@@ -14578,3 +14578,151 @@ Pass 8a5 (lane A, last: mb_phase8 wreck_barrel/turret/launcher/stump/engine, mb_
 - Card PNGs (old luma): fuel_depot, vehicle_hangar fuel_depot .498, vehicle_hangar .403; none for the others.
 - Lead (2026-10-02), wave 8a5 merged (15 models). A full stale-card render (RenderBatch without ids) re-rendered only 4 of 213 models (ammo_carrier, logistics_station, radar_site, repair_bay: new cards), so every other card matches its GLB; the 'unchanged' cards in 6c/8a3/8a4/8a5 are cards drawn from another model. WAVE 8 IS COMPLETE; prompt 27's eight waves are done.
 - Lead (2026-10-02): design review PDF rebuilt at 318 pages after prompt 27's eight waves, prompt 29 and the prompt 28 appendix (only the ExportTheGameForTheDesignDocument test was run, by its exact filter, to export game.json).
+
+## Prompt 30 (cloud, 2026-10-02, cloud/p30-story)
+
+### L0, L1: acts and Legendary
+
+- Precheck in `Docs/checks/p30_precheck.md`. `campaign.json` has `act` 1-4 on every chapter, so the "3 acts" text was
+  the error: the design doc generator (`Tools/docs/programme.py`) now counts the acts from the data, the campaign
+  menu's comment says four acts, `Docs/STORY.md` lists them. The data stays at four.
+- "Epilogue after chapter 9" becomes **Kết mạch Thorne** / *Thorne's Arc Closes*: text keys `campaign.thorneArc(.title)`
+  (EN + VI) for an interlude card after c9m10 and before chapter 15; showing it is UI (LOCAL_TODO). It names no
+  Icarus (L9: the name comes with the timeline). The game's epilogue stays after c12m10.
+- Legendary (`Operations.LegendOpen`) opens on winning `c12m10` by id (`LegendMission`) instead of "the last entry of
+  the operations list", which matched only by data order; the old rule stays as the fallback if c12m10 is missing.
+
+### L2: dialogue queue, triggers, speakers, validator
+
+- **One queue, extended** (`Game/Match/Dialogue.cs`, no second system). P levels of L12 on the existing priorities:
+  `System` (new, P0: shown whatever the setting, cuts any line at once), `Story` and `Warning` (P1: ignore the gap, wait
+  for the line on show; a waiting P1 cuts a P2-P4 line after 1 s), `Event` (P2, kept 12 s), `Reaction` (P3) and
+  `Ambient` (new, P4), both dropped after 8 s. Every line queues now (the old "now or never" for events and reactions
+  becomes "wait at most the shelf"); the gap (9 s, 20 s with a boss on the field, for every P2-P4 line, not only
+  reactions) counts from the last line's start and only stops pile-ups. Settings unchanged: Full all, Important = P0
+  + P1, Off = P0 + story. The Sim's Radio event contract (Value = priority + 1, 1-4) is unchanged. `DialogueTests`
+  rewritten for the new rules. Boss phase lines are P1 (MatchRunner), the usual chatter P3.
+- **Triggers** (`RadioTrigger`, `StoryScript.TriggerKeys`): every key of the sheet "Điểm kích hoạt" has a trigger;
+  `RadioDirector` watches the new ones: objective marks (1/3, 1/2, 2/3, last), objective_stall_90s (90 s without
+  progress and without a P1/P2 line, once; this replaces the old idea of quiet_90s), critical_failure_imminent
+  (`MissionMode.CriticalFailure`: one truck short, one building above the minimum, HQ under 25 %), momentum_high_once
+  (army 2x the enemy's for 30 s with the goal half done), timer_60s, first_unit_type_seen (per battle; per campaign
+  needs the profile, left), general_tactic_change (seen by a scout, 45 s apart), expensive_unit_lost (base CP >= 15,
+  at most twice), ally_arrives (first ally vehicle), event_triggered (first notice of each event kind), boss
+  phase/part/health. Boss overlap: superweapon line > phase > part > health; a health mark is held 10 s and dropped
+  if a phase change falls within 10 s either side; a part line within 10 s of a phase change is dropped; the boss's
+  own phase line (boss data) wins over the script's.
+- **Script lines** (`Sim/Content/ScriptDefs.cs`, `Game/Hud/ScriptText.cs`, `Resources/Data/script/`): when a mission
+  has script lines they replace its campaign `radio` lines and the generic chatter, except the six story moments and
+  story keys (`DialogueRules.IsStoryBeat`), so the slow-motion beats stay. Battle Radio events still play.
+- **Speakers** (`Tools/story/import_speakers.py` -> `script/speakers.json`): the sheet's speakerRole and allowedTriggers
+  by game id; "như trên" = the enemy generals' set (mission_start, boss_spawn, victory, defeat); Aurel only those,
+  with the chapter-11 note; Command ("hq") gets objective/event/reinforcement/timer reports. The main speaker of a
+  mission may also take mission_start, victory, defeat, critical, momentum, stall; anyone may take the scripted
+  triggers (phase, objective_progress, boss phase, event, time), as the sheet's "Theo kịch bản" says.
+- **Validator** (`Tools/story/script_build.py`): length by character budget (VI 110 / EN 90 hard, the soft ranges as
+  warnings) and a render estimate of 2 lines of 58 characters by word wrap until Unity measures the real strip; the
+  other checks of L7 run there too.
+- Compile check of the touched Game files: `Tools/simbuild/gamecheck` (stubs for Unity and the Game types they use).
+
+### L3: match end sequence
+
+- `Sim/SimWorld.MatchEnd.cs`: `MatchPhase` Running -> Resolved -> Presentation -> Results on `SimWorld.Ending`.
+  Setting `IsOver` resolves on that tick (`ResolvedTick`, `ResolvedTime`): result, rewards, stars and score are what
+  the modes and sessions read at that tick. From then `SimWorld.Step` returns at once: no paths, targets, damage,
+  pending explosions, CP, capture, AI or shots (commands were already refused). The runner may keep calling Step; it
+  is a no-op, so the result cannot depend on the presentation and a replay resolves on the same tick.
+- Precheck 4: the Sim and the effects share `Time.timeScale` (the runner runs more or fewer fixed steps). With the
+  battle frozen at RESOLVED, a slow-motion of the pictures cannot change anything; the presentation's own clock is
+  unscaled (`MatchEnd.Advance` is called by the view), so slow motion never stretches the 6-8 / 4-5 / 2.5-4 s.
+- Durations: the middle of the sheet's ranges (`DurationFor`: 7 / 4.5 / 3 s, loss 3.5 s); a tap skips after 0.75 s
+  (`Skip`), `Skipped` tells the results panel to show the story line it cut. `SlowMotion` is off for a loss and a replay.
+- Tests (written): `MatchEndTests` (frozen after the resolve, same state with or without the presentation, same
+  resolve tick on a replay, the skip).
+
+### L4: match rules and scoring
+
+- **Data** (`Tools/story/import_match_rules.py` -> balance.json `matchRules`, `Sim/Content/MatchRules.cs`): per mode
+  the schema's seven fields as the sheet words them plus the numbers the code reads; the campaign's star rules; the
+  leaderboards' key orders. Each quick mode's rules class has `RulesId` and `Apply(world)` (called in `Setup`): the
+  data's numbers replace the session's older ones. The menu's background battle sets `RulesId = null` (no clock).
+- **No general "army gone = lost" rule.** Siege's "attacking player wiped out for 12 s loses" is off (`WipeLoses`,
+  data); Survival and Boss Rush keep theirs because the sheet declares them.
+- **Conquest**: 500 points a side, bleed 0.8 x the point difference, a 10-minute clock, the last 2 minutes x2 (with a
+  clock the final phase is the clock's, the ETA rule stays for clockless uses), holding all three adds nothing extra.
+  Kills no longer cost points (`killTicketFactor` 0: the sheet's score rule has the bleed only; the number is data if
+  the owner wants it back). Level at the limit: up to 60 s overtime, the first side to take one more point wins,
+  else a draw. Catch-up at most +25 % (`SimWorld.CatchUpMax`, was +50 % for every quick mode).
+- **Deathmatch**: a kill scores min(baseCP, 18) (`KillLedger.ScoreCap`, base price, not the rank-discounted one), 480
+  to win, 9 minutes; level: up to 60 s in which the next kill decides, else a draw; catch-up +25 %.
+- **King of the Hill**: 170 at +1/s alone on the hill, 9 minutes; level or contested at the limit: overtime that lasts
+  while contested (at most 60 s); one side alone on the hill then decides (higher score, the holder on a tie); after
+  it, the higher score, else a draw.
+- **Assault**: 4:00 start, +2:30 a sector, at most 5:00 in the bank, 60 s overtime; the difficulty's start keeps its
+  ratio to Normal's (Easy 4:48, Hard 3:36, Very Hard 3:24).
+- **Siege / Weekly**: 60 s overtime while the last target is under attack (was 90). The time limit is the existing bank:
+  8 min + 5 + 5 per ring broken = 18 min at most, as the sheet's ~18. Campaign siege missions keep their own times.
+- **Defend** (CHECK of the sheet's ~12 min): today 8 min + 1 + 1.5 per line lost, at most 10.5 min (Hard 11.5); left
+  as is and reported; no overtime (data), losing outer lines is not a loss (unchanged).
+- **Operations**: the losses part counts base CP lost: 2000 at none, 0 from 150 (`OperationScoring`, operations.json
+  `lossesAtZeroCp`); `MissionMode`/`OperationMode.LostBaseCp`.
+- **Campaign stars** (`CampaignStars`, missions only): ★1 the win; ★2 the type's mastery by goal (escort/evacuate
+  >= 80 % of the trucks, hold/outpost >= 80 % of the time owned, protect >= 75 % standing, survive/duel HQ >= 50 %,
+  boss >= 2 parts broken, recon >= 2/3 of the points seen before the alarm, the rest at most 40 % of the army lost);
+  ★3 the mission's own challenge, else a default by goal (kills, no strikes, no aircraft). No star is fragile or a
+  tight clock, none is a loss condition. `Rewards.Mission` takes the count; the old time/losses rule stays as the
+  fallback.
+- **Leaderboards** (`BoardOrder`): key by key, never a merged formula: Endless/Defend/Survival endless: waves, then
+  base CP of enemies destroyed, then time alive; Boss Rush: bosses, then time (ascending), then parts; Weekly: cleared,
+  then attempts (ascending), then total time (ascending).
+- Tests (written): `MatchRulesTests`.
+
+### L5: the endless part
+
+- `Sim/Modes/Endless.cs`: `IEndlessMode` (CanContinue, InEndless, EndlessSteps, ContinueEndless) on `SiegeMode`
+  (Defend), `SandboxMode` (Survival) and `BossRushMode`; `EndlessRules` holds the sheet's numbers. The win, its rewards
+  and stars are recorded at the resolve; the results' "Continue" calls `ModeSession.ContinueEndless` ->
+  `SimWorld.ContinueMatch` (back to RUNNING, `MatchEnd.Continued`) -> the mode's `ContinueEndless`. Losing later takes
+  nothing back (the result recorded is the win; the endless run's own end is a new result).
+- Growth in stats only (`SimWorld.SetTeamStats`, applied to vehicles that join from then on): Defend/Endless/Survival
+  enemy +4 % a wave beyond the finite part, the player +2 % to +30 %; Boss Rush +8 % a boss (bosses and escorts), the
+  player nothing more. The old Endless grew the sides' income (more vehicles); that is gone. Wave sizes are capped at the
+  finite part's last wave (Defend: the wave it ended on; Endless from the menu: Defend's wave 10; Survival: wave 10), and
+  Boss Rush's endless escorts no longer grow in number (`EndlessMoreEscorts` off).
+- Endless (the menu entry) stays Defend with `Endless` from the start: one code path and one board with Defend's
+  endless part (`defendEndless` and `endless` share the order).
+- Survival: 10 waves, a mini boss with wave 5 and a main boss with wave 10 (`SandboxMode.MainBosses`, the mini being the
+  main boss's `MiniVariant`, the mini-boss mutator's versions); won once wave 10 is out and the field is clear; in the
+  endless part a mini boss every 5 waves and a main one every 10. Mini bosses join without their big attack
+  (`SimWorld.MiniBossesNoBigAttacks`). The old Survival (waves for ever, no win) is `FiniteWaves = 0`.
+- Boss Rush: the endless choice moves from the 20 s in-battle pick to the results (`EndlessAtResults`, default on): the
+  rush ends won at its last boss. The in-battle pick code stays for `EndlessAtResults = false`.
+- Coins: `ModeSession.PayEndless` pays 18 x 0.9^k a wave (60 x 0.9^k a boss) as they pass, through
+  `PlayerProfile.PayEndless` (600 a day over every mode); badges at +10/+20/+30 waves, +5/+10 bosses
+  (`PlayerProfile.AwardEndlessBadge`, ids "<mode>.<n>").
+- CHECK reported: the Boss Rush session's roster and limit (the full hunt has no clock, the weekly hunt its own) do not
+  match the sheet's "10 bosses, 30 minutes"; left as they are (a roster change is a design call).
+- Tests (written): `EndlessTests`.
+
+### L6: neutral sites V1
+
+- The eight V1 rows: the coastal battery, the lighthouse and the neutral supply convoy exist and stay; the contested
+  supply drop now lands between the two armies (else the middle band) and is announced 15 s before (`BattleEvents`,
+  was 5 s), with its marker from the existing `CrateIncoming` event. New: radar (the holder sees 45 m round it),
+  field workshop (the holder's ground vehicles within 14 m mend 1.5 % a second), abandoned AA site (taking it raises an
+  `aa_turret` for the holder; the next holder takes the gun over; destroyed, the site is free again 60 s later), ammo
+  depot (the holder's vehicles within 14 m are resupplied, once each 6 s; its building shot to pieces blows up, 300
+  in 14 m, hurting everyone). `Sim/Modes/Neutrals.cs`, data balance.json `neutrals` (numbers, kinds by mode). No LATER row.
+- Taking a site: a side's ground vehicles alone within 10 m for 8 s (another side takes it the same way), like the
+  coastal batteries. Sites act through the system, not through base utilities (those act team-wide at the HQ).
+- Placement (`Tools/maps/neutrals.py`, on the generated map files; `build_maps.py` did not reproduce the committed
+  maps byte for byte, so the maps were not regenerated): each battlefield's Conquest version (and its Sandbox twin)
+  has two kinds, each a pair mirrored through the middle like the camps (equal value for either side); its Siege
+  version an AA site and an ammo depot on the attacker's half. Buildings: radar dome, garage, ammo dump (existing
+  props), marked `"neutral": 1`. The long versions have none. A spot not walkable in the Sim's grid is dropped.
+- Modes (sheet "Chế độ", column V1): Conquest radar + workshop; Deathmatch ammo depot + AA; King of the Hill workshop;
+  Assault ammo depot; Siege AA; Weekly ammo depot; Survival workshop; Defend the supply drop (event); Boss Rush, the
+  campaign and Operations none (the campaign's battlefields keep their story; the sheet's "như chiến dịch").
+- `neutral_captured`: `SimEventKind.NeutralCaptured` (Arg the kind), 30 s apart, spoken by the script's speaker
+  (speakerRole: Mara for the workshop, Quist for salvage).
+- Tests (written): `NeutralTests` (mirrored pairs, at most two kinds, the modes' kinds).

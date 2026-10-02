@@ -1,0 +1,135 @@
+# Chapter 2 · Black Gold (act 1). Enemy general: Varga. Arc: cut Hegemon's oil at Dunebreak and Red Rock; first
+# Behemoth; Thorne's army on the flank for the first time. Threads: Varga the soldier; Mara and the Behemoth; Nadia
+# notes one small detail about Thorne that does not fit (no conclusion).
+
+@c2m01 main=khai
+mission_start | khai | 1 | Năm phút. Đào hầm quanh các máy bơm và để chúng tự tới. || Five minutes. Dig in round the pumps and let them come.
+time@15 | varga | 2 | Tướng Varga gửi lữ đoàn. Chào mừng tới sa mạc của ta. Hãy đánh nhau như những người lính. || General Varga to the brigade. Welcome to my desert. Let us fight as soldiers do.
+objective_progress:1/2 | linh | 2 | Hai phút rưỡi. Chúng thử từ phía nam, rồi phía đông, giờ là cả hai. || Two and a half minutes. They tried south, then east, now both.
+event_triggered | hq | 2 | Bão cát đang tới. Tầm nhìn còn vài chục mét, giữ đội hình sát nhau. || Sandstorm coming. Visibility down to tens of metres; keep the line close.
+timer_60s | khai | 1 | Một phút nữa. Không ai rời máy bơm. || One more minute. Nobody leaves the pumps.
+victory | khai | 1 | Mỏ dầu vẫn là của ta. Đặt thuốc nổ vào giếng, ta chưa cần chúng cháy. || The field is still ours. Charges on the wells; we do not need them burning yet.
+victory | varga | 1 | Các anh trụ tốt. Ta ghi nhớ điều đó, đại tá. || You held well. I will remember that, Colonel.
+defeat | varga | 1 | Sa mạc trả mọi thứ về cho người kiên nhẫn. Ta kiên nhẫn hơn các anh. || The desert returns everything to the patient. I am the more patient man.
+
+@c2m02 main=linh
+mission_start | linh | 1 | Xe tăng riêng của Varga đang ở ốc đảo. Ông ta ở đây, đại tá. Đích thân. || Varga's own tanks hold the oasis. He is here, Colonel. In person.
+point_captured:town | varga | 3 | Cứ lấy cát nếu muốn. Cát chẳng quan tâm ai đứng trên nó. || Take the sand if you like. The sand does not care who stands on it.
+first_unit_type_seen | linh | 2 | Xe tăng hạng nặng sơn màu lò rèn. Đội cận vệ của Varga, không phải lính thường. || Heavy tanks in forge colours. Varga's guard, not line troops.
+point_lost | linh | 3 | Chúng lấy lại giếng. Varga không bao giờ để mất thứ gì quá lâu. || They retook the wellhead. Varga never lets anything go for long.
+objective_progress:last | dieuhau | 2 | Còn trạm nghỉ đoàn lạc đà! Từ trên này nó chỉ là một chấm trên cát. || Just the caravan stop! From up here it is a dot in the sand.
+victory | khai | 1 | Ba điểm, đường ống không còn nguồn. Varga sẽ phải đi bộ tới chỗ dầu. || Three points; the pipeline has no source. Varga will have to walk to his oil.
+defeat | linh | 1 | Đường ống vẫn chảy. Cứ mỗi giờ nó đổ thêm dầu cho xe tăng của ông ta. || The pipeline still flows. Every hour it feeds his tanks.
+
+@c2m03 main=khai
+mission_start | khai | 1 | Tắt đèn, ga nhỏ. Đưa năm xe qua hẻm núi, cần ít nhất ba. || Lights off, engines low. Five trucks through the canyon, three at least.
+time@45 | linh | 2 | Một đoàn xe trung lập cũng đi đường này. Đừng bắn nhầm, họ chỉ chở nước. || A neutral convoy uses this road too. Hold fire on it; they only carry water.
+event_triggered | linh | 2 | Pháo trên mỏm đá đang dò hẻm. Cho xe tách nhau, đừng dừng dưới vách. || Guns on the ridge are ranging the canyon. Spread the trucks; no stopping under the cliffs.
+objective_progress:1/3 | hq | 2 | Xe đầu đã tới giếng. Đội tiếp nhận đang chờ chiếc thứ hai. || First truck at the wellhead. The crew is waiting for the second.
+critical_failure_imminent | khai | 1 | Không còn xe dự phòng. Mỗi chiếc còn lại phải tới nơi. || No spare trucks left. Every one still rolling has to arrive.
+victory | khai | 1 | Đủ xăng cho lữ đoàn. Đêm nay không ai phải đẩy xe. || Fuel for the brigade. Nobody pushes a tank tonight.
+defeat | khai | 1 | Không đủ xe qua hẻm. Mai ta sẽ phải tiết kiệm từng lít. || Not enough trucks through. Tomorrow we count every litre.
+
+@c2m04 main=khai
+mission_start | khai | 1 | Năm trạm bơm. Trạm nào cũng phải cháy. Vào nhanh, ra nhanh hơn. || Five pumping stations. Every one burns. In fast, out faster.
+objective_progress:1/3 | linh | 2 | Trạm đầu đã nổ. Áp suất cả đường ống đang tụt, chúng sẽ biết ngay. || First station gone. Pressure is dropping along the line; they will know at once.
+time@150 | varga | 2 | Đường ống của ta! Các anh sẽ trả từng thùng một. || My pipeline! You will pay for it by the barrel.
+enemy_reinforcement | linh | 3 | Varga gửi xe từ nhà máy lọc dầu xuống. Đừng đợi chúng, đi tiếp. || Varga is sending vehicles down from the refinery. Do not wait for them; move on.
+objective_progress:last | khai | 2 | Còn một trạm. Đốt nó rồi rút, không ai ở lại ngắm lửa. || One station left. Burn it and go; nobody stays to watch the fire.
+victory | khai | 1 | Đường ống đứt ở năm chỗ. Nhà máy lọc dầu sẽ đói trong nhiều tuần. || The pipeline is cut in five places. The refinery goes hungry for weeks.
+defeat | khai | 1 | Đường ống còn chảy. Rút trước khi xe của Varga khóa đường về. || The pipeline still runs. Pull out before Varga's tanks close the road home.
+
+@c2m05 main=mai
+mission_start | varga | 1 | Đại tá muốn lửa ư? Lửa đây. || You want fire, Colonel? Here is fire.
+boss_spawn | mai | 1 | Inferno. Một con Behemoth lắp súng phun lửa. Đường ống làm mát trên lưng nó, tôi đã vẽ nó. || Inferno: a Behemoth rebuilt for flame. That cooling line on its back? I drew it.
+time@20 | mai | 2 | Đừng lại gần dưới ba mươi mét. Nó đốt bằng nhiên liệu, không phải đạn. Đánh từ xa. || Stay outside thirty metres. It burns fuel, not shells. Hit it from range.
+event_triggered | dieuhau | 2 | Bão cát làm tôi mù, nhưng tôi vẫn thấy đuôi lửa của nó. Đánh dấu cho các anh. || The storm blinds me, but I can see its flame trail. Marking it for you.
+boss_part_destroyed | mai | 2 | Một bình nhiên liệu đã vỡ. Nó cháy chính nó lúc này, đừng đứng gần. || A fuel tank burst. It is burning itself now; keep clear.
+boss_phase_change | mai | 1 | Nó mở hết vòi phun. Lùi ra, để nó tự nóng lên. || All its projectors open. Fall back and let it overheat.
+superweapon_warning | mai | 1 | Nó sắp phun cả vòng lửa quanh mình. Ra khỏi vùng đỏ trước khi nó bùng! || It is about to ring itself in fire. Out of the red zone before it flares!
+boss_hp:75 | linh | 4 | Nhiệt độ thân nó đang tăng. Thêm vài phát nữa là hệ làm mát quá tải. || Its hull is heating up. A few more hits and the cooling gives out.
+boss_hp:50 | khai | 4 | Nó đang quay đầu. Đừng đuổi vào bão, để nó chạy. || It is turning back. Do not chase into the storm; let it run.
+hq_below_50 | mai | 2 | Trại cháy rồi, đại tá. Tôi dập được nếu có người kéo nó ra xa. || The camp is on fire, Colonel. I can put it out if someone draws that thing off.
+victory | khai | 1 | Nó chạy về nhà máy lọc dầu. Ta sẽ tìm nó ở đó. || It ran for the refinery. We will find it there.
+victory | varga | 1 | Inferno lùi lại. Không sao, nó sẽ quay về, và ta cũng vậy. || Inferno withdraws. No matter; it will come back, and so will I.
+defeat | varga | 1 | Lửa không chọn phe, đại tá. Nó chỉ chọn thứ cháy được. || Fire takes no side, Colonel. Only what will burn.
+
+@c2m06 main=linh
+mission_start | linh | 1 | Ba khẩu đội tên lửa, đã đánh dấu đỏ. Chúng di chuyển sau mỗi loạt; ta đi nhanh hơn. || Three rocket batteries, marked red. They move after every salvo; we move faster.
+event_triggered | hung | 2 | Đây là Thorne. Pháo của ta sẽ phủ khói lên mỏm đá phía bắc cho các con. || Thorne here. My guns will smoke the northern mesas for you, lads.
+objective_progress:1/3 | linh | 2 | Một khẩu đội đã gục. Hai khẩu còn lại vừa đổi vị trí về phía tây. || One battery down. The other two just shifted west.
+time@200 | linh | 2 | Khói của tướng Thorne rơi lệch bốn trăm mét. Chắc do bão. Tôi chỉ ghi lại. || Thorne's smoke landed four hundred metres off. The storm, probably. Noted.
+objective_progress:last | linh | 2 | Còn khẩu tên lửa phòng không. Nó đứng yên khi bắn, đó là cửa sổ của ta. || Only the SAM launcher left. It stands still when it fires; that is our window.
+victory | linh | 1 | Gạch ba tên. Bầu trời Red Rock giờ an toàn hơn cho Hawk. || Three names crossed out. The sky over Red Rock is safer for Hawk now.
+defeat | linh | 1 | Chúng thoát vào bão, hướng tây bắc. Tôi đã ghi lại hướng chạy. || They slipped into the storm, north-west. I have their heading.
+
+@c2m07 main=khai
+mission_start | khai | 1 | Họ đã giữ ốc đảo hai năm. Đêm nay ta giữ cho họ. || They held the oasis for two years. Tonight we hold it for them.
+time@10 | hq | 2 | Dân quân ốc đảo gọi: vòng vây có sáu xe, đã đánh dấu. Sở chỉ huy của họ đang bị nã. || Oasis militia calling: six vehicles in the ring, marked. Their HQ is under fire.
+objective_progress:1/3 | khai | 2 | Vòng vây thủng phía nam. Mở rộng lỗ, đừng để chúng khép lại. || The ring is broken in the south. Widen it before they close up.
+time@120 | linh | 2 | Sở chỉ huy dân quân đang dính đòn nặng. Nhanh lên. || The militia HQ is taking heavy fire. Hurry.
+critical_failure_imminent | khai | 1 | Sở chỉ huy của họ sắp sập. Mọi thứ hướng vào xe đang bắn nó. || Their HQ is about to fall. Everything on whatever is shelling it.
+victory | khai | 1 | Vòng vây tan. Ốc đảo nhập lữ đoàn, họ biết rõ từng tảng đá ở đây. || The ring is gone. The oasis joins the brigade; they know every rock here.
+defeat | khai | 1 | Sở chỉ huy ốc đảo thất thủ. Hai năm của họ kết thúc đêm nay. || The oasis HQ has fallen. Their two years end tonight.
+
+@c2m08 main=khai
+mission_start | khai | 1 | Bốn phút trong sân nhà máy. Đừng đuổi chúng ra ngoài, cứ giữ. || Four minutes in the refinery yard. Do not chase them out; hold.
+time@100 | varga | 2 | Đốt chúng ra khỏi nhà máy của ta! || Burn them out of my refinery!
+event_triggered | hung | 2 | Pháo của Thorne đang tới yểm trợ. Cúi đầu xuống, các con. || Thorne's guns coming in. Heads down, lads.
+objective_progress:1/2 | linh | 2 | Hai phút. Varga vừa tung đội dự bị cuối cùng vào, xe tăng hạng nặng. || Two minutes. Varga just threw in his last reserve, heavy tanks.
+point_lost | khai | 3 | Chúng chiếm sân rồi. Lấy lại ngay, đồng hồ không chờ ta. || They have the yard. Take it back; the clock is not waiting.
+victory | khai | 1 | Sân nhà máy là của ta. Varga mất đội dự bị ở đây. || The yard is ours. Varga lost his reserve here.
+defeat | varga | 1 | Nhà máy là của ta, và sẽ còn là của ta. || The refinery is mine, and so it stays.
+
+@c2m09 main=khai
+mission_start | varga | 1 | Thép không biết thương lượng, đại tá. || Steel does not negotiate, Colonel.
+mission_start | khai | 1 | Tôi cũng vậy. || Neither do I.
+general_tactic_change | linh | 3 | Varga chuyển sang phòng thủ chiều sâu. Ông ta muốn ta tự vào bẫy pháo chống tăng. || Varga has gone to defence in depth. He wants us walking into his anti-tank guns.
+time@200 | varga | 2 | Đại tá lái lữ đoàn như người lái một con tàu tốt. Để xem nó chịu được bao nhiêu sức nặng. || You steer your brigade like a good ship. Let us see how much weight it takes.
+expensive_unit_lost | khai | 3 | Mất một xe nặng. Đừng lao thẳng vào pháo của ông ta, vòng qua sườn. || A heavy lost. Stop driving straight at his guns; go round the flank.
+timer_60s | khai | 1 | Một phút. Sở chỉ huy của ông ta phải đổ trước khi bão tan. || One minute. His HQ falls before the storm lifts.
+victory | varga | 1 | Rút lui. Giữ lấy máy móc. Sắt cũng có lúc gãy. || Withdraw. Save the machines. Even iron breaks.
+victory | khai | 1 | Ông ta rút có trật tự. Varga thua cũng giống một người lính. || An orderly retreat. Varga loses like a soldier too.
+defeat | varga | 1 | Về đi, đại tá. Sa mạc này không dành cho người vội. || Go home, Colonel. This desert is not for the hasty.
+
+@c2m10 main=khai
+mission_start | khai | 1 | Hôm nay nhà máy lọc dầu cháy, lữ đoàn. Mọi thứ bên trong cũng vậy. || The refinery burns today, Brigade. Everything inside it too.
+phase_start:2 | khai | 1 | Mỏ dầu và ốc đảo đã chiếm. Giờ chọn đòn tiếp theo, mỗi lựa chọn đều có cái giá. || Field and oasis taken. Now choose the next blow; each has its price.
+phase_start:4 | linh | 1 | Tháp chưng cất và bồn chứa. Inferno đang trốn giữa chúng, đừng bắn vào bồn khi đứng gần. || Towers and tanks. Inferno hides among them; do not hit the tanks while standing close.
+boss_phase_change | mai | 1 | Inferno quay lại, sửa vội. Đường làm mát vẫn là chỗ yếu, tôi thấy mối hàn mới. || Inferno is back, patched in a hurry. The cooling line is still weak; new welds.
+phase_start:8 | khai | 1 | Lửa đã lan khắp nhà máy. Trụ thêm chút nữa, để nó tự cháy hết. || The whole refinery is alight. Hold a little longer and let it burn out.
+victory | khai | 1 | Nhà máy không còn. Con quái lớn của Varga đã lui về Red Rock. || The refinery is gone. Varga's big one has pulled back to Red Rock.
+defeat | khai | 1 | Lùi khỏi nhà máy. Lửa đang quay về phía ta, không phải phía chúng. || Back out of the refinery. The fire is turning on us, not them.
+
+@c2m11 main=mai
+mission_start | khai | 1 | Red Rock, lữ đoàn. Behemoth ở trong đó, và lần này ta có bạn đồng hành. || Red Rock, Brigade. The Behemoth is in there, and this time we have company.
+time@12 | hung | 2 | Quân của Thorne bên cánh trái. Chúc săn tốt, đại tá Kade! || Thorne's army on your left. Good hunting, Colonel Kade!
+ally_arrives | hung | 2 | Các con của ta đã vào vị trí. Để cánh trái cho ta, đại tá. || My lads are in position. Leave the left to me, Colonel.
+phase_start:2 | khai | 1 | Giếng là của ta. Chọn cách đánh tiếp: mỗi đường mở một cánh cửa khác. || The wellhead is ours. Choose the next blow; each road opens a different door.
+phase_start:4 | linh | 1 | Ốc đảo tiếp theo. Quân Thorne giữ sườn, ta giữ giữa. || The oasis next. Thorne's men hold the flank; we hold the middle.
+boss_spawn | mai | 1 | Behemoth. Mối hàn sau tháp pháo: tôi đã vẽ nó, tôi biết nó yếu. || The Behemoth. The weld behind the turret: I drew it, I know it is weak.
+boss_spawn | varga | 1 | Đây là con của ta, đại tá. Hãy cho nó thấy các anh nặng bao nhiêu. || This is my child, Colonel. Show it how much weight you carry.
+boss_part_destroyed | mai | 2 | Pháo phụ bên trái đã câm. Đừng ăn mừng, khẩu chính vẫn còn nguyên. || The left side gun is silent. Do not celebrate; the main gun is untouched.
+boss_phase_change | mai | 1 | Nó hạ thân xuống, khóa xích. Đó là tư thế bắn loạt, rời khỏi trục nòng! || It is locking its tracks. That is its barrage stance; get off its line!
+superweapon_warning | mai | 1 | Loạt pháo lớn sắp tới. Rời khỏi vùng đánh dấu, đừng ai ở lại! || The big salvo is coming. Out of the marked ground; nobody stays!
+boss_hp:50 | dieuhau | 4 | Một nửa rồi! Nó vẫn đứng, nhưng tháp pháo quay chậm hẳn. || Half gone! Still standing, but the turret is slowing.
+boss_hp:25 | khai | 4 | Gần xong. Giữ nhịp, đừng ai lao lên trước. || Nearly there. Keep the rhythm; nobody rushes ahead.
+critical_failure_imminent | khai | 1 | Sở chỉ huy nguy cấp. Dồn hết vào Behemoth, không còn thời gian. || The HQ is critical. Everything onto the Behemoth; we are out of time.
+victory | varga | 1 | Nó gục như một con thú tốt. Đại tá, các anh đã đánh như người lính. || It fell like a good beast. Colonel, you fought like soldiers.
+victory | mai | 1 | Ông hỏi tôi học chế tạo chúng ở đâu, đại tá. Tối nay tôi sẽ kể. || You asked where I learned to build those, Colonel. Tonight I will tell you.
+defeat | varga | 1 | Behemoth vẫn đứng. Sắt kiên nhẫn hơn người. || The Behemoth still stands. Iron is more patient than men.
+
+@c2s1 main=linh
+mission_start | linh | 1 | Ba lần nhìn trong đêm. Mục tiêu là mìn của chúng, không phải xe tăng. || Three looks in the dark. Their mines are the target, not their tanks.
+point_captured | linh | 3 | Hàng mìn chạy theo đường mòn cũ. Varga rải theo sách, gọn gàng. || The mines follow the old track. Varga lays them by the book, neatly.
+objective_progress:last | linh | 2 | Còn một điểm. Tránh vết bánh xe, cát mới xới là chỗ có mìn. || One more. Keep off the wheel ruts; fresh sand means mines.
+victory | linh | 1 | Bản đồ mìn hoàn chỉnh. Công binh sẽ dọn đường trước bình minh. || The minefield map is complete. Engineers clear the road before dawn.
+defeat | linh | 1 | Ta không có bản đồ. Mỗi bước tiếp theo là một canh bạc. || No map. Every step from here is a gamble.
+
+@c2s2 main=dieuhau
+mission_start | dieuhau | 1 | Trực thăng, bay thấp và chậm. Loại tôi thích nhất. Mười chiếc trước hoàng hôn. || Helicopters, low and slow. My favourite kind. Ten before sunset.
+objective_progress:1/2 | dieuhau | 2 | Năm chiếc! Bọn chúng bắt đầu bay theo cặp rồi, khôn ra đấy. || Five down! They are flying in pairs now, getting smarter.
+first_unit_type_seen | dieuhau | 2 | Trực thăng vũ trang hạng nặng. Cái này có giáp, đừng phí đạn súng máy. || Heavy gunship. That one is armoured; do not waste machine-gun rounds.
+momentum_high_once | dieuhau | 4 | Khá là nóng trên này, nhưng bầu trời đang về tay ta. || Pretty warm up here, but the sky is coming our way.
+victory | dieuhau | 1 | Mười chiếc. Bầu trời sạch rồi, mời các anh lên sân khấu. || Ten. The sky is clean; the stage is yours.
+defeat | dieuhau | 1 | Mất lưới phòng không cuối. Tôi phải bay về, đoàn xe tự lo thôi. || Last anti-air gone. I have to head home; the convoys are on their own.

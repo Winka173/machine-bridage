@@ -5,20 +5,31 @@ using EntityId = MachineBrigade.Sim.Core.EntityId;
 
 namespace MachineBrigade.Game.Match
 {
-    /// <summary>Prompt 23 H.3: how much a line matters. Lower is more important.</summary>
+    /// <summary>
+    /// Prompt 23 H.3 / prompt 30 L12: how much a line matters, lower first. The P levels of the writing rules:
+    /// <see cref="System"/> P0, <see cref="Story"/> and <see cref="Warning"/> P1, <see cref="Event"/> P2,
+    /// <see cref="Reaction"/> P3, <see cref="Ambient"/> P4 (<see cref="DialogueDirector.Level"/>). The Sim's Radio
+    /// events give Value = priority + 1 for Story..Reaction, so those four keep their numbers.
+    /// </summary>
     public enum DialoguePriority
     {
-        /// <summary>A story beat the player must hear (a betrayal, a surrender): always shown, queued, never dropped.</summary>
+        /// <summary>P0: a system warning (a superweapon, danger). Shown whatever the setting; cuts any line short.</summary>
+        System = -1,
+
+        /// <summary>P1: a story beat the player must hear (a betrayal, a surrender): always shown, ignores the gap, never dropped.</summary>
         Story = 0,
 
-        /// <summary>A line that comes with a warning (before a strike, a boss's big attack): queued, and cuts chatter short.</summary>
+        /// <summary>P1: the line that comes with a warning (the first superweapon's "get clear"): ignores the gap, cuts chatter short.</summary>
         Warning = 1,
 
-        /// <summary>A line as something happens (a general arrives, a boss changes phase, reinforcements): now or never.</summary>
+        /// <summary>P2: the mission's own event (a goal mark, a boss part, a unit first seen): waits for the gap, kept 12 s.</summary>
         Event = 2,
 
-        /// <summary>A general answering the way the player fights (prompt 22 D.4): now or never, and rarer in boss battles.</summary>
+        /// <summary>P3: a tactical reaction (a point taken, reinforcements, a general's answer): waits for the gap, dropped after 8 s.</summary>
         Reaction = 3,
+
+        /// <summary>P4: atmosphere (momentum, a boss's health mark): waits for the gap, dropped after 8 s.</summary>
+        Ambient = 4,
     }
 
     /// <summary>Prompt 23 H.7: Settings, In-battle dialogue.</summary>
@@ -94,29 +105,44 @@ namespace MachineBrigade.Game.Match
     }
 
     /// <summary>
-    /// Prompt 23 H.3-H.9: every character's line in a battle goes through here, one at a time. Story and warning lines
-    /// queue (story first); a waiting warning cuts a chatter line short. Event and reaction lines show now or never: when
-    /// nothing is up or waiting and at least <see cref="Gap"/> seconds after the last one started (reactions wait
-    /// <see cref="BossReactionGap"/> while a boss is on the field). A line stays 3 to 6 s by its length, then fades; the next
-    /// waits for the fade. The last <see cref="LogSize"/> lines shown are kept for the pause menu's log. A story moment
-    /// slows the battle to <see cref="MomentScale"/> while its lines play (<see cref="TimeScale"/>; the runner applies it
-    /// to the step rate, so the simulation and its replays are untouched). The clock is the caller's: seconds that stop
-    /// under the pause. Presentation only: nothing here touches the battle.
+    /// Prompt 23 H.3-H.9, queue rules of prompt 30 L12: every character's line in a battle goes through here, one at a
+    /// time. Every line waits in one queue, most important first (<see cref="Level"/>), and starts once the line on show
+    /// has faded. P0 (<see cref="DialoguePriority.System"/>) cuts any line short and shows whatever the setting; P1 (story,
+    /// the warning's line) ignores the gap but waits for the line on show; P2-P4 wait until <see cref="Gap"/> seconds
+    /// (<see cref="BossGap"/> with a boss on the field) after the last line started: the gap only stops lines piling up,
+    /// it is not a target rhythm. A P2 line that cannot start within <see cref="EventShelf"/> s, and a P3 or P4 line within
+    /// <see cref="ReactionShelf"/> s, is stale and dropped, never saved up. A waiting P1 cuts a P2-P4 line short. A line
+    /// stays 3 to 6 s by its length, then fades. The last <see cref="LogSize"/> lines shown are kept for the pause menu's
+    /// log. A story moment slows the battle to <see cref="MomentScale"/> while its lines play (<see cref="TimeScale"/>; the
+    /// runner applies it to the step rate, so the simulation and its replays are untouched). The clock is the caller's:
+    /// seconds that stop under the pause. Presentation only: nothing here touches the battle.
     /// </summary>
     public sealed class DialogueDirector
     {
         public const double Gap = 9.0;
-        public const double BossReactionGap = 20.0;
+
+        /// <summary>The gap while a boss is on the field (L12: 20 s).</summary>
+        public const double BossGap = 20.0;
+
+        /// <summary>The old name of <see cref="BossGap"/>.</summary>
+        public const double BossReactionGap = BossGap;
+
         public const double MinSeconds = 3.0, MaxSeconds = 6.0;
 
         /// <summary>The strip's fade (Screens.uss .fc-dialogue); the next line starts after it.</summary>
         public const double FadeSeconds = 0.25;
 
-        /// <summary>A chatter line cut short by a waiting warning still shows this long.</summary>
+        /// <summary>A lower line cut short by a waiting P0 or P1 line still shows this long (a P0 cuts at once).</summary>
         public const double MinShown = 1.0;
 
-        /// <summary>A warning that could not start within this long is stale and dropped.</summary>
+        /// <summary>A P1 warning line that could not start within this long is stale and dropped (a story line never is).</summary>
         public const double WarningShelf = 12.0;
+
+        /// <summary>P2: dropped when it could not start within this long.</summary>
+        public const double EventShelf = 12.0;
+
+        /// <summary>P3 and P4: dropped when they could not start within this long (L12: 8 s).</summary>
+        public const double ReactionShelf = 8.0;
 
         public const int LogSize = 20, QueueSize = 6;
 
@@ -127,18 +153,18 @@ namespace MachineBrigade.Game.Match
 
         public const double MomentMax = 14.0, MomentEaseIn = 0.4, MomentEaseOut = 0.6;
 
-        private readonly List<(DialogueLine line, double at)> _queue = new();
+        private readonly List<(DialogueLine line, double at, long order)> _queue = new();
         private readonly List<DialogueEntry> _log = new();
         private DialogueLine _current;
         private bool _showing;
-        private double _shownAt, _until, _freeAt = double.MinValue, _lastChatter = double.MinValue;
+        private double _shownAt, _until, _freeAt = double.MinValue, _lastStart = double.MinValue;
         private double _momentStart = double.MinValue, _momentEnd = double.MinValue;
         private int _momentCount;
-        private long _started;
+        private long _started, _arrivals;
 
         public DialogueSetting Setting { get; set; } = DialogueSetting.Full;
 
-        /// <summary>A boss is on the field (reactions are rarer).</summary>
+        /// <summary>A boss is on the field (the gap is longer).</summary>
         public bool BossBattle { get; set; }
 
         /// <summary>A line starts showing.</summary>
@@ -153,7 +179,7 @@ namespace MachineBrigade.Game.Match
         /// <summary>The line on show, if any.</summary>
         public DialogueLine? Current => _showing ? _current : null;
 
-        /// <summary>Lines waiting (story and warning lines only).</summary>
+        /// <summary>Lines waiting.</summary>
         public int Waiting => _queue.Count;
 
         /// <summary>The lines shown, oldest first, at most <see cref="LogSize"/>.</summary>
@@ -168,58 +194,94 @@ namespace MachineBrigade.Game.Match
         /// <summary>H.9: this unit's line is on show.</summary>
         public bool IsSpeaking(EntityId unit) => _showing && unit.IsValid && _current.Unit == unit;
 
-        /// <summary>H.7: whether a setting lets a line of this priority show.</summary>
+        /// <summary>L12: a priority's P level (0 system warning, 1 story and the warning's line, 2 event, 3 reaction, 4 atmosphere).</summary>
+        public static int Level(DialoguePriority priority) => priority switch
+        {
+            DialoguePriority.System => 0,
+            DialoguePriority.Story or DialoguePriority.Warning => 1,
+            DialoguePriority.Event => 2,
+            DialoguePriority.Reaction => 3,
+            _ => 4,
+        };
+
+        /// <summary>The P level of a script line's priority number (1-4); 0 stays a system warning.</summary>
+        public static DialoguePriority FromLevel(int level) => level switch
+        {
+            <= 0 => DialoguePriority.System,
+            1 => DialoguePriority.Story,
+            2 => DialoguePriority.Event,
+            3 => DialoguePriority.Reaction,
+            _ => DialoguePriority.Ambient,
+        };
+
+        /// <summary>H.7 / L12: whether a setting lets a line of this priority show. P0 and story lines always do.</summary>
         public static bool Allowed(DialogueSetting setting, DialoguePriority priority) =>
-            priority == DialoguePriority.Story || setting == DialogueSetting.Full || setting == DialogueSetting.Important && priority == DialoguePriority.Warning;
+            priority is DialoguePriority.System or DialoguePriority.Story || setting == DialogueSetting.Full ||
+            setting == DialogueSetting.Important && priority == DialoguePriority.Warning;
 
         /// <summary>H.5: how long a line of this many letters stays: 3 s for a short one, 6 s from about 85 letters.</summary>
         public static double SecondsFor(int letters) => Math.Clamp(1.75 + letters * 0.05, MinSeconds, MaxSeconds);
+
+        /// <summary>How long a line may wait before it is stale (a story line never is).</summary>
+        public static double Shelf(DialoguePriority priority) => priority switch
+        {
+            DialoguePriority.System or DialoguePriority.Story => double.PositiveInfinity,
+            DialoguePriority.Warning => WarningShelf,
+            DialoguePriority.Event => EventShelf,
+            _ => ReactionShelf,
+        };
 
         /// <summary>A line to say at <paramref name="now"/>.</summary>
         public DialogueOutcome Say(in DialogueLine line, double now)
         {
             if (line.Key == null) return DialogueOutcome.Dropped;
             if (!Allowed(Setting, line.Priority)) return DialogueOutcome.Filtered;
-            if (line.Priority <= DialoguePriority.Warning)
+            var order = ++_arrivals;
+            // By priority (a story line before a warning's line of the same level), then by arrival.
+            var at = _queue.Count;
+            while (at > 0 && _queue[at - 1].line.Priority > line.Priority) at--;
+            _queue.Insert(at, (line, now, order));
+            // Full: the newest of the least important goes (never P0 or a story line).
+            if (_queue.Count > QueueSize)
             {
-                var at = _queue.Count;
-                while (at > 0 && _queue[at - 1].line.Priority > line.Priority) at--;
-                _queue.Insert(at, (line, now));
-                // Full: the newest warning goes (a story line never does).
-                if (_queue.Count > QueueSize)
+                var drop = -1;
+                for (var i = _queue.Count - 1; i >= 0; i--)
+                    if (Level(_queue[i].line.Priority) >= 1 && _queue[i].line.Priority != DialoguePriority.Story &&
+                        (drop < 0 || Level(_queue[i].line.Priority) > Level(_queue[drop].line.Priority)))
+                        drop = i;
+                if (drop >= 0)
                 {
-                    var last = _queue.FindLastIndex(q => q.line.Priority == DialoguePriority.Warning);
-                    if (last >= 0) _queue.RemoveAt(last);
+                    var dropped = _queue[drop].order == order;
+                    _queue.RemoveAt(drop);
+                    if (dropped) return DialogueOutcome.Dropped;
                 }
-                var started = _started;
-                Tick(now);
-                return _started != started && _current.Key == line.Key ? DialogueOutcome.Shown : DialogueOutcome.Queued;
             }
-            // Event and reaction lines: now or never.
-            var gap = line.Priority == DialoguePriority.Reaction && BossBattle ? BossReactionGap : Gap;
-            if (_showing || _queue.Count > 0 || now < _freeAt || now - _lastChatter < gap) return DialogueOutcome.Dropped;
-            _lastChatter = now;
-            Start(line, now);
-            return DialogueOutcome.Shown;
+            var started = _started;
+            Tick(now);
+            return _started != started && _current.Key == line.Key ? DialogueOutcome.Shown : DialogueOutcome.Queued;
         }
 
-        /// <summary>Every frame: the line on show ends when its time is up (or a waiting warning cuts chatter short), and the next starts.</summary>
+        /// <summary>Every frame: stale lines go, the line on show ends when its time is up (or a waiting P0/P1 cuts it), and the next starts.</summary>
         public void Tick(double now)
         {
+            if (MomentActive && now - _momentStart >= MomentMax) _momentEnd = _momentStart + MomentMax;
+            _queue.RemoveAll(q => now - q.at > Shelf(q.line.Priority));
             if (_showing)
             {
-                var cut = _current.Priority >= DialoguePriority.Event && now - _shownAt >= MinShown &&
-                          _queue.Exists(q => q.line.Priority == DialoguePriority.Warning);
-                if (now >= _until || cut) End(now);
+                var level = Level(_current.Priority);
+                var cut = _queue.Count > 0 && (
+                    Level(_queue[0].line.Priority) == 0 && level > 0 ||
+                    Level(_queue[0].line.Priority) == 1 && level >= 2 && now - _shownAt >= MinShown);
+                if (now >= _until || cut) End(now, cut && Level(_queue[0].line.Priority) == 0);
             }
-            _queue.RemoveAll(q => q.line.Priority == DialoguePriority.Warning && now - q.at > WarningShelf);
-            if (!_showing && _queue.Count > 0 && now >= _freeAt)
-            {
-                var next = _queue[0].line;
-                _queue.RemoveAt(0);
-                Start(next, now);
-            }
-            if (MomentActive && now - _momentStart >= MomentMax) _momentEnd = _momentStart + MomentMax;
+            if (_showing || _queue.Count == 0) return;
+            var next = _queue[0].line;
+            var nextLevel = Level(next.Priority);
+            // P0 starts at once; the others after the fade; P2-P4 also after the gap.
+            if (nextLevel > 0 && now < _freeAt) return;
+            if (nextLevel >= 2 && now - _lastStart < (BossBattle ? BossGap : Gap)) return;
+            _queue.RemoveAt(0);
+            Start(next, now);
         }
 
         private bool MomentActive => _momentStart > double.MinValue && _momentEnd == double.MaxValue;
@@ -230,6 +292,7 @@ namespace MachineBrigade.Game.Match
             _showing = true;
             _started++;
             _shownAt = now;
+            _lastStart = now;
             _until = now + SecondsFor(line.Words.Length + line.Name.Length);
             _log.Add(new DialogueEntry(line, now));
             if (_log.Count > LogSize) _log.RemoveAt(0);
@@ -244,11 +307,11 @@ namespace MachineBrigade.Game.Match
             SpeakingChanged?.Invoke(line.Speaker, line.Unit, true);
         }
 
-        private void End(double now)
+        private void End(double now, bool system = false)
         {
             var line = _current;
             _showing = false;
-            _freeAt = now + FadeSeconds;
+            _freeAt = system ? now : now + FadeSeconds;
             // A story moment lasts while story lines follow one another, up to three of them.
             if (MomentActive && (_momentCount >= MomentLines || _queue.Count == 0 || _queue[0].line.Priority != DialoguePriority.Story))
                 _momentEnd = now;
@@ -302,6 +365,9 @@ namespace MachineBrigade.Game.Match
             "radio.hung.c9m10.s4", "radio.linh.c9m10.s4b", "radio.varga.c12m10.s4e", "radio.linh.c12m10.s5", "radio.aurel.bug.crash",
             "radio.aurel.bug.down",
         };
+
+        /// <summary>A story beat or a moment's line: kept when a mission's script replaces its radio lines (prompt 30 L7).</summary>
+        public static bool IsStoryBeat(string key) => key != null && (MomentKeys.Contains(key) || StoryKeys.Contains(key));
 
         /// <summary>A line's priority by its key: a story beat, a warning (a boss's big attack, a key with ".warn"), else an event line.</summary>
         public static DialoguePriority PriorityOf(string key)

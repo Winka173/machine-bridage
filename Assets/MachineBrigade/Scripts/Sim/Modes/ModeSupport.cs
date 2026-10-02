@@ -304,7 +304,17 @@ namespace MachineBrigade.Sim.Modes
 
     public sealed class KillLedger
     {
-        private readonly Dictionary<EntityId, (int team, int cost, bool air)> _alive = new();
+        private readonly Dictionary<EntityId, (int team, int cost, bool air, int baseCp)> _alive = new();
+        private readonly int[] _lostBase = new int[2], _lostScore = new int[2];
+
+        /// <summary>Prompt 30 L4: what one loss scores at most (Deathmatch: min(baseCP, 18)); 0: no cap.</summary>
+        public int ScoreCap { get; set; }
+
+        /// <summary>The base CP (no card-rank discount) the side has lost (Operations' losses, Endless's board).</summary>
+        public int LostBaseCp(int team) => team is 0 or 1 ? _lostBase[team] : 0;
+
+        /// <summary>The score the other side made from this side's losses: min(baseCP, <see cref="ScoreCap"/>) each.</summary>
+        public int LostScore(int team) => team is 0 or 1 ? _lostScore[team] : 0;
         private readonly int[] _airLosses = new int[2];
         private readonly List<EntityId> _gone = new();
         private readonly HashSet<EntityId> _seen = new();
@@ -334,15 +344,17 @@ namespace MachineBrigade.Sim.Modes
             {
                 if (!v.IsAlive || v.Team < 0 || v.Team > 1 || (Ignore != null && Ignore(v))) continue;
                 _seen.Add(v.Id);
-                if (!_alive.ContainsKey(v.Id)) _alive[v.Id] = (v.Team, v.Def.ArmyCost, v.Def.Flying);
+                if (!_alive.ContainsKey(v.Id)) _alive[v.Id] = (v.Team, v.Def.ArmyCost, v.Def.Flying, v.Def.BaseCp);
             }
             _gone.Clear();
             foreach (var id in _alive.Keys)
                 if (!_seen.Contains(id)) _gone.Add(id);
             foreach (var id in _gone)
             {
-                var (team, cost, air) = _alive[id];
+                var (team, cost, air, baseCp) = _alive[id];
                 _losses[team]++;
+                _lostBase[team] += baseCp;
+                _lostScore[team] += ScoreCap > 0 ? Math.Min(baseCp, ScoreCap) : baseCp;
                 if (air) _airLosses[team]++;
                 _lostCp[team] += cost;
                 Lost?.Invoke(team, cost);

@@ -329,15 +329,24 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Seconds the choice stays open (unanswered: the rush ends there, won).</summary>
         public float EndlessChoice { get; set; } = 20f;
 
-        /// <summary>Each endless boss's health and damage over the rush's last, a share per step.</summary>
-        public float EndlessHp { get; set; } = 0.15f;
+        /// <summary>
+        /// Prompt 30 L5: the choice comes on the results (the win recorded first: Continue / End) instead of in the battle.
+        /// The rush ends won at its last boss; "Continue" reopens it (<see cref="BossRushMode.ContinueEndless"/>).
+        /// </summary>
+        public bool EndlessAtResults { get; set; } = true;
 
-        public float EndlessDamage { get; set; } = 0.06f;
+        /// <summary>Each endless boss's health and damage over the rush's last, a share per step (sheet "Vô hạn": +8 % a boss).</summary>
+        public float EndlessHp { get; set; } = EndlessRules.EnemyPerBoss;
+
+        public float EndlessDamage { get; set; } = EndlessRules.EnemyPerBoss;
 
         /// <summary>The escorts of the endless run: one more alive at once every this many bosses, all their guards, and this much tougher and harder-hitting a step.</summary>
         public int EndlessEscortEvery { get; set; } = 2;
 
-        public float EndlessEscort { get; set; } = 0.05f;
+        /// <summary>Prompt 30 L5: the endless escorts grow in stats only (+8 % a boss), not in number.</summary>
+        public float EndlessEscort { get; set; } = EndlessRules.EnemyPerBoss;
+
+        public bool EndlessMoreEscorts { get; set; }
 
         /// <summary>
         /// Prompt 26 E.1: the player's estimated damage a second on a boss (<c>HuntPower</c>), set once from the carried deck. A boss's
@@ -387,8 +396,24 @@ namespace MachineBrigade.Sim.Modes
         public float Power { get; set; }
     }
 
-    public sealed partial class BossRushMode
+    public sealed partial class BossRushMode : IEndlessMode
     {
+        /// <summary>Prompt 30 L5: the rush won at its last boss, the results may carry on.</summary>
+        public bool CanContinue => _rules.EndlessOffer && _rules.EndlessAtResults && !Endless && Defeated >= Total && Result is { WinningTeam: PlayerTeam };
+
+        public bool InEndless => Endless;
+
+        public int EndlessSteps => Endless ? Math.Max(0, Defeated - Total) : 0;
+
+        /// <summary>"Continue" on the results: the next boss after the breather, stronger each time.</summary>
+        public void ContinueEndless(SimWorld world)
+        {
+            if (!CanContinue) return;
+            Result = null;
+            Endless = true;
+            _nextBossAt = world.Time + _rules.Breather;
+        }
+
         private readonly List<string> _held = new();
         private readonly HashSet<EntityId> _fitted = new();
         private IReadOnlyList<string>? _offer;
@@ -470,7 +495,7 @@ namespace MachineBrigade.Sim.Modes
             _endlessHp = 1f + _rules.EndlessHp * step;
             _endlessDamage = 1f + _rules.EndlessDamage * step;
             _escortStrength = 1f + _rules.EndlessEscort * step;
-            if (world.EscortSettings is not { } escorts) return;
+            if (world.EscortSettings is not { } escorts || !_rules.EndlessMoreEscorts) return;
             if (_escortBase < 0) _escortBase = escorts.Cap;
             escorts.Cap = _escortBase + step / Math.Max(1, _rules.EndlessEscortEvery);
             escorts.Guards = 1f;

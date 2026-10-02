@@ -357,7 +357,7 @@ namespace MachineBrigade.Sim.Economy
                 // Prompt 13 H.12: a mode with the once-a-match help for the side behind gives its income
                 // boost only to the side that got it; the others keep the old sliding boost.
                 var target = Underdog != null ? (UnderdogTeam == economy.Team ? Underdog.Income : 1f)
-                    : _world.CatchUp && TryGetRival(economy.Team, out var rival) ? CatchUpFor(economy.ArmyCp, rival.ArmyCp) : 1f;
+                    : _world.CatchUp && TryGetRival(economy.Team, out var rival) ? CatchUpFor(economy.ArmyCp, rival.ArmyCp, _world.CatchUpMax) : 1f;
                 economy.CatchUp += (target - economy.CatchUp) * MathF.Min(1f, dt / CatchUpSettle);
                 economy.CommanderIncome = CommanderIncome(economy);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + economy.Earning * dt);
@@ -461,11 +461,11 @@ namespace MachineBrigade.Sim.Economy
         /// <paramref name="rival"/>: none down to three quarters of the rival's, then rising to
         /// <see cref="MaxCatchUp"/> at a fifth.
         /// </summary>
-        public static float CatchUpFor(int own, int rival)
+        public static float CatchUpFor(int own, int rival, float max = MaxCatchUp)
         {
             if (rival < CatchUpMinimumArmy) return 1f;
             var odds = own / (float)rival;
-            return 1f + MaxCatchUp * Math.Clamp((CatchUpBelow - odds) / (CatchUpBelow - 0.2f), 0f, 1f);
+            return 1f + max * Math.Clamp((CatchUpBelow - odds) / (CatchUpBelow - 0.2f), 0f, 1f);
         }
 
         /// <summary>

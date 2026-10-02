@@ -1,0 +1,116 @@
+# Chapter 12 · Helion (act 4). Enemy: Aurel; Varga's last Behemoth; Kessler's last ship. Arc: the last battles at
+# the Helion Launch Complex; Icarus falls. Threads close: Varga falls as a soldier (c12m10's own event lines), Kessler
+# bargains to the end, Mara's surprise (the Behemoth repainted, ours), Aurel fights in the wreck.
+
+@c12m01 main=khai
+mission_start | varga | 1 | Đại tá. Ta lại gặp nhau trên cát. Lần cuối, ta nghĩ vậy. || Colonel. We meet in the sand again. The last time, I think.
+mission_start | khai | 1 | Ốc đảo, nhà máy, mỏ dầu. Lần này ta tới từ phía nam. || The oasis, the refinery, the oil field. From the south this time.
+event_triggered | linh | 2 | Varga đánh từ mọi hướng. Ông ta không còn giữ quân dự bị nữa. || Varga is attacking from every side. He is holding nothing back now.
+point_captured | linh | 3 | Ốc đảo là của ta. Dân quân năm xưa vẫn còn ở đây, họ nhớ ta. || The oasis is ours. The old militia are still here; they remember us.
+objective_progress:last | khai | 2 | Còn mỏ dầu. Lần đầu ta tới đây chỉ mong giữ được năm phút. || The oil field left. The first time we came, we only hoped to hold it five minutes.
+victory | varga | 1 | Các anh vẫn nặng như ngày đầu, đại tá. Không, nặng hơn. || You still carry your weight, Colonel. No, more than before.
+defeat | varga | 1 | Sa mạc vẫn là của ta. Lần cuối. || The desert is still mine. For the last time.
+
+@c12m05 main=sen
+mission_start | sen | 1 | Aurel lấy chương trình drone của tôi khi tôi đi. Và tiếp tục chế tạo. || Aurel took my drone programme when I left. And kept building.
+boss_spawn | sen | 1 | Đó là thiết kế của tôi. Nhắm vào cửa khoang chứa. || That is my design. Aim for the hangar doors.
+time@30 | linh | 2 | Đường Salt Flats tới Helion, không chỗ nấp. Mọi xe đều lộ ra dưới trời. || The Salt Flats road to Helion, no cover. Every vehicle is out under the sky.
+boss_part_destroyed | sen | 2 | Một cửa khoang đã kẹt. Lần này tôi không thấy tiếc. || One hangar door is jammed. This time I feel no regret.
+boss_phase_change | sen | 1 | Nó chuyển sang săn. Nó sẽ tìm xe nóng nhất, tắt máy những xe không cần chạy. || It has switched to hunting. It looks for the hottest engines; shut down whatever can wait.
+superweapon_warning | sen | 1 | Nó sắp thả cả bầy xuống một chỗ. Rời khỏi vùng đỏ! || It is about to drop the whole swarm on one spot. Out of the red!
+event_triggered | dieuhau | 2 | Tôi vào đánh từ phía mặt trời. Giữ phòng không bắn thấp! || Coming in out of the sun. Keep the flak firing low!
+boss_hp:50 | dieuhau | 4 | Một nửa! Nó không có chỗ trốn trên muối! || Half! Nowhere for it to hide on the salt!
+boss_hp:25 | sen | 4 | Pin của nó gần cạn. Tôi nghe nó đếm ngược. || Its batteries are nearly empty. I can hear it counting down.
+victory | sen | 1 | Chiếc Locust cuối cùng. Tôi hy vọng vậy. || The last Locust. I hope.
+defeat | sen | 1 | Bầy của nó còn bay. Ai đó sẽ phải dọn chúng sau chiến tranh. || Its swarm still flies. Someone will have to clean them up after the war.
+
+@c12m03 main=khai
+mission_start | varga | 1 | Thép không biết thương lượng. Nhưng thép cũng biết mệt, đại tá. || Steel does not negotiate. But it can be tired, Colonel.
+mission_start | khai | 1 | Trại cuối của ông ta, nơi Behemoth đầu tiên ra đời. San phẳng sở chỉ huy. || His last camp, where the first Behemoth was born. Level the HQ.
+general_tactic_change | linh | 3 | Varga đổi sang tổng tấn công. Ông ta không còn gì để giữ lại. || Varga has gone all-out. He has nothing left to save.
+event_triggered | dahl | 2 | Pháo của ta đã căn vào hàng chống tăng. Mười một giây sau mỗi lệnh. || Our guns are ranged on his anti-tank line. Eleven seconds after every call.
+expensive_unit_lost | khai | 3 | Mất xe nặng. Ông ta đánh như người không còn gì để mất. Cẩn thận. || A heavy lost. He fights like a man with nothing to lose. Careful.
+time@200 | varga | 2 | Kỹ sư Lind, cô có ở đây không? Ta muốn cô thấy những cỗ máy cuối cùng của ta. || Engineer Lind, are you there? I want you to see my last machines.
+victory | varga | 1 | Đủ rồi. Để những cỗ máy được nghỉ. || Enough. Let the machines rest.
+defeat | varga | 1 | Lò rèn của ta vẫn nóng. Chưa phải lúc, đại tá. || My forge is still hot. Not yet, Colonel.
+
+@c12m02 main=khai
+mission_start | kessler | 1 | Đại tá, hãy biết điều. Mọi con tàu tôi còn, đổi lấy đường đi an toàn. || Colonel, let us be sensible. Every ship I have left, for safe passage.
+time@6 | khai | 2 | Không bán, đô đốc. || No sale, Admiral.
+boss_spawn | kessler | 1 | Vậy ông ra giá đi. Ai cũng có giá của mình. || Name your price, then. Everyone has one.
+boss_spawn | mai | 1 | Scylla, lần thứ ba. Họ chẳng còn gì để sửa nữa. Ra-đa, rồi thân tàu. || Scylla, a third time. Nothing left for them to patch. Radar, then the hull.
+boss_part_destroyed | mai | 2 | Ra-đa gãy, lần cuối. || Radar down, for the last time.
+event_triggered | linh | 2 | Đổ bộ trên bờ phía bắc vịnh. Kessler dồn những gì còn lại để che sở chỉ huy. || A landing on the north shore. Kessler is throwing in what is left to cover his HQ.
+boss_phase_change | mai | 1 | Nó quay mạn. Lần thứ ba, cùng một chỗ. Tránh trục ngang! || It is turning broadside. Third time, same spot. Off its beam!
+superweapon_warning | mai | 1 | Loạt toàn mạn sắp tới. Rời khỏi bờ đỏ! || Full broadside coming. Off the red shore!
+time@200 | kessler | 2 | Gấp đôi. Gấp ba. Ông muốn bao nhiêu, đại tá? || Double. Triple. How much do you want, Colonel?
+boss_hp:50 | dieuhau | 4 | Một nửa! Nó nghiêng như hai lần trước! || Half! It is listing like the last two times!
+hq_below_50 | mai | 2 | Pháo tàu đang nã trại. Kéo xe hậu cần sau mỏm đá, như lần trước. || The ship is shelling the camp. Support vehicles behind the headland, like last time.
+victory | kessler | 1 | Vậy ghi lại thời gian, đại tá. Sổ sách đã khóa. || Then record the time, Colonel. The ledger is closed.
+victory | khai | 1 | Hạm đội cuối của ông ta nằm dưới vịnh. Helion không còn ai che từ biển. || His last fleet is in the bay. Helion has nobody covering it from the sea.
+defeat | kessler | 1 | Lợi nhuận cuối cùng. Cảm ơn, đại tá. || One last profit. Thank you, Colonel.
+
+@c12m04 main=khai
+mission_start | aurel | 1 | Đội cận vệ của tôi tốn kém hơn cả lữ đoàn của ông, đại tá. || My guard costs more than your brigade, Colonel.
+mission_start | khai | 1 | Vậy ông sẽ mất nhiều hơn. San phẳng sở chỉ huy của họ. || Then you will lose more. Level their HQ.
+event_triggered | linh | 2 | Nhiễu toàn dải. Aurel không muốn ta nghe ông ta ra lệnh. || Jamming everywhere. Aurel does not want us hearing his orders.
+general_tactic_change | linh | 3 | Cận vệ đổi sang phòng thủ chiều sâu. Ba hàng quanh bãi phóng phía bắc. || The guard has gone to defence in depth. Three lines round the northern pads.
+expensive_unit_lost | khai | 3 | Mất xe nặng. Cận vệ của ông ta bắn chính xác. Đi chậm, đi cùng nhau. || A heavy lost. His guard shoots well. Slow down, stay together.
+victory | khai | 1 | Bãi phóng phía bắc là của ta. Cận vệ của ông ta đắt, nhưng không đủ. || The northern pads are ours. His guard was expensive, and not enough.
+defeat | aurel | 1 | Như tôi đã nói. Chất lượng có giá của nó. || As I said. Quality has its price.
+
+@c12m07 main=linh
+mission_start | linh | 1 | Ba xe. Chiếc nào cũng quan trọng. Nhiên liệu lò phản ứng của Icarus. || Three trucks. Every one of them counts. Icarus's reactor fuel.
+event_triggered | linh | 2 | Bão cát. Xe tải sẽ đi chậm, nhưng ta cũng khó thấy chúng. || Sandstorm. The trucks slow down, but they are harder to see.
+objective_progress:1/3 | linh | 2 | Một xe đã dừng. Thùng chì còn nguyên. Đừng ai mở nó. || One truck stopped. The lead casks are intact. Nobody opens them.
+objective_progress:last | linh | 2 | Còn một xe. Nó đang chạy về bãi phóng, khoang đổ bộ rơi quanh nó. || One truck left. It is running for the pad, drop pods landing round it.
+timer_60s | khai | 1 | Một phút trước khi xe cuối tới bãi phóng. Dừng nó. || One minute before the last truck reaches the pad. Stop it.
+victory | linh | 1 | Ba xe đã dừng. Icarus sẽ phải bay với nửa bình nhiên liệu. || All three stopped. Icarus will have to fly on half a tank.
+defeat | linh | 1 | Nhiên liệu đã tới. Icarus sẽ bay với bình đầy. || The fuel got through. Icarus flies on a full tank.
+
+@c12m06 main=khai
+mission_start | aurel | 1 | Phi công là chi phí. Drone là đầu tư. || Pilots are an expense. Drones are an investment.
+mission_start | khai | 1 | Sân bay cuối cùng che bãi phóng. Raven đã đi. San phẳng sở chỉ huy. || The last airfield covers the launch pad. Raven is gone. Level the HQ.
+event_triggered | dieuhau | 2 | Máy bay của họ không có người lái. Bay hoàn hảo, và chán như một bảng tính. || Their jets have no pilots. Flying perfectly, and dull as a spreadsheet.
+event_triggered | hq | 2 | Đoàn cứu viện Accord đang tới từ phía nam. Giữ đường cho họ. || Accord relief coming from the south. Keep the road open for them.
+expensive_unit_lost | khai | 3 | Mất xe nặng vì drone. Phòng không bám sát thiết giáp. || A heavy lost to drones. Flak sticks to the armour.
+victory | khai | 1 | Sân bay đã tắt. Bầu trời trên bãi phóng giờ là của Hawk. || The airfield is dark. The sky over the pad belongs to Hawk now.
+victory | dieuhau | 1 | Không còn Raven, không còn ai để đấu. Hơi buồn, nói thật. || No Raven, nobody left to duel. A bit sad, honestly.
+defeat | aurel | 1 | Đầu tư của tôi đã sinh lời. Như dự kiến. || My investment paid off. As projected.
+
+@c12m08 main=linh
+mission_start | linh | 1 | Bốn radar. Bão che ta cũng như che chúng. || Four radars. The storm hides you as much as them.
+event_triggered | linh | 2 | Một thanh kim loại từ quỹ đạo rơi xuống gần bãi phóng. Họ đang thử lần cuối. || A rod from orbit came down near the pad. Their last test.
+objective_progress:1/2 | linh | 2 | Hai radar đã đổ. Icarus mất một nửa đường dẫn. || Two radars down. Icarus has lost half its guidance.
+event_triggered | hq | 2 | Bão đang tan. Hai radar còn lại sẽ thấy ta rõ hơn. || The storm is clearing. The last two radars will see us better.
+timer_60s | khai | 1 | Một phút. Mọi radar phải gục trước khi trời quang hẳn. || One minute. Every radar down before the sky is fully clear.
+victory | linh | 1 | Bốn radar đã đổ. Icarus sẽ phải cất cánh mù. || All four radars down. Icarus will have to lift off blind.
+defeat | linh | 1 | Radar vẫn quét. Icarus sẽ có đường bay hoàn hảo. || The radars still sweep. Icarus will have a perfect flight path.
+
+@c12m09 main=khai
+mission_start | khai | 1 | Giữ nhà máy. Ngày mai ta kết thúc chuyện này. || Hold the refinery. Tomorrow we finish this.
+event_triggered | linh | 2 | Cận vệ của Aurel đánh từ mọi hướng. Họ nhắm vào kho tiếp tế. || Aurel's guard is coming from every side. They are after the supply depot.
+objective_progress:1/2 | khai | 2 | Nửa thời gian. Kho vẫn đầy, đạn cho trận cuối vẫn còn nguyên. || Halfway. The depot is full; the shells for the last battle are untouched.
+event_triggered | linh | 2 | Một đội đánh phá đang lẻn vào kho từ phía tây. || A raiding party is slipping into the depot from the west.
+point_lost | khai | 3 | Mất nhà máy. Lấy lại, trận cuối không đợi được. || The refinery is lost. Take it back; the last battle cannot wait.
+victory | khai | 1 | Nhà máy vẫn của ta. Nghỉ đi, lữ đoàn. Sáng mai là ngày cuối. || The refinery is still ours. Rest, Brigade. Tomorrow is the last day.
+victory | mai | 1 | Đại tá, tôi có một bất ngờ cho ngày mai. Đừng hỏi. Ông sẽ thích. || Colonel, I have a surprise for tomorrow. Don't ask. You will like it.
+defeat | khai | 1 | Mất kho tiếp tế. Ta sẽ vào trận cuối với ít đạn hơn. || The depot is lost. We go into the last battle short of shells.
+
+@c12m10 main=khai
+mission_start | khai | 1 | Đây rồi, lữ đoàn. Mọi thứ ta có, thêm một lần nữa. || This is it, Brigade. Everything we have, one more time.
+time@20 | aurel | 2 | Đại tá Kade. Ông đã đi rất xa. Tôi thừa nhận điều đó. Nhưng bầu trời đã được trả tiền. || Colonel Kade. You have come a long way. I grant you that. But the sky is paid for.
+phase_start:2 | linh | 1 | Kho nhiên liệu đẩy đã chiếm. Chọn đòn tiếp: tháp phóng hay đường cấp nhiên liệu. || The propellant farm is taken. Next: the launch tower or the fuel lines.
+phase_start:4 | khai | 1 | Tòa nhà lắp ráp. Icarus đang được nạp lần cuối bên trong. || The assembly building. Icarus is being loaded for the last time inside.
+phase_start:5 | mai | 1 | Đại tá, nhìn sườn trái. Behemoth sơn màu lữ đoàn. Của ta. Bất ngờ đây. || Colonel, look to the left. A Behemoth in brigade colours. Ours. Surprise.
+boss_spawn | mai | 1 | Behemoth Mk.II của Varga. Con cuối. Các tấm sau vẫn là của tôi. Lần này cũng vậy. || Varga's Behemoth Mk.II. The last one. The rear plates are still mine. Even now.
+boss_hp:50 | mai | 4 | Một nửa. Hai con Behemoth trên cùng một bãi. Tôi chưa bao giờ nghĩ sẽ thấy cảnh này. || Half. Two Behemoths on one field. I never thought I would see it.
+phase_start:6 | khai | 1 | Giữ bãi phóng. Đồng hồ đếm ngược đã chạy. || Hold the launch pad. The countdown has started.
+phase_start:8 | sen | 1 | Icarus đã cất cánh, hoàn chỉnh. Nó phải quay lại vì thiếu đường dẫn. Đó là cơ hội duy nhất. || Icarus is up, complete. Without guidance it has to turn back. That is our only chance.
+superweapon_warning | mai | 1 | Thanh vonfram từ quỹ đạo! Rời khỏi vùng đỏ, ngay, tất cả! || Tungsten rods from orbit! Out of the red, now, everyone!
+boss_part_destroyed | mai | 2 | Một động cơ của Icarus đã tắt. Nó đang mất độ cao. || One of Icarus's engines is out. It is losing altitude.
+boss_hp:25 | dieuhau | 4 | Nó đang rơi! Tôi bay theo nó tới tận mặt đất! || It is falling! I am following it all the way down!
+critical_failure_imminent | khai | 1 | Sở chỉ huy nguy cấp. Không còn gì để giữ lại. Mọi thứ vào Icarus. || The HQ is critical. Nothing held back. Everything onto Icarus.
+victory | khai | 1 | Kết thúc rồi. Lữ đoàn, nghỉ. Ta về nhà. || It is over. Brigade, stand down. We go home.
+victory | khai | 1 | Meridian Coast. Của ta. || Meridian Coast. Ours.
+defeat | aurel | 1 | Bầu trời đã được trả tiền, đại tá. Ông chỉ tới muộn. || The sky was paid for, Colonel. You were simply late.

@@ -3,7 +3,7 @@
 // reads it.
 {
   // Tiers: the enemy's CP and income scale, the player's income, whether fire support is allowed,
-  // and the score multiplier. Legend opens once the last operation of the campaign is won.
+  // and the score multiplier. Legend opens once c12m10 (Helion, the finale) is won (prompt 30 L1).
   "tiers": [
     { "id": "normal", "enemy": 1.0, "playerIncome": 1.0, "supports": true,  "score": 1.0 },
     { "id": "heroic", "enemy": 1.3, "playerIncome": 1.0, "supports": true,  "score": 1.3 },
@@ -11,10 +11,10 @@
     { "id": "legend", "enemy": 1.6, "playerIncome": 0.75, "supports": false, "score": 2.0 }
   ],
 
-  // Score of a won battle: win + time x (1 - minutes / par, at least 0) + losses x (1 - lost / lossesAtZero)
+  // Score of a won battle: win + time x (1 - minutes / par, at least 0) + losses x (1 - lost base CP / lossesAtZeroCp)
   // + hq x the HQ's health left (1 without an HQ); then x the tier's and the mutators' multipliers.
   // A lost battle scores 0.
-  "score": { "win": 5000, "time": 3000, "par": 1500, "losses": 2000, "lossesAtZero": 20, "hq": 2000 },
+  "score": { "win": 5000, "time": 3000, "par": 1500, "losses": 2000, "lossesAtZeroCp": 150, "hq": 2000 },
 
   // The weekly rewards, one ledger for both: the first win of the week of the fortress and of the
   // operation with its mutators each pay once.

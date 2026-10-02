@@ -1,0 +1,165 @@
+# Chapter 9 · Rough Water (act 3). Enemy general: Thorne. Arc: stop Thorne at sea; Caspian, Scylla, Typhon. Venn
+# hears a submarine talking to the sky. Threads: Thorne on Typhon almost confides; after it sinks, his last message:
+# coordinates, and "Don't let me have been right." No body found.
+
+@c9m01 main=khai
+mission_start | khai | 1 | Lại là cảng này. Lần này ta giữ nó. || The port again. This time we keep it.
+time@15 | hung | 2 | Cảng này từng là của Kessler, rồi của các con, giờ là của ta. Cảng chẳng nhớ ai cả. || This port was Kessler's, then yours, now mine. A port remembers nobody.
+event_triggered | linh | 2 | Tàu đổ bộ đang cập bến phía tây. Lính thủy của Thorne, những người cuối cùng của Kessler. || Landing craft at the west quay. Thorne's sailors, Kessler's last men.
+point_captured:west | linh | 3 | Bến tàu là của ta. Kho trên bến chứa toàn phụ tùng ăng-ten. || The docks are ours. The dock stores are full of antenna parts.
+objective_progress:last | khai | 2 | Còn một điểm. Cảng này không đổi chủ thêm lần nào nữa. || One point left. This port does not change hands again.
+victory | khai | 1 | Ironport là của ta, lần thứ hai và lần cuối. || Ironport is ours, a second time and the last.
+defeat | hung | 1 | Cảng vẫn là của ta, Marcus. Ta cần nó thêm vài ngày nữa thôi. || The port stays mine, Marcus. I only need it a few more days.
+
+@c9m02 main=khai
+mission_start | khai | 1 | Ta biết bãi biển này. Rõ hơn ông ta. || We know this beach. Better than he does.
+time@20 | dieuhau | 2 | Bãi biển đầu tiên. Lúc đó tôi còn sợ khói hơn sợ súng. || The first beach. Back then I was more scared of smoke than guns.
+event_triggered | linh | 2 | Sương biển phủ kín bờ. Tàu đổ bộ của họ cũng không thấy đường. || Sea fog over the whole shore. Their landing craft cannot see either.
+point_captured:east | linh | 3 | Lối ra bãi biển là của ta. Lần này ta đi ngược chiều. || The beach exit is ours. This time we came from the other side.
+objective_progress:last | khai | 2 | Còn thị trấn trên dốc. Cùng con đường như hồi đầu. || The town up the draw left. The same road as the first day.
+victory | khai | 1 | Bãi biển lại là của ta. Ông ta không đổ bộ lên đây được nữa. || The beach is ours again. He does not land here any more.
+defeat | hung | 1 | Bãi biển cũ của các con giờ có cờ của ta. Thật buồn cười, phải không? || Your old beach flies my flag now. Funny, is it not?
+
+@c9m03 main=linh
+mission_start | linh | 1 | Có tuần tra trên đường cảng. Cứ đi, đừng dừng. Năm xe, ba phải tới. || Patrols on the harbour road. Keep moving. Five trucks, three must arrive.
+event_triggered | linh | 2 | Pháo của Thorne đang dò đường. Họ biết lịch của ta, ông ta từng đọc nó mỗi sáng. || Thorne's guns are ranging the road. He knows our schedules; he read them every morning.
+objective_progress:1/3 | hq | 2 | Xe đầu đã tới kho. Đạn và nhiên liệu cho đợt tấn công cảng. || First truck at the depot. Shells and fuel for the harbour attack.
+event_triggered | hq | 2 | Sương biển dày đặc. Giữ đoàn xe sát nhau, đèn tắt. || Thick sea fog. Keep the convoy close, lights off.
+critical_failure_imminent | khai | 1 | Thêm một xe là không đủ. Đi sát chiếc cuối. || One more truck and it is not enough. Stay right by the last one.
+victory | linh | 1 | Đoàn xe đã tới. Lần này Thorne đoán sai lịch của ta. || The convoy made it. This time Thorne guessed our schedule wrong.
+defeat | linh | 1 | Không đủ xe tới nơi. Ông ta biết rõ thói quen của ta. || Not enough trucks arrived. He knows our habits too well.
+
+@c9m04 main=mai
+mission_start | mai | 1 | Cùng pháo cũ. Cùng chân đế yếu. || Same guns. Same weak mounts.
+time@20 | mai | 2 | Tôi đã gỡ chúng một lần ở chương đầu chiến tranh. Lần này tôi biết gỡ nhanh hơn. || I took these apart once, at the start of the war. This time I know how to do it faster.
+event_triggered | dieuhau | 2 | Tôi đánh vào ụ pháo phía bắc. Cúi đầu xuống! || Hitting the north gun pit. Heads down!
+objective_progress:1/2 | mai | 2 | Nửa số pháo đã câm. Chân đế bên trái nứt trước, như tôi nói. || Half the guns are silent. The left mounts crack first, as I said.
+timer_60s | khai | 1 | Một phút trước khi tàu của ông ta vào tầm. Pháo bờ biển phải câm. || One minute before his ships are in range. The coastal guns go quiet.
+victory | mai | 1 | Pháo đã nằm. Tàu của ông ta sẽ phải đổ bộ chỗ khác. || The guns are down. His ships will have to land somewhere else.
+defeat | mai | 1 | Pháo vẫn bắn. Tàu của Thorne sẽ vào dưới làn đạn che. || The guns still fire. Thorne's ships come in under cover.
+
+@c9m05 main=linh
+mission_start | linh | 1 | Có thứ gì đó trong sương, bay sát mặt nước. Rất nhanh. || Something in the fog, skimming the water. Very fast.
+boss_spawn | mai | 1 | Caspian: tàu hiệu ứng mặt đất. Bay sát sóng, đổ quân. Bắn vào cánh, nó sẽ chúi xuống. || Caspian, a ground-effect ship: skims the waves, lands troops. Hit the wings; it noses in.
+boss_spawn | hung | 1 | Con chim biển này từng là của Kessler. Ta sơn lại nó thôi. || This seabird was Kessler's. I only repainted it.
+boss_part_destroyed | mai | 2 | Một cánh đã gãy. Nó đang nghiêng, mất độ cao. || One wing is broken. It is listing, losing height.
+boss_phase_change | linh | 1 | Nó lượn vòng để đổ quân lên bờ. Chặn chỗ nó sẽ cập! || It is circling to land troops. Block where it will beach!
+superweapon_warning | mai | 1 | Nó sắp bắn rocket trải dọc bờ. Rời khỏi vùng đỏ trên cát! || It is about to rake the shore with rockets. Off the red sand!
+event_triggered | hq | 2 | Giông từ biển. Sóng sẽ cao hơn, nó khó bay sát nước. || A storm front off the sea. Higher waves; harder for it to skim.
+boss_hp:50 | dieuhau | 4 | Một nửa! Nó bay như con chim bị thương! || Half! It flies like a wounded bird!
+boss_hp:25 | khai | 4 | Gần xong. Đừng để nó chạm bờ. || Nearly there. Do not let it touch the shore.
+hq_below_50 | mai | 2 | Sở chỉ huy ven biển dính rocket. Kéo xe hậu cần vào sau đồi cát. || The shore HQ is taking rockets. Pull the support vehicles behind the dunes.
+victory | linh | 1 | Caspian nằm dưới nước. Quân đổ bộ của Thorne chìm theo nó. || Caspian is in the water. Thorne's landing force went down with it.
+victory | hung | 1 | Một con chim nữa. Không sao. Ta không cần nhiều con nữa. || Another bird. No matter. I will not need many more.
+defeat | hung | 1 | Nó đã đáp. Bãi biển này lại có khách, Marcus. || It has landed. Your beach has visitors again, Marcus.
+
+@c9m11 main=sen
+mission_start | sen | 1 | Tôi cần ba tai nghe trên mặt nước. Pháo đài, ngôi làng, ngọn hải đăng. || I need three ears on the water. The fort, the village, the lighthouse.
+point_captured | sen | 3 | Một tai nghe. Có tín hiệu dưới vịnh, trên một băng tần không ai dùng. || One ear. There is a signal under the bay, on a band nobody uses.
+event_triggered | linh | 2 | Sương biển. Tôi không thấy gì, nhưng tiến sĩ nói bà ấy không cần thấy. || Sea fog. I see nothing, but the Doctor says she does not need to see.
+objective_progress:last | sen | 2 | Còn ngọn hải đăng. Tín hiệu đang lên trời, không về đất liền. || The lighthouse left. The signal goes up to the sky, not to the shore.
+victory | sen | 1 | Một tàu ngầm, đang nói chuyện với một vệ tinh. Nó tên là Typhon. || A submarine, talking to a satellite. It is called Typhon.
+defeat | sen | 1 | Tín hiệu tắt trước khi tôi nghe rõ. Họ biết có người đang nghe. || The signal stopped before I could hear it clearly. They know someone is listening.
+
+@c9m06 main=khai
+mission_start | hung | 1 | Biển không thuộc về các con, Kade. || The sea does not belong to you, Kade.
+mission_start | khai | 1 | Nó cũng không thuộc về ông. San phẳng sở chỉ huy trên bến. || Nor to you. Level the HQ on the docks.
+general_tactic_change | linh | 3 | Thorne đổi sang phân tán. Xe của ông ta rải khắp các bến, khó gom lại. || Thorne has gone to dispersal. His vehicles are spread over every quay.
+event_triggered | linh | 2 | Tàu đổ bộ đang mang viện quân tới. Đánh chúng trước khi chúng cập bến. || Landing craft are bringing reinforcements. Hit them before they berth.
+expensive_unit_lost | khai | 3 | Mất xe nặng trên bến. Đừng dừng giữa hai dãy container. || A heavy lost on the quay. Never stop between two container rows.
+victory | hung | 1 | Lui ra tàu. Ta không cần đất liền nữa. || To the ships. I do not need the land any more.
+victory | khai | 1 | Ông ta bị cắt khỏi biển. Hoặc ông ta muốn ta nghĩ vậy. || He is cut off from the sea. Or he wants us to think so.
+defeat | hung | 1 | Bến tàu vẫn là của ta. Biển vẫn mở cho ta, Marcus. || The docks are mine. The sea is still open to me, Marcus.
+
+@c9m12 main=khai
+mission_start | khai | 1 | Hai hòn đảo và một ngọn hải đăng. Lấy chúng, và tiến sĩ có tai nghe. || Two islands and a lighthouse. Take them, and the Doctor gets her ears.
+event_triggered | linh | 2 | Tàu đổ bộ của Thorne đang tiếp tế cho các đảo. Đánh chúng ngoài kênh. || Thorne's landing craft are supplying the islands. Hit them in the channel.
+point_captured:town | sen | 3 | Hải đăng là của ta. Từ đây tôi nghe được cả kênh. || The lighthouse is ours. From here I can hear the whole channel.
+event_triggered | hq | 2 | Giông đang tới. Lấy đảo cuối trước khi sóng lên. || A storm front is coming. Take the last island before the sea rises.
+objective_progress:last | khai | 2 | Còn một đảo. Nhanh, trước khi bão chặn kênh. || One island left. Quickly, before the storm closes the channel.
+victory | sen | 1 | Phao đang được thả. Giờ ta chờ nó lên tiếng. || Buoys going in. Now we wait for it to speak.
+defeat | khai | 1 | Đảo vẫn là của Thorne. Tiến sĩ sẽ phải nghe từ xa hơn. || The islands are still Thorne's. The Doctor will have to listen from further off.
+
+@c9m13 main=sen
+mission_start | sen | 1 | Giữ họ tránh xa ngọn hải đăng. Typhon đang nói, và tôi đang nghe. || Keep them off the lighthouse. Typhon is talking, and I am listening.
+time@40 | sen | 2 | Typhon gửi tọa độ lên trời mỗi chín mươi giây. Tôi đang chép lại. || Typhon sends coordinates to the sky every ninety seconds. I am copying them.
+event_triggered | linh | 2 | Đổ bộ ở phía nam đảo. Họ biết phao để làm gì. || A landing on the south of the island. They know what the buoys are for.
+objective_progress:1/2 | sen | 2 | Nửa thời gian. Có giọng người trong tín hiệu. Tôi biết giọng này. || Halfway. There is a voice in the signal. I know that voice.
+point_lost | khai | 3 | Mất hải đăng. Lấy lại, tiến sĩ đang nghe dở. || The lighthouse is lost. Take it back; the Doctor is in the middle of listening.
+victory | linh | 1 | Người ra lệnh cho Typhon: Thorne. || The man giving Typhon its orders: Thorne.
+victory | sen | 1 | Ông ta nói về bầu trời như người ta nói về nhà. Tôi không thích điều đó. || He speaks of the sky the way people speak of home. I do not like it.
+defeat | sen | 1 | Tín hiệu mất. Tôi chỉ nghe được nửa câu cuối: "...khi bầu trời mở." || Signal lost. I only caught half the last sentence: "...when the sky opens."
+
+@c9m07 main=khai
+mission_start | khai | 1 | Giữ một tòa đứng vững. Ta chỉ cần vậy. || Keep one standing. That is all we need.
+time@20 | hq | 2 | Người quan sát của ta trong các tòa nhà cảng đang dẫn pháo. Có cả dân thường ở tầng dưới. || Our spotters in the port buildings guide the guns. Civilians on the lower floors too.
+event_triggered | hq | 2 | Sương biển phủ cảng. Tấn công đêm của Thorne sẽ tới từ bến nước. || Sea fog over the port. Thorne's night attack will come from the waterfront.
+objective_progress:1/2 | khai | 2 | Nửa đêm. Một tòa đã cháy. Giữ tòa còn lại. || Midnight. One building is burning. Hold the other.
+critical_failure_imminent | khai | 1 | Chỉ còn một tòa. Che nó bằng mọi thứ. || One building left. Cover it with everything.
+victory | khai | 1 | Tòa nhà còn đứng, người quan sát còn sống. Pháo ta vẫn có mắt. || The building stands, the spotters are alive. Our guns still have eyes.
+defeat | khai | 1 | Mất người quan sát. Pháo sẽ phải bắn theo bản đồ. || The spotters are gone. The guns fire by the map now.
+
+@c9m08 main=khai
+mission_start | hung | 1 | Tàu của Kessler. Thủy thủ của ta. || Kessler's ship. My sailors.
+mission_start | khai | 1 | Chìm nó, lần này vĩnh viễn. || Sink it, for good this time.
+boss_spawn | mai | 1 | Scylla, được sửa lại. Ra-đa mới trên cột, nhưng thân vẫn cũ. Hạ ra-đa trước. || Scylla, refitted. A new radar on the mast, the same old hull. Radar first.
+boss_part_destroyed | mai | 2 | Ra-đa mới đã gãy. Họ sửa nhanh, nhưng không kỹ. || The new radar is down. They fixed it fast, not well.
+boss_phase_change | mai | 1 | Nó quay mạn bắn toàn bộ. Lần trước nó làm vậy ở cùng chỗ này. Tránh trục ngang! || It is turning broadside, at the same spot as last time. Off its beam!
+superweapon_warning | mai | 1 | Loạt đạn toàn mạn sắp tới. Rời khỏi vùng đỏ trên bờ! || Full broadside coming. Off the red stretch of shore!
+event_triggered | linh | 2 | Một đội đánh phá nhắm vào xe đạn của ta. Scylla chỉ là mồi. || A raiding party is after our ammunition trucks. Scylla is the bait.
+boss_hp:50 | dieuhau | 4 | Một nửa! Nó nghiêng giống hệt lần trước! || Half! It is listing just like last time!
+boss_hp:25 | khai | 4 | Lần này đừng để nó lết ra khơi. || This time do not let it limp out to sea.
+hq_below_50 | mai | 2 | Pháo tàu đang nã trại. Đưa xe hậu cần ra sau mỏm đá. || The ship is shelling the camp. Support vehicles behind the headland.
+victory | khai | 1 | Scylla nằm dưới đáy, lần này ở lại đó. || Scylla is on the bottom, and this time it stays there.
+victory | hung | 1 | Tàu của Kessler. Ta đã nói, ông ta chưa bao giờ đóng tàu tốt. || Kessler's ship. I told you; he never built a good one.
+defeat | hung | 1 | Vịnh vẫn là của ta. Typhon cần nó thêm một chút nữa. || The bay is still mine. Typhon needs it a little longer.
+
+@c9m14 main=khai
+mission_start | khai | 1 | Năm phút trên mũi đất. Để chúng tự tới. || Five minutes on the headland. Let them come to us.
+event_triggered | linh | 2 | Tàu cuối của Kessler và lính thủy của Thorne đang đổ bộ. Họ che cho Typhon chạy. || Kessler's last ships and Thorne's sailors are landing. They are covering Typhon's run.
+objective_progress:1/2 | khai | 2 | Nửa chặng. Họ không đánh để thắng. Họ đánh để kéo dài. || Halfway. They are not fighting to win. They are fighting to last.
+event_triggered | hq | 2 | Một kho thả dù đang rơi trên mũi đất. Lấy trước họ. || A supply drop coming down on the headland. Get it before they do.
+timer_60s | khai | 1 | Một phút. Giữ chặt, đợt đổ bộ cuối đang tới. || One minute. Hold tight; the last landing is coming.
+victory | hung | 1 | Cứ giữ đi. Chẳng còn quan trọng bao lâu nữa đâu. || Hold them, then. It will not matter much longer.
+victory | khai | 1 | Mũi đất là của ta. Typhon thì không. Chưa. || The headland is ours. Typhon is not. Not yet.
+defeat | hung | 1 | Mũi đất là của ta. Typhon đã ra khơi, Marcus. || The headland is mine. Typhon is at sea, Marcus.
+
+@c9m09 main=linh
+mission_start | linh | 1 | Các toán súng cối, đã đánh dấu. Đi nhanh. || Mortar teams, marked. Move fast.
+event_triggered | dieuhau | 2 | Tôi đánh vào toán súng cối gần bãi biển nhất. Giữ khoảng cách! || Hitting the mortar team nearest the beach. Keep your distance!
+objective_progress:1/3 | linh | 2 | Một toán đã câm. Họ bắn từ sau đồi cát, như năm đầu chiến tranh. || One team silenced. They fire from behind the dunes, like the first year of the war.
+objective_progress:last | linh | 2 | Còn giàn rocket. Nó đổi chỗ sau mỗi loạt, nhưng chỉ có ba chỗ để đi. || The rocket launcher left. It moves after every salvo, but it has only three places to go.
+event_triggered | hq | 2 | Sương biển tràn vào. Toán cuối sẽ khó thấy hơn. || Sea fog coming in. The last team will be harder to see.
+victory | linh | 1 | Đường bãi biển sạch. Gạch tên ba toán. || The beach road is clear. Three teams crossed out.
+defeat | linh | 1 | Họ rút vào sương. Hướng nam, đã ghi lại. || They pulled back into the fog. South; noted.
+
+@c9m10 main=khai
+mission_start | khai | 1 | Chuyện này kết thúc trên biển, lữ đoàn. || This ends at sea, Brigade.
+time@20 | hung | 2 | Marcus, ông có bao giờ nhìn lên và tự hỏi ai sẽ giữ bầu trời khi chiến tranh kết thúc? || Marcus, do you ever look up and wonder who holds the sky when this ends?
+phase_start:2 | khai | 1 | Cảng đã chiếm. Chọn đòn tiếp: bến tàu ngầm hay kho tên lửa. || The harbour is taken. Next blow: the submarine pens or the missile store.
+phase_start:4 | linh | 1 | Dọn các xưởng ven biển. Typhon đang nạp tên lửa ở bến xa. || Clear the shore works. Typhon is loading missiles at the far pen.
+phase_start:6 | sen | 1 | Typhon đang nổi lên. Nó phải nổi để phóng. Đó là lúc duy nhất ta đánh được nó. || Typhon is surfacing. It has to, to launch. That is the only time we can hit it.
+boss_spawn | mai | 1 | Typhon, tàu ngầm tên lửa. Khi nổi, nắp hầm phóng lộ ra. Đóng từng nắp. || Typhon, a missile submarine. Surfaced, its launch hatches show. Shut them one by one.
+boss_part_destroyed | mai | 2 | Một nắp hầm phóng đã vỡ. Còn ba. || One launch hatch is broken. Three left.
+superweapon_warning | mai | 1 | Nó sắp phóng. Rời khỏi vùng đỏ, mọi người, ngay! || It is about to launch. Out of the red, everyone, now!
+boss_hp:50 | linh | 4 | Typhon mất một nửa. Nó đang gửi tín hiệu lên trời liên tục. || Typhon is at half. It is signalling the sky without stopping.
+boss_hp:25 | dieuhau | 4 | Nó đang lặn xuống! Đừng để nó lặn! || It is diving! Do not let it dive!
+phase_start:7 | khai | 1 | Typhon đang chìm. Giữ bến, thủy thủ của ông ta sẽ lên bờ. || Typhon is sinking. Hold the quays; his sailors will come ashore.
+victory | linh | 1 | Typhon đã chìm. Có một tin nhắn phát ra từ nó khi đang chìm. || Typhon is down. A message came from it as it sank.
+victory | hung | 1 | Tọa độ kèm theo: Icarus phóng từ đó. Đừng để tôi đã đúng. || Coordinates follow: Icarus launches from there. Don't let me have been right.
+victory | linh | 1 | Không tìm thấy thi thể. Tôi sẽ không ghi là đã chết. || No body found. I will not write him down as dead.
+defeat | hung | 1 | Typhon đã lặn. Các con sẽ thấy nó, vào ngày bầu trời mở. || Typhon has dived. You will see it again, the day the sky opens.
+
+@c9s1 main=linh
+mission_start | linh | 1 | Họ chạy theo lịch. Ta sẽ tới sớm. Hai xe chỉ huy rải mìn. || They run on schedule. We will be early. Two minelaying command cars.
+objective_progress:1/2 | linh | 2 | Một xe đã dừng. Lịch rải mìn của nó vẫn nguyên trong ngăn bàn. || One car stopped. Its minelaying schedule is still in the desk drawer.
+event_triggered | hq | 2 | Tàu đổ bộ đang tới đón xe còn lại. Chặn ở cầu tàu. || Landing craft are coming for the other car. Block it at the pier.
+victory | linh | 1 | Cảng không bị đóng. Lịch của Kessler cũ vẫn chạy, nhưng giờ cho ta. || The harbour stays open. Kessler's old schedule still runs, but for us now.
+defeat | linh | 1 | Mìn đã rải. Cảng đóng trong một tuần. || The mines are laid. The harbour is closed for a week.
+
+@c9s2 main=linh
+mission_start | linh | 1 | Tôi muốn radio của họ còn nguyên. Hai trạm trên bãi. || I want their radios intact. Two posts on the beach.
+point_captured | linh | 3 | Trạm thứ nhất. Radio còn bật, đang dò một băng tần lên vệ tinh. || First post. The radio is still on, tuned to a satellite band.
+event_triggered | hq | 2 | Tàu đổ bộ đang tới. Giữ trạm trước khi họ phá radio. || Landing craft are coming. Hold the post before they smash the radio.
+victory | linh | 1 | Hai radio còn nguyên. Tiến sĩ Venn sẽ có việc làm cả đêm. || Both radios intact. Dr Venn will have work all night.
+defeat | linh | 1 | Họ đập radio trước khi ta tới. Thận trọng như mọi khi. || They smashed the radios before we arrived. Careful, as always.

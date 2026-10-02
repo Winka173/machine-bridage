@@ -1,0 +1,1137 @@
+{
+"chapter": 2,
+"missions": {
+"c2m01": {
+"main": "khai"
+},
+"c2m02": {
+"main": "linh"
+},
+"c2m03": {
+"main": "khai"
+},
+"c2m04": {
+"main": "khai"
+},
+"c2m05": {
+"main": "mai"
+},
+"c2m06": {
+"main": "linh"
+},
+"c2m07": {
+"main": "khai"
+},
+"c2m08": {
+"main": "khai"
+},
+"c2m09": {
+"main": "khai"
+},
+"c2m10": {
+"main": "khai"
+},
+"c2m11": {
+"main": "mai"
+},
+"c2s1": {
+"main": "linh"
+},
+"c2s2": {
+"main": "dieuhau"
+}
+},
+"lines": [
+{
+"mission": "c2m01",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m01.01",
+"en": "Five minutes. Dig in round the pumps and let them come.",
+"vi": "Năm phút. Đào hầm quanh các máy bơm và để chúng tự tới."
+},
+{
+"mission": "c2m01",
+"trigger": "time",
+"speaker": "varga",
+"priority": 2,
+"once": true,
+"key": "script.c2m01.02",
+"en": "General Varga to the brigade. Welcome to my desert. Let us fight as soldiers do.",
+"vi": "Tướng Varga gửi lữ đoàn. Chào mừng tới sa mạc của ta. Hãy đánh nhau như những người lính.",
+"at": 15.0
+},
+{
+"mission": "c2m01",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2m01.03",
+"en": "Two and a half minutes. They tried south, then east, now both.",
+"vi": "Hai phút rưỡi. Chúng thử từ phía nam, rồi phía đông, giờ là cả hai.",
+"arg": "1/2"
+},
+{
+"mission": "c2m01",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c2m01.04",
+"en": "Sandstorm coming. Visibility down to tens of metres; keep the line close.",
+"vi": "Bão cát đang tới. Tầm nhìn còn vài chục mét, giữ đội hình sát nhau."
+},
+{
+"mission": "c2m01",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m01.05",
+"en": "One more minute. Nobody leaves the pumps.",
+"vi": "Một phút nữa. Không ai rời máy bơm."
+},
+{
+"mission": "c2m01",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m01.06",
+"en": "The field is still ours. Charges on the wells; we do not need them burning yet.",
+"vi": "Mỏ dầu vẫn là của ta. Đặt thuốc nổ vào giếng, ta chưa cần chúng cháy."
+},
+{
+"mission": "c2m01",
+"trigger": "victory",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m01.07",
+"en": "You held well. I will remember that, Colonel.",
+"vi": "Các anh trụ tốt. Ta ghi nhớ điều đó, đại tá."
+},
+{
+"mission": "c2m01",
+"trigger": "defeat",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m01.08",
+"en": "The desert returns everything to the patient. I am the more patient man.",
+"vi": "Sa mạc trả mọi thứ về cho người kiên nhẫn. Ta kiên nhẫn hơn các anh."
+},
+{
+"mission": "c2m02",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c2m02.01",
+"en": "Varga's own tanks hold the oasis. He is here, Colonel. In person.",
+"vi": "Xe tăng riêng của Varga đang ở ốc đảo. Ông ta ở đây, đại tá. Đích thân."
+},
+{
+"mission": "c2m02",
+"trigger": "point_captured",
+"speaker": "varga",
+"priority": 3,
+"once": true,
+"key": "script.c2m02.02",
+"en": "Take the sand if you like. The sand does not care who stands on it.",
+"vi": "Cứ lấy cát nếu muốn. Cát chẳng quan tâm ai đứng trên nó.",
+"arg": "town"
+},
+{
+"mission": "c2m02",
+"trigger": "first_unit_type_seen",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2m02.03",
+"en": "Heavy tanks in forge colours. Varga's guard, not line troops.",
+"vi": "Xe tăng hạng nặng sơn màu lò rèn. Đội cận vệ của Varga, không phải lính thường."
+},
+{
+"mission": "c2m02",
+"trigger": "point_lost",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c2m02.04",
+"en": "They retook the wellhead. Varga never lets anything go for long.",
+"vi": "Chúng lấy lại giếng. Varga không bao giờ để mất thứ gì quá lâu."
+},
+{
+"mission": "c2m02",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c2m02.05",
+"en": "Just the caravan stop! From up here it is a dot in the sand.",
+"vi": "Còn trạm nghỉ đoàn lạc đà! Từ trên này nó chỉ là một chấm trên cát.",
+"arg": "last"
+},
+{
+"mission": "c2m02",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m02.06",
+"en": "Three points; the pipeline has no source. Varga will have to walk to his oil.",
+"vi": "Ba điểm, đường ống không còn nguồn. Varga sẽ phải đi bộ tới chỗ dầu."
+},
+{
+"mission": "c2m02",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c2m02.07",
+"en": "The pipeline still flows. Every hour it feeds his tanks.",
+"vi": "Đường ống vẫn chảy. Cứ mỗi giờ nó đổ thêm dầu cho xe tăng của ông ta."
+},
+{
+"mission": "c2m03",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m03.01",
+"en": "Lights off, engines low. Five trucks through the canyon, three at least.",
+"vi": "Tắt đèn, ga nhỏ. Đưa năm xe qua hẻm núi, cần ít nhất ba."
+},
+{
+"mission": "c2m03",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2m03.02",
+"en": "A neutral convoy uses this road too. Hold fire on it; they only carry water.",
+"vi": "Một đoàn xe trung lập cũng đi đường này. Đừng bắn nhầm, họ chỉ chở nước.",
+"at": 45.0
+},
+{
+"mission": "c2m03",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2m03.03",
+"en": "Guns on the ridge are ranging the canyon. Spread the trucks; no stopping under the cliffs.",
+"vi": "Pháo trên mỏm đá đang dò hẻm. Cho xe tách nhau, đừng dừng dưới vách."
+},
+{
+"mission": "c2m03",
+"trigger": "objective_progress",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c2m03.04",
+"en": "First truck at the wellhead. The crew is waiting for the second.",
+"vi": "Xe đầu đã tới giếng. Đội tiếp nhận đang chờ chiếc thứ hai.",
+"arg": "1/3"
+},
+{
+"mission": "c2m03",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m03.05",
+"en": "No spare trucks left. Every one still rolling has to arrive.",
+"vi": "Không còn xe dự phòng. Mỗi chiếc còn lại phải tới nơi."
+},
+{
+"mission": "c2m03",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m03.06",
+"en": "Fuel for the brigade. Nobody pushes a tank tonight.",
+"vi": "Đủ xăng cho lữ đoàn. Đêm nay không ai phải đẩy xe."
+},
+{
+"mission": "c2m03",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m03.07",
+"en": "Not enough trucks through. Tomorrow we count every litre.",
+"vi": "Không đủ xe qua hẻm. Mai ta sẽ phải tiết kiệm từng lít."
+},
+{
+"mission": "c2m04",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m04.01",
+"en": "Five pumping stations. Every one burns. In fast, out faster.",
+"vi": "Năm trạm bơm. Trạm nào cũng phải cháy. Vào nhanh, ra nhanh hơn."
+},
+{
+"mission": "c2m04",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2m04.02",
+"en": "First station gone. Pressure is dropping along the line; they will know at once.",
+"vi": "Trạm đầu đã nổ. Áp suất cả đường ống đang tụt, chúng sẽ biết ngay.",
+"arg": "1/3"
+},
+{
+"mission": "c2m04",
+"trigger": "time",
+"speaker": "varga",
+"priority": 2,
+"once": true,
+"key": "script.c2m04.03",
+"en": "My pipeline! You will pay for it by the barrel.",
+"vi": "Đường ống của ta! Các anh sẽ trả từng thùng một.",
+"at": 150.0
+},
+{
+"mission": "c2m04",
+"trigger": "enemy_reinforcement",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c2m04.04",
+"en": "Varga is sending vehicles down from the refinery. Do not wait for them; move on.",
+"vi": "Varga gửi xe từ nhà máy lọc dầu xuống. Đừng đợi chúng, đi tiếp."
+},
+{
+"mission": "c2m04",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c2m04.05",
+"en": "One station left. Burn it and go; nobody stays to watch the fire.",
+"vi": "Còn một trạm. Đốt nó rồi rút, không ai ở lại ngắm lửa.",
+"arg": "last"
+},
+{
+"mission": "c2m04",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m04.06",
+"en": "The pipeline is cut in five places. The refinery goes hungry for weeks.",
+"vi": "Đường ống đứt ở năm chỗ. Nhà máy lọc dầu sẽ đói trong nhiều tuần."
+},
+{
+"mission": "c2m04",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m04.07",
+"en": "The pipeline still runs. Pull out before Varga's tanks close the road home.",
+"vi": "Đường ống còn chảy. Rút trước khi xe của Varga khóa đường về."
+},
+{
+"mission": "c2m05",
+"trigger": "mission_start",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m05.01",
+"en": "You want fire, Colonel? Here is fire.",
+"vi": "Đại tá muốn lửa ư? Lửa đây."
+},
+{
+"mission": "c2m05",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c2m05.02",
+"en": "Inferno: a Behemoth rebuilt for flame. That cooling line on its back? I drew it.",
+"vi": "Inferno. Một con Behemoth lắp súng phun lửa. Đường ống làm mát trên lưng nó, tôi đã vẽ nó."
+},
+{
+"mission": "c2m05",
+"trigger": "time",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c2m05.03",
+"en": "Stay outside thirty metres. It burns fuel, not shells. Hit it from range.",
+"vi": "Đừng lại gần dưới ba mươi mét. Nó đốt bằng nhiên liệu, không phải đạn. Đánh từ xa.",
+"at": 20.0
+},
+{
+"mission": "c2m05",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c2m05.04",
+"en": "The storm blinds me, but I can see its flame trail. Marking it for you.",
+"vi": "Bão cát làm tôi mù, nhưng tôi vẫn thấy đuôi lửa của nó. Đánh dấu cho các anh."
+},
+{
+"mission": "c2m05",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c2m05.05",
+"en": "A fuel tank burst. It is burning itself now; keep clear.",
+"vi": "Một bình nhiên liệu đã vỡ. Nó cháy chính nó lúc này, đừng đứng gần."
+},
+{
+"mission": "c2m05",
+"trigger": "boss_phase_change",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c2m05.06",
+"en": "All its projectors open. Fall back and let it overheat.",
+"vi": "Nó mở hết vòi phun. Lùi ra, để nó tự nóng lên."
+},
+{
+"mission": "c2m05",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c2m05.07",
+"en": "It is about to ring itself in fire. Out of the red zone before it flares!",
+"vi": "Nó sắp phun cả vòng lửa quanh mình. Ra khỏi vùng đỏ trước khi nó bùng!"
+},
+{
+"mission": "c2m05",
+"trigger": "boss_hp",
+"speaker": "linh",
+"priority": 4,
+"once": true,
+"key": "script.c2m05.08",
+"en": "Its hull is heating up. A few more hits and the cooling gives out.",
+"vi": "Nhiệt độ thân nó đang tăng. Thêm vài phát nữa là hệ làm mát quá tải.",
+"arg": "75"
+},
+{
+"mission": "c2m05",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c2m05.09",
+"en": "It is turning back. Do not chase into the storm; let it run.",
+"vi": "Nó đang quay đầu. Đừng đuổi vào bão, để nó chạy.",
+"arg": "50"
+},
+{
+"mission": "c2m05",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c2m05.10",
+"en": "The camp is on fire, Colonel. I can put it out if someone draws that thing off.",
+"vi": "Trại cháy rồi, đại tá. Tôi dập được nếu có người kéo nó ra xa."
+},
+{
+"mission": "c2m05",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m05.11",
+"en": "It ran for the refinery. We will find it there.",
+"vi": "Nó chạy về nhà máy lọc dầu. Ta sẽ tìm nó ở đó."
+},
+{
+"mission": "c2m05",
+"trigger": "victory",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m05.12",
+"en": "Inferno withdraws. No matter; it will come back, and so will I.",
+"vi": "Inferno lùi lại. Không sao, nó sẽ quay về, và ta cũng vậy."
+},
+{
+"mission": "c2m05",
+"trigger": "defeat",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m05.13",
+"en": "Fire takes no side, Colonel. Only what will burn.",
+"vi": "Lửa không chọn phe, đại tá. Nó chỉ chọn thứ cháy được."
+},
+{
+"mission": "c2m06",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c2m06.01",
+"en": "Three rocket batteries, marked red. They move after every salvo; we move faster.",
+"vi": "Ba khẩu đội tên lửa, đã đánh dấu đỏ. Chúng di chuyển sau mỗi loạt; ta đi nhanh hơn."
+},
+{
+"mission": "c2m06",
+"trigger": "event_triggered",
+"speaker": "hung",
+"priority": 2,
+"once": true,
+"key": "script.c2m06.02",
+"en": "Thorne here. My guns will smoke the northern mesas for you, lads.",
+"vi": "Đây là Thorne. Pháo của ta sẽ phủ khói lên mỏm đá phía bắc cho các con."
+},
+{
+"mission": "c2m06",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2m06.03",
+"en": "One battery down. The other two just shifted west.",
+"vi": "Một khẩu đội đã gục. Hai khẩu còn lại vừa đổi vị trí về phía tây.",
+"arg": "1/3"
+},
+{
+"mission": "c2m06",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2m06.04",
+"en": "Thorne's smoke landed four hundred metres off. The storm, probably. Noted.",
+"vi": "Khói của tướng Thorne rơi lệch bốn trăm mét. Chắc do bão. Tôi chỉ ghi lại.",
+"at": 200.0
+},
+{
+"mission": "c2m06",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2m06.05",
+"en": "Only the SAM launcher left. It stands still when it fires; that is our window.",
+"vi": "Còn khẩu tên lửa phòng không. Nó đứng yên khi bắn, đó là cửa sổ của ta.",
+"arg": "last"
+},
+{
+"mission": "c2m06",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c2m06.06",
+"en": "Three names crossed out. The sky over Red Rock is safer for Hawk now.",
+"vi": "Gạch ba tên. Bầu trời Red Rock giờ an toàn hơn cho Hawk."
+},
+{
+"mission": "c2m06",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c2m06.07",
+"en": "They slipped into the storm, north-west. I have their heading.",
+"vi": "Chúng thoát vào bão, hướng tây bắc. Tôi đã ghi lại hướng chạy."
+},
+{
+"mission": "c2m07",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m07.01",
+"en": "They held the oasis for two years. Tonight we hold it for them.",
+"vi": "Họ đã giữ ốc đảo hai năm. Đêm nay ta giữ cho họ."
+},
+{
+"mission": "c2m07",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c2m07.02",
+"en": "Oasis militia calling: six vehicles in the ring, marked. Their HQ is under fire.",
+"vi": "Dân quân ốc đảo gọi: vòng vây có sáu xe, đã đánh dấu. Sở chỉ huy của họ đang bị nã.",
+"at": 10.0
+},
+{
+"mission": "c2m07",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c2m07.03",
+"en": "The ring is broken in the south. Widen it before they close up.",
+"vi": "Vòng vây thủng phía nam. Mở rộng lỗ, đừng để chúng khép lại.",
+"arg": "1/3"
+},
+{
+"mission": "c2m07",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2m07.04",
+"en": "The militia HQ is taking heavy fire. Hurry.",
+"vi": "Sở chỉ huy dân quân đang dính đòn nặng. Nhanh lên.",
+"at": 120.0
+},
+{
+"mission": "c2m07",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m07.05",
+"en": "Their HQ is about to fall. Everything on whatever is shelling it.",
+"vi": "Sở chỉ huy của họ sắp sập. Mọi thứ hướng vào xe đang bắn nó."
+},
+{
+"mission": "c2m07",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m07.06",
+"en": "The ring is gone. The oasis joins the brigade; they know every rock here.",
+"vi": "Vòng vây tan. Ốc đảo nhập lữ đoàn, họ biết rõ từng tảng đá ở đây."
+},
+{
+"mission": "c2m07",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m07.07",
+"en": "The oasis HQ has fallen. Their two years end tonight.",
+"vi": "Sở chỉ huy ốc đảo thất thủ. Hai năm của họ kết thúc đêm nay."
+},
+{
+"mission": "c2m08",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m08.01",
+"en": "Four minutes in the refinery yard. Do not chase them out; hold.",
+"vi": "Bốn phút trong sân nhà máy. Đừng đuổi chúng ra ngoài, cứ giữ."
+},
+{
+"mission": "c2m08",
+"trigger": "time",
+"speaker": "varga",
+"priority": 2,
+"once": true,
+"key": "script.c2m08.02",
+"en": "Burn them out of my refinery!",
+"vi": "Đốt chúng ra khỏi nhà máy của ta!",
+"at": 100.0
+},
+{
+"mission": "c2m08",
+"trigger": "event_triggered",
+"speaker": "hung",
+"priority": 2,
+"once": true,
+"key": "script.c2m08.03",
+"en": "Thorne's guns coming in. Heads down, lads.",
+"vi": "Pháo của Thorne đang tới yểm trợ. Cúi đầu xuống, các con."
+},
+{
+"mission": "c2m08",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2m08.04",
+"en": "Two minutes. Varga just threw in his last reserve, heavy tanks.",
+"vi": "Hai phút. Varga vừa tung đội dự bị cuối cùng vào, xe tăng hạng nặng.",
+"arg": "1/2"
+},
+{
+"mission": "c2m08",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c2m08.05",
+"en": "They have the yard. Take it back; the clock is not waiting.",
+"vi": "Chúng chiếm sân rồi. Lấy lại ngay, đồng hồ không chờ ta."
+},
+{
+"mission": "c2m08",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m08.06",
+"en": "The yard is ours. Varga lost his reserve here.",
+"vi": "Sân nhà máy là của ta. Varga mất đội dự bị ở đây."
+},
+{
+"mission": "c2m08",
+"trigger": "defeat",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m08.07",
+"en": "The refinery is mine, and so it stays.",
+"vi": "Nhà máy là của ta, và sẽ còn là của ta."
+},
+{
+"mission": "c2m09",
+"trigger": "mission_start",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m09.01",
+"en": "Steel does not negotiate, Colonel.",
+"vi": "Thép không biết thương lượng, đại tá."
+},
+{
+"mission": "c2m09",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m09.02",
+"en": "Neither do I.",
+"vi": "Tôi cũng vậy."
+},
+{
+"mission": "c2m09",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c2m09.03",
+"en": "Varga has gone to defence in depth. He wants us walking into his anti-tank guns.",
+"vi": "Varga chuyển sang phòng thủ chiều sâu. Ông ta muốn ta tự vào bẫy pháo chống tăng."
+},
+{
+"mission": "c2m09",
+"trigger": "time",
+"speaker": "varga",
+"priority": 2,
+"once": true,
+"key": "script.c2m09.04",
+"en": "You steer your brigade like a good ship. Let us see how much weight it takes.",
+"vi": "Đại tá lái lữ đoàn như người lái một con tàu tốt. Để xem nó chịu được bao nhiêu sức nặng.",
+"at": 200.0
+},
+{
+"mission": "c2m09",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c2m09.05",
+"en": "A heavy lost. Stop driving straight at his guns; go round the flank.",
+"vi": "Mất một xe nặng. Đừng lao thẳng vào pháo của ông ta, vòng qua sườn."
+},
+{
+"mission": "c2m09",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m09.06",
+"en": "One minute. His HQ falls before the storm lifts.",
+"vi": "Một phút. Sở chỉ huy của ông ta phải đổ trước khi bão tan."
+},
+{
+"mission": "c2m09",
+"trigger": "victory",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m09.07",
+"en": "Withdraw. Save the machines. Even iron breaks.",
+"vi": "Rút lui. Giữ lấy máy móc. Sắt cũng có lúc gãy."
+},
+{
+"mission": "c2m09",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m09.08",
+"en": "An orderly retreat. Varga loses like a soldier too.",
+"vi": "Ông ta rút có trật tự. Varga thua cũng giống một người lính."
+},
+{
+"mission": "c2m09",
+"trigger": "defeat",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m09.09",
+"en": "Go home, Colonel. This desert is not for the hasty.",
+"vi": "Về đi, đại tá. Sa mạc này không dành cho người vội."
+},
+{
+"mission": "c2m10",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m10.01",
+"en": "The refinery burns today, Brigade. Everything inside it too.",
+"vi": "Hôm nay nhà máy lọc dầu cháy, lữ đoàn. Mọi thứ bên trong cũng vậy."
+},
+{
+"mission": "c2m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m10.02",
+"en": "Field and oasis taken. Now choose the next blow; each has its price.",
+"vi": "Mỏ dầu và ốc đảo đã chiếm. Giờ chọn đòn tiếp theo, mỗi lựa chọn đều có cái giá.",
+"arg": "2"
+},
+{
+"mission": "c2m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c2m10.03",
+"en": "Towers and tanks. Inferno hides among them; do not hit the tanks while standing close.",
+"vi": "Tháp chưng cất và bồn chứa. Inferno đang trốn giữa chúng, đừng bắn vào bồn khi đứng gần.",
+"arg": "4"
+},
+{
+"mission": "c2m10",
+"trigger": "boss_phase_change",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c2m10.04",
+"en": "Inferno is back, patched in a hurry. The cooling line is still weak; new welds.",
+"vi": "Inferno quay lại, sửa vội. Đường làm mát vẫn là chỗ yếu, tôi thấy mối hàn mới."
+},
+{
+"mission": "c2m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m10.05",
+"en": "The whole refinery is alight. Hold a little longer and let it burn out.",
+"vi": "Lửa đã lan khắp nhà máy. Trụ thêm chút nữa, để nó tự cháy hết.",
+"arg": "8"
+},
+{
+"mission": "c2m10",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m10.06",
+"en": "The refinery is gone. Varga's big one has pulled back to Red Rock.",
+"vi": "Nhà máy không còn. Con quái lớn của Varga đã lui về Red Rock."
+},
+{
+"mission": "c2m10",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m10.07",
+"en": "Back out of the refinery. The fire is turning on us, not them.",
+"vi": "Lùi khỏi nhà máy. Lửa đang quay về phía ta, không phải phía chúng."
+},
+{
+"mission": "c2m11",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m11.01",
+"en": "Red Rock, Brigade. The Behemoth is in there, and this time we have company.",
+"vi": "Red Rock, lữ đoàn. Behemoth ở trong đó, và lần này ta có bạn đồng hành."
+},
+{
+"mission": "c2m11",
+"trigger": "time",
+"speaker": "hung",
+"priority": 2,
+"once": true,
+"key": "script.c2m11.02",
+"en": "Thorne's army on your left. Good hunting, Colonel Kade!",
+"vi": "Quân của Thorne bên cánh trái. Chúc săn tốt, đại tá Kade!",
+"at": 12.0
+},
+{
+"mission": "c2m11",
+"trigger": "ally_arrives",
+"speaker": "hung",
+"priority": 2,
+"once": true,
+"key": "script.c2m11.03",
+"en": "My lads are in position. Leave the left to me, Colonel.",
+"vi": "Các con của ta đã vào vị trí. Để cánh trái cho ta, đại tá."
+},
+{
+"mission": "c2m11",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m11.04",
+"en": "The wellhead is ours. Choose the next blow; each road opens a different door.",
+"vi": "Giếng là của ta. Chọn cách đánh tiếp: mỗi đường mở một cánh cửa khác.",
+"arg": "2"
+},
+{
+"mission": "c2m11",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c2m11.05",
+"en": "The oasis next. Thorne's men hold the flank; we hold the middle.",
+"vi": "Ốc đảo tiếp theo. Quân Thorne giữ sườn, ta giữ giữa.",
+"arg": "4"
+},
+{
+"mission": "c2m11",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c2m11.06",
+"en": "The Behemoth. The weld behind the turret: I drew it, I know it is weak.",
+"vi": "Behemoth. Mối hàn sau tháp pháo: tôi đã vẽ nó, tôi biết nó yếu."
+},
+{
+"mission": "c2m11",
+"trigger": "boss_spawn",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m11.07",
+"en": "This is my child, Colonel. Show it how much weight you carry.",
+"vi": "Đây là con của ta, đại tá. Hãy cho nó thấy các anh nặng bao nhiêu."
+},
+{
+"mission": "c2m11",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c2m11.08",
+"en": "The left side gun is silent. Do not celebrate; the main gun is untouched.",
+"vi": "Pháo phụ bên trái đã câm. Đừng ăn mừng, khẩu chính vẫn còn nguyên."
+},
+{
+"mission": "c2m11",
+"trigger": "boss_phase_change",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c2m11.09",
+"en": "It is locking its tracks. That is its barrage stance; get off its line!",
+"vi": "Nó hạ thân xuống, khóa xích. Đó là tư thế bắn loạt, rời khỏi trục nòng!"
+},
+{
+"mission": "c2m11",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c2m11.10",
+"en": "The big salvo is coming. Out of the marked ground; nobody stays!",
+"vi": "Loạt pháo lớn sắp tới. Rời khỏi vùng đánh dấu, đừng ai ở lại!"
+},
+{
+"mission": "c2m11",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c2m11.11",
+"en": "Half gone! Still standing, but the turret is slowing.",
+"vi": "Một nửa rồi! Nó vẫn đứng, nhưng tháp pháo quay chậm hẳn.",
+"arg": "50"
+},
+{
+"mission": "c2m11",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c2m11.12",
+"en": "Nearly there. Keep the rhythm; nobody rushes ahead.",
+"vi": "Gần xong. Giữ nhịp, đừng ai lao lên trước.",
+"arg": "25"
+},
+{
+"mission": "c2m11",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c2m11.13",
+"en": "The HQ is critical. Everything onto the Behemoth; we are out of time.",
+"vi": "Sở chỉ huy nguy cấp. Dồn hết vào Behemoth, không còn thời gian."
+},
+{
+"mission": "c2m11",
+"trigger": "victory",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m11.14",
+"en": "It fell like a good beast. Colonel, you fought like soldiers.",
+"vi": "Nó gục như một con thú tốt. Đại tá, các anh đã đánh như người lính."
+},
+{
+"mission": "c2m11",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c2m11.15",
+"en": "You asked where I learned to build those, Colonel. Tonight I will tell you.",
+"vi": "Ông hỏi tôi học chế tạo chúng ở đâu, đại tá. Tối nay tôi sẽ kể."
+},
+{
+"mission": "c2m11",
+"trigger": "defeat",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c2m11.16",
+"en": "The Behemoth still stands. Iron is more patient than men.",
+"vi": "Behemoth vẫn đứng. Sắt kiên nhẫn hơn người."
+},
+{
+"mission": "c2s1",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c2s1.01",
+"en": "Three looks in the dark. Their mines are the target, not their tanks.",
+"vi": "Ba lần nhìn trong đêm. Mục tiêu là mìn của chúng, không phải xe tăng."
+},
+{
+"mission": "c2s1",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c2s1.02",
+"en": "The mines follow the old track. Varga lays them by the book, neatly.",
+"vi": "Hàng mìn chạy theo đường mòn cũ. Varga rải theo sách, gọn gàng."
+},
+{
+"mission": "c2s1",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2s1.03",
+"en": "One more. Keep off the wheel ruts; fresh sand means mines.",
+"vi": "Còn một điểm. Tránh vết bánh xe, cát mới xới là chỗ có mìn.",
+"arg": "last"
+},
+{
+"mission": "c2s1",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c2s1.04",
+"en": "The minefield map is complete. Engineers clear the road before dawn.",
+"vi": "Bản đồ mìn hoàn chỉnh. Công binh sẽ dọn đường trước bình minh."
+},
+{
+"mission": "c2s1",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c2s1.05",
+"en": "No map. Every step from here is a gamble.",
+"vi": "Ta không có bản đồ. Mỗi bước tiếp theo là một canh bạc."
+},
+{
+"mission": "c2s2",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c2s2.01",
+"en": "Helicopters, low and slow. My favourite kind. Ten before sunset.",
+"vi": "Trực thăng, bay thấp và chậm. Loại tôi thích nhất. Mười chiếc trước hoàng hôn."
+},
+{
+"mission": "c2s2",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c2s2.02",
+"en": "Five down! They are flying in pairs now, getting smarter.",
+"vi": "Năm chiếc! Bọn chúng bắt đầu bay theo cặp rồi, khôn ra đấy.",
+"arg": "1/2"
+},
+{
+"mission": "c2s2",
+"trigger": "first_unit_type_seen",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c2s2.03",
+"en": "Heavy gunship. That one is armoured; do not waste machine-gun rounds.",
+"vi": "Trực thăng vũ trang hạng nặng. Cái này có giáp, đừng phí đạn súng máy."
+},
+{
+"mission": "c2s2",
+"trigger": "momentum_high_once",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c2s2.04",
+"en": "Pretty warm up here, but the sky is coming our way.",
+"vi": "Khá là nóng trên này, nhưng bầu trời đang về tay ta."
+},
+{
+"mission": "c2s2",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c2s2.05",
+"en": "Ten. The sky is clean; the stage is yours.",
+"vi": "Mười chiếc. Bầu trời sạch rồi, mời các anh lên sân khấu."
+},
+{
+"mission": "c2s2",
+"trigger": "defeat",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c2s2.06",
+"en": "Last anti-air gone. I have to head home; the convoys are on their own.",
+"vi": "Mất lưới phòng không cuối. Tôi phải bay về, đoàn xe tự lo thôi."
+}
+]
+}

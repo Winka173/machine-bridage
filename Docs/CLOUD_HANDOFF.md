@@ -225,3 +225,23 @@ Prompt 28 appendix merged (feature/visual-overhaul 592d8e2): Unity compile 0 aft
 written in the cloud must compile under Unity's NUnit 3.5 and with `using UnityEngine;`: no `Is.AnyOf` (use a boolean
 `Is.True`), use `Has.Member`/`Has.No.Member` for collections, and alias `EntityId = MachineBrigade.Sim.Core.EntityId`
 (UnityEngine has its own `EntityId`). Waiting locally: the UI greying of tactics a profile forbids (LOCAL_TODO).
+
+## Cloud state 2026-10-02 (prompt 30, stopped early at the owner's request)
+
+- Branch `cloud/p30-story` (from `origin/feature/visual-overhaul` 91c3aa2); head: the commit "Cloud state after prompt 30 (partial)".
+- Done and pushed: L0 (`Docs/checks/p30_precheck.md`), L1, L2, L3, L4, L5, L6, L7 (all 15 chapters, 1601 lines over 193
+  missions, validator 0 errors, 238 soft-length warnings; `Docs/story/script_stats.md`), L8 (`Tools/audit/map_audit.py`
+  → `Docs/checks/map_audit.md/.csv`: 9 RED, 91 YELLOW; `Tools/audit/mode_static_audit.py` → `Docs/checks/mode_static_audit.md`:
+  no symmetric flags).
+- Unfinished, for the local machine:
+  - `Docs/DECISIONS.md` "Prompt 30": notes for L7 (script source format `trigger[:arg][@sec] | speaker | P | VI || EN`,
+    speaker trigger extensions in `Tools/story/import_speakers.py`, the story guard rails in `script_build.py`) and L8
+    (thresholds in the audit scripts' docstrings) are not written.
+  - L9: `Docs/story/report_p30.md` is not written (L0 results, decisions, lines per chapter from script_stats.md, the 238
+    warnings, RED maps: borderbridge conquest/sandbox, coralisles_siege, emberridge conquest/long/sandbox, openpit_siege,
+    swamp_siege (disconnected regions), hydrodam_conquest (path delta 19 %)). Design-doc sections in
+    `Tools/docs/programme.py` (match rules, endless, neutrals, dialogue, end sequence) are not updated; the PDF is local.
+  - `Docs/ai/LOCAL_TODO.md` "Prompt 30" still needs: Unity compile of all edited Game/Sim files; run MatchEndTests,
+    DialogueTests, MatchRulesTests, EndlessTests, NeutralTests, CatalogCheck (none were run in the cloud; only dotnet
+    compile checks); fix the 9 RED maps; export the PDF.
+- Prompt 31 (`cloud/p31-decks`) not started.

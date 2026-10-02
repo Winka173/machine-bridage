@@ -1,0 +1,49 @@
+# Chapter 15 · Hawk and Raven (interlude III, act 3). Enemy: Raven (Kasimir Wolff), named in full for the first time.
+# Arc: Hawk shot down behind the lines; Reyn's Crown column brings him home while Raven hunts it in Morrigan.
+# Threads: Hawk tells, briefly, about Ellis (the setup for chapter 10's payoff); Raven lets Hawk go "this time".
+
+@i3m01 main=reyn
+mission_start | reyn | 1 | Cột của Crown, xuất phát. Ta đưa phi công của ta về nhà. || Crown's column, moving. We bring our pilot home.
+time@40 | quaden | 2 | Hawk nhỏ của ông rơi đẹp lắm, đại tá. Tôi sẽ tự tay kết thúc nó. || Your little Hawk fell well, Colonel. I will finish him myself.
+time@50 | linh | 2 | Đó là Raven. Kasimir Wolff, át chủ bài của Hegemon. Phù hiệu đen trên đĩa đỏ. || That was Raven. Kasimir Wolff, Hegemon's ace. The black bird on a red disc.
+event_triggered | linh | 2 | Đèn hiệu của Hawk lại bật. Ba giây, rồi tắt. Bão tuyết nuốt mất tín hiệu. || Hawk's beacon is back. Three seconds, then gone. The blizzard eats the signal.
+point_captured | reyn | 3 | Đồi radar, không có gì. Chỉ có vết dù kéo lê trên tuyết. Đi tiếp. || The radar hill: nothing. Only a parachute dragged through the snow. Moving on.
+objective_progress:last | reyn | 2 | Còn trại khai thác gỗ. Crown không về tay không. || The lumber camp left. Crown does not come home empty-handed.
+victory | reyn | 1 | Thấy chỗ rơi. Cậu ấy đã tự bước ra khỏi xác máy bay. Theo dấu chân. || Crash site found. He walked away from it. Follow the tracks.
+defeat | reyn | 1 | Mất dấu. Crown sẽ quay lại, mỗi đêm, cho tới khi tìm thấy. || Trail lost. Crown comes back every night until we find him.
+
+@i3m02 main=reyn
+mission_start | reyn | 1 | Có máy bay lạ trên tán rừng. Giữ bệ phóng di chuyển, đừng ai đứng yên. || An unknown aircraft over the canopy. Keep the launchers moving; nobody stands still.
+boss_spawn | quaden | 1 | Morrigan, khai hỏa tự do. Hawk, ta biết nhóc đang nghe. || Morrigan, weapons free. Hawk, I know you are listening.
+time@8 | dieuhau | 1 | Tôi đang nghe đây, Raven. Lần sau tôi sẽ ở trên trời. || I am listening, Raven. Next time I will be flying.
+time@40 | dieuhau | 2 | Hắn bắn rơi Ellis năm đó. Cùng một kiểu bay: lượn thấp, rồi lên thẳng vào mặt trời. || He shot Ellis down, back then. Same flying: low pass, then straight up into the sun.
+time@50 | reyn | 2 | Lời của Hawk đã ghi lại. Giờ thì cúi đầu xuống, trung úy. || Hawk's words are noted. Now keep your head down, Lieutenant.
+boss_part_destroyed | mai | 2 | Một ống phóng của Morrigan đã hỏng. Nó sẽ bắn ít đi một loạt. || One of Morrigan's launch tubes is out. One less salvo.
+boss_phase_change | dieuhau | 1 | Hắn lên cao để bổ nhào! Phòng không nhìn lên mặt trời, đừng nhìn thẳng! || He is climbing to dive! Flak, look into the sun, not straight at it!
+superweapon_warning | dieuhau | 1 | Đòn bổ nhào sắp tới. Rời khỏi vùng đỏ, tản ra! || The dive attack is coming. Out of the red, spread out!
+event_triggered | hq | 2 | Trời đang tối. Morrigan khó thấy hơn, nhưng động cơ của nó vẫn để lại vệt sáng. || Night falling. Morrigan is harder to see, but its engines still leave a glow.
+boss_hp:50 | linh | 4 | Morrigan dính đòn. Raven vẫn chưa rút, hắn thích bị đánh trả. || Morrigan is hit. Raven has not pulled off; he likes being fought.
+critical_failure_imminent | reyn | 1 | Cột cứu hộ sắp vỡ. Giữ xe chở Hawk ở giữa, bằng mọi giá. || The rescue column is about to break. Keep Hawk's vehicle in the middle, whatever it costs.
+victory | khai | 1 | Nó rút rồi. Đi tiếp trước khi nó quay lại. || It broke off. Keep moving before it comes back.
+victory | quaden | 1 | Bay đẹp đấy, nhóc. Nhưng nhóc đang ngồi trong xe tăng. || Fine flying, kid. But you are sitting in a tank.
+defeat | quaden | 1 | Cột cứu hộ tan rồi. Ta sẽ tìm nhóc sau, Hawk. Không vội. || The rescue column is broken. I will find you later, Hawk. No hurry.
+
+@i3m03 main=reyn
+mission_start | reyn | 1 | Crown đây. Phá vòng vây, và cẩn thận với ngôi làng. || Crown here. Break the ring, and mind the village.
+time@15 | dieuhau | 2 | Tôi ở trong nhà thờ. Có bà cụ ở đây pha trà cho tôi suốt hai ngày. || I am in the church. An old lady here has made me tea for two days.
+objective_progress:1/2 | reyn | 2 | Vòng vây thủng phía nam. Bảo vệ làng trước, rồi mới đuổi. || The ring is broken in the south. Protect the village first, then chase.
+event_triggered | hq | 2 | Quân cứu viện của Accord đang tới từ phía tây. Chừa đường cho họ. || Accord relief coming in from the west. Leave them a road.
+critical_failure_imminent | reyn | 1 | Nhà thờ sắp sập. Mọi khẩu vào xe đang bắn nó. Crown không bỏ người lại. || The church is collapsing. Every gun on whatever shells it. Crown leaves nobody.
+victory | dieuhau | 1 | Đúng lúc lắm, đại tá! Tôi bắt đầu thích trà rồi đấy. || About time, Colonel! I was starting to like the tea.
+victory | reyn | 1 | Trung úy. Vào xe tăng. || Lieutenant. Get in the tank.
+defeat | reyn | 1 | Ngôi làng thất thủ. Tôi muốn biết Hawk đã đi đâu. Ngay. || The village has fallen. I want to know where Hawk went. Now.
+
+@i3m04 main=dieuhau
+mission_start | dieuhau | 1 | Năm phút. Rồi tôi trở lại buồng lái, và hắn là của tôi. || Five minutes. Then I am back in a cockpit, and he is mine.
+time@20 | dieuhau | 2 | Ellis luôn nói tôi bay như kẻ đang trốn nợ. Lần này tôi trốn thật. || Ellis always said I flew like someone running from debts. This time I really am.
+event_triggered | linh | 2 | Morrigan đang săn sau cột xe. Raven không bắn, chỉ bay theo. || Morrigan is hunting behind the column. Raven is not firing; just following.
+objective_progress:1/2 | reyn | 2 | Nửa chặng. Điểm đón ở đỉnh đèo. Crown đi cuối. || Halfway. The pickup is at the top of the pass. Crown goes last.
+timer_60s | khai | 1 | Một phút tới điểm đón. Không ai dừng lại. || One minute to the pickup. Nobody stops.
+victory | quaden | 1 | Lần sau, nhóc. Trên đường băng của ta, ở Skyhold. || Next time, kid. On my runway, at Skyhold.
+victory | dieuhau | 1 | Tôi về rồi. Nói với hắn: lần sau tôi tới, và tôi mang theo Ellis. || I am home. Tell him: next time I come, and I bring Ellis with me.
+defeat | quaden | 1 | Điểm đón đã bị chặn. Nhóc sẽ ở lại với ta lâu hơn, Hawk. || The pickup is cut off. You stay with me a little longer, Hawk.

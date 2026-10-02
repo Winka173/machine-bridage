@@ -1,0 +1,1386 @@
+{
+"chapter": 9,
+"missions": {
+"c9m01": {
+"main": "khai"
+},
+"c9m02": {
+"main": "khai"
+},
+"c9m03": {
+"main": "linh"
+},
+"c9m04": {
+"main": "mai"
+},
+"c9m05": {
+"main": "linh"
+},
+"c9m11": {
+"main": "sen"
+},
+"c9m06": {
+"main": "khai"
+},
+"c9m12": {
+"main": "khai"
+},
+"c9m13": {
+"main": "sen"
+},
+"c9m07": {
+"main": "khai"
+},
+"c9m08": {
+"main": "khai"
+},
+"c9m14": {
+"main": "khai"
+},
+"c9m09": {
+"main": "linh"
+},
+"c9m10": {
+"main": "khai"
+},
+"c9s1": {
+"main": "linh"
+},
+"c9s2": {
+"main": "linh"
+}
+},
+"lines": [
+{
+"mission": "c9m01",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m01.01",
+"en": "The port again. This time we keep it.",
+"vi": "Lại là cảng này. Lần này ta giữ nó."
+},
+{
+"mission": "c9m01",
+"trigger": "time",
+"speaker": "hung",
+"priority": 2,
+"once": true,
+"key": "script.c9m01.02",
+"en": "This port was Kessler's, then yours, now mine. A port remembers nobody.",
+"vi": "Cảng này từng là của Kessler, rồi của các con, giờ là của ta. Cảng chẳng nhớ ai cả.",
+"at": 15.0
+},
+{
+"mission": "c9m01",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9m01.03",
+"en": "Landing craft at the west quay. Thorne's sailors, Kessler's last men.",
+"vi": "Tàu đổ bộ đang cập bến phía tây. Lính thủy của Thorne, những người cuối cùng của Kessler."
+},
+{
+"mission": "c9m01",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c9m01.04",
+"en": "The docks are ours. The dock stores are full of antenna parts.",
+"vi": "Bến tàu là của ta. Kho trên bến chứa toàn phụ tùng ăng-ten.",
+"arg": "west"
+},
+{
+"mission": "c9m01",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c9m01.05",
+"en": "One point left. This port does not change hands again.",
+"vi": "Còn một điểm. Cảng này không đổi chủ thêm lần nào nữa.",
+"arg": "last"
+},
+{
+"mission": "c9m01",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m01.06",
+"en": "Ironport is ours, a second time and the last.",
+"vi": "Ironport là của ta, lần thứ hai và lần cuối."
+},
+{
+"mission": "c9m01",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m01.07",
+"en": "The port stays mine, Marcus. I only need it a few more days.",
+"vi": "Cảng vẫn là của ta, Marcus. Ta cần nó thêm vài ngày nữa thôi."
+},
+{
+"mission": "c9m02",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m02.01",
+"en": "We know this beach. Better than he does.",
+"vi": "Ta biết bãi biển này. Rõ hơn ông ta."
+},
+{
+"mission": "c9m02",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c9m02.02",
+"en": "The first beach. Back then I was more scared of smoke than guns.",
+"vi": "Bãi biển đầu tiên. Lúc đó tôi còn sợ khói hơn sợ súng.",
+"at": 20.0
+},
+{
+"mission": "c9m02",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9m02.03",
+"en": "Sea fog over the whole shore. Their landing craft cannot see either.",
+"vi": "Sương biển phủ kín bờ. Tàu đổ bộ của họ cũng không thấy đường."
+},
+{
+"mission": "c9m02",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c9m02.04",
+"en": "The beach exit is ours. This time we came from the other side.",
+"vi": "Lối ra bãi biển là của ta. Lần này ta đi ngược chiều.",
+"arg": "east"
+},
+{
+"mission": "c9m02",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c9m02.05",
+"en": "The town up the draw left. The same road as the first day.",
+"vi": "Còn thị trấn trên dốc. Cùng con đường như hồi đầu.",
+"arg": "last"
+},
+{
+"mission": "c9m02",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m02.06",
+"en": "The beach is ours again. He does not land here any more.",
+"vi": "Bãi biển lại là của ta. Ông ta không đổ bộ lên đây được nữa."
+},
+{
+"mission": "c9m02",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m02.07",
+"en": "Your old beach flies my flag now. Funny, is it not?",
+"vi": "Bãi biển cũ của các con giờ có cờ của ta. Thật buồn cười, phải không?"
+},
+{
+"mission": "c9m03",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m03.01",
+"en": "Patrols on the harbour road. Keep moving. Five trucks, three must arrive.",
+"vi": "Có tuần tra trên đường cảng. Cứ đi, đừng dừng. Năm xe, ba phải tới."
+},
+{
+"mission": "c9m03",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9m03.02",
+"en": "Thorne's guns are ranging the road. He knows our schedules; he read them every morning.",
+"vi": "Pháo của Thorne đang dò đường. Họ biết lịch của ta, ông ta từng đọc nó mỗi sáng."
+},
+{
+"mission": "c9m03",
+"trigger": "objective_progress",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c9m03.03",
+"en": "First truck at the depot. Shells and fuel for the harbour attack.",
+"vi": "Xe đầu đã tới kho. Đạn và nhiên liệu cho đợt tấn công cảng.",
+"arg": "1/3"
+},
+{
+"mission": "c9m03",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c9m03.04",
+"en": "Thick sea fog. Keep the convoy close, lights off.",
+"vi": "Sương biển dày đặc. Giữ đoàn xe sát nhau, đèn tắt."
+},
+{
+"mission": "c9m03",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m03.05",
+"en": "One more truck and it is not enough. Stay right by the last one.",
+"vi": "Thêm một xe là không đủ. Đi sát chiếc cuối."
+},
+{
+"mission": "c9m03",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m03.06",
+"en": "The convoy made it. This time Thorne guessed our schedule wrong.",
+"vi": "Đoàn xe đã tới. Lần này Thorne đoán sai lịch của ta."
+},
+{
+"mission": "c9m03",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m03.07",
+"en": "Not enough trucks arrived. He knows our habits too well.",
+"vi": "Không đủ xe tới nơi. Ông ta biết rõ thói quen của ta."
+},
+{
+"mission": "c9m04",
+"trigger": "mission_start",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c9m04.01",
+"en": "Same guns. Same weak mounts.",
+"vi": "Cùng pháo cũ. Cùng chân đế yếu."
+},
+{
+"mission": "c9m04",
+"trigger": "time",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c9m04.02",
+"en": "I took these apart once, at the start of the war. This time I know how to do it faster.",
+"vi": "Tôi đã gỡ chúng một lần ở chương đầu chiến tranh. Lần này tôi biết gỡ nhanh hơn.",
+"at": 20.0
+},
+{
+"mission": "c9m04",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c9m04.03",
+"en": "Hitting the north gun pit. Heads down!",
+"vi": "Tôi đánh vào ụ pháo phía bắc. Cúi đầu xuống!"
+},
+{
+"mission": "c9m04",
+"trigger": "objective_progress",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c9m04.04",
+"en": "Half the guns are silent. The left mounts crack first, as I said.",
+"vi": "Nửa số pháo đã câm. Chân đế bên trái nứt trước, như tôi nói.",
+"arg": "1/2"
+},
+{
+"mission": "c9m04",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m04.05",
+"en": "One minute before his ships are in range. The coastal guns go quiet.",
+"vi": "Một phút trước khi tàu của ông ta vào tầm. Pháo bờ biển phải câm."
+},
+{
+"mission": "c9m04",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c9m04.06",
+"en": "The guns are down. His ships will have to land somewhere else.",
+"vi": "Pháo đã nằm. Tàu của ông ta sẽ phải đổ bộ chỗ khác."
+},
+{
+"mission": "c9m04",
+"trigger": "defeat",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c9m04.07",
+"en": "The guns still fire. Thorne's ships come in under cover.",
+"vi": "Pháo vẫn bắn. Tàu của Thorne sẽ vào dưới làn đạn che."
+},
+{
+"mission": "c9m05",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m05.01",
+"en": "Something in the fog, skimming the water. Very fast.",
+"vi": "Có thứ gì đó trong sương, bay sát mặt nước. Rất nhanh."
+},
+{
+"mission": "c9m05",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c9m05.02",
+"en": "Caspian, a ground-effect ship: skims the waves, lands troops. Hit the wings; it noses in.",
+"vi": "Caspian: tàu hiệu ứng mặt đất. Bay sát sóng, đổ quân. Bắn vào cánh, nó sẽ chúi xuống."
+},
+{
+"mission": "c9m05",
+"trigger": "boss_spawn",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m05.03",
+"en": "This seabird was Kessler's. I only repainted it.",
+"vi": "Con chim biển này từng là của Kessler. Ta sơn lại nó thôi."
+},
+{
+"mission": "c9m05",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c9m05.04",
+"en": "One wing is broken. It is listing, losing height.",
+"vi": "Một cánh đã gãy. Nó đang nghiêng, mất độ cao."
+},
+{
+"mission": "c9m05",
+"trigger": "boss_phase_change",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m05.05",
+"en": "It is circling to land troops. Block where it will beach!",
+"vi": "Nó lượn vòng để đổ quân lên bờ. Chặn chỗ nó sẽ cập!"
+},
+{
+"mission": "c9m05",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c9m05.06",
+"en": "It is about to rake the shore with rockets. Off the red sand!",
+"vi": "Nó sắp bắn rocket trải dọc bờ. Rời khỏi vùng đỏ trên cát!"
+},
+{
+"mission": "c9m05",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c9m05.07",
+"en": "A storm front off the sea. Higher waves; harder for it to skim.",
+"vi": "Giông từ biển. Sóng sẽ cao hơn, nó khó bay sát nước."
+},
+{
+"mission": "c9m05",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c9m05.08",
+"en": "Half! It flies like a wounded bird!",
+"vi": "Một nửa! Nó bay như con chim bị thương!",
+"arg": "50"
+},
+{
+"mission": "c9m05",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c9m05.09",
+"en": "Nearly there. Do not let it touch the shore.",
+"vi": "Gần xong. Đừng để nó chạm bờ.",
+"arg": "25"
+},
+{
+"mission": "c9m05",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c9m05.10",
+"en": "The shore HQ is taking rockets. Pull the support vehicles behind the dunes.",
+"vi": "Sở chỉ huy ven biển dính rocket. Kéo xe hậu cần vào sau đồi cát."
+},
+{
+"mission": "c9m05",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m05.11",
+"en": "Caspian is in the water. Thorne's landing force went down with it.",
+"vi": "Caspian nằm dưới nước. Quân đổ bộ của Thorne chìm theo nó."
+},
+{
+"mission": "c9m05",
+"trigger": "victory",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m05.12",
+"en": "Another bird. No matter. I will not need many more.",
+"vi": "Một con chim nữa. Không sao. Ta không cần nhiều con nữa."
+},
+{
+"mission": "c9m05",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m05.13",
+"en": "It has landed. Your beach has visitors again, Marcus.",
+"vi": "Nó đã đáp. Bãi biển này lại có khách, Marcus."
+},
+{
+"mission": "c9m11",
+"trigger": "mission_start",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c9m11.01",
+"en": "I need three ears on the water. The fort, the village, the lighthouse.",
+"vi": "Tôi cần ba tai nghe trên mặt nước. Pháo đài, ngôi làng, ngọn hải đăng."
+},
+{
+"mission": "c9m11",
+"trigger": "point_captured",
+"speaker": "sen",
+"priority": 3,
+"once": true,
+"key": "script.c9m11.02",
+"en": "One ear. There is a signal under the bay, on a band nobody uses.",
+"vi": "Một tai nghe. Có tín hiệu dưới vịnh, trên một băng tần không ai dùng."
+},
+{
+"mission": "c9m11",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9m11.03",
+"en": "Sea fog. I see nothing, but the Doctor says she does not need to see.",
+"vi": "Sương biển. Tôi không thấy gì, nhưng tiến sĩ nói bà ấy không cần thấy."
+},
+{
+"mission": "c9m11",
+"trigger": "objective_progress",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c9m11.04",
+"en": "The lighthouse left. The signal goes up to the sky, not to the shore.",
+"vi": "Còn ngọn hải đăng. Tín hiệu đang lên trời, không về đất liền.",
+"arg": "last"
+},
+{
+"mission": "c9m11",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c9m11.05",
+"en": "A submarine, talking to a satellite. It is called Typhon.",
+"vi": "Một tàu ngầm, đang nói chuyện với một vệ tinh. Nó tên là Typhon."
+},
+{
+"mission": "c9m11",
+"trigger": "defeat",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c9m11.06",
+"en": "The signal stopped before I could hear it clearly. They know someone is listening.",
+"vi": "Tín hiệu tắt trước khi tôi nghe rõ. Họ biết có người đang nghe."
+},
+{
+"mission": "c9m06",
+"trigger": "mission_start",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m06.01",
+"en": "The sea does not belong to you, Kade.",
+"vi": "Biển không thuộc về các con, Kade."
+},
+{
+"mission": "c9m06",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m06.02",
+"en": "Nor to you. Level the HQ on the docks.",
+"vi": "Nó cũng không thuộc về ông. San phẳng sở chỉ huy trên bến."
+},
+{
+"mission": "c9m06",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c9m06.03",
+"en": "Thorne has gone to dispersal. His vehicles are spread over every quay.",
+"vi": "Thorne đổi sang phân tán. Xe của ông ta rải khắp các bến, khó gom lại."
+},
+{
+"mission": "c9m06",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9m06.04",
+"en": "Landing craft are bringing reinforcements. Hit them before they berth.",
+"vi": "Tàu đổ bộ đang mang viện quân tới. Đánh chúng trước khi chúng cập bến."
+},
+{
+"mission": "c9m06",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c9m06.05",
+"en": "A heavy lost on the quay. Never stop between two container rows.",
+"vi": "Mất xe nặng trên bến. Đừng dừng giữa hai dãy container."
+},
+{
+"mission": "c9m06",
+"trigger": "victory",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m06.06",
+"en": "To the ships. I do not need the land any more.",
+"vi": "Lui ra tàu. Ta không cần đất liền nữa."
+},
+{
+"mission": "c9m06",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m06.07",
+"en": "He is cut off from the sea. Or he wants us to think so.",
+"vi": "Ông ta bị cắt khỏi biển. Hoặc ông ta muốn ta nghĩ vậy."
+},
+{
+"mission": "c9m06",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m06.08",
+"en": "The docks are mine. The sea is still open to me, Marcus.",
+"vi": "Bến tàu vẫn là của ta. Biển vẫn mở cho ta, Marcus."
+},
+{
+"mission": "c9m12",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m12.01",
+"en": "Two islands and a lighthouse. Take them, and the Doctor gets her ears.",
+"vi": "Hai hòn đảo và một ngọn hải đăng. Lấy chúng, và tiến sĩ có tai nghe."
+},
+{
+"mission": "c9m12",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9m12.02",
+"en": "Thorne's landing craft are supplying the islands. Hit them in the channel.",
+"vi": "Tàu đổ bộ của Thorne đang tiếp tế cho các đảo. Đánh chúng ngoài kênh."
+},
+{
+"mission": "c9m12",
+"trigger": "point_captured",
+"speaker": "sen",
+"priority": 3,
+"once": true,
+"key": "script.c9m12.03",
+"en": "The lighthouse is ours. From here I can hear the whole channel.",
+"vi": "Hải đăng là của ta. Từ đây tôi nghe được cả kênh.",
+"arg": "town"
+},
+{
+"mission": "c9m12",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c9m12.04",
+"en": "A storm front is coming. Take the last island before the sea rises.",
+"vi": "Giông đang tới. Lấy đảo cuối trước khi sóng lên."
+},
+{
+"mission": "c9m12",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c9m12.05",
+"en": "One island left. Quickly, before the storm closes the channel.",
+"vi": "Còn một đảo. Nhanh, trước khi bão chặn kênh.",
+"arg": "last"
+},
+{
+"mission": "c9m12",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c9m12.06",
+"en": "Buoys going in. Now we wait for it to speak.",
+"vi": "Phao đang được thả. Giờ ta chờ nó lên tiếng."
+},
+{
+"mission": "c9m12",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m12.07",
+"en": "The islands are still Thorne's. The Doctor will have to listen from further off.",
+"vi": "Đảo vẫn là của Thorne. Tiến sĩ sẽ phải nghe từ xa hơn."
+},
+{
+"mission": "c9m13",
+"trigger": "mission_start",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c9m13.01",
+"en": "Keep them off the lighthouse. Typhon is talking, and I am listening.",
+"vi": "Giữ họ tránh xa ngọn hải đăng. Typhon đang nói, và tôi đang nghe."
+},
+{
+"mission": "c9m13",
+"trigger": "time",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c9m13.02",
+"en": "Typhon sends coordinates to the sky every ninety seconds. I am copying them.",
+"vi": "Typhon gửi tọa độ lên trời mỗi chín mươi giây. Tôi đang chép lại.",
+"at": 40.0
+},
+{
+"mission": "c9m13",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9m13.03",
+"en": "A landing on the south of the island. They know what the buoys are for.",
+"vi": "Đổ bộ ở phía nam đảo. Họ biết phao để làm gì."
+},
+{
+"mission": "c9m13",
+"trigger": "objective_progress",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c9m13.04",
+"en": "Halfway. There is a voice in the signal. I know that voice.",
+"vi": "Nửa thời gian. Có giọng người trong tín hiệu. Tôi biết giọng này.",
+"arg": "1/2"
+},
+{
+"mission": "c9m13",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c9m13.05",
+"en": "The lighthouse is lost. Take it back; the Doctor is in the middle of listening.",
+"vi": "Mất hải đăng. Lấy lại, tiến sĩ đang nghe dở."
+},
+{
+"mission": "c9m13",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m13.06",
+"en": "The man giving Typhon its orders: Thorne.",
+"vi": "Người ra lệnh cho Typhon: Thorne."
+},
+{
+"mission": "c9m13",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c9m13.07",
+"en": "He speaks of the sky the way people speak of home. I do not like it.",
+"vi": "Ông ta nói về bầu trời như người ta nói về nhà. Tôi không thích điều đó."
+},
+{
+"mission": "c9m13",
+"trigger": "defeat",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c9m13.08",
+"en": "Signal lost. I only caught half the last sentence: \"...when the sky opens.\"",
+"vi": "Tín hiệu mất. Tôi chỉ nghe được nửa câu cuối: \"...khi bầu trời mở.\""
+},
+{
+"mission": "c9m07",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m07.01",
+"en": "Keep one standing. That is all we need.",
+"vi": "Giữ một tòa đứng vững. Ta chỉ cần vậy."
+},
+{
+"mission": "c9m07",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c9m07.02",
+"en": "Our spotters in the port buildings guide the guns. Civilians on the lower floors too.",
+"vi": "Người quan sát của ta trong các tòa nhà cảng đang dẫn pháo. Có cả dân thường ở tầng dưới.",
+"at": 20.0
+},
+{
+"mission": "c9m07",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c9m07.03",
+"en": "Sea fog over the port. Thorne's night attack will come from the waterfront.",
+"vi": "Sương biển phủ cảng. Tấn công đêm của Thorne sẽ tới từ bến nước."
+},
+{
+"mission": "c9m07",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c9m07.04",
+"en": "Midnight. One building is burning. Hold the other.",
+"vi": "Nửa đêm. Một tòa đã cháy. Giữ tòa còn lại.",
+"arg": "1/2"
+},
+{
+"mission": "c9m07",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m07.05",
+"en": "One building left. Cover it with everything.",
+"vi": "Chỉ còn một tòa. Che nó bằng mọi thứ."
+},
+{
+"mission": "c9m07",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m07.06",
+"en": "The building stands, the spotters are alive. Our guns still have eyes.",
+"vi": "Tòa nhà còn đứng, người quan sát còn sống. Pháo ta vẫn có mắt."
+},
+{
+"mission": "c9m07",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m07.07",
+"en": "The spotters are gone. The guns fire by the map now.",
+"vi": "Mất người quan sát. Pháo sẽ phải bắn theo bản đồ."
+},
+{
+"mission": "c9m08",
+"trigger": "mission_start",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m08.01",
+"en": "Kessler's ship. My sailors.",
+"vi": "Tàu của Kessler. Thủy thủ của ta."
+},
+{
+"mission": "c9m08",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m08.02",
+"en": "Sink it, for good this time.",
+"vi": "Chìm nó, lần này vĩnh viễn."
+},
+{
+"mission": "c9m08",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c9m08.03",
+"en": "Scylla, refitted. A new radar on the mast, the same old hull. Radar first.",
+"vi": "Scylla, được sửa lại. Ra-đa mới trên cột, nhưng thân vẫn cũ. Hạ ra-đa trước."
+},
+{
+"mission": "c9m08",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c9m08.04",
+"en": "The new radar is down. They fixed it fast, not well.",
+"vi": "Ra-đa mới đã gãy. Họ sửa nhanh, nhưng không kỹ."
+},
+{
+"mission": "c9m08",
+"trigger": "boss_phase_change",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c9m08.05",
+"en": "It is turning broadside, at the same spot as last time. Off its beam!",
+"vi": "Nó quay mạn bắn toàn bộ. Lần trước nó làm vậy ở cùng chỗ này. Tránh trục ngang!"
+},
+{
+"mission": "c9m08",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c9m08.06",
+"en": "Full broadside coming. Off the red stretch of shore!",
+"vi": "Loạt đạn toàn mạn sắp tới. Rời khỏi vùng đỏ trên bờ!"
+},
+{
+"mission": "c9m08",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9m08.07",
+"en": "A raiding party is after our ammunition trucks. Scylla is the bait.",
+"vi": "Một đội đánh phá nhắm vào xe đạn của ta. Scylla chỉ là mồi."
+},
+{
+"mission": "c9m08",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c9m08.08",
+"en": "Half! It is listing just like last time!",
+"vi": "Một nửa! Nó nghiêng giống hệt lần trước!",
+"arg": "50"
+},
+{
+"mission": "c9m08",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c9m08.09",
+"en": "This time do not let it limp out to sea.",
+"vi": "Lần này đừng để nó lết ra khơi.",
+"arg": "25"
+},
+{
+"mission": "c9m08",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c9m08.10",
+"en": "The ship is shelling the camp. Support vehicles behind the headland.",
+"vi": "Pháo tàu đang nã trại. Đưa xe hậu cần ra sau mỏm đá."
+},
+{
+"mission": "c9m08",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m08.11",
+"en": "Scylla is on the bottom, and this time it stays there.",
+"vi": "Scylla nằm dưới đáy, lần này ở lại đó."
+},
+{
+"mission": "c9m08",
+"trigger": "victory",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m08.12",
+"en": "Kessler's ship. I told you; he never built a good one.",
+"vi": "Tàu của Kessler. Ta đã nói, ông ta chưa bao giờ đóng tàu tốt."
+},
+{
+"mission": "c9m08",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m08.13",
+"en": "The bay is still mine. Typhon needs it a little longer.",
+"vi": "Vịnh vẫn là của ta. Typhon cần nó thêm một chút nữa."
+},
+{
+"mission": "c9m14",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m14.01",
+"en": "Five minutes on the headland. Let them come to us.",
+"vi": "Năm phút trên mũi đất. Để chúng tự tới."
+},
+{
+"mission": "c9m14",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9m14.02",
+"en": "Kessler's last ships and Thorne's sailors are landing. They are covering Typhon's run.",
+"vi": "Tàu cuối của Kessler và lính thủy của Thorne đang đổ bộ. Họ che cho Typhon chạy."
+},
+{
+"mission": "c9m14",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c9m14.03",
+"en": "Halfway. They are not fighting to win. They are fighting to last.",
+"vi": "Nửa chặng. Họ không đánh để thắng. Họ đánh để kéo dài.",
+"arg": "1/2"
+},
+{
+"mission": "c9m14",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c9m14.04",
+"en": "A supply drop coming down on the headland. Get it before they do.",
+"vi": "Một kho thả dù đang rơi trên mũi đất. Lấy trước họ."
+},
+{
+"mission": "c9m14",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m14.05",
+"en": "One minute. Hold tight; the last landing is coming.",
+"vi": "Một phút. Giữ chặt, đợt đổ bộ cuối đang tới."
+},
+{
+"mission": "c9m14",
+"trigger": "victory",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m14.06",
+"en": "Hold them, then. It will not matter much longer.",
+"vi": "Cứ giữ đi. Chẳng còn quan trọng bao lâu nữa đâu."
+},
+{
+"mission": "c9m14",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m14.07",
+"en": "The headland is ours. Typhon is not. Not yet.",
+"vi": "Mũi đất là của ta. Typhon thì không. Chưa."
+},
+{
+"mission": "c9m14",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m14.08",
+"en": "The headland is mine. Typhon is at sea, Marcus.",
+"vi": "Mũi đất là của ta. Typhon đã ra khơi, Marcus."
+},
+{
+"mission": "c9m09",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m09.01",
+"en": "Mortar teams, marked. Move fast.",
+"vi": "Các toán súng cối, đã đánh dấu. Đi nhanh."
+},
+{
+"mission": "c9m09",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c9m09.02",
+"en": "Hitting the mortar team nearest the beach. Keep your distance!",
+"vi": "Tôi đánh vào toán súng cối gần bãi biển nhất. Giữ khoảng cách!"
+},
+{
+"mission": "c9m09",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9m09.03",
+"en": "One team silenced. They fire from behind the dunes, like the first year of the war.",
+"vi": "Một toán đã câm. Họ bắn từ sau đồi cát, như năm đầu chiến tranh.",
+"arg": "1/3"
+},
+{
+"mission": "c9m09",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9m09.04",
+"en": "The rocket launcher left. It moves after every salvo, but it has only three places to go.",
+"vi": "Còn giàn rocket. Nó đổi chỗ sau mỗi loạt, nhưng chỉ có ba chỗ để đi.",
+"arg": "last"
+},
+{
+"mission": "c9m09",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c9m09.05",
+"en": "Sea fog coming in. The last team will be harder to see.",
+"vi": "Sương biển tràn vào. Toán cuối sẽ khó thấy hơn."
+},
+{
+"mission": "c9m09",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m09.06",
+"en": "The beach road is clear. Three teams crossed out.",
+"vi": "Đường bãi biển sạch. Gạch tên ba toán."
+},
+{
+"mission": "c9m09",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m09.07",
+"en": "They pulled back into the fog. South; noted.",
+"vi": "Họ rút vào sương. Hướng nam, đã ghi lại."
+},
+{
+"mission": "c9m10",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m10.01",
+"en": "This ends at sea, Brigade.",
+"vi": "Chuyện này kết thúc trên biển, lữ đoàn."
+},
+{
+"mission": "c9m10",
+"trigger": "time",
+"speaker": "hung",
+"priority": 2,
+"once": true,
+"key": "script.c9m10.02",
+"en": "Marcus, do you ever look up and wonder who holds the sky when this ends?",
+"vi": "Marcus, ông có bao giờ nhìn lên và tự hỏi ai sẽ giữ bầu trời khi chiến tranh kết thúc?",
+"at": 20.0
+},
+{
+"mission": "c9m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m10.03",
+"en": "The harbour is taken. Next blow: the submarine pens or the missile store.",
+"vi": "Cảng đã chiếm. Chọn đòn tiếp: bến tàu ngầm hay kho tên lửa.",
+"arg": "2"
+},
+{
+"mission": "c9m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m10.04",
+"en": "Clear the shore works. Typhon is loading missiles at the far pen.",
+"vi": "Dọn các xưởng ven biển. Typhon đang nạp tên lửa ở bến xa.",
+"arg": "4"
+},
+{
+"mission": "c9m10",
+"trigger": "phase_start",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c9m10.05",
+"en": "Typhon is surfacing. It has to, to launch. That is the only time we can hit it.",
+"vi": "Typhon đang nổi lên. Nó phải nổi để phóng. Đó là lúc duy nhất ta đánh được nó.",
+"arg": "6"
+},
+{
+"mission": "c9m10",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c9m10.06",
+"en": "Typhon, a missile submarine. Surfaced, its launch hatches show. Shut them one by one.",
+"vi": "Typhon, tàu ngầm tên lửa. Khi nổi, nắp hầm phóng lộ ra. Đóng từng nắp."
+},
+{
+"mission": "c9m10",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c9m10.07",
+"en": "One launch hatch is broken. Three left.",
+"vi": "Một nắp hầm phóng đã vỡ. Còn ba."
+},
+{
+"mission": "c9m10",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c9m10.08",
+"en": "It is about to launch. Out of the red, everyone, now!",
+"vi": "Nó sắp phóng. Rời khỏi vùng đỏ, mọi người, ngay!"
+},
+{
+"mission": "c9m10",
+"trigger": "boss_hp",
+"speaker": "linh",
+"priority": 4,
+"once": true,
+"key": "script.c9m10.09",
+"en": "Typhon is at half. It is signalling the sky without stopping.",
+"vi": "Typhon mất một nửa. Nó đang gửi tín hiệu lên trời liên tục.",
+"arg": "50"
+},
+{
+"mission": "c9m10",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c9m10.10",
+"en": "It is diving! Do not let it dive!",
+"vi": "Nó đang lặn xuống! Đừng để nó lặn!",
+"arg": "25"
+},
+{
+"mission": "c9m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c9m10.11",
+"en": "Typhon is sinking. Hold the quays; his sailors will come ashore.",
+"vi": "Typhon đang chìm. Giữ bến, thủy thủ của ông ta sẽ lên bờ.",
+"arg": "7"
+},
+{
+"mission": "c9m10",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m10.12",
+"en": "Typhon is down. A message came from it as it sank.",
+"vi": "Typhon đã chìm. Có một tin nhắn phát ra từ nó khi đang chìm."
+},
+{
+"mission": "c9m10",
+"trigger": "victory",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m10.13",
+"en": "Coordinates follow: Icarus launches from there. Don't let me have been right.",
+"vi": "Tọa độ kèm theo: Icarus phóng từ đó. Đừng để tôi đã đúng."
+},
+{
+"mission": "c9m10",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9m10.14",
+"en": "No body found. I will not write him down as dead.",
+"vi": "Không tìm thấy thi thể. Tôi sẽ không ghi là đã chết."
+},
+{
+"mission": "c9m10",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c9m10.15",
+"en": "Typhon has dived. You will see it again, the day the sky opens.",
+"vi": "Typhon đã lặn. Các con sẽ thấy nó, vào ngày bầu trời mở."
+},
+{
+"mission": "c9s1",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9s1.01",
+"en": "They run on schedule. We will be early. Two minelaying command cars.",
+"vi": "Họ chạy theo lịch. Ta sẽ tới sớm. Hai xe chỉ huy rải mìn."
+},
+{
+"mission": "c9s1",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c9s1.02",
+"en": "One car stopped. Its minelaying schedule is still in the desk drawer.",
+"vi": "Một xe đã dừng. Lịch rải mìn của nó vẫn nguyên trong ngăn bàn.",
+"arg": "1/2"
+},
+{
+"mission": "c9s1",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c9s1.03",
+"en": "Landing craft are coming for the other car. Block it at the pier.",
+"vi": "Tàu đổ bộ đang tới đón xe còn lại. Chặn ở cầu tàu."
+},
+{
+"mission": "c9s1",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9s1.04",
+"en": "The harbour stays open. Kessler's old schedule still runs, but for us now.",
+"vi": "Cảng không bị đóng. Lịch của Kessler cũ vẫn chạy, nhưng giờ cho ta."
+},
+{
+"mission": "c9s1",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9s1.05",
+"en": "The mines are laid. The harbour is closed for a week.",
+"vi": "Mìn đã rải. Cảng đóng trong một tuần."
+},
+{
+"mission": "c9s2",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9s2.01",
+"en": "I want their radios intact. Two posts on the beach.",
+"vi": "Tôi muốn radio của họ còn nguyên. Hai trạm trên bãi."
+},
+{
+"mission": "c9s2",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c9s2.02",
+"en": "First post. The radio is still on, tuned to a satellite band.",
+"vi": "Trạm thứ nhất. Radio còn bật, đang dò một băng tần lên vệ tinh."
+},
+{
+"mission": "c9s2",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c9s2.03",
+"en": "Landing craft are coming. Hold the post before they smash the radio.",
+"vi": "Tàu đổ bộ đang tới. Giữ trạm trước khi họ phá radio."
+},
+{
+"mission": "c9s2",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9s2.04",
+"en": "Both radios intact. Dr Venn will have work all night.",
+"vi": "Hai radio còn nguyên. Tiến sĩ Venn sẽ có việc làm cả đêm."
+},
+{
+"mission": "c9s2",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c9s2.05",
+"en": "They smashed the radios before we arrived. Careful, as always.",
+"vi": "Họ đập radio trước khi ta tới. Thận trọng như mọi khi."
+}
+]
+}

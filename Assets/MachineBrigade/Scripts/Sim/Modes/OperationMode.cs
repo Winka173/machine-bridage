@@ -133,6 +133,11 @@ namespace MachineBrigade.Sim.Modes
 
         public int Losses => _losses + Current.Losses;
 
+        /// <summary>Prompt 30 L4: the base CP lost over every stage so far.</summary>
+        public int LostBaseCp => _lostBaseCp + Current.LostBaseCp;
+
+        private int _lostBaseCp;
+
         /// <summary>The ally has turned on the player.</summary>
         public bool Betrayed { get; private set; }
 
@@ -263,6 +268,7 @@ namespace MachineBrigade.Sim.Modes
                 owners = Current.Owners();
                 _kills += Current.Kills;
                 _losses += Current.Losses;
+                _lostBaseCp += Current.LostBaseCp;
             }
             StageIndex = index;
             _path.Add(index);

@@ -48,6 +48,10 @@ the radio from the chapter that brings them in, with a portrait of their own.
 Played in this order; an interlude (numbered 13-15 so no chapter's ids move) goes with the act before it for the act
 switches of prompt 20 C. The last main mission of a chapter is its operation, with its main boss; an interlude has none.
 
+Four acts (the `act` field of `campaign.json`): I = 1, 2, 3, 13; II = 4, 5, 6, 14; III = 7, 8, 9, 15; IV = 10, 11, 12.
+After chapter 9 comes **Thorne's Arc Closes** (`campaign.thorneArc`, an interlude card before chapter 15), not an
+epilogue; the game's epilogue follows c12m10, and winning c12m10 opens the Operations' Legend tier (prompt 30 L1).
+
 | # | Act | Chapter | General | Main | Side | Maps | Main boss | Mini bosses |
 |---|---|---|---|---|---|---|---|---|
 | 1 | I Landfall | Coast of Fire | Brandt | 9 | 1 | Stormbeach, Greenvale, Ashfield | Bastion | Bastion Mk.0 |

@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 namespace MachineBrigade.Game.Hud
 {
     /// <summary>
-    /// E2, the campaign. First the nine chapters in their three acts, each with its battlefield's
+    /// E2, the campaign. First the fifteen chapters (three of them interludes) in their four acts, each with its battlefield's
     /// picture, its progress and stars, its boss and whether it is open; then a chapter's missions:
     /// the list on the left (a boss mid-chapter, the big operation and the side missions marked),
     /// the chosen one on the right with its briefing, objectives and three stars, the Normal /

@@ -10,8 +10,59 @@ namespace MachineBrigade.Sim.Modes
     /// reinforcement call for the player. It exists to tune combat and explosions before the
     /// real modes (Conquest first) arrive.
     /// </summary>
-    public sealed class SandboxMode : IGameMode
+    public sealed class SandboxMode : IGameMode, IEndlessMode
     {
+        // ------------------------------------------------------------------------------------------------ prompt 30 L5
+
+        /// <summary>
+        /// Survival's finite part (sheet "Luật trận", "Vô hạn"): 10 waves, a mini boss with wave 5 and a main boss with wave 10;
+        /// won once wave 10 is spawned and every enemy is down. 0: the old waves without end (no win).
+        /// </summary>
+        public int FiniteWaves { get; set; } = EndlessRules.SurvivalWaves;
+
+        /// <summary>The main bosses Survival draws from (land bosses), and their mini versions (the mini-boss mutator's).</summary>
+        public static readonly string[] MainBosses = { "behemoth", "mobile_fortress", "mega_gunship", "drone_mothership" };
+
+        private MatchResult? _result;
+        private int _finiteWaves, _lastFiniteSize;
+
+        public MatchResult? Result => _result;
+
+        public bool CanContinue => FiniteWaves > 0 && !InEndless && _result is { WinningTeam: PlayerTeam };
+
+        public bool InEndless { get; private set; }
+
+        public int EndlessSteps => InEndless ? Math.Max(0, Wave - _finiteWaves) : 0;
+
+        public void ContinueEndless(SimWorld world)
+        {
+            if (!CanContinue) return;
+            _result = null;
+            InEndless = true;
+            _finiteWaves = Wave;
+            _waveTimer = WaveInterval / MathF.Max(0.5f, Intensity);
+        }
+
+        /// <summary>Survival's own loss (sheet: the army wiped out, or the drop zone taken) is the session's; this is the win.</summary>
+        private void CheckWin(SimWorld world)
+        {
+            if (FiniteWaves <= 0 || InEndless || _result != null || Wave < FiniteWaves || world.CountAlive(EnemyTeam) > 0) return;
+            _result = new MatchResult(PlayerTeam);
+            world.IsOver = true;
+        }
+
+        /// <summary>The boss a wave brings: a main boss every 10 waves, a mini boss every 5 (the main one's mini version).</summary>
+        private void SpawnBoss(SimWorld world, Vector2 rally)
+        {
+            var kind = EndlessRules.BossOfWave(Wave);
+            if (kind == 0) return;
+            var main = MainBosses[(Wave / EndlessRules.MiniBossEvery) % MainBosses.Length];
+            if (!world.Catalog.Vehicles.TryGetValue(main, out var def)) return;
+            var id = kind == 2 ? main : def.MiniVariant;
+            if (id == null || !world.Catalog.Vehicles.ContainsKey(id)) return;
+            world.SpawnVehicle(id, EnemyTeam, rally, SimMath.DegToRad(225f));
+        }
+
         public const int PlayerTeam = 0;
         public const int EnemyTeam = 1;
 
@@ -47,16 +98,21 @@ namespace MachineBrigade.Sim.Modes
 
         public float ReinforceCooldown { get; private set; }
 
-        public MatchResult? Result => null;
 
         public void Setup(SimWorld world)
         {
+            // Mini bosses carry no superweapon in Survival (the mini-boss rule).
+            world.MiniBossesNoBigAttacks = true;
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
         }
 
         public void Tick(SimWorld world, float dt)
         {
+            if (_result != null) return;
+            CheckWin(world);
             ReinforceCooldown = MathF.Max(0f, ReinforceCooldown - dt);
+            // The finite part's last wave sent: the rest is clearing the field.
+            if (FiniteWaves > 0 && !InEndless && Wave >= FiniteWaves) return;
             _waveTimer -= dt;
             if (_waveTimer > 0f) return;
             _waveTimer = WaveInterval / MathF.Max(0.5f, Intensity);
@@ -83,11 +139,21 @@ namespace MachineBrigade.Sim.Modes
         {
             if (!world.TryGetRally(EnemyTeam, out var rally)) return;
             Wave++;
+            if (InEndless)
+            {
+                // Stats only: the enemy +4 % a wave, the player +2 % (to +30 %); never more than the finite part's last wave.
+                var k = EndlessSteps;
+                world.SetTeamStats(EnemyTeam, EndlessRules.EnemyScale(k), EndlessRules.EnemyScale(k));
+                world.SetTeamStats(PlayerTeam, EndlessRules.PlayerScale(k), EndlessRules.PlayerScale(k));
+            }
+            if (FiniteWaves > 0) SpawnBoss(world, rally);
             // Prompt 13 H.9: waves that keep growing (they stopped at six before, and a deck outgrew them for
             // ever), by the difficulty and the deck, with no ceiling but the enemies alive at once; the heavier
             // cards come in as the waves go on, and from wave 8 more and more of them (all by wave 24) as their
             // elite versions, so a line that holds is worn down in the end.
             var count = Math.Min(room, Math.Max(1, (int)MathF.Round((3f + 0.9f * (Wave - 1)) * Intensity * DeckScale)));
+            if (InEndless) count = Math.Min(count, _lastFiniteSize);
+            else if (FiniteWaves > 0 && Wave == FiniteWaves) _lastFiniteSize = count;
             var reach = Math.Clamp(4 + Wave, 4, WaveRoster.Length);
             var elite = MathF.Min(1f, (Wave - 7) * 0.06f);
             for (var i = 0; i < count; i++)

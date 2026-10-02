@@ -50,6 +50,41 @@ namespace MachineBrigade.Game.Match
 
         public virtual IObjectiveMode Objectives => Mode as IObjectiveMode;
 
+        /// <summary>Prompt 30 L5: the results may offer "Continue" (Defend, Survival, Boss Rush won).</summary>
+        public virtual bool CanContinue => Mode is IEndlessMode e && e.CanContinue;
+
+        /// <summary>
+        /// Prompt 30 L5: the results' "Continue": the win and its rewards were recorded with the result; the battle reopens
+        /// and the mode goes on into its endless part. The results' "End" just leaves.
+        /// </summary>
+        public virtual bool ContinueEndless(SimWorld world)
+        {
+            if (Mode is not IEndlessMode e || !e.CanContinue || !world.ContinueMatch()) return false;
+            e.ContinueEndless(world);
+            _endlessPaidSteps = 0;
+            return true;
+        }
+
+        private int _endlessPaidSteps;
+
+        /// <summary>
+        /// Prompt 30 L5: each wave (boss) beyond the finite part pays 18 (60) x 0.9^k coins, within the day's 600 over
+        /// every mode, and the +10/+20/+30 wave (+5/+10 boss) badges. Called each frame by the runner; returns coins paid now.
+        /// </summary>
+        public int PayEndless(string mode)
+        {
+            if (Mode is not IEndlessMode { InEndless: true } e) return 0;
+            var bosses = Mode is BossRushMode;
+            var paid = 0;
+            while (_endlessPaidSteps < e.EndlessSteps)
+            {
+                paid += PlayerProfile.PayEndless(EndlessRules.Coins(_endlessPaidSteps, bosses));
+                _endlessPaidSteps++;
+                if (EndlessRules.BadgeAt(_endlessPaidSteps, bosses) is var badge && badge > 0) PlayerProfile.AwardEndlessBadge($"{mode}.{badge}");
+            }
+            return paid;
+        }
+
         public virtual HudSpec Hud => new() { Mode = HudMode.Score };
 
         public abstract string Kicker { get; }
@@ -370,6 +405,7 @@ namespace MachineBrigade.Game.Match
                 PlayerVehicles = MatchSettings.AllVehicles, PlayerSupports = MatchSettings.AllSupports,
                 EnemyVehicles = MatchSettings.AllVehicles, EnemySupports = MatchSettings.AllSupports,
                 Bases = Bases(world, GameModeKind.Conquest, seed, menu: true), UnderdogAfter = 0f,
+                RulesId = null, // prompt 30 L4: the menu's battle keeps no clock
             });
             Mode = mode;
             mode.Setup(world);
@@ -1134,12 +1170,22 @@ namespace MachineBrigade.Game.Match
         public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps) =>
             hud.SetStats(world.CountAlive(PlayerTeam), world.CountAlive(EnemyTeam), _mode.Wave, _mode.SecondsToNextWave, fps);
 
+        public override bool ContinueEndless(SimWorld world)
+        {
+            if (!base.ContinueEndless(world)) return false;
+            _over = false;
+            _wipedSince = _overrunSince = -1;
+            return true;
+        }
+
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
-            if (_over || world.Time <= 5.0 || !Lost(world)) return null;
+            // Prompt 30 L5: won once the tenth wave is cleared (the mode's result); lost as before.
+            var won = _mode.Result is { WinningTeam: PlayerTeam };
+            if (_over || !won && (world.Time <= 5.0 || !Lost(world))) return null;
             _over = true;
             world.IsOver = true;
-            var outcome = new MatchOutcome { Result = -1, Subtitle = Strings.Get("mode.survival"), Note = Strings.Get("result.over") };
+            var outcome = new MatchOutcome { Result = won ? 1 : -1, Subtitle = Strings.Get("mode.survival"), Note = Strings.Get(won ? "result.survived" : "result.over") };
             outcome.Rows.Add((Strings.Get("result.waves"), _mode.Wave.ToString()));
             outcome.Rows.Add((Strings.Get("result.kills"), kills.ToString()));
             outcome.Rows.Add((Strings.Get("result.time"), Clock(world.Time)));
@@ -1197,6 +1243,9 @@ namespace MachineBrigade.Game.Match
 
         private int Kills => _op != null ? _op.Kills : _single.Kills;
         private int Losses => _op != null ? _op.Losses : _single.Losses;
+
+        /// <summary>Prompt 30 L4: the base CP lost (Operations' score).</summary>
+        private int LostBaseCp => _op != null ? _op.LostBaseCp : _single.LostBaseCp;
 
         /// <summary>A stage's name (its own text, else "Stage n").</summary>
         public string StageTitle(string stageId, int number)
@@ -1442,6 +1491,15 @@ namespace MachineBrigade.Game.Match
         private int _nextTip;
         private int _tier;
 
+        /// <summary>Prompt 30 L4: the facts for campaignStarRules (the battle's from the mission, the win from the result).</summary>
+        private StarFacts StarFacts(SimWorld world, bool won)
+        {
+            var facts = (_single ?? _op.Current).StarFacts(world);
+            facts.Won = won;
+            facts.Kills = Kills;
+            return facts;
+        }
+
         /// <summary>Whether the mission's own third-star challenge was met.</summary>
         private bool ChallengeMet(SimWorld world) => _def.Challenge switch
         {
@@ -1486,7 +1544,7 @@ namespace MachineBrigade.Game.Match
             var hq = 1f;
             if (world.Bases.Of(PlayerTeam) is { } home && world.TryGetVehicle(home.Hq, out var hqVehicle))
                 hq = hqVehicle.IsAlive ? hqVehicle.Hp / hqVehicle.MaxHp : 0f;
-            var score = Operations.Data.Scoring.Score(won, world.Time, Losses, hq, Operations.Tier(_tier), _run.Mutators);
+            var score = Operations.Data.Scoring.Score(won, world.Time, LostBaseCp, hq, Operations.Tier(_tier), _run.Mutators);
             var best = PlayerProfile.BestScore(_def.Id, _tier);
             var record = PlayerProfile.RecordOperation(_def.Id, _tier, score, (float)world.Time);
             outcome.Subtitle = Strings.Format("ops.resultTitle", ("title", Title), ("tier", Strings.Get("tier." + _tier)));
@@ -1567,7 +1625,8 @@ namespace MachineBrigade.Game.Match
             outcome.Rows.Add((Strings.Get("result.time"), Clock(world.Time)));
             if (_op != null && _op.StageCount > 1)
                 outcome.Rows.Add((Strings.Get("result.stages"), won ? _op.Path.Count.ToString() : UnityEngine.Mathf.Max(0, _op.Path.Count - 1).ToString()));
-            outcome.Reward = Rewards.Mission(_def, won, (float)world.Time, Losses, ChallengeMet(world), System.Math.Min(_tier, 2));
+            outcome.Reward = Rewards.Mission(_def, won, (float)world.Time, Losses, ChallengeMet(world), System.Math.Min(_tier, 2),
+                world.Catalog.MatchRules.Stars.Count(_def, StarFacts(world, won)));
             EventRewards(outcome, world);
             if (_run != null) OperationRows(outcome, world, won);
             if (_tier > 0) outcome.Rows.Add((Strings.Get("tier.label"), Strings.Get("tier." + _tier)));

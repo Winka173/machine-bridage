@@ -1,0 +1,103 @@
+# Chapter 1 · Coast of Fire (act 1). Enemy general: Brandt. Arc: landing, a foothold, the Ashfield fortress.
+# Threads: Brandt trusts his walls; Behemoth heard of once; Brandt's files name Varga at the end.
+
+@c1m01 main=khai
+mission_start | khai | 1 | Lữ đoàn, rời bãi cát trước. Mọi thứ khác tính sau. || Brigade, off the sand first. Everything else comes later.
+time@20 | linh | 2 | Hai điểm phải chiếm: lối ra bãi biển và thị trấn trên dốc. Chúng chưa kịp đào hào. || Two objectives: the beach exit and the town up the draw. They have not dug in yet.
+point_captured:east | dieuhau | 3 | Lối ra bãi biển là của ta! Từ trên này tôi thấy cả vịnh. || Beach exit is ours! I can see the whole bay from up here.
+objective_progress:last | linh | 2 | Còn thị trấn. Lính gác của Brandt đang kéo về đó, khoảng một trung đội. || Only the town left. Brandt's sentries are falling back there, about a platoon.
+critical_failure_imminent | khai | 1 | Ta đang bị đẩy xuống nước. Giữ lấy từng mét đất, tăng viện sắp tới. || They are pushing us into the water. Hold every metre, more boats are coming.
+victory | khai | 1 | Đầu cầu đã vững. Giờ ta tìm chỗ dựng nhà. || Beachhead secured. Now we find somewhere to build.
+defeat | khai | 1 | Lui về tàu. Ta sẽ đổ bộ lại khi trời tối. || Back to the boats. We land again after dark.
+
+@c1m02 main=linh
+mission_start | linh | 1 | Trạm radar trên vách đá đang gọi pháo xuống từng xuồng đổ bộ. Ca trực đổi mỗi giờ. || The radar on the bluffs calls their guns onto every boat. Its crew changes on the hour.
+time@40 | linh | 2 | Ca trực vừa đổi. Lính mới chưa quen máy, ta có vài phút trước khi chúng nhìn rõ. || Shift change. The new crew is still warming up; we have a few blind minutes.
+enemy_reinforcement | linh | 3 | Xe từ thị trấn đang lên dốc giữ radar. Chúng biết thứ đó đáng giá thế nào. || Vehicles from the town are climbing to the radar. They know what it is worth.
+event_triggered | hq | 2 | Mưa đang tới từ biển. Tầm nhìn sẽ giảm, cả ta lẫn chúng. || Rain coming in off the sea. Visibility drops, for them and for us.
+timer_60s | khai | 1 | Một phút nữa đoàn xuồng thứ hai vào vịnh. Radar phải câm trước lúc đó. || One minute until the second wave enters the bay. That radar goes quiet first.
+victory | khai | 1 | Radar gục. Báo xuồng vào được rồi, không ai thấy chúng nữa. || Radar down. Tell the boats to come in; nobody is watching now.
+defeat | linh | 1 | Radar vẫn quét vịnh. Đoàn xuồng sau sẽ phải đi đường vòng. || The radar still sweeps the bay. The next boats will have to go the long way.
+
+@c1m03 main=linh
+mission_start | linh | 1 | Làng chài, ngã tư, trang trại: ba điểm, mỗi điểm vài lính trinh sát của Brandt. || Fishing village, crossroads, farm: three points, a few of Brandt's scouts at each.
+mission_start | khai | 1 | Kháng cự nhẹ. Cho tôi xem lữ đoàn làm được gì khi không bị bắn từ biển. || Light resistance. Show me what this brigade does when nobody shells it from the sea.
+point_captured:town | linh | 3 | Ngã tư là của ta. Mọi con đường vào đất liền đều đi qua đây. || The crossroads is ours. Every road inland runs through it now.
+point_lost | linh | 3 | Chúng chiếm lại một điểm. Trinh sát của Brandt phản ứng nhanh hơn tôi tưởng. || They took one back. Brandt's scouts react faster than I expected.
+objective_progress:last | dieuhau | 2 | Còn một điểm! Tôi thấy đường ống khói của trang trại, nhắm vào đó. || One left! I can see the farm's chimney, steer for that.
+victory | khai | 1 | Làng là của ta. Thuyền chài ra khơi được rồi. || The village is ours. The fishing boats can go back out.
+defeat | linh | 1 | Ta mất cả ba. Trinh sát của chúng giờ biết quân số của ta. || We lost all three. Their scouts know our numbers now.
+
+@c1m04 main=mai
+mission_start | mai | 1 | Đưa tôi ngã tư đó và vài phút yên tĩnh, đại tá, tôi sẽ đưa ông một căn cứ. || Give me that crossroads and a few quiet minutes, Colonel, and I will give you a base.
+point_captured:town | mai | 3 | Đất là của ta. Tháp đang thả xuống, giữ chúng tránh xa đội thợ của tôi! || Ground is ours. Towers coming down, keep them off my crews!
+objective_progress:1/2 | mai | 2 | Nửa số tháp đã dựng. Đừng để ai đứng lên cái tháp phía bắc, nó chưa siết bu lông. || Half the towers are up. Nobody climb the north one, its bolts are still loose.
+enemy_reinforcement | linh | 3 | Đợt phản công đang tới từ phía đông, chúng muốn phá tiền đồn trước khi nó đứng vững. || A counterattack from the east. They want the outpost down before it stands.
+hq_below_50 | mai | 2 | Sở chỉ huy mới đang thủng. Tôi vá được, nhưng phải có người giữ cửa. || The new HQ is holed. I can patch it, but someone has to hold the door.
+victory | mai | 1 | Nó đứng vững. Chào mừng tới sở chỉ huy mới, đại tá. Cà phê thì dở tệ. || It holds. Welcome to your new HQ, Colonel. The coffee is terrible.
+defeat | mai | 1 | Tiền đồn sập. Tôi sẽ tìm chỗ khác, nhưng ta mất cả một buổi sáng. || The outpost is down. I will find another spot, but we lost a whole morning.
+
+@c1m05 main=mai
+time@3 | linh | 2 | Mục tiêu lớn đang tiến về trại. Đó là nguyên mẫu của Brandt, đi trong đêm. || Large contact moving on the camp. Brandt's prototype, coming in the dark.
+boss_spawn | mai | 1 | Bastion Mk.0. Chậm, giáp mỏng ở hông, tháp pháo quay không kịp. Đánh vào hai bên sườn. || Bastion Mk.0. Slow, thin at the flanks, its turret cannot keep up. Hit the sides.
+time@30 | brandt | 2 | Lữ đoàn đổ bộ. Các anh dựng lều, tôi dựng tường. Xem cái nào đứng lâu hơn. || Landing brigade. You pitch tents, I build walls. We shall see which stands longer.
+boss_part_destroyed | mai | 2 | Một khẩu phụ đã câm. Nguyên mẫu nên chưa có giáp dự phòng, tận dụng đi. || One side gun is silent. A prototype has no spare armour; use it.
+boss_hp:75 | khai | 4 | Nó vẫn đi tới. Cứ để nó đi, rồi đánh vào sườn. || It keeps coming. Let it come, then take the flank.
+boss_phase_change | mai | 1 | Nó dừng lại để bắn tầm xa. Đó là lúc nó yếu nhất, áp sát ngay! || It has stopped to fire long. That is when it is weakest, close in now!
+boss_hp:50 | dieuhau | 4 | Một nửa rồi! Tháp pháo của nó đang khói, tôi thấy từ trên này. || Half gone! Its turret is smoking, I can see it from up here.
+superweapon_warning | mai | 1 | Nó nạp loạt pháo lớn. Rời khỏi vòng đỏ, đừng ai đứng trong đó! || It is loading a full salvo. Out of the red ring, nobody stays inside!
+hq_below_50 | mai | 2 | Trại đang bị nã. Kéo nó ra xa khỏi lều trước khi nó san phẳng mọi thứ. || The camp is taking hits. Draw it off before it flattens the tents.
+boss_hp:25 | linh | 4 | Động cơ nó đang hỏng, tốc độ giảm một phần ba. Gần xong rồi. || Its engine is failing, a third slower. Nearly done.
+victory | khai | 1 | Nếu đó là nguyên mẫu, thì Bastion thật sẽ còn tệ hơn. || If that was the prototype, the real Bastion will be worse.
+victory | mai | 1 | Brandt dựng nó vội. Ai đó dạy ông ta cách làm, và người đó giỏi hơn nhiều. || Brandt built it in a hurry. Someone taught him how, someone far better at it.
+defeat | khai | 1 | Lùi khỏi trại. Để nó nghiền lều, đừng để nó nghiền lính. || Pull out of the camp. Let it crush the tents, not the soldiers.
+
+@c1m06 main=khai
+mission_start | khai | 1 | Đoàn xe chỉ chạy khi các cậu chạy. Năm xe, cần ít nhất ba tới trang trại phía tây. || The trucks move when you move. Five of them, at least three to the west farm.
+time@60 | linh | 2 | Có toán cướp trên đường phía bắc. Chúng nhắm vào xe tải, không nhắm vào các anh. || Raiders on the north road. They want the trucks, not you.
+objective_progress:1/3 | hq | 2 | Xe đầu tiên đã tới trang trại. Nhiên liệu đang được dỡ xuống. || First truck at the farm. Fuel is coming off.
+event_triggered | linh | 2 | Pháo địch đang dò đường. Cho đoàn xe tách ra, đừng chạy sát nhau. || Enemy guns are ranging the road. Spread the trucks, no nose to tail.
+critical_failure_imminent | khai | 1 | Chỉ còn đủ xe vừa đúng số cần. Mất thêm một chiếc là hỏng việc. || We have exactly the trucks we need. Lose one more and it is over.
+victory | khai | 1 | Xe đã tới. Đơn vị tiền phương có xăng và đạn cho một tuần. || The trucks made it. The forward units have fuel and shells for a week.
+defeat | khai | 1 | Không đủ xe tới nơi. Tiền phương sẽ phải nhịn đạn. || Not enough trucks got through. The front goes short on shells.
+
+@c1m08 main=linh
+mission_start | linh | 1 | Pháo đài canh con đường này. Chiếm thị trấn và hai kho nhiên liệu là nó chẳng canh được gì. || The fortress watches this road. Take the town and both depots and it watches nothing.
+point_lost | linh | 3 | Chúng chiếm lại một kho. Chúng cần chỗ nhiên liệu đó hơn ta tưởng. || They retook a depot. They need that fuel more than we thought.
+general_tactic_change | linh | 3 | Brandt vừa đổi cách đánh: ông ta rút về giữ quanh kho, không ra đón nữa. || Brandt has changed his plan: he is holding round the depots, not coming out.
+objective_progress:2/3 | dieuhau | 2 | Hai trên ba! Từ trên này tôi thấy tường pháo đài, khói bếp vẫn bốc lên. || Two of three! I can see the fortress walls from here, cookfires still going.
+momentum_high_once | linh | 4 | Tôi đếm được mười hai xe địch rút về. Ghi lại: Brandt không thích thua ngoài đồng. || Twelve enemy vehicles falling back. Noted: Brandt dislikes losing in the open.
+victory | khai | 1 | Đường đã cắt. Pháo đài giờ chỉ còn tường và những gì nó đang có. || The road is cut. The fortress has its walls and whatever it holds now.
+defeat | linh | 1 | Chúng vẫn giữ đường tiếp tế. Pháo đài sẽ đầy kho trước khi ta quay lại. || They still hold the supply road. The fortress will be full when we come back.
+
+@c1m09 main=khai
+mission_start | khai | 1 | Không có đạn thì không có vây hãm. Giữ đoàn xe chạy theo đường phía đông. || No shells, no siege. Keep the trucks rolling on the east road.
+first_unit_type_seen | dieuhau | 2 | Máy bay cường kích từ hướng biển! Phòng không đi kèm đoàn xe, ngay! || Strike jets coming off the sea! Anti-air with the convoy, now!
+objective_progress:1/2 | hq | 2 | Nửa số đạn đã tới thị trấn. Các khẩu pháo đang được đào hầm. || Half the shells are in town. The guns are being dug in.
+event_triggered | linh | 2 | Sương biển đang tràn vào. Xe tải đi chậm lại, nhưng địch cũng mù như ta. || Sea fog rolling in. The trucks slow down, but they are as blind as we are.
+critical_failure_imminent | khai | 1 | Thêm một xe cháy là pháo không đủ đạn. Bọc chặt chiếc cuối. || One more truck burns and the guns go short. Wrap that last one tight.
+victory | khai | 1 | Pháo có đạn. Ngày mai ta gõ cửa Ashfield. || The guns are fed. Tomorrow we knock on Ashfield's door.
+defeat | khai | 1 | Đạn không tới. Ta sẽ phải vây pháo đài bằng những gì còn lại. || The shells did not arrive. We besiege the fortress with what we have left.
+
+@c1m10 main=khai
+mission_start | khai | 1 | Ta đổ bộ vì nơi này. Hôm nay pháo đài Ashfield phải đổ. || This is what we landed for. The Ashfield fortress falls today.
+time@25 | brandt | 2 | Tường này đã đứng ba mươi năm, đại tá. Nó sẽ đứng thêm một ngày nữa. || These walls have stood thirty years, Colonel. They will stand one more day.
+phase_start:2 | khai | 1 | Kho nhiên liệu đã cháy. Giờ chọn cách làm mềm bức tường, mỗi cách đều có giá. || The depot is burning. Now choose how to soften the walls; each way has a price.
+phase_start:3 | brandt | 1 | Các anh vào được sân. Rồi sao? Sân là nơi Bastion đi dạo. || You are in the yard. And then? The yard is where my Bastion walks.
+boss_spawn | mai | 1 | Bastion bản thật. Giáp dày gấp đôi Mk.0, nhưng vẫn quay chậm. Vẫn là hai bên sườn. || The real Bastion. Twice the Mk.0's armour, still slow to turn. Still the flanks.
+boss_part_destroyed | mai | 2 | Một tháp phụ đã gãy. Tôi đã nói mà, ai đó dạy Brandt, nhưng dạy chưa hết. || A side turret is off. Someone taught Brandt, but not everything.
+superweapon_warning | mai | 1 | Nó chuẩn bị nã cả dàn. Ra khỏi vùng đánh dấu ngay, không ai đứng xem! || It is about to fire everything. Out of the marked ground, nobody stays to watch!
+boss_hp:25 | dieuhau | 4 | Bastion đang bốc cháy từ trong ra! Một loạt nữa thôi! || The Bastion is burning from the inside! One more volley!
+phase_start:5 | linh | 1 | Bastion đổ. Brandt đang gọi tất cả về giữ sở chỉ huy, trụ thêm một lúc. || The Bastion is down. Brandt is pulling everyone to the HQ; hold a little longer.
+hq_below_50 | mai | 2 | Trại của ta cũng đang ăn đạn. Đừng để bị kéo ngược về. || Our camp is taking fire too. Do not get dragged back.
+phase_start:6 | khai | 1 | Giờ là sở chỉ huy. San phẳng nó, rồi ta nói chuyện với Brandt. || Now the HQ. Level it, then we talk to Brandt.
+victory | brandt | 1 | Đủ rồi. Tường là của các anh, đại tá. Lính của tôi đi ra còn sống. || Enough. The walls are yours, Colonel. My men walk out alive.
+victory | khai | 1 | Một bãi biển, một pháo đài. Còn cả một vùng duyên hải phía trước. || One beach, one fortress. A whole coast still to go.
+defeat | khai | 1 | Rút khỏi tường. Brandt có thêm một đêm, ta có thêm một bài học. || Off the walls. Brandt gets another night, and we get another lesson.
+
+@c1s1 main=linh
+mission_start | linh | 1 | Ba trang trại, ba lần nhìn. Không ai nổ súng nếu không buộc phải. || Three farms, three looks. Nobody shoots unless they must.
+point_captured | linh | 3 | Vết xích mới trên bùn, bản rộng. Thứ gì đó nặng hơn xe tăng thường đã qua đây. || Fresh tracks in the mud, wide ones. Something heavier than a tank came through.
+objective_progress:last | linh | 2 | Còn một trang trại. Trên cửa kho có vẽ một chữ: Behemoth. Tôi chưa biết nghĩa. || One farm left. Someone painted a word on the barn door: Behemoth. I do not know it yet.
+victory | linh | 1 | Đủ rồi. Thứ đó chưa ở đây, nhưng có người đang chuẩn bị chỗ cho nó. || That is enough. It is not here yet, but someone is making room for it.
+defeat | linh | 1 | Ta không thấy được gì. Ta mù thêm một ngày. || We saw nothing. Blind for another day.

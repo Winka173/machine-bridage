@@ -1,0 +1,1367 @@
+{
+"chapter": 8,
+"missions": {
+"c8m01": {
+"main": "khai"
+},
+"c8m02": {
+"main": "mai"
+},
+"c8m03": {
+"main": "linh"
+},
+"c8m11": {
+"main": "varro"
+},
+"c8m04": {
+"main": "khai"
+},
+"c8m05": {
+"main": "mai"
+},
+"c8m06": {
+"main": "khai"
+},
+"c8m12": {
+"main": "quist"
+},
+"c8m07": {
+"main": "linh"
+},
+"c8m08": {
+"main": "linh"
+},
+"c8m09": {
+"main": "khai"
+},
+"c8m13": {
+"main": "varro"
+},
+"c8m14": {
+"main": "khai"
+},
+"c8m10": {
+"main": "khai"
+},
+"c8s1": {
+"main": "linh"
+},
+"c8s2": {
+"main": "dieuhau"
+}
+},
+"lines": [
+{
+"mission": "c8m01",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m01.01",
+"en": "He ran north. We follow.",
+"vi": "Ông ta chạy về phía bắc. Ta đuổi theo."
+},
+{
+"mission": "c8m01",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m01.02",
+"en": "Thorne's tracks lead into the canyon. They went in a hurry, leaving broken vehicles.",
+"vi": "Dấu xích của quân Thorne đi vào hẻm núi. Họ đi vội, bỏ lại cả xe hỏng.",
+"at": 20.0
+},
+{
+"mission": "c8m01",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c8m01.03",
+"en": "One crossing is ours. Their broken trucks carry antennas, not shells.",
+"vi": "Một ngã qua hẻm là của ta. Xe hỏng của họ chở toàn ăng-ten, không chở đạn."
+},
+{
+"mission": "c8m01",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c8m01.04",
+"en": "They took a crossing back. Thorne knows this country; slow down.",
+"vi": "Chúng lấy lại một ngã. Thorne biết vùng này, đi chậm lại."
+},
+{
+"mission": "c8m01",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c8m01.05",
+"en": "One crossing left. Past it, we are in the mining country.",
+"vi": "Còn một ngã. Qua được là vào vùng mỏ.",
+"arg": "last"
+},
+{
+"mission": "c8m01",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m01.06",
+"en": "The canyon is open. The mines are ahead, and he is in them.",
+"vi": "Hẻm núi đã thông. Vùng mỏ ở phía trước, và ông ta ở trong đó."
+},
+{
+"mission": "c8m01",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m01.07",
+"en": "Go home, Marcus. There is nothing here for your lads.",
+"vi": "Về đi, Marcus. Ở đây chẳng có gì cho các con cả."
+},
+{
+"mission": "c8m02",
+"trigger": "mission_start",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c8m02.01",
+"en": "No ore, no new tanks for him. Hold it.",
+"vi": "Không có quặng thì ông ta không đóng được xe mới. Giữ nó."
+},
+{
+"mission": "c8m02",
+"trigger": "time",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c8m02.02",
+"en": "This depot holds ten times what a fleeing army needs. What is he building?",
+"vi": "Kho quặng này lớn gấp mười lần nhu cầu của một đạo quân đang chạy trốn. Ông ta đóng gì vậy?",
+"at": 40.0
+},
+{
+"mission": "c8m02",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m02.03",
+"en": "The ground is shaking. Something big is digging under us.",
+"vi": "Mặt đất đang rung. Có thứ gì đó lớn đang đào dưới chân ta."
+},
+{
+"mission": "c8m02",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c8m02.04",
+"en": "Midnight. Stay round the depot; keep off the pit edge.",
+"vi": "Nửa đêm. Giữ quanh kho, đừng ra mép hố.",
+"arg": "1/2"
+},
+{
+"mission": "c8m02",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m02.05",
+"en": "One minute to dawn. The last wave will be the heaviest.",
+"vi": "Một phút tới bình minh. Đợt cuối sẽ là đợt nặng nhất."
+},
+{
+"mission": "c8m02",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c8m02.06",
+"en": "Morning. The depot is ours, and three thousand tonnes he had no use for.",
+"vi": "Sáng rồi. Kho quặng là của ta, cùng với ba nghìn tấn ông ta không cần tới."
+},
+{
+"mission": "c8m02",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m02.07",
+"en": "Ore goes to those who need it most, Colonel. Today, that is me.",
+"vi": "Quặng thuộc về những người cần nó nhất, đại tá. Hôm nay là ta."
+},
+{
+"mission": "c8m03",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m03.01",
+"en": "Three batteries, marked. They know our tricks. They fought beside us.",
+"vi": "Ba khẩu đội, đã đánh dấu. Họ biết các mẹo của ta. Họ từng đánh cùng ta."
+},
+{
+"mission": "c8m03",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c8m03.02",
+"en": "Thorne has switched to hit and run. Exactly as he taught his own men last year.",
+"vi": "Thorne đổi sang đánh rồi chạy. Đúng cách ông ta dạy quân của ông ta năm ngoái."
+},
+{
+"mission": "c8m03",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m03.03",
+"en": "One battery down. Its crew surrendered, still in Accord uniform.",
+"vi": "Một khẩu đã gục. Lính của nó đầu hàng, họ mặc quân phục Accord.",
+"arg": "1/3"
+},
+{
+"mission": "c8m03",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c8m03.04",
+"en": "Sandstorm. Their guns are blind, so are our vehicles.",
+"vi": "Bão cát. Pháo của họ mù, xe của ta cũng vậy."
+},
+{
+"mission": "c8m03",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m03.05",
+"en": "The SAM launcher left. It stands still to fire. That is the window.",
+"vi": "Còn khẩu tên lửa phòng không. Nó đứng yên khi bắn. Đó là cửa sổ.",
+"arg": "last"
+},
+{
+"mission": "c8m03",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m03.06",
+"en": "All three crossed out. The mine road is open.",
+"vi": "Ba khẩu đã gạch. Con đường mỏ thông rồi."
+},
+{
+"mission": "c8m03",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m03.07",
+"en": "They slipped into the storm. They know how to dodge us. We taught them.",
+"vi": "Họ thoát vào bão. Họ biết cách tránh ta. Chính ta đã dạy họ."
+},
+{
+"mission": "c8m11",
+"trigger": "mission_start",
+"speaker": "varro",
+"priority": 1,
+"once": true,
+"key": "script.c8m11.01",
+"en": "Tide here. Every truck in the valley is with you, Colonel.",
+"vi": "Tide đây. Mọi xe tải trong thung lũng đều theo các anh, đại tá."
+},
+{
+"mission": "c8m11",
+"trigger": "time",
+"speaker": "varro",
+"priority": 2,
+"once": true,
+"key": "script.c8m11.02",
+"en": "This truck runs on waste oil and spite. It is enough.",
+"vi": "Xe này chạy bằng dầu thải và lòng hận. Đủ dùng.",
+"at": 20.0
+},
+{
+"mission": "c8m11",
+"trigger": "point_captured",
+"speaker": "varro",
+"priority": 3,
+"once": true,
+"key": "script.c8m11.03",
+"en": "The crusher is ours! Twenty years I worked here, first time I hear it silent.",
+"vi": "Máy nghiền là của ta! Hai mươi năm tôi làm ở đây, giờ mới thấy nó im."
+},
+{
+"mission": "c8m11",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m11.04",
+"en": "A new antenna mast on the pit floor. It points straight up, not at us.",
+"vi": "Có một cột ăng-ten mới trên đáy hố. Nó chĩa thẳng lên trời, không chĩa về phía ta."
+},
+{
+"mission": "c8m11",
+"trigger": "objective_progress",
+"speaker": "varro",
+"priority": 2,
+"once": true,
+"key": "script.c8m11.05",
+"en": "The ore loadout left. Stick to the haul road; I know every bend.",
+"vi": "Còn bến xuất quặng. Bám vào đường vận chuyển, tôi biết từng khúc cua.",
+"arg": "last"
+},
+{
+"mission": "c8m11",
+"trigger": "victory",
+"speaker": "varro",
+"priority": 1,
+"once": true,
+"key": "script.c8m11.06",
+"en": "Nobody holds a mine against the people who dug it.",
+"vi": "Không ai giữ được mỏ trước những người đã đào nó."
+},
+{
+"mission": "c8m11",
+"trigger": "defeat",
+"speaker": "varro",
+"priority": 1,
+"once": true,
+"key": "script.c8m11.07",
+"en": "Back to the village. Miners know how to wait. We have waited twenty years.",
+"vi": "Lùi về làng. Thợ mỏ biết chờ. Chúng tôi đã chờ hai mươi năm."
+},
+{
+"mission": "c8m04",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m04.01",
+"en": "They rose for us. We go for them.",
+"vi": "Họ đứng lên vì ta. Ta tới vì họ."
+},
+{
+"mission": "c8m04",
+"trigger": "time",
+"speaker": "varro",
+"priority": 2,
+"once": true,
+"key": "script.c8m04.02",
+"en": "Six vehicles round the mine town, marked. My people hold the church.",
+"vi": "Thị trấn mỏ có sáu xe vây quanh, đã đánh dấu. Người của tôi giữ nhà thờ.",
+"at": 15.0
+},
+{
+"mission": "c8m04",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c8m04.03",
+"en": "The ring is broken. Protect the people inside first, then chase.",
+"vi": "Vòng vây thủng. Bảo vệ những người trong thị trấn trước, rồi mới đuổi.",
+"arg": "1/2"
+},
+{
+"mission": "c8m04",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c8m04.04",
+"en": "The sandstorm is clearing. Both sides will see each other; careful in the open.",
+"vi": "Bão cát đang tan. Hai bên sẽ thấy nhau rõ, cẩn thận ở chỗ trống."
+},
+{
+"mission": "c8m04",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m04.05",
+"en": "The miners' HQ is about to fall. Every gun on whatever is shelling it.",
+"vi": "Sở chỉ huy của thợ mỏ sắp đổ. Mọi khẩu vào xe đang nã nó."
+},
+{
+"mission": "c8m04",
+"trigger": "victory",
+"speaker": "varro",
+"priority": 1,
+"once": true,
+"key": "script.c8m04.06",
+"en": "The town is free. Tonight we drink; tomorrow we ride with you.",
+"vi": "Thị trấn tự do. Đêm nay chúng tôi uống mừng, sáng mai chúng tôi đi cùng các anh."
+},
+{
+"mission": "c8m04",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m04.07",
+"en": "The town has fallen. Get the people out of the shafts before they seal them.",
+"vi": "Thị trấn thất thủ. Đưa người ra khỏi hầm mỏ trước khi chúng phong tỏa nó."
+},
+{
+"mission": "c8m05",
+"trigger": "mission_start",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m05.01",
+"en": "You will not see it coming, Kade.",
+"vi": "Các con sẽ không thấy nó tới đâu, Kade."
+},
+{
+"mission": "c8m05",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c8m05.02",
+"en": "Tartarus, Varga's old tunnelling machine. A huge drill, and only thin plate behind it.",
+"vi": "Tartarus, máy đào hầm cũ của Varga. Mũi khoan khổng lồ, nhưng phía sau chỉ có tấm giáp mỏng."
+},
+{
+"mission": "c8m05",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m05.03",
+"en": "It is boring towards the power station under the dam. Hit it when it surfaces.",
+"vi": "Nó đang đào về phía trạm phát điện dưới đập. Đánh nó khi nó trồi lên.",
+"at": 40.0
+},
+{
+"mission": "c8m05",
+"trigger": "boss_phase_change",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c8m05.04",
+"en": "It is surfacing to turn. Its tail is out; hit it now!",
+"vi": "Nó trồi lên để đổi hướng. Đuôi nó lộ ra, đánh ngay!"
+},
+{
+"mission": "c8m05",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c8m05.05",
+"en": "A drill coolant pack is gone. It will overheat as it digs.",
+"vi": "Một bộ phận làm mát mũi khoan đã vỡ. Nó sẽ nóng lên khi đào."
+},
+{
+"mission": "c8m05",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m05.06",
+"en": "It is halfway to the power station. Two more surfacings.",
+"vi": "Nó đã đi nửa đường tới trạm điện. Còn hai lần trồi lên.",
+"arg": "1/2"
+},
+{
+"mission": "c8m05",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c8m05.07",
+"en": "It is about to surface right under us. Out of the red; the ground will collapse!",
+"vi": "Nó sắp trồi lên ngay dưới ta. Rời khỏi vùng đỏ, mặt đất sẽ sụt!"
+},
+{
+"mission": "c8m05",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c8m05.08",
+"en": "Rain is soaking the ground. Its tunnel will weaken.",
+"vi": "Mưa đang thấm vào đất. Đường hầm của nó sẽ yếu đi."
+},
+{
+"mission": "c8m05",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c8m05.09",
+"en": "Half! Dust pouring out of every vent!",
+"vi": "Một nửa! Bụi bốc lên từ mọi lỗ thông hơi!",
+"arg": "50"
+},
+{
+"mission": "c8m05",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c8m05.10",
+"en": "It is slowing. Keep the pressure; it does not reach the station.",
+"vi": "Nó đang chậm lại. Giữ áp lực, đừng để nó tới trạm.",
+"arg": "25"
+},
+{
+"mission": "c8m05",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m05.11",
+"en": "It is almost at the power station. Everything where it surfaces next.",
+"vi": "Nó sắp tới trạm điện. Dồn tất cả vào chỗ nó trồi lên tiếp theo."
+},
+{
+"mission": "c8m05",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c8m05.12",
+"en": "Tartarus is stuck in its own tunnel.",
+"vi": "Tartarus kẹt trong chính đường hầm của nó."
+},
+{
+"mission": "c8m05",
+"trigger": "victory",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m05.13",
+"en": "No matter. I will not need that dam for long.",
+"vi": "Không sao. Ta không cần cái đập đó lâu đâu."
+},
+{
+"mission": "c8m05",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m05.14",
+"en": "The power station is mine. What I am waiting for needs a great deal of power, Marcus.",
+"vi": "Trạm điện là của ta. Thứ ta đang đợi cần rất nhiều điện, Marcus."
+},
+{
+"mission": "c8m06",
+"trigger": "mission_start",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m06.01",
+"en": "The mountain is mine, Kade. Every tunnel.",
+"vi": "Ngọn núi này là của ta, Kade. Từng đường hầm một."
+},
+{
+"mission": "c8m06",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m06.02",
+"en": "Hold the tunnel mouth till morning. Nobody comes out of the mountain this way.",
+"vi": "Giữ cửa hầm tới sáng. Không ai ra khỏi núi bằng đường này."
+},
+{
+"mission": "c8m06",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c8m06.03",
+"en": "The relief column is coming up from the south. Hold a little longer.",
+"vi": "Đoàn cứu viện đang lên từ phía nam. Giữ thêm ít nữa."
+},
+{
+"mission": "c8m06",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c8m06.04",
+"en": "Midnight. They come out in small groups; count every vehicle.",
+"vi": "Nửa đêm. Họ ra theo từng nhóm nhỏ, đếm từng xe.",
+"arg": "1/2"
+},
+{
+"mission": "c8m06",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c8m06.05",
+"en": "The tunnel mouth is lost. Push them back in, now.",
+"vi": "Mất cửa hầm. Đẩy chúng trở lại, ngay."
+},
+{
+"mission": "c8m06",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m06.06",
+"en": "The tunnel mouth is shut. He has to find another way.",
+"vi": "Cửa hầm đã đóng. Ông ta phải tìm đường khác."
+},
+{
+"mission": "c8m06",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m06.07",
+"en": "A tunnel always has a way out, Marcus. You only have to wait.",
+"vi": "Đường hầm thì luôn có lối ra, Marcus. Chỉ cần biết chờ."
+},
+{
+"mission": "c8m12",
+"trigger": "mission_start",
+"speaker": "quist",
+"priority": 1,
+"once": true,
+"key": "script.c8m12.01",
+"en": "Three depots, all unguarded. My favourite kind.",
+"vi": "Ba kho, không ai canh. Loại tôi thích nhất."
+},
+{
+"mission": "c8m12",
+"trigger": "point_captured",
+"speaker": "quist",
+"priority": 3,
+"once": true,
+"key": "script.c8m12.02",
+"en": "First depot: new engines, still greased. It is not theft, Colonel. It is recovery.",
+"vi": "Kho thứ nhất: động cơ mới, còn nguyên dầu. Đây không phải trộm, đại tá. Đây là thu hồi."
+},
+{
+"mission": "c8m12",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m12.03",
+"en": "Long-range radio crates in the depot. Not the kind used to call in guns.",
+"vi": "Có thùng thiết bị liên lạc đường dài trong kho. Loại này không dùng để gọi pháo."
+},
+{
+"mission": "c8m12",
+"trigger": "objective_progress",
+"speaker": "quist",
+"priority": 2,
+"once": true,
+"key": "script.c8m12.04",
+"en": "One depot left. I have cleared space on the truck for something heavy.",
+"vi": "Còn một kho. Tôi đã dọn chỗ trên xe cho thứ gì đó nặng.",
+"arg": "last"
+},
+{
+"mission": "c8m12",
+"trigger": "victory",
+"speaker": "quist",
+"priority": 1,
+"once": true,
+"key": "script.c8m12.05",
+"en": "Engines, shells, and a map of Thorne's bunker. And a coffee machine.",
+"vi": "Động cơ, đạn, và bản đồ hầm ngầm của Thorne. Với một cái máy pha cà phê."
+},
+{
+"mission": "c8m12",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c8m12.06",
+"en": "A fortress under the pit. A year of food. He is waiting for something.",
+"vi": "Một pháo đài dưới đáy hố. Đủ lương thực cho một năm. Ông ta đang chờ thứ gì đó."
+},
+{
+"mission": "c8m12",
+"trigger": "defeat",
+"speaker": "quist",
+"priority": 1,
+"once": true,
+"key": "script.c8m12.07",
+"en": "They came back for the goods first. Heartbreaking.",
+"vi": "Họ quay lại lấy hàng trước ta. Đau lòng thật."
+},
+{
+"mission": "c8m07",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m07.01",
+"en": "An armoured haul truck is coming down the haul road. Wheels taller than a tank.",
+"vi": "Một xe chở quặng bọc thép đang lao xuống đường vận chuyển. Bánh cao hơn xe tăng."
+},
+{
+"mission": "c8m07",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c8m07.02",
+"en": "Ixion. Break a wheel and it loses its line. It cannot brake in time.",
+"vi": "Ixion. Bẻ một bánh là nó mất hướng. Nó không phanh kịp đâu."
+},
+{
+"mission": "c8m07",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m07.03",
+"en": "A raiding party is going for our ammunition trucks. Ixion is only the screen.",
+"vi": "Một đội đánh phá nhắm vào xe đạn của ta. Ixion chỉ là màn che."
+},
+{
+"mission": "c8m07",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c8m07.04",
+"en": "A wheel has blown! It is sliding towards the edge.",
+"vi": "Một bánh đã nổ! Nó đang trượt về phía mép đường."
+},
+{
+"mission": "c8m07",
+"trigger": "boss_phase_change",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m07.05",
+"en": "It is turning uphill for another run. Get off its straight line!",
+"vi": "Nó quay đầu lên dốc để lấy đà lần nữa. Đứng ra khỏi đường thẳng!"
+},
+{
+"mission": "c8m07",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c8m07.06",
+"en": "It is about to ram straight through the column. Out of the red, now!",
+"vi": "Nó sắp húc thẳng vào đoàn xe. Rời khỏi vùng đỏ, ngay!"
+},
+{
+"mission": "c8m07",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c8m07.07",
+"en": "Hitting its front wheels. Everyone off the road!",
+"vi": "Tôi đánh vào bánh trước của nó. Mọi người tránh xa đường!"
+},
+{
+"mission": "c8m07",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c8m07.08",
+"en": "Half. Let it run itself down; we only need to stay out of its way.",
+"vi": "Một nửa. Để nó tự lao xuống, ta chỉ cần không đứng trước nó.",
+"arg": "50"
+},
+{
+"mission": "c8m07",
+"trigger": "boss_hp",
+"speaker": "quist",
+"priority": 4,
+"once": true,
+"key": "script.c8m07.09",
+"en": "Its tyres would make ten boats if we could bring them home. Just saying.",
+"vi": "Lốp của nó mà mang về được thì đủ làm mười cái xuồng. Chỉ nói vậy thôi.",
+"arg": "25"
+},
+{
+"mission": "c8m07",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c8m07.10",
+"en": "It dented a corner of the HQ. I can fix it if it does not come back.",
+"vi": "Sở chỉ huy bị húc móp một góc. Tôi sửa được nếu nó không quay lại."
+},
+{
+"mission": "c8m07",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m07.11",
+"en": "Ixion is at the bottom of the pit. The haul road is ours.",
+"vi": "Ixion nằm dưới đáy hố. Đường vận chuyển là của ta."
+},
+{
+"mission": "c8m07",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m07.12",
+"en": "It has broken through the column. Up to high ground.",
+"vi": "Nó đã đâm xuyên qua cột xe. Rút về chỗ cao."
+},
+{
+"mission": "c8m08",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m08.01",
+"en": "Look, do not linger. Three spots on the dam.",
+"vi": "Nhìn rồi đi, đừng dừng lại. Ba điểm trên đập."
+},
+{
+"mission": "c8m08",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c8m08.02",
+"en": "First spot: a big dish antenna, pointing at the sky, not yet wired in.",
+"vi": "Điểm thứ nhất: một chảo ăng-ten lớn, quay lên trời, chưa nối điện."
+},
+{
+"mission": "c8m08",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m08.03",
+"en": "Their guns are tracking us. They do not want us looking here.",
+"vi": "Pháo của họ bắt đầu bắn theo. Họ không muốn ta nhìn chỗ này."
+},
+{
+"mission": "c8m08",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m08.04",
+"en": "One spot left. A new concrete works: no windows, no way out.",
+"vi": "Còn một điểm. Có một công trình bê tông mới, không cửa sổ, không lối thoát.",
+"arg": "last"
+},
+{
+"mission": "c8m08",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m08.05",
+"en": "Photographs of all three. None is an escape route. All of them look at the sky.",
+"vi": "Tôi có ảnh của cả ba. Không cái nào là đường thoát thân. Tất cả đều quay lên trời."
+},
+{
+"mission": "c8m08",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m08.06",
+"en": "We only saw half. The other half is still in the storm.",
+"vi": "Ta chỉ thấy được một nửa. Nửa còn lại vẫn trong sương và bóng tối."
+},
+{
+"mission": "c8m09",
+"trigger": "mission_start",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m09.01",
+"en": "I earned this country before you were a colonel.",
+"vi": "Ta đã giành mảnh đất này từ khi các con còn chưa là đại tá."
+},
+{
+"mission": "c8m09",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m09.02",
+"en": "And you sold it. Level the HQ.",
+"vi": "Và ông đã bán nó. San phẳng sở chỉ huy."
+},
+{
+"mission": "c8m09",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c8m09.03",
+"en": "Thorne has gone to encirclement. He always liked the left hook.",
+"vi": "Thorne đổi sang bao vây. Ông ta luôn thích vòng sườn trái."
+},
+{
+"mission": "c8m09",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c8m09.04",
+"en": "A heavy lost on the left. He knows where we go; change the route.",
+"vi": "Mất xe nặng ở sườn trái. Ông ta biết ta sẽ đi đâu, đổi đường."
+},
+{
+"mission": "c8m09",
+"trigger": "time",
+"speaker": "hung",
+"priority": 2,
+"once": true,
+"key": "script.c8m09.05",
+"en": "You fight well, lads. I taught you that, remember?",
+"vi": "Các con chiến đấu giỏi. Ta đã dạy các con điều đó, nhớ không?",
+"at": 200.0
+},
+{
+"mission": "c8m09",
+"trigger": "victory",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m09.06",
+"en": "Withdraw. I do not need this camp. I only need a little more time.",
+"vi": "Rút. Ta không cần cái trại này. Ta chỉ cần thêm chút thời gian."
+},
+{
+"mission": "c8m09",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m09.07",
+"en": "He is running again. He is not losing; he is buying time. Note it.",
+"vi": "Ông ta lại chạy. Ông ta không thua, ông ta câu giờ. Ghi lại."
+},
+{
+"mission": "c8m09",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m09.08",
+"en": "Tired, Marcus. So am I. Go and rest.",
+"vi": "Mệt rồi, Marcus. Ta cũng vậy. Về nghỉ đi."
+},
+{
+"mission": "c8m13",
+"trigger": "mission_start",
+"speaker": "varro",
+"priority": 1,
+"once": true,
+"key": "script.c8m13.01",
+"en": "My brother is in the east camp. Get him out, Colonel, and my people will follow you.",
+"vi": "Em trai tôi ở trại phía đông. Đưa nó ra, đại tá, và người của tôi sẽ theo ông."
+},
+{
+"mission": "c8m13",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m13.02",
+"en": "Three hundred miners in three camps. Thorne has them digging for a machine called Kronos.",
+"vi": "Ba trăm thợ mỏ trong ba trại. Thorne bắt họ đào cho một cỗ máy tên là Kronos.",
+"at": 20.0
+},
+{
+"mission": "c8m13",
+"trigger": "point_captured",
+"speaker": "varro",
+"priority": 3,
+"once": true,
+"key": "script.c8m13.03",
+"en": "One camp is open! They are running out, some still holding picks.",
+"vi": "Một trại đã mở! Họ đang chạy ra, có người còn cầm cuốc."
+},
+{
+"mission": "c8m13",
+"trigger": "event_triggered",
+"speaker": "varro",
+"priority": 2,
+"once": true,
+"key": "script.c8m13.04",
+"en": "The guards are herding miners into the shafts. Do not fire at the shaft doors!",
+"vi": "Lính gác đang dồn thợ mỏ vào hầm. Đừng bắn vào cửa hầm!"
+},
+{
+"mission": "c8m13",
+"trigger": "objective_progress",
+"speaker": "varro",
+"priority": 2,
+"once": true,
+"key": "script.c8m13.05",
+"en": "The east camp is left. My brother is there. Please.",
+"vi": "Còn trại phía đông. Em tôi ở đó. Làm ơn.",
+"arg": "last"
+},
+{
+"mission": "c8m13",
+"trigger": "victory",
+"speaker": "varro",
+"priority": 1,
+"once": true,
+"key": "script.c8m13.06",
+"en": "Every camp is open. Sixty of them want to fight. I said yes.",
+"vi": "Mọi trại đã mở. Sáu mươi người muốn chiến đấu. Tôi đã đồng ý."
+},
+{
+"mission": "c8m13",
+"trigger": "defeat",
+"speaker": "varro",
+"priority": 1,
+"once": true,
+"key": "script.c8m13.07",
+"en": "They have been driven deeper. I will come back, with the whole valley.",
+"vi": "Họ bị dồn xuống sâu hơn. Tôi sẽ quay lại, với cả thung lũng."
+},
+{
+"mission": "c8m14",
+"trigger": "mission_start",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m14.01",
+"en": "You came for the machine, not the miners. We are more alike than you think.",
+"vi": "Các con tới vì cỗ máy, không phải vì thợ mỏ. Ta với các con giống nhau hơn các con nghĩ."
+},
+{
+"mission": "c8m14",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m14.02",
+"en": "Hold the ramp five minutes. The sappers cut Kronos's power line.",
+"vi": "Giữ dốc trong năm phút. Công binh cắt đường điện của Kronos."
+},
+{
+"mission": "c8m14",
+"trigger": "time",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c8m14.03",
+"en": "This line could light a small town. Does one machine need that much?",
+"vi": "Đường điện này có thể thắp sáng một thành phố nhỏ. Một cỗ máy cần nhiều đến vậy sao?",
+"at": 30.0
+},
+{
+"mission": "c8m14",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c8m14.04",
+"en": "A counterattack from the pit floor. They know what we are cutting.",
+"vi": "Đợt phản công từ đáy hố. Họ biết ta đang cắt gì."
+},
+{
+"mission": "c8m14",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m14.05",
+"en": "One minute. The sappers are nearly through; hold tight.",
+"vi": "Một phút. Công binh gần xong, giữ thật chặt."
+},
+{
+"mission": "c8m14",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m14.06",
+"en": "Line cut. Kronos runs on its batteries now, and we have Thorne's money.",
+"vi": "Đã cắt đường dây. Kronos chạy bằng pin, và ta có tiền của Thorne."
+},
+{
+"mission": "c8m14",
+"trigger": "victory",
+"speaker": "quist",
+"priority": 1,
+"once": true,
+"key": "script.c8m14.07",
+"en": "The pay chest. A year of wages. I told you so.",
+"vi": "Hòm lương. Một năm tiền công. Tôi đã nói mà."
+},
+{
+"mission": "c8m14",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m14.08",
+"en": "The line still runs. Kronos is still awake, Marcus.",
+"vi": "Dây điện vẫn chạy. Kronos vẫn thức, Marcus."
+},
+{
+"mission": "c8m10",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m10.01",
+"en": "Into the pit, Brigade.",
+"vi": "Xuống hố, lữ đoàn."
+},
+{
+"mission": "c8m10",
+"trigger": "time",
+"speaker": "hung",
+"priority": 2,
+"once": true,
+"key": "script.c8m10.02",
+"en": "You are going down to the deepest place. I am looking at the sky. That is our difference.",
+"vi": "Các con đang xuống nơi sâu nhất. Ta thì đang nhìn lên trời. Đó là khác biệt của chúng ta.",
+"at": 20.0
+},
+{
+"mission": "c8m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m10.03",
+"en": "The rim is taken. Next blow: the works or the stores; both cost.",
+"vi": "Miệng hố đã chiếm. Chọn đòn tiếp: xưởng hay kho, cả hai đều có giá.",
+"arg": "2"
+},
+{
+"mission": "c8m10",
+"trigger": "phase_start",
+"speaker": "varro",
+"priority": 1,
+"once": true,
+"key": "script.c8m10.04",
+"en": "Blow the works at the bottom. My people will show you where to set the charges.",
+"vi": "Phá các xưởng dưới đáy. Người của tôi chỉ chỗ đặt thuốc nổ.",
+"arg": "4"
+},
+{
+"mission": "c8m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m10.05",
+"en": "Kronos is at the bottom, running on batteries thanks to the line we cut.",
+"vi": "Kronos ở đáy hố. Nó đang chạy bằng pin dự phòng, nhờ đường dây ta đã cắt.",
+"arg": "7"
+},
+{
+"mission": "c8m10",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c8m10.06",
+"en": "Kronos: a mining fortress. Battery banks on both flanks. Drain them and it stops.",
+"vi": "Kronos: pháo đài khai mỏ. Thùng pin ở hai bên sườn. Pin cạn là nó đứng yên."
+},
+{
+"mission": "c8m10",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c8m10.07",
+"en": "One battery bank is gone. It is saving power; slower fire.",
+"vi": "Một dãy pin đã vỡ. Nó chuyển sang tiết kiệm năng lượng, bắn chậm lại."
+},
+{
+"mission": "c8m10",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c8m10.08",
+"en": "It is pouring all its power into one salvo. Out of the red, now!",
+"vi": "Nó dồn hết pin cho một loạt. Ra khỏi vùng đỏ, ngay!"
+},
+{
+"mission": "c8m10",
+"trigger": "boss_hp",
+"speaker": "quist",
+"priority": 4,
+"once": true,
+"key": "script.c8m10.09",
+"en": "Half. Its batteries are worth a fortune intact. Could we shoot somewhere else?",
+"vi": "Một nửa. Pin của nó mà còn tốt thì đáng giá lắm. Bắn chỗ khác được không?",
+"arg": "50"
+},
+{
+"mission": "c8m10",
+"trigger": "boss_hp",
+"speaker": "varro",
+"priority": 4,
+"once": true,
+"key": "script.c8m10.10",
+"en": "It is winding down. My people have seen machines die. This one is dying.",
+"vi": "Nó đang tắt dần. Người của tôi đã từng thấy máy chết. Nó sắp chết.",
+"arg": "25"
+},
+{
+"mission": "c8m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m10.11",
+"en": "Kronos is down. Hold the pit floor; Thorne's men are making a last counterattack.",
+"vi": "Kronos đã gục. Giữ đáy hố, quân Thorne đang phản công lần cuối.",
+"arg": "8"
+},
+{
+"mission": "c8m10",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8m10.12",
+"en": "Thorne has reached the coast. He is heading for Kessler's old ships.",
+"vi": "Thorne đã ra tới bờ biển. Ông ta đang đi về phía những con tàu cũ của Kessler."
+},
+{
+"mission": "c8m10",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c8m10.13",
+"en": "He is not running from us. He is running towards something.",
+"vi": "Ông ta không chạy trốn ta. Ông ta đang chạy tới một thứ gì đó."
+},
+{
+"mission": "c8m10",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c8m10.14",
+"en": "This pit is deep, Marcus. Do not come down here again.",
+"vi": "Hố này sâu, Marcus. Đừng xuống đây nữa."
+},
+{
+"mission": "c8s1",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8s1.01",
+"en": "Three buildings. Quick in, quick out.",
+"vi": "Ba tòa nhà. Vào nhanh, ra nhanh."
+},
+{
+"mission": "c8s1",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c8s1.02",
+"en": "First building: old survey maps marking the firmest ground in the region.",
+"vi": "Tòa thứ nhất: bản đồ khảo sát cũ, đánh dấu những chỗ đất vững nhất trong vùng."
+},
+{
+"mission": "c8s1",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c8s1.03",
+"en": "A sandstorm is coming. Get the maps before the wind takes them.",
+"vi": "Bão cát đang tới. Lấy bản đồ trước khi gió cuốn mất."
+},
+{
+"mission": "c8s1",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8s1.04",
+"en": "Someone circled a very large flat site. There is nothing to mine there.",
+"vi": "Có người đã khoanh tròn một khu đất phẳng rất lớn. Không có gì để đào ở đó cả."
+},
+{
+"mission": "c8s1",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c8s1.05",
+"en": "The wind took the maps. We lose half the mining country.",
+"vi": "Gió đã lấy mất bản đồ. Ta mất dấu một nửa vùng mỏ."
+},
+{
+"mission": "c8s2",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c8s2.01",
+"en": "Night hunting. My favourite. Ten transports carrying his gold.",
+"vi": "Săn đêm. Loại tôi thích nhất. Mười máy bay vận tải, chở vàng của ông ta."
+},
+{
+"mission": "c8s2",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c8s2.02",
+"en": "Five! One just dumped its cargo in the desert to fly lighter.",
+"vi": "Năm chiếc! Một chiếc vừa thả hàng xuống sa mạc để bay nhẹ hơn.",
+"arg": "1/2"
+},
+{
+"mission": "c8s2",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c8s2.03",
+"en": "One left, flying very low. It thinks I cannot see it. It is wrong.",
+"vi": "Còn một chiếc, bay rất thấp. Nó nghĩ tôi không thấy nó. Nó sai.",
+"arg": "last"
+},
+{
+"mission": "c8s2",
+"trigger": "victory",
+"speaker": "quist",
+"priority": 1,
+"once": true,
+"key": "script.c8s2.04",
+"en": "Gold all over the desert. I need three trucks and a shovel.",
+"vi": "Vàng rơi đầy sa mạc. Tôi cần ba xe tải và một cái xẻng."
+},
+{
+"mission": "c8s2",
+"trigger": "defeat",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c8s2.05",
+"en": "They got away. His gold is out to sea.",
+"vi": "Chúng thoát được. Vàng của ông ta đã ra biển."
+}
+]
+}

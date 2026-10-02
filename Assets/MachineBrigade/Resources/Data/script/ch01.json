@@ -1,0 +1,871 @@
+{
+"chapter": 1,
+"missions": {
+"c1m01": {
+"main": "khai"
+},
+"c1m02": {
+"main": "linh"
+},
+"c1m03": {
+"main": "linh"
+},
+"c1m04": {
+"main": "mai"
+},
+"c1m05": {
+"main": "mai"
+},
+"c1m06": {
+"main": "khai"
+},
+"c1m08": {
+"main": "linh"
+},
+"c1m09": {
+"main": "khai"
+},
+"c1m10": {
+"main": "khai"
+},
+"c1s1": {
+"main": "linh"
+}
+},
+"lines": [
+{
+"mission": "c1m01",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m01.01",
+"en": "Brigade, off the sand first. Everything else comes later.",
+"vi": "Lữ đoàn, rời bãi cát trước. Mọi thứ khác tính sau."
+},
+{
+"mission": "c1m01",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c1m01.02",
+"en": "Two objectives: the beach exit and the town up the draw. They have not dug in yet.",
+"vi": "Hai điểm phải chiếm: lối ra bãi biển và thị trấn trên dốc. Chúng chưa kịp đào hào.",
+"at": 20.0
+},
+{
+"mission": "c1m01",
+"trigger": "point_captured",
+"speaker": "dieuhau",
+"priority": 3,
+"once": true,
+"key": "script.c1m01.03",
+"en": "Beach exit is ours! I can see the whole bay from up here.",
+"vi": "Lối ra bãi biển là của ta! Từ trên này tôi thấy cả vịnh.",
+"arg": "east"
+},
+{
+"mission": "c1m01",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c1m01.04",
+"en": "Only the town left. Brandt's sentries are falling back there, about a platoon.",
+"vi": "Còn thị trấn. Lính gác của Brandt đang kéo về đó, khoảng một trung đội.",
+"arg": "last"
+},
+{
+"mission": "c1m01",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m01.05",
+"en": "They are pushing us into the water. Hold every metre, more boats are coming.",
+"vi": "Ta đang bị đẩy xuống nước. Giữ lấy từng mét đất, tăng viện sắp tới."
+},
+{
+"mission": "c1m01",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m01.06",
+"en": "Beachhead secured. Now we find somewhere to build.",
+"vi": "Đầu cầu đã vững. Giờ ta tìm chỗ dựng nhà."
+},
+{
+"mission": "c1m01",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m01.07",
+"en": "Back to the boats. We land again after dark.",
+"vi": "Lui về tàu. Ta sẽ đổ bộ lại khi trời tối."
+},
+{
+"mission": "c1m02",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c1m02.01",
+"en": "The radar on the bluffs calls their guns onto every boat. Its crew changes on the hour.",
+"vi": "Trạm radar trên vách đá đang gọi pháo xuống từng xuồng đổ bộ. Ca trực đổi mỗi giờ."
+},
+{
+"mission": "c1m02",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c1m02.02",
+"en": "Shift change. The new crew is still warming up; we have a few blind minutes.",
+"vi": "Ca trực vừa đổi. Lính mới chưa quen máy, ta có vài phút trước khi chúng nhìn rõ.",
+"at": 40.0
+},
+{
+"mission": "c1m02",
+"trigger": "enemy_reinforcement",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c1m02.03",
+"en": "Vehicles from the town are climbing to the radar. They know what it is worth.",
+"vi": "Xe từ thị trấn đang lên dốc giữ radar. Chúng biết thứ đó đáng giá thế nào."
+},
+{
+"mission": "c1m02",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c1m02.04",
+"en": "Rain coming in off the sea. Visibility drops, for them and for us.",
+"vi": "Mưa đang tới từ biển. Tầm nhìn sẽ giảm, cả ta lẫn chúng."
+},
+{
+"mission": "c1m02",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m02.05",
+"en": "One minute until the second wave enters the bay. That radar goes quiet first.",
+"vi": "Một phút nữa đoàn xuồng thứ hai vào vịnh. Radar phải câm trước lúc đó."
+},
+{
+"mission": "c1m02",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m02.06",
+"en": "Radar down. Tell the boats to come in; nobody is watching now.",
+"vi": "Radar gục. Báo xuồng vào được rồi, không ai thấy chúng nữa."
+},
+{
+"mission": "c1m02",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c1m02.07",
+"en": "The radar still sweeps the bay. The next boats will have to go the long way.",
+"vi": "Radar vẫn quét vịnh. Đoàn xuồng sau sẽ phải đi đường vòng."
+},
+{
+"mission": "c1m03",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c1m03.01",
+"en": "Fishing village, crossroads, farm: three points, a few of Brandt's scouts at each.",
+"vi": "Làng chài, ngã tư, trang trại: ba điểm, mỗi điểm vài lính trinh sát của Brandt."
+},
+{
+"mission": "c1m03",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m03.02",
+"en": "Light resistance. Show me what this brigade does when nobody shells it from the sea.",
+"vi": "Kháng cự nhẹ. Cho tôi xem lữ đoàn làm được gì khi không bị bắn từ biển."
+},
+{
+"mission": "c1m03",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c1m03.03",
+"en": "The crossroads is ours. Every road inland runs through it now.",
+"vi": "Ngã tư là của ta. Mọi con đường vào đất liền đều đi qua đây.",
+"arg": "town"
+},
+{
+"mission": "c1m03",
+"trigger": "point_lost",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c1m03.04",
+"en": "They took one back. Brandt's scouts react faster than I expected.",
+"vi": "Chúng chiếm lại một điểm. Trinh sát của Brandt phản ứng nhanh hơn tôi tưởng."
+},
+{
+"mission": "c1m03",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c1m03.05",
+"en": "One left! I can see the farm's chimney, steer for that.",
+"vi": "Còn một điểm! Tôi thấy đường ống khói của trang trại, nhắm vào đó.",
+"arg": "last"
+},
+{
+"mission": "c1m03",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m03.06",
+"en": "The village is ours. The fishing boats can go back out.",
+"vi": "Làng là của ta. Thuyền chài ra khơi được rồi."
+},
+{
+"mission": "c1m03",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c1m03.07",
+"en": "We lost all three. Their scouts know our numbers now.",
+"vi": "Ta mất cả ba. Trinh sát của chúng giờ biết quân số của ta."
+},
+{
+"mission": "c1m04",
+"trigger": "mission_start",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c1m04.01",
+"en": "Give me that crossroads and a few quiet minutes, Colonel, and I will give you a base.",
+"vi": "Đưa tôi ngã tư đó và vài phút yên tĩnh, đại tá, tôi sẽ đưa ông một căn cứ."
+},
+{
+"mission": "c1m04",
+"trigger": "point_captured",
+"speaker": "mai",
+"priority": 3,
+"once": true,
+"key": "script.c1m04.02",
+"en": "Ground is ours. Towers coming down, keep them off my crews!",
+"vi": "Đất là của ta. Tháp đang thả xuống, giữ chúng tránh xa đội thợ của tôi!",
+"arg": "town"
+},
+{
+"mission": "c1m04",
+"trigger": "objective_progress",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c1m04.03",
+"en": "Half the towers are up. Nobody climb the north one, its bolts are still loose.",
+"vi": "Nửa số tháp đã dựng. Đừng để ai đứng lên cái tháp phía bắc, nó chưa siết bu lông.",
+"arg": "1/2"
+},
+{
+"mission": "c1m04",
+"trigger": "enemy_reinforcement",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c1m04.04",
+"en": "A counterattack from the east. They want the outpost down before it stands.",
+"vi": "Đợt phản công đang tới từ phía đông, chúng muốn phá tiền đồn trước khi nó đứng vững."
+},
+{
+"mission": "c1m04",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c1m04.05",
+"en": "The new HQ is holed. I can patch it, but someone has to hold the door.",
+"vi": "Sở chỉ huy mới đang thủng. Tôi vá được, nhưng phải có người giữ cửa."
+},
+{
+"mission": "c1m04",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c1m04.06",
+"en": "It holds. Welcome to your new HQ, Colonel. The coffee is terrible.",
+"vi": "Nó đứng vững. Chào mừng tới sở chỉ huy mới, đại tá. Cà phê thì dở tệ."
+},
+{
+"mission": "c1m04",
+"trigger": "defeat",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c1m04.07",
+"en": "The outpost is down. I will find another spot, but we lost a whole morning.",
+"vi": "Tiền đồn sập. Tôi sẽ tìm chỗ khác, nhưng ta mất cả một buổi sáng."
+},
+{
+"mission": "c1m05",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c1m05.01",
+"en": "Large contact moving on the camp. Brandt's prototype, coming in the dark.",
+"vi": "Mục tiêu lớn đang tiến về trại. Đó là nguyên mẫu của Brandt, đi trong đêm.",
+"at": 3.0
+},
+{
+"mission": "c1m05",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c1m05.02",
+"en": "Bastion Mk.0. Slow, thin at the flanks, its turret cannot keep up. Hit the sides.",
+"vi": "Bastion Mk.0. Chậm, giáp mỏng ở hông, tháp pháo quay không kịp. Đánh vào hai bên sườn."
+},
+{
+"mission": "c1m05",
+"trigger": "time",
+"speaker": "brandt",
+"priority": 2,
+"once": true,
+"key": "script.c1m05.03",
+"en": "Landing brigade. You pitch tents, I build walls. We shall see which stands longer.",
+"vi": "Lữ đoàn đổ bộ. Các anh dựng lều, tôi dựng tường. Xem cái nào đứng lâu hơn.",
+"at": 30.0
+},
+{
+"mission": "c1m05",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c1m05.04",
+"en": "One side gun is silent. A prototype has no spare armour; use it.",
+"vi": "Một khẩu phụ đã câm. Nguyên mẫu nên chưa có giáp dự phòng, tận dụng đi."
+},
+{
+"mission": "c1m05",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c1m05.05",
+"en": "It keeps coming. Let it come, then take the flank.",
+"vi": "Nó vẫn đi tới. Cứ để nó đi, rồi đánh vào sườn.",
+"arg": "75"
+},
+{
+"mission": "c1m05",
+"trigger": "boss_phase_change",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c1m05.06",
+"en": "It has stopped to fire long. That is when it is weakest, close in now!",
+"vi": "Nó dừng lại để bắn tầm xa. Đó là lúc nó yếu nhất, áp sát ngay!"
+},
+{
+"mission": "c1m05",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c1m05.07",
+"en": "Half gone! Its turret is smoking, I can see it from up here.",
+"vi": "Một nửa rồi! Tháp pháo của nó đang khói, tôi thấy từ trên này.",
+"arg": "50"
+},
+{
+"mission": "c1m05",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c1m05.08",
+"en": "It is loading a full salvo. Out of the red ring, nobody stays inside!",
+"vi": "Nó nạp loạt pháo lớn. Rời khỏi vòng đỏ, đừng ai đứng trong đó!"
+},
+{
+"mission": "c1m05",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c1m05.09",
+"en": "The camp is taking hits. Draw it off before it flattens the tents.",
+"vi": "Trại đang bị nã. Kéo nó ra xa khỏi lều trước khi nó san phẳng mọi thứ."
+},
+{
+"mission": "c1m05",
+"trigger": "boss_hp",
+"speaker": "linh",
+"priority": 4,
+"once": true,
+"key": "script.c1m05.10",
+"en": "Its engine is failing, a third slower. Nearly done.",
+"vi": "Động cơ nó đang hỏng, tốc độ giảm một phần ba. Gần xong rồi.",
+"arg": "25"
+},
+{
+"mission": "c1m05",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m05.11",
+"en": "If that was the prototype, the real Bastion will be worse.",
+"vi": "Nếu đó là nguyên mẫu, thì Bastion thật sẽ còn tệ hơn."
+},
+{
+"mission": "c1m05",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c1m05.12",
+"en": "Brandt built it in a hurry. Someone taught him how, someone far better at it.",
+"vi": "Brandt dựng nó vội. Ai đó dạy ông ta cách làm, và người đó giỏi hơn nhiều."
+},
+{
+"mission": "c1m05",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m05.13",
+"en": "Pull out of the camp. Let it crush the tents, not the soldiers.",
+"vi": "Lùi khỏi trại. Để nó nghiền lều, đừng để nó nghiền lính."
+},
+{
+"mission": "c1m06",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m06.01",
+"en": "The trucks move when you move. Five of them, at least three to the west farm.",
+"vi": "Đoàn xe chỉ chạy khi các cậu chạy. Năm xe, cần ít nhất ba tới trang trại phía tây."
+},
+{
+"mission": "c1m06",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c1m06.02",
+"en": "Raiders on the north road. They want the trucks, not you.",
+"vi": "Có toán cướp trên đường phía bắc. Chúng nhắm vào xe tải, không nhắm vào các anh.",
+"at": 60.0
+},
+{
+"mission": "c1m06",
+"trigger": "objective_progress",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c1m06.03",
+"en": "First truck at the farm. Fuel is coming off.",
+"vi": "Xe đầu tiên đã tới trang trại. Nhiên liệu đang được dỡ xuống.",
+"arg": "1/3"
+},
+{
+"mission": "c1m06",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c1m06.04",
+"en": "Enemy guns are ranging the road. Spread the trucks, no nose to tail.",
+"vi": "Pháo địch đang dò đường. Cho đoàn xe tách ra, đừng chạy sát nhau."
+},
+{
+"mission": "c1m06",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m06.05",
+"en": "We have exactly the trucks we need. Lose one more and it is over.",
+"vi": "Chỉ còn đủ xe vừa đúng số cần. Mất thêm một chiếc là hỏng việc."
+},
+{
+"mission": "c1m06",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m06.06",
+"en": "The trucks made it. The forward units have fuel and shells for a week.",
+"vi": "Xe đã tới. Đơn vị tiền phương có xăng và đạn cho một tuần."
+},
+{
+"mission": "c1m06",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m06.07",
+"en": "Not enough trucks got through. The front goes short on shells.",
+"vi": "Không đủ xe tới nơi. Tiền phương sẽ phải nhịn đạn."
+},
+{
+"mission": "c1m08",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c1m08.01",
+"en": "The fortress watches this road. Take the town and both depots and it watches nothing.",
+"vi": "Pháo đài canh con đường này. Chiếm thị trấn và hai kho nhiên liệu là nó chẳng canh được gì."
+},
+{
+"mission": "c1m08",
+"trigger": "point_lost",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c1m08.02",
+"en": "They retook a depot. They need that fuel more than we thought.",
+"vi": "Chúng chiếm lại một kho. Chúng cần chỗ nhiên liệu đó hơn ta tưởng."
+},
+{
+"mission": "c1m08",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c1m08.03",
+"en": "Brandt has changed his plan: he is holding round the depots, not coming out.",
+"vi": "Brandt vừa đổi cách đánh: ông ta rút về giữ quanh kho, không ra đón nữa."
+},
+{
+"mission": "c1m08",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c1m08.04",
+"en": "Two of three! I can see the fortress walls from here, cookfires still going.",
+"vi": "Hai trên ba! Từ trên này tôi thấy tường pháo đài, khói bếp vẫn bốc lên.",
+"arg": "2/3"
+},
+{
+"mission": "c1m08",
+"trigger": "momentum_high_once",
+"speaker": "linh",
+"priority": 4,
+"once": true,
+"key": "script.c1m08.05",
+"en": "Twelve enemy vehicles falling back. Noted: Brandt dislikes losing in the open.",
+"vi": "Tôi đếm được mười hai xe địch rút về. Ghi lại: Brandt không thích thua ngoài đồng."
+},
+{
+"mission": "c1m08",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m08.06",
+"en": "The road is cut. The fortress has its walls and whatever it holds now.",
+"vi": "Đường đã cắt. Pháo đài giờ chỉ còn tường và những gì nó đang có."
+},
+{
+"mission": "c1m08",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c1m08.07",
+"en": "They still hold the supply road. The fortress will be full when we come back.",
+"vi": "Chúng vẫn giữ đường tiếp tế. Pháo đài sẽ đầy kho trước khi ta quay lại."
+},
+{
+"mission": "c1m09",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m09.01",
+"en": "No shells, no siege. Keep the trucks rolling on the east road.",
+"vi": "Không có đạn thì không có vây hãm. Giữ đoàn xe chạy theo đường phía đông."
+},
+{
+"mission": "c1m09",
+"trigger": "first_unit_type_seen",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c1m09.02",
+"en": "Strike jets coming off the sea! Anti-air with the convoy, now!",
+"vi": "Máy bay cường kích từ hướng biển! Phòng không đi kèm đoàn xe, ngay!"
+},
+{
+"mission": "c1m09",
+"trigger": "objective_progress",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c1m09.03",
+"en": "Half the shells are in town. The guns are being dug in.",
+"vi": "Nửa số đạn đã tới thị trấn. Các khẩu pháo đang được đào hầm.",
+"arg": "1/2"
+},
+{
+"mission": "c1m09",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c1m09.04",
+"en": "Sea fog rolling in. The trucks slow down, but they are as blind as we are.",
+"vi": "Sương biển đang tràn vào. Xe tải đi chậm lại, nhưng địch cũng mù như ta."
+},
+{
+"mission": "c1m09",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m09.05",
+"en": "One more truck burns and the guns go short. Wrap that last one tight.",
+"vi": "Thêm một xe cháy là pháo không đủ đạn. Bọc chặt chiếc cuối."
+},
+{
+"mission": "c1m09",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m09.06",
+"en": "The guns are fed. Tomorrow we knock on Ashfield's door.",
+"vi": "Pháo có đạn. Ngày mai ta gõ cửa Ashfield."
+},
+{
+"mission": "c1m09",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m09.07",
+"en": "The shells did not arrive. We besiege the fortress with what we have left.",
+"vi": "Đạn không tới. Ta sẽ phải vây pháo đài bằng những gì còn lại."
+},
+{
+"mission": "c1m10",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m10.01",
+"en": "This is what we landed for. The Ashfield fortress falls today.",
+"vi": "Ta đổ bộ vì nơi này. Hôm nay pháo đài Ashfield phải đổ."
+},
+{
+"mission": "c1m10",
+"trigger": "time",
+"speaker": "brandt",
+"priority": 2,
+"once": true,
+"key": "script.c1m10.02",
+"en": "These walls have stood thirty years, Colonel. They will stand one more day.",
+"vi": "Tường này đã đứng ba mươi năm, đại tá. Nó sẽ đứng thêm một ngày nữa.",
+"at": 25.0
+},
+{
+"mission": "c1m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m10.03",
+"en": "The depot is burning. Now choose how to soften the walls; each way has a price.",
+"vi": "Kho nhiên liệu đã cháy. Giờ chọn cách làm mềm bức tường, mỗi cách đều có giá.",
+"arg": "2"
+},
+{
+"mission": "c1m10",
+"trigger": "phase_start",
+"speaker": "brandt",
+"priority": 1,
+"once": true,
+"key": "script.c1m10.04",
+"en": "You are in the yard. And then? The yard is where my Bastion walks.",
+"vi": "Các anh vào được sân. Rồi sao? Sân là nơi Bastion đi dạo.",
+"arg": "3"
+},
+{
+"mission": "c1m10",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c1m10.05",
+"en": "The real Bastion. Twice the Mk.0's armour, still slow to turn. Still the flanks.",
+"vi": "Bastion bản thật. Giáp dày gấp đôi Mk.0, nhưng vẫn quay chậm. Vẫn là hai bên sườn."
+},
+{
+"mission": "c1m10",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c1m10.06",
+"en": "A side turret is off. Someone taught Brandt, but not everything.",
+"vi": "Một tháp phụ đã gãy. Tôi đã nói mà, ai đó dạy Brandt, nhưng dạy chưa hết."
+},
+{
+"mission": "c1m10",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c1m10.07",
+"en": "It is about to fire everything. Out of the marked ground, nobody stays to watch!",
+"vi": "Nó chuẩn bị nã cả dàn. Ra khỏi vùng đánh dấu ngay, không ai đứng xem!"
+},
+{
+"mission": "c1m10",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c1m10.08",
+"en": "The Bastion is burning from the inside! One more volley!",
+"vi": "Bastion đang bốc cháy từ trong ra! Một loạt nữa thôi!",
+"arg": "25"
+},
+{
+"mission": "c1m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c1m10.09",
+"en": "The Bastion is down. Brandt is pulling everyone to the HQ; hold a little longer.",
+"vi": "Bastion đổ. Brandt đang gọi tất cả về giữ sở chỉ huy, trụ thêm một lúc.",
+"arg": "5"
+},
+{
+"mission": "c1m10",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c1m10.10",
+"en": "Our camp is taking fire too. Do not get dragged back.",
+"vi": "Trại của ta cũng đang ăn đạn. Đừng để bị kéo ngược về."
+},
+{
+"mission": "c1m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m10.11",
+"en": "Now the HQ. Level it, then we talk to Brandt.",
+"vi": "Giờ là sở chỉ huy. San phẳng nó, rồi ta nói chuyện với Brandt.",
+"arg": "6"
+},
+{
+"mission": "c1m10",
+"trigger": "victory",
+"speaker": "brandt",
+"priority": 1,
+"once": true,
+"key": "script.c1m10.12",
+"en": "Enough. The walls are yours, Colonel. My men walk out alive.",
+"vi": "Đủ rồi. Tường là của các anh, đại tá. Lính của tôi đi ra còn sống."
+},
+{
+"mission": "c1m10",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m10.13",
+"en": "One beach, one fortress. A whole coast still to go.",
+"vi": "Một bãi biển, một pháo đài. Còn cả một vùng duyên hải phía trước."
+},
+{
+"mission": "c1m10",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c1m10.14",
+"en": "Off the walls. Brandt gets another night, and we get another lesson.",
+"vi": "Rút khỏi tường. Brandt có thêm một đêm, ta có thêm một bài học."
+},
+{
+"mission": "c1s1",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c1s1.01",
+"en": "Three farms, three looks. Nobody shoots unless they must.",
+"vi": "Ba trang trại, ba lần nhìn. Không ai nổ súng nếu không buộc phải."
+},
+{
+"mission": "c1s1",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c1s1.02",
+"en": "Fresh tracks in the mud, wide ones. Something heavier than a tank came through.",
+"vi": "Vết xích mới trên bùn, bản rộng. Thứ gì đó nặng hơn xe tăng thường đã qua đây."
+},
+{
+"mission": "c1s1",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c1s1.03",
+"en": "One farm left. Someone painted a word on the barn door: Behemoth. I do not know it yet.",
+"vi": "Còn một trang trại. Trên cửa kho có vẽ một chữ: Behemoth. Tôi chưa biết nghĩa.",
+"arg": "last"
+},
+{
+"mission": "c1s1",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c1s1.04",
+"en": "That is enough. It is not here yet, but someone is making room for it.",
+"vi": "Đủ rồi. Thứ đó chưa ở đây, nhưng có người đang chuẩn bị chỗ cho nó."
+},
+{
+"mission": "c1s1",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c1s1.05",
+"en": "We saw nothing. Blind for another day.",
+"vi": "Ta không thấy được gì. Ta mù thêm một ngày."
+}
+]
+}

@@ -1,0 +1,1176 @@
+{
+"chapter": 3,
+"missions": {
+"c3m01": {
+"main": "khai"
+},
+"c3m02": {
+"main": "linh"
+},
+"c3m11": {
+"main": "linh"
+},
+"c3m03": {
+"main": "khai"
+},
+"c3m04": {
+"main": "mai"
+},
+"c3m05": {
+"main": "dieuhau"
+},
+"c3m06": {
+"main": "linh"
+},
+"c3m12": {
+"main": "khai"
+},
+"c3m07": {
+"main": "khai"
+},
+"c3m08": {
+"main": "linh"
+},
+"c3m09": {
+"main": "khai"
+},
+"c3m10": {
+"main": "khai"
+},
+"c3s1": {
+"main": "linh"
+},
+"c3s2": {
+"main": "linh"
+}
+},
+"lines": [
+{
+"mission": "c3m01",
+"trigger": "mission_start",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c3m01.01",
+"en": "Welcome to the highlands, Colonel. You are a coordinate now.",
+"vi": "Chào mừng tới cao nguyên, đại tá. Từ giờ các anh chỉ là một tọa độ."
+},
+{
+"mission": "c3m01",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m01.02",
+"en": "Keep moving. Coordinates that move are harder to hit.",
+"vi": "Cứ di chuyển. Tọa độ biết đi thì khó bắn trúng hơn."
+},
+{
+"mission": "c3m01",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c3m01.03",
+"en": "Orlov's guns fire on a grid, twelve seconds apart. Count, then step aside.",
+"vi": "Pháo của Orlov bắn theo lưới, cách nhau đúng mười hai giây. Đếm và tránh."
+},
+{
+"mission": "c3m01",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c3m01.04",
+"en": "The sawmill is ours. A phone line runs north from it; cut it.",
+"vi": "Xưởng cưa là của ta. Có dây điện thoại chạy về phía bắc, cắt nó đi.",
+"arg": "east"
+},
+{
+"mission": "c3m01",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c3m01.05",
+"en": "Only the signal post left. Orlov sees the whole pass from it; he will not let go.",
+"vi": "Còn trạm tín hiệu. Từ đó Orlov nhìn cả đèo, ông ta sẽ không bỏ dễ.",
+"arg": "last"
+},
+{
+"mission": "c3m01",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m01.06",
+"en": "The pass is open. Put on another layer; the road north is long.",
+"vi": "Đèo đã mở. Mặc thêm áo, đường lên phía bắc còn dài."
+},
+{
+"mission": "c3m01",
+"trigger": "defeat",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c3m01.07",
+"en": "Coordinate erased. Next time, move faster, Colonel.",
+"vi": "Tọa độ đã bị xóa. Lần sau hãy đi nhanh hơn, đại tá."
+},
+{
+"mission": "c3m02",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m02.01",
+"en": "Heavy tank and SAMs round the radar. Orlov guards his eyes carefully.",
+"vi": "Xe tăng hạng nặng và tên lửa phòng không quanh radar. Orlov canh mắt mình rất kỹ."
+},
+{
+"mission": "c3m02",
+"trigger": "event_triggered",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c3m02.02",
+"en": "Counter-battery ready. Give me their guns' position; I answer in eleven seconds.",
+"vi": "Pháo phản kích sẵn sàng. Cho tôi vị trí khẩu đội địch, tôi trả lời trong mười một giây."
+},
+{
+"mission": "c3m02",
+"trigger": "first_unit_type_seen",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c3m02.03",
+"en": "Long-range launcher behind the radar. Hawk, stay off that ridge.",
+"vi": "Bệ phóng tên lửa tầm xa phía sau radar. Hawk, đừng bay qua mỏm đó."
+},
+{
+"mission": "c3m02",
+"trigger": "enemy_reinforcement",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c3m02.04",
+"en": "Reinforcements climbing from the valley. The radar goes before they arrive.",
+"vi": "Quân tiếp viện leo từ thung lũng lên. Radar phải gục trước khi chúng tới."
+},
+{
+"mission": "c3m02",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m02.05",
+"en": "One minute before the sky clears. Then the radar sees the whole brigade.",
+"vi": "Còn một phút trước khi trời quang. Lúc đó radar sẽ thấy cả lữ đoàn."
+},
+{
+"mission": "c3m02",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m02.06",
+"en": "The first radar station is blind. Orlov's guns have to guess now.",
+"vi": "Trạm radar đầu tiên đã mù. Pháo của Orlov giờ phải đoán."
+},
+{
+"mission": "c3m02",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m02.07",
+"en": "The radar still sweeps. Every vehicle we move will draw fire.",
+"vi": "Radar vẫn quét. Mọi xe ta di chuyển sẽ bị gọi pháo."
+},
+{
+"mission": "c3m11",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m11.01",
+"en": "An Orlov spotter in every hamlet. Take them and his guns go deaf.",
+"vi": "Mỗi thôn có một người quan sát của Orlov. Lấy thôn, pháo của ông ta sẽ điếc."
+},
+{
+"mission": "c3m11",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c3m11.02",
+"en": "One spotter taken. His radio is still warm.",
+"vi": "Một người quan sát đã bị bắt. Máy bộ đàm vẫn còn ấm."
+},
+{
+"mission": "c3m11",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c3m11.03",
+"en": "Two hamlets. His guns are slowing; he has lost his eyes.",
+"vi": "Hai thôn. Pháo của ông ta đang bắn chậm lại, mất mắt rồi.",
+"arg": "2/3"
+},
+{
+"mission": "c3m11",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c3m11.04",
+"en": "The sky is clearing. Aircraft on both sides will be up.",
+"vi": "Bầu trời đang quang. Máy bay hai bên đều sẽ cất cánh."
+},
+{
+"mission": "c3m11",
+"trigger": "victory",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c3m11.05",
+"en": "Three spotters lost. I have thirty more, Colonel.",
+"vi": "Mất ba người quan sát. Ta còn ba mươi người nữa, đại tá."
+},
+{
+"mission": "c3m11",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m11.06",
+"en": "Thirty spotters need thirty hamlets. We will visit each one.",
+"vi": "Ba mươi người cần ba mươi thôn. Ta sẽ tới từng thôn một."
+},
+{
+"mission": "c3m11",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m11.07",
+"en": "The spotters still hold the slopes. The radar road will be all shells.",
+"vi": "Người quan sát vẫn ở trên dốc. Đường lên radar sẽ đầy pháo."
+},
+{
+"mission": "c3m03",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m03.01",
+"en": "We hold the village. They come to us, in the fog.",
+"vi": "Ta giữ ngôi làng. Chúng sẽ tới với ta, trong sương."
+},
+{
+"mission": "c3m03",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c3m03.02",
+"en": "The fog is so thick I only hear tracks. North-west, a lot of them.",
+"vi": "Sương dày tới mức tôi chỉ nghe được tiếng xích. Hướng tây bắc, khá nhiều.",
+"at": 40.0
+},
+{
+"mission": "c3m03",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c3m03.03",
+"en": "Half the time. The villagers are still in the cellars; leave them there.",
+"vi": "Nửa thời gian. Dân làng vẫn trong hầm, cứ để họ ở đó.",
+"arg": "1/2"
+},
+{
+"mission": "c3m03",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c3m03.04",
+"en": "The square is lost. Take it back; it is the only warm place for ten kilometres.",
+"vi": "Mất quảng trường. Lấy lại ngay, đây là chỗ ấm duy nhất trong mười cây số."
+},
+{
+"mission": "c3m03",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c3m03.05",
+"en": "Blizzard coming. Both sides go blind, but we are indoors.",
+"vi": "Bão tuyết đang tới. Hai bên đều mù, nhưng ta đang ở trong nhà."
+},
+{
+"mission": "c3m03",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m03.06",
+"en": "We are still standing. Light the stoves; everyone has earned the warmth.",
+"vi": "Ta vẫn đứng đây. Đốt lò lên, ai cũng xứng đáng được sưởi."
+},
+{
+"mission": "c3m03",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m03.07",
+"en": "The village is lost. Back to the pass before the fog lifts and the guns see us.",
+"vi": "Làng mất rồi. Lui về đèo, trước khi sương tan và pháo nhìn thấy ta."
+},
+{
+"mission": "c3m04",
+"trigger": "mission_start",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c3m04.01",
+"en": "The ice holds towers. I checked. Mostly.",
+"vi": "Mặt băng chịu được tháp. Tôi đã kiểm tra. Hầu hết chỗ."
+},
+{
+"mission": "c3m04",
+"trigger": "point_captured",
+"speaker": "mai",
+"priority": 3,
+"once": true,
+"key": "script.c3m04.02",
+"en": "The lake is ours. Drop the towers on the thick ice; I put red flags there.",
+"vi": "Hồ là của ta. Thả tháp xuống chỗ băng dày, tôi đã cắm cờ đỏ.",
+"arg": "town"
+},
+{
+"mission": "c3m04",
+"trigger": "time",
+"speaker": "orlov",
+"priority": 2,
+"once": true,
+"key": "script.c3m04.03",
+"en": "A base on a lake. How poetic. How flammable.",
+"vi": "Một căn cứ trên hồ. Thật thơ mộng. Và thật dễ cháy.",
+"at": 120.0
+},
+{
+"mission": "c3m04",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c3m04.04",
+"en": "The HQ is holed and the ice under it is cracking. I need five quiet minutes.",
+"vi": "Sở chỉ huy đang thủng và băng bên dưới đang nứt. Tôi cần năm phút yên tĩnh."
+},
+{
+"mission": "c3m04",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c3m04.05",
+"en": "A relief column from the south is heading for the outpost. Clear their road.",
+"vi": "Đoàn cứu trợ từ phía nam đang tới tiền đồn. Mở đường cho họ."
+},
+{
+"mission": "c3m04",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c3m04.06",
+"en": "It stands on the ice, Colonel. Do not ask me if it lasts till spring.",
+"vi": "Nó đứng trên băng, đại tá. Đừng hỏi tôi nó sẽ đứng tới mùa xuân không."
+},
+{
+"mission": "c3m04",
+"trigger": "defeat",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c3m04.07",
+"en": "The outpost went through the ice. I will mark the spot; we fish it out in summer.",
+"vi": "Tiền đồn chìm xuống hồ. Tôi sẽ đánh dấu chỗ đó, mùa hè ta vớt lên."
+},
+{
+"mission": "c3m05",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c3m05.01",
+"en": "Big bird, big target. Keep the launchers moving under it.",
+"vi": "Con chim lớn, mục tiêu lớn. Giữ bệ phóng di chuyển bên dưới nó."
+},
+{
+"mission": "c3m05",
+"trigger": "boss_spawn",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c3m05.02",
+"en": "Look up, Colonel. The coordinate has arrived.",
+"vi": "Ngẩng lên đi, đại tá. Tọa độ đã tới."
+},
+{
+"mission": "c3m05",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c3m05.03",
+"en": "The Harpy. A giant gunship, engines exposed on both sides. Aim for the side rotors.",
+"vi": "Harpy. Trực thăng vũ trang khổng lồ, động cơ lộ ở hai bên. Nhắm vào cánh quạt phụ."
+},
+{
+"mission": "c3m05",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c3m05.04",
+"en": "A jet flying escort for the Harpy. Black bird on a red disc. I know that mark.",
+"vi": "Có một chiếc phản lực bay kèm Harpy. Phù hiệu đen trên đĩa đỏ. Tôi biết phù hiệu đó.",
+"at": 50.0
+},
+{
+"mission": "c3m05",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c3m05.05",
+"en": "That mark shot down Ellis. He is only watching, not joining in.",
+"vi": "Chiếc phù hiệu đó đã bắn rơi Ellis. Hắn chỉ đứng nhìn thôi, chưa vào trận.",
+"at": 70.0
+},
+{
+"mission": "c3m05",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c3m05.06",
+"en": "One engine down. It is listing left; hit the other side.",
+"vi": "Một động cơ đã tắt. Nó nghiêng sang trái, bắn vào phía bên kia."
+},
+{
+"mission": "c3m05",
+"trigger": "boss_phase_change",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c3m05.07",
+"en": "It is coming down to drop troops! That is when it is closest; everything on it!",
+"vi": "Nó hạ thấp để thả quân! Đây là lúc nó gần nhất, bắn hết vào!"
+},
+{
+"mission": "c3m05",
+"trigger": "superweapon_warning",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c3m05.08",
+"en": "It is about to unload a rocket barrage. Out of the red area, fast!",
+"vi": "Nó sắp rải cả loạt rocket. Rời khỏi vùng tô đỏ, nhanh!"
+},
+{
+"mission": "c3m05",
+"trigger": "boss_hp",
+"speaker": "linh",
+"priority": 4,
+"once": true,
+"key": "script.c3m05.09",
+"en": "The Harpy is at half. The black-marked jet just peeled off north.",
+"vi": "Harpy mất một nửa sức. Chiếc phù hiệu đen vừa rời đi về hướng bắc.",
+"arg": "50"
+},
+{
+"mission": "c3m05",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c3m05.10",
+"en": "It is smoking! One more volley, folks!",
+"vi": "Nó đang bốc khói! Một loạt nữa, các anh!",
+"arg": "25"
+},
+{
+"mission": "c3m05",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c3m05.11",
+"en": "The camp is eating rockets. Draw it off; I will handle the rest.",
+"vi": "Trại đang ăn rocket. Kéo nó ra xa, tôi lo phần còn lại."
+},
+{
+"mission": "c3m05",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c3m05.12",
+"en": "The Harpy is down! Somebody owes me a drink.",
+"vi": "Harpy rơi rồi! Ai đó nợ tôi một ly đấy."
+},
+{
+"mission": "c3m05",
+"trigger": "victory",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c3m05.13",
+"en": "One gunship. Winter has other rotors.",
+"vi": "Một trực thăng. Mùa đông còn nhiều cánh quạt khác."
+},
+{
+"mission": "c3m05",
+"trigger": "defeat",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c3m05.14",
+"en": "Could not bring it down. No anti-air left; I am flying home low.",
+"vi": "Không hạ được nó. Mất phòng không, tôi phải bay thấp về nhà."
+},
+{
+"mission": "c3m06",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m06.01",
+"en": "Three batteries. They fire, they move, they fire. Be quicker than the second shot.",
+"vi": "Ba khẩu đội. Chúng bắn, chúng chạy, rồi lại bắn. Phải nhanh hơn phát thứ hai."
+},
+{
+"mission": "c3m06",
+"trigger": "event_triggered",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c3m06.02",
+"en": "I am listening to their shells. Every salvo gives me another bearing.",
+"vi": "Tôi đang nghe tiếng đạn bay của chúng. Mỗi loạt tôi lại có thêm một góc."
+},
+{
+"mission": "c3m06",
+"trigger": "time",
+"speaker": "orlov",
+"priority": 2,
+"once": true,
+"key": "script.c3m06.03",
+"en": "You found my guns. Remarkable. Also irrelevant.",
+"vi": "Các anh tìm thấy pháo của ta. Đáng nể. Và chẳng có nghĩa gì.",
+"at": 150.0
+},
+{
+"mission": "c3m06",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c3m06.04",
+"en": "One down. The other two are moving towards the gully.",
+"vi": "Một khẩu đã gục. Hai khẩu còn lại chuyển về phía khe núi.",
+"arg": "1/3"
+},
+{
+"mission": "c3m06",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c3m06.05",
+"en": "One gun left. Its muzzle flash is at three-one-zero.",
+"vi": "Còn một khẩu pháo. Ánh chớp đầu nòng của nó ở góc ba trăm mười.",
+"arg": "last"
+},
+{
+"mission": "c3m06",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m06.06",
+"en": "All three crossed out. The valley will be quieter tonight.",
+"vi": "Ba khẩu đội đã bị gạch. Đêm nay thung lũng sẽ yên tĩnh hơn."
+},
+{
+"mission": "c3m06",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m06.07",
+"en": "They vanished into the night, north-east. I have it noted.",
+"vi": "Chúng biến mất vào đêm. Hướng đông bắc. Tôi đã ghi lại."
+},
+{
+"mission": "c3m12",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m12.01",
+"en": "Five minutes under his guns. Keep moving, keep alive.",
+"vi": "Năm phút dưới pháo của ông ta. Cứ di chuyển, cứ sống."
+},
+{
+"mission": "c3m12",
+"trigger": "time",
+"speaker": "orlov",
+"priority": 2,
+"once": true,
+"key": "script.c3m12.02",
+"en": "Adjust fire. Two hundred metres east.",
+"vi": "Điều chỉnh. Hai trăm mét về phía đông.",
+"at": 70.0
+},
+{
+"mission": "c3m12",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c3m12.03",
+"en": "He fires in a pattern: three salvos, shift, three salvos. I can read it now.",
+"vi": "Ông ta bắn theo khuôn: ba loạt, đổi hướng, ba loạt. Đọc được rồi.",
+"at": 90.0
+},
+{
+"mission": "c3m12",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c3m12.04",
+"en": "Halfway. Spread out; no shell gets two vehicles.",
+"vi": "Nửa chặng. Tản ra, đừng để một quả đạn lấy hai xe.",
+"arg": "1/2"
+},
+{
+"mission": "c3m12",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m12.05",
+"en": "One minute. His infantry comes in behind the last salvo.",
+"vi": "Một phút. Bộ binh của ông ta sẽ tràn vào sau loạt pháo cuối."
+},
+{
+"mission": "c3m12",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m12.06",
+"en": "We are still here. His winter killed nobody today.",
+"vi": "Ta vẫn ở đây. Mùa đông của ông ta không giết được ai hôm nay."
+},
+{
+"mission": "c3m12",
+"trigger": "defeat",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c3m12.07",
+"en": "The valley is quiet. Winter always ends this way.",
+"vi": "Thung lũng đã yên. Mùa đông luôn kết thúc như vậy."
+},
+{
+"mission": "c3m07",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m07.01",
+"en": "Civilians in the cabins. They are the objective, not the enemy.",
+"vi": "Dân thường trong các căn nhà gỗ. Họ chính là mục tiêu, không phải địch."
+},
+{
+"mission": "c3m07",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c3m07.02",
+"en": "Nine families in the cabins and the barn. Children too. Orlov shells anything with a roof.",
+"vi": "Chín gia đình trong nhà gỗ và kho thóc. Có trẻ con. Orlov bắn mọi thứ còn mái.",
+"at": 20.0
+},
+{
+"mission": "c3m07",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c3m07.03",
+"en": "Halfway. Keep the vehicles between the ridge and the cabins.",
+"vi": "Nửa thời gian. Giữ xe chắn giữa đồi và các căn nhà.",
+"arg": "1/2"
+},
+{
+"mission": "c3m07",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m07.04",
+"en": "One building left standing. Every vehicle there; shield it with your hulls.",
+"vi": "Chỉ còn một căn nhà đứng. Mọi xe về đó, che bằng thân xe."
+},
+{
+"mission": "c3m07",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c3m07.05",
+"en": "A civilian truck just bolted from the barn. Make sure nobody fires on it.",
+"vi": "Một xe dân sự vừa chạy ra từ kho thóc. Đừng để ai bắn nhầm."
+},
+{
+"mission": "c3m07",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c3m07.06",
+"en": "The families say thank you. They are naming the new calf after the brigade.",
+"vi": "Các gia đình gửi lời: họ sẽ đặt tên con bê mới theo lữ đoàn.",
+"at": 385.0
+},
+{
+"mission": "c3m07",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m07.07",
+"en": "Seven minutes. Nobody inside was hurt. That is the battle we won today.",
+"vi": "Bảy phút. Không ai trong nhà bị thương. Đó là trận ta thắng hôm nay."
+},
+{
+"mission": "c3m07",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m07.08",
+"en": "The last roof is down. Get the ambulances in. Now.",
+"vi": "Mái cuối cùng đã sập. Đưa xe cứu thương vào. Ngay."
+},
+{
+"mission": "c3m08",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m08.01",
+"en": "The wounded cannot wait for daylight. Neither can we. Five trucks; three must arrive.",
+"vi": "Người bị thương không chờ được tới sáng. Ta cũng vậy. Năm xe, ba phải tới."
+},
+{
+"mission": "c3m08",
+"trigger": "first_unit_type_seen",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c3m08.02",
+"en": "Strike jets coming low through the pass. The convoy is in their sights.",
+"vi": "Máy bay cường kích bay thấp theo đèo. Đoàn xe đang trong tầm nhìn của chúng."
+},
+{
+"mission": "c3m08",
+"trigger": "objective_progress",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c3m08.03",
+"en": "First truck at the signal post. The doctors are getting off.",
+"vi": "Xe đầu đã tới trạm tín hiệu. Bác sĩ đang xuống xe.",
+"arg": "1/3"
+},
+{
+"mission": "c3m08",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c3m08.04",
+"en": "Blizzard. The trucks slow down; keep ten metres apart.",
+"vi": "Bão tuyết. Xe tải chậm lại, giữ khoảng cách mười mét."
+},
+{
+"mission": "c3m08",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m08.05",
+"en": "One more truck lost and the post runs short of medicine. Cover the last one.",
+"vi": "Thêm một xe nữa là trạm không có đủ thuốc. Bọc chiếc cuối, bằng mọi giá."
+},
+{
+"mission": "c3m08",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m08.06",
+"en": "The medicine is there. Thirty-two wounded will see the morning.",
+"vi": "Thuốc đã tới. Ba mươi hai người bị thương sẽ qua được đêm nay."
+},
+{
+"mission": "c3m08",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m08.07",
+"en": "Not enough trucks got through. The doctors will have to choose.",
+"vi": "Không đủ xe tới. Bác sĩ sẽ phải chọn ai được chữa trước."
+},
+{
+"mission": "c3m09",
+"trigger": "mission_start",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c3m09.01",
+"en": "Fire mission. Grid one-seven. All batteries.",
+"vi": "Nhiệm vụ bắn. Ô lưới một-bảy. Tất cả khẩu đội."
+},
+{
+"mission": "c3m09",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m09.02",
+"en": "Through the gun wall, then the HQ. He will not wait for us.",
+"vi": "Phá tường pháo, rồi tới sở chỉ huy. Ông ta không đợi ta đâu."
+},
+{
+"mission": "c3m09",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c3m09.03",
+"en": "Orlov has gone to attrition: he wants us ground down under his guns, no fighting needed.",
+"vi": "Orlov đổi sang tiêu hao: ông ta muốn ta tự hao mòn dưới pháo, không cần ra đánh."
+},
+{
+"mission": "c3m09",
+"trigger": "event_triggered",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c3m09.04",
+"en": "Our counter-battery is in place. Eleven seconds after every salvo of theirs.",
+"vi": "Pháo phản kích của ta vào vị trí. Mười một giây sau mỗi loạt của họ."
+},
+{
+"mission": "c3m09",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c3m09.05",
+"en": "Lost a heavy under the guns. Nobody stands still more than three seconds.",
+"vi": "Mất một xe nặng dưới pháo. Đừng đứng yên quá ba giây."
+},
+{
+"mission": "c3m09",
+"trigger": "victory",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c3m09.06",
+"en": "Recalculating. Withdraw the batteries to the next line.",
+"vi": "Tính toán lại. Rút các khẩu đội về tuyến sau."
+},
+{
+"mission": "c3m09",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m09.07",
+"en": "The HQ is down, but he left before we arrived. As always.",
+"vi": "Sở chỉ huy đã đổ, nhưng ông ta đã đi trước khi ta tới. Như mọi lần."
+},
+{
+"mission": "c3m09",
+"trigger": "defeat",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c3m09.08",
+"en": "Snow keeps footprints. I know where you came from.",
+"vi": "Tuyết giữ dấu chân. Ta biết các anh từ đâu tới."
+},
+{
+"mission": "c3m10",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m10.01",
+"en": "The line breaks today, or the winter wins. Move.",
+"vi": "Hôm nay phòng tuyến gãy, hoặc mùa đông thắng. Đi."
+},
+{
+"mission": "c3m10",
+"trigger": "time",
+"speaker": "orlov",
+"priority": 2,
+"once": true,
+"key": "script.c3m10.02",
+"en": "You walk on snow, Colonel. Snow keeps footprints.",
+"vi": "Các anh đi trên tuyết, đại tá. Tuyết giữ dấu chân.",
+"at": 20.0
+},
+{
+"mission": "c3m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m10.03",
+"en": "The hill radar is blind. Choose the second blow: the depot or the supply road. Both cost.",
+"vi": "Radar trên đồi đã mù. Chọn đòn thứ hai: kho đạn hay đường tiếp tế, đều có giá.",
+"arg": "2"
+},
+{
+"mission": "c3m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m10.04",
+"en": "The fortress gate is open. Jötunn stands in it.",
+"vi": "Cổng pháo đài mở. Jötunn đứng chắn ở đó.",
+"arg": "4"
+},
+{
+"mission": "c3m10",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c3m10.05",
+"en": "Jötunn: a walking fortress. Absurd armour in front, but its tracks are exposed.",
+"vi": "Jötunn: một pháo đài biết đi. Giáp trước dày không tưởng, nhưng xích của nó lộ."
+},
+{
+"mission": "c3m10",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c3m10.06",
+"en": "One track is off. It is turning on the spot; hit its back.",
+"vi": "Một bên xích đã đứt. Nó quay vòng tại chỗ rồi, đánh vào lưng."
+},
+{
+"mission": "c3m10",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c3m10.07",
+"en": "It is bringing every gun to bear on the gate. Out of the red zone now!",
+"vi": "Nó chĩa cả dàn pháo xuống cổng. Rời khỏi vùng đỏ ngay!"
+},
+{
+"mission": "c3m10",
+"trigger": "boss_phase_change",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3m10.08",
+"en": "Jötunn is calling its escort. Three vehicles coming out of the yard.",
+"vi": "Jötunn gọi hộ tống. Ba xe đang ra từ trong sân."
+},
+{
+"mission": "c3m10",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c3m10.09",
+"en": "It is stalling! Just a little more!",
+"vi": "Nó đang chết máy! Thêm chút nữa thôi!",
+"arg": "25"
+},
+{
+"mission": "c3m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m10.10",
+"en": "Jötunn is down. Hold the gate; Orlov counterattacks before dark.",
+"vi": "Jötunn đã gục. Giữ cổng, Orlov sẽ phản công trước khi trời tối.",
+"arg": "5"
+},
+{
+"mission": "c3m10",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m10.11",
+"en": "The HQ is critical. Every vehicle to the gate; we do not lose it after all this.",
+"vi": "Sở chỉ huy nguy cấp. Kéo mọi xe về cổng, đừng để mất nó sau từng ấy công."
+},
+{
+"mission": "c3m10",
+"trigger": "victory",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c3m10.12",
+"en": "Withdraw. Winter always comes back, Colonel.",
+"vi": "Rút. Mùa đông luôn quay lại, đại tá."
+},
+{
+"mission": "c3m10",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c3m10.13",
+"en": "The highlands are open. Rest while you can, Brigade.",
+"vi": "Cao nguyên đã mở. Nghỉ được lúc nào thì nghỉ, lữ đoàn."
+},
+{
+"mission": "c3m10",
+"trigger": "defeat",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c3m10.14",
+"en": "The gate is closed. This winter will be long, Colonel.",
+"vi": "Cổng đã đóng. Mùa đông năm nay sẽ dài, đại tá."
+},
+{
+"mission": "c3s1",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3s1.01",
+"en": "Look and leave. The fog helps both sides alike.",
+"vi": "Nhìn rồi đi. Sương giúp cả hai bên như nhau."
+},
+{
+"mission": "c3s1",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c3s1.02",
+"en": "Four gun pits on the radar hill, three empty. Orlov is making room for something.",
+"vi": "Bốn ụ pháo trên đồi radar, ba ụ còn trống. Orlov đang chuẩn bị chỗ cho thứ gì đó."
+},
+{
+"mission": "c3s1",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c3s1.03",
+"en": "The lumber camp is left. I hear a generator there, a big one.",
+"vi": "Còn trại khai thác gỗ. Tôi nghe tiếng máy phát điện ở đó, khá lớn.",
+"arg": "last"
+},
+{
+"mission": "c3s1",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3s1.04",
+"en": "The map is complete. Every gun pit has a name on my map.",
+"vi": "Bản đồ hoàn chỉnh. Mỗi ụ pháo đều có tên trên bản đồ của tôi."
+},
+{
+"mission": "c3s1",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3s1.05",
+"en": "The fog keeps his secrets. We attack blind.",
+"vi": "Sương vẫn giữ bí mật của ông ta. Ta sẽ đánh mù."
+},
+{
+"mission": "c3s2",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3s2.01",
+"en": "Fenrir is in the snow. It sees for Orlov's guns.",
+"vi": "Fenrir ở trong tuyết. Nó nhìn thay cho pháo của Orlov."
+},
+{
+"mission": "c3s2",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c3s2.02",
+"en": "Fenrir: a heavy hunter, a fire-control mast on its back. Break the mast, blind the guns.",
+"vi": "Fenrir: thợ săn hạng nặng, ăng-ten dẫn pháo trên lưng. Gãy ăng-ten là pháo mù."
+},
+{
+"mission": "c3s2",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c3s2.03",
+"en": "The mast is down. Now it is just a big, cold tank.",
+"vi": "Ăng-ten gãy. Giờ nó chỉ là một chiếc xe tăng to và lạnh."
+},
+{
+"mission": "c3s2",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3s2.04",
+"en": "Fenrir is down before the storm lifts. Orlov's guns lose an eye.",
+"vi": "Fenrir gục trước khi bão tan. Pháo của Orlov mất một con mắt."
+},
+{
+"mission": "c3s2",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c3s2.05",
+"en": "The storm lifts and Fenrir still stands. The guns will know where we are.",
+"vi": "Bão tan và Fenrir vẫn đứng. Pháo sẽ biết ta ở đâu."
+}
+]
+}

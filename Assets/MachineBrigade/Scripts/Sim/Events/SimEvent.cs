@@ -180,6 +180,9 @@ namespace MachineBrigade.Sim.Events
         /// the gun's own round), Value the seconds the change takes.
         /// </summary>
         RoundSwitched,
+
+        /// <summary>Prompt 30 L6: a neutral site was taken: DefId its kind ("radar", "workshop", "aa_site", "ammo_depot"), Team the taker.</summary>
+        NeutralCaptured,
     }
 
     /// <summary>
@@ -411,6 +414,9 @@ namespace MachineBrigade.Sim.Events
             LinePriority priority, int team, EntityId about = default) =>
             new(SimEventKind.EventNotice, about, at, new Vector2(bearing, 0f), seconds, (ExplosionTier)(int)kind, key, team, (int)priority,
                 airborne: direction.LengthSquared() > 0.01f, offset: direction);
+
+        internal static SimEvent NeutralTaken(string kind, Vector2 at, int team) =>
+            new(SimEventKind.NeutralCaptured, EntityId.None, at, default, 0f, default, kind, team);
 
         internal static SimEvent WeatherShifting(string weather, float seconds) =>
             new(SimEventKind.WeatherShift, EntityId.None, default, default, seconds, default, weather, 0);

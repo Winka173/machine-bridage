@@ -11,6 +11,21 @@ namespace MachineBrigade.Sim.Modes
 {
     public sealed class SiegeRules
     {
+        /// <summary>Prompt 30 L4: the "matchRules" row (siege, weekly, defend); null keeps the numbers as set.</summary>
+        public string? RulesId { get; set; } = "siege";
+
+        /// <summary>An attacking player wiped out for 12 s loses. Off by the sheet: Siege is lost on time only.</summary>
+        public bool WipeLoses { get; set; }
+
+        public void Apply(SimWorld world)
+        {
+            var id = PlayerDefends ? "defend" : RulesId;
+            if (id == null || world.Catalog.MatchRules.For(id) is not { } r) return;
+            // Siege: 60 s while the last target is under attack; Defend: none (sheet "Luật trận").
+            Overtime = r.Get("overtime", 0f);
+            WipeLoses = r.Get("wipeLoses", 0f) > 0f;
+        }
+
         /// <summary>
         /// The clock is a time bank (as in Overwatch escort): this much at the start, and each
         /// stage cleared adds its bonus, up to <see cref="MaxBank"/> on the clock at once.
@@ -224,8 +239,36 @@ namespace MachineBrigade.Sim.Modes
     /// reinforcements come in by train or onto a runway; at night its sirens sound when it spots
     /// attackers. When the HQ falls, the whole fortress goes up in a chain.
     /// </summary>
-    public sealed class SiegeMode : IGameMode, IObjectiveMode
+    public sealed class SiegeMode : IGameMode, IObjectiveMode, IEndlessMode
     {
+        // ------------------------------------------------------------------------------------------------ prompt 30 L5
+
+        private int _finiteWaves;
+
+        /// <summary>Defend won (the HQ stood to the end): the results offer the endless part.</summary>
+        public bool CanContinue => _rules.PlayerDefends && !_rules.Endless && Result is { WinningTeam: PlayerTeam };
+
+        public bool InEndless => _rules.PlayerDefends && _rules.Endless;
+
+        /// <summary>Waves beyond the finite part (Endless from the menu counts from its first wave).</summary>
+        public int EndlessSteps => InEndless ? Math.Max(0, Wave - _finiteWaves) : 0;
+
+        /// <summary>Defend goes on as Endless: no clock, lost towers stay lost, the line-loss CP still paid, lost with the HQ.</summary>
+        public void ContinueEndless(SimWorld world)
+        {
+            if (!CanContinue) return;
+            Result = null;
+            _rules.Endless = true;
+            _finiteWaves = Wave;
+            _deadline = double.MaxValue;
+            _nextWave = world.Time + _rules.WaveSeconds;
+            PlanWave(world, Wave + 1);
+        }
+
+        /// <summary>A wave's size before the endless cap.</summary>
+        private int SizeAt(int wave) =>
+            Math.Min(_rules.WaveMax, (int)MathF.Round((_rules.WaveStart + _rules.WaveGrowth * (wave - 1)) * MathF.Pow(1f + _rules.WaveCompound, wave - 1) * _waveScale));
+
         public const int PlayerTeam = 0;
         public const int EnemyTeam = 1;
 
@@ -369,6 +412,7 @@ namespace MachineBrigade.Sim.Modes
 
         public void Setup(SimWorld world)
         {
+            _rules.Apply(world);
             world.EnableEconomy(_rules.Attacker.Build(Attacker));
             world.EnableEconomy(_rules.Defender.Build(Defender));
             // Defend: the camps trade places, so the player's drop zone is inside the fortress.
@@ -777,7 +821,7 @@ namespace MachineBrigade.Sim.Modes
                 return;
             }
             // An attacking player wiped out has lost; an attacking AI always buys more.
-            if (_rules.PlayerDefends) return;
+            if (_rules.PlayerDefends || !_rules.WipeLoses) return;
             var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0;
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
             if (_wipedSince >= 0 && world.Time - _wipedSince > 12.0) Finish(world, EnemyTeam);
@@ -1104,6 +1148,8 @@ namespace MachineBrigade.Sim.Modes
             if (swarm.Count == 0) return;
             var raw = (_rules.WaveStart + _rules.WaveGrowth * (wave - 1)) * MathF.Pow(1f + _rules.WaveCompound, wave - 1) * _waveScale;
             var count = Math.Min(_rules.WaveMax, (int)MathF.Round(raw));
+            // Prompt 30 L5: the endless part grows in stats only, never in numbers past the finite part's last wave.
+            if (InEndless) count = Math.Min(count, SizeAt(_finiteWaves > 0 ? _finiteWaves : EndlessRules.DefendFiniteWaves));
             var heavies = _rules.WaveHeavy.Count > 0 && _rules.HeavyEvery > 0 ? Math.Min(count / 4, wave / _rules.HeavyEvery) : 0;
             // Siege breakers: bulldozers for the gates and walls, siege guns and long guns that outrange the towers.
             var breakers = _rules.WaveBreachers.Count > 0 && wave >= _rules.BreachFrom ? Math.Min(count / 4, 1 + (wave - _rules.BreachFrom) / Math.Max(1, _rules.BreachEvery)) : 0;
@@ -1136,9 +1182,14 @@ namespace MachineBrigade.Sim.Modes
             _landed[Wave] = new List<string>();
             foreach (var id in _plan) _reserve.Enqueue((Wave, id));
             ReleaseWaves(world);
-            // Endless: both sides grow each wave, the enemy faster (4 %) than the player (2 %, to +30 %).
-            if (_rules.Endless && world.TryGetEconomy(Attacker, out var economy)) economy.IncomeScale *= 1.04f;
-            if (_rules.Endless && world.TryGetEconomy(Defender, out var ours) && Wave <= 15) ours.IncomeScale *= (1f + 0.02f * Wave) / (1f + 0.02f * (Wave - 1));
+            // Endless: both sides grow each wave, the enemy faster (4 %) than the player (2 %, to +30 %). Prompt 30 L5: in
+            // health and damage (stats only; it was income, which meant more vehicles).
+            if (InEndless)
+            {
+                var k = EndlessSteps;
+                world.SetTeamStats(Attacker, EndlessRules.EnemyScale(k), EndlessRules.EnemyScale(k));
+                world.SetTeamStats(Defender, EndlessRules.PlayerScale(k), EndlessRules.PlayerScale(k));
+            }
             world.Emit(SimEvent.Alert(camp, Key("wave")));
             PlanWave(world, Wave + 1);
         }
@@ -1550,7 +1601,8 @@ namespace MachineBrigade.Sim.Modes
                 // Play-test 6 (DECISIONS 21G): the last boss down, the player may carry on into the endless run.
                 if (Defeated >= Total && !Endless)
                 {
-                    if (!_rules.EndlessOffer)
+                    // Prompt 30 L5: with the choice on the results, the rush is won here (recorded) and may be continued.
+                    if (!_rules.EndlessOffer || _rules.EndlessAtResults)
                     {
                         Finish(world, PlayerTeam);
                         return;

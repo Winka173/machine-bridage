@@ -68,13 +68,18 @@ namespace MachineBrigade.Game.Match
         /// <summary>Open once won in the campaign.</summary>
         public static bool Unlocked(MissionDef mission) => Progression.TestUnlockAll || PlayerProfile.Completed(mission.Id);
 
-        /// <summary>The Legend tier: open once the campaign's last big operation is won.</summary>
+        /// <summary>Prompt 30 L1: the mission whose win opens the Legend tier (the campaign's finale, Helion).</summary>
+        public const string LegendMission = "c12m10";
+
+        /// <summary>The Legend tier: open once c12m10 is won (else, without that mission, the last big operation).</summary>
         public static bool LegendOpen
         {
             get
             {
                 if (Progression.TestUnlockAll) return true;
                 var big = Big;
+                foreach (var m in big)
+                    if (m.Id == LegendMission) return PlayerProfile.Completed(LegendMission);
                 return big.Count > 0 && PlayerProfile.Completed(big[big.Count - 1].Id);
             }
         }

@@ -1148,7 +1148,7 @@ namespace MachineBrigade.Game.Match
                             StartCinematic(e.Position, force: true);
                             Haptics.Pulse(160, 255);
                             var spoken = e.DefId != null && e.DefId.StartsWith("radio.", System.StringComparison.Ordinal);
-                            if (spoken) Say(e.DefId, DialoguePriority.Event, phased.Team);
+                            if (spoken) Say(e.DefId, DialoguePriority.Story, phased.Team); // prompt 30 L12: boss_phase_change is P1
                             _hud.Toast(e.DefId != null && !spoken ? Strings.Get(e.DefId)
                                     : Strings.Format("toast.bossPhase", ("card", Strings.Card(phased.Def.Id)), ("phase", (int)e.Value)),
                                 error: true, seconds: spoken ? 3f : 5f, kind: NoticeKind.Boss);

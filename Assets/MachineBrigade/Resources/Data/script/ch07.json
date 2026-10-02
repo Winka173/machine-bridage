@@ -1,0 +1,1586 @@
+{
+"chapter": 7,
+"missions": {
+"c7m01": {
+"main": "khai"
+},
+"c7m03": {
+"main": "khai"
+},
+"c7m16": {
+"main": "linh"
+},
+"c7m04": {
+"main": "khai"
+},
+"c7m05": {
+"main": "khai"
+},
+"c7m07": {
+"main": "linh"
+},
+"c7m12": {
+"main": "khai"
+},
+"c7m15": {
+"main": "linh"
+},
+"c7m13": {
+"main": "mai"
+},
+"c7m14": {
+"main": "dahl"
+},
+"c7m02": {
+"main": "linh"
+},
+"c7m17": {
+"main": "dahl"
+},
+"c7m06": {
+"main": "khai"
+},
+"c7m11": {
+"main": "dieuhau"
+},
+"c7m09": {
+"main": "linh"
+},
+"c7m18": {
+"main": "dahl"
+},
+"c7m08": {
+"main": "khai"
+},
+"c7m10": {
+"main": "khai"
+},
+"c7s1": {
+"main": "linh"
+}
+},
+"lines": [
+{
+"mission": "c7m01",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m01.01",
+"en": "It is not their city. Move in.",
+"vi": "Đây không phải thành phố của chúng. Tiến vào."
+},
+{
+"mission": "c7m01",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m01.02",
+"en": "Aurel's guard holds the park, the plaza and the car park. Street by street.",
+"vi": "Cận vệ của Aurel giữ công viên, quảng trường và bãi đỗ xe. Từng con phố một.",
+"at": 10.0
+},
+{
+"mission": "c7m01",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c7m01.03",
+"en": "The city militia are coming out of the cellars. They have rifles and know every alley.",
+"vi": "Dân quân thành phố đang ra khỏi hầm. Họ có súng và biết từng con hẻm."
+},
+{
+"mission": "c7m01",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c7m01.04",
+"en": "The plaza is ours. People are hanging flags from the windows.",
+"vi": "Quảng trường là của ta. Người dân đang treo cờ từ cửa sổ.",
+"arg": "town"
+},
+{
+"mission": "c7m01",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c7m01.05",
+"en": "The car park left. Tanks in the middle, carriers hugging the walls.",
+"vi": "Còn bãi đỗ xe. Xe tăng đi giữa, xe bọc thép đi sát tường.",
+"arg": "last"
+},
+{
+"mission": "c7m01",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m01.06",
+"en": "The gate to the capital is open. From here we could walk to Veyra.",
+"vi": "Cửa ngõ thủ đô đã mở. Từ đây ta đi bộ được tới Veyra."
+},
+{
+"mission": "c7m01",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m01.07",
+"en": "The city is not ready. Back to the suburbs; hold what we have.",
+"vi": "Thành phố chưa sẵn sàng. Rút về ngoại ô, giữ những gì ta có."
+},
+{
+"mission": "c7m03",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m03.01",
+"en": "The city is fighting for itself. We fight with it.",
+"vi": "Thành phố đang tự chiến đấu. Ta chiến đấu cùng nó."
+},
+{
+"mission": "c7m03",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c7m03.02",
+"en": "The resistance holds the plaza, seven vehicles round it, marked. They have wounded.",
+"vi": "Quân kháng chiến giữ quảng trường, bảy xe vây quanh, đã đánh dấu. Họ có thương binh.",
+"at": 15.0
+},
+{
+"mission": "c7m03",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m03.03",
+"en": "The guard's guns are shelling the roofs round the plaza. Hit the battery first.",
+"vi": "Pháo của cận vệ đang nã vào mái nhà quanh quảng trường. Đánh vào khẩu đội trước."
+},
+{
+"mission": "c7m03",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c7m03.04",
+"en": "The ring is half broken. Look after the resistance first, then chase.",
+"vi": "Vòng vây thủng một nửa. Lo cho quân kháng chiến trước, rồi mới đuổi.",
+"arg": "1/2"
+},
+{
+"mission": "c7m03",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m03.05",
+"en": "The resistance HQ is about to fall. Everything on whatever is shelling it!",
+"vi": "Sở chỉ huy kháng chiến sắp sập. Mọi thứ vào xe đang nã nó!"
+},
+{
+"mission": "c7m03",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m03.06",
+"en": "The ring is gone. The resistance joins us; tonight they lead the way.",
+"vi": "Vòng vây tan. Quân kháng chiến nhập lữ đoàn, đêm nay họ dẫn đường."
+},
+{
+"mission": "c7m03",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m03.07",
+"en": "The plaza has fallen. We get the survivors out.",
+"vi": "Quảng trường thất thủ. Ta sẽ đưa những người còn sống ra ngoài."
+},
+{
+"mission": "c7m16",
+"trigger": "mission_start",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c7m16.01",
+"en": "Welcome to the city, Kade. My lads will take the north side.",
+"vi": "Chào mừng tới thành phố, Kade. Các con của ta sẽ lấy phía bắc."
+},
+{
+"mission": "c7m16",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m16.02",
+"en": "I am riding with Thorne's staff. Very polite, and very quiet.",
+"vi": "Tôi đi cùng ban tham mưu của tướng Thorne. Họ rất lịch sự, và rất ít nói.",
+"at": 30.0
+},
+{
+"mission": "c7m16",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m16.03",
+"en": "Colonel, a word: watch Thorne. I mean it.",
+"vi": "Đại tá, một lời: hãy để mắt tới tướng Thorne. Tôi nói nghiêm túc.",
+"at": 60.0
+},
+{
+"mission": "c7m16",
+"trigger": "point_captured",
+"speaker": "hung",
+"priority": 3,
+"once": true,
+"key": "script.c7m16.04",
+"en": "One point taken. Well done, lads. Your turn now, Colonel.",
+"vi": "Một điểm đã chiếm. Các con làm tốt lắm. Giờ tới lượt các anh, đại tá."
+},
+{
+"mission": "c7m16",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m16.05",
+"en": "Thorne's wing just changed direction, on new intelligence. It did not come through me.",
+"vi": "Cánh quân Thorne vừa đổi hướng, theo tin tình báo mới. Tin đó không đi qua tôi.",
+"at": 180.0
+},
+{
+"mission": "c7m16",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m16.06",
+"en": "Noted, Nadia. He is on our side.",
+"vi": "Đã ghi nhận, Nadia. Ông ấy ở phe ta."
+},
+{
+"mission": "c7m16",
+"trigger": "defeat",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c7m16.07",
+"en": "No matter, Colonel. This city has waited years; it can wait one more day.",
+"vi": "Không sao, đại tá. Thành phố này đã chờ nhiều năm, nó chờ thêm được một ngày."
+},
+{
+"mission": "c7m04",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m04.01",
+"en": "People live in those towers. They stand.",
+"vi": "Người dân sống trong những tòa tháp đó. Chúng phải đứng vững."
+},
+{
+"mission": "c7m04",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c7m04.02",
+"en": "Three towers, thousands of people. Aurel ordered them shelled rather than left to us.",
+"vi": "Ba tòa tháp, hàng nghìn người. Aurel ra lệnh bắn thay vì để lại cho ta.",
+"at": 20.0
+},
+{
+"mission": "c7m04",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m04.03",
+"en": "Jamming across every band. Their guns fire on old coordinates; they do not need to see.",
+"vi": "Nhiễu toàn dải. Pháo của chúng bắn theo tọa độ cũ, không cần nhìn."
+},
+{
+"mission": "c7m04",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c7m04.04",
+"en": "Halfway. Keep the flak and the counter-battery round the towers.",
+"vi": "Nửa thời gian. Giữ phòng không và xe săn pháo quanh các tòa tháp.",
+"arg": "1/2"
+},
+{
+"mission": "c7m04",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m04.05",
+"en": "One tower left. Every vehicle covers it, with their hulls if they must.",
+"vi": "Chỉ còn một tòa tháp. Mọi xe che nó, bằng thân nếu phải."
+},
+{
+"mission": "c7m04",
+"trigger": "victory",
+"speaker": "hq",
+"priority": 1,
+"once": true,
+"key": "script.c7m04.06",
+"en": "The towers still stand. People are waving from the balconies.",
+"vi": "Các tòa tháp vẫn đứng. Người ta đang vẫy tay từ ban công."
+},
+{
+"mission": "c7m04",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m04.07",
+"en": "The last tower is down. Rescue vehicles in. Every free crew digs.",
+"vi": "Tòa cuối đã đổ. Đưa xe cứu hộ vào. Mọi xe rảnh tay đào bới."
+},
+{
+"mission": "c7m05",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m05.01",
+"en": "Juggernaut again, on the city freight line. Someone patched it up.",
+"vi": "Lại là Juggernaut, trên tuyến hàng hóa của thành phố. Ai đó đã vá nó.",
+"at": 3.0
+},
+{
+"mission": "c7m05",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c7m05.02",
+"en": "Juggernaut, patched in a hurry: new plate over old. The joints between wagons are weak.",
+"vi": "Juggernaut. Vá vội, giáp hàn chồng lên giáp cũ. Mối nối giữa các toa vẫn yếu."
+},
+{
+"mission": "c7m05",
+"trigger": "time",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c7m05.03",
+"en": "Stop it before the depot. Everything on the train.",
+"vi": "Chặn nó trước kho. Mọi thứ vào đoàn tàu.",
+"at": 30.0
+},
+{
+"mission": "c7m05",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m05.04",
+"en": "A third of the way. The depot is at the end of the line, next to the resistance square.",
+"vi": "Tàu qua một phần ba. Kho ở cuối tuyến, sát quảng trường kháng chiến.",
+"arg": "1/3"
+},
+{
+"mission": "c7m05",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c7m05.05",
+"en": "One gun wagon silenced. The train is dragging the wreck; much slower.",
+"vi": "Một toa pháo đã câm. Đoàn tàu đang kéo xác, chậm hẳn."
+},
+{
+"mission": "c7m05",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m05.06",
+"en": "Two thirds. One station before the depot.",
+"vi": "Hai phần ba. Còn một ga trước kho.",
+"arg": "2/3"
+},
+{
+"mission": "c7m05",
+"trigger": "boss_phase_change",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m05.07",
+"en": "It has stopped to unload guns. One minute to stop it. Everything on it.",
+"vi": "Nó dừng lại dỡ pháo. Một phút để chặn. Đánh hết vào nó."
+},
+{
+"mission": "c7m05",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c7m05.08",
+"en": "Heavy round loading in the rear wagon. Clear the rails and the red zone!",
+"vi": "Toa sau đang nạp đạn lớn. Tránh xa đường ray và vùng đỏ!"
+},
+{
+"mission": "c7m05",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c7m05.09",
+"en": "The engine is spitting fire! It is about to roll!",
+"vi": "Đầu máy đang phun lửa! Nó sắp lật!",
+"arg": "25"
+},
+{
+"mission": "c7m05",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m05.10",
+"en": "It is almost at the depot. Everything onto the engine, now.",
+"vi": "Nó sắp vào kho. Dồn tất cả vào đầu máy, ngay."
+},
+{
+"mission": "c7m05",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m05.11",
+"en": "Derailed twice. Kessler will send us the bill.",
+"vi": "Trật bánh lần thứ hai. Kessler sẽ gửi hóa đơn cho ta."
+},
+{
+"mission": "c7m05",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m05.12",
+"en": "It has unloaded its guns in the city. Aurel's guard has another fortress.",
+"vi": "Nó đã dỡ xong pháo trong thành phố. Cận vệ của Aurel có thêm một pháo đài."
+},
+{
+"mission": "c7m07",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m07.01",
+"en": "Three command cars. Without them, the garrison breaks.",
+"vi": "Ba xe chỉ huy. Không có chúng, đồn trú sẽ vỡ."
+},
+{
+"mission": "c7m07",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m07.02",
+"en": "One commissar caught. He only says one thing: the Director will not forget.",
+"vi": "Một chính ủy đã bị bắt. Ông ta chỉ nói một câu: Giám đốc sẽ không quên.",
+"arg": "1/3"
+},
+{
+"mission": "c7m07",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c7m07.03",
+"en": "Heavy rain. The command cars will be slow in the flooded streets.",
+"vi": "Mưa nặng hạt. Xe chỉ huy sẽ đi chậm trong phố ngập."
+},
+{
+"mission": "c7m07",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m07.04",
+"en": "One left, running through the old streets. Narrow; block both ends.",
+"vi": "Còn một xe, chạy qua khu phố cổ. Đường ở đó hẹp, chặn hai đầu.",
+"arg": "last"
+},
+{
+"mission": "c7m07",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c7m07.05",
+"en": "A heavy lost in the narrow streets. No lone chases; work in pairs.",
+"vi": "Mất xe nặng trong phố hẹp. Đừng đuổi một mình, đi theo cặp."
+},
+{
+"mission": "c7m07",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m07.06",
+"en": "All three crossed out. The garrison is coming apart, every unit for itself.",
+"vi": "Ba chính ủy đã gạch. Đồn trú đang tan, đơn vị nào cũng tự lo thân."
+},
+{
+"mission": "c7m07",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m07.07",
+"en": "They escaped into the storm. The garrison still has its drivers.",
+"vi": "Họ thoát vào bão. Đồn trú vẫn còn người cầm lái."
+},
+{
+"mission": "c7m12",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m12.01",
+"en": "Narrow streets. Keep the tanks together and the carriers close.",
+"vi": "Phố hẹp. Giữ xe tăng đi cùng nhau, xe bọc thép sát bên."
+},
+{
+"mission": "c7m12",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c7m12.02",
+"en": "Sea fog in the old streets. Street lights out, only window lights.",
+"vi": "Sương biển tràn vào phố cổ. Đèn đường tắt, chỉ còn đèn cửa sổ."
+},
+{
+"mission": "c7m12",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c7m12.03",
+"en": "One square free. Someone has opened a bakery in the middle of the night.",
+"vi": "Một quảng trường đã tự do. Có người mở cửa hiệu bánh giữa đêm."
+},
+{
+"mission": "c7m12",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c7m12.04",
+"en": "They took a square back. Stay out of dead ends; go round.",
+"vi": "Chúng lấy lại một quảng trường. Đừng vào phố cụt, vòng qua."
+},
+{
+"mission": "c7m12",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c7m12.05",
+"en": "One square left. Slowly, watch the rooftops.",
+"vi": "Còn một quảng trường. Đi chậm, nhìn mái nhà.",
+"arg": "last"
+},
+{
+"mission": "c7m12",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m12.06",
+"en": "Three squares, three districts free. The people are coming out.",
+"vi": "Ba quảng trường, ba khu phố tự do. Người dân đang ra đường."
+},
+{
+"mission": "c7m12",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m12.07",
+"en": "The Old Quarter is still the guard's. We come back by daylight.",
+"vi": "Phố cổ vẫn trong tay cận vệ. Ta sẽ quay lại vào ban ngày."
+},
+{
+"mission": "c7m15",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m15.01",
+"en": "Three squares. I want to know who is really in each.",
+"vi": "Ba quảng trường. Tôi muốn biết ai thực sự ở trong mỗi nơi."
+},
+{
+"mission": "c7m15",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c7m15.02",
+"en": "First square: the guard's flag, but only sentries at the gate.",
+"vi": "Quảng trường thứ nhất: cờ của cận vệ, nhưng chỉ có lính gác ở cổng."
+},
+{
+"mission": "c7m15",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c7m15.03",
+"en": "The militia report unmarked vehicles moving between the squares.",
+"vi": "Dân quân báo có xe lạ đi lại giữa các quảng trường, không cờ."
+},
+{
+"mission": "c7m15",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m15.04",
+"en": "One square left. I can see Thorne's staff car parked there.",
+"vi": "Còn một quảng trường. Tôi thấy xe của ban tham mưu tướng Thorne đỗ ở đó.",
+"arg": "last"
+},
+{
+"mission": "c7m15",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m15.05",
+"en": "Thorne's staff had a guest from Hegemon. I have a photograph.",
+"vi": "Ban tham mưu của Thorne có một vị khách từ Hegemon. Tôi có ảnh."
+},
+{
+"mission": "c7m15",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m15.06",
+"en": "File it, Nadia. We have a city to take.",
+"vi": "Lưu lại, Nadia. Ta còn một thành phố phải chiếm."
+},
+{
+"mission": "c7m15",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m15.07",
+"en": "The rain ruined the photographs. I only have what I remember.",
+"vi": "Mưa làm hỏng hết ảnh. Tôi chỉ còn lại những gì tôi nhớ."
+},
+{
+"mission": "c7m13",
+"trigger": "mission_start",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c7m13.01",
+"en": "Another Inferno. From Varga's works, the same design. It is burning one street at a time.",
+"vi": "Lại một Inferno. Từ xưởng của Varga, cùng thiết kế. Nó đang đốt từng con phố."
+},
+{
+"mission": "c7m13",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c7m13.02",
+"en": "Same design, same weak cooling line. Hit it behind the turret.",
+"vi": "Cùng thiết kế, cùng đường làm mát yếu. Đánh vào sau tháp pháo."
+},
+{
+"mission": "c7m13",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c7m13.03",
+"en": "The city's fire crews are following it. Do not let it turn back on them.",
+"vi": "Đội cứu hỏa của thành phố đang theo sau nó. Đừng để nó quay lại.",
+"at": 30.0
+},
+{
+"mission": "c7m13",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c7m13.04",
+"en": "A fuel tank burst. It is burning itself; keep thirty metres off.",
+"vi": "Bình nhiên liệu vỡ. Nó đang tự cháy, giữ xa ba mươi mét."
+},
+{
+"mission": "c7m13",
+"trigger": "boss_phase_change",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c7m13.05",
+"en": "All projectors open in the narrow street. Back to the square; let it overheat.",
+"vi": "Nó mở hết vòi phun trong phố hẹp. Lùi ra quảng trường, để nó nóng lên."
+},
+{
+"mission": "c7m13",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c7m13.06",
+"en": "A fire ring is about to flare round it. Out of the red, even indoors!",
+"vi": "Vòng lửa sắp bùng quanh nó. Ra khỏi vùng đỏ, kể cả trong nhà!"
+},
+{
+"mission": "c7m13",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c7m13.07",
+"en": "Hitting it from behind. Everyone keep clear!",
+"vi": "Tôi đánh vào cửa sau của nó. Mọi người giữ xa!"
+},
+{
+"mission": "c7m13",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c7m13.08",
+"en": "Half. Do not chase it into burning streets.",
+"vi": "Một nửa. Đừng đuổi vào phố đang cháy.",
+"arg": "50"
+},
+{
+"mission": "c7m13",
+"trigger": "boss_hp",
+"speaker": "linh",
+"priority": 4,
+"once": true,
+"key": "script.c7m13.09",
+"en": "It is stalling in the crossroads. The guard is sending nobody to help it.",
+"vi": "Nó đang chết máy giữa ngã tư. Cận vệ không gửi ai cứu nó.",
+"arg": "25"
+},
+{
+"mission": "c7m13",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c7m13.10",
+"en": "The HQ caught fire. Water on it; draw that thing out of the street!",
+"vi": "Sở chỉ huy dính lửa. Bơm nước vào, kéo nó ra khỏi phố!"
+},
+{
+"mission": "c7m13",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m13.11",
+"en": "That is the last fire in the Old Quarter.",
+"vi": "Đó là đám cháy cuối cùng ở phố cổ."
+},
+{
+"mission": "c7m13",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c7m13.12",
+"en": "Varga built two. I hope he does not build a third.",
+"vi": "Varga làm hai con. Tôi hy vọng ông ta không làm con thứ ba."
+},
+{
+"mission": "c7m13",
+"trigger": "defeat",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c7m13.13",
+"en": "It is still burning. Get the people out first, then us.",
+"vi": "Nó vẫn đang đốt. Rút người dân ra trước, rồi mới tới ta."
+},
+{
+"mission": "c7m14",
+"trigger": "mission_start",
+"speaker": "dahl",
+"priority": 1,
+"once": true,
+"key": "script.c7m14.01",
+"en": "Four minutes, and I will have every bridge in Veyra on the map.",
+"vi": "Bốn phút, và tôi sẽ có mọi cây cầu ở Veyra trên bản đồ."
+},
+{
+"mission": "c7m14",
+"trigger": "event_triggered",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c7m14.02",
+"en": "First bridge ranged. Shells arrive eleven seconds after the call.",
+"vi": "Cầu thứ nhất căn xong. Đạn tới trong mười một giây sau lệnh."
+},
+{
+"mission": "c7m14",
+"trigger": "objective_progress",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c7m14.03",
+"en": "Two bridges. Three more. Keep the square for my guns.",
+"vi": "Hai cầu. Còn ba. Giữ quảng trường cho pháo của tôi.",
+"arg": "1/2"
+},
+{
+"mission": "c7m14",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m14.04",
+"en": "A raiding party is going for the artillery's ammunition trucks. West side.",
+"vi": "Một đội đánh phá đang nhắm vào xe đạn của pháo binh. Phía tây."
+},
+{
+"mission": "c7m14",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c7m14.05",
+"en": "The square is lost. Dahl's guns cannot move; take it back now.",
+"vi": "Mất quảng trường. Pháo của Dahl không di chuyển được, lấy lại ngay."
+},
+{
+"mission": "c7m14",
+"trigger": "victory",
+"speaker": "dahl",
+"priority": 1,
+"once": true,
+"key": "script.c7m14.06",
+"en": "Ranged. Every bridge, to the metre.",
+"vi": "Đã căn xong. Mọi cây cầu, chính xác tới từng mét."
+},
+{
+"mission": "c7m14",
+"trigger": "defeat",
+"speaker": "dahl",
+"priority": 1,
+"once": true,
+"key": "script.c7m14.07",
+"en": "We have to pull the guns out. Half the bridges ranged; we guess the rest.",
+"vi": "Phải kéo pháo ra. Tôi mới căn được nửa số cầu. Nửa còn lại ta sẽ đoán."
+},
+{
+"mission": "c7m02",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m02.01",
+"en": "Three looks. And note anyone else who is looking too.",
+"vi": "Ba lần nhìn. Và ghi lại bất kỳ ai khác cũng đang nhìn."
+},
+{
+"mission": "c7m02",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c7m02.02",
+"en": "The gardens: gun pits along the river bank, facing us.",
+"vi": "Vườn thượng uyển: ụ súng dọc bờ sông, quay ra phía ta."
+},
+{
+"mission": "c7m02",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m02.03",
+"en": "Jamming just came on. Not the guard's; from Thorne's camp. For protection, probably.",
+"vi": "Nhiễu vừa bật. Không phải của cận vệ: phát từ phía doanh trại của Thorne. Có lẽ để bảo vệ."
+},
+{
+"mission": "c7m02",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m02.04",
+"en": "The station is left. I want to know which trains still leave the city.",
+"vi": "Còn nhà ga. Tôi muốn biết tàu nào còn chạy ra khỏi thành phố.",
+"arg": "last"
+},
+{
+"mission": "c7m02",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m02.05",
+"en": "Three places seen. Another scout team went ahead of us. No colours.",
+"vi": "Ba nơi đã xem. Có một đội trinh sát khác cũng đi trước ta. Không mang cờ."
+},
+{
+"mission": "c7m02",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m02.06",
+"en": "We could not see it all. We go into the capital with half a map.",
+"vi": "Ta không nhìn được hết. Ta sẽ vào thủ đô với một nửa bản đồ."
+},
+{
+"mission": "c7m17",
+"trigger": "mission_start",
+"speaker": "dahl",
+"priority": 1,
+"once": true,
+"key": "script.c7m17.01",
+"en": "Longshot here. I walk the shells ahead of you. Stay behind them.",
+"vi": "Longshot đây. Tôi đi trước các anh bằng đạn pháo. Đi sau làn đạn."
+},
+{
+"mission": "c7m17",
+"trigger": "event_triggered",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c7m17.02",
+"en": "Their guns are looking for me. I shift after this salvo; two minutes.",
+"vi": "Pháo địch đang tìm tôi. Tôi đổi vị trí sau loạt này, mất hai phút."
+},
+{
+"mission": "c7m17",
+"trigger": "point_captured",
+"speaker": "dahl",
+"priority": 3,
+"once": true,
+"key": "script.c7m17.03",
+"en": "One bridgehead. Lifting the barrage two hundred metres.",
+"vi": "Một đầu cầu. Tôi nâng làn đạn thêm hai trăm mét."
+},
+{
+"mission": "c7m17",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c7m17.04",
+"en": "Heavy rain. The shells still land, but the river is rising.",
+"vi": "Mưa nặng hạt. Đạn pháo vẫn tới, nhưng sông đang dâng."
+},
+{
+"mission": "c7m17",
+"trigger": "objective_progress",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c7m17.05",
+"en": "The station left. The last barrage lands thirty seconds before you.",
+"vi": "Còn nhà ga. Làn đạn cuối cùng sẽ rơi trước nó ba mươi giây.",
+"arg": "last"
+},
+{
+"mission": "c7m17",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m17.06",
+"en": "We are on the island. Hold what we have.",
+"vi": "Ta đã lên đảo. Giữ những gì đang có."
+},
+{
+"mission": "c7m17",
+"trigger": "defeat",
+"speaker": "dahl",
+"priority": 1,
+"once": true,
+"key": "script.c7m17.07",
+"en": "I ran out of shells before you got there. Sorry. We try again with more.",
+"vi": "Đạn hết trước khi các anh tới. Tôi xin lỗi. Ta thử lại khi có thêm đạn."
+},
+{
+"mission": "c7m06",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m06.01",
+"en": "Four minutes on the square. Nobody takes it back.",
+"vi": "Bốn phút trên quảng trường. Không ai lấy lại được nó."
+},
+{
+"mission": "c7m06",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m06.02",
+"en": "Drop pods coming down on the square. From aircraft, probably.",
+"vi": "Khoang đổ bộ đang rơi từ trên cao xuống quảng trường. Từ máy bay, có lẽ."
+},
+{
+"mission": "c7m06",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m06.03",
+"en": "Thorne's reinforcements should be north of the square. They say the road is blocked.",
+"vi": "Viện quân của Thorne lẽ ra phải tới phía bắc quảng trường. Họ báo đường bị chặn.",
+"at": 60.0
+},
+{
+"mission": "c7m06",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c7m06.04",
+"en": "Halfway. This is the first place in the capital with our flag on it.",
+"vi": "Nửa thời gian. Đây là nơi đầu tiên trong thủ đô có cờ của ta.",
+"arg": "1/2"
+},
+{
+"mission": "c7m06",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c7m06.05",
+"en": "The square is lost. Take it back now, before the fog lifts.",
+"vi": "Mất quảng trường. Lấy lại, ngay, trước khi sương tan."
+},
+{
+"mission": "c7m06",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m06.06",
+"en": "The palace square is ours. The capital knows we are here.",
+"vi": "Quảng trường cung điện là của ta. Thủ đô biết ta đã tới."
+},
+{
+"mission": "c7m06",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m06.07",
+"en": "We have lost our foothold in the capital. Back to the river bank.",
+"vi": "Mất chỗ đứng trong thủ đô. Lùi về bờ sông."
+},
+{
+"mission": "c7m11",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c7m11.01",
+"en": "Fourteen birds over the roofs. Keep the launchers moving.",
+"vi": "Mười bốn con chim trên mái nhà. Giữ bệ phóng di chuyển."
+},
+{
+"mission": "c7m11",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c7m11.02",
+"en": "Seven! The storm has them wobbling; good for us.",
+"vi": "Bảy chiếc! Bão làm chúng bay loạng choạng, tốt cho ta.",
+"arg": "1/2"
+},
+{
+"mission": "c7m11",
+"trigger": "first_unit_type_seen",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c7m11.03",
+"en": "The guard's armoured hunter helicopters. No machine guns; missiles.",
+"vi": "Trực thăng săn có giáp của cận vệ. Đừng phí súng máy, dùng tên lửa."
+},
+{
+"mission": "c7m11",
+"trigger": "momentum_high_once",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c7m11.04",
+"en": "The sky over Veyra is clearing. I can see the palace dome.",
+"vi": "Bầu trời Veyra thoáng dần. Tôi thấy được cả mái vòm cung điện."
+},
+{
+"mission": "c7m11",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m11.05",
+"en": "The sky over Veyra is ours.",
+"vi": "Bầu trời Veyra là của ta."
+},
+{
+"mission": "c7m11",
+"trigger": "defeat",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c7m11.06",
+"en": "Last flak gone. The resistance will have to hide under the roofs.",
+"vi": "Mất phòng không cuối. Kháng chiến sẽ phải trốn dưới mái nhà."
+},
+{
+"mission": "c7m09",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m09.01",
+"en": "The dome carries every Hegemon broadcast in the country. Bring it down.",
+"vi": "Mái vòm phát mọi bản tin của Hegemon trong cả nước. Hạ nó xuống."
+},
+{
+"mission": "c7m09",
+"trigger": "event_triggered",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c7m09.02",
+"en": "Guns ranged on the dome. I need it in the open for twenty seconds.",
+"vi": "Pháo căn vào mái vòm. Cần nó lộ ra hai mươi giây."
+},
+{
+"mission": "c7m09",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m09.03",
+"en": "Tonight's bulletin is ready: Veyra is safe. We have ten minutes to make it wrong.",
+"vi": "Bản tin tối nay đã chuẩn bị xong: Veyra vẫn an toàn. Ta có mười phút để làm nó sai.",
+"at": 120.0
+},
+{
+"mission": "c7m09",
+"trigger": "enemy_reinforcement",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c7m09.04",
+"en": "The guard is rushing to the dome. They value the loudspeaker more than the palace.",
+"vi": "Cận vệ đang dồn về mái vòm. Họ quý cái loa này hơn cả cung điện."
+},
+{
+"mission": "c7m09",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m09.05",
+"en": "One minute to air time. The dome goes quiet.",
+"vi": "Một phút trước giờ phát sóng. Mái vòm phải im lặng."
+},
+{
+"mission": "c7m09",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m09.06",
+"en": "The dome is down. Tonight the whole country will hear silence.",
+"vi": "Mái vòm đã đổ. Tối nay cả nước sẽ nghe thấy sự im lặng."
+},
+{
+"mission": "c7m09",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m09.07",
+"en": "The bulletin went out. The country heard that Veyra is safe.",
+"vi": "Bản tin đã phát. Cả nước nghe rằng Veyra vẫn an toàn."
+},
+{
+"mission": "c7m18",
+"trigger": "time",
+"speaker": "dahl",
+"priority": 1,
+"once": true,
+"key": "script.c7m18.01",
+"en": "Five minutes, you hold. Leave the rest to my guns.",
+"vi": "Năm phút, các anh trụ. Phần còn lại để pháo của tôi.",
+"at": 5.0
+},
+{
+"mission": "c7m18",
+"trigger": "time",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c7m18.02",
+"en": "Longshot. Barrage on the far bank in ten. Heads down.",
+"vi": "Longshot. Pháo kích bờ bên kia trong mười giây. Cúi đầu xuống.",
+"at": 30.0
+},
+{
+"mission": "c7m18",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m18.03",
+"en": "Drop pods behind the river line. They want to cut our way back.",
+"vi": "Khoang đổ bộ rơi sau tuyến sông. Chúng muốn chặn đường lui của ta."
+},
+{
+"mission": "c7m18",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c7m18.04",
+"en": "Halfway. Dahl's guns are working; we only have to stand.",
+"vi": "Nửa chặng. Pháo của Dahl đang làm việc, ta chỉ cần đứng vững.",
+"arg": "1/2"
+},
+{
+"mission": "c7m18",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m18.05",
+"en": "Thorne's army is two kilometres off, guarding supply lines, they say. Civilians first.",
+"vi": "Quân của Thorne cách ta hai cây số. Họ báo đang giữ tuyến tiếp tế, ưu tiên dân thường.",
+"at": 200.0
+},
+{
+"mission": "c7m18",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m18.06",
+"en": "Thorne's army sat it out. Every minute of it.",
+"vi": "Quân Thorne đứng ngoài suốt trận. Từng phút một."
+},
+{
+"mission": "c7m18",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m18.07",
+"en": "Noted. Tomorrow we need every army in the city.",
+"vi": "Đã ghi lại. Ngày mai ta cần mọi đạo quân trong thành phố."
+},
+{
+"mission": "c7m18",
+"trigger": "defeat",
+"speaker": "dahl",
+"priority": 1,
+"once": true,
+"key": "script.c7m18.08",
+"en": "The river line has broken. I am pulling the guns out before they reach them.",
+"vi": "Tuyến sông vỡ. Tôi kéo pháo ra trước khi chúng tới được."
+},
+{
+"mission": "c7m08",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m08.01",
+"en": "Nobody stays in the palace tonight. Hold the square until the last truck leaves.",
+"vi": "Đêm nay không ai ở lại cung điện. Giữ quảng trường tới khi chiếc xe cuối rời đi."
+},
+{
+"mission": "c7m08",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c7m08.02",
+"en": "Six trucks of families, over the west bridge. At least four must make it.",
+"vi": "Sáu xe chở các gia đình, qua cầu phía tây. Cần ít nhất bốn chiếc qua được.",
+"at": 20.0
+},
+{
+"mission": "c7m08",
+"trigger": "first_unit_type_seen",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c7m08.03",
+"en": "Night bombers over the river! They are after the bridge; flak up!",
+"vi": "Máy bay ném bom đêm trên sông! Chúng nhắm vào cầu, phòng không lên!"
+},
+{
+"mission": "c7m08",
+"trigger": "objective_progress",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c7m08.04",
+"en": "Half the trucks are over. A child on the third one is waving our flag.",
+"vi": "Nửa số xe đã qua cầu. Đứa trẻ trên xe thứ ba vẫy cờ của ta.",
+"arg": "1/2"
+},
+{
+"mission": "c7m08",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m08.05",
+"en": "One more truck and it is not enough. Cover the last one over the bridge.",
+"vi": "Thêm một xe là không đủ. Che chiếc cuối qua cầu."
+},
+{
+"mission": "c7m08",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m08.06",
+"en": "The palace is empty. Now we can fight without hitting anyone we should not.",
+"vi": "Cung điện đã trống. Giờ ta có thể đánh mà không sợ trúng ai."
+},
+{
+"mission": "c7m08",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m08.07",
+"en": "Not enough trucks crossed. Find shelter for everyone left behind.",
+"vi": "Không đủ xe qua cầu. Tìm mọi chỗ trú cho những người còn lại."
+},
+{
+"mission": "c7m10",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.01",
+"en": "Veyra, Brigade. Together with Thorne's army.",
+"vi": "Veyra, lữ đoàn. Cùng với quân của Thorne."
+},
+{
+"mission": "c7m10",
+"trigger": "mission_start",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.02",
+"en": "Veyra's last day under Hegemon's flag, lads. Make it a fine one.",
+"vi": "Ngày cuối cùng của Veyra dưới cờ Hegemon, các con. Đánh cho đẹp."
+},
+{
+"mission": "c7m10",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7m10.03",
+"en": "Colonel, three oddities so far, each with a sound explanation. I logged them anyway.",
+"vi": "Đại tá, tôi đã ghi ba điều lạ, mỗi điều có một lời giải thích hợp lý. Tôi vẫn ghi lại.",
+"at": 40.0
+},
+{
+"mission": "c7m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.04",
+"en": "Bridgeheads taken. Next: the palace or the power station. Each has its price.",
+"vi": "Đầu cầu đã chiếm. Chọn đòn tiếp: cung điện hay trạm phát điện. Mỗi đường có giá.",
+"arg": "2"
+},
+{
+"mission": "c7m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.05",
+"en": "The palace and the square. Aurel's guard is throwing in all it has left.",
+"vi": "Cung điện và quảng trường. Cận vệ của Aurel dồn hết những gì còn lại vào đây.",
+"arg": "4"
+},
+{
+"mission": "c7m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.06",
+"en": "Aurel's mobile command is running. After it; it does not leave the city.",
+"vi": "Sở chỉ huy cơ động của Aurel đang chạy. Đuổi theo, đừng để nó ra khỏi thành phố.",
+"arg": "7"
+},
+{
+"mission": "c7m10",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.07",
+"en": "Atlas, a command post on tracks. Heavy armour, but its command masts are exposed on top.",
+"vi": "Atlas, sở chỉ huy trên xích. Giáp nặng, nhưng ăng-ten chỉ huy nằm lộ trên nóc."
+},
+{
+"mission": "c7m10",
+"trigger": "boss_hp",
+"speaker": "linh",
+"priority": 4,
+"once": true,
+"key": "script.c7m10.08",
+"en": "Atlas is at half. It is calling something on the eastern rails.",
+"vi": "Atlas mất một nửa. Nó đang gọi một thứ gì đó trên đường ray phía đông.",
+"arg": "50"
+},
+{
+"mission": "c7m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.09",
+"en": "Nemesis on the eastern rails. A train carrying something I do not want to guess at.",
+"vi": "Nemesis trên đường ray phía đông. Một đoàn tàu chở thứ gì đó tôi không muốn đoán.",
+"arg": "8"
+},
+{
+"mission": "c7m10",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.10",
+"en": "Nemesis is arming its main weapon. Out of the red, everyone, now!",
+"vi": "Nemesis đang nạp vũ khí chính. Rời khỏi vùng đỏ, tất cả, ngay!"
+},
+{
+"mission": "c7m10",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.11",
+"en": "The train is almost there. Everything onto it; nothing held back.",
+"vi": "Đoàn tàu sắp tới đích. Mọi thứ vào nó, không còn gì để giữ lại."
+},
+{
+"mission": "c7m10",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.12",
+"en": "Veyra is free. Thorne got out with a third of his army. We will find him.",
+"vi": "Veyra tự do. Thorne thoát được với một phần ba đạo quân. Ta sẽ tìm ra ông ta."
+},
+{
+"mission": "c7m10",
+"trigger": "victory",
+"speaker": "hung",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.13",
+"en": "I do not hate you, lads. I only see what is coming. Until we meet, Marcus.",
+"vi": "Ta không ghét các con. Ta chỉ thấy trước những gì sẽ tới. Hẹn gặp lại, Marcus."
+},
+{
+"mission": "c7m10",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c7m10.14",
+"en": "Out of the centre. Hold the free districts and wait for orders.",
+"vi": "Rút khỏi trung tâm. Giữ những quận đã tự do, chờ lệnh."
+},
+{
+"mission": "c7s1",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7s1.01",
+"en": "This one stays off the record, Colonel. Three letter drops.",
+"vi": "Chuyện này không ghi vào sổ, đại tá. Ba điểm thả thư."
+},
+{
+"mission": "c7s1",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c7s1.02",
+"en": "First drop: an old mailbox, unlocked. The letters use an Accord army cipher.",
+"vi": "Điểm thả thứ nhất: một hòm thư cũ, không khóa. Thư viết bằng mật mã của quân đội Accord."
+},
+{
+"mission": "c7s1",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c7s1.03",
+"en": "One drop left. The ink on the envelope dried yesterday.",
+"vi": "Còn một điểm. Mực trên phong bì mới khô hôm qua.",
+"arg": "last"
+},
+{
+"mission": "c7s1",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7s1.04",
+"en": "Three drops. The recipient signs with one word: Sol. I do not know who that is yet.",
+"vi": "Ba điểm thả. Người nhận ký tên bằng một chữ: Sol. Tôi chưa biết đó là ai."
+},
+{
+"mission": "c7s1",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c7s1.05",
+"en": "Someone emptied the drops before us. They know we are looking.",
+"vi": "Có người dọn sạch các điểm thả trước ta. Họ biết ta đang tìm."
+}
+]
+}

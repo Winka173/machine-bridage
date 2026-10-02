@@ -143,9 +143,10 @@ namespace MachineBrigade.Game.Match
         /// <summary>Reward multiplier of a mission tier: Heroic pays half as much again, Iron double.</summary>
         public static float TierPay(int tier) => tier switch { 1 => 1.5f, 2 => 2f, _ => 1f };
 
-        public static MatchReward Mission(MissionDef mission, bool won, float seconds, int losses, bool challenge = true, int tier = 0)
+        /// <param name="campaignStars">Prompt 30 L4: the stars by campaignStarRules (CampaignStars.Count); null: the old time / losses rule.</param>
+        public static MatchReward Mission(MissionDef mission, bool won, float seconds, int losses, bool challenge = true, int tier = 0, int? campaignStars = null)
         {
-            var stars = Stars(mission, won, seconds, losses, challenge);
+            var stars = campaignStars ?? Stars(mission, won, seconds, losses, challenge);
             // A tier's first win pays in full, like the mission's first win.
             var first = won && (!PlayerProfile.Completed(mission.Id) || PlayerProfile.MissionTier(mission.Id) < tier);
             var reward = new MatchReward { MissionId = mission.Id, Stars = stars, Tier = tier };

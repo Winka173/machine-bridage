@@ -124,3 +124,14 @@ namespace MachineBrigade.Sim
         }
     }
 }
+
+namespace MachineBrigade.Sim
+{
+    public sealed partial class SimWorld
+    {
+        private Modes.NeutralSystem? _neutrals;
+
+        /// <summary>Prompt 30 L6: the map's neutral sites the mode uses (made on first use).</summary>
+        public Modes.NeutralSystem Neutrals => _neutrals ??= new Modes.NeutralSystem(this);
+    }
+}

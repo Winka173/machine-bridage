@@ -84,6 +84,8 @@ namespace MachineBrigade.Sim.Bosses
         private void JoinBig(Vehicle v, BigAttackDef? instead = null)
         {
             if ((instead ?? v.Def.BigAttack) is not { } def || !v.HasParts && def.Strikes[0].Parts.Count > 0) return;
+            // Prompt 30 L5: Survival's mini bosses carry no superweapon.
+            if (v.IsMiniBoss && _world.MiniBossesNoBigAttacks) return;
             var parts = new List<int>();
             foreach (var s in def.Strikes)
                 foreach (var id in s.Parts)
