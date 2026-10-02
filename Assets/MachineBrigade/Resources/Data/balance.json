@@ -906,7 +906,7 @@
     { "id": "p26_roc_close_twin_30_bmpt", "inherits": "twin_30_bmpt", "weaponFamily": "", "cooldown": 0.946, "damage": 22 },
     { "id": "p26_daedalus_dae57", "inherits": "gun_57mm", "weaponVariantId": "", "weaponFamily": "", "real": "AU-220 57 mm (belly)", "damageType": "HighExplosive", "damage": 120, "burst": 2, "burstInterval": 0.2, "cooldown": 2.3, "pen": 4, "splash": 3.5, "edge": 7 },
     { "id": "p26_daedalus_dae_laser", "inherits": "orbital_laser", "weaponFamilyId": "laser_targeting_laser", "real": "targeting laser (300 kW)", "size": 300, "damage": 40 },
-    { "id": "p26_daedalus_sec_dae57", "inherits": "p26_daedalus_dae57", "cooldown": 1.1, "damage": 135 },
+    { "id": "p26_daedalus_sec_dae57", "inherits": "p26_daedalus_dae57", "edge": 6, "splash": 3, "cooldown": 0.956, "damage": 120 },
     { "id": "p26_daedalus_direct_dae_laser", "inherits": "p26_daedalus_dae_laser", "damage": 16.5 },
     { "id": "p26_icarus_ic_coil", "inherits": "coilgun", "real": "coilgun (64 MJ)", "size": 64, "damage": 1440, "burst": 1, "cooldown": 2, "pierce": true, "pierceMax": 4, "pen": 5 },
     { "id": "p26_icarus_ic_laser", "inherits": "orbital_laser", "weaponFamilyId": "laser_tower", "real": "laser tower (300 kW)", "size": 300, "damage": 40 },
