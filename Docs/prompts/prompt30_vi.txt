@@ -1,0 +1,121 @@
+# PROMPT 30 — KỂ CHUYỆN TRONG TRẬN, KẾT TRẬN, LUẬT TRẬN, PHẦN VÔ HẠN, TRUNG LẬP, KIỂM TĨNH CHẾ ĐỘ VÀ BẢN ĐỒ
+
+Bạn làm việc tự chủ trong repo Machine Brigade (Unity). Không chờ duyệt giữa chừng. Mọi quyết định ghi vào docs/DECISIONS.md (mục "Prompt 30") kèm lý do. Chia việc theo các lượt dưới đây, mỗi lượt một hoặc vài commit. Mọi con số là điểm khởi đầu thiết kế, không phải số đã đo.
+
+## 0. NGUỒN
+- docs/story/Machine_Brigade_Cot_truyen_Che_do_v2.xlsx: nguồn thiết kế chính. Đọc hết các sheet: Luật viết, Giọng nhân vật, Dàn ý chương, Nhịp theo kiểu màn, Điểm kích hoạt, Kết trận, Trung lập, Chế độ, Luật trận, Vô hạn, Đo bản đồ. Sheet Màn bộ bài game, Biến cố, AI theo chế độ KHÔNG thuộc prompt này.
+- campaign.json, balance.json, mã nguồn: nguồn sự thật cho nhiệm vụ, bản đồ, mục tiêu, nhân vật.
+- Dòng thời gian và danh sách nhiệm vụ trong tài liệu thiết kế là canon: không đổi cốt truyện, người chết, người phản bội, người đổi phe, mục tiêu nhiệm vụ.
+
+## 1. LUẬT KHÔNG ĐƯỢC VI PHẠM
+- KHÔNG chạy mô phỏng trận, không test trong game, không đo FPS. Được và phải viết test tự động cho code, dữ liệu và validator.
+- Không lồng tiếng. Không cutscene. Thoại là chữ.
+- Không tạo hệ thoại thứ hai: mở rộng hàng đợi thoại hiện có.
+- Không làm việc của prompt 28 (AI), prompt 31 (màn bộ bài game, biến cố đổi bản đồ, placed_allies).
+- Không thêm hệ kinh tế mới; tiếp tế giữ nguyên, ngưỡng tiếp tế không đổi.
+- Tên riêng không dịch. Song ngữ Việt–Anh qua localization, không viết chuỗi cứng.
+- Dòng ghi "Xem lại" ở bất kỳ file nào là chờ chủ dự án quyết, không áp.
+
+## 2. CÁC LƯỢT
+
+### Lượt 0 — Đọc và kiểm (không sửa)
+Ghi kết quả vào docs/checks/p30_precheck.md:
+1. campaign.json có trường act (hồi) không, giá trị 1–4 cho chương nào; UI chuyển hồi, tóm tắt chương, dòng thời gian đang dùng gì.
+2. Huyền thoại (Tác chiến) đang mở ở đâu trong code.
+3. Hàng đợi thoại hiện có: ưu tiên, khoảng cách 9 s / 20 s, cài đặt Đầy đủ / Chỉ quan trọng / Tắt, nhật ký 20 câu, 6 khoảnh khắc chậm ×0,5.
+4. Mô phỏng và VFX có dùng chung Time.timeScale không.
+5. Nhịp đợt của Sinh tồn; luật bắt kịp (+25%, tiếp viện miễn phí, tới +50%); công thức điểm Tác chiến; điều kiện thắng/thua hiện tại của từng chế độ.
+6. Dữ liệu bản đồ/navmesh đọc được từ editor script không.
+
+### Lượt 1 — Sửa metadata cốt truyện
+- Nếu dữ liệu có 4 hồi: sửa câu "15 chương trong 3 hồi" thành 4 hồi ở mọi nơi (tài liệu, UI, hồ sơ); không đổi dữ liệu về 3. Nếu dữ liệu không có trường act: ghi vào DECISIONS và dùng 4 hồi theo bảng chương.
+- Đổi "phần kết sau chương 9" thành "Kết mạch Thorne" (interlude sau chương 9, trước chương 15). Phần kết thật sau c12m10.
+- Huyền thoại mở sau khi thắng c12m10.
+- Commit: "P30 L1: act structure + Legendary unlock".
+
+### Lượt 2 — Giao diện và hàng đợi thoại
+- Nâng dải phụ đề thành chân dung nhỏ + dải thoại gọn trên khay thẻ, tối đa 2 dòng; dùng chân dung sẵn có (tướng, thẻ briefing); nhân vật thiếu chân dung thì dùng chân dung tạm theo phe và ghi danh sách.
+- Không che cảnh báo siêu vũ khí, giao diện boss then chốt, đồng hồ mục tiêu; tôn trọng safe area ở 16:9, 20:9, 4:3.
+- Ưu tiên P0–P4 theo Luật viết L12:
+  - P0 là cảnh báo hệ thống, không phụ thuộc cài đặt;
+  - 9 s / 20 s chỉ là khoảng cách tối thiểu;
+  - P1 bỏ qua khoảng cách nhưng chờ câu đang hiện xong;
+  - P3/P4 quá hạn 8 s thì bỏ, không dồn hàng.
+- Thêm điểm kích hoạt mới theo sheet Điểm kích hoạt: objective_stall_90s (thay quiet_90s), critical_failure_imminent, momentum_high_once, boss_phase_change; giới hạn expensive_unit_lost; luật chặn chồng thoại boss.
+- Dữ liệu speakerRole / allowedTriggers theo sheet Giọng nhân vật.
+- Validator render: mọi câu ≤ 2 dòng ở màn nhỏ nhất được hỗ trợ, có chân dung, cỡ chữ Lớn; báo câu vượt.
+- Commit theo từng phần.
+
+### Lượt 3 — Kết trận
+- Máy trạng thái RUNNING → RESOLVED → PRESENTATION → RESULTS theo sheet Kết trận.
+- Ở RESOLVED, mô phỏng gameplay đứng yên; PRESENTATION chỉ chạy hình ảnh (camera, VFX, hoạt ảnh, chuỗi nổ boss, proxy quân lùi).
+- Quay chậm chỉ cho hình ảnh. Nếu Lượt 0 cho thấy dùng chung Time.timeScale thì tách đồng hồ hình ảnh khỏi mô phỏng.
+- Thời lượng: 6–8 s / 4–5 s / 2,5–4 s theo loại màn và lần chơi; chạm bỏ qua sau 0,75 s; câu kết cốt truyện bị bỏ qua thì hiện ở bảng kết quả và nhật ký.
+- Test: kết quả trận không đổi giữa có và không có PRESENTATION; replay tái tạo cùng kết quả.
+- Commit: "P30 L3: match end sequence".
+
+### Lượt 4 — Luật trận và cách tính điểm
+- Schema dữ liệu cho mỗi chế độ: winCondition, loseCondition, timeLimit, overtimeRule, drawRule, scoreRule, catchUpPolicy. Áp đúng bảng ở sheet Luật trận.
+- Không có luật chung "hết quân là thua".
+- Giờ tối đa của màn chiến dịch đặt theo từng màn, không theo chế độ.
+- Tử chiến: mỗi xe hạ cho min(baseCP, 18) điểm, dùng baseCP (không dùng giá sau giảm giá hạng thẻ).
+- Tác chiến: giữ công thức hiện có, đổi phần tổn thất sang baseCP đã mất (2.000 khi mất 0, về 0 khi mất 150 baseCP).
+- campaignStarRules[3] chỉ cho màn chiến dịch: ★1 hoàn thành; ★2 làm chủ kiểu màn; ★3 mục tiêu phụ riêng của màn. Đặt mặc định ★2 theo kiểu màn và ★3 theo mô tả màn; không dùng mục tiêu dễ vỡ hay chạy giờ chặt.
+- Bảng xếp hạng Vô tận, Săn trùm, Pháo đài tuần theo thứ tự sắp xếp nhiều tầng ở sheet Luật trận (không dùng công thức gộp cho phép farm).
+- Test cho từng luật thắng/thua/hiệp phụ/hòa bằng trạng thái giả lập (unit test), không mô phỏng trận.
+- Commit theo chế độ.
+
+### Lượt 5 — Phần vô hạn
+- Theo sheet Vô hạn:
+  - Phòng thủ, Sinh tồn, Săn trùm có nút Đánh tiếp (vô hạn) / Kết thúc sau khi thắng;
+  - thưởng thắng ghi nhận trước khi đánh tiếp.
+- Vô tận dùng chung mã và bảng xếp hạng với phần vô hạn của Phòng thủ; vẫn giữ mục menu.
+- Tăng độ khó:
+  - Phòng thủ / Vô tận / Sinh tồn: địch +4% mỗi đợt, ta +2% mỗi đợt tối đa +30%;
+  - Săn trùm: địch +8% mỗi boss.
+  Chỉ tăng chỉ số, không tăng số xe quá đợt cuối phần hữu hạn.
+- Sinh tồn hữu hạn: đợt 5 mini boss, đợt 10 boss chủ lực. Phần vô hạn: mỗi 5 đợt mini boss, mỗi 10 đợt boss chủ lực. Mini boss không có siêu vũ khí.
+- Thưởng: 18 xu × 0,9^k mỗi đợt vượt (Săn trùm 60 xu × 0,9^k mỗi boss), trần 600 xu/ngày cho phần vô hạn; huy hiệu +10/+20/+30 đợt, +5/+10 boss.
+- Commit theo chế độ.
+
+### Lượt 6 — Trung lập bản đầu
+- Làm 8 dòng V1 ở sheet Trung lập. 0–2 yếu tố mỗi bản đồ; chế độ đối xứng đặt đối xứng hoặc tương đương giá trị. Không làm dòng LATER.
+- Thoại neutral_captured theo speakerRole.
+- Commit.
+
+### Lượt 7 — Kịch bản 193 màn
+- Viết theo chương, mỗi chương một commit, theo thứ tự chơi 1, 2, 3, 13, 4, 5, 6, 14, 7, 8, 9, 15, 10, 11, 12.
+- Theo đúng Luật viết, Giọng nhân vật, Dàn ý chương, Nhịp theo kiểu màn, Điểm kích hoạt:
+  - ngân sách 4–8 / 6–10 / 10–16 câu;
+  - người nói chính theo speakerRole;
+  - tướng địch không bắt buộc ở mọi màn;
+  - báo trước Thorne bằng 3 bất thường có lời giải thích;
+  - chương 8 không nhắc Icarus;
+  - Ellis gợi ở chương 3 và 15, trả ở chương 10;
+  - chương 14: Venn đã ra hàng từ trước.
+- 6 khoảnh khắc cốt truyện chậm ×0,5 giữ nguyên.
+- Validator chạy sau mỗi chương: trùng câu nguyên văn giữa các màn; vượt ngân sách; độ dài; trigger không thuộc allowedTriggers của người nói; khóa localization thiếu Việt hoặc Anh; tên riêng bị dịch.
+- Ghi số câu mỗi màn vào docs/story/script_stats.md.
+- Không viết thoại cho phần luật riêng của 23 màn bộ bài game: viết theo mục tiêu gốc của màn; prompt 31 sẽ bổ sung.
+
+### Lượt 8 — Kiểm tĩnh chế độ và bản đồ (chỉ đọc, chỉ báo cáo)
+- Kiểm 4 sổ cho từng chế độ theo sheet Chế độ, ở 25/50/75/100% thời lượng mục tiêu:
+  - Kinh tế;
+  - Quân miễn phí / kịch bản;
+  - Sức mạnh tĩnh;
+  - Nhịp.
+  Xuất dải sức mạnh hai bên; lệch > 30% là RED, 20–30% là YELLOW; chế độ bất đối xứng không bắt 1:1. Không dự đoán tỷ lệ thắng. Ghi docs/checks/mode_static_audit.md.
+- Script đo bản đồ read-only theo sheet Đo bản đồ cho 50 bản đồ (mọi phiên bản chế độ), xuất docs/checks/map_audit.md và .csv. Không sửa bản đồ. Ghi rõ giới hạn của phép đo tĩnh.
+- Commit: "P30 L8: static audits".
+
+### Lượt 9 — Tài liệu và báo cáo
+- Xuất lại tài liệu thiết kế PDF. Thêm hoặc cập nhật các mục: 4 hồi, luật trận theo chế độ, phần vô hạn, trung lập, giao diện thoại, chuỗi kết trận; số đo cũ ở phụ lục Lịch sử đo.
+- Báo cáo docs/story/report_p30.md:
+  - kết quả Lượt 0;
+  - chỗ tự quyết;
+  - số câu thoại theo chương;
+  - lỗi validator còn lại;
+  - các bản đồ và chế độ bị đánh dấu RED/YELLOW.
+
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+- (02/10) xem 3 prompt này và file @Machine_Brigade_Cot_truyen_Che_do_v2.xlsx + đẩy lên luôn, xem phần nào claude cloud làm và phần nào bạn làm, xong đưa tôi prompt gửi cho claude cloud

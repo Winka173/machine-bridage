@@ -1,0 +1,81 @@
+# PROMPT 31 — MÀN BỘ BÀI GAME, ĐỒNG MINH ĐẶT SẴN VÀ BIẾN CỐ ĐỔI BẢN ĐỒ
+
+Bạn làm việc tự chủ trong repo Machine Brigade (Unity). Không chờ duyệt. Quyết định ghi vào docs/DECISIONS.md (mục "Prompt 31"). Chia lượt, mỗi lượt có commit. Số là điểm khởi đầu. Prompt này chạy SAU prompt 28 (có aiModeProfile) và prompt 30 (có luật trận, kịch bản 193 màn).
+
+## 0. NGUỒN
+- docs/story/Machine_Brigade_Cot_truyen_Che_do_v2.xlsx: sheet Màn bộ bài game (23 màn, trường cấu trúc), sheet Biến cố, sheet AI theo chế độ (dòng "Màn bộ bài game"), sheet Giọng nhân vật và Luật viết (cho thoại bổ sung).
+- campaign.json, balance.json, mã nguồn.
+
+## 1. LUẬT KHÔNG ĐƯỢC VI PHẠM
+- KHÔNG đổi mục tiêu gốc của bất kỳ nhiệm vụ nào. Bộ bài và special_rules chỉ đổi cách chơi.
+- Không mô phỏng trận, không test trong game, không đo FPS. Được viết test tự động.
+- Không tạo AI engine mới: màn bộ bài game kế thừa aiModeProfile của kiểu màn, chỉ ghi đè bằng specialRuleFlags.
+- Trần máy bay giữ 6 ở mọi màn. Không có Albatross chơi được (chỉ là vật thể kịch bản ở nền nếu dùng).
+- Không có UI điều khiển anh hùng: placed_allies dùng AI đồng minh, theo lệnh Tấn công/Phòng thủ chung.
+- Dòng "Xem lại" ở bất kỳ file nào: không áp.
+
+## 2. CÁC LƯỢT
+
+### Lượt 0 — Kiểm (không sửa)
+Ghi docs/checks/p31_precheck.md:
+1. Hệ phe/sát thương có hỗ trợ phe CEASEFIRE và targetFactionMask ở cấp sát thương (cả hỗ trợ hỏa lực, nổ lan) chưa (prompt 28 có thể đã thêm).
+2. Đồng minh đặt sẵn: AI đồng minh hiện có (quân của Thorne) dùng lại được cho một đơn vị lẻ không.
+3. Dữ liệu "Behemoth của Mara" và máy bay có tên dựng từ đơn vị có sẵn được không.
+4. Luật trình tạo chiến dịch "không nhiệm vụ nào đòi thẻ chưa mở" nằm ở đâu.
+5. Navmesh có hỗ trợ nhiều trạng thái dựng sẵn và chuyển trạng thái ở tick cố định không.
+6. Với mỗi màn trong 23 màn: số thẻ trong vehicle_ids chưa mở khóa ở thời điểm của màn.
+
+### Lượt 1 — Mô hình dữ liệu bộ bài game
+- Trường của màn: vehicle_ids[8], support_ids[2], placed_allies[], loaned_cards[], special_rules[], status.
+- Đúng 8 thẻ xe mua được + 2 thẻ hỗ trợ; placed_allies không chiếm ô thẻ.
+- Hạng thẻ cố định theo đường cong hạng bộ bài chính ở chương đó; không trang bị.
+- Thẻ chưa mở khóa là loaned_card:
+  - dùng được trong màn, không mở khóa vĩnh viễn;
+  - nhãn "Mượn trong nhiệm vụ này" (Việt–Anh);
+  - tối đa 1–2 thẻ chưa mở mỗi màn; nếu nhiều hơn thì thay bằng thẻ đã mở cùng vai trò và ghi DECISIONS.
+- Sửa luật trình tạo chiến dịch: thẻ mượn là ngoại lệ hợp lệ duy nhất.
+- Màn chọn bộ bài trước trận hiển thị bộ bài cố định (không sửa được) và đồng minh đặt sẵn.
+- Commit: "P31 L1: fixed-deck data model".
+
+### Lượt 2 — 13 màn MAKE FIRST
+c1m01, c2m04, c2s2, c3m06, c4m05, c4m06, c5m07, c7m11, c8m11, c9m08, i3m02, i3m03, c11m13.
+- Áp bộ bài và special_rules đúng sheet.
+- Biến cố liên quan (ví dụ mất điện ở c7m11) lấy từ Lượt 3; nếu chưa có thì màn chạy không có biến cố và ghi DECISIONS.
+- Bổ sung thoại cho luật riêng của màn theo Luật viết (giữ ngân sách của màn; P0 cảnh báo hệ thống vẫn là kênh chính).
+- Test dữ liệu: mỗi màn đủ 8 + 2, mọi id có trong roster, mục tiêu gốc không đổi so với campaign.json trước prompt 31.
+- Commit theo chương.
+
+### Lượt 3 — 5 biến cố FIRST
+Bão cát đổi hướng, Báo động nhà máy, Mất điện thành phố, Phản bội (đã có, thêm báo trước), Khoang đổ bộ quỹ đạo.
+- Mọi biến cố đổi đường đi:
+  - dùng trạng thái navmesh DỰNG SẴN, đổi ở tick cố định;
+  - luôn có đường thay thế; không nhốt xe;
+  - khôi phục đúng khi tải lại;
+  - cảnh báo 8–12 s bằng cảnh báo hệ thống + dấu trên bản đồ nhỏ.
+- Mọi biến cố deterministic theo tick hoặc điều kiện.
+- Test: kiểm kết nối navmesh của mọi trạng thái; replay tái tạo cùng trạng thái.
+- Commit theo biến cố.
+
+### Lượt 4 — Màn MAKE LATER
+- Làm c6m03 (Behemoth của Mara, placed_allies) TRƯỚC như bản thử cơ chế.
+- Chỉ khi c6m03 ổn định (test dữ liệu pass, không lỗi AI đồng minh trong test tự động) mới làm c10m12 và c12m03.
+- Các màn còn lại: i1m01, c5m03, c6m14, i2m01, c7m16, c9m12, c10m11.
+- c6m14: phe CEASEFIRE theo Lượt 0 mục 1; không có luật thua do bắn nhầm.
+- c7m16: một trong ba bất thường của chương 7 xảy ra ở màn này; không có mục tiêu đếm lần Thorne từ chối bắn.
+- c5m03, i2m01, c10m11: giữ đúng mục tiêu gốc (hộ tống thiết bị bắc cầu 5/3; chiếm hai làng và ngôi đền chìm; giữ sân bay trong lúc máy bay hạ cánh).
+- Màn nào không làm kịp hoặc cơ chế không ổn định: để lại bộ bài người chơi, ghi lý do vào báo cáo.
+- Commit theo màn.
+
+### Lượt 5 — Biến cố LATER (chỉ nếu Lượt 2–4 xong và ổn định)
+Theo thứ tự ở sheet Biến cố: Triều lên/xuống, Cầu sập, Cần cẩu đổ, Hồ băng nứt (breaksIce theo weightClass, KHÔNG theo CP), Đập nứt, Sập hầm mỏ, Dung nham, Cháy rừng. Bỏ Mây thấp. Cùng luật navmesh như Lượt 3. Dừng khi gặp rủi ro deterministic hoặc tìm đường không giải quyết được; ghi lại.
+
+### Lượt 6 — Tài liệu và báo cáo
+- Xuất lại tài liệu thiết kế PDF: mục Màn bộ bài game (bộ bài, đồng minh, luật riêng), mục Biến cố.
+- Báo cáo docs/story/report_p31.md:
+  - kết quả Lượt 0;
+  - màn đã làm / để lại và lý do;
+  - thẻ mượn đã thay;
+  - biến cố đã làm / dừng và lý do.
+
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+- (02/10) xem 3 prompt này và file @Machine_Brigade_Cot_truyen_Che_do_v2.xlsx + đẩy lên luôn, xem phần nào claude cloud làm và phần nào bạn làm, xong đưa tôi prompt gửi cho claude cloud

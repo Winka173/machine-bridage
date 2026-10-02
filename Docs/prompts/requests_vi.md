@@ -211,3 +211,5 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) check Machine_Brigade_Can_bang_dot2_v2.xlsx, file cũ Machine_Brigade_Can_bang.xlsx và _applied.xlsx, push lên nếu cần; push prompt 29 (do Claude cloud làm), đưa prompt gửi cloud, phần cloud không làm được thì bạn làm; sửa prompt 28 (gửi prompt 29 trước 28; không thêm hệ phí duy trì mới, dùng tiếp tế; B3-AI đã làm ở prompt 29); ưu tiên hơn task đang làm
 - (02/10) [báo cáo cloud: prompt 29 lượt 0-8 xong, cloud/p29-balance 6a99e85d; 128 gói dữ liệu + 9 gói code áp, 0 CONFLICT, 0 BLOCKED; ArmyFactor đã gỡ; chờ local: compile, CatalogCheck, card, PDF, Blender, UI]
 - (02/10) tiếp tục prompt 27 luôn, nâng agent lên 2
+- (02/10) [đợt 8 prompt 27] làm hết 198 model
+- (02/10) xem 3 prompt này (phụ lục prompt 28, prompt 30, prompt 31) và file Machine_Brigade_Cot_truyen_Che_do_v2.xlsx + đẩy lên luôn, xem phần nào claude cloud làm và phần nào bạn làm, xong đưa tôi prompt gửi cho claude cloud

@@ -183,3 +183,31 @@ Facts the prompt does not know:
   `flareCharges`/`flareRecharge` (17), stealth_bomber's flare skill removed; `apsCapability`, `interceptionMode`, `aps`
   (next_gen_tank, titan_tank); `missiles` (5 vehicles); rail_supergun rank/hp/bombard; p26_gungnir_emrg flags;
   `ai.economy.armyBands` removed.
+
+## Prompts 28 appendix, 30, 31 (owner, 2026-10-02): order and split
+
+Read the prompts whole: the appendix at the end of `Docs/prompts/prompt28_vi.txt` ("PHỤ LỤC PROMPT 28"),
+`Docs/prompts/prompt30_vi.txt`, `Docs/prompts/prompt31_vi.txt`; source `Docs/story/Machine_Brigade_Cot_truyen_Che_do_v2.xlsx`
+(16 sheets). Order: **28 appendix -> 30 -> 31**, one branch each (`cloud/p28-modes`, `cloud/p30-story`, `cloud/p31-decks`),
+each from the latest `origin/feature/visual-overhaul` (the lead merges in between). Same rules as above.
+
+Facts: prompt 29 already removed ArmyFactor and did B3-AI (appendix A is mostly done: verify and record; the new part is
+the spendPressure / advancePressure split). Navigation is the Sim's own (`Scripts/Sim/Navigation`: NavGrid,
+PathFinder, LaneMap, UnitCostField), not Unity NavMesh, so prompt 31's "prebuilt navmesh states" are NavGrid states and
+are Sim work. Maps are JSON (`Resources/Data/maps/*.json`, 100 files incl. mode versions): prompt 30 L8's map audit
+can be a Python tool over them. The dialogue queue and events are Sim (`Events`, `SimWorld.Events.cs`); the HUD that
+draws them is Game.
+
+| part | cloud | local (lead, Unity) |
+|---|---|---|
+| 28 appendix | aiModeProfile data + loader + assignment for every mode and mission type in campaign.json, the pressure split, CEASEFIRE at the damage level (Sim), the unit tests (written, not run) | compile, CatalogCheck |
+| 30 L0, L1 | the precheck by reading code; act metadata, "Kết mạch Thorne", Legendary unlock (data, docs, text keys) | the UI that shows acts |
+| 30 L2 | the P0-P4 queue rules, new triggers, speakerRole/allowedTriggers data, a line-length validator by character budget | the portrait strip UI, safe areas, the real render-width check |
+| 30 L3 | the RUNNING/RESOLVED/PRESENTATION/RESULTS state machine in the Sim, frozen gameplay at RESOLVED, tests | the presentation (camera, VFX, slow motion on a view clock, skip tap) |
+| 30 L4, L5, L6 | match rules schema and scoring, stars, leaderboards order, the endless continuation and rewards, neutrals V1 (Sim + map JSON) | the Continue/End buttons, results screen, neutral models if new ones are needed |
+| 30 L7 | the 193-mission script (text tables EN + VI), validator, `script_stats.md` | - |
+| 30 L8, L9 | mode static audit and map audit (Python), report | the PDF |
+| 31 | the precheck, the fixed-deck data model, loaned cards, campaign generator rule, the 13 + later missions' data and special rules, placed allies (Sim AI), events as NavGrid states, tests | the fixed-deck screen UI, event visuals and minimap marks, the PDF |
+
+List every local item in `Docs/ai/LOCAL_TODO.md` under the prompt's name. No runs except the dotnet compile check and
+Python tools; the prompts' "write automated tests" means write them.

@@ -246,3 +246,68 @@ YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
   Không thêm hệ phí duy trì mới; dùng tiếp tế.
   B3-AI đã làm xong ở prompt 29.
   (Lead: phần Sim của prompt 28 đã làm trước khi có sửa đổi này; I.2 đã thêm ArmyFactor / economy.armyBands chồng lên phí duy trì theo tiếp tế có sẵn, và máy bay đã thôi về vì máu. Cloud gỡ ArmyFactor trong lượt đầu của prompt 29; lượt 6 của prompt 29 xác nhận B3-AI và viết test.)
+
+(02/10, chủ dự án) Phụ lục cho prompt 28 (dán vào cuối prompt 28 + làm luôn):
+
+## PHỤ LỤC PROMPT 28 — HỒ SƠ AI THEO CHẾ ĐỘ VÀ GHI CHÚ KINH TẾ
+
+### A. Kinh tế
+- KHÔNG làm bảng "hệ số thu nhập theo số quân so với trần" (1 / 0,85 / 0,65) trong sheet Cân bằng kinh tế của Machine_Brigade_AI_Research.xlsx. Cơ chế tiếp tế hiện có là cơ chế duy nhất hãm số quân. Mọi chỗ trong prompt này nói "phí duy trì" nghĩa là dùng tiếp tế hiện có. Không đổi ngưỡng tiếp tế (chờ báo cáo C02 của prompt 29).
+- Bỏ "máy bay thấp máu thì về sửa" đã làm ở prompt 29 (gói B3-AI); không làm lại.
+- Tách luật "dùng hoặc mất" thành hai cờ độc lập: spendPressure (phải tiêu CP, không ngồi ở trần kho) và advancePressure (hạ ngưỡng tấn công, buộc tiến quân). Luật hạ ngưỡng tấn công hiện có trong file AI là advancePressure.
+
+### B. Hồ sơ AI theo chế độ (aiModeProfile)
+Nguồn: docs/story/Machine_Brigade_Cot_truyen_Che_do_v2.xlsx, sheet "AI theo chế độ" (bảng 19 dòng và ghi chú schema). Làm thành dữ liệu, không làm cây hành vi riêng.
+
+Schema mỗi chế độ / kiểu màn:
+- controllers[]: COMMANDER | WAVE_DIRECTOR | FORTRESS | BOSS | STATIC (kết hợp được)
+- allowedTactics[]
+- objectivePolicy
+- stallPolicy: OFF | ATTACKER_ONLY | BOTH | OBJECTIVE_STALL_ONLY
+- spendPressure: ON/OFF; advancePressure: ON/OFF
+- supportPolicy: NORMAL | DEFENSIVE_ONLY | DISABLED_UNTIL_ALERT
+- leashRegionId (ưu tiên) + leashDistance (dự phòng)
+- targetFactionMask
+- phaseOverrides[]
+- specialRuleFlags[]
+- autoAI (luật cho AI phe người chơi khi bật Tự mua / Yểm trợ)
+
+Luật bắt buộc:
+- Thứ tự ưu tiên: ràng buộc cứng của màn > hồ sơ chế độ > chiến thuật ưa thích của tướng (chỉ là thiên hướng ban đầu, không khóa) > tham số chiến thuật > độ khó.
+- Độ khó chỉ chỉnh: nhịp ra quyết định, mức khắc chế khi mua, giữ tỷ lệ vai trò, để dành CP, độ ngẫu nhiên, tỷ lệ tinh nhuệ.
+- Độ khó KHÔNG được:
+  - nhắm phe ngừng bắn;
+  - phá leash;
+  - bật hỗ trợ trước báo động ở màn thâm nhập;
+  - bật advancePressure nơi hồ sơ tắt;
+  - cho WAVE_DIRECTOR logic mua quân;
+  - cho boss dùng chiến thuật tướng;
+  - nhìn xuyên sương nếu thiết kế cấm.
+- Phe thủ (Công phá, Công thành, Pháo đài tuần, màn giữ/trụ/bảo vệ) không bị áp lực đứng yên ép rời vị trí.
+- WAVE_DIRECTOR không đổi chiến thuật chiến lược, nhưng các đội trong đợt vẫn dùng hành vi cấp đội (chọc thủng, che chắn, bảo vệ pháo, chọn mục tiêu).
+- Hộ tống / di tản:
+  - stallPolicy OFF;
+  - escortAnchor = tâm đoàn xe, kèm maxAdvanceDistance, rearGuardWeight, threatToConvoyWeight;
+  - noChaseOutsideLeash = true;
+  - Yểm trợ tự động không gọi đòn nổ lan chồng lên vùng an toàn của đoàn;
+  - dùng lại hành vi "đoàn xe chờ hộ tống" có sẵn.
+- Trinh sát / thâm nhập:
+  - trước báo động: engagementPolicy = AVOID_UNLESS_BLOCKING, supportPolicy = DISABLED_UNTIL_ALERT, không đuổi;
+  - sau báo động: phaseOverride sang hồ sơ chiến đấu.
+- Bảo vệ: AI phe người chơi ưu tiên mối đe dọa trực tiếp lớn nhất với công trình được bảo vệ.
+- Giải vây: phá vòng vây → bảo vệ quân được giải vây → rồi mới đuổi.
+- Ngừng bắn: targetFactionMask loại phe CEASEFIRE ở CẤP SÁT THƯƠNG (cả hỗ trợ hỏa lực và nổ lan), không chỉ ở chọn mục tiêu của AI. Kiểm hệ phe/sát thương hiện có; nếu chưa có, thêm cờ phe tối thiểu.
+- Chiến thuật ưa thích của tướng chỉ áp ngoài chiến dịch khi đúng tướng đó chỉ huy (Tác chiến, Pháo đài tuần có tướng). Trận nhanh thường không có thiên hướng tướng.
+- Màn bộ bài game (prompt 31) kế thừa hồ sơ kiểu màn, chỉ ghi đè bằng specialRuleFlags.
+- Phần vô hạn (prompt 30) dùng cùng hồ sơ với chế độ gốc.
+
+### C. Lượt thêm cho prompt 28
+Thêm một lượt sau phần engine chiến thuật: "aiModeProfile + gán hồ sơ cho mọi chế độ và kiểu nhiệm vụ trong campaign.json".
+- Test tự động (unit test, không phải mô phỏng trận):
+  - Phòng thủ không bao giờ nhận áp lực đứng yên phía phe thủ;
+  - màn thâm nhập không gọi hỗ trợ trước báo động;
+  - phe CEASEFIRE không nhận sát thương từ hỏa lực và nổ lan của người chơi;
+  - độ khó Cực khó không bật advancePressure ở hồ sơ tắt;
+  - mọi kiểu nhiệm vụ trong campaign.json có hồ sơ.
+- Câu hỏi cần đọc code: pháo đài ở Công thành có mua quân bằng CP không. Nếu không, spendPressure của FORTRESS là không áp; ghi DECISIONS.
+- Commit: "P28: aiModeProfile".
