@@ -17137,3 +17137,12 @@ scan in one Unity batch run and an agent scores it. No Unity, tests or sims here
 "Ngân sách tam giác cái nào vượt thì cứ giữ, đó là tốt": a model over its triangle budget is kept and never trimmed or
 scored down for it; MODEL_STANDARD's budgets act as a guide/floor, not a cap. The validator's budget errors (glb_check
 BUDGETS hard caps, the full fix's L9 item 7) report over-budget as information only.
+
+## Owner calls after the full fix L3 (owner, 2026-10-02)
+
+- Boss DPS is clamped to 80-120 % of its ground DPS before the fix, by a per-boss `outgoingDamageMult` (real cadences
+  kept; reloads not shortened): nuke_train (Nemesis) x1.309, moloch x1.696, garuda x1.789, command_airship (Roc's model
+  family, 45 %) x1.789, ixion x1.757, bastion_mk0 x1.471, earth_borer x1.085; kronos x0.744, scylla x0.739,
+  supreme_command x0.759, armored_train x0.832, nyx x0.836, mobile_fortress x0.951, leviathan and kraken x0.968.
+  Variants without their own key inherit their parent's factor. Boss health formula unchanged.
+- The 52 flagged player and tower weapons (Docs/balance/player_weapon_waitlist.md) stay as they are until play-tests.
