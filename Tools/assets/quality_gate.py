@@ -378,8 +378,16 @@ def hard_checks(defs, model, own, cls, rec, m, overlap):
 
 
 # ----------------------------------------------------------------------------- the visual grades of pass 8
+REBUILT = DOCS / 'rebuild'
+
+
+def rebuilt():
+    """Models rebuilt in prompt 35 (a folder in Docs/models/rebuild/): the pass 8 grades were of the old file."""
+    return {p.name for p in REBUILT.iterdir() if p.is_dir()} if REBUILT.exists() else set()
+
+
 def visual_grades():
-    """{model: (visual grade, final grade)} from Docs/models/scan/visual_scores.md."""
+    """{model: (visual grade, final grade)} from Docs/models/scan/visual_scores.md (not for a rebuilt model)."""
     out = {}
     if not VISUAL.exists():
         return out
@@ -387,6 +395,8 @@ def visual_grades():
         cells = [c.strip() for c in line.split('|')]
         if len(cells) > 10 and cells[1].startswith('`'):
             out[cells[1].strip('`')] = (cells[6], cells[9])
+    for m in rebuilt():
+        out.pop(m, None)
     return out
 
 
