@@ -14355,3 +14355,37 @@ mirror, no cards, no previews, no tests. The substring filter rebuilt nothing ou
 - **Card luma (old, alpha > .5, Rec. 709):** command_airship .3109, drone_mothership .3076, mega_gunship .3352, sky_fortress .3551, daedalus .4252,
   morrigan .3448. Target: >= old, at most about +20 %; daedalus has the biggest COLOR_0 gain (+5.6 %): watch it.
 - Lead (2026-10-02), wave 5c cards: all six pass (+0.4 % to +1.2 %). build_assets.py lane conflicts are now resolved by handoff_tools/resolve_build_assets.py (keeps both registrations).
+
+## 27 wave 5b (lead pass, 2026-10-02)
+
+Pass 5b (lane A, ground bosses): kronos, moloch, nuke_train, armored_train, earth_borer, added to
+`Tools/blender/mb_p27_wave5_ground.py` (already registered last). Run: Blender rebuild, `glb_check.py` (compare, accept).
+No runner mirror, no cards, no previews, no tests.
+
+- **Method (as 5a).** Each boss is its old builder (p20 kronos / moloch / nuke_train, p16 armored_train, mb_phase8
+  earth_borer), then a V2 pass under the same part names, pivots and materials. Kronos and moloch: their track units sit
+  on breakable `Part_track_*` pivots, so the new `_pivot_track` rebuilds each unit on its own pivot (the 5a belt outline,
+  now `_belt_outline`, shared with `_track_pair`; sagging belt, cleats on the ends, dished road wheels, toothed sprocket and
+  idler on the outer face, chamfered guard; parts `Tr_belt_` / `Tr_wheels_` / `Tr_guard_` plus `Tr_discs_<pivot>`, only
+  the old pivot's materials Undercarriage / Rubber / Armor). Kronos: chamfered turntable lathe, the superstructure as an
+  extrude with sloped roof shoulders, frame, counterweight, front plate, roof ribs, cab and the 12 buckets as chamfered
+  blocks, raised panels, a library hatch, roof greebles (seeds 2951, 2952). Moloch: hull, glacis, workshop, rib plates
+  and doors chamfered, raised panels, greebles on the front deck and the workshop roof (2961, 2962). Trains: the
+  locomotive and wagon hulls as `k.sharp_loft` on the old `_sec6` sections, the open bodies (nuke missile wagon, every
+  flatcar) as chamfered extrudes of the old troughs, raised roof / side panels, turret shells, gun and flak houses,
+  Rocket_box / Sam_box chamfered in place (`_hinged_box`); railway bogies, erector, ICBM, cupolas unchanged; armored_train
+  has a few greebles on the wagon roof (2981), nuke_train none (no free roof). Earth borer: V2 running gear on all six
+  units (`_track_pair`, strip of the old track parts), the Team axial plates as chamfered plates (2 cm thicker so the
+  chamfer shows) with raised panels, engine deck / bulkhead and both 57 mm houses chamfered, greebles on the middle spine
+  plate (2991). The autocannon houses everywhere are `_gun_house` (the old two-ring loft as a sharp loft).
+- **Contracts kept.** Runtime nodes identical on all five (validator `runtimeNodes`), every `Part_*`, `Mount_*`, `Muzzle_*`,
+  `Main_cannon*`, `Erector`, `Searchlight`, the launch-face meshes (`Tubes_bore`, `Launcher_tubes_bore`) untouched; one def
+  per model (no variant shares these models). Materials used unchanged. The suffixed mounts come out dotted (the old
+  builders already wrap `a.finish` with `_suffixed`). `ao_strength` .72 as in 5a.
+- **Gates (old -> new triangles, COLOR_0).** kronos 8,404 -> 13,194 (1.57x, near the 1.6x gate: the four pivot track
+  units carry most of it; .608 -> .687); moloch 7,180 -> 9,556 (1.33x; .595 -> .690); nuke_train 35,666 -> 36,310 (1.02x;
+  .569 -> .617); armored_train 21,874 -> 21,954 (1.00x; .573 -> .618); earth_borer 22,590 -> 23,130 (1.02x; .571 -> .623).
+  Zero-area 0, no errors, open edges unchanged (0), non-manifold edges unchanged or fewer (borer 36 -> 28). Kronos and
+  moloch grow 6 cm in height: the V2 belts reach 1 cm under the ground line (the old ones started at +5 cm).
+- **Card luma (old, alpha > .5, Rec. 709):** kronos .3109, moloch .2946 (the dimmest), nuke_train .3422, armored_train
+  .3323, earth_borer .3117. Watch kronos and moloch (COLOR_0 +13 % / +16 %): the goal is >= old and <= ~+20 %.

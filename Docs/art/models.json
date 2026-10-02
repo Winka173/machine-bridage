@@ -105,7 +105,7 @@
   },
   "armored_train": {
     "file": "armored_train.glb",
-    "triangles": 21874
+    "triangles": 21954
   },
   "artillery": {
     "file": "artillery.glb",
@@ -489,7 +489,7 @@
   },
   "earth_borer": {
     "file": "earth_borer.glb",
-    "triangles": 22590
+    "triangles": 23130
   },
   "elite_aa": {
     "file": "elite_aa.glb",
@@ -857,7 +857,7 @@
   },
   "kronos": {
     "file": "kronos.glb",
-    "triangles": 8404
+    "triangles": 13194
   },
   "lamp_post": {
     "file": "lamp_post.glb",
@@ -1017,7 +1017,7 @@
   },
   "moloch": {
     "file": "moloch.glb",
-    "triangles": 7180
+    "triangles": 9556
   },
   "monster": {
     "file": "monster.glb",
@@ -1053,7 +1053,7 @@
   },
   "nuke_train": {
     "file": "nuke_train.glb",
-    "triangles": 35666
+    "triangles": 36310
   },
   "nyx": {
     "file": "nyx.glb",
