@@ -17636,6 +17636,21 @@ test or sim run. Code: `Tools/export/core/doc_parts.py` (section list, text fixe
   "Sheet:" scope. FULL.md gets SELF_CHECK.md at the top after the check and the PDF is rendered again; both are added to
   MANIFEST (COVERAGE.md gains a pass 6 block). Lead's calls (same pass): check 4 accepts a formula column without `_game`
   when Schema.nguon_khoa starts with "python:"; check 1 no longer expects a sheet "Can_sua" (a model grade in spec 4).
-- **Open.** The pass 6 markers inside domain modules (10/Anh_chup, 10/Model.anh_3_goc, 09/Am_thanh_mau, 09/VFX_vu_khi,
-  11/Huong_dan say CHUA_AP:prompt_xuat_luot6) are left to the domain owner: this lane does not edit d01-d12; the picture
-  list is in COVERAGE.md and MANIFEST.
+- **Open (closed by the follow-up below).** The pass 6 markers inside domain modules (10/Anh_chup, 10/Model.anh_3_goc,
+  09/Am_thanh_mau, 09/VFX_vu_khi, 11/Huong_dan said CHUA_AP:prompt_xuat_luot6) were left to the domain owner.
+- **Follow-up (markers filled, lead's go 03/10).** No CHUA_AP:prompt_xuat_luot6 cell is left. 10/Anh_chup = every picture the
+  md shows (`docmd.picture_plan`, the same walk and names as the md: path in images/, source, sections, caption, px, ruler)
+  plus the 12 tier effect shots of 20b as pending rows. 10/Model.anh_3_goc = the ModelScan 3-up sheet (play / side / rear):
+  Docs/models/rebuild/<m>/unity_scan.png (present, 3 models) or Builds/scan/<m>.png (pending), status in
+  anh_3_goc_trang_thai. 09/Am_thanh_mau = the 3 render_mix mixes (ogg header + mixes.json); Am_thanh_mau_moc = loud
+  moments computed here from the .ogg (analyze_sfx K-weighting, 400 ms windows, 100 ms hop, within 6 LU of the loudest,
+  2 s apart, 8 a mix): Python reading of committed files, no sim. Needs soundfile + scipy (added to CI); without them a
+  KHONG_CHAY row. Recomputed M-max is 0.1-0.2 LU under mixes.json (that was measured before Vorbis).
+  09/VFX_vu_khi = EffectShots.FxJobs subjects (6 tiers + every >= 120 mm weapon with a carrier and damage, from 01
+  sheets; with `--effect-shots DIR` its index.json gives the list); VFX_vu_khi_anh = each frame
+  Builds/effect_shots/<key>/<frame>.png (fire 0 / 0.2 / 1 s, impact 0 / 0.5 / 2 / 10 / 30 s, salvo for > 1 barrel),
+  present / pending by DIR. ctx.effect_shots is set in export.build for this. 11/Huong_dan = the 402 in-game guide strings
+  (guide.* of GuideText / BossText / BigAttackText / OrbitalText / UnitText, tip.*, hint.*) split into first line, how
+  it fights, strong / weak, tip (vi + en, [[ ]] stripped; key FK to 10/Dia_phuong_hoa, not marked twice) plus one
+  CHUA_AP:prompt_24 row for the new-player tutorial. New 10/Kit_chi_tiet (kit35_components.json) and kit35_catalog.png in
+  section 21. The md's effect-shot caption now says 1 m grid (FxBatch draws one). Appendices P1-P5 kept as chosen.

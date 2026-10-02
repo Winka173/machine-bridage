@@ -230,6 +230,74 @@ def table_md(fid: str, sheet: str, header: list, rows: list, names: dict) -> lis
     return lines
 
 
+# ---------------------------------------------------------------------------------------------------------- pictures
+FOLDER_CAPTIONS = {
+    "before_after.png": "{m}: trước / sau dựng lại (front, rear, side, top, 3/4, zoom trận x2)",
+    "unity_scan.png": "{m}: ảnh quét trong Unity (ModelScan: 3 góc play / side / rear ở cự ly camera trận)",
+    "kit35_catalog.png": "bộ chi tiết kit35: 70 chi tiết dựng model (Tools/blender/mb_kit35.py; số đo ở 10_model_tai_san/Kit_chi_tiet)",
+}
+
+
+def export_name(src: Path) -> str:
+    """The picture's file name under images/<file>/: its folder and name joined ('r6_flame.png', 'tier_T3_fire_0.2s.png')."""
+    return "_".join(src.parts[-2:])
+
+
+def folder_files(folder: Path) -> list[Path]:
+    return [p for p in sorted(folder.rglob("*")) if p.suffix.lower() in PIC_EXT] if folder.is_dir() else []
+
+
+def folder_caption(p: Path) -> str:
+    t = FOLDER_CAPTIONS.get(p.name)
+    return t.format(m=p.parent.name) if t else p.relative_to(repo.ROOT).as_posix()
+
+
+def fx_found(root: Path | None) -> list[Path]:
+    """The Unity effect shots section 20b prints: tier_T*/impact_0.5s.png and fire_0.2s.png of an --effect-shots folder."""
+    found = []
+    if root and root.is_dir():
+        for d in sorted(root.glob("tier_T*")):
+            found += [d / name for name in FX_PICS if (d / name).exists()]
+    return found
+
+
+_REVIEW: dict = {}
+
+
+def picture_plan(fids: dict, effect_shots: Path | None = None) -> list[dict]:
+    """Every picture the md of pass 6 shows, in the order Doc places them (one per images/<file>/<name>), without
+    writing anything: {src, rel, part, title, caption, kind}; kind = review (the design review's picture), folder
+    (doc_parts pictures), fx (the Unity effect shots of 20b). fids: {"10": "10_model_tai_san", ...}. The domain
+    module 10 lists it in 10_model_tai_san/Anh_chup."""
+    path = repo.ROOT / DP.DESIGN_HTML
+    if path not in _REVIEW:
+        _REVIEW[path] = read_review(path)[0]
+    review = _REVIEW[path]
+    seen, out = set(), []
+
+    def add(src, part, caption, kind, skip_seen=False):
+        rel = f"images/{fids.get(part['domain'], part['domain'])}/{export_name(src)}"
+        if rel in seen and skip_seen:
+            return
+        out.append(dict(src=src, rel=rel, part=part["num"], title=part["title"], caption=caption, kind=kind,
+                        first=rel not in seen))
+        seen.add(rel)
+
+    for part in DP.PARTS:
+        for prefix in part.get("html", []):
+            for t in (t for t in review if t.startswith(prefix)):
+                for b in review[t]:
+                    if b[0] == "img":
+                        add(b[1], part, apply_fixes(b[2], {}), "review")
+        for folder in part.get("pictures", []):
+            for p in folder_files(repo.ROOT / folder):
+                add(p, part, folder_caption(p), "folder", skip_seen=True)
+        if part.get("fx"):
+            for p in fx_found(effect_shots):
+                add(p, part, f"{p.parent.name} {p.stem}", "fx")
+    return out
+
+
 # ---------------------------------------------------------------------------------------------------------- builder
 class Doc:
     def __init__(self, out: Path, meta: dict, effect_shots: Path | None = None, review: Path | None = None):
@@ -266,7 +334,7 @@ class Doc:
     def picture(self, src: Path, domain_fid: str, caption: str) -> list[str]:
         rel_src = src.relative_to(repo.ROOT).as_posix() if src.is_relative_to(repo.ROOT) else src.name
         parts = src.relative_to(repo.ROOT).parts if src.is_relative_to(repo.ROOT) else ("fx",) + src.parts[-2:]
-        name = "_".join(p for p in parts[-2:])
+        name = export_name(src)
         rel = f"images/{domain_fid}/{name}"
         dst = self.out / rel
         dst.parent.mkdir(parents=True, exist_ok=True)
@@ -288,7 +356,8 @@ class Doc:
             return (f"Đơn vị: m; ảnh không có lưới mét; model {src.parent.name} {model.get('glb_x_m')} × "
                     f"{model.get('glb_y_m')} × {model.get('glb_z_m')} m (glb x × y × z); {ruler}.")
         if "fx" == src.parent.parent.name or (self.effect_shots and src.is_relative_to(self.effect_shots)):
-            return f"Đơn vị: m (cảnh hiệu ứng trên nền phẳng, không lưới); {ruler}."
+            return ("Đơn vị: m (lưới 1 m, vạch 5 m đậm; vòng lõi đỏ, vòng rìa cam; Tăng chủ lực đặt cạnh làm thước, "
+                    f"EffectShots.FxBatch); {ruler}.")
         return f"Đơn vị: ảnh chụp trong game, không có lưới mét; {ruler}." if ruler else "Đơn vị: ảnh chụp, không lưới."
 
     # ------------------------------------------------------------------------------------------------------- parts
@@ -394,23 +463,14 @@ class Doc:
 
     def folder_pictures(self, folder: Path, dom: str) -> list[str]:
         lines = []
-        for p in sorted(folder.rglob("*")):
-            if p.suffix.lower() in PIC_EXT and not (self.out / f"images/{dom}/{'_'.join(p.parts[-2:])}").exists():
-                rel = p.relative_to(repo.ROOT).as_posix()
-                cap = {"before_after.png": f"{p.parent.name}: trước / sau dựng lại (front, rear, side, top, 3/4, zoom trận x2)",
-                       "unity_scan.png": f"{p.parent.name}: ảnh quét trong Unity (ModelScan)"}.get(p.name, rel)
-                lines += self.picture(p, dom, cap)
+        for p in folder_files(folder):
+            if not (self.out / f"images/{dom}/{export_name(p)}").exists():
+                lines += self.picture(p, dom, folder_caption(p))
         return lines
 
     def fx_md(self, dom: str) -> list[str]:
         lines = ["#### Ảnh hiệu ứng theo bậc (Unity, EffectShots.FxBatch)", ""]
-        root = self.effect_shots
-        found = []
-        if root and root.is_dir():
-            for d in sorted(root.glob("tier_T*")):
-                for name in FX_PICS:
-                    if (d / name).exists():
-                        found.append(d / name)
+        found = fx_found(self.effect_shots)
         if not found:
             lines += ["*Ảnh chờ (pending): ảnh hiệu ứng nằm ngoài repo (Builds/effect_shots của máy chạy Unity, "
                       "EffectShots.FxBatch). Chạy lại `python Tools/export/export.py --effect-shots <thư mục>` để chèn. "

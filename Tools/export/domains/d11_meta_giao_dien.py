@@ -1,7 +1,10 @@
 """11_meta_giao_dien, layer A: data outside the battle: rank-up prices, crates and drop odds, shop packs, daily missions,
 skins, unlocks, starter cards, the menu's map list, base-map pictures, the ammunition handbook examples, and every other
-literal table of the meta C# files (auto-found); absent features (achievements, telemetry, tutorial) said so."""
+literal table of the meta C# files (auto-found), the in-game guide strings (Huong_dan); absent features (achievements,
+telemetry, the new-player tutorial) said so."""
 from __future__ import annotations
+
+import re
 
 from core.model import NEED_CODE_CHECK, chua_ap
 
@@ -178,9 +181,7 @@ def build(ctx):
     C.marker_sheet(book, "Thanh_tuu", "Thành tựu", "Thành tựu", "KHONG_CO", absent + " 'Achievement'", "Assets/MachineBrigade/Scripts")
     C.marker_sheet(book, "Telemetry", "Telemetry", "Sự kiện và tham số telemetry", "KHONG_CO",
                    "Không có hệ telemetry (chỉ SandboxSession.cs nhắc chữ 'Telemetry')", "Assets/MachineBrigade/Scripts/Game/Match/SandboxSession.cs")
-    C.marker_sheet(book, "Huong_dan", "Hướng dẫn người chơi", "Trải nghiệm người chơi mới", chua_ap(24),
-                   "prompt 24 (trải nghiệm người chơi mới) đang hoãn; gợi ý trong trận: 07/Nhiem_vu_goi_y, chữ: 10/Dia_phuong_hoa (tip.*, guide.*)",
-                   "Docs/prompts/prompt24_vi.txt")
+    _guides(ctx, book)
     C.marker_sheet(book, "Cai_dat_mac_dinh", "Cài đặt mặc định", "Vòng cảnh báo, thoại, rung camera, cỡ chữ, đồ họa...",
                    chua_ap("xuat_luot5"), "hằng mặc định trong GraphicsOptions.cs, Haptics.cs, PlayerProfile.cs (lượt 5: Hang_so_trong_ma); "
                    "các mảng lựa chọn đồ họa ở Meta_bang_hang (GraphicsOptions#...)", MATCH + "GraphicsOptions.cs")
@@ -203,3 +204,58 @@ def B_snake(name: str) -> str:
 def ctx_root_exists(path: str) -> bool:
     from core.repo import ROOT
     return (ROOT / path).exists()
+
+
+GUIDE_PREFIXES = ("guide", "tip", "hint")
+HIGHLIGHT = re.compile(r"\[\[(.*?)\]\]")
+GUIDE_PARTS = {"cach_danh": ("How it fights", "Cách đánh"), "manh_yeu": ("Strong / weak", "Mạnh / yếu"), "meo": ("Tip", "Mẹo")}
+
+
+def _guide_split(text: str, lang: int) -> dict:
+    """A guide string's lines: the first (name, armour, role), the 'How it fights' / 'Strong / weak' / 'Tip' parts
+    (GuideText, BossText) and the rest; one-line tips and hints are only the first line. [[word]] (a word the game
+    highlights) is printed plain here; the marked text stays in 10_model_tai_san/Dia_phuong_hoa."""
+    lines = [HIGHLIGHT.sub(r"\1", x).strip() for x in (text or "").split("\n") if x.strip()]
+    out = {"dong_dau": lines[0] if lines else "", "khac": []}
+    for line in lines[1:]:
+        for col, labels in GUIDE_PARTS.items():
+            if line.startswith(labels[lang] + ":"):
+                out[col] = line[len(labels[lang]) + 1:].strip()
+                break
+        else:
+            out["khac"].append(line)
+    out["khac"] = " / ".join(out["khac"])
+    return out
+
+
+def _guides(ctx, book):
+    """Huong_dan: every in-game guide string (guide.* of GuideText.cs, BossText.cs, BigAttackText.cs, OrbitalText.cs,
+    UnitText.cs; tip.* and hint.* of Strings.cs), split into its parts; the cells come from 10_model_tai_san/Dia_phuong_hoa
+    (the exported leaf, so not marked twice). The new-player tutorial (prompt 24) is still a CHUA_AP row."""
+    sh = book.sheet("Huong_dan", "Hướng dẫn người chơi", "Chuỗi hướng dẫn trong game: thẻ Hướng dẫn của trang chi tiết (guide.<id>: "
+                    "GuideText, BossText, BigAttackText...), mẹo (tip.*) và gợi ý thao tác (hint.*) tách theo phần; nguyên văn ở "
+                    "10_model_tai_san/Dia_phuong_hoa; hướng dẫn người chơi mới (prompt 24) chưa có")
+    sh.col("khoa", meaning="khóa chuỗi (id ở 10_model_tai_san/Dia_phuong_hoa)", fk=["10_model_tai_san/Dia_phuong_hoa"])
+    sh.col("nhom", meaning="guide: thẻ Hướng dẫn; tip: mẹo; hint: gợi ý thao tác")
+    sh.col("bang", meaning="file C# chứa chuỗi")
+    sh.col("doi_tuong", meaning="phần khóa sau tiền tố (id đơn vị / trùm / đòn lớn)")
+    for lang in ("vi", "en"):
+        for c, m in (("dong_dau", "dòng đầu (tên · giáp · vai trò; mẹo / gợi ý: cả câu)"), ("cach_danh", "Cách đánh / How it fights"),
+                     ("manh_yeu", "Mạnh / yếu / Strong / weak"), ("meo", "Mẹo / Tip"), ("khac", "dòng khác (ngăn ' / ')")):
+            sh.col(f"{c}_{lang}", meaning=f"{m} ({'tiếng Việt' if lang == 'vi' else 'tiếng Anh'})")
+    sh.col("trang_thai", meaning="CHUA_AP:prompt_24: hướng dẫn người chơi mới chưa làm")
+    loc = ctx.books.get("10_model_tai_san")
+    rows = loc.sheets["Dia_phuong_hoa"].rows if loc and "Dia_phuong_hoa" in loc.sheets else {}
+    for rid in sorted((k for k, r in rows.items() if r.values.get("tien_to") in GUIDE_PREFIXES), key=str):
+        v = rows[rid].values
+        r = sh.row(rid, f"10_model_tai_san/Dia_phuong_hoa[{rid}] ({v.get('bang', '')})")
+        r.set("khoa", rid)
+        r.set("nhom", v.get("tien_to", ""))
+        r.set("bang", v.get("bang", ""))
+        r.set("doi_tuong", str(rid).split("@", 1)[0].split(".", 1)[1] if "." in str(rid) else "")
+        for lang, i in (("vi", 1), ("en", 0)):
+            for c, text in _guide_split(v.get(lang, ""), i).items():
+                r.set(f"{c}_{lang}", text)
+    r = sh.row("chua_ap", "Docs/prompts/prompt24_vi.txt")
+    r.set("trang_thai", chua_ap(24))
+    r.set("dong_dau_vi", "hướng dẫn người chơi mới (prompt 24) đang hoãn; gợi ý trong trận: 07/Nhiem_vu_goi_y")
