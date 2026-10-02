@@ -14071,3 +14071,28 @@ outside the row.
 - **Card luma (old, mean of pixels with alpha > .5):** scout_heli .3660, gunship_heli .3914, elite_attack_helicopter .2995 (the
   dimmest of the row: watch it), swarm_carrier .4351, recon_drone .6232, strike_drone .4513, wingman_drone .4266; drop_pod has no card.
 - Lead (2026-10-02), wave 4a cards: six pass (+0.0 % to +3.9 %), drop_pod has none; recon_drone -1.8 % (.6232 -> .6121): merged, pass 4b brightens it. Part_flares is read as a runtime part: 4b renames it to a non-runtime name in mb_p29_details and rebuilds the three.
+
+## 27 wave 6a (lead pass, 2026-10-02)
+
+Pass 6a (lane B, towers): aa_turret, artillery_emplacement, guard_tower, each with `_a` and `_b`. New `Tools/blender/mb_p27_wave6.py`,
+registered last in `build_assets.py` (one line). Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards,
+no previews, no tests.
+
+- **Method (towers differ from wave 3).** The branch builders (`mb_tower_branches`) edit the base by part name (`strip`, `stretch`,
+  `strip(parents=('Turret',))`), so a from-scratch rewrite would break them. Each V2 tower is the old builder, then an `_up` pass that
+  swaps its big hard surfaces for V2 ones under the SAME part names (`k.extrude` pads and platform, `k.block` plates, `k.sharp_loft`
+  gun house with the old box's taper, `k.inset` recesses and raised panels, seeded `k.greebles`, bolts, gussets), then the branch's own
+  old edit, then a small post-pass where the edit added a surface (aa_turret_b revetment, artillery_emplacement_a radar trailer).
+  `guard_tower_b` (the gun nest, its own builder) gets its pad and shield. Weapons (barrels, brakes, SAM tubes, radar, MG, AGL, hmg,
+  searchlight) are untouched: nodes, pivots, muzzles and moving parts are identical, so `TowerArt`/`TowerRankDetails` see the same
+  static walls (Pad, Blockhouse, Cabin, Walkway, revetment stay the body). The gun house loft is cut by the branch's `inside` boxes the same
+  way the old box was (its walls stay inside |x| .52).
+- **AO.** `ao_strength` .65 (default .9) for all nine: paler, per the wave 3 lesson.
+- **Gates (old -> new triangles, COLOR_0).** aa_turret 6,126 -> 6,306 (.570 -> .638); aa_turret_a 6,554 -> 6,670 (.574 -> .639);
+  aa_turret_b 2,382 -> 2,610 (.611 -> .670); artillery_emplacement 7,334 -> 7,946 (.541 -> .606); _a 7,766 -> 8,426 (.543 -> .608);
+  _b 5,770 -> 5,878 (.519 -> .580); guard_tower 4,656 -> 6,772 (1.45x; .650 -> .699); _a 5,372 -> 7,488 (1.39x; .653 -> .700);
+  guard_tower_b 2,594 -> 2,746 (.584 -> .651). Zero-area 0, runtime nodes identical, size within .2 %, open edges unchanged (guard tower 48,
+  as before: the cage tubes). `Muzzle_missile.00x` suffix warning on aa_turret_b is the old convention.
+- **Card luma (old, mean of pixels with alpha > .5, Rec. 709):** aa_turret .4068, aa_turret_a .4084, aa_turret_b .4013,
+  artillery_emplacement .3855, _a .4083, _b .3865, guard_tower .3079 (the dimmest: watch it), guard_tower_a .3164, guard_tower_b .4285.
+- **Pitfall:** `k.block` is a plain box under 12 cm in any size, so shield plates were thickened to 13 cm to get chamfers.
