@@ -14,6 +14,7 @@ using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Modes;
 using MachineBrigade.Sim.Sandbox;
 using UnityEngine;
+using EntityId = MachineBrigade.Sim.Core.EntityId;
 using Vector2 = System.Numerics.Vector2;
 
 namespace MachineBrigade.Tests
@@ -207,7 +208,7 @@ namespace MachineBrigade.Tests
             var squad = general.Squads.Squads.First();
             squad.BlockedLeft = true;
             Run(world, battle, 2f);
-            Assert.That(general.Squads.LastOptions(squad).Select(o => o.action), Does.Not.Contain(SquadAction.FlankLeft));
+            Assert.That(general.Squads.LastOptions(squad).Select(o => o.action), Has.No.Member(SquadAction.FlankLeft));
         }
 
         [Test, Explicit(Why), Category("AI28")]
