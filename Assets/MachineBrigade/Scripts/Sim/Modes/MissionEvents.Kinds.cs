@@ -164,6 +164,7 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.BetrayalWarning:
                 case MissionEventKind.OrbitalPods:
                 case MissionEventKind.IceCrack:
+                case MissionEventKind.ForestFire:
                     return PrepareP31(world, s);
                 default:
                     return true;
@@ -846,6 +847,7 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.BetrayalWarning:
                 case MissionEventKind.OrbitalPods:
                 case MissionEventKind.IceCrack:
+                case MissionEventKind.ForestFire:
                     return HappenP31(world, s);
                 default:
                     return Outcome.Done;
@@ -1009,6 +1011,7 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.CityBlackout:
                 case MissionEventKind.OrbitalPods:
                 case MissionEventKind.IceCrack:
+                case MissionEventKind.ForestFire:
                     UpdateP31(world, s);
                     break;
                 default:

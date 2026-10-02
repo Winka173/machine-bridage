@@ -48,7 +48,7 @@ namespace MachineBrigade.Game.Match
                 "lootDrop" or "supplyDrop" or "neutralConvoy" or "supplyRaid" => NoticeKind.Crate,
                 "weatherShift" or "sandstormTurn" or "cityBlackout" => NoticeKind.Weather,
                 // Prompt 31 L3: the gate that shuts, the pods landing, the ally about to turn.
-                "groundChange" or "iceCrack" => NoticeKind.Area,
+                "groundChange" or "iceCrack" or "forestFire" => NoticeKind.Area,
                 "orbitalPods" => NoticeKind.Reinforce,
                 "betrayalWarning" => NoticeKind.Boss,
                 "blackout" or "intelReveal" => NoticeKind.Area,

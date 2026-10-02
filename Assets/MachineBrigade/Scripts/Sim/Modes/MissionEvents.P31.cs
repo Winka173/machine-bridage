@@ -71,6 +71,20 @@ namespace MachineBrigade.Sim.Modes
             public double QuietUntil;
         }
 
+        private sealed class FirePlan
+        {
+            public string Site = "";
+
+            /// <summary>The site's states after its initial one, in order: the strips the fire burns, the last one burnt out.</summary>
+            public readonly List<string> Fronts = new();
+
+            public int Next;
+            public double NextAt;
+            public bool Warned;
+            public float Every = 30f, Dps = 40f, Burn = 6f;
+            public Vector2 Wind = Vector2.UnitY;
+        }
+
         /// <summary>Whether the enemy sees one of the player's own vehicles (an infiltration found out).</summary>
         private static bool Spotted(SimWorld world)
         {
@@ -199,6 +213,27 @@ namespace MachineBrigade.Sim.Modes
                     s.Plan = plan;
                     return true;
                 }
+                case MissionEventKind.ForestFire:
+                {
+                    var site = e.Word("navSite");
+                    if (site == null || !world.NavStates.TryGet(site, out var held) || held.ActiveName != held.Def.Initial) return false;
+                    var plan = new FirePlan
+                    {
+                        Site = site,
+                        Every = Math.Clamp(e.Number("every", 30f), 12f, 90f),
+                        Dps = MathF.Max(0f, e.Number("dps", 40f)),
+                        Burn = MathF.Max(1f, e.Number("burn", 6f)),
+                    };
+                    var wind = new Vector2(e.Number("windX", 0f), e.Number("windZ", 1f));
+                    plan.Wind = wind.LengthSquared() > 0.01f ? Vector2.Normalize(wind) : Vector2.UnitY;
+                    for (var i = 0; i < held.Def.States.Count; i++)
+                        if (i != held.Active && held.IsValid(i)) plan.Fronts.Add(held.Def.States[i].Name);
+                    if (plan.Fronts.Count == 0 || held.Def.States[held.Def.IndexOf(plan.Fronts[0])].Blocks.Count == 0) return false;
+                    MarkStrip(held, plan.Fronts[0], s, true);
+                    s.Where = s.Marks[0].at;
+                    s.Plan = plan;
+                    return true;
+                }
                 case MissionEventKind.OrbitalPods:
                 {
                     var plan = new PodPlan();
@@ -302,6 +337,11 @@ namespace MachineBrigade.Sim.Modes
                     // The ice is thin from now to the end of the battle (its ring stays on the minimap).
                     s.EndsAt = -1;
                     return Outcome.Running;
+                case MissionEventKind.ForestFire:
+                    // The first strip catches now (StepFire, this step); each next one "every" seconds later.
+                    ((FirePlan)s.Plan!).NextAt = world.Time;
+                    s.EndsAt = -1;
+                    return Outcome.Running;
                 case MissionEventKind.OrbitalPods:
                 {
                     var plan = (PodPlan)s.Plan!;
@@ -365,6 +405,9 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.IceCrack:
                     StepIce(world, s, (IcePlan)s.Plan!);
                     break;
+                case MissionEventKind.ForestFire:
+                    StepFire(world, s, (FirePlan)s.Plan!);
+                    break;
             }
         }
 
@@ -397,6 +440,71 @@ namespace MachineBrigade.Sim.Modes
                 plan.QuietUntil = world.Time + 20.0;
                 Notice(world, s, "start", 0f, v.Id);
             }
+        }
+
+        /// <summary>The minimap marks of a fire strip (a state's blocks): the strip alone, or added to the marks there are.</summary>
+        private static void MarkStrip(Navigation.NavSite site, string state, EventState s, bool alone)
+        {
+            if (alone) s.Marks.Clear();
+            foreach (var b in site.Def.States[site.Def.IndexOf(state)].Blocks) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 4f));
+        }
+
+        /// <summary>
+        /// Prompt 31 L5: the forest fire's clock. Every <see cref="FirePlan.Every"/> seconds the next strip of its site catches
+        /// (a switch at the next tick boundary: the strip is closed ground, whoever is on it is put out of it by NavStates), with
+        /// its flames (the view's ground fires) and its smoke downwind (the smoke clouds every side's sight stops at); the
+        /// vehicles caught on it burn. Its next strip is warned 10 s ahead with its marks; an empty state is the fire out. All
+        /// on the battle's clock over prebuilt strips: a replay burns the same ground on the same step.
+        /// </summary>
+        private void StepFire(SimWorld world, EventState s, FirePlan plan)
+        {
+            if (!world.NavStates.TryGet(plan.Site, out var held))
+            {
+                Finish(world, s, true, "end");
+                return;
+            }
+            var next = plan.Next < plan.Fronts.Count ? held.Def.States[held.Def.IndexOf(plan.Fronts[plan.Next])] : null;
+            if (next != null && next.Blocks.Count > 0 && plan.Next > 0 && !plan.Warned && world.Time >= plan.NextAt - 10.0)
+            {
+                plan.Warned = true;
+                MarkStrip(held, next.Name, s, false);
+                Notice(world, s, "spread", (float)Math.Max(0.0, plan.NextAt - world.Time));
+            }
+            if (world.Time < plan.NextAt) return;
+            if (next == null || next.Blocks.Count == 0)
+            {
+                // Burnt out: the last strip opens again (the empty state); its smoke thins on its own clock.
+                if (next != null) world.NavStates.Schedule(plan.Site, next.Name, world.Tick + 1, world.Tick);
+                s.Marks.Clear();
+                Notice(world, s, "end", 0f);
+                Finish(world, s, true, "end");
+                return;
+            }
+            world.NavStates.Schedule(plan.Site, next.Name, world.Tick + 1, world.Tick);
+            foreach (var b in next.Blocks)
+            {
+                var hx = b.Width * 0.5f;
+                var hz = b.Depth * 0.5f;
+                for (var x = -hx + 4f; x <= hx; x += 8f)
+                    for (var z = -hz + 4f; z <= hz; z += 8f)
+                        world.Emit(SimEvent.GroundFire(b.Center + new Vector2(x, z), plan.Every * 1.2f, 5f));
+                var across = new Vector2(-plan.Wind.Y, plan.Wind.X) * (MathF.Max(b.Width, b.Depth) * 0.25f);
+                var downwind = b.Center + plan.Wind * (MathF.Min(b.Width, b.Depth) * 0.5f + 8f);
+                var cloud = MathF.Max(6f, MathF.Max(b.Width, b.Depth) * 0.25f);
+                world.Strikes.AddSmoke(Teams.Environment, downwind + across, cloud, plan.Every * 1.5f);
+                world.Strikes.AddSmoke(Teams.Environment, downwind - across, cloud, plan.Every * 1.5f);
+                foreach (var v in world.VehicleList)
+                {
+                    if (!v.IsAlive || v.Flying || v.Def.Static) continue;
+                    var d = v.Position - b.Center;
+                    if (MathF.Abs(d.X) > hx + 2f || MathF.Abs(d.Y) > hz + 2f) continue;
+                    world.Status.Burn(v, plan.Dps, plan.Burn, Teams.Environment, EntityId.None);
+                }
+            }
+            MarkStrip(held, next.Name, s, true);
+            plan.Next++;
+            plan.NextAt = world.Time + plan.Every;
+            plan.Warned = false;
         }
 
         private void StepPods(SimWorld world, EventState s, PodPlan plan)

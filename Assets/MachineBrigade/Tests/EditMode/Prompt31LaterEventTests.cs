@@ -6,6 +6,7 @@ using MachineBrigade.Game.Match;
 using MachineBrigade.Sim;
 using MachineBrigade.Sim.Combat;
 using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Modes;
 using Vector2 = System.Numerics.Vector2;
 
@@ -84,6 +85,7 @@ namespace MachineBrigade.Tests
             ("c6m14", "dam_breach", "flood"),
             ("c8m10", "mine_collapse", "adits"),
             ("c5m10", "lava_flow", "lava"),
+            ("c5m13", "forest_fire", "fire"),
         };
 
         [Test]
@@ -261,6 +263,52 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(world.Grid.IsWalkable(new Vector2(-40f, -40f)), "blasted open");
             Assert.IsFalse(world.Grid.IsWalkable(new Vector2(40f, 40f)), "caved in");
             Assert.AreEqual(1, world.NavStates.Switches, "one switch of one site");
+        }
+
+        // ================================================================== Cháy rừng (the forest fire)
+
+        private const string FireSite = "{\"id\": \"fire\", \"initial\": \"none\", \"states\": [{\"name\": \"none\"}, " +
+                                        "{\"name\": \"front1\", \"blocks\": [{\"x\": 40, \"z\": 20, \"w\": 40, \"d\": 10}]}, " +
+                                        "{\"name\": \"front2\", \"blocks\": [{\"x\": 40, \"z\": 30, \"w\": 40, \"d\": 10}]}, {\"name\": \"out\"}]}";
+
+        private const string Fire = "{\"id\": \"ff\", \"kind\": \"ForestFire\", \"trigger\": {\"at\": 1}, \"lead\": 10, " +
+                                    "\"params\": {\"navSite\": \"fire\", \"every\": 20, \"dps\": 40, \"burn\": 6, \"windX\": 0, \"windZ\": 1}}";
+
+        [Test]
+        public void TheFireBurnsItsStripsOneByOneThenGoesOut()
+        {
+            var (world, mode) = Start(Mission(Fire, FireSite, "\"ff\""));
+            var caught = world.SpawnVehicle("main_battle_tank", 0, new Vector2(40f, 20f), 0f);
+            caught.Invulnerable = true;
+            Run(world, mode, 2f);
+            var s = State(mode, "ff");
+            Assert.AreEqual(EventPhase.Warned, s.Phase);
+            Assert.AreEqual(1, s.Marks.Count, "the first strip on the minimap");
+            Run(world, mode, 10f);
+            Assert.AreEqual("front1", world.NavStates.ActiveOf("fire"), "the first strip is burning");
+            Assert.IsFalse(world.Grid.IsWalkable(new Vector2(40f, 20f)));
+            Assert.IsTrue(world.Grid.IsWalkable(caught.Position), "the tank caught on it was put out of the fire");
+            Assert.IsTrue(caught.Statuses[(int)StatusKind.Burn].Until > world.Time, "and it burns");
+            Run(world, mode, 12f);
+            Assert.AreEqual(2, s.Marks.Count, "the strip burning and the next one, warned");
+            Run(world, mode, 9f);
+            Assert.AreEqual("front2", world.NavStates.ActiveOf("fire"), "the wind drove it on");
+            Assert.IsTrue(world.Grid.IsWalkable(new Vector2(40f, 20f)), "the first strip is ash, open again");
+            Run(world, mode, 21f);
+            Assert.AreEqual("out", world.NavStates.ActiveOf("fire"), "burnt out");
+            Assert.AreEqual(EventPhase.Done, s.Phase);
+            Assert.IsTrue(world.Grid.IsWalkable(new Vector2(40f, 30f)));
+        }
+
+        [Test]
+        public void AFireReplayBurnsTheSameGroundOnTheSameStep()
+        {
+            var def = Mission(Fire, FireSite, "\"ff\"");
+            var (a, modeA) = Start(def, 9);
+            var (b, modeB) = Start(def, 9);
+            CollectionAssert.AreEqual(Run(a, modeA, 70f), Run(b, modeB, 70f));
+            Assert.AreEqual(a.NavStates.Sites[0].SwitchedAt, b.NavStates.Sites[0].SwitchedAt);
+            Assert.AreEqual(3, a.NavStates.Switches, "two strips and the fire out");
         }
     }
 }

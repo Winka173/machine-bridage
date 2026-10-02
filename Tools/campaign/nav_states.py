@@ -221,7 +221,9 @@ def check(missions, fail, library=None):
             p = {**(library or {}).get(rid, {}).get('params', {}), **(r.get('params', {}) if isinstance(r, dict) else {})}
             if 'navSite' not in p:
                 continue
-            if p['navSite'] not in named or (not p.get('cycle') and p.get('navState') not in named[p['navSite']]):
+            # A forest fire (or a cycle) walks the site's states itself; a plain switch names the state it brings in.
+            walks = p.get('cycle') or (library or {}).get(rid, {}).get('kind') == 'ForestFire'
+            if p['navSite'] not in named or (not walks and p.get('navState') not in named[p['navSite']]):
                 fail(f"{m['id']}: event {rid} switches {p.get('navSite')} to {p.get('navState')}, which the mission does not build")
 
 

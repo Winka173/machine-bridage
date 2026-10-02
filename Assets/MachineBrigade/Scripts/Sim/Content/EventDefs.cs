@@ -97,6 +97,13 @@ namespace MachineBrigade.Sim.Content
         /// class, never its CP) once it has been on it "seconds" (10): slowed by "slow" for "slowFor" seconds, again and again.
         /// </summary>
         IceCrack,
+
+        /// <summary>
+        /// Prompt 31 L5: a forest fire driven by the wind over the prebuilt strips of its site ("navSite": each state after the
+        /// initial one a burning strip, the last one empty, burnt out), one strip every "every" seconds: the strip burning is
+        /// closed ground, vehicles caught on it burn ("dps" for "burn" seconds) and are put out of it, its smoke drifts downwind.
+        /// </summary>
+        ForestFire,
     }
 
     /// <summary>The C.3 difficulty an event plays at: the mission's own, one step up per tier (Heroic, Iron).</summary>

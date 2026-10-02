@@ -206,3 +206,20 @@ nav_site('c5m10', {'id': 'lava', 'initial': 'clear', 'states': [
     {'name': 'clear'},
     {'name': 'cut', 'blocks': [{'x': -50, 'z': 78, 'w': 24, 'd': 8}]}]})
 events.add('c5m10', 'lava_flow')
+
+
+# ---------------------------------------------------------------------- Cháy rừng (the forest fire): c5m13
+# The sheet's riskiest event, made safe the same way: no fire that spreads cell by cell (a simulation of its own, chance in its
+# spread, its cost), but a prebuilt wind-driven front. At 150 s of the temple's hold a fire catches in the jungle south-west of
+# it and the south wind drives it north in four 12 m strips (x -85..-35, from z -46 to 2), one every 30 s: the strip burning is
+# closed ground (whoever is on it burns, 40 a second for 6 s, and is put out of it), its smoke drifts north (two clouds that
+# stop every side's sight), the strip behind it is ash and open again; then it burns out. The next strip is warned 10 s ahead
+# on the minimap. Every strip leaves the temple and both camps joined (nav_states.py; the game again at load).
+events.KINDS |= {'ForestFire'}
+FIRE_STRIPS = [-40, -28, -16, -4]
+library(E('forest_fire', 'ForestFire', {'at': 150}, {'navSite': 'fire', 'every': 30, 'dps': 40, 'burn': 6, 'windX': 0, 'windZ': 1},
+          lead=10))
+nav_site('c5m13', {'id': 'fire', 'initial': 'none', 'states': [{'name': 'none'}] +
+         [{'name': f'front{k + 1}', 'blocks': [{'x': -60, 'z': z, 'w': 50, 'd': 12}]} for k, z in enumerate(FIRE_STRIPS)] +
+         [{'name': 'out'}]})
+events.add('c5m13', 'forest_fire')
