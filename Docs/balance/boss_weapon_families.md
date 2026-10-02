@@ -219,18 +219,18 @@ Ground DPS **289 -> 213** (74 %); anti-air only 0 -> 0. **Not made up within 20 
 
 ### command_airship
 
-Ground DPS **1532 -> 1532** (100 %); anti-air only 0 -> 0.
+Ground DPS **1532 -> 681** (44 %); anti-air only 0 -> 0. **Not made up within 20 %** (see below).
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `p26_roc_main_roc_bombs` | bomb_400 | 700 x 8 / 35.44 s = 158 | 700 x 8 / 35.44 s = 158 | 10 / 20 |
 | 1 | `p26_roc_main_roc_bombs` | bomb_400 | 700 x 8 / 35.44 s = 158 | 700 x 8 / 35.44 s = 158 | 10 / 20 |
-| 2 | `p26_roc_direct_roc_atgm` | atgm_kornet | 230 x 1 / 1.98 s = 116 | 230 x 1 / 1.98 s = 116 | 0 / 0 |
-| 3 | `p26_roc_direct_roc_atgm` | atgm_kornet | 230 x 1 / 1.98 s = 116 | 230 x 1 / 1.98 s = 116 | 0 / 0 |
-| 4 | `p26_roc_close_twin_30_bmpt` | cal_30 | 22 x 12 / 1.86 s = 142 | 22 x 12 / 1.86 s = 142 | 0 / 0 |
-| 5 | `p26_roc_close_twin_30_bmpt` | cal_30 | 22 x 12 / 1.86 s = 142 | 22 x 12 / 1.86 s = 142 | 0 / 0 |
-| 6 | `p26_roc_roc105` | cal_100_105_he | 300 x 1 / 0.86 s = 350 | 300 x 1 / 0.86 s = 350 | 5 / 10 |
-| 7 | `p26_roc_roc105` | cal_100_105_he | 300 x 1 / 0.86 s = 350 | 300 x 1 / 0.86 s = 350 | 5 / 10 |
+| 2 | `p26_roc_direct_roc_atgm` | atgm_kornet | 230 x 1 / 1.98 s = 116 | 230 x 2 / 20.00 s = 23 | 0 / 0 |
+| 3 | `p26_roc_direct_roc_atgm` | atgm_kornet | 230 x 1 / 1.98 s = 116 | 230 x 2 / 20.00 s = 23 | 0 / 0 |
+| 4 | `p26_roc_close_twin_30_bmpt` | cal_30 | 22 x 12 / 1.86 s = 142 | 22 x 12 / 2.42 s = 109 | 0 / 0 |
+| 5 | `p26_roc_close_twin_30_bmpt` | cal_30 | 22 x 12 / 1.86 s = 142 | 22 x 12 / 2.42 s = 109 | 0 / 0 |
+| 6 | `p26_roc_roc105` | cal_100_105_he | 300 x 1 / 0.86 s = 350 | 300 x 1 / 6.00 s = 50 | 5 / 10 |
+| 7 | `p26_roc_roc105` | cal_100_105_he | 300 x 1 / 0.86 s = 350 | 300 x 1 / 6.00 s = 50 | 5 / 10 |
 
 ### landing_hovercraft
 
@@ -488,18 +488,18 @@ Ground DPS **792 -> 741** (94 %); anti-air only 0 -> 0. Made up: `p26_bastion_di
 
 ### garuda
 
-Ground DPS **1532 -> 1532** (100 %); anti-air only 0 -> 0.
+Ground DPS **1532 -> 681** (44 %); anti-air only 0 -> 0. **Not made up within 20 %** (see below).
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `p26_roc_main_roc_bombs` | bomb_400 | 700 x 8 / 35.44 s = 158 | 700 x 8 / 35.44 s = 158 | 10 / 20 |
 | 1 | `p26_roc_main_roc_bombs` | bomb_400 | 700 x 8 / 35.44 s = 158 | 700 x 8 / 35.44 s = 158 | 10 / 20 |
-| 2 | `p26_roc_direct_roc_atgm` | atgm_kornet | 230 x 1 / 1.98 s = 116 | 230 x 1 / 1.98 s = 116 | 0 / 0 |
-| 3 | `p26_roc_direct_roc_atgm` | atgm_kornet | 230 x 1 / 1.98 s = 116 | 230 x 1 / 1.98 s = 116 | 0 / 0 |
-| 4 | `p26_roc_close_twin_30_bmpt` | cal_30 | 22 x 12 / 1.86 s = 142 | 22 x 12 / 1.86 s = 142 | 0 / 0 |
-| 5 | `p26_roc_close_twin_30_bmpt` | cal_30 | 22 x 12 / 1.86 s = 142 | 22 x 12 / 1.86 s = 142 | 0 / 0 |
-| 6 | `p26_roc_roc105` | cal_100_105_he | 300 x 1 / 0.86 s = 350 | 300 x 1 / 0.86 s = 350 | 5 / 10 |
-| 7 | `p26_roc_roc105` | cal_100_105_he | 300 x 1 / 0.86 s = 350 | 300 x 1 / 0.86 s = 350 | 5 / 10 |
+| 2 | `p26_roc_direct_roc_atgm` | atgm_kornet | 230 x 1 / 1.98 s = 116 | 230 x 2 / 20.00 s = 23 | 0 / 0 |
+| 3 | `p26_roc_direct_roc_atgm` | atgm_kornet | 230 x 1 / 1.98 s = 116 | 230 x 2 / 20.00 s = 23 | 0 / 0 |
+| 4 | `p26_roc_close_twin_30_bmpt` | cal_30 | 22 x 12 / 1.86 s = 142 | 22 x 12 / 2.42 s = 109 | 0 / 0 |
+| 5 | `p26_roc_close_twin_30_bmpt` | cal_30 | 22 x 12 / 1.86 s = 142 | 22 x 12 / 2.42 s = 109 | 0 / 0 |
+| 6 | `p26_roc_roc105` | cal_100_105_he | 300 x 1 / 0.86 s = 350 | 300 x 1 / 6.00 s = 50 | 5 / 10 |
+| 7 | `p26_roc_roc105` | cal_100_105_he | 300 x 1 / 0.86 s = 350 | 300 x 1 / 6.00 s = 50 | 5 / 10 |
 
 ### hyperion
 
@@ -571,7 +571,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | fortress_bastion | 792 | 741 | 94 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
 | rail_supergun | 170 | 170 | 100 % | 240 -> 240 | - |
 | earth_borer | 289 | 213 | 74 % **(< 80 %)** | 0 -> 0 | - |
-| command_airship | 1532 | 1532 | 100 % | 0 -> 0 | - |
+| command_airship | 1532 | 681 | 44 % **(< 80 %)** | 0 -> 0 | - |
 | landing_hovercraft | 302 | 302 | 100 % | 120 -> 120 | - |
 | supreme_command | 143 | 226 | 159 % | 0 -> 0 | - |
 | sky_fortress | 418 | 418 | 100 % | 0 -> 0 | - |
@@ -593,7 +593,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | behemoth_mk0 | 733 | 637 | 87 % | 0 -> 0 | `p26_behemoth_direct_be120` 2 barrels together, `p26_behemoth_sec_be_rockets` 40 tubes |
 | kraken | 771 | 771 | 100 % | 804 -> 804 | - |
 | monster | 792 | 741 | 94 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
-| garuda | 1532 | 1532 | 100 % | 0 -> 0 | - |
+| garuda | 1532 | 681 | 44 % **(< 80 %)** | 0 -> 0 | - |
 | hyperion | 1320 | 1320 | 100 % | 0 -> 0 | - |
 | stymphalos | 622 | 586 | 94 % | 0 -> 0 | - |
 | nyx | 239 | 239 | 100 % | 0 -> 0 | - |
