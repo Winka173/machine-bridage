@@ -274,8 +274,9 @@ class Sheet:
     def sorted_rows(self) -> list[Row]:
         return [self.rows[k] for k in sorted(self.rows, key=natural_key)]
 
-    def table(self) -> tuple[list[str], list[list]]:
-        """(header, rows) as written."""
+    def table(self, values: bool = False) -> tuple[list[str], list[list]]:
+        """(header, rows) as written: a formula cell (core.formula.F) as its A1 text, or with values=True (the CSV) as its
+        evaluated value."""
         cols = self.column_order()
         out = []
         for r in self.sorted_rows():
@@ -286,7 +287,10 @@ class Sheet:
                 elif c == "raw_json":
                     line.append(raw_json(r))
                 else:
-                    line.append(r.values.get(c))
+                    v = r.values.get(c)
+                    if hasattr(v, "template"):
+                        v = (v.value if v.error is None else "#" + "ERR") if values else (v.text or v.template)
+                    line.append(v)
             out.append(line)
         return cols, out
 
@@ -297,6 +301,8 @@ class Sheet:
             kinds = set()
             for r in self.rows.values():
                 v = r.values.get(name)
+                if hasattr(v, "template"):  # a formula: its value's kind
+                    v = v.value
                 if v is None or v == "":
                     continue
                 if isinstance(v, str) and MARKER.match(v):

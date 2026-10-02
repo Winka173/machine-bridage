@@ -67,6 +67,11 @@ def build(ctx, meta: dict, per_source, unmapped, per_file, fk_results, planned: 
     kn = book.sheet("Khoa_ngoai", "Khóa ngoại", "Mọi khóa ngoại và kết quả test (spec 2.2)")
     for c in ("file", "sheet", "cot", "dich", "dich_chua_xuat", "so_gia_tri", "so_loi", "ket_qua", "vi_du_loi"):
         kn.col(c)
+    kc = book.sheet("Kiem_cong_thuc", "Kiểm công thức", "Lớp B: công thức Excel == giá trị mã game (port Python, sai số 1e-6); "
+                    "input chép == file nguồn (spec 2.2, 2.3, 9.4)")
+    for c in ("loai", "file", "sheet", "cot", "so_dong", "so_khop", "so_khong_kiem", "so_loi", "lech_lon_nhat", "doi_chieu",
+              "ket_qua", "vi_du_loi"):
+        kc.col(c)
     vd = book.sheet("Van_de", "Vấn đề", "Cảnh báo của lần xuất (cột ghi hai lần, sheet tự sinh, id trùng)")
     vd.col("noi_dung")
 
@@ -161,6 +166,14 @@ def build(ctx, meta: dict, per_source, unmapped, per_file, fk_results, planned: 
         r.set("so_loi", res["errors"])
         r.set("ket_qua", res["status"])
         r.set("vi_du_loi", res["examples"])
+
+    # Kiem_cong_thuc -------------------------------------------------------------------------------------------------
+    for res in getattr(ctx, "formula_checks", []):
+        r = kc.row(f"{res['kind']}/{res['file']}/{res['sheet']}/{res['column']}", "core/formula.py")
+        for k, c in (("kind", "loai"), ("file", "file"), ("sheet", "sheet"), ("column", "cot"), ("rows", "so_dong"),
+                     ("match", "so_khop"), ("unchecked", "so_khong_kiem"), ("errors", "so_loi"), ("max_diff", "lech_lon_nhat"),
+                     ("reference", "doi_chieu"), ("status", "ket_qua"), ("examples", "vi_du_loi")):
+            r.set(c, res[k])
 
     # Van_de ---------------------------------------------------------------------------------------------------------
     for i, text in enumerate(ctx.issues + [f"lá ánh xạ hai lần: {d[0]} {d[1]}: {d[2]} và {d[3]}" for d in ctx.cov.duplicates]):

@@ -6,8 +6,8 @@
 
 Read only: no game value is changed. Output: Docs/export/<date>_<commit>/ (date = the HEAD commit's date, so a rerun on
 the same commit and data rewrites the same files byte for byte; README.md and MANIFEST.json carry the run's time).
-Exit code: 0 pass; 1 an unmapped leaf, a leaf mapped twice, a failed foreign key or a secret in an output; 2 (--strict)
-leaves still pending on files not built yet.
+Exit code: 0 pass; 1 an unmapped leaf, a leaf mapped twice, a failed foreign key, a layer B formula off its game value, an
+input_<name> copy off its source file, or a secret in an output; 2 (--strict) leaves still pending on files not built yet.
 """
 from __future__ import annotations
 
@@ -29,6 +29,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 import openpyxl  # noqa: E402
 
 from core import fk as FK  # noqa: E402
+from core import formula as FX  # noqa: E402
 from core import index as IX  # noqa: E402
 from core import repo, secrets  # noqa: E402
 from core.context import Context  # noqa: E402
@@ -54,6 +55,7 @@ def build(base_ref: str | None):
         ctx.cov.mark(BALANCE, ("version",), IX.INDEX_ID, "Phien_ban", "gia_tri")
     per_source, unmapped, per_file = ctx.cov.evaluate(ctx.sources, ctx.excluded, ctx.pending, built)
     fk_results = FK.check(ctx.books)
+    FX.run(ctx)  # layer B: resolve and evaluate the formulas, formula == _game and input copy == source (ctx.formula_checks)
     return ctx, per_source, unmapped, per_file, fk_results
 
 
@@ -80,6 +82,15 @@ def summary(ctx, per_source, unmapped, fk_results, strict: bool) -> int:
         if r["status"] == "FAIL":
             code = 1
             print(f"  FK FAIL {r['file']}/{r['sheet']}.{r['column']} -> {r['targets']}: {r['errors']} ({r['examples']})")
+    fx = getattr(ctx, "formula_checks", [])
+    fx_counts = collections.Counter(r["status"] for r in fx)
+    print(f"layer B checks (formula == game / python, input == source): {dict(sorted(fx_counts.items()))}  "
+          f"cells {sum(r['rows'] for r in fx)}")
+    for r in fx:
+        if r["status"] == "FAIL":
+            code = 1
+            print(f"  {r['kind']} FAIL {r['file']}/{r['sheet']}.{r['column']}: {r['rows'] - r['match'] - r['unchecked']} off "
+                  f"(max diff {r['max_diff']:.3g}): {r['examples']}")
     if strict and tot["pending"] and code == 0:
         code = 2
         print("strict: pending leaves remain")
@@ -99,7 +110,7 @@ def write_all(ctx, per_source, unmapped, per_file, fk_results, out: Path, meta: 
             header, rows = s.table()
             formula_cols = {c.name for c in s.cols.values() if c.formula}
             sheets.append((sname, header, rows, formula_cols))
-            write_csv(out / "csv" / fid / f"{sname}.csv", header, rows)
+            write_csv(out / "csv" / fid / f"{sname}.csv", *s.table(values=True))
         write_xlsx(out / "xlsx" / f"{fid}.xlsx", sheets)
     sheets = []
     for sname, s in index_book.sheets.items():
