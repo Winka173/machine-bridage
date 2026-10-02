@@ -18,6 +18,9 @@ namespace MachineBrigade.Sim
         /// <summary>The prebuilt ground states (made on first use; a battle without sites never steps or mixes them).</summary>
         public NavStates NavStates => _navStates ??= new NavStates(Grid);
 
+        /// <summary>Read-only for the view: the sites already made, without making the holder (which would start stepping it).</summary>
+        public IReadOnlyList<NavSite> NavSitesIfAny => _navStates != null ? _navStates.Sites : Array.Empty<NavSite>();
+
         /// <summary>The refusals of the last <see cref="BuildNavSites"/> check (the stuck report and the tests read them).</summary>
         public IReadOnlyList<string> NavSiteProblems { get; private set; } = Array.Empty<string>();
 

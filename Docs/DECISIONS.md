@@ -16396,3 +16396,43 @@ damaged houses, separate sight blockers; the sea side's houses and forests (pass
 `Views/Surroundings.Zones.cs`, `Views/Surroundings.Dressing.cs` (Surroundings is now `partial`), tests
 `MapZonesTests.cs`, `MapDressingTests.cs`; `RtsCamera` gains `TiltDegrees`, `Rotates`, `PlayerMaxZoom`; `CameraFrame`
 reads the internal `MatchRunner.LongMaxZoom`. The 38 GLBs need their import metas.
+
+## UI polish after prompts 28-34 (lead pass, 2026-10-02)
+
+Branch `feature/polish-c4`. The UI / view backlog prompts 28-34 left in Docs/ai/LOCAL_TODO.md. Nothing compiled or run
+here (the lead compiles); no Unity, tests or sims. No new buttons; no model, map JSON or Blender change.
+
+- **Tactic picker vs the mode's AI profile** (prompt 28 appendix): `TacticPick.ModeAllows(catalog, mode, mission, id)` reads
+  the profile the battle will play (`catalog.AiModes.For(mode tag, mission goal)`; the menu has no world) and
+  `TacticPick.ProfileAllows(profile, id)` applies `AiCommander.AllowedTactic`'s rule (no tactics or `noGeneralTactic`:
+  Balanced only). The menu picker greys such a row (the locked look, a "Not played in this mode" tag, no Choose button);
+  the HUD switch greys its button (`KitButton.Disable` with the reason; `ShowPicker` gained an optional `barred` list) and
+  a `NotAllowed` answer toasts the same line. A saved last tactic the mode forbids still shows in the slot: the Sim falls
+  back as before.
+- **Showdown** (prompt 32 L7): `ShowdownSession` posts one notice each at `EscalationAt` (income x the rule's factor),
+  `RebuildCutoff` and when `Phase` turns `SuddenDeath` (an alert, with its seconds), from the rules' numbers. The home
+  screen's map dropdown lists only `ShowdownSession.Eligible` maps while the mode is Showdown (the same option list refilled
+  in place; an empty data list leaves every map) and shows the map that will be played (`MapOf`).
+- **Shield HQ dome** (prompt 32 L4): `EffectsDirector.TickHqDomes(world, playerTeam)` after `Tick`: the item dome's hex
+  `ShieldVisual` at the HQ types' `Radius`, half as high, in the side's colour, up while `HqState.DomeUp`, flickering by
+  `DomeHp / DomeFull`, a soft flare on its crown when its health drops (the Sim emits no hit event for this dome, so no
+  ripple at the impact point), shattering with a ring when it breaks or runs out.
+- **USS** (Screens.uss, end section): `fc-hcard--hqskill` (accent bar and icon while ready, dim while cooling),
+  `fc-hb__row` / `fc-hb__cell` / `fc-hb__chips`, `fc-campaign__fixed-deck` / `fc-campaign__fixed-card` / `fc-tag--loaned`
+  (ally blue), `fc-base__walls` / `fc-base__wall` (48 px tap chips; `fc-base__wall--none`, set by BaseScreen, for no wall).
+- **Closed ground looks** (prompt 31 L3 / L5): `Game/Views/GroundSiteView.cs` reads each NavGrid site's state in force and
+  draws its blocks at their own size (no clearance) by the site's id: a water sheet over silt (`shoal`, `flood`), a fallen
+  bridge's two pitched deck spans with rebar and slabs (`east_bridge`), a crane's lattice boom (`crane`; the crane prop
+  itself falls as the map's rubble), a rock and timber heap (`adits`), a lava cut with crust plates and its own flames and
+  smoke (`lava`), a gate leaf between posts (`mill_gate`), and the forest fire's strip burning (flames and smoke at a rate
+  by its area, capped) with the strips it passed charred (`fire`). Walls' (`wall.`), level crossings' (`rail_`) and pod
+  sites (`pod_`) and unknown ids are left alone. A change after load throws dust along the new ground. Shared surface
+  materials only. The Sim gained a read-only `SimWorld.NavSitesIfAny`: reading `NavStates` would make the holder, which
+  then steps and locks, so the view never touches it.
+- **Match-end poses** (prompt 30 L3 leftover): after a win, `VehicleView.EndRetreat` drives the enemy's surviving
+  non-boss, non-static vehicles away from our rally (a beat, a turn, 1.5 s to speed, 10 s at most) and `EndAim` swings our
+  turrets onto the end shot's focus; both on the scaled clock (the slow motion slows them), applied inside `Render` so the
+  impostor cards follow; cleared when an endless run goes on.
+- **Recon alarm** (prompt 28 appendix): a one-off alert notice when `world.Alarm` turns on (`pressure.alarm`, EN + VI).
+- Left: the leaderboard sort (no board screen yet), the Fortress HQ's turret (model), the branch tower art, and every
+  owner look, shot and test run listed in LOCAL_TODO.

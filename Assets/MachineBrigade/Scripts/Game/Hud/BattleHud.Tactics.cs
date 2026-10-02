@@ -98,12 +98,13 @@ namespace MachineBrigade.Game.Hud
         /// <summary>
         /// The shared picker: a title, status lines, the options (the current one marked), and an extra block (the
         /// per-squad tactics). A choice calls <paramref name="chosen"/> and closes it; a tap beside the card closes it.
+        /// <paramref name="barred"/> (optional, one per option): a reason greys that option out (null keeps it open).
         /// </summary>
         public void ShowPicker(string title, IReadOnlyList<string> status, IReadOnlyList<(string label, string detail, bool current)> options,
-            Action<int> chosen, VisualElement extra = null)
+            Action<int> chosen, VisualElement extra = null, IReadOnlyList<string> barred = null)
         {
             if (_pick == null) return;
-            _pick.Show(title, status, options, chosen, extra);
+            _pick.Show(title, status, options, chosen, extra, barred);
         }
 
         public void HidePicker() => _pick?.Hide();
@@ -147,7 +148,7 @@ namespace MachineBrigade.Game.Hud
         public bool Visible => Root.style.display == DisplayStyle.Flex;
 
         public void Show(string title, IReadOnlyList<string> status, IReadOnlyList<(string label, string detail, bool current)> options,
-            Action<int> chosen, VisualElement extra)
+            Action<int> chosen, VisualElement extra, IReadOnlyList<string> barred = null)
         {
             Kit.ApplyTextSize(Root);
             _title.text = Kit.Caps(title);
@@ -165,6 +166,7 @@ namespace MachineBrigade.Game.Hud
                     Hide();
                     chosen(index);
                 }, options[i].current ? "check" : null);
+                if (barred != null && i < barred.Count && !string.IsNullOrWhiteSpace(barred[i]) && !options[i].current) button.Disable(barred[i]);
                 option.Add(button);
                 if (!string.IsNullOrEmpty(options[i].detail)) option.Add(Kit.Text(options[i].detail, "fc-small fc-choice__detail"));
                 _options.Add(option);

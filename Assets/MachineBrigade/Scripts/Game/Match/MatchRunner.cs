@@ -85,6 +85,7 @@ namespace MachineBrigade.Game.Match
         private ViewRegistry _views;
         private ObjectiveView _objectives;
         private NeutralSiteView _neutralSites;
+        private GroundSiteView _groundSites;
         private MissionMarkers _markers;
         private PlayAreaView _playArea;
 
@@ -379,6 +380,8 @@ namespace MachineBrigade.Game.Match
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
                 options.MaxEffects ? EffectBudget.High : EffectBudget.Eco);
             _effects.SetMapBounds(new Vector3(map.Centre.X, 0f, map.Centre.Y), map.Width * 0.5f, map.Length * 0.5f);
+            // Prompt 31: the closed ground of a mission's prebuilt sites (flood, fallen bridge or boom, sealed adit, lava, fire).
+            if (!_menu) _groundSites = new GroundSiteView(_meshes, _materials, _effects, worldRoot);
             // Build every vehicle's merged model and the munitions now, not on first use mid-battle.
             // Build the merged models of every vehicle this battle can field now, not on first use
             // mid-battle, and only those: the catalogue holds bosses, elites and defences most
@@ -795,6 +798,7 @@ namespace MachineBrigade.Game.Match
             if (!_paused)
             {
                 _effects.Tick(_views);
+                _effects.TickHqDomes(_world, _views.PlayerTeam);
                 _weather.Presence = StormPresence();
                 _weather.Tick();
                 if (_leavingWeather != null && !_leavingWeather.TickLeaving())
@@ -854,6 +858,7 @@ namespace MachineBrigade.Game.Match
             _perf?.Begin();
             _objectives?.Render(Time.time);
             _neutralSites?.Render(_world, Time.time);
+            _groundSites?.Render(_world, Time.time, _paused ? 0f : Time.deltaTime);
             if (_markers != null && _session is MissionSession mission)
             {
                 mission.Mission.Marks(_world, _marks);

@@ -118,7 +118,35 @@ namespace MachineBrigade.Game.Match
             _commander?.Disarm();
             _selection.Deselect();
             PlanEndShot(kind);
+            if (outcome.Result > 0) StartEndPoses();
             Haptics.Pulse(outcome.Result > 0 ? 120 : 90, 200);
+        }
+
+        /// <summary>
+        /// L3 after a win (pictures only): the enemy's surviving vehicles turn away from our rally and drive off towards the
+        /// edge, our turrets (vehicles and towers) swing onto the last target. The Sim stays frozen.
+        /// </summary>
+        private void StartEndPoses()
+        {
+            var now = Time.time;
+            var home = _world.TryGetRally(PlayerTeam, out var rally) ? new Vector3(rally.X, 0f, rally.Y) : _endFocus;
+            foreach (var view in _views.All)
+            {
+                if (view.IsWreck || !view.Sim.IsAlive) continue;
+                if (view.Team == EnemyTeam && !view.Def.Boss && !view.Def.Static)
+                {
+                    var away = view.Position - home;
+                    away.y = 0f;
+                    if (away.sqrMagnitude < 1f) away = view.Position - _endFocus;
+                    view.EndRetreat(away, now);
+                }
+                else if (view.Team == PlayerTeam) view.EndAim(_endFocus, now);
+            }
+        }
+
+        private void ClearEndPoses()
+        {
+            foreach (var view in _views.All) view.EndPoseClear();
         }
 
         /// <summary>
@@ -239,6 +267,7 @@ namespace MachineBrigade.Game.Match
             _endlessSteps = _session.Mode is IEndlessMode e ? e.EndlessSteps : 0;
             Time.timeScale = 1f;
             _hud.HideResult();
+            ClearEndPoses();
             _music?.Resume();
             _hud.Toast(Strings.Get("result.endlessKept"), seconds: 4f, kind: NoticeKind.Reward);
         }

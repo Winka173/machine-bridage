@@ -1040,6 +1040,7 @@ namespace MachineBrigade.Game.Views
             }
             Root.position = position;
             Root.rotation = Quaternion.Euler(0f, hull, 0f);
+            EndPoseHull(hull);
 
             if (_model.Turret != null && !Match.DebugFlags.Has("-mb-no-turret"))
             {
@@ -1049,6 +1050,7 @@ namespace MachineBrigade.Game.Views
                 var kick = t is >= 0f and < 1f ? (1f - t) * (1f - t) * _recoilDistance : 0f;
                 for (var i = 0; i < _recoilRest.Length; i++)
                     _model.RecoilParts[i].localPosition = _recoilRest[i] + Vector3.back * ((_barrelTips == null || _barrelOf[i] == _barrel ? kick : 0f) - BarrelRunOf(i));
+                EndPoseTurret();
             }
 
             // Free weapon mounts turn on their own; their parent may be the turret or the hull (the

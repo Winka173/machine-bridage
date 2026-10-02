@@ -16,6 +16,7 @@ namespace MachineBrigade.Game.Match
     internal sealed class ShowdownSession : ModeSession
     {
         private ShowdownMode _mode;
+        private bool _saidEscalation, _saidCutoff, _saidSudden;
 
         public override HudSpec Hud => new() { Mode = HudMode.Score, ScoreLabel = "stat.hq" };
         public override string Kicker => Strings.Get("mode.showdown.kicker");
@@ -62,6 +63,35 @@ namespace MachineBrigade.Game.Match
             scratch.Clear();
             hud.SetScore(Percent(_mode.HqShare(world, PlayerTeam)), Percent(_mode.HqShare(world, EnemyTeam)), 100, scratch);
             hud.SetTimer(_mode.SecondsLeft(world));
+            Announce(hud, world);
+        }
+
+        /// <summary>
+        /// Prompt 32 L7 (lead UI pass): one notice each at minute 6 (escalation), minute 10 (no more rebuilt towers) and when
+        /// sudden death starts. Reads the Sim's clock and phase only; the times are the rules' (balance.json).
+        /// </summary>
+        private void Announce(BattleHud hud, SimWorld world)
+        {
+            if (_mode.Result != null) return;
+            var rules = _mode.Rules;
+            var now = world.Time;
+            if (!_saidEscalation && now >= rules.EscalationAt)
+            {
+                _saidEscalation = true;
+                hud.Toast(Strings.Format("mode.showdown.escalate", ("mult", rules.EscalationIncome.ToString("0.#", Strings.Culture))),
+                    seconds: 4f, kind: NoticeKind.Reward);
+            }
+            if (!_saidCutoff && now >= rules.RebuildCutoff)
+            {
+                _saidCutoff = true;
+                hud.Toast(Strings.Get("mode.showdown.cutoff"), seconds: 4f, kind: NoticeKind.Objective);
+            }
+            if (!_saidSudden && _mode.Phase == ShowdownPhase.SuddenDeath)
+            {
+                _saidSudden = true;
+                hud.Toast(Strings.Format("mode.showdown.sudden", ("seconds", Math.Round(rules.SuddenDeath))), error: true, seconds: 5f,
+                    kind: NoticeKind.Boss);
+            }
         }
 
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)

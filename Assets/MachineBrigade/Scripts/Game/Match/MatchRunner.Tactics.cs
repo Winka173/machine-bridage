@@ -19,6 +19,9 @@ namespace MachineBrigade.Game.Match
         private int _pressureShown;
         private bool _finalShown;
 
+        /// <summary>Prompt 28 appendix: the recon alarm ("Báo động") has been announced.</summary>
+        private bool _alarmShown;
+
         private void WireTactics()
         {
             _hud.TacticPressed += OpenTacticPicker;
@@ -66,6 +69,12 @@ namespace MachineBrigade.Game.Match
             {
                 _finalShown = true;
                 _hud.Toast(Strings.Get("pressure.final"), seconds: 4f);
+            }
+            // Prompt 28 appendix: a recon mission's alarm (world.Alarm): the enemy is alerted and plays its alert profile.
+            if (!_alarmShown && _world.Alarm)
+            {
+                _alarmShown = true;
+                _hud.Toast(Strings.Get("pressure.alarm"), error: true, seconds: 4f, kind: NoticeKind.Objective);
             }
             var general = _session.PlayerAi?.Commander;
             if (general == null)
@@ -116,6 +125,10 @@ namespace MachineBrigade.Game.Match
                 if (TacticPick.Unlocked(t)) tactics.Add(t);
             var options = new List<(string, string, bool)>();
             foreach (var t in tactics) options.Add((TacticText.Name(t), TacticText.Core(t), t.Id == current.Id));
+            // Prompt 28 appendix: the mode's AI profile may forbid some (RequestTactic would answer NotAllowed): greyed out.
+            var barred = new List<string>();
+            var profile = _world.AiProfile;
+            foreach (var t in tactics) barred.Add(TacticPick.ProfileAllows(profile, t.Id) ? null : Strings.Get("tactic.notInMode"));
             _hud.ShowPicker(Strings.Get("tactic.switch"), status, options, i =>
             {
                 var id = tactics[i].Id;
@@ -126,7 +139,8 @@ namespace MachineBrigade.Game.Match
                     _hud.Toast(Strings.Format("tactic.line.switched", ("tactic", TacticText.Name(tactics[i]))), kind: NoticeKind.Order);
                 }
                 else if (result == TacticSwitchResult.Cooldown) _hud.Toast(Strings.Get("tactic.line.cooldown"), error: true);
-            }, general.SquadTactics ? SquadTactics(general, tactics) : null);
+                else if (result == TacticSwitchResult.NotAllowed) _hud.Toast(Strings.Get("tactic.notInMode"), error: true);
+            }, general.SquadTactics ? SquadTactics(general, tactics) : null, barred);
         }
 
         /// <summary>H.10: each squad's own tactic (or the side's), each with its own cooldown; kept in the profile by squad number.</summary>

@@ -17,6 +17,7 @@ namespace MachineBrigade.Game.Hud
         private VisualElement _tacticPage, _tacticBody;
         private GameModeKind _tacticMode;
         private CommanderDef _tacticCommander;
+        private MissionDef _tacticMission;
 
         private void BuildTacticPage()
         {
@@ -43,14 +44,15 @@ namespace MachineBrigade.Game.Hud
             text.Add(Kit.Text(TacticText.Name(t), "fc-body fc-row-text"));
             text.Add(Kit.Text(TacticText.Core(t), "fc-small fc-row-text"));
             slot.Add(text);
-            slot.Add(new KitButton(ButtonTier.Text, Strings.Get("tactic.pickTitle"), () => OpenTactics(mode, commander), "flag"));
+            slot.Add(new KitButton(ButtonTier.Text, Strings.Get("tactic.pickTitle"), () => OpenTactics(mode, commander, mission), "flag"));
             return slot;
         }
 
-        private void OpenTactics(GameModeKind mode, CommanderDef commander)
+        private void OpenTactics(GameModeKind mode, CommanderDef commander, MissionDef mission = null)
         {
             _tacticMode = mode;
             _tacticCommander = commander;
+            _tacticMission = mission;
             Open(_tacticPage, Strings.Get("tactic.pickTitle"));
             FillTactics();
         }
@@ -78,8 +80,10 @@ namespace MachineBrigade.Game.Hud
         {
             var data = _catalog.AiData;
             var locked = !TacticPick.Unlocked(t);
+            // Prompt 28 appendix: a tactic the mode's AI profile forbids is greyed out (the battle would fall back to another).
+            var barred = !locked && !TacticPick.ModeAllows(_catalog, _tacticMode, _tacticMission, t.Id);
             var isChosen = t.Id == chosen;
-            var row = Kit.Box(KitPanel.SurfaceClass + " fc-cmdr-row" + (locked ? " fc-cmdr-row--locked" : "") + (isChosen ? " fc-cmdr-row--chosen" : ""));
+            var row = Kit.Box(KitPanel.SurfaceClass + " fc-cmdr-row" + (locked || barred ? " fc-cmdr-row--locked" : "") + (isChosen ? " fc-cmdr-row--chosen" : ""));
             if (_commanderSheet != null) row.styleSheets.Add(_commanderSheet);
             row.Add(Kit.Icon("flag", "fc-tactic-icon"));
             var text = Kit.Box("fc-cmdr-row__text");
@@ -99,10 +103,11 @@ namespace MachineBrigade.Game.Hud
             var tags = Kit.Box("fc-cmdr-row__tags");
             if (suited) tags.Add(Tag("star", Strings.Get("tactic.suits"), "fc-tag--ok"));
             if (locked) tags.Add(Tag("lock", TacticText.Unlock(t), "fc-tag--missing"));
+            else if (barred) tags.Add(Tag("lock", Strings.Get("tactic.notInMode"), "fc-tag--missing"));
             else if (isChosen) tags.Add(Tag("check", Strings.Get("cmdr.chosen"), "fc-tag--ok"));
             if (tags.childCount > 0) text.Add(tags);
             row.Add(text);
-            if (!locked && !isChosen)
+            if (!locked && !barred && !isChosen)
             {
                 var id = t.Id;
                 var act = new KitButton(ButtonTier.Secondary, Strings.Get("cmdr.choose"), () =>
