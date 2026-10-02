@@ -266,17 +266,17 @@ Ground DPS **418 -> 418** (100 %); anti-air only 0 -> 0.
 
 ### leviathan
 
-Ground DPS **771 -> 771** (100 %); anti-air only 804 -> 804.
+Ground DPS **771 -> 956** (124 %); anti-air only 804 -> 804.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `p26_leviathan_lev406` | cal_406 | 2400 x 3 / 60.00 s = 0 (laid) | 2400 x 3 (3 together) / 60.00 s = 0 (laid) | 14 / 24 |
 | 1 | `p26_leviathan_lev406` | cal_406 | 2400 x 3 / 60.00 s = 0 (laid) | 2400 x 3 (3 together) / 60.00 s = 0 (laid) | 14 / 24 |
 | 2 | `p26_leviathan_lev406` | cal_406 | 2400 x 3 / 60.00 s = 0 (laid) | 2400 x 3 (3 together) / 60.00 s = 0 (laid) | 14 / 24 |
-| 3 | `p26_leviathan_sec_lev155` | cal_152_155 | 600 x 3 / 13.71 s = 131 | 600 x 3 (3 together) / 13.71 s = 131 | 7 / 14 |
-| 4 | `p26_leviathan_sec_lev155` | cal_152_155 | 600 x 3 / 13.71 s = 131 | 600 x 3 (3 together) / 13.71 s = 131 | 7 / 14 |
-| 5 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 5.10 s = 74 | 0 / 0 |
-| 6 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 5.10 s = 74 | 0 / 0 |
+| 3 | `p26_leviathan_sec_lev155` | cal_152_155 | 600 x 3 / 13.71 s = 131 | 600 x 3 (3 together) / 10.50 s = 171 | 7 / 14 |
+| 4 | `p26_leviathan_sec_lev155` | cal_152_155 | 600 x 3 / 13.71 s = 131 | 600 x 3 (3 together) / 10.50 s = 171 | 7 / 14 |
+| 5 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 3.00 s = 127 | 0 / 0 |
+| 6 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 3.00 s = 127 | 0 / 0 |
 | 7 | `aa_25_triple` | cal_25 | 17 x 15 / 3.10 s = 82 | 17 x 15 / 3.10 s = 82 | 0 / 0 |
 | 8 | `aa_25_triple` | cal_25 | 17 x 15 / 3.10 s = 82 | 17 x 15 / 3.10 s = 82 | 0 / 0 |
 | 9 | `aa_25_triple` | cal_25 | 17 x 15 / 3.10 s = 82 | 17 x 15 / 3.10 s = 82 | 0 / 0 |
@@ -390,12 +390,12 @@ Ground DPS **350 -> 380** (109 %); anti-air only 0 -> 0.
 
 ### scylla
 
-Ground DPS **234 -> 234** (100 %); anti-air only 0 -> 0.
+Ground DPS **234 -> 287** (122 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `naval_130_twin` | cal_127_130 | 380 x 2 / 4.75 s = 160 | 380 x 2 (2 together) / 4.75 s = 160 | 5 / 10 |
-| 1 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 5.10 s = 74 | 0 / 0 |
+| 1 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 3.00 s = 127 | 0 / 0 |
 
 ### locust
 
@@ -446,17 +446,17 @@ Ground DPS **733 -> 637** (87 %); anti-air only 0 -> 0. Made up: `p26_behemoth_d
 
 ### kraken
 
-Ground DPS **771 -> 771** (100 %); anti-air only 804 -> 804.
+Ground DPS **771 -> 956** (124 %); anti-air only 804 -> 804.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `p26_leviathan_lev406` | cal_406 | 2400 x 3 / 60.00 s = 0 (laid) | 2400 x 3 (3 together) / 60.00 s = 0 (laid) | 14 / 24 |
 | 1 | `p26_leviathan_lev406` | cal_406 | 2400 x 3 / 60.00 s = 0 (laid) | 2400 x 3 (3 together) / 60.00 s = 0 (laid) | 14 / 24 |
 | 2 | `p26_leviathan_lev406` | cal_406 | 2400 x 3 / 60.00 s = 0 (laid) | 2400 x 3 (3 together) / 60.00 s = 0 (laid) | 14 / 24 |
-| 3 | `p26_leviathan_sec_lev155` | cal_152_155 | 600 x 3 / 13.71 s = 131 | 600 x 3 (3 together) / 13.71 s = 131 | 7 / 14 |
-| 4 | `p26_leviathan_sec_lev155` | cal_152_155 | 600 x 3 / 13.71 s = 131 | 600 x 3 (3 together) / 13.71 s = 131 | 7 / 14 |
-| 5 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 5.10 s = 74 | 0 / 0 |
-| 6 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 5.10 s = 74 | 0 / 0 |
+| 3 | `p26_leviathan_sec_lev155` | cal_152_155 | 600 x 3 / 13.71 s = 131 | 600 x 3 (3 together) / 10.50 s = 171 | 7 / 14 |
+| 4 | `p26_leviathan_sec_lev155` | cal_152_155 | 600 x 3 / 13.71 s = 131 | 600 x 3 (3 together) / 10.50 s = 171 | 7 / 14 |
+| 5 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 3.00 s = 127 | 0 / 0 |
+| 6 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 3.00 s = 127 | 0 / 0 |
 | 7 | `aa_25_triple` | cal_25 | 17 x 15 / 3.10 s = 82 | 17 x 15 / 3.10 s = 82 | 0 / 0 |
 | 8 | `aa_25_triple` | cal_25 | 17 x 15 / 3.10 s = 82 | 17 x 15 / 3.10 s = 82 | 0 / 0 |
 | 9 | `aa_25_triple` | cal_25 | 17 x 15 / 3.10 s = 82 | 17 x 15 / 3.10 s = 82 | 0 / 0 |
@@ -525,13 +525,13 @@ Ground DPS **622 -> 586** (94 %); anti-air only 0 -> 0.
 
 ### nyx
 
-Ground DPS **239 -> 239** (100 %); anti-air only 0 -> 0.
+Ground DPS **239 -> 343** (144 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `boss_railgun` | rail_railgun | 720 x 1 / 8.00 s = 90 | 720 x 1 / 8.00 s = 90 | 0 / 0 |
-| 1 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 5.10 s = 74 | 0 / 0 |
-| 2 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 5.10 s = 74 | 0 / 0 |
+| 1 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 3.00 s = 127 | 0 / 0 |
+| 2 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 3.00 s = 127 | 0 / 0 |
 
 ### cerberus
 
@@ -575,7 +575,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | landing_hovercraft | 302 | 293 | 97 % | 120 -> 120 | - |
 | supreme_command | 143 | 226 | 159 % | 0 -> 0 | - |
 | sky_fortress | 418 | 418 | 100 % | 0 -> 0 | - |
-| leviathan | 771 | 771 | 100 % | 804 -> 804 | - |
+| leviathan | 771 | 956 | 124 % | 804 -> 804 | - |
 | moloch | 1382 | 1382 | 100 % | 0 -> 0 | `p26_moloch_direct_mo120ap` 2 barrels together, `p26_moloch_main_mo120` 2 barrels together |
 | daedalus | 745 | 745 | 100 % | 0 -> 0 | `p26_daedalus_sec_dae57` 2 barrels together |
 | kronos | 439 | 439 | 100 % | 0 -> 0 | - |
@@ -585,18 +585,18 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | morrigan | 165 | 165 | 100 % | 147 -> 147 | - |
 | bastion_mk0 | 239 | 130 | 54 % **(< 80 %)** | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
 | fenrir | 350 | 380 | 109 % | 0 -> 0 | - |
-| scylla | 234 | 234 | 100 % | 0 -> 0 | - |
+| scylla | 234 | 287 | 122 % | 0 -> 0 | - |
 | locust | 552 | 575 | 104 % | 0 -> 0 | - |
 | behemoth_mk2 | 569 | 515 | 90 % | 0 -> 0 | - |
 | icarus_mk0 | 400 | 400 | 100 % | 0 -> 0 | - |
 | argus | 316 | 316 | 100 % | 0 -> 0 | - |
 | behemoth_mk0 | 733 | 637 | 87 % | 0 -> 0 | `p26_behemoth_direct_be120` 2 barrels together, `p26_behemoth_sec_be_rockets` 40 tubes |
-| kraken | 771 | 771 | 100 % | 804 -> 804 | - |
+| kraken | 771 | 956 | 124 % | 804 -> 804 | - |
 | monster | 792 | 741 | 94 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
 | garuda | 1532 | 681 | 44 % **(< 80 %)** | 0 -> 0 | - |
 | hyperion | 1320 | 1320 | 100 % | 0 -> 0 | - |
 | stymphalos | 622 | 586 | 94 % | 0 -> 0 | - |
-| nyx | 239 | 239 | 100 % | 0 -> 0 | - |
+| nyx | 239 | 343 | 144 % | 0 -> 0 | - |
 | cerberus | 875 | 879 | 101 % | 0 -> 0 | `p26_behemoth_sec_be_rockets` 40 tubes |
 | hydra | 707 | 707 | 100 % | 0 -> 0 | `p26_typhon_sec_ty57` 2 barrels together |
 
