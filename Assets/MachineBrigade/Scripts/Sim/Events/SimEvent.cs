@@ -384,6 +384,10 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent FireTrail(Vehicle boss, Vector2 at, float seconds, float radius) =>
             new(SimEventKind.FireTrail, boss.Id, at, new Vector2(radius, 0f), seconds, ExplosionTier.Medium, boss.Def.Id, boss.Team);
 
+        /// <summary>Prompt 31 L5: a patch of burning ground with no vehicle behind it (the forest fire), drawn as the fire trail's patches.</summary>
+        internal static SimEvent GroundFire(Vector2 at, float seconds, float radius) =>
+            new(SimEventKind.FireTrail, EntityId.None, at, new Vector2(radius, 0f), seconds, ExplosionTier.Medium, "forest_fire", Teams.Environment);
+
         internal static SimEvent Landed(Vehicle boss, Vector2 at, int count) =>
             new(SimEventKind.TroopsLanding, boss.Id, at, boss.Position, count, ExplosionTier.Large, boss.Def.Id, boss.Team);
 

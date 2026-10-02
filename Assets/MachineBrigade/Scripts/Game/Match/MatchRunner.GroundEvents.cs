@@ -11,6 +11,26 @@ namespace MachineBrigade.Game.Match
     /// </summary>
     public sealed partial class MatchRunner
     {
+        private bool _stormSeen;
+
+        /// <summary>
+        /// Prompt 31 L5 (written blind): the sandstorm that rolls over one half of the map (SandstormTurn) covers only that half
+        /// in the view: while the camera looks at the other half the weather's presence is low (the dust thins, the look eases
+        /// back to the weather it replaced); once the storm has passed, a sandstorm that replaced another weather thins out
+        /// everywhere. Any other weather, or a map in a sandstorm of its own with no storm turning, is shown whole.
+        /// </summary>
+        private float StormPresence()
+        {
+            if (_weatherKind != WeatherKind.Sandstorm) return 1f;
+            if (_world.StormActive)
+            {
+                _stormSeen = true;
+                var focus = _camera.Focus;
+                return _world.InStorm(new System.Numerics.Vector2(focus.x, focus.z)) ? 1f : 0.15f;
+            }
+            return _stormSeen && _weather.Replaced ? 0.15f : 1f;
+        }
+
         private void MinimapEventMarks(Minimap minimap)
         {
             foreach (var system in _world.MissionEvents)

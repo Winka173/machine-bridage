@@ -22,7 +22,11 @@ import prompt26  # noqa: E402
 import prompt27  # noqa: E402
 import measure_stamp  # noqa: E402
 import prompt29  # noqa: E402
+<<<<<<< HEAD
 import prompt32  # noqa: E402
+=======
+import prompt31  # noqa: E402
+>>>>>>> 353561717123774da8524f7887c83f92b05df11d
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
@@ -526,6 +530,8 @@ def build(game, imgdir):
     out.append(prompt26.boss_blast_section(game, h))
     out.append(prompt26.hunt_section(game, h))
     out.append(prompt27.section(game, h))
+    # Prompt 31 L6: the game-made decks and the battlefield events.
+    out.append(prompt31.section(game, h))
 
     # ------------------------------------------------------------------ towers, elites, bosses
     def simple_rows(vs):

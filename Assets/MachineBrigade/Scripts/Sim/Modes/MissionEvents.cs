@@ -207,6 +207,7 @@ namespace MachineBrigade.Sim.Modes
             if (t.After != null && Find(t.After) is not { HappenedAt: >= 0 }) return false;
             if (t.Outnumbered is { } ratio && Army(world, MissionMode.EnemyTeam) < ratio * MathF.Max(1f, Army(world, MissionMode.PlayerTeam))) return false;
             if (t.Spotted && !Spotted(world)) return false;
+            if (t.PropDown != null && !PropDown(world, s)) return false;
             s.ReadyAt = world.Time + t.Delay;
             return world.Time >= s.ReadyAt;
         }
@@ -347,7 +348,8 @@ namespace MachineBrigade.Sim.Modes
             MissionEventKind.SideObjective or MissionEventKind.LootDrop => new[] { "start", "done", "fail" },
             MissionEventKind.SupplyRaid => new[] { "warn", "done", "fail" },
             MissionEventKind.Blackout => new[] { "warn", "start", "end" },
-            MissionEventKind.GroundChange or MissionEventKind.OrbitalPods => new[] { "warn", "start" },
+            MissionEventKind.GroundChange or MissionEventKind.OrbitalPods or MissionEventKind.IceCrack => new[] { "warn", "start" },
+            MissionEventKind.ForestFire => new[] { "warn", "spread", "end" },
             MissionEventKind.SandstormTurn or MissionEventKind.CityBlackout => new[] { "warn", "end" },
             MissionEventKind.BetrayalWarning => new[] { "warn" },
             _ => new[] { "start" },
@@ -364,7 +366,7 @@ namespace MachineBrigade.Sim.Modes
             MissionEventKind.SideObjective => new[] { "start", "done", "fail" },
             MissionEventKind.Blackout => new[] { "warn", "end" },
             MissionEventKind.GroundChange or MissionEventKind.SandstormTurn or MissionEventKind.CityBlackout or MissionEventKind.BetrayalWarning
-                or MissionEventKind.OrbitalPods => new[] { "warn" },
+                or MissionEventKind.OrbitalPods or MissionEventKind.IceCrack or MissionEventKind.ForestFire => new[] { "warn" },
             MissionEventKind.LootDrop => Array.Empty<string>(),
             _ => new[] { "start" },
         };
@@ -384,7 +386,7 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.Blackout:
                     return moment is "warn" or "end" ? "linh" : null;
                 case MissionEventKind.GroundChange or MissionEventKind.SandstormTurn or MissionEventKind.CityBlackout or MissionEventKind.BetrayalWarning
-                    or MissionEventKind.OrbitalPods:
+                    or MissionEventKind.OrbitalPods or MissionEventKind.IceCrack or MissionEventKind.ForestFire:
                     return moment == "warn" ? "linh" : null;
                 case MissionEventKind.GeneralField:
                     return moment == "warn" ? "linh" : moment is "start" or "retreat" ? general : null;
@@ -437,11 +439,11 @@ namespace MachineBrigade.Sim.Modes
         private static bool Bad(MissionEventKind kind) => kind is MissionEventKind.EnemyWave or MissionEventKind.Barrage or MissionEventKind.AirRaid
             or MissionEventKind.CounterBattery or MissionEventKind.GeneralField or MissionEventKind.SupplyRaid or MissionEventKind.Blackout
             or MissionEventKind.MiniBoss or MissionEventKind.OrbitalStrike or MissionEventKind.GroundChange or MissionEventKind.SandstormTurn
-            or MissionEventKind.CityBlackout or MissionEventKind.BetrayalWarning or MissionEventKind.OrbitalPods;
+            or MissionEventKind.CityBlackout or MissionEventKind.BetrayalWarning or MissionEventKind.OrbitalPods or MissionEventKind.IceCrack or MissionEventKind.ForestFire;
 
         /// <summary>Prompt 31 L3: the kinds that change the battlefield (8-12 s of warning, a mark on the minimap).</summary>
         public static bool ChangesGround(MissionEventKind kind) => kind is MissionEventKind.GroundChange or MissionEventKind.SandstormTurn
-            or MissionEventKind.CityBlackout or MissionEventKind.BetrayalWarning or MissionEventKind.OrbitalPods;
+            or MissionEventKind.CityBlackout or MissionEventKind.BetrayalWarning or MissionEventKind.OrbitalPods or MissionEventKind.IceCrack or MissionEventKind.ForestFire;
 
         // ------------------------------------------------------------------ the battlefield
 

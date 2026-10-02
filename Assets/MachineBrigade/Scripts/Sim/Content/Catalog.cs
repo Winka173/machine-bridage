@@ -297,6 +297,7 @@ namespace MachineBrigade.Sim.Content
                         def.ModelHeight = size[2];
                     }
                     def.Class = v.Has("class") ? v.Enum<UnitClass>("class") : InferClass(def);
+                    def.Weight = v.Has("weightClass") ? v.Enum<WeightClass>("weightClass") : VehicleDef.InferWeight(def);
                     if (v.Has("strongVs"))
                     {
                         var list = new List<UnitClass>();

@@ -91,6 +91,19 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Prompt 31 L3: Daedalus drops pods that stand up as new enemy structures on prebuilt ground (its "sites").</summary>
         OrbitalPods,
+
+        /// <summary>
+        /// Prompt 31 L5: a frozen lake's ice (a circle, "x", "z", "radius") cracks under a vehicle that breaks ice (its weight
+        /// class, never its CP) once it has been on it "seconds" (10): slowed by "slow" for "slowFor" seconds, again and again.
+        /// </summary>
+        IceCrack,
+
+        /// <summary>
+        /// Prompt 31 L5: a forest fire driven by the wind over the prebuilt strips of its site ("navSite": each state after the
+        /// initial one a burning strip, the last one empty, burnt out), one strip every "every" seconds: the strip burning is
+        /// closed ground, vehicles caught on it burn ("dps" for "burn" seconds) and are put out of it, its smoke drifts downwind.
+        /// </summary>
+        ForestFire,
     }
 
     /// <summary>The C.3 difficulty an event plays at: the mission's own, one step up per tier (Heroic, Iron).</summary>
@@ -148,6 +161,15 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 31 L3: the enemy has seen one of the player's vehicles (an infiltration found out).</summary>
         public bool Spotted { get; set; }
 
+        /// <summary>
+        /// Prompt 31 L5: a prop of this definition standing within 8 m of (<see cref="PropX"/>, <see cref="PropZ"/>) has been
+        /// destroyed (the neutral crane brought down); data "propDown": {"def", "x", "z"}. Never holds where no such prop stands.
+        /// </summary>
+        public string? PropDown { get; set; }
+
+        public float PropX { get; set; }
+        public float PropZ { get; set; }
+
         /// <summary>Seconds between the conditions holding and the event starting.</summary>
         public double Delay { get; set; }
 
@@ -168,6 +190,9 @@ namespace MachineBrigade.Sim.Content
             After = o.Has("after") ? o.String("after") : null,
             Outnumbered = o.Has("outnumbered") ? o.Float("outnumbered") : null,
             Spotted = o.Bool("spotted", false),
+            PropDown = o.Has("propDown") ? o.Object("propDown").String("def") : null,
+            PropX = o.Has("propDown") ? o.Object("propDown").Float("x", 0f) : 0f,
+            PropZ = o.Has("propDown") ? o.Object("propDown").Float("z", 0f) : 0f,
             Delay = o.Float("delay", 0f),
             Every = o.Float("every", 0f),
             Times = o.Int("times", o.Has("every") ? 99 : 1),

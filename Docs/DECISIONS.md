@@ -15636,3 +15636,100 @@ section alone; it ran on the data).
 Tests (written, not run): `HandbookP32Tests` (the type table, the penetration row, the worked example, the marks, the
 defences and their locked rule, the structure table and walls, in both languages, against the data; every chip opens an
 entry that exists).
+
+## Prompt 31 L5 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p31-b3`. Pass 5: the LATER events of the sheet "Biến cố", in the prompt's order (Triều lên/xuống, Cầu
+sập, Cần cẩu đổ, Hồ băng nứt, Đập nứt, Sập hầm mỏ, Dung nham, Cháy rừng; Mây thấp dropped as the sheet says). Nothing was run
+but the Python tools (build_campaign.py `--no-texts`, nav_states.py: every state of every new site passed the build's check);
+the C# is compiled by the lead; Prompt31LaterEventTests is written, not run. All eight were made; none was stopped. The rules
+are pass 3's: prebuilt ground states (`world.NavStates`), a switch only at a tick boundary, a way round in every state (the
+build's check and `NavStates.Validate` at load), nobody trapped (vehicles on closed ground are put out), warned 8-12 s ahead
+with a system notice and minimap marks, deterministic by the battle's clock or a condition, restored on load by the replay
+(same seed, same journal) and `NavStates.Snapshot()` / `Restore()`.
+
+- Mechanism additions (all in `Modes/MissionEvents.P31.cs` unless named):
+  - GroundChange `cycle` (the site's next state that passed the checks, after the one in force or waiting; `wrap` false
+    stops at the last, then the event passes) and `text` (the notice and line by the state coming in:
+    `event.groundChange.<text>.<state>.<moment>`, `radio.linh.ev.groundChange.<text>.<state>.warn`). The marks now show the
+    ground a switch opens as well as the ground it closes.
+  - Trigger `propDown` {def, x, z} (`EventTrigger.PropDown`): the prop of that def nearest the point (within 8 m, looked up
+    once, in map order) has been destroyed.
+  - `VehicleDef.Weight` (`WeightClass` Light / Medium / Heavy; data `weightClass`, else heavy front armour and 1,400 health
+    or more, or a boss, Heavy; heavy front armour Medium; the rest Light) and `BreaksIce` (a ground vehicle of Medium or
+    Heavy weight). Never CP. No balance.json row sets `weightClass` yet.
+  - Kinds `IceCrack` and `ForestFire` (EventDefs, the dispatch in MissionEvents.Kinds.cs, `ChangesGround`, `Bad`, the notice
+    and line moments, MatchRunner's notice icon "Area").
+  - `NavStates.HoldWhile(site, vehicle, state)`: once the vehicle is gone the site goes to the state at the next tick
+    boundary, whichever mode or stage asked (pass 3 leftover, below).
+  - `SimEvent.GroundFire(at, seconds, radius)`: the fire trail's flames (EffectsDirector's FireTrail) with no vehicle.
+  - nav_states.check reads stage events too and the library row's params under the mission's; a `cycle` switch and a
+    ForestFire name no `navState`.
+- The events (library rows and missions in `Tools/campaign/ground_events.py`):
+  - Triều lên/xuống (`tide_turn`, c1m01): every 150 s from 150 s (the sheet's 120-180) the eastern shoal of the landing beach
+    (the fords below the cliffs, x -10..142, z -136..-124) floods ("high") and dries ("low"), a `cycle` of site `shoal`. The
+    fords by the player's beach rally are left out. c9m02 is a reversed battlefield: nav states there are refused by the
+    build, so it keeps its events. Count 4.
+  - Cầu sập (`bridge_collapse`, i2m03 at 150 s): the east bridge (x 122, z -25..25) falls into the river; the great bridge (the
+    point held) and the west ford stay. A time mark only: the sheet's "or when shot enough" needs a bridge with health, and
+    bridge_road is a prop the game never damages. c7m17 is reversed (refused by the build). The interlude's three events:
+    the bridge takes nightfall's place (hunters, chapter 14's signature, and the relief stay).
+  - Cần cẩu đổ (`crane_fall`, c4m05 and c4m02): Ironport's neutral gantry crane (-7.5, 131.25; 2,000 hp, an attack order or a
+    strike) once destroyed buckles: 10 s later its boom falls east along the quay (x 2..32, z 128.5..133.5) and closes the
+    quay's middle lane for good; the lanes north and south stay. It falls along the quay, not south across the rail line
+    (z 106.8: c4m05's train and the rail deliveries). Counts 3 and 3.
+  - Hồ băng nứt (`ice_crack`, c3m04 from 20 s): the frozen lake (the outpost held, 30 m round (0, 0)); a vehicle that breaks
+    ice and has been on it 10 s is slowed 40 % for 8 s as it gives, again every 10 s it stays; both sides; a notice when it
+    gives under one of ours, at most every 20 s. No ground closes (a slow, never a trap), so no nav site. Count 4.
+  - Đập nứt (`dam_breach`, c6m10 at 300 s, c6m14 at 240 s; every 150 s, three times): site `flood` in three prebuilt levels
+    up only (`cycle`, `wrap` false): "rising" the middle of the southern ford, "high" the whole ford, "flood" also the low
+    banks below the bridge (x -21..-15 and 11..17, z -84..-20, clear of the town's outpost slot at (17, -13)); the bridge and
+    the crest road stay above the water. c6m14's convoy route stays west of the banks. Counts 7 (operation) and 4.
+  - Sập hầm mỏ (`mine_collapse`, c8m10 at 240 s): Kronos pit has no natural pair of tunnels (every narrow passage of the map
+    has a way round, and no two are each other's only alternative: searched with a script over the NavGrid raster), so the
+    two "adits" are the two mirrored 14 m passages through the rock at (35, 58) and (-35, -58): the north-east one (the
+    enemy's side) open at the start and the south-west one (by our camp) sealed; at 240 s one switch of site `adits` caves
+    the north-east one in and opens the south-west one. Count 7 (operation).
+  - Dung nham (`lava_flow`, c5m10 at 180 s): the lava comes over the west causeway road's north-east lane (x -62..-38,
+    z 74..82); the west field keeps its way out south, the north spur its way east (a sliver by the flow, within the 6-cell allowance, is put out at
+    the switch). Count 7 (operation).
+  - Cháy rừng (`forest_fire`, c5m13 at 150 s; kind ForestFire): the sheet's high determinism and cost risks come from a fire
+    that spreads cell by cell; this one does not. A prebuilt wind-driven front over the site's states in order: four 12 m
+    strips south-west of the temple (x -85..-35, z -46..2), one every 30 s, the south wind driving it north. The strip burning
+    is closed ground (whoever is on it burns, 40 a second for 6 s, `Status.Burn` from the environment, and is put out of it);
+    its flames are the fire trail's patches (every 8 m, 12 a strip), its smoke two smoke clouds downwind (every side's sight
+    stops at them, as at a smoke screen); the strip behind is ash and open again; the last state (empty) is the fire out.
+    The next strip is warned 10 s ahead ("spread") with its marks. Count 4.
+- Pass 3 leftovers:
+  - c11m10's landing sites reopen after the fortress stage: a pod's tower now holds its site (`HoldWhile`), so the world opens
+    the ground when the tower falls, after the stage too (each stage is its own MissionMode, whose events stop with it).
+  - The turning sandstorm covers only its half in the view (written blind): `Weather.Presence` (0-1, eased over 2.5 s) scales
+    the weather's particles and eases its look back to the weather it replaced; MatchRunner sets it low (0.15) while the
+    camera's focus is outside `SimWorld.InStorm`, and once the storm has passed a sandstorm that replaced another weather
+    thins out everywhere (c12m07 goes back to its night). c2m06's own sandstorm (no weather replaced) only thins its dust.
+- Limits (to watch in play):
+  - The view draws no closed ground (as in pass 3): the flooded shoal and ford, the fallen bridge and boom, the sealed adit,
+    the lava over the lane look as the map draws them; the minimap marks and the notices carry them. A per-site look (a
+    water, rubble or lava plate per closed block) is the next view task. The forest fire has its flames and smoke.
+  - The events' own clocks (the fire's next strip, the ice's timers, the watched crane) are not in the snapshot; a load replays
+    the journal as for every event. The ice cracks by time on the lake, not by standing still.
+  - The python check does not draw the mission's own towers (the game's check does).
+- Event counts after: c1m01 4, i2m03 3, c4m05 3, c4m02 3, c3m04 4, c6m10 7, c6m14 4, c8m10 7, c5m10 7, c5m13 4.
+- Data keys changed (CatalogCheck): campaign.json `eventLibrary.events` (+8 rows: tide_turn, bridge_collapse, crane_fall,
+  ice_crack, dam_breach, mine_collapse, lava_flow, forest_fire; params `cycle`, `wrap`, `text`, trigger `propDown`), missions
+  c1m01, i2m03 (nightfall -> bridge_collapse), c4m05, c4m02, c3m04, c6m10, c6m14, c8m10, c5m10, c5m13 (`missionEvents`; all
+  but c3m04 `navStates`). balance.json unchanged (`weightClass` read when present). CampaignText.cs not regenerated
+  (`--no-texts`).
+
+## Prompt 31 L6 (lead pass, 2026-10-02)
+
+Pass 6: the report and the design document's sections; the PDF is built by the lead.
+
+- `Docs/story/report_p31.md`: the precheck's results, the missions made and left (all 23 made, none left on the player's
+  deck), the loaned cards kept and the sheet's cards replaced (by mission), the events made (13: five FIRST, eight LATER) and
+  stopped (none; Mây thấp dropped by the sheet), the places the sheet named that were not used (c9m02 and c7m17 reversed) and
+  what is pending.
+- `Tools/docs/prompt31.py` `section(game, h)`, called by build_doc.py after prompt 27's: "Màn bộ bài game" (each fixed deck:
+  status, the 8 + 2 cards with the loaned ones marked, placed allies, the special rules in Vietnamese from Strings.cs) and
+  "Biến cố" (each event of prompts 31 L3 and L5: kind, missions, when, what it changes, its prebuilt sites and states), both
+  read from campaign.json, so the document shows what the data holds.

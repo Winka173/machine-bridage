@@ -191,8 +191,8 @@ def check_site(g, site, fail, where, extra_anchors=()):
         apply_state(g, s, -1)
 
 
-def check(missions, fail):
-    """The campaign build's check: every mission's nav sites on the map file the mission loads."""
+def check(missions, fail, library=None):
+    """The campaign build's check: every mission's nav sites on the map file the mission loads (library: event id -> row)."""
     for m in missions:
         sites = m.get('navStates')
         if not sites:
@@ -214,10 +214,17 @@ def check(missions, fail):
         for site in sites:
             check_site(g, site, fail, m['id'])
         named = {s['id']: {st['name'] for st in s['states']} for s in sites}
-        for r in m.get('missionEvents', []):
-            p = r.get('params', {}) if isinstance(r, dict) else {}
-            if 'navSite' in p and (p['navSite'] not in named or p.get('navState') not in named[p['navSite']]):
-                fail(f"{m['id']}: event {r.get('id')} switches {p.get('navSite')} to {p.get('navState')}, which the mission does not build")
+        refs = list(m.get('missionEvents', [])) + [r for st in m.get('stages', []) for r in st.get('missionEvents', [])]
+        for r in refs:
+            # The library row's params under the mission's own (prompt 31 L5: "cycle" walks the site's states, no "navState").
+            rid = r if isinstance(r, str) else r.get('id')
+            p = {**(library or {}).get(rid, {}).get('params', {}), **(r.get('params', {}) if isinstance(r, dict) else {})}
+            if 'navSite' not in p:
+                continue
+            # A forest fire (or a cycle) walks the site's states itself; a plain switch names the state it brings in.
+            walks = p.get('cycle') or (library or {}).get(rid, {}).get('kind') == 'ForestFire'
+            if p['navSite'] not in named or (not walks and p.get('navState') not in named[p['navSite']]):
+                fail(f"{m['id']}: event {rid} switches {p.get('navSite')} to {p.get('navState')}, which the mission does not build")
 
 
 def render(map_id, box=None, extra=()):

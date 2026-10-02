@@ -60,12 +60,63 @@ namespace MachineBrigade.Sim.Modes
             public readonly List<(EntityId id, string site)> Landed = new();
         }
 
+        private sealed class IcePlan
+        {
+            public Vector2 Centre;
+            public float Radius = 30f, Seconds = 10f, Slow = 0.4f, SlowFor = 8f;
+
+            /// <summary>When each ice-breaking vehicle on the ice came onto it (or its ice last gave): looked up, never walked.</summary>
+            public readonly Dictionary<EntityId, double> Since = new();
+
+            public double QuietUntil;
+        }
+
+        private sealed class FirePlan
+        {
+            public string Site = "";
+
+            /// <summary>The site's states after its initial one, in order: the strips the fire burns, the last one burnt out.</summary>
+            public readonly List<string> Fronts = new();
+
+            public int Next;
+            public double NextAt;
+            public bool Warned;
+            public float Every = 30f, Dps = 40f, Burn = 6f;
+            public Vector2 Wind = Vector2.UnitY;
+        }
+
         /// <summary>Whether the enemy sees one of the player's own vehicles (an infiltration found out).</summary>
         private static bool Spotted(SimWorld world)
         {
             foreach (var v in world.VehicleList)
                 if (v.IsAlive && v.Team == Player && !v.Scripted && !v.Def.Static && v.IsVisibleTo(Enemy)) return true;
             return false;
+        }
+
+        /// <summary>Prompt 31 L5: the prop each "propDown" trigger watches (its instance: the prop's id, None where none stands).</summary>
+        private readonly Dictionary<string, EntityId> _watchedProps = new(StringComparer.Ordinal);
+
+        /// <summary>Prompt 31 L5: whether the prop a trigger watches (its def nearest its point, within 8 m) has been destroyed.</summary>
+        private bool PropDown(SimWorld world, EventState s)
+        {
+            var t = s.Def.Trigger;
+            if (!_watchedProps.TryGetValue(s.Def.Instance, out var id))
+            {
+                id = EntityId.None;
+                var at = new Vector2(t.PropX, t.PropZ);
+                var best = 8f * 8f;
+                // The props in the order the map placed them: the same pick in every replay.
+                foreach (var p in world.Props)
+                {
+                    if (p.Def.Id != t.PropDown) continue;
+                    var d = Vector2.DistanceSquared(p.Position, at);
+                    if (d > best) continue;
+                    best = d;
+                    id = p.Id;
+                }
+                _watchedProps[s.Def.Instance] = id;
+            }
+            return id.IsValid && world.TryGetProp(id, out var prop) && !prop.IsAlive;
         }
 
         private bool PrepareP31(SimWorld world, EventState s)
@@ -76,13 +127,23 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.GroundChange:
                 {
                     var site = e.Word("navSite");
-                    var state = e.Word("navState");
-                    if (site == null || state == null || !world.NavStates.CanSwitch(site, state) || world.NavStates.ActiveOf(site) == state) return false;
-                    world.NavStates.TryGet(site, out var held);
+                    if (site == null || !world.NavStates.TryGet(site, out var held)) return false;
+                    // Prompt 31 L5: "cycle" goes to the site's next state that passed the checks (the tide in and out, the
+                    // dam's water a level higher; "wrap": false stops at the last), else the named "navState".
+                    var state = e.Flag("cycle", false) ? NextState(held, e.Flag("wrap", true)) : e.Word("navState");
+                    if (state == null || !world.NavStates.CanSwitch(site, state) || held.ActiveName == state) return false;
                     var to = held.Def.States[held.Def.IndexOf(state)];
-                    // The ground it closes, else (it opens) the ground the state in force closes.
-                    var blocks = to.Blocks.Count > 0 ? to.Blocks : held.Def.States[held.Active].Blocks;
-                    foreach (var b in blocks) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 6f));
+                    // Prompt 31 L5: "text" picks the notice and line by the state coming in ("event.groundChange.<text>.<state>.warn").
+                    s.Variant = e.Word("text") is { } text ? text + "." + state : null;
+                    // The ground it closes, and (prompt 31 L5) the ground it opens: the state in force's blocks the new one has not.
+                    foreach (var b in to.Blocks) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 6f));
+                    foreach (var b in held.Def.States[held.Active].Blocks)
+                    {
+                        var kept = false;
+                        foreach (var k in to.Blocks)
+                            if (k.Center == b.Center && k.Width == b.Width && k.Depth == b.Depth) kept = true;
+                        if (!kept) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 6f));
+                    }
                     s.Where = s.Marks.Count > 0 ? s.Marks[0].at : world.Map.Centre;
                     s.Plan = new GroundPlan { Site = site, State = state };
                     return true;
@@ -137,6 +198,42 @@ namespace MachineBrigade.Sim.Modes
                     s.Where = s.Marks[0].at;
                     return true;
                 }
+                case MissionEventKind.IceCrack:
+                {
+                    var plan = new IcePlan
+                    {
+                        Centre = new Vector2(e.Number("x", 0f), e.Number("z", 0f)),
+                        Radius = MathF.Max(4f, e.Number("radius", 30f)),
+                        Seconds = MathF.Max(1f, e.Number("seconds", 10f)),
+                        Slow = Math.Clamp(e.Number("slow", 0.4f), 0.05f, 0.9f),
+                        SlowFor = MathF.Max(1f, e.Number("slowFor", 8f)),
+                    };
+                    s.Marks.Add((plan.Centre, plan.Radius));
+                    s.Where = plan.Centre;
+                    s.Plan = plan;
+                    return true;
+                }
+                case MissionEventKind.ForestFire:
+                {
+                    var site = e.Word("navSite");
+                    if (site == null || !world.NavStates.TryGet(site, out var held) || held.ActiveName != held.Def.Initial) return false;
+                    var plan = new FirePlan
+                    {
+                        Site = site,
+                        Every = Math.Clamp(e.Number("every", 30f), 12f, 90f),
+                        Dps = MathF.Max(0f, e.Number("dps", 40f)),
+                        Burn = MathF.Max(1f, e.Number("burn", 6f)),
+                    };
+                    var wind = new Vector2(e.Number("windX", 0f), e.Number("windZ", 1f));
+                    plan.Wind = wind.LengthSquared() > 0.01f ? Vector2.Normalize(wind) : Vector2.UnitY;
+                    for (var i = 0; i < held.Def.States.Count; i++)
+                        if (i != held.Active && held.IsValid(i)) plan.Fronts.Add(held.Def.States[i].Name);
+                    if (plan.Fronts.Count == 0 || held.Def.States[held.Def.IndexOf(plan.Fronts[0])].Blocks.Count == 0) return false;
+                    MarkStrip(held, plan.Fronts[0], s, true);
+                    s.Where = s.Marks[0].at;
+                    s.Plan = plan;
+                    return true;
+                }
                 case MissionEventKind.OrbitalPods:
                 {
                     var plan = new PodPlan();
@@ -159,6 +256,27 @@ namespace MachineBrigade.Sim.Modes
                 default:
                     return true;
             }
+        }
+
+        /// <summary>
+        /// Prompt 31 L5: the state after the one in force (or the one waiting to come in) that passed the load-time checks; with
+        /// <paramref name="wrap"/> the last goes back to the first, without it there is none after the last (null).
+        /// </summary>
+        private static string? NextState(Navigation.NavSite site, bool wrap)
+        {
+            var count = site.Def.States.Count;
+            var from = site.Pending >= 0 ? site.Pending : site.Active;
+            for (var step = 1; step < count; step++)
+            {
+                var i = from + step;
+                if (i >= count)
+                {
+                    if (!wrap) return null;
+                    i -= count;
+                }
+                if (site.IsValid(i)) return site.Def.States[i].Name;
+            }
+            return null;
         }
 
         /// <summary>The half a storm rolls over: a named side, or the side the player's biggest group stands in.</summary>
@@ -215,6 +333,15 @@ namespace MachineBrigade.Sim.Modes
                     s.EndsAt = until;
                     return Outcome.Running;
                 }
+                case MissionEventKind.IceCrack:
+                    // The ice is thin from now to the end of the battle (its ring stays on the minimap).
+                    s.EndsAt = -1;
+                    return Outcome.Running;
+                case MissionEventKind.ForestFire:
+                    // The first strip catches now (StepFire, this step); each next one "every" seconds later.
+                    ((FirePlan)s.Plan!).NextAt = world.Time;
+                    s.EndsAt = -1;
+                    return Outcome.Running;
                 case MissionEventKind.OrbitalPods:
                 {
                     var plan = (PodPlan)s.Plan!;
@@ -275,7 +402,109 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.OrbitalPods:
                     StepPods(world, s, (PodPlan)s.Plan!);
                     break;
+                case MissionEventKind.IceCrack:
+                    StepIce(world, s, (IcePlan)s.Plan!);
+                    break;
+                case MissionEventKind.ForestFire:
+                    StepFire(world, s, (FirePlan)s.Plan!);
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Prompt 31 L5: every vehicle that breaks ice (<see cref="VehicleDef.BreaksIce"/>: its weight class) and has been on the
+        /// lake <see cref="IcePlan.Seconds"/> is slowed as the ice gives under it, and its clock starts again; off the ice it
+        /// starts afresh. The vehicles in the world's order, the clocks on the battle's time: a replay cracks the same ice on the
+        /// same step. Nobody is stopped or trapped: a slow only.
+        /// </summary>
+        private void StepIce(SimWorld world, EventState s, IcePlan plan)
+        {
+            var reach = plan.Radius * plan.Radius;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || !v.Def.BreaksIce || Vector2.DistanceSquared(v.Position, plan.Centre) > reach)
+                {
+                    plan.Since.Remove(v.Id);
+                    continue;
+                }
+                if (!plan.Since.TryGetValue(v.Id, out var since))
+                {
+                    plan.Since[v.Id] = world.Time;
+                    continue;
+                }
+                if (world.Time - since < plan.Seconds) continue;
+                world.Status.Slow(v, plan.Slow, plan.SlowFor);
+                plan.Since[v.Id] = world.Time;
+                // The notice when the ice gives under one of ours, not more than once in 20 s.
+                if (v.Team != Player || world.Time < plan.QuietUntil) continue;
+                plan.QuietUntil = world.Time + 20.0;
+                Notice(world, s, "start", 0f, v.Id);
+            }
+        }
+
+        /// <summary>The minimap marks of a fire strip (a state's blocks): the strip alone, or added to the marks there are.</summary>
+        private static void MarkStrip(Navigation.NavSite site, string state, EventState s, bool alone)
+        {
+            if (alone) s.Marks.Clear();
+            foreach (var b in site.Def.States[site.Def.IndexOf(state)].Blocks) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 4f));
+        }
+
+        /// <summary>
+        /// Prompt 31 L5: the forest fire's clock. Every <see cref="FirePlan.Every"/> seconds the next strip of its site catches
+        /// (a switch at the next tick boundary: the strip is closed ground, whoever is on it is put out of it by NavStates), with
+        /// its flames (the view's ground fires) and its smoke downwind (the smoke clouds every side's sight stops at); the
+        /// vehicles caught on it burn. Its next strip is warned 10 s ahead with its marks; an empty state is the fire out. All
+        /// on the battle's clock over prebuilt strips: a replay burns the same ground on the same step.
+        /// </summary>
+        private void StepFire(SimWorld world, EventState s, FirePlan plan)
+        {
+            if (!world.NavStates.TryGet(plan.Site, out var held))
+            {
+                Finish(world, s, true, "end");
+                return;
+            }
+            var next = plan.Next < plan.Fronts.Count ? held.Def.States[held.Def.IndexOf(plan.Fronts[plan.Next])] : null;
+            if (next != null && next.Blocks.Count > 0 && plan.Next > 0 && !plan.Warned && world.Time >= plan.NextAt - 10.0)
+            {
+                plan.Warned = true;
+                MarkStrip(held, next.Name, s, false);
+                Notice(world, s, "spread", (float)Math.Max(0.0, plan.NextAt - world.Time));
+            }
+            if (world.Time < plan.NextAt) return;
+            if (next == null || next.Blocks.Count == 0)
+            {
+                // Burnt out: the last strip opens again (the empty state); its smoke thins on its own clock.
+                if (next != null) world.NavStates.Schedule(plan.Site, next.Name, world.Tick + 1, world.Tick);
+                s.Marks.Clear();
+                Notice(world, s, "end", 0f);
+                Finish(world, s, true, "end");
+                return;
+            }
+            world.NavStates.Schedule(plan.Site, next.Name, world.Tick + 1, world.Tick);
+            foreach (var b in next.Blocks)
+            {
+                var hx = b.Width * 0.5f;
+                var hz = b.Depth * 0.5f;
+                for (var x = -hx + 4f; x <= hx; x += 8f)
+                    for (var z = -hz + 4f; z <= hz; z += 8f)
+                        world.Emit(SimEvent.GroundFire(b.Center + new Vector2(x, z), plan.Every * 1.2f, 5f));
+                var across = new Vector2(-plan.Wind.Y, plan.Wind.X) * (MathF.Max(b.Width, b.Depth) * 0.25f);
+                var downwind = b.Center + plan.Wind * (MathF.Min(b.Width, b.Depth) * 0.5f + 8f);
+                var cloud = MathF.Max(6f, MathF.Max(b.Width, b.Depth) * 0.25f);
+                world.Strikes.AddSmoke(Teams.Environment, downwind + across, cloud, plan.Every * 1.5f);
+                world.Strikes.AddSmoke(Teams.Environment, downwind - across, cloud, plan.Every * 1.5f);
+                foreach (var v in world.VehicleList)
+                {
+                    if (!v.IsAlive || v.Flying || v.Def.Static) continue;
+                    var d = v.Position - b.Center;
+                    if (MathF.Abs(d.X) > hx + 2f || MathF.Abs(d.Y) > hz + 2f) continue;
+                    world.Status.Burn(v, plan.Dps, plan.Burn, Teams.Environment, EntityId.None);
+                }
+            }
+            MarkStrip(held, next.Name, s, true);
+            plan.Next++;
+            plan.NextAt = world.Time + plan.Every;
+            plan.Warned = false;
         }
 
         private void StepPods(SimWorld world, EventState s, PodPlan plan)
@@ -291,21 +520,16 @@ namespace MachineBrigade.Sim.Modes
                 // The landing site's prebuilt state holds the ground, not the tower's own anchor (it opens when the tower falls).
                 world.ReleaseGround(tower);
                 world.NavStates.Schedule(site, "landed", world.Tick + 1, world.Tick);
+                // Prompt 31 L5: the tower holds its site; once it falls the site opens again, during the fortress stage or after it.
+                world.NavStates.HoldWhile(site, tower.Id, "clear");
                 s.Units.Add(tower.Id);
                 plan.Landed.Add((tower.Id, site));
                 // The minimap marks the sites while the pods fall; once down, the towers are on the map as any enemy is.
                 if (plan.Falling.Count == 0) s.Marks.Clear();
             }
             var standing = 0;
-            foreach (var (id, site) in plan.Landed)
-            {
-                if (world.TryGetVehicle(id, out var v) && v.IsAlive)
-                {
-                    standing++;
-                    continue;
-                }
-                if (world.NavStates.ActiveOf(site) == "landed") world.NavStates.Schedule(site, "clear", world.Tick + 1, world.Tick);
-            }
+            foreach (var (id, _) in plan.Landed)
+                if (world.TryGetVehicle(id, out var v) && v.IsAlive) standing++;
             if (plan.Falling.Count == 0 && standing == 0 && plan.Landed.Count > 0)
             {
                 var open = true;

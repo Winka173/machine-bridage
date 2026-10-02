@@ -791,6 +791,7 @@ namespace MachineBrigade.Game.Match
             if (!_paused)
             {
                 _effects.Tick(_views);
+                _weather.Presence = StormPresence();
                 _weather.Tick();
                 if (_leavingWeather != null && !_leavingWeather.TickLeaving())
                 {
