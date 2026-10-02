@@ -24,6 +24,9 @@ namespace MachineBrigade.Game.Effects
 
         private readonly List<Sinker> _ships = new();
 
+        /// <summary>Prompt 34 L7: a ship at least this long (m) breaks in two; a shorter one rolls over and goes under.</summary>
+        internal const float BreakFrom = 24f;
+
         public int Count => _ships.Count;
 
         /// <summary>Takes a destroyed ship's view over: it sinks, then is removed.</summary>
@@ -36,8 +39,8 @@ namespace MachineBrigade.Game.Effects
             {
                 Bow = root, Start = root.position, Rotation = root.rotation, Born = now, Length = length,
                 Height = Mathf.Max(4f, length * 0.25f), Side = (_ships.Count & 1) == 0 ? 1f : -1f,
-                // Only the big ships break their backs.
-                Breaks = length >= 40f,
+                // Only the big ships break their backs (prompt 34 L7: the corvettes and cruisers too, from 24 m; boats roll over).
+                Breaks = length >= BreakFrom,
             };
             if (sinker.Breaks)
             {

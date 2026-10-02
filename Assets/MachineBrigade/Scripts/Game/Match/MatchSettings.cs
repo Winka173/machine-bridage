@@ -363,6 +363,12 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>The soundtrack's own level (0 turns it off), under the master volume.</summary>
         public static float MusicVolume { get; set; } = 0.7f;
+
+        /// <summary>Prompt 34 L6: the battle's sounds (shots, blasts, wrecks, engines, warnings) under the master volume.</summary>
+        public static float EffectsVolume { get; set; } = 1f;
+
+        /// <summary>Prompt 34 L6: the radio and spoken lines under the master volume.</summary>
+        public static float DialogueVolume { get; set; } = 1f;
         public static GraphicsQuality Graphics { get; set; } = GraphicsQuality.Auto;
 
         /// <summary>
@@ -507,6 +513,8 @@ namespace MachineBrigade.Game.Match
             {
                 Volume = PlayerPrefs.GetFloat("mb.volume", Volume);
                 MusicVolume = PlayerPrefs.GetFloat("mb.music", MusicVolume);
+                EffectsVolume = Mathf.Clamp01(PlayerPrefs.GetFloat("mb.effects", EffectsVolume));
+                DialogueVolume = Mathf.Clamp01(PlayerPrefs.GetFloat("mb.dialogue", DialogueVolume));
                 Graphics = (GraphicsQuality)Mathf.Clamp(PlayerPrefs.GetInt("mb.graphics", 0), 0, 4);
                 if (Graphics == GraphicsQuality.Custom) _custom = GraphicsOptions.Load("mb.gfx.", GraphicsOptions.For(DetectTier()));
                 // Reduced motion (older saves) became the low screen-shake setting.
@@ -562,6 +570,8 @@ namespace MachineBrigade.Game.Match
             {
                 PlayerPrefs.SetFloat("mb.volume", Volume);
                 PlayerPrefs.SetFloat("mb.music", MusicVolume);
+                PlayerPrefs.SetFloat("mb.effects", EffectsVolume);
+                PlayerPrefs.SetFloat("mb.dialogue", DialogueVolume);
                 PlayerPrefs.SetInt("mb.graphics", (int)Graphics);
                 if (Graphics == GraphicsQuality.Custom) _custom?.Save("mb.gfx.");
                 PlayerPrefs.SetInt("mb.shake", ScreenShake);

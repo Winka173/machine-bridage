@@ -152,10 +152,12 @@ namespace MachineBrigade.Game.Effects
             _debris = new DebrisPool(budget.Debris);
             _layers.Chunks = new ChunkThrower(_debris, materials, models, _fires, _root);
             _layers.Chunks.Trails.Visible = p => _cull.Visible(p, 0.3f);
-            _wrecks = new WreckManager(_fires, _layers.Chunks, budget.Wrecks);
+            _wrecks = new WreckManager(_fires, _layers.Chunks, budget.Wrecks, _root);
             _projectiles = new ProjectilePool(_root, 96) { RotorMaterial = materials.SoftSmoke };
             _lasers = new LaserBeams(materials, _emitters, _decals, _root);
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake, _lasers);
+            // Prompt 34 L5: the tiers' redrawn blasts and firing looks.
+            InitTiers();
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _layers.Screens, _root);
             _bigZones = new BigAttackZones(materials, meshes, _root);
             // Prompt 34 L3: the T4+ rounds' escape warnings.
@@ -250,6 +252,8 @@ namespace MachineBrigade.Game.Effects
                         if (!ImpactOfKind(round, e, impact, now, size)) Explode(e.Tier, impact, now, size, flash: false, grow: BlastSizes.Round(round), radius: e.Value);
                         // Prompt 26 B.3: a two-layer blast shows its edge too, a second ring on the edge's radius beyond the core's.
                         EdgeRing(impact, e.Value, e.Target.X);
+                        // Prompt 34 L5: its tier's redrawn blast on top, the exact shockwave rings, the shake.
+                        TierImpact(TierFx.Of(round), impact, e.Value, e.Target.X, now, views);
                         // Every blast from Medium up scorches the ground under it, as wide as it is drawn.
                         if (e.Tier >= ExplosionTier.Medium)
                             _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size * BlastSizes.Ground(round) * BlastSizes.Round(round));
@@ -456,6 +460,8 @@ namespace MachineBrigade.Game.Effects
                         // Prompt 25 A5: a vehicle's, a mine's or a prop's blast drawn as wide as it reaches.
                         Explode(e.Tier, blast, now, radius: e.Value);
                         EdgeRing(blast, e.Value, e.Target.X);
+                        // Prompt 34 L5: a salvo's shell (Leviathan's 406 mm) lands as its tier.
+                        TierImpact(SalvoTier(e, views), blast, e.Value, e.Target.X, now, views);
                         _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f));
                         _wrecks.Blow(e.Entity, now);
                         if (e.Tier >= ExplosionTier.Huge)
@@ -517,10 +523,13 @@ namespace MachineBrigade.Game.Effects
                         if (view.Def.Boss && blowsUp) BossDeath(view, now);
                         if (view.Def.Static) FellDefence(view, now);
                         if (blowsUp) Pop(_kill, view.Position + Vector3.up * 0.8f, now);
-                        // Aircraft burst into flames in the air, then fall (see Crash).
-                        else Explode(view.Flying ? ExplosionTier.Large : ExplosionTier.Medium, view.Position + Vector3.up, now);
-                        // A ship lists, breaks and sinks (prompt 16); everything else leaves a burning wreck.
+                        // Aircraft burst into flames in the air, then fall (see Crash); a drone is a small blast (prompt 34 L7).
+                        else Explode(view.Flying && WreckClasses.Of(view.Def) != WreckClass.Drone ? ExplosionTier.Large : ExplosionTier.Medium,
+                            view.Position + Vector3.up, now);
+                        // A ship lists, breaks and sinks (prompt 16); everything else leaves a burning wreck. Prompt 34 L7: a shot-down
+                        // aircraft's wreck flies onto the Sim's crash plan (the event's Target, in Value seconds).
                         if (view.Def.Naval != null) _sinking.Add(view, now);
+                        else if (view.Flying && e.Value > 0f) _wrecks.Add(view, now, Ground(e.Target, 0f), e.Value);
                         else _wrecks.Add(view, now);
                         break;
 
@@ -712,7 +721,10 @@ namespace MachineBrigade.Game.Effects
             foreach (var blast in _blasts) blast.Tick(now);
             _muzzle.Tick(now);
             _debris.Tick(now, Time.deltaTime);
+            _wrecks.Focus = _camera.Focus;
             _wrecks.Tick(now, Time.deltaTime);
+            // Prompt 34 L7: a wreck that has gone leaves a burn mark.
+            while (_wrecks.TryBurnMark(out var mark, out var markSize)) _decals.Place(mark, markSize);
             _sinking.Tick(now);
             for (var i = _departing.Count - 1; i >= 0; i--)
             {
@@ -1215,7 +1227,8 @@ namespace MachineBrigade.Game.Effects
                         var hitAt = impact + Vector3.up * 0.8f;
                         var hitScale = (heavy ? 1f : 0.75f) * (0.9f + 0.2f * UnityEngine.Random.value);
                         _shellHit.Play(hitAt, now, hitScale, grow, BlastSizes.ShellLife(round), BlastSizes.RingFor(e.Value, _shellHit.RingReach, hitScale));
-                        var sparks = heavy ? 36 : 16;
+                        // Prompt 34 L5: an AP round's sparks grow by its tier (1 to T2, +15 % a tier above).
+                        var sparks = Mathf.RoundToInt((heavy ? 36 : 16) * TierFx.Extra(TierFx.Of(round)));
                         sparks += Mathf.RoundToInt(sparks * (grow - 1f) * ExplosionEffect.Density);
                         _muzzle.SparkBurst(hitAt + Vector3.up * 0.2f, Vector3.up + UnityEngine.Random.insideUnitSphere * 0.5f, sparks, 8f * grow,
                             (heavy ? 24f : 16f) * grow);
@@ -1252,7 +1265,7 @@ namespace MachineBrigade.Game.Effects
                     // HEAT: a sharp star flash and a jet of sparks, a small black puff. Drones by the drone (DECISIONS 12C),
                     // missiles a fifth bigger (play-test 5, DECISIONS 20V).
                     Explode(ExplosionTier.Medium, impact + Vector3.up * 0.8f, now, 0.8f * size, flash: false, grow: BlastSizes.Round(round), radius: e.Value);
-                    _muzzle.SparkBurst(impact + Vector3.up, Vector3.up, 18, 10f, 22f);
+                    _muzzle.SparkBurst(impact + Vector3.up, Vector3.up, Mathf.RoundToInt(18 * TierFx.Extra(TierFx.Of(round))), 10f, 22f);
                     _emitters.DamageSmoke(impact + Vector3.up * 1.2f, 1.6f, 0.08f);
                     return true;
                 case ProjectileKind.Shell when round.DamageType == DamageType.HighExplosive && round.Indirect:
@@ -1277,9 +1290,11 @@ namespace MachineBrigade.Game.Effects
                     Explode(ExplosionTier.Medium, impact, now, size, flash: false, grow: BlastSizes.MissileGrow, radius: e.Value);
                     var cloud = Mathf.Max(6f, e.Value);
                     var cloudRing = e.Value > 0f ? BlastSizes.RingQuad(e.Value) : cloud * 2.5f * BlastSizes.Bigger * BlastSizes.MissileGrow;
+                    // Prompt 34 L5: the second fireball grows by the round's tier.
+                    var fuel = TierFx.Extra(TierFx.Of(round));
                     Later(now + 0.15f, () =>
                     {
-                        _napalm.Play(impact + Vector3.up * 0.5f, now + 0.15f, 1.4f * size, BlastSizes.Bigger * BlastSizes.MissileGrow);
+                        _napalm.Play(impact + Vector3.up * 0.5f, now + 0.15f, 1.4f * size, BlastSizes.Bigger * BlastSizes.MissileGrow * fuel);
                         Ring(impact, cloudRing, new Color(2.2f, 1.2f, 0.4f, 0.8f));
                     });
 

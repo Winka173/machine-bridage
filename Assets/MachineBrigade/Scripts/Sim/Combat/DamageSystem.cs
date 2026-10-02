@@ -749,12 +749,15 @@ namespace MachineBrigade.Sim.Combat
             if (killer == null && vehicle.LastAttacker.IsValid && _world.Time - vehicle.LastHitTime <= 10.0 &&
                 _world.TryGetVehicle(vehicle.LastAttacker, out var last)) killer = last;
             if (killer != null && killer.Team == vehicle.Team) killer = null;
-            _world.Emit(SimEvent.VehicleLost(vehicle));
+            // Prompt 34 L7: an aircraft's crash is planned now (where and when it hits the ground) and told to the view on the
+            // loss event, so its wreck can fly a show path that lands on that point at that time.
+            var crash = vehicle.Flying ? CrashPlan(vehicle, speed) : default;
+            _world.Emit(vehicle.Flying ? SimEvent.VehicleLost(vehicle, crash.At, crash.Fall) : SimEvent.VehicleLost(vehicle));
             // Prompt 19 E.7: a tiered boss's last radio line.
             if (vehicle.Def.Tiers?.RadioFor("down") is { } down) _world.Emit(SimEvent.RadioMessage(down, vehicle.Team));
             _world.Economy.OnVehicleDestroyed(vehicle, killer);
             if (vehicle.Def.DeathExplosion != null && !vehicle.Detonated) Schedule(vehicle.Position, vehicle.Def.DeathExplosion, vehicle.Id);
-            if (vehicle.Flying) ScheduleCrash(vehicle, speed);
+            if (vehicle.Flying) ScheduleCrash(vehicle, crash);
             _world.Gear.OnDeath(vehicle, killer);
         }
 
@@ -764,7 +767,14 @@ namespace MachineBrigade.Sim.Combat
         /// fading as it goes), and crushes whatever is under it, either side's: a blast sized by
         /// how heavy it was.
         /// </summary>
-        private void ScheduleCrash(Vehicle vehicle, float speed)
+        private void ScheduleCrash(Vehicle vehicle, (Vector2 At, float Fall) crash) =>
+            _pending.Add(new PendingExplosion(_world.Time + crash.Fall, crash.At, CrashBlast(vehicle.Def), vehicle.Id));
+
+        /// <summary>
+        /// Prompt 34 L7: where and after how long a shot-down aircraft hits the ground (the same numbers as before: a fall
+        /// under 11 m/s² for aeroplanes and 7 for helicopters, carried on by its momentum, the drift fading).
+        /// </summary>
+        internal (Vector2 At, float Fall) CrashPlan(Vehicle vehicle, float speed)
         {
             var def = vehicle.Def;
             var fall = MathF.Sqrt(2f * MathF.Max(1f, vehicle.Height) / (def.FixedWing ? 11f : 7f));
@@ -772,8 +782,7 @@ namespace MachineBrigade.Sim.Combat
             var glide = MathF.Min(fall, 1f / fade);
             var carry = 0.8f * speed * (glide - 0.5f * fade * glide * glide);
             var forward = SimMath.Forward(vehicle.Heading);
-            var at = _world.ClampToMap(vehicle.Position + forward * carry);
-            _pending.Add(new PendingExplosion(_world.Time + fall, at, CrashBlast(def), vehicle.Id));
+            return (_world.ClampToMap(vehicle.Position + forward * carry), fall);
         }
 
         /// <summary>The blast of an aircraft hitting the ground: 8 % of its health as damage, wider for heavier aircraft.</summary>

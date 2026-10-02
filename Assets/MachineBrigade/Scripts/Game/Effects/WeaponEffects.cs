@@ -89,8 +89,33 @@ namespace MachineBrigade.Game.Effects
         private Vector3 Barrel(Vector3 aim) => AlongBarrel && _shotBarrel.sqrMagnitude > 0.5f ? _shotBarrel : aim;
 
         /// <summary>The muzzle flash of the current shot, riding the part its muzzle is drawn on.</summary>
-        private void Flash(MuzzleFx.Kind kind, Vector3 from, Vector3 direction, float now, float scale, float? groundY) =>
-            _muzzle.Fire(kind, from, direction, now, new MuzzleFx.Anchor(_shotNode, from, direction), scale, groundY);
+        private void Flash(MuzzleFx.Kind kind, Vector3 from, Vector3 direction, float now, float scale, float? groundY)
+        {
+            var anchor = new MuzzleFx.Anchor(_shotNode, from, direction);
+            _muzzle.Fire(kind, from, direction, now, anchor, scale, groundY);
+            // Prompt 34 L5: the first flash of the shot is where its tier's firing look goes (TierShot).
+            if (_flashed) return;
+            _flashed = true;
+            _flashFrom = from;
+            _flashDir = direction;
+            _flashGround = groundY;
+            _flashAnchor = anchor;
+        }
+
+        /// <summary>
+        /// Prompt 34 L5: called after a shot of a T1+ round is drawn with a muzzle flash: the round, the shooter (null when
+        /// not drawn), where the flash is and which way it faces, the ground under it (null in the air), its anchor and the
+        /// time. EffectsDirector.Tiers draws the tier's firing look there.
+        /// </summary>
+        internal TierShotHandler TierShot { get; set; }
+
+        internal delegate void TierShotHandler(WeaponDef round, VehicleView shooter, Vector3 from, Vector3 direction, float? groundY,
+            MuzzleFx.Anchor anchor, float now);
+
+        private bool _flashed;
+        private Vector3 _flashFrom, _flashDir;
+        private float? _flashGround;
+        private MuzzleFx.Anchor _flashAnchor;
 
         /// <summary>
         /// Prompt 34 L4: seconds the shot being drawn is late (a simultaneous volley's later barrel, drawn
@@ -103,6 +128,16 @@ namespace MachineBrigade.Game.Effects
 
         /// <summary>A shot by <paramref name="shooter"/> (null when it is not drawn): call once the shooter is drawn this frame.</summary>
         public void Fired(in SimEvent e, VehicleView shooter, ViewRegistry views, float now)
+        {
+            _flashed = false;
+            DrawShot(e, shooter, views, now);
+            if (!_flashed || TierShot == null) return;
+            var drawn = e.Round ?? e.DefId;
+            if (drawn == null || !_catalog.Weapons.TryGetValue(drawn, out var round) || round.Tier < 1) return;
+            TierShot(round, shooter != null && shooter.Root != null ? shooter : null, _flashFrom, _flashDir, _flashGround, _flashAnchor, now);
+        }
+
+        private void DrawShot(in SimEvent e, VehicleView shooter, ViewRegistry views, float now)
         {
             // Prompt 25 G: a second round (the air-burst round, the HE) is drawn as that round.
             var drawn = e.Round ?? e.DefId;

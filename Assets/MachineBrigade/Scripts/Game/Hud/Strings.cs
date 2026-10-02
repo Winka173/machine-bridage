@@ -1904,6 +1904,8 @@ namespace MachineBrigade.Game.Hud
             ["menu.tagline"] = ("Command the armour. Break the line.", "Chỉ huy thiết giáp. Phá vỡ phòng tuyến."),
             ["settings.volume"] = ("Sound volume", "Âm lượng"),
             ["settings.music"] = ("Music", "Nhạc nền"),
+            ["settings.effectsVolume"] = ("Effects", "Hiệu ứng âm thanh"),
+            ["settings.dialogueVolume"] = ("Dialogue", "Thoại"),
             ["settings.quality"] = ("Graphics", "Đồ họa"),
             ["settings.high"] = ("High", "Cao"),
             ["settings.medium"] = ("Medium", "Vừa"),

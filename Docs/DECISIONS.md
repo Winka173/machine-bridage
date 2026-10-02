@@ -15733,3 +15733,132 @@ Pass 6: the report and the design document's sections; the PDF is built by the l
   status, the 8 + 2 cards with the loaned ones marked, placed allies, the special rules in Vietnamese from Strings.cs) and
   "Biến cố" (each event of prompts 31 L3 and L5: kind, missions, when, what it changes, its prebuilt sites and states), both
   read from campaign.json, so the document shows what the data holds.
+
+## Prompt 34 L5/L6/L7 (lead pass, 2026-10-02)
+
+### L5: firing and blasts by tier
+
+- **Redrawn, not scaled.** A round's tier (`WeaponDef.Tier`, from its family) picks a redrawn overlay played ON TOP of the
+  blast the round always had (`ExplosionEffect.CreateTier`, T2-T5; T0 and T1 keep the Small recipe and the flak bursts).
+  The old blast is never cut, shrunk or replaced, so no fire or explosion gets smaller (the owner's rule). Each overlay is
+  designed at its tier's nominal core (T3 5 m, T4 9 m, T5 14 m) with its own quads, column, debris and skirts, and is played
+  at core / nominal clamped to 0.8-1.6 (so a 406 mm overlay is drawn at its design size, not a stretched 152 mm one).
+  T2: a small hot fireball, dust and earth. T3: a medium fireball, a five-billow dust column, a small crater glow. T4: a
+  large rolling fireball, an eight-billow column, fragments and burning debris thrown wide, two dust skirts, a big crater
+  glow. T5: a very large fireball, a ten-billow column that spreads into a small mushroom cap (a ring of six wide billows
+  round a centre one at 26 m), far debris, three dust skirts, a crater glowing 12 s.
+- **Rings exactly on the radii** (`EffectsDirector.Tiers.TierRing`, `BlastSizes.RingQuad`): T4 a shockwave on the edge
+  (the core when there is no edge) and a dust ring on it 0.12 s later; T5 a ring on the core, then one on the edge 0.25 s
+  later. Prompt 26 B.3's edge ring and prompt 25 A5's ring on the core stay as they were.
+- **Firing look** (`TierFx.Fire`, `MuzzleFx.TierShot`), on top of the weapon's own flash: T1 thin smoke; T2 a medium flash
+  core, short smoke (the barrel's recoil was already there); T3 a big flash that burns longer, a muzzle fireball, long slow
+  smoke, dust under the muzzle, a dust ring round the gun, the hull squatting back (`VehicleView.Rock`); T4 a very big flash,
+  two muzzle fireballs, long rolling smoke, a pressure ring round the muzzle, a wide dust ring, the ground lit, and on ships
+  a pale ring and spray on the water; T5 a huge flash that lights the scene (a screen flash), very long smoke, a double
+  pressure ring, the widest dust ring and two water rings. One ground look per volley: a ship's other turrets and a
+  volley's later barrels within 0.35 s draw only their muzzle.
+- **Per-round extras** grow by tier (`TierFx.Extra`: 1 to T2, +15 % a tier): the thermobaric round's second fireball, a
+  HEAT warhead's spark jet, an AP round's sparks.
+- **Camera shake: T4+ only** (`TierFx.Shake`): only on screen, only within 90 m of the view's focus, halving at 25 m, a T5
+  0.6 and a T4 0.22 at the blast (a shot half), through `RtsCamera.AddTierTrauma` with a total cap of 0.65 and the
+  screen shake setting (off / low / full, `MatchSettings.ScreenShake`). The general shake stays off
+  (`RtsCamera.ShakeEnabled`, the owner found it read as stutter), so the T4+ shake is the only one; the setting is shown
+  again. Light vehicles (scouts, light class, or a hull under 2.2 m) within 1.35 times a T4+ blast's reach rock away from
+  it (view only).
+- **Detail and concurrency** (`TierFx.DetailAt`, `TierBudget`): the camera is orthographic, so the view distance is the
+  distance from the focus plus 1.2 times the zoom. Under 70 m full, under 140 m reduced (45 % of the overlay's particles,
+  no thrown chunks), beyond that only the light (the round's own blast still plays). At most T5 1, T4 3 and T3 6 overlays
+  in full detail at once (weights 6 / 3 / 1 against 12, so with a T5 going two T4 fit), each counted for 6 / 4 / 2.5 s;
+  any over steps down one level. The graphics tier scales the overlay too (`ExplosionEffect.RichShare`: High all, Medium
+  80 %, Low half). Final numbers: NEED PROFILE.
+- **Pools**: the overlays are six recipe objects on the shared blast layers (built up front, like every recipe); muzzle
+  smoke, sparks and dust go into MuzzleFx's shared systems; rings into the shared shockwave layer. Nothing new is created
+  mid-battle.
+- **Before/after shots** for docs/vfx: a LOCAL_TODO line (the lead renders them).
+- Tests (written, not run): `Prompt34ViewTests` L5 (caps, the budget stepping down and back, detail by distance and zoom,
+  shake only T4+, each tier's overlay bigger than the one below, the overlay's size, firing looks growing by tier, the
+  406 mm's tier).
+
+### L6: sounds by tier
+
+- **Synthesised, not recorded** (`Tools/sfx/build_sfx.py`, numpy + scipy + soundfile like `Tools/music`; fixed seeds, so a
+  rebuild gives the same files; no AI audio, no samples; `Docs/ASSET_LICENSES.md`). 83 mono Ogg clips, 1.7 MB, in
+  `Resources/Audio/p34/<bank>/`. Each shot is the prompt's three layers premixed into ONE clip (one voice a shot): the
+  mechanism near the gun (bolt, breech, rail clank), the report (crack and body: cutoff 6.5 kHz and 35 ms at T0 down to
+  1 kHz and 0.9 s at T5, with a falling-sine thump from T1) and the tail (slap-back echoes and a bed decaying 0.08 s at T0 to
+  2.6 s at T5, a sub rumble at T4-T5). Phones play little under 150 Hz, so the rumble stays under the mid body (a T5 shot
+  is ~70 % under 150 Hz, ~20 % at 150-600 Hz; the first mix had 93 % under 150 Hz and was cut back).
+- **Banks**: `shot_t0..t5` (3 each), `launch_t2..t5` (rockets and missiles), `blast_he_t1..t5`, `blast_ap_t1..t4` (metal
+  crack and ring), `blast_heat` (crack and jet hiss), `blast_thermo_t3/t4` (pop, then the long whoomp), `smallarms_cluster`,
+  `wreck_<class>` (tank, wheeled, truck, artillery, aircraft, heli, ship, drone), `crash_fall`, `crash_impact`,
+  `train_horn`, `train_rails` (loop), `ship_horn`, `ship_engine` (loop). Picked by `AudioDirector.ShotBank` (guns by tier;
+  flak keeps its burst, flame, drones and bombs keep theirs), `ImpactBank` (thermobaric, HEAT, AP without splash, else HE by
+  tier) and `WreckBank` (L7's `WreckClasses`). A bank whose clips are not imported yet falls back to the old category, so
+  nothing goes silent.
+- **Priority** (`SoundPriority`, the prompt's seven steps as numbers, higher wins): warnings 70 (the incoming-fire whistles;
+  the super weapons' alarms and the siren keep their own source), T5 or a boss's round 60, T4 near the view 50, T3 near 40,
+  our side's important weapons (T2+, missiles, rockets, drones) 30, an enemy's T2 25 (between steps 5 and 6), small arms 20,
+  the environment 10. "Near" is inside 45 % of the hearing reach; a far T4 counts as a near T3, a far T3 as step 5. The
+  priority is per sound played (`Voice.Priority`), not per bank. The old banks' 0-5 map onto it (`SoundPriority.Steps`).
+- **Voices**: the 32-voice pool stays; at 24 busy voices (`EffectVoices`) a new sound under 60 only takes the least important
+  and quietest voice that matters no more than it (else it is dropped), so the last 8 are kept for warnings and T5 / boss.
+- **Small arms as clusters**: T0-T1 streaming bullets (not flak or a railgun) within 20 m of each other inside 0.5 s: from
+  the third, the firefight is one `smallarms_cluster` clip (4-6 guns near and far) at their centre, at most every 0.9 s, and
+  the shots in it take no voice of their own.
+- **Distance**: the old falloff and low-pass stay; a source off the screen is 0.6 as loud.
+- **Wrecks, trains, ships, crashes**: a lost vehicle plays its class's wreck (it carries the blast, so the old blast and
+  debris do not play over it); a falling aircraft also plays its fall, and its crash clip when the Sim's crash blast comes
+  (the Explosion event from the same entity, not before the fall time on the loss event, L7). A train sounds its horn on
+  arrival and every 35-50 s while near; the rails loop follows the nearest moving train, the engine loop the nearest ship;
+  a big ship (radius 4 m+) sounds its horn on arrival. A salvo ship's shells (Explosion events from it) play as its gun's
+  round (the 406 mm: `blast_he_t5`, priority 60).
+- **Volume groups**: Settings has Effects and Dialogue beside Music (`MatchSettings.EffectsVolume`, `DialogueVolume`, saved
+  as `mb.effects`, `mb.dialogue`). Effects scale every one-shot, the loops, the alarms and thunder; Dialogue the radio
+  squelches (the game has no recorded speech yet; the radio lines are text).
+- **Compression and loading**: `Editor/P34AudioImport` (an AssetPostprocessor on `Resources/Audio/p34` only): mono; T0-T3
+  shots and blasts and the clusters ADPCM decompressed on load; T4-T5, wrecks, crashes, horns and thermobaric Vorbis 0.5
+  compressed in memory; the loops Vorbis 0.35; all load in the background. The core banks load with the battle (behind the
+  curtain, as before); the "naval" group (ship horn, engines, ship wrecks) and the "rail" group (train horn, rails) load
+  when the first ship or train arrives, so a map without them never loads them.
+- Tests (written, not run): `Prompt34ViewTests` L6 (every bank a weapon can play has clips, shots and landings by tier and
+  round, the seven steps in order, 24 voices, small arms are streaming bullets only).
+
+### L7: wrecks by vehicle class (view only)
+
+- **The class table** (`WreckClasses.Of`; view only, nothing in the Sim): tank (tracked, the default; trains too) the turret
+  thrown (prompt 9) and the hulk burning; wheeled (22 models with `Part_wheel`, or any model that has one, plus ids with
+  car / jeep / technical / wheeled / apc ...) two wheels thrown off spinning, some burning, and the frame rolling onto its
+  side (85-100 degrees) or roof (160-180) in 0.9 s; truck (Support class, "truck", "ammo", "supply") the cargo going up in a
+  chain of 4-6 blasts along the bed, the bed burning; artillery (Artillery class) the ammunition cooking off (6-9 blasts
+  0.3-0.8 s apart, a fountain of flame for 2-3.5 s, more pops while it burns, the turret thrown half the time); fighter a
+  wing torn off (`Part_wing`) trailing fire, a smoke trail off the wing root, a tight spiral down; helicopter the tail
+  rotor thrown back, the main rotor flying off, a spin faster and faster; big aircraft (radius 4.5 m+, HP over 3,000,
+  Support, flying bosses) a wing gone, an engine burning hard, a long slanting fall banking over; ship listing, breaking in
+  two and sinking (`ShipSinking`; it now breaks from 24 m long, not 40, so the corvettes and cruisers break too; boats
+  still roll over); drone a small blast (Medium, not Large) and nothing left. "Fuselage breaking in two" (the fighters'
+  alternative) is written in the Blender pass (`Part_tail`) but not built: it took the Su-27 to 47 renderers, over its
+  hard cap of 44.
+- **Models** (`Tools/blender/mb_p34_parts.py`, wrapped last in `build_assets.all_builders`): the classes that lacked
+  parts get them by MOVING the builders' own geometry under new pivots (no triangle added, every count unchanged in
+  glb_check): `Part_wheel` (front left) and `Part_wheelb` (rear right) on 22 wheeled vehicles (the connected tyre, rim
+  and hub pieces grouped by the tyre's box), `Part_wing` (the left wing: faces left of 1.15 times the fuselage's half width
+  measured at the nose, ahead of the tailplanes; the two flying wings along their whole length) on 13 aeroplanes, with
+  what hangs under it. Names are letters only after `Part_` (`ModelLibrary.PartPattern`), so no suffix rename. Meshes the
+  runtime finds by name (Bombs, guns, parachutes) are never moved. 39 GLBs rebuilt (the substring filter touched nothing
+  else), accepted. Helicopters already had `Rotor` and `Tail_rotor` nodes; tanks their `Turret`.
+- **Crashing aircraft, deterministic**: `DamageSystem.CrashPlan` computes the fall and the point once (the same formula as
+  before) and the loss event carries them (`VehicleDestroyed`: Target the point, Value the seconds; 0 for anything that
+  does not fall); the crash blast is queued from the same plan, so the Sim's results do not change. The falling wreck
+  flies a show path (`VehicleView.PlanCrash`, `ShowFall`) by its class that is on the ground exactly at that point at that
+  time, where WreckManager's crash and the Sim's blast meet. Torn-off pieces (`WreckBreakup`) are view only, simple
+  kinematics, 48 at most; a piece gone from view is hidden, not destroyed, until its wreck is (the wreck's view still
+  holds its renderers).
+- **Lives and the full-wreck cap**: a wreck lives 30-45 s (`WreckClasses.Life`; it was ~17 s), burning for 40 % of it; a
+  boss's 90 s; Low graphics a third less. Within 90 m of the view's focus at most 12 full wrecks (Medium 9, Low 6): the
+  older ones over the cap go within 3 s; a wreck farther from the view lives 14 s at most. Each leaves a burn mark (a
+  scorch decal as wide as the hulk) as it sinks. Bosses and fixed defences are not counted. The budget's hard cap of
+  living hulks (30 / 45) stays.
+- **Not blocking**: wrecks never block movement or sight (the Sim removes the vehicle). The prompt's exception, the card
+  "a vehicle that becomes cover when destroyed", does not exist in the data yet; nothing to keep.
+- Tests (written, not run): `Prompt34ViewTests` L7 (the class table on the roster, lives and caps, the parts in the
+  rebuilt models, the loss event's crash plan matching the Sim's crash blast in place and time).

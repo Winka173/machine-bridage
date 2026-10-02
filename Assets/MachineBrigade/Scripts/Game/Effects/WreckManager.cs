@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MachineBrigade.Game.Match;
 using MachineBrigade.Game.Views;
 using MachineBrigade.Sim.Content;
 using EntityId = MachineBrigade.Sim.Core.EntityId;
@@ -13,13 +14,21 @@ namespace MachineBrigade.Game.Effects
     /// air trailing fire; big vehicles then cook off in a quick chain of blasts, and some shoot a
     /// fountain of flame out of the turret ring. Shot-down aircraft fall burning and blow up
     /// when they hit the ground. Everything moves on simple kinematics; no physics engine.
+    /// <para>Prompt 34 L7 (DECISIONS "Prompt 34 L5/L6/L7"): the breakup by class (<see cref="WreckClasses"/>): a tank's
+    /// turret thrown and its hulk burning; a wheeled vehicle's wheels thrown off (Part_wheel, Part_wheelb) and its frame
+    /// rolling over; a lorry's cargo going up in a chain along its bed; a gun's ammunition cooking off with a fountain of
+    /// flame; a fighter losing a wing (Part_wing) and spiralling down, a helicopter losing its tail rotor and spinning
+    /// down as its main rotor flies off, a big aircraft burning at an engine and falling long and slanting with a wing
+    /// gone, each on a show path onto the Sim's crash point and time (VehicleView.PlanCrash); a drone a small blast and
+    /// gone. Ships list, break and sink (ShipSinking). All view only: no wreck blocks movement or sight in the Sim.
+    /// Wrecks live 30-45 s (bosses 90 s; Low graphics a third less); at most ~12 full wrecks near the camera (Medium 9,
+    /// Low 6), any more near it and those far from it go sooner, leaving a burn mark.</para>
     /// </summary>
     internal sealed class WreckManager
     {
-        // Explode, burn, go: a hulk burns for a quarter of a minute and is gone soon after, so
+        // Explode, burn, go: a hulk burns for a good part of its life and is gone after it, so
         // the field shows the current fight rather than a scrapyard of old ones.
-        private const float BurnSeconds = 12f;
-        private const float LifeSeconds = 17f;
+        private const float BurnShare = 0.4f;
         private const float SinkSeconds = 3f;
         private const float SinkDepth = 2.2f;
         private const float Gravity = 18f;
@@ -31,45 +40,78 @@ namespace MachineBrigade.Game.Effects
         {
             public EntityId Id;
             public VehicleView View;
-            public float Created, Expires;
+            public WreckClass Class;
+            public float Created, Expires, Burn;
             public float SinkStart = -1f;
             public float NextPop;
             public int PopsLeft;
             public int ChainLeft;
             public float NextChain;
+            public bool ChainAlong, SlowChain;
             public bool WasFalling;
             public bool Blown;
+            public bool Gone;
             public Transform Turret;
             public Vector3 TurretVelocity, TurretSpin;
             public bool TurretFlying;
             public float TurretFlame, TurretSmoke;
             public float JetFrom, JetUntil, JetDebt;
             public float HopVelocity, HopHeight;
+            public float FlipStart = -1f, FlipAngle, FlipSide, FlipLift;
+            public Quaternion FlipBase;
             public int Fire;
         }
 
         private readonly List<Wreck> _wrecks = new();
         private readonly List<(Vector3 position, float size)> _crashes = new();
+        private readonly List<(Vector3 position, float size)> _marks = new();
         private readonly FireSpots _fires;
         private readonly ChunkThrower _chunks;
+        private readonly WreckBreakup _breakup;
         private readonly int _capacity;
+        private float _nextTrim;
 
-        public WreckManager(FireSpots fires, ChunkThrower chunks, int capacity)
+        /// <summary>The view's focus (EffectsDirector sets it each frame): the full wrecks are counted near it.</summary>
+        public Vector3 Focus { get; set; }
+
+        /// <summary>Pieces torn off wrecks still about (tests and the budget log).</summary>
+        public int Pieces => _breakup.Count;
+
+        public WreckManager(FireSpots fires, ChunkThrower chunks, int capacity, Transform parent = null)
         {
             _fires = fires;
             _chunks = chunks;
             _capacity = capacity;
+            _breakup = new WreckBreakup(parent, chunks, fires);
         }
 
-        public void Add(VehicleView view, float now)
+        public void Add(VehicleView view, float now) => Add(view, now, null, 0f);
+
+        /// <summary>
+        /// A destroyed vehicle's view becomes a wreck. For a shot-down aircraft, <paramref name="crashAt"/> and
+        /// <paramref name="fall"/> are the Sim's crash plan (the loss event's Target and Value): its wreck flies a show path
+        /// that lands there and then.
+        /// </summary>
+        public void Add(VehicleView view, float now, Vector3? crashAt, float fall)
         {
             view.BecomeWreck();
+            var cls = WreckClasses.Of(view.Def);
+            // A vehicle the defs call tracked but whose model has wheels to lose breaks up as a wheeled one.
+            if (cls == WreckClass.Tank && !view.Def.Boss && view.FindPart("Part_wheel") != null) cls = WreckClass.Wheeled;
+            var life = WreckClasses.Life(view.Def, Random.value, MatchSettings.Tier);
             var wreck = new Wreck
             {
-                Id = view.Id, View = view, Created = now, Expires = now + LifeSeconds * Random.Range(0.85f, 1.15f),
+                Id = view.Id, View = view, Class = cls, Created = now, Expires = now + life, Burn = life * BurnShare,
                 NextPop = now + Random.Range(3f, 5f), PopsLeft = Random.Range(1, 3), WasFalling = view.Falling,
             };
             _wrecks.Add(wreck);
+            if (cls == WreckClass.Drone)
+            {
+                // A drone: its small blast, and nothing left of it.
+                wreck.Gone = true;
+                if (view.Root != null) view.Root.gameObject.SetActive(false);
+                return;
+            }
             if (view.Def.Static)
             {
                 // A tower, bunker or gun: its ruin stays for the rest of the battle. It burns hard
@@ -91,8 +133,9 @@ namespace MachineBrigade.Game.Effects
             }
             // A shot-down aircraft burns all the way down; a ground hulk burns where it stopped.
             var size = Mathf.Clamp(view.Sim.Radius / 1.6f, 0.75f, 1.6f);
-            wreck.Fire = _fires.Ignite(view.Root.position + Vector3.up * 0.9f, size, BurnSeconds * Random.Range(0.85f, 1.15f), now,
+            wreck.Fire = _fires.Ignite(view.Root.position + Vector3.up * 0.9f, size, wreck.Burn * Random.Range(0.85f, 1.15f), now,
                 view.Flying ? view.Root : null, smoke: view.Def.Boss ? FireSpots.BossSmoke : 1f);
+            if (view.Flying && WreckClasses.Falls(cls)) BreakInTheAir(wreck, now, crashAt, fall);
 
             // Ruins of fixed defences stay; only vehicle hulks make room for new ones.
             var living = 0;
@@ -107,12 +150,58 @@ namespace MachineBrigade.Game.Effects
             }
         }
 
+        /// <summary>
+        /// Prompt 34 L7: a shot-down aircraft breaks up as it starts to fall: a fighter's left wing (Part_wing) goes and it
+        /// spirals down; a helicopter's tail rotor goes, its main rotor flies off and it spins down; a big aircraft's wing goes
+        /// with an engine burning and it falls long and slanting. The fall is a show path onto the Sim's crash plan.
+        /// </summary>
+        private void BreakInTheAir(Wreck w, float now, Vector3? crashAt, float fall)
+        {
+            var view = w.View;
+            var root = view.Root;
+            var drift = view.Def.FixedWing ? root.forward * Mathf.Max(6f, view.Def.Speed * 0.6f) : Vector3.zero;
+            var style = VehicleView.FallStyle.Spin;
+            var side = Random.value < 0.5f ? -1f : 1f;
+            switch (w.Class)
+            {
+                case WreckClass.Fighter:
+                case WreckClass.BigAircraft:
+                {
+                    var big = w.Class == WreckClass.BigAircraft;
+                    style = big ? VehicleView.FallStyle.Slant : VehicleView.FallStyle.Spiral;
+                    // The separated wing is the left one: it rolls and banks to that side.
+                    side = -1f;
+                    var wing = view.FindPart("Part_wing");
+                    if (wing != null)
+                        _breakup.Throw(wing, root, drift * 0.7f - root.right * (big ? 2.5f : 4f) + Vector3.up * (big ? 1.5f : 3f),
+                            Random.insideUnitSphere * (big ? 120f : 320f), true, 0.3f, 25f, now);
+                    // A smoke trail off the torn wing root; a big aircraft's engine burning hard on that side.
+                    var at = root.position - root.right * view.Sim.Radius * (big ? 0.35f : 0.2f);
+                    _fires.Ignite(at, big ? 1.4f : 0.8f, Mathf.Max(6f, fall + 4f), now, root);
+                    break;
+                }
+                case WreckClass.Helicopter:
+                {
+                    var tail = view.FindPart("Tail_rotor");
+                    if (tail != null)
+                        _breakup.Throw(tail, root, -root.forward * 5f + Vector3.up * 2f + Random.insideUnitSphere, new Vector3(720f, 0f, 90f), false,
+                            0.2f, 20f, now);
+                    var rotor = view.FindPart("Rotor") ?? view.FindPart("Rotor_front");
+                    if (rotor != null)
+                        _breakup.Throw(rotor, root, Vector3.up * 7f + Random.insideUnitSphere * 3f, new Vector3(30f, 900f, 20f), false, 0.15f, 20f,
+                            now);
+                    break;
+                }
+            }
+            if (crashAt.HasValue && fall > 0f) view.PlanCrash(crashAt.Value, fall, style, side);
+        }
+
         /// <summary>A falling or fallen aircraft wreck: where it is now (its death blast goes off there).</summary>
         public bool TryGetAircraftWreck(EntityId id, out Vector3 position)
         {
             foreach (var w in _wrecks)
             {
-                if (w.Id != id || !w.View.Flying) continue;
+                if (w.Id != id || !w.View.Flying || w.Gone) continue;
                 position = w.View.Root.position;
                 return true;
             }
@@ -124,21 +213,23 @@ namespace MachineBrigade.Game.Effects
         {
             w.SinkStart = now;
             w.JetUntil = 0f;
-            // No flames over empty ground once the hulk has gone.
+            // No flames over empty ground once the hulk has gone; a burn mark stays where it lay.
             _fires.Extinguish(w.Fire, now);
+            if (!w.Gone && w.View.Root != null && !w.View.Def.Static)
+                _marks.Add((w.View.Root.position, Mathf.Max(2.5f, w.View.Sim.Radius * 2.2f)));
         }
 
         /// <summary>
-        /// The death explosion of a freshly destroyed ground vehicle: pieces of it fly off (some
-        /// burning, some in its colours), the hull bucks, the turret is thrown into the air, and a
-        /// big vehicle's ammunition starts cooking off. Once per wreck; aircraft are left to fall.
+        /// The death explosion of a freshly destroyed ground vehicle, by its class: pieces of it fly off (some burning, some
+        /// in its colours), the hull bucks; a tank's turret is thrown into the air, a wheeled vehicle loses its wheels and rolls
+        /// over, a lorry's cargo goes up in a chain, a gun's ammunition cooks off. Once per wreck; aircraft are left to fall.
         /// </summary>
         public void Blow(EntityId id, float now)
         {
             Wreck wreck = null;
             foreach (var w in _wrecks)
                 if (w.Id == id) wreck = w;
-            if (wreck == null || wreck.Blown || wreck.View.Flying) return;
+            if (wreck == null || wreck.Blown || wreck.Gone || wreck.View.Flying) return;
             wreck.Blown = true;
             var view = wreck.View;
             var radius = view.Sim.Radius;
@@ -161,7 +252,51 @@ namespace MachineBrigade.Game.Effects
                     wreck.JetUntil = wreck.JetFrom + Random.Range(1.4f, 2.6f);
                 }
             }
-            TossTurret(wreck);
+            switch (wreck.Class)
+            {
+                case WreckClass.Wheeled:
+                    ThrowWheels(wreck, now);
+                    // The frame rolls onto its side or its roof.
+                    wreck.FlipStart = now + 0.05f;
+                    wreck.FlipAngle = Random.value < 0.55f ? Random.Range(85f, 100f) : Random.Range(160f, 180f);
+                    wreck.FlipSide = Random.value < 0.5f ? -1f : 1f;
+                    wreck.FlipBase = view.Root.rotation;
+                    break;
+                case WreckClass.Truck:
+                    // The cargo goes up in a chain along the bed, and the bed burns.
+                    wreck.ChainLeft = Random.Range(4, 7);
+                    wreck.NextChain = now + Random.Range(0.25f, 0.45f);
+                    wreck.ChainAlong = true;
+                    _fires.Ignite(view.Root.position - view.Root.forward * radius * 0.5f + Vector3.up * 1f, 0.9f, wreck.Burn * 0.8f, now);
+                    break;
+                case WreckClass.Artillery:
+                    // The ammunition inside cooks off: a long chain, a fountain of flame, pops while it burns; now and then the turret goes.
+                    wreck.ChainLeft = Random.Range(6, 10);
+                    wreck.NextChain = now + Random.Range(0.3f, 0.6f);
+                    wreck.SlowChain = true;
+                    wreck.PopsLeft += 3;
+                    wreck.JetFrom = now + Random.Range(0.3f, 0.6f);
+                    wreck.JetUntil = wreck.JetFrom + Random.Range(2f, 3.5f);
+                    if (Random.value < 0.5f) TossTurret(wreck);
+                    break;
+                default:
+                    TossTurret(wreck);
+                    break;
+            }
+        }
+
+        /// <summary>A wheeled vehicle's separable wheels (Part_wheel, Part_wheelb) thrown out sideways, spinning, some burning.</summary>
+        private void ThrowWheels(Wreck w, float now)
+        {
+            var root = w.View.Root;
+            foreach (var name in new[] { "Part_wheel", "Part_wheelb" })
+            {
+                var wheel = w.View.FindPart(name);
+                if (wheel == null) continue;
+                var outward = root.InverseTransformPoint(wheel.position).x < 0f ? -root.right : root.right;
+                _breakup.Throw(wheel, root, outward * Random.Range(4f, 7f) + Vector3.up * Random.Range(5f, 8f) + Random.insideUnitSphere,
+                    new Vector3(Random.Range(-200f, 200f), 0f, Random.Range(400f, 700f)), Random.value < 0.5f, 0.4f, w.Expires - now, now);
+            }
         }
 
         /// <summary>Throws the turret of a freshly destroyed vehicle high into the air.</summary>
@@ -179,23 +314,24 @@ namespace MachineBrigade.Game.Effects
         /// Ammunition cooking off inside a burning hulk: returns one wreck position that is due a
         /// secondary explosion, and whether it is a pop (a small fireball) or only a spray of
         /// sparks: first a quick chain of pops scattered round the hull right after the big
-        /// blast, then a few while it burns. Never another big blast on the same spot.
+        /// blast (a lorry's along its bed, a gun's slower and longer), then a few while it burns.
+        /// Never another big blast on the same spot.
         /// </summary>
         public bool TryCookOff(float now, out Vector3 position, out bool pop)
         {
             foreach (var w in _wrecks)
             {
-                if (w.SinkStart >= 0f || w.WasFalling) continue;
+                if (w.SinkStart >= 0f || w.WasFalling || w.Gone) continue;
                 var high = w.View.Def.Static ? w.View.Top * 0.6f : 0.8f;
                 if (w.ChainLeft > 0 && now >= w.NextChain)
                 {
                     w.ChainLeft--;
-                    w.NextChain = now + Random.Range(0.22f, 0.5f);
+                    w.NextChain = now + (w.SlowChain ? Random.Range(0.3f, 0.8f) : Random.Range(0.22f, 0.5f));
                     pop = true;
-                    position = Around(w, high, w.View.Sim.Radius * 1.4f);
+                    position = w.ChainAlong ? AlongBed(w, high) : Around(w, high, w.View.Sim.Radius * 1.4f);
                     return true;
                 }
-                if (now - w.Created > (w.View.Def.Static ? StaticBurnSeconds : BurnSeconds) || w.PopsLeft <= 0 || now < w.NextPop) continue;
+                if (now - w.Created > (w.View.Def.Static ? StaticBurnSeconds : w.Burn) || w.PopsLeft <= 0 || now < w.NextPop) continue;
                 w.PopsLeft--;
                 w.NextPop = now + Random.Range(2f, 4f);
                 pop = Random.value < 0.5f;
@@ -221,11 +357,37 @@ namespace MachineBrigade.Game.Effects
             return true;
         }
 
+        /// <summary>Prompt 34 L7: a wreck that has gone left a burn mark here, this wide.</summary>
+        public bool TryBurnMark(out Vector3 position, out float size)
+        {
+            if (_marks.Count == 0)
+            {
+                position = default;
+                size = 0f;
+                return false;
+            }
+            (position, size) = _marks[_marks.Count - 1];
+            _marks.RemoveAt(_marks.Count - 1);
+            return true;
+        }
+
         public void Tick(float now, float dt)
         {
+            if (now >= _nextTrim)
+            {
+                _nextTrim = now + 0.5f;
+                Trim(now);
+            }
+            _breakup.Tick(now, dt);
             for (var i = _wrecks.Count - 1; i >= 0; i--)
             {
                 var w = _wrecks[i];
+                if (w.Gone || w.View.Root == null)
+                {
+                    if (w.View.Root != null) Object.Destroy(w.View.Root.gameObject);
+                    _wrecks.RemoveAt(i);
+                    continue;
+                }
                 if (w.SinkStart < 0f)
                 {
                     w.View.AnimateWreck();
@@ -235,6 +397,7 @@ namespace MachineBrigade.Game.Effects
                         _crashes.Add((w.View.Root.position, w.View.Sim.Radius));
                     }
                     if (now >= w.Expires) Sink(w, now);
+                    Flip(w, now);
                     Hop(w, dt);
                     if (now >= w.JetFrom && now < w.JetUntil)
                     {
@@ -259,16 +422,68 @@ namespace MachineBrigade.Game.Effects
             }
         }
 
+        /// <summary>
+        /// Prompt 34 L7: at most <see cref="WreckClasses.FullCap"/> full wrecks near the camera: the newest stay full, the
+        /// older ones near it go within a few seconds, and wrecks far from the camera live <see cref="WreckClasses.SimpleLife"/>
+        /// at most (both leave a burn mark). Bosses and fixed defences are not counted and keep their lives.
+        /// </summary>
+        private void Trim(float now)
+        {
+            var cap = WreckClasses.FullCap(MatchSettings.Tier);
+            var near = 0;
+            for (var i = _wrecks.Count - 1; i >= 0; i--)
+            {
+                var w = _wrecks[i];
+                if (w.SinkStart >= 0f || w.Gone || w.View.Def.Static || w.View.Def.Boss || w.View.Root == null || w.View.Falling) continue;
+                var p = w.View.Root.position;
+                var far = new Vector2(p.x - Focus.x, p.z - Focus.z).magnitude > WreckClasses.NearCamera;
+                if (far)
+                {
+                    w.Expires = Mathf.Min(w.Expires, w.Created + WreckClasses.SimpleLife);
+                    continue;
+                }
+                // The list runs newest first from the end: those past the cap are the older ones.
+                if (++near > cap) w.Expires = Mathf.Min(w.Expires, now + 3f);
+            }
+        }
+
         public void Clear()
         {
             foreach (var w in _wrecks)
                 if (w.View.Root != null) Object.Destroy(w.View.Root.gameObject);
             _wrecks.Clear();
             _crashes.Clear();
+            _marks.Clear();
+            _breakup.Clear();
         }
 
         private static Vector3 Around(Wreck w, float height, float reach) =>
             w.View.Root.position + new Vector3(Random.Range(-reach, reach), height, Random.Range(-reach, reach));
+
+        /// <summary>A point on a lorry's bed: along its back half, a little to either side.</summary>
+        private static Vector3 AlongBed(Wreck w, float height)
+        {
+            var root = w.View.Root;
+            var r = w.View.Sim.Radius;
+            return root.position - root.forward * Random.Range(-0.1f * r, 0.9f * r) + root.right * Random.Range(-0.35f, 0.35f) * r +
+                   Vector3.up * (height + 0.3f);
+        }
+
+        /// <summary>A wheeled hulk rolling over onto its side or roof (it rises by what it turns over on).</summary>
+        private static void Flip(Wreck w, float now)
+        {
+            if (w.FlipStart < 0f || now < w.FlipStart) return;
+            var k = Mathf.Clamp01((now - w.FlipStart) / 0.9f);
+            var e = k * k * (3f - 2f * k);
+            var angle = w.FlipAngle * e;
+            var rad = angle * Mathf.Deg2Rad;
+            w.View.Root.rotation = w.FlipBase * Quaternion.Euler(0f, 0f, w.FlipSide * angle);
+            var half = w.View.Sim.Radius * 0.45f;
+            w.FlipLift = Mathf.Abs(Mathf.Sin(rad)) * half + (1f - Mathf.Cos(rad)) * 0.5f * w.View.Top * 0.6f;
+            if (k >= 1f) w.FlipStart = -1f;
+            var p = w.View.Root.position;
+            w.View.Root.position = new Vector3(p.x, w.HopHeight + w.FlipLift, p.z);
+        }
 
         /// <summary>The hull thrown up by its death explosion, landing back with a thud.</summary>
         private static void Hop(Wreck w, float dt)
@@ -282,7 +497,7 @@ namespace MachineBrigade.Game.Effects
                 w.HopVelocity = 0f;
             }
             var p = w.View.Root.position;
-            w.View.Root.position = new Vector3(p.x, w.HopHeight, p.z);
+            w.View.Root.position = new Vector3(p.x, w.HopHeight + w.FlipLift, p.z);
         }
 
         /// <summary>The blown-off turret tumbles through the air trailing fire and smoke, and comes to rest burning.</summary>

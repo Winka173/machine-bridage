@@ -462,9 +462,9 @@ namespace MachineBrigade.Game.Hud
                 () => MatchSettings.Options.MaxEffects ? 1 : 0, i => MatchSettings.Customise(o => o.MaxEffects = i == 1)));
 
             var game = Section(body, "settings.section.game");
-            // Camera shake is switched off for now (RtsCamera.ShakeEnabled), so its setting is hidden with it.
-            if (CameraControl.RtsCamera.ShakeEnabled)
-                game.Add(OptionRow("move", "settings.shake",
+            // Camera shake: the general shake is switched off for now (RtsCamera.ShakeEnabled), but prompt 34 L5's T4+ blasts and
+            // shots near the view shake it (RtsCamera.AddTierTrauma), so the setting is always shown: off, low or full.
+            game.Add(OptionRow("move", "settings.shake",
                     new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Strings.Get("settings.full") },
                     () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
             game.Add(ToggleRow("bolt", "settings.haptics", () => MatchSettings.Haptics, on => MatchSettings.Haptics = on));
@@ -489,6 +489,13 @@ namespace MachineBrigade.Game.Hud
             sound.Add(Stepper("volume", Strings.Get("settings.music"),
                 () => MatchSettings.MusicVolume <= 0f ? Strings.Get("settings.off") : $"{Mathf.RoundToInt(MatchSettings.MusicVolume * 100f)}%",
                 step => MatchSettings.MusicVolume = Mathf.Clamp01(Mathf.Round((MatchSettings.MusicVolume + step * 0.1f) * 10f) / 10f)));
+            // Prompt 34 L6: the effects and the dialogue have their own levels too.
+            sound.Add(Stepper("volume", Strings.Get("settings.effectsVolume"),
+                () => MatchSettings.EffectsVolume <= 0f ? Strings.Get("settings.off") : $"{Mathf.RoundToInt(MatchSettings.EffectsVolume * 100f)}%",
+                step => MatchSettings.EffectsVolume = Mathf.Clamp01(Mathf.Round((MatchSettings.EffectsVolume + step * 0.1f) * 10f) / 10f)));
+            sound.Add(Stepper("volume", Strings.Get("settings.dialogueVolume"),
+                () => MatchSettings.DialogueVolume <= 0f ? Strings.Get("settings.off") : $"{Mathf.RoundToInt(MatchSettings.DialogueVolume * 100f)}%",
+                step => MatchSettings.DialogueVolume = Mathf.Clamp01(Mathf.Round((MatchSettings.DialogueVolume + step * 0.1f) * 10f) / 10f)));
         }
 
         // ------------------------------------------------------------------ shared building blocks
