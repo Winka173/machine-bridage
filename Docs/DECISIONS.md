@@ -17131,3 +17131,9 @@ scan in one Unity batch run and an agent scores it. No Unity, tests or sims here
   `VehicleView.DrawScaleOf(VehicleDef, GameObject)`, `TowerArt.ModelFor`, `UnityEditor.GUID.Generate()`; ships are
   detected through a "Naval" bool property by reflection (VehicleDef has none today, so ships stand at y = 0 like
   everything else; harmless). Commands in `Docs/models/scan/README.md`.
+
+## Owner: over-budget models are fine (owner, 2026-10-02)
+
+"Ngân sách tam giác cái nào vượt thì cứ giữ, đó là tốt": a model over its triangle budget is kept and never trimmed or
+scored down for it; MODEL_STANDARD's budgets act as a guide/floor, not a cap. The validator's budget errors (glb_check
+BUDGETS hard caps, the full fix's L9 item 7) report over-budget as information only.
