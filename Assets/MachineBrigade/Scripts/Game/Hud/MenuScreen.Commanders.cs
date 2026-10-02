@@ -27,6 +27,7 @@ namespace MachineBrigade.Game.Hud
             scroll.Add(_commanderBody);
             _commanderPage.Add(scroll);
             if (DebugFlags.Has("-mb-commanders")) Root.schedule.Execute(OpenCommanders).StartingIn(400);
+            BuildTacticPage();
         }
 
         /// <summary>Opens the picker.</summary>

@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- AI UI (28 local pass): tactic picker beside deck and commander (suggested for the commander, unlock by chapter, last pick per mode), HUD tactic switch with cooldown and per-squad tactics, scouted enemy tactic, AI hint line (Settings toggle), upkeep factor on the supply line, pressure lines, tower targeting modes on the Base screen and on a tap, player AI at Normal skill, Sandbox tactic per side and the internal AI viewer sheet. Compiled only; not played.
 - AI (28 extras, cloud): EN/VI text tables for tactics, hints, tower modes, fire stances, upkeep, pressure and the AI viewer; unit-level "VÌ SAO"; Sandbox scenario tests and 5-seed fingerprint/campaign sweeps (Explicit, not run); design docs AI_DESIGN, TACTICS, ECONOMY; the applied research xlsx and its exporter.
 - AI and economy (28 pass 5, cloud, Sim only): income falls with vehicles out against the cap (army bands); pressure tiers on a quiet battle (points worth more, a crate, a barrage on the passive side, armies revealed); Conquest's final phase; hit-and-run spread while backing off; tactic unlock and commander suggestions; the Sandbox sets each side's tactic. Not run yet.
 - AI (28 pass 4, cloud, Sim only): tower targeting modes from the sheet (with `SimWorld.SetTowerMode`), the sheet's special tower rules, towers sharing a target, point defence ordered by mode; boss behaviour types weighting targets and big-attack aims, a slow turn to the most firepower, escorts screening the enemy mass and closing in on a new phase. Not run yet.

@@ -13630,3 +13630,48 @@ the Sim compile check ran.
   `Tools/ai/export_applied_xlsx.py` writes `Machine_Brigade_AI_Research_applied.xlsx` (green game columns on "Tham số
   AI", "Cân bằng kinh tế", "Chiến thuật", a "Tham số thế giới" sheet and a note sheet); exported with the initial values.
 - **balance.json keys added here:** `ai.world.mergeThreshold`.
+
+## 28 local UI pass (lead pass, 2026-10-02)
+
+The Unity side of prompt 28 (Docs/ai/LOCAL_TODO.md). Compile checked only (Unity batch, 0 errors); no EditMode suite,
+play mode, sims or screenshots (O.6 screenshots wait for the owner).
+
+- **Tactic picker (H.4, H.11, H.12, H.14).** `TacticPick` (Game/Match) picks the start tactic: the last one picked for
+  that game mode (`PlayerProfile.LastTactic`, parallel lists in the save), else the first open tactic that suits the
+  commander (`AiBehaviour.SuitedTo`), else Balanced. Unlock = `AiBehaviour.Unlocked` with the chapter reached and the
+  interludes reached; `Progression.TestUnlockAll` (true in this build) opens all. The slot sits under the commander
+  slot on the deck screen (for the menu's mode) and in the mission panel (for the campaign); the picker is a full page
+  in the commander rows' look (Commanders.uss): suited ones first, then all, each with core, strong/weak, buys first
+  (first 4 of `Prefer`), force mix (CP shares, biggest first), counters/countered by, lock and chosen tags. The
+  mission panel also shows the enemy general's favourite tactic (H.7). In-battle switches do not change the saved
+  pick, so a checkpoint replay starts the same.
+- **Player AI (K.2).** `ModeSession.PreparePlayerAi` (called before the first step, every mode but the Sandbox) sets
+  `ConquestAi.Tactic` and `Skill = AiSkill.For(Normal)`; the start tactic and the squad presets are journal inputs
+  ("tactic.start", "squad.presets") so a checkpoint replay matches. The player's ConquestAi keeps `AiDifficulty.Hard`
+  for everything else it did before.
+- **HUD (H.6, H.8, H.10, B.7, I.2, I.6, I.7).** A flag tool on the commander's rail (compact: icon + seconds left,
+  dimmed in the transition; full HUD: a button with the tactic's name) opens one shared picker panel (`PickPanel`,
+  BattleHud.Tactics.cs): current tactic, cooldown or transition, the enemy's tactic only while
+  `TacticSeenBy(world, player)` (else "unknown, scout them"), the open tactics, and per-squad dropdowns when
+  `Commander.SquadTactics` (after chapter 6, `TacticPick.SquadTacticsOpen`). Boss Hunt sets `FreeSwitch` while
+  `RestLeft >= 0`. A toast when a scouted enemy switches. Every accepted switch goes to the journal ("tactic",
+  "squad.tactic", "tower.mode") and replays through `ModeSession.ApplyInput`. Per-squad choices are saved by squad
+  number and applied when a squad of that number first forms.
+- **Hints (B.7).** `AiHints.Next` is polled once a second of battle time inside `ModeSession.TickAi`, whether the hint
+  line is on or off (it refreshes the World Model, so polling only when shown would change the battle); the HUD shows
+  the newest one for 5 s on the start hint's bar, never over the attack-move or box hints. Settings > Game "AI hints"
+  (`mb.aiHints`, on by default).
+- **Upkeep (I.2).** `ArmyFactor` is multiplied into the supply line's modifier ("Over supply -x%"), shown only while it
+  lowers income; no new HUD element. Pressure tiers and Conquest's final phase show as one toast each (I.6, I.7).
+- **Tower modes (E.1).** Saved per tower type (card id), not per hardpoint: simpler for the player and every tower of a
+  type usually wants the same mode; chips on the Base screen's tower panel (Default = the data's, its name in the
+  tooltip). In battle the saved mode is applied once to each new player tower (checked once a second; rebuilt towers
+  get it again); a tap on an own tower with modes opens the picker for that tower only.
+- **Sandbox (H.13, J).** The settings sheet has a tactic dropdown per side (none = the general's favourite); the sides
+  sheet a live switch through `RequestTactic` (cooldown kept). The AI viewer is a sheet (internal build only, "eye" in
+  More), not a ground overlay: one Texture2D per layer (influence, 4 threat kinds, information age, front/chokepoints/
+  contested, events/warnings/enemy groups), repainted only when the side's `UpdatedAt` changes (the World Model's
+  2 Hz); then the tactic and the commander's "VÌ SAO", actual/target force shares, upkeep, CP income and pressure tier,
+  events, each squad (task, state, action, formation, tactic, churn warning), and "VÌ SAO" of the selected unit and
+  its squad. It reads the new `WorldModel.Peek(team)` (never refreshes), so opening the viewer cannot change a battle.
+- **Text.** New keys in TacticText (EN + VI): `aiview.legend.*`, `aiview.pressure`, `sandbox.tactic.general`.

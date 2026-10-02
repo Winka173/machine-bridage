@@ -884,6 +884,7 @@ namespace MachineBrigade.Game.Hud
                     : ground > 0f ? Strings.Format("camp.reachGround", Mathf.RoundToInt(ground)) : Strings.Get("camp.reachNone");
                 if (min > 0f) reachLine += " · " + Strings.Format("camp.minRange", Mathf.RoundToInt(min));
                 _panelBody.Add(Kit.Text(reachLine, "fc-small fc-base__reach"));
+                TowerModeRow(id, branch);
             }
             else _panelBody.Add(Kit.Text(Strings.Get("guide." + id), "fc-small fc-base__reach"));
 
@@ -918,6 +919,36 @@ namespace MachineBrigade.Game.Hud
             }
             if (OpenDetail != null) buttons.Add(new KitButton(ButtonTier.Text, Strings.Get("army.info"), () => OpenDetail(id), "info"));
             _panelBody.Add(buttons);
+        }
+
+        /// <summary>
+        /// Prompt 28 E.1: the tower type's targeting mode, as chips (Default: the data's own). Kept per tower type in the
+        /// profile and set on every tower of that type when it stands in battle; a tap on a tower there changes that one.
+        /// </summary>
+        private void TowerModeRow(string id, string branch)
+        {
+            var towers = _catalog.AiData.Towers;
+            TowerModeDef def = null;
+            if (branch == null || !towers.TryGetValue(branch, out def)) towers.TryGetValue(id, out def);
+            if (def == null || def.Modes.Count == 0) return;
+            var modes = new List<MachineBrigade.Sim.AI.TowerMode> { MachineBrigade.Sim.AI.TowerMode.Default };
+            foreach (var m in def.Modes)
+                if (!modes.Contains(m)) modes.Add(m);
+            var saved = PlayerProfile.TowerModeFor(id) ?? "Default";
+            _panelBody.Add(Kit.Text(Kit.Caps(Strings.Get("tower.mode.title")), "fc-caption fc-base__caption"));
+            var chips = Kit.Box("fc-row fc-row--wrap");
+            foreach (var m in modes)
+            {
+                var mode = m.ToString();
+                var chip = new KitChip(Strings.Get("tower.mode." + mode), mode == saved, () =>
+                {
+                    PlayerProfile.SetTowerModeFor(id, mode);
+                    Refresh();
+                });
+                if (m == MachineBrigade.Sim.AI.TowerMode.Default) chip.tooltip = Strings.Get("tower.mode." + def.Mode);
+                chips.Add(chip);
+            }
+            _panelBody.Add(chips);
         }
 
         private void StatRow(string key, float value, float best, string format)

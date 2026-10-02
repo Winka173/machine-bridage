@@ -286,6 +286,13 @@ namespace MachineBrigade.Game.Match
             {
                 MatchJournal.Record(_world, "autoDeploy", _session.PlayerAi.AutoDeploy ? "1" : "0");
                 MatchJournal.Record(_world, "autoStrike", _session.PlayerAi.AutoStrike ? "1" : "0");
+                // Prompt 28 H.4, H.10, K.2: the picked tactic, the per-squad presets, Normal skill (ModeSession.Tactics.cs).
+                if (kind != GameModeKind.Sandbox)
+                {
+                    _session.PreparePlayerAi(_world, kind, _playerCommander);
+                    MatchJournal.Record(_world, "tactic.start", _session.PlayerAi.Tactic ?? "");
+                    MatchJournal.Record(_world, "squad.presets", _session.SquadPresetsText);
+                }
             }
             // Back to a checkpoint: the battle so far, replayed behind the loading screen.
             if (resume != null && !_menu && mission != null && resume.Mission == mission.Id)
@@ -1406,6 +1413,8 @@ namespace MachineBrigade.Game.Match
                     : Strings.Get("toast.focusClear"));
             };
             _selection.Rejected += _hud.ShowError;
+            // Prompt 28 H.6, H.10, E.1 (MatchRunner.Tactics.cs).
+            WireTactics();
             _selection.EnemyTapped += def => _hud.ShowEnemyTip(def,
                 MatchSettings.DeckVehicles.Select(v => _world.Catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null), TierOf(def));
             WireBossParts();
@@ -1531,6 +1540,7 @@ namespace MachineBrigade.Game.Match
             var playerAi = _session.PlayerAi;
             if (playerAi != null)
                 _hud.SetCommander(playerAi.Stance == CommanderStance.Defend, playerAi.AutoDeploy, playerAi.AutoStrike, playerAi.FocusPoint);
+            UpdateTactics();
             _hud.SetSelection(_selection.Summary());
             // Prompt 13 C.9: the selection's ammunition bar under its health bar.
             _storesStrip ??= new StoresStrip(_hud.SelectionExtras);

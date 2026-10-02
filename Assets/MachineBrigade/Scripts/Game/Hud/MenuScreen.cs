@@ -475,6 +475,8 @@ namespace MachineBrigade.Game.Hud
                 new[] { Strings.Get("settings.slow"), Strings.Get("settings.normal"), Strings.Get("settings.fast") },
                 () => MatchSettings.CameraSpeed, i => MatchSettings.CameraSpeed = i));
             game.Add(ToggleRow("info", "settings.fps", () => MatchSettings.ShowFps, on => MatchSettings.ShowFps = on));
+            // Prompt 28 B.7: the AI's hint line in battle.
+            game.Add(ToggleRow("help", "aihint.settings", () => MatchSettings.AiHints, on => MatchSettings.AiHints = on));
             game.Add(OptionRow("ammo", "settings.ammoIcons",
                 new[] { Strings.Get("settings.ammoIcons.all"), Strings.Get("settings.ammoIcons.air") },
                 () => MatchSettings.AmmoIcons, i => MatchSettings.AmmoIcons = i));

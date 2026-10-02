@@ -32,7 +32,7 @@ namespace MachineBrigade.Game.Match
     /// what the HUD shows, and how the battle ends and pays out. <see cref="MatchRunner"/> stays
     /// the same for every mode.
     /// </summary>
-    internal abstract class ModeSession
+    internal abstract partial class ModeSession
     {
         public const int PlayerTeam = 0;
         public const int EnemyTeam = 1;
@@ -81,6 +81,8 @@ namespace MachineBrigade.Game.Match
         public void TickAi(SimWorld world, float dt)
         {
             foreach (var c in Commanders) c.Tick(world, dt);
+            // Prompt 28 (ModeSession.Tactics.cs): squad tactics, hints, tower modes, Boss Hunt's free switch.
+            TickPlayerAi(world);
             Waves?.Tick(world, dt);
             AllyAi?.Tick(world, dt);
             Events?.Tick(world, dt);
@@ -860,6 +862,9 @@ namespace MachineBrigade.Game.Match
     internal sealed class BossRushSession : ModeSession
     {
         private BossRushMode _mode;
+
+        /// <summary>Prompt 28 H.6: in the rest between two bosses a tactic switch is free of the cooldown.</summary>
+        protected override bool FreeSwitchNow(SimWorld world) => _mode != null && _mode.RestLeft(world) >= 0f;
 
         /// <summary>Prompt 16: the battlefield the rush fights its sea boss on.</summary>
         public const string SeaMap = "lighthousebay";

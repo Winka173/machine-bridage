@@ -89,6 +89,12 @@ namespace MachineBrigade.Game.Hud
                 foreach (var c in commanders) commanderNames.Add(c == null ? Strings.Get("cmdr.sandbox.none") : CommanderText.Call(c) + " · " + CommanderText.Name(c));
                 var picked = commanders.FindIndex(c => (c?.Id ?? "") == side.Commander);
                 body.Add(Drop(Strings.Get("cmdr.sandbox"), commanderNames, Math.Max(0, picked), i => e.Settings(x => x.Sides[t].Commander = commanders[i]?.Id ?? "")));
+                // Prompt 28 H.13: each side's tactic for the full AI (none: its general's favourite).
+                var tactics = TacticPick.Choices(_c.World.Catalog);
+                var tacticNames = new List<string> { Strings.Get("sandbox.tactic.general") };
+                foreach (var tactic in tactics) tacticNames.Add(TacticText.Name(tactic));
+                var tacticAt = tactics.FindIndex(x => x.Id == side.Tactic);
+                body.Add(Drop(Strings.Get("tactic.title"), tacticNames, tacticAt + 1, i => e.Settings(x => x.Sides[t].Tactic = i == 0 ? "" : tactics[i - 1].Id)));
                 body.Add(new KitToggle(Strings.Get("sandbox.cp.unlimited"), side.Cp < 0f, on =>
                 {
                     e.Settings(x => x.Sides[t].Cp = on ? -1f : 30f);
@@ -137,6 +143,7 @@ namespace MachineBrigade.Game.Hud
                 body.Add(new KitToggle(Strings.Get("sandbox.cp.unlimited"), _c.Battle.Unlimited(team), on => _c.Queue(SandboxOp.Side(SandboxOpKind.SideCp, t, on ? -1 : 20))));
                 body.Add(new KitToggle(Strings.Get("sandbox.cooldowns"), _c.Battle.CooldownsOn(team), on => _c.Queue(SandboxOp.Side(SandboxOpKind.Cooldowns, t, on ? 1 : 0))));
                 body.Add(new KitToggle(Strings.Get("sandbox.sideImmortal"), _c.Battle.SideImmortal(team), on => _c.Queue(SandboxOp.Side(SandboxOpKind.SideImmortal, t, on ? 1 : 0))));
+                SideTactic(body, team);
                 if (!_c.World.TryGetEconomy(team, out var economy) || economy.Supports.Count == 0) continue;
                 body.Add(Caption("sandbox.call"));
                 var row = Row();
@@ -154,6 +161,27 @@ namespace MachineBrigade.Game.Hud
                 }
                 body.Add(row);
             }
+        }
+
+        /// <summary>
+        /// Prompt 28 H.13: a running side's tactic, switched as the player would (cooldown and transition; the Sandbox
+        /// ignores neither, so a test sees what the player sees).
+        /// </summary>
+        private void SideTactic(VisualElement body, int team)
+        {
+            if (!_c.World.AiCommanders.TryGetValue(team, out var general)) return;
+            var tactics = TacticPick.Choices(_c.World.Catalog);
+            var names = new List<string>();
+            foreach (var tactic in tactics) names.Add(TacticText.Name(tactic));
+            var at = tactics.FindIndex(x => x.Id == general.CurrentTactic.Id);
+            body.Add(Drop(Strings.Get("tactic.switch"), names, Math.Max(0, at), i =>
+            {
+                var result = general.RequestTactic(_c.World, tactics[i].Id, "sandbox");
+                if (result == MachineBrigade.Sim.AI.TacticSwitchResult.Cooldown) Toast(Strings.Get("tactic.line.cooldown"), false);
+            }));
+            var wait = general.TacticReadyAt - _c.World.Time;
+            if (general.InTransition) body.Add(Kit.Text(Strings.Get("tactic.transition"), "fc-small sb-hint"));
+            else if (wait > 0) body.Add(Kit.Text(Strings.Format("tactic.cooldown", ("seconds", (int)Math.Ceiling(wait))), "fc-small sb-hint"));
         }
 
         // ------------------------------------------------------------------ scenarios (F.1, F.2, F.6, F.7)

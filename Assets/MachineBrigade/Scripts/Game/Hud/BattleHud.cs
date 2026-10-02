@@ -270,6 +270,8 @@ namespace MachineBrigade.Game.Hud
                 _towerMini.Add(towerFace);
                 _towerMini.style.display = DisplayStyle.None;
                 rail.Add(_towerMini);
+                // Prompt 28 H.6: the tactic switch (BattleHud.Tactics.cs).
+                AddTacticControl(rail, true);
                 if (!spec.Sandbox) _safe.Add(rail);
             }
             else
@@ -292,6 +294,7 @@ namespace MachineBrigade.Game.Hud
                 _towerButton.AddToClassList("fc-hud__tower");
                 _towerButton.style.display = DisplayStyle.None;
                 commander.Add(_towerButton);
+                AddTacticControl(commander, false);
                 if (!spec.Sandbox) _safe.Add(commander);
             }
             if (_score != null) _score.PointPressed += id => PointPressed?.Invoke(id);
@@ -429,6 +432,7 @@ namespace MachineBrigade.Game.Hud
             _safe.Add(_choice.Root);
             _supportPick = new SupportPickPanel();
             _safe.Add(_supportPick.Root);
+            AddPickPanel();
 
             _selectionBox = UiKit.Box("selection-box");
             _root.Add(_selectionBox);

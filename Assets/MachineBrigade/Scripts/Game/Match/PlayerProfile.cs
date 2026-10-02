@@ -135,6 +135,18 @@ namespace MachineBrigade.Game.Match
             public List<HuntSave> hunts = new();
             public List<float> fullHuntTimes = new();
             public bool fullHuntPaid;
+
+            /// <summary>Prompt 28 H.14: the last tactic per game mode (parallel lists); see PlayerProfile.Tactics.cs.</summary>
+            public List<string> tacticModes = new();
+            public List<string> tacticIds = new();
+
+            /// <summary>Prompt 28 H.10: the per-squad tactics by squad number (after chapter 6).</summary>
+            public List<string> squadTacticKeys = new();
+            public List<string> squadTacticIds = new();
+
+            /// <summary>Prompt 28 E.1: the targeting mode picked per tower type on the Base screen.</summary>
+            public List<string> towerModeIds = new();
+            public List<string> towerModes = new();
         }
 
         /// <summary>A new profile's base at HQ level 5: a mix of all three sizes (anti-air, guns, artillery, watchtowers).</summary>

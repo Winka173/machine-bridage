@@ -62,6 +62,9 @@ namespace MachineBrigade.Game.Input
         /// <summary>An enemy unit or tower was tapped (prompt 15 E5: its armour against our deck, in a small tooltip).</summary>
         public event Action<VehicleDef> EnemyTapped;
 
+        /// <summary>Prompt 28 E.1: one of the player's own towers (a static) was tapped: its targeting mode can be set.</summary>
+        public event Action<EntityId> OwnTowerTapped;
+
         /// <summary>Raised when a command is refused, so the HUD can say why.</summary>
         public event Action<CommandError> Rejected;
 
@@ -168,6 +171,7 @@ namespace MachineBrigade.Game.Input
             var picked = _views.Pick(screen, _camera.Camera, _pickMargin);
             if (picked != null && Mine(picked))
             {
+                if (picked.Sim.Def.Static) OwnTowerTapped?.Invoke(picked.Id);
                 // Play-test 6: a tap on a unit already selected lets the selection go (a tap on the ground is a move order).
                 if (_selected.Contains(picked.Id))
                 {

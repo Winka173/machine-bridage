@@ -2617,3 +2617,6 @@
 .boss-part.broken .boss-part-cross { display: flex; }
 .boss-part.focused { border-color: #f2c14e; border-width: 2px; background-color: rgba(242, 193, 78, 0.25); }
 .boss-part.pressed { scale: 0.92 0.92; }
+
+/* Prompt 28 H.6: the tactic switch dims while the squads regroup for a new tactic. */
+.fc-hud__tactic--busy .fc-hud__tool-face { opacity: 0.6; }
