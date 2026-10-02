@@ -14954,3 +14954,9 @@ the lead, the tests are written, not run.
     cruise_missile -> airstrike (the cruise missile opens later), chaff_strike -> smoke_screen (both screens). Rule
     ciwsSaturate: Scylla's `ciws_fore` part and the point defence of prompt 26 (CombatSystem.PointDefence) already shoot
     rounds down. Line: Mara at 40 s.
+  - i3m02, i3m03 (interlude III): i3m02 loaned aa_57mm_vehicle, decoy_paradrop (the decoys are the mission's trick);
+    shorad_vehicle -> aa_vehicle, radar_support_vehicle -> recon_drone, interceptor_drone_vehicle -> heavy_aa,
+    mobile_repair_vehicle -> engineer_vehicle, chaff_strike -> smoke_screen. Rule morriganDecoys: Morrigan's big attack
+    already goes for aircraft and anti-air (BigAttackDefs); its preference for anti-air that stands still is pending.
+    Line: Nadia at 70 s. i3m03 loaned next_gen_tank, mobile_repair_vehicle (exactly the sheet's deck); rule eliteRank,
+    `rankBonus` 1 ("one rank above the player": one above the campaign curve the fixed deck fights at). Line: Reyn at 30 s.

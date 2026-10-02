@@ -122,6 +122,19 @@ DECKS = {
         loaned=['coastal_ashm_vehicle', 'ground_cruise_missile_vehicle'],
         replaced={'stealth_naval_strike': 'attack_jet', 'river_gunboat': 'mlrs', 'cruise_missile': 'airstrike', 'chaff_strike': 'smoke_screen'},
         rules=['ciwsSaturate']),
+    'i3m02': dict(
+        vehicles=['long_sam', 'sam_launcher', 'aa_vehicle', 'recon_drone', 'aa_57mm_vehicle', 'iron_beam', 'heavy_aa', 'engineer_vehicle'],
+        supports=['decoy_paradrop', 'smoke_screen'],
+        loaned=['aa_57mm_vehicle', 'decoy_paradrop'],
+        replaced={'shorad_vehicle': 'aa_vehicle', 'radar_support_vehicle': 'recon_drone', 'interceptor_drone_vehicle': 'heavy_aa',
+                  'mobile_repair_vehicle': 'engineer_vehicle', 'chaff_strike': 'smoke_screen'},
+        rules=['morriganDecoys']),
+    'i3m03': dict(
+        vehicles=['heavy_tank', 'next_gen_tank', 'main_battle_tank', 'bmpt', 'twin_tank', 'heavy_aa', 'mobile_repair_vehicle', 'ammo_carrier'],
+        supports=['repair_drop', 'artillery_barrage'],
+        loaned=['next_gen_tank', 'mobile_repair_vehicle'],
+        replaced={},
+        rules=['eliteRank'], rankBonus=1),
 }
 
 
