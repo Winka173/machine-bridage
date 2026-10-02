@@ -134,3 +134,8 @@ The cloud session writes the Sim only. Each line: file, what, why.
 - Effects: the Shield's emergency dome has no visual yet (only the toast); the Fortress HQ's added gun fires from the HQ
   model's mounts (a turret on the model may be wanted); card renders for the three HQ ids if a screen shows them.
 - Play: the refitted HQ numbers (Docs/balance/p32_hq_types.md) and the garrison at the base's edge.
+
+## Prompt 32 L5 (lead pass, 2026-10-02): waves by HQ level
+
+- Unity: compile, CatalogCheck (balance.json base.reference); run BaseWavesP32Tests, DefendLinesTests, DefendModeTests, QuickModeTests.
+- Play: Defend and Endless at HQ 1 and 5 (the reference sizes, Docs/DECISIONS "Prompt 32 L4/L5/L6/L8" L5).

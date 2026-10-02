@@ -1309,7 +1309,9 @@ namespace MachineBrigade.Game.Hud
             ["camp.overview"] = ("Base overview", "Tổng quan căn cứ"),
             ["camp.idleHint"] = ("Drag a tower from the tray onto a slot, or tap a tower and then a slot: only the slots it fits light up. The base is laid out once, by place (gate, outer ring, inner ring, by the HQ, the rear), for every map; set a map up on its own when it needs it.", "Kéo tháp từ khay vào ô, hoặc chạm tháp rồi chạm ô: chỉ ô vừa với tháp sáng lên. Căn cứ xếp một lần theo vị trí (cổng, vòng ngoài, vòng trong, cạnh SCH, phía sau) cho mọi bản đồ; bản đồ nào cần thì chỉnh riêng."),
             ["camp.strength"] = ("Base strength", "Sức mạnh căn cứ"),
-            ["camp.strengthNote"] = ("100 is the enemy's Normal base at HQ level 3. In Defend and Endless the enemy's waves grow with this number.", "100 là căn cứ địch mức Thường, SCH cấp 3. Ở Phòng thủ và Vô tận, đợt địch mạnh lên theo số này."),
+            // Prompt 32 L5: the waves come from the HQ level's reference base; this number is only shown.
+            ["camp.strengthNote"] = ("100 is the enemy's Normal base at HQ level 3. In Defend and Endless the enemy's waves follow your HQ level (a reference base for each level), not this number.",
+                "100 là căn cứ địch mức Thường, SCH cấp 3. Ở Phòng thủ và Vô tận, đợt địch theo cấp sở chỉ huy của bạn (một căn cứ tham chiếu cho mỗi cấp), không theo số này."),
             ["camp.cover"] = ("Base cover", "Độ phủ căn cứ"),
             ["camp.role.antilight"] = ("Light vehicles", "Chống xe nhẹ"),
             ["camp.role.antitank"] = ("Tanks", "Chống tăng"),

@@ -79,6 +79,20 @@
       "ai": { "brandt": "fortress", "kessler": "fortress", "varga": "garrison", "orlov": "shield", "aurel": "shield",
               "Easy": "garrison", "Normal": "fortress", "Hard": "shield", "VeryHard": "fortress" }
     },
+    // Prompt 32 L5 (DECISIONS "Prompt 32 L4/L5/L6/L8"): the reference base of each HQ level (rank 1, no equipment, no HQ
+    // type), every slot the level opens filled with a balanced mix of roster cards. The Defend and Endless waves are sized
+    // by the reference of the defender's HQ level (BaseStrength.ReferenceScore), never by the player's own base, which
+    // the Base screen only shows.
+    "reference": [
+      { "level": 1, "small": ["guard_tower", "mg_bunker", "aa_turret"], "medium": ["gun_turret"], "utilities": ["repair_bay"] },
+      { "level": 2, "small": ["guard_tower", "mg_bunker", "aa_turret", "at_gun_emplacement"], "medium": ["gun_turret", "atgm_tower"], "utilities": ["repair_bay"] },
+      { "level": 3, "small": ["guard_tower", "mg_bunker", "aa_turret", "at_gun_emplacement"], "medium": ["gun_turret", "heavy_flak_tower"], "large": ["heavy_turret"],
+        "utilities": ["repair_bay", "radar_station"] },
+      { "level": 4, "small": ["guard_tower", "mg_bunker", "aa_turret", "at_gun_emplacement", "minefield"], "medium": ["gun_turret", "atgm_tower", "heavy_flak_tower"],
+        "large": ["heavy_turret"], "utilities": ["repair_bay", "radar_station"] },
+      { "level": 5, "small": ["guard_tower", "mg_bunker", "aa_turret", "at_gun_emplacement", "minefield", "ew_tower"], "medium": ["gun_turret", "atgm_tower", "c_ram"],
+        "large": ["heavy_turret", "missile_battery"], "utilities": ["repair_bay", "radar_station", "ammo_depot"] }
+    ],
     "roles": { "Conquest": "Anchor", "KingOfTheHill": "Anchor", "Deathmatch": "Anchor", "Assault": "Target", "Siege": "Target",
                "Defend": "Defend", "Endless": "Defend", "Weekly": "Target", "Survival": "None", "BossRush": "None", "Campaign": "None" },
     // The enemy's base: which towers it prefers (weights by tower id, "*" for any), and its HQ level, by difficulty.

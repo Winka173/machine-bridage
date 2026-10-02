@@ -15261,3 +15261,25 @@ tables: 0.5-1.2, every 60 s, regen 0.2-0.4 %, dome 8-18 %, to go back to).
 Tests (written, not run): `HqTypeP32Tests` (the data; the Fortress def and its scaled mount; the Shield's interceptors;
 the plain HQ for Garrison; the garrison's stock, turn-out, post, supply, pay and return; the shared cooldown; the dome;
 the barrage's scale; the AI's choice; the marks; the nearest point defence takes a round).
+
+### L5: Defend / Endless waves by HQ level
+
+Wave strength = ReferenceBasePower(the defender's HQ level) x the difficulty x the wave curve x the campaign progress
+factor. Data `base.reference` (five loadouts, level 1-5, rank 1, no equipment, no HQ type, every slot the level opens
+filled with roster cards: L1 guard tower, MG bunker, AA tower, gun turret, repair bay; L2 + AT post, ATGM tower; L3 the
+gun turret and the medium AA, a heavy turret, + radar station; L4 + minefield, ATGM tower; L5 + EW tower, C-RAM, missile
+battery, ammo depot). Code: `BaseRules.Reference`, `BaseStrength.ReferencePower` / `ReferenceScore` (the 100 scale kept:
+the enemy's Normal base at HQ 3), `SiegeMode` (ScaleToBase): `_waveScale = WaveScale(ReferenceScore(level)) x
+SiegeRules.ProgressScale`, the attacker's income x its square root as before.
+
+- The player's own base strength (`BaseStrength.Score` of what stands) is still read into `SiegeMode.BaseScore` and shown
+  on the Base screen; it no longer sizes anything. "camp.strengthNote" now says the waves follow the HQ level.
+- The difficulty factor and the wave curve are the ones the session already sets (wave start, growth, compound, the
+  difficulty's income); unchanged. Endless (prompt 30) uses the same formula and keeps its per-wave growth.
+- The campaign progress factor (`ProgressScale`, default 1): no campaign mission runs SiegeMode's Defend today (missions
+  run MissionMode), so it stays 1 until one does.
+- Paper values (Power: HQ 14, large 11, medium 7, small 4, module or passive 1): reference power about 34 / 45 / 57 / 68 / 84
+  CP, scores about 60 / 79 / 100 / 119 / 147, wave scale about 0.75 (the floor) / 0.84 / 1.0 / 1.14 / 1.34.
+
+Tests (written, not run): `BaseWavesP32Tests` (a reference for every level; the power grows with the level; two bases at
+the same HQ level get the same waves; the level and the progress factor move them).

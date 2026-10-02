@@ -124,6 +124,12 @@ namespace MachineBrigade.Sim.Modes
         public bool ScaleToBase { get; set; }
 
         /// <summary>
+        /// Prompt 32 L5: wave strength = ReferenceBasePower(the defender's HQ level) x the difficulty (its wave numbers and
+        /// income, set by the session) x the wave curve x this campaign progress factor (1 outside a campaign mission).
+        /// </summary>
+        public float ProgressScale { get; set; } = 1f;
+
+        /// <summary>
         /// Endless: each wave this share bigger than the last (on top of <see cref="WaveGrowth"/>, which
         /// adds vehicles), so the pressure climbs smoothly (0: only the added vehicles).
         /// </summary>
@@ -513,8 +519,12 @@ namespace MachineBrigade.Sim.Modes
                 // Prompt 13 H.7: the waves by the base they face, and drawn against it.
                 if (_rules.ScaleToBase)
                 {
+                    // Prompt 32 L5: the player's own base strength is only shown (BaseScore); the waves are sized by the
+                    // reference base of the defender's HQ level, times the campaign's progress factor.
                     BaseScore = BaseStrength.Score(world, Defender);
-                    _waveScale = BaseStrength.WaveScale(BaseScore);
+                    ReferenceLevel = Math.Clamp(world.Bases.Of(Defender)?.Loadout.HqLevel ?? 1, 1, world.Catalog.Base.MaxLevel);
+                    ReferenceScore = BaseStrength.ReferenceScore(world.Catalog, ReferenceLevel);
+                    _waveScale = BaseStrength.WaveScale(ReferenceScore) * MathF.Max(0.1f, _rules.ProgressScale);
                     if (world.TryGetEconomy(Attacker, out var attacking)) attacking.IncomeScale *= MathF.Sqrt(_waveScale);
                 }
                 if (_rules.CounterBase) _counterRoster = CounterRoster(world);
@@ -522,8 +532,16 @@ namespace MachineBrigade.Sim.Modes
             }
         }
 
-        /// <summary>The defender's base strength the waves were sized by (100: the mid-level mark; 0 when the waves are not scaled).</summary>
+        /// <summary>The defender's own base strength (100: the mid-level mark; 0 when the waves are not scaled): shown only (prompt 32 L5).</summary>
         public float BaseScore { get; private set; }
+
+        /// <summary>Prompt 32 L5: the HQ level and reference score the waves were sized by.</summary>
+        public int ReferenceLevel { get; private set; }
+
+        public float ReferenceScore { get; private set; }
+
+        /// <summary>The waves' size factor (BaseStrength.WaveScale of the reference score, x the progress factor).</summary>
+        public float WaveScaleNow => _waveScale;
 
         private float _waveScale = 1f;
         private List<string>? _counterRoster;
