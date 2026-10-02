@@ -339,13 +339,13 @@ Ground DPS **707 -> 619** (88 %); anti-air only 145 -> 145. Made up: `p26_typhon
 
 ### ixion
 
-Ground DPS **615 -> 615** (100 %); anti-air only 0 -> 0.
+Ground DPS **615 -> 280** (46 %); anti-air only 0 -> 0. **Not made up within 20 %** (see below).
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `p26_ixion_125` | cal_125_ap | 400 x 1 / 1.03 s = 390 | 400 x 1 / 1.03 s = 390 | 0 / 0 |
-| 1 | `p26_ixion_mg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.33 s = 113 | 0 / 0 |
-| 2 | `p26_ixion_mg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.33 s = 113 | 0 / 0 |
+| 0 | `p26_ixion_125` | cal_125_ap | 400 x 1 / 1.03 s = 390 | 400 x 1 / 7.50 s = 53 | 0 / 0 |
+| 1 | `p26_ixion_mg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.25 s = 113 | 0 / 0 |
+| 2 | `p26_ixion_mg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.25 s = 113 | 0 / 0 |
 
 ### caspian
 
@@ -580,7 +580,7 @@ Ground DPS **707 -> 619** (88 %); anti-air only 0 -> 0. Made up: `p26_typhon_sec
 | daedalus | 745 | 778 | 104 % | 0 -> 0 | `p26_daedalus_sec_dae57` 2 barrels together |
 | kronos | 439 | 708 | 161 % | 0 -> 0 | - |
 | typhon | 707 | 619 | 88 % | 145 -> 145 | `p26_typhon_sec_ty57` 2 barrels together |
-| ixion | 615 | 615 | 100 % | 0 -> 0 | - |
+| ixion | 615 | 280 | 46 % **(< 80 %)** | 0 -> 0 | - |
 | caspian | 260 | 260 | 100 % | 0 -> 0 | - |
 | morrigan | 165 | 165 | 100 % | 147 -> 147 | - |
 | bastion_mk0 | 239 | 130 | 54 % **(< 80 %)** | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
