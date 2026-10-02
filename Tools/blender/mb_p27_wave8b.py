@@ -19,6 +19,7 @@ import mb_props as props
 import mb_mapkit as mk
 import mb_town as town
 import mb_themes as themes
+import mb_themes2 as themes2
 from mathutils import Vector
 from mb_siege import bag_run, coil, shells
 
@@ -445,6 +446,16 @@ def _theme(name, ao=.8, **kw):
     return run, dict(old[1], ao_strength=ao)
 
 
+def _theme2(name, ao=.8, **kw):
+    old = themes2.BUILDERS[name]
+
+    def run(a):
+        with _v2(**kw):
+            old[0](a)
+        k.clean(a)
+    return run, dict(old[1], ao_strength=ao)
+
+
 def _wrap(fn, opts, ao):
     def run(a):
         fn(a)
@@ -519,4 +530,18 @@ BUILDERS = {
     'snow_rock': _theme('snow_rock', .8, seg_add=2),
     'storage_tank': _theme('storage_tank', .8, seg_add=2),
     'watchtower': _theme('watchtower', .8, seg_add=2),
+    'bamboo_clump': _theme2('bamboo_clump', .8, seg_add=2),
+    'basalt_rock_a': _theme2('basalt_rock_a', .8, seg_add=2),
+    'basalt_rock_b': _theme2('basalt_rock_b', .8, seg_add=2),
+    'basalt_rock_c': _theme2('basalt_rock_c', .8, seg_add=2),
+    'billboard': _theme2('billboard', .8, seg_add=2),
+    'bus': _theme2('bus', .8, seg_add=2),
+    'charred_tree': _theme2('charred_tree', .8, seg_add=2),
+    'control_tower': _theme2('control_tower', .8, seg_add=2),
+    'fern_bush': _theme2('fern_bush', .8, seg_add=2),
+    'fuel_truck': _theme2('fuel_truck', .8, seg_add=2),
+    'hangar': _theme2('hangar', .8, seg_add=2),
+    'highrise_a': _theme2('highrise_a', .8, seg_add=2),
+    'highrise_b': _theme2('highrise_b', .8, box_min=.3, seg_add=2),
+    'jungle_tree_a': _theme2('jungle_tree_a', .8, seg_add=2),
 }
