@@ -2452,6 +2452,30 @@
    ],
    "reason": "merge of feature/fix-art2",
    "changes": []
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "behemoth",
+    "cerberus",
+    "daedalus",
+    "fortress_bastion",
+    "hydra_sub",
+    "moloch",
+    "monster",
+    "typhon"
+   ],
+   "reason": "merge of feature/fix-art",
+   "changes": [
+    "behemoth: triangles 21,046 -> 21,610 (+2.7%); vertices 23,289 -> 23,869 (+2.5%); fileBytes 1,217,076 -> 1,246,844 (+2.4%); structure changed",
+    "cerberus: triangles 11,848 -> 12,434 (+4.9%); vertices 11,756 -> 12,263 (+4.3%); fileBytes 635,020 -> 660,992 (+4.1%); structure changed",
+    "daedalus: triangles 14,644 -> 14,772 (+0.9%); vertices 19,226 -> 19,402 (+0.9%); fileBytes 979,488 -> 987,296 (+0.8%); structure changed",
+    "fortress_bastion: fileBytes 1,481,688 -> 1,482,000 (+0.0%); structure changed",
+    "hydra_sub: triangles 7,268 -> 7,548 (+3.9%); vertices 8,435 -> 8,763 (+3.9%); fileBytes 444,068 -> 461,148 (+3.8%); structure changed",
+    "moloch: triangles 9,556 -> 10,244 (+7.2%); vertices 9,866 -> 10,602 (+7.5%); fileBytes 532,680 -> 570,828 (+7.2%); structure changed",
+    "monster: triangles 23,066 -> 23,626 (+2.4%); vertices 27,730 -> 28,386 (+2.4%); fileBytes 1,372,648 -> 1,405,492 (+2.4%); structure changed",
+    "typhon: triangles 6,596 -> 6,876 (+4.2%); vertices 6,806 -> 7,134 (+4.8%); fileBytes 361,208 -> 377,496 (+4.5%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -9233,13 +9257,13 @@
   },
   "behemoth": {
    "file": "behemoth.glb",
-   "fileBytes": 1217076,
-   "sha1": "0e5f1db739b89fe4",
+   "fileBytes": 1246844,
+   "sha1": "69309c1130d5db8d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 84,
+   "nodes": 92,
    "meshes": 68,
    "materials": 10,
    "animations": 0,
@@ -9249,8 +9273,8 @@
    "submeshes": 68,
    "materialSlots": 68,
    "materialsUsed": 10,
-   "triangles": 21046,
-   "vertices": 23289,
+   "triangles": 21610,
+   "vertices": 23869,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -9258,7 +9282,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 426,
+   "loosePieces": 435,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -9281,9 +9305,9 @@
     2.949,
     0.755
    ],
-   "structureHash": "2d7b956115219edc",
+   "structureHash": "90e64eb12517fb6d",
    "color0": {
-    "mean": 0.6553,
+    "mean": 0.6577,
     "min": 0.1694,
     "max": 1.0,
     "p05": 0.2579,
@@ -9370,6 +9394,14 @@
     "Mount_mg",
     "Mount_mg.001",
     "Mount_rocket",
+    "Muzzle_b1_gun",
+    "Muzzle_b1_gun_001",
+    "Muzzle_b1_gun_002",
+    "Muzzle_b1_main",
+    "Muzzle_b2_gun",
+    "Muzzle_b2_gun_001",
+    "Muzzle_b2_gun_002",
+    "Muzzle_b2_main",
     "Muzzle_brake",
     "Muzzle_brake_2",
     "Muzzle_gun",
@@ -12197,13 +12229,13 @@
   },
   "cerberus": {
    "file": "cerberus.glb",
-   "fileBytes": 635020,
-   "sha1": "ad8e816bcd1adc77",
+   "fileBytes": 660992,
+   "sha1": "57ec7f123db7fbed",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 90,
+   "nodes": 92,
    "meshes": 71,
    "materials": 7,
    "animations": 0,
@@ -12213,8 +12245,8 @@
    "submeshes": 71,
    "materialSlots": 71,
    "materialsUsed": 7,
-   "triangles": 11848,
-   "vertices": 11756,
+   "triangles": 12434,
+   "vertices": 12263,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -12222,7 +12254,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 177,
+   "loosePieces": 179,
    "openEdges": 384,
    "nonManifoldEdges": 2,
    "boundsMin": [
@@ -12245,12 +12277,12 @@
     2.724,
     -0.03
    ],
-   "structureHash": "a4357abbee45ae5c",
+   "structureHash": "c46b8947683a3434",
    "color0": {
-    "mean": 0.7414,
+    "mean": 0.7412,
     "min": 0.3228,
     "max": 1.0,
-    "p05": 0.4337,
+    "p05": 0.4175,
     "p95": 0.9898,
     "outOfRange": 0
    },
@@ -12364,6 +12396,8 @@
     "Mount_mg",
     "Mount_mg.001",
     "Mount_rocket",
+    "Muzzle_b1_main",
+    "Muzzle_b2_main",
     "Muzzle_brake",
     "Muzzle_gun",
     "Muzzle_gun.001",
@@ -14632,13 +14666,13 @@
   },
   "daedalus": {
    "file": "daedalus.glb",
-   "fileBytes": 979488,
-   "sha1": "fc28781fc24f29ea",
+   "fileBytes": 987296,
+   "sha1": "a1bae0455f9815a3",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 64,
+   "nodes": 68,
    "meshes": 52,
    "materials": 12,
    "animations": 0,
@@ -14648,8 +14682,8 @@
    "submeshes": 52,
    "materialSlots": 52,
    "materialsUsed": 12,
-   "triangles": 14644,
-   "vertices": 19226,
+   "triangles": 14772,
+   "vertices": 19402,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -14657,7 +14691,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 481,
+   "loosePieces": 485,
    "openEdges": 0,
    "nonManifoldEdges": 4,
    "boundsMin": [
@@ -14680,12 +14714,12 @@
     2.703,
     -0.462
    ],
-   "structureHash": "5a147d8f45ee46fb",
+   "structureHash": "12d403540a6c55f5",
    "color0": {
-    "mean": 0.7576,
+    "mean": 0.7574,
     "min": 0.1981,
     "max": 1.0,
-    "p05": 0.3659,
+    "p05": 0.3705,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -14741,6 +14775,10 @@
     "Keel",
     "Mount_gun",
     "Mount_gun.001",
+    "Muzzle_b1_gun",
+    "Muzzle_b1_gun_001",
+    "Muzzle_b2_gun",
+    "Muzzle_b2_gun_001",
     "Muzzle_gun",
     "Muzzle_gun.001",
     "Pd_base",
@@ -25109,13 +25147,13 @@
   },
   "fortress_bastion": {
    "file": "fortress_bastion.glb",
-   "fileBytes": 1481688,
-   "sha1": "5488da5636c2b267",
+   "fileBytes": 1482000,
+   "sha1": "1b304521439f6cb2",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 109,
+   "nodes": 113,
    "meshes": 90,
    "materials": 13,
    "animations": 0,
@@ -25157,7 +25195,7 @@
     4.433,
     3.178
    ],
-   "structureHash": "43460653ca7969c5",
+   "structureHash": "21c7e52ad4f6f357",
    "color0": {
     "mean": 0.658,
     "min": 0.1701,
@@ -25293,6 +25331,10 @@
     "Mount_mg",
     "Mount_mg.001",
     "Mount_missile",
+    "Muzzle_b1_gun",
+    "Muzzle_b1_gun_001",
+    "Muzzle_b2_gun",
+    "Muzzle_b2_gun_001",
     "Muzzle_gun",
     "Muzzle_gun.001",
     "Muzzle_gun.002",
@@ -31992,11 +32034,11 @@
   },
   "hydra_sub": {
    "file": "hydra_sub.glb",
-   "fileBytes": 444068,
-   "sha1": "ebdf45bbe57939df",
+   "fileBytes": 461148,
+   "sha1": "de6445f89c758552",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 67,
+   "nodes": 71,
    "meshes": 54,
    "materials": 8,
    "animations": 0,
@@ -32006,8 +32048,8 @@
    "submeshes": 54,
    "materialSlots": 54,
    "materialsUsed": 8,
-   "triangles": 7268,
-   "vertices": 8435,
+   "triangles": 7548,
+   "vertices": 8763,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -32015,7 +32057,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 149,
+   "loosePieces": 155,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -32038,13 +32080,13 @@
     1.443,
     -0.0
    ],
-   "structureHash": "2f2ce8d99b24fdb5",
+   "structureHash": "945ab9cb3e1de277",
    "color0": {
-    "mean": 0.6241,
+    "mean": 0.623,
     "min": 0.1944,
     "max": 0.9987,
     "p05": 0.2156,
-    "p95": 0.8702,
+    "p95": 0.8626,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -32112,6 +32154,10 @@
     "Hull_low",
     "Mount_gun",
     "Mount_missile",
+    "Muzzle_b1_gun",
+    "Muzzle_b1_missile",
+    "Muzzle_b2_gun",
+    "Muzzle_b2_missile",
     "Muzzle_gun",
     "Muzzle_missile",
     "Part_doors_l",
@@ -39324,13 +39370,13 @@
   },
   "moloch": {
    "file": "moloch.glb",
-   "fileBytes": 532680,
-   "sha1": "2ca1a02d5db62b19",
+   "fileBytes": 570828,
+   "sha1": "95a71aaa89145e6e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 66,
+   "nodes": 74,
    "meshes": 52,
    "materials": 9,
    "animations": 0,
@@ -39340,8 +39386,8 @@
    "submeshes": 52,
    "materialSlots": 52,
    "materialsUsed": 9,
-   "triangles": 9556,
-   "vertices": 9866,
+   "triangles": 10244,
+   "vertices": 10602,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -39349,7 +39395,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 165,
+   "loosePieces": 177,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -39372,13 +39418,13 @@
     6.02,
     1.572
    ],
-   "structureHash": "b62b6656026e2625",
+   "structureHash": "e993986b1c20ee01",
    "color0": {
-    "mean": 0.6903,
+    "mean": 0.6935,
     "min": 0.1735,
     "max": 1.0,
-    "p05": 0.2786,
-    "p95": 0.9722,
+    "p05": 0.3094,
+    "p95": 0.9634,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -39427,6 +39473,14 @@
     "Mount_gun.001",
     "Mount_gun.002",
     "Mount_mg",
+    "Muzzle_b1_gun",
+    "Muzzle_b1_gun_001",
+    "Muzzle_b1_gun_002",
+    "Muzzle_b1_main",
+    "Muzzle_b2_gun",
+    "Muzzle_b2_gun_001",
+    "Muzzle_b2_gun_002",
+    "Muzzle_b2_main",
     "Muzzle_gun",
     "Muzzle_gun.001",
     "Muzzle_gun.002",
@@ -39487,13 +39541,13 @@
   },
   "monster": {
    "file": "monster.glb",
-   "fileBytes": 1372648,
-   "sha1": "e4a220003e0743b8",
+   "fileBytes": 1405492,
+   "sha1": "c43fb3f964387241",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 109,
+   "nodes": 113,
    "meshes": 83,
    "materials": 7,
    "animations": 0,
@@ -39503,8 +39557,8 @@
    "submeshes": 83,
    "materialSlots": 83,
    "materialsUsed": 7,
-   "triangles": 23066,
-   "vertices": 27730,
+   "triangles": 23626,
+   "vertices": 28386,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -39512,7 +39566,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 661,
+   "loosePieces": 673,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -39535,13 +39589,13 @@
     6.467,
     0.125
    ],
-   "structureHash": "04e038c78aa1e3f1",
+   "structureHash": "37afee5c210b745b",
    "color0": {
-    "mean": 0.6319,
+    "mean": 0.6324,
     "min": 0.0801,
     "max": 1.0,
     "p05": 0.1944,
-    "p95": 0.8951,
+    "p95": 0.8873,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -39676,6 +39730,10 @@
     "Mount_mg",
     "Mount_mg.001",
     "Mount_missile",
+    "Muzzle_b1_gun",
+    "Muzzle_b1_gun_001",
+    "Muzzle_b2_gun",
+    "Muzzle_b2_gun_001",
     "Muzzle_brake",
     "Muzzle_gun",
     "Muzzle_gun.001",
@@ -54597,13 +54655,13 @@
   },
   "typhon": {
    "file": "typhon.glb",
-   "fileBytes": 361208,
-   "sha1": "60050257c610cfbc",
+   "fileBytes": 377496,
+   "sha1": "5e1edbd67b43a14d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 40,
+   "nodes": 42,
    "meshes": 31,
    "materials": 9,
    "animations": 0,
@@ -54613,8 +54671,8 @@
    "submeshes": 31,
    "materialSlots": 31,
    "materialsUsed": 9,
-   "triangles": 6596,
-   "vertices": 6806,
+   "triangles": 6876,
+   "vertices": 7134,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -54622,7 +54680,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 66,
+   "loosePieces": 72,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -54645,7 +54703,7 @@
     3.774,
     0.0
    ],
-   "structureHash": "9fc349a7a0ae10f2",
+   "structureHash": "03db0c010cd8b03b",
    "color0": {
     "mean": 0.663,
     "min": 0.1966,
@@ -54688,6 +54746,8 @@
     "Missile_hump",
     "Mount_gun",
     "Mount_missile",
+    "Muzzle_b1_gun",
+    "Muzzle_b2_gun",
     "Muzzle_gun",
     "Muzzle_missile",
     "Part_doors_l",
