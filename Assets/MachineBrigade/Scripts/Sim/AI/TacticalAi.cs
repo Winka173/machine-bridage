@@ -518,7 +518,7 @@ namespace MachineBrigade.Sim.AI
         private readonly HashSet<EntityId> _refitting = new();
 
         /// <summary>Health share under which an aircraft goes back to the airfield, and the share it waits for.</summary>
-        private const float RefitBelow = 0.35f, RefitUntil = 0.9f;
+        private const float RefitUntil = 0.9f;
 
         /// <summary>
         /// An aircraft's trip to be mended: below 35 % health it goes to the landing pad (see
@@ -540,9 +540,9 @@ namespace MachineBrigade.Sim.AI
                 _refitting.Remove(v.Id);
                 return false;
             }
-            // Prompt 28 D.3: with the layered AI aircraft go back for their ammunition only, never for their health.
-            var hurt = !Layered && v.Hp < v.MaxHp * RefitBelow;
-            if (!_refitting.Contains(v.Id) && hurt && world.Supply.CanBreakOff(v)) _refitting.Add(v.Id);
+            // Prompt 29 B3-AI (prompt 28 D.3): no aircraft flies home because it is hurt. It goes back for its ammunition
+            // (the supply system's holding pattern), is mended standing on the airfield or the HQ, and engineers and repair
+            // stations mend whatever is in their reach; the old trip home below 35 % health is gone.
             if (!_refitting.Contains(v.Id)) return false;
             if (v.Hp >= v.MaxHp * RefitUntil)
             {

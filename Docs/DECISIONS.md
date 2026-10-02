@@ -13978,3 +13978,11 @@ light_tank 9 m/s, vbied 13, flame_tank 6.5, engineer_vehicle 7: every known_good
   weapon (the override is lost for a geared mount): listed for the local check.
 - balance.json keys added: `flareCharges`, `flareRecharge`, `apsCapability`, `interceptionMode`, `missiles`, `aps` on
   titan_tank; changed: next_gen_tank `aps`, stealth_bomber `skills`.
+
+## Prompt 29 L6 (cloud, 2026-10-02): no low-health aircraft retreat (B3-AI)
+
+C12 found the condition in `TacticalAi.Refit` (35 % -> fly to the airfield or HQ, stay to 90 %), already off for the
+layered AI of prompt 28. Removed for every TacticalAi (wave modes, Sandbox Combat AI, allies): no aircraft starts a
+trip home for its health. Untouched: going back for ammunition (SupplySystem), mending while on the airfield or the HQ,
+the holding pattern, engineers and repair stations. Tests `AircraftReturnTests` (low health fights on; out of
+ammunition still leaves), not run. B3-AI is a code bundle (`aircraft.returnBecauseLowHP` false), marked done in the tool.

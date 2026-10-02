@@ -595,3 +595,9 @@ Note: the B1 group runs re-checked B0 bundles applied in pass 3 (thermobaric_lau
 | B2-APS-titan_tank | OK | 3 rows |
 | B2-APS-main_battle_tank | OK | 1 rows |
 | B2-APS-trophy | OK | code bundle (1 code rows) |
+
+## Run apply: B3-AI (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| B3-AI | OK | code bundle (1 code rows) |
