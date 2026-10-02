@@ -47,13 +47,13 @@ namespace MachineBrigade.Game.Rendering
     public static class PreviewSettings
     {
         /// <summary>Ground units that swim or hover: shown on the water's edge (their names say so; the Sim drives them on land).</summary>
-        public static readonly IReadOnlyCollection<string> Amphibious = new HashSet<string>
+        public static readonly HashSet<string> Amphibious = new HashSet<string>
         {
             "amphib_light_vehicle", "light_tank", "hover_gunboat", "landing_hovercraft",
         };
 
         /// <summary>The rail bosses by id (their frame and route say so too; the list keeps a variant without them on its track).</summary>
-        public static readonly IReadOnlyCollection<string> RailUnits = new HashSet<string> { "armored_train", "nuke_train", "rail_supergun" };
+        public static readonly HashSet<string> RailUnits = new HashSet<string> { "armored_train", "nuke_train", "rail_supergun" };
 
         public static PreviewSetting Of(VehicleDef def)
         {
