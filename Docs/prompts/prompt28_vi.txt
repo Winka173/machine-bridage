@@ -240,3 +240,4 @@ O. KIỂM TRA
 
 YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
 - (02/10) xem @Machine_Brigade_AI_Research.xlsx và add cả file đó vào và cả prompt này vào cho tương lai làm, commit lên luôn
+- (02/10, cloud) Repo này là Machine Brigade. Chuyển sang nhánh feature/visual-overhaul (git fetch origin feature/visual-overhaul && git checkout feature/visual-overhaul), rồi đọc Docs/CLOUD_HANDOFF.md và làm đúng theo đó. Tạo nhánh cloud/p28-sim từ nhánh này, chỉ push lên nhánh đó. Ưu tiên số 1 là tiết kiệm token. Trả lời tôi bằng tiếng Việt, tối đa 1 agent, không chạy test, sim hay đo đạc khi tôi chưa cho phép (chỉ compile check bằng dotnet). Việc tiếp theo: bắt đầu prompt 28 (Docs/prompts/prompt28_vi.txt), phần Sim, từ lượt 1 (phần A, L, N và script đọc Docs/ai/Machine_Brigade_AI_Research.xlsx). Commit và push sau mỗi bước đã kiểm tra; khi dừng, ghi mục "Cloud state" vào cuối Docs/CLOUD_HANDOFF.md.
