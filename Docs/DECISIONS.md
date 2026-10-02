@@ -13117,3 +13117,76 @@ Zero-area triangles 0 on all seven files; every one far inside its boss class bu
 (-4 %; its card, angles and detail pass); Garuda's 2,840 triangles are a plain lofted wing by the jet rule (no skin
 detail); Hydra's preview luma is from before its launch-tube lids were seated (its card was re-rendered after).
 Weapon lists are still the parents' (ASSET_DEBT "Weapon lists"), so Kraken's "guns" fire from its deck cells.
+
+
+## 27 wave 1c pass A (lead pass, 2026-10-02)
+
+The first sixteen rows of the PROGRESS "Wave 1c" table (prompt 25 batch B stand-ins) built as their own models, in
+`Tools/blender/mb_p27_wave1c.py` (merged last in `all_builders()`), plus `airborne_light_tank_chute`, the paradrop
+proxy. Checks run: Blender rebuilds, `glb_check.py` (compare, accept with reasons), CatalogCheck in the runner (OK: 241
+vehicles, 371 weapons), card renders, one ModelPreview batch (16 models; one combined contact sheet looked at). No
+tests, sims or measures.
+
+- **Own ids, no `_hd`.** Every def now has `"model": "<its own id>"` and no `"tint"`; no number, `modelSize` or
+  behaviour changed. The models are built to the def's `modelSize` (length along Y, gun or nose counted), every side
+  within 4 % of it (the art bible's gate), see the table. No `_hd`
+  twins (the 16 are not in `HIGH_DETAIL`); the card renders from the normal file.
+- **Nodes.** Each model keeps its stand-in's runtime nodes (`Turret`, `Main_cannon`, `Muzzle_brake`, `Muzzle_main`,
+  `Muzzle_coax`, `Radar`, `Rotor`, `Tail_rotor`, `Muzzle_gun` / `_rocket` (+ `.001`), `Muzzle_missile`, `Bombs`,
+  `Point_exhaust`, `Point_fire`), checked against the defs' weapon slots. Additions: `Propeller` on the prop plane (it
+  spins by the existing pattern, view only), `Mount_mg` > `Muzzle_mg` on the river boat (its `agl_40` secondary is slot
+  `mg`) and the gunboat (a CIWS), `Mount_mg` on the next-gen tank and the howitzer, `Radar` on the 2S38 and the hijack
+  truck, `Main_cannon_cradle` on the howitzer (as the Artillery stand-in had), `Muzzle_main` + `Muzzle_missile` + `.001`
+  on the MANPADS pit's `Turret` (the stand-in `shield_tower` had no weapon node at all), `Wreck_turret` on the wreck car.
+  Dropped: the engineer's `Blade` (an M58 has no dozer), the IFV's `Muzzle_missile` (the def has no ATGM).
+- **Wreck car.** `Wreck_turret` is the node only (a sandbag ring round the roof gun post in the bed); the rule that the
+  wreck resolves into a gun pit stays in ASSET_DEBT (prompt 28).
+- **Airborne tank chute.** `airborne_light_tank_chute` (card false, modelSize 9 x 9 x 11, a flying proxy that the
+  validator classes as a jet) is the Booker body under a 12-gore Team canopy with a Medical stripe, a vent ring and 12
+  rigging lines: 9.00 x 9.00 x 11.05 m. Its tank is drawn leaner (5 wheels, no skirt panels, no smoke launchers) to stay
+  at 3,514 tris, under the jet budget; the first version (5,994) was over it. `AirDrops` builds its own canopy for a
+  bought vehicle's descent (a different path from the proxy unit), unchanged.
+- **Jets and the heli.** Checkpoint 1: prop plane and stealth strike are plain lofts and `Planform` wings (no insets,
+  no panel greebles) with the library `canopy`; the prop plane's rocket pods are Team lathes (the library pod is
+  `Armor`, dark on a card). The A-12 is a flat-iron wing (one `sharp_loft` tip to tip, a straight 35 degree leading
+  edge, an almost straight trailing edge, fold seams and hinge fairings on the clipped tips; no sawtooth, so it differs
+  from Garuda and the B-2 stand-in). The heli is `_octagon` lofts with the library canopy, engine nacelles,
+  `rotor_head` and `tail_rotor`.
+- **Brightness.** COLOR_0 mean of every model 0.79 - 0.81 (stand-ins 0.52 - 0.75), by `ao_strength` 0.15, grime 0.05 and
+  by putting the big visible lower hull tubs, fenders, skirts, rails and turret plates on `Team` instead of `Armor`.
+  Card luma (mean Rec. 709 over the model's pixels, old card -> new): 14 of 16 equal or above the old (airborne tank
+  -0.5 %); **two are below**: prop_attack_plane 0.2743 -> 0.2501 (-8.8 %: the old jet was a fat twin-engine airframe
+  with a large bright wing, the Super Tucano is a thin single with a dark canopy and propeller) and
+  coastal_ashm_vehicle 0.368 -> 0.3464 (-5.9 %: the stand-in's pale missile bundle on tracks against a wheeled truck
+  with six dark tyres). Three more passes (AO to 0, Team flaps and mudguards, a larger wing, pale canisters) moved them
+  only 2 %; left as is for the lead to decide. The preview sheets (card lighting, 8 angles mean / detail view) are
+  bright for all (0.36 - 0.52 / 0.31 - 0.55) and the LOD1 cells read each role.
+- **Doubts.** No def has parts, so no hit position moved. The tracked units are 1.9 - 2.3x their stand-in's triangles
+  (the V2 `track_unit` costs 2,000 - 2,500 tris a pair) but inside the ground budget (7,800 soft): howitzer 6,520,
+  next_gen_tank 6,512 (stand-in 7,196, down), 2S38 6,028. The river boat and gunboat are boats on the ground (the
+  stand-ins were a wheeled car and a gun); they sit on a flat keel at z 0.08. Pass B (the other 17 rows) is not in
+  this series.
+
+| model | tris stand-in -> new | size (m) | COLOR_0 | card luma | validator |
+|---|---|---|---|---|---|
+| aa_57mm_vehicle | 2,884 (aa_gun_vehicle) -> 6,028 | 5.74x2.59x2.67 | 0.5821 -> 0.7949 | 0.3164 -> 0.3256 | ground, no error |
+| mine_rocket_truck | 2,224 (mlrs) -> 5,012 | 6.16x2.05x2.60 | 0.5765 -> 0.8077 | 0.2776 -> 0.3064 | ground, no error |
+| prop_attack_plane | 2,376 (attack_jet) -> 2,634 | 6.05x6.04x1.77 | 0.7072 -> 0.801 | 0.2743 -> 0.2501 | jet, no error |
+| light_attack_heli | 1,966 (scout_heli) -> 3,058 | 3.85x3.21x1.53 | 0.6937 -> 0.8069 | 0.195 -> 0.2247 | helicopter, no error |
+| next_gen_tank | 7,196 (main_battle_tank) -> 6,512 | 7.79x3.10x2.29 | 0.6229 -> 0.7927 | 0.2866 -> 0.2936 | ground, no error |
+| demolition_line_vehicle | 2,304 (engineer_vehicle) -> 6,202 | 6.55x2.94x2.00 | 0.5276 -> 0.7978 | 0.2843 -> 0.3184 | ground, no error |
+| combat_wreck_car | 2,272 (armored_car) -> 2,794 | 4.81x2.11x1.50 | 0.6101 -> 0.8034 | 0.2594 -> 0.2826 | ground, no error |
+| drone_hijack_vehicle | 1,976 (ew_jammer) -> 3,446 | 9.13x2.78x3.80 | 0.607 -> 0.8104 | 0.3139 -> 0.3163 | ground, no error |
+| manpads_tower | 5,344 (shield_tower) -> 1,750 | 3.24x3.24x2.43 | 0.7454 -> 0.7876 | 0.3541 -> 0.4147 | tower, no error |
+| river_patrol_boat | 2,272 (armored_car) -> 1,624 | 4.64x2.10x1.54 | 0.6101 -> 0.8068 | 0.2573 -> 0.2657 | ground, no error |
+| river_gunboat | 3,444 (artillery) -> 2,302 | 7.91x3.12x2.79 | 0.5582 -> 0.8087 | 0.2765 -> 0.2907 | ground, no error |
+| coastal_ashm_vehicle | 3,248 (sam_launcher) -> 3,508 | 7.29x2.68x2.95 | 0.5798 -> 0.8145 | 0.368 -> 0.3464 | ground, no error |
+| auto_loader_howitzer | 3,444 (artillery) -> 6,520 | 8.00x3.16x2.93 | 0.5582 -> 0.7992 | 0.2785 -> 0.3135 | ground, no error |
+| amphib_light_vehicle | 3,192 (ifv) -> 4,606 | 5.58x3.06x2.47 | 0.5766 -> 0.7962 | 0.3342 -> 0.335 | ground, no error |
+| airborne_light_tank | 2,728 (light_tank) -> 5,550 | 6.45x2.62x1.85 | 0.5513 -> 0.7975 | 0.2987 -> 0.2971 | ground, no error |
+| airborne_light_tank_chute | 2,728 (light_tank) -> 3,514 | 9.00x9.00x11.05 | 0.5513 -> 0.7949 | - -> - | jet, no error |
+| stealth_naval_strike | 2,096 (stealth_bomber) -> 2,124 | 8.33x21.00x1.50 | 0.7017 -> 0.7907 | 0.1794 -> 0.2768 | jet, no error |
+- Lead (2026-10-02) on the two card-luma misses: accepted. The -1 % card gate guards a model against darkening when it
+  is rebuilt; here the "old" card is a different model (the stand-in), the new files' COLOR_0 (0.79-0.81) and preview
+  views are brighter than the stand-ins', and the drop comes from the new silhouettes (a slim prop plane, a canister
+  launcher) filling less of the card. Waves keep the gate for rebuilds of the same model.

@@ -497,106 +497,106 @@
             "id": "aa_57mm_vehicle",
             "kind": "vehicle",
             "model": "aa_57mm_vehicle",
-            "source": "Models/aa_gun_vehicle",
-            "hash": "v2:9404c2bdeee7ccb79036204e88816cf852a35a8a"
+            "source": "Models/aa_57mm_vehicle",
+            "hash": "v2:bee71d1a6cc830be5788b6e1f0413408c5def34f"
         },
         {
             "id": "mine_rocket_truck",
             "kind": "vehicle",
             "model": "mine_rocket_truck",
-            "source": "Models/mlrs",
-            "hash": "v2:63990ea1ba9f84326eb0c1c0c3f6adba214b833a"
+            "source": "Models/mine_rocket_truck",
+            "hash": "v2:199a011e5257abd635edea0f2422c1f2f036309f"
         },
         {
             "id": "prop_attack_plane",
             "kind": "vehicle",
             "model": "prop_attack_plane",
-            "source": "Models/attack_jet_hd",
-            "hash": "v2:82c8b09e7fc8cffa62c994d68933b00140d78c9b"
+            "source": "Models/prop_attack_plane",
+            "hash": "v2:68da0375ae4fa4ae0e6f5ba30cfd92fb9e1bff4a"
         },
         {
             "id": "light_attack_heli",
             "kind": "vehicle",
             "model": "light_attack_heli",
-            "source": "Models/scout_heli",
-            "hash": "v2:84b02b07a8b12f7310b60422789b4ccd0c2e82f7"
+            "source": "Models/light_attack_heli",
+            "hash": "v2:a31f30b0e1905c6a09351029aaac7bc297ba8b33"
         },
         {
             "id": "next_gen_tank",
             "kind": "vehicle",
             "model": "next_gen_tank",
-            "source": "Models/main_battle_tank_hd",
-            "hash": "v2:3cf333416a30a49781938a48cb7627042d0aec96"
+            "source": "Models/next_gen_tank",
+            "hash": "v2:1bd64a8cb727b7d81215441548b4fc1a03b1603c"
         },
         {
             "id": "demolition_line_vehicle",
             "kind": "vehicle",
             "model": "demolition_line_vehicle",
-            "source": "Models/engineer_vehicle",
-            "hash": "v2:fea7325173df6f42013b55ff6ce8c083cef89b09"
+            "source": "Models/demolition_line_vehicle",
+            "hash": "v2:c97aacc1faed88ef827085e6039e21a9ec589785"
         },
         {
             "id": "combat_wreck_car",
             "kind": "vehicle",
             "model": "combat_wreck_car",
-            "source": "Models/armored_car",
-            "hash": "v2:92880b99aaac70ee6c9e2b4765a896bc0278080c"
+            "source": "Models/combat_wreck_car",
+            "hash": "v2:d4f485b74cae276d422a61add7a778349efae703"
         },
         {
             "id": "drone_hijack_vehicle",
             "kind": "vehicle",
             "model": "drone_hijack_vehicle",
-            "source": "Models/ew_jammer",
-            "hash": "v2:47d4cd1bf82b7c10814e2b07fff443791923de8b"
+            "source": "Models/drone_hijack_vehicle",
+            "hash": "v2:3b3cb1cf8cbe69cb87d6fe36d3ec6d5520c33a82"
         },
         {
             "id": "river_patrol_boat",
             "kind": "vehicle",
             "model": "river_patrol_boat",
-            "source": "Models/armored_car",
-            "hash": "v2:92880b99aaac70ee6c9e2b4765a896bc0278080c"
+            "source": "Models/river_patrol_boat",
+            "hash": "v2:66c578f060ada9e94aaaa0be4aa81f1fb25ea3ef"
         },
         {
             "id": "river_gunboat",
             "kind": "vehicle",
             "model": "river_gunboat",
-            "source": "Models/artillery_hd",
-            "hash": "v2:f195f77a977c3e1df9f9ef5ef0aeae88e5103d3c"
+            "source": "Models/river_gunboat",
+            "hash": "v2:901c402cd11b98dc82730d52e31168d7da570e30"
         },
         {
             "id": "coastal_ashm_vehicle",
             "kind": "vehicle",
             "model": "coastal_ashm_vehicle",
-            "source": "Models/sam_launcher",
-            "hash": "v2:c23ff1c444f1cac7f4d001cb0e5e0c61d3bd5429"
+            "source": "Models/coastal_ashm_vehicle",
+            "hash": "v2:42ee256cbe6a90069da43bf73201ab7900257de3"
         },
         {
             "id": "auto_loader_howitzer",
             "kind": "vehicle",
             "model": "auto_loader_howitzer",
-            "source": "Models/artillery_hd",
-            "hash": "v2:f195f77a977c3e1df9f9ef5ef0aeae88e5103d3c"
+            "source": "Models/auto_loader_howitzer",
+            "hash": "v2:25f3b009b5810341b546367c192e9ee5abe1bfe7"
         },
         {
             "id": "amphib_light_vehicle",
             "kind": "vehicle",
             "model": "amphib_light_vehicle",
-            "source": "Models/ifv",
-            "hash": "v2:8b98a831d35c197cb374241719d0861c834b56bd"
+            "source": "Models/amphib_light_vehicle",
+            "hash": "v2:5b613e0c6c4fa6843ea189577ea10143d1c50ec8"
         },
         {
             "id": "airborne_light_tank",
             "kind": "vehicle",
             "model": "airborne_light_tank",
-            "source": "Models/light_tank_hd",
-            "hash": "v2:edf50063023c5355de0bd0f65a02abd9414aa6de"
+            "source": "Models/airborne_light_tank",
+            "hash": "v2:1a7e46957def37e7b3fb34242a576a3bcd2145c2"
         },
         {
             "id": "stealth_naval_strike",
             "kind": "vehicle",
             "model": "stealth_naval_strike",
-            "source": "Models/stealth_bomber",
-            "hash": "v2:d47e2278b2b8d18b1cf1350f462dbdb326d967f5"
+            "source": "Models/stealth_naval_strike",
+            "hash": "v2:27b306bed5ac9c5ab1dd35c752e338d986bff95e"
         },
         {
             "id": "twin_rotor_gunship",
@@ -1323,8 +1323,8 @@
             "id": "manpads_tower",
             "kind": "tower",
             "model": "manpads_tower",
-            "source": "Models/shield_tower",
-            "hash": "v2:d71a0d1addbe8e271e0b07417a25a1e1021001b7"
+            "source": "Models/manpads_tower",
+            "hash": "v2:152edec9d204fa65a9c6a9803960f00a858cd4ec"
         },
         {
             "id": "mega_gunship",
