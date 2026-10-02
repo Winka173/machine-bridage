@@ -180,3 +180,82 @@ Nhập ngược để cân bằng bằng Excel, tái dùng cơ chế manifest (g
 - Lượt 9 (tùy chọn): nhập ngược.
 Báo cáo cuối docs/fixes/report_export.md: số file, số sheet, số dòng, số cột mỗi file; độ phủ khóa (số lá, số lá đã ánh xạ, Khong_xuat); nguồn không đọc được; cột suy ra và kết quả khớp mã; số hằng số trong mã; chỗ tự quyết.
 ----- end -----
+
+
+(03/10, chủ dự án — bổ sung, nguyên văn)
+
+----- addendum -----
+BỔ SUNG cho prompt xuất dữ liệu (thêm mục 12 và lượt 10): LỚP THAM CHIẾU NGOÀI ĐỜI VÀ GAME
+
+## 12. MỤC TIÊU
+Mọi thực thể và cơ chế phải truy ngược được về: (a) hệ thống / mẫu ngoài đời mà nó dựa vào, (b) game / phim mà ta lấy ý, (c) điểm giống, điểm khác có chủ đích, (d) thông số thật để so với số trong game. Khi cân bằng, người xem phân biệt được "lệch do lỗi" với "lệch có chủ đích".
+
+## 12.1 NGUỒN DỮ LIỆU THAM CHIẾU
+- Quét và xuất đúng nội dung của Tools/docs/unit_refs.json và mọi ghi chú tham chiếu khác trong repo (ghi chú script Blender, DECISIONS, cột "Ngoài đời" / "Tham khảo ngoài đời" / "Tham khảo game" / "Cảm giác khác" trong các file Excel cân bằng cũ nếu còn trong repo).
+- Nếu agent KHÔNG truy cập được web: chỉ dùng dữ liệu có sẵn trong repo; phần còn lại ghi NEED_SOURCE. KHÔNG tự điền thông số từ trí nhớ. Thiếu nguồn thì để NEED_SOURCE để chủ dự án bổ sung.
+- Nếu truy cập được web: mỗi con số ngoài đời phải kèm một nguồn cụ thể (mục 12.3); không có nguồn thì NEED_SOURCE.
+
+## 12.2 SHEET THAM CHIẾU THEO LĨNH VỰC (mỗi file lĩnh vực có sheet <tên>_tham_chieu; dòng = thực thể)
+Cột chung (mọi sheet tham chiếu):
+- entity_id (khóa ngoại), ten_hien_thi;
+- loai_tham_chieu: doi_that (thiết bị / hệ thống thật) | game | phim_truyen | lich_su | hoc_thuyet_quan_su | gia_tuong (không có mẫu thật);
+- ten_mau_that (nhiều giá trị ngăn ";"), quoc_gia, nam_dua_vao_su_dung;
+- ten_game, co_che_game (cơ chế lấy ý, ngắn), ten_phim_truyen;
+- diem_giong (ngắn), diem_khac_co_chu_dich (ngắn), ly_do_khac (gameplay / hiệu năng / bản quyền / giả tưởng), cam_giac_khac_khi_choi (so với bản gốc);
+- do_tin_cay: da_kiem_chung (có nguồn đối chiếu) | uoc_dinh | ban_dau_doan | NEED_SOURCE (giữ nhãn "ước đoán" của unit_refs.json là uoc_dinh);
+- nguon_id (khóa ngoại sang Nguon_tham_chieu; nhiều giá trị ngăn ";");
+- ghi_chu_ban_quyen: tham chiếu chỉ ở mức ý tưởng; KHÔNG dùng tên, logo, văn bản, ảnh hay mô hình thuộc bản quyền; tên và phù hiệu thật không dùng.
+
+Cột thêm theo lĩnh vực:
+- 01 Vũ khí: ngoai_doi_co_mm, ngoai_doi_khoi_luong_dan_kg, ngoai_doi_so_toc_dau_nong_m_s, ngoai_doi_tam_hieu_qua_m, ngoai_doi_tam_toi_da_m, ngoai_doi_phat_phut_toi_da, ngoai_doi_phat_phut_duy_tri, ngoai_doi_nap (tay / tự động), ngoai_doi_khoi_luong_thuoc_no_kg; cột so sánh ở 12.4.
+- 02 Phương tiện: ngoai_doi_khoi_luong_t, ngoai_doi_dai_m, ngoai_doi_rong_m, ngoai_doi_cao_m, ngoai_doi_toc_do_toi_da_km_h, ngoai_doi_giap (mô tả), ngoai_doi_to_lai (số người), ngoai_doi_dong_co_cong_suat_kw, ngoai_doi_tam_hoat_dong_km, ngoai_doi_nam; ghi tham chiếu kích thước (ví dụ "0,8 × M977 HEMTT").
+- 03 Boss: nguồn cảm hứng (Object 279, Iowa, BelAZ-75710, Barguzin, EMRG, TOS-1A…) kèm phần nào của boss lấy từ mẫu nào; hệ số phóng to so với mẫu thật; phần giả tưởng.
+- 04 Căn cứ và tháp: mẫu thật của từng tháp và nhánh (Phalanx, Sprut-B, HESCO, T-wall, Iron Dome, Patriot…); tường (kích thước, vật liệu thật); HQ / nhà chính (căn cứ tiền phương, FOB); game tham khảo cho cơ chế (xây lại tháp, tường, kỹ năng nhà chính, đồn trú).
+- 05 Chế độ và kinh tế: game tham khảo cho từng chế độ (điểm cứ điểm, hiệp phụ, leo thang thu nhập, vô hạn…); cơ chế nào giữ nguyên, nào đổi.
+- 06 AI: học thuyết quân sự cho từng chiến thuật (phòng thủ chiều sâu, phục kích, tiêu hao, bắn và chạy, tập trung hỏa lực…); game AI tham khảo (utility AI, influence map, squad AI); tướng địch: kiểu chỉ huy lấy ý.
+- 07 Chiến dịch: mỗi nhiệm vụ / chương: tham chiếu lịch sử hoặc phim / game (ví dụ màn bộ bài game: Company of Heroes, StarCraft II, Warcraft III…); ghi mã màn.
+- 08 Bản đồ: khu vực địa lý / biome thật lấy ý; địa danh; đường ray, cảng thật; game tham khảo cho cơ chế bản đồ (địa hình, vật cản phá được, làn mềm).
+- 09 Hiệu ứng và âm thanh: nguồn hiệu ứng / âm thanh theo bậc cỡ (đặc điểm tiếng bắn thật của pháo / súng, nguồn: ghi âm giấy phép CC0 / CC-BY, hay tổng hợp bằng script); game làm tham chiếu "cảm giác"; không dùng đoạn thu từ game thương mại.
+- 10 Model: tài liệu tham chiếu hình dạng và kích thước (tên bản vẽ / ảnh tham khảo: chỉ ghi nguồn và URL, KHÔNG nhúng ảnh bản quyền); bảng kích thước thật.
+- 11 Meta: game tham khảo cho cơ chế (nâng hạng, hòm đồ, nhiệm vụ ngày…).
+- 07 Thoại: nhân vật / giọng lấy ý (nếu có); chỉ ghi ở mức ý tưởng.
+
+## 12.3 SHEET NGUỒN (file 13_tham_chieu_nguon, file mới)
+- Nguon_tham_chieu: nguon_id, loai (tài liệu quân sự chính thức, nhà sản xuất, sách, bài báo, Wikipedia, wiki game, video, bản vẽ), tieu_de, tac_gia_to_chuc, nam, url, ngay_truy_cap, do_tin_cay (1–3: 1 chính thức / nhà sản xuất, 2 nguồn thứ cấp uy tín, 3 cộng đồng), ghi_chu.
+- Tham_chieu_game_co_che: mỗi cơ chế lấy ý từ game: ten_game, co_che, nhom (kinh tế, AI, bản đồ, chế độ, UI, meta), diem_giong, diem_khac_co_chu_dich, ly_do, cam_giac_khac_khi_choi, muc_ap_dung (nguyên bản / sửa / chỉ lấy ý), dan_den_sheet (tên file / sheet liên quan).
+- Tham_chieu_hoc_thuyet: học thuyết quân sự và thuật ngữ dùng (phòng thủ chiều sâu, phục kích, tiêu hao, tập trung hỏa lực, đòn đánh sườn…) kèm nguồn.
+- Thiếu_nguon: danh sách mọi thực thể và cột đang NEED_SOURCE, xếp theo lĩnh vực và độ ưu tiên (xe, vũ khí, boss trước).
+- Tai_lieu_ban_quyen: danh sách nguồn có bản quyền, ghi rõ chỉ dùng ý tưởng và thông số (sự kiện), không dùng văn bản hay ảnh.
+
+## 12.4 SO SÁNH GAME VỚI THẬT (cột suy ra, công thức sống)
+Trong mỗi file lĩnh vực thêm sheet <tên>_so_sanh_that. Mỗi thông số có đối chiếu: gia_tri_game, gia_tri_that, ty_le (game / thật), co_chu_dich (true / false), ly_do, co_lech_lon (true nếu ty_le ngoài khoảng cho phép mà co_chu_dich = false):
+- Vũ khí: chu kỳ đầy đủ so với nhịp thật (sau luật "súng chậm hơn 30% và mạnh hơn tương ứng, trừ súng máy và pháo phòng không"); sát thương so với khối lượng đạn / thuốc nổ; tầm; tốc độ đạn; cỡ nổ so với thuốc nổ thật (căn bậc ba).
+- Xe: kích thước (dài, rộng, cao), tốc độ, khối lượng (tương đối), tỷ lệ model so với mẫu thật (≤ 10%).
+- Tháp: tầm, nhịp bắn so với hệ thống thật.
+- Boss: kích thước tương đối, nhịp pháo so với mẫu thật.
+- Khoảng cho phép (điểm khởi đầu): tốc độ và kích thước 0,7–1,4 lần; nhịp bắn 0,6–2 lần; sát thương và tầm không bắt buộc 1:1 (chỉ ghi ty_le).
+- Mọi dòng co_lech_lon = true phải có ly_do hoặc nằm trong danh sách Cho_quyet.
+
+## 12.5 QUY TẮC
+1. KHÔNG bịa. Mọi thông số ngoài đời phải có nguon_id hoặc là NEED_SOURCE.
+2. Mọi tham chiếu "ước đoán" giữ nguyên nhãn, không nâng thành da_kiem_chung nếu chưa đối chiếu nguồn.
+3. Đơn vị ở tên cột (km_h, m, kg, mm, phat_phut). Không ghi đơn vị trong ô.
+4. Tên mẫu thật ghi đúng ký hiệu; mẫu giả tưởng ghi gia_tuong kèm lý do, không gán mẫu thật.
+5. Văn bản tham chiếu là tóm tắt của chính ta; không dán đoạn văn bản bản quyền.
+6. Ảnh tham chiếu: chỉ ghi URL và nguồn; không lưu bản sao ảnh bản quyền trong repo.
+7. Không ghi tên hoặc phù hiệu quốc gia thật trong dữ liệu hiển thị cho người chơi (đã có luật cho model).
+
+## 12.6 TEST VÀ TỰ KIỂM
+- Mọi xe, vũ khí, tháp, boss, nhà chính, loại tường có ít nhất một dòng tham chiếu hoặc loai_tham_chieu = gia_tuong kèm ly_do.
+- Không nguon_id mồ côi; mọi nguon_id trong sheet tham chiếu tồn tại ở Nguon_tham_chieu; mọi nguồn có url hoặc tài liệu in rõ.
+- Mọi cột thông số ngoài đời có nguon_id hoặc NEED_SOURCE.
+- Mọi cơ chế lấy ý từ game (chế độ, AI, bản đồ, meta) có dòng ở Tham_chieu_game_co_che.
+- Bảng so sánh: số dòng co_lech_lon, trong đó có / không có ly_do.
+- Phủ: tỷ lệ thực thể có da_kiem_chung / uoc_dinh / NEED_SOURCE theo lĩnh vực, ghi vào COVERAGE.md và SELF_CHECK.md.
+- Markdown theo lĩnh vực: mỗi mục có tiểu mục "Tham khảo ngoài đời và game" (tóm tắt, link nguồn, điểm giống / khác).
+- So sánh hai bản xuất (diff): thêm thay đổi ở sheet tham chiếu.
+
+## 12.7 LƯỢT 10
+- Lượt 10: làm 12.1–12.5 cho 01–04 trước (vũ khí, xe, boss, tháp), rồi 05–11, rồi file 13; sau cùng chạy 12.6.
+- Báo cáo report_export.md bổ sung: số tham chiếu theo độ tin cậy; số NEED_SOURCE; số dòng co_lech_lon; danh sách ưu tiên điền nguồn.
+----- end addendum -----

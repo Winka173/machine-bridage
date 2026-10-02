@@ -229,3 +229,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 
 ## Xuất toàn bộ dữ liệu, 03/10
 - "làm cái này luôn, tôi cần cái này cho tương lai để thấy mọi chỉ số và cân bằng game sau khi phát hành" + prompt "XUẤT TOÀN BỘ DỮ LIỆU GAME THÀNH BỘ FILE CÂN BẰNG, CHIA THEO LĨNH VỰC" (nguyên văn: export_full_vi.txt). Thay mọi yêu cầu xuất / Excel / Markdown trước đó.
+- Bổ sung 03/10: mục 12 "Lớp tham chiếu ngoài đời và game" + lượt 10 + file 13_tham_chieu_nguon (nguyên văn cuối export_full_vi.txt).
