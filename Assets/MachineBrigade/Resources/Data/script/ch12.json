@@ -1,0 +1,987 @@
+{
+"chapter": 12,
+"missions": {
+"c12m01": {
+"main": "khai"
+},
+"c12m05": {
+"main": "sen"
+},
+"c12m03": {
+"main": "khai"
+},
+"c12m02": {
+"main": "khai"
+},
+"c12m04": {
+"main": "khai"
+},
+"c12m07": {
+"main": "linh"
+},
+"c12m06": {
+"main": "khai"
+},
+"c12m08": {
+"main": "linh"
+},
+"c12m09": {
+"main": "khai"
+},
+"c12m10": {
+"main": "khai"
+}
+},
+"lines": [
+{
+"mission": "c12m01",
+"trigger": "mission_start",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c12m01.01",
+"en": "Colonel. We meet in the sand again. The last time, I think.",
+"vi": "Đại tá. Ta lại gặp nhau trên cát. Lần cuối, ta nghĩ vậy."
+},
+{
+"mission": "c12m01",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m01.02",
+"en": "The oasis, the refinery, the oil field. From the south this time.",
+"vi": "Ốc đảo, nhà máy, mỏ dầu. Lần này ta tới từ phía nam."
+},
+{
+"mission": "c12m01",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c12m01.03",
+"en": "Varga is attacking from every side. He is holding nothing back now.",
+"vi": "Varga đánh từ mọi hướng. Ông ta không còn giữ quân dự bị nữa."
+},
+{
+"mission": "c12m01",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c12m01.04",
+"en": "The oasis is ours. The old militia are still here; they remember us.",
+"vi": "Ốc đảo là của ta. Dân quân năm xưa vẫn còn ở đây, họ nhớ ta."
+},
+{
+"mission": "c12m01",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c12m01.05",
+"en": "The oil field left. The first time we came, we only hoped to hold it five minutes.",
+"vi": "Còn mỏ dầu. Lần đầu ta tới đây chỉ mong giữ được năm phút.",
+"arg": "last"
+},
+{
+"mission": "c12m01",
+"trigger": "victory",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c12m01.06",
+"en": "You still carry your weight, Colonel. No, more than before.",
+"vi": "Các anh vẫn nặng như ngày đầu, đại tá. Không, nặng hơn."
+},
+{
+"mission": "c12m01",
+"trigger": "defeat",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c12m01.07",
+"en": "The desert is still mine. For the last time.",
+"vi": "Sa mạc vẫn là của ta. Lần cuối."
+},
+{
+"mission": "c12m05",
+"trigger": "mission_start",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c12m05.01",
+"en": "Aurel took my drone programme when I left. And kept building.",
+"vi": "Aurel lấy chương trình drone của tôi khi tôi đi. Và tiếp tục chế tạo."
+},
+{
+"mission": "c12m05",
+"trigger": "boss_spawn",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c12m05.02",
+"en": "That is my design. Aim for the hangar doors.",
+"vi": "Đó là thiết kế của tôi. Nhắm vào cửa khoang chứa."
+},
+{
+"mission": "c12m05",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c12m05.03",
+"en": "The Salt Flats road to Helion, no cover. Every vehicle is out under the sky.",
+"vi": "Đường Salt Flats tới Helion, không chỗ nấp. Mọi xe đều lộ ra dưới trời.",
+"at": 30.0
+},
+{
+"mission": "c12m05",
+"trigger": "boss_part_destroyed",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c12m05.04",
+"en": "One hangar door is jammed. This time I feel no regret.",
+"vi": "Một cửa khoang đã kẹt. Lần này tôi không thấy tiếc."
+},
+{
+"mission": "c12m05",
+"trigger": "boss_phase_change",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c12m05.05",
+"en": "It has switched to hunting. It looks for the hottest engines; shut down whatever can wait.",
+"vi": "Nó chuyển sang săn. Nó sẽ tìm xe nóng nhất, tắt máy những xe không cần chạy."
+},
+{
+"mission": "c12m05",
+"trigger": "superweapon_warning",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c12m05.06",
+"en": "It is about to drop the whole swarm on one spot. Out of the red!",
+"vi": "Nó sắp thả cả bầy xuống một chỗ. Rời khỏi vùng đỏ!"
+},
+{
+"mission": "c12m05",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c12m05.07",
+"en": "Coming in out of the sun. Keep the flak firing low!",
+"vi": "Tôi vào đánh từ phía mặt trời. Giữ phòng không bắn thấp!"
+},
+{
+"mission": "c12m05",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c12m05.08",
+"en": "Half! Nowhere for it to hide on the salt!",
+"vi": "Một nửa! Nó không có chỗ trốn trên muối!",
+"arg": "50"
+},
+{
+"mission": "c12m05",
+"trigger": "boss_hp",
+"speaker": "sen",
+"priority": 4,
+"once": true,
+"key": "script.c12m05.09",
+"en": "Its batteries are nearly empty. I can hear it counting down.",
+"vi": "Pin của nó gần cạn. Tôi nghe nó đếm ngược.",
+"arg": "25"
+},
+{
+"mission": "c12m05",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c12m05.10",
+"en": "The last Locust. I hope.",
+"vi": "Chiếc Locust cuối cùng. Tôi hy vọng vậy."
+},
+{
+"mission": "c12m05",
+"trigger": "defeat",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c12m05.11",
+"en": "Its swarm still flies. Someone will have to clean them up after the war.",
+"vi": "Bầy của nó còn bay. Ai đó sẽ phải dọn chúng sau chiến tranh."
+},
+{
+"mission": "c12m03",
+"trigger": "mission_start",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c12m03.01",
+"en": "Steel does not negotiate. But it can be tired, Colonel.",
+"vi": "Thép không biết thương lượng. Nhưng thép cũng biết mệt, đại tá."
+},
+{
+"mission": "c12m03",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m03.02",
+"en": "His last camp, where the first Behemoth was born. Level the HQ.",
+"vi": "Trại cuối của ông ta, nơi Behemoth đầu tiên ra đời. San phẳng sở chỉ huy."
+},
+{
+"mission": "c12m03",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c12m03.03",
+"en": "Varga has gone all-out. He has nothing left to save.",
+"vi": "Varga đổi sang tổng tấn công. Ông ta không còn gì để giữ lại."
+},
+{
+"mission": "c12m03",
+"trigger": "event_triggered",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c12m03.04",
+"en": "Our guns are ranged on his anti-tank line. Eleven seconds after every call.",
+"vi": "Pháo của ta đã căn vào hàng chống tăng. Mười một giây sau mỗi lệnh."
+},
+{
+"mission": "c12m03",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c12m03.05",
+"en": "A heavy lost. He fights like a man with nothing to lose. Careful.",
+"vi": "Mất xe nặng. Ông ta đánh như người không còn gì để mất. Cẩn thận."
+},
+{
+"mission": "c12m03",
+"trigger": "time",
+"speaker": "varga",
+"priority": 2,
+"once": true,
+"key": "script.c12m03.06",
+"en": "Engineer Lind, are you there? I want you to see my last machines.",
+"vi": "Kỹ sư Lind, cô có ở đây không? Ta muốn cô thấy những cỗ máy cuối cùng của ta.",
+"at": 200.0
+},
+{
+"mission": "c12m03",
+"trigger": "victory",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c12m03.07",
+"en": "Enough. Let the machines rest.",
+"vi": "Đủ rồi. Để những cỗ máy được nghỉ."
+},
+{
+"mission": "c12m03",
+"trigger": "defeat",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.c12m03.08",
+"en": "My forge is still hot. Not yet, Colonel.",
+"vi": "Lò rèn của ta vẫn nóng. Chưa phải lúc, đại tá."
+},
+{
+"mission": "c12m02",
+"trigger": "mission_start",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c12m02.01",
+"en": "Colonel, let us be sensible. Every ship I have left, for safe passage.",
+"vi": "Đại tá, hãy biết điều. Mọi con tàu tôi còn, đổi lấy đường đi an toàn."
+},
+{
+"mission": "c12m02",
+"trigger": "time",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c12m02.02",
+"en": "No sale, Admiral.",
+"vi": "Không bán, đô đốc.",
+"at": 6.0
+},
+{
+"mission": "c12m02",
+"trigger": "boss_spawn",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c12m02.03",
+"en": "Name your price, then. Everyone has one.",
+"vi": "Vậy ông ra giá đi. Ai cũng có giá của mình."
+},
+{
+"mission": "c12m02",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c12m02.04",
+"en": "Scylla, a third time. Nothing left for them to patch. Radar, then the hull.",
+"vi": "Scylla, lần thứ ba. Họ chẳng còn gì để sửa nữa. Ra-đa, rồi thân tàu."
+},
+{
+"mission": "c12m02",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c12m02.05",
+"en": "Radar down, for the last time.",
+"vi": "Ra-đa gãy, lần cuối."
+},
+{
+"mission": "c12m02",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c12m02.06",
+"en": "A landing on the north shore. Kessler is throwing in what is left to cover his HQ.",
+"vi": "Đổ bộ trên bờ phía bắc vịnh. Kessler dồn những gì còn lại để che sở chỉ huy."
+},
+{
+"mission": "c12m02",
+"trigger": "boss_phase_change",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c12m02.07",
+"en": "It is turning broadside. Third time, same spot. Off its beam!",
+"vi": "Nó quay mạn. Lần thứ ba, cùng một chỗ. Tránh trục ngang!"
+},
+{
+"mission": "c12m02",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c12m02.08",
+"en": "Full broadside coming. Off the red shore!",
+"vi": "Loạt toàn mạn sắp tới. Rời khỏi bờ đỏ!"
+},
+{
+"mission": "c12m02",
+"trigger": "time",
+"speaker": "kessler",
+"priority": 2,
+"once": true,
+"key": "script.c12m02.09",
+"en": "Double. Triple. How much do you want, Colonel?",
+"vi": "Gấp đôi. Gấp ba. Ông muốn bao nhiêu, đại tá?",
+"at": 200.0
+},
+{
+"mission": "c12m02",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c12m02.10",
+"en": "Half! It is listing like the last two times!",
+"vi": "Một nửa! Nó nghiêng như hai lần trước!",
+"arg": "50"
+},
+{
+"mission": "c12m02",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c12m02.11",
+"en": "The ship is shelling the camp. Support vehicles behind the headland, like last time.",
+"vi": "Pháo tàu đang nã trại. Kéo xe hậu cần sau mỏm đá, như lần trước."
+},
+{
+"mission": "c12m02",
+"trigger": "victory",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c12m02.12",
+"en": "Then record the time, Colonel. The ledger is closed.",
+"vi": "Vậy ghi lại thời gian, đại tá. Sổ sách đã khóa."
+},
+{
+"mission": "c12m02",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m02.13",
+"en": "His last fleet is in the bay. Helion has nobody covering it from the sea.",
+"vi": "Hạm đội cuối của ông ta nằm dưới vịnh. Helion không còn ai che từ biển."
+},
+{
+"mission": "c12m02",
+"trigger": "defeat",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c12m02.14",
+"en": "One last profit. Thank you, Colonel.",
+"vi": "Lợi nhuận cuối cùng. Cảm ơn, đại tá."
+},
+{
+"mission": "c12m04",
+"trigger": "mission_start",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c12m04.01",
+"en": "My guard costs more than your brigade, Colonel.",
+"vi": "Đội cận vệ của tôi tốn kém hơn cả lữ đoàn của ông, đại tá."
+},
+{
+"mission": "c12m04",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m04.02",
+"en": "Then you will lose more. Level their HQ.",
+"vi": "Vậy ông sẽ mất nhiều hơn. San phẳng sở chỉ huy của họ."
+},
+{
+"mission": "c12m04",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c12m04.03",
+"en": "Jamming everywhere. Aurel does not want us hearing his orders.",
+"vi": "Nhiễu toàn dải. Aurel không muốn ta nghe ông ta ra lệnh."
+},
+{
+"mission": "c12m04",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c12m04.04",
+"en": "The guard has gone to defence in depth. Three lines round the northern pads.",
+"vi": "Cận vệ đổi sang phòng thủ chiều sâu. Ba hàng quanh bãi phóng phía bắc."
+},
+{
+"mission": "c12m04",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c12m04.05",
+"en": "A heavy lost. His guard shoots well. Slow down, stay together.",
+"vi": "Mất xe nặng. Cận vệ của ông ta bắn chính xác. Đi chậm, đi cùng nhau."
+},
+{
+"mission": "c12m04",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m04.06",
+"en": "The northern pads are ours. His guard was expensive, and not enough.",
+"vi": "Bãi phóng phía bắc là của ta. Cận vệ của ông ta đắt, nhưng không đủ."
+},
+{
+"mission": "c12m04",
+"trigger": "defeat",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c12m04.07",
+"en": "As I said. Quality has its price.",
+"vi": "Như tôi đã nói. Chất lượng có giá của nó."
+},
+{
+"mission": "c12m07",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c12m07.01",
+"en": "Three trucks. Every one of them counts. Icarus's reactor fuel.",
+"vi": "Ba xe. Chiếc nào cũng quan trọng. Nhiên liệu lò phản ứng của Icarus."
+},
+{
+"mission": "c12m07",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c12m07.02",
+"en": "Sandstorm. The trucks slow down, but they are harder to see.",
+"vi": "Bão cát. Xe tải sẽ đi chậm, nhưng ta cũng khó thấy chúng."
+},
+{
+"mission": "c12m07",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c12m07.03",
+"en": "One truck stopped. The lead casks are intact. Nobody opens them.",
+"vi": "Một xe đã dừng. Thùng chì còn nguyên. Đừng ai mở nó.",
+"arg": "1/3"
+},
+{
+"mission": "c12m07",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c12m07.04",
+"en": "One truck left. It is running for the pad, drop pods landing round it.",
+"vi": "Còn một xe. Nó đang chạy về bãi phóng, khoang đổ bộ rơi quanh nó.",
+"arg": "last"
+},
+{
+"mission": "c12m07",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m07.05",
+"en": "One minute before the last truck reaches the pad. Stop it.",
+"vi": "Một phút trước khi xe cuối tới bãi phóng. Dừng nó."
+},
+{
+"mission": "c12m07",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c12m07.06",
+"en": "All three stopped. Icarus will have to fly on half a tank.",
+"vi": "Ba xe đã dừng. Icarus sẽ phải bay với nửa bình nhiên liệu."
+},
+{
+"mission": "c12m07",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c12m07.07",
+"en": "The fuel got through. Icarus flies on a full tank.",
+"vi": "Nhiên liệu đã tới. Icarus sẽ bay với bình đầy."
+},
+{
+"mission": "c12m06",
+"trigger": "mission_start",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c12m06.01",
+"en": "Pilots are an expense. Drones are an investment.",
+"vi": "Phi công là chi phí. Drone là đầu tư."
+},
+{
+"mission": "c12m06",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m06.02",
+"en": "The last airfield covers the launch pad. Raven is gone. Level the HQ.",
+"vi": "Sân bay cuối cùng che bãi phóng. Raven đã đi. San phẳng sở chỉ huy."
+},
+{
+"mission": "c12m06",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c12m06.03",
+"en": "Their jets have no pilots. Flying perfectly, and dull as a spreadsheet.",
+"vi": "Máy bay của họ không có người lái. Bay hoàn hảo, và chán như một bảng tính."
+},
+{
+"mission": "c12m06",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c12m06.04",
+"en": "Accord relief coming from the south. Keep the road open for them.",
+"vi": "Đoàn cứu viện Accord đang tới từ phía nam. Giữ đường cho họ."
+},
+{
+"mission": "c12m06",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c12m06.05",
+"en": "A heavy lost to drones. Flak sticks to the armour.",
+"vi": "Mất xe nặng vì drone. Phòng không bám sát thiết giáp."
+},
+{
+"mission": "c12m06",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m06.06",
+"en": "The airfield is dark. The sky over the pad belongs to Hawk now.",
+"vi": "Sân bay đã tắt. Bầu trời trên bãi phóng giờ là của Hawk."
+},
+{
+"mission": "c12m06",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c12m06.07",
+"en": "No Raven, nobody left to duel. A bit sad, honestly.",
+"vi": "Không còn Raven, không còn ai để đấu. Hơi buồn, nói thật."
+},
+{
+"mission": "c12m06",
+"trigger": "defeat",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c12m06.08",
+"en": "My investment paid off. As projected.",
+"vi": "Đầu tư của tôi đã sinh lời. Như dự kiến."
+},
+{
+"mission": "c12m08",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c12m08.01",
+"en": "Four radars. The storm hides you as much as them.",
+"vi": "Bốn radar. Bão che ta cũng như che chúng."
+},
+{
+"mission": "c12m08",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c12m08.02",
+"en": "A rod from orbit came down near the pad. Their last test.",
+"vi": "Một thanh kim loại từ quỹ đạo rơi xuống gần bãi phóng. Họ đang thử lần cuối."
+},
+{
+"mission": "c12m08",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c12m08.03",
+"en": "Two radars down. Icarus has lost half its guidance.",
+"vi": "Hai radar đã đổ. Icarus mất một nửa đường dẫn.",
+"arg": "1/2"
+},
+{
+"mission": "c12m08",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c12m08.04",
+"en": "The storm is clearing. The last two radars will see us better.",
+"vi": "Bão đang tan. Hai radar còn lại sẽ thấy ta rõ hơn."
+},
+{
+"mission": "c12m08",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m08.05",
+"en": "One minute. Every radar down before the sky is fully clear.",
+"vi": "Một phút. Mọi radar phải gục trước khi trời quang hẳn."
+},
+{
+"mission": "c12m08",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c12m08.06",
+"en": "All four radars down. Icarus will have to lift off blind.",
+"vi": "Bốn radar đã đổ. Icarus sẽ phải cất cánh mù."
+},
+{
+"mission": "c12m08",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c12m08.07",
+"en": "The radars still sweep. Icarus will have a perfect flight path.",
+"vi": "Radar vẫn quét. Icarus sẽ có đường bay hoàn hảo."
+},
+{
+"mission": "c12m09",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m09.01",
+"en": "Hold the refinery. Tomorrow we finish this.",
+"vi": "Giữ nhà máy. Ngày mai ta kết thúc chuyện này."
+},
+{
+"mission": "c12m09",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c12m09.02",
+"en": "Aurel's guard is coming from every side. They are after the supply depot.",
+"vi": "Cận vệ của Aurel đánh từ mọi hướng. Họ nhắm vào kho tiếp tế."
+},
+{
+"mission": "c12m09",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c12m09.03",
+"en": "Halfway. The depot is full; the shells for the last battle are untouched.",
+"vi": "Nửa thời gian. Kho vẫn đầy, đạn cho trận cuối vẫn còn nguyên.",
+"arg": "1/2"
+},
+{
+"mission": "c12m09",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c12m09.04",
+"en": "A raiding party is slipping into the depot from the west.",
+"vi": "Một đội đánh phá đang lẻn vào kho từ phía tây."
+},
+{
+"mission": "c12m09",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c12m09.05",
+"en": "The refinery is lost. Take it back; the last battle cannot wait.",
+"vi": "Mất nhà máy. Lấy lại, trận cuối không đợi được."
+},
+{
+"mission": "c12m09",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m09.06",
+"en": "The refinery is still ours. Rest, Brigade. Tomorrow is the last day.",
+"vi": "Nhà máy vẫn của ta. Nghỉ đi, lữ đoàn. Sáng mai là ngày cuối."
+},
+{
+"mission": "c12m09",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c12m09.07",
+"en": "Colonel, I have a surprise for tomorrow. Don't ask. You will like it.",
+"vi": "Đại tá, tôi có một bất ngờ cho ngày mai. Đừng hỏi. Ông sẽ thích."
+},
+{
+"mission": "c12m09",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m09.08",
+"en": "The depot is lost. We go into the last battle short of shells.",
+"vi": "Mất kho tiếp tế. Ta sẽ vào trận cuối với ít đạn hơn."
+},
+{
+"mission": "c12m10",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.01",
+"en": "This is it, Brigade. Everything we have, one more time.",
+"vi": "Đây rồi, lữ đoàn. Mọi thứ ta có, thêm một lần nữa."
+},
+{
+"mission": "c12m10",
+"trigger": "time",
+"speaker": "aurel",
+"priority": 2,
+"once": true,
+"key": "script.c12m10.02",
+"en": "Colonel Kade. You have come a long way. I grant you that. But the sky is paid for.",
+"vi": "Đại tá Kade. Ông đã đi rất xa. Tôi thừa nhận điều đó. Nhưng bầu trời đã được trả tiền.",
+"at": 20.0
+},
+{
+"mission": "c12m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.03",
+"en": "The propellant farm is taken. Next: the launch tower or the fuel lines.",
+"vi": "Kho nhiên liệu đẩy đã chiếm. Chọn đòn tiếp: tháp phóng hay đường cấp nhiên liệu.",
+"arg": "2"
+},
+{
+"mission": "c12m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.04",
+"en": "The assembly building. Icarus is being loaded for the last time inside.",
+"vi": "Tòa nhà lắp ráp. Icarus đang được nạp lần cuối bên trong.",
+"arg": "4"
+},
+{
+"mission": "c12m10",
+"trigger": "phase_start",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.05",
+"en": "Colonel, look to the left. A Behemoth in brigade colours. Ours. Surprise.",
+"vi": "Đại tá, nhìn sườn trái. Behemoth sơn màu lữ đoàn. Của ta. Bất ngờ đây.",
+"arg": "5"
+},
+{
+"mission": "c12m10",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.06",
+"en": "Varga's Behemoth Mk.II. The last one. The rear plates are still mine. Even now.",
+"vi": "Behemoth Mk.II của Varga. Con cuối. Các tấm sau vẫn là của tôi. Lần này cũng vậy."
+},
+{
+"mission": "c12m10",
+"trigger": "boss_hp",
+"speaker": "mai",
+"priority": 4,
+"once": true,
+"key": "script.c12m10.07",
+"en": "Half. Two Behemoths on one field. I never thought I would see it.",
+"vi": "Một nửa. Hai con Behemoth trên cùng một bãi. Tôi chưa bao giờ nghĩ sẽ thấy cảnh này.",
+"arg": "50"
+},
+{
+"mission": "c12m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.08",
+"en": "Hold the launch pad. The countdown has started.",
+"vi": "Giữ bãi phóng. Đồng hồ đếm ngược đã chạy.",
+"arg": "6"
+},
+{
+"mission": "c12m10",
+"trigger": "phase_start",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.09",
+"en": "Icarus is up, complete. Without guidance it has to turn back. That is our only chance.",
+"vi": "Icarus đã cất cánh, hoàn chỉnh. Nó phải quay lại vì thiếu đường dẫn. Đó là cơ hội duy nhất.",
+"arg": "8"
+},
+{
+"mission": "c12m10",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.10",
+"en": "Tungsten rods from orbit! Out of the red, now, everyone!",
+"vi": "Thanh vonfram từ quỹ đạo! Rời khỏi vùng đỏ, ngay, tất cả!"
+},
+{
+"mission": "c12m10",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c12m10.11",
+"en": "One of Icarus's engines is out. It is losing altitude.",
+"vi": "Một động cơ của Icarus đã tắt. Nó đang mất độ cao."
+},
+{
+"mission": "c12m10",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c12m10.12",
+"en": "It is falling! I am following it all the way down!",
+"vi": "Nó đang rơi! Tôi bay theo nó tới tận mặt đất!",
+"arg": "25"
+},
+{
+"mission": "c12m10",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.13",
+"en": "The HQ is critical. Nothing held back. Everything onto Icarus.",
+"vi": "Sở chỉ huy nguy cấp. Không còn gì để giữ lại. Mọi thứ vào Icarus."
+},
+{
+"mission": "c12m10",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.14",
+"en": "It is over. Brigade, stand down. We go home.",
+"vi": "Kết thúc rồi. Lữ đoàn, nghỉ. Ta về nhà."
+},
+{
+"mission": "c12m10",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.15",
+"en": "Meridian Coast. Ours.",
+"vi": "Meridian Coast. Của ta."
+},
+{
+"mission": "c12m10",
+"trigger": "defeat",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c12m10.16",
+"en": "The sky was paid for, Colonel. You were simply late.",
+"vi": "Bầu trời đã được trả tiền, đại tá. Ông chỉ tới muộn."
+}
+]
+}
