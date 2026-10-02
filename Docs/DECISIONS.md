@@ -17529,3 +17529,57 @@ Pass 3 (pilot, then STOP):
 - Before / after pictures are Blender Workbench sheets (Tools/blender/render_angles.py + Tools/models/sheet.py, base colours from the glTF materials); the in-game shots are the lead's Unity run (ModelScan -mbScan "ixion,zu23_technical,rocket_turret").
 - Over-budget pilots kept (owner rule): 35.7k / 7.4k / 9.1k triangles.
 - build_assets is not byte-deterministic for any builder (old ones too): one index accessor's order changes run to run, geometry identical. Left for the owner (QUESTIONS.md 9).
+
+## Bộ xuất dữ liệu toàn bộ (lane B, pass 5 part 2)
+
+Branch `feature/export-b2`, 2026-10-03: layer B of files 05-12 (spec 4 "B:"), Hang_so_trong_ma wired, the lead's two self-check
+items. Python only; no Unity, test, sim or measure run; no game value changed.
+
+- **Modules.** `domains/_b05.py` .. `_b12.py`, one hook line in each lane C domain file. Evaluator (`core/formula.py`) gains
+  COUNTIFS, SUMIFS, LEN, FIND, LEFT, SUBSTITUTE, IFERROR (Excel 2007 functions; MAXIFS left out: Excel stores it as
+  `_xlfn.`) and a range cache. `_layer_b.cs_find / cs_num` read a C# literal by pattern with its file:line (NEED_CODE_CHECK
+  and an issue when the pattern no longer matches; never a guess); `git_last_commit` dates a report against its inputs.
+- **05.** Start CP and income are C# literals of each mode session (ModeSessions.cs, ShowdownSession.cs); the game applies
+  startCp.scale (OpeningRules.StartCp, ported), economy.income, ConquestSession's x1.18 and BuyProfile.For(difficulty).Income
+  to the enemy (Easy 0.8, Normal 0.7, Hard 1.2, Very Hard 1.4). CP earned = start + Earning x t with upkeep, catch-up,
+  commanders, kills and events left out; objective bonus split evenly (Conquest 1.5 points held, Hill held half the time);
+  Assault sectors and Boss Rush bounties not counted. Length = the clock the game uses at Normal + the most bonus time +
+  overtime. Kiem_tinh_che_do takes books 2-4 from Tools/audit/mode_static_audit.py (its waves, bosses, fortress slots,
+  tempo rule) and book 1 live from Kinh_te_suy_ra (the game's literals; the tool's MODES table is stale for Weekly and Boss
+  Rush and ignores BuyProfile and startCp.scale).
+- **Findings 05.** At Normal the enemy's 0.7 income makes Deathmatch and King of the Hill RED (enemy about 35 % below the
+  player); Conquest GREEN (x1.18). Defend's data timeLimit 720 s is not read (SiegeRules.Apply reads only overtime): the
+  code clock is 480 + 150 = 630 s. Siege's 1080 s equals 480 + 600 by coincidence.
+- **06.** AI_xung_dot ports the tactic precedence (ConquestAi.P28 TickLayered + Commander.AllowedTactic) per mode / goal x
+  general: the Weekly fortress (siege profile) turns Aurel, Orlov, Varga, Venn and Wolff to balanced. AI_xung_dot_do_kho:
+  the Defend, Survival and Boss Rush profiles block the Hard / Very Hard switching.
+- **07.** Counts by COUNTIFS over Thoai; budget and word-for-word rule from Tools/story/script_build.py; silence = the
+  longest gap between known times (mission_start 0 s, time lines). All 193 missions in budget, no duplicate line.
+- **08.** Ban_do_do_tinh = Docs/checks/map_audit.csv + validate_p33.json as data (not re-measured), the status re-derived by
+  a formula with the audit's thresholds (100 of 100 equal the report; all YELLOW on sightline). Nav connectivity per
+  prebuilt state: CHUA_DO (nav_states.py runs at campaign build, no per-map report; running it waits for the owner).
+  Ngan_sach_thuc_the: caps found in the code (player 32 vehicles, enemy economy.vehicleCap via input_kinh_te, 6
+  aircraft, effects caps); no cap found for projectiles in flight.
+- **09 / 10.** Audio and model numbers are report data (metrics.json, static_scores.csv, visual_scores.md, fix_validate
+  item 7); keng, the rising table, the budget status (on current GLB triangles), the final grade (lower of static* and
+  visual), score (Tot 2 / Can_sua 1 / Kem 0) and decision (da_lam_lai / khoi_phuc / lam_lai / giu) are formulas. Old
+  grades were never scored, so "điểm bản cũ" is the report's old-vs-new verdict. The 15 L8 rebuilds differ from the report
+  (expected). Localisation: missing / twice by formula; "proper name in one language" uses script_build's NAMES list;
+  "no literal in the code" is a heuristic (a key built as prefix + id or $"a.{x}" counts as used).
+- **11.** Rewards.cs literals; a reference quick battle of 20 kills and 9 minutes; rank 1 -> 10 of one card 12 850 coins,
+  70 Normal wins (10.5 h). Mathf.RoundToInt rounds .5 to even, Excel ROUND away from zero (no .5 case today).
+- **12.** Hang_so_trong_ma = scan_constants.scan (7 249 rows, natural id order file / line / column). Lich_su_do.stale is
+  now STALE / OK by git (the data changed after the measurement file's last commit; commit_do = that commit): all STALE,
+  as the *_before / *_baseline files are snapshots by design.
+- **Lead items.** 04/Mo_dun_tien_ich_vu_khi and 04/Tuong_vu_khi get one KHONG_CO marker row (no utility module or wall has a
+  secondary[]); KHONG_CO joins core/model.MARKER (FK and kinds skip it, as the self-check already did). The (id, column)
+  check keys on the source collection (`<file>#<first key>`), so balance.json vehicles[] and props[] are different entities.
+  Owner question: `radar_station` is both a utility module (vehicles[], width 6 m) and a prop (props[], width 7.9 m); one id,
+  two things: rename one?
+- **Schema.** Accepted assumptions written into the columns: aircraft armour 0 (01 dps_may_bay, 02 Hoi_quy), light / heavy
+  = armour 1 / 3 (02), Boss_hieu_qua on the main weapon without the rank fireRate (03); Stinger = stinger_post; LECH_DOT_1
+  stays in the enum of 01 ghi_chu_lech. A formula id with a dot is shown bracketed in Schema.cong_thuc
+  (`@[economy.income]`) so the secret scan does not read it as an e-mail. Prompt 35's new sources (Tools/assets/
+  gold_metrics.json, Tools/blender/specs/*.json) are exported in 10 (Model_chuan_vang, Model_spec_dung) to keep coverage.
+- **Self-check 4** counts a formula column with a Python reference (no `_game`, Schema.nguon_khoa "python: ...") as a gap;
+  those are analysis columns the game does not compute (left for lane C / the lead to read the reference instead).

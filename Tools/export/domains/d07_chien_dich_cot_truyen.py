@@ -7,6 +7,7 @@ import re
 
 from core.model import NEED_CODE_CHECK, child_rows, chua_ap
 
+from . import _b07
 from . import _lane_c as C
 
 FILE_ID = "07_chien_dich_cot_truyen"
@@ -300,3 +301,6 @@ def build(ctx):
     C.marker_sheet(book, "Cutscene_khoanh_khac", "Khoảnh khắc chậm", "6 khoảnh khắc chậm x0,5 (mã Cinematics.cs)",
                    chua_ap("xuat_luot5"), "đọc hằng và điều kiện trong Assets/MachineBrigade/Scripts/Game/Match/Cinematics.cs",
                    "Assets/MachineBrigade/Scripts/Game/Match/Cinematics.cs")
+
+    # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)
+    _b07.build(ctx, book, camp)

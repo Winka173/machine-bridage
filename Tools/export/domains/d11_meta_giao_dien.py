@@ -6,6 +6,7 @@ from __future__ import annotations
 from core.model import NEED_CODE_CHECK, chua_ap
 
 from . import _balance as B
+from . import _b11
 from . import _lane_c as C
 
 FILE_ID = "11_meta_giao_dien"
@@ -169,6 +170,9 @@ def build(ctx):
     st = book.kv_sheet("So_tay_dan", "Sổ tay đạn", "balance.json handbook: xe mẫu bắn và xe mẫu bị bắn của sổ tay đạn trên giao diện")
     book.kv_rows(st, d.get("handbook") or {}, B.BALANCE, ("handbook",), "handbook")
 
+    # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)
+    _b11.build(ctx, book)
+
     # ------------------------------------------------------------------ absent / later
     absent = "Không có trong mã và dữ liệu (tìm 03/10: 0 file C# nhắc tới)"
     C.marker_sheet(book, "Thanh_tuu", "Thành tựu", "Thành tựu", "KHONG_CO", absent + " 'Achievement'", "Assets/MachineBrigade/Scripts")
@@ -185,8 +189,9 @@ def build(ctx):
                    C.DATA + "operations.json")
     C.marker_sheet(book, "Thu_hang", "Thứ hạng", "Bảng xếp hạng", "XEM_05", "thứ tự xếp hạng ở 05_che_do_kinh_te/Vo_han "
                    "(matchRules.leaderboards); không có bảng xếp hạng trực tuyến", B.BALANCE + ": matchRules.leaderboards")
-    C.marker_sheet(book, "Thuong", "Thưởng", "Thưởng trận / chiến dịch", NEED_CODE_CHECK,
-                   "xu / XP / bản thiết kế mỗi nhiệm vụ: 07/Nhiem_vu (coins, xp, prints, rarePrints); thưởng trận nhanh: Rewards.cs",
+    C.marker_sheet(book, "Thuong", "Thưởng", "Thưởng trận / chiến dịch", "XEM_Meta_kinh_te_nguon",
+                   "xu / XP / bản thiết kế mỗi nhiệm vụ: 07/Nhiem_vu (coins, xp, prints, rarePrints); công thức thưởng trận nhanh / "
+                   "Sinh tồn / nhiệm vụ của Rewards.cs: Meta_kinh_te_nguon, Meta_kinh_te_tran (lớp B, lượt 5)",
                    MATCH + "Rewards.cs")
 
 

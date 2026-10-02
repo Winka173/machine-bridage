@@ -8,6 +8,7 @@ import re
 from core.model import child_rows
 
 from . import _balance as B
+from . import _b08
 from . import _lane_c as C
 
 FILE_ID = "08_ban_do"
@@ -188,3 +189,5 @@ def build(ctx):
             r.set("he_so_tam_nhin", sight[w], C.CAMPAIGN, ("eventLibrary", "rules", "weatherSight", w))
         r.set("so_nhiem_vu", uses.get(w, 0))
 
+    # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)
+    _b08.build(ctx, book)
