@@ -1,0 +1,8 @@
+# C16: AoE list against main weapons with splash (prompt 29, read only)
+
+Compared the sheet "Tính toán" column AoE with each vehicle's main weapon after `inherits` and its weapon family
+(`splash` > 0). Missiles whose blast is an `explosion`/two-layer blast (prompt 26) rather than `splash` show as 0 here:
+that explains the first list. Reported only; nothing changed.
+
+- **In the AoE list but the main weapon has no `splash`:** coastal_ashm_vehicle (nsm_coastal, splash 0.0); ground_cruise_missile_vehicle (cruise_missile_ground, splash 0.0); mine_rocket_truck (none, splash 0.0)
+- **Main weapon has `splash` but not in the AoE list:** airborne_vehicle (gun_100_2a70, splash 3.0); river_gunboat (gun_100_river, splash 4.0); uav_loiter_strike (uav_loiter_missile, splash 2.0); wingman_drone (aim9, splash 1.5); fighter_jet (air_to_air, splash 2.0); interceptor_jet (r37m, splash 3.0); stealth_fighter (air_to_air, splash 2.0); gunship_heli (gunship_rockets, splash 3.0); sky_gunship (gunship_105, splash 5.5); vbied (detonator, splash 10.0); flame_tank (flamethrower, splash 2.5); turtle_tank (gun_120mm, splash 1.5); fpv_carrier (fpv_swarm, splash 2.5); lancet_truck (lancet, splash 3.0); fibre_fpv_carrier (fpv_fibre, splash 2.5); aa_vehicle (flak_35, splash 2.5); shorad_vehicle (avenger_stingers, splash 2.0); aa_gun_vehicle (bofors_l70, splash 2.5); interceptor_drone_vehicle (interceptor_drone, splash 1.5); aa_57mm_vehicle (gun_57mm_2s38, splash 3.0); heavy_aa (twin_30_flak, splash 2.5); sam_launcher (buk_launcher, splash 2.0); long_sam (sam_48n6, splash 7.2); bunker_vehicle (gun_105_bunker, splash 1.5); main_battle_tank (gun_120mm, splash 1.5); twin_tank (gun_120_twin, splash 1.5); heavy_tank (gun_152, splash 2.5); titan_tank (gun_140_twin, splash 2.0)

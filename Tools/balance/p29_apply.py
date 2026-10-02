@@ -35,7 +35,7 @@ LOG = os.path.join(ROOT, "Docs", "balance", "apply_log_p29.md")
 # Code bundles whose code is in the repository (each pass adds the ones it wrote).
 DONE_CODE: set[str] = {"S01", "S02", "S03", "S04", "S08", "S09"}
 # Checks done with a result that lets their bundles go (Docs/checks/*.md).
-DONE_CHECKS: set[str] = set()
+DONE_CHECKS: set[str] = {"C06", "C12"}
 
 # Mode names of E1 -> SimWorld.ModeTag values, and the bank each mode's code gives the side the manifest means.
 MODE_TAGS = {

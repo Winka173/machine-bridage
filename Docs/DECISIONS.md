@@ -13907,3 +13907,13 @@ upkeep line now shows `Upkeep`; `Docs/ai/ECONOMY.md`, LOCAL_TODO and `WorldModel
 - **S09** the code already keeps radians and the document already converts (prompt 25 C.4); tests added (C# data vs
   code; Python: the document's °/s columns go through `deg()`).
 - Tests written, not run: `BalanceRound2Tests` (EditMode), `Tools/balance/test_p29.py` (unittest).
+
+## Prompt 29 L2 (cloud, 2026-10-02): pre-apply checks
+
+C03, C05, C06, C07, C09, C10, C12, C13, C15, C16 written to `Docs/checks/` (the repository's `Docs`, not `docs`).
+Results that matter for later passes: C05 every flare baseline matches (no B2-FLR conflict); C06 one APS code path,
+bosses carry the same `aps` (classified, numbers kept); C07 iron_beam recharges in 0.8 s in the data; C10 Buk and the
+other AA weapons hit aircraft at x1.3 (the sheet's assumption holds); C12 the low-health return is one condition in
+`TacticalAi.Refit`, already off for the layered AI; C13 no stored flag fields exist (they are computed from the round),
+so S05 adds optional overrides; C16 lists three AoE rows without `splash` (missile blasts) and 28 splash weapons not
+in the AoE list (reported only, B5 is HOLD anyway). C06 and C12 now let their bundles go (`DONE_CHECKS`).
