@@ -2989,6 +2989,115 @@ def grad_truck(a):
     k.clean(a)
 
 
+def _naval_hull(a, part, sections, keel, chamfer=.12):
+    """mb_naval._hull on the V2 kit: the same sections (y, half beam, deck height) lofted with a chamfered deck edge."""
+    rings = []
+    for y, hw, zd in sections:
+        rings.append([(hw, y, zd), (hw * .97, y, .6), (hw * .78, y, keel * .6), (hw * .3, y, keel),
+                      (-hw * .3, y, keel), (-hw * .78, y, keel * .6), (-hw * .97, y, .6), (-hw, y, zd)])
+    k.sharp_loft(part, rings, chamfer=chamfer, corners=(0, 7))
+
+
+def _boat_mg(a, loc, length=.8, r=.04, name_ammo=True):
+    """The boats' pintle machine gun on its own `Mount_mg` pivot (old geometry as chamfered blocks and a revolved barrel);
+    `Muzzle_mg` at the old position."""
+    mg = a.pivot('Mount_mg', loc)
+    k.block(a.part('Mg_body', 'Steel', mg), (.25, .9, .25), loc=(0, -.2, .2), chamfer=.02)
+    front = -.65
+    k.lathe(a.part('Mg_barrel', 'Steel', mg), [(r, 0), (r, length - .1), (r * 1.5, length - .08), (r * 1.5, length),
+                                                 (0, length)], loc=(0, front, .22), rot=FORWARD, seg=8)
+    a.pivot('Muzzle_mg', (0, front - length, .22), mg)
+    return mg
+
+
+def sea_corvette(a):
+    """Escort corvette (mb_naval.sea_corvette, 30 x 5.6 m) on the V2 kit: a lofted hull with a chamfered deck edge,
+    extruded stepped superstructure with a sloped bridge front, a gun house, lathed barrel, mast and funnel; same parts and
+    pivots (`Part_gun`, `Mount_gun`, `Muzzle_gun`, `Part_mg`, `Mount_mg`, `Muzzle_mg`, `Radar`)."""
+    from mb_naval import ciws, pv, _suffixed
+    _suffixed(a)
+    _naval_hull(a, a.part('Hull', 'Armor'), [(-15.0, .2, 3.0), (-13.5, 1.2, 2.9), (-10.0, 2.4, 2.6), (-4.0, 2.8, 2.4),
+                                              (6.0, 2.8, 2.3), (13.0, 2.6, 2.3), (15.0, 2.4, 2.3)], -1.4, chamfer=.18)
+    for s in (-1, 1):
+        k.block(a.part('Boot_top', 'Team'), (.06, 24.0, .35), loc=(s * 2.8, 1.0, .25), chamfer=0)
+    a.part('Deck', 'Asphalt').box((5.0, 26.0, .05), loc=(0, 1.0, 2.35), bevel=0)
+    pg = pv(a, 'Part_gun', (0, -9.0, 2.6))
+    m = a.pivot('Mount_gun', (0, 0, 0), pg)
+    k.extrude(a.part('Gun_house', 'Team', m), [(-1.1, .1), (1.3, .1), (1.3, .9), (.6, 1.32), (-.6, 1.32), (-1.2, .9)],
+              1.9, loc=(0, 0, 0), axis='X', chamfer=.08, corner=.1)
+    k.lathe(a.part('Gun_barrel', 'Steel', m), [(.14, -.1), (.14, .4), (.09, .5), (.09, 3.0), (.12, 3.04), (.12, 3.2),
+                                                 (.06, 3.2), (0, 3.2)], loc=(0, -1.0, .85), rot=FORWARD, seg=10, worn=(5,))
+    a.pivot('Muzzle_gun', (0, -4.2, .85), m)
+    sup = a.part('Superstructure', 'Team')
+    k.extrude(sup, [(-4.0, 2.4), (4.0, 2.4), (4.0, 4.6), (-3.0, 4.6), (-4.0, 4.1)], 4.4, loc=(0, -1.0, 0), axis='X',
+              chamfer=.1, corner=.12)
+    k.extrude(sup, [(-2.0, 4.6), (2.0, 4.6), (2.0, 6.4), (-1.5, 6.4), (-2.0, 5.9)], 3.6, loc=(0, -2.5, 0), axis='X',
+              chamfer=.1, corner=.12)
+    a.part('Bridge_glass', 'Glass').box((3.2, .06, .5), loc=(0, -4.52, 5.8), rot=(.18, 0, 0), bevel=0)
+    for s in (-1, 1):
+        a.part('Bridge_glass', 'Glass').box((.05, 1.6, .45), loc=(s * 1.83, -2.8, 5.7), bevel=0)       # side windows
+        a.part('Rails', 'Steel').box((.08, 20.0, .08), loc=(s * 2.65, 1.5, 2.9), bevel=0)               # deck rails
+    k.block(a.part('Hangar', 'Team'), (4.0, 5.0, 2.4), loc=(0, 6.5, 3.6), chamfer=.1)
+    a.part('Hangar_door', 'Undercarriage').box((3.0, .06, 1.8), loc=(0, 9.02, 3.4), bevel=0)
+    pv(a, 'Part_mg', (0, 6.5, 4.85))
+    ciws(a, 'Mount_mg', (0, 0, 0), parent='Part_mg')
+    mast = a.part('Mast', 'Steel')
+    k.lathe(mast, [(.22, 0), (.22, .3), (.14, .5), (.14, 4.0)], loc=(0, -1.8, 6.4), seg=8)
+    k.block(mast, (1.8, .12, .12), loc=(0, -1.8, 9.15), chamfer=0)
+    rad = a.pivot('Radar', (0, -1.8, 10.4))
+    k.block(a.part('Radar_bar', 'Medical', rad), (2.0, .2, .45), loc=(0, 0, .2), chamfer=.03, ends=(True, True))
+    k.block(a.part('Radar_pedestal', 'Steel', rad), (.3, .3, .3), loc=(0, 0, -.3), chamfer=.02)
+    k.block(a.part('Funnel', 'Armor'), (1.4, 1.8, 1.8), loc=(0, 2.6, 5.4), rot=(-.1, 0, 0), chamfer=.15, taper=(.85, .85))
+    a.part('Funnel_cap', 'Undercarriage').box((1.0, 1.2, .08), loc=(0, 2.52, 6.32), rot=(-.1, 0, 0), bevel=0)
+    k.clean(a)
+
+
+def missile_boat(a):
+    """Fast attack boat (mb_naval.missile_boat, 14 x 3.8 m) on the V2 kit: a lofted planing hull with a chamfered deck edge,
+    a chamfered cabin, two rocket pods with tube faces, a revolved-barrel machine gun and a mast; same parts and pivots
+    (`Mount_rocket`, `Muzzle_rocket`, `Mount_mg`, `Muzzle_mg`)."""
+    hull = a.part('Hull', 'Armor')
+    rings = []
+    for y, hw, zd in ((-7.0, .15, 1.5), (-6.0, .9, 1.45), (-4.0, 1.7, 1.35), (0.0, 1.9, 1.25), (4.0, 1.9, 1.2),
+                      (7.0, 1.8, 1.2)):
+        rings.append([(hw, y, zd), (hw * .98, y, .3), (hw * .4, y, -.5), (0.0, y, -.7), (-hw * .4, y, -.5),
+                      (-hw * .98, y, .3), (-hw, y, zd)])
+    k.sharp_loft(hull, rings, chamfer=.1, corners=(0, 6))
+    for s in (-1, 1):
+        k.block(a.part('Stripe', 'Team'), (.05, 10.0, .22), loc=(s * 1.9, .5, .64), chamfer=0)
+    a.part('Deck', 'Asphalt').box((3.4, 10.0, .04), loc=(0, 1.5, 1.24), bevel=0)
+    k.extrude(a.part('Cabin', 'Team'), [(-1.9, 1.25), (1.7, 1.25), (1.7, 2.4), (.2, 2.45), (-1.3, 2.0)], 2.2,
+              loc=(0, -1.2, 0), axis='X', chamfer=.1, corner=.1)
+    a.part('Cabin_glass', 'Glass').box((2.0, .05, .4), loc=(0, -3.0, 2.05), rot=(.5, 0, 0), bevel=0)
+    m = a.pivot('Mount_rocket', (0, 2.6, 1.3))
+    pods = a.part('Rocket_pods', 'Armor', m)
+    for s in (-1, 1):
+        k.block(pods, (.8, 2.4, .7), loc=(s * .8, 0, .55), rot=(.18, 0, 0), chamfer=.06, ends=(True, True))
+        a.part('Pod_tubes', 'Charred', m).box((.7, .04, .6), loc=(s * .8, -1.22, .78), rot=(.18, 0, 0), bevel=0)
+    a.pivot('Muzzle_rocket', (0, -1.3, .8), m)
+    _boat_mg(a, (0, -.8, 2.45), length=.8)
+    k.lathe(a.part('Mast', 'Steel'), [(.08, 0), (.08, 1.4)], loc=(0, .2, 2.3), seg=6)
+    k.clean(a)
+
+
+def landing_craft(a):
+    """Landing craft (mb_naval.landing_craft, 17 x 7 m) on the V2 kit: a chamfered hull, wing walls, the bow ramp with its
+    hazard edge, a chamfered wheelhouse with window, bollards and a revolved-barrel machine gun; same parts and pivots
+    (`Mount_mg`, `Muzzle_mg`)."""
+    k.block(a.part('Hull', 'Armor'), (7.0, 16.0, 2.2), loc=(0, .5, .3), chamfer=.15)
+    a.part('Well', 'Undercarriage').box((5.6, 11.0, .05), loc=(0, -1.5, 1.42), bevel=0)
+    for s in (-1, 1):
+        k.block(a.part('Wing_walls', 'Team'), (.6, 12.0, 1.0), loc=(s * 3.2, -1.5, 1.9), chamfer=.05)
+    k.block(a.part('Ramp', 'Armor'), (5.8, .3, 2.4), loc=(0, -7.9, 1.8), rot=(-.18, 0, 0), chamfer=.05)
+    a.part('Ramp_edges', 'Hazard').box((6.0, .1, .18), loc=(0, -8.2, 2.9), bevel=0)
+    k.block(a.part('Wheelhouse', 'Team'), (3.2, 2.6, 2.2), loc=(0, 6.2, 2.5), chamfer=.15, ends=(False, True))
+    a.part('Wheelhouse_glass', 'Glass').box((2.6, .05, .5), loc=(0, 4.88, 3.0), bevel=0)
+    for s in (-1, 1):
+        k.lathe(a.part('Bollards', 'Steel'), [(.16, 0), (.16, .3), (.22, .36)], loc=(s * 3.2, 7.0, 1.4), seg=4)
+    _boat_mg(a, (0, 6.2, 3.65), length=.9, r=.045)
+    k.clean(a)
+
+
 def _mbt_v2(a):
     exp.main_battle_tank(a)
 
@@ -3080,4 +3189,7 @@ BUILDERS = {
     'scout_jeep': (scout_jeep, dict(_opts('scout_jeep'), ao_strength=.65)),
     'scout_jeep_hd': (functools.partial(scout_jeep, detail=True), dict(_opts('scout_jeep'), ao_strength=.65)),
     'grad_truck': (grad_truck, dict(_opts('grad_truck'), ao_strength=.65)),
+    'sea_corvette': (sea_corvette, dict(_opts('sea_corvette'), ao_strength=.65)),
+    'missile_boat': (missile_boat, dict(_opts('missile_boat'), ao_strength=.65)),
+    'landing_craft': (landing_craft, dict(_opts('landing_craft'), ao_strength=.65)),
 }

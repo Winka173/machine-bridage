@@ -861,7 +861,7 @@
   },
   "landing_craft": {
     "file": "landing_craft.glb",
-    "triangles": 320
+    "triangles": 498
   },
   "landing_hovercraft": {
     "file": "landing_hovercraft.glb",
@@ -993,7 +993,7 @@
   },
   "missile_boat": {
     "file": "missile_boat.glb",
-    "triangles": 432
+    "triangles": 630
   },
   "mlrs": {
     "file": "mlrs.glb",
@@ -1281,7 +1281,7 @@
   },
   "sea_corvette": {
     "file": "sea_corvette.glb",
-    "triangles": 1346
+    "triangles": 1884
   },
   "sea_cruiser": {
     "file": "sea_cruiser.glb",

@@ -828,6 +828,20 @@
     "scout_jeep: triangles 2,212 -> 2,422 (+9.5%); vertices 2,782 -> 2,857 (+2.7%); meshes 21 -> 23 (+9.5%); renderers 21 -> 23 (+9.5%); materials 13 -> 12 (-7.7%); materialSlots 21 -> 23 (+9.5%); fileBytes 159,072 -> 165,056 (+3.8%); structure changed",
     "FLAG scout_jeep_hd: triangles 8,908 -> 3,738 (-58.0%); vertices 13,300 -> 4,881 (-63.3%); meshes 36 -> 27 (-25.0%); renderers 36 -> 27 (-25.0%); materials 13 -> 12 (-7.7%); materialSlots 36 -> 27 (-25.0%); fileBytes 675,348 -> 265,608 (-60.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "sea_corvette",
+    "missile_boat",
+    "landing_craft"
+   ],
+   "reason": "27 wave 3h: V2 rebuild",
+   "changes": [
+    "FLAG landing_craft: triangles 320 -> 498 (+55.6%); vertices 404 -> 581 (+43.8%); meshes 9 -> 10 (+11.1%); renderers 9 -> 10 (+11.1%); materialSlots 9 -> 10 (+11.1%); fileBytes 29,092 -> 38,896 (+33.7%); structure changed",
+    "FLAG missile_boat: triangles 432 -> 630 (+45.8%); vertices 555 -> 678 (+22.2%); fileBytes 37,724 -> 44,580 (+18.2%); structure changed",
+    "FLAG sea_corvette: triangles 1,346 -> 1,884 (+40.0%); vertices 1,433 -> 1,914 (+33.6%); meshes 18 -> 22 (+22.2%); renderers 18 -> 22 (+22.2%); materialSlots 18 -> 22 (+22.2%); fileBytes 89,980 -> 117,832 (+31.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -27308,22 +27322,22 @@
   },
   "landing_craft": {
    "file": "landing_craft.glb",
-   "fileBytes": 29092,
-   "sha1": "d5f0c14ece5d289e",
+   "fileBytes": 38896,
+   "sha1": "19b5f0ee53723aa0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 11,
-   "meshes": 9,
+   "nodes": 12,
+   "meshes": 10,
    "materials": 6,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 9,
-   "submeshes": 9,
-   "materialSlots": 9,
+   "renderers": 10,
+   "submeshes": 10,
+   "materialSlots": 10,
    "materialsUsed": 6,
-   "triangles": 320,
-   "vertices": 404,
+   "triangles": 498,
+   "vertices": 581,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -27331,7 +27345,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 10,
+   "loosePieces": 12,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -27342,25 +27356,25 @@
    "boundsMax": [
     3.5,
     3.975,
-    8.2535
+    8.2624
    ],
    "size": [
-    16.753,
+    16.762,
     7.0,
     4.775
    ],
    "center": [
     0.0,
     1.588,
-    -0.123
+    -0.119
    ],
-   "structureHash": "66add7e38fe3e712",
+   "structureHash": "fb0a4550f7e0261b",
    "color0": {
-    "mean": 0.6677,
-    "min": 0.1809,
-    "max": 0.8222,
-    "p05": 0.2878,
-    "p95": 0.8137,
+    "mean": 0.7752,
+    "min": 0.4229,
+    "max": 0.9987,
+    "p05": 0.456,
+    "p95": 0.9905,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -27373,6 +27387,7 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Bollards",
     "Hull",
     "Mg_barrel",
     "Mg_body",
@@ -31551,8 +31566,8 @@
   },
   "missile_boat": {
    "file": "missile_boat.glb",
-   "fileBytes": 37724,
-   "sha1": "9de8b75b580847ba",
+   "fileBytes": 44580,
+   "sha1": "5d71e8adf78438de",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 14,
@@ -31565,8 +31580,8 @@
    "submeshes": 10,
    "materialSlots": 10,
    "materialsUsed": 6,
-   "triangles": 432,
-   "vertices": 555,
+   "triangles": 630,
+   "vertices": 678,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -31597,13 +31612,13 @@
     1.5,
     0.0
    ],
-   "structureHash": "a2ba5bceea3f394e",
+   "structureHash": "162494b0e6d00fa2",
    "color0": {
-    "mean": 0.6782,
-    "min": 0.1272,
+    "mean": 0.7449,
+    "min": 0.2828,
     "max": 0.9987,
-    "p05": 0.2623,
-    "p95": 0.9816,
+    "p05": 0.4392,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -39523,22 +39538,22 @@
   },
   "sea_corvette": {
    "file": "sea_corvette.glb",
-   "fileBytes": 89980,
-   "sha1": "13fdc3feb654c8f1",
+   "fileBytes": 117832,
+   "sha1": "c8f2961cbe3291c4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 25,
-   "meshes": 18,
+   "nodes": 29,
+   "meshes": 22,
    "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 18,
-   "submeshes": 18,
-   "materialSlots": 18,
+   "renderers": 22,
+   "submeshes": 22,
+   "materialSlots": 22,
    "materialsUsed": 8,
-   "triangles": 1346,
-   "vertices": 1433,
+   "triangles": 1884,
+   "vertices": 1914,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -39546,7 +39561,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 25,
+   "loosePieces": 32,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -39569,13 +39584,13 @@
     4.712,
     0.0
    ],
-   "structureHash": "9ed638f5210bafda",
+   "structureHash": "53b09ea8ef0706e0",
    "color0": {
-    "mean": 0.6481,
-    "min": 0.0999,
+    "mean": 0.7281,
+    "min": 0.278,
     "max": 0.9987,
-    "p05": 0.2065,
-    "p95": 0.8137,
+    "p05": 0.4393,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -39608,9 +39623,11 @@
     "CIWS_ring_mg",
     "Deck",
     "Funnel",
+    "Funnel_cap",
     "Gun_barrel",
     "Gun_house",
     "Hangar",
+    "Hangar_door",
     "Hull",
     "Mast",
     "Mount_gun",
@@ -39621,6 +39638,8 @@
     "Part_mg",
     "Radar",
     "Radar_bar",
+    "Radar_pedestal",
+    "Rails",
     "Superstructure"
    ],
    "category": "ground",

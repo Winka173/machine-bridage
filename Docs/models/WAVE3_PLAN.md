@@ -12,7 +12,7 @@ one agent at a time, each pass on its own branch `feature/p27-wave3<x>` from `le
 | 3e | counter_battery_radar, ew_jammer, bunker_vehicle, ammo_carrier, supply_truck, railgun_truck, shahed_truck, vbied | done (builds and static gates; cards by the lead, DECISIONS 27 wave 3e)
 | 3f | wheeled_gun, zu23_technical, rocket_technical, hover_gunboat, aa_gun_vehicle, airborne_vehicle, fibre_fpv_carrier, interceptor_drone_vehicle | done (builds and static gates; cards by the lead, DECISIONS 27 wave 3f)
 | 3g | microwave_vehicle, nlos_atgm_vehicle, radar_atgm_vehicle, radar_scout, recoilless_jeep, shorad_vehicle, sp_mortar, wheeled_howitzer | done (builds and static gates; cards by the lead, DECISIONS 27 wave 3g)
-| 3h | armored_car, command_vehicle, fpv_carrier, lancet_truck, scout_jeep (+hd), landing_craft, missile_boat, sea_corvette, grad_truck |
+| 3h | armored_car, command_vehicle, fpv_carrier, lancet_truck, scout_jeep (+hd), landing_craft, missile_boat, sea_corvette, grad_truck | done (builds and static gates; cards by the lead, DECISIONS 27 wave 3h)
 
 ## The standing brief for every pass (the agent reads this instead of a long prompt)
 
