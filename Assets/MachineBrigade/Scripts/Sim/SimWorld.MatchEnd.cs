@@ -83,6 +83,20 @@ namespace MachineBrigade.Sim
             ResolvedTime = world.Time;
         }
 
+        /// <summary>Prompt 30 L5: back to running after "Continue" (the win stays recorded by the session).</summary>
+        internal void Reopen()
+        {
+            Phase = MatchPhase.Running;
+            ResolvedTick = -1;
+            ResolvedTime = double.NaN;
+            Elapsed = 0;
+            Skipped = false;
+            Continued++;
+        }
+
+        /// <summary>How many times the match was continued into its endless part.</summary>
+        public int Continued { get; private set; }
+
         /// <summary>The view starts the presentation (from RESOLVED only).</summary>
         public void BeginPresentation(EndKind kind, double? seconds = null)
         {
@@ -121,5 +135,36 @@ namespace MachineBrigade.Sim
     {
         /// <summary>Prompt 30 L3: the match's ending.</summary>
         public MatchEnd Ending { get; } = new();
+    }
+}
+
+namespace MachineBrigade.Sim
+{
+    public sealed partial class SimWorld
+    {
+        private readonly (float hp, float damage)[] _teamStats = { (1f, 1f), (1f, 1f) };
+
+        /// <summary>Prompt 30 L5: mini bosses join without their big attack (Survival).</summary>
+        public bool MiniBossesNoBigAttacks { get; set; }
+
+        /// <summary>Prompt 30 L5: the endless part's stat growth for a side; vehicles that join from now on carry it.</summary>
+        public void SetTeamStats(int team, float hp, float damage)
+        {
+            if (team is 0 or 1) _teamStats[team] = (hp, damage);
+        }
+
+        public (float hp, float damage) TeamStats(int team) => team is 0 or 1 ? _teamStats[team] : (1f, 1f);
+
+        /// <summary>
+        /// Prompt 30 L5: the results' "Continue": the battle runs again from where it stood (the win already recorded).
+        /// Only from a resolved match.
+        /// </summary>
+        public bool ContinueMatch()
+        {
+            if (Ending.Phase == MatchPhase.Running) return false;
+            _over = false;
+            Ending.Reopen();
+            return true;
+        }
     }
 }

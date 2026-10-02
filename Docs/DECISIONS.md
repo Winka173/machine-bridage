@@ -14625,3 +14625,30 @@ Pass 8b3 (lane B, mb_town, 16 models), in `Tools/blender/mb_p27_wave8b.py`. Owne
   base CP of enemies destroyed, then time alive; Boss Rush: bosses, then time (ascending), then parts; Weekly: cleared,
   then attempts (ascending), then total time (ascending).
 - Tests (written): `MatchRulesTests`.
+
+### L5: the endless part
+
+- `Sim/Modes/Endless.cs`: `IEndlessMode` (CanContinue, InEndless, EndlessSteps, ContinueEndless) on `SiegeMode`
+  (Defend), `SandboxMode` (Survival) and `BossRushMode`; `EndlessRules` holds the sheet's numbers. The win, its rewards
+  and stars are recorded at the resolve; the results' "Continue" calls `ModeSession.ContinueEndless` ->
+  `SimWorld.ContinueMatch` (back to RUNNING, `MatchEnd.Continued`) -> the mode's `ContinueEndless`. Losing later takes
+  nothing back (the result recorded is the win; the endless run's own end is a new result).
+- Growth in stats only (`SimWorld.SetTeamStats`, applied to vehicles that join from then on): Defend/Endless/Survival
+  enemy +4 % a wave beyond the finite part, the player +2 % to +30 %; Boss Rush +8 % a boss (bosses and escorts), the
+  player nothing more. The old Endless grew the sides' income (more vehicles); that is gone. Wave sizes are capped at the
+  finite part's last wave (Defend: the wave it ended on; Endless from the menu: Defend's wave 10; Survival: wave 10), and
+  Boss Rush's endless escorts no longer grow in number (`EndlessMoreEscorts` off).
+- Endless (the menu entry) stays Defend with `Endless` from the start: one code path and one board with Defend's
+  endless part (`defendEndless` and `endless` share the order).
+- Survival: 10 waves, a mini boss with wave 5 and a main boss with wave 10 (`SandboxMode.MainBosses`, the mini being the
+  main boss's `MiniVariant`, the mini-boss mutator's versions); won once wave 10 is out and the field is clear; in the
+  endless part a mini boss every 5 waves and a main one every 10. Mini bosses join without their big attack
+  (`SimWorld.MiniBossesNoBigAttacks`). The old Survival (waves for ever, no win) is `FiniteWaves = 0`.
+- Boss Rush: the endless choice moves from the 20 s in-battle pick to the results (`EndlessAtResults`, default on): the
+  rush ends won at its last boss. The in-battle pick code stays for `EndlessAtResults = false`.
+- Coins: `ModeSession.PayEndless` pays 18 x 0.9^k a wave (60 x 0.9^k a boss) as they pass, through
+  `PlayerProfile.PayEndless` (600 a day over every mode); badges at +10/+20/+30 waves, +5/+10 bosses
+  (`PlayerProfile.AwardEndlessBadge`, ids "<mode>.<n>").
+- CHECK reported: the Boss Rush session's roster and limit (the full hunt has no clock, the weekly hunt its own) do not
+  match the sheet's "10 bosses, 30 minutes"; left as they are (a roster change is a design call).
+- Tests (written): `EndlessTests`.

@@ -63,6 +63,11 @@ namespace MachineBrigade.Game.Match
             public List<int> sinceLegendary = new();
             public int winCrateDay;
             public int winCrates;
+
+            /// <summary>Prompt 30 L5: the endless parts' coins paid today (all modes, capped), and the badges earned.</summary>
+            public int endlessDay;
+            public int endlessPaid;
+            public List<string> endlessBadges = new();
             public int adDay;
             public int ads;
             public long lastAdTicks;

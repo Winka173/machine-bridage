@@ -86,3 +86,8 @@ The cloud session writes the Sim only. Each line: file, what, why.
   operations). A skipped story line goes to the results panel and the log. Loss: camera to our HQ or last vehicle,
   explosion, the general's gloating line, 3-4 s, no slow motion. Run `MatchEndTests` and the existing suites (some
   tests may have stepped a world after `IsOver`; they now see it frozen).
+- L5: the results panel's two buttons for Defend, Survival and Boss Rush when `session.CanContinue`: "Đánh tiếp (vô hạn)"
+  (`result.continueEndless`, calls `session.ContinueEndless(world)`, hides the panel, resumes) and "Kết thúc"
+  (`result.endRun`), with `result.endlessKept`. Call `session.PayEndless(modeId)` each frame (or each wave) and toast
+  the coins and badges. Boss Rush's in-battle endless pick no longer opens (EndlessAtResults). Endless's menu entry
+  unchanged. Leaderboards: sort with `world.Catalog.MatchRules.Board(id)`. Run `EndlessTests`, `MatchRulesTests`.

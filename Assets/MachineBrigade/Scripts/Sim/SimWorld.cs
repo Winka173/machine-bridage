@@ -451,6 +451,12 @@ namespace MachineBrigade.Sim
                 vehicle.HpScale *= hp;
                 vehicle.DamageBoost *= damage;
             }
+            // Prompt 30 L5: the endless part's growth (stats only).
+            if (team is 0 or 1 && _teamStats[team] is var (sh, sd) && (sh != 1f || sd != 1f))
+            {
+                vehicle.HpScale *= sh;
+                vehicle.DamageBoost *= sd;
+            }
             vehicle.Hp = vehicle.MaxHp;
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);

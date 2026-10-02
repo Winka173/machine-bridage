@@ -1597,6 +1597,11 @@ namespace MachineBrigade.Game.Hud
             ["result.defeat"] = ("DEFEAT", "THẤT BẠI"),
             ["result.draw"] = ("DRAW", "HÒA"),
             ["result.over"] = ("THE LINE HAS FALLEN", "TRẬN ĐỊA ĐÃ THẤT THỦ"),
+            // Prompt 30 L5: Survival's finite part won, and the results' endless choice.
+            ["result.survived"] = ("TEN WAVES HELD", "ĐÃ TRỤ QUA MƯỜI ĐỢT"),
+            ["result.continueEndless"] = ("Continue (endless)", "Đánh tiếp (vô hạn)"),
+            ["result.endRun"] = ("End", "Kết thúc"),
+            ["result.endlessKept"] = ("Your win and its rewards are already recorded.", "Chiến thắng và phần thưởng đã được ghi nhận."),
             ["result.kills"] = ("Destroyed", "Tiêu diệt"),
             ["result.losses"] = ("Lost", "Tổn thất"),
             ["result.time"] = ("Time", "Thời gian"),

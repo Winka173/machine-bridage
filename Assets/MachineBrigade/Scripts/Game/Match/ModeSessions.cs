@@ -50,6 +50,41 @@ namespace MachineBrigade.Game.Match
 
         public virtual IObjectiveMode Objectives => Mode as IObjectiveMode;
 
+        /// <summary>Prompt 30 L5: the results may offer "Continue" (Defend, Survival, Boss Rush won).</summary>
+        public virtual bool CanContinue => Mode is IEndlessMode e && e.CanContinue;
+
+        /// <summary>
+        /// Prompt 30 L5: the results' "Continue": the win and its rewards were recorded with the result; the battle reopens
+        /// and the mode goes on into its endless part. The results' "End" just leaves.
+        /// </summary>
+        public virtual bool ContinueEndless(SimWorld world)
+        {
+            if (Mode is not IEndlessMode e || !e.CanContinue || !world.ContinueMatch()) return false;
+            e.ContinueEndless(world);
+            _endlessPaidSteps = 0;
+            return true;
+        }
+
+        private int _endlessPaidSteps;
+
+        /// <summary>
+        /// Prompt 30 L5: each wave (boss) beyond the finite part pays 18 (60) x 0.9^k coins, within the day's 600 over
+        /// every mode, and the +10/+20/+30 wave (+5/+10 boss) badges. Called each frame by the runner; returns coins paid now.
+        /// </summary>
+        public int PayEndless(string mode)
+        {
+            if (Mode is not IEndlessMode { InEndless: true } e) return 0;
+            var bosses = Mode is BossRushMode;
+            var paid = 0;
+            while (_endlessPaidSteps < e.EndlessSteps)
+            {
+                paid += PlayerProfile.PayEndless(EndlessRules.Coins(_endlessPaidSteps, bosses));
+                _endlessPaidSteps++;
+                if (EndlessRules.BadgeAt(_endlessPaidSteps, bosses) is var badge && badge > 0) PlayerProfile.AwardEndlessBadge($"{mode}.{badge}");
+            }
+            return paid;
+        }
+
         public virtual HudSpec Hud => new() { Mode = HudMode.Score };
 
         public abstract string Kicker { get; }
@@ -1135,12 +1170,22 @@ namespace MachineBrigade.Game.Match
         public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps) =>
             hud.SetStats(world.CountAlive(PlayerTeam), world.CountAlive(EnemyTeam), _mode.Wave, _mode.SecondsToNextWave, fps);
 
+        public override bool ContinueEndless(SimWorld world)
+        {
+            if (!base.ContinueEndless(world)) return false;
+            _over = false;
+            _wipedSince = _overrunSince = -1;
+            return true;
+        }
+
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
-            if (_over || world.Time <= 5.0 || !Lost(world)) return null;
+            // Prompt 30 L5: won once the tenth wave is cleared (the mode's result); lost as before.
+            var won = _mode.Result is { WinningTeam: PlayerTeam };
+            if (_over || !won && (world.Time <= 5.0 || !Lost(world))) return null;
             _over = true;
             world.IsOver = true;
-            var outcome = new MatchOutcome { Result = -1, Subtitle = Strings.Get("mode.survival"), Note = Strings.Get("result.over") };
+            var outcome = new MatchOutcome { Result = won ? 1 : -1, Subtitle = Strings.Get("mode.survival"), Note = Strings.Get(won ? "result.survived" : "result.over") };
             outcome.Rows.Add((Strings.Get("result.waves"), _mode.Wave.ToString()));
             outcome.Rows.Add((Strings.Get("result.kills"), kills.ToString()));
             outcome.Rows.Add((Strings.Get("result.time"), Clock(world.Time)));
