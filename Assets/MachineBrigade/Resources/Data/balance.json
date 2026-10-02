@@ -1001,7 +1001,7 @@
     { "id": "p26_roc_roc_atgm", "inherits": "boss_missiles", "weaponFamily": "", "real": "Kornet (dropped from the bay)", "damage": 300, "cooldown": 2, "pen": 5, "range": 55 },
     { "id": "p26_roc_main_roc_bombs", "inherits": "p26_roc_roc_bombs", "caliberMm": 0, "edge": 20, "splash": 10, "cooldown": 33.34, "damage": 700 },
     { "id": "p26_roc_direct_roc_atgm", "inherits": "p26_roc_roc_atgm", "burstInterval": 0.6, "burst": 2, "cooldown": 19.4, "damage": 230 },
-    { "id": "p26_roc_close_twin_30_bmpt", "inherits": "twin_30_bmpt", "weaponFamily": "", "cooldown": 1.5, "damage": 22 },
+    { "id": "p26_roc_close_twin_30_bmpt", "inherits": "twin_30_bmpt", "weaponFamily": "", "cooldown": 1.45, "damage": 22 },
     { "id": "p26_daedalus_dae57", "inherits": "gun_57mm", "weaponVariantId": "", "weaponFamily": "", "real": "AU-220 57 mm (belly)", "damageType": "HighExplosive", "damage": 120, "burst": 2, "burstInterval": 0.2, "cooldown": 2.3, "pen": 4, "splash": 3.5, "edge": 7 },
     { "id": "p26_daedalus_dae_laser", "inherits": "orbital_laser", "weaponFamilyId": "laser_targeting_laser", "real": "targeting laser (300 kW)", "size": 300, "powerKw": 300, "damage": 40 },
     { "id": "p26_daedalus_sec_dae57", "inherits": "p26_daedalus_dae57", "real": "AU-220 57 mm (twin belly mount)", "salvoMode": "SIMULTANEOUS", "barrels": 2, "burstInterval": 0.5, "burst": 4, "edge": 6, "splash": 3, "cooldown": 2.79, "damage": 120 },
