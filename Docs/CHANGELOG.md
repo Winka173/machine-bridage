@@ -7,6 +7,17 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+Nothing yet.
+
+## v0.34.0: Prompt 26 (bosses: health, weapons, two-layer blasts, sizes, Boss Hunt health), prompt 27 wave 1 (the model pipeline and 43 new models), prompt 28 saved
+
+2026-10-02 · merged into main together with v0.33.0 (the owner: "toàn bộ"); the design review PDF was rebuilt first (316 pages)
+
+Main merges on feature/visual-overhaul since v0.33.0 was written (newest first): 3329117 the PDF rebuild; 593d785 wave 1c
+pass B; 5ae66c9 wave 1c pass A; ba5eda4 wave 1b; 66ce86a wave 1a + Monster, Nyx; 8138b9b preview, budgets, Art Bible,
+wave plan; 67dc88a experiment 1; 1536eff Step 0 and the GLB baseline; e25dc0b the 318-page PDF; 4a2b4c1 prompt 26 pass 3;
+4633f03 prompt 26 pass 2; 78dbf58 prompt 26 pass 1. Docs only: 34b06fa prompt 28 and Docs/ai/Machine_Brigade_AI_Research.xlsx.
+
 ### Design review PDF rebuilt (DECISIONS "27 PDF rebuild")
 
 - 316 pages: wave 1 models and cards, a new section 10h on the prompt 27 model pipeline, the Unreleased headings

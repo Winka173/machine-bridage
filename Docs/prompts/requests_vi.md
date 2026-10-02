@@ -198,3 +198,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) xong 1b 1c luôn
 - (02/10) update pdf, rồi làm khoảng 3 model đợt 2
 - (02/10) hủy agent đợt 2, chỉ pdf
+- (02/10) merge toàn bộ vào main (v0.33.0, prompt 27 đợt 1, PDF, prompt 28)
