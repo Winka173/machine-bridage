@@ -104,19 +104,19 @@ Ground DPS **462 -> 546** (118 %); anti-air only 0 -> 0.
 
 ### drone_mothership
 
-Ground DPS **1304 -> 1304** (100 %); anti-air only 0 -> 0.
+Ground DPS **1304 -> 1188** (91 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `p26_matriarch_tiny_mothership_cannon` | cal_57 | 120 x 4 / 41.06 s = 12 | 120 x 4 / 41.06 s = 12 | 3 / 6 |
+| 0 | `p26_matriarch_tiny_mothership_cannon` | cal_57 | 120 x 4 / 41.06 s = 12 | 120 x 4 / 4.29 s = 112 | 3 / 6 |
 | 1 | `p26_matriarch_ma_drones` | drone_zala_lancet_3_swarm | 320 x 6 / 5.00 s = 384 | 320 x 6 / 5.00 s = 384 | 3 / 6 |
-| 2 | `p26_matriarch_close_boss_flak` | cal_35 | 25 x 41 / 6.11 s = 168 | 25 x 41 / 6.11 s = 168 | 2.5 / 0 |
-| 3 | `p26_matriarch_close_boss_flak` | cal_35 | 25 x 41 / 6.11 s = 168 | 25 x 41 / 6.11 s = 168 | 2.5 / 0 |
-| 4 | `p26_matriarch_tiny_mothership_cannon` | cal_57 | 120 x 4 / 41.06 s = 12 | 120 x 4 / 41.06 s = 12 | 3 / 6 |
-| 5 | `p26_matriarch_direct_ma_atgm` | atgm_kornet | 230 x 1 / 3.29 s = 70 | 230 x 1 / 3.29 s = 70 | 0 / 0 |
-| 6 | `p26_matriarch_sec_autocannon_30` | cal_30 | 22 x 10 / 1.04 s = 211 | 22 x 10 / 1.04 s = 211 | 0 / 0 |
-| 7 | `p26_matriarch_sec_autocannon_30` | cal_30 | 22 x 10 / 1.04 s = 211 | 22 x 10 / 1.04 s = 211 | 0 / 0 |
-| 8 | `p26_matriarch_direct_ma_atgm` | atgm_kornet | 230 x 1 / 3.29 s = 70 | 230 x 1 / 3.29 s = 70 | 0 / 0 |
+| 2 | `p26_matriarch_close_boss_flak` | cal_35 | 25 x 41 / 6.11 s = 168 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
+| 3 | `p26_matriarch_close_boss_flak` | cal_35 | 25 x 41 / 6.11 s = 168 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
+| 4 | `p26_matriarch_tiny_mothership_cannon` | cal_57 | 120 x 4 / 41.06 s = 12 | 120 x 4 / 4.29 s = 112 | 3 / 6 |
+| 5 | `p26_matriarch_direct_ma_atgm` | atgm_kornet | 230 x 1 / 3.29 s = 70 | 230 x 1 / 20.00 s = 12 | 0 / 0 |
+| 6 | `p26_matriarch_sec_autocannon_30` | cal_30 | 22 x 10 / 1.04 s = 211 | 22 x 10 / 2.50 s = 88 | 0 / 0 |
+| 7 | `p26_matriarch_sec_autocannon_30` | cal_30 | 22 x 10 / 1.04 s = 211 | 22 x 10 / 2.50 s = 88 | 0 / 0 |
+| 8 | `p26_matriarch_direct_ma_atgm` | atgm_kornet | 230 x 1 / 3.29 s = 70 | 230 x 1 / 20.00 s = 12 | 0 / 0 |
 
 ### nuke_train
 
@@ -399,12 +399,12 @@ Ground DPS **234 -> 234** (100 %); anti-air only 0 -> 0.
 
 ### locust
 
-Ground DPS **552 -> 552** (100 %); anti-air only 0 -> 0.
+Ground DPS **552 -> 575** (104 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `p26_matriarch_ma_drones` | drone_zala_lancet_3_swarm | 320 x 6 / 5.00 s = 384 | 320 x 6 / 5.00 s = 384 | 3 / 6 |
-| 1 | `p26_matriarch_close_boss_flak` | cal_35 | 25 x 41 / 6.11 s = 168 | 25 x 41 / 6.11 s = 168 | 2.5 / 0 |
+| 1 | `p26_matriarch_close_boss_flak` | cal_35 | 25 x 41 / 6.11 s = 168 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
 
 ### behemoth_mk2
 
@@ -515,13 +515,13 @@ Ground DPS **1320 -> 1320** (100 %); anti-air only 0 -> 0.
 
 ### stymphalos
 
-Ground DPS **622 -> 622** (100 %); anti-air only 0 -> 0.
+Ground DPS **622 -> 586** (94 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `p26_matriarch_ma_drones` | drone_zala_lancet_3_swarm | 320 x 6 / 5.00 s = 384 | 320 x 6 / 5.00 s = 384 | 3 / 6 |
-| 1 | `p26_matriarch_close_boss_flak` | cal_35 | 25 x 41 / 6.11 s = 168 | 25 x 41 / 6.11 s = 168 | 2.5 / 0 |
-| 2 | `p26_matriarch_direct_ma_atgm` | atgm_kornet | 230 x 1 / 3.29 s = 70 | 230 x 1 / 3.29 s = 70 | 0 / 0 |
+| 1 | `p26_matriarch_close_boss_flak` | cal_35 | 25 x 41 / 6.11 s = 168 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
+| 2 | `p26_matriarch_direct_ma_atgm` | atgm_kornet | 230 x 1 / 3.29 s = 70 | 230 x 1 / 20.00 s = 12 | 0 / 0 |
 
 ### nyx
 
@@ -562,7 +562,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | mobile_fortress | 954 | 1204 | 126 % | 145 -> 145 | - |
 | armored_train | 660 | 952 | 144 % | 0 -> 0 | - |
 | mega_gunship | 462 | 546 | 118 % | 0 -> 0 | - |
-| drone_mothership | 1304 | 1304 | 100 % | 0 -> 0 | - |
+| drone_mothership | 1304 | 1188 | 91 % | 0 -> 0 | - |
 | nuke_train | 1751 | 1751 | 100 % | 62 -> 62 | `p26_nemesis_sec_boss_rockets` 40 tubes |
 | silver_bug | 1638 | 1638 | 100 % | 0 -> 0 | - |
 | behemoth_inferno | 282 | 282 | 100 % | 0 -> 0 | - |
@@ -586,7 +586,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | bastion_mk0 | 239 | 239 | 100 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
 | fenrir | 350 | 380 | 109 % | 0 -> 0 | - |
 | scylla | 234 | 234 | 100 % | 0 -> 0 | - |
-| locust | 552 | 552 | 100 % | 0 -> 0 | - |
+| locust | 552 | 575 | 104 % | 0 -> 0 | - |
 | behemoth_mk2 | 569 | 515 | 90 % | 0 -> 0 | - |
 | icarus_mk0 | 400 | 400 | 100 % | 0 -> 0 | - |
 | argus | 316 | 316 | 100 % | 0 -> 0 | - |
@@ -595,7 +595,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | monster | 792 | 792 | 100 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
 | garuda | 1532 | 1532 | 100 % | 0 -> 0 | - |
 | hyperion | 1320 | 1320 | 100 % | 0 -> 0 | - |
-| stymphalos | 622 | 622 | 100 % | 0 -> 0 | - |
+| stymphalos | 622 | 586 | 94 % | 0 -> 0 | - |
 | nyx | 239 | 239 | 100 % | 0 -> 0 | - |
 | cerberus | 875 | 879 | 101 % | 0 -> 0 | `p26_behemoth_sec_be_rockets` 40 tubes |
 | hydra | 707 | 707 | 100 % | 0 -> 0 | `p26_typhon_sec_ty57` 2 barrels together |
