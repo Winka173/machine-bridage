@@ -40,16 +40,21 @@ namespace MachineBrigade.Game.Hud
     /// </summary>
     internal sealed class ResultPanel
     {
-        private readonly Action _again, _menu, _doubleCoins, _next, _checkpoint;
+        private readonly Action _again, _menu, _doubleCoins, _next, _checkpoint, _continueEndless;
         private readonly Label _outcome, _title, _note, _coins, _xp;
         private readonly IconElement _outcomeIcon;
         private readonly VisualElement _head, _stars, _rows, _side, _rewardBox, _reward, _doubled, _unlocks, _hintBox, _hints, _buttons, _claim;
+
+        /// <summary>Prompt 30 L3: the story lines the match end cut, under the numbers.</summary>
+        private readonly VisualElement _storyBox, _story;
         private readonly KitButton _deck;
         private KitButton _double;
         private RewardView _shown;
 
-        public ResultPanel(Action again, Action menu, Action doubleCoins, Action next, Action checkpoint, Action deck = null)
+        public ResultPanel(Action again, Action menu, Action doubleCoins, Action next, Action checkpoint, Action deck = null,
+            Action continueEndless = null)
         {
+            _continueEndless = continueEndless;
             _again = again;
             _menu = menu;
             _doubleCoins = doubleCoins;
@@ -76,6 +81,11 @@ namespace MachineBrigade.Game.Hud
             main.Add(_stars);
             _rows = Kit.Box("fc-result__rows");
             main.Add(_rows);
+            _storyBox = Kit.Box("fc-result__block fc-result__story");
+            _storyBox.Add(Kit.Caption(Strings.Get("result.story")));
+            _story = Kit.Box("");
+            _storyBox.Add(_story);
+            main.Add(_storyBox);
             columns.Add(main);
 
             _side = Kit.Box("fc-result__side");
@@ -127,7 +137,7 @@ namespace MachineBrigade.Game.Hud
         /// <param name="outcome">1 victory, 0 draw, -1 defeat.</param>
         /// <param name="title">The mission's name or the mode's.</param>
         public void Show(int outcome, string title, IReadOnlyList<(string label, string value)> rows, RewardView reward,
-            string note = null, IReadOnlyList<string> hints = null)
+            string note = null, IReadOnlyList<string> hints = null, IReadOnlyList<string> story = null, bool endless = false)
         {
             Kit.ApplyTextSize(Root);
             _shown = reward;
@@ -179,7 +189,18 @@ namespace MachineBrigade.Game.Hud
             _hintBox.style.display = _hints.childCount > 0 ? DisplayStyle.Flex : DisplayStyle.None;
             _side.style.display = hasReward || _hints.childCount > 0 ? DisplayStyle.Flex : DisplayStyle.None;
 
-            BuildButtons(outcome, reward);
+            // Prompt 30 L3: a story line the match end cut is read here (it is in the dialogue log too).
+            _story.Clear();
+            if (story != null)
+                foreach (var line in story)
+                {
+                    var label = Kit.Text(line, "fc-body fc-result__story-line");
+                    label.enableRichText = true;
+                    _story.Add(label);
+                }
+            _storyBox.style.display = _story.childCount > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+
+            BuildButtons(outcome, reward, endless && _continueEndless != null);
             Root.style.display = DisplayStyle.Flex;
         }
 
@@ -188,9 +209,18 @@ namespace MachineBrigade.Game.Hud
         /// a win goes on (the next mission, or back to the menu), a loss plays again (from the
         /// checkpoint when a multi-stage mission kept one).
         /// </summary>
-        private void BuildButtons(int outcome, RewardView reward)
+        private void BuildButtons(int outcome, RewardView reward, bool endless = false)
         {
             _buttons.Clear();
+            if (outcome > 0 && endless)
+            {
+                // Prompt 30 L5: the won Defend, Survival or Boss Rush may go on. "End" leaves (the reward is claimed on the way
+                // out, as always); "Continue (endless)" claims it first and resumes the battle.
+                _buttons.Add(new KitButton(ButtonTier.Secondary, Strings.Get("result.endRun"), _menu, "home"));
+                BuildClaim(reward);
+                _buttons.Add(new KitButton(ButtonTier.Primary, Strings.Get("result.continueEndless"), _continueEndless, "arrow"));
+                return;
+            }
             var next = outcome > 0 && reward is { HasNext: true };
             var checkpoint = outcome <= 0 && reward is { CanResume: true };
             if (outcome > 0)
@@ -203,6 +233,15 @@ namespace MachineBrigade.Game.Hud
                 _buttons.Add(new KitButton(ButtonTier.Secondary, Strings.Get("result.menu"), _menu, "home"));
                 if (checkpoint) _buttons.Add(new KitButton(ButtonTier.Secondary, Strings.Get("result.fromStart"), _again, "restart"));
             }
+            BuildClaim(reward);
+            if (outcome > 0) _buttons.Add(new KitButton(ButtonTier.Primary, Strings.Get("result.continue"), next ? _next : _menu, "arrow"));
+            else if (checkpoint) _buttons.Add(new KitButton(ButtonTier.Primary, Strings.Get("result.again"), _checkpoint, "flag"));
+            else _buttons.Add(new KitButton(ButtonTier.Primary, Strings.Get("result.again"), _again, "restart"));
+        }
+
+        /// <summary>Doubling the coins with an ad, by the coins it doubles.</summary>
+        private void BuildClaim(RewardView reward)
+        {
             _claim.Clear();
             _double = null;
             if (reward is { CanDouble: true, Coins: > 0 })
@@ -211,10 +250,10 @@ namespace MachineBrigade.Game.Hud
                 _claim.Add(_double);
             }
             _claim.style.display = _double != null ? DisplayStyle.Flex : DisplayStyle.None;
-            if (outcome > 0) _buttons.Add(new KitButton(ButtonTier.Primary, Strings.Get("result.continue"), next ? _next : _menu, "arrow"));
-            else if (checkpoint) _buttons.Add(new KitButton(ButtonTier.Primary, Strings.Get("result.again"), _checkpoint, "flag"));
-            else _buttons.Add(new KitButton(ButtonTier.Primary, Strings.Get("result.again"), _again, "restart"));
         }
+
+        /// <summary>Prompt 30 L5: closes (the battle goes on).</summary>
+        public void Hide() => Root.style.display = DisplayStyle.None;
 
         /// <summary>The coins were paid: shows the final amount, and "×2" after an ad.</summary>
         public void ShowClaimed(int coins, bool doubled)

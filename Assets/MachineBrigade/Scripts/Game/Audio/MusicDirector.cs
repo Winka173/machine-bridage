@@ -151,6 +151,13 @@ namespace MachineBrigade.Game.Audio
             _stinger.Play();
         }
 
+        /// <summary>Prompt 30 L5: the battle goes on after its result (the endless part): the stinger stops, the battle's music returns.</summary>
+        public void Resume()
+        {
+            _stinger.Stop();
+            Switch(_boss ? Mood.Boss : _base);
+        }
+
         private void Switch(Mood mood)
         {
             var name = mood switch

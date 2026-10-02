@@ -426,7 +426,8 @@ namespace MachineBrigade.Game.Hud
                 _safe.Add(_dialogueLog.Root);
             }
             _result = new ResultPanel(() => RestartPressed?.Invoke(), () => MenuPressed?.Invoke(), () => DoubleRewardPressed?.Invoke(),
-                () => NextMissionPressed?.Invoke(), () => CheckpointPressed?.Invoke(), () => DeckPressed?.Invoke());
+                () => NextMissionPressed?.Invoke(), () => CheckpointPressed?.Invoke(), () => DeckPressed?.Invoke(),
+                () => ContinueEndlessPressed?.Invoke());
             _safe.Add(_result.Root);
             _choice = new ChoicePanel();
             _safe.Add(_choice.Root);
@@ -567,6 +568,9 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>The result screen's "next mission" button (campaign).</summary>
         public event Action NextMissionPressed;
+
+        /// <summary>Prompt 30 L5: the results' "Continue (endless)".</summary>
+        public event Action ContinueEndlessPressed;
 
         /// <summary>The result screen's "back to the checkpoint" button (a lost multi-stage mission).</summary>
         public event Action CheckpointPressed;
@@ -804,12 +808,23 @@ namespace MachineBrigade.Game.Hud
         /// <param name="title">The mission's name or the mode's.</param>
         /// <param name="note">A line under the title (an endless run's record); null for none.</param>
         /// <param name="hints">After a defeat: one or two things to change, with a button to the deck.</param>
+        /// <param name="story">Prompt 30 L3: the story lines the match end cut (rich text, the speaker first); null or empty for none.</param>
+        /// <param name="endless">Prompt 30 L5: the won battle may go on into its endless part ("Continue (endless)" / "End").</param>
         public void ShowResult(int outcome, string title, IReadOnlyList<(string, string)> rows, RewardView reward = null,
-            string note = null, IReadOnlyList<string> hints = null)
+            string note = null, IReadOnlyList<string> hints = null, IReadOnlyList<string> story = null, bool endless = false)
         {
             if (_pause != null) _pause.Visible = false;
-            _result?.Show(outcome, title, rows, reward, note, hints);
+            _result?.Show(outcome, title, rows, reward, note, hints, story, endless);
         }
+
+        /// <summary>Prompt 30 L5: the results close (the battle goes on into its endless part).</summary>
+        public void HideResult() => _result?.Hide();
+
+        /// <summary>
+        /// Prompt 30 L3: the match end plays: the card tray, the selection strip and the command buttons hide (the boss bar, the
+        /// mission bar and the notices stay, so does the dialogue).
+        /// </summary>
+        public void SetEnding(bool on) => _safe?.EnableInClassList("fc-hud--ending", on);
 
         private VisualElement _letterTop, _letterBottom;
         private float _shownLetterbox = -1f;
