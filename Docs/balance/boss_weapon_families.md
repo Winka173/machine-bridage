@@ -304,13 +304,13 @@ Ground DPS **1382 -> 652** (47 %); anti-air only 0 -> 0. Made up: `p26_moloch_di
 
 ### daedalus
 
-Ground DPS **745 -> 745** (100 %); anti-air only 0 -> 0. Made up: `p26_daedalus_sec_dae57` 2 barrels together.
+Ground DPS **745 -> 778** (104 %); anti-air only 0 -> 0. Made up: `p26_daedalus_sec_dae57` 2 barrels together.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `p26_daedalus_direct_dae_laser` | laser_targeting_laser | 16.5 x 1 / 0.10 s = 165 | 16.5 x 1 / 0.10 s = 165 | 1.5 / 0 |
-| 1 | `p26_daedalus_sec_dae57` | cal_57 | 120 x 2 / 1.16 s = 208 | 120 x 2 / 1.16 s = 208 | 3 / 6 |
-| 2 | `p26_daedalus_sec_dae57` | cal_57 | 120 x 2 / 1.16 s = 208 | 120 x 2 / 1.16 s = 208 | 3 / 6 |
+| 1 | `p26_daedalus_sec_dae57` | cal_57 | 120 x 2 / 1.16 s = 208 | 120 x 8 (2 together) / 4.29 s = 224 | 3 / 6 |
+| 2 | `p26_daedalus_sec_dae57` | cal_57 | 120 x 2 / 1.16 s = 208 | 120 x 8 (2 together) / 4.29 s = 224 | 3 / 6 |
 | 3 | `p26_daedalus_direct_dae_laser` | laser_targeting_laser | 16.5 x 1 / 0.10 s = 165 | 16.5 x 1 / 0.10 s = 165 | 1.5 / 0 |
 
 ### kronos
@@ -577,7 +577,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | sky_fortress | 418 | 418 | 100 % | 0 -> 0 | - |
 | leviathan | 771 | 956 | 124 % | 804 -> 804 | - |
 | moloch | 1382 | 652 | 47 % **(< 80 %)** | 0 -> 0 | `p26_moloch_direct_mo120ap` 2 barrels together, `p26_moloch_main_mo120` 2 barrels together |
-| daedalus | 745 | 745 | 100 % | 0 -> 0 | `p26_daedalus_sec_dae57` 2 barrels together |
+| daedalus | 745 | 778 | 104 % | 0 -> 0 | `p26_daedalus_sec_dae57` 2 barrels together |
 | kronos | 439 | 439 | 100 % | 0 -> 0 | - |
 | typhon | 707 | 707 | 100 % | 145 -> 145 | `p26_typhon_sec_ty57` 2 barrels together |
 | ixion | 615 | 615 | 100 % | 0 -> 0 | - |
