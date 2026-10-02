@@ -2576,6 +2576,16 @@
    "changes": [
     "FLAG ixion: triangles 17,324 -> 35,714 (+106.2%); vertices 22,038 -> 45,716 (+107.4%); meshes 40 -> 123 (+207.5%); renderers 40 -> 123 (+207.5%); materials 11 -> 17 (+54.5%); materialSlots 40 -> 123 (+207.5%); fileBytes 1,079,984 -> 2,311,660 (+114.0%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "zu23_technical"
+   ],
+   "reason": "P35 pilot 2: ZU-23 technical rebuilt from scratch on kit35 (7.4k triangles, over the light max: owner rule, kept)",
+   "changes": [
+    "FLAG zu23_technical: triangles 1,996 -> 7,436 (+272.5%); vertices 2,394 -> 10,488 (+338.1%); meshes 22 -> 53 (+140.9%); renderers 22 -> 53 (+140.9%); materials 9 -> 11 (+22.2%); materialSlots 22 -> 53 (+140.9%); fileBytes 140,136 -> 559,032 (+298.9%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -57202,24 +57212,24 @@
   },
   "zu23_technical": {
    "file": "zu23_technical.glb",
-   "fileBytes": 140136,
-   "sha1": "c22c91f8bfb785e9",
+   "fileBytes": 559032,
+   "sha1": "9a870d4ed4e03829",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 28,
-   "meshes": 22,
-   "materials": 9,
+   "nodes": 59,
+   "meshes": 53,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 22,
-   "submeshes": 22,
-   "materialSlots": 22,
-   "materialsUsed": 9,
-   "triangles": 1996,
-   "vertices": 2394,
+   "renderers": 53,
+   "submeshes": 53,
+   "materialSlots": 53,
+   "materialsUsed": 11,
+   "triangles": 7436,
+   "vertices": 10488,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -57227,36 +57237,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 45,
-   "openEdges": 0,
-   "nonManifoldEdges": 2,
+   "loosePieces": 272,
+   "openEdges": 4,
+   "nonManifoldEdges": 0,
    "boundsMin": [
-    -0.77,
+    -0.805,
     0.0,
-    -2.16
+    -2.25
    ],
    "boundsMax": [
-    0.77,
-    1.58,
-    2.23
+    0.805,
+    1.64,
+    2.3319
    ],
    "size": [
-    4.39,
-    1.54,
-    1.58
+    4.582,
+    1.61,
+    1.64
    ],
    "center": [
     0.0,
-    0.79,
-    0.035
+    0.82,
+    0.041
    ],
-   "structureHash": "122f9dfb4778c591",
+   "structureHash": "cc19c2239b2438c6",
    "color0": {
-    "mean": 0.7051,
-    "min": 0.0863,
+    "mean": 0.5401,
+    "min": 0.0639,
     "max": 1.0,
-    "p05": 0.1246,
-    "p95": 0.9987,
+    "p05": 0.117,
+    "p95": 0.8137,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -57286,12 +57296,37 @@
    "runtimeSuffixed": [],
    "nodeNames": [
     "Ammo_boxes",
-    "Body",
+    "Antennas",
+    "Axles",
+    "Bed",
+    "Bed_floor",
+    "Body_dark",
+    "Bull_bar",
+    "Bumpers",
+    "Cab",
+    "Cab_fit",
     "Chassis",
+    "Exhaust",
+    "Fender_flares",
     "Glass",
-    "Gun_carriage",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_fit",
+    "Gun_pedestal",
+    "Gun_seats",
+    "Hubs",
+    "Hubs.001",
+    "Hubs.002",
+    "Jerrycans",
+    "Kit_hinges",
+    "Kit_hooks",
+    "Kit_straps",
+    "Lamp_rims",
+    "Lamp_rims.001",
     "Lamps",
-    "Light_rims",
+    "Lamps.001",
+    "Magazines",
     "Main_cannon",
     "Main_cannon_2",
     "Muzzle_brake",
@@ -57301,23 +57336,31 @@
     "Part_wheelb",
     "Point_exhaust",
     "Point_fire",
-    "Seats",
     "Sight",
-    "Steel",
-    "Tail_lamps",
+    "Spare_rim",
+    "Spare_wheel",
+    "Suspension",
+    "Team_band",
     "Turret",
     "Turret_armor",
     "Tyres",
     "Tyres.001",
     "Tyres.002",
+    "Wheel_nuts",
+    "Wheel_nuts.001",
+    "Wheel_nuts.002",
     "Wheels",
     "Wheels.001",
-    "Wheels.002"
+    "Wheels.002",
+    "Window_frames",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "vertices 10,488 over the ground normal budget 10,100"
+   ],
    "units": [
     "zu23_technical"
    ],
