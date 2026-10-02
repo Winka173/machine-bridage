@@ -786,6 +786,18 @@
     "FLAG sp_mortar: triangles 2,344 -> 2,806 (+19.7%); vertices 2,416 -> 3,035 (+25.6%); meshes 11 -> 21 (+90.9%); renderers 11 -> 21 (+90.9%); materials 5 -> 6 (+20.0%); materialSlots 11 -> 21 (+90.9%); fileBytes 132,364 -> 172,008 (+30.0%); structure changed",
     "FLAG wheeled_howitzer: triangles 1,564 -> 2,136 (+36.6%); vertices 1,674 -> 2,286 (+36.6%); meshes 10 -> 18 (+80.0%); renderers 10 -> 18 (+80.0%); materials 6 -> 8 (+33.3%); materialSlots 10 -> 18 (+80.0%); fileBytes 93,908 -> 132,376 (+41.0%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "nlos_atgm_vehicle",
+    "radar_atgm_vehicle"
+   ],
+   "reason": "3g fix: brighter (ao .35, paler tubes, rails, missile)",
+   "changes": [
+    "nlos_atgm_vehicle: bytes only",
+    "radar_atgm_vehicle: bytes only"
+   ]
   }
  ],
  "models": {
@@ -33121,7 +33133,7 @@
   "nlos_atgm_vehicle": {
    "file": "nlos_atgm_vehicle.glb",
    "fileBytes": 135960,
-   "sha1": "b3456e7982308eca",
+   "sha1": "b3a08b484dc04aec",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -33170,10 +33182,10 @@
    ],
    "structureHash": "49f2757f0c0ecc26",
    "color0": {
-    "mean": 0.7111,
-    "min": 0.2687,
+    "mean": 0.7589,
+    "min": 0.4314,
     "max": 1.0,
-    "p05": 0.3759,
+    "p05": 0.5448,
     "p95": 0.9987,
     "outOfRange": 0
    },
@@ -34820,7 +34832,7 @@
   "radar_atgm_vehicle": {
    "file": "radar_atgm_vehicle.glb",
    "fileBytes": 204700,
-   "sha1": "e2cc76ff10db3cfe",
+   "sha1": "860cb5964fb37937",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -34869,10 +34881,10 @@
    ],
    "structureHash": "7f0e66cd744b8e03",
    "color0": {
-    "mean": 0.6774,
-    "min": 0.2291,
+    "mean": 0.7303,
+    "min": 0.4009,
     "max": 1.0,
-    "p05": 0.3589,
+    "p05": 0.4898,
     "p95": 0.9898,
     "outOfRange": 0
    },

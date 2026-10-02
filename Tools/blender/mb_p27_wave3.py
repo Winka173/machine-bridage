@@ -2293,7 +2293,8 @@ def interceptor_drone_vehicle(a):
 
 
 # ============================================================================= pass 3g: sensor, ATGM, mortar and gun vehicles
-def _truck_pn_v2(a, length, width, cab, axles, r=.45, bed_h=1.25, cab_h=2.0, armoured=True):
+def _truck_pn_v2(a, length, width, cab, axles, r=.45, bed_h=1.25, cab_h=2.0, armoured=True,
+                  chassis='Undercarriage'):
     """pn._truck on the V2 kit (extruded cab with a sloped screen, V2 wheels, chamfered bed, deck plate, bumper, grille);
     same parts and geometry. Returns the bed top."""
     hd.mark(a, False)
@@ -2330,7 +2331,7 @@ def _truck_pn_v2(a, length, width, cab, axles, r=.45, bed_h=1.25, cab_h=2.0, arm
     return bed_h
 
 
-def _launcher_v2(a, parent, loc, size, cells, pitch, mat='Armor'):
+def _launcher_v2(a, parent, loc, size, cells, pitch, mat='Armor', tube_mat='Undercarriage'):
     """pn._launcher_box on the V2 kit: a chamfered box tilted up by `pitch`, ringed tube mouths, side rails; returns the
     front centre like the original."""
     w, d, h = size
@@ -2338,7 +2339,7 @@ def _launcher_v2(a, parent, loc, size, cells, pitch, mat='Armor'):
     k.block(box, size, loc=loc, rot=(-pitch, 0, 0), chamfer=.05, ends=(True, True))
     c, s = math.cos(pitch), math.sin(pitch)
     front = (loc[0], loc[1] - (d / 2 + .02) * c, loc[2] + (d / 2 + .02) * s)
-    tubes = a.part('Tubes', 'Undercarriage', parent)
+    tubes = a.part('Tubes', tube_mat, parent)
     rr = min(w / cells[0], h / cells[1]) * .36
     for i in range(cells[0]):
         for j in range(cells[1]):
@@ -2382,7 +2383,7 @@ def nlos_atgm_vehicle(a):
     top = _truck_pn_v2(a, 6.0, 2.1, 1.9, 3, r=.45, bed_h=1.2)
     t = a.pivot('Turret', (0, 1.4, top))
     k.block(a.part('Hinge', 'Armor', t), (1.4, .8, .35), loc=(0, .5, .2), chamfer=.04)
-    front = _launcher_v2(a, t, (0, 0, .7), (1.6, 1.8, .9), (2, 2), math.radians(30), mat='Team')
+    front = _launcher_v2(a, t, (0, 0, .7), (1.6, 1.8, .9), (2, 2), math.radians(30), mat='Team', tube_mat='Steel')
     a.pivot('Muzzle_missile', front, t)
     k.lathe(a.part('Sensor_mast', 'Steel'), [(.08, -.5), (.08, -.15), (.06, -.13), (.06, .3)], loc=(-.7, -1.6, 2.5), seg=8)
     k.block(a.part('Sensor', 'Glass'), (.3, .3, .25), loc=(-.7, -1.6, 2.9), chamfer=.04)
@@ -2397,13 +2398,13 @@ def radar_atgm_vehicle(a):
     missile, the radar box with a lens; same nodes."""
     top = _tracked_v2(a, 5.6, 2.5, 1.0, 1.45, 6)
     t = a.pivot('Turret', (0, -.8, top))
-    rails = a.part('Rails', 'Team', t)
+    rails = a.part('Rails', 'Armor', t)
     for x in (-.45, .45):
         _ybox(rails, (.25, 2.2, .25), (x, -.4, .5), rot=(.3, 0, 0), chamfer=.04)
     arms = a.part('Rail_arms', 'Steel', t)
     for x in (-.45, .45):
         k.block(arms, (.12, .3, .45), loc=(x, .2, .22), chamfer=.02)
-    k.lathe(a.part('Missiles', 'Armor', t), [(0, -.9), (.1, -.9), (.1, .5), (.08, .7), (.04, .9), (0, .92)],
+    k.lathe(a.part('Missiles', 'Steel', t), [(0, -.9), (.1, -.9), (.1, .5), (.08, .7), (.04, .9), (0, .92)],
             loc=(0, -.5, .72), rot=(R90 - .3, 0, 0), seg=8)
     a.pivot('Muzzle_missile', (0, -1.55, .85), t)
     r = a.pivot('Radar', (0, 1.4, top + .1))
@@ -2649,8 +2650,8 @@ BUILDERS = {
     'fibre_fpv_carrier': (fibre_fpv_carrier, _opts('fibre_fpv_carrier')),
     'interceptor_drone_vehicle': (interceptor_drone_vehicle, _opts('interceptor_drone_vehicle')),
     'microwave_vehicle': (microwave_vehicle, dict(_opts('microwave_vehicle'), ao_strength=.65)),
-    'nlos_atgm_vehicle': (nlos_atgm_vehicle, dict(_opts('nlos_atgm_vehicle'), ao_strength=.65)),
-    'radar_atgm_vehicle': (radar_atgm_vehicle, dict(_opts('radar_atgm_vehicle'), ao_strength=.65)),
+    'nlos_atgm_vehicle': (nlos_atgm_vehicle, dict(_opts('nlos_atgm_vehicle'), ao_strength=.35)),
+    'radar_atgm_vehicle': (radar_atgm_vehicle, dict(_opts('radar_atgm_vehicle'), ao_strength=.35)),
     'radar_scout': (radar_scout, dict(_opts('radar_scout'), ao_strength=.65)),
     'recoilless_jeep': (recoilless_jeep, dict(_opts('recoilless_jeep'), ao_strength=.65)),
     'shorad_vehicle': (shorad_vehicle, dict(_opts('shorad_vehicle'), ao_strength=.65)),
