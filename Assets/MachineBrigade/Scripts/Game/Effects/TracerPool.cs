@@ -67,7 +67,8 @@ namespace MachineBrigade.Game.Effects
             _next = (_next + 1) % _tracers.Count;
             tracer.From = from;
             tracer.To = to;
-            tracer.Start = now + delay;
+            // Fix prompt L4: on the shot clock, so it lands on the Sim tick its damage does (ShotClock).
+            tracer.Start = ShotClock.Map(now) + delay;
             tracer.Duration = Mathf.Max(0.03f, duration);
             tracer.Arc = arc;
             tracer.Trail = trail;
@@ -95,6 +96,7 @@ namespace MachineBrigade.Game.Effects
 
         public void Tick(float now, Emitters emitters)
         {
+            now = ShotClock.Map(now);
             foreach (var tracer in _tracers)
             {
                 if (!tracer.Active) continue;

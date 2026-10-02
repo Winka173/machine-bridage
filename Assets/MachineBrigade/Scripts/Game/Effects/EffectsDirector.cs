@@ -219,8 +219,10 @@ namespace MachineBrigade.Game.Effects
                         {
                             // Flak and missiles bursting around an aircraft, at its height (a killing
                             // hit finds it among the wrecks); misses burst at a typical flying height.
+                            // Fix prompt L4: a missile a flare decoyed (or one out of reach) bursts where it was sent, at its height.
                             var height = views.TryGet(e.Entity, out var struck) && struck.Flying ? struck.Altitude + 0.5f
-                                : _wrecks.TryGetAircraftWreck(e.Entity, out var falling) ? falling.y + 0.5f : 15f;
+                                : _wrecks.TryGetAircraftWreck(e.Entity, out var falling) ? falling.y + 0.5f
+                                : DecoyHeight(e.Position, now, out var decoyed) ? decoyed : 15f;
                             var burst = new Vector3(e.Position.X, height, e.Position.Y);
                             // Play-test 10 (DECISIONS PT10 visuals): an air-burst round's burst is its own flak burst alone
                             // (a sharp flash, a black puff that hangs, a spark spray); no Small blast, lone ring or grey puffs.
@@ -482,6 +484,11 @@ namespace MachineBrigade.Game.Effects
                         }
                         break;
 
+                    case SimEventKind.RoundDiverted:
+                        // Fix prompt L4: a guided round taken off its target in flight turns onto where it now goes off.
+                        RoundDiverted(e, views, now);
+                        break;
+
                     case SimEventKind.SkillUsed when e.Skill == SkillKind.Flares:
                         // Prompt 29 5.5 (FLARE_EFFECT): a flare charge used: every dispenser fires its fan at once.
                         if (views.TryGet(e.Entity, out var flarer) && flarer.Flying && _cull.Visible(flarer.Position, 0.3f)) FlareSalvo(flarer);
@@ -653,28 +660,6 @@ namespace MachineBrigade.Game.Effects
                         fired.Projectile == ProjectileKind.Bullet ? 1.6f : fired.Projectile == ProjectileKind.Shell ? 4.5f : 3.2f);
             }
             _shots.Clear();
-        }
-
-        /// <summary>
-        /// Prompt 29 5.5 (FLARE_EFFECT): 4 points from each dispenser point the model has (a side and a row each: 2 x 4, a big
-        /// aircraft's two rows at once), or from under both sides of the hull on a model without dispensers.
-        /// </summary>
-        private void FlareSalvo(VehicleView flyer)
-        {
-            var scale = Mathf.Clamp(flyer.Sim.Radius / 3.2f, 0.8f, 1.6f);
-            var points = flyer.FlarePoints;
-            var fired = false;
-            for (var i = 0; i < points.Count; i++)
-            {
-                if (points[i] == null) continue;
-                _emitters.Flares(points[i].position, points[i].forward, scale);
-                fired = true;
-            }
-            if (fired || flyer.Root == null) return;
-            var right = flyer.Root.right;
-            var below = flyer.Position - flyer.Root.up * 0.3f - flyer.Root.forward * flyer.Sim.Radius * 0.2f;
-            for (var s = -1; s <= 1; s += 2)
-                _emitters.Flares(below + right * (s * flyer.Sim.Radius * 0.3f), right * s - Vector3.up * 1.2f - flyer.Root.forward * 0.3f, scale);
         }
 
         /// <summary>The point nearest <paramref name="to"/>, or null when there are none.</summary>

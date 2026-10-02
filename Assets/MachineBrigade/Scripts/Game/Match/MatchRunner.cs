@@ -762,6 +762,9 @@ namespace MachineBrigade.Game.Match
                 DispatchEvents();
                 _perf?.End(PerfProbe.Section.Events);
             }
+            // Fix prompt L4: rounds in flight are drawn on the Sim's clock (as the views interpolate it), so each lands on
+            // the frame its damage is drawn (Effects/ShotClock.cs: the delayed damage).
+            ShotClock.Advance(_world.Time - _clock.StepSeconds * (1.0 - _clock.Alpha), frozen, Time.deltaTime);
 
             if (_p34Stress != null && !_paused) _p34Stress.Tick(_world, Time.time, _effects, _audio);
             if (_crowd != null && !_paused)
@@ -1104,6 +1107,7 @@ namespace MachineBrigade.Game.Match
 
         private void OnDestroy()
         {
+            ShotClock.Active = false;
             _sandbox?.Screen.Dispose();
             DailyMissions.Suspended = false;
             _stuck?.Finish(_world);
