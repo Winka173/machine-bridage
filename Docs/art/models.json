@@ -9,7 +9,7 @@
   },
   "aa_gun_vehicle": {
     "file": "aa_gun_vehicle.glb",
-    "triangles": 2884
+    "triangles": 3556
   },
   "aa_turret": {
     "file": "aa_turret.glb",
@@ -53,7 +53,7 @@
   },
   "airborne_vehicle": {
     "file": "airborne_vehicle.glb",
-    "triangles": 2684
+    "triangles": 3260
   },
   "airborne_vehicle_chute": {
     "file": "airborne_vehicle_chute.glb",
@@ -549,7 +549,7 @@
   },
   "fibre_fpv_carrier": {
     "file": "fibre_fpv_carrier.glb",
-    "triangles": 1312
+    "triangles": 1324
   },
   "fighter_jet": {
     "file": "fighter_jet.glb",
@@ -781,7 +781,7 @@
   },
   "hover_gunboat": {
     "file": "hover_gunboat.glb",
-    "triangles": 1416
+    "triangles": 2202
   },
   "howitzer": {
     "file": "howitzer.glb",
@@ -809,7 +809,7 @@
   },
   "interceptor_drone_vehicle": {
     "file": "interceptor_drone_vehicle.glb",
-    "triangles": 1192
+    "triangles": 1494
   },
   "interceptor_jet": {
     "file": "interceptor_jet.glb",
@@ -1209,7 +1209,7 @@
   },
   "rocket_technical": {
     "file": "rocket_technical.glb",
-    "triangles": 1912
+    "triangles": 2948
   },
   "rocket_turret": {
     "file": "rocket_turret.glb",
@@ -1573,7 +1573,7 @@
   },
   "wheeled_gun": {
     "file": "wheeled_gun.glb",
-    "triangles": 2508
+    "triangles": 3058
   },
   "wheeled_howitzer": {
     "file": "wheeled_howitzer.glb",
@@ -1617,6 +1617,6 @@
   },
   "zu23_technical": {
     "file": "zu23_technical.glb",
-    "triangles": 1356
+    "triangles": 1996
   }
 }

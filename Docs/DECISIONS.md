@@ -13809,3 +13809,30 @@ mirror, no cards, no previews, no tests.
 - Building the eight names rebuilt no other model (no substring hits); the first test build before the edit changed the seven
   GLBs byte-wise and was reverted with `git checkout`.
 - Lead (2026-10-02), wave 3e cards: all six with cards pass (+0.4 % to +4.5 %); supply_truck and ammo_carrier have none.
+
+## 27 wave 3f (lead pass, 2026-10-02)
+
+Pass 3f, the eight rows wheeled_gun, zu23_technical, rocket_technical, hover_gunboat, aa_gun_vehicle, airborne_vehicle,
+fibre_fpv_carrier, interceptor_drone_vehicle, builders appended to `mb_p27_wave3.py` (`_opts` now also reads
+`mb_p25_new.BUILDERS`). Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests.
+
+- **Builders.** Same recipe, copy-first. The technicals sit on the existing `_pickup_v2`; new `_tracked_v2` (V2 track unit,
+  extruded hull with chamfered glacis, fenders, lights) for aa_gun_vehicle and airborne_vehicle. Wheeled gun: V2 wheels, extruded
+  hull, `_turret_loft`, `parts.barrel` 120 mm. Technicals: lathed rings and turntables, revolved barrels (ZU-23 barrels 6-sided),
+  Type 63 tubes as revolved tubes with rim collars. Hover gunboat: hull `sharp_loft` on the old stations, extruded wheelhouse, the
+  AK-630 as six thin revolved barrels (was one), fan ducts and guard rings revolved (14-sided). Fibre carrier and interceptor
+  truck: extruded cabs, V2 wheels, flanged lathed spools, hex launcher as a revolved six-sided body. Seeds unused (no greebles).
+- **Gates (baseline -> new).** wheeled_gun 2,508 -> 3,058 (1.22x); zu23 1,356 -> 1,996 (1.47x); rocket 1,912 -> 2,948 (1.54x);
+  hover 1,416 -> 2,202 (1.56x); aa_gun 2,884 -> 3,556 (1.23x); airborne 2,684 -> 3,260 (1.21x); fibre 1,312 -> 1,324 (1.01x);
+  interceptor 1,192 -> 1,494 (1.25x). Zero-area 0, open edges 0, 0 errors, 0 warnings, runtime nodes identical on all eight,
+  COLOR_0 mean up (+0.02 to +0.08). Size (length / width / height) inside 4 %: worst fibre length +3.4 %, interceptor length
+  +3.3 %, technicals width +2.7 % (the V2 wheel discs).
+- **Triangle budget** again: zu23 first came out 1.63x and hover 1.66x; cut by 6-sided ZU barrels and carriage ring, 14-sided fan
+  ducts. The Type 63 tube lathe is capped (an open end left 96 open edges).
+- **Notes.** `airborne_vehicle_chute` keeps its old build (not in the row); the substring filter rebuilt it, GLB reverted with
+  `git checkout`. Rocket, ZU-23, wheeled gun and hover gunboat lose the `Rubber` material where the V2 wheel's tyre is
+  `Undercarriage` (hover keeps its Rubber skirt).
+- Card luma (old, mean of pixels with alpha > .5): wheeled_gun .3764, zu23_technical .3508, rocket_technical .3458,
+  aa_gun_vehicle .3654, airborne_vehicle .3620, fibre_fpv_carrier .3286, interceptor_drone_vehicle .3377. hover_gunboat has no
+  card PNG. New cards: the lead renders them after the merge.
+

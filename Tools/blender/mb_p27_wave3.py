@@ -2,6 +2,9 @@
 last in build_assets.all_builders() so these builders win. Same models as before: every runtime node name, pivot,
 material, proportion and `_hd` twin kept (see Docs/models/WAVE3_PLAN.md).
 
+Pass 3f: wheeled_gun, zu23_technical, rocket_technical, hover_gunboat, aa_gun_vehicle, airborne_vehicle,
+fibre_fpv_carrier, interceptor_drone_vehicle.
+
 Pass 3e: supply_truck, ammo_carrier, counter_battery_radar, ew_jammer, railgun_truck, shahed_truck, vbied, bunker_vehicle.
 
 Pass 3d: mlrs, elite_mlrs (on the new mlrs), heavy_rocket_artillery, thermobaric_launcher, ballistic_launcher,
@@ -24,6 +27,7 @@ from mathutils import Vector
 import mb_detail as hd
 import mb_kit27 as k
 import mb_p25_models2 as m2
+import mb_p25_new as pn
 import mb_p27_experiment as exp
 import mb_parts27 as parts
 import mb_vehicles as mv
@@ -1976,6 +1980,315 @@ def bunker_vehicle(a):
     k.clean(a)
 
 
+# ============================================================================= pass 3f: wheeled, technicals, hover, light
+def wheeled_gun(a):
+    """Wheeled tank destroyer (Centauro II, m2.wheeled_gun) on the V2 kit: V2 wheels, an extruded hull with chamfers and
+    insets, a lofted turret, the 120 mm gun as one surface; same nodes (`Turret`, `Main_cannon`, `Muzzle_brake`,
+    `Muzzle_main`, `Muzzle_coax`, `Mount_mg`, `Muzzle_mg`) and pivots."""
+    hd.mark(a, False)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    a.part('Chassis', 'Undercarriage').box((1.5, 5.4, .3), loc=(0, 0, .5), bevel=0)
+    for s in (-1, 1):
+        for y in (-2.0, -1.0, .8, 1.8):
+            parts.road_wheel(a, (s * .94, y, .46), .46, .34, s, seg=8)
+    k.extrude(hull, [(-2.6, .58), (-3.0, .9), (-2.2, 1.42), (2.8, 1.44), (2.95, .66)], 2.2, axis='X', chamfer=.06,
+              corner=.04)
+    k.inset(hull, lambda c, n, f: n.z > .5 and n.y < -.2 and c.y < -1.9, width=.07, depth=.012)
+    for s in (-1, 1):
+        k.block(armor, (.42, 2.2, .07), loc=(s * .94, -1.5, 1.0), chamfer=.02)                          # fenders
+        k.block(armor, (.42, 2.2, .07), loc=(s * .94, 1.3, 1.0), chamfer=.02)
+        k.block(armor, (.08, 5.0, .4), loc=(s * 1.14, .1, 1.2), chamfer=.02)                            # side armour
+        _lights(a, (s * .75,), -2.85, 1.05, size=(.14, .04, .1))
+        _lights(a, (s * .85,), 2.96, 1.1, facing=1, size=(.12, .04, .08), lamp='Alloy')
+    _hatch(a, .8, -2.12, 1.42, .17, handle=False)
+    a.part('Deck', 'Undercarriage').grille(1.2, .8, loc=(0, 2.2, 1.45), rot=(-R90, 0, 0), slats=4, depth=.05,
+                                           thickness=.04)
+    a.pivot('Point_exhaust', (-.8, 2.9, 1.1))
+    a.pivot('Point_fire', (0, 2.2, 1.5))
+    steel.cyl(.95, .08, loc=(0, -.1, 1.44), seg=16, bevel=0)
+    t = a.pivot('Turret', (0, -.1, 1.44))
+    _turret_loft(a.part('Turret_body', 'Team', t),
+                 [(-.35, -1.35), (.35, -1.35), (1.08, -.9), (1.12, 1.0), (.9, 1.75), (-.9, 1.75), (-1.12, 1.0),
+                  (-1.08, -.9)], .32, .6, .92, chamfer=.04)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    k.block(tarm, (.6, .3, .42), loc=(0, -1.4, .3), chamfer=.04, taper=(.9, .9))                       # mantlet
+    k.block(tarm, (.34, .3, .2), loc=(-.55, -.6, .7), chamfer=.03)                                     # sight
+    a.part('Sight', 'Glass', t).box((.24, .03, .1), loc=(-.55, -.76, .7), bevel=0)
+    k.block(tarm, (1.6, .3, .32), loc=(0, 1.85, .36), chamfer=.03)                                     # bustle box
+    for s in (-1, 1):
+        parts.smoke_launcher(a, a.part('Smoke', 'Steel', t), 1.0, -.4, .5, s, count=2, gap=.08, r=.05, depth=.14)
+    _hatch(a, .5, .4, .6, .24, parent=t, seg=10, handle=False)
+    y0, length, z = -1.52, 4.2, .32
+    parts.barrel(a, 'Main_cannon', t, 0, y0, z, length, .08, seg=10, sleeve=1.25, extractor=(.42, 1.62, .4),
+                 brake_name='Muzzle_brake', brake='collar')
+    a.pivot('Muzzle_main', (0, y0 - length - .16, z), t)
+    mv._coax(a, t, -.3, -1.4, .38, length=.36, housing=.24)
+    mv._roof_mg(a, t, (.5, .4, .62), length=.75, shield=False)
+    k.clean(a)
+
+
+def zu23_technical(a):
+    """Anti-aircraft technical (ZU-23-2 on the pickup, m2.zu23_technical) on the V2 pickup: lathed carriage ring,
+    chamfered cradle and receivers, the two 23 mm barrels as one revolved surface each with their flash hiders; same
+    nodes (`Turret`, `Main_cannon`/`_2`, `Muzzle_brake`/`_2`, `Muzzle_main`)."""
+    z = _pickup_v2(a)
+    a.pivot('Point_fire', (0, 1.0, 1.0))
+    t = a.pivot('Turret', (0, 1.1, z))
+    k.lathe(a.part('Gun_carriage', 'Armor', t), [(.45, 0), (.45, .12), (.38, .15), (.2, .15)], seg=10, worn=(1,))
+    k.block(a.part('Turret_armor', 'Armor', t), (.6, .7, .3), loc=(0, .05, .3), chamfer=.03)             # cradle
+    for s, suffix in ((1, ''), (-1, '_2')):
+        x = s * .16
+        k.block(a.part(f'Main_cannon{suffix}', 'Steel', t), (.14, .6, .16), loc=(x, -.15, .55), chamfer=.02)
+        parts.barrel(a, f'Main_cannon{suffix}', t, x, -.43, .55, 1.85, .045, seg=6, sleeve=1.1,
+                     extractor=(.55, 1.3, .22), brake_name=f'Muzzle_brake{suffix}', brake='collar')
+        k.block(a.part('Ammo_boxes', 'Crate', t), (.2, .4, .3), loc=(s * .42, -.05, .55), chamfer=.02)
+        k.block(a.part('Seats', 'Canvas', t), (.26, .24, .1), loc=(s * .3, .5, .42), chamfer=.02)
+    a.part('Sight', 'Glass', t).box((.1, .1, .1), loc=(.3, .2, .75), bevel=0)
+    a.pivot('Muzzle_main', (.16, -2.46, .55), t)
+    k.clean(a)
+
+
+def rocket_technical(a):
+    """Rocket technical (Type 63 on the pickup, m2.rocket_technical) on the V2 pickup: lathed turntable, chamfered
+    cradle, twelve revolved tubes with rim collars and dark bore discs in three chamfered bands, the cab-roof machine
+    gun; same nodes (`Turret`, `Rocket_tubes`, `Tubes_bore`, `Muzzle_main`, `Mount_mg`, `Muzzle_mg`)."""
+    z = _pickup_v2(a)
+    mv._roof_mg(a, None, (.3, -.72, 1.44), length=.7, shield=False)
+    a.pivot('Point_fire', (0, 1.0, 1.0))
+    t = a.pivot('Turret', (0, 1.05, z))
+    k.lathe(a.part('Turret_steel', 'Steel', t), [(.32, 0), (.32, .1), (.26, .12), (.1, .12)], seg=12, worn=(1,))
+    k.block(a.part('Turret_armor', 'Armor', t), (.5, .5, .36), loc=(0, .1, .28), chamfer=.03)             # cradle
+    tilt = .12
+    rot = (R90 - tilt, 0, 0)
+    axis = Vector((0, -math.cos(tilt), math.sin(tilt)))
+    c = Vector((0, -.1, .72))
+    tubes = a.part('Rocket_tubes', 'Crate', t)
+    bores = a.part('Tubes_bore', 'Undercarriage', t)
+    for row in range(3):
+        for col in range(4):
+            p = c + Vector((-.3 + col * .2, 0, -.2 + row * .2))
+            k.lathe(tubes, [(.06, -.6), (.085, -.6), (.085, .54), (.1, .57), (.1, .61), (.06, .61)], loc=tuple(p),
+                    rot=rot, seg=8, worn=(3,))
+            bores.cyl(.06, .02, loc=tuple(p + axis * .61), rot=rot, seg=8, bevel=0)
+    bands = a.part('Pod_bands', 'Armor', t)
+    for kk in (-.35, .35):
+        k.block(bands, (.86, .06, .66), loc=tuple(c + axis * kk), rot=(-tilt, 0, 0), chamfer=.02)
+    a.pivot('Muzzle_main', tuple(c + axis * .66), t)
+    k.clean(a)
+
+
+def hover_gunboat(a):
+    """Escort hovercraft (AK-630, m2.hover_gunboat) on the V2 kit: the hull a sharp-edged loft on the same stations,
+    an extruded wheelhouse with chamfers, the six-barrel AK-630 as a cluster of thin revolved barrels, the fan ducts
+    as revolved rings; same nodes (`Mount_mg`, `Muzzle_mg`, `Radar`, `Propeller`, `Propeller_2`) and pivots."""
+    hd.mark(a, False)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    stations = ((-7.0, .25), (-6.6, 1.05), (-5.8, 1.6), (-4.2, 1.92), (-1.0, 1.95), (2.5, 1.85), (5.2, 1.6),
+                (6.7, 1.35), (7.0, 1.1))
+    a.part('Skirt', 'Rubber').loft([[(hw * .86, y, 0), (hw, y, .5), (hw * .96, y, .95), (-hw * .96, y, .95),
+                                     (-hw, y, .5), (-hw * .86, y, 0)] for y, hw in stations], bevel=0)
+    k.sharp_loft(hull, [[(hw * .95, y, .9), (hw * .9, y, 1.45), (-hw * .9, y, 1.45), (-hw * .95, y, .9)]
+                        for y, hw in stations], chamfer=.05)
+    a.part('Skirt_band', 'Undercarriage').loft([[(hw * 1.005, y, .42), (hw * 1.005, y, .56), (-hw * 1.005, y, .56),
+                                                 (-hw * 1.005, y, .42)] for y, hw in stations[1:-1]], bevel=0)
+    # the wheelhouse amidships
+    k.extrude(hull, [(-2.6, 1.4), (-2.2, 2.45), (.8, 2.5), (1.0, 1.4)], 2.3, axis='X', chamfer=.06, corner=.04)
+    k.inset(hull, lambda c, n, f: abs(n.x) > .9 and c.z > 1.7, width=.14, depth=.01)
+    glass = a.part('Glass', 'Glass')
+    glass.box((2.0, .05, .34), loc=(0, -2.34, 2.12), rot=(-.36, 0, 0), bevel=0)
+    for s in (-1, 1):
+        glass.box((.04, 1.6, .3), loc=(s * 1.16, -.9, 2.1), bevel=0)
+    k.block(armor, (1.4, 1.2, .12), loc=(0, -.5, 2.54), chamfer=.02)                                   # roof
+    _hatch(a, .4, -.3, 2.6, .17, handle=False)
+    k.block(steel, (.16, .16, 1.0), loc=(0, .2, 3.05), chamfer=0)                                      # mast
+    r = a.pivot('Radar', (0, .2, 3.55))
+    k.block(a.part('Radar_bar', 'Armor', r), (1.1, .16, .12), loc=(0, 0, .06), chamfer=.02)
+    a.part('Beacon', 'TeamGlow').box((.12, .12, .1), loc=(0, .2, 3.5), bevel=0)
+    # the AK-630 on the foredeck
+    m = a.pivot('Mount_mg', (0, -4.4, 1.45))
+    mount = a.part('CIWS_mount', 'Armor', m)
+    k.lathe(mount, [(.6, 0), (.6, .24), (.52, .3), (.3, .3)], seg=14, worn=(1,))
+    k.block(mount, (.9, 1.0, .55), loc=(0, .1, .55), chamfer=.06, taper=(.8, .8))
+    guns = a.part('CIWS_barrels', 'Steel', m)
+    for i in range(6):
+        u = i * TAU / 6
+        k.lathe(guns, [(.045, 0), (.045, 1.45), (.055, 1.48), (.055, 1.52), (0, 1.52)],
+                loc=(math.cos(u) * .1, -.35, .58 + math.sin(u) * .1), rot=FORWARD, seg=6)
+    for d0 in (.9, 1.42):
+        k.ring(guns, [(.12, d0), (.2, d0), (.2, d0 + .1), (.12, d0 + .1)], loc=(0, -.35, .58), rot=FORWARD, seg=8)
+    a.pivot('Muzzle_mg', (0, -1.9, .58), m)
+    # two ducted fans aft on pylons, their rudders behind
+    for s, name in ((1, 'Propeller'), (-1, 'Propeller_2')):
+        x, y, z = s * .95, 5.3, 2.35
+        k.ring(a.part('Fan_ducts', 'Team'), [(.83, 0), (.95, 0), (.95, .52), (1.0, .6), (.83, .6)],
+               loc=(x, y - .3, z), rot=(-R90, 0, 0), seg=14, worn=(3,))
+        k.ring(armor, [(.9, .58), (1.02, .58), (1.02, .66), (.9, .66)], loc=(x, y - .3, z), rot=(-R90, 0, 0), seg=14)
+        k.block(steel, (.16, .5, .9), loc=(x, y, 1.45 + .45), chamfer=0)                              # pylon
+        p = a.pivot(name, (x, y - .05, z))
+        k.lathe(a.part('Fan_hubs', 'Armor', p), [(.18, -.2), (.18, .12), (.12, .2), (0, .2)], rot=FORWARD, seg=10)
+        blades = a.part('Fan_blades', 'Undercarriage', p)
+        for i in range(5):
+            u = i * TAU / 5
+            blades.box((.2, .05, .72), loc=(math.cos(u) * .48, 0, math.sin(u) * .48), rot=(0, -u + R90, 0), bevel=0)
+        for dx in (-.35, .35):
+            k.block(armor, (.06, .5, 1.5), loc=(x + dx, y + .75, z), chamfer=0)                       # rudders
+    a.pivot('Point_exhaust', (0, 5.9, 2.3))
+    a.pivot('Point_fire', (0, -.5, 2.6))
+    k.clean(a)
+
+
+def _tracked_v2(a, length, width, glacis, height, wheels, cleat=.44):
+    """pn._tracked on the V2 kit (V2 track units, an extruded hull with a chamfered glacis); returns the hull top."""
+    parts.track_unit(a, width / 2 - .25, length, .77, .26, wheels, .46, sprocket_end=1, cleat_pitch=cleat, teeth=6,
+                     wheel_seg=7)
+    hull = a.part('Hull', 'Team')
+    y0, y1 = -length / 2, length / 2
+    k.extrude(hull, [(y0, .55), (y0 + .05, .8), (y0 + glacis, height), (y1 - .1, height), (y1, height - .2),
+                     (y1, .55)], width - .5, axis='X', chamfer=.05, corner=.04)
+    k.inset(hull, lambda c, n, f: n.z > .5 and n.y < -.2 and c.y < y0 + glacis + .3, width=.07, depth=.012)
+    armor = a.part('Armor', 'Armor')
+    for s in (-1, 1):
+        k.block(armor, (.6, length * .92, .06), loc=(s * (width / 2 - .25), -.03, .82), chamfer=.02)      # fenders
+        _lights(a, (s * (width / 2 - .5),), y0 + .02, height - .3, size=(.16, .04, .1))
+        _lights(a, (s * (width / 2 - .5),), y1 + .02, height - .4, facing=1, size=(.12, .04, .08), lamp='Alloy')
+    a.pivot('Point_exhaust', (width / 2 - .45, y1 - .3, height))
+    a.pivot('Point_fire', (0, 0, height + .2))
+    return height
+
+
+def aa_gun_vehicle(a):
+    """Tracked 40 mm SPAAG (CV90 AA look, mb_p25_new.aa_gun_vehicle) on the V2 kit: V2 running gear, an extruded
+    hull and turret, the 40 mm gun as one revolved surface, the search radar on its mast; same nodes."""
+    hd.mark(a, False)
+    top = _tracked_v2(a, 5.3, 2.5, .6, 1.55, 6)
+    steel = a.part('Steel', 'Steel')
+    t = a.pivot('Turret', (0, .3, top))
+    _hatch(a, .6, -1.7, top, .2, handle=False)
+    a.part('Deck', 'Undercarriage').grille(1.0, .8, loc=(-.5, 1.8, top + .01), rot=(-R90, 0, 0), slats=4, depth=.05,
+                                           thickness=.04)
+    k.extrude(a.part('Turret_body', 'Team', t), [(-.55, -1.0), (.55, -1.0), (.85, -.5), (.85, .9), (-.85, .9),
+                                                 (-.85, -.5)], .7, loc=(0, 0, .35), axis='Z', chamfer=.05, corner=.04,
+              taper=.88)
+    steel.cyl(.6, .08, loc=(0, .3, top), seg=14, bevel=0)
+    pitch = math.radians(20)
+    parts.barrel(a, 'Main_cannon', t, 0, -1.0, .45, 2.2, .07, seg=10, sleeve=1.25, extractor=(.4, 1.5, .4),
+                 brake_name='Muzzle_brake', brake='collar', rot=(R90 - pitch, 0, 0))
+    d = 2.36
+    a.pivot('Muzzle_main', (0, -1.0 - d * math.cos(pitch), .45 + d * math.sin(pitch)), t)
+    k.block(a.part('Turret_armor', 'Armor', t), (.5, .4, .4), loc=(0, -1.0, .45), chamfer=.03, taper=(.9, .9))
+    r = a.pivot('Radar', (0, .9, .95), t)
+    k.lathe(a.part('Radar_mast', 'Steel', r), [(.1, -.25), (.1, 0), (.06, .02), (.06, .08)], seg=8)
+    k.block(a.part('Radar_panel', 'Armor', r), (1.0, .1, .45), loc=(0, 0, .22), chamfer=.02)
+    pn._stripes(a, 3.5, 2.0, top)
+    k.clean(a)
+
+
+def airborne_vehicle(a):
+    """Light airborne IFV (BMD-4 look, mb_p25_new.airborne_vehicle) on the V2 kit: V2 running gear, an extruded hull
+    and turret, the 100 mm gun as one surface, the coaxial gun; the pallet-and-canopies variant
+    (`airborne_vehicle_chute`) keeps its old build."""
+    hd.mark(a, False)
+    top = _tracked_v2(a, 4.8, 2.5, .9, 1.3, 5)
+    t = a.pivot('Turret', (0, .2, top))
+    _hatch(a, .6, -1.55, top, .2, handle=False)
+    k.extrude(a.part('Turret_body', 'Team', t), [(-.5, -.85), (.5, -.85), (.75, -.4), (.75, .85), (-.75, .85),
+                                                 (-.75, -.4)], .55, loc=(0, 0, .28), axis='Z', chamfer=.05, corner=.04,
+              taper=.86)
+    parts.barrel(a, 'Main_cannon', t, 0, -.85, .35, 1.9, .09, seg=10, sleeve=1.3, extractor=(.45, 1.5, .3),
+                 brake_name='Muzzle_brake', brake='collar')
+    a.pivot('Muzzle_main', (0, -.85 - 1.9 - .2, .35), t)
+    mv._coax(a, t, .35, -.85, .35, length=.9, housing=.3)
+    k.block(a.part('Turret_armor', 'Armor', t), (.5, .3, .4), loc=(0, -.85, .3), chamfer=.03, taper=(.9, .9))
+    pn._stripes(a, 2.8, 2.0, top)
+    k.clean(a)
+
+
+def fibre_fpv_carrier(a):
+    """4x4 armoured pickup with an FPV rack and two cable spools (mb_p25_new.fibre_fpv_carrier) on the V2 kit: V2
+    wheels, an extruded cab, a chamfered bed, revolved flanged spools; same nodes (`Turret`, `Muzzle_main`)."""
+    hd.mark(a, False)
+    body = a.part('Hull', 'Team')
+    a.part('Chassis', 'Undercarriage').box((1.3, 4.0, .22), loc=(0, 0, .5), bevel=0)
+    for s in (-1, 1):
+        for y in (-1.5, 1.4):
+            parts.road_wheel(a, (s * .82, y, .42), .42, .3, s, seg=8)
+    k.extrude(body, [(-2.2, .5), (-2.2, .95), (-1.55, 1.1), (-1.25, 1.62), (-.25, 1.62), (-.2, .5)], 1.9, axis='X',
+              chamfer=.06, corner=.04)
+    k.inset(body, lambda c, n, f: abs(n.x) > .9 and c.y < -.6, width=.09, depth=.012)
+    bed = a.part('Bed', 'Armor')
+    k.block(bed, (1.8, 2.5, .08), loc=(0, 1.05, .84), chamfer=.02)
+    for s in (-1, 1):
+        k.block(bed, (.08, 2.5, .42), loc=(s * .9, 1.05, 1.03), chamfer=0)
+    k.block(bed, (1.8, .08, .42), loc=(0, 2.3, 1.03), chamfer=0)
+    k.block(bed, (1.8, .08, .42), loc=(0, -.2, 1.03), chamfer=0)
+    glass = a.part('Glass', 'Glass')
+    glass.box((1.6, .05, .35), loc=(0, -2.21, 1.3), bevel=0)
+    for s in (-1, 1):
+        glass.box((.04, .7, .3), loc=(s * .96, -1.0, 1.35), bevel=0)
+    k.block(a.part('Steel', 'Steel'), (2.0, .14, .18), loc=(0, -2.28, .6), chamfer=.03)
+    _lights(a, (-.7, .7), -2.21, .85, size=(.2, .04, .1))
+    t = a.pivot('Turret', (0, 1.2, .95))
+    k.block(a.part('Rack', 'Steel', t), (1.2, .9, .12), loc=(0, 0, .3), rot=(.25, 0, 0), chamfer=.02)
+    drones = a.part('Drones', 'Undercarriage', t)
+    for x in (-.35, .35):
+        k.block(drones, (.45, .45, .12), loc=(x, 0, .42), rot=(.25, 0, 0), chamfer=.03)
+    a.pivot('Muzzle_main', (0, -.4, .6), t)
+    spools = a.part('Spools', 'Hazard')
+    for x in (-.55, .55):
+        k.lathe(spools, [(0, -.175), (.3, -.175), (.3, -.13), (.2, -.11), (.2, .11), (.3, .13), (.3, .175), (0, .175)],
+                loc=(x, 1.95, 1.2), rot=ACROSS, seg=12, worn=(1, 6))
+    k.block(a.part('Spool_frame', 'Armor'), (1.7, .12, .1), loc=(0, 1.95, .98), chamfer=0)
+    a.pivot('Point_exhaust', (.7, 2.3, .7))
+    a.pivot('Point_fire', (0, 0, 1.6))
+    k.clean(a)
+
+
+def interceptor_drone_vehicle(a):
+    """4x4 tactical truck (JLTV look) with a hexagonal interceptor-drone launcher (mb_p25_new.interceptor_drone_vehicle)
+    on the V2 kit: V2 wheels, an extruded cab, a chamfered bed, the hex box as a revolved six-sided body in bands;
+    same nodes (`Turret`, `Muzzle_main`)."""
+    hd.mark(a, False)
+    body = a.part('Hull', 'Team')
+    a.part('Chassis', 'Undercarriage').box((1.4, 4.4, .22), loc=(0, 0, .5), bevel=0)
+    for s in (-1, 1):
+        for y in (-1.6, 1.55):
+            parts.road_wheel(a, (s * .86, y, .45), .45, .32, s, seg=8)
+    k.extrude(body, [(-2.4, .5), (-2.4, 1.1), (-1.8, 1.25), (-1.45, 1.7), (-.3, 1.7), (-.3, .5)], 2.0, axis='X',
+              chamfer=.06, corner=.04)
+    k.inset(body, lambda c, n, f: abs(n.x) > .9 and c.y < -.7, width=.1, depth=.012)
+    k.block(a.part('Bed', 'Armor'), (2.0, 2.6, .6), loc=(0, 1.1, .85), chamfer=.04)
+    glass = a.part('Glass', 'Glass')
+    glass.box((1.7, .05, .35), loc=(0, -2.41, 1.35), bevel=0)
+    for s in (-1, 1):
+        glass.box((.04, .8, .34), loc=(s * 1.01, -1.2, 1.4), bevel=0)
+    k.block(a.part('Steel', 'Steel'), (2.1, .14, .18), loc=(0, -2.46, .6), chamfer=.03)
+    _lights(a, (-.7, .7), -2.4, .95, size=(.2, .04, .1))
+    _lights(a, (-.8, .8), 2.42, .8, facing=1, size=(.12, .04, .1), lamp='Alloy')
+    _hatch(a, .5, -.9, 1.7, .2, handle=False)
+    t = a.pivot('Turret', (0, 1.2, 1.15))
+    pitch = .5
+    rot = (R90 - pitch, 0, 0)
+    k.lathe(a.part('Launcher_ring', 'Armor', t), [(.5, 0), (.5, .1), (.4, .12), (.2, .12)], seg=12, worn=(1,))
+    k.lathe(a.part('Launcher', 'Team', t), [(0, -.8), (.54, -.8), (.6, -.74), (.6, .74), (.54, .8), (0, .8)],
+            loc=(0, 0, .75), rot=rot, seg=6, worn=(1, 4))
+    for kk in (-.4, .35):
+        k.ring(a.part('Launcher_bands', 'Armor', t), [(.59, -.04), (.65, -.04), (.65, .04), (.59, .04)],
+               loc=(0, -math.cos(pitch) * kk, .75 + math.sin(pitch) * kk), rot=rot, seg=6)
+    front = (0, -.82 * math.cos(pitch), .75 + .82 * math.sin(pitch))
+    pn._tube_faces(a, t, front, pitch, [(0, 0)] + [(math.cos(i * TAU / 6) * .35, math.sin(i * TAU / 6) * .35)
+                                                    for i in range(6)], .12)
+    a.pivot('Muzzle_main', front, t)
+    k.block(a.part('Radar_panel', 'Armor'), (.7, .1, .5), loc=(.7, -.3, 1.95), chamfer=.02)
+    k.block(a.part('Radar_mast', 'Steel'), (.1, .1, .3), loc=(.7, -.3, 1.8), chamfer=0)
+    a.pivot('Point_exhaust', (.8, 2.4, .8))
+    a.pivot('Point_fire', (0, 0, 1.7))
+    k.clean(a)
+
+
 # ============================================================================= elites on the rebuilt bases
 def _mbt_v2(a):
     exp.main_battle_tank(a)
@@ -1985,6 +2298,8 @@ def _opts(name):
     if name in ('flame_tank', 'twin_tank'):
         import mb_p25_models as p25
         return p25.BUILDERS[name][1]
+    if name in pn.BUILDERS:
+        return pn.BUILDERS[name][1]
     return m2.BUILDERS[name][1]
 
 
@@ -2036,4 +2351,12 @@ BUILDERS = {
     'shahed_truck': (shahed_truck, _opts('shahed_truck')),
     'vbied': (vbied, _opts('vbied')),
     'bunker_vehicle': (bunker_vehicle, _opts('bunker_vehicle')),
+    'wheeled_gun': (wheeled_gun, _opts('wheeled_gun')),
+    'zu23_technical': (zu23_technical, _opts('zu23_technical')),
+    'rocket_technical': (rocket_technical, _opts('rocket_technical')),
+    'hover_gunboat': (hover_gunboat, _opts('hover_gunboat')),
+    'aa_gun_vehicle': (aa_gun_vehicle, _opts('aa_gun_vehicle')),
+    'airborne_vehicle': (airborne_vehicle, _opts('airborne_vehicle')),
+    'fibre_fpv_carrier': (fibre_fpv_carrier, _opts('fibre_fpv_carrier')),
+    'interceptor_drone_vehicle': (interceptor_drone_vehicle, _opts('interceptor_drone_vehicle')),
 }
