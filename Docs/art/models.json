@@ -501,7 +501,7 @@
   },
   "elite_heavy_tank": {
     "file": "elite_heavy_tank.glb",
-    "triangles": 3752
+    "triangles": 5754
   },
   "elite_mbt": {
     "file": "elite_mbt.glb",
@@ -513,7 +513,7 @@
   },
   "elite_tank_destroyer": {
     "file": "elite_tank_destroyer.glb",
-    "triangles": 3088
+    "triangles": 4794
   },
   "engineer_vehicle": {
     "file": "engineer_vehicle.glb",
@@ -725,11 +725,11 @@
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",
-    "triangles": 3660
+    "triangles": 5662
   },
   "heavy_tank_hd": {
     "file": "heavy_tank_hd.glb",
-    "triangles": 9102
+    "triangles": 13536
   },
   "heavy_turret": {
     "file": "heavy_turret.glb",
@@ -885,11 +885,11 @@
   },
   "light_tank": {
     "file": "light_tank.glb",
-    "triangles": 2728
+    "triangles": 4350
   },
   "light_tank_hd": {
     "file": "light_tank_hd.glb",
-    "triangles": 6828
+    "triangles": 10762
   },
   "lighthouse": {
     "file": "lighthouse.glb",
@@ -1437,11 +1437,11 @@
   },
   "tank_destroyer": {
     "file": "tank_destroyer.glb",
-    "triangles": 2996
+    "triangles": 4702
   },
   "tank_destroyer_hd": {
     "file": "tank_destroyer_hd.glb",
-    "triangles": 7344
+    "triangles": 11494
   },
   "tank_ditch": {
     "file": "tank_ditch.glb",
@@ -1469,7 +1469,7 @@
   },
   "titan_tank": {
     "file": "titan_tank.glb",
-    "triangles": 5876
+    "triangles": 8276
   },
   "towed_at_gun": {
     "file": "towed_at_gun.glb",

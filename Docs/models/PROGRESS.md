@@ -126,6 +126,8 @@ Fix the error with the smallest change (DECISIONS: proportions within 25 % of `m
 
 ## Wave 3: ground vehicles (V2) - 65 models
 
+**Pass 3a done (2026-10-02, V2 rebuild in `mb_p27_wave3`; static gates pass, cards and previews not yet rendered):** heavy_tank (+hd), light_tank (+hd), tank_destroyer (+hd), elite_heavy_tank, elite_mbt, elite_tank_destroyer, titan_tank, turtle_tank.
+
 Tanks and tracked first (the 12 `_hd` models are here or done), then wheeled, then boats. grad_truck is over the ground soft budget: it may not grow.
 
 | builder | models |

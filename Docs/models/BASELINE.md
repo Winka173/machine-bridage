@@ -9,7 +9,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
 | boss | 33 | 495,942 | 15,028 | rail_supergun (36,726) | 2,197 | 0 | 27 |
-| ground | 95 | 342,332 | 3,603 | main_battle_tank_hd (16,462) | 2,366 | 1 | 7 |
+| ground | 95 | 370,182 | 3,896 | main_battle_tank_hd (16,462) | 2,374 | 0 | 7 |
 | structure | 78 | 327,100 | 4,193 | headquarters (14,164) | 2,745 | 0 | 20 |
 | prop | 115 | 238,276 | 2,071 | house_large (6,056) | 1,540 | 0 | 8 |
 | unlisted | 33 | 105,160 | 3,186 | apc_hd (14,466) | 615 | 0 | 2 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 6,742 | 240 | fpv_drone (1,520) | 191 | 0 | 1 |
 
-All files: 1,654,842 triangles, 1 with errors, 82 more with warnings only.
+All files: 1,682,692 triangles, 0 with errors, 83 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -39,9 +39,9 @@ All files: 1,654,842 triangles, 1 with errors, 82 more with warnings only.
 
 | class | metric | over soft (warning) | over hard (error) | over the hard cap |
 |---|---|---:|---:|---|
-| ground | movingParts | 2 | 1 | siege_tank |
+| ground | movingParts | 2 | 0 | - |
 | ground | renderers | 1 | 0 | - |
-| ground | triangles | 1 | 0 | - |
+| ground | triangles | 2 | 0 | - |
 | ground | vertices | 1 | 0 | - |
 | jet | triangles | 1 | 0 | - |
 | jet | vertices | 1 | 0 | - |
@@ -52,12 +52,11 @@ All files: 1,654,842 triangles, 1 with errors, 82 more with warnings only.
 | structure | movingParts | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-10 models over a budget, 1 of them over a hard cap.
+11 models over a budget, 0 of them over a hard cap.
 
 ## Error reasons (count of models)
 
-- over a budget hard cap: 1
+- none
 
-## Flagged models (1)
+## Flagged models (0)
 
-- **siege_tank** (ground): movingParts 22 over the ground normal hard cap 10
