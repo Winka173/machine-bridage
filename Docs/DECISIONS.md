@@ -14859,3 +14859,48 @@ previews or tests.
   hands toasts "We hold the {site}" / "The enemy took the {site}". Whether the radar dome, garage and ammo dump read
   as capturable is left for the owner's look in Unity.
 - Lead (2026-10-02): prompt 30 local merged (compile 0 first try); design review PDF rebuilt at 320 pages with section 2c (match rules, endless, neutrals, dialogue UI, match end, 4 acts). Prompt 30 is done except its tests (wait for the owner) and the L3/L5 leftovers listed in report_p30.md.
+
+## Prompt 31 L0/L1/L2 (lead pass, 2026-10-02)
+
+Lane B of `Docs/LOCAL_PLAN_P31_P32.md`, branch `feature/p31-b1`. Passes 0, 1 and 2 only (events are pass 3). Nothing was
+run but the Python tools (build_campaign.py, script_build.py); the C# was written against the code and is compiled by
+the lead, the tests are written, not run.
+
+- L0: `Docs/checks/p31_precheck.md`. Ceasefire is at the damage level already (prompt 28 appendix: DamageSystem.Apply,
+  per team); the allied TacticalAi can drive a lone `Ally` vehicle but is made only for missions with allies and does
+  not follow Attack/Defend; Mara's Behemoth and Hawk's aircraft are data from existing units (behaviour on the player's
+  team is pass 4's check); the card rule lives in `build_campaign.check()`; the NavGrid has reference-counted blockers,
+  a version and lazy regions but no named prebuilt states (pass 3 builds them on that); a table of the locked cards of
+  every one of the 23 decks.
+- L1 data model: campaign.json mission key `fixedDeck` {`vehicleIds`[8], `supportIds`[2], `placedAllies`[] (def, x, z,
+  heading, name, fallback, lossIfDestroyed), `loanedCards`[], `specialRules`[], `status` ("MAKE_FIRST"/"MAKE_LATER"),
+  `rankBonus`, `prepSeconds`}, the sheet's field names in camelCase like the rest of campaign.json. Written by
+  `Tools/campaign/fixed_decks.py` (DECKS, the replacements, the rules), parsed by `Sim/Content/FixedDeckDef.cs`
+  (`MissionDef.FixedDeck`).
+- Rank: "fixed by the main deck's rank curve in that chapter" is `Campaign.ExpectedRank(mission)` (the game's own curve:
+  1 at the start, 7 at act IV, 8 at the end), floored, plus `rankBonus`; no equipment (`Gear.Boost(rank, no pieces)`).
+  The player's own base towers keep the profile's ranks (a base is not part of the deck).
+- Loaned cards: a card not a starter and not unlocked by an earlier mission (a mission's own reward is not owned in it;
+  shop-only cards count as not owned, since a player may not have bought them). Usable in the mission, never unlocked by
+  it (nothing in the game unlocks a card by fielding it; the mission's own `unlocks` still pay on a win). Label
+  "Loaned for this mission" / "Mượn trong nhiệm vụ này" (Strings `fixeddeck.loaned`). At most two a mission; the sheet's
+  other locked cards are replaced by an unlocked card of the same role (L2 list below).
+- c1m01 exception: four loaned cards. A new player owns four vehicle cards (scout_jeep, armored_car, ifv,
+  main_battle_tank), so an eight-card deck there cannot be built with two loans; the four loans are the sheet's
+  amphibious vehicle, light tank, rocket technical (c1m01's own reward) and mortar carrier.
+- Campaign generator: `build_campaign.check()` calls `fixed_decks.check_mission` with the cards owned before the
+  mission: 8 + 2 different cards in balance.json, every card owned or loaned (the only valid exception), a loaned card
+  not owned, at most 2 loaned (`LOAN_EXCEPTIONS`), known rules, the rules' data conditions (no camp for a raid, no
+  outposts or command vehicle for the beach landing, a boss route for the train's wait, a rank bonus for elite armour),
+  and the objective fields equal to `Tools/campaign/p31_objectives_baseline.json` (written from campaign.json before
+  prompt 31, all 23 sheet missions).
+- Game: `MissionDecks` returns the fixed deck for the battle's cards (HUD), the player side (`MissionSession.Build`),
+  the enemy's pace (`EnemyScaling.Match`), the rank discounts, the enemy base's counters, the enemy tips and the defeat
+  hints; `MatchSettings.DeckVehicles` (the saved deck) is never touched, so nothing is overwritten. Fixed-deck screen:
+  the mission page (`MenuScreen.Campaign.FixedDeckPanel`) shows the 8 + 2 cards read only at the deck's rank (a tap opens
+  the card page), "Loaned" under each loaned card, the placed allies (no card slot, "lost if it falls"), and one line per
+  special rule; the briefing card gets a "Fixed deck" chip; the recommended-power line uses the fixed deck.
+- AI: no new AI. A fixed deck's rules are added to the mission type's profile as flags `rule:<id>`
+  (`SimWorld.AddProfileFlags` from `MissionMode.Setup`); the profile's id stays the mission type's.
+- Placed allies: data and screen now; spawning, the allied AI for them (`AllyAi` is already made when a deck has
+  some) and the Attack/Defend order are pass 4 (c6m03 first). None of the 13 MAKE FIRST decks has one.

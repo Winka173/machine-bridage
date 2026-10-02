@@ -1306,6 +1306,12 @@ namespace MachineBrigade.Game.Match
             // Prompt 22 D.5: what the story's choices so far change here (the campaign's battles only).
             var playerSide = PlayerSide(_def.PlayerCp + (_run == null ? Narrative.PlayerCpBonus(_def) : 0f), _def.PlayerIncome);
             playerSide.ArmyCap = _def.PlayerCap;
+            // Prompt 31 L1: a mission with a fixed deck fields that deck, not the player's (loaned cards included).
+            if (_def.FixedDeck is { } fixedDeck)
+            {
+                playerSide.Vehicles = fixedDeck.Vehicles;
+                playerSide.Supports = fixedDeck.Supports;
+            }
             world.SetVision(EnemyTeam, _run == null ? Narrative.EnemyVision(_def) : 1f);
             // Heroic and Iron (and Legend): the enemy comes stronger; Iron and Legend also leave the
             // player poorer and without fire support (operations.json "tiers").
@@ -1347,7 +1353,8 @@ namespace MachineBrigade.Game.Match
             }
             Mode.Setup(world);
             // Bases in a mission: a camp for either side if the mission gives one, and outposts on marked points.
-            var enemyBase = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, _def.EnemyHq > 0 ? _def.EnemyHq : null, against: MatchSettings.DeckVehicles);
+            var enemyBase = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, _def.EnemyHq > 0 ? _def.EnemyHq : null,
+                against: MissionDecks.Deck(_def, MatchSettings.DeckVehicles));
             if (_def.PlayerBase != BaseRole.None || _def.EnemyBase != BaseRole.None)
                 BaseDefences.Build(world, new BaseSetup()
                     .Set(PlayerTeam, MutatedBase(PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam)), _def.PlayerBase)
@@ -1392,7 +1399,8 @@ namespace MachineBrigade.Game.Match
             player.Goal = w => _mode.PlayerGoal(w);
             player.Demolish = w => _mode.PlayerDemolish(w);
             // The allied commander goes where the player's goal is, with its own units only (prompt 23 C.2: the Accord's waves too).
-            if (def.Ally != null || MissionEventSystem.NeedsAllies(def))
+            // Prompt 31: a fixed deck's placed allies are driven by it too (they spawn from prompt 31 L4 on).
+            if (def.Ally != null || MissionEventSystem.NeedsAllies(def) || def.FixedDeck is { PlacedAllies: { Count: > 0 } })
                 AllyAi = new TacticalAi(PlayerTeam, EnemyTeam, seed + 11)
                 {
                     Allies = true,

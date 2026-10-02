@@ -3,7 +3,7 @@
     python Tools/campaign/build_campaign.py [--report <dir>] [--no-texts] [--dry]
 
 The mission events' library is events.py (prompt 23), the events each mission plays act10.py (prompt 23 E), the balance
-sheet's unlock route act11.py (prompt 25 D2). The missions are written in act1.py, act2.py and act3.py, laid out in twelve chapters by act4.py
+sheet's unlock route act11.py (prompt 25 D2), the game-made decks fixed_decks.py (prompt 31). The missions are written in act1.py, act2.py and act3.py, laid out in twelve chapters by act4.py
 (prompt 20), in chapters of 9-18 missions and three interludes by act5.py-act8.py (prompt 22), the
 story's choices and story loot by act9.py (prompt 22 D), the people and chapters in story.py. This script turns reversed missions round, gives every mission its
 pay (the economy curve of Docs/DECISIONS.md section 4, 19A for twelve chapters), checks the campaign's
@@ -38,6 +38,7 @@ import act9  # noqa: E402,F401
 import act10  # noqa: E402,F401
 import act11  # noqa: E402
 import events  # noqa: E402
+import fixed_decks  # noqa: E402  (prompt 31: the game-made decks, after the events they add to)
 
 DATA = os.path.join(ROOT, 'Assets', 'MachineBrigade', 'Resources', 'Data')
 TEXT_CS = os.path.join(ROOT, 'Assets', 'MachineBrigade', 'Scripts', 'Game', 'Hud', 'CampaignText.cs')
@@ -329,6 +330,8 @@ def check(missions):
     owned = set(STARTERS)
     per_chapter = {}
     for m in missions:
+        # Prompt 31 L1: a fixed deck asks only for cards unlocked by then, or loaned for the mission (the one exception).
+        fixed_decks.check_mission(m, owned, VEHICLES, fail)
         if m['goal'] not in GOALS:
             fail(f"{m['id']}: goal {m['goal']}")
         if (m['map'] in PENDING_MAPS) != any(a == 'map:' + m['map'] for a in m.get('awaits', [])):

@@ -66,6 +66,9 @@ namespace MachineBrigade.Sim.Modes
         private float _bossBest = float.MaxValue;
         private double _bossProgressAt;
 
+        /// <summary>Prompt 31 L2 (c4m05): the route boss stands until then (the fixed deck's prepSeconds); 0: it moves at once.</summary>
+        private double _bossHeldUntil;
+
         private MissionDef _def;
         private readonly SideSetup _player;
         private readonly SideSetup? _enemy;
@@ -259,6 +262,8 @@ namespace MachineBrigade.Sim.Modes
             world.BigAttackSettings ??= Content.BigAttackSettings.For(world.Catalog.BigAttackRules, "Normal");
             // Prompt 28 appendix: the mission plays its type's AI profile; escorts keep auto support off the convoy.
             world.MissionGoal = _def.Goal.ToString();
+            // Prompt 31 L1: a fixed deck's special rules ride on the mission type's profile as flags (no AI of their own).
+            if (_def.FixedDeck is { } deck) world.AddProfileFlags(deck.AiFlags);
             if (_def.Goal is MissionGoal.Escort or MissionGoal.Evacuate) world.ConvoySafeZone = () => ConvoyPositions(world);
             SetupStage(world, true, null);
         }
@@ -332,7 +337,10 @@ namespace MachineBrigade.Sim.Modes
                     // Prompt 20: the mission's route over the battlefield's own (Kronos's).
                     MachineBrigade.Sim.Bosses.BossSystem.DropOwnRoute(boss);
                     boss.Scripted = true;
-                    Drive(world, boss, _def.Boss.Route[0]);
+                    // Prompt 31 L2: a fixed deck's preparation time (c4m05: the trap is laid before the train comes).
+                    var prep = _def.FixedDeck?.PrepSeconds ?? 0f;
+                    _bossHeldUntil = prep > 0f ? StartedAt + prep : 0.0;
+                    if (prep <= 0f) Drive(world, boss, _def.Boss.Route[0]);
                 }
             }
             foreach (var h in _def.Hunt)
@@ -380,6 +388,7 @@ namespace MachineBrigade.Sim.Modes
             _wave = 0;
             _launchStarted = -1;
             _bossWaypoint = 0;
+            _bossHeldUntil = 0.0;
             if (next.Boss != null) _boss = EntityId.None;
             next.EventRules = _def.EventRules;
             _def = next;
@@ -686,6 +695,16 @@ namespace MachineBrigade.Sim.Modes
             var route = _def.Boss?.Route;
             if (BossFled || route == null || route.Count == 0 || _bossWaypoint >= route.Count) return;
             if (!world.TryGetVehicle(_boss, out var boss) || !boss.IsAlive) return;
+            if (_bossHeldUntil > 0.0)
+            {
+                // Still preparing: it stands; then it sets off for its first waypoint.
+                if (world.Time < _bossHeldUntil) return;
+                _bossHeldUntil = 0.0;
+                _bossBest = float.MaxValue;
+                _bossProgressAt = world.Time;
+                Drive(world, boss, route[_bossWaypoint]);
+                return;
+            }
             var left = Vector2.Distance(boss.Position, route[_bossWaypoint]);
             if (left > WaypointReach)
             {
