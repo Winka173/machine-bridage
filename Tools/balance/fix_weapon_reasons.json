@@ -52,11 +52,12 @@
  "p26_nemesis_direct_ne125": "real 2A46 with its autoloader, 8 rpm (7.5 s); wave 1's 5.56 s is too fast after the 30 % rule",
  "p26_nemesis_main_ne152": "a 152 mm railway gun of the 2A65 class, 8 rpm (7.5 s); the 4-round 0.5 s salvo was 6 x too fast",
  "p26_nemesis_sec_boss_rockets": "wave 1 boss_rockets: rockets 0.5 s apart (BM-21: 40 in 20 s), 2.44 s after the ripple; each pod keeps its rockets; made up: a full BM-21 pack of 40 tubes (8 before); made up: a full BM-21 pack of 40 tubes (13 before)",
- "p26_roc_close_twin_30_bmpt": "wave 1 twin_30_bmpt: 12 rounds at 720 rpm every 2.42 s (2 x 2A42)",
+ "p26_roc_close_twin_30_bmpt": "wave 1 twin_30_bmpt: 12 rounds at 720 rpm, 1.45 s after (wave 1's 1.5 s is a hair over 2 x the practical rate)",
  "p26_roc_direct_roc_atgm": "a twin Kornet launcher: the pair 0.6 s apart, every 20 s (3 rpm a rail); 55.6 s was too slow",
  "p26_roc_main_roc_bombs": "a 400 kg bomb stick from an airship's bay: no real rate for the bay's reload; the 35.4 s cycle kept",
  "p26_roc_roc105": "real M102 10 rpm (6 s); wave 1's 2.74 s is too fast after the 30 % rule",
- "p26_typhon_direct_ty100": "wave 1 naval_100: 2 rounds 0.5 s apart every 3.5 s (AK-100 60 rpm)",
+ "p26_typhon_direct_ty100": "wave 1 naval_100's pair every 3.5 s, the rounds 1 s apart (AK-100 60 rpm; wave 1's 0.5 s is twice the real rate)",
  "p26_typhon_sec_ty57": "wave 1 mothership_cannon: 4 rounds 0.5 s apart every 4.29 s (AU-220M 120 rpm); made up: a twin 57 mm deck mount (as the real AK-725 twin 57 mm)",
+ "sam_battery": "MIM-104 Patriot: the pair ~3 s apart (est.; 0.45 s was too fast), the 11 s cycle kept",
  "train_gun": "real B-38 5-7.5 rpm (8 s at 7.5); wave 1's 5.11 s is too fast"
 }

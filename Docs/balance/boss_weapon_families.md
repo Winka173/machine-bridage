@@ -23,10 +23,11 @@ the anti-air-only mounts. No battle was run. Health: unchanged (the formula P x 
 | 155_60 | `p26_leviathan_sec_lev155` | 3 barrels together every 10.5 s | wave 1 naval_155_triple: the triple turret, 3 rounds every 10.5 s (real ~5 rpm a gun): passes (b) |
 | ak130 | `naval_130_twin` | 2 barrels together every 3.0 s | real AK-130 10-40 rpm a barrel: 20 rpm (3 s), practical; 4.75 s was too slow |
 | a192 | `p26_leviathan_direct_lev127` | one round every 3.0 s | an A-192 class 130 mm, 30 rpm max: 20 rpm practical (3 s) |
-| ak100 | `p26_typhon_direct_ty100` | 2 rounds 0.5 s apart, 3.0 s after | wave 1 naval_100: 2 rounds 0.5 s apart every 3.5 s (AK-100 60 rpm) |
+| ak100 | `p26_typhon_direct_ty100` | 2 rounds 1.0 s apart, 2.5 s after | wave 1 naval_100's pair every 3.5 s, the rounds 1 s apart (AK-100 60 rpm; wave 1's 0.5 s is twice the real rate) |
 | au220 | `p26_typhon_sec_ty57`, `p26_daedalus_sec_dae57`, `p26_kronos_direct_kr57`, `p26_matriarch_tiny_mothership_cannon` | 4 rounds 0.5 s apart, 2.79 s after | wave 1 mothership_cannon: 4 rounds 0.5 s apart every 4.29 s (AU-220M 120 rpm) |
 | 2a42 | `p26_matriarch_sec_autocannon_30`, `p26_kronos_close_autocannon_30` | 10 rounds 0.1111 s apart, 1.5 s after | wave 1 autocannon_30: 10 rounds at 540 rpm every 2.5 s (2A42 550-800 rpm) |
-| 2a42x2 | `p26_roc_close_twin_30_bmpt` | 12 rounds 0.0833 s apart, 1.5 s after | wave 1 twin_30_bmpt: 12 rounds at 720 rpm every 2.42 s (2 x 2A42) |
+| 2a42x2 | `p26_roc_close_twin_30_bmpt` | 12 rounds 0.0833 s apart, 1.45 s after | wave 1 twin_30_bmpt: 12 rounds at 720 rpm, 1.45 s after (wave 1's 1.5 s is a hair over 2 x the practical rate) |
+| patriot | `sam_battery` | 2 rounds 3.0 s apart, 8.0 s after | MIM-104 Patriot: the pair ~3 s apart (est.; 0.45 s was too fast), the 11 s cycle kept |
 | grad | `p26_behemoth_sec_be_rockets`, `p26_nemesis_sec_boss_rockets`, `p26_kronos_close_boss_rockets`, `boss_rockets` | ripple 0.5 s apart, 2.44 s after | wave 1 boss_rockets: rockets 0.5 s apart (BM-21: 40 in 20 s), 2.44 s after the ripple; each pod keeps its rockets |
 | smerch | `p26_jotunn_sec_jo_rockets` | ripple 3.17 s apart, 15.76 s after | real BM-30 Smerch 12 rockets in 38 s (3.17 s apart), wave 1 rockets_300mm's 15.76 s after the ripple |
 | kornet | `p26_behemoth_tiny_boss_missiles`, `p26_matriarch_direct_ma_atgm` | one round every 20 s | real 9M133 Kornet 3 rpm (20 s); wave 1's 6.39 s is too fast |
