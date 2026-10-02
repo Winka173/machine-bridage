@@ -1,0 +1,1606 @@
+{
+ "note": "Written by Tools/balance/fix_validate.py (item 3): each weapon a unit carries, its rounds a cycle and cycle, the audit's rate flags and the recorded reason. FixValidatorTests fails when the data no longer matches: rerun the script.",
+ "recordedRateFlags": {
+  "amos_120": "the real reference is an estimate (no published launch interval): not a clear error",
+  "avenger_stingers": "the real reference is an estimate (no published launch interval): not a clear error",
+  "ballistic_missile": "DECISIONS 19R kept the ripple off the real pace on purpose (a real salvo would take 20-35 s of a 90 s fight)",
+  "boss_missiles": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "buk_launcher": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "caesar_155": "the real reference is an estimate (no published launch interval): not a clear error",
+  "cruise_missile_ground": "the real reference is an estimate (no published launch interval): not a clear error",
+  "flak_35": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "flak_88": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose",
+  "gun_100_river": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error",
+  "gun_105_ags": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error",
+  "gun_105_apfsds": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)",
+  "gun_105_bunker": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)",
+  "gun_105_long": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)",
+  "gun_105_wheeled": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)",
+  "gun_120_twin": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "gun_120mm": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "gun_125_armata_ke": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "gun_125_elite": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)",
+  "gun_140_twin": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error",
+  "gun_155_coastal": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose",
+  "gun_155_crusader": "the real reference is an estimate (no published launch interval): not a clear error",
+  "gun_155_twin_ap": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose",
+  "gun_155_twin_coastlr": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose",
+  "gun_57mm": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "gunship_105": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)",
+  "gunship_40mm": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)",
+  "howitzer": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "howitzer_cb": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose",
+  "howitzer_fixed": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose",
+  "jassm": "the real reference is an estimate (no published launch interval): not a clear error",
+  "kornet_multi": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "kornet_top": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "mlrs_elite": "DECISIONS 19R kept the ripple off the real pace on purpose (a real salvo would take 20-35 s of a 90 s fight)",
+  "mlrs_rockets": "DECISIONS 19R kept the ripple off the real pace on purpose (a real salvo would take 20-35 s of a 90 s fight)",
+  "mortar_240_fixed": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose",
+  "naval_76": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "one_shot_kornet": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose",
+  "patriot": "the real reference is an estimate (no published launch interval): not a clear error",
+  "recoilless_106": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error",
+  "rockets_300mm": "DECISIONS 19R kept the ripple off the real pace on purpose (a real salvo would take 20-35 s of a 90 s fight)",
+  "sam_battery_lrr": "the real reference is an estimate (no published launch interval): not a clear error",
+  "sam_pac3": "the real reference is an estimate (no published launch interval): not a clear error",
+  "sam_post": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "siege_gun_105": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error",
+  "siege_mortar_240": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error",
+  "spg9_73mm": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose",
+  "tamir": "the real reference is an estimate (no published launch interval): not a clear error",
+  "tower_kornet": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call",
+  "turret_gmlrs": "DECISIONS 19R kept the ripple off the real pace on purpose (a real salvo would take 20-35 s of a 90 s fight)",
+  "turret_gun_120": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose",
+  "turret_gun_120_long": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose",
+  "twin_30_bmpt": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+ },
+ "weapons": {
+  "aa_25_triple": {
+   "cycle": 3.1,
+   "flags": [],
+   "n": 15,
+   "reason": ""
+  },
+  "agl_40": {
+   "cycle": 4.2,
+   "flags": [],
+   "n": 6,
+   "reason": ""
+  },
+  "aim9": {
+   "cycle": 8.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "air_cruise_missile": {
+   "cycle": 11.2,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "air_to_air": {
+   "cycle": 3.99,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "amos_120": {
+   "cycle": 10.75,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 4,
+   "reason": "the real reference is an estimate (no published launch interval): not a clear error"
+  },
+  "anti_radar_missile": {
+   "cycle": 8.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "apkws_rocket": {
+   "cycle": 1.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "at_gun_100": {
+   "cycle": 5.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "ataka": {
+   "cycle": 11.42,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "atgm": {
+   "cycle": 12.33,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "autocannon_25": {
+   "cycle": 2.634,
+   "flags": [],
+   "n": 8,
+   "reason": ""
+  },
+  "autocannon_30": {
+   "cycle": 2.611,
+   "flags": [],
+   "n": 10,
+   "reason": ""
+  },
+  "autocannon_40": {
+   "cycle": 3.52,
+   "flags": [],
+   "n": 10,
+   "reason": ""
+  },
+  "avenger_stingers": {
+   "cycle": 18.5,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 8,
+   "reason": "the real reference is an estimate (no published launch interval): not a clear error"
+  },
+  "ballistic_missile": {
+   "cycle": 24.21,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "DECISIONS 19R kept the ripple off the real pace on purpose (a real salvo would take 20-35 s of a 90 s fight)"
+  },
+  "bastion_gun": {
+   "cycle": 5.21,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "boat_rockets": {
+   "cycle": 8.08,
+   "flags": [],
+   "n": 10,
+   "reason": ""
+  },
+  "bofors_l70": {
+   "cycle": 7.75,
+   "flags": [],
+   "n": 20,
+   "reason": ""
+  },
+  "bomber_payload": {
+   "cycle": 12.4,
+   "flags": [],
+   "n": 7,
+   "reason": ""
+  },
+  "bomber_tail_guns": {
+   "cycle": 3.197,
+   "flags": [],
+   "n": 26,
+   "reason": ""
+  },
+  "borer_cannon": {
+   "cycle": 6.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "borer_drill": {
+   "cycle": 1.5,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "boss_flak": {
+   "cycle": 5.38,
+   "flags": [],
+   "n": 41,
+   "reason": ""
+  },
+  "boss_flamer": {
+   "cycle": 0.25,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "boss_heli_gun": {
+   "cycle": 9.668,
+   "flags": [],
+   "n": 40,
+   "reason": ""
+  },
+  "boss_hmg": {
+   "cycle": 13.247,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "boss_minigun": {
+   "cycle": 6.761,
+   "flags": [],
+   "n": 40,
+   "reason": ""
+  },
+  "boss_missiles": {
+   "cycle": 6.39,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "boss_railgun": {
+   "cycle": 8.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "boss_rockets": {
+   "cycle": 8.44,
+   "flags": [],
+   "n": 13,
+   "reason": ""
+  },
+  "boss_thermo": {
+   "cycle": 14.01,
+   "flags": [],
+   "n": 6,
+   "reason": ""
+  },
+  "bucket_wheel": {
+   "cycle": 2.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "buk_launcher": {
+   "cycle": 3.3,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "bunker_buster_bomb": {
+   "cycle": 90.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "bunker_flame": {
+   "cycle": 0.195,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "bunker_hmg": {
+   "cycle": 13.3,
+   "flags": [],
+   "n": 150,
+   "reason": ""
+  },
+  "bunker_hmg_twin": {
+   "cycle": 11.5,
+   "flags": [],
+   "n": 150,
+   "reason": ""
+  },
+  "c_ram_gatling": {
+   "cycle": 7.0,
+   "flags": [],
+   "n": 200,
+   "reason": ""
+  },
+  "caesar_155": {
+   "cycle": 31.0,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 4,
+   "reason": "the real reference is an estimate (no published launch interval): not a clear error"
+  },
+  "ciws_aa": {
+   "cycle": 6.002,
+   "flags": [],
+   "n": 60,
+   "reason": ""
+  },
+  "cluster_at_bomb": {
+   "cycle": 90.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "coilgun": {
+   "cycle": 4.79,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "coyote_interceptor": {
+   "cycle": 1.125,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "cruise_missile_ground": {
+   "cycle": 45.0,
+   "flags": [
+    "TOO SLOW"
+   ],
+   "n": 2,
+   "reason": "the real reference is an estimate (no published launch interval): not a clear error"
+  },
+  "cruiser_203": {
+   "cycle": 11.8,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "detonator": {
+   "cycle": 1.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "door_gun": {
+   "cycle": 12.33,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "dozer_blade": {
+   "cycle": 1.6,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "drone_missile": {
+   "cycle": 3.58,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "fighter_cannon": {
+   "cycle": 5.949,
+   "flags": [],
+   "n": 44,
+   "reason": ""
+  },
+  "flak_35": {
+   "cycle": 6.5,
+   "flags": [
+    "TOO SLOW"
+   ],
+   "n": 22,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "flak_88": {
+   "cycle": 2.0,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"
+  },
+  "flak_quad": {
+   "cycle": 3.217,
+   "flags": [],
+   "n": 54,
+   "reason": ""
+  },
+  "flamethrower": {
+   "cycle": 0.25,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "focus_laser": {
+   "cycle": 9.4,
+   "flags": [],
+   "n": 80,
+   "reason": ""
+  },
+  "fpv_fibre": {
+   "cycle": 6.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "fpv_hangar": {
+   "cycle": 10.5,
+   "flags": [],
+   "n": 4,
+   "reason": ""
+  },
+  "fpv_hangar_swarm": {
+   "cycle": 7.9,
+   "flags": [],
+   "n": 4,
+   "reason": ""
+  },
+  "fpv_swarm": {
+   "cycle": 2.8,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "fpv_swarm_mini": {
+   "cycle": 52.0,
+   "flags": [],
+   "n": 6,
+   "reason": ""
+  },
+  "glide_fab500": {
+   "cycle": 3.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "grad_cluster": {
+   "cycle": 13.0,
+   "flags": [],
+   "n": 11,
+   "reason": ""
+  },
+  "griffin": {
+   "cycle": 4.286,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "gsh30k": {
+   "cycle": 6.287,
+   "flags": [],
+   "n": 37,
+   "reason": ""
+  },
+  "guided_bomb": {
+   "cycle": 6.651,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "gun_100_2a70": {
+   "cycle": 6.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "gun_100_river": {
+   "cycle": 3.0,
+   "flags": [
+    "TOO SLOW"
+   ],
+   "n": 1,
+   "reason": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error"
+  },
+  "gun_105_ags": {
+   "cycle": 5.0,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error"
+  },
+  "gun_105_apfsds": {
+   "cycle": 3.908,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)"
+  },
+  "gun_105_bunker": {
+   "cycle": 4.536,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)"
+  },
+  "gun_105_long": {
+   "cycle": 3.333,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)"
+  },
+  "gun_105_wheeled": {
+   "cycle": 3.704,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)"
+  },
+  "gun_120_twin": {
+   "cycle": 5.163,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "gun_120mm": {
+   "cycle": 5.098,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "gun_125_armata_ke": {
+   "cycle": 5.0,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "gun_125_elite": {
+   "cycle": 5.66,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)"
+  },
+  "gun_140_twin": {
+   "cycle": 4.537,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error"
+  },
+  "gun_152": {
+   "cycle": 5.714,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "gun_152_heat": {
+   "cycle": 6.33,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "gun_155_coastal": {
+   "cycle": 8.84,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"
+  },
+  "gun_155_crusader": {
+   "cycle": 27.5,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 4,
+   "reason": "the real reference is an estimate (no published launch interval): not a clear error"
+  },
+  "gun_155_twin_ap": {
+   "cycle": 5.55,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"
+  },
+  "gun_155_twin_coastlr": {
+   "cycle": 5.55,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"
+  },
+  "gun_57_auto": {
+   "cycle": 5.4,
+   "flags": [],
+   "n": 6,
+   "reason": ""
+  },
+  "gun_57mm": {
+   "cycle": 4.5,
+   "flags": [
+    "TOO SLOW"
+   ],
+   "n": 2,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "gun_57mm_2s38": {
+   "cycle": 0.5,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "gun_behemoth": {
+   "cycle": 8.98,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "gun_launched_atgm": {
+   "cycle": 20.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "gunship_105": {
+   "cycle": 2.743,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)"
+  },
+  "gunship_25mm": {
+   "cycle": 6.011,
+   "flags": [],
+   "n": 56,
+   "reason": ""
+  },
+  "gunship_40mm": {
+   "cycle": 5.992,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 29,
+   "reason": "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)"
+  },
+  "gunship_rockets": {
+   "cycle": 9.771,
+   "flags": [],
+   "n": 16,
+   "reason": ""
+  },
+  "hel_beam": {
+   "cycle": 0.052,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "heli_ataka": {
+   "cycle": 4.88,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "heli_atgm": {
+   "cycle": 4.88,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "heli_gun": {
+   "cycle": 9.668,
+   "flags": [],
+   "n": 40,
+   "reason": ""
+  },
+  "heli_rockets": {
+   "cycle": 8.51,
+   "flags": [],
+   "n": 11,
+   "reason": ""
+  },
+  "hellfire_standoff": {
+   "cycle": 8.0,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "hellfire_volley": {
+   "cycle": 11.09,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "hmg_roof": {
+   "cycle": 16.11,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "hmg_selfdef_15": {
+   "cycle": 16.11,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "hmg_selfdef_18": {
+   "cycle": 16.11,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "hmg_selfdef_21": {
+   "cycle": 16.11,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "hover_ciws": {
+   "cycle": 6.002,
+   "flags": [],
+   "n": 60,
+   "reason": ""
+  },
+  "hover_rockets": {
+   "cycle": 27.0,
+   "flags": [],
+   "n": 11,
+   "reason": ""
+  },
+  "howitzer": {
+   "cycle": 7.143,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "howitzer_cb": {
+   "cycle": 3.9,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"
+  },
+  "howitzer_fixed": {
+   "cycle": 3.9,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"
+  },
+  "hq_flak": {
+   "cycle": 6.432,
+   "flags": [],
+   "n": 120,
+   "reason": ""
+  },
+  "ifv_30": {
+   "cycle": 2.611,
+   "flags": [],
+   "n": 10,
+   "reason": ""
+  },
+  "illum_flare": {
+   "cycle": 15.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "interceptor_drone": {
+   "cycle": 4.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "jassm": {
+   "cycle": 10.44,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "the real reference is an estimate (no published launch interval): not a clear error"
+  },
+  "jet_bombs": {
+   "cycle": 10.3,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "jet_cannon": {
+   "cycle": 5.182,
+   "flags": [],
+   "n": 70,
+   "reason": ""
+  },
+  "kh29": {
+   "cycle": 7.86,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "khrizantema": {
+   "cycle": 9.6,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "kornet_multi": {
+   "cycle": 5.55,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "kornet_top": {
+   "cycle": 5.2,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "lancet": {
+   "cycle": 8.372,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "lancet_hangar": {
+   "cycle": 3.6,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "laser_50kw": {
+   "cycle": 0.067,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "leviathan_cruise": {
+   "cycle": 50.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "mg_coax": {
+   "cycle": 12.33,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "mg_coax_ground": {
+   "cycle": 4.444,
+   "flags": [],
+   "n": 37,
+   "reason": ""
+  },
+  "mg_jeep": {
+   "cycle": 16.11,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "mg_jeep_selfdef": {
+   "cycle": 16.11,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "minigun": {
+   "cycle": 8.0,
+   "flags": [],
+   "n": 200,
+   "reason": ""
+  },
+  "missile_57e6": {
+   "cycle": 4.452,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "mlrs_elite": {
+   "cycle": 10.246,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 5,
+   "reason": "DECISIONS 19R kept the ripple off the real pace on purpose (a real salvo would take 20-35 s of a 90 s fight)"
+  },
+  "mlrs_rockets": {
+   "cycle": 11.144,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 5,
+   "reason": "DECISIONS 19R kept the ripple off the real pace on purpose (a real salvo would take 20-35 s of a 90 s fight)"
+  },
+  "mortar_120": {
+   "cycle": 5.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "mortar_240_fixed": {
+   "cycle": 5.0,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"
+  },
+  "mothership_drones": {
+   "cycle": 9.37,
+   "flags": [],
+   "n": 4,
+   "reason": ""
+  },
+  "naval_130_twin": {
+   "cycle": 3.0,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "naval_76": {
+   "cycle": 3.6,
+   "flags": [
+    "TOO SLOW"
+   ],
+   "n": 2,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "net_zap": {
+   "cycle": 0.5,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "none": {
+   "cycle": 1.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "nsm_coastal": {
+   "cycle": 10.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "one_shot_kornet": {
+   "cycle": 1000007.4,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 8,
+   "reason": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"
+  },
+  "p26_bastion_close_boss_hmg": {
+   "cycle": 13.247,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "p26_bastion_direct_b100": {
+   "cycle": 8.6,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "p26_bastion_main_b155": {
+   "cycle": 15.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_bastion_sec_b240": {
+   "cycle": 60.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_bastion_tiny_autocannon_40": {
+   "cycle": 3.32,
+   "flags": [],
+   "n": 10,
+   "reason": ""
+  },
+  "p26_bastion_tiny_kornet_twin": {
+   "cycle": 20.0,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "p26_bastion_tiny_zu23": {
+   "cycle": 4.96,
+   "flags": [],
+   "n": 50,
+   "reason": ""
+  },
+  "p26_behemoth_close_boss_flak": {
+   "cycle": 5.38,
+   "flags": [],
+   "n": 41,
+   "reason": ""
+  },
+  "p26_behemoth_direct_be120": {
+   "cycle": 7.5,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "p26_behemoth_main_be152": {
+   "cycle": 8.98,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "p26_behemoth_sec_be_rockets": {
+   "cycle": 21.94,
+   "flags": [],
+   "n": 40,
+   "reason": ""
+  },
+  "p26_behemoth_tiny_be120": {
+   "cycle": 7.5,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_behemoth_tiny_boss_missiles": {
+   "cycle": 20.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_behemoth_tiny_kornet_twin": {
+   "cycle": 20.0,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "p26_daedalus_direct_dae_laser": {
+   "cycle": 0.1,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_daedalus_sec_dae57": {
+   "cycle": 4.29,
+   "flags": [],
+   "n": 8,
+   "reason": ""
+  },
+  "p26_gungnir_emrg": {
+   "cycle": 25.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_icarus_close_autocannon_40": {
+   "cycle": 3.32,
+   "flags": [],
+   "n": 10,
+   "reason": ""
+  },
+  "p26_icarus_direct_ic_laser": {
+   "cycle": 0.1,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_icarus_main_ic_coil": {
+   "cycle": 5.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_icarus_sec_orbital_laser": {
+   "cycle": 0.1,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_ixion_125": {
+   "cycle": 7.5,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_ixion_mg": {
+   "cycle": 13.247,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "p26_jotunn_close_boss_flak": {
+   "cycle": 5.38,
+   "flags": [],
+   "n": 41,
+   "reason": ""
+  },
+  "p26_jotunn_direct_jo125": {
+   "cycle": 7.5,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_jotunn_jo203": {
+   "cycle": 24.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_jotunn_sec_jo_rockets": {
+   "cycle": 37.95,
+   "flags": [],
+   "n": 8,
+   "reason": ""
+  },
+  "p26_jotunn_tiny_twin_30_flak": {
+   "cycle": 6.975,
+   "flags": [],
+   "n": 160,
+   "reason": ""
+  },
+  "p26_kronos_close_autocannon_30": {
+   "cycle": 2.5,
+   "flags": [],
+   "n": 10,
+   "reason": ""
+  },
+  "p26_kronos_close_boss_rockets": {
+   "cycle": 8.44,
+   "flags": [],
+   "n": 13,
+   "reason": ""
+  },
+  "p26_kronos_direct_kr57": {
+   "cycle": 4.29,
+   "flags": [],
+   "n": 4,
+   "reason": ""
+  },
+  "p26_leviathan_direct_lev127": {
+   "cycle": 3.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_leviathan_lev406": {
+   "cycle": 60.0,
+   "flags": [],
+   "n": 3,
+   "reason": ""
+  },
+  "p26_leviathan_sec_lev155": {
+   "cycle": 10.5,
+   "flags": [],
+   "n": 3,
+   "reason": ""
+  },
+  "p26_matriarch_close_boss_flak": {
+   "cycle": 5.38,
+   "flags": [],
+   "n": 41,
+   "reason": ""
+  },
+  "p26_matriarch_direct_ma_atgm": {
+   "cycle": 20.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_matriarch_ma_drones": {
+   "cycle": 5.0,
+   "flags": [],
+   "n": 6,
+   "reason": ""
+  },
+  "p26_matriarch_sec_autocannon_30": {
+   "cycle": 2.5,
+   "flags": [],
+   "n": 10,
+   "reason": ""
+  },
+  "p26_matriarch_tiny_mothership_cannon": {
+   "cycle": 4.29,
+   "flags": [],
+   "n": 4,
+   "reason": ""
+  },
+  "p26_moloch_close_boss_flak": {
+   "cycle": 5.38,
+   "flags": [],
+   "n": 41,
+   "reason": ""
+  },
+  "p26_moloch_direct_mo120ap": {
+   "cycle": 7.5,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "p26_moloch_main_mo120": {
+   "cycle": 7.5,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "p26_moloch_tiny_zu23": {
+   "cycle": 4.96,
+   "flags": [],
+   "n": 50,
+   "reason": ""
+  },
+  "p26_nemesis_close_boss_flak": {
+   "cycle": 5.38,
+   "flags": [],
+   "n": 41,
+   "reason": ""
+  },
+  "p26_nemesis_direct_ne125": {
+   "cycle": 7.5,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_nemesis_main_ne152": {
+   "cycle": 7.5,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_nemesis_sec_boss_rockets": {
+   "cycle": 21.94,
+   "flags": [],
+   "n": 40,
+   "reason": ""
+  },
+  "p26_roc_close_twin_30_bmpt": {
+   "cycle": 2.366,
+   "flags": [],
+   "n": 12,
+   "reason": ""
+  },
+  "p26_roc_direct_roc_atgm": {
+   "cycle": 20.0,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "p26_roc_main_roc_bombs": {
+   "cycle": 35.44,
+   "flags": [],
+   "n": 8,
+   "reason": ""
+  },
+  "p26_roc_roc105": {
+   "cycle": 6.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "p26_typhon_direct_ty100": {
+   "cycle": 3.5,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "p26_typhon_sec_ty57": {
+   "cycle": 4.29,
+   "flags": [],
+   "n": 8,
+   "reason": ""
+  },
+  "patriot": {
+   "cycle": 3.2,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "the real reference is an estimate (no published launch interval): not a clear error"
+  },
+  "r37m": {
+   "cycle": 4.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "r60": {
+   "cycle": 7.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "railgun": {
+   "cycle": 7.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "recoilless_106": {
+   "cycle": 6.667,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error"
+  },
+  "recon_missile": {
+   "cycle": 11.59,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "rockets_300mm": {
+   "cycle": 18.26,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 11,
+   "reason": "DECISIONS 19R kept the ripple off the real pace on purpose (a real salvo would take 20-35 s of a 90 s fight)"
+  },
+  "s8_pods": {
+   "cycle": 4.4,
+   "flags": [],
+   "n": 8,
+   "reason": ""
+  },
+  "sam": {
+   "cycle": 4.452,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "sam_48n6": {
+   "cycle": 7.2,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "sam_battery": {
+   "cycle": 11.0,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "sam_battery_lrr": {
+   "cycle": 3.9,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "the real reference is an estimate (no published launch interval): not a clear error"
+  },
+  "sam_pac3": {
+   "cycle": 6.7,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "the real reference is an estimate (no published launch interval): not a clear error"
+  },
+  "sam_post": {
+   "cycle": 4.4,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "scout_rockets": {
+   "cycle": 8.61,
+   "flags": [],
+   "n": 12,
+   "reason": ""
+  },
+  "shahed": {
+   "cycle": 8.5,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "siege_gun_105": {
+   "cycle": 4.6,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error"
+  },
+  "siege_mortar_240": {
+   "cycle": 7.619,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error"
+  },
+  "smart_at_shell": {
+   "cycle": 25.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "spg9_73mm": {
+   "cycle": 6.67,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"
+  },
+  "spike_nlos": {
+   "cycle": 10.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "stealth_payload": {
+   "cycle": 14.3,
+   "flags": [],
+   "n": 2,
+   "reason": ""
+  },
+  "stinger_atas": {
+   "cycle": 9.07,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "stinger_post": {
+   "cycle": 4.452,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "supergun_800": {
+   "cycle": 25.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "swarm_drones": {
+   "cycle": 3.3,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "tamir": {
+   "cycle": 3.5,
+   "flags": [
+    "TOO SLOW"
+   ],
+   "n": 1,
+   "reason": "the real reference is an estimate (no published launch interval): not a clear error"
+  },
+  "technical_rockets": {
+   "cycle": 7.6,
+   "flags": [],
+   "n": 5,
+   "reason": ""
+  },
+  "thermobaric_bomb": {
+   "cycle": 90.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "thermobaric_rockets": {
+   "cycle": 12.95,
+   "flags": [],
+   "n": 9,
+   "reason": ""
+  },
+  "tower_ac25": {
+   "cycle": 2.55,
+   "flags": [],
+   "n": 10,
+   "reason": ""
+  },
+  "tower_flak_30": {
+   "cycle": 6.432,
+   "flags": [],
+   "n": 120,
+   "reason": ""
+  },
+  "tower_hmg": {
+   "cycle": 12.5,
+   "flags": [],
+   "n": 100,
+   "reason": ""
+  },
+  "tower_kornet": {
+   "cycle": 5.55,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "train_gun": {
+   "cycle": 8.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "turret_gmlrs": {
+   "cycle": 8.0,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 2,
+   "reason": "DECISIONS 19R kept the ripple off the real pace on purpose (a real salvo would take 20-35 s of a 90 s fight)"
+  },
+  "turret_gun_120": {
+   "cycle": 2.88,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"
+  },
+  "turret_gun_120_long": {
+   "cycle": 3.9,
+   "flags": [
+    "TOO FAST"
+   ],
+   "n": 1,
+   "reason": "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"
+  },
+  "turret_rockets": {
+   "cycle": 4.07,
+   "flags": [],
+   "n": 6,
+   "reason": ""
+  },
+  "turret_rockets_cluster": {
+   "cycle": 3.92,
+   "flags": [],
+   "n": 6,
+   "reason": ""
+  },
+  "twin_30_bmpt": {
+   "cycle": 2.5,
+   "flags": [
+    "TOO SLOW"
+   ],
+   "n": 12,
+   "reason": "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"
+  },
+  "twin_30_flak": {
+   "cycle": 7.0,
+   "flags": [],
+   "n": 160,
+   "reason": ""
+  },
+  "twin_35_ahead": {
+   "cycle": 6.129,
+   "flags": [],
+   "n": 24,
+   "reason": ""
+  },
+  "uav_loiter_missile": {
+   "cycle": 7.0,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "wvr_aam": {
+   "cycle": 2.12,
+   "flags": [],
+   "n": 1,
+   "reason": ""
+  },
+  "zu23": {
+   "cycle": 5.0,
+   "flags": [],
+   "n": 50,
+   "reason": ""
+  }
+ }
+}

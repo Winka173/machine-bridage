@@ -16742,6 +16742,34 @@ edges data (a test field) keeps the theme's old picture.
   build_doc.py imports it beside the other lanes' modules (prompt34 kept) and calls it inside section 15. The PDF is not
   rebuilt here. The far-zoom edge shots per biome need Unity renders: Docs/ai/LOCAL_TODO.md.
 
+## Sửa lỗi tổng hợp L9 (lead pass, 2026-10-02)
+
+Branch `feature/fix-l9`, pass 9 of `Docs/prompts/fix_full_vi.txt` (the validators), items 1-6 and 8; item 7 (models) waits for
+pass 8. Each item is a rerunnable Python check, `python Tools/balance/fix_validate.py [items]` (balance.json, the GLBs and the
+audio analyser's functions in memory; exit 1 on a failure), and an EditMode test in the build, `FixValidatorTests`. Written,
+not run in Unity (the owner's rule); the Python checks were run.
+
+| item | Python | EditMode test |
+|---|---|---|
+| 1 calibre / warhead is data | `fix_calibre.check` + one field a line, the name's kg against the mm | `Item1_...`: one field, `WeaponInfo.Spec` prints mm only for a calibre and kg only for a warhead, a gun's calibre is its size |
+| 2 one family, one round | boss-only lines by weaponFamilyId + variant: damage, core, edge, speed; `p34_validate.families` | `Item2_...`: the same on the catalog's boss mounts; every variant has its reason |
+| 3 rates against the source | `full_weapon_audit` flags (TOO FAST / SLOW / UNIT) against its `WAIT_NOTES` (the recorded list with reasons); writes `Docs/checks/fix_validate.json` | reads the JSON: rounds a cycle and cycle must match the catalog (stale: rerun the script), a flag needs a reason |
+| 4 declared targets | `target_mask_check` (no declared layer without a damaging round; its elite-only second rounds stay reported) | `Item4_...` (the `TargetMaskTests` rule over every gun) |
+| 5 warnings and rings | `warningRules` floors / escape / cap, a 203 mm / 300 mm rocket / 400 kg weapon is T4+ and warned, edge >= core, `p34_warnings.check`, `p34_validate.rings` | `Item5_...`: `WarnSeconds` >= the prompt's formula (floors 2.5 / 3.5 / 4 s, 0.5 s + core / 4.5 m/s, cap 6 s), `WarnRadius` = max(core, edge) |
+| 6 muzzles and flares | `p34_validate.muzzles`; every flare unit's GLB (and `_hd`) has >= 2 `Mount_Flare_*`; the view reads them first and the release spawns from the view's points | `Item6_...` x3: a `Muzzle_*` node with a `Muzzle_b<k>_` child per barrel on every unit firing barrels together; two `Mount_Flare_*` per flare unit; the source reads them |
+| 8 audio | `analyze_sfx` in memory: no keng outside `armour_metal`, the per-size table rises | reads `Docs/audio/metrics.json` (current by its clip names) and recomputes the rise |
+
+- **Recorded exceptions**: item 2 leaves out the lines a boss shares with a player unit (the player rule) and Gungnir's frozen
+  `autocannon_40`; item 3's list is `full_weapon_audit.WAIT_NOTES` (the reasons of `player_weapon_waitlist.md`), 53 flagged
+  lines, and the script prints the entries on it that no longer fail; item 6's `FLARE_KNOWN_MISSING` (the test's
+  `FlareKnownMissing`; fixing one fails until it is taken off).
+- **Found and fixed (data)**: item 2: `hover_ciws` / `ciws_aa` (the AK-630: 12 a round at 300 m/s) sat in family `cal_30` beside the
+  2A42 / M230 round (22 at 200 m/s) with no variant: they are now variant `ciws` with its reason in the family table.
+- **Found, not fixed (the model, for pass 8)**: the `stymphalos` boss model has no `Mount_Flare_*` points (built after the flare
+  kit; add it to `Tools/blender/mb_flare_mounts.FLARE_UNITS` and rebuild); it is the one known entry of item 6.
+- Results: all seven checks pass. Unchecked for the compile: the test reads GLB nodes with `MiniJson`, the player rule of item 2
+  by mounts only (the Python one also sees ids a vehicle names elsewhere; both pass today).
+
 ## Sửa lỗi tổng hợp L7 (lead pass, 2026-10-02)
 
 Branch `feature/fix-art3` (lane C of Docs/FIX_FULL_PLAN.md), pass 7 of Docs/prompts/fix_full_vi.txt: the owner's "everything
