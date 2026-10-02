@@ -14419,3 +14419,4 @@ mirror, no cards, no previews, no tests. The substring filter rebuilt nothing ou
   warnings are the old ones), each far inside its boss class.
 - **Card luma (old, alpha > .5, Rec. 709):** leviathan .3217, caspian .3595, typhon .2215 (the dimmest: watch it), landing_hovercraft .2849,
   supreme_command .3304. Target: >= old, at most about +20 %.
+- Lead (2026-10-02), wave 5d cards: all five pass (+0.3 % to +2.9 %). Wave 5 is complete (21 bosses). Waves 1-7 are done; wave 8 (198 props, scenery, munitions, unlisted) waits for the owner's call on scope.
