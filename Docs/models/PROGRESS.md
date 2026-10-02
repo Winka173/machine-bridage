@@ -136,6 +136,8 @@ Fix the error with the smallest change (DECISIONS: proportions within 25 % of `m
 
 **Pass 3e done (2026-10-02, static gates pass; cards not rendered by the agent):** counter_battery_radar, ew_jammer, bunker_vehicle, ammo_carrier, supply_truck, railgun_truck, shahed_truck, vbied.
 
+**Pass 3f done (2026-10-02, static gates pass; cards not rendered by the agent):** wheeled_gun, zu23_technical, rocket_technical, hover_gunboat, aa_gun_vehicle, airborne_vehicle, fibre_fpv_carrier, interceptor_drone_vehicle.
+
 Tanks and tracked first (the 12 `_hd` models are here or done), then wheeled, then boats. grad_truck is over the ground soft budget: it may not grow.
 
 | builder | models |
