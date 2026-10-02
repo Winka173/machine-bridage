@@ -264,6 +264,8 @@ namespace MachineBrigade.Sim.Modes
             world.MissionGoal = _def.Goal.ToString();
             // Prompt 31 L1: a fixed deck's special rules ride on the mission type's profile as flags (no AI of their own).
             if (_def.FixedDeck is { } deck) world.AddProfileFlags(deck.AiFlags);
+            // Prompt 31 L3: the mission's prebuilt ground states, built and checked before the first step.
+            world.BuildNavSites(_def.NavSites, _def.TargetNear is { } near ? new[] { near } : null);
             if (_def.Goal is MissionGoal.Escort or MissionGoal.Evacuate) world.ConvoySafeZone = () => ConvoyPositions(world);
             SetupStage(world, true, null);
         }

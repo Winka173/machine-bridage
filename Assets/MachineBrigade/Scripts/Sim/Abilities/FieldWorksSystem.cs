@@ -404,7 +404,7 @@ namespace MachineBrigade.Sim.Abilities
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || v.Team != team || v.IsPod) continue;
-                var reach = SpotterReach(v, v.Def.VisionRange * v.VisionFactor * _world.WeatherSight);
+                var reach = SpotterReach(v, v.Def.VisionRange * v.VisionFactor * _world.WeatherSight * _world.StormSight(v.Position));
                 if (Vector2.DistanceSquared(v.Position, point) <= reach * reach && !_world.Strikes.Obscures(v.Position, point)) return true;
             }
             return false;

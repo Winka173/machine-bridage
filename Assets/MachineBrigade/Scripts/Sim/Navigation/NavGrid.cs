@@ -75,6 +75,13 @@ namespace MachineBrigade.Sim.Navigation
         public void RemoveBlocker(Vector2 center, float width, float depth, float clearance) =>
             ChangeRect(center, width + 2f * clearance, depth + 2f * clearance, -1);
 
+        /// <summary>
+        /// Prompt 31 L3: a prebuilt state's rectangle in (+1) or out (-1) without telling the routes (the load-time build and
+        /// check of <see cref="NavStates"/>; a switch during the battle closes ground through <see cref="AddBlocker"/>).
+        /// </summary>
+        internal void Mark(NavBlock block, int delta) =>
+            ChangeRect(block.Center, block.Width + 2f * block.Clearance, block.Depth + 2f * block.Clearance, delta);
+
         /// <summary>Blocks every cell whose centre fails <paramref name="open"/> for good (terrain outside the map's outline).</summary>
         public void BlockWhere(Func<Vector2, bool> open)
         {

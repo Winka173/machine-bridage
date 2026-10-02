@@ -154,6 +154,8 @@ namespace MachineBrigade.Sim.Modes
         {
             _startedAt = world.Time;
             if (_def.PlayArea is { } area) world.Expand(area);
+            // Prompt 31 L3: the operation's prebuilt ground states (its stages share the battlefield), before the first stage.
+            world.BuildNavSites(_def.NavSites);
             Begin(world, 0, true);
             // Prompt 23: the operation's own events (its stages' own run in each stage).
             // (A mission with an ally and no stages is its own one stage: that stage runs its events.)

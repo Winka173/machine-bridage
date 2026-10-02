@@ -384,6 +384,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 31 L1: the deck the game hands out (campaign.json "fixedDeck"); null: the player's own.</summary>
         public FixedDeckDef? FixedDeck { get; set; }
 
+        /// <summary>Prompt 31 L3: the mission's prebuilt ground states (campaign.json "navStates"), built as the battle loads.</summary>
+        public IReadOnlyList<Navigation.NavSiteDef> NavSites { get; set; } = Array.Empty<Navigation.NavSiteDef>();
+
         /// <summary>A chapter's big operation: the Operations mode offers it again once won.</summary>
         public bool Operation { get; set; }
 
@@ -706,6 +709,7 @@ namespace MachineBrigade.Sim.Content
             if (m.Has("missionEvents"))
                 def.Events = library.Resolve(m, "missionEvents", plan => Parse(Bare(m).Under(plan), library));
             if (m.Has("fixedDeck")) def.FixedDeck = FixedDeckDef.Parse(m.Object("fixedDeck"));
+            if (m.Has("navStates")) def.NavSites = NavSiteDefs.Parse(m, "navStates");
             if (m.Has("challenge"))
             {
                 var c = m.Object("challenge");

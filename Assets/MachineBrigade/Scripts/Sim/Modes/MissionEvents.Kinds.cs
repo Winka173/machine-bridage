@@ -155,6 +155,12 @@ namespace MachineBrigade.Sim.Modes
                     return true;
                 case MissionEventKind.Ceasefire:
                     return PrepareCeasefire(world, s);
+                case MissionEventKind.GroundChange:
+                case MissionEventKind.SandstormTurn:
+                case MissionEventKind.CityBlackout:
+                case MissionEventKind.BetrayalWarning:
+                case MissionEventKind.OrbitalPods:
+                    return PrepareP31(world, s);
                 default:
                     return true;
             }
@@ -830,6 +836,12 @@ namespace MachineBrigade.Sim.Modes
                     s.EndsAt = world.Time + plan.Seconds;
                     return Outcome.Running;
                 }
+                case MissionEventKind.GroundChange:
+                case MissionEventKind.SandstormTurn:
+                case MissionEventKind.CityBlackout:
+                case MissionEventKind.BetrayalWarning:
+                case MissionEventKind.OrbitalPods:
+                    return HappenP31(world, s);
                 default:
                     return Outcome.Done;
             }
@@ -988,6 +1000,11 @@ namespace MachineBrigade.Sim.Modes
                     if (t >= 1f) Finish(world, s, true, "end");
                     break;
                 }
+                case MissionEventKind.SandstormTurn:
+                case MissionEventKind.CityBlackout:
+                case MissionEventKind.OrbitalPods:
+                    UpdateP31(world, s);
+                    break;
                 default:
                     s.Phase = EventPhase.Done;
                     break;

@@ -1617,6 +1617,8 @@ namespace MachineBrigade.Game.Match
                 if (Time.time > _warnings[i].until) _warnings.RemoveAt(i);
                 else minimap.Warning(_warnings[i].at, _warnings[i].radius);
             }
+            // Prompt 31 L3: the places the battlefield events mark (a gate shutting, the storm's half, the grid's towers, the pods).
+            if (!_menu) MinimapEventMarks(minimap);
             // Every enemy is on the map (the radar picture): the ones in sight bright, the rest dim;
             // a boss always, as a big marker.
             foreach (var v in _world.Vehicles)

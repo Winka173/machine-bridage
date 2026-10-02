@@ -46,7 +46,11 @@ namespace MachineBrigade.Game.Match
                 "generalField" or "miniBoss" => NoticeKind.Boss,
                 "sideObjective" or "planChange" or "ceasefire" => NoticeKind.Objective,
                 "lootDrop" or "supplyDrop" or "neutralConvoy" or "supplyRaid" => NoticeKind.Crate,
-                "weatherShift" => NoticeKind.Weather,
+                "weatherShift" or "sandstormTurn" or "cityBlackout" => NoticeKind.Weather,
+                // Prompt 31 L3: the gate that shuts, the pods landing, the ally about to turn.
+                "groundChange" => NoticeKind.Area,
+                "orbitalPods" => NoticeKind.Reinforce,
+                "betrayalWarning" => NoticeKind.Boss,
                 "blackout" or "intelReveal" => NoticeKind.Area,
                 _ => NoticeKind.Info,
             };
