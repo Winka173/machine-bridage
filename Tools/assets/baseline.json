@@ -1735,6 +1735,70 @@
    ],
    "reason": "merge of feature/p27-wave8b6",
    "changes": []
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "container",
+    "container_stack",
+    "dock_bollards",
+    "factory",
+    "gantry_crane",
+    "jersey_barrier",
+    "lamp_post",
+    "office_block",
+    "rail_boxcar",
+    "rail_tanker",
+    "boulders",
+    "cliff_a",
+    "cliff_b",
+    "dirt_mound",
+    "mountain_a",
+    "mountain_b",
+    "mountain_c",
+    "sandbags",
+    "tank_trap",
+    "tree",
+    "pine",
+    "birch",
+    "tree_broad",
+    "tree_dead",
+    "tree_round",
+    "rubble_small",
+    "rubble_medium",
+    "rubble_large"
+   ],
+   "reason": "wave 8b7 rebuild (harbor, terrain, trees, rubble)",
+   "changes": [
+    "FLAG birch: triangles 436 -> 492 (+12.8%); vertices 1,188 -> 1,229 (+3.5%); fileBytes 59,592 -> 61,736 (+3.6%); structure changed",
+    "boulders: bytes only",
+    "cliff_a: bytes only",
+    "cliff_b: bytes only",
+    "container: triangles 796 -> 828 (+4.0%); vertices 1,446 -> 1,470 (+1.7%); fileBytes 71,316 -> 72,564 (+1.7%); structure changed",
+    "container_stack: triangles 1,592 -> 1,656 (+4.0%); vertices 2,892 -> 2,940 (+1.7%); fileBytes 141,368 -> 143,864 (+1.8%); structure changed",
+    "dirt_mound: bytes only",
+    "FLAG dock_bollards: triangles 762 -> 854 (+12.1%); vertices 1,108 -> 1,210 (+9.2%); fileBytes 59,100 -> 64,136 (+8.5%); structure changed",
+    "factory: triangles 4,896 -> 5,180 (+5.8%); vertices 7,266 -> 7,511 (+3.4%); fileBytes 375,296 -> 387,784 (+3.3%); structure changed",
+    "FLAG gantry_crane: triangles 4,516 -> 5,316 (+17.7%); vertices 5,704 -> 6,230 (+9.2%); fileBytes 296,076 -> 324,020 (+9.4%); structure changed",
+    "jersey_barrier: bytes only",
+    "lamp_post: triangles 284 -> 300 (+5.6%); vertices 364 -> 376 (+3.3%); fileBytes 22,524 -> 23,148 (+2.8%); structure changed",
+    "mountain_a: bytes only",
+    "mountain_b: bytes only",
+    "mountain_c: bytes only",
+    "office_block: triangles 3,524 -> 3,548 (+0.7%); vertices 5,174 -> 5,198 (+0.5%); fileBytes 267,624 -> 268,820 (+0.4%); structure changed",
+    "pine: bytes only",
+    "FLAG rail_boxcar: triangles 2,572 -> 2,908 (+13.1%); vertices 3,960 -> 4,160 (+5.1%); fileBytes 202,720 -> 213,552 (+5.3%); structure changed",
+    "FLAG rail_tanker: triangles 2,498 -> 2,866 (+14.7%); vertices 3,467 -> 3,683 (+6.2%); fileBytes 181,340 -> 193,068 (+6.5%); structure changed",
+    "rubble_large: bytes only",
+    "rubble_medium: bytes only",
+    "rubble_small: bytes only",
+    "sandbags: bytes only",
+    "tank_trap: bytes only",
+    "tree: bytes only",
+    "tree_broad: bytes only",
+    "FLAG tree_dead: triangles 168 -> 196 (+16.7%); vertices 330 -> 340 (+3.0%); fileBytes 16,884 -> 17,492 (+3.6%); structure changed",
+    "tree_round: triangles 448 -> 476 (+6.2%); vertices 1,290 -> 1,304 (+1.1%); fileBytes 63,040 -> 63,828 (+1.2%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -9056,8 +9120,8 @@
   },
   "birch": {
    "file": "birch.glb",
-   "fileBytes": 59592,
-   "sha1": "e9f6d23af526ddac",
+   "fileBytes": 61736,
+   "sha1": "e0b6425f9a1c35c0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 4,
@@ -9070,8 +9134,8 @@
    "submeshes": 4,
    "materialSlots": 4,
    "materialsUsed": 4,
-   "triangles": 436,
-   "vertices": 1188,
+   "triangles": 492,
+   "vertices": 1229,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -9102,12 +9166,12 @@
     4.314,
     0.067
    ],
-   "structureHash": "d6700a4c27d5d945",
+   "structureHash": "c48297d8439598c5",
    "color0": {
-    "mean": 0.7163,
-    "min": 0.2193,
+    "mean": 0.7253,
+    "min": 0.3176,
     "max": 0.8222,
-    "p05": 0.4393,
+    "p05": 0.5201,
     "p95": 0.8137,
     "outOfRange": 0
    },
@@ -9577,7 +9641,7 @@
   "boulders": {
    "file": "boulders.glb",
    "fileBytes": 122816,
-   "sha1": "04d7bee224b795a0",
+   "sha1": "505c78aa4cc0b018",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 1,
@@ -9624,10 +9688,10 @@
    ],
    "structureHash": "7804930c6e740ecd",
    "color0": {
-    "mean": 0.5976,
-    "min": 0.062,
+    "mean": 0.6132,
+    "min": 0.1238,
     "max": 0.8143,
-    "p05": 0.1694,
+    "p05": 0.2216,
     "p95": 0.8058,
     "outOfRange": 0
    },
@@ -11733,7 +11797,7 @@
   "cliff_a": {
    "file": "cliff_a.glb",
    "fileBytes": 99500,
-   "sha1": "106c3a52c5340bda",
+   "sha1": "e0338e13bb3c44b6",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 4,
@@ -11780,10 +11844,10 @@
    ],
    "structureHash": "ef4be86073bac25f",
    "color0": {
-    "mean": 0.6964,
-    "min": 0.1194,
+    "mean": 0.7043,
+    "min": 0.1978,
     "max": 0.8216,
-    "p05": 0.4393,
+    "p05": 0.4736,
     "p95": 0.8137,
     "outOfRange": 0
    },
@@ -11806,7 +11870,7 @@
   "cliff_b": {
    "file": "cliff_b.glb",
    "fileBytes": 99508,
-   "sha1": "892965e39c17b9b2",
+   "sha1": "5d7cb543f63f7e44",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 4,
@@ -11853,10 +11917,10 @@
    ],
    "structureHash": "4263ced148aa48cb",
    "color0": {
-    "mean": 0.6958,
-    "min": 0.154,
+    "mean": 0.7041,
+    "min": 0.2099,
     "max": 0.8222,
-    "p05": 0.456,
+    "p05": 0.4906,
     "p95": 0.8137,
     "outOfRange": 0
    },
@@ -12669,8 +12733,8 @@
   },
   "container": {
    "file": "container.glb",
-   "fileBytes": 71316,
-   "sha1": "013ecddb272b4b55",
+   "fileBytes": 72564,
+   "sha1": "4cc03e7e82f3e067",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 3,
@@ -12683,8 +12747,8 @@
    "submeshes": 3,
    "materialSlots": 3,
    "materialsUsed": 3,
-   "triangles": 796,
-   "vertices": 1446,
+   "triangles": 828,
+   "vertices": 1470,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -12715,13 +12779,13 @@
     1.31,
     0.0
    ],
-   "structureHash": "801d4714261dddb1",
+   "structureHash": "2dd61dcd6c5235f2",
    "color0": {
-    "mean": 0.5997,
-    "min": 0.081,
+    "mean": 0.6201,
+    "min": 0.1401,
     "max": 0.8222,
-    "p05": 0.1327,
-    "p95": 0.8064,
+    "p05": 0.2117,
+    "p95": 0.8058,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -12741,8 +12805,8 @@
   },
   "container_stack": {
    "file": "container_stack.glb",
-   "fileBytes": 141368,
-   "sha1": "766a489daadd709e",
+   "fileBytes": 143864,
+   "sha1": "d81c7b36164a849a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 6,
@@ -12755,8 +12819,8 @@
    "submeshes": 6,
    "materialSlots": 6,
    "materialsUsed": 4,
-   "triangles": 1592,
-   "vertices": 2892,
+   "triangles": 1656,
+   "vertices": 2940,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -12787,12 +12851,12 @@
     2.625,
     0.0
    ],
-   "structureHash": "8271c8f473201938",
+   "structureHash": "0c38f1d508bab97f",
    "color0": {
-    "mean": 0.6426,
-    "min": 0.0789,
+    "mean": 0.6646,
+    "min": 0.1374,
     "max": 0.8296,
-    "p05": 0.1607,
+    "p05": 0.2265,
     "p95": 0.8064,
     "outOfRange": 0
    },
@@ -14459,7 +14523,7 @@
   "dirt_mound": {
    "file": "dirt_mound.glb",
    "fileBytes": 41400,
-   "sha1": "59a82a0c29cab86e",
+   "sha1": "a3161452126fb2f7",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 2,
@@ -14506,10 +14570,10 @@
    ],
    "structureHash": "1dd632adcde14616",
    "color0": {
-    "mean": 0.7322,
-    "min": 0.3861,
+    "mean": 0.7372,
+    "min": 0.4283,
     "max": 0.8296,
-    "p05": 0.5901,
+    "p05": 0.6019,
     "p95": 0.8064,
     "outOfRange": 0
    },
@@ -14529,8 +14593,8 @@
   },
   "dock_bollards": {
    "file": "dock_bollards.glb",
-   "fileBytes": 59100,
-   "sha1": "f43f8337bdd00c92",
+   "fileBytes": 64136,
+   "sha1": "c6515b8b945e6081",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 5,
@@ -14543,8 +14607,8 @@
    "submeshes": 5,
    "materialSlots": 5,
    "materialsUsed": 5,
-   "triangles": 762,
-   "vertices": 1108,
+   "triangles": 854,
+   "vertices": 1210,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -14575,13 +14639,13 @@
     0.34,
     0.0
    ],
-   "structureHash": "4c22964d5c7e0b23",
+   "structureHash": "58db41b9fceb036c",
    "color0": {
-    "mean": 0.5409,
-    "min": 0.0887,
+    "mean": 0.5673,
+    "min": 0.1474,
     "max": 0.8216,
-    "p05": 0.1532,
-    "p95": 0.8064,
+    "p05": 0.2139,
+    "p95": 0.8058,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -17583,8 +17647,8 @@
   },
   "factory": {
    "file": "factory.glb",
-   "fileBytes": 375296,
-   "sha1": "270a8d16e217dc69",
+   "fileBytes": 387784,
+   "sha1": "48230c87b64ca517",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -17599,8 +17663,8 @@
    "submeshes": 26,
    "materialSlots": 26,
    "materialsUsed": 13,
-   "triangles": 4896,
-   "vertices": 7266,
+   "triangles": 5180,
+   "vertices": 7511,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -17631,13 +17695,13 @@
     10.012,
     -0.043
    ],
-   "structureHash": "452cfeb95ab890d7",
+   "structureHash": "eb0996644e8bcb20",
    "color0": {
-    "mean": 0.5899,
-    "min": 0.062,
+    "mean": 0.6167,
+    "min": 0.1238,
     "max": 1.0,
-    "p05": 0.1388,
-    "p95": 0.9816,
+    "p05": 0.2084,
+    "p95": 0.981,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -20058,8 +20122,8 @@
   },
   "gantry_crane": {
    "file": "gantry_crane.glb",
-   "fileBytes": 296076,
-   "sha1": "1b2dbf943eb30acc",
+   "fileBytes": 324020,
+   "sha1": "8857714a917e7fa2",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -20074,8 +20138,8 @@
    "submeshes": 17,
    "materialSlots": 17,
    "materialsUsed": 12,
-   "triangles": 4516,
-   "vertices": 5704,
+   "triangles": 5316,
+   "vertices": 6230,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -20106,12 +20170,12 @@
     9.34,
     0.0
    ],
-   "structureHash": "6d2da7de28a4d7af",
+   "structureHash": "cd85e4125a08e32c",
    "color0": {
-    "mean": 0.7252,
-    "min": 0.1587,
+    "mean": 0.7289,
+    "min": 0.2524,
     "max": 1.0,
-    "p05": 0.3426,
+    "p05": 0.4016,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -27159,7 +27223,7 @@
   "jersey_barrier": {
    "file": "jersey_barrier.glb",
    "fileBytes": 28520,
-   "sha1": "6faa977613330860",
+   "sha1": "613554912a39fc45",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 5,
@@ -27206,10 +27270,10 @@
    ],
    "structureHash": "53564805ef970b61",
    "color0": {
-    "mean": 0.6212,
-    "min": 0.1452,
+    "mean": 0.638,
+    "min": 0.1958,
     "max": 0.9905,
-    "p05": 0.1694,
+    "p05": 0.2273,
     "p95": 0.9898,
     "outOfRange": 0
    },
@@ -28002,8 +28066,8 @@
   },
   "lamp_post": {
    "file": "lamp_post.glb",
-   "fileBytes": 22524,
-   "sha1": "16059de13d47fa5d",
+   "fileBytes": 23148,
+   "sha1": "9109eea94b7683e6",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -28018,8 +28082,8 @@
    "submeshes": 4,
    "materialSlots": 4,
    "materialsUsed": 4,
-   "triangles": 284,
-   "vertices": 364,
+   "triangles": 300,
+   "vertices": 376,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -28050,12 +28114,12 @@
     3.595,
     0.486
    ],
-   "structureHash": "55177c10512fe635",
+   "structureHash": "73098e2ebaf1b49e",
    "color0": {
-    "mean": 0.7049,
-    "min": 0.1712,
+    "mean": 0.712,
+    "min": 0.242,
     "max": 1.0,
-    "p05": 0.2573,
+    "p05": 0.2987,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -33778,7 +33842,7 @@
   "mountain_a": {
    "file": "mountain_a.glb",
    "fileBytes": 342024,
-   "sha1": "53225f90be651c87",
+   "sha1": "a0fba8bf1dc738ef",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 4,
@@ -33825,11 +33889,11 @@
    ],
    "structureHash": "2f4b93adc44fd6a5",
    "color0": {
-    "mean": 0.7628,
-    "min": 0.4393,
+    "mean": 0.7636,
+    "min": 0.4617,
     "max": 0.8296,
     "p05": 0.6153,
-    "p95": 0.8097,
+    "p95": 0.8137,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -33851,7 +33915,7 @@
   "mountain_b": {
    "file": "mountain_b.glb",
    "fileBytes": 339436,
-   "sha1": "f8c82b77905d78d0",
+   "sha1": "97d15136b88d6590",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 3,
@@ -33898,10 +33962,10 @@
    ],
    "structureHash": "7ecb22458fb588d0",
    "color0": {
-    "mean": 0.7383,
-    "min": 0.5025,
+    "mean": 0.739,
+    "min": 0.5262,
     "max": 0.8296,
-    "p05": 0.6091,
+    "p05": 0.6105,
     "p95": 0.8064,
     "outOfRange": 0
    },
@@ -33923,7 +33987,7 @@
   "mountain_c": {
    "file": "mountain_c.glb",
    "fileBytes": 314316,
-   "sha1": "ee6433c4a4123a48",
+   "sha1": "6fd0c7e285423ec5",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 3,
@@ -33970,8 +34034,8 @@
    ],
    "structureHash": "39abbbaf494b1381",
    "color0": {
-    "mean": 0.7297,
-    "min": 0.5757,
+    "mean": 0.7301,
+    "min": 0.5762,
     "max": 0.8222,
     "p05": 0.6105,
     "p95": 0.8064,
@@ -34682,8 +34746,8 @@
   },
   "office_block": {
    "file": "office_block.glb",
-   "fileBytes": 267624,
-   "sha1": "971a3f29c8e10c69",
+   "fileBytes": 268820,
+   "sha1": "40ef2c9e75883058",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -34698,8 +34762,8 @@
    "submeshes": 19,
    "materialSlots": 19,
    "materialsUsed": 10,
-   "triangles": 3524,
-   "vertices": 5174,
+   "triangles": 3548,
+   "vertices": 5198,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -34730,12 +34794,12 @@
     8.345,
     0.085
    ],
-   "structureHash": "512489f5cdf74ba9",
+   "structureHash": "c9f3a81973695c10",
    "color0": {
-    "mean": 0.6039,
-    "min": 0.0615,
+    "mean": 0.6294,
+    "min": 0.1231,
     "max": 1.0,
-    "p05": 0.1506,
+    "p05": 0.223,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -35408,7 +35472,7 @@
   "pine": {
    "file": "pine.glb",
    "fileBytes": 12512,
-   "sha1": "701c350e9a88f860",
+   "sha1": "192fd26eba4b118a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 3,
@@ -35455,10 +35519,10 @@
    ],
    "structureHash": "af01156922d7fcb9",
    "color0": {
-    "mean": 0.6528,
-    "min": 0.0844,
+    "mean": 0.6675,
+    "min": 0.1649,
     "max": 0.8137,
-    "p05": 0.191,
+    "p05": 0.2579,
     "p95": 0.8064,
     "outOfRange": 0
    },
@@ -36539,8 +36603,8 @@
   },
   "rail_boxcar": {
    "file": "rail_boxcar.glb",
-   "fileBytes": 202720,
-   "sha1": "3765dea1c42f2ac7",
+   "fileBytes": 213552,
+   "sha1": "32065f21cd161fed",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 15,
@@ -36553,8 +36617,8 @@
    "submeshes": 15,
    "materialSlots": 15,
    "materialsUsed": 9,
-   "triangles": 2572,
-   "vertices": 3960,
+   "triangles": 2908,
+   "vertices": 4160,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -36585,12 +36649,12 @@
     2.12,
     0.0
    ],
-   "structureHash": "2692299de3e916f0",
+   "structureHash": "77f6024ca34f2bff",
    "color0": {
-    "mean": 0.6065,
-    "min": 0.0842,
+    "mean": 0.6239,
+    "min": 0.162,
     "max": 0.9987,
-    "p05": 0.1701,
+    "p05": 0.2216,
     "p95": 0.8064,
     "outOfRange": 0
    },
@@ -36931,8 +36995,8 @@
   },
   "rail_tanker": {
    "file": "rail_tanker.glb",
-   "fileBytes": 181340,
-   "sha1": "a9acb04f8d473cca",
+   "fileBytes": 193068,
+   "sha1": "9ecb48640f1cbcd7",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 13,
@@ -36945,8 +37009,8 @@
    "submeshes": 13,
    "materialSlots": 13,
    "materialsUsed": 7,
-   "triangles": 2498,
-   "vertices": 3467,
+   "triangles": 2866,
+   "vertices": 3683,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -36977,12 +37041,12 @@
     2.295,
     0.0
    ],
-   "structureHash": "47c4a87036baef58",
+   "structureHash": "2bd2e85e81863d77",
    "color0": {
-    "mean": 0.6448,
-    "min": 0.1445,
+    "mean": 0.6641,
+    "min": 0.2056,
     "max": 0.8296,
-    "p05": 0.1877,
+    "p05": 0.2744,
     "p95": 0.8064,
     "outOfRange": 0
    },
@@ -39109,7 +39173,7 @@
   "rubble_large": {
    "file": "rubble_large.glb",
    "fileBytes": 281844,
-   "sha1": "fee8df8495f767a7",
+   "sha1": "12cd80561e99f003",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 4,
@@ -39156,11 +39220,11 @@
    ],
    "structureHash": "64e77790eec98ed4",
    "color0": {
-    "mean": 0.5649,
-    "min": 0.0601,
+    "mean": 0.5875,
+    "min": 0.1205,
     "max": 0.9987,
-    "p05": 0.1366,
-    "p95": 0.9641,
+    "p05": 0.2001,
+    "p95": 0.9722,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -39182,7 +39246,7 @@
   "rubble_medium": {
    "file": "rubble_medium.glb",
    "fileBytes": 173264,
-   "sha1": "41ddc5968a414ae2",
+   "sha1": "626ae6277f74c7bd",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 4,
@@ -39229,11 +39293,11 @@
    ],
    "structureHash": "766afbaad7ce3a32",
    "color0": {
-    "mean": 0.5782,
-    "min": 0.0615,
+    "mean": 0.5992,
+    "min": 0.1212,
     "max": 0.9987,
-    "p05": 0.164,
-    "p95": 0.9547,
+    "p05": 0.2254,
+    "p95": 0.9548,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -39255,7 +39319,7 @@
   "rubble_small": {
    "file": "rubble_small.glb",
    "fileBytes": 177496,
-   "sha1": "6f5b94ba3ece9508",
+   "sha1": "6840be02d23853b5",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 4,
@@ -39302,11 +39366,11 @@
    ],
    "structureHash": "5b2e8da20014f7bb",
    "color0": {
-    "mean": 0.5849,
-    "min": 0.0603,
+    "mean": 0.6057,
+    "min": 0.1212,
     "max": 0.9987,
-    "p05": 0.1473,
-    "p95": 0.9816,
+    "p05": 0.2074,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -39917,7 +39981,7 @@
   "sandbags": {
    "file": "sandbags.glb",
    "fileBytes": 75700,
-   "sha1": "59a087e1e624ef9a",
+   "sha1": "e28b0d9306b13be2",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 1,
@@ -39964,10 +40028,10 @@
    ],
    "structureHash": "694240c0866bec6c",
    "color0": {
-    "mean": 0.6043,
-    "min": 0.081,
+    "mean": 0.6218,
+    "min": 0.1403,
     "max": 0.8143,
-    "p05": 0.3002,
+    "p05": 0.3457,
     "p95": 0.7985,
     "outOfRange": 0
    },
@@ -45892,7 +45956,7 @@
   "tank_trap": {
    "file": "tank_trap.glb",
    "fileBytes": 16260,
-   "sha1": "ba1744354048487b",
+   "sha1": "b0fe1173b722c2ab",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 2,
@@ -45939,10 +46003,10 @@
    ],
    "structureHash": "9db51e791cc43c11",
    "color0": {
-    "mean": 0.6622,
-    "min": 0.2091,
+    "mean": 0.6713,
+    "min": 0.2596,
     "max": 0.8137,
-    "p05": 0.3146,
+    "p05": 0.3581,
     "p95": 0.7985,
     "outOfRange": 0
    },
@@ -46993,7 +47057,7 @@
   "tree": {
    "file": "tree.glb",
    "fileBytes": 11864,
-   "sha1": "f6039ed9f7a47935",
+   "sha1": "60d7b5a15a064351",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 3,
@@ -47040,10 +47104,10 @@
    ],
    "structureHash": "6f285a92645e2cf1",
    "color0": {
-    "mean": 0.6299,
-    "min": 0.0801,
+    "mean": 0.6459,
+    "min": 0.1618,
     "max": 0.8058,
-    "p05": 0.1876,
+    "p05": 0.2539,
     "p95": 0.7985,
     "outOfRange": 0
    },
@@ -47065,7 +47129,7 @@
   "tree_broad": {
    "file": "tree_broad.glb",
    "fileBytes": 58536,
-   "sha1": "2b77f13159ad9c2a",
+   "sha1": "199339f7101c87e2",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 4,
@@ -47112,11 +47176,11 @@
    ],
    "structureHash": "4e96f37c9757f175",
    "color0": {
-    "mean": 0.7259,
-    "min": 0.1631,
+    "mean": 0.7361,
+    "min": 0.2291,
     "max": 0.9898,
-    "p05": 0.3319,
-    "p95": 0.8951,
+    "p05": 0.3861,
+    "p95": 0.9041,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -47137,8 +47201,8 @@
   },
   "tree_dead": {
    "file": "tree_dead.glb",
-   "fileBytes": 16884,
-   "sha1": "890666489a3fc806",
+   "fileBytes": 17492,
+   "sha1": "ccde55ee2d9d21f3",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 1,
@@ -47151,8 +47215,8 @@
    "submeshes": 1,
    "materialSlots": 1,
    "materialsUsed": 1,
-   "triangles": 168,
-   "vertices": 330,
+   "triangles": 196,
+   "vertices": 340,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -47183,12 +47247,12 @@
     3.156,
     -0.001
    ],
-   "structureHash": "0608145bb4bda61a",
+   "structureHash": "71f34b7e70c00986",
    "color0": {
-    "mean": 0.7074,
-    "min": 0.0749,
+    "mean": 0.7189,
+    "min": 0.3409,
     "max": 0.8216,
-    "p05": 0.3315,
+    "p05": 0.411,
     "p95": 0.8143,
     "outOfRange": 0
    },
@@ -47207,8 +47271,8 @@
   },
   "tree_round": {
    "file": "tree_round.glb",
-   "fileBytes": 63040,
-   "sha1": "5f5007615afdebbd",
+   "fileBytes": 63828,
+   "sha1": "d239ccd8be53040f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 3,
@@ -47221,8 +47285,8 @@
    "submeshes": 3,
    "materialSlots": 3,
    "materialsUsed": 3,
-   "triangles": 448,
-   "vertices": 1290,
+   "triangles": 476,
+   "vertices": 1304,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -47253,12 +47317,12 @@
     3.18,
     0.104
    ],
-   "structureHash": "b0e74c636eb00df2",
+   "structureHash": "3b00a77b14475bd7",
    "color0": {
-    "mean": 0.7047,
-    "min": 0.0976,
+    "mean": 0.7124,
+    "min": 0.2539,
     "max": 0.8216,
-    "p05": 0.4279,
+    "p05": 0.4731,
     "p95": 0.8137,
     "outOfRange": 0
    },
