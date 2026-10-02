@@ -94,12 +94,36 @@ namespace MachineBrigade.Sim.Content
         public IReadOnlyList<string> Roster => _roster;
 
         private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };
+
+        /// <summary>The air drop's fall when a size names none ("rebuild.delay").</summary>
         public float RebuildDelay { get; internal set; } = 4f;
+
+        // Prompt 32 L2: the drop's fall by size ("rebuild.<size>.drop": 2.5 / 3.5 / 5 s); NaN: the delay above.
+        private readonly float[] _drop = { float.NaN, float.NaN, float.NaN };
+
+        /// <summary>Prompt 32 L2: no tower is flown back in while an enemy stands this close to its slot ("rebuild.enemyRadius").</summary>
+        public float RebuildEnemyRadius { get; internal set; } = 20f;
+
+        /// <summary>Prompt 32 L2: seconds into a Showdown match after which no tower is flown back in ("rebuild.showdownCutoff").</summary>
+        public float ShowdownRebuildCutoff { get; internal set; } = 600f;
+
+        /// <summary>Prompt 32 L2: the HQ's health share at which a side's cheapest fallen small or medium tower comes back free, once ("rebuild.hqRescue").</summary>
+        public float HqRescueShare { get; internal set; } = 0.25f;
         public int OutpostCp { get; internal set; } = 6;
         public int OutpostSlots { get; internal set; } = 2;
 
-        /// <summary>CP to fly a destroyed tower back in, by its size.</summary>
-        public int RebuildCost(VehicleDef tower) => _rebuild[(int)(tower.Fort?.Size ?? SlotSize.Small)].cp;
+        /// <summary>
+        /// CP to fly a destroyed tower back in: its baseRebuildCP (prompt 32 L2, "rebuildCp", from Tools/balance/p32_tower_prices.py),
+        /// else its size's. The balance value: every calculation reads it; what a side pays is <c>BaseSystem.RuntimeCostOf</c>.
+        /// </summary>
+        public int RebuildCost(VehicleDef tower) => tower.BaseRebuildCp > 0 ? tower.BaseRebuildCp : _rebuild[(int)(tower.Fort?.Size ?? SlotSize.Small)].cp;
+
+        /// <summary>Prompt 32 L2: seconds a rebuilt tower's air drop takes to land, by its size.</summary>
+        public float RebuildDrop(VehicleDef tower)
+        {
+            var d = _drop[(int)(tower.Fort?.Size ?? SlotSize.Small)];
+            return float.IsNaN(d) ? RebuildDelay : d;
+        }
 
         /// <summary>Seconds after a tower falls (or was last called) before it can be flown back in, by its size.</summary>
         public float RebuildCooldown(VehicleDef tower) => _rebuild[(int)(tower.Fort?.Size ?? SlotSize.Small)].cooldown;
@@ -148,12 +172,16 @@ namespace MachineBrigade.Sim.Content
             {
                 var r = b.Object("rebuild");
                 rules.RebuildDelay = r.Float("delay", 4f);
+                rules.RebuildEnemyRadius = Math.Max(0f, r.Float("enemyRadius", 20f));
+                rules.ShowdownRebuildCutoff = Math.Max(0f, r.Float("showdownCutoff", 600f));
+                rules.HqRescueShare = Math.Clamp(r.Float("hqRescue", 0.25f), 0f, 1f);
                 foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
                 {
                     var key = size.ToString().ToLowerInvariant();
                     if (!r.Has(key)) continue;
                     var o = r.Object(key);
                     rules._rebuild[(int)size] = (o.Int("cp", rules._rebuild[(int)size].cp), o.Float("cooldown", rules._rebuild[(int)size].cooldown));
+                    if (o.Has("drop")) rules._drop[(int)size] = Math.Max(0.1f, o.Float("drop", 4f));
                 }
             }
             if (b.Has("outpost"))

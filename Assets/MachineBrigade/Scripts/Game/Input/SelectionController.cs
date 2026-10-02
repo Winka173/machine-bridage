@@ -65,6 +65,12 @@ namespace MachineBrigade.Game.Input
         /// <summary>Prompt 28 E.1: one of the player's own towers (a static) was tapped: its targeting mode can be set.</summary>
         public event Action<EntityId> OwnTowerTapped;
 
+        /// <summary>
+        /// Prompt 32 L2: a tap on the ground (no unit under it) offered first to the base: with Auto-buy off, a tap on a
+        /// fallen tower's slot flies it back in (no new button). True: the tap was taken.
+        /// </summary>
+        public Func<SimVector2, bool> SlotTapped;
+
         /// <summary>Raised when a command is refused, so the HUD can say why.</summary>
         public event Action<CommandError> Rejected;
 
@@ -220,6 +226,7 @@ namespace MachineBrigade.Game.Input
                 if (part >= 0) PartTapped(picked.Id, part);
             }
             if (picked != null && picked.Team != _team) EnemyTapped?.Invoke(picked.Sim.Def);
+            if (picked == null && SlotTapped != null && _camera.TryGroundPoint(screen, out var tapped) && SlotTapped(new SimVector2(tapped.x, tapped.z))) return;
             if (_selected.Count == 0 || (picked != null && picked.Team == _team)) return;
 
             if (picked != null)

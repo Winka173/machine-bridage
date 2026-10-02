@@ -14975,3 +14975,95 @@ Tests updated for the new rules (not run): `TowerRosterTests` (no minefield bran
 `[Ignore]`d with the reason; the AI's 57 mm pick against light vehicles; the old migration test expects the CP relay's
 choice dropped), `Prompt25NewContent*Tests` (folded and retired towers no longer in the shop), `TowerBranchArtTests`
 (the five cards waiting for branch art skipped). Left for Unity and art: Docs/ai/LOCAL_TODO.md.
+
+### L2: rebuilding towers, and their prices
+
+Rules (Sim, `BaseSystem`, `BaseRules`, `ConquestAi.TryRebuild`; data `base.rebuild`):
+
+- Loadout towers stand free at the start (unchanged). The cooldown (25 / 40 / 60 s by size) now runs from the tower's
+  fall (it used to take the later of the fall and the last call's end).
+- The CP go as the drop starts; the drop falls 2.5 / 3.5 / 5 s by size (`rebuild.<size>.drop`; `delay` 4 stays the
+  fallback). Nothing is called while an enemy vehicle (not a fixed structure) stands within 20 m of the slot
+  (`enemyRadius`; new `CommandError.EnemyNear`, "err.EnemyNear" EN + VI). An outpost's slot only while its point is held
+  (outposts already went with a lost point). A Defend line's lost ring is never rebuilt (unchanged, `LoseRing`); its
+  retreat CP unchanged. A rebuilt tower keeps its branch (the slot's def) and its card's equipment, at full health.
+- Auto-buy on: the side's AI calls the fallen tower nearest a threat (nearest living enemy vehicle; slot order on a
+  tie), only when the CP left after its runtime price still buys the deck's cheapest ground card (was a flat +4).
+  Auto-buy off: a tap within 5 m of a fallen tower's slot (no unit under the tap) calls it
+  (`SelectionController.SlotTapped`, `MatchRunner.TapFallenTower`); the existing tower button stays, no new button.
+- Showdown: `BaseSystem.RebuildUntil` (default infinite) stops new calls; a paid drop still lands. The mode (L7) sets
+  it to `rebuild.showdownCutoff` = 600 s.
+- HQ at 25 % health (`hqRescue`): once a match the cheapest fallen small or medium tower (baseRebuildCP, then slot order;
+  never large) drops free, ignoring its cooldown but not the enemy radius (it waits for a slot it can fill); no CP.
+- Destroying a tower pays nothing: towers' `cp` is 0 (L0), and `OnVehicleDestroyed` now skips any fort explicitly.
+- Two prices: `VehicleDef.BaseRebuildCp` (data `rebuildCp`, read by `BaseRules.RebuildCost`, which every calculation
+  uses) and `BaseSystem.RuntimeCostOf(team, slot)` = `SimMath.RoundHalfUp(base x Commanders.TowerDropScale)` (Brandt's
+  air-dropped towers 0.8), what the side pays and the HUD shows. `CostOf(slot)` stays the base price.
+
+Pricing (`Tools/balance/p32_tower_prices.py`, run on the data; report `Docs/balance/p32_tower_prices.md`, the record of
+the run that applied it: a rerun after the cuts shows the cut towers at eq 8). The prompt's formula, with these
+provisional choices:
+
+- Reference threats: per tower size, a price band of card vehicles (small 3-8 CP, medium 5-12, large 9-20; ground, not
+  bosses, elites or ships); in each of the four classes the median weapon by penetration (melee, laid, air-only and
+  cruise missiles out; HE includes the guns' HE second rounds; artillery = an Artillery-class vehicle's HE). Picked:
+  small `ifv_30` / `gun_105_wheeled_he` / `khrizantema` / `caesar_155`; medium `gun_105_ags` / `gun_105_wheeled_he` /
+  `lancet` / `mlrs_rockets`; large `gun_125_armata_ke` / `gun_155_crusader` / `spike_nlos` / `thermobaric_rockets`.
+- Health in data units x toughness for towers and vehicles alike (cancels); towers read as structures (thermobaric 2.0
+  replacing 1.5, L0 item 6), vehicles as ground, both against their front armour.
+- Role targets: air (median aircraft front armour 0), heavy (front 3 and up: median 3), light (front 2 or less:
+  median 1); "ground" and "multi" the mean of light and heavy. Role vehicle groups: AntiAir; the Armor branch; Light and
+  Scout; Artillery; all ground cards. Weapon bonuses by armour class count; a branch carries its elite-only rounds; the
+  switch to a second round costs once per 30 s engagement.
+- Reach bands: <= 30 m 0.575, <= 50 m 0.625, beyond 50 m or indirect 0.725 (the mid band's top, 50 m, is mine).
+- Utility (provisional formulas, scales anchored on the provisional table): interceptors (C-RAM, laser, net) =
+  (radius / 35)^2 x interceptions a minute (APS charges over reload or recharge; the net by its weapon's rate),
+  priced 5 x sqrt(value / the C-RAM's); protectors = damage prevented a minute (dome hp over recharge, wards 3 towers'
+  shields, shelter cut x a 60 dps zone, by area), 5 x sqrt(value / the troop shelter's); the CP relay = the CP it pays
+  in an expected 120 s life (0.1 CP/s x economy 0.9 = 10.8, so the small cap 6); jammers, lighting, decoys, teeth and
+  mines the size floor (3).
+
+Script vs provisional (base card / branches; the full table with equivalentCP, factor and raw price is in the report):
+
+| group | script | provisional |
+|---|---|---|
+| Small AA (aa_turret / .flak / .sam) | 6 / 6 / 5 | 6 (REBALANCE_STATS) |
+| MG bunker (base / .twin / .flame) | 6 / 6 / 6 | 6 (REBALANCE_STATS) |
+| Guard tower (base / .watch / .nest) | 5 / 5 / 5 | 4 |
+| AT post (base / .long / .recoilless) | 4 / 4 / 3 | 3 |
+| Small unarmed (EW, teeth, mines, lighting, decoys) | 3 | 3 |
+| CP relay | 6 | 3 (unarmed floor) |
+| Gun turret (base / .long sniper / .auto 57 mm) | 11 / 11 / 11 | - / 6 / 7 |
+| Medium AA (base / .heavy / .bofors) | 7 / 7 / 6 | 6 |
+| Rocket battery (base / .cluster / .guided) | 11 / 10 / 9 | 6 |
+| ATGM tower (base / .top / .multi) | 7 / 7 / 6 | 5 |
+| C-RAM (base / .centurion / .dome) | 5 / 5 / 5 | 5 |
+| Anti-drone (base / .laser / .net) | 5 / 5 / 5 | - / 7 / 5 |
+| Troop shelter | 5 | 5 |
+| Long-range SAM (base / .lrr / .pac3) | 13 / 12 / 9 | 12 / 11 / 9 |
+| Heavy turret (base / .coastal / .bastion) | 18 / 18 / 18 | 10 / 11 / 17 (HOLD) |
+| Drone hangar (base / .lancet / .swarm) | 12 / 14 / 14 | 9 |
+| Artillery emplacement (base / .cb / .mortar) | 12 / 12 / 12 | 9 |
+| Shield generator (base / .bulwark / .ward) | 10 / 10 / 10 | 9 |
+
+The script's prices are applied (`rebuildCp` on all 60 defs, the 22 cards and their 38 branches). The large gaps (gun
+turret, rocket battery, heavy turret, drone hangar, emplacement) come from the towers' effective health: kinetic and
+shaped charges do 0.6 to structures and the towers' front armour cuts the reference rounds' penetration, so a tower
+holds two to three times a vehicle's effective health per CP; several then hit the band's top. Not rebalanced here
+beyond the prompt's two rules below.
+
+REBALANCE_STATS (small towers past equivalentCP 8): `mg_bunker` 14.1, `.twin` 15.5, `.flame` 19.3, `aa_turret` 10.5,
+`.flak` 12.4 (the prompt expected the 23 mm, the flame bunker, the small AA and the MG bunker: the same five).
+Damage cut through `outgoingDamageMult` (health kept), (8 / eq)^2: 0.3204, 0.2672, 0.1716, 0.5762, 0.4139; the
+branches not cut (`aa_turret.sam`) carry an explicit 1 (they inherit their card's line). Before / after equivalentCP
+14.1-19.3 / 8; price 6 either way (the cap). These are large cuts made on paper (the flame bunker to 17 % damage): the
+first thing to look at in play.
+
+Steel fortress (`heavy_turret.bastion`, HOLD): formula 18 (raw 28.5, over 15). One roof MG fewer: raw 26.2, still 18;
+health down to the base heavy turret's 2,800 (not below: the branch would be weaker than its card): raw 21.0, still 18.
+Reaching 13-15 would need health about 1,200. Verdict: not applied; the fortress stays at its current stats and price
+18 (the cap), HOLD for the owner (the prompt's provisional 17 also sits above 15).
+
+Tests (written, not run): `TowerRebuildP32Tests` (rebuilt towers outside the supply army value; no CP for a destroyed
+tower; runtime vs base under Brandt; no drop with an enemy within 20 m; the drop by size; the Showdown cut-off with a paid
+drop landing; the HQ rescue; every price in its band), `BaseTests` (a medium tower's price from the data).

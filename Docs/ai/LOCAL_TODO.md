@@ -110,3 +110,8 @@ The cloud session writes the Sim only. Each line: file, what, why.
 - Unity: compile, `CatalogCheck`, card renders of the ten new branch ids; run `TowerRosterP32Tests`, `TargetMaskTests`,
   `TowerRosterTests`, `TowerBranchTests`, `TowerCardTests`, `Prompt20TowersMapsTests`, `Prompt25NewContentTests`,
   `Prompt25NewContentBTests`, `TowerBranchArtTests`, `TowerGearTests`, `BaseLayoutTests`, `BaseTests`.
+
+## Prompt 32 L2 (lead pass, 2026-10-02): rebuilds and prices
+
+- Unity: compile, CatalogCheck (balance.json: 60 rebuildCp, 5 outgoingDamageMult cuts, base.rebuild drop/enemyRadius/showdownCutoff/hqRescue); run TowerRebuildP32Tests, BaseTests, TowerGearTests, DefendLinesTests, BaseDefenceTests.
+- Play: the REBALANCE_STATS cuts (MG bunker x0.32, twin x0.27, flame x0.17, AA tower x0.58, flak x0.41) and the tap on a fallen slot with Auto-buy off; the steel fortress verdict (HOLD) for the owner.

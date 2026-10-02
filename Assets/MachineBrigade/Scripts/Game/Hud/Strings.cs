@@ -1447,6 +1447,8 @@ namespace MachineBrigade.Game.Hud
             ["err.ArmyAtCapacity"] = ("Too many vehicles on the field", "Quá nhiều xe trên chiến trường"),
             ["err.AirAtCapacity"] = ("Air slots full: at most 6 aircraft at once", "Hết suất không quân: tối đa 6 máy bay cùng lúc"),
             ["err.OnCooldown"] = ("Not ready yet", "Chưa sẵn sàng"),
+            // Prompt 32 L2: a fallen tower is not flown back in while the enemy stands round its slot.
+            ["err.EnemyNear"] = ("Enemies too close to the slot (20 m)", "Địch ở quá gần ô tháp (20 m)"),
             ["err.UnitLimit"] = ("Only one of these per side", "Mỗi phe chỉ được một chiếc"),
             ["unit.ew_tower"] = ("EW tower", "Tháp gây nhiễu EW"),
             ["unit.dragons_teeth"] = ("Dragon's teeth", "Răng rồng"),

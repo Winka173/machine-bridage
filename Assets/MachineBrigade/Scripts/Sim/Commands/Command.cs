@@ -116,6 +116,9 @@ namespace MachineBrigade.Sim.Commands
 
         /// <summary>Prompt 25 F2 batch A: a parachute drop only where the side sees, and never into an enemy base.</summary>
         DropNotSeen,
+
+        /// <summary>Prompt 32 L2: no tower is flown back in while an enemy stands within 20 m of its slot.</summary>
+        EnemyNear,
     }
 
     public readonly struct CommandResult

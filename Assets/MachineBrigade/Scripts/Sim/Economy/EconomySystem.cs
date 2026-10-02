@@ -385,7 +385,7 @@ namespace MachineBrigade.Sim.Economy
                 own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.ArmyCost * MathF.Min(LossRefundCap, victim.Gear.Trait(TraitId.SetSalvageRights).B));
             var team = victim.LastAttackerTeam;
             var paid = 0f;
-            if (team >= 0 && team != victim.Team && _world.Time - victim.LastHitTime <= 10.0 && _teams.TryGetValue(team, out var economy))
+            if (team >= 0 && team != victim.Team && victim.Def.Fort == null && _world.Time - victim.LastHitTime <= 10.0 && _teams.TryGetValue(team, out var economy))
             {
                 paid = KillShare(Bounty(economy, victim), KillerBonus(killer, team), economy.Commander?.KillRefund ?? KillReward);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * paid);

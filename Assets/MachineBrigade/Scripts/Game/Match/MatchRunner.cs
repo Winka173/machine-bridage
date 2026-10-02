@@ -1545,7 +1545,7 @@ namespace MachineBrigade.Game.Match
             if (!_menu)
             {
                 var callable = _world.Bases.Callable(PlayerTeam);
-                _hud.SetTowers(callable.Count, callable.Count > 0 ? _world.Bases.CostOf(callable[0]) : 0);
+                _hud.SetTowers(callable.Count, callable.Count > 0 ? _world.Bases.RuntimeCostOf(PlayerTeam, callable[0]) : 0);
             }
             if (Time.unscaledDeltaTime > 0f) _fps = Mathf.Lerp(_fps, 1f / Time.unscaledDeltaTime, 0.05f);
             if (_menu) return;

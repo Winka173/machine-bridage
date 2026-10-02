@@ -20,6 +20,12 @@ namespace MachineBrigade.Sim.Content
         /// two branches of a card never do (the branch rule: they differ in what they do, not only in numbers). Null: none.
         /// </summary>
         public string? Role { get; internal set; }
+
+        /// <summary>
+        /// Prompt 32 L2: the CP the balance gives flying this tower back in ("rebuildCp", baseRebuildCP; 0: its size's).
+        /// What a side pays is the runtime price (a commander's cut, rounded half up once at the end).
+        /// </summary>
+        public int BaseRebuildCp { get; internal set; }
     }
 
     public sealed partial class Catalog
@@ -31,6 +37,7 @@ namespace MachineBrigade.Sim.Content
             if (!branch && v.Has("branches")) def.DeclaredBranches = v.StringArray("branches");
             def.NoBranch = !branch && v.Bool("noBranch", false);
             def.Role = v.Has("towerRole") ? v.String("towerRole") : null;
+            def.BaseRebuildCp = Math.Max(0, v.Int("rebuildCp", 0));
         }
     }
 }
