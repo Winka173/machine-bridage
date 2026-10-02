@@ -13780,3 +13780,4 @@ runner mirror, no cards, no previews, no tests.
 - Card luma (old, mean of pixels with alpha > .5): mlrs .3374, elite_mlrs .2700, heavy_rocket_artillery .3461,
   thermobaric_launcher .3441, ballistic_launcher .3394, long_sam .3326, sam_launcher .4259, iron_beam .3426. New cards: the lead
   renders them after the merge.
+- Lead (2026-10-02), wave 3d cards: all eight pass (-0.3 % to +3.7 %).

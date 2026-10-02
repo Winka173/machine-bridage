@@ -78,7 +78,7 @@
             "kind": "vehicle",
             "model": "mlrs",
             "source": "Models/mlrs",
-            "hash": "v2:63990ea1ba9f84326eb0c1c0c3f6adba214b833a"
+            "hash": "v2:d5dddba28b0155e9e0aea9832b5044b903e48eb3"
         },
         {
             "id": "aa_vehicle",
@@ -92,7 +92,7 @@
             "kind": "vehicle",
             "model": "sam_launcher",
             "source": "Models/sam_launcher",
-            "hash": "v2:c23ff1c444f1cac7f4d001cb0e5e0c61d3bd5429"
+            "hash": "v2:3594575b490e3bac64b3a64bf5c3d365784bddde"
         },
         {
             "id": "scout_heli",
@@ -141,7 +141,7 @@
             "kind": "vehicle",
             "model": "thermobaric_launcher",
             "source": "Models/thermobaric_launcher",
-            "hash": "v2:7cdd754d33ee9fbeac3d2d331392ada05e3a2a50"
+            "hash": "v2:be76481c7a17b497af9352d7ea64aa0ae5c34b24"
         },
         {
             "id": "heavy_aa",
@@ -197,14 +197,14 @@
             "kind": "vehicle",
             "model": "heavy_rocket_artillery",
             "source": "Models/heavy_rocket_artillery",
-            "hash": "v2:4feb9735f8710f7d32849d447950c83dd5314be4"
+            "hash": "v2:522f491f5ba38bf908ba73038421f2992f5f0536"
         },
         {
             "id": "ballistic_launcher",
             "kind": "vehicle",
             "model": "ballistic_launcher",
             "source": "Models/ballistic_launcher",
-            "hash": "v2:a5f8e07999433575c6a8bca46a0161d33d938003"
+            "hash": "v2:ff7fc94acb80c7ad148c28b10bdecf840e9bfc70"
         },
         {
             "id": "engineer_vehicle",
@@ -288,7 +288,7 @@
             "kind": "vehicle",
             "model": "iron_beam",
             "source": "Models/iron_beam",
-            "hash": "v2:c5fd6b50e52f81a9f70b0e1ebb664b066f9c2cbe"
+            "hash": "v2:69da8c18e60a2ff550cf5d51c5d47906af255e05"
         },
         {
             "id": "railgun_truck",
@@ -337,7 +337,7 @@
             "kind": "vehicle",
             "model": "long_sam",
             "source": "Models/long_sam",
-            "hash": "v2:cd0581e7d2e84c725ded0983b6cbfb494160c23f"
+            "hash": "v2:f180f66be52f19ca009c66f8402c55f2c849ab49"
         },
         {
             "id": "armored_bulldozer",
@@ -1072,7 +1072,7 @@
             "kind": "elite",
             "model": "long_sam",
             "source": "Models/long_sam",
-            "hash": "v2:cd0581e7d2e84c725ded0983b6cbfb494160c23f"
+            "hash": "v2:f180f66be52f19ca009c66f8402c55f2c849ab49"
         },
         {
             "id": "elite_mbt",
@@ -1086,7 +1086,7 @@
             "kind": "elite",
             "model": "elite_mlrs",
             "source": "Models/elite_mlrs",
-            "hash": "v2:9f2f2b57d3454c48311829bc985ebb7c479d3da2"
+            "hash": "v2:1c5bc7c05dbb41d59f5d25e00becc72f241a3d92"
         },
         {
             "id": "elite_tank_destroyer",
