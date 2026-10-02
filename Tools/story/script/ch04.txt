@@ -124,7 +124,7 @@ defeat | kessler | 1 | Cảng vẫn hoạt động. Doanh thu quý này vẫn �
 mission_start | kessler | 1 | Tàu của ta rời bến lúc mười tám giờ, đại tá. Đừng tới muộn. || My ship leaves at eighteen hundred, Colonel. Do not be late.
 mission_start | khai | 1 | Hôm nay ta không chặn được tàu. Năm phút với hậu quân, rồi Rust Yard là của ta. || No stopping the ships today. Five minutes with his rearguard, then Rust Yard is ours.
 first_unit_type_seen | dieuhau | 2 | Máy bay ném bom hạng nhẹ phía biển! Chúng đang che đường cho đoàn tàu. || Light bombers off the sea! They are covering the ships.
-event_triggered | linh | 2 | Kessler đổi kế hoạch: hậu quân rút về cầu tàu sớm. Đừng đuổi vào đó. || Kessler changed the plan: the rearguard falls back to the pier early. Do not chase them in.
+event_triggered | linh | 2 | Kessler đổi kế hoạch: hậu quân rút về cầu tàu sớm. Đừng đuổi vào đó. || Kessler changed plans: the rearguard falls back to the pier early. Do not chase.
 timer_60s | khai | 1 | Một phút. Tàu đã ra khơi, hậu quân sẽ dồn hết vào ta. || One minute. The ships are out; the rearguard throws everything at us.
 victory | khai | 1 | Ông ta ra biển rồi. Để ông ta đi. Ta gặp hạm đội ở Beacon Bay. || He is at sea. Let him go. We meet his fleet at Beacon Bay.
 defeat | kessler | 1 | Lịch trình được giữ. Hậu quân của ta đáng đồng tiền. || The schedule holds. My rearguard earned its pay.
