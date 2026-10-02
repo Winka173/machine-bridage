@@ -893,7 +893,7 @@
   },
   "lava_vent": {
     "file": "lava_vent.glb",
-    "triangles": 818
+    "triangles": 834
   },
   "leviathan": {
     "file": "leviathan.glb",
@@ -1093,11 +1093,11 @@
   },
   "parked_jet": {
     "file": "parked_jet.glb",
-    "triangles": 3292
+    "triangles": 3658
   },
   "parking_garage": {
     "file": "parking_garage.glb",
-    "triangles": 3804
+    "triangles": 4996
   },
   "pier": {
     "file": "pier.glb",
@@ -1125,7 +1125,7 @@
   },
   "radar_dome": {
     "file": "radar_dome.glb",
-    "triangles": 2046
+    "triangles": 2086
   },
   "radar_scout": {
     "file": "radar_scout.glb",
@@ -1273,7 +1273,7 @@
   },
   "runway_light": {
     "file": "runway_light.glb",
-    "triangles": 272
+    "triangles": 292
   },
   "sam_launcher": {
     "file": "sam_launcher.glb",
@@ -1381,7 +1381,7 @@
   },
   "skyscraper": {
     "file": "skyscraper.glb",
-    "triangles": 4592
+    "triangles": 5208
   },
   "smoke_carrier": {
     "file": "smoke_carrier.glb",
@@ -1413,7 +1413,7 @@
   },
   "stilt_hut": {
     "file": "stilt_hut.glb",
-    "triangles": 3308
+    "triangles": 3916
   },
   "stone_wall": {
     "file": "stone_wall.glb",
@@ -1489,7 +1489,7 @@
   },
   "temple_ruin": {
     "file": "temple_ruin.glb",
-    "triangles": 4814
+    "triangles": 5070
   },
   "thermobaric_launcher": {
     "file": "thermobaric_launcher.glb",
