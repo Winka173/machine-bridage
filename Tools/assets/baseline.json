@@ -1926,6 +1926,17 @@
     "bulwark_post: bytes only",
     "uav_loiter_strike: fileBytes 85,872 -> 85,888 (+0.0%)"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "bulwark_post",
+    "coastal_battery",
+    "super_gun",
+    "uav_loiter_strike"
+   ],
+   "reason": "merge of feature/p27-standins",
+   "changes": []
   }
  ],
  "models": {
