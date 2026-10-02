@@ -693,7 +693,7 @@
   },
   "headquarters": {
     "file": "headquarters.glb",
-    "triangles": 14260
+    "triangles": 14164
   },
   "heavy_aa": {
     "file": "heavy_aa.glb",
@@ -749,15 +749,15 @@
   },
   "helipad": {
     "file": "helipad.glb",
-    "triangles": 1128
+    "triangles": 1032
   },
   "helipad_a": {
     "file": "helipad_a.glb",
-    "triangles": 1348
+    "triangles": 1252
   },
   "helipad_b": {
     "file": "helipad_b.glb",
-    "triangles": 2084
+    "triangles": 1988
   },
   "highrise_a": {
     "file": "highrise_a.glb",
@@ -997,7 +997,7 @@
   },
   "mobile_fortress": {
     "file": "mobile_fortress.glb",
-    "triangles": 20290
+    "triangles": 23256
   },
   "mobile_repair_vehicle": {
     "file": "mobile_repair_vehicle.glb",

@@ -708,21 +708,21 @@
             "kind": "tower",
             "model": "helipad",
             "source": "Models/helipad",
-            "hash": "v2:f3ebc8ec4701ba90d15c3d6573bc8552cdc627d6"
+            "hash": "v2:8632041388de13a52d29dd466a586f52537c2c7f"
         },
         {
             "id": "airfield.hangar",
             "kind": "tower",
             "model": "helipad_a",
             "source": "Models/helipad_a",
-            "hash": "v2:cf4ab898a8edc2233b4bdc853ae40f8aceb899ef"
+            "hash": "v2:50d7f6fdbd14fc77ec64f4f7af9c3edcec4ffaef"
         },
         {
             "id": "airfield.service",
             "kind": "tower",
             "model": "helipad_b",
             "source": "Models/helipad_b",
-            "hash": "v2:951631ae562546f95897a1fb2bbe1ccffcaa8c45"
+            "hash": "v2:2d958e133edb19b63ebf5fdf1b49ead6a07c2014"
         },
         {
             "id": "ammo_depot",
@@ -771,7 +771,7 @@
             "kind": "tower",
             "model": "at_gun_emplacement",
             "source": "Models/at_gun_emplacement",
-            "hash": "v2:7db5c4c3f7de2ddc463120d0f65193c6191209f2"
+            "hash": "v2:ee7ca6727c044da80df7cb620c0df323c785cdb9"
         },
         {
             "id": "atgm_tower",
@@ -1121,7 +1121,7 @@
             "kind": "boss",
             "model": "mobile_fortress",
             "source": "Models/mobile_fortress",
-            "hash": "v2:f7f01b0236b251df01687ca7565932112d5af156"
+            "hash": "v2:4d1448ae2c8f4872a83f647bab78d02d4fdcba1c"
         },
         {
             "id": "fire_control_centre",
@@ -1212,14 +1212,14 @@
             "kind": "tower",
             "model": "headquarters",
             "source": "Models/headquarters",
-            "hash": "v2:500fd35d0f1d7b921fb51f4349941fa4eea57b99"
+            "hash": "v2:a2f32cdfd12de167b67f01b8b0fdc8c1416591d7"
         },
         {
             "id": "heavy_flak_tower",
             "kind": "tower",
             "model": "heavy_flak_tower",
             "source": "Models/heavy_flak_tower",
-            "hash": "v2:1808167ef8c4ca99527a695e89cb4b1e190c4918"
+            "hash": "v2:c14c2d3651ff6a8a9675098e0b5ff71a045848e8"
         },
         {
             "id": "heavy_turret",
@@ -1303,7 +1303,7 @@
             "kind": "tower",
             "model": "laser_ad_station",
             "source": "Models/laser_ad_station",
-            "hash": "v2:0aa4a7a59ef5f5cc1b210b7983c76dcb757f6a6e"
+            "hash": "v2:8fb49d9b6d2ed1a49ffcd65332ad23c7c6cc76b3"
         },
         {
             "id": "leviathan",
@@ -1401,7 +1401,7 @@
             "kind": "boss",
             "model": "mobile_fortress",
             "source": "Models/mobile_fortress",
-            "hash": "v2:f7f01b0236b251df01687ca7565932112d5af156"
+            "hash": "v2:4d1448ae2c8f4872a83f647bab78d02d4fdcba1c"
         },
         {
             "id": "moloch",
@@ -1583,7 +1583,7 @@
             "kind": "tower",
             "model": "visual_jammer",
             "source": "Models/visual_jammer",
-            "hash": "v2:173a055ba38c090bc093dde7191a9675c34eb0c1"
+            "hash": "v2:c5bee2a5f7825cdaf8bbddad3b546184b3e27c7d"
         },
         {
             "id": "gunship_support",
