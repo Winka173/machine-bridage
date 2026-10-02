@@ -5,7 +5,7 @@
   },
   "aa_gun_tower": {
     "file": "aa_gun_tower.glb",
-    "triangles": 1412
+    "triangles": 1724
   },
   "aa_gun_vehicle": {
     "file": "aa_gun_vehicle.glb",
@@ -581,7 +581,7 @@
   },
   "flare_tower": {
     "file": "flare_tower.glb",
-    "triangles": 500
+    "triangles": 680
   },
   "floodlight_mast": {
     "file": "floodlight_mast.glb",
@@ -737,15 +737,15 @@
   },
   "heavy_turret": {
     "file": "heavy_turret.glb",
-    "triangles": 9222
+    "triangles": 9514
   },
   "heavy_turret_a": {
     "file": "heavy_turret_a.glb",
-    "triangles": 9378
+    "triangles": 9670
   },
   "heavy_turret_b": {
     "file": "heavy_turret_b.glb",
-    "triangles": 11666
+    "triangles": 11958
   },
   "hedge": {
     "file": "hedge.glb",
@@ -981,15 +981,15 @@
   },
   "missile_battery": {
     "file": "missile_battery.glb",
-    "triangles": 6926
+    "triangles": 7242
   },
   "missile_battery_a": {
     "file": "missile_battery_a.glb",
-    "triangles": 8338
+    "triangles": 8654
   },
   "missile_battery_b": {
     "file": "missile_battery_b.glb",
-    "triangles": 6974
+    "triangles": 7290
   },
   "missile_boat": {
     "file": "missile_boat.glb",
@@ -1289,7 +1289,7 @@
   },
   "searchlight": {
     "file": "searchlight.glb",
-    "triangles": 1124
+    "triangles": 1292
   },
   "shahed_truck": {
     "file": "shahed_truck.glb",
