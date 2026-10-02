@@ -238,3 +238,28 @@
 | B1-nlos_atgm_vehicle | OK | 3 rows |
 | B1-laser_tank | OK | 3 rows |
 | B1-railgun_truck | OK | 3 rows |
+
+## Run apply: E1, B0-*, B1-rocket_technical, B1-mortar_carrier, B1-sp_mortar, B1-artillery, B1-wheeled_howitzer, B1-mine_rocket_truck, B1-mlrs, B1-shahed_truck, B1-thermobaric_launcher, B1-ballistic_launcher, B1-heavy_rocket_artillery, B1-siege_tank (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| E1 | ALREADY_APPLIED | |
+| B0-sky_gunship | ALREADY_APPLIED | |
+| B0-thermobaric_launcher | ALREADY_APPLIED | |
+| B0-siege_tank | ALREADY_APPLIED | |
+| B0-light_tank | ALREADY_APPLIED | |
+| B0-vbied | ALREADY_APPLIED | |
+| B0-flame_tank | ALREADY_APPLIED | |
+| B0-engineer_vehicle | ALREADY_APPLIED | |
+| B1-rocket_technical | OK | 1 rows |
+| B1-mortar_carrier | OK | 1 rows |
+| B1-sp_mortar | OK | 3 rows |
+| B1-artillery | OK | 3 rows |
+| B1-wheeled_howitzer | OK | 3 rows |
+| B1-mine_rocket_truck | OK | 3 rows |
+| B1-mlrs | OK | 3 rows |
+| B1-shahed_truck | OK | 3 rows |
+| B1-thermobaric_launcher | OK | 3 rows |
+| B1-ballistic_launcher | OK | 3 rows |
+| B1-heavy_rocket_artillery | OK | 4 rows |
+| B1-siege_tank | OK | 4 rows |
