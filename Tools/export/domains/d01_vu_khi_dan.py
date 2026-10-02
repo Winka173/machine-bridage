@@ -9,10 +9,13 @@ from __future__ import annotations
 import ast
 import re
 
+from core.formula import F
 from core.model import NEED_CODE_CHECK, NEED_SOURCE, chua_ap, child_rows
 from core.repo import ROOT
 
 from . import _balance as B
+from . import _game as G
+from . import _b01, _unit_settle
 
 FILE_ID = "01_vu_khi_dan"
 TITLE = "Vũ khí và đạn"
@@ -20,7 +23,7 @@ DESC = "Vũ khí, họ, dòng vũ khí thật, đạn thay thế, bảng sát th
 
 REASONS = "Tools/balance/fix_weapon_reasons.json"
 AUDIT = "Tools/balance/full_weapon_audit.py"
-LAYER_B = chua_ap("xuat_luot5")
+LAYER_B = chua_ap("xuat_luot5")  # kept for the cells pass 5 still leaves (none in 01 after pass 5)
 
 # (column, source key, default when absent, unit, meaning); default NEED_CODE_CHECK: the C# default is not a literal
 EFFECTIVE = [
@@ -34,7 +37,7 @@ EFFECTIVE = [
     ("cong_suat_kw", "powerKw", "", "kW", "công suất (la-de)"),
     ("nang_luong_mj", "energyMj", "", "MJ", "năng lượng (pháo điện từ)"),
     ("loai_sat_thuong", "damageType", "", "", "loại sát thương (Bang_sat_thuong)"),
-    ("xuyen", "pen", NEED_CODE_CHECK, "", "mức xuyên 0-5 (Bang_xuyen_giap); thiếu: mặc định của WeaponDef"),
+    ("xuyen", "pen", "Armour.DefaultPenetration", "", "mức xuyên 0-5 (Bang_xuyen_giap); thiếu: theo họ và cỡ (port Armour.cs DefaultPenetration)"),
     ("dang_dan", "projectile", "Shell", "", "dạng đạn (ProjectileKind)"),
     ("so_nong", "barrels", 1, "", "số nòng"),
     ("che_do_nong", "salvoMode", "RIPPLE", "", "SIMULTANEOUS / RIPPLE"),
@@ -55,6 +58,16 @@ EFFECTIVE = [
     ("tran_ban_m", "ceiling", "", "m", "trần bắn máy bay"),
     ("do_tan", "spread", 0.0, "", "độ tản (đơn vị trong mã: xem Don_vi_chua_ro)"),
     ("bac_no", "impactTier", "", "", "bậc hình ảnh vụ nổ (ExplosionTier)"),
+    # pass 5: the flags the layer B formulas read (game values: Catalog.cs FromJson defaults)
+    ("danh_noc", "topAttack", False, "", "đánh nóc (topAttack)"),
+    ("bay_cong", "lofted", False, "", "bắn cầu vồng qua vật cản (lofted)"),
+    ("nhiet_ap", "thermobaric", False, "", "nhiệt áp: HE lên công trình dùng damageTable.thermobaric (thermobaric)"),
+    ("chi_danh_chan", "interceptOnly", False, "", "chỉ bắn chặn đạn, không nhắm xe / máy bay (interceptOnly)"),
+    ("dat_boi_boss", "laid", False, "", "do hệ boss đặt bắn, không qua CombatSystem (laid)"),
+    ("tia", "beam", False, "", "tia (beam)"),
+    ("dan_huong", "guided", False, "", "có dẫn (guided: rocket / đạn có dẫn)"),
+    ("kich_co", "size", 0.0, "", "cỡ của Sim (size): mm cho súng / rocket, kg cho bom, khác theo họ (Armour.cs DefaultPenetration)"),
+    ("so_vien_mang_may_bay", "load", 0, "", "số viên một lần nạp của máy bay (load; Definitions.cs Load)"),
 ]
 TRACKED = ["sat_thuong_moi_phat", "thoi_gian_nap_s", "tam_m", "loi_m", "ria_m", "toc_do_dan_m_s", "so_phat_moi_loat",
            "khoang_phat_trong_loat_s", "so_nong", "che_do_nong", "xuyen", "loai_sat_thuong", "bang_dan", "nap_bang_s",
@@ -71,6 +84,7 @@ def effective(w: dict, tiers: dict) -> dict:
     out = {}
     for col, key, default, _u, _m in EFFECTIVE:
         out[col] = w.get(key, default)
+    out["xuyen"] = G.pen(w)  # Definitions.cs Penetration: data "pen", else Armour.DefaultPenetration
     out["bac_co"] = f"T{tiers[w['weaponFamilyId']]}" if w.get("weaponFamilyId") in tiers else ""
     return out
 
@@ -95,6 +109,7 @@ def build(ctx):
     base_res = B.resolved_weapons(base) if base else {}
     base_tiers = {f["id"]: f.get("tier") for f in base.data(B.BALANCE).get("weaponFamilyTable", [])} if base else {}
     real = real_rates()
+    warn_rules = d.get("warningRules") or {}
     reasons = ctx.data(REASONS) if REASONS in ctx.sources else {}
 
     # ------------------------------------------------------------------ Vu_khi
@@ -111,10 +126,13 @@ def build(ctx):
     vk.col("mang_boi", meaning="id đơn vị mang (ngăn ';')", fk=OWNERS + ["03_boss/Boss_bo_phan_thu_vien"])
     vk.col("so_don_vi_mang", meaning="số đơn vị mang")
     vk.col("ten_be", meaning="bệ: <đơn vị>:<chỉ số bệ> (0 = vũ khí chính, k = secondary[k-1]; other = nhắc ở trường khác)")
-    vk.col("thoi_gian_canh_bao_s", unit="s", meaning="thời gian cảnh báo vòng (công thức trong mã, warningRules)")
-    vk.col("co_vong_canh_bao", meaning="có vòng cảnh báo (công thức trong mã, warningRules)")
+    vk.col("thoi_gian_canh_bao_s", unit="s", meaning="thời gian cảnh báo vòng: WeaponDef.WarnSeconds (port FixRules.cs "
+           "WarningRules.Seconds; công thức sống ở Vu_khi_suy_ra)", source_note="port Sim/Content/WeaponDef.P34.cs WarnSeconds")
+    vk.col("co_vong_canh_bao", meaning="có vòng cảnh báo: WarningRules.Warns (port FixRules.cs; công thức sống ở Vu_khi_suy_ra)",
+           source_note="port Sim/Content/FixRules.cs WarningRules.Warns")
     vk.col("lech_nong_s", unit="s", meaning="lệch giữa các nòng RIPPLE (hằng số trong mã)")
-    vk.col("thoi_gian_bay_toi_tam_s", unit="s", meaning="tầm / tốc độ đạn (lớp B, lượt 5)")
+    vk.col("thoi_gian_bay_toi_tam_s", unit="s", meaning="tầm / tốc độ đạn (lớp B: công thức sống; CombatSystem.cs bay "
+           "khoảng cách / projectileSpeed, bom và MRSI riêng)", formula="={tam_m}/{toc_do_dan_m_s}")
     vk.col("ngoai_doi_phat_phut_toi_da", unit="phát/phút",
            meaning="nhịp tối đa ngoài đời (bảng REAL của Tools/balance/full_weapon_audit.py)")
     vk.col("ngoai_doi_phat_phut_duy_tri", unit="phát/phút", meaning="nhịp thực tế / duy trì ngoài đời (bảng REAL)")
@@ -143,10 +161,14 @@ def build(ctx):
         r.set("mang_boi", ";".join(sorted({u[1] for u in us})))
         r.set("so_don_vi_mang", len({u[1] for u in us}))
         r.set("ten_be", ";".join(f"{u[1]}:{u[2]}" for u in sorted(us, key=lambda x: (x[1], str(x[2])))))
-        r.set("thoi_gian_canh_bao_s", NEED_CODE_CHECK)
-        r.set("co_vong_canh_bao", NEED_CODE_CHECK)
+        tier = tiers.get(e.get("weaponFamilyId"), -1) if e.get("weaponFamilyId") else -1
+        tier = -1 if tier is None else int(tier)
+        r.set("thoi_gian_canh_bao_s", G.warn_seconds(e, tier, warn_rules))
+        r.set("co_vong_canh_bao", G.warns(e, tier, warn_rules))
         r.set("lech_nong_s", NEED_CODE_CHECK if (eff["so_nong"] or 1) > 1 and eff["che_do_nong"] == "RIPPLE" else "")
-        r.set("thoi_gian_bay_toi_tam_s", LAYER_B)
+        flight = (G.f(e, "range") / G.f(e, "projectileSpeed")) if G.f(e, "projectileSpeed") > 0 else None
+        r.set("thoi_gian_bay_toi_tam_s", F("={tam_m}/{toc_do_dan_m_s}", expect=flight, ref="python: tam_m / toc_do_dan_m_s")
+              if flight is not None else "")
         name = (e.get("real") or "").lower()
         hit = next((x for x in real if re.search(x[0], name)), None) if name else None
         if hit:
@@ -249,7 +271,7 @@ def build(ctx):
         r.set("loai_dan", e.get("round", ""))
         r.set("dung_cho", ";".join(e.get("for", [])) if isinstance(e.get("for"), list) else e.get("for", ""))
         r.set("loai_sat_thuong", e.get("damageType", ""))
-        r.set("xuyen", e.get("pen", NEED_CODE_CHECK))
+        r.set("xuyen", G.pen(e) if e else "")
         r.set("sat_thuong_moi_phat", e.get("damage", ""))
         r.set("loi_m", e.get("splash", 0.0))
         for c in ("dieu_kien_tu_doi", "thoi_gian_doi_s", "thoi_gian_giu_s"):
@@ -354,5 +376,7 @@ def build(ctx):
                  units={"gunMinMm": "mm", "bombMinKg": "kg", "rocketMinMm": "mm", "floorT4": "s", "floor406": "s",
                         "floorT5": "s", "base": "s", "escapeSpeed": "m/s", "cap": "s", "maxShown": "",
                         "salvoMergeSeconds": "s", "fadeIn": "s"})
+    _b01.build(ctx, book, d, res, tiers, warn_rules)
+    _unit_settle.apply(book)
     ctx.note("01_canh_bao", "Canh_bao_vong.cap đọc là giây (trần thời gian cảnh báo) và base là giây: suy từ tên khóa; "
              "công thức thời gian cảnh báo nằm trong mã (Vu_khi.thoi_gian_canh_bao_s = NEED_CODE_CHECK).")

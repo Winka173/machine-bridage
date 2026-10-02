@@ -63,6 +63,7 @@ def write_xlsx(path: Path, sheets: list[tuple[str, list[str], list[list], set]])
                     out.append(v)
             ws.append(out)
     wb.properties.creator = "Tools/export"
+    wb.calculation.fullCalcOnLoad = True  # layer B formulas carry no cached value: Excel / LibreOffice compute them on open
     buf = io.BytesIO()
     wb.save(buf)
     path.parent.mkdir(parents=True, exist_ok=True)

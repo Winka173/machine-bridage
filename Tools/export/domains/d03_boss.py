@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from core.model import NEED_CODE_CHECK, chua_ap, child_rows
 
+from . import _b03, _unit_settle
 from . import _balance as B
 from . import _units as U
 
@@ -125,8 +126,9 @@ def build(ctx):
             ("aim", "", "cách nhắm của bệ (Free / Hull...)", None), ("bo_phan", "", "bộ phận mang bệ (parts[].mounts)", None),
             ("so_nong", "", "số nòng của vũ khí", None), ("sat_thuong_moi_phat", "hp", "sát thương mỗi phát (vũ khí, trước hệ số boss)", None),
             ("thoi_gian_nap_s", "s", "thời gian nạp", None), ("loi_m", "m", "lõi nổ", None),
-            ("ria_tren_boss_m", "m", "rìa nổ trên boss (Catalog: mọi vũ khí nổ của boss có rìa gấp đôi lõi: WithEdge)", None),
-            ("canh_bao_s", "s", "thời gian cảnh báo (công thức trong mã)", None),
+            ("ria_tren_boss_m", "m", "rìa nổ trên boss (port Catalog.cs WithEdge: rìa = min(20, 2 x lõi) trừ khi đã có rìa, "
+             "lõi < 2 m, tia, flak, chỉ bắn máy bay)", None),
+            ("canh_bao_s", "s", "thời gian cảnh báo (port WeaponDef.WarnSeconds; WithEdge không đổi lõi)", None),
             ("chu_ky_day_du_s", "s", "chu kỳ đầy đủ (lớp B)", None)):
         bv.col(c, unit=unit, meaning=m, fk=fk)
     B.declare_changes(bv, ["vu_khi"])
@@ -153,9 +155,7 @@ def build(ctx):
             r.set("sat_thuong_moi_phat", w.get("damage", "") if w else "")
             r.set("thoi_gian_nap_s", w.get("cooldown", "") if w else "")
             r.set("loi_m", w.get("splash", 0.0) if w else "")
-            r.set("ria_tren_boss_m", NEED_CODE_CHECK)
-            r.set("canh_bao_s", NEED_CODE_CHECK)
-            r.set("chu_ky_day_du_s", LAYER_B)
+            # ria_tren_boss_m, canh_bao_s, chu_ky_day_du_s, dps_duy_tri: layer B (_b03, pass 5)
             if base is not None:
                 if base_mounts is None:
                     r.set("so_voi_ban_goc", "moi")
@@ -274,6 +274,8 @@ def build(ctx):
         r.set("cach_xep", how)
         r.set("phong_khong", NEED_CODE_CHECK)
         r.set("tuan", NEED_CODE_CHECK)
+    _b03.build(ctx, book, d, built, base_built, base_w)
+    _unit_settle.apply(book)
     ctx.note("03_sanhunt", f"Sanhunt: {len(story)} boss theo port của BossHunts.Story (spec ghi 41; boss trên ray không có arena "
              "bị loại như trong mã).")
     us = book.sheet("Sanhunt_chua_xep", "Săn trùm: boss chưa có ô chương", "BossHunts.Unslotted: boss mới và chương nó đứng sau")
