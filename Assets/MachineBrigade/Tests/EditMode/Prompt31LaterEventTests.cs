@@ -63,7 +63,7 @@ namespace MachineBrigade.Tests
         public void EveryLaterEventHasItsWordsInBothLanguages()
         {
             // Every ("text", state) a campaign event brings in (Tools/campaign/ground_events.py, prompt 31 L5).
-            var variants = new[] { "tide.high", "tide.low", "bridge.down", "crane.fallen" };
+            var variants = new[] { "tide.high", "tide.low", "bridge.down", "crane.fallen", "dam.rising", "dam.high", "dam.flood" };
             var keys = new List<string>();
             foreach (var v in variants)
                 keys.AddRange(new[] { $"event.groundChange.{v}.warn", $"event.groundChange.{v}.start", $"radio.linh.ev.groundChange.{v}.warn" });
@@ -80,6 +80,8 @@ namespace MachineBrigade.Tests
             ("i2m03", "bridge_collapse", "east_bridge"),
             ("c4m05", "crane_fall", "crane"),
             ("c4m02", "crane_fall", "crane"),
+            ("c6m10", "dam_breach", "flood"),
+            ("c6m14", "dam_breach", "flood"),
         };
 
         [Test]
@@ -211,6 +213,30 @@ namespace MachineBrigade.Tests
             Assert.Greater(StatusSystem.SlowShare(theirs, world.Time), 0f, "both sides' alike");
             Assert.AreEqual(0f, StatusSystem.SlowShare(jeep, world.Time), "a light vehicle never breaks it");
             Assert.AreEqual(0f, StatusSystem.SlowShare(ashore, world.Time), "off the lake nothing happens");
+        }
+
+        // ================================================================== Đập nứt (the dam cracks)
+
+        [Test]
+        public void TheDamRaisesTheWaterLevelByLevelAndNeverLowersIt()
+        {
+            const string breach = "{\"id\": \"db\", \"kind\": \"GroundChange\", \"trigger\": {\"at\": 1, \"every\": 20, \"times\": 5}, \"lead\": 10, " +
+                                  "\"params\": {\"navSite\": \"flood\", \"cycle\": true, \"wrap\": false, \"text\": \"dam\"}}";
+            const string site = "{\"id\": \"flood\", \"initial\": \"dry\", \"states\": [{\"name\": \"dry\"}, " +
+                                "{\"name\": \"rising\", \"blocks\": [{\"x\": 40, \"z\": 40, \"w\": 10, \"d\": 10}]}, " +
+                                "{\"name\": \"high\", \"blocks\": [{\"x\": 40, \"z\": 40, \"w\": 20, \"d\": 20}]}, " +
+                                "{\"name\": \"flood\", \"blocks\": [{\"x\": 40, \"z\": 40, \"w\": 30, \"d\": 30}]}]}";
+            var (world, mode) = Start(Mission(breach, site, "\"db\""));
+            var seen = new List<string>();
+            for (var k = 0; k < 120; k++)
+            {
+                Run(world, mode, 1f);
+                var now = world.NavStates.ActiveOf("flood");
+                if (seen.Count == 0 || seen[seen.Count - 1] != now) seen.Add(now);
+            }
+            CollectionAssert.AreEqual(new[] { "dry", "rising", "high", "flood" }, seen, "one level at a time, up only");
+            Assert.IsFalse(world.Grid.IsWalkable(new Vector2(52f, 40f)), "the last level's water");
+            Assert.AreEqual(3, world.NavStates.Switches, "it stops at the last level");
         }
     }
 }

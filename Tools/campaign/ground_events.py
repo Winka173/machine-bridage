@@ -159,3 +159,25 @@ for mid in ('c4m05', 'c4m02'):
 events.KINDS |= {'IceCrack'}
 library(E('ice_crack', 'IceCrack', {'at': 20}, {'x': 0, 'z': 0, 'radius': 30, 'seconds': 10, 'slow': 0.4, 'slowFor': 8}, lead=10))
 events.add('c3m04', 'ice_crack')
+
+
+# ---------------------------------------------------------------------- Đập nứt (the dam cracks): c6m10, c6m14
+# The Hollow Dam's wall cracks and the river below it rises in three steps (the sheet's three prebuilt levels, "cycle" without
+# "wrap": the water never goes down in the battle): "rising" floods the middle of the southern ford (x -10..18, z -105..-95; its
+# north and south edges still cross), "high" the whole ford (z -114..-86), "flood" also the low banks either side of the river
+# below the bridge (x -21..-15 and 11..17, z -84..-12). The bridge (the town point) and the dam's crest road stay above the water:
+# every level keeps the three points and both camps joined (nav_states.py; the game checks again at load).
+DAM_FORD = {'x': 4, 'z': -100, 'w': 28, 'd': 28}
+DAM_SITE = {'id': 'flood', 'initial': 'dry', 'states': [
+    {'name': 'dry'},
+    {'name': 'rising', 'blocks': [{'x': 4, 'z': -100, 'w': 28, 'd': 10}]},
+    {'name': 'high', 'blocks': [DAM_FORD]},
+    {'name': 'flood', 'blocks': [DAM_FORD, {'x': -18, 'z': -48, 'w': 6, 'd': 72}, {'x': 14, 'z': -48, 'w': 6, 'd': 72}]}]}
+library(E('dam_breach', 'GroundChange', {'at': 300, 'every': 150, 'times': 3}, {'navSite': 'flood', 'cycle': True, 'wrap': False, 'text': 'dam'},
+          lead=10))
+# c6m10 (the operation on the dam): the wall cracks five minutes in, under the general's assault (7 events of 5-8).
+nav_site('c6m10', DAM_SITE)
+events.add('c6m10', 'dam_breach')
+# c6m14 (the evacuation under the ceasefire, 900 s): sooner, so the three levels come inside its clock (4 events of 2-4).
+nav_site('c6m14', DAM_SITE)
+events.add('c6m14', {'id': 'dam_breach', 'trigger': {'at': 240, 'every': 150, 'times': 3}})
