@@ -17345,6 +17345,44 @@ Unity, test or sim run.
   csv/, images/ and pdf/ are git-ignored; 00_chi_muc/ (and md/ from pass 6) stay committed. Every xlsx is under 50 MB, no
   _a / _b split.
 
+## Bộ xuất dữ liệu toàn bộ (lane C, passes 7-8)
+
+Lane C, 2026-10-03: spec 7 (diff), 8 (secrets), 9 (self-check) and CI. Read only; Python only, no Unity, test or sim run.
+
+- **Diff.** `python Tools/export/export.py diff <dirA|refA> <dirB|refB> [--out DIR]` -> `Docs/export/diff_<A>_<B>/`: one
+  xlsx + md per file of either export (00-12 today, 13 when pass 10 adds it) and `00_tom_tat.xlsx` (+ .md). Generic over
+  every sheet, so the reference sheets of spec 12.6 are diffed with no new code. Reads `csv/` (the exact strings written)
+  and falls back to the xlsx when a folder has only those; rows matched by the first column. Not compared: raw_json,
+  nguon (a C# line shift is not a data change) and the `<col>_truoc` / `<col>_sau` / so_voi_ban_goc block (it follows
+  --base). A column only one side has goes to Cot_doi instead of a change in every row. Change % = (new - old) / |old|;
+  from 0 it is blank. Source commit = the newest commit in A..B that touched the row's nguon file, blank if none did.
+  Watched groups for the 20 % list, by column name (or a kv sheet's khoa): dps, hp, price (cp / cost / price / gia_*),
+  cycle (cooldown / reload / nap). The index 00 is diffed but kept out of the top 50 and the 20 % list. No clock in
+  any output: a rerun gives the same bytes.
+- **Refs.** A ref is exported in a temp git worktree with the current exporter overlaid (so only data differs), with
+  `--base ""` and `--lenient`: a domain the old tree cannot build is left out and named in its 00/Van_de.
+- **Demo** origin/main (v0.34.0, 9198a675) -> 382d5fb9: d01 and d09 are not buildable on v0.34.0 (a helper / source
+  added later, e.g. Tools/balance/full_weapon_audit.py), so they show as added; the rest: rows +62 997 / -136, 20 345
+  cells changed, 373 watched values over 20 % on 195 entities (02 HP 133, 02 price 91, 03 cycle 96, 04 price 50, 03 HP 3).
+  Only `00_tom_tat.*` is committed (`.gitignore` keeps the per-file diffs out).
+- **Self-check.** `python Tools/export/export.py check [--out DIR]`: two exports in separate processes, the 9 checks read
+  back from csv/, `00_chi_muc/SELF_CHECK.md` (no clock; added to MANIFEST). Exit 1 only on the CI four: coverage, foreign
+  keys, determinism, secrets; the rest report DAT / CHUA_DAT / CHUA_AP. Check 1 parses spec 4's sheet names from the spec.
+  Check 2's (id, column) rule compares two cells only when one is an input_ sheet or both columns read the same source
+  file (Schema.nguon_khoa): same column name for another quantity is not a conflict. Check 5 samples 200 numeric md
+  table cells (seed 20261003) once pass 6 builds md/.
+- **Result at 382d5fb9.** 1 CHUA_DAT (file 13 = pass 10; 23 layer B / C sheets = pass 5; empty 04/Mo_dun_tien_ich_vu_khi
+  and 04/Tuong_vu_khi, no marker row), 2 CHUA_DAT (radar_station width_m: 04/Mo_dun_tien_ich 6 vs 08/Vat_the_loai 7.9,
+  two entities sharing an id in balance.json), 3 DAT, 4 CHUA_AP (pass 5), 5 CHUA_AP (pass 6), 6-9 DAT.
+- **Fixes in lane C's own files.** 10/Model size columns are `glb_x_m` / `glb_y_m` / `glb_z_m` (were dai_m / cao_m /
+  rong_m, which clashed with 02/Xe's game size); 05/Che_do `text_time_limit` (was `_s`: it holds the card's text).
+- **Secrets.** The scan reads every output file: xlsx / zip parts, PDF streams inflated, other binaries as Latin-1; adds
+  JWT, bearer, api_key= / token= assignments and emails to the existing keys, passwords, local paths and user name.
+  0 hits on the export and the diff folders.
+- **CI.** `.github/workflows/export.yml`: on push, Ubuntu, Python 3.11 + openpyxl 3.1.5 + numpy, `export.py check --out
+  $RUNNER_TEMP/export`; nothing committed, SELF_CHECK.md uploaded as an artifact. USER is blanked so the runner's name
+  ("runner") is not scanned as a local user name.
+
 ## Play-test 12 audio (lane C)
 
 Branch `feature/pt12-audio`. The owner: machine guns and autocannons much worse than yesterday (`f5e565d3`); artillery,
