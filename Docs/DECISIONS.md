@@ -13869,3 +13869,16 @@ no longer writes them; `AiParams.ArmyBandEdges` gone) and its row in the applied
 upkeep (`TeamEconomy.Upkeep`, `Supply`, prompt 7) is untouched and is the in-battle upkeep. The Sandbox AI viewer's
 upkeep line now shows `Upkeep`; `Docs/ai/ECONOMY.md`, LOCAL_TODO and `WorldModelTests` follow. The text key
 `upkeep.factor` ("Upkeep: income x{factor}") stays valid for the supply upkeep.
+
+## Prompt 29 L0 (cloud, 2026-10-02): field map and manifest export
+
+- `Tools/balance/p29_manifest.py` exports the v2 Manifest and bundles to `Docs/balance/manifest_v2.json` with the
+  xlsx's sha256 (4bef428df8e2...); the apply tool reads only the export.
+- C01 (`Docs/balance_field_map.md`): HP in the Manifest is effective health (data hp x toughness 2.2: ifv 520 -> 1144,
+  sky_gunship 1069 -> 2352), so HP rows are compared and written in data units through one ROUND_HALF_UP. Delivery is
+  one constant today (3.5 s), so `dropDelay` is a new per-vehicle key. `outgoingDamageMult` is new: the existing
+  `weaponDamage` touches only ground targets and is already set on 29 vehicles, so reusing it would break the
+  manifest's expected 1.0. Flares are skills with shared cooldowns, so charges and recharge become per-vehicle keys
+  (the shared skills are not edited). The CP bank per mode becomes data (`economy.bankByMode`) holding the manifest's
+  [from, to]: the runtime moves a side's bank only when the mode set it to the "from" value, so a mode or side the
+  manifest does not describe (a siege defender, the Sandbox) keeps its bank.
