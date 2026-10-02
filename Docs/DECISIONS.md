@@ -14436,3 +14436,17 @@ Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror, no car
 - **Lesson:** near the .80 ceiling every extra vertex lowers the COLOR_0 mean; give additions a light material (`MetalSheet`) and a low `ao_strength`, or skip the model. A rebar stub on debris_concrete
   changed its bounds 22 % and its COLOR_0 -2.8 %: dropped.
 - Lead (2026-10-02), wave 8a1 merged: 20 munitions and debris rebuilt (no cards), aim120 and aim9 kept.
+
+## 27 wave 8a2 (lead pass, 2026-10-02)
+
+Pass 8a2 (lane A, second half of the generated munitions row, 22 models, all in `Tools/blender/mb_p27_wave8a.py`): same method as 8a1. The current `mb_munitions` builders are reused unchanged
+(silhouette, nodes, sizes) with a lighter AO bake (`ao_strength` .5, 0 for maverick, kh29l, patriot, jdam which sit at the ceiling) and small static details: guide studs (hellfire, hellfire_longbow, igla, stinger,
+r60, patriot, hydra, s8, tos_rocket, shorad_dart), hanger lugs (maverick, kh29l, mam_l) and an arming vane (jdam). heat_round, jassm, lancet, mortar_bomb, rail_slug, rocket_107, shahed and shell_155 got the AO change only.
+Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. The substring filter also rebuilt hydra_sub, lancet_truck, shahed_truck: reverted.
+
+- **Gates (old -> new triangles, COLOR_0):** heat_round 122 -> 122 (.788 -> .795); hellfire 206 -> 230 (.798 -> .799); hellfire_longbow 206 -> 230 (.798 -> .799); hydra 114 -> 126 (.783 -> .792);
+  igla 192 -> 204 (.787 -> .794); jassm 124 -> 124 (.810 -> .816); jdam 244 -> 256 (.775 -> .800); kh29l 238 -> 262 (.805 -> .805); lancet 160 -> 160 (.755 -> .773); mam_l 206 -> 218 (.768 -> .780);
+  maverick 238 -> 262 (.790 -> .805); mortar_bomb 122 -> 122 (.788 -> .792); patriot 214 -> 238 (.805 -> .806); r60 198 -> 222 (.789 -> .795); rail_slug 86 -> 86 (.787 -> .795);
+  rocket_107 110 -> 110 (.801 -> .803); s8 106 -> 118 (.801 -> .802); shahed 200 -> 200 (.780 -> .791); shell_155 126 -> 126 (.795 -> .796); shorad_dart 238 -> 250 (.794 -> .797);
+  stinger 158 -> 170 (.798 -> .800); tos_rocket 126 -> 150 (.800 -> .805). At most 1.19x, no errors or warnings. Sizes identical except mam_l (+3.3 % on one axis, the lugs).
+- No card PNGs exist for any of the 22.
