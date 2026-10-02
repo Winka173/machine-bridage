@@ -968,15 +968,15 @@
     { "id": "scout_jeep", "stillCamo": 0.4, "value": 0.5, "scale": 1, "modelSize": [2.64, 1.4, 1.41],       "armour": 0, "hp": 120, "speed": 12, "turnRate": 200, "turretTurnRate": 360, "radius": 1.3, "length": 2.64, "width": 1.4, "cp": 2, "vision": 60,
       "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 2,
       "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.1, "tier": "Large" } },
-    { "id": "light_tank", "value": 0.5, "scale": 1, "modelSize": [6.39, 2.61, 1.89],       "class": "Tank", "armour": 2, "hp": 460, "speed": 9, "turnRate": 90, "turretTurnRate": 120, "radius": 1.7, "length": 5.72, "width": 2.61, "cp": 3, "vision": 40,
+    { "id": "light_tank", "dropDelay": 2.5, "value": 0.5, "scale": 1, "modelSize": [6.39, 2.61, 1.89],       "class": "Tank", "armour": 2, "hp": 460, "speed": 9, "turnRate": 90, "turretTurnRate": 120, "radius": 1.7, "length": 5.72, "width": 2.61, "cp": 3, "vision": 40,
       "firesWhileMoving": true, "weapon": "gun_57mm",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "gun_launched_atgm", "slot": "main", "aim": "Turret" } ],
       "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
-    { "id": "main_battle_tank", "value": 0.92, "scale": 1, "modelSize": [7.79, 3.07, 2.3], "armour": [4, 2, 1, 1], "hp": 900, "speed": 6.5, "turnRate": 60, "turretTurnRate": 115, "radius": 2.2, "length": 6.1, "width": 3.07, "cp": 7, "vision": 30,
+    { "id": "main_battle_tank", "outgoingDamageMult": 1.1429, "value": 0.92, "scale": 1, "modelSize": [7.79, 3.07, 2.3], "armour": [4, 2, 1, 1], "hp": 1050, "speed": 6.5, "turnRate": 60, "turretTurnRate": 115, "radius": 2.2, "length": 6.1, "width": 3.07, "cp": 8, "vision": 30,
       "firesWhileMoving": true, "weapon": "gun_120mm",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 150, "radius": 7, "delay": 0.45, "tier": "Huge" } },
-    { "id": "flame_tank", "value": 0.73, "scale": 1, "modelSize": [7.12, 2.66, 1.87],       "armour": 3, "hp": 600, "speed": 6.5, "turnRate": 80, "turretTurnRate": 110, "radius": 1.9, "length": 5.75, "width": 2.66, "cp": 5, "vision": 26,
+    { "id": "flame_tank", "outgoingDamageMult": 1.2, "value": 0.73, "scale": 1, "modelSize": [7.12, 2.66, 1.87],       "armour": 3, "hp": 741, "speed": 6.5, "turnRate": 80, "turretTurnRate": 110, "radius": 1.9, "length": 5.75, "width": 2.66, "cp": 6, "vision": 26,
       "firesWhileMoving": true, "weapon": "flamethrower",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 140, "radius": 5, "delay": 0.3, "tier": "Huge" } },
@@ -1011,7 +1011,7 @@
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
     // Prompt 17 D.6: the breakthrough tank. Its 152 mm loads armour-piercing for armour and high explosive for
     // structures and light vehicles ("he" on the gun); front armour 4, sides 3; slow. The twin tank is the tank hunter.
-    { "id": "heavy_tank", "value": 1.18, "scale": 1, "modelSize": [8.39, 3.01, 2.2],       "armour": [4, 3, 2, 2], "hp": 1600, "speed": 4.2, "turnRate": 45, "turretTurnRate": 115, "radius": 2.6, "length": 6.55, "width": 3.01, "cp": 13, "vision": 30,
+    { "id": "heavy_tank", "dropDelay": 5, "outgoingDamageMult": 1.3538, "value": 1.18, "scale": 1, "modelSize": [8.39, 3.01, 2.2],       "armour": [4, 3, 2, 2], "hp": 2032, "speed": 4.2, "turnRate": 45, "turretTurnRate": 115, "radius": 2.6, "length": 6.55, "width": 3.01, "cp": 16, "vision": 30,
       "firesWhileMoving": true, "weapon": "gun_152",
       "secondary": [ { "weapon": "autocannon_30", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 200, "radius": 9, "delay": 0.5, "tier": "Huge" } },
@@ -1057,7 +1057,7 @@
       "firesWhileMoving": true, "weapon": "twin_30_flak",
       "secondary": [ { "weapon": "missile_57e6", "slot": "missile", "aim": "Turret" } ],
       "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "titan_tank", "value": 1.33, "scale": 1, "modelSize": [11.3, 5.3, 2.84],       "armour": 4, "hp": 2600, "speed": 4, "turnRate": 45, "turretTurnRate": 115, "radius": 2.9, "length": 8.14, "width": 5.3, "cp": 18, "vision": 34,
+    { "id": "titan_tank", "dropDelay": 5, "outgoingDamageMult": 1.4694, "value": 1.33, "scale": 1, "modelSize": [11.3, 5.3, 2.84],       "armour": 4, "hp": 3445, "speed": 4, "turnRate": 45, "turretTurnRate": 115, "radius": 2.9, "length": 8.14, "width": 5.3, "cp": 23, "vision": 34,
       "firesWhileMoving": true, "weapon": "gun_140_twin",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" },
                      { "weapon": "atgm", "slot": "missile", "aim": "Turret" } ],
@@ -1083,7 +1083,7 @@
     // Third wave. Long-range launchers carry limited ammunition and a machine gun for when it runs out.
     // Prompt 17 D.6: the tank hunter among the heavies: two 120 mm guns fired as one volley of two, a long 7 s reload
     // (its opening shot is its strength); front armour 3; faster, and a quicker turret, than the heavy tank.
-    { "id": "twin_tank", "value": 1.09, "scale": 1, "modelSize": [8.96, 3.53, 2.64],        "armour": [3, 2, 1, 1], "hp": 1150, "speed": 6, "turnRate": 58, "turretTurnRate": 115, "radius": 2.5, "length": 7.02, "width": 3.53, "cp": 9, "vision": 32,
+    { "id": "twin_tank", "outgoingDamageMult": 1.2681, "value": 1.09, "scale": 1, "modelSize": [8.96, 3.53, 2.64],        "armour": [3, 2, 1, 1], "hp": 1450, "speed": 6, "turnRate": 58, "turretTurnRate": 115, "radius": 2.5, "length": 7.02, "width": 3.53, "cp": 11, "vision": 32,
       "firesWhileMoving": true, "weapon": "gun_120_twin",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 130, "radius": 8, "delay": 0.4, "tier": "Huge" } },
@@ -1157,11 +1157,11 @@
     { "id": "railgun_truck", "value": 1.26, "scale": 1, "modelSize": [9.9, 2.48, 2.89],    "class": "TankHunter", "armour": 1, "hp": 420, "speed": 6.5, "turnRate": 60, "turretTurnRate": 45, "radius": 2.7, "length": 9.9, "width": 2.48, "cp": 10, "vision": 40,
       "firesWhileMoving": false, "weapon": "railgun", "captureRate": 1,
       "deathExplosion": { "damage": 120, "radius": 7, "delay": 0.3, "tier": "Huge" } },
-    { "id": "turtle_tank", "value": 1.11, "scale": 1, "modelSize": [7.42, 2.97, 2.81],      "class": "Tank", "armour": [3, 2, 2, 3], "hp": 1300, "speed": 4.5, "turnRate": 50, "turretTurnRate": 40, "radius": 2.7, "length": 6.1, "width": 2.97, "cp": 7, "vision": 26,
+    { "id": "turtle_tank", "outgoingDamageMult": 1.1429, "value": 1.11, "scale": 1, "modelSize": [7.42, 2.97, 2.81],      "class": "Tank", "armour": [3, 2, 2, 3], "hp": 1514, "speed": 4.5, "turnRate": 50, "turretTurnRate": 40, "radius": 2.7, "length": 6.1, "width": 2.97, "cp": 8, "vision": 26,
       "firesWhileMoving": true, "weapon": "gun_120mm", "mainAim": "Hull", "droneArmor": 0.2, "mineProof": true, "captureRate": 1,
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
-    { "id": "bmpt", "value": 1, "scale": 1, "modelSize": [6.08, 2.96, 2.39],             "class": "Tank", "armour": 3, "hp": 1150, "speed": 6, "turnRate": 70, "turretTurnRate": 90, "radius": 2.4, "length": 6.08, "width": 2.85, "cp": 9, "vision": 36,
+    { "id": "bmpt", "outgoingDamageMult": 1.2681, "value": 1, "scale": 1, "modelSize": [6.08, 2.96, 2.39],             "class": "Tank", "armour": 3, "hp": 1450, "speed": 6, "turnRate": 70, "turretTurnRate": 90, "radius": 2.4, "length": 6.08, "width": 2.85, "cp": 11, "vision": 36,
       "firesWhileMoving": true, "weapon": "twin_30_bmpt", "captureRate": 1,
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "ataka", "slot": "missile", "aim": "Turret" },
                      { "weapon": "agl_40", "slot": "agl_l", "aim": "Left" }, { "weapon": "agl_40", "slot": "agl_r", "aim": "Right" } ],
@@ -1169,8 +1169,8 @@
     // Prompt 8 A.1: an armoured combat bulldozer (D9R). Only a roof machine gun; the blade rams structures down
     // at three times the damage, it ploughs dragon's teeth flat as it drives into them, and takes half a mine's
     // blast. The commander sends it ahead of the line into an enemy base. 3,500 health in game.
-    { "id": "armored_bulldozer", "value": 1, "scale": 1, "modelSize": [6.13, 3.7, 3.53], "class": "Heavy", "armour": [3, 3, 2, 2], "hp": 1300, "speed": 4, "turnRate": 55, "turretTurnRate": 200, "radius": 3.4,
-      "length": 6.13, "width": 3.7, "cp": 7, "vision": 30, "captureRate": 1,
+    { "id": "armored_bulldozer", "outgoingDamageMult": 1.1429, "value": 1, "scale": 1, "modelSize": [6.13, 3.7, 3.53], "class": "Heavy", "armour": [3, 3, 2, 2], "hp": 1514, "speed": 4, "turnRate": 55, "turretTurnRate": 200, "radius": 3.4,
+      "length": 6.13, "width": 3.7, "cp": 8, "vision": 30, "captureRate": 1,
       "firesWhileMoving": true, "weapon": "dozer_blade", "mainAim": "Hull", "mainSlot": "blade", "breacher": true, "mineArmor": 0.5,
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 90, "radius": 6, "delay": 0.4, "tier": "Huge" } },
@@ -1214,7 +1214,7 @@
     { "id": "shield_carrier", "value": 1, "scale": 1, "modelSize": [6.29, 2.46, 2.84], "class": "Support", "armour": 1, "hp": 480, "speed": 8.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.3, "length": 6.29, "width": 2.46, "cp": 7, "vision": 36,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "captureRate": 1, "dome": { "radius": 12, "hp": 1000, "recharge": 20 },
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "bunker_vehicle", "value": 0.89, "scale": 1, "modelSize": [9.9, 4.07, 2.6], "class": "Heavy", "armour": [2, 2, 1, 1], "hp": 1300, "speed": 5, "turnRate": 45, "turretTurnRate": 40, "radius": 2.7, "length": 8.39, "width": 4.07, "cp": 6, "vision": 36,
+    { "id": "bunker_vehicle", "outgoingDamageMult": 1.1667, "value": 0.89, "scale": 1, "modelSize": [9.9, 4.07, 2.6], "class": "Heavy", "armour": [2, 2, 1, 1], "hp": 1550, "speed": 5, "turnRate": 45, "turretTurnRate": 40, "radius": 2.7, "length": 8.39, "width": 4.07, "cp": 7, "vision": 36,
       "firesWhileMoving": true, "weapon": "gun_105_bunker", "secondary": [ { "weapon": "mg_coax", "slot": "mg", "aim": "Turret" } ],
       "deploy": { "seconds": 3, "front": 2, "range": 1.3, "arc": 45 },
       "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
@@ -1514,7 +1514,7 @@
       "firesWhileMoving": true, "weapon": "minigun", "mainSlot": "gun", "flying": true, "altitude": 13, "captureRate": 0,
       "secondary": [ { "weapon": "heli_atgm", "slot": "missile", "model": "atgm_ataka", "aim": "Hull" } ], "deathExplosion": { "damage": 45, "radius": 5, "delay": 0.4, "tier": "Large" } },
     // dx19: the T-14 Armata-class next-generation tank stand-in (main_battle_tank's hull): an APS that takes two hits before it recharges.
-    { "id": "next_gen_tank", "model": "next_gen_tank", "modelSize": [7.79, 3.07, 2.3], "armour": [4, 2, 1, 1], "hp": 1045, "speed": 6.5, "turnRate": 60, "turretTurnRate": 115, "radius": 2.2, "length": 7.79, "width": 3.07, "cp": 9, "vision": 34,
+    { "id": "next_gen_tank", "outgoingDamageMult": 1.2681, "model": "next_gen_tank", "modelSize": [7.79, 3.07, 2.3], "armour": [4, 2, 1, 1], "hp": 1318, "speed": 6.5, "turnRate": 60, "turretTurnRate": 115, "radius": 2.2, "length": 7.79, "width": 3.07, "cp": 11, "vision": 34,
       "weapon": "gun_125_armata_ke", "aps": { "radius": 20, "shells": 0.5, "charges": 2, "recharge": 1.2, "rockets": true, "laser": true }, "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // dx21: the M58 MICLIC-class demolition-line vehicle stand-in (engineer_vehicle's hull): a mine roller ahead of it (mineProof).
     { "id": "demolition_line_vehicle", "model": "demolition_line_vehicle", "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 2, "hp": 545, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
@@ -1541,7 +1541,7 @@
     { "id": "amphib_light_vehicle", "model": "amphib_light_vehicle", "modelSize": [5.48, 3.02, 2.5], "armour": 1, "hp": 545, "speed": 8, "turnRate": 110, "turretTurnRate": 160, "radius": 2.3, "length": 5.48, "width": 3.02, "cp": 6, "vision": 34,
       "firesWhileMoving": true, "weapon": "autocannon_25", "deathExplosion": { "damage": 75, "radius": 6, "delay": 0.3, "tier": "Large" } },
     // dx37: the M8 AGS-class airborne light tank stand-in (light_tank's hull): dropped by parachute like dx10's airborne_vehicle.
-    { "id": "airborne_light_tank", "model": "airborne_light_tank", "modelSize": [6.39, 2.61, 1.89], "class": "Tank", "armour": [2, 1, 0, 0], "hp": 591, "speed": 8, "turnRate": 90, "turretTurnRate": 100, "radius": 1.7, "length": 6.39, "width": 2.61, "cp": 5, "vision": 36,
+    { "id": "airborne_light_tank", "outgoingDamageMult": 1.2, "model": "airborne_light_tank", "modelSize": [6.39, 2.61, 1.89], "class": "Tank", "armour": [2, 1, 0, 0], "hp": 727, "speed": 8, "turnRate": 90, "turretTurnRate": 100, "radius": 1.7, "length": 6.39, "width": 2.61, "cp": 6, "vision": 36,
       "weapon": "gun_105_ags", "paradrop": { "proxy": "airborne_light_tank_chute", "fall": 6, "height": 30, "baseKeepOut": 45 }, "deathExplosion": { "damage": 85, "radius": 7, "delay": 0.3, "tier": "Large" } },
     { "id": "airborne_light_tank_chute", "card": false, "model": "airborne_light_tank_chute", "modelSize": [9.0, 9.0, 11.0], "class": "Tank", "armour": [2, 1, 0, 0], "hp": 591, "speed": 1, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "cp": 0, "vision": 12,
       "weapon": "none", "flying": true, "altitude": 30 },

@@ -179,3 +179,28 @@
 | bundle | outcome | detail |
 |---|---|---|
 | E1 | OK | 7 rows |
+
+## Run apply: E1, B0-*, B1-light_tank, B1-airborne_light_tank, B1-flame_tank, B1-turtle_tank, B1-bmpt, B1-bunker_vehicle, B1-armored_bulldozer, B1-main_battle_tank, B1-next_gen_tank, B1-twin_tank, B1-heavy_tank, B1-titan_tank (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| E1 | ALREADY_APPLIED | |
+| B0-sky_gunship | ALREADY_APPLIED | |
+| B0-thermobaric_launcher | ALREADY_APPLIED | |
+| B0-siege_tank | ALREADY_APPLIED | |
+| B0-light_tank | ALREADY_APPLIED | |
+| B0-vbied | ALREADY_APPLIED | |
+| B0-flame_tank | ALREADY_APPLIED | |
+| B0-engineer_vehicle | ALREADY_APPLIED | |
+| B1-light_tank | OK | 1 rows |
+| B1-airborne_light_tank | OK | 3 rows |
+| B1-flame_tank | OK | 3 rows |
+| B1-turtle_tank | OK | 3 rows |
+| B1-bmpt | OK | 3 rows |
+| B1-bunker_vehicle | OK | 3 rows |
+| B1-armored_bulldozer | OK | 3 rows |
+| B1-main_battle_tank | OK | 3 rows |
+| B1-next_gen_tank | OK | 3 rows |
+| B1-twin_tank | OK | 3 rows |
+| B1-heavy_tank | OK | 4 rows |
+| B1-titan_tank | OK | 4 rows |
