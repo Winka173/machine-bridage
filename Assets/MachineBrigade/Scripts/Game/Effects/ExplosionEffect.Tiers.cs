@@ -35,7 +35,7 @@ namespace MachineBrigade.Game.Effects
                     e.Smoke(2, new Vector2(3.4f, 4.6f), new Vector2(3f, 4.2f), 0.35f);
                     break;
 
-                default: // T3 and up (T4 and T5 are redrawn in their own commits)
+                case 3:
                     e.Fireball(1, new Vector2(5f, 6.2f), new Vector2(0.7f, 0.9f), 0.4f, hot: true);
                     e.Fireball(3, new Vector2(5.5f, 7.5f), new Vector2(1.1f, 1.45f), 1.2f);
                     e.Fireball(2, new Vector2(4.5f, 6f), new Vector2(0.95f, 1.2f), 1.8f, 0.14f);
@@ -49,6 +49,28 @@ namespace MachineBrigade.Game.Effects
                     e.Column(5, new Vector2(4.6f, 6f), new Vector2(7f, 9f), 0.35f, 1.4f);
                     e.CraterGlow(4.5f, 3.5f);
                     e._chunks = new ChunkThrower.Recipe(earth: 8, wreckage: 0, burning: 1, new Vector2(6f, 12f), 0.9f);
+                    break;
+
+                default: // T4 and up (T5 is redrawn in its own commit)
+                    e.Flash(14f);
+                    e.Fireball(2, new Vector2(9f, 11.5f), new Vector2(0.85f, 1.1f), 0.8f, hot: true);
+                    e.Fireball(4, new Vector2(8f, 10.5f), new Vector2(1.35f, 1.75f), 2.4f);
+                    e.Fireball(3, new Vector2(7f, 9f), new Vector2(1.2f, 1.5f), 3f, 0.15f);
+                    e.Fireball(2, new Vector2(6f, 8f), new Vector2(1.1f, 1.4f), 3.4f, 0.32f);
+                    e.Secondaries(9f, 3.4f, 0.22f, 0.5f, 0.8f, 1.15f);
+                    e.Smoke(8, new Vector2(7f, 10f), new Vector2(6f, 9f));
+                    e.Sparks(80, new Vector2(10f, 26f), 0.22f);
+                    e.Debris(30, new Vector2(9f, 20f));
+                    e.BurningDebris(12, new Vector2(9f, 18f));
+                    e.Dirt(30, new Vector2(6f, 15f));
+                    e.Embers(40, 1.4f);
+                    e.GroundLight(28f, 1f, 0.4f);
+                    e.DustRing(28f, 24);
+                    e.OuterDust(30f, 16);
+                    // A tall smoke column: eight billows, each 2.4 m above the last.
+                    e.Column(8, new Vector2(6.5f, 8.5f), new Vector2(10f, 13f), 0.5f, 2.4f);
+                    e.CraterGlow(8f, 6f);
+                    e._chunks = new ChunkThrower.Recipe(earth: 16, wreckage: 4, burning: 4, new Vector2(9f, 18f), 1.2f);
                     break;
 
             }
