@@ -181,6 +181,12 @@ namespace MachineBrigade.Sim.AI
                 intel.Refresh();
             return intel;
         }
+
+        /// <summary>
+        /// Prompt 28 J: the side's picture as it stands, never refreshed (null before its first refresh). The local AI
+        /// viewer reads this, so looking at the AI never moves the moment it refreshes (a battle stays the same).
+        /// </summary>
+        public TeamIntel? Peek(int team) => _teams.TryGetValue(team, out var intel) && intel.Ready ? intel : null;
     }
 
     /// <summary>One side's battlefield picture: grids of strength and threat (cells of <see cref="AiParams.WorldCell"/> m), contacts and events.</summary>

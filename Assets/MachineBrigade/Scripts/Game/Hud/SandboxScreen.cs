@@ -104,6 +104,8 @@ namespace MachineBrigade.Game.Hud
             MenuRow("swords", "sandbox.duel", () => Open("sandbox.duel", DuelPanel));
             MenuRow("sb_ab", "sandbox.ab", () => Open("sandbox.ab", AbPanel));
             MenuRow("sb_chart", "sandbox.stats", () => Open("sandbox.stats.title", StatsPanel));
+            // Prompt 28 J: the AI viewer, internal build only (SandboxScreen.AiView.cs).
+            if (SandboxSession.Internal) MenuRow("eye", "aiview.title", () => Open("aiview.title", AiViewPanel));
             MenuRow("home", "sandbox.quit", Quit);
             _menu.style.display = DisplayStyle.None;
             _frame.Add(_menu);

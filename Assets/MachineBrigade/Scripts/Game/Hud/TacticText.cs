@@ -187,6 +187,13 @@ namespace MachineBrigade.Game.Hud
             ["aiview.layer.events"] = ("Events", "Sự kiện"),
             ["aiview.layer.squads"] = ("Squads", "Đội"),
             ["aiview.layer.economy"] = ("Upkeep and income", "Phí duy trì và thu nhập"),
+            ["aiview.legend.influence"] = ("Blue: our strength · red: the enemy's as remembered", "Xanh: lực lượng ta · đỏ: lực lượng địch theo trí nhớ"),
+            ["aiview.legend.threat"] = ("Brighter: more of this threat as the side knows it", "Càng sáng: mối đe dọa này càng lớn theo hiểu biết của phe"),
+            ["aiview.legend.confidence"] = ("Green fades as information grows old; dark: never seen", "Xanh nhạt dần khi thông tin cũ đi; tối: chưa từng thấy"),
+            ["aiview.legend.front"] = ("Yellow: front · magenta: chokepoints · grey: contested", "Vàng: tiền tuyến · tím: điểm nghẽn · xám: vùng tranh chấp"),
+            ["aiview.legend.events"] = ("Red: threat · green: opportunity · blue: window · yellow: mismatch · orange: strike warning", "Đỏ: đe dọa · xanh lá: cơ hội · xanh dương: thời cơ · vàng: lệch đội hình · cam: cảnh báo pháo kích"),
+            ["aiview.pressure"] = ("Pressure tier {tier}", "Mức áp lực {tier}"),
+            ["sandbox.tactic.general"] = ("General's favourite", "Theo sở thích của tướng"),
 
             ["squad.state.Travel"] = ("Travel", "Di chuyển"),
             ["squad.state.Approach"] = ("Approach", "Tiếp cận"),
