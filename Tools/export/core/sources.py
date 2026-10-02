@@ -58,9 +58,13 @@ class Source:
         return self.path.read_bytes() if self.path is not None else b""
 
     def sha256(self) -> str:
+        """The file's hash; text files with LF line ends (a Windows checkout's CRLF gives the same hash as CI's LF)."""
         if self.path is None:
             return ""
-        return hashlib.sha256(self.raw()).hexdigest()
+        data = self.raw()
+        if self.kind not in ("glb", "audio"):
+            data = data.replace(bytes([13, 10]), bytes([10]))
+        return hashlib.sha256(data).hexdigest()
 
     @property
     def data(self):
