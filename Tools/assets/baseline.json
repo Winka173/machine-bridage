@@ -842,6 +842,30 @@
     "FLAG missile_boat: triangles 432 -> 630 (+45.8%); vertices 555 -> 678 (+22.2%); fileBytes 37,724 -> 44,580 (+18.2%); structure changed",
     "FLAG sea_corvette: triangles 1,346 -> 1,884 (+40.0%); vertices 1,433 -> 1,914 (+33.6%); meshes 18 -> 22 (+22.2%); renderers 18 -> 22 (+22.2%); materialSlots 18 -> 22 (+22.2%); fileBytes 89,980 -> 117,832 (+31.0%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "scout_heli",
+    "gunship_heli",
+    "elite_attack_helicopter",
+    "swarm_carrier",
+    "recon_drone",
+    "strike_drone",
+    "wingman_drone",
+    "drop_pod"
+   ],
+   "reason": "prompt 27 wave 4a: aircraft V2 rebuild (flare tubes on scout_heli, gunship_heli, swarm_carrier)",
+   "changes": [
+    "FLAG drop_pod: triangles 3,004 -> 2,612 (-13.0%); vertices 3,690 -> 3,493 (-5.3%); meshes 12 -> 13 (+8.3%); renderers 12 -> 13 (+8.3%); materialSlots 12 -> 13 (+8.3%); fileBytes 193,476 -> 183,384 (-5.2%); structure changed",
+    "FLAG elite_attack_helicopter: triangles 3,518 -> 4,398 (+25.0%); vertices 4,794 -> 5,386 (+12.3%); meshes 28 -> 29 (+3.6%); renderers 28 -> 29 (+3.6%); materialSlots 28 -> 29 (+3.6%); fileBytes 259,744 -> 294,264 (+13.3%); structure changed",
+    "FLAG gunship_heli: triangles 3,112 -> 4,692 (+50.8%); vertices 4,304 -> 5,573 (+29.5%); meshes 20 -> 24 (+20.0%); renderers 20 -> 24 (+20.0%); materialSlots 20 -> 24 (+20.0%); fileBytes 230,356 -> 299,556 (+30.0%); structure changed",
+    "FLAG recon_drone: triangles 584 -> 890 (+52.4%); vertices 894 -> 1,159 (+29.6%); meshes 11 -> 12 (+9.1%); renderers 11 -> 12 (+9.1%); materialSlots 11 -> 12 (+9.1%); fileBytes 55,568 -> 70,036 (+26.0%); structure changed",
+    "FLAG scout_heli: triangles 1,966 -> 2,626 (+33.6%); vertices 2,768 -> 3,483 (+25.8%); meshes 17 -> 21 (+23.5%); renderers 17 -> 21 (+23.5%); materialSlots 17 -> 21 (+23.5%); fileBytes 152,172 -> 191,628 (+25.9%); structure changed",
+    "FLAG strike_drone: triangles 1,848 -> 1,968 (+6.5%); vertices 2,642 -> 2,791 (+5.6%); meshes 14 -> 16 (+14.3%); renderers 14 -> 16 (+14.3%); materialSlots 14 -> 16 (+14.3%); fileBytes 142,864 -> 152,060 (+6.4%); structure changed",
+    "FLAG swarm_carrier: triangles 2,400 -> 3,512 (+46.3%); vertices 3,447 -> 4,855 (+40.8%); meshes 20 -> 22 (+10.0%); renderers 20 -> 22 (+10.0%); materialSlots 20 -> 22 (+10.0%); fileBytes 185,492 -> 256,068 (+38.0%); structure changed",
+    "FLAG wingman_drone: triangles 688 -> 1,064 (+54.7%); vertices 962 -> 1,248 (+29.7%); meshes 8 -> 9 (+12.5%); renderers 8 -> 9 (+12.5%); materialSlots 8 -> 9 (+12.5%); fileBytes 56,512 -> 72,308 (+28.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -14824,32 +14848,32 @@
   },
   "drop_pod": {
    "file": "drop_pod.glb",
-   "fileBytes": 193476,
-   "sha1": "83755f5ac2c9fc4a",
+   "fileBytes": 183384,
+   "sha1": "8211139178d515d0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 12,
-   "meshes": 12,
+   "nodes": 13,
+   "meshes": 13,
    "materials": 7,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 12,
-   "submeshes": 12,
-   "materialSlots": 12,
+   "renderers": 13,
+   "submeshes": 13,
+   "materialSlots": 13,
    "materialsUsed": 7,
-   "triangles": 3004,
-   "vertices": 3690,
-   "degenerateTriangles": 13,
+   "triangles": 2612,
+   "vertices": 3493,
+   "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
     "COLOR_0": 0,
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 69,
+   "loosePieces": 71,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -14858,26 +14882,26 @@
     -1.6072
    ],
    "boundsMax": [
-    1.628,
+    1.63,
     3.21,
-    1.5994
+    1.6072
    ],
    "size": [
-    3.207,
-    3.228,
+    3.214,
+    3.23,
     6.31
    ],
    "center": [
-    0.014,
+    0.015,
     0.055,
-    -0.004
+    0.0
    ],
-   "structureHash": "98031b48f0af3e6c",
+   "structureHash": "c85a6c8403c25c22",
    "color0": {
-    "mean": 0.7532,
-    "min": 0.0951,
+    "mean": 0.7796,
+    "min": 0.2958,
     "max": 1.0,
-    "p05": 0.3512,
+    "p05": 0.4393,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -14895,14 +14919,13 @@
     "Retro_glow",
     "Retro_ring",
     "Rivets",
+    "Seams",
     "Stripe"
    ],
    "category": "air",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "13 zero-area triangles (0.43%)"
-   ],
+   "warnings": [],
    "units": [
     "drop_pod"
    ],
@@ -15362,24 +15385,24 @@
   },
   "elite_attack_helicopter": {
    "file": "elite_attack_helicopter.glb",
-   "fileBytes": 259744,
-   "sha1": "5479d582b207d6e7",
+   "fileBytes": 294264,
+   "sha1": "377181e595303d4b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 37,
-   "meshes": 28,
+   "nodes": 38,
+   "meshes": 29,
    "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 28,
-   "submeshes": 28,
-   "materialSlots": 28,
+   "renderers": 29,
+   "submeshes": 29,
+   "materialSlots": 29,
    "materialsUsed": 11,
-   "triangles": 3518,
-   "vertices": 4794,
+   "triangles": 4398,
+   "vertices": 5386,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -15387,8 +15410,8 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 124,
-   "openEdges": 0,
+   "loosePieces": 125,
+   "openEdges": 176,
    "nonManifoldEdges": 2,
    "boundsMin": [
     -2.4406,
@@ -15410,13 +15433,13 @@
     1.111,
     -0.087
    ],
-   "structureHash": "85e2026f795dd86a",
+   "structureHash": "f8998259719f7d0a",
    "color0": {
-    "mean": 0.6728,
-    "min": 0.0802,
+    "mean": 0.6849,
+    "min": 0.0801,
     "max": 1.0,
-    "p05": 0.2871,
-    "p95": 0.8064,
+    "p05": 0.3047,
+    "p95": 0.9816,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -15442,6 +15465,7 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antennas",
     "Armor",
     "Beacon",
     "Canopy",
@@ -21516,24 +21540,24 @@
   },
   "gunship_heli": {
    "file": "gunship_heli.glb",
-   "fileBytes": 230356,
-   "sha1": "ae5e8772eb76264f",
+   "fileBytes": 299556,
+   "sha1": "122f8645be619631",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 32,
-   "meshes": 20,
+   "nodes": 36,
+   "meshes": 24,
    "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 20,
-   "submeshes": 20,
-   "materialSlots": 20,
+   "renderers": 24,
+   "submeshes": 24,
+   "materialSlots": 24,
    "materialsUsed": 9,
-   "triangles": 3112,
-   "vertices": 4304,
+   "triangles": 4692,
+   "vertices": 5573,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -21541,36 +21565,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 111,
-   "openEdges": 0,
+   "loosePieces": 113,
+   "openEdges": 120,
    "nonManifoldEdges": 0,
    "boundsMin": [
     -3.1956,
-    0.0,
+    -0.005,
     -3.9181
    ],
    "boundsMax": [
     3.3797,
     2.1,
-    3.675
+    3.7
    ],
    "size": [
-    7.593,
+    7.618,
     6.575,
-    2.1
+    2.105
    ],
    "center": [
     0.092,
-    1.05,
-    -0.122
+    1.048,
+    -0.109
    ],
-   "structureHash": "d21aa7cc908f8412",
+   "structureHash": "86f90894b4c9d880",
    "color0": {
-    "mean": 0.6667,
-    "min": 0.1301,
+    "mean": 0.7217,
+    "min": 0.2786,
     "max": 1.0,
-    "p05": 0.3012,
-    "p95": 0.8058,
+    "p05": 0.3912,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -21592,6 +21616,9 @@
     "tail_rotor": [
      "Tail_rotor"
     ],
+    "part": [
+     "Part_flares"
+    ],
     "point": [
      "Point_exhaust",
      "Point_fire"
@@ -21605,9 +21632,11 @@
     "Muzzle_rocket.001"
    ],
    "nodeNames": [
+    "Antennas",
     "Armor",
     "Beacon",
     "Canopy",
+    "Canopy_frames",
     "Fuselage",
     "Gun",
     "Launch_tubes",
@@ -21619,8 +21648,10 @@
     "Muzzle_missile.001",
     "Muzzle_rocket",
     "Muzzle_rocket.001",
+    "Part_flares",
+    "Part_flares_glow",
     "Pod_bands",
-    "Pod_tubes_bore",
+    "Pod_face",
     "Pods",
     "Point_exhaust",
     "Point_fire",
@@ -21647,7 +21678,7 @@
    "units": [
     "gunship_heli"
    ],
-   "movingParts": 3,
+   "movingParts": 4,
    "budgetClass": "helicopter"
   },
   "hangar": {
@@ -34869,24 +34900,22 @@
   },
   "radar_atgm_vehicle": {
    "file": "radar_atgm_vehicle.glb",
-   "fileBytes": 204700,
-   "sha1": "860cb5964fb37937",
+   "fileBytes": 191476,
+   "sha1": "7f2fdff579ae3958",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [
-    "KHR_materials_emissive_strength"
-   ],
-   "nodes": 23,
-   "meshes": 18,
-   "materials": 8,
+   "extensions": [],
+   "nodes": 16,
+   "meshes": 11,
+   "materials": 5,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 18,
-   "submeshes": 18,
-   "materialSlots": 18,
-   "materialsUsed": 8,
-   "triangles": 3194,
-   "vertices": 3779,
+   "renderers": 11,
+   "submeshes": 11,
+   "materialSlots": 11,
+   "materialsUsed": 5,
+   "triangles": 2672,
+   "vertices": 3716,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -34894,36 +34923,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 70,
+   "loosePieces": 94,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.31,
+    -1.32,
     -0.01,
-    -2.865
+    -2.8406
    ],
    "boundsMax": [
-    1.31,
-    2.4742,
-    2.8334
+    1.32,
+    2.5315,
+    2.8342
    ],
    "size": [
-    5.698,
-    2.62,
-    2.484
+    5.675,
+    2.64,
+    2.542
    ],
    "center": [
     0.0,
-    1.232,
-    -0.016
+    1.261,
+    -0.003
    ],
-   "structureHash": "7f0e66cd744b8e03",
+   "structureHash": "69a89b6cd123d3e7",
    "color0": {
-    "mean": 0.7303,
-    "min": 0.4009,
-    "max": 1.0,
-    "p05": 0.4898,
-    "p95": 0.9898,
+    "mean": 0.5781,
+    "min": 0.0651,
+    "max": 0.9987,
+    "p05": 0.2305,
+    "p95": 0.806,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -34943,24 +34972,17 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Hatch_fittings",
-    "Hatches",
+    "Fenders",
     "Hubs",
     "Hull",
-    "Lamps",
-    "Light_rims",
     "Missiles",
     "Muzzle_missile",
     "Point_exhaust",
     "Point_fire",
     "Radar",
     "Radar_box",
-    "Radar_lens",
-    "Rail_arms",
     "Rails",
     "Sprockets",
-    "Tail_lamps",
     "Team_bands",
     "Tracks",
     "Turret",
@@ -36554,24 +36576,24 @@
   },
   "recon_drone": {
    "file": "recon_drone.glb",
-   "fileBytes": 55568,
-   "sha1": "768197766fc7ed36",
+   "fileBytes": 70036,
+   "sha1": "29d33924631e2d19",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 17,
-   "meshes": 11,
+   "nodes": 18,
+   "meshes": 12,
    "materials": 7,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 11,
-   "submeshes": 11,
-   "materialSlots": 11,
+   "renderers": 12,
+   "submeshes": 12,
+   "materialSlots": 12,
    "materialsUsed": 7,
-   "triangles": 584,
-   "vertices": 894,
+   "triangles": 890,
+   "vertices": 1159,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -36579,9 +36601,9 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 27,
+   "loosePieces": 28,
    "openEdges": 0,
-   "nonManifoldEdges": 4,
+   "nonManifoldEdges": 39,
    "boundsMin": [
     -2.415,
     -0.3,
@@ -36589,26 +36611,26 @@
    ],
    "boundsMax": [
     2.415,
-    0.175,
+    0.1848,
     1.28
    ],
    "size": [
     2.67,
     4.83,
-    0.475
+    0.485
    ],
    "center": [
     0.0,
-    -0.062,
+    -0.058,
     -0.055
    ],
-   "structureHash": "627c716fa0fef9a5",
+   "structureHash": "e0fa3337d225737e",
    "color0": {
-    "mean": 0.761,
-    "min": 0.2084,
+    "mean": 0.7825,
+    "min": 0.2915,
     "max": 1.0,
-    "p05": 0.6073,
-    "p95": 1.0,
+    "p05": 0.6029,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -36644,6 +36666,7 @@
     "Propeller_hub",
     "Pylons",
     "Sensor",
+    "Sensor_mount",
     "Wing_lights",
     "Wings"
    ],
@@ -39186,24 +39209,24 @@
   },
   "scout_heli": {
    "file": "scout_heli.glb",
-   "fileBytes": 152172,
-   "sha1": "84b02b07a8b12f73",
+   "fileBytes": 191628,
+   "sha1": "afb034b95001e92a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 25,
-   "meshes": 17,
+   "nodes": 29,
+   "meshes": 21,
    "materials": 7,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 17,
-   "submeshes": 17,
-   "materialSlots": 17,
+   "renderers": 21,
+   "submeshes": 21,
+   "materialSlots": 21,
    "materialsUsed": 7,
-   "triangles": 1966,
-   "vertices": 2768,
+   "triangles": 2626,
+   "vertices": 3483,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -39211,8 +39234,8 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 75,
-   "openEdges": 0,
+   "loosePieces": 82,
+   "openEdges": 32,
    "nonManifoldEdges": 0,
    "boundsMin": [
     -1.5841,
@@ -39234,13 +39257,13 @@
     0.783,
     -0.529
    ],
-   "structureHash": "b42fb9793a9af812",
+   "structureHash": "e7dc1fdc35765884",
    "color0": {
-    "mean": 0.6937,
-    "min": 0.0885,
+    "mean": 0.7405,
+    "min": 0.2655,
     "max": 1.0,
-    "p05": 0.3416,
-    "p95": 0.8058,
+    "p05": 0.3912,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -39256,6 +39279,9 @@
     "tail_rotor": [
      "Tail_rotor"
     ],
+    "part": [
+     "Part_flares"
+    ],
     "point": [
      "Point_exhaust",
      "Point_fire"
@@ -39266,8 +39292,10 @@
     "Muzzle_rocket.001"
    ],
    "nodeNames": [
+    "Antennas",
     "Beacon",
     "Canopy",
+    "Canopy_frames",
     "Fuselage",
     "Minigun_housings",
     "Miniguns",
@@ -39275,8 +39303,10 @@
     "Muzzle_gun.001",
     "Muzzle_rocket",
     "Muzzle_rocket.001",
+    "Part_flares",
+    "Part_flares_glow",
     "Pod_bands",
-    "Pod_tubes_bore",
+    "Pod_face",
     "Pods",
     "Point_exhaust",
     "Point_fire",
@@ -39301,7 +39331,7 @@
    "units": [
     "scout_heli"
    ],
-   "movingParts": 2,
+   "movingParts": 3,
    "budgetClass": "helicopter"
   },
   "scout_jeep": {
@@ -43434,24 +43464,24 @@
   },
   "strike_drone": {
    "file": "strike_drone.glb",
-   "fileBytes": 142864,
-   "sha1": "bc8c7922b324471e",
+   "fileBytes": 152060,
+   "sha1": "c411576ba03b5e08",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 21,
-   "meshes": 14,
+   "nodes": 23,
+   "meshes": 16,
    "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 14,
-   "submeshes": 14,
-   "materialSlots": 14,
+   "renderers": 16,
+   "submeshes": 16,
+   "materialSlots": 16,
    "materialsUsed": 8,
-   "triangles": 1848,
-   "vertices": 2642,
+   "triangles": 1968,
+   "vertices": 2791,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -43459,13 +43489,13 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 71,
+   "loosePieces": 73,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
     -4.02,
     -0.58,
-    -2.1
+    -2.015
    ],
    "boundsMax": [
     4.02,
@@ -43473,22 +43503,22 @@
     2.15
    ],
    "size": [
-    4.25,
+    4.165,
     8.04,
     1.24
    ],
    "center": [
     0.0,
     0.04,
-    0.025
+    0.068
    ],
-   "structureHash": "5eb687588cf909cf",
+   "structureHash": "a66b336080d37d43",
    "color0": {
-    "mean": 0.7339,
-    "min": 0.0974,
+    "mean": 0.7548,
+    "min": 0.2915,
     "max": 1.0,
-    "p05": 0.4175,
-    "p95": 0.8137,
+    "p05": 0.5145,
+    "p95": 0.8143,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -43511,6 +43541,7 @@
     "Muzzle_rocket.001"
    ],
    "nodeNames": [
+    "Antennas",
     "Fuselage",
     "Missile_bands",
     "Missile_fins",
@@ -43531,6 +43562,7 @@
     "Propeller_hub",
     "Pylons",
     "Sensor",
+    "Sensor_mount",
     "Wing_lights"
    ],
    "category": "air",
@@ -44363,24 +44395,24 @@
   },
   "swarm_carrier": {
    "file": "swarm_carrier.glb",
-   "fileBytes": 185492,
-   "sha1": "32920741fdde2588",
+   "fileBytes": 256068,
+   "sha1": "2988db8bbaf1dba0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 27,
-   "meshes": 20,
+   "nodes": 29,
+   "meshes": 22,
    "materials": 7,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 20,
-   "submeshes": 20,
-   "materialSlots": 20,
+   "renderers": 22,
+   "submeshes": 22,
+   "materialSlots": 22,
    "materialsUsed": 7,
-   "triangles": 2400,
-   "vertices": 3447,
+   "triangles": 3512,
+   "vertices": 4855,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -44388,9 +44420,9 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 92,
+   "loosePieces": 120,
    "openEdges": 0,
-   "nonManifoldEdges": 20,
+   "nonManifoldEdges": 35,
    "boundsMin": [
     -8.15,
     -1.2028,
@@ -44411,12 +44443,12 @@
     1.194,
     0.005
    ],
-   "structureHash": "e4dbd9e9b242407e",
+   "structureHash": "bce1f20f794d1c81",
    "color0": {
-    "mean": 0.6411,
+    "mean": 0.6663,
     "min": 0.0801,
     "max": 1.0,
-    "p05": 0.1354,
+    "p05": 0.1557,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -44426,6 +44458,9 @@
      "Propeller_2",
      "Propeller_3",
      "Propeller_4"
+    ],
+    "part": [
+     "Part_flares"
     ],
     "point": [
      "Point_exhaust",
@@ -44443,6 +44478,8 @@
     "Drone_warheads",
     "Fuselage",
     "Muzzle_drone",
+    "Part_flares",
+    "Part_flares_glow",
     "Point_exhaust",
     "Point_fire",
     "Prop_blades",
@@ -44469,7 +44506,7 @@
    "units": [
     "swarm_carrier"
    ],
-   "movingParts": 4,
+   "movingParts": 5,
    "budgetClass": "jet"
   },
   "tank_buster": {
@@ -48078,24 +48115,24 @@
   },
   "wingman_drone": {
    "file": "wingman_drone.glb",
-   "fileBytes": 56512,
-   "sha1": "44d3d6535fb04915",
+   "fileBytes": 72308,
+   "sha1": "d30c8dec831233af",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 12,
-   "meshes": 8,
+   "nodes": 13,
+   "meshes": 9,
    "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 8,
-   "submeshes": 8,
-   "materialSlots": 8,
+   "renderers": 9,
+   "submeshes": 9,
+   "materialSlots": 9,
    "materialsUsed": 8,
-   "triangles": 688,
-   "vertices": 962,
+   "triangles": 1064,
+   "vertices": 1248,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -48103,13 +48140,13 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 23,
+   "loosePieces": 25,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
     -1.665,
     -0.2309,
-    -1.74
+    -1.76
    ],
    "boundsMax": [
     1.665,
@@ -48117,21 +48154,21 @@
     1.75
    ],
    "size": [
-    3.49,
+    3.51,
     3.33,
     0.79
    ],
    "center": [
     0.0,
     0.164,
-    0.005
+    -0.005
    ],
-   "structureHash": "842b31571494c5a3",
+   "structureHash": "321ced9f56897ef3",
    "color0": {
-    "mean": 0.7278,
-    "min": 0.1439,
+    "mean": 0.7699,
+    "min": 0.3274,
     "max": 1.0,
-    "p05": 0.3274,
+    "p05": 0.4504,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -48160,6 +48197,7 @@
     "Muzzle_missile.001",
     "Point_exhaust",
     "Point_fire",
+    "Pylons",
     "Wing_lights"
    ],
    "category": "air",

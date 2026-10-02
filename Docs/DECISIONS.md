@@ -14042,3 +14042,31 @@ ammunition still leaves), not run. B3-AI is a code bundle (`aircraft.returnBecau
 time; flares by unit; APS by entity; the Gungnir), read from balance.json and the apply state; `build_doc.py` places it
 before table 9b, and (S08) moves 9b and 2b to the appendix "Lịch sử đo" unless their stamps match. The PDF itself is built
 locally (it needs the game export and Edge). Final report: `Docs/balance/report_p29.md`.
+
+## 27 wave 4a (lead pass, 2026-10-02)
+
+Pass 4a (lane A), the row scout_heli, gunship_heli, elite_attack_helicopter, swarm_carrier, recon_drone, strike_drone,
+wingman_drone, drop_pod, builders in the new `Tools/blender/mb_p27_wave4.py` (registered last in `build_assets.py`). Run: Blender
+rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. The substring filter touched nothing
+outside the row.
+
+- **Builders.** Copy-first on the old lofts (same sections, so proportions hold). Helicopters: `parts.rotor_head` / `tail_rotor`,
+  framed canopies (`parts.canopy`), `parts.engine_nacelle`, airfoil stub wings (`k.extrude`), `parts.rocket_pod`, turned ATGM rails,
+  minigun / chin gun / door-gun barrels (`k.lathe`), chamfered skids, struts and gear, turned masts, antennas. The elite wraps the V2
+  Apache (`exp.attack_helicopter`, it was on the old one) with the old gold marks. Drones: `k.sharp_loft` octagon bodies (recon,
+  wingman), Planform airfoil wings (recon's box wing is now one), `parts.pylon`, turned propeller spinner (`_prop2`, same pivot and
+  part names), turned exhaust. The strike drone keeps its rounded radar-nose body. swarm_carrier keeps the shared C-130 airframe
+  (jet rule: `k.clean` only) with V2 FPV drones on the rails. drop_pod: turned hull, seam rings, bells, chamfered fins, fewer rivets.
+- **Prompt 29 5.5.** `p29.flare_tubes` on scout_heli (1 row a side), gunship_heli (1) and swarm_carrier (2), on the boom or rear
+  fuselage. Side effect: the validator now lists `Part_flares` as a runtime `part` node on those three (the only runtime-name
+  change; the glow mesh `Part_flares_glow` is not listed). The effect and Game code are the lead's.
+- **Gates (old -> new triangles, COLOR_0).** scout 1,966 -> 2,626 (.694 -> .741); gunship 3,112 -> 4,692 (.667 -> .722, 1.51x);
+  elite_attack 3,518 -> 4,398 (.673 -> .685); swarm_carrier 2,400 -> 3,512 (.641 -> .666, 1.46x: five-tube rows cut to three first,
+  the first build was 1.76x); recon 584 -> 890 (.761 -> .783, 1.52x); strike 1,848 -> 1,968 (.734 -> .755); wingman 688 -> 1,064
+  (.728 -> .770, 1.55x); drop_pod 3,004 -> 2,612 (.753 -> .780, 13 zero-area gone). Zero-area 0 on all, materials unchanged, no new
+  material on a moving part, size within 2.1 % (recon height +2.1 %, strike length -2.0 %).
+- **Not gated, noted.** Open edges: elite 176 (same as the accepted V2 Apache), gunship 120, scout 32 (rocket pod rear faces and
+  canopy sweeps are open by design). Non-manifold edges: recon 4 -> 39, swarm_carrier 20 -> 35 (overlapping flare/boom parts;
+  no validator flag).
+- **Card luma (old, mean of pixels with alpha > .5):** scout_heli .3660, gunship_heli .3914, elite_attack_helicopter .2995 (the
+  dimmest of the row: watch it), swarm_carrier .4351, recon_drone .6232, strike_drone .4513, wingman_drone .4266; drop_pod has no card.
