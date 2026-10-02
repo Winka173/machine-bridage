@@ -63,6 +63,12 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>A secondary weapon that does damage.</summary>
         Secondary = 32768,
+
+        /// <summary>Prompt 29 L5: flares as charges (<see cref="VehicleDef.FlareCharges"/> above 0); the heat decoys need them.</summary>
+        Flares = 65536,
+
+        /// <summary>Prompt 29 L5: an APS of its own or room for one (<see cref="VehicleDef.ApsCapability"/> not None); Trophy needs it.</summary>
+        ApsMount = 131072,
     }
 
     /// <summary>
@@ -79,6 +85,34 @@ namespace MachineBrigade.Game.Match
         public static bool Within(VehicleNeed need, VehicleNeed has) => (need & ~has) == 0;
 
         /// <summary>
+        /// Prompt 29 L5 (DECISIONS "Prompt 29 local UI"): hardware a few cards carry (flares as charges, an APS mount). A class
+        /// meets a need with hardware when a third of its cards meet the rest and at least one card has the hardware too, so
+        /// the module still goes on the branch; <see cref="WorksOn"/> says which vehicles it does anything for.
+        /// </summary>
+        public const VehicleNeed Hardware = VehicleNeed.Flares | VehicleNeed.ApsMount;
+
+        /// <summary>Whether a vehicle piece does anything on this vehicle's hardware (only the hardware needs are checked here).</summary>
+        public static bool WorksOn(GearItem item, VehicleDef def)
+        {
+            if (item == null || def == null) return true;
+            var need = Need(item);
+            return (need & Hardware) == 0 || Within(need, Of(def));
+        }
+
+        /// <summary>The cards of a branch a piece with hardware needs works on (empty for a piece without them).</summary>
+        public static List<string> CardsFor(GearItem item, GearBranch branch)
+        {
+            var list = new List<string>();
+            var need = Need(item);
+            if ((need & Hardware) == 0) return list;
+            var catalog = TowerFit.GameCatalog;
+            foreach (var id in MatchSettings.AllVehicles)
+                if (catalog.Vehicles.TryGetValue(id, out var def) && !def.Boss && !def.Static && !def.Elite && Gear.BranchOf(def) == branch && Within(need, Of(def)))
+                    list.Add(id);
+            return list;
+        }
+
+        /// <summary>
         /// What a vehicle def has. Its main weapon counts for everything it can hit; a secondary only
         /// for what it is made for (a coaxial machine gun that can also shoot at aircraft does not make
         /// a tank an anti-air vehicle; a SAM or flak on the roof does).
@@ -91,6 +125,8 @@ namespace MachineBrigade.Game.Match
             if (def.CaptureRate > 0f && !def.Flying) has |= VehicleNeed.Captures;
             if (def.Armor == ArmorClass.Heavy) has |= VehicleNeed.Heavy;
             if (def.Mounts[0].Aim == MountAim.Turret && !def.Flying) has |= VehicleNeed.Turret;
+            if (def.FlareCharges > 0) has |= VehicleNeed.Flares;
+            if (def.ApsCapability != ApsCapability.None) has |= VehicleNeed.ApsMount;
             for (var i = 0; i < def.Mounts.Count; i++)
             {
                 var w = def.Mounts[i].Weapon;
@@ -224,9 +260,13 @@ namespace MachineBrigade.Game.Match
         {
             if (!Classes().TryGetValue((cls, branch), out var cards) || cards.Count == 0) return false;
             var n = 0;
+            var hardware = (need & Hardware) == 0;
             foreach (var has in cards)
-                if (Within(need, has)) n++;
-            return n * 3 >= cards.Count;
+            {
+                if (Within(need & ~Hardware, has)) n++;
+                if (Within(need, has)) hardware = true;
+            }
+            return hardware && n * 3 >= cards.Count;
         }
 
         /// <summary>Whether a branch fits a need: one of its classes meets it.</summary>

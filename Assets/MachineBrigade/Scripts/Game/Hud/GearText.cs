@@ -110,6 +110,18 @@ namespace MachineBrigade.Game.Hud
             return names.Count == 0 ? Strings.Get("gear.fitsNone") : Strings.Format("gear.fitsFor", string.Join(", ", names));
         }
 
+        /// <summary>
+        /// Prompt 29 L5: "Only on: Main Battle Tank, Titan" for a piece that needs hardware few cards carry (Trophy: an APS
+        /// mount; the heat decoys: flares as charges), "No vehicle of this branch can use it" when none has it; else empty.
+        /// </summary>
+        public static string HardwareLine(GearItem item, GearBranch branch)
+        {
+            if (item == null || (VehicleFit.Need(item) & VehicleFit.Hardware) == 0) return "";
+            var names = new List<string>();
+            foreach (var id in VehicleFit.CardsFor(item, branch)) names.Add(Strings.Card(id));
+            return names.Count == 0 ? Strings.Get("gear.hardwareNone") : Strings.Format("gear.hardwareOnly", string.Join(", ", names));
+        }
+
         /// <summary>A stat line: "+8% range", "-6% speed" (a drawback), "-2 s regen delay".</summary>
         public static string Line(Gear.Line line) => Line(line.Stat, line.Value, line.Kind == Gear.LineKind.Penalty);
 

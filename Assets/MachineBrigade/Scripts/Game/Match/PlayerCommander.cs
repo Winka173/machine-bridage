@@ -71,7 +71,7 @@ namespace MachineBrigade.Game.Match
             var economy = world.TryGetEconomy(0, out var e) ? e : null; // the player is team 0
             foreach (var id in vehicles)
                 if (world.Catalog.Vehicles.TryGetValue(id, out var v))
-                    cards.Add(new CardInfo(id, false, economy?.CostOf(id, v.CpCost) ?? v.CpCost, CardIcons.For(id)));
+                    cards.Add(new CardInfo(id, false, economy?.CostOf(id, v.CpCost) ?? v.CpCost, CardIcons.For(id), StoresStrip.MissileLoad(v), v.FlareCharges));
             foreach (var id in supports)
                 if (world.Catalog.TryGetSupport(id, out var s))
                     cards.Add(new CardInfo(id, true, economy?.CostOf(id, s.CpCost) ?? s.CpCost, CardIcons.For(id)));

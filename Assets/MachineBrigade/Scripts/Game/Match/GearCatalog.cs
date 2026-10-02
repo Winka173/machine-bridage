@@ -315,8 +315,10 @@ namespace MachineBrigade.Game.Match
             new(SpecialModule.AutoRepair, Any, 0.012f, 0.018f),
             new(SpecialModule.VeteranCrew, Armed, 0.08f, 0.12f),
             new(SpecialModule.SmokeDischarger, Ground, 8f, 10f, 0f, 1f),
-            new(SpecialModule.TrophyAps, Ground, 1f, 2f, 25f, 20f),
-            new(SpecialModule.FlareDispenser, Flying, 3f, 4f, 25f, 18f),
+            // Prompt 29 L5: Trophy only for a vehicle with an APS mount (ApsCapability not None), the heat decoys only for
+            // flares as charges (FlareCharges above 0); see VehicleFit.Hardware.
+            new(SpecialModule.TrophyAps, Ground | VehicleNeed.ApsMount, 1f, 2f, 25f, 20f),
+            new(SpecialModule.FlareDispenser, Flying | VehicleNeed.Flares, 3f, 4f, 25f, 18f),
             new(SpecialModule.DroneEscort, Any, 1f, 2f, 25f, 20f),
             new(SpecialModule.EmpPayload, Any, 2f, 3f, 10f, 14f),
             new(SpecialModule.MineDispenser, Ground, 2f, 3f, 20f, 15f),

@@ -104,7 +104,7 @@ namespace MachineBrigade.Game.Views
             }
             else
             {
-                var max = Mathf.Max(1, Sim.Def.Mounts[0].Weapon.Ammo);
+                var max = Mathf.Max(1, Sim.Arm(0).Ammo);
                 var left = Mathf.Max(0, Sim.Ammo(0));
                 empty = Sim.OutOfAmmo && Sim.ReloadPaused;
                 leaving = false;

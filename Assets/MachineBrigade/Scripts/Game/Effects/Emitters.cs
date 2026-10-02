@@ -54,6 +54,9 @@ namespace MachineBrigade.Game.Effects
         private readonly ParticleSystem _damageSmoke;
         private readonly ParticleSystem _damageFire;
 
+        /// <summary>Prompt 29 5.5 (FLARE_EFFECT): decoy flares, white-hot points with a short smoke trail each.</summary>
+        private readonly ParticleSystem _flares;
+
         public Emitters(MaterialLibrary m, Transform parent)
         {
             _trail = Continuous(parent, "Shell Trails", m.Smoke, 3000, PB.SmokeGradient(0.8f, 0.3f), 0.7f, 2.6f);
@@ -142,6 +145,25 @@ namespace MachineBrigade.Game.Effects
             _damageFire = Continuous(parent, "Damage Fire", FxMaterials.Shared.Flames, 600,
                 PB.Hold(new Color(0.3f, 0.27f, 0.24f), new Color(0.26f, 0.24f, 0.22f), 0.1f, 0.6f), 0.7f, 1.2f);
             PB.Flipbook(_damageFire, loop: true, tilt: 10f, pivotY: -0.1f);
+            // Prompt 29 5.5: decoy flares, white-hot burning down to orange, falling slowly, each with a thin pale trail.
+            _flares = Continuous(parent, "Decoy Flares", m.Sparks, 400,
+                PB.Fade(new Color(3f, 2.7f, 2.2f), new Color(2.4f, 1.5f, 0.6f), new Color(1.2f, 0.45f, 0.12f)), 1f, 0.55f);
+            var flareMain = _flares.main;
+            flareMain.gravityModifier = 0.22f;
+            var flareTrails = _flares.trails;
+            flareTrails.enabled = true;
+            flareTrails.mode = ParticleSystemTrailMode.PerParticle;
+            flareTrails.ratio = 1f;
+            flareTrails.lifetime = new ParticleSystem.MinMaxCurve(0.7f);
+            flareTrails.minVertexDistance = 0.25f;
+            flareTrails.dieWithParticles = false;
+            flareTrails.sizeAffectsWidth = true;
+            flareTrails.inheritParticleColor = false;
+            flareTrails.textureMode = ParticleSystemTrailTextureMode.Stretch;
+            flareTrails.widthOverTrail = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.Linear(0f, 0.3f, 1f, 1.3f));
+            flareTrails.colorOverTrail = new ParticleSystem.MinMaxGradient(PB.Fade(new Color(1f, 0.97f, 0.92f), new Color(0.95f, 0.93f, 0.9f),
+                new Color(0.9f, 0.9f, 0.9f), 0.55f));
+            _flares.GetComponent<ParticleSystemRenderer>().trailMaterial = m.Smoke;
             _dust = Continuous(parent, "Tread Dust", m.Smoke, 1500,
                 PB.Fade(new Color(0.62f, 0.56f, 0.44f), new Color(0.58f, 0.53f, 0.42f), new Color(0.55f, 0.5f, 0.4f), 0.45f), 0.8f, 2.4f);
         }
@@ -353,6 +375,26 @@ namespace MachineBrigade.Game.Effects
                 s.SmokeDebt += SmokeRate * dt;
                 for (; s.SmokeDebt >= 1f; s.SmokeDebt -= 1f)
                     DamageSmoke(Vector3.Lerp(s.From, s.To, Random.Range(0.55f, 1.05f)) + Vector3.up * 1.1f, Random.Range(2.1f, 3f), 0.02f);
+            }
+        }
+
+        /// <summary>
+        /// Prompt 29 5.5 (FLARE_EFFECT): one dispenser's salvo, <paramref name="count"/> bright points fanning from
+        /// <paramref name="look"/> (down and out) towards straight down, each with a short smoke trail.
+        /// </summary>
+        public void Flares(Vector3 position, Vector3 look, float scale, int count = 4)
+        {
+            look = look.sqrMagnitude > 1e-4f ? look.normalized : Vector3.down;
+            var axis = Vector3.Cross(look, Vector3.down);
+            if (axis.sqrMagnitude < 1e-4f) axis = Vector3.right;
+            axis.Normalize();
+            for (var i = 0; i < count; i++)
+            {
+                // From well out to nearly down: the fan of a salvo (the "angel wings" when both sides and rows fire).
+                var t = count > 1 ? i / (count - 1f) : 0.5f;
+                var dir = Quaternion.AngleAxis(Mathf.Lerp(-20f, 35f, t) + Random.Range(-5f, 5f), axis) * look;
+                Emit(_flares, position + Random.insideUnitSphere * 0.1f * scale, dir * Random.Range(6.5f, 9f) * Mathf.Max(0.6f, scale),
+                    Random.Range(0.55f, 0.75f) * scale, Random.Range(1.6f, 2.2f));
             }
         }
 

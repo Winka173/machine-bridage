@@ -11,31 +11,76 @@ namespace MachineBrigade.Game.Hud
     /// </summary>
     public sealed class StoresStrip
     {
-        private readonly VisualElement _row, _fill;
-        private readonly Label _text;
+        private readonly VisualElement _row, _fill, _track;
+        private readonly Label _text, _extra;
         private int _left = -1, _full = -1;
         private bool _slow;
+        private string _shownExtra;
+
+        /// <summary>
+        /// Prompt 29 L5: the load of a vehicle's own missile mounts ("missiles" in the data: the copy
+        /// <see cref="VehicleDef.ArmOf"/> gives), past the main weapon (the bar shows that one); 0 for none.
+        /// </summary>
+        public static int MissileLoad(VehicleDef def)
+        {
+            if (def == null) return 0;
+            var n = 0;
+            for (var i = 1; i < def.Mounts.Count; i++)
+            {
+                var shared = def.Mounts[i].Weapon;
+                if (shared == null) continue;
+                var own = def.ArmOf(shared);
+                if (own != shared && own.Ammo > 0) n += own.Ammo;
+            }
+            return n;
+        }
+
+        /// <summary>Prompt 29 L5: "Missiles 3/4 · Flares 2/3" (either half only when the vehicle has it), or null.</summary>
+        public static string KitLine(int missilesLeft, int missilesFull, int flaresLeft, int flaresFull)
+        {
+            string line = null;
+            if (missilesFull > 0) line = Strings.Format("hud.kit.missiles", ("left", missilesLeft), ("full", missilesFull));
+            if (flaresFull > 0)
+            {
+                var flares = Strings.Format("hud.kit.flares", ("left", flaresLeft), ("full", flaresFull));
+                line = line == null ? flares : line + "  ·  " + flares;
+            }
+            return line;
+        }
 
         public StoresStrip(VisualElement host)
         {
             _row = Kit.Box("fc-grow");
             _text = Kit.Text("", "fc-small");
             _row.Add(_text);
-            var track = Kit.Box("fc-hud__hp");
+            _track = Kit.Box("fc-hud__hp");
             _fill = Kit.Box("fc-hud__hp-fill");
-            track.Add(_fill);
-            _row.Add(track);
+            _track.Add(_fill);
+            _row.Add(_track);
+            // Prompt 29 L5: the missile mount's rounds and the flare charges, one small line under the bar.
+            _extra = Kit.Text("", "fc-small");
+            _extra.style.display = DisplayStyle.None;
+            _row.Add(_extra);
             host.Add(_row);
             _row.style.display = DisplayStyle.None;
         }
 
         /// <summary>What the selection carries: its stores or shots left, the full load, the kind, and whether they come back slowly.</summary>
-        public void Set(int left, int full, ProjectileKind kind, bool slow, VisualElement host)
+        public void Set(int left, int full, ProjectileKind kind, bool slow, VisualElement host, string extra = null)
         {
-            var show = full > 0;
+            var bar = full > 0;
+            var show = bar || !string.IsNullOrEmpty(extra);
             _row.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
             host.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
-            if (!show || left == _left && full == _full && slow == _slow) return;
+            _text.style.display = bar ? DisplayStyle.Flex : DisplayStyle.None;
+            _track.style.display = bar ? DisplayStyle.Flex : DisplayStyle.None;
+            if (extra != _shownExtra)
+            {
+                _shownExtra = extra;
+                _extra.text = extra ?? "";
+                _extra.style.display = string.IsNullOrEmpty(extra) ? DisplayStyle.None : DisplayStyle.Flex;
+            }
+            if (!bar || left == _left && full == _full && slow == _slow) return;
             _left = left;
             _full = full;
             _slow = slow;

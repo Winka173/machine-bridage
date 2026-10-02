@@ -121,7 +121,7 @@ namespace MachineBrigade.Game.Input
                         if (v.Stores(i).full > 0 && (best < 0 || v.Stores(i).full > v.Stores(best).full)) best = i;
                     if (v.RearmRate > 0f && v.RearmRate < 1f) slow = true;
                 }
-                else if (!v.Def.Static && mounts.Count > 0 && mounts[0].Weapon.Ammo > 0)
+                else if (!v.Def.Static && mounts.Count > 0 && v.Arm(0).Ammo > 0)
                 {
                     best = 0;
                     if (v.ReloadPaused) slow = true;
@@ -143,10 +143,41 @@ namespace MachineBrigade.Game.Input
                 else
                 {
                     left += Math.Max(0, v.Ammo(0));
-                    full += weapon.Ammo;
+                    // Prompt 29 L5: the vehicle's own load (its "missiles" copy, the equipment's magazine), not the shared weapon's.
+                    full += v.Arm(0).Ammo;
                 }
             }
             return (left, full, kind, slow);
+        }
+
+        /// <summary>
+        /// Prompt 29 L5: the selection's own missile mounts (rounds left of their load; the main weapon is the bar's) and
+        /// flare charges, summed over the selected vehicles.
+        /// </summary>
+        public (int missilesLeft, int missilesFull, int flaresLeft, int flaresFull) Loadout()
+        {
+            int ml = 0, mf = 0, fl = 0, ff = 0;
+            foreach (var view in _views.All)
+            {
+                if (!_selected.Contains(view.Id)) continue;
+                var v = view.Sim;
+                var mounts = v.Def.Mounts;
+                for (var i = 1; i < mounts.Count; i++)
+                {
+                    var shared = mounts[i].Weapon;
+                    if (shared == null || v.Def.ArmOf(shared) == shared) continue;
+                    var full = v.Arm(i).Ammo;
+                    if (full <= 0) continue;
+                    ml += Math.Max(0, v.Ammo(i));
+                    mf += full;
+                }
+                if (v.FlareChargesMax > 0)
+                {
+                    fl += v.FlareChargesLeft;
+                    ff += v.FlareChargesMax;
+                }
+            }
+            return (ml, mf, fl, ff);
         }
 
         /// <summary>Gets first refusal on taps (strike targeting); returns true when it used the tap.</summary>

@@ -14250,3 +14250,44 @@ moving parts untouched. Run: Blender rebuild of the ten, `glb_check.py` (compare
 - **Card luma (old, alpha > .5, Rec. 709):** barrage_balloon .5838, blast_wall .3723, fire_control_centre .3961, inflatable_decoy .4254, troop_shelter .4112, ammo_dump .3466,
   targeting_station .4216. logistics_station, radar_site and repair_bay have no card of their own yet (balance.json borrows fuel_depot, radar_dome, vehicle_hangar), so there is no old luma.
 - Lead (2026-10-02), wave 7b cards: six pass (+0.4 % to +14.1 %); blast_wall -1.3 % so it KEEPS its old model and card (from 2ca5447); logistics_station, radar_site, repair_bay have no card. Wave 7 is complete (21 of 22 on V2).
+
+## Prompt 29 local UI (lead pass, 2026-10-02)
+
+Branch feature/p29-local-ui; written without a compile (the lead's runner compiles and runs the tests).
+
+- **L5 equipment fit.** Equipment is worn per branch, so the per-vehicle rule is a hardware need: `VehicleNeed.Flares`
+  (`FlareCharges > 0`) and `VehicleNeed.ApsMount` (`ApsCapability != None`), `VehicleFit.Hardware`. The heat decoys need
+  `Flying | Flares`, Trophy `Ground | ApsMount`. A class meets a need with hardware when a third of its cards meet the rest
+  and at least one card has the hardware (the third-of-the-class rule alone would drop Trophy: 3 cards carry an APS mount),
+  so both modules still drop and go on their branch. Per vehicle: the equipment screen names the cards a module works on
+  ("Only on: ..."), the vehicle's Equipment tab dims a worn module that does nothing on it ("Does nothing on this vehicle"),
+  and the Sandbox kit draws again (8 tries) when it drew one of them for a vehicle without the hardware. The Sim already
+  ignores both modules on such a vehicle (GearSystem). Not changed: the Sim AI's air-flare count (`ConquestAi` counts the
+  decoys on any aircraft).
+- **L5 own load.** Checked: `GearSystem.TuneWeapons` starts from `Vehicle.Arms` (`VehicleDef.ArmOf`), so the equipment's
+  magazine and reload lines scale the vehicle's own missile load, and `RefillMagazines` fills to it. The view read the shared
+  weapon in three places (the selection's ammo bar, the stores mark, the mark's build test); they read `Vehicle.Arm(0)` now.
+- **L5 HUD and card.** The selection strip gets one small line under its bar: "Missiles 3/4 · Flares 2/3" (the mounts past the
+  main weapon that have their own "missiles" copy, and the flare charges; summed over the selection; the main weapon stays the
+  bar's). The tray card fills its reserved `fc-hcard__badges` row: a missile badge with the load and a flare badge with the
+  charges (new `flares` icon), flat on the field panel, at the small text size. Keys `hud.kit.missiles`, `hud.kit.flares`
+  (UnitText), `gear.hardwareOnly`, `gear.hardwareNone`, `gear.idleHere` (Strings), EN + VI.
+- **G1 aiming line.** `AimLines` (Game/Effects): a pool of 4 view-facing LineRenderers on the unlit strike-warning material
+  (no property block), gun to aim, drawn for the warning from the pierce bombard's `FiredWith` (a boss with
+  `Bombard.PierceMax > 0`, the event's weapon = the bombard's weapon, its travel time = the 3 s warning); it widens as the shot
+  comes and blinks in the last second; drawn even with both ends off screen. ASSET_DEBT row struck.
+- **C11 hunt UI.** The draw counts a boss as main when it is a chapter's main or of the main rank (Gungnir, 17 mains); the
+  rules line (`MainsIn`) and the roster's skull marks used the rank alone. Both use `BossHunts.MainIds()` (the draw's flag) now.
+- **5.5 effects.** `ModelLibrary.AddEffectPoints` (on the template, before the meshes merge) puts an empty `FxPoint_flares` /
+  `FxPoint_aps` at the middle of each side (and each row, rows more than 0.15 model metres apart along the hull) of the
+  `Flares` and `Aps_cluster` meshes; the part's own origin is its parent's pivot, so the node position alone is not the tubes.
+  A flare point looks down and out. FLARE_EFFECT: on `SkillUsed` (flares) of an aircraft, every point fires 4 white-hot points
+  (Sparks material, HDR white to orange, 1.6-2.2 s, slow fall) fanning from out to down, each with a short pale smoke trail
+  (the particle Trails module, Smoke material); a big aircraft's two rows fire at once (the angel wings); a model without the
+  node fires from under both sides of the hull. APS_EFFECT: an interception by a vehicle's own APS draws a 0.1 s tracer from
+  the nearest `FxPoint_aps` to the round, then the existing burst (Pop + flak puff); without the node, the old origin. Nothing
+  existing was resized.
+- **To check at the compile/play pass:** the trail module settings on the flare system (`dieWithParticles`, `sizeAffectsWidth`,
+  `widthOverTrail`); whether the glTF import keeps the `Flares` / `Aps_cluster` mesh names (`.001` suffixes are stripped);
+  whether two flare rows on one side are more than 0.15 m apart (else they draw as one point per side: 4 flares a side);
+  the badge size on the compact tray on a phone.

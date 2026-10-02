@@ -87,6 +87,9 @@ namespace MachineBrigade.Game.Effects
         private readonly ProjectilePool _projectiles;
         private readonly WeaponEffects _weapons;
         private readonly LaserBeams _lasers;
+
+        /// <summary>Prompt 29 G1: Gungnir's aiming line for its warning.</summary>
+        private readonly AimLines _aimLines;
         private readonly StrikeEffects _strikes;
         private readonly AirDrops _drops;
         private readonly GroundMark _marker;
@@ -155,6 +158,7 @@ namespace MachineBrigade.Game.Effects
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake, _lasers);
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _layers.Screens, _root);
             _bigZones = new BigAttackZones(materials, meshes, _root);
+            _aimLines = new AimLines(materials, _root);
             _drops = new AirDrops(catalog, models, meshes, materials, _emitters, _root);
 
             _marker = new GroundMark("Move Marker", _root, meshes, materials, GroundMark.Style.Move);
@@ -349,6 +353,13 @@ namespace MachineBrigade.Game.Effects
                             // Play-test 5 (DECISIONS 20W): the C-RAM's stream has been on the round for its burst; it bursts where it flew.
                             interceptAt = Ground(e.Position, burst.height);
                         }
+                        else if (guard != null && NearestPoint(guard.ApsPoints, interceptAt) is { } cassette)
+                        {
+                            // Prompt 29 5.5 (APS_EFFECT): a 0.1 s beam from the turret's cassette to the round, then the burst below.
+                            var from = cassette.position;
+                            _tracers.Launch(from, interceptAt, 0.1f, 0f, 0.12f, 1.2f, now);
+                            _muzzle.Fire(MuzzleFx.Kind.Autocannon, from, interceptAt - from, now, 0.9f, guard.Position.y);
+                        }
                         else if (guard != null)
                         {
                             var from = guard.Position + Vector3.up * 2.4f + guard.Root.right * (e.Value * 1.3f);
@@ -449,6 +460,11 @@ namespace MachineBrigade.Game.Effects
                         {
                             _fires.Ignite(blast, 0.9f, 18f, now);
                         }
+                        break;
+
+                    case SimEventKind.SkillUsed when e.Skill == SkillKind.Flares:
+                        // Prompt 29 5.5 (FLARE_EFFECT): a flare charge used: every dispenser fires its fan at once.
+                        if (views.TryGet(e.Entity, out var flarer) && flarer.Flying && _cull.Visible(flarer.Position, 0.3f)) FlareSalvo(flarer);
                         break;
 
                     case SimEventKind.SkillUsed when e.Skill == SkillKind.Emp:
@@ -584,6 +600,11 @@ namespace MachineBrigade.Game.Effects
                     _weapons.Charging(e, shooter, now);
                     continue;
                 }
+                // Prompt 29 G1 (ASSET_DEBT "Gungnir's line warning"): a pierce shot's FiredWith (the bombard's gun, the warning as its
+                // travel time) draws its aiming line, gun to aim, for the warning; drawn even when both ends are off screen.
+                if (shooter != null && e.Kind == SimEventKind.WeaponFired && shooter.Sim.Def.Bombard is { PierceMax: > 0 } pierce &&
+                    e.DefId != null && e.DefId == pierce.Weapon && e.Value > 0.2f)
+                    _aimLines.Show(Ground(e.Position, 0.6f), Ground(e.Target, 0.6f), e.Value, now);
                 // Shots entirely off screen are not drawn (the sound still plays).
                 if (!_cull.Visible(Ground(e.Position, 1f), 0.15f) && !_cull.Visible(Ground(e.Target, 1f), 0.15f)) continue;
                 _weapons.Fired(e, shooter, views, now);
@@ -600,6 +621,44 @@ namespace MachineBrigade.Game.Effects
                         fired.Projectile == ProjectileKind.Bullet ? 1.6f : fired.Projectile == ProjectileKind.Shell ? 4.5f : 3.2f);
             }
             _shots.Clear();
+        }
+
+        /// <summary>
+        /// Prompt 29 5.5 (FLARE_EFFECT): 4 points from each dispenser point the model has (a side and a row each: 2 x 4, a big
+        /// aircraft's two rows at once), or from under both sides of the hull on a model without dispensers.
+        /// </summary>
+        private void FlareSalvo(VehicleView flyer)
+        {
+            var scale = Mathf.Clamp(flyer.Sim.Radius / 3.2f, 0.8f, 1.6f);
+            var points = flyer.FlarePoints;
+            var fired = false;
+            for (var i = 0; i < points.Count; i++)
+            {
+                if (points[i] == null) continue;
+                _emitters.Flares(points[i].position, points[i].forward, scale);
+                fired = true;
+            }
+            if (fired || flyer.Root == null) return;
+            var right = flyer.Root.right;
+            var below = flyer.Position - flyer.Root.up * 0.3f - flyer.Root.forward * flyer.Sim.Radius * 0.2f;
+            for (var s = -1; s <= 1; s += 2)
+                _emitters.Flares(below + right * (s * flyer.Sim.Radius * 0.3f), right * s - Vector3.up * 1.2f - flyer.Root.forward * 0.3f, scale);
+        }
+
+        /// <summary>The point nearest <paramref name="to"/>, or null when there are none.</summary>
+        private static Transform NearestPoint(IReadOnlyList<Transform> points, Vector3 to)
+        {
+            Transform best = null;
+            var bestDistance = float.MaxValue;
+            for (var i = 0; i < points.Count; i++)
+            {
+                if (points[i] == null) continue;
+                var d = (points[i].position - to).sqrMagnitude;
+                if (d >= bestDistance) continue;
+                bestDistance = d;
+                best = points[i];
+            }
+            return best;
         }
 
         /// <summary>Brief ring at a commanded destination, confirming the order landed.</summary>
@@ -632,6 +691,7 @@ namespace MachineBrigade.Game.Effects
             _emitters.Tick(now, Time.deltaTime);
             _strikes.Tick(now);
             _bigZones.Tick(views, now);
+            _aimLines.Tick(now);
             TickBigCharge(views, now);
             _drops.Tick(now);
             JetTrails(views, now);

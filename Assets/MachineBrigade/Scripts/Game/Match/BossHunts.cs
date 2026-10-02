@@ -117,13 +117,25 @@ namespace MachineBrigade.Game.Match
         /// <summary>The full hunt opens once the operation of the last chapter switched on is won.</summary>
         public static bool FullOpen => Progression.TestUnlockAll || Campaign.ChapterDone(Campaign.LastChapter);
 
-        /// <summary>How many of a run's bosses are main bosses.</summary>
+        /// <summary>
+        /// Prompt 29 C11 (checked in the G1 pass): the bosses the hunts count as main, the draw's own flag (a chapter's main, or
+        /// a boss of the main rank in a mini slot: Gungnir), so the rules line and the roster's marks agree with the draw (17 mains).
+        /// </summary>
+        public static HashSet<string> MainIds()
+        {
+            var set = new HashSet<string>();
+            foreach (var b in Story)
+                if (b.Main) set.Add(b.Id);
+            return set;
+        }
+
+        /// <summary>How many of a run's bosses are main bosses (as the draw counts them, see <see cref="MainIds"/>).</summary>
         public static int MainsIn(IReadOnlyList<string> run)
         {
-            var catalog = GameContent.LoadCatalog();
+            var mains = MainIds();
             var n = 0;
             foreach (var id in run)
-                if (catalog.Vehicles.TryGetValue(id, out var def) && def.Rank == BossRank.Main) n++;
+                if (mains.Contains(id)) n++;
             return n;
         }
     }

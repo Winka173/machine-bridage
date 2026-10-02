@@ -99,6 +99,8 @@ namespace MachineBrigade.Game.Hud
             ["pine"] = "<path d=\"M12 2 6 10h3l-4 6h14l-4-6h3ZM12 16v6\"/>",
             ["dune"] = "<path d=\"M2 19c4-6 8-6 11-2s6 3 9-1M6 9a3 3 0 1 0 0-.1\"/><path d=\"M16 4v6M13 7h6\"/>",
             ["anchor"] = "<path d=\"M12 7v14M5 13a7 7 0 0 0 14 0M3 13h4M17 13h4\"/><circle cx=\"12\" cy=\"5\" r=\"2\"/>",
+            // Prompt 29 L5: flares, a point and its trails fanning down and out (the deck card's badge).
+            ["flares"] = "<circle cx=\"12\" cy=\"5\" r=\"2\"/><path d=\"M11 7 4 19M11.5 7.5 9 21M12.5 7.5 15 21M13 7l7 12\"/>",
             ["flame"] = "<path d=\"M12 22a7 7 0 0 0 7-7c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-3 3-5 5-5 8a7 7 0 0 0 7 7Z\"/>",
             ["barrage"] = "<path d=\"M6 3v6M12 2v7M18 3v6\"/><path d=\"M4 21a8 5 0 0 1 16 0\"/><path d=\"m9 13 3 3 3-3\"/>",
             ["airstrike"] = "<path d=\"M12 2l2 7 7 3v2l-7-1-1 6 3 2v1l-4-1-4 1v-1l3-2-1-6-7 1v-2l7-3Z\"/>",

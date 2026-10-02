@@ -21,6 +21,8 @@ namespace MachineBrigade.Game.Hud
             ["hud.stores.missiles"] = ("Missiles {left}/{full}", "Tên lửa {left}/{full}"),
             ["hud.stores.rockets"] = ("Rockets {left}/{full}", "Rốc-két {left}/{full}"),
             ["hud.stores.rounds"] = ("Ammo {left}/{full}", "Đạn {left}/{full}"),
+            ["hud.kit.missiles"] = ("Missiles {left}/{full}", "Tên lửa {left}/{full}"),
+            ["hud.kit.flares"] = ("Flares {left}/{full}", "Pháo sáng {left}/{full}"),
 
             ["detail.ammoIcons"] = ("Ammo icons", "Biểu tượng đạn"),
             ["icons.low"] = ("Yellow magazine: running low (under 20%)", "Băng đạn vàng: sắp hết đạn (dưới 20%)"),
