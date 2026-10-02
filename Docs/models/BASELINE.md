@@ -13,12 +13,12 @@ the hard cap an error). Warnings are listed in the JSON.
 | structure | 78 | 352,890 | 4,524 | headquarters (14,164) | 2,770 | 0 | 9 |
 | prop | 115 | 237,142 | 2,062 | command_hq (5,982) | 1,540 | 0 | 8 |
 | air | 30 | 107,046 | 3,568 | fighter_jet_hd (14,216) | 596 | 0 | 14 |
-| unlisted | 33 | 105,232 | 3,188 | apc_hd (14,466) | 619 | 0 | 2 |
+| unlisted | 33 | 105,304 | 3,191 | apc_hd (14,466) | 623 | 0 | 2 |
 | scenery | 29 | 27,056 | 932 | rubble_large (3,516) | 110 | 0 | 2 |
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
-| munition | 28 | 6,886 | 245 | fpv_drone (1,520) | 198 | 0 | 1 |
+| munition | 28 | 7,066 | 252 | fpv_drone (1,520) | 208 | 0 | 1 |
 
-All files: 1,788,218 triangles, 0 with errors, 70 more with warnings only.
+All files: 1,788,470 triangles, 0 with errors, 70 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
