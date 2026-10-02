@@ -14921,3 +14921,8 @@ the lead, the tests are written, not run.
     aa_vehicle are the only owned anti-air and are in the deck); mobile_repair_vehicle -> ammo_carrier (the owned
     support truck), uav_scan -> smoke_screen (no scan card owned yet). Rule warnedAirWaves: the mission's `air_wave`
     event already warns of its direction (C.3 seconds, minimap mark). Line: Nadia at 40 s.
+  - c3m06 (chapter 3): loaned radar_scout, instant_counter_battery (the cat-and-mouse tools); wheeled_howitzer ->
+    mortar_carrier (owned indirect fire), scout_heli -> attack_helicopter (c3m06's own reward is the scout helicopter, so
+    it is not owned in it; the owned flyer), illum_flare_strike -> uav_scan (both scan cards). Rule nightGuns: Night is
+    the mission's weather, the counter-battery radar shows a gun that fired (StatusKind.Reveal), the hunted guns move on
+    their routes; all existing. Line: Nadia at 30 s.

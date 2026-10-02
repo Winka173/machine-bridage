@@ -78,6 +78,12 @@ DECKS = {
         loaned=['shorad_vehicle', 'aa_gun_vehicle'],
         replaced={'mobile_repair_vehicle': 'ammo_carrier', 'uav_scan': 'smoke_screen'},
         rules=['warnedAirWaves']),
+    'c3m06': dict(
+        vehicles=['scout_jeep', 'radar_scout', 'counter_battery_radar', 'mortar_carrier', 'artillery', 'attack_helicopter', 'recon_drone', 'armored_car'],
+        supports=['instant_counter_battery', 'uav_scan'],
+        loaned=['radar_scout', 'instant_counter_battery'],
+        replaced={'wheeled_howitzer': 'mortar_carrier', 'scout_heli': 'attack_helicopter', 'illum_flare_strike': 'uav_scan'},
+        rules=['nightGuns']),
 }
 
 

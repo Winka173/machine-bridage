@@ -620,6 +620,17 @@
 "vi": "Chúng biến mất vào đêm. Hướng đông bắc. Tôi đã ghi lại."
 },
 {
+"mission": "c3m06",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c3m06.08",
+"en": "Tonight they show only when they fire. The radar will catch the flash.",
+"vi": "Đêm nay chúng chỉ lộ khi khai hỏa. Radar phản pháo sẽ bắt lấy ánh chớp đó.",
+"at": 30.0
+},
+{
 "mission": "c3m12",
 "trigger": "mission_start",
 "speaker": "khai",
