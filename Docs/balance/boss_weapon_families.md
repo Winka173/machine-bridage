@@ -77,20 +77,20 @@ Ground DPS **954 -> 1204** (126 %); anti-air only 145 -> 145.
 
 ### armored_train
 
-Ground DPS **660 -> 660** (100 %); anti-air only 0 -> 0.
+Ground DPS **660 -> 952** (144 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `train_gun` | cal_152_155 | 600 x 1 / 9.58 s = 63 | 600 x 1 / 9.58 s = 63 | 2.5 / 0 |
-| 1 | `boss_rockets` | rkt_grad_122 | 200 x 13 / 31.37 s = 83 | 200 x 13 / 31.37 s = 83 | 4.5 / 9 |
-| 2 | `boss_hmg` | cal_12_7 | 15 x 100 / 21.05 s = 71 | 15 x 100 / 21.05 s = 71 | 0 / 0 |
+| 0 | `train_gun` | cal_152_155 | 600 x 1 / 9.58 s = 63 | 600 x 1 / 8.00 s = 75 | 2.5 / 0 |
+| 1 | `boss_rockets` | rkt_grad_122 | 200 x 13 / 31.37 s = 83 | 200 x 13 / 8.44 s = 308 | 4.5 / 9 |
+| 2 | `boss_hmg` | cal_12_7 | 15 x 100 / 21.05 s = 71 | 15 x 100 / 13.25 s = 113 | 0 / 0 |
 | 3 | `boss_flak` | cal_35 | 25 x 41 / 5.38 s = 191 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
-| 4 | `train_gun` | cal_152_155 | 600 x 1 / 9.58 s = 63 | 600 x 1 / 9.58 s = 63 | 2.5 / 0 |
+| 4 | `train_gun` | cal_152_155 | 600 x 1 / 9.58 s = 63 | 600 x 1 / 8.00 s = 75 | 2.5 / 0 |
 | 5 | `boss_flak` | cal_35 | 25 x 41 / 5.38 s = 191 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
 
 ### mega_gunship
 
-Ground DPS **462 -> 462** (100 %); anti-air only 0 -> 0.
+Ground DPS **462 -> 546** (118 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
@@ -99,8 +99,8 @@ Ground DPS **462 -> 462** (100 %); anti-air only 0 -> 0.
 | 2 | `boss_heli_gun` | cal_30 | 22 x 40 / 9.67 s = 91 | 22 x 40 / 9.67 s = 91 | 0 / 0 |
 | 3 | `boss_minigun` | cal_7_62 | 5.5 x 40 / 6.76 s = 33 | 5.5 x 40 / 6.76 s = 33 | 0 / 0 |
 | 4 | `gunship_rockets` | rkt_70_80 | 32 x 16 / 9.77 s = 52 | 32 x 16 / 9.77 s = 52 | 3 / 0 |
-| 5 | `boss_hmg` | cal_12_7 | 15 x 100 / 21.05 s = 71 | 15 x 100 / 21.05 s = 71 | 0 / 0 |
-| 6 | `boss_hmg` | cal_12_7 | 15 x 100 / 21.05 s = 71 | 15 x 100 / 21.05 s = 71 | 0 / 0 |
+| 5 | `boss_hmg` | cal_12_7 | 15 x 100 / 21.05 s = 71 | 15 x 100 / 13.25 s = 113 | 0 / 0 |
+| 6 | `boss_hmg` | cal_12_7 | 15 x 100 / 21.05 s = 71 | 15 x 100 / 13.25 s = 113 | 0 / 0 |
 
 ### drone_mothership
 
@@ -246,12 +246,12 @@ Ground DPS **302 -> 302** (100 %); anti-air only 120 -> 120.
 
 ### supreme_command
 
-Ground DPS **143 -> 143** (100 %); anti-air only 0 -> 0.
+Ground DPS **143 -> 226** (159 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `boss_hmg` | cal_12_7 | 15 x 100 / 21.05 s = 71 | 15 x 100 / 21.05 s = 71 | 0 / 0 |
-| 1 | `boss_hmg` | cal_12_7 | 15 x 100 / 21.05 s = 71 | 15 x 100 / 21.05 s = 71 | 0 / 0 |
+| 0 | `boss_hmg` | cal_12_7 | 15 x 100 / 21.05 s = 71 | 15 x 100 / 13.25 s = 113 | 0 / 0 |
+| 1 | `boss_hmg` | cal_12_7 | 15 x 100 / 21.05 s = 71 | 15 x 100 / 13.25 s = 113 | 0 / 0 |
 
 ### sky_fortress
 
@@ -560,8 +560,8 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 |---|---|---|---|---|---|
 | behemoth | 1012 | 1099 | 109 % | 0 -> 0 | `p26_behemoth_direct_be120` 2 barrels together, `p26_behemoth_sec_be_rockets` 40 tubes |
 | mobile_fortress | 954 | 1204 | 126 % | 145 -> 145 | - |
-| armored_train | 660 | 660 | 100 % | 0 -> 0 | - |
-| mega_gunship | 462 | 462 | 100 % | 0 -> 0 | - |
+| armored_train | 660 | 952 | 144 % | 0 -> 0 | - |
+| mega_gunship | 462 | 546 | 118 % | 0 -> 0 | - |
 | drone_mothership | 1304 | 1304 | 100 % | 0 -> 0 | - |
 | nuke_train | 1751 | 1751 | 100 % | 62 -> 62 | `p26_nemesis_sec_boss_rockets` 40 tubes |
 | silver_bug | 1638 | 1638 | 100 % | 0 -> 0 | - |
@@ -573,7 +573,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | earth_borer | 289 | 289 | 100 % | 0 -> 0 | - |
 | command_airship | 1532 | 1532 | 100 % | 0 -> 0 | - |
 | landing_hovercraft | 302 | 302 | 100 % | 120 -> 120 | - |
-| supreme_command | 143 | 143 | 100 % | 0 -> 0 | - |
+| supreme_command | 143 | 226 | 159 % | 0 -> 0 | - |
 | sky_fortress | 418 | 418 | 100 % | 0 -> 0 | - |
 | leviathan | 771 | 771 | 100 % | 804 -> 804 | - |
 | moloch | 1382 | 1382 | 100 % | 0 -> 0 | `p26_moloch_direct_mo120ap` 2 barrels together, `p26_moloch_main_mo120` 2 barrels together |
