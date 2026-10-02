@@ -10,8 +10,6 @@ DATA = "Assets/MachineBrigade/Resources/Data/"
 
 CLAIMS = [
     # ---------------------------------------------------------------- balance.json blocks of later files
-    (BAL, "economy.**", "05_che_do_kinh_te", "kinh tế, CP, thu nhập, trần"),
-    (BAL, "matchRules.**", "05_che_do_kinh_te", "luật trận theo chế độ"),
     (BAL, "ai.**", "06_ai", "tham số AI (prompt 28 L)"),
     (BAL, "aiBehaviour.**", "06_ai", "chiến thuật, hành vi AI"),
     (BAL, "aiModeProfiles.**", "06_ai", "hồ sơ AI theo chế độ"),
@@ -20,13 +18,11 @@ CLAIMS = [
     (BAL, "neutrals.**", "08_ban_do", "trung lập"),
     (BAL, "handbook.**", "11_meta_giao_dien", "ví dụ của sổ tay đạn trên giao diện"),
     # ---------------------------------------------------------------- other data files
-    (DATA + "campaign.json", "economy.**", "05_che_do_kinh_te", "kinh tế chiến dịch"),
     (DATA + "campaign.json", "generals.**", "06_ai", "tướng địch của chiến dịch (bộ bài, phong cách)"),
     (DATA + "campaign.json", "migration*.**", "12_he_thong_trang_thai", "chuyển đổi save cũ"),
     (DATA + "campaign.json", "**", "07_chien_dich_cot_truyen", "chương, nhiệm vụ, biến cố"),
     (DATA + "script/*.json", "**", "07_chien_dich_cot_truyen", "thoại, người nói, trigger"),
     (DATA + "release.json", "**", "07_chien_dich_cot_truyen", "phần chiến dịch bản phát hành mở"),
-    (DATA + "operations.json", "**", "05_che_do_kinh_te", "Tác chiến: bậc, điểm, tuần, mutator"),
     (DATA + "maps/*.json", "**", "08_ban_do", "bản đồ (lưới địa hình: tóm tắt hoặc Khong_xuat do lane 08 quyết)"),
     (DATA + "map_dressing.json", "**", "08_ban_do", "trang trí, biome, địa danh"),
     ("Assets/MachineBrigade/Resources/UI/Bases/*.json", "**", "11_meta_giao_dien", "ảnh bản đồ căn cứ của màn Căn cứ"),
