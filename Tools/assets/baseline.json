@@ -1863,6 +1863,28 @@
     "wreck_stump: triangles 932 -> 972 (+4.3%); vertices 1,300 -> 1,328 (+2.2%); fileBytes 71,124 -> 72,604 (+2.1%); structure changed",
     "wreck_turret: triangles 1,112 -> 1,152 (+3.6%); vertices 1,549 -> 1,593 (+2.8%); fileBytes 80,904 -> 83,080 (+2.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "base_gate",
+    "base_wall",
+    "fishing_boat",
+    "floodlight_mast",
+    "fuel_depot",
+    "lighthouse",
+    "pier",
+    "razor_wire",
+    "sandbag_wall",
+    "vehicle_hangar",
+    "wreck_barrel",
+    "wreck_engine",
+    "wreck_launcher",
+    "wreck_stump",
+    "wreck_turret"
+   ],
+   "reason": "merge of feature/p27-wave8a5",
+   "changes": []
   }
  ],
  "models": {
