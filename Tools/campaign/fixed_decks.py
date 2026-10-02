@@ -46,6 +46,7 @@ RULES = {
     'morriganDecoys': "Morrigan's big attack goes for anti-air (BigAttackDefs); the decoy paradrop draws fire",
     'eliteRank': 'the cards fight one rank above the curve (rankBonus 1)',
     'timedRecon': 'Recon against the time limit; the test_rod event is Skygate turning its gun',
+    'cityBlackout': 'the city_blackout event (prompt 31 L3): night falls and the towers on the grid shut down, both sides',
 }
 
 # The sheet's rules not in effect yet, and why (the report and DECISIONS list them).
@@ -53,7 +54,7 @@ PENDING = {
     'c2m04': 'extraction point after the last station, win with 3 vehicles there: would change the objective (Destroy), dropped',
     'c4m05': 'mines on the rails slow the train: mines damage it, no slow yet',
     'c5m07': 'the canopy hides ground vehicles from drones: no canopy cover in the Sim yet',
-    'c7m11': 'city blackout (prompt 31 L3 event, not built yet: the mission runs without it); the storm cutting radar range',
+    'c7m11': 'the storm cutting radar range (no Sim rule yet); the city blackout is in since prompt 31 L3',
     'i3m02': 'Morrigan prefers anti-air that stands still: its big attack picks anti-air, moving or not',
 }
 
@@ -109,7 +110,7 @@ DECKS = {
         supports=['uav_scan', 'airstrike'],
         loaned=['aa_57mm_vehicle', 'shorad_vehicle'],
         replaced={'radar_support_vehicle': 'recon_drone', 'illum_flare_strike': 'uav_scan', 'sead_strike': 'airstrike'},
-        rules=['airCap6']),
+        rules=['airCap6', 'cityBlackout']),
     'c8m11': dict(
         vehicles=['combat_wreck_car', 'armored_bulldozer', 'rocket_technical', 'zu23_technical', 'recoilless_jeep', 'mortar_carrier', 'engineer_vehicle', 'vbied'],
         supports=['artillery_barrage', 'smoke_screen'],
@@ -213,6 +214,8 @@ def check_mission(m, owned, defs, fail):
         fail(f'{mid}: deliveries land on the beach only: no outposts and no command vehicle')
     if 'trainPrep' in rules and not (deck.get('prepSeconds', 0) > 0 and m.get('boss', {}).get('route')):
         fail(f'{mid}: the train waits only with prepSeconds and a boss route')
+    if 'cityBlackout' in rules and not any((r if isinstance(r, str) else r.get('id')) == 'city_blackout' for r in m.get('missionEvents', [])):
+        fail(f'{mid}: the city blackout rule wants the city_blackout event')
     if 'eliteRank' in rules and deck.get('rankBonus', 0) < 1:
         fail(f'{mid}: elite armour wants a rank bonus')
     if mid not in BASELINE:

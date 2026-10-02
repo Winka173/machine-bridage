@@ -64,3 +64,11 @@ nav_site('i1m01', {'id': 'mill_gate', 'initial': 'open', 'states': [
 # The garrison's wave comes on the alarm, not on a clock (the sheet: one mistake changes the battle).
 replace_event('i1m01', 'enemy_wave', 'factory_alarm')
 events.add('i1m01', 'alarm_wave')
+
+
+# ---------------------------------------------------------------------- Mất điện thành phố (the city blackout): c7m11
+# The capital's grid fails: the street lights go out (night rolls in over 25 s, the weather sight of Night) and every tower on
+# the grid, the player's and the enemy's (MissionEventSystem.GridTowers: radars, searchlights, lasers, shields, fire control),
+# is knocked out for 90 s until the backup power comes on. No ground changes.
+library(E('city_blackout', 'CityBlackout', {'at': 240}, {'seconds': 25, 'outage': 90}, lead=10))
+events.add('c7m11', 'city_blackout')

@@ -148,6 +148,9 @@ namespace MachineBrigade.Game.Hud
             ["radio.linh.ev.groundChange.alarm.warn"] = ("They have seen us. Sirens all over the works, and the mill gate is coming down.", "Chúng thấy ta rồi. Còi báo động khắp xưởng, cổng xưởng cán đang hạ xuống."),
             ["event.enemyWave.alarm.warn"] = ("The alarm brings the garrison in {seconds} s, {dir}", "Báo động gọi đồn binh tới sau {seconds} giây, {dir}"),
             ["radio.linh.ev.enemyWave.alarm.warn"] = ("The whole garrison is awake now. Here they come.", "Cả đồn binh đã thức dậy. Chúng tới kìa."),
+            ["event.cityBlackout.warn"] = ("The city's grid is failing: lights out and the towers on the grid shut down in {seconds} s", "Lưới điện thành phố đang sập: đèn tắt và các tháp nối lưới ngừng hoạt động sau {seconds} giây"),
+            ["event.cityBlackout.end"] = ("Backup power: the towers on the grid are working again", "Có điện dự phòng: các tháp nối lưới đã hoạt động lại"),
+            ["radio.linh.ev.cityBlackout.warn"] = ("The substations are going down one by one. In a moment the whole city goes dark, theirs and ours.", "Các trạm biến áp đang sập từng cái một. Lát nữa cả thành phố sẽ tối om, của chúng lẫn của ta."),
             ["radio.linh.ev.sandstormTurn.warn"] = ("The wind has swung round. The sand is coming our way, and their side is clearing.", "Gió đã quay chiều. Cát đang đổ về phía ta, còn phía bên kia đang quang dần."),
         };
     }

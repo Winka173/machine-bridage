@@ -2122,6 +2122,7 @@ namespace MachineBrigade.Game.Hud
             ["fixeddeck.rule.ciwsSaturate"] = ("Scylla's close-in guns shoot missiles down: fire them together, or break the guns first.", "Pháo phòng thủ tầm gần của Scylla bắn hạ tên lửa: phóng dồn một lúc, hoặc phá pháo đó trước."),
             ["fixeddeck.rule.morriganDecoys"] = ("Morrigan goes for anti-air: fire, then move. Decoys draw its fire.", "Morrigan săn phòng không: bắn xong thì đổi chỗ. Mồi nhử kéo hỏa lực của nó."),
             ["fixeddeck.rule.eliteRank"] = ("Crown's elite armour: every card one rank above the campaign's curve.", "Thiết giáp tinh nhuệ của Crown: mọi thẻ cao hơn đường cong chiến dịch một cấp."),
+            ["fixeddeck.rule.cityBlackout"] = ("Mid-battle the city's power fails: night falls and the towers on the grid shut down for a while, theirs and ours.", "Giữa trận, điện thành phố mất: trời tối hẳn và các tháp nối lưới điện ngừng hoạt động một lúc, của địch lẫn của ta."),
             ["fixeddeck.rule.timedRecon"] = ("Against the clock: see each launcher, then pull out before Skygate turns its gun.", "Chạy đua với giờ: xem từng bệ phóng rồi rút trước khi Skygate quay pháo."),
             // Prompt 25 D2: story loot is never sold.
             ["deck.lockedLoot"] = ("{name}: story loot, won in mission {mission}. It is not for sale.",
