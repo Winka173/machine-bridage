@@ -15,7 +15,7 @@
 
   "siegeRings": [87.0, 39.0],
 
-  "units": [{"def": "scout_jeep", "team": 0, "x": -98.75, "z": -108.75, "heading": 45}, {"def": "scout_jeep", "team": 0, "x": -108.75, "z": -98.75, "heading": 45}, {"def": "ifv", "team": 0, "x": -102.5, "z": -102.5, "heading": 45}, {"def": "light_tank", "team": 0, "x": -111.25, "z": -111.25, "heading": 45}],
+  "units": [{"def": "scout_jeep", "team": 0, "x": -98.75, "z": -108.75, "heading": 45, "start": true}, {"def": "scout_jeep", "team": 0, "x": -108.75, "z": -98.75, "heading": 45, "start": true}, {"def": "ifv", "team": 0, "x": -102.5, "z": -102.5, "heading": 45, "start": true}, {"def": "light_tank", "team": 0, "x": -111.25, "z": -111.25, "heading": 45, "start": true}],
 
   "bases": [
     {"team": 0, "hq": {"x": -121.0, "z": -114.5, "heading": 46}, "slots": [

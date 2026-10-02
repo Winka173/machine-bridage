@@ -102,6 +102,15 @@ namespace MachineBrigade.Game.Match
 
             /// <summary>Prompt 32 L1: retired tower cards whose base slots were emptied, to tell the player once; empty once shown.</summary>
             public List<string> rosterNews = new();
+
+            /// <summary>
+            /// Prompt 32 L4: the HQ type ("fortress", "garrison", "shield"; empty: the data's default) and a Fortress's
+            /// branch ("ground", "air"). hqTypeVersion 1: the HQ doctrine's change to the HQ type has been told once.
+            /// </summary>
+            public string hqType = "";
+            public string hqBranch = "";
+            public int hqTypeVersion;
+            public bool hqTypeNews;
             public List<string> baseUtilities = new();
             public List<string> baseOutpost = new();
 
@@ -595,6 +604,7 @@ namespace MachineBrigade.Game.Match
             MigrateToPlans(_data);
             MigrateCampaign(_data);
             RefundOldDoctrines(_data);
+            MigrateHqType(_data);
         }
 
         public static void Save()
@@ -635,6 +645,7 @@ namespace MachineBrigade.Game.Match
             MigrateToPlans(_data);
             MigrateCampaign(_data);
             RefundOldDoctrines(_data);
+            MigrateHqType(_data);
         }
 
         /// <summary>Tests: the profile as it would be saved.</summary>

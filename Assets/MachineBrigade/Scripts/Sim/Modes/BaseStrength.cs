@@ -81,6 +81,22 @@ namespace MachineBrigade.Sim.Modes
         }
 
         /// <summary>
+        /// Prompt 32 L5: ReferenceBasePower, the power in CP of an HQ level's reference base (balance.json
+        /// "base.reference"; a level without one: the AI's Normal base at that level). The Defend and Endless waves are
+        /// sized by it, never by the player's own base.
+        /// </summary>
+        public static float ReferencePower(Catalog catalog, int level)
+        {
+            level = Math.Clamp(level, 1, catalog.Base.MaxLevel);
+            foreach (var r in catalog.Base.Reference)
+                if (r.HqLevel == level) return Power(catalog, r);
+            return Power(catalog, BaseLoadout.ForAi(catalog, "Normal", "default", 1, level));
+        }
+
+        /// <summary>Prompt 32 L5: an HQ level's reference base on the 100 scale (the waves' measure).</summary>
+        public static float ReferenceScore(Catalog catalog, int level) => 100f * ReferencePower(catalog, level) / Reference(catalog);
+
+        /// <summary>
         /// How much bigger the Defend and Endless waves come against a base of this score: the score's
         /// share of the 100 mark to the power 0.75, between 0.75 and 2.5 (a base twice the mark faces
         /// waves 1.7 times the size; a bare HQ about three quarters).

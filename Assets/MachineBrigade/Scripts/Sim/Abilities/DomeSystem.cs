@@ -134,8 +134,18 @@ namespace MachineBrigade.Sim.Abilities
         /// <summary>What is left of a hit on <paramref name="victim"/> after the dome over it (if any) has taken its share.</summary>
         internal float Absorb(Vehicle victim, float damage, DamageType type, in HitInfo hit)
         {
-            if ((_up.Count == 0 && _warded.Count == 0) || !(damage > 0f) || type == DamageType.Energy || hit.Kind is HitKind.Burn or HitKind.Redirect or HitKind.Mine) return damage;
+            var skill = _world.Bases.AnySkillDome;
+            if ((_up.Count == 0 && _warded.Count == 0 && !skill) || !(damage > 0f) || type == DamageType.Energy || hit.Kind is HitKind.Burn or HitKind.Redirect or HitKind.Mine) return damage;
             var dome = _up.Count > 0 ? Covering(victim, hit.Attacker) : null;
+            // Prompt 32 L4: a Shield HQ's emergency dome over its base counts as a dome (domes never add up: the one with
+            // the most left takes the hit; what it cannot take goes through to the unit).
+            if (skill && _world.Bases.SkillDomeOver(victim) is { } hq && (dome == null || hq.DomeHp > dome.DomeHp))
+            {
+                var held = MathF.Min(damage, hq.DomeHp);
+                hq.DomeHp -= held;
+                if (hq.DomeHp <= 0.01f) hq.DomeHp = 0f;
+                return damage - held;
+            }
             // A tower shield only where no dome covers the tower: the two never add up. It stops the rounds aimed at the
             // tower (direct hits and piercing rounds), not the blasts of shells, rockets and bombs round it.
             if (dome == null) return hit.Kind is HitKind.Direct or HitKind.Pierce ? AbsorbWard(victim, damage) : damage;

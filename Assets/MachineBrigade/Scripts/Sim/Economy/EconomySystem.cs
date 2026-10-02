@@ -298,6 +298,34 @@ namespace MachineBrigade.Sim.Economy
             return CommandResult.Ok;
         }
 
+        /// <summary>
+        /// Prompt 32 L6: an opening squad's vehicle, dropped as a bought one (the deck's drop zone and the card's own drop
+        /// time; then a regular vehicle: supply, refunds, Deathmatch score) for its baseCP, not the ranked or commander
+        /// price, and never promoted to an elite. The caps still hold.
+        /// </summary>
+        internal CommandResult DeployOpening(int team, string defId)
+        {
+            if (!_teams.TryGetValue(team, out var economy)) return CommandResult.Rejected(CommandError.NotAvailable);
+            if (!_world.Catalog.Vehicles.TryGetValue(defId, out var def)) return CommandResult.Rejected(CommandError.UnknownCard);
+            if (!_world.Bases.TryGetDropZone(team, out var zone)) return CommandResult.Rejected(CommandError.NoRallyPoint);
+            var price = def.CpCost;
+            if (economy.Cp < price) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            if (VehicleCount(team) >= economy.VehicleCap) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
+            if (def.MaxPerSide > 0 && Fielded(team, defId) >= def.MaxPerSide) return CommandResult.Rejected(CommandError.UnitLimit);
+            if (def.Flying && !def.AirCapFree && AircraftCount(team) >= AircraftCap(team)) return CommandResult.Rejected(CommandError.AirAtCapacity);
+            economy.Cp -= price;
+            if (def.Flying) _world.CountAircraft(team);
+            var index = _deliveries++;
+            var angle = index * 2.39996f;
+            var landing = zone + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (2f + (index % 5) * 1.5f);
+            var delivery = def.DropDelay * (economy.Commander?.Delivery ?? 1f);
+            _pending.Add((team, defId, _world.Time + delivery, landing));
+            economy.ArmyCp = ArmyCp(team);
+            economy.VehicleCount = VehicleCount(team);
+            _world.Emit(SimEvent.DeploymentQueued(team, defId, landing, Inward(zone), delivery));
+            return CommandResult.Ok;
+        }
+
         /// <summary>How many of a vehicle a side has in the field or on its way.</summary>
         internal int Fielded(int team, string defId)
         {
@@ -385,7 +413,8 @@ namespace MachineBrigade.Sim.Economy
                 own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.ArmyCost * MathF.Min(LossRefundCap, victim.Gear.Trait(TraitId.SetSalvageRights).B));
             var team = victim.LastAttackerTeam;
             var paid = 0f;
-            if (team >= 0 && team != victim.Team && victim.Def.Fort == null && _world.Time - victim.LastHitTime <= 10.0 && _teams.TryGetValue(team, out var economy))
+            // Prompt 32 L4: a garrison squad pays nobody.
+            if (team >= 0 && team != victim.Team && victim.Def.Fort == null && !victim.Garrison && _world.Time - victim.LastHitTime <= 10.0 && _teams.TryGetValue(team, out var economy))
             {
                 paid = KillShare(Bounty(economy, victim), KillerBonus(killer, team), economy.Commander?.KillRefund ?? KillReward);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * paid);
@@ -525,7 +554,8 @@ namespace MachineBrigade.Sim.Economy
             var total = 0;
             foreach (var v in _world.VehicleList)
                 // Prompt 23 C.4: a mission event's reinforcements are outside the army (they have a cap of their own).
-                if (v.IsAlive && v.Team == team && !v.Ally && !v.Reinforcement) total += v.Def.ArmyCost;
+                // Prompt 32 L4: a Garrison HQ's squads count against the cap, never in the army supply reads.
+                if (v.IsAlive && v.Team == team && !v.Ally && !v.Reinforcement && !v.Garrison) total += v.Def.ArmyCost;
             foreach (var (pendingTeam, defId, _, landing) in _pending)
                 if (pendingTeam == team && !_allyLandings.Contains(landing)) total += _world.Catalog.Vehicle(defId).CpCost;
             return total;
@@ -554,7 +584,7 @@ namespace MachineBrigade.Sim.Economy
             return total;
         }
 
-        private int VehicleCount(int team)
+        internal int VehicleCount(int team)
         {
             var total = 0;
             foreach (var v in _world.VehicleList)

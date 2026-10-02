@@ -348,52 +348,67 @@ namespace MachineBrigade.Sim.Combat
             // A heavy missile (cruise or ballistic): the only thing a PAC-3's interceptors take (DECISIONS 19T).
             var heavy = IsHeavyMissile(weapon);
             var mark = _world.TryGetTarget(p.Target, out var target) && target.IsAlive ? target.Position : p.AimPoint;
-            foreach (var v in _world.VehicleList)
+            // Prompt 32 L4, the point-defence stacking rule: a round is offered to ONE system only, the nearest that may take
+            // it and has an interceptor left (ties by id); there is no second try on the same round, and a round a gun point
+            // defence has engaged or let through is not offered again. Systems that overlap add reach and interceptors,
+            // never a second chance. A dome takes what comes through (DomeSystem).
+            if (p.PdPassed || p.EngagedBy.IsValid) return false;
+            Vehicle? v = null;
+            var bestD = float.MaxValue;
+            foreach (var c in _world.VehicleList)
             {
-                var aps = v.Aps;
+                var a = c.Aps;
                 // A boss's protection system stops with its parts (prompt 16: the Behemoth's, the Tempest's laser, the hovercraft's CIWS).
-                if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0 || v.Stunned || v.ApsOff) continue;
+                if (a == null || !c.IsAlive || c.Team == p.OwnerTeam || c.ApsCharges <= 0 || c.Stunned || c.ApsOff) continue;
                 // Play-test 5: a gun point defence (the C-RAM) takes rounds in flight with a burst, never as they land.
-                if (aps.Burst > 0f) continue;
-                if (guarded.IsValid && v.Id != guarded) continue;
-                if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
+                if (a.Burst > 0f) continue;
+                if (guarded.IsValid && c.Id != guarded) continue;
+                var d2 = Vector2.DistanceSquared(c.Position, mark);
+                if (d2 > a.Radius * a.Radius) continue;
                 // Prompt 15 C.6: a point-defence laser is an energy weapon: smoke round it or its mark blinds it.
-                if (aps.Laser && (_world.Strikes.InSmoke(v.Position) || _world.Strikes.InSmoke(mark))) continue;
-                if (aps.Heavy && !heavy) continue;
+                if (a.Laser && (_world.Strikes.InSmoke(c.Position) || _world.Strikes.InSmoke(mark))) continue;
+                if (a.Heavy && !heavy) continue;
                 // Prompt 29 S07 (D7): a vehicle's own APS takes guided missiles, drones and direct-fire rockets only, and
                 // never a round flagged apsEligible=false.
-                if (v.Def.InterceptionMode == InterceptionMode.SelfAps &&
+                if (c.Def.InterceptionMode == InterceptionMode.SelfAps &&
                     (weapon.ApsEligible == false || !(direct || kind == ProjectileKind.Drone))) continue;
-                if (!aps.Heavy && !direct && rocket && !aps.Rockets) continue;
-                if (!aps.Heavy && !aps.Direct && direct && !lobbed) continue;
-                if (!aps.Heavy && !direct && shell && (aps.Shells <= 0f || _world.Random.NextDouble() >= aps.Shells)) continue;
-                // Prompt 16: a ship's CIWS with its fire-control radar broken misses now and then.
-                if (v.ApsMiss > 0f && _world.Random.NextDouble() < v.ApsMiss)
-                {
-                    v.ApsCharges--;
-                    if (aps.Reload > 0f) v.ApsReload = 0f;
-                    continue;
-                }
+                if (!a.Heavy && !direct && rocket && !a.Rockets) continue;
+                if (!a.Heavy && !a.Direct && direct && !lobbed) continue;
+                if (!a.Heavy && !direct && shell && a.Shells <= 0f) continue;
+                if (v != null && (d2 > bestD || (d2 == bestD && c.Id.Value > v.Id.Value))) continue;
+                v = c;
+                bestD = d2;
+            }
+            if (v == null) return false;
+            var aps = v.Aps!;
+            p.PdPassed = true;
+            // Its share of the shells: one roll, by the one system the round was offered to.
+            if (!aps.Heavy && !direct && shell && _world.Random.NextDouble() >= aps.Shells) return false;
+            // Prompt 16: a ship's CIWS with its fire-control radar broken misses now and then.
+            if (v.ApsMiss > 0f && _world.Random.NextDouble() < v.ApsMiss)
+            {
                 v.ApsCharges--;
-                // A launcher reloaded whole starts its reload again at every launch.
                 if (aps.Reload > 0f) v.ApsReload = 0f;
-                v.ApsLeft = !v.ApsLeft;
-                // The interceptor meets the round a few metres out, on the side it came from; an
-                // interceptor missile flies out and meets it short of its mark.
-                var from = _world.TryGetVehicle(p.Owner, out var shooter) ? shooter.Position : mark + SimMath.Forward(v.Heading) * 10f;
-                if (aps.Missiles)
-                {
-                    var back = from - mark;
-                    var meet = back.LengthSquared() > 0.01f ? mark + Vector2.Normalize(back) * MathF.Min(10f, back.Length() * 0.5f) : mark;
-                    _world.Emit(SimEvent.Intercept(v, weapon, meet, v.ApsLeft));
-                    return true;
-                }
-                var toward = from - v.Position;
-                toward = toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
-                _world.Emit(SimEvent.Intercept(v, weapon, v.Position + toward * (v.Def.HullBound + 3f), v.ApsLeft));
+                return false;
+            }
+            v.ApsCharges--;
+            // A launcher reloaded whole starts its reload again at every launch.
+            if (aps.Reload > 0f) v.ApsReload = 0f;
+            v.ApsLeft = !v.ApsLeft;
+            // The interceptor meets the round a few metres out, on the side it came from; an
+            // interceptor missile flies out and meets it short of its mark.
+            var from = _world.TryGetVehicle(p.Owner, out var shooter) ? shooter.Position : mark + SimMath.Forward(v.Heading) * 10f;
+            if (aps.Missiles)
+            {
+                var back = from - mark;
+                var meet = back.LengthSquared() > 0.01f ? mark + Vector2.Normalize(back) * MathF.Min(10f, back.Length() * 0.5f) : mark;
+                _world.Emit(SimEvent.Intercept(v, weapon, meet, v.ApsLeft));
                 return true;
             }
-            return false;
+            var toward = from - v.Position;
+            toward = toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
+            _world.Emit(SimEvent.Intercept(v, weapon, v.Position + toward * (v.Def.HullBound + 3f), v.ApsLeft));
+            return true;
         }
 
         /// <summary>

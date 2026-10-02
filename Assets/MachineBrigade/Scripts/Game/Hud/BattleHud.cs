@@ -364,6 +364,7 @@ namespace MachineBrigade.Game.Hud
                 _deck = new DeckBar(cards, Compact);
                 _deck.TipRow = id => Catalog != null && Catalog.Vehicles.TryGetValue(id, out var held) ? KitCombat.Row(held, 4) : null;
                 _deck.CardPressed += i => CardPressed?.Invoke(i);
+                _deck.SkillPressed += () => HqSkillPressed?.Invoke();
                 _deck.CpTapped += () => Toast(Strings.Get("hud.cpInfo"), seconds: 5f);
                 _safe.Add(_deck.Root);
             }
@@ -525,6 +526,13 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The zoom buttons beside the minimap (both HUDs since play-test 6): the factor to zoom by.</summary>
         public event Action<float> ZoomPressed;
         public event Action<int> CardPressed;
+
+        /// <summary>Prompt 32 L4: the HQ skill button (the one new HUD button) was tapped.</summary>
+        public event Action HqSkillPressed;
+
+        /// <summary>Prompt 32 L4: the HQ skill button's state (null icon: hidden). See <see cref="DeckBar.SetSkill"/>.</summary>
+        public void SetHqSkill(string icon, string name, string tip, float share, float seconds, bool armed) =>
+            _deck?.SetSkill(icon, name, tip, share, seconds, armed);
         public event Action TargetCancelled;
         public event Action PausePressed;
 

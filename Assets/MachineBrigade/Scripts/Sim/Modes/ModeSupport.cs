@@ -342,7 +342,8 @@ namespace MachineBrigade.Sim.Modes
             _seen.Clear();
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Team < 0 || v.Team > 1 || (Ignore != null && Ignore(v))) continue;
+                // Prompt 32 L4: a Garrison HQ's squads score nothing (no Deathmatch points).
+                if (!v.IsAlive || v.Team < 0 || v.Team > 1 || v.Garrison || (Ignore != null && Ignore(v))) continue;
                 _seen.Add(v.Id);
                 if (!_alive.ContainsKey(v.Id)) _alive[v.Id] = (v.Team, v.Def.ArmyCost, v.Def.Flying, v.Def.BaseCp);
             }

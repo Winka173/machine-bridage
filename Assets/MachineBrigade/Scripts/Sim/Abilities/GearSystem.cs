@@ -1050,7 +1050,7 @@ namespace MachineBrigade.Sim.Abilities
             // Prompt 15 C.9: reactive armour (the module) cuts shaped charges hard and nothing else; a tandem warhead defeats it.
             if (v.Special == SpecialModule.ReactiveArmor && type == DamageType.ShapedCharge && hit.Kind is not (HitKind.Mine or HitKind.Burn) &&
                 !(hit.Projectile?.Tandem ?? false))
-                m *= 1f - Math.Clamp(v.SpecialPower, 0f, 0.8f);
+                m *= 1f - Math.Clamp(v.SpecialPower, 0f, Content.HandbookFacts.ReactiveCap);
             var g = v.Gear;
             if (g == null) return m;
             var cut = g.Stat(Stats.Resist(type)) + Adapted(g, type, now);

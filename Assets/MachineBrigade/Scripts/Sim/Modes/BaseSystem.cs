@@ -93,6 +93,9 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>Prompt 32 L2: the HQ's one free rebuild at a quarter of its health has been given.</summary>
         public bool HqRescueUsed { get; internal set; }
+
+        /// <summary>Prompt 32 L4: the HQ type's state in the battle (its skill, garrison, marks, emergency dome).</summary>
+        public HqState Hq32 { get; } = new();
     }
 
     /// <summary>
@@ -103,7 +106,7 @@ namespace MachineBrigade.Sim.Modes
     /// mode (<see cref="BaseRole"/>). In the campaign, a captured point marked as an outpost can
     /// be set up as one: 1-2 hardpoints for towers flown in with CP, and a second drop zone.
     /// </summary>
-    public sealed class BaseSystem
+    public sealed partial class BaseSystem
     {
         /// <summary>Prompt 20 L.2: a layered base's yard (the hardpoints' place) and the tower an AI keeps in it.</summary>
         internal const string YardPlace = "yard";
@@ -173,12 +176,14 @@ namespace MachineBrigade.Sim.Modes
             var heading = site?.Heading ?? SimMath.HeadingOf(-away);
             if (catalog.Vehicles.ContainsKey(catalog.Base.HqId))
             {
-                var hq = _world.SpawnVehicle(catalog.Base.HqId, team, hqAt, heading);
+                // Prompt 32 L4: the HQ stands as its type's def (a Fortress's gun, a Shield's point defence).
+                var hq = _world.SpawnVehicle(HqDefOf(fitted), team, hqAt, heading);
                 hq.Invulnerable = role == BaseRole.Anchor;
                 _world.AnchorDefence(hq);
                 b.Hq = hq.Id;
             }
             b.HqPosition = hqAt;
+            SetUpHq(b);
             // The hardpoints the HQ level opens: the first so many of each size (the map lists the
             // most important first), each taking the loadout's tower for that slot of that size.
             if (site != null)
@@ -243,6 +248,9 @@ namespace MachineBrigade.Sim.Modes
             var fitted = loadout.Fitted(catalog);
             var b = new TeamBase(team, role, fitted) { HqPosition = hq };
             _bases[team] = b;
+            // Prompt 32 L4: a fortress's command HQ is a building the mode watches: the type's garrison, repairs and skill
+            // work round it; its HQ-mounted parts (a Fortress's gun, a Shield's point defence) need an HQ of its own.
+            SetUpHq(b);
             var seen = new int[3];
             var forward = new int[3];
             var utility = 0;
@@ -573,6 +581,7 @@ namespace MachineBrigade.Sim.Modes
                 if (b.Hq.IsValid && !b.HqFallen && (!_world.TryGetVehicle(b.Hq, out var hq) || !hq.IsAlive)) b.HqFallen = true;
                 foreach (var slot in b.Slots) Watch(b, slot);
                 HqRescue(b);
+                StepHq(b);
                 // An outpost lost with its point: its towers go with it.
                 _lost.Clear();
                 foreach (var (id, slots) in b.Outposts)

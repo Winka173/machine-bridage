@@ -15434,3 +15434,205 @@ blast, and the preview scenes (one flat ground quad for every unit; the turntabl
   list): those keep one muzzle. Check: `python Tools/balance/p34_barrels.py` reports every listed muzzle's barrels (OK).
 - Tests (written, not run): `Prompt34Tests` L4 (the listed weapons fire their barrels together, the volleys keep their
   DPS, the super tank's two barrels fire in the same tick).
+
+## Prompt 32 L4/L5/L6/L8 (lead pass, 2026-10-02)
+
+Prompt 32 passes 4, 5, 6 and 8 on `feature/p32-a2` (lane A of Docs/LOCAL_PLAN_P31_P32.md). Pass 3 (walls) and pass 7
+(Showdown) wait for prompt 31's prebuilt NavGrid states. Nothing run (no Unity, tests or sims); the Python tools ran on
+the data. Locked rules of section 0 hold: no retreat on health, supply only, caps 32 + 6, POINT_DEFENSE never stops tank
+shells, aiModeProfile extended by data only (one new optional field), deterministic (tick timers, id order), one new
+HUD button.
+
+### L4: HQ types (Fortress, Garrison, Shield)
+
+Data `base.hqTypes` (parsed by `Content/HqTypeRules.cs`); Sim `Modes/BaseSystem.HqTypes.cs` (`HqState` on each
+`TeamBase.Hq32`); `BaseLoadout.HqType` / `HqBranch`; Game: the HUD button (`DeckBar.SetSkill`, `BattleHud.HqSkillPressed`,
+`PlayerCommander.OnSkill`), the Base screen's HQ box (a tap cycles Fortress ground -> Fortress anti-air -> Garrison ->
+Shield), the save (`PlayerProfile.HqType.cs`), texts `Hud/BaseText.cs` (EN + VI).
+
+- **No doctrine left to replace.** The HQ doctrines were folded into the commanders and refunded in DECISIONS 23D, so no
+  save holds one. The "free re-pick" migration is `PlayerProfile.MigrateHqType` (hqTypeVersion 1): a save that had played
+  is told once ("news.hqType"); choosing a type is always free (a loadout choice, like a deck's cards).
+- **`HqType.None`.** A loadout made in code (`new BaseLoadout()`, `BaseLoadout.HqOnly`, the modes' bare camps, the old
+  tests) keeps the plain HQ and no skill; the player's loadout takes the save's type (default `fortress`, data), the AI's
+  `ForAi` its general's. So no existing HQ changes unless a loadout names a type.
+- **How the types are built.** The HQ stands as its type's def: `headquarters.fortress_ground` / `_air` (the plain HQ
+  plus the sniper turret's `turret_gun_120_long` / the Bofors tower's `bofors_l70`: tower weapons reused, no new family),
+  `headquarters.shield` (the plain HQ plus a C-RAM's gun point defence, radius 45). The Fortress gun's level scale goes
+  on that mount only (`WeaponState.DamageScale` and `RateScale`, each the square root, so DPS x scale; the HQ's own guns
+  keep theirs). The Shield's interceptors: `ApsMax = round(4 x scale)` (1..6), reloading at `scale` pace
+  (`Vehicle.ApsRate`). Garrison stands as the plain `headquarters`.
+- **The skill** (`CommandType.HqSkill`, `BaseSystem.UseSkill`, one 120 s cooldown, ready at the start): Fortress =
+  `hq_barrage` (an event support: 3 rounds of 450 x the level's scale through `SimWorld.StrikeDamage`, pen 4, blast 8; the
+  support cards' rules: on the map, not into the enemy home zone); the HUD arms it and the next map tap aims it (the
+  support cards' UX). Garrison = the alarm (every stocked squad out now, the caps holding; rejected with nothing in
+  stock). Shield = the emergency dome over the base region for 10 s, absorbing its share of the HQ's full health; it is a
+  dome as DomeSystem's are (the one with the most left takes a hit, never adding up), so it absorbs what the point
+  defence lets through.
+- **Garrison.** A squad stocked every interval (2 at most), turned out beside the HQ when an enemy vehicle is inside the
+  region (45 m round the HQ, looked at every 0.25 s), one squad a look while the alive cap (baseCP) and the side's army
+  cap allow (else it stays in stock). Squads by level as the prompt (light_tank; armored_car + scout_jeep; light_tank +
+  armored_car; main_battle_tank; main_battle_tank + scout_jeep). They are `Vehicle.Garrison`: posted on the HQ's side
+  facing the intruder (`GuardPoint`, `PostRadius` = the region: the called escort's mechanism, they never chase out of
+  it; ordered past it they are called back), left alone by every AI loop, in the army cap and entity budget, never in
+  `ArmyCp` (supply), no CP to anyone when destroyed, no Deathmatch score (the kill ledger skips them). After 30 s with no
+  enemy in the region they go back in (retired: no wreck, no kill) and the stock refills at its pace.
+- **Shield.** Camp towers inside the region unhit for 5 s mend their level's share a second (by tick, in `BaseSystem.Step`).
+- **Fortress-ring bases** (Siege / Defend / Endless on a fortress map): the command HQ is a building the mode watches, not
+  an HQ vehicle, so the HQ-mounted parts (the Fortress gun, the Shield point defence) are absent there; the garrison, the
+  Shield's mending and every skill work round the HQ's position.
+- **Point-defence stacking rule** (`DamageSystem.TryIntercept`, `CombatSystem.NearerGun`): a round is offered to one
+  system only, the nearest to its mark that may take it and has an interceptor left (ties by id); the shell-share roll
+  is made once, by that system; a round a gun point defence engaged or let through (`EngagedBy`, `PdPassed`) is never
+  offered again; overlapping systems add reach and interceptors only. Before, every system in list order rolled its own
+  shell share (several chances on one shell). Tank shells are unchanged: `GunTakes` and `TryIntercept` take only an
+  indirect weapon's shells, so POINT_DEFENSE never stops a tank's round.
+- **HQ damage marks.** 50 %: an alert ("alert.hq.half.*", the siren on ours) and the smoke the view already shows below
+  60 % (EffectsDirector.ShowDamage); no loss of function. 25 %: an alert and L2's one free rebuild (unchanged).
+- **The AI.** Its type by its general's base style (`base.hqTypes.ai`: brandt, kessler Fortress; varga Garrison; orlov,
+  aurel Shield), else by difficulty (Easy Garrison, Normal Fortress, Hard Shield, Very Hard Fortress); a Fortress takes
+  the anti-air guns against a deck of 30 % aircraft or more. It uses the skill when the enemy CP (base price) inside its
+  region reaches the mode profile's `hqSkillThreat` (new optional field, default 8; data: conquest, deathmatch, hill 8,
+  assault 10, siege 12; also in `Tools/ai/import_ai_modes.py` EXTRA). `BaseSystem.AutoSkill`: every side but the
+  player's; the menu's battle both.
+- **One button.** The skill card right after the CP box (`fc-hcard--hqskill`), its icon by type (barrage / reinforce /
+  shield), the cooldown's sweep and seconds; hidden without a type; a hold shows what it does.
+
+Comparison (`Tools/balance/p32_hq_types.py`, report `Docs/balance/p32_hq_types.md`): "defensive value a minute of the
+base under attack" in CP = damage dealt + damage prevented (over the health a CP of card vehicles buys: ground 190,
+aircraft 137) + the temporary troops' baseCP. Provisional assumptions (mine): the gun busy 50 % of the minute; 1.5
+vehicles a barrage blast; a 2-minute attack; 12 C-RAM-eligible rounds a minute in salvos of 6; towers mending 50 % of
+the minute; 75 % of the dome used. With the prompt's tables every type ran 1.5-4x over its band:
+
+| HQ | target | Fortress ground | Fortress AA | Garrison | Shield |
+|---|---|---|---|---|---|
+| 1 | 4-5 | 7.7 | 13.7 | 6.0 | 11.6 |
+| 2 | 5-6 | 10.1 | 17.8 | 7.5 | 17.8 |
+| 3 | 6-7 | 12.4 | 21.9 | 9.0 | 20.9 |
+| 4 | 7-8 | 15.5 | 27.3 | 12.0 | 28.8 |
+| 5 | 8-9 | 18.6 | 32.8 | 15.0 | 37.6 |
+
+Refitted (`--apply`; per level one factor on each type's tables, so the prompt's shape holds within a level): Fortress
+ground `scale` 0.29 / 0.36 / 0.42 / 0.49 / 0.55, anti-air `airScale` (new) 0.16 / 0.2 / 0.23 / 0.27 / 0.31; Garrison
+`every` (now by level) 120 / 100 / 100 / 130 / 170 s; Shield `scale` 0.15 / 0.19 / 0.24 / 0.26 / 0.29, `regen` 0.059 % to
+0.096 % a second, `dome` 2.4 % to 4.3 % of the HQ. After: 4.4-4.5 / 5.5-5.6 / 6.3-6.6 / 7.4-7.7 / 8.5-8.6, every type in
+its band. These are large cuts on paper resting on my assumptions: the first thing to look at in play (the prompt's
+tables: 0.5-1.2, every 60 s, regen 0.2-0.4 %, dome 8-18 %, to go back to).
+
+Tests (written, not run): `HqTypeP32Tests` (the data; the Fortress def and its scaled mount; the Shield's interceptors;
+the plain HQ for Garrison; the garrison's stock, turn-out, post, supply, pay and return; the shared cooldown; the dome;
+the barrage's scale; the AI's choice; the marks; the nearest point defence takes a round).
+
+### L5: Defend / Endless waves by HQ level
+
+Wave strength = ReferenceBasePower(the defender's HQ level) x the difficulty x the wave curve x the campaign progress
+factor. Data `base.reference` (five loadouts, level 1-5, rank 1, no equipment, no HQ type, every slot the level opens
+filled with roster cards: L1 guard tower, MG bunker, AA tower, gun turret, repair bay; L2 + AT post, ATGM tower; L3 the
+gun turret and the medium AA, a heavy turret, + radar station; L4 + minefield, ATGM tower; L5 + EW tower, C-RAM, missile
+battery, ammo depot). Code: `BaseRules.Reference`, `BaseStrength.ReferencePower` / `ReferenceScore` (the 100 scale kept:
+the enemy's Normal base at HQ 3), `SiegeMode` (ScaleToBase): `_waveScale = WaveScale(ReferenceScore(level)) x
+SiegeRules.ProgressScale`, the attacker's income x its square root as before.
+
+- The player's own base strength (`BaseStrength.Score` of what stands) is still read into `SiegeMode.BaseScore` and shown
+  on the Base screen; it no longer sizes anything. "camp.strengthNote" now says the waves follow the HQ level.
+- The difficulty factor and the wave curve are the ones the session already sets (wave start, growth, compound, the
+  difficulty's income); unchanged. Endless (prompt 30) uses the same formula and keeps its per-wave growth.
+- The campaign progress factor (`ProgressScale`, default 1): no campaign mission runs SiegeMode's Defend today (missions
+  run MissionMode), so it stays 1 until one does.
+- Paper values (Power: HQ 14, large 11, medium 7, small 4, module or passive 1): reference power about 34 / 45 / 57 / 68 / 84
+  CP, scores about 60 / 79 / 100 / 119 / 147, wave scale about 0.75 (the floor) / 0.84 / 1.0 / 1.14 / 1.34.
+
+Tests (written, not run): `BaseWavesP32Tests` (a reference for every level; the power grows with the level; two bases at
+the same HQ level get the same waves; the level and the progress factor move them).
+
+### L6: starting CP x 1.16 and opening squads
+
+**Starting CP.** Data `economy.startCp` (`scale` 1.16, `modes`), read by `Content/OpeningRules.cs` and applied once in
+`SimWorld.EnableEconomy`: a listed mode's starting CP x 1.16, rounded half up, both sides (the bank raised to it if it
+was lower). The prompt's numbers (Conquest 18 -> 21, Assault 16 -> 19, Defend 24 -> 28, Siege 34 -> 39) are not the code's
+starting CP; the rule (x 1.16 for the new prices) was applied to what the modes really start with, so:
+
+| mode | player before -> after | enemy before -> after |
+|---|---|---|
+| Conquest | 14 -> 16 | 14 -> 16 |
+| Deathmatch | 18 -> 21 | 18 -> 21 |
+| King of the Hill | 16 -> 19 | 16 -> 19 |
+| Assault | 20 -> 23 | 32 -> 37 |
+| Survival | 16 -> 19 | (waves) |
+| Defend / Endless | 30 -> 35 | 22 -> 26 |
+| Weekly | 26 -> 30 | 22 -> 26 |
+| Siege | 38 -> 44 | 20 / 24 -> 23 / 28 |
+| Boss Hunt | 40 -> 46 (its bank is already 60: kept, not clamped) | |
+| campaign missions | their own CP x 1.16, half up (both sides) | |
+| Showdown | listed for pass 7: a mode starting at 18 gets the prompt's 21 | |
+
+The Sandbox and the menu's battle keep theirs; a test world (no mode tag) keeps its CP. A Boss Hunt resumed at a
+checkpoint sets its CP from the rules' unscaled 40 (the checkpoint path does not pass through EnableEconomy): left as it
+is (a resumed run keeps the CP it carries).
+
+**Opening squads.** Data `openingSquads` (roles as candidate id lists, or `{ "maxCp": 4 }` for Varro's cheap three; the
+commander table; the enemy general table; `modes`, `enemyModes`, `share` 0.6). `Modes/OpeningSquads.cs`: each role of the
+row takes the deck's cheapest card of the role (baseCP, then id), never a card of 0 CP, a fixed structure, a boss, an
+elite or a ship; a role the deck lacks is left out and its CP kept; a card that would take the squad past 60 % of the
+starting CP is left out. `EconomySystem.DeployOpening` drops each as a bought vehicle at the drop zone with the card's
+own drop time (a regular vehicle: supply, refunds, Deathmatch score) for its baseCP (not the ranked or commander price),
+never promoted to an elite; the caps hold. `ModeSession.DropOpeningSquads` runs right after the mode is built (tick 0).
+
+- **Where.** The player's squad in Conquest, Deathmatch, King of the Hill, Assault, Siege, Defend, Endless (Defend's
+  continuation), Survival, Boss Hunt and Showdown (listed for pass 7); the enemy's where an enemy commander buys (Conquest,
+  Deathmatch, King of the Hill, Assault, Siege, Showdown), not where the enemy is waves or bosses. Boss Hunt: the first
+  boss's at tick 0, each later boss's as it arrives (`BossRushRules.OpeningRoles`, within 60 % of the starting CP and the
+  CP the side has then). Campaign missions: only with `"openingSquad": true` (MissionDef, default off; none sets it, so the
+  23 fixed-deck missions, placed allies, recon / infiltration and scripted-convoy openings never get one).
+- **The table** (commander ids in the data: the sheet's Mara, Hawk and Nadia are `lind`, `reyes`, `kerr` by their portraits
+  mai, dieuhau, linh): kade MBT + scout; lind engineer + repair + light; reyes scout helicopter + scout; kerr scout + radar
+  scout + light; venn FPV carrier + scout; mendez wheeled armour + light tank + scout; brandt deployable bunker +
+  engineer; dahl the cheapest mortar or SP gun + scout; brenn none; adler scout + light; varro three of 4 CP or less (the
+  cheapest, repeated); reyn MBT; quist a fortifying vehicle (bunker vehicle or siege tank) + light + scout; okoye none.
+- **Enemy generals** by id or base style: varga tanks, orlov artillery + radar scout, kessler mine layer + light, sen (the
+  data's id of Venn's portrait) and venn drones, aurel the cheapest heavy, wolff helicopter and thorne MBT (no general of
+  those names in the data yet: kept for when they come); every other side (quick modes) the default scout + light.
+- **The maps' start units (precheck item 2).** The units seen at the start came from the maps' generic `units`
+  (build_maps.py CONQUEST_UNITS / SURVIVAL_UNITS), not from another system: they are replaced by the squads where those
+  come. `Tools/maps/p32_start_units.py` marked them `"start": true` in the 100 generated map files (650 units; rerunnable,
+  `--check`), and build_maps.py now writes the flag. `UnitPlacement.Start`; `SimWorld.SkipStartUnits` (set by the session
+  where the player's squad comes) makes `SimWorld.MapUnits` leave them out (Conquest, the quick modes, Survival, Siege,
+  Boss Hunt read MapUnits). The map files keep the units: a campaign mission (MissionMode reads every unit) still has
+  them, and the outlines keep their spots. A siege fortress's own defences are never marked.
+
+Tests (written, not run): `OpeningSquadP32Tests` (the scale per mode; the economy's start; every commander's row and
+every role id; cheapest per role, ties by id; a missing role; the budget; Varro; exclusions; the drop from the starting
+CP as regular vehicles; the marked start units left out; no mission on by default).
+
+### L8: the ammunition handbook
+
+In game: the Dossier's new tab "Ammunition handbook" / "Sổ tay đạn" (`MenuScreen.Story.cs` `DossierTab.Ammo`,
+`FillHandbook`), its entries from `Game/Hud/AmmoHandbook.cs` (`Build`: generated from the catalog in the language shown,
+texts `hb.*` in `Hud/BaseText.cs`, EN + VI). Design document: `Tools/docs/prompt32.py` (`ammo_handbook`, Vietnamese then
+English, from balance.json; build_doc.py adds it after the prompt 29 section; `python Tools/docs/prompt32.py` prints the
+section alone; it ran on the data).
+
+- **Entries.** (1) The six damage types x ground / air / structures (the damage table), a strong / weak sentence each
+  (its best and worst kind) and 2-3 examples (the weapons most carried by card vehicles of that type, by id on a tie, one
+  per real weapon name). (2) Penetration against armour (the data's six steps), directional faces, vehicles to level 4
+  and bosses to 5 (`ArmourLevels`), no overmatch on the roof or on aircraft, and a worked example from the data
+  (`handbook.exampleShooter` / `exampleTarget`: one shot of the IFV's 2A42 on a main battle tank, front 4 x0.25 = 6, side 2
+  x0.85 = 19; the weapon's own damage, `DamageTable.Effective`). (3) Marks: top attack, thermobaric (x2.0 replacing x1.5,
+  never x3: precheck item 6), the two-layer blast (an example weapon's core, edge and share), guided, airburst
+  (fragmentation x1.3 on aircraft), second rounds (hold 2 s, switch at least 0.5 s: `WeaponDef.RoundHoldSeconds` /
+  `MinSwitchSeconds`, and an example gun's switch), minimum range (examples with their metres). (4) What stops which
+  rounds: reactive armour (up to 80 %: the code now reads `HandbookFacts.ReactiveCap`, the one number that was a literal),
+  cages, SELF_APS and POINT_DEFENSE (the C-RAM's and the laser's shell shares from the data; both lines say they never stop
+  a tank's shell, as the locked rule), flares, smoke, jamming, shields; the one-system-per-round rule of L4. (5) What to hit
+  structures with (the types by their structure value, thermobaric first), walls: the wall breakers x1.5.
+- **Walls ahead of pass 3.** The wall breakers' shared tag and multiplier are data now (`base.walls`: armored_bulldozer,
+  engineer_vehicle, demolition_line_vehicle; `breakerMultiplier` 1.5; `BaseRules.WallBreakers`, `WallBreakerMultiplier`)
+  for pass 3's walls to apply; the handbook and the WALL BREAKER chip read them.
+- **Detail page chips** (`MenuScreen.Detail.cs`, above the weapons; the main card keeps its marks): TOP ATTACK (a weapon
+  striking the roof), SECOND ROUND (a round its carrier loads), AIRBURST (fragmentation that hits aircraft), GUIDED
+  (missile, drone, guided bomb or shell), STRUCTURE BREAKER (a weapon at x1.5 or more on structures), WALL BREAKER; a tap
+  opens the Dossier's handbook scrolled to its entry (`OpenHandbook`).
+
+Tests (written, not run): `HandbookP32Tests` (the type table, the penetration row, the worked example, the marks, the
+defences and their locked rule, the structure table and walls, in both languages, against the data; every chip opens an
+entry that exists).

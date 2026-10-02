@@ -64,8 +64,11 @@ TACTIC_NAMES = {"Phục kích": "ambush", "Bảo vệ căn cứ": "base_defence"
 # What the sheet says in prose, as fields (the appendix's mandatory rules).
 EXTRA = {
     # Defending side: "ai" the AI's commander holds, "player" the player holds; the defender never gets stall pressure.
-    "assault": {"defender": "ai", "leashRegion": "zone", "leashDistance": 40},
-    "siege": {"defender": "ai", "leashRegion": "defenceLayer", "leashDistance": 30},
+    "assault": {"defender": "ai", "leashRegion": "zone", "leashDistance": 40, "hqSkillThreat": 10},
+    "siege": {"defender": "ai", "leashRegion": "defenceLayer", "leashDistance": 30, "hqSkillThreat": 12},
+    # Prompt 32 L4: the enemy CP inside a base's region at which the AI uses its HQ's skill (the profile's default is 8).
+    "conquest": {"hqSkillThreat": 8},
+    "hill": {"hqSkillThreat": 8},
     "defend": {"defender": "player"},
     "survival": {"defender": "player"},
     "hold": {"defender": "player"},
@@ -79,7 +82,7 @@ EXTRA = {
     "outpost": {"phaseOverrides": [{"when": "step:clear", "stall": "Both"}, {"when": "step:capture", "stall": "Both"},
                                    {"when": "step:build", "stall": "ObjectiveStallOnly"},
                                    {"when": "step:hold", "stall": "AttackerOnly"}]},
-    "deathmatch": {"flags": ["riskWeightByUnitValue"]},
+    "deathmatch": {"flags": ["riskWeightByUnitValue"], "hqSkillThreat": 8},
     "bossrush": {"flags": ["noGeneralTactic"]},
     "fixed_deck": {"inherits": True},
     # "theo giai đoạn": the operation's phases override; between phases it plays like a capture mission.

@@ -37,13 +37,20 @@ namespace MachineBrigade.Sim.Content
 
     public readonly struct UnitPlacement
     {
-        public UnitPlacement(string defId, int team, Vector2 position, float heading)
+        public UnitPlacement(string defId, int team, Vector2 position, float heading, bool start = false)
         {
             DefId = defId;
             Team = team;
             Position = position;
             Heading = heading;
+            Start = start;
         }
+
+        /// <summary>
+        /// Prompt 32 L6: one of a generated map's generic start units (the map file's "start": true): replaced by the
+        /// opening squad in the modes that have one (<see cref="SimWorld.MapUnits"/>); a mission keeps them.
+        /// </summary>
+        public bool Start { get; }
 
         public string DefId { get; }
         public int Team { get; }
@@ -245,7 +252,7 @@ namespace MachineBrigade.Sim.Content
             var teams = new List<TeamStart>();
             foreach (var t in Teams) teams.Add(new TeamStart(Swap(t.Team), t.Rally));
             var units = new List<UnitPlacement>();
-            foreach (var u in Units) units.Add(new UnitPlacement(u.DefId, Swap(u.Team), u.Position, u.Heading));
+            foreach (var u in Units) units.Add(new UnitPlacement(u.DefId, Swap(u.Team), u.Position, u.Heading, u.Start));
             var bases = new List<BaseSiteDef>();
             foreach (var b in Bases) bases.Add(new BaseSiteDef(Swap(b.Team), b.Hq, b.Heading, b.Slots));
             // A fixed route runs toward the other camp now: the same road, walked the other way.
@@ -314,7 +321,7 @@ namespace MachineBrigade.Sim.Content
             foreach (var u in root.Array("units"))
             {
                 units.Add(new UnitPlacement(u.String("def"), u.Int("team", 0), new Vector2(u.Float("x"), u.Float("z")),
-                    SimMath.DegToRad(u.Float("heading", 0f))));
+                    SimMath.DegToRad(u.Float("heading", 0f)), u.Bool("start", false)));
             }
 
             var points = new List<CapturePointDef>();

@@ -167,7 +167,7 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(new TeamEconomy(PlayerTeam, _rules.StartCp, vehicles: _rules.PlayerVehicles, supports: _rules.PlayerSupports));
             world.EnableEconomy(new TeamEconomy(EnemyTeam, _rules.StartCp, vehicles: _rules.EnemyVehicles, supports: _rules.EnemySupports));
             if (_rules.UnderdogAfter > 0f) world.Economy.Underdog = new Economy.UnderdogRules { After = _rules.UnderdogAfter };
-            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+            foreach (var unit in world.MapUnits) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             if (_rules.BaseDefences) BaseDefences.Build(world, _rules.Bases, PlayerTeam, EnemyTeam);
             world.Bases.PointOwner = OwnerOf;
             if (_rules.Outposts) _outposts = new Outposts(world, _points, neutral: true);

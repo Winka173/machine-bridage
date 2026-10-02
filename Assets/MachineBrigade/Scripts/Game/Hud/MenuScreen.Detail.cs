@@ -712,6 +712,21 @@ namespace MachineBrigade.Game.Hud
 
         private void VehicleWeapons(VehicleDef def, bool table = false)
         {
+            // Prompt 32 L8: small chips for the handbook's marks (top attack, second round, airburst, guided, structure and wall
+            // breakers); a tap opens the right entry of the ammunition handbook. The main card keeps its marks.
+            var chips = AmmoHandbook.Chips(_catalog, def);
+            if (chips.Count > 0)
+            {
+                var strip = Kit.Box("fc-hb__chips");
+                strip.style.flexDirection = FlexDirection.Row;
+                strip.style.flexWrap = Wrap.Wrap;
+                foreach (var (key, entry) in chips)
+                {
+                    var target = entry;
+                    strip.Add(new KitChip(Strings.Get(key), false, () => OpenHandbook(target)));
+                }
+                _detailBody.Add(strip);
+            }
             var mounts = def.Mounts;
             var lines = WeaponInfo.Of(def);
             for (var i = 0; i < lines.Count && i < mounts.Count; i++)

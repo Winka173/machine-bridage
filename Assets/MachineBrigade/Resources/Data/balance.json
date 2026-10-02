@@ -13,6 +13,9 @@
   "firepower": { "strikes": 2.0, "propBlasts": 1.5, "vehicleBlasts": 2.0 },
   // Play-test 6 (DECISIONS 21G): income 0.95 -> 0.9: the owner found the economy a little strong (battles flooded).
   "economy": { "income": 0.9, "supply": 1.05, "bankByMode": { "Conquest": [30, 45], "Deathmatch": [30, 45], "KingOfTheHill": [30, 45], "Assault": [30, 45], "Siege": [40, 55], "Defend": [30, 45], "Endless": [30, 45], "Survival": [30, 40], "BossRush": [45, 60] },
+    // Prompt 32 L6 (DECISIONS "Prompt 32 L4/L5/L6/L8"): every listed mode's starting CP x 1.16 (the new prices), rounded
+    // half up, both sides; a campaign mission's own CP too.
+    "startCp": { "scale": 1.16, "modes": ["Conquest", "Deathmatch", "KingOfTheHill", "Assault", "Siege", "Weekly", "Defend", "Endless", "Survival", "BossRush", "Campaign", "Showdown"] },
     // Army supply per mode, in CP: upkeep starts at 1.5x it (40 x 1.05 x 1.5: about 63 CP, eight
     // to ten mid-tier vehicles). A mode that sets its own (Siege, Defend, a campaign mission) keeps it.
     // The campaign stays at its tuned 24 until its rework; Survival at 30 (more would make the waves easy).
@@ -35,6 +38,51 @@
   // then a cooldown. roles, by mode: Anchor (the HQ cannot fall: a camp to lean on), Target (the enemy
   // base is the objective), Defend (the side loses when its HQ falls), None (no base).
   // Tower tiers (1-10), branches and utility modules come later; "tier", "branches" and "modules" are kept free for them.
+  // Prompt 32 L8: the ammunition handbook's worked example (one shot of the shooter's main weapon on the target's front and side).
+  "handbook": { "exampleShooter": "ifv", "exampleTarget": "main_battle_tank" },
+  // Prompt 32 L6: the opening squads. In "modes" the player's commander drops its row at tick 0, in "enemyModes" the enemy
+  // commander its general's (by id or base style, else "default"); each role is the deck's cheapest card of the role
+  // (baseCP, then id; a role the deck lacks is left out, its CP kept), its baseCP taken from the starting CP, at most
+  // "share" of it. They replace the maps' generic start units ("start": true in the map files) in those modes. Campaign
+  // missions only with their "openingSquad" flag (default off). lind, reyes and kerr are the sheet's Mara, Hawk and
+  // Nadia; sen is Venn's general id; wolff and thorne have no general in the data yet.
+  "openingSquads": {
+    "share": 0.6,
+    "modes": ["Conquest", "Deathmatch", "KingOfTheHill", "Assault", "Siege", "Defend", "Endless", "Survival", "BossRush", "Showdown"],
+    "enemyModes": ["Conquest", "Deathmatch", "KingOfTheHill", "Assault", "Siege", "Showdown"],
+    "roles": {
+      "mbt": ["main_battle_tank", "next_gen_tank", "twin_tank", "turtle_tank"],
+      "scout": ["scout_jeep", "radar_scout", "amphib_light_vehicle"],
+      "radar_scout": ["radar_scout", "radar_support_vehicle", "counter_battery_radar"],
+      "engineer": ["engineer_vehicle", "demolition_line_vehicle", "bridging_vehicle"],
+      "repair": ["mobile_repair_vehicle", "ammo_carrier"],
+      "light": ["armored_car", "rocket_technical", "recoilless_jeep", "zu23_technical", "combat_wreck_car"],
+      "scout_heli": ["scout_heli", "light_attack_heli"],
+      "fpv": ["fpv_carrier", "fibre_fpv_carrier"],
+      "wheeled": ["armored_car", "wheeled_gun", "ifv"],
+      "light_tank": ["light_tank", "airborne_light_tank"],
+      "bunker": ["bunker_vehicle"],
+      "fortify": ["bunker_vehicle", "siege_tank"],
+      "artillery": ["mortar_carrier", "sp_mortar", "wheeled_howitzer", "artillery", "auto_loader_howitzer"],
+      "mine_layer": ["mine_layer", "mine_rocket_truck"],
+      "heli": ["attack_helicopter", "light_attack_heli", "scout_heli", "gunship_heli"],
+      "drone": ["fpv_carrier", "fibre_fpv_carrier", "lancet_truck", "ground_drone_carrier"],
+      "tank": ["light_tank", "main_battle_tank", "next_gen_tank", "turtle_tank", "twin_tank", "heavy_tank"],
+      "heavy": ["heavy_tank", "twin_tank", "armored_bulldozer", "titan_tank", "bunker_vehicle"],
+      "cheap4": { "maxCp": 4 }
+    },
+    "commanders": {
+      "kade": ["mbt", "scout"], "lind": ["engineer", "repair", "light"], "reyes": ["scout_heli", "scout"],
+      "kerr": ["scout", "radar_scout", "light"], "venn": ["fpv", "scout"], "mendez": ["wheeled", "light_tank", "scout"],
+      "brandt": ["bunker", "engineer"], "dahl": ["artillery", "scout"], "brenn": [], "adler": ["scout", "light"],
+      "varro": ["cheap4", "cheap4", "cheap4"], "reyn": ["mbt"], "quist": ["fortify", "light", "scout"], "okoye": []
+    },
+    "generals": {
+      "varga": ["tank"], "orlov": ["artillery", "radar_scout"], "kessler": ["mine_layer", "light"], "wolff": ["heli"],
+      "sen": ["drone"], "venn": ["drone"], "thorne": ["mbt"], "aurel": ["heavy"], "default": ["scout", "light"]
+    }
+  },
+
   "base": {
     "hq": "headquarters",
     // Prompt 32 L1 (DECISIONS "Prompt 32 L0/L1/L2"): the player's 22 tower cards (10 small, 7 medium, 5 large).
@@ -56,6 +104,45 @@
     "rebuild": { "small": { "cp": 2, "cooldown": 25, "drop": 2.5 }, "medium": { "cp": 4, "cooldown": 40, "drop": 3.5 }, "large": { "cp": 7, "cooldown": 60, "drop": 5 }, "delay": 4,
       "enemyRadius": 20, "showdownCutoff": 600, "hqRescue": 0.25 },
     "outpost": { "cp": 6, "slots": 2 },
+    // Prompt 32 L4 (DECISIONS "Prompt 32 L4/L5/L6/L8"): the HQ types, chosen in the loadout from HQ level 1 (they replace the
+    // HQ doctrine). Scales by HQ level 1-5. "radius": the base region (the Shield's dome, the garrison's leash, the AI's
+    // threat count). Fortress: the HQ stands as headquarters.fortress_ground / _air (the plain HQ plus a medium tower's
+    // gun, its damage and cadence each the root of "scale", "airScale" for the anti-air branch); skill hq_barrage (three
+    // heavy rounds, damage x the scale). Garrison: a squad stocked every "every" s by level ("stock" at most), turned out
+    // when an enemy enters the region, gone after
+    // "clear" s without enemies; "caps" the baseCP alive. Shield: headquarters.shield (a C-RAM's point defence over the
+    // region, "charges" x "scale" interceptors at "scale" pace), towers mend "regen" of their health a second after
+    // "regenDelay" s unhit, the emergency dome absorbs "dome" of the HQ's health for "domeSeconds". Compared by
+    // Tools/balance/p32_hq_types.py (Docs/balance/p32_hq_types.md), which refitted the prompt's tables (0.5-1.2, every 60 s,
+    // regen 0.2-0.4 %, dome 8-18 %) into the value bands: its --apply wrote the numbers below.
+    "hqTypes": {
+      "default": "fortress", "skillCooldown": 120, "radius": 45,
+      "fortress": { "ground": "headquarters.fortress_ground", "air": "headquarters.fortress_air", "barrage": "hq_barrage",
+                    "scale": [0.29, 0.36, 0.42, 0.49, 0.55], "airScale": [0.16, 0.2, 0.23, 0.27, 0.31], "aiAirShare": 0.3 },
+      "garrison": { "every": [120.0, 100.0, 100.0, 130.0, 170.0], "stock": 2, "clear": 30, "caps": [6, 8, 10, 12, 15],
+                    "squads": [ { "units": ["light_tank"] }, { "units": ["armored_car", "scout_jeep"] }, { "units": ["light_tank", "armored_car"] },
+                                { "units": ["main_battle_tank"] }, { "units": ["main_battle_tank", "scout_jeep"] } ] },
+      "shield": { "hq": "headquarters.shield", "scale": [0.15, 0.19, 0.24, 0.26, 0.29], "charges": 4,
+                  "regenDelay": 5, "regen": [0.00059, 0.00073, 0.0009, 0.00092, 0.00096], "dome": [0.024, 0.029, 0.036, 0.04, 0.043], "domeSeconds": 10 },
+      "ai": { "brandt": "fortress", "kessler": "fortress", "varga": "garrison", "orlov": "shield", "aurel": "shield",
+              "Easy": "garrison", "Normal": "fortress", "Hard": "shield", "VeryHard": "fortress" }
+    },
+    // Prompt 32 L8 (for pass 3's walls): the wall breakers (shared tag) and their damage on walls only (not towers or the HQ).
+    "walls": { "breakerMultiplier": 1.5, "breakers": ["armored_bulldozer", "engineer_vehicle", "demolition_line_vehicle"] },
+    // Prompt 32 L5 (DECISIONS "Prompt 32 L4/L5/L6/L8"): the reference base of each HQ level (rank 1, no equipment, no HQ
+    // type), every slot the level opens filled with a balanced mix of roster cards. The Defend and Endless waves are sized
+    // by the reference of the defender's HQ level (BaseStrength.ReferenceScore), never by the player's own base, which
+    // the Base screen only shows.
+    "reference": [
+      { "level": 1, "small": ["guard_tower", "mg_bunker", "aa_turret"], "medium": ["gun_turret"], "utilities": ["repair_bay"] },
+      { "level": 2, "small": ["guard_tower", "mg_bunker", "aa_turret", "at_gun_emplacement"], "medium": ["gun_turret", "atgm_tower"], "utilities": ["repair_bay"] },
+      { "level": 3, "small": ["guard_tower", "mg_bunker", "aa_turret", "at_gun_emplacement"], "medium": ["gun_turret", "heavy_flak_tower"], "large": ["heavy_turret"],
+        "utilities": ["repair_bay", "radar_station"] },
+      { "level": 4, "small": ["guard_tower", "mg_bunker", "aa_turret", "at_gun_emplacement", "minefield"], "medium": ["gun_turret", "atgm_tower", "heavy_flak_tower"],
+        "large": ["heavy_turret"], "utilities": ["repair_bay", "radar_station"] },
+      { "level": 5, "small": ["guard_tower", "mg_bunker", "aa_turret", "at_gun_emplacement", "minefield", "ew_tower"], "medium": ["gun_turret", "atgm_tower", "c_ram"],
+        "large": ["heavy_turret", "missile_battery"], "utilities": ["repair_bay", "radar_station", "ammo_depot"] }
+    ],
     "roles": { "Conquest": "Anchor", "KingOfTheHill": "Anchor", "Deathmatch": "Anchor", "Assault": "Target", "Siege": "Target",
                "Defend": "Defend", "Endless": "Defend", "Weekly": "Target", "Survival": "None", "BossRush": "None", "Campaign": "None" },
     // The enemy's base: which towers it prefers (weights by tower id, "*" for any), and its HQ level, by difficulty.
@@ -275,11 +362,11 @@
   // profile each mode tag and campaign goal plays (Docs/DECISIONS.md "28 appendix").
   "aiModeProfiles": {
     "profiles": {
-      "conquest": {"name": "Giữ cứ điểm", "controllers": ["Commander"], "tactics": ["*"], "generalTactic": false, "stall": "Both", "spend": true, "advance": true, "support": "Normal", "engagement": "Normal", "defender": "none", "targetMask": ["enemy"], "objectivePolicy": "Chặn mất điểm nhanh nhất; mục tiêu chế độ thắng sở thích chiến thuật", "autoAiNote": "Giữ cứ điểm đang mất nhanh nhất"},
-      "deathmatch": {"name": "Tử chiến", "controllers": ["Commander"], "tactics": ["*"], "generalTactic": false, "stall": "Both", "spend": true, "advance": true, "support": "Normal", "engagement": "Normal", "defender": "none", "targetMask": ["enemy"], "objectivePolicy": "riskWeightByUnitValue: tránh \"biếu\" xe đắt; dẫn điểm gần hết giờ thì giảm hung hăng (không rút hẳn)", "autoAiNote": "Dồn hỏa lực, tránh biếu xe đắt", "flags": ["riskWeightByUnitValue"]},
-      "hill": {"name": "Vua đồi", "controllers": ["Commander"], "tactics": ["*"], "generalTactic": false, "stall": "Both", "spend": true, "advance": true, "support": "Normal", "engagement": "Normal", "defender": "none", "targetMask": ["enemy"], "objectivePolicy": "Sàn cứng: không để đồi trống khi đủ quân tranh; 60 s cuối ưu tiên đồi cao hơn", "autoAiNote": "Giữ đồi"},
-      "assault": {"name": "Công phá", "controllers": ["Commander", "Static"], "tactics": ["depth", "base_defence", "attrition", "ambush", "balanced"], "generalTactic": false, "stall": "AttackerOnly", "spend": true, "advance": false, "support": "Normal", "engagement": "Normal", "defender": "ai", "targetMask": ["enemy"], "objectivePolicy": "Mất khu thì lùi về khu sau (leashRegion theo khu)", "autoAiNote": "Khu kế tiếp, quỹ thời gian", "leashRegion": "zone", "leashDistance": 40},
-      "siege": {"name": "Công thành / Pháo đài tuần", "controllers": ["WaveDirector", "Fortress"], "tactics": ["depth", "base_defence", "attrition", "ambush", "balanced"], "generalTactic": false, "stall": "Off", "spend": true, "advance": false, "support": "Normal", "engagement": "Normal", "defender": "ai", "targetMask": ["enemy"], "objectivePolicy": "Đồn trú leash theo lớp phòng thủ; áp lực cho phe công là giờ, siêu pháo, mục tiêu", "autoAiNote": "Mục tiêu giai đoạn; né vùng siêu pháo", "leashRegion": "defenceLayer", "leashDistance": 30},
+      "conquest": {"name": "Giữ cứ điểm", "controllers": ["Commander"], "tactics": ["*"], "generalTactic": false, "stall": "Both", "spend": true, "advance": true, "support": "Normal", "engagement": "Normal", "defender": "none", "hqSkillThreat": 8, "targetMask": ["enemy"], "objectivePolicy": "Chặn mất điểm nhanh nhất; mục tiêu chế độ thắng sở thích chiến thuật", "autoAiNote": "Giữ cứ điểm đang mất nhanh nhất"},
+      "deathmatch": {"name": "Tử chiến", "controllers": ["Commander"], "tactics": ["*"], "generalTactic": false, "stall": "Both", "spend": true, "advance": true, "support": "Normal", "engagement": "Normal", "defender": "none", "hqSkillThreat": 8, "targetMask": ["enemy"], "objectivePolicy": "riskWeightByUnitValue: tránh \"biếu\" xe đắt; dẫn điểm gần hết giờ thì giảm hung hăng (không rút hẳn)", "autoAiNote": "Dồn hỏa lực, tránh biếu xe đắt", "flags": ["riskWeightByUnitValue"]},
+      "hill": {"name": "Vua đồi", "controllers": ["Commander"], "tactics": ["*"], "generalTactic": false, "stall": "Both", "spend": true, "advance": true, "support": "Normal", "engagement": "Normal", "defender": "none", "hqSkillThreat": 8, "targetMask": ["enemy"], "objectivePolicy": "Sàn cứng: không để đồi trống khi đủ quân tranh; 60 s cuối ưu tiên đồi cao hơn", "autoAiNote": "Giữ đồi"},
+      "assault": {"name": "Công phá", "controllers": ["Commander", "Static"], "tactics": ["depth", "base_defence", "attrition", "ambush", "balanced"], "generalTactic": false, "stall": "AttackerOnly", "spend": true, "advance": false, "support": "Normal", "engagement": "Normal", "defender": "ai", "hqSkillThreat": 10, "targetMask": ["enemy"], "objectivePolicy": "Mất khu thì lùi về khu sau (leashRegion theo khu)", "autoAiNote": "Khu kế tiếp, quỹ thời gian", "leashRegion": "zone", "leashDistance": 40},
+      "siege": {"name": "Công thành / Pháo đài tuần", "controllers": ["WaveDirector", "Fortress"], "tactics": ["depth", "base_defence", "attrition", "ambush", "balanced"], "generalTactic": false, "stall": "Off", "spend": true, "advance": false, "support": "Normal", "engagement": "Normal", "defender": "ai", "hqSkillThreat": 12, "targetMask": ["enemy"], "objectivePolicy": "Đồn trú leash theo lớp phòng thủ; áp lực cho phe công là giờ, siêu pháo, mục tiêu", "autoAiNote": "Mục tiêu giai đoạn; né vùng siêu pháo", "leashRegion": "defenceLayer", "leashDistance": 30},
       "defend": {"name": "Phòng thủ / Vô tận", "controllers": ["WaveDirector"], "tactics": [], "generalTactic": false, "stall": "Off", "spend": false, "advance": false, "support": "Normal", "engagement": "Normal", "defender": "player", "targetMask": ["enemy"], "objectivePolicy": "Đội trong đợt vẫn dùng hành vi cấp đội (chọc thủng, che chắn, bảo vệ pháo, chọn mục tiêu)", "autoAiNote": "Giữ tuyến, lùi tuyến có trật tự"},
       "survival": {"name": "Sinh tồn", "controllers": ["WaveDirector", "Boss"], "tactics": [], "generalTactic": false, "stall": "Off", "spend": false, "advance": false, "support": "Normal", "engagement": "Normal", "defender": "player", "targetMask": ["enemy"], "objectivePolicy": "", "autoAiNote": "Giữ bãi thả; chặn mối đe dọa gần; không đuổi xa"},
       "bossrush": {"name": "Săn trùm", "controllers": ["Boss"], "tactics": [], "generalTactic": false, "stall": "Off", "spend": false, "advance": false, "support": "Normal", "engagement": "Normal", "defender": "none", "targetMask": ["enemy"], "objectivePolicy": "", "autoAiNote": "1) né cảnh báo chết người 2) bộ phận boss nguy hiểm 3) bộ phận lộ ra 4) thân", "flags": ["noGeneralTactic"]},
@@ -1440,6 +1527,17 @@
       "secondary": [ { "weapon": "hq_flak", "slot": "mg", "aim": "Free" }, { "weapon": "hq_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 260, "radius": 14, "delay": 0.8, "tier": "Ultimate" } },
+    // Prompt 32 L4: the HQ as its type stands (base.hqTypes): the plain HQ plus a medium tower's gun (the sniper turret's
+    // 120 mm, the Bofors tower's 40 mm), or plus a C-RAM's point defence over the base region (6 the most; the HQ level
+    // sets how many of them, base.hqTypes.shield).
+    { "id": "headquarters.fortress_ground", "inherits": "headquarters",
+      "secondary": [ { "weapon": "hq_flak", "slot": "mg", "aim": "Free" }, { "weapon": "hq_flak", "slot": "mg", "aim": "Free" },
+                     { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "turret_gun_120_long", "slot": "gun", "aim": "Free" } ] },
+    { "id": "headquarters.fortress_air", "inherits": "headquarters",
+      "secondary": [ { "weapon": "hq_flak", "slot": "mg", "aim": "Free" }, { "weapon": "hq_flak", "slot": "mg", "aim": "Free" },
+                     { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "bofors_l70", "slot": "gun", "aim": "Free" } ] },
+    { "id": "headquarters.shield", "inherits": "headquarters",
+      "aps": {"radius": 45, "charges": 6, "recharge": 0.6, "rockets": true, "shells": 0.3, "burst": 0.5} },
     // The fortress super-gun (Siege and Defend): a giant twin gun the fortress fires on a countdown at the attackers'
     // army or camp (SiegeMode drives it; it has no gun of its own). Destroying it is a side objective.
     { "id": "super_gun", "class": "Defense", "static": true, "model": "super_gun", "scale": 1.8, "armour": 3, "hp": 5200, "speed": 0, "turnRate": 1, "turretTurnRate": 12, "radius": 7, "length": 8, "width": 8, "cp": 0, "vision": 40,
@@ -2542,6 +2640,8 @@
     { "id": "escort_drop.aa_vehicle",       "kind": "Reinforce", "event": true, "cooldown": 0, "delay": 3.0, "radius": 5, "count": 1, "tier": "Large", "units": ["aa_vehicle"] },
     { "id": "escort_drop.engineer_vehicle", "kind": "Reinforce", "event": true, "cooldown": 0, "delay": 3.0, "radius": 5, "count": 1, "tier": "Large", "units": ["engineer_vehicle"] },
     // Prompt 19: the warning rings of a drop pod's landing and of the Silver Bug's crash (the look only; no damage of their own).
+    // Prompt 32 L4: a Fortress HQ's skill, three heavy rounds on the point (damage x the HQ level's scale, base.hqTypes).
+    { "id": "hq_barrage",        "kind": "Barrage",       "pen": 4, "event": true, "cooldown": 0, "delay": 1.5, "radius": 4, "count": 3, "duration": 1.5, "damage": 450, "blast": 8, "tier": "Huge" },
     { "id": "pod_drop",          "kind": "Barrage",       "pen": 0, "event": true, "cooldown": 0, "delay": 6.0, "radius": 5, "count": 1, "duration": 0, "damage": 0, "blast": 4, "tier": "Large" },
     { "id": "bug_crash",         "kind": "Barrage",       "pen": 0, "event": true, "cooldown": 0, "delay": 6.0, "radius": 18, "count": 1, "duration": 0, "damage": 0, "blast": 16, "tier": "Ultimate" },
     { "id": "supergun_shell",    "kind": "Barrage",       "pen": 4, "event": true, "cooldown": 0, "delay": 3.0, "radius": 15, "count": 1, "duration": 0, "damage": 0, "blast": 12, "tier": "Ultimate" },

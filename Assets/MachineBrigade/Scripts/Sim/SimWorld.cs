@@ -361,6 +361,22 @@ namespace MachineBrigade.Sim
         /// <summary>The mode being played ("Conquest", "Siege"...; null in tests), for data that differs by mode.</summary>
         public string? ModeTag { get; set; }
 
+        /// <summary>
+        /// Prompt 32 L6: the map's generic start units (<see cref="UnitPlacement.Start"/>) are left out: the mode gives its
+        /// sides opening squads instead (set by the session; false in tests and missions).
+        /// </summary>
+        public bool SkipStartUnits { get; set; }
+
+        /// <summary>The map's units a mode spawns at its start: all, or all but the generic start units (<see cref="SkipStartUnits"/>).</summary>
+        public IEnumerable<UnitPlacement> MapUnits
+        {
+            get
+            {
+                foreach (var u in Map.Units)
+                    if (!SkipStartUnits || !u.Start) yield return u;
+            }
+        }
+
         public void EnableEconomy(TeamEconomy economy)
         {
             // The catalog sets the pace of every economy (see balance.json "economy").
@@ -372,6 +388,14 @@ namespace MachineBrigade.Sim
             if (economy.Team == 1) economy.VehicleCap = Catalog.VehicleCapFor(ModeTag);
             // Prompt 29 E1: the mode's bank from the data, where the mode gave this side the bank the manifest moved.
             economy.BaseBank = Catalog.BankFor(ModeTag, economy.BaseBank);
+            // Prompt 32 L6: the starting CP x the data's scale (1.16, the new prices) in the modes it lists, rounded half up;
+            // the bank never below it.
+            var start = Catalog.Opening.StartCp(ModeTag, economy.Cp);
+            if (start != economy.Cp)
+            {
+                economy.Cp = start;
+                economy.BaseBank = MathF.Max(economy.BaseBank, start);
+            }
             Economy.Enable(economy);
             // Prompt 22 F: a commander set before the economy was enabled.
             ApplyCommander(economy);
@@ -517,7 +541,7 @@ namespace MachineBrigade.Sim
 
         /// <summary>How much harder a side's fire support of this kind hits (its card's rank).</summary>
         internal float StrikeDamage(int team, string supportId) =>
-            team >= 0 && team < _strikeBoosts.Length && _strikeBoosts[team] is { } boost ? boost(supportId) : 1f;
+            (team >= 0 && team < _strikeBoosts.Length && _strikeBoosts[team] is { } boost ? boost(supportId) : 1f) * Bases.SkillStrikeScale(team, supportId);
 
         /// <summary>The rank of a side's fire-support card (1 when the side has no ranks).</summary>
         internal int StrikeRank(int team, string supportId) =>
@@ -677,6 +701,8 @@ namespace MachineBrigade.Sim
                         Mix((long)MathF.Round(v.PartFrac[i] * 1000f) * 4 + (v.PartBroken[i] ? 1 : 0) + (v.PartPatched[i] ? 2 : 0));
                 }
                 Bosses.Mix(Mix);
+                // Prompt 32 L4: the HQ types' state (skill cooldowns, garrison stock, emergency domes).
+                Bases.Mix(Mix);
                 Naval.Mix(Mix);
                 // Prompt 23 A.3: the mission's events (their moments, the blackout, the weather's sight).
                 MixEvents(Mix);
@@ -728,6 +754,7 @@ namespace MachineBrigade.Sim
             if (command.Type == CommandType.Paradrop) return Economy.Paradrop(command.Team, command.DefId, command.Point);
             if (command.Type == CommandType.Strike) return Strikes.Call(command);
             if (command.Type == CommandType.CallTower) return Bases.CallTower(command);
+            if (command.Type == CommandType.HqSkill) return Bases.UseSkill(command);
             if (command.Type == CommandType.Outpost) return Bases.SetUpOutpost(command);
             if (command.Type == CommandType.FocusPart) return Bosses.Focus(command);
 
