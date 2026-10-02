@@ -14858,3 +14858,4 @@ previews or tests.
   minimap: a small square per site (holder colour, capture arc) and an amber closing ring for the drop. A site changing
   hands toasts "We hold the {site}" / "The enemy took the {site}". Whether the radar dome, garage and ammo dump read
   as capturable is left for the owner's look in Unity.
+- Lead (2026-10-02): prompt 30 local merged (compile 0 first try); design review PDF rebuilt at 320 pages with section 2c (match rules, endless, neutrals, dialogue UI, match end, 4 acts). Prompt 30 is done except its tests (wait for the owner) and the L3/L5 leftovers listed in report_p30.md.
