@@ -20,6 +20,18 @@ namespace MachineBrigade.Game.Hud
             return texture;
         }
 
+        private static readonly Dictionary<string, Texture2D> Found = new();
+
+        /// <summary>Prompt 30 L2: the portrait drawn for <paramref name="id"/>, or null when there is none (no HQ stand-in).</summary>
+        public static Texture2D Find(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            if (Found.TryGetValue(id, out var texture)) return texture;
+            texture = Resources.Load<Texture2D>("UI/Portraits/" + id);
+            Found[id] = texture;
+            return texture;
+        }
+
         /// <summary>A square portrait element (its size is the stylesheet's).</summary>
         public static VisualElement Element(string id, string classNames)
         {

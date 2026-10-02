@@ -793,6 +793,30 @@
 .cb { --fc-dialogue-enemy: var(--fc-dialogue-enemy-cb); }
 .fc-dialogue--raised { left: var(--fc-space-3); right: 720px; }
 .fc-dialogue--high { bottom: 280px; }
+/* Prompt 30 L2: the portrait strip: a small portrait (or the side's placeholder with the speaker's initial) before the two
+   lines, framed in the side's colour; a P0 system line has a danger edge. Bottom centre in the safe area, so it never
+   covers the top bar's objective timer, the boss bar or its big-attack warning (16:9, 20:9 and 4:3 alike). */
+.fc-dialogue__strip { flex-direction: row; align-items: center; }
+.fc-dialogue__portrait {
+    width: 44px; height: 44px; flex-shrink: 0; margin-right: var(--fc-space-2); align-items: center; justify-content: center;
+    -unity-background-scale-mode: scale-and-crop; background-color: rgba(20, 24, 28, 0.9);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;
+    border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px;
+}
+.fc-dialogue__portrait--ally { border-top-color: var(--fc-dialogue-ally); border-right-color: var(--fc-dialogue-ally); border-bottom-color: var(--fc-dialogue-ally); border-left-color: var(--fc-dialogue-ally); }
+.fc-dialogue__portrait--enemy { border-top-color: var(--fc-dialogue-enemy); border-right-color: var(--fc-dialogue-enemy); border-bottom-color: var(--fc-dialogue-enemy); border-left-color: var(--fc-dialogue-enemy); }
+.fc-dialogue__portrait--placeholder.fc-dialogue__portrait--ally { background-color: rgb(28, 52, 72); }
+.fc-dialogue__portrait--placeholder.fc-dialogue__portrait--enemy { background-color: rgb(74, 31, 26); }
+.fc-dialogue__initial { -unity-font: var(--fc-font-display-semi); font-size: 22px; color: var(--fc-text); -unity-text-align: middle-center; }
+.fc-dialogue__text { flex-shrink: 1; -unity-text-align: middle-left; }
+.fc-dialogue--system .fc-dialogue__strip { border-left-width: 3px; border-left-color: var(--fc-danger); }
+.fc-hud.fc-text-large .fc-dialogue__portrait { width: 52px; height: 52px; }
+.fc-hud.fc-hud--compact .fc-dialogue__portrait { width: 40px; height: 40px; }
+/* Prompt 30 L3: the match end hides the card tray, the selection strip and the command buttons (the boss bar, the mission
+   bar, the notices and the dialogue stay). */
+.fc-hud--ending .fc-deck, .fc-hud--ending .fc-hud__command, .fc-hud--ending .fc-hud__rail, .fc-hud--ending .fc-hud__corner { display: none; }
+/* Prompt 30 L3: the story lines the match end cut, on the results panel */
+.fc-result__story-line { margin-top: var(--fc-space-1); white-space: normal; }
 /* H.6: the log of the battle's last lines, over the pause menu */
 .fc-dialogue-log__card { width: 760px; max-height: 88%; }
 .fc-dialogue-log__scroll { flex-shrink: 1; margin: var(--fc-space-2) 0; }
