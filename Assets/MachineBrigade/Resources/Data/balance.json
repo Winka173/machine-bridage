@@ -965,7 +965,7 @@
   // weapon is the main weapon (on the turret; fixed forward on aircraft). secondary lists extra mounts:
   // slot names the model muzzle (Muzzle_<slot>); aim is Turret (coaxial), Free (own mount) or Hull (fixed forward).
   "vehicles": [
-    { "id": "scout_jeep", "stillCamo": 0.4, "value": 0.5, "scale": 1, "modelSize": [2.64, 1.4, 1.41],       "armour": 0, "hp": 120, "speed": 12, "turnRate": 200, "turretTurnRate": 360, "radius": 1.3, "length": 2.64, "width": 1.4, "cp": 2, "vision": 60,
+    { "id": "scout_jeep", "dropDelay": 2.5, "stillCamo": 0.4, "value": 0.5, "scale": 1, "modelSize": [2.64, 1.4, 1.41],       "armour": 0, "hp": 120, "speed": 12, "turnRate": 200, "turretTurnRate": 360, "radius": 1.3, "length": 2.64, "width": 1.4, "cp": 2, "vision": 60,
       "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 2,
       "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.1, "tier": "Large" } },
     { "id": "light_tank", "dropDelay": 2.5, "value": 0.5, "scale": 1, "modelSize": [6.39, 2.61, 1.89],       "class": "Tank", "armour": 2, "hp": 460, "speed": 9, "turnRate": 90, "turretTurnRate": 120, "radius": 1.7, "length": 5.72, "width": 2.61, "cp": 3, "vision": 40,
@@ -1106,21 +1106,21 @@
     // Prompt 17 D.5: the engineer and the fortification sapper are one card, the engineer: it repairs vehicles and
     // (at half the rate) towers, clears mines and breaks obstacles, slowly with its MG (the bulldozer is the quick way).
     // It does not rearm (the ammunition carrier does). The sapper's model stays for a later camouflage.
-    { "id": "engineer_vehicle", "value": 1, "altModels": ["sapper"], "scale": 1, "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": [2, 1, 1, 0], "hp": 800, "speed": 7, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 3, "vision": 30,
+    { "id": "engineer_vehicle", "dropDelay": 2.5, "value": 1, "altModels": ["sapper"], "scale": 1, "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": [2, 1, 1, 0], "hp": 800, "speed": 7, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 3, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "repair": { "radius": 14, "rate": 0.025 },
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.35, "tier": "Large" } },
     // Prompt 13 F.2: the ammunition carrier, a forward rearm point (the supply truck's model: asset debt).
-    { "id": "ammo_carrier", "value": 1, "scale": 1, "modelSize": [8.36, 2.02, 2.46], "class": "Support", "armour": 0, "hp": 520, "speed": 8.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.0, "length": 8.36, "width": 2.02, "cp": 4, "vision": 30,
+    { "id": "ammo_carrier", "dropDelay": 2.5, "value": 1, "scale": 1, "modelSize": [8.36, 2.02, 2.46], "class": "Support", "armour": 0, "hp": 520, "speed": 8.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.0, "length": 8.36, "width": 2.02, "cp": 4, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "captureRate": 1, "rearm": { "radius": 14, "rate": 4 }, "airRearm": { "radius": 12, "rate": 2 },
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "ew_jammer", "value": 1, "scale": 1, "modelSize": [9.01, 2.76, 3.83],        "class": "Support", "armour": 1, "hp": 380, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 5, "vision": 40,
+    { "id": "ew_jammer", "outgoingDamageMult": 1.2, "value": 1, "scale": 1, "modelSize": [9.01, 2.76, 3.83],        "class": "Support", "armour": 1, "hp": 468, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 6, "vision": 40,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "jammer": 32,
       "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.35, "tier": "Large" } },
     { "id": "fpv_carrier", "outgoingDamageMult": 1.1667, "value": 1.17, "scale": 1, "modelSize": [7.41, 2.04, 2.88],      "class": "TankHunter", "armour": 1, "hp": 500, "speed": 9, "turnRate": 90, "turretTurnRate": 90, "radius": 2.3, "length": 7.41, "width": 2.04, "cp": 7, "vision": 48,
       "firesWhileMoving": false, "weapon": "fpv_swarm",
       "secondary": [ { "weapon": "hmg_selfdef_18", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "mine_layer", "value": 1, "scale": 1, "modelSize": [7.62, 2.7, 1.97],       "class": "Support", "armour": [1, 1, 0, 0], "hp": 420, "speed": 5.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 7.62, "width": 2.7, "cp": 5, "vision": 30,
+    { "id": "mine_layer", "outgoingDamageMult": 1.2, "value": 1, "scale": 1, "modelSize": [7.62, 2.7, 1.97],       "class": "Support", "armour": [1, 1, 0, 0], "hp": 518, "speed": 5.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 7.62, "width": 2.7, "cp": 6, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "mines": { "interval": 6, "max": 8, "damage": 484, "radius": 5, "tier": "Large", "trigger": 2.2 },
       "deathExplosion": { "damage": 140, "radius": 8, "delay": 0.35, "tier": "Huge" } },
     { "id": "fighter_jet", "dropDelay": 5, "outgoingDamageMult": 1.3594, "ceiling": "high", "value": 1.5, "rearmTime": 11, "strongVs": ["Plane", "Helicopter"], "scale": 1.1765, "modelSize": [8.64, 5.85, 2.15],      "armour": 0,  "hp": 673, "speed": 40, "turnRate": 129, "turretTurnRate": 360, "radius": 3.4, "cp": 15, "vision": 72,
@@ -1134,13 +1134,13 @@
 
     // Elite enemy variants: refurbished base models (1.15x), tougher, with skills. Never bought.
     // Round 5 vehicles (Docs research 2026-09-27).
-    { "id": "vbied", "value": 1.5, "scale": 1, "modelSize": [4.58, 1.68, 1.6],            "class": "Scout", "armour": [2, 1, 0, 0], "hp": 364, "speed": 13, "turnRate": 150, "turretTurnRate": 360, "radius": 1.8, "length": 4.58, "width": 1.68, "cp": 3, "vision": 30,
+    { "id": "vbied", "dropDelay": 2.5, "value": 1.5, "scale": 1, "modelSize": [4.58, 1.68, 1.6],            "class": "Scout", "armour": [2, 1, 0, 0], "hp": 364, "speed": 13, "turnRate": 150, "turretTurnRate": 360, "radius": 1.8, "length": 4.58, "width": 1.68, "cp": 3, "vision": 30,
       "firesWhileMoving": true, "weapon": "detonator", "mainAim": "Hull", "kamikaze": true, "captureRate": 1,
       "deathExplosion": { "damage": 300, "radius": 6, "delay": 0.1, "tier": "Huge" } },
     { "id": "zu23_technical", "dropDelay": 2.5, "value": 0.5, "scale": 1, "modelSize": [4.39, 1.5, 1.56],   "class": "AntiAir", "armour": 0, "hp": 210, "speed": 12, "turnRate": 180, "turretTurnRate": 240, "radius": 1.5, "length": 4.39, "width": 1.5, "cp": 3, "vision": 40,
       "firesWhileMoving": true, "weapon": "zu23", "captureRate": 2,
       "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.1, "tier": "Large" } },
-    { "id": "smoke_carrier", "value": 1, "scale": 1, "modelSize": [4.21, 2.24, 2.64],    "class": "Support", "armour": [1, 1, 0, 0], "hp": 400, "speed": 5.9, "turnRate": 100, "turretTurnRate": 200, "radius": 2.0, "length": 4.21, "width": 2.24, "cp": 3, "vision": 30,
+    { "id": "smoke_carrier", "dropDelay": 2.5, "value": 1, "scale": 1, "modelSize": [4.21, 2.24, 2.64],    "class": "Support", "armour": [1, 1, 0, 0], "hp": 400, "speed": 5.9, "turnRate": 100, "turretTurnRate": 200, "radius": 2.0, "length": 4.21, "width": 2.24, "cp": 3, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "skills": ["smoke_generator"], "captureRate": 2,
       "deathExplosion": { "damage": 40, "radius": 5, "delay": 0.2, "tier": "Large" } },
     { "id": "lancet_truck", "outgoingDamageMult": 1.1667, "value": 0.76, "scale": 1, "modelSize": [7.41, 2.02, 2.7],     "class": "TankHunter", "strongVs": ["Artillery"], "armour": 1, "hp": 455, "speed": 9, "turnRate": 90, "turretTurnRate": 90, "radius": 2.3, "length": 7.41, "width": 2.02, "cp": 7, "vision": 50,
@@ -1177,7 +1177,7 @@
     // Roster cleanup (prompt 2). A command vehicle: a fire-rate aura, a forward drop zone once it has
     // stood still, one per side. A wheeled tank hunter (Centauro), a counter-battery radar
     // (Cobra / Zoopark), a long-range SAM (S-300 / S-400).
-    { "id": "command_vehicle", "value": 1, "scale": 1, "modelSize": [5.64, 2.08, 2.14], "class": "Support", "armour": [1, 1, 0, 0], "hp": 560, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.3, "length": 5.64, "width": 2.08, "cp": 6, "vision": 44,
+    { "id": "command_vehicle", "outgoingDamageMult": 1.1667, "value": 1, "scale": 1, "modelSize": [5.64, 2.08, 2.14], "class": "Support", "armour": [1, 1, 0, 0], "hp": 668, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.3, "length": 5.64, "width": 2.08, "cp": 7, "vision": 44,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "mainSlot": "mg", "mainAim": "Free", "captureRate": 1,
       "commandAura": { "radius": 25, "fireRate": 0.1 }, "forwardDrop": 5, "maxPerSide": 1,
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
@@ -1185,7 +1185,7 @@
       "firesWhileMoving": true, "weapon": "gun_105_wheeled", "captureRate": 1,
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.35, "tier": "Large" } },
-    { "id": "counter_battery_radar", "value": 1, "scale": 1, "modelSize": [6.65, 2.3, 2.89], "class": "Support", "armour": 1, "hp": 360, "speed": 7, "turnRate": 80, "turretTurnRate": 200, "radius": 2.3, "length": 6.6, "width": 2.1, "cp": 5, "vision": 44,
+    { "id": "counter_battery_radar", "outgoingDamageMult": 1.2, "value": 1, "scale": 1, "modelSize": [6.65, 2.3, 2.89], "class": "Support", "armour": 1, "hp": 445, "speed": 7, "turnRate": 80, "turretTurnRate": 200, "radius": 2.3, "length": 6.6, "width": 2.1, "cp": 6, "vision": 44,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "mainSlot": "mg", "mainAim": "Free", "captureRate": 1,
       "counterBattery": { "range": 120, "seconds": 8, "bonus": 0.15 },
       "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
@@ -1211,7 +1211,7 @@
     { "id": "laser_tank", "outgoingDamageMult": 1.2681, "value": 1.01, "scale": 1, "modelSize": [6.08, 2.82, 2.74], "class": "TankHunter", "armour": [2, 1, 1, 1], "hp": 882, "speed": 6.5, "turnRate": 65, "turretTurnRate": 55, "radius": 2.4, "length": 6.08, "width": 2.82, "cp": 11, "vision": 38,
       "firesWhileMoving": true, "weapon": "focus_laser", "strongVs": ["Heavy", "Tank", "Boss"],
       "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.4, "tier": "Huge" } },
-    { "id": "shield_carrier", "value": 1, "scale": 1, "modelSize": [6.29, 2.46, 2.84], "class": "Support", "armour": 1, "hp": 480, "speed": 8.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.3, "length": 6.29, "width": 2.46, "cp": 7, "vision": 36,
+    { "id": "shield_carrier", "outgoingDamageMult": 1.1429, "value": 1, "scale": 1, "modelSize": [6.29, 2.46, 2.84], "class": "Support", "armour": 1, "hp": 559, "speed": 8.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.3, "length": 6.29, "width": 2.46, "cp": 8, "vision": 36,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "captureRate": 1, "dome": { "radius": 12, "hp": 1000, "recharge": 20 },
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.35, "tier": "Huge" } },
     { "id": "bunker_vehicle", "outgoingDamageMult": 1.1667, "value": 0.89, "scale": 1, "modelSize": [9.9, 4.07, 2.6], "class": "Heavy", "armour": [2, 2, 1, 1], "hp": 1550, "speed": 5, "turnRate": 45, "turretTurnRate": 40, "radius": 2.7, "length": 8.39, "width": 4.07, "cp": 7, "vision": 36,
@@ -1451,7 +1451,7 @@
       "firesWhileMoving": true, "weapon": "r37m", "secondary": [{ "weapon": "anti_radar_missile", "slot": "aam", "aim": "Free" }], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 38, "captureRate": 0, "interceptor": true, "rearmTime": 11,
       "skills": ["jet_flares"], "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.6, "tier": "Huge" } },
     // dx20: the armoured radar scout (Fennek, BRDM-2 with a radar): standing 2 s it raises its mast, sees 80 m and all but hides.
-    { "id": "radar_scout", "modelSize": [4.6, 2.0, 4.0], "class": "Scout", "armour": 1, "hp": 318, "speed": 11, "turnRate": 150, "turretTurnRate": 220, "radius": 1.7, "length": 4.4, "width": 2.0, "cp": 4, "vision": 50,
+    { "id": "radar_scout", "dropDelay": 2.5, "modelSize": [4.6, 2.0, 4.0], "class": "Scout", "armour": 1, "hp": 318, "speed": 11, "turnRate": 150, "turretTurnRate": 220, "radius": 1.7, "length": 4.4, "width": 2.0, "cp": 4, "vision": 50,
       "stillVision": 80, "stillAfter": 2, "stillCamo": 0.6, "firesWhileMoving": true, "weapon": "hmg_selfdef_21", "mainSlot": "mg", "captureRate": 2,
       "deathExplosion": { "damage": 40, "radius": 4, "delay": 0.2, "tier": "Large" } },
     // dx25: the gabion blast wall (Hesco): no route blocked; its side's towers up to 10 m behind it take 30 % less direct fire.
@@ -1517,13 +1517,13 @@
     { "id": "next_gen_tank", "outgoingDamageMult": 1.2681, "model": "next_gen_tank", "modelSize": [7.79, 3.07, 2.3], "armour": [4, 2, 1, 1], "hp": 1318, "speed": 6.5, "turnRate": 60, "turretTurnRate": 115, "radius": 2.2, "length": 7.79, "width": 3.07, "cp": 11, "vision": 34,
       "weapon": "gun_125_armata_ke", "aps": { "radius": 20, "shells": 0.5, "charges": 2, "recharge": 1.2, "rockets": true, "laser": true }, "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // dx21: the M58 MICLIC-class demolition-line vehicle stand-in (engineer_vehicle's hull): a mine roller ahead of it (mineProof).
-    { "id": "demolition_line_vehicle", "model": "demolition_line_vehicle", "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 2, "hp": 545, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
+    { "id": "demolition_line_vehicle", "dropDelay": 2.5, "model": "demolition_line_vehicle", "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 2, "hp": 545, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "mineProof": true, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.35, "tier": "Large" } },
     // dx22: the "dies into a gun pit" light vehicle (a C&C Generals Battle Bus idea; armored_car's hull); a bigger cook-off death in this pass (no wreck-turret entity yet: DECISIONS 25F2-B).
     { "id": "combat_wreck_car", "dropDelay": 2.5, "model": "combat_wreck_car", "modelSize": [4.78, 2.08, 1.49], "class": "Light", "armour": 1, "hp": 409, "speed": 11.5, "turnRate": 150, "turretTurnRate": 220, "radius": 2.1, "length": 4.44, "width": 2.08, "cp": 4, "vision": 40,
       "firesWhileMoving": true, "weapon": "mg_jeep", "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.3, "tier": "Huge" } },
     // dx24: the drone-hijack vehicle stand-in (ew_jammer's hull): plays as batch A's microwave pulse (downs drones in a cone) rather than a true side-flip capture, which has no mechanism yet.
-    { "id": "drone_hijack_vehicle", "model": "drone_hijack_vehicle", "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 409, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 6, "vision": 40,
+    { "id": "drone_hijack_vehicle", "outgoingDamageMult": 1.1667, "model": "drone_hijack_vehicle", "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 486, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 7, "vision": 40,
       "firesWhileMoving": true, "weapon": "none", "microwave": { "range": 40, "arc": 360, "cooldown": 20 }, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
     // dx32: the river patrol boat stand-in (Mark VI / RCB class; armored_car's hull): a machine gun and a grenade launcher.
     { "id": "river_patrol_boat", "outgoingDamageMult": 1.2, "model": "river_patrol_boat", "modelSize": [4.78, 2.08, 1.49], "class": "Light", "armour": 0, "hp": 450, "speed": 14, "turnRate": 160, "turretTurnRate": 220, "radius": 2.0, "length": 4.44, "width": 2.08, "cp": 6, "vision": 40,
@@ -1554,13 +1554,13 @@
       "firesWhileMoving": true, "weapon": "heli_gun", "mainSlot": "gun", "flying": true, "altitude": 15, "captureRate": 0,
       "secondary": [ { "weapon": "agl_40", "slot": "mg", "aim": "Free" } ], "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.5, "tier": "Huge" } },
     // dx40: the THeMIS / Uran-9-class ground drone carrier stand-in (interceptor_drone_vehicle's hull): a cheap decoy screen; its three minion robots are not modelled yet (no minion-spawn mechanism exists: DECISIONS 25F2-B).
-    { "id": "ground_drone_carrier", "model": "ground_drone_carrier", "modelSize": [5.0, 2.0, 2.4], "class": "Support", "armour": 1, "hp": 409, "speed": 9, "turnRate": 110, "turretTurnRate": 150, "radius": 1.9, "length": 5.0, "width": 2.0, "cp": 5, "vision": 40,
+    { "id": "ground_drone_carrier", "outgoingDamageMult": 1.2, "model": "ground_drone_carrier", "modelSize": [5.0, 2.0, 2.4], "class": "Support", "armour": 1, "hp": 505, "speed": 9, "turnRate": 110, "turretTurnRate": 150, "radius": 1.9, "length": 5.0, "width": 2.0, "cp": 6, "vision": 40,
       "firesWhileMoving": true, "weapon": "mg_coax_ground", "deathExplosion": { "damage": 45, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // dx41: the MTO-UB-class mobile repair vehicle stand-in (engineer_vehicle's hull): slower, wider-reaching repair than the engineer (does not mend broken tower parts: DECISIONS 25F2-B).
-    { "id": "mobile_repair_vehicle", "model": "mobile_repair_vehicle", "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 1, "hp": 591, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
+    { "id": "mobile_repair_vehicle", "dropDelay": 2.5, "model": "mobile_repair_vehicle", "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 1, "hp": 591, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "repair": { "radius": 20, "rate": 0.015 }, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.35, "tier": "Large" } },
     // dx42: the Giraffe AMB / Kasta-class mobile AA radar stand-in (radar_scout's hull): high vision only in this pass; the AA-range aura is not modelled yet (no vehicle-aura field exists: DECISIONS 25F2-B).
-    { "id": "radar_support_vehicle", "model": "radar_support_vehicle", "class": "Scout", "modelSize": [4.6, 2.0, 4.0], "armour": 1, "hp": 409, "speed": 11, "turnRate": 150, "turretTurnRate": 220, "radius": 1.7, "length": 4.4, "width": 2.0, "cp": 5, "vision": 65,
+    { "id": "radar_support_vehicle", "outgoingDamageMult": 1.2, "model": "radar_support_vehicle", "class": "Scout", "modelSize": [4.6, 2.0, 4.0], "armour": 1, "hp": 505, "speed": 11, "turnRate": 150, "turretTurnRate": 220, "radius": 1.7, "length": 4.4, "width": 2.0, "cp": 6, "vision": 65,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "deathExplosion": { "damage": 40, "radius": 4, "delay": 0.2, "tier": "Large" } },
     // dx43: the 2A45 Sprut-B-class towed AT gun stand-in (tank_destroyer's hull): unarmoured, no deploy-delay mechanism yet (plays as a cheap glass-cannon AT vehicle: DECISIONS 25F2-B).
     { "id": "towed_at_gun", "dropDelay": 2.5, "model": "towed_at_gun", "class": "TankHunter", "modelSize": [7.89, 2.62, 2.04], "armour": 0, "hp": 364, "speed": 5, "turnRate": 60, "turretTurnRate": 40, "radius": 2.4, "length": 7.89, "width": 2.62, "cp": 4, "vision": 32,
@@ -1575,7 +1575,7 @@
     { "id": "bunker_shelter_tower", "model": "bunker_shelter_tower", "modelSize": [6.0, 5.0, 2.2], "fort": { "size": "Medium" }, "static": true, "armour": 3, "hp": 1818, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.6, "length": 6.0, "width": 5.0, "cp": 0, "vision": 30,
       "weapon": "none", "shelter": { "radius": 18, "cut": 0.5 } },
     // dx49: the Peresvet-class dazzler vehicle stand-in (ew_jammer's hull): plays as an EW jammer (its accuracy effect on nearby enemy fire) rather than a separate on-demand cone, which has no mechanism yet (DECISIONS 25F2-B).
-    { "id": "dazzler_vehicle", "model": "dazzler_vehicle", "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 409, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 5, "vision": 35,
+    { "id": "dazzler_vehicle", "outgoingDamageMult": 1.2, "model": "dazzler_vehicle", "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 505, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 6, "vision": 35,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "jammer": 30, "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // dx50: the Typhon MRC-class ground-launched cruise missile vehicle stand-in (sam_launcher's hull).
     { "id": "ground_cruise_missile_vehicle", "dropDelay": 5, "outgoingDamageMult": 1.25, "model": "ground_cruise_missile_vehicle", "modelSize": [7.18, 2.7, 2.97], "armour": 1, "hp": 586, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.3, "length": 7.18, "width": 2.7, "cp": 15, "vision": 35,
@@ -1587,10 +1587,10 @@
     { "id": "heavy_lift_helicopter", "outgoingDamageMult": 1.1429, "model": "heavy_lift_helicopter", "rearmTime": 9, "modelSize": [7.59, 6.58, 2.1], "armour": 1, "hp": 955, "speed": 12, "turnRate": 90, "turretTurnRate": 1, "radius": 4.5, "cp": 8, "vision": 42,
       "weapon": "none", "flying": true, "altitude": 17, "captureRate": 1, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.4, "tier": "Large" } },
     // dx53: the AVLB / MTU-72-class bridging vehicle stand-in (engineer_vehicle's hull): laying a bridge over a river map gap is not modelled yet (no river-gap map feature exists: DECISIONS 25F2-B); plays as an armoured support vehicle for now.
-    { "id": "bridging_vehicle", "model": "bridging_vehicle", "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 2, "hp": 682, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
+    { "id": "bridging_vehicle", "dropDelay": 2.5, "model": "bridging_vehicle", "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 2, "hp": 682, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "deathExplosion": { "damage": 65, "radius": 6, "delay": 0.35, "tier": "Large" } },
     // dx54: the Pole-21-class GPS jammer vehicle stand-in (ew_jammer's own hull and field: a second copy of its jammer, since the sim has no separate glide-bomb/cruise-missile-only jamming yet: DECISIONS 25F2-B).
-    { "id": "gps_jammer_vehicle", "model": "gps_jammer_vehicle", "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 364, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 5, "vision": 35,
+    { "id": "gps_jammer_vehicle", "outgoingDamageMult": 1.2, "model": "gps_jammer_vehicle", "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 450, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 6, "vision": 35,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "jammer": 28, "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // dx55: the anti-drone net corridor stand-in (laser_ad_station's hull): a cheap small-slot tower, drones only, passable.
     { "id": "drone_net_tower", "model": "drone_net_tower", "modelSize": [6.0, 4.0, 4.6], "fort": { "size": "Small" }, "static": true, "passable": true, "armour": 0, "hp": 364, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 1.6, "length": 3.0, "width": 8.0, "cp": 0, "vision": 20,

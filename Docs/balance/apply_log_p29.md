@@ -321,3 +321,35 @@
 | B1-attack_jet | OK | 4 rows |
 | B1-stealth_bomber | OK | 4 rows |
 | B1-heavy_bomber | OK | 4 rows |
+
+## Run apply: E1, B0-*, B1-engineer_vehicle, B1-smoke_carrier, B1-ammo_carrier, B1-bridging_vehicle, B1-demolition_line_vehicle, B1-mobile_repair_vehicle, B1-counter_battery_radar, B1-dazzler_vehicle, B1-ew_jammer, B1-gps_jammer_vehicle, B1-ground_drone_carrier, B1-mine_layer, B1-command_vehicle, B1-drone_hijack_vehicle, B1-shield_carrier, B1-scout_jeep, B1-vbied, B1-radar_scout, B1-radar_support_vehicle (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| E1 | ALREADY_APPLIED | |
+| B0-sky_gunship | ALREADY_APPLIED | |
+| B0-thermobaric_launcher | CONFLICT | units.thermobaric_launcher.hp: current 2490.4, expected 990, new 1980 |
+| B0-siege_tank | CONFLICT | units.siege_tank.hp: current 4270.200000000001, expected 1320, new 3300 |
+| B0-light_tank | ALREADY_APPLIED | |
+| B0-vbied | ALREADY_APPLIED | |
+| B0-flame_tank | ALREADY_APPLIED | |
+| B0-engineer_vehicle | ALREADY_APPLIED | |
+| B1-engineer_vehicle | OK | 1 rows |
+| B1-smoke_carrier | OK | 1 rows |
+| B1-ammo_carrier | OK | 1 rows |
+| B1-bridging_vehicle | OK | 1 rows |
+| B1-demolition_line_vehicle | OK | 1 rows |
+| B1-mobile_repair_vehicle | OK | 1 rows |
+| B1-counter_battery_radar | OK | 3 rows |
+| B1-dazzler_vehicle | OK | 3 rows |
+| B1-ew_jammer | OK | 3 rows |
+| B1-gps_jammer_vehicle | OK | 3 rows |
+| B1-ground_drone_carrier | OK | 3 rows |
+| B1-mine_layer | OK | 3 rows |
+| B1-command_vehicle | OK | 3 rows |
+| B1-drone_hijack_vehicle | OK | 3 rows |
+| B1-shield_carrier | OK | 3 rows |
+| B1-scout_jeep | OK | 1 rows |
+| B1-vbied | OK | 1 rows |
+| B1-radar_scout | OK | 1 rows |
+| B1-radar_support_vehicle | OK | 3 rows |
