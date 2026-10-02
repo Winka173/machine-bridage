@@ -17131,3 +17131,42 @@ scan in one Unity batch run and an agent scores it. No Unity, tests or sims here
   `VehicleView.DrawScaleOf(VehicleDef, GameObject)`, `TowerArt.ModelFor`, `UnityEditor.GUID.Generate()`; ships are
   detected through a "Naval" bool property by reflection (VehicleDef has none today, so ships stand at y = 0 like
   everything else; harmless). Commands in `Docs/models/scan/README.md`.
+
+## Sửa lỗi tổng hợp L8 (lead pass, 2026-10-02)
+
+Pass 8 items 2-4 (Docs/prompts/fix_full_vi.txt) on the 402 ModelScan sheets the lead rendered into the runner's
+`Builds/scan` (226 models with a sheet, 176 with an old one). No Unity, tests or sims.
+
+- **Reading the sheets.** Composite grids built with PIL (old above new, each view cropped to the model's mask so the
+  model fills the cell; 35 grids, 6 models with an old sheet or 10 without per image), so every sheet was looked at
+  without opening 402 files. The four `_a` / `_b` models without a sheet (cp_relay_a/b, minefield_a/b) keep their
+  static grade.
+- **Scores** (Docs/models/scan/visual_scores.md): a visual grade and reason per model, old vs new, final = the lower of
+  the static and the visual grade. The table shows the static grade twice: as static_scores.csv has it, and "static*"
+  without the over-budget fault (the lead's instruction of 2026-10-02 for this pass). Final: Tốt 22, Cần sửa 121,
+  Kém 87; visual: Tốt 125, Cần sửa 75, Kém 26. Most final Kém on a visually fine model come from named-part counts (a
+  mantlet or idler modelled inside a merged node); they are listed in the backlog as a naming job, not a rebuild.
+- **Worse than old: none restored.** Old vs new: better 60, same 115, redesign 1 (ixion, prompt 26 D1: the old giant
+  wheel lacks the 8 part nodes the def names). guard_tower_b looked thinner on its new sheet, but its GLB only gained
+  pad and shield detail (2,594 -> 2,746 triangles, runtime nodes identical); the new sheet draws 2,154 triangles of the
+  file's 2,746 (guard_tower 6,180 of 6,772), so the difference is in how ModelScan loads the current model, not in the
+  model: flagged for the ModelScan owner. sky_gunship better (2,708 -> 3,652, same silhouette, more detail); every
+  structure, tower and HQ the same or better (the pale cast concrete is wave 7's lead rule).
+- **Rebuilt (15, Tools/blender/mb_fix_l8.py, registered last in build_assets.py).** With no worse-than-old model and the
+  starter cards and towers all visually Tốt, the picks are the visual Kém box models: eight statics (heavy_flak_tower,
+  flare_tower, laser_ad_station, visual_jammer, fire_control_centre, radar_site, troop_shelter, repair_bay) and seven
+  vehicles (interceptor_drone_vehicle, microwave_vehicle, nlos_atgm_vehicle on one shared detailed truck; radar_scout,
+  recoilless_jeep, sp_mortar, wheeled_howitzer). Triangles 390-2,806 -> 2,874-8,902 (table in visual_scores.md). Every
+  runtime node kept at its place (Turret, Radar, Main_cannon, Muzzle_brake, Muzzle_*, Mount_mg, Point_*); added
+  Mount_aam + Muzzle_aam (interceptor_drone_vehicle's free-aimed Coyote) and Mount_APS (laser_ad_station has `aps`).
+  Static meshes avoid the runtime spinner names (`Radar` exactly spins: the fixed panels are `Search_panel`). Sizes
+  within 10 % of the old GLBs; laser_ad_station, visual_jammer and repair_bay keep their long side on Y (glb_check's
+  modelSize check caught a first build laid out across X). Checked in Blender preview renders (Workbench, two views),
+  `glb_check.py --accept` with 0 errors.
+- **Not rebuilt** (Docs/models/scan/fix_backlog.md): moloch (chapter 6 main boss, visual Kém) needs its own pass -
+  track and door part nodes, four twin-gun mounts and factory doors; morrigan and garuda (flat flying-wing slabs, 1,344
+  and 2,840 triangles) likewise; heavy_turret_a/_b lack the main muzzle node (a node fix).
+- **For the lead:** re-render the 15 rebuilt models (cards and `-mbScan` "after" sheets): heavy_flak_tower,
+  flare_tower, laser_ad_station, visual_jammer, fire_control_centre, radar_site, troop_shelter, repair_bay,
+  interceptor_drone_vehicle, microwave_vehicle, nlos_atgm_vehicle, radar_scout, recoilless_jeep, sp_mortar,
+  wheeled_howitzer. Not done here: MODEL_STANDARD.md was not edited in this pass.
