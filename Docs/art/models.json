@@ -89,7 +89,7 @@
   },
   "aps_tank": {
     "file": "aps_tank.glb",
-    "triangles": 8164
+    "triangles": 7958
   },
   "armed_truck": {
     "file": "armed_truck.glb",
@@ -137,7 +137,7 @@
   },
   "atgm_carrier": {
     "file": "atgm_carrier.glb",
-    "triangles": 7356
+    "triangles": 7164
   },
   "atgm_tower": {
     "file": "atgm_tower.glb",
@@ -801,7 +801,7 @@
   },
   "howitzer": {
     "file": "howitzer.glb",
-    "triangles": 8800
+    "triangles": 8384
   },
   "hydra_sub": {
     "file": "hydra_sub.glb",
@@ -1349,7 +1349,7 @@
   },
   "siege_mortar": {
     "file": "siege_mortar.glb",
-    "triangles": 7844
+    "triangles": 7614
   },
   "siege_tank": {
     "file": "siege_tank.glb",
