@@ -1,0 +1,380 @@
+{
+"chapter": 13,
+"missions": {
+"i1m01": {
+"main": "mai"
+},
+"i1m02": {
+"main": "brenn"
+},
+"i1m03": {
+"main": "mai"
+},
+"i1m04": {
+"main": "mai"
+}
+},
+"lines": [
+{
+"mission": "i1m01",
+"trigger": "mission_start",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.i1m01.01",
+"en": "Left at the smelter, second door. I could walk this place in my sleep.",
+"vi": "Rẽ trái ở lò luyện, cửa thứ hai. Tôi nhắm mắt cũng đi được nơi này."
+},
+{
+"mission": "i1m01",
+"trigger": "time",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.i1m01.02",
+"en": "The loading gate changes guard every forty minutes. They never changed that schedule.",
+"vi": "Lính gác đổi ca ở cổng bốc hàng mỗi bốn mươi phút. Họ chưa bao giờ sửa lịch đó.",
+"at": 25.0
+},
+{
+"mission": "i1m01",
+"trigger": "point_captured",
+"speaker": "mai",
+"priority": 3,
+"once": true,
+"key": "script.i1m01.03",
+"en": "The loading gate. My paint mark from years ago is still on the post.",
+"vi": "Cổng bốc hàng. Vết sơn tôi để lại năm đó vẫn còn trên cột.",
+"arg": "west"
+},
+{
+"mission": "i1m01",
+"trigger": "enemy_reinforcement",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.i1m01.04",
+"en": "The Foundry guard is awake. They are coming from the rail shed.",
+"vi": "Đội bảo vệ Foundry đã thức. Họ đang tới từ xưởng đường ray."
+},
+{
+"mission": "i1m01",
+"trigger": "objective_progress",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.i1m01.05",
+"en": "Only the smelter. It is hot in there; do not park on the iron floor.",
+"vi": "Còn lò luyện. Bên trong nóng lắm, đừng dừng xe trên sàn gang.",
+"arg": "last"
+},
+{
+"mission": "i1m01",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.i1m01.06",
+"en": "The gates are ours. Mara, lead the way.",
+"vi": "Các cổng là của ta. Mara, dẫn đường đi."
+},
+{
+"mission": "i1m01",
+"trigger": "defeat",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.i1m01.07",
+"en": "They have locked the Foundry. I know another way in, but not tonight.",
+"vi": "Họ khóa Foundry rồi. Tôi biết một lối khác, nhưng không phải đêm nay."
+},
+{
+"mission": "i1m02",
+"trigger": "mission_start",
+"speaker": "brenn",
+"priority": 1,
+"once": true,
+"key": "script.i1m02.01",
+"en": "Three archive rooms, three copies. Hegemon never threw anything away.",
+"vi": "Ba phòng lưu trữ, ba bản sao. Hegemon chưa bao giờ vứt đi thứ gì."
+},
+{
+"mission": "i1m02",
+"trigger": "point_captured",
+"speaker": "brenn",
+"priority": 3,
+"once": true,
+"key": "script.i1m02.02",
+"en": "First room. Files by colour, then by year, then by signature. Beautiful.",
+"vi": "Phòng thứ nhất. Hồ sơ xếp theo màu, rồi theo năm, rồi theo người ký. Hoàn hảo."
+},
+{
+"mission": "i1m02",
+"trigger": "objective_progress",
+"speaker": "brenn",
+"priority": 2,
+"once": true,
+"key": "script.i1m02.03",
+"en": "Two rooms. The drawings have handwritten margin notes. Engineer Lind's hand, I believe.",
+"vi": "Hai phòng. Bản vẽ có ghi chú viết tay bên lề. Chữ của kỹ sư Lind, tôi đoán.",
+"arg": "2/3"
+},
+{
+"mission": "i1m02",
+"trigger": "objective_stall_90s",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.i1m02.04",
+"en": "The last room is in the east block cellar. The way in is behind the conveyor.",
+"vi": "Phòng còn lại ở tầng hầm khu đông. Lối vào phía sau băng chuyền."
+},
+{
+"mission": "i1m02",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.i1m02.05",
+"en": "Rain coming in, the fog getting thicker. Harder for the guards to spot scouts.",
+"vi": "Mưa đang tới, sương dày thêm. Đội gác sẽ khó thấy xe trinh sát."
+},
+{
+"mission": "i1m02",
+"trigger": "victory",
+"speaker": "brenn",
+"priority": 1,
+"once": true,
+"key": "script.i1m02.06",
+"en": "Four hundred and twelve sheets. Sign here, Engineer. In triplicate.",
+"vi": "Bốn trăm mười hai tờ. Xin ký vào đây, kỹ sư. Ba bản."
+},
+{
+"mission": "i1m02",
+"trigger": "defeat",
+"speaker": "brenn",
+"priority": 1,
+"once": true,
+"key": "script.i1m02.07",
+"en": "The file is incomplete. I do not accept incomplete files. We go back.",
+"vi": "Hồ sơ không đầy đủ. Tôi không chấp nhận hồ sơ không đầy đủ. Ta quay lại."
+},
+{
+"mission": "i1m03",
+"trigger": "mission_start",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.i1m03.01",
+"en": "Engineer Lind. You came back for your firstborn?",
+"vi": "Kỹ sư Lind. Cô quay về vì đứa con đầu lòng sao?"
+},
+{
+"mission": "i1m03",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.i1m03.02",
+"en": "That is my prototype. Hit the left track: I never fixed the tensioner.",
+"vi": "Đó là nguyên mẫu của tôi. Đánh vào xích trái: tôi chưa bao giờ sửa bộ căng xích."
+},
+{
+"mission": "i1m03",
+"trigger": "time",
+"speaker": "varga",
+"priority": 2,
+"once": true,
+"key": "script.i1m03.03",
+"en": "I remember you then, Engineer. You drew all night and never ate lunch.",
+"vi": "Ta nhớ cô hồi đó, kỹ sư. Cô vẽ suốt đêm và không bao giờ ăn trưa.",
+"at": 40.0
+},
+{
+"mission": "i1m03",
+"trigger": "time",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.i1m03.04",
+"en": "He is right. I thought I was building something that would protect people.",
+"vi": "Ông ấy nói đúng. Tôi đã nghĩ mình đang làm ra thứ bảo vệ người khác.",
+"at": 60.0
+},
+{
+"mission": "i1m03",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.i1m03.05",
+"en": "The left track is loose. It will drift left; stay on its right.",
+"vi": "Xích trái đã nhả. Nó sẽ quay vòng sang trái, đứng ở bên phải nó."
+},
+{
+"mission": "i1m03",
+"trigger": "boss_phase_change",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.i1m03.06",
+"en": "It has gone to Foundry guard mode. I wrote that mode. It fires at anything that moves.",
+"vi": "Nó chuyển sang chế độ giữ Foundry. Tôi đã viết chế độ đó. Nó sẽ bắn mọi thứ chuyển động."
+},
+{
+"mission": "i1m03",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.i1m03.07",
+"en": "It is about to shell the floor. Out of the red area; that floor will give way!",
+"vi": "Nó sắp nã đạn nổ dưới sàn. Ra khỏi vùng đỏ, sàn ở đó sẽ sập!"
+},
+{
+"mission": "i1m03",
+"trigger": "boss_hp",
+"speaker": "brenn",
+"priority": 4,
+"once": true,
+"key": "script.i1m03.08",
+"en": "Noted: half the prototype has been dismantled. Not by the approved method.",
+"vi": "Ghi nhận: một nửa nguyên mẫu đã bị tháo dỡ. Bằng cách không chuẩn.",
+"arg": "50"
+},
+{
+"mission": "i1m03",
+"trigger": "boss_hp",
+"speaker": "mai",
+"priority": 4,
+"once": true,
+"key": "script.i1m03.09",
+"en": "Its engine was the first I ever assembled. It is choking. Nearly done.",
+"vi": "Động cơ của nó là bản đầu tiên tôi tự lắp. Nó đang nghẹt. Gần rồi.",
+"arg": "25"
+},
+{
+"mission": "i1m03",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.i1m03.10",
+"en": "It is shelling our camp. It still knows these halls better than we do.",
+"vi": "Trại của ta đang bị nó nã. Nó vẫn nhớ đường đi trong nhà máy hơn ta."
+},
+{
+"mission": "i1m03",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.i1m03.11",
+"en": "Rest now. I am sorry I built you.",
+"vi": "Nghỉ đi. Tôi xin lỗi vì đã tạo ra mày."
+},
+{
+"mission": "i1m03",
+"trigger": "victory",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.i1m03.12",
+"en": "You have killed your firstborn. I hope you never have to do it twice.",
+"vi": "Cô đã giết đứa con đầu lòng. Ta mong cô sẽ không phải làm vậy lần thứ hai."
+},
+{
+"mission": "i1m03",
+"trigger": "defeat",
+"speaker": "varga",
+"priority": 1,
+"once": true,
+"key": "script.i1m03.13",
+"en": "It still guards its home, Engineer. You taught it well.",
+"vi": "Nó vẫn bảo vệ nhà của nó, kỹ sư. Cô đã dạy nó tốt."
+},
+{
+"mission": "i1m04",
+"trigger": "time",
+"speaker": "brenn",
+"priority": 1,
+"once": true,
+"key": "script.i1m04.01",
+"en": "Four minutes to load. Nobody touches the crates marked blue.",
+"vi": "Bốn phút để chất hàng. Không ai chạm vào thùng đánh dấu xanh.",
+"at": 3.0
+},
+{
+"mission": "i1m04",
+"trigger": "time",
+"speaker": "brenn",
+"priority": 2,
+"once": true,
+"key": "script.i1m04.02",
+"en": "Blue crates are originals. Red are copies. Yellow is the Engineer's coffee.",
+"vi": "Thùng xanh là bản gốc. Thùng đỏ là bản sao. Thùng vàng là cà phê của kỹ sư.",
+"at": 20.0
+},
+{
+"mission": "i1m04",
+"trigger": "objective_progress",
+"speaker": "brenn",
+"priority": 2,
+"once": true,
+"key": "script.i1m04.03",
+"en": "Half the crates loaded. Acceptable progress, not outstanding.",
+"vi": "Nửa số thùng đã lên xe. Tiến độ chấp nhận được, chưa xuất sắc.",
+"arg": "1/2"
+},
+{
+"mission": "i1m04",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.i1m04.04",
+"en": "A raiding party is going for the trucks. They know what we took.",
+"vi": "Một đội đánh phá đang nhắm vào xe hàng. Chúng biết ta lấy được gì."
+},
+{
+"mission": "i1m04",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.i1m04.05",
+"en": "The loading yard is lost. Take it back; no crate stays behind.",
+"vi": "Mất sân bốc hàng. Lấy lại, không thùng nào bị bỏ lại."
+},
+{
+"mission": "i1m04",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.i1m04.06",
+"en": "The convoy is out. Mara, are you all right?",
+"vi": "Đoàn xe đã ra. Mara, cô ổn chứ?"
+},
+{
+"mission": "i1m04",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.i1m04.07",
+"en": "I will be. Brenn says the last page is signed. The first one is the hard one.",
+"vi": "Tôi sẽ ổn. Brenn bảo trang cuối đã ký nhận. Trang đầu mới khó."
+},
+{
+"mission": "i1m04",
+"trigger": "defeat",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.i1m04.08",
+"en": "The drawings stay behind. They will build again from my own lines.",
+"vi": "Bản vẽ bị bỏ lại. Họ sẽ xây lại từ chính những nét vẽ của tôi."
+}
+]
+}

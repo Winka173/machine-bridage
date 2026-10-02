@@ -1,0 +1,46 @@
+# Chapter 13 · Blueprints (interlude I, act 1). Enemy general: Varga (through the Foundry's old loudspeakers).
+# Arc: Mara goes back to the Foundry for the Behemoth drawings and faces the Mk.0 she designed. Threads: her own
+# handwritten notes on the drawings; Varga remembers her as a young engineer. Brenn is the light touch.
+
+@i1m01 main=mai
+mission_start | mai | 1 | Rẽ trái ở lò luyện, cửa thứ hai. Tôi nhắm mắt cũng đi được nơi này. || Left at the smelter, second door. I could walk this place in my sleep.
+time@25 | mai | 2 | Lính gác đổi ca ở cổng bốc hàng mỗi bốn mươi phút. Họ chưa bao giờ sửa lịch đó. || The loading gate changes guard every forty minutes. They never changed that schedule.
+point_captured:west | mai | 3 | Cổng bốc hàng. Vết sơn tôi để lại năm đó vẫn còn trên cột. || The loading gate. My paint mark from years ago is still on the post.
+enemy_reinforcement | linh | 3 | Đội bảo vệ Foundry đã thức. Họ đang tới từ xưởng đường ray. || The Foundry guard is awake. They are coming from the rail shed.
+objective_progress:last | mai | 2 | Còn lò luyện. Bên trong nóng lắm, đừng dừng xe trên sàn gang. || Only the smelter. It is hot in there; do not park on the iron floor.
+victory | khai | 1 | Các cổng là của ta. Mara, dẫn đường đi. || The gates are ours. Mara, lead the way.
+defeat | mai | 1 | Họ khóa Foundry rồi. Tôi biết một lối khác, nhưng không phải đêm nay. || They have locked the Foundry. I know another way in, but not tonight.
+
+@i1m02 main=brenn
+mission_start | brenn | 1 | Ba phòng lưu trữ, ba bản sao. Hegemon chưa bao giờ vứt đi thứ gì. || Three archive rooms, three copies. Hegemon never threw anything away.
+point_captured | brenn | 3 | Phòng thứ nhất. Hồ sơ xếp theo màu, rồi theo năm, rồi theo người ký. Hoàn hảo. || First room. Files by colour, then by year, then by signature. Beautiful.
+objective_progress:2/3 | brenn | 2 | Hai phòng. Bản vẽ có ghi chú viết tay bên lề. Chữ của kỹ sư Lind, tôi đoán. || Two rooms. The drawings have handwritten margin notes. Engineer Lind's hand, I believe.
+objective_stall_90s | linh | 3 | Phòng còn lại ở tầng hầm khu đông. Lối vào phía sau băng chuyền. || The last room is in the east block cellar. The way in is behind the conveyor.
+event_triggered | hq | 2 | Mưa đang tới, sương dày thêm. Đội gác sẽ khó thấy xe trinh sát. || Rain coming in, the fog getting thicker. Harder for the guards to spot scouts.
+victory | brenn | 1 | Bốn trăm mười hai tờ. Xin ký vào đây, kỹ sư. Ba bản. || Four hundred and twelve sheets. Sign here, Engineer. In triplicate.
+defeat | brenn | 1 | Hồ sơ không đầy đủ. Tôi không chấp nhận hồ sơ không đầy đủ. Ta quay lại. || The file is incomplete. I do not accept incomplete files. We go back.
+
+@i1m03 main=mai
+mission_start | varga | 1 | Kỹ sư Lind. Cô quay về vì đứa con đầu lòng sao? || Engineer Lind. You came back for your firstborn?
+boss_spawn | mai | 1 | Đó là nguyên mẫu của tôi. Đánh vào xích trái: tôi chưa bao giờ sửa bộ căng xích. || That is my prototype. Hit the left track: I never fixed the tensioner.
+time@40 | varga | 2 | Ta nhớ cô hồi đó, kỹ sư. Cô vẽ suốt đêm và không bao giờ ăn trưa. || I remember you then, Engineer. You drew all night and never ate lunch.
+time@60 | mai | 2 | Ông ấy nói đúng. Tôi đã nghĩ mình đang làm ra thứ bảo vệ người khác. || He is right. I thought I was building something that would protect people.
+boss_part_destroyed | mai | 2 | Xích trái đã nhả. Nó sẽ quay vòng sang trái, đứng ở bên phải nó. || The left track is loose. It will drift left; stay on its right.
+boss_phase_change | mai | 1 | Nó chuyển sang chế độ giữ Foundry. Tôi đã viết chế độ đó. Nó sẽ bắn mọi thứ chuyển động. || It has gone to Foundry guard mode. I wrote that mode. It fires at anything that moves.
+superweapon_warning | mai | 1 | Nó sắp nã đạn nổ dưới sàn. Ra khỏi vùng đỏ, sàn ở đó sẽ sập! || It is about to shell the floor. Out of the red area; that floor will give way!
+boss_hp:50 | brenn | 4 | Ghi nhận: một nửa nguyên mẫu đã bị tháo dỡ. Bằng cách không chuẩn. || Noted: half the prototype has been dismantled. Not by the approved method.
+boss_hp:25 | mai | 4 | Động cơ của nó là bản đầu tiên tôi tự lắp. Nó đang nghẹt. Gần rồi. || Its engine was the first I ever assembled. It is choking. Nearly done.
+hq_below_50 | mai | 2 | Trại của ta đang bị nó nã. Nó vẫn nhớ đường đi trong nhà máy hơn ta. || It is shelling our camp. It still knows these halls better than we do.
+victory | mai | 1 | Nghỉ đi. Tôi xin lỗi vì đã tạo ra mày. || Rest now. I am sorry I built you.
+victory | varga | 1 | Cô đã giết đứa con đầu lòng. Ta mong cô sẽ không phải làm vậy lần thứ hai. || You have killed your firstborn. I hope you never have to do it twice.
+defeat | varga | 1 | Nó vẫn bảo vệ nhà của nó, kỹ sư. Cô đã dạy nó tốt. || It still guards its home, Engineer. You taught it well.
+
+@i1m04 main=mai
+time@3 | brenn | 1 | Bốn phút để chất hàng. Không ai chạm vào thùng đánh dấu xanh. || Four minutes to load. Nobody touches the crates marked blue.
+time@20 | brenn | 2 | Thùng xanh là bản gốc. Thùng đỏ là bản sao. Thùng vàng là cà phê của kỹ sư. || Blue crates are originals. Red are copies. Yellow is the Engineer's coffee.
+objective_progress:1/2 | brenn | 2 | Nửa số thùng đã lên xe. Tiến độ chấp nhận được, chưa xuất sắc. || Half the crates loaded. Acceptable progress, not outstanding.
+event_triggered | linh | 2 | Một đội đánh phá đang nhắm vào xe hàng. Chúng biết ta lấy được gì. || A raiding party is going for the trucks. They know what we took.
+point_lost | khai | 3 | Mất sân bốc hàng. Lấy lại, không thùng nào bị bỏ lại. || The loading yard is lost. Take it back; no crate stays behind.
+victory | khai | 1 | Đoàn xe đã ra. Mara, cô ổn chứ? || The convoy is out. Mara, are you all right?
+victory | mai | 1 | Tôi sẽ ổn. Brenn bảo trang cuối đã ký nhận. Trang đầu mới khó. || I will be. Brenn says the last page is signed. The first one is the hard one.
+defeat | mai | 1 | Bản vẽ bị bỏ lại. Họ sẽ xây lại từ chính những nét vẽ của tôi. || The drawings stay behind. They will build again from my own lines.
