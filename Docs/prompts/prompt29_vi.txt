@@ -1,0 +1,145 @@
+# PROMPT 29 — ÁP CÂN BẰNG ĐỢT 2 (BẢN v2) THEO MANIFEST
+
+Bạn làm việc tự chủ trong repo Machine Brigade (Unity). Không chờ duyệt giữa chừng. Mọi quyết định bạn tự đưa ra ghi vào docs/DECISIONS.md (mục "Prompt 29"), kèm lý do. Chia việc thành các lượt bên dưới, mỗi lượt một hoặc vài commit có thông điệp rõ ràng. Các con số trong file là điểm khởi đầu; ngoài phạm vi file thì không tự đổi số.
+
+## 0. FILE VÀ VAI TRÒ CỦA TỪNG FILE
+
+1. docs/balance/Machine_Brigade_Can_bang_dot2_v2.xlsx — NGUỒN DUY NHẤT để sửa dữ liệu.
+   - Sheet Manifest: mọi thay đổi dữ liệu. Chỉ dòng status = FIX hoặc APPLY được áp.
+   - Sheet Quy tắc (R1–R11): luật bắt buộc. Đọc hết trước khi làm.
+   - Sheet Gói: danh sách bundle, depends_on, requires_code.
+   - Sheet Quyết định (D1–D9): đã chốt, không bàn lại.
+   - Sheet CHECK (C01–C16): việc đọc code/dữ liệu và báo cáo, không sửa.
+   - Các sheet Tính toán, Hệ số, Máy bay – số phát, Pháo sáng, APS, Vũ khí dùng chung, Gungnir, Ngân sách thực thể, So với v1: giải thích và công thức. Không lấy số từ đây để áp; số áp đã đóng băng trong Manifest.
+2. docs/balance/Machine_Brigade_Can_bang_dot2.xlsx — BẢN v1 CỦA ĐỢT 2, CHỈ THAM KHẢO.
+   - KHÔNG áp bất kỳ dòng nào của v1. Nhiều số trong v1 đã bị thay hoặc bác (xem sheet "So với v1" của v2).
+   - Chỉ dùng v1 cho ba việc:
+     (a) sheet "Pháo sáng & APS", cột "Model và hiệu ứng": mô tả ống thả pháo sáng, cụm APS và hiệu ứng (lượt 5);
+     (b) sheet "Tên lửa trên xe": số tên lửa mỗi lần đầy đạn và thời gian nạp (lượt 5, mục 5.4);
+     (c) sheet "Kinh tế": bảng kho CP theo chế độ, để đối chiếu với gói E1 của v2.
+   - Nếu v1 và v2 khác nhau ở bất kỳ con số nào: v2 thắng.
+3. docs/balance/Machine_Brigade_Can_bang.xlsx — ĐỢT 1 (đã áp ở prompt 25). Chỉ dùng để truy nguồn:
+   - xác nhận known_good của các dòng FIX;
+   - CHECK C08 (truy các thay đổi "ngoài dự kiến" về dòng đợt 1 đã gây ra).
+   Không áp lại bất kỳ dòng nào của đợt 1.
+
+## 1. LUẬT KHÔNG ĐƯỢC VI PHẠM
+
+- Chỉ FIX và APPLY được sửa dữ liệu. DECIDE, HOLD, CHECK, REJECT: không sửa. Ô trống hoặc mã lạ: bỏ qua (fail closed).
+- Dòng ghi "Xem lại" ở bất kỳ file nào là chờ chủ dự án quyết: KHÔNG áp. (Lỗi này đã xảy ra ở đợt 1.)
+- Kiểm tra trước khi áp (R2): hiện tại == new_value → ALREADY_APPLIED; hiện tại == expected_before (trong tolerance) → OK; khác → CONFLICT. Một dòng CONFLICT thì bỏ cả gói, ghi log, đi tiếp gói khác.
+- Áp nguyên gói (R3), tôn trọng depends_on. Gói phụ thuộc vào gói chưa áp thì để lại, ghi log "BLOCKED".
+- Không đọc văn xuôi (R4): không lấy số từ cột reason/derivation hay từ chuỗi kiểu "2352 → 6000".
+- field_path là tên logic (R5). Phải ánh xạ sang khóa thật trước (CHECK C01). Không ánh xạ được thì gói đó CONFLICT, không đoán.
+- Vũ khí dùng chung (R8): không sửa vũ khí để đạt DPS của một xe. Dùng units.<id>.outgoingDamageMult.
+- Làm tròn (R6): một hàm ROUND_HALF_UP dùng chung. Không dùng round() làm tròn về số chẵn.
+- baseCP và chi phí gọi (R7): mọi phân nhóm dùng baseCP.
+- Đợt này THUẦN LÝ THUYẾT: không chạy mô phỏng trận, không test trong game, không đo FPS hay hiệu năng. Được và phải viết test tự động cho code và dữ liệu (unit test, test validator), vì đó không phải mô phỏng.
+- Không làm việc của prompt 28 (AI mới, 16 chiến thuật, kinh tế trong trận), trừ đúng gói B3-AI nêu ở lượt 6.
+
+## 2. CÁC LƯỢT
+
+### Lượt 0 — Đọc và lập bản đồ (không sửa dữ liệu)
+- Đọc v2 (toàn bộ Quy tắc, Quyết định, Manifest, Gói, CHECK).
+- CHECK C01: lập docs/balance_field_map.md, ánh xạ mọi field_path trong Manifest sang khóa thật trong balance.json / campaign.json / mã nguồn. Đánh dấu các trường chưa tồn tại (ví dụ outgoingDamageMult, flare.maxCharges, apsCapability) là "tạo ở lượt 1 hoặc 5".
+- Xuất Manifest sang docs/balance/manifest_v2.json (hoặc .csv) để code đọc, kèm hash của file xlsx nguồn. Từ đây code chỉ đọc file đã xuất này.
+- Commit: "P29 L0: field map + manifest export".
+
+### Lượt 1 — Hạ tầng (gói S01–S04, S08, S09)
+- S01: công cụ áp manifest (editor script hoặc tool trong Tools/): đọc manifest, kiểm tra trước khi áp, áp theo gói, tôn trọng depends_on, có chế độ chạy thử (dry-run). Ghi log ra docs/balance/apply_log_p29.md: mỗi gói OK / ALREADY_APPLIED / CONFLICT / BLOCKED / SKIPPED(status).
+- S02: hàm ROUND_HALF_UP chung, kèm test: 12,5 → 13; 19,5 → 20; máu làm tròn tới 10.
+- S03: trường units.<id>.outgoingDamageMult (mặc định 1,0), nhân sát thương mọi vũ khí của xe khi bắn. Không đổi nhịp bắn, băng đạn, nạp, số viên. Validator: dòng scope=unit thì JSON vũ khí phải giữ nguyên; nếu một vũ khí dùng chung đổi thì liệt kê mọi xe mang nó và báo lỗi.
+- S04: tách baseCP và runtimeCallCost. Thưởng, thời gian thả dù, tiếp tế, phân loại dùng baseCP.
+- S08: số đo có hash; tài liệu thiết kế chuyển số đo lệch hash sang phụ lục "Lịch sử đo".
+- S09: test hồi quy đơn vị tốc độ xoay (dữ liệu °/s, mã rad/s; tài liệu không in rad/s dưới nhãn °/s).
+- Commit theo từng gói.
+
+### Lượt 2 — CHECK trước khi áp cân bằng
+Làm C03, C05, C06, C07, C09, C10, C12, C13, C15, C16. Mỗi CHECK ghi đúng file nêu ở cột "Ghi kết quả vào".
+- Không sửa dữ liệu trong lượt này.
+- Nếu kết quả CHECK làm một gói sai precondition, ghi rõ trong báo cáo; lượt sau precondition sẽ tự chặn gói đó.
+- Nếu C10 cho hệ số Buk với máy bay khác 1,3: ghi số thật vào báo cáo, KHÔNG tự sửa máu máy bay; liệt kê máy bay nào ra khỏi dải ở sheet "Máy bay – số phát".
+- Nếu C16 thấy danh sách AoE thiếu hoặc thừa: chỉ báo cáo.
+- Commit: "P29 L2: pre-apply checks".
+
+### Lượt 3 — Sửa lỗi (gói B0-*, status FIX)
+- 3 gói máu (sky_gunship, thermobaric_launcher, siege_tank) và 4 gói tốc độ (light_tank, vbied, flame_tank, engineer_vehicle).
+- Đối chiếu known_good với file đợt 1 và ghi kết quả vào DECISIONS.
+- Commit: "P29 L3: FIX regressions from round 1".
+
+### Lượt 4 — Kinh tế và định giá lại (E1, B1-*)
+- Áp E1 (kho CP theo chế độ) trước, vì mọi B1 phụ thuộc E1. Không đụng ngưỡng tiếp tế (E2 là HOLD).
+- Áp các gói B1-* đủ điều kiện. B1-sky_gunship phụ thuộc B2-FLR-sky_gunship và B3-AI nên để tới lượt 7.
+- Không áp B5-* (HOLD).
+- Cập nhật mô tả thẻ, tooltip và localization Việt–Anh nếu chúng in số giá, máu hoặc thời gian thả dù.
+- Commit theo nhóm lớp xe (xe tăng/hạng nặng; xe nhẹ/diệt tăng; pháo binh; phòng không; máy bay/trực thăng; hỗ trợ/trinh sát).
+
+### Lượt 5 — Hệ tự vệ và tên lửa trên xe (S05, S06, S07, B2-FLR-*, B2-APS-*)
+5.1 S05: cờ năng lực đòn đánh (canHitGround, canHitAir, interceptable, flareEligible, apsEligible, ciwsEligible). Dùng lại trường có sẵn theo kết quả C13; không tạo trường trùng. Gán cờ cho mọi vũ khí và đòn boss. Không suy cờ từ chuyện "có phải vũ khí boss không".
+5.2 S06 + B2-FLR-*: pháo sáng theo số lần dự trữ; hồi dần ở vòng chờ, nạp đầy khi về Bãi đáp hoặc sở chỉ huy. Mồi bẫy nhiệt chỉ nâng cấp đơn vị đã có pháo sáng (+1 lần, hồi nhanh hơn 25%); không gắn được cho đơn vị không có.
+5.3 S07 + B2-APS-*:
+   - interceptionSystem.mode = SELF_APS | POINT_DEFENSE.
+   - apsCapability = NONE | BUILT_IN | RETROFIT_ELIGIBLE.
+   - Loại đạn chặn được tách riêng: directMissile, drone, directRocket, artilleryRocket, mortarShell, artilleryShell, tankShell.
+   - SELF_APS chỉ chặn directMissile, drone, directRocket.
+   - Trophy (B2-APS-trophy):
+     NONE → không gắn được;
+     RETROFIT_ELIGIBLE → cho 2 lần, hồi 20 s;
+     BUILT_IN → +1 lần, hồi ×0,75.
+   - POINT_DEFENSE (xe la-de phòng không, tháp, boss): giữ nguyên số trừ dòng có trong Manifest. Phần boss làm theo kết quả C06, không chuẩn hóa về profile xe người chơi.
+5.4 Tên lửa trên xe theo hệ đạn (quyết định đã chốt từ trước). Lấy số từ sheet "Tên lửa trên xe" của bản v1:
+   - ifv / atgm: 2 tên lửa, nạp 20 s;
+   - light_tank / gun_launched_atgm: 2 tên lửa, nạp 25 s;
+   - bmpt / ataka: 4 tên lửa, nạp 30 s;
+   - nlos_atgm_vehicle / spike_nlos: 2 tên lửa, nạp 25 s;
+   - titan_tank / atgm: 4 tên lửa, nạp 30 s.
+   Pháo chính vẫn bắn khi hết tên lửa. Nạp nhanh hơn gần Xe tiếp đạn hoặc Kho đạn. Hiện biểu tượng số tên lửa còn lại trên đơn vị và trên thẻ.
+   Đây là dòng duy nhất lấy số từ v1. Trước khi áp, kiểm tra xe đó hiện đã có hệ băng/nạp cho tên lửa chưa: nếu đã có thì ghi lại giá trị hiện tại vào DECISIONS và KHÔNG ghi đè. Vì atgm là vũ khí dùng chung giữa ifv và titan_tank, số tên lửa/nạp phải đặt ở cấp xe (override theo xe), không sửa vũ khí dùng chung.
+5.5 Model và hiệu ứng: theo cột "Model và hiệu ứng" của v1.
+   - Pháo sáng: ống thả trên thân hoặc đuôi; chùm sáng bung hai bên; máy bay lớn thả kiểu "cánh thiên thần".
+   - APS: cụm cảm biến/bệ phóng nhỏ trên tháp pháo; tia chặn và nổ nhỏ khi chặn.
+   Dùng bộ kit Blender hiện có (frontier_kit.py), quy ước Part_* / Mount_* và vật liệu Armor / Team / TeamGlow; chỉ thêm chi tiết nhỏ, không dựng lại model. Xuất lại GLB bằng build_assets.py cho các đơn vị bị đổi.
+- Commit theo từng mục 5.1–5.5.
+
+### Lượt 6 — Bỏ máy bay rút về sửa khi thấp máu (B3-AI)
+- Theo kết quả C12: chỉ bỏ điều kiện "máu thấp thì về Bãi đáp / sở chỉ huy để sửa".
+- Giữ nguyên: về vì hết đạn, sửa khi đang ở Bãi đáp hoặc trên sở chỉ huy, vòng chờ, trạm sửa và công binh sửa xe trong tầm.
+- Test tự động: máy bay máu thấp vẫn tiếp tục đánh; máy bay hết đạn vẫn về.
+- Đây là thay đổi hẹp. Không làm phần AI khác của prompt 28.
+- Commit: "P29 L6: remove low-HP aircraft retreat".
+
+### Lượt 7 — Pháo hạm bay và Gungnir
+- Áp B1-sky_gunship khi B0-sky_gunship, B2-FLR-sky_gunship và B3-AI đã xong.
+- G1 Gungnir (requires_code):
+  - đổi tier mini → major;
+  - siêu vũ khí hồi 45 s, targetingMode = GLOBAL, cảnh báo 3 s có vẽ đường ngắm;
+  - đòn xuyên tuyến tối đa 5 xe × 1.000, nổ ở xe cuối 2.000 (lõi 12 m, rìa 20 m còn 40%);
+  - cờ canHitAir=false, interceptable=false, flareEligible=false, apsEligible=false;
+  - máu theo công thức boss chủ lực hiện có cho chương 11 (P × t × 0,6).
+  Làm C11 trước: cập nhật cách Săn trùm chọn 7 mini + 3 chủ lực nếu cần; ghi vào DECISIONS.
+- Commit theo từng gói.
+
+### Lượt 8 — Tài liệu và báo cáo
+- Xuất lại tài liệu thiết kế PDF từ dữ liệu.
+  - Bảng 9b và 2b (số đo cũ) chuyển sang phụ lục "Lịch sử đo".
+  - Thêm phần "Cân bằng đợt 2": bảng giá/máu/hệ số sát thương mới; bảng pháo sáng và APS theo loại; mục Gungnir mới.
+- Báo cáo cuối docs/balance/report_p29.md:
+  - số gói OK / ALREADY_APPLIED / CONFLICT / BLOCKED / bị bỏ theo status;
+  - danh sách CONFLICT và lý do;
+  - kết quả mọi CHECK đã làm;
+  - những CHECK chưa làm được (C02, C04, C08, C14 nếu chưa xong) và lý do;
+  - mọi chỗ bạn phải tự quyết.
+- Commit: "P29 L8: design doc + report".
+
+## 3. CHECK CÒN LẠI (làm nếu kịp, không chặn lượt khác)
+C02 (tiếp tế: 20 câu hỏi ở sheet CHECK), C04 (ngân sách thực thể), C08 (truy thay đổi đợt 1), C14 (thước đo vai trò cho thẻ ≤ 8 CP). Chỉ báo cáo, không sửa dữ liệu.
+
+## 4. KHI GẶP TÌNH HUỐNG KHÔNG CÓ TRONG FILE
+- Nếu dữ liệu thật khác mô tả trong file: tin dữ liệu thật, gói liên quan sẽ CONFLICT; ghi vào báo cáo.
+- Nếu cần một trường mới không có trong Manifest: được tạo với giá trị mặc định không đổi hành vi (ví dụ hệ số 1,0); ghi vào DECISIONS.
+- Không tự thêm hệ thống mới ngoài các gói S01–S09.
+
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+- (02/10) check @Machine_Brigade_Can_bang_dot2_v2.xlsx và file cũ @Machine_Brigade_Can_bang.xlsx cả @Machine_Brigade_Can_bang_applied.xlsx nếu cần push chết lên, và push cả prompt này, do sẽ được claude clould lo, đọc và hiểu và đưa tôi prompt để gửi claude cloud làm, nếu phần nào claude cloud không làm được thì bạn làm
+- (02/10) ưu tiên phần này hơn task đang làm
+- (02/10, lead) File v1 Machine_Brigade_Can_bang_dot2.xlsx không có trong thư mục của chủ dự án (chỉ có dot2_v2); số của mục 5.4 đã nằm sẵn trong prompt, mô tả của 5.5 cũng vậy; E1 không đối chiếu được với v1 cho tới khi có file.

@@ -208,3 +208,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) [báo cáo cloud: lượt 2-5 phần Sim + Scope widened xong, cloud/p28-sim 295d1ace; AI mới bật mặc định (ConquestAi.LayeredDefault), kinh tế mới mọi chế độ, BattleEvents.Escalation]
 - (02/10) bắt đầu prompt 27 đợt 3, nhớ chia nhỏ ra, và tiết kiệm token
 - (02/10) [chọn] lead chép sang runner sau mỗi lượt và tự render card/preview; agent chỉ dựng model
+- (02/10) check Machine_Brigade_Can_bang_dot2_v2.xlsx, file cũ Machine_Brigade_Can_bang.xlsx và _applied.xlsx, push lên nếu cần; push prompt 29 (do Claude cloud làm), đưa prompt gửi cloud, phần cloud không làm được thì bạn làm; sửa prompt 28 (gửi prompt 29 trước 28; không thêm hệ phí duy trì mới, dùng tiếp tế; B3-AI đã làm ở prompt 29); ưu tiên hơn task đang làm

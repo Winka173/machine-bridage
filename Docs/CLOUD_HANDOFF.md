@@ -146,3 +146,26 @@ the EditMode suite and every measure.
   merge, `LayeredDefault = false` restores the old commander; `BattleEvents.Escalation = false` the old events.
 - balance.json keys added: `ai.world.bigFight`, `ai.world.escalationPoints`, `ai.world.churnWarn`,
   `ai.world.mergeThreshold`, and the whole generated `aiBehaviour` block; no existing value changed.
+
+## Prompt 29 (owner, 2026-10-02): balance round 2 (v2), for the cloud
+
+Read `Docs/prompts/prompt29_vi.txt` whole (it is the task) and its source `Docs/balance/Machine_Brigade_Can_bang_dot2_v2.xlsx`.
+Work on a new branch `cloud/p29-balance` from `origin/feature/visual-overhaul`; same rules as above (Vietnamese replies,
+English code/docs, one sub-agent at most, save tokens, DECISIONS sections `## Prompt 29 <pass> (cloud, <date>)`).
+Facts the prompt does not know:
+- **The v1 file `Docs/balance/Machine_Brigade_Can_bang_dot2.xlsx` does not exist** (the owner only has v2). Use the
+  numbers the prompt itself gives for 5.4 and its 5.5 descriptions; E1's cross-check against v1 is not possible: log it.
+- **The owner amended prompt 28** (end of `prompt28_vi.txt`): "no new upkeep system; use supply (tiếp tế)". Prompt 28
+  I.2 already added `ArmyFactor` (`Scripts/Sim/Economy/EconomySystem.P28.cs`, `economy.armyBands` in balance.json) on
+  top of the supply upkeep that already existed (`EconomySystem.Upkeep`, `Supply`). Pass 0 of this prompt: remove
+  ArmyFactor from `Earning` and the armyBands data (keep the supply upkeep untouched), fix the docs (`Docs/ai/ECONOMY.md`)
+  and the HUD text key if it names it (list the HUD line in LOCAL_TODO). Record it.
+- **B3-AI is probably already done** by prompt 28 (aircraft return only when out of ammo). Pass 6: verify against C12,
+  log ALREADY_APPLIED if so, and write the two tests the prompt asks for.
+- The Blender kit name in 5.5 (`frontier_kit.py`) exists, but the current kit is V2 (`mb_kit27.py`, `mb_parts27.py`,
+  wave builders `mb_p27_*.py`, registered last in `build_assets.py`). The cloud has no Blender: write the builder changes
+  for the flare tubes and APS clusters, do not build; list the model ids in LOCAL_TODO for the local session (it builds,
+  validates and renders the cards).
+- No runs (owner's rule): the prompt says "write unit tests"; write them, do not run them; the only allowed run is the
+  dotnet compile check and Python tools on the xlsx (the manifest export, the apply tool in dry-run and real mode on
+  balance.json/campaign.json). CatalogCheck, the Unity compile, the PDF export (pass 8) and card renders are local.
