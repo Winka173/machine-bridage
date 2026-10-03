@@ -1,0 +1,169 @@
+{
+ "id": "shield_tower_a",
+ "class": "tower",
+ "real": [],
+ "shape": "unit_sheet.json Công trình (shield_tower, branch shield_tower.bulwark: the dome): built on the base's plinth (owner decision 4) with a dome projector dish and three emitter arms.",
+ "confidence": "uoc_dinh (fiction; unit_refs media: Shield Generator (Supreme Commander), Bubble Shield (Halo 3))",
+ "target_size": {
+  "L": 7.186,
+  "W": 7.186,
+  "H": 9.22,
+  "source": "the old GLB (wave 2 keeps sizes within 10 %)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "hexagonal cast plinth with a sloped kerb, joints and a hazard ring",
+   "nodes": [
+    "Base",
+    "Base_joints",
+    "Base_ring"
+   ]
+  },
+  {
+   "feature": "broken ring of jersey barriers with stripes",
+   "nodes": [
+    "Barriers",
+    "Barrier_stripes"
+   ]
+  },
+  {
+   "feature": "prefabricated capacitor cabins: walls, roofs, grilles, doors, Team bands, vents, cable trays, capacitor caps, rivets",
+   "nodes": [
+    "Shelter",
+    "Roof",
+    "Grilles",
+    "Doors",
+    "Team_band",
+    "Vents",
+    "Cable_trays",
+    "Capacitor_caps",
+    "Kit_rivets"
+   ]
+  },
+  {
+   "feature": "tapered hexagonal core braced by three lattice legs on footings with anchor bolts",
+   "nodes": [
+    "Walls_core",
+    "Mast",
+    "Footings",
+    "Kit_bolts"
+   ]
+  },
+  {
+   "feature": "conduits with insulator stacks and clamps",
+   "nodes": [
+    "Conduits",
+    "Insulators",
+    "Kit_clamps"
+   ]
+  },
+  {
+   "feature": "TeamGlow emitter rings round the core",
+   "nodes": [
+    "Emitter_rings"
+   ]
+  },
+  {
+   "feature": "railed service platform with a Team band and marker lamps, ladder with its cage, beacon",
+   "nodes": [
+    "Roof_deck",
+    "Platform_band",
+    "Railings",
+    "Lamps",
+    "Ladders",
+    "Ladder_cage",
+    "Beacons"
+   ]
+  },
+  {
+   "feature": "floodlight, junction box",
+   "nodes": [
+    "Light_poles",
+    "Junction_box"
+   ]
+  },
+  {
+   "feature": "dome projector: an upturned dish of glowing segments in a steel rim on three struts, its core emitter",
+   "nodes": [
+    "Emitter_collar",
+    "Dish_struts",
+    "Dome_dish",
+    "Dome_segments",
+    "Dome_rim",
+    "Emitter"
+   ]
+  },
+  {
+   "feature": "three emitter arms from the platform with glowing tips, a third capacitor cabin",
+   "nodes": [
+    "Emitter_arms",
+    "Emitter_tips",
+    "Shelter"
+   ]
+  },
+  {
+   "feature": "whip antenna",
+   "nodes": [
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 6000,
+  "note": "owner decision 6 (wave 1): a tower is seen in numbers, at most 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "the cabin bands",
+  "the platform band",
+  "TeamGlow rings, dish segments and arm tips"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Hegemon (cast concrete, prefabricated: pads, jersey barriers, steel rails)",
+ "details": {
+  "tier1": [
+   "plinth",
+   "core and legs",
+   "crown"
+  ],
+  "tier2": [
+   "capacitor cabins",
+   "barriers",
+   "platform",
+   "ladder and cage",
+   "emitter rings",
+   "conduits",
+   "dish",
+   "emitter arms"
+  ],
+  "tier3": [
+   "insulators",
+   "clamps",
+   "anchor bolts",
+   "rivets",
+   "capacitor caps",
+   "marker lamps",
+   "beacon",
+   "joints"
+  ]
+ },
+ "questions": []
+}
