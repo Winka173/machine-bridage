@@ -89,6 +89,14 @@ import mb_p35_microwave_vehicle  # noqa: E402
 import mb_p35_smoke_carrier  # noqa: E402
 import mb_p35_elite_mbt  # noqa: E402
 import mb_p35_swarm_carrier  # noqa: E402
+import mb_p35_wave2_atgm  # noqa: E402
+import mb_p35_wave2_guns  # noqa: E402
+import mb_p35_wave2_heavy  # noqa: E402
+import mb_p35_wave2_hangar  # noqa: E402
+import mb_p35_wave2_shield  # noqa: E402
+import mb_p35_wave2_branches  # noqa: E402
+import mb_p35_wave2_support  # noqa: E402
+import mb_p35_trims  # noqa: E402
 import mb_p35_flame_tank  # noqa: E402
 import mb_p35_river_patrol_boat  # noqa: E402
 import mb_p35_towed_at_gun  # noqa: E402
@@ -221,6 +229,11 @@ def all_builders():
                 **mb_p35_counter_battery_radar.BUILDERS, **mb_p35_lancet_truck.BUILDERS,
                 **mb_p35_microwave_vehicle.BUILDERS, **mb_p35_smoke_carrier.BUILDERS,
                 **mb_p35_elite_mbt.BUILDERS, **mb_p35_swarm_carrier.BUILDERS,
+                # Prompt 35 wave 2 lane A (DECISIONS "Prompt 35 wave 2 (lane A)"): towers with their branches (last).
+                **mb_p35_wave2_atgm.BUILDERS, **mb_p35_wave2_guns.BUILDERS,
+                **mb_p35_wave2_heavy.BUILDERS, **mb_p35_wave2_hangar.BUILDERS,
+                **mb_p35_wave2_shield.BUILDERS, **mb_p35_wave2_branches.BUILDERS,
+                **mb_p35_wave2_support.BUILDERS,
                 # Prompt 35 wave 4, lane C (DECISIONS "Prompt 35 wave 4 (lane C)"): rebuilt from scratch (last).
                 **mb_p35_flame_tank.BUILDERS, **mb_p35_river_patrol_boat.BUILDERS, **mb_p35_towed_at_gun.BUILDERS, **mb_p35_fpv_carrier.BUILDERS, **mb_p35_shorad_vehicle.BUILDERS, **mb_p35_armored_bulldozer.BUILDERS, **mb_p35_sam_launcher.BUILDERS, **mb_p35_amphib_light_vehicle.BUILDERS, **mb_p35_mine_layer.BUILDERS, **mb_p35_demolition_line_vehicle.BUILDERS, **mb_p35_bmpt.BUILDERS, **mb_p35_aa_gun_vehicle.BUILDERS, **mb_p35_aa_vehicle.BUILDERS, **mb_p35_artillery.BUILDERS, **mb_p35_tank_destroyer.BUILDERS}
     for name in HIGH_DETAIL:
@@ -240,6 +253,8 @@ def all_builders():
     builders = mb_p34_parts.wrap(builders)
     # Fix prompt L4: the Mount_Flare_* points on every unit with flares (after every other builder and wrapper).
     builders = mb_flare_mounts.wrap(builders)
+    # Prompt 35 wave 2: the old towers over the 1.5 x cap that no wave rebuilds, trimmed after their bake (last).
+    builders = mb_p35_trims.wrap(builders)
     return builders
 
 

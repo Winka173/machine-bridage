@@ -17931,3 +17931,47 @@ Owner's bomb-run fix (Docs/prompts/bomb_run_vi.txt), pass 0 only: export and dia
   StrikeSystem.cs:250-275 and BossSystem.BigAttacks.cs:708-720 (python Random for the lateral offsets).
 - Bom_ket_qua_vung: three formations (5 in a row along the track 8 m apart, 5 across, 5 in an 8 m square cluster),
   vehicles as points, centred on the aim (an airstrike's on its line's middle: its Point is the line's start).
+
+## Prompt 35 wave 2 (lane A)
+
+Branch `feature/p35-w2` (2026-10-03), after the owner's "tiếp tục" on wave 1 with the lead's defaults. Report:
+Docs/models/WAVE_2_REPORT.md.
+
+- **Modules.** One module per family, registered last in all_builders: `mb_p35_wave2_atgm` (atgm_tower, _a, _b),
+  `_guns` (gun_turret, _b), `_heavy` (heavy_turret, _b), `_hangar` (drone_hangar, _a, _b), `_shield` (shield_tower,
+  _a), `_branches` (mg_bunker_b, aa_turret_b, artillery_emplacement_b, cp_relay_b), `_support` (logistics_station,
+  helipad, _a, _b); a spec each in Tools/blender/specs/. Lean helpers in `mb_p35_w2parts` (six-sided sandbags at 20
+  triangles, cap-less slabs, lift joints, bolt grids, box stacks), not in the kit (lane B builds on the kit at the
+  same time).
+- **Branches with their base** (decision 4) where the base is in this wave; the four branches whose base comes later
+  keep the base's footprint so the later rebuild can share it. cp_relay_b is an orphan file (cp_relay has noBranch):
+  rebuilt as the unit_refs' cp_relay.loot (a salvage relay post); it has no card.
+- **Runtime nodes** of the old files kept (Turret, Main_cannon[_2], Muzzle_brake[_2], Muzzle_main / coax / mg /
+  missile[.NNN], Mount_mg, Mount_gun[.001], Radar, Point_fire, Launch_rail, Launch_column / Launch_collar, the
+  launcher mesh name ATGM_pod). heavy_turret_b writes its own `Muzzle_b1/b2_main` (mb_p34_barrels does it for
+  heavy_turret only). Tube meshes on aa_turret_b are named `Tube_bodies`, not `Launch_tubes`, so ModelLibrary does not
+  start launching its rounds from new launch points. Raised roof guns (the roof-gun rule): heavy_turret's MG on a
+  riser and post (Mount_mg 0.73 m higher than the old pivot), artillery_emplacement_b's crew MG on a 0.4 m post.
+- **Sizes** within 10 % of the old GLBs (the spec's target_size); the base helipad kept flat (0.11 m).
+- **What moves the soft score on towers** (for the next waves): faces never seen (pad undersides, wall tops under a
+  roof, berm undersides) count in the area the densities divide by, so they are left out (`caps=`); precast slab and
+  formwork joints and see-through rails, ladders and fences carry edges, regions and silhouette; a pale wall material
+  (Plaster) and a lighter bake on low emplacements (grime_height 0.1-0.15, ao_strength 0.45-0.55) keep the battle-view
+  picture out of the darkest brightness bins. A part that is half sunk (`k.block` is centred on its loc) was lifted.
+- **NEEDS_HUMAN** (4 rounds, all hard gates pass): drone_hangar family 71.5-71.8, heavy_turret 78.0, heavy_turret_b
+  71.6, artillery_emplacement_b 64.1, logistics_station 63.7, helipad family 52.5-61.8 (obstacle gold). Owner
+  question 1 in the report.
+- **Trims (review item 2).** The six over-cap towers no wave rebuilds (ew_tower_a, guard_tower, guard_tower_a,
+  missile_battery, _a, _b) keep their builders; `mb_p35_trims.wrap` (last wrapper in all_builders) decimates their
+  densest parts after the bake (collapse, then zero-area and duplicate faces removed: the canonical-order export
+  refuses a face twice). All six under 6,000, soft scores kept (80.6-100 -> 83.2-100). Sheets in Docs/models/trims/
+  (not rebuild/, so the gate keeps their pass 8 grade).
+- **Kit (lane B's four requests).** `tread_wheel`, `side_skirt(bolts=)`, `era_bricks(bolts=)`, `pintle_mg(riser=,
+  ring_r=, cradle=)`; defaults unchanged (rocket_turret family and fortress_bastion rebuild byte-identical). Lane B's
+  `mb_p35b_parts.tread_wheel` stays as is (its models are not rebuilt here).
+- **Kit door fix.** `K.door` built the frame posts along the wall's normal; now upright. ixion, fortress_hive,
+  repair_bay, radar_site, ammo_dump rebuilt (soft -0.1 to -0.9; the posts had counted as silhouette).
+- **build_assets.py** had a stray `}` from the wave 1 merge (a syntax error); fixed.
+- **Review item 7.** Boss!P11 "(model tạm)" removed in the xlsx XML (sheet10.xml only); unit_sheet.py rerun (its json
+  unchanged: it reads column D); the same note removed from unit_refs.json, which copies P11.
+- **Renderer caps.** logistics_station merged small parts of one material (59 -> 46 renderers, structure cap 48).

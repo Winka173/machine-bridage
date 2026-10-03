@@ -1,0 +1,214 @@
+{
+ "id": "heavy_turret",
+ "class": "tower",
+ "real": [
+  "AK-130 130 mm naval mount on shore",
+  "A-222 Bereg",
+  "M284 155 mm"
+ ],
+ "shape": "unit_sheet.json Công trình (heavy_turret): a big twin 155 mm turret on an armoured concrete base, 10.3 x 8.0 x 6.1 m; branches differ clearly at the default zoom.",
+ "confidence": "ban_dau_doan (unit_refs names the guns; the barbette is a generic coastal battery)",
+ "target_size": {
+  "L": 10.256,
+  "W": 7.985,
+  "H": 6.105,
+  "source": "the old GLB (wave 2 keeps sizes within 10 %)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "cast apron with precast joints",
+   "nodes": [
+    "Base_apron",
+    "Base_joints"
+   ]
+  },
+  {
+   "feature": "octagonal battered (18-degree) concrete barbette with lift joints and a Team band",
+   "nodes": [
+    "Base",
+    "Lift_joints",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "deck joints, race ring",
+   "nodes": [
+    "Deck_joints",
+    "Race"
+   ]
+  },
+  {
+   "feature": "crew door in a cast porch with a lamp",
+   "nodes": [
+    "Door_porch",
+    "Doors",
+    "Lamps"
+   ]
+  },
+  {
+   "feature": "ammunition jib crane (post, truss jib, hook cable) lifting a 155 mm shell",
+   "nodes": [
+    "Crane",
+    "Crane_base",
+    "Crane_truss",
+    "Shells"
+   ]
+  },
+  {
+   "feature": "shell pallets, charge canisters, a crate",
+   "nodes": [
+    "Pallets",
+    "Charge_cans",
+    "Crates"
+   ]
+  },
+  {
+   "feature": "wire fence at the front, floodlight, range post, extinguisher",
+   "nodes": [
+    "Kit_fence",
+    "Light_poles",
+    "Range_post",
+    "Extinguishers"
+   ]
+  },
+  {
+   "feature": "faceted AK-130-class gun house with Team bands, welds and panel seams",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_band",
+    "Kit_welds",
+    "Panel_seams"
+   ]
+  },
+  {
+   "feature": "two gun ports (mantlets), twin 155 mm with fume extractors and double-baffle brakes, coaxial MG",
+   "nodes": [
+    "Mantlet",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Brake_ports",
+    "Coax"
+   ]
+  },
+  {
+   "feature": "rangefinder housing with armoured ears across the rear roof",
+   "nodes": [
+    "Sight",
+    "Glass"
+   ]
+  },
+  {
+   "feature": "commander's cupola with vision blocks, loader's hatch, vents, grille, lamps",
+   "nodes": [
+    "Cupola",
+    "Hatches",
+    "Vents",
+    "Grilles",
+    "Lamps"
+   ]
+  },
+  {
+   "feature": "crew rail round the roof walkway, ladder up the rear",
+   "nodes": [
+    "Railings",
+    "Ladders"
+   ]
+  },
+  {
+   "feature": "pintle MG on a riser and post with cradle, ammunition can and shield (roof-gun rule)",
+   "nodes": [
+    "MG_riser",
+    "MG_post",
+    "MG_cradle",
+    "MG_shield",
+    "Mount_mg"
+   ]
+  },
+  {
+   "feature": "two whip antennas",
+   "nodes": [
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_155_twin_ap",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_b1_main",
+    "Muzzle_b2_main"
+   ],
+   "note": "Muzzle_main between the barrels; the per-barrel muzzles are added by mb_p34_barrels"
+  },
+  {
+   "weapon": "(none in data)",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "kept from the old model"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 6000,
+  "note": "owner decision 6 (wave 1): a tower is seen in numbers, at most 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "the barbette band",
+  "the gun house side bands"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Hegemon (cast concrete, prefabricated: pads, jersey barriers, steel rails)",
+ "details": {
+  "tier1": [
+   "apron",
+   "barbette",
+   "gun house",
+   "twin barrels"
+  ],
+  "tier2": [
+   "porch and door",
+   "jib crane",
+   "pallets",
+   "rangefinder",
+   "cupola",
+   "roof rail",
+   "ladder",
+   "pintle MG"
+  ],
+  "tier3": [
+   "joints",
+   "lift joints",
+   "welds",
+   "seams",
+   "brake ports",
+   "vision blocks",
+   "handles",
+   "lamps",
+   "antennas"
+  ]
+ },
+ "questions": []
+}
