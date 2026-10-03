@@ -464,3 +464,9 @@ Danh sách id đã xóa và thay thế: `Docs/fixes/playtest14_deleted.md`. Khô
 | PT14-B7 | reinforcements | thả 2 MBT + 1 IFV, chỉ tốn vật phẩm | người chơi chọn quân ≤ 20 CP gốc; gọi tốn ceil(1,5 × tổng) CP (và vật phẩm) | chủ dự án 03/10 |
 | PT14-B8 | Garrison HQ | đội hỗn hợp theo cấp | tùy chọn: đội là đơn vị người chơi chọn (số lượng = số xe của đội cấp đó) | kế hoạch PT14 |
 | PT14-B9 | Giá tháp p32_tower_prices | - | bỏ laser_ad_station.net | biến thể bị xóa |
+
+## PT14 lead (03/10): opening squads after the radar_scout role was emptied
+| What | Before | After | Why |
+|---|---|---|---|
+| commanders.kerr opening roles | scout, light (radar_scout emptied) | scout, scout, light | keeps 3 squads; recon role -> scout jeep |
+| generals.orlov opening roles | artillery (radar_scout emptied) | artillery, scout | keeps 2 squads; spotter for the guns |

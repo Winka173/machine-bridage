@@ -72,12 +72,12 @@
     },
     "commanders": {
       "kade": ["mbt", "scout"], "lind": ["engineer", "repair", "light"], "reyes": ["scout_heli", "scout"],
-      "kerr": ["scout", "light"], "venn": ["fpv", "scout"], "mendez": ["wheeled", "light_tank", "scout"],
+      "kerr": ["scout", "scout", "light"], "venn": ["fpv", "scout"], "mendez": ["wheeled", "light_tank", "scout"],
       "brandt": ["bunker", "engineer"], "dahl": ["artillery", "scout"], "brenn": [], "adler": ["scout", "light"],
       "varro": ["cheap4", "cheap4", "cheap4"], "reyn": ["mbt"], "quist": ["fortify", "light", "scout"], "okoye": []
     },
     "generals": {
-      "varga": ["tank"], "orlov": ["artillery"], "kessler": ["mine_layer", "light"], "wolff": ["heli"],
+      "varga": ["tank"], "orlov": ["artillery", "scout"], "kessler": ["mine_layer", "light"], "wolff": ["heli"],
       "sen": ["drone"], "venn": ["drone"], "thorne": ["mbt"], "aurel": ["heavy"], "default": ["scout", "light"]
     }
   },

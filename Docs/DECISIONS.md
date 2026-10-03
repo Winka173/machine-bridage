@@ -19320,3 +19320,12 @@ Part 2 (lane B):
 8. Support detail pages: "Units called" tab (units a support drops or builds). reinforcements: the player fills the drop
    on that tab (choices list, ≤ 20 base CP), the call costs ceil(1.5 × total) CP on top of using the item
    (Command.Call); nothing saved: its default drop cut to 20 CP.
+
+## Play-test 14: cloud session 1 questions (lead decides, owner: "tự quyết luôn", 03/10)
+- Kerr / Orlov lost the radar_scout role: replaced by a second "scout" (scout_jeep); CHANGES.md "PT14 lead".
+- Airdropped armour (reinforcements): stop being a coin item; a plain fire-support card paid in CP only
+  (ceil(1.5 x picked value), cap 20 cp). Queued for the next cloud session; refund owned items as coins.
+- Vehicle / aircraft hangars: Medium, unlock c3m04 / c7m02, as the cloud set them.
+- Leftovers for local: Unity look at one-tap / base tab / new tabs / rally button; stale EditMode tests (repair bay,
+  airfield, fire-control link, Army tab order, base cover strip) to update; export rebuild needs ExportGameDoc
+  (later, with the owner's word); hangar models (lead's model wave); source xlsx still has deleted ids.
