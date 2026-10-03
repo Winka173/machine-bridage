@@ -498,3 +498,4 @@ Nhánh `cloud/pt14-d`. Lý do: `Docs/DECISIONS.md` "Play-test 14 (lane D, cloud)
 | PT14-D2 | Mở khóa `reinforcements` | cửa hàng vật phẩm | chiến dịch chương 4 (c4m08, `act11.ORPHANS`); mua sớm theo giá thẻ hỗ trợ | thẻ thường cần đường mở khóa |
 | PT14-D3 | Save cũ (roster version 10) | - | mỗi vật phẩm `reinforcements` còn trong túi hoàn 450 xu (`CardMerges.CallItemPricePt14`) | hoàn tiền vật phẩm |
 | PT14-D4 | Kinh tế chiến dịch (generator tính lại) | hồi I-II trả x1,64 | x1,66 | thêm một thẻ trên đường mở khóa |
+| PT14-D5 | Locust (biến thể drone_mothership) vũ khí drone | dùng chung `p26_matriarch_ma_drones`: loạt 6 drone cách 0,2 s, hồi 4 s (~6 drone / 5 s) | vũ khí riêng `locust_drones`: 1 drone, hồi 2 s (1 drone / 2 s); sát thương mỗi drone giữ nguyên; Matriarch không đổi | chủ dự án: Locust 1 drone mỗi 2 s |
