@@ -3264,6 +3264,16 @@
    "changes": [
     "FLAG targeting_station: meshes 52 -> 46 (-11.5%); renderers 52 -> 46 (-11.5%); materialSlots 52 -> 46 (-11.5%); fileBytes 484,800 -> 479,056 (-1.2%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "mine_rocket_truck"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG mine_rocket_truck: triangles 5,012 -> 7,340 (+46.4%); vertices 5,589 -> 9,871 (+76.6%); meshes 21 -> 56 (+166.7%); renderers 21 -> 56 (+166.7%); materials 8 -> 13 (+62.5%); materialSlots 21 -> 56 (+166.7%); fileBytes 298,264 -> 534,008 (+79.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -41170,24 +41180,24 @@
   },
   "mine_rocket_truck": {
    "file": "mine_rocket_truck.glb",
-   "fileBytes": 298264,
-   "sha1": "199a011e5257abd6",
+   "fileBytes": 534008,
+   "sha1": "990163ad5f8c7a37",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 25,
-   "meshes": 21,
-   "materials": 8,
+   "nodes": 60,
+   "meshes": 56,
+   "materials": 13,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 21,
-   "submeshes": 21,
-   "materialSlots": 21,
-   "materialsUsed": 8,
-   "triangles": 5012,
-   "vertices": 5589,
+   "renderers": 56,
+   "submeshes": 56,
+   "materialSlots": 56,
+   "materialsUsed": 13,
+   "triangles": 7340,
+   "vertices": 9871,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -41195,36 +41205,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 94,
-   "openEdges": 0,
+   "loosePieces": 234,
+   "openEdges": 16,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.025,
+    -1.044,
     0.0,
-    -3.1
+    -3.0964
    ],
    "boundsMax": [
-    1.025,
-    2.6,
-    3.0624
+    1.044,
+    2.81,
+    3.1867
    ],
    "size": [
-    6.162,
-    2.05,
-    2.6
+    6.283,
+    2.088,
+    2.81
    ],
    "center": [
     0.0,
-    1.3,
-    -0.019
+    1.405,
+    0.045
    ],
-   "structureHash": "82b91bbe43066757",
+   "structureHash": "4ae5de382cb6a26b",
    "color0": {
-    "mean": 0.8077,
-    "min": 0.6105,
+    "mean": 0.591,
+    "min": 0.0589,
     "max": 1.0,
-    "p05": 0.722,
-    "p95": 0.9898,
+    "p05": 0.1585,
+    "p95": 0.9393,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -41241,31 +41251,66 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Air_tanks",
     "Antennas",
-    "Armor",
+    "Axles",
+    "Battery_box",
+    "Beacon_base",
+    "Beacons",
+    "Body",
+    "Bumper",
     "Cab",
     "Chassis",
-    "Grab_rails",
-    "Hatch_fittings",
+    "Doors",
+    "Exhaust",
+    "Exhaust_caps",
+    "Exhaust_mufflers",
+    "Exhaust_shields",
+    "Fuel_tank",
+    "Glass",
+    "Grille_frames",
+    "Grilles",
     "Hatches",
+    "Hubs",
+    "Jack_pads",
+    "Jerrycans",
+    "Kit_hinges",
+    "Kit_latches",
+    "Kit_racks",
+    "Kit_steel",
+    "Kit_straps",
+    "Ladders",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_housing",
+    "Leaf_springs",
+    "Lift_eyes",
+    "Mud_wings",
     "Muzzle_main",
-    "Pod",
-    "Pod_band",
-    "Pod_frame",
+    "Outriggers",
+    "Pack_frames",
     "Point_exhaust",
     "Point_fire",
-    "Steel",
-    "Tail_lights",
+    "Rams",
+    "Roof_kit",
+    "Shutters",
+    "Spare_wheel",
+    "Spare_wheel_rim",
+    "Stencil_bands",
+    "Steps",
+    "Sun_visor",
+    "Tail_lamps",
+    "Tarp",
+    "Toolbox",
     "Tubes",
     "Tubes_bore",
+    "Turntable",
     "Turret",
-    "Turret_armor",
-    "Turret_steel",
+    "Turret_cradle",
     "Tyres",
     "Wheels",
-    "Windows"
+    "Window_frames",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,

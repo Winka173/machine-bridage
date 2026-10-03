@@ -1,0 +1,132 @@
+{
+ "id": "mine_rocket_truck",
+ "class": "wheeled",
+ "real": [
+  "ISDM Zemledeliye remote mining system (two 25-tube 122 mm packages)",
+  "a KamAZ-5350-family 6x6 cab-over truck"
+ ],
+ "shape": "a three-axle cab-over truck: flat-fronted cab with grille, bumper, lamps, raked two-pane windscreen under raised armoured shutters, doors, steps, mirrors, beacon and whip; ladder frame, front axle and rear tandem with lugged tyres, mud wings, fuel tank, battery box, air tanks, exhaust stack, spare wheel; on the rear deck the turntable with the elevating cradle and two 5 x 5 launch packages (tube mouths, end frames, lifting eyes, stencil bands) raised over the cab; rear stabiliser jacks, ladder, jerrycans, toolbox, tarp roll.",
+ "confidence": "xấp xỉ (Zemledeliye photographs; scaled onto a shorter 6x6 to the def's modelSize)",
+ "target_size": {
+  "L": 6.09,
+  "W": 2.0,
+  "H": 2.6,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "cab-over cab: grille, raked windscreen, shutters, doors, mirrors, steps",
+   "nodes": [
+    "Cab",
+    "Grilles",
+    "Glass",
+    "Shutters",
+    "Doors",
+    "Steps"
+   ]
+  },
+  {
+   "feature": "frame on three axles, lugged tyres, mud wings, tanks, exhaust, spare wheel",
+   "nodes": [
+    "Chassis",
+    "Axles",
+    "Wheels",
+    "Tyres",
+    "Mud_wings",
+    "Fuel_tank",
+    "Air_tanks",
+    "Spare_wheel"
+   ]
+  },
+  {
+   "feature": "rear deck, jerrycans, toolbox, tarp, ladder, stabiliser jacks",
+   "nodes": [
+    "Body",
+    "Jerrycans",
+    "Toolbox",
+    "Tarp",
+    "Ladders",
+    "Outriggers",
+    "Jack_pads"
+   ]
+  },
+  {
+   "feature": "turntable, cradle, rams",
+   "nodes": [
+    "Turret",
+    "Turntable",
+    "Turret_cradle",
+    "Rams"
+   ]
+  },
+  {
+   "feature": "two 25-tube launch packages with tube mouths",
+   "nodes": [
+    "Tubes",
+    "Tubes_bore",
+    "Pack_frames",
+    "Stencil_bands",
+    "Lift_eyes",
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "note": "light wheeled: seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "cab (Team)",
+  "deck (Team)",
+  "launch packages (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "Russian-pattern truck: team colour cab and packages, hazard stencil bands",
+ "details": {
+  "tier1": [
+   "cab",
+   "deck",
+   "packages",
+   "wheels"
+  ],
+  "tier2": [
+   "shutters",
+   "turntable",
+   "jacks",
+   "spare wheel",
+   "tanks",
+   "toolbox"
+  ],
+  "tier3": [
+   "tube mouths",
+   "lamps",
+   "mirrors",
+   "hinges",
+   "lifting eyes",
+   "jerrycans",
+   "whip"
+  ]
+ },
+ "questions": []
+}
