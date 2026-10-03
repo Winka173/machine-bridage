@@ -509,6 +509,9 @@ namespace MachineBrigade.Game.Effects
                 var t = (now - shot.Start) / shot.Duration;
                 if (t >= 1f)
                 {
+                    // Play-test 14 ("vệt khói bị cắt gần mục tiêu"): the smoke left the flame's tip, a flame's length behind the
+                    // missile, so the last stretch to the target never got its puffs: they are laid now, up to the impact.
+                    if (!still) FinishTrail(shot, plumes, emitters);
                     shot.Active = false;
                     shot.Transform.gameObject.SetActive(false);
                     continue;
@@ -566,6 +569,30 @@ namespace MachineBrigade.Game.Effects
                     emitters.Trail(PositionAt(shot, shot.PuffT), shot.Trail);
                 }
                 emitters.Motor(shot.Transform.position - forward * 0.6f, forward, shot.Trail);
+            }
+        }
+
+        /// <summary>Play-test 14: the rest of a motor's smoke trail, from its last puff to the impact point, as the round lands.</summary>
+        private void FinishTrail(Shot shot, MotorPlumes plumes, Emitters emitters)
+        {
+            var back = -shot.Transform.forward;
+            if (shot.PlumeLength > 0f && shot.PlumeSmoke > 0f)
+            {
+                var path = Mathf.Max(1f, Vector3.Distance(shot.From, shot.To) + shot.Arc);
+                var step = shot.PuffSpacing * plumes.SmokeSpacing / path;
+                if (step <= 0f) return;
+                while (shot.PuffT + step <= 1f)
+                {
+                    shot.PuffT += step;
+                    plumes.Smoke(PositionAt(shot, shot.PuffT), back, shot.PlumeSmoke);
+                }
+                return;
+            }
+            if (shot.Streak > 0f || shot.Trail <= 0f || shot.PuffStep <= 0f) return;
+            while (shot.PuffT + shot.PuffStep <= 1f)
+            {
+                shot.PuffT += shot.PuffStep;
+                emitters.Trail(PositionAt(shot, shot.PuffT), shot.Trail);
             }
         }
 
