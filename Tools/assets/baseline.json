@@ -2838,6 +2838,16 @@
    "changes": [
     "FLAG super_gun: triangles 4,266 -> 7,132 (+67.2%); vertices 5,083 -> 9,754 (+91.9%); meshes 39 -> 58 (+48.7%); renderers 39 -> 58 (+48.7%); materialSlots 39 -> 58 (+48.7%); fileBytes 288,916 -> 530,052 (+83.5%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "super_gun"
+   ],
+   "reason": "P35 wave 3: super_gun barrels to the old length",
+   "changes": [
+    "super_gun: bytes only"
+   ]
   }
  ],
  "models": {
@@ -52660,7 +52670,7 @@
   "super_gun": {
    "file": "super_gun.glb",
    "fileBytes": 530052,
-   "sha1": "b42e7c229c9dd6b5",
+   "sha1": "4efabdb6485d8368",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -52694,22 +52704,22 @@
    ],
    "boundsMax": [
     3.6664,
-    4.7714,
-    5.2738
+    5.1,
+    5.8918
    ],
    "size": [
-    9.34,
+    9.958,
     7.333,
-    4.771
+    5.1
    ],
    "center": [
     0.0,
-    2.386,
-    0.604
+    2.55,
+    0.913
    ],
    "structureHash": "754e28115bcca434",
    "color0": {
-    "mean": 0.6031,
+    "mean": 0.603,
     "min": 0.0674,
     "max": 1.0,
     "p05": 0.1557,

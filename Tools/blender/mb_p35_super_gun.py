@@ -116,10 +116,10 @@ def _gun_house(a):
     k.block(a.part('Cradle', 'Armor', t), (2.2, .7, .9), loc=(0, -1.45, .65), rot=(-ELEV * .5, 0, 0), chamfer=.08)
     for g, name, brake in ((g0, 'Main_cannon', 'Muzzle_brake'), (g1, 'Main_cannon_2', 'Muzzle_brake_2')):
         bp = a.part(name, 'Steel', t)
-        k.lathe(bp, [(.3, 0), (.3, .6), (.24, .75), (.2, 1.5), (.17, 4.1), (0, 4.1)], loc=g.at(0), rot=g.lathe_rot,
+        k.lathe(bp, [(.3, 0), (.3, .6), (.24, .75), (.2, 1.5), (.17, 4.8), (0, 4.8)], loc=g.at(0), rot=g.lathe_rot,
                 seg=14, worn=(1,))
         band = a.part('Collar_band', 'Steel', t)
-        for z in (.9, 2.3, 3.5):
+        for z in (.9, 2.6, 4.1):
             band.cyl(.22, .1, loc=g.at(z), rot=g.lathe_rot, seg=14, bevel=0)
         rec = a.part('Recuperators', 'Steel', t)
         k.lathe(rec, [(.11, 0), (.11, 1.3), (.07, 1.36)], loc=g.at(-.2, up=.38), rot=g.lathe_rot, seg=8)
@@ -129,8 +129,8 @@ def _gun_house(a):
             z = .08 + j * .15
             prof += [(.3, z), (.3, z + .09), (.22, z + .1)]
         prof += [(.22, .7), (0, .7)]
-        k.lathe(mb, prof, loc=g.at(4.08), rot=g.lathe_rot, seg=12)
-    a.pivot('Muzzle_main', g0.at(4.8), t)
+        k.lathe(mb, prof, loc=g.at(4.78), rot=g.lathe_rot, seg=12)
+    a.pivot('Muzzle_main', g0.at(5.5), t)
     # The cupola with its vision blocks, the rangefinder's arms out of both cheeks, hatches, vents, the roof kit.
     cup = a.part('Cupola', 'Armor', t)
     k.lathe(cup, [(.45, 0), (.45, .35), (.35, .45), (0, .47)], loc=(-.8, .6, 1.45), seg=14)
