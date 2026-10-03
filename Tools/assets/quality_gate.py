@@ -19,6 +19,11 @@ against the gold mean of the model's class (thresholds 85 / 80 / 80 / 80 / 100 %
 """
 from __future__ import annotations
 
+import sys as _sys
+try:
+    _sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
 import argparse
 import csv
 import json
