@@ -2696,6 +2696,26 @@
    "changes": [
     "FLAG counter_battery_radar: triangles 2,396 -> 6,956 (+190.3%); vertices 2,834 -> 8,881 (+213.4%); meshes 22 -> 60 (+172.7%); renderers 22 -> 60 (+172.7%); materials 8 -> 10 (+25.0%); materialSlots 22 -> 60 (+172.7%); fileBytes 161,984 -> 491,368 (+203.3%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "lancet_truck"
+   ],
+   "reason": "P35 wave 1",
+   "changes": [
+    "FLAG lancet_truck: triangles 2,314 -> 7,300 (+215.5%); vertices 2,755 -> 9,763 (+254.4%); meshes 22 -> 60 (+172.7%); renderers 22 -> 60 (+172.7%); materials 9 -> 10 (+11.1%); materialSlots 22 -> 60 (+172.7%); fileBytes 158,072 -> 531,288 (+236.1%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "lancet_truck"
+   ],
+   "reason": "P35 wave 1",
+   "changes": [
+    "lancet_truck: vertices 9,763 -> 9,765 (+0.0%); fileBytes 531,288 -> 531,376 (+0.0%)"
+   ]
   }
  ],
  "models": {
@@ -34896,24 +34916,24 @@
   },
   "lancet_truck": {
    "file": "lancet_truck.glb",
-   "fileBytes": 158072,
-   "sha1": "d7ddb67f48b815f7",
+   "fileBytes": 531376,
+   "sha1": "65641b9155f80b1d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 28,
-   "meshes": 22,
-   "materials": 9,
+   "nodes": 66,
+   "meshes": 60,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 22,
-   "submeshes": 22,
-   "materialSlots": 22,
-   "materialsUsed": 9,
-   "triangles": 2314,
-   "vertices": 2755,
+   "renderers": 60,
+   "submeshes": 60,
+   "materialSlots": 60,
+   "materialsUsed": 10,
+   "triangles": 7300,
+   "vertices": 9765,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -34921,36 +34941,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 68,
-   "openEdges": 0,
+   "loosePieces": 237,
+   "openEdges": 8,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.02,
+    -1.1,
     0.0,
-    -3.525
+    -3.7592
    ],
    "boundsMax": [
-    1.02,
-    2.7001,
-    3.9
+    1.1,
+    2.9781,
+    3.76
    ],
    "size": [
-    7.425,
-    2.04,
-    2.7
+    7.519,
+    2.2,
+    2.978
    ],
    "center": [
     0.0,
-    1.35,
-    0.188
+    1.489,
+    0.0
    ],
-   "structureHash": "20b9350ce2cec177",
+   "structureHash": "9da6ff0b31e3fa39",
    "color0": {
-    "mean": 0.7197,
-    "min": 0.2729,
+    "mean": 0.6178,
+    "min": 0.0504,
     "max": 1.0,
-    "p05": 0.3964,
-    "p95": 0.9987,
+    "p05": 0.1779,
+    "p95": 0.8957,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -34971,34 +34991,72 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Bed",
+    "Ammo_can_mg",
+    "Antennas",
+    "Axles",
     "Body",
+    "Body_dark",
     "Box_face",
     "Box_shell",
+    "Bumper",
+    "Cab",
+    "Cab_dark",
+    "Cab_fit",
+    "Carriage",
     "Cells",
     "Chassis",
+    "Cradle_mg",
+    "Exhaust",
+    "Exhaust_caps",
+    "Fenders",
     "Glass",
+    "Grille_frames",
+    "Grilles",
+    "Gun_carriage_mg",
+    "Gun_fit_mg",
+    "Gun_ring_fit_mg",
+    "Gun_ring_mg",
+    "Gun_shield_mg",
+    "Hatch_fittings",
+    "Hatches",
+    "Hubs",
+    "Kit_hooks",
+    "Kit_latches",
+    "Kit_straps",
+    "Ladders",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
-    "MG",
-    "MG_ammo",
-    "MG_shield",
+    "Lancet",
+    "Lancet_prop",
+    "Lancet_seeker",
+    "MG_barrel",
+    "MG_flash",
     "Mount_mg",
+    "Mudflaps",
     "Munition_wings",
     "Muzzle_main",
     "Muzzle_mg",
     "Point_exhaust",
     "Point_fire",
     "Rack_base",
+    "Rack_fit",
+    "Rail",
+    "Railings",
     "Rams",
-    "Sensor",
-    "Steel",
-    "Stripes",
+    "Receiver_mg",
+    "Steps",
+    "Stowage",
+    "Suspension",
     "Tail_lamps",
+    "Tail_lenses",
+    "Team_band",
+    "Turntable",
     "Turret",
     "Tyres",
-    "Wheels"
+    "Wheels",
+    "Window_frames",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,
