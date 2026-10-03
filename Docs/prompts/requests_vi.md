@@ -242,3 +242,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 duyệt pilot prompt 35: "súng trên nóc nhìn hơi dẹp, nhưng approve" (11 câu hỏi: theo đề xuất của lead). Lượt 10 bộ xuất: "có tra web để điền số liệu ngoài đời kèm nguồn không => không".
 - 03/10 duyệt đợt 1 prompt 35: "tiếp tục" (7 câu hỏi theo đề xuất mặc định của lead).
+- 03/10 "Sửa lỗi ném bom (không phải prompt mới)": rải thảm thay vì một điểm; lượt 0 xuất dữ liệu bom rồi DỪNG (nguyên văn: bomb_run_vi.txt).

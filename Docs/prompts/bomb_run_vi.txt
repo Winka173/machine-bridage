@@ -1,0 +1,71 @@
+(03/10, chủ dự án — nguyên văn; sửa lỗi, không phải prompt mới)
+
+Sửa lỗi ném bom (không phải prompt mới). Làm tự chủ, ghi DECISIONS mục "Ném bom rải thảm", mỗi lượt một commit. Không mô phỏng trận; được viết test tự động và công cụ đo offline.
+
+## VẤN ĐỀ
+Máy bay ném bom xả toàn bộ bom vào MỘT điểm. Ngoài đời bom rơi cách nhau theo đường bay (rải thảm). Ý thiết kế đã là rải (mô tả thẻ: "thả một hàng 12 quả", boss "rải thảm 20 quả"), nên nhiều khả năng điểm rơi của mọi quả lấy cùng một điểm nhắm, thay vì dịch dọc đường bay.
+
+## LƯỢT 0 — XUẤT DỮ LIỆU ĐỂ XEM (rồi DỪNG)
+Nếu Tools/export đã có: chạy và xuất. Nếu chưa có: tạo bản xuất tập trung vào bom theo cùng quy tắc định dạng của bộ xuất dữ liệu (cột đầu là id; số lưu dạng số; đơn vị ở tên cột; có cột nguon và raw_json; ô chưa làm ghi CHUA_AP:prompt_N, ô cần đọc mã ghi NEED_CODE_CHECK).
+Xuất ra docs/export/bom_<ngày>/ gồm Machine_Brigade_Bom_<ngày>.xlsx, CSV từng sheet, và Machine_Brigade_Bom_<ngày>.md. Các sheet:
+1. Bom_vu_khi: MỌI vũ khí thả bom (bom thường, bom dẫn đường, bom lượn, bom nhiệt áp, napalm, bom chùm, bom xuyên boongke, bom của boss, thẻ hỗ trợ không kích). Đủ cột như sheet Vu_khi (cỡ hoặc đầu nổ kg, loại sát thương, sát thương, lõi, rìa, cảnh báo, số bom mỗi lượt, nhịp, nạp…), cộng danh sách đơn vị mang.
+2. Bom_don_vi: mọi máy bay, boss, thẻ hỗ trợ thả bom: id, lớp, tốc độ, tốc độ quay, độ cao thả, số bom mỗi lượt, cách nạp, cách vòng chờ.
+3. Bom_hanh_vi: hành vi thả bom THEO MÃ (không theo mô tả): chọn mục tiêu, hướng vào, điều kiện thả (ví dụ chỉ thả khi đủ 2/3 số bom), điểm nhắm, cách tính điểm rơi của TỪNG quả, ngòi nổ, kiểm tra an toàn quân ta, vòng lại.
+4. Bom_vet_tha (quan trọng nhất): chạy hàm thả bom trong test (không mô phỏng trận) với kịch bản chuẩn cho từng vũ khí thả bom: điểm nhắm (0,0), hướng bay 0°, 3 seed. Mỗi quả một dòng: vu_khi_id, seed, chi_so_bom, tick_tha, vi_tri_tha_x_m, vi_tri_tha_z_m, tick_cham, vi_tri_roi_x_m, vi_tri_roi_z_m, thoi_gian_roi_s. Cuối bảng mỗi vũ khí: số điểm rơi khác nhau, khoảng cách xa nhất giữa hai quả, độ dài dải, độ lệch ngang.
+5. Bom_canh_bao: hình dạng và kích thước vòng cảnh báo hiện tại của từng vũ khí thả bom.
+6. Bom_ket_qua_vung: với hai đội hình chuẩn (5 xe cách nhau 8 m theo hàng; 5 xe thành cụm 8 m), số xe trúng trong lõi và rìa cho mỗi lượt thả, tính từ Bom_vet_tha.
+Ghi BOM_REPORT.md: nguyên nhân quan sát được (các quả có thật sự rơi cùng điểm không), đường dẫn các file.
+DỪNG. Chỉ tiếp tục khi chủ dự án nói "tiếp tục".
+
+## LƯỢT 1 — THAM SỐ RẢI THẢM (thêm vào dữ liệu vũ khí thả bom và cột trong sheet Bom_vu_khi; chủ dự án đã yêu cầu thêm chỉ số)
+Mỗi vũ khí thả bom có:
+- che_do_tha: POINT (một điểm; bom dẫn đường) | STICK (rải thảm dọc đường bay) | PATTERN (hình khác, nếu cần sau).
+- so_bom_moi_luot (n).
+- khoang_cach_giua_bom_m (spacing).
+- do_dai_dai_m = (n − 1) × spacing.
+- chu_ky_tha_giua_bom_s = spacing / toc_do_bay_luc_tha_m_s (để khoảng cách dọc đường nhất quán với tốc độ máy bay).
+- toc_do_bay_luc_tha_m_s.
+- thoi_gian_roi_s (fallTime, mặc định 1,2 s) và khoang_dan_dau_m = tốc độ × thời gian rơi (tha trước điểm nhắm để quả ĐẦU rơi đúng đầu dải).
+- huong_ra_tham: HEADING_APPROACH (hướng đang vào) hoặc HEADING_TRUC_CHINH (trục chính của cụm mục tiêu).
+- tam_dai: ĐẦU dải tại điểm nhắm (START) hoặc TÂM dải tại điểm nhắm (CENTER).
+- lech_ngang_m (độ lệch ngang theo seed, mặc định ±0,25 × lõi), lech_doc_m (mặc định ±0,15 × spacing); deterministic theo seed lúc thả.
+- ty_le_chong_lan = lõi / spacing (mục tiêu 0,8–1,2: nổ nối nhau thành dải liên tục, không dồn cục).
+- do_rong_dai_m = 2 × rìa + 2 × lech_ngang.
+- so_muc_tieu_toi_thieu (mặc định 3 hoặc một hàng công trình); ít mục tiêu hơn thì rút còn max(2, ceil(n/3)) quả hoặc không thả.
+- khoang_cach_an_toan_m (mặc định max(lõi, 8) m): MỖI QUẢ có kiểm tra riêng, quả nào sẽ rơi trong khoảng này quanh quân ta thì không thả (bỏ quả đó, không bỏ cả lượt).
+- thoi_gian_bay_thang_s = độ dài dải / tốc độ + thời gian rơi + 1 s; máy bay giữ thẳng hướng và độ cao suốt thời gian này; khoang_thoat_m ≥ 40 m sau quả cuối rồi mới được vòng lại.
+- thoi_gian_mo_khoang_bom_s (hình ảnh).
+- canh_bao_dang: STICK_RECT (một hình chữ nhật bao cả dải, có đường hướng bay) cho bom ≥ 400 kg và boss; còn lại không có vòng (theo luật vòng cảnh báo).
+- Công thức khởi điểm:
+  spacing = 1,1 × lõi (giới hạn 0,8–1,5 × lõi);
+  độ dài dải giới hạn 120 m (boss 140 m); vượt thì giảm spacing xuống không dưới 0,8 × lõi, vẫn vượt thì giảm n;
+  quả nhắm gần mục tiêu then chốt nhất nằm ở giữa dải.
+- Bom DẪN ĐƯỜNG (GBU, bom lượn UMPK, SDB, bom của cường kích tàng hình trên hạm): che_do_tha = POINT; khoảng lệch giữa các quả chỉ vài mét theo độ tản của vũ khí (không rải thảm).
+- Áp cho: Oanh tạc cơ chiến lược (12 quả), Oanh tạc cơ tàng hình (3 bom rất lớn: dải ngắn), Argus / Garuda / Roc (dải 8 và 20 quả), cường kích mang bom thường, thẻ hỗ trợ không kích, bom napalm; mọi vũ khí thả bom khác tìm thấy ở Lượt 0.
+- Giữ nguyên: tổng sát thương mỗi lượt, chu kỳ giữa các lượt, số bom mỗi lượt. Chỉ đổi PHÂN BỐ điểm rơi. Không cân bằng lại ở lượt này (sẽ xem Bom_ket_qua_vung sau).
+
+## LƯỢT 2 — SỬA LỖI VÀ TEST
+- Sửa: điểm rơi của quả i = điểm đầu dải + hướng × i × spacing + lệch (seed), tính theo vị trí máy bay lúc thả cộng khoảng dẫn đầu; KHÔNG lấy một điểm nhắm chung cho mọi quả.
+- Chọn hướng ra thảm: trục chính của cụm mục tiêu (phân tích trục chính ma trận hiệp phương sai 2×2, deterministic) trong ±45° so với hướng vào; không có cụm thì dùng hướng vào. Quả bị bỏ vì an toàn không dịch vị trí các quả còn lại.
+- Test tự động:
+  1. mọi quả của một lượt nằm trên một đường thẳng dọc hướng ra thảm (sai số ngang ≤ lech_ngang);
+  2. độ dài dải = (n − 1) × spacing ± 5%;
+  3. chu kỳ thả nhất quán với tốc độ (spacing = tốc độ × chu kỳ, ± 5%);
+  4. cùng seed ra cùng điểm rơi (deterministic);
+  5. mọi điểm rơi nằm trong hình chữ nhật cảnh báo (≥ 95%; không quả nào ngoài hơn 1 m);
+  6. ty_le_chong_lan nằm trong 0,8–1,2 (hoặc có lý do);
+  7. không quả nào rơi trong khoảng an toàn quanh quân ta (thử với quân ta đặt dọc dải);
+  8. bom dẫn đường vẫn ra điểm (đúng POINT);
+  9. máy bay giữ thẳng hướng và độ cao trong thoi_gian_bay_thang_s.
+- Số "Bom_ket_qua_vung" mới: số xe trúng trong lõi và rìa với hai đội hình chuẩn (hàng, cụm); báo trước / sau.
+
+## LƯỢT 3 — HÌNH ẢNH VÀ ÂM THANH (chỉ trình diễn, không đổi mô phỏng)
+- Mở khoang bom, từng quả thả đúng nhịp, vệt bom, nổ nối nhau theo dải (nổ tiếp ở quả kế liền sau, âm thanh nổ rải theo dải, đuôi vang chung).
+- Hiệu ứng nổ theo bậc cỡ bom (đã có luật bậc T0–T5): dải nổ nhìn rõ chuỗi, không chồng thành một cột.
+- Vòng cảnh báo: một hình chữ nhật cho cả dải (viền mảnh, nền mờ, tâm lõi đậm hơn), tắt theo từng đoạn khi các quả nổ qua.
+- Giới hạn hiệu năng: số hiệu ứng nổ đồng thời theo ngân sách hiện có; dải 20 quả dùng hiệu ứng nhẹ hơn cho các quả xa camera.
+
+## LƯỢT 4 — TÀI LIỆU VÀ BÁO CÁO
+- Cập nhật bộ xuất dữ liệu: các sheet Bom_* nằm trong file 01_vu_khi_dan (hoặc file riêng nếu tách); md tương ứng; thêm mục "Ném bom rải thảm" trong PDF (bảng tham số, ảnh dải nổ trước / sau).
+- Thẻ máy bay hiện: "thả N quả, cách nhau X m, dải Y m" (sinh từ dữ liệu).
+- Báo cáo docs/fixes/report_bomb_run.md: nguyên nhân tìm được, bảng trước / sau (số điểm rơi khác nhau, độ dài dải, số xe trúng với hai đội hình chuẩn), danh sách vũ khí đã áp, chỗ tự quyết.
