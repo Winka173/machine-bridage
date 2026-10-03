@@ -57,8 +57,8 @@ namespace MachineBrigade.Sim.Modes
     {
         public const int PlayerTeam = 0;
         public const int EnemyTeam = 1;
-        private const float CaptureSeconds = 10f;
-        private const float WaypointReach = 5f;
+        private static float CaptureSeconds => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.CaptureSeconds;
+        private static float WaypointReach => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.WaypointReach;
 
         /// <summary>Seconds a route boss may make no headway before it is sent on again.</summary>
         private const double BossStall = 12.0;
@@ -78,7 +78,7 @@ namespace MachineBrigade.Sim.Modes
         private readonly Dictionary<string, float> _scouting = new();
 
         /// <summary>Seconds a vehicle must stay on a recon objective to scout it.</summary>
-        public const float ScoutSeconds = 3f;
+        public static float ScoutSeconds => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.ScoutSeconds;
         private readonly List<(EntityId id, int waypoint)> _convoy = new();
 
         /// <summary>Prompt 31 L4: the fixed deck's placed allies on the field, and whether losing each loses the mission.</summary>
@@ -124,7 +124,7 @@ namespace MachineBrigade.Sim.Modes
         private readonly HashSet<EntityId> _halted = new();
 
         /// <summary>A truck drives on only with a friendly vehicle this close: the army leads, the convoy follows.</summary>
-        private const float EscortReach = 22f;
+        private static float EscortReach => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.EscortReach;
         private readonly KillLedger _ledger = new();
         private readonly List<string> _single = new();
         private float _held, _waveTimer, _convoyTimer;
@@ -138,10 +138,11 @@ namespace MachineBrigade.Sim.Modes
         private readonly List<string> _roster = new();
 
         /// <summary>No reinforcements before this far in, and at least this long between two.</summary>
-        private const double ReinforceFirst = 45.0, ReinforceGap = 75.0;
+        private static double ReinforceFirst => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.ReinforceFirst;
+        private static double ReinforceGap => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.ReinforceGap;
 
         /// <summary>The enemy calls for help once its army is down to this share of the strongest it has been.</summary>
-        private const float ReinforceBelow = 0.6f;
+        private static float ReinforceBelow => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.ReinforceBelow;
 
         /// <summary>Times the enemy has been reinforced.</summary>
         public int Reinforced => _reinforced;
@@ -154,7 +155,7 @@ namespace MachineBrigade.Sim.Modes
         public bool BossFled { get; private set; }
 
         /// <summary>Seconds a fleeing boss takes to leave the battle.</summary>
-        private const double FleeSeconds = 8.0;
+        private static double FleeSeconds => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.FleeSeconds;
 
         /// <summary>The allied commander's HQ (set by the operation; none without an ally). Relieve is lost when it falls.</summary>
         internal EntityId AllyHq { get; set; }

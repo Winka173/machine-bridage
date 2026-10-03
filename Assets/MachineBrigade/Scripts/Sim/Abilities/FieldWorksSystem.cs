@@ -56,7 +56,7 @@ namespace MachineBrigade.Sim.Abilities
         internal void SetDark(bool dark) => _dark = dark;
 
         /// <summary>The weather table's sight at night (EventDefs: Night 0.75, Fog 0.7, Sandstorm 0.75).</summary>
-        private const float NightSight = 0.75f;
+        private static float NightSight => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.NightSight;
 
         /// <summary>A unit joins the battle: a high-flying jet takes its altitude tier.</summary>
         internal void Joined(Vehicle v)
@@ -152,7 +152,7 @@ namespace MachineBrigade.Sim.Abilities
 
         // ================================================================== decoys
 
-        private const double DecoyCheckSeconds = 0.5;
+        private static double DecoyCheckSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.DecoyCheckSeconds;
 
         /// <summary>
         /// A decoy is found out by the side of an enemy scout, radar (a counter-battery or air-search radar, a radar module)
@@ -359,7 +359,7 @@ namespace MachineBrigade.Sim.Abilities
             if (_world.Map.EdgeDistance(jet.Position) > 1f) _world.Strikes.AddScan(jet.Team, jet.Position, p.Width * 0.5f, p.Seconds);
         }
 
-        private const double PassScanSeconds = 0.5;
+        private static double PassScanSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.PassScanSeconds;
 
         /// <summary>
         /// The jet's one run: straight across the battlefield at full speed, towards the enemy's camp from where it came

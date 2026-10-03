@@ -41,15 +41,15 @@ namespace MachineBrigade.Sim.Content
         public int Tier { get; internal set; } = -1;
 
         /// <summary>Prompt 34 L1: a T5 blast's edge may reach this far (the 406 mm's 24 m, the 800 mm's 28 m); T0-T4 keep <see cref="MaxEdge"/>.</summary>
-        public const float MaxEdgeT5 = 28f;
+        public static float MaxEdgeT5 => global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.MaxEdgeT5;
 
         // ------------------------------------------------------------------------------------------------ L3 warnings
 
         /// <summary>Prompt 34 L3: how fast a vehicle gets out of a blast's core (m/s), for the warning time.</summary>
-        public const float EscapeSpeed = 4.5f;
+        public static float EscapeSpeed => global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.EscapeSpeed;
 
         /// <summary>Prompt 34 L3: no warning lasts longer than this.</summary>
-        public const float MaxWarning = 6f;
+        public static float MaxWarning => global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.MaxWarning;
 
         /// <summary>
         /// Prompt 34 L3: the warning a T4+ round must give before it lands, by escape time: max(the tier's floor, 0.5 s + core /

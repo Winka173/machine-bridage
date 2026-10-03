@@ -36,7 +36,7 @@ namespace MachineBrigade.Sim.Movement
         private const double RescueGrace = 6.0;
 
         /// <summary>How long a rescued vehicle drives through its own side's hulls.</summary>
-        private const double GhostSeconds = 4.0;
+        private static double GhostSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.GhostSeconds;
 
         /// <summary>A second rescue within this long of a first is the next rung.</summary>
         private const double RungMemory = 25.0;

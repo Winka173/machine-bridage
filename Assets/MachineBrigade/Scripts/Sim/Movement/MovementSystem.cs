@@ -18,46 +18,46 @@ namespace MachineBrigade.Sim.Movement
     {
         private const float ArriveWaypoint = 1.6f;
         private const float ArriveFinal = 0.8f;
-        private const float RepathInterval = 0.5f;
+        private static float RepathInterval => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.RepathInterval;
         private const float StuckWindow = 1.5f;
-        private const float StuckDistance = 0.4f;
+        private static float StuckDistance => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StuckDistance;
 
         /// <summary>Driving this far in one stuck window counts as progress even when it is not towards the waypoint (going round something).</summary>
-        private const float StuckDetourDistance = 3f;
+        private static float StuckDetourDistance => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StuckDetourDistance;
 
         /// <summary>A hull stuck this close to its goal (plus its own size) among others has arrived.</summary>
-        private const float ArrivalReach = 5f;
+        private static float ArrivalReach => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ArrivalReach;
 
         /// <summary>Stuck windows before a vehicle gives up its route: two routed round parked hulls, one backing off, then this.</summary>
         private const int StuckStrikesToGiveUp = 4;
-        private const float SeparationSlack = 0.05f;
+        private static float SeparationSlack => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SeparationSlack;
 
         /// <summary>A destination this close that lies beside or behind the hull counts as reached.</summary>
-        private const float SettleDistance = 2.5f;
+        private static float SettleDistance => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SettleDistance;
 
         /// <summary>Within this distance of its destination a hovering aircraft slides straight onto it.</summary>
         private const float HoverSlide = 6f;
 
         /// <summary>How long a detour round a blocker lasts after it was last seen, and how far it turns.</summary>
-        private const double AvoidSeconds = 0.9;
+        private static double AvoidSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AvoidSeconds;
 
         private const float AvoidAngle = 0.8f;
 
         /// <summary>Misalignment a driver ignores rather than turn for (radians, about 2.3 degrees).</summary>
         private const float HeadingDeadBand = 0.04f;
-        private const float SeparationStiffness = 0.55f;
+        private static float SeparationStiffness => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SeparationStiffness;
 
         /// <summary>Largest push per step, so a deep overlap resolves over a few steps instead of a jump.</summary>
-        private const float MaxPush = 0.35f;
+        private static float MaxPush => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.MaxPush;
 
         /// <summary>How far an idle vehicle will drive from its post to fight.</summary>
-        private const float GuardLeash = 16f;
+        private static float GuardLeash => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.GuardLeash;
 
         /// <summary>How long an idle vehicle remembers who shot it.</summary>
-        private const float AnswerFireSeconds = 5f;
+        private static float AnswerFireSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AnswerFireSeconds;
 
         /// <summary>After finishing a hand-given order, a vehicle stays out of the commander AI's hands this long.</summary>
-        public const float ManualHoldSeconds = 20f;
+        public static float ManualHoldSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ManualHoldSeconds;
 
         private readonly SimWorld _world;
 
@@ -1020,7 +1020,8 @@ namespace MachineBrigade.Sim.Movement
         private const float HoldCone = 0.6f;
 
         /// <summary>Share of its guns' reach a hovering jet glides in to, and a chasing one keeps behind a fast jet.</summary>
-        private const float HoverShare = 0.6f, ChaseShare = 0.55f;
+        private static float HoverShare => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.HoverShare;
+        private static float ChaseShare => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ChaseShare;
 
         /// <summary>
         /// Play-test 5: on a jet's tail within this cosine of dead astern (about 60 degrees), and closer than this share of

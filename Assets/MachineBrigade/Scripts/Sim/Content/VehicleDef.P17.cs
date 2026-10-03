@@ -77,7 +77,7 @@ namespace MachineBrigade.Sim.Content
         public float Quiet { get; internal set; } = 5f;
 
         /// <summary>Relays a base may hold (the Base screen, the loadout and the AI's pick all keep to it).</summary>
-        public const int MaxPerBase = 2;
+        public static int MaxPerBase => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RelayDef.MaxPerBase;
     }
 
     public sealed partial class VehicleDef

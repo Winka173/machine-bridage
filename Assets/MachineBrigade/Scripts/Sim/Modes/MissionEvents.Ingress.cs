@@ -18,7 +18,7 @@ namespace MachineBrigade.Sim.Modes
     public sealed partial class MissionEventSystem
     {
         /// <summary>Seconds between two rows through a gate (20 ticks).</summary>
-        public const double RowGap = 1.0;
+        public static double RowGap => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.RowGap;
 
         /// <summary>Half a tick: a row's due time sits half a tick early, so float sums never push it to the next tick.</summary>
         private const double HalfTick = 0.025;

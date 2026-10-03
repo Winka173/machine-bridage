@@ -151,10 +151,10 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>A point's watchtower: a guard tower, with twice the health while it is neutral.</summary>
         public const string Tower = "guard_tower";
 
-        private const float NeutralHealth = 2f;
-        public const float BuildSeconds = 8f;
-        public const float RebuildSeconds = 35f;
-        public const float RespawnSeconds = 100f;
+        private static float NeutralHealth => global::MachineBrigade.Sim.Content.SimTunables.Modes.Outposts.NeutralHealth;
+        public static float BuildSeconds => global::MachineBrigade.Sim.Content.SimTunables.Modes.Outposts.BuildSeconds;
+        public static float RebuildSeconds => global::MachineBrigade.Sim.Content.SimTunables.Modes.Outposts.RebuildSeconds;
+        public static float RespawnSeconds => global::MachineBrigade.Sim.Content.SimTunables.Modes.Outposts.RespawnSeconds;
 
         private sealed class Site
         {

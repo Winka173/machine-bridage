@@ -78,10 +78,10 @@ namespace MachineBrigade.Game.Match
         // ------------------------------------------------------------------ D.5 choices and their consequences
 
         /// <summary>The miners freed in chapter 8 bring this much CP to every chapter 9 battle.</summary>
-        public const int MinersCp = 6;
+        public static int MinersCp => global::MachineBrigade.Sim.Content.SimTunables.Campaign.Narrative.MinersCp;
 
         /// <summary>With the Skygate Array's radar burned in chapter 11, the enemy sees this share as far in chapter 12.</summary>
-        public const float RadarVision = 0.75f;
+        public static float RadarVision => global::MachineBrigade.Sim.Content.SimTunables.Campaign.Narrative.RadarVision;
 
         public static float PlayerCpBonus(MissionDef m) =>
             m != null && m.Chapter == 9 && Campaign.Chosen("c8.miners") == "rescue" ? MinersCp : 0f;

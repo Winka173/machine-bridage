@@ -255,7 +255,7 @@ namespace MachineBrigade.Sim.Combat
         internal const float BossFlankBonus = 1.5f;
 
         internal const float LightTowerAirBonus = 1.25f;
-        internal const float EngineerBreach = 3f;
+        internal static float EngineerBreach => global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.EngineerBreach;
 
 
         /// <summary>A cluster round opens over the impact: its bomblets land round it and go off one after another.</summary>
@@ -744,10 +744,11 @@ namespace MachineBrigade.Sim.Combat
         internal int PierceVictims { get; private set; }
 
         /// <summary>Prompt 15 C.4: the share of a fire hit's damage that burns on afterwards, and over how long.</summary>
-        internal const float FireAfterburn = 0.3f, FireBurnSeconds = 3f;
+        internal static float FireAfterburn => global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.FireAfterburn;
+        internal static float FireBurnSeconds => global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.FireBurnSeconds;
 
         /// <summary>Prompt 15 C.6: the share of a beam's damage smoke scatters.</summary>
-        internal const float SmokeEnergyCut = 0.8f;
+        internal static float SmokeEnergyCut => global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.SmokeEnergyCut;
 
         private void OnVehicleDestroyed(Vehicle vehicle, in HitInfo hit)
         {

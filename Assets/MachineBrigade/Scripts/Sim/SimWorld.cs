@@ -253,7 +253,7 @@ namespace MachineBrigade.Sim
         /// </summary>
         public bool HomeZones { get; set; }
 
-        public const float HomeRadius = 35f;
+        public static float HomeRadius => global::MachineBrigade.Sim.Content.SimTunables.Modes.SimWorld.HomeRadius;
 
         /// <summary>
         /// Catch-up (the quick modes): the side losing the war of armies is reinforced faster and
@@ -328,7 +328,7 @@ namespace MachineBrigade.Sim
             if (team >= 0 && team < _entrench.Length) _entrench[team] = on;
         }
 
-        public const float EntrenchSeconds = 3f;
+        public static float EntrenchSeconds => global::MachineBrigade.Sim.Content.SimTunables.Modes.SimWorld.EntrenchSeconds;
         public const float EntrenchReduction = 0.2f;
 
         /// <summary>Hull-down: its side is dug in and it has not moved for a while.</summary>
@@ -1341,7 +1341,7 @@ namespace MachineBrigade.Sim
         }
 
         /// <summary>Prompt 16: how far out to sea the lighthouse's holder sees ships from its lamp.</summary>
-        public const float LighthouseSight = 170f;
+        public static float LighthouseSight => global::MachineBrigade.Sim.Content.SimTunables.Modes.SimWorld.LighthouseSight;
 
         /// <summary>Ghillie Mode: a hidden vehicle shows only to enemies this close.</summary>
         public const float GhillieReveal = 8f;

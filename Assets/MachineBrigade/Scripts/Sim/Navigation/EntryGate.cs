@@ -28,7 +28,7 @@ namespace MachineBrigade.Sim.Navigation
     public sealed class EntryGate
     {
         /// <summary>How far beyond the map's rectangle an implicit gate's approach starts (the widest view's half width + 15 %).</summary>
-        public const float OuterLength = 120f;
+        public static float OuterLength => global::MachineBrigade.Sim.Content.SimTunables.Maps.EntryGate.OuterLength;
 
         public EntryGate(string id, EntryGateKind kind, Vector2 position, Vector2 inward, float visualIngressLength, IReadOnlyList<Vector2> path,
             string side = "", bool isImplicit = false)

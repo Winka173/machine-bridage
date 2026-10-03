@@ -17,7 +17,7 @@ namespace MachineBrigade.Sim.AI
     public sealed partial class SquadLayer
     {
         /// <summary>A member's short move when overwhelmed is made at most this often (seconds).</summary>
-        private const double ShortMoveEvery = 8.0;
+        private static double ShortMoveEvery => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ShortMoveEvery;
 
         private readonly Dictionary<EntityId, double> _shortMoveAt = new();
 

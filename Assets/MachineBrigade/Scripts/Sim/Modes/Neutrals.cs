@@ -35,7 +35,7 @@ namespace MachineBrigade.Sim.Modes
         private float _timer;
 
         /// <summary>Seconds between two of the sites' updates.</summary>
-        private const float Interval = 0.5f;
+        private static float Interval => global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.Interval;
 
         public NeutralSystem(SimWorld world) => _world = world;
 

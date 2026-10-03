@@ -20,16 +20,16 @@ namespace MachineBrigade.Sim.Navigation
         public const int Layers = 3;
 
         /// <summary>Below this speed a vehicle counts as parked.</summary>
-        public const float ParkedSpeed = 0.5f;
+        public static float ParkedSpeed => global::MachineBrigade.Sim.Content.SimTunables.Maps.UnitCostField.ParkedSpeed;
 
         /// <summary>Step multipliers x5, x9, x26 and x2 at the path finder's 0.1 scale.</summary>
         public const byte FriendParkedCost = 40, EnemyParkedCost = 80, StunnedCost = 250, RingCost = 10;
 
         /// <summary>The ring reaches this far past the hull (metres).</summary>
-        private const float RingReach = 2f;
+        private static float RingReach => global::MachineBrigade.Sim.Content.SimTunables.Maps.UnitCostField.RingReach;
 
         /// <summary>A refresh is good for this many steps (half a second at 20 Hz).</summary>
-        private const int RefreshTicks = 10;
+        private static int RefreshTicks => global::MachineBrigade.Sim.Content.SimTunables.Maps.UnitCostField.RefreshTicks;
 
         private readonly NavGrid _grid;
         private readonly byte[][] _cost;

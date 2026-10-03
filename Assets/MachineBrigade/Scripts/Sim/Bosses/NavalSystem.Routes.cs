@@ -35,10 +35,10 @@ namespace MachineBrigade.Sim.Bosses
     internal sealed partial class NavalSystem
     {
         /// <summary>A naval hull this long or longer is a big ship: it sails the route graph's traffic rules.</summary>
-        internal const float BigShipLength = 25f;
+        internal static float BigShipLength => global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.BigShipLength;
 
         /// <summary>The minimum gap's extra: half this ship's length + half the other's + 10 m.</summary>
-        internal const float GapExtra = 10f;
+        internal static float GapExtra => global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.GapExtra;
 
         /// <summary>Within this much of the minimum gap a ship starts to slow.</summary>
         internal const float SlowBand = 20f;
@@ -47,19 +47,19 @@ namespace MachineBrigade.Sim.Bosses
         internal const float LateralMargin = 1.5f;
 
         /// <summary>m/s of closing speed allowed per metre of room left inside the slowing band.</summary>
-        internal const float CloseRate = 0.25f;
+        internal static float CloseRate => global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.CloseRate;
 
         /// <summary>Held up (stopped) this many ticks (3 s): the lower of the two pulls into a holding node.</summary>
-        internal const int HoldAfterTicks = 60;
+        internal static int HoldAfterTicks => global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.HoldAfterTicks;
 
         /// <summary>A ship stays in its holding node at least this many ticks (2 s).</summary>
-        internal const int HoldMinTicks = 40;
+        internal static int HoldMinTicks => global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.HoldMinTicks;
 
         /// <summary>Slack added to the minimum gap when a slot is slid clear of another.</summary>
-        internal const float SlotSlack = 4f;
+        internal static float SlotSlack => global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SlotSlack;
 
         /// <summary>The boss's patrol is sampled every this many metres to check a slot.</summary>
-        internal const float SlotSample = 8f;
+        internal static float SlotSample => global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SlotSample;
 
         private SeaRouteGraph? _routes;
         private bool _routesBuilt;
@@ -381,7 +381,7 @@ namespace MachineBrigade.Sim.Bosses
         }
 
         /// <summary>A flagship this near the end of its patrol ahead of it is about to come about (its escorts stand out).</summary>
-        internal const float TurnWarn = 45f;
+        internal static float TurnWarn => global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.TurnWarn;
 
         /// <summary>
         /// Whether a flagship is coming about (or about to, near the end of its patrol, or changing lane): not yet lined up

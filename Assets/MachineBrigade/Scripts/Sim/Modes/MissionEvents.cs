@@ -638,10 +638,10 @@ namespace MachineBrigade.Sim.Modes
             }
         }
 
-        private const float EconomySystemDelivery = MachineBrigade.Sim.Economy.EconomySystem.DeliverySeconds;
+        private static float EconomySystemDelivery => MachineBrigade.Sim.Economy.EconomySystem.DeliverySeconds;
 
         /// <summary>Seconds a reinforcement pushes on its own before its side's commander takes it over.</summary>
-        private const double PushSeconds = 40.0;
+        private static double PushSeconds => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PushSeconds;
 
         private Vehicle Arrive(SimWorld world, EventState s, string defId, int team, Vector2 at, Vector2 inward, bool ally)
         {

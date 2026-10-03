@@ -27,13 +27,13 @@ namespace MachineBrigade.Sim.Abilities
         internal const int ClusterRounds = 2;
 
         /// <summary>After a last stand (Unbreakable, Aegis Dome, an overheal shield taking a killing blow) no other may save it for this long.</summary>
-        internal const float LastStandGap = 6f;
+        internal static float LastStandGap => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.LastStandGap;
 
         /// <summary>Kill Reload: seconds taken off the main gun's reload.</summary>
-        internal const float KillReadySeconds = 2f;
+        internal static float KillReadySeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.KillReadySeconds;
 
         /// <summary>Volatile Fuel Tanks: the most its blast may do, whatever the hull.</summary>
-        internal const float FuelBlastCap = 1500f;
+        internal static float FuelBlastCap => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.FuelBlastCap;
 
         /// <summary>The seconds between the reference weapon's hits (the proc coefficient is 1 at this interval).</summary>
         internal const float ProcReference = 1.5f;
@@ -135,7 +135,7 @@ namespace MachineBrigade.Sim.Abilities
         }
 
         /// <summary>Laser Warning's smoke: once every this many seconds.</summary>
-        internal const float LaserWarningCooldown = 20f;
+        internal static float LaserWarningCooldown => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.LaserWarningCooldown;
 
         /// <summary>Rearguard: driving away from the nearest enemy it knows of (reversing counts).</summary>
         private bool MovingAway(Vehicle v)

@@ -47,10 +47,11 @@ namespace MachineBrigade.Sim.Modes
     public static class BossHunt
     {
         public const int WeeklyMains = 3;
-        public const int WeeklyMinis = 7;
+        public static int WeeklyMinis => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossHunt.WeeklyMinis;
 
         /// <summary>Play-test 6 (DECISIONS 21G): the week's run has at least this many main and mini bosses that answer aircraft.</summary>
-        public const int AirDefenceMains = 1, AirDefenceMinis = 3;
+        public static int AirDefenceMains => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossHunt.AirDefenceMains;
+        public static int AirDefenceMinis => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossHunt.AirDefenceMinis;
 
         /// <summary>The week's run (fewer when the chapters switched on have fewer bosses).</summary>
         public static IReadOnlyList<string> Weekly(int week, IReadOnlyList<HuntBoss> story)
@@ -216,7 +217,7 @@ namespace MachineBrigade.Sim.Modes
         public const int Offered = 3;
 
         /// <summary>Prompt 26 E.2: all the supports together add at most this much army strength (+40 %).</summary>
-        public const float Cap = 0.40f;
+        public static float Cap => global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.Cap;
 
         public static readonly IReadOnlyList<HuntSupportDef> All = new[]
         {
