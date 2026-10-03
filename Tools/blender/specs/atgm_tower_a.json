@@ -1,0 +1,188 @@
+{
+ "id": "atgm_tower_a",
+ "class": "tower",
+ "real": [
+  "9M133 Kornet",
+  "FGM-148 Javelin (top attack, command launch unit)"
+ ],
+ "shape": "unit_sheet.json Công trình (atgm_tower, branch atgm_tower.top): the top-attack branch; built on the base's emplacement (owner decision 4) with the launcher raised on a guyed column so it reads apart from the base.",
+ "confidence": "uoc_dinh (unit_refs: 'ước đoán (Javelin)')",
+ "target_size": {
+  "L": 5.19,
+  "W": 5.19,
+  "H": 6.83,
+  "source": "the old GLB (wave 2 keeps sizes within 10 %)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "cast pad with a 45-degree kerb, precast slab joints, jersey barriers",
+   "nodes": [
+    "Base",
+    "Base_joints",
+    "Barriers"
+   ]
+  },
+  {
+   "feature": "battered concrete blockhouse with formwork lifts, firing slit and side slits",
+   "nodes": [
+    "Walls",
+    "Lift_joints",
+    "Slits",
+    "Slit_frames"
+   ]
+  },
+  {
+   "feature": "rear door in an upright cast porch, step",
+   "nodes": [
+    "Door_porch",
+    "Doors",
+    "Steps"
+   ]
+  },
+  {
+   "feature": "roof slab with parapet on three sides, sandbag course, drain spouts",
+   "nodes": [
+    "Roof",
+    "Parapet",
+    "Sandbags",
+    "Drain_spouts"
+   ]
+  },
+  {
+   "feature": "guard rail round the roof, ladder with safety cage",
+   "nodes": [
+    "Railings",
+    "Ladders",
+    "Ladder_cage"
+   ]
+  },
+  {
+   "feature": "Team band under the roof",
+   "nodes": [
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "roof fittings: gas-filter vent, periscope, beacon, radio and whip antenna",
+   "nodes": [
+    "Vents",
+    "Sight",
+    "Beacons",
+    "Radio_box",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "yard: missile crates, ammunition boxes, spare containers on a rack, cable reel, fuel drum, floodlight, sign",
+   "nodes": [
+    "Crates",
+    "Ammo_boxes",
+    "Rocket_rack",
+    "Spare_rounds",
+    "Cable_reel",
+    "Fuel_drums",
+    "Light_poles",
+    "Signs"
+   ]
+  },
+  {
+   "feature": "guyed launch column with collar, gussets, rungs and a cable trunk",
+   "nodes": [
+    "Launch_column",
+    "Launch_column_band",
+    "Launch_collar",
+    "Column_gussets",
+    "Guy_wires",
+    "Guy_anchors"
+   ]
+  },
+  {
+   "feature": "two launch boxes elevated 15 degrees with seeker sunshades, the command launch unit and its battery",
+   "nodes": [
+    "Turret",
+    "ATGM_pod",
+    "Turret_armor",
+    "Launcher_sight",
+    "Launcher_lens",
+    "Clu_battery"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "kornet_top",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "Muzzle_missile / .001 at the two boxes' mouths"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 6000,
+  "note": "owner decision 6 (wave 1): a tower is seen in numbers, at most 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "the blockhouse band",
+  "the launch boxes",
+  "the column band"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Hegemon (cast concrete, prefabricated: pads, jersey barriers, steel rails)",
+ "details": {
+  "tier1": [
+   "cast pad",
+   "blockhouse",
+   "roof slab and parapet",
+   "launcher",
+   "launch column"
+  ],
+  "tier2": [
+   "porch and door",
+   "ladder and cage",
+   "guard rail",
+   "sandbags",
+   "jersey barriers",
+   "crates",
+   "spare-round rack",
+   "pedestal and shield",
+   "guy wires",
+   "sunshades"
+  ],
+  "tier3": [
+   "slab joints",
+   "lift joints",
+   "form ties",
+   "drain spouts",
+   "beacon",
+   "periscope",
+   "rivets",
+   "lens",
+   "cable",
+   "conduit clips",
+   "bolts",
+   "rungs",
+   "guy anchors"
+  ]
+ },
+ "questions": []
+}

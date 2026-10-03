@@ -21,7 +21,7 @@ Index (section 3 of the prompt):
             mesh_antenna, dish, periscope, tow_hook, tow_cable, crate, jerrycan, backpack, net_roll, grille, exhaust
   tracked   detail (context), road_wheel, sprocket, idler, return_roller, tracks, side_skirt, fender, turret_ring,
             gun_barrel, roof_mg, pintle_mg, smoke_dischargers, era_bricks, slat_cage, net_armour
-  wheeled   truck_wheel, axle, leaf_spring, windscreen, mirror, outrigger
+  wheeled   truck_wheel, tread_wheel, axle, leaf_spring, windscreen, mirror, outrigger
   aircraft  wing, fin, intake, missile, bomb, drop_tank, flare_dispenser, blade_antenna, landing_gear, pylon
   heli      rotor_head, tail_rotor, skids, stub_wing
   ship      ship_hull, railing, ladder, vls, ciws, rhib, radar_mast
@@ -419,9 +419,10 @@ def tracks(a, x, length, top, wheel_r, wheels, belt_width, sprocket_end=1, cleat
                        cleat_pitch=cleat_pitch, wheel_seg=12, teeth=teeth, return_rollers=rollers)
 
 
-def side_skirt(a, x, y0, y1, ztop, h, s, panels=4, t=.04, mat='Team', parent=None, hinged=True):
+def side_skirt(a, x, y0, y1, ztop, h, s, panels=4, t=.04, mat='Team', parent=None, hinged=True, bolts=True):
     """Side skirts on side s: `panels` plates with a hinge line along the top, bolt rows, a rubber lower flap and a
-    worn chamfer (each plate its own block, a little gap between)."""
+    worn chamfer (each plate its own block, a little gap between). `bolts=False` (wave 2, lane B's request) leaves
+    the four bolts a panel out (about 80 triangles a panel); the default keeps them."""
     part = a.part(KIT['skirts'], mat, parent)
     rub = a.part('Skirt_flaps', 'Rubber', parent)
     steel = a.part(KIT['hinges'], 'Steel', parent)
@@ -433,9 +434,10 @@ def side_skirt(a, x, y0, y1, ztop, h, s, panels=4, t=.04, mat='Team', parent=Non
         if hinged:
             hinge(steel, (s * (x + t / 2 + .01), yc - L * .3, ztop - .04), (s * (x + t / 2 + .01), yc + L * .3,
                                                                            ztop - .04), r=.022, knuckles=3)
-        hd.bolt_line(steel, (s * (x + t / 2), yc - L * .4, ztop - h * .55), (s * (x + t / 2), yc + L * .4,
-                                                                           ztop - h * .55), 4, rot=hd.side_rot(s),
-                     r=.016, h=.02)
+        if bolts:
+            hd.bolt_line(steel, (s * (x + t / 2), yc - L * .4, ztop - h * .55), (s * (x + t / 2), yc + L * .4,
+                                                                               ztop - h * .55), 4,
+                         rot=hd.side_rot(s), r=.016, h=.02)
 
 
 def fender(part, x, y0, y1, z, w, s, lip=.04):
@@ -463,7 +465,8 @@ def roof_mg(a, parent, loc, length=.9, shield=True):
         p27.mg_mount(a, parent, loc, length=length, shield=shield)
 
 
-def pintle_mg(a, parent, loc, index=0, scale=1.0, slot='mg', shield=True, length=1.1, post=0.0):
+def pintle_mg(a, parent, loc, index=0, scale=1.0, slot='mg', shield=True, length=1.1, post=0.0, riser=0.0,
+              ring_r=.36, cradle=None):
     """A pintle machine gun on its own yaw pivot `Mount_<slot>` (index 1, 2 ...: `Mount_<slot>.001` ...), sized by
     `scale` (1 = a 12.7 mm gun on a tank roof; a boss uses 1.6-2): a turned pintle, the receiver with its sloped feed
     cover and spade grips, the barrel with its carrying handle and flash hider, the ammunition can, a shield.
@@ -472,10 +475,32 @@ def pintle_mg(a, parent, loc, index=0, scale=1.0, slot='mg', shield=True, length
     `post` (metres; wave 1, the owner's roof-gun rule in MODEL_STANDARD): the gun stands on a fixed pintle post that
     high (a base plate with gussets, the column, a collar) with the mount pivot on its top, and gets a cradle (side
     plates, a trunnion pin) round the receiver, so it stands clear of the roof line at the battle camera's distance.
-    The default 0 builds the pilot's gun unchanged."""
+    The default 0 builds the pilot's gun unchanged.
+    `riser` (metres; wave 2, lane B's request, the whole roof-gun rule in one call): a riser collar under the
+    post (an M66-class ring of radius `ring_r` x scale on its collar, the rail on top, four brackets), as on a
+    hatch ring; the post (or, with post 0, the mount itself) stands on its top. `cradle` builds the cradle
+    round the receiver (default: whenever there is a post or a riser). Defaults keep today's geometry."""
     suffixed(a)
     sc = scale
     tag = '' if index == 0 else f'__{index:03d}'
+    if cradle is None:
+        cradle = post > 0 or riser > 0
+    if riser > 0:
+        x, y, z = loc
+        rr = ring_r * sc
+        rp = a.part(f'MG_riser{tag}', 'Armor', parent)
+        k.ring(rp, [(rr * .8, 0), (rr * .92, 0), (rr * .92, riser * .7), (rr * .86, riser), (rr * .8, riser)],
+               loc=(x, y, z), seg=12, worn=(3,))
+        rs = a.part(f'MG_post{tag}', 'Steel', parent)
+        k.ring(rs, [(rr * .95, riser - .015 * sc), (rr * 1.02, riser - .015 * sc), (rr * 1.02, riser + .025 * sc),
+                    (rr * .95, riser + .025 * sc)], loc=(x, y, z), seg=12)
+        for i in range(4):
+            u = i * TAU / 4 + TAU / 8
+            rs.box((.03 * sc, .05 * sc, riser * .9), loc=(x + math.cos(u) * rr * .97, y + math.sin(u) * rr * .97,
+                                                     z + riser * .45), rot=(0, 0, u), bevel=0)
+        # The slide arm from the ring rail to the post at the centre.
+        rs.box((.08 * sc, rr * .95, .04 * sc), loc=(x, y + rr * .48, z + riser + .02 * sc), bevel=0)
+        loc = (x, y, z + riser + .02 * sc)
     if post > 0:
         x, y, z = loc
         pp = a.part(f'MG_post{tag}', 'Steel', parent)
@@ -488,7 +513,7 @@ def pintle_mg(a, parent, loc, index=0, scale=1.0, slot='mg', shield=True, length
                                                        z + .08 * sc), rot=(0, 0, -u), bevel=0)
         loc = (x, y, z + post)
     m = a.pivot(name(f'Mount_{slot}', index), loc, parent)
-    if post > 0:
+    if cradle:
         cr = a.part(f'MG_cradle{tag}', 'Armor', m)
         for s in (-1, 1):
             k.block(cr, (.02 * sc, .3 * sc, .14 * sc), loc=(s * .095 * sc, -.02 * sc, .17 * sc), chamfer=.006 * sc)
@@ -506,7 +531,7 @@ def pintle_mg(a, parent, loc, index=0, scale=1.0, slot='mg', shield=True, length
                 (.05 * sc, L - .1 * sc), (.05 * sc, L - .01 * sc), (.035 * sc, L), (.02 * sc, L),
                 (.02 * sc, L - .05 * sc), (0, L - .05 * sc)], loc=(0, front, .22 * sc), rot=FORWARD, seg=8, worn=(4,))
     handle(g, (0, front - .25 * sc, .27 * sc), (0, front - .45 * sc, .27 * sc), (0, 0, 1), h=.05 * sc, r=.01 * sc)
-    ab = 1.35 if post > 0 else 1.0       # a post-mounted gun carries the big ammunition can on a bracket
+    ab = 1.35 if (post > 0 or riser > 0) else 1.0   # a raised gun carries the big ammunition can on a bracket
     k.block(a.part(f'MG_ammo{tag}', 'Armor', m), (.13 * sc * ab, .24 * sc * ab, .16 * sc * ab),
             loc=(.16 * sc * ab, .02 * sc, .2 * sc - (ab - 1) * .05 * sc), chamfer=.015 * sc)
     if shield:
@@ -522,11 +547,11 @@ def smoke_dischargers(a, x, y, z, s, count=4, parent=None):
     p27.smoke_launcher(a, part, x, y, z, s, count=count)
 
 
-def era_bricks(a, origin, u, v, cols, rows, size=(.3, .22, .07), gap=.02, parent=None, mat='Armor'):
+def era_bricks(a, origin, u, v, cols, rows, size=(.3, .22, .07), gap=.02, parent=None, mat='Armor', bolts=True):
     """A block of explosive reactive armour bricks on a plane spanned by unit u, v at origin (normal u x v), each a
-    chamfered brick with two bolts."""
+    chamfered brick with two bolts (`bolts=False`, wave 2: plain bricks, half the triangles; the default keeps them)."""
     part = a.part(KIT['era'], mat, parent)
-    bolts = a.part(KIT['bolts'], 'Steel', parent)
+    bolt_part = a.part(KIT['bolts'], 'Steel', parent) if bolts else None
     u, v, o = Vector(u).normalized(), Vector(v).normalized(), Vector(origin)
     n = u.cross(v).normalized()
     rot = Matrix((u, v, n)).transposed().to_euler('XYZ')
@@ -535,8 +560,8 @@ def era_bricks(a, origin, u, v, cols, rows, size=(.3, .22, .07), gap=.02, parent
         for j in range(rows):
             c = o + u * ((i - (cols - 1) / 2) * (w + gap)) + v * ((j - (rows - 1) / 2) * (h + gap))
             plate(part, (w, h, t), loc=tuple(c + n * (t / 2 - .01)), rot=tuple(rot), chamfer=.015)
-            for s in (-1, 1):
-                hd.bolt(bolts, tuple(c + u * (s * w * .32) + n * (t - .012)), rot=tuple(rot), r=.014, h=.018)
+            for s in ((-1, 1) if bolts else ()):
+                hd.bolt(bolt_part, tuple(c + u * (s * w * .32) + n * (t - .012)), rot=tuple(rot), r=.014, h=.018)
 
 
 def slat_cage(a, p0, p1, z0, height, outward, pitch=.12, standoff=.35, parent=None):
@@ -617,6 +642,57 @@ def truck_wheel(a, centre, r, width, s, lugs=18, seg=18, rim_mat='Steel', parent
     if hub_cap:
         k.lathe(a.part(KIT['hubs'], 'Steel', parent), [(r * .12, f), (r * .12, f + .05), (r * .07, f + .08),
                                                        (0, f + .085)], loc=centre, rot=rot, seg=8)
+
+
+def tread_wheel(a, centre, r, width, s, seg=14, depth=None, parent=None, tyre='Tyres', rim='Wheels', rim_mat='Steel',
+                hub=True, nuts=0, dish=.6, rim_seg=8):
+    """A lean military tyre (about 250 triangles against about 700 for truck_wheel; wave 2, lane B's request, after
+    its mb_p35b_parts.tread_wheel) on an axle along X, outer face on side s: the casing's two tread rows alternate in
+    radius vertex by vertex, so a chevron lug pattern reads in the silhouette without lug boxes; the inner face ends
+    at the sidewall (never seen); a dished rim with its flange, the hub boss and (nuts > 0) wheel nuts. For trucks
+    and carriers with many wheels."""
+    import bmesh
+    w = width
+    ld = depth if depth is not None else r * .07
+    R = r - ld
+    prof = [(R * .9, -w / 2), (R, -w / 2 + w * .12), (r, -w / 2 + w * .3),
+            (r, w / 2 - w * .3), (R, w / 2 - w * .12), (R * .9, w / 2), (r * .62, w / 2 - .012)]
+    sh = a.part(tyre, 'Rubber', parent)
+    bm = sh.bm
+    rows = []
+    for j, (rr, z) in enumerate(prof):
+        row = []
+        for i in range(seg):
+            u = i * TAU / seg
+            q = rr
+            if j in (2, 3):                    # the tread: lug and groove alternate, offset between the two rows
+                q = r if (i + j) % 2 == 0 else R + ld * .5
+            row.append(bm.verts.new((q * math.cos(u), q * math.sin(u), z)))
+        rows.append(row)
+    faces = []
+    for ra, rb in zip(rows, rows[1:]):
+        faces += [bm.faces.new((ra[i], ra[(i + 1) % seg], rb[(i + 1) % seg], rb[i])) for i in range(seg)]
+    faces.append(bm.faces.new(list(reversed(rows[0]))))
+    faces.append(bm.faces.new(rows[-1]))
+    bmesh.ops.recalc_face_normals(bm, faces=faces)
+    k._wear(sh, rows[1] + rows[4])
+    rot = (0, s * R90, 0)
+    bmesh.ops.transform(bm, matrix=k._frame(centre, rot), verts=[v for row in rows for v in row])
+    f = w / 2
+    dk = dish / .6
+    k.lathe(a.part(rim, rim_mat, parent), [(r * .64, f + .012), (r * .57, f + .016), (r * .5, f - .05 * dk),
+                                           (r * .22, f - .06 * dk), (0, f - .06 * dk)], loc=centre, rot=rot,
+            seg=rim_seg, worn=(0,))
+    m = frame(centre, rot)
+    if hub:
+        k.lathe(a.part(KIT['hubs'], 'Steel', parent), [(r * .13, f), (r * .1, f + .05), (0, f + .065)], loc=centre,
+                rot=rot, seg=6)
+    if nuts:
+        nut = a.part(KIT['nuts'], 'Steel', parent)
+        for i in range(nuts):
+            u = i * TAU / nuts
+            nut.cyl(r * .03 + .004, .03, loc=_at(m, (r * .3 * math.cos(u), r * .3 * math.sin(u), f - .03)), rot=rot,
+                    seg=5, bevel=0)
 
 
 def axle(part, y, z, half_track, r=.09, diff=True):
@@ -1078,7 +1154,7 @@ def door(a, loc, size=(1.0, 2.0), normal=(0, -1, 0), parent=None, mat='Armor'):
     m = frame(loc, rot)
     fr = a.part('Door_frames', 'Steel', parent)
     for s in (-1, 1):
-        fr.box((.08, .08, h), loc=_at(m, (s * (w / 2 + .04), h / 2, .02)), rot=rot, bevel=0)
+        fr.box((.08, h, .08), loc=_at(m, (s * (w / 2 + .04), h / 2, .02)), rot=rot, bevel=0)   # wave 2: upright
     fr.box((w + .16, .08, .08), loc=_at(m, (0, h + .04, .02)), rot=rot, bevel=0)
     # A door's local frame: +Z out of the wall, +Y up the wall after rot_to; the boxes above use (x, up, out).
     leaf = a.part('Doors', mat, parent)

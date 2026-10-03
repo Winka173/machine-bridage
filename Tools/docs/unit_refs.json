@@ -158,7 +158,7 @@
   "daedalus": { "real": [], "media": ["Acclamator-class (Star Wars: Attack of the Clones)"], "note": "Tàu đổ bộ tấn công của Aurel" },
   "kronos": { "real": ["Bagger 288"], "media": [], "note": "Máy xúc gầu quay khổng lồ" },
   "typhon": { "real": ["Project 941 Akula (Typhoon)"], "media": ["The Hunt for Red October (1990)"], "note": "Tàu ngầm tên lửa" },
-  "ixion": { "real": ["BelAZ-75710 (xe tải mỏ lớn nhất thế giới)", "tháp pháo T-72 125 mm hàn trên thùng"], "media": [], "note": "Xe tải mỏ bọc thép của Thorne ở Deepcut Mine: ca-bin lệch trái, sáu bánh lớn, lưỡi húc chữ V (model tạm)" },
+  "ixion": { "real": ["BelAZ-75710 (xe tải mỏ lớn nhất thế giới)", "tháp pháo T-72 125 mm hàn trên thùng"], "media": [], "note": "Xe tải mỏ bọc thép của Thorne ở Deepcut Mine: ca-bin lệch trái, sáu bánh lớn, lưỡi húc chữ V" },
   "caspian": { "real": ["ekranoplan lớp Lun MD-160 ('Quái vật biển Caspi')"], "media": [], "note": "Thủy phi cơ hiệu ứng mặt đất" },
   "bastion_mk0": { "real": ["2B8 240 mm", "Bofors 40 mm"], "media": ["Sandcrawler (Star Wars)"], "note": "ước đoán: bản đầu, nhỏ của Bastion" },
   "fenrir": { "real": ["NASA Crawler-Transporter", "Kharkovchanka (1959)"], "media": ["Sandcrawler (Star Wars)"], "note": "ước đoán: biến thể của pháo đài di động" },
