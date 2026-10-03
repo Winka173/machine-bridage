@@ -179,6 +179,9 @@ import mb_p35_nyx  # noqa: E402
 import mb_p35_kraken  # noqa: E402
 import mb_p35_garuda  # noqa: E402
 import mb_p35_cp_relay  # noqa: E402
+import mb_p35_radar_support_vehicle  # noqa: E402
+import mb_p35_coastal_ashm_vehicle  # noqa: E402
+import mb_p35_sp_mortar  # noqa: E402
 import mb_p35_coastal_battery  # noqa: E402
 import mb_p35_artillery_emplacement_a  # noqa: E402
 import mb_p35_shield_tower_b  # noqa: E402
@@ -337,7 +340,7 @@ def all_builders():
                 **mb_p35_hydra_sub.BUILDERS, **mb_p35_nyx.BUILDERS, **mb_p35_kraken.BUILDERS,
                 **mb_p35_garuda.BUILDERS,
                 # Prompt 35 wave 10 (lane B): bosses, tower branches, helicopters and vehicles, each from its own builder.
-                **mb_p35_cp_relay.BUILDERS, **mb_p35_coastal_battery.BUILDERS, **mb_p35_artillery_emplacement_a.BUILDERS, **mb_p35_shield_tower_b.BUILDERS, **mb_p35_heavy_turret_a.BUILDERS, **mb_p35_visual_jammer.BUILDERS, **mb_p35_flare_tower.BUILDERS, **mb_p35_recoilless_gun_tower.BUILDERS, **mb_p35_manpads_tower.BUILDERS}
+                **mb_p35_cp_relay.BUILDERS, **mb_p35_radar_support_vehicle.BUILDERS, **mb_p35_coastal_ashm_vehicle.BUILDERS, **mb_p35_sp_mortar.BUILDERS, **mb_p35_coastal_battery.BUILDERS, **mb_p35_artillery_emplacement_a.BUILDERS, **mb_p35_shield_tower_b.BUILDERS, **mb_p35_heavy_turret_a.BUILDERS, **mb_p35_visual_jammer.BUILDERS, **mb_p35_flare_tower.BUILDERS, **mb_p35_recoilless_gun_tower.BUILDERS, **mb_p35_manpads_tower.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
