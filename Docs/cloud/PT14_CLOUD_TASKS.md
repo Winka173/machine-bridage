@@ -135,3 +135,41 @@ the change minimal; the lead resolves conflicts.
    done and why, what needs a Unity look, questions for the owner.
 4. Push. The owner tells the local lead, who merges, compiles in Unity, checks LFS, renders, and updates the
    owner's test copy.
+
+## Cloud state 2026-10-03 (session 2)
+Branch `cloud/pt14-a` (from feature/visual-overhaul 4ff17fba); last commit: the one adding this note. Sim builds
+(`dotnet build Tools/simbuild/Sim.csproj`: 0 errors); the catalog loads (FromJson). No tests written or run. Game/UI
+files only syntax-checked (C# 9); they need a compile in Unity. Details per item: Docs/DECISIONS.md
+"Play-test 14 (lane A, cloud)"; values: Docs/export/CHANGES.md "Play-test 14 lane A".
+
+Done:
+- 3 armored_car coax at 30 m (`mg_coax_long`), so both guns fire on the turret's target.
+- 4 smoke trails laid to the impact (ProjectilePool.FinishTrail); every rocket burns to the end.
+- 5 light_tank clip on land; its gun-launched ATGM and the gun share the barrel (1 s apart).
+- 6 sky_gunship shots louder, farther, single shots a size class up.
+- 7 launchers: the Sim waits for the erector (`erectSeconds`) before the first round.
+- 8 boss howitzers drawn as artillery (`"lobs"` on boss_howitzer, inherited).
+- 9 Leviathan trains its main turrets before each salvo (battle and preview); barrels on mount pivots recoil.
+- 10 rail bosses never turn their hull off the track.
+- 11 bulldozer clip: a HESCO wall and a watchtower.
+- 12 sea swells and ripples run downwind.
+- 14 escorts filtered by the boss's domain (`escortRules.domains`).
+
+For local (needs Unity):
+- Compile Game: VehicleView.MountKick.cs (new), VehicleView.Aim.cs, VehicleView.cs, WeaponEffects.cs, ModelLibrary.cs /
+  .Lod.cs, FiringRange.Bosses.cs / .Abilities.cs, PreviewSettings.cs, AudioDirector.P34.cs, EffectsDirector.cs,
+  WeaponInfo.cs, ProjectilePool.cs, MotorPlumes.cs; shader Water.shader.
+- 9: check the Leviathan's barrels kick (Gun_barrels / Sec_barrels are now kept unmerged on their Mount_gun pivots) and
+  the turrets traverse before the salvo (menu preview and a sea battle). Secondary turrets (mounts 3, 4) sleep until
+  phase 1 by design (`wake`); if the owner meant they never turn even awake, look in a phase-1 battle.
+- 5: whether the ATGM is now visible in the clip (it flies ~0.3 s from the gun's muzzle).
+- 6: listen to the gunship; tune GunshipGain / GunshipCarry if needed.
+- 7: the side ATGM box (VehicleView AtgmSeconds 0.6) still snaps up when fired; not handled.
+- 11: watch the clip (the dozer drives to the wall, then the tower).
+- 12: sea tiles without water not found by reading; check a sea map. Wave direction needs a look.
+- 13 not done: StrikeEffects already flies the jet / bomber and drops bombs or napalm canisters; no cause found by
+  reading. Check in a match which part is missing.
+- 14: Nyx's tanks at sea: no sea boss has escort tables; the source (a mode's or mission's waves?) not found.
+- Replay hashes change (Sim: A1-A6 in CHANGES).
+
+Questions for the owner: none.

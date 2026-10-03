@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Play-test 14 (lane A, cloud): armoured car's coax reaches its cannon's 30 m; launchers fire once their erector is up; boss escorts keep to the boss's domain; rail bosses stay on the track; Leviathan trains its turrets before a salvo and its barrels recoil; light tank shown on land, its gun-launched missile never leaves with a shell; bulldozer's clip breaks a wall and a watchtower; gunship guns louder; boss howitzers drawn as artillery again; smoke trails reach the impact; sea waves run with the wind.
 - Play-test 13 follow-up (lane B): Inferno's glacis mount is a 125 mm thermobaric gun turret; Behemoth's mount 6 fires from its hull gun; 29 gun towers elevate on a baked trunnion pivot with their whole cradle (ModelLibrary measures it); 14 launchers carry indexed rounds that hide when fired (round meshes no longer merged)
 - Play-test 13 (lane B): bridging vehicle removed (refund on old saves); drone table in the balance pack; armour hits are a knock and sparks (the bell is now a rare ricochet whine); In action clips show the mine roller, drone killers and transports at work; the Leviathan preview lies along the beach.
 - Play-test 13 (lane B, models): the Iskander's missiles ride its erector about the rear hinge, the ground cruise missile box erects to fire (Erectors 86 / 80 deg; hinge built where ModelLibrary turns it), the FPV carrier redrawn as a bonneted 6x6 protected truck with a drone launch station, relay mast and EW (soft 99.7).
