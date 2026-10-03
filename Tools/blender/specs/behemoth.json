@@ -163,8 +163,9 @@
    "slot": "mount 6",
    "mount": "Mount_gun",
    "muzzles": [
-    "Muzzle_gun"
-   ]
+    "Muzzle_missile.002"
+   ],
+   "note": "120 mm shells since play-test 13 (lane C); the third missile-slot muzzle sits at the hull gun second barrel"
   },
   {
    "weapon": "p26_behemoth_direct_be120",

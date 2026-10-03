@@ -23,6 +23,7 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 import frontier_kit as kit  # noqa: E402
 import mb_air  # noqa: E402
+import mb_pt13_followup  # noqa: E402
 import mb_artillery  # noqa: E402
 import mb_air2  # noqa: E402
 import mb_air3  # noqa: E402
@@ -420,6 +421,8 @@ def all_builders():
     builders = mb_flare_mounts.wrap(builders)
     # Prompt 35 wave 2: the old towers over the 1.5 x cap that no wave rebuilds, trimmed after their bake (last).
     builders = mb_p35_trims.wrap(builders)
+    # Play-test 13 follow-up (lane B): baked gun-tower Elevation pivots, indexed launcher rounds (last).
+    builders = mb_pt13_followup.wrap(builders)
     return builders
 
 

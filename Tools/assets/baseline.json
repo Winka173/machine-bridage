@@ -5047,6 +5047,16 @@
    "changes": [
     "FLAG behemoth_inferno: triangles 23,648 -> 25,710 (+8.7%); vertices 28,914 -> 30,715 (+6.2%); meshes 68 -> 83 (+22.1%); renderers 68 -> 83 (+22.1%); materialSlots 68 -> 83 (+22.1%); fileBytes 1,140,244 -> 1,224,300 (+7.4%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "behemoth"
+   ],
+   "reason": "play-test 13 follow-up: Muzzle_missile.002 at the hull gun (mount 6 fires 120 mm)",
+   "changes": [
+    "behemoth: fileBytes 1,289,172 -> 1,289,284 (+0.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -12765,14 +12775,14 @@
   },
   "behemoth": {
    "file": "behemoth.glb",
-   "fileBytes": 1289172,
-   "sha1": "462af3449e353e5d",
+   "fileBytes": 1289284,
+   "sha1": "3c84102fd735d7b0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 131,
+   "nodes": 132,
    "meshes": 104,
    "materials": 12,
    "animations": 0,
@@ -12814,7 +12824,7 @@
     2.891,
     0.792
    ],
-   "structureHash": "2531daa620b0beeb",
+   "structureHash": "5690063846c73e03",
    "color0": {
     "mean": 0.6242,
     "min": 0.156,
@@ -12844,6 +12854,7 @@
      "Muzzle_mg.001",
      "Muzzle_missile",
      "Muzzle_missile.001",
+     "Muzzle_missile.002",
      "Muzzle_rocket"
     ],
     "mount": [
@@ -12870,7 +12881,8 @@
     "Muzzle_gun.001",
     "Muzzle_gun.002",
     "Muzzle_mg.001",
-    "Muzzle_missile.001"
+    "Muzzle_missile.001",
+    "Muzzle_missile.002"
    ],
    "nodeNames": [
     "AA_ammo",
@@ -12950,6 +12962,7 @@
     "Muzzle_mg.001",
     "Muzzle_missile",
     "Muzzle_missile.001",
+    "Muzzle_missile.002",
     "Muzzle_rocket",
     "Periscope",
     "Point_exhaust",
