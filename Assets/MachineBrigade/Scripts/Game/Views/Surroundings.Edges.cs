@@ -347,47 +347,144 @@ namespace MachineBrigade.Game.Views
                 Place("Edge River", Own(RiverMesh(r)), CalmWater(materials));
         }
 
-        /// <summary>The sea as runs of cells (one quad per run of a row) over a square of half-size <paramref name="half"/>, leaving out the inner square <paramref name="hole"/>.</summary>
+        /// <summary>
+        /// The sea over a square of half-size <paramref name="half"/> in cells of <paramref name="cell"/>, leaving out the inner
+        /// square <paramref name="hole"/>. Play-test 14 session 5 ("chỉ bị khai rìa của biển và mặt đất": along a slanting coast the
+        /// water stopped in steps, the ground showing in wedges between them under the slanting foam line): the cells wholly at
+        /// sea are runs of quads as before; a cell the coast crosses is cut along it (marching squares: each crossing found on
+        /// the cell's sides by halving), so the water reaches the shoreline everywhere, as the shore texture's foam does.
+        /// </summary>
         private Mesh SeaMesh(float half, float cell, float hole)
         {
             var vertices = new List<Vector3>();
             var uvs = new List<UnityEngine.Vector2>();
             var triangles = new List<int>();
             var n = Mathf.RoundToInt(half * 2f / cell);
+            var x0 = _centre.x - half;
+            var z0 = _centre.y - half;
+            // Sea or not at every cell corner, once.
+            var corner = new bool[(n + 1) * (n + 1)];
+            for (var z = 0; z <= n; z++)
+            for (var x = 0; x <= n; x++)
+                corner[z * (n + 1) + x] = SeaMeshAt(new Vector2(x0 + x * cell, z0 + z * cell), cell);
+            var polygon = new List<Vector2>(6);
             for (var z = 0; z < n; z++)
             {
-                var z0 = _centre.y - half + z * cell;
+                var za = z0 + z * cell;
                 var start = -1;
                 for (var x = 0; x <= n; x++)
                 {
-                    var sea = false;
+                    var full = false;
+                    var any = false;
                     if (x < n)
                     {
-                        var c = new Vector2(_centre.x - half + (x + 0.5f) * cell, z0 + cell * 0.5f);
+                        var c = new Vector2(x0 + (x + 0.5f) * cell, za + cell * 0.5f);
                         var inHole = hole > 0f && Mathf.Abs(c.x - _centre.x) < hole && Mathf.Abs(c.y - _centre.y) < hole;
-                        sea = !inHole && EdgeSeaAt(c);
+                        if (!inHole)
+                        {
+                            bool a = corner[z * (n + 1) + x], b = corner[(z + 1) * (n + 1) + x];
+                            bool d = corner[(z + 1) * (n + 1) + x + 1], e = corner[z * (n + 1) + x + 1];
+                            full = a && b && d && e;
+                            any = a || b || d || e;
+                        }
                     }
-                    if (sea && start < 0) start = x;
-                    if (!sea && start >= 0)
+                    // Whole sea cells: one quad per run of a row.
+                    if (full && start < 0) start = x;
+                    if (!full && start >= 0)
                     {
-                        var xa = _centre.x - half + start * cell;
-                        var xb = _centre.x - half + x * cell;
-                        var i = vertices.Count;
-                        vertices.Add(new Vector3(xa, -0.02f, z0));
-                        vertices.Add(new Vector3(xa, -0.02f, z0 + cell));
-                        vertices.Add(new Vector3(xb, -0.02f, z0 + cell));
-                        vertices.Add(new Vector3(xb, -0.02f, z0));
-                        uvs.Add(new UnityEngine.Vector2(xa * 0.02f, z0 * 0.02f));
-                        uvs.Add(new UnityEngine.Vector2(xa * 0.02f, (z0 + cell) * 0.02f));
-                        uvs.Add(new UnityEngine.Vector2(xb * 0.02f, (z0 + cell) * 0.02f));
-                        uvs.Add(new UnityEngine.Vector2(xb * 0.02f, z0 * 0.02f));
-                        triangles.Add(i); triangles.Add(i + 1); triangles.Add(i + 2);
-                        triangles.Add(i); triangles.Add(i + 2); triangles.Add(i + 3);
+                        SeaQuad(vertices, uvs, triangles, x0 + start * cell, x0 + x * cell, za, za + cell);
                         start = -1;
+                    }
+                    if (full || !any) continue;
+                    // A coast cell: its corners in winding order (+z, then +x: clockwise from above, facing up), the sea ones
+                    // kept and a point on the coast added on each side the coast crosses.
+                    polygon.Clear();
+                    for (var k = 0; k < 4; k++)
+                    {
+                        var (px, pz) = Corner(k);
+                        var (qx, qz) = Corner((k + 1) & 3);
+                        var p = new Vector2(x0 + (x + px) * cell, za + pz * cell);
+                        var q = new Vector2(x0 + (x + qx) * cell, za + qz * cell);
+                        var pSea = corner[(z + pz) * (n + 1) + x + px];
+                        var qSea = corner[(z + qz) * (n + 1) + x + qx];
+                        if (pSea) polygon.Add(p);
+                        if (pSea != qSea) polygon.Add(CoastCrossing(pSea ? p : q, pSea ? q : p, cell));
+                    }
+                    if (polygon.Count < 3) continue;
+                    var first = vertices.Count;
+                    foreach (var v in polygon)
+                    {
+                        vertices.Add(new Vector3(v.x, -0.02f, v.y));
+                        uvs.Add(new UnityEngine.Vector2(v.x * 0.02f, v.y * 0.02f));
+                    }
+                    for (var k = 1; k + 1 < polygon.Count; k++)
+                    {
+                        triangles.Add(first);
+                        triangles.Add(first + k);
+                        triangles.Add(first + k + 1);
                     }
                 }
             }
             return WaterMesh("Edge Sea", vertices, uvs, triangles);
+        }
+
+        /// <summary>A cell's corner <paramref name="k"/> (0..3) as (x, z) steps, in winding order: (0,0), (0,1), (1,1), (1,0).</summary>
+        private static (int x, int z) Corner(int k) => k switch
+        {
+            0 => (0, 0),
+            1 => (0, 1),
+            2 => (1, 1),
+            _ => (1, 0),
+        };
+
+        /// <summary>One flat quad of sea from (xa, za) to (xb, zb), clockwise from above (faces up).</summary>
+        private static void SeaQuad(List<Vector3> vertices, List<UnityEngine.Vector2> uvs, List<int> triangles, float xa, float xb, float za, float zb)
+        {
+            var i = vertices.Count;
+            vertices.Add(new Vector3(xa, -0.02f, za));
+            vertices.Add(new Vector3(xa, -0.02f, zb));
+            vertices.Add(new Vector3(xb, -0.02f, zb));
+            vertices.Add(new Vector3(xb, -0.02f, za));
+            uvs.Add(new UnityEngine.Vector2(xa * 0.02f, za * 0.02f));
+            uvs.Add(new UnityEngine.Vector2(xa * 0.02f, zb * 0.02f));
+            uvs.Add(new UnityEngine.Vector2(xb * 0.02f, zb * 0.02f));
+            uvs.Add(new UnityEngine.Vector2(xb * 0.02f, za * 0.02f));
+            triangles.Add(i); triangles.Add(i + 1); triangles.Add(i + 2);
+            triangles.Add(i); triangles.Add(i + 2); triangles.Add(i + 3);
+        }
+
+        /// <summary>
+        /// Where the coast crosses a cell side, from its sea end <paramref name="sea"/> to its land end <paramref name="land"/>:
+        /// halved until the step is under 5 cm (so the near and the far sheet, and two cells, meet on the same point).
+        /// </summary>
+        private Vector2 CoastCrossing(Vector2 sea, Vector2 land, float reach)
+        {
+            var steps = Mathf.Clamp(Mathf.CeilToInt(Mathf.Log(Mathf.Max(1f, (land - sea).magnitude / 0.05f), 2f)), 1, 12);
+            for (var i = 0; i < steps; i++)
+            {
+                var mid = (sea + land) * 0.5f;
+                if (SeaMeshAt(mid, reach)) sea = mid;
+                else land = mid;
+            }
+            return (sea + land) * 0.5f;
+        }
+
+        /// <summary>
+        /// Whether the sea sheet covers a point: the edge sea; inside the map's rectangle (its own water and ground there), the
+        /// corners up to <paramref name="reach"/> in from its edge count as the sea just outside them, so a coast cell on the
+        /// edge is not cut along a slant that would open a seam at the map's edge.
+        /// </summary>
+        private bool SeaMeshAt(Vector2 p, float reach)
+        {
+            if (EdgeSeaAt(p)) return true;
+            var dx = Mathf.Abs(p.x - _centre.x) - _halfX;
+            var dz = Mathf.Abs(p.y - _centre.y) - _halfZ;
+            if (dx > 0f || dz > 0f || reach <= 0f) return false;
+            if (dx < -reach && dz < -reach) return false;
+            var q = p;
+            if (dx >= dz) q.x = _centre.x + Mathf.Sign(p.x - _centre.x) * (_halfX + 0.05f);
+            else q.y = _centre.y + Mathf.Sign(p.y - _centre.y) * (_halfZ + 0.05f);
+            return EdgeSeaAt(q);
         }
 
         /// <summary>A river's channel from the edge out to the horizon (4 m steps, meandering past the corner pieces).</summary>
