@@ -29,7 +29,7 @@ GUN = (0.0, 1.22, FLOOR + .02)
 def _running_gear(a):
     for y in AXLES:
         for s in (-1, 1):
-            K.truck_wheel(a, (s * TRACK, y, WHEEL_R), WHEEL_R, WHEEL_W, s, lugs=10, seg=12, rim_mat='Steel',
+            K.truck_wheel(a, (s * TRACK, y, WHEEL_R), WHEEL_R, WHEEL_W, s, lugs=8, seg=12, rim_mat='Steel',
                           lug_depth=.035, nuts=4)
             K.dust(a, (s * TRACK, y, .1), radius=.7, k=.25)
         K.axle(a.part('Axles', 'Undercarriage'), y, WHEEL_R, TRACK - .05, r=.045, diff=True)
@@ -119,7 +119,7 @@ def _bed_stowage(a):
     K.crate(crates, straps, (.42, .26, .2), (-.42, .7, FLOOR + .02))
     K.crate(crates, straps, (.42, .26, .2), (-.42, .7, FLOOR + .22))
     K.crate(crates, straps, (.36, .24, .18), (.45, 2.0, FLOOR + .02), rot=(0, 0, R90))
-    K.truck_wheel(a, (.42, .68, FLOOR + .13), .26, .17, 1, lugs=8, seg=12, tyre='Spare_wheel', rim='Spare_rim',
+    K.truck_wheel(a, (.42, .68, FLOOR + .13), .26, .17, 1, lugs=6, seg=12, tyre='Spare_wheel', rim='Spare_rim',
                   lug_depth=.03, nuts=0, hub_cap=False)
     K.jerrycan(a.part('Jerrycans', 'Fuel'), (-.5, 2.0, FLOOR + .02), rot=(0, 0, 0), scale=.83)
 
@@ -129,8 +129,16 @@ def _gun(a):
     barrels (jackets, flash hiders), the box magazines outside each breech, the sight in the middle, the elevating and
     traversing handwheels."""
     steel = a.part('Gun_pedestal', 'Steel')
-    k.lathe(steel, [(.3, 0), (.3, .06), (.12, .1), (.1, .42), (.18, .46)], loc=GUN, seg=12, worn=(1, 4))
-    t = a.pivot('Turret', (GUN[0], GUN[1], GUN[2] + .46))
+    # Wave 1 (the owner's roof-gun rule): the pedestal stands 5 cm taller with a collar and gussets, the box
+    # magazines stand upright over the breeches and the AA ring sight rises on its post, so the gun reads tall over
+    # the cab roof (the height stays within 10 % of modelSize).
+    k.lathe(steel, [(.3, 0), (.3, .06), (.12, .1), (.1, .44), (.14, .45), (.14, .48), (.18, .51)], loc=GUN, seg=12,
+            worn=(1, 4))
+    for g in range(2):
+        u = g * math.pi + R90
+        steel.box((.02, .16, .2), loc=(GUN[0] + math.sin(u) * .14, GUN[1] + math.cos(u) * .14, GUN[2] + .16),
+                  rot=(0, 0, -u), bevel=0)
+    t = a.pivot('Turret', (GUN[0], GUN[1], GUN[2] + .51))
     car = a.part('Turret_armor', 'Armor', t)
     K.chamfer_box(car, (.62, .7, .1), loc=(0, .05, .05), c=.02)
     for s in (-1, 1):
@@ -153,10 +161,17 @@ def _gun(a):
                                                     (.035, L - .03), (0, L - .03)], loc=(x, .15, z), rot=K.FORWARD,
                 seg=8, worn=(1,))
         side = 1 if x > 0 else -1
-        K.chamfer_box(a.part('Magazines', 'Armor', t), (.1, .32, .16), loc=(x + side * .1, .05, z + .02), c=.015)
+        K.chamfer_box(a.part('Magazines', 'Armor', t), (.09, .3, .22), loc=(x + side * .1, .05, z), c=.015)
+        sf.box((.012, .26, .02), loc=(x + side * .147, .05, z + .06), bevel=0)                      # magazine latch
     K.periscope(a, (0, -.15, z - .06), facing=(0, -1, 0), parent='Turret', size=(.09, .1, .1), mat='Armor')
+    sight = a.part('Gun_sight', 'Steel', t)
+    sight.cyl(.012, .05, loc=(0, -.3, z + .0), seg=5, bevel=0)
+    sight.torus(.05, .007, loc=(0, -.3, z + .05), rot=(R90, 0, 0), seg=10, ring=3)
+    # Owner decision 2: the data fires both barrels (barrels 2): a muzzle for each under the slot's Muzzle_main.
     a.pivot('Muzzle_main', (0, .15 - 1.75 - .01, z), 'Turret')
-    K.soot(a, (0, GUN[1] + .15 - 1.75, GUN[2] + .46 + z), radius=.25, k=.3)
+    for i, x in enumerate((.11, -.11)):
+        a.pivot(f'Muzzle_b{i + 1}_main', (x, 0, 0), 'Muzzle_main')
+    K.soot(a, (0, GUN[1] + .15 - 1.75, GUN[2] + .51 + z), radius=.25, k=.3)
 
 
 def zu23_technical(a):
