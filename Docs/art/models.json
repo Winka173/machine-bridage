@@ -1881,7 +1881,7 @@
   },
   "wall_gun": {
     "file": "wall_gun.glb",
-    "triangles": 2672
+    "triangles": 5440
   },
   "wall_hesco": {
     "file": "wall_hesco.glb",

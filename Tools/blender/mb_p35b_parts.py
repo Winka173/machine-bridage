@@ -245,3 +245,22 @@ def canvas_roll(a, loc, length, r=.1, parent=None, mat='Canvas'):
                                                (r * .8, length / 2)], loc=loc, rot=(0, R90, 0), seg=8)
     for f in (-.3, .3):
         a.part('Kit_straps', 'Steel', parent).box((.04, r * 2.1, r * 2.1), loc=(x + f * length, y, z), bevel=0)
+
+
+def sandbag_run(a, path, courses=2, bag=(.6, .32, .15), part='Sandbags', mat='Sandbag', seed=0, parent=None,
+                closed=False):
+    """Sandbags laid along a polyline (wave 3): `courses` high, each course offset by half a bag and set back a
+    little (a battered face), every bag a pillow block with jitter in size and yaw; the part name is the caller's
+    (Parapet, Walls, Sandbags) so a structure's gate roles can read it."""
+    import random
+    shape = a.part(part, mat, parent)
+    rng = random.Random(seed * 7919 + len(path))
+    L, W, H = bag
+    pts = list(path) + [path[0]] if closed else list(path)
+    for c in range(courses):
+        for p, t in k.along(pts, pitch=L * .96, start=L / 2 * (c % 2)):
+            yaw = math.atan2(t.y, t.x)
+            j = rng.uniform(-.04, .04)
+            k.block(shape, (L * (.95 + j), W * (1 + j), H), loc=(p.x, p.y, p.z + H / 2 + c * H * .9),
+                    rot=(0, 0, yaw + rng.uniform(-.07, .07)), chamfer=H * .4, ends=(False, True))
+    return shape
