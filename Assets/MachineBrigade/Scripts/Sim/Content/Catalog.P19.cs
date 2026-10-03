@@ -47,6 +47,7 @@ namespace MachineBrigade.Sim.Content
                 Descend = MathF.Max(0.5f, t.Float("descend", 4f)),
                 Shift = MathF.Max(0.5f, t.Float("shift", 3.5f)),
                 EscortsOnDescend = t.Bool("escortsOnDescend", true),
+                EnterLow = t.Bool("enterLow", true),
                 // Prompt 20 H.2: the phase in which it stops where it is (Daedalus holds low, bays open).
                 HaltPhase = t.Int("haltPhase", -1),
             };

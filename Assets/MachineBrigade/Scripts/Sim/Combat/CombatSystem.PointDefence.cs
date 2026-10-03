@@ -114,9 +114,8 @@ namespace MachineBrigade.Sim.Combat
         private static float RoundHeight(Projectile p)
         {
             var done = p.Flight > 0f ? Math.Clamp(1f - p.TimeLeft / p.Flight, 0f, 1f) : 1f;
-            var w = p.Weapon;
-            var share = w.Indirect && w.Projectile is ProjectileKind.Rocket or ProjectileKind.Shell ? 0.27f
-                : w.Projectile is ProjectileKind.Missile or ProjectileKind.Drone ? 0.12f : 0.02f;
+            // Play-test 13 (lane C): the weapon's flight profile sets the arc (ballistic, lofted, direct).
+            var share = p.Weapon.ArcShare;
             return 1.5f + Vector2.Distance(p.Origin, p.AimPoint) * share * 4f * done * (1f - done);
         }
 

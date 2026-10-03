@@ -666,6 +666,19 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Which launcher fires next (the systems alternate sides).</summary>
         internal bool ApsLeft;
 
+        /// <summary>
+        /// Play-test 13 (lane C): a vehicle APS activation stays open until this time; every round reaching it meanwhile meets
+        /// the same activation (one charge spent for the lot).
+        /// </summary>
+        internal double ApsVolleyUntil = double.NegativeInfinity;
+
+        /// <summary>
+        /// Play-test 13 (lane C): the flare cloud the last release made (its <see cref="FlaresUntil"/>) and its one seeded roll:
+        /// every IR missile arriving inside that cloud's window is tested against the same roll.
+        /// </summary>
+        internal double FlareCloudUntil = double.NegativeInfinity;
+        internal double FlareCloudRoll;
+
         /// <summary>Play-test 5 (DECISIONS 20W): the round a gun point defence is streaming at, since when, and for how long.</summary>
         internal Projectile? PdRound;
         internal double PdSince;

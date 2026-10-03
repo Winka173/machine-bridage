@@ -1148,6 +1148,7 @@ namespace MachineBrigade.Game.Hud
             ["detail.cooldown"] = ("Ready again in {seconds} s", "Hồi chiêu {seconds} giây"),
             ["detail.count"] = ("{count|# blast|# blasts}", "{count} phát nổ"),
             ["detail.main"] = ("main", "chính"),
+            ["detail.unarmed"] = ("Unarmed: a support unit, it carries no weapon", "Không vũ trang: đơn vị hỗ trợ, không mang vũ khí"),
             // Full fix L3: a single-shot weapon "every X s" (its full cycle); a salvo or magazine "salvo N · cycle X s" (the
             // time to fire it all plus the reload); the sustained damage a second, the barrels, a blast's core and edge.
             ["detail.weaponLine"] = ("{damage} dmg  ·  every {seconds} s  ·  {metres} m  ·  {targets}", "{damage} ST  ·  mỗi {seconds} s  ·  {metres} m  ·  {targets}"),

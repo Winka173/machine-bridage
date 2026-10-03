@@ -27,6 +27,21 @@ namespace MachineBrigade.Sim.Content
 
     public sealed partial class VehicleDef
     {
+        /// <summary>
+        /// Play-test 13 (lane C): it carries no weapon (a tanker, a heavy-lift helicopter, a support building): every mount's
+        /// weapon deals no damage (the placeholder "none"). The card then shows no gun rows, not a gun of 0 damage.
+        /// </summary>
+        public bool Unarmed
+        {
+            get
+            {
+                if (Weapon.Damage > 0f) return false;
+                foreach (var m in Mounts)
+                    if (m.Weapon.Damage > 0f) return false;
+                return true;
+            }
+        }
+
         /// <summary>The army branch whose equipment loadout it wears (see <see cref="ArmyBranch"/>).</summary>
         public ArmyBranch Branch { get; internal set; }
 

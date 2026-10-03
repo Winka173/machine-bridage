@@ -72,7 +72,10 @@ namespace MachineBrigade.Sim.Abilities
                 // Active protection reloads one interceptor at a time; a launcher reloaded whole (prompt 20 L.1, the
                 // Iron Dome) gets all of them back once it has been quiet for its reload time (it restarts at each launch).
                 var aps = v.Aps;
-                if (aps != null && !v.ApsOff && v.ApsCharges < Math.Min(aps.Charges, v.ApsMax) && (v.ApsReload += dt * v.ApsRate) >= (aps.Reload > 0f ? aps.Reload : aps.Recharge))
+                // Play-test 13 (lane C): a vehicle's own APS (one activation takes a whole salvo) reloads ApsRechargeScale slower.
+                var apsRecharge = aps == null ? 0f : aps.Reload > 0f ? aps.Reload
+                    : v.Def.InterceptionMode == InterceptionMode.SelfAps ? aps.Recharge * SimTunables.Weapons.Countermeasures.ApsRechargeScale : aps.Recharge;
+                if (aps != null && !v.ApsOff && v.ApsCharges < Math.Min(aps.Charges, v.ApsMax) && (v.ApsReload += dt * v.ApsRate) >= apsRecharge)
                 {
                     v.ApsCharges = aps.Reload > 0f ? Math.Min(aps.Charges, v.ApsMax) : v.ApsCharges + 1;
                     v.ApsReload = 0f;
@@ -633,7 +636,9 @@ namespace MachineBrigade.Sim.Abilities
             SkillTrigger.UnderFire => now - v.LastHitTime < 1.0,
             SkillTrigger.EnemyInRange => _world.FindNearestEnemy(v, skill.Radius > 0f ? skill.Radius : v.Def.Weapon.Range,
                 requireVisible: true) != null,
-            SkillTrigger.MissileIncoming => _world.MissileIncoming(v.Id),
+            // Play-test 13 (lane C): flares go out on the missile warner's terminal cue, so one cloud meets every missile
+            // arriving together (released at launch, a 1.5 s cloud had burnt out before a long shot arrived).
+            SkillTrigger.MissileIncoming => skill.Kind == SkillKind.Flares ? _world.FlareCue(v.Id) : _world.MissileIncoming(v.Id),
             SkillTrigger.PartBroken => _world.Bosses.CanPatch(v),
             _ => false,
         };

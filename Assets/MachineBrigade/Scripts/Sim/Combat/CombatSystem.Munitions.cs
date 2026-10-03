@@ -16,7 +16,7 @@ namespace MachineBrigade.Sim.Combat
     /// cannot be outrun. It misses only by an APS, a jammer (at launch), its one launch roll (<see cref="Projectile.Failed"/>),
     /// a sight-guided missile's shooter dying or losing sight on the way (<see cref="Divert.Sight"/>), its target getting out
     /// of its reach (<see cref="Divert.Reach"/>), and for an IR missile a flare (<see cref="Divert.Flare"/>).</item>
-    /// <item>Flares: one roll per IR missile, on the first tick its aircraft's flares burn while it flies; a decoyed missile
+    /// <item>Flares (play-test 13): one seeded roll per flare cloud, shared by every IR missile arriving inside its window; a decoyed missile
     /// flies on to the flare and bursts beside it (an air burst with its effect and sound). Radar-guided families, guns and
     /// lasers are never decoyed.</item>
     /// <item>Unguided rockets, shells, mortars and bombs (not a free-falling stick, which falls where the drop puts it)
@@ -81,11 +81,19 @@ namespace MachineBrigade.Sim.Combat
                 if (p.Diverted != Entities.Divert.None || p.Jammed || p.Failed || !Homes(p.Weapon)) continue;
                 if (!_world.TryGetTarget(p.Target, out var target) || !target.IsAlive) continue;
                 var weapon = p.Weapon;
-                // C: one roll per IR missile on the first tick its aircraft's flares burn while it flies.
-                if (!p.FlareRolled && p.TargetFlying && target is Vehicle flyer && flyer.FlaresUntil > now && FlareTakes(weapon, rules))
+                // C, play-test 13 (lane C): a flare cloud seduces every IR seeker that arrives inside its window (while it
+                // burns, plus a short grace), all on the cloud's one seeded roll: one release can decoy a whole salvo. A
+                // missile still far out when the cloud burns is left for the next release.
+                if (!p.FlareRolled && p.TargetFlying && target is Vehicle flyer && flyer.FlaresUntil > now && FlareTakes(weapon, rules) &&
+                    p.TimeLeft <= (float)(flyer.FlaresUntil - now) + SimTunables.Weapons.Countermeasures.FlareGraceSeconds)
                 {
                     p.FlareRolled = true;
-                    if (_world.Random.NextDouble() < rules.FlareDecoyChance * (1f - weapon.FlareResist))
+                    if (flyer.FlareCloudUntil != flyer.FlaresUntil)
+                    {
+                        flyer.FlareCloudUntil = flyer.FlaresUntil;
+                        flyer.FlareCloudRoll = _world.Random.NextDouble();
+                    }
+                    if (flyer.FlareCloudRoll < rules.FlareDecoyChance * (1f - weapon.FlareResist))
                     {
                         DivertRound(p, Entities.Divert.Flare, FlarePoint(flyer, rules));
                         continue;

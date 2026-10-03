@@ -113,6 +113,14 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The view: rings shown at once at most (super weapons on top of these, always).</summary>
         public int MaxShown { get; internal set; } = 6;
 
+        /// <summary>
+        /// Play-test 13 (lane C), data "normalFire": whether a weapon's ordinary fire warns at all. False (the owner's rule):
+        /// a gun fires and its shell lands at once, with no ring and no added flight; only the bosses' big attacks, the super
+        /// weapons' strikes, the supports and a bomber's stick warn (their own systems). <see cref="IsBig"/> still sorts the
+        /// big rounds (the preview's ring time, the export).
+        /// </summary>
+        public bool NormalFire { get; internal set; }
+
         /// <summary>The view: one shooter's rounds fired within this (s) whose rings touch are one ring round them all.</summary>
         public float SalvoMerge { get; internal set; } = 0.6f;
 
@@ -128,10 +136,17 @@ namespace MachineBrigade.Sim.Content
         }
 
         /// <summary>
-        /// Whether a round warns at all: never a guided one (it chases its target and has no fall point) nor a beam; else its
-        /// tier (T4+: 203 mm and up, the 400 kg bombs, the Smerch) or, for a weapon with no family, its size by kind.
+        /// Whether a round fired by a mount warns (a ring on its fall point, its flight held to the warning): only when
+        /// <see cref="NormalFire"/> is on and the round is a big one (<see cref="IsBig"/>). Off by the owner's rule (play-test 13).
         /// </summary>
-        public bool Warns(WeaponDef w)
+        public bool Warns(WeaponDef w) => NormalFire && IsBig(w);
+
+        /// <summary>
+        /// Whether a round is a big one the rules would warn of: never a guided one (it chases its target and has no fall
+        /// point) nor a beam; else its tier (T4+: 203 mm and up, the 400 kg bombs, the Smerch) or, for a weapon with no
+        /// family, its size by kind.
+        /// </summary>
+        public bool IsBig(WeaponDef w)
         {
             if (w.Guided || w.GuidedRocket || w.Beam || w.Laid || w.SplashRadius <= 0f) return false;
             if (w.Tier >= 0) return w.Tier >= 4;
@@ -156,6 +171,7 @@ namespace MachineBrigade.Sim.Content
             EscapeSpeed = Math.Max(0.1f, o.Float("escapeSpeed", 4.5f)),
             Cap = Math.Max(0.5f, o.Float("cap", 6f)),
             MaxShown = Math.Max(1, o.Int("maxShown", 6)),
+            NormalFire = o.Bool("normalFire", false),
             SalvoMerge = Math.Max(0f, o.Float("salvoMergeSeconds", 0.6f)),
             FadeIn = Math.Max(0f, o.Float("fadeIn", 0.4f)),
         };

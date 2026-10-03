@@ -369,7 +369,9 @@ namespace MachineBrigade.Sim.Combat
             {
                 var a = c.Aps;
                 // A boss's protection system stops with its parts (prompt 16: the Behemoth's, the Tempest's laser, the hovercraft's CIWS).
-                if (a == null || !c.IsAlive || c.Team == p.OwnerTeam || c.ApsCharges <= 0 || c.Stunned || c.ApsOff) continue;
+                // Play-test 13 (lane C): a vehicle APS activation still open takes this round too, charges left or not.
+                var volleyOpen = c.Def.InterceptionMode == InterceptionMode.SelfAps && c.ApsVolleyUntil >= _world.Time;
+                if (a == null || !c.IsAlive || c.Team == p.OwnerTeam || (c.ApsCharges <= 0 && !volleyOpen) || c.Stunned || c.ApsOff) continue;
                 // Play-test 5: a gun point defence (the C-RAM) takes rounds in flight with a burst, never as they land.
                 if (a.Burst > 0f) continue;
                 if (guarded.IsValid && c.Id != guarded) continue;
@@ -401,10 +403,20 @@ namespace MachineBrigade.Sim.Combat
                 if (aps.Reload > 0f) v.ApsReload = 0f;
                 return false;
             }
-            v.ApsCharges--;
-            // A launcher reloaded whole starts its reload again at every launch.
-            if (aps.Reload > 0f) v.ApsReload = 0f;
-            v.ApsLeft = !v.ApsLeft;
+            // Play-test 13 (lane C): a vehicle's hard-kill APS fires one activation at everything arriving together (a Trophy
+            // or Afganit volley): the first round spends the charge and opens the activation; rounds reaching the vehicle
+            // within ApsVolleySeconds join it free. To balance it, its interceptors come back ApsRechargeScale times slower
+            // (AbilitySystem): the real systems' weak point is the reload, not the kill.
+            var selfAps = v.Def.InterceptionMode == InterceptionMode.SelfAps;
+            var joins = selfAps && v.ApsVolleyUntil >= _world.Time;
+            if (!joins)
+            {
+                v.ApsCharges--;
+                // A launcher reloaded whole starts its reload again at every launch.
+                if (aps.Reload > 0f) v.ApsReload = 0f;
+                v.ApsLeft = !v.ApsLeft;
+                if (selfAps) v.ApsVolleyUntil = _world.Time + SimTunables.Weapons.Countermeasures.ApsVolleySeconds;
+            }
             // The interceptor meets the round a few metres out, on the side it came from; an
             // interceptor missile flies out and meets it short of its mark.
             var from = _world.TryGetVehicle(p.Owner, out var shooter) ? shooter.Position : mark + SimMath.Forward(v.Heading) * 10f;

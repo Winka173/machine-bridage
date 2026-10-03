@@ -121,6 +121,13 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Its escorts come as it leaves orbit, not while it is still out of reach.</summary>
         public bool EscortsOnDescend { get; internal set; } = true;
 
+        /// <summary>
+        /// Play-test 13 (lane C), data "enterLow" (default true, the owner's rule): it comes onto the battlefield already at its
+        /// low flight level, on the first low step of its opening cycle: no orbit opening and no slow descent (an aircraft
+        /// arrives at its working height). False keeps the opening and the descent.
+        /// </summary>
+        public bool EnterLow { get; internal set; } = true;
+
         /// <summary>Prompt 20: the phase (0 up) from which it stops moving (-1: never).</summary>
         public int HaltPhase { get; internal set; } = -1;
 

@@ -61,7 +61,36 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 34 L3: this round's escape warning (0 below T4).</summary>
         /// <para>Fix prompt L5: a round with no family that the rules warn of by its size (a 203 mm gun, a 400 kg bomb, a 300 mm
         /// rocket) warns as a T4.</para>
-        public float WarnSeconds => EscapeWarning(Tier < 0 && WarningRules.Shared.Warns(this) ? 4 : Tier, WeaponFamilyId, SplashRadius);
+        public float WarnSeconds => EscapeWarning(Tier < 0 && WarningRules.Shared.IsBig(this) ? 4 : Tier, WeaponFamilyId, SplashRadius);
+
+        /// <summary>Play-test 13 (lane C): the data's "flightProfile", if it names one.</summary>
+        public FlightProfile? FlightData { get; internal set; }
+
+        /// <summary>
+        /// Play-test 13 (lane C): how the round flies: the data's profile, else by kind: a ballistic missile, an artillery rocket
+        /// (a minimum range) and a lobbed shell or bomb fly ballistic; a top-attack or lofted missile and a drone loft; the rest
+        /// fly direct.
+        /// </summary>
+        public FlightProfile Flight => FlightData ?? Projectile switch
+        {
+            ProjectileKind.Missile => Family == "ballistic" ? FlightProfile.Ballistic : TopAttack || Lofted ? FlightProfile.Loft : FlightProfile.Direct,
+            ProjectileKind.Rocket => MinRange > 0f || Family == "ballistic" ? FlightProfile.Ballistic : FlightProfile.Direct,
+            ProjectileKind.Drone => FlightProfile.Loft,
+            ProjectileKind.Shell => Indirect ? FlightProfile.Ballistic : FlightProfile.Direct,
+            ProjectileKind.Bomb => FlightProfile.Ballistic,
+            _ => FlightProfile.Direct,
+        };
+
+        /// <summary>
+        /// Play-test 13 (lane C): the path's peak as a share of the ground distance, by <see cref="Flight"/> (ballistic 0.28, loft
+        /// 0.2, a direct missile 0.04, anything else direct 0.02): the Sim's round height and the view's arc.
+        /// </summary>
+        public float ArcShare => Flight switch
+        {
+            FlightProfile.Ballistic => 0.28f,
+            FlightProfile.Loft => 0.2f,
+            _ => Projectile == ProjectileKind.Missile ? 0.04f : 0.02f,
+        };
 
         /// <summary>Prompt 34 L3: the ring a warning draws: the blast's edge when it has two layers, else its core.</summary>
         public float WarnRadius => SplashEdge > SplashRadius ? SplashEdge : SplashRadius;

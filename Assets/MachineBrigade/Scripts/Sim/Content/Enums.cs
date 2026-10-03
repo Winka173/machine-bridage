@@ -137,6 +137,18 @@ namespace MachineBrigade.Sim.Content
     }
 
     /// <summary>What a weapon fires. Missiles are guided; everything else lands on its aim point.</summary>
+    /// <summary>
+    /// Play-test 13 (lane C): how a round flies (data "flightProfile"; <see cref="WeaponDef.Flight"/>): straight at its target
+    /// (a gun, an ATGM on its wire, a rocket pod), lofted (a tube- or box-launched missile climbs, then dives or turns onto its
+    /// target: top attack, VLS, coastal boxes), or ballistic (artillery shells and rockets, ballistic missiles: a high arc).
+    /// </summary>
+    public enum FlightProfile
+    {
+        Direct,
+        Loft,
+        Ballistic,
+    }
+
     public enum ProjectileKind
     {
         Shell,

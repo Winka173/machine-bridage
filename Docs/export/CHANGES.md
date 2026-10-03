@@ -237,3 +237,191 @@ Việt hoặc Anh lấy số lớn, dải hẹp nhất). Cả hai đều làm đ
   carriers[] rearmSeconds / loaded; supportRule, bigRule, altitudeRule).
 - `defenceWaves` (rule, waveCount, levels[] level / referencePower / referenceScore / waveScale / incomeScale / waves{Easy, Normal, Hard}).
 - Bộ đọc: sheet `Bom_*` vào file 01 sau công thức, nên `pack.add_bom_sheets` gọi `gamefill.fill_late` (ctx.game).
+
+
+## Lane C — cấu trúc gói và phần xuất
+
+Nhánh `feature/pack-c`, một commit mỗi lượt: lượt 1 và bổ sung cấu trúc `63d102a8`, lượt 2 (md) `f8550c12`, lượt 5 (nhập ngược)
+`3eae75bc`; sau khi gộp `lead/integration` (phần game của lane B) và đọc `game.json`: commit lượt 6 (kiểm tra, gói
+`Docs/export/current/`, CHANGES / DECISIONS / CHANGELOG). Lane C không đổi giá trị game nào và không sửa C#, balance.json hay dữ liệu.
+
+### Số sheet / dòng / cột, trước và sau (mỗi ô: sheet / dòng / cột)
+
+| file | trước | sau |
+|---|---|---|
+| 01_chien_dau (cũ 01 + 02) | 50 / 3293 / 1051 | 57 / 3485 / 1350 |
+| 02_boss (cũ 03) | 44 / 1851 / 805 | 45 / 1879 / 816 |
+| 03_can_cu (cũ 04) | 28 / 676 / 666 | 30 / 890 / 702 |
+| 04_che_do_kinh_te_ai (cũ 05 + 06 + 11) | 54 / 1980 / 657 | 46 / 1466 / 587 |
+| 05_chien_dich (cũ 07) | 35 / 9134 / 555 | 31 / 2792 / 518 |
+| 06_ban_do (cũ 08) | 41 / 151332 / 511 | 32 / 6583 / 425 |
+| 07_hinh_anh_am_thanh_model (cũ 09 + 10) | 43 / 41539 / 563 | 33 / 16266 / 491 |
+| 08_tham_chieu (cũ 13) | 7 / 7293 / 74 | 5 / 945 / 54 |
+| 00_index (cũ 00_chi_muc) | 14 / 8116 / 130 | 4 / 5575 / 44 |
+| 12_he_thong_trang_thai | 23 / 16009 / 191 | (bỏ khỏi gói) |
+| bulk.zip | (nằm trong xlsx cũ) | 21 CSV / 177485 / 213 |
+
+Tổng: trước 339 sheet / 241 223 dòng (13 file lĩnh vực và chỉ mục); sau 283 sheet trong 9 xlsx và 21 CSV trong bulk.zip.
+Gói chỉ có 19 file và `images/` (29 ảnh, tiền tố file, chỉ ảnh mà một md dẫn tới; ảnh trước / sau dựng lại model, 304 MB, không còn).
+
+### Sheet rời khỏi gói (bảng đầy đủ: `_qa/qa.xlsx`, sheet `Ngoai_goi`, sinh khi chạy)
+
+- Mục 2.1 (quy trình, test, validator, manifest, lịch sử đo, quyết định, chờ quyết, bảng đơn vị tài liệu, thiếu nguồn): 24 sheet
+  của file 12, `Tham_chieu_decisions`, `Thieu_nguon` (6 332 dòng); lá nguồn của chúng tính là Khong_xuat trong độ phủ.
+- Lịch sử, không phải giá trị game: `Model_lich_su` (120 dòng ghi chú dựng lại model), `Anh_chup` (chỉ mục ảnh của md cũ).
+- Mục 2.5 (một dòng KHONG_CO, game không có thứ đó): `Telemetry`, `Thanh_tuu`, `Tuong_vu_khi`, `Mo_dun_tien_ich_vu_khi` và 6 sheet
+  `*_so_sanh_that` rỗng. Ô `KHONG_CO` trong sheet nhiều dòng đổi thành `KHONG_AP_DUNG`, lý do ở `Schema.ly_do_khong_ap_dung`.
+- Mục 4: `Hang_so_trong_ma` chỉ còn ở `_qa/Hang_so_trong_ma.csv` (7 065 dòng sau khi bỏ `SimTunables*` và `BalancePackFacts`).
+- Bom: 4 sheet tĩnh gộp vào 01 (`Bom_vu_khi`, `Bom_don_vi`, `Bom_hanh_vi`, `Bom_canh_bao`); `Bom_vet_tha` và `Bom_ket_qua_vung` là số đo
+  của test Unity (vết thả, trước / sau), không phải dữ liệu: không vào gói. Thư mục `bom_2026-10-03` và các vết csv của nó xóa khỏi git.
+- Mục 2.3: 21 sheet vào `bulk.zip` (`<file>__<sheet>.csv`); `06_ban_do` thêm `Ban_do_tom_tat` (mỗi bản đồ một dòng: vật thể theo loại,
+  phần trăm diện tích mỗi tag địa hình, ô căn cứ, ô pháo đài, đường, làn, điểm nghẽn); `Thoai_thong_ke` (theo nhiệm vụ) giữ trong xlsx.
+
+### Phân loại `Khac_chua_phan_loai`
+
+| mục | vào | lý do |
+|---|---|---|
+| Anh_can_cu, Anh_can_cu_mui_ten, Anh_can_cu_vien | 03_can_cu | hình của chính ô căn cứ |
+| So_tay_dan | 01_chien_dau | xe mẫu của sổ tay đạn |
+| Anh_the (bulk), Hau_ky_hinh_anh | 07_hinh_anh_am_thanh_model | hình ảnh |
+| Thoi_tiet, Do_kho | giữ ở 06_ban_do, 04_che_do_kinh_te_ai | chiến dịch chỉ dùng lại |
+| Test_kich_ban, Validator_*, Bang_don_vi_tai_lieu | ngoài gói | không phải dữ liệu game |
+
+### Đơn vị (`Don_vi_chua_ro` đã bỏ)
+
+350 cột số (300 tên) chưa biết đơn vị được điền vào `Schema.don_vi` (`core/units_fill.py`: chú thích C# của `TierFx.Muzzle`,
+`EffectLife.Band` và tên cột): s, m, m/s, deg, hp, hp/s, CP, xu, điểm, byte, `so_luong`, `he_so`, `ty_le`, `khong_don_vi`. Cột số đã
+biết là không đơn vị cũng ghi `khong_don_vi`; sheet khóa / giá trị ghi `theo_cot_don_vi`. Còn **14** cột ghi `khong_ro` (mã và chú
+thích không nói): `Trang_bi_bo` (two_piece_arg1-3, four_piece_arg1-3), `Boss.tiers_opening`, `Boss.tiers_shift`,
+`Boss_khung.defaults_tiers_shift`, `AI_ho_so_che_do.hq_skill_threat`, `AI_tham_so.min` / `.max`, `Vat_the_loai.collapse`,
+`VFX_chay_than_xe.power`.
+
+### NEED_CODE_CHECK: trước / sau
+
+- Trước: 5 723 ô (cả Schema và README). Sau khi gộp lane B và đọc `game.json` (`--game-json`): **103 ô, 8 sheet**; 5 326 ô điền từ
+  `balancePack`; 7 cột KHONG_AP_DUNG kèm lý do (dải phát để hạ máy bay, bù boss, mục tiêu gốc bộ bài, LOD1 của model, độ lệch nòng
+  RIPPLE, mở khóa xe tinh nhuệ, hướng dẫn người chơi mới); sáu sheet chỉ có một dòng dấu hiệu (cài đặt mặc định, khoảnh khắc điện
+  ảnh, kết trận, xác vỡ, màn xem trước, mixer) thành sheet thật từ `game.json`.
+- Còn lại, `game.json` chưa có giá trị (lane B / chủ dự án): `Bom_canh_bao.ban_kinh_ria_m` (10), `Bom_vu_khi` cột `ria_m` và
+  `loai_sat_thuong` (14), `Bom_don_vi` cột `do_cao_tha_m` và `nap_lai_s` (10): bán kính rìa, độ cao thả, thời gian nạp của đòn không
+  kích và đòn lớn nằm ở `StrikeSystem` / `BossSystem`; `Hanh_vi_dan_nhom.tuong_tac_gay_nhieu` (7); `Khac_che` dòng
+  `main_battle_tank` (9: APS chỉ khi gắn Trophy); `Phao_sang` `flare_tower`, `flare_searchlight_tower` (2); `Sanhunt.tuan` (41);
+  `Dot_phong_thu` cột `he_so_do_kho`, `duong_cong_dot` (10).
+- Hai chỗ giá trị là gộp, không đo từng dòng (ghi ở `Schema.y_nghia`): `Thoai.so_dong_hien_thi_toi_da` = số dòng của dòng thoại tệ nhất
+  (cùng số cho mọi dòng); `Hanh_vi_dan_nhom` (7 loại đạn) là trung bình theo số vũ khí của các nhóm chặn đạn của game (`roundGroups`;
+  Bullet và Flame cùng nhóm `other`).
+
+### Hằng số trong mã
+
+- Lane B đã đưa ra 260 khóa (`tunables.json`); bộ xuất hiện chúng trong sheet lĩnh vực: `Hang_so_vu_khi`, `Hang_so_phuong_tien` (01),
+  `Hang_so_boss` (02), `Hang_so_can_cu` (03), `Hang_so_che_do`, `Hang_so_ai` (04), `Hang_so_chien_dich` (05), `Hang_so_ban_do` (06);
+  mỗi hằng số một dòng (giá trị, đơn vị, nhóm quét, tên C#), sửa được qua nhập ngược. Không có file 99.
+- Chưa đưa ra: **3 132** dòng "co" của bản quét (`_qa/Hang_so_trong_ma.csv`): 3 097 số viết thẳng trong biểu thức và 35 khai báo
+  (xem phần lane B); 3 933 dòng là hạ tầng.
+- Cầu nối: dữ liệu JSON dưới `Assets/` mà không sheet nào nhận (khối mới của balance.json, file dữ liệu mới) vào sheet khóa / giá trị
+  `Hang_so_<khối>` của file chọn theo tên khối (`core/pack.py`, `CONST_ROUTE`), nên độ phủ không vỡ khi lane B thêm khóa.
+
+### Quyết định của lane C (không đổi giá trị game)
+
+- `_truoc` / `_sau`: giữ; mốc so sánh là `5f5b3247`, commit ngay trước khi áp cân bằng đợt 2 (prompt 29), mặc định của `--base`.
+- Chữ quy trình: "prompt N", "lượt N", CHUA_AP, "HOLD:" bị bỏ khỏi chữ của ô, md và Schema (không đụng chữ thoại, chuỗi địa phương
+  hóa, giấy phép: chữ của chính game); chỗ nói tới file cũ (`09_hieu_ung_am_thanh/Am_thanh`) đổi sang tên mới.
+- Dấu hiệu còn lại: `NEED_SOURCE` (thông số ngoài đời: `*_tham_chieu`, `Vu_khi.ngoai_doi_*`), `KHONG_AP_DUNG`, `NEED_CODE_CHECK`.
+- Kiểm tra: `export.py check` xuất hai lần (hai tiến trình) và chạy mọi test của mục 7; CI chạy nó vào thư mục tạm và chạy
+  `check --structure-only` trên `Docs/export/current`. Không chạy test game hay replay.
+
+## Play-test 13 (lane C)
+
+Nhánh `feature/pt13-c`. Mọi số đổi trong lượt này (lý do ngoài đời: `Docs/DECISIONS.md` "Play-test 13 (lane C)").
+
+### tunables.json (khóa mới, `weapons.countermeasures`)
+
+| khóa | giá trị | ý nghĩa |
+|---|---|---|
+| flareCueSeconds | 1.5 s | pháo sáng bắn khi tên lửa còn ≤ 1.5 s là tới (cảnh báo giai đoạn cuối) |
+| flareGraceSeconds | 0.5 s | tên lửa tới trong lúc đám pháo sáng cháy + 0.5 s đều bị thử cùng một lần tung |
+| apsVolleySeconds | 0.4 s | một lần kích hoạt APS xe chặn mọi đạn tới trong 0.4 s, tốn 1 lần nạp |
+| apsRechargeScale | x1.5 | APS xe nạp lại chậm hơn 1.5 lần (bù cho luật trên) |
+
+### balance.json (luật, dữ liệu)
+
+| mục | cũ | mới |
+|---|---|---|
+| warningRules.normalFire | (không có: bắn thường T4+ có vòng + giữ đạn) | false: bắn thường không vòng, không giữ |
+| leviathan.salvo.warning | leviathan_shell (vòng 3.7 s) | bỏ: đạn bay theo tốc độ pháo 406 |
+| boss_thermo (Inferno) | TOS-1A 220 mm rocket, 6 x 97 / 12.51 s, minRange 10 | pháo 125 mm đạn nhiệt áp, 291 / 6.255 s, bắn thẳng, 170 m/s |
+| p26_behemoth_tiny_kornet_twin | 2 Kornet x 230 / 19.4 s | đạn pháo phụ 120 mm 230 / 9.7 s |
+| flightProfile Ballistic | — | boss_rockets, p26_behemoth_be_rockets, p26_jotunn_jo_rockets (và các vũ khí kế thừa) |
+| flightProfile Loft | — | sam_pac3, sam_48n6, tamir, leviathan_cruise, cruise_missile_ground, nsm_coastal; họ mim_104_patriot_pac_2, nsm_oniks |
+| tiers.enterLow | (không có: mở màn trên quỹ đạo + hạ dần 4 s) | true (mặc định): vào thẳng tầng thấp |
+| mainAim Hull | turret xoay | ballistic_launcher, ground_cruise_missile_vehicle, coastal_ashm_vehicle |
+
+### Tốc độ đạn (projectileSpeed, m/s; ~0.3 x tốc độ trung bình ngoài đời, trần 300, không giảm)
+
+Sửa ở họ vũ khí (family) khi vũ khí lấy tốc độ từ họ; cột cuối là vũ khí kích hoạt sửa khi khác tên.
+
+| mục | cột | cũ | mới | vũ khí |
+|---|---|---|---|---|
+| apkws (family) | projectileSpeed | 45 | 180 | apkws_rocket |
+| 9m120_ataka (family) | projectileSpeed | 26 | 120 | ataka |
+| atgm | projectileSpeed | 20 | 80 |  |
+| 9m133_kornet (family) | projectileSpeed | 22 | 80 | atgm_heavy |
+| atgm_post | projectileSpeed | 19 | 60 |  |
+| avenger_stingers | projectileSpeed | 42 | 200 |  |
+| ballistic_missile | projectileSpeed | 50 | 200 |  |
+| s_8_80_mm (family) | projectileSpeed | 40 | 180 | boat_rockets |
+| boss_howitzer | projectileSpeed | 60 | 100 |  |
+| 2b8_240_mm (family) | projectileSpeed | 38 | 60 | boss_mortar |
+| boss_rockets | projectileSpeed | 45 | 130 |  |
+| tos_1a_220_mm_thermobaric (family) | projectileSpeed | 35 | 70 | boss_thermo |
+| 9m317_buk (family) | projectileSpeed | 50 | 250 | buk_launcher |
+| caesar_155 | projectileSpeed | 45 | 100 |  |
+| m284_155_mm_2 (family) | projectileSpeed | 45 | 100 | casemate_155 |
+| cruise_missile_ground | projectileSpeed | 22 | 70 |  |
+| cruiser_203 | projectileSpeed | 70 | 110 |  |
+| agm_114_hellfire (family) | projectileSpeed | 26 | 110 | drone_missile |
+| bm_21_grad_122_mm_2 (family) | projectileSpeed | 45 | 130 | grad_cluster |
+| bm_21_grad_122_mm (family) | projectileSpeed | 45 | 130 | grad_rockets |
+| griffin | projectileSpeed | 22 | 70 |  |
+| gun_launched_atgm | projectileSpeed | 22 | 90 |  |
+| hydra_70_mm (family) | projectileSpeed | 40 | 180 | heli_rockets |
+| hover_rockets | projectileSpeed | 50 | 85 |  |
+| igla_v | projectileSpeed | 24 | 170 |  |
+| jassm | projectileSpeed | 20 | 70 |  |
+| kh29 | projectileSpeed | 32 | 120 |  |
+| khrizantema | projectileSpeed | 24 | 120 |  |
+| leviathan_460 | projectileSpeed | 60 | 200 |  |
+| leviathan_cruise | projectileSpeed | 24 | 70 |  |
+| maverick | projectileSpeed | 23 | 90 |  |
+| missile_57e6 | projectileSpeed | 55 | 300 |  |
+| mlrs_elite | projectileSpeed | 50 | 140 |  |
+| m31_gmlrs_227_mm (family) | projectileSpeed | 50 | 140 | mlrs_rockets |
+| 2b11_120_mm (family) | projectileSpeed | 32 | 60 | mortar_120 |
+| nsm_coastal | projectileSpeed | 40 | 85 |  |
+| p26_behemoth_be_rockets | projectileSpeed | 45 | 130 |  |
+| p26_jotunn_jo_rockets | projectileSpeed | 45 | 120 |  |
+| mim_104_patriot_pac_2 (family) | projectileSpeed | 60 | 300 | patriot |
+| r37m | projectileSpeed | 70 | 300 |  |
+| r60 | projectileSpeed | 42 | 210 |  |
+| recon_missile | projectileSpeed | 22 | 60 |  |
+| rockets_300mm | projectileSpeed | 55 | 120 |  |
+| sam | projectileSpeed | 42 | 200 |  |
+| sam_48n6 | projectileSpeed | 65 | 300 |  |
+| sam_pac3 | projectileSpeed | 65 | 300 |  |
+| smart_155_bonus (family) | projectileSpeed | 45 | 100 | smart_at_shell |
+| spike_nlos | projectileSpeed | 26 | 55 |  |
+| stinger_atas | projectileSpeed | 42 | 180 |  |
+| stinger_post | projectileSpeed | 42 | 180 |  |
+| supergun_800 | projectileSpeed | 120 | 140 |  |
+| tamir | projectileSpeed | 50 | 180 |  |
+| technical_rockets | projectileSpeed | 38 | 80 |  |
+| uav_loiter_missile | projectileSpeed | 26 | 110 |  |
+| vikhr | projectileSpeed | 24 | 120 |  |
+| aim_9_sidewinder (family) | projectileSpeed | 55 | 210 | aim9, wvr_aam |
+| agm_88_harm (family) | projectileSpeed | 45 | 210 | anti_radar_missile |
+| nsm_oniks (family) | projectileSpeed | 30 | 225 | anti_ship_missile |
+| air_to_air | projectileSpeed | 60 | 300 | |
+| air_cruise_missile | projectileSpeed | 22 | 65 | |
+| amos_120 | projectileSpeed | 32 | 60 | |
+
+Trận replay bị ảnh hưởng: mọi trận (tốc độ đạn, pháo sáng, APS, cảnh báo) — baseline của ReplayHashTests cần ghi lại.

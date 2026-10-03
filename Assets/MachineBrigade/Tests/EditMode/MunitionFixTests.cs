@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using NUnit.Framework;
@@ -148,6 +149,152 @@ namespace MachineBrigade.Tests
             foreach (var e in world.Events)
                 if (e.Kind == SimEventKind.RoundDiverted && e.Other == tank.Id && e.Mount == (int)Divert.Reach) told = true;
             Assert.IsTrue(told, "the view is told");
+        }
+
+        [Test]
+        public void OneFlareCloudDecoysTheWholeSalvoOrNone()
+        {
+            // Play-test 13 (lane C): a flare cloud seduces every IR seeker arriving inside its window on its one roll, so a
+            // salvo arriving together is all decoyed or all flies true; a missile still far out is left for the next release.
+            var c = Shipped;
+            for (var seed = 1; seed <= 8; seed++)
+            {
+                var world = new SimWorld(c, new MapDefinition("field", 300f,
+                    new[] { new TeamStart(0, new Vector2(-120f, -120f)), new TeamStart(1, new Vector2(120f, 120f)) },
+                    new List<PropPlacement>(), new List<UnitPlacement>()), seed);
+                var shooter = world.SpawnVehicle("aa_vehicle", 1, new Vector2(0f, -40f), 0f);
+                var jet = world.SpawnVehicle("fighter_jet", 0, new Vector2(0f, 20f), 0f);
+                jet.FlaresUntil = world.Time + 3.0;
+                var salvo = new List<Projectile>();
+                for (var k = 0; k < 3; k++)
+                {
+                    var round = new Projectile(shooter.Id, shooter.Team, c.Weapons["stinger_atas"], jet.Position, jet.Id, 1f + 0.1f * k, targetFlying: true)
+                        { Origin = shooter.Position, Shooter = shooter, LaunchedAt = world.Time };
+                    salvo.Add(round);
+                    world.Combat.AddProjectile(round);
+                }
+                var far = new Projectile(shooter.Id, shooter.Team, c.Weapons["stinger_atas"], jet.Position, jet.Id, 9f, targetFlying: true)
+                    { Origin = shooter.Position, Shooter = shooter, LaunchedAt = world.Time };
+                world.Combat.AddProjectile(far);
+                world.Step(TestWorlds.Step);
+                foreach (var round in salvo)
+                {
+                    Assert.IsTrue(round.FlareRolled, $"seed {seed}: a missile inside the cloud's window meets it");
+                    Assert.AreEqual(salvo[0].Diverted, round.Diverted, $"seed {seed}: one cloud, one outcome for the salvo");
+                }
+                Assert.IsFalse(far.FlareRolled, $"seed {seed}: a missile 9 s out is not tested by this cloud");
+            }
+        }
+
+        [Test]
+        public void OneApsActivationTakesEveryRoundArrivingTogether()
+        {
+            // Play-test 13 (lane C): one hard-kill activation meets a whole salvo for one charge; it stays open even with no
+            // charge left; the interceptor then reloads slower (SimTunables countermeasures.apsRechargeScale).
+            var c = Shipped;
+            var world = Field(c);
+            var shooter = world.SpawnVehicle("attack_helicopter", 1, new Vector2(0f, 40f), 0f);
+            var tank = world.SpawnVehicle("main_battle_tank", 0, Vector2.Zero, 0f);
+            Assert.AreEqual(InterceptionMode.SelfAps, tank.Def.InterceptionMode, "a tank's own APS");
+            tank.Aps = new ApsDef(12f, 1, 4f);
+            tank.ApsCharges = 1;
+            var missile = c.Weapons["hellfire_standoff"];
+            bool Lands()
+            {
+                tank.Hp = tank.MaxHp;
+                var round = new Projectile(shooter.Id, shooter.Team, missile, tank.Position, tank.Id, 0f)
+                    { Origin = shooter.Position, Shooter = shooter, Main = true };
+                world.Damage.ResolveImpact(round);
+                return tank.Hp < tank.MaxHp;
+            }
+            Assert.IsFalse(Lands(), "the first missile opens the activation");
+            Assert.AreEqual(0, tank.ApsCharges, "one charge spent");
+            Assert.IsFalse(Lands(), "the second, arriving together, is taken by the same activation");
+            Assert.IsFalse(Lands(), "and the third");
+            Assert.AreEqual(0, tank.ApsCharges, "still one charge for the salvo");
+            Assert.Greater(SimTunables.Weapons.Countermeasures.ApsRechargeScale, 1f, "paid for by a slower reload");
+        }
+
+        [Test]
+        public void MissilesAndRocketsFlyAtTheirRealOrder()
+        {
+            // Play-test 13 (lane C): speeds at ~0.3 x the real average (the game's small-arms scale): an ATGM well under a
+            // SAM, a cruise missile subsonic, nothing that flies on a motor crawling; tube-launched rounds loft or arc.
+            var c = Shipped;
+            foreach (var w in c.Weapons.Values)
+                if (w.Projectile is ProjectileKind.Missile or ProjectileKind.Rocket)
+                    Assert.GreaterOrEqual(w.ProjectileSpeed, 50f, w.Id + ": a motor-driven round is not slower than 50 m/s");
+            Assert.Less(c.Weapons["kornet_twin"].ProjectileSpeed, c.Weapons["stinger_atas"].ProjectileSpeed, "an ATGM is slower than a SAM");
+            Assert.Less(c.Weapons["leviathan_cruise"].ProjectileSpeed, c.Weapons["sam_48n6"].ProjectileSpeed, "a cruise missile is subsonic");
+            Assert.AreEqual(FlightProfile.Direct, c.Weapons["kornet_twin"].Flight, "an ATGM flies straight on its beam");
+            Assert.AreEqual(FlightProfile.Loft, c.Weapons["kornet_top"].Flight, "a top-attack missile lofts");
+            Assert.AreEqual(FlightProfile.Loft, c.Weapons["sam_battery"].Flight, "a Patriot leaves its canister upward");
+            Assert.AreEqual(FlightProfile.Ballistic, c.Weapons["p26_jotunn_sec_jo_rockets"].Flight, "Fenrir's and Jötunn's Smerch pods arc");
+            Assert.AreEqual(FlightProfile.Ballistic, c.Weapons["grad_rockets"].Flight, "a Grad arcs");
+            Assert.AreEqual(FlightProfile.Direct, c.Weapons["heli_rockets"].Flight, "a rocket pod fires straight");
+            Assert.Greater(c.Weapons["p26_jotunn_sec_jo_rockets"].ArcShare, c.Weapons["kornet_twin"].ArcShare);
+        }
+
+        [Test]
+        public void BossGunsFireShellsNotRockets()
+        {
+            // Play-test 13 (lane C): Inferno's thermobaric weapon is a 125 mm gun; the Behemoth's side gun fires its shells.
+            var c = Shipped;
+            var thermo = c.Weapons["boss_thermo"];
+            Assert.AreEqual(ProjectileKind.Shell, thermo.Projectile, "a cannon");
+            Assert.IsTrue(thermo.Thermobaric, "with the thermobaric round");
+            Assert.AreEqual(582f, thermo.Damage * thermo.Burst * 12.51f / thermo.Cooldown, 1f, "the six rockets' damage per 12.51 s kept");
+            var side = c.Weapons["p26_behemoth_tiny_kornet_twin"];
+            Assert.AreEqual(ProjectileKind.Shell, side.Projectile, "the side gun fires shells");
+            Assert.AreEqual(460f, side.Damage * side.Burst * 19.4f / side.Cooldown, 1f, "the twin Kornet's damage per 19.4 s kept");
+        }
+
+        [Test]
+        public void SupportAircraftAreUnarmedNotZeroDamageGuns()
+        {
+            // Play-test 13 (lane C): a tanker and a heavy-lift helicopter carry no weapon (their "none" placeholder): the card
+            // reads VehicleDef.Unarmed and shows no gun rows instead of a gun of 0 damage.
+            var c = Shipped;
+            Assert.IsTrue(c.Vehicles["aerial_tanker"].Unarmed, "aerial tanker");
+            Assert.IsTrue(c.Vehicles["heavy_lift_helicopter"].Unarmed, "heavy-lift helicopter");
+            Assert.IsFalse(c.Vehicles["main_battle_tank"].Unarmed, "a tank is armed");
+        }
+
+        [Test]
+        public void AircraftEnterAtTheirOwnCruiseSpeed()
+        {
+            // Play-test 13 (lane C): an aircraft comes onto the battlefield flying at its own speed (never faster), not
+            // hanging still and racing to catch up; a ground vehicle still starts at rest.
+            var c = Shipped;
+            var world = Field(c);
+            var jet = world.SpawnVehicle("fighter_jet", 0, new Vector2(0f, 20f), 0f);
+            var heli = world.SpawnVehicle("attack_helicopter", 0, new Vector2(20f, 20f), 0f);
+            var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(-20f, 0f), 0f);
+            Assert.AreEqual(jet.Def.Speed, jet.Speed, 1e-4f, "the jet at its cruise speed");
+            Assert.AreEqual(heli.Def.Speed, heli.Speed, 1e-4f, "the helicopter too");
+            Assert.AreEqual(0f, tank.Speed, 1e-4f, "a tank starts at rest");
+            var from = jet.Position;
+            world.Step(TestWorlds.Step);
+            Assert.LessOrEqual(Vector2.Distance(from, jet.Position), jet.Def.Speed * TestWorlds.Step + 1e-3f, "never faster than its own speed");
+        }
+
+        [Test]
+        public void ErectorLaunchersTurnTheWholeVehicleNotATurret()
+        {
+            // Play-test 13 (lane C): a TEL (Iskander) and a cruise-missile box launcher do not traverse: the vehicle turns to
+            // face the target, the erector stays on the hull's line; a rocket pack on a turntable (MLRS, Grad) still traverses.
+            var c = Shipped;
+            foreach (var id in new[] { "ballistic_launcher", "ground_cruise_missile_vehicle", "coastal_ashm_vehicle" })
+                Assert.AreEqual(MountAim.Hull, c.Vehicles[id].Mounts[0].Aim, id + ": aims with its hull");
+            Assert.AreEqual(MountAim.Turret, c.Vehicles["mlrs"].Mounts[0].Aim, "an MLRS launcher pack traverses");
+            var world = Field(c);
+            var tel = world.SpawnVehicle("ballistic_launcher", 0, new Vector2(0f, -60f), MathF.PI);
+            world.SpawnVehicle("main_battle_tank", 1, new Vector2(0f, 40f), 0f);
+            for (var i = 0; i < 40; i++)
+            {
+                world.Step(TestWorlds.Step);
+                Assert.AreEqual(tel.Heading, tel.TurretHeading, 1e-5f, "the erector never swings off the hull");
+            }
         }
 
         [Test]

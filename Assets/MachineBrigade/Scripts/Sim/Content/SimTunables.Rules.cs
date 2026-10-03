@@ -81,6 +81,28 @@ namespace MachineBrigade.Sim.Content
             }
         }
 
+        public static partial class Weapons
+        {
+            /// <summary>
+            /// Play-test 13 (lane C): the two vehicle self-defences (flares, hard-kill APS) work on every threat that arrives
+            /// together, as a flare cloud or one APS activation does in real life; the APS reloads slower to pay for it.
+            /// </summary>
+            public static class Countermeasures
+            {
+                /// <summary>A flare release is cued when an IR missile is this close to arriving (s): the missile warner's terminal cue.</summary>
+                public static float FlareCueSeconds = 1.5f;
+
+                /// <summary>A missile arriving up to this long after the cloud burns out is still inside its window (s).</summary>
+                public static float FlareGraceSeconds = 0.5f;
+
+                /// <summary>One APS activation takes every round reaching the vehicle within this long of it (s).</summary>
+                public static float ApsVolleySeconds = 0.4f;
+
+                /// <summary>A vehicle APS's interceptor comes back this many times slower (x): the price of the volley rule.</summary>
+                public static float ApsRechargeScale = 1.5f;
+            }
+        }
+
         public static partial class Modes
         {
             public static partial class EndlessRules
@@ -248,6 +270,10 @@ namespace MachineBrigade.Sim.Content
             new Entry("bosses.bossRushRules.fullMiniSeconds", "s", () => Bosses.BossRushRules.FullMiniSeconds, v => Bosses.BossRushRules.FullMiniSeconds = (float)v),
             new Entry("bosses.bossRushRules.fullMainSeconds", "s", () => Bosses.BossRushRules.FullMainSeconds, v => Bosses.BossRushRules.FullMainSeconds = (float)v),
             new Entry("bosses.bossRushRules.hpShare", "share", () => Bosses.BossRushRules.HpShare, v => Bosses.BossRushRules.HpShare = (float)v),
+            new Entry("weapons.countermeasures.flareCueSeconds", "s", () => Weapons.Countermeasures.FlareCueSeconds, v => Weapons.Countermeasures.FlareCueSeconds = (float)v),
+            new Entry("weapons.countermeasures.flareGraceSeconds", "s", () => Weapons.Countermeasures.FlareGraceSeconds, v => Weapons.Countermeasures.FlareGraceSeconds = (float)v),
+            new Entry("weapons.countermeasures.apsVolleySeconds", "s", () => Weapons.Countermeasures.ApsVolleySeconds, v => Weapons.Countermeasures.ApsVolleySeconds = (float)v),
+            new Entry("weapons.countermeasures.apsRechargeScale", "x", () => Weapons.Countermeasures.ApsRechargeScale, v => Weapons.Countermeasures.ApsRechargeScale = (float)v),
             new Entry("modes.endlessRules.enemyPerBoss", "share/step", () => Modes.EndlessRules.EnemyPerBoss, v => Modes.EndlessRules.EnemyPerBoss = (float)v),
             new Entry("modes.endlessRules.coinDecay", "x", () => Modes.EndlessRules.CoinDecay, v => Modes.EndlessRules.CoinDecay = v),
             Entry.IntArray("vehicles.priceRules.groupMaxCp", "CP", () => Vehicles.PriceRules.GroupMaxCp, v => Vehicles.PriceRules.GroupMaxCp = v),

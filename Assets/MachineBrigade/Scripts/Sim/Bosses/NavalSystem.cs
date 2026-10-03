@@ -445,6 +445,9 @@ namespace MachineBrigade.Sim.Bosses
             {
                 if (parts[i].Kind != "maingun" || v.IsPartBroken(i)) continue;
                 turret++;
+                // Play-test 13 (lane C): a turret's salvo is gunfire: with no "warning" in the data its shells fly their own
+                // flight (the gun's shell speed) and land unmarked; the boss's big attack keeps its warned strike.
+                var flight = warning == null && gun != null ? Vector2.Distance(v.PartPosition(i), aim) / gun.ProjectileSpeed : salvo.Warn;
                 for (var s = 0; s < salvo.Shells; s++, j++)
                 {
                     var along = total > 1 ? (j - (total - 1) * 0.5f) * spread / (total - 1) : 0f;
@@ -452,7 +455,7 @@ namespace MachineBrigade.Sim.Bosses
                     var reach = scatter * MathF.Sqrt((float)_world.Random.NextDouble());
                     var at = _world.ClampToMap(aim + sea.Along * along + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach);
                     if (warning != null) _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, salvo.Warn));
-                    _world.Damage.Queue(at, salvo.Blast(ExplosionTier.Huge), salvo.Warn + 0.15 * (together ? turret : j), v.Team, v,
+                    _world.Damage.Queue(at, salvo.Blast(ExplosionTier.Huge), flight + 0.15 * (together ? turret : j), v.Team, v,
                         HitKind.Strike, v.Id);
                 }
                 // The turret swings to its aim (inside its arc) and fires (its muzzle flash and the shells' flight).
@@ -461,7 +464,7 @@ namespace MachineBrigade.Sim.Bosses
                 var m = mounts[0];
                 Lay(v, m, SimMath.HeadingOf(aim - v.Position));
                 if (gun != null)
-                    for (var s = 0; s < salvo.Shells; s++) _world.Emit(SimEvent.Fired(v, m, v.PartPosition(i), aim, salvo.Warn, EntityId.None));
+                    for (var s = 0; s < salvo.Shells; s++) _world.Emit(SimEvent.Fired(v, m, v.PartPosition(i), aim, flight, EntityId.None));
             }
             v.LastFiredAt = now;
         }

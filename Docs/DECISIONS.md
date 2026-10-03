@@ -19077,3 +19077,72 @@ Rendering, VFX and view motion from play-test 13 (Docs/prompts/requests_vi.md). 
   without an index (`Missiles`, `Missile_bands`) are never touched, so an old model is unchanged. Not seen against c2b75dd9
   (the merge was refused to this lane): the lead checks that the rebuilt ballistic_launcher / ground_cruise_missile_vehicle
   name their rounds with an index, and that LOD1 (merged per moving part) is acceptable keeping the full load far away.
+
+## Play-test 13 (lane C)
+
+Branch `feature/pt13-c` (from `lead/integration` 4b4627fa). Owner rule: think how it works in real life first; each fix
+carries its one-line reasoning. Written blind: no Unity run, no tests run (owner's pause); tests written or updated.
+
+- **Flares (2b7eca0f).** Real life: a flare cloud sits in every IR seeker's view during the last seconds; each seeker that
+  arrives while it burns is seduced by the same cloud. So: flares go out on the missile warner's terminal cue
+  (`weapons.countermeasures.flareCueSeconds` 1.5 s, the skill trigger MissileIncoming for flares), a release is one cloud
+  with one seeded roll, and every IR missile arriving inside its burn plus `flareGraceSeconds` 0.5 s is tested against
+  that roll (chance x (1 - flareResist), as before). A missile still far out waits for the next release. Released at launch
+  before, a 1.5 s cloud had burnt out before a long shot arrived, and each missile rolled alone.
+- **APS (same commit).** The owner's "cps" is the vehicle APS (hard kill, `InterceptionMode.SelfAps`); the code has no
+  "CPS" (the C-RAM is the gun point defence and is unchanged). Real life: one Trophy / Afganit activation engages the
+  threats arriving together; its weak point is the reload. So: the first round spends a charge and opens the activation
+  for `apsVolleySeconds` 0.4 s; rounds reaching the vehicle meanwhile join it free (even at 0 charges). Balance: a vehicle
+  APS interceptor reloads `apsRechargeScale` x1.5 slower (per-round chance rejected: it would make the existing
+  deterministic APS tests flaky and is less true to the real limit). Only flares and APS stay vehicle self-defence.
+- **No warning on ordinary fire (f0faf74b).** Real life: a gun fires and the shell lands after its flight; nobody paints the
+  fall point. `warningRules.normalFire` false: `WarningRules.Warns` (Sim hold + view ring) is off for every mount's fire;
+  `IsBig` keeps the old T4+ sort (preview ring time, export, validator). Only big attacks, super-weapon strikes, supports
+  and bomb sticks warn (own systems, untouched). Leviathan's turret salvo (its main guns' only fire) loses its
+  `leviathan_shell` ring and its 3.7 s hold: the shells fly distance / shell speed. The "super slow" rounds were mostly
+  this hold: a T4/T5 round at short range was kept 2.5-3.7 s in the air (Jötunn's 203 mm, Fenrir's and Jötunn's Smerch
+  300 mm pods, Leviathan's 406 mm, Bastion's 240 mm).
+- **Speeds (fa3c2985).** Real life: ATGM 200-320 m/s, SAM Mach 2-6, cruise subsonic ~250, artillery shells 300-900. The
+  game draws real-size vehicles on ranges ~30x short, and its guns run at ~0.27 x real (MG 240, autocannon 300); a literal
+  250 m/s ATGM would outrun the game's tank shells (170) and land in 0.2 s. So 55 missile, rocket and lobbed-shell speeds
+  went to ~0.3 x the real average, capped at 300 and never slowed: ATGM 55-120 (Kornet 80, TOW 80, Hellfire 110), SAM
+  170-300 (Stinger 180, Igla-V 24 -> 170, Patriot / S-400 / AMRAAM 300), cruise 65-85 (Kalibr 70), HARM 210, Oniks 225,
+  Iskander 200 (ballistic arc kept visible), rockets 70-180 (Grad 130, Smerch 120, Hydra 180), artillery 60-200 (155 mm
+  45 -> 100, 203 mm 60 -> 100, mortars 32-38 -> 60, 406 mm 60 -> 200, 800 mm 140). Damage, cycles and counts unchanged.
+  Full list in `Docs/export/CHANGES.md`.
+- **Flight profiles (same commit).** Real life: an ATGM flies its beam straight; tube / box / VLS missiles climb then dive or
+  turn; artillery rockets and shells arc. `WeaponDef.Flight` (Direct, Loft, Ballistic; data `flightProfile`, else by kind:
+  min-range rockets, ballistic family, lobbed shells and bombs arc; top-attack / lofted missiles and drones loft) and
+  `WeaponDef.ArcShare` (0.28 / 0.2 / 0.04 missile / 0.02). Data: the boss Grad / Smerch pods (no min range) Ballistic;
+  Patriot, PAC-3, 48N6, Tamir, Kalibr (Leviathan VLS), Typhon, NSM coastal, Oniks Loft. The Sim's round height uses it.
+  **Lane A hook:** `WeaponEffects` (Missile arc `distance * 0.06f`, Rocket `artillery ? ArcFor(...) : 0.02`) should read
+  `weapon.ArcShare` / `weapon.Flight`; until then the drawn arc is the old one.
+- **Boss cannons (same commit).** Real life: a gun barrel fires shells. Inferno's thermobaric weapon is a 125 mm gun with
+  the 3VOF128 thermobaric round (291 every 6.255 s = the six TOS rockets' 582 every 12.51 s), direct fire; the Behemoth's
+  mount 6 on its 120 mm side gun (`Mount_gun`) fired twin Kornets out of the barrel, now that gun's shells (230 every
+  9.7 s = 460 every 19.4 s). Rocket pods on launcher boxes (Jötunn / Fenrir, Nemesis' rocket car, Kronos, Behemoth pod,
+  the hovercraft's 140 mm, a Zubr's real fit) stay rockets with a ballistic arc. **Lane B:** Inferno's glacis TOS box
+  (`Mount_rocket`) now fires a 125 mm shell; a short gun barrel there would match.
+- **Unarmed cards (12e73e9d).** Real life: a KC-46 tanker and a CH-47 heavy lift carry no gun. The data was right (the
+  `none` placeholder); the card printed its 0. `VehicleDef.Unarmed` (every mount deals no damage): the detail card skips
+  volley / DPS / range rows and the placeholder's weapon line and says "Unarmed: a support unit".
+- **Bomb sticks (73b7fcc9).** Real life: a bombardier releases so the stick straddles the target, its middle on it, and lays
+  the run over the most targets. `CombatSystem.BestStickCentre` (deterministic: centres half a spacing apart from half a
+  stick before to half a stick past the target, up to half a blast to the side; most enemies under a bomb, then the target
+  hit, then nearest the target). A free bomber lets go when the middle of the stick it would drop is over that centre
+  (was: target at middle + 2 m, or late, so it fell under bombs 2-3-4); the axis run lines up on the centre (lateral
+  offset); a boss bay centres its stick on it. BombStickTests' anchor is unchanged (the stick still starts where the first
+  bomb's fall puts it; Lay releases exactly centred), so their expectations stand; three tests added.
+- **Aircraft entry (88685408).** Real life: an aircraft arrives flying at its cruise speed. A spawned flying unit (not a
+  tiered boss or pod) now starts at `Def.Speed` instead of hanging still and accelerating. **Lane A hook:** the drawn fly-in
+  (`VehicleView` `run = above * above * (FixedWing ? 80 : 35)` over 2.6 s) is what races in at 2-4x speed; with the Sim at
+  cruise from tick 0 it should drop the horizontal run (keep the short height settle).
+- **Flying bosses (290d0251).** Real life: it arrives at its working height. `tiers.enterLow` (default true): no orbit
+  opening and no slow descent; the boss starts on its cycle's first low step (Icarus low 10 s, then high 25 / low 10),
+  its satellite already up; escorts come at once. Daedalus loses its 10 s orbit opening too (owner: "các boss bay").
+- **Erector launchers (bec701fd, lead's added item).** Real life: an Iskander TEL or a Tomahawk / NSM box launcher does not
+  traverse; the vehicle turns and the erector raises. `mainAim: "Hull"` on ballistic_launcher, ground_cruise_missile_vehicle
+  and coastal_ashm_vehicle (turret locked to the hull; a standing hull-aimed vehicle turns to its target, existing code);
+  turretTurnRate cannot be 0 (Guard.Positive), so it stays and is unused. MLRS / Grad / Smerch packs keep traversing (real
+  turntables).
+- Not merged: `git merge lead/integration` was refused by the session's permission guard; the lead merges.

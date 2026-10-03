@@ -192,7 +192,8 @@ namespace MachineBrigade.Tests
                           (w.Projectile == ProjectileKind.Rocket && w.CaliberMm >= rules.RocketMinMm) ||
                           (w.Projectile == ProjectileKind.Bomb && w.WarheadKg >= rules.BombMinKg);
                 var fires = !(w.Guided || w.GuidedRocket || w.Beam || w.Laid) && w.SplashRadius > 0f;
-                var warns = rules.Warns(w);
+                // Play-test 13 (lane C): the big rounds the rules sort (IsBig); ordinary fire itself no longer warns.
+                var warns = rules.IsBig(w);
                 if (big && fires && !warns) failures.Add($"{w.Id}: {w.CaliberMm:0.#} mm / {w.WarheadKg:0.#} kg but no warning (tier {w.Tier})");
                 if (!warns) continue;
                 warned++;
