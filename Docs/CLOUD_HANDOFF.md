@@ -245,3 +245,39 @@ written in the cloud must compile under Unity's NUnit 3.5 and with `using UnityE
     DialogueTests, MatchRulesTests, EndlessTests, NeutralTests, CatalogCheck (none were run in the cloud; only dotnet
     compile checks); fix the 9 RED maps; export the PDF.
 - Prompt 31 (`cloud/p31-decks`) not started.
+
+## Play-test 14 lane B (owner, 2026-10-03): UI, hangars, aura buildings, HQ tab, fire-support summons
+
+Read `Docs/AGENT_RULES.md`, then `Docs/prompts/playtest14_vi.txt` (owner's words, Vietnamese) and
+`Docs/fixes/playtest14_plan.md` (binding decisions, owner answers). Branch from `origin/feature/visual-overhaul`,
+push to **`cloud/pt14-b`** only (never main or feature/*). No Unity in the cloud: compile the Sim with the dotnet
+project of "Setup and compile check" above; review Game/UI C# by hand (C# 9). Write tests if useful, do not run them.
+
+Running locally in parallel (do NOT do their parts): lane A = gameplay/VFX fixes and boss escorts by domain; lane C =
+deletes every id in the plan's "Deletion list" (and moves their GLBs to Archive/models). So: do not delete anything,
+do not reference ids from the deletion list in new code/data, do not touch boss models. Bosses are on hold.
+
+Your work (gameplay values allowed only as listed in the plan; log each in `Docs/export/CHANGES.md`):
+1. Commander + tactic get their own menu tab, showing the chosen commander's starting forces (generals +
+   openingSquads in balance.json), read-only.
+2. Back button (top-left) and tab switching often need two taps: find the cause by reading the UI code
+   (focus / picking / pointer handlers / navigation) and fix so one tap works everywhere.
+3. Base tab: cannot scroll, text hidden behind the base cover; make it scroll, readable, simpler (flat tactical style).
+4. New HQ tab: pick HQ type (headquarters, .fortress_ground, .fortress_air, .shield = the gun) and the light unit the
+   HQ calls (scout_jeep / armored_car / light_tank); wire into the match.
+5. Hangars: keep drone_hangar; add a vehicle hangar (scout_jeep / armored_car / light_tank, player picks one) and an
+   aircraft hangar (scout_heli / recon_drone). Free, one unit per cycle, max 2 alive per hangar; tap the map to set a
+   rally point. New structure ids, strings EN/VI, catalog entries; reuse existing hangar models as placeholders (the
+   local lead redraws the 3 hangars later).
+6. Aura buildings per the plan (airfield: aircraft +10 % damage, +10 % speed; repair_bay: ground vehicles +10 % damage,
+   +10 % max HP; fire_control_centre renamed "Defence Command Centre" / "Trung tâm chỉ huy phòng thủ": structures
+   +15 % range, +10 % HP); global while standing, one per kind, no stacking, deterministic Sim; their old functions
+   replaced; drop airfield.hangar / airfield.service.
+7. laser_ad_station renamed "Laser Defence Tower" / "Tháp la-de phòng thủ"; drop the .net variant.
+8. Fire-support screen: a "Units called" tab for supports that call units. reinforcements (Airdropped armour): the
+   player picks the units, total unit value <= 20 cp, call price = ceil(1.5 x total) (20 -> 30, 15 -> 23).
+
+Finish: `## Play-test 14 (lane B, cloud)` in Docs/DECISIONS.md (append at the end), one CHANGELOG line under
+Unreleased, commits "Play-test 14 (lane B): ..." in logical steps, then append a short `## Cloud state <date>
+(play-test 14 lane B)` note at the end of this file (what is done, what needs a Unity check locally, open questions)
+and push cloud/pt14-b.
