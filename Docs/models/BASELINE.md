@@ -9,16 +9,16 @@ the hard cap an error). Warnings are listed in the JSON.
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
 | boss | 26 | 813,805 | 31,300 | leviathan (62,916) | 3,227 | 2 | 24 |
-| ground | 66 | 568,066 | 8,607 | main_battle_tank_hd (16,462) | 3,788 | 2 | 38 |
+| ground | 66 | 569,046 | 8,621 | main_battle_tank_hd (16,462) | 3,735 | 2 | 40 |
 | structure | 71 | 412,111 | 5,804 | headquarters (21,052) | 3,809 | 2 | 18 |
 | prop | 115 | 258,170 | 2,244 | command_hq (8,872) | 1,568 | 0 | 3 |
 | unlisted | 34 | 108,062 | 3,178 | apc_hd (14,968) | 668 | 0 | 0 |
-| air | 19 | 98,286 | 5,172 | fighter_jet_hd (14,216) | 711 | 0 | 14 |
+| air | 19 | 101,328 | 5,333 | fighter_jet_hd (14,216) | 711 | 0 | 14 |
 | scenery | 96 | 40,708 | 424 | rubble_large (3,516) | 294 | 0 | 2 |
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 25 | 5,154 | 206 | bomb (404) | 175 | 0 | 0 |
 
-All files: 2,324,612 triangles, 6 with errors, 94 more with warnings only.
+All files: 2,328,634 triangles, 6 with errors, 96 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -48,16 +48,16 @@ All files: 2,324,612 triangles, 6 with errors, 94 more with warnings only.
 | boss_s | renderers | 1 | 2 | fortress_bastion, ixion |
 | boss_s | triangles | 3 | 0 | - |
 | boss_s | vertices | 5 | 0 | - |
-| ground | movingParts | 2 | 0 | - |
+| ground | movingParts | 3 | 0 | - |
 | ground | renderers | 14 | 2 | fpv_carrier, heavy_aa |
 | ground | triangles | 26 | 0 | - |
-| ground | vertices | 32 | 0 | - |
+| ground | vertices | 33 | 0 | - |
 | helicopter | renderers | 1 | 0 | - |
 | helicopter | triangles | 1 | 0 | - |
 | helicopter | vertices | 1 | 0 | - |
 | jet | renderers | 8 | 0 | - |
-| jet | triangles | 3 | 0 | - |
-| jet | vertices | 3 | 0 | - |
+| jet | triangles | 4 | 0 | - |
+| jet | vertices | 4 | 0 | - |
 | prop | renderers | 1 | 0 | - |
 | prop | triangles | 1 | 0 | - |
 | prop | vertices | 1 | 0 | - |
@@ -70,7 +70,7 @@ All files: 2,324,612 triangles, 6 with errors, 94 more with warnings only.
 | tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-71 models over a budget, 6 of them over a hard cap.
+73 models over a budget, 6 of them over a hard cap.
 
 ## Error reasons (count of models)
 
