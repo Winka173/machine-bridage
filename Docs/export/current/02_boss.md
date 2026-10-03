@@ -2,7 +2,7 @@
 
 Boss, bộ phận, siêu vũ khí, hộ tống, pha, Săn trùm.
 
-Gói cân bằng Machine Brigade, commit ab1de758, ngày 2026-10-03. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 37f753af, ngày 2026-10-04. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng hợp boss
 
@@ -29,7 +29,7 @@ Sheet 02_boss/Boss_phase — Boss: pha (6 dòng, 11 cột)
 | leviathan/0 | leviathan | 0 | 0.6 |  |  | radio.kessler.leviathan.phase2 |  | 2.5 |
 | leviathan/1 | leviathan | 1 | 0.25 |  | 1.25 | radio.kessler.leviathan.phase3 |  | 3 |
 
-Bảng đầy đủ: xem sheet `Boss_be_goc` (86 dòng).
+Bảng đầy đủ: xem sheet `Boss_be_goc` (90 dòng).
 
 ## Săn trùm (Boss Hunt)
 
@@ -364,7 +364,7 @@ Sheet 02_boss/Boss_ho_tong — Hộ tống boss (13 dòng, 9 cột)
 | nuke_train | nuke_train |  |  |  |  |  |
 | silver_bug | silver_bug | 0.6;0.25 |  |  |  |  |
 
-Bảng đầy đủ: xem sheet `Boss` (31 dòng), `Boss_vu_khi` (180 dòng), `Boss_bo_phan` (153 dòng), `Boss_hang` (42 dòng).
+Bảng đầy đủ: xem sheet `Boss` (31 dòng), `Boss_vu_khi` (184 dòng), `Boss_bo_phan` (153 dòng), `Boss_hang` (42 dòng).
 
 ## Tham khảo ngoài đời và game
 
@@ -425,14 +425,14 @@ Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
 - `W_wikipedia_landing_craft_air_cushion`: Wikipedia 'Landing Craft Air Cushion' (độ tin 2)
 - … 2 nguồn nữa: xem sheet Nguon_tham_chieu của 08_tham_chieu.
 
-Sheet 02_boss/Boss_so_sanh_that — Boss: so sánh với thật: 95 dòng, 18 cột; bảng đầy đủ: xem sheet Boss_so_sanh_that.
+Sheet 02_boss/Boss_so_sanh_that — Boss: so sánh với thật: 98 dòng, 18 cột; bảng đầy đủ: xem sheet Boss_so_sanh_that.
 
 ## Các sheet của file
 
 Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_sheet, Schema). Sheet `input_<tên>` là bản chép của một sheet nguồn để công thức Excel đọc cùng file; sửa ở sheet nguồn, không sửa bản chép.
 
 - `Boss` (31 dòng): Boss — Mỗi boss (41: chủ lực, mini, biến thể) một dòng: giá trị game (đã dựng) và trường gốc
-- `Boss_be_goc` (86 dòng): Boss: bệ phụ gốc — secondary[]: bệ phụ (chỉ số bệ = thu_tu + 1; bệ 0 là vũ khí chính)
+- `Boss_be_goc` (90 dòng): Boss: bệ phụ gốc — secondary[]: bệ phụ (chỉ số bệ = thu_tu + 1; bệ 0 là vũ khí chính)
 - `Boss_bo_phan` (153 dòng): Boss: bộ phận — parts[]: bộ phận phá được (use = mẫu ở Boss_bo_phan_thu_vien)
 - `Boss_phase` (6 dòng): Boss: pha — phases[]: ngưỡng máu, biến hình, đổi vũ khí / sát thương
 - `Boss_bien_the_chinh` (56 dòng): Boss: chỉnh bộ phận của biến thể — variant.tune: bộ phận -> trường đổi
@@ -440,7 +440,9 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Boss_tiers_schedule` (10 dòng): Boss: tiers_schedule — Danh sách con 'tiers_schedule' của Boss (tự sinh).
 - `Boss_tiers_schedule_steps` (16 dòng): Boss: tiers_schedule: steps — Danh sách con 'steps' của Boss_tiers_schedule (tự sinh).
 - `Boss_air` (1 dòng): Boss: air — Danh sách con 'air' của Boss (tự sinh).
-- `Boss_vu_khi` (180 dòng): Boss: vũ khí theo bệ — Mỗi bệ của boss khi dựng (thư viện bộ phận, mountWeapons, biến thể): một dòng; số lấy từ 01_chien_dau/Vu_khi (giá trị game)
+- `Boss_vu_khi` (184 dòng): Boss: vũ khí theo bệ — Mỗi bệ của boss khi dựng (thư viện bộ phận, mountWeapons, biến thể): một dòng; số lấy từ 01_chien_dau/Vu_khi (giá trị game)
+- `Boss_tam_toi_thieu` (184 dòng): Boss: tầm tối thiểu — Mỗi bệ của mỗi boss một dòng: độ cao nòng từ GLB (vẽ lại) và dữ liệu, góc nòng (barrelLimits), tầm tối thiểu theo hình học, đề xuất, vùng chết và vũ…
+- `Boss_goc_nong` (41 dòng): Boss: góc nòng — barrelLimits: góc hạ / nâng nòng theo lớp và họ vũ khí (estimated = uoc_dinh), luật xếp lớp, độ cao mục tiêu tham chiếu; đọc bởi Tools/export/boss_mi…
 - `Boss_bo_phan_thu_vien` (19 dòng): Thư viện bộ phận boss — bossParts: mẫu bộ phận (máu theo phần, giáp, vũ khí, xác)
 - `Boss_khung` (8 dòng): Khung boss — bossFrames: kiểu di chuyển và trường mặc định theo khung
 - `Boss_hang` (42 dòng): Hạng boss — bossRanks: main / mini: hệ số sát thương, nhịp, máu, pha, thưởng
@@ -465,5 +467,5 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Sanhunt_chua_xep` (6 dòng): Săn trùm: boss chưa có ô chương — BossHunts.Unslotted: boss mới và chương nó đứng sau
 - `Sanhunt_ho_tro` (12 dòng): Săn trùm: hỗ trợ tác chiến — HuntSupports.All (BossHunt.cs): 12 hỗ trợ chọn sau boss chủ lực
 - `Boss_tham_chieu` (31 dòng): Boss: tham chiếu ngoài đời — Mỗi boss một dòng: nguồn cảm hứng, phần lấy từ mẫu nào, hệ số phóng to, phần giả tưởng (spec 12.2; chỉ dữ liệu có trong repo)
-- `Boss_so_sanh_that` (95 dòng): Boss: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
+- `Boss_so_sanh_that` (98 dòng): Boss: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
 - `Hang_so_boss` (28 dòng): Hằng số boss: đòn lớn, pha, hộ tống — Assets/MachineBrigade/Resources/Data/tunables.json: 'bosses' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị k…

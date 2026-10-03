@@ -233,6 +233,10 @@ namespace MachineBrigade.Sim.Content
         /// <summary>No shot at anything closer than this (a long-range air-to-air missile in a turning fight); 0: none.</summary>
         public float MinReach { get; internal set; }
 
+        /// <summary>Balance pack 2 (lane C): no shot at a ground target nearer than this, measured like <see cref="MinReach"/>
+        /// (a boss's high gun cannot depress onto a vehicle at its feet); aircraft are not limited. 0: none.</summary>
+        public float GroundMinReach { get; internal set; }
+
         /// <summary>A heavy air-burst gun: it goes for tight groups of aircraft and big aircraft first.</summary>
         public bool GroupPriority { get; internal set; }
 
@@ -368,6 +372,7 @@ namespace MachineBrigade.Sim.Content
         {
             def.GroundRange = MathF.Max(0f, w.Float("groundRange", 0f));
             def.MinReach = MathF.Max(0f, w.Float("minReach", 0f));
+            def.GroundMinReach = MathF.Max(0f, w.Float("groundMinReach", 0f));
             def.GroupPriority = w.Bool("groupPriority", false);
             def.BigGame = w.Bool("bigGame", false);
             def.JamProof = w.Bool("jamProof", false);

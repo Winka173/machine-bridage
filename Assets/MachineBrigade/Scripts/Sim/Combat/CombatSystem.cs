@@ -509,6 +509,8 @@ namespace MachineBrigade.Sim.Combat
             // Prompt 25 F2 batch A: a heavy flak gun lowered at the ground reaches less far; a long-range missile has a minimum reach.
             if (weapon.GroundRange > 0f && !IsFlying(target)) reach *= weapon.GroundRange / weapon.Range;
             if (weapon.MinReach > 0f && distance - target.Radius < weapon.MinReach) return false;
+            // Balance pack 2 (lane C): a boss's high gun has a dead zone at its feet (aircraft above it are still reached).
+            if (weapon.GroundMinReach > 0f && !IsFlying(target) && distance - target.Radius < weapon.GroundMinReach) return false;
             // Play-test 8 A: a free-falling bomb reaches as far ahead as the middle of its stick falls.
             if (FreeFall(v, weapon)) reach = MathF.Max(reach, BombReach(v, weapon));
             // Radar-absorbent coating: a missile must come closer to lock on.

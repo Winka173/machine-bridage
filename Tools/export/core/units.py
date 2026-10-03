@@ -20,7 +20,7 @@ SECONDS = {
 }
 METRES = {
     "range", "minRange", "splash", "edge", "radius", "vision", "length", "width", "height", "altitude", "ceiling",
-    "groundRange", "minReach", "orbitRadius", "reach", "leash", "repairReach", "enemyRadius", "flareOffset",
+    "groundRange", "minReach", "groundMinReach", "orbitRadius", "reach", "leash", "repairReach", "enemyRadius", "flareOffset",
     "proximityFuze", "airReach", "dropRadius", "standoff", "blast", "pad", "depth", "core", "spacing", "stillVision",
     "metresWide", "metresHigh", "area", "x", "y", "z", "distance", "gap", "offset", "sightRange",
     # the bomb-run fix: weapons[*].stick

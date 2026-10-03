@@ -58,7 +58,11 @@ namespace MachineBrigade.Sim.Entities
                 var ammo = Arms[i].Ammo;
                 // An aircraft's stores (prompt 13 C): rounds when full, taken on again over the field.
                 var load = def.LoadOf(def.Mounts[i].Weapon);
-                Weapons[i] = new WeaponState { Heading = heading, Ammo = load > 0 ? load : ammo > 0 ? ammo : -1, Load = load };
+                // Balance pack 2 addendum (lane C): a mount with its own firing arc (a rear turret) starts at the arc's centre, not
+                // the hull's heading, so it never faces forward before its first aim.
+                var mount = def.Mounts[i];
+                var rest = mount.ArcHalf > 0f ? heading + mount.ArcCentre : heading;
+                Weapons[i] = new WeaponState { Heading = rest, Ammo = load > 0 ? load : ammo > 0 ? ammo : -1, Load = load };
                 if (load > 0) HasStores = true;
             }
             Aps = def.Aps;
