@@ -740,6 +740,8 @@ namespace MachineBrigade.Sim.Movement
                 v.Traffic.WaitingForGate = false;
                 v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 2f * dt);
                 TryAdvance(v, v.Speed * dt);
+                // Play-test 14: a rail boss never turns off its track to fire.
+                if (def.Frame?.Move == BossMove.Rail) return;
                 // Hovering aircraft turn to face their target so hull-mounted rockets and missiles bear.
                 if (def.Mounts[0].Aim == MountAim.Hull && _world.TryGetTarget(v.Target, out var target) &&
                     (def.Flying || target is not Vehicle { Flying: true }))
