@@ -307,3 +307,5 @@ For local (needs Unity):
   session's edit.
 
 Questions for the owner: none.
+- Follow-up (owner): c8m10's last stage is Moloch (x1.4) with Tartarus tunnelling up at Moloch's 60 %; chapter 8 main
+  Moloch, minis Ixion and Tartarus (CHANGES PT14-D12). Play it: the surfacing spot and the two bosses together.

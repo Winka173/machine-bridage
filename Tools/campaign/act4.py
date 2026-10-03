@@ -399,15 +399,16 @@ new(d, ('Thorne\'s Camp', 'Trại của Thorne'),
     [say('hung', 'Start', 'I earned this country before you were a colonel.', 'Ta đã giành lấy đất nước này khi ngươi còn chưa là đại tá.')])
 
 d = clone('c2m10', 'c8m10', weather='Clear', playerBase='None', operation=True, **H8)
-# Play-test 14: Tartarus waits at the bottom (Kronos was deleted).
-boss(stage(d, 'inferno'), 'earth_borer', health=2.6)
-copy_stage_texts('c2m10', 'c8m10', {'inferno': ('Tartarus', 'Tartarus')})
-stage(d, 'inferno')['events'].append({'at': 'start', 'kind': 'Radio', 'key': retext('radio.hung.c8m10.s5', 'Wake up, Tartarus. Dig them a grave.', 'Thức dậy đi, Tartarus. Đào cho chúng một nấm mồ.')})
+# Play-test 14: Moloch, dragged out of the gorge and restarted by Thorne, waits at the bottom (Kronos was deleted); Tartarus
+# tunnels up mid-fight (act10: the "tartarus" event on this stage, at Moloch's 60 %).
+boss(stage(d, 'inferno'), 'moloch', health=1.4)
+copy_stage_texts('c2m10', 'c8m10', {'inferno': ('Moloch and Tartarus', 'Moloch và Tartarus')})
+stage(d, 'inferno')['events'].append({'at': 'start', 'kind': 'Radio', 'key': retext('radio.hung.c8m10.s5', 'Open the doors, Moloch. Tartarus, dig them a grave.', 'Mở cửa ra, Moloch. Tartarus, đào cho chúng một nấm mồ.')})
 new(d, ('The Deepest Pit', 'Hố sâu nhất'),
-    ('The operation into Thorne\'s mine: take the pit\'s rim, choose what to hit next, blow the works, then face what waits at the bottom: Tartarus.',
-     'Chiến dịch vào khu mỏ của Thorne: chiếm miệng hố, chọn mục tiêu kế tiếp, phá các xưởng, rồi đối mặt với thứ đang chờ dưới đáy: Tartarus.'),
-    (('Buried', 'Chôn vùi'), ('Tartarus went down into its own tunnel. Thorne was already on a boat.',
-                                'Tartarus sụp xuống chính đường hầm của nó. Thorne thì đã ở trên một con tàu.')),
+    ('The operation into Thorne\'s mine: take the pit\'s rim, choose what to hit next, blow the works, then face what waits at the bottom: Moloch, pulled out of the gorge and running again, with Tartarus under the ground.',
+     'Chiến dịch vào khu mỏ của Thorne: chiếm miệng hố, chọn mục tiêu kế tiếp, phá các xưởng, rồi đối mặt với thứ đang chờ dưới đáy: Moloch, được kéo lên từ hẻm sông và chạy lại, cùng Tartarus dưới lòng đất.'),
+    (('Buried', 'Chôn vùi'), ('Moloch went down into the pit and Tartarus into its own tunnel. Thorne was already on a boat.',
+                                'Moloch sụp xuống đáy hố, Tartarus sụp xuống đường hầm của nó. Thorne thì đã ở trên một con tàu.')),
     [say('khai', 'Start', 'Into the pit, Brigade.', 'Xuống hố, Lữ đoàn.'),
      say('linh', 'Win', 'Thorne has reached the coast. He is heading for Kessler\'s old ships.', 'Thorne đã tới bờ biển. Hắn đang tìm tới những con tàu cũ của Kessler.')])
 
@@ -634,7 +635,7 @@ d = move('c8m10', 'openpit')
 stage(d, 'tanks').update(targets=['storage_tank'], targetX=-110, targetZ=78, targetRadius=20)
 stage(d, 'wells').update(targets=['silo'], targetX=61, targetZ=-115, targetRadius=12)
 stage(d, 'refinery').update(targets=['factory', 'gantry_crane'], targetX=91, targetZ=-104, targetRadius=20)
-# Tartarus starts at the head of the haul road and tunnels to the player's base.
+# Moloch starts at the head of the haul road and drives it to the player's base.
 stage(d, 'inferno')['boss'].update(x=96, z=96, heading=225)
 
 move('c11m04', 'orbitalgate')

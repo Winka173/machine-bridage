@@ -98,7 +98,8 @@ namespace MachineBrigade.Tests
             // Prompt 22 E: the new mini bosses no chapter lists yet come in at their interludes.
             slots.AddRange(BossHunts.Unslotted.Select(u => u.id).Where(id => !slots.Contains(id)));
             CollectionAssert.AreEquivalent(slots, full, "every chapter slot once, the trains and the railway gun too (DECISIONS 21G)");
-            Assert.AreEqual(16, story.Count(b => b.Main), "the twelve main bosses, Nemesis too, and batch D's four");
+            // Play-test 14: eleven chapter mains (Moloch holds chapters 6 and 8), Monster in chapter 11's mini slot, Kraken and Hyperion.
+            Assert.AreEqual(14, story.Count(b => b.Main), "the main bosses of the hunts");
             // It opens once the last chapter on is done.
             PlayerProfile.ResetForTests();
             Progression.TestUnlockAll = false;
@@ -258,16 +259,16 @@ namespace MachineBrigade.Tests
         {
             var catalog = GameContent.LoadCatalog();
             var mains = Campaign.Chapters.Select(c => c.Main).Where(id => id != null).ToList();
-            Assert.AreEqual(12, mains.Distinct().Count(), "twelve main bosses (an interlude has none)");
+            Assert.AreEqual(11, mains.Distinct().Count(), "eleven main bosses (an interlude has none; Moloch holds chapters 6 and 8)");
             // Play-test 14 deleted ten bosses (their slots went to Matriarch, Behemoth Mk.II, Tartarus, Charybdis, Harpy, Roc, Monster).
-            Assert.AreEqual(15, Campaign.Chapters.SelectMany(c => c.Minis).Distinct().Count(), "fifteen mini bosses in the slots");
+            Assert.AreEqual(16, Campaign.Chapters.SelectMany(c => c.Minis).Distinct().Count(), "sixteen mini bosses in the slots");
             foreach (var c in Campaign.Chapters)
                 foreach (var id in c.Minis.Append(c.Main).Where(id => id != null))
                 {
                     Assert.IsTrue(catalog.Vehicles.TryGetValue(id, out var def) && def.Boss, $"chapter {c.Number}: {id} is a boss");
-                    // Play-test 14: Tartarus (a mini boss) holds chapter 8's main slot in Kronos's place, and Monster (a main boss)
-                    // a mini slot of chapter 11 in Gungnir's (balance pack rule D: a main boss in a mini slot stays a main boss).
-                    var rank = id == "monster" || id == c.Main && id != "earth_borer" ? BossRank.Main : BossRank.Mini;
+                    // Play-test 14: Monster (a main boss) holds a mini slot of chapter 11 in Gungnir's place (balance pack rule D: a main
+                    // boss in a mini slot stays a main boss).
+                    var rank = id == "monster" || id == c.Main ? BossRank.Main : BossRank.Mini;
                     Assert.AreEqual(rank, def.Rank, id);
                     Assert.AreEqual(Generals[id], def.General, id + "'s general");
                     Assert.IsTrue(Strings.Has($"char.{def.General}.name") && Strings.Has($"char.{def.General}.role"), def.General);
@@ -325,10 +326,12 @@ namespace MachineBrigade.Tests
                     Assert.Greater(file.Props.Count(p => goal.Targets.Contains(p.DefId) &&
                         (goal.TargetNear is not { } near || Vector2.Distance(p.Position, near) <= goal.TargetRadius)), 0, $"{id}: {string.Join(",", goal.Targets)}");
             }
-            // Play-test 14: Tartarus waits at the head of the haul road (Kronos, whose road it was, was deleted).
-            var tartarus = Campaign.Get("c8m10").Stages.Select(s => s.Mission.Boss).First(b => b?.Def == "earth_borer");
+            // Play-test 14: Moloch waits at the head of the haul road (Kronos, whose road it was, was deleted); Tartarus tunnels up
+            // in the same fight when Moloch is down to 60 %.
+            var last = Campaign.Get("c8m10").Stages.Select(s => s.Mission).First(s => s.Boss?.Def == "moloch");
             var route = GameContent.LoadMap("openpit_conquest").Route("haul");
-            Assert.Less(Vector2.Distance(tartarus.Position, route[0]), 1f, "Tartarus starts at the head of the haul road");
+            Assert.Less(Vector2.Distance(last.Boss.Position, route[0]), 1f, "Moloch starts at the head of the haul road");
+            Assert.IsTrue(last.Events.Any(e => e.Kind == MissionEventKind.MiniBoss && e.Trigger.BossHealth is > 0f), "Tartarus comes up mid-fight");
         }
 
         // ------------------------------------------------------------------ helpers

@@ -193,5 +193,5 @@ retext('mission.c2m01.fragment.title', 'Crude', 'Dầu thô')
 # The mission after which each choice of D.5 comes (the flag it sets is the choice's id); the chapter-end comics (D.8) hang
 # off each chapter's "comic" key in campaign.json. Nothing reads them yet.
 mission('c4m14')['storyChoice'] = 'c4.pursuit'   # chase Kessler out to sea at once, or stay and save the civilian ships
-mission('c8m09')['storyChoice'] = 'c8.miners'    # free the miners Thorne holds (help in chapter 9), or strike at Tartarus (more coins)
+mission('c8m09')['storyChoice'] = 'c8.miners'    # free the miners Thorne holds (help in chapter 9), or strike at Moloch (more coins)
 mission('c11m09')['storyChoice'] = 'c11.radar'   # the Skygate radars first (less enemy sight in chapter 12), or straight to Helion

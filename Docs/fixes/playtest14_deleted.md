@@ -146,7 +146,7 @@ EN/VI (names, guide, notes, radio, part radio), the card manifest and pictures, 
 |---|---|
 | `fortress_hive` | `drone_mothership` (Matriarch; c5m05, driven off at 50 %) |
 | `supreme_command` | `behemoth_mk2` (Behemoth Mk.II; c7m10's last-but-one stage) |
-| `kronos` | `earth_borer` (Tartarus; c8m10, chapter 8's main slot; the open-pit route renamed "haul") |
+| `kronos` | `moloch` (Moloch; c8m10's last stage, chapter 8's main slot) with `earth_borer` (Tartarus) tunnelling up at Moloch's 60 %; the open-pit route renamed "haul" |
 | `caspian` | `landing_hovercraft` (Charybdis; c9m05) |
 | `morrigan` | `mega_gunship` (Harpy; i3m02, c10m12's duel, the "harpy_hunt" event, Quaden's mini) |
 | `sky_fortress` | `command_airship` (Roc; c10m08, driven off at 50 %) |

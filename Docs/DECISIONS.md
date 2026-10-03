@@ -19466,3 +19466,9 @@ Docs/cloud/PT14_CLOUD_TASKS.md "Session 5", done locally on `feature/pt14-e`. No
   CHANGES PT14-E3. Replay hashes change (E1-E3).
 - For local (Unity): the bomber pass and bomb sizes in a match; a slanting coast and the map-edge strip; Leviathan / Nyx
   previews (boats, framing) and the turret rise in a phase-1 battle; smoke amounts overall.
+
+- **Owner, after session 3: Moloch is c8m10's main boss.** The last stage fights Moloch (x1.4: Kronos's 87,650 against
+  Moloch's 63,000), dragged out of the gorge it went into in chapter 6 and restarted by Thorne; Tartarus is the fight's
+  second boss: the "tartarus" mini-boss event (warned, surfacing) on that stage, triggered at Moloch's 60 % (bossHealth).
+  Chapter 8's slots: main Moloch (it holds chapter 6's too: eleven distinct mains), minis Ixion and Tartarus; the miners'
+  choice strikes at Moloch's power line. Hunt counts in the tests follow (14 mains in the story hunt, 16 slot minis).

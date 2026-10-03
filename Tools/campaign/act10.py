@@ -262,6 +262,8 @@ add('c8m10', 'enemy_wave', 'hawk_strike')
 add_stage('c8m10', 'fields', 'nadia_intel')
 add_stage('c8m10', 'refinery', 'accord_artillery')
 add_stage('c8m10', 'counter', 'enemy_counterattack', 'supply_drop')
+# Play-test 14: Tartarus tunnels up under the fight when Moloch is down to 60 %.
+add_stage('c8m10', 'inferno', {'id': 'tartarus', 'trigger': {'bossHealth': 0.6}})
 
 # ====================================================================== chapter 9: Rough Water (Thorne)
 # Landings from the sea and sea fog rolling in; Thorne on the field in the fog at Ironport (c9m06).
