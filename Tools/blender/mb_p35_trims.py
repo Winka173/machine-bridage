@@ -26,6 +26,9 @@ TRIMS = {
     'missile_battery_b': {'Sandbags': .4, 'Mast': .45, 'Platform_armor': .5, 'Shelter_blocks': .5, 'Race_band': .5,
                           'Turntable': .6, 'Plinth': .6, 'Radar_reflector': .6},
 }
+# Play-test 14 wave M4 (lane A): the guard towers are redrawn under the tower cap by mb_pt14_m4 (no trim).
+for _redrawn in ('guard_tower', 'guard_tower_a'):
+    TRIMS.pop(_redrawn)
 
 
 def _clean(me):

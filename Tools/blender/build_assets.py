@@ -242,6 +242,7 @@ import mb_p35_dragons_teeth_b  # noqa: E402
 import mb_pt14_m1  # noqa: E402
 import mb_pt14_m2  # noqa: E402
 import mb_pt14_m3  # noqa: E402
+import mb_pt14_m4  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -432,7 +433,10 @@ def all_builders():
                 **mb_pt14_m2.BUILDERS,
                 # Play-test 14 wave M3 (DECISIONS "Play-test 14 model wave M3 (lane models)"): the sea bosses redrawn,
                 # scylla with its own model (last, so they win).
-                **mb_pt14_m3.BUILDERS}
+                **mb_pt14_m3.BUILDERS,
+                # Play-test 14 wave M4 (DECISIONS "Play-test 14 model wave M4 (lane A)"): the base buildings redrawn
+                # (three hangars, the MG bunkers with port guns, the guard towers, the Laser Defence Tower; last).
+                **mb_pt14_m4.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

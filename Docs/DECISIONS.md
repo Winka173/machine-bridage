@@ -19687,3 +19687,56 @@ detail went where it reads (each model 3-8 x its old count, far under N x the ca
   hangar) instead of their arc centre aft; starting arc mounts at their arc centre would fix it (Sim change, replay
   hashes). A sleeping 155 mm's barrels pass through the hull for the ~1 s of the rise (the well takes the house).
   Needs Unity: card renders / ModelScan, the well rise in a phase-1 battle, the barrel kick on all mounts.
+
+
+## Play-test 14 model wave M4 (lane A)
+
+Owner: Docs/prompts/playtest14_vi.txt ("ve lai toan bo 3 hangar", "guard tower va laser anti drone station nen ve lai",
+"mg bunker nen co them sung, bunker von co nhieu sung may o trong ban ra"); spec Docs/cloud/PT14_CLOUD_TASKS.md session 4
+row M4. Built locally (worktree MachineBrigade-art, branch feature/pt14-m4). Builder `Tools/blender/mb_pt14_m4.py`
+(registered last in build_assets' dict). Sheets: Docs/models/rebuild/<id>/before_after.png. No Unity, no tests.
+- **Triangle cap**: the gate scores every static def (hangars too) as the tower class, seen in numbers: at most 1.5 x
+  4,000 = 6,000 triangles (owner decision 6). All eleven files stay under it; detail went into varied fittings
+  (K.clutter), not repeated geometry. Hidden bottoms (pads, containers, deck) are left out (`_pad`).
+- **mg_bunker family**: hexagonal cast pillbox (bow vertex forward) half buried in a berm open at the rear-left entry.
+  Four splayed concrete embrasures (bow faces -30 / 30, flanks -90 / 90) each hold a PKM in a ball mount on its own yaw
+  pivot `Mount_mg` .. `Mount_mg.003` with `Muzzle_mg[.NNN]` at the flash hider; barrels named `Port_barrels[_k]` so
+  they kick (MountBarrelPattern). The pivots carry a baked yaw (the arc centre) so the static model shows the guns out
+  of their ports; the runtime overwrites the mount's local yaw every frame (VehicleView: Euler(0, heading - parent)),
+  so the baked rest pose does not change aiming. The kit's world matrix was made rotation-aware for this asset only
+  (`_rotatable`), so the AO bake follows the turned guns. Main gun: the cupola `Turret` + baked `Elevation` (NSV /
+  twin NSV / flame gun). _a (.twin) inherits the four port guns (data); _b (.flame) keeps `"secondary": []`, so its
+  embrasures are shut by armoured shutters (no undrawn guns, no decor guns). The old plain `Mount_missile` /
+  `Muzzle_missile` pivots (no missile in any def) are dropped.
+- **Data** (CHANGES "Play-test 14 model wave M4"): weapon `bunker_pkm` (PKM 7.62 mm, inherits mg_coax: 5.5 x 0.092 s,
+  range 28, 100-round belt, 6 s reload); mg_bunker `secondary` = four of it, slot mg, aim Free, arcs [-30,40] [30,40]
+  [-90,40] [90,40]. outgoingDamageMult untouched. Raw output +34 % on a target in one port's arc, +68 % dead ahead
+  (two ports cross there), 0 behind 130 degrees. Open question: tune outgoingDamageMult if the bunker now overperforms.
+- **guard_tower / _a**: new steel tower: raked legs on piers with three tiers of X bracing, caged ladder, railed deck,
+  octagonal armoured cab with a sloped glass band behind an RPG bar screen, roof ring `Turret` with the M2 on a baked
+  `Elevation` behind a yaw-fixed shield; _a (.watch) adds the telescopic mast, EO ball and turning `Radar` panel.
+  The decor AGL (`Mount_gun`, no def fires it) is gone. guard_tower_b (.nest) keeps its own P35 model.
+- **laser_ad_station (Laser Defence Tower)**: clad tapered steel tower with four fixed radar panels, platform and rail,
+  beam director (`Turret` drum + yoke, `Elevation` housing, `Muzzle_main` at the aperture) on top; power/cooling
+  module behind with chillers, APS sensor mast (`Mount_APS`). Not drone-themed. modelSize [6.0, 3.85, 6.6].
+- **Hangars**: three distinct ones. drone_hangar (+_a Lancet catapult, _b six swarm cells): two ISO containers roofed
+  into a bay with a roller door, launch deck with railing, anti-drone net (`Roof_net`) over the rear half;
+  `Launch_rail`, `Muzzle_main`, `Muzzle_door_l` kept at the launcher's mouth. vehicle_hangar: own file
+  `vehicle_hangar_base` (the map prop vehicle_hangar.glb keeps its name and file): portal-frame motor-pool shed, door
+  rolled up, lift, shelving, office lean-to, solar panels, floodlights. aircraft_hangar: own file: tension-fabric
+  helicopter shelter on steel arches, doors drawn open, maintenance stand, helipad apron with H, tug, light masts,
+  windsock, fuel point. Data `model` + `modelSize` fitted to the 8 m slot ([8.0, 7.5, 4.93] / [8.0, 7.72, 5.32]).
+- **Wrappers**: mb_pt13_followup's ELEVATION and mb_p35_trims' TRIMS drop the redrawn ids (own Elevation, no trim).
+- **Gate tool**: scan_prep.model_owners now scores a branch's art file against the branch def that names it ("art"),
+  before the _a/_b fallback to the base def (mg_bunker_b was being held to mg_bunker's four port guns). Side effect:
+  missile_battery_a (art of missile_battery.pac3, which has `aps`) now fails `Mount_APS`: a real gap in that model,
+  not touched here.
+- Gate (after glb_quantize; all hard ok), triangles before -> after, soft before -> after: mg_bunker 3,748 -> 5,490
+  (92.0 -> 81.4), _a 4,996 -> 5,966 (97.4 -> 84.9), _b 3,602 -> 5,900 (95.8 -> 80.0), guard_tower 5,796 -> 5,098
+  (88.2 -> 99.5), _a 5,942 -> 5,650 (94.9 -> 100), laser_ad_station 5,592 -> 5,342 (89.9 -> 86.6), drone_hangar 4,912
+  -> 4,880 (88.9 -> 80.8), _a 5,072 -> 4,894 (88.6 -> 81.4), _b 5,884 -> 5,728 (90.4 -> 82.3), vehicle_hangar_base new
+  5,744 (69.4), aircraft_hangar new 4,522 (58.0). The two big sheds score low against the tower gold (small dense
+  towers): parts and small pieces per m2 of a 8 x 8 m building under the 6,000 cap; a higher allowance for hangars
+  (not seen in numbers) is the lead's call. Full gate: 145 / 166 pass.
+- Needs Unity: card renders / ModelScan, the port guns' traverse and kick in a battle, the hangar fits in the base
+  slots, icons for the two new model ids.
