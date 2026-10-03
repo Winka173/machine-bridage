@@ -19269,3 +19269,49 @@ py_compile, and a .NET compile of Sim + Game against the Unity DLLs (Build succe
   `.001` (the wrapper installs the rename on every model it touches).
 - Render for the lead: behemoth_inferno, behemoth (mount 6 shells from the hull gun), the gun towers in their preview
   (barrel rises with its cradle when firing at aircraft / range), the launchers above after a volley (covers / noses gone).
+
+## Gói cân bằng 2 (lane C)
+
+Branch `feature/pack2-c` (from `lead/integration` a7fcba7e). Section 5 of `Docs/prompts/export_pack2_vi.txt` (a minimum
+range for every boss weapon; an owner-requested gameplay change). No Unity run, no tests, no ExportGameDoc: Python over the
+data and GLBs, an export to a scratch folder (unmapped 0, FK and formulas OK, `check --structure-only` passes on both packs),
+and a .NET SDK compile of the Sim (netstandard2.1, C# 9: 0 errors, the 2 old warnings). Full per-boss / per-weapon record:
+`Docs/export/CHANGES.md` "Gói cân bằng 2, mục 5".
+
+- **Calculator: `Tools/export/boss_min_range.py`.** Bosses as the loader builds them (`p26_ab.expand` plus the frame's
+  `defaults`, which expand leaves out: daedalus and the other spacecraft fly at 22 m); a variant's model is its parent's
+  (BossTemplates). The k-th mount of a slot sits on the k-th `Muzzle_<slot>` by name, else `Mount_<slot>`, as VehicleView
+  maps them; drawn scale = `modelSize[0]` / model length, else `scale`. Distances run from the boss centre to the target's
+  near face. Direct fire: (muzzle height - target centre height) / tan(depression) + the barrel's reach along the aim (yaw
+  pivot -> muzzle; the pivot's own offset changes sign with direction, so it averages out; a Hull mount counts its forward
+  reach). The `+ full offset` reading gave 20+ m dead zones to end-mounted guns on trains and ships for targets on the far side.
+- **Game ballistics, not real ones.** `projectileSpeed` is the game's flight pace, so v^2 sin(2 theta)/g with it gives
+  kilometres. The calculator uses v = sqrt(g x range), the speed that reaches the weapon's range at 45 deg: lobbed fire gets
+  range x min(sin 2 theta_min, sin 2 theta_max) (mortar 45-85 deg, others 5-70 deg); a rocket rack that cannot depress
+  launches level and falls: sqrt(2 x range x drop).
+- **Barrel limits are class defaults (uoc_dinh, 144 mounts).** No weapon or mount carries one. Section 5.2 classes plus one
+  split the prompt leaves open: a non-main gun under 100 mm (naval under 130 mm) is a secondary gun at 15 deg, not a boss
+  gun at 8 deg. Aircraft bosses use the view's 65 deg look-down (VehicleView.Elevate) from their altitude; guided missiles
+  and drones 1 m (real arming x the game's ~1/60-1/110 range scale); bombs, melee and air-only weapons none. Reference
+  target centre heights come from the Xe_tham_chieu models: MBT 1.13 m (used), armoured car 0.76 m, heavy tank 1.07 m.
+- **A new weapon key, `groundMinReach`, instead of `minRange`.** The Sim has no boss exemption: CombatSystem.InReach gates
+  every mount of every shooter on MinRange and MinReach, so no `ap_dung_tam_toi_thieu` flag was needed. But `minRange > 0`
+  turns a weapon indirect (WeaponDef.Indirect: no line-of-fire check, lobbed-shell interception) and puts its carrier in the
+  artillery role for Commander / ConquestAi / TacticalAi and counter-battery radar: an AI change the prompt forbids. And
+  `minReach` also stops a boss's flak shooting the helicopter overhead. `groundMinReach` (m, edge-measured, ground targets
+  only): CombatSystem.InReach, Catalog.P25A (parse, default 0), Definitions.Tuned (copied), Tools/export/core/units.py. Weapons
+  already lobbed (minRange > 0) raise their minRange instead.
+- **One value per weapon id: the smallest proposal of its mounts.** 65 boss weapons changed (63 groundMinReach, supergun_800
+  minRange 30 -> 69, p26_bastion_sec_b240 12 -> 14). Weapons used on several bosses get the lowest mount's value rather than
+  forcing a low mount to carry a tall one's dead zone; the under-stated mounts are listed. Boss weapons that ordinary units
+  also carry (boss_flak, hover_ciws, zu23, gunship_rockets, fighter_cannon, gunship_105/40mm/25mm) are left at 0 for the
+  owner; 3 non-boss parents are pinned at groundMinReach 0 so nothing leaks through inherits; the 6 second rounds of boss guns
+  inherit their gun's value (same barrel). No weapon added, no AI, no boss HP changed.
+- **A proposal at the weapon's range is cut to 80 % of it** (12 mounts, e.g. moloch's 120 mm guns 40-65 m of geometry on a
+  32 m range): MinRange >= Range throws at load, and a ground minimum past the range would mute the gun on the ground.
+- **Dead zone and cover.** Dead-zone radius = the smallest written minimum among a boss's main barrels (guns, rockets, lobbed
+  fire); the band runs from its body radius (0 for a flyer) out to it; covered when ground weapons with a smaller minimum
+  reach 90 % of the band. 17 bosses uncovered (CHANGES lists each with its nearest weapon); 22 get "xem lại thời gian hạ"
+  (band >= 8 m). Sheet `Boss_tam_toi_thieu` in 02_boss (d03_boss, 223 rows, every column of 5.1); the published pack is not
+  re-exported here (the lead exports after the merge). For the owner to run when wanted: CatalogCheck (new key) and a new
+  ReplayHashTests baseline (every boss match changes).
