@@ -365,5 +365,65 @@ namespace MachineBrigade.Tests
                 }
             }
         }
+
+        // Play-test 13 (lane C) ------------------------------------------------------------------------------------------------
+        // The anchor of a laid stick is unchanged (the free-falling stick still starts where its first bomb's fall puts it at
+        // release; Lay above releases exactly centred, so the nine tests keep their expectations). What changed is WHEN a free
+        // bomber lets go and WHERE a bay centres: on the best centre for the target group (CombatSystem.BestStickCentre).
+
+        [Test]
+        public void ALoneTargetFallsMidStick()
+        {
+            var dir = new Vector2(0f, 1f);
+            var target = new Vector2(3f, 7f);
+            var centre = CombatSystem.BestStickCentre(target, dir, 4, 10f, 6f, 3f, new List<Vector2> { target }, out var hits);
+            Assert.AreEqual(1, hits);
+            Assert.AreEqual(target.X, centre.X, 1e-4f, "no side offset for a lone target");
+            Assert.AreEqual(target.Y, centre.Y, 1e-4f, "the stick's middle on it: bombs 2 and 3 either side, 1 before, 4 past");
+        }
+
+        [Test]
+        public void ARowAheadIsCoveredFromItsFirstVehicle()
+        {
+            // The target leads a row running on along the track: the stick moves forward over the row, the target still inside.
+            var dir = new Vector2(0f, 1f);
+            var row = new List<Vector2> { new Vector2(0f, 0f), new Vector2(0f, 8f), new Vector2(0f, 16f), new Vector2(0f, 24f), new Vector2(0f, 32f) };
+            var onTarget = 0;
+            foreach (var p in row)
+                for (var k = 0; k < 4; k++)
+                    if (Vector2.Distance(p, new Vector2(0f, (k - 1.5f) * 11f)) <= 6f) { onTarget++; break; }
+            var centre = CombatSystem.BestStickCentre(row[0], dir, 4, 11f, 6f, 0f, row, out var hits);
+            Assert.Greater(hits, onTarget, "more of the row under the stick than with its middle on the target");
+            Assert.Greater(centre.Y, 0f, "moved forward along the row");
+            Assert.LessOrEqual(centre.Y, 1.5f * 11f + 1e-3f, "the target stays inside the stick");
+            var again = CombatSystem.BestStickCentre(row[0], dir, 4, 11f, 6f, 0f, row, out var hitsAgain);
+            Assert.AreEqual(centre, again, "deterministic");
+            Assert.AreEqual(hits, hitsAgain);
+        }
+
+        [Test]
+        public void TheBomberLetsGoWhenTheStickMiddleComesOverTheTarget()
+        {
+            // A lone tank: the bomber holds its stick until the middle of the stick it would drop is over the tank (not later).
+            var world = new SimWorld(Cat, Field(), seed: 3);
+            var target = world.SpawnVehicle("main_battle_tank", 1, Vector2.Zero, 0f);
+            var carrier = world.SpawnVehicle("heavy_bomber", 0, new Vector2(0f, -80f), 0f);
+            var mount = MountOf(carrier, "bomber_payload");
+            var round = CombatSystem.Loaded(carrier, mount);
+            carrier.Heading = 0f;
+            carrier.Speed = round.Stick.ReleaseSpeed;
+            var straddles = typeof(CombatSystem).GetMethod("StickStraddles", Hidden);
+            Assert.IsNotNull(straddles, "CombatSystem.StickStraddles (private) not found");
+            var bombs = (int)typeof(CombatSystem).GetMethod("StickBombs", Hidden, null, new[] { typeof(Vehicle), typeof(int), typeof(IDamageable) }, null)
+                .Invoke(world.Combat, new object[] { carrier, mount, target });
+            var middle = carrier.Speed * CombatSystem.BombFall(carrier) + CombatSystem.StickLength(carrier, round, bombs) * 0.5f;
+            bool Lets(float along)
+            {
+                carrier.Position = new Vector2(0f, -along);
+                return (bool)straddles.Invoke(world.Combat, new object[] { carrier, mount, target });
+            }
+            Assert.IsFalse(Lets(middle + 1f), "too early: the stick's middle would fall short of the tank");
+            Assert.IsTrue(Lets(middle - 0.5f), "the stick's middle over the tank: let go");
+        }
     }
 }
