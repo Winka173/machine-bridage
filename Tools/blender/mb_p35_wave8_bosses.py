@@ -710,8 +710,313 @@ def _train_flatcar(a):
     _train_flak(a, 2, (0, 14.3, 1.5), (0, -1.1, .35))
 
 
+# ============================================================================= leviathan
+LEV_HULL = [  # (y, half beam at the waterline, half beam at the deck, deck height)
+    (-43.0, .08, .15, 5.7), (-41.5, 1.1, 1.9, 5.5), (-39.0, 2.6, 3.9, 5.2), (-34.0, 4.8, 6.0, 4.85),
+    (-26.0, 6.8, 7.5, 4.5), (-15.0, 7.9, 8.15, 4.15), (0.0, 8.1, 8.25, 3.95), (20.0, 7.9, 8.1, 3.8),
+    (32.0, 7.0, 7.55, 3.62), (40.0, 5.5, 6.4, 3.52), (43.9, 4.4, 5.6, 3.5)]
+
+
+def _lev_deck_z(y):
+    pts = LEV_HULL
+    for (y0, _, _, z0), (y1, _, _, z1) in zip(pts, pts[1:]):
+        if y0 <= y <= y1:
+            return z0 + (z1 - z0) * (y - y0) / (y1 - y0)
+    return pts[-1][3]
+
+
+def _lev_main_turret(a, index, part_loc, mount_z):
+    """A triple 406 mm turret under its Part_gun[.NNN] pivot: the barbette, the turret (Mount_gun[.NNN]) with its
+    sloped face plate, the roof with the rangefinder ears and hoods, three long barrels in blast bags, Muzzle_gun
+    [.NNN] at the middle barrel's tip and the per-barrel muzzles b1-b3 (left to right)."""
+    pname = K.name('Part_gun', index)
+    tag = '' if index == 0 else f'_{index:03d}'
+    p = a.pivot(pname, part_loc)
+    px, py, pz = part_loc
+    k.lathe(a.part(f'Barbette{tag}', 'Armor', p), [(3.4, -.6), (3.4, mount_z - pz - .05), (3.25, mount_z - pz)],
+            seg=24)
+    m = a.pivot(K.name('Mount_gun', index), (0, 0, mount_z - pz), p)
+    W.poly_turret(a.part(f'Gun_house{tag}', 'Team', m), [
+        (0, [(-2.6, -3.1), (2.6, -3.1), (3.3, -1.8), (3.3, 3.4), (2.8, 4.2), (-2.8, 4.2), (-3.3, 3.4), (-3.3, -1.8)]),
+        (1.6, [(-2.4, -3.3), (2.4, -3.3), (3.25, -2.0), (3.25, 3.4), (2.75, 4.2), (-2.75, 4.2), (-3.25, 3.4),
+               (-3.25, -2.0)]),
+        (2.5, [(-2.0, -2.4), (2.0, -2.4), (2.9, -1.5), (2.9, 3.2), (2.5, 3.95), (-2.5, 3.95), (-2.9, 3.2),
+               (-2.9, -1.5)])], chamfer=.08)
+    k.block(a.part(f'Gun_face{tag}', 'Armor', m), (5.4, .5, 1.9), loc=(0, -3.0, 1.05), rot=(.25, 0, 0), chamfer=.05)
+    for s in (-1, 1):
+        k.lathe(a.part(f'Rangefinder{tag}', 'Armor', m), [(.32, -.5), (.36, -.4), (.36, .4), (.32, .5)],
+                loc=(s * 3.15, 1.2, 2.2), rot=(0, R90, 0), seg=10)
+        k.block(a.part(f'Hoods{tag}', 'Armor', m), (.7, .9, .45), loc=(s * 1.4, -1.2, 2.72), chamfer=.04)
+    K.ladder(a.part(f'Turret_ladder{tag}', 'Steel', m), (3.3, 2.4, .2), (3.3, 2.4, 2.4), width=.5, step=.35)
+    for x in (-1.7, 0, 1.7):
+        k.lathe(a.part(f'Blast_bags{tag}', 'Canvas', m), [(.62, 0), (.7, .15), (.62, .35), (.42, .5)],
+                loc=(x, -3.15, 1.24), rot=K.FORWARD, seg=10)
+        K.gun_barrel(a, f'Gun_barrels{tag}', m, x, -3.5, 1.24, 9.45, .27, seg=12, extractor=(.15, 1.25, .6),
+                     brake_name=f'Gun_muzzles{tag}', brake='collar')
+    mz = a.pivot(K.name('Muzzle_gun', index), (0, -12.95, 1.24), m)
+    per_barrel(a, mz, f'gun_{index:03d}' if index else 'gun', (-1.7, 0, 1.7))
+    a.part(f'Team_band{tag}', 'Team', m).box((4.0, 2.5, .03), loc=(0, .9, 2.51), bevel=0)
+
+
+def _lev_sec_turret(a, index, side_name, part_loc, mount_z):
+    """A triple 155 mm turret raised on its barbette under its Part_sec_* pivot (Mount_gun.003 / .004)."""
+    p = a.pivot(side_name, part_loc)
+    px, py, pz = part_loc
+    tag = f'_{index:03d}'
+    k.lathe(a.part(f'Sec_barbette{tag}', 'Armor', p), [(1.9, 0), (1.9, mount_z - pz - .05), (1.8, mount_z - pz)],
+            seg=18)
+    m = a.pivot(K.name('Mount_gun', index), (0, 0, mount_z - pz), p)
+    W.poly_turret(a.part(f'Sec_house{tag}', 'Team', m), [
+        (0, [(-1.3, -1.7), (1.3, -1.7), (1.8, -.8), (1.8, 1.9), (-1.8, 1.9), (-1.8, -.8)]),
+        (1.3, [(-1.05, -1.4), (1.05, -1.4), (1.55, -.6), (1.55, 1.75), (-1.55, 1.75), (-1.55, -.6)])], chamfer=.05)
+    for x in (-.62, 0, .62):
+        K.gun_barrel(a, f'Sec_barrels{tag}', m, x, -1.75, .84, 5.93, .1, seg=10, extractor=(.3, 1.3, .3),
+                     brake_name=f'Sec_muzzles{tag}', brake='collar')
+    mz = a.pivot(K.name('Muzzle_gun', index), (0, -7.68, .84), m)
+    per_barrel(a, mz, f'gun_{index:03d}', (-.62, 0, .62))
+    k.block(a.part(f'Sec_hoods{tag}', 'Armor', m), (.5, .6, .3), loc=(.9, .2, 1.4), chamfer=.03)
+
+
+def leviathan(a):
+    """See the module docstring (leviathan). Runtime (the def's parts): Part_gun / .001 / .002 > Mount_gun / .001 /
+    .002 (the triple 406 mm, with their per-barrel muzzles; NavalSystem.PreviewSalvo lays them by these parts),
+    Part_sec_f / Part_sec_a > Mount_gun.003 / .004 (triple 155 mm), Part_vls, Part_aa_l / Part_aa_r > Mount_mg.002 -
+    .009, Part_mg / .001 > Mount_mg / .001 (CIWS), Part_radar > Radar, Part_deck, Part_welldeck, Part_engine;
+    Mount_APS (the APS launchers on the tower)."""
+    K.suffixed(a)
+    # The hull: a long lofted hull with the clipper bow, flare and sheer; the belt and boot top; the deck.
+    stations = []
+    for y, hw, hdk, zd in LEV_HULL:
+        stations.append((y, [(0, -2.6), (hw * .55, -2.5), (hw * .9, -1.4), (hw, 0.0), (hdk * .98, zd - .9),
+                             (hdk, zd), (0, zd + .12)]))
+    K.section_loft(a.part('Hull', 'Armor'), stations)
+    for s in (-1, 1):
+        pts_belt = [(s * (hw * 1.005), y, .35) for y, hw, _, _ in LEV_HULL[2:-1]]
+        a.part('Armor_belt', 'Team').tube([(x, y, z) for x, y, z in pts_belt], .22, seg=4)
+        a.part('Boot_top', 'Undercarriage').tube([(s * (hw * 1.004), y, -.25) for y, hw, _, _ in LEV_HULL[1:]], .12,
+                                                 seg=4)
+        # Hawse pipes and the anchors on the bow, the bilge keel line.
+        a.part('Anchors', 'Steel').box((.25, .6, 1.0), loc=(s * 3.1, -38.6, 3.8), rot=(0, 0, s * -.5), bevel=0)
+        a.part('Anchors', 'Undercarriage').cyl(.35, .2, loc=(s * 2.9, -38.8, 4.5), rot=(0, s * R90, s * -.5), seg=10,
+                                               bevel=0)
+    deck = a.part('Deck', 'Wood')
+    k.extrude(deck, [(-.1, -42.6), (.1, -42.6), (3.6, -39.0), (5.8, -34.0), (7.3, -26.0), (8.0, -15.0), (8.1, 0.0),
+                     (7.95, 20.0), (7.4, 32.0), (-7.4, 32.0), (-7.95, 20.0), (-8.1, 0.0), (-8.0, -15.0),
+                     (-7.3, -26.0), (-5.8, -34.0), (-3.6, -39.0)], .06, loc=(0, 0, 0), axis='Z')
+    # The wooden deck follows the sheer: lift its vertices to the deck line.
+    for v in deck.bm.verts:
+        v.co.z += _lev_deck_z(v.co.y) + .05
+    seams = a.part('Deck_seams', 'Undercarriage')
+    for x in (-5.0, -2.5, 2.5, 5.0):
+        seams.box((.03, 50.0, .02), loc=(x, -7.0, _lev_deck_z(-7.0) + .13), bevel=0)
+    # Deck fittings: rails along the edges, bollards, chain runs to the capstans, vents, hatches.
+    for s in (-1, 1):
+        rail = [(s * (hdk - .2), y, _lev_deck_z(y) + .05) for y, _, hdk, _ in LEV_HULL[2:-2]]
+        for q0, q1 in zip(rail, rail[1:]):          # one run per hull station gap (each its own rail)
+            K.railing(a.part('Railings', 'Steel'), [q0, q1], h=.9, post=2.2, r=.03)
+        for y in (-36.0, -29.0, 22.0, 30.0):
+            hw = next(h for (y0, _, h, _), (y1, _, h1, _) in zip(LEV_HULL, LEV_HULL[1:]) if y0 <= y <= y1)
+            k.lathe(a.part('Bollards', 'Steel'), [(.18, 0), (.18, .4), (.24, .44), (.24, .52), (0, .52)],
+                    loc=(s * (hw - .9), y, _lev_deck_z(y) + .05), seg=10)
+        a.part('Chain', 'Undercarriage').tube([(s * 2.9, -38.6, _lev_deck_z(-38.6) + .1),
+                                              (s * 1.5, -35.5, _lev_deck_z(-35.5) + .1)], .1, seg=4)
+        k.lathe(a.part('Winch', 'Steel'), [(.5, 0), (.5, .4), (.35, .5), (.35, .7)], loc=(s * 1.5, -35.0,
+                                                                                         _lev_deck_z(-35) + .05), seg=12)
+    for (x, y) in ((-4.0, -30.0), (4.0, -30.0), (-5.0, 23.0), (5.0, 23.0)):
+        k.lathe(a.part('Vents', 'Steel'), [(.3, 0), (.3, .8), (.45, .9), (.5, 1.2), (.45, 1.4), (0, 1.45)],
+                loc=(x, y, _lev_deck_z(y)), seg=10)
+    for (x, y) in ((-3.5, -17.5), (3.5, -17.5), (0, 29.5)):
+        k.block(a.part('Hatches', 'Armor'), (1.4, 1.2, .25), loc=(x, y, _lev_deck_z(y) + .15), chamfer=.04)
+    # The main battery fore and aft, the secondaries, the superstructure, the tower, the funnels, the aft decks.
+    _lev_main_turret(a, 0, (0, -21.4, 4.49), 5.09)
+    _lev_main_turret(a, 1, (0, -13.0, 4.19), 6.79)
+    _lev_main_turret(a, 2, (0, 25.6, 3.73), 4.43)
+    _lev_superstructure(a)
+    _lev_sec_turret(a, 3, 'Part_sec_f', (0, -7.2, 5.79), 9.59)
+    _lev_sec_turret(a, 4, 'Part_sec_a', (0, 19.8, 3.8), 6.8)
+    _lev_aa(a)
+    _lev_aft(a)
+    a.pivot('Point_fire', (0, 4.0, 8.0))
+    a.pivot('Point_exhaust', (0, 7.0, 14.0))
+    k.clean(a)
+
+
+def _lev_superstructure(a):
+    """The superstructure: the deckhouse block, the armoured conning tower with its bridge windows, the pagoda tower
+    (tiers, platforms, yards) up to the radar mast (Part_radar > Radar), the CIWS sponsons (Part_mg / .001), the
+    VLS block (Part_vls), the funnel (Part_engine) with its cap and soot, the boats in their davits, the APS
+    launchers (Mount_APS)."""
+    z0 = 3.9
+    dh = a.part('Deckhouse', 'Team')
+    W.poly_turret(dh, [(z0, [(-4.4, -9.6), (4.4, -9.6), (5.0, -7.0), (5.0, 20.5), (4.0, 22.2), (-4.0, 22.2),
+                              (-5.0, 20.5), (-5.0, -7.0)]),
+                       (6.25, [(-4.2, -9.4), (4.2, -9.4), (4.8, -6.9), (4.8, 20.3), (3.85, 22.0), (-3.85, 22.0),
+                               (-4.8, 20.3), (-4.8, -6.9)])], chamfer=.06)
+    for s in (-1, 1):
+        for y in range(-6, 20, 2):
+            a.part('Portholes', 'Glass').cyl(.16, .04, loc=(s * 4.93, y, 5.2), rot=(0, R90, 0), seg=8, bevel=0)
+        K.door(a, (s * 4.95, 2.5, z0 + .05), size=(.9, 1.8), normal=(s, 0, 0), mat='Armor', frame_mat='Steel')
+        a.part('Team_band', 'Team').box((.04, 28.0, .3), loc=(s * 4.92, 6.0, 6.0), bevel=0)
+    # Conning tower: armoured block with the bridge windows, the wings either side.
+    ct = a.part('Superstructure', 'Team')
+    W.poly_turret(ct, [(6.25, [(-3.0, -6.2), (3.0, -6.2), (3.4, -4.8), (3.4, 1.2), (-3.4, 1.2), (-3.4, -4.8)]),
+                       (10.6, [(-2.6, -5.8), (2.6, -5.8), (3.0, -4.6), (3.0, 1.0), (-3.0, 1.0), (-3.0, -4.6)])],
+                  chamfer=.06)
+    for i in range(7):
+        x = -2.1 + i * .7
+        a.part('Windows', 'Glass').box((.55, .04, .45), loc=(x, -5.92 + abs(x) * .05, 9.9), rot=(-.12, 0, 0),
+                                       bevel=0)
+    a.part('Bridge', 'Armor').box((9.0, 1.6, .2), loc=(0, -3.0, 10.7), bevel=0)
+    for s in (-1, 1):
+        K.railing(a.part('Railings', 'Steel'), [(s * 4.4, -3.7, 10.8), (s * 4.4, -2.3, 10.8)], h=.9, post=.7, r=.03)
+    # The pagoda tower: stacked tiers with platforms, rails and yards.
+    tw = a.part('Tower', 'Team')
+    for z0_, z1_, w0, d0, w1, d1 in ((10.6, 13.0, 2.4, 4.2, 2.0, 3.6), (13.0, 15.4, 1.8, 3.2, 1.4, 2.6),
+                                     (15.4, 18.3, 1.2, 2.2, .9, 1.6)):
+        k.sharp_loft(tw, [[(-w0, -3.0 - d0 / 2, z0_), (w0, -3.0 - d0 / 2, z0_), (w0, -3.0 + d0 / 2, z0_),
+                           (-w0, -3.0 + d0 / 2, z0_)],
+                          [(-w1, -3.0 - d1 / 2, z1_), (w1, -3.0 - d1 / 2, z1_), (w1, -3.0 + d1 / 2, z1_),
+                           (-w1, -3.0 + d1 / 2, z1_)]], chamfer=.05)
+        a.part('Tower_platforms', 'Armor').box((2 * w0 + 1.2, d0 + .8, .12), loc=(0, -3.0, z1_), bevel=0)
+        K.railing(a.part('Railings', 'Steel'), [(-w0 - .55, -3.0 - d0 / 2 - .35, z1_), (w0 + .55, -3.0 - d0 / 2 - .35,
+                                                                                          z1_)], h=.8, post=.9,
+                  r=.025)
+        for i in range(3):
+            a.part('Windows', 'Glass').box((.5, .03, .3), loc=(-w1 + .5 + i * (w1 - .5), -3.0 - d1 / 2 - .04,
+                                                               z1_ - .5), bevel=0)
+    a.part('Tower', 'Steel').box((7.0, .2, .2), loc=(0, -2.6, 16.9), bevel=0)        # the yard
+    for x in (-3.2, 3.2):
+        K.whip_antenna(a.part('Antennas', 'Steel'), (x, -2.6, 17.0), h=2.4, lean=.0)
+    # Part_radar: the top of the tower with its mast and the search array (Radar spins).
+    pr = a.pivot('Part_radar', (0, -1.0, 18.39))
+    k.lathe(a.part('Radar_mast', 'Steel', pr), [(.5, -.1), (.5, .3), (.3, .5), (.25, 2.9), (.35, 3.1)],
+            loc=(0, .5, 0), seg=12)
+    r = a.pivot('Radar', (0, .5, 3.2), pr)
+    k.block(a.part('Radar_array', 'Armor', r), (3.6, .35, 1.1), loc=(0, 0, .55), rot=(-.2, 0, 0), chamfer=.05)
+    a.part('Radar_face', 'Undercarriage', r).box((3.3, .03, .9), loc=(0, -.2, .6), rot=(-.2, 0, 0), bevel=0)
+    a.part('Radar_drive', 'Steel', r).cyl(.35, .3, loc=(0, 0, -.05), seg=10, bevel=0)
+    for s in (-1, 1):
+        K.dish(a.part('Dishes', 'Medical', pr), a.part('Dishes', 'Steel', pr), (s * 1.2, .5, 1.6), r=.45,
+               normal=(0, -1, .3), seg=10)
+    K.beacon(a, (0, -1.6, 18.5), r=.12)
+    # APS launchers on the tower's first platform (Mount_APS at their centre).
+    aps = a.pivot('Mount_APS', (0, -3.0, 13.15))
+    for s in (-1, 1):
+        for y in (-1.6, 1.4):
+            K.chamfer_box(a.part('Aps_launchers', 'Armor', aps), (.6, .5, .45), loc=(s * 2.3, y, .25), c=.04)
+            for j in range(3):
+                a.part('Aps_tubes', 'Undercarriage', aps).cyl(.07, .04, loc=(s * 2.3 - .18 + j * .18, y - .26, .3),
+                                                              rot=K.FORWARD, seg=6, bevel=0)
+    # CIWS (Part_mg on the bridge's left wing, Part_mg.001 on the after deckhouse right).
+    for i, (pname, loc) in enumerate((('Part_mg', (-3.4, -3.4, 9.27)), ('Part_mg__001', (2.1, 16.5, 6.26)))):
+        p = a.pivot(pname, loc)
+        k.lathe(a.part(f'Ciws_sponson{"" if i == 0 else "_001"}', 'Armor', p), [(.9, -1.35), (.9, -1.2), (.7, -1.1)],
+                seg=12)
+        K.ciws(a, 'mg' if i == 0 else 'mg__001', (0, 0, -1.27), parent=p, scale=1.82)
+    # Part_vls: the launch cells on the deckhouse roof either side of the funnel.
+    pv = a.pivot('Part_vls', (0, 5.6, 7.49))
+    for s in (-1, 1):
+        K.vls(a, (s * 2.7, 0, -1.2), 3, 6, cell=.55, parent=pv)
+    # Part_engine: the big raked funnel with its cap and the soot round its mouth.
+    pe = a.pivot('Part_engine', (0, 7.0, 7.49))
+    k.extrude(a.part('Funnel', 'Team', pe), [(-1.4, -2.2), (1.4, -2.2), (1.7, -1.4), (1.7, 1.8), (1.2, 2.4),
+                                             (-1.2, 2.4), (-1.7, 1.8), (-1.7, -1.4)], 7.6, loc=(0, .3, 2.6),
+              rot=(-.12, 0, 0), axis='Z', chamfer=.06, taper=(.9, .9))
+    k.extrude(a.part('Funnel_cap', 'Charred', pe), [(-1.15, -1.75), (1.15, -1.75), (1.4, -1.1), (1.4, 1.5),
+                                                    (1.0, 2.0), (-1.0, 2.0), (-1.4, 1.5), (-1.4, -1.1)], .5,
+              loc=(0, 1.3, 6.5), rot=(-.12, 0, 0), axis='Z')
+    a.part('Funnel_bands', 'Team', pe).box((3.1, 4.3, .3), loc=(0, 1.0, 5.2), rot=(-.12, 0, 0), bevel=0)
+    K.soot(a, (0, 8.1, 14.2), radius=2.4, k=.55)
+    # The aft mainmast (a tripod with its yard and whips), the Tomahawk armoured box launchers and the Harpoon
+    # canisters on the deckhouse roof, the aircraft crane at the stern.
+    mm = a.part('Mainmast', 'Steel')
+    for leg in ((0, 10.0), (-1.4, 12.2), (1.4, 12.2)):
+        mm.tube([(leg[0], leg[1], 6.25), (0, 10.6, 14.5)], .14, seg=6)
+    mm.box((6.0, .18, .18), loc=(0, 10.6, 13.6), bevel=0)
+    mm.box((3.6, .14, .14), loc=(0, 10.6, 12.2), bevel=0)
+    for x in (-2.8, 2.8):
+        K.whip_antenna(a.part('Antennas', 'Steel'), (x, 10.6, 13.7), h=2.0, lean=.0)
+    K.beacon(a, (0, 10.6, 14.5), r=.1)
+    for s in (-1, 1):
+        for j in range(2):
+            K.chamfer_box(a.part('Abl_launchers', 'Armor'), (1.2, 2.6, .9), loc=(s * 3.4, 18.6 + j * 1.5, 6.7), c=.06)
+            a.part('Abl_lids', 'Team').box((1.25, 2.65, .06), loc=(s * 3.4, 18.6 + j * 1.5, 7.18), bevel=0)
+        hr = a.part('Harpoon_racks', 'Steel')
+        hr.box((.12, 2.8, .7), loc=(s * 1.6, 9.0, 6.6), bevel=0)
+        for j in range(4):
+            k.lathe(a.part('Harpoon_canisters', 'Fuel'), [(.2, -1.3), (.22, -1.25), (.22, 1.25), (.2, 1.3)],
+                    loc=(s * (1.85 + (j % 2) * .45), 9.0, 6.55 + (j // 2) * .45), rot=K.FORWARD, seg=8)
+    cr = a.part('Crane', 'CraneYellow')
+    cr.cyl(.45, 2.6, loc=(-6.0, 30.2, 4.9), seg=10, bevel=0)
+    cr.limb((-6.0, 30.2, 6.0), (-8.4, 35.0, 7.4), .35, .5, bevel=0)        # swung out over the side
+    a.part('Kit_cables', 'Steel').tube([(-8.4, 35.0, 7.3), (-8.4, 35.0, 4.8)], .04, seg=4)
+    a.part('Crane_hook', 'Steel').box((.4, .4, .5), loc=(-8.4, 35.0, 4.6), bevel=0)
+    # The accommodation ladder rigged down the right side, its platform at the waterline.
+    lad = a.part('Accommodation_ladder', 'Steel')
+    lad.tube([(8.2, -8.0, 4.0), (8.3, -12.5, .6)], .06, seg=4)
+    lad.tube([(8.7, -8.0, 4.0), (8.8, -12.5, .6)], .06, seg=4)
+    for j in range(8):
+        f = (j + .5) / 8
+        lad.box((.5, .25, .04), loc=(8.45 + .1 * f, -8.0 - 4.5 * f, 4.0 - 3.4 * f), bevel=0)
+    lad.box((.9, 1.2, .1), loc=(8.5, -13.1, .55), bevel=0)
+    # Boats in their davits on the deckhouse roof aft.
+    for s in (-1, 1):
+        K.rhib(a.part('Boats', 'Armor'), a.part('Boat_tubes', 'Canvas'), (s * 3.3, 13.5, 6.3), length=5.0, beam=1.8)
+        for y in (11.8, 15.2):
+            a.part('Davits', 'Steel').tube([(s * 2.2, y, 6.25), (s * 2.2, y, 7.9), (s * 3.3, y, 8.1)], .08, seg=6)
+
+
+def _lev_aa(a):
+    """The AA sponsons along both sides (Part_aa_l x 6.1 with Mount_mg.002 - .005, Part_aa_r with .006 - .009): the
+    sponson deck and its splinter shield, a triple 25 mm on each mount (Muzzle_mg.NNN at the middle barrel)."""
+    for pname, s, first in (('Part_aa_l', 1, 2), ('Part_aa_r', -1, 6)):
+        p = a.pivot(pname, (s * 6.1, 4.5, 3.96))
+        k.block(a.part(f'Aa_sponson{"_l" if s > 0 else "_r"}', 'Armor', p), (2.4, 21.0, .2), loc=(0, 0, .1),
+                chamfer=.03)
+        k.block(a.part(f'Aa_shield{"_l" if s > 0 else "_r"}', 'Team', p), (.12, 21.0, .8), loc=(s * 1.15, 0, .5),
+                chamfer=.02)
+        for j, y in enumerate((-5.0, 0.0, 8.0, 13.0)):
+            i = first + j
+            m = a.pivot(K.name('Mount_mg', i), (0, y - 4.5, {-5.0: .6, 0.0: .56, 8.0: .49, 13.0: .44}[y]), p)
+            tg = f'_{i:03d}'
+            k.lathe(a.part(f'Aa_mount{tg}', 'Armor', m), [(.5, -.25), (.5, -.15), (.38, -.05), (.32, .15)], seg=10)
+            k.block(a.part(f'Aa_shield{tg}', 'Team', m), (.9, .06, .45), loc=(0, -.4, .25), rot=(-.25, 0, 0),
+                    chamfer=.012)
+            for dx in (-.15, 0, .15):
+                k.lathe(a.part(f'Aa_guns{tg}', 'Steel', m), [(.04, 0), (.04, .25), (.028, .28), (.028, 1.3),
+                                                             (.04, 1.32), (.04, 1.4), (0, 1.41)],
+                        loc=(dx, -.35, .42), rot=K.FORWARD, seg=6)
+            a.pivot(K.name('Muzzle_mg', i), (0, -1.75, .42), m)
+
+
+def _lev_aft(a):
+    """The aft decks: the flight deck (Part_deck) with its markings, edge nets and lights; the stern gate of the well
+    deck (Part_welldeck) with its hinges and the ensign staff."""
+    pd = a.pivot('Part_deck', (0, 36.0, 3.57))
+    a.part('Flight_deck', 'Asphalt', pd).box((12.6, 11.0, .1), loc=(0, .5, .05), bevel=0)
+    mk = a.part('Deck_markings', 'PlasterWhite', pd)
+    k.ring(mk, [(2.4, 0), (2.7, 0), (2.7, .02), (2.4, .02)], loc=(0, .5, .1), seg=24)
+    for x in (-.9, .9):
+        mk.box((.4, 2.6, .02), loc=(x, .5, .11), bevel=0)
+    mk.box((1.4, .4, .02), loc=(0, .5, .11), bevel=0)
+    for s in (-1, 1):
+        mk.box((.15, 10.0, .02), loc=(s * 5.9, .5, .11), bevel=0)
+        a.part('Deck_nets', 'Steel', pd).box((.6, 10.6, .05), loc=(s * 6.6, .5, -.1), rot=(0, s * .3, 0), bevel=0)
+        for y in (-4.0, -1.0, 2.0, 5.0):
+            a.part('Deck_lights', 'Lamp', pd).cyl(.08, .06, loc=(s * 6.1, y, .12), seg=6, bevel=0)
+    a.part('Team_band', 'Team', pd).box((12.6, .3, .03), loc=(0, -4.9, .11), bevel=0)
+    pw = a.pivot('Part_welldeck', (0, 42.75, 1.9))
+    k.block(a.part('Stern_gate', 'Armor', pw), (6.0, .3, 3.0), loc=(0, 1.2, -.2), chamfer=.04)
+    for x in (-2.0, 2.0):
+        a.part('Gate_hinges', 'Steel', pw).cyl(.15, .5, loc=(x, 1.25, -1.6), rot=(0, R90, 0), seg=8, bevel=0)
+    a.part('Gate_frame', 'Hazard', pw).box((6.4, .1, .2), loc=(0, 1.35, 1.25), bevel=0)
+    a.part('Ensign_staff', 'Steel', pw).cyl(.05, 3.0, loc=(0, 1.0, 3.2), seg=6, bevel=0)
+    a.part('Ensign', 'Team', pw).box((.02, 1.2, .8), loc=(0, 1.6, 4.2), bevel=0)
+
+
 BUILDERS = {
     'behemoth': (behemoth, dict(ao_distance=.9, grime_height=.8, ao_strength=.72)),
     'mobile_fortress': (mobile_fortress, dict(ao_distance=1.1, grime_height=1.0, ao_strength=.7)),
     'armored_train': (armored_train, dict(ao_distance=.8, grime_height=.7, ao_strength=.72)),
+    'leviathan': (leviathan, dict(ao_distance=1.6, grime_height=1.0, ao_strength=.75)),
 }

@@ -1,0 +1,305 @@
+{
+ "id": "leviathan",
+ "class": "boss",
+ "frame": "ship",
+ "real": [
+  "Iowa-class modernised in the 1980s (Mk 7 406 mm triples, ABL Tomahawk boxes, Harpoon, CIWS)",
+  "Kirov-class launch cells"
+ ],
+ "shape": "unit_sheet Boss: 'Thiet giap ham lop Iowa hien dai hoa, them be phong thang dung kieu Kirov.' Bossfile: three triple 406 mm turrets, a pagoda tower, launch cells by the funnel, a well deck.",
+ "confidence": "tham_khao_thuc (Iowa layout; every part node and mount place of the old file kept, the sea-boss gold set)",
+ "target_size": {
+  "L": 87.1,
+  "W": 16.5,
+  "H": 25.4,
+  "source": "the old GLB (87.1 x 16.5 x 25.4 from the keel)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "long lofted hull with the clipper bow, flare and sheer, belt, boot top, teak deck with seams",
+   "nodes": [
+    "Hull",
+    "Armor_belt",
+    "Boot_top",
+    "Deck",
+    "Deck_seams"
+   ]
+  },
+  {
+   "feature": "three triple 406 mm turrets on barbettes (Part_gun > Mount_gun), blast bags, rangefinders, per-barrel muzzles",
+   "nodes": [
+    "Part_gun",
+    "Part_gun.001",
+    "Part_gun.002",
+    "Mount_gun",
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Gun_house",
+    "Gun_barrels",
+    "Blast_bags",
+    "Muzzle_b1_gun",
+    "Muzzle_b3_gun"
+   ]
+  },
+  {
+   "feature": "two raised triple 155 mm turrets (Part_sec_f / Part_sec_a)",
+   "nodes": [
+    "Part_sec_f",
+    "Part_sec_a",
+    "Mount_gun.003",
+    "Mount_gun.004",
+    "Sec_house",
+    "Sec_barrels"
+   ]
+  },
+  {
+   "feature": "deckhouse, armoured conning tower with the bridge, the pagoda tower with platforms, yard and whips",
+   "nodes": [
+    "Deckhouse",
+    "Superstructure",
+    "Bridge",
+    "Tower",
+    "Tower_platforms",
+    "Windows",
+    "Portholes"
+   ]
+  },
+  {
+   "feature": "tower top with the radar mast and the spinning array (Part_radar > Radar), dishes, APS launchers",
+   "nodes": [
+    "Part_radar",
+    "Radar",
+    "Radar_array",
+    "Radar_mast",
+    "Dishes",
+    "Mount_APS",
+    "Aps_launchers"
+   ]
+  },
+  {
+   "feature": "funnel (Part_engine), launch cells (Part_vls), ABL boxes, Harpoon canisters, the mainmast, boats in davits",
+   "nodes": [
+    "Part_engine",
+    "Funnel",
+    "Part_vls",
+    "Vls",
+    "Abl_launchers",
+    "Harpoon_canisters",
+    "Mainmast",
+    "Boats",
+    "Davits"
+   ]
+  },
+  {
+   "feature": "CIWS on sponsons (Part_mg / .001) and the AA sponsons with triple 25 mm (Part_aa_l / _r)",
+   "nodes": [
+    "Part_mg",
+    "Part_mg.001",
+    "Mount_mg",
+    "Mount_mg.001",
+    "Part_aa_l",
+    "Part_aa_r",
+    "Aa_guns"
+   ]
+  },
+  {
+   "feature": "flight deck (Part_deck), stern gate of the well deck (Part_welldeck), crane, deck fittings",
+   "nodes": [
+    "Part_deck",
+    "Flight_deck",
+    "Part_welldeck",
+    "Stern_gate",
+    "Crane",
+    "Railings",
+    "Bollards",
+    "Anchors",
+    "Winch",
+    "Vents",
+    "Hatches"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_leviathan_lev406",
+   "slot": "mount 0",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_lev406",
+   "slot": "mount 1",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_lev406",
+   "slot": "mount 2",
+   "mount": "Mount_gun.002",
+   "muzzles": [
+    "Muzzle_gun.002"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_sec_lev155",
+   "slot": "mount 3",
+   "mount": "Mount_gun.003",
+   "muzzles": [
+    "Muzzle_gun.003"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_sec_lev155",
+   "slot": "mount 4",
+   "mount": "Mount_gun.004",
+   "muzzles": [
+    "Muzzle_gun.004"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_direct_lev127",
+   "slot": "mount 5",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_direct_lev127",
+   "slot": "mount 6",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "armour belt (Team)",
+  "turret houses, deckhouse, tower (Team)",
+  "funnel band, roof bands, ensign (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "turret_fore",
+   "node": "Part_gun"
+  },
+  {
+   "part": "turret_super",
+   "node": "Part_gun.001"
+  },
+  {
+   "part": "turret_aft",
+   "node": "Part_gun.002"
+  },
+  {
+   "part": "sec_fore",
+   "node": "Part_sec_f"
+  },
+  {
+   "part": "sec_aft",
+   "node": "Part_sec_a"
+  },
+  {
+   "part": "vls",
+   "node": "Part_vls"
+  },
+  {
+   "part": "aa_port",
+   "node": "Part_aa_l"
+  },
+  {
+   "part": "aa_starboard",
+   "node": "Part_aa_r"
+  },
+  {
+   "part": "ciws_fore",
+   "node": "Part_mg"
+  },
+  {
+   "part": "ciws_aft",
+   "node": "Part_mg.001"
+  },
+  {
+   "part": "radar",
+   "node": "Part_radar"
+  },
+  {
+   "part": "flight_deck",
+   "node": "Part_deck"
+  },
+  {
+   "part": "well_deck",
+   "node": "Part_welldeck"
+  },
+  {
+   "part": "machinery",
+   "node": "Part_engine"
+  }
+ ],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "deckhouse",
+   "tower",
+   "three main turrets"
+  ],
+  "tier2": [
+   "secondary turrets",
+   "funnel",
+   "mainmast",
+   "boats",
+   "AA sponsons",
+   "flight deck",
+   "crane",
+   "barrels",
+   "rails"
+  ],
+  "tier3": [
+   "portholes",
+   "windows",
+   "bollards",
+   "vents",
+   "VLS lids",
+   "Harpoons",
+   "AA guns",
+   "lights",
+   "anchors",
+   "ladders"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the three main turrets (each breaks its three shells off the broadside)",
+   "the pagoda tower's radar",
+   "the funnel and the launch cells beside it"
+  ],
+  "how_to_fight": "the def's parts; NavalSystem.PreviewSalvo lays the maingun parts by Part_gun / Mount_gun; scylla keeps turret_fore, vls and ciws_fore"
+ },
+ "questions": []
+}
