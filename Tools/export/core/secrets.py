@@ -46,9 +46,45 @@ def scan_text(text: str, where: str, hits: list):
             hits.append((where, "local_user_name", user[:2] + "…"))
 
 
+PNG_MAGIC = bytes([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A])
+JPEG_START = bytes([0xFF, 0xD8])
+JPEG_SCAN = bytes([0xFF, 0xDA])
+PNG_TEXT = (b"tEXt", b"iTXt", b"eXIf")
+
+
+def image_meta(data: bytes, suffix: str) -> str | None:
+    """A PNG's or JPEG's metadata only (a PNG's text and EXIF chunks, zTXt inflated; a JPEG's segments before its scan
+    data), as Latin-1; None for anything else. The bomb-run fix, pass 4: the compressed pixels read raw matched the email
+    pattern by chance (e.g. "PK@Oh.cR" in a model sheet), a false hit in every export with pictures; the metadata (where an
+    EXIF path or an author's address would sit) is still read in full."""
+    if suffix == ".png" and data[:8] == PNG_MAGIC:
+        out, i = [], 8
+        while i + 8 <= len(data):
+            size = int.from_bytes(data[i:i + 4], "big")
+            kind = data[i + 4:i + 8]
+            body = data[i + 8:i + 8 + size]
+            if kind in PNG_TEXT:
+                out.append(body.decode("latin-1"))
+            elif kind == b"zTXt":
+                key, _, rest = body.partition(bytes([0]))
+                try:
+                    out.append(key.decode("latin-1") + " " + zlib.decompress(rest[1:]).decode("latin-1"))
+                except zlib.error:
+                    out.append(body.decode("latin-1"))
+            if kind == b"IEND":
+                break
+            i += 12 + size
+        return "\n".join(out)
+    if suffix in (".jpg", ".jpeg") and data[:2] == JPEG_START:
+        scan = data.find(JPEG_SCAN)
+        return data[:scan if scan > 0 else len(data)].decode("latin-1")
+    return None
+
+
 def scan_file(p: Path, where: str, hits: list):
-    """Every output file (spec 9.9): zip parts (xlsx / docx) one by one, PDF streams inflated, text as UTF-8, anything
-    else (images, fonts) as Latin-1 so metadata such as an EXIF path is still read."""
+    """Every output file (spec 9.9): zip parts (xlsx / docx) one by one, PDF streams inflated, text as UTF-8, PNG / JPEG
+    pictures by their metadata (image_meta), anything else (fonts) as Latin-1 so metadata such as an EXIF path is still
+    read."""
     suffix = p.suffix.lower()
     data = p.read_bytes()
     if suffix in (".xlsx", ".docx", ".pptx", ".zip") and zipfile.is_zipfile(p):
@@ -65,6 +101,8 @@ def scan_file(p: Path, where: str, hits: list):
             scan_text(body.decode("latin-1"), f"{where}:stream{i}", hits)
     elif suffix in TEXT:
         scan_text(data.decode("utf-8", "replace"), where, hits)
+    elif (meta := image_meta(data, suffix)) is not None:
+        scan_text(meta, where, hits)
     else:
         scan_text(data.decode("latin-1"), where, hits)
 

@@ -15,5 +15,8 @@ Full fix L10 (sections 10j and 21 A-E, `Tools/docs/fix_full.py`) also reads, whe
   `fx/<key>/fire_0s.png`, `fire_0.2s.png`, `fire_1s.png`, `impact_0s.png`, `impact_0.5s.png`, `impact_2s.png`,
   `impact_10s.png`, `impact_30s.png`, plus `salvo.png` and `salvo_impact.png` for a multi-barrel gun; `<key>` is
   `tier_T0` ... `tier_T5` or a weapon id.
+  The bomb-run fix (section 22, `Tools/docs/bomb_run.py`) adds `fx/stick_heavy_bomber/` and `fx/stick_command_airship/`:
+  `before_impact_0s.png`, `before_impact_1s.png`, `before_impact_3s.png`, `after_impact_0s.png`, `after_impact_1s.png`,
+  `after_impact_3s.png` (`-mbFxIds sticks` renders only these and keeps the other keys in `index.json`).
 - `scan/` = a copy of the runner's `Builds/scan` (ModelScan: `<model>.png`, `<model>_old.png`).
 - `scan_after/` = a copy of the runner's `Builds/scan_after` (ModelScan after the L8 rebuilds).

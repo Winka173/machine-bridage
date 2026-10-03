@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using MachineBrigade.Game.Audio;
 using MachineBrigade.Game.Effects;
+using MachineBrigade.Game.Hud;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Game.Rendering;
 using MachineBrigade.Sim.Content;
@@ -190,6 +191,40 @@ namespace MachineBrigade.Tests
             gate.OfferRect(stick, Vector3.zero, Vector3.right, 40f, 12f, WarningKind.Round);
             gate.Resolve(null, Vector3.zero);
             Assert.IsFalse(gate.Shown(stick, WarningKind.Round), "Off: no rectangle (only the super weapons stay)");
+        }
+
+        [Test, Category("BombStick")]
+        public void TheAircraftCardsSayTheirStickFromTheData()
+        {
+            var c = Shipped;
+            var was = Strings.Vietnamese;
+            try
+            {
+                foreach (var id in new[] { "heavy_bomber", "attack_jet", "elite_attack_jet" })
+                {
+                    var stick = StickLines.StickOf(c.Vehicles[id]);
+                    Assert.IsNotNull(stick, id + " lays a stick");
+                    var length = (stick.Bombs - 1) * stick.Spacing;
+                    Strings.Vietnamese = true;
+                    var vi = Strings.Get("guide." + id);
+                    StringAssert.Contains($"thả {stick.Bombs} quả", vi, id + " (vi)");
+                    StringAssert.Contains(StickLines.Words(stick, true), vi, id + " (vi): the count, spacing and length from the data");
+                    Assert.Greater(length, 0f, id + ": a stick has a length");
+                    StringAssert.DoesNotContain("{{", vi, id + " (vi): no placeholder left");
+                    Strings.Vietnamese = false;
+                    var en = Strings.Get("guide." + id);
+                    StringAssert.Contains(StickLines.Words(stick, false), en, id + " (en)");
+                    StringAssert.DoesNotContain("{{", en, id + " (en): no placeholder left");
+                }
+                Strings.Vietnamese = true;
+                StringAssert.DoesNotContain("12 quả", Strings.Get("guide.heavy_bomber"), "the stale twelve bombs are gone");
+                Strings.Vietnamese = false;
+                StringAssert.DoesNotContain("twelve", Strings.Get("guide.heavy_bomber"));
+            }
+            finally
+            {
+                Strings.Vietnamese = was;
+            }
         }
 
         [Test, Category("BombStick")]

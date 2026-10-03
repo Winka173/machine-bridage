@@ -18622,3 +18622,38 @@ written, not run).
   shock and dust rings on the edge, crater, rocking, EffectLife smoke): every bomb of a stick keeps its whole tier look;
   only the overlay and lingering smoke of the far bombs of a long stick step down, and only before the tier budget counts
   them, so the bombs where the player looks keep the full-detail slots (T4: 3 at once, weight 12).
+
+## Ném bom rải thảm (pass 4, lane B, 2026-10-03)
+Docs and report (spec pass 4), branch feature/bomb-p34. Not compiled or run here; the export tool was run (coverage 0
+unmapped, check below).
+- **Export**: the bomb export stays its own folder (`export.py bom`, Docs/export/bom_<date>/: the six Bom_* sheets, md,
+  BOM_REPORT.md) and file 01_vu_khi_dan links it: new sheet Bom_rai_tham, one row per weapon with a stick (che_do_tha,
+  cach_tha, n, spacing, length, interval, overlap, width, warning shape, carriers, the card's words EN / VI, the bomb
+  export's files). Its values are set without source paths (the stick leaves are already mapped by Vu_khi), so coverage
+  and the foreign keys are untouched; the md follows from the csv. Merging the Bom_* sheets into file 01 would have mapped
+  the stick leaves twice and dragged the Unity trace into the full export.
+- **bom.py compare_rows**: per weapon and carrier, the 3-seed means before (vet_tha_truoc_luot2.csv) and after
+  (vet_tha_unity.csv): distinct points, stick length, vehicles hit in the row and the cluster (the spec's two standard
+  formations). Read by the PDF and the report.
+- **PDF**: Tools/docs/bomb_run.py, section 22 "Ném bom rải thảm" after the appendix (build_doc.py): the stick parameter
+  table from balance.json (weapons[*].stick after inherits; carriers from game.json; the card's words), the before / after
+  table, and the stick pictures fx/stick_heavy_bomber/ and fx/stick_command_airship/ ({before,after}_impact_{0,1,3}s.png),
+  a grey "shot pending" box for a missing one (fix_full._shot).
+- **Pictures** (EffectShots.Sticks.cs, FxBatch): keys stick_heavy_bomber (bomber_payload) and stick_command_airship
+  (p26_roc_main_roc_bombs); each stick laid twice on the metre grid along the screen's diagonal, an MBT beside it, each
+  bomb's core and edge rings: before (the bomber's release speed x burst interval, 3.5 m; a boss bay's eight on one point
+  in a small scatter) and after (the data's spacing, a small schematic jitter), landing one gap after another (burst
+  interval before, stick interval after) as EffectsDirector draws a bomb (FxImpact); the bomber flown past its stick end,
+  the airship off to the side. FxRender's frame loop moved into FxShoot (shared). A run for some keys (-mbFxIds) now keeps
+  the other keys' entries in index.json (FxKeptEntries). Unity (the lead renders):
+  `Unity.exe -batchmode -force-d3d11 -quit -projectPath <repo> -executeMethod MachineBrigade.Editor.EffectShots.FxBatch -mbFxOut <repo>\Builds\effect_shots -mbFxIds sticks -logFile <tmp>\fx_sticks.log`, then copy Builds/effect_shots to <imgdir>/fx (Docs/doc-images/README.md)
+- **Cards**: GuideText writes {{stick}} where the heavy bomber, the attack jet and the elite attack jet name their bombs;
+  Strings.Get fills it through StickLines (Game/Hud/StickLines.cs) from the unit's first stick weapon: "thả 7 quả, cách
+  nhau 11 m, dải 66 m" / "7 bombs 11 m apart, a 66 m stick". The stale "12 quả" / "twelve heavy bombs" are gone (EN and
+  VI). The export's guide sheets show the raw {{stick}}, as they already show the supports' {{count}}.
+- **Report**: Docs/fixes/report_bomb_run.md (cause, before / after, weapons changed, own decisions, what to look at).
+- **export.py check**: passes (coverage, foreign keys, determinism, secrets; run on this branch into a temp folder). The
+  secret scan read PNG / JPEG pictures raw and matched the email pattern in compressed pixels of seven model sheets
+  (Docs/models pictures copied into 10_model_tai_san: "PK@Oh.cR"); core/secrets.py now reads a picture's metadata only
+  (PNG text / EXIF chunks, a JPEG's segments before its scan data), where a path or address would actually sit.
+- **Tests** (written, not run): BombStickViewTests.TheAircraftCardsSayTheirStickFromTheData.

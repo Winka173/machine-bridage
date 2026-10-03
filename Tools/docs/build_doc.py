@@ -28,6 +28,7 @@ import prompt32_base  # noqa: E402
 import prompt34  # noqa: E402
 import prompt33  # noqa: E402
 import fix_full  # noqa: E402
+import bomb_run  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
@@ -865,6 +866,8 @@ def build(game, imgdir):
     out.append(programme.gallery(game, h, imgdir))
     # Full fix L10 and the owner's PDF rules A-E (02/10): the weapon table, the bosses, effects with shots, audio, models.
     out.append(fix_full.appendix(game, h, imgdir))
+    # The bomb-run fix, pass 4: the stick parameters, before / after and the stick pictures (bomb_run.py).
+    out.append(bomb_run.section(game, h, imgdir))
     if history:
         out.append("<div class='section'><h2>Phụ lục: Lịch sử đo</h2><p>Các bảng đo dưới đây đo trên dữ liệu hoặc luật khác bản hiện tại "
                    f"(prompt 29 R10). Bảng 9b: {esc(measure_stamp.describe(prompt25.measure_path()))}. Bảng 2b: đo tay ở prompt 13, không có dấu hash.</p></div>")
