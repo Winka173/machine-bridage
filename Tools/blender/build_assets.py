@@ -97,6 +97,26 @@ import mb_p35_wave2_shield  # noqa: E402
 import mb_p35_wave2_branches  # noqa: E402
 import mb_p35_wave2_support  # noqa: E402
 import mb_p35_trims  # noqa: E402
+import mb_p35_wall_hesco  # noqa: E402
+import mb_p35_wall_gun  # noqa: E402
+import mb_p35_wall_t  # noqa: E402
+import mb_p35_blast_wall  # noqa: E402
+import mb_p35_aa_gun_tower  # noqa: E402
+import mb_p35_at_gun_emplacement  # noqa: E402
+import mb_p35_heavy_flak_tower  # noqa: E402
+import mb_p35_searchlight  # noqa: E402
+import mb_p35_one_shot_atgm_tower  # noqa: E402
+import mb_p35_laser_ad_station  # noqa: E402
+import mb_p35_fire_control_centre  # noqa: E402
+import mb_p35_troop_shelter  # noqa: E402
+import mb_p35_bunker_shelter_tower  # noqa: E402
+import mb_p35_inflatable_decoy  # noqa: E402
+import mb_p35_barrage_balloon  # noqa: E402
+import mb_p35_super_gun  # noqa: E402
+import mb_p35_ifv  # noqa: E402
+import mb_p35_light_tank  # noqa: E402
+import mb_p35_engineer_vehicle  # noqa: E402
+import mb_p35_mortar_carrier  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -218,7 +238,17 @@ def all_builders():
                 **mb_p35_wave2_atgm.BUILDERS, **mb_p35_wave2_guns.BUILDERS,
                 **mb_p35_wave2_heavy.BUILDERS, **mb_p35_wave2_hangar.BUILDERS,
                 **mb_p35_wave2_shield.BUILDERS, **mb_p35_wave2_branches.BUILDERS,
-                **mb_p35_wave2_support.BUILDERS}
+                **mb_p35_wave2_support.BUILDERS,
+                # Prompt 35 wave 3, lane B (DECISIONS "Prompt 35 wave 3 (lane B)"): walls, towers, structures and four
+                # vehicles rebuilt from scratch, one builder each (last, so they win).
+                **mb_p35_wall_hesco.BUILDERS, **mb_p35_wall_gun.BUILDERS, **mb_p35_wall_t.BUILDERS,
+                **mb_p35_blast_wall.BUILDERS, **mb_p35_aa_gun_tower.BUILDERS, **mb_p35_at_gun_emplacement.BUILDERS,
+                **mb_p35_heavy_flak_tower.BUILDERS, **mb_p35_searchlight.BUILDERS,
+                **mb_p35_one_shot_atgm_tower.BUILDERS, **mb_p35_laser_ad_station.BUILDERS,
+                **mb_p35_fire_control_centre.BUILDERS, **mb_p35_troop_shelter.BUILDERS,
+                **mb_p35_bunker_shelter_tower.BUILDERS, **mb_p35_inflatable_decoy.BUILDERS,
+                **mb_p35_barrage_balloon.BUILDERS, **mb_p35_super_gun.BUILDERS, **mb_p35_ifv.BUILDERS,
+                **mb_p35_light_tank.BUILDERS, **mb_p35_engineer_vehicle.BUILDERS, **mb_p35_mortar_carrier.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

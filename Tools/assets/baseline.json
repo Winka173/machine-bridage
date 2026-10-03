@@ -2852,6 +2852,26 @@
    "changes": [
     "mortar_carrier: fileBytes 595,828 -> 595,820 (-0.0%)"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "barrage_balloon",
+    "bunker_shelter_tower",
+    "fire_control_centre",
+    "laser_ad_station",
+    "super_gun",
+    "troop_shelter"
+   ],
+   "reason": "P35 wave 3: rebuilt on the merged kit35 (door frame fix)",
+   "changes": [
+    "barrage_balloon: fileBytes 264,748 -> 264,732 (-0.0%)",
+    "bunker_shelter_tower: fileBytes 359,324 -> 359,328 (+0.0%)",
+    "fire_control_centre: fileBytes 408,872 -> 408,852 (-0.0%)",
+    "laser_ad_station: fileBytes 465,324 -> 465,328 (+0.0%)",
+    "super_gun: bytes only",
+    "troop_shelter: bytes only"
+   ]
   }
  ],
  "models": {
@@ -9245,8 +9265,8 @@
   },
   "barrage_balloon": {
    "file": "barrage_balloon.glb",
-   "fileBytes": 264748,
-   "sha1": "53d34fcabf283c17",
+   "fileBytes": 264732,
+   "sha1": "c71cff088978b197",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 32,
@@ -9268,9 +9288,9 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 110,
+   "loosePieces": 108,
    "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "nonManifoldEdges": 2,
    "boundsMin": [
     -2.0603,
     -0.013,
@@ -9293,10 +9313,10 @@
    ],
    "structureHash": "7f91f027681c3a26",
    "color0": {
-    "mean": 0.6163,
+    "mean": 0.6173,
     "min": 0.0537,
     "max": 0.9987,
-    "p05": 0.1498,
+    "p05": 0.1546,
     "p95": 0.8137,
     "outOfRange": 0
    },
@@ -11625,8 +11645,8 @@
   },
   "bunker_shelter_tower": {
    "file": "bunker_shelter_tower.glb",
-   "fileBytes": 359324,
-   "sha1": "6ec8dbc57383adee",
+   "fileBytes": 359328,
+   "sha1": "9cf47e7a3015c332",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -11650,9 +11670,9 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 171,
+   "loosePieces": 169,
    "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "nonManifoldEdges": 2,
    "boundsMin": [
     -2.575,
     -0.0167,
@@ -11675,11 +11695,11 @@
    ],
    "structureHash": "47c1e39ae513be99",
    "color0": {
-    "mean": 0.5758,
+    "mean": 0.576,
     "min": 0.0554,
     "max": 1.0,
-    "p05": 0.2051,
-    "p95": 0.9381,
+    "p05": 0.2112,
+    "p95": 0.9375,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -25076,8 +25096,8 @@
   },
   "fire_control_centre": {
    "file": "fire_control_centre.glb",
-   "fileBytes": 408872,
-   "sha1": "4a053154d8796462",
+   "fileBytes": 408852,
+   "sha1": "7808d3f53976e603",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 43,
@@ -25099,9 +25119,9 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 232,
+   "loosePieces": 230,
    "openEdges": 16,
-   "nonManifoldEdges": 0,
+   "nonManifoldEdges": 2,
    "boundsMin": [
     -3.0142,
     -0.0237,
@@ -25124,10 +25144,10 @@
    ],
    "structureHash": "e62d5c52eb93abea",
    "color0": {
-    "mean": 0.5762,
+    "mean": 0.5758,
     "min": 0.0551,
     "max": 0.9987,
-    "p05": 0.1356,
+    "p05": 0.1366,
     "p95": 0.8899,
     "outOfRange": 0
    },
@@ -35907,8 +35927,8 @@
   },
   "laser_ad_station": {
    "file": "laser_ad_station.glb",
-   "fileBytes": 465324,
-   "sha1": "d767ec481ea5e9f2",
+   "fileBytes": 465328,
+   "sha1": "50b465c99d8eae5d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -35932,9 +35952,9 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 259,
+   "loosePieces": 257,
    "openEdges": 28,
-   "nonManifoldEdges": 0,
+   "nonManifoldEdges": 2,
    "boundsMin": [
     -1.999,
     0.0,
@@ -35957,10 +35977,10 @@
    ],
    "structureHash": "e731a95c46ef0c6b",
    "color0": {
-    "mean": 0.5564,
+    "mean": 0.5573,
     "min": 0.0623,
     "max": 1.0,
-    "p05": 0.1388,
+    "p05": 0.1382,
     "p95": 0.8137,
     "outOfRange": 0
    },
@@ -53007,7 +53027,7 @@
   "super_gun": {
    "file": "super_gun.glb",
    "fileBytes": 530052,
-   "sha1": "4efabdb6485d8368",
+   "sha1": "cf4b5ebaf3fb69b4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -53031,9 +53051,9 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 221,
+   "loosePieces": 219,
    "openEdges": 8,
-   "nonManifoldEdges": 0,
+   "nonManifoldEdges": 2,
    "boundsMin": [
     -3.6664,
     0.0,
@@ -53056,10 +53076,10 @@
    ],
    "structureHash": "754e28115bcca434",
    "color0": {
-    "mean": 0.603,
+    "mean": 0.6055,
     "min": 0.0674,
     "max": 1.0,
-    "p05": 0.1557,
+    "p05": 0.1634,
     "p95": 0.9119,
     "outOfRange": 0
    },
@@ -55789,7 +55809,7 @@
   "troop_shelter": {
    "file": "troop_shelter.glb",
    "fileBytes": 295336,
-   "sha1": "b98800ba9738f997",
+   "sha1": "8042b8a2486883e4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -55813,9 +55833,9 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 152,
+   "loosePieces": 150,
    "openEdges": 4,
-   "nonManifoldEdges": 0,
+   "nonManifoldEdges": 2,
    "boundsMin": [
     -2.475,
     -0.0228,
@@ -55838,10 +55858,10 @@
    ],
    "structureHash": "10b8873c8a3b5e59",
    "color0": {
-    "mean": 0.5812,
+    "mean": 0.5843,
     "min": 0.0603,
     "max": 1.0,
-    "p05": 0.1221,
+    "p05": 0.1291,
     "p95": 0.9634,
     "outOfRange": 0
    },
