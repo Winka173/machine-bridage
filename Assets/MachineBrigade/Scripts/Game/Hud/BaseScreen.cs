@@ -117,8 +117,13 @@ namespace MachineBrigade.Game.Hud
 
             // Top: the HQ's level, the map, the three plans, Auto-arrange, "Saved".
             var bar = Kit.Box("fc-base__bar");
-            // Prompt 32 L4: a tap on the HQ changes its type (Fortress ground / anti-air, Garrison, Shield), free.
-            _hq = Kit.Tappable("fc-base__hq", CycleHqType);
+            // Prompt 32 L4: the HQ's type (Fortress ground / anti-air, Garrison, Shield), free. Play-test 14: chosen on the HQ tab;
+            // a tap on the HQ here opens it.
+            _hq = Kit.Tappable("fc-base__hq", () =>
+            {
+                if (OpenHq != null) OpenHq();
+                else CycleHqType();
+            });
             _hq.Add(Kit.Icon(TowerIcons.For("headquarters") ?? "hq", "fc-base__hq-icon"));
             var hqText = Kit.Box("fc-base__hq-text");
             _hqTitle = Kit.Text("", "fc-panel-title fc-row-text");
@@ -138,7 +143,7 @@ namespace MachineBrigade.Game.Hud
                 _wallChips[i].Add(_wallLabels[i]);
                 walls.Add(_wallChips[i]);
             }
-            bar.Add(walls);
+            // Play-test 14: the wall lines are chosen on the HQ tab (the bar wrapped onto a second row and squeezed the map).
             _dropHost = Kit.Box("fc-base__map-pick");
             bar.Add(_dropHost);
             var plans = Kit.Box("fc-base__plans");
@@ -189,13 +194,16 @@ namespace MachineBrigade.Game.Hud
 
             var panel = Kit.Box(KitPanel.SurfaceClass + " fc-base__panel", PickingMode.Position);
             var panelScroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-base__panel-scroll");
-            _panelBody = panelScroll.contentContainer;
+            _panelBody = Kit.Box("fc-base__panel-body");
+            panelScroll.Add(_panelBody);
             panel.Add(panelScroll);
             body.Add(panel);
             Root.Add(body);
 
-            _strip = Kit.Box(KitPanel.SurfaceClass + " fc-base__strip");
-            Root.Add(_strip);
+            // Play-test 14: the base's cover and strength sit under the panel, in its scroll (a fixed strip along the bottom
+            // took the map's height on a phone and hid the panel's text behind it).
+            _strip = Kit.Box("fc-base__strip");
+            panelScroll.Add(_strip);
 
             // What follows the finger while a tower is dragged.
             _ghost = Kit.Box(KitPanel.SurfaceClass + " fc-base__ghost");
@@ -218,6 +226,9 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>A structure's detail page asked for: set by the menu.</summary>
         internal Action<string> OpenDetail { get; set; }
+
+        /// <summary>Play-test 14: opens the Army page's HQ tab (the HQ's type, its called unit, the hangars, the walls).</summary>
+        internal Action OpenHq { get; set; }
 
         internal string MapId => _mapId;
         internal IReadOnlyList<SlotView> CampSlots => _slots;

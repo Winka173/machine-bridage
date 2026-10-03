@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Match
         public const int GemToCoins = 15;
 
         /// <summary>The roster the save is in (see <see cref="Data.rosterVersion"/> and <see cref="CardMerges"/>).</summary>
-        internal const int RosterVersion = 8;
+        internal const int RosterVersion = 9;
 
         /// <summary>
         /// Moves progress off the cards folded into others or retired (once per save). A merged
@@ -125,7 +125,67 @@ namespace MachineBrigade.Game.Match
                 foreach (var id in Progression.FormerStarters)
                     if (!d.unlocked.Contains(id) && !d.owned.Contains(id)) d.unlocked.Add(id);
             if (d.rosterVersion < 7) MigrateTowerRoster(d);
+            if (d.rosterVersion < 9) MigratePlaytest14(d);
             d.rosterVersion = RosterVersion;
+        }
+
+        /// <summary>
+        /// Version 9 (play-test 14, Docs/fixes/playtest14_deleted.md): the deleted units, supports and structures. A card
+        /// bought with coins pays its price back (<see cref="CardMerges.DeletedPt14"/>), the coins its rank cost come back and
+        /// its blueprints turn universal; a deleted structure leaves every base slot, utility slot and map set-up empty and a
+        /// branch chosen on it is dropped; gunship items still in the bag come back as coins. The menu's roster notice says
+        /// how many coins came back.
+        /// </summary>
+        private static void MigratePlaytest14(Data d)
+        {
+            var refund = 0;
+            foreach (var pair in CardMerges.DeletedPt14)
+            {
+                var gone = pair.Key;
+                if (d.owned.RemoveAll(id => id == gone) > 0) refund += pair.Value;
+                d.unlocked.RemoveAll(id => id == gone);
+                var i = d.rankIds.IndexOf(gone);
+                if (i >= 0)
+                {
+                    var rank = Mathf.Clamp(i < d.ranks.Count ? d.ranks[i] : 1, 1, CardRanks.Max);
+                    refund += CardRanks.CoinsSpent(rank);
+                    d.universal += (i < d.prints.Count ? d.prints[i] : 0) + CardRanks.BlueprintsSpent(rank);
+                    d.rankIds.RemoveAt(i);
+                    if (i < d.ranks.Count) d.ranks.RemoveAt(i);
+                    if (i < d.prints.Count) d.prints.RemoveAt(i);
+                }
+                EmptyTower(d, gone);
+                if (d.baseUtilities != null)
+                    for (var k = 0; k < d.baseUtilities.Count; k++)
+                        if (d.baseUtilities[k] == gone) d.baseUtilities[k] = Sim.Modes.BaseLoadout.Empty;
+                for (var k = d.branchTowers.Count - 1; k >= 0; k--)
+                {
+                    if (d.branchTowers[k] != gone) continue;
+                    d.branchTowers.RemoveAt(k);
+                    if (k < d.branchChoices.Count) d.branchChoices.RemoveAt(k);
+                }
+                d.freeBranchSwaps?.Remove(gone);
+                d.branchNews?.Remove(gone);
+            }
+            for (var k = d.branchChoices.Count - 1; k >= 0; k--)
+            {
+                if (Array.IndexOf(CardMerges.RetiredBranchesPt14, d.branchChoices[k]) < 0) continue;
+                d.branchChoices.RemoveAt(k);
+                if (k < d.branchTowers.Count) d.branchTowers.RemoveAt(k);
+            }
+            var item = d.itemIds.IndexOf(CardMerges.DeletedItemPt14);
+            if (item >= 0)
+            {
+                if (item < d.itemCounts.Count)
+                {
+                    refund += Math.Max(0, d.itemCounts[item]) * CardMerges.DeletedItemPricePt14;
+                    d.itemCounts.RemoveAt(item);
+                }
+                d.itemIds.RemoveAt(item);
+            }
+            if (refund <= 0) return;
+            d.coins += refund;
+            _rosterRefund += refund;
         }
 
         /// <summary>

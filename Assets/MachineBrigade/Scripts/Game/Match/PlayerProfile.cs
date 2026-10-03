@@ -110,6 +110,16 @@ namespace MachineBrigade.Game.Match
             public string hqType = "";
             public string hqBranch = "";
 
+            /// <summary>Play-test 14: the light unit the Garrison HQ calls (the HQ tab); empty: the level's mixed squad.</summary>
+            public string hqUnit = "";
+
+            /// <summary>Play-test 14: the unit each hangar card turns out (hangar id, unit id), chosen on the HQ tab.</summary>
+            public List<string> hangarIds = new();
+            public List<string> hangarUnits = new();
+
+            /// <summary>Play-test 14: the drop of each call the player fills ("support=unit,unit"), set on its Units called tab.</summary>
+            public List<string> calls = new();
+
             /// <summary>Prompt 32 L3: each wall line's type, outer first ("none", "hesco", "t_wall", "gun_wall"; missing: the data's default).</summary>
             public List<string> wallTypes = new();
             public int hqTypeVersion;
@@ -178,7 +188,7 @@ namespace MachineBrigade.Game.Match
         /// The heavy fortress and the artillery emplacement: measured best of the candidates against
         /// a mixed army with the attackers knowing the towers (DECISIONS 3, "Base table").
         /// </summary>
-        public static readonly string[] DefaultLarge = { "heavy_turret", "artillery_emplacement" };
+        public static readonly string[] DefaultLarge = { "heavy_turret", "missile_battery" };
 
         /// <summary>2: the base loadout is in sized lists (see <see cref="Data.baseVersion"/>).</summary>
         internal const int BaseVersion = 2;

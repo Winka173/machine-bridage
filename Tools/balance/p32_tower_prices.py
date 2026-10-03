@@ -47,26 +47,25 @@ FORTRESS = "heavy_turret.bastion"
 # Role of each card family (a branch takes its card's unless named): the target its DPS is read on and the vehicles it
 # is compared with; "util:<kind>" for the utility formulas.
 ROLE = {
-    "guard_tower": "light", "mg_bunker": "light", "at_gun_emplacement": "at", "aa_turret": "air",
-    "ew_tower": "util:floor", "dragons_teeth": "util:floor", "minefield": "util:floor", "cp_relay": "util:relay",
-    "searchlight": "util:floor", "inflatable_decoy": "util:floor",
+    "guard_tower": "light", "mg_bunker": "light", "aa_turret": "air",
+    "ew_tower": "util:floor", "cp_relay": "util:relay",
     "atgm_tower": "at", "gun_turret": "at", "gun_turret.auto": "light", "c_ram": "util:intercept",
-    "rocket_turret": "ground", "heavy_flak_tower": "air", "laser_ad_station": "util:intercept", "troop_shelter": "util:protect",
+    "rocket_turret": "ground", "laser_ad_station": "util:intercept",
     "heavy_turret": "at", "heavy_turret.coastal": "ground", "missile_battery": "air", "drone_hangar": "multi",
-    "artillery_emplacement": "ground", "shield_tower": "util:protect",
+    "shield_tower": "util:protect",
 }
 # Utility anchors (the provisional table): the def whose value maps to the provisional price.
-ANCHORS = {"intercept": ("c_ram", 5), "protect": ("troop_shelter", 5)}
+# Play-test 14: the troop shelter (the old protect anchor, 5) is deleted; the shield tower anchors at its provisional 9.
+ANCHORS = {"intercept": ("c_ram", 5), "protect": ("shield_tower", 9)}
 PROVISIONAL = {
     "aa_turret": 6, "aa_turret.flak": 6, "aa_turret.sam": 6, "mg_bunker": 6, "mg_bunker.twin": 6, "mg_bunker.flame": 6,
     "guard_tower": 4, "guard_tower.watch": 4, "guard_tower.nest": 4,
-    "at_gun_emplacement": 3, "at_gun_emplacement.long": 3, "at_gun_emplacement.recoilless": 3,
-    "gun_turret.auto": 7, "laser_ad_station.laser": 7, "gun_turret.long": 6, "heavy_flak_tower": 6, "heavy_flak_tower.heavy": 6,
-    "heavy_flak_tower.bofors": 6, "rocket_turret": 6, "rocket_turret.cluster": 6, "rocket_turret.guided": 6,
+    "gun_turret.auto": 7, "laser_ad_station.laser": 7, "gun_turret.long": 6,
+    "rocket_turret": 6, "rocket_turret.cluster": 6, "rocket_turret.guided": 6,
     "atgm_tower": 5, "atgm_tower.top": 5, "atgm_tower.multi": 5, "c_ram": 5, "c_ram.centurion": 5, "c_ram.dome": 5,
-    "troop_shelter": 5, "laser_ad_station.net": 5, FORTRESS: 17, "missile_battery": 12, "missile_battery.lrr": 11,
+    FORTRESS: 17, "missile_battery": 12, "missile_battery.lrr": 11,
     "missile_battery.pac3": 9, "heavy_turret": 10, "heavy_turret.coastal": 11, "drone_hangar": 9, "drone_hangar.lancet": 9,
-    "drone_hangar.swarm": 9, "artillery_emplacement": 9, "artillery_emplacement.cb": 9, "artillery_emplacement.mortar": 9,
+    "drone_hangar.swarm": 9, 
     "shield_tower": 9, "shield_tower.bulwark": 9, "shield_tower.ward": 9,
 }
 SMALL_UNARMED = 3

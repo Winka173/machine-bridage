@@ -199,7 +199,6 @@ namespace MachineBrigade.Tests
             var expected = new Dictionary<string, (string mission, string boss)>
             {
                 ["railgun_truck"] = ("c4m10", "behemoth_tempest"), ["swarm_carrier"] = ("c5m10", "drone_mothership"),
-                ["bunker_vehicle"] = ("c6m10", "moloch"), ["wingman_drone"] = ("c10m10", "command_airship"),
             };
             foreach (var (card, (mission, boss)) in expected)
             {

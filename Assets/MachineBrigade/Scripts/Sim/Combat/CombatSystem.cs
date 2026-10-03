@@ -935,6 +935,8 @@ namespace MachineBrigade.Sim.Combat
             if (index >= 0 && index < shooter.Weapons.Length) damageScale *= shooter.Weapons[index].DamageScale;
             // Prompt 25 F2 batch A: a tower linked by a fire-control centre.
             damageScale *= shooter.LinkDamage;
+            // Play-test 14: the side's base aura building (airfield, repair bay).
+            damageScale *= shooter.AuraDamage;
             // Prompt 25 C1: a boss's own weapon damage (the sheet's target damage a second against armour 3), on the ground only:
             // its anti-air keeps its numbers.
             if (!targetFlying) damageScale *= shooter.Def.WeaponDamage;

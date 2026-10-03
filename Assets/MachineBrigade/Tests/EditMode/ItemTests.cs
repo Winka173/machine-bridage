@@ -58,23 +58,15 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void ReinforcementsDropInAndEscortsLeave()
+        public void ReinforcementsDropInAndStay()
         {
+            // Play-test 14 deleted the gunship item whose escort flew home; the dropped armour stays.
             var world = Field(out var economy);
             economy.Items["reinforcements"] = 1;
-            economy.Items["gunship_support"] = 1;
             world.Submit(Command.Strike(0, "reinforcements", new Vector2(-20f, -20f), new Vector2(-20f, -20f)));
-            world.Submit(Command.Strike(0, "gunship_support", new Vector2(0f, 0f), new Vector2(0f, 0f)));
             Run(world, 5f);
-            Assert.AreEqual(4, world.CountAlive(0), "two tanks, an IFV and a gunship arrive");
-            var retired = false;
-            for (var t = 0f; t < 35f && !retired; t += TestWorlds.Step)
-            {
-                world.Step(TestWorlds.Step);
-                foreach (var e in world.Events) retired |= e.Kind == SimEventKind.VehicleRetired;
-                world.ClearEvents();
-            }
-            Assert.IsTrue(retired, "the gunship flies home when its time is up");
+            Assert.AreEqual(3, world.CountAlive(0), "two tanks and an IFV arrive");
+            Run(world, 35f);
             Assert.AreEqual(3, world.CountAlive(0), "the dropped armour stays");
         }
 

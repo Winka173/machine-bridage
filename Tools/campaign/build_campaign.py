@@ -51,7 +51,7 @@ GOALS = {'Capture', 'Hold', 'Destroy', 'Escort', 'Survive', 'Boss', 'Intercept',
 # The cards a new player owns (Progression.StarterVehicles / StarterSupports / StarterTowers; prompt 25 D2: the sheet's
 # starter vehicles, act11.py).
 STARTERS = act11.STARTERS
-MODULES = {'repair_bay', 'ammo_depot', 'airfield', 'logistics_station', 'radar_station'}
+MODULES = {'repair_bay', 'airfield', 'logistics_station'}
 # Cards that shoot at aircraft from the ground (and the fighter), for the anti-air rule.
 ANTI_AIR = {'aa_vehicle', 'sam_launcher', 'heavy_aa', 'zu23_technical', 'long_sam', 'fighter_jet', 'aa_turret', 'missile_battery', 'iron_beam'}
 FLYING_BOSSES = {'mega_gunship', 'drone_mothership', 'sky_fortress', 'silver_bug', 'command_airship',
@@ -375,10 +375,11 @@ def check(missions):
             if len(st) < 4:
                 fail(f"{m['id']}: an operation of {len(st)} stages")
     # Prompt 20 D.1: a real reward in every chapter. Prompt 25 D2: the balance sheet opens most vehicles in acts I-II, so a
-    # chapter opens 3 to 10 cards (was 4 to 7), and an interlude up to two (the sheet's turtle tank and shield carrier).
+    # chapter opens 3 to 10 cards (was 4 to 7), and an interlude up to two (the sheet's shield carrier). Play-test 14 deleted
+    # dozens of cards, so a chapter opens 2 to 10.
     for c in range(1, CHAPTERS + 1):
         n = per_chapter.get(c, 0)
-        if not 3 <= n <= 10:
+        if not 2 <= n <= 10:
             fail(f'chapter {c} unlocks {n} cards')
     for c in story.INTERLUDES:
         if per_chapter.get(c, 0) > 2:

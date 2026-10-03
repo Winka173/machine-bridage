@@ -19,7 +19,7 @@ namespace MachineBrigade.Sim.Abilities
     /// the airborne vehicle's parachute drop. Everything reads the simulation's state and clock only (deterministic).
     /// The drone killers (the microwave, interceptor drones) and the targeting weights are CombatSystem.P25A's.
     /// </summary>
-    internal sealed class FieldWorksSystem
+    internal sealed partial class FieldWorksSystem
     {
         private readonly SimWorld _world;
 
@@ -77,6 +77,7 @@ namespace MachineBrigade.Sim.Abilities
             _screens.Clear();
             _centres.Clear();
             _decoys.Clear();
+            _auras.Clear();
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || v.Team < 0) continue;
@@ -84,6 +85,7 @@ namespace MachineBrigade.Sim.Abilities
                 if (d.BlastWall != null) _walls.Add(v);
                 if (d.Shelter != null) _shelters.Add(v);
                 if (d.Decoy != null) _decoys.Add(v);
+                if (d.BaseAura != null) _auras.Add(v);
                 // A stunned light, balloon crew, jammer or centre does nothing while it lasts.
                 if (v.Stunned) continue;
                 if (d.Searchlight != null) _lights.Add(v);
@@ -94,6 +96,7 @@ namespace MachineBrigade.Sim.Abilities
                 if (d.ReconPass != null) PassScan(v, now);
             }
             LinkTowers();
+            ApplyBaseAuras();
             if (_decoys.Count > 0 && now >= _decoyCheckAt)
             {
                 _decoyCheckAt = now + DecoyCheckSeconds;

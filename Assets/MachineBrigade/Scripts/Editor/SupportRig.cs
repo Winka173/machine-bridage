@@ -168,7 +168,7 @@ namespace MachineBrigade.Editor
         /// <summary>The cards on the sheet, in its order, with the half-height of each row's view.</summary>
         public static readonly (string id, float view)[] Cards =
         {
-            ("artillery_barrage", 14f), ("smoke_screen", 14f), ("remote_mines", 14f), ("sead_strike", 13f), ("airstrike", 24f),
+            ("artillery_barrage", 14f), ("remote_mines", 14f), ("airstrike", 24f),
             ("napalm_strike", 24f), ("cluster_strike", 24f), ("air_raid", 28f), ("cruise_missile", 22f), ("moab", 34f), ("emp_blast", 18f),
             ("repair_drop", 11f), ("reinforcements", 14f), ("supergun_shell", 20f),
         };

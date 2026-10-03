@@ -29,8 +29,7 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>The towers that run on the city's grid (radars, searchlights, lasers, shields, fire control) unless an event names its own.</summary>
         public static readonly string[] GridTowers =
         {
-            "radar_station", "ew_tower", "searchlight", "flare_searchlight_tower", "laser_ad_station", "shield_tower", "fire_control_centre",
-            "targeting_station", "c_ram", "visual_jammer",
+            "ew_tower", "flare_searchlight_tower", "laser_ad_station", "shield_tower", "fire_control_centre", "targeting_station", "c_ram",
         };
 
         private sealed class GroundPlan

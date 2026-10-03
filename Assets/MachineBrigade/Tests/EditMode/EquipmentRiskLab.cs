@@ -145,35 +145,6 @@ namespace MachineBrigade.Tests
             Lab.Write("defensive_lines", sb.ToString());
         }
 
-        /// <summary>
-        /// The armoured bulldozer and the turtle tank under the same fire: the bulldozer must not be
-        /// the better sponge for the line (A.1), while it is the best close-range wrecker of structures.
-        /// </summary>
-        [Test, Category("Balance"), Timeout(7200000)]
-        public void TheBulldozerIsNoBetterSpongeThanTheTurtle()
-        {
-            Lab.Gate();
-            var sb = new StringBuilder();
-            sb.AppendLine("| card | CP | health | seconds alive a life (mixed fire) | a CP | (tank fire) | a CP |");
-            sb.AppendLine("|---|---|---|---|---|---|---|");
-            var results = new Dictionary<string, float>();
-            foreach (var card in new[] { "armored_bulldozer", "turtle_tank", "heavy_tank" })
-            {
-                var def = Lab.Catalog.Vehicle(card);
-                var mixed = Lab.TimePerLife(new Lab.Soak { Target = card }, 3);
-                var tanks = Lab.TimePerLife(new Lab.Soak { Target = card, Attackers = new[] { "main_battle_tank", "main_battle_tank", "tank_destroyer" } }, 3);
-                results[card] = mixed;
-                results[card + " tanks"] = tanks;
-                sb.AppendLine($"| {card} | {def.CpCost} | {def.MaxHp:0} | {mixed:0.0} | {mixed / def.CpCost:0.00} | {tanks:0.0} | {tanks / def.CpCost:0.00} |");
-            }
-            Lab.Write("bulldozer_sponge", sb.ToString());
-            // Within one salvo of the attackers (5 %): deaths fall on their salvos, so a few hundred health either way
-            // often changes nothing; with the same health, the turtle's drone armour and mine immunity are its edge.
-            Assert.LessOrEqual(results["armored_bulldozer"], results["turtle_tank"] * 1.05f, "the turtle stays the better sponge under mixed fire");
-            Assert.LessOrEqual(results["armored_bulldozer tanks"], results["turtle_tank tanks"] * 1.05f, "and under tank fire");
-            Assert.LessOrEqual(Lab.Catalog.Vehicle("armored_bulldozer").MaxHp, Lab.Catalog.Vehicle("turtle_tank").MaxHp, "no more health than the turtle");
-        }
-
         /// <summary>The SP gun's damage a second with shoot-and-scoot against the same gun held in place (the move's cost).</summary>
         [Test, Category("Balance"), Timeout(7200000)]
         public void ShootAndScootCostsLittleFire()

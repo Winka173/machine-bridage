@@ -367,7 +367,7 @@ namespace MachineBrigade.Game.Hud
             locked.Locked = true;
             locked.UnlockWhere = Strings.Format("kit.unlockChapter", 3);
             Specimen(states, State("locked"), new KitVehicleCard(locked, () => { }));
-            Specimen(states, State("longName"), new KitVehicleCard(Card("counter_battery_radar", 2), () => { }));
+            Specimen(states, State("longName"), new KitVehicleCard(Card("ground_cruise_missile_vehicle", 2), () => { }));
             var roster = Row(vehicles);
             foreach (var id in new[] { "scout_jeep", "light_tank", "artillery", "aa_vehicle", "fighter_jet", "engineer_vehicle", "elite_mbt", "gun_turret" })
                 roster.Add(new KitVehicleCard(Card(id, 4), () => { }));

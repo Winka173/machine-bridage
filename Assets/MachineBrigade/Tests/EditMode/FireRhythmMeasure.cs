@@ -23,9 +23,9 @@ namespace MachineBrigade.Tests
         private static readonly (string shooter, string target, float distance)[] Cases =
         {
             ("attack_jet", "main_battle_tank", 45f), ("fighter_jet", "attack_helicopter", 45f),
-            ("fighter_jet", "ifv", 45f), ("gunship_heli", "ifv", 22f), ("attack_helicopter", "ifv", 22f),
+            ("fighter_jet", "ifv", 45f), ("attack_helicopter", "ifv", 22f),
             ("scout_heli", "armored_car", 18f), ("sky_gunship", "ifv", 40f), ("armored_car", "armored_car", 18f), ("armored_car", "attack_helicopter", 14f),
-            ("ifv", "ifv", 18f), ("ifv", "attack_helicopter", 14f), ("bmpt", "ifv", 18f), ("main_battle_tank", "ifv", 18f), ("scout_jeep", "armored_car", 16f),
+            ("ifv", "ifv", 18f), ("ifv", "attack_helicopter", 14f), ("main_battle_tank", "ifv", 18f), ("scout_jeep", "armored_car", 16f),
             ("heavy_aa", "attack_helicopter", 25f), ("aa_vehicle", "attack_helicopter", 25f), ("zu23_technical", "attack_helicopter", 20f),
             // Test feedback 2 (12D): the anti-aircraft guns, towers, bunkers and boss guns on streams.
             ("elite_aa", "attack_helicopter", 25f), ("aa_turret", "attack_helicopter", 25f), ("aa_turret.flak", "attack_helicopter", 25f),

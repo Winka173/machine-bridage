@@ -128,6 +128,11 @@ namespace MachineBrigade.Game.Match
             // Prompt 32 L4: the HQ type chosen on the Base screen.
             resolved.HqType = HqType;
             resolved.HqBranch = HqBranch;
+            // Play-test 14: the unit the Garrison calls, if the player has it.
+            resolved.HqUnit = HqUnit is { } unit && IsUnlocked(unit) ? unit : null;
+            // Play-test 14: the unit each hangar turns out, if the player has it.
+            for (var i = 0; i < D.hangarIds.Count && i < D.hangarUnits.Count; i++)
+                if (!string.IsNullOrEmpty(D.hangarUnits[i]) && IsUnlocked(D.hangarUnits[i])) resolved.HangarUnits[D.hangarIds[i]] = D.hangarUnits[i];
             // Prompt 32 L3: the wall lines chosen on the Base screen.
             resolved.Walls = WallTypes();
             // A module's rank-7 branch too (the landing pad's, prompt 13 F.1).

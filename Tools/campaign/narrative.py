@@ -365,10 +365,6 @@ LOOT = [
                                 'Pháo điện từ của Tempest được vớt lên nguyên vẹn; Mara dựng cả một chiếc xe quanh nó.')),
     ('swarm_carrier', 'c5m10', ('Venn came over with the plans for her drone mothership, and the Accord built it.',
                                 'Venn mang theo bản vẽ máy bay mẹ thả drone của bà khi đào ngũ, và Accord đã chế tạo nó.')),
-    ('bunker_vehicle', 'c6m10', ('Moloch\'s factory floor was still turning out deployable bunkers when it fell. Now they are ours.',
-                                 'Sàn xưởng của Moloch vẫn đang xuất xưởng xe công sự triển khai khi nó thất thủ. Giờ chúng là của ta.')),
-    ('wingman_drone', 'c10m10', ('Roc\'s escort drones obeyed the last order they got, ours: form up on our jets.',
-                                 'Drone hộ vệ của Roc làm theo mệnh lệnh cuối cùng nhận được, của ta: bay theo đội hình máy bay ta.')),
     ('cruise_missile', 'c12m02', ('Kessler\'s last bargain: his cruise missiles, for his sailors\' lives.',
                                   'Cuộc mặc cả cuối cùng của Kessler: tên lửa hành trình của hắn, đổi lấy mạng sống thủy thủ.')),
 ]

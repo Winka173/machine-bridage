@@ -24,7 +24,7 @@ from act1 import ORLOV
 from act2 import KESSLER
 from act3 import AUREL, QUADEN
 
-LY_HAN = ['main_battle_tank', 'heavy_tank', 'titan_tank', 'bmpt', 'ifv', 'aa_vehicle', 'mlrs', 'tank_destroyer']
+LY_HAN = ['main_battle_tank', 'heavy_tank', 'titan_tank', 'ifv', 'aa_vehicle', 'mlrs', 'tank_destroyer']
 
 # Goals whose mission can be flipped (played from the other side): what they name is a map point, a unit
 # written from the player's corner, or the centre. Destroy, Protect, Escort, Intercept and Boss missions
@@ -665,21 +665,21 @@ retext('mission.c11m07.brief', 'A Locust drone carrier covers the west pad. Burn
 # The old route's cards in chapters 7-12 spread onto the new chapters 8, 9 and 11.
 
 UNLOCKS = {
-    'c1m01': ['rocket_technical'], 'c1m02': ['mortar_carrier'], 'c1m03': ['repair_drop'], 'c1m04': ['rocket_turret', 'repair_bay'],
+    'c1m01': ['rocket_technical'], 'c1m02': ['mortar_carrier'], 'c1m03': [], 'c1m04': ['rocket_turret', 'repair_bay'],
     'c1m05': ['tank_destroyer'], 'c1m06': ['zu23_technical'],
     'c2m01': ['mlrs'], 'c2m02': ['sam_launcher'], 'c2m03': ['flame_tank'], 'c2m04': ['airstrike'], 'c2m05': ['heavy_tank'],
-    'c2m06': ['atgm_tower', 'ammo_depot'],
-    'c3m01': ['heavy_aa'], 'c3m02': ['attack_helicopter'], 'c3m03': ['uav_scan', 'ammo_carrier'], 'c3m04': ['dragons_teeth', 'radar_station'],
+    'c2m06': ['atgm_tower'],
+    'c3m01': ['heavy_aa'], 'c3m02': ['attack_helicopter'], 'c3m03': ['ammo_carrier'], 'c3m04': ['vehicle_hangar'],
     'c3m05': ['recon_drone'],
     'c4m01': ['command_vehicle'], 'c4m02': ['attack_jet'], 'c4m03': ['wheeled_gun'], 'c4m04': ['logistics_station'], 'c4m05': ['field_tower'],
     'c4m10': ['laser_tank'], 'c4m11': ['heavy_turret.coastal'],
     'c5m01': ['strike_drone'], 'c5m02': ['fpv_carrier'], 'c5m04': ['twin_tank', 'airfield'], 'c5m05': ['long_sam'], 'c5m09': ['fighter_jet'],
     'c5m10': ['drone_hangar'],
-    'c6m02': ['armored_bulldozer', 'c_ram'], 'c6m03': ['ew_tower', 'shield_carrier'], 'c6m04': ['scout_heli'], 'c6m06': ['lancet_truck'],
-    'c7m01': ['vbied'], 'c7m02': ['turtle_tank'], 'c7m03': ['bmpt'], 'c7m04': ['smoke_carrier'],
-    'c8m01': ['shahed_truck'], 'c8m02': ['counter_battery_radar'], 'c8m03': ['thermobaric_launcher'], 'c8m04': ['bunker_vehicle'],
-    'c9m01': ['wingman_drone'], 'c9m02': ['remote_mines'], 'c9m03': ['iron_beam'], 'c9m04': ['artillery_emplacement'],
-    'c10m01': ['sead_strike'], 'c10m02': ['heavy_rocket_artillery'], 'c10m04': ['ew_jammer'], 'c10m05': ['gunship_heli'],
+    'c6m02': ['armored_bulldozer', 'c_ram'], 'c6m03': ['ew_tower', 'shield_carrier'], 'c6m04': ['scout_heli'], 'c6m06': [],
+    'c7m01': ['vbied'], 'c7m02': ['aircraft_hangar'], 'c7m03': [], 'c7m04': [],
+    'c8m01': ['shahed_truck'], 'c8m02': [], 'c8m03': ['thermobaric_launcher'], 'c8m04': [],
+    'c9m01': [], 'c9m02': ['remote_mines'], 'c9m03': ['iron_beam'], 'c9m04': [],
+    'c10m01': [], 'c10m02': ['heavy_rocket_artillery'], 'c10m04': ['ew_jammer'], 'c10m05': [],
     'c11m01': ['railgun_truck'], 'c11m02': ['stealth_fighter'], 'c11m03': ['cp_relay'], 'c11m04': ['heavy_turret'],
     'c12m02': ['cruise_missile'], 'c12m03': ['shield_tower'], 'c12m04': ['swarm_carrier'], 'c12m06': ['mine_layer'],
 }

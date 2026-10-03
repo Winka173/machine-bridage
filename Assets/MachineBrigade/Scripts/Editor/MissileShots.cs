@@ -40,12 +40,12 @@ namespace MachineBrigade.Editor
         private static readonly (string id, bool air)[] Launchers =
         {
             ("sam_launcher", true), ("aa_vehicle", true), ("heavy_aa", true), ("missile_battery", true), ("long_sam", true), ("aa_turret.sam", true),
-            ("ifv", false), ("bmpt", false), ("atgm_tower", false), ("titan_tank", false), ("mg_bunker", false),
-            ("attack_helicopter", false), ("elite_attack_helicopter", false), ("gunship_heli", false), ("scout_heli", false), ("strike_drone", false),
+            ("ifv", false), ("atgm_tower", false), ("titan_tank", false), ("mg_bunker", false),
+            ("attack_helicopter", false), ("elite_attack_helicopter", false), ("scout_heli", false), ("strike_drone", false),
             ("attack_jet", false), ("fighter_jet", true), ("recon_drone", false), ("stealth_bomber", false), ("heavy_bomber", false),
             ("mlrs", false), ("thermobaric_launcher", false), ("heavy_rocket_artillery", false), ("ballistic_launcher", false), ("rocket_turret", false), ("rocket_technical", false),
             // Play-test 13 follow-up (lane A): the lofted box launchers (NSM, Typhon) and the PAC-3 tower.
-            ("coastal_ashm_vehicle", false), ("ground_cruise_missile_vehicle", false), ("missile_battery.pac3", true),
+            ("ground_cruise_missile_vehicle", false), ("missile_battery.pac3", true),
         };
 
         /// <summary>The side-on column showing the whole flight path (after the moments' columns).</summary>

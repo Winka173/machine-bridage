@@ -34,9 +34,9 @@ namespace MachineBrigade.Tests
         public void TheOldLoadoutBecomesThePlanAndNoMapChanges()
         {
             // A version 2 profile with its own base: a gap in the small slots, one module, its own outpost.
-            string[] small = { "mg_bunker", "aa_turret", "guard_tower", "", "ew_tower", "dragons_teeth" };
+            string[] small = { "mg_bunker", "aa_turret", "guard_tower", "", "ew_tower", "cp_relay" };
             string[] medium = { "atgm_tower", "gun_turret", "rocket_turret" };
-            string[] large = { "artillery_emplacement", "heavy_turret" };
+            string[] large = { "missile_battery", "heavy_turret" };
             string[] utilities = { "repair_bay" };
             string Json(IEnumerable<string> l) => "[" + string.Join(",", l.Select(x => "\"" + x + "\"")) + "]";
             PlayerProfile.LoadForTests("{\"baseVersion\":2,\"baseEdited\":true,\"baseLevel\":5,\"baseSmall\":" + Json(small) + ",\"baseMedium\":" + Json(medium) +
@@ -74,10 +74,10 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(MatchSettings.AllMaps.Count(), camps.Count, "every map has a camp");
             // Auto-arrange on the first map: the AI's pick among the towers, laid out by place.
             var (firstId, firstSite) = camps[0];
-            var ai = BaseLoadout.ForAi(catalog, "Normal", "default", 3, 5, id => id != "minefield");
+            var ai = BaseLoadout.ForAi(catalog, "Normal", "default", 3, 5, id => id != "ew_tower");
             var plan = new BasePlan();
             plan.FromCamp(firstSite, BasePlan.ToAssignment(firstSite, ai));
-            Assert.IsFalse(plan.Places.Values.Contains("minefield"), "only the towers allowed");
+            Assert.IsFalse(plan.Places.Values.Contains("ew_tower"), "only the towers allowed");
             foreach (var (id, site) in camps)
             {
                 var towers = plan.Assign(site, out var misfit);

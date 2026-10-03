@@ -142,6 +142,16 @@ namespace MachineBrigade.Game.Hud
             ["ul.moduleRearm"] = ("Launchers in the base reload {count} times as fast", "Xe phóng trong căn cứ nạp đạn nhanh gấp {count} lần"),
             ["ul.moduleRepair"] = ("Repairs vehicles in the base", "Sửa xe trong căn cứ"),
             ["ul.moduleSupply"] = ("{supply} more army supply", "Thêm {supply} sức chứa quân"),
+            // Play-test 14: the hangars and the base aura buildings.
+            ["ul.hangar"] = ("Sends out one {units} every {seconds} s, free, while fewer than {count} of its own are alive", "Cứ {seconds} giây gửi ra một {units}, miễn phí, khi còn ít hơn {count} chiếc của nó"),
+            ["ul.aura.aircraft"] = ("aircraft", "máy bay"),
+            ["ul.aura.ground"] = ("ground vehicles", "xe mặt đất"),
+            ["ul.aura.structures"] = ("structures", "công trình"),
+            ["ul.aura.damage"] = ("All your {who}: +{percent}% damage", "Mọi {who} của ta: +{percent}% sát thương"),
+            ["ul.aura.speed"] = ("All your {who}: +{percent}% speed", "Mọi {who} của ta: +{percent}% tốc độ"),
+            ["ul.aura.hp"] = ("All your {who}: +{percent}% max health", "Mọi {who} của ta: +{percent}% máu tối đa"),
+            ["ul.aura.range"] = ("All your {who}: +{percent}% range", "Mọi {who} của ta: +{percent}% tầm bắn"),
+            ["ul.aura.one"] = ("Anywhere on the map while it stands; a second of the same kind adds nothing", "Trên toàn bản đồ khi nó còn đứng; cái thứ hai cùng loại không cộng thêm"),
 
             // Prompt 17 C: shield domes, deploying, wingmen, relays, the laser's ramp, the drone swarm.
             ["ul.dome"] = ("Shield dome of {metres} m: takes {health} damage for its side inside (not energy), back {seconds} s after its last hit; domes do not add up", "Vòm khiên {metres} m: hấp thụ {health} sát thương cho phe ta bên trong (trừ năng lượng), hồi lại {seconds} giây sau đòn cuối; các vòm không cộng dồn"),

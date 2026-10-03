@@ -428,7 +428,7 @@ def static_sheets(ctx) -> dict[str, tuple[list[str], list[list]]]:
     units = {**{k: dict(v, _loai="xe") for k, v in xe.items()}, **{k: dict(v, _loai="boss") for k, v in boss.items()}}
     wids = bomb_weapons(vk)
     carriers = {w: [u for u in str(vk[w].get("mang_boi") or "").split(";") if u] for w in wids}
-    sup = {k: v for k, v in the.items() if v.get("kind") == "Airstrike" or k in ("glide_bomb_strike", "cluster_at_strike")}
+    sup = {k: v for k, v in the.items() if v.get("kind") == "Airstrike" or k in ("glide_bomb_strike",)}
     big = {k: v for k, v in big_all.items() if v.get("icon") == "bomb"}
     big_strikes = {k: next(s for s in big_strike_all.values() if s.get("boss_sieu_vu_khi_id") == k) for k in big}
     sheets = {}

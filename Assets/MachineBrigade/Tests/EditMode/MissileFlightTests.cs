@@ -58,7 +58,7 @@ namespace MachineBrigade.Tests
                 Plume.For(catalog.Weapons[id], catalog.Weapons[id].Projectile, catalog.Weapons[id].ProjectileModel, air).Length;
             // In the munition's own lengths (a SAM is twice an ATGM's length, so its flame is four times as long).
             Assert.GreaterOrEqual(Length("sam"), Length("atgm") * 2f, "a SAM's plume is long, an ATGM's short");
-            Assert.Greater(Length("sam"), Length("heli_atgm", true), "air-to-ground missiles in between");
+            Assert.Greater(Length("sam"), Length("hellfire_volley", true), "air-to-ground missiles in between");
             // Play-test 5 (DECISIONS 20V): the heavy launchers' flames cut to 60 % of their type's, still in munition lengths.
             Assert.AreEqual(Length("sam") * Plume.ShortFlame, Length("sam_long"), 1e-4f, "the SAM launcher's Buk");
             foreach (var id in new[] { "buk_launcher", "thermobaric_rockets", "rockets_300mm", "ballistic_missile", "sam_48n6", "patriot", "sam_pac3" })
@@ -75,7 +75,7 @@ namespace MachineBrigade.Tests
             var speeds = new Dictionary<string, float>
             {
                 { "atgm", 19f }, { "kornet_twin", 20f }, { "sam", 24f }, { "sam_long", 24f }, { "sam_battery", 24f }, { "sam_48n6", 24f },
-                { "heli_atgm", 11.8f }, { "hellfire_volley", 21f }, { "drone_missile", 21f }, { "vikhr", 24f }, { "maverick", 23f },
+                { "hellfire_volley", 21f }, { "drone_missile", 21f }, { "vikhr", 24f }, { "maverick", 23f },
                 { "air_to_air", 24f }, { "wvr_aam", 24f }, { "stinger_atas", 24f }, { "hellfire_standoff", 24f }, { "air_cruise_missile", 17f },
                 { "heli_rockets", 48f }, { "s8_pods", 20.2f }, // play-test 5 (DECISIONS 20W), 6 (21F) and 7 (22P): the attack jet's rockets 25 %, 20 %, then 30 % slower
             };
@@ -242,7 +242,7 @@ namespace MachineBrigade.Tests
             // was fitted to the SAM launcher's 2.45 m box (2.6 m): the box is ASSET_DEBT now.
             Assert.AreEqual(4.44f / 3.6f * 1.2f, Drawn("sam_long", "buk"), 0.01f, "the SAM launcher's missile");
             Assert.Less(Drawn("sam", "shorad_dart"), 1f, "SHORAD darts no bigger than their model");
-            Assert.AreEqual(0.744f, Drawn("heli_atgm", "hellfire", true), 0.01f, "a helicopter's Hellfire (1.04 m, its rack 0.81 m)");
+            Assert.AreEqual(0.78f, Drawn("hellfire_volley", "hellfire", true), 0.01f, "a helicopter's Hellfire (scale 0.65 x 1.2 as an air-to-ground missile)");
             Assert.AreEqual(0.696f, Drawn("maverick", "maverick", true), 0.01f, "the A-10's Maverick (1.39 m, its rack 1.1 m)");
             Assert.AreEqual(1.15f, Drawn("mlrs_rockets", "gmlrs"), 0.01f, "MLRS rockets as they were (they fit their pod)");
             Assert.AreEqual(1.2f, Drawn("air_cruise_missile", "cruise_missile", true), 0.01f, "cruise missiles as they were");

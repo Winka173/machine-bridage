@@ -4327,7 +4327,7 @@ def fortress_defences():
         ('gun_turret', 2.0, 44.0), ('aa_turret', 6.0, 74.0),
         # Stage 2, inside the wall ring, clear of the lane from each ring gate to the keep gate.
         ('gun_turret', 20.0, 40.0), ('rocket_turret', 20.0, 70.0), ('aa_turret', 32.0, 44.0),
-        ('artillery_emplacement', 26.0, 88.0), (battery, 34.0, 34.0), (flak, 36.0, 88.0),
+        ('rocket_turret', 26.0, 88.0), (battery, 34.0, 34.0), (flak, 36.0, 88.0),
         # Stage 3, the keep: in its corners and against its walls, clear of the yard and the
         # gates' mouths (the flak tower alone, in the corner west of the HQ).
         (heavy, 46.5, 46.5), ('mg_bunker', 54.0, 79.0), ('aa_turret', 60.0, 79.0), (flak, 46.5, 77.5, 'alone'),
@@ -4444,7 +4444,7 @@ def fortress_buildings(L, name, count=14, reach=None):
 
 
 UNIT_SPOT = {'guard_tower': 4.0, 'gun_turret': 5.5, 'aa_turret': 5.0, 'rocket_turret': 5.0, 'mg_bunker': 4.5,
-             'artillery_emplacement': 7.0, 'heavy_turret': 8.5, 'flak_tower': 8.5, 'aa_turret.flak': 8.5, 'missile_battery': 9.5}
+             'heavy_turret': 8.5, 'flak_tower': 8.5, 'aa_turret.flak': 8.5, 'missile_battery': 9.5}
 
 
 def siege_targets(L):

@@ -36,7 +36,7 @@ namespace MachineBrigade.Tests
 
         internal static readonly Scenario SupportThreat = new()
         {
-            Name = "support", Group = new[] { "bmpt", "bmpt", "main_battle_tank", "attack_helicopter" }, Seconds = SupportSeconds,
+            Name = "support", Group = new[] { "ifv", "ifv", "main_battle_tank", "attack_helicopter" }, Seconds = SupportSeconds,
         };
 
         internal sealed class SupportResult

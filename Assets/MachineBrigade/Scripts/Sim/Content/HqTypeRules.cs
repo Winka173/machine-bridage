@@ -76,6 +76,24 @@ namespace MachineBrigade.Sim.Content
             new[] { "main_battle_tank" }, new[] { "main_battle_tank", "scout_jeep" },
         };
 
+        /// <summary>
+        /// Play-test 14: the light units the player may have the HQ call (the HQ tab); a squad is then its level's count of that
+        /// unit. Empty: the level's mixed squad (the AI's).
+        /// </summary>
+        private readonly List<string> _callable = new() { "scout_jeep", "armored_car", "light_tank" };
+
+        public IReadOnlyList<string> Callable => _callable;
+
+        /// <summary>The level's squad: the chosen unit as many times as the level's squad has units, or the squad itself.</summary>
+        public IReadOnlyList<string> Squad(int level, string? unit)
+        {
+            var squad = Squad(level);
+            if (string.IsNullOrEmpty(unit) || !_callable.Contains(unit!)) return squad;
+            var calls = new string[squad.Count];
+            for (var i = 0; i < calls.Length; i++) calls[i] = unit!;
+            return calls;
+        }
+
         /// <summary>The most baseCP of garrison alive at once, by HQ level.</summary>
         private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };
 
@@ -182,6 +200,11 @@ namespace MachineBrigade.Sim.Content
                     r._squads.Clear();
                     foreach (var s in g.Array("squads")) r._squads.Add(s.StringArray("units"));
                     if (r._squads.Count == 0) throw new FormatException("base.hqTypes.garrison.squads: at least one squad.");
+                }
+                if (g.Has("callable"))
+                {
+                    r._callable.Clear();
+                    r._callable.AddRange(g.StringArray("callable"));
                 }
                 if (g.Has("caps"))
                 {

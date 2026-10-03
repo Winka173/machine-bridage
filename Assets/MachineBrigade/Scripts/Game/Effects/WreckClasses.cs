@@ -50,10 +50,8 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         internal static readonly HashSet<string> WheeledModels = new()
         {
-            "armored_car", "combat_wreck_car", "coastal_ashm_vehicle", "fibre_fpv_carrier", "fpv_carrier", "ground_cruise_missile_vehicle",
-            "heavy_aa", "interceptor_drone_vehicle", "iron_beam", "long_sam", "microwave_vehicle", "nlos_atgm_vehicle", "radar_scout",
-            "radar_support_vehicle", "recoilless_jeep", "rocket_technical", "scout_jeep", "shorad_vehicle", "towed_at_gun", "vbied",
-            "wheeled_gun", "zu23_technical",
+            "armored_car", "fpv_carrier", "ground_cruise_missile_vehicle", "heavy_aa", "iron_beam", "long_sam", "recoilless_jeep",
+            "rocket_technical", "scout_jeep", "vbied", "wheeled_gun", "zu23_technical",
         };
 
         /// <summary>Other ground vehicles that run on wheels, by words in their id (elites and variants of the above).</summary>

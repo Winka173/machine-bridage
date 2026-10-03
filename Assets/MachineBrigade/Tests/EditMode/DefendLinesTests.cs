@@ -24,7 +24,7 @@ namespace MachineBrigade.Tests
             HqLevel = 5,
             Small = { "guard_tower", "mg_bunker" },
             Medium = { "gun_turret" },
-            Large = { "artillery_emplacement" },
+            Large = { "missile_battery" },
             Utilities = { "repair_bay" },
         };
 

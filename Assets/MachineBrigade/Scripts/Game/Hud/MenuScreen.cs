@@ -266,9 +266,11 @@ namespace MachineBrigade.Game.Hud
         {
             // The topmost dialog closes. The story card is a scrim too and stays in the menu while hidden:
             // it hides, never leaves (a Back that took it out left Start with nothing to show, DECISIONS 21B).
+            // Play-test 14: only a scrim on screen counts. The comic page waits hidden in the menu too, and Back took
+            // it out first, unseen, so after every menu build the first Back did nothing (it took two taps).
             VisualElement dialog = null;
             foreach (var scrim in Root.Query(className: KitDialog.ScrimClass).ToList())
-                if (_story == null || scrim != _story.Root || _story.Visible) dialog = scrim;
+                if (Shown(scrim) && (_story == null || scrim != _story.Root || _story.Visible)) dialog = scrim;
             if (dialog != null)
             {
                 if (_story != null && dialog == _story.Root) _story.Hide();
@@ -287,6 +289,15 @@ namespace MachineBrigade.Game.Hud
             if (_tab == Tab.Campaign && CampaignBack()) return true;
             if (_tab == Tab.Home) return false;
             ShowTab(Tab.Home);
+            return true;
+        }
+
+        /// <summary>Whether an element is on screen: it and every parent up to the menu's root are displayed and visible.</summary>
+        private bool Shown(VisualElement element)
+        {
+            for (var e = element; e != null && e != Root.parent; e = e.parent)
+                if (e.resolvedStyle.display == DisplayStyle.None || e.style.display == DisplayStyle.None || e.resolvedStyle.visibility == Visibility.Hidden)
+                    return false;
             return true;
         }
 
@@ -718,9 +729,12 @@ namespace MachineBrigade.Game.Hud
                 case "army-gear":
                 case "army-base":
                 case "army-outpost":
+                case "army-commander":
+                case "army-hq":
                     _armyView = screen switch
                     {
                         "army-deck" => ArmyView.Deck, "army-towers" => ArmyView.Towers, "army-gear" => ArmyView.Equipment, "army-outpost" => ArmyView.Outpost,
+                        "army-commander" => ArmyView.Commander, "army-hq" => ArmyView.Hq,
                         _ => ArmyView.Base,
                     };
                     ShowTab(Tab.Army);
@@ -843,19 +857,15 @@ namespace MachineBrigade.Game.Hud
             "sam_launcher" => "sam",
             "mortar_carrier" => "mortar",
             "rocket_technical" => "technical",
-            "gunship_heli" => "gunship",
             "scout_heli" => "scoutheli",
             "strike_drone" => "reaper",
             "flame_tank" => "flame",
             "ifv" => "ifv",
             "command_vehicle" => "command",
             "wheeled_gun" => "wheeledgun",
-            "counter_battery_radar" => "cbradar",
             "long_sam" => "longsam",
-            "uav_scan" => "drone",
             "remote_mines" => "mine",
             "field_tower" => "tower",
-            "sead_strike" => "sead",
             "thermobaric_launcher" => "thermo",
             "heavy_aa" => "heavyaa",
             "titan_tank" => "titan",
@@ -879,63 +889,28 @@ namespace MachineBrigade.Game.Hud
             "sky_gunship" => "ac130",
             "vbied" => "vbied",
             "zu23_technical" => "zu23",
-            "smoke_carrier" => "smokecar",
-            "lancet_truck" => "lancet",
             "shahed_truck" => "shahed",
             "iron_beam" => "laser",
             "railgun_truck" => "railgun",
-            "turtle_tank" => "turtle",
-            "bmpt" => "bmpt",
             "sapper" => "sapper",
             // Prompt 17 C.
             "stealth_fighter" => "fighter",
-            "wingman_drone" => "drone",
             "laser_tank" => "laser",
             "shield_carrier" => "shield",
-            "bunker_vehicle" => "siegegun",
             "swarm_carrier" => "fpvtruck",
             // Prompt 25 F2 batch A (DECISIONS 25F2-A).
             "aa_gun_vehicle" => "aa",
-            "shorad_vehicle" => "sam",
-            "microwave_vehicle" => "jammer",
-            "nlos_atgm_vehicle" => "atgm",
-            "radar_atgm_vehicle" => "atgm",
             "recoilless_jeep" => "jeep",
-            "airborne_vehicle" => "ifv",
-            "wheeled_howitzer" => "artillery",
             "sp_mortar" => "mortar",
-            "glide_bomber" => "b52",
-            "recon_jet" => "fighter",
-            "interceptor_jet" => "fighter",
-            "radar_scout" => "armoredcar",
-            "fibre_fpv_carrier" => "fpvtruck",
-            "interceptor_drone_vehicle" => "drone",
             // (batch A icons: new entries above)
             // Prompt 25 F2 batch B (DECISIONS 25F2-B): the 26 non-tower stand-ins, an existing glyph each.
-            "aa_57mm_vehicle" => "aa",
-            "mine_rocket_truck" => "mlrs",
-            "prop_attack_plane" => "su25",
-            "light_attack_heli" => "gunship",
             "next_gen_tank" => "titan",
             "demolition_line_vehicle" => "engineer",
-            "combat_wreck_car" => "armoredcar",
-            "drone_hijack_vehicle" => "jammer",
             "river_patrol_boat" => "technical",
             "river_gunboat" => "artillery",
-            "coastal_ashm_vehicle" => "missile",
-            "auto_loader_howitzer" => "artillery",
-            "amphib_light_vehicle" => "ifv",
-            "airborne_light_tank" => "lighttank",
             "stealth_naval_strike" => "b2",
             "twin_rotor_gunship" => "ac130",
-            "ground_drone_carrier" => "drone",
-            "mobile_repair_vehicle" => "engineer",
-            "radar_support_vehicle" => "armoredcar",
-            "towed_at_gun" => "destroyer",
-            "dazzler_vehicle" => "jammer",
             "ground_cruise_missile_vehicle" => "missile",
-            "aerial_tanker" => "b52",
-            "heavy_lift_helicopter" => "gunship",
             "gps_jammer_vehicle" => "jammer",
             // (batch B icons: new entries above)
             "napalm_strike" => "flame",
@@ -945,26 +920,12 @@ namespace MachineBrigade.Game.Hud
             "field_repair" => "repair",
             "emp_blast" => "bolt",
             "shield_dome" => "shield",
-            "gunship_support" => "gunship",
             "artillery_barrage" => "barrage",
             "airstrike" => "airstrike",
             "cruise_missile" => "missile",
-            "smoke_screen" => "smoke",
             "repair_drop" => "repair",
             // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
             "glide_bomb_strike" => "bomb",
-            "guided_shell_strike" => "barrage",
-            "cluster_at_strike" => "airstrike",
-            "uav_loiter_strike_support" => "drone",
-            "uav_loiter_strike" => "reaper",
-            "ammo_resupply" => "ammo",
-            "jam_storm" => "jammer",
-            "illum_flare_strike" => "eye",
-            "decoy_paradrop" => "reinforce",
-            "decoy_tank" => "tank",
-            "instant_counter_battery" => "barrage",
-            "drone_intercept_strike" => "drone",
-            "chaff_strike" => "smoke",
             _ when id.Contains('.') => For(id.Substring(0, id.IndexOf('.'))),
             _ => "tank",
         };

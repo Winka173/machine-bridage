@@ -42,6 +42,9 @@ namespace MachineBrigade.Sim.Strikes
         {
             public SupportDef Support = null!;
             public int Team;
+
+            /// <summary>Play-test 14: the units a filled call drops (null: the support's own).</summary>
+            public IReadOnlyList<string>? Calls;
             public Vector2 Point, Direction;
             public double Start;
             public int Done;
@@ -124,6 +127,22 @@ namespace MachineBrigade.Sim.Strikes
                 return CommandResult.Rejected(CommandError.InvalidPoint);
 
             var economy = _world.Economy.TryGet(command.Team, out var e) ? e : null;
+            // Play-test 14: a call the player fills: chosen units of its list, worth at most its CP in all; it costs its scale
+            // times their total CP (on top of the item, for a consumable).
+            var callPrice = 0;
+            if (support.CallMaxCp > 0f)
+            {
+                if (command.Calls == null || command.Calls.Count == 0) return CommandResult.Rejected(CommandError.UnknownCard);
+                var total = 0f;
+                foreach (var id in command.Calls)
+                {
+                    if (!Contains(support.CallChoices, id) || !_world.Catalog.Vehicles.TryGetValue(id, out var def)) return CommandResult.Rejected(CommandError.UnknownCard);
+                    total += def.BaseCp;
+                }
+                if (total > support.CallMaxCp + 1e-4f) return CommandResult.Rejected(CommandError.NotEnoughCp);
+                callPrice = support.CallPrice(total);
+                if (economy != null && economy.Cp < callPrice) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            }
             if (support.Consumable)
             {
                 // Items are not in the deck and cost no CP, but each use spends one.
@@ -139,15 +158,16 @@ namespace MachineBrigade.Sim.Strikes
                 if (!_world.Economy.TrySpend(command.Team, economy?.PriceOf(support.Id, support.CpCost) ?? support.CpCost))
                     return CommandResult.Rejected(CommandError.NotEnoughCp);
             }
+            if (callPrice > 0 && !_world.Economy.TrySpend(command.Team, callPrice)) return CommandResult.Rejected(CommandError.NotEnoughCp);
             if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown * (economy.Commander?.StrikeCooldown ?? 1f) * economy.StrikeScale;
 
-            Launch(support, command.Team, command.Point, command.Point2);
+            Launch(support, command.Team, command.Point, command.Point2, support.CallMaxCp > 0f ? command.Calls : null);
             _world.CountStrike(command.Team);
             return CommandResult.Ok;
         }
 
         /// <summary>Starts a strike with no deck, CP or cooldown checks (battle events call bombers this way).</summary>
-        internal void Launch(SupportDef support, int team, Vector2 point, Vector2 towards)
+        internal void Launch(SupportDef support, int team, Vector2 point, Vector2 towards, IReadOnlyList<string>? calls = null)
         {
             var direction = towards - point;
             direction = direction.LengthSquared() > 0.01f ? Vector2.Normalize(direction) : Vector2.UnitX;
@@ -160,6 +180,7 @@ namespace MachineBrigade.Sim.Strikes
                 Support = support, Team = team, Point = point, Direction = direction,
                 Start = _world.Time + support.Delay, Scatter = team >= 0 && _world.Abilities.Jammed(point, team) ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.JamRules.StrikeScatter : 1f,
                 Length = support.Length * line, Duration = support.Duration * line, Count = (int)MathF.Round(support.Count * line),
+                Calls = calls,
             };
             _strikes.Add(strike);
             var end = support.IsLine ? point + direction * strike.Length : point;
@@ -358,7 +379,7 @@ namespace MachineBrigade.Sim.Strikes
                 {
                     if (now < s.Start) return false;
                     _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
-                    var units = support.Units;
+                    var units = s.Calls ?? support.Units;
                     for (var k = 0; k < units.Count; k++)
                     {
                         var angle = k * SimMath.Tau / Math.Max(1, units.Count);

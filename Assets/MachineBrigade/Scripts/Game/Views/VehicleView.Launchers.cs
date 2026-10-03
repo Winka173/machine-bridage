@@ -60,7 +60,6 @@ namespace MachineBrigade.Game.Views
             // The Patriot's box and the Shahed truck's rack are drawn at their firing angles and travel lowered.
             ["missile_battery"] = new(ErectKind.Raised, 0f, 1.2f, -34f),
             ["shahed_truck"] = new(ErectKind.Raised, 0f, 1.0f, -12f),
-            ["lancet_truck"] = new(ErectKind.Raised, 34f, 0.8f),
         };
 
         /// <summary>A side ATGM box's firing angle and the seconds it takes to come up (a Bradley's TOW launcher).</summary>

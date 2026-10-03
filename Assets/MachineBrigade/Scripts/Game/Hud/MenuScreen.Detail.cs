@@ -33,6 +33,9 @@ namespace MachineBrigade.Game.Hud
             Weapons,
             Firing,
             Equipment,
+
+            /// <summary>Play-test 14: a support's units called (a fire support that drops or flies in units, or builds a tower).</summary>
+            Units,
         }
 
         private VisualElement _detail, _detailPreview, _detailArt, _detailTags, _detailCounters, _detailBody, _detailDock, _detailDeck;
@@ -97,7 +100,7 @@ namespace MachineBrigade.Game.Hud
 
             var right = _detailRight = Kit.Box("fc-detail__right");
             _detailTabs = new KitTabs(new[] { Strings.Get("detail.stats"), Strings.Get("detail.guide"), Strings.Get("detail.weaponsTab"),
-                Strings.Get("detail.firing"), Strings.Get("army.equipment") }, 0, i =>
+                Strings.Get("detail.firing"), Strings.Get("army.equipment"), Strings.Get("detail.units") }, 0, i =>
             {
                 _detailTab = (DetailTab)i;
                 ShowPreview();
@@ -249,6 +252,10 @@ namespace MachineBrigade.Game.Hud
             var bossPage = IsBoss(id);
             _detailTabs.Tabs[(int)DetailTab.Equipment].style.display = bossPage ? DisplayStyle.None : DisplayStyle.Flex;
             if (bossPage && _detailTab == DetailTab.Equipment) _detailTab = DetailTab.Guide;
+            // Play-test 14: the Units called tab only on a support that calls units.
+            var calls = vehicle == null && _catalog.TryGetSupport(id, out var calling) && (calling.Units.Count > 0 || calling.CallMaxCp > 0f);
+            _detailTabs.Tabs[(int)DetailTab.Units].style.display = calls ? DisplayStyle.Flex : DisplayStyle.None;
+            if (!calls && _detailTab == DetailTab.Units) _detailTab = DetailTab.Stats;
             _detailTabs.Select((int)_detailTab, false);
             ArrangeDetail();
 
@@ -302,6 +309,9 @@ namespace MachineBrigade.Game.Hud
                 case DetailTab.Firing:
                     _detailBody.Add(Kit.Body2(Strings.Get(module ? "detail.moduleNoFiring" : vehicle != null ? "detail.firingNote" : "detail.firingStrike")));
                     if (vehicle != null && !module) VehicleWeapons(vehicle);
+                    break;
+                case DetailTab.Units:
+                    UnitsCalled(id);
                     break;
                 default:
                     if (structure) StructureEquipment(vehicle, module);

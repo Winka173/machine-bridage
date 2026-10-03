@@ -83,8 +83,8 @@ namespace MachineBrigade.Tests
             var tank = world.SpawnVehicle("main_battle_tank", 1, new Vector2(48f, 0f), 0f);
             tank.HoldFire = true;
             var mlrs = world.SpawnVehicle("mlrs", 0, new Vector2(48f, -80f), 0f);
-            var bmpt = world.SpawnVehicle("bmpt", 0, new Vector2(48f, -30f), 0f);
-            world.Submit(new Command(CommandType.Attack, 0, new[] { mlrs.Id, bmpt.Id }, target: tank.Id));
+            var ifv = world.SpawnVehicle("ifv", 0, new Vector2(48f, -30f), 0f);
+            world.Submit(new Command(CommandType.Attack, 0, new[] { mlrs.Id, ifv.Id }, target: tank.Id));
             var taken = new List<string>();
             var atgm = 0f;
             DamageSystem.DamageLog = (by, victim, amount, kind, weapon) =>
@@ -96,7 +96,7 @@ namespace MachineBrigade.Tests
                 Run(world, 40f, e =>
                 {
                     if (e.Kind == SimEventKind.Intercepted && e.Entity == dome.Id && e.DefId != null) taken.Add(e.DefId);
-                }, dome, tank, bmpt, mlrs);
+                }, dome, tank, ifv, mlrs);
             }
             finally
             {
@@ -133,7 +133,7 @@ namespace MachineBrigade.Tests
                 return loadout.Branches.TryGetValue("c_ram", out var b) ? b : null;
             }
             Assert.AreEqual("c_ram.dome", Pick("artillery", "mlrs", "mortar_carrier", "main_battle_tank"));
-            Assert.AreEqual("c_ram.centurion", Pick("attack_helicopter", "bmpt", "ifv", "main_battle_tank"));
+            Assert.AreEqual("c_ram.centurion", Pick("attack_helicopter", "tank_destroyer", "ifv", "main_battle_tank"));
             // An easy AI keeps its towers plain.
             var easy = BaseLoadout.ForAi(catalog, "Easy", against: new[] { "artillery", "mlrs" });
             Assert.IsEmpty(easy.Branches);

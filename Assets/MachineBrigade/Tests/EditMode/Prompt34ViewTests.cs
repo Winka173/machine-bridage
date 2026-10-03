@@ -236,7 +236,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(WreckClass.Tank, WreckClasses.Of(c.Vehicles["main_battle_tank"]));
             Assert.AreEqual(WreckClass.Wheeled, WreckClasses.Of(c.Vehicles["scout_jeep"]));
             Assert.AreEqual(WreckClass.Truck, WreckClasses.Of(c.Vehicles["supply_truck"]));
-            Assert.AreEqual(WreckClass.Artillery, WreckClasses.Of(c.Vehicles["wheeled_howitzer"]));
+            Assert.AreEqual(WreckClass.Artillery, WreckClasses.Of(c.Vehicles["artillery"]));
             Assert.AreEqual(WreckClass.Fighter, WreckClasses.Of(c.Vehicles["fighter_jet"]));
             Assert.AreEqual(WreckClass.Helicopter, WreckClasses.Of(c.Vehicles["attack_helicopter"]));
             Assert.AreEqual(WreckClass.BigAircraft, WreckClasses.Of(c.Vehicles["heavy_bomber"]));

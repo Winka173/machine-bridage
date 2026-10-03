@@ -591,6 +591,7 @@ namespace MachineBrigade.Sim.Modes
                 foreach (var slot in b.Slots) Watch(b, slot);
                 HqRescue(b);
                 StepHq(b);
+                StepHangars(b);
                 // An outpost lost with its point: its towers go with it.
                 _lost.Clear();
                 foreach (var (id, slots) in b.Outposts)

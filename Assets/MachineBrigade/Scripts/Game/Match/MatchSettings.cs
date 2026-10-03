@@ -117,7 +117,7 @@ namespace MachineBrigade.Game.Match
         {
             "scout_jeep", "armored_car", "rocket_technical", "light_tank", "main_battle_tank", "heavy_tank",
             "tank_destroyer", "flame_tank", "mortar_carrier", "artillery", "mlrs", "aa_vehicle", "sam_launcher",
-            "scout_heli", "attack_helicopter", "gunship_heli", "strike_drone", "attack_jet",
+            "scout_heli", "attack_helicopter", "strike_drone", "attack_jet",
             "ifv", "thermobaric_launcher", "heavy_aa", "titan_tank",
             "heavy_bomber", "stealth_bomber",
             // Play-test 7 (DECISIONS 22P): the AC-130 is an aircraft card again (its support card is gone).
@@ -126,66 +126,43 @@ namespace MachineBrigade.Game.Match
             // Prompt 17 D: the ATGM carrier, A-10, Ka-52 and sapper were folded into other cards (CardMerges).
             "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer", "ammo_carrier",
             "fighter_jet", "recon_drone",
-            "vbied", "zu23_technical", "smoke_carrier", "lancet_truck", "shahed_truck", "iron_beam", "railgun_truck",
-            "turtle_tank", "bmpt",
-            "command_vehicle", "wheeled_gun", "counter_battery_radar", "long_sam",
+            "vbied", "zu23_technical", "shahed_truck", "iron_beam", "railgun_truck",
+            "command_vehicle", "wheeled_gun", "long_sam",
             "armored_bulldozer",
             // Prompt 17 C.
-            "stealth_fighter", "wingman_drone", "laser_tank", "shield_carrier", "bunker_vehicle", "swarm_carrier",
+            "stealth_fighter", "laser_tank", "shield_carrier", "swarm_carrier",
             // Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new vehicles.
             "aa_gun_vehicle",
-            "shorad_vehicle",
-            "microwave_vehicle",
-            "nlos_atgm_vehicle",
-            "radar_atgm_vehicle",
             "recoilless_jeep",
-            "airborne_vehicle",
-            "wheeled_howitzer",
             "sp_mortar",
-            "glide_bomber",
-            "recon_jet",
-            "interceptor_jet",
-            "radar_scout",
-            "fibre_fpv_carrier",
-            "interceptor_drone_vehicle",
             // (batch A cards: new entries above)
             // Prompt 25 F2 batch B (DECISIONS 25F2-B): the 26 non-tower Thấp-priority items (dx23 not in this pass;
             // the six towers are base-slot cards, not here).
-            "aa_57mm_vehicle",
-            "mine_rocket_truck",
-            "prop_attack_plane",
-            "light_attack_heli",
             "next_gen_tank",
             "demolition_line_vehicle",
-            "combat_wreck_car",
-            "drone_hijack_vehicle",
             "river_patrol_boat",
             "river_gunboat",
-            "coastal_ashm_vehicle",
-            "auto_loader_howitzer",
-            "amphib_light_vehicle",
-            "airborne_light_tank",
             "stealth_naval_strike",
             "twin_rotor_gunship",
-            "ground_drone_carrier",
-            "mobile_repair_vehicle",
-            "radar_support_vehicle",
-            "towed_at_gun",
-            "dazzler_vehicle",
             "ground_cruise_missile_vehicle",
-            "aerial_tanker",
-            "heavy_lift_helicopter",
             "gps_jammer_vehicle",
             // (batch B cards: new entries above)
         };
 
         public static readonly string[] AllSupports =
-            { "artillery_barrage", "airstrike", "cruise_missile", "smoke_screen", "repair_drop", "napalm_strike",
-              "uav_scan", "remote_mines", "field_tower", "sead_strike",
+            { "artillery_barrage", "airstrike", "cruise_missile", "repair_drop", "napalm_strike",
+              "remote_mines", "field_tower",
               // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
-              "glide_bomb_strike", "guided_shell_strike", "cluster_at_strike", "uav_loiter_strike_support", "ammo_resupply",
-              "jam_storm", "illum_flare_strike", "decoy_paradrop", "instant_counter_battery", "drone_intercept_strike",
-              "chaff_strike" };
+              "glide_bomb_strike" };
+
+        /// <summary>Play-test 14: the base roster's hangars that turn out units (the vehicle and aircraft hangars).</summary>
+        public static List<string> BaseHangars(MachineBrigade.Sim.Content.Catalog catalog)
+        {
+            var list = new List<string>();
+            foreach (var id in catalog.Base.Roster)
+                if (catalog.Vehicles.TryGetValue(id, out var def) && def.Hangar != null) list.Add(id);
+            return list;
+        }
 
         // A new player's deck: the starter cards (the rest are won in the campaign or bought).
         private static readonly string[] DefaultVehicles = Progression.StarterVehicles;

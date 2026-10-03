@@ -43,7 +43,7 @@ namespace MachineBrigade.Tests
 
         private static readonly string[] Autocannons =
         {
-            "autocannon_30", "ifv_30", "flak_35", "autocannon_25", "jet_cannon", "twin_30_flak", "gsh30k", "zu23", "twin_30_bmpt",
+            "autocannon_30", "ifv_30", "flak_35", "autocannon_25", "jet_cannon", "twin_30_flak", "zu23", "twin_30_bmpt",
             "fighter_cannon", "twin_35_ahead", "heli_gun", "gunship_25mm", "gunship_40mm",
         };
 

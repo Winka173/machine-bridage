@@ -71,24 +71,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: hai pháo 120 mm bắn gần như cùng lúc, một [[phát đôi]] ở 34 m, rồi nạp lâu (7 giây); tháp xoay nhanh, chạy nhanh hơn tăng nặng; giáp trước cấp 3.\n" +
                 "Mạnh / yếu: phát mở màn thắng tay đôi với tăng chủ lực và tăng nặng; bắn lại chậm, nên xe diệt tăng, trực thăng và bầy xe nhẹ bào mòn được nó.\n" +
                 "Mẹo: cho nó mở màn vào chiếc tăng nặng nhất của địch, để các xe khác che lúc nó nạp đạn."),
-            ["guide.turtle_tank"] = (
-                "[[Turtle tank]] · heavy armour under a steel shed · drone-proof\n" +
-                "How it fights: a 120 mm gun that cannot turn: it aims with the whole hull. The shed stops 80% of [[drone]] damage; its roller sets off [[mines]].\n" +
-                "Strong / weak: walks through FPV swarms, Lancets and minefields, and beats light vehicles; heavy tanks and tank destroyers beat it.\n" +
-                "Tip: lead with it against drone carriers and minelayers; it is slow, so keep the others behind it.",
-                "[[Tăng mái che]] · giáp dày dưới mái thép · chống drone\n" +
-                "Cách đánh: pháo 120 mm không xoay được, phải quay cả thân để ngắm. Mái thép chặn 80% sát thương [[drone]], trục lăn kích nổ [[mìn]] vô hại.\n" +
-                "Mạnh / yếu: đi xuyên bầy FPV, Lancet và bãi mìn, thắng xe nhẹ; thua tăng hạng nặng và xe diệt tăng.\n" +
-                "Mẹo: cho đi đầu khi địch có xe drone và xe rải mìn; nó chậm, để các xe khác theo sau."),
-            ["guide.bmpt"] = (
-                "[[Tank support vehicle]] · heavy armour · many guns\n" +
-                "How it fights: twin 30 mm cannons (ground and air), paired Ataka [[anti-tank missiles]] from 40 m, and [[grenade launchers]] firing to both sides.\n" +
-                "Strong / weak: clears [[light vehicles]], scouts, helicopters and AA round your tanks, and hurts tanks; heavy tanks and tank hunters beat it.\n" +
-                "Tip: drive it next to your battle tanks: it kills what they are bad at hitting.",
-                "[[Xe hỗ trợ tăng]] · giáp dày · nhiều vũ khí\n" +
-                "Cách đánh: pháo đôi 30 mm (bắn cả đất lẫn trời), [[tên lửa chống tăng]] Ataka bắn cặp từ 40 m, và [[súng phóng lựu]] bắn sang hai bên.\n" +
-                "Mạnh / yếu: dọn [[xe nhẹ]], trinh sát, trực thăng và phòng không quanh xe tăng ta, hại được cả xe tăng; thua tăng nặng và xe diệt tăng.\n" +
-                "Mẹo: cho chạy cạnh tăng chủ lực: nó hạ những gì xe tăng khó bắn trúng."),
             ["guide.heavy_tank"] = (
                 "[[Heavy tank]] · thick armour · breakthrough\n" +
                 "How it fights: a 152 mm gun that loads [[armour-piercing]] for armour and [[high explosive]] for structures and groups of light vehicles on its own; a 30 mm autocannon beside it answers [[helicopters]]. Front armour 4, sides 3.\n" +
@@ -143,15 +125,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: dừng lại rồi phóng lần lượt từng chiếc [[drone cảm tử]], vài giây một chiếc, lao xuống xe bọc thép cách 12–75 m; hết mười sáu chiếc thì nạp lại một lúc.\n" +
                 "Mạnh / yếu: phá nát [[xe tăng]] và tăng nặng từ xa; tăng APS, xe la-de phòng không và xe gây nhiễu chặn drone, tăng mái che gần như miễn nhiễm.\n" +
                 "Mẹo: bắn từ sau tuyến ta vào xe tăng nặng nhất của địch, giữ ngoài tầm pháo của chúng."),
-            ["guide.lancet_truck"] = (
-                "[[Loitering munition truck]] · light armour · long reach (85 m)\n" +
-                "How it fights: stops and launches Lancet [[drones]] one at a time that fly up to 85 m and dive onto a target: [[double damage]] on artillery and on anything parked for 3 s; six, then a reload.\n" +
-                "Strong / weak: made for [[artillery]], launchers and SAMs behind the line, and parked tanks; APS, laser AA and jammers stop its drones.\n" +
-                "Tip: let scouts, a UAV scan or a counter-battery radar find the enemy's guns, then send the Lancets after them.",
-                "[[Xe phóng đạn lảng vảng]] · giáp mỏng · tầm với xa (85 m)\n" +
-                "Cách đánh: dừng lại rồi phóng từng chiếc [[drone]] Lancet bay tới 85 m rồi lao xuống mục tiêu: [[gấp đôi sát thương]] lên pháo binh và mọi xe đứng yên quá 3 giây; sáu chiếc rồi nạp lại.\n" +
-                "Mạnh / yếu: chuyên diệt [[pháo binh]], giàn phóng và tên lửa phòng không phía sau tuyến, cả xe tăng đứng yên; tăng APS, xe la-de phòng không và xe gây nhiễu chặn được drone.\n" +
-                "Mẹo: cho trinh sát, UAV quét hoặc radar phản pháo tìm pháo địch trước, rồi thả Lancet săn chúng."),
             ["guide.railgun_truck"] = (
                 "[[Railgun truck]] · light armour · very long range (90 m)\n" +
                 "How it fights: stands still and [[charges]] for 0.9 s (the coils glow), then fires a slug that [[pierces]] every vehicle on its line, out to 90 m.\n" +
@@ -329,15 +302,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: có súng máy nóc; khi chạy, cứ 6 giây thả một quả [[mìn chống tăng]] (tối đa 8), xe địch cán phải là nổ tung.\n" +
                 "Mạnh / yếu: trừng phạt [[xe tăng]] và đoàn xe đi theo một lối; tăng mái che có trục lăn phá mìn, máy bay thì không sợ.\n" +
                 "Mẹo: chạy qua lại trên con đường địch hay đi, hoặc quanh cứ điểm của ta."),
-            ["guide.smoke_carrier"] = (
-                "[[Smoke carrier]] · light armour · hides the army\n" +
-                "How it fights: a roof MG; whenever an enemy is in range it lays an 11 m [[smoke]] cloud round itself that no one can see through.\n" +
-                "Strong / weak: shields tanks and slow vehicles as they close in on [[long-range guns]]; it fights poorly itself.\n" +
-                "Tip: lead a push with it towards tank destroyers or ATGM carriers so your tanks get close.",
-                "[[Xe thả khói]] · giáp mỏng · che giấu đội quân\n" +
-                "Cách đánh: có súng máy nóc; mỗi khi địch trong tầm, nó phủ [[màn khói]] 11 m quanh mình, không ai nhìn xuyên qua được.\n" +
-                "Mạnh / yếu: che chở xe tăng và xe chậm khi áp sát [[pháo tầm xa]] của địch; tự nó đánh rất yếu.\n" +
-                "Mẹo: cho chạy đầu đội hình khi tiến vào xe diệt tăng hoặc xe tên lửa chống tăng để xe tăng ta áp sát được."),
 
             // Helicopters.
             ["guide.scout_heli"] = (
@@ -358,15 +322,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: [[tên lửa chống tăng]] Hellfire Longbow bắn cặp từ 55 m; nó treo ở rìa tầm đó, vòng sang phía tránh phòng không tầm ngắn; pháo 30 mm và rốc-két khi gần, 2 Stinger bắn máy bay; có [[mồi nhiệt]].\n" +
                 "Mạnh / yếu: hạ [[xe tăng]], tăng nặng và pháo binh từ ngoài tầm pháo cao xạ và tên lửa tầm ngắn; xe tên lửa phòng không tầm xa, trạm PK tầm xa và tiêm kích bắn xa hơn nó.\n" +
                 "Mẹo: nó tự giữ khoảng cách: đi kèm thứ xử lý được tên lửa tầm xa (đòn SEAD, pháo binh)."),
-            ["guide.gunship_heli"] = (
-                "[[Armoured gunship helicopter]] · flying IFV · can take objectives\n" +
-                "How it fights: opens with big [[rocket]] salvos, then a fixed 30 mm cannon and ATGMs; [[door gunners]] fire out of both sides. Drops flares.\n" +
-                "Strong / weak: wrecks light vehicles, scouts and towers; AA vehicles and fighters are its danger, but it takes a lot to bring down.\n" +
-                "Tip: the only helicopter that [[captures]] points: send it to grab an undefended objective across the map.",
-                "[[Trực thăng vũ trang bọc giáp]] · xe bộ binh bay · chiếm được cứ điểm\n" +
-                "Cách đánh: mở màn bằng loạt [[rốc-két]] lớn, rồi pháo 30 mm cố định và tên lửa chống tăng; [[xạ thủ]] bắn từ hai cửa hông. Có mồi nhiệt.\n" +
-                "Mạnh / yếu: phá nát xe nhẹ, trinh sát và tháp canh; sợ xe phòng không và tiêm kích, nhưng rất lì đòn.\n" +
-                "Mẹo: trực thăng duy nhất [[chiếm được cứ điểm]]: đưa nó đi chiếm điểm trống ở xa bên kia bản đồ."),
 
             // Fixed-wing aircraft and drones.
             ["guide.recon_drone"] = (
@@ -563,15 +518,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: pháo 120 mm [[xuyên giáp]] (như Centauro II) vừa chạy vừa bắn tới 38 m, khoảng 70 sát thương mỗi giây lên giáp dày, [[+25%]] khi trúng hông hoặc đuôi.\n" +
                 "Mạnh / yếu: chạy vòng tuyến xe tăng và trừng phạt hai bên sườn; giáp mỏng nên đấu thẳng với tăng là thua, pháo tự động xé nát nó.\n" +
                 "Mẹo: vòng qua sườn trong lúc xe tăng giữ mặt trước: phát nào trúng hông cũng đáng giá."),
-            ["guide.counter_battery_radar"] = (
-                "[[Counter-battery radar]] · light armour · finds the enemy's guns\n" +
-                "How it fights: a roof MG only; any enemy artillery that fires within 120 m of it is [[revealed]] to your side for 8 s, and your artillery does [[+15%]] to it.\n" +
-                "Strong / weak: turns the enemy's guns into targets for your own artillery, Lancets and aircraft; useless where the enemy has no artillery.\n" +
-                "Tip: bring it with your own artillery or Lancets against an army of guns and rockets.",
-                "[[Xe radar phản pháo]] · giáp mỏng · tìm pháo địch\n" +
-                "Cách đánh: chỉ có súng máy trên nóc; pháo địch nào khai hỏa trong vòng 120 m quanh nó bị [[lộ vị trí]] với phe ta trong 8 giây, và pháo binh ta gây [[+15%]] sát thương lên nó.\n" +
-                "Mạnh / yếu: biến pháo địch thành mục tiêu cho pháo, Lancet và máy bay của ta; vô dụng khi địch không có pháo binh.\n" +
-                "Mẹo: mang theo cùng pháo binh hoặc Lancet khi địch dựa vào pháo và rốc-két."),
             ["guide.long_sam"] = (
                 "[[Long-range SAM]] · light armour · 95 m reach\n" +
                 "How it fights: stops and fires one big missile every 8 s at [[aircraft only]] out to 95 m (600 damage, not closer than 20 m).\n" +
@@ -590,15 +536,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: bệ phóng Kornet đôi bắn [[tên lửa chống tăng]] theo cặp xa tới 50 m.\n" +
                 "Mạnh / yếu: chặn xe tăng và giáp dày từ xa; APS và xe la-de phòng không bắn hạ được tên lửa của nó, pháo binh bắn xa hơn nó.\n" +
                 "Mẹo: nã pháo từ ngoài 50 m, hoặc cho tăng có APS hay xe la-de phòng không đi cùng đợt tấn công."),
-            ["guide.uav_scan"] = (
-                "[[UAV scan]] · recon · {{cp}} CP\n" +
-                "How it fights: a drone circles the mark for {{duration}} s and shows [[everything within {{radius}} m]] to your side: stealth aircraft, hidden guns and mines too.\n" +
-                "Strong / weak: cheap eyes for artillery and for a push into the unknown; it deals no damage.\n" +
-                "Tip: call it on an objective before the army goes in, or where something unseen is shooting at you.",
-                "[[UAV quét]] · trinh sát · {{cp}} CP\n" +
-                "Cách đánh: một drone lượn vòng trên điểm đánh dấu trong {{duration}} giây và cho phe ta thấy [[mọi thứ trong {{radius}} m]]: cả máy bay tàng hình, pháo ẩn và mìn.\n" +
-                "Mạnh / yếu: đôi mắt rẻ cho pháo binh và cho một đợt tiến vào nơi chưa rõ; không gây sát thương.\n" +
-                "Mẹo: gọi lên cứ điểm trước khi quân tiến vào, hoặc nơi có thứ gì vô hình đang bắn quân ta."),
             ["guide.remote_mines"] = (
                 "[[Remote mines]] · area denial · {{cp}} CP\n" +
                 "How it fights: rockets scatter [[{{count}} anti-tank mines]] within {{radius}} m of the mark; each blows up under the first enemy vehicle over it, and they clear themselves after {{duration}} s.\n" +
@@ -617,15 +554,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: một [[tháp canh]] được thả dù xuống điểm đánh dấu và chiến đấu trong {{duration}} giây; từ cấp {{unitRank}} của thẻ là [[tháp tên lửa chống tăng]]. Không bao giờ thả vào căn cứ địch.\n" +
                 "Mạnh / yếu: giữ cứ điểm vừa chiếm hoặc bịt lỗ hổng trên tuyến; pháo binh và pháo nặng hạ được nó.\n" +
                 "Mẹo: thả xuống cứ điểm mà địch sắp phản công."),
-            ["guide.sead_strike"] = (
-                "[[SEAD strike]] · anti-radiation missile · {{cp}} CP\n" +
-                "How it fights: a jet fires an anti-radiation missile at the [[enemy air defence]] nearest the mark (within {{radius}} m): {{damage}} damage, and it is [[knocked out]] for {{duration}} s.\n" +
-                "Strong / weak: opens the sky for your aircraft; wasted where there is no anti-air.\n" +
-                "Tip: call it just before your helicopters or bombers go in.",
-                "[[Đòn SEAD]] · tên lửa chống bức xạ · {{cp}} CP\n" +
-                "Cách đánh: máy bay phóng tên lửa chống bức xạ vào [[phòng không địch]] gần điểm đánh dấu nhất (trong {{radius}} m): {{damage}} sát thương, và nó [[tê liệt]] {{duration}} giây.\n" +
-                "Mạnh / yếu: mở đường trên trời cho máy bay ta; phí công nếu không có phòng không.\n" +
-                "Mẹo: gọi ngay trước khi trực thăng hoặc oanh tạc cơ của ta xông vào."),
             ["guide.ew_tower"] = (
                 "[[EW tower]] · small tower · jams, does not shoot\n" +
                 "How it fights: guided missiles, drones and fire support aimed within 30 m of it go wide; it has no gun.\n" +
@@ -635,24 +563,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: tên lửa điều khiển, drone và hỏa lực yểm trợ nhắm vào trong vòng 30 m quanh nó bị lệch; không có súng.\n" +
                 "Mạnh / yếu: làm cùn tên lửa chống tăng, Lancet và các đòn không kích vào căn cứ; thứ gì chỉ cần lái tới bắn là hạ được nó.\n" +
                 "Mẹo: đặt cạnh các tháp mà tên lửa địch hay nhắm; nhánh: máy gây nhiễu drone 45 m, hoặc máy đánh lừa radar tìm pháo."),
-            ["guide.dragons_teeth"] = (
-                "[[Dragon's teeth]] · small obstacle · blocks the way\n" +
-                "How it fights: rows of concrete teeth that no vehicle drives through; it fights nothing and is shot at last.\n" +
-                "Strong / weak: turns an approach into a detour under your guns; engineers breach it three times as fast.\n" +
-                "Tip: close the gap the enemy will come through; the wire branch slows instead of blocking.",
-                "[[Răng rồng]] · vật cản nhỏ · chặn đường\n" +
-                "Cách đánh: các hàng khối bê tông không xe nào đi qua được; không đánh gì và bị bắn sau cùng.\n" +
-                "Mạnh / yếu: biến lối vào thành đường vòng dưới họng súng của ta; công binh phá nhanh gấp ba.\n" +
-                "Mẹo: bịt lỗ hổng địch sẽ đi qua; nhánh rào thép gai thì làm chậm thay vì chặn."),
-            ["guide.minefield"] = (
-                "[[Minefield]] · small obstacle · eight mines\n" +
-                "How it fights: eight anti-tank mines within 5 m, laid again every 45 s; the field itself is no target.\n" +
-                "Strong / weak: punishes vehicles that rush in; scouts, engineers and a UAV scan see the mines, and engineers clear them.\n" +
-                "Tip: put it on the road into your base, behind the guns that make the enemy slow down.",
-                "[[Bãi mìn]] · vật cản nhỏ · tám quả mìn\n" +
-                "Cách đánh: tám quả mìn chống tăng trong vòng 5 m, rải lại mỗi 45 giây; bãi mìn không phải mục tiêu.\n" +
-                "Mạnh / yếu: trừng phạt xe lao vào ồ ạt; trinh sát, công binh và UAV quét thấy mìn, công binh gỡ được.\n" +
-                "Mẹo: đặt trên đường vào căn cứ, sau các họng súng buộc địch phải chậm lại."),
             ["guide.c_ram"] = (
                 "[[C-RAM interceptor]] · medium tower · shoots rounds down\n" +
                 "How it fights: shoots down rockets, missiles, drones and about a third of the shells aimed within 35 m, two interceptors at a time; its 20 mm gatling fires at nothing else, not even aircraft.\n" +
@@ -662,6 +572,24 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: bắn hạ rốc-két, tên lửa, drone và khoảng một phần ba đạn pháo nhắm vào trong 35 m, hai quả đánh chặn cùng lúc; pháo nhiều nòng 20 mm chỉ bắn đạn bay tới, không bắn máy bay.\n" +
                 "Mạnh / yếu: che căn cứ khỏi pháo binh, rốc-két và drone; không có gì đánh xe mặt đất.\n" +
                 "Mẹo: đặt nơi pháo địch sẽ gây hại nhất, giữa các tháp của ta. Ở hạng 7, [[Vòm Sắt]] đổi súng nhiều nòng lấy tên lửa đánh chặn (60 m, sáu quả một lượt, không chặn đạn bắn thẳng); Centurion giữ vai trò che chắn tầm gần bắn nhanh."),
+            ["guide.vehicle_hangar"] = (
+                "[[Vehicle hangar]] · medium structure · free light vehicles\n" +
+                "How it fights: every 60 s it sends out [[one light vehicle]] (scout jeep, armoured car or light tank: your pick on the HQ tab), free, while fewer than two of its own are alive.\n" +
+                "Strong / weak: a steady trickle of free units; they are light and come one at a time.\n" +
+                "Tip: set the hangar rally point in battle (tap its button, then the map) to send them forward.",
+                "[[Nhà chứa xe]] · công trình ô vừa · xe nhẹ miễn phí\n" +
+                "Cách đánh: cứ 60 giây gửi ra [[một xe hạng nhẹ]] (xe jeep trinh sát, xe bọc thép hoặc xe tăng hạng nhẹ: chọn ở tab Sở chỉ huy), miễn phí, khi còn ít hơn hai xe của nó.\n" +
+                "Mạnh / yếu: quân miễn phí đều đặn; chúng nhẹ và ra từng chiếc một.\n" +
+                "Mẹo: đặt điểm tập kết nhà chứa trong trận (chạm nút của nó rồi chạm bản đồ) để đưa chúng lên trước."),
+            ["guide.aircraft_hangar"] = (
+                "[[Aircraft hangar]] · medium structure · free light aircraft\n" +
+                "How it fights: every 60 s it launches [[one light aircraft]] (scout helicopter or recon UAV: your pick on the HQ tab), free, while fewer than two of its own are up.\n" +
+                "Strong / weak: free eyes and harassment in the air; weak against anti-air.\n" +
+                "Tip: put the hangar rally point where you want to see.",
+                "[[Nhà chứa máy bay]] · công trình ô vừa · máy bay nhẹ miễn phí\n" +
+                "Cách đánh: cứ 60 giây phóng [[một máy bay nhẹ]] (trực thăng trinh sát hoặc UAV trinh sát: chọn ở tab Sở chỉ huy), miễn phí, khi còn ít hơn hai chiếc của nó trên trời.\n" +
+                "Mạnh / yếu: mắt và quấy rối miễn phí trên không; yếu trước phòng không.\n" +
+                "Mẹo: đặt điểm tập kết nhà chứa ở nơi cần quan sát."),
             ["guide.drone_hangar"] = (
                 "[[Drone hangar]] · large tower · FPV drones\n" +
                 "How it fights: sends two FPV kamikaze drones every 20 s at enemies out to 70 m, heavy on armour and structures.\n" +
@@ -672,31 +600,22 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: bào mòn thứ gì đứng ngoài tầm các tháp khác; APS, la-de và máy gây nhiễu chặn được drone.\n" +
                 "Mẹo: nhánh Lancet bắn tới 85 m và săn pháo binh; nhánh Bầy đàn phóng bốn chiếc một lần."),
             ["guide.repair_bay"] = (
-                "[[Repair bay]] · utility module\n" +
-                "How it fights: vehicles within 35 m of your HQ mend 1.5% of their health a second, even in the middle of a fight.\n" +
-                "Strong / weak: keeps a defending army on its feet; it does nothing for vehicles out in the field.\n" +
-                "Tip: pair it with a base that fights at home (Defend, Siege, a pressed Conquest).",
-                "[[Xưởng sửa chữa]] · mô-đun tiện ích\n" +
-                "Cách đánh: xe trong vòng 35 m quanh sở chỉ huy hồi 1,5% máu mỗi giây, kể cả giữa trận.\n" +
-                "Mạnh / yếu: giữ quân phòng thủ đứng vững; không giúp gì xe ở ngoài chiến trường.\n" +
-                "Mẹo: dùng khi căn cứ phải đánh tại nhà (Phòng thủ, Công thành, Chiếm cứ điểm bị ép)."),
-            ["guide.ammo_depot"] = (
-                "[[Ammunition depot]] · utility module\n" +
-                "How it fights: vehicles rearm at home twice as fast.\n" +
-                "Strong / weak: great for launchers and artillery that empty their magazines; it blows up hard when destroyed.\n" +
-                "Tip: take it with an army of rocket artillery.",
-                "[[Kho đạn]] · mô-đun tiện ích\n" +
-                "Cách đánh: xe nạp đạn tại căn cứ nhanh gấp đôi.\n" +
-                "Mạnh / yếu: rất hợp với giàn phóng và pháo binh hay hết đạn; nổ rất mạnh khi bị phá.\n" +
-                "Mẹo: mang theo khi bộ bài nhiều pháo phản lực."),
+                "[[Repair bay]] · utility module · ground aura\n" +
+                "How it fights: while it stands, [[every ground vehicle]] of yours, anywhere on the map, hits 10% harder and has 10% more health.\n" +
+                "Strong / weak: lifts a whole tank army; a second repair bay adds nothing, and losing it loses the lift.\n" +
+                "Tip: guard it well inside the base.",
+                "[[Xưởng sửa chữa]] · mô-đun tiện ích · hào quang mặt đất\n" +
+                "Cách đánh: khi nó còn đứng, [[mọi xe mặt đất]] của ta, ở bất cứ đâu trên bản đồ, gây thêm 10% sát thương và có thêm 10% máu.\n" +
+                "Mạnh / yếu: nâng cả đạo quân xe tăng; xưởng thứ hai không cộng thêm, mất nó là mất hiệu ứng.\n" +
+                "Mẹo: đặt sâu trong căn cứ và bảo vệ kỹ."),
             ["guide.airfield"] = (
-                "[[Airfield]] · utility module\n" +
-                "How it fights: aircraft over it repair 3% a second and rearm; they come back to it when out of ammunition (no trip home for being hurt).\n" +
-                "Strong / weak: keeps helicopters and jets flying longer; they still have to fly out to fight and can be shot down on the way.\n" +
+                "[[Airfield]] · utility module · air aura\n" +
+                "How it fights: while it stands, [[every aircraft]] of yours (planes and helicopters, not drones) hits 10% harder and flies 10% faster.\n" +
+                "Strong / weak: lifts a whole air wing; a second airfield adds nothing. Aircraft rearm at the HQ.\n" +
                 "Tip: take it with two or more aircraft in the deck.",
-                "[[Sân bay dã chiến]] · mô-đun tiện ích\n" +
-                "Cách đánh: máy bay bay trên nó hồi 3% máu mỗi giây và nạp đạn; chúng về đây khi hết đạn (không còn bay về vì bị thương).\n" +
-                "Mạnh / yếu: giúp trực thăng và máy bay bay được lâu hơn; chúng vẫn phải ra trận và có thể bị bắn rơi trên đường.\n" +
+                "[[Sân bay dã chiến]] · mô-đun tiện ích · hào quang trên không\n" +
+                "Cách đánh: khi nó còn đứng, [[mọi máy bay]] của ta (máy bay và trực thăng, không tính drone) gây thêm 10% sát thương và bay nhanh hơn 10%.\n" +
+                "Mạnh / yếu: nâng cả phi đội; sân bay thứ hai không cộng thêm. Máy bay nạp đạn ở sở chỉ huy.\n" +
                 "Mẹo: mang theo khi bộ bài có từ hai máy bay trở lên."),
             ["guide.logistics_station"] = (
                 "[[Logistics station]] · utility module\n" +
@@ -707,15 +626,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: mức tiếp tế của quân ta tăng thêm 8 CP: thu nhập chỉ giảm khi quân vượt mức tiếp tế.\n" +
                 "Mạnh / yếu: cho đội quân lớn giữ nguyên thu nhập; vô ích với đội quân nhỏ.\n" +
                 "Mẹo: mang theo khi bộ bài toàn xe đắt tiền."),
-            ["guide.radar_station"] = (
-                "[[Radar station]] · utility module\n" +
-                "How it fights: anything inside your base shows, stealth and hidden units too, and enemy guns firing within 120 m show for 8 s.\n" +
-                "Strong / weak: exposes stealth bombers and hidden guns over your base; it cannot see beyond it.\n" +
-                "Tip: take it against stealth aircraft and artillery-heavy enemies.",
-                "[[Trạm radar]] · mô-đun tiện ích\n" +
-                "Cách đánh: mọi thứ trong căn cứ đều lộ, kể cả tàng hình và ẩn nấp, và pháo địch khai hỏa trong 120 m bị lộ 8 giây.\n" +
-                "Mạnh / yếu: làm lộ oanh tạc cơ tàng hình và pháo ẩn trên căn cứ; không nhìn được ra ngoài.\n" +
-                "Mẹo: mang theo khi địch dùng máy bay tàng hình và nhiều pháo binh."),
             ["guide.headquarters"] = (
                 "[[Headquarters]] · fixed defence · the heart of a base\n" +
                 "How it fights: a twin heavy gun fires two-shot [[volleys]] out to 40 m, twin 30 mm flak and a coaxial MG cover the sky; new vehicles are dropped round it.\n" +
@@ -833,15 +743,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: súng máy nặng bắn nhanh (32 m, bắn cả máy bay).\n" +
                 "Mạnh / yếu: quét sạch trinh sát và [[xe nhẹ]]; gần như không làm xước xe tăng.\n" +
                 "Mẹo: đưa xe tăng vào, đừng dùng xe nhẹ; tăng phun lửa hoặc pháo binh phá nó rất nhanh."),
-            ["guide.artillery_emplacement"] = (
-                "[[Artillery emplacement]] · fixed defence · long range (90 m)\n" +
-                "How it fights: a howitzer that shells ground targets 25–90 m away whenever the defence can see them; nothing for close defence.\n" +
-                "Strong / weak: hurts anything that stops inside its range; it cannot hit closer than 25 m, and it is fairly fragile.\n" +
-                "Tip: rush it with fast vehicles: inside 25 m its gun cannot fire at you. Kill its [[spotters]] first.",
-                "[[Trận địa pháo]] · công sự cố định · tầm xa (90 m)\n" +
-                "Cách đánh: lựu pháo nã vào mục tiêu mặt đất cách 25–90 m mỗi khi phe thủ nhìn thấy; không có gì tự vệ ở gần.\n" +
-                "Mạnh / yếu: gây đau cho mọi thứ dừng lại trong tầm; không bắn được gần hơn 25 m, và khá mỏng manh.\n" +
-                "Mẹo: dùng xe nhanh lao vào: trong vòng 25 m pháo của nó chịu thua. Diệt [[tai mắt]] của nó trước."),
 
             // Mission units and bosses.
             ["guide.hover_gunboat"] = (
@@ -1094,105 +995,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: sau {{delay}} giây cảnh báo, {{count}} quả [[bom lượn]] rơi xuống điểm chọn (mỗi quả nổ bán kính {{blast}} m); khác không kích, không có máy bay bay qua mục tiêu, nhưng hệ đánh chặn hạng nặng vẫn bắn hạ được bom.\n" +
                 "Mạnh / yếu: đánh trúng mục tiêu sau lưng phòng không tầm gần; SAM hạng nặng hoặc C-RAM vẫn có thể hạ một quả trước khi rơi.\n" +
                 "Mẹo: dùng cho công sự kiên cố mà máy bay không kích không sống nổi khi bay qua."),
-            ["guide.guided_shell_strike"] = (
-                "[[Guided shell]] · one pinpoint round · {{cp}} CP\n" +
-                "How it fights: after a {{delay}} s warning, one [[Excalibur/Krasnopol-class]] shell lands exactly on the spot, no scatter ({{blast}} m blast).\n" +
-                "Strong / weak: certain against a target standing still; a moving vehicle can simply drive off before it lands.\n" +
-                "Tip: call it the moment an enemy gun or vehicle parks; a barrage's 6 rounds scatter, this one does not.",
-                "[[Đạn pháo dẫn đường]] · một phát trúng đích · {{cp}} CP\n" +
-                "Cách đánh: sau {{delay}} giây cảnh báo, một quả đạn kiểu [[Excalibur/Krasnopol]] rơi đúng điểm chọn, không tản mát (nổ bán kính {{blast}} m).\n" +
-                "Mạnh / yếu: chắc chắn trúng mục tiêu đứng yên; xe đang di chuyển có thể lái đi trước khi đạn rơi.\n" +
-                "Mẹo: gọi ngay khi pháo hoặc xe địch vừa đỗ lại; pháo kích 6 phát tản mát, thẻ này thì không."),
-            ["guide.cluster_at_strike"] = (
-                "[[AT cluster bomb]] · {{count}} homing bomblets · {{cp}} CP\n" +
-                "How it fights: after a {{delay}} s warning, up to {{count}} top-attack bomblets each find the nearest distinct enemy vehicle in the circle and strike its roof; aircraft and buildings are not hit.\n" +
-                "Strong / weak: wipes out a whole cluster of tanks at once; wasted against a single vehicle or a fortified position.\n" +
-                "Tip: call it on a column or a mass of armour, not on towers.",
-                "[[Bom chùm chống tăng]] · {{count}} đầu đạn tự tìm · {{cp}} CP\n" +
-                "Cách đánh: sau {{delay}} giây cảnh báo, tối đa {{count}} đầu đạn con đánh nóc, mỗi đầu đạn tự tìm một xe địch khác nhau trong vùng; không đánh máy bay và công trình.\n" +
-                "Mạnh / yếu: xóa sổ cả cụm xe tăng cùng lúc; phí phạm nếu chỉ có một xe hoặc công sự kiên cố.\n" +
-                "Mẹo: dùng cho đoàn xe hoặc cụm thiết giáp, không dùng cho tháp canh."),
-            ["guide.uav_loiter_strike_support"] = (
-                "[[Loitering UAV strike]] · circles for {{duration}} s · {{cp}} CP\n" +
-                "How it fights: an [[attack UAV]] circles the point for {{duration}} s, firing at the strongest enemy vehicle it can reach; unlike every other card here, its strike is not instant.\n" +
-                "Strong / weak: keeps pressure on a fight as it develops; enemy air defence can shoot the drone down and end it early.\n" +
-                "Tip: call it as a fight starts, with cover against enemy anti-air.",
-                "[[UAV lượn tấn công]] · lượn {{duration}} giây · {{cp}} CP\n" +
-                "Cách đánh: một [[UAV tấn công]] lượn trên điểm chọn trong {{duration}} giây, tự bắn vào xe địch mạnh nhất trong tầm; khác mọi thẻ khác ở đây, đòn này không tức thì.\n" +
-                "Mạnh / yếu: giữ áp lực suốt trận đánh đang diễn ra; phòng không địch bắn hạ được UAV, kết thúc sớm.\n" +
-                "Mẹo: gọi ngay khi trận đánh bắt đầu, có người che chắn phòng không địch."),
-            ["guide.ammo_resupply"] = (
-                "[[Ammo resupply]] · instant refill · {{cp}} CP\n" +
-                "How it fights: every friendly vehicle within {{radius}} m has its weapons refilled at once, no waiting.\n" +
-                "Strong / weak: keeps artillery and aircraft in the fight when their stores run dry; useless on a vehicle that is not limited on ammunition.\n" +
-                "Tip: call it on your howitzers and strike aircraft once their rate of fire drops.",
-                "[[Thả dù tiếp đạn]] · nạp đầy ngay · {{cp}} CP\n" +
-                "Cách đánh: mọi xe ta trong vòng {{radius}} m được nạp đầy đạn ngay lập tức, không phải chờ.\n" +
-                "Mạnh / yếu: giữ pháo binh và máy bay tiếp tục chiến đấu khi hết đạn; vô dụng với xe không giới hạn đạn.\n" +
-                "Mẹo: gọi cho lựu pháo và máy bay tấn công của bạn khi tốc độ bắn giảm."),
-            ["guide.jam_storm"] = (
-                "[[Jamming storm]] · {{radius}} m circle · {{cp}} CP\n" +
-                "How it fights: after a {{delay}} s warning, every enemy drone in the circle is downed at once, and the circle then hides everything inside it for {{duration}} s.\n" +
-                "Strong / weak: stops a drone swarm cold and blinds the enemy's view of what you do there; ground vehicles and towers are untouched.\n" +
-                "Tip: call it over a drone launch site, or over your own advance to cover it.",
-                "[[Bão gây nhiễu]] · vùng {{radius}} m · {{cp}} CP\n" +
-                "Cách đánh: sau {{delay}} giây cảnh báo, mọi drone địch trong vùng rơi ngay, và vùng đó bị che khuất trong {{duration}} giây.\n" +
-                "Mạnh / yếu: chặn đứng bầy drone và che mắt địch trong vùng đó; xe mặt đất và tháp canh không bị ảnh hưởng.\n" +
-                "Mẹo: gọi trên điểm phóng drone địch, hoặc che chắn cho đợt tiến quân của bạn."),
-            ["guide.illum_flare_strike"] = (
-                "[[Illumination flare]] · {{radius}} m circle · {{cp}} CP\n" +
-                "How it fights: a flare lights the circle for {{duration}} s, showing your side everything inside it, night or fog alike (as a UAV scan).\n" +
-                "Strong / weak: the cheapest way to fight blind weather or the dark; a UAV scan shows stealth too, and costs more.\n" +
-                "Tip: call it before pushing into a dark or foggy sector.",
-                "[[Pháo sáng chiếu sáng]] · vùng {{radius}} m · {{cp}} CP\n" +
-                "Cách đánh: pháo sáng chiếu vùng này trong {{duration}} giây, cho phe ta thấy mọi thứ trong đó, dù đêm hay sương mù (như UAV quét).\n" +
-                "Mạnh / yếu: cách rẻ nhất để đối phó thời tiết xấu hoặc đêm tối; UAV quét còn thấy cả tàng hình nhưng đắt hơn.\n" +
-                "Mẹo: gọi trước khi tiến vào khu vực tối hoặc nhiều sương mù."),
-            ["guide.decoy_paradrop"] = (
-                "[[Decoy paradrop]] · 3 fake tanks · {{cp}} CP\n" +
-                "How it fights: 3 [[inflatable tank decoys]] land on the spot; the enemy takes them for real tanks and fires on them until it spots the trick, or for {{duration}} s.\n" +
-                "Strong / weak: pulls fire off your real vehicles for free; a scout, radar or UAV scan up close sees through it at once (as the inflatable decoy tower does).\n" +
-                "Tip: drop it on your flank just before a push, to pull the enemy's eye the wrong way.",
-                "[[Mồi nhử thả dù]] · 3 xe tăng giả · {{cp}} CP\n" +
-                "Cách đánh: 3 [[xe tăng bơm hơi]] rơi xuống điểm chọn; địch tưởng thật và bắn vào chúng cho tới khi phát hiện ra, hoặc hết {{duration}} giây.\n" +
-                "Mạnh / yếu: hút hỏa lực khỏi xe thật miễn phí; trinh sát, radar hoặc UAV quét ở gần phát hiện ra ngay (như tháp mồi nhử bơm hơi).\n" +
-                "Mẹo: thả ở sườn trận địa ngay trước một đợt tiến công, để đánh lạc hướng mắt địch."),
-            ["guide.instant_counter_battery"] = (
-                "[[Instant counter-battery]] · punishes enemy guns · {{cp}} CP\n" +
-                "How it fights: after a {{delay}} s warning, every enemy artillery piece that fired in the last 10 s, anywhere within {{radius}} m, takes {{count}} rounds of {{blast}} m blasts.\n" +
-                "Strong / weak: a real threat to enemy artillery that just opened up; a gun that has not fired recently is safe.\n" +
-                "Tip: call it the moment enemy shells start landing on your side.",
-                "[[Phản pháo tức thì]] · trừng phạt pháo địch · {{cp}} CP\n" +
-                "Cách đánh: sau {{delay}} giây cảnh báo, mọi khẩu pháo địch vừa bắn trong 10 giây qua, ở bất kỳ đâu trong {{radius}} m, bị {{count}} loạt nổ bán kính {{blast}} m.\n" +
-                "Mạnh / yếu: mối đe dọa thật với pháo địch vừa khai hỏa; khẩu nào chưa bắn gần đây thì an toàn.\n" +
-                "Mẹo: gọi ngay khi đạn pháo địch bắt đầu rơi vào phe ta."),
-            ["guide.drone_intercept_strike"] = (
-                "[[Drone intercept strike]] · {{count}} interceptors · {{cp}} CP\n" +
-                "How it fights: up to {{count}} small missiles each find the nearest distinct enemy drone in the circle and take it down; nothing else is hit.\n" +
-                "Strong / weak: dumps a whole drone swarm or loitering-munition wave at once; useless against anything that is not a drone.\n" +
-                "Tip: call it the moment a drone swarm shows on the minimap.",
-                "[[Đòn tên lửa đánh chặn drone]] · {{count}} tên lửa nhỏ · {{cp}} CP\n" +
-                "Cách đánh: tối đa {{count}} tên lửa nhỏ, mỗi quả tự tìm một drone địch khác nhau trong vùng và hạ nó; không đánh thứ gì khác.\n" +
-                "Mạnh / yếu: dập cả bầy drone hoặc đợt đạn lảng vảng cùng lúc; vô dụng với bất cứ thứ gì không phải drone.\n" +
-                "Mẹo: gọi ngay khi bầy drone địch hiện trên minimap."),
-            ["guide.chaff_strike"] = (
-                "[[Radar chaff]] · {{radius}} m circle · {{cp}} CP\n" +
-                "How it fights: for {{duration}} s, the circle denies lock-on the same way a smoke screen does — built on the same zone, so it works exactly like one.\n" +
-                "Strong / weak: opens a corridor for your own aircraft to fly through; a smoke screen already does the same job for ground sightlines and lasers, so pick whichever fits the target.\n" +
-                "Tip: call it along the flight path you want your planes to take.",
-                "[[Rải nhiễu radar]] · vùng {{radius}} m · {{cp}} CP\n" +
-                "Cách đánh: trong {{duration}} giây, vùng này chặn khóa mục tiêu giống hệt màn khói — dùng chung một vùng che, nên hoạt động y hệt màn khói.\n" +
-                "Mạnh / yếu: mở hành lang cho máy bay ta bay qua; màn khói cũng làm được việc này cho tầm nhìn mặt đất và laser, chọn thẻ nào hợp mục tiêu hơn.\n" +
-                "Mẹo: gọi dọc đường bay bạn muốn máy bay mình đi qua."),
-            ["guide.smoke_screen"] = (
-                "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
-                "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +
-                "Strong / weak: saves units from long-range guns, ATGMs and railguns; it does no damage, and at point-blank range fighting goes on.\n" +
-                "Tip: drop it between your advancing tanks and the enemy's [[tank destroyers]], or over a unit pulling back.",
-                "[[Màn khói]] · che tầm nhìn · {{cp}} CP\n" +
-                "Cách đánh: sau {{delay}} giây, đám khói {{radius}} m đứng trong {{duration}} giây; không ai nhìn vào hay xuyên qua được, súng pháo mất [[tầm nhìn]].\n" +
-                "Mạnh / yếu: cứu quân ta khỏi pháo tầm xa, tên lửa chống tăng và pháo điện từ; không gây sát thương, sát sạt nhau thì vẫn đánh được.\n" +
-                "Mẹo: thả giữa xe tăng ta đang tiến và [[xe diệt tăng]] địch, hoặc che cho xe đang rút lui."),
             ["guide.repair_drop"] = (
                 "[[Repair]] · heals an area · {{cp}} CP\n" +
                 "How it fights: repairs your vehicles within {{radius}} m by {{percent}}% of their health, spread over {{duration}} s.\n" +
@@ -1276,15 +1078,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: dùng một lần; xe ta trong vòng {{radius}} m giảm {{percent}}% sát thương nhận vào trong {{duration}} giây.\n" +
                 "Mạnh / yếu: cứu cụm quân khỏi boss, loạt pháo hoặc đòn đánh lớn; chỉ che những xe đứng bên trong lúc khiên bật lên.\n" +
                 "Mẹo: thả lên [[tuyến xe tăng]] ngay khi trận đánh lớn bắt đầu."),
-            ["guide.gunship_support"] = (
-                "[[Gunship on call]] · item · an airborne gunship for {{duration}} s\n" +
-                "How it fights: one use; a sky gunship arrives and [[orbits]] for {{duration}} s, firing its 105, 40 and 25 mm guns at ground targets.\n" +
-                "Strong / weak: devastating on ground forces; it cannot hit aircraft, and enemy SAMs and fighters can shoot it down.\n" +
-                "Tip: call it over the main ground fight once the enemy's [[anti-air]] is cleared.",
-                "[[Pháo đài bay yểm trợ]] · vật phẩm · pháo hạm bay trong {{duration}} giây\n" +
-                "Cách đánh: dùng một lần; pháo đài bay tới và [[bay vòng]] {{duration}} giây, pháo 105, 40 và 25 mm nã vào mục tiêu mặt đất.\n" +
-                "Mạnh / yếu: tàn phá quân mặt đất; không bắn được máy bay, tên lửa phòng không và tiêm kích địch có thể bắn hạ nó.\n" +
-                "Mẹo: gọi xuống trận đánh chính khi [[phòng không]] địch đã bị dọn sạch."),
 
             // Prompt 17 C: the new units and towers.
             ["guide.stealth_fighter"] = (
@@ -1296,15 +1089,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: [[tàng hình]]: địch chỉ thấy ở 40% tầm nhìn, và trong 2,5 giây sau mỗi lần khai hỏa; trạm radar, tháp canh và UAV quét làm lộ nó. Bốn tên lửa AIM-120 đánh máy bay, hai bom GBU-39 thả vào xe và tháp phòng không, pháo 25 mm.\n" +
                 "Mạnh / yếu: dọn sạch bầu trời và SAM trước khi máy bay cường kích tới; mang ít đạn hơn tiêm kích thường nên về hồi đạn sớm hơn.\n" +
                 "Mẹo: cho bay trước đoàn oanh tạc; radar, tháp canh và UAV quét là thứ tìm ra nó."),
-            ["guide.wingman_drone"] = (
-                "[[Wingman drone]] · no armour · escort drone\n" +
-                "How it fights: flies on its leader's wing (the nearest manned aircraft within 120 m; with none it patrols over the front) with two AIM-9s; an enemy anti-air missile aimed at its leader turns onto it four times in ten.\n" +
-                "Strong / weak: keeps your fighters and bombers alive for a few more missiles; alone it is weak, and a fighter shoots it down easily.\n" +
-                "Tip: buy it once you fly manned aircraft; it does not count against the six-aircraft cap (at most four a side).",
-                "[[Drone hộ vệ]] · không giáp · drone hộ tống\n" +
-                "Cách đánh: bay kèm cánh máy bay dẫn (máy bay có người lái gần nhất trong 120 m; không có thì tuần tra trên chiến tuyến) với hai tên lửa AIM-9; tên lửa phòng không địch nhắm vào máy bay dẫn có bốn phần mười cơ hội chuyển sang nó.\n" +
-                "Mạnh / yếu: giúp tiêm kích và oanh tạc cơ sống thêm vài quả tên lửa; một mình thì yếu, tiêm kích địch bắn hạ dễ.\n" +
-                "Mẹo: mua khi đã có máy bay có người lái; không tính vào trần sáu máy bay (tối đa bốn chiếc mỗi phe)."),
             ["guide.laser_tank"] = (
                 "[[Laser tank destroyer]] · heavy armour in front · burns through armour\n" +
                 "How it fights: an [[energy]] beam (40 m) that ramps from x0.3 to x2 over 6 s on one target and starts again on a new one; it pierces the thickest armour.\n" +
@@ -1323,15 +1107,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: [[vòm khiên]] 12 m quanh xe hấp thụ 1.000 sát thương từ đạn pháo, đạn súng, bom và tên lửa cho mọi đơn vị phe ta bên trong, rồi vỡ; hồi lại 20 giây sau đòn cuối. Có súng máy nóc.\n" +
                 "Mạnh / yếu: giúp tuyến xe tăng áp sát dưới làn đạn; vũ khí năng lượng xuyên thẳng qua, nhiều vòm không cộng dồn, và bản thân xe giáp mỏng.\n" +
                 "Mẹo: giữ ngay sau các xe tăng dẫn đầu; địch đã vào trong vòm thì vòm không chặn được."),
-            ["guide.bunker_vehicle"] = (
-                "[[Deployable bunker]] · medium armour, heavy dug in · holds ground\n" +
-                "How it fights: on its tracks a 105 mm gun and a coaxial MG within a front arc; stopped with an enemy in reach, or on guard at a point or a choke, it [[digs in]] (3 s, no firing): front armour level 4, 44 m reach, turret all round. Ordered away, it packs up (3 s) first.\n" +
-                "Strong / weak: an anchor for a point or a siege line; slow to react, and artillery and aircraft strike its thin roof.\n" +
-                "Tip: send it where the line should hold; the icon over it shows digging in and dug in.",
-                "[[Xe công sự triển khai]] · giáp vừa, dày khi triển khai · giữ trận địa\n" +
-                "Cách đánh: khi di chuyển có pháo 105 mm và súng máy đồng trục trong cung phía trước; dừng lại khi có địch trong tầm, hoặc canh giữ cứ điểm hay điểm nghẽn, thì [[triển khai]] (3 giây, không bắn): giáp trước cấp 4, tầm 44 m, tháp xoay 360°. Khi được lệnh đi, nó thu lại trước (3 giây).\n" +
-                "Mạnh / yếu: làm chốt cho cứ điểm hoặc tuyến công thành; phản ứng chậm, pháo binh và máy bay đánh vào nóc mỏng.\n" +
-                "Mẹo: đưa tới nơi tuyến cần trụ lại; biểu tượng trên xe cho biết đang triển khai hay đã triển khai."),
             ["guide.swarm_carrier"] = (
                 "[[Drone mothership aircraft]] · light armour · a drone swarm anywhere\n" +
                 "How it fights: flies over the target, releasing its eight [[FPV drones]] (shaped charge, top attack) one after another, each to its own target, and drops two guided bombs from the same bay as it passes; its stores come back over 16 s.\n" +
@@ -1360,15 +1135,6 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: thêm CP cho căn cứ yên ổn; chiếm một ô phòng thủ nhỏ, và quân địch tấn công căn cứ sẽ nhắm nó trước.\n" +
                 "Mẹo: tối đa hai trạm mỗi căn cứ, không đặt ở tiền đồn; cân nhắc với tòa tháp mà nó thay chỗ."),
             // Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new units and structures.
-            ["guide.heavy_flak_tower"] = (
-                "[[Heavy flak tower]] · medium tower · heavy air bursts\n" +
-                "How it fights: a big shell every 2 s, bursting 6 m wide at aircraft out to 70 m; lowered, it hits tanks out to 50 m.\n" +
-                "Strong / weak: breaks up [[bombers]] and tight formations; too slow for lone jets and drones.\n" +
-                "Tip: pair it with quick AA guns that take the helicopters.",
-                "[[Tháp cao xạ hạng nặng]] · tháp ô vừa · đạn nổ trên không\n" +
-                "Cách đánh: 2 giây một phát lớn, nổ trên không rộng 6 m, tầm 70 m; hạ nòng bắn xe tăng trong 50 m.\n" +
-                "Mạnh / yếu: bẻ gãy [[oanh tạc cơ]] và tốp máy bay dày; quá chậm với tiêm kích lẻ và drone.\n" +
-                "Mẹo: đặt cạnh pháo phòng không bắn nhanh để lo trực thăng."),
             ["guide.aa_gun_vehicle"] = (
                 "[[40 mm AA gun vehicle]] · light armour · steady flak\n" +
                 "How it fights: four [[proximity-fused]] rounds a second on the move, out to 48 m.\n" +
@@ -1378,51 +1144,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: bốn phát [[ngòi cận đích]] mỗi giây, vừa chạy vừa bắn, tầm 48 m.\n" +
                 "Mạnh / yếu: thắng trực thăng, drone và xe nhẹ; xe tăng gần như miễn nhiễm.\n" +
                 "Mẹo: đi cùng tuyến đầu để chống trực thăng."),
-            ["guide.shorad_vehicle"] = (
-                "[[Light SAM vehicle]] · very light armour · one big ripple\n" +
-                "How it fights: eight [[heat-seeking missiles]] in one ripple out to 44 m, on the move, then a 15 s reload.\n" +
-                "Strong / weak: swats helicopters and drones in one burst; flares fool some, and it dies to anything on the ground.\n" +
-                "Tip: save the ripple for a helicopter pair.",
-                "[[Xe tên lửa phòng không nhẹ]] · giáp rất mỏng · xả một loạt\n" +
-                "Cách đánh: tám [[tên lửa tầm nhiệt]] một loạt, tầm 44 m, vừa chạy vừa bắn, rồi nạp 15 giây.\n" +
-                "Mạnh / yếu: hạ trực thăng và drone trong một loạt; pháo sáng lừa được vài quả, dưới đất thứ gì cũng diệt được nó.\n" +
-                "Mẹo: dành loạt tên lửa cho một cặp trực thăng."),
-            ["guide.microwave_vehicle"] = (
-                "[[Anti-drone microwave vehicle]] · light armour · a swarm at once\n" +
-                "How it fights: every 8 s a [[microwave pulse]] downs every enemy drone in a 60° cone out to 30 m; vehicles are unharmed.\n" +
-                "Strong / weak: wipes out FPV swarms and drone aircraft; useless against anything else.\n" +
-                "Tip: park it beside your tanks where the drones dive.",
-                "[[Xe vi sóng chống drone]] · giáp nhẹ · diệt cả bầy\n" +
-                "Cách đánh: mỗi 8 giây một [[xung vi sóng]] làm rơi mọi drone địch trong hình nón 60°, tầm 30 m; xe không hề hấn.\n" +
-                "Mạnh / yếu: quét sạch bầy FPV và máy bay drone; vô dụng với mọi thứ khác.\n" +
-                "Mẹo: đỗ cạnh xe tăng ta, nơi drone lao xuống."),
-            ["guide.at_gun_emplacement"] = (
-                "[[Anti-tank gun emplacement]] · small tower · cheap tank killer\n" +
-                "How it fights: an [[armour-piercing]] shot every 5 s out to 38 m, only 45° either side of its front; the gun turns slowly.\n" +
-                "Strong / weak: stops tanks that come head on; artillery and flanking cars kill it.\n" +
-                "Tip: face it down the road the enemy armour takes.",
-                "[[Ụ pháo chống tăng]] · tháp ô nhỏ · diệt tăng giá rẻ\n" +
-                "Cách đánh: 5 giây một phát [[xuyên giáp]], tầm 38 m, chỉ trong 45° hai bên phía trước; pháo xoay chậm.\n" +
-                "Mạnh / yếu: chặn xe tăng lao thẳng tới; pháo binh và xe vòng sườn diệt được nó.\n" +
-                "Mẹo: quay mặt nó về con đường thiết giáp địch đi."),
-            ["guide.nlos_atgm_vehicle"] = (
-                "[[Beyond-sight ATGM vehicle]] · light armour · anti-tank artillery\n" +
-                "How it fights: a heavy missile every 10 s out to 90 m, [[over cover]] onto the roof, at what its side sees.\n" +
-                "Strong / weak: kills tanks from behind a hill; blind alone, slow to fire.\n" +
-                "Tip: pair it with a scout or a UAV scan.",
-                "[[Xe tên lửa chống tăng ngoài tầm nhìn]] · giáp nhẹ · pháo binh chống tăng\n" +
-                "Cách đánh: 10 giây một tên lửa lớn, tầm 90 m, [[bay vòng qua vật cản]] đánh nóc, vào mục tiêu phe ta nhìn thấy.\n" +
-                "Mạnh / yếu: diệt xe tăng từ sau đồi; tự đi thì mù, bắn chậm.\n" +
-                "Mẹo: đi cặp với trinh sát hoặc UAV quét."),
-            ["guide.radar_atgm_vehicle"] = (
-                "[[Radar-guided ATGM vehicle]] · medium armour · sees through smoke\n" +
-                "How it fights: two heavy missiles 0.6 s apart out to 50 m, then 9 s; its [[radar sees through smoke]].\n" +
-                "Strong / weak: beats tanks hiding in smoke; APS stops some missiles.\n" +
-                "Tip: bring it against smoke carriers.",
-                "[[Xe tên lửa chống tăng dẫn radar]] · giáp vừa · nhìn xuyên khói\n" +
-                "Cách đánh: hai tên lửa lớn cách nhau 0,6 giây, tầm 50 m, rồi nạp 9 giây; [[radar nhìn xuyên khói]].\n" +
-                "Mạnh / yếu: thắng xe tăng nấp trong khói; APS chặn được vài quả.\n" +
-                "Mẹo: đem ra đối đầu xe tạo khói."),
             ["guide.recoilless_jeep"] = (
                 "[[Recoilless rifle jeep]] · no armour · hit and run\n" +
                 "How it fights: one heavy [[HEAT round]] every 6.7 s out to 32 m; parked, it is hard to see until it fires.\n" +
@@ -1432,24 +1153,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: 6,7 giây một phát [[nổ lõm]] nặng, tầm 32 m; đỗ yên thì khó thấy cho tới khi bắn.\n" +
                 "Mạnh / yếu: phục kích xe tăng từ sườn chỉ với 3 CP; thứ gì bắn trả cũng hạ được nó.\n" +
                 "Mẹo: bắn vào sườn một chiếc tăng rồi chạy."),
-            ["guide.airborne_vehicle"] = (
-                "[[Airborne fighting vehicle]] · light armour · behind the lines\n" +
-                "How it fights: tap its card, then ground your side sees: it lands by [[parachute]] in 6 s; anti-air can shoot it on the way down.\n" +
-                "Strong / weak: takes empty points and hits artillery from behind; loses to tanks.\n" +
-                "Tip: tap the card twice to send it to the drop zone instead.",
-                "[[Xe đổ bộ đường không]] · giáp nhẹ · sau lưng địch\n" +
-                "Cách đánh: chạm thẻ rồi chạm vùng phe ta nhìn thấy: nó [[nhảy dù]] xuống trong 6 giây; phòng không bắn được khi còn dưới dù.\n" +
-                "Mạnh / yếu: chiếm cứ điểm trống, đánh pháo binh từ phía sau; thua xe tăng.\n" +
-                "Mẹo: chạm thẻ hai lần để đưa nó về bãi thả."),
-            ["guide.wheeled_howitzer"] = (
-                "[[Shoot-and-scoot howitzer]] · no armour · fire and move\n" +
-                "How it fights: four 155 mm shells in 6 s out to 90 m, then it [[drives off]] at once and reloads for 25 s.\n" +
-                "Strong / weak: counter-battery fire lands on empty ground; its thin hull dies fast.\n" +
-                "Tip: keep it far back behind a scout.",
-                "[[Pháo bánh lốp bắn rồi chạy]] · không giáp · bắn rồi đổi chỗ\n" +
-                "Cách đánh: bốn phát 155 mm trong 6 giây, tầm 90 m, rồi [[chạy ngay]] và nạp lại 25 giây.\n" +
-                "Mạnh / yếu: phản pháo rơi vào chỗ trống; thân mỏng, dễ chết.\n" +
-                "Mẹo: giữ thật xa phía sau, có trinh sát đi trước."),
             ["guide.sp_mortar"] = (
                 "[[Turreted SP mortar]] · medium armour · a rain of bombs\n" +
                 "How it fights: four 120 mm bombs out to 60 m that [[land at the same moment]], then 10 s.\n" +
@@ -1459,42 +1162,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: bốn quả cối 120 mm, tầm 60 m, [[rơi xuống cùng lúc]], rồi nghỉ 10 giây.\n" +
                 "Mạnh / yếu: nghiền một cụm quân trước khi kịp tản ra; áp sát thì thua xe tăng.\n" +
                 "Mẹo: nhắm vào các cụm quân trinh sát tìm thấy."),
-            ["guide.glide_bomber"] = (
-                "[[Long-range glide bomber]] · light armour · bombs from far off\n" +
-                "How it fights: releases a [[glide bomb]] from 90 m and turns away; the bomb glides onto the target at 20 m/s.\n" +
-                "Strong / weak: hits towers and groups outside short-range AA; point defences can shoot the bombs down.\n" +
-                "Tip: send it at fixed defences, with fighters over it.",
-                "[[Máy bay ném bom lượn tầm xa]] · giáp nhẹ · ném bom từ xa\n" +
-                "Cách đánh: thả [[bom lượn]] từ cách 90 m rồi quay đi; bom lượn 20 m/s xuống mục tiêu.\n" +
-                "Mạnh / yếu: đánh tháp và cụm quân ngoài tầm phòng không gần; hệ đánh chặn bắn hạ được bom.\n" +
-                "Mẹo: tung vào công sự cố định, có tiêm kích che."),
-            ["guide.recon_jet"] = (
-                "[[High-speed recon jet]] · no armour · one big look\n" +
-                "How it fights: no weapons; [[one straight pass]] across the map shows a strip 60 m wide for 20 s, stealth too, then it leaves.\n" +
-                "Strong / weak: finds artillery, hidden guns and decoys; flies too high for all but long-range SAMs and fighters.\n" +
-                "Tip: call it just before a barrage.",
-                "[[Máy bay trinh sát tốc độ cao]] · không giáp · một lần nhìn lớn\n" +
-                "Cách đánh: không vũ khí; [[bay thẳng một lượt]] ngang map, làm lộ dải rộng 60 m trong 20 giây, cả tàng hình, rồi rời trận.\n" +
-                "Mạnh / yếu: tìm pháo binh, ụ súng ẩn và mồi nhử; bay cao, chỉ tên lửa tầm xa và tiêm kích với tới.\n" +
-                "Mẹo: gọi ngay trước một trận pháo kích."),
-            ["guide.interceptor_jet"] = (
-                "[[Interceptor]] · no armour · bomber killer\n" +
-                "How it fights: dashes in and fires two [[very long-range missiles]] from 90 m, big aircraft first; nothing inside 15 m.\n" +
-                "Strong / weak: kills bombers and gunships early; loses a close dogfight.\n" +
-                "Tip: hold it back for the enemy's bombers.",
-                "[[Tiêm kích đánh chặn]] · không giáp · diệt oanh tạc cơ\n" +
-                "Cách đánh: lao vào, bắn hai [[tên lửa tầm siêu xa]] từ 90 m, ưu tiên máy bay lớn; không bắn trong 15 m.\n" +
-                "Mạnh / yếu: diệt oanh tạc cơ và pháo hạm bay từ sớm; thua khi quần thảo gần.\n" +
-                "Mẹo: giữ lại chờ oanh tạc cơ của địch."),
-            ["guide.radar_scout"] = (
-                "[[Radar scout car]] · light armour · stands watch\n" +
-                "How it fights: sees 50 m moving; standing 2 s it raises its [[radar mast]]: 80 m, and it all but hides.\n" +
-                "Strong / weak: spots for artillery from afar and unmasks decoys; weak on the move.\n" +
-                "Tip: park it on a flank and leave it there.",
-                "[[Xe trinh sát bọc thép radar mặt đất]] · giáp nhẹ · đứng gác\n" +
-                "Cách đánh: khi chạy nhìn 50 m; đứng yên 2 giây thì dựng [[cột radar]]: nhìn 80 m và gần như ẩn.\n" +
-                "Mạnh / yếu: chỉ điểm cho pháo binh từ xa, lật tẩy mồi nhử; di chuyển thì yếu.\n" +
-                "Mẹo: đỗ ở cánh và để yên đó."),
             ["guide.blast_wall"] = (
                 "[[Gabion blast wall]] · small structure · cover for towers\n" +
                 "How it fights: no gun, no obstacle; towers up to 10 m behind it take [[30 % less]] direct fire.\n" +
@@ -1504,33 +1171,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: không súng, không chặn đường; tháp trong 10 m sau nó nhận ít hơn [[30%]] sát thương bắn thẳng.\n" +
                 "Mạnh / yếu: giữ tháp tuyến đầu trước xe tăng; đạn cầu vồng và bom vẫn vượt qua.\n" +
                 "Mẹo: đặt trước tháp mạnh nhất."),
-            ["guide.inflatable_decoy"] = (
-                "[[Inflatable decoy]] · small structure · draws the fire\n" +
-                "How it fights: looks like a [[gun turret]]; the enemy shoots it until their scouts, radars, drones or scans find it out.\n" +
-                "Strong / weak: wastes the enemy's shells and missiles for little; almost no health.\n" +
-                "Tip: put it where the first shells would land.",
-                "[[Mồi nhử bơm hơi]] · công trình ô nhỏ · hút hỏa lực\n" +
-                "Cách đánh: trông như [[tháp pháo]]; địch bắn vào nó cho tới khi trinh sát, radar, drone hoặc UAV quét lật tẩy.\n" +
-                "Mạnh / yếu: làm địch phí đạn pháo và tên lửa; gần như không có máu.\n" +
-                "Mẹo: đặt nơi loạt pháo đầu tiên sẽ rơi."),
             ["guide.fire_control_centre"] = (
-                "[[Fire-control centre]] · utility module · links the towers\n" +
-                "How it fights: towers within 30 m hit [[12 % harder]] and gang up on one target.\n" +
-                "Strong / weak: turns a tower cluster into one block; useless for towers spread thin.\n" +
-                "Tip: put your best guns within its 30 m.",
-                "[[Trung tâm điều khiển hỏa lực]] · mô-đun tiện ích · liên kết tháp\n" +
-                "Cách đánh: tháp trong 30 m gây thêm [[12%]] sát thương và dồn hỏa lực vào một mục tiêu.\n" +
-                "Mạnh / yếu: biến cụm tháp thành một khối; vô dụng khi tháp đặt thưa.\n" +
-                "Mẹo: đặt các khẩu mạnh nhất trong vòng 30 m."),
-            ["guide.searchlight"] = (
-                "[[Battlefield searchlight]] · small structure · light in the dark\n" +
-                "How it fights: at [[night and in fog]] your side sees everything within 35 m of it; enemies there shoot 20 % worse.\n" +
-                "Strong / weak: turns night attacks against the attacker; does nothing by day.\n" +
-                "Tip: take it for night and fog battles.",
-                "[[Đèn pha chiến trường]] · công trình ô nhỏ · ánh sáng đêm\n" +
-                "Cách đánh: [[ban đêm và trong sương mù]], phe ta thấy mọi thứ trong 35 m quanh nó; địch trong vùng bắn kém 20%.\n" +
-                "Mạnh / yếu: biến trận đêm thành bất lợi cho kẻ tấn công; ban ngày vô dụng.\n" +
-                "Mẹo: mang theo cho trận đêm và sương mù."),
+                "[[Defence Command Centre]] · utility module · structure aura\n" +
+                "How it fights: while it stands, [[every structure]] of yours reaches 15% further and has 10% more health.\n" +
+                "Strong / weak: lifts the whole base at once; a second centre adds nothing, and losing it loses the lift.\n" +
+                "Tip: put it behind the towers it lifts.",
+                "[[Trung tâm chỉ huy phòng thủ]] · mô-đun tiện ích · hào quang công trình\n" +
+                "Cách đánh: khi nó còn đứng, [[mọi công trình]] của ta bắn xa hơn 15% và có thêm 10% máu.\n" +
+                "Mạnh / yếu: nâng cả căn cứ cùng lúc; trung tâm thứ hai không cộng thêm, mất nó là mất hiệu ứng.\n" +
+                "Mẹo: đặt sau các tháp nó nâng."),
             ["guide.barrage_balloon"] = (
                 "[[Radar aerostat]] · small structure · AA that never fires\n" +
                 "How it fights: enemy bombing within 40 m of it [[scatters 50 % wider]]; enemy helicopters keep out; it also [[shows aircraft]] within 45 m, stealth ones too.\n" +
@@ -1540,42 +1189,6 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: bom địch ném trong 40 m quanh nó [[tản mát thêm 50%]]; trực thăng địch tránh vùng; nó còn [[làm lộ máy bay]] trong 45 m, cả máy bay tàng hình.\n" +
                 "Mạnh / yếu: phá các lượt ném bom vào căn cứ; bom dẫn đường không bị ảnh hưởng.\n" +
                 "Mẹo: đặt trên những tháp cần giữ nhất."),
-            ["guide.visual_jammer"] = (
-                "[[Visual jammer]] · utility module · hides the base\n" +
-                "How it fights: enemies see nothing of yours within 35 m of it from further than [[15 m]], unless they are scouts.\n" +
-                "Strong / weak: artillery cannot find what it covers; scouts and UAV scans see through it.\n" +
-                "Tip: put your towers and artillery inside its 35 m.",
-                "[[Máy tạo nhiễu tầm nhìn]] · mô-đun tiện ích · che căn cứ\n" +
-                "Cách đánh: địch không thấy gì của ta trong 35 m quanh nó nếu xa hơn [[15 m]], trừ trinh sát.\n" +
-                "Mạnh / yếu: pháo binh không tìm được thứ nó che; trinh sát và UAV quét nhìn xuyên.\n" +
-                "Mẹo: đặt tháp và pháo binh trong vòng 35 m."),
-            ["guide.fibre_fpv_carrier"] = (
-                "[[Fibre-optic FPV carrier]] · light armour · drones jammers cannot stop\n" +
-                "How it fights: flies one [[fibre-optic drone]] at a time onto armour out to 60 m, one every 6 s; no jammer scrambles it.\n" +
-                "Strong / weak: beats tanks behind jammers; point defences still take its drones.\n" +
-                "Tip: bring it when the enemy leans on jammers.",
-                "[[Xe phóng drone FPV cáp quang]] · giáp nhẹ · không thể gây nhiễu\n" +
-                "Cách đánh: điều khiển từng chiếc [[drone cáp quang]] lao vào xe bọc thép, tầm 60 m, 6 giây một chiếc; gây nhiễu vô tác dụng.\n" +
-                "Mạnh / yếu: thắng xe tăng núp sau xe gây nhiễu; hệ đánh chặn vẫn hạ được drone.\n" +
-                "Mẹo: mang theo khi địch dùng nhiều gây nhiễu."),
-            ["guide.interceptor_drone_vehicle"] = (
-                "[[Interceptor drone vehicle]] · light armour · drones against drones\n" +
-                "How it fights: an [[interceptor drone]] every 4 s out to 60 m at drones and helicopters, and at enemy drones in flight.\n" +
-                "Strong / weak: thins out FPV swarms and helicopters; jets fly past untouched.\n" +
-                "Tip: keep it beside your tanks and artillery.",
-                "[[Xe drone đánh chặn]] · giáp nhẹ · drone chống drone\n" +
-                "Cách đánh: 4 giây một [[drone đánh chặn]], tầm 60 m, vào drone và trực thăng, cả drone địch đang bay tới.\n" +
-                "Mạnh / yếu: làm mỏng bầy FPV và trực thăng; máy bay phản lực bay qua vô sự.\n" +
-                "Mẹo: giữ cạnh xe tăng và pháo binh ta."),
-            ["guide.troop_shelter"] = (
-                "[[Troop shelter]] · medium structure · shelter from shells\n" +
-                "How it fights: your vehicles within 15 m take [[half]] from shells, mortars, bombs and strikes; not direct fire.\n" +
-                "Strong / weak: keeps defenders alive through a barrage; no help against tanks.\n" +
-                "Tip: gather your defenders round it when the shells come.",
-                "[[Hầm che quân]] · công trình ô vừa · tránh đạn pháo\n" +
-                "Cách đánh: xe ta trong 15 m nhận [[một nửa]] sát thương pháo, cối, bom và không kích; không che đạn bắn thẳng.\n" +
-                "Mạnh / yếu: giữ quân phòng thủ sống qua trận pháo kích; vô dụng trước xe tăng.\n" +
-                "Mẹo: kéo quân phòng thủ về quanh nó khi đạn pháo tới."),
             ["guide.flare_tower"] = (
                 "[[Flare tower]] · small structure · light in bursts\n" +
                 "How it fights: at [[night and in fog]], every 15 s a flare over the nearest enemy within 40 m shows everything within 30 m.\n" +
@@ -1586,11 +1199,11 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: tìm quân đột kích đêm, cả tàng hình; ban ngày vô dụng.\n" +
                 "Mẹo: đi cặp với đèn pha ở map đêm."),
             ["guide.laser_ad_station"] = (
-                "[[Laser anti-drone station]] · medium tower · never runs dry\n" +
+                "[[Laser Defence Tower]] · medium tower · never runs dry\n" +
                 "How it fights: a [[laser]] at drones only out to 40 m, and interceptors for rockets and mortar bombs; smoke cuts it by 80 %.\n" +
                 "Strong / weak: shuts down drone swarms and rocket rain; useless against aircraft and tanks.\n" +
                 "Tip: keep your own smoke away from it.",
-                "[[Trạm phòng không laser chống drone]] · tháp ô vừa · không bao giờ hết đạn\n" +
+                "[[Tháp la-de phòng thủ]] · tháp ô vừa · không bao giờ hết đạn\n" +
                 "Cách đánh: [[laser]] chỉ bắn drone, tầm 40 m, cùng bộ đánh chặn rốc-két và đạn cối; khói làm tia yếu 80%.\n" +
                 "Mạnh / yếu: dập bầy drone và mưa rốc-két; vô dụng trước máy bay và xe tăng.\n" +
                 "Mẹo: giữ khói của ta tránh xa nó."),
@@ -1605,62 +1218,28 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: khẩu ở giữa, giữa cao xạ bắn nhanh và cao xạ hạng nặng."),
             // (batch A guides: new entries above)
             // Prompt 25 F2 batch B (DECISIONS 25F2-B): short cards for the 33 Thấp-priority stand-ins (dx23 not in this pass).
-            ["guide.aa_57mm_vehicle"] = ("[[57 mm AA vehicle]] · heavier flak\n" + "Two rounds a second, out to 52 m; hits light vehicles too.",
-                "[[Xe phòng không 57 mm]] · cao xạ đòn nặng\n" + "Hai phát mỗi giây, tầm 52 m; trúng được cả xe nhẹ."),
-            ["guide.mine_rocket_truck"] = ("[[Mine-laying rocket truck]] · area denial\n" + "Seeds a minefield ahead; no direct damage.",
-                "[[Xe pháo phản lực rải mìn]] · khóa hướng tiến\n" + "Rải mìn phía trước; không gây sát thương trực tiếp."),
-            ["guide.prop_attack_plane"] = ("[[Light prop attack plane]] · cheap, slow, low\n" + "A gun and rockets against light vehicles; buy several.",
-                "[[Máy bay cường kích cánh quạt]] · rẻ, chậm, bay thấp\n" + "Súng và rốc-két trị xe nhẹ; mua theo tốp."),
-            ["guide.light_attack_heli"] = ("[[Light attack helicopter]] · fast, thin armour\n" + "A few ATGMs and a gun; hit a flank, then pull back.",
-                "[[Trực thăng tấn công hạng nhẹ]] · nhanh, giáp mỏng\n" + "Vài tên lửa chống tăng và súng máy; đánh sườn rồi rút."),
             ["guide.next_gen_tank"] = ("[[Next-generation tank]] · double-charge APS\n" + "Shrugs off the first two incoming rockets or shells.",
                 "[[Tăng thế hệ mới]] · APS hai lần\n" + "Chặn được hai phát tên lửa hoặc đạn pháo đầu tiên."),
             ["guide.demolition_line_vehicle"] = ("[[Demolition-line vehicle]] · mine roller\n" + "Mines ahead of it go off harmlessly; opens the way in.",
                 "[[Xe phá mìn bằng dây nổ]] · con lăn phá mìn\n" + "Mìn phía trước nổ vô hại; mở đường tấn công."),
-            ["guide.combat_wreck_car"] = ("[[Wreck-turret car]] · goes out loud\n" + "A bigger cook-off blast when it falls, for now.",
-                "[[Xe khi hỏng thành công sự]] · nổ lớn khi hết máu\n" + "Đợt này nổ mạnh hơn khi bị hạ."),
-            ["guide.drone_hijack_vehicle"] = ("[[Drone-hijack vehicle]] · anti-drone pulse\n" + "Downs enemy drones in a cone, for now (no side-flip yet).",
-                "[[Xe chiếm quyền drone]] · xung chống drone\n" + "Hạ drone địch trong hình nón; chưa lật được phe."),
             ["guide.manpads_tower"] = ("[[MANPADS post]] · cheap small-slot AA\n" + "Short-ranged Stingers, aircraft and helicopters only.",
                 "[[Tổ tên lửa vác vai]] · phòng không ô nhỏ rẻ\n" + "Tên lửa Stinger tầm ngắn, chỉ bắn máy bay và trực thăng."),
             ["guide.river_patrol_boat"] = ("[[River patrol boat]] · fast, light\n" + "Controls a river; a machine gun and a grenade launcher.",
                 "[[Tàu tuần tra sông]] · nhanh, nhẹ\n" + "Kiểm soát mặt sông; súng máy và súng phóng lựu."),
             ["guide.river_gunboat"] = ("[[River gunboat]] · floating artillery\n" + "Slow; a 100 mm gun for the shore.",
                 "[[Pháo hạm sông]] · pháo binh nổi\n" + "Chậm; pháo 100 mm bắn phá bờ."),
-            ["guide.coastal_ashm_vehicle"] = ("[[Coastal AShM vehicle]] · very long reach\n" + "A slow-reloading heavy missile, strongest at distant targets.",
-                "[[Xe tên lửa chống hạm bờ biển]] · tầm rất xa\n" + "Tên lửa nặng nạp chậm, mạnh nhất ở mục tiêu xa."),
-            ["guide.auto_loader_howitzer"] = ("[[Auto-loading howitzer]] · four rounds at once\n" + "A burst that lands together, then a long reload.",
-                "[[Lựu pháo nạp tự động]] · bốn phát cùng lúc\n" + "Loạt đạn rơi cùng lúc, rồi nạp lâu."),
-            ["guide.amphib_light_vehicle"] = ("[[Amphibious light vehicle]] · beach landing\n" + "An autocannon against light vehicles, for coastal maps.",
-                "[[Xe lội nước tốc độ cao]] · đổ bộ từ biển\n" + "Pháo tự động trị xe nhẹ, dùng ở map ven biển."),
-            ["guide.airborne_light_tank"] = ("[[Airborne light tank]] · drops behind the line\n" + "A 105 mm gun, thin armour, parachutes in wherever its side sees.",
-                "[[Tăng nhẹ thả dù]] · rơi sau lưng địch\n" + "Pháo 105 mm, giáp mỏng, thả dù ở nơi phe ta nhìn thấy."),
             ["guide.stealth_naval_strike"] = ("[[Stealth carrier strike jet]] · precision only\n" + "Two guided bombs against buildings and parked targets; no gun.",
                 "[[Cường kích tàng hình trên hạm]] · chỉ đánh chính xác\n" + "Hai bom dẫn đường trị công trình và xe đứng yên; không pháo."),
             ["guide.twin_rotor_gunship"] = ("[[Twin-rotor gunship]] · low, slow firepower\n" + "Between the attack helicopter and the Sky Fortress; easy to hit.",
                 "[[Pháo hạm trực thăng hai rô-to]] · hỏa lực bay thấp\n" + "Giữa trực thăng vũ trang và Pháo hạm bay; dễ bị bắn trúng."),
-            ["guide.ground_drone_carrier"] = ("[[Ground drone carrier]] · cheap scout, for now\n" + "Its three minion robots are not modelled yet.",
-                "[[Xe chỉ huy robot mặt đất]] · trinh sát rẻ, tạm thời\n" + "Ba robot con chưa được làm."),
-            ["guide.mobile_repair_vehicle"] = ("[[Mobile repair vehicle]] · wide, slow repair\n" + "A bigger radius than the engineer, a slower rate.",
-                "[[Xe sửa chữa lưu động]] · sửa rộng, chậm\n" + "Vùng sửa rộng hơn công binh, tốc độ chậm hơn."),
-            ["guide.radar_support_vehicle"] = ("[[Mobile AA radar]] · far-seeing scout, for now\n" + "Its AA-range bonus is not modelled yet.",
-                "[[Xe radar phòng không di động]] · trinh sát tầm xa, tạm thời\n" + "Phần cộng tầm bắn cho PK chưa được làm."),
-            ["guide.towed_at_gun"] = ("[[Towed anti-tank gun]] · glass cannon\n" + "Long reach, hard-hitting, no armour.",
-                "[[Pháo chống tăng kéo cỡ lớn]] · mạnh nhưng mong manh\n" + "Bắn xa, mạnh, không giáp."),
             ["guide.flare_searchlight_tower"] = ("[[Flare tower]] · cheap night light\n" + "Every 15 s at night, a flare over the nearest enemy lights up round it.",
                 "[[Tháp pháo sáng]] · chiếu sáng đêm rẻ\n" + "Mỗi 15 giây ban đêm, một quả pháo sáng trên đầu địch gần nhất."),
             ["guide.recoilless_gun_tower"] = ("[[Recoilless gun post]] · cheap AT, short reach\n" + "Weaker than the anti-tank gun emplacement, but cheaper.",
                 "[[Ụ súng không giật]] · chống tăng rẻ, tầm ngắn\n" + "Yếu hơn ụ pháo chống tăng nhưng rẻ hơn."),
             ["guide.bunker_shelter_tower"] = ("[[Bunker]] · rainbow-proof\n" + "Vehicles of its side nearby take half from shells, mortars, bombs and strikes.",
                 "[[Hầm ngầm che quân]] · chống pháo kích\n" + "Xe phe ta gần đó nhận ít hơn một nửa sát thương từ pháo, cối, bom, không kích."),
-            ["guide.dazzler_vehicle"] = ("[[Laser dazzler vehicle]] · plays as a jammer\n" + "Throws off nearby enemy fire, for now.",
-                "[[Xe laser chói lóa]] · chơi như xe gây nhiễu\n" + "Làm nhiễu loạn hỏa lực địch gần đó, tạm thời."),
             ["guide.ground_cruise_missile_vehicle"] = ("[[Ground cruise missile vehicle]] · very long reach\n" + "Two slow missiles; the enemy has time to shoot them down.",
                 "[[Xe phóng tên lửa hành trình]] · tầm rất xa\n" + "Hai tên lửa chậm; địch có thời gian bắn hạ."),
-            ["guide.aerial_tanker"] = ("[[Aerial tanker]] · unarmed, for now\n" + "Its endurance bonus for nearby aircraft is not modelled yet.",
-                "[[Máy bay tiếp dầu]] · không vũ trang, tạm thời\n" + "Phần cộng thời gian bay cho máy bay phe ta chưa được làm."),
-            ["guide.heavy_lift_helicopter"] = ("[[Heavy-lift helicopter]] · unarmed transport, for now\n" + "Airlifting a tower anywhere seen is not modelled yet.",
-                "[[Trực thăng cẩu tháp]] · vận tải không vũ trang, tạm thời\n" + "Việc cẩu tháp đặt tùy nơi chưa được làm."),
             ["guide.gps_jammer_vehicle"] = ("[[GPS jammer vehicle]] · plays as a jammer\n" + "Throws off nearby enemy fire, for now.",
                 "[[Xe gây nhiễu định vị]] · chơi như xe gây nhiễu\n" + "Làm nhiễu loạn hỏa lực địch gần đó, tạm thời."),
             ["guide.drone_net_tower"] = ("[[Drone net corridor]] · cheap, passive\n" + "Drones flying through are downed; vehicles pass freely.",

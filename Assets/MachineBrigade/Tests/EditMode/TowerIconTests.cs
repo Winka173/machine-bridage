@@ -57,8 +57,7 @@ namespace MachineBrigade.Tests
             }
             Assert.IsNull(TowerIcons.For("main_battle_tank"), "a vehicle is not a structure");
 
-            // The three the owner named: dragon's teeth and the EW tower showed a tank, the AA tower the AA vehicle's icon.
-            Assert.AreEqual("t_teeth", CardIcons.For("dragons_teeth"));
+            // The ones the owner named: the EW tower showed a tank, the AA tower the AA vehicle's icon.
             Assert.AreEqual("t_ew", CardIcons.For("ew_tower"));
             Assert.AreEqual("t_aa", CardIcons.For("aa_turret"));
             Assert.AreNotEqual(CardIcons.For("aa_vehicle"), CardIcons.For("aa_turret.flak"));

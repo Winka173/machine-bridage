@@ -33,9 +33,9 @@ namespace MachineBrigade.Tests
         {
             ["mixed"] = new[] { "main_battle_tank", "main_battle_tank", "ifv", "heavy_tank", "mlrs", "aa_vehicle", "attack_helicopter" },
             ["armour"] = new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank", "heavy_tank", "heavy_tank", "tank_destroyer" },
-            ["light+drones"] = new[] { "armored_car", "armored_car", "armored_car", "armored_car", "scout_jeep", "scout_jeep", "fpv_carrier", "fpv_carrier", "lancet_truck", "strike_drone", "wheeled_gun" },
+            ["light+drones"] = new[] { "armored_car", "armored_car", "armored_car", "armored_car", "scout_jeep", "scout_jeep", "fpv_carrier", "fpv_carrier", "fpv_carrier", "strike_drone", "wheeled_gun" },
             ["artillery"] = new[] { "mlrs", "mlrs", "artillery", "artillery", "heavy_rocket_artillery", "main_battle_tank", "main_battle_tank" },
-            ["air"] = new[] { "attack_helicopter", "attack_helicopter", "gunship_heli", "attack_jet" },
+            ["air"] = new[] { "attack_helicopter", "attack_helicopter", "attack_helicopter", "attack_jet" },
         };
 
         /// <summary>A mixed base of all three sizes: the default a player starts with, and what the tests compare with.</summary>
@@ -108,7 +108,7 @@ namespace MachineBrigade.Tests
             Enumerable.Range(1, seeds).Average(s => Score(catalog, defence, army, s));
 
         private static readonly string[] Weaponed =
-            { "guard_tower", "mg_bunker", "aa_turret", "gun_turret", "atgm_tower", "rocket_turret", "c_ram", "artillery_emplacement", "missile_battery", "drone_hangar", "heavy_turret" };
+            { "guard_tower", "mg_bunker", "aa_turret", "gun_turret", "atgm_tower", "rocket_turret", "c_ram", "missile_battery", "drone_hangar", "heavy_turret" };
 
         [Test, Category("Balance"), Timeout(7200000)]
         public void AMixedBaseIsBestAgainstAMixedArmyAndNoOneTowerBaseBeatsEverything()
@@ -139,7 +139,7 @@ namespace MachineBrigade.Tests
         {
             Gate();
             var catalog = GameContent.LoadCatalog();
-            var heavy = new BaseLoadout { HqLevel = 5, Medium = { "gun_turret", "gun_turret", "rocket_turret" }, Large = { "heavy_turret", "artillery_emplacement" } };
+            var heavy = new BaseLoadout { HqLevel = 5, Medium = { "gun_turret", "gun_turret", "rocket_turret" }, Large = { "heavy_turret", "heavy_turret" } };
             var army = Enemies["light+drones"];
             float heavyDown = 0f, mixedDown = 0f, heavyScore = 0f, mixedScore = 0f;
             Verbose = true;
@@ -286,10 +286,10 @@ namespace MachineBrigade.Tests
             var mixedSmall = new[] { "guard_tower", "aa_turret", "mg_bunker", "guard_tower", "aa_turret", "mg_bunker" };
             var candidates = new Dictionary<string, BaseLoadout>
             {
-                ["default"] = Base(new[] { "artillery_emplacement", "missile_battery" }, new[] { "gun_turret", "rocket_turret", "gun_turret" }, mixedSmall),
-                ["art+heavy"] = Base(new[] { "artillery_emplacement", "heavy_turret" }, new[] { "gun_turret", "rocket_turret", "gun_turret" }, mixedSmall),
+                ["default"] = Base(new[] { "heavy_turret", "missile_battery" }, new[] { "gun_turret", "rocket_turret", "gun_turret" }, mixedSmall),
+                ["hangar+heavy"] = Base(new[] { "drone_hangar", "heavy_turret" }, new[] { "gun_turret", "rocket_turret", "gun_turret" }, mixedSmall),
                 ["heavy+patriot"] = Base(new[] { "heavy_turret", "missile_battery" }, new[] { "gun_turret", "rocket_turret", "atgm_tower" }, mixedSmall),
-                ["heavy+art, atgm"] = Base(new[] { "heavy_turret", "artillery_emplacement" }, new[] { "gun_turret", "rocket_turret", "atgm_tower" }, mixedSmall),
+                ["heavy+hangar, atgm"] = Base(new[] { "heavy_turret", "drone_hangar" }, new[] { "gun_turret", "rocket_turret", "atgm_tower" }, mixedSmall),
                 ["greedy"] = Base(new[] { "heavy_turret", "heavy_turret" }, new[] { "rocket_turret", "aa_turret", "gun_turret" },
                     new[] { "guard_tower", "guard_tower", "mg_bunker", "mg_bunker", "guard_tower", "guard_tower" }),
             };
@@ -314,7 +314,7 @@ namespace MachineBrigade.Tests
                 var world = new SimWorld(catalog, GameContent.LoadMap("ashfield_conquest"), seed: seed);
                 var loadout = Mixed();
                 loadout.Utilities.Add("airfield");
-                var deck = new[] { "main_battle_tank", "ifv", "attack_helicopter", "gunship_heli", "aa_vehicle", "mlrs" };
+                var deck = new[] { "main_battle_tank", "ifv", "attack_helicopter", "attack_helicopter", "aa_vehicle", "mlrs" };
                 var mode = new ConquestMode(new ConquestRules
                 {
                     Bases = new BaseSetup().Set(0, loadout, BaseRole.Anchor).Set(1, loadout.Clone(), BaseRole.Anchor),

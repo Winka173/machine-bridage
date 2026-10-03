@@ -135,6 +135,23 @@ namespace MachineBrigade.Game.Hud
             _skill.Root.style.display = DisplayStyle.None;
             Root.Add(_skill.Root);
 
+            // Play-test 14: the hangar rally point (only while the side has a vehicle or aircraft hangar): a tap arms it, the
+            // next tap on the map sets it.
+            _rally = Kit.Box("fc-hcard fc-hcard--support fc-hcard--rally", PickingMode.Position);
+            _rally.AddManipulator(new Tap(() =>
+            {
+                UiKit.RaiseClicked();
+                RallyPressed?.Invoke();
+            }));
+            var rallyArt = Kit.Box("fc-hcard__art");
+            rallyArt.Add(Kit.Icon("flag", "fc-hcard__icon"));
+            _rally.Add(rallyArt);
+            var rallyName = Kit.Text(Strings.Get("hangar.rally"), compact ? "fc-hcard__name fc-hcard__name--short" : "fc-caption fc-hcard__name");
+            Kit.FixedLines(rallyName, compact ? 1 : 2);
+            _rally.Add(rallyName);
+            _rally.style.display = DisplayStyle.None;
+            Root.Add(_rally);
+
             var row = Kit.Box("fc-deck__cards");
             for (var i = 0; i < cards.Count; i++)
             {
@@ -245,6 +262,23 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>Prompt 32 L4: the HQ skill button was tapped.</summary>
         public event Action SkillPressed;
+
+        /// <summary>Play-test 14: the hangar rally button was tapped.</summary>
+        public event Action RallyPressed;
+
+        private readonly VisualElement _rally;
+        private bool _rallyShown;
+
+        /// <summary>Play-test 14: the hangar rally button: shown while the side has a hangar, armed while it waits for its point.</summary>
+        public void SetRally(bool show, bool armed)
+        {
+            if (show != _rallyShown)
+            {
+                _rallyShown = show;
+                _rally.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+            _rally.EnableInClassList("fc-hcard--armed", show && armed);
+        }
 
         private readonly Card _skill;
         private readonly VisualElement _skillIcon;

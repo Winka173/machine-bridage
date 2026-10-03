@@ -77,7 +77,7 @@ namespace MachineBrigade.Tests
             var behemoth = WeaponInfo.Describe(c.Weapons["p26_behemoth_main_be152"]).Name;
             Assert.That(behemoth, Does.Contain("152 mm"));
             Assert.That(behemoth, Does.Not.Contain("26 mm"));
-            Assert.That(c.Weapons["heli_atgm"].WarheadKg, Is.EqualTo(9f), "a Hellfire's warhead, not the missile's 49 kg");
+            Assert.That(c.Weapons["hellfire_volley"].WarheadKg, Is.EqualTo(9f), "a Hellfire's warhead, not the missile's 49 kg");
         }
 
         // ------------------------------------------------------------------------------------------------ L3

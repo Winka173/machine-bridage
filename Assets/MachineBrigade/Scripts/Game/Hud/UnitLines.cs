@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Globalization;
 using MachineBrigade.Sim.Abilities;
 using MachineBrigade.Sim.Content;
@@ -157,7 +158,21 @@ namespace MachineBrigade.Game.Hud
             var lines = new List<string>();
             foreach (var (w, _) in Armed(def)) lines.AddRange(Weapon(def, w));
             if (def.Utility is { } u) lines.AddRange(Module(u));
+            if (def.BaseAura is { } aura) lines.AddRange(Aura(aura));
+            if (def.Hangar is { } hangar)
+                lines.Add(F("ul.hangar", ("units", string.Join(" / ", hangar.Units.Select(Strings.Card))), ("seconds", N(hangar.Every)), ("count", hangar.Alive)));
             return lines;
+        }
+
+        /// <summary>Play-test 14: a base aura building's lifts, for its side's units of one kind anywhere on the map.</summary>
+        public static IEnumerable<string> Aura(BaseAuraDef a)
+        {
+            var who = Strings.Get("ul.aura." + a.Reach.ToString().ToLowerInvariant());
+            if (a.Damage > 0f) yield return F("ul.aura.damage", ("who", who), ("percent", N(a.Damage * 100f)));
+            if (a.Speed > 0f) yield return F("ul.aura.speed", ("who", who), ("percent", N(a.Speed * 100f)));
+            if (a.Hp > 0f) yield return F("ul.aura.hp", ("who", who), ("percent", N(a.Hp * 100f)));
+            if (a.Range > 0f) yield return F("ul.aura.range", ("who", who), ("percent", N(a.Range * 100f)));
+            yield return Strings.Get("ul.aura.one");
         }
 
         private static bool HasStores(VehicleDef def)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MachineBrigade.Sim.Content;
 
 namespace MachineBrigade.Game.Match
@@ -28,6 +29,79 @@ namespace MachineBrigade.Game.Match
                 D.hqBranch = value.ToString().ToLowerInvariant();
                 Save();
             }
+        }
+
+        /// <summary>
+        /// Play-test 14: the light unit a Garrison HQ calls, chosen on the HQ tab (null: the level's mixed squad). Only a
+        /// unit the HQ may call (<see cref="HqTypeRules.Callable"/>) counts.
+        /// </summary>
+        public static string HqUnit
+        {
+            get => string.IsNullOrEmpty(D.hqUnit) ? null : D.hqUnit;
+            set
+            {
+                D.hqUnit = value ?? "";
+                Save();
+            }
+        }
+
+        /// <summary>
+        /// Play-test 14: the units a call the player fills drops (its Units called tab): the saved drop with what is no longer
+        /// in the call's list or not unlocked left out, cut to the call's cap; nothing saved: the support's own units, so cut.
+        /// </summary>
+        public static List<string> CallUnits(string supportId, SupportDef support, Catalog catalog)
+        {
+            var saved = new List<string>();
+            var found = false;
+            foreach (var entry in D.calls)
+            {
+                var at = entry.IndexOf('=');
+                if (at <= 0 || entry.Substring(0, at) != supportId) continue;
+                found = true;
+                foreach (var u in entry.Substring(at + 1).Split(','))
+                    if (!string.IsNullOrEmpty(u)) saved.Add(u);
+            }
+            var list = new List<string>();
+            var total = 0f;
+            foreach (var u in found ? saved : new List<string>(support.Units))
+            {
+                if (!catalog.Vehicles.TryGetValue(u, out var def)) continue;
+                if (found && (System.Linq.Enumerable.Contains(support.CallChoices, u) == false || !IsUnlocked(u))) continue;
+                if (total + def.BaseCp > support.CallMaxCp + 1e-4f) continue;
+                total += def.BaseCp;
+                list.Add(u);
+            }
+            return list;
+        }
+
+        public static void SetCallUnits(string supportId, List<string> units)
+        {
+            D.calls.RemoveAll(e => e.StartsWith(supportId + "=", System.StringComparison.Ordinal));
+            D.calls.Add(supportId + "=" + string.Join(",", units));
+            Save();
+        }
+
+        /// <summary>Play-test 14: the unit a hangar card turns out (null: its first, the data's default).</summary>
+        public static string HangarUnit(string hangarId)
+        {
+            var i = D.hangarIds.IndexOf(hangarId);
+            return i >= 0 && i < D.hangarUnits.Count && !string.IsNullOrEmpty(D.hangarUnits[i]) ? D.hangarUnits[i] : null;
+        }
+
+        public static void SetHangarUnit(string hangarId, string unit)
+        {
+            var i = D.hangarIds.IndexOf(hangarId);
+            if (i < 0)
+            {
+                D.hangarIds.Add(hangarId);
+                D.hangarUnits.Add(unit ?? "");
+            }
+            else
+            {
+                while (D.hangarUnits.Count <= i) D.hangarUnits.Add("");
+                D.hangarUnits[i] = unit ?? "";
+            }
+            Save();
         }
 
         /// <summary>

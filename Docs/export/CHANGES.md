@@ -425,3 +425,42 @@ Sửa ở họ vũ khí (family) khi vũ khí lấy tốc độ từ họ; cột
 | amos_120 | projectileSpeed | 32 | 60 | |
 
 Trận replay bị ảnh hưởng: mọi trận (tốc độ đạn, pháo sáng, APS, cảnh báo) — baseline của ReplayHashTests cần ghi lại.
+
+## Play-test 14 lane C (cloud session 1): xóa đơn vị, hỗ trợ, công trình
+
+Danh sách id đã xóa và thay thế: `Docs/fixes/playtest14_deleted.md`. Không đổi chỉ số của đơn vị còn lại; các giá trị dưới đây
+đổi vì các thẻ bị xóa.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-1 | `Progression.StarterSupports` (thẻ hỗ trợ khởi đầu) | artillery_barrage, smoke_screen | artillery_barrage, **repair_drop** | smoke_screen bị xóa; người chơi mới vẫn có 2 thẻ hỗ trợ |
+| PT14-2 | Mở khóa chiến dịch | c1m03 mở repair_drop; nhiều nhiệm vụ mở thẻ bị xóa | c1m03 không mở gì (repair_drop là thẻ khởi đầu); thẻ bị xóa bỏ khỏi danh sách mở khóa | thẻ bị xóa |
+| PT14-3 | Luật kiểm chiến dịch (`build_campaign.py`): số thẻ mỗi chương mở | 3-10 | **2-10** (chương 10 còn 2) | thẻ bị xóa |
+| PT14-4 | Kinh tế chiến dịch (generator tự tính lại) | blueprint scale 0,50; deck rank 7,00 đầu hồi IV, 7,21 cuối; hồi I-II trả x3,00 | blueprint scale **0,75**; deck rank **7,21** đầu hồi IV, **8,00** cuối; hồi I-II trả **x1,62** | ít thẻ hơn trên đường mở khóa |
+| PT14-5 | Bộ bài cố định (fixed decks, 8 xe + 2 hỗ trợ) | thẻ bị xóa | thay bằng thẻ cùng vai trò chưa có trong bộ (log của `Tools/campaign/fixed_decks.py`, thẻ mượn tính lại theo kiểm tra) | thẻ bị xóa |
+| PT14-6 | Deck/roster/đợt sóng địch trong chiến dịch, sự kiện (`EventDefs`, `events.py`, tướng) | bmpt, gunship_heli, lancet_truck, ... | ifv, attack_helicopter, fpv_carrier, ... (bỏ khi trùng) | thay thế theo kế hoạch |
+| PT14-7 | `openingSquads.roles` | có thẻ bị xóa; vai "radar_scout" | bỏ thẻ bị xóa; vai "bunker" = siege_tank; vai "radar_scout" bỏ (Kerr, Orlov mất ô đó) | thẻ bị xóa |
+| PT14-8 | `base.roster` (thẻ tháp) | 22 | **14** | công trình bị xóa |
+| PT14-9 | `base.reference` (căn cứ chuẩn tính sức mạnh sóng Phòng thủ/Vô tận) | ô của tháp bị xóa | cùng số ô, tháp còn lại cùng cỡ (mg_bunker, guard_tower, rocket_turret; tiện ích logistics_station, airfield) | giữ sức mạnh chuẩn gần như cũ |
+| PT14-10 | `base.ai.styles` (trọng số tháp AI) | có tháp bị xóa | bỏ các khóa đó (Kessler còn "*": 1,0) | công trình bị xóa |
+| PT14-11 | Hộ tống boss (`escorts`, `escortTemplates`) | smoke_carrier, counter_battery_radar, lancet_truck, bmpt | ew_jammer, command_vehicle, fpv_carrier, ifv | thay thế |
+| PT14-12 | Lính gác Gungnir (`guards`) | dragons_teeth x3 | blast_wall x3 | thay thế |
+| PT14-13 | Bản đồ siege coralisles, swamp (và `build_maps.py`) | artillery_emplacement x2 | rocket_turret x2 | thay thế |
+| PT14-14 | `PlayerProfile.DefaultLarge` (ô lớn mặc định) | heavy_turret, artillery_emplacement | heavy_turret, **missile_battery** | thay thế |
+| PT14-15 | IFV `skills` | ["apc_smoke"] | [] | chủ dự án bỏ apc_smoke |
+| PT14-16 | Giá tháp `p32_tower_prices.py`: mốc "protect" | troop_shelter = 5 | shield_tower = 9 (giá tạm của nó) | troop_shelter bị xóa; chỉ là công cụ, không ghi dữ liệu |
+| PT14-17 | Save cũ (roster version 9) | - | hoàn tiền thẻ đã mua (`CardMerges.DeletedPt14`), xu + bản vẽ của cấp thẻ, 500 xu mỗi vật phẩm gunship | yêu cầu "file lưu cũ được hoàn lại" |
+
+## Play-test 14 lane B (cloud session 1): UI and base systems
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-B1 | repair_bay | sửa 1,5 %/s xe trong căn cứ | hào quang: mọi xe mặt đất +10 % sát thương, +10 % máu tối đa | kế hoạch PT14 |
+| PT14-B2 | airfield | bãi đáp: sửa 3 %/s, nạp đạn; nhánh hangar/service | hào quang: mọi máy bay (không tính drone) +10 % sát thương, +10 % tốc độ; nạp đạn ở HQ; bỏ 2 nhánh | kế hoạch PT14 |
+| PT14-B3 | fire_control_centre → Defence Command Centre | tháp trong 30 m +12 % sát thương, dồn mục tiêu | mọi công trình +15 % tầm, +10 % máu | kế hoạch PT14 |
+| PT14-B4 | laser_ad_station | nhánh .laser / .net | chỉ .laser; tên Laser Defence Tower | kế hoạch PT14 |
+| PT14-B5 | vehicle_hangar, aircraft_hangar (mới) | - | Medium, máu 1800, giáp 2, rebuildCp 8; 1 quân/60 s, tối đa 2 còn sống; mở ở c3m04 / c7m02; AI style mặc định 0,5 / 0,3 | kế hoạch PT14 |
+| PT14-B6 | base.roster | 14 | 16 | thêm 2 hangar |
+| PT14-B7 | reinforcements | thả 2 MBT + 1 IFV, chỉ tốn vật phẩm | người chơi chọn quân ≤ 20 CP gốc; gọi tốn ceil(1,5 × tổng) CP (và vật phẩm) | chủ dự án 03/10 |
+| PT14-B8 | Garrison HQ | đội hỗn hợp theo cấp | tùy chọn: đội là đơn vị người chơi chọn (số lượng = số xe của đội cấp đó) | kế hoạch PT14 |
+| PT14-B9 | Giá tháp p32_tower_prices | - | bỏ laser_ad_station.net | biến thể bị xóa |

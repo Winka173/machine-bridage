@@ -38,6 +38,7 @@ namespace MachineBrigade.Game.Match
             hud.CardPressed += OnCard;
             hud.TargetCancelled += Disarm;
             hud.HqSkillPressed += OnSkill;
+            hud.HangarRallyPressed += OnRally;
             // Items the player brought (bought with coins): a strip of their own under the minimap.
             if (world.TryGetEconomy(team, out var economy))
                 foreach (var id in Progression.Items)
@@ -51,10 +52,13 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>Id of the support (or item) waiting for a target, or null.</summary>
-        public string ArmedSupport => _armed >= 0 ? _cards[_armed].Id : _armedItem >= 0 ? _items[_armedItem] : _armedSkill ? ArmedSkillId : null;
+        public string ArmedSupport => _armed >= 0 ? _cards[_armed].Id : _armedItem >= 0 ? _items[_armedItem] : _armedSkill ? ArmedSkillId : _armedRally ? ArmedRallyId : null;
 
         /// <summary>Prompt 32 L4: what <see cref="ArmedSupport"/> reads while the HQ's barrage waits for its point (Back disarms it).</summary>
         public const string ArmedSkillId = "hq.skill";
+
+        /// <summary>Play-test 14: what <see cref="ArmedSupport"/> reads while the hangar rally point waits for its tap.</summary>
+        public const string ArmedRallyId = "hangar.rally";
 
         /// <summary>
         /// What calling a card costs now, to the fraction of a CP (prompt 22 F: a commander's price change; the card shows it
@@ -85,8 +89,20 @@ namespace MachineBrigade.Game.Match
         /// <summary>Tap interceptor: while a strike is armed, the tap chooses its target.</summary>
         public bool TryTap(Vector2 screen)
         {
-            if (_armed < 0 && _armedItem < 0 && !_armedSkill) return false;
+            if (_armed < 0 && _armedItem < 0 && !_armedSkill && !_armedRally) return false;
             if (!_camera.TryGroundPoint(screen, out var ground)) return true;
+            // Play-test 14: the hangars' units gather where the map is tapped.
+            if (_armedRally)
+            {
+                var rally = _world.SubmitPlayer(Command.HangarRally(_team, new SimVector2(ground.x, ground.z)));
+                if (!rally.Accepted) _hud.ShowError(rally.Error);
+                else
+                {
+                    _hud.Toast(Strings.Get("hangar.rally.set"));
+                    Disarm();
+                }
+                return true;
+            }
             // Prompt 32 L4: a Fortress HQ's barrage lands where the map is tapped.
             if (_armedSkill)
             {
@@ -118,7 +134,10 @@ namespace MachineBrigade.Game.Match
                 point -= along * (support.Length * 0.5f);
                 towards = point + along;
             }
-            var result = _world.SubmitPlayer(Command.Strike(_team, id, point, towards));
+            // Play-test 14: a call the player fills drops the units saved on its Units called tab.
+            var result = support is { CallMaxCp: > 0f }
+                ? _world.SubmitPlayer(Command.Call(_team, id, point, PlayerProfile.CallUnits(id, support, _world.Catalog)))
+                : _world.SubmitPlayer(Command.Strike(_team, id, point, towards));
             if (!result.Accepted) _hud.ShowError(result.Error);
             else Disarm();
             return true;
@@ -145,6 +164,7 @@ namespace MachineBrigade.Game.Match
                 }
             }
             UpdateSkill();
+            UpdateRally();
             // The supply upkeep (prompt 29 pass 0 removed prompt 28's second, army-size factor; the owner: "use supply").
             _hud.SetDeck(economy.Cp, economy.Bank, economy.Earning, economy.Upkeep * economy.CatchUp, _states);
             if (_items.Count == 0) return;
@@ -177,6 +197,7 @@ namespace MachineBrigade.Game.Match
             _armed = -1;
             _armedItem = index;
             _armedSkill = false;
+            _armedRally = false;
             _hud.SetTargeting(Strings.Format("target.hint", Strings.Support(id)));
         }
 
@@ -225,6 +246,7 @@ namespace MachineBrigade.Game.Match
             _armed = index;
             _armedItem = -1;
             _armedSkill = false;
+            _armedRally = false;
             _hud.SetTargeting(Strings.Format("target.hint", Strings.Support(card.Id)));
         }
 
@@ -276,6 +298,7 @@ namespace MachineBrigade.Game.Match
                 _armed = -1;
                 _armedItem = -1;
                 _armedSkill = true;
+                _armedRally = false;
                 _hud.SetTargeting(Strings.Get("target.hqSkill"));
                 return;
             }
@@ -283,8 +306,41 @@ namespace MachineBrigade.Game.Match
             if (!result.Accepted) _hud.ShowError(result.Error);
         }
 
+        // ------------------------------------------------------------------ play-test 14: the hangar rally point
+
+        private bool _armedRally;
+
+        /// <summary>The rally button shows while the side has a standing vehicle or aircraft hangar.</summary>
+        private void UpdateRally()
+        {
+            var any = false;
+            foreach (var v in _world.Vehicles)
+                if (v.IsAlive && v.Team == _team && v.Def.Hangar != null)
+                {
+                    any = true;
+                    break;
+                }
+            if (!any && _armedRally) Disarm();
+            _hud.SetHangarRally(any, _armedRally);
+        }
+
+        private void OnRally()
+        {
+            if (_armedRally)
+            {
+                Disarm();
+                return;
+            }
+            _armed = -1;
+            _armedItem = -1;
+            _armedSkill = false;
+            _armedRally = true;
+            _hud.SetTargeting(Strings.Get("hangar.rally.hint"));
+        }
+
         public void Disarm()
         {
+            _armedRally = false;
             _armedSkill = false;
             _armed = -1;
             _armedItem = -1;

@@ -490,6 +490,10 @@ namespace MachineBrigade.Sim.Content
                         LineScale = s.Has("rankLine") ? s.Object("rankLine").Float("scale", 1f) : 1f,
                         // Prompt 25 F2 batch C: a Homing strike's targets (ht10: drones only; ht03: ground vehicles).
                         DronesOnly = s.Bool("dronesOnly", false),
+                        // Play-test 14: a call the player fills.
+                        CallMaxCp = s.Has("call") ? Math.Max(0f, s.Object("call").Float("maxCp", 0f)) : 0f,
+                        CallPriceScale = s.Has("call") ? Math.Max(0f, s.Object("call").Float("priceScale", 1.5f)) : 1.5f,
+                        CallChoices = s.Has("call") && s.Object("call").Has("choices") ? s.Object("call").StringArray("choices") : Array.Empty<string>(),
                     }));
                 }
             }

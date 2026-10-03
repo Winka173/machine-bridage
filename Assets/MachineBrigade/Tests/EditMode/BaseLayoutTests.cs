@@ -72,7 +72,7 @@ namespace MachineBrigade.Tests
             var catalog = Catalog;
             var loadout = new BaseLoadout();
             Assert.IsFalse(BaseLayout.Place(loadout, catalog, LoadoutSlot.Tower(SlotSize.Small, 0), "heavy_turret"), "a large tower not into a small slot");
-            Assert.IsFalse(BaseLayout.Place(loadout, catalog, LoadoutSlot.Tower(SlotSize.Medium, 0), "artillery_emplacement"));
+            Assert.IsFalse(BaseLayout.Place(loadout, catalog, LoadoutSlot.Tower(SlotSize.Medium, 0), "missile_battery"));
             Assert.IsTrue(BaseLayout.Place(loadout, catalog, LoadoutSlot.Tower(SlotSize.Large, 0), "guard_tower"), "a light tower goes anywhere");
             Assert.IsFalse(BaseLayout.Fits(catalog, "aa_turret.flak", LoadoutSlot.Tower(SlotSize.Large, 0)), "a branch is not a card");
             Assert.IsFalse(BaseLayout.Fits(catalog, "point_tower", LoadoutSlot.Tower(SlotSize.Large, 0)), "nor a point's watchtower");

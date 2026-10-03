@@ -150,6 +150,19 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Vehicles dropped (Reinforce) or flown in (Escort).</summary>
         public IReadOnlyList<string> Units { get; internal set; } = Array.Empty<string>();
 
+        /// <summary>
+        /// Play-test 14: a call the player fills (0: <see cref="Units"/> as they are): units of <see cref="CallChoices"/> worth at
+        /// most this many CP in all (base CP), the call's price in CP <see cref="CallPriceScale"/> times their total, rounded up.
+        /// </summary>
+        public float CallMaxCp { get; internal set; }
+
+        public float CallPriceScale { get; internal set; } = 1.5f;
+
+        public IReadOnlyList<string> CallChoices { get; internal set; } = Array.Empty<string>();
+
+        /// <summary>The CP a filled call of units worth <paramref name="total"/> base CP costs.</summary>
+        public int CallPrice(float total) => (int)Math.Ceiling(total * CallPriceScale - 1e-4);
+
         /// <summary>A Tower drop: from this card rank (0: never) it drops its second tower.</summary>
         public int UnitRank { get; internal set; }
 

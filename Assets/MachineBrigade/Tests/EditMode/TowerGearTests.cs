@@ -184,11 +184,11 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(TowerFit.Within(TowerNeed.HitsAir, Of("missile_battery")));
             Assert.IsFalse(TowerFit.Within(TowerNeed.HitsGround, Of("missile_battery")), "a SAM battery is not for ground targets");
             Assert.IsFalse(TowerFit.Within(TowerNeed.HitsGround, Of("aa_turret.sam")), "nor is the AA tower's SAM branch");
-            Assert.IsTrue(TowerFit.Within(TowerNeed.Magazine, Of("artillery_emplacement")), "the emplacement's howitzer has a magazine");
+            Assert.IsTrue(TowerFit.Within(TowerNeed.Magazine, Of("c_ram.dome")), "the Iron Dome branch's interceptors have a magazine");
             Assert.IsFalse(TowerFit.Within(TowerNeed.Magazine, Of("gun_turret")));
 
             // An obstacle: a tower with no weapon at all.
-            var teeth = new VehicleDef("dragons_teeth", ArmorClass.Structure, maxHp: 900f, speed: 1f, turnRateDegrees: 1f, turretTurnRateDegrees: 1f, radius: 1.8f, cpCost: 0,
+            var teeth = new VehicleDef("test_obstacle", ArmorClass.Structure, maxHp: 900f, speed: 1f, turnRateDegrees: 1f, turretTurnRateDegrees: 1f, radius: 1.8f, cpCost: 0,
                 visionRange: 10f, firesWhileMoving: false, TestWorlds.Stub, deathExplosion: null, isStatic: true) { Fort = new FortDef(SlotSize.Small, FortKind.Tower) };
             Assert.AreEqual(TowerNeed.None, TowerFit.Of(teeth), "nothing to aim");
             Assert.IsTrue(TowerFit.Fits(Piece(GearSlot.TowerStructure, "reinforced_concrete"), teeth), "walls work on it");
@@ -206,15 +206,15 @@ namespace MachineBrigade.Tests
             var fuze = Piece(GearSlot.TowerWeapon, "flak_proximity_fuze");
             var towers = TowerFit.TowersFor(fuze, Catalog);
             CollectionAssert.IsSubsetOf(new[] { "aa_turret", "guard_tower", "mg_bunker", "missile_battery" }, towers, "towers whose weapon hits aircraft");
-            foreach (var id in new[] { "gun_turret", "heavy_turret", "artillery_emplacement", "atgm_tower", "rocket_turret" })
+            foreach (var id in new[] { "gun_turret", "heavy_turret", "atgm_tower", "rocket_turret" })
                 CollectionAssert.DoesNotContain(towers, id, id + " cannot hit aircraft: a proximity fuze does nothing on it");
             var sabot = TowerFit.TowersFor(Piece(GearSlot.TowerWeapon, "sabot_rounds"), Catalog);
             CollectionAssert.DoesNotContain(sabot, "missile_battery");
             CollectionAssert.Contains(sabot, "gun_turret");
             CollectionAssert.AreEquivalent(TowerCards.All(Catalog), TowerFit.TowersFor(Piece(GearSlot.TowerStructure, "blast_walls"), Catalog), "walls work on every tower");
             Assert.IsEmpty(TowerFit.TowersFor(new GearItem { slot = (int)GearSlot.Armor, baseType = "spall_liner" }, Catalog), "a vehicle piece fits no tower");
-            Assert.IsEmpty(TowerFit.TowersFor(Piece(GearSlot.TowerSystems, "ammo_handling"), Catalog).Except(new[] { "artillery_emplacement" }),
-                "magazine handling only where there is a magazine");
+            foreach (var id in TowerFit.TowersFor(Piece(GearSlot.TowerSystems, "ammo_handling"), Catalog))
+                Assert.IsTrue(TowerFit.Within(TowerNeed.Magazine, TowerFit.Of(Catalog.Vehicles[id])), id + ": magazine handling only where there is a magazine");
 
             // The matrix the fit screen reads: every tower card and branch, with what works for it.
             var matrix = TowerFit.Matrix(Catalog);
@@ -228,7 +228,7 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(rows.ContainsKey("aa_turret.flak"), "branches have their own rows");
             CollectionAssert.DoesNotContain(rows["gun_turret"].Bases, "flak_proximity_fuze");
             CollectionAssert.Contains(rows["aa_turret"].Bases, "flak_proximity_fuze");
-            CollectionAssert.Contains(rows["artillery_emplacement"].Bases, "ammo_handling");
+            CollectionAssert.Contains(rows["c_ram.dome"].Bases, "ammo_handling");
             Assert.IsFalse(rows.ContainsKey("headquarters"), "the HQ wears no tower equipment");
         }
 
@@ -525,14 +525,6 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(now + 2.0, halved.StunnedUntil, 1e-3, "Epic: half as long");
             Assert.AreEqual(now + 4.0, plain.StunnedUntil, 1e-3, "a tower without it is out for the whole time");
             Assert.IsTrue(Procced(events, TraitId.TowerBackupGenerator), "the BACKUP POWER word");
-
-            // A SEAD strike still hurts the anti-air tower, but does not knock it out.
-            Assert.IsTrue(world.Submit(Command.Strike(1, "sead_strike", immune.Position)).Accepted, "the strike is called");
-            var hp = immune.Hp;
-            Run(world, 4f);
-            Assert.Less(immune.Hp, hp, "the strike lands");
-            Assert.IsFalse(immune.Stunned, "and the generator keeps it running");
-            Assert.LessOrEqual(immune.StunnedUntil, world.Time);
         }
 
         // ------------------------------------------------------------------ crates

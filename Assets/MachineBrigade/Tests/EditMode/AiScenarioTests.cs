@@ -269,8 +269,8 @@ namespace MachineBrigade.Tests
         public void ArtilleryFiresAndMovesAndAvoidsMarkedSpots()
         {
             var s = Scenario(23, SandboxAi.Full, SandboxAi.Full,
-                Block("artillery", 0, new Vector2(-50f, -50f), 2).Append(("counter_battery_radar", 0, -55f, -45f))
-                    .Concat(Block("artillery", 1, new Vector2(50f, 50f), 2)).Append(("counter_battery_radar", 1, 55f, 45f)).ToArray());
+                Block("artillery", 0, new Vector2(-50f, -50f), 2).Append(("command_vehicle", 0, -55f, -45f))
+                    .Concat(Block("artillery", 1, new Vector2(50f, 50f), 2)).Append(("command_vehicle", 1, 55f, 45f)).ToArray());
             var (world, battle) = Build(s);
             Run(world, battle, 120f);
             Assert.That(world.AiLog.Entries.Count(e => e.Text == "artillery scoot"), Is.GreaterThan(0), "guns moved after firing");

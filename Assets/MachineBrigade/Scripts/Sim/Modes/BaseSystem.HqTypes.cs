@@ -18,6 +18,9 @@ namespace MachineBrigade.Sim.Modes
 
         public HqType Type { get; internal set; }
         public HqBranch Branch { get; internal set; }
+
+        /// <summary>Play-test 14: the light unit the Garrison calls (null: the level's mixed squad).</summary>
+        public string? Unit { get; internal set; }
         public int Level { get; internal set; } = 1;
 
         /// <summary>Match time the skill is ready again.</summary>
@@ -81,6 +84,7 @@ namespace MachineBrigade.Sim.Modes
             s.Ready = true;
             s.Type = b.Loadout.HqType;
             s.Branch = b.Loadout.HqBranch;
+            s.Unit = b.Loadout.HqUnit;
             s.Level = Math.Clamp(b.Loadout.HqLevel, 1, 5);
             s.SkillReadyAt = _world.Time;
             s.Stock = 0;
@@ -226,7 +230,7 @@ namespace MachineBrigade.Sim.Modes
         /// </summary>
         private bool TurnOut(TeamBase b, HqState s, HqTypeRules rules, Vector2 towards)
         {
-            var squad = rules.Squad(s.Level);
+            var squad = rules.Squad(s.Level, s.Unit);
             var cost = 0f;
             var ids = new List<VehicleDef>();
             foreach (var id in squad)

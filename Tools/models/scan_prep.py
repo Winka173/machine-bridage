@@ -48,7 +48,7 @@ REF_DOC = ROOT / 'Docs' / 'models' / 'reference_dimensions.md'
 RUNNER = Path('C:/Users/Winka/Projects/MachineBrigade-runner')
 BASE = '07444b1'
 HQ = ('headquarters', 'command_hq')
-OBSTACLE = re.compile(r'^(wall_|base_wall|blast_wall|dragons_teeth|minefield|barricade|razor|sandbag_wall|jersey)')
+OBSTACLE = re.compile(r'^(wall_|base_wall|blast_wall|barricade|razor|sandbag_wall|jersey)')
 P27_COMMIT = re.compile(r'(?i)(prompt 27|\bwave \d)')
 
 # LOD0 triangle budgets per class [min, max] (the prompt's numbers; MODEL_STANDARD.md section 1).

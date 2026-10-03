@@ -17,7 +17,7 @@ namespace MachineBrigade.Tests
     /// <summary>
     /// The tower roster (prompt 3): what each new tower does, the guard tower's and the light
     /// towers' own jobs, the cannon towers' weaknesses, the Patriot, the utility modules, engineers
-    /// on towers, mines and obstacles, and the merged point tower.
+    /// on towers and mines, and the merged point tower.
     /// </summary>
     public class TowerRosterTests
     {
@@ -50,9 +50,8 @@ namespace MachineBrigade.Tests
         {
             var catalog = GameContent.LoadCatalog();
             var towers = TowerCards.All(catalog);
-            // Prompt 32 L1: the minefield has no branch now.
-            foreach (var id in new[] { "guard_tower", "mg_bunker", "aa_turret", "ew_tower", "dragons_teeth", "gun_turret", "atgm_tower",
-                         "rocket_turret", "c_ram", "artillery_emplacement", "missile_battery", "drone_hangar", "heavy_turret" })
+            foreach (var id in new[] { "guard_tower", "mg_bunker", "aa_turret", "ew_tower", "gun_turret", "atgm_tower",
+                         "rocket_turret", "c_ram", "missile_battery", "drone_hangar", "heavy_turret" })
             {
                 Assert.Contains(id, towers, id);
                 Assert.AreEqual(2, TowerCards.Branches(catalog, id).Count, $"{id} has two branches");
@@ -63,7 +62,7 @@ namespace MachineBrigade.Tests
             Assert.IsFalse(catalog.Vehicles.ContainsKey("gun_pit"), "the hidden gun pit is gone (prompt 17 D.4)");
             var sizes = new Dictionary<string, SlotSize>
             {
-                ["ew_tower"] = SlotSize.Small, ["dragons_teeth"] = SlotSize.Small, ["minefield"] = SlotSize.Small,
+                ["ew_tower"] = SlotSize.Small,
                 ["c_ram"] = SlotSize.Medium, ["drone_hangar"] = SlotSize.Large,
             };
             foreach (var (id, size) in sizes) Assert.AreEqual(size, catalog.Vehicles[id].Fort.Size, id);
@@ -112,43 +111,6 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(1.25f, DamageSystem.BonusFor(aa.Def.Weapon, aa, heli, world.Time), 1e-4f, "a light tower on a helicopter");
             Assert.AreEqual(1f, DamageSystem.BonusFor(aa.Def.Weapon, aa, jet, world.Time), 1e-4f, "not on a jet");
             Assert.AreEqual(1f, DamageSystem.BonusFor(gun.Def.Weapon, gun, heli, world.Time), 1e-4f, "a medium tower gets none");
-        }
-
-        [Test]
-        public void AFixedMinefieldKeepsItsMinesAndIsNoTarget()
-        {
-            var world = Field();
-            var field = Tower(world, "minefield", 0, new Vector2(0f, 0f));
-            Run(world, 1f);
-            var mines = world.Mines.Where(m => m.IsAlive && m.Layer == field.Id).ToList();
-            // Prompt 32 L1: the one kind is the AT branch's: five mines.
-            Assert.AreEqual(5, mines.Count, "five mines at once");
-            Assert.IsTrue(mines.All(m => Vector2.Distance(m.Position, field.Position) <= 5.01f), "round it");
-            Assert.IsTrue(field.Def.Untargetable && field.Def.Passable && field.Def.Passive, "no target, no blocker, no gun");
-            var victim = world.SpawnVehicle("armored_car", 1, mines[0].Position + new Vector2(0f, 10f), 3.14f);
-            world.Submit(new Command(CommandType.Move, 1, new[] { victim.Id }, mines[0].Position - new Vector2(0f, 8f)));
-            Run(world, 6f);
-            Assert.Less(world.Mines.Count(m => m.IsAlive && m.Layer == field.Id), 5, "one went off");
-            Run(world, 46f);
-            Assert.AreEqual(5, world.Mines.Count(m => m.IsAlive && m.Layer == field.Id), "and the field is laid again within 45 s");
-        }
-
-        [Test]
-        public void DragonsTeethBlockTheWayAndEngineersBreachThemFaster()
-        {
-            var world = Field();
-            var teeth = Tower(world, "dragons_teeth", 1, new Vector2(0f, 0f));
-            Assert.IsTrue(teeth.BlocksRoutes, "it blocks the way");
-            var engineer = world.SpawnVehicle("engineer_vehicle", 0, new Vector2(0f, -10f), 0f);
-            var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(4f, -10f), 0f);
-            Assert.AreEqual(3f, DamageSystem.BonusFor(engineer.Def.Weapon, engineer, teeth, world.Time), 1e-4f, "an engineer breaches three times as fast");
-            Assert.AreEqual(1f, DamageSystem.BonusFor(tank.Def.Weapon, tank, teeth, world.Time), 1e-4f);
-            var wire = Tower(world, "dragons_teeth.wire", 1, new Vector2(40f, 0f));
-            Assert.IsFalse(wire.BlocksRoutes, "wire does not block");
-            var runner = world.SpawnVehicle("armored_car", 0, new Vector2(40f, 3f), 0f);
-            world.Submit(new Command(CommandType.Stop, 0, new[] { runner.Id }));
-            Run(world, 1f);
-            Assert.Greater(Sim.Combat.StatusSystem.SlowShare(runner, world.Time), 0.4f, "but slows what is in it");
         }
 
         [Test]
@@ -224,16 +186,18 @@ namespace MachineBrigade.Tests
             var world = Field();
             var tower = Tower(world, "gun_turret", 0, new Vector2(0f, 0f));
             tower.Hp = tower.MaxHp * 0.5f;
-            var field = Tower(world, "minefield", 1, new Vector2(20f, 0f));
+            // Play-test 14: the fixed minefield is gone; a mine layer's mines stand in for it.
+            var mineDef = world.Catalog.Vehicles["mine_layer"].Mines;
+            foreach (var at in new[] { new Vector2(16f, 0f), new Vector2(18f, 2f), new Vector2(20f, -2f) }) world.DebugAddMine(1, at, mineDef);
             Run(world, 1f);
             var engineer = world.SpawnVehicle("engineer_vehicle", 0, new Vector2(6f, 0f), 0f);
             world.Submit(new Command(CommandType.Stop, 0, new[] { engineer.Id }));
             Run(world, 4f);
             Assert.Greater(tower.Hp, tower.MaxHp * 0.5f, "a tower beside an engineer is patched up");
-            var mines = world.Mines.Count(m => m.IsAlive && m.Layer == field.Id);
+            var mines = world.Mines.Count(m => m.IsAlive && m.Team == 1);
             world.Submit(new Command(CommandType.Move, 0, new[] { engineer.Id }, new Vector2(14f, 0f)));
             Run(world, 12f);
-            Assert.Less(world.Mines.Count(m => m.IsAlive && m.Layer == field.Id), mines, "and clears the mines it finds");
+            Assert.Less(world.Mines.Count(m => m.IsAlive && m.Team == 1), mines, "and clears the mines it finds");
         }
 
         [Test]

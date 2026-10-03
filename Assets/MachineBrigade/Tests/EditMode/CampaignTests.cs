@@ -115,9 +115,9 @@ namespace MachineBrigade.Tests
             var owned = Owned(mission);
             var level = Campaign.HqLevelAt(mission);
             var loadout = new BaseLoadout { HqLevel = level };
-            string[] large = { "artillery_emplacement", "missile_battery", "heavy_turret", "drone_hangar" };
+            string[] large = { "missile_battery", "heavy_turret", "drone_hangar" };
             string[] medium = { "gun_turret", "rocket_turret", "atgm_tower", "c_ram" };
-            string[] small = { "guard_tower", "aa_turret", "mg_bunker", "ew_tower", "dragons_teeth", "minefield" };
+            string[] small = { "guard_tower", "aa_turret", "mg_bunker", "ew_tower" };
             void Fill(List<string> into, string[] order, SlotSize size)
             {
                 var have = order.Where(owned.Contains).ToList();
@@ -126,7 +126,7 @@ namespace MachineBrigade.Tests
             Fill(loadout.Large, large, SlotSize.Large);
             Fill(loadout.Medium, medium, SlotSize.Medium);
             Fill(loadout.Small, small, SlotSize.Small);
-            foreach (var id in new[] { "repair_bay", "ammo_depot", "radar_station", "logistics_station", "airfield" })
+            foreach (var id in new[] { "repair_bay", "logistics_station", "airfield" })
                 if (owned.Contains(id) && loadout.Utilities.Count < catalog.Base.UtilitySlots(level)) loadout.Utilities.Add(id);
             return loadout;
         }
@@ -360,7 +360,7 @@ namespace MachineBrigade.Tests
                 stars.Add(i % 3 + 1);
                 tiers.Add(i == 9 ? 1 : 0);
             }
-            var json = JsonUtility.ToJson(new OldSave { missionIds = ids, missionStars = stars, missionTiers = tiers, unlocked = new List<string> { "mlrs", "gunship_heli", "cruise_missile" }, coins = 777 });
+            var json = JsonUtility.ToJson(new OldSave { missionIds = ids, missionStars = stars, missionTiers = tiers, unlocked = new List<string> { "mlrs", "attack_helicopter", "cruise_missile" }, coins = 777 });
             try
             {
                 PlayerProfile.LoadForTests(json);
@@ -374,7 +374,7 @@ namespace MachineBrigade.Tests
                     Assert.AreEqual(0, PlayerProfile.Stars(m.Legacy), "the old id is gone");
                 }
                 Assert.AreEqual(stars[3], PlayerProfile.Stars("c3m05"), "m03 (Iron Bird) became chapter 3's boss");
-                Assert.IsTrue(PlayerProfile.IsUnlocked("gunship_heli") && PlayerProfile.IsUnlocked("cruise_missile"), "cards won stay won");
+                Assert.IsTrue(PlayerProfile.IsUnlocked("attack_helicopter") && PlayerProfile.IsUnlocked("cruise_missile"), "cards won stay won");
                 Assert.AreEqual(777, PlayerProfile.Coins);
                 Assert.AreEqual(Campaign.Get("m09"), Campaign.Get("c3m10"), "an old id still finds its mission");
                 Assert.GreaterOrEqual(Campaign.HqLevelCap, 2, "the HQ level of the Iron Bird mission it won");

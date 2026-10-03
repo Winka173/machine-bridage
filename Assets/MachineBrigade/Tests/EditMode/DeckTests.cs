@@ -41,31 +41,31 @@ namespace MachineBrigade.Tests
         [Test]
         public void TakingOutTheFirstSupportLeavesTheSecondInItsSlot()
         {
-            Supports("artillery_barrage", "smoke_screen");
+            Supports("artillery_barrage", "cruise_missile");
             Assert.That(MatchSettings.ToggleDeckCard("artillery_barrage", true), Is.EqualTo(MatchSettings.DeckChange.Removed));
             var layout = MatchSettings.DeckLayout(true);
             Assert.That(layout[0], Is.Null);
-            Assert.That(layout[1], Is.EqualTo("smoke_screen"));
-            Assert.That(MatchSettings.DeckSupports, Is.EqualTo(new[] { "smoke_screen" }));
+            Assert.That(layout[1], Is.EqualTo("cruise_missile"));
+            Assert.That(MatchSettings.DeckSupports, Is.EqualTo(new[] { "cruise_missile" }));
         }
 
         [Test]
         public void TheLastSupportStaysAndNothingIsAddedBack()
         {
-            Supports("smoke_screen");
-            Assert.That(MatchSettings.ToggleDeckCard("smoke_screen", true), Is.EqualTo(MatchSettings.DeckChange.LastCard));
-            Assert.That(MatchSettings.DeckSupports, Is.EqualTo(new[] { "smoke_screen" }));
+            Supports("cruise_missile");
+            Assert.That(MatchSettings.ToggleDeckCard("cruise_missile", true), Is.EqualTo(MatchSettings.DeckChange.LastCard));
+            Assert.That(MatchSettings.DeckSupports, Is.EqualTo(new[] { "cruise_missile" }));
         }
 
         [Test]
         public void AnAddedCardFillsTheEmptySlot()
         {
-            Supports("artillery_barrage", "smoke_screen");
+            Supports("artillery_barrage", "cruise_missile");
             MatchSettings.ToggleDeckCard("artillery_barrage", true);
             Assert.That(MatchSettings.ToggleDeckCard("airstrike", true), Is.EqualTo(MatchSettings.DeckChange.Added));
             var layout = MatchSettings.DeckLayout(true);
             Assert.That(layout[0], Is.EqualTo("airstrike"));
-            Assert.That(layout[1], Is.EqualTo("smoke_screen"));
+            Assert.That(layout[1], Is.EqualTo("cruise_missile"));
             Assert.That(MatchSettings.ToggleDeckCard("repair_drop", true), Is.EqualTo(MatchSettings.DeckChange.Full));
         }
     }

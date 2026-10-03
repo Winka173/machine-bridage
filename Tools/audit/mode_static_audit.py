@@ -53,7 +53,7 @@ MODES = {
 }
 WAVE_ROSTER = ["light_tank", "scout_jeep", "armored_car", "ifv", "rocket_technical", "main_battle_tank", "attack_helicopter",
                "tank_destroyer", "flame_tank", "scout_heli", "mortar_carrier", "artillery", "aa_vehicle", "mlrs",
-               "gunship_heli", "heavy_tank", "attack_jet"]
+               "heavy_tank", "attack_jet"]
 
 
 def balance():

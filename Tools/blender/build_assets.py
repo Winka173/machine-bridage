@@ -259,6 +259,23 @@ import mb_vehicles3  # noqa: E402
 ROOT = HERE.parents[1]
 OUT = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Models'
 REPORT = ROOT / 'Docs' / 'art' / 'models.json'
+# archived (play-test 14): the units and structures the owner deleted keep their models and builders; a build writes
+# them to Archive/models/ (outside Assets, not in the game), Docs/fixes/playtest14_deleted.md lists them.
+ARCHIVE = ROOT / 'Archive' / 'models'
+ARCHIVED = frozenset((
+    'aa_57mm_vehicle', 'aerial_tanker', 'airborne_light_tank', 'airborne_light_tank_chute',
+    'airborne_vehicle', 'airborne_vehicle_chute', 'amphib_light_vehicle', 'artillery_emplacement',
+    'artillery_emplacement_a', 'artillery_emplacement_b', 'at_gun_emplacement', 'auto_loader_howitzer',
+    'bmpt', 'bunker_vehicle', 'coastal_ashm_vehicle', 'combat_wreck_car', 'counter_battery_radar',
+    'dazzler_vehicle', 'dragons_teeth', 'dragons_teeth_a', 'dragons_teeth_b', 'drone_hijack_vehicle',
+    'fibre_fpv_carrier', 'glide_bomber', 'ground_drone_carrier', 'gunship_heli', 'heavy_flak_tower',
+    'heavy_lift_helicopter', 'inflatable_decoy', 'interceptor_drone_vehicle', 'interceptor_jet',
+    'lancet_truck', 'light_attack_heli', 'microwave_vehicle', 'mine_rocket_truck', 'minefield',
+    'minefield_a', 'minefield_b', 'mobile_repair_vehicle', 'nlos_atgm_vehicle', 'prop_attack_plane',
+    'radar_atgm_vehicle', 'radar_scout', 'radar_site', 'radar_support_vehicle', 'recon_jet', 'searchlight',
+    'shorad_vehicle', 'smoke_carrier', 'towed_at_gun', 'troop_shelter', 'turtle_tank', 'uav_loiter_strike',
+    'visual_jammer', 'wheeled_howitzer', 'wingman_drone',
+))
 # Vehicles with a high-detail variant: <name>_hd is the builder called with detail=True.
 HIGH_DETAIL = ('main_battle_tank', 'light_tank', 'heavy_tank', 'apc', 'scout_jeep', 'aa_vehicle', 'artillery',
                'tank_destroyer', 'attack_helicopter', 'attack_jet', 'fighter_jet', 'sky_gunship')
@@ -432,6 +449,7 @@ def build_all(filters=()):
     root = kit.workspace()
     kit.clear_workspace(root)
     OUT.mkdir(parents=True, exist_ok=True)
+    ARCHIVE.mkdir(parents=True, exist_ok=True)
     builders = all_builders()
     report = json.loads(REPORT.read_text(encoding='utf-8')) if REPORT.exists() else {}
     for name, (build, options) in builders.items():
@@ -440,7 +458,7 @@ def build_all(filters=()):
         asset = kit.Asset(name, root, **options)
         build(asset)
         asset.finish()
-        asset.export(OUT / f'{name}.glb')
+        asset.export((ARCHIVE if name in ARCHIVED else OUT) / f'{name}.glb')  # archived (play-test 14)
         report[name] = {'file': f'{name}.glb', 'triangles': asset.triangles()}
         print(f'BUILT {name}: {asset.triangles()} triangles')
         # Blender object names are global: clear this asset so the next one gets clean names

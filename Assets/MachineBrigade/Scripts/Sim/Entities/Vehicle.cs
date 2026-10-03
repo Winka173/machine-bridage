@@ -335,7 +335,7 @@ namespace MachineBrigade.Sim.Entities
         public bool Barraging { get; private set; }
 
         /// <summary>Drive speed multiplier from skills.</summary>
-        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * SpeedScale * SpeedGear * PhaseSpeed * PartSpeed * TerrainSpeed;
+        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * SpeedScale * SpeedGear * PhaseSpeed * PartSpeed * TerrainSpeed * AuraSpeed;
 
         /// <summary>
         /// Prompt 33 L3: the terrain tag's speed multiplier under it (ROAD 1.2, ROUGH 0.85, FOREST 0.75, SHALLOW_WATER 0.5 but for
@@ -404,7 +404,7 @@ namespace MachineBrigade.Sim.Entities
         public float Speed { get; internal set; }
 
         public float Hp { get; internal set; }
-        public float MaxHp => Def.MaxHp * HpScale;
+        public float MaxHp => Def.MaxHp * HpScale * AuraHp;
 
         /// <summary>Health multiplier: the side's upgrades, then a mode's changes (a mutator, a hunt's support, a mission's target).</summary>
         internal float HpScale = 1f;

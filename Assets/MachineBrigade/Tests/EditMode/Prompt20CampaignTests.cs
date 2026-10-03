@@ -94,7 +94,7 @@ namespace MachineBrigade.Tests
             };
             var save = new StorySave
             {
-                campaignVersion = 2, coins = 555, unlocked = new List<string> { "gunship_heli", "heavy_turret" },
+                campaignVersion = 2, coins = 555, unlocked = new List<string> { "attack_helicopter", "heavy_turret" },
                 missionIds = old.Select(o => o.id).ToList(), missionStars = old.Select(o => o.stars).ToList(), missionTiers = old.Select(o => o.tier).ToList(),
                 chaptersSeen = new List<int> { 1, 7, 8, 9, 10 },
             };
@@ -108,7 +108,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(0, PlayerProfile.Stars("c9m01"), "nothing lands where nothing was won");
             foreach (var c in new[] { 1, 10, 7, 12, PlayerProfile.EpilogueSeen }) Assert.IsTrue(PlayerProfile.ChapterSeen(c), $"card {c} seen");
             Assert.IsFalse(PlayerProfile.ChapterSeen(8) || PlayerProfile.ChapterSeen(9), "chapters 8 and 9 are new");
-            Assert.IsTrue(PlayerProfile.IsUnlocked("gunship_heli") && PlayerProfile.IsUnlocked("heavy_turret"), "cards won stay won");
+            Assert.IsTrue(PlayerProfile.IsUnlocked("attack_helicopter") && PlayerProfile.IsUnlocked("heavy_turret"), "cards won stay won");
             Assert.AreEqual(555, PlayerProfile.Coins);
             Assert.AreEqual(5, Campaign.HqLevelCap, "the HQ level the old c9m03 opened is kept");
             // The new chapters are open to play from where the save stood; saved and read back, nothing moves twice.

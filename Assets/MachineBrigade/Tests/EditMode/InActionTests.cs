@@ -147,32 +147,6 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void CalledGunshipStaysOverItsSpot()
-        {
-            var world = Field();
-            var economy = new TeamEconomy(0, 999f, income: 50f, bank: 999f);
-            economy.Items["gunship_support"] = 1;
-            world.EnableEconomy(economy);
-            world.EnableEconomy(new TeamEconomy(1));
-            world.SpawnVehicle("recon_drone", 0, new Vector2(0f, -10f), 0f);
-            for (var i = 0; i < 2; i++) world.SpawnVehicle("armored_car", 1, new Vector2(i * 6f - 3f, 0f), 3.14f);
-            // A juicier group 55 m off, which it used to fly off to.
-            for (var i = 0; i < 3; i++) world.SpawnVehicle("heavy_tank", 1, new Vector2(40f + i * 5f, 38f), 3.14f);
-            Assert.IsTrue(world.Submit(Command.Strike(0, "gunship_support", new Vector2(0f, 0f), default)).Accepted);
-            var farthest = 0f;
-            for (var t = 0f; t < 28f; t += TestWorlds.Step)
-            {
-                world.Step(TestWorlds.Step);
-                world.ClearEvents();
-                if (t < 8f) continue;
-                foreach (var v in world.Vehicles)
-                    if (v.IsAlive && v.Def.Id == "sky_gunship") farthest = Mathf.Max(farthest, v.Position.Length());
-            }
-            Assert.Greater(farthest, 0f, "the gunship came");
-            Assert.Less(farthest, 48f, "it circles over the spot it was called to");
-        }
-
-        [Test]
         public void RangeReadoutsAreInBothLanguages()
         {
             foreach (var key in new[] { "range.relay", "range.relay.quiet", "range.depot", "range.supply" })

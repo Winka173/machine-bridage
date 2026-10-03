@@ -29,7 +29,7 @@ namespace MachineBrigade.Tests
             ("fighter_jet", "attack_jet", 70f), ("fighter_jet", "fighter_jet", 70f), ("strike_drone", "main_battle_tank", 70f),
             ("recon_drone", "main_battle_tank", 70f), ("heavy_bomber", "main_battle_tank", 70f), ("stealth_bomber", "main_battle_tank", 70f),
             ("sky_gunship", "ifv", 60f), ("attack_helicopter", "ifv", 50f), ("elite_attack_helicopter", "ifv", 50f),
-            ("gunship_heli", "ifv", 50f), ("attack_helicopter", "ifv", 70f), ("scout_heli", "armored_car", 45f),
+            ("attack_helicopter", "ifv", 70f), ("scout_heli", "armored_car", 45f),
         };
 
         private static SimWorld Field(int seed) =>
@@ -154,7 +154,6 @@ namespace MachineBrigade.Tests
             ("Attack jet vs column + 2 AA", new[] { "attack_jet" }, new[] { "main_battle_tank", "main_battle_tank", "aa_vehicle", "aa_vehicle" }),
             ("attack helis vs IFV column", new[] { "attack_helicopter", "attack_helicopter" }, new[] { "ifv", "ifv", "ifv" }),
             ("attack helis vs IFVs + AA", new[] { "attack_helicopter", "attack_helicopter" }, new[] { "ifv", "ifv", "aa_vehicle" }),
-            ("gunship helis vs tank column", new[] { "gunship_heli", "gunship_heli" }, new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank" }),
             ("strike drones vs tank column", new[] { "strike_drone", "strike_drone" }, new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank" }),
             ("AC-130 vs IFV column + AA", new[] { "sky_gunship" }, new[] { "ifv", "ifv", "ifv", "aa_vehicle" }),
         };

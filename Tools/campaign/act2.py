@@ -6,7 +6,7 @@ build_campaign.py turns it round onto the battlefield."""
 from campaign_kit import T, add_mission, ring, say, scripted, units, waves
 
 KESSLER = ['wheeled_gun', 'ifv', 'main_battle_tank', 'heavy_tank', 'sam_launcher', 'fpv_carrier', 'mine_layer', 'mlrs']
-SEN = ['strike_drone', 'fpv_carrier', 'lancet_truck', 'recon_drone', 'ew_jammer', 'ifv', 'main_battle_tank', 'aa_vehicle']
+SEN = ['strike_drone', 'fpv_carrier', 'recon_drone', 'ew_jammer', 'ifv', 'main_battle_tank', 'aa_vehicle']
 VARGA_LATE = ['main_battle_tank', 'heavy_tank', 'twin_tank', 'tank_destroyer', 'fpv_carrier', 'flame_tank', 'ifv', 'mlrs']
 
 
@@ -92,7 +92,7 @@ add_mission(m('c4m05', 4, 'ironport', 'Intercept', 'Night', legacy='m12', timeLi
                      {'def': 'mlrs', 'team': 0, 'x': -112.5, 'z': 41.25, 'heading': 45}, {'def': 'heavy_tank', 'team': 0, 'x': -56.25, 'z': 86.25, 'heading': 90},
                      {'def': 'heavy_tank', 'team': 0, 'x': -45, 'z': 93.75, 'heading': 90}],
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=10, enemyIncome=0.85,
-              enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'sam_launcher', 'gunship_heli', 'attack_jet'],
+              enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'sam_launcher', 'attack_helicopter', 'attack_jet'],
               playerCp=28, playerIncome=1.4, playerCap=36, unlocks=['thermobaric_launcher', 'field_tower'], starTime=480, starLosses=8, challenge={'kind': 'NoStrikes'}),
             ('The Steel Train', 'Juggernaut'),
             ('Kessler\'s armoured train is running for the docks with a cargo Nadia does not like the sound of. Destroy it before it arrives.',
@@ -281,7 +281,7 @@ add_mission(m('c5m01', 5, 'junglepass', 'Capture', 'Rain', legacy='m14', points=
 
 add_mission(m('c5m02', 5, 'emberridge', 'Hunt', 'Night', general='sen', timeLimit=1100, targetHealth=2.5, reinforcements=2,
               hunt=[scripted('fpv_carrier', (60, 60), route=[(80, 80), (40, 50), (70, 30)]),
-                    scripted('lancet_truck', (-20, 90), route=[(-50, 90), (0, 70), (-30, 60)]),
+                    scripted('fpv_carrier', (-20, 90), route=[(-50, 90), (0, 70), (-30, 60)]),
                     scripted('fpv_carrier', (90, -10), route=[(110, -40), (80, 10), (110, 20)])],
               units=units(1, ['main_battle_tank', 'aa_vehicle'], (60, 60), 6) + units(1, ['ifv', 'ew_jammer'], (-20, 90), 6) + units(1, ['main_battle_tank', 'aa_vehicle'], (90, -10), 6),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=14, enemyIncome=0.9, enemyDeck=SEN,
@@ -379,7 +379,7 @@ add_mission(m('c5m08', 5, 'emberridge', 'Protect', 'Overcast', reversed=True, ta
 
 add_mission(m('c5m09', 5, 'junglepass', 'Duel', 'Night', targetHealth=0.4, general='sen', enemyBase='Target', enemyHq=2, replay=True, reinforcements=3, timeLimit=1500,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=11, enemyIncome=0.56,
-              playerCp=30, playerIncome=2.3, playerCap=40, playerBase='Anchor', unlocks=['fighter_jet', 'wingman_drone'], starTime=900, starLosses=14),
+              playerCp=30, playerIncome=2.3, playerCap=40, playerBase='Anchor', unlocks=['fighter_jet'], starTime=900, starLosses=14),
             ('The Hangars of the Pass', 'Những nhà chứa trên đèo'),
             ('Venn\'s field headquarters is ringed with drone hangars and jammers. Break it at night and level her HQ. Nadia thinks she may not fight to the end.',
              'Sở chỉ huy dã chiến của Venn được bao quanh bởi những nhà chứa drone và xe gây nhiễu. Phá nó trong đêm và san phẳng sở chỉ huy. Nadia nghĩ bà ấy có thể sẽ không đánh tới cùng.'),
@@ -407,7 +407,7 @@ add_mission(m('c5m10', 5, 'emberridge', 'Capture', 'Storm', legacy='m15', operat
                   {'stage': 'swarm', 'goal': 'Survive', 'surviveSeconds': 480, 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.sen.c5m10.s3'},
                               {'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['strike_drone', 'strike_drone', 'fpv_carrier', 'ifv']},
-                              {'at': '110', 'kind': 'Reinforce', 'team': 1, 'units': ['strike_drone', 'lancet_truck', 'main_battle_tank', 'ew_jammer']}]},
+                              {'at': '110', 'kind': 'Reinforce', 'team': 1, 'units': ['strike_drone', 'fpv_carrier', 'main_battle_tank', 'ew_jammer']}]},
                   {'stage': 'mothership', 'goal': 'Boss', 'boss': scripted('drone_mothership', (84, 84), heading=225, health=1.6),
                    'events': [{'at': 'end', 'kind': 'Radio', 'key': 'radio.sen.c5m10.end'}]},
               ],
@@ -484,7 +484,7 @@ add_mission(m('c6m02', 6, 'whiteout', 'Evacuate', 'Snow', reversed=True, convoyC
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(['main_battle_tank', 'ifv', 'flame_tank', 'mortar_carrier'], first=50, interval=50, size=2, grow=0.35, max_size=5, max_alive=12,
                           spawns=[(80, 60), (40, 100), (100, 10)]),
-              unlocks=['armored_bulldozer', 'c_ram', 'bunker_vehicle'], starTime=600, starLosses=10),
+              unlocks=['armored_bulldozer', 'c_ram'], starTime=600, starLosses=10),
             ('Evacuate Whiteout', 'Sơ tán Whiteout Pass'),
             ('Varga\'s counterstrike is pouring over the pass. The villagers at the frozen lake have to get out: six trucks, one every few seconds, down the road to our camp. '
              'Hold the lake until the last one leaves, then cover the road. Four must get through.',
@@ -548,7 +548,7 @@ add_mission(m('c6m06', 6, 'hydrodam', 'Hold', 'Fog', points=['town'], holdSecond
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=11, enemyIncome=0.9, enemyDeck=VARGA_LATE,
               playerCp=28, playerIncome=1.4, playerCap=42, playerBase='Anchor',
               waves=waves(['main_battle_tank', 'ifv', 'flame_tank', 'mortar_carrier', 'twin_tank'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12),
-              unlocks=['lancet_truck'], starTime=0, starLosses=12),
+              unlocks=[], starTime=0, starLosses=12),
             ('Hold the Bridge', 'Giữ cây cầu'),
             ('The road bridge below the dam is the only way across for heavy armour. Hold it in the fog for four minutes. The bridge must not fall into Varga\'s hands.',
              'Cây cầu đường bộ dưới chân đập là lối duy nhất cho thiết giáp hạng nặng vượt sông. Giữ nó trong sương mù bốn phút. Không được để cây cầu rơi vào tay Varga.'),
@@ -641,7 +641,7 @@ T('radio.hung.c6m10.s4', 'Kade! Thorne here, the Northern Army is on the road. H
 
 add_mission(m('c6s1', 6, 'ashfield', 'ShootDown', 'Night', side=True, reversed=True, after='c6m03', speaker='dieuhau', killsNeeded=14, timeLimit=1200,
               enemyAi='waves', difficulty='Normal', playerCp=28, playerIncome=1.45, playerCap=36, playerBase='Anchor',
-              waves=waves(['attack_helicopter', 'gunship_heli', 'attack_jet', 'strike_drone', 'main_battle_tank'], first=30, interval=42, size=3, grow=0.4, max_size=6, max_alive=14),
+              waves=waves(['attack_helicopter', 'attack_jet', 'strike_drone', 'main_battle_tank'], first=30, interval=42, size=3, grow=0.4, max_size=6, max_alive=14),
               rarePrints=40, starTime=600, starLosses=10),
             ('Night Raiders', 'Không kích đêm'),
             ('Varga\'s night raiders are bombing the Ashfield fortress. Hawk wants fourteen of them down before dawn.',

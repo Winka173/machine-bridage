@@ -169,13 +169,6 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void TheGunshipOnCallHasTheGunshipsCard()
-        {
-            var cards = CardRenders.Cards(GameContent.LoadCatalog());
-            Assert.IsTrue(cards.Any(c => c.id == "gunship_support" && c.kind == "support" && c.model == "sky_gunship"));
-        }
-
-        [Test]
         public void TheBunkerDigsInHullDownBehindItsBank()
         {
             Assert.Greater(VehicleView.HullSink, 1f, "hull-down: sunk past its tracks");

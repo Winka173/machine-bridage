@@ -50,7 +50,6 @@ namespace MachineBrigade.Game.Hud
             foreach (var id in supports)
             {
                 if (id is "repair_drop" or "field_repair") repair = true;
-                if (id is "uav_scan") recon = true;
                 if (id is "artillery_barrage") artillery = true;
             }
             return new RoleCover(antiTank, air, artillery, repair, recon);
