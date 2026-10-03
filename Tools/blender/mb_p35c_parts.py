@@ -447,3 +447,15 @@ def pickets(a, points, h=.9, parent=None, wire=True):
         wp = a.part('Kit_fence', 'Steel', parent)
         for zz in (.35, .75):
             wp.tube([(x, y, z + zz * h) for x, y, z in points], .006, seg=3, caps=False)
+
+
+def plain_wheel(a, centre, r, width, s, seg=10, rim_mat='Steel', parent=None, tyre='Tyres', rim='Wheels'):
+    """A cheap wheel (about 110 triangles) for trailers and generators: a rounded casing, the dished rim, the hub."""
+    rot = p27.side_rot(s)
+    w = width
+    k.lathe(a.part(tyre, 'Rubber', parent), [(r * .62, -w / 2), (r * .9, -w / 2), (r, -w * .25), (r, w * .25),
+                                             (r * .9, w / 2), (r * .62, w / 2)], loc=centre, rot=rot, seg=seg,
+            caps=(False, False), worn=(2, 3))
+    k.lathe(a.part(rim, rim_mat, parent), [(r * .63, w / 2 - .01), (r * .55, w / 2), (r * .25, w / 2 - .04),
+                                           (r * .18, w / 2 + .02), (0, w / 2 + .02)], loc=centre, rot=rot, seg=seg,
+            worn=(1,))

@@ -297,15 +297,15 @@
   },
   "c_ram": {
     "file": "c_ram.glb",
-    "triangles": 5806
+    "triangles": 5930
   },
   "c_ram_a": {
     "file": "c_ram_a.glb",
-    "triangles": 6254
+    "triangles": 5972
   },
   "c_ram_b": {
     "file": "c_ram_b.glb",
-    "triangles": 7150
+    "triangles": 5704
   },
   "cactus": {
     "file": "cactus.glb",
