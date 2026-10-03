@@ -1,0 +1,318 @@
+{
+ "id": "command_airship",
+ "class": "boss",
+ "real": [
+  "Hybrid Air Vehicles Airlander 10",
+  "Lockheed Martin P-791 (unit_refs)",
+  "media: Kirov airship (Red Alert 2)"
+ ],
+ "shape": "unit_refs: 'Sky Admiral', a flying battleship with two gas envelopes; BossText: two 57 mm AA turrets, drones from two hangars and bombs; no modelSize (the old file 45.5 x 31.5 x 16.1 m).",
+ "confidence": "ước đoán (twin-envelope hybrid layout; the gondola, turrets and pods are game design)",
+ "target_size": {
+  "L": 45.55,
+  "W": 31.53,
+  "H": 16.1,
+  "source": "the old file (the def has no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "two envelopes (Team, the lift role) with ballonet bands, gore seams, nose battens, ridge Team bands",
+   "nodes": [
+    "Envelopes",
+    "Envelope_bands",
+    "Gore_seams",
+    "Nose_battens",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "cruciform X tail fins with rudders on each envelope, nav lights",
+   "nodes": [
+    "Tail_fins",
+    "Fin_rudders",
+    "Nav_lights"
+   ]
+  },
+  {
+   "feature": "ridge walkways with rails, vents, mooring points, the left envelope's solar arrays, the right one's observation blister, antenna farm and dish",
+   "nodes": [
+    "Ridge_walkway",
+    "Ridge_rails",
+    "Envelope_vents",
+    "Mooring_points",
+    "Solar_panels",
+    "Observation_blister",
+    "Antenna",
+    "Dish"
+   ]
+  },
+  {
+   "feature": "the armoured spine deck with its truss into the envelopes, deck lines, railings, lockers, fittings, crates, hatches, beacon, flag",
+   "nodes": [
+    "Deck",
+    "Deck_armor",
+    "Spine_truss",
+    "Deck_lines",
+    "Railings",
+    "Deck_lockers",
+    "Deck_fittings",
+    "Deck_crates",
+    "Flag"
+   ]
+  },
+  {
+   "feature": "two dual-purpose turrets on barbettes: the 57 mm house and the twin 30 mm beside it, one muzzle a barrel",
+   "nodes": [
+    "Part_gun",
+    "Part_gun.001",
+    "Mount_gun",
+    "Mount_gun.001",
+    "Barbette",
+    "Gun_house",
+    "Gun_barrel",
+    "Gun_twin",
+    "Muzzle_b1_gun",
+    "Muzzle_b2_gun",
+    "Muzzle_b1_gun_001",
+    "Muzzle_b2_gun_001"
+   ]
+  },
+  {
+   "feature": "the radar mast and platform, the spinning array with grid and IFF bar",
+   "nodes": [
+    "Part_radar",
+    "Radar_mast",
+    "Radar_platform",
+    "Radar",
+    "Radar_array",
+    "Radar_grid",
+    "Radar_iff"
+   ]
+  },
+  {
+   "feature": "the keel gondola (Hull) with the bridge window band and command windows, the Team band, portholes, floodlights",
+   "nodes": [
+    "Hull_gondola",
+    "Command_windows",
+    "Bridge_band",
+    "Portholes"
+   ]
+  },
+  {
+   "feature": "weak point: the bomb bay doors on hinge pivots (a later bomb-run pass opens them), riveted and one shade off, over the racked bombs",
+   "nodes": [
+    "Part_bay_door_L",
+    "Part_bay_door_R",
+    "Bay_door_l",
+    "Bay_door_r",
+    "Bay_bands",
+    "Bomb_racks",
+    "Bombs_body"
+   ]
+  },
+  {
+   "feature": "the two drone hangars with doors, rails, cradles, drones and their launch doors",
+   "nodes": [
+    "Part_hangar",
+    "Part_hangar.001",
+    "Hangar_doors",
+    "Launch_cradle",
+    "Drones",
+    "Muzzle_door_l",
+    "Muzzle_door_r"
+   ]
+  },
+  {
+   "feature": "the 105 mm ball pods on struts under the envelopes",
+   "nodes": [
+    "Mount_gun.002",
+    "Mount_gun.003",
+    "Pod_housings",
+    "Pod_struts",
+    "Muzzle_gun.002",
+    "Muzzle_gun.003"
+   ]
+  },
+  {
+   "feature": "weak point: four engine nacelles on pylons, riveted and one shade off, with grilles, exhausts and four-blade propellers",
+   "nodes": [
+    "Part_engine",
+    "Part_engine.001",
+    "Part_engine.002",
+    "Part_engine.003",
+    "Propeller",
+    "Propeller_2",
+    "Propeller_3",
+    "Propeller_4"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "lift (envelopes, propellers, engines)",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_roc_main_roc_bombs",
+   "slot": "mountWeapons 0",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "p26_roc_main_roc_bombs",
+   "slot": "mountWeapons 1",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "weapon": "p26_roc_direct_roc_atgm",
+   "slot": "mountWeapons 2",
+   "mount": "Part_hangar",
+   "muzzles": [
+    "Muzzle_door_l"
+   ]
+  },
+  {
+   "weapon": "p26_roc_direct_roc_atgm",
+   "slot": "mountWeapons 3",
+   "mount": "Part_hangar.001",
+   "muzzles": [
+    "Muzzle_door_r"
+   ]
+  },
+  {
+   "weapon": "p26_roc_close_twin_30_bmpt",
+   "slot": "mountWeapons 4",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_b1_gun"
+   ]
+  },
+  {
+   "weapon": "p26_roc_close_twin_30_bmpt",
+   "slot": "mountWeapons 5",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_b1_gun_001"
+   ]
+  },
+  {
+   "weapon": "p26_roc_roc105",
+   "slot": "mountWeapons 6",
+   "mount": "Mount_gun.002",
+   "muzzles": [
+    "Muzzle_gun.002"
+   ]
+  },
+  {
+   "weapon": "p26_roc_roc105",
+   "slot": "mountWeapons 7",
+   "mount": "Mount_gun.003",
+   "muzzles": [
+    "Muzzle_gun.003"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "both envelopes (Team), the ridge bands, the barbette bands, the gondola band, the flag"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "engine_fl",
+   "node": "Part_engine"
+  },
+  {
+   "part": "engine_fr",
+   "node": "Part_engine.001"
+  },
+  {
+   "part": "engine_rl",
+   "node": "Part_engine.002"
+  },
+  {
+   "part": "engine_rr",
+   "node": "Part_engine.003"
+  },
+  {
+   "part": "hangar_l",
+   "node": "Part_hangar"
+  },
+  {
+   "part": "hangar_r",
+   "node": "Part_hangar.001"
+  },
+  {
+   "part": "radar",
+   "node": "Part_radar"
+  },
+  {
+   "part": "pod_105_l",
+   "node": "Mount_gun.002"
+  },
+  {
+   "part": "pod_105_r",
+   "node": "Mount_gun.003"
+  },
+  {
+   "part": "bomb_bay",
+   "node": "(no node: a hit area at [0, 8.5, -3.0]; drawn on Part_bay_door_L / _R)"
+  }
+ ],
+ "wreck": "bosses break up on their Part_* nodes",
+ "faction_style": "Quaden's air fleet: riveted armour on soft envelopes, solar skins",
+ "details": {
+  "tier1": [
+   "envelopes",
+   "spine deck",
+   "gondola"
+  ],
+  "tier2": [
+   "turrets",
+   "radar",
+   "pods",
+   "nacelles",
+   "hangars",
+   "fins",
+   "solar arrays",
+   "blister"
+  ],
+  "tier3": [
+   "portholes",
+   "rivets",
+   "vents",
+   "rails",
+   "lockers",
+   "bombs",
+   "drones",
+   "propeller tips",
+   "antennas"
+  ]
+ },
+ "questions": [],
+ "frame": "air",
+ "weak_points": [
+  "the engines (tip): four riveted nacelles one shade off",
+  "the bomb bay: two riveted doors one shade off, hazard bands"
+ ],
+ "scale_note": "the old file's 45.5 m (the def has no modelSize); argus draws it at 0.4375 x, garuda is its own wing"
+}
