@@ -1,0 +1,138 @@
+{
+ "id": "aerial_tanker",
+ "class": "jet",
+ "real": [
+  "Ilyushin Il-78M Midas (three UPAZ-1 refuelling pods)",
+  "PS-90 / D-30KP-2 turbofans",
+  "APP-50 flare dispensers"
+ ],
+ "shape": "No unit_refs / unit_sheet row; the def is a support aircraft (weapon none, 3 flare charges) whose modelSize 19.8 x 22.62 x 5.7 m (0.4-0.43 x real) fits the Il-78M (46.6 m long, 50.5 m span, a T-tail, a high wing, four engines). The old file mixed a boom and hose pods; rebuilt as the Il-78M: the round fuselage with the glazed navigator's nose, the cockpit windows, the main gear sponsons, the upswept rear with the tail gunner's station, the high swept wing with anhedral and four engines on pylons, the T-tail, three UPAZ pods (two under the outer wings, one on the rear fuselage's left side) trailing short hoses and drogues.",
+ "confidence": "xấp xỉ (Il-78M published three-view drawings)",
+ "target_size": {
+  "L": 19.8,
+  "W": 22.62,
+  "H": 5.7,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "round fuselage with the glazed navigator's nose, cockpit windows, the main gear sponsons, the cargo ramp lines",
+   "nodes": [
+    "Fuselage",
+    "Glass",
+    "Sponsons",
+    "Panels"
+   ]
+  },
+  {
+   "feature": "the tail gunner's station at the end of the upswept rear",
+   "nodes": [
+    "Tail_turret",
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "feature": "high swept wing with anhedral, flap tracks, tip lights",
+   "nodes": [
+    "Wings",
+    "Flaps",
+    "Wing_lights"
+   ]
+  },
+  {
+   "feature": "four turbofans on pylons: intakes, nacelles, nozzles with reversers",
+   "nodes": [
+    "Engines",
+    "Intakes",
+    "Nozzles",
+    "Pylons"
+   ]
+  },
+  {
+   "feature": "T-tail: the swept fin, the tailplane on its top, rudder and elevators",
+   "nodes": [
+    "Tail",
+    "Rudders"
+   ]
+  },
+  {
+   "feature": "three UPAZ refuelling pods with their ram-air turbines, hoses and drogues",
+   "nodes": [
+    "Pods",
+    "Pod_turbines",
+    "Hoses",
+    "Drogues"
+   ]
+  },
+  {
+   "feature": "flare dispensers on the gear sponsons, beacons, aerials",
+   "nodes": [
+    "Flares",
+    "Beacon_base",
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "canopy",
+  "wings",
+  "tail",
+  "intakes",
+  "exhaust",
+  "pylons",
+  "stores",
+  "flares"
+ ],
+ "weapons": [],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "cap": null,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "a large support aircraft; renderers under the jet cap 44"
+ },
+ "team_zones": [
+  "fuselage (Team)",
+  "wings (Team)",
+  "tail (Team)",
+  "pods (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "Part_wing comes off (wrapper)",
+ "faction_style": "Soviet-pattern heavy transport conversion (both factions)",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "wing",
+   "T-tail",
+   "engines"
+  ],
+  "tier2": [
+   "sponsons",
+   "pods",
+   "pylons",
+   "nose glazing",
+   "tail turret",
+   "flaps"
+  ],
+  "tier3": [
+   "drogues",
+   "hoses",
+   "beacons",
+   "aerials",
+   "lights",
+   "flare dispensers",
+   "panels"
+  ]
+ },
+ "questions": []
+}

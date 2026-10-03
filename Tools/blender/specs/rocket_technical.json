@@ -1,0 +1,156 @@
+{
+ "id": "rocket_technical",
+ "class": "wheeled",
+ "real": [
+  "Toyota Hilux 6th generation single cab 'technical' (unit_refs: Toyota Hilux technical)",
+  "Type 63 107 mm 12-tube launcher (unit_refs, sheet)",
+  "12.7 mm on the roll bar"
+ ],
+ "shape": "unit_sheet.json Phương tiện: Bán tải dân sự, giàn rốc-két 12 ống nhỏ trên thùng sau. Từ trên xuống: lưới ống tròn nhỏ ở thùng sau. Khoảng 4.2 × 1.4 × 1.6 m (0,8 × Toyota Hilux + Type 63); vũ khí nhìn thấy Type 63 107 mm, M2 Browning 12.7 mm; vạch màu phe trên nóc và hai hông; không phù hiệu thật. A single-cab Hilux (the zu23_technical is the 7th-generation double cab) so the two technicals read apart.",
+ "confidence": "xấp xỉ (Hilux LN106 drawings; Type 63 on pickups, Libya / Syria photographs)",
+ "target_size": {
+  "L": 4.39,
+  "W": 1.5,
+  "H": 1.86,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the civilian single cab with its windscreen, side and rear windows, doors, mirrors, the hood and grille, bumper and lamps",
+   "nodes": [
+    "Cab",
+    "Body",
+    "Glass",
+    "Grilles",
+    "Lamps",
+    "Bumper",
+    "Doors"
+   ]
+  },
+  {
+   "feature": "the ladder frame, the front axle and the rear leaf-sprung axle with lugged tyres",
+   "nodes": [
+    "Chassis",
+    "Axles",
+    "Tyres",
+    "Wheels",
+    "Hubs",
+    "Leaf_springs"
+   ]
+  },
+  {
+   "feature": "the long cargo bed with its tailgate and dropsides",
+   "nodes": [
+    "Bed",
+    "Tailgate"
+   ]
+  },
+  {
+   "feature": "the Type 63 launcher on its turntable on the bed: the cradle, three rows of four tubes",
+   "nodes": [
+    "Turret",
+    "Turntable",
+    "Cradle",
+    "Tubes",
+    "Tubes_bore",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "the 12.7 mm on its post on the roll bar behind the cab",
+   "nodes": [
+    "Roll_bar",
+    "Mount_mg",
+    "MG",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "rocket crates, jerrycans, a tarp, the whip antenna",
+   "nodes": [
+    "Crates",
+    "Jerrycans",
+    "Tarp",
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "technical_rockets",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 barrel in data (the tubes fire in a ripple from one point)"
+  },
+  {
+   "weapon": "mg_jeep_selfdef",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "aim Free"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "under the 1.5 x cap"
+ },
+ "team_zones": [
+  "cab (Team)",
+  "bed (Team)",
+  "launcher (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "Part_wheel / Part_wheelb come off (wrapper)",
+ "faction_style": "insurgent technical (both factions)",
+ "details": {
+  "tier1": [
+   "cab",
+   "hood",
+   "bed",
+   "launcher"
+  ],
+  "tier2": [
+   "tyres",
+   "axles",
+   "roll bar",
+   "tubes",
+   "crates",
+   "bumper"
+  ],
+  "tier3": [
+   "mirrors",
+   "wipers",
+   "lamps",
+   "handles",
+   "straps",
+   "antenna",
+   "wheel nuts"
+  ]
+ },
+ "questions": []
+}

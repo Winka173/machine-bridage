@@ -1,0 +1,161 @@
+{
+ "id": "radar_atgm_vehicle",
+ "class": "tracked",
+ "real": [
+  "9P157-2 Khrizantema-S (9K123) on the BMP-3 chassis",
+  "1L32-1 millimetre-wave guidance radar",
+  "9M123 missiles in their launch tubes"
+ ],
+ "shape": "No unit_refs / unit_sheet row; the def's weapon is khrizantema and the old builders (mb_p25_new) drew the Khrizantema-S: a BMP-3 hull (0.8 x real) with no turret, the launch assembly on a low turntable on the front roof, the guidance radar head raised on its arm between two launch rails carrying two missile tubes each, the BMP-3's splash board and rear doors.",
+ "confidence": "xấp xỉ (9P157-2 photographs, the 2005 parade and later)",
+ "target_size": {
+  "L": 5.8,
+  "W": 2.5,
+  "H": 2.3,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "BMP-3 hull: the long flat glacis with the folded splash board, the raised rear deck, the rear doors with steps",
+   "nodes": [
+    "Hull",
+    "Hull_lower",
+    "Trim_vane",
+    "Doors",
+    "Steps"
+   ]
+  },
+  {
+   "feature": "six road wheels a side, front idler, rear sprocket, return rollers, linked track, float boxes",
+   "nodes": [
+    "Wheels",
+    "Idlers",
+    "Sprockets",
+    "Rollers",
+    "Tracks",
+    "Track_links",
+    "Skirts"
+   ]
+  },
+  {
+   "feature": "the low launch turntable on the front roof with the launcher cradle",
+   "nodes": [
+    "Turret",
+    "Turntable",
+    "Cradle"
+   ]
+  },
+  {
+   "feature": "the 1L32-1 radar head on its raised arm",
+   "nodes": [
+    "Radar",
+    "Radar_box",
+    "Radar_arm",
+    "Radar_face"
+   ]
+  },
+  {
+   "feature": "two launch rails, each with two missile tubes",
+   "nodes": [
+    "Launcher",
+    "Tubes",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "the operator's sight, driver's periscopes, hatches",
+   "nodes": [
+    "Sight",
+    "Glass",
+    "Hatches"
+   ]
+  },
+  {
+   "feature": "smoke dischargers, stowage, reload tube racks, aerials, exhaust",
+   "nodes": [
+    "Smoke_launchers",
+    "Stowage",
+    "Racks",
+    "Antennas",
+    "Point_exhaust"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "smoke",
+  "stowage"
+ ],
+ "merged": {
+  "roof_mg": "Launcher"
+ },
+ "weapons": [
+  {
+   "weapon": "khrizantema",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_missile"
+   ],
+   "note": "1 barrel (the ready tube on the left rail)"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "cap": null,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "tracked: over the class maximum is information only"
+ },
+ "team_zones": [
+  "hull (Team)",
+  "launcher (Team)",
+  "bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck; the launcher burns",
+ "faction_style": "modern tracked launcher (both factions)",
+ "details": {
+  "tier1": [
+   "hull",
+   "launch assembly",
+   "running gear"
+  ],
+  "tier2": [
+   "radar head",
+   "rails",
+   "splash board",
+   "doors",
+   "float boxes",
+   "bins"
+  ],
+  "tier3": [
+   "periscopes",
+   "smoke tubes",
+   "lamps",
+   "tow hooks",
+   "aerials",
+   "handles",
+   "track links"
+  ]
+ },
+ "questions": []
+}

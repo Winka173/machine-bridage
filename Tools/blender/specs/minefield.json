@@ -1,0 +1,82 @@
+{
+ "class": "obstacle",
+ "confidence": "xấp xỉ (TM-62M / PTM-3 photographs; minefield marking practice)",
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   6000
+  ],
+  "floor": 0,
+  "cap": null,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "a flat prop"
+ },
+ "breakable": [],
+ "wreck": "none (passable, untargetable)",
+ "faction_style": "field obstacle (both factions)",
+ "questions": [],
+ "id": "minefield",
+ "real": [
+  "TM-62M anti-tank mines with MVCh-62 pressure fuzes",
+  "minefield marking: pickets, warning tape, red triangle signs"
+ ],
+ "shape": "balance.json: minefield (towerRole mines_at, a fixed field keeping mines round it; 5 x 5 m, passable, untargetable). A flat 5 x 5 m patch of disturbed earth: TM-62M mines half-buried in their spoil rings, two exposed with their fuzes, the perimeter marked with pickets, warning tape and red triangle signs so it reads from the battle camera.",
+ "target_size": {
+  "L": 4.87,
+  "W": 4.87,
+  "H": 1.11,
+  "source": "the old GLB (the def's 5 x 5 m footprint)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the patch of disturbed earth with spoil mounds and tracks",
+   "nodes": [
+    "Ground_patch",
+    "Mine_earth"
+   ]
+  },
+  {
+   "feature": "TM-62M mines half-buried, two exposed with their pressure fuzes and carry handles",
+   "nodes": [
+    "Mine_bodies",
+    "Mine_fuzes",
+    "Mine_plates"
+   ]
+  },
+  {
+   "feature": "the perimeter: pickets, warning tape, red triangle signs on stakes",
+   "nodes": [
+    "Pickets",
+    "Tape",
+    "Signs"
+   ]
+  }
+ ],
+ "class_parts": [],
+ "team_zones": [
+  "sign backs (Team)"
+ ],
+ "colour_zones_min": 2,
+ "details": {
+  "tier1": [
+   "earth patch"
+  ],
+  "tier2": [
+   "mines",
+   "spoil rings",
+   "signs"
+  ],
+  "tier3": [
+   "fuzes",
+   "handles",
+   "pickets",
+   "tape",
+   "stones"
+  ]
+ }
+}

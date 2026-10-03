@@ -41,7 +41,7 @@
   },
   "aerial_tanker": {
     "file": "aerial_tanker.glb",
-    "triangles": 4164
+    "triangles": 5454
   },
   "airborne_light_tank": {
     "file": "airborne_light_tank.glb",
@@ -101,7 +101,7 @@
   },
   "armored_car": {
     "file": "armored_car.glb",
-    "triangles": 2622
+    "triangles": 6804
   },
   "armored_train": {
     "file": "armored_train.glb",
@@ -365,7 +365,7 @@
   },
   "command_hq": {
     "file": "command_hq.glb",
-    "triangles": 5982
+    "triangles": 8872
   },
   "command_tent": {
     "file": "command_tent.glb",
@@ -785,11 +785,11 @@
   },
   "elite_aa": {
     "file": "elite_aa.glb",
-    "triangles": 5456
+    "triangles": 11904
   },
   "elite_apc": {
     "file": "elite_apc.glb",
-    "triangles": 5480
+    "triangles": 11260
   },
   "elite_attack_helicopter": {
     "file": "elite_attack_helicopter.glb",
@@ -797,7 +797,7 @@
   },
   "elite_heavy_tank": {
     "file": "elite_heavy_tank.glb",
-    "triangles": 5754
+    "triangles": 13350
   },
   "elite_mbt": {
     "file": "elite_mbt.glb",
@@ -809,7 +809,7 @@
   },
   "elite_tank_destroyer": {
     "file": "elite_tank_destroyer.glb",
-    "triangles": 4794
+    "triangles": 11184
   },
   "engineer_vehicle": {
     "file": "engineer_vehicle.glb",
@@ -957,7 +957,7 @@
   },
   "ground_drone_carrier": {
     "file": "ground_drone_carrier.glb",
-    "triangles": 4274
+    "triangles": 8736
   },
   "guard_tower": {
     "file": "guard_tower.glb",
@@ -969,7 +969,7 @@
   },
   "guard_tower_b": {
     "file": "guard_tower_b.glb",
-    "triangles": 2746
+    "triangles": 5880
   },
   "gun_pit": {
     "file": "gun_pit.glb",
@@ -981,7 +981,7 @@
   },
   "gun_turret_a": {
     "file": "gun_turret_a.glb",
-    "triangles": 6702
+    "triangles": 5327
   },
   "gun_turret_b": {
     "file": "gun_turret_b.glb",
@@ -1237,11 +1237,11 @@
   },
   "mg_bunker": {
     "file": "mg_bunker.glb",
-    "triangles": 3904
+    "triangles": 3748
   },
   "mg_bunker_a": {
     "file": "mg_bunker_a.glb",
-    "triangles": 4204
+    "triangles": 4996
   },
   "mg_bunker_b": {
     "file": "mg_bunker_b.glb",
@@ -1265,7 +1265,7 @@
   },
   "minefield": {
     "file": "minefield.glb",
-    "triangles": 3198
+    "triangles": 4746
   },
   "minefield_a": {
     "file": "minefield_a.glb",
@@ -1273,7 +1273,7 @@
   },
   "minefield_b": {
     "file": "minefield_b.glb",
-    "triangles": 4560
+    "triangles": 4194
   },
   "missile": {
     "file": "missile.glb",
@@ -1345,7 +1345,7 @@
   },
   "nlos_atgm_vehicle": {
     "file": "nlos_atgm_vehicle.glb",
-    "triangles": 4918
+    "triangles": 7440
   },
   "nuke_train": {
     "file": "nuke_train.glb",
@@ -1405,7 +1405,7 @@
   },
   "radar_atgm_vehicle": {
     "file": "radar_atgm_vehicle.glb",
-    "triangles": 3194
+    "triangles": 10290
   },
   "radar_dome": {
     "file": "radar_dome.glb",
@@ -1517,7 +1517,7 @@
   },
   "rocket_technical": {
     "file": "rocket_technical.glb",
-    "triangles": 2948
+    "triangles": 6554
   },
   "rocket_turret": {
     "file": "rocket_turret.glb",
@@ -1581,11 +1581,11 @@
   },
   "scout_jeep": {
     "file": "scout_jeep.glb",
-    "triangles": 2422
+    "triangles": 6064
   },
   "scout_jeep_hd": {
     "file": "scout_jeep_hd.glb",
-    "triangles": 3738
+    "triangles": 6064
   },
   "sea_corvette": {
     "file": "sea_corvette.glb",
@@ -1857,7 +1857,7 @@
   },
   "uav_loiter_strike": {
     "file": "uav_loiter_strike.glb",
-    "triangles": 1084
+    "triangles": 3504
   },
   "vbied": {
     "file": "vbied.glb",

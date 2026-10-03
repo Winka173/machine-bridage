@@ -1,0 +1,155 @@
+{
+ "id": "nlos_atgm_vehicle",
+ "class": "wheeled",
+ "real": [
+  "Rafael Spike NLOS launcher (eight-cell pattern, four cells drawn per the old file)",
+  "Tatra T815-7 6x6 armoured cab-over truck pattern",
+  "12.7 mm on a cab-roof ring"
+ ],
+ "shape": "No unit_refs / unit_sheet row; the old builders drew a Spike NLOS launcher truck (a 6x6 armoured truck, a turntable with an elevating arm and the four-cell canister box, a datalink mast with an optic head, reload canisters on the bed, the cab-roof machine gun). Rebuilt on a Tatra-pattern armoured 6x6 (0.8 x real) so it shares nothing with the JLTV-type microwave_vehicle.",
+ "confidence": "ban_dau_doan (no sheet row; Spike NLOS and Tatra 815-7 armoured cab photographs)",
+ "target_size": {
+  "L": 6.0,
+  "W": 2.1,
+  "H": 2.6,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "armoured cab-over crew cab with the steep windscreen, side windows, roof hatch, mirrors, lamps, bumper",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Windows",
+    "Lamps",
+    "Bumper",
+    "Hatches"
+   ]
+  },
+  {
+   "feature": "the chassis frame, front axle and rear tandem with lugged tyres, suspension, mudguards",
+   "nodes": [
+    "Chassis",
+    "Axles",
+    "Tyres",
+    "Wheels",
+    "Hubs",
+    "Fender_flares"
+   ]
+  },
+  {
+   "feature": "the launcher turntable with its elevating arm and the four-cell canister box",
+   "nodes": [
+    "Turret",
+    "Turntable",
+    "Launcher",
+    "Launch_cells",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "the datalink mast with its optic head",
+   "nodes": [
+    "Mast",
+    "Sensor_head",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "reload canisters in a rack on the bed, side bins, fuel tank, exhaust",
+   "nodes": [
+    "Reload_canisters",
+    "Stowage",
+    "Fuel_tank",
+    "Exhaust"
+   ]
+  },
+  {
+   "feature": "12.7 mm on the cab-roof ring",
+   "nodes": [
+    "Gun_ring",
+    "Mount_mg",
+    "MG",
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "spike_nlos",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_missile"
+   ],
+   "note": "1 barrel (the ready cell)"
+  },
+  {
+   "weapon": "hmg_selfdef_15",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "aim Free"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "under the 1.5 x cap"
+ },
+ "team_zones": [
+  "cab (Team)",
+  "launcher (Team)",
+  "bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "Part_wheel / Part_wheelb come off (wrapper); the launcher burns",
+ "faction_style": "modern armoured truck (both factions)",
+ "details": {
+  "tier1": [
+   "cab",
+   "bed",
+   "launcher box"
+  ],
+  "tier2": [
+   "tyres",
+   "axles",
+   "mast",
+   "canisters",
+   "bins",
+   "gun ring",
+   "bumper"
+  ],
+  "tier3": [
+   "wheel nuts",
+   "mirrors",
+   "wipers",
+   "lamps",
+   "handles",
+   "aerials",
+   "steps"
+  ]
+ },
+ "questions": []
+}

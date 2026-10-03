@@ -1,0 +1,93 @@
+{
+ "class": "obstacle",
+ "confidence": "xấp xỉ (TM-62M / PTM-3 photographs; minefield marking practice)",
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   6000
+  ],
+  "floor": 0,
+  "cap": null,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "a flat prop"
+ },
+ "breakable": [],
+ "wreck": "none (passable, untargetable)",
+ "faction_style": "field obstacle (both factions)",
+ "questions": [],
+ "id": "minefield_b",
+ "real": [
+  "PTM-3 scatterable anti-tank mines",
+  "UMZ / Zemledelie-style scatter dispenser module on a skid",
+  "minefield marking"
+ ],
+ "shape": "Orphan branch file of the no-branch minefield (mb_tower_branches: 'Scatter mines (B): a dozen small mines strewn over the patch and a mine dispenser on a skid in the corner, its six tubes pointing up and out'). Kept: the base's earth patch and perimeter (so it reads as the same field upgraded), PTM-3 bar mines scattered over it and the six-tube dispenser module on its skid in a corner.",
+ "target_size": {
+  "L": 4.87,
+  "W": 4.87,
+  "H": 1.11,
+  "source": "the old GLB (the def's 5 x 5 m footprint)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the base's patch of disturbed earth",
+   "nodes": [
+    "Ground_patch",
+    "Mine_earth"
+   ]
+  },
+  {
+   "feature": "PTM-3 bar mines scattered over the patch",
+   "nodes": [
+    "Mine_bodies",
+    "Mine_caps"
+   ]
+  },
+  {
+   "feature": "the six-tube scatter dispenser on its skid with the cable reel and control box",
+   "nodes": [
+    "Dispenser",
+    "Dispenser_tubes",
+    "Skid",
+    "Tow_cable"
+   ]
+  },
+  {
+   "feature": "the perimeter: pickets, warning tape, red triangle signs on stakes",
+   "nodes": [
+    "Pickets",
+    "Tape",
+    "Signs"
+   ]
+  }
+ ],
+ "class_parts": [],
+ "team_zones": [
+  "dispenser (Team)",
+  "sign backs (Team)"
+ ],
+ "colour_zones_min": 2,
+ "details": {
+  "tier1": [
+   "earth patch",
+   "dispenser"
+  ],
+  "tier2": [
+   "mines",
+   "skid",
+   "signs"
+  ],
+  "tier3": [
+   "caps",
+   "pickets",
+   "tape",
+   "cable",
+   "stones"
+  ]
+ }
+}

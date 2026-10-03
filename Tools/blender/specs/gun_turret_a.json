@@ -1,0 +1,136 @@
+{
+ "id": "gun_turret_a",
+ "class": "tower",
+ "real": [
+  "Rh-120 L/55 120 mm (balance.json turret_gun_120_long)",
+  "Leopard 2A6-class turret: the 2A4 turret with the wedge add-on armour",
+  "PERI R17 commander's panoramic sight, EMES 15 gunner's sight"
+ ],
+ "shape": "Branch A of gun_turret (gun_turret.long, gun_sniper_120): the base's casemate shared (owner decision 4, lane A's mb_p35_wave2_guns.casemate) carrying the upgraded turret, so it reads as the base turret upgraded: the faceted welded turret with the wedge armour over its front, the longer L/55 gun with the muzzle reference sensor, the raised panoramic sight and the long telescopic sniper sight on the roof, smoke dischargers, the bustle basket.",
+ "confidence": "xấp xỉ (Leopard 2A6 photographs)",
+ "target_size": {
+  "L": 10.9,
+  "W": 4.99,
+  "H": 4.0,
+  "source": "the old GLB (wave 7 keeps sizes within 10 %)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the base's casemate: apron, battered walls, race ring, rear entry, the yard (shared)",
+   "nodes": [
+    "Base_apron",
+    "Base",
+    "Race",
+    "Entry",
+    "Hatches"
+   ]
+  },
+  {
+   "feature": "the faceted welded turret with the wedge add-on armour over its front and the Team side plates",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_wedges",
+    "Turret_skirts"
+   ]
+  },
+  {
+   "feature": "the L/55 gun on its mantlet with the thermal sleeve, the fume extractor and the muzzle reference sensor; the coax",
+   "nodes": [
+    "Mantlet",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Coax",
+    "Muzzle_coax"
+   ]
+  },
+  {
+   "feature": "the raised panoramic sight, the long telescopic sniper sight, the gunner's sight",
+   "nodes": [
+    "Sight",
+    "Glass",
+    "Sniper_scope"
+   ]
+  },
+  {
+   "feature": "commander's cupola, loader's hatch, smoke dischargers, the bustle basket, antennas",
+   "nodes": [
+    "Hatches",
+    "Smoke_launchers",
+    "Racks",
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "turret_gun_120_long",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "(none in data)",
+   "slot": "coax",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_coax"
+   ],
+   "note": "kept from the old model"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "casemate band (Team)",
+  "turret side plates (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "Hegemon casemate (lane A's base)",
+ "details": {
+  "tier1": [
+   "casemate",
+   "turret",
+   "long gun"
+  ],
+  "tier2": [
+   "wedge armour",
+   "sights",
+   "basket",
+   "entry",
+   "sandbags"
+  ],
+  "tier3": [
+   "hatches",
+   "smoke tubes",
+   "antennas",
+   "periscopes",
+   "welds",
+   "spent cases"
+  ]
+ },
+ "questions": []
+}

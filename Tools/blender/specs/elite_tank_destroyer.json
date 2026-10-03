@@ -1,0 +1,172 @@
+{
+ "id": "elite_tank_destroyer",
+ "class": "tracked",
+ "real": [
+  "2S25M Sprut-SDM1 (the upgraded 2S25 on the BMD-4M chassis; unit_refs: 2S25 Sprut-SD, 2A75 125 mm APFSDS)",
+  "remote 12.7 mm weapon station"
+ ],
+ "shape": "unit_refs: 2S25 Sprut-SD (2A75 125 mm APFSDS), elite of tank_destroyer: the upgraded Sprut-SDM1, a long low air-droppable hull with seven small road wheels, the boat bow with its folded trim vane, the flat angular turret with add-on armour boxes, the very long gun, the commander's panoramic sight and the remote 12.7 mm on its post; team body, black armour, gold bands, red-glowing sights (DECISIONS 25B2).",
+ "confidence": "xấp xỉ (2S25M photographs, Army-2018 / 2020)",
+ "target_size": {
+  "L": 9.08,
+  "W": 3.01,
+  "H": 2.34,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "long low hull with the boat bow, the folded trim vane, water-jet outlets",
+   "nodes": [
+    "Hull",
+    "Trim_vane",
+    "Waterjets"
+   ]
+  },
+  {
+   "feature": "seven small road wheels a side on swing arms, front idler, rear sprocket, return rollers, linked track",
+   "nodes": [
+    "Wheels",
+    "Idlers",
+    "Sprockets",
+    "Rollers",
+    "Tracks",
+    "Track_links",
+    "Suspension"
+   ]
+  },
+  {
+   "feature": "black rubber skirt edges and front flaps",
+   "nodes": [
+    "Skirts",
+    "Skirt_edge"
+   ]
+  },
+  {
+   "feature": "flat angular turret with add-on armour boxes, bustle basket, gold bands",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armour",
+    "Racks"
+   ]
+  },
+  {
+   "feature": "the very long 125 mm gun on its mantlet, thermal sleeve bands, fume extractor",
+   "nodes": [
+    "Mantlet",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "commander's panoramic sight, gunner's sight, glowing windows",
+   "nodes": [
+    "Sight",
+    "Glass",
+    "Sight_glow"
+   ]
+  },
+  {
+   "feature": "remote 12.7 mm on its raised post",
+   "nodes": [
+    "Mount_mg",
+    "MG",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "smoke dischargers, hatches, stowage, aerials, engine grilles",
+   "nodes": [
+    "Smoke_launchers",
+    "Hatches",
+    "Stowage",
+    "Antennas",
+    "Grilles"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_105_apfsds",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 barrel; the long gun after unit_refs"
+  },
+  {
+   "weapon": "hmg_roof",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "aim Free"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "cap": null,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "tracked: over the class maximum is information only"
+ },
+ "team_zones": [
+  "hull (Team)",
+  "turret (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "elite: team body, EliteBlack armour, Gilded bands, EliteGlow sights (DECISIONS 25B2)",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "gun",
+   "running gear"
+  ],
+  "tier2": [
+   "trim vane",
+   "armour boxes",
+   "sights",
+   "RWS",
+   "bins",
+   "grilles"
+  ],
+  "tier3": [
+   "periscopes",
+   "smoke tubes",
+   "lamps",
+   "tow hooks",
+   "aerials",
+   "track links"
+  ]
+ },
+ "questions": []
+}

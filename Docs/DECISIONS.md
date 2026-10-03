@@ -18123,3 +18123,58 @@ Decisions:
   fighter's clean faces against the air-boss gold). More detail would be padding (prompt 35 section 1).
 - **Over budget (information).** monster 39.6k (boss), tracked 9.4-10.4k and gps_jammer_vehicle 7.4k: all under the
   lead's 1.5 x the class maximum for units seen in numbers (10,500; light 7,500).
+
+## Prompt 35 wave 7 (lane C)
+Branch `feature/p35-w7` from lead/integration (wave 4 merged), 2026-10-03: the Wave 7 models of Docs/models/WAVES_P35.md,
+one new builder each (`Tools/blender/mb_p35_<id>.py`; minefield / minefield_b and mg_bunker / mg_bunker_a share a module)
+with a spec first (`Tools/blender/specs/<id>.json`); report Docs/models/WAVE_7_REPORT.md. Blender and Python only (no
+Unity, no test, sim or measure run).
+- Lead calls on the wave 4 questions: the six reference choices stay for now and go to the owner as a question
+  (amphib_light_vehicle as an AAV-7A1 pattern, aa_gun_vehicle as the CV9040 AAV, shorad_vehicle as the Avenger,
+  demolition_line_vehicle as the M1150 ABV, river_patrol_boat as a PBR / SURC, towed_at_gun as the 2A45M);
+  fpv_carrier as an RG-33L is fine.
+- main_battle_tank (a gold model, prompt 27): not rebuilt. With merged-node names accepted (decision 8) it passes every
+  hard gate as it is (7,196 triangles, soft 93.5), so nothing was changed.
+- References. unit_refs where a row exists: elite_aa (Skyranger 35 on the Leopard 1 / Gepard hull; the def's
+  `twin_35_ahead` drawn as two 35 mm guns in side pods, the real Skyranger 35 has one), elite_heavy_tank (Object 195),
+  elite_tank_destroyer (unit_refs' 2S25, as its upgrade the 2S25M Sprut-SDM1 so it shares nothing with the wave 4 2S25;
+  the gun drawn long after unit_refs' 2A75 although the def says gun_105_apfsds), elite_apc (unit_refs' "M2 Bradley /
+  BMP-3" base: the ifv is the Bradley, so the BMP-3 with the Epokha module, which carries exactly the def's 30 mm, coax
+  and ATGM), armored_car (Pandur I), scout_jeep (M151A2 with a WMIK-style pedestal), rocket_technical (a 6th-generation
+  single-cab Hilux so it reads apart from the double-cab zu23_technical). No row (the old builders' reference, confidence
+  in each spec): radar_atgm_vehicle (9P157-2 Khrizantema-S on the BMP-3 chassis), nlos_atgm_vehicle (Spike NLOS on a
+  Tatra-pattern armoured 6x6, not the JLTV-type of microwave_vehicle it used to share 31-41 % with),
+  ground_drone_carrier (Milrem Type-X pattern with three small UGVs on `Minion_1..3`), uav_loiter_strike (MQ-1C Gray
+  Eagle), aerial_tanker (Il-78M: the modelSize fits its proportions; three UPAZ pods), command_hq (the old mb_siege
+  brief with its own geometry).
+- Elites follow DECISIONS 25B2 (owner review of wave 1, item 6): team-coloured bodies, every armour part EliteBlack,
+  Gilded bands, EliteGlow sights.
+- Towers. gun_turret_a stands on lane A's gun_turret casemate (`mb_p35_wave2_guns.casemate`, owner decision 4: one
+  family) with a Leopard-2A6-class turret (wedge armour, the L/55, the raised panoramic sight, the old branch's long
+  sniper scope). mg_bunker and mg_bunker_a are built in lane A's mg_bunker_b style (the same mound, drum, race and
+  cupola dimensions, lane A's `mb_p35_w2parts` bags / stack), so all three read as one pillbox: the base with one NSV,
+  the twin with a bolted cupola collar and two jacketed barrels. guard_tower_b keeps the guard tower's blockhouse
+  (3.5 x 3.5 m, its Concrete / Armor / Steel) with the lattice and cabin taken down and a sandbagged gun nest on the
+  roof; its height grows from 1.8 m (the old low sandbag ring) to 4.6 m. That is over the 10 % size rule: kept because
+  the branch must read as an upgrade of the base (lead instruction); asked in the report. The footprint is unchanged.
+  The old files' `Mount_missile` / `Muzzle_missile` (mg_bunker, mg_bunker_a) and `Mount_gun` / `Muzzle_gun`
+  (guard_tower_b) are kept.
+- minefield / minefield_b: flat props on the old 4.87 m footprint (5.1 m with the pickets), mines drawn 1.5 x so they
+  read at 28.4 px per metre; lathe bodies with worn rows fix the old files' ao_dust_wear failure. minefield_b (an
+  orphan branch of the no-branch minefield) keeps the base's patch and perimeter with PTM-3 bar mines and the six-tube
+  dispenser.
+- Stores: uav_loiter_strike's Hellfires use lane C's `store` (nose forward), not `mb_kit35.missile`, so lane A's nose
+  fix does not flip them. recon_drone and strike_drone (wave 4) still pass `direction=(0, 1, 0)` to the kit missile and
+  must be flipped when the fix lands (kit request in the report).
+- Gate roles the real vehicle lacks, spec `"merged"` as in wave 4: elite_aa roof_mg -> Launcher_box, radar_atgm_vehicle
+  roof_mg -> Launcher, uav_loiter_strike flares -> Fuselage. Honest names elsewhere: elite_apc's bow PKTs as `MG_bow`
+  (roof_mg), the RWS receivers as `MG_receiver`, launcher cradles as `Cradle` (mantlet).
+- Budgets. Units seen in numbers stay under 1.5 x the class maximum: armored_car 6,804, scout_jeep 6,064,
+  rocket_technical 6,554, nlos_atgm_vehicle 7,440 (cap 7,500); towers 3,748-5,880 (cap 6,000). Tracked 8.7-13.4k and
+  command_hq 8.9k over their class maxima as information only; renderers under glb_check's caps (aerial_tanker 42 of
+  44, command_hq 52 of 58).
+- NEEDS_HUMAN: guard_tower_b, soft 71.2 after four rounds (68.4 before): the tower gold is dense and the 10 % size rule
+  keeps the nest's kit inside the old footprint; every hard gate passes. command_hq scores 89.3 against the old file's
+  90.0, which failed two hard gates (base, walls) and had no sloped faces: the new file stays (section 1).
+- Full gate (--no-write) after the wave: 230 models, 97 pass; all twenty wave 7 ids pass every hard gate; no other
+  model's own-geometry check names a wave 7 model (twin_tank names main_battle_tank, unchanged).

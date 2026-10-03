@@ -1,0 +1,144 @@
+{
+ "id": "scout_jeep",
+ "class": "wheeled",
+ "real": [
+  "M151A2 MUTT (unit_refs, sheet)",
+  "Land Rover WMIK (unit_refs: the gun pedestal and roll cage)",
+  "M2 Browning 12.7 mm"
+ ],
+ "shape": "unit_sheet.json Phương tiện: Xe 4x4 mui trần nhỏ, khung chống lật, súng máy trên chốt giữa, can nhiên liệu sau. Từ trên xuống: nhỏ nhất game, thấy rõ người lái và súng. Khoảng 2.7 × 1.3 × 1.4 m (0,8 × M151 / LRV); vũ khí nhìn thấy M2 Browning 12.7 mm; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (M151A2 drawings; WMIK pedestal photographs)",
+ "target_size": {
+  "L": 2.64,
+  "W": 1.4,
+  "H": 1.41,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "open steel tub with the flat hood, the slotted grille, the front fenders with lamps",
+   "nodes": [
+    "Body",
+    "Grilles",
+    "Fenders",
+    "Lamps"
+   ]
+  },
+  {
+   "feature": "the fold-down windscreen frame with its glass, the roll cage over the crew",
+   "nodes": [
+    "Glass",
+    "Windscreen_frame",
+    "Roll_cage"
+   ]
+  },
+  {
+   "feature": "four wheels with lugged tyres, axles, coil springs, the spare wheel",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Hubs",
+    "Axles",
+    "Spare_wheel"
+   ]
+  },
+  {
+   "feature": "seats and the driver at the wheel",
+   "nodes": [
+    "Seats",
+    "Crew",
+    "Steering"
+   ]
+  },
+  {
+   "feature": "the M2 on its pedestal post in the middle with the cradle, the ammunition can and the shield",
+   "nodes": [
+    "Turret",
+    "Gun_post",
+    "Cradle",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Gun_shield",
+    "Ammo_boxes"
+   ]
+  },
+  {
+   "feature": "jerrycans in the rear rack, the radio, a whip antenna, tail lamps",
+   "nodes": [
+    "Jerrycans",
+    "Radio",
+    "Antennas",
+    "Tail_lamps"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "mg_jeep",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 barrel (the pedestal M2)"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "a starter unit seen in numbers: under the 1.5 x cap"
+ },
+ "team_zones": [
+  "body (Team)",
+  "hood (Team)",
+  "bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "Part_wheel / Part_wheelb come off (wrapper)",
+ "faction_style": "light utility vehicle (both factions)",
+ "details": {
+  "tier1": [
+   "tub",
+   "hood",
+   "wheels"
+  ],
+  "tier2": [
+   "roll cage",
+   "windscreen",
+   "pedestal gun",
+   "seats",
+   "spare wheel",
+   "jerrycans"
+  ],
+  "tier3": [
+   "lamps",
+   "grille slots",
+   "mirror",
+   "handles",
+   "antenna",
+   "driver",
+   "wheel nuts"
+  ]
+ },
+ "questions": []
+}
