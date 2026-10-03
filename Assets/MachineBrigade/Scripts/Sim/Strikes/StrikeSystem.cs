@@ -158,7 +158,7 @@ namespace MachineBrigade.Sim.Strikes
             var strike = new Strike
             {
                 Support = support, Team = team, Point = point, Direction = direction,
-                Start = _world.Time + support.Delay, Scatter = team >= 0 && _world.Abilities.Jammed(point, team) ? 2.2f : 1f,
+                Start = _world.Time + support.Delay, Scatter = team >= 0 && _world.Abilities.Jammed(point, team) ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.JamRules.StrikeScatter : 1f,
                 Length = support.Length * line, Duration = support.Duration * line, Count = (int)MathF.Round(support.Count * line),
             };
             _strikes.Add(strike);

@@ -67,6 +67,8 @@ namespace MachineBrigade.Tests
                 ["id"] = v.Id, ["setting"] = RenderCode.PreviewSettings.Of(v).ToString(),
             }).ToList());
             Section("defaultSettings", PackSettings);
+            Section("strikes", () => PackStrikes(catalog));
+            Section("defenceWaves", () => PackDefenceWaves(catalog));
             return pack;
         }
 
@@ -79,26 +81,31 @@ namespace MachineBrigade.Tests
         private static object PackInterception(Catalog catalog)
         {
             var byKind = BalancePackFacts.RoundKinds.ToDictionary(k => k, k => catalog.Weapons.Values.Where(w => BalancePackFacts.RoundKind(w) == k).ToList());
-            var carriers = new List<object>();
-            foreach (var v in catalog.Vehicles.Values.Where(v => v.Aps != null).OrderBy(v => v.Id))
+            (Dictionary<string, object> blocks, Dictionary<string, object> shares) Blocks(VehicleDef carrier, ApsDef system)
             {
-                var blocks = new Dictionary<string, object>();
-                var shares = new Dictionary<string, object>();
+                var blocked = new Dictionary<string, object>();
+                var shellShares = new Dictionary<string, object>();
                 foreach (var kind in BalancePackFacts.RoundKinds)
                 {
                     var list = byKind[kind];
                     var taken = 0;
                     var share = 1f;
                     foreach (var w in list)
-                        if (BalancePackFacts.MayIntercept(v, w, out var s))
+                        if (BalancePackFacts.MayIntercept(carrier, system, w, out var s))
                         {
                             taken++;
                             share = Math.Min(share, s);
                         }
-                    blocks[kind] = list.Count == 0 ? "khong_co_dan" : taken == 0 ? "khong" : taken == list.Count ? "co" : "mot_phan:" + taken + "/" + list.Count;
-                    shares[kind] = taken > 0 ? share : 0f;
+                    blocked[kind] = list.Count == 0 ? "khong_co_dan" : taken == 0 ? "khong" : taken == list.Count ? "co" : "mot_phan:" + taken + "/" + list.Count;
+                    shellShares[kind] = taken > 0 ? share : 0f;
                 }
+                return (blocked, shellShares);
+            }
+            var carriers = new List<object>();
+            foreach (var v in catalog.Vehicles.Values.Where(v => v.Aps != null).OrderBy(v => v.Id))
+            {
                 var a = v.Aps!;
+                var (blocks, shares) = Blocks(v, a);
                 carriers.Add(new Dictionary<string, object>
                 {
                     ["id"] = v.Id, ["mode"] = v.InterceptionMode.ToString(), ["static"] = v.Static, ["boss"] = v.Boss,
@@ -107,11 +114,26 @@ namespace MachineBrigade.Tests
                     ["blocks"] = blocks, ["shellShare"] = shares,
                 });
             }
+            // The Trophy module (GearSystem.TrophyAps): the APS a RETROFIT_ELIGIBLE vehicle has only with it, and a BUILT_IN
+            // one's improved APS. Only flares and APS are a vehicle's self-defence: this is APS, fitted as an upgrade.
+            var upgrades = new List<object>();
+            foreach (var v in catalog.Vehicles.Values.Where(v => v.ApsCapability != ApsCapability.None).OrderBy(v => v.Id))
+            {
+                if (MachineBrigade.Sim.Abilities.GearSystem.TrophyAps(v) is not { } trophy) continue;
+                var (blocks, shares) = Blocks(v, trophy);
+                upgrades.Add(new Dictionary<string, object>
+                {
+                    ["id"] = v.Id, ["module"] = "trophy_aps", ["capability"] = v.ApsCapability.ToString(), ["baseHasAps"] = v.Aps != null,
+                    ["radius"] = trophy.Radius, ["charges"] = trophy.Charges, ["recharge"] = trophy.Recharge,
+                    ["blocks"] = blocks, ["shellShare"] = shares,
+                });
+            }
             return new Dictionary<string, object>
             {
                 ["kinds"] = BalancePackFacts.RoundKinds.Cast<object>().ToList(),
                 ["note"] = "static rules of DamageSystem.TryIntercept / GunTakes (reach, interceptors left, smoke and rolls left out)",
                 ["carriers"] = carriers,
+                ["upgrades"] = upgrades,
             };
         }
 
@@ -119,22 +141,34 @@ namespace MachineBrigade.Tests
         private static object PackRoundGroups(Catalog catalog)
         {
             var rules = catalog.Munitions;
+            Dictionary<string, object> Group(string key, string name, List<WeaponDef> members)
+            {
+                float Share(Func<WeaponDef, bool> f) => members.Count(f) / (float)members.Count;
+                return new Dictionary<string, object>
+                {
+                    [key] = name, ["weapons"] = members.Count,
+                    ["homing"] = Share(w => MachineBrigade.Sim.Combat.CombatSystem.Homes(w)),
+                    ["flareTakes"] = Share(w => MachineBrigade.Sim.Combat.CombatSystem.FlareTakes(w, rules)),
+                    ["apsEligible"] = Share(w => w.ApsEligible != false), ["ciwsEligible"] = Share(w => w.CiwsEligible != false),
+                    ["interceptable"] = Share(w => w.Interceptable != false), ["warns"] = Share(w => catalog.Warnings.Warns(w)),
+                    ["maxFlightSeconds"] = members.Max(w => BalancePackFacts.FlightSeconds(catalog, w, w.Range)),
+                    ["splashing"] = Share(w => w.Splashes), ["jamTakes"] = Share(BalancePackFacts.JamTakes),
+                };
+            }
             var rows = new List<object>();
             foreach (var kind in BalancePackFacts.RoundKinds.Append("other"))
             {
                 var list = catalog.Weapons.Values.Where(w => BalancePackFacts.RoundKind(w) == kind).ToList();
                 if (list.Count == 0) continue;
-                float Share(Func<WeaponDef, bool> f) => list.Count(f) / (float)list.Count;
-                rows.Add(new Dictionary<string, object>
-                {
-                    ["kind"] = kind, ["weapons"] = list.Count,
-                    ["homing"] = Share(w => MachineBrigade.Sim.Combat.CombatSystem.Homes(w)),
-                    ["flareTakes"] = Share(w => MachineBrigade.Sim.Combat.CombatSystem.FlareTakes(w, rules)),
-                    ["apsEligible"] = Share(w => w.ApsEligible != false), ["ciwsEligible"] = Share(w => w.CiwsEligible != false),
-                    ["interceptable"] = Share(w => w.Interceptable != false), ["warns"] = Share(w => catalog.Warnings.Warns(w)),
-                    ["maxFlightSeconds"] = list.Max(w => BalancePackFacts.FlightSeconds(catalog, w, w.Range)),
-                    ["splashing"] = Share(w => w.Splashes),
-                });
+                rows.Add(Group("kind", kind, list));
+            }
+            // Hanh_vi_dan_nhom's own rows: one per projectile kind (the sheet's grouping), so each row carries its own numbers.
+            var byProjectile = new List<object>();
+            foreach (var projectile in Enum.GetValues(typeof(ProjectileKind)).Cast<ProjectileKind>())
+            {
+                var list = catalog.Weapons.Values.Where(w => w.Projectile == projectile).ToList();
+                if (list.Count == 0) continue;
+                byProjectile.Add(Group("projectile", projectile.ToString(), list));
             }
             return new Dictionary<string, object>
             {
@@ -142,10 +176,16 @@ namespace MachineBrigade.Tests
                 {
                     ["leadCapSeconds"] = rules.LeadCap, ["proximityFuzeM"] = rules.ProximityFuze, ["missReachScale"] = rules.ReachScale,
                     ["flareDecoyChance"] = rules.FlareDecoyChance,
+                    ["jamMissMinM"] = SimTunables.Weapons.JamRules.GuidedMissMin, ["jamMissSpreadM"] = SimTunables.Weapons.JamRules.GuidedMissSpread,
+                    ["jamStrikeScatter"] = SimTunables.Weapons.JamRules.StrikeScatter, ["jamSwarmChance"] = SimTunables.Weapons.JamRules.SwarmJamChance,
+                    ["jam"] = "a guided round (missile, drone) fired from or at a point inside an enemy jammer's radius lands jamMissMinM + up to " +
+                              "jamMissSpreadM m off (jamProof weapons and a commander's drone perk excepted); fire support called into the bubble " +
+                              "lands jamStrikeScatter times as wide; a boss's swarm drone over it loses its target at jamSwarmChance",
                     ["onMiss"] = "a round past its range x reachScale self-destructs (Divert.Reach); a sight-guided missile whose shooter dies or loses sight (smoke, a wall) is lost (Divert.Sight)",
                     ["aim"] = "homing: guided, guided rocket, guided bomb, guided shell; else led (lead capped at leadCapSeconds)",
                 },
                 ["groups"] = rows,
+                ["projectileGroups"] = byProjectile,
             };
         }
 
@@ -176,7 +216,17 @@ namespace MachineBrigade.Tests
             foreach (var v in catalog.Vehicles.Values.OrderBy(v => v.Id))
             {
                 var (kind, charges, recharge) = BalancePackFacts.SelfDefence(v);
-                if (kind != "flare") continue;
+                if (kind != "flare")
+                {
+                    // A flare tower's illumination flare (FieldWorksSystem.Flares): one flare a release, every Flares.Every s, at night.
+                    if (v.Flares is { } lit)
+                        rows.Add(new Dictionary<string, object>
+                        {
+                            ["id"] = v.Id, ["size"] = "illumination", ["flaresMin"] = 1, ["flaresMax"] = 1, ["charges"] = 0,
+                            ["rechargeSeconds"] = lit.Every, ["litRadius"] = lit.Radius, ["litSeconds"] = lit.Seconds, ["range"] = lit.Range,
+                        });
+                    continue;
+                }
                 var size = v.Class == UnitClass.Helicopter ? "helicopter" : v.Radius >= 4f || v.Boss ? "large" : "fighter";
                 var count = size == "helicopter" ? rules.FlaresHelicopter : size == "large" ? rules.FlaresLarge : rules.FlaresFighter;
                 rows.Add(new Dictionary<string, object>
@@ -292,6 +342,12 @@ namespace MachineBrigade.Tests
                     ["weeklyMains"] = BossHunt.WeeklyMains, ["weeklyMinis"] = BossHunt.WeeklyMinis, ["airDefenceMains"] = BossHunt.AirDefenceMains,
                     ["airDefenceMinis"] = BossHunt.AirDefenceMinis, ["fullFrom"] = BossHunt.FullFrom, ["fullTo"] = BossHunt.FullTo,
                     ["weeklyStep"] = BossHunt.WeeklyStep, ["weeklyMinutes"] = BossHunts.WeeklyMinutes,
+                    ["weekRule"] = "week = ISO year x 100 + ISO week (WeeklyFortress.Week, UTC); run = BossHunts.Weekly(week), the same on every device",
+                    ["weeksYear"] = HuntYear,
+                    ["weeks"] = Enumerable.Range(1, ISOWeek.GetWeeksInYear(HuntYear)).Select(k => (object)new Dictionary<string, object>
+                    {
+                        ["week"] = HuntYear * 100 + k, ["run"] = BossHunts.Weekly(HuntYear * 100 + k).Cast<object>().ToList(),
+                    }).ToList(),
                     ["bosses"] = BossHunts.Story.Select(b => (object)new Dictionary<string, object>
                     {
                         ["id"] = b.Id, ["main"] = b.Main, ["chapter"] = b.Chapter, ["airDefence"] = b.AirDefence,
@@ -299,6 +355,9 @@ namespace MachineBrigade.Tests
                 },
             };
         }
+
+        /// <summary>The ISO year whose weeks the export lists for the Boss Hunt's weekly run (fixed, so the pack does not change by date).</summary>
+        private const int HuntYear = 2026;
 
         /// <summary>Thap: the balance multiplier, the card a branch folds into, the unlock route and the self-defence recharge.</summary>
         private static object PackTowers(Catalog catalog) => catalog.Vehicles.Values.Where(v => v.Static && !v.Boss).OrderBy(v => v.Id).Select(v =>
@@ -426,6 +485,8 @@ namespace MachineBrigade.Tests
                 return lines;
             }
             var result = new Dictionary<string, object>();
+            // Each line's most lines (Vietnamese or English, either strip): Thoai.so_dong_hien_thi_toi_da per row.
+            var perLine = new SortedDictionary<string, object>(StringComparer.Ordinal);
             foreach (var (label, strip) in new[] { ("raised", raisedStrip), ("normal", normalStrip) })
             {
                 var width = strip - padding - portrait;
@@ -439,6 +500,8 @@ namespace MachineBrigade.Tests
                     var vi = Lines(name + line.Vi, width);
                     var en = Lines(name + line.En, width);
                     if (vi > 2 || en > 2) overTwo++;
+                    var most = Math.Max(vi, en);
+                    if (!perLine.TryGetValue(line.Key, out var before) || (before is int was && was < most)) perLine[line.Key] = most;
                     if (vi > maxVi)
                     {
                         maxVi = vi;
@@ -451,6 +514,7 @@ namespace MachineBrigade.Tests
                     ["textWidthPx"] = width, ["maxLinesVi"] = maxVi, ["maxLinesEn"] = maxEn, ["linesOverTwo"] = overTwo, ["worstKey"] = worst,
                 };
             }
+            result["perLine"] = perLine;
             result["fontSizePx"] = fontSize;
             result["method"] = method;
             return result;
@@ -524,6 +588,86 @@ namespace MachineBrigade.Tests
                 ["lifeMinSeconds"] = FxCode.WreckClasses.Life(tank, 0f, t), ["lifeMaxSeconds"] = FxCode.WreckClasses.Life(tank, 1f, t),
                 ["bossLifeSeconds"] = FxCode.WreckClasses.Life(boss, 0.5f, t),
             }).ToList();
+        }
+
+        /// <summary>
+        /// 01 Bom_vu_khi / Bom_don_vi / Bom_canh_bao: each support's damage type, blast edge and rim share and the height the
+        /// view drops its bombs from; each big attack's strikes (core, edge layer, its share, falloff); each bomb carrier's
+        /// rearm (a boss carries no load, so it never goes back to rearm).
+        /// </summary>
+        private static object PackStrikes(Catalog catalog)
+        {
+            var rim = SimTunables.Weapons.DamageRules.EdgeFalloff;
+            var supports = catalog.Supports.Values.OrderBy(s => s.Id, StringComparer.Ordinal).Select(s => (object)new Dictionary<string, object>
+            {
+                ["id"] = s.Id, ["kind"] = s.Kind.ToString(), ["type"] = s.DamageType.ToString(), ["thermobaric"] = s.Thermobaric,
+                ["blastRadius"] = s.BlastRadius, ["edgeRadius"] = 0f, ["rimShare"] = s.Thermobaric ? (1f + rim) * 0.5f : rim,
+                ["releaseAltitude"] = FxCode.StrikeEffects.ReleaseAltitude(s),
+            }).ToList();
+            var big = catalog.BigAttacks.Values.OrderBy(b => b.Id, StringComparer.Ordinal).Select(b => (object)new Dictionary<string, object>
+            {
+                ["id"] = b.Id,
+                ["strikes"] = b.Strikes.Select(st => (object)new Dictionary<string, object>
+                {
+                    ["shape"] = st.Shape.ToString(), ["type"] = st.Type.ToString(), ["radius"] = st.Radius, ["edgeRadius"] = st.EdgeRadius,
+                    ["edgeShare"] = st.EdgeShare, ["falloff"] = st.Falloff,
+                }).ToList(),
+            }).ToList();
+            var carriers = new List<object>();
+            foreach (var v in catalog.Vehicles.Values.OrderBy(v => v.Id, StringComparer.Ordinal))
+            {
+                var bombs = v.Mounts.Select(m => m.Weapon).Where(w => w.Projectile == ProjectileKind.Bomb).Distinct().ToList();
+                if (bombs.Count == 0) continue;
+                carriers.Add(new Dictionary<string, object>
+                {
+                    ["id"] = v.Id, ["boss"] = v.Boss, ["flying"] = v.Flying, ["rearmSeconds"] = v.RearmTime,
+                    ["loaded"] = bombs.Any(w => v.LoadOf(w) > 0), ["bombs"] = bombs.Select(w => (object)w.Id).ToList(),
+                });
+            }
+            return new Dictionary<string, object>
+            {
+                ["supportRule"] = "a support strike's blast (StrikeSystem.Land, the cluster bomblets) calls DamageSystem.Splash with no edge layer: full " +
+                                  "damage at the centre falling to rimShare at the blast radius (edgeRadius 0)",
+                ["bigRule"] = "a big attack's blast has the core (radius, full damage) and the edge layer (edgeRadius, edgeShare of it); with no edge it falls to falloff at the rim",
+                ["altitudeRule"] = "releaseAltitude is the view's (StrikeEffects): the simulation lands the bombs on its own schedule; 0: no aircraft drops them",
+                ["supports"] = supports, ["bigAttacks"] = big, ["carriers"] = carriers,
+            };
+        }
+
+        /// <summary>
+        /// 04 Dot_phong_thu: each HQ level's reference base (BaseStrength.ReferencePower / ReferenceScore), the waves' size
+        /// factor it gives (BaseStrength.WaveScale; the attacker's income x its square root) and Defend's wave curve by
+        /// difficulty (SiegeMode.WaveSize with the session's numbers, tunables modes.defendWaves), outside a campaign mission.
+        /// </summary>
+        private static object PackDefenceWaves(Catalog catalog)
+        {
+            var difficulties = new[] { MachineBrigade.Sim.AI.AiDifficulty.Easy, MachineBrigade.Sim.AI.AiDifficulty.Normal, MachineBrigade.Sim.AI.AiDifficulty.Hard };
+            var waveCount = EndlessRules.DefendFiniteWaves;
+            var levels = new List<object>();
+            for (var level = 1; level <= catalog.Base.MaxLevel; level++)
+            {
+                var score = BaseStrength.ReferenceScore(catalog, level);
+                var scale = BaseStrength.WaveScale(score);
+                var curves = new Dictionary<string, object>();
+                foreach (var difficulty in difficulties)
+                {
+                    var start = SiegeMode.DefendWaveStart(false, difficulty);
+                    var growth = SiegeMode.DefendWaveGrowth(false, difficulty);
+                    curves[difficulty.ToString()] = Enumerable.Range(1, waveCount).Select(wave => (object)SiegeMode.WaveSize(start, growth,
+                        SiegeMode.DefendWaveCompound(false), SiegeMode.DefendWaveMax, scale, wave)).ToList();
+                }
+                levels.Add(new Dictionary<string, object>
+                {
+                    ["level"] = level, ["referencePower"] = BaseStrength.ReferencePower(catalog, level), ["referenceScore"] = score,
+                    ["waveScale"] = scale, ["incomeScale"] = MathF.Sqrt(scale), ["waves"] = curves,
+                });
+            }
+            return new Dictionary<string, object>
+            {
+                ["rule"] = "wave n = min(waveMax, round((start + growth x (n - 1)) x waveScale)); waveScale = clamp((referenceScore / 100) ^ " +
+                           "exponent, min, max) x the campaign progress factor (1 here); Hard covers Very Hard",
+                ["waveCount"] = waveCount, ["levels"] = levels,
+            };
         }
 
         /// <summary>11 Cai_dat_mac_dinh: the settings as the game starts them (MatchSettings' initial values; the export loads no save).</summary>

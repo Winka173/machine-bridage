@@ -102,10 +102,15 @@ namespace MachineBrigade.Sim.Content
         /// point defence with a burst): reach, interceptors left, smoke, stuns and the rolls are left out.
         /// <paramref name="shellShare"/>: the share of lobbed shells it takes (1 for the rest).
         /// </summary>
-        public static bool MayIntercept(VehicleDef carrier, WeaponDef w, out float shellShare)
+        public static bool MayIntercept(VehicleDef carrier, WeaponDef w, out float shellShare) => MayIntercept(carrier, carrier.Aps, w, out shellShare);
+
+        /// <summary>
+        /// <see cref="MayIntercept(VehicleDef, WeaponDef, out float)"/> with the protection system <paramref name="a"/> in place
+        /// of the carrier's own (the Trophy module's APS, GearSystem.TrophyAps).
+        /// </summary>
+        public static bool MayIntercept(VehicleDef carrier, ApsDef? a, WeaponDef w, out float shellShare)
         {
             shellShare = 1f;
-            var a = carrier.Aps;
             if (a == null) return false;
             if (a.Burst > 0f)
             {
@@ -159,6 +164,13 @@ namespace MachineBrigade.Sim.Content
             if (flare != null) return ("flare", 1, flare.Cooldown);
             return ("none", 0, 0f);
         }
+
+        /// <summary>
+        /// Whether an enemy jammer takes <paramref name="w"/>'s round (CombatSystem.Launch): a guided round (missile, drone)
+        /// fired from or at a point inside a hostile jammer's radius, unless the weapon is jam-proof, lands
+        /// JamRules.GuidedMissMin + up to GuidedMissSpread metres off (a commander's drone perk may shrug it off).
+        /// </summary>
+        public static bool JamTakes(WeaponDef w) => w.Guided && !w.JamProof;
 
         /// <summary>The upkeep (income share kept) at an army value of <paramref name="armyCp"/> against <paramref name="supply"/>.</summary>
         public static float Upkeep(int armyCp, int supply) => Economy.TeamEconomy.UpkeepFor(armyCp, supply);

@@ -6,6 +6,15 @@
   // m metres, x multiplier, share 0-1 of a whole, CP command points, count, coins, deg degrees, m/s.
   "version": 1,
   "weapons": {
+    "damageRules": {
+      "edgeFalloff": { "value": 0.25, "unit": "share", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageSystem.EdgeFalloff" }
+    },
+    "jamRules": {
+      "guidedMissMin": { "value": 5.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "01", "code": "CombatSystem.Launch (jammed / lock lost)" },
+      "guidedMissSpread": { "value": 6.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "01", "code": "CombatSystem.Launch (jammed / lock lost)" },
+      "strikeScatter": { "value": 2.2, "unit": "x", "kind": "ban_kinh", "linh_vuc": "01", "code": "StrikeSystem.Launch Scatter" },
+      "swarmJamChance": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "01", "code": "BossSystem.BigAttacks swarm" }
+    },
     "combatSystem": {
       "axisRatio": { "value": 1.5, "unit": "x", "kind": "nguong", "linh_vuc": "01", "code": "CombatSystem.AxisRatio" },
       "counterBatteryPriority": { "value": 12.0, "unit": "score", "kind": "gioi_han_thuc_the", "linh_vuc": "01", "code": "CombatSystem.CounterBatteryPriority" },
@@ -39,6 +48,13 @@
     }
   },
   "vehicles": {
+    "trophyRules": {
+      "radius": { "value": 20.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "GearSystem.TrophyAps" },
+      "charges": { "value": 2, "unit": "count", "kind": "tran", "linh_vuc": "02", "code": "GearSystem.TrophyAps" },
+      "recharge": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem.TrophyAps" },
+      "builtInExtraCharges": { "value": 1, "unit": "count", "kind": "tran", "linh_vuc": "02", "code": "GearSystem.TrophyAps" },
+      "builtInRechargeScale": { "value": 0.75, "unit": "x", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem.TrophyAps" }
+    },
     "abilitySystem": {
       "homeReach": { "value": 20.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "AbilitySystem.HomeReach" },
       "homeRearmSeconds": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "AbilitySystem.HomeRearmSeconds" },
@@ -198,6 +214,24 @@
     }
   },
   "modes": {
+    "defendWaves": {
+      "startEasy": { "value": 2, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "SiegeMode.DefendWaveStart" },
+      "startNormal": { "value": 3, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "SiegeMode.DefendWaveStart" },
+      "startHard": { "value": 4, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "SiegeMode.DefendWaveStart" },
+      "endlessStartEasy": { "value": 4, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "05", "code": "SiegeMode.DefendWaveStart" },
+      "endlessStartNormal": { "value": 5, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "05", "code": "SiegeMode.DefendWaveStart" },
+      "endlessStartHard": { "value": 6, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "05", "code": "SiegeMode.DefendWaveStart" },
+      "growth": { "value": 1.8, "unit": "count/wave", "kind": "tan_suat", "linh_vuc": "04", "code": "SiegeMode.DefendWaveGrowth" },
+      "growthHard": { "value": 2.0, "unit": "count/wave", "kind": "tan_suat", "linh_vuc": "04", "code": "SiegeMode.DefendWaveGrowth" },
+      "endlessGrowth": { "value": 1.2, "unit": "count/wave", "kind": "tan_suat", "linh_vuc": "05", "code": "SiegeMode.DefendWaveGrowth" },
+      "endlessCompound": { "value": 0.06, "unit": "share/wave", "kind": "tan_suat", "linh_vuc": "05", "code": "SiegeMode.DefendWaveCompound" },
+      "waveMax": { "value": 36, "unit": "count", "kind": "tran", "linh_vuc": "04", "code": "SiegeMode.DefendWaveMax" }
+    },
+    "baseStrengthRules": {
+      "waveScaleExponent": { "value": 0.75, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "BaseStrength.WaveScale" },
+      "waveScaleMin": { "value": 0.75, "unit": "x", "kind": "tran", "linh_vuc": "04", "code": "BaseStrength.WaveScale" },
+      "waveScaleMax": { "value": 2.5, "unit": "x", "kind": "tran", "linh_vuc": "04", "code": "BaseStrength.WaveScale" }
+    },
     "teamEconomy": {
       "maxVehicles": { "value": 32, "unit": "count", "kind": "tran", "linh_vuc": "05", "code": "TeamEconomy.MaxVehicles" },
       "maxAircraft": { "value": 6, "unit": "count", "kind": "tran", "linh_vuc": "05", "code": "TeamEconomy.MaxAircraft" }
@@ -307,7 +341,7 @@
       "outmatchedRatio": { "value": 0.6, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "TacticalAi.OutmatchedRatio" },
       "recoveredRatio": { "value": 0.95, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "TacticalAi.RecoveredRatio" },
       "commitSeconds": { "value": 60.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "TacticalAi.CommitSeconds" },
-      "assaultOdds": { "value": 1.4, "unit": "x", "kind": "xac_suat", "linh_vuc": "06", "code": "TacticalAi.AssaultOdds" },
+      "assaultOdds": { "value": 1.4, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "TacticalAi.AssaultOdds" },
       "shellingTime": { "value": 35.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "TacticalAi.ShellingTime" },
       "crateDetour": { "value": 50.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.CrateDetour" },
       "depotReach": { "value": 40.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.DepotReach" },

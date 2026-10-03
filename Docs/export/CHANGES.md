@@ -190,3 +190,50 @@ thích không nói): `Trang_bi_bo` (two_piece_arg1-3, four_piece_arg1-3), `Boss.
 - Dấu hiệu còn lại: `NEED_SOURCE` (thông số ngoài đời: `*_tham_chieu`, `Vu_khi.ngoai_doi_*`), `KHONG_AP_DUNG`, `NEED_CODE_CHECK`.
 - Kiểm tra: `export.py check` xuất hai lần (hai tiến trình) và chạy mọi test của mục 7; CI chạy nó vào thư mục tạm và chạy
   `check --structure-only` trên `Docs/export/current`. Không chạy test game hay replay.
+
+## Lane B — 103 ô NEED_CODE_CHECK còn lại (`feature/pack-b2`)
+
+Không đổi giá trị game nào; luật A (hàm xuất chỉ đọc) và luật B (hằng số ra `tunables.json`, giữ nguyên giá trị). Không chạy
+Unity hay test; Sim, Game và Tests biên dịch bằng .NET SDK với DLL của Unity 6. Bộ đọc lane C (`core/gamefill.py`) thử trên một
+game.json giả (khóa mới, số giả): export + `check --structure-only` qua hết, NEED_CODE_CHECK 0.
+
+| Sheet / cột | Ô | Cách | Giá trị / lý do |
+|---|---|---|---|
+| `Bom_vu_khi.ria_m`, `Bom_canh_bao.ban_kinh_ria_m` | 20 | A | thẻ hỗ trợ: 0 (StrikeSystem gọi `Splash` không có lớp rìa; sát thương giảm tới `rimShare` ở mép); siêu vũ khí boss: `BigStrikeDef.EdgeRadius` (gấp đôi lõi, tối đa 20 m) |
+| `Bom_vu_khi.loai_sat_thuong` | 4 | A | `SupportDef.DamageType` (mặc định HighExplosive khi dữ liệu không ghi) |
+| `Bom_don_vi.do_cao_tha_m` | 6 | A + KHONG_AP_DUNG | thẻ ném bom: độ cao hình của `StrikeEffects` (máy bay 24 m, oanh tạc cơ 32 m), mô phỏng không dùng; `glide_bomb_strike`, `cluster_at_strike`: KHONG_AP_DUNG (không có máy bay thả) |
+| `Bom_don_vi.nap_lai_s` | 4 | KHONG_AP_DUNG | boss (argus, command_airship, garuda, morrigan): `VehicleDef.LoadOf` = 0 với boss, không về nạp |
+| `Hanh_vi_dan_nhom.tuong_tac_gay_nhieu` | 7 | A + B | tỷ lệ vũ khí đạn dẫn đường (tên lửa, drone) không jamProof; trượt 5–11 m; hỗ trợ ×2,2; drone bầy boss 0,5 |
+| `Khac_che` dòng `main_battle_tank` | 9 | A + B | `chan_*` = "khong" (xe khi chưa lắp); cột mới `aps_nang_cap` (Trophy: r 20 m, 2 đạn chặn, 20 s) và `chan_khi_nang_cap` (chặn được gì khi lắp) — APS là tự vệ duy nhất ngoài pháo sáng, nên nâng cấp ghi như APS |
+| `Phao_sang` `flare_tower`, `flare_searchlight_tower` | 2 | A | `1;1`: tháp pháo sáng chiếu sáng bắn một quả mỗi lần (FieldWorksSystem.Flares), mỗi 15 s, chỉ ban đêm |
+| `Sanhunt.tuan` | 41 | A | tuần = năm ISO × 100 + tuần ISO (UTC); `BossHunts.Weekly(tuần)` xuất cho 53 tuần năm 2026 (năm cố định để gói không đổi theo ngày); ô: số tuần / 53 rồi `Wnn#vị trí` |
+| `Dot_phong_thu.he_so_do_kho` | 5 | A + B | `BaseStrength.WaveScale(ReferenceScore(cấp HQ))` |
+| `Dot_phong_thu.duong_cong_dot` | 5 | A + B | số xe đợt 1–10 ở Thường (`SiegeMode.WaveSize`); Dễ / Khó trong game.json |
+
+Theo từng dòng (trước là số gộp): `Hanh_vi_dan_nhom` đọc `roundGroups.projectileGroups` (đếm đúng trên dạng đạn của dòng; game.json cũ
+vẫn dùng trung bình có trọng số); `Thoai.so_dong_hien_thi_toi_da` đọc `dialogue.maxVisibleLines.perLine` (số dòng của chính câu đó,
+Việt hoặc Anh lấy số lớn, dải hẹp nhất). Cả hai đều làm được theo dòng; không còn chỗ gộp.
+
+### Hằng số ra dữ liệu (luật B, 24 khóa mới, cùng giá trị)
+
+- `weapons.damageRules.edgeFalloff` 0,25 (DamageSystem.EdgeFalloff).
+- `weapons.jamRules`: `guidedMissMin` 5, `guidedMissSpread` 6 (CombatSystem.Launch), `strikeScatter` 2,2 (StrikeSystem.Launch),
+  `swarmJamChance` 0,5 (BossSystem.BigAttacks, drone bầy).
+- `vehicles.trophyRules`: `radius` 20, `charges` 2, `recharge` 20, `builtInExtraCharges` 1, `builtInRechargeScale` 0,75
+  (GearSystem.Equip → `GearSystem.TrophyAps`).
+- `modes.defendWaves`: `startEasy/Normal/Hard` 2/3/4, `endlessStartEasy/Normal/Hard` 4/5/6, `growth` 1,8, `growthHard` 2,0,
+  `endlessGrowth` 1,2, `endlessCompound` 0,06, `waveMax` 36 (ModeSessions DefendSession.Build → `SiegeMode.DefendWave*`).
+- `modes.baseStrengthRules`: `waveScaleExponent` 0,75, `waveScaleMin` 0,75, `waveScaleMax` 2,5 (BaseStrength.WaveScale).
+- Tổng khóa `tunables.json`: 284. Test mới `TunablesTests.PassTwoMovesKeepTheOldLiterals` (viết, chưa chạy).
+
+### Khóa game.json mới (`balancePack`)
+
+- `interception.upgrades[]` (id, module, capability, baseHasAps, radius, charges, recharge, blocks, shellShare).
+- `roundGroups.groups[].jamTakes`, `roundGroups.projectileGroups[]` (như groups, khóa `projectile`), `roundGroups.rules.jam*`.
+- `flaresPerRelease[]` thêm dòng `size = illumination` (litRadius, litSeconds, range).
+- `boss.hunt.weekRule`, `weeksYear`, `weeks[]` (week, run).
+- `dialogue.maxVisibleLines.perLine` (khóa câu → số dòng).
+- `strikes` (supports[] type / edgeRadius / rimShare / releaseAltitude; bigAttacks[].strikes[] edgeRadius / edgeShare / falloff;
+  carriers[] rearmSeconds / loaded; supportRule, bigRule, altitudeRule).
+- `defenceWaves` (rule, waveCount, levels[] level / referencePower / referenceScore / waveScale / incomeScale / waves{Easy, Normal, Hard}).
+- Bộ đọc: sheet `Bom_*` vào file 01 sau công thức, nên `pack.add_bom_sheets` gọi `gamefill.fill_late` (ctx.game).

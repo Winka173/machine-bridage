@@ -19,8 +19,8 @@ namespace MachineBrigade.Sim.Combat
     /// </summary>
     internal sealed class DamageSystem
     {
-        /// <summary>Damage at the edge of a blast, relative to the centre.</summary>
-        private const float EdgeFalloff = 0.25f;
+        /// <summary>Damage at the edge of a blast, relative to the centre (tunables weapons.damageRules.edgeFalloff).</summary>
+        internal static float EdgeFalloff => global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageRules.EdgeFalloff;
 
         private readonly SimWorld _world;
         private readonly List<PendingExplosion> _pending = new();

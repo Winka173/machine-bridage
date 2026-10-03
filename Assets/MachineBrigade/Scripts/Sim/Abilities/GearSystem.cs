@@ -81,21 +81,9 @@ namespace MachineBrigade.Sim.Abilities
             {
                 case SpecialModule.TrophyAps:
                 {
-                    // Prompt 29 B2-APS-trophy (D7): NONE takes no Trophy; RETROFIT_ELIGIBLE gets 2 charges every 20 s; BUILT_IN
-                    // gets one more charge and recharges x0.75.
-                    var own = v.Def.Aps;
-                    switch (v.Def.ApsCapability)
-                    {
-                        case ApsCapability.RetrofitEligible:
-                            v.Aps = new ApsDef(own?.Radius ?? 20f, 2, 20f);
-                            break;
-                        case ApsCapability.BuiltIn when own != null:
-                            v.Aps = new ApsDef(own.Radius, own.Charges + 1, own.Recharge * 0.75f) { Rockets = own.Rockets, Shells = own.Shells, Laser = own.Laser };
-                            break;
-                        default:
-                            // NONE (every other vehicle, the sheet "APS"): the module cannot be fitted; it does nothing here.
-                            break;
-                    }
+                    // Prompt 29 B2-APS-trophy (D7): NONE takes no Trophy (it does nothing here); RETROFIT_ELIGIBLE and BUILT_IN
+                    // get the APS of TrophyAps.
+                    if (TrophyAps(v.Def) is { } trophy) v.Aps = trophy;
                     if (v.Aps != null) v.ApsCharges = v.Aps.Charges;
                     break;
                 }
@@ -119,6 +107,32 @@ namespace MachineBrigade.Sim.Abilities
                     break;
             }
         }
+
+        /// <summary>
+        /// The APS the Trophy module gives a vehicle (tunables vehicles.trophyRules): RETROFIT_ELIGIBLE gets Charges
+        /// interceptors every Recharge s (radius: its own, else Radius); BUILT_IN gets BuiltInExtraCharges more and its
+        /// recharge x BuiltInRechargeScale; NONE (and a BUILT_IN with no APS) null: the module cannot be fitted.
+        /// </summary>
+        public static ApsDef? TrophyAps(VehicleDef def)
+        {
+            var own = def.Aps;
+            switch (def.ApsCapability)
+            {
+                case ApsCapability.RetrofitEligible:
+                    return new ApsDef(own?.Radius ?? TrophyRadius, TrophyCharges, TrophyRecharge);
+                case ApsCapability.BuiltIn when own != null:
+                    return new ApsDef(own.Radius, own.Charges + TrophyExtraCharges, own.Recharge * TrophyRechargeScale)
+                        { Rockets = own.Rockets, Shells = own.Shells, Laser = own.Laser };
+                default:
+                    return null;
+            }
+        }
+
+        private static float TrophyRadius => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrophyRules.Radius;
+        private static int TrophyCharges => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrophyRules.Charges;
+        private static float TrophyRecharge => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrophyRules.Recharge;
+        private static int TrophyExtraCharges => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrophyRules.BuiltInExtraCharges;
+        private static float TrophyRechargeScale => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrophyRules.BuiltInRechargeScale;
 
         /// <summary>Copies the weapons the equipment changes (the catalog's stay as they are).</summary>
         private static void TuneWeapons(Vehicle v, GearState g)

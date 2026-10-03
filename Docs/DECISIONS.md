@@ -18916,3 +18916,24 @@ sheet list are in `Docs/export/CHANGES.md` ("Lane C"). No game value changed.
 - **Import.** `export.py import <pack|xlsx> --dry-run`: the pack is rebuilt from the tree and compared cell by cell; only raw
   columns (Schema.sua_duoc) become manifest rows; the manifest goes through `p29_apply.py --manifest`. Unedited pack: 0 rows;
   one edited cell: exactly one row (`tests/test_import_demo.py`).
+
+## Gói cân bằng (lane B): 103 ô còn lại
+
+Branch `feature/pack-b2`. Every cell lane C left NEED_CODE_CHECK now has a game.json source or a KHONG_AP_DUNG reason; no
+gameplay value changed (table and keys in Docs/export/CHANGES.md). Nothing run; Sim, Game and Tests compiled with the .NET SDK.
+
+- **Read, not guessed.** Support strikes have no edge layer (StrikeSystem never passes edgeRadius to Splash): ria_m 0 with the
+  rim share named; boss big attacks use BigStrikeDef.EdgeRadius. A support's release height is the view's (StrikeEffects), so
+  it is exported as such; a glide bomb and the homing bomblets have no dropping aircraft (KHONG_AP_DUNG). Bosses carry no bomb
+  load (LoadOf = 0), so they never rearm (KHONG_AP_DUNG).
+- **Jammer.** Only guided rounds (Missile, Drone projectiles; not jamProof) are jammed: they land 5-11 m off; support fire into
+  the bubble scatters x2.2; a boss swarm drone loses its target at 0.5. These four literals moved to tunables (rule B).
+- **MBT and Trophy.** Self-defence is flares or APS only; the MBT (RETROFIT_ELIGIBLE) has APS only with the Trophy module, so
+  its chan_* cells are the vehicle as it comes ("khong") and two new columns carry the upgrade (aps_nang_cap, chan_khi_nang_cap).
+  The Trophy numbers moved to tunables; GearSystem.TrophyAps is the one function the game and the export share.
+- **Boss Hunt week.** The week is computed (ISO year x 100 + ISO week, UTC; seeded draw): the export lists BossHunts.Weekly for
+  the 53 weeks of 2026, a fixed year so the pack does not change with the export date.
+- **Defence waves.** he_so_do_kho = BaseStrength.WaveScale of the HQ level's reference base; duong_cong_dot = waves 1-10 at
+  Normal by SiegeMode.WaveSize. The Defend curve's numbers (ModeSessions literals) and the wave-scale clamp moved to tunables.
+- **Per row.** Hanh_vi_dan_nhom is now counted per projectile kind (projectileGroups), and Thoai.so_dong_hien_thi_toi_da per line
+  (perLine): both were possible, so no aggregate is left.

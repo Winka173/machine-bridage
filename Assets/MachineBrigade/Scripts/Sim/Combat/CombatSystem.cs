@@ -953,7 +953,8 @@ namespace MachineBrigade.Sim.Combat
             if (weapon.Guided)
             {
                 var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
-                projectile.Miss = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (5f + (float)_world.Random.NextDouble() * 6f);
+                projectile.Miss = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (global::MachineBrigade.Sim.Content.SimTunables.Weapons.JamRules.GuidedMissMin +
+                    (float)_world.Random.NextDouble() * global::MachineBrigade.Sim.Content.SimTunables.Weapons.JamRules.GuidedMissSpread);
             }
             _projectiles.Add(projectile);
             var wide = projectile.Jammed || projectile.Failed ? projectile.Miss : default;
