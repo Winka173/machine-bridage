@@ -1,0 +1,249 @@
+{
+ "id": "armored_train",
+ "class": "boss",
+ "frame": "rail",
+ "real": [
+  "Soviet armoured train BP-35",
+  "B-38 152 mm",
+  "2B11 120 mm mortar (twin)",
+  "ZU-23-2"
+ ],
+ "shape": "unit_sheet Boss: 'tau boc thep Lien Xo BP-35, B-38 152 mm, 2B11 120 mm - dau may diesel boc thep keo toa phao.'",
+ "confidence": "tham_khao_thuc (BP-35 armoured locomotive and gun wagon; cars and couplings kept from the old file)",
+ "target_size": {
+  "L": 25.06,
+  "W": 3.4,
+  "H": 4.94,
+  "source": "the old GLB (25.06 x 3.4 x 4.94); the car layout and lengths kept exactly (the rails tile it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "three cars on their bogies with underframes, headstocks, buffers and couplers (lengths kept)",
+   "nodes": [
+    "Underframe",
+    "Bogies",
+    "Rail_wheels",
+    "Headstocks",
+    "Buffers",
+    "Couplers"
+   ]
+  },
+  {
+   "feature": "armoured diesel: faceted body, raised cab with vision slits, cupola, fans, stacks, searchlight, running board",
+   "nodes": [
+    "Hull",
+    "Vision_slits",
+    "Cupola_top",
+    "Fans",
+    "Stacks",
+    "Searchlight",
+    "Running_board"
+   ]
+  },
+  {
+   "feature": "the locomotive's rear gun casemate (gun_car_rear) and the twin flak on the cab roof",
+   "nodes": [
+    "Rear_casemate",
+    "Rear_gun",
+    "Muzzle_main.001",
+    "Mount_mg.001"
+   ]
+  },
+  {
+   "feature": "gun wagon casemate body with the main turret and the long 152 mm",
+   "nodes": [
+    "Car_body",
+    "Car_deck",
+    "Turret",
+    "Turret_body",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "HMG cupola and the rocket box on the wagon",
+   "nodes": [
+    "Mount_mg",
+    "MG_cupola",
+    "Mount_rocket",
+    "Rocket_box",
+    "Tubes_bore"
+   ]
+  },
+  {
+   "feature": "mortar flatcar with the twin 120 mm on its turntable, the bomb crates, the tail flak",
+   "nodes": [
+    "Part_mortar",
+    "Mount_mortar",
+    "Mortar_tube",
+    "Mortar_tube_2",
+    "Muzzle_mortar",
+    "Mortar_crates",
+    "Mount_mg.002"
+   ]
+  },
+  {
+   "feature": "riveted plates and seams, skirt plates, sandbags, handles, steps, spare rails, tool boxes",
+   "nodes": [
+    "Armor",
+    "Kit_rivets",
+    "Skirt_plates",
+    "Sandbags",
+    "Kit_handles",
+    "Spare_rails",
+    "Tool_boxes"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "train_gun",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "boss_rockets",
+   "slot": "rocket",
+   "mount": "Mount_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "weapon": "boss_hmg",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  },
+  {
+   "weapon": "train_gun",
+   "slot": "main",
+   "mount": "Rear_casemate",
+   "muzzles": [
+    "Muzzle_main.001"
+   ]
+  },
+  {
+   "weapon": "train_mortar",
+   "slot": "mortar",
+   "mount": "Mount_mortar",
+   "muzzles": [
+    "Muzzle_mortar"
+   ]
+  },
+  {
+   "weapon": "boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg.002",
+   "muzzles": [
+    "Muzzle_mg.002"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "locomotive and wagon bodies (Team)",
+  "turret and mortar turntable (Team)",
+  "bands along every car (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "locomotive",
+   "node": "(no node: a hit area on the locomotive)"
+  },
+  {
+   "part": "gun_car_front",
+   "node": "Main_cannon",
+   "data_node": "Main_cannon|Muzzle_brake"
+  },
+  {
+   "part": "gun_car_rear",
+   "node": "(no node: the rear casemate)"
+  },
+  {
+   "part": "rocket_car",
+   "node": "Mount_rocket"
+  },
+  {
+   "part": "flak_car",
+   "node": "(no node: a hit area)"
+  },
+  {
+   "part": "mortar_car",
+   "node": "Part_mortar"
+  }
+ ],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "locomotive",
+   "gun wagon",
+   "flatcar",
+   "turret"
+  ],
+  "tier2": [
+   "casemate",
+   "cupola",
+   "rocket box",
+   "mortar",
+   "flak mounts",
+   "skirt plates",
+   "bogies"
+  ],
+  "tier3": [
+   "rivets",
+   "vision slits",
+   "handles",
+   "steps",
+   "sandbags",
+   "crates",
+   "fire buckets",
+   "lamps",
+   "buffers",
+   "springs"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the long 152 mm over the locomotive",
+   "the rocket box and HMG cupola on the wagon",
+   "the twin mortar on the flatcar"
+  ],
+  "how_to_fight": "the def's parts; it cannot leave the rails"
+ },
+ "questions": []
+}

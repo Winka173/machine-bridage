@@ -34,7 +34,6 @@
     "Fuselage",
     "Wings",
     "Fins",
-    "Intakes",
     "Nozzles"
    ]
   },
@@ -65,7 +64,7 @@
   {
    "weapon": "p26_matriarch_ma_drones",
    "slot": "mountWeapons 1",
-   "mount": "Part_drone (bay)",
+   "mount": "Part_drone",
    "muzzles": [
     "Muzzle_missile"
    ]
@@ -149,14 +148,6 @@
  },
  "breakable": [
   {
-   "part": "cannon_bow",
-   "node": "Turret"
-  },
-  {
-   "part": "cannon_gondola",
-   "node": "Mount_main.001"
-  },
-  {
    "part": "drone_bay",
    "node": "(no node: a hit area at [0, -2.3, -4.6])"
   },
@@ -167,10 +158,6 @@
   {
    "part": "flak_top",
    "node": "Mount_mg"
-  },
-  {
-   "part": "flak_rear",
-   "node": "Mount_mg.001"
   },
   {
    "part": "shield",
@@ -194,5 +181,6 @@
   }
  ],
  "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
- "questions": []
+ "questions": [],
+ "merged": "prompt 35 wave 8 (lane A): the intakes are drawn in Fuselage / Nozzles (wave 1 renderer-cap merge, commit 0667414c); the dropped parts of this variant (cannon_bow Turret, cannon_gondola Mount_main.001, flak_rear Mount_mg.001; variant drop list) carry no node"
 }

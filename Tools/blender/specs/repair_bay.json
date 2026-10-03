@@ -18,8 +18,8 @@
    "feature": "cast slab with ramps front and back, expansion joints, painted bay lines",
    "nodes": [
     "Base",
-    "Slab_joints",
-    "Bay_lines"
+    "Slab_marks",
+    "Hazard_marks"
    ]
   },
   {
@@ -33,17 +33,15 @@
    "nodes": [
     "Roof",
     "Roof_ribs",
-    "Roof_seams",
-    "Skylights",
-    "Ridge",
-    "Ridge_vents"
+    "Frame",
+    "Skylights"
    ]
   },
   {
    "feature": "corrugated back wall with a door, a window and the extractor; half-height side walls",
    "nodes": [
     "Wall",
-    "Wall_seams",
+    "Frame",
     "Windows",
     "Doors"
    ]
@@ -52,18 +50,16 @@
    "feature": "gantry crane on rails over the work area: A-frame legs, box girder, hoist, hook and chain lifting an engine pack",
    "nodes": [
     "Gantry",
-    "Crane_rails",
-    "Hoist",
-    "Hook_chain",
-    "Hook_block",
-    "Engine_pack"
+    "Frame",
+    "Machinery",
+    "Hazard_marks"
    ]
   },
   {
    "feature": "inspection pit with its hazard kerb",
    "nodes": [
-    "Pit",
-    "Pit_kerb"
+    "Slab_marks",
+    "Hazard_marks"
    ]
   },
   {
@@ -71,8 +67,7 @@
    "nodes": [
     "Workbench",
     "Tool_chests",
-    "Compressor",
-    "Gas_bottles",
+    "Machinery",
     "Tyres",
     "Fuel_drums"
    ]
@@ -150,5 +145,6 @@
  "wreck": "structures collapse whole (no part nodes)",
  "questions": [
   "Structures are scored against the tower gold set (small gun towers dense in railings and ladders): at the 6,000-triangle cap a large building cannot match its edge density per pixel. A structure gold set (like decision 5 for bosses), or the owner's look?"
- ]
+ ],
+ "merged": "prompt 35 wave 8 (lane A): node names follow the committed GLB after the wave 1 renderer-cap merge (commit 0667414c: small parts of one material merged into the named part)"
 }

@@ -1,0 +1,169 @@
+{
+ "id": "wheeled_gun",
+ "class": "wheeled",
+ "real": [
+  "Centauro II (0.8 x) with the Hitfact II turret",
+  "120/45 mm gun",
+  "PKT / M240 coax",
+  "M2 Browning 12.7 mm"
+ ],
+ "shape": "unit_sheet.json Phuong tien: 'Xe 8 banh, thap phao tang day du voi nong 120 mm dai. Tu tren xuong: nhu xe tang nhung 4 cap banh.'",
+ "confidence": "tham_khao_thuc (Centauro II layout: engine front right, driver front left)",
+ "target_size": {
+  "L": 8.97,
+  "W": 2.39,
+  "H": 2.31,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "8x8 running gear with axle arms",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Axles"
+   ]
+  },
+  {
+   "feature": "faceted hull with the bow trim plate, engine deck front right, driver's hatch and periscopes front left",
+   "nodes": [
+    "Hull",
+    "Deck",
+    "Grilles",
+    "Hatches",
+    "Hatch_fittings",
+    "Periscope_hoods",
+    "Glass",
+    "Trim_plate"
+   ]
+  },
+  {
+   "feature": "Hitfact II turret: wedge front, cheek modules, long bustle",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor",
+    "Turret_ring"
+   ]
+  },
+  {
+   "feature": "120 mm with thermal sleeve, fume extractor, baffle brake, mantlet, coax",
+   "nodes": [
+    "Main_cannon",
+    "Muzzle_brake",
+    "Mantlet",
+    "Coax",
+    "Muzzle_main",
+    "Muzzle_coax"
+   ]
+  },
+  {
+   "feature": "commander's panoramic sight, gunner's sight, smoke banks",
+   "nodes": [
+    "Sight",
+    "Smoke_launchers"
+   ]
+  },
+  {
+   "feature": "12.7 mm on its post on the roof",
+   "nodes": [
+    "Mount_mg",
+    "MG",
+    "MG_post",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "side bins, bustle rack with a net roll, crate",
+   "nodes": [
+    "Stowage",
+    "Bustle_rack"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_105_wheeled",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "mg_coax",
+   "slot": "coax",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_coax"
+   ]
+  },
+  {
+   "weapon": "hmg_roof",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "heavy budget class (Support truck over 9 m); under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "hull (Team)",
+  "turret body (Team)",
+  "bands on both sides and the roof panel (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "gun",
+   "wheels"
+  ],
+  "tier2": [
+   "mantlet",
+   "cheek modules",
+   "sights",
+   "side bins",
+   "bustle rack",
+   "hatches",
+   "smoke banks"
+  ],
+  "tier3": [
+   "periscopes",
+   "coax",
+   "lamps",
+   "tow hooks",
+   "antennas",
+   "net roll",
+   "latches"
+  ]
+ },
+ "questions": []
+}

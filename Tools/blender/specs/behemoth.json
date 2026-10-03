@@ -1,0 +1,297 @@
+{
+ "id": "behemoth",
+ "class": "boss",
+ "frame": "ground",
+ "real": [
+  "Object 279 (1959: four tracks, flat hull)",
+  "2A65 152 mm (twin)",
+  "composite armour, APS (Trophy class)"
+ ],
+ "shape": "unit_sheet Boss: 'Dua tren Object 279 ... Baneblade - thiet giap ham tren can bon cum xich.' Breakable turret, tracks, engine as separate blocks.",
+ "confidence": "tham_khao_thuc (Object 279 running gear; the turret and sponsons after the Baneblade read)",
+ "target_size": {
+  "L": 13.79,
+  "W": 8.2,
+  "H": 5.92,
+  "source": "the old GLB (13.79 x 8.2 x 5.92 with the gun; data length 12.59, width 6.5 x scale)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "four track units, two a side, armoured skirts with rubber edges",
+   "nodes": [
+    "Tracks",
+    "Track_links",
+    "Wheels",
+    "Sprockets",
+    "Idlers",
+    "Skirts",
+    "Skirt_edge"
+   ]
+  },
+  {
+   "feature": "wide low lofted hull with the glacis composite modules, hatches, vision blocks, searchlight",
+   "nodes": [
+    "Hull",
+    "Armor",
+    "Hatches",
+    "Vision_blocks",
+    "Searchlight"
+   ]
+  },
+  {
+   "feature": "main turret with the twin 152 mm in one mantlet, cheek blocks, cupola, sight, bustle rack",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor",
+    "Gun_mantlet",
+    "Main_cannon",
+    "Main_cannon_2",
+    "Muzzle_brake",
+    "Muzzle_brake_2",
+    "Cupola_top",
+    "Sight"
+   ]
+  },
+  {
+   "feature": "two flak mounts on the turret roof",
+   "nodes": [
+    "Mount_mg",
+    "Mount_mg.001",
+    "AA_mount",
+    "AA_guns"
+   ]
+  },
+  {
+   "feature": "APS radar panels and launcher clusters",
+   "nodes": [
+    "Mount_APS",
+    "Aps_panels",
+    "Aps_cluster",
+    "Aps_tubes"
+   ]
+  },
+  {
+   "feature": "hull gun turret and the two sponson turrets with twin 120 mm",
+   "nodes": [
+    "Mount_gun",
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Sponsons"
+   ]
+  },
+  {
+   "feature": "rocket box on the engine deck, missile racks on the hull sides",
+   "nodes": [
+    "Mount_rocket",
+    "R_box_Mount_rocket",
+    "R_tubes_Mount_rocket",
+    "Missile_racks",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "engine deck grilles, exhaust stacks, drums, stowage rack and fuel cells on the left skirts",
+   "nodes": [
+    "Grilles",
+    "Stacks",
+    "Drums",
+    "Stowage_rack",
+    "Fuel_cells",
+    "Jerrycans"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_behemoth_main_be152",
+   "slot": "mount 0",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "p26_behemoth_tiny_be120",
+   "slot": "mount 1",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "p26_behemoth_close_boss_flak",
+   "slot": "mount 2",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "p26_behemoth_close_boss_flak",
+   "slot": "mount 3",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  },
+  {
+   "weapon": "p26_behemoth_tiny_boss_missiles",
+   "slot": "mount 4",
+   "mount": "Missile_racks",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "p26_behemoth_tiny_boss_missiles",
+   "slot": "mount 5",
+   "mount": "Missile_racks",
+   "muzzles": [
+    "Muzzle_missile.001"
+   ]
+  },
+  {
+   "weapon": "p26_behemoth_tiny_kornet_twin",
+   "slot": "mount 6",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "p26_behemoth_direct_be120",
+   "slot": "mount 7",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "weapon": "p26_behemoth_direct_be120",
+   "slot": "mount 8",
+   "mount": "Mount_gun.002",
+   "muzzles": [
+    "Muzzle_gun.002"
+   ]
+  },
+  {
+   "weapon": "p26_behemoth_sec_be_rockets",
+   "slot": "mount 9",
+   "mount": "Mount_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "hull and fenders (Team)",
+  "turret body and the sponson houses (Team)",
+  "bands along both skirts and the roof panel (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "main_gun",
+   "node": "Main_cannon",
+   "data_node": "Main_cannon|Main_cannon_2|Muzzle_brake|Muzzle_brake_2"
+  },
+  {
+   "part": "gun_120",
+   "node": "Mount_gun"
+  },
+  {
+   "part": "flak_r",
+   "node": "Mount_mg"
+  },
+  {
+   "part": "flak_l",
+   "node": "Mount_mg.001"
+  },
+  {
+   "part": "missiles_r",
+   "node": "(no node: a hit area)"
+  },
+  {
+   "part": "missiles_l",
+   "node": "(no node: a hit area)"
+  },
+  {
+   "part": "aps",
+   "node": "Mount_APS"
+  },
+  {
+   "part": "side_gun_l",
+   "node": "Mount_gun.001"
+  },
+  {
+   "part": "side_gun_r",
+   "node": "Mount_gun.002"
+  },
+  {
+   "part": "rocket_pod",
+   "node": "Mount_rocket"
+  }
+ ],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "twin 152 mm",
+   "four track units"
+  ],
+  "tier2": [
+   "sponsons",
+   "hull gun turret",
+   "flak mounts",
+   "rocket box",
+   "missile racks",
+   "skirts",
+   "glacis modules",
+   "grilles"
+  ],
+  "tier3": [
+   "track links",
+   "periscopes",
+   "APS tubes",
+   "drums",
+   "jerrycans",
+   "lamps",
+   "beacons",
+   "antennas",
+   "rivets",
+   "cable coils"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the twin 152 mm and its mantlet over the glacis",
+   "the sponson turrets stand out over the outer tracks",
+   "the rocket box on the engine deck",
+   "the APS clusters on the turret rear"
+  ],
+  "how_to_fight": "the def's parts; behemoth_mk0 keeps main_gun, side guns and rocket_pod, mara_behemoth the whole model"
+ },
+ "questions": []
+}

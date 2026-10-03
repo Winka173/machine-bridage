@@ -1,0 +1,109 @@
+{
+ "id": "dragons_teeth_a",
+ "class": "obstacle",
+ "real": [
+  "Czech hedgehog (rolled steel angles)",
+  "anchor chain obstacles (Atlantic Wall)"
+ ],
+ "shape": "branch dragons_teeth.hedgehog (art dragons_teeth_a): 'Twice as tough to breach' - steel hedgehogs on the same footing.",
+ "confidence": "tham_khao_thuc (Czech hedgehogs welded from angles, chained)",
+ "target_size": {
+  "L": 2.44,
+  "W": 5.25,
+  "H": 1.39,
+  "source": "the old GLB (5.25 x 2.44 x 1.39)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "three big Czech hedgehogs of chamfered L-angles with gusset plates and bolts, two small ones",
+   "nodes": [
+    "Hedgehogs",
+    "Hedgehog_plates",
+    "Kit_bolts"
+   ]
+  },
+  {
+   "feature": "welded steel shoes bolted to the plinths",
+   "nodes": [
+    "Shoes"
+   ]
+  },
+  {
+   "feature": "anchor chain looped hedgehog to hedgehog and to end stakes",
+   "nodes": [
+    "Chain",
+    "Anchor_stakes"
+   ]
+  },
+  {
+   "feature": "the footing, plinths and earth bed of the line",
+   "nodes": [
+    "Footing",
+    "Footing_dirt",
+    "Footing_joints"
+   ]
+  },
+  {
+   "feature": "rust stains, grass, moss, stones",
+   "nodes": [
+    "Rust_stains",
+    "Tufts",
+    "Moss",
+    "Stones"
+   ]
+  },
+  {
+   "feature": "marker stakes with Team bands",
+   "nodes": [
+    "Stakes",
+    "Stake_bands",
+    "Stake_reflectors"
+   ]
+  }
+ ],
+ "class_parts": [],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   6000
+  ],
+  "floor": 0,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "obstacle: at most 6,000 (drawn many times along a line)"
+ },
+ "team_zones": [
+  "the marker stakes' bands (Team)"
+ ],
+ "colour_zones_min": 2,
+ "breakable": [],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "field-welded steel on cast footing",
+ "details": {
+  "tier1": [
+   "hedgehogs",
+   "footing"
+  ],
+  "tier2": [
+   "plinths",
+   "small hedgehogs",
+   "shoes",
+   "stakes",
+   "earth bed"
+  ],
+  "tier3": [
+   "chain links",
+   "bolts",
+   "gussets",
+   "anchor caps",
+   "tufts",
+   "stones",
+   "rust stains"
+  ]
+ },
+ "questions": []
+}

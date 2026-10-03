@@ -1,0 +1,110 @@
+{
+ "id": "dragons_teeth",
+ "class": "obstacle",
+ "real": [
+  "Westwall / Siegfried line dragon's teeth (Hoeckerhindernis)",
+  "Czech hedgehog"
+ ],
+ "shape": "unit_sheet.json Cong trinh: 'Hang khoi be tong hinh kim tu thap cut. Kich thuoc hien 2.5 x 5.2 x 1.3 m.' unit_refs: Westwall teeth in two staggered rows.",
+ "confidence": "tham_khao_thuc (Westwall teeth; rows repeat every 5 m so segments tile)",
+ "target_size": {
+  "L": 2.48,
+  "W": 5.17,
+  "H": 1.27,
+  "source": "the old GLB (5.17 x 2.48 x 1.27; data length 5, width 2.5)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "two staggered rows of cast truncated pyramids, the back row taller, on square plinths",
+   "nodes": [
+    "Teeth",
+    "Lift_lines"
+   ]
+  },
+  {
+   "feature": "half-buried spine footing, the plinths, the dug earth bed with a ragged edge, joints",
+   "nodes": [
+    "Footing",
+    "Footing_dirt",
+    "Footing_joints"
+   ]
+  },
+  {
+   "feature": "one tooth broken to its rebar, spall and chips at the feet",
+   "nodes": [
+    "Rebar",
+    "Rubble"
+   ]
+  },
+  {
+   "feature": "Czech hedgehog wedged in the front gap",
+   "nodes": [
+    "Hedgehogs",
+    "Hedgehog_plates"
+   ]
+  },
+  {
+   "feature": "moss, grass tufts, stones, stencilled numbers",
+   "nodes": [
+    "Moss",
+    "Tufts",
+    "Stones",
+    "Stencils"
+   ]
+  },
+  {
+   "feature": "marker stakes with Team bands at both ends",
+   "nodes": [
+    "Stakes",
+    "Stake_bands",
+    "Stake_reflectors"
+   ]
+  }
+ ],
+ "class_parts": [],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   6000
+  ],
+  "floor": 0,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "obstacle: at most 6,000 (drawn many times along a line)"
+ },
+ "team_zones": [
+  "the marker stakes' bands (Team)"
+ ],
+ "colour_zones_min": 2,
+ "breakable": [],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "Hegemon cast concrete (both factions use it)",
+ "details": {
+  "tier1": [
+   "teeth",
+   "footing"
+  ],
+  "tier2": [
+   "plinths",
+   "earth bed",
+   "hedgehog",
+   "stakes",
+   "broken tooth"
+  ],
+  "tier3": [
+   "lift lines",
+   "rebar",
+   "chips",
+   "stones",
+   "tufts",
+   "moss",
+   "stencils",
+   "reflectors"
+  ]
+ },
+ "questions": []
+}

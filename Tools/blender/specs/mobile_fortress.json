@@ -1,0 +1,273 @@
+{
+ "id": "mobile_fortress",
+ "class": "boss",
+ "frame": "ground",
+ "real": [
+  "NASA Crawler-Transporter (corner crawler trucks, jacking cylinders)",
+  "Kharkovchanka (1959) glazed bridge",
+  "2A44 203 mm (2S7 Pion)"
+ ],
+ "shape": "unit_sheet Boss: 'Dua tren NASA Crawler-Transporter, Kharkovchanka, 2A44 203 mm, Sandcrawler - phao dai banh xich bon cum, cau chi huy lap kinh.'",
+ "confidence": "tham_khao_thuc (the crawler-transporter's four twin-track trucks under a platform; the bridge after the Kharkovchanka)",
+ "target_size": {
+  "L": 16.09,
+  "W": 9.1,
+  "H": 8.3,
+  "source": "the old GLB (16.09 x 9.1 x 8.29)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "four corner crawler trucks, two track units each, frames, jacking cylinders",
+   "nodes": [
+    "Tracks",
+    "Track_links",
+    "Wheels",
+    "Sprockets",
+    "Idlers",
+    "Truck_frames",
+    "Jacks"
+   ]
+  },
+  {
+   "feature": "the thick platform with deck plates, walkway lines, railings, ladders, fuel tanks",
+   "nodes": [
+    "Hull",
+    "Deck",
+    "Railings",
+    "Ladders",
+    "Fuel_tanks",
+    "Hazard_bands"
+   ]
+  },
+  {
+   "feature": "glazed command bridge with the raked window band",
+   "nodes": [
+    "Bridge",
+    "Windows",
+    "Window_frames",
+    "Bridge_roof",
+    "Sight"
+   ]
+  },
+  {
+   "feature": "flak cupolas on the front corners",
+   "nodes": [
+    "Mount_mg",
+    "Mount_mg.001",
+    "MG_cupola",
+    "MG_guns"
+   ]
+  },
+  {
+   "feature": "armoured core block with vents, stacks, the radar mast and EMP dish (Radar)",
+   "nodes": [
+    "Armor",
+    "Grilles",
+    "Stacks",
+    "Radar_mast",
+    "Radar",
+    "Radar_dish"
+   ]
+  },
+  {
+   "feature": "main turret with the 203 mm, recoil cylinders, brake; the second gun on the roof (Mount_gun)",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Mount_gun",
+    "Gun2_house",
+    "Gun2_barrel"
+   ]
+  },
+  {
+   "feature": "rear deck: two rocket pods, the missile silo, the SAM box, the loading crane",
+   "nodes": [
+    "Mount_rocket",
+    "Mount_rocket.001",
+    "Rocket_pod",
+    "Tubes_bore",
+    "Silo_missiles",
+    "Mount_missile",
+    "Mount_missile.001",
+    "Sam_box",
+    "Crane"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_jotunn_jo203",
+   "slot": "mount 0",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "p26_jotunn_sec_jo_rockets",
+   "slot": "mount 1",
+   "mount": "Mount_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "weapon": "p26_jotunn_sec_jo_rockets",
+   "slot": "mount 2",
+   "mount": "Mount_rocket.001",
+   "muzzles": [
+    "Muzzle_rocket.001"
+   ]
+  },
+  {
+   "weapon": "p26_jotunn_close_boss_flak",
+   "slot": "mount 3",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "p26_jotunn_close_boss_flak",
+   "slot": "mount 4",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  },
+  {
+   "weapon": "p26_jotunn_direct_jo125",
+   "slot": "mount 5",
+   "mount": "Mount_missile",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "p26_jotunn_tiny_twin_30_flak",
+   "slot": "mount 6",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  },
+  {
+   "weapon": "p26_jotunn_jo203",
+   "slot": "mount 7",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "platform (Team)",
+  "bridge and turret body (Team)",
+  "bands along both sides (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "howitzer",
+   "node": "Main_cannon",
+   "data_node": "Main_cannon|Muzzle_brake"
+  },
+  {
+   "part": "rockets_l",
+   "node": "Mount_rocket"
+  },
+  {
+   "part": "rockets_r",
+   "node": "Mount_rocket.001"
+  },
+  {
+   "part": "flak_l",
+   "node": "Mount_mg"
+  },
+  {
+   "part": "flak_r",
+   "node": "Mount_mg.001"
+  },
+  {
+   "part": "missiles",
+   "node": "(no node: the silo, Mount_missile)"
+  },
+  {
+   "part": "emp",
+   "node": "Radar"
+  },
+  {
+   "part": "howitzer_2",
+   "node": "Mount_gun"
+  },
+  {
+   "part": "sam",
+   "node": "Mount_missile.001"
+  }
+ ],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "platform",
+   "crawler trucks",
+   "core block",
+   "turret"
+  ],
+  "tier2": [
+   "bridge",
+   "flak cupolas",
+   "rocket pods",
+   "SAM box",
+   "radar mast",
+   "crane",
+   "fuel tanks",
+   "crates"
+  ],
+  "tier3": [
+   "track links",
+   "window frames",
+   "railings",
+   "lamps",
+   "beacons",
+   "lifting eyes",
+   "silo lids",
+   "cables",
+   "antennas",
+   "rivets"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the 203 mm over the bridge",
+   "the rocket pods and the SAM box on the rear deck",
+   "the EMP dish on its mast",
+   "the flak cupolas on the front corners"
+  ],
+  "how_to_fight": "the def's parts; fenrir keeps rockets_l, rockets_r and flak_l"
+ },
+ "questions": []
+}
