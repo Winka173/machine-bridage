@@ -470,7 +470,7 @@
             "kind": "boss",
             "model": "armored_train",
             "source": "Models/armored_train",
-            "hash": "v2:b9e5347dea6035d899b65290b839d846f0c23b54"
+            "hash": "v2:b170b23a5249d4cfdaf69e50a89fdce20c20ef92"
         },
         {
             "id": "atgm_tower",
@@ -603,7 +603,7 @@
             "kind": "boss",
             "model": "daedalus",
             "source": "Models/daedalus",
-            "hash": "v2:a6903971b3f97ff182af6bcb4d42a5ee896fee3c"
+            "hash": "v2:5e51b625e28098ccc7af6e39c2fbcaed71e3bafa"
         },
         {
             "id": "drone_hangar",
@@ -897,7 +897,7 @@
             "kind": "boss",
             "model": "ixion",
             "source": "Models/ixion",
-            "hash": "v2:b56cd5ffabc85481e2f9c1b9aaff2d346d4b05e9"
+            "hash": "v2:acea9a5421696fc6c683cc36b8a9d880700d4166"
         },
         {
             "id": "kraken",
@@ -960,7 +960,7 @@
             "kind": "boss",
             "model": "mega_gunship",
             "source": "Models/mega_gunship",
-            "hash": "v2:f1388f4b5023a24d1ecdd70bc077ec0c0c6411bc"
+            "hash": "v2:61dce6b16a3938feb5bd9e4e0217bcb69371c8d4"
         },
         {
             "id": "mg_bunker",
@@ -1030,7 +1030,7 @@
             "kind": "boss",
             "model": "nuke_train",
             "source": "Models/nuke_train",
-            "hash": "v2:a2e56cdf018048c6815d27f456edba6fac61808f"
+            "hash": "v2:c2634108ece2ba722df25f2c36f4b220f969fdb0"
         },
         {
             "id": "nyx",
