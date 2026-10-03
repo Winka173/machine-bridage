@@ -1581,11 +1581,11 @@
   },
   "scout_jeep": {
     "file": "scout_jeep.glb",
-    "triangles": 2422
+    "triangles": 6064
   },
   "scout_jeep_hd": {
     "file": "scout_jeep_hd.glb",
-    "triangles": 3738
+    "triangles": 6064
   },
   "sea_corvette": {
     "file": "sea_corvette.glb",

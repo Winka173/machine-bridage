@@ -3060,6 +3060,18 @@
    ],
    "reason": "P35 wave 7",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "scout_jeep",
+    "scout_jeep_hd"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG scout_jeep: triangles 2,422 -> 6,064 (+150.4%); vertices 2,857 -> 8,329 (+191.5%); meshes 27 -> 52 (+92.6%); renderers 27 -> 52 (+92.6%); materialSlots 27 -> 52 (+92.6%); fileBytes 169,108 -> 454,692 (+168.9%); structure changed",
+    "FLAG scout_jeep_hd: triangles 3,738 -> 6,064 (+62.2%); vertices 4,825 -> 8,329 (+72.6%); meshes 35 -> 52 (+48.6%); renderers 35 -> 52 (+48.6%); materialSlots 35 -> 52 (+48.6%); fileBytes 271,080 -> 454,692 (+67.7%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -49045,24 +49057,24 @@
   },
   "scout_jeep": {
    "file": "scout_jeep.glb",
-   "fileBytes": 169108,
-   "sha1": "02af79d2ac4f0bd4",
+   "fileBytes": 454692,
+   "sha1": "0b5adde4b43b9bfb",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 33,
-   "meshes": 27,
+   "nodes": 58,
+   "meshes": 52,
    "materials": 12,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 27,
-   "submeshes": 27,
-   "materialSlots": 27,
+   "renderers": 52,
+   "submeshes": 52,
+   "materialSlots": 52,
    "materialsUsed": 12,
-   "triangles": 2422,
-   "vertices": 2857,
+   "triangles": 6064,
+   "vertices": 8329,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -49070,36 +49082,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 68,
-   "openEdges": 0,
+   "loosePieces": 213,
+   "openEdges": 24,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -0.6982,
-    0.0,
-    -1.3284
+    -0.76,
+    -0.003,
+    -1.195
    ],
    "boundsMax": [
-    0.6982,
-    1.4149,
-    1.3037
+    0.705,
+    1.4357,
+    1.4619
    ],
    "size": [
-    2.632,
-    1.396,
-    1.415
+    2.657,
+    1.465,
+    1.439
    ],
    "center": [
-    0.0,
-    0.707,
-    -0.012
+    -0.028,
+    0.716,
+    0.133
    ],
-   "structureHash": "7de416905325d035",
+   "structureHash": "b396d88c8e41576b",
    "color0": {
-    "mean": 0.7128,
-    "min": 0.2729,
+    "mean": 0.5855,
+    "min": 0.0731,
     "max": 1.0,
-    "p05": 0.404,
-    "p95": 0.9987,
+    "p05": 0.102,
+    "p95": 0.9035,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -49108,6 +49120,9 @@
     ],
     "main_cannon": [
      "Main_cannon"
+    ],
+    "muzzle_brake": [
+     "Muzzle_brake"
     ],
     "muzzle": [
      "Muzzle_main"
@@ -49123,39 +49138,64 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Ammo_box",
     "Ammo_boxes",
-    "Armor",
-    "Beacon",
+    "Antennas",
+    "Axles",
     "Body",
-    "Chassis",
+    "Bumper",
+    "Cradle",
     "Crew",
-    "Crew.001",
+    "Crew_head",
+    "Crew_helmet",
+    "Exhaust",
+    "Fenders",
     "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_base",
+    "Gun_belt",
+    "Gun_bracket",
+    "Gun_post",
     "Gun_shield",
-    "Helmets",
-    "Helmets.001",
+    "Hubs",
+    "Hubs.001",
+    "Hubs.002",
     "Jerrycans",
+    "Kit_racks",
+    "Kit_steel",
+    "Kit_straps",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
+    "MG_receiver",
     "Main_cannon",
-    "Mount",
+    "Muzzle_brake",
     "Muzzle_main",
     "Part_wheel",
     "Part_wheelb",
     "Point_exhaust",
     "Point_fire",
+    "Radio",
+    "Roll_cage",
     "Seats",
-    "Spare",
-    "Steel",
+    "Sight",
+    "Spare_wheel",
+    "Spare_wheel_rim",
+    "Steering",
     "Tail_lamps",
+    "Team_band",
     "Turret",
     "Tyres",
     "Tyres.001",
     "Tyres.002",
+    "Undercarriage",
+    "Wheel_nuts",
+    "Wheel_nuts.001",
+    "Wheel_nuts.002",
     "Wheels",
     "Wheels.001",
-    "Wheels.002"
+    "Wheels.002",
+    "Windscreen_frame"
    ],
    "category": "ground",
    "hd": false,
@@ -49169,24 +49209,24 @@
   },
   "scout_jeep_hd": {
    "file": "scout_jeep_hd.glb",
-   "fileBytes": 271080,
-   "sha1": "e78fdd5169c5ea3f",
+   "fileBytes": 454692,
+   "sha1": "0b42f354ad87b0cc",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 41,
-   "meshes": 35,
+   "nodes": 58,
+   "meshes": 52,
    "materials": 12,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 35,
-   "submeshes": 35,
-   "materialSlots": 35,
+   "renderers": 52,
+   "submeshes": 52,
+   "materialSlots": 52,
    "materialsUsed": 12,
-   "triangles": 3738,
-   "vertices": 4825,
+   "triangles": 6064,
+   "vertices": 8329,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -49194,36 +49234,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 121,
-   "openEdges": 0,
+   "loosePieces": 213,
+   "openEdges": 24,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -0.6982,
-    0.0,
-    -1.3284
+    -0.76,
+    -0.003,
+    -1.195
    ],
    "boundsMax": [
-    0.6982,
-    1.4149,
-    1.3654
+    0.705,
+    1.4357,
+    1.4619
    ],
    "size": [
-    2.694,
-    1.396,
-    1.415
+    2.657,
+    1.465,
+    1.439
    ],
    "center": [
-    0.0,
-    0.707,
-    0.019
+    -0.028,
+    0.716,
+    0.133
    ],
-   "structureHash": "3e86aafb53f7308b",
+   "structureHash": "b396d88c8e41576b",
    "color0": {
-    "mean": 0.6657,
-    "min": 0.2771,
+    "mean": 0.5854,
+    "min": 0.0731,
     "max": 1.0,
-    "p05": 0.3368,
-    "p95": 0.981,
+    "p05": 0.102,
+    "p95": 0.9035,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -49232,6 +49272,9 @@
     ],
     "main_cannon": [
      "Main_cannon"
+    ],
+    "muzzle_brake": [
+     "Muzzle_brake"
     ],
     "muzzle": [
      "Muzzle_main"
@@ -49247,47 +49290,64 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Ammo_box",
     "Ammo_boxes",
-    "Armor",
-    "Beacon",
+    "Antennas",
+    "Axles",
     "Body",
-    "Chassis",
+    "Bumper",
+    "Cradle",
     "Crew",
-    "Crew.001",
+    "Crew_head",
+    "Crew_helmet",
+    "Exhaust",
+    "Fenders",
     "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_base",
+    "Gun_belt",
+    "Gun_bracket",
+    "Gun_post",
     "Gun_shield",
-    "Helmets",
-    "Helmets.001",
     "Hubs",
     "Hubs.001",
     "Hubs.002",
-    "Jeep_bolts",
     "Jerrycans",
+    "Kit_racks",
+    "Kit_steel",
+    "Kit_straps",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
+    "MG_receiver",
     "Main_cannon",
-    "Mount",
-    "Mud_flaps",
+    "Muzzle_brake",
     "Muzzle_main",
     "Part_wheel",
     "Part_wheelb",
     "Point_exhaust",
     "Point_fire",
+    "Radio",
+    "Roll_cage",
     "Seats",
-    "Spare",
-    "Steel",
+    "Sight",
+    "Spare_wheel",
+    "Spare_wheel_rim",
+    "Steering",
     "Tail_lamps",
+    "Team_band",
     "Turret",
     "Tyres",
     "Tyres.001",
     "Tyres.002",
-    "Wheel_bolts",
-    "Wheel_bolts.001",
-    "Wheel_bolts.002",
+    "Undercarriage",
+    "Wheel_nuts",
+    "Wheel_nuts.001",
+    "Wheel_nuts.002",
     "Wheels",
     "Wheels.001",
-    "Wheels.002"
+    "Wheels.002",
+    "Windscreen_frame"
    ],
    "category": "ground",
    "hd": true,
