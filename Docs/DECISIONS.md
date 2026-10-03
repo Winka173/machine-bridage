@@ -18177,3 +18177,32 @@ Unity, no test, sim or measure run).
   90.0, which failed two hard gates (base, walls) and had no sloped faces: the new file stays (section 1).
 - Full gate (--no-write) after the wave: 230 models, 97 pass; all twenty wave 7 ids pass every hard gate; no other
   model's own-geometry check names a wave 7 model (twin_tank names main_battle_tank, unchanged).
+
+## Prompt 35 wave 9 (lane C)
+
+Branch feature/p35-w9 (from feature/p35-w7 with lead/integration merged). Report: Docs/models/WAVE_9_REPORT.md.
+- Lead's calls on the wave 7 questions: (1) guard_tower_b as a gun nest on the base blockhouse (4.6 m, same footprint)
+  accepted: the 10 % rule guards the footprint, a taller upgrade is fine, on the owner's look. (2) elite_tank_destroyer
+  draws the gun its def fires: the 125 mm became a long 105 mm (gun_105_apfsds) this wave. (3) elite_aa keeps the
+  def's twin 35 mm (the model follows the data). (4) recon_drone / strike_drone checked after the kit missile fix:
+  they already pass direction (0, -1, 0) and rebuild byte-identical, nothing changed. (5) The six wave 4 references and
+  the new questions go to the owner's list (WAVE_9_REPORT "Owner questions").
+- Towers with branches are built in one module each, base and branches together: aa_turret / aa_turret_a share the
+  emplacement (plinth, race, berm with a sandbag course, rear bay, net); c_ram / c_ram_a / c_ram_b share the FOB site
+  (trailer on jacks, generator, HESCO L, T-wall, mast). artillery_emplacement keeps build_pit / build_bay for its
+  wave 10 branch.
+- Towers drop the slab under the whole post (the ground is the floor): the soft score's parts and tiers are per m2 of
+  surface, and a slab's two faces were a third of it. The base role is the plinth, gravel patches or timber floor.
+- iron_beam stays a truck (the def is mobile: speed 7, modelSize): a truck-mounted Iron Beam, laser only, no gun and
+  no shells, Mount_APS added. Owner question 2.
+- Visible weapons follow the data (section 7): ew_jammer and mobile_repair_vehicle carry their main hmg_selfdef_15 as
+  the roof gun on a post (pivot Turret); shahed_truck's free 12.7 mm stands on its post (Mount_mg). Old plain pivots
+  for weapons the def does not have stay without a drawn weapon (aa_turret_a Muzzle_missile, artillery_emplacement /
+  heavy_rocket_artillery / ballistic_launcher Mount_mg).
+- kronos: five muzzles for the five mountWeapons, in the runtime's per-slot order: Muzzle_main (mount 0, twin 30 mm on
+  Turret), Mount_gun / .001 (mounts 1 and 2, 57 mm), Mount_gun.002 (mount 4, the second 30 mm), Mount_rocket (mount 5).
+  Part gun_r names Mount_gun (a 57 mm by that order): owner question 3. earth_borer gets Muzzle_main at the drill tip.
+- combat_wreck_car keeps its footprint (prompt 33: a placed prop that blocks nothing); its wheels use the kit's
+  tread_wheel, since lane C's lugged_tyre with rocket_technical's arguments counted as 34 % shared geometry.
+- Full gate (--no-write) after the wave: 230 models, 133 pass; all twenty wave 9 ids and elite_tank_destroyer pass
+  every hard gate with soft >= 80; no other model's own-geometry check names a wave 9 model.
