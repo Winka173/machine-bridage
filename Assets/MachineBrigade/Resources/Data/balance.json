@@ -54,7 +54,7 @@
       "mbt": ["main_battle_tank", "next_gen_tank", "twin_tank", "turtle_tank"],
       "scout": ["scout_jeep", "radar_scout", "amphib_light_vehicle"],
       "radar_scout": ["radar_scout", "radar_support_vehicle", "counter_battery_radar"],
-      "engineer": ["engineer_vehicle", "demolition_line_vehicle", "bridging_vehicle"],
+      "engineer": ["engineer_vehicle", "demolition_line_vehicle"],
       "repair": ["mobile_repair_vehicle", "ammo_carrier"],
       "light": ["armored_car", "rocket_technical", "recoilless_jeep", "zu23_technical", "combat_wreck_car"],
       "scout_heli": ["scout_heli", "light_attack_heli"],
@@ -1877,9 +1877,6 @@
     // dx52: the CH-47 / Mi-26-class tower-lift helicopter stand-in (gunship_heli's hull): unarmed heavy transport in this pass; carrying a tower to any seen ground spot is not modelled yet (no airlift-drop command exists: DECISIONS 25F2-B).
     { "id": "heavy_lift_helicopter", "flareRecharge": 20, "flareCharges": 3, "outgoingDamageMult": 1.1429, "model": "heavy_lift_helicopter", "rearmTime": 9, "modelSize": [7.59, 6.58, 2.1], "armour": 1, "hp": 955, "speed": 12, "turnRate": 90, "turretTurnRate": 1, "radius": 4.5, "cp": 8, "vision": 42,
       "weapon": "none", "flying": true, "altitude": 17, "captureRate": 1, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.4, "tier": "Large" } },
-    // dx53: the AVLB / MTU-72-class bridging vehicle stand-in (engineer_vehicle's hull): laying a bridge over a river map gap is not modelled yet (no river-gap map feature exists: DECISIONS 25F2-B); plays as an armoured support vehicle for now.
-    { "id": "bridging_vehicle", "dropDelay": 2.5, "model": "bridging_vehicle", "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 2, "hp": 682, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
-      "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "deathExplosion": { "damage": 65, "radius": 6, "delay": 0.35, "tier": "Large" } },
     // dx54: the Pole-21-class GPS jammer vehicle stand-in (ew_jammer's own hull and field: a second copy of its jammer, since the sim has no separate glide-bomb/cruise-missile-only jamming yet: DECISIONS 25F2-B).
     { "id": "gps_jammer_vehicle", "outgoingDamageMult": 1.2, "model": "gps_jammer_vehicle", "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 450, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 6, "vision": 35,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "jammer": 28, "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },

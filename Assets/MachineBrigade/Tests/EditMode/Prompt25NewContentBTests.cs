@@ -62,7 +62,6 @@ namespace MachineBrigade.Tests
             new Row("ground_cruise_missile_vehicle", 1000, 12, false),
             new Row("aerial_tanker", 2500, 8, false),
             new Row("heavy_lift_helicopter", 1800, 7, false),
-            new Row("bridging_vehicle", 1500, 4, false),
             new Row("gps_jammer_vehicle", 800, 5, false),
             new Row("drone_net_tower", 800, 0, true),
             new Row("one_shot_atgm_tower", 2000, 0, true),

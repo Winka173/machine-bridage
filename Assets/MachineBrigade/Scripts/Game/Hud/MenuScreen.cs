@@ -936,7 +936,6 @@ namespace MachineBrigade.Game.Hud
             "ground_cruise_missile_vehicle" => "missile",
             "aerial_tanker" => "b52",
             "heavy_lift_helicopter" => "gunship",
-            "bridging_vehicle" => "engineer",
             "gps_jammer_vehicle" => "jammer",
             // (batch B icons: new entries above)
             "napalm_strike" => "flame",

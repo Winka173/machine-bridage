@@ -669,13 +669,6 @@
             "hash": "v2:ee97922254098aff8e2bc30a1be84f143024b214"
         },
         {
-            "id": "bridging_vehicle",
-            "kind": "vehicle",
-            "model": "bridging_vehicle",
-            "source": "Models/bridging_vehicle",
-            "hash": "v2:38db882129a9000aa92aae6c997976230e441983"
-        },
-        {
             "id": "gps_jammer_vehicle",
             "kind": "vehicle",
             "model": "gps_jammer_vehicle",
