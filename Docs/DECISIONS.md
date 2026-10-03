@@ -18683,3 +18683,4 @@ Prompt 35 section 9: the GLB total may grow by at most 25 %; after the rebuild i
   were therefore post-processed, not rebuilt.
 - Unity check for the lead: CatalogCheck plus the card / ModelPreview renders of main_battle_tank, monster and
   ammo_crate compared with the previous ones (REBUILD_REPORT section 9).
+- (lead, 2026-10-03) kronos gun_r's hit point moved to (3, -7, 9.6), its real gun (Mount_gun.002), per the owner's answer 4.
