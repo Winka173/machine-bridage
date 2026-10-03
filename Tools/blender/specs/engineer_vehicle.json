@@ -1,0 +1,31 @@
+{
+ "id": "engineer_vehicle",
+ "class": "tracked",
+ "real": ["BREM-1 / M88A2-class armoured recovery and engineer vehicle on a tank chassis (unit_sheet: M2 Browning 12.7 mm)"],
+ "shape": "unit_sheet.json Phương tiện: a tank chassis without a turret, a folding crane on the roof, a dozer blade in front; from above the crane lies diagonally along the hull, the blade wider than the hull; about 6.9 x 3.0 x 2.6 m (0.8 x M88A2 / BREM-1); the def's modelSize 6.45 x 3.02 x 2.02 m wins; team stripes; no insignia.",
+ "confidence": "xấp xỉ (BREM-1 layout: slewing crane at the front left, casemate, dozer blade; scaled to modelSize)",
+ "target_size": {"L": 6.45, "W": 3.02, "H": 2.02, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "the low hull (Team) with the V splash board, the crew casemate at the front right with hatch and periscopes", "nodes": ["Hull", "Hull_lower", "Splash_board", "Casemate", "Hatches", "Sight"]},
+  {"feature": "the slewing crane on its ring at the front left, the jib folded back diagonally to its rest, luffing ram, sheave, hook block and cable, hazard stripes", "nodes": ["Crane_ring", "Crane", "Boom_inner", "Boom_stripes", "Crane_ram", "Sheave", "Hook_block", "Crane_cable", "Jib_rest"]},
+  {"feature": "the dozer blade on push arms (`Blade` pivot: the runtime rams it): curved mould board, cutting edge, hydraulic rams, hazard stripes", "nodes": ["Blade", "Blade_plate", "Blade_edge", "Blade_rams", "Push_arms", "Blade_stripe"]},
+  {"feature": "six road wheels, rear sprocket, front idler on its arm, a linked track under rubber side skirts", "nodes": ["Wheels", "Tyres", "Sprockets", "Idlers", "Tracks", "Track_links", "Skirts"]},
+  {"feature": "the cupola with the M2 on its raised ring with cradle and shield (the self-defence gun), spare 12.7 mm cans", "nodes": ["Cupola", "Turret", "Gun_ring", "Cradle", "Main_cannon", "Muzzle_brake", "Gun_shield", "Hmg_ammo"]},
+  {"feature": "the winch fairlead in the nose, tow hooks, tow bars and a tow cable on the sides, spare track links, crates and jerrycans, smoke launchers on the casemate, grilles and the exhaust", "nodes": ["Fairlead", "Kit_hooks", "Tow_bars", "Tow_cable", "Spare_links", "Stowage", "Jerrycans", "Smoke_launchers", "Grilles", "Point_exhaust"]}
+ ],
+ "class_parts": ["hull", "turret (the gun's ring)", "mantlet (the cradle)", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [{"weapon": "hmg_selfdef_15", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]}],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "heavy class (tracked): over the maximum is information only"},
+ "team_zones": ["hull, casemate and crane (Team)", "bands on the hull sides and on the crane base"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the wrappers add the tracked wreck parts",
+ "faction_style": "military engineer vehicle (both factions)",
+ "details": {
+  "tier1": ["hull", "casemate", "crane jib", "dozer blade", "tracks and wheels"],
+  "tier2": ["crane ring and column", "push arms", "skirts", "cupola and gun", "fenders", "tow bars", "crates"],
+  "tier3": ["periscopes", "hatch", "lamps", "hooks", "fairlead rollers", "sheave", "hook block", "cable", "stripes", "spare links", "jerrycans", "smoke tubes", "ammunition cans"]
+ },
+ "questions": []
+}
