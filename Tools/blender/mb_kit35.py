@@ -463,16 +463,37 @@ def roof_mg(a, parent, loc, length=.9, shield=True):
         p27.mg_mount(a, parent, loc, length=length, shield=shield)
 
 
-def pintle_mg(a, parent, loc, index=0, scale=1.0, slot='mg', shield=True, length=1.1):
+def pintle_mg(a, parent, loc, index=0, scale=1.0, slot='mg', shield=True, length=1.1, post=0.0):
     """A pintle machine gun on its own yaw pivot `Mount_<slot>` (index 1, 2 ...: `Mount_<slot>.001` ...), sized by
     `scale` (1 = a 12.7 mm gun on a tank roof; a boss uses 1.6-2): a turned pintle, the receiver with its sloped feed
     cover and spade grips, the barrel with its carrying handle and flash hider, the ammunition can, a shield.
     `Muzzle_<slot>[.NNN]` at the barrel's tip. Pivots are named through name() / suffixed() (added in the pilot:
-    mb_parts27.mg_mount names only one gun)."""
+    mb_parts27.mg_mount names only one gun).
+    `post` (metres; wave 1, the owner's roof-gun rule in MODEL_STANDARD): the gun stands on a fixed pintle post that
+    high (a base plate with gussets, the column, a collar) with the mount pivot on its top, and gets a cradle (side
+    plates, a trunnion pin) round the receiver, so it stands clear of the roof line at the battle camera's distance.
+    The default 0 builds the pilot's gun unchanged."""
     suffixed(a)
     sc = scale
     tag = '' if index == 0 else f'__{index:03d}'
+    if post > 0:
+        x, y, z = loc
+        pp = a.part(f'MG_post{tag}', 'Steel', parent)
+        k.block(pp, (.24 * sc, .24 * sc, .03 * sc), loc=(x, y, z + .015 * sc), chamfer=.008 * sc)
+        k.lathe(pp, [(.045 * sc, 0), (.045 * sc, post - .05 * sc), (.062 * sc, post - .04 * sc), (.062 * sc, post),
+                     (0, post)], loc=(x, y, z), seg=8, worn=(2,))
+        for g in range(3):
+            u = g * TAU / 3
+            pp.box((.012 * sc, .09 * sc, .1 * sc), loc=(x + math.sin(u) * .07 * sc, y + math.cos(u) * .07 * sc,
+                                                       z + .08 * sc), rot=(0, 0, -u), bevel=0)
+        loc = (x, y, z + post)
     m = a.pivot(name(f'Mount_{slot}', index), loc, parent)
+    if post > 0:
+        cr = a.part(f'MG_cradle{tag}', 'Armor', m)
+        for s in (-1, 1):
+            k.block(cr, (.02 * sc, .3 * sc, .14 * sc), loc=(s * .095 * sc, -.02 * sc, .17 * sc), chamfer=.006 * sc)
+        k.lathe(cr, [(.018 * sc, -.12 * sc), (.018 * sc, .12 * sc)], loc=(0, .02 * sc, .17 * sc), rot=(0, R90, 0),
+                seg=6)
     g = a.part(f'MG{tag}', 'Steel', m)
     k.lathe(g, [(.07 * sc, 0), (.07 * sc, .04 * sc), (.045 * sc, .07 * sc), (.04 * sc, .16 * sc)], seg=8, worn=(1,))
     k.extrude(g, [(-.2 * sc, .14 * sc), (.18 * sc, .14 * sc), (.2 * sc, .26 * sc), (.02 * sc, .3 * sc),
@@ -485,8 +506,9 @@ def pintle_mg(a, parent, loc, index=0, scale=1.0, slot='mg', shield=True, length
                 (.05 * sc, L - .1 * sc), (.05 * sc, L - .01 * sc), (.035 * sc, L), (.02 * sc, L),
                 (.02 * sc, L - .05 * sc), (0, L - .05 * sc)], loc=(0, front, .22 * sc), rot=FORWARD, seg=8, worn=(4,))
     handle(g, (0, front - .25 * sc, .27 * sc), (0, front - .45 * sc, .27 * sc), (0, 0, 1), h=.05 * sc, r=.01 * sc)
-    k.block(a.part(f'MG_ammo{tag}', 'Armor', m), (.13 * sc, .24 * sc, .16 * sc), loc=(.16 * sc, .02 * sc, .2 * sc),
-            chamfer=.015 * sc)
+    ab = 1.35 if post > 0 else 1.0       # a post-mounted gun carries the big ammunition can on a bracket
+    k.block(a.part(f'MG_ammo{tag}', 'Armor', m), (.13 * sc * ab, .24 * sc * ab, .16 * sc * ab),
+            loc=(.16 * sc * ab, .02 * sc, .2 * sc - (ab - 1) * .05 * sc), chamfer=.015 * sc)
     if shield:
         k.extrude(a.part(f'MG_shield{tag}', 'Armor', m), [(-.28 * sc, -.17 * sc), (.28 * sc, -.17 * sc),
                                                         (.24 * sc, .2 * sc), (-.24 * sc, .2 * sc)], .04 * sc,

@@ -1,34 +1,148 @@
 {
  "id": "rocket_turret",
  "class": "tower",
- "real": ["BM-21 Grad 122 mm launcher (40 tubes, 4 x 10)"],
+ "real": [
+  "BM-21 Grad 122 mm launcher (40 tubes, 4 x 10)"
+ ],
  "shape": "unit_sheet.json Công trình: a 40-tube rocket launcher on a low turning base; 4.7 x 4.7 x 3.4 m; clear from the 45-60 degree camera; the two branches must differ at the default zoom; faction stripe. unit_refs: a rocket launcher behind a blast wall.",
  "confidence": "ban_dau_doan (a tower design, no single real model: the BM-21 tube pack is real, the emplacement is the sheet's)",
- "target_size": {"L": 4.7, "W": 4.7, "H": 3.4, "source": "unit_sheet 'Kích thước hiện' and the old GLB (4.67 x 4.69 x 3.40)", "tolerance": 0.10},
+ "target_size": {
+  "L": 4.7,
+  "W": 4.7,
+  "H": 3.4,
+  "source": "unit_sheet 'Kích thước hiện' and the old GLB (4.67 x 4.69 x 3.40)",
+  "tolerance": 0.1
+ },
  "features": [
-  {"feature": "40-tube launcher pack (4 rows of 10) elevated on a cradle", "nodes": ["Tubes", "Launcher_cradle", "Muzzle_main"]},
-  {"feature": "low turning base on a race ring", "nodes": ["Turret", "Race"]},
-  {"feature": "field-built emplacement: timber-framed earth pad", "nodes": ["Base", "Base_timbers"]},
-  {"feature": "blast wall of sandbags round the front and sides", "nodes": ["Sandbags"]},
-  {"feature": "reload: rocket crates and a rack behind the launcher", "nodes": ["Crates", "Rocket_rack"]},
-  {"feature": "a short antenna and a work lamp", "nodes": ["Antennas", "Lamps"]}
+  {
+   "feature": "40-tube launcher pack (4 rows of 10) elevated on a cradle",
+   "nodes": [
+    "Tubes",
+    "Launcher_cradle",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "low turning base on a race ring",
+   "nodes": [
+    "Turret",
+    "Race"
+   ]
+  },
+  {
+   "feature": "field-built emplacement: timber-framed earth pad",
+   "nodes": [
+    "Base",
+    "Base_timbers"
+   ]
+  },
+  {
+   "feature": "blast wall of sandbags round the front and sides",
+   "nodes": [
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "reload: rocket crates and a rack behind the launcher",
+   "nodes": [
+    "Crates",
+    "Rocket_rack"
+   ]
+  },
+  {
+   "feature": "a short antenna and a work lamp",
+   "nodes": [
+    "Antennas",
+    "Lamps"
+   ]
+  },
+  {
+   "feature": "crew MG on a raised pintle post with cradle, ammunition can and shield (the owner's roof-gun rule)",
+   "nodes": [
+    "MG_post",
+    "MG_cradle",
+    "Mount_mg",
+    "MG_shield"
+   ]
+  }
  ],
- "class_parts": ["base", "walls", "roof (the turning launcher deck)", "antenna"],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof (the turning launcher deck)",
+  "antenna"
+ ],
  "weapons": [
-  {"weapon": "turret_rockets", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]},
-  {"weapon": "(none in data)", "slot": "mg", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"], "note": "kept from the old model: its node names stay (prompt 35 section 1), a pintle MG for the crew"}
+  {
+   "weapon": "turret_rockets",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "(none in data)",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "kept from the old model: its node names stay (prompt 35 section 1), a pintle MG for the crew"
+  }
  ],
- "flare": false, "aps": false,
- "budget": {"lod0": [2000, 4000], "floor": 1400, "lod1_share": 0.5, "lod2_share": 0.2},
- "team_zones": ["the launcher deck and the tube pack's sides (Team)", "a band on the cradle"],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 6000,
+  "note": "owner decision 6 (wave 1): a tower is seen in numbers, at most 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "the launcher deck and the tube pack's sides (Team)",
+  "a band on the cradle"
+ ],
  "colour_zones_min": 3,
  "breakable": [],
  "wreck": "towers collapse whole (no part nodes)",
  "faction_style": "Accord (the player builds it from chapter 1): practical, field-built: sandbags, timber, nets",
  "details": {
-  "tier1": ["earth pad", "sandbag wall", "turning deck", "tube pack"],
-  "tier2": ["cradle and elevating ram", "race ring", "crates", "rocket rack", "operator seat and shield", "timber frame"],
-  "tier3": ["tube mouths", "pack bands and bolts", "lamp", "antenna", "cable", "handles", "stakes", "jerrycan"]
+  "tier1": [
+   "earth pad",
+   "sandbag wall",
+   "turning deck",
+   "tube pack"
+  ],
+  "tier2": [
+   "cradle and elevating ram",
+   "race ring",
+   "crates",
+   "rocket rack",
+   "operator seat and shield",
+   "timber frame"
+  ],
+  "tier3": [
+   "tube mouths",
+   "pack bands and bolts",
+   "lamp",
+   "antenna",
+   "cable",
+   "handles",
+   "stakes",
+   "jerrycan"
+  ]
  },
- "questions": ["Towers draw one model for both sides: the Accord (field-built) style was chosen for the player's tower; a Hegemon look would need a second model id (data)."]
+ "questions": [
+  "Towers draw one model for both sides: the Accord (field-built) style was chosen for the player's tower; a Hegemon look would need a second model id (data)."
+ ],
+ "branches": {
+  "rocket_turret_a": "Tools/blender/specs/rocket_turret_a.json",
+  "rocket_turret_b": "Tools/blender/specs/rocket_turret_b.json"
+ }
 }
