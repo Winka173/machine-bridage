@@ -422,10 +422,18 @@ namespace MachineBrigade.Sim.Content
             {
                 var role = raw.TryGetValue("role", out var r) && r is string roleName ? roleName.ToLowerInvariant() : "guard";
                 var swap = table.TryGetValue(role, out var s) && s is string byRole ? byRole : table.TryGetValue("default", out var d) && d is string fallback ? fallback : null;
+                // "unit:role": the stand-in takes another role (a jammer's place in the air is air cover).
+                string? newRole = null;
+                if (swap != null && swap.IndexOf(':') > 0)
+                {
+                    newRole = swap.Substring(swap.IndexOf(':') + 1);
+                    swap = swap.Substring(0, swap.IndexOf(':'));
+                }
                 if (swap != null && vehicles.ContainsKey(swap))
                 {
                     raw["unit"] = swap;
                     raw.Remove("elite");
+                    if (newRole != null) raw["role"] = newRole;
                 }
             }
             foreach (var key in new List<string>(raw.Keys))

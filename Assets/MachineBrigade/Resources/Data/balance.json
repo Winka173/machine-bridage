@@ -883,6 +883,8 @@
     // Towers (prompt 3): ground-only coaxial guns for the cannon towers, the new towers' weapons,
     // and the rank-7 branches' variants ("inherits": the named weapon's numbers, these on top).
     { "id": "none", "weaponFamilyId": "wpn_none",              "pen": 0, "form": "None", "damageType": "Kinetic", "damage": 0, "cooldown": 1, "range": 1, "projectileSpeed": 100, "impactTier": "Small" },
+    // Play-test 14: the armoured car's coax, laid with its 25 mm cannon: the same reach (30 m), so both guns fire together.
+    { "id": "mg_coax_long", "weaponFamily": "pkt_m240_7_62_mm", "real": "PKT / M240 7.62 mm", "family": "mg", "size": 7.62, "caliberMm": 7.62, "pen": 0, "inherits": "mg_coax", "range": 30 },
     { "id": "mg_coax_ground", "weaponFamily": "pkt_m240_7_62_mm", "real": "PKT / M240 7.62 mm", "family": "mg", "size": 7.62, "caliberMm": 7.62,    "pen": 0, "inherits": "mg_coax", "targets": "Ground", "roundWeight": 6, "cooldown": 0.0951, "clip": 37, "clipReload": 1.02 },
     { "id": "c_ram_gatling", "weaponFamilyId": "cal_20", "real": "Phalanx M61 20 mm", "family": "autocannon", "size": 20, "caliberMm": 20,     "pen": 1, "damageType": "Fragmentation", "damage": 2, "cooldown": 0.02, "range": 32, "projectileSpeed": 380, "splash": 1.2, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "interceptOnly": true, "clip": 200, "clipReload": 3.02 },
     { "id": "gun_pit_105", "weaponFamilyId": "cal_120_ap", "weaponFamily": "rh_120_l_44_120_mm", "real": "Rh-120 L/44 120 mm (dug in)", "family": "tank_gun", "size": 120, "caliberMm": 120,       "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 240, "cooldown": 4.63, "range": 36, "spread": 0.4, "impactTier": "Medium" },
@@ -1276,7 +1278,8 @@
       "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.6, "tier": "Large" } },
     { "id": "armored_car", "dropDelay": 2.5, "value": 0.94, "scale": 1, "modelSize": [4.78, 2.08, 1.49],      "class": "Light", "armour": 1, "hp": 300, "speed": 11.5, "turnRate": 150, "turretTurnRate": 220, "radius": 2.1, "length": 4.44, "width": 2.08, "cp": 3, "vision": 46,
       "firesWhileMoving": true, "weapon": "autocannon_25", "captureRate": 2,
-      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
+      // Play-test 14: its coax reaches as far as the cannon (mg_coax_long), so the two fire together at what the turret is laid on.
+      "secondary": [ { "weapon": "mg_coax_long", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.2, "tier": "Large" } },
     { "id": "tank_destroyer", "outgoingDamageMult": 1.1667, "value": 1.17, "scale": 1, "modelSize": [7.89, 2.62, 2.04],   "class": "TankHunter", "armour": [2, 1, 1, 0], "hp": 741, "speed": 7, "turnRate": 70, "turretTurnRate": 55, "radius": 2.4, "length": 5.72, "width": 2.62, "cp": 7, "vision": 34,
       "firesWhileMoving": true, "weapon": "gun_105_long",
@@ -2489,14 +2492,15 @@
     "leash": 28, "bounty": 3, "helperBounty": 4, "repair": 0.003, "repairReach": 12,
     "spotBonus": 0.15, "spotSpread": 0.6, "marks": [0.5], "dropWarn": 3,
     // Play-test 14 (owner Q19): escorts keep to the boss's domain. A unit of another domain in a boss's table (its own or its
-    // general's) is swapped for its domain's unit of the same role ("default" for any other role).
+    // general's) is swapped for its domain's unit of the same role ("default" for any other role; "unit:role" also changes
+    // the role, where the domain has no unit for it: no jammer flies or sails).
     "domains": {
       "ground": { "guard": "main_battle_tank", "raid": "light_tank", "cover": "aa_vehicle", "spot": "armored_car", "repair": "engineer_vehicle",
                   "jam": "ew_jammer", "smoke": "ew_jammer", "default": "main_battle_tank" },
       "air":    { "guard": "attack_helicopter", "raid": "attack_helicopter", "cover": "fighter_jet", "spot": "scout_heli", "repair": "attack_helicopter",
-                  "jam": "scout_heli", "smoke": "scout_heli", "default": "attack_helicopter" },
+                  "jam": "fighter_jet:cover", "smoke": "scout_heli", "default": "attack_helicopter" },
       "sea":    { "guard": "missile_boat", "raid": "hover_gunboat", "cover": "sea_corvette", "spot": "river_patrol_boat", "repair": "river_gunboat",
-                  "jam": "river_patrol_boat", "smoke": "river_patrol_boat", "default": "missile_boat" }
+                  "jam": "sea_corvette:cover", "smoke": "river_patrol_boat", "default": "missile_boat" }
     }
   },
   // Prompt 20 E.4: escort templates by general. A table in "escorts" with "template" is built on its general's; a
