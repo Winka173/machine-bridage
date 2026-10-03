@@ -3058,6 +3058,18 @@
    ],
    "reason": "P35 wave 9",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "aa_turret",
+    "aa_turret_a"
+   ],
+   "reason": "P35 wave 9",
+   "changes": [
+    "aa_turret: meshes 51 -> 50 (-2.0%); renderers 51 -> 50 (-2.0%); materialSlots 51 -> 50 (-2.0%); fileBytes 387,600 -> 386,612 (-0.3%); structure changed",
+    "aa_turret_a: meshes 56 -> 53 (-5.4%); renderers 56 -> 53 (-5.4%); materialSlots 56 -> 53 (-5.4%); fileBytes 439,220 -> 436,092 (-0.7%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -3490,21 +3502,21 @@
   },
   "aa_turret": {
    "file": "aa_turret.glb",
-   "fileBytes": 387600,
-   "sha1": "ef29fc776de69414",
+   "fileBytes": 386612,
+   "sha1": "249a036e9c104a52",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 55,
-   "meshes": 51,
+   "nodes": 54,
+   "meshes": 50,
    "materials": 15,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 51,
-   "submeshes": 51,
-   "materialSlots": 51,
+   "renderers": 50,
+   "submeshes": 50,
+   "materialSlots": 50,
    "materialsUsed": 15,
    "triangles": 5202,
    "vertices": 6936,
@@ -3538,9 +3550,9 @@
     1.586,
     -0.011
    ],
-   "structureHash": "1f94718a7ed08237",
+   "structureHash": "ca2671d70f80a6d8",
    "color0": {
-    "mean": 0.6156,
+    "mean": 0.6169,
     "min": 0.0751,
     "max": 1.0,
     "p05": 0.1257,
@@ -3553,9 +3565,7 @@
     ],
     "main_cannon": [
      "Main_cannon",
-     "Main_cannon_2",
-     "Main_cannon_2_sleeve",
-     "Main_cannon_sleeve"
+     "Main_cannon_2"
     ],
     "muzzle_brake": [
      "Muzzle_brake",
@@ -3588,6 +3598,7 @@
     "Glass",
     "Gun_casing_chutes",
     "Gun_cradle",
+    "Gun_sleeves",
     "Hatches",
     "Helmets",
     "Kit_cables",
@@ -3600,8 +3611,6 @@
     "Launcher_tubes",
     "Main_cannon",
     "Main_cannon_2",
-    "Main_cannon_2_sleeve",
-    "Main_cannon_sleeve",
     "Masts",
     "Muzzle_brake",
     "Muzzle_brake_2",
@@ -3634,26 +3643,26 @@
    "units": [
     "aa_turret"
    ],
-   "movingParts": 6,
+   "movingParts": 4,
    "budgetClass": "tower"
   },
   "aa_turret_a": {
    "file": "aa_turret_a.glb",
-   "fileBytes": 439220,
-   "sha1": "b136b6719d668a0e",
+   "fileBytes": 436092,
+   "sha1": "1578b6d51521442d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 60,
-   "meshes": 56,
+   "nodes": 57,
+   "meshes": 53,
    "materials": 15,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 56,
-   "submeshes": 56,
-   "materialSlots": 56,
+   "renderers": 53,
+   "submeshes": 53,
+   "materialSlots": 53,
    "materialsUsed": 15,
    "triangles": 5952,
    "vertices": 7943,
@@ -3687,9 +3696,9 @@
     1.586,
     0.002
    ],
-   "structureHash": "1dd0af70bc1de98b",
+   "structureHash": "484e7e818fa524e7",
    "color0": {
-    "mean": 0.6111,
+    "mean": 0.6122,
     "min": 0.0751,
     "max": 1.0,
     "p05": 0.1311,
@@ -3703,12 +3712,8 @@
     "main_cannon": [
      "Main_cannon",
      "Main_cannon_2",
-     "Main_cannon_2_sleeve",
      "Main_cannon_3",
-     "Main_cannon_3_sleeve",
-     "Main_cannon_4",
-     "Main_cannon_4_sleeve",
-     "Main_cannon_sleeve"
+     "Main_cannon_4"
     ],
     "muzzle_brake": [
      "Muzzle_brake",
@@ -3743,6 +3748,7 @@
     "Duckboards",
     "Extinguisher",
     "Glass",
+    "Gun_sleeves",
     "Hatch_fittings",
     "Hatches",
     "Helmets",
@@ -3752,12 +3758,8 @@
     "Kit_straps",
     "Main_cannon",
     "Main_cannon_2",
-    "Main_cannon_2_sleeve",
     "Main_cannon_3",
-    "Main_cannon_3_sleeve",
     "Main_cannon_4",
-    "Main_cannon_4_sleeve",
-    "Main_cannon_sleeve",
     "Mantlet",
     "Masts",
     "Muzzle_brake",
@@ -3789,12 +3791,10 @@
    ],
    "category": "structure",
    "hd": false,
-   "errors": [
-    "movingParts 10 over the tower normal hard cap 9"
-   ],
+   "errors": [],
    "warnings": [],
    "units": [],
-   "movingParts": 10,
+   "movingParts": 6,
    "budgetClass": "tower"
   },
   "aa_turret_b": {

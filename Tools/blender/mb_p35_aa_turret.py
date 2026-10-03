@@ -102,7 +102,7 @@ def _barrel(a, name, parent, loc, length, r, pitch, brake=None, sleeve=0, seg=10
                                              (0, length)], loc=loc, rot=rot, seg=seg, worn=(1,))
     for j in range(sleeve):
         f = .25 + j * .2
-        a.part(f'{name}_sleeve', 'Armor', parent).cyl(r * 1.15, .06, loc=(x + d[0] * length * f, y + d[1] * length * f,
+        a.part('Gun_sleeves', 'Armor', parent).cyl(r * 1.15, .06, loc=(x + d[0] * length * f, y + d[1] * length * f,
                                                                              z + d[2] * length * f), rot=rot, seg=seg,
                                                       bevel=0)
     tip = (x + d[0] * length, y + d[1] * length, z + d[2] * length)
