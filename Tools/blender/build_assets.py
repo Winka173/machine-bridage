@@ -199,7 +199,7 @@ def all_builders():
                 # Prompt 35 pilots (DECISIONS "Prompt 35"): rebuilt from scratch on the kit35 library (last, so they win).
                 **mb_p35_ixion.BUILDERS, **mb_p35_zu23_technical.BUILDERS, **mb_p35_rocket_turret.BUILDERS,
                 # Prompt 35 wave 1 lane A (DECISIONS "Prompt 35 wave 1 (lane A)"): five bosses and three structures.
-                **mb_p35_wave1_bosses.BUILDERS, **mb_p35_wave1_towers.BUILDERS}
+                **mb_p35_wave1_bosses.BUILDERS, **mb_p35_wave1_towers.BUILDERS,
                 # Prompt 35 wave 1, lane B (DECISIONS "Prompt 35 wave 1 (lane B)"): vehicles rebuilt from scratch (last).
                 **mb_p35_supply_truck.BUILDERS, **mb_p35_ammo_carrier.BUILDERS,
                 **mb_p35_vbied.BUILDERS, **mb_p35_elite_mlrs.BUILDERS,
