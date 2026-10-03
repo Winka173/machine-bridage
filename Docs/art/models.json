@@ -1029,11 +1029,11 @@
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",
-    "triangles": 5662
+    "triangles": 9296
   },
   "heavy_tank_hd": {
     "file": "heavy_tank_hd.glb",
-    "triangles": 13536
+    "triangles": 15120
   },
   "heavy_turret": {
     "file": "heavy_turret.glb",

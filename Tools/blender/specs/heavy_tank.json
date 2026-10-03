@@ -1,0 +1,187 @@
+{
+ "id": "heavy_tank",
+ "class": "tracked",
+ "real": [
+  "Object 195 / T-95 (0.8 x)",
+  "2A83 152 mm",
+  "2A42 30 mm",
+  "M2 Browning 12.7 mm"
+ ],
+ "shape": "unit_sheet.json Phuong tien: 'Tang rat nang, than dai, thap nho khong nguoi lai goc canh, nong 152 mm to va dai, 7 banh. Tu tren xuong: nong rat to.'",
+ "confidence": "tham_khao_thuc (Object 195 layout: crew capsule in the hull, unmanned turret)",
+ "target_size": {
+  "L": 8.39,
+  "W": 3.01,
+  "H": 2.2,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "long low hull, seven road wheels, sprocket rear, idler front, return rollers, tracks",
+   "nodes": [
+    "Hull",
+    "Armor",
+    "Wheels",
+    "Sprockets",
+    "Idlers",
+    "Tracks",
+    "Track_links"
+   ]
+  },
+  {
+   "feature": "side skirts with the rubber edge and hinge line, sponson fenders",
+   "nodes": [
+    "Skirts",
+    "Skirt_edge",
+    "Fenders"
+   ]
+  },
+  {
+   "feature": "glacis composite modules, the crew capsule's three hatches with periscopes",
+   "nodes": [
+    "Glacis_armor",
+    "Hatches",
+    "Hatch_fittings",
+    "Periscope",
+    "Periscope_hoods"
+   ]
+  },
+  {
+   "feature": "small angular unmanned turret with cheek blocks",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor"
+   ]
+  },
+  {
+   "feature": "152 mm with thermal sleeve, fume extractor, baffle brake in its mantlet; the 30 mm beside it",
+   "nodes": [
+    "Main_cannon",
+    "Muzzle_brake",
+    "Mantlet",
+    "Coax",
+    "Coax_housing",
+    "Muzzle_main",
+    "Muzzle_coax"
+   ]
+  },
+  {
+   "feature": "sights, smoke banks, 12.7 mm on its post",
+   "nodes": [
+    "Sight",
+    "Smoke_launchers",
+    "Mount_mg",
+    "MG",
+    "MG_post",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "engine deck grilles, exhaust louvre, stowage bins, drums, tow cable",
+   "nodes": [
+    "Grilles",
+    "Deck",
+    "Stowage",
+    "Kit_cables"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_152",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "autocannon_30",
+   "slot": "coax",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_coax"
+   ]
+  },
+  {
+   "weapon": "hmg_roof",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "lead rule (wave 5): units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "hull, skirts, fenders (Team)",
+  "turret body (Team)",
+  "bands on both sides and the roof panel (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "152 mm",
+   "tracks"
+  ],
+  "tier2": [
+   "skirts",
+   "mantlet",
+   "glacis modules",
+   "sights",
+   "hatches",
+   "bins",
+   "grilles",
+   "road wheels",
+   "sprocket",
+   "idler"
+  ],
+  "tier3": [
+   "track links",
+   "rollers",
+   "periscopes",
+   "smoke tubes",
+   "lamps",
+   "tow hooks",
+   "cable",
+   "antennas",
+   "latches"
+  ]
+ },
+ "questions": []
+}

@@ -143,6 +143,7 @@ import mb_p35_wave5_bosses  # noqa: E402
 import mb_p35_wave5_air  # noqa: E402
 import mb_p35_wave8_fort  # noqa: E402
 import mb_p35_wave8_trucks  # noqa: E402
+import mb_p35_wave8_ground  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -281,7 +282,8 @@ def all_builders():
                 **mb_p35_wave5_tanks.BUILDERS, **mb_p35_wave5_deploy.BUILDERS,
                 **mb_p35_wave5_bosses.BUILDERS, **mb_p35_wave5_air.BUILDERS,
                 # Prompt 35 wave 8 lane A (DECISIONS "Prompt 35 wave 8 (lane A)"): bosses, trucks, base pieces (last).
-                **mb_p35_wave8_fort.BUILDERS, **mb_p35_wave8_trucks.BUILDERS}
+                **mb_p35_wave8_fort.BUILDERS, **mb_p35_wave8_trucks.BUILDERS,
+                **mb_p35_wave8_ground.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
