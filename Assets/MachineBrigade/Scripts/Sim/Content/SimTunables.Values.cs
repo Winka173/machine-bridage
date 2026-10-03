@@ -297,7 +297,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>bosses.navalSystem.lighthouseRadius (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:43).</summary>
                 public static float LighthouseRadius = 14f;
             }
-            public static class BossHunt
+            public static partial class BossHunt
             {
                 /// <summary>bosses.bossHunt.weeklyMinis (count; gioi_han_thuc_the, was Sim/Modes/BossHunt.cs:50).</summary>
                 public static int WeeklyMinis = 7;
@@ -370,7 +370,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>modes.battleEvents.crateRepair (share; thuong, was Sim/Modes/BattleEvents.cs:24).</summary>
                 public static float CrateRepair = 0.3f;
             }
-            public static class EndlessRules
+            public static partial class EndlessRules
             {
                 /// <summary>modes.endlessRules.enemyPerWave (share/wave; khac, was Sim/Modes/Endless.cs:30).</summary>
                 public static float EnemyPerWave = 0.04f;

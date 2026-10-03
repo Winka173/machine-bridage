@@ -34,7 +34,7 @@ namespace MachineBrigade.Sim.Modes
         public static float PlayerMax => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.PlayerMax;
 
         /// <summary>Boss Rush: the enemy +8 % a boss; the player gets nothing more (its support already goes to +40 %).</summary>
-        public const float EnemyPerBoss = 0.08f;
+        public static float EnemyPerBoss => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.EnemyPerBoss;
 
         /// <summary>Survival: a mini boss every 5 waves, a main boss every 10 (instead of the mini boss); 10 waves finite.</summary>
         public static int MiniBossEvery => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.MiniBossEvery;
@@ -49,7 +49,7 @@ namespace MachineBrigade.Sim.Modes
         public static int BossCoins => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.BossCoins;
         public static int DailyCap => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.DailyCap;
 
-        public const double CoinDecay = 0.9;
+        public static double CoinDecay => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.CoinDecay;
 
         /// <summary>Badges at +10, +20, +30 waves and +5, +10 bosses.</summary>
         public static int[] WaveBadges => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.WaveBadges;

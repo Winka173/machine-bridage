@@ -54,6 +54,45 @@ namespace MachineBrigade.Sim.Content
             }
         }
 
+        public static partial class Bosses
+        {
+            public static partial class BossHunt
+            {
+                /// <summary>Main bosses in the week's hunt.</summary>
+                public static int WeeklyMains = 3;
+
+                /// <summary>The full hunt's strength ramp, first boss to last (x).</summary>
+                public static float FullFrom = 0.8f, FullTo = 1.3f;
+
+                /// <summary>The week's hunt: each next boss this much stronger (x per boss).</summary>
+                public static float WeeklyStep = 0.06f;
+            }
+
+            /// <summary>The Boss Hunt's time-to-kill targets (BossRushRules; seconds a mini and a main boss should take).</summary>
+            public static class BossRushRules
+            {
+                public static float MiniSeconds = 66f, MainSeconds = 168f;
+
+                /// <summary>The full hunt's targets.</summary>
+                public static float FullMiniSeconds = 60f, FullMainSeconds = 150f;
+
+                /// <summary>The share of power x time the boss's health is (the army does not hit all the time).</summary>
+                public static float HpShare = 0.6f;
+            }
+        }
+
+        public static partial class Modes
+        {
+            public static partial class EndlessRules
+            {
+                /// <summary>The enemy's strength per boss step in the boss-only endless run (x per step).</summary>
+                public static float EnemyPerBoss = 0.08f;
+
+                /// <summary>Each next reward of the same kind pays this share of the last (coins x 0.9^k).</summary>
+                public static double CoinDecay = 0.9;
+            }
+        }
+
         public static partial class Vehicles
         {
             /// <summary>
@@ -97,6 +136,17 @@ namespace MachineBrigade.Sim.Content
             new Entry("modes.holdFlags.laterEventsQuickModes", "flag", () => Modes.HoldFlags.LaterEventsQuickModes ? 1 : 0,
                 v => Modes.HoldFlags.LaterEventsQuickModes = v != 0, flag: true),
             new Entry("modes.holdFlags.laterNeutrals", "flag", () => Modes.HoldFlags.LaterNeutrals ? 1 : 0, v => Modes.HoldFlags.LaterNeutrals = v != 0, flag: true),
+            new Entry("bosses.bossHunt.weeklyMains", "count", () => Bosses.BossHunt.WeeklyMains, v => Bosses.BossHunt.WeeklyMains = (int)System.Math.Round(v)),
+            new Entry("bosses.bossHunt.fullFrom", "x", () => Bosses.BossHunt.FullFrom, v => Bosses.BossHunt.FullFrom = (float)v),
+            new Entry("bosses.bossHunt.fullTo", "x", () => Bosses.BossHunt.FullTo, v => Bosses.BossHunt.FullTo = (float)v),
+            new Entry("bosses.bossHunt.weeklyStep", "x", () => Bosses.BossHunt.WeeklyStep, v => Bosses.BossHunt.WeeklyStep = (float)v),
+            new Entry("bosses.bossRushRules.miniSeconds", "s", () => Bosses.BossRushRules.MiniSeconds, v => Bosses.BossRushRules.MiniSeconds = (float)v),
+            new Entry("bosses.bossRushRules.mainSeconds", "s", () => Bosses.BossRushRules.MainSeconds, v => Bosses.BossRushRules.MainSeconds = (float)v),
+            new Entry("bosses.bossRushRules.fullMiniSeconds", "s", () => Bosses.BossRushRules.FullMiniSeconds, v => Bosses.BossRushRules.FullMiniSeconds = (float)v),
+            new Entry("bosses.bossRushRules.fullMainSeconds", "s", () => Bosses.BossRushRules.FullMainSeconds, v => Bosses.BossRushRules.FullMainSeconds = (float)v),
+            new Entry("bosses.bossRushRules.hpShare", "share", () => Bosses.BossRushRules.HpShare, v => Bosses.BossRushRules.HpShare = (float)v),
+            new Entry("modes.endlessRules.enemyPerBoss", "share/step", () => Modes.EndlessRules.EnemyPerBoss, v => Modes.EndlessRules.EnemyPerBoss = (float)v),
+            new Entry("modes.endlessRules.coinDecay", "x", () => Modes.EndlessRules.CoinDecay, v => Modes.EndlessRules.CoinDecay = v),
             Entry.IntArray("vehicles.priceRules.groupMaxCp", "CP", () => Vehicles.PriceRules.GroupMaxCp, v => Vehicles.PriceRules.GroupMaxCp = v),
             Entry.FloatArray("vehicles.priceRules.groupFactor", "x", () => Vehicles.PriceRules.GroupFactor, v => Vehicles.PriceRules.GroupFactor = v),
             new Entry("vehicles.priceRules.bonusPerCp", "share/CP", () => Vehicles.PriceRules.BonusPerCp, v => Vehicles.PriceRules.BonusPerCp = (float)v),

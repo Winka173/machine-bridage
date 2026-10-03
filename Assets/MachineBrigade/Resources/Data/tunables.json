@@ -172,10 +172,21 @@
     "bossHunt": {
       "weeklyMinis": { "value": 7, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "03", "code": "BossHunt.WeeklyMinis" },
       "airDefenceMains": { "value": 1, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "03", "code": "BossHunt.AirDefenceMains" },
-      "airDefenceMinis": { "value": 3, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "03", "code": "BossHunt.AirDefenceMinis" }
+      "airDefenceMinis": { "value": 3, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "03", "code": "BossHunt.AirDefenceMinis" },
+      "weeklyMains": { "value": 3, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "03", "code": "BossHunt.WeeklyMains" },
+      "fullFrom": { "value": 0.8, "unit": "x", "kind": "sat_thuong", "linh_vuc": "03", "code": "BossHunt.FullFrom" },
+      "fullTo": { "value": 1.3, "unit": "x", "kind": "sat_thuong", "linh_vuc": "03", "code": "BossHunt.FullTo" },
+      "weeklyStep": { "value": 0.06, "unit": "x", "kind": "sat_thuong", "linh_vuc": "03", "code": "BossHunt.WeeklyStep" }
     },
     "huntSupports": {
       "cap": { "value": 0.4, "unit": "share", "kind": "tran", "linh_vuc": "03", "code": "HuntSupports.Cap" }
+    },
+    "bossRushRules": {
+      "miniSeconds": { "value": 66.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "03", "code": "BossRushRules.MiniSeconds" },
+      "mainSeconds": { "value": 168.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "03", "code": "BossRushRules.MainSeconds" },
+      "fullMiniSeconds": { "value": 60.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "03", "code": "BossHuntSession (full hunt)" },
+      "fullMainSeconds": { "value": 150.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "03", "code": "BossHuntSession (full hunt)" },
+      "hpShare": { "value": 0.6, "unit": "share", "kind": "sat_thuong", "linh_vuc": "03", "code": "BossRushRules.HpShare" }
     }
   },
   "bases": {
@@ -222,7 +233,9 @@
       "bossCoins": { "value": 60, "unit": "coins", "kind": "thuong", "linh_vuc": "05", "code": "EndlessRules.BossCoins" },
       "dailyCap": { "value": 600, "unit": "coins", "kind": "tran", "linh_vuc": "05", "code": "EndlessRules.DailyCap" },
       "waveBadges": { "value": [10, 20, 30], "unit": "waves", "kind": "gioi_han_thuc_the", "linh_vuc": "05", "code": "EndlessRules.WaveBadges" },
-      "bossBadges": { "value": [5, 10], "unit": "bosses", "kind": "gioi_han_thuc_the", "linh_vuc": "05", "code": "EndlessRules.BossBadges" }
+      "bossBadges": { "value": [5, 10], "unit": "bosses", "kind": "gioi_han_thuc_the", "linh_vuc": "05", "code": "EndlessRules.BossBadges" },
+      "enemyPerBoss": { "value": 0.08, "unit": "share/step", "kind": "khac", "linh_vuc": "05", "code": "EndlessRules.EnemyPerBoss" },
+      "coinDecay": { "value": 0.9, "unit": "x", "kind": "thuong", "linh_vuc": "05", "code": "EndlessRules.CoinDecay" }
     },
     "outposts": {
       "neutralHealth": { "value": 2.0, "unit": "x", "kind": "sat_thuong", "linh_vuc": "05", "code": "Outposts.NeutralHealth" },
