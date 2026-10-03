@@ -1,0 +1,254 @@
+{
+ "id": "rail_supergun",
+ "class": "boss",
+ "real": [
+  "US Navy EMRG electromagnetic railgun (scaled up)",
+  "BZhRK Barguzin rail train",
+  "a modern diesel locomotive (rail_tractor, a separate model) (unit_refs)"
+ ],
+ "shape": "unit_refs: a super-heavy railgun on a railway: the railgun car, capacitor cars, the diesel locomotive; one shot every 25 s through several targets; static boss; no modelSize (the old file 63.9 x 8.8 x 16.5 m).",
+ "confidence": "xấp xỉ (EMRG barrel scaled to a 40 m rail housing; railway-gun carriage with outriggers)",
+ "target_size": {
+  "L": 63.92,
+  "W": 8.84,
+  "H": 16.53,
+  "source": "the old file (the def has no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the track bed: ballast, rails, concrete sleepers, clips",
+   "nodes": [
+    "Ballast",
+    "Rails",
+    "Sleepers",
+    "Kit_clips"
+   ]
+  },
+  {
+   "feature": "four two-axle bogies (the rail running gear) under the girder carriage (Deck) with its Team skirts and bands",
+   "nodes": [
+    "Bogies",
+    "Rail_wheels",
+    "Deck",
+    "Hull_skirts",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "deployed outrigger jacks on pads, railings, ladders, walkways, buffers, deck lines, fittings and lockers",
+   "nodes": [
+    "Outriggers",
+    "Jack_pads",
+    "Railings",
+    "Ladders",
+    "Walkways",
+    "Buffers",
+    "Deck_fittings",
+    "Deck_lockers"
+   ]
+  },
+  {
+   "feature": "the turntable and the armoured gun house (Part_main > Turret) with cheek blocks, trunnions and elevating rams",
+   "nodes": [
+    "Part_main",
+    "Turret",
+    "Turntable",
+    "Turret_walls",
+    "Turret_armor",
+    "Trunnions",
+    "Rams"
+   ]
+  },
+  {
+   "feature": "weak point: the 40 m railgun barrel: the rail housing in segments with collars, the glowing rail gap, coolant pipes, the truss, the cradle shroud with vents, the muzzle shroud",
+   "nodes": [
+    "Main_cannon",
+    "Main_cannon_collars",
+    "Main_cannon_glow",
+    "Coolant_pipes",
+    "Barrel_truss",
+    "Turret_cradle",
+    "Cradle_vents",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "the loading crane on the turret's rear (Part_crane)",
+   "nodes": [
+    "Part_crane",
+    "Crane_post",
+    "Crane_jib"
+   ]
+  },
+  {
+   "feature": "capacitor banks with caps, glow strips and cable runs",
+   "nodes": [
+    "Capacitor_banks",
+    "Capacitor_caps",
+    "Capacitor_glow",
+    "Kit_cables"
+   ]
+  },
+  {
+   "feature": "weak point: the fire-control cabin (Part_generator) with its windows, band, radar and whip",
+   "nodes": [
+    "Part_generator",
+    "Hull_cabin",
+    "Cabin_windows",
+    "Radar_array",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "weak points: two 40 mm turrets forward (Part_gun / .001) and two CIWS aft (Part_mg / .001)",
+   "nodes": [
+    "Part_gun",
+    "Part_gun.001",
+    "Mount_gun",
+    "Mount_gun.001",
+    "Part_mg",
+    "Part_mg.001",
+    "Mount_mg",
+    "Mount_mg.001"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear (bogies, rail wheels)",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "supergun_800",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "autocannon_40",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "autocannon_40",
+   "slot": "gun",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "weapon": "ciws_aa",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "ciws_aa",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "the carriage skirts and bands, the gun house band, the cradle shroud, the cabin band (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "main_gun",
+   "node": "Main_cannon"
+  },
+  {
+   "part": "fire_control",
+   "node": "Part_generator"
+  },
+  {
+   "part": "gun_l",
+   "node": "Part_gun"
+  },
+  {
+   "part": "gun_r",
+   "node": "Part_gun.001"
+  },
+  {
+   "part": "aa_l",
+   "node": "Part_mg"
+  },
+  {
+   "part": "aa_r",
+   "node": "Part_mg.001"
+  },
+  {
+   "part": "tractor_l",
+   "node": "(no node: the rail_tractor model attaches, attach 0)"
+  },
+  {
+   "part": "tractor_r",
+   "node": "(no node: the rail_tractor model attaches, attach 1)"
+  }
+ ],
+ "wreck": "bosses break up on their Part_* nodes",
+ "faction_style": "heavy railway artillery with energy fittings",
+ "details": {
+  "tier1": [
+   "carriage",
+   "gun house",
+   "barrel"
+  ],
+  "tier2": [
+   "bogies",
+   "outriggers",
+   "cradle shroud",
+   "capacitor banks",
+   "cabin",
+   "turrets",
+   "CIWS",
+   "crane"
+  ],
+  "tier3": [
+   "sleepers",
+   "clips",
+   "collars",
+   "caps",
+   "vents",
+   "railings",
+   "rungs",
+   "lockers",
+   "glow strips"
+  ]
+ },
+ "questions": [
+  "rail_supergun was a gold-set member (boss gold, prompt 35 GOLD_METRICS): the rebuild scores 85.0 against the rail frame's gold (the old file 76.4) with 11.9k triangles instead of 36.7k; gold_metrics.json is not recomputed on this branch."
+ ],
+ "frame": "rail",
+ "weak_points": [
+  "the barrel, the fire-control cabin, the 40 mm turrets and the CIWS on their own nodes, one shade off"
+ ],
+ "scale_note": "the old file's 64 m; the barrel keeps its old muzzle point"
+}
