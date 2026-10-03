@@ -19824,3 +19824,57 @@ bằng 2, bổ sung 03/10, mục 1".
   turrets do not face forward before their first aim (replay hashes change anyway).
 - For the owner when wanted: CatalogCheck, TunablesTests, a new ReplayHashTests baseline; Unity ExportGameDoc to refresh
   `Docs/export/game_snapshot.json` (taken before this change).
+
+## Play-test 14 model wave M6 (lane A)
+
+Owner: Docs/prompts/playtest14_vi.txt ("self propelled aa gun, gun missile aa: ... 2 nong sung auto canon co ve sai, no
+hoi xa, check design thuc te"); lead's brief: the M4 hangars scored 58-82, more detail allowed (~12k), the MG bunker's
+port guns normalised. Built locally (worktree MachineBrigade-art, branch feature/pt14-m6). Builder
+`Tools/blender/mb_pt14_m6.py` (registered last in build_assets' dict). Sheets: Docs/models/rebuild/<id>/before_after.png.
+No Unity, no tests.
+- **aa_vehicle (Self-propelled AA gun)**: the P35 Gepard put its 35 mm guns at x +-1.36 at deck height, out over the
+  fenders (barrel span = hull width). New turret after the Gepard / Type 87 / K30 family: compact box turret, the two
+  KDA guns in armoured housings tight against its cheeks at mid height, barrel axes 2.0 m apart (inside the 2.76 m
+  hull, ~0.73 of its width, as on the Type 87), both on one baked `Elevation` cradle (trunnion shaft through the
+  turret, feed chutes, v0 radars on the brakes). Tracking radar between the guns on the turret face, search radar on
+  its mast at the rear (`Radar`), Stinger box `Mount_missile` on the rear roof, smoke dischargers moved to the rear
+  cheeks. Hull and running gear of P35 wave 4 reused. Width 3.32 -> 2.81 m (modelSize width 3.06, within the gate's
+  10 %; data untouched).
+- **heavy_aa (Gun-missile AA)**: new Pantsir-S1 / Tunguska combat module on the wave 8 KamAZ: the two twin-barrel 2A38M
+  on the turret's cheeks (pair axes 1.48 m apart, a gun's two barrels 0.15 m apart; before: pairs under the packs at
+  +-0.86 with barrels 0.14 apart, half hidden), the two six-round packs outboard of them, guns and packs on one
+  `Elevation` trunnion (the packs rise with the guns, as on the real module); round tracking array in the turret face,
+  search radar lowered onto the roof (height stays inside modelSize). Kept under the gate's light-class cap
+  (7,500): rivets, pack end caps and bevelled boxes dropped.
+- **Both barrels fire**: each gun's `Muzzle_main` sits between the mouths with authored `Muzzle_b<k>_main` children at
+  every barrel (ModelLibrary.AddBarrelPoints: each a launch point, used in turn): aa_vehicle b1 / b2 (left, right),
+  heavy_aa b1..b4 ordered left, right, left, right so Main_cannon / Main_cannon_2 recoil alternate with the flashes.
+  `Muzzle_missile` .. `__003` at the four tube columns as before.
+- **Hangars** (not seen in numbers, ~9.8-12.2k triangles): drone_hangar family: the +X container drawn open (doors at
+  90 degrees, shelving of drone cases, an FPV ready rack, charging shelf), container side fittings, sandbag parapet
+  on the deck front, ground control station (console, screens, seats), guyed antenna mast kept to M4's height,
+  satcom dish, EO camera mast, generator + fuel bladder, FPV launch table; base: a trestle of three FPV launch
+  rails; _a: Lancet catapult + six Lancet canisters; _b: nine swarm cells + battery charging racks.
+  vehicle_hangar_base: the front reworked into a full-width roller door (5.44 m, a little over half up, wind locks,
+  bottom bar, coil box and motor) over a concrete ramp with kerbs, grooves and drain; piers with bollards; strip
+  windows, girts, knee braces, ridge vent, roof plant (water tank, fan cowls, hatch), roof fixings, lockers, jack
+  stands, spare road wheels and track links, A-frame gantry with a power pack, drum tray. The roof sheets are
+  one-sided (their underside is never seen). aircraft_hangar: seven ribs with fabric seams, crown vents, beacons and
+  lightning rods, gantry beam with hoist over a spare engine on its dolly, parts shelving, HVAC with duct, rear
+  ladder, self-supporting lattice mast (the guyed one ran 1.4 m outside the footprint), light bars, more pad lights,
+  tie-downs, cones, a sandbag revetment. Footprints kept: GLB L x W x H drone 8.02 x 7.89 x 5.62 (was 7.95 x 7.89 x
+  5.43), vehicle 8.65 x 8.28 x 5.47 (8.61 x 8.07 x 5.3), aircraft 8.51 x 8.33 x 5.59 (8.4 x 8.28 x 5.59); modelSize
+  unchanged.
+- **Gate**: the hangars stay scored against tower_big (DECISIONS "Prompt 35": "big: emplacements, shelters, hangars");
+  that set is the intended one and they pass it, so it is not changed. Only the towers' numbers cap (1.5 x 4,000) no
+  longer applies to them: quality_gate `NOT_IN_NUMBERS` (model or def id containing "hangar").
+- **mg_bunker** (CHANGES "Play-test 14 model wave M6"): bunker_pkm damage 5.5 -> 1.6, so the four ports add ~+10 % in
+  one port's arc and ~+20 % dead ahead (was +34 / +68 %); the main gun's output elsewhere unchanged
+  (outgoingDamageMult untouched); the twin branch dead ahead +17 %.
+- Gate (after glb_quantize; all hard ok), triangles before -> after, soft before -> after: aa_vehicle 9,586 -> 11,760
+  (93.2 -> 99.0; tracked heavy, no cap; BUDGETS ground 1.5 x 9,700), aa_vehicle_hd 9,586 -> 11,940 (structure, its old
+  parts fail unchanged), heavy_aa 7,278 -> 7,422 (92.7 -> 91.4), drone_hangar 4,880 -> 9,772 (80.8 -> 96.2), _a 4,894 ->
+  9,830 (81.4 -> 96.1), _b 5,728 -> 11,012 (82.3 -> 96.4), vehicle_hangar_base 5,744 -> 12,214 (69.4 -> 87.9),
+  aircraft_hangar 4,522 -> 10,154 (58.0 -> 87.0). Full gate 148 / 167 pass (was 145 / 166).
+- Needs Unity: card renders / ModelScan, the four Pantsir barrels firing in turn and the packs rising with the guns,
+  the Gepard's two barrels' flashes, hangar fits in the base slots.

@@ -25,11 +25,11 @@
   },
   "aa_vehicle": {
     "file": "aa_vehicle.glb",
-    "triangles": 9586
+    "triangles": 11760
   },
   "aa_vehicle_hd": {
     "file": "aa_vehicle_hd.glb",
-    "triangles": 9586
+    "triangles": 11940
   },
   "adobe_house": {
     "file": "adobe_house.glb",
@@ -61,7 +61,7 @@
   },
   "aircraft_hangar": {
     "file": "aircraft_hangar.glb",
-    "triangles": 4522
+    "triangles": 10154
   },
   "ammo_carrier": {
     "file": "ammo_carrier.glb",
@@ -757,15 +757,15 @@
   },
   "drone_hangar": {
     "file": "drone_hangar.glb",
-    "triangles": 4880
+    "triangles": 9772
   },
   "drone_hangar_a": {
     "file": "drone_hangar_a.glb",
-    "triangles": 4894
+    "triangles": 9830
   },
   "drone_hangar_b": {
     "file": "drone_hangar_b.glb",
-    "triangles": 5728
+    "triangles": 11012
   },
   "drone_hijack_vehicle": {
     "file": "drone_hijack_vehicle.glb",
@@ -1009,7 +1009,7 @@
   },
   "heavy_aa": {
     "file": "heavy_aa.glb",
-    "triangles": 7278
+    "triangles": 7422
   },
   "heavy_attack_heli": {
     "file": "heavy_attack_heli.glb",
@@ -1881,7 +1881,7 @@
   },
   "vehicle_hangar_base": {
     "file": "vehicle_hangar_base.glb",
-    "triangles": 5744
+    "triangles": 12214
   },
   "visual_jammer": {
     "file": "visual_jammer.glb",

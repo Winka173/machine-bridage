@@ -243,6 +243,7 @@ import mb_pt14_m1  # noqa: E402
 import mb_pt14_m2  # noqa: E402
 import mb_pt14_m3  # noqa: E402
 import mb_pt14_m4  # noqa: E402
+import mb_pt14_m6  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -436,7 +437,10 @@ def all_builders():
                 **mb_pt14_m3.BUILDERS,
                 # Play-test 14 wave M4 (DECISIONS "Play-test 14 model wave M4 (lane A)"): the base buildings redrawn
                 # (three hangars, the MG bunkers with port guns, the guard towers, the Laser Defence Tower; last).
-                **mb_pt14_m4.BUILDERS}
+                **mb_pt14_m4.BUILDERS,
+                # Play-test 14 wave M6 (DECISIONS "Play-test 14 model wave M6 (lane A)"): the two gun air-defence
+                # vehicles with their real gun spacing, the three hangars with more detail (last, so they win).
+                **mb_pt14_m6.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

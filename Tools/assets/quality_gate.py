@@ -92,6 +92,9 @@ ANCHOR = 80.0
 # Owner decision 6: units seen in numbers (technicals, light vehicles, towers) stay under 1.5 x the class maximum; a
 # hard gate for these budget classes only (over-budget stays information for the others).
 NUMBERS_CAP = {'light': 1.5, 'tower': 1.5}
+# Play-test 14 wave M6: the hangars (drone, vehicle, aircraft and their branches) stand once in a base, never in
+# numbers, so the towers' numbers cap does not apply to them (the class budget stays information, as for structures).
+NOT_IN_NUMBERS = re.compile(r'hangar', re.I)
 # Owner decision 8: a role, muzzle or mount the kit merged into another node counts when that node is there
 # (MODEL_STANDARD section 4: a part the sheet shows inside a merged node is cleared). {model: {item: host node}};
 # the four V2 gold models here, a rebuilt model in its spec ("merged": {...}, Tools/blender/specs/<id>.json).
@@ -499,6 +502,8 @@ def hard_checks(defs, model, own, cls, rec, m, overlap):
     lo, hi = sp.BUDGET[bcls]
     tris = rec['triangles']
     cap = NUMBERS_CAP.get(bcls)
+    if cap and (NOT_IN_NUMBERS.search(model) or (own is not None and NOT_IN_NUMBERS.search(own.get('id', '')))):
+        cap = None
     out = [('triangles_floor', tris >= FLOOR * lo, f'{tris} (floor {int(FLOOR * lo)}, class {lo}-{hi}'
             + (f'; over max +{tris / hi - 1:.0%}' + ('' if cap else ', information only') if tris > hi else '')
             + ')')]

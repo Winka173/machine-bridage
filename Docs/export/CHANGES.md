@@ -2948,3 +2948,13 @@ Chủ dự án quyết thêm vũ khí phụ hay đổi bệ (không thêm vũ kh
 | monster | 8 | casemate | 5.07 | 7.24 | 2.16 |
 | nuke_train | 4 | sam_car | 4.13 | 7.45 | 3.32 |
 | typhon | 0 | sam | 10.68 | 13.64 | 2.97 |
+
+## Play-test 14 model wave M6 (lane A): MG bunker port guns normalised
+
+Nhánh `feature/pt14-m6`. Lý do: `Docs/DECISIONS.md` "Play-test 14 model wave M6 (lane A)". Chỉ lý thuyết, không chạy
+Unity / test.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-M6-1 | `bunker_pkm` `damage` | 5.5 (kế thừa mg_coax) | 1.6 (~10.5 DPS duy trì mỗi súng, thô) | 4 súng lỗ châu mai giữ nguyên; sản lượng chính diện mg_bunker chỉ +20 % so với trước wave M4 |
+| PT14-M6-2 | sản lượng thô mg_bunker (NSV ~106.6 DPS duy trì) | +36.2 / súng: +34 % (một cung), +68 % (chính diện) | +10.5 / súng: +9.9 % (một cung), +19.7 % (chính diện), 0 (phía sau) | outgoingDamageMult giữ nguyên (0.6086); .twin (NSV đôi ~123.4 DPS) chính diện +17 %; .flame không có súng cổng |
