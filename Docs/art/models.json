@@ -69,7 +69,7 @@
   },
   "ammo_dump": {
     "file": "ammo_dump.glb",
-    "triangles": 3484
+    "triangles": 5284
   },
   "amphib_light_vehicle": {
     "file": "amphib_light_vehicle.glb",
@@ -1417,7 +1417,7 @@
   },
   "radar_site": {
     "file": "radar_site.glb",
-    "triangles": 4252
+    "triangles": 5830
   },
   "radar_station": {
     "file": "radar_station.glb",
@@ -1477,7 +1477,7 @@
   },
   "repair_bay": {
     "file": "repair_bay.glb",
-    "triangles": 5214
+    "triangles": 5970
   },
   "repair_crate": {
     "file": "repair_crate.glb",
