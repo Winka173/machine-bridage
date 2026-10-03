@@ -333,3 +333,6 @@ Items 1-2 (impact smoke x0.4, no ground zones for bombs/shells) are already merg
 14. Boss escorts by domain: ground boss -> ground vehicles, sea boss -> boats, air boss -> aircraft (Nyx gets tanks at
     sea now); data/rules in balance.json escortRules / escortTemplates.
 Do not delete anything (session 1 does). Commits "Play-test 14 (lane A): ...", push.
+
+> **Play-test 14: superseded.** The two play-test 14 sections above are replaced by `Docs/cloud/PT14_CLOUD_TASKS.md`
+> (capabilities, branches, setup, tasks, finish). Read that file instead.

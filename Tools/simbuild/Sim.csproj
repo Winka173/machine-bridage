@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Engine-free compile check of the deterministic Sim (assembly MachineBrigade.Sim, noEngineReferences) for
+       sessions without Unity (Claude cloud). Unity 6 compiles C# 9: keep LangVersion 9.0. Run: dotnet build Tools/simbuild/Sim.csproj -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyName>MachineBrigade.Sim</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <OutputPath>../../Temp/simbuild/</OutputPath>
+    <BaseIntermediateOutputPath>../../Temp/simbuild/obj/</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Assets/MachineBrigade/Scripts/Sim/**/*.cs" />
+  </ItemGroup>
+</Project>
