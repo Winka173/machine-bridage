@@ -1,0 +1,231 @@
+{
+ "id": "kronos",
+ "class": "boss",
+ "real": [
+  "Bagger 288 bucket-wheel excavator (unit_refs)",
+  "30 mm and 57 mm turrets, a rocket pod (balance.json mountWeapons)"
+ ],
+ "shape": "unit_refs: Bagger 288 turned war machine: four crawler units under the octagonal substructure, the slewing ring, the stepped machine house with window bands, walkways, railings and ladders, the operator's cab, the lattice cutter boom with its conveyor to the bucket wheel with eighteen toothed buckets, the A-frame pylon with cable stays, the counterweight boom and box, the discharge conveyor; on the roof the twin 30 mm, two 57 mm, a second 30 mm and the rocket pod.",
+ "confidence": "xấp xỉ (Bagger 288 photographs; the old file's size)",
+ "target_size": {
+  "L": 48.56,
+  "W": 16.2,
+  "H": 16.06,
+  "source": "the old GLB (the boss scales it by size 1.24)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "four crawler units",
+   "nodes": [
+    "Part_track_fl",
+    "Part_track_fr",
+    "Part_track_rl",
+    "Part_track_rr",
+    "Tracks",
+    "Track_links"
+   ]
+  },
+  {
+   "feature": "substructure, slewing ring, stair towers",
+   "nodes": [
+    "Chassis",
+    "Slewing_ring",
+    "Stairs"
+   ]
+  },
+  {
+   "feature": "machine house, windows, walkways, railings, ladders",
+   "nodes": [
+    "Hull",
+    "Lit_windows",
+    "Walkways",
+    "Railings",
+    "Ladders"
+   ]
+  },
+  {
+   "feature": "operator's cab",
+   "nodes": [
+    "Part_cab",
+    "Cab",
+    "Glass"
+   ]
+  },
+  {
+   "feature": "lattice cutter boom and the bucket wheel with buckets and teeth",
+   "nodes": [
+    "Part_boom",
+    "Boom_girder",
+    "Part_wheel",
+    "Wheel_rim",
+    "Buckets",
+    "Bucket_teeth"
+   ]
+  },
+  {
+   "feature": "A-frame pylon, stays, counterweight boom and box, discharge conveyor",
+   "nodes": [
+    "Pylon",
+    "Counter_boom",
+    "Counterweight",
+    "Conveyor"
+   ]
+  },
+  {
+   "feature": "roof armament: twin 30 mm, two 57 mm, second 30 mm, rocket pod",
+   "nodes": [
+    "Turret",
+    "Muzzle_main",
+    "Mount_gun",
+    "Muzzle_gun",
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Mount_rocket",
+    "Muzzle_rocket"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running_gear"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_kronos_close_autocannon_30",
+   "slot": "mount 0",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the twin 30 mm (main)"
+  },
+  {
+   "weapon": "p26_kronos_direct_kr57",
+   "slot": "mount 1",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ],
+   "note": "57 mm (gun slot k=0)"
+  },
+  {
+   "weapon": "p26_kronos_direct_kr57",
+   "slot": "mount 2",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ],
+   "note": "57 mm (gun slot k=1)"
+  },
+  {
+   "weapon": "p26_kronos_close_autocannon_30",
+   "slot": "mount 4",
+   "mount": "Mount_gun.002",
+   "muzzles": [
+    "Muzzle_gun.002"
+   ],
+   "note": "the second 30 mm (gun slot k=2, part gun_r)"
+  },
+  {
+   "weapon": "p26_kronos_close_boss_rockets",
+   "slot": "mount 5",
+   "mount": "Mount_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ],
+   "note": "the rocket pod"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "cap": null,
+  "note": "boss: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "substructure bands (Team)",
+  "house band (Team)",
+  "gun houses and pod (Team)",
+  "cab (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "node": "Part_wheel",
+   "part": "bucket_wheel"
+  },
+  {
+   "node": "Part_boom",
+   "part": "boom"
+  },
+  {
+   "node": "Part_track_fl",
+   "part": "track_fl"
+  },
+  {
+   "node": "Part_track_fr",
+   "part": "track_fr"
+  },
+  {
+   "node": "Part_track_rl",
+   "part": "track_rl"
+  },
+  {
+   "node": "Part_track_rr",
+   "part": "track_rr"
+  },
+  {
+   "node": "Part_cab",
+   "part": "cab"
+  },
+  {
+   "node": "Turret",
+   "part": "gun_l"
+  },
+  {
+   "node": "Mount_gun",
+   "part": "gun_r"
+  },
+  {
+   "node": "Mount_rocket",
+   "part": "rockets"
+  }
+ ],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "boss: mining yellow steel, team bands and gun houses",
+ "details": {
+  "tier1": [
+   "crawlers",
+   "house",
+   "boom",
+   "bucket wheel"
+  ],
+  "tier2": [
+   "pylon",
+   "counterweight",
+   "turrets",
+   "cab",
+   "stairs"
+  ],
+  "tier3": [
+   "teeth",
+   "rollers",
+   "railings",
+   "floodlights",
+   "beacons",
+   "stays"
+  ]
+ },
+ "questions": [
+  "Data: part gun_r (use gun_30) names Mount_gun, which the runtime gives to mount 1 (a 57 mm); the model draws a 57 mm there and the second 30 mm on Mount_gun.002 (mount 4). Lead/owner: point gun_r at Mount_gun.002?"
+ ]
+}
