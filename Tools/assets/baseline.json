@@ -3068,6 +3068,16 @@
    "changes": [
     "FLAG glide_bomber: triangles 1,624 -> 3,184 (+96.1%); vertices 1,862 -> 4,539 (+143.8%); meshes 14 -> 37 (+164.3%); renderers 14 -> 37 (+164.3%); materials 5 -> 10 (+100.0%); materialSlots 14 -> 37 (+164.3%); fileBytes 107,120 -> 256,880 (+139.8%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "stealth_naval_strike"
+   ],
+   "reason": "P35 wave 6: stealth_naval_strike rebuilt from scratch",
+   "changes": [
+    "FLAG stealth_naval_strike: triangles 2,124 -> 3,662 (+72.4%); vertices 2,786 -> 5,626 (+101.9%); meshes 25 -> 38 (+52.0%); renderers 25 -> 38 (+52.0%); materialSlots 25 -> 38 (+52.0%); fileBytes 159,664 -> 307,460 (+92.6%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -52783,24 +52793,24 @@
   },
   "stealth_naval_strike": {
    "file": "stealth_naval_strike.glb",
-   "fileBytes": 159664,
-   "sha1": "3dddc60346bfaafa",
+   "fileBytes": 307460,
+   "sha1": "7131f3af3e77ddc5",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 32,
-   "meshes": 25,
+   "nodes": 45,
+   "meshes": 38,
    "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 25,
-   "submeshes": 25,
-   "materialSlots": 25,
+   "renderers": 38,
+   "submeshes": 38,
+   "materialSlots": 38,
    "materialsUsed": 10,
-   "triangles": 2124,
-   "vertices": 2786,
+   "triangles": 3662,
+   "vertices": 5626,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -52808,36 +52818,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 74,
-   "openEdges": 24,
-   "nonManifoldEdges": 0,
+   "loosePieces": 199,
+   "openEdges": 864,
+   "nonManifoldEdges": 12,
    "boundsMin": [
-    -10.5,
-    -0.612,
-    -4.1617
+    -10.1,
+    -0.565,
+    -4.19
    ],
    "boundsMax": [
-    10.5,
-    0.8828,
-    4.1639
+    10.1,
+    0.896,
+    4.2
    ],
    "size": [
-    8.326,
-    21.0,
-    1.495
+    8.39,
+    20.2,
+    1.461
    ],
    "center": [
-    0.0,
-    0.135,
-    0.001
+    -0.0,
+    0.165,
+    0.005
    ],
-   "structureHash": "271b1781dd68bffa",
+   "structureHash": "a2b449266a69eb02",
    "color0": {
-    "mean": 0.7907,
-    "min": 0.6644,
+    "mean": 0.6732,
+    "min": 0.0801,
     "max": 1.0,
-    "p05": 0.7006,
-    "p95": 0.9898,
+    "p05": 0.262,
+    "p95": 0.8301,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -52861,34 +52871,47 @@
     "Muzzle_rocket.001"
    ],
    "nodeNames": [
-    "Armor",
-    "Armor.001",
+    "Antennas",
+    "Antennas.001",
     "Bay_doors",
-    "Bay_doors.001",
     "Bomb_bands",
     "Bomb_bodies",
     "Bomb_fuzes",
-    "Bomb_rack",
     "Bomb_seekers",
     "Bombs",
     "Canopy",
     "Canopy_frames",
     "Exhaust_glow",
-    "Exhaust_glow.001",
     "Exhaust_trough",
-    "Exhaust_trough.001",
+    "Flare_mouths",
+    "Flare_mouths.001",
+    "Flares",
+    "Flares.001",
     "Fold_seam",
     "Fold_seam.001",
+    "Fuselage",
     "Intakes",
-    "Intakes.001",
     "Muzzle_missile",
     "Muzzle_rocket",
     "Muzzle_rocket.001",
+    "Panel_lines",
+    "Panel_lines.001",
     "Part_wing",
     "Point_exhaust",
     "Point_fire",
+    "Pylons",
+    "Pylons.001",
+    "Racks",
+    "Ram_edges",
+    "Ram_edges.001",
+    "Ram_tape",
+    "Ram_tape.001",
     "Standoff_missile",
     "Standoff_missile.001",
+    "Tail_section",
+    "Team_band",
+    "Team_band.001",
+    "Walkways",
     "Wing",
     "Wing.001",
     "Wing_lights",
@@ -52898,7 +52921,8 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Muzzle_rocket.001"
+    "runtime names with a Blender suffix: Muzzle_rocket.001",
+    "renderers 38 over the jet normal budget 36"
    ],
    "units": [
     "stealth_naval_strike"

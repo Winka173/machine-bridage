@@ -1,0 +1,177 @@
+{
+ "id": "stealth_naval_strike",
+ "class": "jet",
+ "real": [
+  "A-12 Avenger II (cancelled US Navy carrier stealth attack aircraft): a triangular flying wing"
+ ],
+ "shape": "refs: none; the old builder (mb_p27_wave1c): an A-12 Avenger II flat-iron flying wing, 8.4 x 21 x 1.5 m, a straight 35 degree leading edge and an almost straight trailing edge, clipped tips with the carrier fold hinges, a flush canopy, intakes, flat exhaust troughs, weapon bays, the bomb rack under the belly; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 8.4,
+  "W": 21.0,
+  "H": 1.5,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the triangular flying wing (Team): one airfoil loft tip to tip, straight trailing edge, clipped tips",
+   "nodes": [
+    "Wing",
+    "Part_wing"
+   ]
+  },
+  {
+   "feature": "fold hinge lines, elevon and spoiler seams, wing lights, Team markings",
+   "nodes": [
+    "Fold_seam",
+    "Wing_lights",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "the blended centre body over the crew and the bays (the fuselage role)",
+   "nodes": [
+    "Fuselage"
+   ]
+  },
+  {
+   "feature": "the tandem two-seat canopy and its frames",
+   "nodes": [
+    "Canopy",
+    "Canopy_frames"
+   ]
+  },
+  {
+   "feature": "two intakes under the leading edge either side of the nose",
+   "nodes": [
+    "Intakes"
+   ]
+  },
+  {
+   "feature": "the aft centre section (the tail role) with the two flat exhaust troughs and their glow",
+   "nodes": [
+    "Tail_section",
+    "Exhaust_trough",
+    "Exhaust_glow",
+    "Point_exhaust"
+   ]
+  },
+  {
+   "feature": "two weapon bays with doors and racks, the bomb load half out (Bombs)",
+   "nodes": [
+    "Bay_doors",
+    "Racks",
+    "Bombs",
+    "Bomb_bodies",
+    "Bomb_seekers",
+    "Bomb_bands",
+    "Bomb_fuzes",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "four standoff missiles on pylons under the wings",
+   "nodes": [
+    "Pylons",
+    "Standoff_missile",
+    "Muzzle_rocket",
+    "Muzzle_rocket.001"
+   ]
+  },
+  {
+   "feature": "flush flare dispensers under the outer wing roots",
+   "nodes": [
+    "Flares",
+    "Flare_mouths"
+   ]
+  },
+  {
+   "feature": "radar-absorbent edge bands, tape over the panel seams, sawtooth panel outlines, walkway lines (paint, no relief)",
+   "nodes": [
+    "Ram_edges",
+    "Ram_tape",
+    "Panel_lines",
+    "Walkways"
+   ]
+  },
+  {
+   "feature": "the refuelling probe, blade antennas",
+   "nodes": [
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "canopy",
+  "wings",
+  "tail",
+  "intakes",
+  "exhaust",
+  "pylons",
+  "stores",
+  "flares"
+ ],
+ "weapons": [
+  {
+   "weapon": "jet_bombs",
+   "slot": "missile",
+   "mount": "Bombs",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only"
+ },
+ "team_zones": [
+  "the wing and centre body (Team)",
+  "markings on both outer wings"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the wrapper adds Part_wing (the left wing along its whole length, a flying wing)",
+ "faction_style": "military aircraft (both factions); jet rule: no insets",
+ "details": {
+  "tier1": [
+   "wing",
+   "centre body"
+  ],
+  "tier2": [
+   "canopy",
+   "intakes",
+   "tail section",
+   "exhaust troughs",
+   "bay doors",
+   "standoff missiles",
+   "pylons"
+  ],
+  "tier3": [
+   "canopy frames",
+   "bombs",
+   "seekers",
+   "fuzes",
+   "flare mouths",
+   "seams",
+   "tape",
+   "panel outlines",
+   "lights",
+   "probe",
+   "antennas"
+  ]
+ },
+ "questions": [
+  "NEEDS_HUMAN: a triangular flying wing stays near-convex from every side (silhouette 1.07 against the jet gold 1.42) and its top outline is symmetric; 67.5 after four rounds. Accept on the look?"
+ ]
+}
