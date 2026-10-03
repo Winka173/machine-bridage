@@ -19,17 +19,17 @@ namespace MachineBrigade.Game.Views
         private const float BarWidth = 2.4f;
         private const float BarHeight = 0.2f;
         private const float RecoilSeconds = 0.35f;
-        /// <summary>Aircraft fly in over this long: from behind along their heading, a little above their height.</summary>
+        /// <summary>Aircraft settle onto their flight level over this long, from a little above it (no run-in: play-test 13).</summary>
         private const float ArriveSeconds = 2.6f;
 
         /// <summary>
-        /// Test feedback 19P, the In action clip: an aircraft glides in and eases off onto its station (it comes in
-        /// fastest and slows all the way), over a shorter run, instead of the battle's fly-in that races in and then
-        /// brakes. Set by the range when it adds the view.
+        /// Test feedback 19P, the In action clip: an aircraft eases down onto its flight level (fastest first, slowing
+        /// all the way) over a longer settle than the battle's. Play-test 13 follow-up: neither has a horizontal run any
+        /// more; the Sim flies it in at its own speed. Set by the range when it adds the view.
         /// </summary>
         public bool GentleArrival { get; set; }
 
-        /// <summary>The drawn fly-in is over: the aircraft is where the simulation has it.</summary>
+        /// <summary>The drawn settle onto its flight level is over (the range frames and fires only after it).</summary>
         public bool Arrived => !Flying || Time.time - _spawnTime >= (GentleArrival ? GentleSeconds : ArriveSeconds);
 
         private const float GentleSeconds = 3.2f;
@@ -996,8 +996,8 @@ namespace MachineBrigade.Game.Views
 
             if (Flying)
             {
-                // Fly in from behind (never out of the ground), then hover with a slow bob, nose
-                // down when speeding up and bank into turns.
+                // Settle onto its flight level from a little above (never out of the ground), then hover with a slow
+                // bob, nose down when speeding up and bank into turns.
                 // Prompt 19: a boss on altitude tiers and a falling drop pod are drawn at the sim's height (no fly-in).
                 var tiered = Sim.Def.Tiers != null || Sim.IsPod;
                 var sinceSpawn = (Time.time - _spawnTime) / (GentleArrival ? GentleSeconds : ArriveSeconds);
@@ -1013,13 +1013,10 @@ namespace MachineBrigade.Game.Views
                     Altitude = _tierHeight + (Sim.Crashed || Sim.IsPod ? 0f : bob);
                 }
                 else Altitude = Def.Altitude + above * (Def.FixedWing ? 8f : 10f) + bob * arrive + _climb;
-                if (above > 0f)
-                {
-                    // It flies in along its heading from behind, dropping to its height as it comes.
-                    var heading = hull * Mathf.Deg2Rad;
-                    var run = GentleArrival ? above * (Def.FixedWing ? 42f : 24f) : above * above * (Def.FixedWing ? 80f : 35f);
-                    position -= new Vector3(Mathf.Sin(heading), 0f, Mathf.Cos(heading)) * run;
-                }
+                // Play-test 13 follow-up (lane A): no horizontal run-in. The Sim spawns an aircraft already at its cruise
+                // speed, so it is drawn where the Sim has it from the first frame and moves at its own speed; a run from
+                // behind that shrank to nothing added its own speed on top (2-4x the unit's, then a brake). Only the short
+                // settle from a few metres above its flight level is left (the height above), never a faster entry.
                 var turn = Mathf.DeltaAngle(_previousHeading, _currentHeading) * 20f;
                 if (Def.FixedWing)
                 {
