@@ -246,3 +246,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 sau khi agent hết hạn mức phiên: "tiếp tục".
 - 03/10 trả lời câu hỏi prompt 35: railgun_truck 8x8 hạng nặng mang súng ray đôi lấy từ Tempest => "được"; nhà chính dạng pháo đài thêm súng nhìn thấy được => "có". "còn câu hỏi nào gửi tôi luôn".
 - 03/10 trả lời danh sách 11 câu hỏi: "sửa theo đề xuất hết".
+- 03/10 "cho 1 agent tìm hiểu cách tối ưu token project này và viết thành 1 file commit lên luôn".
