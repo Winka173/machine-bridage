@@ -190,3 +190,99 @@ thích không nói): `Trang_bi_bo` (two_piece_arg1-3, four_piece_arg1-3), `Boss.
 - Dấu hiệu còn lại: `NEED_SOURCE` (thông số ngoài đời: `*_tham_chieu`, `Vu_khi.ngoai_doi_*`), `KHONG_AP_DUNG`, `NEED_CODE_CHECK`.
 - Kiểm tra: `export.py check` xuất hai lần (hai tiến trình) và chạy mọi test của mục 7; CI chạy nó vào thư mục tạm và chạy
   `check --structure-only` trên `Docs/export/current`. Không chạy test game hay replay.
+
+## Play-test 13 (lane C)
+
+Nhánh `feature/pt13-c`. Mọi số đổi trong lượt này (lý do ngoài đời: `Docs/DECISIONS.md` "Play-test 13 (lane C)").
+
+### tunables.json (khóa mới, `weapons.countermeasures`)
+
+| khóa | giá trị | ý nghĩa |
+|---|---|---|
+| flareCueSeconds | 1.5 s | pháo sáng bắn khi tên lửa còn ≤ 1.5 s là tới (cảnh báo giai đoạn cuối) |
+| flareGraceSeconds | 0.5 s | tên lửa tới trong lúc đám pháo sáng cháy + 0.5 s đều bị thử cùng một lần tung |
+| apsVolleySeconds | 0.4 s | một lần kích hoạt APS xe chặn mọi đạn tới trong 0.4 s, tốn 1 lần nạp |
+| apsRechargeScale | x1.5 | APS xe nạp lại chậm hơn 1.5 lần (bù cho luật trên) |
+
+### balance.json (luật, dữ liệu)
+
+| mục | cũ | mới |
+|---|---|---|
+| warningRules.normalFire | (không có: bắn thường T4+ có vòng + giữ đạn) | false: bắn thường không vòng, không giữ |
+| leviathan.salvo.warning | leviathan_shell (vòng 3.7 s) | bỏ: đạn bay theo tốc độ pháo 406 |
+| boss_thermo (Inferno) | TOS-1A 220 mm rocket, 6 x 97 / 12.51 s, minRange 10 | pháo 125 mm đạn nhiệt áp, 291 / 6.255 s, bắn thẳng, 170 m/s |
+| p26_behemoth_tiny_kornet_twin | 2 Kornet x 230 / 19.4 s | đạn pháo phụ 120 mm 230 / 9.7 s |
+| flightProfile Ballistic | — | boss_rockets, p26_behemoth_be_rockets, p26_jotunn_jo_rockets (và các vũ khí kế thừa) |
+| flightProfile Loft | — | sam_pac3, sam_48n6, tamir, leviathan_cruise, cruise_missile_ground, nsm_coastal; họ mim_104_patriot_pac_2, nsm_oniks |
+| tiers.enterLow | (không có: mở màn trên quỹ đạo + hạ dần 4 s) | true (mặc định): vào thẳng tầng thấp |
+| mainAim Hull | turret xoay | ballistic_launcher, ground_cruise_missile_vehicle, coastal_ashm_vehicle |
+
+### Tốc độ đạn (projectileSpeed, m/s; ~0.3 x tốc độ trung bình ngoài đời, trần 300, không giảm)
+
+Sửa ở họ vũ khí (family) khi vũ khí lấy tốc độ từ họ; cột cuối là vũ khí kích hoạt sửa khi khác tên.
+
+| mục | cột | cũ | mới | vũ khí |
+|---|---|---|---|---|
+| apkws (family) | projectileSpeed | 45 | 180 | apkws_rocket |
+| 9m120_ataka (family) | projectileSpeed | 26 | 120 | ataka |
+| atgm | projectileSpeed | 20 | 80 |  |
+| 9m133_kornet (family) | projectileSpeed | 22 | 80 | atgm_heavy |
+| atgm_post | projectileSpeed | 19 | 60 |  |
+| avenger_stingers | projectileSpeed | 42 | 200 |  |
+| ballistic_missile | projectileSpeed | 50 | 200 |  |
+| s_8_80_mm (family) | projectileSpeed | 40 | 180 | boat_rockets |
+| boss_howitzer | projectileSpeed | 60 | 100 |  |
+| 2b8_240_mm (family) | projectileSpeed | 38 | 60 | boss_mortar |
+| boss_rockets | projectileSpeed | 45 | 130 |  |
+| tos_1a_220_mm_thermobaric (family) | projectileSpeed | 35 | 70 | boss_thermo |
+| 9m317_buk (family) | projectileSpeed | 50 | 250 | buk_launcher |
+| caesar_155 | projectileSpeed | 45 | 100 |  |
+| m284_155_mm_2 (family) | projectileSpeed | 45 | 100 | casemate_155 |
+| cruise_missile_ground | projectileSpeed | 22 | 70 |  |
+| cruiser_203 | projectileSpeed | 70 | 110 |  |
+| agm_114_hellfire (family) | projectileSpeed | 26 | 110 | drone_missile |
+| bm_21_grad_122_mm_2 (family) | projectileSpeed | 45 | 130 | grad_cluster |
+| bm_21_grad_122_mm (family) | projectileSpeed | 45 | 130 | grad_rockets |
+| griffin | projectileSpeed | 22 | 70 |  |
+| gun_launched_atgm | projectileSpeed | 22 | 90 |  |
+| hydra_70_mm (family) | projectileSpeed | 40 | 180 | heli_rockets |
+| hover_rockets | projectileSpeed | 50 | 85 |  |
+| igla_v | projectileSpeed | 24 | 170 |  |
+| jassm | projectileSpeed | 20 | 70 |  |
+| kh29 | projectileSpeed | 32 | 120 |  |
+| khrizantema | projectileSpeed | 24 | 120 |  |
+| leviathan_460 | projectileSpeed | 60 | 200 |  |
+| leviathan_cruise | projectileSpeed | 24 | 70 |  |
+| maverick | projectileSpeed | 23 | 90 |  |
+| missile_57e6 | projectileSpeed | 55 | 300 |  |
+| mlrs_elite | projectileSpeed | 50 | 140 |  |
+| m31_gmlrs_227_mm (family) | projectileSpeed | 50 | 140 | mlrs_rockets |
+| 2b11_120_mm (family) | projectileSpeed | 32 | 60 | mortar_120 |
+| nsm_coastal | projectileSpeed | 40 | 85 |  |
+| p26_behemoth_be_rockets | projectileSpeed | 45 | 130 |  |
+| p26_jotunn_jo_rockets | projectileSpeed | 45 | 120 |  |
+| mim_104_patriot_pac_2 (family) | projectileSpeed | 60 | 300 | patriot |
+| r37m | projectileSpeed | 70 | 300 |  |
+| r60 | projectileSpeed | 42 | 210 |  |
+| recon_missile | projectileSpeed | 22 | 60 |  |
+| rockets_300mm | projectileSpeed | 55 | 120 |  |
+| sam | projectileSpeed | 42 | 200 |  |
+| sam_48n6 | projectileSpeed | 65 | 300 |  |
+| sam_pac3 | projectileSpeed | 65 | 300 |  |
+| smart_155_bonus (family) | projectileSpeed | 45 | 100 | smart_at_shell |
+| spike_nlos | projectileSpeed | 26 | 55 |  |
+| stinger_atas | projectileSpeed | 42 | 180 |  |
+| stinger_post | projectileSpeed | 42 | 180 |  |
+| supergun_800 | projectileSpeed | 120 | 140 |  |
+| tamir | projectileSpeed | 50 | 180 |  |
+| technical_rockets | projectileSpeed | 38 | 80 |  |
+| uav_loiter_missile | projectileSpeed | 26 | 110 |  |
+| vikhr | projectileSpeed | 24 | 120 |  |
+| aim_9_sidewinder (family) | projectileSpeed | 55 | 210 | aim9, wvr_aam |
+| agm_88_harm (family) | projectileSpeed | 45 | 210 | anti_radar_missile |
+| nsm_oniks (family) | projectileSpeed | 30 | 225 | anti_ship_missile |
+| air_to_air | projectileSpeed | 60 | 300 | |
+| air_cruise_missile | projectileSpeed | 22 | 65 | |
+| amos_120 | projectileSpeed | 32 | 60 | |
+
+Trận replay bị ảnh hưởng: mọi trận (tốc độ đạn, pháo sáng, APS, cảnh báo) — baseline của ReplayHashTests cần ghi lại.
