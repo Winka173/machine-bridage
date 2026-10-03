@@ -173,7 +173,7 @@
   },
   "ballistic_launcher": {
     "file": "ballistic_launcher.glb",
-    "triangles": 7414
+    "triangles": 7454
   },
   "ballistic_missile": {
     "file": "ballistic_missile.glb",
@@ -949,7 +949,7 @@
   },
   "ground_cruise_missile_vehicle": {
     "file": "ground_cruise_missile_vehicle.glb",
-    "triangles": 5606
+    "triangles": 5726
   },
   "ground_drone_carrier": {
     "file": "ground_drone_carrier.glb",
