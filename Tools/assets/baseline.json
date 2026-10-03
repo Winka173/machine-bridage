@@ -3072,6 +3072,26 @@
     "FLAG scout_jeep: triangles 2,422 -> 6,064 (+150.4%); vertices 2,857 -> 8,329 (+191.5%); meshes 27 -> 52 (+92.6%); renderers 27 -> 52 (+92.6%); materialSlots 27 -> 52 (+92.6%); fileBytes 169,108 -> 454,692 (+168.9%); structure changed",
     "FLAG scout_jeep_hd: triangles 3,738 -> 6,064 (+62.2%); vertices 4,825 -> 8,329 (+72.6%); meshes 35 -> 52 (+48.6%); renderers 35 -> 52 (+48.6%); materialSlots 35 -> 52 (+48.6%); fileBytes 271,080 -> 454,692 (+67.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "rocket_technical"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG rocket_technical: triangles 2,948 -> 6,554 (+122.3%); vertices 3,216 -> 9,325 (+190.0%); meshes 20 -> 51 (+155.0%); renderers 20 -> 51 (+155.0%); materials 8 -> 11 (+37.5%); materialSlots 20 -> 51 (+155.0%); fileBytes 180,628 -> 501,016 (+177.4%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "rocket_technical"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "rocket_technical: bytes only"
+   ]
   }
  ],
  "models": {
@@ -47350,24 +47370,24 @@
   },
   "rocket_technical": {
    "file": "rocket_technical.glb",
-   "fileBytes": 180628,
-   "sha1": "bdb446171dca0562",
+   "fileBytes": 501016,
+   "sha1": "6ab372670b26ef86",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 28,
-   "meshes": 20,
-   "materials": 8,
+   "nodes": 59,
+   "meshes": 51,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 20,
-   "submeshes": 20,
-   "materialSlots": 20,
-   "materialsUsed": 8,
-   "triangles": 2948,
-   "vertices": 3216,
+   "renderers": 51,
+   "submeshes": 51,
+   "materialSlots": 51,
+   "materialsUsed": 11,
+   "triangles": 6554,
+   "vertices": 9325,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -47375,36 +47395,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 57,
-   "openEdges": 0,
-   "nonManifoldEdges": 11,
+   "loosePieces": 255,
+   "openEdges": 16,
+   "nonManifoldEdges": 5,
    "boundsMin": [
-    -0.77,
-    0.0,
-    -2.16
+    -0.7983,
+    -0.0035,
+    -2.18
    ],
    "boundsMax": [
-    0.77,
-    1.8731,
-    2.23
+    0.7983,
+    1.9878,
+    2.29
    ],
    "size": [
-    4.39,
-    1.54,
-    1.873
+    4.47,
+    1.597,
+    1.991
    ],
    "center": [
     0.0,
-    0.937,
-    0.035
+    0.992,
+    0.055
    ],
-   "structureHash": "9e56998693c1e5ee",
+   "structureHash": "ac1989b335b1ba58",
    "color0": {
-    "mean": 0.6788,
-    "min": 0.0863,
+    "mean": 0.5853,
+    "min": 0.0731,
     "max": 1.0,
-    "p05": 0.2582,
-    "p95": 0.9816,
+    "p05": 0.1055,
+    "p95": 0.8137,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -47429,34 +47449,65 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antennas",
+    "Axles",
+    "Bed",
     "Body",
+    "Bumper",
+    "Cab",
     "Chassis",
+    "Cradle",
+    "Crates",
+    "Doors",
+    "Exhaust",
+    "Fender_flares",
     "Glass",
+    "Grille_frames",
+    "Grilles",
+    "Hubs",
+    "Hubs.001",
+    "Hubs.002",
+    "Jerrycans",
+    "Kit_steel",
+    "Kit_straps",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
+    "Leaf_springs",
     "MG",
     "MG_ammo",
+    "MG_cradle",
+    "MG_post",
+    "MG_shield",
     "Mount_mg",
     "Muzzle_main",
     "Muzzle_mg",
     "Part_wheel",
     "Part_wheelb",
-    "Pod_bands",
+    "Pedestal",
     "Point_exhaust",
     "Point_fire",
-    "Rocket_tubes",
-    "Steel",
+    "Roll_bar",
+    "Sight",
     "Tail_lamps",
+    "Tailgate",
+    "Tarp",
+    "Team_band",
+    "Tube_bands",
+    "Tubes",
     "Tubes_bore",
+    "Turntable",
     "Turret",
-    "Turret_armor",
-    "Turret_steel",
     "Tyres",
     "Tyres.001",
     "Tyres.002",
+    "Wheel_nuts",
+    "Wheel_nuts.001",
+    "Wheel_nuts.002",
     "Wheels",
     "Wheels.001",
-    "Wheels.002"
+    "Wheels.002",
+    "Window_frames",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,
