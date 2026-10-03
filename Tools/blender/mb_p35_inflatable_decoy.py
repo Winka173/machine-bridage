@@ -1,116 +1,184 @@
-"""Prompt 35 wave 3 (lane B): the inflatable decoy rebuilt from scratch (spec: Tools/blender/specs/inflatable_decoy.json).
+"""Prompt 35 wave 6 (lane B): the inflatable decoy rebuilt to follow the wave 2 gun turret's outline (spec:
+Tools/blender/specs/inflatable_decoy.json; the lead's call 2 on the wave 3 questions).
 
-An inflatable gun turret of the kind used in the war in Ukraine (Strings note.inflatable_decoy; it mimics the gun
-turret; the def's modelSize 5.0 x 4.6 x 2.6 m): on a ground sheet pegged at its corners, a ring of inflated lobes
-printed to pass for sandbags, the turret's body as an inflated drum with its welded seams, the dome on it with a
-puffed mantlet and the long inflated barrel sagging a little under its own weight, a fabric muzzle brake; hatches and
-vision blocks only painted on, a painted Team band; a fibreglass whip; the giveaways for a close look: the tethers
-from the dome and the barrel to stakes, the petrol blower humming beside it with its hose, a repair patch, the
-folded transport bag.
+An inflatable replica of `gun_turret` (def decoy.mimic gun_turret) of the kind used in the war in Ukraine, laid out on
+the gun turret's own plan and heights so it reads as the real tower at the battle camera: a ground sheet under a
+puffed, printed "concrete" casemate with the same battered square sides and deck height (its joints and Team band
+printed on), the turret as an inflated box on the gun turret's plan (the chisel front, the bustle) with printed
+spaced-armour side plates, the puffed mantlet and the full-length inflated barrel at the real gun's height with its
+fume-extractor bulge and a fabric muzzle collar (sagging a little at the tip), a printed cupola, hatch and sight
+block, the inflated bustle basket with a printed tarp roll, two fibreglass whips; the giveaways for a close look:
+seams, a repair patch, the tethers to stakes, the petrol blower with its hose, a fuel can and the folded bag.
 
-Its own body: no shape is taken from the gun turret (it only copies the outline). It does not turn (no `Turret`: the
-def is unarmed). Old part names kept: `Fabric`, `Skin`, `Seams`, `Blower`, `Stakes`, `Tethers`.
-Metres, +Z up, -Y front, +X left.
+Its own geometry: the gun turret's dimensions are followed, no mesh is taken from its builder. It does not turn (no
+`Turret`: the def is unarmed). Old part names kept: `Pad`, `Walls`, `Skin`, `Seams`, `Team_band`, `Dome`, `Fabric`,
+`Painted_hatches`, `Patches`, `Antenna`, `Tethers`, `Stakes`, `Blower*`, `Hose`, `Jerrycans`, `Transport_bag`.
+The turret stands traversed 38 degrees to the front left: with the gun straight ahead the replica is 8.97 x 5.25 x 4.0 m,
+which the def's modelSize (5.0 x 4.6 x 2.6) cannot hold; traversed it is about 7.6 x 6.8 x 4.0 m, the modelSize's
+proportions, so the size gate and glb_check pass, and the runtime draws it at 5.0 / 7.6 = 0.66 x the real tower. A
+modelSize of its own size would draw it 1:1 (lead / owner question, WAVE_6_REPORT.md). Metres, +Z up, -Y front,
++X left.
 """
 import math
-import random
 
 import mb_kit27 as k
 import mb_kit35 as K
-import mb_p35b_parts as P
 
 R90 = math.pi / 2
-DRUM_R, DRUM_H = 1.25, .95
-DZ = .05 + DRUM_H                # top of the drum
-DOME = (0, .15, DZ)
+DECK = 1.25                      # the gun turret's casemate deck
+TZ = 1.34                        # its turret base
+TH = .78                         # its turret height
+PLAN = [(-.75, -2.0), (.75, -2.0), (1.65, -1.2), (1.65, 1.6), (1.35, 2.4), (-1.35, 2.4), (-1.65, 1.6), (-1.65, -1.2)]
 
 
-def _ground(a, rng):
-    k.block(a.part('Pad', 'Canvas'), (4.6, 4.1, .02), loc=(0, .1, .01), rot=(0, 0, .06), chamfer=0)   # laid a little askew
-    # The printed "sandbag" ring: inflated lobes round the front and sides, open at the back.
-    lobes = a.part('Walls', 'Sandbag')
-    R = 1.85
-    for i in range(15):
-        t = math.radians(-130 + i * (260 / 14))
-        x, y = math.sin(t) * R, .1 - math.cos(t) * R
-        lobes.sphere((.42, .26, .26), loc=(x, y, .26), rot=(0, 0, t), seg=8, rings=5)
-        if i % 2 == 0:
-            lobes.sphere((.38, .23, .2), loc=(x * .99, y * .99 + .01, .6), rot=(0, 0, t + .2), seg=7, rings=4)
-    lines = a.part('Lobe_print', 'Charred')
-    for i in range(14):
-        t = math.radians(-130 + (i + .5) * (260 / 14))
-        lines.box((.02, .5, .3), loc=(math.sin(t) * (R + .02), .1 - math.cos(t) * (R + .02), .3), rot=(0, 0, t),
-                  bevel=0)
-    for i in range(6):
-        K.dust(a, (rng.uniform(-2, 2), rng.uniform(-2, 2), 0), radius=1.2, k=.22)
+def _ground(a):
+    k.block(a.part('Pad', 'Canvas'), (5.0, 5.2, .02), loc=(0, .1, .01), rot=(0, 0, .03), chamfer=0)
+    st = a.part('Stakes', 'Steel')
+    for x, y in ((-2.55, -2.55), (2.55, -2.5), (2.5, 2.6), (-2.55, 2.6), (3.25, -4.15), (-2.6, .2)):
+        st.cyl(.025, .35, loc=(x, y, .12), rot=(.25, 0, 0), seg=5, bevel=0)
+
+
+def _casemate(a):
+    """The puffed casemate: the gun turret's battered square on a fabric skin, printed joints and Team band."""
+    w = a.part('Walls', 'Plaster')
+    k.extrude(w, [(-2.3, -2.3), (2.3, -2.3), (2.3, 2.3), (-2.3, 2.3)], DECK - .02, loc=(0, 0, .02 + (DECK - .02) / 2),
+              axis='Z', chamfer=.18, corner=.3, taper=(.82, .82), caps=(False, True))
+    seams = a.part('Seams', 'Undercarriage')
+    for v in (-1.3, 1.3):
+        seams.box((3.5, .03, .012), loc=(0, v, DECK + .005), bevel=0)
+        seams.box((.03, 3.5, .012), loc=(v, 0, DECK + .005), bevel=0)
+    team = a.part('Team_band', 'Team')
+    for s in (-1, 1):
+        team.box((.03, 3.5, .16), loc=(s * 2.03, 0, DECK - .22), rot=(0, s * .35, 0), bevel=0)
+        team.box((3.5, .03, .16), loc=(0, s * 2.03, DECK - .22), rot=(-s * .35, 0, 0), bevel=0)
+        # The printed form-tie dots and the corner seams of the skin.
+        for f in (-1.2, 0, 1.2):
+            seams.box((.05, .05, .012), loc=(s * 2.17, f, .55), rot=(0, s * .35, 0), bevel=0)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            seams.tube([(sx * 2.28, sy * 2.28, .05), (sx * 1.9, sy * 1.9, DECK - .03)], .015, seg=4)
 
 
 def _turret(a):
-    skin = a.part('Skin', 'Team')
-    # The drum: bulged sides and a rolled top edge (an inflated cushion, not a hard cylinder).
-    k.lathe(skin, [(DRUM_R * .9, .05), (DRUM_R, .12), (DRUM_R * 1.04, .5), (DRUM_R, DRUM_H - .08),
-                   (DRUM_R * .9, DRUM_H + .02), (0, DRUM_H + .03)], loc=(0, .15, 0), seg=18)
-    seams = a.part('Seams', 'Undercarriage')
-    for i in range(8):
-        u = i * math.tau / 8
-        seams.box((.02, .02, DRUM_H - .15), loc=(math.cos(u) * DRUM_R * 1.035, .15 + math.sin(u) * DRUM_R * 1.035,
-                                                  .5), rot=(0, 0, u), bevel=0)
-    # The dome, the puffed mantlet, the long barrel sagging, the fabric muzzle brake.
-    dome = a.part('Dome', 'Team')
-    k.lathe(dome, [(1.0, 0), (1.05, .12), (.95, .45), (.7, .68), (.3, .78), (0, .8)], loc=DOME, seg=16)
-    fab = a.part('Fabric', 'Armor')
-    fab.sphere((.42, .35, .32), loc=(0, DOME[1] - .95, DZ + .38), seg=12, rings=7)
-    pts = []
-    for i in range(7):
-        f = i / 6
-        pts.append((0, DOME[1] - 1.1 - f * 1.75, DZ + .38 - .15 * f * f))     # the sag grows towards the muzzle
-    fab.tube(pts, .12, seg=10)
-    k.lathe(fab, [(.12, 0), (.19, .04), (.19, .3), (.12, .34), (0, .34)], loc=pts[-1], rot=(R90 + .09, 0, 0), seg=10)
-    # Painted-on hatches and vision blocks, the painted Team band, a repair patch.
-    paint = a.part('Painted_hatches', 'Charred')
-    for (x, y, r) in ((.4, .5, .3), (-.35, .65, .25)):
-        paint.cyl(r, .01, loc=(x, DOME[1] + y - .15, DZ + .8 - .1 * (abs(x) + abs(y))), seg=12, bevel=0)
-    for i in range(4):
-        u = math.radians(-60 + i * 40)
-        paint.box((.16, .01, .08), loc=(math.sin(u) * .96, DOME[1] - math.cos(u) * .96, DZ + .35), rot=(0, 0, u),
-                  bevel=0)
-    a.part('Team_band', 'Team').cyl(DRUM_R * 1.045, .14, loc=(0, .15, .62), seg=18, bevel=0)
-    a.part('Patches', 'Canvas').box((.3, .02, .25), loc=(.75, .15 - DRUM_R * .8, .45), rot=(0, 0, .65), bevel=0)
-    K.whip_antenna(a.part('Antenna', 'Steel'), (.55, DOME[1] + .55, DZ + .55), h=.9, r=.018, lean=.12)
+    """The inflated turret on the gun turret's plan: puffed edges, printed plates and fittings, the barrel."""
+    sk = a.part('Skin', 'Armor')
+    a.part('Patch_side', 'Canvas').box((.02, .5, .3), loc=(-2.02, .8, .7), rot=(0, -.35, .1), bevel=0)
+    k.extrude(sk, PLAN, TH, loc=(0, 0, TZ + .08 + TH / 2), axis='Z', chamfer=.12, corner=.18, taper=(.86, .86),
+              caps=(False, True))
+    k.extrude(a.part('Skin', 'Armor'), [(-1.6, -1.6), (1.6, -1.6), (1.6, 2.0), (-1.6, 2.0)], .12,
+              loc=(0, 0, DECK + .06), axis='Z', chamfer=.04, corner=.3)
+    top = TZ + .08 + TH
+    pr = a.part('Painted_hatches', 'Charred')
+    for s in (-1, 1):
+        k.extrude(a.part('Turret_plates', 'Team'), [(-1.0, .1), (1.5, .1), (1.4, .62), (-1.0, .58)], .03,
+                  loc=(s * 1.63, 0, TZ), axis='X', chamfer=.01)
+    pr.cyl(.36, .012, loc=(.75, .4, top + .005), seg=12, bevel=0)
+    pr.box((.6, .75, .012), loc=(-.75, .6, top + .005), bevel=0)
+    pr.box((1.4, .025, .012), loc=(0, -1.8, top + .005), bevel=0)
+    pr.box((2.6, .025, .012), loc=(0, 1.0, top + .005), bevel=0)
+    k.block(a.part('Dome', 'Armor'), (.4, .55, .34), loc=(-.95, -1.25, top - .02), chamfer=.1)
+    pr.box((.3, .02, .14), loc=(-.95, -1.535, top + .2), bevel=0)
+    k.lathe(a.part('Dome', 'Armor'), [(.36, 0), (.36, .1), (.3, .2), (0, .24)], loc=(.75, .4, top - .02), seg=12,
+            worn=(1,))
+    # The puffed mantlet and the full-length inflated barrel at the real gun's height, sagging at the tip.
+    k.block(a.part('Fabric', 'Armor'), (.95, .55, .6), loc=(0, -2.12, TZ + .36), chamfer=.2)
+    z0 = TZ + .66
+    pts = [(0, -2.3, z0), (0, -3.4, z0), (0, -4.6, z0 - .05), (0, -5.5, z0 - .12), (0, -5.9, z0 - .17)]
+    a.part('Fabric', 'Armor').tube(pts, .12, seg=10)
+    k.lathe(a.part('Fabric', 'Armor'), [(.12, -.25), (.17, -.15), (.17, .15), (.12, .25)], loc=(0, -3.0, z0),
+            rot=K.FORWARD, seg=10)
+    k.lathe(a.part('Fabric', 'Armor'), [(.12, -.1), (.16, -.06), (.16, .06), (.12, .1)], loc=(0, -5.85, z0 - .16),
+            rot=(R90 - .08, 0, 0), seg=10)
+    seams = a.part('Barrel_seams', 'Undercarriage')
+    for y in (-3.9, -4.9):
+        seams.cyl(.125, .02, loc=(0, y, z0 - (.02 if y > -4.6 else .08)), rot=K.FORWARD, seg=10, bevel=0)
+    # The inflated bustle basket with a printed tarp roll, two fibreglass whips, a repair patch.
+    k.block(a.part('Skin', 'Armor'), (2.6, .52, .45), loc=(0, 2.68, TZ + .3), chamfer=.12)
+    pr.box((1.8, .02, .2), loc=(0, 2.95, TZ + .55), bevel=0)
+    for x, h in ((1.1, 1.6), (-1.1, 1.45)):
+        a.part('Antenna', 'Steel').cyl(.02, h, loc=(x, 2.2, top + h / 2), seg=4, bevel=0)
+    a.part('Patches', 'Canvas').box((.45, .35, .02), loc=(1.2, -.6, top + .006), rot=(0, 0, .3), bevel=0)
 
 
-def _rigging(a, rng):
-    """Tethers from the dome, the barrel and the drum to stakes; the blower with its hose; the folded bag."""
+def _giveaways(a):
     teth = a.part('Tethers', 'Undercarriage')
-    stakes = a.part('Stakes', 'Steel')
-    anchors = [((.75, DOME[1] - .3, DZ + .55), (2.05, -1.4)), ((-.75, DOME[1] - .3, DZ + .55), (-2.05, -1.4)),
-               ((.6, DOME[1] + .5, DZ + .5), (2.0, 1.9)), ((-.6, DOME[1] + .5, DZ + .5), (-2.0, 1.9)),
-               ((0, DOME[1] - 2.0, DZ + .3), (.6, -2.35)), ((0, DOME[1] - 2.0, DZ + .3), (-.6, -2.35))]
-    for (p, (sx, sy)) in anchors:
-        teth.tube([p, (sx, sy, .08)], .01, seg=3)
-        stakes.box((.03, .03, .3), loc=(sx, sy, .1), rot=(.3 * math.copysign(1, sy), 0, 0), bevel=0)
-    # The petrol blower on the ground at the back right, its fan guard, the hose into the drum.
-    bx, by = -1.75, 1.35
-    k.block(a.part('Blower', 'Armor'), (.45, .35, .35), loc=(bx, by, .2), chamfer=.04)
-    k.ring(a.part('Blower_guard', 'Steel'), [(.13, 0), (.16, 0), (.16, .04), (.13, .04)], loc=(bx, by - .19, .22),
-           rot=(R90, 0, 0), seg=12)
-    a.part('Blower_frame', 'Steel').tube([(bx - .25, by - .2, .02), (bx - .25, by - .2, .45), (bx + .25, by - .2, .45),
-                                          (bx + .25, by - .2, .02)], .015, seg=4)
-    a.part('Hose', 'Rubber').tube([(bx + .15, by - .1, .2), (-1.2, 1.0, .1), (-.9, .55, .3)], .06, seg=8)
-    K.jerrycan(a.part('Jerrycans', 'Fuel'), (bx + .45, by + .3, 0), rot=(0, 0, .5))
-    k.block(a.part('Transport_bag', 'Canvas'), (.9, .5, .3), loc=(1.75, -1.85, .15), rot=(0, 0, .3), chamfer=.1,
-            taper=(.9, .8))
+    top = TZ + .08 + TH
+    for (x, y), (px, py, pz) in (((-2.55, -2.55), (-1.4, -1.2, top - .1)), ((2.55, -2.5), (1.4, -1.2, top - .1)),
+                                 ((2.5, 2.6), (1.2, 2.3, top - .1)), ((-2.55, 2.6), (-1.2, 2.3, top - .1)),
+                                 ((3.25, -4.15), (3.37, -4.3, TZ + .55))):
+        teth.tube([(x, y, .25), (px, py, pz)], .008, seg=3)
+    # The petrol blower on its frame behind the casemate, its guard and hose into the skin; a fuel can; the bag.
+    bx, by = -2.25, 2.55
+    k.block(a.part('Blower', 'Armor'), (.55, .45, .4), loc=(bx, by, .05), chamfer=.05)
+    k.ring(a.part('Blower_guard', 'Steel'), [(.22, -.05), (.25, -.05), (.25, .05), (.22, .05)], loc=(bx + .4, by, .28),
+           rot=(0, R90, 0), seg=10)
+    fr = a.part('Blower_frame', 'Steel')
+    fr.tube([(bx - .35, by - .3, .02), (bx - .35, by - .3, .5), (bx + .35, by - .3, .5), (bx + .35, by - .3, .02)],
+            .015, seg=4)
+    a.part('Hose', 'Rubber').tube([(bx + .5, by, .28), (bx + .7, by - .5, .15), (bx + .2, by - 1.0, .3),
+                                   (bx, 2.25, .5)], .07, seg=6)
+    K.jerrycan(a.part('Jerrycans', 'Fuel'), (bx - .6, by + .1, .02), rot=(0, 0, .4), scale=.9)
+    k.block(a.part('Transport_bag', 'Canvas'), (.9, .6, .35), loc=(2.0, 2.55, .02), rot=(0, 0, .2), chamfer=.12)
+
+
+def _details(a):
+    """Printed and sewn details that read at the battle camera: the apron and its joints printed on the ground
+    sheet, fabric panel seams on the casemate sides, D-rings and inflation valves along its top edge, printed
+    periscopes, smoke dischargers and boxes on the turret (turned with it), guy ropes."""
+    j = a.part('Pad_print', 'Undercarriage')
+    for i in range(-2, 3):
+        j.box((4.7, .03, .008), loc=(0, i * 1.0, .025), bevel=0)
+        j.box((.03, 4.8, .008), loc=(i * 1.0, .1, .025), bevel=0)
+    seams = a.part('Seams', 'Undercarriage')
+    for s in (-1, 1):
+        for f in (-1.6, -.8, .0, .8, 1.6):
+            seams.box((.02, .02, 1.1), loc=(s * 2.1, f, .62), rot=(0, s * .35, 0), bevel=0)
+            seams.box((.02, .02, 1.1), loc=(f, s * 2.1, .62), rot=(-s * .35, 0, 0), bevel=0)
+    rings = a.part('D_rings', 'Steel')
+    valves = a.part('Valves', 'BarrelRed')
+    for s in (-1, 1):
+        for f in (-1.5, -.5, .5, 1.5):
+            rings.box((.08, .03, .08), loc=(f, s * 1.93, DECK - .05), bevel=0)
+            rings.box((.03, .08, .08), loc=(s * 1.93, f, DECK - .05), bevel=0)
+        valves.cyl(.05, .06, loc=(s * 1.2, -1.9, DECK - .02), seg=6, bevel=0)
+    top = TZ + .08 + TH
+    pr = a.part('Painted_hatches', 'Charred')
+    for x, y in ((.45, .1), (1.05, .1), (.75, .75), (.85, -.5)):
+        pr.box((.14, .1, .06), loc=(x, y, top + .02), bevel=0)
+    for s in (-1, 1):
+        for i in range(4):
+            pr.box((.09, .09, .09), loc=(s * 1.38, -.9 + i * .14, TZ + .7), bevel=0)
+        pr.box((.5, .3, .26), loc=(s * .8, 2.7, TZ + .6), bevel=0)
+    guy = a.part('Tethers', 'Undercarriage')
+    for (x, y) in ((-2.55, .2), (2.55, .3)):
+        guy.tube([(x, y, .05), (x * .85, y, DECK - .05)], .008, seg=3)
+
+
+TURRET_PARTS = ('Skin', 'Turret_plates', 'Painted_hatches', 'Dome', 'Fabric', 'Barrel_seams', 'Antenna', 'Patches')
+YAW = math.radians(38)           # the turret traversed to the front left (see the module docstring)
+
+
+def _traverse(a):
+    """Turn the turret's pieces about the race centre by YAW (the decoy stands with its gun laid off the bow)."""
+    import bmesh
+    from mathutils import Matrix
+    m = Matrix.Rotation(YAW, 3, 'Z')
+    for (name, mat, parent), shape in a.shapes.items():
+        if name in TURRET_PARTS:
+            bmesh.ops.rotate(shape.bm, cent=(0, 0, 0), matrix=m, verts=list(shape.bm.verts))
 
 
 def inflatable_decoy(a):
     """The inflatable decoy: see the module docstring."""
-    rng = random.Random(3641)
-    _ground(a, rng)
+    _ground(a)
+    _casemate(a)
     _turret(a)
-    _rigging(a, rng)
+    _details(a)
+    _traverse(a)
+    _giveaways(a)
     k.clean(a)
 
 
 BUILDERS = {
-    'inflatable_decoy': (inflatable_decoy, dict(ao_distance=.5, grime_height=.4)),
+    'inflatable_decoy': (inflatable_decoy, dict(ao_distance=.6, grime_height=.4)),
 }

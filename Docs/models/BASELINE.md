@@ -10,7 +10,7 @@ the hard cap an error). Warnings are listed in the JSON.
 |---|---:|---:|---:|---|---:|---:|---:|
 | boss | 33 | 559,002 | 16,939 | rail_supergun (36,726) | 2,376 | 0 | 27 |
 | ground | 95 | 554,920 | 5,841 | main_battle_tank_hd (16,462) | 3,551 | 0 | 22 |
-| structure | 86 | 421,804 | 4,904 | headquarters (14,164) | 3,545 | 0 | 14 |
+| structure | 86 | 421,296 | 4,898 | headquarters (14,164) | 3,550 | 0 | 15 |
 | prop | 115 | 253,918 | 2,207 | apartment (6,128) | 1,540 | 0 | 2 |
 | air | 31 | 114,618 | 3,697 | fighter_jet_hd (14,216) | 832 | 0 | 19 |
 | unlisted | 33 | 107,254 | 3,250 | apc_hd (14,968) | 628 | 0 | 0 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 7,146 | 255 | fpv_drone (1,564) | 210 | 0 | 1 |
 
-All files: 2,079,620 triangles, 0 with errors, 88 more with warnings only.
+All files: 2,079,112 triangles, 0 with errors, 89 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 

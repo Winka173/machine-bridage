@@ -3078,6 +3078,16 @@
    "changes": [
     "FLAG stealth_naval_strike: triangles 2,124 -> 3,662 (+72.4%); vertices 2,786 -> 5,626 (+101.9%); meshes 25 -> 38 (+52.0%); renderers 25 -> 38 (+52.0%); materialSlots 25 -> 38 (+52.0%); fileBytes 159,664 -> 307,460 (+92.6%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "inflatable_decoy"
+   ],
+   "reason": "P35 wave 6: inflatable_decoy rebuilt from scratch",
+   "changes": [
+    "FLAG inflatable_decoy: triangles 3,088 -> 2,580 (-16.5%); vertices 3,748 -> 3,982 (+6.2%); meshes 19 -> 24 (+26.3%); renderers 19 -> 24 (+26.3%); materials 9 -> 10 (+11.1%); materialSlots 19 -> 24 (+26.3%); fileBytes 203,072 -> 215,508 (+6.1%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -34077,22 +34087,22 @@
   },
   "inflatable_decoy": {
    "file": "inflatable_decoy.glb",
-   "fileBytes": 203072,
-   "sha1": "d64fea2ec8536799",
+   "fileBytes": 215508,
+   "sha1": "cfe90bf58bf50353",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 19,
-   "meshes": 19,
-   "materials": 9,
+   "nodes": 24,
+   "meshes": 24,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 19,
-   "submeshes": 19,
-   "materialSlots": 19,
-   "materialsUsed": 9,
-   "triangles": 3088,
-   "vertices": 3748,
+   "renderers": 24,
+   "submeshes": 24,
+   "materialSlots": 24,
+   "materialsUsed": 10,
+   "triangles": 2580,
+   "vertices": 3982,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -34100,52 +34110,55 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 81,
-   "openEdges": 0,
+   "loosePieces": 128,
+   "openEdges": 22,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -2.4188,
-    -0.0477,
-    -2.2842
+    -2.9736,
+    -0.155,
+    -3.0432
    ],
    "boundsMax": [
-    2.4188,
-    2.4932,
-    3.0489
+    3.7645,
+    3.8,
+    4.7623
    ],
    "size": [
-    5.333,
-    4.838,
-    2.541
+    7.806,
+    6.738,
+    3.955
    ],
    "center": [
-    0.0,
-    1.223,
-    0.382
+    0.395,
+    1.822,
+    0.86
    ],
-   "structureHash": "f375cae5e1d85667",
+   "structureHash": "5d012e942ac2b06f",
    "color0": {
-    "mean": 0.5481,
-    "min": 0.0601,
-    "max": 0.9898,
-    "p05": 0.1086,
-    "p95": 0.8058,
+    "mean": 0.6098,
+    "min": 0.0619,
+    "max": 0.9987,
+    "p05": 0.1557,
+    "p95": 0.8216,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
     "Antenna",
+    "Barrel_seams",
     "Blower",
     "Blower_frame",
     "Blower_guard",
+    "D_rings",
     "Dome",
     "Fabric",
     "Hose",
     "Jerrycans",
-    "Lobe_print",
     "Pad",
+    "Pad_print",
     "Painted_hatches",
+    "Patch_side",
     "Patches",
     "Seams",
     "Skin",
@@ -34153,12 +34166,16 @@
     "Team_band",
     "Tethers",
     "Transport_bag",
+    "Turret_plates",
+    "Valves",
     "Walls"
    ],
    "category": "structure",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "inflatable_decoy: length 7.81 m vs modelSize 5.0 m (fitted at runtime)"
+   ],
    "units": [
     "inflatable_decoy"
    ],
