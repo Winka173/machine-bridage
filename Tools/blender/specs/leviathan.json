@@ -49,8 +49,9 @@
     "Part_sec_a",
     "Mount_gun.003",
     "Mount_gun.004",
-    "Sec_house",
-    "Sec_barrels"
+    "Sec_house_003",
+    "Sec_barrels_003",
+    "Sec_house_004"
    ]
   },
   {
@@ -100,7 +101,8 @@
     "Mount_mg.001",
     "Part_aa_l",
     "Part_aa_r",
-    "Aa_guns"
+    "Aa_guns_002",
+    "Aa_sponson_l"
    ]
   },
   {
