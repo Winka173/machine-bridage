@@ -96,6 +96,7 @@ import mb_p35_wave2_hangar  # noqa: E402
 import mb_p35_wave2_shield  # noqa: E402
 import mb_p35_wave2_branches  # noqa: E402
 import mb_p35_wave2_support  # noqa: E402
+import mb_p35_trims  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -235,6 +236,8 @@ def all_builders():
     builders = mb_p34_parts.wrap(builders)
     # Fix prompt L4: the Mount_Flare_* points on every unit with flares (after every other builder and wrapper).
     builders = mb_flare_mounts.wrap(builders)
+    # Prompt 35 wave 2: the old towers over the 1.5 x cap that no wave rebuilds, trimmed after their bake (last).
+    builders = mb_p35_trims.wrap(builders)
     return builders
 
 

@@ -825,7 +825,7 @@
   },
   "ew_tower_a": {
     "file": "ew_tower_a.glb",
-    "triangles": 6268
+    "triangles": 5664
   },
   "ew_tower_b": {
     "file": "ew_tower_b.glb",
@@ -961,11 +961,11 @@
   },
   "guard_tower": {
     "file": "guard_tower.glb",
-    "triangles": 6772
+    "triangles": 5796
   },
   "guard_tower_a": {
     "file": "guard_tower_a.glb",
-    "triangles": 7488
+    "triangles": 5942
   },
   "guard_tower_b": {
     "file": "guard_tower_b.glb",
@@ -1281,15 +1281,15 @@
   },
   "missile_battery": {
     "file": "missile_battery.glb",
-    "triangles": 7242
+    "triangles": 5842
   },
   "missile_battery_a": {
     "file": "missile_battery_a.glb",
-    "triangles": 8654
+    "triangles": 5952
   },
   "missile_battery_b": {
     "file": "missile_battery_b.glb",
-    "triangles": 7290
+    "triangles": 5832
   },
   "missile_boat": {
     "file": "missile_boat.glb",
