@@ -1,0 +1,279 @@
+{
+ "id": "hyperion",
+ "class": "boss",
+ "real": [
+  "Znamya 2 orbital mirror experiment (1993)",
+  "ISS integrated truss, solar array wings and radiators",
+  "media: silver_bug's references (unit_refs)"
+ ],
+ "shape": "Aurel's orbital mirror station: a hexagonal ring of square lattice trusses with corner nodes and navigation lights, rows of white mirror facets on gimbal posts tilted to the core, six tubular spokes with radiator panels, the core stack (habitat drum, equipment rings, docking ports, windows, team bands, comms mast with dish and beacon, the APS crown), the sun-beam emitter on its yoke under the core (lens barrel, cooling fins, glowing aperture), the main engine on the core's aft side (bell, throat glow, tanks), four RCS pods on the outer corners, two point-defence laser turrets, two coilguns (rails, coil rings, capacitors) on the front corners and two 40 mm turrets aft, solar trusses fore and aft with four array wings, the pod bay with two landing pods on legs under the core.",
+ "confidence": "ước đoán (a game boss; Znamya 2 and ISS hardware for the parts)",
+ "target_size": {
+  "L": 67.2,
+  "W": 43.7,
+  "H": 20.0,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "hexagonal ring trusses, nodes, nav lights",
+   "nodes": [
+    "Hull",
+    "Truss_diagonals",
+    "Ring_nodes",
+    "Nav_lights"
+   ]
+  },
+  {
+   "feature": "mirror facets on gimbals",
+   "nodes": [
+    "Mirrors",
+    "Mirror_frames"
+   ]
+  },
+  {
+   "feature": "spokes and radiators",
+   "nodes": [
+    "Spokes",
+    "Radiators"
+   ]
+  },
+  {
+   "feature": "core stack, docking ports, mast, dish, beacon",
+   "nodes": [
+    "Body",
+    "Core_rings",
+    "Docking_ports",
+    "Comms_mast",
+    "Comms_dish",
+    "Glass"
+   ]
+  },
+  {
+   "feature": "sun-beam emitter",
+   "nodes": [
+    "Turret",
+    "Laser_mount",
+    "Main_cannon",
+    "Main_cannon_lens",
+    "Laser_fins",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "main engine",
+   "nodes": [
+    "Thruster_main",
+    "Engine_mount",
+    "Engine_bell",
+    "Engine_glow",
+    "Engine_tanks"
+   ]
+  },
+  {
+   "feature": "RCS pods",
+   "nodes": [
+    "Thruster_fl",
+    "Thruster_fr",
+    "Thruster_rl",
+    "Thruster_rr"
+   ]
+  },
+  {
+   "feature": "point-defence lasers, coilguns, 40 mm turrets",
+   "nodes": [
+    "Pd_laser_l",
+    "Pd_laser_r",
+    "Mount_mg",
+    "Mount_mg.001",
+    "Mount_gun",
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Mount_gun.003"
+   ]
+  },
+  {
+   "feature": "solar trusses and arrays",
+   "nodes": [
+    "Solar_truss",
+    "Solar_cells",
+    "Solar_frames"
+   ]
+  },
+  {
+   "feature": "pod bay and landing pods",
+   "nodes": [
+    "Pod_bay",
+    "Pod_dock",
+    "Pod_0",
+    "Pod_2",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "APS crown",
+   "nodes": [
+    "Mount_APS",
+    "Aps_emitter"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "lift"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_icarus_sec_orbital_laser",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "mount 0: the sun-beam emitter"
+  },
+  {
+   "weapon": "p26_icarus_main_ic_coil",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ],
+   "note": "mount 1"
+  },
+  {
+   "weapon": "p26_icarus_main_ic_coil",
+   "slot": "gun",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ],
+   "note": "mount 2"
+  },
+  {
+   "weapon": "p26_icarus_direct_ic_laser",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "mount 3: point-defence laser"
+  },
+  {
+   "weapon": "p26_icarus_direct_ic_laser",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ],
+   "note": "mount 4"
+  },
+  {
+   "weapon": "p26_icarus_close_autocannon_40",
+   "slot": "gun",
+   "mount": "Mount_gun.002",
+   "muzzles": [
+    "Muzzle_gun.002"
+   ],
+   "note": "mount 5"
+  },
+  {
+   "weapon": "p26_icarus_close_autocannon_40",
+   "slot": "gun",
+   "mount": "Mount_gun.003",
+   "muzzles": [
+    "Muzzle_gun.003"
+   ],
+   "note": "mount 6"
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "cap": null,
+  "note": "boss: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "ring trusses (Team)",
+  "core (Team)",
+  "weapon houses (Team)",
+  "pods (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "node": "Turret",
+   "part": "main_laser"
+  },
+  {
+   "node": "Thruster_main",
+   "part": "main_engine"
+  },
+  {
+   "node": "Thruster_fl",
+   "part": "thruster_fl"
+  },
+  {
+   "node": "Thruster_fr",
+   "part": "thruster_fr"
+  },
+  {
+   "node": "Thruster_rl",
+   "part": "thruster_rl"
+  },
+  {
+   "node": "Thruster_rr",
+   "part": "thruster_rr"
+  },
+  {
+   "node": "Pd_laser_l",
+   "part": "pd_laser_l"
+  },
+  {
+   "node": "Pd_laser_r",
+   "part": "pd_laser_r"
+  },
+  {
+   "node": "Pod_bay",
+   "part": "pod_bay"
+  }
+ ],
+ "wreck": "the runtime breaks the boss parts off",
+ "faction_style": "Aurel's orbital hardware: team colour structure, white mirrors and radiators, gold solar frames, energy glows",
+ "details": {
+  "tier1": [
+   "ring",
+   "core",
+   "solar wings",
+   "emitter"
+  ],
+  "tier2": [
+   "mirrors",
+   "spokes",
+   "engine",
+   "RCS pods",
+   "turrets",
+   "coilguns",
+   "pods"
+  ],
+  "tier3": [
+   "truss diagonals",
+   "nav lights",
+   "windows",
+   "docking ports",
+   "dish",
+   "fins",
+   "tanks"
+  ]
+ },
+ "questions": []
+}
