@@ -2800,7 +2800,8 @@
     // Snow: a mountain village, a radar station on the heights.
     { "id": "log_cabin", "scale": 1.49,     "armor": "Structure", "hp": 910,  "width": 8.97,  "depth": 8.06,  "blocks": true },
     { "id": "snow_rock",     "armor": "Structure", "hp": 1000000, "width": 4.6, "depth": 3.8, "blocks": true },
-    { "id": "radar_station", "scale": 1.15, "armor": "Structure", "hp": 1200, "width": 7.9,  "depth": 7.8,  "blocks": true },
+    // Owner fix 10 (2026-10-03): the map prop has its own id (it drew the same id as the base utility module, width 6 m).
+    { "id": "radar_station_prop", "scale": 1.15, "armor": "Structure", "hp": 1200, "width": 7.9,  "depth": 7.8,  "blocks": true },
     { "id": "watchtower", "scale": 1.15,    "armor": "Structure", "hp": 350,  "width": 4,    "depth": 4.1,  "blocks": true, "blocksFire": false },
     // Harbour: docks, a rail yard and a factory district.
     { "id": "container",     "armor": "Structure", "hp": 400,  "width": 6,    "depth": 2.4,  "blocks": true },

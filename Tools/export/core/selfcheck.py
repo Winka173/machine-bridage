@@ -127,7 +127,8 @@ def check1(books, planned: dict):
 def _src_files(schema_row: dict) -> frozenset:
     """The source collections a column reads (Schema.nguon_khoa '<file>: <path>, <path>; ...'): '<file>#<root>', root = the
     path's first key (vehicles, props, ...), so the same id in two collections of one file (balance.json vehicles[] and
-    props[] both have radar_station) is two entities, not one datum (lane B, pass 5 part 2)."""
+    props[] both had radar_station until owner fix 10 split it into radar_station_prop) is two entities, not one datum
+    (lane B, pass 5 part 2)."""
     text = schema_row.get("nguon_khoa", "") if schema_row else ""
     out = set()
     for part in text.split(";"):

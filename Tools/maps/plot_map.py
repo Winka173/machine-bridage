@@ -55,7 +55,7 @@ COLOURS = {'tree': '#3f6b3a', 'palm': '#5f8b3a', 'cactus': '#6f8b4a', 'mesa': '#
            'tank_ditch': '#86795e', 'wreck_tank': '#3a2a26', 'wreck_truck': '#3a2a26', 'wreck_car': '#3a2a26',
            'artillery_wreck': '#3a2a26', 'boulders': '#707070', 'bridge_road': '#c9b48e', 'tank_trap': '#303030',
            'dead_tree': '#5a4a3a', 'power_pylon': '#9098a0',
-           'shield_generator': '#30c0ff', 'radar_station': '#ffffff', 'fortress_gate': '#ff2020'}
+           'shield_generator': '#30c0ff', 'radar_station_prop': '#ffffff', 'fortress_gate': '#ff2020'}
 SURFACES = {'lava_pool': '#ff5a10', 'river_water': '#5a4a2a', 'river_ford': '#9a8a5a'}
 # Water as the theme draws it: brown in the jungle, blue elsewhere (sea, reservoir, big river).
 BLUE_WATER = {'river_water': '#2f5f7a', 'river_ford': '#7ea3a6'}

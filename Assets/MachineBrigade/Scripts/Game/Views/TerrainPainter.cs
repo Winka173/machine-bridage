@@ -415,7 +415,7 @@ namespace MachineBrigade.Game.Views
         private static readonly HashSet<string> PavedUnder = new()
         {
             "fuel_tank", "storage_tank", "refinery_tower", "oil_pump", "container", "container_stack", "gantry_crane", "factory",
-            "office_block", "rail_tanker", "rail_boxcar", "radar_station", "hangar", "control_tower", "radar_dome", "revetment",
+            "office_block", "rail_tanker", "rail_boxcar", "radar_station_prop", "hangar", "control_tower", "radar_dome", "revetment",
             "highrise_a", "highrise_b", "skyscraper", "parking_garage", "command_hq", "base_wall", "fuel_depot", "ammo_dump",
             "vehicle_hangar", "helipad",
         };

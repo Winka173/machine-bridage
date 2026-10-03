@@ -136,7 +136,7 @@ namespace MachineBrigade.Game.Views
                             (prop.Def.Width * prop.Def.Depth >= 3f || (vegetation ? treeShadows : clutterShadows));
                 var movingBefore = _moving.Count;
                 var instance = id == "fortress_gate" ? GateDoors(casts)
-                    : id is "oil_pump" or "radar_station" or "control_tower" or "command_hq" ? SpawnMoving(model, casts, rng) : Spawn(model, casts);
+                    : id is "oil_pump" or "radar_station_prop" or "control_tower" or "command_hq" ? SpawnMoving(model, casts, rng) : Spawn(model, casts);
                 // Towers on the battlefield are cut down to size so they do not hide the fighting
                 // from the high camera (the skyline beyond the edge keeps them full height).
                 if (id is "highrise_a" or "highrise_b" or "skyscraper") instance.transform.localScale = new Vector3(1f, 0.62f, 1f);
@@ -604,7 +604,7 @@ namespace MachineBrigade.Game.Views
             "storage_tank" => ("storage_tank", null, MetalDebris),
             "pipeline" => ("pipeline", null, new[] { "debris_metal", "debris_metal", "debris_metal" }),
             "log_cabin" => ("log_cabin", "rubble_small", BarnDebris),
-            "radar_station" => ("radar_station", "rubble_medium", MetalDebris),
+            "radar_station_prop" => ("radar_station", "rubble_medium", MetalDebris),
             "watchtower" => ("watchtower", null, new[] { "debris_wood", "debris_metal", "debris_wood", "debris_metal" }),
             "container" or "container_stack" => (defId, null, MetalDebris),
             "gantry_crane" => ("gantry_crane", "rubble_large", MetalDebris),

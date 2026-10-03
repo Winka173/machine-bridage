@@ -63,7 +63,7 @@ namespace MachineBrigade.Sim.Modes
         public float Overtime { get; set; } = 90f;
 
         /// <summary>Stage 1 objectives: the relay stations of the outer line.</summary>
-        public string Relay { get; set; } = "radar_station";
+        public string Relay { get; set; } = "radar_station_prop";
 
         /// <summary>Stage 2 objectives: the shield generators inside the walls, which keep the HQ shielded.</summary>
         public string Generator { get; set; } = "shield_generator";
