@@ -196,6 +196,139 @@ def _mlrs_module(a):
     K.bolt_ring(a.part('Kit_bolts', 'Steel', t), (0, 0, .12), (0, 0, 1), .55, 8)
 
 
+# ============================================================================= grad_truck (BM-21 Grad)
+def grad_truck(a):
+    """See the module docstring. Runtime: Turret (the launcher's yaw pivot over the rear tandem), Muzzle_main (the
+    centre of the tube face), Mount_mg / Muzzle_mg (the pedestal gun behind the cab); launch face
+    `Rocket_tubes_face`."""
+    R, WD, HX = .55, .38, 1.0
+    _wheels(a, (-2.95, 1.05, 2.45), R, WD, HX, nuts=0, diff_rear=False)
+    _rails(a, -3.6, 3.5, .95, .48, cross=(-3.3, -2.0, -.6, .6, 1.75, 3.3))
+    # Wings over the front wheels (the Ural's rounded mudguards), flat guards over the tandem, mud flaps, steps.
+    fen = a.part('Fenders', 'Team')
+    for s in (-1, 1):
+        k.extrude(fen, [(-.6, 0), (-.45, .3), (.45, .3), (.65, 0), (.6, -.04), (-.6, -.04)], .5,
+                  loc=(s * HX, -2.95, 1.22), axis='X', chamfer=.02)
+        fen.box((.5, 2.2, .04), loc=(s * HX, 1.75, 1.25), bevel=0)
+        a.part('Mud_flaps', 'Rubber').box((.42, .02, .42), loc=(s * HX, 2.95, .9), bevel=0)
+        a.part('Steps', 'Steel').box((.3, .34, .03), loc=(s * 1.0, -1.95, .72), bevel=0)
+        a.part('Tail_lamps', 'LavaGlow').box((.1, .02, .07), loc=(s * .95, 3.57, 1.05), bevel=0)
+        a.part('Marker_lights', 'Alloy').box((.06, .03, .05), loc=(s * 1.18, 3.4, 1.28), bevel=0)
+    a.part('Tail_lamps', 'LavaGlow').box((.12, .02, .06), loc=(-.95, 3.57, 1.18), bevel=0)
+    _grad_cab(a)
+    _grad_bed(a)
+    _grad_pack(a)
+    a.pivot('Point_fire', (0, 1.2, 2.0))
+    a.pivot('Point_exhaust', (-1.05, -1.45, 1.2))
+    k.clean(a)
+
+
+def _grad_cab(a):
+    """The Ural-375's long bonnet with its louvred sides and the vertical radiator grille, the bumper with the
+    winch and tow hooks, headlamps on the wings, the open cab with the folding windscreen and the canvas top, the
+    pedestal 12.7 mm behind it, the whip antenna."""
+    hood = a.part('Body', 'Team')
+    k.sharp_loft(hood, [[(-.62, -3.72, .95), (.62, -3.72, .95), (.62, -2.45, .95), (-.62, -2.45, .95)],
+                        [(-.62, -3.75, 1.5), (.62, -3.75, 1.5), (.66, -2.45, 1.62), (-.66, -2.45, 1.62)],
+                        [(-.48, -3.68, 1.72), (.48, -3.68, 1.72), (.55, -2.45, 1.82), (-.55, -2.45, 1.82)]],
+                 chamfer=.04)
+    K.grille(a, (0, -3.765, 1.25), .9, .5, facing=(0, -1, 0), slats=7, frame_mat='Armor')
+    for s in (-1, 1):
+        for i in range(4):
+            a.part('Louvres', 'Armor').box((.012, .08, .2), loc=(s * .64, -3.3 + i * .16, 1.3), rot=(0, 0, .3),
+                                           bevel=0)
+        K.lamp(a, (s * .9, -3.42, 1.42), (0, -1, 0), r=.09, guard=False)
+    a.part('Bumper', 'Armor').box((2.3, .2, .24), loc=(0, -3.8, .95), bevel=0)
+    k.lathe(a.part('Winch', 'Steel'), [(.12, -.35), (.12, .35)], loc=(0, -3.86, .82), rot=(0, R90, 0), seg=10)
+    for x in (-.8, .8):
+        K.tow_hook(a.part('Kit_tow', 'Steel'), (x, -3.9, .92), facing=(0, -1, 0), size=.1)
+    # The cab: lower body and doors, the open upper with the windscreen frame and the canvas top on its bows.
+    cab = a.part('Body', 'Team')
+    K.chamfer_box(cab, (2.2, 1.15, .75), loc=(0, -1.95, 1.55), c=.04)
+    K.windscreen(a, [(1.0, -2.5, 1.95), (-1.0, -2.5, 1.95), (-.98, -2.42, 2.45), (.98, -2.42, 2.45)],
+                 frame_mat='Armor', wipers=2, bar=.05)
+    top = a.part('Canvas_top', 'Canvas')
+    k.sharp_loft(top, [[(-1.08, -2.4, 1.92), (1.08, -2.4, 1.92), (1.08, -1.4, 1.92), (-1.08, -1.4, 1.92)],
+                       [(-1.06, -2.4, 2.4), (1.06, -2.4, 2.4), (1.06, -1.4, 2.4), (-1.06, -1.4, 2.4)],
+                       [(-.9, -2.38, 2.52), (.9, -2.38, 2.52), (.9, -1.42, 2.52), (-.9, -1.42, 2.52)]],
+                 chamfer=.06)
+    bows = a.part('Canvas_bows', 'Steel')
+    for y in (-2.1, -1.75):
+        bows.box((2.12, .03, .03), loc=(0, y, 2.53), bevel=0)
+    for s in (-1, 1):
+        a.part('Windows', 'Glass').box((.02, .55, .35), loc=(s * 1.09, -2.0, 2.15), bevel=0)
+        K.handle(a.part('Kit_handles', 'Steel'), (s * 1.11, -1.75, 1.6), (s * 1.11, -1.6, 1.6), (s, 0, 0), h=.04)
+        K.mirror(a.part('Mirrors', 'Steel'), (s * 1.12, -2.45, 2.05), s, arm=.08)
+        a.part('Door_lines', 'Armor').box((.02, .03, .7), loc=(s * 1.105, -1.5, 1.55), bevel=0)
+        a.part('Canvas_ties', 'Undercarriage').box((.02, .02, .3), loc=(s * 1.085, -2.2, 2.25), bevel=0)
+    # The pedestal gun behind the cab (a 12.7 mm on its post), the antenna on the cab corner.
+    a.part('Pedestal', 'Armor').box((.5, .5, .06), loc=(.5, -1.6, 2.33), bevel=0)
+    K.pintle_mg(a, None, (.5, -1.6, 2.36), length=.74, post=.22, shield=True)
+    K.whip_antenna(a.part('Antennas', 'Steel'), (-.95, -1.5, 2.5), h=1.1, lean=.04)
+
+
+def _grad_bed(a):
+    """The bed under the launcher: the platform, the fuel tank and the tool box on the frame, the exhaust under
+    the cab, the rear jacks (rams and pads), the spare wheel behind the cab, ammunition crates."""
+    a.part('Bed', 'Armor').box((2.3, 4.6, .1), loc=(0, 1.15, 1.15), bevel=0)
+    for s in (-1, 1):
+        a.part('Bed_rails', 'Steel').box((.05, 4.6, .08), loc=(s * 1.15, 1.15, 1.2), bevel=0)
+        a.part('Jacks', 'Armor').box((.16, .16, .55), loc=(s * .85, 3.35, .82), bevel=0)
+        a.part('Jack_rams', 'Steel').cyl(.05, .4, loc=(s * .85, 3.35, .42), seg=8, bevel=0)
+        k.block(a.part('Jack_pads', 'Steel'), (.3, .3, .05), loc=(s * .85, 3.35, .2), chamfer=.015)
+    a.part('Tanks', 'Armor').cyl(.26, 1.1, loc=(1.0, -.55, .82), rot=K.FORWARD, seg=12, bevel=.02)
+    a.part('Kit_straps', 'Steel').box((.56, .04, .56), loc=(1.0, -.8, .82), bevel=0)
+    a.part('Kit_straps', 'Steel').box((.56, .04, .56), loc=(1.0, -.3, .82), bevel=0)
+    K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.38, .8, .38), (-1.0, -.55, .85), bands=1)
+    K.exhaust(a, (-1.05, -1.45, .8), r=.06, length=.4, direction=(0, 0, 1))
+    K.soot(a, (-1.05, -1.45, 1.2), radius=.3, k=.4)
+    K.crate(a.part('Stowage', 'Crate'), a.part('Kit_latches', 'Steel'), (.45, .6, .3), (.85, -.55, 1.36), bands=2)
+
+
+def _grad_pack(a):
+    """The launcher on the Turret pivot: the traverse ring, the cradle with its trunnions and elevating screw, the
+    40-tube pack (4 rows of 10) in its three frame bands, the firing cables along the top, the sight box; the
+    travel rest under the front of the pack."""
+    t = a.pivot('Turret', (0, 2.25, 1.27))
+    k.lathe(a.part('Turret_steel', 'Steel', t), [(.7, 0), (.74, .02), (.74, .12), (.68, .14)], seg=16)
+    K.bolt_ring(a.part('Kit_bolts', 'Steel', t), (0, 0, .14), (0, 0, 1), .62, 6)
+    arm = a.part('Turret_armor', 'Armor', t)
+    K.chamfer_box(arm, (1.3, 1.1, .3), loc=(0, 0, .3), c=.04)
+    for s in (-1, 1):
+        k.extrude(arm, [(-.5, 0), (.5, 0), (.25, .55), (-.25, .55)], .08, loc=(s * .6, 0, .45), axis='X')
+        a.part('Turret_steel', 'Steel', t).cyl(.09, .14, loc=(s * .66, .15, .95), rot=(0, R90, 0), seg=8,
+                                               bevel=0)
+    a.part('Elevating_screw', 'Steel', t).tube([(0, -.4, .45), (0, -.85, .78)], .05, seg=8)
+    y0, y1, zc = -2.73, .32, 1.2          # pack front / rear (pivot frame), centre height
+    tubes = a.part('Rocket_tubes', 'Undercarriage', t)
+    face = a.part('Rocket_tubes_face', 'Steel', t)
+    for i in range(10):
+        x = -.94 + i * .209
+        for j in range(4):
+            z = zc - .3 + j * .2
+            if i in (0, 9) or j in (0, 3):     # the inner tubes are hidden by the outer ones and the bands
+                tubes.cyl(.075, y1 - y0, loc=(x, (y0 + y1) / 2, z), rot=K.FORWARD, seg=6, bevel=0)
+            face.cyl(.068, .04, loc=(x, y0 - .01, z), rot=K.FORWARD, seg=6, bevel=0)
+    fr = a.part('Rocket_tubes_frame', 'Team', t)
+    for y in (y0 + .15, (y0 + y1) / 2, y1 - .15):
+        k.extrude(fr, [(-1.1, zc - .45), (1.1, zc - .45), (1.1, zc + .45), (-1.1, zc + .45)], .12,
+                  loc=(0, y, 0), axis='Y', chamfer=.02)
+    for s in (-1, 1):
+        fr.box((.06, y1 - y0, .06), loc=(s * 1.08, (y0 + y1) / 2, zc - .42), bevel=0)
+    cab = a.part('Rocket_tubes_cables', 'Rubber', t)
+    for x in (-.6, 0, .6):
+        cab.tube([(x, y1 - .1, zc + .46), (x, (y0 + y1) / 2, zc + .5), (x, y0 + .3, zc + .46)], .025, seg=5)
+    K.chamfer_box(a.part('Sight', 'Armor', t), (.22, .3, .25), loc=(-1.2, -.3, .9), c=.02)
+    a.part('Glass', 'Glass', t).box((.15, .01, .1), loc=(-1.2, -.455, .95), bevel=0)
+    a.pivot('Muzzle_main', (0, -2.73, 1.2), t)
+    a.part('Team_band', 'Team', t).box((2.0, .5, .012), loc=(0, -1.6, zc + .46), bevel=0)
+    rest = a.part('Rest_pad', 'Steel')
+    for s in (-1, 1):
+        rest.tube([(s * .5, -.35, 1.2), (0, -.35, 1.95)], .04, seg=6)
+    rest.box((.5, .2, .06), loc=(0, -.35, 1.97), bevel=0)
+
+
 BUILDERS = {
     'mlrs': (mlrs, dict(ao_distance=.5, grime_height=.5)),
+    'grad_truck': (grad_truck, dict(ao_distance=.6, grime_height=.55, ao_strength=.65)),
 }
