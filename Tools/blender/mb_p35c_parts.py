@@ -459,3 +459,32 @@ def plain_wheel(a, centre, r, width, s, seg=10, rim_mat='Steel', parent=None, ty
     k.lathe(a.part(rim, rim_mat, parent), [(r * .63, w / 2 - .01), (r * .55, w / 2), (r * .25, w / 2 - .04),
                                            (r * .18, w / 2 + .02), (0, w / 2 + .02)], loc=centre, rot=rot, seg=seg,
             worn=(1,))
+
+
+# ----------------------------------------------------------------------------- erector hinges
+
+# ModelLibrary.BarrelPattern: the Turret children that join the runtime `Elevation` pivot (plus ErectorParts' extra).
+BARREL_NAMES = (r'^(main_cannon|muzzle_brake|mortar_tube|rocket_tubes|tubes|tube_bores|pod(?!_frame)|atgm_pod|launcher|'
+                r'coax|muzzle_main|muzzle_coax|muzzle_missile|muzzle_rocket)\w*(\.\d+)?$')
+
+
+def elevation_pivot(a, parent, extra=None):
+    """Play-test 13 (lane B): where ModelLibrary.AddElevation puts the runtime `Elevation` pivot of `parent`'s
+    elevating parts (names matching BARREL_NAMES or `extra`, ModelLibrary.ErectorParts): across the middle, 6 % of
+    the group's length in from its rear end and 30 % of the way up it, from the meshes' bounds. Returns the point in
+    `parent`'s coordinates (+Z up, -Y front), so a builder can put the erector's hinge shaft and its brackets exactly
+    where the erector will turn. Call it after every elevating part is built (the hinge shaft must stay inside)."""
+    import re
+    pats = [re.compile(BARREL_NAMES, re.I)] + ([re.compile(extra, re.I)] if extra else [])
+    lo, hi = [math.inf] * 3, [-math.inf] * 3
+    for (name, _mat, par), shape in a.shapes.items():
+        if par != parent or not any(p.match(name) for p in pats):
+            continue
+        for v in shape.bm.verts:
+            for i in range(3):
+                lo[i] = min(lo[i], v.co[i])
+                hi[i] = max(hi[i], v.co[i])
+    if lo[0] == math.inf:
+        raise ValueError(f'no elevating parts under {parent}')
+    # Unity's front is +Z (Blender -Y): its bounds.min.z is the group's rear, Blender's largest Y.
+    return ((lo[0] + hi[0]) / 2, hi[1] - .06 * (hi[1] - lo[1]), lo[2] + .3 * (hi[2] - lo[2]))

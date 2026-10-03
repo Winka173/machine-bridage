@@ -9,7 +9,7 @@ and lamps; the ladder frame on three axles with big lugged tyres, wings and mud 
 the stiffening ribs, the lifting eyes, the team band), the erecting rams at the rear; the launcher's control
 box and generator behind the cab, the rear outrigger jacks, toolboxes, jerrycans, the spare wheel.
 
-Runtime nodes kept: `Turret`, `Muzzle_main` (the cell box's front face), `Hatches`, `Point_exhaust`, `Point_fire`
+Runtime nodes kept: `Turret`, `Muzzle_main` (the cell box's front face), `Point_exhaust`, `Point_fire`
 (the wrapper adds `Part_wheel` / `Part_wheelb`). Metres, +Z up, -Y front, +X left.
 """
 import math
@@ -107,11 +107,11 @@ def _launcher(a):
                  (-W / 2 + .1, L / 2 - .3)], .42, .42 + H,
                 mid=([(-W / 2, -L / 2 - .3), (W / 2, -L / 2 - .3), (W / 2, L / 2 - .3), (-W / 2, L / 2 - .3)], .42 + H - .15))
     yf = -L / 2 - .3
-    hp = a.part('Hatches', 'Armor', t)
-    hf = a.part('Hatch_fittings', 'Steel', t)
+    hp = a.part('Launcher_hatches', 'Armor', t)
+    hf = a.part('Launcher_hatch_fittings', 'Steel', t)
     for cx in (-.37, .37):
         for zz in (cz - .3, cz + .28):
-            k.block(hp, (.6, .05, .5), loc=(cx, yf - .025, zz - .25), chamfer=.012)
+            k.block(hp, (.6, .05, .5), loc=(cx, yf - .025, zz), chamfer=.012)       # centred on its cell
             hf.box((.08, .03, .08), loc=(cx, yf - .06, zz + .2), bevel=0)
             hf.box((.4, .02, .03), loc=(cx, yf - .055, zz), bevel=0)
     rib = a.part('Launcher_ribs', 'Steel', t)
@@ -121,14 +121,31 @@ def _launcher(a):
             rib.box((.04, .06, H - .15), loc=(s * (W / 2 + .01), f * L - .3, .42 + (H - .15) / 2), bevel=0)
     for s in (-1, 1):
         for y in (-1.6, 1.0):
-            K.handle(a.part('Kit_handles', 'Steel', t), (s * .55, y, .42 + H + .01), (s * .55, y + .12, .42 + H + .01),
+            K.handle(a.part('Launcher_handles', 'Steel', t), (s * .55, y, .42 + H + .01), (s * .55, y + .12, .42 + H + .01),
                      (0, 0, 1), h=.05, r=.012)
-    a.part('Team_band', 'Team', t).box((.02, 1.6, .2), loc=(W / 2 + .03, -.4, cz + .3), bevel=0)
-    a.part('Hazard_marks', 'Hazard', t).box((W - .1, .02, .08), loc=(0, yf - .01, .42 + H - .05), bevel=0)
+    a.part('Launcher_band', 'Team', t).box((.02, 1.6, .2), loc=(W / 2 + .03, -.4, cz + .3), bevel=0)
+    a.part('Launcher_hazard', 'Hazard', t).box((W - .1, .02, .08), loc=(0, yf - .01, .42 + H - .05), bevel=0)
+    a.pivot('Muzzle_main', (0, yf - .08, cz), t)
+    # Play-test 13 (lane B): the box is an erector. Everything on it is named Launcher_* so ModelLibrary puts it on
+    # the runtime `Elevation` pivot; the pivot lands 6 % in from the box's rear and 30 % up it (C.elevation_pivot),
+    # and the trunnion, its lugs and the brackets are built exactly there, so the box swings up about its rear
+    # hinge to fire (VehicleView Erectors: raised 80 degrees from this flat travel pose) and lies down to drive.
+    hx, hy, hz = C.elevation_pivot(a, t)
+    a.part('Launcher_hinge', 'Steel', t).cyl(.07, 1.9, loc=(hx, hy, hz), rot=(0, R90, 0), seg=10, bevel=0)
+    lug = a.part('Launcher_lugs', 'Armor', t)
     rr = a.part('Launcher_rams', 'Steel', t)
     for s in (-1, 1):
-        rr.limb((s * .5, 1.9, .1), (s * .5, 1.2, .45), .05, .06, bevel=0)
-    a.pivot('Muzzle_main', (0, yf - .08, cz), t)
+        lug.box((.04, .3, .32), loc=(s * (W / 2 + .035), hy, hz), bevel=0)
+        # The erecting rams along the box's sides, their feet at the hinge brackets.
+        rr.limb((s * .86, hy - .35, hz - .05), (s * .86, .1, hz + .38), .08, .08, bevel=0)
+        rr.limb((s * .86, .1, hz + .38), (s * .86, -.7, hz + .5), .05, .05, bevel=0)
+    # The fixed frame on the turntable and the hinge brackets standing on it (they stay down when the box rises).
+    fr = a.part('Turret_frame', 'Steel', t)
+    K.chamfer_box(fr, (2.0, 1.0, .07), loc=(0, hy - .15, .185), c=.02)
+    br = a.part('Turret_brackets', 'Armor', t)
+    for s in (-1, 1):
+        k.extrude(br, [(hy - .45, .22), (hy + .3, .22), (hy + .14, hz + .12), (hy - .14, hz + .12)], .05,
+                  loc=(s * .9, 0, 0), axis='X')
 
 
 def ground_cruise_missile_vehicle(a, detail=False):

@@ -82,7 +82,7 @@ def _chassis(a):
     wing = a.part('Mud_wings', 'Team')
     for y in AXLES[1:]:
         for s in (-1, 1):
-            K.plate(wing, (.5, 1.45, .04), loc=(s * (TX + .03), y, WR * 2 + .12), chamfer=.01)
+            K.plate(wing, (.5, 1.45, .04), loc=(s * (TX + .03), y, WR * 2 + .12), chamfer=0)
     for s in (-1, 1):
         C.stowage_box(a, (.32, 1.2, .32), (s * 1.02, -.25, FZ - .55), mat='Team', latches=2)
     C.jerry_rack(a, (-1.1, 2.15, FZ - .55), count=2, axis='Y')
@@ -108,7 +108,7 @@ def _bay(a):
         xc, xd = sorted((s * 1.0, s * 1.1))
         C.slab_loft(bay, [(xa, y0), (xb, y0), (xb, y1), (xa, y1)], [(xc, y0 + .05), (xd, y0 + .05), (xd, y1 - .05),
                                                                     (xc, y1 - .05)], BAY_Z - .2, BAY_TOP)
-    k.block(bay, (2.4, .2, BAY_TOP - BAY_Z + .2), loc=(0, y1 - .1, BAY_Z - .2 + (BAY_TOP - BAY_Z + .2) / 2), chamfer=.02)
+    k.block(bay, (2.4, .2, .33), loc=(0, y1 - .1, BAY_Z - .035), chamfer=.02)      # a low sill under the boom
     k.block(bay, (2.4, .25, BAY_TOP - BAY_Z + .45), loc=(0, y0 + .12, BAY_Z - .2 + (BAY_TOP - BAY_Z + .45) / 2),
             chamfer=.02)
     a.part('Floor', 'Undercarriage').box((2.0, y1 - y0, .05), loc=(0, (y0 + y1) / 2, BAY_Z), bevel=0)
@@ -131,45 +131,86 @@ def _bay(a):
         for yy in (y0 + 1.0, y1 - 1.0):
             a.part('Cover_rams', 'Steel').limb((s * 1.0, yy, BAY_TOP - .1), (s * 1.24, yy, BAY_TOP - .5), .03, .035,
                                                bevel=0)
-    # The launch beam and the two 9M723 missiles side by side (`Turret`).
-    t = a.pivot('Turret', (0, .9, BAY_Z + .05))
-    beam = a.part('Launcher_beam', 'Armor', t)
-    k.block(beam, (1.6, 6.6, .22), loc=(0, .2, 0), chamfer=.03)
-    R, L = .36, 6.0
-    lift = math.radians(22)           # the left missile on its erector, raised from its tail hinge
-    for i, x in enumerate((-.42, .42)):
-        hinge = (x, .2 + L / 2, .22 + R + .02)
-        e = lift if i == 0 else 0.0
-        rot = (R90 - e, 0, 0)
-        d = (0, -math.cos(e), math.sin(e))
-        k.lathe(a.part('Missiles', 'Fuel', t), [(R * .85, 0), (R, .15), (R, L * .72), (R * .85, L * .84),
-                                                (R * .45, L * .96), (0, L)], loc=hinge, rot=rot, seg=12,
-                worn=(2, 4))
+    _erector(a)
 
-        def at(f, up=0.0):
-            return (x, hinge[1] + d[1] * f + math.sin(e) * up, hinge[2] + d[2] * f + math.cos(e) * up)
-        a.part('Missile_seekers', 'Glass', t).cyl(R * .35, .02, loc=at(L * .9, R * .5), rot=(R90 - e - .5, 0, 0),
-                                                  seg=8, bevel=0)
-        a.part('Missile_bands', 'Hazard', t).cyl(R + .01, .08, loc=at(L * .55), rot=rot, seg=12, bevel=0)
+
+ERECTOR = '^(erector|missile_)'     # ModelLibrary.ErectorParts["ballistic_launcher"]: what rides the Elevation pivot
+
+
+def _erector(a):
+    """Play-test 13 (lane B): the erector and both 9M723 missiles drawn lying on it (travel pose, `Turret`).
+
+    Everything that rises is named Erector_* / Missile_* (or Muzzle_main), so ModelLibrary puts all of it on the
+    runtime `Elevation` pivot: the boom's rails and cross members, the spine, the saddles and clamps, the ram body,
+    the missiles with their fins, nozzles, seekers and bands, the hinge shaft. The pivot lands 6 % in from the
+    group's rear end and 30 % up it (C.elevation_pivot); the hinge shaft and its brackets on the bay floor are built
+    exactly there, so the boom turns about its own rear hinge and the missiles ride up with it (VehicleView
+    Erectors: raised 86 degrees from this flat pose)."""
+    t = a.pivot('Turret', (0, 1.0, BAY_Z + .2))
+    floor = (BAY_Z + .025) - (BAY_Z + .2)       # the bay floor's top in the Turret's coordinates
+    R, L = .36, 6.0
+    tail = 3.6                                  # the missiles' base (their nozzles reach back over the hinge)
+    y_front, y_rear = tail - 5.45, tail + .5    # the boom rails
+    rail_h, axis_z = .24, .24 + .1 + R
+    # The boom: two box rails, cross members, the spine between the missiles, the erecting ram's body under it.
+    boom = a.part('Erector_beam', 'Armor', t)
+    for s in (-1, 1):
+        k.block(boom, (.14, y_rear - y_front, rail_h), loc=(s * .62, (y_front + y_rear) / 2, rail_h / 2), chamfer=.02)
+    for y in (y_front + .3, -.2, 1.2, 2.5, y_rear - .25):
+        boom.box((1.1, .12, .14), loc=(0, y, .12), bevel=0)
+    k.block(a.part('Erector_arm', 'Armor', t), (.12, 4.8, .15), loc=(0, 1.0, rail_h + .075), chamfer=.02)
+    ram = a.part('Erector_ram', 'Steel', t)
+    ram.cyl(.075, 2.4, loc=(0, 2.0, .11), rot=K.FORWARD, seg=10, bevel=0)
+    ram.cyl(.04, 1.1, loc=(0, .3, .11), rot=K.FORWARD, seg=8, bevel=0)
+    ram.box((.2, .14, .2), loc=(0, 3.25, .11), bevel=0)
+    # The saddles under each missile, the clamp bands over them.
+    sad = a.part('Erector_saddles', 'Steel', t)
+    clamps = a.part('Erector_clamps', 'Steel', t)
+    for x in (-.42, .42):
+        for f in (.15, .5, .85):
+            yy = tail - L * f
+            if yy < y_front + .1:
+                continue
+            k.extrude(sad, [(x - .3, rail_h), (x + .3, rail_h), (x + .3, axis_z - R * .55), (x + .18, axis_z - R - .005),
+                            (x - .18, axis_z - R - .005), (x - .3, axis_z - R * .55)], .16, loc=(0, yy, 0), axis='Y')
+        for f in (.3, .7):
+            clamps.cyl(R + .018, .07, loc=(x, tail - L * f, axis_z), rot=K.FORWARD, seg=8, bevel=0)
+    # The two 9M723 missiles side by side, noses forward: ogive, body, the tail skirt with four small fins, nozzle.
+    for x in (-.42, .42):
+        base = (x, tail, axis_z)
+        k.lathe(a.part('Missile_bodies', 'Fuel', t), [(R * .9, 0), (R, .12), (R, L * .7), (R * .88, L * .82),
+                                                      (R * .55, L * .93), (R * .12, L * .995), (0, L)],
+                loc=base, rot=(R90, 0, 0), seg=12, worn=(2, 4))
+        a.part('Missile_seekers', 'Glass', t).cyl(R * .3, .02, loc=(x, tail - L * .9, axis_z + R * .5),
+                                                  rot=(R90 - .55, 0, 0), seg=8, bevel=0)
+        a.part('Missile_bands', 'Hazard', t).cyl(R + .008, .09, loc=(x, tail - L * .56, axis_z), rot=K.FORWARD,
+                                                 seg=10, bevel=0)
         fins = a.part('Missile_fins', 'Steel', t)
         for j in range(4):
             u = j * R90 + math.pi / 4
-            c = at(.35)
-            fr = (Matrix.Rotation(-e, 3, 'X') @ Matrix.Rotation(u - R90, 3, 'Y')).to_euler('XYZ')
-            fins.box((.02, .55, .28), loc=(c[0] + math.cos(u) * (R + .12), c[1] + math.sin(u) * (R + .12) * math.sin(e),
-                                           c[2] + math.sin(u) * (R + .12) * math.cos(e)), rot=tuple(fr), bevel=0)
-        k.lathe(a.part('Nozzles', 'Undercarriage', t), [(R * .55, 0), (R * .7, .12), (R * .5, .2)],
-                loc=at(-.02), rot=(-R90 - e, 0, 0), seg=10)
-        for f in (.25, .6):
-            a.part('Launcher_cradles', 'Steel', t).box((.75, .1, .3), loc=(x, hinge[1] - L * f, .3), bevel=0)
-        if i == 0:
-            a.pivot('Muzzle_main', at(L + .02), t)
-            ar = a.part('Erector_arm', 'Armor', t)
-            ar.limb((x, hinge[1] - 1.0, .2), at(L * .45, -R - .05), .08, .08, bevel=0)
-            k.block(ar, (.3, 4.2, .12), loc=at(L * .55, -R - .08), rot=(-e, 0, 0), chamfer=.02)
-    rr = a.part('Launcher_rams', 'Steel', t)
+            rr = R + .13
+            fins.box((.025, .55, .26), loc=(x + math.cos(u) * rr, tail - .4, axis_z + math.sin(u) * rr),
+                     rot=(0, R90 - u, 0), bevel=0)
+        k.lathe(a.part('Missile_nozzles', 'Undercarriage', t), [(R * .55, 0), (R * .72, .14), (R * .5, .22)],
+                loc=(x, tail + .01, axis_z), rot=(-R90, 0, 0), seg=10)
+    a.pivot('Muzzle_main', (.42, tail - L - .03, axis_z), t)
+    # The hinge: where the runtime turns the group, a shaft through lugs on the rails, brackets on the bay floor.
+    hx, hy, hz = C.elevation_pivot(a, 'Turret', ERECTOR)
+    lug = a.part('Erector_lugs', 'Armor', t)
     for s in (-1, 1):
-        rr.limb((s * .75, 3.2, .05), (s * .75, 1.6, .25), .06, .07, bevel=0)
+        lh = hz + .13 - (rail_h - .04)
+        k.block(lug, (.07, .36, lh), loc=(s * .62, hy, rail_h - .04 + lh / 2), chamfer=.02)
+    a.part('Erector_hinge', 'Steel', t).cyl(.07, 1.56, loc=(hx, hy, hz), rot=(0, R90, 0), seg=10, bevel=0)
+    br = a.part('Bay_hinge_brackets', 'Armor', t)
+    for s in (-1, 1):
+        k.extrude(br, [(hy - .3, floor), (hy + .3, floor), (hy + .14, hz + .1), (hy - .14, hz + .1)], .05,
+                  loc=(s * .745, 0, 0), axis='X')
+    # The boom's rests on the bay floor (it lies on them for travel), the ram's foot.
+    rests = a.part('Bay_rests', 'Steel', t)
+    for y in (y_front + .5, 1.6):
+        for s in (-1, 1):
+            rests.box((.22, .3, -.012 - floor), loc=(s * .62, y, (floor - .012) / 2), bevel=0)
+    a.part('Bay_ram_foot', 'Steel', t).box((.3, .3, -.03 - floor), loc=(0, 3.25, (floor - .03) / 2), bevel=0)
 
 
 def ballistic_launcher(a, detail=False):

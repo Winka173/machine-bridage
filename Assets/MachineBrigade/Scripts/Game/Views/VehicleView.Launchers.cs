@@ -50,10 +50,13 @@ namespace MachineBrigade.Game.Views
             ["thermobaric_launcher"] = new(ErectKind.Aimed, 0f, 1.2f),
             ["rocket_technical"] = new(ErectKind.Aimed, 0f, 0.7f),
             ["sam_launcher"] = new(ErectKind.Aimed, 0f, 0.9f),
-            // The S-300's canisters are drawn flat and stand upright; the Iskander's missiles are drawn 20 degrees up.
+            // The S-300's canisters are drawn flat and stand upright; play-test 13: the Iskander's boom and both missiles
+            // are drawn lying on it and rise together about its rear hinge, and the Typhon-class cruise missile box
+            // lies flat for travel and swings up near vertical about its rear hinge to fire.
             ["long_sam"] = new(ErectKind.Raised, 84f, 1.6f),
             ["elite_long_sam"] = new(ErectKind.Raised, 84f, 1.6f),
-            ["ballistic_launcher"] = new(ErectKind.Raised, 66f, 2.0f),
+            ["ballistic_launcher"] = new(ErectKind.Raised, 86f, 2.2f),
+            ["ground_cruise_missile_vehicle"] = new(ErectKind.Raised, 80f, 2.2f),
             // The Patriot's box and the Shahed truck's rack are drawn at their firing angles and travel lowered.
             ["missile_battery"] = new(ErectKind.Raised, 0f, 1.2f, -34f),
             ["shahed_truck"] = new(ErectKind.Raised, 0f, 1.0f, -12f),
