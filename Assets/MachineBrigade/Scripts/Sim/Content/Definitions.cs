@@ -337,6 +337,8 @@ namespace MachineBrigade.Sim.Content
                 // Prompt 25 F2 batch A: the new weapons' mechanisms.
                 GroundRange = GroundRange, MinReach = MinReach, GroupPriority = GroupPriority, BigGame = BigGame, JamProof = JamProof,
                 OneAtATime = OneAtATime, Lofted = Lofted, Mrsi = Mrsi, Glides = Glides, Prey = Prey,
+                // Play-test 13 (lane C): the flight profile.
+                FlightData = FlightData,
                 // The bomb-run fix: the stick travels with the copy.
                 Stick = Stick,
                 // Prompt 25 G: the gun's second rounds (the rounds are not tuned: the gun's reach and cadence govern).

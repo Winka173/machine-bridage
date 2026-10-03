@@ -215,6 +215,40 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void MissilesAndRocketsFlyAtTheirRealOrder()
+        {
+            // Play-test 13 (lane C): speeds at ~0.3 x the real average (the game's small-arms scale): an ATGM well under a
+            // SAM, a cruise missile subsonic, nothing that flies on a motor crawling; tube-launched rounds loft or arc.
+            var c = Shipped;
+            foreach (var w in c.Weapons.Values)
+                if (w.Projectile is ProjectileKind.Missile or ProjectileKind.Rocket)
+                    Assert.GreaterOrEqual(w.ProjectileSpeed, 50f, w.Id + ": a motor-driven round is not slower than 50 m/s");
+            Assert.Less(c.Weapons["kornet_twin"].ProjectileSpeed, c.Weapons["stinger_atas"].ProjectileSpeed, "an ATGM is slower than a SAM");
+            Assert.Less(c.Weapons["leviathan_cruise"].ProjectileSpeed, c.Weapons["sam_48n6"].ProjectileSpeed, "a cruise missile is subsonic");
+            Assert.AreEqual(FlightProfile.Direct, c.Weapons["kornet_twin"].Flight, "an ATGM flies straight on its beam");
+            Assert.AreEqual(FlightProfile.Loft, c.Weapons["kornet_top"].Flight, "a top-attack missile lofts");
+            Assert.AreEqual(FlightProfile.Loft, c.Weapons["sam_battery"].Flight, "a Patriot leaves its canister upward");
+            Assert.AreEqual(FlightProfile.Ballistic, c.Weapons["p26_jotunn_sec_jo_rockets"].Flight, "Fenrir's and Jötunn's Smerch pods arc");
+            Assert.AreEqual(FlightProfile.Ballistic, c.Weapons["grad_rockets"].Flight, "a Grad arcs");
+            Assert.AreEqual(FlightProfile.Direct, c.Weapons["heli_rockets"].Flight, "a rocket pod fires straight");
+            Assert.Greater(c.Weapons["p26_jotunn_sec_jo_rockets"].ArcShare, c.Weapons["kornet_twin"].ArcShare);
+        }
+
+        [Test]
+        public void BossGunsFireShellsNotRockets()
+        {
+            // Play-test 13 (lane C): Inferno's thermobaric weapon is a 125 mm gun; the Behemoth's side gun fires its shells.
+            var c = Shipped;
+            var thermo = c.Weapons["boss_thermo"];
+            Assert.AreEqual(ProjectileKind.Shell, thermo.Projectile, "a cannon");
+            Assert.IsTrue(thermo.Thermobaric, "with the thermobaric round");
+            Assert.AreEqual(582f, thermo.Damage * thermo.Burst * 12.51f / thermo.Cooldown, 1f, "the six rockets' damage per 12.51 s kept");
+            var side = c.Weapons["p26_behemoth_tiny_kornet_twin"];
+            Assert.AreEqual(ProjectileKind.Shell, side.Projectile, "the side gun fires shells");
+            Assert.AreEqual(460f, side.Damage * side.Burst * 19.4f / side.Cooldown, 1f, "the twin Kornet's damage per 19.4 s kept");
+        }
+
+        [Test]
         public void TheShotClockIsOffOutsideABattle()
         {
             var clock = new Game.Effects.ShotClock();

@@ -276,6 +276,8 @@ namespace MachineBrigade.Sim.Content
             def.JamProof = w.Bool("jamProof", false);
             def.OneAtATime = w.Bool("oneAtATime", false);
             def.Lofted = w.Bool("lofted", false);
+            // Play-test 13 (lane C): the flight profile (Direct, Loft, Ballistic); without it, by kind (WeaponDef.Flight).
+            if (w.Has("flightProfile")) def.FlightData = w.Enum<FlightProfile>("flightProfile");
             def.Mrsi = w.Bool("mrsi", false);
             def.Glides = w.Bool("glides", false);
             def.Prey = w.Enum("prey", Prey.Any);
