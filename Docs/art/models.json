@@ -1109,7 +1109,7 @@
   },
   "interceptor_drone_vehicle": {
     "file": "interceptor_drone_vehicle.glb",
-    "triangles": 4068
+    "triangles": 4298
   },
   "interceptor_jet": {
     "file": "interceptor_jet.glb",
