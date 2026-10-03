@@ -1,0 +1,218 @@
+{
+ "id": "hydra_sub",
+ "class": "boss",
+ "real": [
+  "a small surfaced SSGN in the Yasen / Oscar line: VLS tubes behind the sail, a 100 mm deck gun, a pump-jet"
+ ],
+ "shape": "BossText note.hydra: a small submarine with vertical launch tubes along its back; it surfaces to launch drones, dives and surfaces faster than Typhon; modelSize 34.8 x 7.2 x 8 m (hull axis at z 0).",
+ "confidence": "ban_dau_doan (no sheet shape note; BossText note and tip, the old builder)",
+ "target_size": {
+  "L": 34.8,
+  "W": 7.2,
+  "H": 8.0,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the lathed pressure hull (Team), the dark tiled lower half, tile seams, boot-top, Hung colour bands",
+   "nodes": [
+    "Hull",
+    "Hull_low",
+    "Hull_tiles",
+    "Boot_top",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "the casing deck with limber holes, the safety track, escape hatches, bollards, the capstan, fittings",
+   "nodes": [
+    "Deck",
+    "Limber_holes",
+    "Safety_track",
+    "Hatches",
+    "Bollards",
+    "Capstan",
+    "Casing_fittings"
+   ]
+  },
+  {
+   "feature": "the tall sail (superstructure) with fairwater planes, cockpit windows, masts, a ladder, warning and navigation lights",
+   "nodes": [
+    "Sail",
+    "Sail_planes",
+    "Glass",
+    "Masts",
+    "Radar_mast",
+    "Ladders",
+    "Warning_lights",
+    "Nav_lights"
+   ]
+  },
+  {
+   "feature": "the SAM box on top of the sail (Mount_missile)",
+   "nodes": [
+    "Mount_missile",
+    "Launcher_box",
+    "Launcher_tubes_bore",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "the 100 mm deck gun in its faceted mount forward of the sail (Mount_gun; the wrapper twins the barrel)",
+   "nodes": [
+    "Mount_gun",
+    "Gun_house_gun",
+    "Gun_steel_gun",
+    "Gun_brake_gun",
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "feature": "weak point: ten launch tubes under two rows of riveted hatch plates, one shade off (doors_l, doors_r)",
+   "nodes": [
+    "Part_doors_l",
+    "Part_doors_r",
+    "Door_doors_l_plates",
+    "Door_doors_r_plates",
+    "Kit_rivets",
+    "Door_bands"
+   ]
+  },
+  {
+   "feature": "the drone deck aft with six FPV quadcopters on their pads",
+   "nodes": [
+    "Drone_deck",
+    "Drone_marks",
+    "Part_drone",
+    "Part_drone.005",
+    "Fpv_body",
+    "Fpv_rotors"
+   ]
+  },
+  {
+   "feature": "the cruciform stern planes and the shrouded pump-jet (rudder)",
+   "nodes": [
+    "Part_rudder",
+    "Stern_planes",
+    "Plane_tips",
+    "Pump_jet",
+    "Pump_hub"
+   ]
+  },
+  {
+   "feature": "flank sonar arrays and the bow sensor domes",
+   "nodes": [
+    "Flank_arrays",
+    "Sensor_domes"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_typhon_sec_ty57",
+   "slot": "mountWeapons 1",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "p26_typhon_sec_ty57",
+   "slot": "mountWeapons 2",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_b1_gun"
+   ]
+  },
+  {
+   "weapon": "p26_typhon_direct_ty100",
+   "slot": "mountWeapons 3",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_b2_gun"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "the hull top and sail (Team) in Hung colours",
+  "the colour bands on the bow"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "doors_l",
+   "node": "Part_doors_l"
+  },
+  {
+   "part": "doors_r",
+   "node": "Part_doors_r"
+  },
+  {
+   "part": "deck_gun",
+   "node": "Mount_gun"
+  },
+  {
+   "part": "rudder",
+   "node": "Part_rudder"
+  }
+ ],
+ "wreck": "ShipSinking; the parts break off on their Part_* nodes",
+ "faction_style": "General Hung's (Sen) submarine: smooth hull, tiles, colour bands",
+ "details": {
+  "tier1": [
+   "pressure hull",
+   "sail",
+   "casing"
+  ],
+  "tier2": [
+   "deck gun",
+   "SAM box",
+   "hatch rows",
+   "stern planes",
+   "pump-jet",
+   "drone deck",
+   "fairwater planes",
+   "flank arrays"
+  ],
+  "tier3": [
+   "rivets",
+   "limber holes",
+   "tile seams",
+   "masts",
+   "windows",
+   "bollards",
+   "capstan",
+   "drones",
+   "lights",
+   "ladder",
+   "fittings"
+  ]
+ },
+ "questions": [],
+ "frame": "sea",
+ "def": "hydra",
+ "weak_points": [
+  "the launch doors carry its missiles (BossText tip): two rows of riveted hatch plates one shade off, red bands",
+  "the deck gun only shoots when it is up: on the casing forward of the sail"
+ ],
+ "scale_note": "the real-type features (sail, gun, tubes, planes) drawn 1.3-1.5 x for the boss read"
+}
