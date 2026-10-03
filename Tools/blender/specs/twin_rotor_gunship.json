@@ -1,0 +1,172 @@
+{
+ "id": "twin_rotor_gunship",
+ "class": "helicopter",
+ "real": [
+  "Boeing ACH-47A 'Guns-A-Go-Go' (armed CH-47 Chinook)"
+ ],
+ "shape": "the old builder: an ACH-47A on a CH-47 tandem-rotor airframe with a chin turret, side gun pods, two rotors; modelSize 11.93 x 5.7 x 4.82 m; heli_gun (turret), agl_40 (aim Free), flares.",
+ "confidence": "cao (ACH-47A is documented: chin M5 40 mm, pylon guns, door guns)",
+ "target_size": {
+  "L": 11.93,
+  "W": 5.7,
+  "H": 4.82,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the long box fuselage (Team) with rounded flanks, panel seams, Team bands, cockpit armour plates, round windows",
+   "nodes": [
+    "Fuselage",
+    "Panel_seams",
+    "Team_band",
+    "Armor",
+    "Portholes"
+   ]
+  },
+  {
+   "feature": "the stepped cockpit: framed windscreen, side and chin windows",
+   "nodes": [
+    "Glass",
+    "Canopy_frames"
+   ]
+  },
+  {
+   "feature": "the forward and aft pylons, the two engine pods with intakes, screens, seams and exhausts, grilles, roof panels and walkways",
+   "nodes": [
+    "Fuselage_pylon",
+    "Engines",
+    "Intakes",
+    "Intake_screens",
+    "Exhaust",
+    "Engine_seams",
+    "Grilles",
+    "Walkways"
+   ]
+  },
+  {
+   "feature": "the front Rotor and the Rotor_rear, three blades each with hubs, grips and tips",
+   "nodes": [
+    "Rotor",
+    "Rotor_hub",
+    "Rotor_blades",
+    "Rotor_rear",
+    "Rotor_rear_hub",
+    "Rotor_rear_blades"
+   ]
+  },
+  {
+   "feature": "side fuel sponsons, four fixed gear legs (twin wheels in front)",
+   "nodes": [
+    "Sponsons",
+    "Gear",
+    "Gear_tyres"
+   ]
+  },
+  {
+   "feature": "the chin turret (Turret) with its guns, the sensor ball, the two side pylons with the 40 mm pods (Mount_mg, .001), door guns",
+   "nodes": [
+    "Turret",
+    "Gun_turret",
+    "Guns",
+    "Sensor_ball",
+    "Pylons",
+    "Pods",
+    "Door_guns"
+   ]
+  },
+  {
+   "feature": "flare dispensers, beacons, nav lights, antennas, hoist, pitot, rear ramp, access panels, kick steps, grips, wire cutters",
+   "nodes": [
+    "Flares",
+    "Beacons",
+    "Nav_lights",
+    "Antennas",
+    "Hoist",
+    "Pitot",
+    "Hatches",
+    "Kick_steps",
+    "Kit_handles",
+    "Wire_cutters"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "glass",
+  "rotor hub",
+  "every blade",
+  "tail rotor",
+  "gear",
+  "stub wings",
+  "weapons"
+ ],
+ "weapons": [
+  {
+   "weapon": "heli_gun",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "Muzzle_gun kept at the same point"
+  },
+  {
+   "weapon": "agl_40",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "the right pod's Mount_mg.001 / Muzzle_mg.001 kept"
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only (owner rule 02/10)"
+ },
+ "team_zones": [
+  "the fuselage, pylons and sponsons (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "aircraft break into Part_* by class (prompt 34 wrapper) and fall",
+ "faction_style": "Vietnam-era gunship conversion, bolted armour",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "two rotor discs",
+   "aft pylon"
+  ],
+  "tier2": [
+   "engine pods",
+   "sponsons",
+   "pylons and pods",
+   "chin turret",
+   "gear"
+  ],
+  "tier3": [
+   "windows",
+   "panels",
+   "steps",
+   "grips",
+   "rings",
+   "antennas",
+   "cutters",
+   "flare cells"
+  ]
+ },
+ "questions": [],
+ "merged": {
+  "tail_rotor": "Rotor_rear"
+ },
+ "merged_note": "a tandem-rotor helicopter has no tail rotor: the rear rotor (Rotor_rear) does that job."
+}
