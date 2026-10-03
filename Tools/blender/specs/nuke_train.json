@@ -1,0 +1,267 @@
+{
+ "id": "nuke_train",
+ "class": "boss",
+ "real": [
+  "BZhRK Molodets (RT-23 UTTKh rail-mobile ICBM: roof-door launcher car, catenary diverter)",
+  "BP-43 armoured train (armoured locomotive with turrets)",
+  "railway flatcars carrying a 220 mm MLRS pod, a Roland-pattern SAM turret, a 152 mm gun and a twin 35 mm AA turret"
+ ],
+ "shape": "The old file's six cars at their places and lengths (41.2 m over the couplers), every runtime pivot kept to the centimetre: the armoured diesel locomotive with the V plough, wedge cab, sloped bolted hood, radiator fans, stacks, three-axle bogies behind skirts, the twin gun turret and the cab MG cupola; the launcher car with the control cabin and its MG cupola, the armoured trough with the roof doors open, the folded catenary diverter, chevrons and radiation signs, the erector with the ICBM (the icbm projectile's scheme); the rocket, SAM, 152 mm gun and twin 35 mm AA flatcars, each its Part_* load with railings and crates; SA-3 couplers, air hoses, steps, Team bands, bogies on every car.",
+ "confidence": "ước đoán (a game boss; BZhRK Molodets, BP-43 armoured train and railway artillery / air-defence flatcars for the parts)",
+ "target_size": {
+  "L": 41.6,
+  "W": 3.44,
+  "H": 4.93,
+  "source": "balance.json length / width; the old GLB's height",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "armoured locomotive: plough, wedge cab, slits, lamps, sloped hood plates, grilles, fans, stacks, skirts, three-axle bogies",
+   "nodes": [
+    "Hull",
+    "Armor",
+    "Chevrons",
+    "Vision_slits",
+    "Fans",
+    "Bogies",
+    "Rail_wheels"
+   ]
+  },
+  {
+   "feature": "twin gun turret and the cab MG cupola",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Main_cannon",
+    "Main_cannon_2",
+    "Muzzle_brake",
+    "Muzzle_brake_2",
+    "Muzzle_main",
+    "Mount_mg",
+    "Muzzle_mg",
+    "MG_cupola"
+   ]
+  },
+  {
+   "feature": "launcher car: control cabin and cupola, trough, open roof doors, diverter, signs, erector, ICBM",
+   "nodes": [
+    "Control_cabin",
+    "Mount_mg.001",
+    "Muzzle_mg.001",
+    "Roof_doors",
+    "Diverter",
+    "Trefoils",
+    "Erector",
+    "Erector_frame",
+    "Erector_clamps",
+    "Icbm_payload",
+    "Icbm_warhead",
+    "Icbm_body"
+   ]
+  },
+  {
+   "feature": "rocket flatcar",
+   "nodes": [
+    "Part_rocket",
+    "Mount_rocket",
+    "Muzzle_rocket",
+    "Rocket_box"
+   ]
+  },
+  {
+   "feature": "SAM flatcar",
+   "nodes": [
+    "Part_missile",
+    "Mount_missile",
+    "Muzzle_missile",
+    "Sam_tubes",
+    "Sam_radar"
+   ]
+  },
+  {
+   "feature": "152 mm gun flatcar",
+   "nodes": [
+    "Part_gun152",
+    "Mount_gun",
+    "Muzzle_gun",
+    "Gun_barrel",
+    "Gun_shield"
+   ]
+  },
+  {
+   "feature": "twin 35 mm AA flatcar",
+   "nodes": [
+    "Part_aa",
+    "Mount_mg.002",
+    "Muzzle_mg.002",
+    "Aa_house",
+    "Aa_guns"
+   ]
+  },
+  {
+   "feature": "every car: frames, couplers, hoses, steps, bands, decks, railings, crates",
+   "nodes": [
+    "Underframe",
+    "Couplers",
+    "Car_band",
+    "Car_deck",
+    "Car_rails",
+    "Ammo_crates"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running_gear"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_nemesis_main_ne152",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "mount 0: the locomotive's twin gun (twin_gun; one muzzle between the tips, as the old file)"
+  },
+  {
+   "weapon": "p26_nemesis_close_boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "mount 1: the cab cupola (flak_front)"
+  },
+  {
+   "weapon": "p26_nemesis_close_boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ],
+   "note": "mount 2: the launcher cabin's cupola (flak_rear)"
+  },
+  {
+   "weapon": "p26_nemesis_sec_boss_rockets",
+   "slot": "rocket",
+   "mount": "Mount_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ],
+   "note": "mount 3: the rocket car"
+  },
+  {
+   "weapon": "p26_nemesis_direct_ne125",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ],
+   "note": "mount 5: the 152 mm gun car"
+  },
+  {
+   "weapon": "p26_nemesis_close_boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg.002",
+   "muzzles": [
+    "Muzzle_mg.002"
+   ],
+   "note": "mount 6: the AA car"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "cap": null,
+  "note": "boss: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "locomotive hull (Team)",
+  "launcher trough and roof doors (Team)",
+  "control cabin (Team)",
+  "turret (Team)",
+  "car bands (Team)",
+  "flatcar loads (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "node": "Main_cannon",
+   "part": "twin_gun"
+  },
+  {
+   "node": "Mount_mg",
+   "part": "flak_front"
+  },
+  {
+   "node": "Mount_mg.001",
+   "part": "flak_rear"
+  },
+  {
+   "node": "Part_rocket",
+   "part": "rocket_car"
+  },
+  {
+   "node": "Part_missile",
+   "part": "sam_car"
+  },
+  {
+   "node": "Part_gun152",
+   "part": "gun_car_152"
+  },
+  {
+   "node": "Part_aa",
+   "part": "aa_car"
+  },
+  {
+   "node": "Hull",
+   "part": "locomotive (no node)"
+  },
+  {
+   "node": "Erector",
+   "part": "erector (no node in the def; the Erector pivot)"
+  }
+ ],
+ "wreck": "the runtime breaks the boss parts off",
+ "faction_style": "Hung's armoured train: team-colour hulls, dark riveted armour, hazard chevrons and radiation signs",
+ "details": {
+  "tier1": [
+   "locomotive",
+   "launcher car",
+   "flatcars"
+  ],
+  "tier2": [
+   "turret",
+   "erector",
+   "missile",
+   "roof doors",
+   "launchers",
+   "guns",
+   "bogies"
+  ],
+  "tier3": [
+   "bolts",
+   "slits",
+   "lamps",
+   "chevrons",
+   "signs",
+   "hoses",
+   "steps",
+   "railings",
+   "crates",
+   "rounds",
+   "antennas"
+  ]
+ },
+ "questions": []
+}

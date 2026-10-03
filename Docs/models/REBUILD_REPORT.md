@@ -13,7 +13,7 @@ recompute dropped"), the DECISIONS "Prompt 35" sections, and git (sizes, times).
 | models reviewed (scored) | **230** | every GLB a def, a tower branch or an HQ draws (REBUILD_LIST: P1 129, P2 86, P3 15; 29 stand-ins found) |
 | models rebuilt | **218** | P1 129 of 129, P2 82 of 86, P3 7 of 15 (zu23_technical, guard_tower / _a, ew_tower_a, missile_battery / _a / _b: bases rebuilt with their branches) |
 | P2 not rebuilt | 4 | the owner-approved V2 gold models main_battle_tank, fighter_jet, attack_helicopter, silver_bug: they pass every gate as they are (merged-node names, decision 8) |
-| P3 not rebuilt | 8 | minefield_a, dragons_teeth_b, drone_mothership, ew_tower, ew_tower_b, nuke_train, recoilless_jeep, airborne_light_tank_chute (section 8: P3 not rebuilt) |
+| P3 not rebuilt | 8 -> 0 | minefield_a, dragons_teeth_b, drone_mothership, ew_tower, ew_tower_b, nuke_train, recoilless_jeep, airborne_light_tank_chute: rebuilt in wave 12 (section 9) |
 | NEEDS_HUMAN raised | **25** | pilot 2, wave 1 3, wave 2 10, wave 3 4, wave 5 3, wave 6 2, wave 7 1; waves 4, 8, 9, 10, 11: none |
 | NEEDS_HUMAN still under 80 | 23 | ixion (89.8) and rocket_turret (83.5) now pass; the other 23 pass every hard gate (the 3 wave 1 structures accepted on the owner's look still score 57.6-70.9; list in section 5) |
 | whole gate now | **199 of 230** | hard gates 230 of 230; soft Tốt 199, Cần sửa 24, Kém 7 (pass 0: Tốt 78, Cần sửa 89, Kém 63) |
@@ -221,13 +221,13 @@ in each wave's DECISIONS.
    40 mm needs a data change (a model id of its own or hidden nodes).
 5. **kronos gun_r's `at`**: the node now points at Mount_gun.002 (owner fix 6) but the hit point stays at the old
    Mount_gun place (4, -2, 9.4); move it to (3, -7, 9.6)?
-6. **The P3 models left as they are** (minefield_a, dragons_teeth_b, drone_mothership, ew_tower, ew_tower_b,
+6. **The P3 models left as they are** (answered: wave 12 rebuilt them, section 9) (minefield_a, dragons_teeth_b, drone_mothership, ew_tower, ew_tower_b,
    nuke_train, recoilless_jeep, airborne_light_tank_chute): leave, or a wave 12? airborne_light_tank_chute in
    particular is the air_other gold, and its ground model airborne_light_tank was rebuilt in wave 6.
 7. **Over-guide triangles on non-capped classes** (kept by the 02/10 rule): e.g. airborne_vehicle_chute 13,056
    (air_other 7,000), auto_loader_howitzer 9,464 and the tracked average 9,569 (7,000), the bosses up to 39.6k (monster):
    fine on phones, or wait for the FPS measure?
-8. **Helipads**: the lead allows a windsock and light posts above the flat pad; build them (it would lift the three
+8. **Helipads** (answered: built in wave 12, section 9): the lead allows a windsock and light posts above the flat pad; build them (it would lift the three
    pads' scores)?
 
 **Answered** (kept for the record)
@@ -292,3 +292,15 @@ The over-limit size of section 6 is fixed by vertex quantisation; no model's loo
 - **Unity check (lead)**: reimport the GLBs, CatalogCheck, then render the cards / ModelPreview sheets of
   main_battle_tank, monster and ammo_crate and compare them with the previous renders (luma within the 1 % card
   gate, no "unsupported extension" or ColorFormatUnsupported errors in the import log).
+## 9. Wave 12 (lane C)
+
+The owner's answers on section 8 (DECISIONS "Prompt 35: owner answers on REBUILD_REPORT section 8") added a wave 12:
+the eight P3 models rebuilt from scratch and the three helipads lifted with a windsock, light posts and real heliport
+furniture (report: Docs/models/WAVE_12_REPORT.md). All eleven pass every hard gate; the P3 eight score 94.2-100
+(dragons_teeth_b 83.2 -> 100, drone_mothership 94.1 -> 98.6, the rest held or up); the helipads rise from
+52.5 / 54.1 / 61.8 to 72.5 / 74.5 / 70.2 (still under 80: a flat pad), so helipad and helipad_a leave the Kém list of
+section 5. With wave 12, models rebuilt: 226 of 230 (P3 15 of 15); the 4 not rebuilt are the owner-approved V2 gold
+models. Whole gate after the wave (`--no-write`): 199 of 230 pass, hard gates 230 of 230. GLB total: 170.4 MiB
+(+38.4 % on the pre-prompt-35 tree; the eleven files 5.9 -> 7.9 MiB). New open question: nuke_train's `locomotive`
+hit point sits on the launcher car (WAVE_12_REPORT, owner questions). The gold recompute the owner asked for after
+wave 12 is the lead's step (`quality_gate.py --gold`), not run here.

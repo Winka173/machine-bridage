@@ -4,13 +4,13 @@
  "real": [
   "FARP (forward arming and refuelling point)"
  ],
- "shape": "unit_sheet.json Công trình (airfield, branch airfield.service): the pad with a forward arming and refuelling point.",
+ "shape": "unit_sheet.json Công trình (airfield, branch airfield.service): the pad with a forward arming and refuelling point. Wave 12 (lane C): the paint over the stains (the H clear), elevated perimeter lights, tie-down cups, the windsock and two floodlight posts (its FARP windsock replaced by the common one).",
  "confidence": "uoc_dinh (unit_refs: 'ước đoán: nhánh phục vụ máy bay')",
  "target_size": {
   "L": 10.0,
   "W": 10.0,
-  "H": 1.935,
-  "source": "the old GLB (wave 2 keeps sizes within 10 %)",
+  "H": 3.39,
+  "source": "the old GLB's footprint (kept exactly); the height is wave 12's windsock and light posts (thin props above the flat pad, the lead's allowance)",
   "tolerance": 0.1
  },
  "features": [
@@ -72,6 +72,30 @@
    "nodes": [
     "Windsock_pole",
     "Windsock"
+   ]
+  },
+  {
+   "feature": "wave 12: elevated green FATO perimeter lights, tie-down cups and rings, flush lamps in rims",
+   "nodes": [
+    "Perimeter_lights",
+    "Lamp_rims",
+    "Tie_down_cups",
+    "Tie_downs"
+   ]
+  },
+  {
+   "feature": "wave 12: the ICAO windsock (frangible mast, swivel frame, five-band sock, obstruction light)",
+   "nodes": [
+    "Windsock_pole",
+    "Obstruction_light",
+    "Windsock"
+   ]
+  },
+  {
+   "feature": "wave 12: two floodlight posts at the front corners",
+   "nodes": [
+    "Light_poles",
+    "Light_housing"
    ]
   }
  ],

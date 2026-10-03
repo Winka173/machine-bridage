@@ -49,7 +49,7 @@
   },
   "airborne_light_tank_chute": {
     "file": "airborne_light_tank_chute.glb",
-    "triangles": 3514
+    "triangles": 16310
   },
   "airborne_vehicle": {
     "file": "airborne_vehicle.glb",
@@ -473,7 +473,7 @@
   },
   "dragons_teeth_b": {
     "file": "dragons_teeth_b.glb",
-    "triangles": 4232
+    "triangles": 8378
   },
   "dress_coast_buoy": {
     "file": "dress_coast_buoy.glb",
@@ -769,7 +769,7 @@
   },
   "drone_mothership": {
     "file": "drone_mothership.glb",
-    "triangles": 20206
+    "triangles": 18880
   },
   "drone_net_tower": {
     "file": "drone_net_tower.glb",
@@ -821,7 +821,7 @@
   },
   "ew_tower": {
     "file": "ew_tower.glb",
-    "triangles": 5936
+    "triangles": 5998
   },
   "ew_tower_a": {
     "file": "ew_tower_a.glb",
@@ -829,7 +829,7 @@
   },
   "ew_tower_b": {
     "file": "ew_tower_b.glb",
-    "triangles": 5376
+    "triangles": 5740
   },
   "factory": {
     "file": "factory.glb",
@@ -1053,15 +1053,15 @@
   },
   "helipad": {
     "file": "helipad.glb",
-    "triangles": 2224
+    "triangles": 4370
   },
   "helipad_a": {
     "file": "helipad_a.glb",
-    "triangles": 3614
+    "triangles": 6422
   },
   "helipad_b": {
     "file": "helipad_b.glb",
-    "triangles": 4140
+    "triangles": 5582
   },
   "highrise_a": {
     "file": "highrise_a.glb",
@@ -1269,7 +1269,7 @@
   },
   "minefield_a": {
     "file": "minefield_a.glb",
-    "triangles": 3780
+    "triangles": 6730
   },
   "minefield_b": {
     "file": "minefield_b.glb",
@@ -1349,7 +1349,7 @@
   },
   "nuke_train": {
     "file": "nuke_train.glb",
-    "triangles": 36310
+    "triangles": 28910
   },
   "nyx": {
     "file": "nyx.glb",
@@ -1461,7 +1461,7 @@
   },
   "recoilless_jeep": {
     "file": "recoilless_jeep.glb",
-    "triangles": 3386
+    "triangles": 7328
   },
   "recon_drone": {
     "file": "recon_drone.glb",

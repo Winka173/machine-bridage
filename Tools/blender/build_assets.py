@@ -231,6 +231,14 @@ import mb_p35_prop_attack_plane  # noqa: E402
 import mb_p35_airborne_vehicle_chute  # noqa: E402
 import mb_p35_cerberus  # noqa: E402
 import mb_p35_hyperion  # noqa: E402
+import mb_p35_minefield_a  # noqa: E402
+import mb_p35_nuke_train  # noqa: E402
+import mb_p35_drone_mothership  # noqa: E402
+import mb_p35_helipads  # noqa: E402
+import mb_p35_airborne_light_tank_chute  # noqa: E402
+import mb_p35_recoilless_jeep  # noqa: E402
+import mb_p35_ew_tower  # noqa: E402
+import mb_p35_dragons_teeth_b  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -389,7 +397,9 @@ def all_builders():
                 # Prompt 35 wave 10 (lane B): bosses, tower branches, helicopters and vehicles, each from its own builder.
                 **mb_p35_cp_relay.BUILDERS, **mb_p35_rail_supergun.BUILDERS, **mb_p35_daedalus.BUILDERS, **mb_p35_command_airship.BUILDERS, **mb_p35_heavy_bomber.BUILDERS, **mb_p35_twin_rotor_gunship.BUILDERS, **mb_p35_heavy_lift_helicopter.BUILDERS, **mb_p35_radar_support_vehicle.BUILDERS, **mb_p35_coastal_ashm_vehicle.BUILDERS, **mb_p35_sp_mortar.BUILDERS, **mb_p35_coastal_battery.BUILDERS, **mb_p35_artillery_emplacement_a.BUILDERS, **mb_p35_shield_tower_b.BUILDERS, **mb_p35_heavy_turret_a.BUILDERS, **mb_p35_visual_jammer.BUILDERS, **mb_p35_flare_tower.BUILDERS, **mb_p35_recoilless_gun_tower.BUILDERS, **mb_p35_manpads_tower.BUILDERS,
                 # Prompt 35 wave 11, lane C (DECISIONS "Prompt 35 wave 11 (lane C)"): rebuilt from scratch (last).
-                **mb_p35_drop_pod.BUILDERS, **mb_p35_bulwark_post.BUILDERS, **mb_p35_drone_net_tower.BUILDERS, **mb_p35_flare_searchlight_tower.BUILDERS, **mb_p35_targeting_station.BUILDERS, **mb_p35_mine_rocket_truck.BUILDERS, **mb_p35_wheeled_howitzer.BUILDERS, **mb_p35_auto_loader_howitzer.BUILDERS, **mb_p35_light_attack_heli.BUILDERS, **mb_p35_prop_attack_plane.BUILDERS, **mb_p35_airborne_vehicle_chute.BUILDERS, **mb_p35_cerberus.BUILDERS, **mb_p35_hyperion.BUILDERS}
+                **mb_p35_drop_pod.BUILDERS, **mb_p35_bulwark_post.BUILDERS, **mb_p35_drone_net_tower.BUILDERS, **mb_p35_flare_searchlight_tower.BUILDERS, **mb_p35_targeting_station.BUILDERS, **mb_p35_mine_rocket_truck.BUILDERS, **mb_p35_wheeled_howitzer.BUILDERS, **mb_p35_auto_loader_howitzer.BUILDERS, **mb_p35_light_attack_heli.BUILDERS, **mb_p35_prop_attack_plane.BUILDERS, **mb_p35_airborne_vehicle_chute.BUILDERS, **mb_p35_cerberus.BUILDERS, **mb_p35_hyperion.BUILDERS,
+                # Prompt 35 wave 12, lane C (DECISIONS "Prompt 35 wave 12 (lane C)"): the P3 models rebuilt (last).
+                **mb_p35_minefield_a.BUILDERS, **mb_p35_nuke_train.BUILDERS, **mb_p35_drone_mothership.BUILDERS, **mb_p35_helipads.BUILDERS, **mb_p35_airborne_light_tank_chute.BUILDERS, **mb_p35_recoilless_jeep.BUILDERS, **mb_p35_ew_tower.BUILDERS, **mb_p35_dragons_teeth_b.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

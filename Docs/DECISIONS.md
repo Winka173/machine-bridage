@@ -18785,3 +18785,41 @@ unmapped, check below).
   (Docs/models pictures copied into 10_model_tai_san: "PK@Oh.cR"); core/secrets.py now reads a picture's metadata only
   (PNG text / EXIF chunks, a JPEG's segments before its scan data), where a path or address would actually sit.
 - **Tests** (written, not run): BombStickViewTests.TheAircraftCardsSayTheirStickFromTheData.
+
+## Prompt 35 wave 12 (lane C)
+
+Branch feature/p35-w12 (from lead/integration eec98c34). Report: Docs/models/WAVE_12_REPORT.md; REBUILD_REPORT.md
+section 9.
+- The eight P3 models rebuilt from scratch, each its own script `Tools/blender/mb_p35_<id>.py` and spec; every old
+  pivot kept at its place (checked node by node against the old files). The three helipads keep lane A's wave 2
+  builders and run them on `mb_p35_helipads.pad` (lane A's pad with the paint 1.2 cm over the concrete and the stains
+  under it, so the H is never blotted; real flush / elevated lights and tie-down cups) by swapping
+  `mb_p35_wave2_support.pad` for the call; then the windsock, two floodlight posts and, per pad, a fuel cabinet,
+  a towed bowser (helipad_a) or nothing more (helipad_b, whose own windsock is stripped). Footprints kept to the
+  centimetre; helipad_b has no perimeter lights on +X (its sandbag run stands there). Spec heights updated (3.39 /
+  3.54 m: thin props above the flat pad, the lead's allowance).
+- Shared helpers touched without changing their users: `mb_p35_minefield._patch(rng=)` (minefield_a scatters its
+  stones and tufts at random: the golden-ratio rows lined them up diagonally) and
+  `mb_p35_airborne_vehicle_chute._merge_static(keep=)`; minefield, minefield_b and airborne_vehicle_chute rebuild
+  byte-identical.
+- airborne_light_tank_chute calls lane B's `mb_p35_airborne_light_tank.airborne_light_tank` unchanged (its nodes are
+  the wave 6 tank's) and adds a US heavy-drop rig (Type V platform, chains, M-2 release, four G-11 canopies) so it
+  is not the Russian three-canopy rig of airborne_vehicle_chute; static parts merged by material (38 renderers).
+- ew_tower / ew_tower_b share one site laid out as the old family (pad, mast axis, platform height, Radar at
+  7.07 m, shelter, generator, drums, reel), so ew_tower_a (old build, trimmed in wave 2) still reads as their branch;
+  both under the 6,000 tower cap. Building `-- ew_tower` also rebuilds ew_tower_a, which comes out differing (bake noise): its GLB is
+  restored from git after each build.
+- minefield_a and dragons_teeth_b use their family's ground (the wave 7 patch and perimeter; lane A's wave 8
+  `_footing` and end stakes). The minefield_a mines keep the old glowing Team rims (the own side sees them).
+- recoilless_jeep moves to an M38A1C (the real 106 mm carrier) so it is not the scout jeep's M151; Muzzle_main
+  moves 12 cm forward to the new tube's tip (-1.55 m).
+- drone_mothership: X tail (frees the keel for the UAV trapeze), the shield part drawn as a belt round the hull at
+  y 2.35 (a mast there would sit in the aft flak turret's barrel sweep). `.001` pivots written with
+  `K.name` / `K.suffixed`. The flare wrapper now adds `Mount_Flare_L2` / `_R2` (it reads the dispensers as two rows).
+- nuke_train: the old car layout and lengths, the Part_* loads at their exact places; the 152 mm barrel still
+  crosses the SAM turret's sweep (the pivots set both); the outrigger jacks stowed so the width stays 3.44 m.
+  Owner question: the def's `locomotive` hit point (0, -8.5, 2.5) lies on the launcher car (Blender y +8.5); the
+  locomotive's centre is at (0, 6.1, 2.5) in the def's frame. Data not changed.
+- Full gate after the wave (`quality_gate.py --no-write`): 230 models, 199 pass, hard gates 230 of 230; the eleven
+  pass every hard gate (the helipads 70.2-74.5, accepted on the look since wave 2). The gold recompute after wave 12
+  (owner answer 1) is left to the lead.

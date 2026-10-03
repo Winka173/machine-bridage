@@ -1,0 +1,106 @@
+{
+ "class": "obstacle",
+ "confidence": "xấp xỉ (M21 / M607 tilt-rod fuze and TM-83 photographs; minefield marking practice)",
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   6000
+  ],
+  "floor": 0,
+  "cap": null,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "a flat prop"
+ },
+ "breakable": [],
+ "wreck": "none (passable, untargetable)",
+ "faction_style": "field obstacle (both factions)",
+ "questions": [],
+ "id": "minefield_a",
+ "real": [
+  "M21 heavy anti-tank mine with the M607 tilt-rod fuze",
+  "TM-83 off-route side-attack mine with its seismic sensor",
+  "minefield marking and a taped crossing lane"
+ ],
+ "shape": "Orphan branch file of the no-branch minefield (mb_tower_branches: 'Anti-tank mines (A): three big mines lying on the ground, each with a glowing army-coloured rim (clear to their own side)'). Kept: the three big mines and their glowing Team rims; drawn on the rebuilt base's earth patch and perimeter (wave 7) so it reads as the same field: three surface-laid M21-pattern mines (drum, rolled rim, carrying bail, arming boss, M607 fuze with the tilt rod), a TM-83 on its tripod with the seismic sensor, a taped crossing lane at the front, an opened mine crate with two mines and a rod bundle.",
+ "target_size": {
+  "L": 4.87,
+  "W": 4.87,
+  "H": 1.11,
+  "source": "the old GLB (the def's 5 x 5 m footprint)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the base's patch of disturbed earth with spoil rings",
+   "nodes": [
+    "Ground_patch",
+    "Mine_earth"
+   ]
+  },
+  {
+   "feature": "three heavy AT mines with fuzes, tilt rods and the glowing Team rims",
+   "nodes": [
+    "Mine_bodies",
+    "Mine_fuzes",
+    "Tilt_rods",
+    "Mine_rims"
+   ]
+  },
+  {
+   "feature": "the TM-83 off-route mine on its tripod and the seismic sensor",
+   "nodes": [
+    "Side_mine",
+    "Mine_stake",
+    "Sensor_spike"
+   ]
+  },
+  {
+   "feature": "the taped crossing lane, the opened mine crate",
+   "nodes": [
+    "Lane_tape",
+    "Lane_pegs",
+    "Mine_crate"
+   ]
+  },
+  {
+   "feature": "the perimeter: pickets, warning tape, red triangle signs on stakes",
+   "nodes": [
+    "Pickets",
+    "Tape",
+    "Signs"
+   ]
+  }
+ ],
+ "class_parts": [],
+ "team_zones": [
+  "mine rims (TeamGlow)",
+  "side-mine band (Team)",
+  "sign backs (Team)"
+ ],
+ "colour_zones_min": 2,
+ "details": {
+  "tier1": [
+   "earth patch",
+   "mines"
+  ],
+  "tier2": [
+   "side mine",
+   "crate",
+   "signs",
+   "lane"
+  ],
+  "tier3": [
+   "fuzes",
+   "tilt rods",
+   "bails",
+   "pickets",
+   "tape",
+   "cable",
+   "stones"
+  ]
+ }
+}

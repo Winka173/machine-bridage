@@ -1,0 +1,152 @@
+{
+ "id": "recoilless_jeep",
+ "class": "wheeled",
+ "real": [
+  "M38A1C jeep (the 106 mm carrier)",
+  "M40A1 106 mm recoilless rifle on the M79 mount",
+  "M8C .50 spotting rifle, M92F telescope"
+ ],
+ "shape": "Fix L8's layout kept (the rifle on a pedestal in the rear, the tube over the folded windscreen and the hood, the old pivots); rebuilt as an M38A1C so it is not the scout jeep's M151: round-nosed body with crowned hood, rolled front wings with arches, rear arches in the tub, seven-slot grille with round lamps, brush guard, the split windscreen folded flat with the gun's notch and rest pad, open tub with curved cut-outs and 45-degree rear corners, seats, steering wheel; leaf springs on beam axles, lugged wheels, the spare and the jerrycan on the tail; the M40A1 with its perforated breech chamber, venturi breech block and handle, muzzle ring, the M8C spotting rifle on two brackets, the M92F telescope, handwheels and the firing knob on the M79 pedestal; rounds in the rear rack, radio, whip, tarp roll.",
+ "confidence": "xấp xỉ (M38A1C drawings; M40A1 / M79 mount photographs)",
+ "target_size": {
+  "L": 3.5,
+  "W": 1.4,
+  "H": 1.6,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "round-nosed M38A1 body: hood, wings, tub with arches and cut-outs, grille, lamps, bumper, brush guard",
+   "nodes": [
+    "Body",
+    "Body_wings",
+    "Grille",
+    "Grilles",
+    "Bumper",
+    "Brush_guard"
+   ]
+  },
+  {
+   "feature": "folded split windscreen with glass, seats, steering wheel, mirror",
+   "nodes": [
+    "Windscreen_frame",
+    "Glass",
+    "Seats",
+    "Steering"
+   ]
+  },
+  {
+   "feature": "four lugged wheels on beam axles with leaf springs, chassis rails, the spare on the tail",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Axles",
+    "Leaf_springs",
+    "Chassis",
+    "Spare_wheel"
+   ]
+  },
+  {
+   "feature": "the M40A1 on the M79 pedestal: pedestal, traverse ring, cradle, trunnions, handwheels, tube, chamber, breech, muzzle ring",
+   "nodes": [
+    "Turret",
+    "Pedestal",
+    "Cradle",
+    "Main_cannon",
+    "Breech_chamber",
+    "Breech",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "the M8C spotting rifle and the M92F telescope",
+   "nodes": [
+    "Spotting_rifle",
+    "Sight"
+   ]
+  },
+  {
+   "feature": "stowage: rounds in the rack, radio, whip, jerrycan, tarp roll",
+   "nodes": [
+    "Rounds",
+    "Radio",
+    "Antennas",
+    "Jerrycans",
+    "Tarp_roll"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "recoilless_106",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 tube (the M40A1); the spotting rifle has no data weapon"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "a starter unit seen in numbers: under the 1.5 x cap"
+ },
+ "team_zones": [
+  "body (Team)",
+  "hood (Team)",
+  "bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "Part_wheel / Part_wheelb come off (wrapper)",
+ "faction_style": "light utility vehicle (both factions)",
+ "details": {
+  "tier1": [
+   "body",
+   "wheels",
+   "rifle"
+  ],
+  "tier2": [
+   "wings",
+   "grille",
+   "windscreen",
+   "pedestal",
+   "breech",
+   "spare"
+  ],
+  "tier3": [
+   "lamps",
+   "hooks",
+   "hinges",
+   "handwheels",
+   "spotting rifle",
+   "sight",
+   "rounds",
+   "radio",
+   "whip",
+   "straps",
+   "nuts"
+  ]
+ },
+ "questions": []
+}
