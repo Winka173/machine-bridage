@@ -54,7 +54,8 @@ namespace MachineBrigade.Game.Effects
             var bomb = new Vector3(e.Target.X, 0f, e.Target.Y);
             var way = StickWay(e, shooter, views, stick, bomb);
             var owner = ((long)e.Entity.Value << 8) | (uint)(e.Mount & 0xff);
-            var run = _stickRuns.Fired(owner, round, bomb, way, now, Mathf.Max(0.05f, e.Value), rect && (enemy || preview),
+            // Play-test 14 (lane A): a stick of ordinary bombs shows no rectangle (Zoneless); a T5 stick still warns.
+            var run = _stickRuns.Fired(owner, round, bomb, way, now, Mathf.Max(0.05f, e.Value), rect && (enemy || preview) && !Zoneless(round),
                 round.Tier >= 5 || preview, out var index);
             if (shooter != null && shooter.Root != null && shooter.HasBayDoors)
             {

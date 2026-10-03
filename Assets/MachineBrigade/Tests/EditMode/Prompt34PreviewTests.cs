@@ -99,12 +99,14 @@ namespace MachineBrigade.Tests
         public void PreviewRingsAreTheBlastsAndLeaveTheBossWarningsAlone()
         {
             var c = C;
-            var shell = c.Weapons.Values.First(w => w.SplashRadius > 0f && !w.Guided && !w.Laid && w.WarnSeconds <= 0f && w.SplashRadius < 5f);
+            var shell = c.Weapons.Values.First(w => w.SplashRadius > 0f && !w.Guided && !w.Laid && w.WarnSeconds <= 0f && w.SplashRadius < 5f &&
+                !EffectsDirector.Zoneless(w));
             Assert.That(EffectsDirector.PreviewRingFor(shell, false), Is.True, shell.Id);
             Assert.That(EffectsDirector.PreviewRingFor(shell, true), Is.True, shell.Id + ": a small boss round has no warning of its own");
             var guided = c.Weapons.Values.First(w => w.Guided && w.SplashRadius > 0f);
             Assert.That(EffectsDirector.PreviewRingFor(guided, false), Is.False, guided.Id + ": no fixed fall point");
-            var big = c.Weapons.Values.FirstOrDefault(w => w.WarnSeconds > 0f && !w.Guided && !w.Laid && w.SplashRadius > 0f);
+            var big = c.Weapons.Values.FirstOrDefault(w => w.WarnSeconds > 0f && !w.Guided && !w.Laid && w.SplashRadius > 0f &&
+                !EffectsDirector.Zoneless(w));
             if (big != null)
             {
                 Assert.That(EffectsDirector.PreviewRingFor(big, true), Is.False, big.Id + ": the boss's escape warning draws it");

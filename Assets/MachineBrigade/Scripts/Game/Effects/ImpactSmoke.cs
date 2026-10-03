@@ -90,14 +90,16 @@ namespace MachineBrigade.Game.Effects
         /// A blast of <paramref name="band"/> at <paramref name="at"/> (its core <paramref name="core"/> m) at
         /// <paramref name="now"/>: the smoke and dust it leaves behind, at <paramref name="detail"/>.
         /// </summary>
-        public void Linger(int band, Vector3 at, float core, float now, TierFx.Detail detail)
+        /// <param name="smoke">Play-test 14 (lane A): its smoke's life against the band's (a tank round's 0.4).</param>
+        public void Linger(int band, Vector3 at, float core, float now, TierFx.Detail detail, float smoke = 1f)
         {
             if (band <= 0) return; // up to 14.5 mm: its own half-second puff is all
             var life = EffectLife.Of(band);
+            smoke = Mathf.Clamp(smoke, 0.05f, 1f);
             var ground = new Vector3(at.x, Mathf.Max(0.3f, at.y), at.z);
             if (band >= 4)
             {
-                Raise(band >= 5, ground, Mathf.Max(core, band >= 5 ? 14f : 8f), Random.Range(life.SmokeMin, life.SmokeMax), now,
+                Raise(band >= 5, ground, Mathf.Max(core, band >= 5 ? 14f : 8f), Random.Range(life.SmokeMin, life.SmokeMax) * smoke, now,
                     detail == TierFx.Detail.Far);
                 return;
             }
@@ -107,7 +109,7 @@ namespace MachineBrigade.Game.Effects
             for (var k = 0; k < puffs; k++)
             {
                 var spot = ground + new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)) * size * 0.4f + Vector3.up * Random.Range(0.2f, 0.8f);
-                Emit(_haze, spot, Vector3.up * Random.Range(0.2f, 0.6f), size * Random.Range(0.8f, 1.15f), Random.Range(life.SmokeMin, life.SmokeMax), 0);
+                Emit(_haze, spot, Vector3.up * Random.Range(0.2f, 0.6f), size * Random.Range(0.8f, 1.15f), Random.Range(life.SmokeMin, life.SmokeMax) * smoke, 0);
             }
         }
 
