@@ -2064,7 +2064,7 @@
       "parts": [
         { "id": "flamer_r", "kind": "flamer", "hp": 0.12, "armour": 2, "node": "Main_cannon|Main_cannon_hose|Main_cannon_jacket|Muzzle_brake|Muzzle_brake_glow|Muzzle_brake_pilot", "wreck": "wreck_barrel", "at": [0.62, 3.4, 4.1], "radius": 2.2, "mounts": [0], "radio": "radio.part.maingun"},
         { "id": "flamer_l", "kind": "flamer", "hp": 0.12, "armour": 2, "node": "Main_cannon_2|Main_cannon_2_hose|Main_cannon_2_jacket|Muzzle_brake_2|Muzzle_brake_2_glow|Muzzle_brake_2_pilot", "wreck": "wreck_barrel", "at": [-0.62, 3.4, 4.1], "radius": 2.2, "mounts": [3]},
-        { "id": "thermo", "kind": "thermo", "hp": 0.12, "armour": 2, "node": "Mount_rocket", "wreck": "wreck_launcher", "at": [0, 3.45, 2.8], "radius": 2.2, "mounts": [1]},
+        { "id": "thermo", "kind": "thermo", "hp": 0.12, "armour": 2, "node": "Mount_rocket", "wreck": "wreck_turret", "at": [0, 3.45, 2.8], "radius": 2.2, "mounts": [1]},
         { "id": "flak", "kind": "flak", "hp": 0.1, "armour": 2, "node": "Mount_mg", "wreck": "wreck_turret", "at": [0.9, -1.15, 4.8], "radius": 1.8, "mounts": [2]},
         { "id": "fuel", "kind": "fuel", "hp": 0.08, "armour": 1, "node": "Fuel_tanks|Tank_straps|Tank_hazard", "wreck": "wreck_stump", "at": [0, -4.6, 2.6], "radius": 2.6, "stops": ["trail"]} ],
       "deathExplosion": { "damage": 420, "radius": 19, "delay": 2.6, "tier": "Ultimate" } },

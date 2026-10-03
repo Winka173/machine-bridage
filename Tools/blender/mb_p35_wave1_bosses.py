@@ -466,9 +466,9 @@ def fortress_hive(a):
 
 # ============================================================================= behemoth_inferno
 # Hegemon flame tank on an Object 279 frame: an elliptical cast hull shell over four narrow tracks, a squat cast
-# turret with twin flame projectors (jackets, fuel hoses, nozzles with pilot flames), a TOS-1A-style thermobaric
-# rocket box on the glacis, a flak gun on the turret roof, the red fuel tanks strapped on the rear deck (its weak
-# point, the card's "fuel" part). Runtime nodes: Turret with Main_cannon / Main_cannon_2 and their _hose, _jacket,
+# turret with twin flame projectors (jackets, fuel hoses, nozzles with pilot flames), a 125 mm thermobaric gun in a
+# small casemate turret on the glacis (play-test 13 follow-up; it was a TOS-1A-style rocket box), a flak gun on the
+# turret roof, the red fuel tanks strapped on the rear deck (its weak point, the card's "fuel" part). Runtime nodes: Turret with Main_cannon / Main_cannon_2 and their _hose, _jacket,
 # Muzzle_brake[_2] with _glow, _pilot (parts flamer_r / flamer_l), Muzzle_main, Mount_rocket / Muzzle_rocket
 # (thermo), Mount_mg / Muzzle_mg on the turret (flak), Fuel_tanks / Tank_straps / Tank_hazard (fuel).
 I_TURRET = (0.0, 0.4, 3.57)
@@ -574,23 +574,49 @@ def _inferno_turret(a):
 
 
 def _inferno_glacis(a):
-    """The thermobaric rocket box on the glacis (Mount_rocket): a pedestal, the 4 x 6 tube box raised 20 degrees."""
-    a.part('Rocket_pedestal', 'Steel').cyl(.35, .35, loc=(0, -3.45, 2.45), seg=10, bevel=0)
+    """The thermobaric gun on the glacis (Mount_rocket, part thermo; play-test 13 follow-up). Real life: the 125 mm
+    3VOF128 thermobaric round is fired from a 2A46-class smoothbore gun, so the mount is a small cast casemate turret on
+    a raised barbette, an unmanned autoloader turret: a short, heavy barrel (thermal sleeve, fume extractor, a reference
+    collar at the muzzle, no brake on a smoothbore), a cast mantlet, the autoloader bustle behind with its loading
+    hatch, the gunner's sight, smoke dischargers, lifting eyes. It traverses freely under the flame projectors (clear
+    of them and of the main turret ring all round). Muzzle_rocket at the barrel's mouth (one barrel)."""
+    # The barbette the turret turns on, sunk into the glacis shell, its bolted top lip.
+    bar = a.part('Gun_barbette', 'Armor')
+    bar.cyl(.86, .5, loc=(0, -3.45, 2.36), seg=20, bevel=.02)
+    K.bolt_ring(a.part('Gun_barbette_bolts', 'Steel'), (0, -3.45, 2.615), (0, 0, 1), .8, 14, r=.022, h=.02)
     m = a.pivot('Mount_rocket', (0, -3.45, 2.63))
-    mm = Matrix.Translation(Vector((0, -.15, .45))) @ Matrix.Rotation(math.radians(-20), 4, 'X')
-    rot = tuple(mm.to_euler('XYZ'))
-    k.block(a.part('Rocket_box', 'Team', m), (1.7, 1.4, .8), loc=tuple(mm @ Vector((0, 0, 0))), rot=rot,
-            chamfer=.05)
-    mouths = a.part('Rocket_mouths', 'Undercarriage', m)
-    rims = a.part('Rocket_rims', 'Steel', m)
-    fm = mm @ Matrix.Rotation(R90, 4, 'X')
-    frot = tuple(fm.to_euler('XYZ'))
-    for i in range(6):
-        for j in range(4):
-            c = mm @ Vector(((i - 2.5) * .26, -.71, (j - 1.5) * .18))
-            rims.cyl(.085, .03, loc=tuple(c), rot=frot, seg=6, bevel=0)
-            mouths.cyl(.065, .035, loc=tuple(c), rot=frot, seg=6, bevel=0)
-    a.pivot('Muzzle_rocket', (0, -1.03, .83), 'Mount_rocket')
+    K.turret_ring(a.part('Thermo_ring', 'Steel', m), (0, 0, -.03), .78, h=.1)
+    # The cast house: a low dome, a little longer than wide (its front under the mantlet), and the bustle.
+    house = a.part('Thermo_house', 'Team', m)
+    k.lathe(house, [(.8, 0), (.82, .08), (.79, .3), (.66, .5), (.4, .63), (0, .67)], loc=(0, .05, .02), seg=20,
+            worn=(1, 2))
+    bustle = a.part('Thermo_bustle', 'Armor', m)
+    k.extrude(bustle, [(-.52, .45), (.52, .45), (.44, 1.18), (-.44, 1.18)], .42, loc=(0, 0, .1), axis='Z',
+              chamfer=.04, corner=.06)
+    K.hatch_rect(a, (0, .86, .53), size=(.5, .42), normal=(0, 0, 1), parent='Mount_rocket')
+    K.grille(a, (0, 1.19, .31), .6, .22, facing=(0, 1, 0), slats=4, parent='Mount_rocket')
+    a.part('Thermo_hazard', 'SafetyStripe', m).box((.8, .02, .07), loc=(0, 1.195, .46), bevel=0)
+    # The cast mantlet: a rounded shield across the gun's root, its cheek plates, the bore evacuator collar.
+    mant = a.part('Thermo_mantlet', 'Armor', m)
+    mant.cyl(.25, .64, loc=(0, -.82, .38), rot=(0, R90, 0), seg=14, bevel=.02)
+    k.block(mant, (.66, .34, .42), loc=(0, -.66, .36), chamfer=.06)
+    for s_ in (-1, 1):
+        mant.box((.05, .3, .36), loc=(s_ * .35, -.78, .38), bevel=0)
+    # The 125 mm barrel: short and heavy (sleeve, extractor, the muzzle reference collar).
+    K.gun_barrel(a, 'Thermo_barrel', 'Mount_rocket', 0, -1.04, .38, 1.8, .12, seg=14, extractor=(.42, 1.5, .42),
+                 brake_name='Thermo_collar', brake='collar', sleeve=1.25)
+    a.pivot('Muzzle_rocket', (0, -1.04 - 1.8 - .18, .38), 'Mount_rocket')
+    # The gunner's sight on the roof (left), a coaxial sensor head on the right, smoke dischargers, lifting eyes.
+    sight = a.part('Thermo_sight', 'Armor', m)
+    K.chamfer_box(sight, (.22, .3, .2), loc=(.32, -.24, .72), c=.025)
+    a.part('Thermo_glass', 'Glass', m).box((.16, .012, .1), loc=(.32, -.395, .74), bevel=0)
+    K.chamfer_box(sight, (.16, .2, .14), loc=(-.34, -.3, .66), c=.02)
+    a.part('Thermo_glass', 'Glass', m).cyl(.045, .012, loc=(-.34, -.405, .66), rot=K.FORWARD, seg=8, bevel=0)
+    for s_ in (-1, 1):
+        K.smoke_dischargers(a, s_ * .7, -.1, .32, s_, count=2, parent='Mount_rocket')
+        a.part('Thermo_eyes', 'Steel', m).torus(.05, .014, loc=(s_ * .55, .25, .5), rot=(0, R90, 0), seg=10, ring=4)
+    K.whip_antenna(a.part('Thermo_antenna', 'Steel', m), (-.36, .95, .52), h=.9, r=.02)
+    K.soot(a, (0, -3.45 - 3.0, 2.63 + .38), radius=.5, k=.35)
     K.tone(a, 'Mount_rocket', k=.9)
 
 

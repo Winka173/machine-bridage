@@ -55,7 +55,7 @@
     "Turret_armor",
     "Turret_steel",
     "Rocket_tubes",
-    "Rocket_tubes_face",
+    "Rocket_tubes_rounds", "Round_1", "Round_8",
     "Rocket_tubes_frame",
     "Muzzle_main"
    ]

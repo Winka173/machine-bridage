@@ -13,7 +13,8 @@
   {"feature": "the long smoothbore with its pepperpot muzzle brake", "nodes": ["Main_cannon", "Muzzle_brake", "Brake_ports"]},
   {"feature": "the gunner's telescope and handwheels", "nodes": ["Sights", "Handwheels"]},
   {"feature": "ammunition crates and rounds, the timber ammunition niche, a field radio with whip, striped aiming stakes", "nodes": ["Crates", "Rounds", "Niche", "Radio", "Antennas", "Aiming_posts"]},
-  {"feature": "a camouflage net with scrim over the crew's corner, spent cases, a jerrycan, helmets, stones", "nodes": ["Camo_net", "Camo_net_garnish", "Spent_cases", "Jerrycans", "Helmets", "Stones"]}
+  {"feature": "a camouflage net with scrim over the crew's corner, spent cases, a jerrycan, helmets, stones", "nodes": ["Camo_net", "Camo_net_garnish", "Spent_cases", "Jerrycans", "Helmets", "Stones"]},
+  {"feature": "gun elevation pivot at the trunnion carrying barrels, cradle and muzzles (play-test 13 follow-up)", "nodes": ["Elevation"]}
  ],
  "class_parts": ["base", "walls", "roof (the turning upper carriage)", "antenna"],
  "weapons": [{"weapon": "at_gun_100", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]}],

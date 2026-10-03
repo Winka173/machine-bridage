@@ -44,7 +44,7 @@
    "nodes": [
     "Launcher_frame",
     "Tube_bodies",
-    "Tube_caps",
+    "Round_1", "Round_4",
     "Battery_boxes"
    ]
   },
@@ -73,6 +73,12 @@
    "nodes": [
     "Ground_sandstone",
     "Ground_rock"
+   ]
+  },
+  {
+   "feature": "gun elevation pivot at the trunnion carrying barrels, cradle / mantlet and muzzles (play-test 13 follow-up)",
+   "nodes": [
+    "Elevation"
    ]
   }
  ],
