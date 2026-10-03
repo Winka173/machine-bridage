@@ -3048,6 +3048,16 @@
    "changes": [
     "FLAG sea_cruiser: meshes 93 -> 63 (-32.3%); renderers 93 -> 63 (-32.3%); materialSlots 93 -> 63 (-32.3%); fileBytes 1,127,276 -> 1,100,652 (-2.4%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "interceptor_jet"
+   ],
+   "reason": "P35 wave 6: interceptor_jet rebuilt from scratch",
+   "changes": [
+    "FLAG interceptor_jet: triangles 1,500 -> 3,436 (+129.1%); vertices 1,696 -> 5,013 (+195.6%); meshes 11 -> 40 (+263.6%); renderers 11 -> 40 (+263.6%); materials 5 -> 10 (+100.0%); materialSlots 11 -> 40 (+263.6%); fileBytes 95,992 -> 282,200 (+194.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -34245,24 +34255,24 @@
   },
   "interceptor_jet": {
    "file": "interceptor_jet.glb",
-   "fileBytes": 95992,
-   "sha1": "b5cc1cfbf65e0218",
+   "fileBytes": 282200,
+   "sha1": "72af17b4354b2905",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 17,
-   "meshes": 11,
-   "materials": 5,
+   "nodes": 50,
+   "meshes": 40,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 11,
-   "submeshes": 11,
-   "materialSlots": 11,
-   "materialsUsed": 5,
-   "triangles": 1500,
-   "vertices": 1696,
+   "renderers": 40,
+   "submeshes": 40,
+   "materialSlots": 40,
+   "materialsUsed": 10,
+   "triangles": 3436,
+   "vertices": 5013,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -34270,74 +34280,117 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 31,
-   "openEdges": 32,
-   "nonManifoldEdges": 10,
+   "loosePieces": 165,
+   "openEdges": 240,
+   "nonManifoldEdges": 1,
    "boundsMin": [
-    -2.7,
-    -0.53,
-    -4.6
+    -2.71,
+    -1.0,
+    -4.18
    ],
    "boundsMax": [
-    2.7,
-    1.6518,
-    4.55
+    2.71,
+    1.6,
+    4.7
    ],
    "size": [
-    9.15,
-    5.4,
-    2.182
+    8.88,
+    5.42,
+    2.6
    ],
    "center": [
-    0.0,
-    0.561,
-    -0.025
+    -0.0,
+    0.3,
+    0.26
    ],
-   "structureHash": "df1527e5ba9915e7",
+   "structureHash": "62eeff8bbe66d11f",
    "color0": {
-    "mean": 0.7923,
-    "min": 0.5516,
+    "mean": 0.6892,
+    "min": 0.0999,
     "max": 1.0,
-    "p05": 0.5901,
-    "p95": 1.0,
+    "p05": 0.3047,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
     "muzzle": [
+     "Muzzle_aam",
      "Muzzle_missile"
+    ],
+    "mount": [
+     "Mount_aam"
     ],
     "part": [
      "Part_wing"
+    ],
+    "point": [
+     "Point_exhaust",
+     "Point_fire"
     ]
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antennas",
+    "Beacons",
     "Canopy",
+    "Canopy_frames",
+    "Exhaust_glow",
     "Fins",
+    "Flare_mouths",
     "Flares",
-    "Flares_glow",
     "Fuselage",
+    "Fuselage.001",
+    "Intake_dark",
+    "Intake_dark.001",
     "Intakes",
     "Intakes.001",
+    "Lamps",
+    "Missile_aam",
+    "Missile_bands",
+    "Missile_bands.001",
+    "Missile_fins",
+    "Missile_fins.001",
+    "Missile_fins.002",
+    "Missile_seekers",
+    "Missile_seekers.001",
     "Missiles",
     "Mount_Flare_L",
     "Mount_Flare_R",
     "Mount_Flare_TL",
     "Mount_Flare_TR",
+    "Mount_aam",
+    "Muzzle_aam",
     "Muzzle_missile",
+    "Nozzle_petals",
+    "Nozzles",
     "Part_wing",
-    "Tails",
+    "Point_exhaust",
+    "Point_fire",
+    "Pylons",
+    "Pylons.001",
+    "Racks",
+    "Radome",
+    "Rudders",
+    "Rudders.001",
+    "Spine",
+    "Tailplanes",
+    "Team_band",
+    "Ventral_fins",
+    "Wing_lights",
+    "Wing_lights.001",
     "Wings",
     "Wings.001"
    ],
    "category": "air",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "renderers 40 over the jet normal budget 36"
+   ],
    "units": [
     "interceptor_jet"
    ],
-   "movingParts": 1,
+   "movingParts": 2,
    "budgetClass": "jet"
   },
   "iron_beam": {
