@@ -3358,6 +3358,26 @@
     "FLAG targeting_station: triangles 4,446 -> 6,486 (+45.9%); vertices 6,239 -> 8,948 (+43.4%); meshes 39 -> 46 (+17.9%); renderers 39 -> 46 (+17.9%); materials 13 -> 12 (-7.7%); materialSlots 39 -> 46 (+17.9%); fileBytes 340,152 -> 479,056 (+40.8%); structure changed",
     "FLAG wheeled_howitzer: triangles 5,026 -> 7,342 (+46.1%); vertices 5,420 -> 9,451 (+74.4%); meshes 35 -> 60 (+71.4%); renderers 35 -> 60 (+71.4%); materials 8 -> 13 (+62.5%); materialSlots 35 -> 60 (+71.4%); fileBytes 303,388 -> 519,188 (+71.1%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "airborne_vehicle_chute",
+    "auto_loader_howitzer",
+    "bulwark_post",
+    "cerberus",
+    "drone_net_tower",
+    "drop_pod",
+    "flare_searchlight_tower",
+    "hyperion",
+    "light_attack_heli",
+    "mine_rocket_truck",
+    "prop_attack_plane",
+    "targeting_station",
+    "wheeled_howitzer"
+   ],
+   "reason": "merge of feature/p35-w11",
+   "changes": []
   }
  ],
  "models": {
