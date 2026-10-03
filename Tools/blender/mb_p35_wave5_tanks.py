@@ -523,9 +523,101 @@ def _laser_turret(a):
     a.pivot('Muzzle_main', (0, -1.41, .88), t)
 
 
+# ============================================================================= aa_57mm_vehicle
+def aa_57mm_vehicle(a):
+    """2S38 Derivatsiya-PVO: see the module docstring. Runtime: Turret, Main_cannon, Muzzle_brake, Muzzle_main,
+    Radar (spins), Point_fire, Point_exhaust."""
+    TX, TW, WR = 1.0, .42, .29
+    wheels = [-1.85 + i * .72 for i in range(6)]
+    W.running_gear(a, TX, TW, WR, wheels, (-2.4, .5, .24), (2.5, .52, .25), rollers=(-1.1, .3, 1.6), roller_z=.74,
+                   top_hidden=.68, disc_mat='Armor', seg=8, link_pitch=.32, teeth=9)
+    hull = a.part('Hull', 'Team')
+    # The BMP-3's hull: the long flat nose with the trim vane folded on it, the low deck, the high square stern.
+    W.side_hull(hull, [(2.95, .4), (2.98, 1.1), (2.75, 1.14), (-.6, 1.05), (-1.9, .92), (-2.65, .7),
+                       (-2.62, .52), (-2.3, .38)], 2.0, chamfer=.04)
+    tub = a.part('Hull_tub', 'Armor')
+    W.side_hull(tub, [(2.8, .3), (-2.1, .3), (-2.35, .5), (2.8, .5)], 1.55, chamfer=.03)
+    vane = a.part('Trim_vane', 'Team')
+    vane.box((1.9, .5, .05), loc=(0, -2.25, .93), rot=(-.55, 0, 0), bevel=0)
+    for s in (-1, 1):
+        a.part('Steel', 'Steel').box((.05, .25, .05), loc=(s * .8, -2.05, 1.0), bevel=0)
+    fen = a.part('Fenders', 'Team')
+    for s in (-1, 1):
+        K.fender(fen, TX, -2.55, 2.85, .8, .46, s)
+        sk = a.part('Skirt_edge', 'Rubber')
+        sk.box((.03, 5.0, .2), loc=(s * (TX + .23), .15, .68), bevel=0)
+        a.part('Team_band', 'Team').box((.012, 1.6, .09), loc=(s * (TX + .26), -.5, .86), bevel=0)
+    # Driver's hatch between two crew hatches on the nose, vision blocks, lamps, tow hooks.
+    for x in (-.55, 0, .55):
+        hc = (x, -1.45, 1.0)
+        k.ring(a.part('Hatches', 'Armor'), [(.17, 0), (.21, 0), (.21, .05), (.17, .05)], loc=hc, seg=10)
+        k.lathe(a.part('Hatches', 'Armor'), [(0, .07), (.15, .065), (.18, .04), (.18, .02)], loc=hc, seg=10)
+        a.part('Sight', 'Armor').box((.12, .08, .06), loc=(x, -1.72, .98), rot=(-.4, 0, 0), bevel=0)
+    for s in (-1, 1):
+        K.lamp(a, (s * .78, -2.5, .86), (0, -1, .1), r=.06, guard=False)
+        K.tow_hook(a.part('Kit_tow', 'Steel'), (s * .5, -2.66, .55), facing=(0, -1, 0), size=.09)
+        # The stern doors (the BMP-3's rear exit over the engine), the water-jet covers under them.
+        d = a.part('Rear_doors', 'Team')
+        d.box((.6, .04, .55), loc=(s * .35, 2.99, .72), bevel=0)
+        K.handle(a.part('Kit_handles', 'Steel'), (s * .3 - .1, 3.02, .8), (s * .3 + .1, 3.02, .8), (0, 1, 0), h=.04)
+        a.part('Jet_covers', 'Armor').cyl(.16, .06, loc=(s * .75, 2.98, .45), rot=K.FORWARD, seg=10, bevel=0)
+        a.part('Tail_lamps', 'LavaGlow').box((.1, .02, .06), loc=(s * .88, 2.99, 1.02), bevel=0)
+    # Engine deck: louvres, the exhaust on the right, stowage boxes on the rear fenders.
+    K.grille(a, (0, 2.2, 1.125), 1.1, .7, facing=(0, 0, 1), slats=5, frame_mat='Team')
+    K.grille(a, (-.85, 1.7, 1.0), .25, .6, facing=(-1, 0, .3), slats=3, frame_mat='Armor')
+    for s in (-1, 1):
+        K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.38, .7, .26), (s * TX, 2.15, .8))
+    a.pivot('Point_fire', (0, 1.0, 1.1))
+    a.pivot('Point_exhaust', (.7, 2.95, .85))
+    _aa57_turret(a)
+    k.clean(a)
+
+
+def _aa57_turret(a):
+    """The AU-220M unmanned module: a low angular house, the 57 mm gun in its armoured cradle with the feed housing
+    on the left, the coax, the sight drum on the roof, smoke launchers, the radar on a mast at the rear."""
+    t = a.pivot('Turret', (0, .5, 1.05))
+    body = a.part('Turret_body', 'Team', t)
+    W.poly_turret(body, [
+        (0, [(-.7, -1.0), (.7, -1.0), (1.0, -.4), (1.0, .95), (.8, 1.15), (-.8, 1.15), (-1.0, .95), (-1.0, -.4)]),
+        (.32, [(-.62, -1.12), (.62, -1.12), (1.02, -.45), (1.02, 1.0), (.82, 1.2), (-.82, 1.2), (-1.02, 1.0),
+               (-1.02, -.45)]),
+        (.6, [(-.5, -.9), (.5, -.9), (.85, -.35), (.85, .9), (.7, 1.05), (-.7, 1.05), (-.85, .9), (-.85, -.35)])],
+        chamfer=.04)
+    k.ring(a.part('Turret_armor', 'Armor', t), [(.8, -.07), (.9, -.07), (.9, .02), (.8, .02)], seg=16)
+    K.chamfer_box(a.part('Mantlet', 'Armor', t), (.5, .42, .5), loc=(0, -1.18, .42), c=.05)
+    K.chamfer_box(a.part('Feed_housing', 'Armor', t), (.32, .7, .3), loc=(.42, -.8, .62), c=.04)
+    K.gun_barrel(a, 'Main_cannon', t, 0, -1.38, .42, 1.57, .055, seg=10, extractor=(.3, 1.3, .3),
+                 brake_name='Muzzle_brake', brake='baffle', sleeve=1.55)
+    a.pivot('Muzzle_main', (0, -3.25, .42), t)
+    k.lathe(a.part('MG_coax', 'Steel', t), [(.02, 0), (.02, .4), (0, .41)], loc=(-.3, -1.32, .36), rot=K.FORWARD,
+            seg=6)
+    # The sight drum (gunner's optical-electronic sight) and its glass, the commander's panoramic head.
+    k.lathe(a.part('Sight_drum', 'Armor', t), [(.22, 0), (.22, .28), (.18, .32), (0, .33)], loc=(-.48, -.45, .6),
+            seg=12)
+    a.part('Sight_glass', 'Glass', t).box((.2, .02, .12), loc=(-.48, -.67, .76), bevel=0)
+    K.periscope(a, (.5, .15, .6), facing=(0, -1, 0), parent=t, size=(.2, .18, .18))
+    for s in (-1, 1):
+        K.smoke_dischargers(a, .95, -.3, .3, s, count=3, parent=t)
+        K.crate(a.part('Stowage', 'Armor', t), a.part('Kit_latches', 'Steel', t), (.16, .6, .26), (s * 1.1, .45, .1),
+                bands=1)
+    a.part('Team_band', 'Team', t).box((.8, .5, .012), loc=(0, .25, .605), bevel=0)
+    # The radar mast on the turret rear and the spinning panel array.
+    mast = a.part('Radar_mast', 'Steel', t)
+    mast.cyl(.07, .4, loc=(0, .7, .8), seg=8, bevel=0)
+    for s in (-1, 1):
+        mast.limb((s * .25, .55, .6), (0, .7, .9), .04, .04, bevel=0)
+    r = a.pivot('Radar', (0, .7, 1.0), t)
+    K.chamfer_box(a.part('Radar_panel', 'Armor', r), (.85, .12, .48), loc=(0, -.05, .26), c=.02)
+    a.part('Radar_back', 'Steel', r).box((.5, .14, .2), loc=(0, .08, .2), bevel=0)
+    a.part('Radar_face', 'Undercarriage', r).box((.75, .01, .38), loc=(0, -.115, .26), bevel=0)
+    K.whip_antenna(a.part('Antennas', 'Steel', t), (-.7, .95, .6), h=.5, lean=.25)
+
+
 BUILDERS = {
     'twin_tank': (twin_tank, dict(ao_distance=.5, grime_height=.6)),
     'titan_tank': (titan_tank, dict(ao_distance=.6, grime_height=.6)),
     'turtle_tank': (turtle_tank, dict(ao_distance=.5, grime_height=.6)),
     'laser_tank': (laser_tank, dict(ao_distance=.5, grime_height=.6)),
+    'aa_57mm_vehicle': (aa_57mm_vehicle, dict(ao_distance=.5, grime_height=.6)),
 }

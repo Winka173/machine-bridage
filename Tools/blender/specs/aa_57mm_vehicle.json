@@ -1,0 +1,148 @@
+{
+ "id": "aa_57mm_vehicle",
+ "class": "tracked",
+ "real": [
+  "2S38 Derivatsiya-PVO (BMP-3 chassis, AU-220M 57 mm module)"
+ ],
+ "shape": "No unit_refs / unit_sheet row (the def's weapon is gun_57mm_2s38); built as the 2S38 the weapon is named after.",
+ "confidence": "xấp xỉ (2S38 photographs and published dimensions)",
+ "target_size": {
+  "L": 5.9,
+  "W": 2.5,
+  "H": 2.7,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "BMP-3 hull: long flat nose with the trim vane, low deck, square stern with the rear doors and water-jet covers",
+   "nodes": [
+    "Hull",
+    "Hull_tub",
+    "Trim_vane",
+    "Rear_doors",
+    "Jet_covers"
+   ]
+  },
+  {
+   "feature": "six road wheels, rubber skirt edge, fenders",
+   "nodes": [
+    "Wheels",
+    "Tracks",
+    "Skirt_edge",
+    "Fenders"
+   ]
+  },
+  {
+   "feature": "AU-220M unmanned angular turret",
+   "nodes": [
+    "Turret",
+    "Turret_body"
+   ]
+  },
+  {
+   "feature": "57 mm gun with baffle brake in an armoured mantlet, feed housing on the left, coax",
+   "nodes": [
+    "Main_cannon",
+    "Muzzle_brake",
+    "Mantlet",
+    "Feed_housing",
+    "MG_coax"
+   ]
+  },
+  {
+   "feature": "sight drum and commander's panoramic head",
+   "nodes": [
+    "Sight_drum",
+    "Sight_glass",
+    "Sight"
+   ]
+  },
+  {
+   "feature": "radar panel spinning on a mast at the turret rear",
+   "nodes": [
+    "Radar",
+    "Radar_panel",
+    "Radar_mast"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_57mm_2s38",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "lead rule (wave 5): units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "hull, trim vane, fenders, rear doors (Team)",
+  "turret body (Team)",
+  "roof panel and side bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (tank wreck)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "gun",
+   "tracks"
+  ],
+  "tier2": [
+   "trim vane",
+   "mantlet",
+   "feed housing",
+   "sight drum",
+   "radar",
+   "rear doors",
+   "stowage",
+   "grilles"
+  ],
+  "tier3": [
+   "hatches",
+   "vision blocks",
+   "smoke launchers",
+   "coax",
+   "lamps",
+   "tow hooks",
+   "handles",
+   "antenna",
+   "return rollers"
+  ]
+ },
+ "questions": []
+}
