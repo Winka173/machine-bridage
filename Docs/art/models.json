@@ -105,7 +105,7 @@
   },
   "armored_train": {
     "file": "armored_train.glb",
-    "triangles": 21954
+    "triangles": 26470
   },
   "artillery": {
     "file": "artillery.glb",
@@ -117,7 +117,7 @@
   },
   "artillery_emplacement_a": {
     "file": "artillery_emplacement_a.glb",
-    "triangles": 8426
+    "triangles": 5919
   },
   "artillery_emplacement_b": {
     "file": "artillery_emplacement_b.glb",
@@ -221,7 +221,7 @@
   },
   "behemoth": {
     "file": "behemoth.glb",
-    "triangles": 21610
+    "triangles": 25692
   },
   "behemoth_inferno": {
     "file": "behemoth_inferno.glb",
@@ -349,11 +349,11 @@
   },
   "coastal_ashm_vehicle": {
     "file": "coastal_ashm_vehicle.glb",
-    "triangles": 3508
+    "triangles": 6758
   },
   "coastal_battery": {
     "file": "coastal_battery.glb",
-    "triangles": 4394
+    "triangles": 5806
   },
   "combat_wreck_car": {
     "file": "combat_wreck_car.glb",
@@ -361,7 +361,7 @@
   },
   "command_airship": {
     "file": "command_airship.glb",
-    "triangles": 22840
+    "triangles": 18808
   },
   "command_hq": {
     "file": "command_hq.glb",
@@ -373,7 +373,7 @@
   },
   "command_vehicle": {
     "file": "command_vehicle.glb",
-    "triangles": 3084
+    "triangles": 6096
   },
   "container": {
     "file": "container.glb",
@@ -397,11 +397,11 @@
   },
   "cp_relay": {
     "file": "cp_relay.glb",
-    "triangles": 2192
+    "triangles": 4912
   },
   "cp_relay_a": {
     "file": "cp_relay_a.glb",
-    "triangles": 2220
+    "triangles": 4858
   },
   "cp_relay_b": {
     "file": "cp_relay_b.glb",
@@ -417,7 +417,7 @@
   },
   "daedalus": {
     "file": "daedalus.glb",
-    "triangles": 14772
+    "triangles": 13190
   },
   "dazzler_vehicle": {
     "file": "dazzler_vehicle.glb",
@@ -465,15 +465,15 @@
   },
   "dragons_teeth": {
     "file": "dragons_teeth.glb",
-    "triangles": 1508
+    "triangles": 3592
   },
   "dragons_teeth_a": {
     "file": "dragons_teeth_a.glb",
-    "triangles": 1980
+    "triangles": 4340
   },
   "dragons_teeth_b": {
     "file": "dragons_teeth_b.glb",
-    "triangles": 4088
+    "triangles": 4232
   },
   "dress_coast_buoy": {
     "file": "dress_coast_buoy.glb",
@@ -877,7 +877,7 @@
   },
   "flare_tower": {
     "file": "flare_tower.glb",
-    "triangles": 5102
+    "triangles": 5534
   },
   "floodlight_mast": {
     "file": "floodlight_mast.glb",
@@ -941,7 +941,7 @@
   },
   "gmlrs": {
     "file": "gmlrs.glb",
-    "triangles": 126
+    "triangles": 150
   },
   "gps_jammer_vehicle": {
     "file": "gps_jammer_vehicle.glb",
@@ -949,7 +949,7 @@
   },
   "grad_truck": {
     "file": "grad_truck.glb",
-    "triangles": 6342
+    "triangles": 7408
   },
   "ground_cruise_missile_vehicle": {
     "file": "ground_cruise_missile_vehicle.glb",
@@ -989,7 +989,7 @@
   },
   "gunship_heli": {
     "file": "gunship_heli.glb",
-    "triangles": 4660
+    "triangles": 5624
   },
   "hangar": {
     "file": "hangar.glb",
@@ -997,11 +997,11 @@
   },
   "headquarters": {
     "file": "headquarters.glb",
-    "triangles": 14164
+    "triangles": 21052
   },
   "heavy_aa": {
     "file": "heavy_aa.glb",
-    "triangles": 4524
+    "triangles": 7278
   },
   "heavy_attack_heli": {
     "file": "heavy_attack_heli.glb",
@@ -1009,7 +1009,7 @@
   },
   "heavy_bomber": {
     "file": "heavy_bomber.glb",
-    "triangles": 3540
+    "triangles": 5472
   },
   "heavy_flak_tower": {
     "file": "heavy_flak_tower.glb",
@@ -1017,7 +1017,7 @@
   },
   "heavy_lift_helicopter": {
     "file": "heavy_lift_helicopter.glb",
-    "triangles": 3858
+    "triangles": 5388
   },
   "heavy_rocket": {
     "file": "heavy_rocket.glb",
@@ -1029,11 +1029,11 @@
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",
-    "triangles": 5662
+    "triangles": 9296
   },
   "heavy_tank_hd": {
     "file": "heavy_tank_hd.glb",
-    "triangles": 13536
+    "triangles": 15120
   },
   "heavy_turret": {
     "file": "heavy_turret.glb",
@@ -1041,7 +1041,7 @@
   },
   "heavy_turret_a": {
     "file": "heavy_turret_a.glb",
-    "triangles": 9670
+    "triangles": 5980
   },
   "heavy_turret_b": {
     "file": "heavy_turret_b.glb",
@@ -1181,7 +1181,7 @@
   },
   "leviathan": {
     "file": "leviathan.glb",
-    "triangles": 26744
+    "triangles": 24358
   },
   "light_attack_heli": {
     "file": "light_attack_heli.glb",
@@ -1221,7 +1221,7 @@
   },
   "manpads_tower": {
     "file": "manpads_tower.glb",
-    "triangles": 1750
+    "triangles": 3072
   },
   "market_stall": {
     "file": "market_stall.glb",
@@ -1229,7 +1229,7 @@
   },
   "mega_gunship": {
     "file": "mega_gunship.glb",
-    "triangles": 11476
+    "triangles": 9284
   },
   "mesa": {
     "file": "mesa.glb",
@@ -1297,11 +1297,11 @@
   },
   "mlrs": {
     "file": "mlrs.glb",
-    "triangles": 2652
+    "triangles": 7472
   },
   "mobile_fortress": {
     "file": "mobile_fortress.glb",
-    "triangles": 23256
+    "triangles": 25402
   },
   "mobile_repair_vehicle": {
     "file": "mobile_repair_vehicle.glb",
@@ -1413,7 +1413,7 @@
   },
   "radar_scout": {
     "file": "radar_scout.glb",
-    "triangles": 3362
+    "triangles": 5352
   },
   "radar_site": {
     "file": "radar_site.glb",
@@ -1425,7 +1425,7 @@
   },
   "radar_support_vehicle": {
     "file": "radar_support_vehicle.glb",
-    "triangles": 3368
+    "triangles": 6540
   },
   "radio_mast": {
     "file": "radio_mast.glb",
@@ -1437,7 +1437,7 @@
   },
   "rail_supergun": {
     "file": "rail_supergun.glb",
-    "triangles": 28756
+    "triangles": 11894
   },
   "rail_tanker": {
     "file": "rail_tanker.glb",
@@ -1449,7 +1449,7 @@
   },
   "railgun_truck": {
     "file": "railgun_truck.glb",
-    "triangles": 2924
+    "triangles": 7482
   },
   "razor_wire": {
     "file": "razor_wire.glb",
@@ -1457,7 +1457,7 @@
   },
   "recoilless_gun_tower": {
     "file": "recoilless_gun_tower.glb",
-    "triangles": 2318
+    "triangles": 3818
   },
   "recoilless_jeep": {
     "file": "recoilless_jeep.glb",
@@ -1489,7 +1489,7 @@
   },
   "river_gunboat": {
     "file": "river_gunboat.glb",
-    "triangles": 2302
+    "triangles": 5224
   },
   "river_patrol_boat": {
     "file": "river_patrol_boat.glb",
@@ -1621,7 +1621,7 @@
   },
   "shield_tower_b": {
     "file": "shield_tower_b.glb",
-    "triangles": 6236
+    "triangles": 5438
   },
   "shop": {
     "file": "shop.glb",
@@ -1681,7 +1681,7 @@
   },
   "sp_mortar": {
     "file": "sp_mortar.glb",
-    "triangles": 5748
+    "triangles": 7226
   },
   "stealth_bomber": {
     "file": "stealth_bomber.glb",
@@ -1845,7 +1845,7 @@
   },
   "twin_rotor_gunship": {
     "file": "twin_rotor_gunship.glb",
-    "triangles": 4366
+    "triangles": 8392
   },
   "twin_tank": {
     "file": "twin_tank.glb",
@@ -1869,7 +1869,7 @@
   },
   "visual_jammer": {
     "file": "visual_jammer.glb",
-    "triangles": 3672
+    "triangles": 5750
   },
   "volcanic_cliff": {
     "file": "volcanic_cliff.glb",
@@ -1905,7 +1905,7 @@
   },
   "wheeled_gun": {
     "file": "wheeled_gun.glb",
-    "triangles": 3058
+    "triangles": 7178
   },
   "wheeled_howitzer": {
     "file": "wheeled_howitzer.glb",

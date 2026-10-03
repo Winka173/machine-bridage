@@ -194,6 +194,8 @@ namespace MachineBrigade.Sim.Content
                 ParseWeaponP25A(w, def);
                 // Prompt 34 L1: its family and variant.
                 ParseWeaponP34(w, def);
+                // The bomb-run fix (DECISIONS "Ném bom rải thảm"): the stick parameters (after the blast's edge is known).
+                ParseWeaponStick(w, def);
                 if (def.Clip < 0 || def.ClipReload < 0f || (def.Clip > 0 && def.Burst > 1))
                     throw new FormatException($"{w.Path}: a magazine (clip) needs a single-round weapon (burst 1) and a clipReload of 0 or more.");
                 if (w.Has("bonuses"))

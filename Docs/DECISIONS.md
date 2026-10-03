@@ -18265,3 +18265,305 @@ Branch feature/p35-w9 (from feature/p35-w7 with lead/integration merged). Report
   tread_wheel, since lane C's lugged_tyre with rocket_technical's arguments counted as 34 % shared geometry.
 - Full gate (--no-write) after the wave: 230 models, 133 pass; all twenty wave 9 ids and elite_tank_destroyer pass
   every hard gate with soft >= 80; no other model's own-geometry check names a wave 9 model.
+
+## Prompt 35 wave 8 (lane A)
+
+Branch `feature/p35-w8` from `lead/integration` (2026-10-03; wave 5 merged there). Report: Docs/models/WAVE_8_REPORT.md.
+Blender and Python only: no Unity run, no test, sim or measure.
+
+**Lead calls (2026-10-03)** on the wave 5 questions:
+1. Typhon's silo ahead of the sail, as on the real boat: kept.
+2. typhon, stealth_bomber and morrigan are accepted on the owner's look (no gold set of their own).
+3. recon_jet as the SR-71, aa_57mm_vehicle as the 2S38 and gps_jammer_vehicle as an EW truck: kept; they go into the
+   owner question list.
+
+Decisions:
+- **Modules.** `mb_p35_wave8_fort` (dragons_teeth, dragons_teeth_a, headquarters), `mb_p35_wave8_trucks` (mlrs,
+  grad_truck, command_vehicle, railgun_truck, radar_scout, heavy_aa, wheeled_gun; lean layout helpers for wheels,
+  axles, frame rails and fenders), `mb_p35_wave8_ground` (heavy_tank with `_hd`, river_gunboat), `mb_p35_wave8_air`
+  (gunship_heli, mega_gunship; it imports the wave 5 loft helpers body_loft / span_loft / FOIL14), `mb_p35_wave8_bosses`
+  (behemoth, mobile_fortress, armored_train, leviathan; the helpers `twin_turret` and `per_barrel`). A spec each in
+  Tools/blender/specs/. Registered last in all_builders, inside the dict.
+- **Gold models.** attack_helicopter and fighter_jet (owner-approved, prompt 27 V2) are not rebuilt: both already pass
+  every gate with their names and nodes; nothing in their files changed.
+- **References.** Rows without a sheet entry follow their data: radar_scout = a Fennek-class 4x4 with its sensor mast
+  (the data's 4 m height), river_gunboat = a Project 1204 Shmel monitor (the old file was a Buyan-like boat with a
+  VLS), grad_truck (elite_grad's model) = the BM-21 on the Ural-375. railgun_truck is its own vehicle now (a heavy
+  8x8 carrying the twin-rail gun; it was Ixion's old stand-in source): it shares nothing with ixion.
+- **headquarters.** The HQ types of prompt 32 (fortress ground / air, garrison, shield) swap the def, not the model,
+  so the plinth (14 x 12 m, the footprint) and every pivot (Turret, the two main muzzles, coax, Radar, Mount_mg) stay
+  exactly where they were. The data's second hq_flak had no mount (gate: Mount_mg 1/2): it gets its own twin 30 mm
+  nest on the main roof's front left corner (Mount_mg.001, Muzzle_mg.001 moved there from the tower mount), under
+  the main gun's barrels. The fortress types' extra `gun` slot (turret_gun_120_long / bofors_l70) still has no mount
+  of its own on the model (as before): owner / lead question 2.
+- **Per-barrel muzzles.** behemoth's turrets (twin 152 mm, hull and sponson twin 120 mm) and leviathan's five triple
+  turrets now model all their barrels and write Muzzle_b<k>_<tag> themselves (same names and places as the wrappers
+  wrote); `mb_fix_barrels` (TWIN / EXTRA) and `mb_p34_barrels` (TARGETS) no longer list them. headquarters keeps the
+  mb_p34_barrels wrapper (its two barrels are found as before: Muzzle_b1 / b2_main unchanged).
+- **leviathan (sea-boss gold).** Every part node (Part_gun / .001 / .002, Part_sec_f / _a, Part_vls, Part_aa_l / _r,
+  Part_mg / .001, Part_radar, Part_deck, Part_welldeck, Part_engine) and every mount and muzzle stays where it was
+  (CIWS muzzles within 7 cm): NavalSystem.PreviewSalvo lays the maingun parts by Part_gun and their first mount, and
+  scylla hides the parts it drops by these nodes. The aft main turret faces forward in the file as before (the
+  runtime's arc turns it). Mount_APS added on the tower (the def has APS; it was the hard fail).
+- **armored_train (rail gold).** The three cars keep their ends, lengths and couplings (locomotive -9.4 .. -0.6,
+  gun wagon 0.6 .. 9.4, flatcar 10.31 .. 14.76 m) and the old pivots; the gate's 7 muzzles come from the data's
+  weapons: the second train_gun fires from a fixed casemate on the locomotive's rear deck (part gun_car_rear has no
+  node; a fixed piece, so no Mount_main is added that the main slot's mount mapping could confuse), and the two
+  boss_flak get their own twin flak mounts (Mount_mg.001 on the cab roof, .002 on the flatcar's tail).
+- **mega_gunship.** The data's two boss_hmg had no muzzles (gate: 7/9): door guns on Mount_mg.002 / .003 at the rear
+  cabin windows. Muzzle_missile moves 0.8 m down to the belly rack it now fires from (it stood inside the fuselage).
+- **behemoth.** Mount_APS on the turret roof rear (the hard fail); the turret's flak mounts, the hull and sponson
+  turrets and the rocket box keep their pivots. mara_behemoth / behemoth_mk0 keep working off the same nodes.
+- **Gate / validator.** validate_specs skips a variant boss's dropped parts (as quality_gate.boss_part_nodes does): the
+  stymphalos spec no longer has to name nodes its variant does not carry.
+- **Wave 1 specs.** ammo_dump, radar_site, repair_bay, rocket_turret_a, stymphalos pass validate_specs: their node
+  names follow the committed GLBs after the wave 1 renderer-cap merge (commit 0667414c); the heights are the
+  owner-approved wave 1 files (ammo_dump's whip antenna, radar_site's dish on its raised drive, rocket_turret_a's
+  pack on its cradle stand above the old heights; recorded in each spec's size source).
+- **Build-set dependence.** heavy_tank and wheeled_gun differ in two COLOR_0 vertices of the roof gun (MG) when they are
+  built together with the other wave ids instead of alone (the kit pintle's post cap is coincident with the gun's
+  base, so the AO ray hits there depend on object order); the committed files are the single-model builds. The other
+  sixteen rebuild byte-identically.
+- **Over budget (information).** Bosses 24-26k (behemoth 25.7k, mobile_fortress 25.4k, leviathan 24.4k, armored_train
+  26.5k); headquarters 18.2k; heavy_tank 9.3k (tracked cap 10,500); the wheeled units 5.4-7.5k, under the light
+  cap 7,500.
+
+## Prompt 35 wave 10 (lane B)
+Branch `feature/p35-w10` (from lead/integration with wave 6 merged), the models of wave 10 (Docs/models/WAVES_P35.md):
+nineteen rebuilt from scratch, one builder each (`Tools/blender/mb_p35_<id>.py`; cp_relay and cp_relay_a share
+`mb_p35_cp_relay.py`), a spec each first (`Tools/blender/specs/<id>.json`), registered inside the builders dict of
+build_assets.py after wave 6; silver_bug untouched. Report: Docs/models/WAVE_10_REPORT.md. Blender and Python only (no
+Unity, no test, sim or measure).
+- **Lead calls on the wave 6 questions** (2026-10-03): (a) stealth_naval_strike and garuda, the flying wings, are
+  accepted on the owner's look; (b) inflatable_decoy's modelSize goes to the owner's question list (data unchanged);
+  (c) the small craft's pintle Gatling and the Zodiac / raft canisters are fine.
+- **silver_bug** (owner-approved gold, prompt 27 V2): not rebuilt and not rebuilt from build_assets; it already passes
+  the whole gate (86.3 Tốt, every hard gate, Mount_APS present), so nothing changed (no node or name edit needed).
+- **Bomb bays (the pending bomb-run fix).** heavy_bomber and command_airship carry their bay doors on their own hinge
+  pivots, `Part_bay_door_L` / `Part_bay_door_R` (the pivot on the hinge line, the door hanging inboard from it, so a
+  rotation about Y opens it); the bomb launch points keep their names: heavy_bomber `Muzzle_missile` (the bay's drop
+  point), command_airship `Mount_gun` / `Mount_gun.001` (mountWeapons 0 / 1, roc_bombs) and its bay at the def's
+  bomb_bay hit area (blender (0, -8.5, -3.0)). The bombs are racked between the doors on both.
+- **Tower branches match their wave 2 bases.** heavy_turret_a stands on `mb_p35_wave2_heavy.barbette` (owner decision
+  4: one shared emplacement; the barbette is lane A's shared sub-assembly, not a model builder) and turns its own
+  stretched gun house (L/52-class barrels, charge bustle, coastal search radar `Radar`, new); its per-barrel muzzles
+  `Muzzle_b1_main` / `_b2_main` are written by the builder as heavy_turret_b does (gun_155_twin_ap has two barrels:
+  the old file failed 1/2). shield_tower_b repeats the base's plinth, barriers, cabins (three banks), emitter rings and
+  insulators in its own script but keeps the old file's low wide outline (8.3 x 8.3 x 4.5 m, the size rule) with three
+  lattice arms carrying outward ward projectors instead of the base's 9.5 m pylon. artillery_emplacement_a repeats the
+  _b emplacement (U berm, sandbag courses, revetment, plank floor, net) with a towed 155 mm and a phased-array
+  counter-battery radar (`Radar` at its old place). cp_relay and cp_relay_a share one compound in the cp_relay_b style
+  (4 x 4 pad, HESCO, fence, Team-banded shelter) under the old 7.3 m guyed mast; _a adds the comms container with the
+  big dish.
+- **L8 models** (flare_tower, sp_mortar, visual_jammer): L8's layouts kept (the braced flare post with the eight-tube
+  rack; the Patria AMV with AMOS; the shelter, mast head, smoke drums and generator), brought to the prompt 35
+  standard (tiers, regions, sloped bodies, the roof MG on a raised ring with its shield). visual_jammer is laid out
+  along Y for the def's 6 x 5 m (a whole-model turn at the end of its builder).
+- **Merged roles (spec "merged")**: twin_rotor_gunship `tail_rotor` in `Rotor_rear` (a tandem has no tail rotor);
+  heavy_lift_helicopter `stub_wings` in `Sponsons` and `weapons` in `Launchers_flares` (the Mi-26 is unarmed and has
+  no stub wings). Gate request (lead): skip these roles for unarmed and tandem helicopters.
+- **New runtime nodes**: twin_rotor_gunship `Turret` (the def turns its chin gun) and `Mount_mg` / `.001` (agl_40 is
+  aimed freely); heavy_bomber `Mount_gun` (the free tail guns); command_airship `Muzzle_b1_gun` / `_b2_gun` and
+  `_gun_001` (the twin 30 mm: eight mounts want eight muzzles, as garuda); daedalus `Mount_APS` (its def has APS) and
+  its own `Muzzle_b1/b2_gun[_001]` (the L3 wrapper finds no single barrel on the new ball guns, so the twins are built
+  here); heavy_turret_a `Radar`. Every old `Part_*`, `Mount_*`, `Muzzle_*`, `Radar`, `Propeller*`, `Rotor*`,
+  `Tail_rotor`, `Turret`, `Point_*` is kept under its old name and parent; daedalus' `Legs` are its running gear.
+- **Caps and renderers**: the towers stay under 6,000 (heavy_turret_a 5,980, artillery_emplacement_a 5,919), the light
+  vehicles under 7,500 (sp_mortar 7,226); static parts folded with `mb_p35b_parts.merge_parts` where glb_check's
+  renderer caps bit (cp_relay pair, visual_jammer, twin_rotor_gunship, heavy_bomber, shield_tower_b).
+- **Sizes**: all within 10 % of modelSize, or of the old file where the def has none (branches, cp_relay, the three
+  bosses, coastal_battery); rail_supergun 59.0 x 8.0 x 16.5 (-8 % / -9 % / 0 %), its barrel ending at the old muzzle.
+- **rail_supergun** was a member of the boss gold set: rebuilt (85.0 against the rail frame gold, the old file 76.4
+  failing its single-block gate) with 11.9k triangles instead of 36.7k; gold_metrics.json not recomputed here.
+- **Kit requests (for lane A)**: lift lane B's `clutter`, `plane`, `portholes` and `merge_parts` (mb_p35b_parts.py)
+  into mb_kit35 (report); lane B did not edit the kit.
+- build_assets.py: rebuilt from build_assets the 19 files match (the filter also rebuilt cp_relay_b: identical;
+  daedalus, radar_support_vehicle and shield_tower_b differed by bake noise at the same size: the gated files kept);
+  `python -m py_compile Tools/blender/build_assets.py` passes. glb_check: 0 errors, baseline accepts for the 19.
+- quality_report.xlsx / .csv not rewritten on this branch; full gate `--no-write`: 230 models, 151 pass; compared with
+  the csv no model outside waves 6, 7 and 10 changed.
+
+## Prompt 35: owner answers (2026-10-03)
+- railgun_truck as a heavy 8x8 carrying the twin-rail gun salvaged from Tempest: approved.
+- The fortress HQ types get a visible gun on the model for their `gun` weapon (Mount_* + Muzzle_*, model only): approved.
+
+## Owner: open questions settled by the lead's proposals (2026-10-03)
+Owner: "sửa theo đề xuất hết".
+1. Bomb-run fix pass 1 starts; the strategic bomber keeps its 7 bombs (data) and the card text saying 12 is corrected.
+2. amphib_light_vehicle moves off AAV-7 (prompt 24's reserved list; BMP-3F is reserved too): rebuild on a non-reserved
+   amphibious light vehicle that fits its data frame.
+3. Kept references: aa_gun_vehicle CV9040 AAV, shorad_vehicle Avenger, demolition_line_vehicle M1150 ABV,
+   river_patrol_boat PBR/SURC, towed_at_gun 2A45M, recon_jet SR-71, aa_57mm_vehicle 2S38, gps_jammer_vehicle EW truck.
+4. inflatable_decoy's modelSize is set so it draws at the real gun_turret's size.
+5. iron_beam stays a truck (the data has it mobile).
+6. kronos's gun_r part points at Mount_gun.002 (not the 57 mm Mount_gun).
+7. ballistic_launcher keeps one missile raised 22 degrees.
+8. supreme_command keeps its wheels and 11 m mast.
+9. The export counts a cited real-world source as da_kiem_chung.
+10. radar_station is split into two ids (the base module and the map prop).
+11. Defend mode reads its timeLimit (720 s) from data instead of the code's 630 s; the Normal x0.7 enemy income and the
+    Weekly fortress tactic override wait for play-tests.
+
+## Prompt 35: fortress HQ gun and kit items (lane A)
+
+Branch `feature/p35-hqgun` from `lead/integration` (2026-10-03), after the owner's answers above. Blender and Python
+only: no Unity run, no test, sim or measure.
+- **One model, one gun.** The HQ types swap the def, not the model: headquarters.fortress_ground (turret_gun_120_long,
+  Rh-120 L/55, 1 barrel) and headquarters.fortress_air (bofors_l70, 40 mm, 1 barrel) both inherit `"model":
+  "headquarters"`, and each has exactly one `gun` slot weapon, so both resolve the same `Mount_gun` / `Muzzle_gun`
+  (the k-th weapon of a slot takes the k-th mount). A second mount for the Bofors would never be used without a data
+  change, so the model carries one gun: the 120 mm L/55 of the ground fortress (the default branch; the AI takes
+  air 30 % of the time). The air fortress's Bofors fires from the same muzzle. If the owner wants the 40 mm drawn,
+  that needs a data change (a model of its own for fortress_air, or `hiddenNodes`): owner / lead question.
+- **Where.** A second bastion tower at the rear right of the main block (2 x 2 m battered cast prism to 6.2 m, Team
+  band, pour lines, loopholes, a ladder up its back, the race with its hazard band) carrying a low faceted casemate
+  turret on `Mount_gun` (2.30, 4.75, 6.30): the gun house in Team colour, mantlet, side cheeks, the barrel (2.7 m,
+  r 0.10: the main 152 mm's scale; sleeve, fume extractor, baffle brake `Gun_brake`), sight hood, hatch, rear bin,
+  whip; `Muzzle_gun` at the brake's face (2.30, 0.82, 7.10). The barrel parts are named `Gun_*` so they never read
+  as the main gun's recoil barrels (`Main_cannon*` / `Muzzle_brake*`). The place is the only one outside the main
+  turret's barrel sweep (5.4 m) where a long barrel turns clear of the model: check_muzzles' sweeps pass for
+  Mount_gun, Turret, Mount_mg and Radar.
+- **Kept / moved.** Every old pivot (Turret, Main_cannon / _2, Muzzle_brake / _2, Muzzle_main / .001, Muzzle_b1 /
+  b2_main, Muzzle_coax, Radar, Mount_mg / .001, Muzzle_mg / .001), the plinth and the footprint are unchanged; the
+  generator set moved forward between the wing and the new tower, the fuel drums behind the radar footing, the right
+  roof mast to the rear parapet (it stood in the new gun's arc; the left one moved with it, which also clears the
+  tower flak's old clash), the radar platform rail lowered 0.55 -> 0.40 m (the dish ran into it when turning).
+  Still open from wave 8: Mount_mg.001's barrels cross the gun drum over 75-165 degrees (a dead arc; its pivots
+  stay).
+- **Gate.** headquarters 21,052 triangles (over the tower budget: information only), 7 moving parts, soft 98.0 Tốt,
+  every hard gate passes; validate_specs passes (the spec names the new nodes); glb_check 0 errors, baseline
+  accepted.
+- **Kit items** (backward compatible: every default keeps the old geometry):
+  `mb_kit35.ladder(..., facing=None)` (the wall's outward normal: the rungs run along that wall);
+  `mb_kit27.sweep(..., v_up=False)` (the docstring now says the old frame's v runs along -up, so down on a flat
+  path; v_up=True mirrors the profile so v follows `up`); lane B's `clutter`, `plane`, `portholes` and
+  `merge_parts` moved into mb_kit35 unchanged (mb_p35b_parts keeps them as aliases).
+  quality_gate: wheel nodes (Tyres, Wheels, Wheel_*, Hubs, Rims, Road_wheels ...) never count as shared geometry
+  (their triangles stay in the total as the model's own); a structure's asymmetry is also read without its base
+  slab (flat, on the floor, covering half the top-view box) and the score takes the better reading, as sloped_dirs
+  does (reading it only without the slab dropped 13 towers by 5 points, four of them under 80); the helicopter roles
+  skip `tail_rotor` on a tandem (`Rotor_rear`) and `weapons` / `stub_wings` on an unarmed def.
+  Full gate (`--no-write`, old gold) 186 of 230 before and after the gate changes; only command_hq changed (89.3 ->
+  94.3, the slab case wave 7 reported).
+- **GLBs.** Rebuilt singly with the new kit: guard_tower_b, cp_relay / _a / _b, sea_cruiser, landing_craft,
+  hydra_sub, command_hq, aa_turret / _a / _b, twin_rotor_gunship match their committed files; glide_bomber and
+  interceptor_jet differ from the committed files by bake noise with the old kit as with the new (the two builds
+  are identical), so the committed files are kept. headquarters' COLOR_0 differs by AO bake noise (up to 0.047)
+  between builds from different starting states; the gated file is kept.
+- **Gold recompute** (`quality_gate.py --gold --no-write`, after the merge of wave 10): 163 of 230 pass (186 with the
+  old gold); 24 lose the pass (13 towers, 11 bosses: aa_gun_tower, aa_turret / _a / _b, artillery_emplacement_a,
+  behemoth / _inferno / _tempest, caspian, cp_relay_b, fortress_hive, gun_turret / _a, heavy_turret_a, hydra_sub,
+  kraken, landing_hovercraft, mg_bunker / _b, missile_battery, mobile_fortress, moloch, nyx, shield_tower_a),
+  morrigan gains it; headquarters 91.6 Tốt. Cause: a gold member needs a pass 8 visual grade of Tốt, and
+  `visual_grades()` drops every rebuilt model, so the gold sets shrank to the old models left: boss_ground and
+  boss_sea lost theirs (behemoth, mobile_fortress, leviathan rebuilt) and fall back to the whole boss gold; hq and
+  wheeled have none (they borrow structure / tracked); tower's is ew_tower, ew_tower_b and flare_searchlight_tower
+  (the last fails two hard gates). rail_supergun (36.7k -> 11.9k) left the boss gold. Committed as its own commit
+  so the lead can keep or drop it; a rule that lets a rebuilt model with every hard gate and soft >= 80 stand for
+  gold would refill the sets (lead question).
+
+## Prompt 35: gold recompute dropped (lead, 2026-10-03)
+Lane A's `quality_gate.py --gold` after the waves shrank the gold sets (rebuilt models carry no visual grade, so they
+cannot be gold; boss_ground, boss_sea, hq and wheeled lost their own gold) and the full gate fell from 186 to 163 passes.
+Reverted: the pre-rebuild gold stays the reference until rebuilt models get visual grades.
+
+
+## Ném bom rải thảm (pass 1, lane B, 2026-10-03)
+Owner's bomb-run fix, pass 1 (Docs/prompts/bomb_run_vi.txt; owner item 1 of "open questions settled": the strategic bomber
+keeps its 7 bombs). Branch feature/bomb-p12. Stick parameters only; damage, burst, cooldown and loads unchanged.
+- **Data**: balance.json weapons[*].stick on every bomb weapon pass 0 found: mode, bombs, spacing, length, interval,
+  releaseSpeed, fallTime, lead, heading (APPROACH / AXIS), anchor (START / CENTER), drop (OVERFLY / BAY), jitterAcross,
+  jitterAlong, overlap, width, minTargets, safety, straightTime, exit, bayOpen, warnShape (NONE / RING / STICK_RECT; not
+  "warn": the export reads "warn" as seconds). Read by Catalog.ParseWeaponStick into WeaponDef.Stick (StickDef,
+  Scripts/Sim/Content/WeaponDef.Stick.cs; Tuned copies carry it). On load: stick bombs must equal the burst, and length,
+  interval, overlap and width must match their formulas within 2 % (a FormatException names the field).
+- **Formulas**: spacing = 1.1 x core (every stick: overlap core / spacing = 0.909, inside 0.8-1.2); length = (n - 1) x
+  spacing, all under the 120 m cap (bosses 140 m), so no spacing or count was cut; interval = spacing / releaseSpeed;
+  lead = releaseSpeed x fallTime; fallTime = sqrt(2 x altitude / 40) of the main carrier; jitters 0.25 x core across,
+  0.15 x spacing along; width = 2 x WarnRadius (the edge, else the core) + 2 x jitterAcross; safety = max(core, 8);
+  straightTime = length / speed + fall + 1 s (also >= 40 m past the last bomb: never the longer here).
+- **STICK**: bomber_payload (heavy_bomber) n 7, 11 m, 66 m, 0.625 s at 17.6 m/s (22 m/s at the run's 0.8 throttle),
+  AXIS, minTargets 3, straight 6.2 s, STICK_RECT (500 kg); jet_bombs (attack_jet, elite_attack_jet, stealth_naval_strike)
+  n 2, 8.8 m, 8.8 m, 0.344 s at 25.6 m/s, APPROACH, straight 2.57 s, NONE (250 kg); p26_roc_roc_bombs n 8, 5.5 m, 38.5 m
+  and p26_roc_main_roc_bombs (argus, garuda, command_airship) n 8, 11 m, 77 m, both drop BAY, AXIS, STICK_RECT.
+- **Boss bays keep their 0.3 s ripple**: an airship crawls at 4.5-6 m/s, so spacing / its speed would stretch an 8-bomb
+  stick past the bay's whole cycle; their releaseSpeed is the bay's nominal walk (spacing / 0.3 s), their lead 0 (the
+  stick is laid round the aim) and their straightTime 0 (they do not fly over). Cycle and DPS unchanged.
+- **POINT**: the guided bombs stealth_payload (GBU-31 JDAM), guided_bomb (SDB), glide_fab500 (UMPK) land on their target
+  (the code's spread for guided rounds is 0; a lost lock still misses by 5-11 m): no jitter, lead 0. The spec's "stealth
+  bomber, 3 very large bombs, short stick" predates the data (2 guided JDAMs): kept POINT by the spec's own guided rule.
+  The single free-falling bombs (cluster_at_bomb, bunker_buster_bomb, thermobaric_bomb on glide_bomber) are POINT n 1
+  (their 0.5 x spread scatter stays); warnShape RING where FixRules warns (bunker buster, ODAB-500).
+- **Supports and boss strips** are not weapons and keep their code and data: airstrike 4 / 60 m (overlap 0.5: four big
+  bombs over a wide line, left for the pass 4 balance look), napalm 8 / 55 m (1.15), air_raid 10 / 70 m (1.03),
+  cluster_strike 30 bomblets (2.7, a saturating carpet), garuda_carpet / airship_carpet (1.4), kraken_air_raid (1.2).
+  Bom_vu_khi shows their stick columns worked out from that data.
+- **Card text**: the bomber's "12 bombs" guide line is corrected in pass 4 (cards from data), not here.
+- **Export**: Tools/export/bom.py Bom_vu_khi gains the spec's columns (che_do_tha ... canh_bao_dang, STICK_COLS); the
+  stick keys get their units in core/units.py; `export.py coverage`: unmapped 0.
+
+
+## Ném bom rải thảm (pass 2, lane B, 2026-10-03)
+The fix and its tests (spec pass 2), branch feature/bomb-p12. Where bombs land changes; damage, bombs per pass and the
+cycle do not. Not compiled or run here (the lead compiles and runs the bomb tests).
+- **Each bomb its own point**: the first bomb of a stick fixes its line in the mount's state (CombatSystem.PlanStick:
+  WeaponState.StickStart / StickDir / StickNext / StickBombs); bomb i lands at start + dir x i x spacing (StickPoint)
+  plus a seeded jitter (world Random, two draws, the same count the old scatter circle used): +-jitterAlong along,
+  +-jitterAcross across, widened by Works.SpreadFactor (balloons, searchlights). A free-falling stick's start is
+  BombImpact at release (the aircraft's position plus its speed over the fall: the lead), its way the aircraft's heading
+  (bombs keep the aircraft's track). The line is fixed in geometry, so a stick is (n - 1) x spacing long whatever the
+  aircraft's speed between bombs.
+- **Release moment**: StickStraddles uses the data stick ((n - 1) x spacing); CENTER lets go when the target is under the
+  middle of the stick it will drop, START when it is where the first bomb falls.
+- **Interval and cycle**: a stick's bombs go one stick.interval apart (WeaponDef.SalvoGap); after the stick the cooldown is
+  the data's less (n - 1) x (interval - burstInterval) (StickCooldown), so first bomb to first bomb stays what it was
+  (CycleSeconds / SustainedDps keep reading burstInterval, still right).
+- **Axis**: CombatSystem.StickDirection (pure, deterministic): the 2 x 2 covariance of the enemy ground units within half
+  the stick plus the edge of the aim; its major eigenvector (0.5 atan2(2cxy, cxx - cyy)), signed along the approach; used
+  when the long spread is at least 1.5 x the short one (a blob has no axis) and the axis is within 45 degrees of the
+  approach, else the approach. A boss bay lays its stick on it; a free-falling bomber cannot turn its stick off its track,
+  so with heading AXIS (bomber_payload) MovementSystem.DriveAeroplane steers its run in: while farther than lead + half the
+  stick + 3 turn radii out, it flies for a point on the axis behind the target (CombatSystem.StickEntry), then at the target.
+- **Boss bays**: p26_roc_roc_bombs gets "projectile": "Bomb" (the main bay inherits it): unguided bombs, not shells. They
+  are not FreeFall (BayStick): the bosses stand off (a 4.5-6 m/s airship never flies over its target), so the stick is laid
+  round the aim (CENTER), along the cluster axis or the boss-to-aim line, the bay rippling at its 0.3 s. A bay bomb falls at
+  least BombFall from the boss's height, its old shell time if longer (the 400 kg warning time still governs). Side effects
+  of the Bomb kind, accepted: Indirect (no line-of-fire check, no wall hit on the way), lobbed for field-works cover,
+  BombWorth weighs the bosses' bay targets (groups first), the view draws a bomb (pass 3 looks at it).
+- **Friendly safety per bomb**: Launch drops no bomb whose jittered point lies within stick.safety (+ the friend's radius)
+  of a friendly ground vehicle; the others keep their points. CanFire holds a stick back only when every bomb's point is
+  unsafe (StickAllUnsafe); POINT bombs keep the old checks.
+- **Few targets**: on fewer than stick.minTargets enemy ground units (vehicles or structures, 2 structures count as a row)
+  within half the stick plus the edge of the target, a stick drops max(2, ceil(n / 3)) (the heavy bomber 3 of 7; the jet's
+  pair and the ripple of 8 unaffected below that); stores pay only for the bombs dropped (StickCount, in Operate before the
+  ammo is taken and in CanFire for the release length). This is the spec's rule; it lowers a lone target's damage per pass.
+- **Straight and level**: the first bomb of a free-falling stick sets Vehicle.StickStraightUntil = now + straightTime and
+  StraightHeading; DriveAeroplane then holds heading, speed and height (Height is the def altitude) and skips its run logic
+  until then. Bosses do not hold.
+- **Tests** (Assets/MachineBrigade/Tests/EditMode/BombStickTests.cs, category BombStick): the spec's nine, on heavy_bomber,
+  attack_jet and command_airship sticks and the three guided POINT bombs, calling Launch / DriveAeroplane directly.
+  PlayTest8ATests.BombsOfAStickFall... groups a stick's bombs by a 1.0 s gap (was 0.5: the FAB-500 stick is 0.625 s apart).
+- **Trace**: BombStickTrace puts the target in the middle of five tanks in a row along the track (so a stick drops all its
+  bombs), cuts the salvo as Operate does, uses SalvoGap and writes che_do_tha, huong_dai_deg, so_bom_dai. The pass 0 csv is
+  kept as Docs/export/bom_2026-10-03/vet_tha_truoc_luot2.csv; `export.py bom` (new --before) reports Bom_ket_qua_vung for
+  TRUOC and SAU (column giai_doan; supports and strips SAU_KHONG_DOI) and BOM_REPORT.md gets a before / after table.
+- **Left for later**: pass 3 (bay doors, bombs drawn one by one along the stick, the STICK_RECT warning, a boss bay bomb
+  drawn falling from its stand-off), pass 4 (cards "N bombs, X m apart, Y m stick" from data; the bomber's "12 bombs" line;
+  report). To check in play: the heavy bomber's release speed (the data assumes the run's 0.8 throttle; at release it may
+  still be at 22 m/s, then its bombs fall a little behind it), the AXIS run in, and the few-target cut.
+
+## Ném bom rải thảm (pass 2 follow-up, lane B, 2026-10-03)
+The lead's four failing tests after merging passes 1-2 (a8bea43a); branch feature/bomb-p12b.
+- AirAndTowerTests.BombsLandUnderTheBomber was stale, not the lead: the FAB-500 is T4, so each landing is held to its
+  escape warning (2.7 s) while the bomber flies on, and the gap at impact measured that delay. It now checks each bomb
+  against the track: the stick starts the lead (speed x fall) ahead of the release, bomb i i spacings on (jitter
+  tolerance), the heading held, every impact on its aim.
+- BombStickTests.NoBombFallsInsideTheSafetyDistanceOfFriends: test setup. A friend 3 m beside the jet's first bomb was
+  also within safety 8 m + its 2.2 m radius of the second bomb (8.8 m on), so both were rightly skipped. The friend now
+  stands half the safety distance behind the first bomb (and beyond the last on sticks of 4+); the per-bomb skip is right.
+- PlayTest8ATests.SiegeBlastIsSmallerAndTheLongRangeSamsBigger: the siege mortar's 7.2 m (play-test 8 A) went back to
+  its 2B8 240 mm family's 9 m in prompt 25 A3 (4bb7b7a4, DECISIONS "25A", "A3 Weapon families": members share the
+  blast); the owner keeps it (play-test 12). Test expects 9; data unchanged.
+- Prompt34Tests.TheSameFamilyFiresTheSameRoundOnEveryBoss: weaponFamilyTable cal_23 boss.damage 7 -> 3.5, matching the
+  owner-approved zu23 at 2 barrels x 3.5 a round (DECISIONS "Prompt 35: owner review of the pilot", item 2). The table's
+  boss block is a reference only (no Sim code applies it); DPS unchanged.

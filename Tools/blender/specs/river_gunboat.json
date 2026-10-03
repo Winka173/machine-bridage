@@ -1,0 +1,150 @@
+{
+ "id": "river_gunboat",
+ "class": "ground",
+ "real": [
+  "Project 1204 Shmel riverine monitor (tank turret forward)",
+  "100 mm gun",
+  "KPV-class heavy MG aft"
+ ],
+ "shape": "No sheet row; data: modelSize 7.86 x 3.14 x 2.88, weapon gun_100_river. Built as a Shmel-type river monitor (the old file was a Buyan-like gunboat with a VLS).",
+ "confidence": "ban_dau_doan (no card text; the river role and the 100 mm after the Shmel class)",
+ "target_size": {
+  "L": 7.86,
+  "W": 3.14,
+  "H": 2.88,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "shallow hard-chine hull with the raked bow, spray strakes, rub rail, fender tyres",
+   "nodes": [
+    "Hull",
+    "Strakes",
+    "Undercarriage",
+    "Fender_tyres",
+    "Fender_ropes"
+   ]
+  },
+  {
+   "feature": "tank-type turret on its barbette with the 100 mm, mantlet, cupola, sight drum",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor",
+    "Barbette",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Sight_drum",
+    "Sight_glass"
+   ]
+  },
+  {
+   "feature": "low armoured wheelhouse with slit windows, doors, life rings, searchlight",
+   "nodes": [
+    "Deckhouse",
+    "Windows",
+    "Life_rings",
+    "Lamps"
+   ]
+  },
+  {
+   "feature": "mast with the navigation radar array and the yard",
+   "nodes": [
+    "Radar_array",
+    "Radar_back",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "aft gun tub with the heavy MG on its pedestal, ammunition boxes",
+   "nodes": [
+    "Ciws_tub",
+    "Mount_mg",
+    "MG",
+    "Muzzle_mg",
+    "Stowage"
+   ]
+  },
+  {
+   "feature": "deck fittings: rails, bollards, windlass, anchor, vents, smoke pots, exhausts, ensign",
+   "nodes": [
+    "Railings",
+    "Bollards",
+    "Windlass",
+    "Anchor",
+    "Vents",
+    "Smoke_pots",
+    "Exhaust",
+    "Ensign",
+    "Deck"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "superstructure",
+  "weapon",
+  "deck details"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_100_river",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "a boat scored as ground (light budget class); under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "hull (Team)",
+  "turret body and wheelhouse (Team)",
+  "boot-top bands and roof panels (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "wheelhouse"
+  ],
+  "tier2": [
+   "barbette",
+   "mast",
+   "gun tub",
+   "vents",
+   "fender tyres",
+   "smoke pots"
+  ],
+  "tier3": [
+   "rails",
+   "bollards",
+   "windlass",
+   "anchor",
+   "life rings",
+   "windows",
+   "ropes",
+   "antennas",
+   "latches"
+  ]
+ },
+ "questions": []
+}

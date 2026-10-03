@@ -1,0 +1,149 @@
+{
+ "id": "radar_support_vehicle",
+ "class": "wheeled",
+ "real": [
+  "Saab Giraffe AMB / 39N6 Kasta class mobile radar on a 4x4"
+ ],
+ "shape": "the old builder: a Giraffe AMB / Kasta radar truck with a cab RWS, an equipment box, four jacks and the raised mast with the flat array; modelSize 4.6 x 2.0 x 4.0 m; class Scout, hmg_selfdef_15.",
+ "confidence": "xấp xỉ (generic armoured 4x4 radar; drawn at modelSize)",
+ "target_size": {
+  "L": 4.6,
+  "W": 2.0,
+  "H": 4.0,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the armoured bonneted cab (Team): grille, bumper, windscreen with wipers, side windows, doors, steps, mirrors, lamps",
+   "nodes": [
+    "Cab",
+    "Grilles",
+    "Bumper",
+    "Glass",
+    "Lamps",
+    "Steps"
+   ]
+  },
+  {
+   "feature": "four wheels on two axles with leaf springs, fenders, mud flaps, fuel tank",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Axles",
+    "Suspension",
+    "Fenders",
+    "Mudflaps",
+    "Fuel_tanks"
+   ]
+  },
+  {
+   "feature": "the remote 12.7 mm station on a raised ring over the cab (Turret) with its shield and sensor",
+   "nodes": [
+    "Turret",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Gun_shield",
+    "Rws_sensor"
+   ]
+  },
+  {
+   "feature": "the equipment shelter with Team bands, louvres, A/C unit, door, cable ports; the generator box; four jacks",
+   "nodes": [
+    "Shelter",
+    "Team_band",
+    "Ac_unit",
+    "Doors",
+    "Cable_ports",
+    "Generator",
+    "Outriggers"
+   ]
+  },
+  {
+   "feature": "the telescopic mast in three sections with guy points and cable, the flat phased array on its turning head (Radar)",
+   "nodes": [
+    "Mast",
+    "Mast_base",
+    "Guy_points",
+    "Radar",
+    "Radar_panel",
+    "Radar_cells",
+    "Radar_head",
+    "Radar_cabin"
+   ]
+  },
+  {
+   "feature": "whips, jerrycans, the spare wheel, the beacon",
+   "nodes": [
+    "Antennas",
+    "Jerrycans",
+    "Spare_wheel",
+    "Beacons"
+   ]
+  }
+ ],
+ "class_parts": [
+  "every wheel",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "hmg_selfdef_15",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: light units seen in numbers stay under 1.5 x 5,000"
+ },
+ "team_zones": [
+  "the cab, the shelter bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "vehicles break into Part_wheel / Part_wheelb (prompt 34 wrapper) and burn",
+ "faction_style": "modern armoured 4x4",
+ "details": {
+  "tier1": [
+   "cab",
+   "shelter",
+   "mast and array"
+  ],
+  "tier2": [
+   "wheels",
+   "RWS",
+   "generator",
+   "jacks",
+   "array cells"
+  ],
+  "tier3": [
+   "wipers",
+   "handles",
+   "lamps",
+   "springs",
+   "ports",
+   "jerrycans",
+   "beacon"
+  ]
+ },
+ "questions": []
+}

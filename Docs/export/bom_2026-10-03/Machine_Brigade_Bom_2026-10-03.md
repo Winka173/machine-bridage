@@ -8,14 +8,14 @@ Bom_vet_tha: đọc 132 dòng từ vet_tha_unity.csv; thẻ hỗ trợ và siêu
 
 | id | nhom | ten_that | dau_no_kg | loai_sat_thuong | sat_thuong_moi_phat | loi_m | so_bom_moi_luot | khoang_tha_giua_bom_s | thoi_gian_nap_s | duong_tha_theo_ma | don_vi_mang | khoang_cach_giua_bom_m_toan_toc | do_dai_dai_m_toan_toc | ty_le_chong_lan_loi_tren_khoang | canh_bao_theo_luat |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| bomber_payload | vu_khi_don_vi | FAB-500 (500 kg) | 500 | HighExplosive | 420 | 10 | 7 | 0.2 | 11.2 | FREE_FALL | heavy_bomber | 4.4 | 26.4 | 2.273 | TRUE |
+| bomber_payload | vu_khi_don_vi | FAB-500 (500 kg) | 500 | HighExplosive | 420 | 10 | 7 | 0.2 | 11.2 | FREE_FALL_STICK | heavy_bomber | 4.4 | 26.4 | 2.273 | TRUE |
 | bunker_buster_bomb | vu_khi_don_vi | GBU-28 | 2100 | HighExplosive | 1400 | 6 | 1 |  | 90 | FREE_FALL | glide_bomber |  |  |  | TRUE |
 | cluster_at_bomb | vu_khi_don_vi | CBU-97 Sensor Fuzed Weapon | 450 | ShapedCharge | 0 | 3 | 1 |  | 90 | FREE_FALL | glide_bomber |  |  |  | TRUE |
 | glide_fab500 | vu_khi_don_vi | FAB-500 M-62 with UMPK glide kit | 500 | HighExplosive | 420 | 10 | 1 |  | 3 | GLIDE | glide_bomber |  |  |  | FALSE |
 | guided_bomb | vu_khi_don_vi | GBU-39 SDB (110 kg) | 110 | HighExplosive | 210 | 4 | 1 |  | 6.651 | GUIDED | morrigan;stealth_fighter;strike_drone |  |  |  | FALSE |
-| jet_bombs | vu_khi_don_vi | FAB-250 (250 kg) | 250 | HighExplosive | 310 | 8 | 2 | 0.25 | 10.05 | FREE_FALL | attack_jet;elite_attack_jet;stealth_naval_strike | 8.0 | 8.0 | 1.0 | FALSE |
-| p26_roc_main_roc_bombs | vu_khi_don_vi | bomb-bay stick 400 kg | 400 | HighExplosive | 700 | 10 | 8 | 0.3 | 33.34 | SHELL_PATH | argus;command_airship;garuda |  |  |  | TRUE |
-| p26_roc_roc_bombs | vu_khi_don_vi | bomb-bay stick 400 kg | 400 | HighExplosive | 400 | 5 | 8 | 0.3 | 2.9 | SHELL_PATH |  |  |  |  | TRUE |
+| jet_bombs | vu_khi_don_vi | FAB-250 (250 kg) | 250 | HighExplosive | 310 | 8 | 2 | 0.25 | 10.05 | FREE_FALL_STICK | attack_jet;elite_attack_jet;stealth_naval_strike | 8.0 | 8.0 | 1.0 | FALSE |
+| p26_roc_main_roc_bombs | vu_khi_don_vi | bomb-bay stick 400 kg | 400 | HighExplosive | 700 | 10 | 8 | 0.3 | 33.34 | BAY_STICK | argus;command_airship;garuda |  |  |  | TRUE |
+| p26_roc_roc_bombs | vu_khi_don_vi | bomb-bay stick 400 kg | 400 | HighExplosive | 400 | 5 | 8 | 0.3 | 2.9 | BAY_STICK |  |  |  |  | TRUE |
 | stealth_payload | vu_khi_don_vi | GBU-31 JDAM (907 kg) | 907 | HighExplosive | 892 | 13 | 2 | 0.3 | 14 | GUIDED | stealth_bomber |  |  |  | FALSE |
 | thermobaric_bomb | vu_khi_don_vi | ODAB-500 | 500 | HighExplosive | 380 | 12 | 1 |  | 90 | FREE_FALL | glide_bomber |  |  |  | TRUE |
 | air_raid | the_ho_tro | Không kích bất ngờ |  | NEED_CODE_CHECK | 200 | 8.0 | 10 | 0.267 | 0 | SUPPORT_AIRSTRIKE | (máy bay của thẻ, không là đơn vị) | 7.778 | 70.0 | 1.029 | TRUE (vòng / dải hỗ trợ) |
@@ -61,19 +61,19 @@ Bom_vet_tha: đọc 132 dòng từ vet_tha_unity.csv; thẻ hỗ trợ và siêu
 | id | buoc | mo_ta_theo_ma | file_ham |
 |---|---|---|---|
 | HV01 | chon_muc_tieu | Máy bay cánh cố định có vũ khí CHÍNH là bom và burst > 1 chọn mục tiêu bằng BombTarget: xe mặt đất địch nhìn thấy trong max(tầm nhìn, 60 m), điểm = BombWorth (cụm, công trình; trừ nơi vừa ném) × √clamp(Worth, 2, 25) / (1 + d/200). Đơn vị khác (bom là vũ khí phụ, boss): kẻ địch gần nhất trong tầm. | Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs:402-404 Think; Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs:433 BombTarget; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:406 BombWorth |
-| HV02 | huong_vao | Không có đường vào tính trước: máy bay quay mũi thẳng vào vị trí mục tiêu (goal = target.Position) theo tốc độ quay; hướng dải bom = hướng mũi lúc thả. | Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs:944 goal; Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs:993 RotateTowards |
+| HV02 | huong_vao | Máy bay quay mũi vào mục tiêu (goal = target.Position). Lượt 2: dải có heading AXIS (bomber_payload) khi còn xa thì bay tới điểm vào trên trục chính của cụm mục tiêu (StickEntry: phía sau mục tiêu một khoảng dẫn đầu + nửa dải + bán kính quay; trục trong ±45° so với hướng vào, không thì giữ hướng vào), rồi mới vào mục tiêu. Hướng dải = hướng mũi lúc thả. | Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs DriveAeroplane; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs StickEntry, StickDirection |
 | HV03 | toc_do_luc_tha | Ga 0,8 khi cách mục tiêu < 1,1 × AttackReach (AttackReach = tầm súng thân ngắn nhất, không có thì tầm vũ khí 0); có AttackHold thì ga 0,5–1 khi vào giữ; khi kéo ra (RunExtending) ga 1. Tốc độ đổi tối đa 0,8 × tốc độ/s. | Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs:960-968, Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs:994, Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs:1194 AttackReach |
-| HV04 | dieu_kien_tha | CanFire: hết hồi, đúng loại đạn, không có quân ta (StickNearOwn), trong tầm (InReach, tầm bom = tốc độ × thời gian rơi + nửa dải + lõi), rồi StickStraddles: mục tiêu lệch ngang ≤ lõi + bán kính mục tiêu và dọc đường bay từ (rơi − blast/2) tới (rơi + nửa dải + 2 m). KHÔNG có điều kiện 'chỉ thả khi đủ 2/3 số bom' trong mã. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:719-737 CanFire; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs:62-73 StickStraddles; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs:54-55 BombReach; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:502 InReach |
-| HV05 | so_bom_moi_luot | Loạt = Burst; máy bay có kho bom (load) thì loạt = min(Burst, số bom còn), trừ cả loạt khỏi kho. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:560-565 Operate; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs:46-51 StickBombs |
-| HV06 | nhip_tha | Quả đầu thả ngay khi CanFire đúng; các quả sau mỗi BurstInterval (bộ đếm theo bước 20 Hz; interval < 0,05 s thì nhiều quả cùng một bước). | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:516-532 (loạt đang dở); Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:606-612 |
-| HV07 | diem_nham_tung_qua | Bom rơi tự do: MỖI quả nhắm lại lúc thả: aimAt = BombImpact = vị trí máy bay + hướng mũi × (tốc độ × thời gian rơi). Không dùng chung một điểm nhắm. Khoảng cách giữa hai quả = tốc độ lúc đó × BurstInterval (StickLength = (n−1) × BurstInterval × tốc độ). | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:820-821 Launch; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs:38-39 BombImpact; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs:42-43 StickLength |
-| HV08 | diem_nham_bom_boss | Bom khoang của boss (p26_roc_roc_bombs, p26_roc_main_roc_bombs) kế thừa boss_howitzer nên Projectile = Shell, không phải Bomb: FreeFall = false, cả 8 quả nhắm vào CHÍNH mục tiêu (còn sống thì theo vị trí mục tiêu, không thì BurstAim = vị trí lúc bắt đầu loạt), chỉ lệch theo độ tản pháo → MỘT ĐIỂM. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:529 (loạt dở nhắm t.Position); Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:611 BurstAim; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:829 spread; Assets/MachineBrigade/Resources/Data/balance.json: weapons p26_roc_roc_bombs |
+| HV04 | dieu_kien_tha | CanFire: hết hồi, đúng loại đạn; dải STICK chỉ bị giữ lại khi MỌI quả đều rơi gần quân ta (StickAllUnsafe); trong tầm (InReach, tầm bom = tốc độ × thời gian rơi + nửa dải + lõi, dải = (n−1) × spacing), rồi StickStraddles: mục tiêu lệch ngang ≤ lõi + bán kính mục tiêu và dọc đường bay từ (rơi − blast/2) tới (rơi + nửa dải + 2 m) khi tâm dải CENTER (START: tới rơi + blast/2). Khoang bom boss (BAY): như vũ khí thường, không cần bay qua. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs CanFire; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs StickStraddles, StickAllUnsafe, BombReach; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs InReach |
+| HV05 | so_bom_moi_luot | Loạt = Burst; lượt 2: dải STICK có minTargets mà quanh dải (nửa dải + rìa quanh mục tiêu) có ít hơn minTargets xe / công trình địch (và < 2 công trình) thì chỉ thả max(2, ceil(n/3)) quả (StickCount); máy bay có kho bom (load) thì loạt = min(loạt, số bom còn), chỉ trừ số đã thả. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs Operate; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs StickCount, StickBombs |
+| HV06 | nhip_tha | Quả đầu thả ngay khi CanFire đúng; các quả sau mỗi SalvoGap: dải STICK = stick.interval (spacing / tốc độ lúc thả), khác = BurstInterval (bộ đếm theo bước 20 Hz). Sau dải, thời gian nạp = cooldown − (n−1) × (interval − burstInterval), nên chu kỳ từ dải này tới dải sau giữ nguyên. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs Operate; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs StickCooldown; Assets/MachineBrigade/Scripts/Sim/Content/WeaponDef.Stick.cs SalvoGap |
+| HV07 | diem_nham_tung_qua | Lượt 2: quả đầu cố định dải (PlanStick): đầu dải = BombImpact lúc thả (vị trí máy bay + hướng mũi × tốc độ × thời gian rơi = khoảng dẫn đầu), hướng = hướng mũi; quả i rơi tại đầu dải + hướng × i × spacing (StickPoint), không bao giờ một điểm nhắm chung. Một quả rơi tự do (POINT n 1) vẫn nhắm BombImpact. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs Launch; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs PlanStick, StickLine, StickPoint, BombImpact |
+| HV08 | diem_nham_bom_boss | Lượt 2: bom khoang của boss (p26_roc_roc_bombs, p26_roc_main_roc_bombs) là Projectile Bomb, stick.drop BAY: dải 8 quả đặt quanh điểm nhắm (CENTER), hướng = trục chính của cụm mục tiêu trong ±45° so với đường boss → điểm nhắm, không thì đường đó; quả i tại đầu dải + hướng × i × spacing; rơi ít nhất BombFall (thời gian bay cũ nếu dài hơn). Khoang vẫn nhả cách 0,3 s. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs Launch; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs BayStick, StickLine, AxisAt; Assets/MachineBrigade/Resources/Data/balance.json: weapons p26_roc_roc_bombs.stick |
 | HV09 | diem_nham_bom_dan_duong | Bom dẫn đường (data guided hoặc form GuidedBomb: SDB, JDAM, UMPK): aimAt = mục tiêu (dẫn trước nếu mục tiêu chạy), độ tản thường theo tầm; bom lượn bay tới bằng tốc độ riêng. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:805-806 LeadPoint; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:829; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:875-878; Assets/MachineBrigade/Scripts/Sim/Content/Definitions.cs:224 GuidedBomb |
-| HV10 | tan_xa | Bom rơi tự do: lệch ngẫu nhiên trong vòng bán kính Spread × 0,5 (FreeFallScatter) quanh điểm của nó, × hệ số khinh khí cầu chắn (Works.SpreadFactor). Không có lệch dọc / ngang riêng theo đường bay. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:829, Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:856-858; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs:28 |
+| HV10 | tan_xa | Lượt 2: quả của dải STICK lệch theo seed (world Random) ±jitterAlong dọc và ±jitterAcross ngang dải (không còn vòng tản), × hệ số khinh khí cầu / đèn chiếu (Works.SpreadFactor). Bom rơi tự do POINT: vòng Spread × 0,5 như cũ. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs Launch; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs FreeFallScatter |
 | HV11 | thoi_gian_roi | BombFall = √(2 × max(4, độ cao) / 40) (BombGravity 40 m/s², theo tỉ lệ bản đồ); bom có cảnh báo (≥ 400 kg) rơi không sớm hơn thời gian cảnh báo. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:874, Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:883; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs:25, Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs:35 |
 | HV12 | ngoi_no | Không có ngòi riêng: quả bom nổ khi hết thời gian bay tại điểm aim (UpdateProjectiles → Damage.ResolveImpact); bom chùm tung bom con ở đó. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs: UpdateProjectiles; Assets/MachineBrigade/Scripts/Sim/Combat/DamageSystem (ResolveImpact) NEED_CODE_CHECK |
-| HV13 | an_toan_quan_ta | Bom rơi tự do: StickNearOwn xét MỘT vòng quanh giữa dải (bán kính lõi + nửa dải + 3 m): có xe ta thì KHÔNG thả cả loạt (không bỏ từng quả). Bom khác: OwnNear quanh mục tiêu, lõi + 3 m. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:727-729; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs:76-82 |
-| HV14 | vong_lai | Kéo ra (RunExtending) khi cách < max(6, 0,3 × tầm) hoặc đã qua mục tiêu và < 0,6 × tầm: bay thẳng toàn lực; xa hơn max(0,85 × tầm, 2,2 × bán kính quay) thì quay lại vào. Không có đoạn bay thẳng bắt buộc sau quả cuối. Glide bomber quay đi trước khi tới mục tiêu. | Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs:932-941; Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.P25A.cs:17-23 GlideAway |
+| HV13 | an_toan_quan_ta | Lượt 2: dải STICK xét TỪNG quả: điểm rơi (sau lệch) trong stick.safety (+ bán kính xe) quanh xe mặt đất phe ta thì quả đó không thả; các quả khác giữ điểm của mình. Cả dải chỉ bị giữ lại khi mọi quả đều không an toàn. Bom rơi tự do POINT: StickNearOwn như cũ; bom khác: OwnNear quanh mục tiêu, lõi + 3 m. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs CanFire, Launch; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs StickAllUnsafe, StickNearOwn |
+| HV14 | vong_lai | Lượt 2: thả quả đầu của dải STICK thì máy bay giữ hướng, tốc độ, độ cao trong stick.straightTime (dải / tốc độ + thời gian rơi + 1 s, và ≥ 40 m sau quả cuối) (StickStraightUntil); sau đó như cũ: kéo ra (RunExtending) khi gần / đã qua mục tiêu, xa hơn max(0,85 × tầm, 2,2 × bán kính quay) thì quay lại. Glide bomber quay đi trước khi tới mục tiêu. | Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs DriveAeroplane; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs PlanStick; Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.P25A.cs GlideAway |
 | HV15 | tranh_nem_lai | Loạt > 1 quả ghi điểm vừa ném (_bombed) để BombWorth chấm thấp nơi đó lần sau. | Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:567; Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs:406 |
 | HV16 | the_ho_tro_khong_kich | Airstrike: Count quả rải đều từ Point tới Point + hướng × Length (Lerp), lệch ngang ngẫu nhiên ±Radius/2, cách nhau Duration/(Count−1) s; máy bay bay với tốc độ Length/Duration. Đã là dải (không dồn một điểm). | Assets/MachineBrigade/Scripts/Sim/Strikes/StrikeSystem.cs:250-275 |
 | HV17 | sieu_vu_khi_boss_strip | Strip: n quả cách đều dọc trục (−L/2 + L(k+0,5)/n), lệch ngang ±0,35 × W (khi không có interval), rơi trải trong Duration. Đã là dải. | Assets/MachineBrigade/Scripts/Sim/Bosses/BossSystem.BigAttacks.cs:708-720 (rơi), :492-505 (vùng cảnh báo) |
@@ -86,7 +86,7 @@ Bom_vet_tha: đọc 132 dòng từ vet_tha_unity.csv; thẻ hỗ trợ và siêu
 | air_raid/(the_ho_tro)/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 10.0 | 70.011 | 70.0 | 5.086 | 1.029 |
 | airship_carpet/command_airship/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 16.0 | 75.055 | 75.0 | 7.745 | 1.4 |
 | airstrike/(the_ho_tro)/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 4.0 | 60.091 | 60.0 | 3.957 | 0.5 |
-| bomber_payload/heavy_bomber/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 7.0 | 19.729 | 19.671 | 3.962 | 3.111 |
+| bomber_payload/heavy_bomber/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 7.0 | 65.757 | 65.68 | 4.616 | 0.914 |
 | bunker_buster_bomb/glide_bomber/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | cluster_at_bomb/glide_bomber/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | cluster_strike/(the_ho_tro)/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 30.0 | 60.39 | 60.0 | 9.655 | 2.658 |
@@ -97,12 +97,12 @@ Bom_vet_tha: đọc 132 dòng từ vet_tha_unity.csv; thẻ hỗ trợ và siêu
 | guided_bomb/strike_drone/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | jet_bombs/attack_jet/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | jet_bombs/elite_attack_jet/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| jet_bombs/stealth_naval_strike/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 2.0 | 9.15 | 9.099 | 0.899 | 0.907 |
+| jet_bombs/stealth_naval_strike/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 2.0 | 9.27 | 8.963 | 2.321 | 0.913 |
 | kraken_air_raid/kraken/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 12.0 | 82.651 | 82.5 | 8.823 | 1.2 |
 | napalm_strike/(the_ho_tro)/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 8.0 | 55.091 | 55.0 | 4.061 | 1.145 |
-| p26_roc_main_roc_bombs/argus/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 5.667 | 4.142 | 3.751 | 3.458 | 18.797 |
-| p26_roc_main_roc_bombs/command_airship/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 5.667 | 4.142 | 3.751 | 3.458 | 18.797 |
-| p26_roc_main_roc_bombs/garuda/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 5.333 | 3.974 | 3.597 | 3.239 | 19.677 |
+| p26_roc_main_roc_bombs/argus/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 8.0 | 76.835 | 76.816 | 4.616 | 0.911 |
+| p26_roc_main_roc_bombs/command_airship/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 8.0 | 76.835 | 76.816 | 4.616 | 0.911 |
+| p26_roc_main_roc_bombs/garuda/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 8.0 | 76.835 | 76.816 | 4.616 | 0.911 |
 | stealth_payload/stealth_bomber/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 2.0 | 1.839 | 1.539 | 0.758 | 14.42 |
 | thermobaric_bomb/glide_bomber/TONG_KET |  |  |  |  |  |  |  | TONG_KET_TB_3_SEED | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 
@@ -135,203 +135,401 @@ Bom_vet_tha: đọc 132 dòng từ vet_tha_unity.csv; thẻ hỗ trợ và siêu
 
 ## Bom_ket_qua_vung
 
-| id | doi_hinh | so_bom | so_xe_trung_loi | so_xe_trung_ria | so_xe_trung | so_lan_trung_loi |
-|---|---|---|---|---|---|---|
-| air_raid/(the_ho_tro)/s1/HANG_DOC_8M | HANG_DOC_8M | 10 | 5 | 0 | 5 | 10 |
-| air_raid/(the_ho_tro)/s1/HANG_NGANG_8M | HANG_NGANG_8M | 10 | 1 | 0 | 1 | 2 |
-| air_raid/(the_ho_tro)/s1/CUM_8M | CUM_8M | 10 | 5 | 0 | 5 | 6 |
-| air_raid/(the_ho_tro)/s2/HANG_DOC_8M | HANG_DOC_8M | 10 | 5 | 0 | 5 | 10 |
-| air_raid/(the_ho_tro)/s2/HANG_NGANG_8M | HANG_NGANG_8M | 10 | 2 | 0 | 2 | 3 |
-| air_raid/(the_ho_tro)/s2/CUM_8M | CUM_8M | 10 | 5 | 0 | 5 | 7 |
-| air_raid/(the_ho_tro)/s3/HANG_DOC_8M | HANG_DOC_8M | 10 | 5 | 0 | 5 | 10 |
-| air_raid/(the_ho_tro)/s3/HANG_NGANG_8M | HANG_NGANG_8M | 10 | 3 | 0 | 3 | 4 |
-| air_raid/(the_ho_tro)/s3/CUM_8M | CUM_8M | 10 | 5 | 0 | 5 | 7 |
-| airship_carpet/command_airship/s1/HANG_DOC_8M | HANG_DOC_8M | 16 | 5 | 0 | 5 | 14 |
-| airship_carpet/command_airship/s1/HANG_NGANG_8M | HANG_NGANG_8M | 16 | 3 | 2 | 5 | 4 |
-| airship_carpet/command_airship/s1/CUM_8M | CUM_8M | 16 | 5 | 0 | 5 | 10 |
-| airship_carpet/command_airship/s2/HANG_DOC_8M | HANG_DOC_8M | 16 | 5 | 0 | 5 | 13 |
-| airship_carpet/command_airship/s2/HANG_NGANG_8M | HANG_NGANG_8M | 16 | 2 | 1 | 3 | 3 |
-| airship_carpet/command_airship/s2/CUM_8M | CUM_8M | 16 | 5 | 0 | 5 | 11 |
-| airship_carpet/command_airship/s3/HANG_DOC_8M | HANG_DOC_8M | 16 | 5 | 0 | 5 | 13 |
-| airship_carpet/command_airship/s3/HANG_NGANG_8M | HANG_NGANG_8M | 16 | 3 | 1 | 4 | 4 |
-| airship_carpet/command_airship/s3/CUM_8M | CUM_8M | 16 | 5 | 0 | 5 | 10 |
-| airstrike/(the_ho_tro)/s1/HANG_DOC_8M | HANG_DOC_8M | 4 | 4 | 0 | 4 | 4 |
-| airstrike/(the_ho_tro)/s1/HANG_NGANG_8M | HANG_NGANG_8M | 4 | 0 | 0 | 0 | 0 |
-| airstrike/(the_ho_tro)/s1/CUM_8M | CUM_8M | 4 | 4 | 0 | 4 | 4 |
-| airstrike/(the_ho_tro)/s2/HANG_DOC_8M | HANG_DOC_8M | 4 | 4 | 0 | 4 | 4 |
-| airstrike/(the_ho_tro)/s2/HANG_NGANG_8M | HANG_NGANG_8M | 4 | 0 | 0 | 0 | 0 |
-| airstrike/(the_ho_tro)/s2/CUM_8M | CUM_8M | 4 | 4 | 0 | 4 | 4 |
-| airstrike/(the_ho_tro)/s3/HANG_DOC_8M | HANG_DOC_8M | 4 | 4 | 0 | 4 | 4 |
-| airstrike/(the_ho_tro)/s3/HANG_NGANG_8M | HANG_NGANG_8M | 4 | 0 | 0 | 0 | 0 |
-| airstrike/(the_ho_tro)/s3/CUM_8M | CUM_8M | 4 | 4 | 0 | 4 | 4 |
-| bomber_payload/heavy_bomber/s1/HANG_DOC_8M | HANG_DOC_8M | 7 | 5 | 0 | 5 | 18 |
-| bomber_payload/heavy_bomber/s1/HANG_NGANG_8M | HANG_NGANG_8M | 7 | 3 | 0 | 3 | 11 |
-| bomber_payload/heavy_bomber/s1/CUM_8M | CUM_8M | 7 | 5 | 0 | 5 | 24 |
-| bomber_payload/heavy_bomber/s2/HANG_DOC_8M | HANG_DOC_8M | 7 | 4 | 0 | 4 | 17 |
-| bomber_payload/heavy_bomber/s2/HANG_NGANG_8M | HANG_NGANG_8M | 7 | 3 | 0 | 3 | 15 |
-| bomber_payload/heavy_bomber/s2/CUM_8M | CUM_8M | 7 | 5 | 0 | 5 | 27 |
-| bomber_payload/heavy_bomber/s3/HANG_DOC_8M | HANG_DOC_8M | 7 | 4 | 0 | 4 | 15 |
-| bomber_payload/heavy_bomber/s3/HANG_NGANG_8M | HANG_NGANG_8M | 7 | 3 | 0 | 3 | 13 |
-| bomber_payload/heavy_bomber/s3/CUM_8M | CUM_8M | 7 | 5 | 0 | 5 | 28 |
-| bunker_buster_bomb/glide_bomber/s1/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| bunker_buster_bomb/glide_bomber/s1/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| bunker_buster_bomb/glide_bomber/s1/CUM_8M | CUM_8M | 1 | 3 | 0 | 3 | 3 |
-| bunker_buster_bomb/glide_bomber/s2/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| bunker_buster_bomb/glide_bomber/s2/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| bunker_buster_bomb/glide_bomber/s2/CUM_8M | CUM_8M | 1 | 3 | 0 | 3 | 3 |
-| bunker_buster_bomb/glide_bomber/s3/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| bunker_buster_bomb/glide_bomber/s3/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| bunker_buster_bomb/glide_bomber/s3/CUM_8M | CUM_8M | 1 | 3 | 0 | 3 | 3 |
-| cluster_at_bomb/glide_bomber/s1/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| cluster_at_bomb/glide_bomber/s1/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| cluster_at_bomb/glide_bomber/s1/CUM_8M | CUM_8M | 1 | 1 | 0 | 1 | 1 |
-| cluster_at_bomb/glide_bomber/s2/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| cluster_at_bomb/glide_bomber/s2/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| cluster_at_bomb/glide_bomber/s2/CUM_8M | CUM_8M | 1 | 1 | 0 | 1 | 1 |
-| cluster_at_bomb/glide_bomber/s3/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| cluster_at_bomb/glide_bomber/s3/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| cluster_at_bomb/glide_bomber/s3/CUM_8M | CUM_8M | 1 | 1 | 0 | 1 | 1 |
-| cluster_strike/(the_ho_tro)/s1/HANG_DOC_8M | HANG_DOC_8M | 30 | 5 | 0 | 5 | 20 |
-| cluster_strike/(the_ho_tro)/s1/HANG_NGANG_8M | HANG_NGANG_8M | 30 | 3 | 0 | 3 | 6 |
-| cluster_strike/(the_ho_tro)/s1/CUM_8M | CUM_8M | 30 | 5 | 0 | 5 | 17 |
-| cluster_strike/(the_ho_tro)/s2/HANG_DOC_8M | HANG_DOC_8M | 30 | 5 | 0 | 5 | 22 |
-| cluster_strike/(the_ho_tro)/s2/HANG_NGANG_8M | HANG_NGANG_8M | 30 | 2 | 0 | 2 | 7 |
-| cluster_strike/(the_ho_tro)/s2/CUM_8M | CUM_8M | 30 | 5 | 0 | 5 | 18 |
-| cluster_strike/(the_ho_tro)/s3/HANG_DOC_8M | HANG_DOC_8M | 30 | 5 | 0 | 5 | 23 |
-| cluster_strike/(the_ho_tro)/s3/HANG_NGANG_8M | HANG_NGANG_8M | 30 | 2 | 0 | 2 | 5 |
-| cluster_strike/(the_ho_tro)/s3/CUM_8M | CUM_8M | 30 | 5 | 0 | 5 | 17 |
-| garuda_carpet/garuda/s1/HANG_DOC_8M | HANG_DOC_8M | 20 | 5 | 0 | 5 | 13 |
-| garuda_carpet/garuda/s1/HANG_NGANG_8M | HANG_NGANG_8M | 20 | 3 | 2 | 5 | 4 |
-| garuda_carpet/garuda/s1/CUM_8M | CUM_8M | 20 | 5 | 0 | 5 | 9 |
-| garuda_carpet/garuda/s2/HANG_DOC_8M | HANG_DOC_8M | 20 | 5 | 0 | 5 | 14 |
-| garuda_carpet/garuda/s2/HANG_NGANG_8M | HANG_NGANG_8M | 20 | 1 | 2 | 3 | 2 |
-| garuda_carpet/garuda/s2/CUM_8M | CUM_8M | 20 | 5 | 0 | 5 | 9 |
-| garuda_carpet/garuda/s3/HANG_DOC_8M | HANG_DOC_8M | 20 | 5 | 0 | 5 | 12 |
-| garuda_carpet/garuda/s3/HANG_NGANG_8M | HANG_NGANG_8M | 20 | 3 | 2 | 5 | 4 |
-| garuda_carpet/garuda/s3/CUM_8M | CUM_8M | 20 | 5 | 0 | 5 | 10 |
-| glide_fab500/glide_bomber/s1/HANG_DOC_8M | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
-| glide_fab500/glide_bomber/s1/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
-| glide_fab500/glide_bomber/s1/CUM_8M | CUM_8M | 1 | 5 | 0 | 5 | 5 |
-| glide_fab500/glide_bomber/s2/HANG_DOC_8M | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
-| glide_fab500/glide_bomber/s2/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
-| glide_fab500/glide_bomber/s2/CUM_8M | CUM_8M | 1 | 5 | 0 | 5 | 5 |
-| glide_fab500/glide_bomber/s3/HANG_DOC_8M | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
-| glide_fab500/glide_bomber/s3/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
-| glide_fab500/glide_bomber/s3/CUM_8M | CUM_8M | 1 | 5 | 0 | 5 | 5 |
-| guided_bomb/morrigan/s1/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 1 | 2 | 1 |
-| guided_bomb/morrigan/s1/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/morrigan/s1/CUM_8M | CUM_8M | 1 | 1 | 4 | 5 | 1 |
-| guided_bomb/morrigan/s2/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 1 | 2 | 1 |
-| guided_bomb/morrigan/s2/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 1 | 2 | 1 |
-| guided_bomb/morrigan/s2/CUM_8M | CUM_8M | 1 | 1 | 4 | 5 | 1 |
-| guided_bomb/morrigan/s3/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 1 | 2 | 1 |
-| guided_bomb/morrigan/s3/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 1 | 2 | 1 |
-| guided_bomb/morrigan/s3/CUM_8M | CUM_8M | 1 | 1 | 4 | 5 | 1 |
-| guided_bomb/stealth_fighter/s1/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/stealth_fighter/s1/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/stealth_fighter/s1/CUM_8M | CUM_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/stealth_fighter/s2/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/stealth_fighter/s2/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/stealth_fighter/s2/CUM_8M | CUM_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/stealth_fighter/s3/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/stealth_fighter/s3/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/stealth_fighter/s3/CUM_8M | CUM_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/strike_drone/s1/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/strike_drone/s1/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/strike_drone/s1/CUM_8M | CUM_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/strike_drone/s2/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/strike_drone/s2/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/strike_drone/s2/CUM_8M | CUM_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/strike_drone/s3/HANG_DOC_8M | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/strike_drone/s3/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| guided_bomb/strike_drone/s3/CUM_8M | CUM_8M | 1 | 1 | 0 | 1 | 1 |
-| jet_bombs/attack_jet/s1/HANG_DOC_8M | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
-| jet_bombs/attack_jet/s1/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| jet_bombs/attack_jet/s1/CUM_8M | CUM_8M | 1 | 5 | 0 | 5 | 5 |
-| jet_bombs/attack_jet/s2/HANG_DOC_8M | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
-| jet_bombs/attack_jet/s2/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| jet_bombs/attack_jet/s2/CUM_8M | CUM_8M | 1 | 4 | 0 | 4 | 4 |
-| jet_bombs/attack_jet/s3/HANG_DOC_8M | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
-| jet_bombs/attack_jet/s3/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 2 | 0 | 2 | 2 |
-| jet_bombs/attack_jet/s3/CUM_8M | CUM_8M | 1 | 5 | 0 | 5 | 5 |
-| jet_bombs/elite_attack_jet/s1/HANG_DOC_8M | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
-| jet_bombs/elite_attack_jet/s1/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| jet_bombs/elite_attack_jet/s1/CUM_8M | CUM_8M | 1 | 5 | 0 | 5 | 5 |
-| jet_bombs/elite_attack_jet/s2/HANG_DOC_8M | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
-| jet_bombs/elite_attack_jet/s2/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
-| jet_bombs/elite_attack_jet/s2/CUM_8M | CUM_8M | 1 | 4 | 0 | 4 | 4 |
-| jet_bombs/elite_attack_jet/s3/HANG_DOC_8M | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
-| jet_bombs/elite_attack_jet/s3/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 2 | 0 | 2 | 2 |
-| jet_bombs/elite_attack_jet/s3/CUM_8M | CUM_8M | 1 | 5 | 0 | 5 | 5 |
-| jet_bombs/stealth_naval_strike/s1/HANG_DOC_8M | HANG_DOC_8M | 2 | 3 | 0 | 3 | 4 |
-| jet_bombs/stealth_naval_strike/s1/HANG_NGANG_8M | HANG_NGANG_8M | 2 | 1 | 0 | 1 | 2 |
-| jet_bombs/stealth_naval_strike/s1/CUM_8M | CUM_8M | 2 | 5 | 0 | 5 | 6 |
-| jet_bombs/stealth_naval_strike/s2/HANG_DOC_8M | HANG_DOC_8M | 2 | 3 | 0 | 3 | 4 |
-| jet_bombs/stealth_naval_strike/s2/HANG_NGANG_8M | HANG_NGANG_8M | 2 | 1 | 0 | 1 | 2 |
-| jet_bombs/stealth_naval_strike/s2/CUM_8M | CUM_8M | 2 | 5 | 0 | 5 | 6 |
-| jet_bombs/stealth_naval_strike/s3/HANG_DOC_8M | HANG_DOC_8M | 2 | 3 | 0 | 3 | 4 |
-| jet_bombs/stealth_naval_strike/s3/HANG_NGANG_8M | HANG_NGANG_8M | 2 | 1 | 0 | 1 | 2 |
-| jet_bombs/stealth_naval_strike/s3/CUM_8M | CUM_8M | 2 | 5 | 0 | 5 | 6 |
-| kraken_air_raid/kraken/s1/HANG_DOC_8M | HANG_DOC_8M | 12 | 5 | 0 | 5 | 10 |
-| kraken_air_raid/kraken/s1/HANG_NGANG_8M | HANG_NGANG_8M | 12 | 3 | 2 | 5 | 4 |
-| kraken_air_raid/kraken/s1/CUM_8M | CUM_8M | 12 | 5 | 0 | 5 | 12 |
-| kraken_air_raid/kraken/s2/HANG_DOC_8M | HANG_DOC_8M | 12 | 5 | 0 | 5 | 10 |
-| kraken_air_raid/kraken/s2/HANG_NGANG_8M | HANG_NGANG_8M | 12 | 2 | 2 | 4 | 4 |
-| kraken_air_raid/kraken/s2/CUM_8M | CUM_8M | 12 | 5 | 0 | 5 | 10 |
-| kraken_air_raid/kraken/s3/HANG_DOC_8M | HANG_DOC_8M | 12 | 5 | 0 | 5 | 10 |
-| kraken_air_raid/kraken/s3/HANG_NGANG_8M | HANG_NGANG_8M | 12 | 2 | 3 | 5 | 4 |
-| kraken_air_raid/kraken/s3/CUM_8M | CUM_8M | 12 | 5 | 0 | 5 | 11 |
-| napalm_strike/(the_ho_tro)/s1/HANG_DOC_8M | HANG_DOC_8M | 8 | 5 | 0 | 5 | 10 |
-| napalm_strike/(the_ho_tro)/s1/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 2 | 0 | 2 | 4 |
-| napalm_strike/(the_ho_tro)/s1/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 11 |
-| napalm_strike/(the_ho_tro)/s2/HANG_DOC_8M | HANG_DOC_8M | 8 | 5 | 0 | 5 | 10 |
-| napalm_strike/(the_ho_tro)/s2/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 3 | 0 | 3 | 4 |
-| napalm_strike/(the_ho_tro)/s2/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 10 |
-| napalm_strike/(the_ho_tro)/s3/HANG_DOC_8M | HANG_DOC_8M | 8 | 5 | 0 | 5 | 10 |
-| napalm_strike/(the_ho_tro)/s3/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 2 | 0 | 2 | 4 |
-| napalm_strike/(the_ho_tro)/s3/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 11 |
-| p26_roc_main_roc_bombs/argus/s1/HANG_DOC_8M | HANG_DOC_8M | 8 | 3 | 2 | 5 | 22 |
-| p26_roc_main_roc_bombs/argus/s1/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 23 |
-| p26_roc_main_roc_bombs/argus/s1/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 40 |
-| p26_roc_main_roc_bombs/argus/s2/HANG_DOC_8M | HANG_DOC_8M | 8 | 3 | 2 | 5 | 23 |
-| p26_roc_main_roc_bombs/argus/s2/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 24 |
-| p26_roc_main_roc_bombs/argus/s2/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 40 |
-| p26_roc_main_roc_bombs/argus/s3/HANG_DOC_8M | HANG_DOC_8M | 8 | 3 | 2 | 5 | 22 |
-| p26_roc_main_roc_bombs/argus/s3/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 23 |
-| p26_roc_main_roc_bombs/argus/s3/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 40 |
-| p26_roc_main_roc_bombs/command_airship/s1/HANG_DOC_8M | HANG_DOC_8M | 8 | 3 | 2 | 5 | 22 |
-| p26_roc_main_roc_bombs/command_airship/s1/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 23 |
-| p26_roc_main_roc_bombs/command_airship/s1/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 40 |
-| p26_roc_main_roc_bombs/command_airship/s2/HANG_DOC_8M | HANG_DOC_8M | 8 | 3 | 2 | 5 | 23 |
-| p26_roc_main_roc_bombs/command_airship/s2/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 24 |
-| p26_roc_main_roc_bombs/command_airship/s2/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 40 |
-| p26_roc_main_roc_bombs/command_airship/s3/HANG_DOC_8M | HANG_DOC_8M | 8 | 3 | 2 | 5 | 22 |
-| p26_roc_main_roc_bombs/command_airship/s3/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 23 |
-| p26_roc_main_roc_bombs/command_airship/s3/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 40 |
-| p26_roc_main_roc_bombs/garuda/s1/HANG_DOC_8M | HANG_DOC_8M | 8 | 3 | 2 | 5 | 24 |
-| p26_roc_main_roc_bombs/garuda/s1/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 23 |
-| p26_roc_main_roc_bombs/garuda/s1/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 40 |
-| p26_roc_main_roc_bombs/garuda/s2/HANG_DOC_8M | HANG_DOC_8M | 8 | 3 | 2 | 5 | 23 |
-| p26_roc_main_roc_bombs/garuda/s2/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 24 |
-| p26_roc_main_roc_bombs/garuda/s2/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 40 |
-| p26_roc_main_roc_bombs/garuda/s3/HANG_DOC_8M | HANG_DOC_8M | 8 | 3 | 2 | 5 | 22 |
-| p26_roc_main_roc_bombs/garuda/s3/HANG_NGANG_8M | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 24 |
-| p26_roc_main_roc_bombs/garuda/s3/CUM_8M | CUM_8M | 8 | 5 | 0 | 5 | 40 |
-| stealth_payload/stealth_bomber/s1/HANG_DOC_8M | HANG_DOC_8M | 2 | 3 | 0 | 3 | 6 |
-| stealth_payload/stealth_bomber/s1/HANG_NGANG_8M | HANG_NGANG_8M | 2 | 3 | 0 | 3 | 6 |
-| stealth_payload/stealth_bomber/s1/CUM_8M | CUM_8M | 2 | 5 | 0 | 5 | 10 |
-| stealth_payload/stealth_bomber/s2/HANG_DOC_8M | HANG_DOC_8M | 2 | 3 | 0 | 3 | 6 |
-| stealth_payload/stealth_bomber/s2/HANG_NGANG_8M | HANG_NGANG_8M | 2 | 3 | 0 | 3 | 6 |
-| stealth_payload/stealth_bomber/s2/CUM_8M | CUM_8M | 2 | 5 | 0 | 5 | 10 |
-| stealth_payload/stealth_bomber/s3/HANG_DOC_8M | HANG_DOC_8M | 2 | 3 | 0 | 3 | 6 |
-| stealth_payload/stealth_bomber/s3/HANG_NGANG_8M | HANG_NGANG_8M | 2 | 3 | 0 | 3 | 6 |
-| stealth_payload/stealth_bomber/s3/CUM_8M | CUM_8M | 2 | 5 | 0 | 5 | 10 |
-| thermobaric_bomb/glide_bomber/s1/HANG_DOC_8M | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
-| thermobaric_bomb/glide_bomber/s1/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
-| thermobaric_bomb/glide_bomber/s1/CUM_8M | CUM_8M | 1 | 5 | 0 | 5 | 5 |
-| thermobaric_bomb/glide_bomber/s2/HANG_DOC_8M | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
-| thermobaric_bomb/glide_bomber/s2/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
-| thermobaric_bomb/glide_bomber/s2/CUM_8M | CUM_8M | 1 | 5 | 0 | 5 | 5 |
-| thermobaric_bomb/glide_bomber/s3/HANG_DOC_8M | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
-| thermobaric_bomb/glide_bomber/s3/HANG_NGANG_8M | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
-| thermobaric_bomb/glide_bomber/s3/CUM_8M | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| id | giai_doan | doi_hinh | so_bom | so_xe_trung_loi | so_xe_trung_ria | so_xe_trung | so_lan_trung_loi |
+|---|---|---|---|---|---|---|---|
+| SAU/air_raid/(the_ho_tro)/s1/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 10 | 5 | 0 | 5 | 10 |
+| SAU/air_raid/(the_ho_tro)/s1/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 10 | 1 | 0 | 1 | 2 |
+| SAU/air_raid/(the_ho_tro)/s1/CUM_8M | SAU_KHONG_DOI | CUM_8M | 10 | 5 | 0 | 5 | 6 |
+| SAU/air_raid/(the_ho_tro)/s2/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 10 | 5 | 0 | 5 | 10 |
+| SAU/air_raid/(the_ho_tro)/s2/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 10 | 2 | 0 | 2 | 3 |
+| SAU/air_raid/(the_ho_tro)/s2/CUM_8M | SAU_KHONG_DOI | CUM_8M | 10 | 5 | 0 | 5 | 7 |
+| SAU/air_raid/(the_ho_tro)/s3/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 10 | 5 | 0 | 5 | 10 |
+| SAU/air_raid/(the_ho_tro)/s3/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 10 | 3 | 0 | 3 | 4 |
+| SAU/air_raid/(the_ho_tro)/s3/CUM_8M | SAU_KHONG_DOI | CUM_8M | 10 | 5 | 0 | 5 | 7 |
+| SAU/airship_carpet/command_airship/s1/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 16 | 5 | 0 | 5 | 14 |
+| SAU/airship_carpet/command_airship/s1/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 16 | 3 | 2 | 5 | 4 |
+| SAU/airship_carpet/command_airship/s1/CUM_8M | SAU_KHONG_DOI | CUM_8M | 16 | 5 | 0 | 5 | 10 |
+| SAU/airship_carpet/command_airship/s2/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 16 | 5 | 0 | 5 | 13 |
+| SAU/airship_carpet/command_airship/s2/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 16 | 2 | 1 | 3 | 3 |
+| SAU/airship_carpet/command_airship/s2/CUM_8M | SAU_KHONG_DOI | CUM_8M | 16 | 5 | 0 | 5 | 11 |
+| SAU/airship_carpet/command_airship/s3/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 16 | 5 | 0 | 5 | 13 |
+| SAU/airship_carpet/command_airship/s3/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 16 | 3 | 1 | 4 | 4 |
+| SAU/airship_carpet/command_airship/s3/CUM_8M | SAU_KHONG_DOI | CUM_8M | 16 | 5 | 0 | 5 | 10 |
+| SAU/airstrike/(the_ho_tro)/s1/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 4 | 4 | 0 | 4 | 4 |
+| SAU/airstrike/(the_ho_tro)/s1/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 4 | 0 | 0 | 0 | 0 |
+| SAU/airstrike/(the_ho_tro)/s1/CUM_8M | SAU_KHONG_DOI | CUM_8M | 4 | 4 | 0 | 4 | 4 |
+| SAU/airstrike/(the_ho_tro)/s2/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 4 | 4 | 0 | 4 | 4 |
+| SAU/airstrike/(the_ho_tro)/s2/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 4 | 0 | 0 | 0 | 0 |
+| SAU/airstrike/(the_ho_tro)/s2/CUM_8M | SAU_KHONG_DOI | CUM_8M | 4 | 4 | 0 | 4 | 4 |
+| SAU/airstrike/(the_ho_tro)/s3/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 4 | 4 | 0 | 4 | 4 |
+| SAU/airstrike/(the_ho_tro)/s3/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 4 | 0 | 0 | 0 | 0 |
+| SAU/airstrike/(the_ho_tro)/s3/CUM_8M | SAU_KHONG_DOI | CUM_8M | 4 | 4 | 0 | 4 | 4 |
+| SAU/bomber_payload/heavy_bomber/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 7 | 5 | 0 | 5 | 9 |
+| SAU/bomber_payload/heavy_bomber/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 7 | 2 | 0 | 2 | 3 |
+| SAU/bomber_payload/heavy_bomber/s1/CUM_8M | SAU | CUM_8M | 7 | 5 | 0 | 5 | 10 |
+| SAU/bomber_payload/heavy_bomber/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 7 | 5 | 0 | 5 | 10 |
+| SAU/bomber_payload/heavy_bomber/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 7 | 3 | 0 | 3 | 4 |
+| SAU/bomber_payload/heavy_bomber/s2/CUM_8M | SAU | CUM_8M | 7 | 5 | 0 | 5 | 8 |
+| SAU/bomber_payload/heavy_bomber/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 7 | 5 | 0 | 5 | 9 |
+| SAU/bomber_payload/heavy_bomber/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 7 | 2 | 0 | 2 | 3 |
+| SAU/bomber_payload/heavy_bomber/s3/CUM_8M | SAU | CUM_8M | 7 | 5 | 0 | 5 | 9 |
+| SAU/bunker_buster_bomb/glide_bomber/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/bunker_buster_bomb/glide_bomber/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/bunker_buster_bomb/glide_bomber/s1/CUM_8M | SAU | CUM_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/bunker_buster_bomb/glide_bomber/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/bunker_buster_bomb/glide_bomber/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/bunker_buster_bomb/glide_bomber/s2/CUM_8M | SAU | CUM_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/bunker_buster_bomb/glide_bomber/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/bunker_buster_bomb/glide_bomber/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/bunker_buster_bomb/glide_bomber/s3/CUM_8M | SAU | CUM_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/cluster_at_bomb/glide_bomber/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/cluster_at_bomb/glide_bomber/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/cluster_at_bomb/glide_bomber/s1/CUM_8M | SAU | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/cluster_at_bomb/glide_bomber/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/cluster_at_bomb/glide_bomber/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/cluster_at_bomb/glide_bomber/s2/CUM_8M | SAU | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/cluster_at_bomb/glide_bomber/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/cluster_at_bomb/glide_bomber/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/cluster_at_bomb/glide_bomber/s3/CUM_8M | SAU | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/cluster_strike/(the_ho_tro)/s1/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 30 | 5 | 0 | 5 | 20 |
+| SAU/cluster_strike/(the_ho_tro)/s1/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 30 | 3 | 0 | 3 | 6 |
+| SAU/cluster_strike/(the_ho_tro)/s1/CUM_8M | SAU_KHONG_DOI | CUM_8M | 30 | 5 | 0 | 5 | 17 |
+| SAU/cluster_strike/(the_ho_tro)/s2/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 30 | 5 | 0 | 5 | 22 |
+| SAU/cluster_strike/(the_ho_tro)/s2/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 30 | 2 | 0 | 2 | 7 |
+| SAU/cluster_strike/(the_ho_tro)/s2/CUM_8M | SAU_KHONG_DOI | CUM_8M | 30 | 5 | 0 | 5 | 18 |
+| SAU/cluster_strike/(the_ho_tro)/s3/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 30 | 5 | 0 | 5 | 23 |
+| SAU/cluster_strike/(the_ho_tro)/s3/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 30 | 2 | 0 | 2 | 5 |
+| SAU/cluster_strike/(the_ho_tro)/s3/CUM_8M | SAU_KHONG_DOI | CUM_8M | 30 | 5 | 0 | 5 | 17 |
+| SAU/garuda_carpet/garuda/s1/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 20 | 5 | 0 | 5 | 13 |
+| SAU/garuda_carpet/garuda/s1/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 20 | 3 | 2 | 5 | 4 |
+| SAU/garuda_carpet/garuda/s1/CUM_8M | SAU_KHONG_DOI | CUM_8M | 20 | 5 | 0 | 5 | 9 |
+| SAU/garuda_carpet/garuda/s2/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 20 | 5 | 0 | 5 | 14 |
+| SAU/garuda_carpet/garuda/s2/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 20 | 1 | 2 | 3 | 2 |
+| SAU/garuda_carpet/garuda/s2/CUM_8M | SAU_KHONG_DOI | CUM_8M | 20 | 5 | 0 | 5 | 9 |
+| SAU/garuda_carpet/garuda/s3/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 20 | 5 | 0 | 5 | 12 |
+| SAU/garuda_carpet/garuda/s3/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 20 | 3 | 2 | 5 | 4 |
+| SAU/garuda_carpet/garuda/s3/CUM_8M | SAU_KHONG_DOI | CUM_8M | 20 | 5 | 0 | 5 | 10 |
+| SAU/glide_fab500/glide_bomber/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/glide_fab500/glide_bomber/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/glide_fab500/glide_bomber/s1/CUM_8M | SAU | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| SAU/glide_fab500/glide_bomber/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/glide_fab500/glide_bomber/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/glide_fab500/glide_bomber/s2/CUM_8M | SAU | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| SAU/glide_fab500/glide_bomber/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/glide_fab500/glide_bomber/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/glide_fab500/glide_bomber/s3/CUM_8M | SAU | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| SAU/guided_bomb/morrigan/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 1 | 2 | 1 |
+| SAU/guided_bomb/morrigan/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/morrigan/s1/CUM_8M | SAU | CUM_8M | 1 | 1 | 4 | 5 | 1 |
+| SAU/guided_bomb/morrigan/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 1 | 2 | 1 |
+| SAU/guided_bomb/morrigan/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 1 | 2 | 1 |
+| SAU/guided_bomb/morrigan/s2/CUM_8M | SAU | CUM_8M | 1 | 1 | 4 | 5 | 1 |
+| SAU/guided_bomb/morrigan/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 1 | 2 | 1 |
+| SAU/guided_bomb/morrigan/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 1 | 2 | 1 |
+| SAU/guided_bomb/morrigan/s3/CUM_8M | SAU | CUM_8M | 1 | 1 | 4 | 5 | 1 |
+| SAU/guided_bomb/stealth_fighter/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/stealth_fighter/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/stealth_fighter/s1/CUM_8M | SAU | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/stealth_fighter/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/stealth_fighter/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/stealth_fighter/s2/CUM_8M | SAU | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/stealth_fighter/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/stealth_fighter/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/stealth_fighter/s3/CUM_8M | SAU | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/strike_drone/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/strike_drone/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/strike_drone/s1/CUM_8M | SAU | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/strike_drone/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/strike_drone/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/strike_drone/s2/CUM_8M | SAU | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/strike_drone/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/strike_drone/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/guided_bomb/strike_drone/s3/CUM_8M | SAU | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| SAU/jet_bombs/attack_jet/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/attack_jet/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/attack_jet/s1/CUM_8M | SAU | CUM_8M | 1 | 4 | 0 | 4 | 4 |
+| SAU/jet_bombs/attack_jet/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/attack_jet/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/attack_jet/s2/CUM_8M | SAU | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| SAU/jet_bombs/attack_jet/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/attack_jet/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/attack_jet/s3/CUM_8M | SAU | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| SAU/jet_bombs/elite_attack_jet/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/elite_attack_jet/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/elite_attack_jet/s1/CUM_8M | SAU | CUM_8M | 1 | 4 | 0 | 4 | 4 |
+| SAU/jet_bombs/elite_attack_jet/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/elite_attack_jet/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/elite_attack_jet/s2/CUM_8M | SAU | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| SAU/jet_bombs/elite_attack_jet/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/elite_attack_jet/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 2 | 0 | 2 | 2 |
+| SAU/jet_bombs/elite_attack_jet/s3/CUM_8M | SAU | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| SAU/jet_bombs/stealth_naval_strike/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 2 | 3 | 0 | 3 | 4 |
+| SAU/jet_bombs/stealth_naval_strike/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 2 | 2 | 0 | 2 | 3 |
+| SAU/jet_bombs/stealth_naval_strike/s1/CUM_8M | SAU | CUM_8M | 2 | 5 | 0 | 5 | 7 |
+| SAU/jet_bombs/stealth_naval_strike/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 2 | 3 | 0 | 3 | 4 |
+| SAU/jet_bombs/stealth_naval_strike/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 2 | 2 | 0 | 2 | 3 |
+| SAU/jet_bombs/stealth_naval_strike/s2/CUM_8M | SAU | CUM_8M | 2 | 5 | 0 | 5 | 7 |
+| SAU/jet_bombs/stealth_naval_strike/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 2 | 3 | 0 | 3 | 4 |
+| SAU/jet_bombs/stealth_naval_strike/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 2 | 2 | 0 | 2 | 3 |
+| SAU/jet_bombs/stealth_naval_strike/s3/CUM_8M | SAU | CUM_8M | 2 | 5 | 0 | 5 | 6 |
+| SAU/kraken_air_raid/kraken/s1/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 12 | 5 | 0 | 5 | 10 |
+| SAU/kraken_air_raid/kraken/s1/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 12 | 3 | 2 | 5 | 4 |
+| SAU/kraken_air_raid/kraken/s1/CUM_8M | SAU_KHONG_DOI | CUM_8M | 12 | 5 | 0 | 5 | 12 |
+| SAU/kraken_air_raid/kraken/s2/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 12 | 5 | 0 | 5 | 10 |
+| SAU/kraken_air_raid/kraken/s2/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 12 | 2 | 2 | 4 | 4 |
+| SAU/kraken_air_raid/kraken/s2/CUM_8M | SAU_KHONG_DOI | CUM_8M | 12 | 5 | 0 | 5 | 10 |
+| SAU/kraken_air_raid/kraken/s3/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 12 | 5 | 0 | 5 | 10 |
+| SAU/kraken_air_raid/kraken/s3/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 12 | 2 | 3 | 5 | 4 |
+| SAU/kraken_air_raid/kraken/s3/CUM_8M | SAU_KHONG_DOI | CUM_8M | 12 | 5 | 0 | 5 | 11 |
+| SAU/napalm_strike/(the_ho_tro)/s1/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 8 | 5 | 0 | 5 | 10 |
+| SAU/napalm_strike/(the_ho_tro)/s1/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 8 | 2 | 0 | 2 | 4 |
+| SAU/napalm_strike/(the_ho_tro)/s1/CUM_8M | SAU_KHONG_DOI | CUM_8M | 8 | 5 | 0 | 5 | 11 |
+| SAU/napalm_strike/(the_ho_tro)/s2/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 8 | 5 | 0 | 5 | 10 |
+| SAU/napalm_strike/(the_ho_tro)/s2/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 8 | 3 | 0 | 3 | 4 |
+| SAU/napalm_strike/(the_ho_tro)/s2/CUM_8M | SAU_KHONG_DOI | CUM_8M | 8 | 5 | 0 | 5 | 10 |
+| SAU/napalm_strike/(the_ho_tro)/s3/HANG_DOC_8M | SAU_KHONG_DOI | HANG_DOC_8M | 8 | 5 | 0 | 5 | 10 |
+| SAU/napalm_strike/(the_ho_tro)/s3/HANG_NGANG_8M | SAU_KHONG_DOI | HANG_NGANG_8M | 8 | 2 | 0 | 2 | 4 |
+| SAU/napalm_strike/(the_ho_tro)/s3/CUM_8M | SAU_KHONG_DOI | CUM_8M | 8 | 5 | 0 | 5 | 11 |
+| SAU/p26_roc_main_roc_bombs/argus/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 8 | 5 | 0 | 5 | 8 |
+| SAU/p26_roc_main_roc_bombs/argus/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 5 |
+| SAU/p26_roc_main_roc_bombs/argus/s1/CUM_8M | SAU | CUM_8M | 8 | 5 | 0 | 5 | 8 |
+| SAU/p26_roc_main_roc_bombs/argus/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 8 | 5 | 0 | 5 | 9 |
+| SAU/p26_roc_main_roc_bombs/argus/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 5 |
+| SAU/p26_roc_main_roc_bombs/argus/s2/CUM_8M | SAU | CUM_8M | 8 | 5 | 0 | 5 | 9 |
+| SAU/p26_roc_main_roc_bombs/argus/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 8 | 5 | 0 | 5 | 9 |
+| SAU/p26_roc_main_roc_bombs/argus/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 5 |
+| SAU/p26_roc_main_roc_bombs/argus/s3/CUM_8M | SAU | CUM_8M | 8 | 5 | 0 | 5 | 7 |
+| SAU/p26_roc_main_roc_bombs/command_airship/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 8 | 5 | 0 | 5 | 8 |
+| SAU/p26_roc_main_roc_bombs/command_airship/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 5 |
+| SAU/p26_roc_main_roc_bombs/command_airship/s1/CUM_8M | SAU | CUM_8M | 8 | 5 | 0 | 5 | 8 |
+| SAU/p26_roc_main_roc_bombs/command_airship/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 8 | 5 | 0 | 5 | 9 |
+| SAU/p26_roc_main_roc_bombs/command_airship/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 5 |
+| SAU/p26_roc_main_roc_bombs/command_airship/s2/CUM_8M | SAU | CUM_8M | 8 | 5 | 0 | 5 | 9 |
+| SAU/p26_roc_main_roc_bombs/command_airship/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 8 | 5 | 0 | 5 | 9 |
+| SAU/p26_roc_main_roc_bombs/command_airship/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 5 |
+| SAU/p26_roc_main_roc_bombs/command_airship/s3/CUM_8M | SAU | CUM_8M | 8 | 5 | 0 | 5 | 7 |
+| SAU/p26_roc_main_roc_bombs/garuda/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 8 | 5 | 0 | 5 | 8 |
+| SAU/p26_roc_main_roc_bombs/garuda/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 5 |
+| SAU/p26_roc_main_roc_bombs/garuda/s1/CUM_8M | SAU | CUM_8M | 8 | 5 | 0 | 5 | 8 |
+| SAU/p26_roc_main_roc_bombs/garuda/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 8 | 5 | 0 | 5 | 9 |
+| SAU/p26_roc_main_roc_bombs/garuda/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 5 |
+| SAU/p26_roc_main_roc_bombs/garuda/s2/CUM_8M | SAU | CUM_8M | 8 | 5 | 0 | 5 | 9 |
+| SAU/p26_roc_main_roc_bombs/garuda/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 8 | 5 | 0 | 5 | 9 |
+| SAU/p26_roc_main_roc_bombs/garuda/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 5 |
+| SAU/p26_roc_main_roc_bombs/garuda/s3/CUM_8M | SAU | CUM_8M | 8 | 5 | 0 | 5 | 7 |
+| SAU/stealth_payload/stealth_bomber/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 2 | 3 | 0 | 3 | 6 |
+| SAU/stealth_payload/stealth_bomber/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 2 | 3 | 0 | 3 | 6 |
+| SAU/stealth_payload/stealth_bomber/s1/CUM_8M | SAU | CUM_8M | 2 | 5 | 0 | 5 | 10 |
+| SAU/stealth_payload/stealth_bomber/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 2 | 3 | 0 | 3 | 6 |
+| SAU/stealth_payload/stealth_bomber/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 2 | 3 | 0 | 3 | 6 |
+| SAU/stealth_payload/stealth_bomber/s2/CUM_8M | SAU | CUM_8M | 2 | 5 | 0 | 5 | 10 |
+| SAU/stealth_payload/stealth_bomber/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 2 | 3 | 0 | 3 | 6 |
+| SAU/stealth_payload/stealth_bomber/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 2 | 3 | 0 | 3 | 6 |
+| SAU/stealth_payload/stealth_bomber/s3/CUM_8M | SAU | CUM_8M | 2 | 5 | 0 | 5 | 10 |
+| SAU/thermobaric_bomb/glide_bomber/s1/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/thermobaric_bomb/glide_bomber/s1/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/thermobaric_bomb/glide_bomber/s1/CUM_8M | SAU | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| SAU/thermobaric_bomb/glide_bomber/s2/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/thermobaric_bomb/glide_bomber/s2/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/thermobaric_bomb/glide_bomber/s2/CUM_8M | SAU | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| SAU/thermobaric_bomb/glide_bomber/s3/HANG_DOC_8M | SAU | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/thermobaric_bomb/glide_bomber/s3/HANG_NGANG_8M | SAU | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| SAU/thermobaric_bomb/glide_bomber/s3/CUM_8M | SAU | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| TRUOC/air_raid/(the_ho_tro)/s1/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 10 | 5 | 0 | 5 | 10 |
+| TRUOC/air_raid/(the_ho_tro)/s1/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 10 | 1 | 0 | 1 | 2 |
+| TRUOC/air_raid/(the_ho_tro)/s1/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 10 | 5 | 0 | 5 | 6 |
+| TRUOC/air_raid/(the_ho_tro)/s2/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 10 | 5 | 0 | 5 | 10 |
+| TRUOC/air_raid/(the_ho_tro)/s2/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 10 | 2 | 0 | 2 | 3 |
+| TRUOC/air_raid/(the_ho_tro)/s2/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 10 | 5 | 0 | 5 | 7 |
+| TRUOC/air_raid/(the_ho_tro)/s3/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 10 | 5 | 0 | 5 | 10 |
+| TRUOC/air_raid/(the_ho_tro)/s3/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 10 | 3 | 0 | 3 | 4 |
+| TRUOC/air_raid/(the_ho_tro)/s3/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 10 | 5 | 0 | 5 | 7 |
+| TRUOC/airship_carpet/command_airship/s1/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 16 | 5 | 0 | 5 | 14 |
+| TRUOC/airship_carpet/command_airship/s1/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 16 | 3 | 2 | 5 | 4 |
+| TRUOC/airship_carpet/command_airship/s1/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 16 | 5 | 0 | 5 | 10 |
+| TRUOC/airship_carpet/command_airship/s2/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 16 | 5 | 0 | 5 | 13 |
+| TRUOC/airship_carpet/command_airship/s2/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 16 | 2 | 1 | 3 | 3 |
+| TRUOC/airship_carpet/command_airship/s2/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 16 | 5 | 0 | 5 | 11 |
+| TRUOC/airship_carpet/command_airship/s3/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 16 | 5 | 0 | 5 | 13 |
+| TRUOC/airship_carpet/command_airship/s3/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 16 | 3 | 1 | 4 | 4 |
+| TRUOC/airship_carpet/command_airship/s3/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 16 | 5 | 0 | 5 | 10 |
+| TRUOC/airstrike/(the_ho_tro)/s1/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 4 | 4 | 0 | 4 | 4 |
+| TRUOC/airstrike/(the_ho_tro)/s1/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 4 | 0 | 0 | 0 | 0 |
+| TRUOC/airstrike/(the_ho_tro)/s1/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 4 | 4 | 0 | 4 | 4 |
+| TRUOC/airstrike/(the_ho_tro)/s2/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 4 | 4 | 0 | 4 | 4 |
+| TRUOC/airstrike/(the_ho_tro)/s2/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 4 | 0 | 0 | 0 | 0 |
+| TRUOC/airstrike/(the_ho_tro)/s2/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 4 | 4 | 0 | 4 | 4 |
+| TRUOC/airstrike/(the_ho_tro)/s3/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 4 | 4 | 0 | 4 | 4 |
+| TRUOC/airstrike/(the_ho_tro)/s3/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 4 | 0 | 0 | 0 | 0 |
+| TRUOC/airstrike/(the_ho_tro)/s3/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 4 | 4 | 0 | 4 | 4 |
+| TRUOC/bomber_payload/heavy_bomber/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 7 | 5 | 0 | 5 | 18 |
+| TRUOC/bomber_payload/heavy_bomber/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 7 | 3 | 0 | 3 | 11 |
+| TRUOC/bomber_payload/heavy_bomber/s1/CUM_8M | TRUOC | CUM_8M | 7 | 5 | 0 | 5 | 24 |
+| TRUOC/bomber_payload/heavy_bomber/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 7 | 4 | 0 | 4 | 17 |
+| TRUOC/bomber_payload/heavy_bomber/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 7 | 3 | 0 | 3 | 15 |
+| TRUOC/bomber_payload/heavy_bomber/s2/CUM_8M | TRUOC | CUM_8M | 7 | 5 | 0 | 5 | 27 |
+| TRUOC/bomber_payload/heavy_bomber/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 7 | 4 | 0 | 4 | 15 |
+| TRUOC/bomber_payload/heavy_bomber/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 7 | 3 | 0 | 3 | 13 |
+| TRUOC/bomber_payload/heavy_bomber/s3/CUM_8M | TRUOC | CUM_8M | 7 | 5 | 0 | 5 | 28 |
+| TRUOC/bunker_buster_bomb/glide_bomber/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/bunker_buster_bomb/glide_bomber/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/bunker_buster_bomb/glide_bomber/s1/CUM_8M | TRUOC | CUM_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/bunker_buster_bomb/glide_bomber/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/bunker_buster_bomb/glide_bomber/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/bunker_buster_bomb/glide_bomber/s2/CUM_8M | TRUOC | CUM_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/bunker_buster_bomb/glide_bomber/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/bunker_buster_bomb/glide_bomber/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/bunker_buster_bomb/glide_bomber/s3/CUM_8M | TRUOC | CUM_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/cluster_at_bomb/glide_bomber/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/cluster_at_bomb/glide_bomber/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/cluster_at_bomb/glide_bomber/s1/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/cluster_at_bomb/glide_bomber/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/cluster_at_bomb/glide_bomber/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/cluster_at_bomb/glide_bomber/s2/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/cluster_at_bomb/glide_bomber/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/cluster_at_bomb/glide_bomber/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/cluster_at_bomb/glide_bomber/s3/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/cluster_strike/(the_ho_tro)/s1/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 30 | 5 | 0 | 5 | 20 |
+| TRUOC/cluster_strike/(the_ho_tro)/s1/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 30 | 3 | 0 | 3 | 6 |
+| TRUOC/cluster_strike/(the_ho_tro)/s1/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 30 | 5 | 0 | 5 | 17 |
+| TRUOC/cluster_strike/(the_ho_tro)/s2/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 30 | 5 | 0 | 5 | 22 |
+| TRUOC/cluster_strike/(the_ho_tro)/s2/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 30 | 2 | 0 | 2 | 7 |
+| TRUOC/cluster_strike/(the_ho_tro)/s2/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 30 | 5 | 0 | 5 | 18 |
+| TRUOC/cluster_strike/(the_ho_tro)/s3/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 30 | 5 | 0 | 5 | 23 |
+| TRUOC/cluster_strike/(the_ho_tro)/s3/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 30 | 2 | 0 | 2 | 5 |
+| TRUOC/cluster_strike/(the_ho_tro)/s3/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 30 | 5 | 0 | 5 | 17 |
+| TRUOC/garuda_carpet/garuda/s1/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 20 | 5 | 0 | 5 | 13 |
+| TRUOC/garuda_carpet/garuda/s1/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 20 | 3 | 2 | 5 | 4 |
+| TRUOC/garuda_carpet/garuda/s1/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 20 | 5 | 0 | 5 | 9 |
+| TRUOC/garuda_carpet/garuda/s2/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 20 | 5 | 0 | 5 | 14 |
+| TRUOC/garuda_carpet/garuda/s2/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 20 | 1 | 2 | 3 | 2 |
+| TRUOC/garuda_carpet/garuda/s2/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 20 | 5 | 0 | 5 | 9 |
+| TRUOC/garuda_carpet/garuda/s3/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 20 | 5 | 0 | 5 | 12 |
+| TRUOC/garuda_carpet/garuda/s3/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 20 | 3 | 2 | 5 | 4 |
+| TRUOC/garuda_carpet/garuda/s3/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 20 | 5 | 0 | 5 | 10 |
+| TRUOC/glide_fab500/glide_bomber/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/glide_fab500/glide_bomber/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/glide_fab500/glide_bomber/s1/CUM_8M | TRUOC | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| TRUOC/glide_fab500/glide_bomber/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/glide_fab500/glide_bomber/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/glide_fab500/glide_bomber/s2/CUM_8M | TRUOC | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| TRUOC/glide_fab500/glide_bomber/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/glide_fab500/glide_bomber/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/glide_fab500/glide_bomber/s3/CUM_8M | TRUOC | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| TRUOC/guided_bomb/morrigan/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 1 | 2 | 1 |
+| TRUOC/guided_bomb/morrigan/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/morrigan/s1/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 4 | 5 | 1 |
+| TRUOC/guided_bomb/morrigan/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 1 | 2 | 1 |
+| TRUOC/guided_bomb/morrigan/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 1 | 2 | 1 |
+| TRUOC/guided_bomb/morrigan/s2/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 4 | 5 | 1 |
+| TRUOC/guided_bomb/morrigan/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 1 | 2 | 1 |
+| TRUOC/guided_bomb/morrigan/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 1 | 2 | 1 |
+| TRUOC/guided_bomb/morrigan/s3/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 4 | 5 | 1 |
+| TRUOC/guided_bomb/stealth_fighter/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/stealth_fighter/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/stealth_fighter/s1/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/stealth_fighter/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/stealth_fighter/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/stealth_fighter/s2/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/stealth_fighter/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/stealth_fighter/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/stealth_fighter/s3/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/strike_drone/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/strike_drone/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/strike_drone/s1/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/strike_drone/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/strike_drone/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/strike_drone/s2/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/strike_drone/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/strike_drone/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/guided_bomb/strike_drone/s3/CUM_8M | TRUOC | CUM_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/jet_bombs/attack_jet/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| TRUOC/jet_bombs/attack_jet/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/jet_bombs/attack_jet/s1/CUM_8M | TRUOC | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| TRUOC/jet_bombs/attack_jet/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| TRUOC/jet_bombs/attack_jet/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/jet_bombs/attack_jet/s2/CUM_8M | TRUOC | CUM_8M | 1 | 4 | 0 | 4 | 4 |
+| TRUOC/jet_bombs/attack_jet/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| TRUOC/jet_bombs/attack_jet/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 2 | 0 | 2 | 2 |
+| TRUOC/jet_bombs/attack_jet/s3/CUM_8M | TRUOC | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| TRUOC/jet_bombs/elite_attack_jet/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| TRUOC/jet_bombs/elite_attack_jet/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/jet_bombs/elite_attack_jet/s1/CUM_8M | TRUOC | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| TRUOC/jet_bombs/elite_attack_jet/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| TRUOC/jet_bombs/elite_attack_jet/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 1 | 0 | 1 | 1 |
+| TRUOC/jet_bombs/elite_attack_jet/s2/CUM_8M | TRUOC | CUM_8M | 1 | 4 | 0 | 4 | 4 |
+| TRUOC/jet_bombs/elite_attack_jet/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 2 | 0 | 2 | 2 |
+| TRUOC/jet_bombs/elite_attack_jet/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 2 | 0 | 2 | 2 |
+| TRUOC/jet_bombs/elite_attack_jet/s3/CUM_8M | TRUOC | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| TRUOC/jet_bombs/stealth_naval_strike/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 2 | 3 | 0 | 3 | 4 |
+| TRUOC/jet_bombs/stealth_naval_strike/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 2 | 1 | 0 | 1 | 2 |
+| TRUOC/jet_bombs/stealth_naval_strike/s1/CUM_8M | TRUOC | CUM_8M | 2 | 5 | 0 | 5 | 6 |
+| TRUOC/jet_bombs/stealth_naval_strike/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 2 | 3 | 0 | 3 | 4 |
+| TRUOC/jet_bombs/stealth_naval_strike/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 2 | 1 | 0 | 1 | 2 |
+| TRUOC/jet_bombs/stealth_naval_strike/s2/CUM_8M | TRUOC | CUM_8M | 2 | 5 | 0 | 5 | 6 |
+| TRUOC/jet_bombs/stealth_naval_strike/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 2 | 3 | 0 | 3 | 4 |
+| TRUOC/jet_bombs/stealth_naval_strike/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 2 | 1 | 0 | 1 | 2 |
+| TRUOC/jet_bombs/stealth_naval_strike/s3/CUM_8M | TRUOC | CUM_8M | 2 | 5 | 0 | 5 | 6 |
+| TRUOC/kraken_air_raid/kraken/s1/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 12 | 5 | 0 | 5 | 10 |
+| TRUOC/kraken_air_raid/kraken/s1/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 12 | 3 | 2 | 5 | 4 |
+| TRUOC/kraken_air_raid/kraken/s1/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 12 | 5 | 0 | 5 | 12 |
+| TRUOC/kraken_air_raid/kraken/s2/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 12 | 5 | 0 | 5 | 10 |
+| TRUOC/kraken_air_raid/kraken/s2/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 12 | 2 | 2 | 4 | 4 |
+| TRUOC/kraken_air_raid/kraken/s2/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 12 | 5 | 0 | 5 | 10 |
+| TRUOC/kraken_air_raid/kraken/s3/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 12 | 5 | 0 | 5 | 10 |
+| TRUOC/kraken_air_raid/kraken/s3/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 12 | 2 | 3 | 5 | 4 |
+| TRUOC/kraken_air_raid/kraken/s3/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 12 | 5 | 0 | 5 | 11 |
+| TRUOC/napalm_strike/(the_ho_tro)/s1/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 8 | 5 | 0 | 5 | 10 |
+| TRUOC/napalm_strike/(the_ho_tro)/s1/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 8 | 2 | 0 | 2 | 4 |
+| TRUOC/napalm_strike/(the_ho_tro)/s1/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 8 | 5 | 0 | 5 | 11 |
+| TRUOC/napalm_strike/(the_ho_tro)/s2/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 8 | 5 | 0 | 5 | 10 |
+| TRUOC/napalm_strike/(the_ho_tro)/s2/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 8 | 3 | 0 | 3 | 4 |
+| TRUOC/napalm_strike/(the_ho_tro)/s2/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 8 | 5 | 0 | 5 | 10 |
+| TRUOC/napalm_strike/(the_ho_tro)/s3/HANG_DOC_8M | TRUOC_KHONG_DOI | HANG_DOC_8M | 8 | 5 | 0 | 5 | 10 |
+| TRUOC/napalm_strike/(the_ho_tro)/s3/HANG_NGANG_8M | TRUOC_KHONG_DOI | HANG_NGANG_8M | 8 | 2 | 0 | 2 | 4 |
+| TRUOC/napalm_strike/(the_ho_tro)/s3/CUM_8M | TRUOC_KHONG_DOI | CUM_8M | 8 | 5 | 0 | 5 | 11 |
+| TRUOC/p26_roc_main_roc_bombs/argus/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 8 | 3 | 2 | 5 | 22 |
+| TRUOC/p26_roc_main_roc_bombs/argus/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 23 |
+| TRUOC/p26_roc_main_roc_bombs/argus/s1/CUM_8M | TRUOC | CUM_8M | 8 | 5 | 0 | 5 | 40 |
+| TRUOC/p26_roc_main_roc_bombs/argus/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 8 | 3 | 2 | 5 | 23 |
+| TRUOC/p26_roc_main_roc_bombs/argus/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 24 |
+| TRUOC/p26_roc_main_roc_bombs/argus/s2/CUM_8M | TRUOC | CUM_8M | 8 | 5 | 0 | 5 | 40 |
+| TRUOC/p26_roc_main_roc_bombs/argus/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 8 | 3 | 2 | 5 | 22 |
+| TRUOC/p26_roc_main_roc_bombs/argus/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 23 |
+| TRUOC/p26_roc_main_roc_bombs/argus/s3/CUM_8M | TRUOC | CUM_8M | 8 | 5 | 0 | 5 | 40 |
+| TRUOC/p26_roc_main_roc_bombs/command_airship/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 8 | 3 | 2 | 5 | 22 |
+| TRUOC/p26_roc_main_roc_bombs/command_airship/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 23 |
+| TRUOC/p26_roc_main_roc_bombs/command_airship/s1/CUM_8M | TRUOC | CUM_8M | 8 | 5 | 0 | 5 | 40 |
+| TRUOC/p26_roc_main_roc_bombs/command_airship/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 8 | 3 | 2 | 5 | 23 |
+| TRUOC/p26_roc_main_roc_bombs/command_airship/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 24 |
+| TRUOC/p26_roc_main_roc_bombs/command_airship/s2/CUM_8M | TRUOC | CUM_8M | 8 | 5 | 0 | 5 | 40 |
+| TRUOC/p26_roc_main_roc_bombs/command_airship/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 8 | 3 | 2 | 5 | 22 |
+| TRUOC/p26_roc_main_roc_bombs/command_airship/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 23 |
+| TRUOC/p26_roc_main_roc_bombs/command_airship/s3/CUM_8M | TRUOC | CUM_8M | 8 | 5 | 0 | 5 | 40 |
+| TRUOC/p26_roc_main_roc_bombs/garuda/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 8 | 3 | 2 | 5 | 24 |
+| TRUOC/p26_roc_main_roc_bombs/garuda/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 23 |
+| TRUOC/p26_roc_main_roc_bombs/garuda/s1/CUM_8M | TRUOC | CUM_8M | 8 | 5 | 0 | 5 | 40 |
+| TRUOC/p26_roc_main_roc_bombs/garuda/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 8 | 3 | 2 | 5 | 23 |
+| TRUOC/p26_roc_main_roc_bombs/garuda/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 24 |
+| TRUOC/p26_roc_main_roc_bombs/garuda/s2/CUM_8M | TRUOC | CUM_8M | 8 | 5 | 0 | 5 | 40 |
+| TRUOC/p26_roc_main_roc_bombs/garuda/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 8 | 3 | 2 | 5 | 22 |
+| TRUOC/p26_roc_main_roc_bombs/garuda/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 8 | 3 | 2 | 5 | 24 |
+| TRUOC/p26_roc_main_roc_bombs/garuda/s3/CUM_8M | TRUOC | CUM_8M | 8 | 5 | 0 | 5 | 40 |
+| TRUOC/stealth_payload/stealth_bomber/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 2 | 3 | 0 | 3 | 6 |
+| TRUOC/stealth_payload/stealth_bomber/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 2 | 3 | 0 | 3 | 6 |
+| TRUOC/stealth_payload/stealth_bomber/s1/CUM_8M | TRUOC | CUM_8M | 2 | 5 | 0 | 5 | 10 |
+| TRUOC/stealth_payload/stealth_bomber/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 2 | 3 | 0 | 3 | 6 |
+| TRUOC/stealth_payload/stealth_bomber/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 2 | 3 | 0 | 3 | 6 |
+| TRUOC/stealth_payload/stealth_bomber/s2/CUM_8M | TRUOC | CUM_8M | 2 | 5 | 0 | 5 | 10 |
+| TRUOC/stealth_payload/stealth_bomber/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 2 | 3 | 0 | 3 | 6 |
+| TRUOC/stealth_payload/stealth_bomber/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 2 | 3 | 0 | 3 | 6 |
+| TRUOC/stealth_payload/stealth_bomber/s3/CUM_8M | TRUOC | CUM_8M | 2 | 5 | 0 | 5 | 10 |
+| TRUOC/thermobaric_bomb/glide_bomber/s1/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/thermobaric_bomb/glide_bomber/s1/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/thermobaric_bomb/glide_bomber/s1/CUM_8M | TRUOC | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| TRUOC/thermobaric_bomb/glide_bomber/s2/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/thermobaric_bomb/glide_bomber/s2/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/thermobaric_bomb/glide_bomber/s2/CUM_8M | TRUOC | CUM_8M | 1 | 5 | 0 | 5 | 5 |
+| TRUOC/thermobaric_bomb/glide_bomber/s3/HANG_DOC_8M | TRUOC | HANG_DOC_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/thermobaric_bomb/glide_bomber/s3/HANG_NGANG_8M | TRUOC | HANG_NGANG_8M | 1 | 3 | 0 | 3 | 3 |
+| TRUOC/thermobaric_bomb/glide_bomber/s3/CUM_8M | TRUOC | CUM_8M | 1 | 5 | 0 | 5 | 5 |

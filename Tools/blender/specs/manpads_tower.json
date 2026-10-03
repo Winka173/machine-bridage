@@ -1,0 +1,130 @@
+{
+ "id": "manpads_tower",
+ "class": "tower",
+ "real": [
+  "Djigit / Strelets twin MANPADS mount (Igla) on its pedestal",
+  "a sandbagged field pit"
+ ],
+ "shape": "the old builder: a sandbagged pit with two shoulder-launched tubes on a low tripod; modelSize 3.2 x 3.2 x 2.4 m; weapon sam.",
+ "confidence": "xấp xỉ (Djigit layout: seat, two tubes, sight, IFF; the pit is a field set-up)",
+ "target_size": {
+  "L": 3.2,
+  "W": 3.2,
+  "H": 2.4,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the dug earth pad, a three-course sandbag ring open at the rear with steps, duckboards",
+   "nodes": [
+    "Base",
+    "Sandbags",
+    "Steps",
+    "Floor"
+   ]
+  },
+  {
+   "feature": "the pedestal tripod with levelling feet and the traversing head (Turret) with the gunner's seat",
+   "nodes": [
+    "Pedestal",
+    "Turret",
+    "Turret_head",
+    "Seat",
+    "Seat_arm"
+   ]
+  },
+  {
+   "feature": "two launch tubes (Team) with bands, grip stocks, battery units and seeker caps on the yoke",
+   "nodes": [
+    "Tubes",
+    "Tube_bands",
+    "Grip_stocks",
+    "Battery_units",
+    "Seeker_caps",
+    "Yoke"
+   ]
+  },
+  {
+   "feature": "the reflex sight on its arm, the IFF interrogator antenna",
+   "nodes": [
+    "Sight",
+    "Sight_arm",
+    "Glass",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "spare missile cases, ammunition boxes, the radio with its whip, a camouflage net corner, a binocular post",
+   "nodes": [
+    "Missile_cases",
+    "Ammo_boxes",
+    "Radio_box",
+    "Camo_net",
+    "Binoculars"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof (the turning head)",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "sam",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the two tubes' own points Muzzle_missile / .001 kept"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: towers seen in numbers stay under 1.5 x 4,000"
+ },
+ "team_zones": [
+  "the launch tubes, a band on the parapet (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "field-built (earth, sandbags, timber)",
+ "details": {
+  "tier1": [
+   "pit",
+   "pedestal",
+   "launcher"
+  ],
+  "tier2": [
+   "sandbag ring",
+   "tubes",
+   "seat",
+   "missile cases",
+   "net"
+  ],
+  "tier3": [
+   "bolts",
+   "bands",
+   "battery units",
+   "caps",
+   "sight",
+   "IFF grid",
+   "whip",
+   "binoculars"
+  ]
+ },
+ "questions": []
+}

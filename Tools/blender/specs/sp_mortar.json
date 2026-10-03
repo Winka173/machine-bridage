@@ -1,0 +1,160 @@
+{
+ "id": "sp_mortar",
+ "class": "wheeled",
+ "real": [
+  "Patria AMV 8x8 with the AMOS twin 120 mm mortar turret"
+ ],
+ "shape": "fix L8's sp_mortar (Patria AMV + AMOS); modelSize 6.3 x 2.3 x 2.5 m; amos_120, hmg_selfdef_18 on the roof (aim Free).",
+ "confidence": "cao (AMV hull and AMOS turret are well documented; drawn at modelSize)",
+ "target_size": {
+  "L": 6.3,
+  "W": 2.3,
+  "H": 2.5,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the AMV hull (Team): wedge nose, vertical lower sides, upper sides leaning in, the folded trim vane, Team bands",
+   "nodes": [
+    "Hull",
+    "Trim_vane",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "eight wheels on four axles with wishbones, the chassis rails, fenders and mud flaps",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Axles",
+    "Suspension",
+    "Chassis",
+    "Fenders",
+    "Mudflaps"
+   ]
+  },
+  {
+   "feature": "add-on side armour with bolts, the driver's hatch and vision blocks, the engine louvres and exhaust",
+   "nodes": [
+    "Armor",
+    "Kit_bolts",
+    "Hatches",
+    "Glass",
+    "Grilles",
+    "Exhaust"
+   ]
+  },
+  {
+   "feature": "the AMOS turret (Turret): faceted body, bustle, the big welded mantlet (Team), two barrels in recoil sleeves with brakes",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_bustle",
+    "Turret_armor",
+    "Recoil_sleeves",
+    "Main_cannon",
+    "Main_cannon_2",
+    "Muzzle_brake",
+    "Muzzle_brake_2",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "sight heads, hatches, smoke dischargers, the roof MG on a raised ring with its shield (Mount_mg)",
+   "nodes": [
+    "Sight",
+    "Smoke_launchers",
+    "Mount_mg",
+    "Muzzle_mg",
+    "Gun_shield_mg"
+   ]
+  },
+  {
+   "feature": "rear door with hinges and steps, tail lamps, lamps, mirrors, toolboxes, jerrycans, net roll, whips, turret bin",
+   "nodes": [
+    "Kit_hinges",
+    "Steps",
+    "Tail_lamps",
+    "Lamps",
+    "Toolbox",
+    "Jerrycans",
+    "Stowage",
+    "Antennas",
+    "Bins"
+   ]
+  }
+ ],
+ "class_parts": [
+  "every wheel",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "amos_120",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "hmg_selfdef_18",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: light units seen in numbers stay under 1.5 x 5,000"
+ },
+ "team_zones": [
+  "the hull (Team), the turret mantlet and bands"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "vehicles break into Part_wheel / Part_wheelb (prompt 34 wrapper) and burn",
+ "faction_style": "modern 8x8, bolted add-on armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "wheels"
+  ],
+  "tier2": [
+   "mantlet",
+   "barrels",
+   "armour panels",
+   "hatches",
+   "MG",
+   "toolboxes"
+  ],
+  "tier3": [
+   "bolts",
+   "hinges",
+   "vision blocks",
+   "lamps",
+   "smoke tubes",
+   "jerrycans",
+   "whips"
+  ]
+ },
+ "questions": []
+}

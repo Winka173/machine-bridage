@@ -122,6 +122,10 @@ KIT_PIECE = re.compile(r'^(Tyres?|Wheels?|Hubs?|Wheel_bolts|Wheel_nuts|Sprockets
                        r'Hatch_fittings|MG|MG_\w+|Smoke\w*|Antennas?|Rotor_\w+|Tail_rotor\w*|Nozzle\w*|Exhaust\w*|'
                        r'Missiles?|Missile_\w+|Pods?|Pod_\w+|Bolts|Rivets|Welds|Lamps|Lamp_\w+|Grilles?|Handles|Hinges|'
                        r'Kit_\w+|Rails?|Railings|Ladders?|Sandbags?|Glass|Cab_glass)(\.\d+)?$', re.I)
+# Prompt 35 (lane A, wave 9's request): wheels never count as shared geometry, in the whole-model share either (the
+# gate's own_geometry): a kit tyre (tread_wheel, lugged_tyre) with the same arguments in two small vehicles is not a
+# copied model. Their triangles stay in the model's total as its own.
+KIT_WHEEL = re.compile(r'^(Tyres?|Tires?|Wheels?|Wheel_\w+|Hubs?|Rims?|Road_?wheels?|Lug_nuts|Tyre_\w+)(\.\d+)?$', re.I)
 
 
 def family(name):
@@ -143,10 +147,11 @@ def geometry_overlap(names, pool=None, ubiquitous=6):
             m = gm.load(MODELS / f'{n}.glb')
         except Exception:
             continue
-        a1, n1 = gm.triangle_hashes(m)
+        a1, n1 = gm.triangle_hashes(m, skip=lambda p: KIT_WHEEL.match(p.node))
         a2, n2 = gm.triangle_hashes(m, skip=lambda p: KIT_PIECE.match(p.node))
+        wheels = sum(len(p.tris) for p in m.pieces if len(p.tris) >= 12 and KIT_WHEEL.match(p.node))
         keys_all[n] = (np.unique(a1), np.unique(n1), len(a1))
-        keys_body[n] = (a2, n2, a1, n1)
+        keys_body[n] = (a2, n2, a1, n1, wheels)
     fams = {n: family(n) for n in keys_all}
     out = {}
     counts_abs = _counts([keys_all[n][0] for n in keys_all], [fams[n] for n in keys_all])
@@ -154,16 +159,16 @@ def geometry_overlap(names, pool=None, ubiquitous=6):
     for n in names:
         if n not in keys_body:
             continue
-        ab, nbk, aa, na = keys_body[n]
+        ab, nbk, aa, na, wheels = keys_body[n]
         res = []
-        for ak, nk in ((aa, na), (ab, nbk)):
+        for ak, nk, own in ((aa, na, wheels), (ab, nbk, 0)):
             if not len(ak):
                 res.append(0.0)
                 continue
             ca = _lookup(counts_abs, ak)
             cn = _lookup(counts_norm, nk)
             shared = ((ca >= 2) & (ca <= ubiquitous)) | ((cn >= 2) & (cn <= ubiquitous))
-            res.append(float(shared.mean()))
+            res.append(float(shared.sum()) / (len(shared) + own))
         partner = _partner(n, keys_all, fams) if max(res) >= 0.1 else ''
         out[n] = (round(res[0], 3), round(res[1], 3), partner)
     return out
@@ -303,6 +308,23 @@ def _sloped_directions(model, structure=False):
     return int((sums >= 0.005 * sum(x.sum() for x in areas)).sum())
 
 
+def _base_slab(model):
+    """ids of the pieces that make a structure's base slab (prompt 35 lane A, wave 7's request): flat (at most
+    0.6 m or 8 % of the model's height thick), on the model's floor (bottom within 0.15 m of it) and covering at
+    least half the model's top-view bounding box. Empty when the model has none."""
+    lo, hi = model.bounds()
+    height = hi[1] - lo[1]
+    box = (hi[0] - lo[0]) * (hi[2] - lo[2])
+    out = set()
+    for p in model.pieces:
+        if not len(p.tris):
+            continue
+        a, b = p.pos.min(axis=0), p.pos.max(axis=0)
+        if b[1] - a[1] <= max(0.6, 0.08 * height) and a[1] - lo[1] <= 0.15 and (b[0] - a[0]) * (b[2] - a[2]) >= 0.5 * box:
+            out.add(id(p))
+    return out
+
+
 def metrics(model, length_ref=7.0, structure=False):
     """The soft metrics of one model (see the module notes)."""
     out = {}
@@ -316,11 +338,19 @@ def metrics(model, length_ref=7.0, structure=False):
     img, _ = gm.render(model, 'battle')
     out['edges'] = gm.edge_density(img)
     out['regions'] = gm.brightness_regions(img)
-    top, _ = gm.render(model, 'top', px=256 / max(float(max(model.bounds()[1] - model.bounds()[0])), 1e-3),
-                       mask_only=True)
-    inter = (top & top[:, ::-1]).sum()
-    union = (top | top[:, ::-1]).sum()
-    out['asym_raw'] = float(1 - inter / union) if union else 0.0
+    px_top = 256 / max(float(max(model.bounds()[1] - model.bounds()[0])), 1e-3)
+
+    def _asym(keep=None):
+        top, _ = gm.render(model, 'top', px=px_top, mask_only=True, keep=keep)
+        inter = (top & top[:, ::-1]).sum()
+        union = (top | top[:, ::-1]).sum()
+        return float(1 - inter / union) if union else 0.0
+    out['asym_raw'] = _asym()
+    # Prompt 35 (lane A, wave 7's request): a structure is also read without its base slab (a square or octagonal
+    # slab made a post read as symmetric); the score takes the better of the two readings, as sloped_dirs does.
+    slab = _base_slab(model) if structure else set()
+    if slab and any(len(p.tris) and id(p) not in slab for p in model.pieces):
+        out['asym_noslab'] = _asym(lambda p: id(p) not in slab)
     lo, hi = model.bounds()
     L = float(max(hi - lo))
     scale = max(1.0, L / length_ref)
@@ -362,8 +392,8 @@ def soft_score(m, gold):
     total = 0.0
     for key, weight, need in SOFT:
         if key == 'asymmetry':
-            a = m['asym_raw']
-            s = 1.0 if min(0.01, 0.8 * (gold.get('asym_raw') or 0)) <= a <= 0.35 else 0.5
+            lo_a = min(0.01, 0.8 * (gold.get('asym_raw') or 0))
+            s = 1.0 if any(lo_a <= a <= 0.35 for a in (m['asym_raw'], m.get('asym_noslab', m['asym_raw']))) else 0.5
         elif key == 'tiers':
             parts = []
             for t in ('tier2_m2', 'tier3_m2'):
@@ -438,6 +468,14 @@ def hard_checks(defs, model, own, cls, rec, m, overlap):
             roles = [r for r in roles if r[0] not in absent]
         if cls in ('wheeled', 'ground', 'tracked') and own is not None and not defs.armed(defs.field(own, 'weapon')):
             roles = [r for r in roles if r[0] not in ('weapon', 'barrel', 'roof_mg')]
+        if cls == 'helicopter':
+            # Prompt 35 (lane A, lane B's request): a tandem (Rotor_rear aft) has no tail rotor; an unarmed transport
+            # (no armed main or secondary weapon) has no weapons and needs no stub wings to carry them.
+            if any(re.match(r'^Rotor_rear(?:$|[._0-9])', x, re.I) for x in names):
+                roles = [r for r in roles if r[0] != 'tail_rotor']
+            if own is not None and not defs.armed(defs.field(own, 'weapon')) and not any(
+                    isinstance(x, dict) and defs.armed(x.get('weapon')) for x in (defs.field(own, 'secondary') or [])):
+                roles = [r for r in roles if r[0] not in ('weapons', 'stub_wings')]
     missing = [n for n, pat in roles if not any(sp.role(pat).match(x) for x in names)]
     inside = [n for n in missing if cleared(n)]
     missing = [n for n in missing if n not in inside]

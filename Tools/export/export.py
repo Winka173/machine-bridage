@@ -201,6 +201,8 @@ def main(argv=None) -> int:
     ap.add_argument("--dry-run", action="store_true", help="import: write the change manifest only (the only import mode)")
     ap.add_argument("--trace", help="bom: the csv the EditMode test BombStickTrace wrote (default env MB_BOMB_TRACE, then "
                     "<out>/vet_tha_unity.csv)")
+    ap.add_argument("--before", help="bom: the pass 0 trace csv kept as 'before' for Bom_ket_qua_vung (default "
+                    "Docs/export/bom_2026-10-03/vet_tha_truoc_luot2.csv)")
     args = ap.parse_args(argv)
     if args.command == "bom":
         import bom

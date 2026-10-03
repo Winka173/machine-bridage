@@ -244,3 +244,5 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 duyệt đợt 1 prompt 35: "tiếp tục" (7 câu hỏi theo đề xuất mặc định của lead).
 - 03/10 "Sửa lỗi ném bom (không phải prompt mới)": rải thảm thay vì một điểm; lượt 0 xuất dữ liệu bom rồi DỪNG (nguyên văn: bomb_run_vi.txt).
 - 03/10 sau khi agent hết hạn mức phiên: "tiếp tục".
+- 03/10 trả lời câu hỏi prompt 35: railgun_truck 8x8 hạng nặng mang súng ray đôi lấy từ Tempest => "được"; nhà chính dạng pháo đài thêm súng nhìn thấy được => "có". "còn câu hỏi nào gửi tôi luôn".
+- 03/10 trả lời danh sách 11 câu hỏi: "sửa theo đề xuất hết".

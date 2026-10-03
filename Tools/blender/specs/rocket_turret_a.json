@@ -9,8 +9,8 @@
  "target_size": {
   "L": 4.7,
   "W": 4.7,
-  "H": 3.4,
-  "source": "unit_sheet 'Kích thước hiện' and the old GLB (4.67 x 4.69 x 3.40)",
+  "H": 3.9,
+  "source": "unit_sheet 'Kích thước hiện' and the old GLB (4.67 x 4.69 x 3.40); H is the committed wave 1 GLB (owner-approved): the 16-tube pack stands on its cradle to 3.83 m",
   "tolerance": 0.1
  },
  "features": [

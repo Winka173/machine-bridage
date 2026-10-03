@@ -9,8 +9,8 @@
  "target_size": {
   "L": 8.1,
   "W": 7.9,
-  "H": 7.9,
-  "source": "unit_sheet 'Kích thước hiện' and the old GLB (8.1 x 7.9 x 7.9)",
+  "H": 9.7,
+  "source": "unit_sheet 'Kích thước hiện' and the old GLB (8.1 x 7.9 x 7.9); H is the committed wave 1 GLB (owner-approved wave 1): the dish on its raised drive reaches 9.67 m, the body (tower platform) 6.8 m",
   "tolerance": 0.1
  },
  "features": [
@@ -18,15 +18,15 @@
    "feature": "cast concrete pad with sloped edges and the generator's annex slab",
    "nodes": [
     "Base",
-    "Base_ties",
-    "Drain"
+    "Fit_steel",
+    "Kit_cables"
    ]
   },
   {
    "feature": "tapering lattice tower with X bracing, footings, a caged ladder and a railed platform",
    "nodes": [
     "Tower",
-    "Tower_footing",
+    "Base",
     "Ladders",
     "Platform",
     "Railing"
@@ -50,7 +50,7 @@
    "nodes": [
     "Shelter",
     "Doors",
-    "Ac_unit",
+    "Junction_boxes",
     "Antenna",
     "Roof"
    ]
@@ -59,9 +59,8 @@
    "feature": "generator skid with its stack, battery boxes, fuel drums",
    "nodes": [
     "Generator",
-    "Generator_skid",
+    "Fit_steel",
     "Exhaust",
-    "Battery_boxes",
     "Fuel_drums"
    ]
   },
@@ -138,5 +137,6 @@
  "wreck": "structures collapse whole (no part nodes)",
  "questions": [
   "Structures are scored against the tower gold set (small gun towers dense in railings and ladders): at the 6,000-triangle cap a large building cannot match its edge density per pixel. A structure gold set (like decision 5 for bosses), or the owner's look?"
- ]
+ ],
+ "merged": "prompt 35 wave 8 (lane A): node names follow the committed GLB after the wave 1 renderer-cap merge (commit 0667414c: small parts of one material merged into the named part)"
 }

@@ -107,7 +107,9 @@ namespace MachineBrigade.Tests
         public void SiegeBlastIsSmallerAndTheLongRangeSamsBigger()
         {
             var catalog = GameContent.LoadCatalog();
-            Assert.AreEqual(7.2f, catalog.Weapons["siege_mortar_240"].SplashRadius, 1e-3f, "the siege mortar's blast 20 % down from 9 m");
+            // Play-test 8 A cut it to 7.2 m; prompt 25 A3 (DECISIONS "25A", "A3 Weapon families": one family a real weapon, its
+            // members share the blast) gave it back its 2B8 240 mm family's 9 m, and the owner keeps it (play-test 12).
+            Assert.AreEqual(9f, catalog.Weapons["siege_mortar_240"].SplashRadius, 1e-3f, "the siege mortar's blast is its 2B8 family's 9 m");
             Assert.AreEqual("siege_mortar_240", catalog.Vehicle("siege_tank").Weapon.Id);
             var s400 = catalog.Weapons["sam_48n6"];
             Assert.AreEqual(7.2f, s400.SplashRadius, 1e-3f, "the 48N6's blast doubled from 3.6 m");
@@ -165,7 +167,8 @@ namespace MachineBrigade.Tests
             });
             Assert.GreaterOrEqual(aims.Count, 3, "the bomber let a stick go");
             // The first stick: its bombs one after another, spaced along the track, each ahead of where it was let go.
-            var stick = aims.TakeWhile((a, i) => i == 0 || a.at - aims[i - 1].at < 0.5).ToList();
+            // The bomb-run fix: a stick's bombs go spacing / release speed apart (0.625 s for the FAB-500 stick).
+            var stick = aims.TakeWhile((a, i) => i == 0 || a.at - aims[i - 1].at < 1.0).ToList();
             Assert.GreaterOrEqual(stick.Count, 3, "one stick, bomb after bomb");
             // The track: from where the first bomb was let go to where the last one was.
             var track = Vector2.Normalize(stick[stick.Count - 1].from - stick[0].from);

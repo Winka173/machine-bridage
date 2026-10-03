@@ -937,11 +937,17 @@ def railing(part, points, h=1.0, post=1.2, r=.025):
         part.box((r * 2, r * 2, h), loc=tuple(Vector(p) + Vector((0, 0, h / 2))), bevel=0)
 
 
-def ladder(part, p0, p1, width=.45, step=.3, r=.022):
-    """A ladder from p0 (bottom) to p1 (top): two stringers and rungs every `step`."""
+def ladder(part, p0, p1, width=.45, step=.3, r=.022, facing=None):
+    """A ladder from p0 (bottom) to p1 (top): two stringers and rungs every `step`.
+    `facing` (prompt 35, lane A; wave 7's request): the outward normal (x, y) of the wall the ladder stands against;
+    the rungs then run along that wall, so a vertical ladder lies flat on a side wall (without it a vertical ladder
+    always spreads along X, and a slanted one across its slope). None keeps the old frame."""
     p0, p1 = Vector(p0), Vector(p1)
     d = p1 - p0
-    side = d.cross(Vector((0, 0, 1)))
+    if facing is not None:
+        side = Vector((facing[0], facing[1], 0)).cross(Vector((0, 0, 1)))
+    else:
+        side = d.cross(Vector((0, 0, 1)))
     side = side.normalized() if side.length > 1e-6 else Vector((1, 0, 0))
     for s in (-1, 1):
         part.tube([tuple(p0 + side * s * width / 2), tuple(p1 + side * s * width / 2)], r * 1.2, seg=4)
@@ -1525,3 +1531,68 @@ def _apply(a):
                 changed = True
         if changed:
             attr.data.foreach_set('color', cols)
+
+
+# ============================================================================= lane B's helpers (prompt 35 lane A)
+# Lifted from mb_p35b_parts (waves 6 and 10, lane B's request) unchanged; mb_p35b_parts keeps them as aliases.
+def clutter(a, name, mat, x0, x1, y0, y1, z, n, seed, size=(.2, .6), height=(.12, .5), parent=None, gap=.08,
+            step=.05):
+    """Deck fittings (wave 6, ships): n small boxes of varied size (lockers, hose boxes, junction boxes, cable
+    reels' housings) scattered without overlap in the rectangle x0..x1 x y0..y1 standing on z; sizes are drawn from
+    `size` / `height` in `step` increments, so each reads as its own fitting. Plain boxes (12 triangles each)."""
+    rng = random.Random(seed)
+    part = a.part(name, mat, parent)
+    placed = []
+    q = lambda lo, hi: round(rng.uniform(lo, hi) / step) * step or step  # noqa: E731
+    tries = 0
+    while len(placed) < n and tries < n * 40:
+        tries += 1
+        w, d, h = q(*size), q(*size), q(*height)
+        cx, cy = rng.uniform(x0 + w / 2, x1 - w / 2), rng.uniform(y0 + d / 2, y1 - d / 2)
+        if any(abs(cx - px) < (w + pw) / 2 + gap and abs(cy - py) < (d + pd) / 2 + gap for px, py, pw, pd in placed):
+            continue
+        placed.append((cx, cy, w, d))
+        part.box((w, d, h), loc=(cx, cy, z + h / 2), bevel=0)
+    return placed
+
+
+def plane(part, x0, x1, y0, y1, z):
+    """A one-sided horizontal deck plate (facing up): a deck seen only from above (half the area of a box)."""
+    part.mesh([(x0, y0, z), (x1, y0, z), (x1, y1, z), (x0, y1, z)], [(0, 1, 2, 3)])
+
+
+def portholes(a, points, normal, r=.12, parent=None, rim_mat='Steel', glass='Glass', seg=8):
+    """Portholes on a wall facing `normal`: a rim ring and the glass disc each."""
+    rot = rot_to(normal)
+    for p in points:
+        a.part('Porthole_rims', rim_mat, parent).cyl(r * 1.25, .03, loc=p, rot=rot, seg=seg, bevel=0)
+        q = (p[0] + normal[0] * .012, p[1] + normal[1] * .012, p[2] + normal[2] * .012)
+        a.part('Portholes', glass, parent).cyl(r, .02, loc=q, rot=rot, seg=seg, bevel=0)
+
+
+def merge_parts(a, mapping):
+    """Fold static parts into fewer meshes (wave 6: glb_check's renderer cap on ships): every shape whose name is a
+    key of `mapping` is appended to the shape named mapping[name] with the same material and parent (its vertex
+    layers kept), then dropped. Call at the end of a builder, before the finish."""
+    for key in list(a.order):
+        name, mat, parent = key
+        target = mapping.get(name)
+        if not target or target == name:
+            continue
+        src = a.shapes[key]
+        dst = a.part(target, mat, parent)
+        sl = list(src.bm.verts.layers.float)
+        layers = [(l, dst.bm.verts.layers.float.get(l.name) or dst.bm.verts.layers.float.new(l.name)) for l in sl]
+        vmap = {}
+        for v in src.bm.verts:
+            nv = dst.bm.verts.new(v.co)
+            for ls, ld in layers:
+                nv[ld] = v[ls]
+            vmap[v] = nv
+        for f in src.bm.faces:
+            try:
+                dst.bm.faces.new([vmap[v] for v in f.verts])
+            except ValueError:
+                pass
+        del a.shapes[key]
+        a.order.remove(key)

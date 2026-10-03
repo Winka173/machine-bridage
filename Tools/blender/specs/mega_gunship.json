@@ -1,0 +1,257 @@
+{
+ "id": "mega_gunship",
+ "class": "boss",
+ "frame": "air",
+ "real": [
+  "CH-47 Chinook (airframe size)",
+  "ACH-47A 'Guns-A-Go-Go' (gun pods, door guns, chin turret)"
+ ],
+ "shape": "unit_sheet Boss: 'CH-47 Chinook (co khung), ACH-47A Guns-A-Go-Go - truc thang hai ro-to vu trang hang nang.'",
+ "confidence": "tham_khao_thuc (Chinook airframe; the ACH-47A's armament layout)",
+ "target_size": {
+  "L": 20.58,
+  "W": 13.32,
+  "H": 6.08,
+  "source": "the old GLB (20.58 x 13.32 x 6.08 with the rotors)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "Chinook box fuselage with the rounded nose, cabin windows, frame bands, side fuel pods, rear ramp",
+   "nodes": [
+    "Fuselage",
+    "Canopy",
+    "Canopy_frames",
+    "Frame_bands",
+    "Fuel_pods",
+    "Ramp",
+    "Door"
+   ]
+  },
+  {
+   "feature": "low forward and tall aft pylons, the engines with intakes and exhausts, the shaft tunnel",
+   "nodes": [
+    "Engines",
+    "Intake_screens",
+    "Soot",
+    "Grilles"
+   ]
+  },
+  {
+   "feature": "two three-blade rotors (Rotor, Rotor_rear)",
+   "nodes": [
+    "Rotor",
+    "Rotor_hub",
+    "Rotor_blades",
+    "Rotor_rear",
+    "Rotor_rear_blades",
+    "Rotor_rear_tips"
+   ]
+  },
+  {
+   "feature": "stub pylons with the rocket pods, the belly missile rack",
+   "nodes": [
+    "Pylons",
+    "Pods",
+    "Pod_tubes",
+    "Missile_rack",
+    "Missiles",
+    "Muzzle_rocket",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "chin gun turrets, forward miniguns, rear door guns",
+   "nodes": [
+    "Mount_gun",
+    "Mount_gun.001",
+    "Gun_turret",
+    "Mount_mg",
+    "Mount_mg.001",
+    "Mount_mg.002",
+    "Mount_mg.003"
+   ]
+  },
+  {
+   "feature": "gear, sensor, lamps, flare dispensers",
+   "nodes": [
+    "Gear",
+    "Tyres",
+    "Sensor",
+    "Flares",
+    "Nav_lights"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "gunship_rockets",
+   "slot": "rocket",
+   "mount": "Pods",
+   "muzzles": [
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "weapon": "boss_heli_gun",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "boss_heli_gun",
+   "slot": "gun",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "weapon": "boss_missiles",
+   "slot": "missile",
+   "mount": "Missile_rack",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "boss_minigun",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "boss_minigun",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  },
+  {
+   "weapon": "gunship_rockets",
+   "slot": "rocket",
+   "mount": "Pods",
+   "muzzles": [
+    "Muzzle_rocket.001"
+   ]
+  },
+  {
+   "weapon": "boss_hmg",
+   "slot": "mg",
+   "mount": "Mount_mg.002",
+   "muzzles": [
+    "Muzzle_mg.002"
+   ]
+  },
+  {
+   "weapon": "boss_hmg",
+   "slot": "mg",
+   "mount": "Mount_mg.003",
+   "muzzles": [
+    "Muzzle_mg.003"
+   ]
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "fuselage and pylons (Team)",
+  "fuel pods (Team)",
+  "bands along the cabin (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "gun_l",
+   "node": "Mount_gun"
+  },
+  {
+   "part": "gun_r",
+   "node": "Mount_gun.001"
+  },
+  {
+   "part": "minigun_l",
+   "node": "Mount_mg"
+  },
+  {
+   "part": "minigun_r",
+   "node": "Mount_mg.001"
+  },
+  {
+   "part": "pod_l",
+   "node": "(no node: a hit area at the left pod)"
+  },
+  {
+   "part": "pod_r",
+   "node": "(no node: a hit area at the right pod)"
+  },
+  {
+   "part": "missiles",
+   "node": "(no node: the belly rack)"
+  },
+  {
+   "part": "rotor_rear",
+   "node": "Rotor_rear"
+  }
+ ],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "two rotors",
+   "pylons"
+  ],
+  "tier2": [
+   "fuel pods",
+   "engines",
+   "ramp",
+   "stub pylons",
+   "pods",
+   "turrets",
+   "missile rack"
+  ],
+  "tier3": [
+   "windows",
+   "frame bands",
+   "door guns",
+   "grilles",
+   "lamps",
+   "hinges",
+   "tubes",
+   "gear",
+   "flare dispensers",
+   "antenna"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the rear rotor on its tall pylon",
+   "the chin turrets and the forward miniguns",
+   "the stub pods either side"
+  ],
+  "how_to_fight": "the def's parts; only anti-air and aircraft reach it"
+ },
+ "questions": []
+}

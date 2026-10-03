@@ -195,6 +195,29 @@ import mb_p35_stealth_fighter  # noqa: E402
 import mb_p35_supreme_command  # noqa: E402
 import mb_p35_kronos  # noqa: E402
 import mb_p35_earth_borer  # noqa: E402
+import mb_p35_wave8_fort  # noqa: E402
+import mb_p35_wave8_trucks  # noqa: E402
+import mb_p35_wave8_ground  # noqa: E402
+import mb_p35_wave8_air  # noqa: E402
+import mb_p35_wave8_bosses  # noqa: E402
+import mb_p35_cp_relay  # noqa: E402
+import mb_p35_rail_supergun  # noqa: E402
+import mb_p35_daedalus  # noqa: E402
+import mb_p35_command_airship  # noqa: E402
+import mb_p35_heavy_bomber  # noqa: E402
+import mb_p35_twin_rotor_gunship  # noqa: E402
+import mb_p35_heavy_lift_helicopter  # noqa: E402
+import mb_p35_radar_support_vehicle  # noqa: E402
+import mb_p35_coastal_ashm_vehicle  # noqa: E402
+import mb_p35_sp_mortar  # noqa: E402
+import mb_p35_coastal_battery  # noqa: E402
+import mb_p35_artillery_emplacement_a  # noqa: E402
+import mb_p35_shield_tower_b  # noqa: E402
+import mb_p35_heavy_turret_a  # noqa: E402
+import mb_p35_visual_jammer  # noqa: E402
+import mb_p35_flare_tower  # noqa: E402
+import mb_p35_recoilless_gun_tower  # noqa: E402
+import mb_p35_manpads_tower  # noqa: E402
 import mb_p35_drop_pod  # noqa: E402
 import mb_p35_bulwark_post  # noqa: E402
 import mb_p35_drone_net_tower  # noqa: E402
@@ -359,6 +382,12 @@ def all_builders():
                 **mb_p35_garuda.BUILDERS,
                 # Prompt 35 wave 9, lane C (DECISIONS "Prompt 35 wave 9 (lane C)"): rebuilt from scratch (last).
                 **mb_p35_aa_turret.BUILDERS, **mb_p35_c_ram.BUILDERS, **mb_p35_artillery_emplacement.BUILDERS, **mb_p35_long_sam.BUILDERS, **mb_p35_heavy_rocket_artillery.BUILDERS, **mb_p35_ballistic_launcher.BUILDERS, **mb_p35_ew_jammer.BUILDERS, **mb_p35_iron_beam.BUILDERS, **mb_p35_shahed_truck.BUILDERS, **mb_p35_interceptor_drone_vehicle.BUILDERS, **mb_p35_mobile_repair_vehicle.BUILDERS, **mb_p35_ground_cruise_missile_vehicle.BUILDERS, **mb_p35_combat_wreck_car.BUILDERS, **mb_p35_stealth_fighter.BUILDERS, **mb_p35_supreme_command.BUILDERS, **mb_p35_kronos.BUILDERS, **mb_p35_earth_borer.BUILDERS,
+                # Prompt 35 wave 8 lane A (DECISIONS "Prompt 35 wave 8 (lane A)"): bosses, trucks, base pieces (last).
+                **mb_p35_wave8_fort.BUILDERS, **mb_p35_wave8_trucks.BUILDERS,
+                **mb_p35_wave8_ground.BUILDERS, **mb_p35_wave8_air.BUILDERS,
+                **mb_p35_wave8_bosses.BUILDERS,
+                # Prompt 35 wave 10 (lane B): bosses, tower branches, helicopters and vehicles, each from its own builder.
+                **mb_p35_cp_relay.BUILDERS, **mb_p35_rail_supergun.BUILDERS, **mb_p35_daedalus.BUILDERS, **mb_p35_command_airship.BUILDERS, **mb_p35_heavy_bomber.BUILDERS, **mb_p35_twin_rotor_gunship.BUILDERS, **mb_p35_heavy_lift_helicopter.BUILDERS, **mb_p35_radar_support_vehicle.BUILDERS, **mb_p35_coastal_ashm_vehicle.BUILDERS, **mb_p35_sp_mortar.BUILDERS, **mb_p35_coastal_battery.BUILDERS, **mb_p35_artillery_emplacement_a.BUILDERS, **mb_p35_shield_tower_b.BUILDERS, **mb_p35_heavy_turret_a.BUILDERS, **mb_p35_visual_jammer.BUILDERS, **mb_p35_flare_tower.BUILDERS, **mb_p35_recoilless_gun_tower.BUILDERS, **mb_p35_manpads_tower.BUILDERS,
                 # Prompt 35 wave 11, lane C (DECISIONS "Prompt 35 wave 11 (lane C)"): rebuilt from scratch (last).
                 **mb_p35_drop_pod.BUILDERS, **mb_p35_bulwark_post.BUILDERS, **mb_p35_drone_net_tower.BUILDERS, **mb_p35_flare_searchlight_tower.BUILDERS, **mb_p35_targeting_station.BUILDERS, **mb_p35_mine_rocket_truck.BUILDERS, **mb_p35_wheeled_howitzer.BUILDERS, **mb_p35_auto_loader_howitzer.BUILDERS, **mb_p35_light_attack_heli.BUILDERS, **mb_p35_prop_attack_plane.BUILDERS, **mb_p35_airborne_vehicle_chute.BUILDERS, **mb_p35_cerberus.BUILDERS, **mb_p35_hyperion.BUILDERS}
     for name in HIGH_DETAIL:

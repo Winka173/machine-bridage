@@ -8,17 +8,17 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| ground | 95 | 733,362 | 7,719 | main_battle_tank_hd (16,462) | 4,833 | 0 | 43 |
-| boss | 33 | 632,192 | 19,157 | monster (39,598) | 2,819 | 0 | 29 |
-| structure | 86 | 428,933 | 4,987 | headquarters (14,164) | 3,710 | 0 | 15 |
+| ground | 95 | 771,722 | 8,123 | main_battle_tank_hd (16,462) | 5,236 | 0 | 47 |
+| boss | 33 | 607,912 | 18,421 | monster (39,598) | 2,924 | 0 | 30 |
+| structure | 86 | 444,696 | 5,170 | headquarters (21,052) | 3,914 | 0 | 16 |
 | prop | 115 | 256,808 | 2,233 | command_hq (8,872) | 1,565 | 0 | 3 |
-| air | 31 | 147,434 | 4,755 | fighter_jet_hd (14,216) | 1,061 | 0 | 23 |
+| air | 31 | 155,886 | 5,028 | fighter_jet_hd (14,216) | 1,149 | 0 | 23 |
 | unlisted | 33 | 107,254 | 3,250 | apc_hd (14,968) | 628 | 0 | 0 |
 | scenery | 96 | 40,708 | 424 | rubble_large (3,516) | 294 | 0 | 2 |
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 7,146 | 255 | fpv_drone (1,564) | 210 | 0 | 1 |
 
-All files: 2,374,087 triangles, 0 with errors, 117 more with warnings only.
+All files: 2,412,382 triangles, 0 with errors, 123 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -43,13 +43,15 @@ All files: 2,374,087 triangles, 0 with errors, 117 more with warnings only.
 | boss_s | triangles | 1 | 0 | - |
 | boss_s | vertices | 2 | 0 | - |
 | ground | movingParts | 2 | 0 | - |
-| ground | renderers | 11 | 0 | - |
-| ground | triangles | 35 | 0 | - |
-| ground | vertices | 40 | 0 | - |
-| helicopter | renderers | 1 | 0 | - |
-| jet | renderers | 12 | 0 | - |
-| jet | triangles | 4 | 0 | - |
-| jet | vertices | 3 | 0 | - |
+| ground | renderers | 15 | 0 | - |
+| ground | triangles | 36 | 0 | - |
+| ground | vertices | 42 | 0 | - |
+| helicopter | renderers | 3 | 0 | - |
+| helicopter | triangles | 1 | 0 | - |
+| helicopter | vertices | 1 | 0 | - |
+| jet | renderers | 13 | 0 | - |
+| jet | triangles | 5 | 0 | - |
+| jet | vertices | 4 | 0 | - |
 | munition | renderers | 1 | 0 | - |
 | munition | triangles | 1 | 0 | - |
 | munition | vertices | 1 | 0 | - |
@@ -58,10 +60,11 @@ All files: 2,374,087 triangles, 0 with errors, 117 more with warnings only.
 | prop | vertices | 1 | 0 | - |
 | scenery | renderers | 2 | 0 | - |
 | structure | movingParts | 1 | 0 | - |
-| structure | renderers | 7 | 0 | - |
+| structure | renderers | 9 | 0 | - |
+| tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-70 models over a budget, 0 of them over a hard cap.
+80 models over a budget, 0 of them over a hard cap.
 
 ## Error reasons (count of models)
 

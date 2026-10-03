@@ -1,0 +1,230 @@
+{
+ "id": "headquarters",
+ "class": "hq",
+ "real": [
+  "hardened concrete command post",
+  "2A83 152 mm (twin, the bastion gun)",
+  "2A38 30 mm (twin flak)",
+  "Rh-120 L/55 120 mm (the fortress types' gun, one barrel; prompt 35)"
+ ],
+ "shape": "unit_sheet.json Cong trinh: 'Nha chi huy be tong nhieu khoi, ang-ten, co phe, bao cat quanh.' unit_refs: Construction Yard (C&C) for the read. The prompt 32 HQ types (fortress ground / air, garrison, shield) use this model unchanged; prompt 35 added the fortress types' gun (Mount_gun) on its own tower.",
+ "confidence": "tham_khao_thuc (layout kept from the approved old file; every piece rebuilt)",
+ "target_size": {
+  "L": 12.73,
+  "W": 14.1,
+  "H": 9.4,
+  "source": "the old GLB (12.73 x 14.1 x 9.37; the 14 x 12 m plinth kept exactly)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the 14 x 12 m plinth with its joints",
+   "nodes": [
+    "Plinth",
+    "Plinth_joints"
+   ]
+  },
+  {
+   "feature": "two-storey battered cast block: buttresses, pour lines, slit windows with visors, fascia, parapet, coping",
+   "nodes": [
+    "Block",
+    "Buttresses",
+    "Pour_lines",
+    "Fascia",
+    "Parapet",
+    "Coping",
+    "Windows",
+    "Lit_windows",
+    "Window_frames",
+    "Window_visors",
+    "Shutters"
+   ]
+  },
+  {
+   "feature": "hardened entrance portal with the hazard-framed blast door, sign and lamps; sandbag chicane, HESCO, jersey barriers, the flag",
+   "nodes": [
+    "Portal",
+    "Blast_door",
+    "Door_hazard",
+    "Sign",
+    "Sandbags",
+    "Hesco",
+    "Barriers",
+    "Flag",
+    "Flag_pole"
+   ]
+  },
+  {
+   "feature": "corner bastion tower with the first twin 30 mm in its sandbag ring",
+   "nodes": [
+    "Tower_deck",
+    "Blast_bags",
+    "Mount_mg",
+    "Flak_carriage",
+    "Flak_barrel",
+    "Muzzle_mg",
+    "Ladder"
+   ]
+  },
+  {
+   "feature": "the roof: gun drum with the hazard band and race, the second twin 30 mm nest, vents, air conditioners, antenna masts",
+   "nodes": [
+    "Drum",
+    "Drum_band",
+    "Race",
+    "Mount_mg.001",
+    "Muzzle_mg.001",
+    "Vents",
+    "Aircon",
+    "Antenna",
+    "Cable_tray"
+   ]
+  },
+  {
+   "feature": "the twin heavy gun turret: faceted house, blast bags, barrels with brakes, coax, cupola, sights",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_ring",
+    "Main_cannon",
+    "Main_cannon_2",
+    "Muzzle_brake",
+    "Muzzle_brake_2",
+    "Muzzle_main",
+    "Muzzle_main.001",
+    "Coax",
+    "Muzzle_coax",
+    "Cupola_top"
+   ]
+  },
+  {
+   "feature": "signals wing with the helipad roof and the windsock",
+   "nodes": [
+    "Wing",
+    "Pad",
+    "Pad_border",
+    "Pad_markings",
+    "Edge_lights",
+    "Windsock"
+   ]
+  },
+  {
+   "feature": "yard: lattice radar tower with the dish (Radar), generator set, drums, HESCO",
+   "nodes": [
+    "Radar_tower",
+    "Tower_platform",
+    "Radar",
+    "Radar_dish",
+    "Generator",
+    "Drums"
+   ]
+  },
+  {
+   "feature": "prompt 35: the fortress gun tower at the rear right (battered cast prism, Team band, loopholes, ladder, race) with the low casemate turret: faceted gun house, mantlet, the 120 mm L/55 with extractor and baffle brake (Mount_gun / Muzzle_gun, the fortress types' gun slot)",
+   "nodes": [
+    "Mount_gun",
+    "Gun_house",
+    "Gun_mantlet",
+    "Gun_barrel",
+    "Gun_brake",
+    "Muzzle_gun",
+    "Race",
+    "Tower_deck"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "sandbags / walls",
+  "roof",
+  "antennas"
+ ],
+ "weapons": [
+  {
+   "weapon": "bastion_gun",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main",
+    "Muzzle_main.001"
+   ]
+  },
+  {
+   "weapon": "hq_flak",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "hq_flak",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  },
+  {
+   "weapon": "mg_coax",
+   "slot": "coax",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_coax"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   6000
+  ],
+  "floor": 1400,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only (owner rule 02/10)"
+ },
+ "team_zones": [
+  "fascia and floor bands (Team)",
+  "turret body and coping (Team)",
+  "the flag, helipad border, shutters (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "Hegemon cast concrete with Accord field kit (sandbags, HESCO)",
+ "details": {
+  "tier1": [
+   "block",
+   "wing",
+   "tower",
+   "turret",
+   "radar tower"
+  ],
+  "tier2": [
+   "portal",
+   "drum",
+   "flak mounts",
+   "helipad",
+   "generator",
+   "HESCO",
+   "barriers",
+   "sandbags"
+  ],
+  "tier3": [
+   "slit windows",
+   "visors",
+   "lamps",
+   "vents",
+   "antennas",
+   "beacons",
+   "drums",
+   "edge lights",
+   "pour lines",
+   "ladders"
+  ]
+ },
+ "questions": []
+}

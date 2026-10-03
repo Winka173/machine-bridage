@@ -1,0 +1,151 @@
+{
+ "id": "command_vehicle",
+ "class": "wheeled",
+ "real": [
+  "M1130 Stryker CV (0.8 x)",
+  "BTR-80 KShM",
+  "M2 Browning 12.7 mm"
+ ],
+ "shape": "unit_sheet.json Phuong tien: 'Xe 8 banh, than cao, nhieu cot ang-ten roi va mot cot kinh vien vong gap, leu chi huy gan sau. Tu tren xuong: nhieu cham ang-ten, cot dai nam doc.'",
+ "confidence": "tham_khao_thuc (Stryker CV layout)",
+ "target_size": {
+  "L": 5.64,
+  "W": 2.08,
+  "H": 2.14,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "8x8 running gear with its axle arms",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Undercarriage"
+   ]
+  },
+  {
+   "feature": "faceted hull: V bottom, chine, tumblehome sides, sloped bow, rear ramp outline, bolted add-on panels",
+   "nodes": [
+    "Hull",
+    "Armor",
+    "Ramp_lines",
+    "Trim_plate",
+    "Kit_bolts"
+   ]
+  },
+  {
+   "feature": "driver's hatch with periscopes, commander's cupola with vision blocks",
+   "nodes": [
+    "Hatches",
+    "Hatch_fittings",
+    "Periscope",
+    "Periscope_hoods",
+    "Glass"
+   ]
+  },
+  {
+   "feature": "12.7 mm on the cupola riser",
+   "nodes": [
+    "Mount_mg",
+    "MG",
+    "MG_post",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "folded telescopic mast along the roof with its sensor head, SATCOM dish, row of whip antennas",
+   "nodes": [
+    "Mast",
+    "Sensor",
+    "Dish",
+    "Antenna"
+   ]
+  },
+  {
+   "feature": "command tent rolled on the rear deck under straps, beacons, stowage",
+   "nodes": [
+    "Tent",
+    "Straps",
+    "Beacons",
+    "Stowage"
+   ]
+  },
+  {
+   "feature": "engine louvres and exhaust on the right front",
+   "nodes": [
+    "Exhaust_louvres",
+    "Exhaust",
+    "Grilles"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "hmg_selfdef_15",
+   "slot": "main",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "heavy budget class (Support truck over 9 m); under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "hull (Team)",
+  "a band along both sides (Team)",
+  "roof panel (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "wheels"
+  ],
+  "tier2": [
+   "add-on panels",
+   "mast",
+   "dish",
+   "tent",
+   "cupola",
+   "hatches",
+   "stowage bin"
+  ],
+  "tier3": [
+   "periscopes",
+   "vision blocks",
+   "antennas",
+   "beacons",
+   "straps",
+   "lamps",
+   "tow hooks",
+   "rivets",
+   "jerrycan"
+  ]
+ },
+ "questions": []
+}
