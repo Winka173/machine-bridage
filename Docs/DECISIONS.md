@@ -18021,3 +18021,61 @@ and Python only (no Unity, no test, sim or measure).
   laser_ad_station 73.0, heavy_flak_tower 66.6 (owner question 1). Structures and walls on the owner's look.
 - quality_report.xlsx / .csv not rewritten on this branch; full gate `--no-write`: 230 models, 59 pass, no model
   outside the wave changed.
+
+## Prompt 35 wave 6 (lane B)
+Branch `feature/p35-w6` (from lead/integration with wave 3 merged), the twenty models of wave 6
+(Docs/models/WAVES_P35.md) and the inflatable decoy (the lead's wave 3 call 2): one new builder per model
+(`Tools/blender/mb_p35_<id>.py`; inflatable_decoy's own wave 3 script rewritten), a spec each first
+(`Tools/blender/specs/<id>.json`), registered last in build_assets.py; report Docs/models/WAVE_6_REPORT.md. Blender and
+Python only (no Unity, no test, sim or measure).
+- **Lead calls on the wave 3 questions** (2026-10-03): (1) the four NEEDS_HUMAN gun towers (at_gun_emplacement,
+  heavy_flak_tower, one_shot_atgm_tower, laser_ad_station) and the walls and shelters under 80 are accepted on the
+  owner's look; (2) yes: inflatable_decoy rebuilt in this wave to follow the wave 2 gun_turret's outline closely (a
+  decoy must read as the real tower at battle distance); (3) super_gun in the fortress concrete style is fine.
+- **The decoy and its modelSize.** The replica keeps the gun turret's dimensions (casemate 4.6 m square, deck 1.25 m,
+  turret plan, gun 1.34 + 0.66 m high to y -5.97). The def's modelSize (5.0 x 4.6 x 2.6) cannot hold it with the gun
+  straight ahead (8.97 x 5.25 x 4.0: the size gate and glb_check fail), so the turret stands traversed 38 degrees
+  (7.8 x 6.7 x 4.0: the modelSize's proportions, both pass). The runtime fits the length to modelSize, so the decoy is
+  drawn at 0.66 x the real tower until its modelSize follows (owner question 2; data not changed). No `Turret`: the
+  def is unarmed.
+- **Runtime nodes.** Every `Part_*`, `Mount_*`, `Muzzle_*`, `Radar`, `Propeller*`, `Point_*` of the old files is kept
+  under its old name and parent; the four bosses' pivots at their exact old places (the def parts' `at` and tune are
+  set onto them). New nodes: `Mount_APS` on next_gen_tank, sea_corvette, nyx and kraken (the defs' APS; on the
+  radar faces / turret roof); sea_cruiser's APS merged into its mast's `Aps_faces` (spec "merged", as silver_bug's
+  `Pd_base`) because one more pivot puts it over glb_check's ground moving-parts cap of 10; interceptor_jet's
+  `Mount_aam` / `Muzzle_aam` and fibre_fpv_carrier's `Mount_rocket` / `Muzzle_rocket` (the defs' free secondaries had
+  none); garuda's `Muzzle_b1_gun` / `_b2_gun` / `_gun_001` under its twin dorsal guns (the def's eight mounts want eight
+  muzzles; the barrels' own launch points, as prompt 34 L4). sea_cruiser's muzzles moved to the new barrels' ends
+  (10.4 m ahead of the mounts instead of 12.4 m). The wrappers run on the new builders as on the old ones:
+  mb_p34_barrels (sea_cruiser's per-barrel muzzles; kraken's cells have no barrels), mb_fix_barrels (hydra_sub's deck
+  gun twinned, its SAM box's two launch points), mb_p34_parts (Part_wheel / Part_wheelb, Part_wing),
+  mb_flare_mounts (interceptor_jet L / R / TL / TR on one dispenser row a side, glide_bomber L / L2 / R / R2 / TL / TR
+  on two).
+- **Classes and gold.** Ships borrow the whole boss gold (no ship gold); bosses use their frame's (sea, air). The
+  ship and boss densities divide by surface area, so decks are one-sided planes and fittings are many small varied
+  pieces (`mb_p35b_parts.clutter`); the ship rules (CIWS, boat) are met on the small craft with what such craft carry:
+  landing_craft a pintle M134 (as an LCAC) and a Zodiac, missile_boat a pintle minigun and life-raft canisters
+  (owner question 3). hover_gunboat is the ground class (its def is not naval) and keeps the light cap.
+- **Caps.** The light wheeled units stay under 1.5 x 5,000 = 7,500 (shield_carrier 7,436, dazzler 7,134, hijacker
+  6,754, FPV pickup 6,364); tanks 9,464-11,642 and sea_cruiser 14,150 are over their class maximum as information
+  only (owner rule). glb_check renderer caps: static parts folded with `mb_p35b_parts.merge_parts` on sea_cruiser,
+  interceptor_jet, glide_bomber and stealth_naval_strike.
+- **Sizes.** All within 10 % of modelSize (the gate) or of the old file where the data has none (landing_craft,
+  missile_boat, sea_corvette, sea_cruiser); fibre_fpv_carrier, interceptor_jet and glide_bomber back within 10 % in
+  height (they were 13-21 % off), hydra_sub's stern planes back to its 7.2 m width.
+- **Styles.** Bosses drawn 1.3-1.5 x of the real type's features for the read; the weak points the BossText tips
+  name are riveted plates one shade off (`K.tone`) on their own nodes (hydra_sub's launch doors, nyx's VLS and CIWS,
+  kraken's landing area and CIWS, garuda's bomb bays and engines). Jets: no insets or greebles; radar-absorbent edge
+  bands, seam tape and panel patchwork are flat paint on the skin.
+- **Helpers (lane B, mb_p35b_parts.py)**: `clutter`, `plane`, `portholes`, `merge_parts` (requested for the kit,
+  report). Tools: `validate_specs.py` now reads a variant boss's keep / drop list as scan_prep.boss_part_nodes does
+  (nyx's dropped leviathan parts were asked for).
+- **build_assets.py**: the twenty new builders registered after the wave 3 ones; rebuilt from build_assets the 21
+  files match (the substring filter also rebuilt airborne_vehicle_chute and airborne_light_tank_chute from their old
+  builders: reverted; airborne_vehicle and fibre_fpv_carrier differed by 27 / 126 bytes of bake noise: the gated files
+  kept); `python -m py_compile Tools/blender/build_assets.py` passes.
+- **NEEDS_HUMAN** (4 rounds, every hard gate passes): stealth_naval_strike 67.5 and garuda 67.2, the two flying wings
+  (near-convex silhouettes, symmetric top outlines, smooth skins; owner question 1). The decoy (57.6) on the owner's
+  look with the structures.
+- quality_report.xlsx / .csv not rewritten on this branch; full gate `--no-write`: 230 models, 77 pass, no model
+  outside waves 3 and 6 changed; glb_check 0 errors.
