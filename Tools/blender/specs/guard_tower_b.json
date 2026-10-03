@@ -1,0 +1,146 @@
+{
+ "id": "guard_tower_b",
+ "class": "tower",
+ "real": [
+  "M242 Bushmaster 25 mm on a pedestal mount with a gun shield (balance.json tower_ac25)",
+  "Mk 19 40 mm grenade launcher on the parapet (the old file's Mount_gun)",
+  "the guard tower's cast blockhouse"
+ ],
+ "shape": "Branch B of guard_tower (guard_tower.nest, autocannon_25; vision 48 against the base's 60). The old file was a low sandbag ring on a pad; rebuilt as an upgrade of the base: the guard tower's concrete blockhouse kept (3.5 x 3.5 m, door, firing slits, wall lamp, its steel corner legs cut down to stubs), its roof turned into a sandbagged gun nest on a steel deck with Team kick plates and railings, the shielded 25 mm on its pedestal turret, the 40 mm launcher on the parapet, ready-ammunition boxes, a ladder up the side, a whip and the beacon.",
+ "confidence": "xấp xỉ (pedestal-mounted M242 / Mk 19 on fortified posts; the base tower's blockhouse)",
+ "target_size": {
+  "L": 4.32,
+  "W": 3.5,
+  "H": 4.6,
+  "source": "the footprint of the old GLB; the height follows the base's blockhouse (a lead call: the old low nest was 1.8 m)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the base's cast blockhouse with its door, firing slits, wall lamp and the steel leg stubs on base plates",
+   "nodes": [
+    "Blockhouse",
+    "Doors",
+    "Slits",
+    "Lamps",
+    "Tower_frame",
+    "Base_plates"
+   ]
+  },
+  {
+   "feature": "the steel deck on the roof with the grate, Team kick plates and railings",
+   "nodes": [
+    "Walkway",
+    "Walkway_grate",
+    "Kick_plates",
+    "Railing"
+   ]
+  },
+  {
+   "feature": "the sandbag parapet of the nest",
+   "nodes": [
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "the shielded M242 25 mm on its pedestal turret with the cradle, the feed chute and the ammunition box",
+   "nodes": [
+    "Turret",
+    "Gun_shield",
+    "Gun_cradle",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Ammo_boxes"
+   ]
+  },
+  {
+   "feature": "the 40 mm launcher on its socket on the parapet",
+   "nodes": [
+    "Mount_gun",
+    "AGL",
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "feature": "the ladder up the side, the whip antenna, the beacon",
+   "nodes": [
+    "Ladder",
+    "Antennas",
+    "Beacon_base"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "tower_ac25",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "(none in data)",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ],
+   "note": "kept from the old model"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "kick plates (Team)",
+  "gun shield (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "the guard tower's blockhouse (mb_p27_wave6 guard_tower)",
+ "details": {
+  "tier1": [
+   "blockhouse",
+   "deck",
+   "gun"
+  ],
+  "tier2": [
+   "sandbags",
+   "railings",
+   "shield",
+   "ladder",
+   "AGL"
+  ],
+  "tier3": [
+   "slits",
+   "lamp",
+   "bolts",
+   "ammo boxes",
+   "antenna",
+   "beacon",
+   "base plates"
+  ]
+ },
+ "questions": [
+  "guard_tower_b grows from 1.8 m to the blockhouse's height plus the nest (about 4.5 m) so it reads as the guard tower upgraded; the footprint is unchanged. Lead / owner call."
+ ]
+}

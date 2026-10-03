@@ -3186,6 +3186,24 @@
    ],
    "reason": "P35 wave 7",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "guard_tower_b"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG guard_tower_b: triangles 2,746 -> 5,880 (+114.1%); vertices 3,481 -> 8,794 (+152.6%); meshes 22 -> 60 (+172.7%); renderers 22 -> 60 (+172.7%); materials 10 -> 16 (+60.0%); materialSlots 22 -> 60 (+172.7%); fileBytes 192,556 -> 482,512 (+150.6%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "guard_tower_b"
+   ],
+   "reason": "P35 wave 7",
+   "changes": []
   }
  ],
  "models": {
@@ -29658,22 +29676,24 @@
   },
   "guard_tower_b": {
    "file": "guard_tower_b.glb",
-   "fileBytes": 192556,
-   "sha1": "204345dd3c9a594b",
+   "fileBytes": 482512,
+   "sha1": "3b3064f1f8b99d8f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 26,
-   "meshes": 22,
-   "materials": 10,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 64,
+   "meshes": 60,
+   "materials": 16,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 22,
-   "submeshes": 22,
-   "materialSlots": 22,
-   "materialsUsed": 10,
-   "triangles": 2746,
-   "vertices": 3481,
+   "renderers": 60,
+   "submeshes": 60,
+   "materialSlots": 60,
+   "materialsUsed": 16,
+   "triangles": 5880,
+   "vertices": 8794,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -29681,36 +29701,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 87,
-   "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "loosePieces": 250,
+   "openEdges": 28,
+   "nonManifoldEdges": 2,
    "boundsMin": [
-    -1.75,
+    -1.9,
     -0.02,
-    -1.75
+    -1.9244
    ],
    "boundsMax": [
-    1.75,
-    1.7897,
-    2.568
+    1.9,
+    4.53,
+    2.62
    ],
    "size": [
-    4.318,
-    3.5,
-    1.81
+    4.544,
+    3.8,
+    4.55
    ],
    "center": [
     0.0,
-    0.885,
-    0.409
+    2.255,
+    0.348
    ],
-   "structureHash": "e957807596044625",
+   "structureHash": "e682aca382429993",
    "color0": {
-    "mean": 0.6514,
-    "min": 0.2702,
-    "max": 0.9987,
-    "p05": 0.3581,
-    "p95": 0.8109,
+    "mean": 0.6727,
+    "min": 0.2744,
+    "max": 1.0,
+    "p05": 0.3559,
+    "p95": 0.9375,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -29734,31 +29754,69 @@
    "runtimeSuffixed": [],
    "nodeNames": [
     "AGL",
+    "AGL.001",
     "AGL_ammo",
-    "AGL_bands",
-    "AGL_bore",
-    "AGL_shield",
-    "AGL_sight",
-    "AGL_sight_glass",
     "AGL_socket",
-    "AGL_steel",
-    "Ammo_bands",
-    "Crate_bands",
-    "Crate_cleats",
+    "Ammo_boxes",
+    "Ammo_boxes.001",
+    "Antennas",
+    "Barrel_case",
+    "Base",
+    "Base_plates",
+    "Beacon_base",
+    "Beacons",
+    "Blockhouse",
+    "Buckets",
     "Crates",
+    "Door_frames",
+    "Door_slots",
+    "Doors",
+    "Extinguishers",
+    "Feed_chute",
+    "Fittings",
+    "Fuel_drums",
+    "Gas_bottles",
+    "Glass",
+    "Grille_frames",
+    "Grilles",
     "Gun_cradle",
+    "Gun_receiver",
     "Gun_shield",
     "Gun_sight",
+    "Horn",
+    "Jerrycans",
+    "Kick_plates",
+    "Kit_bands",
+    "Kit_bolts",
+    "Kit_hinges",
+    "Kit_latches",
+    "Kit_straps",
+    "Ladder",
+    "Lamp_guards",
+    "Lamp_rims",
+    "Lamps",
+    "Leg_gussets",
+    "Lift_joints",
     "Main_cannon",
     "Mount_gun",
     "Muzzle_brake",
     "Muzzle_gun",
     "Muzzle_main",
-    "Pad",
+    "Pedestal",
+    "Phone_box",
+    "Radio",
+    "Radio_handset",
+    "Railing",
     "Sandbags",
+    "Scope",
+    "Scope_tripod",
+    "Slits",
+    "Spent_cases",
+    "Stencil",
+    "Tower_frame",
     "Turret",
-    "Turret_armor",
-    "Turret_steel"
+    "Walkway",
+    "Walkway_grate"
    ],
    "category": "structure",
    "hd": false,
