@@ -267,7 +267,7 @@
             "kind": "vehicle",
             "model": "zu23_technical",
             "source": "Models/zu23_technical",
-            "hash": "v2:9a870d4ed4e03829c6a636582fd267e7b4668cb3"
+            "hash": "v2:acffc67c134104daaa556090f25794fa7d052638"
         },
         {
             "id": "smoke_carrier",
@@ -736,7 +736,7 @@
             "kind": "tower",
             "model": "ammo_dump",
             "source": "Models/ammo_dump",
-            "hash": "v2:9d916519cf62f2a2b36cafdfde3845217891da6d"
+            "hash": "v2:0f4c2bb38f017e0594b1da9ee37c302cd11f54f7"
         },
         {
             "id": "argus",
@@ -827,7 +827,7 @@
             "kind": "boss",
             "model": "fortress_bastion",
             "source": "Models/fortress_bastion",
-            "hash": "v2:5488da5636c2b2677dba823e2f56babab164fb8a"
+            "hash": "v2:692848da1cc3ae2ad5d0547ca44b0aef0ce18f78"
         },
         {
             "id": "behemoth",
@@ -841,7 +841,7 @@
             "kind": "boss",
             "model": "behemoth_inferno",
             "source": "Models/behemoth_inferno",
-            "hash": "v2:bc522385cec873a8f62dc1e7b144c6e636ae8d7f"
+            "hash": "v2:33d3f2e21912661363edb31b02423ca2545edd8a"
         },
         {
             "id": "behemoth_mk0",
@@ -862,7 +862,7 @@
             "kind": "boss",
             "model": "behemoth_tempest",
             "source": "Models/behemoth_tempest",
-            "hash": "v2:c64b3b0e1f60ac5f1eacabac8a4d52bda6e228bb"
+            "hash": "v2:fc4a08a2767e80878d5b809273f0bb2fa3cd2fd2"
         },
         {
             "id": "blast_wall",
@@ -1156,14 +1156,14 @@
             "kind": "boss",
             "model": "fortress_bastion",
             "source": "Models/fortress_bastion",
-            "hash": "v2:5488da5636c2b2677dba823e2f56babab164fb8a"
+            "hash": "v2:692848da1cc3ae2ad5d0547ca44b0aef0ce18f78"
         },
         {
             "id": "fortress_hive",
             "kind": "boss",
             "model": "fortress_hive",
             "source": "Models/fortress_hive",
-            "hash": "v2:7dccbfc2b471a6f5ad9b0817743a641e1986ad06"
+            "hash": "v2:e7cab340c053607c46fbeaa19f97f428c6a349e6"
         },
         {
             "id": "garuda",
@@ -1331,7 +1331,7 @@
             "kind": "boss",
             "model": "ixion",
             "source": "Models/ixion",
-            "hash": "v2:81b77c6692952048aa9e08d8aa0ef08083c96bef"
+            "hash": "v2:b56cd5ffabc85481e2f9c1b9aaff2d346d4b05e9"
         },
         {
             "id": "kraken",
@@ -1513,7 +1513,7 @@
             "kind": "tower",
             "model": "radar_site",
             "source": "Models/radar_site",
-            "hash": "v2:fe77900b60f979e44237a72e6fbdcdf2d6837367"
+            "hash": "v2:9426e01ef7b569ed945329d0d337ed2c9e314c15"
         },
         {
             "id": "rail_supergun",
@@ -1534,28 +1534,28 @@
             "kind": "tower",
             "model": "repair_bay",
             "source": "Models/repair_bay",
-            "hash": "v2:ed3e45c9d1b691dcebcdfc59297e652a6db7ba05"
+            "hash": "v2:8062aafafdd9e553ee01312c0e13e504f0391437"
         },
         {
             "id": "rocket_turret",
             "kind": "tower",
             "model": "rocket_turret",
             "source": "Models/rocket_turret",
-            "hash": "v2:c8f66f6dd70462a400951ee74dbbe08eb71e6e59"
+            "hash": "v2:c56ac57053906d140f246faf14b5d12892890672"
         },
         {
             "id": "rocket_turret.cluster",
             "kind": "tower",
             "model": "rocket_turret_a",
             "source": "Models/rocket_turret_a",
-            "hash": "v2:a110bcc2b49987003360d9cf3eeedb6b97914f22"
+            "hash": "v2:ebfcbe9ce3dd5223cca582d96f61f4c927710c2b"
         },
         {
             "id": "rocket_turret.guided",
             "kind": "tower",
             "model": "rocket_turret_b",
             "source": "Models/rocket_turret_b",
-            "hash": "v2:041d822e8d6e19ecfc7f26378d48d4d8b1fdd2bd"
+            "hash": "v2:f0a434cb07251a05f064174dd3ddecbf31295db7"
         },
         {
             "id": "scylla",
@@ -1632,7 +1632,7 @@
             "kind": "boss",
             "model": "stymphalos",
             "source": "Models/stymphalos",
-            "hash": "v2:c63cb2467256a97dea69f0f5040055fae59f0c1f"
+            "hash": "v2:8f11f905515d12ba207651dc9f0904c600690a02"
         },
         {
             "id": "super_gun",
