@@ -45,6 +45,16 @@ namespace MachineBrigade.Sim.Content
         public float Every { get; internal set; } = 60f;
         public int Alive { get; internal set; } = 2;
 
+        /// <summary>
+        /// Play-test 14 session 5 ("các hangar unit chọn trong hq nên cân bằng, nếu chọn light tank thì được 1, jeep thì được 2"):
+        /// the CP the units alive at once may be worth; 0 keeps <see cref="Alive"/> for every unit.
+        /// </summary>
+        public float Budget { get; internal set; }
+
+        /// <summary>How many of <paramref name="unit"/> it keeps alive: floor(<see cref="Budget"/> / the unit's CP), at least one.</summary>
+        public int AliveOf(VehicleDef? unit) =>
+            Budget > 0f && unit != null && unit.CpCost > 0 ? Math.Max(1, (int)MathF.Floor(Budget / unit.CpCost + 1e-4f)) : Alive;
+
         /// <summary>How far round its post a turned-out unit fights.</summary>
         public float Post { get; internal set; } = 20f;
     }
@@ -180,6 +190,13 @@ namespace MachineBrigade.Sim.Content
         /// had a target that long (the view raises it at that pace; a launcher fired before it was up snapped up at once).
         /// </summary>
         public float ErectSeconds { get; internal set; }
+
+        /// <summary>
+        /// Play-test 14 session 5: a side ATGM box's erector (the IFV's TOW launcher), seconds from stowed to firing angle (0:
+        /// none). The missile mount (slot "missile") fires once it has had a target that long, as a launcher's main weapon does
+        /// by <see cref="ErectSeconds"/>; the view raises the box at that pace (it had snapped up for a missile fired at once).
+        /// </summary>
+        public float SideErectSeconds { get; internal set; }
         public SearchlightDef? Searchlight { get; internal set; }
         public BalloonDef? Balloon { get; internal set; }
         public SightJammerDef? SightJammer { get; internal set; }
@@ -256,6 +273,7 @@ namespace MachineBrigade.Sim.Content
             }
             if (v.Has("decoy")) def.Decoy = new DecoyDef { Mimic = v.Object("decoy").Has("mimic") ? v.Object("decoy").String("mimic") : "gun_turret" };
             def.ErectSeconds = Math.Max(0f, v.Float("erectSeconds", 0f));
+            def.SideErectSeconds = Math.Max(0f, v.Float("sideErectSeconds", 0f));
             if (v.Has("fireControl"))
             {
                 var o = v.Object("fireControl");
@@ -270,7 +288,7 @@ namespace MachineBrigade.Sim.Content
                 def.Hangar = new HangarDef
                 {
                     Units = o.StringArray("units"), Every = MathF.Max(5f, o.Float("every", 60f)), Alive = Math.Max(1, o.Int("alive", 2)),
-                    Post = MathF.Max(5f, o.Float("post", 20f)),
+                    Post = MathF.Max(5f, o.Float("post", 20f)), Budget = MathF.Max(0f, o.Float("budget", 0f)),
                 };
             }
             if (v.Has("aura"))

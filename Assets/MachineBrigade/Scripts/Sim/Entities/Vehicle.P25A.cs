@@ -29,6 +29,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Play-test 14: since when a launcher's erector has been coming up, and when it last had a target.</summary>
         internal double ErectFrom = double.NegativeInfinity, ErectLast = double.NegativeInfinity;
 
+        /// <summary>Play-test 14 session 5: the same for a side ATGM box's erector (<see cref="Content.VehicleDef.SideErectSeconds"/>).</summary>
+        internal double SideErectFrom = double.NegativeInfinity, SideErectLast = double.NegativeInfinity;
+
         /// <summary>A microwave's next pulse, a flare tower's next flare.</summary>
         internal double WorksNextAt;
 

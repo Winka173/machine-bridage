@@ -1266,7 +1266,7 @@
         { "id": "thermobaric_launcher", "erectSeconds": 1.2, "outgoingDamageMult": 1.2222, "value": 0.78, "scale": 1, "modelSize": [6.02, 2.85, 2.79], "armour": 3, "hp": 1132, "speed": 5.5, "turnRate": 55, "turretTurnRate": 50, "radius": 2.5, "length": 6.02, "width": 2.85, "cp": 11, "vision": 30,
       "firesWhileMoving": false, "weapon": "thermobaric_rockets", "secondary": [{"weapon": "hmg_selfdef_18", "slot": "mg", "aim": "Free"}], "mainSlot": "rocket",
       "deathExplosion": { "damage": 180, "radius": 9, "delay": 0.4, "tier": "Ultimate" } },
-    { "id": "ifv", "missiles": [{ "weapon": "atgm", "ammo": 2, "reload": 20 }], "outgoingDamageMult": 1.1667, "value": 1.06, "scale": 1, "modelSize": [5.48, 3.02, 2.5],              "armour": 2, "hp": 623, "speed": 8, "turnRate": 110, "turretTurnRate": 160, "radius": 2.3, "length": 5.31, "width": 3.02, "cp": 7, "vision": 34,
+    { "id": "ifv", "sideErectSeconds": 0.6, "missiles": [{ "weapon": "atgm", "ammo": 2, "reload": 20 }], "outgoingDamageMult": 1.1667, "value": 1.06, "scale": 1, "modelSize": [5.48, 3.02, 2.5],              "armour": 2, "hp": 623, "speed": 8, "turnRate": 110, "turretTurnRate": 160, "radius": 2.3, "length": 5.31, "width": 3.02, "cp": 7, "vision": 34,
       "firesWhileMoving": true, "weapon": "ifv_30", "captureRate": 3,
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "atgm", "slot": "missile", "aim": "Turret" } ], "skills": [],
       "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.35, "tier": "Large" } },
@@ -1436,7 +1436,7 @@
       "firesWhileMoving": true, "weapon": "twin_35_ahead", "skills": ["elite_overdrive"],
       "secondary": [ { "weapon": "sam", "slot": "missile", "aim": "Turret" } ],
       "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "elite_apc", "modelSize": [6.31, 3.47, 3.02], "scale": 1,        "class": "Light", "elite": true, "eliteOf": "ifv", "armour": [3, 1, 0, 0], "hp": 702, "speed": 9, "turnRate": 110, "turretTurnRate": 160, "radius": 2.5, "length": 6.11, "width": 3.47, "cp": 0, "vision": 34,
+    { "id": "elite_apc", "sideErectSeconds": 0.6, "modelSize": [6.31, 3.47, 3.02], "scale": 1,        "class": "Light", "elite": true, "eliteOf": "ifv", "armour": [3, 1, 0, 0], "hp": 702, "speed": 9, "turnRate": 110, "turretTurnRate": 160, "radius": 2.5, "length": 6.11, "width": 3.47, "cp": 0, "vision": 34,
       "firesWhileMoving": true, "weapon": "autocannon_30", "skills": ["elite_emp"],
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "atgm", "slot": "missile", "aim": "Turret" } ],
       "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.35, "tier": "Huge" } },
@@ -1503,13 +1503,15 @@
     { "id": "drone_hangar", "rebuildCp": 12, "branches": ["drone_hangar.lancet", "drone_hangar.swarm"],     "fort": { "size": "Large" }, "static": true, "armour": 2, "hp": 2200, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3.6, "length": 8, "width": 8, "cp": 0, "vision": 60,
       "weapon": "fpv_hangar", "mainSlot": "door_l", "mainAim": "Hull", "deathExplosion": { "damage": 160, "radius": 10, "delay": 0.4, "tier": "Ultimate" } },
     // Play-test 14: the vehicle hangar and the aircraft hangar (medium structures, the drone hangar's model until the art
-    // pass): free, one unit every 60 s while fewer than two of its own are alive, the player's pick of the light units;
+    // pass): free, one unit every 60 s while fewer than two of its own are alive, the player's pick of the light units
+    // (play-test 14 session 5: as many alive as "budget" CP buys of the pick: jeep 2, armoured car 1, light tank 1;
+    // scout helicopter 2, recon drone 1);
     // they hold the hangar rally point (a tap on the map in battle) or the hangar's front.
     { "id": "vehicle_hangar", "rebuildCp": 8, "model": "drone_hangar", "modelSize": [8.0, 8.0, 4.0], "fort": { "size": "Medium" }, "static": true, "armour": 2, "hp": 1800, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3.6, "length": 8, "width": 8, "cp": 0, "vision": 50,
-      "weapon": "none", "hangar": { "units": ["scout_jeep", "armored_car", "light_tank"], "every": 60, "alive": 2, "post": 20 },
+      "weapon": "none", "hangar": { "units": ["scout_jeep", "armored_car", "light_tank"], "every": 60, "alive": 2, "budget": 5, "post": 20 },
       "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
     { "id": "aircraft_hangar", "rebuildCp": 8, "model": "drone_hangar", "modelSize": [8.0, 8.0, 4.0], "fort": { "size": "Medium" }, "static": true, "armour": 2, "hp": 1800, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3.6, "length": 8, "width": 8, "cp": 0, "vision": 50,
-      "weapon": "none", "hangar": { "units": ["scout_heli", "recon_drone"], "every": 60, "alive": 2, "post": 30 },
+      "weapon": "none", "hangar": { "units": ["scout_heli", "recon_drone"], "every": 60, "alive": 2, "budget": 12, "post": 30 },
       "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
     // Rank-7 branches: each a trade, for a different fight, not a straight upgrade.
     { "id": "guard_tower.watch", "rebuildCp": 5, "towerRole": "observation_reach", "art": "guard_tower_a", "inherits": "guard_tower", "branchOf": "guard_tower", "vision": 78, "towerRangeAura": { "radius": 30, "range": 0.15 } },

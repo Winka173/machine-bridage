@@ -560,6 +560,8 @@ namespace MachineBrigade.Sim.Combat
             }
             // Play-test 14: a launcher fires once its erector is up (see Erected).
             else if (index == 0 && v.Def.ErectSeconds > 0f && target != null && !Erected(v)) return;
+            // Play-test 14 session 5: so does a side ATGM box (the IFV's), at its own erector's pace.
+            else if (index > 0 && v.Def.SideErectSeconds > 0f && target != null && v.Def.Mounts[index].Slot == "missile" && !SideErected(v)) return;
             // Play-test 14: a gun-launched missile goes up the main gun's barrel, so the two never leave it together.
             else if (BarrelBusy(v, index)) return;
             // Limited ammunition: one round per trigger pull (a whole salvo counts as one).
@@ -654,6 +656,15 @@ namespace MachineBrigade.Sim.Combat
             if (now - v.ErectLast > ErectHold) v.ErectFrom = now;
             v.ErectLast = now;
             return now - v.ErectFrom >= v.Def.ErectSeconds - 1e-6;
+        }
+
+        /// <summary>Play-test 14 session 5: whether a side ATGM box is up, by the same rule as <see cref="Erected"/>.</summary>
+        private bool SideErected(Vehicle v)
+        {
+            var now = _world.Time;
+            if (now - v.SideErectLast > ErectHold) v.SideErectFrom = now;
+            v.SideErectLast = now;
+            return now - v.SideErectFrom >= v.Def.SideErectSeconds - 1e-6;
         }
 
         /// <summary>Seconds between a single-shot gun's round and the second one Twin Feed adds.</summary>
