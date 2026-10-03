@@ -1,0 +1,38 @@
+{
+ "id": "elite_mbt",
+ "class": "tracked",
+ "real": ["T-90M (2A46M-5 125 mm, Relikt reactive armour, remote 12.7 mm station)"],
+ "shape": "No shape drawing in unit_sheet.json (the elite is not a sheet row); unit_refs: 'T-90M (2A46M-5 125 mm), Leopard 2A4 / M1 Abrams (base chassis)', note 'elite main battle tank, reinforced armour painted black'. Built as the T-90M so it no longer is the main battle tank (a Leopard 2A4) with paint.",
+ "confidence": "xấp xỉ (T-90M published dimensions and photographs)",
+ "target_size": {"L": 8.96, "W": 3.53, "H": 2.64, "source": "balance.json modelSize (0.93 x the T-90M's 9.63 x 3.78 m with the gun forward; the remote station inside the height)", "tolerance": 0.10},
+ "features": [
+  {"feature": "low hull, long shallow glacis with a V of Relikt bricks and the splash board, dozer blade under the nose", "nodes": ["Hull", "Era_bricks", "Dozer_blade"]},
+  {"feature": "flat welded turret with the reactive-armour wedge over both front cheeks", "nodes": ["Turret", "Turret_body", "Turret_armor"]},
+  {"feature": "125 mm gun with thermal sleeve and fume extractor, mantlet with dust cover, coaxial machine gun", "nodes": ["Main_cannon", "Muzzle_brake", "Mantlet", "Mantlet_cover", "Coax"]},
+  {"feature": "commander's remote weapon station with a 12.7 mm gun on its post, gunner's sight box, panoramic sight", "nodes": ["Mount_mg", "MG", "Rws_sensor", "Sight"]},
+  {"feature": "ammunition bustle inside a slat cage, snorkel tube stowed on it; slat armour round the engine deck", "nodes": ["Bustle", "Slat_armour", "Turret_steel"]},
+  {"feature": "six large road wheels, return rollers, front idler, rear sprocket, linked track", "nodes": ["Wheels", "Rollers", "Idlers", "Sprockets", "Tracks", "Track_links"]},
+  {"feature": "rubber side skirts with reactive-armour boxes over their front half", "nodes": ["Skirts", "Skirt_era"]},
+  {"feature": "external fuel cells on the right fender, tool and stowage boxes on the left, unditching log at the rear", "nodes": ["Fuel_cells", "Toolbox", "Log"]},
+  {"feature": "elite marks: black armour, gold barrel band and chevrons, red-glowing sights", "nodes": ["Main_cannon_gilt", "Chevrons", "Sight_glow"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "gun_125_elite", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]},
+  {"weapon": "mg_coax", "slot": "coax", "mount": "Turret", "muzzles": ["Muzzle_coax"]},
+  {"weapon": "hmg_roof", "slot": "mg", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"]}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2},
+ "team_zones": ["hull and turret body (Team)", "roof panel on the turret (Team)", "a band along both hull sides (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (tank wreck)",
+ "faction_style": "elite (team paint, black armour, gold marks)",
+ "details": {
+  "tier1": ["hull", "turret", "gun", "tracks"],
+  "tier2": ["glacis ERA", "cheek ERA wedges", "mantlet", "bustle", "slat cages", "skirts and skirt ERA", "fuel cells", "tool box", "remote weapon station", "sight boxes", "dozer blade", "log", "road wheels", "sprocket", "idler"],
+  "tier3": ["track links", "return rollers", "smoke dischargers", "hatches", "periscope", "coax", "gold bands and chevrons", "antenna", "lamps", "grilles", "fuel caps", "cables", "snorkel"]
+ },
+ "questions": []
+}
