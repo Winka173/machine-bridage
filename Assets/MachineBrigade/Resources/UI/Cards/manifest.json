@@ -36,14 +36,14 @@
             "kind": "vehicle",
             "model": "main_battle_tank",
             "source": "Models/main_battle_tank_hd",
-            "hash": "v2:3cf333416a30a49781938a48cb7627042d0aec96"
+            "hash": "v2:26bdb5e978a23c1c1deb401df579e3d07420eb8a"
         },
         {
             "id": "heavy_tank",
             "kind": "vehicle",
             "model": "heavy_tank",
             "source": "Models/heavy_tank_hd",
-            "hash": "v2:947d7bb7a6d8723e785cbb866339c70a37b5b694"
+            "hash": "v2:85e89901c0bbf6482ad42e702382ed87356b4f31"
         },
         {
             "id": "tank_destroyer",
@@ -953,7 +953,7 @@
             "kind": "structure",
             "model": "main_battle_tank",
             "source": "Models/main_battle_tank_hd",
-            "hash": "v2:3cf333416a30a49781938a48cb7627042d0aec96"
+            "hash": "v2:26bdb5e978a23c1c1deb401df579e3d07420eb8a"
         },
         {
             "id": "dragons_teeth",
@@ -1380,7 +1380,7 @@
             "kind": "boss",
             "model": "leviathan",
             "source": "Models/leviathan",
-            "hash": "v2:7b0d7865f7572a100f95a188bd30727f807aad91"
+            "hash": "v2:c5f29df0724dbb572b800ad2feaaae91215c3bcd"
         },
         {
             "id": "locust",
@@ -1478,7 +1478,7 @@
             "kind": "boss",
             "model": "monster",
             "source": "Models/monster",
-            "hash": "v2:6361d864a0eb0aa00b934f2d93714bf956929532"
+            "hash": "v2:8ea389fbdf5ef92b393ab16d7b28de0266d624b0"
         },
         {
             "id": "morrigan",
@@ -1562,7 +1562,7 @@
             "kind": "boss",
             "model": "leviathan",
             "source": "Models/leviathan",
-            "hash": "v2:7b0d7865f7572a100f95a188bd30727f807aad91"
+            "hash": "v2:c5f29df0724dbb572b800ad2feaaae91215c3bcd"
         },
         {
             "id": "searchlight",
