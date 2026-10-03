@@ -195,6 +195,12 @@ namespace MachineBrigade.Game.Rendering
         private const string ElevationName = "Elevation";
 
         /// <summary>
+        /// Play-test 13: one modelled round of a launcher (missile_1, Missile_2_fins, Round_3, rocket_04, cruise_missile_1, any case;
+        /// every node with the same index is one round), shown and hidden by VehicleView.Loaded.
+        /// </summary>
+        internal static readonly Regex RoundPattern = new(@"^(missile|round|rocket|cruise_missile)_?(\d+)", RegexOptions.IgnoreCase);
+
+        /// <summary>
         /// Play-test 6 (DECISIONS 21H): launchers whose erector is drawn under other names than the barrel parts: they
         /// join the elevating group, so the view can raise them to fire (the Iskander's erector and missiles, the Shahed
         /// truck's launch rack and drone, the Lancet truck's cell box).
@@ -1121,8 +1127,10 @@ namespace MachineBrigade.Game.Rendering
         private void MergeRigidParts(Transform root)
         {
             var anchors = new HashSet<Transform> { root };
+            // Play-test 13 follow-up (lane B): a launcher's indexed rounds keep their own meshes, so VehicleView.Loaded can hide
+            // a fired one (merged into the launcher they could not be). The far detail level still merges them (BuildLod).
             foreach (var t in root.GetComponentsInChildren<Transform>(true))
-                if (IsMovingPart(t)) anchors.Add(t);
+                if (IsMovingPart(t) || RoundPattern.IsMatch(t.name)) anchors.Add(t);
 
             var groups = new Dictionary<Transform, List<MeshFilter>>();
             foreach (var filter in root.GetComponentsInChildren<MeshFilter>(true))
@@ -1188,7 +1196,12 @@ namespace MachineBrigade.Game.Rendering
         private static (float pitch, BarrelKind kind) AddElevation(Transform root, string modelId = null)
         {
             var turret = Find(root, TurretPattern);
-            if (turret == null || turret.Find(ElevationName) != null) return (0f, BarrelKind.None);
+            if (turret == null) return (0f, BarrelKind.None);
+            // Play-test 13 follow-up (lane B): a model may bring its own pivot, built at the gun's trunnion with the whole
+            // cradle on it (the gun towers). It is measured like a built one, not rebuilt; a mesh that is merely named
+            // Elevation (no children) is left as before.
+            var baked = turret.Find(ElevationName);
+            if (baked != null) return baked.childCount > 0 ? MeasureBaked(turret, baked) : (0f, BarrelKind.None);
             if (modelId != null && SideLaunchers.Contains(modelId)) AddSideErector(turret);
             var parts = new List<Transform>();
             Transform muzzle = null;
@@ -1206,13 +1219,9 @@ namespace MachineBrigade.Game.Rendering
             if (!launcherRides) parts.RemoveAll(p => p.name.StartsWith("Muzzle_missile", StringComparison.OrdinalIgnoreCase));
 
             Bounds? box = null;
-            var kind = BarrelKind.Gun;
+            var kind = KindOf(parts);
             foreach (var part in parts)
             {
-                var name = part.name.ToLowerInvariant();
-                if (name.StartsWith("mortar_tube")) kind = BarrelKind.Mortar;
-                else if (kind == BarrelKind.Gun && (name.StartsWith("tubes") || name.StartsWith("rocket_tubes") || name.StartsWith("pod") ||
-                                                    name.StartsWith("launcher")) && !HasCannon(parts)) kind = BarrelKind.Launcher;
                 foreach (var filter in part.GetComponentsInChildren<MeshFilter>(true))
                 {
                     if (filter.sharedMesh == null) continue;
@@ -1267,6 +1276,40 @@ namespace MachineBrigade.Game.Rendering
             }
             if (lo.x > hi.x) return new Vector3(0f, 1.5f, 1f);
             return new Vector3((lo.x + hi.x) * 0.5f, hi.y + 0.15f, Mathf.Lerp((lo.z + hi.z) * 0.5f, hi.z, 0.6f));
+        }
+
+        /// <summary>A barrel group's kind from its parts' names: a mortar tube, a launcher (tubes, pods, a box, no cannon), else a gun.</summary>
+        private static BarrelKind KindOf(List<Transform> parts)
+        {
+            var kind = BarrelKind.Gun;
+            foreach (var part in parts)
+            {
+                var name = part.name.ToLowerInvariant();
+                if (name.StartsWith("mortar_tube")) kind = BarrelKind.Mortar;
+                else if (kind == BarrelKind.Gun && (name.StartsWith("tubes") || name.StartsWith("rocket_tubes") || name.StartsWith("pod") ||
+                                                    name.StartsWith("launcher")) && !HasCannon(parts)) kind = BarrelKind.Launcher;
+            }
+            return kind;
+        }
+
+        /// <summary>
+        /// Play-test 13 follow-up (lane B): a pivot the model brings (an `Elevation` node under the turret, at the trunnion): the
+        /// barrel's drawn pitch, from its Muzzle_main as AddElevation measures it, and its kind from the parts on it.
+        /// </summary>
+        private static (float pitch, BarrelKind kind) MeasureBaked(Transform turret, Transform elevation)
+        {
+            var parts = new List<Transform>();
+            Transform muzzle = null;
+            foreach (Transform child in elevation)
+            {
+                parts.Add(child);
+                if (muzzle == null && child.name.StartsWith("Muzzle_main", StringComparison.OrdinalIgnoreCase)) muzzle = child;
+            }
+            var kind = KindOf(parts);
+            if (muzzle == null) return (0f, kind);
+            var aim = turret.InverseTransformPoint(muzzle.position) - elevation.localPosition;
+            if (Aligned(muzzle)) aim = turret.InverseTransformDirection(muzzle.forward);
+            return (Mathf.Atan2(aim.y, Mathf.Max(0.01f, new Vector2(aim.x, aim.z).magnitude)) * Mathf.Rad2Deg, kind);
         }
 
         private static bool HasCannon(List<Transform> parts)

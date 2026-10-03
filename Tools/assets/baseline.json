@@ -5057,6 +5057,46 @@
    "changes": [
     "behemoth: fileBytes 1,289,172 -> 1,289,284 (+0.0%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "gun_turret",
+    "gun_turret_a",
+    "gun_turret_b",
+    "heavy_turret",
+    "heavy_turret_a",
+    "heavy_turret_b",
+    "aa_turret",
+    "aa_turret_a",
+    "aa_turret_b",
+    "c_ram",
+    "c_ram_a",
+    "aa_gun_tower",
+    "heavy_flak_tower",
+    "at_gun_emplacement",
+    "artillery_emplacement",
+    "artillery_emplacement_a",
+    "artillery_emplacement_b",
+    "coastal_battery",
+    "recoilless_gun_tower",
+    "guard_tower",
+    "guard_tower_a",
+    "guard_tower_b",
+    "mg_bunker",
+    "mg_bunker_a",
+    "mg_bunker_b",
+    "bulwark_post",
+    "laser_ad_station",
+    "headquarters",
+    "manpads_tower"
+   ],
+   "reason": "play-test 13 follow-up: baked Elevation pivot at the trunnion",
+   "changes": [
+    "bulwark_post: fileBytes 289,632 -> 289,716 (+0.0%); structure changed",
+    "mg_bunker_a: fileBytes 305,136 -> 305,256 (+0.0%); structure changed",
+    "mg_bunker_b: fileBytes 231,416 -> 231,500 (+0.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -5211,13 +5251,13 @@
   },
   "aa_gun_tower": {
    "file": "aa_gun_tower.glb",
-   "fileBytes": 344052,
-   "sha1": "e896f06174ddd30d",
+   "fileBytes": 344140,
+   "sha1": "648c53979b9ea9f4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_mesh_quantization"
    ],
-   "nodes": 47,
+   "nodes": 48,
    "meshes": 45,
    "materials": 12,
    "animations": 0,
@@ -5259,7 +5299,7 @@
     1.591,
     0.0
    ],
-   "structureHash": "c1acd1ff442e57f4",
+   "structureHash": "480a25e71417413d",
    "color0": {
     "mean": 0.6192,
     "min": 0.0621,
@@ -5294,6 +5334,7 @@
     "Clips",
     "Cradle",
     "Crates",
+    "Elevation",
     "Elevation_arc",
     "Extinguishers",
     "Field_phone",
@@ -5493,14 +5534,14 @@
   },
   "aa_turret": {
    "file": "aa_turret.glb",
-   "fileBytes": 306680,
-   "sha1": "c95eab893d1ccbf6",
+   "fileBytes": 306780,
+   "sha1": "9d277d6e5c1e6584",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 54,
+   "nodes": 55,
    "meshes": 50,
    "materials": 15,
    "animations": 0,
@@ -5542,7 +5583,7 @@
     1.586,
     -0.011
    ],
-   "structureHash": "ca2671d70f80a6d8",
+   "structureHash": "cb4f3a15d40d6530",
    "color0": {
     "mean": 0.6169,
     "min": 0.0751,
@@ -5586,6 +5627,7 @@
     "Camo_net_garnish",
     "Casings",
     "Duckboards",
+    "Elevation",
     "Extinguisher",
     "Glass",
     "Gun_casing_chutes",
@@ -5640,14 +5682,14 @@
   },
   "aa_turret_a": {
    "file": "aa_turret_a.glb",
-   "fileBytes": 344284,
-   "sha1": "e781d9b10d728a8f",
+   "fileBytes": 345192,
+   "sha1": "44f1c3ef22b39fb6",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 57,
+   "nodes": 58,
    "meshes": 53,
    "materials": 15,
    "animations": 0,
@@ -5689,9 +5731,9 @@
     1.586,
     0.002
    ],
-   "structureHash": "484e7e818fa524e7",
+   "structureHash": "b65de8c8de6a544d",
    "color0": {
-    "mean": 0.6122,
+    "mean": 0.6123,
     "min": 0.0751,
     "max": 1.0,
     "p05": 0.1311,
@@ -5739,6 +5781,7 @@
     "Casings",
     "Cupola",
     "Duckboards",
+    "Elevation",
     "Extinguisher",
     "Glass",
     "Gun_sleeves",
@@ -5792,13 +5835,13 @@
   },
   "aa_turret_b": {
    "file": "aa_turret_b.glb",
-   "fileBytes": 209144,
-   "sha1": "764188a578d52819",
+   "fileBytes": 209228,
+   "sha1": "afd69cae5d20622b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_mesh_quantization"
    ],
-   "nodes": 45,
+   "nodes": 46,
    "meshes": 38,
    "materials": 20,
    "animations": 0,
@@ -5840,7 +5883,7 @@
     1.406,
     -0.052
    ],
-   "structureHash": "df0d8d524146547c",
+   "structureHash": "9c21c9b8fdb14e00",
    "color0": {
     "mean": 0.6579,
     "min": 0.2536,
@@ -5877,6 +5920,7 @@
     "Camo_garnish",
     "Camo_net",
     "Duckboards",
+    "Elevation",
     "Glass",
     "Ground_foliagedark",
     "Ground_foliagelight",
@@ -9250,13 +9294,13 @@
   },
   "artillery_emplacement": {
    "file": "artillery_emplacement.glb",
-   "fileBytes": 292016,
-   "sha1": "abcc81871313c0f4",
+   "fileBytes": 292104,
+   "sha1": "e7e1335f0c751805",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_mesh_quantization"
    ],
-   "nodes": 47,
+   "nodes": 48,
    "meshes": 43,
    "materials": 17,
    "animations": 0,
@@ -9298,7 +9342,7 @@
     1.59,
     0.748
    ],
-   "structureHash": "9cdeccbf4387933c",
+   "structureHash": "dc9a7aa6b8a21b36",
    "color0": {
     "mean": 0.6316,
     "min": 0.0656,
@@ -9338,6 +9382,7 @@
     "Charge_cases",
     "Charges",
     "Cradle",
+    "Elevation",
     "Equilibrators",
     "Extinguisher",
     "Floor",
@@ -9387,13 +9432,13 @@
   },
   "artillery_emplacement_a": {
    "file": "artillery_emplacement_a.glb",
-   "fileBytes": 379764,
-   "sha1": "5faaa457058cb676",
+   "fileBytes": 379856,
+   "sha1": "aea606af0193d28d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_mesh_quantization"
    ],
-   "nodes": 72,
+   "nodes": 73,
    "meshes": 67,
    "materials": 22,
    "animations": 0,
@@ -9435,7 +9480,7 @@
     1.937,
     1.531
    ],
-   "structureHash": "2c3e1dd57d7cd144",
+   "structureHash": "046a21d47e208851",
    "color0": {
     "mean": 0.6942,
     "min": 0.2915,
@@ -9483,6 +9528,7 @@
     "Charge_cans",
     "Command_box",
     "Cradle",
+    "Elevation",
     "Equilibrators",
     "Firing_base",
     "Flag",
@@ -9550,13 +9596,13 @@
   },
   "artillery_emplacement_b": {
    "file": "artillery_emplacement_b.glb",
-   "fileBytes": 345688,
-   "sha1": "7d3e6c5ac1719650",
+   "fileBytes": 345784,
+   "sha1": "ef3e513fb680fbe0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_mesh_quantization"
    ],
-   "nodes": 56,
+   "nodes": 57,
    "meshes": 52,
    "materials": 21,
    "animations": 0,
@@ -9598,7 +9644,7 @@
     1.603,
     0.081
    ],
-   "structureHash": "b5cfa5c99c0fa310",
+   "structureHash": "7f350d165e958aae",
    "color0": {
     "mean": 0.7133,
     "min": 0.3443,
@@ -9642,6 +9688,7 @@
     "Crane_base",
     "Crane_truss",
     "Elevating_screw",
+    "Elevation",
     "Floor",
     "Ground_charred",
     "Ground_foliagedark",
@@ -9926,13 +9973,13 @@
   },
   "at_gun_emplacement": {
    "file": "at_gun_emplacement.glb",
-   "fileBytes": 293200,
-   "sha1": "c59c12c41356564b",
+   "fileBytes": 293320,
+   "sha1": "5e7406140af5dece",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_mesh_quantization"
    ],
-   "nodes": 47,
+   "nodes": 48,
    "meshes": 45,
    "materials": 16,
    "animations": 0,
@@ -9974,7 +10021,7 @@
     0.97,
     -0.006
    ],
-   "structureHash": "de069505ff170170",
+   "structureHash": "053372be97b475cd",
    "color0": {
     "mean": 0.5775,
     "min": 0.057,
@@ -10012,6 +10059,7 @@
     "Carriage",
     "Cradle",
     "Crates",
+    "Elevation",
     "Handwheels",
     "Helmets",
     "Hubs",
@@ -14375,14 +14423,14 @@
   },
   "bulwark_post": {
    "file": "bulwark_post.glb",
-   "fileBytes": 289632,
-   "sha1": "ed6f8edee142bba5",
+   "fileBytes": 289716,
+   "sha1": "dc9d3f930da875af",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 36,
+   "nodes": 37,
    "meshes": 34,
    "materials": 15,
    "animations": 0,
@@ -14424,7 +14472,7 @@
     1.193,
     0.046
    ],
-   "structureHash": "15c10d7aa1dbc7df",
+   "structureHash": "78b0aff88071ee6f",
    "color0": {
     "mean": 0.6294,
     "min": 0.0638,
@@ -14457,6 +14505,7 @@
     "Berm",
     "Casings",
     "Cradle",
+    "Elevation",
     "Flag",
     "Flag_pole",
     "Floor_boards",
@@ -14953,14 +15002,14 @@
   },
   "c_ram": {
    "file": "c_ram.glb",
-   "fileBytes": 363604,
-   "sha1": "7066b3c0893c7dbc",
+   "fileBytes": 363616,
+   "sha1": "8443f57ad02e7e87",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 66,
+   "nodes": 67,
    "meshes": 61,
    "materials": 18,
    "animations": 0,
@@ -14971,7 +15020,7 @@
    "materialSlots": 61,
    "materialsUsed": 18,
    "triangles": 5930,
-   "vertices": 8220,
+   "vertices": 8218,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -15002,7 +15051,7 @@
     2.675,
     -0.208
    ],
-   "structureHash": "7d97724a113ec671",
+   "structureHash": "55ec5850bde2e2b5",
    "color0": {
     "mean": 0.5984,
     "min": 0.0648,
@@ -15043,6 +15092,7 @@
     "Chassis",
     "Deck",
     "Deck_plates",
+    "Elevation",
     "Exhaust",
     "Exhaust_caps",
     "Exhaust_mufflers",
@@ -15113,14 +15163,14 @@
   },
   "c_ram_a": {
    "file": "c_ram_a.glb",
-   "fileBytes": 365664,
-   "sha1": "15a293f2c7e9b7c6",
+   "fileBytes": 365680,
+   "sha1": "9fada508ef1e790a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 69,
+   "nodes": 70,
    "meshes": 64,
    "materials": 19,
    "animations": 0,
@@ -15131,7 +15181,7 @@
    "materialSlots": 64,
    "materialsUsed": 19,
    "triangles": 5972,
-   "vertices": 8185,
+   "vertices": 8183,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -15162,7 +15212,7 @@
     3.04,
     -0.208
    ],
-   "structureHash": "f92f31b3d1bf44ca",
+   "structureHash": "5ae181e890b62fd0",
    "color0": {
     "mean": 0.6015,
     "min": 0.0648,
@@ -15203,6 +15253,7 @@
     "Chassis",
     "Deck",
     "Deck_plates",
+    "Elevation",
     "Exhaust",
     "Exhaust_caps",
     "Exhaust_mufflers",
@@ -16699,14 +16750,14 @@
   },
   "coastal_battery": {
    "file": "coastal_battery.glb",
-   "fileBytes": 350788,
-   "sha1": "e89d5b87662e7b51",
+   "fileBytes": 350892,
+   "sha1": "c9f2808a308b767a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 65,
+   "nodes": 66,
    "meshes": 61,
    "materials": 20,
    "animations": 0,
@@ -16748,7 +16799,7 @@
     2.237,
     0.62
    ],
-   "structureHash": "e09f2160239fb703",
+   "structureHash": "1bca0eb0833d3406",
    "color0": {
     "mean": 0.6431,
     "min": 0.1939,
@@ -16795,6 +16846,7 @@
     "Door_slots",
     "Doors",
     "Drain_slots",
+    "Elevation",
     "Extinguishers",
     "Glass",
     "Glass.001",
@@ -32828,14 +32880,14 @@
   },
   "guard_tower": {
    "file": "guard_tower.glb",
-   "fileBytes": 356732,
-   "sha1": "8544575d57562bf0",
+   "fileBytes": 356880,
+   "sha1": "f43037a3752c5168",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 58,
+   "nodes": 59,
    "meshes": 53,
    "materials": 13,
    "animations": 0,
@@ -32877,7 +32929,7 @@
     5.793,
     0.0
    ],
-   "structureHash": "86b9166aaf4bedbc",
+   "structureHash": "cc20cec3668f7c3d",
    "color0": {
     "mean": 0.6968,
     "min": 0.2476,
@@ -32930,6 +32982,7 @@
     "Cabin_inner",
     "Cabin_lit",
     "Door",
+    "Elevation",
     "Fittings",
     "Hatch_frame",
     "Hatch_lid",
@@ -32980,14 +33033,14 @@
   },
   "guard_tower_a": {
    "file": "guard_tower_a.glb",
-   "fileBytes": 381844,
-   "sha1": "7d78283977716e51",
+   "fileBytes": 381896,
+   "sha1": "1168aade47031eb4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 66,
+   "nodes": 67,
    "meshes": 60,
    "materials": 15,
    "animations": 0,
@@ -32998,7 +33051,7 @@
    "materialSlots": 60,
    "materialsUsed": 15,
    "triangles": 5942,
-   "vertices": 8838,
+   "vertices": 8835,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -33029,9 +33082,9 @@
     6.84,
     0.0
    ],
-   "structureHash": "e012ec4b069d98ea",
+   "structureHash": "43b12c3104c708df",
    "color0": {
-    "mean": 0.7028,
+    "mean": 0.7029,
     "min": 0.2476,
     "max": 1.0,
     "p05": 0.3853,
@@ -33085,6 +33138,7 @@
     "Cabin_inner",
     "Cabin_lit",
     "Door",
+    "Elevation",
     "Fittings",
     "Hatch_frame",
     "Hatch_lid",
@@ -33141,14 +33195,14 @@
   },
   "guard_tower_b": {
    "file": "guard_tower_b.glb",
-   "fileBytes": 380956,
-   "sha1": "66802f899582b526",
+   "fileBytes": 381080,
+   "sha1": "64cfeaae5aac07d8",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 64,
+   "nodes": 65,
    "meshes": 60,
    "materials": 16,
    "animations": 0,
@@ -33190,7 +33244,7 @@
     2.255,
     0.348
    ],
-   "structureHash": "e682aca382429993",
+   "structureHash": "522f26775a527cbc",
    "color0": {
     "mean": 0.6727,
     "min": 0.2744,
@@ -33237,6 +33291,7 @@
     "Door_frames",
     "Door_slots",
     "Doors",
+    "Elevation",
     "Extinguishers",
     "Feed_chute",
     "Fittings",
@@ -33437,14 +33492,14 @@
   },
   "gun_turret": {
    "file": "gun_turret.glb",
-   "fileBytes": 312828,
-   "sha1": "515c209c9493825c",
+   "fileBytes": 312960,
+   "sha1": "455b542adc21a20b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 52,
+   "nodes": 53,
    "meshes": 49,
    "materials": 17,
    "animations": 0,
@@ -33486,7 +33541,7 @@
     2.0,
     1.506
    ],
-   "structureHash": "28c669928f680c45",
+   "structureHash": "2a929b229dca9c87",
    "color0": {
     "mean": 0.6638,
     "min": 0.2016,
@@ -33521,6 +33576,7 @@
     "Base_ties",
     "Coax",
     "Deck_joints",
+    "Elevation",
     "Entry",
     "Extinguishers",
     "Glass",
@@ -33577,14 +33633,14 @@
   },
   "gun_turret_a": {
    "file": "gun_turret_a.glb",
-   "fileBytes": 323816,
-   "sha1": "08b2a5fbb3d55c81",
+   "fileBytes": 323952,
+   "sha1": "df6f5c8a5c3c75c3",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 52,
+   "nodes": 53,
    "meshes": 49,
    "materials": 17,
    "animations": 0,
@@ -33626,7 +33682,7 @@
     2.0,
     2.156
    ],
-   "structureHash": "44ffb29790d32e97",
+   "structureHash": "79d683d4837353e5",
    "color0": {
     "mean": 0.666,
     "min": 0.2016,
@@ -33660,6 +33716,7 @@
     "Base_ties",
     "Coax",
     "Deck_joints",
+    "Elevation",
     "Entry",
     "Extinguishers",
     "Glass",
@@ -33715,14 +33772,14 @@
   },
   "gun_turret_b": {
    "file": "gun_turret_b.glb",
-   "fileBytes": 277524,
-   "sha1": "20b1b848b5ad015e",
+   "fileBytes": 277684,
+   "sha1": "06bf792a3e081527",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 58,
+   "nodes": 59,
    "meshes": 52,
    "materials": 16,
    "animations": 0,
@@ -33764,9 +33821,9 @@
     1.91,
     0.649
    ],
-   "structureHash": "cd38e07b1bc985bc",
+   "structureHash": "31bee76f4d806639",
    "color0": {
-    "mean": 0.6533,
+    "mean": 0.6532,
     "min": 0.2016,
     "max": 1.0,
     "p05": 0.3002,
@@ -33804,6 +33861,7 @@
     "Brake_ports",
     "Coax",
     "Deck_joints",
+    "Elevation",
     "Entry",
     "Extinguishers",
     "Feed_chute",
@@ -34144,14 +34202,14 @@
   },
   "headquarters": {
    "file": "headquarters.glb",
-   "fileBytes": 1161968,
-   "sha1": "ccce64717969e896",
+   "fileBytes": 1162060,
+   "sha1": "2aee986a6746226e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 149,
+   "nodes": 150,
    "meshes": 136,
    "materials": 22,
    "animations": 0,
@@ -34193,9 +34251,9 @@
     4.76,
     0.35
    ],
-   "structureHash": "27f0651f7d763cbb",
+   "structureHash": "74bcca11dfbcd012",
    "color0": {
-    "mean": 0.6545,
+    "mean": 0.6546,
     "min": 0.1993,
     "max": 1.0,
     "p05": 0.2915,
@@ -34270,6 +34328,7 @@
     "Drums",
     "Edge_light_bases",
     "Edge_lights",
+    "Elevation",
     "Fascia",
     "Flag",
     "Flag_pole",
@@ -34949,13 +35008,13 @@
   },
   "heavy_flak_tower": {
    "file": "heavy_flak_tower.glb",
-   "fileBytes": 346772,
-   "sha1": "15e7bc567e7f1cda",
+   "fileBytes": 346880,
+   "sha1": "533f7555742c7431",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_mesh_quantization"
    ],
-   "nodes": 45,
+   "nodes": 46,
    "meshes": 43,
    "materials": 15,
    "animations": 0,
@@ -34997,7 +35056,7 @@
     1.548,
     0.247
    ],
-   "structureHash": "a9ac4e28d701cbd1",
+   "structureHash": "88bc7ece185ec7dc",
    "color0": {
     "mean": 0.6065,
     "min": 0.0601,
@@ -35030,6 +35089,7 @@
     "Carriage",
     "Cradle",
     "Crate_bands",
+    "Elevation",
     "Extinguishers",
     "Field_phone",
     "Floor_planks",
@@ -35759,14 +35819,14 @@
   },
   "heavy_turret": {
    "file": "heavy_turret.glb",
-   "fileBytes": 357648,
-   "sha1": "0e0853551f70dd95",
+   "fileBytes": 357740,
+   "sha1": "3d16ba437d2078bc",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 68,
+   "nodes": 69,
    "meshes": 61,
    "materials": 17,
    "animations": 0,
@@ -35808,7 +35868,7 @@
     3.01,
     1.125
    ],
-   "structureHash": "c2ef96a1862db197",
+   "structureHash": "9c1866c865fc8083",
    "color0": {
     "mean": 0.6665,
     "min": 0.1621,
@@ -35856,6 +35916,7 @@
     "Door_porch",
     "Door_slots",
     "Doors",
+    "Elevation",
     "Extinguishers",
     "Glass",
     "Grille_frames",
@@ -35920,14 +35981,14 @@
   },
   "heavy_turret_a": {
    "file": "heavy_turret_a.glb",
-   "fileBytes": 376824,
-   "sha1": "bb4b5eae64b87671",
+   "fileBytes": 376948,
+   "sha1": "9ad0620fd6a819c2",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 79,
+   "nodes": 80,
    "meshes": 71,
    "materials": 19,
    "animations": 0,
@@ -35969,7 +36030,7 @@
     3.235,
     2.325
    ],
-   "structureHash": "a3cf109ba196e99d",
+   "structureHash": "ddabfd97e499caf9",
    "color0": {
     "mean": 0.6763,
     "min": 0.1621,
@@ -36025,6 +36086,7 @@
     "Door_porch",
     "Door_slots",
     "Doors",
+    "Elevation",
     "Extinguishers",
     "Glass",
     "Hatches",
@@ -36092,14 +36154,14 @@
   },
   "heavy_turret_b": {
    "file": "heavy_turret_b.glb",
-   "fileBytes": 368912,
-   "sha1": "8d864e058c59a886",
+   "fileBytes": 369000,
+   "sha1": "e0b1aaae6ae1fc4c",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 80,
+   "nodes": 81,
    "meshes": 69,
    "materials": 16,
    "animations": 0,
@@ -36141,7 +36203,7 @@
     3.01,
     1.125
    ],
-   "structureHash": "2d0f56ee3fdf4e93",
+   "structureHash": "01c579fc5e9361cf",
    "color0": {
     "mean": 0.6835,
     "min": 0.1621,
@@ -36204,6 +36266,7 @@
     "Door_porch",
     "Door_slots",
     "Doors",
+    "Elevation",
     "Extinguishers",
     "Glass",
     "Grille_frames",
@@ -40883,14 +40946,14 @@
   },
   "laser_ad_station": {
    "file": "laser_ad_station.glb",
-   "fileBytes": 366932,
-   "sha1": "b0e83a0145611082",
+   "fileBytes": 367000,
+   "sha1": "dbebc38347dc20bb",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 61,
+   "nodes": 62,
    "meshes": 58,
    "materials": 14,
    "animations": 0,
@@ -40932,7 +40995,7 @@
     2.345,
     -0.0
    ],
-   "structureHash": "e731a95c46ef0c6b",
+   "structureHash": "f80d63af4767f333",
    "color0": {
     "mean": 0.5573,
     "min": 0.0623,
@@ -40970,6 +41033,7 @@
     "Door_frames",
     "Door_slots",
     "Doors",
+    "Elevation",
     "Extinguishers",
     "Fins",
     "Gas_bottles",
@@ -42931,13 +42995,13 @@
   },
   "manpads_tower": {
    "file": "manpads_tower.glb",
-   "fileBytes": 185776,
-   "sha1": "e676be8dcc34470f",
+   "fileBytes": 185872,
+   "sha1": "95a9045a6389d1e9",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_mesh_quantization"
    ],
-   "nodes": 34,
+   "nodes": 35,
    "meshes": 30,
    "materials": 12,
    "animations": 0,
@@ -42979,7 +43043,7 @@
     1.14,
     0.0
    ],
-   "structureHash": "02833f969d744c63",
+   "structureHash": "0cceed485d818312",
    "color0": {
     "mean": 0.6734,
     "min": 0.2599,
@@ -42994,10 +43058,13 @@
     ],
     "muzzle": [
      "Muzzle_main",
-     "Muzzle_missile"
+     "Muzzle_missile",
+     "Muzzle_missile.001"
     ]
    },
-   "runtimeSuffixed": [],
+   "runtimeSuffixed": [
+    "Muzzle_missile.001"
+   ],
    "nodeNames": [
     "Ammo_boxes",
     "Antennas",
@@ -43008,6 +43075,7 @@
     "Binoculars",
     "Camo_net",
     "Camo_net_garnish",
+    "Elevation",
     "Floor",
     "Glass",
     "Grip_stocks",
@@ -43016,7 +43084,7 @@
     "Missile_cases",
     "Muzzle_main",
     "Muzzle_missile",
-    "Muzzle_missile__001",
+    "Muzzle_missile.001",
     "Net_poles",
     "Pedestal",
     "Radio_box",
@@ -43037,7 +43105,9 @@
    "category": "structure",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "runtime names with a Blender suffix: Muzzle_missile.001"
+   ],
    "units": [
     "manpads_tower"
    ],
@@ -43481,14 +43551,14 @@
   },
   "mg_bunker": {
    "file": "mg_bunker.glb",
-   "fileBytes": 241444,
-   "sha1": "b7e7e513ff7086ea",
+   "fileBytes": 241540,
+   "sha1": "7ad5ba24f4d7b63d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 45,
+   "nodes": 46,
    "meshes": 41,
    "materials": 17,
    "animations": 0,
@@ -43530,7 +43600,7 @@
     1.603,
     0.138
    ],
-   "structureHash": "ca28bd1322f0137a",
+   "structureHash": "fa4d8d4ba0a23324",
    "color0": {
     "mean": 0.63,
     "min": 0.1846,
@@ -43570,6 +43640,7 @@
     "Door_slots",
     "Door_well",
     "Doors",
+    "Elevation",
     "Embrasure",
     "Embrasure_slot",
     "Glass",
@@ -43617,14 +43688,14 @@
   },
   "mg_bunker_a": {
    "file": "mg_bunker_a.glb",
-   "fileBytes": 305136,
-   "sha1": "49d4292092695173",
+   "fileBytes": 305256,
+   "sha1": "62ec255cb6eb72e3",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 50,
+   "nodes": 51,
    "meshes": 46,
    "materials": 17,
    "animations": 0,
@@ -43666,7 +43737,7 @@
     1.603,
     0.438
    ],
-   "structureHash": "6150afc52df325a5",
+   "structureHash": "fb8624012b3066a7",
    "color0": {
     "mean": 0.6443,
     "min": 0.1846,
@@ -43710,6 +43781,7 @@
     "Door_slots",
     "Door_well",
     "Doors",
+    "Elevation",
     "Embrasure",
     "Embrasure_slot",
     "Glass",
@@ -43760,13 +43832,13 @@
   },
   "mg_bunker_b": {
    "file": "mg_bunker_b.glb",
-   "fileBytes": 231416,
-   "sha1": "cb5dda2b16391f5d",
+   "fileBytes": 231500,
+   "sha1": "a343a0efa251a90b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_mesh_quantization"
    ],
-   "nodes": 44,
+   "nodes": 45,
    "meshes": 42,
    "materials": 18,
    "animations": 0,
@@ -43808,7 +43880,7 @@
     1.63,
     0.168
    ],
-   "structureHash": "532a67fa9db2b768",
+   "structureHash": "8f8631c1c051399f",
    "color0": {
     "mean": 0.6338,
     "min": 0.2041,
@@ -43836,6 +43908,7 @@
     "Door_slots",
     "Door_well",
     "Doors",
+    "Elevation",
     "Embrasure",
     "Embrasure_slot",
     "Extinguishers",
@@ -50896,13 +50969,13 @@
   },
   "recoilless_gun_tower": {
    "file": "recoilless_gun_tower.glb",
-   "fileBytes": 235796,
-   "sha1": "8e9adbc9f708fd4f",
+   "fileBytes": 235920,
+   "sha1": "04b7a81f2242e14e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_mesh_quantization"
    ],
-   "nodes": 36,
+   "nodes": 37,
    "meshes": 34,
    "materials": 14,
    "animations": 0,
@@ -50944,7 +51017,7 @@
     1.46,
     0.021
    ],
-   "structureHash": "633113fe7d315269",
+   "structureHash": "8a2ebdcea17a002a",
    "color0": {
     "mean": 0.6324,
     "min": 0.2149,
@@ -50975,6 +51048,7 @@
     "Bag_ties",
     "Base",
     "Cradle",
+    "Elevation",
     "Flag",
     "Flag_pole",
     "Floor",

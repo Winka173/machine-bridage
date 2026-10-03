@@ -88,6 +88,12 @@
     "Aiming_posts",
     "Flag"
    ]
+  },
+  {
+   "feature": "gun elevation pivot at the trunnion carrying barrels, cradle / mantlet and muzzles (play-test 13 follow-up)",
+   "nodes": [
+    "Elevation"
+   ]
   }
  ],
  "class_parts": [

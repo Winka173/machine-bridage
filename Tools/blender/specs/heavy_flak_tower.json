@@ -15,7 +15,8 @@
   {"feature": "layers' seats, sight boxes, handwheels", "nodes": ["Seats", "Sight_box", "Glass", "Handwheels"]},
   {"feature": "ammunition boxes in the wall's niches, ready shells in racks, spent cases", "nodes": ["Ammo_boxes", "Crate_bands", "Shells", "Shell_tips", "Shell_racks"]},
   {"feature": "the optical rangefinder on its tripod, a field telephone, a whip antenna and its cable", "nodes": ["Rangefinder", "Rangefinder_tripod", "Field_phone", "Antenna", "Kit_cables"]},
-  {"feature": "crew kit: helmets, jerrycan, extinguisher, shovel and pick; stones round the berm", "nodes": ["Helmets", "Jerrycans", "Extinguishers", "Tools", "Stones"]}
+  {"feature": "crew kit: helmets, jerrycan, extinguisher, shovel and pick; stones round the berm", "nodes": ["Helmets", "Jerrycans", "Extinguishers", "Tools", "Stones"]},
+  {"feature": "gun elevation pivot at the trunnion carrying barrels, cradle and muzzles (play-test 13 follow-up)", "nodes": ["Elevation"]}
  ],
  "class_parts": ["base", "walls", "roof (the turning mount)", "antenna"],
  "weapons": [{"weapon": "flak_88", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]}],

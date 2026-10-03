@@ -14,7 +14,8 @@
   {"feature": "the front shield plates (Team) with rivets and struts", "nodes": ["Shield", "Shield_struts", "Kit_rivets"]},
   {"feature": "the layer's and trainer's seats and reflex sights", "nodes": ["Seats", "Sights", "Glass"]},
   {"feature": "the fire-control radar dish on a tripod mast with its cable", "nodes": ["Radar_post", "Radar_box", "Radar_dish", "Kit_cables"]},
-  {"feature": "ready-use clip racks, crates, spent cases, field telephone, whip antenna, rolled net, extinguisher, tool box", "nodes": ["Clip_racks", "Crates", "Spent_cases", "Field_phone", "Antennas", "Tarp", "Extinguishers", "Toolbox"]}
+  {"feature": "ready-use clip racks, crates, spent cases, field telephone, whip antenna, rolled net, extinguisher, tool box", "nodes": ["Clip_racks", "Crates", "Spent_cases", "Field_phone", "Antennas", "Tarp", "Extinguishers", "Toolbox"]},
+  {"feature": "gun elevation pivot at the trunnion carrying barrels, cradle and muzzles (play-test 13 follow-up)", "nodes": ["Elevation"]}
  ],
  "class_parts": ["base", "walls", "roof (the turning mount)", "antenna"],
  "weapons": [{"weapon": "bofors_l70", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]}],

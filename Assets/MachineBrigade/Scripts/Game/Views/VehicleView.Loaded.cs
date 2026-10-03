@@ -19,7 +19,7 @@ namespace MachineBrigade.Game.Views
     /// </summary>
     public sealed partial class VehicleView
     {
-        private static readonly Regex RoundNode = new(@"^(missile|round|rocket|cruise_missile)_?(\d+)", RegexOptions.IgnoreCase);
+        private static Regex RoundNode => ModelLibrary.RoundPattern;
 
         /// <summary>The modelled rounds, lowest index first; each is the nodes of one round.</summary>
         private List<List<Transform>> _loadedRounds;
