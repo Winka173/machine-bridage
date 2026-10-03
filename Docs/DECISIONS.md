@@ -19146,3 +19146,55 @@ carries its one-line reasoning. Written blind: no Unity run, no tests run (owner
   turretTurnRate cannot be 0 (Guard.Positive), so it stays and is unused. MLRS / Grad / Smerch packs keep traversing (real
   turntables).
 - Not merged: `git merge lead/integration` was refused by the session's permission guard; the lead merges.
+
+
+## Play-test 13 follow-up (lane A)
+
+Branch `feature/pt13-a2` (from `lead/integration` f450ba37). View side of lane C's hooks. Written blind (no Unity run, no
+tests run); compile-checked with dotnet over Sim + Game + Editor and MissileFlightTests (scratch project referencing the Unity
+and package DLLs), 0 errors.
+
+- **Aircraft entry (977f4e96).** The Sim now spawns an aircraft at its cruise speed, so `VehicleView` draws it where the Sim has
+  it from the first frame: the horizontal run-in from behind (`above^2 x 80 / 35 m`, gentle `above x 42 / 24 m`) is gone. A run
+  that shrinks to nothing adds its own speed to the unit's (the 2-4x race-in, then a brake), and no entry that converges on the
+  Sim's position can move at the unit's own speed, so none is kept. Only the short settle from 8-10 m above the flight level
+  stays (2.6 s; 3.2 s eased for the range's In clip; the range still frames and fires after it). A tiered boss already draws at
+  the Sim's height from the first frame (`JoinTiers` runs in `Bosses.Joined` before `VehicleSpawned`; `_tierHeight` starts at
+  `Sim.Height`), so `tiers.enterLow` bosses appear straight at their low level with no descent; nothing else in the view draws
+  an orbit or descent.
+- **Flight profiles (5f814eba).** `ProjectilePool.FlyLoft` / `FlyBallistic` turn the round just launched onto a cubic path:
+  `From`, `From + Out` (the climb out of the tube or barrel), `To + up x Rise - ahead x Back` (kept on the live aim point, so
+  homing and diversions still work), `To`. The inner points stand at `peak / 0.75`, so the path peaks at the Sim's own height
+  (`ArcShare x ground distance`, as `CombatSystem.RoundHeight`; a C-RAM burst meets the round where it is drawn). The path
+  still starts and ends on `From` / `To` over the same duration and ShotClock start, so it lands on the Sim's impact tick and
+  point; only its shape changed. A 16-step length table paces it: a Loft round evenly along its length (no slow dive), a
+  Ballistic round evenly over the ground (fast off the barrel, slow over the top, plunging; with no barrel the curve is exactly
+  the Sim's parabola, pinned by a test).
+  - Loft (Patriot / PAC-3, 48N6, Tamir, NSM, Typhon, Kalibr VLS, top-attack and lofted missiles): climbs out along its tube at
+    least 45 deg (12 deg off an aircraft; a VLS cell near straight up, leaning 4 % of the range toward the target so its heading
+    is defined), arcs over, dives about 55-60 deg (`LoftDive` 0.18). Winged loitering drones fly it too (25 deg off the rack);
+    FPV quadcopters keep their own weaving flight.
+  - Ballistic (artillery rockets, the bosses' Grad / Smerch pods now that `artillery` reads `Flight`, the Iskander, lobbed
+    shells): leaves along the laid barrel, tubes or erector (inner point 0.15-0.6 of the range out, i.e. 32-68 deg at the Sim's
+    0.28 share), comes down at least as steeply as it went up (second point at most a third back; a low barrel's round falls
+    steeper than it rose, as a real shell does). Replaces the barrel-angle arc (`ArcFor`, removed) and the Iskander's 0.45 arc,
+    which put the drawn round metres off the Sim's.
+  - Direct (ATGMs, rocket pods, guns): the flat run off the rail (`Leave`), hump now the Sim's 0.04 / 0.02 share (was 0.06 of
+    the 3D distance). Trail and smoke unchanged (puff spacing follows the longer path).
+- **Shaders.** A scan of all 12 project shaders / includes (every HLSLPROGRAM / CGPROGRAM block: Lit's 6, Water's 4, one
+  elsewhere) for HLSL reserved words or primitive types (line, point, triangle, sample, lineadj, sampler, texture, vector,
+  matrix, linear, centroid, precise, shared, ...) used as variable, parameter, member, function or macro names found none;
+  GroundMark has one pass and `midLine` covers it. The only other `line` token outside comments is a ShaderLab property label
+  string in Shield.shader (harmless).
+- **FlareShots (20c9d211).** `EditorSceneManager.NewScene` per row unloads unused assets, which destroyed the sheet Texture2D
+  made before it (the lead's MissingReferenceException at `SetPixels`). The rows now write into a `Color[]` and the texture is
+  made at the end.
+- **MissileShots (fcf29709).** A fifth column sees the whole flight side-on at 0.8 of the flight; `missiles.txt` logs each
+  round's profile, drawn peak vs the Sim's, landing time vs the Sim's flight time and distance from the aim point. Added
+  coastal_ashm_vehicle, ground_cruise_missile_vehicle and missile_battery.pac3 (skipped if not a vehicle id).
+- **To render:** `-executeMethod MachineBrigade.Editor.MissileShots.Run -mbShotsOut Builds/missile_shots_pt13 -mbShotsIds
+  ifv+atgm_tower+long_sam+missile_battery+coastal_ashm_vehicle+ground_cruise_missile_vehicle+mlrs+heavy_rocket_artillery+ballistic_launcher`
+  (Direct, Loft, Ballistic; MissileShots fires missiles and rockets only, so a lobbed shell's arc shows in Play mode with an
+  artillery card or a C-RAM base); the aircraft entry only shows in motion: Play mode, call an
+  aircraft (or spawn Icarus / Daedalus in the Sandbox) and watch the first 3 s; `PlayShots -mbPlayShotsOnly air,gunship,boss`
+  for stills.
