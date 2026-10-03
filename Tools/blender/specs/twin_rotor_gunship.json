@@ -27,21 +27,18 @@
   {
    "feature": "the stepped cockpit: framed windscreen, side and chin windows",
    "nodes": [
-    "Glass",
-    "Canopy_frames"
+    "Glass"
    ]
   },
   {
    "feature": "the forward and aft pylons, the two engine pods with intakes, screens, seams and exhausts, grilles, roof panels and walkways",
    "nodes": [
-    "Fuselage_pylon",
     "Engines",
     "Intakes",
-    "Intake_screens",
     "Exhaust",
-    "Engine_seams",
     "Grilles",
-    "Walkways"
+    "Walkways",
+    "Engine_struts"
    ]
   },
   {
@@ -58,7 +55,6 @@
   {
    "feature": "side fuel sponsons, four fixed gear legs (twin wheels in front)",
    "nodes": [
-    "Sponsons",
     "Gear",
     "Gear_tyres"
    ]
@@ -82,12 +78,7 @@
     "Beacons",
     "Nav_lights",
     "Antennas",
-    "Hoist",
-    "Pitot",
-    "Hatches",
-    "Kick_steps",
-    "Kit_handles",
-    "Wire_cutters"
+    "Kit_handles"
    ]
   }
  ],
@@ -168,5 +159,5 @@
  "merged": {
   "tail_rotor": "Rotor_rear"
  },
- "merged_note": "a tandem-rotor helicopter has no tail rotor: the rear rotor (Rotor_rear) does that job."
+ "merged_note": "a tandem-rotor helicopter has no tail rotor: the rear rotor (Rotor_rear) does that job. Static fittings are folded into Fuselage / Armor / Panel_seams / Engine_struts (glb_check's helicopter renderer cap)."
 }

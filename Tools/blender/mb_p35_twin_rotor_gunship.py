@@ -186,6 +186,15 @@ def _skin(a):
     a.part('Wire_cutters', 'Steel').box((.04, .05, .3), loc=(0, -5.3, .55), rot=(.5, 0, 0), bevel=0)
 
 
+MERGE = {n: 'Fuselage' for n in ('Fuselage_pylon', 'Fuselage_pylon_aft', 'Sponsons', 'Roof_panels_team')}
+MERGE.update({n: 'Armor' for n in ('Roof_panels_armor', 'Access_panels_armor', 'Hoist', 'Doors', 'Hatches',
+                                   'Canopy_frames')})
+MERGE.update({n: 'Panel_seams' for n in ('Engine_seams', 'Roof_panels_undercarriage', 'Access_panels_undercarriage')})
+MERGE.update({n: 'Engine_struts' for n in ('Kick_steps', 'Tie_rings', 'Drain_masts', 'Wire_cutters', 'Intake_screens',
+                                           'Roof_panels_steel', 'Pitot', 'Rotor_mast')})
+MERGE.update({'Roof_panels_charred': 'Walkways', 'Access_panels_hazard': 'Hazard_marks'})
+
+
 def twin_rotor_gunship(a):
     K.suffixed(a)
     _fuselage(a)
@@ -204,6 +213,7 @@ def twin_rotor_gunship(a):
             new = (name.replace('Rotor_', 'Rotor_rear_', 1), mat, parent)
             a.shapes[new] = a.shapes.pop(key)
             a.order[i] = new
+    P.merge_parts(a, MERGE)
     k.clean(a)
 
 
