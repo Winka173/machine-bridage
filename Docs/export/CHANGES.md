@@ -505,3 +505,15 @@ Nhánh `cloud/pt14-d`. Lý do: `Docs/DECISIONS.md` "Play-test 14 (lane D, cloud)
 | PT14-D9 | `mega_gunship` (Harpy) `duel` | không | `"duel": { "escorts": false }` (chỉ trong nhiệm vụ đấu tay đôi c10m12: không hộ tống, không tàng hình) | Raven đấu Hawk bằng Harpy |
 | PT14-D10 | Sự kiện mini-boss xen kẽ III | `morrigan_hunt` (Morrigan) | `harpy_hunt` (Harpy); mini của Quaden: Harpy | Morrigan bị xóa |
 | PT14-D11 | Tuyến cố định bản đồ openpit | `routes.kronos` | `routes.haul` (cùng tọa độ) | Kronos bị xóa; đường vận chuyển giữ nguyên |
+
+## Play-test 14 session 5 (lane E, local): hangar theo ngân sách, hộp ATGM bên hông
+
+Nhánh `feature/pt14-e`. Lý do: `Docs/DECISIONS.md` "Play-test 14 session 5 (local lane A)". Sát thương không đổi.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-E1 | `vehicle_hangar` `hangar.budget` (mới) | 2 xe còn sống mỗi hangar, loại nào cũng vậy | còn sống = floor(5 / CP của xe chọn): scout_jeep (2 CP) **2**, armored_car (3) **1**, light_tank (3) **1** | chủ dự án: "chọn light tank thì được 1, jeep thì được 2" |
+| PT14-E2 | `aircraft_hangar` `hangar.budget` (mới) | 2 | floor(12 / CP): scout_heli (6) **2**, recon_drone (7) **1** | cùng quy tắc |
+| PT14-E3 | `ifv`, `elite_apc` `sideErectSeconds` (mới) 0,6 | tên lửa ATGM bắn ngay khi có mục tiêu (hộp bên hông bật lên tức thì) | tên lửa chờ hộp dựng 0,6 s sau khi có mục tiêu (cùng luật `erectSeconds` của xe phóng); hộp nâng theo nhịp đó | hộp phóng nâng lên rồi mới bắn |
+
+Trận replay bị ảnh hưởng: PT14-E1, E2, E3 đổi Sim — baseline của ReplayHashTests cần ghi lại.

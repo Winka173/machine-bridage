@@ -160,7 +160,8 @@ namespace MachineBrigade.Game.Hud
             if (def.Utility is { } u) lines.AddRange(Module(u));
             if (def.BaseAura is { } aura) lines.AddRange(Aura(aura));
             if (def.Hangar is { } hangar)
-                lines.Add(F("ul.hangar", ("units", string.Join(" / ", hangar.Units.Select(Strings.Card))), ("seconds", N(hangar.Every)), ("count", hangar.Alive)));
+                lines.Add(F("ul.hangar", ("units", string.Join(" / ", hangar.Units.Select(Strings.Card))), ("seconds", N(hangar.Every)),
+                    ("count", string.Join(" / ", hangar.Units.Select(unitId => hangar.AliveOf(catalog.Vehicles.TryGetValue(unitId, out var unitDef) ? unitDef : null))))));
             return lines;
         }
 

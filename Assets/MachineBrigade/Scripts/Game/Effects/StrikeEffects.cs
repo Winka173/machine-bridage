@@ -22,8 +22,21 @@ namespace MachineBrigade.Game.Effects
         internal const float SeadScale = 1.8f;
         private const float BombFall = 0.8f;
 
-        /// <summary>The heavy bomber of a bombing raid flies higher than the strike jet.</summary>
+        /// <summary>The heavy bomber of a bombing run flies higher than the strike jet.</summary>
         private const float BomberAltitude = 32f;
+
+        /// <summary>
+        /// Play-test 14 session 5 ("máy bay phải là máy bay ném bom ... cục bom nó to hơn cả máy bay"): every bombing run (the
+        /// airstrike, the napalm strike, the cluster strike, the neutral air raid) is flown by the heavy bomber, and what it
+        /// drops is drawn at its real size against that bomber: the bomber (B-52 lineage) is drawn
+        /// <see cref="BomberDrawnLength"/> m long for a real 48.5 m, so a 500 kg bomb (2.5 m) is drawn about 1 m long, the
+        /// size of the bombs racked in its bay. Real lengths (metres) of what is dropped:
+        /// </summary>
+        private const float RealBomberLength = 48.5f, RealBomb = 2.5f, RealMk84 = 3.84f, RealFab = 2.5f, RealCanister = 3.3f,
+            RealDispenser = 2.34f, RealBomblet = 0.9f;
+
+        /// <summary>A napalm canister's girth against its length (a BLU-27: 3.3 m long, 0.48 m across).</summary>
+        private const float CanisterGirth = 0.15f;
 
         /// <summary>The transport of an airlift or the MOAB (the same aircraft AirDrops flies), its height and speed over the drop.</summary>
         private const string TransportModel = AirDrops.TransportModel;
@@ -297,8 +310,11 @@ namespace MachineBrigade.Game.Effects
                 _bombs.RemoveAt(i);
                 // Play-test 8 A (DECISIONS 22Q): each falls on the curve of a bomb keeping the aircraft's speed, not a straight line.
                 if (_hasBomb)
-                    _projectiles.Launch(_models.Merged(_models.Has(model) ? model : "bomb"), from, to, BombFall, 0f, 0f, now,
+                {
+                    var chunk = _models.Merged(_models.Has(model) ? model : "bomb");
+                    _projectiles.Launch(chunk, from, to, BombFall, 0f, 0f, now, scale: BombScale(chunk.Mesh, RealLengthOf(model)),
                         control: WeaponEffects.BombPath(from, to, false));
+                }
                 // The bombs leave the wings as they fall.
                 foreach (var jet in _jets)
                     if (jet.Active && jet.Bombs != null) jet.Bombs.gameObject.SetActive(false);
@@ -387,7 +403,7 @@ namespace MachineBrigade.Game.Effects
             // speed on the way down, so it drops out from under the aircraft and lands as it passes.
             var speed = support.Length / Mathf.Max(0.2f, support.Duration);
             var forward = (end - start).normalized;
-            var altitude = IsBomberRaid(support) ? BomberAltitude : JetAltitude;
+            var altitude = IsBomberRun(support) ? BomberAltitude : JetAltitude;
             var drops = new List<(float at, Vector3 from, Vector3 to)>();
             for (var i = 0; i < support.Count; i++)
             {
@@ -397,13 +413,51 @@ namespace MachineBrigade.Game.Effects
                 drops.Add((firstImpact + i * interval, release, target));
             }
             if (DropsOwnRounds(support, drops, forward, speed)) return;
-            // The bombs by the aircraft: the strike jet's Mk 84s, the bombing raid's FAB-500s.
+            // The bombs by the support: the airstrike's Mk 84s, the bombing raid's FAB-500s (all from the heavy bomber now).
             var model = IsBomberRaid(support) ? "bomb_fab" : support.Id == "airstrike" ? "bomb_mk84" : "bomb";
             foreach (var (at, from, to) in drops) _bombs.Add((at - BombFall, from, to, model));
         }
 
-        /// <summary>The neutral bombing raid of the battle events: a heavy bomber rather than the strike jet.</summary>
+        /// <summary>The neutral bombing raid of the battle events (its FAB-500s).</summary>
         private static bool IsBomberRaid(SupportDef support) => support.Id == "air_raid";
+
+        /// <summary>Play-test 14 session 5: a bombing run of any kind (the airstrike kind) is flown by the heavy bomber.</summary>
+        private static bool IsBomberRun(SupportDef support) => support.Kind == SupportKind.Airstrike;
+
+        /// <summary>The real length (metres) of a dropped bomb model.</summary>
+        private static float RealLengthOf(string model) => model switch
+        {
+            "bomb_mk84" => RealMk84,
+            "bomb_fab" => RealFab,
+            _ => RealBomb,
+        };
+
+        private float _bomberLength = -1f;
+
+        /// <summary>How long the heavy bomber is drawn (metres): its def's model size, else its sheet's 19.8 m.</summary>
+        private float BomberDrawnLength
+        {
+            get
+            {
+                if (_bomberLength > 0f) return _bomberLength;
+                _bomberLength = _catalog.Vehicles.TryGetValue("heavy_bomber", out var bomber) && bomber.ModelLength > 0f ? bomber.ModelLength : 19.8f;
+                return _bomberLength;
+            }
+        }
+
+        /// <summary>The drawn length (metres) of something <paramref name="realLength"/> m long next to the drawn bomber.</summary>
+        private float DrawnLength(float realLength) => realLength * BomberDrawnLength / RealBomberLength;
+
+        /// <summary>The scale that draws <paramref name="mesh"/> (its length along z) at the drawn length of <paramref name="realLength"/> m.</summary>
+        private float BombScale(Mesh mesh, float realLength)
+        {
+            var length = mesh != null ? mesh.bounds.size.z : 0f;
+            return length > 0.05f ? DrawnLength(realLength) / length : 1f;
+        }
+
+        /// <summary>The scale that draws model <paramref name="modelId"/> (merged, its length along z) at the drawn length of <paramref name="realLength"/> m.</summary>
+        private float BombScale(string modelId, float realLength) =>
+            _models.Has(modelId) ? BombScale(_models.Merged(modelId).Mesh, realLength) : 1f;
 
         /// <summary>
         /// Balance pack (lane B): the height the view drops a support's bombs from (Bom_don_vi.do_cao_tha_m), in metres: a
@@ -412,14 +466,14 @@ namespace MachineBrigade.Game.Effects
         /// (StrikeSystem), so this height is the picture only.
         /// </summary>
         internal static float ReleaseAltitude(SupportDef support) =>
-            support.Kind == SupportKind.Airstrike ? IsBomberRaid(support) ? BomberAltitude : JetAltitude : 0f;
+            support.Kind == SupportKind.Airstrike ? IsBomberRun(support) ? BomberAltitude : JetAltitude : 0f;
 
         /// <summary>The MOAB: dropped from a transport, not flown in like the cruise missile it shares its kind with.</summary>
         private static bool IsMoab(SupportDef support) => support.Id == "moab";
 
         private void LaunchJet(SupportDef support, int team, Vector3 from, Vector3 to, float seconds, float now)
         {
-            var bomber = IsBomberRaid(support) && _models.Has("heavy_bomber");
+            var bomber = IsBomberRun(support) && _models.Has("heavy_bomber");
             if (!bomber && !_hasJet) return;
             var model = bomber ? "heavy_bomber" : "strike_jet";
             var altitude = bomber ? BomberAltitude : JetAltitude;
@@ -724,10 +778,10 @@ namespace MachineBrigade.Game.Effects
         }
 
         /// <summary>A finless canister (a stretched capsule), <paramref name="length"/> metres long.</summary>
-        private GameObject Canister(Material paint, float length)
+        private GameObject Canister(Material paint, float length, float girth = 0.36f)
         {
             var go = Body(null, paint, 1f);
-            go.transform.localScale = new Vector3(length * 0.36f, length * 0.5f, length * 0.36f);
+            go.transform.localScale = new Vector3(length * girth, length * 0.5f, length * girth);
             return go;
         }
 
@@ -934,7 +988,8 @@ namespace MachineBrigade.Game.Effects
         {
             if (support.DamageType == DamageType.Fire)
             {
-                foreach (var (at, from, to) in drops) Add(Round.Canister, Canister(_silver, 2.4f), from, to, at - BombFall, at);
+                foreach (var (at, from, to) in drops)
+                    Add(Round.Canister, Canister(_silver, DrawnLength(RealCanister), CanisterGirth), from, to, at - BombFall, at);
                 return true;
             }
             if (drops.Count < 24) return false;
@@ -947,9 +1002,9 @@ namespace MachineBrigade.Game.Effects
                 var centre = Vector3.Lerp(drops[g].to, drops[last].to, 0.5f);
                 var opens = first - 0.5f;
                 var open = centre - forward * (speed * 0.5f) + Vector3.up * 14f;
-                Add(Round.Dispenser, Body("bomb", null, 1.6f), drops[g].from, open, first - BombFall, opens);
+                Add(Round.Dispenser, Body("bomb", null, BombScale("bomb", RealDispenser)), drops[g].from, open, first - BombFall, opens);
                 for (var k = g; k <= last; k++)
-                    Add(Round.Bomblet, Canister(_yellow, 1f), open + Random.insideUnitSphere * 1.2f, drops[k].to, opens, drops[k].at);
+                    Add(Round.Bomblet, Canister(_yellow, DrawnLength(RealBomblet)), open + Random.insideUnitSphere * 1.2f, drops[k].to, opens, drops[k].at);
             }
             return true;
         }

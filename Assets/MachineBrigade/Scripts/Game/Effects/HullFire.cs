@@ -417,7 +417,7 @@ namespace MachineBrigade.Game.Effects
                 position = at - gap + Random.insideUnitSphere * size * 0.15f,
                 velocity = velocity * SmokeCarry + Vector3.up * Random.Range(0.7f, 1.2f) + Random.insideUnitSphere * 0.25f,
                 startSize = size * Random.Range(0.95f, 1.25f) * look.SmokeSize,
-                startLifetime = Random.Range(2.4f, 3.6f) * Mathf.Lerp(0.95f, 1.25f, severity),
+                startLifetime = Random.Range(2.4f, 3.6f) * Mathf.Lerp(0.95f, 1.25f, severity) * SmokeTimes.Fire,
                 startColor = new Color(shade, shade, shade, look.SmokeAlpha),
                 rotation = Random.Range(0f, 360f), applyShapeToPosition = false,
             }, 1);

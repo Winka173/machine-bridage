@@ -141,14 +141,17 @@ namespace MachineBrigade.Game.Views
         private void RaiseSideLauncher(bool snap = false)
         {
             if (_atgmBox == null) return;
-            if (snap || Sim.IsAlive && (Sim.MountTarget(_atgmMount).IsValid || ThreatNear) && Sim.MountCooldown(_atgmMount) <= AtgmSeconds + 1f)
+            // Play-test 14 session 5: at its erector's pace (the data's sideErectSeconds; the Sim fires the missile once it is up),
+            // never snapped up for a missile: one fired before it is fully up (a view behind the Sim) still rises at that pace.
+            var seconds = Def.SideErectSeconds > 0f ? Def.SideErectSeconds : AtgmSeconds;
+            if (snap || Sim.IsAlive && (Sim.MountTarget(_atgmMount).IsValid || ThreatNear) && Sim.MountCooldown(_atgmMount) <= seconds + 1f)
                 _atgmUntil = Time.time + ErectHold;
             var want = snap || Time.time < _atgmUntil ? AtgmRaise : 0f;
-            _atgmPitch = snap ? want : Mathf.MoveTowards(_atgmPitch, want, AtgmRaise / AtgmSeconds * Time.deltaTime);
+            _atgmPitch = Mathf.MoveTowards(_atgmPitch, want, AtgmRaise / seconds * Time.deltaTime);
             _atgmBox.localRotation = _atgmRest * Quaternion.Euler(-_atgmPitch, 0f, 0f);
         }
 
-        /// <summary>A missile leaves the side box: it is laid at once, as a main barrel is (<see cref="LayForShot"/>).</summary>
+        /// <summary>A missile leaves the side box: it is held up (play-test 14 session 5: rising at its pace, not snapped up).</summary>
         internal void LaySideLauncher(int mount)
         {
             if (mount == _atgmMount) RaiseSideLauncher(snap: true);

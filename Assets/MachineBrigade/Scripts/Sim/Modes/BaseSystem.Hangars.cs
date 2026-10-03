@@ -35,7 +35,8 @@ namespace MachineBrigade.Sim.Modes
     {
         /// <summary>
         /// Play-test 14: the side's hangars. Each standing hangar turns out one unit a cycle (free: no CP, no army supply,
-        /// no kill bounty, like the Garrison's squads) while fewer than its def's count of its own are alive and the side's
+        /// no kill bounty, like the Garrison's squads) while fewer than its def's count of its own are alive (session 5: its
+        /// budget over the unit's CP, <see cref="HangarDef.AliveOf"/>) and the side's
         /// vehicle cap has room; the units hold the hangar rally point, or the hangar's side facing the enemy's camp.
         /// </summary>
         private void StepHangars(TeamBase b)
@@ -52,7 +53,8 @@ namespace MachineBrigade.Sim.Modes
                 s.Out.RemoveAll(id => !_world.TryGetVehicle(id, out var u) || !u.IsAlive);
                 if (now < s.NextAt) continue;
                 s.NextAt = now + hangar.Every;
-                if (s.Out.Count >= hangar.Alive || string.IsNullOrEmpty(s.Unit) || !_world.Catalog.Vehicles.ContainsKey(s.Unit)) continue;
+                // Play-test 14 session 5: as many alive as its budget buys of the picked unit (a light tank 1, a jeep 2).
+                if (string.IsNullOrEmpty(s.Unit) || !_world.Catalog.Vehicles.TryGetValue(s.Unit, out var unitDef) || s.Out.Count >= hangar.AliveOf(unitDef)) continue;
                 if (_world.TryGetEconomy(b.Team, out var economy) && _world.Economy.VehicleCount(b.Team) >= economy.VehicleCap) continue;
                 var post = HangarPost(b, v);
                 var dir = post - v.Position;

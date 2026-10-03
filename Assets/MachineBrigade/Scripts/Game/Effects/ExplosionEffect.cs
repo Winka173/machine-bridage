@@ -553,7 +553,7 @@ namespace MachineBrigade.Game.Effects
         /// keeps its ring on the radius while the rest of it grows (prompt 25 A5: every blast with a radius).
         /// </summary>
         public void Play(Vector3 position, float now, float scale = 1f, float grow = 1f, float life = 1f, float ring = 0f) =>
-            Play(position, now, scale, grow, life, ring, 1f);
+            Play(position, now, scale, grow, life, ring, 1f, SmokeTimes.Blast);
 
         /// <summary>
         /// Prompt 34 L5: as above, emitting <paramref name="share"/> of every burst (never fewer than one particle of each).
@@ -561,8 +561,9 @@ namespace MachineBrigade.Game.Effects
         /// (<see cref="TierFx"/>); every older recipe is played whole.
         /// </summary>
         /// <param name="smoke">Play-test 14 (lane A): the life of its smoke, dust and smoke column alone against the recipe's
-        /// (a tank round's 0.4: its smoke clears 60 % sooner); the fire, flash, sparks and debris are never cut.</param>
-        public void Play(Vector3 position, float now, float scale, float grow, float life, float ring, float share, float smoke = 1f)
+        /// (a tank round's 0.4: its smoke clears 60 % sooner); the fire, flash, sparks and debris are never cut. Play-test 14
+        /// session 5: every blast's smoke at <see cref="SmokeTimes.Blast"/> unless it says (a death's <see cref="SmokeTimes.Death"/>).</param>
+        public void Play(Vector3 position, float now, float scale, float grow, float life, float ring, float share, float smoke = SmokeTimes.Blast)
         {
             grow = Mathf.Max(1f, grow);
             var density = grow > 1f ? Density : 1f;

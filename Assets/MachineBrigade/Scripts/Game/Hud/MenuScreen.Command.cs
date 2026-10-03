@@ -126,7 +126,8 @@ namespace MachineBrigade.Game.Hud
                 var panel = Kit.Box(KitPanel.SurfaceClass + " fc-panel fc-mb-2");
                 panel.Add(Kit.Text(Kit.Caps(Strings.Unit(id)), "fc-panel-title"));
                 panel.Add(Kit.Body2(PlayerProfile.IsUnlocked(id)
-                    ? Strings.Format("ul.hangar", ("units", Strings.Get("hq.tab.pick")), ("seconds", Mathf.RoundToInt(hangar.Every)), ("count", hangar.Alive))
+                    ? Strings.Format("ul.hangar", ("units", Strings.Get("hq.tab.pick")), ("seconds", Mathf.RoundToInt(hangar.Every)),
+                        ("count", hangar.AliveOf(_catalog.Vehicles.TryGetValue(PlayerProfile.HangarUnit(id) ?? hangar.Units[0], out var pickedDef) ? pickedDef : null)))
                     : Strings.Get("hq.tab.hangarLocked")));
                 var hangarId = id;
                 panel.Add(UnitChips(hangar.Units, PlayerProfile.HangarUnit(id) ?? hangar.Units[0], unit =>

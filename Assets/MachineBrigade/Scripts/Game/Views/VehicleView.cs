@@ -1082,6 +1082,8 @@ namespace MachineBrigade.Game.Views
             }
             // Play-test 14: guns on their own mounts kick back as they fire (VehicleView.MountKick).
             KickMountBarrels();
+            // Play-test 14 session 5: guns a later phase wakes are hidden in the hull, and rise when it wakes them.
+            RaiseWakeMounts();
 
             Elevate();
             RaiseSideLauncher();

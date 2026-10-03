@@ -76,4 +76,28 @@ namespace MachineBrigade.Game.Effects
         /// <summary>A crater's life for the band (0: none).</summary>
         public static float Crater(int band) => Of(band).Crater;
     }
+
+    /// <summary>
+    /// Play-test 14 session 5 ("giảm toàn bộ thời gian các khói, kể cả khói tên lửa, khói cháy nổ, khói sát thương khi nổ chết
+    /// (cái này đáng kể nhất) do nó làm chiến trường toàn khói"): every smoke clears sooner, as a share of the life it had. The
+    /// fire, the flash, the fireball, sparks and debris are never cut or shrunk; a tank round's impact smoke keeps its own
+    /// 0.4 (<see cref="EffectsDirector.TankSmokeLife"/>). View only.
+    /// </summary>
+    internal static class SmokeTimes
+    {
+        /// <summary>A missile's or rocket's smoke trail (the motor plume's puffs, the old shell trail).</summary>
+        public const float Trail = 0.5f;
+
+        /// <summary>A blast's smoke, dust and smoke column, and the smoke it leaves lingering (ImpactSmoke).</summary>
+        public const float Blast = 0.5f;
+
+        /// <summary>A vehicle's death: its killing blast's and its death explosion's smoke (the worst of it).</summary>
+        public const float Death = 0.35f;
+
+        /// <summary>A fire's smoke (a burning hull, a wreck, a ground fire): each puff's life.</summary>
+        public const float Fire = 0.5f;
+
+        /// <summary>The smoke a fire (a wreck's above all) smoulders on with after its flames are out: how long it goes on.</summary>
+        public const float Smoulder = 0.5f;
+    }
 }
