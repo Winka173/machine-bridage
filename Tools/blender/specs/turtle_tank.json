@@ -1,0 +1,164 @@
+{
+ "id": "turtle_tank",
+ "class": "tracked",
+ "real": [
+  "'turtle' tank / Tsar Mangal (T-72 chassis, 2024)",
+  "KMT-7 mine roller"
+ ],
+ "shape": "unit_sheet.json Phương tiện: 'T-72 phủ mái tôn kim loại lớn như mai rùa che cả thân và tháp, chỉ nòng pháo thò ra, mép mái buông gần sát đất, lưới chống drone.' Card: 'trục lăn kích nổ mìn'.",
+ "confidence": "xấp xỉ (photographs of the 2024 turtle tanks; T-72 dimensions at 0.8 x per the sheet)",
+ "target_size": {
+  "L": 7.42,
+  "W": 2.97,
+  "H": 2.81,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "corrugated shed over hull and turret down to 0.62 m, pitched roof with ribs",
+   "nodes": [
+    "Shell",
+    "Shell_front",
+    "Shell_seams"
+   ]
+  },
+  {
+   "feature": "rusty and fresh patches welded on, side doors with hinges, vision slits",
+   "nodes": [
+    "Shell_patches_Rust",
+    "Shell_patches_Armor",
+    "Shell_doors",
+    "Slits"
+   ]
+  },
+  {
+   "feature": "anti-drone net on a tube frame over the front and the roof",
+   "nodes": [
+    "Anti_drone_net",
+    "Net_armour",
+    "Net_frame"
+   ]
+  },
+  {
+   "feature": "only the 120 mm gun out of the front slot, coax beside it",
+   "nodes": [
+    "Main_cannon",
+    "Muzzle_brake",
+    "Coax"
+   ]
+  },
+  {
+   "feature": "KMT-7 mine roller gangs on arms ahead of the hull",
+   "nodes": [
+    "Mine_roller",
+    "Mine_roller_arms"
+   ]
+  },
+  {
+   "feature": "T-72 running gear, six road wheels, rubber skirts under the eaves",
+   "nodes": [
+    "Wheels",
+    "Tracks",
+    "Sprockets",
+    "Idlers",
+    "Skirts"
+   ]
+  },
+  {
+   "feature": "T-72 turret under the shed: cupola NSVT, 902A smoke launchers",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Mantlet",
+    "Roof_mg",
+    "Smoke_launchers"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_120mm",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "mg_coax",
+   "slot": "coax",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_coax"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "lead rule (wave 5): units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "bands along both shed sides (Team)",
+  "a panel on the roof (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (tank wreck)",
+ "faction_style": "improvised (Mara's workshop): salvaged sheet, logs, net",
+ "details": {
+  "tier1": [
+   "hull",
+   "shed",
+   "gun",
+   "tracks"
+  ],
+  "tier2": [
+   "mine roller",
+   "net frame",
+   "side doors",
+   "patches",
+   "turret",
+   "skirts",
+   "logs"
+  ],
+  "tier3": [
+   "roof ribs",
+   "seams",
+   "hinges",
+   "handles",
+   "slits",
+   "jerrycan",
+   "straps",
+   "coax",
+   "smoke launchers",
+   "periscope"
+  ]
+ },
+ "questions": []
+}

@@ -289,7 +289,142 @@ def _titan_turret(a):
     K.whip_antenna(a.part('Antennas', 'Steel', t), (1.4, 1.5, .75), h=.5, lean=.3)
 
 
+# ============================================================================= turtle_tank
+def turtle_tank(a):
+    """The improvised turtle tank: see the module docstring. Runtime: Turret (the gun is laid by the hull: mainAim
+    Hull), Main_cannon, Muzzle_brake, Muzzle_main, Coax, Muzzle_coax, Point_fire, Point_exhaust."""
+    TX, TW, WR = 1.12, .5, .3
+    wheels = [-1.95 + i * .74 for i in range(6)]
+    W.running_gear(a, TX, TW, WR, wheels, (-2.55, .52, .26), (2.6, .55, .27), disc_mat='Armor', seg=8,
+                   link_pitch=.36, top_hidden=.62, teeth=9)
+    hull = a.part('Hull', 'Armor')
+    W.side_hull(hull, [(2.95, .42), (3.0, .88), (2.8, 1.08), (-1.1, 1.1), (-2.75, .82), (-2.82, .62),
+                       (-2.55, .4)], 1.72, chamfer=.04)
+    fen = a.part('Fenders', 'Armor')
+    for s in (-1, 1):
+        K.fender(fen, TX, -2.8, 2.9, .82, .5, s)
+        # The T-72's rubber skirts, ragged, just under the shed's eaves.
+        sk = a.part('Skirts', 'Rubber')
+        for i in range(6):
+            sk.box((.03, .86, .3), loc=(s * (TX + .27), -2.45 + i * .9, .66), rot=(0, 0, .02 * (i % 2 - .5)), bevel=0)
+    # KMT-7 mine roller on its two arms ahead of the hull: two roller gangs of toothed discs, the chain between.
+    ar = a.part('Mine_roller_arms', 'Armor')
+    st = a.part('Mine_roller', 'Steel')
+    for s in (-1, 1):
+        ar.limb((s * .78, -2.75, .7), (s * .78, -3.75, .42), .14, .16, bevel=0)
+        ar.box((.18, .3, .25), loc=(s * .78, -2.78, .72), bevel=0)
+        for i in range(4):
+            x = s * (.5 + i * .18)
+            k.lathe(st, [(.12, -.035), (.27, -.03), (.29, 0), (.27, .03), (.12, .035)], loc=(x, -3.92, .3),
+                    rot=(0, R90, 0), seg=10)
+        st.cyl(.06, .8, loc=(s * .77, -3.92, .3), rot=(0, R90, 0), seg=6, bevel=0)
+    a.part('Kit_cables', 'Steel').tube([(-.45, -3.92, .3), (-.1, -3.95, .12), (.1, -3.95, .12), (.45, -3.92, .3)],
+                                       .025, seg=4)
+    a.pivot('Point_fire', (0, .3, 2.6))
+    a.pivot('Point_exhaust', (.9, 2.9, .9))
+    K.exhaust(a, (-1.05, 1.6, 1.0), r=.06, length=.3, direction=(1, .2, .3), muffler=False, cap=False)
+    _turtle_turret(a)
+    _turtle_shell(a)
+    k.clean(a)
+
+
+def _turtle_turret(a):
+    """The T-72 turret under the shed: the cast dome, the gun through the shed's front slot, the coax, the cupola
+    with its NSVT (seen through the shed's front opening), the 902A smoke grenade launchers."""
+    t = a.pivot('Turret', (0, .1, 1.3))
+    k.lathe(a.part('Turret_body', 'Armor', t), [(1.12, -.05), (1.15, .1), (1.08, .3), (.85, .5), (.45, .62),
+                                               (0, .64)], loc=(0, -.05, 0), seg=14)
+    K.chamfer_box(a.part('Mantlet', 'Armor', t), (.55, .3, .34), loc=(0, -1.05, .35), c=.04)
+    K.gun_barrel(a, 'Main_cannon', t, 0, -1.2, .45, 3.0, .07, seg=10, extractor=(.38, 1.6, .45),
+                 brake_name='Muzzle_brake', brake='collar', sleeve=1.25)
+    a.pivot('Muzzle_main', (0, -4.34, .45), t)
+    k.lathe(a.part('Coax', 'Steel', t), [(.022, 0), (.022, 1.95), (0, 1.96)], loc=(-.22, -1.1, .45), rot=K.FORWARD,
+            seg=6)
+    a.pivot('Muzzle_coax', (-.22, -3.07, .45), t)
+    k.ring(a.part('Hatches', 'Armor', t), [(.26, 0), (.32, 0), (.32, .08), (.26, .08)], loc=(-.38, .2, .6), seg=10)
+    k.lathe(a.part('Hatches', 'Armor', t), [(0, .1), (.24, .095), (.27, .06), (.27, .02)], loc=(.4, .3, .58), seg=10)
+    K.periscope(a, (.45, -.5, .5), facing=(0, -1, 0), parent=t, size=(.22, .2, .2))
+    mg = a.part('Roof_mg', 'Steel', t)
+    mg.cyl(.04, .3, loc=(-.38, .2, .8), seg=6, bevel=0)
+    k.lathe(mg, [(.03, 0), (.03, .9), (.045, .92), (.045, 1.0), (0, 1.02)], loc=(-.38, .0, .98), rot=K.FORWARD, seg=6)
+    K.chamfer_box(a.part('MG_ammo', 'Armor', t), (.14, .26, .18), loc=(-.24, .22, .96), c=.02)
+    for s in (-1, 1):
+        K.smoke_dischargers(a, .95, -.45, .25, s, count=4, parent=t)
+
+
+def _turtle_shell(a):
+    """The welded shed: a box-section house of corrugated sheet down to 0.62 m over hull and turret, the pitched roof
+    with its ribs, the front with the gun slot and two vision slits, a side door each side, patches of rusty and
+    fresh sheet, the anti-drone net hung on a tube frame over the front and the roof."""
+    shell = a.part('Shell', 'MetalSheet')
+    half, y0, y1, zb, ze, zr = 1.48, -2.95, 3.15, .62, 2.05, 2.75
+    prof = [(-half, zb), (half, zb), (half, ze), (half * .55, zr - .08), (0, zr), (-half * .55, zr - .08),
+            (-half, ze)]
+    # Front and back as their own panels (the slot for the gun in the front), the long sides and the roof lofted.
+    k.extrude(shell, [(x, z) for x, z in prof], y1 - y0 - .1, loc=(0, (y0 + y1) / 2 + .05, 0), axis='Y',
+              chamfer=.03, corner=.0)
+    fr = a.part('Shell_front', 'MetalSheet')
+    fy = y0 + .04
+    for (x0, x1) in ((-half, -.42), (.42, half)):
+        fr.box((x1 - x0, .04, ze - zb), loc=((x0 + x1) / 2, fy, (zb + ze) / 2), bevel=0)
+    fr.box((.84, .04, 1.05 - zb), loc=(0, fy, (zb + 1.05) / 2), bevel=0)
+    fr.box((.84, .04, ze - 2.0), loc=(0, fy, (2.0 + ze) / 2), bevel=0)
+    fr.mesh([(-half, fy, ze), (half, fy, ze), (half * .55, fy, zr - .08), (0, fy, zr), (-half * .55, fy, zr - .08)],
+            [(0, 1, 2, 3, 4)])
+    fr.mesh([(-half, fy + .04, ze), (-half * .55, fy + .04, zr - .08), (0, fy + .04, zr), (half * .55, fy + .04,
+             zr - .08), (half, fy + .04, ze)], [(0, 1, 2, 3, 4)])
+    # Corrugation ribs over the roof and down the sides, the welded seams, the rusty and fresh patches.
+    seams = a.part('Shell_seams', 'Steel')
+    for i in range(11):
+        y = y0 + .3 + i * .56
+        seams.tube([(-half - .02, y, zb + .02), (-half - .02, y, ze), (-half * .55, y, zr - .06), (0, y, zr + .02),
+                    (half * .55, y, zr - .06), (half + .02, y, ze), (half + .02, y, zb + .02)], .018, seg=4,
+                   caps=False)
+    for s in (-1, 1):
+        seams.box((.03, y1 - y0, .05), loc=(s * (half + .01), (y0 + y1) / 2, ze), bevel=0)
+    for mat, pts in (('Rust', [(1, -1.6, 1.4, .9, .6), (-1, 1.3, 1.1, 1.1, .7), (1, 2.2, 1.6, .6, .5)]),
+                     ('Armor', [(-1, -2.0, 1.6, .7, .55), (1, .4, .95, .8, .45)])):
+        pp = a.part(f'Shell_patches_{mat}', mat)
+        for s, y, z, w, h in pts:
+            pp.box((.025, w, h), loc=(s * (half + .02), y, z), rot=(.05 * s, 0, 0), bevel=0)
+    rp = a.part('Shell_patches_Rust', 'Rust')
+    rp.box((.9, .7, .03), loc=(.65, -.6, zr - .2), rot=(0, -.47, 0), bevel=0)
+    # Side doors (hinged sheet on a frame) and vision slits.
+    for s in (-1, 1):
+        d = a.part('Shell_doors', 'MetalSheet')
+        d.box((.03, .75, .9), loc=(s * (half + .03), .9, 1.25), bevel=0)
+        K.hinge(a.part('Kit_hinges', 'Steel'), (s * (half + .05), .52, 1.0), (s * (half + .05), .52, 1.5), r=.02,
+                knuckles=2)
+        K.handle(a.part('Kit_handles', 'Steel'), (s * (half + .05), 1.15, 1.2), (s * (half + .05), 1.15, 1.35),
+                 (s, 0, 0), h=.05)
+    sl = a.part('Slits', 'Undercarriage')
+    for x in (-.85, .85):
+        sl.box((.35, .02, .07), loc=(x, fy - .025, 1.6), bevel=0)
+    # Stowage: logs and a spare-track bundle strapped to the rear wall, jerrycans by the door.
+    lg = a.part('Stowage', 'Wood')
+    for i in range(3):
+        lg.cyl(.09, 2.2, loc=(0, y1 + .1, .9 + i * .19), rot=(0, R90, 0), seg=7, bevel=0)
+    for x in (-1.0, 1.0):
+        a.part('Kit_straps', 'Steel').box((.04, .25, .65), loc=(x, y1 + .1, 1.1), bevel=0)
+    K.jerrycan(a.part('Jerrycans', 'Crate'), (-(half + .1), 1.9, .62), rot=(0, 0, R90))
+    # The anti-drone net: a tube frame standing off the front and over the front half of the roof, the net on it.
+    W.cable(a.part('Net_frame', 'Steel'), [(-half, y0 - .5, zb + .3), (-half, y0 - .5, ze + .2),
+                                          (half, y0 - .5, ze + .2), (half, y0 - .5, zb + .3)], r=.03)
+    K.net_armour(a, (-half, y0, 0), (half, y0, 0), zb + .3, ze - zb - .1, (0, -1, 0), cell=.32, standoff=.48)
+    net = a.part('Anti_drone_net', 'Canvas')
+    for i in range(7):
+        y = y0 - .3 + i * .55
+        net.tube([(-half - .05, y, ze + .05), (0, y + .1, zr + .25), (half + .05, y, ze + .05)], .012, seg=3,
+                 caps=False)
+    for x in (-1.0, 0, 1.0):
+        net.tube([(x, y0 - .5, zr + .1 - abs(x) * .4), (x, y0 + 3.0, zr + .1 - abs(x) * .4)], .012, seg=3, caps=False)
+    for s in (-1, 1):
+        a.part('Team_band', 'Team').box((.012, 2.4, .14), loc=(s * (half + .045), -.6, 1.85), bevel=0)
+    a.part('Team_band', 'Team').box((1.2, .8, .012), loc=(0, .8, zr + .02), rot=(0, 0, 0), bevel=0)
+
+
 BUILDERS = {
     'twin_tank': (twin_tank, dict(ao_distance=.5, grime_height=.6)),
     'titan_tank': (titan_tank, dict(ao_distance=.6, grime_height=.6)),
+    'turtle_tank': (turtle_tank, dict(ao_distance=.5, grime_height=.6)),
 }
