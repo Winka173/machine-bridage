@@ -47,7 +47,9 @@ internal static class Move
         var plans = new List<Plan>();
         var trees = new Dictionary<string, SyntaxTree>();
 
-        foreach (var row in rows)
+        var manual = rows.Where(r => r.Mode.StartsWith("manual")).ToList();
+        foreach (var m in manual) Console.WriteLine($"skip (manual) csv:{m.CsvLine} {m.File}:{m.Line} {m.Literal}: {m.Mode}");
+        foreach (var row in rows.Where(r => !r.Mode.StartsWith("manual")))
         {
             var rel = Repo.Rel(row.File);
             if (!wt.Files.TryGetValue(rel, out var text)) { errors.Add($"csv:{row.CsvLine} {row.File}: no such C# file"); continue; }

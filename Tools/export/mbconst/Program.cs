@@ -31,7 +31,3 @@ internal static class Program
     }
 }
 
-internal static partial class Scan
-{
-    public static int Run(string[] args) => 0;
-}

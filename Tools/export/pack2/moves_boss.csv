@@ -1,0 +1,519 @@
+file,line,literal,key,unit,kind,linh_vuc,occurrence,mode,note,context
+Game/Match/BossHunts.cs,22,1500,bosses.bossHunts.weeklyReward,x,khac,03,1,const_to_property,,const_field: public const int WeeklyReward = 1500;
+Game/Match/BossHunts.cs,25,10000,bosses.bossHunts.fullReward,x,khac,03,1,const_to_property,,const_field: public const int FullReward = 10000;
+Game/Match/BossHunts.cs,28,2020,bosses.bossHunts.fullSeed,x,khac,03,1,const_to_property,,const_field: public const int FullSeed = 2020;
+Game/Match/BossHunts.cs,79,3,bosses.bossHunts.unslottedValue,x,khac,03,1,manual:static array table (FloatArray / IntArray entry),,"tuple: (""behemoth_mk0"", 3), (""morrigan"", 9),"
+Game/Match/BossHunts.cs,79,9,bosses.bossHunts.unslottedValue2,x,khac,03,1,manual:static array table (FloatArray / IntArray entry),,"tuple: (""behemoth_mk0"", 3), (""morrigan"", 9),"
+Game/Match/BossHunts.cs,81,4,bosses.bossHunts.unslottedValue3,x,khac,03,1,manual:static array table (FloatArray / IntArray entry),,"tuple: (""nyx"", 4), (""stymphalos"", 5), (""cerberus"", 6), (""monster"", 8), (""kraken"", 9), (""hydra"", 9), (""garuda"", 10), (""hyperion"", 12),"
+Game/Match/BossHunts.cs,81,5,bosses.bossHunts.unslottedValue4,x,khac,03,1,manual:static array table (FloatArray / IntArray entry),,"tuple: (""nyx"", 4), (""stymphalos"", 5), (""cerberus"", 6), (""monster"", 8), (""kraken"", 9), (""hydra"", 9), (""garuda"", 10), (""hyperion"", 12),"
+Game/Match/BossHunts.cs,81,6,bosses.bossHunts.unslottedValue5,x,khac,03,1,manual:static array table (FloatArray / IntArray entry),,"tuple: (""nyx"", 4), (""stymphalos"", 5), (""cerberus"", 6), (""monster"", 8), (""kraken"", 9), (""hydra"", 9), (""garuda"", 10), (""hyperion"", 12),"
+Game/Match/BossHunts.cs,81,8,bosses.bossHunts.unslottedValue6,x,khac,03,1,manual:static array table (FloatArray / IntArray entry),,"tuple: (""nyx"", 4), (""stymphalos"", 5), (""cerberus"", 6), (""monster"", 8), (""kraken"", 9), (""hydra"", 9), (""garuda"", 10), (""hyperion"", 12),"
+Game/Match/BossHunts.cs,81,9,bosses.bossHunts.unslottedValue2,x,khac,03,1,manual:static array table (FloatArray / IntArray entry),,"tuple: (""nyx"", 4), (""stymphalos"", 5), (""cerberus"", 6), (""monster"", 8), (""kraken"", 9), (""hydra"", 9), (""garuda"", 10), (""hyperion"", 12),"
+Game/Match/BossHunts.cs,81,10,bosses.bossHunts.unslottedValue7,x,khac,03,1,manual:static array table (FloatArray / IntArray entry),,"tuple: (""nyx"", 4), (""stymphalos"", 5), (""cerberus"", 6), (""monster"", 8), (""kraken"", 9), (""hydra"", 9), (""garuda"", 10), (""hyperion"", 12),"
+Game/Match/BossHunts.cs,81,12,bosses.bossHunts.unslottedValue8,x,khac,03,1,manual:static array table (FloatArray / IntArray entry),,"tuple: (""nyx"", 4), (""stymphalos"", 5), (""cerberus"", 6), (""monster"", 8), (""kraken"", 9), (""hydra"", 9), (""garuda"", 10), (""hyperion"", 12),"
+Game/Match/BossHunts.cs,81,9,bosses.bossHunts.unslottedValue2,x,khac,03,2,manual:static array table (FloatArray / IntArray entry),,"tuple: (""nyx"", 4), (""stymphalos"", 5), (""cerberus"", 6), (""monster"", 8), (""kraken"", 9), (""hydra"", 9), (""garuda"", 10), (""hyperion"", 12),"
+Game/Match/BossHunts.cs,108,2,bosses.bossHunts.airDefenceNMin,x,nguong,03,1,inline,,compare: return n >= 2;
+Game/Match/HuntPower.cs,15,10f,bosses.huntPower.fielded,x,khac,03,1,const_to_property,,const_field: public const float Fielded = 10f;
+Game/Match/HuntPower.cs,18,0.3f,bosses.huntPower.uptime,s,thoi_gian,03,1,const_to_property,,const_field: public const float Uptime = 0.3f;
+Game/Match/HuntPower.cs,21,60f,bosses.huntPower.floor,x,khac,03,1,const_to_property,,const_field: public const float Floor = 60f;
+Game/Match/MatchRunner.BossParts.cs,34,2.5f,bosses.matchRunner.orderAtPartSeconds,s,thoi_gian,03,1,inline,,"arg:BattleHud.Toast: seconds: 2.5f, kind: NoticeKind.Part);"
+Game/Match/MatchRunner.BossParts.cs,35,40,bosses.matchRunner.orderAtPartMilliseconds,s,thoi_gian,03,1,inline,,"arg:Haptics.Pulse: Haptics.Pulse(40, 160);"
+Game/Match/MatchRunner.BossParts.cs,35,160,bosses.matchRunner.orderAtPartStrength,x,khac,03,1,inline,,"arg:Haptics.Pulse: Haptics.Pulse(40, 160);"
+Sim/Bosses/BossSystem.BigAttacks.cs,195,2.0,bosses.bossSystem.tryBeginNowAdd,s,thoi_gian,03,1,inline,,add: s.Next = now + 2.0;
+Sim/Bosses/BossSystem.BigAttacks.cs,223,3.0,bosses.bossSystem.tryBeginNowAdd2,s,thoi_gian,03,1,inline,,add: s.Next = now + 3.0;
+Sim/Bosses/BossSystem.BigAttacks.cs,227,0.5f,bosses.bossSystem.tryBeginWarnFloor,s,thoi_gian,03,1,inline,,"math_max: var warn = MathF.Max(0.5f, def.Warn + scale.Warn);"
+Sim/Bosses/BossSystem.BigAttacks.cs,236,0.01f,bosses.bossSystem.tryBeginLengthSquaredMin,m,ban_kinh,03,1,inline,,compare: s.Axis = toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
+Sim/Bosses/BossSystem.BigAttacks.cs,244,0.95f,bosses.bossSystem.tryBeginShare,s,thoi_gian,03,1,inline,,"arg:StatusSystem.Slow: if (def.Halt) _world.Status.Slow(v, 0.95f, warn);"
+Sim/Bosses/BossSystem.BigAttacks.cs,262,0.5,bosses.bossSystem.heldInFlightNowSub,s,thoi_gian,03,1,inline,,"subtract: case ""bombard"" when v.Def.Bombard is { } b && v.BombardNext - b.Every * v.PartCadence > now - b.Warn - 0.5:"
+Sim/Bosses/BossSystem.BigAttacks.cs,263,0.5,bosses.bossSystem.heldInFlightNowSub,s,thoi_gian,03,1,inline,,"subtract: case ""cruise"" when v.Def.Cruise is { } c && v.CruiseNext - c.Every * v.PartCadence > now - c.Warn - 0.5:"
+Sim/Bosses/BossSystem.BigAttacks.cs,277,2f,bosses.bossSystem.aimAtRadiusAdd,m,ban_kinh,03,1,inline,,"add: return Spot(v, def.Strikes[0].Radius + 2f, false, out _) > 0;"
+Sim/Bosses/BossSystem.BigAttacks.cs,283,4,bosses.bossSystem.aimAtNMin,x,nguong,03,1,inline,,compare: if (n >= 4) return true;
+Sim/Bosses/BossSystem.BigAttacks.cs,338,15f,bosses.bossSystem.spotScale,m,ban_kinh,03,1,inline,,"multiply: if (!Target(v, o, still) || Vector2.DistanceSquared(o.Position, e.Position) > 15f * 15f) continue;"
+Sim/Bosses/BossSystem.BigAttacks.cs,338,15f,bosses.bossSystem.spotScale,m,ban_kinh,03,2,inline,,"multiply: if (!Target(v, o, still) || Vector2.DistanceSquared(o.Position, e.Position) > 15f * 15f) continue;"
+Sim/Bosses/BossSystem.BigAttacks.cs,339,4f,bosses.bossSystem.spotStaticTrue,x,nguong,03,1,inline,,"conditional: weight += o.Def.Static ? 4f : MathF.Max(1f, o.Def.CpCost);"
+Sim/Bosses/BossSystem.BigAttacks.cs,378,1.6f,bosses.bossSystem.rodSpotsRadiusScale,m,ban_kinh,03,1,inline,,multiply: var apart = radius * 1.6f;
+Sim/Bosses/BossSystem.BigAttacks.cs,389,2,bosses.bossSystem.rodSpotsNScale,count,gioi_han_thuc_the,03,1,inline,,multiply: for (var k = 0; spots.Count < n && k < n * 2; k++)
+Sim/Bosses/BossSystem.BigAttacks.cs,392,1.7f,bosses.bossSystem.rodSpotsRadiusScale2,m,ban_kinh,03,1,inline,,"multiply: spots.Add(_world.ClampToMap(centre + new Vector2(MathF.Cos(a), MathF.Sin(a)) * radius * 1.7f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,398,3f,bosses.bossSystem.rodWeightStaticTrue,x,sat_thuong,03,1,inline,,"conditional: private static float RodWeight(Vehicle o) => o.Def.Static ? 3f : (1f + o.Def.Armour.Front) * (1f + o.Def.Armour.Front) + MathF.Max(1f, o.Def.CpCost) * 0.5f;"
+Sim/Bosses/BossSystem.BigAttacks.cs,398,0.5f,bosses.bossSystem.rodWeightMaxScale,count,sat_thuong,03,1,inline,,"multiply: private static float RodWeight(Vehicle o) => o.Def.Static ? 3f : (1f + o.Def.Armour.Front) * (1f + o.Def.Armour.Front) + MathF.Max(1f, o.Def.CpCost) * 0.5f;"
+Sim/Bosses/BossSystem.BigAttacks.cs,427,4f,bosses.bossSystem.preyStaticTrue,x,khac,03,1,inline,,conditional: var pa = a.Def.CpCost + (a.Def.Static ? 4f : 0f);
+Sim/Bosses/BossSystem.BigAttacks.cs,428,4f,bosses.bossSystem.preyStaticTrue,x,khac,03,1,inline,,conditional: var pb = b.Def.CpCost + (b.Def.Static ? 4f : 0f);
+Sim/Bosses/BossSystem.BigAttacks.cs,429,1e-3f,bosses.bossSystem.preyAbsMin,x,nguong,03,1,inline,,compare: if (MathF.Abs(pa - pb) > 1e-3f) return pb.CompareTo(pa);
+Sim/Bosses/BossSystem.BigAttacks.cs,495,0.5f,bosses.bossSystem.planLengthScale,m,ban_kinh,03,1,inline,,"multiply: s.ZoneList.Add(new BigZone(s.Aim, axis, st.Length * 0.5f, st.Width * 0.5f, fire, true, st.Radius));"
+Sim/Bosses/BossSystem.BigAttacks.cs,495,0.5f,bosses.bossSystem.planWidthScale,m,ban_kinh,03,2,inline,,"multiply: s.ZoneList.Add(new BigZone(s.Aim, axis, st.Length * 0.5f, st.Width * 0.5f, fire, true, st.Radius));"
+Sim/Bosses/BossSystem.BigAttacks.cs,502,0.5f,bosses.bossSystem.planLengthScale,m,ban_kinh,03,1,inline,,multiply: var at = _world.ClampToMap(s.Aim + axis * (-st.Length * 0.5f + st.Length * (k + 0.5f) / n));
+Sim/Bosses/BossSystem.BigAttacks.cs,502,0.5f,bosses.bossSystem.planKAdd,m,ban_kinh,03,2,inline,,add: var at = _world.ClampToMap(s.Aim + axis * (-st.Length * 0.5f + st.Length * (k + 0.5f) / n));
+Sim/Bosses/BossSystem.BigAttacks.cs,509,0.5f,bosses.bossSystem.planAxisScale,m,ban_kinh,03,1,inline,,"multiply: s.ZoneList.Add(new BigZone(s.Origin + s.Axis * st.Length * 0.5f, s.Axis, st.Length * 0.5f, st.Width * 0.5f, fire, true, 1f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,509,0.5f,bosses.bossSystem.planLengthScale,m,ban_kinh,03,2,inline,,"multiply: s.ZoneList.Add(new BigZone(s.Origin + s.Axis * st.Length * 0.5f, s.Axis, st.Length * 0.5f, st.Width * 0.5f, fire, true, 1f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,509,0.5f,bosses.bossSystem.planWidthScale,m,ban_kinh,03,3,inline,,"multiply: s.ZoneList.Add(new BigZone(s.Origin + s.Axis * st.Length * 0.5f, s.Axis, st.Length * 0.5f, st.Width * 0.5f, fire, true, 1f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,514,0.5f,bosses.bossSystem.planLengthScale,m,ban_kinh,03,1,inline,,"multiply: s.ZoneList.Add(new BigZone(s.Aim, axis, st.Length * 0.5f, st.Width * 0.5f, fire, true, 1f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,514,0.5f,bosses.bossSystem.planWidthScale,m,ban_kinh,03,2,inline,,"multiply: s.ZoneList.Add(new BigZone(s.Aim, axis, st.Length * 0.5f, st.Width * 0.5f, fire, true, 1f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,518,8f,bosses.bossSystem.planAreaFloor,x,nguong,03,1,inline,,"math_max: s.ZoneList.Add(new BigZone(s.Aim, MathF.Max(8f, st.Area), fire, false));"
+Sim/Bosses/BossSystem.BigAttacks.cs,528,0.35,bosses.bossSystem.planKScale,m,ban_kinh,03,1,inline,,"multiply: var due = fire + 0.35 * k + MathF.Max(st.Flight, Vector2.Distance(v.Position, at) / MissileTopSpeed);"
+Sim/Bosses/BossSystem.BigAttacks.cs,536,8f,bosses.bossSystem.planRadius,m,ban_kinh,03,1,inline,,"ctor_arg:BigZone: s.ZoneList.Add(new BigZone(Offset(v, st.At), 8f, fire, false));"
+Sim/Bosses/BossSystem.BigAttacks.cs,548,0.2,bosses.bossSystem.planKScale2,x,khac,03,1,inline,,multiply: var due = fire + 0.2 * k;
+Sim/Bosses/BossSystem.BigAttacks.cs,560,0.5f,bosses.bossSystem.planWidthScale,m,ban_kinh,03,1,inline,,multiply: var half = st.Width * 0.5f * MathF.PI / 180f;
+Sim/Bosses/BossSystem.BigAttacks.cs,563,0.66f,bosses.bossSystem.planKScale3,x,khac,03,1,inline,,multiply: var dir = SimMath.Forward(v.Heading + k * half * 0.66f);
+Sim/Bosses/BossSystem.BigAttacks.cs,564,0.55f,bosses.bossSystem.planDirScale,m,ban_kinh,03,1,inline,,"multiply: s.ZoneList.Add(new BigZone(_world.ClampToMap(SwingCentre(v) + dir * st.Radius * 0.55f), st.Radius * 0.5f, fire, true));"
+Sim/Bosses/BossSystem.BigAttacks.cs,564,0.5f,bosses.bossSystem.planRadiusScale,m,ban_kinh,03,1,inline,,"multiply: s.ZoneList.Add(new BigZone(_world.ClampToMap(SwingCentre(v) + dir * st.Radius * 0.55f), st.Radius * 0.5f, fire, true));"
+Sim/Bosses/BossSystem.BigAttacks.cs,572,0.5f,bosses.bossSystem.planDistanceScale,m,ban_kinh,03,1,inline,,"multiply: s.ZoneList.Add(new BigZone(mid, s.Axis, Vector2.Distance(v.Position, to) * 0.5f, st.Width * 0.5f, fire, true, 1f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,572,0.5f,bosses.bossSystem.planWidthScale,m,ban_kinh,03,2,inline,,"multiply: s.ZoneList.Add(new BigZone(mid, s.Axis, Vector2.Distance(v.Position, to) * 0.5f, st.Width * 0.5f, fire, true, 1f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,637,4,bosses.bossSystem.chargeStage,s,thoi_gian,03,1,inline,,"arg:SimEvent.Big: _world.Emit(SimEvent.Big(v, def.Id, 4, s.Aim, def.EmpDelay));"
+Sim/Bosses/BossSystem.BigAttacks.cs,646,2,bosses.bossSystem.cancelStage,x,khac,03,1,inline,,"arg:SimEvent.Big: _world.Emit(SimEvent.Big(v, s.Def.Id, 2, s.Aim, 0f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,660,0.5,bosses.bossSystem.finishNowAdd,s,thoi_gian,03,1,inline,,"add: if (_dodges[i].back > s.Now + 0.5) _dodges[i] = (_dodges[i].unit, _dodges[i].before, _dodges[i].from, _dodges[i].exit, Math.Min(_dodges[i].back, s.Now + 1.0));"
+Sim/Bosses/BossSystem.BigAttacks.cs,704,0.08,bosses.bossSystem.fireKScale,s,thoi_gian,03,1,inline,,"multiply: Round(v, s, st, _world.ClampToMap(at), now + (k / salvo) * gap + 0.08 * (k % salvo), scale, k);"
+Sim/Bosses/BossSystem.BigAttacks.cs,714,0.5f,bosses.bossSystem.fireLengthScale,m,ban_kinh,03,1,inline,,multiply: var along = -st.Length * 0.5f + st.Length * (k + 0.5f) / n;
+Sim/Bosses/BossSystem.BigAttacks.cs,714,0.5f,bosses.bossSystem.fireKAdd,m,ban_kinh,03,2,inline,,add: var along = -st.Length * 0.5f + st.Length * (k + 0.5f) / n;
+Sim/Bosses/BossSystem.BigAttacks.cs,715,0.5f,bosses.bossSystem.fireNextDoubleSub,s,thoi_gian,03,1,inline,,subtract: var lateral = st.Width > 0f && st.Interval <= 0f ? ((float)rng.NextDouble() - 0.5f) * st.Width * 0.7f : 0f;
+Sim/Bosses/BossSystem.BigAttacks.cs,715,0.7f,bosses.bossSystem.fireNextDoubleScale,s,thoi_gian,03,1,inline,,multiply: var lateral = st.Width > 0f && st.Interval <= 0f ? ((float)rng.NextDouble() - 0.5f) * st.Width * 0.7f : 0f;
+Sim/Bosses/BossSystem.BigAttacks.cs,720,0.5f,bosses.bossSystem.fireAxisScale,s,thoi_gian,03,1,inline,,"multiply: _world.Emit(SimEvent.AircraftPass(v.Team, pass, s.Aim - axis * st.Length * 0.5f, s.Aim + axis * st.Length * 0.5f, MathF.Max(0.5f, st.Duration)));"
+Sim/Bosses/BossSystem.BigAttacks.cs,720,0.5f,bosses.bossSystem.fireAxisScale,s,thoi_gian,03,2,inline,,"multiply: _world.Emit(SimEvent.AircraftPass(v.Team, pass, s.Aim - axis * st.Length * 0.5f, s.Aim + axis * st.Length * 0.5f, MathF.Max(0.5f, st.Duration)));"
+Sim/Bosses/BossSystem.BigAttacks.cs,720,0.5f,bosses.bossSystem.fireDurationFloor,s,thoi_gian,03,3,inline,,"math_max: _world.Emit(SimEvent.AircraftPass(v.Team, pass, s.Aim - axis * st.Length * 0.5f, s.Aim + axis * st.Length * 0.5f, MathF.Max(0.5f, st.Duration)));"
+Sim/Bosses/BossSystem.BigAttacks.cs,740,0.35,bosses.bossSystem.fireKScale2,s,thoi_gian,03,1,inline,,multiply: var launch = now + 0.35 * k;
+Sim/Bosses/BossSystem.BigAttacks.cs,741,0.5,bosses.bossSystem.fireLaunchAdd,x,nguong,03,1,inline,,"add: Launch(v, s, st, from, at, launch, Math.Max(launch + 0.5, due), scale, EntityId.None, part);"
+Sim/Bosses/BossSystem.BigAttacks.cs,774,0.08,bosses.bossSystem.circleDelayKScale,s,thoi_gian,03,1,inline,,multiply: return (k / salvo) * gap + 0.08 * (k % salvo);
+Sim/Bosses/BossSystem.BigAttacks.cs,807,0.9,bosses.bossSystem.stepBlastsDueSub,x,sat_thuong,03,1,inline,,subtract: if (!b.Shot && now >= b.Due - 0.9)
+Sim/Bosses/BossSystem.BigAttacks.cs,810,0.05,bosses.bossSystem.stepBlastsDueFloor,x,sat_thuong,03,1,inline,,"math_max: if (b.Boss.IsAlive) Shoot(b.Boss, b.Mount, b.Look, b.From, b.At, (float)Math.Max(0.05, b.Due - now), EntityId.None);"
+Sim/Bosses/BossSystem.BigAttacks.cs,840,0.01f,bosses.bossSystem.blastAtLengthSquaredMin,m,sat_thuong,03,1,inline,,compare: var half = side.LengthSquared() > 0.01f;
+Sim/Bosses/BossSystem.BigAttacks.cs,868,800f,bosses.bossSystem.blastAtDamageMin,x,sat_thuong,03,1,inline,,compare: var tier = damage >= 800f ? ExplosionTier.Ultimate : damage >= 200f ? ExplosionTier.Huge : damage >= 50f ? ExplosionTier.Large : ExplosionTier.Medium;
+Sim/Bosses/BossSystem.BigAttacks.cs,868,200f,bosses.bossSystem.blastAtDamageMin2,x,sat_thuong,03,1,inline,,compare: var tier = damage >= 800f ? ExplosionTier.Ultimate : damage >= 200f ? ExplosionTier.Huge : damage >= 50f ? ExplosionTier.Large : ExplosionTier.Medium;
+Sim/Bosses/BossSystem.BigAttacks.cs,868,50f,bosses.bossSystem.blastAtDamageMin3,x,sat_thuong,03,1,inline,,compare: var tier = damage >= 800f ? ExplosionTier.Ultimate : damage >= 200f ? ExplosionTier.Huge : damage >= 50f ? ExplosionTier.Large : ExplosionTier.Medium;
+Sim/Bosses/BossSystem.BigAttacks.cs,905,0.5f,bosses.bossSystem.pierceWidthScale,m,ban_kinh,03,1,inline,,"multiply: if (along < 0f || along > st.Length + e.Radius || MathF.Abs(Vector2.Dot(d, across)) > st.Width * 0.5f + e.Radius) continue;"
+Sim/Bosses/BossSystem.BigAttacks.cs,918,0.12f,bosses.bossSystem.pierceSeconds,s,thoi_gian,03,1,inline,,"arg:BossSystem.Shoot: Shoot(v, mount, LookOf(st), part >= 0 ? v.PartPosition(part) : v.Position, s.Origin + s.Axis * st.Length, 0.12f, EntityId.None);"
+Sim/Bosses/BossSystem.BigAttacks.cs,929,3,bosses.bossSystem.firingStage,x,khac,03,1,inline,,"arg:SimEvent.Big: _world.Emit(SimEvent.Big(v, def.Id, 3, s.Aim, 0f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,960,0.5f,bosses.bossSystem.sweepLengthScale,m,thoi_gian,03,1,inline,,"multiply: var zone = s.ZoneList.Count > 0 ? s.ZoneList[0] : new BigZone(s.Aim, s.Axis, st.Length * 0.5f, st.Width * 0.5f, now, true);"
+Sim/Bosses/BossSystem.BigAttacks.cs,960,0.5f,bosses.bossSystem.sweepWidthScale,m,thoi_gian,03,2,inline,,"multiply: var zone = s.ZoneList.Count > 0 ? s.ZoneList[0] : new BigZone(s.Aim, s.Axis, st.Length * 0.5f, st.Width * 0.5f, now, true);"
+Sim/Bosses/BossSystem.BigAttacks.cs,961,0.1,bosses.bossSystem.sweepDurationFloor,s,thoi_gian,03,1,inline,,"math_max: var t = (float)Math.Clamp((now - s.FireAt) / Math.Max(0.1, st.Duration), 0.0, 1.0);"
+Sim/Bosses/BossSystem.BigAttacks.cs,962,2f,bosses.bossSystem.sweepHalfLengthScale,m,ban_kinh,03,1,inline,,multiply: Vector2 At(float u) => zone.Centre + zone.Axis * (-zone.HalfLength + 2f * zone.HalfLength * u);
+Sim/Bosses/BossSystem.BigAttacks.cs,970,0.5f,bosses.bossSystem.sweepWidthScale,m,ban_kinh,03,1,inline,,"multiply: if (SegmentDistance(e.Position, from, to) > st.Width * 0.5f + e.Radius) continue;"
+Sim/Bosses/BossSystem.BigAttacks.cs,976,2,bosses.bossSystem.sweepTickMod,ticks,thoi_gian,03,1,inline,,modulo: if (_world.Tick % 2 == 0)
+Sim/Bosses/BossSystem.BigAttacks.cs,1018,3f,bosses.bossSystem.dropKAdd,x,khac,03,1,inline,,add: var spot = ramp + forward * (3f + 4f * (k / 2)) + right * ((k % 2 == 0 ? -1f : 1f) * 3f);
+Sim/Bosses/BossSystem.BigAttacks.cs,1018,4f,bosses.bossSystem.dropKScale,x,khac,03,1,inline,,multiply: var spot = ramp + forward * (3f + 4f * (k / 2)) + right * ((k % 2 == 0 ? -1f : 1f) * 3f);
+Sim/Bosses/BossSystem.BigAttacks.cs,1018,2,bosses.bossSystem.dropKDivisor,x,khac,03,1,inline,,divide: var spot = ramp + forward * (3f + 4f * (k / 2)) + right * ((k % 2 == 0 ? -1f : 1f) * 3f);
+Sim/Bosses/BossSystem.BigAttacks.cs,1018,2,bosses.bossSystem.dropKMod,x,khac,03,2,inline,,modulo: var spot = ramp + forward * (3f + 4f * (k / 2)) + right * ((k % 2 == 0 ? -1f : 1f) * 3f);
+Sim/Bosses/BossSystem.BigAttacks.cs,1018,3f,bosses.bossSystem.dropScale,x,khac,03,2,inline,,multiply: var spot = ramp + forward * (3f + 4f * (k / 2)) + right * ((k % 2 == 0 ? -1f : 1f) * 3f);
+Sim/Bosses/BossSystem.BigAttacks.cs,1031,8f,bosses.bossSystem.swarmAreaFloor,x,nguong,03,1,inline,,"math_max: var area = MathF.Max(8f, st.Area);"
+Sim/Bosses/BossSystem.BigAttacks.cs,1039,100,bosses.bossSystem.swarmFrontScale,x,sat_thuong,03,1,inline,,multiply: var pa = a.Def.Armour.Front * 100 + a.Def.CpCost;
+Sim/Bosses/BossSystem.BigAttacks.cs,1040,100,bosses.bossSystem.swarmFrontScale,x,sat_thuong,03,1,inline,,multiply: var pb = b.Def.Armour.Front * 100 + b.Def.CpCost;
+Sim/Bosses/BossSystem.BigAttacks.cs,1051,0.12,bosses.bossSystem.swarmKScale,s,thoi_gian,03,1,inline,,multiply: var launch = now + 0.12 * k;
+Sim/Bosses/BossSystem.BigAttacks.cs,1080,0.1,bosses.bossSystem.stepFlyersArriveFloor,s,thoi_gian,03,1,inline,,"math_max: if (f.Boss.IsAlive) Shoot(f.Boss, f.Mount, f.Look, f.From, f.To, (float)Math.Max(0.1, f.Arrive - now), f.Target);"
+Sim/Bosses/BossSystem.BigAttacks.cs,1089,0.1,bosses.bossSystem.stepFlyersArriveFloor,s,thoi_gian,03,1,inline,,"math_max: var t = (float)Math.Clamp((now - f.Launch) / Math.Max(0.1, f.Arrive - f.Launch), 0.0, 1.0);"
+Sim/Bosses/BossSystem.BigAttacks.cs,1094,5,bosses.bossSystem.stepFlyersStage,x,khac,03,1,inline,,"arg:SimEvent.Big: _world.Emit(SimEvent.Big(f.Boss, f.State.Def.Id, 5, at, 0f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,1106,0.05f,bosses.bossSystem.interceptedFlyerTicksScale,s,thoi_gian,03,1,inline,,multiply: var seconds = FlyerTicks * 0.05f;
+Sim/Bosses/BossSystem.BigAttacks.cs,1111,90f,bosses.bossSystem.interceptedScale,x,khac,03,1,inline,,multiply: if (d2 > 90f * 90f) continue;
+Sim/Bosses/BossSystem.BigAttacks.cs,1111,90f,bosses.bossSystem.interceptedScale,x,khac,03,2,inline,,multiply: if (d2 > 90f * 90f) continue;
+Sim/Bosses/BossSystem.BigAttacks.cs,1146,8f,bosses.bossSystem.arrivedDistanceMax,m,ban_kinh,03,1,inline,,"compare: if (!jammed && f.Target.IsValid && _world.TryGetVehicle(f.Target, out var t) && t.IsAlive && Vector2.Distance(t.Position, f.To) < 8f) target = t;"
+Sim/Bosses/BossSystem.BigAttacks.cs,1150,12f,bosses.bossSystem.arrivedScale,x,khac,03,1,inline,,multiply: var best = 12f * 12f;
+Sim/Bosses/BossSystem.BigAttacks.cs,1150,12f,bosses.bossSystem.arrivedScale,x,khac,03,2,inline,,multiply: var best = 12f * 12f;
+Sim/Bosses/BossSystem.BigAttacks.cs,1160,7f,bosses.bossSystem.arrivedRadius,m,ban_kinh,03,1,inline,,"arg:BossSystem.RandomIn: var at = target?.Position ?? f.To + (jammed ? RandomIn(_world.Random, 7f) : Vector2.Zero);"
+Sim/Bosses/BossSystem.BigAttacks.cs,1172,9f,bosses.bossSystem.burnRadiusMax,m,ban_kinh,03,1,inline,,compare: if (fire.Radius <= 9f)
+Sim/Bosses/BossSystem.BigAttacks.cs,1177,0.35f,bosses.bossSystem.burnRadiusScale,m,thoi_gian,03,1,inline,,"multiply: _world.Emit(SimEvent.FireTrail(boss, at, fire.Seconds, fire.Radius * 0.35f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,1178,8,bosses.bossSystem.burnKMax,x,nguong,03,1,inline,,compare: for (var k = 0; k < 8; k++)
+Sim/Bosses/BossSystem.BigAttacks.cs,1180,8f,bosses.bossSystem.burnKDivisor,x,khac,03,1,inline,,divide: var a = k * SimMath.Tau / 8f;
+Sim/Bosses/BossSystem.BigAttacks.cs,1182,0.01f,bosses.bossSystem.burnLengthSquaredMin,m,ban_kinh,03,1,inline,,"compare: if (side.LengthSquared() > 0.01f && Vector2.Dot(dir, side) < 0f) continue;"
+Sim/Bosses/BossSystem.BigAttacks.cs,1183,0.65f,bosses.bossSystem.burnDirScale,s,thoi_gian,03,1,inline,,"multiply: _world.Emit(SimEvent.FireTrail(boss, _world.ClampToMap(at + dir * fire.Radius * 0.65f), fire.Seconds, fire.Radius * 0.35f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,1183,0.35f,bosses.bossSystem.burnRadiusScale,m,thoi_gian,03,1,inline,,"multiply: _world.Emit(SimEvent.FireTrail(boss, _world.ClampToMap(at + dir * fire.Radius * 0.65f), fire.Seconds, fire.Radius * 0.35f));"
+Sim/Bosses/BossSystem.BigAttacks.cs,1190,10,bosses.bossSystem.stepFiresTickMod,ticks,thoi_gian,03,1,inline,,modulo: if (_bigFires.Count == 0 || _world.Tick % 10 != 5) return;
+Sim/Bosses/BossSystem.BigAttacks.cs,1190,5,bosses.bossSystem.stepFiresTickIs,ticks,thoi_gian,03,1,inline,,equals: if (_bigFires.Count == 0 || _world.Tick % 10 != 5) return;
+Sim/Bosses/BossSystem.BigAttacks.cs,1199,0.01f,bosses.bossSystem.stepFiresLengthSquaredMin,m,ban_kinh,03,1,inline,,compare: var half = side.LengthSquared() > 0.01f;
+Sim/Bosses/BossSystem.BigAttacks.cs,1205,1.2f,bosses.bossSystem.stepFiresSeconds,s,thoi_gian,03,1,inline,,"arg:StatusSystem.Burn: _world.Status.Burn(e, dps, 1.2f, boss.Team, boss.Id);"
+Sim/Bosses/BossSystem.BigAttacks.cs,1218,0.5f,bosses.bossSystem.quakeWarnedWarnFloor,s,thoi_gian,03,1,inline,,"math_max: warn = MathF.Max(0.5f, s.Def.Warn + scale.Warn);"
+Sim/Bosses/BossSystem.BigAttacks.cs,1275,0.1f,bosses.bossSystem.dodgeSpeedMax,s,thoi_gian,03,1,inline,,"compare: if (speed <= 0.1f || Vector2.Distance(e.Position, exit) / speed > zone.Due - now - 0.2) continue;"
+Sim/Bosses/BossSystem.BigAttacks.cs,1275,0.2,bosses.bossSystem.dodgeDueSub,s,thoi_gian,03,1,inline,,"subtract: if (speed <= 0.1f || Vector2.Distance(e.Position, exit) / speed > zone.Due - now - 0.2) continue;"
+Sim/Bosses/BossSystem.BigAttacks.cs,1304,2f,bosses.bossSystem.stepDodgesDistanceMax,m,ban_kinh,03,1,inline,,"compare: var ours = unit.Order.Kind == OrderKind.Idle || (unit.Order.Kind == OrderKind.Move && Vector2.Distance(unit.Order.Point, exit) <= 2f);"
+Sim/Bosses/BossSystem.Escorts.cs,36,0.05f,bosses.bossSystem.escortSecondsEscortTicksScale,s,thoi_gian,03,1,inline,,multiply: private static float EscortSeconds => EscortTicks * 0.05f;
+Sim/Bosses/BossSystem.Escorts.cs,184,2,bosses.bossSystem.sendPassMax,x,nguong,03,1,inline,,compare: for (var pass = 0; pass < 2 && room > 0; pass++)
+Sim/Bosses/BossSystem.Escorts.cs,196,0.95f,bosses.bossSystem.sendShare,count,gioi_han_thuc_the,03,1,inline,,"arg:StatusSystem.Slow: if (wave.Halt > 0f) _world.Status.Slow(g.Boss, 0.95f, wave.Halt);"
+Sim/Bosses/BossSystem.Escorts.cs,270,80f,bosses.bossSystem.threatDirectionScale,x,khac,03,1,inline,,multiply: var best = 80f * 80f;
+Sim/Bosses/BossSystem.Escorts.cs,270,80f,bosses.bossSystem.threatDirectionScale,x,khac,03,2,inline,,multiply: var best = 80f * 80f;
+Sim/Bosses/BossSystem.Escorts.cs,281,0.01f,bosses.bossSystem.threatDirectionLengthSquaredMin,m,ban_kinh,03,1,inline,,compare: return to.LengthSquared() > 0.01f ? Vector2.Normalize(to) : SimMath.Forward(boss.Heading);
+Sim/Bosses/BossSystem.Escorts.cs,287,4f,bosses.bossSystem.edgePointHalfSizeSub,count,tran,03,1,inline,,subtract: var limit = _world.Map.HalfSize - 4f;
+Sim/Bosses/BossSystem.Escorts.cs,304,2,bosses.bossSystem.slotPointIndexMod,x,khac,03,1,inline,,modulo: var side = index % 2 == 0 ? 1f : -1f;
+Sim/Bosses/BossSystem.Escorts.cs,305,2,bosses.bossSystem.slotPointIndexDivisor,x,khac,03,1,inline,,divide: var rank = index / 2 % 3;
+Sim/Bosses/BossSystem.Escorts.cs,305,3,bosses.bossSystem.slotPointIndexMod2,x,khac,03,1,inline,,modulo: var rank = index / 2 % 3;
+Sim/Bosses/BossSystem.Escorts.cs,309,8f,bosses.bossSystem.slotPointHullAdd,x,khac,03,1,inline,,add: return boss.Position + forward * (hull + 8f + rank * 6f) + right * side * 4f;
+Sim/Bosses/BossSystem.Escorts.cs,309,6f,bosses.bossSystem.slotPointRankScale,x,khac,03,1,inline,,multiply: return boss.Position + forward * (hull + 8f + rank * 6f) + right * side * 4f;
+Sim/Bosses/BossSystem.Escorts.cs,309,4f,bosses.bossSystem.slotPointRightScale,x,khac,03,1,inline,,multiply: return boss.Position + forward * (hull + 8f + rank * 6f) + right * side * 4f;
+Sim/Bosses/BossSystem.Escorts.cs,316,8f,bosses.bossSystem.slotPointHullAdd,x,khac,03,1,inline,,add: return boss.Position + threat * toward * (hull + 8f + rank * 5f) + across * side * (3f + rank * 3f);
+Sim/Bosses/BossSystem.Escorts.cs,316,5f,bosses.bossSystem.slotPointRankScale2,x,khac,03,1,inline,,multiply: return boss.Position + threat * toward * (hull + 8f + rank * 5f) + across * side * (3f + rank * 3f);
+Sim/Bosses/BossSystem.Escorts.cs,316,3f,bosses.bossSystem.slotPointRankAdd,x,khac,03,1,inline,,add: return boss.Position + threat * toward * (hull + 8f + rank * 5f) + across * side * (3f + rank * 3f);
+Sim/Bosses/BossSystem.Escorts.cs,316,3f,bosses.bossSystem.slotPointRankScale3,x,khac,03,2,inline,,multiply: return boss.Position + threat * toward * (hull + 8f + rank * 5f) + across * side * (3f + rank * 3f);
+Sim/Bosses/BossSystem.Escorts.cs,319,6f,bosses.bossSystem.slotPointHullAdd2,x,khac,03,1,inline,,add: return boss.Position + right * side * (hull + 6f + rank * 5f) + forward * (3f - rank * 5f);
+Sim/Bosses/BossSystem.Escorts.cs,319,5f,bosses.bossSystem.slotPointRankScale2,x,khac,03,1,inline,,multiply: return boss.Position + right * side * (hull + 6f + rank * 5f) + forward * (3f - rank * 5f);
+Sim/Bosses/BossSystem.Escorts.cs,319,3f,bosses.bossSystem.slotPointRankSub,x,khac,03,1,inline,,subtract: return boss.Position + right * side * (hull + 6f + rank * 5f) + forward * (3f - rank * 5f);
+Sim/Bosses/BossSystem.Escorts.cs,319,5f,bosses.bossSystem.slotPointRankScale2,x,khac,03,2,inline,,multiply: return boss.Position + right * side * (hull + 6f + rank * 5f) + forward * (3f - rank * 5f);
+Sim/Bosses/BossSystem.Escorts.cs,334,1.6f,bosses.bossSystem.guideLeashScale,m,ban_kinh,03,1,inline,,multiply: var reach = m.Role == EscortRole.Raid ? leash * 1.6f : leash;
+Sim/Bosses/BossSystem.Escorts.cs,348,6f,bosses.bossSystem.guideDistanceMin,m,ban_kinh,03,1,inline,,"compare: var far = Vector2.Distance(v.Position, home) > 6f;"
+Sim/Bosses/BossSystem.Escorts.cs,349,4f,bosses.bossSystem.guideDistanceMin2,m,ban_kinh,03,1,inline,,"compare: var moved = !m.HasOrder || Vector2.Distance(m.Ordered, home) > 4f;"
+Sim/Bosses/BossSystem.Escorts.cs,372,0.5f,bosses.bossSystem.threatDistanceScale,m,ban_kinh,03,1,inline,,"multiply: var score = d + Vector2.Distance(e.Position, guard.Position) * 0.5f - (attacking ? 30f : 0f);"
+Sim/Bosses/BossSystem.Escorts.cs,372,30f,bosses.bossSystem.threatAttackingTrue,m,ban_kinh,03,1,inline,,"conditional: var score = d + Vector2.Distance(e.Position, guard.Position) * 0.5f - (attacking ? 30f : 0f);"
+Sim/Bosses/BossSystem.Escorts.cs,402,2.5f,bosses.bossSystem.helpEscortSecondsScale,s,thoi_gian,03,1,inline,,"multiply: _world.Status.Mark(e, rules.SpotBonus, EscortSeconds * 2.5f, v.Team, 0f);"
+Sim/Bosses/BossSystem.Escorts.cs,403,6,bosses.bossSystem.helpMarkedMin,x,nguong,03,1,inline,,compare: if (++marked >= 6) break;
+Sim/Bosses/BossSystem.Escorts.cs,423,10.0,bosses.bossSystem.paidTimeMin,s,thoi_gian,03,1,inline,,"compare: if (team < 0 || team == v.Team || _world.Time - v.LastHitTime > 10.0 || !_world.TryGetEconomy(team, out var economy)) return;"
+Sim/Bosses/BossSystem.P20.cs,76,8,bosses.bossSystem.stepP20Nguong,x,nguong,03,1,manual:pattern,,"relational_pattern: if (def.SpotAura < 1f && !v.SpotOff && v.Team is >= 0 and < 8) _spot[v.Team] = MathF.Min(_spot[v.Team], def.SpotAura);"
+Sim/Bosses/BossSystem.P20.cs,102,0.5,bosses.bossSystem.guardNowAdd,s,thoi_gian,03,1,inline,,add: v.GuardNext = now + 0.5;
+Sim/Bosses/BossSystem.P20.cs,107,0.6,bosses.bossSystem.guardDelay,s,thoi_gian,03,1,inline,,"arg:DamageSystem.Queue: 0.6, v.Team, v, HitKind.Strike, v.Id);"
+Sim/Bosses/BossSystem.P20.cs,111,8,bosses.bossSystem.spotAuraForValue,x,khac,03,1,manual:pattern,,relational_pattern: public float SpotAuraFor(int team) => team is >= 0 and < 8 ? _spot[team] : 1f;
+Sim/Bosses/BossSystem.P20.cs,137,0.5f,bosses.bossSystem.factoryLengthScale,m,ban_kinh,03,1,inline,,multiply: var from = doors.Count > 0 ? v.PartPosition(doors[k % doors.Count]) : v.Position - forward * (v.Def.Length * 0.5f);
+Sim/Bosses/BossSystem.P20.cs,139,5f,bosses.bossSystem.factoryRowAdd,x,khac,03,1,inline,,add: var spot = from - forward * (5f + 4f * row) + right * ((k % 2 == 0 ? -1f : 1f) * 1.5f);
+Sim/Bosses/BossSystem.P20.cs,139,4f,bosses.bossSystem.factoryRowScale,x,khac,03,1,inline,,multiply: var spot = from - forward * (5f + 4f * row) + right * ((k % 2 == 0 ? -1f : 1f) * 1.5f);
+Sim/Bosses/BossSystem.P20.cs,139,2,bosses.bossSystem.factoryKMod,x,khac,03,1,inline,,modulo: var spot = from - forward * (5f + 4f * row) + right * ((k % 2 == 0 ? -1f : 1f) * 1.5f);
+Sim/Bosses/BossSystem.P20.cs,139,1.5f,bosses.bossSystem.factoryScale,x,khac,03,1,inline,,multiply: var spot = from - forward * (5f + 4f * row) + right * ((k % 2 == 0 ? -1f : 1f) * 1.5f);
+Sim/Bosses/BossSystem.P20.cs,140,8,bosses.bossSystem.factoryMaxRings,x,sat_thuong,03,1,inline,,"arg:NavGrid.TryNearestWalkable: if (_world.Grid.TryNearestWalkable(_world.ClampToMap(spot), 8, out var open)) spot = open;"
+Sim/Bosses/BossSystem.P20.cs,145,0.5f,bosses.bossSystem.factoryLengthScale,m,ban_kinh,03,1,inline,,"multiply: _world.Emit(SimEvent.Landed(v, v.Position - forward * (v.Def.Length * 0.5f), count));"
+Sim/Bosses/BossSystem.P20.cs,165,0.5f,bosses.bossSystem.crushLengthScale,m,ban_kinh,03,1,inline,,"multiply: var front = MathF.Max(v.Def.Length * 0.5f, v.Radius * 0.6f);"
+Sim/Bosses/BossSystem.P20.cs,165,0.6f,bosses.bossSystem.crushRadiusScale,m,ban_kinh,03,1,inline,,"multiply: var front = MathF.Max(v.Def.Length * 0.5f, v.Radius * 0.6f);"
+Sim/Bosses/BossSystem.P20.cs,166,0.5f,bosses.bossSystem.crushWidthScale,m,ban_kinh,03,1,inline,,"multiply: var half = MathF.Max(v.Def.Width * 0.5f, v.Radius * 0.5f);"
+Sim/Bosses/BossSystem.P20.cs,166,0.5f,bosses.bossSystem.crushRadiusScale2,m,ban_kinh,03,2,inline,,"multiply: var half = MathF.Max(v.Def.Width * 0.5f, v.Radius * 0.5f);"
+Sim/Bosses/BossSystem.P20.cs,174,2.5f,bosses.bossSystem.crushFrontSub,m,ban_kinh,03,1,inline,,"subtract: if (along < front - 2.5f || along > front + c.Reach + e.Radius || MathF.Abs(Vector2.Dot(d, right)) > half + e.Radius) continue;"
+Sim/Bosses/BossSystem.P20.cs,178,50f,bosses.bossSystem.crushMaxHpScale,count,sat_thuong,03,1,inline,,"multiply: _world.Damage.Apply(e, e.MaxHp * 50f, DamageType.Kinetic, info);"
+Sim/Bosses/BossSystem.P20.cs,181,0.1f,bosses.bossSystem.crushArmourCutFloor,x,sat_thuong,03,1,inline,,"math_max: var mult = MathF.Max(0.1f, 1f - c.ArmourCut * e.Def.Armour.Front) * (e.Kind == TargetKind.Structure ? c.Structure : 1f);"
+Sim/Bosses/BossSystem.P20.cs,189,2.5f,bosses.bossSystem.crushFrontSub,m,ban_kinh,03,1,inline,,"subtract: if (along < front - 2.5f || along > front + c.Reach + prop.Radius || MathF.Abs(Vector2.Dot(d, right)) > half + prop.Radius) continue;"
+Sim/Bosses/BossSystem.P20.cs,198,3,bosses.bossSystem.debrisKMax,x,nguong,03,1,inline,,compare: for (var k = 0; k < 3; k++)
+Sim/Bosses/BossSystem.P20.cs,201,4f,bosses.bossSystem.debrisRadius,x,sat_thuong,03,1,inline,,"arg:ExplosionDef.TwoLayer: _world.Damage.Queue(at, ExplosionDef.TwoLayer(c.DebrisDamage * v.DamageBoost, 4f, ExplosionTier.Large), 0.8 + 0.3 * k, v.Team, v, HitKind.Strike, v.Id);"
+Sim/Bosses/BossSystem.P20.cs,201,0.8,bosses.bossSystem.debrisKAdd,x,sat_thuong,03,1,inline,,"add: _world.Damage.Queue(at, ExplosionDef.TwoLayer(c.DebrisDamage * v.DamageBoost, 4f, ExplosionTier.Large), 0.8 + 0.3 * k, v.Team, v, HitKind.Strike, v.Id);"
+Sim/Bosses/BossSystem.P20.cs,201,0.3,bosses.bossSystem.debrisKScale,x,sat_thuong,03,1,inline,,"multiply: _world.Damage.Queue(at, ExplosionDef.TwoLayer(c.DebrisDamage * v.DamageBoost, 4f, ExplosionTier.Large), 0.8 + 0.3 * k, v.Team, v, HitKind.Strike, v.Id);"
+Sim/Bosses/BossSystem.P20.cs,211,6f,bosses.bossSystem.followRouteRadiusFloor,m,ban_kinh,03,1,inline,,"math_max: var reach = MathF.Max(6f, v.Radius * 0.8f);"
+Sim/Bosses/BossSystem.P20.cs,211,0.8f,bosses.bossSystem.followRouteRadiusScale,m,ban_kinh,03,1,inline,,"multiply: var reach = MathF.Max(6f, v.Radius * 0.8f);"
+Sim/Bosses/BossSystem.P20.cs,229,6.0,bosses.bossSystem.followRouteNowMax,s,thoi_gian,03,1,inline,,compare: if (now - v.RouteDriven < 6.0) return;
+Sim/Bosses/BossSystem.P20.cs,247,6.0,bosses.bossSystem.riseTimeAdd,s,thoi_gian,03,1,inline,,add: v.BurrowNext = _world.Time + warn + 6.0;
+Sim/Bosses/BossSystem.P20.cs,248,2,bosses.bossSystem.riseStage,x,khac,03,1,inline,,"arg:SimEvent.Burrow: _world.Emit(SimEvent.Burrow(v, 2, v.Position));"
+Sim/Bosses/BossSystem.P20.cs,256,0.5f,bosses.bossSystem.swingWidthScale,m,ban_kinh,03,1,inline,,multiply: var cos = MathF.Cos(st.Width * 0.5f * MathF.PI / 180f);
+Sim/Bosses/BossSystem.P20.cs,265,2f,bosses.bossSystem.swingLengthMax,m,ban_kinh,03,1,inline,,"compare: return length < 2f || Vector2.Dot(d / MathF.Max(0.01f, length), forward) >= cos - radius / MathF.Max(1f, length);"
+Sim/Bosses/BossSystem.P20.cs,265,0.01f,bosses.bossSystem.swingLengthFloor,m,ban_kinh,03,1,inline,,"math_max: return length < 2f || Vector2.Dot(d / MathF.Max(0.01f, length), forward) >= cos - radius / MathF.Max(1f, length);"
+Sim/Bosses/BossSystem.P20.cs,281,2,bosses.bossSystem.swingK,x,khac,03,1,inline,,declarator: for (var k = -2; k <= 2; k++)
+Sim/Bosses/BossSystem.P20.cs,281,2,bosses.bossSystem.swingKMax,x,nguong,03,2,inline,,compare: for (var k = -2; k <= 2; k++)
+Sim/Bosses/BossSystem.P20.cs,283,0.2f,bosses.bossSystem.swingKScale,m,ban_kinh,03,1,inline,,multiply: var dir = SimMath.Forward(v.Heading + k * st.Width * 0.2f * MathF.PI / 180f);
+Sim/Bosses/BossSystem.P20.cs,284,0.7f,bosses.bossSystem.swingDirScale,m,ban_kinh,03,1,inline,,"multiply: _world.Emit(SimEvent.Exploded(_world.ClampToMap(centre + dir * st.Radius * 0.7f), new ExplosionDef(0f, 6f, 0f, ExplosionTier.Huge), v.Id));"
+Sim/Bosses/BossSystem.P20.cs,284,6f,bosses.bossSystem.swingRadius,m,ban_kinh,03,1,inline,,"ctor_arg:ExplosionDef: _world.Emit(SimEvent.Exploded(_world.ClampToMap(centre + dir * st.Radius * 0.7f), new ExplosionDef(0f, 6f, 0f, ExplosionTier.Huge), v.Id));"
+Sim/Bosses/BossSystem.P20.cs,289,0.5f,bosses.bossSystem.swingCentreLengthScale,m,ban_kinh,03,1,inline,,"multiply: private static Vector2 SwingCentre(Vehicle v) => v.Position + SimMath.Forward(v.Heading) * MathF.Max(0f, v.Def.Length * 0.5f - 4f);"
+Sim/Bosses/BossSystem.P20.cs,289,4f,bosses.bossSystem.swingCentreLengthSub,m,ban_kinh,03,1,inline,,"subtract: private static Vector2 SwingCentre(Vehicle v) => v.Position + SimMath.Forward(v.Heading) * MathF.Max(0f, v.Def.Length * 0.5f - 4f);"
+Sim/Bosses/BossSystem.P20.cs,314,0.6f,bosses.bossSystem.stepChargeHeading,x,khac,03,1,inline,,compound_assign: v.Heading += 0.6f;
+Sim/Bosses/BossSystem.P20.cs,317,0.1,bosses.bossSystem.stepChargeChargeEndFloor,s,thoi_gian,03,1,inline,,"math_max: var u = (float)Math.Clamp((now - v.ChargeStart) / Math.Max(0.1, v.ChargeEnd - v.ChargeStart), 0.0, 1.0);"
+Sim/Bosses/BossSystem.P20.cs,323,0.5f,bosses.bossSystem.stepChargeWidthScale,m,ban_kinh,03,1,inline,,"multiply: if (Vector2.Distance(e.Position, v.Position) > st.Width * 0.5f + e.Radius + v.Radius * 0.3f) continue;"
+Sim/Bosses/BossSystem.P20.cs,323,0.3f,bosses.bossSystem.stepChargeRadiusScale,m,ban_kinh,03,1,inline,,"multiply: if (Vector2.Distance(e.Position, v.Position) > st.Width * 0.5f + e.Radius + v.Radius * 0.3f) continue;"
+Sim/Bosses/BossSystem.P20.cs,349,0.5f,bosses.bossSystem.seatSeatsScale,x,khac,03,1,inline,,multiply: var spot = _world.ClampToMap(at + right * ((k - (st.Seats - 1) * 0.5f) * 4.5f) + forward * 2f);
+Sim/Bosses/BossSystem.P20.cs,349,4.5f,bosses.bossSystem.seatKScale,x,khac,03,1,inline,,multiply: var spot = _world.ClampToMap(at + right * ((k - (st.Seats - 1) * 0.5f) * 4.5f) + forward * 2f);
+Sim/Bosses/BossSystem.P20.cs,349,2f,bosses.bossSystem.seatForwardScale,x,khac,03,1,inline,,multiply: var spot = _world.ClampToMap(at + right * ((k - (st.Seats - 1) * 0.5f) * 4.5f) + forward * 2f);
+Sim/Bosses/BossSystem.P20.cs,350,8,bosses.bossSystem.seatMaxRings,x,sat_thuong,03,1,inline,,"arg:NavGrid.TryNearestWalkable: if (_world.Grid.TryNearestWalkable(spot, 8, out var open)) spot = open;"
+Sim/Bosses/BossSystem.P22.cs,61,1.5,bosses.bossSystem.stepDuelsNowAdd,s,thoi_gian,03,1,inline,,"add: v.FlaresUntil = Math.Max(v.FlaresUntil, now + 1.5);"
+Sim/Bosses/BossSystem.P28.cs,43,100f,bosses.bossSystem.stepP28Reach,m,ban_kinh,03,1,inline,,"arg:BossSystem.Firepower: v.FaceHeading = Firepower(v, 100f) is { } bearing ? bearing : null;"
+Sim/Bosses/BossSystem.P28.cs,59,0.01f,bosses.bossSystem.firepowerLengthSquaredMin,m,ban_kinh,03,1,inline,,compare: return sum.LengthSquared() > 0.01f ? SimMath.HeadingOf(sum) : null;
+Sim/Bosses/BossSystem.P28.cs,67,90f,bosses.bossSystem.escortBearingReach,m,ban_kinh,03,1,inline,,"arg:BossSystem.Firepower: var bearing = Firepower(boss, 90f) ?? boss.Heading;"
+Sim/Bosses/BossSystem.P28.cs,80,8.0,bosses.bossSystem.escortSpreadNowAdd,s,thoi_gian,03,1,inline,,add: _escortsClose[g.Boss.Id] = now + 8.0;
+Sim/Bosses/BossSystem.P28.cs,82,0.5f,bosses.bossSystem.escortSpreadTryGetValueTrue,s,thoi_gian,03,1,inline,,"conditional: return _escortsClose.TryGetValue(g.Boss.Id, out var until) && now < until ? 0.5f : 1f;"
+Sim/Bosses/BossSystem.P28.cs,97,10f,bosses.bossSystem.behaviourAimRadius,m,ban_kinh,03,1,inline,,"arg:BossSystem.Crowd: var score = 1f + Crowd(e, 10f) * 0.5f;"
+Sim/Bosses/BossSystem.P28.cs,97,0.5f,bosses.bossSystem.behaviourAimCrowdScale,x,khac,03,1,inline,,"multiply: var score = 1f + Crowd(e, 10f) * 0.5f;"
+Sim/Bosses/BossSystem.P28.cs,101,3f,bosses.bossSystem.behaviourAimMinRangeTrue,m,ban_kinh,03,1,inline,,"conditional: BossBehaviour.AntiArtillery => e.Def.Weapon.MinRange > 0f ? 3f : 1f,"
+Sim/Bosses/BossSystem.P28.cs,102,1.6f,bosses.bossSystem.behaviourAimIsMovingFalse,x,khac,03,1,inline,,"conditional: BossBehaviour.AreaDenial => e.IsMoving ? 1f : 1.6f,"
+Sim/Bosses/BossSystem.P28.cs,103,10f,bosses.bossSystem.behaviourAimRadius,m,ban_kinh,03,1,inline,,"arg:BossSystem.Crowd: BossBehaviour.AntiBlob => 1f + Crowd(e, 10f) * 0.4f,"
+Sim/Bosses/BossSystem.P28.cs,103,0.4f,bosses.bossSystem.behaviourAimCrowdScale2,x,khac,03,1,inline,,"multiply: BossBehaviour.AntiBlob => 1f + Crowd(e, 10f) * 0.4f,"
+Sim/Bosses/BossSystem.P28.cs,104,30f,bosses.bossSystem.behaviourAimDistanceMax,m,ban_kinh,03,1,inline,,"compare: BossBehaviour.CoreProtection => Vector2.Distance(e.Position, v.Position) < 30f ? 2f : 1f,"
+Sim/Bosses/BossSystem.P28.cs,104,2f,bosses.bossSystem.behaviourAimDistanceTrue,m,ban_kinh,03,1,inline,,"conditional: BossBehaviour.CoreProtection => Vector2.Distance(e.Position, v.Position) < 30f ? 2f : 1f,"
+Sim/Bosses/BossSystem.P28.cs,105,2.2f,bosses.bossSystem.behaviourAimBehindTrue,x,khac,03,1,inline,,"conditional: BossBehaviour.FlankPunishment => Behind(v, e) ? 2.2f : 1f,"
+Sim/Bosses/BossSystem.P28.cs,131,0.01f,bosses.bossSystem.behindLengthSquaredMax,m,ban_kinh,03,1,inline,,compare: if (to.LengthSquared() < 0.01f) return false;
+Sim/Bosses/BossSystem.P28.cs,132,0.5f,bosses.bossSystem.behindDotMax,x,nguong,03,1,inline,,"compare: return Vector2.Dot(Vector2.Normalize(to), SimMath.Forward(boss.Heading)) < 0.5f;"
+Sim/Bosses/BossSystem.Parts.cs,63,1000f,bosses.bossSystem.choosePartDistanceSub,m,ban_kinh,03,1,inline,,subtract: if (locked) score = (boss.BodyShut ? boss.BigAttack?.Def.UsesPart(parts[i].Id) ?? false : parts[i].Kind == boss.Def.PartLock?.Kind) ? 1000f - distance : -500f -
+Sim/Bosses/BossSystem.Parts.cs,63,500f,bosses.bossSystem.choosePartDistanceSub2,m,ban_kinh,03,1,inline,,subtract: if (locked) score = (boss.BodyShut ? boss.BigAttack?.Def.UsesPart(parts[i].Id) ?? false : parts[i].Kind == boss.Def.PartLock?.Kind) ? 1000f - distance : -500f -
+Sim/Bosses/BossSystem.Parts.cs,64,0.01f,bosses.bossSystem.choosePartDistanceScale,m,ban_kinh,03,1,inline,,"multiply: else score = Danger(shooter, boss, i) - distance * 0.01f;"
+Sim/Bosses/BossSystem.Parts.cs,87,100f,bosses.bossSystem.dangerPartHealthScale,x,sat_thuong,03,1,inline,,"multiply: if (shooter.Def.Class == UnitClass.TankHunter) return boss.PartHealth(i) / MathF.Max(1f, boss.MaxHp) * 100f;"
+Sim/Bosses/BossSystem.Parts.cs,103,0.15f,bosses.bossSystem.dangerAllScale,x,khac,03,1,inline,,multiply: var score = (antiAir ? toAir : toShooter) + all * 0.15f;
+Sim/Bosses/BossSystem.Parts.cs,104,8f,bosses.bossSystem.dangerScore,x,sat_thuong,03,1,inline,,compound_assign: if (part.Skills.Count > 0 || part.Stops.Count > 0) score += 8f;
+Sim/Bosses/BossSystem.Parts.cs,106,60f,bosses.bossSystem.dangerStageTrue,x,khac,03,1,inline,,conditional: if (boss.BigAttack is { } big && big.Def.UsesPart(part.Id)) score += big.Stage == BigStage.Charging ? 60f : 8f;
+Sim/Bosses/BossSystem.Parts.cs,106,8f,bosses.bossSystem.dangerStageFalse,x,khac,03,1,inline,,conditional: if (boss.BigAttack is { } big && big.Def.UsesPart(part.Id)) score += big.Stage == BigStage.Charging ? 60f : 8f;
+Sim/Bosses/BossSystem.Parts.cs,117,3,bosses.bossSystem.groundFirepowerArmour,x,sat_thuong,03,1,inline,,"arg:DamageTable.Effective: _world.Catalog.Damage.Effective(w, 3, TargetKind.Ground)) : 0f;"
+Sim/Bosses/BossSystem.Parts.cs,121,0.1f,bosses.bossSystem.firepowerCycleSecondsFloor,s,sat_thuong,03,1,inline,,"math_max: w.Damage * Math.Max(1, w.RoundsPerCycle) / MathF.Max(0.1f, w.CycleSeconds);"
+Sim/Bosses/BossSystem.Parts.cs,187,0.01f,bosses.bossSystem.damagePartPartFracMax,x,sat_thuong,03,1,inline,,"compare: if (boss.PartFrac[i] * full <= 0.01f) Break(boss, i, hit);"
+Sim/Bosses/BossSystem.Parts.cs,206,3f,bosses.bossSystem.breakRadiusFloor,m,ban_kinh,03,1,inline,,"math_max: _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, MathF.Max(3f, part.Radius * 1.4f), 0f, ExplosionTier.Huge), boss.Id));"
+Sim/Bosses/BossSystem.Parts.cs,206,1.4f,bosses.bossSystem.breakRadiusScale,m,ban_kinh,03,1,inline,,"multiply: _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, MathF.Max(3f, part.Radius * 1.4f), 0f, ExplosionTier.Huge), boss.Id));"
+Sim/Bosses/BossSystem.Parts.cs,237,0.5f,bosses.bossSystem.patchScore,x,sat_thuong,03,1,inline,,compound_assign: if (part.Skills.Count > 0 || part.Stops.Count > 0) score += 0.5f;
+Sim/Bosses/BossSystem.Parts.cs,245,0.05f,bosses.bossSystem.patchShareMin,x,nguong,03,1,inline,,"math_clamp: boss.PartFrac[best] = Math.Clamp(share, 0.05f, 1f);"
+Sim/Bosses/BossSystem.Parts.cs,327,0.9f,bosses.bossSystem.recomputeMountFailCap,count,tran,03,1,inline,,"math_min: boss.MountFail[m] = MathF.Min(0.9f, boss.MountFail[m] + part.Fail);"
+Sim/Bosses/BossSystem.Tiers.cs,232,0.4f,bosses.bossSystem.changePartSpeedFloor,m/s,thoi_gian,03,1,inline,,"math_max: if (seconds < 0f) seconds = t.Shift / MathF.Max(0.4f, v.PartSpeed);"
+Sim/Bosses/BossSystem.Tiers.cs,257,0.1,bosses.bossSystem.heightShiftEndsFloor,m,thoi_gian,03,1,inline,,"math_max: var u = (float)Math.Clamp((now - v.ShiftStart) / Math.Max(0.1, v.ShiftEnds - v.ShiftStart), 0.0, 1.0);"
+Sim/Bosses/BossSystem.Tiers.cs,258,3f,bosses.bossSystem.heightUSub,m,ban_kinh,03,1,inline,,subtract: u = u * u * (3f - 2f * u);
+Sim/Bosses/BossSystem.Tiers.cs,258,2f,bosses.bossSystem.heightUScale,m,ban_kinh,03,1,inline,,multiply: u = u * u * (3f - 2f * u);
+Sim/Bosses/BossSystem.Tiers.cs,269,0.34f,bosses.bossSystem.podsDuePodShareFloor,share,thoi_gian,03,1,inline,,"math_max: v.PodNext = now + p.EveryIn(v.TierPhase) * (v.PodShare < 1f ? 1f / MathF.Max(0.34f, v.PodShare) : 1f);"
+Sim/Bosses/BossSystem.Tiers.cs,278,0.5f,bosses.bossSystem.podsDueDistanceMin,m,ban_kinh,03,1,inline,,"compare: centre = distance > 0.5f ? group + back / distance * MathF.Min(p.Offset, distance) : group;"
+Sim/Bosses/BossSystem.Tiers.cs,285,2,bosses.bossSystem.podsDuePodsSentScale,count,gioi_han_thuc_the,03,1,inline,,"multiply: for (var j = 0; j < seats; j++) units[j] = _world.Economy.ForWave(v.Team, p.Units[(v.PodsSent * 2 + j) % p.Units.Count]);"
+Sim/Bosses/BossSystem.Tiers.cs,288,8,bosses.bossSystem.podsDueMaxRings,x,sat_thuong,03,1,inline,,"arg:NavGrid.TryNearestWalkable: if (_world.Grid.TryNearestWalkable(at, 8, out var open)) at = open;"
+Sim/Bosses/BossSystem.Tiers.cs,289,8f,bosses.bossSystem.podsDueHeightFloor,m,ban_kinh,03,1,inline,,"math_max: _podOrders.Add((v, at, units, MathF.Max(8f, v.Height), p));"
+Sim/Bosses/BossSystem.Tiers.cs,323,0.1,bosses.bossSystem.stepPodsPodLandsFloor,s,thoi_gian,03,1,inline,,"math_max: var u = (float)Math.Clamp((now - pod.PodLaunched) / Math.Max(0.1, pod.PodLands - pod.PodLaunched), 0.0, 1.0);"
+Sim/Bosses/BossSystem.Tiers.cs,331,0.5f,bosses.bossSystem.stepPodsLengthScale,m,ban_kinh,03,1,inline,,multiply: var spot = pod.Position + right * ((k - (f.Units.Length - 1) * 0.5f) * 5f) + forward * 3f;
+Sim/Bosses/BossSystem.Tiers.cs,331,5f,bosses.bossSystem.stepPodsKScale,m,ban_kinh,03,1,inline,,multiply: var spot = pod.Position + right * ((k - (f.Units.Length - 1) * 0.5f) * 5f) + forward * 3f;
+Sim/Bosses/BossSystem.Tiers.cs,331,3f,bosses.bossSystem.stepPodsForwardScale,m,ban_kinh,03,1,inline,,multiply: var spot = pod.Position + right * ((k - (f.Units.Length - 1) * 0.5f) * 5f) + forward * 3f;
+Sim/Bosses/BossSystem.Tiers.cs,352,5f,bosses.bossSystem.stepPodsRadius,m,ban_kinh,03,1,inline,,"ctor_arg:ExplosionDef: else _world.Emit(SimEvent.Exploded(pod.Position, new ExplosionDef(0f, 5f, 0f, ExplosionTier.Large), pod.Id));"
+Sim/Bosses/BossSystem.Tiers.cs,360,3f,bosses.bossSystem.podGround,x,khac,03,1,const_to_property,,const_field: private const float PodGround = 3f;
+Sim/Bosses/BossSystem.Tiers.cs,388,12,bosses.bossSystem.crashSiteMaxRings,x,sat_thuong,03,1,inline,,"arg:NavGrid.TryNearestWalkable: return _world.Grid.TryNearestWalkable(at, 12, out var open) ? open : at;"
+Sim/Bosses/BossSystem.Tiers.cs,393,0.1,bosses.bossSystem.stepCrashCrashAtFloor,s,thoi_gian,03,1,inline,,"math_max: var u = (float)Math.Clamp((now - v.CrashStart) / Math.Max(0.1, v.CrashAt - v.CrashStart), 0.0, 1.0);"
+Sim/Bosses/BossSystem.Trail.cs,21,12,bosses.bossSystem.trailPatches,x,khac,03,1,const_to_property,,const_field: private const int TrailPatches = 12;
+Sim/Bosses/BossSystem.Trail.cs,35,0.5f,bosses.bossSystem.trailLengthScale,m,ban_kinh,03,1,inline,,multiply: var at = _world.ClampToMap(v.Position - SimMath.Forward(v.Heading) * (v.Def.Length * 0.5f + trail.Radius * 0.5f));
+Sim/Bosses/BossSystem.Trail.cs,35,0.5f,bosses.bossSystem.trailRadiusScale,m,ban_kinh,03,2,inline,,multiply: var at = _world.ClampToMap(v.Position - SimMath.Forward(v.Heading) * (v.Def.Length * 0.5f + trail.Radius * 0.5f));
+Sim/Bosses/BossSystem.Trail.cs,52,10,bosses.bossSystem.stepTrailsTickMod,ticks,thoi_gian,03,1,inline,,modulo: if (_trails.Count == 0 || _world.Tick % 10 != 5) return;
+Sim/Bosses/BossSystem.Trail.cs,52,5,bosses.bossSystem.stepTrailsTickIs,ticks,thoi_gian,03,1,inline,,equals: if (_trails.Count == 0 || _world.Tick % 10 != 5) return;
+Sim/Bosses/BossSystem.Trail.cs,67,1.2f,bosses.bossSystem.stepTrailsSeconds,s,thoi_gian,03,1,inline,,"arg:StatusSystem.Burn: _world.Status.Burn(e, dps, 1.2f, source.Team, source.Id);"
+Sim/Bosses/BossSystem.cs,103,3.0,bosses.bossSystem.boreNowAdd,s,thoi_gian,03,1,inline,,add: v.BurrowNext = now + 3.0;
+Sim/Bosses/BossSystem.cs,125,10,bosses.bossSystem.boreTickMod,ticks,thoi_gian,03,1,inline,,"modulo: if (!b.Sea && _world.Tick % 10 == 0 && BiggestGroup(v, out var goal) > 0) v.BurrowGoal = goal;"
+Sim/Bosses/BossSystem.cs,152,2,bosses.bossSystem.boreStage,x,khac,03,1,inline,,"arg:SimEvent.Burrow: _world.Emit(SimEvent.Burrow(v, 2, v.Position));"
+Sim/Bosses/BossSystem.cs,163,6,bosses.bossSystem.seaGoalKMax,share,xac_suat,03,1,inline,,compare: for (var k = 0; k < 6 && MathF.Abs(u - f.X) < lane.Patrol * 0.5f; k++) u = ((float)_world.Random.NextDouble() * 2f - 1f) * lane.Patrol;
+Sim/Bosses/BossSystem.cs,163,2f,bosses.bossSystem.seaGoalNextDoubleScale,share,xac_suat,03,1,inline,,multiply: for (var k = 0; k < 6 && MathF.Abs(u - f.X) < lane.Patrol * 0.5f; k++) u = ((float)_world.Random.NextDouble() * 2f - 1f) * lane.Patrol;
+Sim/Bosses/BossSystem.cs,182,15f,bosses.bossSystem.biggestGroupScale,m,ban_kinh,03,1,inline,,"multiply: if (Vector2.DistanceSquared(o.Position, e.Position) > 15f * 15f) continue;"
+Sim/Bosses/BossSystem.cs,182,15f,bosses.bossSystem.biggestGroupScale,m,ban_kinh,03,2,inline,,"multiply: if (Vector2.DistanceSquared(o.Position, e.Position) > 15f * 15f) continue;"
+Sim/Bosses/BossSystem.cs,201,2f,bosses.bossSystem.quakeRadiusScale,m,ban_kinh,03,1,inline,,"multiply: var edge = MathF.Min(WeaponDef.MaxEdge, b.Radius * 2f);"
+Sim/Bosses/BossSystem.cs,215,0.4f,bosses.bossSystem.quakeDamageScale,x,sat_thuong,03,1,inline,,"multiply: _world.Damage.Apply(e, core ? b.Damage : b.Damage * 0.4f, DamageType.HighExplosive, info);"
+Sim/Bosses/BossSystem.cs,242,3,bosses.bossSystem.landLandingsScale,count,gioi_han_thuc_the,03,1,inline,,multiply: var id = l.Units[(v.Landings * 3 + k) % l.Units.Count];
+Sim/Bosses/BossSystem.cs,243,3f,bosses.bossSystem.landKAdd,x,khac,03,1,inline,,add: var spot = ramp + forward * (3f + 4f * (k / 2)) + right * ((k % 2 == 0 ? -1f : 1f) * 3f);
+Sim/Bosses/BossSystem.cs,243,4f,bosses.bossSystem.landKScale,x,khac,03,1,inline,,multiply: var spot = ramp + forward * (3f + 4f * (k / 2)) + right * ((k % 2 == 0 ? -1f : 1f) * 3f);
+Sim/Bosses/BossSystem.cs,243,2,bosses.bossSystem.landKDivisor,x,khac,03,1,inline,,divide: var spot = ramp + forward * (3f + 4f * (k / 2)) + right * ((k % 2 == 0 ? -1f : 1f) * 3f);
+Sim/Bosses/BossSystem.cs,243,2,bosses.bossSystem.landKMod,x,khac,03,2,inline,,modulo: var spot = ramp + forward * (3f + 4f * (k / 2)) + right * ((k % 2 == 0 ? -1f : 1f) * 3f);
+Sim/Bosses/BossSystem.cs,243,3f,bosses.bossSystem.landScale,x,khac,03,2,inline,,multiply: var spot = ramp + forward * (3f + 4f * (k / 2)) + right * ((k % 2 == 0 ? -1f : 1f) * 3f);
+Sim/Bosses/BossSystem.cs,300,6f,bosses.bossSystem.pierceLineLengthAdd,m,ban_kinh,03,1,inline,,add: if (t < 0f || t > length + 6f) continue;
+Sim/Bosses/BossSystem.cs,301,1.2f,bosses.bossSystem.pierceLineRadiusAdd,m,ban_kinh,03,1,inline,,add: if ((offset - along * t).Length() > o.Radius + 1.2f) continue;
+Sim/Bosses/BossSystem.cs,311,2.5f,bosses.bossSystem.pierceLineRadius,x,sat_thuong,03,1,inline,,"ctor_arg:ExplosionDef: _world.Damage.Queue(hit.Position, new ExplosionDef(b.PierceDamage, 2.5f, 0f, ExplosionTier.Large), b.Warn, v.Team, v, HitKind.Strike, v.Id);"
+Sim/Bosses/NavalRules.cs,49,1f,bosses.navalRules.fleetShare,share,khac,03,1,inline,,property_init: public float FleetShare { get; set; } = 1f;
+Sim/Bosses/NavalRules.cs,52,10f,bosses.navalRules.captureSeconds,s,thoi_gian,03,1,inline,,property_init: public float CaptureSeconds { get; set; } = 10f;
+Sim/Bosses/NavalRules.cs,55,60f,bosses.navalRules.rebuildSeconds,s,thoi_gian,03,1,inline,,property_init: public float RebuildSeconds { get; set; } = 60f;
+Sim/Bosses/NavalSystem.Preview.cs,53,0.5f,bosses.navalSystem.previewSalvoShellsScale,x,khac,03,1,inline,,multiply: var along = salvo.Shells > 1 ? (s - (salvo.Shells - 1) * 0.5f) * 2.5f : 0f;
+Sim/Bosses/NavalSystem.Preview.cs,53,2.5f,bosses.navalSystem.previewSalvoSScale,x,khac,03,1,inline,,multiply: var along = salvo.Shells > 1 ? (s - (salvo.Shells - 1) * 0.5f) * 2.5f : 0f;
+Sim/Bosses/NavalSystem.Preview.cs,55,2f,bosses.navalSystem.previewSalvoSqrtScale,m,ban_kinh,03,1,inline,,multiply: var reach = 2f * MathF.Sqrt((float)_world.Random.NextDouble());
+Sim/Bosses/NavalSystem.Preview.cs,58,0.15,bosses.navalSystem.previewSalvoScale,x,sat_thuong,03,1,inline,,"multiply: _world.Damage.Queue(at, salvo.Blast(ExplosionTier.Huge), salvo.Warn + 0.15 * (together ? turret : s), v.Team, v,"
+Sim/Bosses/NavalSystem.Routes.cs,44,20f,bosses.navalSystem.slowBand,x,khac,03,1,const_to_property,,const_field: internal const float SlowBand = 20f;
+Sim/Bosses/NavalSystem.Routes.cs,47,1.5f,bosses.navalSystem.lateralMargin,x,khac,03,1,const_to_property,,const_field: internal const float LateralMargin = 1.5f;
+Sim/Bosses/NavalSystem.Routes.cs,98,2,bosses.navalSystem.rankRank,x,khac,03,1,inline,,return: if (role == NavalRole.Lander) return 2;
+Sim/Bosses/NavalSystem.Routes.cs,99,3,bosses.navalSystem.rankRoleTrue,x,khac,03,1,inline,,conditional: return role == NavalRole.Escort ? 3 : 4;
+Sim/Bosses/NavalSystem.Routes.cs,99,4,bosses.navalSystem.rankRoleFalse,x,khac,03,1,inline,,conditional: return role == NavalRole.Escort ? 3 : 4;
+Sim/Bosses/NavalSystem.Routes.cs,116,0.3f,bosses.navalSystem.travelDirDMin,x,nguong,03,1,inline,,compare: return d > 0.3f ? 1 : d < -0.3f ? -1 : 0;
+Sim/Bosses/NavalSystem.Routes.cs,116,0.3f,bosses.navalSystem.travelDirDMax,x,nguong,03,2,inline,,compare: return d > 0.3f ? 1 : d < -0.3f ? -1 : 0;
+Sim/Bosses/NavalSystem.Routes.cs,188,3f,bosses.navalSystem.routeTrafficSlowBandScale,m,ban_kinh,03,1,inline,,multiply: runAlong < runGap + 3f * SlowBand)
+Sim/Bosses/NavalSystem.Routes.cs,191,0.05f,bosses.navalSystem.routeTrafficSeaCapMax,s,thoi_gian,03,1,inline,,compare: a.SeaWait = blocker != null && a.SeaCap < 0.05f && MathF.Abs(a.Speed) < 0.1f ? a.SeaWait + 1 : 0;
+Sim/Bosses/NavalSystem.Routes.cs,191,0.1f,bosses.navalSystem.routeTrafficAbsMax,s,thoi_gian,03,1,inline,,compare: a.SeaWait = blocker != null && a.SeaCap < 0.05f && MathF.Abs(a.Speed) < 0.1f ? a.SeaWait + 1 : 0;
+Sim/Bosses/NavalSystem.Routes.cs,241,2f,bosses.navalSystem.startHoldWidthAdd,m,ban_kinh,03,1,inline,,add: if (MathF.Abs(n.Frame.Y - line) < (v.Def.Width + cause.Def.Width) * 0.5f + LateralMargin + 2f) continue;
+Sim/Bosses/NavalSystem.Routes.cs,283,0.5f,bosses.navalSystem.hullDistanceLengthScale,m,ban_kinh,03,1,inline,,"multiply: var dx = MathF.Max(0f, MathF.Abs(at.X) - boss.Length * 0.5f);"
+Sim/Bosses/NavalSystem.Routes.cs,284,0.5f,bosses.navalSystem.hullDistanceWidthScale,m,ban_kinh,03,1,inline,,"multiply: var dy = MathF.Max(0f, MathF.Abs(at.Y) - boss.Width * 0.5f);"
+Sim/Bosses/NavalSystem.Routes.cs,288,28f,bosses.navalSystem.leashLeashFalse,m,ban_kinh,03,1,inline,,conditional: private float Leash => _world.Catalog.EscortRules.Leash > 0f ? _world.Catalog.EscortRules.Leash : 28f;
+Sim/Bosses/NavalSystem.Routes.cs,305,2,bosses.navalSystem.resolveSlotRowMax,x,nguong,03,1,inline,,compare: for (var row = 0; row < 2; row++)
+Sim/Bosses/NavalSystem.Routes.cs,307,12f,bosses.navalSystem.resolveSlotAcross0Add,x,khac,03,1,inline,,add: var across = row == 0 ? across0 : across0 + 12f;
+Sim/Bosses/NavalSystem.Routes.cs,323,4,bosses.navalSystem.placePassMax,x,nguong,03,1,inline,,compare: for (var pass = 0; pass < 4; pass++)
+Sim/Bosses/NavalSystem.Routes.cs,331,1e-3f,bosses.navalSystem.placeAbsMax,x,nguong,03,1,inline,,compare: var away = at.X > o.X || (MathF.Abs(at.X - o.X) < 1e-3f && at.X >= 0f) ? 1f : -1f;
+Sim/Bosses/NavalSystem.Routes.cs,352,2f,bosses.navalSystem.slotValidHalfSizeSub,count,tran,03,1,inline,,subtract: var limit = _world.Map.HalfSize - 2f;
+Sim/Bosses/NavalSystem.Routes.cs,355,0.5f,bosses.navalSystem.slotValidWidthScale,m,ban_kinh,03,1,inline,,multiply: var margin = escort.Width * 0.5f + 2f;
+Sim/Bosses/NavalSystem.Routes.cs,355,2f,bosses.navalSystem.slotValidWidthAdd,m,ban_kinh,03,1,inline,,add: var margin = escort.Width * 0.5f + 2f;
+Sim/Bosses/NavalSystem.Routes.cs,396,0.97f,bosses.navalSystem.turningDotMin,x,nguong,03,1,inline,,"compare: var aligned = Vector2.Dot(SimMath.Forward(flag.Heading), sea.Along * flag.NavalDir) >= 0.97f;"
+Sim/Bosses/NavalSystem.Routes.cs,398,3f,bosses.navalSystem.turningAbsMin,s,thoi_gian,03,1,inline,,compare: return !aligned || toEnd < TurnWarn || MathF.Abs(ff.Y - lane.W) > 3f;
+Sim/Bosses/NavalSystem.cs,70,4f,bosses.navalSystem.joinedMargin,x,khac,03,1,inline,,"arg:NavalSystem.OnWater: v.Position = OnWater(sea, v.Position, 4f);"
+Sim/Bosses/NavalSystem.cs,118,2,bosses.navalSystem.joinedMod,x,khac,03,1,inline,,"modulo: : new Vector2((escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)), 0f);"
+Sim/Bosses/NavalSystem.cs,118,8f,bosses.navalSystem.joinedKScale,x,khac,03,1,inline,,"multiply: : new Vector2((escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)), 0f);"
+Sim/Bosses/NavalSystem.cs,118,2,bosses.navalSystem.joinedKDivisor,x,khac,03,2,inline,,"divide: : new Vector2((escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)), 0f);"
+Sim/Bosses/NavalSystem.cs,126,2,bosses.navalSystem.joinedMod,count,gioi_han_thuc_the,03,1,inline,,modulo: var along = role == NavalRole.Escort ? (escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)) : (k - (count - 1) * 0.5f) * 22f;
+Sim/Bosses/NavalSystem.cs,126,8f,bosses.navalSystem.joinedKScale,count,gioi_han_thuc_the,03,1,inline,,multiply: var along = role == NavalRole.Escort ? (escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)) : (k - (count - 1) * 0.5f) * 22f;
+Sim/Bosses/NavalSystem.cs,126,0.5f,bosses.navalSystem.joinedCountScale,count,gioi_han_thuc_the,03,1,inline,,multiply: var along = role == NavalRole.Escort ? (escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)) : (k - (count - 1) * 0.5f) * 22f;
+Sim/Bosses/NavalSystem.cs,126,22f,bosses.navalSystem.joinedKScale2,count,gioi_han_thuc_the,03,1,inline,,multiply: var along = role == NavalRole.Escort ? (escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)) : (k - (count - 1) * 0.5f) * 22f;
+Sim/Bosses/NavalSystem.cs,126,2,bosses.navalSystem.joinedKDivisor,count,gioi_han_thuc_the,03,2,inline,,divide: var along = role == NavalRole.Escort ? (escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)) : (k - (count - 1) * 0.5f) * 22f;
+Sim/Bosses/NavalSystem.cs,140,2,bosses.navalSystem.stationOfKMod,x,khac,03,1,inline,,"modulo: new(ship.Station * (k % 2 == 0 ? 1f : -1f), ship.Abeam + 11f * k * (ship.Abeam < 0f ? -1f : 1f));"
+Sim/Bosses/NavalSystem.cs,140,11f,bosses.navalSystem.stationOfKScale,x,khac,03,1,inline,,"multiply: new(ship.Station * (k % 2 == 0 ? 1f : -1f), ship.Abeam + 11f * k * (ship.Abeam < 0f ? -1f : 1f));"
+Sim/Bosses/NavalSystem.cs,188,5,bosses.navalSystem.stepTickMod,ticks,thoi_gian,03,1,inline,,"modulo: if (_batteries.Count > 0 && _world.Tick % 5 == 0) Batteries(sea, dt * 5f, now);"
+Sim/Bosses/NavalSystem.cs,188,5f,bosses.navalSystem.stepDtScale,s,thoi_gian,03,1,inline,,"multiply: if (_batteries.Count > 0 && _world.Tick % 5 == 0) Batteries(sea, dt * 5f, now);"
+Sim/Bosses/NavalSystem.cs,189,5,bosses.navalSystem.stepTickMod,ticks,thoi_gian,03,1,inline,,"modulo: if (sea.Lighthouse != null && _world.Tick % 5 == 0) Lighthouse(sea, dt * 5f);"
+Sim/Bosses/NavalSystem.cs,189,5f,bosses.navalSystem.stepDtScale,s,thoi_gian,03,1,inline,,"multiply: if (sea.Lighthouse != null && _world.Tick % 5 == 0) Lighthouse(sea, dt * 5f);"
+Sim/Bosses/NavalSystem.cs,196,0.35f,bosses.navalSystem.stepRadarOffTrue,x,khac,03,1,inline,,conditional: v.ApsMiss = v.RadarOff ? 0.35f : 0f;
+Sim/Bosses/NavalSystem.cs,262,0.8f,bosses.navalSystem.sailDistanceMax,m,ban_kinh,03,1,inline,,compare: if (v.Stunned || v.Landing || distance < 0.8f)
+Sim/Bosses/NavalSystem.cs,269,0.25f,bosses.navalSystem.sailDotFloor,m,ban_kinh,03,1,inline,,"math_max: var alignment = MathF.Max(0.25f, Vector2.Dot(SimMath.Forward(v.Heading), to / distance));"
+Sim/Bosses/NavalSystem.cs,271,8f,bosses.navalSystem.sailDistanceDivisor,m,ban_kinh,03,1,inline,,"divide: var target = speed * alignment * MathF.Min(1f, distance / 8f + 0.2f);"
+Sim/Bosses/NavalSystem.cs,271,0.2f,bosses.navalSystem.sailDistanceAdd,m,ban_kinh,03,1,inline,,"add: var target = speed * alignment * MathF.Min(1f, distance / 8f + 0.2f);"
+Sim/Bosses/NavalSystem.cs,274,0.5f,bosses.navalSystem.sailSpeedScale,m/s,tan_suat,03,1,inline,,"multiply: v.Speed += Math.Clamp(target - v.Speed, -v.Def.Speed * dt, v.Def.Speed * 0.5f * dt);"
+Sim/Bosses/NavalSystem.cs,277,0.6f,bosses.navalSystem.sailHullRadiusScale,m,ban_kinh,03,1,inline,,multiply: var margin = naval.Role == NavalRole.Lander ? -1f : v.Def.HullRadius * 0.6f + 1f;
+Sim/Bosses/NavalSystem.cs,289,2f,bosses.navalSystem.onWaterHalfSizeSub,count,tran,03,1,inline,,subtract: var limit = _world.Map.HalfSize - 2f;
+Sim/Bosses/NavalSystem.cs,316,0.3f,bosses.navalSystem.flagshipSpeedFloor,m/s,tan_suat,03,1,inline,,"math_max: var pace = MathF.Max(0.3f, v.Def.Speed * v.SpeedFactor * naval.EscapeSpeed);"
+Sim/Bosses/NavalSystem.cs,320,0.01f,bosses.navalSystem.flagshipTurnRateFloor,s,thoi_gian,03,1,inline,,"math_max: v.EscapeDeadline = now + left / pace + turn / MathF.Max(0.01f, v.Def.TurnRate * v.TurnFactor);"
+Sim/Bosses/NavalSystem.cs,323,3f,bosses.navalSystem.flagshipEndSub,s,thoi_gian,03,1,inline,,subtract: if (MathF.Abs(f.X) >= far.End - 3f && now >= v.EscapeDeadline)
+Sim/Bosses/NavalSystem.cs,351,4f,bosses.navalSystem.flagshipXMin,x,nguong,03,1,inline,,compare: if ((f.X - turnU) * v.NavalDir > -4f) v.NavalDir = -v.NavalDir;
+Sim/Bosses/NavalSystem.cs,376,2,bosses.navalSystem.phaseBeginsChargesAdd,s,thoi_gian,03,1,inline,,"add: v.Aps = phase == 1 ? new ApsDef(own.Radius, own.Charges + 2, own.Recharge * 0.6f) { Rockets = own.Rockets, Shells = own.Shells } : own;"
+Sim/Bosses/NavalSystem.cs,376,0.6f,bosses.navalSystem.phaseBeginsRechargeScale,s,thoi_gian,03,1,inline,,"multiply: v.Aps = phase == 1 ? new ApsDef(own.Radius, own.Charges + 2, own.Recharge * 0.6f) { Rockets = own.Rockets, Shells = own.Shells } : own;"
+Sim/Bosses/NavalSystem.cs,382,0.5,bosses.navalSystem.phaseBeginsFirstScale,s,thoi_gian,03,1,inline,,"multiply: if (v.Def.Cruise is { } cruise && phase == cruise.Phase) v.CruiseNext = Math.Max(v.CruiseNext, now + cruise.First * 0.5);"
+Sim/Bosses/NavalSystem.cs,388,0.5f,bosses.navalSystem.phaseBeginsCountScale,count,gioi_han_thuc_the,03,1,inline,,multiply: var side = (k - (wave.Units.Count - 1) * 0.5f) * 18f;
+Sim/Bosses/NavalSystem.cs,388,18f,bosses.navalSystem.phaseBeginsKScale,count,gioi_han_thuc_the,03,1,inline,,multiply: var side = (k - (wave.Units.Count - 1) * 0.5f) * 18f;
+Sim/Bosses/NavalSystem.cs,400,20f,bosses.navalSystem.phaseBeginsRadius,m,ban_kinh,03,1,inline,,"arg:StrikeSystem.AddSmoke: _world.Strikes.AddSmoke(v.Team, v.Position, 20f, 22f);"
+Sim/Bosses/NavalSystem.cs,400,22f,bosses.navalSystem.phaseBeginsSeconds,s,thoi_gian,03,1,inline,,"arg:StrikeSystem.AddSmoke: _world.Strikes.AddSmoke(v.Team, v.Position, 20f, 22f);"
+Sim/Bosses/NavalSystem.cs,401,18f,bosses.navalSystem.phaseBeginsOutScale,x,khac,03,1,inline,,"multiply: _world.Strikes.AddSmoke(v.Team, v.Position - sea.Out * 18f, 16f, 18f);"
+Sim/Bosses/NavalSystem.cs,401,16f,bosses.navalSystem.phaseBeginsRadius2,m,ban_kinh,03,1,inline,,"arg:StrikeSystem.AddSmoke: _world.Strikes.AddSmoke(v.Team, v.Position - sea.Out * 18f, 16f, 18f);"
+Sim/Bosses/NavalSystem.cs,401,18f,bosses.navalSystem.phaseBeginsSeconds2,s,thoi_gian,03,2,inline,,"arg:StrikeSystem.AddSmoke: _world.Strikes.AddSmoke(v.Team, v.Position - sea.Out * 18f, 16f, 18f);"
+Sim/Bosses/NavalSystem.cs,423,0.7f,bosses.navalSystem.salvoRangeScale,m,ban_kinh,03,1,inline,,multiply: if (MathF.Abs(v.SweepU - f.X) > salvo.Range * 0.7f) v.SweepU = f.X;
+Sim/Bosses/NavalSystem.cs,424,8f,bosses.navalSystem.salvoShoreAtSub,x,khac,03,1,inline,,"subtract: var sweep = sea.At(v.SweepU, sea.ShoreAt(v.SweepU) - 8f);"
+Sim/Bosses/NavalSystem.cs,427,24f,bosses.navalSystem.salvoRadius,m,ban_kinh,03,1,inline,,"arg:NavalSystem.BiggestGroup: else if (BiggestGroup(v, salvo.Range, out var near, sweep, 24f) > 0) aim = near;"
+Sim/Bosses/NavalSystem.cs,431,3.5f,bosses.navalSystem.salvoScale,x,khac,03,1,inline,,multiply: var scatter = 3.5f * (blind ? salvo.BlindScatter : 1f);
+Sim/Bosses/NavalSystem.cs,453,0.5f,bosses.navalSystem.salvoTotalScale,x,khac,03,1,inline,,multiply: var along = total > 1 ? (j - (total - 1) * 0.5f) * spread / (total - 1) : 0f;
+Sim/Bosses/NavalSystem.cs,458,0.15,bosses.navalSystem.salvoScale2,x,sat_thuong,03,1,inline,,"multiply: _world.Damage.Queue(at, salvo.Blast(ExplosionTier.Huge), flight + 0.15 * (together ? turret : j), v.Team, v,"
+Sim/Bosses/NavalSystem.cs,478,6f,bosses.navalSystem.cruiseRadarOffTrue,x,khac,03,1,inline,,conditional: var scatter = v.RadarOff ? 6f : 2f;
+Sim/Bosses/NavalSystem.cs,478,2f,bosses.navalSystem.cruiseRadarOffFalse,x,khac,03,1,inline,,conditional: var scatter = v.RadarOff ? 6f : 2f;
+Sim/Bosses/NavalSystem.cs,514,4f,bosses.navalSystem.launchCraftForwardScale,x,khac,03,1,inline,,"multiply: if (v.Def.Parts[i].Kind == ""welldeck"") at = v.PartPosition(i) - SimMath.Forward(v.Heading) * 4f;"
+Sim/Bosses/NavalSystem.cs,535,8f,bosses.navalSystem.escortDistanceMax,m,ban_kinh,03,1,inline,,"compare: if (Vector2.Distance(sea.At(astern.X, astern.Y), v.Position) < 8f) v.SlotVia = false;"
+Sim/Bosses/NavalSystem.cs,543,2f,bosses.navalSystem.escortLengthAdd,m,ban_kinh,03,1,inline,,add: var wide = (flag.Def.Length + v.Def.Width) * 0.5f + 2f;
+Sim/Bosses/NavalSystem.cs,546,4f,bosses.navalSystem.escortNavalDirScale,x,khac,03,1,inline,,"multiply: v.NavalGoal = new Vector2(ff.X + v.StationAt.X + flag.NavalDir * 4f, w + across * (flag.Escaping ? 1.25f : 1f));"
+Sim/Bosses/NavalSystem.cs,546,1.25f,bosses.navalSystem.escortEscapingTrue,x,khac,03,1,inline,,"conditional: v.NavalGoal = new Vector2(ff.X + v.StationAt.X + flag.NavalDir * 4f, w + across * (flag.Escaping ? 1.25f : 1f));"
+Sim/Bosses/NavalSystem.cs,549,24f,bosses.navalSystem.escortStationTrue,x,khac,03,1,inline,,conditional: var station = naval.Station == 0f ? 24f : naval.Station;
+Sim/Bosses/NavalSystem.cs,552,0.45f,bosses.navalSystem.escortSideScale,x,khac,03,1,inline,,"multiply: if (flag.Escaping) v.NavalGoal = new Vector2(ff.X + side * station * 0.45f + flag.NavalDir * 6f, ff.Y - 15f);"
+Sim/Bosses/NavalSystem.cs,552,6f,bosses.navalSystem.escortNavalDirScale2,x,khac,03,1,inline,,"multiply: if (flag.Escaping) v.NavalGoal = new Vector2(ff.X + side * station * 0.45f + flag.NavalDir * 6f, ff.Y - 15f);"
+Sim/Bosses/NavalSystem.cs,552,15f,bosses.navalSystem.escortYSub,x,khac,03,1,inline,,"subtract: if (flag.Escaping) v.NavalGoal = new Vector2(ff.X + side * station * 0.45f + flag.NavalDir * 6f, ff.Y - 15f);"
+Sim/Bosses/NavalSystem.cs,556,4f,bosses.navalSystem.escortNavalDirScale,x,khac,03,1,inline,,"multiply: v.NavalGoal = new Vector2(ff.X + side * station + flag.NavalDir * 4f, lane?.W ?? ff.Y);"
+Sim/Bosses/NavalSystem.cs,568,4f,bosses.navalSystem.patrolXMin,x,nguong,03,1,inline,,compare: if ((f.X - v.NavalDir * lane.Patrol) * v.NavalDir > -4f) v.NavalDir = -v.NavalDir;
+Sim/Bosses/NavalSystem.cs,578,3,bosses.navalSystem.raiderDashStageMod,x,khac,03,1,inline,,modulo: v.DashStage = (v.DashStage + 1) % 3;
+Sim/Bosses/NavalSystem.cs,579,40.0,bosses.navalSystem.raiderDashStageValue,s,thoi_gian,03,1,inline,,"switch_arm: v.DashUntil = now + v.DashStage switch { 0 => naval.DashEvery, 1 => 40.0, _ => naval.DashHold };"
+Sim/Bosses/NavalSystem.cs,580,0.5,bosses.navalSystem.raiderNextDoubleMax,share,xac_suat,03,1,inline,,compare: if (v.DashStage == 0 && _world.Random.NextDouble() < 0.5) v.NavalDir = -v.NavalDir;
+Sim/Bosses/NavalSystem.cs,590,3,bosses.navalSystem.raiderValueMod,x,khac,03,1,inline,,modulo: ? sea.Frame(flag.Position).X + ((v.Id.Value % 3) - 1) * 20f
+Sim/Bosses/NavalSystem.cs,590,20f,bosses.navalSystem.raiderValueScale,x,khac,03,1,inline,,multiply: ? sea.Frame(flag.Position).X + ((v.Id.Value % 3) - 1) * 20f
+Sim/Bosses/NavalSystem.cs,591,20f,bosses.navalSystem.raiderNavalDirScale,x,khac,03,1,inline,,"multiply: : Math.Clamp(f.X + v.NavalDir * 20f, -lane.Patrol, lane.Patrol);"
+Sim/Bosses/NavalSystem.cs,599,0.3f,bosses.navalSystem.raiderDashWScale,x,nguong,03,1,inline,,"multiply: v.NavalGoal = new Vector2(pier.X, MathF.Max(pier.Y + naval.DashW * 0.3f, sea.ShoreAt(pier.X) + 8f));"
+Sim/Bosses/NavalSystem.cs,599,8f,bosses.navalSystem.raiderShoreAtAdd,x,nguong,03,1,inline,,"add: v.NavalGoal = new Vector2(pier.X, MathF.Max(pier.Y + naval.DashW * 0.3f, sea.ShoreAt(pier.X) + 8f));"
+Sim/Bosses/NavalSystem.cs,600,6f,bosses.navalSystem.raiderDistanceMax,m,ban_kinh,03,1,inline,,"compare: if (Vector2.Distance(sea.At(v.NavalGoal.X, v.NavalGoal.Y), v.Position) < 6f)"
+Sim/Bosses/NavalSystem.cs,602,2,bosses.navalSystem.raiderDashStage,x,khac,03,1,inline,,assign: v.DashStage = 2;
+Sim/Bosses/NavalSystem.cs,621,5f,bosses.navalSystem.landerDistanceMax,m,ban_kinh,03,1,inline,,"compare: if (double.IsPositiveInfinity(v.UnloadAt) && Vector2.Distance(v.Position, beach.At) < 5f)"
+Sim/Bosses/NavalSystem.cs,623,3.0,bosses.navalSystem.landerNowAdd,s,thoi_gian,03,1,inline,,add: v.UnloadAt = now + 3.0;
+Sim/Bosses/NavalSystem.cs,632,0.5f,bosses.navalSystem.landerLengthScale,m,ban_kinh,03,1,inline,,"multiply: _spawns.Add((v.Cargo[k], v.Team, inland + across * ((k - (v.Cargo.Length - 1) * 0.5f) * 6f), SimMath.HeadingOf(inland - beach.At),"
+Sim/Bosses/NavalSystem.cs,632,6f,bosses.navalSystem.landerKScale,m,ban_kinh,03,1,inline,,"multiply: _spawns.Add((v.Cargo[k], v.Team, inland + across * ((k - (v.Cargo.Length - 1) * 0.5f) * 6f), SimMath.HeadingOf(inland - beach.At),"
+Sim/Bosses/NavalSystem.cs,640,10f,bosses.navalSystem.landerHullRadiusAdd,m,ban_kinh,03,1,inline,,"add: if (Vector2.Distance(v.Position, home) < 10f + (flag?.Def.HullRadius ?? 0f))"
+Sim/Bosses/NavalSystem.cs,654,5,bosses.navalSystem.sunkKMax,x,nguong,03,1,inline,,compare: for (var k = 0; k < 5; k++)
+Sim/Bosses/NavalSystem.cs,656,2,bosses.navalSystem.sunkKSub,m,ban_kinh,03,1,inline,,subtract: var at = v.Position + forward * ((k - 2) * v.Def.HullRadius * 0.55f);
+Sim/Bosses/NavalSystem.cs,656,0.55f,bosses.navalSystem.sunkKScale,m,ban_kinh,03,1,inline,,multiply: var at = v.Position + forward * ((k - 2) * v.Def.HullRadius * 0.55f);
+Sim/Bosses/NavalSystem.cs,657,9f,bosses.navalSystem.sunkKAdd,x,sat_thuong,03,1,inline,,"add: _world.Damage.Queue(at, new ExplosionDef(0f, 9f + 2f * (k % 2), 0f, ExplosionTier.Ultimate), 0.8 + 0.7 * k, v.Team, null, HitKind.Strike, v.Id);"
+Sim/Bosses/NavalSystem.cs,657,2f,bosses.navalSystem.sunkKScale2,x,sat_thuong,03,1,inline,,"multiply: _world.Damage.Queue(at, new ExplosionDef(0f, 9f + 2f * (k % 2), 0f, ExplosionTier.Ultimate), 0.8 + 0.7 * k, v.Team, null, HitKind.Strike, v.Id);"
+Sim/Bosses/NavalSystem.cs,657,2,bosses.navalSystem.sunkKMod,x,sat_thuong,03,1,inline,,"modulo: _world.Damage.Queue(at, new ExplosionDef(0f, 9f + 2f * (k % 2), 0f, ExplosionTier.Ultimate), 0.8 + 0.7 * k, v.Team, null, HitKind.Strike, v.Id);"
+Sim/Bosses/NavalSystem.cs,657,0.8,bosses.navalSystem.sunkKAdd2,x,sat_thuong,03,1,inline,,"add: _world.Damage.Queue(at, new ExplosionDef(0f, 9f + 2f * (k % 2), 0f, ExplosionTier.Ultimate), 0.8 + 0.7 * k, v.Team, null, HitKind.Strike, v.Id);"
+Sim/Bosses/NavalSystem.cs,657,0.7,bosses.navalSystem.sunkKScale3,x,sat_thuong,03,1,inline,,"multiply: _world.Damage.Queue(at, new ExplosionDef(0f, 9f + 2f * (k % 2), 0f, ExplosionTier.Ultimate), 0.8 + 0.7 * k, v.Team, null, HitKind.Strike, v.Id);"
+Sim/Bosses/NavalSystem.cs,783,15f,bosses.navalSystem.biggestGroupScale,m,ban_kinh,03,1,inline,,"multiply: if (Vector2.DistanceSquared(o.Position, e.Position) > 15f * 15f) continue;"
+Sim/Bosses/NavalSystem.cs,783,15f,bosses.navalSystem.biggestGroupScale,m,ban_kinh,03,2,inline,,"multiply: if (Vector2.DistanceSquared(o.Position, e.Position) > 15f * 15f) continue;"
+Sim/Content/BigAttackDefs.cs,72,8f,bosses.bigFireDef.seconds,s,thoi_gian,03,1,inline,,property_init: public float Seconds { get; internal set; } = 8f;
+Sim/Content/BigAttackDefs.cs,73,30f,bosses.bigFireDef.dps,x,khac,03,1,inline,,property_init: public float Dps { get; internal set; } = 30f;
+Sim/Content/BigAttackDefs.cs,74,8f,bosses.bigFireDef.radius,m,ban_kinh,03,1,inline,,property_init: public float Radius { get; internal set; } = 8f;
+Sim/Content/BigAttackDefs.cs,93,1,bosses.bigStrikeDef.count,count,gioi_han_thuc_the,03,1,inline,,property_init: public int Count { get; internal set; } = 1;
+Sim/Content/BigAttackDefs.cs,113,5f,bosses.bigStrikeDef.radius,m,ban_kinh,03,1,inline,,property_init: public float Radius { get; internal set; } = 5f;
+Sim/Content/BigAttackDefs.cs,116,0.25f,bosses.bigStrikeDef.falloff,x,khac,03,1,inline,,property_init: public float Falloff { get; internal set; } = 0.25f;
+Sim/Content/BigAttackDefs.cs,122,0.4f,bosses.bigStrikeDef.edgeShare,share,khac,03,1,inline,,property_init: public float EdgeShare { get; internal set; } = 0.4f;
+Sim/Content/BigAttackDefs.cs,134,2f,bosses.bigStrikeDef.edgeRadiusRadiusScale,m,ban_kinh,03,1,inline,,"multiply: var edge = MathF.Min(WeaponDef.MaxEdge, Radius * 2f);"
+Sim/Content/BigAttackDefs.cs,171,26f,bosses.bigStrikeDef.speed,m/s,tan_suat,03,1,inline,,property_init: public float Speed { get; internal set; } = 26f;
+Sim/Content/BigAttackDefs.cs,173,8f,bosses.bigStrikeDef.flight,x,khac,03,1,inline,,property_init: public float Flight { get; internal set; } = 8f;
+Sim/Content/BigAttackDefs.cs,176,4,bosses.bigStrikeDef.targets,x,khac,03,1,inline,,property_init: public int Targets { get; internal set; } = 4;
+Sim/Content/BigAttackDefs.cs,198,6,bosses.bigStrikeDef.max,x,nguong,03,1,inline,,property_init: public int Max { get; internal set; } = 6;
+Sim/Content/BigAttackDefs.cs,217,1e-3f,bosses.bigStrikeDef.fullCountDurationAdd,s,thoi_gian,03,1,inline,,"add: public int FullCount => PerPart > 0 ? PerPart * Math.Max(1, Parts.Count) : Every > 0f ? (int)MathF.Floor(Duration / Every + 1e-3f) * Math.Max(1, Salvo) : Count;"
+Sim/Content/BigAttackDefs.cs,242,3.5f,bosses.bigAttackDef.warn,s,thoi_gian,03,1,inline,,property_init: public float Warn { get; internal set; } = 3.5f;
+Sim/Content/BigAttackDefs.cs,245,60f,bosses.bigAttackDef.cooldown,s,thoi_gian,03,1,inline,,property_init: public float Cooldown { get; internal set; } = 60f;
+Sim/Content/BigAttackDefs.cs,360,30f,bosses.bigAttackRules.first,x,khac,03,1,inline,,property_init: public float First { get; internal set; } = 30f;
+Sim/Content/BigAttackDefs.cs,363,150f,bosses.bigAttackRules.intercept,x,khac,03,1,inline,,property_init: public float Intercept { get; internal set; } = 150f;
+Sim/Content/BigAttackDefs.cs,366,0.5f,bosses.bigAttackRules.aaHit,x,khac,03,1,inline,,property_init: public float AaHit { get; internal set; } = 0.5f;
+Sim/Content/BigAttackDefs.cs,369,3f,bosses.bigAttackRules.dodge,x,khac,03,1,inline,,property_init: public float Dodge { get; internal set; } = 3f;
+Sim/Content/BossDefs.cs,20,10f,bosses.bossPartDef.ctorHpMax,x,sat_thuong,03,1,inline,,"compare: Hp = hp > 0f && hp < 10f ? hp : throw new ArgumentException($""Boss part '{id}': hp is a share of the body's health (0 to 10)."");"
+Sim/Content/BossDefs.cs,35,1,bosses.bossPartDef.armour,x,sat_thuong,03,1,inline,,property_init: public int Armour { get; internal set; } = -1;
+Sim/Content/BossDefs.cs,52,2f,bosses.bossPartDef.radius,m,ban_kinh,03,1,inline,,property_init: public float Radius { get; internal set; } = 2f;
+Sim/Content/BossDefs.cs,61,1f,bosses.bossPartDef.speed,m/s,tan_suat,03,1,inline,,property_init: public float Speed { get; internal set; } = 1f;
+Sim/Content/BossDefs.cs,73,0.3f,bosses.bossPartDef.breakDamage,x,sat_thuong,03,1,inline,,property_init: public float BreakDamage { get; internal set; } = 0.3f;
+Sim/Content/BossDefs.cs,142,20f,bosses.burrowDef.surface,x,khac,03,1,inline,,property_init: public float Surface { get; internal set; } = 20f;
+Sim/Content/BossDefs.cs,143,2f,bosses.burrowDef.dive,x,khac,03,1,inline,,property_init: public float Dive { get; internal set; } = 2f;
+Sim/Content/BossDefs.cs,144,14f,bosses.burrowDef.speed,m/s,tan_suat,03,1,inline,,property_init: public float Speed { get; internal set; } = 14f;
+Sim/Content/BossDefs.cs,145,2f,bosses.burrowDef.warn,s,thoi_gian,03,1,inline,,property_init: public float Warn { get; internal set; } = 2f;
+Sim/Content/BossDefs.cs,146,15f,bosses.burrowDef.radius,m,ban_kinh,03,1,inline,,property_init: public float Radius { get; internal set; } = 15f;
+Sim/Content/BossDefs.cs,147,3f,bosses.burrowDef.stun,x,khac,03,1,inline,,property_init: public float Stun { get; internal set; } = 3f;
+Sim/Content/BossDefs.cs,148,300f,bosses.burrowDef.damage,x,sat_thuong,03,1,inline,,property_init: public float Damage { get; internal set; } = 300f;
+Sim/Content/BossDefs.cs,149,6f,bosses.burrowDef.exposed,x,khac,03,1,inline,,property_init: public float Exposed { get; internal set; } = 6f;
+Sim/Content/BossDefs.cs,150,1.5f,bosses.burrowDef.exposedTaken,x,khac,03,1,inline,,property_init: public float ExposedTaken { get; internal set; } = 1.5f;
+Sim/Content/BossDefs.cs,153,12f,bosses.burrowDef.first,x,khac,03,1,inline,,property_init: public float First { get; internal set; } = 12f;
+Sim/Content/BossDefs.cs,184,40f,bosses.landingDef.every,x,tan_suat,03,1,inline,,property_init: public float Every { get; internal set; } = 40f;
+Sim/Content/BossDefs.cs,185,6f,bosses.landingDef.stop,x,khac,03,1,inline,,property_init: public float Stop { get; internal set; } = 6f;
+Sim/Content/BossDefs.cs,186,3,bosses.landingDef.min,x,nguong,03,1,inline,,property_init: public int Min { get; internal set; } = 3;
+Sim/Content/BossDefs.cs,187,4,bosses.landingDef.max,x,nguong,03,1,inline,,property_init: public int Max { get; internal set; } = 4;
+Sim/Content/BossDefs.cs,188,4,bosses.landingDef.landings,x,khac,03,1,inline,,property_init: public int Landings { get; internal set; } = 4;
+Sim/Content/BossDefs.cs,189,20f,bosses.landingDef.first,x,khac,03,1,inline,,property_init: public float First { get; internal set; } = 20f;
+Sim/Content/BossDefs.cs,193,10f,bosses.landingDef.rampY,x,khac,03,1,inline,,"ctor_arg:Vector2: public Vector2 Ramp { get; internal set; } = new(0f, 10f);"
+Sim/Content/BossDefs.cs,205,20f,bosses.bombardDef.every,x,tan_suat,03,1,inline,,property_init: public float Every { get; internal set; } = 20f;
+Sim/Content/BossDefs.cs,206,3f,bosses.bombardDef.warn,s,thoi_gian,03,1,inline,,property_init: public float Warn { get; internal set; } = 3f;
+Sim/Content/BossDefs.cs,207,1400f,bosses.bombardDef.damage,x,sat_thuong,03,1,inline,,property_init: public float Damage { get; internal set; } = 1400f;
+Sim/Content/BossDefs.cs,208,14f,bosses.bombardDef.radius,m,ban_kinh,03,1,inline,,property_init: public float Radius { get; internal set; } = 14f;
+Sim/Content/BossDefs.cs,209,3f,bosses.bombardDef.scatter,x,khac,03,1,inline,,property_init: public float Scatter { get; internal set; } = 3f;
+Sim/Content/BossDefs.cs,210,2.5f,bosses.bombardDef.blindScatter,x,khac,03,1,inline,,property_init: public float BlindScatter { get; internal set; } = 2.5f;
+Sim/Content/BossDefs.cs,211,10f,bosses.bombardDef.first,x,khac,03,1,inline,,property_init: public float First { get; internal set; } = 10f;
+Sim/Content/BossDefs.cs,252,0.8f,bosses.fireTrailDef.groundBurn,x,khac,03,1,const_to_property,,const_field: public const float GroundBurn = 0.8f;
+Sim/Content/BossDefs.cs,254,4f,bosses.fireTrailDef.every,x,tan_suat,03,1,inline,,property_init: public float Every { get; internal set; } = 4f;
+Sim/Content/BossDefs.cs,255,10f,bosses.fireTrailDef.seconds,s,thoi_gian,03,1,inline,,property_init: public float Seconds { get; internal set; } = 10f;
+Sim/Content/BossDefs.cs,256,3.5f,bosses.fireTrailDef.radius,m,ban_kinh,03,1,inline,,property_init: public float Radius { get; internal set; } = 3.5f;
+Sim/Content/BossDefs.cs,257,18f,bosses.fireTrailDef.dps,x,khac,03,1,inline,,property_init: public float Dps { get; internal set; } = 18f;
+Sim/Content/BossDefs.cs,302,3,bosses.scootDef.shots,x,khac,03,1,inline,,property_init: public int Shots { get; internal set; } = 3;
+Sim/Content/BossDefs.cs,303,15f,bosses.scootDef.min,x,nguong,03,1,inline,,property_init: public float Min { get; internal set; } = 15f;
+Sim/Content/BossDefs.cs,304,20f,bosses.scootDef.max,x,nguong,03,1,inline,,property_init: public float Max { get; internal set; } = 20f;
+Sim/Content/BossTemplates.cs,51,2,bosses.bossTemplates.expandPassMax,x,nguong,03,1,inline,,compare: for (var pass = 0; pass < 2; pass++)
+Sim/Content/BossTemplates.cs,248,2f,bosses.bossTemplates.resizeFallback,m,ban_kinh,03,1,inline,,"arg:BossTemplates.Number: part[""radius""] = (double)(Number(part, ""radius"", 2f) * size);"
+Sim/Content/BossTemplates.cs,256,6f,bosses.bossTemplates.resizeFallback2,x,sat_thuong,03,1,inline,,"arg:BossTemplates.Number: blast[""radius""] = (double)(Number(blast, ""radius"", 6f) * MathF.Sqrt(size));"
+Sim/Content/BossTemplates.cs,293,0.7f,bosses.bossTemplates.variantFallback,x,khac,03,1,inline,,"arg:BossTemplates.Number: Resize(d, Number(rules, ""size"", 0.7f));"
+Sim/Content/BossTemplates.cs,342,0.004,bosses.bossTemplates.rankPhvFloor,x,sat_thuong,03,1,inline,,"math_max: part[""hp""] = Math.Round(Math.Max(0.004, phv * partsShare / sum), 4);"
+Sim/Content/BossTemplates.cs,342,4,bosses.bossTemplates.rankMaxDigits,count,sat_thuong,03,1,inline,,"math_round: part[""hp""] = Math.Round(Math.Max(0.004, phv * partsShare / sum), 4);"
+Sim/Content/BossTemplates.cs,360,3,bosses.bossTemplates.bigAttacksDepthMin,x,nguong,03,1,inline,,"compare: if (depth > 3 || !byId.TryGetValue(from, out var parent)) throw new FormatException($""{path}.from: unknown big attack '{from}'."");"
+Sim/Content/EscortDefs.cs,162,5,bosses.escortRules.capForTryGetValueFalse,count,tran,03,1,inline,,"conditional: difficulty != null && Caps.TryGetValue(difficulty, out var cap) ? cap : Caps.TryGetValue(""Normal"", out var normal) ? normal : 5;"
+Sim/Content/EscortDefs.cs,165,2,bosses.escortRules.bossRushCut,x,khac,03,1,inline,,property_init: public int BossRushCut { get; internal set; } = 2;
+Sim/Content/EscortDefs.cs,167,3,bosses.escortRules.bossRushMin,x,nguong,03,1,inline,,property_init: public int BossRushMin { get; internal set; } = 3;
+Sim/Content/EscortDefs.cs,170,0.5f,bosses.escortRules.bossRushGuards,x,khac,03,1,inline,,property_init: public float BossRushGuards { get; internal set; } = 0.5f;
+Sim/Content/EscortDefs.cs,172,28f,bosses.escortRules.leash,m,ban_kinh,03,1,inline,,property_init: public float Leash { get; internal set; } = 28f;
+Sim/Content/EscortDefs.cs,175,3f,bosses.escortRules.bounty,x,khac,03,1,inline,,property_init: public float Bounty { get; internal set; } = 3f;
+Sim/Content/EscortDefs.cs,177,4f,bosses.escortRules.helperBounty,x,khac,03,1,inline,,property_init: public float HelperBounty { get; internal set; } = 4f;
+Sim/Content/EscortDefs.cs,180,0.003f,bosses.escortRules.repair,x,khac,03,1,inline,,property_init: public float Repair { get; internal set; } = 0.003f;
+Sim/Content/EscortDefs.cs,183,12f,bosses.escortRules.repairReach,m,ban_kinh,03,1,inline,,property_init: public float RepairReach { get; internal set; } = 12f;
+Sim/Content/EscortDefs.cs,186,0.15f,bosses.escortRules.spotBonus,x,khac,03,1,inline,,property_init: public float SpotBonus { get; internal set; } = 0.15f;
+Sim/Content/EscortDefs.cs,189,0.6f,bosses.escortRules.spotSpread,x,khac,03,1,inline,,property_init: public float SpotSpread { get; internal set; } = 0.6f;
+Sim/Content/EscortDefs.cs,192,0.5f,bosses.escortRules.marksValue,x,khac,03,1,inline,,table: public IReadOnlyList<float> Marks { get; internal set; } = new[] { 0.5f };
+Sim/Content/EscortDefs.cs,195,3f,bosses.escortRules.dropWarn,s,thoi_gian,03,1,inline,,property_init: public float DropWarn { get; internal set; } = 3f;
+Sim/Content/EscortDefs.cs,204,5,bosses.escortSettings.cap,count,tran,03,1,inline,,property_init: public int Cap { get; set; } = 5;
+Sim/Content/TierDefs.cs,45,4,bosses.tierArmourDef.hull,x,khac,03,1,inline,,property_init: public int Hull { get; internal set; } = 4;
+Sim/Content/TierDefs.cs,46,2,bosses.tierArmourDef.belly,x,khac,03,1,inline,,property_init: public int Belly { get; internal set; } = 2;
+Sim/Content/TierDefs.cs,47,3,bosses.tierArmourDef.grounded,x,khac,03,1,inline,,property_init: public int Grounded { get; internal set; } = 3;
+Sim/Content/TierDefs.cs,57,6f,bosses.crashDef.fall,x,khac,03,1,inline,,property_init: public float Fall { get; internal set; } = 6f;
+Sim/Content/TierDefs.cs,59,500f,bosses.crashDef.damage,x,sat_thuong,03,1,inline,,property_init: public float Damage { get; internal set; } = 500f;
+Sim/Content/TierDefs.cs,60,16f,bosses.crashDef.radius,m,ban_kinh,03,1,inline,,property_init: public float Radius { get; internal set; } = 16f;
+Sim/Content/TierDefs.cs,75,10f,bosses.hijackDef.first,x,khac,03,1,inline,,property_init: public float First { get; internal set; } = 10f;
+Sim/Content/TierDefs.cs,76,40f,bosses.hijackDef.every,x,tan_suat,03,1,inline,,property_init: public float Every { get; internal set; } = 40f;
+Sim/Content/TierDefs.cs,77,4f,bosses.hijackDef.warn,s,thoi_gian,03,1,inline,,property_init: public float Warn { get; internal set; } = 4f;
+Sim/Content/TierDefs.cs,78,6f,bosses.hijackDef.seconds,s,thoi_gian,03,1,inline,,property_init: public float Seconds { get; internal set; } = 6f;
+Sim/Content/TierDefs.cs,100,4f,bosses.tierDef.descend,x,khac,03,1,inline,,property_init: public float Descend { get; internal set; } = 4f;
+Sim/Content/TierDefs.cs,101,3.5f,bosses.tierDef.shift,x,khac,03,1,inline,,property_init: public float Shift { get; internal set; } = 3.5f;
+Sim/Content/TierDefs.cs,104,150f,bosses.tierDef.orbitHeight,m,ban_kinh,03,1,inline,,property_init: public float OrbitHeight { get; internal set; } = 150f;
+Sim/Content/TierDefs.cs,105,60f,bosses.tierDef.highHeight,m,ban_kinh,03,1,inline,,property_init: public float HighHeight { get; internal set; } = 60f;
+Sim/Content/TierDefs.cs,106,22f,bosses.tierDef.lowHeight,m,ban_kinh,03,1,inline,,property_init: public float LowHeight { get; internal set; } = 22f;
+Sim/Content/TierDefs.cs,183,4f,bosses.podDef.first,x,khac,03,1,inline,,property_init: public float First { get; internal set; } = 4f;
+Sim/Content/TierDefs.cs,184,14f,bosses.podDef.every,x,tan_suat,03,1,inline,,property_init: public float Every { get; internal set; } = 14f;
+Sim/Content/TierDefs.cs,185,2,bosses.podDef.count,count,gioi_han_thuc_the,03,1,inline,,property_init: public int Count { get; internal set; } = 2;
+Sim/Content/TierDefs.cs,186,1,bosses.podDef.min,x,nguong,03,1,inline,,property_init: public int Min { get; internal set; } = 1;
+Sim/Content/TierDefs.cs,187,2,bosses.podDef.perPod,x,khac,03,1,inline,,property_init: public int PerPod { get; internal set; } = 2;
+Sim/Content/TierDefs.cs,188,6f,bosses.podDef.fall,x,khac,03,1,inline,,property_init: public float Fall { get; internal set; } = 6f;
+Sim/Content/TierDefs.cs,189,6,bosses.podDef.max,x,nguong,03,1,inline,,property_init: public int Max { get; internal set; } = 6;
+Sim/Content/TierDefs.cs,190,30f,bosses.podDef.offset,m,ban_kinh,03,1,inline,,property_init: public float Offset { get; internal set; } = 30f;
+Sim/Content/TierDefs.cs,191,12f,bosses.podDef.spread,x,khac,03,1,inline,,property_init: public float Spread { get; internal set; } = 12f;
+Sim/Content/TierDefs.cs,197,6f,bosses.podDef.radius,m,ban_kinh,03,1,inline,,property_init: public float Radius { get; internal set; } = 6f;
+Sim/Content/TierDefs.cs,206,2f,bosses.podDef.everyInEveryByPhaseFloor,x,tan_suat,03,1,inline,,"math_max: public float EveryIn(int phase) => EveryByPhase.Count == 0 ? Every : MathF.Max(2f, EveryByPhase[Math.Clamp(phase, 0, EveryByPhase.Count - 1)]);"
+Sim/Entities/BigAttackState.cs,93,0.01f,bosses.bigZone.exitsLengthSquaredMin,m,ban_kinh,03,1,inline,,compare: var dir = d.LengthSquared() > 0.01f ? Vector2.Normalize(d) : fallback;
+Sim/Entities/Vehicle.Boss.cs,57,1f,bosses.vehicle.partSpeed,m/s,tan_suat,03,1,inline,,field_init: internal float PartSpeed = 1f;
+Sim/Modes/BossHunt.cs,218,3,bosses.huntSupports.offered,x,khac,03,1,manual:const used in a constant context (parameter default at Game/Effects/WarningGate.cs:118),,const_field: public const int Offered = 3;
+Sim/Modes/BossHunt.cs,225,0.15f,bosses.huntSupports.allValue,x,sat_thuong,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""hull"", ""shield"", HuntSupportKind.Hull, 0.15f, 0.15f), // the army's health +15 %"
+Sim/Modes/BossHunt.cs,225,0.15f,bosses.huntSupports.allStrength,x,sat_thuong,03,2,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""hull"", ""shield"", HuntSupportKind.Hull, 0.15f, 0.15f), // the army's health +15 %"
+Sim/Modes/BossHunt.cs,226,0.10f,bosses.huntSupports.allValue2,x,sat_thuong,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""gunnery"", ""crosshair"", HuntSupportKind.Gunnery, 0.10f, 0.10f), // its damage +10 %"
+Sim/Modes/BossHunt.cs,226,0.10f,bosses.huntSupports.allStrength2,x,sat_thuong,03,2,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""gunnery"", ""crosshair"", HuntSupportKind.Gunnery, 0.10f, 0.10f), // its damage +10 %"
+Sim/Modes/BossHunt.cs,227,0.12f,bosses.huntSupports.allValue3,x,tan_suat,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""loaders"", ""ammo"", HuntSupportKind.Loaders, 0.12f, 0.12f), // its fire rate +12 %"
+Sim/Modes/BossHunt.cs,227,0.12f,bosses.huntSupports.allStrength3,x,tan_suat,03,2,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""loaders"", ""ammo"", HuntSupportKind.Loaders, 0.12f, 0.12f), // its fire rate +12 %"
+Sim/Modes/BossHunt.cs,228,0.12f,bosses.huntSupports.allValue3,x,tan_suat,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""engines"", ""move"", HuntSupportKind.Engines, 0.12f, 0.06f), // its speed +12 %"
+Sim/Modes/BossHunt.cs,228,0.06f,bosses.huntSupports.allStrength4,x,tan_suat,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""engines"", ""move"", HuntSupportKind.Engines, 0.12f, 0.06f), // its speed +12 %"
+Sim/Modes/BossHunt.cs,229,0.01f,bosses.huntSupports.allValue4,x,sat_thuong,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""regen"", ""repair"", HuntSupportKind.Regen, 0.01f, 0.08f), // 1 % of health a second out of fire"
+Sim/Modes/BossHunt.cs,229,0.08f,bosses.huntSupports.allStrength5,x,sat_thuong,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""regen"", ""repair"", HuntSupportKind.Regen, 0.01f, 0.08f), // 1 % of health a second out of fire"
+Sim/Modes/BossHunt.cs,230,0.25f,bosses.huntSupports.allValue5,s,thoi_gian,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""rapid"", ""airstrike"", HuntSupportKind.Rapid, 0.25f), // fire support cooldowns -25 %"
+Sim/Modes/BossHunt.cs,231,0.20f,bosses.huntSupports.allValue6,x,khac,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""logistics"", ""cp"", HuntSupportKind.Logistics, 0.20f, 0.10f), // CP income +20 %"
+Sim/Modes/BossHunt.cs,231,0.10f,bosses.huntSupports.allStrength2,x,khac,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""logistics"", ""cp"", HuntSupportKind.Logistics, 0.20f, 0.10f), // CP income +20 %"
+Sim/Modes/BossHunt.cs,232,35f,bosses.huntSupports.allValue7,s,thoi_gian,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""warchest"", ""coin"", HuntSupportKind.WarChest, 35f, 0.05f), // 35 CP now"
+Sim/Modes/BossHunt.cs,232,0.05f,bosses.huntSupports.allStrength6,s,thoi_gian,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""warchest"", ""coin"", HuntSupportKind.WarChest, 35f, 0.05f), // 35 CP now"
+Sim/Modes/BossHunt.cs,233,6f,bosses.huntSupports.allValue8,count,tran,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""supply"", ""people"", HuntSupportKind.Supply, 6f, 0.08f), // army cap +6"
+Sim/Modes/BossHunt.cs,233,0.08f,bosses.huntSupports.allStrength5,count,tran,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""supply"", ""people"", HuntSupportKind.Supply, 6f, 0.08f), // army cap +6"
+Sim/Modes/BossHunt.cs,234,0.05f,bosses.huntSupports.allStrength6,x,khac,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""workshop"", ""gear"", HuntSupportKind.Workshop, 1f, 0.05f), // rests repair twice as much"
+Sim/Modes/BossHunt.cs,235,0.5f,bosses.huntSupports.allValue9,x,khac,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""bounty"", ""trophy"", HuntSupportKind.Bounty, 0.5f, 0.05f), // boss bounties +50 %"
+Sim/Modes/BossHunt.cs,235,0.05f,bosses.huntSupports.allStrength6,x,khac,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""bounty"", ""trophy"", HuntSupportKind.Bounty, 0.5f, 0.05f), // boss bounties +50 %"
+Sim/Modes/BossHunt.cs,236,3f,bosses.huntSupports.allValue10,x,khac,03,1,manual:static initializer is an expression,,"ctor_arg:HuntSupportDef: new HuntSupportDef(""airdrop"", ""reinforce"", HuntSupportKind.Airdrop, 3f), // three of the deck's vehicles, free"
+Sim/Modes/BossHunt.cs,332,20f,bosses.bossRushRules.endlessChoice,x,khac,03,1,inline,,property_init: public float EndlessChoice { get; set; } = 20f;
+Sim/Modes/BossHunt.cs,346,2,bosses.bossRushRules.endlessEscortEvery,x,tan_suat,03,1,inline,,property_init: public int EndlessEscortEvery { get; set; } = 2;
+Sim/Modes/BossHunt.cs,375,1f,bosses.bossRushRules.cpKept,CP,khac,03,1,inline,,property_init: public float CpKept { get; set; } = 1f;
+Sim/Modes/BossHunt.cs,378,1f,bosses.bossRushRules.bossHp,x,khac,03,1,inline,,property_init: public float BossHp { get; set; } = 1f;
+Sim/Modes/BossHunt.cs,380,1f,bosses.bossRushRules.bossDamage,x,sat_thuong,03,1,inline,,property_init: public float BossDamage { get; set; } = 1f;
+Sim/Modes/BossHunt.cs,423,1f,bosses.bossRushMode.bountyScale,x,khac,03,1,inline,,"field_init: private float _bountyScale = 1f, _repairScale = 1f, _ramp = 1f;"
+Sim/Modes/BossHunt.cs,423,1f,bosses.bossRushMode.repairScale,x,khac,03,2,inline,,"field_init: private float _bountyScale = 1f, _repairScale = 1f, _ramp = 1f;"
+Sim/Modes/BossHunt.cs,424,1f,bosses.bossRushMode.endlessHp,x,sat_thuong,03,1,inline,,"field_init: private float _endlessHp = 1f, _endlessDamage = 1f, _escortStrength = 1f;"
+Sim/Modes/BossHunt.cs,424,1f,bosses.bossRushMode.endlessDamage,x,sat_thuong,03,2,inline,,"field_init: private float _endlessHp = 1f, _endlessDamage = 1f, _escortStrength = 1f;"
