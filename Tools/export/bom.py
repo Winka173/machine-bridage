@@ -42,6 +42,76 @@ TRACE_COLS = ["vu_khi_id", "don_vi_id", "seed", "chi_so_bom", "tick_tha", "vi_tr
               "vi_tri_roi_x_m", "vi_tri_roi_z_m", "thoi_gian_roi_s", "toc_do_luc_tha_m_s", "do_cao_m", "huong_bay_deg",
               "duong_tha", "dieu_kien_tha", "loi_m", "ria_m", "khoang_tha_s", "ghi_chu"]
 C = "Assets/MachineBrigade/Scripts/Sim/"
+# The bomb-run fix, pass 1: the stick parameters of the spec, one column each (balance.json weapons[*].stick key; the
+# supports' and the bosses' strips have no "stick" block: their columns are worked out from their own data).
+STICK_COLS = [
+    ("che_do_tha", "mode", "POINT / STICK / PATTERN"),
+    ("cach_tha", "drop", "OVERFLY (máy bay bay qua, bom rơi tự do) / BAY (khoang bom boss: dải đặt quanh điểm nhắm)"),
+    ("so_bom_dai_n", "bombs", "số bom một lượt (n; = burst)"),
+    ("khoang_cach_giua_bom_m", "spacing", "spacing = 1,1 × lõi (0,8–1,5 × lõi)"),
+    ("do_dai_dai_m", "length", "(n − 1) × spacing; trần 120 m (boss 140 m)"),
+    ("chu_ky_tha_giua_bom_s", "interval", "spacing / tốc độ lúc thả"),
+    ("toc_do_bay_luc_tha_m_s", "releaseSpeed", "tốc độ máy bay lúc thả (ga 0,8 khi vào; boss: tốc độ danh nghĩa của khoang = spacing / chu kỳ)"),
+    ("thoi_gian_roi_s", "fallTime", "√(2 × độ cao / 40)"),
+    ("khoang_dan_dau_m", "lead", "tốc độ × thời gian rơi (thả trước để quả đầu rơi đầu dải); BAY và dẫn đường: 0"),
+    ("huong_ra_tham", "heading", "APPROACH / AXIS (trục chính cụm mục tiêu trong ±45°)"),
+    ("tam_dai", "anchor", "START / CENTER"),
+    ("lech_ngang_m", "jitterAcross", "± theo seed, 0,25 × lõi"),
+    ("lech_doc_m", "jitterAlong", "± theo seed, 0,15 × spacing"),
+    ("ty_le_chong_lan", "overlap", "lõi / spacing (mục tiêu 0,8–1,2)"),
+    ("do_rong_dai_m", "width", "2 × rìa + 2 × lệch ngang"),
+    ("so_muc_tieu_toi_thieu", "minTargets", "ít hơn thì thả max(2, ceil(n/3)) quả (0: không áp)"),
+    ("so_bom_khi_it_muc_tieu", None, "max(2, ceil(n/3)) (dải STICK có minTargets)"),
+    ("khoang_cach_an_toan_m", "safety", "max(lõi, 8): mỗi quả tự kiểm tra, quả rơi gần quân ta bị bỏ"),
+    ("thoi_gian_bay_thang_s", "straightTime", "độ dài / tốc độ + thời gian rơi + 1 s (và ≥ 40 m sau quả cuối); 0: không giữ"),
+    ("khoang_thoat_m", "exit", "bay thẳng ≥ 40 m sau quả cuối rồi mới vòng"),
+    ("thoi_gian_mo_khoang_bom_s", "bayOpen", "hình ảnh (lượt 3)"),
+    ("canh_bao_dang", "warnShape", "STICK_RECT (≥ 400 kg và boss) / RING / NONE"),
+]
+
+
+def stick_of(w: dict, vk: dict) -> dict:
+    """The weapon's "stick" block from its raw json (or its parent's through inherits), {} without one."""
+    seen = set()
+    while w and id(w) not in seen:
+        seen.add(id(w))
+        try:
+            raw = json.loads(w.get("raw_json") or "{}")
+        except (TypeError, ValueError):
+            raw = {}
+        if isinstance(raw.get("stick"), dict):
+            return raw["stick"]
+        w = vk.get(str(w.get("ke_thua_tu") or ""), {})
+    return {}
+
+
+def stick_values(st: dict) -> dict:
+    out = {}
+    for col, key, _m in STICK_COLS:
+        if key is None:
+            continue
+        v = st.get(key, "")
+        out[col] = v if v != "" else ""
+    n = int(fnum(st.get("bombs"), 1)) if st else 0
+    out["so_bom_khi_it_muc_tieu"] = (min(n, max(2, -(-n // 3))) if st.get("mode") == "STICK" and fnum(st.get("minTargets")) > 0
+                                     and n > 1 else "")
+    return out
+
+
+def strip_stick(n: int, length: float, core: float, edge: float, dur: float, lateral: float, centre: bool) -> dict:
+    """A support's airstrike or a boss strip as stick columns (their code lays the line; nothing here is data)."""
+    spacing = (length / (n - 1) if centre is False else length / n) if n > 1 and length else 0.0
+    interval = dur / (n - 1) if n > 1 else 0.0
+    speed = spacing / interval if interval else 0.0
+    return {"che_do_tha": "STICK", "cach_tha": "OVERFLY" if not centre else "BAY", "so_bom_dai_n": n,
+            "khoang_cach_giua_bom_m": r3(spacing), "do_dai_dai_m": r3(spacing * (n - 1)), "chu_ky_tha_giua_bom_s": r3(interval),
+            "toc_do_bay_luc_tha_m_s": r3(speed), "thoi_gian_roi_s": "", "khoang_dan_dau_m": "",
+            "huong_ra_tham": "APPROACH (hướng người chơi kéo)" if not centre else "APPROACH (hướng boss)",
+            "tam_dai": "START (Point = đầu dải)" if not centre else "CENTER", "lech_ngang_m": r3(lateral), "lech_doc_m": 0,
+            "ty_le_chong_lan": r3(core / spacing) if spacing else "", "do_rong_dai_m": r3(2 * max(edge, core) + 2 * lateral),
+            "so_muc_tieu_toi_thieu": 0, "so_bom_khi_it_muc_tieu": "", "khoang_cach_an_toan_m": "",
+            "thoi_gian_bay_thang_s": "", "khoang_thoat_m": "", "thoi_gian_mo_khoang_bom_s": "",
+            "canh_bao_dang": "STICK_RECT"}
 
 
 # ---------------------------------------------------------------------------------------------------------- helpers
@@ -126,6 +196,7 @@ def sheet_vu_khi(vk_header, vk, wids, carriers, sup, big, big_strikes, units):
     extra = ["duong_tha_theo_ma", "che_do_tha_hien_tai", "so_bom_moi_luot", "khoang_tha_giua_bom_s", "don_vi_mang",
              "toc_do_don_vi_mang_m_s", "khoang_cach_giua_bom_m_toan_toc", "khoang_cach_giua_bom_m_ga_0_8",
              "do_dai_dai_m_toan_toc", "ty_le_chong_lan_loi_tren_khoang", "canh_bao_theo_luat", "thoi_gian_canh_bao_s_theo_luat"]
+    extra += [c for c, _k, _m in STICK_COLS]
     base = [c for c in vk_header if c not in ("id", "nguon", "raw_json")]
     header = ["id", "nhom"] + base + extra + ["nguon", "raw_json"]
     rows = []
@@ -157,6 +228,7 @@ def sheet_vu_khi(vk_header, vk, wids, carriers, sup, big, big_strikes, units):
             "thoi_gian_canh_bao_s_theo_luat": r3(warn_seconds(core, tier)) if warns else 0,
             "nguon": w.get("nguon", ""), "raw_json": w.get("raw_json", ""),
         })
+        vals.update(stick_values(stick_of(w, vk)))
         rows.append([vals.get(c, "") for c in header])
     for sid, s in sup.items():
         count = int(fnum(s.get("count"), 1))
@@ -182,6 +254,8 @@ def sheet_vu_khi(vk_header, vk, wids, carriers, sup, big, big_strikes, units):
                 "ty_le_chong_lan_loi_tren_khoang": r3(core / spacing) if spacing else "",
                 "canh_bao_theo_luat": "TRUE (vòng / dải hỗ trợ)", "thoi_gian_canh_bao_s_theo_luat": num(s.get("delay_s")),
                 "nguon": s.get("nguon", ""), "raw_json": s.get("raw_json", "")}
+        if kind == "Airstrike" and count > 1:
+            vals.update(strip_stick(count, length, core, core, dur, 0.5 * fnum(s.get("radius_m")), False))
         rows.append([vals.get(c, "") for c in header])
     for bid, b in big.items():
         st = big_strikes[bid]
@@ -204,6 +278,9 @@ def sheet_vu_khi(vk_header, vk, wids, carriers, sup, big, big_strikes, units):
                 "ty_le_chong_lan_loi_tren_khoang": r3(core / spacing) if strip and spacing else "",
                 "canh_bao_theo_luat": "TRUE (siêu vũ khí)", "thoi_gian_canh_bao_s_theo_luat": num(b.get("warn_s")),
                 "nguon": f"{b.get('nguon', '')}; {st.get('nguon', '')}", "raw_json": st.get("raw_json", "")}
+        if strip and count > 1:
+            vals.update(strip_stick(count, length, core, min(20.0, core * 2.0), dur,
+                                    0.35 * fnum(st.get("width_m")), True))
         rows.append([vals.get(c, "") for c in header])
     return header, rows
 

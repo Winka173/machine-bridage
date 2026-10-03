@@ -15,14 +15,18 @@ SECONDS = {
     "surviveSeconds", "flareRecharge", "launchSeconds", "dropWarn", "showdownCutoff", "floorT4", "floor406",
     "floorT5", "grace", "mainSeconds", "miniSeconds", "convoyInterval", "fleeDelay",
     "dive", "stun", "exposed", "earlySeconds",
+    # the bomb-run fix: weapons[*].stick
+    "interval", "fallTime", "straightTime", "bayOpen",
 }
 METRES = {
     "range", "minRange", "splash", "edge", "radius", "vision", "length", "width", "height", "altitude", "ceiling",
     "groundRange", "minReach", "orbitRadius", "reach", "leash", "repairReach", "enemyRadius", "flareOffset",
     "proximityFuze", "airReach", "dropRadius", "standoff", "blast", "pad", "depth", "core", "spacing", "stillVision",
     "metresWide", "metresHigh", "area", "x", "y", "z", "distance", "gap", "offset", "sightRange",
+    # the bomb-run fix: weapons[*].stick
+    "lead", "jitterAcross", "jitterAlong", "safety", "exit",
 }
-METRES_PER_SECOND = {"speed", "projectileSpeed", "escapeSpeed", "transitSpeed", "climb", "descend"}
+METRES_PER_SECOND = {"speed", "projectileSpeed", "escapeSpeed", "transitSpeed", "climb", "descend", "releaseSpeed"}
 DEGREES_PER_SECOND = {"turnRate", "turretTurnRate"}
 DEGREES = {"heading", "turretArc", "arc", "angle", "pitch", "yaw"}
 
@@ -43,7 +47,7 @@ OWN_UNIT = {"caliberMm": "mm", "warheadKg": "kg", "powerKw": "kW", "energyMj": "
 
 UNITLESS = {
     # counts
-    "count", "charges", "burst", "barrels", "clip", "ammo", "load", "cap", "caps", "slots", "points", "stock", "units",
+    "count", "charges", "burst", "bombs", "minTargets", "barrels", "clip", "ammo", "load", "cap", "caps", "slots", "points", "stock", "units",
     "shells", "rockets", "missiles", "drones", "lines", "small", "medium", "large", "utility", "level", "number",
     "segments", "campLines", "fortressLines", "maxShown", "maxPerSide", "flareCharges", "bountyCap", "escortCap",
     "bossRushCut", "bossRushMin", "mounts", "guns", "act", "chapter", "reward", "coins", "xp", "prints", "salvo",
@@ -51,7 +55,7 @@ UNITLESS = {
     "priority", "week", "waves", "squads", "killsNeeded", "convoyCount", "convoyNeeded", "protectNeeded", "hqLevel",
     "reinforcements", "playerCap", "starLosses", "value", "bounty", "helperBounty", "marks", "stops", "at",
     # shares, multipliers, chances, levels
-    "mult", "scale", "damageScale", "hpScale", "costScale", "share", "chance", "outgoingDamageMult", "weaponDamage",
+    "mult", "scale", "damageScale", "overlap", "hpScale", "costScale", "share", "chance", "outgoingDamageMult", "weaponDamage",
     "stillCamo", "damage", "fireRate", "airDamage", "strikeTaken", "strikeCap", "strikeOver", "partsShare",
     "powerRatio", "otherShare", "budget", "blueprintChance", "flareDecoyChance", "reachScale", "leadCap", "thermobaric",
     "penetration", "Ground", "Air", "Structure", "durability", "breakerMultiplier", "rubbleSlow", "hqRescue",

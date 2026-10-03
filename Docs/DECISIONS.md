@@ -18403,3 +18403,38 @@ Owner: "sửa theo đề xuất hết".
 10. radar_station is split into two ids (the base module and the map prop).
 11. Defend mode reads its timeLimit (720 s) from data instead of the code's 630 s; the Normal x0.7 enemy income and the
     Weekly fortress tactic override wait for play-tests.
+
+
+## Ném bom rải thảm (pass 1, lane B, 2026-10-03)
+Owner's bomb-run fix, pass 1 (Docs/prompts/bomb_run_vi.txt; owner item 1 of "open questions settled": the strategic bomber
+keeps its 7 bombs). Branch feature/bomb-p12. Stick parameters only; damage, burst, cooldown and loads unchanged.
+- **Data**: balance.json weapons[*].stick on every bomb weapon pass 0 found: mode, bombs, spacing, length, interval,
+  releaseSpeed, fallTime, lead, heading (APPROACH / AXIS), anchor (START / CENTER), drop (OVERFLY / BAY), jitterAcross,
+  jitterAlong, overlap, width, minTargets, safety, straightTime, exit, bayOpen, warnShape (NONE / RING / STICK_RECT; not
+  "warn": the export reads "warn" as seconds). Read by Catalog.ParseWeaponStick into WeaponDef.Stick (StickDef,
+  Scripts/Sim/Content/WeaponDef.Stick.cs; Tuned copies carry it). On load: stick bombs must equal the burst, and length,
+  interval, overlap and width must match their formulas within 2 % (a FormatException names the field).
+- **Formulas**: spacing = 1.1 x core (every stick: overlap core / spacing = 0.909, inside 0.8-1.2); length = (n - 1) x
+  spacing, all under the 120 m cap (bosses 140 m), so no spacing or count was cut; interval = spacing / releaseSpeed;
+  lead = releaseSpeed x fallTime; fallTime = sqrt(2 x altitude / 40) of the main carrier; jitters 0.25 x core across,
+  0.15 x spacing along; width = 2 x WarnRadius (the edge, else the core) + 2 x jitterAcross; safety = max(core, 8);
+  straightTime = length / speed + fall + 1 s (also >= 40 m past the last bomb: never the longer here).
+- **STICK**: bomber_payload (heavy_bomber) n 7, 11 m, 66 m, 0.625 s at 17.6 m/s (22 m/s at the run's 0.8 throttle),
+  AXIS, minTargets 3, straight 6.2 s, STICK_RECT (500 kg); jet_bombs (attack_jet, elite_attack_jet, stealth_naval_strike)
+  n 2, 8.8 m, 8.8 m, 0.344 s at 25.6 m/s, APPROACH, straight 2.57 s, NONE (250 kg); p26_roc_roc_bombs n 8, 5.5 m, 38.5 m
+  and p26_roc_main_roc_bombs (argus, garuda, command_airship) n 8, 11 m, 77 m, both drop BAY, AXIS, STICK_RECT.
+- **Boss bays keep their 0.3 s ripple**: an airship crawls at 4.5-6 m/s, so spacing / its speed would stretch an 8-bomb
+  stick past the bay's whole cycle; their releaseSpeed is the bay's nominal walk (spacing / 0.3 s), their lead 0 (the
+  stick is laid round the aim) and their straightTime 0 (they do not fly over). Cycle and DPS unchanged.
+- **POINT**: the guided bombs stealth_payload (GBU-31 JDAM), guided_bomb (SDB), glide_fab500 (UMPK) land on their target
+  (the code's spread for guided rounds is 0; a lost lock still misses by 5-11 m): no jitter, lead 0. The spec's "stealth
+  bomber, 3 very large bombs, short stick" predates the data (2 guided JDAMs): kept POINT by the spec's own guided rule.
+  The single free-falling bombs (cluster_at_bomb, bunker_buster_bomb, thermobaric_bomb on glide_bomber) are POINT n 1
+  (their 0.5 x spread scatter stays); warnShape RING where FixRules warns (bunker buster, ODAB-500).
+- **Supports and boss strips** are not weapons and keep their code and data: airstrike 4 / 60 m (overlap 0.5: four big
+  bombs over a wide line, left for the pass 4 balance look), napalm 8 / 55 m (1.15), air_raid 10 / 70 m (1.03),
+  cluster_strike 30 bomblets (2.7, a saturating carpet), garuda_carpet / airship_carpet (1.4), kraken_air_raid (1.2).
+  Bom_vu_khi shows their stick columns worked out from that data.
+- **Card text**: the bomber's "12 bombs" guide line is corrected in pass 4 (cards from data), not here.
+- **Export**: Tools/export/bom.py Bom_vu_khi gains the spec's columns (che_do_tha ... canh_bao_dang, STICK_COLS); the
+  stick keys get their units in core/units.py; `export.py coverage`: unmapped 0.
