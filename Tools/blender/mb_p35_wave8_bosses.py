@@ -445,7 +445,273 @@ def _fortress_turret(a):
     K.whip_antenna(a.part('Antenna', 'Steel', t), (-1.7, 2.0, 1.2), h=1.0, lean=.15)
 
 
+# ============================================================================= armored_train
+TRAIN_CARS = ((-9.4, -.6), (.6, 9.4), (10.31, 14.76))     # locomotive, gun wagon, mortar flatcar (the old file's)
+
+
+def _train_car_base(a, y0, y1, bogies, head=True, tail=True):
+    """One car's running gear and frame: the underframe, the two bogies, the headstocks with buffers and the coupler
+    at each end (head / tail), the step boards."""
+    K.chamfer_box(a.part('Underframe', 'Undercarriage'), (2.5, y1 - y0, .36), loc=(0, (y0 + y1) / 2, 1.18), c=.03)
+    for y in bogies:
+        K.bogie(a, (0, y, .0), wheel_r=.46, base=2.0)
+    for y, d in ((y0, -1), (y1, 1)):
+        if (d < 0 and not head) or (d > 0 and not tail):
+            continue
+        a.part('Headstocks', 'Armor').box((3.0, .3, .5), loc=(0, y + d * .0, 1.15), bevel=0)
+        a.part('Headstock_bars', 'Hazard').box((3.0, .02, .14), loc=(0, y + d * .16, 1.2), bevel=0)
+        for s in (-1, 1):
+            k.lathe(a.part('Buffers', 'Steel'), [(.09, 0), (.09, .22), (.2, .24), (.2, .34), (0, .37)],
+                    loc=(s * .85, y + d * .14, 1.0), rot=(-d * R90, 0, 0), seg=10)
+        a.part('Couplers', 'Steel').box((.18, .4, .18), loc=(0, y + d * .25, 1.1), bevel=0)
+    for s in (-1, 1):
+        a.part('Wheel_flanges', 'Steel').box((.25, y1 - y0 - 1.0, .03), loc=(s * 1.35, (y0 + y1) / 2, .75), bevel=0)
+
+
+def armored_train(a):
+    """See the module docstring (armored_train). The car layout and lengths are the old file's (the rails tile
+    it). Runtime: Turret / Main_cannon / Muzzle_brake / Muzzle_main (gun_car_front), Muzzle_main.001 (the
+    locomotive's rear gun, gun_car_rear: fixed casemate), Mount_rocket (rocket_car), Mount_mg (the HMG cupola),
+    Mount_mg.001 / .002 (the twin flak on the locomotive cab roof and on the flatcar's tail), Part_mortar >
+    Mount_mortar > Muzzle_mortar (mortar_car)."""
+    K.suffixed(a)
+    (l0, l1), (w0, w1), (m0, m1) = TRAIN_CARS
+    _train_car_base(a, l0, l1, (-7.6, -2.4))
+    _train_car_base(a, w0, w1, (2.4, 7.6))
+    _train_car_base(a, m0, m1, (11.4, 13.7))
+    _train_loco(a)
+    _train_wagon(a)
+    _train_flatcar(a)
+    _train_kit(a)
+    a.pivot('Point_fire', (0, -4.0, 3.0))
+    a.pivot('Point_exhaust', (.9, -3.6, 3.6))
+    k.clean(a)
+
+
+def _studs(part, p0, p1, pitch=.2, size=.045):
+    """A row of square bolt heads (12-triangle boxes: cheaper than turned rivets for the long seams)."""
+    p0, p1 = Vector(p0), Vector(p1)
+    n = max(1, int((p1 - p0).length / pitch))
+    for i in range(n + 1):
+        part.box((size, size, size), loc=tuple(p0.lerp(p1, i / n)), bevel=0)
+
+
+def _train_kit(a):
+    """The riveted field kit an armoured train carries everywhere: rivet rows along every body seam, bogie skirt
+    plates, grab handles and steps at the car ends, sandbag parapets on the flatcar and round the HMG cupola, tool
+    boxes and spare rails, the fire buckets."""
+    rv = a.part('Kit_rivets', 'Steel')
+    for s in (-1, 1):
+        for y0, y1, zs in ((-9.2, -.8, (1.4, 2.06)), (.8, 9.2, (1.4, 1.99))):
+            for z in zs:
+                _studs(rv, (s * 1.615, y0, z), (s * 1.615, y1, z), pitch=.2)
+        _studs(rv, (s * 1.2, -6.1, 2.97), (s * 1.2, -1.1, 2.97), pitch=.22)
+        _studs(rv, (s * 1.32, .8, 2.64), (s * 1.32, 9.2, 2.64), pitch=.22)
+        for (y0, y1), bog in zip(TRAIN_CARS, ((-7.6, -2.4), (2.4, 7.6), (11.4, 13.7))):
+            for yb in bog:
+                K.armour_plate(a, a.part('Skirt_plates', 'Armor'), (.55, 2.1, .05), (s * 1.42, yb, .78),
+                               rot=(0, s * R90, 0), rivet=.5)
+            for y in (y0 + .15, y1 - .15):
+                K.handle(a.part('Kit_handles', 'Steel'), (s * 1.5, y, 1.5), (s * 1.5, y, 2.2), (s, 0, 0), h=.06)
+                a.part('Steps', 'Steel').box((.3, .25, .03), loc=(s * 1.45, y, .62), bevel=0)
+    # Sandbag parapets: along both flatcar sides and in an arc behind the HMG cupola.
+    m0, m1 = TRAIN_CARS[2]
+    for s in (-1, 1):
+        K.sandbag_run(a, [(s * 1.05, m0 + .3, 1.47), (s * 1.05, 11.2, 1.47)], courses=2, bag=(.5, .3, .16),
+                      part='Sandbags', seed=7 + s, lean=True)
+        K.sandbag_run(a, [(s * 1.05, 13.9, 1.47), (s * 1.05, m1 - .3, 1.47)], courses=2, bag=(.5, .3, .16),
+                      part='Sandbags', seed=9 + s, lean=True)
+    K.sandbag_run(a, [(-.9, 7.3, 2.64), (-.75, 7.0, 2.64), (.75, 7.0, 2.64), (.9, 7.3, 2.64)], courses=2,
+                  bag=(.5, .3, .16), part='Sandbags', seed=11, lean=True)
+    # Tool boxes of several sizes, spare rails along the wagon side, fire buckets on the locomotive.
+    for j, (x, y, sz) in enumerate(((-1.0, 1.6, (.5, .35, .25)), (-1.0, 2.3, (.4, .5, .3)), (1.0, 9.0, (.6, .3, .22)))):
+        K.crate(a.part('Tool_boxes', 'Armor'), a.part('Kit_latches', 'Steel'), sz, (x, y, 2.64), bands=1)
+    for z in (1.45, 1.6):
+        a.part('Spare_rails', 'Steel').box((.07, 5.0, .1), loc=(-1.76, 5.0, z), bevel=0)
+    for y in (3.0, 5.0, 7.0):
+        a.part('Spare_rails', 'Steel').box((.16, .06, .3), loc=(-1.69, y, 1.52), bevel=0)
+    # The running board and its hand rail along the locomotive's right side only.
+    a.part('Running_board', 'Steel').box((.24, 7.0, .04), loc=(1.73, -4.8, 1.38), bevel=0)
+    for y in (-8.0, -6.0, -4.0, -2.0):
+        a.part('Running_board', 'Steel').box((.04, .04, .7), loc=(1.83, y, 1.73), bevel=0)
+    a.part('Running_board', 'Steel').tube([(1.83, -8.2, 2.05), (1.83, -1.6, 2.05)], .02, seg=4)
+    for j in range(3):
+        k.lathe(a.part('Fire_buckets', 'BarrelRed'), [(.1, 0), (.13, .25), (0, .25)], loc=(1.6, -5.0 + j * .35, 1.9),
+                seg=8)
+
+
+def _train_loco(a):
+    """The armoured diesel (BP-35 class): the faceted body over the frame with the raised cab at the front, its
+    vision slits and the commander's cupola, riveted side plates and the Team band, roof fans and vents, the
+    exhaust stacks, the headlight and searchlight, the rear gun casemate with the 152 mm (Muzzle_main.001), the
+    twin flak on the cab roof (Mount_mg.001)."""
+    def sec(y, w, z0, zs, zr, wr):
+        return [(-w, y, z0), (w, y, z0), (w, y, zs), (wr, y, zr), (-wr, y, zr), (-w, y, zs)]
+    k.sharp_loft(a.part('Hull', 'Team'), [sec(-9.4, 1.45, 1.34, 1.9, 2.35, .95), sec(-8.8, 1.58, 1.34, 2.05, 2.95, 1.2),
+                                          sec(-8.2, 1.6, 1.34, 2.2, 3.35, 1.2), sec(-6.4, 1.6, 1.34, 2.2, 3.35, 1.2),
+                                          sec(-6.1, 1.6, 1.34, 2.05, 2.95, 1.15), sec(-1.1, 1.6, 1.34, 2.05, 2.95, 1.15),
+                                          sec(-.6, 1.55, 1.34, 2.0, 2.7, 1.1)], chamfer=.06)
+    for s in (-1, 1):
+        for j in range(4):
+            K.armour_plate(a, a.part('Armor', 'Armor'), (.75, 1.15, .06), (s * 1.62, -5.4 + j * 1.2, 1.72),
+                           rot=(0, s * R90, 0), rivet=.45)
+        a.part('Car_band', 'Team').box((.03, 8.4, .14), loc=(s * 1.63, -5.0, 2.12), bevel=0)
+        for y in (-8.0, -7.0):
+            a.part('Vision_slits', 'Glass').box((.03, .45, .1), loc=(s * 1.5, y, 2.75), rot=(0, s * .35, 0), bevel=0)
+        K.lamp(a, (s * .95, -9.42, 1.65), (0, -1, 0), r=.1, guard=True)
+        a.part('Lamp_hoods', 'Armor').box((.3, .2, .06), loc=(s * .95, -9.45, 1.8), bevel=0)
+    for x in (-.55, 0, .55):
+        a.part('Vision_slits', 'Glass').box((.38, .03, .1), loc=(x, -8.98, 2.72), rot=(-.6, 0, 0), bevel=0)
+    k.lathe(a.part('Searchlight', 'Armor'), [(.18, -.15), (.2, .12), (.15, .16)], loc=(-.8, -8.5, 3.45),
+            rot=K.FORWARD, seg=10)
+    a.part('Lamps', 'Lamp').cyl(.16, .02, loc=(-.8, -8.66, 3.45), rot=K.FORWARD, seg=10, bevel=0)
+    k.ring(a.part('Cupola_top', 'Armor'), [(.3, 0), (.36, 0), (.36, .18), (.3, .18)], loc=(.6, -7.0, 3.35), seg=12)
+    a.part('Periscope', 'Glass').box((.25, .03, .06), loc=(.6, -7.35, 3.45), bevel=0)
+    # Roof: fans in their rings, vents, the exhaust stacks, the walkway.
+    for y in (-5.3, -4.3):
+        k.ring(a.part('Fans', 'Armor'), [(.36, 0), (.42, 0), (.42, .1), (.36, .1)], loc=(0, y, 2.95), seg=12)
+        a.part('Fans', 'Undercarriage').cyl(.36, .02, loc=(0, y, 2.97), seg=12, bevel=0)
+    for s in (-1, 1):
+        K.smokestack(a, (s * .9, -3.6, 2.9), r=.13, h=.7, mat='Steel')
+        K.grille(a, (s * 1.62, -2.0, 2.3), 1.2, .3, facing=(s, 0, 0), slats=4, frame_mat='Armor')
+    a.part('Deck', 'Armor').box((1.4, 3.0, .03), loc=(0, -2.6, 2.96), bevel=0)
+    K.whip_antenna(a.part('Antenna', 'Steel'), (-.9, -6.6, 3.35), h=1.5, lean=.05)
+    K.beacon(a, (.9, -6.4, 3.35), r=.08)
+    # The rear gun casemate (gun_car_rear): a fixed faceted house with the 152 mm laid forward over the cab.
+    W.poly_turret(a.part('Rear_casemate', 'Armor'), [(2.95, [(-.95, -2.9), (.95, -2.9), (1.2, -2.2), (1.2, -1.0),
+                                                        (-1.2, -1.0), (-1.2, -2.2)]),
+                                                (3.6, [(-.75, -2.7), (.75, -2.7), (1.0, -2.1), (1.0, -1.1),
+                                                       (-1.0, -1.1), (-1.0, -2.1)])], chamfer=.04)
+    K.gun_barrel(a, 'Rear_gun', None, 0, -2.85, 3.3, 2.0, .09, seg=10, extractor=(.4, 1.4, .3),
+                 brake_name='Rear_gun_brake', brake='baffle')
+    a.pivot('Muzzle_main__001', (0, -5.15, 3.3))
+    # The twin flak on the cab roof (Mount_mg.001).
+    _train_flak(a, 1, (0, -7.6, 3.4), (0, -1.2, .35))
+
+
+def _train_flak(a, index, loc, muzzle):
+    """A twin 23 mm flak on its yaw pivot Mount_mg[.NNN]: the pedestal, the cradle, two barrels, the shield, the
+    ammunition boxes; Muzzle_mg[.NNN] between the barrels."""
+    tag = '' if index == 0 else f'_{index:03d}'
+    m = a.pivot(K.name('Mount_mg', index), loc)
+    k.lathe(a.part(f'Flak_base{tag}', 'Armor', m), [(.4, -.05), (.4, .05), (.28, .1), (.22, .25)], seg=10)
+    K.chamfer_box(a.part(f'Flak_cradle{tag}', 'Armor', m), (.45, .5, .25), loc=(0, .05, .3), c=.03)
+    k.block(a.part(f'Flak_shield{tag}', 'Team', m), (.75, .05, .35), loc=(0, -.3, .38), rot=(-.2, 0, 0),
+            chamfer=.012)
+    mx, my, mz = muzzle
+    for dx in (-.09, .09):
+        k.lathe(a.part(f'Flak_barrels{tag}', 'Steel', m), [(.035, 0), (.035, .2), (.025, .22), (.025, abs(my) - .1),
+                                                           (.035, abs(my) - .08), (.035, abs(my)), (0, abs(my) + .01)],
+                loc=(mx + dx, 0, mz), rot=K.FORWARD, seg=6)
+    K.chamfer_box(a.part(f'Flak_ammo{tag}', 'Crate', m), (.16, .3, .2), loc=(.3, .1, .3), c=.015)
+    a.pivot(K.name('Muzzle_mg', index), muzzle, m)
+
+
+def _train_wagon(a):
+    """The gun wagon: the low casemate body with sloped sides and the end walls, riveted panels, the main turret
+    (Turret: a faceted house, the long 152 mm with its brake, sight, cupola), the HMG cupola (Mount_mg) and the
+    rocket box (Mount_rocket) behind it, ammunition boxes."""
+    w0, w1 = TRAIN_CARS[1]
+    k.sharp_loft(a.part('Car_body', 'Team'), [
+        [(-1.45, w0, 1.34), (1.45, w0, 1.34), (1.45, w0, 1.85), (1.15, w0, 2.4), (-1.15, w0, 2.4), (-1.45, w0, 1.85)],
+        [(-1.6, w0 + .5, 1.34), (1.6, w0 + .5, 1.34), (1.6, w0 + .5, 2.0), (1.3, w0 + .5, 2.62), (-1.3, w0 + .5, 2.62),
+         (-1.6, w0 + .5, 2.0)],
+        [(-1.6, w1 - .5, 1.34), (1.6, w1 - .5, 1.34), (1.6, w1 - .5, 2.0), (1.3, w1 - .5, 2.62), (-1.3, w1 - .5, 2.62),
+         (-1.6, w1 - .5, 2.0)],
+        [(-1.45, w1, 1.34), (1.45, w1, 1.34), (1.45, w1, 1.85), (1.15, w1, 2.4), (-1.15, w1, 2.4), (-1.45, w1, 1.85)]],
+        chamfer=.06)
+    a.part('Car_deck', 'Armor').box((2.5, 7.6, .03), loc=(0, (w0 + w1) / 2, 2.63), bevel=0)
+    for s in (-1, 1):
+        for j in range(5):
+            K.armour_plate(a, a.part('Armor', 'Armor'), (.55, 1.35, .05), (s * 1.62, 1.6 + j * 1.5, 1.68),
+                           rot=(0, s * R90, 0), rivet=.45)
+        a.part('Car_band', 'Team').box((.03, 7.6, .14), loc=(s * 1.63, 5.0, 2.0), bevel=0)
+        a.part('Vision_slits', 'Glass').box((.03, .5, .08), loc=(s * 1.45, 5.0, 2.3), rot=(0, s * .5, 0), bevel=0)
+        a.part('Tail_lights', 'LavaGlow').box((.12, .03, .08), loc=(s * 1.1, 15.0, 1.4), bevel=0)
+    for y in (5.4, 7.2):
+        K.crate(a.part('Ammo_boxes', 'Crate'), a.part('Kit_latches', 'Steel'), (.6, .4, .3), (1.0, y, 2.63), bands=1)
+    a.part('Vents', 'Steel').cyl(.15, .3, loc=(-1.0, 5.2, 2.78), seg=8, bevel=0)
+    # The main turret.
+    t = a.pivot('Turret', (0, 3.2, 3.18))
+    K.turret_ring(a.part('Turret_steel', 'Steel', t), (0, 0, -.5), 1.35, h=.12)
+    W.poly_turret(a.part('Turret_body', 'Team', t), [
+        (-.5, [(-.9, -1.45), (.9, -1.45), (1.5, -.7), (1.5, .9), (1.2, 1.7), (-1.2, 1.7), (-1.5, .9), (-1.5, -.7)]),
+        (.35, [(-.85, -1.55), (.85, -1.55), (1.55, -.75), (1.55, .95), (1.25, 1.75), (-1.25, 1.75), (-1.55, .95),
+               (-1.55, -.75)]),
+        (.86, [(-.65, -1.15), (.65, -1.15), (1.25, -.55), (1.25, .85), (1.0, 1.55), (-1.0, 1.55), (-1.25, .85),
+               (-1.25, -.55)])], chamfer=.05)
+    K.chamfer_box(a.part('Turret_armor', 'Armor', t), (.75, .5, .6), loc=(0, -1.55, .62), c=.05)
+    K.gun_barrel(a, 'Main_cannon', t, 0, -1.8, .62, 5.61, .12, seg=12, extractor=(.35, 1.45, .55), brake='baffle')
+    a.pivot('Muzzle_main', (0, -7.71, .62), t)
+    K.chamfer_box(a.part('Sight', 'Armor', t), (.3, .35, .25), loc=(.75, -.6, .98), c=.03)
+    a.part('Periscope', 'Glass', t).box((.22, .01, .12), loc=(.75, -.78, 1.0), bevel=0)
+    K.hatch_round(a, (-.55, .5, .86), r=.34, parent=t, periscopes=2, seg=10)
+    K.whip_antenna(a.part('Antenna', 'Steel', t), (-1.0, 1.3, .86), h=.9, lean=.15)
+    a.part('Team_band', 'Team', t).box((1.6, .9, .015), loc=(0, .3, .865), bevel=0)
+    # The HMG cupola (Mount_mg) and the rocket box (Mount_rocket).
+    m = a.pivot('Mount_mg', (0, 6.35, 2.7))
+    k.lathe(a.part('MG_cupola', 'Team', m), [(.55, -.07), (.55, .15), (.45, .35), (.25, .48), (0, .5)], seg=12)
+    a.part('MG_glass', 'Glass', m).box((.3, .02, .08), loc=(.25, -.42, .3), rot=(-.6, 0, 0), bevel=0)
+    k.lathe(a.part('MG_gun', 'Steel', m), [(.035, 0), (.035, .9), (.05, .92), (.05, 1.0), (0, 1.01)],
+            loc=(0, -.36, .18), rot=K.FORWARD, seg=6)
+    a.pivot('Muzzle_mg', (0, -1.37, .18), m)
+    m = a.pivot('Mount_rocket', (0, 8.3, 2.64))
+    k.lathe(a.part('Launcher_base', 'Steel', m), [(.55, 0), (.58, .03), (.58, .12), (.5, .14)], seg=12)
+    K.chamfer_box(a.part('Launcher_armor', 'Armor', m), (.6, .7, .3), loc=(0, .1, .28), c=.03)
+    k.block(a.part('Rocket_box', 'Team', m), (1.3, 1.4, .5), loc=(0, .1, .62), rot=(.14, 0, 0), chamfer=.04)
+    for ix in range(4):
+        for iz in range(2):
+            a.part('Tubes_bore', 'Undercarriage', m).cyl(.09, .03, loc=(-.45 + ix * .3, -.6, .55 + iz * .25),
+                                                         rot=(R90 + .14, 0, 0), seg=8, bevel=0)
+    a.part('Pod_bands', 'Steel', m).box((1.34, .06, .54), loc=(0, .3, .62), rot=(.14, 0, 0), bevel=0)
+    a.part('Launcher_steel', 'Steel', m).tube([(.4, .3, .15), (.4, -.1, .45)], .05, seg=6)
+    a.pivot('Muzzle_rocket', (0, -.91, .68), m)
+
+
+def _train_flatcar(a):
+    """The mortar flatcar: its deck and low armoured sides, the bomb crates at the ends, the twin 120 mm mortar on
+    its turntable (Part_mortar > Mount_mortar: ring, baseplates, cradle, struts, the two tubes at 60 degrees,
+    Muzzle_mortar at the left bore), the twin flak on its tail (Mount_mg.002)."""
+    m0, m1 = TRAIN_CARS[2]
+    mid = (m0 + m1) / 2
+    a.part('Deck', 'Armor').box((2.6, m1 - m0, .1), loc=(0, mid, 1.42), bevel=0)
+    for s in (-1, 1):
+        k.block(a.part('Car_body', 'Team'), (.1, m1 - m0 - .2, .45), loc=(s * 1.28, mid, 1.69), chamfer=.02)
+        for e in (-1, 1):
+            K.crate(a.part('Mortar_crates', 'Crate'), a.part('Kit_latches', 'Steel'), (.5, .3, .3),
+                    (s * .75, mid + e * 1.6, 1.47), bands=1)
+    pm = a.pivot('Part_mortar', (0, 12.53, 1.62))
+    k.ring(a.part('Mortar_ring', 'Steel', pm), [(1.08, -.05), (1.16, -.05), (1.16, .08), (1.08, .08)], seg=20)
+    m = a.pivot('Mount_mortar', (0, 0, .1), pm)
+    a.part('Mortar_turntable', 'Team', m).cyl(1.05, .1, loc=(0, 0, .05), seg=20, bevel=0)
+    pitch = math.radians(60)
+    d = Vector((0, -math.cos(pitch), math.sin(pitch)))
+    trot = (R90 - pitch, 0, 0)
+    L = 1.8
+    for s, nm in ((1, 'Mortar_tube'), (-1, 'Mortar_tube_2')):
+        B = Vector((s * .24, .5, .25))
+        M = B + d * L
+        a.part(nm, 'Steel', m).cyl(.075, L, loc=tuple(B + d * (L / 2)), rot=trot, seg=12, bevel=0)
+        a.part('Mortar_breech', 'Armor', m).cyl(.105, .24, loc=tuple(B + d * .04), rot=trot, seg=12, bevel=0)
+        k.block(a.part('Mortar_baseplates', 'Armor', m), (.44, .5, .06), loc=(s * .24, .56, .12), chamfer=.01)
+        k.lathe(a.part('Mortar_muzzle', 'Steel', m), [(.095, -.03), (.095, .06), (.06, .06), (.06, .02)],
+                loc=tuple(M), rot=trot, seg=12)
+        a.part('Mortar_bore', 'Charred', m).cyl(.056, .02, loc=tuple(M + d * .02), rot=trot, seg=10, bevel=0)
+        for f in (.3, .72):
+            a.part('Mortar_bands', 'Armor', m).cyl(.088, .07, loc=tuple(B + d * (L * f)), rot=trot, seg=12, bevel=0)
+    C = Vector((0, .5, .25)) + d * (L * .45)
+    k.block(a.part('Mortar_cradle', 'Team', m), (.74, .34, .26), loc=tuple(C), rot=(-pitch, 0, 0), chamfer=.03)
+    for s in (-1, 1):
+        a.part('Mortar_struts', 'Steel', m).tube([(s * .36, -.42, .09), (s * .36, C.y + .1, C.z - .15)], .05, seg=6)
+    a.part('Mortar_ram_foot', 'Armor', m).box((.8, .3, .1), loc=(0, -.5, .12), bevel=0)
+    K.chamfer_box(a.part('Mortar_ammo', 'Crate', m), (.36, .3, .34), loc=(.72, .6, .26), c=.02)
+    K.chamfer_box(a.part('Mortar_ammo', 'Crate', m), (.36, .3, .34), loc=(-.72, .6, .26), c=.02)
+    a.pivot('Muzzle_mortar', (.24, -.43, 1.86), m)
+    _train_flak(a, 2, (0, 14.3, 1.5), (0, -1.1, .35))
+
+
 BUILDERS = {
     'behemoth': (behemoth, dict(ao_distance=.9, grime_height=.8, ao_strength=.72)),
     'mobile_fortress': (mobile_fortress, dict(ao_distance=1.1, grime_height=1.0, ao_strength=.7)),
+    'armored_train': (armored_train, dict(ao_distance=.8, grime_height=.7, ao_strength=.72)),
 }
