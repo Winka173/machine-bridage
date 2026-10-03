@@ -1037,3 +1037,16 @@ vị trí trúng (`at`) và model; sát thương, máu, vũ khí không đổi.
 | PT14-M1-2 | `mobile_fortress` parts `at` | howitzer [0, 3.0, 7.1], rockets [∓1.9, -6.0, 4.6], missiles [0, -6.05, 4.6], howitzer_2 [0, -2.0, 7.4], sam [2.6, -4.4, 5.6] | howitzer [0, 4.0, 7.0], rockets [∓2.15, -6.0, 5.0], missiles [0, 9.0, 3.3] (pháo 125 mm mũi), howitzer_2 [0, -2.1, 7.7], sam [1.25, 5.5, 6.3] (nóc cầu chỉ huy) | đúng 2 bệ phóng đối xứng phía sau; mount 5 bắn đạn 125 mm nên ra từ nòng pháo mũi chứ không từ nắp silo |
 | PT14-M1-3 | `bastion_mk0` | vẽ bằng model fortress_bastion | `"model": "bastion_mk0"`; tune mortar `at` [0, -0.83, 9.66] (đơn vị đã nhân size 1.51 của cha) | model riêng (nguyên mẫu) |
 | PT14-M1-4 | `fenrir` | vẽ bằng model mobile_fortress | `"model": "fenrir"`; tune `at` rockets_l/r [∓2.02, -6.3, 5.63], flak_l [0, 4.23, 5.47] (đã nhân size 1.657 của cha) | model riêng (xe xích hai khoang mùa đông) |
+
+## Play-test 14 model wave M2 (lane models): trains, Ixion weapons, Harpy wings
+
+Nhánh `feature/pt14-m2`. Lý do: `Docs/DECISIONS.md` "Play-test 14 model wave M2 (lane models)".
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-M2-1 | `armored_train` `length`, parts `at` | 25.06; at y như cũ | 49.18; mọi `at` y + 7.17 (locomotive 14.67, gun_car_front 3.97, gun_car_rear 9.17, rocket_car -1.13, flak_car 0.82, mortar_car -5.33) | thêm 3 toa; model đặt giữa theo chiều dài |
+| PT14-M2-2 | `nuke_train` `length`, parts `at` | 41.6; locomotive [0, -8.5, 2.5] (sai phía) | 60.12; mọi `at` y + 19.07; locomotive [0, 25.2, 2.5] (đầu máy thật) | thêm 2 toa; đặt giữa |
+| PT14-M2-3 | `mega_gunship` parts | gun_l/r [∓0.56, 7.1, 1.1]; pod_l/r [∓2.67, 1.3, 1.4] không node; missiles [0, 1.25, 1.5] không node | gun_l/r [∓2.3, 1.05, 0.95]; pod_l/r [∓3.2, -0.1, 1.14] node Part_pod / Part_pod.001; missiles [0, 0.1, 1.42] node Part_missiles | súng và bệ phóng lên cánh |
+| PT14-M2-4 | `mega_gunship` secondary 0, 1 (boss_heli_gun) | Free, không arc | Free, `arc` [-45, 70] / [45, 70] | nòng súng cánh không quay xuyên thân |
+| PT14-M2-5 | `ixion` secondary | 2 x p26_ixion_mg | + pt14_ixion_30 (gun), 2 x pt14_ixion_kornet (missile), pt14_ixion_grad (rocket) | chủ nhân: thêm 4-5 vũ khí |
+| PT14-M2-6 | vũ khí mới | — | pt14_ixion_30: 2A42 30 mm, kế thừa autocannon_30, 22 x 8 phát, hồi 3.5 s (~41 DPS); pt14_ixion_kornet: 9M133 Kornet-EM, kế thừa boss_missiles, 230, hồi 12 s (~19 DPS mỗi bệ); pt14_ixion_grad: BM-21V 122 mm, kế thừa grad_rockets, 57 x 9, hồi 20 s (~21 DPS) | tổng hỏa lực tầm xa thô của Ixion ~278 -> ~379 DPS (+36 %, trước outgoingDamageMult) |

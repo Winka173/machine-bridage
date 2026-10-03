@@ -314,8 +314,13 @@ namespace MachineBrigade.Game.Views
             {
                 var loco = _models.Spawn(_models.Has("armored_train") ? "armored_train" : "truck", team, _root.transform);
                 loco.Root.transform.localScale = Vector3.one * 1.15f;
-                run.Parts.Add((loco.Root.transform, 0f));
-                var behind = 12f;
+                // Play-test 14 wave M2: the Juggernaut's model grew to six cars and is centred on its length. Its nose
+                // stays where the old model's was (11.3 m ahead of the run's front point: the loco is set back by the
+                // difference) and the wagons couple on behind its tail.
+                var size = VehicleView.Measure(loco.Root.transform, loco.Root.transform);
+                var lead = Mathf.Max(0f, size.max.z * 1.15f - 11.3f);
+                run.Parts.Add((loco.Root.transform, lead));
+                var behind = Mathf.Max(12f, lead - size.min.z * 1.15f + 0.6f);
                 foreach (var wagon in new[] { "rail_boxcar", "rail_tanker", "rail_boxcar" })
                 {
                     if (!_models.Has(wagon)) continue;
@@ -353,10 +358,12 @@ namespace MachineBrigade.Game.Views
                 var dir = (end - new Vector3(a.X, 0f, a.Y)).normalized;
                 var front = end - dir * 12.5f + dir * TrainOffset(t);
                 var rotation = Quaternion.LookRotation(dir);
-                foreach (var (part, behind) in run.Parts)
+                for (var i = 0; i < run.Parts.Count; i++)
                 {
+                    var (part, behind) = run.Parts[i];
                     var p = front - dir * behind;
-                    part.SetPositionAndRotation(p, behind > 0f ? rotation * Quaternion.Euler(0f, 90f, 0f) : rotation);
+                    // The first part is the locomotive (along the line); the wagon models lie across it.
+                    part.SetPositionAndRotation(p, i > 0 ? rotation * Quaternion.Euler(0f, 90f, 0f) : rotation);
                 }
                 if (!run.Dusted && t >= -0.5f)
                 {

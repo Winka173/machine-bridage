@@ -19504,3 +19504,44 @@ change: each GLB keeps its old length (fenrir and bastion_mk0 keep their parents
   new `at`; its own model was already off them.
 - Gate (quality_gate, after glb_quantize): Jötunn 100, Bastion 100, Mk0 100, Fenrir 94.6, Inferno 96.4; all hard ok.
   Needs Unity: card renders / ModelScan, the launch points of the new pods, sponson traverse in the preview.
+## Play-test 14 model wave M2 (lane models)
+
+Owner: Docs/prompts/playtest14_vi.txt ("2 boss tàu lửa: đều thêm 2-4 toa", "ixion: thêm súng / tên lửa, khoảng 4-5 vũ khí",
+the Harpy note, Daedalus 500 %); spec Docs/cloud/PT14_CLOUD_TASKS.md session 4 row M2. Builder
+`Tools/blender/mb_pt14_m2.py` (registered last in build_assets' dict). Sheets: Docs/models/rebuild/<id>/before_after.png.
+- **armored_train (Juggernaut)**: the wave 8 train kept (its builder runs first), three cars added: the control platform
+  ahead of the locomotive (deflector, rail-repair load, hand derrick), the command car behind the mortar flatcar
+  (observation tower with the stereoscopic rangefinder, bedstead antenna) and the rear control platform (cable drums,
+  spare wheelset, tail lamps). Reference: BP-43 armoured train. No new weapons (the cars are support cars). 49.2 m.
+- **nuke_train (Nemesis)**: the wave 12 train kept, two cars added at the tail as on the BZhRK "Molodets": the command and
+  communications car disguised as a reefer (radomes, folded telescopic mast, A/C units) and an unarmed pusher diesel
+  with its cab at the tail. 60.1 m (drawn ~102 m at size 1.48 x scale 1.15).
+- Trains are **re-centred** on their length (the Sim holds a train as a span of `length` centred on its position; the old
+  models sat 2.7 / 9.6 m off it). So every part `at` moves along the length (+7.17 / +19.07) and `length` = the model's.
+  The rigid model is still one piece: cars do not articulate on curves (a 50-60 m body cuts a sharp curve more than
+  before). Articulated cars need runtime code (Car_* pivots following the spline): open question for the lead.
+- FortressView (siege stand-in train uses the armored_train model): the loco is set back so its nose stays where the old
+  model's was and the wagons couple behind its measured tail (was a fixed 12 m, which already overlapped). Needs compile.
+- **ixion**: P35 truck kept; four weapons added (models + data): 2A42 30 mm low remote turret at the canopy's right rear
+  (kept under the 125 mm's sweep height and inside the old length: modelSize fit unchanged), two 9M133 Kornet-EM twin
+  launchers on the roof edges, a 12-tube BM-21V Grad-V pack on the rear roof's right edge (Tubes_bore face). Total
+  ranged output +~36 % raw (CHANGES); role (rammer / mines) unchanged. No new parts (their hp share would shift).
+- **mega_gunship (Harpy)**: redrawn. Chinook airframe as the ACH-47 gunship with Mi-24-style stub wings on the sponsons:
+  inner stations turreted 30 mm gun pods (Mount_gun / .001, the old chin guns), middle stations 20-tube 80 mm pods
+  (Part_pod / .001 > Muzzle_rocket; "Pods" launch pairs), wingtips four-tube Ataka launchers (Part_missiles >
+  Muzzle_missile on the centre line, "Launch_tubes" pairs), door miniguns and aft window HMGs at their old places.
+  Cockpit panes are the nose loft's own facets (an earlier try with free quads sank into the curved skin).
+  Data: part places, nodes Part_pod / .001 / Part_missiles, and each wing gun an arc of its own side ([∓45, 70]) so
+  the barrel never swings through the fuselage.
+- **daedalus**: redrawn at the old size (36.3 x 20.2 x 13.9 m) with every runtime node at its old place: the hull loft with
+  the terrace lip, the chine trench with lit windows, the deck "city" of two-tone modules, six twin laser turrets
+  (decor), PD laser towers, the stepped superstructure with plated walls, the bridge, the engine block with six bells and
+  two auxiliaries, pod bays, legs, keel fin. The twin 57 mm barrels and per-barrel muzzles are modelled here, so
+  mb_fix_barrels no longer copies daedalus's barrels (TWIN entry removed).
+- Triangles (before -> after) and gate (quality_gate after glb_quantize; all hard ok): armored_train 26,470 -> 51,170
+  (95.5 -> 92.3), nuke_train 28,910 -> 40,684 (100 -> 92.9), ixion 36,022 -> 40,940 (89.2 -> 90.7), mega_gunship
+  9,284 -> 26,228 (100 -> 100), daedalus 13,190 -> 28,160 (83.1 -> 86.4). The trains lose only on the silhouette metric
+  (a 50-60 m strip at 256 px); budgets were not needed (detail went where it reads).
+- Not done here / needs Unity: card renders and ModelScan, the launch points of Harpy's pods and wingtip racks, the wing
+  gun arcs in a duel, the stand-in train in Siege, rail maps' play range with the longer trains. The source workbooks
+  (xlsx) do not carry the new Ixion weapons / train lengths yet.
