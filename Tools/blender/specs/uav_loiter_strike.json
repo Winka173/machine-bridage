@@ -1,0 +1,144 @@
+{
+ "id": "uav_loiter_strike",
+ "class": "jet",
+ "real": [
+  "General Atomics MQ-1C Gray Eagle (the old builder's choice)",
+  "AGM-114 Hellfire on M299 twin rails"
+ ],
+ "shape": "No unit_refs / unit_sheet row; mb_p27_standins drew it as an MQ-1C Gray Eagle (slim wing, inverted-V tail, satcom hump, four Hellfires; 4.25 x 8.04 x 1.24 m, the def's modelSize). Rebuilt on the same reference: the slim fuselage with the bulbous satcom nose, the EO/IR ball under the chin, the long straight high wing, the inverted-V tail with the ventral fin, the pusher propeller behind the heavy-fuel engine, two twin Hellfire rails.",
+ "confidence": "xấp xỉ (MQ-1C published drawings)",
+ "target_size": {
+  "L": 4.25,
+  "W": 8.04,
+  "H": 1.24,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "slim fuselage with the bulbous satcom nose, access panels, aerials",
+   "nodes": [
+    "Fuselage",
+    "Panels",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "EO/IR sensor ball under the chin with its window",
+   "nodes": [
+    "Sensor",
+    "Sensor_ball",
+    "Glass"
+   ]
+  },
+  {
+   "feature": "the engine bay: the dorsal intake, the cooler scoop, the exhaust stubs",
+   "nodes": [
+    "Intakes",
+    "Exhausts",
+    "Point_exhaust"
+   ]
+  },
+  {
+   "feature": "long straight high wing with flaperons and wing-tip lights",
+   "nodes": [
+    "Wings",
+    "Flaps",
+    "Wing_lights"
+   ]
+  },
+  {
+   "feature": "inverted-V tail with the ventral fin",
+   "nodes": [
+    "Tail",
+    "Rudders"
+   ]
+  },
+  {
+   "feature": "three-blade pusher propeller",
+   "nodes": [
+    "Propeller",
+    "Propeller_hub",
+    "Propeller_blades"
+   ]
+  },
+  {
+   "feature": "two pylons with M299 twin rails and four Hellfires",
+   "nodes": [
+    "Pylons",
+    "Racks",
+    "Missiles",
+    "Missile_fins",
+    "Muzzle_missile"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "canopy",
+  "wings",
+  "tail",
+  "intakes",
+  "exhaust",
+  "pylons",
+  "stores"
+ ],
+ "merged": {
+  "flares": "Fuselage"
+ },
+ "weapons": [
+  {
+   "weapon": "uav_loiter_missile",
+   "slot": "main",
+   "mount": "Pylons",
+   "muzzles": [
+    "Muzzle_missile"
+   ],
+   "note": "1 barrel; Muzzle_missile.001 on the other wing (kept from the old file)"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "cap": null,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "a drone: just over the floor"
+ },
+ "team_zones": [
+  "fuselage (Team)",
+  "wings (Team)",
+  "tail (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "Part_wing comes off (wrapper)",
+ "faction_style": "modern UAV (both factions)",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "wing",
+   "tail"
+  ],
+  "tier2": [
+   "sensor ball",
+   "propeller",
+   "pylons",
+   "missiles",
+   "intakes"
+  ],
+  "tier3": [
+   "aerials",
+   "panels",
+   "lights",
+   "exhaust stubs",
+   "rails"
+  ]
+ },
+ "questions": []
+}

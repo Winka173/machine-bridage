@@ -3092,6 +3092,16 @@
    "changes": [
     "rocket_technical: bytes only"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "uav_loiter_strike"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG uav_loiter_strike: triangles 1,084 -> 3,504 (+223.2%); vertices 1,472 -> 3,838 (+160.7%); meshes 13 -> 25 (+92.3%); renderers 13 -> 25 (+92.3%); materials 7 -> 8 (+14.3%); materialSlots 13 -> 25 (+92.3%); fileBytes 85,888 -> 215,640 (+151.1%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -57659,24 +57669,24 @@
   },
   "uav_loiter_strike": {
    "file": "uav_loiter_strike.glb",
-   "fileBytes": 85888,
-   "sha1": "4e903c0fc21cb288",
+   "fileBytes": 215640,
+   "sha1": "d39feae0054686cf",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 18,
-   "meshes": 13,
-   "materials": 7,
+   "nodes": 30,
+   "meshes": 25,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 13,
-   "submeshes": 13,
-   "materialSlots": 13,
-   "materialsUsed": 7,
-   "triangles": 1084,
-   "vertices": 1472,
+   "renderers": 25,
+   "submeshes": 25,
+   "materialSlots": 25,
+   "materialsUsed": 8,
+   "triangles": 3504,
+   "vertices": 3838,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -57684,36 +57694,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 33,
-   "openEdges": 48,
+   "loosePieces": 89,
+   "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -4.03,
-    -0.6369,
-    -2.11
+    -4.02,
+    -0.76,
+    -2.12
    ],
    "boundsMax": [
-    4.03,
-    0.6,
-    2.15
+    4.02,
+    0.4,
+    2.12
    ],
    "size": [
-    4.26,
-    8.06,
-    1.237
+    4.24,
+    8.04,
+    1.16
    ],
    "center": [
     0.0,
-    -0.018,
-    0.02
+    -0.18,
+    -0.0
    ],
-   "structureHash": "c39627c73b5139db",
+   "structureHash": "59afd745dbef6c88",
    "color0": {
-    "mean": 0.806,
-    "min": 0.6785,
+    "mean": 0.7946,
+    "min": 0.5538,
     "max": 1.0,
-    "p05": 0.7114,
-    "p95": 0.9816,
+    "p05": 0.7001,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -57734,23 +57744,35 @@
    ],
    "nodeNames": [
     "Antennas",
-    "Engine_scoop",
-    "Exhaust",
+    "Antennas.001",
+    "Exhausts",
+    "Flaps",
     "Fuselage",
+    "Glass",
+    "Intake_ducts",
+    "Intakes",
+    "Lamps",
     "Missile_fins",
-    "Missile_seekers",
     "Missiles",
     "Muzzle_missile",
     "Muzzle_missile.001",
+    "Panels",
     "Point_exhaust",
     "Point_fire",
     "Propeller",
     "Propeller_blades",
     "Propeller_hub",
     "Pylons",
+    "Racks",
+    "Rudders",
     "Sensor",
-    "Sensor_mount",
-    "Wing_lights"
+    "Sensor_ball",
+    "Tail",
+    "Team_band",
+    "Wing_lights",
+    "Wing_lights.001",
+    "Wing_root",
+    "Wings"
    ],
    "category": "air",
    "hd": false,
