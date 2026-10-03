@@ -24,8 +24,9 @@ TAU = math.tau
 HALF = 2.4
 
 
-def _patch(a, seed=0):
-    """The earth patch, its trampled spots and ruts, stones and tufts, the marked perimeter with signs."""
+def _patch(a, seed=0, rng=None):
+    """The earth patch, its trampled spots and ruts, stones and tufts, the marked perimeter with signs. With `rng`
+    (wave 12's minefield_a) the stones and tufts are scattered at random instead of on the low-discrepancy rows."""
     k.extrude(a.part('Ground_patch', 'Sandstone'), C.octagon(4.75, 4.75, .55), .05, loc=(0, 0, .025), axis='Z',
               corner=.05, taper=(.97, .97), caps=(False, True))
     spots = a.part('Mine_earth', 'Dirt')
@@ -42,12 +43,16 @@ def _patch(a, seed=0):
     for i in range(30):
         x = -2.15 + 4.3 * ((i * .618 + seed * .17) % 1.0)
         y = -2.15 + 4.3 * ((i * .382 + seed * .31) % 1.0)
+        if rng:
+            x, y = rng.uniform(-2.15, 2.15), rng.uniform(-2.15, 2.15)
         sz = .06 + (i % 4) * .03
         rk.box((sz, sz * 1.3, sz * .6), loc=(x, y, .05 + sz * .2), rot=(i * .7, i * .3, i * 1.3), bevel=0)
     tf = a.part('Tufts', 'FoliageDark')
     for i in range(16):
         x = -2.2 + 4.4 * ((i * .7548 + seed * .23) % 1.0)
         y = -2.2 + 4.4 * ((i * .5698 + seed * .41) % 1.0)
+        if rng:
+            x, y = rng.uniform(-2.2, 2.2), rng.uniform(-2.2, 2.2)
         tf.cyl(.09, .14 + (i % 3) * .04, loc=(x, y, .12), rot=(0, 0, i * .7), seg=4, r2=.01, bevel=0)
     # The perimeter: pickets every 0.6 m, two strands of warning tape, red triangle signs on tall stakes.
     pk = a.part('Pickets', 'Wood')

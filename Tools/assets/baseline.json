@@ -3378,6 +3378,16 @@
    ],
    "reason": "merge of feature/p35-w11",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "minefield_a"
+   ],
+   "reason": "P35 wave 12",
+   "changes": [
+    "FLAG minefield_a: triangles 3,780 -> 6,730 (+78.0%); vertices 5,745 -> 9,673 (+68.4%); meshes 18 -> 33 (+83.3%); renderers 18 -> 33 (+83.3%); materialSlots 18 -> 33 (+83.3%); fileBytes 294,328 -> 500,384 (+70.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -42283,24 +42293,24 @@
   },
   "minefield_a": {
    "file": "minefield_a.glb",
-   "fileBytes": 294328,
-   "sha1": "0320f7c223203456",
+   "fileBytes": 500384,
+   "sha1": "2e1ce724d842c83f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 18,
-   "meshes": 18,
+   "nodes": 33,
+   "meshes": 33,
    "materials": 14,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 18,
-   "submeshes": 18,
-   "materialSlots": 18,
+   "renderers": 33,
+   "submeshes": 33,
+   "materialSlots": 33,
    "materialsUsed": 14,
-   "triangles": 3780,
-   "vertices": 5745,
+   "triangles": 6730,
+   "vertices": 9673,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -42308,59 +42318,74 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 150,
-   "openEdges": 44,
-   "nonManifoldEdges": 4,
+   "loosePieces": 286,
+   "openEdges": 100,
+   "nonManifoldEdges": 1,
    "boundsMin": [
-    -2.4329,
-    -0.0729,
-    -2.4329
+    -2.5542,
+    -0.0452,
+    -2.5425
    ],
    "boundsMax": [
-    2.4329,
-    1.0382,
-    2.4329
+    2.5542,
+    1.1211,
+    2.5478
    ],
    "size": [
-    4.866,
-    4.866,
-    1.111
+    5.09,
+    5.108,
+    1.166
    ],
    "center": [
     0.0,
-    0.483,
-    0.0
+    0.538,
+    0.003
    ],
-   "structureHash": "ea3aa252ab32af17",
+   "structureHash": "a836e92f13c7cd02",
    "color0": {
-    "mean": 0.691,
-    "min": 0.2074,
+    "mean": 0.5949,
+    "min": 0.0469,
     "max": 1.0,
-    "p05": 0.381,
+    "p05": 0.1345,
     "p95": 1.0,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Barbed_wire",
-    "Ground",
-    "Kerb",
+    "Crate_bands",
+    "Ground_patch",
+    "Lane_pegs",
+    "Lane_sign_mark",
+    "Lane_tape",
     "Mine_bands",
     "Mine_bodies",
+    "Mine_cables",
+    "Mine_crate",
+    "Mine_earth",
+    "Mine_fuzes",
     "Mine_plates",
     "Mine_rims",
-    "Mounds",
+    "Mine_stake",
+    "Mine_stake.001",
     "Pickets",
-    "Posts",
-    "Sign_edges",
-    "Sign_eyes",
+    "Ruts",
+    "Sensor_spike",
+    "Sensor_spike.001",
+    "Side_mine",
+    "Side_mine_band",
+    "Side_mine_face",
+    "Sign_backs",
     "Sign_marks",
-    "Sign_plates",
-    "Tape_red",
-    "Tape_white",
-    "Tufts",
-    "Tufts_dry"
+    "Sign_stakes",
+    "Signs",
+    "Stones",
+    "Tape",
+    "Tilt_rods",
+    "Tilt_rods.001",
+    "Tools_steel",
+    "Tools_wood",
+    "Tufts"
    ],
    "category": "structure",
    "hd": false,
