@@ -18466,3 +18466,88 @@ only: no Unity run, no test, sim or measure.
 Lane A's `quality_gate.py --gold` after the waves shrank the gold sets (rebuilt models carry no visual grade, so they
 cannot be gold; boss_ground, boss_sea, hq and wheeled lost their own gold) and the full gate fell from 186 to 163 passes.
 Reverted: the pre-rebuild gold stays the reference until rebuilt models get visual grades.
+
+
+## Ném bom rải thảm (pass 1, lane B, 2026-10-03)
+Owner's bomb-run fix, pass 1 (Docs/prompts/bomb_run_vi.txt; owner item 1 of "open questions settled": the strategic bomber
+keeps its 7 bombs). Branch feature/bomb-p12. Stick parameters only; damage, burst, cooldown and loads unchanged.
+- **Data**: balance.json weapons[*].stick on every bomb weapon pass 0 found: mode, bombs, spacing, length, interval,
+  releaseSpeed, fallTime, lead, heading (APPROACH / AXIS), anchor (START / CENTER), drop (OVERFLY / BAY), jitterAcross,
+  jitterAlong, overlap, width, minTargets, safety, straightTime, exit, bayOpen, warnShape (NONE / RING / STICK_RECT; not
+  "warn": the export reads "warn" as seconds). Read by Catalog.ParseWeaponStick into WeaponDef.Stick (StickDef,
+  Scripts/Sim/Content/WeaponDef.Stick.cs; Tuned copies carry it). On load: stick bombs must equal the burst, and length,
+  interval, overlap and width must match their formulas within 2 % (a FormatException names the field).
+- **Formulas**: spacing = 1.1 x core (every stick: overlap core / spacing = 0.909, inside 0.8-1.2); length = (n - 1) x
+  spacing, all under the 120 m cap (bosses 140 m), so no spacing or count was cut; interval = spacing / releaseSpeed;
+  lead = releaseSpeed x fallTime; fallTime = sqrt(2 x altitude / 40) of the main carrier; jitters 0.25 x core across,
+  0.15 x spacing along; width = 2 x WarnRadius (the edge, else the core) + 2 x jitterAcross; safety = max(core, 8);
+  straightTime = length / speed + fall + 1 s (also >= 40 m past the last bomb: never the longer here).
+- **STICK**: bomber_payload (heavy_bomber) n 7, 11 m, 66 m, 0.625 s at 17.6 m/s (22 m/s at the run's 0.8 throttle),
+  AXIS, minTargets 3, straight 6.2 s, STICK_RECT (500 kg); jet_bombs (attack_jet, elite_attack_jet, stealth_naval_strike)
+  n 2, 8.8 m, 8.8 m, 0.344 s at 25.6 m/s, APPROACH, straight 2.57 s, NONE (250 kg); p26_roc_roc_bombs n 8, 5.5 m, 38.5 m
+  and p26_roc_main_roc_bombs (argus, garuda, command_airship) n 8, 11 m, 77 m, both drop BAY, AXIS, STICK_RECT.
+- **Boss bays keep their 0.3 s ripple**: an airship crawls at 4.5-6 m/s, so spacing / its speed would stretch an 8-bomb
+  stick past the bay's whole cycle; their releaseSpeed is the bay's nominal walk (spacing / 0.3 s), their lead 0 (the
+  stick is laid round the aim) and their straightTime 0 (they do not fly over). Cycle and DPS unchanged.
+- **POINT**: the guided bombs stealth_payload (GBU-31 JDAM), guided_bomb (SDB), glide_fab500 (UMPK) land on their target
+  (the code's spread for guided rounds is 0; a lost lock still misses by 5-11 m): no jitter, lead 0. The spec's "stealth
+  bomber, 3 very large bombs, short stick" predates the data (2 guided JDAMs): kept POINT by the spec's own guided rule.
+  The single free-falling bombs (cluster_at_bomb, bunker_buster_bomb, thermobaric_bomb on glide_bomber) are POINT n 1
+  (their 0.5 x spread scatter stays); warnShape RING where FixRules warns (bunker buster, ODAB-500).
+- **Supports and boss strips** are not weapons and keep their code and data: airstrike 4 / 60 m (overlap 0.5: four big
+  bombs over a wide line, left for the pass 4 balance look), napalm 8 / 55 m (1.15), air_raid 10 / 70 m (1.03),
+  cluster_strike 30 bomblets (2.7, a saturating carpet), garuda_carpet / airship_carpet (1.4), kraken_air_raid (1.2).
+  Bom_vu_khi shows their stick columns worked out from that data.
+- **Card text**: the bomber's "12 bombs" guide line is corrected in pass 4 (cards from data), not here.
+- **Export**: Tools/export/bom.py Bom_vu_khi gains the spec's columns (che_do_tha ... canh_bao_dang, STICK_COLS); the
+  stick keys get their units in core/units.py; `export.py coverage`: unmapped 0.
+
+
+## Ném bom rải thảm (pass 2, lane B, 2026-10-03)
+The fix and its tests (spec pass 2), branch feature/bomb-p12. Where bombs land changes; damage, bombs per pass and the
+cycle do not. Not compiled or run here (the lead compiles and runs the bomb tests).
+- **Each bomb its own point**: the first bomb of a stick fixes its line in the mount's state (CombatSystem.PlanStick:
+  WeaponState.StickStart / StickDir / StickNext / StickBombs); bomb i lands at start + dir x i x spacing (StickPoint)
+  plus a seeded jitter (world Random, two draws, the same count the old scatter circle used): +-jitterAlong along,
+  +-jitterAcross across, widened by Works.SpreadFactor (balloons, searchlights). A free-falling stick's start is
+  BombImpact at release (the aircraft's position plus its speed over the fall: the lead), its way the aircraft's heading
+  (bombs keep the aircraft's track). The line is fixed in geometry, so a stick is (n - 1) x spacing long whatever the
+  aircraft's speed between bombs.
+- **Release moment**: StickStraddles uses the data stick ((n - 1) x spacing); CENTER lets go when the target is under the
+  middle of the stick it will drop, START when it is where the first bomb falls.
+- **Interval and cycle**: a stick's bombs go one stick.interval apart (WeaponDef.SalvoGap); after the stick the cooldown is
+  the data's less (n - 1) x (interval - burstInterval) (StickCooldown), so first bomb to first bomb stays what it was
+  (CycleSeconds / SustainedDps keep reading burstInterval, still right).
+- **Axis**: CombatSystem.StickDirection (pure, deterministic): the 2 x 2 covariance of the enemy ground units within half
+  the stick plus the edge of the aim; its major eigenvector (0.5 atan2(2cxy, cxx - cyy)), signed along the approach; used
+  when the long spread is at least 1.5 x the short one (a blob has no axis) and the axis is within 45 degrees of the
+  approach, else the approach. A boss bay lays its stick on it; a free-falling bomber cannot turn its stick off its track,
+  so with heading AXIS (bomber_payload) MovementSystem.DriveAeroplane steers its run in: while farther than lead + half the
+  stick + 3 turn radii out, it flies for a point on the axis behind the target (CombatSystem.StickEntry), then at the target.
+- **Boss bays**: p26_roc_roc_bombs gets "projectile": "Bomb" (the main bay inherits it): unguided bombs, not shells. They
+  are not FreeFall (BayStick): the bosses stand off (a 4.5-6 m/s airship never flies over its target), so the stick is laid
+  round the aim (CENTER), along the cluster axis or the boss-to-aim line, the bay rippling at its 0.3 s. A bay bomb falls at
+  least BombFall from the boss's height, its old shell time if longer (the 400 kg warning time still governs). Side effects
+  of the Bomb kind, accepted: Indirect (no line-of-fire check, no wall hit on the way), lobbed for field-works cover,
+  BombWorth weighs the bosses' bay targets (groups first), the view draws a bomb (pass 3 looks at it).
+- **Friendly safety per bomb**: Launch drops no bomb whose jittered point lies within stick.safety (+ the friend's radius)
+  of a friendly ground vehicle; the others keep their points. CanFire holds a stick back only when every bomb's point is
+  unsafe (StickAllUnsafe); POINT bombs keep the old checks.
+- **Few targets**: on fewer than stick.minTargets enemy ground units (vehicles or structures, 2 structures count as a row)
+  within half the stick plus the edge of the target, a stick drops max(2, ceil(n / 3)) (the heavy bomber 3 of 7; the jet's
+  pair and the ripple of 8 unaffected below that); stores pay only for the bombs dropped (StickCount, in Operate before the
+  ammo is taken and in CanFire for the release length). This is the spec's rule; it lowers a lone target's damage per pass.
+- **Straight and level**: the first bomb of a free-falling stick sets Vehicle.StickStraightUntil = now + straightTime and
+  StraightHeading; DriveAeroplane then holds heading, speed and height (Height is the def altitude) and skips its run logic
+  until then. Bosses do not hold.
+- **Tests** (Assets/MachineBrigade/Tests/EditMode/BombStickTests.cs, category BombStick): the spec's nine, on heavy_bomber,
+  attack_jet and command_airship sticks and the three guided POINT bombs, calling Launch / DriveAeroplane directly.
+  PlayTest8ATests.BombsOfAStickFall... groups a stick's bombs by a 1.0 s gap (was 0.5: the FAB-500 stick is 0.625 s apart).
+- **Trace**: BombStickTrace puts the target in the middle of five tanks in a row along the track (so a stick drops all its
+  bombs), cuts the salvo as Operate does, uses SalvoGap and writes che_do_tha, huong_dai_deg, so_bom_dai. The pass 0 csv is
+  kept as Docs/export/bom_2026-10-03/vet_tha_truoc_luot2.csv; `export.py bom` (new --before) reports Bom_ket_qua_vung for
+  TRUOC and SAU (column giai_doan; supports and strips SAU_KHONG_DOI) and BOM_REPORT.md gets a before / after table.
+- **Left for later**: pass 3 (bay doors, bombs drawn one by one along the stick, the STICK_RECT warning, a boss bay bomb
+  drawn falling from its stand-off), pass 4 (cards "N bombs, X m apart, Y m stick" from data; the bomber's "12 bombs" line;
+  report). To check in play: the heavy bomber's release speed (the data assumes the run's 0.8 throttle; at release it may
+  still be at 22 m/s, then its bombs fall a little behind it), the AXIS run in, and the few-target cut.

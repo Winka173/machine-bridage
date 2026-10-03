@@ -529,9 +529,10 @@ namespace MachineBrigade.Sim.Combat
                             Launch(v, index, alive ? t.Position : state.BurstAim, state.BurstTarget, state.BurstFlying, state.BurstScale, false, alive ? t : null);
                     }
                     state.BurstLeft--;
-                    state.BurstTimer += weapon.Burst > 1 ? weapon.BurstInterval : TwinGap;
+                    // The bomb-run fix: a stick's bombs go one release interval (spacing / release speed) apart.
+                    state.BurstTimer += weapon.Burst > 1 ? weapon.SalvoGap : TwinGap;
                 }
-                if (state.BurstLeft == 0) state.Cooldown = weapon.Cooldown;
+                if (state.BurstLeft == 0) state.Cooldown = weapon.LaysStick ? StickCooldown(weapon, state) : weapon.Cooldown;
                 return;
             }
 
@@ -558,6 +559,12 @@ namespace MachineBrigade.Sim.Combat
             // rockets from a half-empty pod fires half a ripple); a launcher's magazine counts trigger pulls.
             // Prompt 25 G: the round in the gun sets the salvo (a guided shell goes one at a time).
             var salvo = Loaded(v, index).Burst;
+            // The bomb-run fix: a stick on fewer than its minimum targets drops max(2, ceil(n / 3)) (the stores keep the rest).
+            if (weapon.LaysStick)
+            {
+                salvo = StickCount(v, index, target, salvo);
+                state.StickBombs = state.Load > 0 ? Math.Min(salvo, Math.Max(1, state.Ammo)) : salvo;
+            }
             if (state.Load > 0)
             {
                 salvo = Math.Min(salvo, Math.Max(0, state.Ammo));
@@ -606,7 +613,7 @@ namespace MachineBrigade.Sim.Combat
             if (salvo > 1 || extra > 0)
             {
                 state.BurstLeft = salvo - 1 + extra;
-                state.BurstTimer = weapon.Burst > 1 ? weapon.BurstInterval : TwinGap;
+                state.BurstTimer = weapon.Burst > 1 ? weapon.SalvoGap : TwinGap;
                 state.BurstTarget = target.Id;
                 state.BurstAim = target.Position;
                 state.BurstFlying = IsFlying(target);
@@ -724,9 +731,13 @@ namespace MachineBrigade.Sim.Combat
             if (!LoadedReaches(v, index, target)) return false;
             // Prompt 13 D.2: no bombs where friends are too close to where they would fall.
             // Play-test 8 A: a free-falling stick is judged where it will come down, not at the target.
+            // The bomb-run fix, pass 2: a stick is judged bomb by bomb (Launch skips each bomb that would fall by friends); it is
+            // held back only when none of its bombs is safe.
             var freeFall = FreeFall(v, v.Arms[index]);
+            var stick = Sticks(v, v.Arms[index]);
             if (v.Arms[index].Projectile == ProjectileKind.Bomb &&
-                (freeFall ? StickNearOwn(v, index) : OwnNear(v.Team, target.Position, v.Arms[index].SplashRadius + 3f))) return false;
+                (stick ? StickAllUnsafe(v, index, target)
+                    : freeFall ? StickNearOwn(v, index) : OwnNear(v.Team, target.Position, v.Arms[index].SplashRadius + 3f))) return false;
             // Artillery and rocket launchers must stop to fire their main weapon; their machine guns need not.
             if (index == 0 && !v.Def.FiresWhileMoving && v.IsMoving) return false;
             if (!InReach(v, target, v.Arms[index]) || !HasLineOfFire(v, target, v.Arms[index])) return false;
@@ -818,15 +829,26 @@ namespace MachineBrigade.Sim.Combat
             // Play-test 8 A: a free-falling bomb lands where its drop point and its fall put it (the aircraft's speed carries
             // it on ahead as it drops), not on the target: a stick's bombs come down one after another along the track.
             var freeFall = FreeFall(shooter, weapon);
-            if (freeFall) aimAt = BombImpact(shooter);
-            var part = !freeFall && aimTarget is Vehicle { HasParts: true } boss && target == boss.Id ? _world.Bosses.ChoosePart(shooter, boss, weapon) : -1;
+            // The bomb-run fix, pass 2 (DECISIONS "Ném bom rải thảm"): a stick's bomb i lands on its own point, the stick's start
+            // plus i spacings along it (fixed when the first bomb goes: the aircraft's position at release plus its lead, or a
+            // boss bay's line round its aim), never on one aim shared by the stick.
+            var stick = Sticks(shooter, weapon);
+            var mountState = shooter.Weapons[index];
+            if (stick)
+            {
+                if (pull || mountState.StickDir == Vector2.Zero) PlanStick(shooter, index, weapon, aimAt);
+                aimAt = StickPoint(mountState.StickStart, mountState.StickDir, weapon.Stick!.Spacing, mountState.StickNext);
+                mountState.StickNext++;
+            }
+            else if (freeFall) aimAt = BombImpact(shooter);
+            var part = !freeFall && !stick && aimTarget is Vehicle { HasParts: true } boss && target == boss.Id ? _world.Bosses.ChoosePart(shooter, boss, weapon) : -1;
             if (part >= 0 && aimTarget is Vehicle partOf) aimAt = partOf.PartPosition(part);
             var distance = Vector2.Distance(shooter.Position, aimAt);
             // Rounds scatter more the farther they fly: tight up close, and at the edge of range
             // wide enough that a long shot can miss outright.
             // The gun's reach (a second round's is its gun's; equipment may lengthen the gun's own).
             var reach = Math.Clamp(distance / shooter.Arms[index].Range, 0f, 1.2f);
-            var spread = weapon.Guided || weapon.GuidedRocket ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
+            var spread = stick || weapon.Guided || weapon.GuidedRocket ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
             // A boss's broken fire-control radar: its guns scatter wider.
             if (index < shooter.MountSpread.Length) spread *= shooter.MountSpread[index];
             // Prompt 28 I.8: hit and run pays for firing while backing off.
@@ -856,6 +878,18 @@ namespace MachineBrigade.Sim.Combat
             // Prompt 25 F2 batch A: dazzled by an enemy searchlight in the dark; bombs over an enemy barrage balloon.
             if (!weapon.Guided && spread > 0f) spread *= _world.Works.SpreadFactor(shooter, weapon, aimAt);
             var aim = aimAt + RandomInCircle(spread);
+            if (stick)
+            {
+                // A stick's bomb: its seeded jitter along and across the line (no circle of scatter), wider over a barrage
+                // balloon or dazzled; a bomb that would fall by friends is not dropped (the others keep their points).
+                var laid = weapon.Stick!;
+                var side = new Vector2(-mountState.StickDir.Y, mountState.StickDir.X);
+                var widen = _world.Works.SpreadFactor(shooter, weapon, aimAt);
+                var along = ((float)_world.Random.NextDouble() * 2f - 1f) * laid.JitterAlong * widen;
+                var across = ((float)_world.Random.NextDouble() * 2f - 1f) * laid.JitterAcross * widen;
+                aim += mountState.StickDir * along + side * across;
+                if (OwnNear(shooter.Team, aim, laid.Safety)) return;
+            }
             var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;
             // A direct-fire round that meets a wall on its way (the spread took it wide, or the
             // target slipped behind a building mid-salvo) bursts on the wall and damages it.
@@ -872,6 +906,8 @@ namespace MachineBrigade.Sim.Combat
             // A bomb keeps the aircraft's forward speed as it falls, so it lands under the aircraft
             // as it passes over, not ahead of it.
             if (freeFall) travel = BombFall(shooter);
+            // The bomb-run fix: a boss bay's bomb falls at least its fall from the boss's height (its old shell flight otherwise).
+            else if (BayStick(weapon)) travel = MathF.Max(BombFall(shooter), Vector2.Distance(origin, aim) / weapon.ProjectileSpeed);
             else if (weapon.Projectile == ProjectileKind.Bomb && shooter.Flying)
                 travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
             // Prompt 25 F2 batch A: a glide bomb flies at its own speed; a simultaneous-impact salvo lands together.

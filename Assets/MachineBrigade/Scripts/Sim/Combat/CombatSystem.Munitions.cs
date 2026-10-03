@@ -50,7 +50,7 @@ namespace MachineBrigade.Sim.Combat
             for (var pass = 0; pass < 2; pass++)
             {
                 var distance = Vector2.Distance(shooter.Position, at);
-                var flight = weapon.Projectile == ProjectileKind.Bomb && shooter.Flying
+                var flight = weapon.Projectile == ProjectileKind.Bomb && shooter.Flying && !BayStick(weapon)
                     ? MathF.Max(0.8f, distance / MathF.Max(8f, shooter.Speed))
                     : distance / MathF.Max(1f, weapon.ProjectileSpeed);
                 at = target.Position + velocity * MathF.Min(cap, flight);

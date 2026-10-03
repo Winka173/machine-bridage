@@ -862,6 +862,16 @@ namespace MachineBrigade.Sim.Movement
         /// </summary>
         private void DriveAeroplane(Vehicle v, float dt)
         {
+            // The bomb-run fix, pass 2 (DECISIONS "Ném bom rải thảm"): laying a stick, a bomber holds its heading, speed and
+            // height until its straight-flight time is up (the stick, the fall, a second more, 40 m clear after the last bomb).
+            if (_world.Time < v.StickStraightUntil)
+            {
+                v.InAttackHold = false;
+                v.OnTail = false;
+                v.Heading = v.StraightHeading;
+                v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
+                return;
+            }
             var def = v.Def;
             var turnRadius = def.Speed / def.TurnRate;
             var target = RunTarget(v);
@@ -942,6 +952,8 @@ namespace MachineBrigade.Sim.Movement
                     }
                     // Out of a hover it turns away first rather than fly on through its target.
                     goal = v.RunExtending ? v.Position + SimMath.Forward(v.BreakAway ? v.BreakHeading : v.Heading) * 10f : target.Position;
+                    // The bomb-run fix, pass 2: a stick bomber comes in along the target cluster's axis (stick.heading AXIS).
+                    if (!v.RunExtending && tail == null) goal = _world.Combat.StickEntry(v, target, goal, turnRadius);
                     if (tail != null && !v.RunExtending && !(behind && distance < range * TailClose))
                         goal = tail.Position - SimMath.Forward(tail.Heading) * (range * ChaseShare);
                     var gap = distance - target.Radius;

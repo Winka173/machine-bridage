@@ -165,7 +165,8 @@ namespace MachineBrigade.Tests
             });
             Assert.GreaterOrEqual(aims.Count, 3, "the bomber let a stick go");
             // The first stick: its bombs one after another, spaced along the track, each ahead of where it was let go.
-            var stick = aims.TakeWhile((a, i) => i == 0 || a.at - aims[i - 1].at < 0.5).ToList();
+            // The bomb-run fix: a stick's bombs go spacing / release speed apart (0.625 s for the FAB-500 stick).
+            var stick = aims.TakeWhile((a, i) => i == 0 || a.at - aims[i - 1].at < 1.0).ToList();
             Assert.GreaterOrEqual(stick.Count, 3, "one stick, bomb after bomb");
             // The track: from where the first bomb was let go to where the last one was.
             var track = Vector2.Normalize(stick[stick.Count - 1].from - stick[0].from);

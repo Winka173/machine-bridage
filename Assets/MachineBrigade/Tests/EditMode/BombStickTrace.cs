@@ -28,6 +28,10 @@ namespace MachineBrigade.Tests
     /// the run throttle of MovementSystem (0.8 inside 1.1 x its attack reach; the attack-hold ease), nothing else.
     /// Three seeds. One row a bomb, written to the csv named by MB_BOMB_TRACE (Tools/export/export.py bom reads it into
     /// the Bom_vet_tha sheet). Runs only with MB_BOMB_TRACE set.
+    /// <para>Pass 2: the target is the middle of five tanks in a row along the track, 8 m apart (the spec's standard row,
+    /// so a stick meets its minimum targets and drops all its bombs); the salvo is cut as Operate cuts it (StickCount), its
+    /// bombs go one SalvoGap apart (a stick's spacing / release speed), and each row also writes the stick's mode, the way
+    /// it runs and its bomb count. The pass 0 csv is kept as Docs/export/bom_2026-10-03/vet_tha_truoc_luot2.csv ("before").</para>
     /// </summary>
     public class BombStickTrace
     {
@@ -36,7 +40,8 @@ namespace MachineBrigade.Tests
         private static readonly int[] Seeds = { 1, 2, 3 };
 
         private const string Header = "vu_khi_id,don_vi_id,seed,chi_so_bom,tick_tha,vi_tri_tha_x_m,vi_tri_tha_z_m,tick_cham,vi_tri_roi_x_m," +
-            "vi_tri_roi_z_m,thoi_gian_roi_s,toc_do_luc_tha_m_s,do_cao_m,huong_bay_deg,duong_tha,dieu_kien_tha,loi_m,ria_m,khoang_tha_s,ghi_chu";
+            "vi_tri_roi_z_m,thoi_gian_roi_s,toc_do_luc_tha_m_s,do_cao_m,huong_bay_deg,duong_tha,dieu_kien_tha,loi_m,ria_m,khoang_tha_s,ghi_chu," +
+            "che_do_tha,huong_dai_deg,so_bom_dai";
 
         [Test, Category("Export")]
         public void WriteTheBombDropTrace()
@@ -101,11 +106,15 @@ namespace MachineBrigade.Tests
         {
             var world = new SimWorld(catalog, Field(), seed: seed);
             var target = world.SpawnVehicle("main_battle_tank", 1, Vector2.Zero, 0f);
+            // Pass 2: four more tanks in the row along the track (the spec's 5 vehicles 8 m apart).
+            foreach (var z in new[] { -16f, -8f, 8f, 16f }) world.SpawnVehicle("main_battle_tank", 1, new Vector2(0f, z), 0f);
             var bomber = world.SpawnVehicle(carrier.Id, 0, new Vector2(0f, -40f), 0f);
             var combat = world.Combat;
             var round = CombatSystem.Loaded(bomber, mount);
             var freeFall = CombatSystem.FreeFall(bomber, round);
-            var path = freeFall ? "FREE_FALL" : round.Projectile == ProjectileKind.Bomb ? (round.Glides ? "GLIDE" : "GUIDED_OR_GROUND") : "SHELL_PATH";
+            var sticks = CombatSystem.Sticks(bomber, round);
+            var path = freeFall ? (sticks ? "FREE_FALL_STICK" : "FREE_FALL") : CombatSystem.BayStick(round) ? "BAY_STICK"
+                : round.Projectile == ProjectileKind.Bomb ? (round.Glides ? "GLIDE" : "GUIDED_OR_GROUND") : "SHELL_PATH";
             var state = bomber.Weapons[mount];
             state.Cooldown = 0f;
             bomber.Heading = 0f;
@@ -137,8 +146,12 @@ namespace MachineBrigade.Tests
 
             // The salvo as CombatSystem.Operate fires it: the first bomb now, the rest one BurstInterval apart (20 Hz steps).
             var salvo = round.Burst;
+            // Pass 2: Operate's few-target cut (StickCount, private) and the stick's bomb count in the mount's state.
+            var stickCount = typeof(CombatSystem).GetMethod("StickCount", Hidden);
+            if (round.LaysStick && stickCount != null) salvo = (int)stickCount.Invoke(combat, new object[] { bomber, mount, target, salvo });
             if (state.Load > 0) salvo = Math.Min(salvo, Math.Max(0, state.Ammo));
-            var interval = round.Burst > 1 ? round.BurstInterval : 0.15f;
+            if (round.LaysStick) state.StickBombs = salvo;
+            var interval = round.Burst > 1 ? round.SalvoGap : 0.15f;
             var written = Drop(world, combat, launch, bomber, mount, target, round, carrier.Id, seed, 0, tick, true, path, condition, interval, sb);
             var left = salvo - 1;
             var timer = interval;
@@ -178,7 +191,11 @@ namespace MachineBrigade.Tests
                     .Append(F(e.Target.X)).Append(',').Append(F(e.Target.Y)).Append(',').Append(F(travel)).Append(',')
                     .Append(F(speed)).Append(',').Append(F(bomber.Height)).Append(',').Append(F(bomber.Heading * 180f / MathF.PI)).Append(',')
                     .Append(path).Append(',').Append(condition).Append(',').Append(F(round.SplashRadius)).Append(',').Append(F(round.WarnRadius))
-                    .Append(',').Append(F(interval)).Append(',').Append('\n');
+                    .Append(',').Append(F(interval)).Append(',')
+                    .Append(',').Append(round.Stick != null ? round.Stick.Mode.ToString().ToUpperInvariant() : "")
+                    .Append(',').Append(CombatSystem.Sticks(bomber, round) ? F(SimMath.HeadingOf(bomber.Weapons[mount].StickDir) * 180f / MathF.PI) : "")
+                    .Append(',').Append(CombatSystem.Sticks(bomber, round) ? bomber.Weapons[mount].StickBombs.ToString(CultureInfo.InvariantCulture) : "")
+                    .Append('\n');
                 count++;
             }
             world.ClearEvents();

@@ -36,6 +36,14 @@ namespace MachineBrigade.Sim.Entities
         public EntityId BurstTarget;
         public System.Numerics.Vector2 BurstAim;
 
+        /// <summary>
+        /// The bomb-run fix, pass 2 (DECISIONS "Ném bom rải thảm"): the stick under way, fixed when its first bomb goes: where
+        /// bomb 0 lands (before its jitter), the way the stick runs (unit vector), the next bomb's index along it, and how many
+        /// bombs this stick drops (its full count, or fewer on few targets).
+        /// </summary>
+        public System.Numerics.Vector2 StickStart, StickDir;
+        public int StickNext, StickBombs;
+
         /// <summary>The salvo was aimed at an aircraft: later rounds keep bursting in the air.</summary>
         public bool BurstFlying;
 
