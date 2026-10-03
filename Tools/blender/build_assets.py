@@ -178,6 +178,7 @@ import mb_p35_hydra_sub  # noqa: E402
 import mb_p35_nyx  # noqa: E402
 import mb_p35_kraken  # noqa: E402
 import mb_p35_garuda  # noqa: E402
+import mb_p35_cp_relay  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -326,7 +327,9 @@ def all_builders():
                 **mb_p35_sea_corvette.BUILDERS, **mb_p35_sea_cruiser.BUILDERS, **mb_p35_interceptor_jet.BUILDERS,
                 **mb_p35_glide_bomber.BUILDERS, **mb_p35_stealth_naval_strike.BUILDERS,
                 **mb_p35_hydra_sub.BUILDERS, **mb_p35_nyx.BUILDERS, **mb_p35_kraken.BUILDERS,
-                **mb_p35_garuda.BUILDERS}
+                **mb_p35_garuda.BUILDERS,
+                # Prompt 35 wave 10 (lane B): bosses, tower branches, helicopters and vehicles, each from its own builder.
+                **mb_p35_cp_relay.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
