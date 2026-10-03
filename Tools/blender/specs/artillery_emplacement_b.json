@@ -1,0 +1,152 @@
+{
+ "id": "artillery_emplacement_b",
+ "class": "tower",
+ "real": [
+  "2B8 / M-240 240 mm mortar",
+  "2S4 Tyulpan (the bomb)"
+ ],
+ "shape": "unit_sheet.json Công trình (artillery_emplacement, branch artillery_emplacement.mortar): a U-shaped earth and sandbag emplacement with the 240 mm mortar raised steeply; reads apart from the howitzer branches.",
+ "confidence": "ban_dau_doan (unit_refs names the mortar; the emplacement follows the base's U of earth and sandbags)",
+ "target_size": {
+  "L": 7.002,
+  "W": 6.813,
+  "H": 3.309,
+  "source": "the old GLB (wave 2 keeps sizes within 10 %)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "earth pad, U-shaped berm with sod, two sandbag courses, timber revetments, plank floor",
+   "nodes": [
+    "Base",
+    "Berm",
+    "Berm_sod_grass",
+    "Sandbags",
+    "Sandbags_new",
+    "Revetment",
+    "Floor"
+   ]
+  },
+  {
+   "feature": "240 mm mortar: baseplate with ribs, tube with bands and breech, cradle, carriage with two wheels, recoil cylinders, elevating screw",
+   "nodes": [
+    "Turret",
+    "Baseplate",
+    "Baseplate_ribs",
+    "Mortar_tube",
+    "Tube_bands",
+    "Breech",
+    "Cradle",
+    "Carriage",
+    "Tyres",
+    "Recoil_cyl",
+    "Elevating_screw",
+    "Axles"
+   ]
+  },
+  {
+   "feature": "loading jib with a bomb on the hook, bombs on pallets, loading tray, charge cases, ammunition boxes",
+   "nodes": [
+    "Crane",
+    "Crane_truss",
+    "Crane_base",
+    "Mortar_bombs",
+    "Pallets",
+    "Loading_tray",
+    "Charge_cans",
+    "Ammo_boxes"
+   ]
+  },
+  {
+   "feature": "crew MG on a pintle post on the parapet (the roof-gun rule)",
+   "nodes": [
+    "Mount_mg",
+    "MG_post",
+    "MG_cradle",
+    "MG_shield"
+   ]
+  },
+  {
+   "feature": "camouflage net on poles over the rear, whip and radio, aiming posts, scorch, stones, ground patches",
+   "nodes": [
+    "Camo_net",
+    "Net_poles",
+    "Antennas",
+    "Radio_box",
+    "Aiming_posts",
+    "Scorch",
+    "Stones"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "mortar_240_fixed",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "(none in data)",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "kept from the old model"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 6000,
+  "note": "owner decision 6 (wave 1): a tower is seen in numbers, at most 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "the mortar tube"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (field-built: sandbags, timber, nets, corrugated sheet)",
+ "details": {
+  "tier1": [
+   "pad",
+   "berm",
+   "mortar"
+  ],
+  "tier2": [
+   "carriage",
+   "wheels",
+   "jib",
+   "pallets",
+   "net",
+   "revetment",
+   "pintle MG"
+  ],
+  "tier3": [
+   "ribs",
+   "bands",
+   "stones",
+   "latches",
+   "aiming posts",
+   "fins"
+  ]
+ },
+ "questions": []
+}

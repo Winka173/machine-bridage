@@ -1,0 +1,128 @@
+{
+ "id": "helipad_b",
+ "class": "obstacle",
+ "real": [
+  "FARP (forward arming and refuelling point)"
+ ],
+ "shape": "unit_sheet.json Công trình (airfield, branch airfield.service): the pad with a forward arming and refuelling point.",
+ "confidence": "uoc_dinh (unit_refs: 'ước đoán: nhánh phục vụ máy bay')",
+ "target_size": {
+  "L": 10.0,
+  "W": 10.0,
+  "H": 1.935,
+  "source": "the old GLB (wave 2 keeps sizes within 10 %)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "precast pad with a 45-degree kerb (one corner cut), slab joints, tyre stains",
+   "nodes": [
+    "Base",
+    "Base_joints",
+    "Stains"
+   ]
+  },
+  {
+   "feature": "touchdown ring and the H in white, edge stripes and approach arrows in yellow, the pad number, a Team bar",
+   "nodes": [
+    "Paint_white",
+    "Paint_edge",
+    "Paint_yellow",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "flush edge lights with rims, tie-down rings, drain grates",
+   "nodes": [
+    "Lamps",
+    "Lamp_rims",
+    "Tie_downs",
+    "Drain_grates"
+   ]
+  },
+  {
+   "feature": "two pillow fuel bladders with valves in a sandbag bund",
+   "nodes": [
+    "Fuel_bladders",
+    "Bladder_valves",
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "pump unit with grille, hose reels and hoses",
+   "nodes": [
+    "Pump_skid",
+    "Hose_reels",
+    "Hoses"
+   ]
+  },
+  {
+   "feature": "arming point: rocket rack with spare rockets, ammunition boxes on a pallet, extinguisher trolley",
+   "nodes": [
+    "Rocket_rack",
+    "Spare_rockets",
+    "Pallets",
+    "Ammo_boxes",
+    "Extinguishers",
+    "Cart_wheels"
+   ]
+  },
+  {
+   "feature": "windsock on its pole",
+   "nodes": [
+    "Windsock_pole",
+    "Windsock"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   6000
+  ],
+  "floor": 0,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "obstacle class (passable pad); budget information only"
+ },
+ "team_zones": [
+  "the Team bar"
+ ],
+ "colour_zones_min": 2,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (field-built: sandbags, timber, nets, corrugated sheet)",
+ "details": {
+  "tier1": [
+   "pad"
+  ],
+  "tier2": [
+   "ring and H",
+   "edge stripes",
+   "arrows",
+   "bladders",
+   "pump unit",
+   "rocket rack"
+  ],
+  "tier3": [
+   "lights",
+   "rims",
+   "tie-downs",
+   "grates",
+   "joints",
+   "stains",
+   "valves",
+   "windsock"
+  ]
+ },
+ "questions": []
+}

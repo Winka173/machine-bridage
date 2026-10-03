@@ -1,0 +1,89 @@
+{
+ "id": "helipad",
+ "class": "obstacle",
+ "real": [
+  "helicopter landing pad (the H)"
+ ],
+ "shape": "unit_sheet.json Công trình (airfield): a flat concrete landing pad with paint marks and lights, 10.0 x 10.0 x 0.1 m; passable, kept flat.",
+ "confidence": "ban_dau_doan",
+ "target_size": {
+  "L": 10.0,
+  "W": 10.0,
+  "H": 0.115,
+  "source": "the old GLB (wave 2 keeps sizes within 10 %)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "precast pad with a 45-degree kerb (one corner cut), slab joints, tyre stains",
+   "nodes": [
+    "Base",
+    "Base_joints",
+    "Stains"
+   ]
+  },
+  {
+   "feature": "touchdown ring and the H in white, edge stripes and approach arrows in yellow, the pad number, a Team bar",
+   "nodes": [
+    "Paint_white",
+    "Paint_edge",
+    "Paint_yellow",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "flush edge lights with rims, tie-down rings, drain grates",
+   "nodes": [
+    "Lamps",
+    "Lamp_rims",
+    "Tie_downs",
+    "Drain_grates"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   6000
+  ],
+  "floor": 0,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "obstacle class (passable pad); budget information only"
+ },
+ "team_zones": [
+  "the Team bar by the ring"
+ ],
+ "colour_zones_min": 2,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Hegemon (cast concrete, prefabricated: pads, jersey barriers, steel rails)",
+ "details": {
+  "tier1": [
+   "pad"
+  ],
+  "tier2": [
+   "ring and H",
+   "edge stripes",
+   "arrows"
+  ],
+  "tier3": [
+   "lights",
+   "rims",
+   "tie-downs",
+   "grates",
+   "joints",
+   "stains"
+  ]
+ },
+ "questions": []
+}
