@@ -85,7 +85,7 @@
             "kind": "vehicle",
             "model": "aa_vehicle",
             "source": "Models/aa_vehicle_hd",
-            "hash": "v2:9716743d82cb0c404af2fcef3fdad33d205c1214"
+            "hash": "v2:7b7574be0ddab89cd26a826275eb3ed2da0b912d"
         },
         {
             "id": "sam_launcher",
@@ -141,7 +141,7 @@
             "kind": "vehicle",
             "model": "heavy_aa",
             "source": "Models/heavy_aa",
-            "hash": "v2:b0836d4f892c3eb25c96514f329145d5df29a802"
+            "hash": "v2:6d07d593b190347a2516cfbaa683b1d5d68f269c"
         },
         {
             "id": "titan_tank",
@@ -211,7 +211,7 @@
             "kind": "vehicle",
             "model": "ew_jammer",
             "source": "Models/ew_jammer",
-            "hash": "v2:e4f4688945f11d1bfbb46213fe366a9199048ac7"
+            "hash": "v2:4b90cbfa55f7d778a322eb00a2c989a04f48d998"
         },
         {
             "id": "fpv_carrier",
@@ -274,7 +274,7 @@
             "kind": "vehicle",
             "model": "iron_beam",
             "source": "Models/iron_beam",
-            "hash": "v2:dcc365baf4bf1b3843ad360522a635bfef8a6620"
+            "hash": "v2:d4c1c92cadc15569b12e451c420d597207577956"
         },
         {
             "id": "railgun_truck",
@@ -288,14 +288,14 @@
             "kind": "vehicle",
             "model": "command_vehicle",
             "source": "Models/command_vehicle",
-            "hash": "v2:badc2e3d94f32b3802e046c712004a022f6e1488"
+            "hash": "v2:fe597bf44d98c75290d55e65a3153375b9b5ea19"
         },
         {
             "id": "wheeled_gun",
             "kind": "vehicle",
             "model": "wheeled_gun",
             "source": "Models/wheeled_gun",
-            "hash": "v2:9c3a611dc8412a339fec1ea78e56751c5b1a449e"
+            "hash": "v2:65e23ff424a4b2037b23e9e6087a291cffba22e8"
         },
         {
             "id": "long_sam",
@@ -393,7 +393,7 @@
             "kind": "vehicle",
             "model": "stealth_naval_strike",
             "source": "Models/stealth_naval_strike",
-            "hash": "v2:7131f3af3e77ddc5f5e647a4087619caef37f96a"
+            "hash": "v2:1dae31fb1ffa89fc82011f5a940acdfc50a34210"
         },
         {
             "id": "twin_rotor_gunship",
@@ -443,13 +443,6 @@
             "model": "aa_turret_b",
             "source": "Models/aa_turret_b",
             "hash": "v2:3c6612b7005d52502316f6de11496b49a62b541b"
-        },
-        {
-            "id": "aircraft_hangar",
-            "kind": "tower",
-            "model": "drone_hangar",
-            "source": "Models/drone_hangar",
-            "hash": "v2:eaed7160b8f87d365bbf4df1111e149e382d9d76"
         },
         {
             "id": "airfield",
@@ -610,7 +603,7 @@
             "kind": "tower",
             "model": "drone_hangar",
             "source": "Models/drone_hangar",
-            "hash": "v2:eaed7160b8f87d365bbf4df1111e149e382d9d76"
+            "hash": "v2:af1e61442c8d25f8c1980b2497fd65bc255ece56"
         },
         {
             "id": "drone_hangar.lancet",
@@ -785,7 +778,7 @@
             "kind": "tower",
             "model": "guard_tower",
             "source": "Models/guard_tower",
-            "hash": "v2:f43037a3752c5168c9342caeddd177320027557d"
+            "hash": "v2:def39d144e95931637ca3920aad54fdbc5cb7033"
         },
         {
             "id": "guard_tower.nest",
@@ -918,14 +911,14 @@
             "kind": "tower",
             "model": "laser_ad_station",
             "source": "Models/laser_ad_station",
-            "hash": "v2:dbebc38347dc20bb8fce500ccac78bf33442c30b"
+            "hash": "v2:5e65a995a235f87120a7a3088e9a269aff16e1fa"
         },
         {
             "id": "laser_ad_station.laser",
             "kind": "tower",
             "model": "laser_ad_station",
             "source": "Models/laser_ad_station",
-            "hash": "v2:dbebc38347dc20bb8fce500ccac78bf33442c30b"
+            "hash": "v2:5e65a995a235f87120a7a3088e9a269aff16e1fa"
         },
         {
             "id": "leviathan",
@@ -967,7 +960,7 @@
             "kind": "tower",
             "model": "mg_bunker",
             "source": "Models/mg_bunker",
-            "hash": "v2:7ad5ba24f4d7b63d87e98c2fa6776d3fd4b1f758"
+            "hash": "v2:83c5c7594f1b5589e6ab9bbb28bf71aa40c14189"
         },
         {
             "id": "mg_bunker.flame",
@@ -1140,9 +1133,9 @@
         {
             "id": "vehicle_hangar",
             "kind": "tower",
-            "model": "drone_hangar",
-            "source": "Models/drone_hangar",
-            "hash": "v2:eaed7160b8f87d365bbf4df1111e149e382d9d76"
+            "model": "vehicle_hangar_base",
+            "source": "Models/vehicle_hangar_base",
+            "hash": "v2:356caf2a7badc5d063dffe81a728b012290b70df"
         }
     ]
 }
