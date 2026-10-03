@@ -19387,3 +19387,48 @@ Unity, no tests, as the owner asked). Value changes: Docs/export/CHANGES.md "Pla
 - **13 napalm / airstrike aircraft.** StrikeEffects already flies strike_jet / heavy_bomber over (LaunchJet) and drops
   bombs or napalm canisters (ScheduleBombs, DropsOwnRounds); the Sim emits AircraftPass. No cause found by reading;
   for local (check in a match which part is missing).
+
+## Play-test 14 session 5 (local lane A)
+
+Owner's Unity notes of 03/10 (last block of Docs/prompts/playtest14_vi.txt), the lead's calls in
+Docs/cloud/PT14_CLOUD_TASKS.md "Session 5", done locally on `feature/pt14-e`. No Unity run; the lead compiles on merge.
+
+- **1 bombers, bombs to scale.** StrikeEffects.IsBomberRun: every airstrike-kind support (airstrike, napalm_strike,
+  cluster_strike, air_raid) is flown by heavy_bomber at BomberAltitude (32 m; the SEAD jet stays a strike jet). What it
+  drops is drawn at real size against the drawn bomber (B-52 lineage: 48.5 m real, drawn at its modelSize 19.8 m, so x0.41):
+  Mk 84 3.84 m -> 1.6 m, 500 kg / FAB-500 2.5 m -> 1.0 m (the size of the FAB-500s racked in its bay), napalm canister
+  BLU-27 3.3 m x 0.48 m -> 1.35 m x 0.2 m (was 2.4 m x 0.86 m), cluster dispenser 2.34 m -> 0.95 m (was 2.6 m), bomblets
+  0.9 m -> 0.37 m. Scale by mesh length (ProjectilePool scale / Faller body scale). ReleaseAltitude follows (export only).
+- **2 sea staircase.** The edge sea mesh (Surroundings.SeaMesh) was whole cells (2 m near, ~20 m far) chosen by the cell
+  centre, so a slanting coast stopped in steps while the foam (the bilinear shore texture) ran slanting. Now: whole sea
+  cells stay runs of quads; a cell the coast crosses is cut along it (marching squares on EdgeSeaAt at the corners, each
+  crossing found by halving to < 5 cm, so neighbours and the near/far sheets meet). SeaMeshAt lets corners up to a cell
+  inside the map's rectangle count as the sea just outside, so no seam opens at the map's edge (that strip lies under the
+  map's own ground and water). The map's own sea (MapView contour) was already smooth.
+- **3 Nyx's tanks.** They were the preview's ability scene, not escorts: Nyx inherits Leviathan's `aps`, so
+  FiringRange.SceneFor gave Scene.Interceptor, which stood a main_battle_tank and an ifv by the ship and sent a rocket
+  technical and an ATGM tower at them. At sea (PreviewSetting.Sea, any ship) the Jammer and Interceptor scenes now stage
+  SeaGuard: a sea_corvette and a river_gunboat on the starboard beam fore and aft, missile boats past the ends of the line
+  abreast (a boss) or out ahead (a warship) firing at them; the boss frame takes them in.
+- **4 Leviathan's sleeping turrets.** VehicleView.WakeMounts: every `wake` mount's pivot (Leviathan mounts 3, 4; also
+  Typhon's deck gun, same rule) is sunk until its top is at its seat and hidden while asleep; when Sim.Phase reaches the
+  wake phase it rises over 1.5 s (0.98 s up, ease-out; then unfolds from 0.8 width with a small lift and settle). Pivot
+  position/scale only; a pivot an awake mount shares is left alone. The far LOD mesh, if it bakes the turrets, still shows
+  them: for local.
+- **5 no phase cutscene.** MatchRunner: BossPhase no longer calls StartCinematic (camera hold, letterbox, slow motion);
+  the general's line, the HUD notice and the haptic stay.
+- **6 hangars by cost.** HangarDef.Budget (data `hangar.budget`): alive = max(1, floor(budget / unit CP)); vehicle hangar 5
+  (jeep 2 CP -> 2, armoured car 3 -> 1, light tank 3 -> 1), aircraft hangar 12 (scout heli 6 -> 2, recon drone 7 -> 1).
+  Spawn cycle unchanged. HQ tab and unit lines show the count of the pick / of each unit. CHANGES PT14-E1, E2.
+- **7 smoke shorter.** SmokeTimes (EffectLife.cs): trails 0.5 (MotorPlumes smoke life, Emitters.Trail), blast smoke 0.5
+  (ExplosionEffect default, EffectsDirector._smokeLife default -> ExplosionEffect smoke layers and ImpactSmoke linger),
+  death 0.35 (the VehicleDestroyed blast, the Explosion event = death explosions / mines / props, a shot-down aircraft's
+  airburst, BossDeath and BossFinale), fire 0.5 (FireSpots puffs, HullFire smoke, Emitters.DamageSmoke), smoulder 0.5
+  (FireSpots: how long a fire / wreck smokes on after its flames). Tank-round impacts keep 0.4. Fire, flash, fireball,
+  sparks, debris untouched; gameplay smoke screens untouched.
+- **Side ATGM box.** It snapped up because the Sim fires the mount at once. VehicleDef.SideErectSeconds (data
+  `sideErectSeconds`, ifv and elite_apc 0.6 = the old drawn pace): the missile mount fires once it has had a target that
+  long (CombatSystem.SideErected, same rule as Erected); the view raises the box at that pace and never snaps it.
+  CHANGES PT14-E3. Replay hashes change (E1-E3).
+- For local (Unity): the bomber pass and bomb sizes in a match; a slanting coast and the map-edge strip; Leviathan / Nyx
+  previews (boats, framing) and the turret rise in a phase-1 battle; smoke amounts overall.

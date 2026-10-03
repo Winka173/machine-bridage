@@ -487,3 +487,15 @@ Nhánh `cloud/pt14-a`. Lý do ngoài đời: `Docs/DECISIONS.md` "Play-test 14 (
 | PT14-A9 | Động cơ rocket pháo binh / tên lửa đạn đạo (hình) | tắt ở 85 % / 75 % đường bay | cháy tới lúc nổ; khói kéo tới điểm nổ | vệt khói tới lúc nổ |
 
 Trận replay bị ảnh hưởng: PT14-A1, A2, A3, A4, A5, A6 đổi Sim — baseline của ReplayHashTests cần ghi lại.
+
+## Play-test 14 session 5 (lane E, local): hangar theo ngân sách, hộp ATGM bên hông
+
+Nhánh `feature/pt14-e`. Lý do: `Docs/DECISIONS.md` "Play-test 14 session 5 (local lane A)". Sát thương không đổi.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-E1 | `vehicle_hangar` `hangar.budget` (mới) | 2 xe còn sống mỗi hangar, loại nào cũng vậy | còn sống = floor(5 / CP của xe chọn): scout_jeep (2 CP) **2**, armored_car (3) **1**, light_tank (3) **1** | chủ dự án: "chọn light tank thì được 1, jeep thì được 2" |
+| PT14-E2 | `aircraft_hangar` `hangar.budget` (mới) | 2 | floor(12 / CP): scout_heli (6) **2**, recon_drone (7) **1** | cùng quy tắc |
+| PT14-E3 | `ifv`, `elite_apc` `sideErectSeconds` (mới) 0,6 | tên lửa ATGM bắn ngay khi có mục tiêu (hộp bên hông bật lên tức thì) | tên lửa chờ hộp dựng 0,6 s sau khi có mục tiêu (cùng luật `erectSeconds` của xe phóng); hộp nâng theo nhịp đó | hộp phóng nâng lên rồi mới bắn |
+
+Trận replay bị ảnh hưởng: PT14-E1, E2, E3 đổi Sim — baseline của ReplayHashTests cần ghi lại.
