@@ -149,7 +149,7 @@ def _launcher(a):
     K.chamfer_box(base, (1.1, 1.4, .3), loc=(0, .3, .15), c=.04)
     # The rail: a long box beam from behind the turntable rising forward, its trestle legs and the elevation ram.
     L = 3.5
-    p0 = Vector((0, 1.8, .12))                    # rear end (turret space)
+    p0 = Vector((0, 1.8, -.02))                   # rear end (turret space)
     d = Vector((0, -math.cos(RAIL), math.sin(RAIL)))
     p1 = p0 + d * L
     rail = a.part('Rail', 'Steel', t)
