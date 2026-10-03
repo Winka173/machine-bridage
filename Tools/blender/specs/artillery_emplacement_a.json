@@ -1,0 +1,155 @@
+{
+ "id": "artillery_emplacement_a",
+ "class": "tower",
+ "real": [
+  "M198 / M777 155 mm towed howitzer (unit_refs artillery_emplacement.cb: M284 155 mm)",
+  "AN/TPQ-50 class counter-battery radar"
+ ],
+ "shape": "artillery_emplacement.cb (howitzer_cb, counterBattery): the counter-battery branch; an upgrade of the wave 2 emplacement of artillery_emplacement_b; the old file 10.05 x 7.15 x 3.91 m (no modelSize).",
+ "confidence": "xấp xỉ (towed 155 mm layout; the radar is a small phased array)",
+ "target_size": {
+  "L": 10.05,
+  "W": 7.15,
+  "H": 3.91,
+  "source": "the old file (branch art: no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the _b emplacement: dirt pad, U-shaped berm with sod, sandbag courses (a newer canvas course), timber revetment, plank floor, ground patches, stones",
+   "nodes": [
+    "Base",
+    "Berm",
+    "Sandbags",
+    "Sandbags_new",
+    "Revetment",
+    "Floor",
+    "Stones"
+   ]
+  },
+  {
+   "feature": "the howitzer (Turret): firing base, split trails (Team) with spades and handles, side plates, equilibrators, trunnions",
+   "nodes": [
+    "Turret",
+    "Firing_base",
+    "Trails",
+    "Spades",
+    "Carriage",
+    "Equilibrators",
+    "Trunnions"
+   ]
+  },
+  {
+   "feature": "the cradle with recoil cylinders, the long barrel with thermal jacket and double-baffle brake, the breech and loading tray, sight and shield",
+   "nodes": [
+    "Cradle",
+    "Recoil_cyl",
+    "Main_cannon",
+    "Thermal_jacket",
+    "Muzzle_brake",
+    "Breech_block",
+    "Loading_tray",
+    "Sight",
+    "Gun_shield",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "the raised road wheels on their arms",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Wheel_arms"
+   ]
+  },
+  {
+   "feature": "the counter-battery radar: cast pad, lattice mast, the turning panel (Radar) with its cells and box, the cable to the command box, two whips",
+   "nodes": [
+    "Radar_pad",
+    "Radar_mast",
+    "Radar",
+    "Radar_panel",
+    "Radar_cells",
+    "Command_box",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "the crew MG on its pintle post on the parapet, camouflage net, shell pallet, charge cans, ammunition stack, tarp, jerrycans, aiming posts, flag",
+   "nodes": [
+    "Mount_mg",
+    "Muzzle_mg",
+    "Camo_net",
+    "Shells",
+    "Charge_cans",
+    "Ammo_boxes",
+    "Tarp",
+    "Jerrycans",
+    "Aiming_posts",
+    "Flag"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "howitzer_fixed",
+   "slot": "main (the branch fires howitzer_cb)",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: towers seen in numbers stay under 1.5 x 4,000"
+ },
+ "team_zones": [
+  "the trails, the barrel jacket, the flag (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "field-built (earth berm, sandbags, timber), as artillery_emplacement_b",
+ "details": {
+  "tier1": [
+   "emplacement",
+   "howitzer",
+   "radar mast"
+  ],
+  "tier2": [
+   "berm",
+   "trails",
+   "barrel",
+   "wheels",
+   "radar panel",
+   "net"
+  ],
+  "tier3": [
+   "spades",
+   "handles",
+   "brake ports",
+   "cells",
+   "shells",
+   "stones",
+   "patches",
+   "jerrycans"
+  ]
+ },
+ "questions": []
+}
