@@ -1154,7 +1154,7 @@ def door(a, loc, size=(1.0, 2.0), normal=(0, -1, 0), parent=None, mat='Armor'):
     m = frame(loc, rot)
     fr = a.part('Door_frames', 'Steel', parent)
     for s in (-1, 1):
-        fr.box((.08, .08, h), loc=_at(m, (s * (w / 2 + .04), h / 2, .02)), rot=rot, bevel=0)
+        fr.box((.08, h, .08), loc=_at(m, (s * (w / 2 + .04), h / 2, .02)), rot=rot, bevel=0)   # wave 2: upright
     fr.box((w + .16, .08, .08), loc=_at(m, (0, h + .04, .02)), rot=rot, bevel=0)
     # A door's local frame: +Z out of the wall, +Y up the wall after rot_to; the boxes above use (x, up, out).
     leaf = a.part('Doors', mat, parent)
