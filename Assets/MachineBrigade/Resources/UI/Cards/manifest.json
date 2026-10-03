@@ -239,7 +239,7 @@
             "kind": "vehicle",
             "model": "ammo_carrier",
             "source": "Models/ammo_carrier",
-            "hash": "v2:c50fe4b2c580acfcb7a71103f48365d7b686c387"
+            "hash": "v2:5221584879c103e1b9fdb5919fb0bb9dc94b9735"
         },
         {
             "id": "fighter_jet",
@@ -260,7 +260,7 @@
             "kind": "vehicle",
             "model": "vbied",
             "source": "Models/vbied",
-            "hash": "v2:7fe6a1b3fc6412ee5ee315406950b0f7efaac116"
+            "hash": "v2:ea789622d73dcfbcf3ba9133a2d69a5550dcc9bf"
         },
         {
             "id": "zu23_technical",
@@ -274,14 +274,14 @@
             "kind": "vehicle",
             "model": "smoke_carrier",
             "source": "Models/smoke_carrier",
-            "hash": "v2:18c96b8a56f192987fb1b9a7c2fe7d873082f429"
+            "hash": "v2:54271456fc7fe207dec1078cd7fcc761e8322ed1"
         },
         {
             "id": "lancet_truck",
             "kind": "vehicle",
             "model": "lancet_truck",
             "source": "Models/lancet_truck",
-            "hash": "v2:d7ddb67f48b815f7162c68142affa35cd3b21509"
+            "hash": "v2:56a42327110119ac231a9079fa2abd3d7d1fcca6"
         },
         {
             "id": "shahed_truck",
@@ -337,7 +337,7 @@
             "kind": "vehicle",
             "model": "counter_battery_radar",
             "source": "Models/counter_battery_radar",
-            "hash": "v2:bd32d73e43216eb663cff7d41c9d88680e672a3d"
+            "hash": "v2:0feaea5e2220ee5bebae02cd66393b42766a3e32"
         },
         {
             "id": "long_sam",
@@ -393,7 +393,7 @@
             "kind": "vehicle",
             "model": "swarm_carrier",
             "source": "Models/swarm_carrier",
-            "hash": "v2:7f1c5ebc46581ae28e5e179cec1fd7f303331e3e"
+            "hash": "v2:67c3ccb56bc3a2c4e079a700ab186bba0d8eea84"
         },
         {
             "id": "aa_gun_vehicle",
@@ -414,7 +414,7 @@
             "kind": "vehicle",
             "model": "microwave_vehicle",
             "source": "Models/microwave_vehicle",
-            "hash": "v2:cf4eca87966fa650ee6f6cc099b8f3e2cc146dfb"
+            "hash": "v2:6b00d75705c16a4cb690006892e02029a83ab3b2"
         },
         {
             "id": "nlos_atgm_vehicle",
@@ -1086,14 +1086,14 @@
             "kind": "elite",
             "model": "elite_mbt",
             "source": "Models/elite_mbt",
-            "hash": "v2:7dc16b6f2a5d000ef6b14e6d69502d57e9c85f9d"
+            "hash": "v2:f5e8dd05fcaa1a74e5c2408fb0254bf017f985bd"
         },
         {
             "id": "elite_mlrs",
             "kind": "elite",
             "model": "elite_mlrs",
             "source": "Models/elite_mlrs",
-            "hash": "v2:1c5bc7c05dbb41d59f5d25e00becc72f241a3d92"
+            "hash": "v2:e09878c668ebdb8944ad3f5442649d1fb0621df5"
         },
         {
             "id": "elite_tank_destroyer",
