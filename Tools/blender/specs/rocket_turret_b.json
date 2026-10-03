@@ -1,0 +1,154 @@
+{
+ "id": "rocket_turret_b",
+ "class": "tower",
+ "real": [
+  "M270 / HIMARS GMLRS launch pod container (6 cells each)"
+ ],
+ "shape": "unit_sheet.json Công trình (rocket_turret): the two branches must differ clearly at the default zoom; built on the base's emplacement (owner decision 4, wave 1).",
+ "confidence": "ban_dau_doan (tower branch design; the launcher is real, the emplacement is the base tower's)",
+ "target_size": {
+  "L": 4.7,
+  "W": 4.7,
+  "H": 3.4,
+  "source": "unit_sheet 'Kích thước hiện' and the old GLB (4.67 x 4.69 x 3.40)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "two GMLRS launch pod boxes, 6 cells each behind frangible covers, the guided branch (rocket_turret.guided, turret_gmlrs)",
+   "nodes": [
+    "Tubes",
+    "Pod_covers",
+    "Pod_seams",
+    "Pod_ribs",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "guidance mast: datalink whip and a sensor head (the branch's vision 95)",
+   "nodes": [
+    "Mast",
+    "Sensor_head",
+    "Sensor_glass",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "low turning base on a race ring",
+   "nodes": [
+    "Turret",
+    "Race"
+   ]
+  },
+  {
+   "feature": "field-built emplacement: timber-framed earth pad",
+   "nodes": [
+    "Base",
+    "Base_timbers"
+   ]
+  },
+  {
+   "feature": "blast wall of sandbags round the front and sides",
+   "nodes": [
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "reload: rocket crates and a rack behind the launcher",
+   "nodes": [
+    "Crates",
+    "Rocket_rack"
+   ]
+  },
+  {
+   "feature": "a short antenna and a work lamp",
+   "nodes": [
+    "Antennas",
+    "Lamps"
+   ]
+  },
+  {
+   "feature": "crew MG on a raised pintle post with cradle, ammunition can and shield (the owner's roof-gun rule)",
+   "nodes": [
+    "MG_post",
+    "MG_cradle",
+    "Mount_mg",
+    "MG_shield"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof (the turning launcher deck)",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "turret_rockets",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "(none in data)",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "kept from the old model: its node names stay (prompt 35 section 1), a pintle MG for the crew"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 6000,
+  "note": "owner decision 6 (wave 1): a tower is seen in numbers, at most 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "the launcher deck and the tube pack's sides (Team)",
+  "a band on the cradle"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (the player builds it from chapter 1): practical, field-built: sandbags, timber, nets",
+ "details": {
+  "tier1": [
+   "earth pad",
+   "sandbag wall",
+   "turning deck",
+   "two pod boxes",
+   "mast"
+  ],
+  "tier2": [
+   "cradle and elevating ram",
+   "race ring",
+   "crates",
+   "rocket rack",
+   "operator seat and shield",
+   "timber frame"
+  ],
+  "tier3": [
+   "tube mouths",
+   "pack bands and bolts",
+   "lamp",
+   "antenna",
+   "cable",
+   "handles",
+   "stakes",
+   "jerrycan"
+  ]
+ },
+ "questions": []
+}
