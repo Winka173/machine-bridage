@@ -174,6 +174,54 @@ def _card(n: int, spacing: float, vietnamese: bool) -> str:
     return f"thả {n} quả, cách nhau {f(spacing)} m, dải {f(length)} m" if vietnamese else f"{n} bombs {f(spacing)} m apart, a {f(length)} m stick"
 
 
+def _drone_sheet(book, d, res, users):
+    """Drone (play-test 13): one table of every drone: the drone rounds vehicles send (FPV, Lancet, Shahed...) and the drone
+    aircraft. Data values here; the values the game builds or draws (speed, blast, flight, drawn size) come from game.json
+    balancePack.drones (core/gamefill.py)."""
+    sh = book.sheet("Drone", "Drone: tốc độ, đầu nổ, cỡ, vụ nổ",
+                    "Mọi drone của game một dòng: drone đạn (FPV, Lancet, Shahed do xe phóng) và máy bay drone; tốc độ bay, "
+                    "đầu nổ (kg), sát thương, bán kính nổ lõi / rìa, tầm, thời gian bay, cỡ (dài) và cỡ vụ nổ khi vẽ")
+    for c, unit, m in (("loai", "", "dan_drone (drone vũ khí, bay tới mục tiêu và nổ) / may_bay_drone (máy bay không người lái)"),
+                       ("ten_that", "", "hệ thống thật"), ("mang_boi", "", "đơn vị phóng / mang (ngăn ';')"),
+                       ("toc_do_m_s", "m/s", "tốc độ bay (drone đạn: tốc độ đạn game dựng; máy bay: speed)"),
+                       ("do_cao_m", "m", "độ cao bay (máy bay drone)"),
+                       ("dau_no_kg", "kg", "khối lượng đầu nổ / bom (warheadKg; máy bay: của vũ khí, ngăn ';')"),
+                       ("sat_thuong", "hp", "sát thương mỗi drone (game dựng)"),
+                       ("loi_m", "m", "bán kính lõi nổ (SplashRadius)"), ("ria_m", "m", "bán kính rìa nổ (0: một lớp)"),
+                       ("tam_m", "m", "tầm phóng"), ("thoi_gian_bay_toi_tam_s", "s", "thời gian bay tới tầm tối đa"),
+                       ("mau_hp", "hp", "máu (máy bay drone)"), ("vu_khi", "", "vũ khí của máy bay drone (ngăn ';')"),
+                       ("mo_hinh", "", "mô hình vẽ drone đạn"),
+                       ("kich_thuoc_m", "m", "cỡ: drone đạn = chiều dài khi vẽ; máy bay drone = dài x rộng x cao (modelSize)"),
+                       ("no_hinh_x", "x", "vụ nổ khi vẽ lớn hơn vụ nổ chung bao nhiêu lần (BlastSizes.Drone)")):
+        sh.col(c, unit=unit, meaning=m)
+    for wid in sorted(w for w, e in res.items() if e.get("projectile") == "Drone"):
+        e = res[wid]
+        r = sh.row(wid, f"{B.BALANCE}: weapons[{wid}] (giá trị game từ game.json balancePack.drones)")
+        r.set("loai", "dan_drone")
+        r.set("ten_that", e.get("real", ""))
+        r.set("mang_boi", ";".join(sorted({u for _k, u, _m in users.get(wid, [])})))
+        r.set("dau_no_kg", e.get("warheadKg", 0))
+        for c in ("toc_do_m_s", "sat_thuong", "loi_m", "ria_m", "tam_m", "thoi_gian_bay_toi_tam_s", "mo_hinh", "kich_thuoc_m", "no_hinh_x"):
+            r.set(c, NEED_CODE_CHECK)
+    weapons = {w: e for w, e in res.items()}
+    for v in d.get("vehicles", []):
+        if not v.get("drone"):
+            continue
+        vid = v["id"]
+        arms = [v.get("weapon")] + [x.get("weapon") for x in v.get("secondary") or [] if isinstance(x, dict)]
+        arms = [a for a in arms if isinstance(a, str) and a and a != "none"]
+        r = sh.row(vid, f"{B.BALANCE}: vehicles[{vid}]")
+        r.set("loai", "may_bay_drone")
+        r.set("ten_that", v.get("real", ""))
+        r.set("toc_do_m_s", v.get("speed", ""))
+        r.set("do_cao_m", v.get("altitude", ""))
+        r.set("mau_hp", v.get("hp", ""))
+        r.set("vu_khi", ";".join(arms))
+        r.set("dau_no_kg", ";".join(f"{a}:{weapons.get(a, {}).get('warheadKg', 0)}" for a in arms))
+        size = v.get("modelSize")
+        r.set("kich_thuoc_m", " x ".join(f"{x:g}" for x in size) if isinstance(size, list) else "")
+
+
 def build(ctx):
     book = ctx.book(FILE_ID, TITLE, DESC)
     d = B.bal(ctx)
@@ -450,6 +498,8 @@ def build(ctx):
         for c in ("cach_nham", "khi_no", "khi_truot", "co_canh_bao", "thoi_gian_bay_toi_da_s", "tuong_tac_phao_sang",
                   "tuong_tac_aps", "tuong_tac_gay_nhieu"):
             r.set(c, NEED_CODE_CHECK)
+
+    _drone_sheet(book, d, res, users)
 
     # ------------------------------------------------------------------ Canh_bao_vong
     cb = book.kv_sheet("Canh_bao_vong", "Vòng cảnh báo", "warningRules: loại đòn có vòng, sàn thời gian theo bậc, số vùng tối đa")

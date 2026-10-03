@@ -69,6 +69,7 @@ namespace MachineBrigade.Tests
             Section("defaultSettings", PackSettings);
             Section("strikes", () => PackStrikes(catalog));
             Section("defenceWaves", () => PackDefenceWaves(catalog));
+            Section("drones", () => PackDrones(catalog));
             return pack;
         }
 
@@ -631,6 +632,40 @@ namespace MachineBrigade.Tests
                 ["bigRule"] = "a big attack's blast has the core (radius, full damage) and the edge layer (edgeRadius, edgeShare of it); with no edge it falls to falloff at the rim",
                 ["altitudeRule"] = "releaseAltitude is the view's (StrikeEffects): the simulation lands the bombs on its own schedule; 0: no aircraft drops them",
                 ["supports"] = supports, ["bigAttacks"] = big, ["carriers"] = carriers,
+            };
+        }
+
+        /// <summary>
+        /// 01 Drone (play-test 13): every drone the game flies. A drone round (an FPV, Lancet or Shahed a vehicle sends): its
+        /// speed, warhead, blast core and edge, flight to full range, the model it is drawn with and how much bigger than that
+        /// model (WeaponEffects: RoundScale or projectileScale, x SizeOf, x QuadScale for the quadcopter) and its blast drawn
+        /// (BlastSizes.Drone). A drone aircraft: speed, height, health and weapons.
+        /// </summary>
+        private static object PackDrones(Catalog catalog)
+        {
+            var rounds = new List<object>();
+            foreach (var w in catalog.Weapons.Values.Where(w => w.Projectile == ProjectileKind.Drone).OrderBy(w => w.Id, StringComparer.Ordinal))
+            {
+                var model = w.ProjectileModel ?? "fpv_drone";
+                var quad = model == "fpv_drone";
+                rounds.Add(new Dictionary<string, object>
+                {
+                    ["id"] = w.Id, ["speed"] = w.ProjectileSpeed, ["damage"] = w.Damage, ["warheadKg"] = w.WarheadKg, ["splash"] = w.SplashRadius,
+                    ["edge"] = w.SplashEdge, ["range"] = w.Range, ["flightAtRangeSeconds"] = BalancePackFacts.FlightSeconds(catalog, w, w.Range),
+                    ["model"] = model, ["roundLength"] = w.RoundLength, ["projectileScale"] = w.ProjectileScale,
+                    ["drawnScale"] = FxCode.WeaponEffects.SizeOf(w, ProjectileKind.Drone, model, false) * (quad ? FxCode.WeaponEffects.QuadScale : 1f),
+                    ["blastDrawScale"] = FxCode.BlastSizes.Drone(w),
+                });
+            }
+            var craft = catalog.Vehicles.Values.Where(v => v.Drone).OrderBy(v => v.Id, StringComparer.Ordinal).Select(v => (object)new Dictionary<string, object>
+            {
+                ["id"] = v.Id, ["speed"] = v.Speed, ["altitude"] = v.Altitude, ["hp"] = v.MaxHp,
+                ["weapons"] = v.Mounts.Select(m => (object)m.Weapon.Id).Distinct().ToList(),
+            }).ToList();
+            return new Dictionary<string, object>
+            {
+                ["rule"] = "drawn length = (roundLength if set, else the model's length x projectileScale) x drawnScale",
+                ["rounds"] = rounds, ["craft"] = craft,
             };
         }
 

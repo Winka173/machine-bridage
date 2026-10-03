@@ -265,6 +265,24 @@
    "row": null,
    "variants": 3
   },
+  "hit_armour_light": {
+   "group": "hit_armour",
+   "size": "s1",
+   "row": null,
+   "variants": 4
+  },
+  "hit_armour_heavy": {
+   "group": "hit_armour",
+   "size": "s3",
+   "row": null,
+   "variants": 3
+  },
+  "hit_armour_glance": {
+   "group": "hit_armour",
+   "size": "s2",
+   "row": null,
+   "variants": 3
+  },
   "wreck_tank": {
    "group": "wreck",
    "size": null,

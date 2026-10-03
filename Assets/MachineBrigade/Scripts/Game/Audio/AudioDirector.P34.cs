@@ -159,6 +159,8 @@ namespace MachineBrigade.Game.Audio
             foreach (var name in new[] { "blast_air_s1", "blast_air_s2", "blast_air_s3" }) TierBank(name, 1f, 3, 0.06f, SoundPriority.FarBlast, light: true);
             foreach (var name in new[] { "hit_ground_light", "hit_concrete_light", "hit_pen_light" }) TierBank(name, 1f, 3, 0.05f, SoundPriority.SmallArms, light: true);
             foreach (var name in new[] { "hit_ground_heavy", "hit_concrete_heavy", "hit_pen_heavy" }) TierBank(name, 1f, 3, 0.05f, SoundPriority.NearShot);
+            TierBank("hit_armour_light", 1f, 3, 0.05f, SoundPriority.SmallArms, light: true);
+            foreach (var name in new[] { "hit_armour_heavy", "hit_armour_glance" }) TierBank(name, 1f, 3, 0.05f, SoundPriority.NearShot);
             TierBank("hit_metal_light", 1f, 2, MetalCap.MinGap, SoundPriority.SmallArms, light: true);
             TierBank("hit_metal_heavy", 1f, 2, MetalCap.MinGap, SoundPriority.NearShot);
             TierBank("smallarms_cluster", 1f, 2, 0.35f, SoundPriority.SmallArms, light: true);
@@ -349,9 +351,12 @@ namespace MachineBrigade.Game.Audio
             {
                 if (round.DamageType != DamageType.Kinetic) return false;
                 var surface = Surface(e, round);
-                // Over the cap a glancing round is not heard at all (the run is heard by its first few).
-                if (surface == HitSurface.Metal && !_metal.TryTake(Time.unscaledTime)) return true;
-                name = SoundLibrary.HitBank(surface, size);
+                // Play-test 13: armour not pierced knocks (hit_armour_*); a rare share whines off as a ricochet, under the
+                // match-wide metal cap (the view's own roll: no Sim state).
+                name = (surface is HitSurface.Metal or HitSurface.Glance) && UnityEngine.Random.value < SoundLibrary.RicochetShare &&
+                       _metal.TryTake(Time.unscaledTime)
+                    ? SoundLibrary.RicochetBank(size)
+                    : SoundLibrary.HitBank(surface, size);
             }
             if (!_tierBanks.TryGetValue(name, out var bank)) return false;
             // The bomb-run fix, pass 3: a stick's blasts each crack at their own point; the one before gives up its tail as the

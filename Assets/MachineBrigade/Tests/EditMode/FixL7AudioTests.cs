@@ -59,6 +59,8 @@ namespace MachineBrigade.Tests
             foreach (HitSurface s in System.Enum.GetValues(typeof(HitSurface)))
                 foreach (SizeClass z in System.Enum.GetValues(typeof(SizeClass)))
                     Need(SoundLibrary.HitBank(s, z), s + " " + z);
+            Need(SoundLibrary.RicochetBank(SizeClass.S1), "the ricochet");
+            Need(SoundLibrary.RicochetBank(SizeClass.S3), "the ricochet");
             foreach (var bank in new[] { "engine_tracked", "engine_wheeled", "engine_heavy", "flare_pop", "warn_whistle", "warn_whistle_big", "blast_air_s1",
                          "blast_he_s1", "blast_he_s2", "blast_he_s3", "blast_he_s4", "blast_he_s406" })
                 Need(bank, "the director");
@@ -68,16 +70,22 @@ namespace MachineBrigade.Tests
         [Test]
         public void MetalIsOnlyForArmourNotPierced()
         {
+            // Play-test 13: armour not pierced knocks (hit_armour_*); the metal whine is the rare ricochet only.
             foreach (SizeClass z in System.Enum.GetValues(typeof(SizeClass)))
             {
-                Assert.That(SoundLibrary.HitBank(HitSurface.Metal, z), Does.StartWith("hit_metal_"));
-                foreach (var s in new[] { HitSurface.Ground, HitSurface.Concrete, HitSurface.Pierced })
+                Assert.That(SoundLibrary.HitBank(HitSurface.Metal, z), Does.StartWith("hit_armour_"));
+                Assert.That(SoundLibrary.HitBank(HitSurface.Glance, z), Does.StartWith("hit_armour_"));
+                Assert.That(SoundLibrary.RicochetBank(z), Does.StartWith("hit_metal_"));
+                foreach (HitSurface s in System.Enum.GetValues(typeof(HitSurface)))
                     Assert.That(SoundLibrary.HitBank(s, z), Does.Not.Contain("metal"), s + " " + z);
             }
+            Assert.AreEqual("hit_armour_glance", SoundLibrary.HitBank(HitSurface.Glance, SizeClass.S3), "a heavy round far outclassed: the glance");
+            Assert.Less(SoundLibrary.RicochetShare, 0.2f, "the ricochet stays rare");
             Assert.AreEqual(HitSurface.Ground, SoundLibrary.SurfaceOf(false, false, false, false, true, 4f, 0f), "nothing struck: the ground");
             Assert.AreEqual(HitSurface.Concrete, SoundLibrary.SurfaceOf(true, false, false, false, true, 1f, 0f), "a prop: concrete");
             Assert.AreEqual(HitSurface.Concrete, SoundLibrary.SurfaceOf(true, true, true, false, true, 1f, 4f), "a fixed defence: concrete");
-            Assert.AreEqual(HitSurface.Metal, SoundLibrary.SurfaceOf(true, true, false, false, true, 2f, 4f), "kinetic, not pierced: metal");
+            Assert.AreEqual(HitSurface.Metal, SoundLibrary.SurfaceOf(true, true, false, false, true, 3f, 4f), "kinetic, not pierced: metal");
+            Assert.AreEqual(HitSurface.Glance, SoundLibrary.SurfaceOf(true, true, false, false, true, 2f, 4f), "armour two levels over it: a glance");
             Assert.AreEqual(HitSurface.Pierced, SoundLibrary.SurfaceOf(true, true, false, false, true, 4f, 4f), "kinetic, level with the armour: through");
             Assert.AreEqual(HitSurface.Pierced, SoundLibrary.SurfaceOf(true, true, false, false, true, 4f, 2f), "kinetic over the armour: through");
             Assert.AreEqual(HitSurface.Pierced, SoundLibrary.SurfaceOf(true, true, false, false, false, 1f, 4f), "not kinetic: never metal");
