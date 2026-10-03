@@ -285,7 +285,7 @@
   },
   "bunker_vehicle": {
     "file": "bunker_vehicle.glb",
-    "triangles": 7792
+    "triangles": 9356
   },
   "bus": {
     "file": "bus.glb",
