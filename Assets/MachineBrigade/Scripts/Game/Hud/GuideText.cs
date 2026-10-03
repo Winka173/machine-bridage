@@ -1043,12 +1043,12 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: rất tốt với xe nhẹ và pháo binh dàn trải; mỗi bom con nhỏ nên tăng hạng nặng ít hề hấn.\n" +
                 "Mẹo: kéo dọc phía sau đội hình địch, nơi [[pháo binh]] và xe hỗ trợ của chúng đứng."),
             ["guide.reinforcements"] = (
-                "[[Airdropped armour]] · item · {{units}} free vehicles\n" +
-                "How it fights: one use; {{delay}} s after you tap, two battle tanks and an IFV [[drop in]] at that spot, at no CP cost.\n" +
+                "[[Airdropped armour]] · fire support · vehicles you choose\n" +
+                "How it fights: pick the drop on its Units called tab (up to 20 CP of vehicles); {{delay}} s after you tap they [[drop in]] at that spot. The call costs 1.5 times their CP.\n" +
                 "Strong / weak: puts a strong group anywhere at once; once down, they are ordinary vehicles.\n" +
                 "Tip: drop them on an [[objective]] you must hold, or right behind the enemy's artillery.",
-                "[[Tiếp viện thả dù]] · vật phẩm · {{units}} xe miễn phí\n" +
-                "Cách đánh: dùng một lần; {{delay}} giây sau khi chạm, hai tăng chủ lực và một xe chiến đấu bộ binh [[thả dù]] xuống điểm đó, không tốn CP.\n" +
+                "[[Tiếp viện thả dù]] · hỗ trợ hỏa lực · xe do ta chọn\n" +
+                "Cách đánh: chọn quân thả ở thẻ Quân được gọi (tối đa 20 CP xe); {{delay}} giây sau khi chạm, chúng [[thả dù]] xuống điểm đó. Gọi tốn gấp 1,5 lần CP của chúng.\n" +
                 "Mạnh / yếu: có ngay một cụm quân mạnh ở bất kỳ đâu; tiếp đất rồi thì là xe bình thường.\n" +
                 "Mẹo: thả xuống [[cứ điểm]] cần giữ, hoặc ngay sau lưng pháo binh địch."),
             ["guide.field_repair"] = (

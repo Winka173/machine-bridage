@@ -487,3 +487,14 @@ Nhánh `cloud/pt14-a`. Lý do ngoài đời: `Docs/DECISIONS.md` "Play-test 14 (
 | PT14-A9 | Động cơ rocket pháo binh / tên lửa đạn đạo (hình) | tắt ở 85 % / 75 % đường bay | cháy tới lúc nổ; khói kéo tới điểm nổ | vệt khói tới lúc nổ |
 
 Trận replay bị ảnh hưởng: PT14-A1, A2, A3, A4, A5, A6 đổi Sim — baseline của ReplayHashTests cần ghi lại.
+
+## Play-test 14 lane D (cloud session 3)
+
+Nhánh `cloud/pt14-d`. Lý do: `Docs/DECISIONS.md` "Play-test 14 (lane D, cloud)".
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-D1 | `reinforcements` (Tiếp viện thả dù) | vật phẩm mua bằng xu (900 xu / 2 cái), không tốn CP | thẻ hỗ trợ hỏa lực thường: thẻ 0 CP + giá gọi ceil(1,5 x CP quân chọn, tối đa 20 CP); hồi 30 s như cũ; lệnh gọi không kèm quân (AI) thả `units` vừa giới hạn | lead/chủ dự án: không còn là vật phẩm xu |
+| PT14-D2 | Mở khóa `reinforcements` | cửa hàng vật phẩm | chiến dịch chương 4 (c4m08, `act11.ORPHANS`); mua sớm theo giá thẻ hỗ trợ | thẻ thường cần đường mở khóa |
+| PT14-D3 | Save cũ (roster version 10) | - | mỗi vật phẩm `reinforcements` còn trong túi hoàn 450 xu (`CardMerges.CallItemPricePt14`) | hoàn tiền vật phẩm |
+| PT14-D4 | Kinh tế chiến dịch (generator tính lại) | hồi I-II trả x1,64 | x1,66 | thêm một thẻ trên đường mở khóa |

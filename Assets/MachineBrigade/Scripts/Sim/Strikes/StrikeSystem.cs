@@ -130,11 +130,14 @@ namespace MachineBrigade.Sim.Strikes
             // Play-test 14: a call the player fills: chosen units of its list, worth at most its CP in all; it costs its scale
             // times their total CP (on top of the item, for a consumable).
             var callPrice = 0;
+            var calls = command.Calls;
             if (support.CallMaxCp > 0f)
             {
-                if (command.Calls == null || command.Calls.Count == 0) return CommandResult.Rejected(CommandError.UnknownCard);
+                // Play-test 14 (cloud session 3): a call with no units named (the AI's) drops the data's default, inside the cap.
+                if (calls == null || calls.Count == 0) calls = DefaultCall(support);
+                if (calls.Count == 0) return CommandResult.Rejected(CommandError.UnknownCard);
                 var total = 0f;
-                foreach (var id in command.Calls)
+                foreach (var id in calls)
                 {
                     if (!Contains(support.CallChoices, id) || !_world.Catalog.Vehicles.TryGetValue(id, out var def)) return CommandResult.Rejected(CommandError.UnknownCard);
                     total += def.BaseCp;
@@ -161,9 +164,23 @@ namespace MachineBrigade.Sim.Strikes
             if (callPrice > 0 && !_world.Economy.TrySpend(command.Team, callPrice)) return CommandResult.Rejected(CommandError.NotEnoughCp);
             if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown * (economy.Commander?.StrikeCooldown ?? 1f) * economy.StrikeScale;
 
-            Launch(support, command.Team, command.Point, command.Point2, support.CallMaxCp > 0f ? command.Calls : null);
+            Launch(support, command.Team, command.Point, command.Point2, support.CallMaxCp > 0f ? calls : null);
             _world.CountStrike(command.Team);
             return CommandResult.Ok;
+        }
+
+        /// <summary>The data's drop of a call (its "units"), as many as fit under its CP cap, in order.</summary>
+        private List<string> DefaultCall(SupportDef support)
+        {
+            var list = new List<string>();
+            var total = 0f;
+            foreach (var id in support.Units)
+            {
+                if (!_world.Catalog.Vehicles.TryGetValue(id, out var def) || total + def.BaseCp > support.CallMaxCp + 1e-4f) continue;
+                total += def.BaseCp;
+                list.Add(id);
+            }
+            return list;
         }
 
         /// <summary>Starts a strike with no deck, CP or cooldown checks (battle events call bombers this way).</summary>

@@ -1161,7 +1161,7 @@ namespace MachineBrigade.Game.Hud
             ["support.air_raid.info"] = ("A battle event: a wave of bombers.", "Sự kiện trận đấu: một đợt máy bay ném bom."),
             ["support.moab.info"] = ("The biggest bomb there is: one use.", "Quả bom lớn nhất: dùng một lần."),
             ["support.cluster_strike.info"] = ("{{count}} bomblets over a wide area: one use.", "{{count}} bom con phủ vùng rộng: dùng một lần."),
-            ["support.reinforcements.info"] = ("{{units}} vehicles arrive at once: one use.", "{{units}} xe đến ngay lập tức: dùng một lần."),
+            ["support.reinforcements.info"] = ("The vehicles you chose (up to 20 CP) drop in at once; paid in CP.", "Các xe ta chọn (tối đa 20 CP) thả dù xuống ngay; trả bằng CP."),
             ["support.field_repair.info"] = ("Repairs your whole army: one use.", "Sửa chữa toàn quân: dùng một lần."),
             ["support.emp_blast.info"] = ("Knocks out enemy vehicles in the area for {{duration}} s: one use.", "Vô hiệu hóa xe địch trong vùng trong {{duration}} giây: dùng một lần."),
             ["support.shield_dome.info"] = ("A dome that takes most of the damage off your vehicles inside: one use.", "Vòm khiên chặn phần lớn sát thương cho xe ta bên trong: dùng một lần."),

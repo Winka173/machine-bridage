@@ -150,6 +150,11 @@ namespace MachineBrigade.Game.Match
 
         public const int DeletedItemPricePt14 = 500;
 
+        /// <summary>Play-test 14 (cloud session 3): Airdropped armour, no longer an item, and the coins one item cost (a pack of two was 900).</summary>
+        public const string CallItemPt14 = "reinforcements";
+
+        public const int CallItemPricePt14 = 450;
+
         /// <summary>The card an old id stands for now (itself when it was not merged; null when it was retired or deleted).</summary>
         public static string Resolve(string id)
         {

@@ -2464,7 +2464,9 @@
     // Items: single-use, bought with coins in the shop, no CP. Carried into any match in a strip beside the minimap.
     { "id": "moab",              "kind": "CruiseMissile", "pen": 4, "consumable": true, "cooldown": 20, "delay": 4.0, "radius": 24, "count": 1, "damage": 4000, "blast": 27, "tier": "Ultimate" },
     { "id": "cluster_strike",    "kind": "Airstrike",     "pen": 2, "consumable": true, "cooldown": 15, "delay": 2.5, "radius": 10, "count": 30, "duration": 2.2, "damage": 90, "blast": 5.5, "tier": "Large", "length": 60 },
-    { "id": "reinforcements",    "kind": "Reinforce",     "consumable": true, "cooldown": 30, "delay": 3.0, "radius": 8,  "count": 3, "tier": "Large", "units": ["main_battle_tank", "main_battle_tank", "ifv"],
+    // Play-test 14 (cloud session 3): no longer an item bought with coins: a fire-support card paid in CP only (its "cp" 0, the
+    // call's price below). A call with no units named (the AI's) drops "units", as many as fit under "maxCp".
+    { "id": "reinforcements",    "kind": "Reinforce",     "cooldown": 30, "delay": 3.0, "radius": 8,  "count": 3, "tier": "Large", "units": ["main_battle_tank", "main_battle_tank", "ifv"],
       // Play-test 14: the player fills the drop (the battle's call page): units of "choices" worth at most "maxCp" base CP in all;
       // the call costs ceil("priceScale" x their total) CP (20 -> 30, 15 -> 23). "units" stays the drop where nothing is chosen.
       "call": { "maxCp": 20, "priceScale": 1.5, "choices": ["scout_jeep", "armored_car", "ifv", "light_tank", "main_battle_tank", "tank_destroyer", "aa_vehicle", "heavy_tank"] } },

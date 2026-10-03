@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Match
         public const int GemToCoins = 15;
 
         /// <summary>The roster the save is in (see <see cref="Data.rosterVersion"/> and <see cref="CardMerges"/>).</summary>
-        internal const int RosterVersion = 9;
+        internal const int RosterVersion = 10;
 
         /// <summary>
         /// Moves progress off the cards folded into others or retired (once per save). A merged
@@ -126,6 +126,7 @@ namespace MachineBrigade.Game.Match
                     if (!d.unlocked.Contains(id) && !d.owned.Contains(id)) d.unlocked.Add(id);
             if (d.rosterVersion < 7) MigrateTowerRoster(d);
             if (d.rosterVersion < 9) MigratePlaytest14(d);
+            if (d.rosterVersion < 10) MigrateCallItems(d);
             d.rosterVersion = RosterVersion;
         }
 
@@ -183,6 +184,23 @@ namespace MachineBrigade.Game.Match
                 }
                 d.itemIds.RemoveAt(item);
             }
+            if (refund <= 0) return;
+            d.coins += refund;
+            _rosterRefund += refund;
+        }
+
+        /// <summary>
+        /// Version 10 (play-test 14, cloud session 3): Airdropped armour is a fire-support card paid in CP now, no longer an
+        /// item bought with coins: the items still in the bag come back as coins (<see cref="CardMerges.CallItemPricePt14"/>
+        /// each).
+        /// </summary>
+        private static void MigrateCallItems(Data d)
+        {
+            var item = d.itemIds.IndexOf(CardMerges.CallItemPt14);
+            if (item < 0) return;
+            var refund = item < d.itemCounts.Count ? Math.Max(0, d.itemCounts[item]) * CardMerges.CallItemPricePt14 : 0;
+            if (item < d.itemCounts.Count) d.itemCounts.RemoveAt(item);
+            d.itemIds.RemoveAt(item);
             if (refund <= 0) return;
             d.coins += refund;
             _rosterRefund += refund;
