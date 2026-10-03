@@ -1,0 +1,38 @@
+{
+ "id": "elite_heavy_tank",
+ "class": "tracked",
+ "real": ["Object 195 / T-95 (2A83 152 mm, HEAT rounds; unit_refs)", "2A42 30 mm coaxial autocannon", "12.7 mm remote weapon station"],
+ "shape": "unit_refs: Object 195 / T-95 (2A83 152 mm, HEAT), elite of heavy_tank. A very long low hull with seven large road wheels, the crew capsule raised at the front with its periscope row, reactive armour over the glacis and the front skirts; the low angular unmanned turret with the huge 152 mm gun, the 30 mm autocannon in its housing on the right cheek, the sights and the remote 12.7 mm on its post; team body, black armour, gold bands, red-glowing sights (DECISIONS 25B2).",
+ "confidence": "xấp xỉ (Object 195 published drawings and the 2017 museum photographs)",
+ "target_size": {"L": 9.64, "W": 3.46, "H": 2.53, "source": "balance.json modelSize", "tolerance": 0.10},
+ "features": [
+  {"feature": "very long low hull, the long glacis under reactive armour, the raised crew capsule with periscopes", "nodes": ["Hull", "Hull_lower", "Capsule", "Kit_era", "Hatches"]},
+  {"feature": "seven large road wheels a side, front idler, rear sprocket, return rollers, linked track", "nodes": ["Wheels", "Idlers", "Sprockets", "Rollers", "Tracks", "Track_links"]},
+  {"feature": "rubber side skirts with reactive armour boxes over the front half", "nodes": ["Skirts", "Skirt_era"]},
+  {"feature": "the low angular unmanned turret with its bustle and gold bands", "nodes": ["Turret", "Turret_body", "Turret_roof", "Bustle"]},
+  {"feature": "the 2A83 152 mm gun on its mantlet, thermal sleeve, fume extractor, muzzle collar", "nodes": ["Mantlet", "Main_cannon", "Muzzle_brake", "Muzzle_main"]},
+  {"feature": "the 2A42 30 mm autocannon in its housing on the right turret cheek", "nodes": ["Coax", "Coax_housing", "Muzzle_coax"]},
+  {"feature": "gunner's sight, commander's panoramic sight with glowing windows", "nodes": ["Sight", "Glass", "Sight_glow"]},
+  {"feature": "remote 12.7 mm on its raised post", "nodes": ["Mount_mg", "MG", "Muzzle_mg", "Gun_post_rws"]},
+  {"feature": "engine deck grilles, exhausts, smoke dischargers, stowage, unditching log, aerials", "nodes": ["Grilles", "Point_exhaust", "Smoke_launchers", "Stowage", "Log", "Antennas"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "gun_152_heat", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel"},
+  {"weapon": "autocannon_30", "slot": "coax", "mount": "Turret", "muzzles": ["Muzzle_coax"], "note": "aim Turret"},
+  {"weapon": "hmg_roof", "slot": "mg", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"], "note": "aim Free"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "cap": null, "lod1_share": 0.5, "lod2_share": 0.2, "note": "tracked: over the class maximum is information only"},
+ "team_zones": ["hull (Team)", "turret (Team)", "capsule (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck; the turret burns",
+ "faction_style": "elite: team body, EliteBlack armour, Gilded bands, EliteGlow sights (DECISIONS 25B2)",
+ "details": {
+  "tier1": ["hull", "turret", "gun", "running gear"],
+  "tier2": ["skirts", "ERA blocks", "capsule", "bustle", "coax housing", "sights", "RWS", "grilles"],
+  "tier3": ["periscopes", "smoke tubes", "lamps", "tow hooks", "handles", "aerials", "log straps", "track links"]
+ },
+ "questions": []
+}
