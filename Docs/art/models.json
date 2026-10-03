@@ -357,7 +357,7 @@
   },
   "combat_wreck_car": {
     "file": "combat_wreck_car.glb",
-    "triangles": 2794
+    "triangles": 4010
   },
   "command_airship": {
     "file": "command_airship.glb",

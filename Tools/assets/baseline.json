@@ -3196,6 +3196,16 @@
    "changes": [
     "FLAG ground_cruise_missile_vehicle: triangles 3,868 -> 5,606 (+44.9%); vertices 4,105 -> 7,443 (+81.3%); meshes 27 -> 57 (+111.1%); renderers 27 -> 57 (+111.1%); materials 9 -> 10 (+11.1%); materialSlots 27 -> 57 (+111.1%); fileBytes 232,104 -> 416,836 (+79.6%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "combat_wreck_car"
+   ],
+   "reason": "P35 wave 9",
+   "changes": [
+    "FLAG combat_wreck_car: triangles 2,794 -> 4,010 (+43.5%); vertices 3,136 -> 4,639 (+47.9%); meshes 24 -> 40 (+66.7%); renderers 24 -> 40 (+66.7%); materials 10 -> 11 (+10.0%); materialSlots 24 -> 40 (+66.7%); fileBytes 180,696 -> 269,508 (+49.1%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -14524,24 +14534,24 @@
   },
   "combat_wreck_car": {
    "file": "combat_wreck_car.glb",
-   "fileBytes": 180696,
-   "sha1": "f2e0efae32a7d89c",
+   "fileBytes": 269508,
+   "sha1": "a70b0d5b7a1fc9e0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 32,
-   "meshes": 24,
-   "materials": 10,
+   "nodes": 48,
+   "meshes": 40,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 24,
-   "submeshes": 24,
-   "materialSlots": 24,
-   "materialsUsed": 10,
-   "triangles": 2794,
-   "vertices": 3136,
+   "renderers": 40,
+   "submeshes": 40,
+   "materialSlots": 40,
+   "materialsUsed": 11,
+   "triangles": 4010,
+   "vertices": 4639,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -14549,36 +14559,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 65,
-   "openEdges": 0,
+   "loosePieces": 93,
+   "openEdges": 10,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.055,
+    -1.0,
     0.0,
-    -2.38
+    -2.45
    ],
    "boundsMax": [
-    1.055,
-    1.5005,
-    2.43
+    1.0,
+    1.6084,
+    2.487
    ],
    "size": [
-    4.81,
-    2.11,
-    1.5
+    4.937,
+    2.0,
+    1.608
    ],
    "center": [
     0.0,
-    0.75,
-    0.025
+    0.804,
+    0.018
    ],
-   "structureHash": "46eaa00a909beb67",
+   "structureHash": "def5c63dda18da6e",
    "color0": {
-    "mean": 0.8034,
-    "min": 0.6105,
+    "mean": 0.6297,
+    "min": 0.0585,
     "max": 1.0,
-    "p05": 0.6928,
-    "p95": 0.9987,
+    "p05": 0.171,
+    "p95": 0.9804,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -14606,17 +14616,32 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Ammo_box",
-    "Armor",
+    "Ammo_boxes",
+    "Antennas",
+    "Armor_plates",
+    "Armor_plates.001",
+    "Axles",
     "Body",
-    "Bumper",
-    "Chassis",
+    "Bull_bar",
     "Coax",
-    "Grille",
+    "Exhaust",
+    "Firing_ports",
+    "Glass",
     "Gun_post",
+    "Gun_receiver",
+    "Gun_ring",
     "Gun_shield",
+    "Hubs",
+    "Hubs.001",
+    "Hubs.002",
+    "Jerrycans",
+    "Kit_bolts",
+    "Kit_handles",
+    "Kit_racks",
+    "Kit_steel",
+    "Kit_welds",
+    "Lamp_rims",
     "Lamps",
-    "Light_housing",
     "Main_cannon",
     "Muzzle_brake",
     "Muzzle_coax",
@@ -14625,18 +14650,19 @@
     "Part_wheelb",
     "Point_exhaust",
     "Point_fire",
-    "Spare",
-    "Steel",
-    "Tail_lights",
+    "Sandbags",
+    "Skirts",
+    "Spare_wheel",
+    "Spare_wheel_rim",
+    "Tail_lamps",
     "Turret",
     "Tyres",
     "Tyres.001",
     "Tyres.002",
+    "Visors",
     "Wheels",
     "Wheels.001",
     "Wheels.002",
-    "Windows",
-    "Wreck_sandbags",
     "Wreck_turret"
    ],
    "category": "ground",

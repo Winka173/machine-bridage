@@ -1,0 +1,131 @@
+{
+ "id": "combat_wreck_car",
+ "class": "wheeled",
+ "real": [
+  "improvised up-armoured sedan (Libyan / Syrian war photographs)",
+  "12.7 mm on a shielded roof ring (balance.json mg_jeep)"
+ ],
+ "shape": "The light car that dies into a gun pit (Battle Bus idea): an old sedan with rusty welded plates over bonnet, doors and boot, the windscreen plated over with vision slits, boxed side windows with firing ports, a bull bar, plate skirts over the wheels, the spare tyre, jerrycans and a sandbag on the boot, the shielded roof gun ring with the 12.7 mm and a coaxial gun.",
+ "confidence": "ước đoán (improvised armoured cars; the def's modelSize; a placed prop that blocks nothing, footprint kept)",
+ "target_size": {
+  "L": 4.78,
+  "W": 2.08,
+  "H": 1.49,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "sedan body with welded plates, welds, bolts, skirts",
+   "nodes": [
+    "Body",
+    "Armor_plates",
+    "Skirts",
+    "Kit_welds"
+   ]
+  },
+  {
+   "feature": "plated windscreen with slits, boxed windows, firing ports",
+   "nodes": [
+    "Visors",
+    "Glass",
+    "Firing_ports"
+   ]
+  },
+  {
+   "feature": "axles and wheels",
+   "nodes": [
+    "Axles",
+    "Wheels",
+    "Tyres"
+   ]
+  },
+  {
+   "feature": "bull bar, spare tyre, jerrycans, sandbag, whip",
+   "nodes": [
+    "Bull_bar",
+    "Spare_wheel",
+    "Jerrycans",
+    "Sandbags",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "shielded roof ring, post, 12.7 mm, coax",
+   "nodes": [
+    "Turret",
+    "Wreck_turret",
+    "Gun_ring",
+    "Gun_post",
+    "Gun_shield",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Coax",
+    "Muzzle_coax"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "mg_jeep",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 barrel; the coax kept from the old file"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "note": "light wheeled: seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "body (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "improvised: team-coloured car, rusty plates",
+ "details": {
+  "tier1": [
+   "body",
+   "wheels",
+   "gun ring"
+  ],
+  "tier2": [
+   "plates",
+   "bull bar",
+   "shield",
+   "spare tyre"
+  ],
+  "tier3": [
+   "slits",
+   "ports",
+   "bolts",
+   "welds",
+   "lamps",
+   "whip"
+  ]
+ },
+ "questions": []
+}

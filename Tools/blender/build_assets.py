@@ -170,6 +170,7 @@ import mb_p35_shahed_truck  # noqa: E402
 import mb_p35_interceptor_drone_vehicle  # noqa: E402
 import mb_p35_mobile_repair_vehicle  # noqa: E402
 import mb_p35_ground_cruise_missile_vehicle  # noqa: E402
+import mb_p35_combat_wreck_car  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -310,7 +311,7 @@ def all_builders():
                 # Prompt 35 wave 7, lane C (DECISIONS "Prompt 35 wave 7 (lane C)"): rebuilt from scratch (last).
                 **mb_p35_elite_aa.BUILDERS, **mb_p35_elite_heavy_tank.BUILDERS, **mb_p35_elite_tank_destroyer.BUILDERS, **mb_p35_elite_apc.BUILDERS, **mb_p35_radar_atgm_vehicle.BUILDERS, **mb_p35_ground_drone_carrier.BUILDERS, **mb_p35_nlos_atgm_vehicle.BUILDERS, **mb_p35_armored_car.BUILDERS, **mb_p35_scout_jeep.BUILDERS, **mb_p35_rocket_technical.BUILDERS, **mb_p35_uav_loiter_strike.BUILDERS, **mb_p35_aerial_tanker.BUILDERS, **mb_p35_command_hq.BUILDERS, **mb_p35_minefield.BUILDERS, **mb_p35_gun_turret_a.BUILDERS, **mb_p35_mg_bunker.BUILDERS, **mb_p35_guard_tower_b.BUILDERS,
                 # Prompt 35 wave 9, lane C (DECISIONS "Prompt 35 wave 9 (lane C)"): rebuilt from scratch (last).
-                **mb_p35_aa_turret.BUILDERS, **mb_p35_c_ram.BUILDERS, **mb_p35_artillery_emplacement.BUILDERS, **mb_p35_long_sam.BUILDERS, **mb_p35_heavy_rocket_artillery.BUILDERS, **mb_p35_ballistic_launcher.BUILDERS, **mb_p35_ew_jammer.BUILDERS, **mb_p35_iron_beam.BUILDERS, **mb_p35_shahed_truck.BUILDERS, **mb_p35_interceptor_drone_vehicle.BUILDERS, **mb_p35_mobile_repair_vehicle.BUILDERS, **mb_p35_ground_cruise_missile_vehicle.BUILDERS}
+                **mb_p35_aa_turret.BUILDERS, **mb_p35_c_ram.BUILDERS, **mb_p35_artillery_emplacement.BUILDERS, **mb_p35_long_sam.BUILDERS, **mb_p35_heavy_rocket_artillery.BUILDERS, **mb_p35_ballistic_launcher.BUILDERS, **mb_p35_ew_jammer.BUILDERS, **mb_p35_iron_beam.BUILDERS, **mb_p35_shahed_truck.BUILDERS, **mb_p35_interceptor_drone_vehicle.BUILDERS, **mb_p35_mobile_repair_vehicle.BUILDERS, **mb_p35_ground_cruise_missile_vehicle.BUILDERS, **mb_p35_combat_wreck_car.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
