@@ -5,39 +5,65 @@
    "airborne_light_tank_chute"
   ],
   "boss": [
-   "drone_mothership",
-   "hyperion",
+   "armored_train",
+   "mega_gunship",
    "nuke_train",
+   "rail_supergun",
    "silver_bug"
   ],
   "boss_air": [
-   "drone_mothership",
+   "mega_gunship",
    "silver_bug"
+  ],
+  "boss_ground": [
+   "behemoth",
+   "mobile_fortress"
   ],
   "boss_rail": [
    "nuke_train"
   ],
+  "boss_sea": [
+   "leviathan"
+  ],
   "helicopter": [
    "attack_helicopter",
-   "light_attack_heli"
+   "scout_heli"
+  ],
+  "hq": [
+   "headquarters"
   ],
   "jet": [
-   "fighter_jet",
-   "prop_attack_plane"
+   "aerial_tanker",
+   "fighter_jet"
   ],
   "obstacle": [
-   "dragons_teeth_b"
+   "dragons_teeth_b",
+   "minefield"
   ],
   "structure": [
    "targeting_station"
   ],
   "tower": [
+   "aa_turret_a",
+   "cp_relay",
    "ew_tower",
+   "ew_tower_a",
    "ew_tower_b",
-   "flare_searchlight_tower"
+   "guard_tower",
+   "guard_tower_a"
   ],
   "tracked": [
-   "main_battle_tank"
+   "demolition_line_vehicle",
+   "main_battle_tank",
+   "siege_tank",
+   "titan_tank"
+  ],
+  "wheeled": [
+   "armored_car",
+   "grad_truck",
+   "scout_jeep",
+   "shahed_truck",
+   "towed_at_gun"
   ]
  },
  "classes": {
@@ -54,28 +80,40 @@
    "count": 3
   },
   "boss": {
-   "silhouette": 1.6145,
-   "edges": 0.1448,
-   "regions": 3.4519,
-   "parts_m2": 1.7899,
-   "tier2_m2": 1.6715,
-   "tier3_m2": 7.3778,
-   "asym_raw": 0.0335,
-   "sloped_dirs": 16.5,
-   "zones": 11.75,
+   "silhouette": 1.605,
+   "edges": 0.1728,
+   "regions": 4.6505,
+   "parts_m2": 2.1627,
+   "tier2_m2": 1.7827,
+   "tier3_m2": 10.0812,
+   "asym_raw": 0.0208,
+   "sloped_dirs": 11.4,
+   "zones": 12.2,
    "count": 33
   },
   "boss_air": {
-   "silhouette": 1.591,
-   "edges": 0.139,
-   "regions": 3.0302,
-   "parts_m2": 1.3591,
-   "tier2_m2": 1.0531,
-   "tier3_m2": 3.7655,
-   "asym_raw": 0.0249,
-   "sloped_dirs": 21.5,
+   "silhouette": 1.7565,
+   "edges": 0.1503,
+   "regions": 3.992,
+   "parts_m2": 1.63,
+   "tier2_m2": 1.0992,
+   "tier3_m2": 4.1074,
+   "asym_raw": 0.0238,
+   "sloped_dirs": 18.5,
+   "zones": 11.5,
+   "count": 8
+  },
+  "boss_ground": {
+   "silhouette": 1.7552,
+   "edges": 0.2456,
+   "regions": 7.5275,
+   "parts_m2": 0.5233,
+   "tier2_m2": 1.0204,
+   "tier3_m2": 0.9476,
+   "asym_raw": 0.0129,
+   "sloped_dirs": 8.5,
    "zones": 12.0,
-   "count": 9
+   "count": 16
   },
   "boss_rail": {
    "silhouette": 1.5181,
@@ -89,40 +127,64 @@
    "zones": 15.0,
    "count": 3
   },
+  "boss_sea": {
+   "silhouette": 1.4831,
+   "edges": 0.1241,
+   "regions": 2.8214,
+   "parts_m2": 1.9009,
+   "tier2_m2": 1.4958,
+   "tier3_m2": 7.9619,
+   "asym_raw": 0.0299,
+   "sloped_dirs": 8.0,
+   "zones": 15.0,
+   "count": 6
+  },
   "helicopter": {
-   "silhouette": 2.1984,
-   "edges": 0.2861,
-   "regions": 19.614,
-   "parts_m2": 1.9046,
-   "tier2_m2": 1.6698,
-   "tier3_m2": 2.4867,
-   "asym_raw": 0.0527,
-   "sloped_dirs": 24.0,
+   "silhouette": 2.1247,
+   "edges": 0.3237,
+   "regions": 23.0087,
+   "parts_m2": 2.4265,
+   "tier2_m2": 1.7627,
+   "tier3_m2": 2.4798,
+   "asym_raw": 0.0866,
+   "sloped_dirs": 37.5,
    "zones": 8.0,
    "count": 7
   },
+  "hq": {
+   "silhouette": 1.7995,
+   "edges": 0.1587,
+   "regions": 4.6253,
+   "parts_m2": 0.4386,
+   "tier2_m2": 0.7693,
+   "tier3_m2": 0.4822,
+   "asym_raw": 0.017,
+   "sloped_dirs": 5.0,
+   "zones": 21.0,
+   "count": 2
+  },
   "jet": {
-   "silhouette": 1.5677,
-   "edges": 0.202,
-   "regions": 7.9144,
-   "parts_m2": 0.7904,
-   "tier2_m2": 0.5918,
-   "tier3_m2": 0.9582,
-   "asym_raw": 0.0208,
-   "sloped_dirs": 17.5,
+   "silhouette": 1.4229,
+   "edges": 0.1756,
+   "regions": 6.3243,
+   "parts_m2": 0.8782,
+   "tier2_m2": 0.6461,
+   "tier3_m2": 1.358,
+   "asym_raw": 0.0213,
+   "sloped_dirs": 14.0,
    "zones": 8.5,
    "count": 17
   },
   "obstacle": {
-   "silhouette": 2.823,
-   "edges": 0.323,
-   "regions": 14.7996,
-   "parts_m2": 0.3369,
-   "tier2_m2": 0.249,
-   "tier3_m2": 0.4248,
-   "asym_raw": 0.0292,
-   "sloped_dirs": 56.0,
-   "zones": 9.0,
+   "silhouette": 2.8624,
+   "edges": 0.2668,
+   "regions": 10.8253,
+   "parts_m2": 0.6442,
+   "tier2_m2": 0.7483,
+   "tier3_m2": 1.2274,
+   "asym_raw": 0.0146,
+   "sloped_dirs": 35.0,
+   "zones": 11.0,
    "count": 14
   },
   "structure": {
@@ -138,28 +200,40 @@
    "count": 4
   },
   "tower": {
-   "silhouette": 2.6103,
-   "edges": 0.3381,
-   "regions": 14.2384,
-   "parts_m2": 0.9262,
-   "tier2_m2": 1.414,
-   "tier3_m2": 0.5492,
-   "asym_raw": 0.0121,
-   "sloped_dirs": 12.6667,
-   "zones": 15.6667,
+   "silhouette": 2.471,
+   "edges": 0.2964,
+   "regions": 12.3657,
+   "parts_m2": 0.9527,
+   "tier2_m2": 1.4165,
+   "tier3_m2": 0.6641,
+   "asym_raw": 0.0566,
+   "sloped_dirs": 12.7143,
+   "zones": 16.0,
    "count": 62
   },
   "tracked": {
-   "silhouette": 1.3068,
-   "edges": 0.2743,
-   "regions": 9.2374,
-   "parts_m2": 0.4281,
-   "tier2_m2": 0.6616,
-   "tier3_m2": 0.2854,
-   "asym_raw": 0.0024,
-   "sloped_dirs": 8.0,
+   "silhouette": 1.4602,
+   "edges": 0.2718,
+   "regions": 9.5071,
+   "parts_m2": 0.3972,
+   "tier2_m2": 0.7283,
+   "tier3_m2": 0.3032,
+   "asym_raw": 0.0023,
+   "sloped_dirs": 7.5,
    "zones": 8.0,
    "count": 38
+  },
+  "wheeled": {
+   "silhouette": 1.6209,
+   "edges": 0.3343,
+   "regions": 14.9161,
+   "parts_m2": 0.7008,
+   "tier2_m2": 0.6315,
+   "tier3_m2": 0.476,
+   "asym_raw": 0.0418,
+   "sloped_dirs": 11.0,
+   "zones": 8.4,
+   "count": 43
   }
  },
  "v2": {
