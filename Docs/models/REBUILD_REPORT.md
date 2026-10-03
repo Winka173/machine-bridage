@@ -16,7 +16,7 @@ recompute dropped"), the DECISIONS "Prompt 35" sections, and git (sizes, times).
 | P3 not rebuilt | 8 -> 0 | minefield_a, dragons_teeth_b, drone_mothership, ew_tower, ew_tower_b, nuke_train, recoilless_jeep, airborne_light_tank_chute: rebuilt in wave 12 (section 9) |
 | NEEDS_HUMAN raised | **25** | pilot 2, wave 1 3, wave 2 10, wave 3 4, wave 5 3, wave 6 2, wave 7 1; waves 4, 8, 9, 10, 11: none |
 | NEEDS_HUMAN still under 80 | 23 | ixion (89.8) and rocket_turret (83.5) now pass; the other 23 pass every hard gate (the 3 wave 1 structures accepted on the owner's look still score 57.6-70.9; list in section 5) |
-| whole gate now | **199 of 230** | hard gates 230 of 230; soft Tốt 199, Cần sửa 24, Kém 7 (pass 0: Tốt 78, Cần sửa 89, Kém 63) |
+| whole gate now | **202 of 230** | gold recomputed with the rebuilt models and recalibrated (owner answer 1, section 2 end): hard gates 230 of 230; soft Tốt 202, Cần sửa 21, Kém 7. Pre-rebuild gold: 199 (Tốt 199, Cần sửa 24, Kém 7); first recompute: 105; pass 0: Tốt 78, Cần sửa 89, Kém 63 |
 
 Every rebuilt model is its own script and spec (`Tools/blender/mb_p35_<id>.py` or a wave module,
 `Tools/blender/specs/<id>.json`), with a before / after sheet in `Docs/models/rebuild/<id>/` and the lead's Unity
@@ -78,6 +78,57 @@ rails and sleepers count as thousands of small parts).
 
 The gold sets were not recomputed (lead, 2026-10-03): rebuilt models carry no pass 8 visual grade, so a recompute
 would shrink the sets to the old models left and drop 24 passes (lane A's run: 163 of 230).
+
+### Gold recomputed with the rebuilt models (owner answer 1, lane A, 2026-10-03)
+
+The owner allowed a rebuilt model that passes every hard gate with soft >= 80 to stand for gold (section 8 item 1).
+Gate passes: **199** of 230 with the pre-rebuild gold, **105** after lane A's first recompute (one set per class,
+top 10 %; the lead held it back because three of the four owner-approved V2 models failed it), **202** after the
+recalibration now in `gold_metrics.json` (DECISIONS "Prompt 35: gold recompute with rebuilt models (lane A)"):
+
+- mixed classes split into sets of like models: wheeled light / heavy, tracked light / heavy, jet drone / fighter /
+  heavy, helicopter light / heavy, obstacle flat / wall / pad / tall, tower mast / small / big (boss frames as before);
+- anchor: every gold member and every V2 model scores >= 80 against its own set leave-one-out, else the set widens
+  (top 20 %, 25 %, down to the candidates' median); dense outliers never stand for gold; set value = median of members;
+- a set without gold, or a sole member, borrows a similar set (sea boss <-> ship, HQ / structure -> big towers,
+  river boats -> ship, air boss -> heavy jets), then its parent class.
+
+V2 models against their own sets: main_battle_tank 82.8, fighter_jet 81.6, attack_helicopter 98.3, silver_bug 81.5.
+Grades against the pre-rebuild gold: 33 change; Tốt -> Cần sửa 11, Cần sửa -> Tốt 14, Kém -> Cần sửa 4, Cần sửa -> Kém
+4; soft Tốt 202, Cần sửa 21, Kém 7. "scored on it" counts each model under the set it is scored against now.
+
+| gold set | members | how chosen | scored on it | pass old gold | first recompute | now |
+|---|---|---|---|---|---|---|
+| tower_big | c_ram_b, gun_turret, gun_turret_b, visual_jammer | top 10 % of 28 candidates; outliers left out: artillery_emplacement, barrage_balloon, c_ram, c_ram_a, gun_turret_a | 34 | 17 | 5 | 28 |
+| wheeled_heavy | lancet_truck, long_sam, railgun_truck, wheeled_howitzer | top 10 % of 29 candidates; outliers left out: command_vehicle, heavy_rocket_artillery, towed_at_gun, wheeled_gun | 31 | 31 | 4 | 29 |
+| tracked_heavy | airborne_light_tank, artillery, elite_mbt, heavy_tank, main_battle_tank, next_gen_tank, twin_tank | top 20 % of 29 candidates; outliers left out: bridging_vehicle, elite_tank_destroyer, mine_layer, sam_launcher, tank_destroyer | 30 | 30 | 29 | 30 |
+| tower_small | mg_bunker_a, searchlight | top 10 % of 20 candidates; outliers left out: flare_tower, manpads_tower, recoilless_gun_tower | 20 | 18 | 4 | 20 |
+| boss_ground | fortress_hive, supreme_command | top 10 % of 15 candidates; outliers left out: kronos, monster | 15 | 15 | 8 | 15 |
+| obstacle_flat | dragons_teeth_a, minefield_a | top 10 % of 6 candidates; outliers left out: dragons_teeth_b | 13 | 6 | 1 | 6 |
+| wheeled_light | recoilless_jeep, rocket_technical, zu23_technical | top 20 % of 11 candidates; outliers left out: scout_jeep | 12 | 12 | 6 | 9 |
+| boss_air | drone_mothership, mega_gunship, silver_bug, stymphalos | top 25 % of 6 candidates; outliers left out: hyperion | 9 | 7 | 4 | 7 |
+| tower_mast | ew_tower_a, ew_tower_b | top 10 % of 8 candidates; outliers left out: ew_tower | 9 | 9 | 9 | 9 |
+| tracked_light | airborne_vehicle, ground_drone_carrier | top 10 % of 8 candidates | 8 | 8 | 8 | 8 |
+| jet_heavy | heavy_bomber, swarm_carrier | top 10 % of 4 candidates; outliers left out: sky_gunship | 7 | 5 | 0 | 4 |
+| boss_sea | leviathan, nyx | top 10 % of 6 candidates | 7 | 6 | 4 | 7 |
+| jet_fighter | fighter_jet, prop_attack_plane | top 10 % of 4 candidates | 6 | 6 | 2 | 5 |
+| helicopter_heavy | attack_helicopter, elite_attack_helicopter | top 10 % of 4 candidates | 5 | 5 | 4 | 5 |
+| structure | bulwark_post, targeting_station | top 10 % of 2 candidates | 4 | 4 | 2 | 2 |
+| jet_drone | recon_drone, strike_drone | top 10 % of 4 candidates | 4 | 4 | 4 | 4 |
+| air_other | airborne_light_tank_chute, airborne_vehicle_chute | top 10 % of 2 candidates | 3 | 3 | 1 | 2 |
+| boss_rail | armored_train, rail_supergun | top 10 % of 3 candidates; outliers left out: nuke_train | 3 | 3 | 2 | 3 |
+| ground | hover_gunboat, river_patrol_boat | top 10 % of 3 candidates | 3 | 3 | 3 | 3 |
+| ship | missile_boat | down to the median of 4 candidates; under the anchor, left out: sea_cruiser; sole member | 3 | 3 | 2 | 2 |
+| hq | command_hq, headquarters | top 10 % of 2 candidates | 2 | 2 | 1 | 2 |
+| helicopter_light | light_attack_heli, scout_heli | top 10 % of 2 candidates | 2 | 2 | 2 | 2 |
+
+Reading: big towers gain most (17 -> 28: hangars, emplacements, flak, shelters no longer measured against slim masts).
+Down: wheeled light (armored_car, radar_scout, interceptor_drone_vehicle under the jeep / technical gold), wheeled heavy
+(fpv_carrier, microwave_vehicle), structure (coastal_battery 61.0, super_gun 64.3 against bulwark_post and
+targeting_station, the only two candidates), drop_pod (against the two chutes), recon_jet and stealth_fighter, sea_cruiser
+(left out of the ship gold by the anchor). Walls (no candidate of their own) and helipads borrow the flat set and fall to
+Kém (helipad_b 57.8, wall_gun 55.9, wall_hesco 58.0, blast_wall 46.7); they failed the old gold too. Per-model scores:
+quality_report.csv; per-set rules and metrics: GOLD_METRICS.md.
 
 ## 3. Kit components added
 
