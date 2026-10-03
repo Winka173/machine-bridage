@@ -3188,6 +3188,16 @@
     "FLAG stealth_fighter: triangles 3,336 -> 2,976 (-10.8%); vertices 5,122 -> 4,123 (-19.5%); meshes 32 -> 38 (+18.8%); renderers 32 -> 38 (+18.8%); materials 9 -> 7 (-22.2%); materialSlots 32 -> 38 (+18.8%); fileBytes 278,616 -> 238,316 (-14.5%); structure changed",
     "FLAG supreme_command: triangles 10,214 -> 14,610 (+43.0%); vertices 12,365 -> 19,622 (+58.7%); meshes 59 -> 75 (+27.1%); renderers 59 -> 75 (+27.1%); materials 16 -> 12 (-25.0%); materialSlots 59 -> 75 (+27.1%); fileBytes 660,620 -> 1,022,024 (+54.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "drop_pod"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG drop_pod: triangles 2,612 -> 6,090 (+133.2%); vertices 3,493 -> 8,643 (+147.4%); meshes 13 -> 29 (+123.1%); renderers 13 -> 29 (+123.1%); materials 7 -> 9 (+28.6%); materialSlots 13 -> 29 (+123.1%); fileBytes 183,384 -> 446,936 (+143.7%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -23503,24 +23513,24 @@
   },
   "drop_pod": {
    "file": "drop_pod.glb",
-   "fileBytes": 183384,
-   "sha1": "8211139178d515d0",
+   "fileBytes": 446936,
+   "sha1": "901313b4156f6a2e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 13,
-   "meshes": 13,
-   "materials": 7,
+   "nodes": 29,
+   "meshes": 29,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 13,
-   "submeshes": 13,
-   "materialSlots": 13,
-   "materialsUsed": 7,
-   "triangles": 2612,
-   "vertices": 3493,
+   "renderers": 29,
+   "submeshes": 29,
+   "materialSlots": 29,
+   "materialsUsed": 9,
+   "triangles": 6090,
+   "vertices": 8643,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -23528,49 +23538,65 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 71,
-   "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "loosePieces": 202,
+   "openEdges": 80,
+   "nonManifoldEdges": 180,
    "boundsMin": [
-    -1.6,
-    -3.1,
-    -1.6072
+    -1.7187,
+    0.0,
+    -1.7187
    ],
    "boundsMax": [
-    1.63,
-    3.21,
-    1.6072
+    1.7187,
+    6.2965,
+    1.7187
    ],
    "size": [
-    3.214,
-    3.23,
-    6.31
+    3.437,
+    3.437,
+    6.297
    ],
    "center": [
-    0.015,
-    0.055,
+    0.0,
+    3.148,
     0.0
    ],
-   "structureHash": "c85a6c8403c25c22",
+   "structureHash": "e44efeeea4f23b2f",
    "color0": {
-    "mean": 0.7796,
-    "min": 0.2958,
+    "mean": 0.6147,
+    "min": 0.0534,
     "max": 1.0,
-    "p05": 0.4393,
-    "p95": 1.0,
+    "p05": 0.1382,
+    "p95": 0.9829,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
     "Access_hatch",
+    "Antennas",
     "Beacon",
+    "Beacon_base",
+    "Beacons",
+    "Canister_bands",
+    "Drogue_canister",
     "Fin_struts",
     "Fins",
+    "Glass",
     "Hatch",
     "Hatch_seam",
     "Heat_shield",
+    "Heat_shield_rim",
     "Hull",
+    "Kit_bolts",
+    "Kit_handles",
+    "Kit_hinges",
+    "Kit_rivets",
+    "Legs",
+    "Lift_eyes",
+    "Pads",
+    "Port_rim",
+    "Rcs_quads",
     "Retro_glow",
     "Retro_ring",
     "Rivets",
@@ -23580,7 +23606,10 @@
    "category": "air",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 6,090 over the jet normal budget 5,100",
+    "vertices 8,643 over the jet normal budget 7,100"
+   ],
    "units": [
     "drop_pod"
    ],
