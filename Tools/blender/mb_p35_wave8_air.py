@@ -129,6 +129,174 @@ def gunship_heli(a):
     k.clean(a)
 
 
+# ============================================================================= mega_gunship (ACH-47 "Guns-A-Go-Go")
+def _chinook_rotor(a, pivot, prefix, R, chord, phase, blades=3):
+    """A three-blade Chinook rotor under its pivot: the hub with its droop stops, the blade grips and the long
+    blades with their tip stripes."""
+    hub = a.part(f'{prefix}_hub', 'Steel', pivot)
+    k.lathe(hub, [(.42, -.1), (.46, 0), (.46, .12), (.3, .2), (.12, .32), (0, .34)], seg=12, worn=(1, 2))
+    gr = a.part(f'{prefix}_grips', 'Armor', pivot)
+    bl = a.part(f'{prefix}_blades', 'Armor', pivot)
+    tp = a.part(f'{prefix}_tips', 'Hazard', pivot)
+    for j in range(blades):
+        u = phase + j * TAU / blades
+        c, s_ = math.cos(u), math.sin(u)
+        k.block(gr, (.9, .3, .14), loc=(c * .8, s_ * .8, .02), rot=(0, 0, u), chamfer=.02)
+        for f0, f1, ch in ((1.2, R * .35, chord * 1.05), (R * .35, R * .7, chord), (R * .7, R - .45, chord * .9)):
+            L = f1 - f0
+            bl.box((L, ch, .05), loc=(c * (f0 + L / 2), s_ * (f0 + L / 2), .03 - f0 * .006), rot=(.05, 0, u),
+                   bevel=0)
+        tp.box((.45, chord * .92, .052), loc=(c * (R - .22), s_ * (R - .22), .03 - R * .006), rot=(.05, 0, u),
+               bevel=0)
+
+
+def mega_gunship(a):
+    """See the module docstring (mega_gunship). Runtime (the def's parts): Mount_gun / .001 (gun_l / gun_r, the chin
+    turrets), Mount_mg / .001 (minigun_l / _r, the forward windows), Rotor_rear (rotor_rear); Rotor, Muzzle_rocket /
+    .001 (the stub pods), Muzzle_missile (the belly launcher), Mount_mg.002 / .003 (the door guns: the data's two
+    boss_hmg); mb_flare_mounts adds Mount_Flare_*."""
+    K.suffixed(a)
+    fus = a.part('Fuselage', 'Team')
+    # The Chinook box fuselage: the rounded nose, the long constant section, the rising rear ramp line.
+    stations = resample([(-8.6, .25, 1.6, 2.2), (-8.2, .9, 1.2, 2.9), (-7.4, 1.25, 1.0, 3.25), (-6.4, 1.42, .95, 3.4),
+                         (5.0, 1.42, .95, 3.45), (7.2, 1.38, 1.4, 3.5), (8.6, 1.2, 2.3, 3.55)], 22)
+    rings = []
+    for y, w, zb, zt in stations:
+        zc = (zb + zt) / 2
+        rings.append([(0, y, zb), (w * .85, y, zb + .1), (w, y, zc - (zc - zb) * .5), (w, y, zc + (zt - zc) * .4),
+                      (w * .82, y, zt - .05), (0, y, zt), (-w * .82, y, zt - .05), (-w, y, zc + (zt - zc) * .4),
+                      (-w, y, zc - (zc - zb) * .5), (-w * .85, y, zb + .1)])
+    fus.loft(rings, bevel=0)
+    # Cockpit glazing, the frames, the nose sensor.
+    cg = a.part('Canopy', 'Glass')
+    for s in (-1, 1):
+        cg.mesh([(s * .3, -8.55, 2.3), (s * 1.0, -8.15, 2.35), (s * 1.0, -7.7, 3.05), (s * .3, -8.0, 3.0)],
+                [(0, 1, 2, 3) if s > 0 else (3, 2, 1, 0)])
+        cg.mesh([(s * 1.27, -7.9, 2.3), (s * 1.27, -7.0, 2.3), (s * 1.27, -7.0, 2.95), (s * 1.27, -7.7, 3.0)],
+                [(0, 1, 2, 3) if s > 0 else (3, 2, 1, 0)])
+        a.part('Canopy_frames', 'Armor').box((.04, .05, .8), loc=(s * .65, -8.15, 2.67), rot=(-.6, 0, 0), bevel=0)
+    a.part('Canopy_frames', 'Armor').box((2.1, .06, .06), loc=(0, -8.0, 3.02), bevel=0)
+    k.lathe(a.part('Sensor', 'Armor'), [(0, -.18), (.2, -.15), (.24, 0), (.2, .16), (0, .2)], loc=(0, -8.75, 1.4),
+            seg=10)
+    a.part('Lamps', 'Lamp').box((.16, .02, .1), loc=(0, -8.96, 1.42), bevel=0)
+    # Cabin windows, frame bands, armour plates on the sides, the side door (right front), the team band.
+    for s in (-1, 1):
+        for y in (-3.4, -2.2, -1.0, .2, 1.4, 2.6, 3.8):
+            a.part('Canopy', 'Glass').box((.03, .45, .45), loc=(s * 1.43, y, 2.45), bevel=0)
+        for y in (-6.0, -3.0, 0.0, 3.0, 6.0):
+            a.part('Frame_bands', 'Armor').box((.03, .08, 2.3), loc=(s * 1.44, y, 2.2), bevel=0)
+        K.panel(a, a.part('Armor', 'Armor'), (2.4, .9), (s * 1.45, -5.4, 1.55), (s, 0, 0), t=.04, rivet=.3)
+        a.part('Team_band', 'Team').box((.03, 11.0, .2), loc=(s * 1.44, -.5, 3.05), bevel=0)
+        a.part('Nav_lights', 'LavaGlow' if s > 0 else 'SignalGreen').box((.05, .1, .05), loc=(s * 1.45, -7.0, 3.3),
+                                                                         bevel=0)
+    a.part('Door', 'Armor').box((.04, 1.1, 1.6), loc=(-1.44, -6.2, 1.95), bevel=0)
+    # The Chinook's side fuel pods along the lower fuselage, their access panels and filler caps; the rear ramp.
+    for s in (-1, 1):
+        pod = a.part('Fuel_pods', 'Team')
+        for y0, y1, w0, w1 in ((-3.6, -3.0, .1, .5), (-3.0, 3.8, .5, .5), (3.8, 4.6, .5, .1)):
+            k.sharp_loft(pod, [[(s * 1.4, y0, 1.0), (s * (1.4 + w0), y0, 1.05), (s * (1.4 + w0), y0, 1.75),
+                                (s * 1.4, y0, 1.85)],
+                               [(s * 1.4, y1, 1.0), (s * (1.4 + w1), y1, 1.05), (s * (1.4 + w1), y1, 1.75),
+                                (s * 1.4, y1, 1.85)]], chamfer=.04)
+        for y in (-2.0, .4, 2.8):
+            K.panel(a, a.part('Armor', 'Armor'), (1.1, .45), (s * 1.92, y, 1.42), (s, 0, 0), t=.02, rivet=.2)
+        a.part('Steel', 'Steel').cyl(.06, .04, loc=(s * 1.85, -.8, 1.86), seg=8, bevel=0)
+        K.handle(a.part('Kit_handles', 'Steel'), (s * 1.45, -6.6, 2.4), (s * 1.45, -6.6, 2.9), (s, 0, 0), h=.05)
+    ramp = a.part('Ramp', 'Armor')
+    k.block(ramp, (2.5, 1.5, .08), loc=(0, 8.15, 1.75), rot=(-.85, 0, 0), chamfer=.02)
+    for x in (-1.0, 1.0):
+        a.part('Kit_hinges', 'Steel').cyl(.06, .3, loc=(x, 7.6, 1.32), rot=(0, R90, 0), seg=8, bevel=0)
+    for j in range(6):
+        a.part('Ramp_ribs', 'Steel').box((2.2, .05, .04), loc=(0, 7.75 + j * .14, 1.4 + j * .12), rot=(-.85, 0, 0),
+                                          bevel=0)
+    # Pylon fairing panels, grilles and the hydraulic lines along the tunnel.
+    for y in (-6.4, -5.2):
+        K.grille(a, (.56, y, 3.85), .5, .3, facing=(1, 0, 0), slats=3, frame_mat='Armor')
+    for s in (-1, 1):
+        K.grille(a, (s * .62, 6.8, 4.6), .9, .5, facing=(s, 0, 0), slats=4, frame_mat='Armor')
+        a.part('Kit_cables', 'Rubber').tube([(s * .3, -4.4, 3.6), (s * .3, 0, 3.65), (s * .3, 4.6, 3.6)], .03, seg=4)
+    # The two pylons: the low forward one and the tall aft one with its engines either side.
+    k.sharp_loft(a.part('Fuselage', 'Team'), [[(-.8, -7.3, 3.35), (.8, -7.3, 3.35), (.8, -4.4, 3.4), (-.8, -4.4, 3.4)],
+                                              [(-.55, -6.6, 4.3), (.55, -6.6, 4.3), (.55, -5.0, 4.3),
+                                               (-.55, -5.0, 4.3)]], chamfer=.05)
+    k.sharp_loft(a.part('Fuselage', 'Team'), [[(-1.0, 4.6, 3.4), (1.0, 4.6, 3.4), (1.0, 8.2, 3.5), (-1.0, 8.2, 3.5)],
+                                              [(-.6, 5.6, 5.3), (.6, 5.6, 5.3), (.6, 7.9, 5.3), (-.6, 7.9, 5.3)]],
+                 chamfer=.05)
+    a.part('Steel', 'Steel').box((.5, 10.0, .25), loc=(0, .5, 3.55), bevel=0)       # the drive-shaft tunnel
+    for s in (-1, 1):
+        k.lathe(a.part('Engines', 'Armor'), [(.08, -1.2), (.4, -1.1), (.45, -.6), (.45, .7), (.35, 1.05),
+                                             (.3, 1.15)], loc=(s * 1.25, 6.5, 4.0), rot=(-R90, 0, 0), seg=12)
+        a.part('Intake_screens', 'Undercarriage').cyl(.36, .03, loc=(s * 1.25, 5.3, 4.0), rot=K.FORWARD, seg=12,
+                                                      bevel=0)
+        a.part('Soot', 'Charred').cyl(.28, .05, loc=(s * 1.25, 7.66, 4.0), rot=K.BACKWARD, seg=10, bevel=0)
+        K.soot(a, (s * 1.25, 7.8, 4.0), radius=.6, k=.45)
+        a.part('Steel', 'Steel').box((.3, .8, .25), loc=(s * .85, 6.5, 3.75), bevel=0)
+    r = a.pivot('Rotor', (0, -5.8, 4.6))
+    _chinook_rotor(a, r, 'Rotor', 7.6, .62, R90)
+    rr = a.pivot('Rotor_rear', (0, 6.7, 5.66))
+    _chinook_rotor(a, rr, 'Rotor_rear', 7.6, .62, -R90)
+    # Stub pylons with the rocket pods (pod_l / pod_r), the belly missile launcher, the gear.
+    for i, s in ((0, 1), (1, -1)):
+        k.block(a.part('Pylons', 'Armor'), (1.2, .9, .16), loc=(s * 2.0, -.85, 1.6), rot=(0, s * -.12, 0), chamfer=.02)
+        a.part('Pylons', 'Armor').box((.1, .7, .4), loc=(s * 2.67, -.85, 1.65), bevel=0)
+        k.lathe(a.part('Pods', 'Team'), [(0, -.55), (.24, -.48), (.26, .45), (.22, .6)], loc=(s * 2.67, -.75, 1.4),
+                rot=(-R90, 0, 0), seg=10)
+        tubes = a.part('Pod_tubes', 'Undercarriage')
+        for j in range(7):
+            u = j * TAU / 6 if j else 0
+            rr_ = .14 if j else 0
+            tubes.cyl(.05, .02, loc=(s * 2.67 + math.cos(u) * rr_, -1.31, 1.4 + math.sin(u) * rr_), rot=K.FORWARD,
+                      seg=6, bevel=0)
+        a.part('Wing_lights', 'Lamp').box((.06, .08, .05), loc=(s * 2.95, -.85, 1.65), bevel=0)
+        a.pivot(K.name('Muzzle_rocket', i), (s * 2.67, -1.3, 1.4))
+    K.chamfer_box(a.part('Missile_rack', 'Armor'), (.9, 1.4, .3), loc=(0, -.35, .95), c=.03)
+    for dx in (-.25, .25):
+        K.store(a, (dx, .1, .7), .07, 1.3, body='Missiles', body_mat='Fuel', fins='Missile_fins', seg=8)
+        a.part('Missile_noses', 'Glass').cyl(.05, .03, loc=(dx, -1.21, .7), rot=K.FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_missile', (0, -1.25, .7))
+    gear = a.part('Gear', 'Steel')
+    for x, y in ((-1.0, -5.0), (1.0, -5.0), (-1.1, 5.6), (1.1, 5.6)):
+        gear.tube([(x * .8, y, 1.0), (x, y, .35)], .06, seg=6)
+        k.lathe(a.part('Tyres', 'Rubber'), [(.14, -.1), (.3, -.09), (.3, .09), (.14, .1)], loc=(x, y, .3),
+                rot=(0, R90, 0), seg=12)
+    a.part('Undercarriage', 'Armor').box((2.4, .3, .25), loc=(0, -5.0, .95), bevel=0)
+    # The chin gun turrets (gun_l Mount_gun at x .56, gun_r Mount_gun.001) and the forward miniguns.
+    for i, s in ((0, 1), (1, -1)):
+        m = a.pivot(K.name('Mount_gun', i), (s * .56, -7.1, 1.1))
+        tg = '' if i == 0 else '_001'
+        k.lathe(a.part(f'Gun_turret{tg}', 'Armor', m), [(.3, -.12), (.32, .02), (.24, .14), (0, .16)], seg=10)
+        k.lathe(a.part(f'Gun{tg}', 'Steel', m), [(.05, 0), (.05, 1.3), (.07, 1.33), (.07, 1.42), (0, 1.43)],
+                loc=(0, -.2, -.2), rot=K.FORWARD, seg=8)
+        K.chamfer_box(a.part(f'Gun{tg}', 'Steel', m), (.2, .45, .2), loc=(0, .05, -.18), c=.02)
+        a.pivot(K.name('Muzzle_gun', i), (0, -1.62, -.2), m)
+    for i, s in ((0, 1), (1, -1)):
+        m = a.pivot(K.name('Mount_mg', i), (s * 1.52, -4.6, 1.7))
+        tg = '' if i == 0 else '_001'
+        k.lathe(a.part(f'Door_gun_mount{tg}', 'Armor', m), [(.18, -.1), (.2, 0), (.15, .14), (.1, .3)], seg=8)
+        bar = a.part(f'Door_gun_barrels{tg}', 'Steel', m)
+        for j in range(6):
+            u = j * TAU / 6
+            bar.cyl(.018, .8, loc=(math.cos(u) * .05, -.62 + .0, .56 + math.sin(u) * .05), rot=(R90 - .5, 0, 0),
+                    seg=4, bevel=0)
+        K.chamfer_box(a.part(f'Door_gun{tg}', 'Steel', m), (.2, .4, .2), loc=(0, -.1, .38), c=.02)
+        a.pivot(K.name('Muzzle_mg', i), (0, -1.02, .56), m)
+    # The door guns at the rear cabin windows (the data's two boss_hmg: Mount_mg.002 left, .003 right).
+    for i, s in ((2, 1), (3, -1)):
+        m = a.pivot(K.name('Mount_mg', i), (s * 1.55, 3.2, 2.1))
+        tg = f'_{i:03d}'
+        a.part(f'Door_gun_mount{tg}', 'Steel', m).cyl(.05, .35, loc=(0, 0, .1), seg=6, bevel=0)
+        k.lathe(a.part(f'Door_gun{tg}', 'Steel', m), [(.035, 0), (.035, .75), (.05, .78), (.05, .86), (0, .87)],
+                loc=(0, -.05, .3), rot=K.FORWARD, seg=6)
+        K.chamfer_box(a.part(f'Door_gun{tg}', 'Steel', m), (.14, .3, .16), loc=(0, .1, .3), c=.015)
+        a.pivot(K.name('Muzzle_mg', i), (0, -.92, .3), m)
+    for s in (-1, 1):
+        K.flare_dispenser(a, (s * 1.43, 4.0, 1.7), normal=(s, 0, -.3), cols=2, rows=2, cell=.07)
+    K.beacon(a, (0, 1.5, 3.7), r=.08)
+    K.whip_antenna(a.part('Steel', 'Steel'), (.3, -2.0, 3.65), h=.6, lean=.3)
+    k.clean(a)
+
+
 BUILDERS = {
     'gunship_heli': (gunship_heli, dict(ao_distance=.4, grime_height=.3, ao_strength=.65)),
+    'mega_gunship': (mega_gunship, dict(ao_distance=.8, grime_height=.5, ao_strength=.75)),
 }
