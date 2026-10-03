@@ -3022,6 +3022,16 @@
    ],
    "reason": "P35 wave 7",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "ground_drone_carrier"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG ground_drone_carrier: triangles 4,274 -> 8,736 (+104.4%); vertices 5,125 -> 11,543 (+125.2%); meshes 37 -> 59 (+59.5%); renderers 37 -> 59 (+59.5%); materials 7 -> 8 (+14.3%); materialSlots 37 -> 59 (+59.5%); fileBytes 285,460 -> 613,632 (+115.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -28957,24 +28967,24 @@
   },
   "ground_drone_carrier": {
    "file": "ground_drone_carrier.glb",
-   "fileBytes": 285460,
-   "sha1": "293f66f5bc6bd3ac",
+   "fileBytes": 613632,
+   "sha1": "34aef112d655a036",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 44,
-   "meshes": 37,
-   "materials": 7,
+   "nodes": 66,
+   "meshes": 59,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 37,
-   "submeshes": 37,
-   "materialSlots": 37,
-   "materialsUsed": 7,
-   "triangles": 4274,
-   "vertices": 5125,
+   "renderers": 59,
+   "submeshes": 59,
+   "materialSlots": 59,
+   "materialsUsed": 8,
+   "triangles": 8736,
+   "vertices": 11543,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -28982,36 +28992,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 102,
+   "loosePieces": 274,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.02,
-    -0.01,
-    -2.6309
+    -1.006,
+    -0.067,
+    -2.4772
    ],
    "boundsMax": [
-    1.02,
-    2.38,
-    2.44
+    1.006,
+    2.45,
+    2.4343
    ],
    "size": [
-    5.071,
-    2.04,
-    2.39
+    4.912,
+    2.012,
+    2.517
    ],
    "center": [
     0.0,
-    1.185,
-    -0.095
+    1.192,
+    -0.021
    ],
-   "structureHash": "87d01dcf49b37d04",
+   "structureHash": "86f3869f54862eac",
    "color0": {
-    "mean": 0.7971,
-    "min": 0.5382,
+    "mean": 0.5637,
+    "min": 0.0648,
     "max": 1.0,
-    "p05": 0.6934,
-    "p95": 0.9898,
+    "p05": 0.1417,
+    "p95": 0.8463,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -29034,18 +29044,32 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Comms_mast",
+    "Ammo_boxes",
+    "Antennas",
+    "Cradle",
+    "Dock",
     "Exhaust",
-    "Exhaust_louvres",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_belt",
+    "Gun_bracket",
+    "Gun_post",
     "Hatch_fittings",
     "Hatches",
     "Hubs",
     "Hull",
-    "Hull_tub",
+    "Hull_lower",
+    "Idlers",
+    "Kit_latches",
+    "Kit_steel",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_housing",
+    "MG_receiver",
     "Main_cannon",
+    "Mast",
     "Minion_1",
     "Minion_2",
     "Minion_3",
@@ -29068,21 +29092,32 @@
     "Muzzle_main",
     "Point_exhaust",
     "Point_fire",
-    "Sensor_ball",
+    "Ramp",
+    "Rollers",
+    "Sensors",
+    "Sight",
+    "Skirts",
+    "Smoke_launchers",
     "Sprockets",
-    "Tail_lights",
+    "Stowage",
+    "Suspension",
+    "Tail_lamps",
+    "Team_band",
+    "Track_links",
     "Tracks",
+    "Turntable",
     "Turret",
     "Turret_armor",
-    "Turret_body",
-    "Turret_boxes",
     "Tyres",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 8,736 over the ground normal budget 7,800",
+    "vertices 11,543 over the ground normal budget 10,100"
+   ],
    "units": [
     "ground_drone_carrier"
    ],

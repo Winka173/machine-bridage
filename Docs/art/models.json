@@ -957,7 +957,7 @@
   },
   "ground_drone_carrier": {
     "file": "ground_drone_carrier.glb",
-    "triangles": 4274
+    "triangles": 8736
   },
   "guard_tower": {
     "file": "guard_tower.glb",

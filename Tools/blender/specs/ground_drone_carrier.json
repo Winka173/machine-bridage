@@ -1,0 +1,155 @@
+{
+ "id": "ground_drone_carrier",
+ "class": "tracked",
+ "real": [
+  "Milrem Type-X robotic combat vehicle pattern (unmanned tracked hull)",
+  "remote weapon station with a 7.62 mm machine gun",
+  "small tracked reconnaissance UGVs (THeMIS-family scale models)"
+ ],
+ "shape": "No unit_refs / unit_sheet row; the old builder drew a THeMIS / Uran-9 class drone carrier (4.95 x 2.0 x 2.4 m) with three small tracked robots docked on the rear deck. Rebuilt as a Type-X-pattern unmanned tracked hull: a low armoured hull with five road wheels, the remote weapon station with its MG and sensor head, the comms mast, the rear deck dock with three small UGVs behind a folding ramp.",
+ "confidence": "ban_dau_doan (no sheet row; Milrem Type-X published photographs for the hull)",
+ "target_size": {
+  "L": 5.0,
+  "W": 2.0,
+  "H": 2.4,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "low unmanned armoured hull: sloped nose with sensors and lamps, flat deck, engine grille, side skirts",
+   "nodes": [
+    "Hull",
+    "Hull_lower",
+    "Skirts",
+    "Grilles",
+    "Sensors"
+   ]
+  },
+  {
+   "feature": "five road wheels a side, front idler, rear sprocket, return rollers, linked track",
+   "nodes": [
+    "Wheels",
+    "Idlers",
+    "Sprockets",
+    "Rollers",
+    "Tracks",
+    "Track_links"
+   ]
+  },
+  {
+   "feature": "remote weapon station: the turntable, the cradle, the 7.62 mm MG with its ammunition can, the sensor head, smoke dischargers",
+   "nodes": [
+    "Turret",
+    "Cradle",
+    "MG_receiver",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Sight",
+    "Smoke_launchers"
+   ]
+  },
+  {
+   "feature": "the comms mast with its antennas",
+   "nodes": [
+    "Mast",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "the rear deck dock with three small tracked UGVs and the folding ramp",
+   "nodes": [
+    "Dock",
+    "Ramp",
+    "Minion_1",
+    "Minion_2",
+    "Minion_3",
+    "Minion_hull",
+    "Minion_tracks"
+   ]
+  },
+  {
+   "feature": "access hatches, stowage bins, tow points",
+   "nodes": [
+    "Hatches",
+    "Stowage",
+    "Kit_steel"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "mg_coax_ground",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 barrel (the RWS machine gun)"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "cap": null,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "tracked: over the class maximum is information only"
+ },
+ "team_zones": [
+  "hull (Team)",
+  "UGVs (Team)",
+  "bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "modern robotic vehicle (both factions)",
+ "details": {
+  "tier1": [
+   "hull",
+   "running gear",
+   "RWS"
+  ],
+  "tier2": [
+   "mast",
+   "UGVs",
+   "ramp",
+   "skirts",
+   "grille",
+   "bins"
+  ],
+  "tier3": [
+   "sensors",
+   "lamps",
+   "aerials",
+   "smoke tubes",
+   "handles",
+   "tow hooks",
+   "track links"
+  ]
+ },
+ "questions": []
+}
