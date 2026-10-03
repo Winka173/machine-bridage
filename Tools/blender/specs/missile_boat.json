@@ -1,0 +1,196 @@
+{
+ "id": "missile_boat",
+ "class": "ship",
+ "real": [
+  "14 m planing fast attack craft (unit_refs) with an S-8 80 mm launcher; M2 12.7 mm; pintle minigun as on patrol boats"
+ ],
+ "shape": "unit_refs: a 14 m planing-hull fast attack boat with S-8 80 mm rockets; the data: 14 x 3.8 m (no modelSize; the old file 14.0 x 3.85 x 4.4 m); team bands on both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 14.0,
+  "W": 3.85,
+  "H": 4.4,
+  "source": "the old file (balance.json has length 14, width 3.8, no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the deep-vee planing hull (Armor) with the flared raked bow, hard chines, the dark bottom, the stripe",
+   "nodes": [
+    "Hull",
+    "Hull_low",
+    "Stripe"
+   ]
+  },
+  {
+   "feature": "spray rails, the rubbing strake, fenders on their lines, the deck",
+   "nodes": [
+    "Spray_rails",
+    "Strakes",
+    "Fenders",
+    "Fender_lines",
+    "Deck"
+   ]
+  },
+  {
+   "feature": "the transom: two stern drives with props, exhaust outlets, the boarding step",
+   "nodes": [
+    "Stern_drives",
+    "Props",
+    "Exhaust_outlets",
+    "Boarding_step"
+   ]
+  },
+  {
+   "feature": "the low wheelhouse (superstructure): raked windows, side windows, portholes, doors, roof hatch, roof rail",
+   "nodes": [
+    "Cabin",
+    "Cabin_glass",
+    "Portholes",
+    "Door_panels",
+    "Hatches",
+    "Railings"
+   ]
+  },
+  {
+   "feature": "the radar mast with the scanner, whips, navigation lights, searchlight, horn",
+   "nodes": [
+    "Mast",
+    "Radar_scanner",
+    "Antennas",
+    "Nav_lights",
+    "Searchlight",
+    "Horn"
+   ]
+  },
+  {
+   "feature": "the heavy MG behind its shield on the wheelhouse roof (Mount_mg)",
+   "nodes": [
+    "Gun_ring",
+    "Mount_mg",
+    "Mg_body",
+    "Mg_barrel",
+    "Gun_shield",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "the trainable launcher aft with two S-8 pods and their tube faces (Mount_rocket)",
+   "nodes": [
+    "Launcher_base",
+    "Mount_rocket",
+    "Launcher_cradle",
+    "Rocket_pods",
+    "Pod_face",
+    "Pod_tubes",
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "feature": "the pintle minigun on the port bridge wing (close-in Gatling) and its ammunition box",
+   "nodes": [
+    "Gatling",
+    "Ammo_boxes"
+   ]
+  },
+  {
+   "feature": "two life-raft canisters on their cradle (the boat role)",
+   "nodes": [
+    "Lifeboat_canisters",
+    "Boat_cradle",
+    "Kit_straps"
+   ]
+  },
+  {
+   "feature": "reload pods on their rack, deck lockers, ammunition boxes, deck fittings, the anchor winch, bollards, cleats, railings, Team bands",
+   "nodes": [
+    "Reload_pods",
+    "Reload_rack",
+    "Deck_lockers",
+    "Deck_fittings",
+    "Anchor_winch",
+    "Bollards",
+    "Cleats",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "superstructure",
+  "mast",
+  "turrets",
+  "ciws",
+  "boats",
+  "deck_details"
+ ],
+ "weapons": [
+  {
+   "weapon": "boat_rockets",
+   "slot": "rocket",
+   "mount": "Mount_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "weapon": "hmg_roof",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   8000,
+   15000
+  ],
+  "floor": 5600,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only"
+ },
+ "team_zones": [
+  "deck, wheelhouse, rocket pods (Team)",
+  "bands on both hull sides"
+ ],
+ "colour_zones_min": 5,
+ "breakable": [],
+ "wreck": "the runtime sinks ships whole (ShipSinking)",
+ "faction_style": "Leviathan's fleet: grey naval steel, Team on the hull band and superstructure",
+ "details": {
+  "tier1": [
+   "hull",
+   "wheelhouse"
+  ],
+  "tier2": [
+   "launcher and pods",
+   "mast",
+   "stern drives",
+   "reload rack",
+   "railings",
+   "life rafts"
+  ],
+  "tier3": [
+   "windows",
+   "portholes",
+   "fenders",
+   "bollards",
+   "cleats",
+   "whips",
+   "lights",
+   "searchlight",
+   "horn",
+   "lockers",
+   "ammunition boxes",
+   "pod tubes"
+  ]
+ },
+ "questions": [
+  "The ship rules want a CIWS and a boat: the missile boat carries a pintle minigun (close-in Gatling) and two life-raft canisters; acceptable?"
+ ]
+}

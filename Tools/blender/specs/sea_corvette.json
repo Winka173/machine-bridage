@@ -1,0 +1,211 @@
+{
+ "id": "sea_corvette",
+ "class": "ship",
+ "real": [
+  "30 m escort corvette (unit_refs: OTO Melara 76/62, AK-630); Buyan-M / Steregushchiy layout at small scale"
+ ],
+ "shape": "unit_refs: a 30 m escort corvette; the data: 30 x 5.6 m (no modelSize; the old file 30.0 x 5.66 x 12.2 m); team bands on both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 30.0,
+  "W": 5.66,
+  "H": 12.22,
+  "source": "the old file (balance.json has length 30, width 5.6, no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the flared hull (Armor) with the raked stem, sheer, the dark bottom and boot-top, seams, portholes, hawse pipes",
+   "nodes": [
+    "Hull",
+    "Hull_low",
+    "Boot_top",
+    "Hull_seams",
+    "Portholes",
+    "Hawse"
+   ]
+  },
+  {
+   "feature": "the foredeck and quarterdeck plates, the breakwater, the windlasses and anchor chains",
+   "nodes": [
+    "Deck",
+    "Breakwater",
+    "Windlass",
+    "Anchor_chain"
+   ]
+  },
+  {
+   "feature": "the 76 mm in its stealth gun house (Part_gun > Mount_gun)",
+   "nodes": [
+    "Part_gun",
+    "Mount_gun",
+    "Gun_ring",
+    "Gun_house",
+    "Gun_barrel",
+    "Gun_brake",
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "feature": "the eight-cell VLS block behind the gun",
+   "nodes": [
+    "Vls",
+    "Vls_hatches"
+   ]
+  },
+  {
+   "feature": "the three-tier superstructure: the bridge window band, side windows, bridge wings, doors, portholes",
+   "nodes": [
+    "Superstructure",
+    "Bridge_glass",
+    "Bridge_wings",
+    "Doors"
+   ]
+  },
+  {
+   "feature": "the integrated pyramid mast with yards, the spinning search radar, the point-defence radar faces (Mount_APS), whips",
+   "nodes": [
+    "Mast",
+    "Mast_steel",
+    "Radar",
+    "Radar_bar",
+    "Aps_faces",
+    "Mount_APS",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "the funnel with its cap and exhausts",
+   "nodes": [
+    "Funnel",
+    "Funnel_cap",
+    "Exhausts"
+   ]
+  },
+  {
+   "feature": "two quad anti-ship canister launchers amidships",
+   "nodes": [
+    "Missile_canisters",
+    "Canister_frames"
+   ]
+  },
+  {
+   "feature": "the hangar with its roller door; the AK-630 on its roof (Part_mg > Mount_mg)",
+   "nodes": [
+    "Hangar",
+    "Hangar_door",
+    "Door_slats",
+    "Part_mg",
+    "Mount_mg",
+    "CIWS_body_mg",
+    "CIWS_barrels_mg",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "the RHIB in its davits (the boat)",
+   "nodes": [
+    "Boats",
+    "Boat_tubes",
+    "Davits"
+   ]
+  },
+  {
+   "feature": "railings, ladders, life-raft canisters, bollards, fairleads, deck lockers and fittings, navigation lights, Team bands",
+   "nodes": [
+    "Rails",
+    "Ladders",
+    "Life_rafts",
+    "Bollards",
+    "Fairleads",
+    "Deck_lockers",
+    "Foredeck_fittings",
+    "Roof_fittings",
+    "Hangar_fittings",
+    "Nav_lights",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "superstructure",
+  "mast",
+  "turrets",
+  "ciws",
+  "boats",
+  "deck_details"
+ ],
+ "weapons": [
+  {
+   "weapon": "naval_76",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "hover_ciws",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   8000,
+   15000
+  ],
+  "floor": 5600,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only"
+ },
+ "team_zones": [
+  "decks, superstructure, mast, gun house, hangar (Team)",
+  "bands on both hull sides"
+ ],
+ "colour_zones_min": 5,
+ "breakable": [],
+ "wreck": "the runtime sinks ships whole (ShipSinking); the gun and CIWS stay on their Part_* nodes",
+ "faction_style": "Leviathan's fleet: grey naval steel, Team on the hull band and superstructure",
+ "details": {
+  "tier1": [
+   "hull",
+   "superstructure",
+   "hangar",
+   "mast"
+  ],
+  "tier2": [
+   "gun house",
+   "VLS",
+   "funnel",
+   "canister launchers",
+   "bridge wings",
+   "RHIB and davits",
+   "CIWS",
+   "radar"
+  ],
+  "tier3": [
+   "portholes",
+   "windows",
+   "railings",
+   "ladders",
+   "life rafts",
+   "bollards",
+   "fairleads",
+   "vents",
+   "lockers",
+   "whips",
+   "lights",
+   "door slats",
+   "windlasses"
+  ]
+ },
+ "questions": []
+}

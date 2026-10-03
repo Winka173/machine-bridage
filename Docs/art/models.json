@@ -45,7 +45,7 @@
   },
   "airborne_light_tank": {
     "file": "airborne_light_tank.glb",
-    "triangles": 5550
+    "triangles": 10510
   },
   "airborne_light_tank_chute": {
     "file": "airborne_light_tank_chute.glb",
@@ -53,7 +53,7 @@
   },
   "airborne_vehicle": {
     "file": "airborne_vehicle.glb",
-    "triangles": 3260
+    "triangles": 9464
   },
   "airborne_vehicle_chute": {
     "file": "airborne_vehicle_chute.glb",
@@ -269,7 +269,7 @@
   },
   "bridging_vehicle": {
     "file": "bridging_vehicle.glb",
-    "triangles": 5148
+    "triangles": 9652
   },
   "bug_satellite": {
     "file": "bug_satellite.glb",
@@ -421,7 +421,7 @@
   },
   "dazzler_vehicle": {
     "file": "dazzler_vehicle.glb",
-    "triangles": 4640
+    "triangles": 7134
   },
   "dead_tree": {
     "file": "dead_tree.glb",
@@ -765,7 +765,7 @@
   },
   "drone_hijack_vehicle": {
     "file": "drone_hijack_vehicle.glb",
-    "triangles": 3446
+    "triangles": 6754
   },
   "drone_mothership": {
     "file": "drone_mothership.glb",
@@ -845,7 +845,7 @@
   },
   "fibre_fpv_carrier": {
     "file": "fibre_fpv_carrier.glb",
-    "triangles": 1324
+    "triangles": 6364
   },
   "fighter_jet": {
     "file": "fighter_jet.glb",
@@ -929,7 +929,7 @@
   },
   "garuda": {
     "file": "garuda.glb",
-    "triangles": 2840
+    "triangles": 8022
   },
   "gbu39": {
     "file": "gbu39.glb",
@@ -937,7 +937,7 @@
   },
   "glide_bomber": {
     "file": "glide_bomber.glb",
-    "triangles": 1624
+    "triangles": 3184
   },
   "gmlrs": {
     "file": "gmlrs.glb",
@@ -1081,7 +1081,7 @@
   },
   "hover_gunboat": {
     "file": "hover_gunboat.glb",
-    "triangles": 2202
+    "triangles": 4648
   },
   "howitzer": {
     "file": "howitzer.glb",
@@ -1089,7 +1089,7 @@
   },
   "hydra_sub": {
     "file": "hydra_sub.glb",
-    "triangles": 7548
+    "triangles": 7912
   },
   "hyperion": {
     "file": "hyperion.glb",
@@ -1105,7 +1105,7 @@
   },
   "inflatable_decoy": {
     "file": "inflatable_decoy.glb",
-    "triangles": 3088
+    "triangles": 2580
   },
   "interceptor_drone_vehicle": {
     "file": "interceptor_drone_vehicle.glb",
@@ -1113,7 +1113,7 @@
   },
   "interceptor_jet": {
     "file": "interceptor_jet.glb",
-    "triangles": 1500
+    "triangles": 3436
   },
   "iron_beam": {
     "file": "iron_beam.glb",
@@ -1145,7 +1145,7 @@
   },
   "kraken": {
     "file": "kraken.glb",
-    "triangles": 10796
+    "triangles": 12638
   },
   "kronos": {
     "file": "kronos.glb",
@@ -1161,7 +1161,7 @@
   },
   "landing_craft": {
     "file": "landing_craft.glb",
-    "triangles": 498
+    "triangles": 8592
   },
   "landing_hovercraft": {
     "file": "landing_hovercraft.glb",
@@ -1293,7 +1293,7 @@
   },
   "missile_boat": {
     "file": "missile_boat.glb",
-    "triangles": 630
+    "triangles": 5752
   },
   "mlrs": {
     "file": "mlrs.glb",
@@ -1341,7 +1341,7 @@
   },
   "next_gen_tank": {
     "file": "next_gen_tank.glb",
-    "triangles": 6620
+    "triangles": 11642
   },
   "nlos_atgm_vehicle": {
     "file": "nlos_atgm_vehicle.glb",
@@ -1353,7 +1353,7 @@
   },
   "nyx": {
     "file": "nyx.glb",
-    "triangles": 3526
+    "triangles": 7602
   },
   "obsidian_spire": {
     "file": "obsidian_spire.glb",
@@ -1589,11 +1589,11 @@
   },
   "sea_corvette": {
     "file": "sea_corvette.glb",
-    "triangles": 1884
+    "triangles": 7638
   },
   "sea_cruiser": {
     "file": "sea_cruiser.glb",
-    "triangles": 5416
+    "triangles": 14150
   },
   "searchlight": {
     "file": "searchlight.glb",
@@ -1605,7 +1605,7 @@
   },
   "shield_carrier": {
     "file": "shield_carrier.glb",
-    "triangles": 2476
+    "triangles": 7436
   },
   "shield_generator": {
     "file": "shield_generator.glb",
@@ -1693,7 +1693,7 @@
   },
   "stealth_naval_strike": {
     "file": "stealth_naval_strike.glb",
-    "triangles": 2124
+    "triangles": 3662
   },
   "stilt_hut": {
     "file": "stilt_hut.glb",

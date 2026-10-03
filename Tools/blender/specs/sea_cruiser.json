@@ -1,0 +1,251 @@
+{
+ "id": "sea_cruiser",
+ "class": "ship",
+ "real": [
+  "Kirov-class missile cruiser / Iowa-class with missiles (unit_refs), twin Mk 71-class 203 mm, two CIWS"
+ ],
+ "shape": "unit_refs: the first Leviathan, now the fleet missile cruiser; the data: 64 x 11 m drawn at 0.72 (no modelSize; the old file 64.35 x 11.12 x 20.72 m); team bands on both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 64.35,
+  "W": 11.12,
+  "H": 20.72,
+  "source": "the old file (balance.json has length 64, width 11, scale 0.72, no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the long flared hull (Armor) with the clipper bow, sheer, the dark bottom and boot-top, seams, portholes, hawse pipes",
+   "nodes": [
+    "Hull",
+    "Hull_low",
+    "Boot_top",
+    "Hull_seams",
+    "Porthole_rims"
+   ]
+  },
+  {
+   "feature": "the decks with seam lines, non-skid walkways, yellow safety lines",
+   "nodes": [
+    "Deck",
+    "Walkways"
+   ]
+  },
+  {
+   "feature": "the forward twin 203 mm turret: barbette, armoured gun house, sighting hoods, rangefinder, blast bags, two barrels (Part_gun > Mount_gun)",
+   "nodes": [
+    "Part_gun",
+    "Mount_gun",
+    "Barbette_gun",
+    "Gunhouse_gun",
+    "Rangefinder_gun",
+    "Blast_bags_gun",
+    "Barrels_gun",
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "feature": "the aft twin 203 mm turret (Part_gun.001 > Mount_gun.001)",
+   "nodes": [
+    "Part_gun.001",
+    "Mount_gun.001",
+    "Barbette_gun_001",
+    "Gunhouse_gun_001",
+    "Barrels_gun_001",
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "feature": "two VLS fields fore and aft of the forward turret",
+   "nodes": [
+    "Vls",
+    "Vls_hatches"
+   ]
+  },
+  {
+   "feature": "the four-tier superstructure: the bridge window band, bridge wings, side windows, doors, portholes, ladders",
+   "nodes": [
+    "Superstructure",
+    "Bridge_glass",
+    "Ladders"
+   ]
+  },
+  {
+   "feature": "the main pyramid mast, yards, the spinning air-search radar (Part_radar > Radar), APS faces (Mount_APS), directors, whips",
+   "nodes": [
+    "Mast",
+    "Mast_steel",
+    "Part_radar",
+    "Radar",
+    "Radar_array",
+    "Aps_faces",
+    "Directors"
+   ]
+  },
+  {
+   "feature": "the twin-uptake funnel and the aft lattice mast",
+   "nodes": [
+    "Funnel",
+    "Funnel_band"
+   ]
+  },
+  {
+   "feature": "two CIWS on sponsons (Part_mg > Mount_mg starboard forward, Part_mg.001 > Mount_mg.001 port aft)",
+   "nodes": [
+    "Part_mg",
+    "Mount_mg",
+    "CIWS_body_mg",
+    "CIWS_barrels_mg",
+    "Muzzle_mg",
+    "Part_mg.001",
+    "Mount_mg.001",
+    "CIWS_body_mg_001",
+    "Muzzle_mg.001",
+    "Sponsons"
+   ]
+  },
+  {
+   "feature": "quad anti-ship canisters both sides",
+   "nodes": [
+    "Missile_canisters",
+    "Davits"
+   ]
+  },
+  {
+   "feature": "two RHIBs in davits (the boats), the boat crane",
+   "nodes": [
+    "Boats",
+    "Boat_tubes",
+    "Davits",
+    "Crane"
+   ]
+  },
+  {
+   "feature": "the hangar door and the flight deck with its markings, nets and lights",
+   "nodes": [
+    "Deck_marks",
+    "Deck_nets",
+    "Deck_lights"
+   ]
+  },
+  {
+   "feature": "railings, life rafts, bollards, capstans, anchor chains, fire boxes, hose reels, lockers, fittings, navigation lights, Team bands",
+   "nodes": [
+    "Railings",
+    "Life_rafts",
+    "Bollards",
+    "Fire_boxes",
+    "Deck_lockers",
+    "Fittings",
+    "Nav_lights",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "superstructure",
+  "mast",
+  "turrets",
+  "ciws",
+  "boats",
+  "deck_details"
+ ],
+ "weapons": [
+  {
+   "weapon": "cruiser_203",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_b1_gun",
+    "Muzzle_b2_gun"
+   ]
+  },
+  {
+   "weapon": "cruiser_203",
+   "slot": "gun",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_b1_gun_001",
+    "Muzzle_b2_gun_001"
+   ]
+  },
+  {
+   "weapon": "hover_ciws",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "hover_ciws",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   8000,
+   15000
+  ],
+  "floor": 5600,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only"
+ },
+ "team_zones": [
+  "decks, superstructure, mast, funnel, gun houses (Team)",
+  "bands on both hull sides"
+ ],
+ "colour_zones_min": 5,
+ "breakable": [],
+ "wreck": "the runtime sinks ships whole (ShipSinking); turrets and CIWS on their Part_* nodes",
+ "faction_style": "Leviathan's fleet: grey naval steel, Team on the hull band and superstructure",
+ "details": {
+  "tier1": [
+   "hull",
+   "superstructure",
+   "turrets",
+   "mast"
+  ],
+  "tier2": [
+   "gun houses",
+   "barrels",
+   "VLS",
+   "funnel",
+   "lattice mast",
+   "directors",
+   "CIWS",
+   "canisters",
+   "RHIBs",
+   "crane",
+   "flight deck"
+  ],
+  "tier3": [
+   "portholes",
+   "windows",
+   "railings",
+   "ladders",
+   "life rafts",
+   "bollards",
+   "capstans",
+   "fire boxes",
+   "hose reels",
+   "lockers",
+   "whips",
+   "lights",
+   "nets",
+   "door slats"
+  ]
+ },
+ "questions": [],
+ "merged": {
+  "Mount_APS": "Aps_faces"
+ }
+}

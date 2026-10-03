@@ -1,0 +1,206 @@
+{
+ "id": "landing_craft",
+ "class": "ship",
+ "real": [
+  "LCM-8 / LCU-class mechanised landing craft (unit_refs: LCM, a bow-ramp craft carrying two tanks); M2 12.7 mm, pintle M134 as on the LCAC"
+ ],
+ "shape": "unit_refs: a landing craft with a bow ramp carrying two tanks; the data: 17 x 7 m (no modelSize; the old file 16.8 x 7.0 x 4.8 m); team bands on both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 16.76,
+  "W": 7.0,
+  "H": 4.78,
+  "source": "the old file (balance.json has length 17, width 7, no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the box barge hull (Armor) with its spoon bow, the dark bottom and boot-top band, strakes, weld seams, studs",
+   "nodes": [
+    "Hull",
+    "Hull_low",
+    "Boot_top",
+    "Strakes",
+    "Hull_seams",
+    "Kit_studs"
+   ]
+  },
+  {
+   "feature": "old-tyre fenders on chains along both sides",
+   "nodes": [
+    "Fender_tyres",
+    "Fender_chains"
+   ]
+  },
+  {
+   "feature": "the bow ramp raised and locked: ribs, edges, hinge knuckles, the A-frame and winch wires",
+   "nodes": [
+    "Ramp",
+    "Ramp_ribs",
+    "Ramp_edges",
+    "Ramp_frame",
+    "Kit_cables"
+   ]
+  },
+  {
+   "feature": "the open well deck: tread plates, tie-down rings, the lashing gear along its sides",
+   "nodes": [
+    "Well",
+    "Tread_plates",
+    "Tie_downs",
+    "Lashing_gear"
+   ]
+  },
+  {
+   "feature": "the wing walls with walkways, railings, ladders, deck lights and walkway fittings",
+   "nodes": [
+    "Wing_walls",
+    "Deck",
+    "Railings",
+    "Ladders",
+    "Deck_lights",
+    "Walkway_fittings"
+   ]
+  },
+  {
+   "feature": "the engine casing and the two-tier wheelhouse (superstructure): window band, side windows, portholes, doors, flying-bridge rail",
+   "nodes": [
+    "Wheelhouse",
+    "Wheelhouse_top",
+    "Wheelhouse_glass",
+    "Portholes",
+    "Porthole_rims",
+    "Door_panels"
+   ]
+  },
+  {
+   "feature": "the short mast with the radar scanner, whips and navigation lights",
+   "nodes": [
+    "Mast",
+    "Radar_scanner",
+    "Antennas",
+    "Nav_lights"
+   ]
+  },
+  {
+   "feature": "the heavy machine gun on the wheelhouse roof (Mount_mg) with its shield and ammunition can",
+   "nodes": [
+    "Gun_ring",
+    "Mount_mg",
+    "Mg_body",
+    "Mg_barrel",
+    "Mg_shield",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "the close-in Gatling (pintle M134) in its tub on the port sponson",
+   "nodes": [
+    "Gun_sponson",
+    "Gun_tub",
+    "Gatling"
+   ]
+  },
+  {
+   "feature": "the Zodiac inflatable on its cradle on the aft deck",
+   "nodes": [
+    "Boats",
+    "Boat_cradle",
+    "Boat_floor",
+    "Boat_motor"
+   ]
+  },
+  {
+   "feature": "deck lockers, roof and casing fittings, exhaust stacks, vents, bollards, cleats, life rings, the stern winch and kedge anchor, Team bands",
+   "nodes": [
+    "Deck_lockers",
+    "Roof_fittings",
+    "Casing_fittings",
+    "Stacks",
+    "Vents",
+    "Bollards",
+    "Cleats",
+    "Life_rings",
+    "Winch",
+    "Anchor",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "superstructure",
+  "mast",
+  "turrets",
+  "ciws",
+  "boats",
+  "deck_details"
+ ],
+ "weapons": [
+  {
+   "weapon": "hmg_roof",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   8000,
+   15000
+  ],
+  "floor": 5600,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only"
+ },
+ "team_zones": [
+  "wing walls, ramp, wheelhouse (Team)",
+  "bands on both hull sides"
+ ],
+ "colour_zones_min": 5,
+ "breakable": [],
+ "wreck": "the runtime sinks ships whole (ShipSinking): no Part_* split is read for this id",
+ "faction_style": "Leviathan's fleet: grey naval steel, Team on the hull band and superstructure",
+ "details": {
+  "tier1": [
+   "hull",
+   "wing walls",
+   "ramp",
+   "wheelhouse"
+  ],
+  "tier2": [
+   "well deck",
+   "tread plates",
+   "casing",
+   "mast",
+   "gun tub",
+   "Zodiac",
+   "ramp frame",
+   "railings",
+   "ladders"
+  ],
+  "tier3": [
+   "tyre fenders",
+   "chains",
+   "studs",
+   "tie-downs",
+   "lashing gear",
+   "portholes",
+   "bollards",
+   "cleats",
+   "life rings",
+   "whips",
+   "lights",
+   "winch",
+   "anchor"
+  ]
+ },
+ "questions": [
+  "The ship rules want a CIWS and a boat on every ship: the landing craft carries the pintle M134 an LCAC carries (close-in Gatling) and a Zodiac; acceptable?"
+ ]
+}

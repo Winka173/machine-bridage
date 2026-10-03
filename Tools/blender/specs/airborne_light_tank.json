@@ -1,0 +1,204 @@
+{
+ "id": "airborne_light_tank",
+ "class": "tracked",
+ "real": [
+  "M8 Armored Gun System / M10 Booker (XM35 105 mm with pepper-pot brake, coax M240, commander M2)"
+ ],
+ "shape": "refs: none; the old builder (mb_p27_wave1c): M8 AGS / M10 Booker light hull with a low 105 mm turret; 6.39 x 2.61 x 1.89 m with the gun (about 0.73 x the real M8); team bands on the roof and both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 6.39,
+  "W": 2.61,
+  "H": 1.89,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the welded box hull (Team), sloped glacis, lower nose plate",
+   "nodes": [
+    "Hull",
+    "Hull_lower"
+   ]
+  },
+  {
+   "feature": "bolt-on Level II armour modules on the glacis and the hull sides with bolt rows",
+   "nodes": [
+    "Armor_modules",
+    "Kit_bolts"
+   ]
+  },
+  {
+   "feature": "the driver's hatch on the centre line with three periscopes; lamps, hooks, front fenders",
+   "nodes": [
+    "Hatches",
+    "Hatch_fittings",
+    "Lamps",
+    "Kit_hooks",
+    "Fenders"
+   ]
+  },
+  {
+   "feature": "six road wheels, the rear sprocket, the front idler on its arm, a linked track",
+   "nodes": [
+    "Wheels",
+    "Tyres",
+    "Sprockets",
+    "Idlers",
+    "Tracks",
+    "Track_links"
+   ]
+  },
+  {
+   "feature": "short skirts (four plates a side) with a rubber edge",
+   "nodes": [
+    "Skirts",
+    "Skirt_edge"
+   ]
+  },
+  {
+   "feature": "engine deck louvres, the rear exhaust grille, tail lamps, tow cable",
+   "nodes": [
+    "Grilles",
+    "Point_exhaust",
+    "Tail_lamps",
+    "Tow_cable"
+   ]
+  },
+  {
+   "feature": "the low turret with flat bolted cheek modules and the bustle autoloader with blow-out panels",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor",
+    "Bustle",
+    "Blowout_panels"
+   ]
+  },
+  {
+   "feature": "the bolted mantlet, the 105 mm gun, fume extractor and pepper-pot muzzle brake, the coax",
+   "nodes": [
+    "Mantlet",
+    "Main_cannon",
+    "Fume_extractor",
+    "Muzzle_brake",
+    "Brake_holes",
+    "Coax"
+   ]
+  },
+  {
+   "feature": "the gunner's sight head, the commander's cupola with periscopes, the loader's hatch",
+   "nodes": [
+    "Sight",
+    "Glass",
+    "Cupola"
+   ]
+  },
+  {
+   "feature": "the commander's M2 on a pintle over the cupola (roof-gun rule)",
+   "nodes": [
+    "Mount_mg",
+    "MG",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "two three-tube smoke dischargers on the turret cheeks",
+   "nodes": [
+    "Smoke_launchers"
+   ]
+  },
+  {
+   "feature": "stowage bins, racks, a tarp roll, toolboxes, water cans, whips, Team bands",
+   "nodes": [
+    "Stowage",
+    "Racks",
+    "Tarp_roll",
+    "Toolbox",
+    "Jerrycans",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_105_ags",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "heavy class: over the maximum is information only"
+ },
+ "team_zones": [
+  "hull, turret, bustle, skirts (Team)",
+  "bands on the hull sides and the turret roof"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the turret flies off (Turret)",
+ "faction_style": "military vehicle (both factions)",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "tracks and wheels",
+   "skirts"
+  ],
+  "tier2": [
+   "armour modules",
+   "glacis",
+   "mantlet",
+   "gun",
+   "brake",
+   "bustle",
+   "cupola",
+   "sight",
+   "toolboxes",
+   "fenders"
+  ],
+  "tier3": [
+   "bolts",
+   "periscopes",
+   "hatches",
+   "grilles",
+   "lamps",
+   "hooks",
+   "smoke tubes",
+   "coax",
+   "whips",
+   "water cans",
+   "tow cable",
+   "pintle M2"
+  ]
+ },
+ "questions": []
+}

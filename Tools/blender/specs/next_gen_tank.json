@@ -1,0 +1,207 @@
+{
+ "id": "next_gen_tank",
+ "class": "tracked",
+ "real": [
+  "T-14 Armata (2A82-1M 125 mm, coax PKTM, 12.7 mm Kord RWS, Afghanit APS)"
+ ],
+ "shape": "refs: none; the old builder: a low flat-faced hull on seven road wheels, a low unmanned turret set well back with ERA, APS radar panels at its corners, a remote MG, a panoramic sight mast, side screens with ERA, a rear cage; 7.79 x 3.07 x 2.3 m with the gun (0.72 x the real tank); team bands on the roof and both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 7.79,
+  "W": 3.07,
+  "H": 2.3,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the long low hull (Team) with the flat upper glacis, the lower nose plate, the stepped rear",
+   "nodes": [
+    "Hull",
+    "Hull_lower"
+   ]
+  },
+  {
+   "feature": "the driver's capsule hatch in the middle of the glacis with three periscopes",
+   "nodes": [
+    "Hatches",
+    "Hatch_fittings"
+   ]
+  },
+  {
+   "feature": "seven road wheels a side, the rear sprocket, the front idler on its arm, a linked track",
+   "nodes": [
+    "Wheels",
+    "Tyres",
+    "Sprockets",
+    "Idlers",
+    "Tracks",
+    "Track_links"
+   ]
+  },
+  {
+   "feature": "skirts: reactive bricks over the front four wheels, hinged plates behind, a rubber edge",
+   "nodes": [
+    "Skirts",
+    "Era_bricks",
+    "Skirt_edge"
+   ]
+  },
+  {
+   "feature": "the engine deck grilles, the rear exhaust louvre, the slat cage over the rear",
+   "nodes": [
+    "Grilles",
+    "Deck_plates",
+    "Slat_armour",
+    "Point_exhaust"
+   ]
+  },
+  {
+   "feature": "the unmanned faceted turret set well back, its bolted cheek modules",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor"
+   ]
+  },
+  {
+   "feature": "the slim mantlet and gaiter, the 125 mm gun in its thermal sleeve with clamps, the coax",
+   "nodes": [
+    "Mantlet",
+    "Mantlet_gaiter",
+    "Main_cannon",
+    "Barrel_clamps",
+    "Muzzle_brake",
+    "Coax"
+   ]
+  },
+  {
+   "feature": "Afghanit: four AESA radar panels on the turret corners, five hard-kill tubes a side, the APS pivot",
+   "nodes": [
+    "Aps_panels",
+    "Aps_faces",
+    "Aps_cluster",
+    "Mount_APS"
+   ]
+  },
+  {
+   "feature": "soft-kill grenade launchers on the roof's rear corners",
+   "nodes": [
+    "Smoke_launchers"
+   ]
+  },
+  {
+   "feature": "the commander's panoramic sight mast, the gunner's sight head, a hatch",
+   "nodes": [
+    "Sight_mast",
+    "Sight_drum",
+    "Sight",
+    "Glass"
+   ]
+  },
+  {
+   "feature": "the remote 12.7 mm station on a raised ring (roof-gun rule)",
+   "nodes": [
+    "Mount_mg",
+    "MG",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "the bustle box with stowage and a tarp roll, toolboxes, jerrycans, tow cable, lamps, hooks, mudflaps, whips, Team bands",
+   "nodes": [
+    "Bustle",
+    "Stowage",
+    "Tarp_roll",
+    "Toolbox",
+    "Jerrycans",
+    "Tow_cable",
+    "Lamps",
+    "Kit_hooks",
+    "Mudflaps",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_125_armata_ke",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "heavy class: over the maximum is information only"
+ },
+ "team_zones": [
+  "hull, turret, skirts (Team)",
+  "bands on the hull sides and the turret roof"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the turret flies off (Turret); the runtime breaks the tracked hull",
+ "faction_style": "military vehicle (both factions)",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "tracks and wheels",
+   "skirts"
+  ],
+  "tier2": [
+   "glacis",
+   "engine deck",
+   "mantlet",
+   "gun",
+   "APS clusters",
+   "radar panels",
+   "sight mast",
+   "bustle",
+   "RWS",
+   "slat cage"
+  ],
+  "tier3": [
+   "periscopes",
+   "hatches",
+   "grilles",
+   "lamps",
+   "hooks",
+   "clamps",
+   "smoke tubes",
+   "coax",
+   "whips",
+   "jerrycans",
+   "tow cable",
+   "ERA bricks"
+  ]
+ },
+ "questions": []
+}

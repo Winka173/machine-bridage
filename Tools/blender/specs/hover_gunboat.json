@@ -1,0 +1,155 @@
+{
+ "id": "hover_gunboat",
+ "class": "ground",
+ "real": [
+  "air-cushion escort gunboat (unit_refs: fast attack hull, AK-630 30 mm); Zubr / Tsaplya-class layout at small scale"
+ ],
+ "shape": "unit_sheet.json: a low air-cushion hull, a black rubber skirt round the bottom, two big pusher fans in guard rings at the stern, a small six-barrel turret forward; from above a teardrop with two round fan rings at the tail; 14.0 x 3.9 x 4.4 m (modelSize 14 x 3.92 x 3.67); visible weapon AK-630 30 mm; team stripes on the roof and both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 14.0,
+  "W": 3.92,
+  "H": 3.67,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the teardrop buoyancy hull (Team) with sloped deck edges and the bow rubbing strake",
+   "nodes": [
+    "Hull",
+    "Strake"
+   ]
+  },
+  {
+   "feature": "the black segmented skirt, its fingers and the steel band",
+   "nodes": [
+    "Skirt",
+    "Skirt_fingers",
+    "Skirt_band"
+   ]
+  },
+  {
+   "feature": "the AK-630 forward: base, gun house, mantle, six barrels with their casings (Mount_mg)",
+   "nodes": [
+    "CIWS_base",
+    "Mount_mg",
+    "CIWS_mount",
+    "CIWS_mantle",
+    "CIWS_barrels",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "the stepped wheelhouse with its window band, doors, roof hatch",
+   "nodes": [
+    "Wheelhouse",
+    "Glass",
+    "Door_panels",
+    "Hatches"
+   ]
+  },
+  {
+   "feature": "the lattice mast with the spinning radar, whips, searchlight, beacon",
+   "nodes": [
+    "Mast",
+    "Radar",
+    "Radar_bar",
+    "Antennas",
+    "Searchlight",
+    "Beacons"
+   ]
+  },
+  {
+   "feature": "two ducted fans at the stern: guard rings, guards, pylons, four-blade props on hubs, twin rudder vanes",
+   "nodes": [
+    "Fan_ducts",
+    "Fan_guards",
+    "Duct_pylons",
+    "Propeller",
+    "Propeller_2",
+    "Fan_hubs",
+    "Fan_blades",
+    "Rudders"
+   ]
+  },
+  {
+   "feature": "engine air intakes, the exhaust, lift-fan grilles, bollards, railings, the life raft canister, Team bands",
+   "nodes": [
+    "Intakes",
+    "Exhaust",
+    "Point_exhaust",
+    "Grilles",
+    "Bollards",
+    "Railings",
+    "Life_rafts",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "hover_ciws",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "light class seen in numbers: at most 1.5 x 5,000 = 7,500 (hard gate)"
+ },
+ "team_zones": [
+  "hull, wheelhouse, gun house, fan ducts (Team)",
+  "bands on both hull sides"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime sinks the craft (ShipSinking); the fans spin on their own nodes",
+ "faction_style": "military craft (both factions)",
+ "details": {
+  "tier1": [
+   "hull",
+   "skirt",
+   "wheelhouse",
+   "fan ducts"
+  ],
+  "tier2": [
+   "gun",
+   "mast",
+   "fans",
+   "rudders",
+   "intakes",
+   "grilles",
+   "life raft"
+  ],
+  "tier3": [
+   "skirt fingers",
+   "barrels",
+   "windows",
+   "hatch",
+   "bollards",
+   "railings",
+   "whips",
+   "searchlight",
+   "beacon",
+   "fan guards",
+   "straps"
+  ]
+ },
+ "questions": []
+}

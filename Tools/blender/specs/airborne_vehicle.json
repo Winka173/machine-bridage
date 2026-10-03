@@ -1,0 +1,200 @@
+{
+ "id": "airborne_vehicle",
+ "class": "tracked",
+ "real": [
+  "BMD-4M (Bakhcha-U turret: 2A70 100 mm, 2A72 30 mm coaxial, PKT; two bow PKT)"
+ ],
+ "shape": "refs: none; the old builder (mb_p25_new / mb_p27_wave3): light airborne IFV, BMD-4 look, extruded hull and turret, the 100 mm gun and the coaxial gun; 5.0 x 2.5 x 2.0 m (about 0.8 x the real BMD-4M); team bands on the roof and both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 5.0,
+  "W": 2.5,
+  "H": 2.0,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the small boat hull (Team) with the sharp double-sloped beak",
+   "nodes": [
+    "Hull",
+    "Hull_lower"
+   ]
+  },
+  {
+   "feature": "the trim vane folded on the glacis, its ribs and arms",
+   "nodes": [
+    "Trim_vane",
+    "Vane_ribs"
+   ]
+  },
+  {
+   "feature": "the driver's hatch and periscopes; the two bow machine guns in ball mounts",
+   "nodes": [
+    "Hatches",
+    "Hatch_fittings",
+    "Ball_mounts",
+    "MG_bow"
+   ]
+  },
+  {
+   "feature": "five road wheels, rear sprocket, front idler on its arm, four return rollers, a linked track",
+   "nodes": [
+    "Wheels",
+    "Tyres",
+    "Sprockets",
+    "Idlers",
+    "Rollers",
+    "Tracks",
+    "Track_links"
+   ]
+  },
+  {
+   "feature": "thin fender skirts over the track tops with mud flaps",
+   "nodes": [
+    "Skirts",
+    "Mudflaps"
+   ]
+  },
+  {
+   "feature": "engine deck grilles, the rear hatch, the two water-jet outlets, the exhaust louvre",
+   "nodes": [
+    "Grilles",
+    "Water_jets",
+    "Point_exhaust"
+   ]
+  },
+  {
+   "feature": "the faceted Bakhcha-U turret, its cheek plates",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor"
+   ]
+  },
+  {
+   "feature": "the mantlet with the 100 mm gun, the 30 mm coaxial cannon and its jacket, the PKT",
+   "nodes": [
+    "Mantlet",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Coax",
+    "Coax_jacket",
+    "Coax_pkt"
+   ]
+  },
+  {
+   "feature": "the gunner's sight head (right), the commander's panoramic sight on its post (left), two hatches",
+   "nodes": [
+    "Sight",
+    "Sight_drum",
+    "Glass"
+   ]
+  },
+  {
+   "feature": "three smoke dischargers a side",
+   "nodes": [
+    "Smoke_launchers"
+   ]
+  },
+  {
+   "feature": "the rear stowage box, bags, a canvas roll, jerrycans, tow cable, lamps, hooks, whips, Team bands",
+   "nodes": [
+    "Stowage",
+    "Stowage_bags",
+    "Tarp_roll",
+    "Jerrycans",
+    "Tow_cable",
+    "Lamps",
+    "Kit_hooks",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_100_2a70",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "autocannon_30",
+   "slot": "coax",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_coax"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "heavy class: over the maximum is information only"
+ },
+ "team_zones": [
+  "hull, turret, fender skirts (Team)",
+  "bands on the hull sides and the turret roof"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the turret flies off (Turret)",
+ "faction_style": "military vehicle (both factions)",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "tracks and wheels"
+  ],
+  "tier2": [
+   "beak",
+   "trim vane",
+   "mantlet",
+   "guns",
+   "sights",
+   "stowage box",
+   "fender skirts",
+   "water jets"
+  ],
+  "tier3": [
+   "periscopes",
+   "ball mounts",
+   "bow MGs",
+   "hatches",
+   "grilles",
+   "lamps",
+   "hooks",
+   "smoke tubes",
+   "whips",
+   "jerrycans",
+   "tow cable",
+   "mud flaps"
+  ]
+ },
+ "questions": []
+}

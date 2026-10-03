@@ -1,0 +1,180 @@
+{
+ "id": "fibre_fpv_carrier",
+ "class": "wheeled",
+ "real": [
+  "armoured 4x4 pickup (Land Cruiser 79 / Kozak-class conversion) carrying fibre-optic FPV drones"
+ ],
+ "shape": "refs: none; the old builder (mb_p25_new / mb_p27_wave3): a 4x4 armoured pickup with an FPV rack and two cable spools; 4.6 x 1.9 x 2.0 m; team bands on both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 4.6,
+  "W": 1.9,
+  "H": 2.0,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the bonnet with its louvred grille and bull bar, lamps, tow hooks, wheel arches",
+   "nodes": [
+    "Hull",
+    "Grille",
+    "Bull_bar",
+    "Lamps",
+    "Kit_hooks",
+    "Fenders"
+   ]
+  },
+  {
+   "feature": "the armoured four-door cab, windscreen, small thick windows, door seams, handles, mirrors, steps, roof hatch",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Window_frames",
+    "Door_seams",
+    "Steel",
+    "Steps",
+    "Hatches"
+   ]
+  },
+  {
+   "feature": "four wheels on beam axles with leaf springs",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Hubs",
+    "Axles",
+    "Suspension"
+   ]
+  },
+  {
+   "feature": "the bed: tub, sides, tailgate, tail lamps, exhaust",
+   "nodes": [
+    "Bed",
+    "Tail_lamps",
+    "Exhaust",
+    "Point_exhaust"
+   ]
+  },
+  {
+   "feature": "the FPV launch rack on its turntable: four quadcopters with arms, rotors, charges and cameras (Turret)",
+   "nodes": [
+    "Turntable",
+    "Turret",
+    "Rack",
+    "Drones",
+    "Drone_arms",
+    "Drone_rotors",
+    "Drone_charges",
+    "Drone_cams",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "the two fibre spools on their frame and the fibre runs",
+   "nodes": [
+    "Spools",
+    "Spool_fibre",
+    "Spool_frame",
+    "Kit_cables"
+   ]
+  },
+  {
+   "feature": "the mini-swarm launch box on the cab roof (the free secondary)",
+   "nodes": [
+    "Mount_rocket",
+    "Launcher_box",
+    "Tubes",
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "feature": "the operator's antenna mast, jerrycans, the spare wheel, a rolled net, Team bands",
+   "nodes": [
+    "Antennas",
+    "Jerrycans",
+    "Spare_wheel",
+    "Stowage",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "fpv_fibre",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "fpv_swarm_mini",
+   "slot": "rocket",
+   "mount": "Mount_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "light class seen in numbers: at most 1.5 x 5,000 = 7,500 (hard gate)"
+ },
+ "team_zones": [
+  "bonnet, cab and drones (Team)",
+  "bands on both doors"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the wrappers add Part_wheel (front left) and Part_wheelb (rear right)",
+ "faction_style": "military vehicle (both factions)",
+ "details": {
+  "tier1": [
+   "cab",
+   "bonnet",
+   "bed",
+   "wheels"
+  ],
+  "tier2": [
+   "bull bar",
+   "rack",
+   "spools",
+   "launch box",
+   "spare wheel",
+   "fenders"
+  ],
+  "tier3": [
+   "drones",
+   "rotors",
+   "charges",
+   "cameras",
+   "handles",
+   "mirrors",
+   "lamps",
+   "hooks",
+   "steps",
+   "antenna",
+   "jerrycans",
+   "net"
+  ]
+ },
+ "questions": []
+}

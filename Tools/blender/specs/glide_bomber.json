@@ -1,0 +1,195 @@
+{
+ "id": "glide_bomber",
+ "class": "jet",
+ "real": [
+  "Su-34 Fullback with FAB-500 + UMPK glide kits; R-73 on the wingtip rails"
+ ],
+ "shape": "refs: none; the old builder (mb_p25_new): an Su-34 look, a Flanker planform with a broad flat nose and side-by-side cockpit, twin tails, two big glide bombs with UMPK wings under the wings; 9.3 x 5.9 x 2.4 m (about 0.42 x the real aircraft); team bands on the fins; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 9.3,
+  "W": 5.9,
+  "H": 2.4,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the fuselage (Team) with the broad flat platypus nose and chines, the tail stinger with its radar",
+   "nodes": [
+    "Fuselage",
+    "Nose_flat",
+    "Intake_dark"
+   ]
+  },
+  {
+   "feature": "the wide canopy over the side-by-side seats, its frames",
+   "nodes": [
+    "Canopy",
+    "Rudders"
+   ]
+  },
+  {
+   "feature": "canards, the long root extensions and the Flanker wing with tip rails and lights",
+   "nodes": [
+    "Tails",
+    "Wings",
+    "Pylons",
+    "Wing_lights",
+    "Part_wing"
+   ]
+  },
+  {
+   "feature": "two engine nacelles with the tunnel between, intakes with ramps under the root extensions",
+   "nodes": [
+    "Nacelles",
+    "Intakes",
+    "Intake_dark"
+   ]
+  },
+  {
+   "feature": "nozzles with petals and the afterburner glow",
+   "nodes": [
+    "Nozzles",
+    "Nozzle_petals",
+    "Exhaust_glow"
+   ]
+  },
+  {
+   "feature": "twin fins with rudders and Team bands, the tailplanes, two ventral fins",
+   "nodes": [
+    "Fins",
+    "Rudders",
+    "Tails",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "two FAB-500 with UMPK glide wing kits and tail fins on heavy pylons, R-73 on the wingtip rails",
+   "nodes": [
+    "Bombs",
+    "Bomb_wings",
+    "Bomb_bands",
+    "Pylons",
+    "Missiles"
+   ]
+  },
+  {
+   "feature": "the centre-line rack under the tunnel (the main weapon)",
+   "nodes": [
+    "Racks",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "two rows of flare dispensers a side on the nacelles (Mount_Flare_* from the wrapper)",
+   "nodes": [
+    "Flares",
+    "Flare_mouths",
+    "Mount_Flare_L",
+    "Mount_Flare_L2",
+    "Mount_Flare_R",
+    "Mount_Flare_R2",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR"
+   ]
+  },
+  {
+   "feature": "the refuelling probe, pitot, blade antennas, lights",
+   "nodes": [
+    "Antennas",
+    "Lamps",
+    "Beacons"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "canopy",
+  "wings",
+  "tail",
+  "intakes",
+  "exhaust",
+  "pylons",
+  "stores",
+  "flares"
+ ],
+ "weapons": [
+  {
+   "weapon": "glide_fab500",
+   "slot": "missile",
+   "mount": "Fuselage",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "bunker_buster_bomb",
+   "slot": "bomb",
+   "mount": "Fuselage",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "thermobaric_bomb",
+   "slot": "bomb",
+   "mount": "Fuselage",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only"
+ },
+ "team_zones": [
+  "fuselage, wings, fins (Team)",
+  "bands on both fins"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the wrapper adds Part_wing (the left wing) for the breakup",
+ "faction_style": "military aircraft (both factions); jet rule: no insets",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "wings",
+   "nacelles",
+   "fins"
+  ],
+  "tier2": [
+   "nose",
+   "canopy",
+   "canards",
+   "intakes",
+   "nozzles",
+   "tailplanes",
+   "stinger",
+   "glide bombs",
+   "pylons"
+  ],
+  "tier3": [
+   "canopy frames",
+   "petals",
+   "bomb wings",
+   "bomb fins",
+   "flare mouths",
+   "probe",
+   "pitot",
+   "antennas",
+   "lights",
+   "R-73"
+  ]
+ },
+ "questions": []
+}

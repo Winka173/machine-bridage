@@ -1,0 +1,179 @@
+{
+ "id": "interceptor_jet",
+ "class": "jet",
+ "real": [
+  "MiG-31BM Foxhound (R-37M long-range missiles, Kh-31P anti-radar missile)"
+ ],
+ "shape": "refs: none; the old builder (mb_p25_new): a MiG-31 look, big boxy intakes, a long straight fuselage, twin tails, four long R-37 missiles under the fuselage; 9.1 x 5.4 x 2.5 m (about 0.4 x the real aircraft); team bands on the fins; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 9.1,
+  "W": 5.4,
+  "H": 2.5,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the long lofted fuselage (Team) with the radome, spine and dorsal fairing",
+   "nodes": [
+    "Fuselage",
+    "Radome",
+    "Spine"
+   ]
+  },
+  {
+   "feature": "the tandem two-seat canopy with its frames",
+   "nodes": [
+    "Canopy",
+    "Canopy_frames"
+   ]
+  },
+  {
+   "feature": "big rectangular side intakes with splitter plates, ramps and dark ducts",
+   "nodes": [
+    "Intakes",
+    "Intake_dark"
+   ]
+  },
+  {
+   "feature": "the shoulder trapezoidal wing with root extensions, fences, wingtip lights",
+   "nodes": [
+    "Wings",
+    "Wing_lights",
+    "Part_wing"
+   ]
+  },
+  {
+   "feature": "twin canted fins with rudders, all-moving tailplanes, two ventral fins",
+   "nodes": [
+    "Fins",
+    "Rudders",
+    "Tailplanes",
+    "Ventral_fins"
+   ]
+  },
+  {
+   "feature": "two large nozzles with petals and the afterburner glow",
+   "nodes": [
+    "Nozzles",
+    "Nozzle_petals",
+    "Exhaust_glow"
+   ]
+  },
+  {
+   "feature": "four R-37M under the fuselage on their recesses",
+   "nodes": [
+    "Missiles",
+    "Racks",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "wing pylons; the anti-radar missile on the right pylon on its own pivot (the free secondary)",
+   "nodes": [
+    "Pylons",
+    "Mount_aam",
+    "Missile_aam",
+    "Muzzle_aam"
+   ]
+  },
+  {
+   "feature": "flare dispensers on the rear fuselage sides (Mount_Flare_* from the wrapper)",
+   "nodes": [
+    "Flares",
+    "Flare_mouths",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR"
+   ]
+  },
+  {
+   "feature": "the refuelling probe, pitot, blade antennas, lights, Team bands",
+   "nodes": [
+    "Antennas",
+    "Lamps",
+    "Beacons",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "canopy",
+  "wings",
+  "tail",
+  "intakes",
+  "exhaust",
+  "pylons",
+  "stores",
+  "flares"
+ ],
+ "weapons": [
+  {
+   "weapon": "r37m",
+   "slot": "missile",
+   "mount": "Fuselage",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "anti_radar_missile",
+   "slot": "aam",
+   "mount": "Mount_aam",
+   "muzzles": [
+    "Muzzle_aam"
+   ]
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only"
+ },
+ "team_zones": [
+  "fuselage, wings, fins (Team)",
+  "bands on both fins"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the wrapper adds Part_wing (the left wing) for the breakup",
+ "faction_style": "military aircraft (both factions); jet rule: no insets",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "wings",
+   "fins"
+  ],
+  "tier2": [
+   "intakes",
+   "canopy",
+   "nozzles",
+   "tailplanes",
+   "ventral fins",
+   "missiles",
+   "pylons"
+  ],
+  "tier3": [
+   "canopy frames",
+   "petals",
+   "fences",
+   "flare mouths",
+   "probe",
+   "pitot",
+   "antennas",
+   "lights",
+   "missile fins"
+  ]
+ },
+ "questions": []
+}
