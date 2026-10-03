@@ -1191,8 +1191,9 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.BossPhase when !_menu && _world.TryGetVehicle(e.Entity, out var phased):
                         if (e.Mount == 1)
                         {
-                            // The boss transforms: the camera goes to it, its general speaks.
-                            StartCinematic(e.Position, force: true);
+                            // The boss transforms: its general speaks. Play-test 14 session 5 ("boss vào phase mới không cần
+                            // cutscreen"): no cinematic any more (no camera grab, letterbox or slow motion); the radio line and
+                            // the HUD notice stay.
                             Haptics.Pulse(160, 255);
                             var spoken = e.DefId != null && e.DefId.StartsWith("radio.", System.StringComparison.Ordinal);
                             if (spoken) Say(e.DefId, DialoguePriority.Story, phased.Team); // prompt 30 L12: boss_phase_change is P1
