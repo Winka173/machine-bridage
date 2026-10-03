@@ -2818,6 +2818,16 @@
    "changes": [
     "FLAG inflatable_decoy: triangles 1,378 -> 3,088 (+124.1%); vertices 1,278 -> 3,748 (+193.3%); meshes 6 -> 19 (+216.7%); renderers 6 -> 19 (+216.7%); materials 6 -> 9 (+50.0%); materialSlots 6 -> 19 (+216.7%); fileBytes 71,440 -> 203,072 (+184.3%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "barrage_balloon"
+   ],
+   "reason": "P35 wave 3: barrage_balloon rebuilt (lane B)",
+   "changes": [
+    "FLAG barrage_balloon: triangles 1,748 -> 3,930 (+124.8%); vertices 1,594 -> 4,752 (+198.1%); meshes 9 -> 32 (+255.6%); renderers 9 -> 32 (+255.6%); materials 6 -> 10 (+66.7%); materialSlots 9 -> 32 (+255.6%); fileBytes 90,264 -> 264,748 (+193.3%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -9095,22 +9105,22 @@
   },
   "barrage_balloon": {
    "file": "barrage_balloon.glb",
-   "fileBytes": 90264,
-   "sha1": "404de02388fa9cc7",
+   "fileBytes": 264748,
+   "sha1": "53d34fcabf283c17",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 9,
-   "meshes": 9,
-   "materials": 6,
+   "nodes": 32,
+   "meshes": 32,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 9,
-   "submeshes": 9,
-   "materialSlots": 9,
-   "materialsUsed": 6,
-   "triangles": 1748,
-   "vertices": 1594,
+   "renderers": 32,
+   "submeshes": 32,
+   "materialSlots": 32,
+   "materialsUsed": 10,
+   "triangles": 3930,
+   "vertices": 4752,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -9118,47 +9128,70 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 21,
+   "loosePieces": 110,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.8908,
-    -0.02,
-    -4.7
+    -2.0603,
+    -0.013,
+    -4.57
    ],
    "boundsMax": [
-    1.8908,
-    15.95,
-    4.5
+    2.0603,
+    16.1443,
+    4.325
    ],
    "size": [
-    9.2,
-    3.782,
-    15.97
+    8.895,
+    4.121,
+    16.157
    ],
    "center": [
     0.0,
-    7.965,
-    -0.1
+    8.066,
+    -0.122
    ],
-   "structureHash": "100c031a83b67aa5",
+   "structureHash": "7f91f027681c3a26",
    "color0": {
-    "mean": 0.6735,
-    "min": 0.1366,
+    "mean": 0.6163,
+    "min": 0.0537,
     "max": 0.9987,
-    "p05": 0.2641,
-    "p95": 0.8143,
+    "p05": 0.1498,
+    "p95": 0.8137,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antennas",
     "Cable",
+    "Dish",
+    "Dish_feed",
+    "Door_frames",
+    "Door_slots",
+    "Doors",
     "Drum",
+    "Drum_flanges",
     "Envelope",
+    "Envelope_seams",
+    "Fence",
+    "Fin_edges",
     "Fins",
+    "Generator",
+    "Generator_stack",
+    "Gondola",
     "Hubs",
+    "Jack_pads",
+    "Kit_cables",
+    "Kit_hinges",
+    "Mast",
+    "Outriggers",
     "Pad",
+    "Radome",
+    "Rigging",
+    "Shelter",
+    "Shelter_ribs",
+    "Signs",
     "Team_bands",
     "Tyres",
     "Winch"
