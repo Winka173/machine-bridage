@@ -2832,6 +2832,16 @@
    "changes": [
     "FLAG engineer_vehicle: triangles 3,670 -> 8,144 (+121.9%); vertices 4,297 -> 11,062 (+157.4%); meshes 21 -> 60 (+185.7%); renderers 21 -> 60 (+185.7%); materials 7 -> 11 (+57.1%); materialSlots 21 -> 60 (+185.7%); fileBytes 232,916 -> 595,544 (+155.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "mortar_carrier"
+   ],
+   "reason": "P35 wave 3: mortar_carrier rebuilt (lane B)",
+   "changes": [
+    "FLAG mortar_carrier: triangles 3,242 -> 8,422 (+159.8%); vertices 3,999 -> 11,021 (+175.6%); meshes 23 -> 61 (+165.2%); renderers 23 -> 61 (+165.2%); materials 7 -> 12 (+71.4%); materialSlots 23 -> 61 (+165.2%); fileBytes 219,040 -> 595,828 (+172.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -41217,24 +41227,24 @@
   },
   "mortar_carrier": {
    "file": "mortar_carrier.glb",
-   "fileBytes": 219040,
-   "sha1": "6bafad9c9854c99e",
+   "fileBytes": 595828,
+   "sha1": "7bce3937c272486f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 29,
-   "meshes": 23,
-   "materials": 7,
+   "nodes": 67,
+   "meshes": 61,
+   "materials": 12,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 23,
-   "submeshes": 23,
-   "materialSlots": 23,
-   "materialsUsed": 7,
-   "triangles": 3242,
-   "vertices": 3999,
+   "renderers": 61,
+   "submeshes": 61,
+   "materialSlots": 61,
+   "materialsUsed": 12,
+   "triangles": 8422,
+   "vertices": 11021,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -41242,36 +41252,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 75,
+   "loosePieces": 250,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.15,
-    -0.0406,
-    -2.015
+    -1.27,
+    -0.0645,
+    -2.33
    ],
    "boundsMax": [
-    1.15,
-    3.1756,
-    2.1914
+    1.33,
+    3.2238,
+    2.2056
    ],
    "size": [
-    4.206,
-    2.3,
-    3.216
+    4.536,
+    2.6,
+    3.288
    ],
    "center": [
-    0.0,
-    1.568,
-    0.088
+    0.03,
+    1.58,
+    -0.062
    ],
-   "structureHash": "3ab66a9124010319",
+   "structureHash": "d8f807d5c2be858b",
    "color0": {
-    "mean": 0.6318,
-    "min": 0.0821,
+    "mean": 0.5938,
+    "min": 0.0498,
     "max": 1.0,
-    "p05": 0.1777,
-    "p95": 0.9722,
+    "p05": 0.1588,
+    "p95": 0.9125,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -41292,19 +41302,47 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Deck",
+    "Aiming_posts",
+    "Ammo_can_cdr",
+    "Baseplate",
+    "Cradle_cdr",
+    "Crates",
+    "Cupola",
+    "Elevation",
+    "Elevation_screw",
+    "Exhaust",
+    "Exhaust_caps",
+    "Fuel_tanks",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_carriage_cdr",
+    "Gun_fit_cdr",
+    "Gun_ring_cdr",
+    "Gun_ring_fit_cdr",
+    "Gun_shield_cdr",
     "Hatch_fittings",
+    "Hatch_floor",
     "Hatch_lids",
     "Hatch_well",
     "Hatches",
     "Hubs",
     "Hull",
+    "Hull_dark",
+    "Hull_lower",
+    "Idlers",
+    "Jerrycans",
+    "Kit_brackets",
+    "Kit_hinges",
+    "Kit_hooks",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
     "MG",
     "MG_ammo",
-    "MG_shield",
+    "MG_flash",
     "Mortar_tube",
     "Mortar_tube_ring",
     "Mount_mg",
@@ -41312,10 +41350,20 @@
     "Muzzle_mg",
     "Point_exhaust",
     "Point_fire",
+    "Receiver_cdr",
+    "Round_rack",
+    "Rounds",
     "Sight",
+    "Skirt_edge",
+    "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
+    "Stowage",
     "Tail_lamps",
+    "Team_band",
+    "Track_links",
     "Tracks",
+    "Trim_vane",
     "Turret",
     "Turret_armor",
     "Turret_steel",
@@ -41325,7 +41373,10 @@
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 8,422 over the ground normal budget 7,800",
+    "vertices 11,021 over the ground normal budget 10,100"
+   ],
    "units": [
     "mortar_carrier"
    ],
