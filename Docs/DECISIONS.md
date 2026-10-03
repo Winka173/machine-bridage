@@ -17705,3 +17705,21 @@ test or sim run. Code: `Tools/export/core/doc_parts.py` (section list, text fixe
   it fights, strong / weak, tip (vi + en, [[ ]] stripped; key FK to 10/Dia_phuong_hoa, not marked twice) plus one
   CHUA_AP:prompt_24 row for the new-player tutorial. New 10/Kit_chi_tiet (kit35_components.json) and kit35_catalog.png in
   section 21. The md's effect-shot caption now says 1 m grid (FxBatch draws one). Appendices P1-P5 kept as chosen.
+
+## Prompt 35: owner review of the pilot (2026-10-03)
+Owner: "súng trên nóc nhìn hơi dẹp, nhưng approve" (roof guns look a bit flat, but approved); the 11 questions in
+Docs/models/QUESTIONS.md go by the lead's proposals:
+1. Ixion keeps modelSize 26 m and six tyres (no data change).
+2. zu23 gets `barrels: 2` with per-barrel damage halved so its DPS stays exactly the same (two muzzles on the model).
+3. Hegemon tower twins: later (needs new model ids).
+4. Tower branches (_a/_b) are rebuilt together with their base, from wave 1.
+5. Ixion 79.7 and rocket_turret 79.6 accepted on the owner's look; each boss frame (ground, rail, air, sea) gets its own
+   gold set in quality_gate.
+6. Over-budget is kept, but units seen in numbers (technicals, light vehicles, towers) stay under 1.5 x the class maximum.
+7. mara_behemoth gets its own model id.
+8. The gate accepts merged nodes for the gold models' names (as MODEL_STANDARD section 4 does).
+9. Fix the GLB exporter's accessor order so builds are byte-identical.
+10. Remove Ixion's "(model tạm)" note from the balance spreadsheet's shape cell (and regenerate unit_sheet.json).
+11. Keep the kit's material separation (11-17 per model); merge to 6 only if the phone FPS measure later asks for it.
+Roof guns (pintle MGs, remote weapon stations, roof turrets) must read with real height: raised mount, cradle, ammo box,
+shield where the real one has it; fix Ixion's roof gun and the pilots' in wave 1, and the rule goes into MODEL_STANDARD.

@@ -93,3 +93,8 @@ Own def = the def whose id is the model, else the first def drawing it. HQ ids -
 `flying` -> jet (`fixedWing`), helicopter (has a `Rotor*` node) or air_other; static or speed 0 -> obstacle (`wall`,
 `obstacle`, `passable` or a wall / teeth / minefield id), tower (`fort` or `branchOf`; the `_a` / `_b` files) or
 structure; otherwise tracked (Tracks / Sprockets nodes), wheeled (Tyres / Wheels nodes) or ground.
+
+## Roof guns (owner, prompt 35 pilot review, 2026-10-03)
+Roof-mounted guns (pintle MGs, remote weapon stations, small roof turrets) must not look flat: build the raised mount
+or pintle post, the cradle, the ammo box and the gun shield where the real one has them, so the gun stands clear of the
+roof line at the battle camera's distance.
