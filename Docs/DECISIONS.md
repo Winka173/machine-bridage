@@ -19203,5 +19203,5 @@ and package DLLs), 0 errors.
 Owner: "check file tối ưu, dùng sonnet là dùng sonnet 5.0 mới đúng, không bao giờ được dùng sonnet 5.5". The Agent tool's
 `sonnet` alias resolves to the newest Sonnet (5.5), so it is no longer used; mid-tier jobs go to `opus` until the alias is
 pinned to Sonnet 5.0 (ANTHROPIC_DEFAULT_SONNET_MODEL with the exact model id, only on the owner's word). Earlier today
-two agents ran on the `sonnet` alias (the balance-pack export lane and nothing else model-related); their work was checked
+one agent ran on the `sonnet` alias (the balance-pack export lane, lane C); its work was checked (15/15 export checks)
 and merged. TOKEN_OPTIMISATION.md section 5 and AGENT_RULES.md updated.
