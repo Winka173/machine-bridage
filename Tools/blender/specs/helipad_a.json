@@ -1,0 +1,118 @@
+{
+ "id": "helipad_a",
+ "class": "obstacle",
+ "real": [
+  "field aircraft shelter (fabric clamshell)"
+ ],
+ "shape": "unit_sheet.json Công trình (airfield, branch airfield.hangar): the pad with a field hangar on its rear; must read apart from the pad and the service branch.",
+ "confidence": "uoc_dinh (unit_refs: 'ước đoán: nhánh nhà chứa')",
+ "target_size": {
+  "L": 10.0,
+  "W": 10.0,
+  "H": 3.77,
+  "source": "the old GLB (wave 2 keeps sizes within 10 %)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "precast pad with a 45-degree kerb (one corner cut), slab joints, tyre stains",
+   "nodes": [
+    "Base",
+    "Base_joints",
+    "Stains"
+   ]
+  },
+  {
+   "feature": "touchdown ring and the H in white, edge stripes and approach arrows in yellow, the pad number, a Team bar",
+   "nodes": [
+    "Paint_white",
+    "Paint_edge",
+    "Paint_yellow",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "flush edge lights with rims, tie-down rings, drain grates",
+   "nodes": [
+    "Lamps",
+    "Lamp_rims",
+    "Tie_downs",
+    "Drain_grates"
+   ]
+  },
+  {
+   "feature": "fabric clamshell shelter: six steel arches, the canvas skin and its closed back, the end curtains drawn back, ballast, guy ropes, Team band",
+   "nodes": [
+    "Shelter_arches",
+    "Roof",
+    "Curtain",
+    "Ballast",
+    "Guy_ropes"
+   ]
+  },
+  {
+   "feature": "inside: tool cart, a rotor blade on trestles, parts boxes, a work light",
+   "nodes": [
+    "Tool_cart",
+    "Cart_wheels",
+    "Trestles",
+    "Rotor_blade",
+    "Ammo_boxes",
+    "Light_poles"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   6000
+  ],
+  "floor": 0,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "obstacle class (passable pad); budget information only"
+ },
+ "team_zones": [
+  "the Team bar",
+  "the shelter band"
+ ],
+ "colour_zones_min": 2,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (field-built: sandbags, timber, nets, corrugated sheet)",
+ "details": {
+  "tier1": [
+   "pad",
+   "shelter"
+  ],
+  "tier2": [
+   "ring and H",
+   "edge stripes",
+   "arrows",
+   "arches",
+   "curtains",
+   "cart",
+   "trestles"
+  ],
+  "tier3": [
+   "lights",
+   "rims",
+   "tie-downs",
+   "grates",
+   "joints",
+   "stains",
+   "guy ropes",
+   "ballast"
+  ]
+ },
+ "questions": []
+}
