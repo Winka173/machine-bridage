@@ -689,6 +689,9 @@ namespace MachineBrigade.Game.Match
                 PlayerDefends = true, Endless = _endless,
                 // The clock the enemy has to break in: longer the harder it is.
                 StartSeconds = hard ? 540f : easy ? 420f : 480f, StageBonus = new[] { 60f, 90f }, MaxBank = 900f,
+                // Owner fix 11 (2026-10-03): matchRules defend.timeLimit (720 s) is the Normal clock with both bonuses earned;
+                // SiegeRules.Apply moves each difficulty's start above by the same amount (Normal 480 -> 570).
+                NormalStartSeconds = 480f,
                 WaveSeconds = _endless ? 55f : 70f, StageCp = 12f, Hardening = 4.5f, LineHardening = 2f, RetreatCp = new[] { 24f, 32f },
                 // The player's inner lines are the strong ones.
                 // Prompt 13 H.7: Defend's outer line 1 -> 1.45 and the inner ones 1.4 / 1.8 -> 1.25 / 1.4 (the outer line

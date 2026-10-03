@@ -18567,3 +18567,46 @@ The lead's four failing tests after merging passes 1-2 (a8bea43a); branch featur
 - Prompt34Tests.TheSameFamilyFiresTheSameRoundOnEveryBoss: weaponFamilyTable cal_23 boss.damage 7 -> 3.5, matching the
   owner-approved zu23 at 2 barrels x 3.5 a round (DECISIONS "Prompt 35: owner review of the pilot", item 2). The table's
   boss block is a reference only (no Sim code applies it); DPS unchanged.
+
+## Owner fixes 2026-10-03 (lane A)
+Branch `feature/owner-fixes` from `lead/integration`, items 2, 4, 6, 10 and 11 of "Owner: open questions settled by the
+lead's proposals (2026-10-03)". Blender and Python only: no Unity run, no test, sim or measure.
+- **2. amphib_light_vehicle off AAV-7.** AAV-7 (and BMP-3F) are on prompt 24's reserved list, PT-76 is light_tank's
+  reference, BMD-2 sits next to the reserved BMD-4 and an ACV-class 8x8 is 8.9 m long; the AMX-10P (Marine) fits the
+  frame: tracked, amphibious on two water jets, 5.79 x 2.78 x 2.57 m against the modelSize 5.48 x 3.02 x 2.5, a 20 mm
+  turret where the data has a 25 mm. New builder `mb_fix_amphib_light_vehicle.py` (wedge nose, trim vane on the glacis,
+  five road wheels and three return rollers, ramp between the water jets, two-man turret a little left; runtime nodes
+  Turret, Main_cannon, Muzzle_brake, Muzzle_main, Coax, Muzzle_coax, Point_exhaust, Point_fire kept) replaces lane C's
+  `mb_p35_amphib_light_vehicle.py` (removed) in the same place of the builders dict. 10,648 triangles (over the
+  ground cap: information only), soft 95.0 Tốt, every hard gate; spec rewritten (no open question), unit_refs row
+  added, glb_check baseline accepted.
+- **4. inflatable_decoy's modelSize.** modelSize is view-only: the Sim parses it into VehicleDef.ModelLength / Width /
+  Height and nothing in Scripts/Sim reads them (VehicleView.DrawScaleOf and AirDrops do). The view fits the model's
+  length (Measure: mesh-bounds corners in the model frame, z) to modelSize[0]; gun_turret has no modelSize and scale 1,
+  so it draws at its GLB size. The decoy's GLB is the replica at the gun turret's dimensions (turret traversed 38
+  degrees), so modelSize = its own box, 7.81 x 6.74 x 3.96 (was 5.0 x 4.6 x 2.6: drawn at 0.64 x), draws it at scale
+  1, the real tower's size. The collision length / width / radius are unchanged. glb_check baseline accepted (its
+  length warning gone); quality_gate unchanged (57.6, hard ok).
+- **6. kronos gun_r.** Mounts: 0 Turret (main 30 mm), 1 / 2 the 57 mm (`Mount_gun`, `Mount_gun.001`), 3 the bucket
+  wheel, 4 gun_r's own autocannon_30 (gun_30 template; the k-th weapon of the gun slot takes the k-th mount:
+  `Mount_gun.002`), 5 the rockets. Parts resolve their node by exact name in VehicleView.BossParts (hidden when the
+  part breaks). gun_r's node is now `Mount_gun.002`, so a broken gun_r hides the second 30 mm, not a 57 mm. Its `at`
+  (4, -2, 9.4: the old Mount_gun place, used by the Sim for hits) is kept as a gameplay value: lead question whether to
+  move it to Mount_gun.002's place (3, -7, 9.6). Spec and builder comment follow.
+- **10. radar_station split.** The base utility module keeps `radar_station` (saves, loadouts, campaign unlocks,
+  cards, GridTowers, TowerIcons, strings, unit_refs). The map prop is `radar_station_prop` (balance.json props[]; it
+  still draws `radar_station.glb`, MapView.Describe). Renamed: 60 map JSONs edited in place by a script that only
+  touched `{"def": "radar_station",` (180) and landmarks' `"prop": "radar_station"` (11); landmarks' `"model"` (5) and
+  map_dressing.json's landmarks (5) name the GLB and stay. campaign.json mission and stage `targets` (13; the one
+  `unlocks` entry is the module) equal a `build_campaign.py --no-texts` rebuild from the edited act1 / act3 sources.
+  Tools/maps (build_maps, fortress, longmap, check_access, plot_map; terrain.py's landmark rows name the prop and the
+  GLB model), SiegeRules.Relay, MatchRunner's fortress debug, MapView, TerrainPainter, five EditMode tests, the export
+  selfcheck note. `export.py check`: self-checks 1-8 and 12.6 DAT (keys, foreign keys, determinism); 9 CHUA_DAT on
+  seven "email" false positives in raw PNG bytes of file 10's before / after images (not touched here).
+- **11. Defend clock.** The 630 s was 480 s (Normal start) + 60 + 90 s (stage bonuses). SiegeRules gets
+  `NormalStartSeconds` (DefendSession sets 480); Apply, reading matchRules "defend", moves every difficulty's start by
+  timeLimit - (Normal start + bonuses), so Normal's start + bonuses = 720 s (start 570; Hard 630, Easy 510; Endless
+  untouched). Measured from the start as set, so a second Apply changes nothing; deterministic. DefendSession's
+  literal clock line is kept, so the export still reads it, and SiegeRules.Apply now names "timeLimit" (the export's
+  reads check turns true). New EditMode `DefendClockTests` (written, not run): Normal's start + bonuses equals the data,
+  the clock starts at the start, Hard / Easy keep their 60 s offsets.

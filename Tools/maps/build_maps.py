@@ -180,7 +180,7 @@ def load_static_footprints():
 STATIC_FOOTPRINT = load_static_footprints()
 BUILDINGS = {'house_small', 'house_large', 'cottage', 'townhouse', 'apartment', 'shop', 'church', 'barn', 'silo',
              'warehouse', 'garage', 'water_tower', 'ruin', 'fuel_tank', 'wall', 'adobe_house', 'adobe_large',
-             'refinery_tower', 'storage_tank', 'oil_pump', 'log_cabin', 'radar_station', 'watchtower', 'factory',
+             'refinery_tower', 'storage_tank', 'oil_pump', 'log_cabin', 'radar_station_prop', 'watchtower', 'factory',
              'office_block', 'gantry_crane', 'container', 'container_stack', 'rail_tanker', 'rail_boxcar'}
 
 
@@ -1234,7 +1234,7 @@ def frostpeak(seed=37):
     L.road(5, 3, -46, 19, -46)                                  # track to the lumber camp
 
     # The radar station crowns the western heights, watched by towers and ringed with rock.
-    L.add('radar_station', -30, 62, 0, pad=1.0, must=True)
+    L.add('radar_station_prop', -30, 62, 0, pad=1.0, must=True)
     L.add('watchtower', -43, 54, 0, pad=0.6)
     L.add('watchtower', -17, 37, 0, pad=0.6)
     for x, z, rot in ((-30, 37, 0), (-39, 44, 90), (-21, 50, 90)):
@@ -1528,7 +1528,7 @@ def whiteout(seed=83):
                     L.add('tank_trap', *diag(side * (13 + 3.5 * k), sign * (t + (1.5 if k % 2 else -1.5))), 0, pad=0.4)
 
     # West, the signal post: a radar behind the objective, towers and a barracks round it.
-    L.add('radar_station', *diag(0, 71), 0, pad=0.8, must=True)
+    L.add('radar_station_prop', *diag(0, 71), 0, pad=0.8, must=True)
     for side in (1, -1):
         L.near('watchtower', *diag(side * 13, 65), 3, pad=0.6)
         L.near('log_cabin', *diag(side * 15, 43), 5, 0, pad=0.8)
@@ -2375,7 +2375,7 @@ def landingbeach(seed=167):
     for dx, dz, kind, rot in ((-12.0, 8.0, 'sandbags', 90), (12.0, -6.0, 'sandbags', 90), (-6.0, -12.0, 'jersey_barrier', 0),
                               (7.0, 12.0, 'jersey_barrier', 0)):
         L.add(kind, dx, dz, rot, pad=0.4, road_gap=0.3, ignore_points=True)
-    L.near('radar_station', 26.0, 6.0, 5, 0, pad=0.8)
+    L.near('radar_station_prop', 26.0, 6.0, 5, 0, pad=0.8)
     L.near('ruin_tower', -24.0, 14.0, 4, 0, pad=0.8)
 
     # The coastal village on the plateau: the church on the square (the west objective), houses
@@ -2802,7 +2802,7 @@ def launchsite(seed=181):
     # Radar dishes and a tracking station between the pad and each camp, mirrored.
     for sign in (1, -1):
         for x, z in ((-66.0, -26.0), (-82.0, -6.0), (-54.0, -54.0)):
-            L.near('radar_station', *at(sign, x, z), 8, 0, pad=0.8)
+            L.near('radar_station_prop', *at(sign, x, z), 8, 0, pad=0.8)
         L.near('radar_dome', *at(sign, -8.0, -58.0), 8, 0, pad=0.8)
         L.near('office_block', *at(sign, 30.0, -76.0), 6, 0, pad=0.8)
         L.near('ammo_dump', *at(sign, -20.0, -62.0), 4, 0, pad=0.8)
@@ -2849,7 +2849,7 @@ def saltflat(seed=163):
     # The survey beacon at the centre: a mast, the survey huts, a weather radar either side, and
     # sandbags dug in round them.
     L.add('radio_mast', 3.5, 9.0, 0, pad=0.5, road_gap=0.5, ignore_points=True)
-    for x, z, kind, rot in ((-24.0, 17.0, 'radar_station', 0), (-9.0, 6.0, 'container', 90), (6.0, -12.0, 'container', 0),
+    for x, z, kind, rot in ((-24.0, 17.0, 'radar_station_prop', 0), (-9.0, 6.0, 'container', 90), (6.0, -12.0, 'container', 0),
                             (12.0, 4.0, 'sandbags', 90), (-4.0, 13.0, 'sandbags', 0)):
         for sx, sz in ((x, z), (-x, -z)):
             L.add(kind, sx, sz, rot, pad=0.5, road_gap=0.4, ignore_points=True)
@@ -3905,7 +3905,7 @@ def orbitalgate(seed=223):
         L.scatter('barrel', *at(sign, 80.0, -80.0), 4, 11, 5, pad=0.3)
 
     # The radar posts astride each camp's road to the field (diagonal frame: s along the road).
-    for kind, s, t in (('radar_dome', 84.0, 20.0), ('radar_station', 72.0, -20.0), ('radar_station', 96.0, -19.0),
+    for kind, s, t in (('radar_dome', 84.0, 20.0), ('radar_station_prop', 72.0, -20.0), ('radar_station_prop', 96.0, -19.0),
                        ('office_block', 102.0, 24.0), ('log_cabin', 64.0, 26.0)):
         mirrored(L, kind, *diag(s, t), 0, radius=5.0, pad=0.8, must=True)
     for s, t in ((80.0, -31.0), (92.0, 31.0), (66.0, -12.0)):
@@ -4454,7 +4454,7 @@ def siege_targets(L):
     w, d = PROPS['command_hq']['width'] / 2, PROPS['command_hq']['depth'] / 2
     targets = [('camp', *L.teams[1]), ('hq', hq['x'] - w, hq['z'] - d, hq['x'] + w, hq['z'] + d)]
     for p in L.props:
-        if p['def'] in ('radar_station', generator):
+        if p['def'] in ('radar_station_prop', generator):
             pw, pd = PROPS[p['def']]['width'] / 2, PROPS[p['def']]['depth'] / 2
             targets.append((p['def'], p['x'] - pw, p['z'] - pd, p['x'] + pw, p['z'] + pd))
     return targets
@@ -4505,7 +4505,7 @@ def fortify(L, name, buildings=True):
     L.put('command_hq', *HQ, 0, pad=0.3)
     for x, z in ((-2.0, 60.0), (60.0, -2.0)):
         L.remove(lambda a0, b0, a1, b1: a0 < x + 7 and a1 > x - 7 and b0 < z + 7 and b1 > z - 7)
-        L.put('radar_station', x, z, 0, pad=0.5)
+        L.put('radar_station_prop', x, z, 0, pad=0.5)
     for x, z in ((26.0, 78.0), (78.0, 26.0), (24.0, 24.0)):
         L.put(generator, x, z, 0, pad=0.5)
     # The ring's stores and hangars (they chain when they go), off the lanes to the keep gates.

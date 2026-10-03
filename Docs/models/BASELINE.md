@@ -8,17 +8,17 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| ground | 95 | 764,134 | 8,043 | main_battle_tank_hd (16,462) | 5,155 | 0 | 46 |
+| ground | 95 | 765,526 | 8,058 | main_battle_tank_hd (16,462) | 5,157 | 0 | 46 |
 | boss | 33 | 593,220 | 17,976 | monster (39,598) | 2,860 | 0 | 30 |
-| structure | 86 | 432,936 | 5,034 | headquarters (21,052) | 3,847 | 0 | 16 |
-| prop | 115 | 256,808 | 2,233 | command_hq (8,872) | 1,565 | 0 | 3 |
+| structure | 86 | 432,936 | 5,034 | headquarters (21,052) | 3,847 | 0 | 15 |
+| prop | 114 | 252,886 | 2,218 | command_hq (8,872) | 1,527 | 0 | 3 |
 | air | 31 | 140,568 | 4,534 | fighter_jet_hd (14,216) | 1,063 | 0 | 21 |
-| unlisted | 33 | 107,254 | 3,250 | apc_hd (14,968) | 628 | 0 | 0 |
+| unlisted | 34 | 111,176 | 3,269 | apc_hd (14,968) | 666 | 0 | 0 |
 | scenery | 96 | 40,708 | 424 | rubble_large (3,516) | 294 | 0 | 2 |
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 7,146 | 255 | fpv_drone (1,564) | 210 | 0 | 1 |
 
-All files: 2,363,024 triangles, 0 with errors, 120 more with warnings only.
+All files: 2,364,416 triangles, 0 with errors, 119 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 

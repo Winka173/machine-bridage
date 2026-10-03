@@ -216,7 +216,7 @@ def _guns(a):
         return t
     # The main twin 30 mm on its old pivot (muzzle 4.2 m ahead, as the old file).
     turret('Turret', (4.0, 2.0, ROOF), 2, .07, 3.15, 'Muzzle_main', 'main')
-    # Mount 1 / 2 (57 mm) and mount 4 (the second 30 mm, part gun_r's node is the first gun pivot).
+    # Mount 1 / 2 (57 mm) and mount 4 (the second 30 mm, part gun_r's node Mount_gun.002).
     turret(K.name('Mount_gun', 0), (-4.0, 2.0, ROOF), 1, .1, 2.8, K.name('Muzzle_gun', 0), 'g0', house=1.05)
     turret(K.name('Mount_gun', 1), (3.0, 7.0, ROOF), 1, .1, 2.8, K.name('Muzzle_gun', 1), 'g1', house=1.05)
     turret(K.name('Mount_gun', 2), (-3.0, 7.0, ROOF), 2, .07, 2.4, K.name('Muzzle_gun', 2), 'g2', house=.9)

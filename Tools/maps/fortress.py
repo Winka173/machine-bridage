@@ -346,7 +346,7 @@ class Fortress:
         hq = next(p for p in L.props if p['def'] == 'command_hq')
         w, d = 8.0, 7.0
         out = [('rally', *RALLY), ('hq', hq['x'] - w, hq['z'] - d, hq['x'] + w, hq['z'] + d)]
-        for kind in ('radar_station', 'shield_generator'):
+        for kind in ('radar_station_prop', 'shield_generator'):
             for p in L.props:
                 if p['def'] == kind:
                     out.append((kind, p['x'] - 4, p['z'] - 4, p['x'] + 4, p['z'] + 4))
@@ -591,7 +591,7 @@ WIDE_CLUTTER = {'floodlight_mast': 0, 'sandbags': 1, 'sandbag_wall': 1, 'tank_tr
 WIDE_REACH = 6.0
 FIRE_REACH = 15.0
 # Never taken out: the stages' objectives (a relay is a radar station, also in the battlefield's buildings).
-OBJECTIVES = {'radar_station', 'shield_generator', 'command_hq', 'base_wall', 'base_gate', 'fortress_gate'}
+OBJECTIVES = {'radar_station_prop', 'shield_generator', 'command_hq', 'base_wall', 'base_gate', 'fortress_gate'}
 
 
 def open_wide(F, c, in_fort=None):
@@ -920,12 +920,12 @@ def outer_works(F, c, half):
         for t, off in ((tt, oo) for tt in (base, base * 0.8, base * 1.2, base * 0.6) for oo in (22.0, 30.0, 16.0, 40.0, 50.0)):
             x, z = at(t, off)
             spot = F.spot(x, z, 9.2, reach=18.0, clear=True, gap=3.0, road=1.0) if outline_tools.inside(F.poly, x, z) else None
-            if spot and L.put('radar_station', *spot, 0, pad=0.5):
+            if spot and L.put('radar_station_prop', *spot, 0, pad=0.5):
                 F.relays.append(spot)
                 placed = True
                 break
         if not placed:
-            L.failed.append(('radar_station', *at(base, 26.0)))
+            L.failed.append(('radar_station_prop', *at(base, 26.0)))
     # Strongpoints: a small tower hardpoint every 26 m along the line (a medium one at every third),
     # as close behind it as there is room, sandbags in front.
     small = medium = 0

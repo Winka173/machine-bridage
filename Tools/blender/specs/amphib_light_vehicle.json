@@ -1,33 +1,169 @@
 {
  "id": "amphib_light_vehicle",
  "class": "tracked",
- "real": ["AAV-7A1 pattern amphibious tracked carrier (boat hull, bow plane, water jets, rear ramp)", "25 mm cannon in a one-man turret (LAV-25 / up-gunned AAV pattern)"],
- "shape": "no unit_sheet.json row: the old builder's EFV / AAV-7 (boat-hulled tracked APC, planing bow, trim vane, rear ramp, small one-man turret on the right front).",
- "confidence": "ban_dau_doan (no unit_refs row; reference_real.json lists the M2A3 Bradley; the AAV pattern after the old builder and the id, shortened to the def's proportions)",
- "target_size": {"L": 5.48, "W": 3.02, "H": 2.5, "source": "balance.json modelSize (wider and shorter than the real AAV)", "tolerance": 0.10},
+ "real": [
+  "AMX-10P / AMX-10P Marine pattern amphibious tracked IFV (wedge nose, trim vane on the glacis, two rear water jets, rear ramp)",
+  "two-man Toucan-pattern turret with the data's 25 mm cannon (the real one a 20 mm M693) and a coaxial MG"
+ ],
+ "shape": "owner fix 2 (2026-10-03): moved off AAV-7, which prompt 24 keeps for a future card (with BMP-3F); an AMX-10P-pattern amphibious IFV fits the def's frame (tracked, 5.48 x 3.02 x 2.5 m, 25 mm autocannon, armour 1, fast): long upper glacis, five road wheels and three return rollers a side, two water jets beside the rear ramp, turret a little left behind the driver.",
+ "confidence": "ban_dau_doan (no unit_refs row before; AMX-10P chosen by the lead's proposal, owner-approved 2026-10-03; real 5.79 x 2.78 x 2.57 m, fitted to the modelSize)",
+ "target_size": {
+  "L": 5.48,
+  "W": 3.02,
+  "H": 2.5,
+  "source": "balance.json modelSize (a little shorter and wider than the real AMX-10P)",
+  "tolerance": 0.1
+ },
  "features": [
-  {"feature": "boat hull: slab sides over the tracks, long planing bow with the bow plane folded on it", "nodes": ["Hull", "Hull_lower", "Bow_plane", "Skirt_edge"]},
-  {"feature": "six road wheels a side under the hull side, front sprocket, rear idler", "nodes": ["Wheels", "Tyres", "Sprockets", "Idlers", "Tracks", "Track_links"]},
-  {"feature": "rear ramp with its troop door, water-jet ducts with deflector doors either side", "nodes": ["Ramp", "Hatches", "Waterjets", "Jet_doors"]},
-  {"feature": "four cargo hatches on the roof, the driver's and commander's cupolas on the front left", "nodes": ["Cupola", "Sight"]},
-  {"feature": "one-man turret on the front right: 25 mm cannon, mantlet, coaxial MG, sight, smoke dischargers", "nodes": ["Turret", "Turret_body", "Mantlet", "Main_cannon", "Muzzle_brake", "Muzzle_main", "Coax", "MG_coax", "Muzzle_coax", "Smoke_launchers"]},
-  {"feature": "recessed headlights, bilge outlets, engine grilles, stowage", "nodes": ["Bilge_outlets", "Grilles", "Jerrycans", "Stowage"]}
+  {
+   "feature": "welded hull: long upper glacis and short lower glacis meeting at a wedge nose, straight sponson sides over the tracks with a lip along their foot",
+   "nodes": [
+    "Hull",
+    "Skirt_edge",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "trim vane folded flat on the glacis, nose lamps in guards, tow hooks",
+   "nodes": [
+    "Bow_plane",
+    "Lamps",
+    "Kit_steel"
+   ]
+  },
+  {
+   "feature": "five road wheels a side, three return rollers, front drive sprocket, rear idler, open track run",
+   "nodes": [
+    "Wheels",
+    "Sprockets",
+    "Idlers",
+    "Rollers",
+    "Tracks",
+    "Track_links"
+   ]
+  },
+  {
+   "feature": "driver's hatch and periscopes front left; engine grilles on the front right glacis and roof, exhaust louvre on the right side",
+   "nodes": [
+    "Hatch",
+    "Periscopes",
+    "Grille_frames",
+    "Point_exhaust"
+   ]
+  },
+  {
+   "feature": "troop roof with two hatches and vision blocks along both edges; stowage bin and jerrycans",
+   "nodes": [
+    "Hatches",
+    "Periscopes",
+    "Stowage",
+    "Jerrycans"
+   ]
+  },
+  {
+   "feature": "rear ramp with vision blocks and hinges; two water-jet housings with deflector doors either side of it",
+   "nodes": [
+    "Ramp",
+    "Waterjets",
+    "Jet_doors",
+    "Tail_lamps"
+   ]
+  },
+  {
+   "feature": "two-man turret: mantlet, 25 mm cannon with a flash collar, coaxial MG, commander's sight, two roof hatches, ammunition boxes, smoke dischargers",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Mantlet",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Coax",
+    "MG_coax",
+    "Muzzle_coax",
+    "Sight",
+    "Ammo_boxes",
+    "Smoke_launchers"
+   ]
+  }
  ],
- "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
  "weapons": [
-  {"weapon": "autocannon_25", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel; Muzzle_coax kept from the old file"}
+  {
+   "weapon": "autocannon_25",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 barrel; Muzzle_coax kept"
+  }
  ],
- "flare": false, "aps": false,
- "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 9.3k: over the maximum, information only"},
- "team_zones": ["hull (Team)", "turret (Team)", "bands on the hull sides and the turret (Team)"],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "information only (over-budget models are kept)"
+ },
+ "team_zones": [
+  "hull (Team)",
+  "turret (Team)",
+  "bands on the hull sides and the turret (Team)"
+ ],
  "colour_zones_min": 4,
  "breakable": [],
  "wreck": "the Turret flies off",
- "faction_style": "marine amphibious carrier (both factions)",
+ "faction_style": "marine amphibious IFV (both factions)",
  "details": {
-  "tier1": ["boat hull", "turret", "tracks"],
-  "tier2": ["bow plane", "ramp", "water jets", "cargo hatches", "cupolas", "mantlet", "grilles", "bins"],
-  "tier3": ["rivets", "periscopes", "bilge outlets", "hinges", "handles", "lamps", "tow hooks", "smoke tubes", "jerrycans", "aerial"]
+  "tier1": [
+   "hull",
+   "turret",
+   "tracks"
+  ],
+  "tier2": [
+   "trim vane",
+   "ramp",
+   "water jets",
+   "grilles",
+   "hatches",
+   "mantlet",
+   "ammunition boxes",
+   "sight",
+   "return rollers"
+  ],
+  "tier3": [
+   "weld seams",
+   "periscopes",
+   "vision blocks",
+   "hinges",
+   "handles",
+   "lamps",
+   "tow hooks",
+   "smoke tubes",
+   "jerrycans",
+   "aerial"
+  ]
  },
- "questions": ["No unit_refs row and reference_real.json says M2A3 Bradley: built as an AAV-7A1-pattern amphibian (the id and the old builder); confirm, or name the reference."]
+ "questions": []
 }

@@ -192,7 +192,7 @@
    "part": "gun_l"
   },
   {
-   "node": "Mount_gun",
+   "node": "Mount_gun.002",
    "part": "gun_r"
   },
   {
@@ -226,6 +226,6 @@
   ]
  },
  "questions": [
-  "Data: part gun_r (use gun_30) names Mount_gun, which the runtime gives to mount 1 (a 57 mm); the model draws a 57 mm there and the second 30 mm on Mount_gun.002 (mount 4). Lead/owner: point gun_r at Mount_gun.002?"
+  "Settled (owner, 2026-10-03): part gun_r names Mount_gun.002 (the second 30 mm, mount 4). Its 'at' still reads the old Mount_gun place (data x 4, y -2): kept, a gameplay value."
  ]
 }

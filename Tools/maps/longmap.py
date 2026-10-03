@@ -347,7 +347,7 @@ class LongFortress(F_.Fortress):
         hq = next(p for p in L.props if p['def'] == 'command_hq')
         w, d = 8.0, 7.0
         out = [('rally', *RALLY), ('hq', hq['x'] - w, hq['z'] - d, hq['x'] + w, hq['z'] + d)]
-        for kind in ('radar_station', 'shield_generator'):
+        for kind in ('radar_station_prop', 'shield_generator'):
             for p in L.props:
                 if p['def'] == kind:
                     out.append((kind, p['x'] - 4, p['z'] - 4, p['x'] + 4, p['z'] + 4))
@@ -534,10 +534,10 @@ def forward_works(F):
     L = F.L
     for x, z in RELAYS:
         spot = F.spot(x, z, 9.2, reach=16.0, clear=True, gap=3.0, road=1.0)
-        if spot and L.put('radar_station', *spot, 0, pad=0.5):
+        if spot and L.put('radar_station_prop', *spot, 0, pad=0.5):
             F.relays.append(spot)
         else:
-            L.failed.append(('radar_station', x, z))
+            L.failed.append(('radar_station_prop', x, z))
     for size, prefs in FORWARD_SLOTS:
         for x, z in prefs:
             at = F_.place_slot(F, size, 'tower', x, z, 1, reach=10.0, clear=True, quiet=True, gap=2.5, road=2.0)
@@ -640,7 +640,7 @@ def fortify_long(L, name, theme, poly):
     L.teams = [attacker, RALLY]
     # A radar station of the battlefield's own would count as a relay: it becomes a radar dome.
     for p in L.props:
-        if p['def'] == 'radar_station':
+        if p['def'] == 'radar_station_prop':
             p['def'] = 'radar_dome'
     L.rects = [(p['x'] - w / 2, p['z'] - d / 2, p['x'] + w / 2, p['z'] + d / 2)
                for p in L.props for w, d in [B.Layout.size(p['def'], p.get('rot', 0))]]

@@ -24,7 +24,28 @@ namespace MachineBrigade.Sim.Modes
             // Siege: 60 s while the last target is under attack; Defend: none (sheet "Luật trận").
             Overtime = r.Get("overtime", 0f);
             WipeLoses = r.Get("wipeLoses", 0f) > 0f;
+            // Owner fix 11 (2026-10-03): Defend's "timeLimit" is its clock at Normal with both stage bonuses earned
+            // (start + bonuses: 720 s; the code alone gave 480 + 150 = 630 s). Every difficulty's start moves by the same
+            // amount, so Hard and Easy keep their offset. Measured from the start as set, so a second Apply changes nothing.
+            var limit = r.Get("timeLimit", 0f);
+            if (PlayerDefends && !Endless && NormalStartSeconds > 0f && limit > 0f)
+            {
+                _codeStartSeconds ??= StartSeconds;
+                var bonusTotal = 0f;
+                foreach (var stageBonus in StageBonus) bonusTotal += stageBonus;
+                StartSeconds = MathF.Max(60f, _codeStartSeconds.Value + limit - (NormalStartSeconds + bonusTotal));
+            }
         }
+
+        /// <summary>
+        /// Owner fix 11: Defend's start at Normal as the code sets it (0: the data's timeLimit is not read). With it,
+        /// <see cref="Apply"/> moves <see cref="StartSeconds"/> so that Normal's start plus every stage bonus equals the
+        /// data's defend.timeLimit.
+        /// </summary>
+        public float NormalStartSeconds { get; set; }
+
+        /// <summary>The start as set before <see cref="Apply"/> read the data's timeLimit (null: not read yet).</summary>
+        private float? _codeStartSeconds;
 
         /// <summary>
         /// The clock is a time bank (as in Overwatch escort): this much at the start, and each
@@ -42,7 +63,7 @@ namespace MachineBrigade.Sim.Modes
         public float Overtime { get; set; } = 90f;
 
         /// <summary>Stage 1 objectives: the relay stations of the outer line.</summary>
-        public string Relay { get; set; } = "radar_station";
+        public string Relay { get; set; } = "radar_station_prop";
 
         /// <summary>Stage 2 objectives: the shield generators inside the walls, which keep the HQ shielded.</summary>
         public string Generator { get; set; } = "shield_generator";

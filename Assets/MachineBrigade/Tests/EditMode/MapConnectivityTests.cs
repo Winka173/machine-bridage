@@ -116,7 +116,7 @@ namespace MachineBrigade.Tests
             foreach (var p in world.Props)
             {
                 if (!p.IsAlive) continue;
-                if (p.Def.Id is "radar_station" or "shield_generator" or "command_hq")
+                if (p.Def.Id is "radar_station_prop" or "shield_generator" or "command_hq")
                     Need(p.Def.Id, p.Position, p.Width / 2 + FireReach - Reach, p.Depth / 2 + FireReach - Reach);
                 if (p.Def.Id == "base_gate")
                 {

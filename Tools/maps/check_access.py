@@ -201,7 +201,7 @@ def check(path, tables=None):
         w, d, _ = props[p['def']]
         if p.get('rot', 0) % 180 == 90:
             w, d = d, w
-        if p['def'] in ('radar_station', 'shield_generator', 'command_hq'):
+        if p['def'] in ('radar_station_prop', 'shield_generator', 'command_hq'):
             need.append((p['def'], p['x'], p['z'], w / 2 + FIRE_REACH - REACH, d / 2 + FIRE_REACH - REACH))
         if p['def'] == 'base_gate':
             across = (0.0, 6.0) if p.get('rot', 0) % 180 == 0 else (6.0, 0.0)

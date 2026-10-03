@@ -942,7 +942,7 @@ namespace MachineBrigade.Game.Match
                     return;
                 }
                 foreach (var prop in _world.Props)
-                    if (prop.IsAlive && (step == 1 ? prop.Def.Id == "radar_station" : prop.Def.Id == "shield_generator")) _world.DebugDestroyProp(prop);
+                    if (prop.IsAlive && (step == 1 ? prop.Def.Id == "radar_station_prop" : prop.Def.Id == "shield_generator")) _world.DebugDestroyProp(prop);
                 if (step == 1) _fortressCheckAt = Time.time + 2f;
             }
             if (DebugFlags.Has("-mb-arrival") && fortress.Arrival is { } line)
