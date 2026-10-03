@@ -17723,3 +17723,47 @@ Docs/models/QUESTIONS.md go by the lead's proposals:
 11. Keep the kit's material separation (11-17 per model); merge to 6 only if the phone FPS measure later asks for it.
 Roof guns (pintle MGs, remote weapon stations, roof turrets) must read with real height: raised mount, cradle, ammo box,
 shield where the real one has it; fix Ixion's roof gun and the pilots' in wave 1, and the rule goes into MODEL_STANDARD.
+
+## Prompt 35 wave 1 (lane B)
+Branch `feature/p35-w1b`, 2026-10-03: the vehicle half of wave 1 (ten models), one new builder per model
+(`Tools/blender/mb_p35_<id>.py`) and a spec each (`Tools/blender/specs/<id>.json`); report `Docs/models/WAVE_1_REPORT_B.md`.
+Blender and Python only (no Unity, no test, sim or measure run).
+- References. supply_truck and ammo_carrier share unit_refs (M977 HEMTT, KamAZ-5350) and borrowed from each other: the
+  ammunition carrier takes the M977 (its sheet: racks, tiered boxes, the rear crane), the supply truck the KamAZ of the
+  same row, as the 8x8 KamAZ-6350 (the sheet asks eight wheels; the 5350 is a 6x6). elite_mlrs (no sheet row; unit_refs
+  "M142 HIMARS / M270") takes the HIMARS truck (its modelSize is the HIMARS's own size) with the M270's twin-pod
+  launcher-loader module, so it no longer reads as the plain mlrs (one HIMARS pod). elite_mbt is the T-90M of its
+  unit_refs (the plain MBT is a Leopard 2A4) and calls no other builder. microwave_vehicle has no unit_refs row: a
+  Leonidas-class flat microwave array on a JLTV-class utility 4x4 (confidence ban_dau_doan, asked in the report).
+  swarm_carrier is a C-130J (six-bladed props) so its airframe is not the AC-130U sky gunship's.
+- Helpers. Lane B's parametric parts live in `mb_p35b_parts.py` (not the kit, which lane A owns): `raised_gun` (the
+  owner's roof-gun rule: riser ring or pedestal, pintle post, cradle, receiver with grips, barrel with handle and flash
+  hider, ammunition can, shield; names passed by the caller so main-weapon guns keep Turret / Main_cannon /
+  Muzzle_brake / Muzzle_main and free ones Mount_mg / Muzzle_mg), `tread_wheel` (a lean tyre whose tread rows
+  alternate in radius, about 250 triangles against about 700 for kit35.truck_wheel), `tarp_bows`, `ammo_box`,
+  `leaf_pack`, `canvas_roll`, `fuel_tank`, `toolbox`, `step`, `mudflap`. Bodies, cabs, hulls, turrets and wings are in
+  each model's own script.
+- Budget. Owner decision 6: the wheeled ones (light class 3,000-5,000) are kept under 7,500 (1.5 x): 4,698-7,494.
+  smoke_carrier 8,458 and elite_mbt 10,002 (heavy class, max 7,000) and swarm_carrier 4,918 are over or near the
+  maximum as information only; they are not units seen in numbers. Detail was cut where the battle camera cannot see it
+  (inner tyre faces, spring eyes, hidden cross members) before anything visible.
+- Paint. The gate measures brightness regions and shading edges on base colour x COLOR_0, so all-dark paint scores low
+  (the first elite_mbt pass in EliteBlack: 79.7). Elites follow DECISIONS 25B2: the body in the team colour, every armour
+  part EliteBlack, gold bands and chevrons, EliteGlow sights (elite_mbt 89.6, elite_mlrs 87.7). The VBIED's plates are
+  bare torch-cut steel (MetalSheet) with rusted, painted and team patches, as the Mosul photographs show. The swarm
+  carrier's airframe is team-painted like the old file's.
+- Old vs new. elite_mbt (94.3 -> 89.6) and swarm_carrier (95.0 -> 85.1) score lower than the files they replace, but
+  those were copies (the MBT's builder; 50 % of the sky gunship's triangles) and failed hard gates (mantlet and idler;
+  tail, intakes, exhaust, pylons, stores). Prompt 35 section 1 (own geometry, every required part) outranks the soft
+  score of a copy, so the new files stay; both are Tốt.
+- Node names. Every runtime node of the old files is kept (Turret, Main_cannon, Muzzle_brake, Muzzle_*, Mount_mg,
+  Coax, Radar, Propeller..._4, Point_*); the wrappers still add Part_wheel / Part_wheelb (vbied, microwave_vehicle),
+  Part_wing and Mount_Flare_L/R/L2/R2/TL/TR (swarm_carrier, from its two rows of `Flares`). New names for the gate:
+  Mantlet, Idlers, Skirts (elite_mbt), Cradle and Skirt_edge (smoke_carrier: an M113 has no skirts, the sponson's lower
+  lip is the part that covers the top run).
+- No mesh LOD1 / LOD2 in the files (pass 1 decision: the runtime builds them); tier 3 pieces are separate small parts.
+- Renderers: a few parts were merged per material so every file is under glb_check's caps (swarm_carrier 62 -> 38,
+  jet hard cap 44).
+- quality_report.xlsx / .csv are not rewritten on this branch (lane A writes them too): the lead's full gate run after
+  the merge refreshes them. Full gate on this branch (--no-write): 230 models, the ten pass; no other model's
+  own-geometry check names one of the ten.
