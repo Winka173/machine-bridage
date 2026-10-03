@@ -1,0 +1,144 @@
+{
+ "id": "ew_jammer",
+ "class": "wheeled",
+ "real": [
+  "Krasukha-4 jammer (unit_refs: Krasukha-4, Leer-3)",
+  "BAZ-6910-022 8x8 chassis",
+  "self-defence 12.7 mm (balance.json hmg_selfdef_15)"
+ ],
+ "shape": "unit_refs: Krasukha-4: the BAZ's forward crew cab with a flat raked windscreen and four doors, four axles in two pairs, the long equipment van with side and rear doors, ladder, air-conditioning units, grilles and lockers, the big curved reflector lying back on its turning pedestal with ribs, feed boom and horns, the folded mast along the roof, the roof 12.7 mm on its post.",
+ "confidence": "xấp xỉ (Krasukha-4 photographs; the def's modelSize)",
+ "target_size": {
+  "L": 9.01,
+  "W": 2.76,
+  "H": 3.83,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "forward crew cab: windscreen, windows, doors, steps, mirrors, grille",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Doors",
+    "Steps",
+    "Grilles"
+   ]
+  },
+  {
+   "feature": "frame on four axles, lugged tyres, wings",
+   "nodes": [
+    "Chassis",
+    "Axles",
+    "Wheels",
+    "Tyres",
+    "Mud_wings"
+   ]
+  },
+  {
+   "feature": "equipment van: doors, ladder, air-conditioning, lockers, railings",
+   "nodes": [
+    "Body",
+    "Doors",
+    "Ladders",
+    "Air_con",
+    "Railings"
+   ]
+  },
+  {
+   "feature": "curved reflector on its turning pedestal (spins)",
+   "nodes": [
+    "Radar",
+    "Radar_dish",
+    "Radar_ribs",
+    "Radar_feed",
+    "Radar_horns",
+    "Radar_base"
+   ]
+  },
+  {
+   "feature": "folded mast, whips",
+   "nodes": [
+    "Masts",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "roof 12.7 mm on its post",
+   "nodes": [
+    "Turret",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Gun_post"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "hmg_selfdef_15",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the roof gun on its post (MODEL_STANDARD Roof guns)"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "note": "light wheeled: seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "cab (Team)",
+  "van (Team)",
+  "reflector band (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "Russian EW truck, team-coloured",
+ "details": {
+  "tier1": [
+   "cab",
+   "chassis",
+   "van",
+   "reflector"
+  ],
+  "tier2": [
+   "roof gun",
+   "air-con units",
+   "mast",
+   "wings",
+   "lockers"
+  ],
+  "tier3": [
+   "mirrors",
+   "lamps",
+   "ladder rungs",
+   "ribs",
+   "horns",
+   "whips"
+  ]
+ },
+ "questions": []
+}
