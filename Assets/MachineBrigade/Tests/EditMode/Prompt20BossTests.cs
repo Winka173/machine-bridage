@@ -257,7 +257,8 @@ namespace MachineBrigade.Tests
         {
             var world = Field();
             var daedalus = world.SpawnVehicle("daedalus", 1, new Vector2(0f, 40f), 0f);
-            Assert.AreEqual(AltitudeTier.Orbit, daedalus.Tier, "it opens in orbit");
+            // Play-test 13 (lane C): it comes in straight at its low flight level (tiers.enterLow), no orbit opening.
+            Assert.AreEqual(AltitudeTier.Low, daedalus.Tier, "it enters at its low level");
             Group(world, "main_battle_tank", new Vector2(0f, -10f), 4, 20f);
             world.Bosses.JumpPhase(daedalus, 0);
             Run(world, 12f);

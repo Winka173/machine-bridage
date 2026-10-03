@@ -69,7 +69,26 @@ namespace MachineBrigade.Sim.Bosses
         {
             if (v.Def.Tiers is not { } t) return;
             var now = _world.Time;
-            if (t.Opening > 0f)
+            if (t.EnterLow)
+            {
+                // Play-test 13 (lane C): straight in at its low flight level, on its opening cycle's first low step (its
+                // first step when it has none); its satellite is up there already (the rod rain's origin).
+                var cycle = t.CycleOf(0);
+                var at = 0;
+                for (var i = 0; i < cycle.Count; i++)
+                    if (cycle[i].Tier == AltitudeTier.Low)
+                    {
+                        at = i;
+                        break;
+                    }
+                v.LeftOrbit = true;
+                v.HasSatellite = t.Opening > 0f;
+                v.SatelliteAt = v.Position;
+                v.Tier = v.TierFrom = v.TierTo = cycle[at].Tier;
+                v.TierStep = at;
+                v.TierNext = now + cycle[at].Seconds;
+            }
+            else if (t.Opening > 0f)
             {
                 v.Tier = v.TierFrom = v.TierTo = AltitudeTier.Orbit;
                 v.TierNext = now + t.Opening;
@@ -90,7 +109,7 @@ namespace MachineBrigade.Sim.Bosses
         }
 
         /// <summary>A tiered boss that opens in orbit gets its escorts as it comes down, not while it is out of reach.</summary>
-        private static bool EscortsLater(Vehicle v) => v.Def.Tiers is { Opening: > 0f, EscortsOnDescend: true };
+        private static bool EscortsLater(Vehicle v) => v.Def.Tiers is { Opening: > 0f, EscortsOnDescend: true, EnterLow: false };
 
         private void Radio(Vehicle v, TierDef t, string moment)
         {

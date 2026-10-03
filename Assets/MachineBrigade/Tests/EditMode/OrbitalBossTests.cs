@@ -88,34 +88,34 @@ namespace MachineBrigade.Tests
         // ------------------------------------------------------------------ the opening and the schedule
 
         [Test]
-        public void TheOpeningIsOutOfReachThenItNeverGoesBackToOrbitAndKeepsItsSchedule()
+        public void ItEntersAtItsLowLevelNeverGoesToOrbitAndKeepsItsSchedule()
         {
             var world = Field(difficulty: null);
             var bug = world.SpawnVehicle("silver_bug", 1, Vector2.Zero, 0f);
             Tough(world, "main_battle_tank", new Vector2(0f, 20f));
             var t = bug.Def.Tiers;
-            // Play-test 6 (DECISIONS 21G): half a second in orbit, then straight down (15 s up there overflowed the screen).
-            Assert.AreEqual(0.5f, t.Opening, 1e-3f);
-            Assert.AreEqual(AltitudeTier.Orbit, bug.Tier);
-            Assert.IsTrue(bug.Invulnerable, "untouchable in orbit");
-            var fired = Run(world, 0.4f).Count(e => e.Kind == SimEventKind.WeaponFired && e.Entity == bug.Id);
-            Assert.AreEqual(0, fired, "its guns hold in orbit");
-            Assert.AreEqual(AltitudeTier.Orbit, bug.Tier);
+            // Play-test 13 (lane C): it comes in straight at its low flight level (tiers.enterLow), no orbit and no slow
+            // descent; it starts on its cycle's low step (10 s), then keeps the cycle (high 25 s, low 10 s).
+            Assert.IsTrue(t.EnterLow);
+            Assert.AreEqual(AltitudeTier.Low, bug.Tier, "in at its low level");
+            Assert.IsFalse(bug.Invulnerable, "in reach from the start");
+            Assert.IsTrue(bug.LeftOrbit && bug.HasSatellite, "its satellite is up there already");
+            Assert.AreEqual(t.LowHeight, bug.Height, 1e-3f, "drawn at its low height at once");
             var seen = new List<(double at, AltitudeTier tier, bool shifting)>();
             Run(world, 110f, each: () => seen.Add((world.Time, bug.Tier, bug.Shifting)));
-            Assert.IsTrue(bug.LeftOrbit && bug.HasSatellite, "down from orbit, a satellite left up there");
-            Assert.IsFalse(seen.Any(s => s.at > 0.7 && s.tier == AltitudeTier.Orbit), "never back to orbit");
+            Assert.IsFalse(seen.Any(s => s.tier == AltitudeTier.Orbit), "never in orbit");
             AltitudeTier At(double time) => seen.First(s => s.at >= time).tier;
-            // 0.5-4.5 s the way down (counts as high), high to 29.5, the change to low (low meanwhile), low to 43, the
-            // change back (still low), high from 46.5.
-            Assert.AreEqual(AltitudeTier.High, At(1.5));
-            Assert.AreEqual(AltitudeTier.High, At(29.0));
-            Assert.AreEqual(AltitudeTier.Low, At(30.5), "during the change the lower tier counts");
-            Assert.AreEqual(AltitudeTier.Low, At(35.5));
-            Assert.AreEqual(AltitudeTier.Low, At(44.5), "climbing back it is still hit as low");
-            Assert.AreEqual(AltitudeTier.High, At(47.5));
-            Assert.AreEqual(AltitudeTier.High, At(70.5));
-            Assert.AreEqual(AltitudeTier.Low, At(73.5));
+            // Low to 10 s, the climb (still low) to 13.5, high to 38.5, the change down (low meanwhile), low to 52, the climb
+            // back (still low), high from 55.5.
+            Assert.AreEqual(AltitudeTier.Low, At(1.5));
+            Assert.AreEqual(AltitudeTier.Low, At(9.5));
+            Assert.AreEqual(AltitudeTier.Low, At(12.0), "climbing it is still hit as low");
+            Assert.AreEqual(AltitudeTier.High, At(14.5));
+            Assert.AreEqual(AltitudeTier.High, At(37.5));
+            Assert.AreEqual(AltitudeTier.Low, At(39.5), "during the change the lower tier counts");
+            Assert.AreEqual(AltitudeTier.Low, At(51.0));
+            Assert.AreEqual(AltitudeTier.Low, At(54.0), "climbing back it is still hit as low");
+            Assert.AreEqual(AltitudeTier.High, At(56.5));
             Assert.IsTrue(seen.Any(s => s.shifting), "each change takes its time");
             var shots = Run(world, 1f).Count(e => e.Kind == SimEventKind.WeaponFired && e.Entity == bug.Id);
             Assert.Greater(Run(world, 10f).Count(e => e.Kind == SimEventKind.WeaponFired && e.Entity == bug.Id) + shots, 0, "its laser fires once it is down");
