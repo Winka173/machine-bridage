@@ -53,7 +53,7 @@
   },
   "airborne_vehicle": {
     "file": "airborne_vehicle.glb",
-    "triangles": 3260
+    "triangles": 9464
   },
   "airborne_vehicle_chute": {
     "file": "airborne_vehicle_chute.glb",

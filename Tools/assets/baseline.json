@@ -2920,6 +2920,16 @@
    "changes": [
     "FLAG airborne_light_tank: triangles 5,550 -> 10,510 (+89.4%); vertices 6,564 -> 14,127 (+115.2%); meshes 29 -> 63 (+117.2%); renderers 29 -> 63 (+117.2%); materials 7 -> 11 (+57.1%); materialSlots 29 -> 63 (+117.2%); fileBytes 351,436 -> 745,832 (+112.2%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "airborne_vehicle"
+   ],
+   "reason": "P35 wave 6: airborne_vehicle rebuilt from scratch",
+   "changes": [
+    "FLAG airborne_vehicle: triangles 3,260 -> 9,464 (+190.3%); vertices 3,804 -> 12,850 (+237.8%); meshes 18 -> 52 (+188.9%); renderers 18 -> 52 (+188.9%); materials 6 -> 10 (+66.7%); materialSlots 18 -> 52 (+188.9%); fileBytes 205,704 -> 673,512 (+227.4%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -4719,24 +4729,24 @@
   },
   "airborne_vehicle": {
    "file": "airborne_vehicle.glb",
-   "fileBytes": 205704,
-   "sha1": "ea40410f88ec13e0",
+   "fileBytes": 673512,
+   "sha1": "5121c70b55ebb974",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 23,
-   "meshes": 18,
-   "materials": 6,
+   "nodes": 57,
+   "meshes": 52,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 18,
-   "submeshes": 18,
-   "materialSlots": 18,
-   "materialsUsed": 6,
-   "triangles": 3260,
-   "vertices": 3804,
+   "renderers": 52,
+   "submeshes": 52,
+   "materialSlots": 52,
+   "materialsUsed": 10,
+   "triangles": 9464,
+   "vertices": 12850,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -4744,36 +4754,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 66,
+   "loosePieces": 305,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.31,
-    -0.0222,
-    -2.465
+    -1.2525,
+    -0.0645,
+    -2.5744
    ],
    "boundsMax": [
-    1.31,
-    1.855,
-    2.69
+    1.2525,
+    2.1254,
+    2.75
    ],
    "size": [
-    5.155,
-    2.62,
-    1.877
+    5.324,
+    2.505,
+    2.19
    ],
    "center": [
     0.0,
-    0.916,
-    0.112
+    1.03,
+    0.088
    ],
-   "structureHash": "9169e8a72a6f6df2",
+   "structureHash": "66ce1c5be069510a",
    "color0": {
-    "mean": 0.6302,
-    "min": 0.0885,
+    "mean": 0.5871,
+    "min": 0.0704,
     "max": 1.0,
-    "p05": 0.1587,
-    "p95": 0.981,
+    "p05": 0.1557,
+    "p95": 0.8867,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -4797,34 +4807,71 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
+    "Ball_mounts",
     "Coax",
+    "Coax_jacket",
+    "Coax_pkt",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
     "Hatch_fittings",
+    "Hatch_fittings.001",
     "Hatches",
+    "Hatches.001",
     "Hubs",
     "Hull",
+    "Hull_lower",
+    "Idlers",
+    "Jerrycans",
+    "Kit_hooks",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
+    "MG_bow",
     "Main_cannon",
+    "Mantlet",
+    "Mudflaps",
     "Muzzle_brake",
     "Muzzle_coax",
     "Muzzle_main",
     "Point_exhaust",
     "Point_fire",
+    "Rollers",
+    "Sight",
+    "Sight.001",
+    "Sight_drum",
+    "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
+    "Stowage",
+    "Stowage_bags",
     "Tail_lamps",
-    "Team_bands",
+    "Tarp_roll",
+    "Team_band",
+    "Team_band.001",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
+    "Trim_vane",
     "Turret",
     "Turret_armor",
     "Turret_body",
+    "Turret_steel",
     "Tyres",
+    "Vane_ribs",
+    "Water_jets",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 9,464 over the ground normal budget 7,800",
+    "vertices 12,850 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
    "units": [
     "airborne_vehicle"
    ],
