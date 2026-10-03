@@ -753,15 +753,15 @@
   },
   "drone_hangar": {
     "file": "drone_hangar.glb",
-    "triangles": 7794
+    "triangles": 4912
   },
   "drone_hangar_a": {
     "file": "drone_hangar_a.glb",
-    "triangles": 6634
+    "triangles": 5072
   },
   "drone_hangar_b": {
     "file": "drone_hangar_b.glb",
-    "triangles": 9770
+    "triangles": 5884
   },
   "drone_hijack_vehicle": {
     "file": "drone_hijack_vehicle.glb",
