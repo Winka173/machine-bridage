@@ -614,10 +614,111 @@ def _aa57_turret(a):
     K.whip_antenna(a.part('Antennas', 'Steel', t), (-.7, .95, .6), h=.5, lean=.25)
 
 
+# ============================================================================= thermobaric_launcher
+def thermobaric_launcher(a):
+    """TOS-1A Solntsepyok: see the module docstring. Runtime: Turret (the turntable), Launcher / Launcher_face /
+    Tubes (elevating), Muzzle_rocket and Muzzle_main (the face of the tube block), Mount_mg / Muzzle_mg (the
+    self-defence gun on the hull rear), Point_fire, Point_exhaust."""
+    TX, TW, WR = 1.1, .5, .3
+    wheels = [-1.95 + i * .76 for i in range(6)]
+    W.running_gear(a, TX, TW, WR, wheels, (-2.55, .55, .26), (2.55, .57, .27), rollers=(-1.0, .55, 2.0),
+                   roller_z=.8, top_hidden=.72, disc_mat='Armor', seg=8, link_pitch=.34, teeth=9)
+    hull = a.part('Hull', 'Team')
+    # The T-72 hull: the long glacis to the V-ribbed nose, flat deck, the rear plate with its louvres.
+    W.side_hull(hull, [(2.9, .45), (2.95, .95), (2.78, 1.1), (-1.1, 1.12), (-2.75, .82), (-2.82, .62),
+                       (-2.55, .42)], 1.72, chamfer=.04)
+    fen = a.part('Fenders', 'Team')
+    for s in (-1, 1):
+        K.fender(fen, TX, -2.8, 2.85, .84, .62, s)
+        sk = a.part('Skirts', 'Rubber')
+        for i in range(6):
+            sk.box((.03, .88, .32), loc=(s * (TX + .3), -2.4 + i * .92, .68), bevel=0)
+        a.part('Team_band', 'Team').box((.012, 1.8, .08), loc=(s * (TX + .32), -.4, .76), bevel=0)
+    # The dozer blade under the nose, the glacis splash board, driver's hatch, lamps.
+    blade = a.part('Dozer_blade', 'Armor')
+    k.extrude(blade, [(-.12, -.12), (.05, -.13), (.1, .14), (-.02, .16)], 2.0, loc=(0, -2.85, .52), axis='X',
+              chamfer=.02)
+    a.part('Steel', 'Steel').box((1.5, .06, .08), loc=(0, -2.0, 1.0), rot=(-.4, 0, 0), bevel=0)
+    hc = (0, -1.45, 1.12)
+    k.ring(a.part('Hatches', 'Armor'), [(.22, 0), (.27, 0), (.27, .05), (.22, .05)], loc=hc, seg=10)
+    k.lathe(a.part('Hatches', 'Armor'), [(0, .08), (.18, .075), (.23, .05), (.23, .02)], loc=hc, seg=10)
+    a.part('Sight', 'Armor').box((.16, .09, .07), loc=(0, -1.75, 1.1), rot=(-.4, 0, 0), bevel=0)
+    for s in (-1, 1):
+        K.lamp(a, (s * .9, -2.0, 1.02), (0, -1, .1), r=.06, guard=False)
+        K.tow_hook(a.part('Kit_tow', 'Steel'), (s * .55, -2.85, .7), facing=(0, -1, 0), size=.1)
+    # Crew compartment boxes either side of the turntable (the TOS crew's), the fuel drums on the rear plate.
+    for s in (-1, 1):
+        K.chamfer_box(a.part('Crew_boxes', 'Team'), (.5, 1.2, .32), loc=(s * 1.05, -.6, .98), c=.04)
+        hc2 = (s * 1.05, -.6, 1.15)
+        k.ring(a.part('Hatches', 'Armor'), [(.15, 0), (.19, 0), (.19, .04), (.15, .04)], loc=hc2, seg=8)
+        K.fuel_drum(a.part('Fuel_drums', 'Armor'), a.part('Kit_straps', 'Steel'), (s * .55, 3.05, .75), r=.25, h=.8,
+                    lying=True)
+    K.grille(a, (0, 2.1, 1.115), 1.1, .9, facing=(0, 0, 1), slats=5, frame_mat='Team')
+    K.grille(a, (-.85, 1.7, 1.0), .3, .7, facing=(-1, 0, .4), slats=3, frame_mat='Armor')
+    K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.5, .9, .28), (TX + .05, 1.6, .84))
+    for s in (-1, 1):
+        a.part('Tail_lamps', 'LavaGlow').box((.1, .02, .06), loc=(s * .95, 2.93, 1.0), bevel=0)
+    K.pintle_mg(a, None, (-1.05, 2.65, .84), post=.44, length=.95, shield=False)
+    a.pivot('Point_fire', (0, 1.95, 1.35))
+    a.pivot('Point_exhaust', (1.2, 2.55, 1.0))
+    _tos_launcher(a)
+    k.clean(a)
+
+
+def _tos_launcher(a):
+    """The turntable, the launcher's lifting rams and cradle, the 24-tube box: armoured side panels, the tube
+    mouths in a 6 x 4 grid on its face, the rear covers, the laying sight on the turntable."""
+    t = a.pivot('Turret', (0, .5, 1.28))
+    k.lathe(a.part('Turret_body', 'Team', t), [(.95, -.18), (.98, -.1), (.95, .05), (.85, .12), (0, .12)], seg=16)
+    k.ring(a.part('Turret_steel', 'Steel', t), [(.9, -.2), (1.0, -.2), (1.0, -.12), (.9, -.12)], seg=16)
+    cr = a.part('Cradle', 'Armor', t)
+    for s in (-1, 1):
+        cr.box((.16, .7, .5), loc=(s * .55, .6, .35), bevel=0)
+        a.part('Rams', 'Steel', t).limb((s * .35, -.4, .1), (s * .35, -.9, .55), .1, .1, bevel=0)
+        a.part('Rams', 'Steel', t).limb((s * .35, -.4, .12), (s * .35, -.5, .25), .16, .16, bevel=0)
+    a.part('Cradle', 'Steel', t).cyl(.08, 1.3, loc=(0, .75, .55), rot=(0, R90, 0), seg=8, bevel=0)
+    # The box, tilted up 8 degrees at the front, centred over the turntable: front face at local y -2.65.
+    e = math.radians(8)
+    L, Wd, H = 3.6, 1.9, .95
+    yc, zc = -.85, .92
+    box = a.part('Launcher', 'Team', t)
+    K.chamfer_box(box, (Wd, L, H), loc=(0, yc, zc), rot=(-e, 0, 0), c=.05)
+    arm = a.part('Launcher_armor', 'Armor', t)
+    d = Vector((0, -math.cos(e), math.sin(e)))
+    up = Vector((0, math.sin(e), math.cos(e)))
+    c0 = Vector((0, yc, zc))
+    for s in (-1, 1):
+        for i in range(3):
+            p = c0 + d * ((i - 1) * 1.15) + Vector((s * (Wd / 2 + .03), 0, 0))
+            K.panel(a, arm, (1.05, .8), tuple(p), (s, 0, 0), t=.04, rivet=.25, parent=t)
+    face_c = c0 + d * (L / 2 + .01)
+    a.part('Launcher_face', 'Armor', t).box((Wd - .06, .03, H - .06), loc=tuple(face_c), rot=(-e, 0, 0), bevel=0)
+    tubes = a.part('Tubes', 'Undercarriage', t)
+    rims = a.part('Tube_rims', 'Steel', t)
+    for i in range(6):
+        for j in range(4):
+            p = face_c + Vector(((i - 2.5) * .29, 0, 0)) + up * ((j - 1.5) * .21) + d * .012
+            tubes.cyl(.1, .02, loc=tuple(p), rot=(R90 - e, 0, 0), seg=8, bevel=0)
+            rims.cyl(.115, .015, loc=tuple(p - d * .005), rot=(R90 - e, 0, 0), seg=8, bevel=0)
+    back_c = c0 - d * (L / 2 + .01)
+    a.part('Launcher_covers', 'Canvas', t).box((Wd - .1, .04, H - .1), loc=tuple(back_c), rot=(-e, 0, 0), bevel=0)
+    for i in range(4):
+        p = c0 + d * (-1.4 + i * .95) + up * (H / 2 + .01)
+        a.part('Kit_latches', 'Steel', t).box((Wd + .04, .05, .03), loc=tuple(p), rot=(-e, 0, 0), bevel=0)
+    a.pivot('Muzzle_rocket', (0, -2.65, .92), t)
+    a.pivot('Muzzle_main', (0, -2.65, .92), t)
+    K.periscope(a, (.7, .05, .12), facing=(0, -1, 0), parent=t, size=(.2, .18, .2))
+    K.smoke_dischargers(a, .95, .4, .2, 1, count=3, parent=t)
+    K.smoke_dischargers(a, .95, .4, .2, -1, count=3, parent=t)
+    a.part('Team_band', 'Team', t).box((1.2, .6, .012), loc=tuple(c0 + up * (H / 2 + .006)), rot=(-e, 0, 0),
+                                       bevel=0)
+
+
 BUILDERS = {
     'twin_tank': (twin_tank, dict(ao_distance=.5, grime_height=.6)),
     'titan_tank': (titan_tank, dict(ao_distance=.6, grime_height=.6)),
     'turtle_tank': (turtle_tank, dict(ao_distance=.5, grime_height=.6)),
     'laser_tank': (laser_tank, dict(ao_distance=.5, grime_height=.6)),
     'aa_57mm_vehicle': (aa_57mm_vehicle, dict(ao_distance=.5, grime_height=.6)),
+    'thermobaric_launcher': (thermobaric_launcher, dict(ao_distance=.5, grime_height=.6)),
 }
