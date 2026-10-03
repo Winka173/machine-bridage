@@ -18684,3 +18684,9 @@ Prompt 35 section 9: the GLB total may grow by at most 25 %; after the rebuild i
 - Unity check for the lead: CatalogCheck plus the card / ModelPreview renders of main_battle_tank, monster and
   ammo_crate compared with the previous ones (REBUILD_REPORT section 9).
 - (lead, 2026-10-03) kronos gun_r's hit point moved to (3, -7, 9.6), its real gun (Mount_gun.002), per the owner's answer 4.
+
+## Token guide v2 (lane A, 03/10)
+- Owner request 03/10 (requests_vi.md, last line): small savings + outside practice + model per job. TOKEN_OPTIMISATION.md v2: 24 small rules (S1-S24) measured from a static scan of 263 transcripts; prompt-caching section from the official docs; "Which model for which job" table.
+- Most capable = `fable` (the `best` alias resolves to Fable where available, else Opus); models, VFX, Sim fixes and balance use it (else `opus`); `sonnet` for audits, exports, tests, doc generators; `haiku` for routine docs, moves, greps (untried here: spot-check first runs). Merges and renders stay with the lead; never set CLAUDE_CODE_SUBAGENT_MODEL globally.
+- balance.json has // comments: use grep on `"id": "<id>"` or Tools/balance/jsonc_edit.strip_comments, not json.load.
+- AGENT_RULES gains a 10-line token hygiene block; report length 5-10 lines (model/VFX up to 15).
