@@ -34,8 +34,13 @@ namespace MachineBrigade.Editor
         {
             var output = Argument("-mbShotsOut") ?? Path.Combine(Application.dataPath, "../Builds/flare_shots");
             Directory.CreateDirectory(output);
-            var sheet = new Texture2D(CellW * Moments.Length, CellH * 2, TextureFormat.RGB24, false);
-            for (var row = 0; row < 2; row++) Row(sheet, row == 1, 1 - row);
+            // The sheet's pixels live in a plain array while the rows render: each row opens a new scene, which unloads
+            // unused assets and destroyed a Texture2D made before it (MissingReferenceException at SetPixels).
+            var width = CellW * Moments.Length;
+            var pixels = new Color[width * CellH * 2];
+            for (var row = 0; row < 2; row++) Row(pixels, width, row == 1, 1 - row);
+            var sheet = new Texture2D(width, CellH * 2, TextureFormat.RGB24, false);
+            sheet.SetPixels(pixels);
             sheet.Apply();
             var path = Path.Combine(output, "flares.png");
             File.WriteAllBytes(path, sheet.EncodeToPNG());
@@ -43,7 +48,7 @@ namespace MachineBrigade.Editor
             Debug.Log("[FlareShots] wrote " + Path.GetFullPath(path));
         }
 
-        private static void Row(Texture2D sheet, bool night, int sheetRow)
+        private static void Row(Color[] sheet, int sheetWidth, bool night, int sheetRow)
         {
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             Random.InitState(20261003);
@@ -99,7 +104,9 @@ namespace MachineBrigade.Editor
                     var frame = new Texture2D(CellW, CellH, TextureFormat.RGB24, false);
                     frame.ReadPixels(new Rect(0, 0, CellW, CellH), 0, 0);
                     frame.Apply();
-                    sheet.SetPixels(col * CellW, sheetRow * CellH, CellW, CellH, frame.GetPixels());
+                    var cell = frame.GetPixels();
+                    for (var y = 0; y < CellH; y++)
+                        System.Array.Copy(cell, y * CellW, sheet, (sheetRow * CellH + y) * sheetWidth + col * CellW, CellW);
                     Object.DestroyImmediate(frame);
                     RenderTexture.active = null;
                 }
