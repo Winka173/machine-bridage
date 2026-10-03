@@ -2986,6 +2986,16 @@
    "changes": [
     "FLAG elite_tank_destroyer: triangles 4,794 -> 11,184 (+133.3%); vertices 5,507 -> 15,057 (+173.4%); meshes 27 -> 64 (+137.0%); renderers 27 -> 64 (+137.0%); materials 9 -> 13 (+44.4%); materialSlots 27 -> 64 (+137.0%); fileBytes 298,876 -> 792,888 (+165.3%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "elite_apc"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG elite_apc: triangles 5,480 -> 11,260 (+105.5%); vertices 6,673 -> 14,910 (+123.4%); meshes 41 -> 59 (+43.9%); renderers 41 -> 59 (+43.9%); materials 9 -> 11 (+22.2%); materialSlots 41 -> 59 (+43.9%); fileBytes 367,256 -> 781,456 (+112.8%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -23283,24 +23293,24 @@
   },
   "elite_apc": {
    "file": "elite_apc.glb",
-   "fileBytes": 367256,
-   "sha1": "a616d0ba73c91ca7",
+   "fileBytes": 781456,
+   "sha1": "1a10be8dfe788cda",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 47,
-   "meshes": 41,
-   "materials": 9,
+   "nodes": 65,
+   "meshes": 59,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 41,
-   "submeshes": 41,
-   "materialSlots": 41,
-   "materialsUsed": 9,
-   "triangles": 5480,
-   "vertices": 6673,
+   "renderers": 59,
+   "submeshes": 59,
+   "materialSlots": 59,
+   "materialsUsed": 11,
+   "triangles": 11260,
+   "vertices": 14910,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -23308,36 +23318,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 137,
+   "loosePieces": 364,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.748,
-    -0.0435,
-    -3.0302
+    -1.661,
+    -0.067,
+    -3.36
    ],
    "boundsMax": [
-    1.748,
-    2.9727,
-    3.358
+    1.661,
+    2.87,
+    2.975
    ],
    "size": [
-    6.388,
-    3.496,
-    3.016
+    6.335,
+    3.322,
+    2.937
    ],
    "center": [
     0.0,
-    1.465,
-    0.164
+    1.402,
+    -0.192
    ],
-   "structureHash": "9ac2fd40da44767a",
+   "structureHash": "749e36deeaa7396a",
    "color0": {
-    "mean": 0.6317,
-    "min": 0.0801,
+    "mean": 0.5641,
+    "min": 0.0704,
     "max": 1.0,
-    "p05": 0.2002,
-    "p95": 0.9728,
+    "p05": 0.1618,
+    "p95": 0.9002,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -23363,58 +23373,79 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "APS",
-    "APS_glow",
-    "APS_post",
-    "APS_sensors",
-    "Armor",
-    "Cdr_sight",
-    "Cdr_sight_glass",
-    "Cdr_sight_post",
-    "Chevrons",
+    "Antennas",
     "Coax",
-    "Deck",
-    "Elite_glow",
-    "Hatch_fittings",
-    "Hatch_fittings.001",
+    "Doors",
+    "Exhaust",
+    "Fenders",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
+    "Hull_lower",
+    "Idlers",
+    "Jerrycans",
+    "Kit_latches",
+    "Kit_latches.001",
+    "Kit_racks",
+    "Kit_steel",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
     "Launcher_arm",
     "Launcher_box",
-    "Light_rims",
+    "MG_bow",
+    "MG_bow_ball",
     "Main_cannon",
     "Main_cannon_gilt",
+    "Mantlet",
     "Muzzle_brake",
     "Muzzle_coax",
     "Muzzle_main",
     "Muzzle_missile",
-    "Periscope",
-    "Periscope_hoods",
     "Point_exhaust",
     "Point_fire",
+    "Rollers",
     "Sight",
-    "Skirt_edge",
+    "Sight.001",
+    "Sight_glow",
     "Skirts",
-    "Smoke",
     "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
-    "Steel",
+    "Steps",
+    "Stowage",
+    "Stowage.001",
+    "Suspension",
     "Tail_lamps",
+    "Team_band",
+    "Team_band.001",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
+    "Trim_vane",
+    "Trim_vane_ribs",
+    "Tube_caps",
     "Tubes",
     "Turret",
-    "Turret_armor",
+    "Turret_armour",
     "Turret_body",
+    "Turret_ring",
+    "Turret_roof",
     "Tyres",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 11,260 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 14,910 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
    "units": [
     "elite_apc"
    ],
