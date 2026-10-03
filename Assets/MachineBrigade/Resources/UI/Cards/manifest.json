@@ -204,7 +204,7 @@
             "kind": "vehicle",
             "model": "ballistic_launcher",
             "source": "Models/ballistic_launcher",
-            "hash": "v2:3e066b5ca5651ed283b01bf1346fa4b4ec354a0e"
+            "hash": "v2:c64b1243b9c2b75348663890c6c5c3fa1b083b73"
         },
         {
             "id": "engineer_vehicle",
@@ -225,7 +225,7 @@
             "kind": "vehicle",
             "model": "fpv_carrier",
             "source": "Models/fpv_carrier",
-            "hash": "v2:a2156ab281d34d2939f94be60aaea60828e469bb"
+            "hash": "v2:c6b77af8fa913ec5e3a348f76f65aa1eff6c4d69"
         },
         {
             "id": "mine_layer",
@@ -652,7 +652,7 @@
             "kind": "vehicle",
             "model": "ground_cruise_missile_vehicle",
             "source": "Models/ground_cruise_missile_vehicle",
-            "hash": "v2:f68ae1802b577045db1522b5cc044179da4c2680"
+            "hash": "v2:476642ce96809f6633cbe0285784750b782091a7"
         },
         {
             "id": "aerial_tanker",
@@ -1051,7 +1051,7 @@
             "kind": "elite",
             "model": "fpv_carrier",
             "source": "Models/fpv_carrier",
-            "hash": "v2:a2156ab281d34d2939f94be60aaea60828e469bb"
+            "hash": "v2:c6b77af8fa913ec5e3a348f76f65aa1eff6c4d69"
         },
         {
             "id": "elite_grad",
