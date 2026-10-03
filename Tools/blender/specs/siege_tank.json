@@ -1,0 +1,182 @@
+{
+ "id": "siege_tank",
+ "class": "tracked",
+ "real": [
+  "2S4 Tyulpan (2B8 240 mm)",
+  "M110 (spades)",
+  "2S7 Pion",
+  "Siege Tank (StarCraft II) for the two modes"
+ ],
+ "shape": "unit_sheet.json Phương tiện: 'Khung xích, cối 240 mm nòng rất to và ngắn đặt ở đuôi, càng chống hạ xuống khi bắn, thêm pháo 105 mm phụ. Từ trên xuống: nòng cối to tròn, càng chống ở sau.' Visible weapons 2B8 240 mm, L7 105 mm, M2.",
+ "confidence": "xấp xỉ (2S4 / M110 parts; the poses after VehicleView.Deploy's siege rig)",
+ "target_size": {
+  "L": 9.13,
+  "W": 3.34,
+  "H": 3.44,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "very big short 240 mm mortar: cradle on trunnions, fat sleeve, telescoping tube, big brake",
+   "nodes": [
+    "Main_cannon_cradle",
+    "Main_cannon_sleeve",
+    "Main_cannon_tube",
+    "Muzzle_brake",
+    "Muzzle_brake_ports"
+   ]
+  },
+  {
+   "feature": "twin 105 mm on a sliding mantlet (tank mode)",
+   "nodes": [
+    "Deploy_gun",
+    "Mantlet_105",
+    "Gun105_tubes",
+    "Gun105_brakes"
+   ]
+  },
+  {
+   "feature": "four hydraulic legs folded on the track pods: I-section arms, ram housings, rams, claw pads",
+   "nodes": [
+    "Deploy_brace_l",
+    "Deploy_brace_r",
+    "Deploy_leg_l",
+    "Deploy_leg_r",
+    "Deploy_braceknee_l",
+    "Deploy_legram_l"
+   ]
+  },
+  {
+   "feature": "rear spades stowed against the tail",
+   "nodes": [
+    "Deploy_spade_l",
+    "Deploy_spade_r"
+   ]
+  },
+  {
+   "feature": "low wide lofted hull, armoured pods over the track ends, six road wheels",
+   "nodes": [
+    "Hull",
+    "Track_pods",
+    "Pod_trim",
+    "Wheels",
+    "Tracks",
+    "Skirt_edge"
+   ]
+  },
+  {
+   "feature": "broad turret on a tall ring with riveted side panels, the roof M2 on its post",
+   "nodes": [
+    "Deploy_riser",
+    "Turret",
+    "Turret_body",
+    "Turret_armor",
+    "Mount_mg",
+    "MG"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "siege_mortar_240",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "siege_gun_105",
+   "slot": "gun",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "hmg_selfdef_21",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "lead rule (wave 5): units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "hull and track pods (Team)",
+  "turret body (Team)",
+  "roof panel and side bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (tank wreck)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "pods",
+   "turret",
+   "mortar",
+   "tracks"
+  ],
+  "tier2": [
+   "legs",
+   "rams",
+   "spades",
+   "riser",
+   "cradle",
+   "sleeve",
+   "brake",
+   "twin 105",
+   "glacis plate",
+   "stowage",
+   "exhausts"
+  ],
+  "tier3": [
+   "claws",
+   "pads",
+   "rivets",
+   "periscopes",
+   "hatches",
+   "smoke launchers",
+   "lamps",
+   "tow hooks",
+   "teeth",
+   "MG"
+  ]
+ },
+ "merged": {
+  "mantlet": "Main_cannon_cradle"
+ },
+ "questions": []
+}

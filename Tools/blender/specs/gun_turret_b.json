@@ -119,9 +119,10 @@
    "slot": "main",
    "mount": "Turret",
    "muzzles": [
-    "Muzzle_main"
+    "Muzzle_b1_main",
+    "Muzzle_b2_main"
    ],
-   "note": "barrels 1 in data: Muzzle_main on the left barrel; Main_cannon_2 kept as the old model's second barrel"
+   "note": "wave 5 lead call 3: barrels 2 (35 damage a round, 12 a magazine, 0.25 s, reload 2.65 s: cycle 5.40 s and DPS 78 unchanged); Muzzle_main stays on the right barrel, a muzzle per barrel under it"
   },
   {
    "weapon": "(none in data)",

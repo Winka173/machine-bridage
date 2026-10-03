@@ -26,7 +26,9 @@ Index (section 3 of the prompt):
   heli      rotor_head, tail_rotor, skids, stub_wing
   ship      ship_hull, railing, ladder, vls, ciws, rhib, radar_mast
   rail      rail_track, bogie
-  structure footing, sandbag_wall, wire_fence, hesco, t_wall, floodlight, door, beacon (style 'accord' / 'hegemon')
+  structure footing, sandbag_wall, wire_fence, hesco, t_wall, floodlight, door, beacon (style 'accord' / 'hegemon'),
+            sandbag_run, earth_pad, camo_net, track_run (wave 3 lane B's helpers)
+  bodies    ring_from_half, section_loft, slab_loft, ellipse_half; store (lean missile / bomb; wave 4 lane C's)
   boss      armour_plate, breakable_panel, fuel_drum, smokestack, gun_cluster
   colour    soot, dust, tone, team_band (COLOR_0 effects applied after the bake)
 """
@@ -804,8 +806,9 @@ def intake(shape, dark, loc, w, h, depth, facing=(0, -1, 0), lip=.04):
 
 
 def missile(a, loc, r, length, direction=(0, -1, 0), fins=4, parent=None, body='Missiles', seeker='Glass', band=True):
-    """A missile nose along `direction`: an ogive body, the seeker dome, a hazard band, 4 tail fins and 4 canards."""
-    rot = rot_to([-c for c in direction])
+    """A missile from its tail at loc, the nose `length` along `direction`: an ogive body, the seeker dome, a hazard
+    band, 4 tail fins and 4 canards. (Wave 5 fix, lane C's report: it used to build the nose towards -direction.)"""
+    rot = rot_to(direction)
     m = frame(loc, rot)
     k.lathe(a.part(body, 'Fuel', parent), [(0, 0), (r * .8, .02), (r, .08), (r, length * .82), (r * .9, length * .94),
                                            (r * .45, length), (0, length + .005)], loc=loc, rot=rot, seg=8, worn=(2,))
@@ -1147,12 +1150,13 @@ def floodlight(a, loc, facing=(0, -1, -.3), pole=3.0, parent=None):
     a.part(KIT['cables'], 'Undercarriage', parent).tube([(x + .08, y, z + pole), (x + .08, y, z + .1)], .012, seg=4)
 
 
-def door(a, loc, size=(1.0, 2.0), normal=(0, -1, 0), parent=None, mat='Armor'):
-    """A steel door in a wall: the frame, the leaf with a vision slot, hinges and a handle."""
+def door(a, loc, size=(1.0, 2.0), normal=(0, -1, 0), parent=None, mat='Armor', frame_mat='Steel'):
+    """A steel door in a wall: the frame, the leaf with a vision slot, hinges and a handle. `frame_mat` (wave 5,
+    lane B's request): the frame's material (default Steel, as before)."""
     w, h = size
     rot = rot_to(normal)
     m = frame(loc, rot)
-    fr = a.part('Door_frames', 'Steel', parent)
+    fr = a.part('Door_frames', frame_mat, parent)
     for s in (-1, 1):
         fr.box((.08, h, .08), loc=_at(m, (s * (w / 2 + .04), h / 2, .02)), rot=rot, bevel=0)   # wave 2: upright
     fr.box((w + .16, .08, .08), loc=_at(m, (0, h + .04, .02)), rot=rot, bevel=0)
@@ -1171,6 +1175,199 @@ def beacon(a, loc, parent=None, r=.1):
     k.lathe(a.part('Beacon_base', 'Armor', parent), [(r * 1.2, 0), (r * 1.2, .05), (r, .07)], loc=loc, seg=10)
     k.lathe(a.part('Beacons', 'Alloy', parent), [(r * .9, .07), (r * .9, .18), (r * .5, .24), (0, .26)], loc=loc,
             seg=10)
+
+
+# ----------------------------------------------------------------------------- wave 3 lane B's helpers (wave 5)
+# Lifted unchanged from mb_p35b_parts.py at lane B's request (the lead's wave 5 note): sandbag_run, earth_pad,
+# camo_net, track_run. mb_p35b_parts keeps its copies, so its models build the same.
+
+
+def sandbag_run(a, path, courses=2, bag=(.6, .32, .15), part='Sandbags', mat='Sandbag', seed=0, parent=None,
+                closed=False, lean=False):
+    """Sandbags laid along a polyline (wave 3): `courses` high, each course offset by half a bag and set back a
+    little (a battered face), every bag a pillow block with jitter in size and yaw; the part name is the caller's
+    (Parapet, Walls, Sandbags) so a structure's gate roles can read it. lean=True: square-cornered bags (about 36
+    triangles instead of 60) for long runs on towers under the triangle cap."""
+    import random
+    shape = a.part(part, mat, parent)
+    rng = random.Random(seed * 7919 + len(path))
+    L, W, H = bag
+    pts = list(path) + [path[0]] if closed else list(path)
+    for c in range(courses):
+        for p, t in k.along(pts, pitch=L * .96, start=L / 2 * (c % 2)):
+            yaw = math.atan2(t.y, t.x)
+            j = rng.uniform(-.04, .04)
+            size = (L * (.95 + j), W * (1 + j), H)
+            loc = (p.x, p.y, p.z + H / 2 + c * H * .9)
+            rot = (0, 0, yaw + rng.uniform(-.07, .07))
+            if lean:
+                sx, sy = size[0] / 2, size[1] / 2
+                k.extrude(shape, [(-sx, -sy), (sx, -sy), (sx, sy), (-sx, sy)], H, loc=loc, rot=rot, axis='Z',
+                          chamfer=H * .4, ends=(False, True))
+            else:
+                k.block(shape, size, loc=loc, rot=rot, chamfer=H * .4, ends=(False, True))
+    return shape
+
+
+def earth_pad(a, outline, h, part='Base', mat='Dirt', taper=.94, parent=None, bottom=True):
+    """A dug earth pad of irregular outline (a field earthwork), its sides sloped by `taper` (wave 3 towers);
+    bottom=False leaves out the face on the ground (never seen)."""
+    k.extrude(a.part(part, mat, parent), outline, h, loc=(0, 0, h / 2), axis='Z', chamfer=min(.08, h * .3),
+              corner=.12, taper=(taper, taper), caps=(bottom, True))
+
+
+def camo_net(a, poles, sag, z0, part='Camo_net', mat='Canvas', pole_part='Net_poles', parent=None, garnish=0, seed=0):
+    """A camouflage net on poles [(x, y, height)]: the net sags to a centre point `sag` below the mean pole height,
+    two-sided; garnish adds that many hanging scrim tufts (thin dangling flaps) along its edge."""
+    import random
+    rng = random.Random(seed)
+    pp = a.part(pole_part, 'Wood', parent)
+    pts = []
+    for x, y, h in poles:
+        pp.cyl(.04, h, loc=(x, y, z0 + h / 2), seg=5, bevel=0)
+        pts.append((x, y, z0 + h))
+    n = len(pts)
+    cx = sum(p[0] for p in pts) / n
+    cy = sum(p[1] for p in pts) / n
+    cz = sum(p[2] for p in pts) / n - sag
+    net = a.part(part, mat, parent)
+    verts, faces = [], []
+    for i in range(n):
+        p, q = pts[i], pts[(i + 1) % n]
+        m = ((p[0] + q[0]) / 2, (p[1] + q[1]) / 2, (p[2] + q[2]) / 2 - sag * .45)
+        b = len(verts)
+        c = (cx, cy, cz)
+        verts += [p, m, q, c] + [(v[0], v[1], v[2] - .012) for v in (p, m, q, c)]   # the underside 12 mm lower
+        faces += [(b, b + 1, b + 3), (b + 1, b + 2, b + 3), (b + 7, b + 5, b + 4), (b + 7, b + 6, b + 5)]
+    net.mesh(verts, faces)
+    if garnish:
+        g = a.part(part + '_garnish', 'FoliageDark', parent)
+        for j in range(garnish):
+            i = j % n
+            p, q = pts[i], pts[(i + 1) % n]
+            f = rng.uniform(.15, .85)
+            x, y = p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f
+            z = p[2] + (q[2] - p[2]) * f - sag * .45 * math.sin(math.pi * f)
+            g.box((.25, .02, .35), loc=(x, y, z - .17), rot=(0, 0, math.atan2(q[1] - p[1], q[0] - p[0])), bevel=0)
+
+
+def track_run(a, tx, tw, wheels, wr, sprocket, idler, rollers=(), roller_z=None, link_pitch=.24, wheel_w=.18,
+              disc_mat='Armor', hide_top=None, teeth=10, inset=.12, wheel_seg=10):
+    """Both tracks of a tracked hull (wave 3): the belt round the sprocket, the idler and the road wheels (its outline
+    the hull of their circles), a link block every link_pitch all round (hide_top = (y0, y1, z) leaves out the top
+    run between y0 and y1 above z, where the skirts hide it), road wheels, the toothed sprocket, a spoked idler on its
+    tensioner arm, return rollers. sprocket / idler = (y, z, r); tx is the track's centre line, tw its width."""
+    import mb_vehicles as mv
+    belt = a.part('Tracks', 'Undercarriage')
+    links = a.part('Track_links', 'Undercarriage')
+    pts = []
+    for cy, cz, r in ((sprocket[0], sprocket[1], sprocket[2] + .04), (idler[0], idler[1], idler[2] + .04)) + \
+            tuple((y, wr, wr + .035) for y in wheels):
+        for i in range(20):
+            u = i * TAU / 20
+            pts.append((cy + r * math.cos(u), cz + r * math.sin(u)))
+    outline = mv._hull2d(pts)
+    wx = tw / 2 - inset
+    for s in (-1, 1):
+        k.extrude(belt, outline, tw, loc=(s * tx, 0, 0), axis='X', chamfer=0)
+        for (py, pz), (ty, tz) in mv._perimeter(outline, link_pitch, .0):
+            if hide_top and pz > hide_top[2] and hide_top[0] < py < hide_top[1]:
+                continue
+            ny, nz = tz, -ty
+            k.block(links, (tw + .03, .06, .035), loc=(s * tx, py + ny * .012, pz + nz * .012),
+                    rot=(math.atan2(tz, ty), 0, 0), chamfer=0)
+        for y in wheels:
+            p27.road_wheel(a, (s * (tx + wx), y, wr), wr, wheel_w, s, seg=wheel_seg, disc_mat=disc_mat)
+        p27.sprocket(a, (s * (tx + wx), sprocket[0], sprocket[1]), sprocket[2], teeth, wheel_w * .75, s)
+        ri = idler[2]
+        k.lathe(a.part('Idlers', disc_mat), [(0, .09), (ri * .3, .09), (ri * .4, .07), (ri * .85, .07), (ri, .04),
+                                             (ri, -.06), (ri * .85, -.07), (0, -.07)],
+                loc=(s * (tx + wx), idler[0], idler[1]), rot=p27.side_rot(s), seg=wheel_seg, worn=(4,))
+        arm_dir = 1 if idler[0] > sprocket[0] else -1
+        a.part('Idlers', disc_mat).limb((s * (tx - .05), idler[0], idler[1]),
+                                         (s * (tx - .05), idler[0] - arm_dir * .35, idler[1] + .15), .06, .08,
+                                         bevel=0)
+        for y in rollers:
+            return_roller(a, (s * (tx + wx - .02), y, roller_z), .08, .1, s)
+        dust(a, (s * tx, 0, .1), radius=1.6, k=.3)
+
+
+# ----------------------------------------------------------------------------- wave 4 lane C's helpers (wave 5)
+# Lifted unchanged from mb_p35c_parts.py at the lead's request: ring_from_half, section_loft, slab_loft,
+# ellipse_half (bodies through cross-sections) and store (a lean missile / bomb in two parts). mb_p35c_parts
+# keeps its copies, so lane C's models build the same.
+
+
+def ring_from_half(y, half):
+    """A full closed ring at station y from a half outline [(x, z), ...] running from the bottom centre (x = 0) up the
+    +X side to the top centre (x = 0); the -X side is the mirror. Points with x = 0 are not doubled."""
+    right = [(x, y, z) for x, z in half]
+    left = [(-x, y, z) for x, z in reversed(half) if x > 1e-6]
+    pts = right + left
+    return pts
+
+
+def section_loft(part, stations):
+    """Skin a body through stations [(y, half_outline), ...] from front to rear (every half outline the same number
+    of points, see ring_from_half)."""
+    rings = [ring_from_half(y, half) for y, half in stations]
+    n = {len(r) for r in rings}
+    if len(n) != 1:
+        raise ValueError(f'section_loft: rings differ in size {sorted(n)}')
+    part.loft(rings, bevel=0)
+    return part
+
+
+def slab_loft(part, bottom, top, z0, z1, loc=(0, 0, 0), mid=None):
+    """A prism with sloped sides: polygon `bottom` [(x, y), ...] at z0, `top` (same count) at z1, optional `mid`
+    (polygon, z) as a waist between them. Translated by loc."""
+    ox, oy, oz = loc
+    rings = [[(x + ox, y + oy, z0 + oz) for x, y in bottom]]
+    if mid:
+        poly, zm = mid
+        rings.append([(x + ox, y + oy, zm + oz) for x, y in poly])
+    rings.append([(x + ox, y + oy, z1 + oz) for x, y in top])
+    part.loft(rings, bevel=0)
+    return part
+
+
+def ellipse_half(w, h, zc, n=6, flat=0.0, xs=0.0):
+    """A half outline for section_loft: an ellipse w half-wide and h half-tall centred at zc, from the bottom centre up
+    the +X side to the top centre (n segments); flat > 0 flattens the bottom (a keel line), xs shifts nothing (kept
+    for symmetry of calls)."""
+    pts = []
+    for i in range(n + 1):
+        u = -math.pi / 2 + math.pi * i / n
+        x, z = w * math.cos(u), zc + h * math.sin(u)
+        if flat and z < zc - h * (1 - flat):
+            z = zc - h * (1 - flat)
+        pts.append((0.0 if i in (0, n) else x, z))
+    return pts
+
+
+def store(a, tail, r, length, parent=None, body='Missiles', body_mat='Fuel', fins='Missile_fins', kind='missile',
+          seg=8):
+    """A lean store pointing forward (-Y) from its tail point: 'missile' (ogive nose, tail fins and canards) or
+    'bomb' (blunt nose, a cruciform tail with its box ring). Two parts only (body, fins), so an aircraft carrying many
+    stays under the renderer cap."""
+    x, y, z = tail
+    if kind == 'bomb':
+        prof = [(0, 0), (r * .5, .03), (r * .8, length * .15), (r, length * .35), (r, length * .7),
+                (r * .7, length * .9), (r * .35, length), (0, length + .01)]
+    else:
+        prof = [(0, 0), (r * .8, .02), (r, .06), (r, length * .8), (r * .8, length * .92), (r * .35, length),
+                (0, length + .01)]
+    k.lathe(a.part(body, body_mat, parent), prof, loc=tail, rot=FORWARD, seg=seg, worn=(3,))
+    fp = a.part(fins, 'Steel', parent)
+    for i in range(4):
+        u = i * R90 + math.pi / 4
+        c, s = math.cos(u), math.sin(u)
+        span = r * (1.3 if kind == 'bomb' else 1.6)
+        fp.box((.006, length * .14, span), loc=(x + c * (r + span / 2 - .005), y - length * .08, z + s * (r + span / 2 - .005)),
+               rot=(0, u - R90, 0), bevel=0)
+        if kind != 'bomb':
+            fp.box((.005, length * .06, r * .8), loc=(x + c * (r + r * .35), y - length * .72, z + s * (r + r * .35)),
+                   rot=(0, u - R90, 0), bevel=0)
 
 
 # ============================================================================= bosses

@@ -1,0 +1,145 @@
+{
+ "id": "laser_tank",
+ "class": "tracked",
+ "real": [
+  "Rheinmetall HEL (high-energy laser) demonstrators",
+  "DE M-SHORAD (laser on Stryker, remote weapon station)"
+ ],
+ "shape": "unit_sheet.json Phương tiện: 'Khung xích mang đầu phát laser trên giá chạc, gương tròn lớn, tấm tản nhiệt hai bên. Từ trên xuống: đĩa gương tròn trên giá chạc.' Visible weapon: focused laser (300 kW).",
+ "confidence": "ban_dau_doan (a fictional tracked laser after the sheet; the director and radiators after the HEL demonstrators)",
+ "target_size": {
+  "L": 6.08,
+  "W": 2.82,
+  "H": 2.74,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "beam director head with the big round mirror and lens on a fork (yoke)",
+   "nodes": [
+    "Main_cannon",
+    "Main_cannon_lens",
+    "Main_cannon_hood",
+    "Director_trunnions",
+    "Cradle"
+   ]
+  },
+  {
+   "feature": "radiator banks on both turret sides with glowing cores and fan housings",
+   "nodes": [
+    "Radiators",
+    "Radiator_glow",
+    "Radiator_fans"
+   ]
+  },
+  {
+   "feature": "power cabinet at the turret rear, IRST sensor ball",
+   "nodes": [
+    "Power_cabinet",
+    "Sensor"
+   ]
+  },
+  {
+   "feature": "mid-size tracked chassis, six road wheels, skirts",
+   "nodes": [
+    "Hull",
+    "Wheels",
+    "Tracks",
+    "Skirts"
+   ]
+  },
+  {
+   "feature": "remote 7.62 mm weapon station on the hull front (self-defence)",
+   "nodes": [
+    "Rws",
+    "Rws_gun"
+   ]
+  },
+  {
+   "feature": "power pack exhausts and rear louvres",
+   "nodes": [
+    "Exhaust",
+    "Grilles"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "focus_laser",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "lead rule (wave 5): units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "hull, fenders, skirts, turret body (Team)",
+  "the mirror hood (Team)",
+  "roof panel and side bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (tank wreck)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "beam director",
+   "tracks"
+  ],
+  "tier2": [
+   "fork",
+   "mirror hood",
+   "radiator banks",
+   "power cabinet",
+   "remote weapon station",
+   "skirts",
+   "stowage",
+   "exhausts"
+  ],
+  "tier3": [
+   "radiator cores",
+   "fans",
+   "lens",
+   "handles",
+   "periscopes",
+   "antenna",
+   "smoke launchers",
+   "lamps",
+   "tow hooks"
+  ]
+ },
+ "questions": []
+}

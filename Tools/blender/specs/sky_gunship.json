@@ -1,0 +1,160 @@
+{
+ "id": "sky_gunship",
+ "class": "jet",
+ "real": [
+  "AC-130U Spooky (M102 105 mm, Bofors 40 mm, GAU-12 25 mm)"
+ ],
+ "shape": "unit_sheet.json Phương tiện: 'Máy bay vận tải 4 động cơ cánh quạt, pháo 105 mm, 40 mm, 25 mm thò ra bên mạn trái. Từ trên xuống: như máy bay vận tải, 3 nòng lệch trái.' (0.4 x the AC-130).",
+ "confidence": "xấp xỉ (AC-130U drawings at 0.4 x)",
+ "target_size": {
+  "L": 11.93,
+  "W": 16.3,
+  "H": 4.82,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "C-130 fuselage: round section, upswept tail with the ramp, cockpit glazing, gear sponsons",
+   "nodes": [
+    "Fuselage",
+    "Canopy",
+    "Ramp_lines",
+    "Undercarriage"
+   ]
+  },
+  {
+   "feature": "high wing with four turboprop nacelles, four-blade propellers (spin)",
+   "nodes": [
+    "Wings",
+    "Nacelles",
+    "Intakes",
+    "Propeller",
+    "Propeller_2",
+    "Propeller_3",
+    "Propeller_4"
+   ]
+  },
+  {
+   "feature": "tall fin and tailplane",
+   "nodes": [
+    "Fins",
+    "Tailplanes"
+   ]
+  },
+  {
+   "feature": "left-side gun deck: 105 mm aft, 40 mm, 25 mm forward, their ports",
+   "nodes": [
+    "Guns",
+    "Gun_ports",
+    "Gun_deck_windows",
+    "Muzzle_main",
+    "Muzzle_gun",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "sensor turrets: nose radar blister, IR / TV balls (merged per material)",
+   "nodes": [
+    "Sensor"
+   ]
+  },
+  {
+   "feature": "external tanks on pylons between the engines (tanks merged with the Team parts), flare dispensers",
+   "nodes": [
+    "Pylons",
+    "Flares"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "canopy",
+  "wings",
+  "tail",
+  "intakes",
+  "exhaust",
+  "pylons",
+  "stores",
+  "flares"
+ ],
+ "weapons": [
+  {
+   "weapon": "gunship_105",
+   "slot": "main",
+   "mount": "Fuselage",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "gunship_40mm",
+   "slot": "gun",
+   "mount": "Fuselage",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "gunship_25mm",
+   "slot": "mg",
+   "mount": "Fuselage",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "fuselage (Team)",
+  "wing (Team)",
+  "nacelles (Team)",
+  "fin and tailplane (Team)",
+  "drop tanks (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "mb_p34_parts cuts Part_wing out of the left wing; sky_gunship_hd is the same builder (detail flag)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "wing",
+   "fin"
+  ],
+  "tier2": [
+   "nacelles",
+   "propellers",
+   "tailplane",
+   "sponsons",
+   "guns",
+   "sensor turrets",
+   "drop tanks"
+  ],
+  "tier3": [
+   "glazing",
+   "ports",
+   "brake",
+   "flare dispensers",
+   "antennas",
+   "beacon",
+   "nav lights",
+   "intakes",
+   "exhausts",
+   "door"
+  ]
+ },
+ "questions": []
+}

@@ -1,0 +1,138 @@
+{
+ "id": "stealth_bomber",
+ "class": "jet",
+ "real": [
+  "B-2 Spirit",
+  "GBU-31 JDAM",
+  "AGM-158 JASSM"
+ ],
+ "shape": "unit_sheet.json Phương tiện: 'Cánh bay hình chữ W răng cưa, không đuôi, rất rộng so với chiều dài. Từ trên xuống: hình boomerang răng cưa.' (0.4 x the B-2).",
+ "confidence": "xấp xỉ (B-2 plan form and photographs at 0.4 x)",
+ "target_size": {
+  "L": 8.4,
+  "W": 21.0,
+  "H": 1.5,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "flying wing with the W saw-tooth trailing edge, lofted through airfoil sections",
+   "nodes": [
+    "Fuselage",
+    "Trailing_edges",
+    "Leading_edges"
+   ]
+  },
+  {
+   "feature": "cockpit hump with four panes",
+   "nodes": [
+    "Fuselage_hump",
+    "Canopy"
+   ]
+  },
+  {
+   "feature": "dorsal intakes with splitter plates, exhaust troughs over the trailing edge",
+   "nodes": [
+    "Intakes",
+    "Intake_ducts",
+    "Exhausts",
+    "Exhaust_glow"
+   ]
+  },
+  {
+   "feature": "split drag rudders at the tips (its yaw control: no fin) and the elevons",
+   "nodes": [
+    "Rudders",
+    "Elevons"
+   ]
+  },
+  {
+   "feature": "two bomb bays open on rotary launchers with JDAMs; JASSMs on bay pylons",
+   "nodes": [
+    "Bay_doors",
+    "Rack_launcher",
+    "Bombs",
+    "Standoff_missile",
+    "Pylons"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "canopy",
+  "wings",
+  "tail",
+  "intakes",
+  "exhaust",
+  "pylons",
+  "stores",
+  "flares"
+ ],
+ "weapons": [
+  {
+   "weapon": "stealth_payload",
+   "slot": "missile (main)",
+   "mount": "Fuselage",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "jassm",
+   "slot": "rocket",
+   "mount": "Fuselage",
+   "muzzles": [
+    "Muzzle_rocket"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "the wing (Team)",
+  "intakes (Team)",
+  "the cockpit hump (Team)",
+  "a panel on the back (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "mb_p34_parts cuts Part_wing out of the left wing along the whole length (flying wing)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "flying wing"
+  ],
+  "tier2": [
+   "cockpit hump",
+   "intakes",
+   "exhaust troughs",
+   "rudders",
+   "elevons",
+   "bay doors",
+   "rotary launchers"
+  ],
+  "tier3": [
+   "panes",
+   "splitters",
+   "edge strips",
+   "access panels",
+   "gear doors",
+   "nav lights",
+   "bombs",
+   "missiles"
+  ]
+ },
+ "questions": []
+}

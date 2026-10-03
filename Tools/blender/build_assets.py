@@ -137,6 +137,10 @@ import mb_p35_aa_gun_vehicle  # noqa: E402
 import mb_p35_aa_vehicle  # noqa: E402
 import mb_p35_artillery  # noqa: E402
 import mb_p35_tank_destroyer  # noqa: E402
+import mb_p35_wave5_tanks  # noqa: E402
+import mb_p35_wave5_deploy  # noqa: E402
+import mb_p35_wave5_bosses  # noqa: E402
+import mb_p35_wave5_air  # noqa: E402
 import mb_p35_elite_aa  # noqa: E402
 import mb_p35_elite_heavy_tank  # noqa: E402
 import mb_p35_elite_tank_destroyer  # noqa: E402
@@ -288,6 +292,9 @@ def all_builders():
                 **mb_p35_light_tank.BUILDERS, **mb_p35_engineer_vehicle.BUILDERS, **mb_p35_mortar_carrier.BUILDERS,
                 # Prompt 35 wave 4, lane C (DECISIONS "Prompt 35 wave 4 (lane C)"): rebuilt from scratch (last).
                 **mb_p35_flame_tank.BUILDERS, **mb_p35_moloch.BUILDERS, **mb_p35_attack_jet.BUILDERS, **mb_p35_strike_drone.BUILDERS, **mb_p35_recon_drone.BUILDERS, **mb_p35_scout_heli.BUILDERS, **mb_p35_river_patrol_boat.BUILDERS, **mb_p35_towed_at_gun.BUILDERS, **mb_p35_fpv_carrier.BUILDERS, **mb_p35_shorad_vehicle.BUILDERS, **mb_p35_armored_bulldozer.BUILDERS, **mb_p35_sam_launcher.BUILDERS, **mb_p35_amphib_light_vehicle.BUILDERS, **mb_p35_mine_layer.BUILDERS, **mb_p35_demolition_line_vehicle.BUILDERS, **mb_p35_bmpt.BUILDERS, **mb_p35_aa_gun_vehicle.BUILDERS, **mb_p35_aa_vehicle.BUILDERS, **mb_p35_artillery.BUILDERS, **mb_p35_tank_destroyer.BUILDERS,
+                # Prompt 35 wave 5 lane A (DECISIONS "Prompt 35 wave 5 (lane A)"): bosses, tanks, aircraft (last).
+                **mb_p35_wave5_tanks.BUILDERS, **mb_p35_wave5_deploy.BUILDERS,
+                **mb_p35_wave5_bosses.BUILDERS, **mb_p35_wave5_air.BUILDERS,
                 # Prompt 35 wave 7, lane C (DECISIONS "Prompt 35 wave 7 (lane C)"): rebuilt from scratch (last).
                 **mb_p35_elite_aa.BUILDERS, **mb_p35_elite_heavy_tank.BUILDERS, **mb_p35_elite_tank_destroyer.BUILDERS, **mb_p35_elite_apc.BUILDERS, **mb_p35_radar_atgm_vehicle.BUILDERS, **mb_p35_ground_drone_carrier.BUILDERS, **mb_p35_nlos_atgm_vehicle.BUILDERS, **mb_p35_armored_car.BUILDERS, **mb_p35_scout_jeep.BUILDERS, **mb_p35_rocket_technical.BUILDERS, **mb_p35_uav_loiter_strike.BUILDERS, **mb_p35_aerial_tanker.BUILDERS, **mb_p35_command_hq.BUILDERS, **mb_p35_minefield.BUILDERS, **mb_p35_gun_turret_a.BUILDERS, **mb_p35_mg_bunker.BUILDERS, **mb_p35_guard_tower_b.BUILDERS}
     for name in HIGH_DETAIL:

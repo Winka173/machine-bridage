@@ -113,7 +113,7 @@ def _stores(a):
         for x in (.75, 1.15):
             K.pylon(py, s * x, -.28, -.02, WING_Z - .02, WING_Z - .1, w=.03)
     for s, name in ((1, 'Muzzle_missile.001'), (-1, 'Muzzle_missile')):
-        K.missile(a, (s * .75, -.1, WING_Z - .14), .025, .55, direction=(0, 1, 0), fins=4)   # kit: the nose points to -direction
+        K.missile(a, (s * .75, -.1, WING_Z - .14), .025, .55, direction=(0, -1, 0), fins=4)   # nose forward (kit fixed in wave 5)
         a.pivot(name.replace('.001', '__001'), (s * .75, -.67, WING_Z - .14))
 
 

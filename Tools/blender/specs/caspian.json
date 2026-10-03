@@ -1,0 +1,199 @@
+{
+ "id": "caspian",
+ "class": "boss",
+ "frame": "sea",
+ "real": [
+  "Lun-class ekranoplan MD-160 ('the Caspian Sea Monster')"
+ ],
+ "shape": "unit_sheet.json Boss: 'Dựa trên: ekranoplan lớp Lun MD-160 ... Thủy phi cơ hiệu ứng mặt đất. Kích thước hiện 36.0 × 26.5 × 10.9 m ...'",
+ "confidence": "xấp xỉ (Lun photographs; at the old file's size)",
+ "target_size": {
+  "L": 52.87,
+  "W": 38.97,
+  "H": 16.0,
+  "source": "the old GLB (52.9 x 39.0 x 16.0; no modelSize in data)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "long boat hull with chines, planing step, portholes, door outlines",
+   "nodes": [
+    "Hull",
+    "Hull_chines",
+    "Planing_step",
+    "Portholes",
+    "Door_lines"
+   ]
+  },
+  {
+   "feature": "cockpit glazing on the nose (Bridge), radome, nose canards",
+   "nodes": [
+    "Bridge",
+    "Cockpit",
+    "Radome",
+    "Canards"
+   ]
+  },
+  {
+   "feature": "eight turbofans on the canard pylon behind the cockpit (breakable: it slows)",
+   "nodes": [
+    "Part_engines",
+    "Engine_pylon",
+    "Jets",
+    "Jet_intakes"
+   ]
+  },
+  {
+   "feature": "short low wings with end-plate floats, flaps and fences (breakable)",
+   "nodes": [
+    "Part_wing_l",
+    "Part_wing_r",
+    "Wing_wing_l",
+    "Float_wing_l"
+   ]
+  },
+  {
+   "feature": "huge swept fin with the T-tail stabiliser",
+   "nodes": [
+    "Tail_fin",
+    "Stabiliser",
+    "Elevators"
+   ]
+  },
+  {
+   "feature": "six Moskit canisters in pairs on the spine (breakable)",
+   "nodes": [
+    "Part_launcher",
+    "Launch_canisters",
+    "Canister_caps",
+    "Launcher_fairing"
+   ]
+  },
+  {
+   "feature": "six-barrel CIWS aft, two ZU-23-2 turrets on the spine",
+   "nodes": [
+    "Mount_gun",
+    "Mount_mg",
+    "Mount_mg.001"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "hover_ciws",
+   "slot": "main",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "zu23",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_b1_mg",
+    "Muzzle_b2_mg"
+   ]
+  },
+  {
+   "weapon": "zu23",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_b1_mg_001",
+    "Muzzle_b2_mg_001"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "hull (Team)",
+  "cockpit block (Team)",
+  "wings (Team)",
+  "fin and stabiliser (Team)",
+  "engine pylon (Team)",
+  "turrets and side stripes (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "engines",
+   "node": "Part_engines"
+  },
+  {
+   "part": "launcher",
+   "node": "Part_launcher"
+  },
+  {
+   "part": "wing_l",
+   "node": "Part_wing_l"
+  },
+  {
+   "part": "wing_r",
+   "node": "Part_wing_r"
+  }
+ ],
+ "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
+ "faction_style": "Hegemon general's sea monster: grey hull, hazard edges",
+ "details": {
+  "tier1": [
+   "hull",
+   "wings",
+   "fin",
+   "engine pylon"
+  ],
+  "tier2": [
+   "cockpit",
+   "floats",
+   "stabiliser",
+   "canisters",
+   "jets",
+   "CIWS",
+   "ZU-23 turrets",
+   "flaps",
+   "spine"
+  ],
+  "tier3": [
+   "portholes",
+   "hatches",
+   "door lines",
+   "antennas",
+   "bollards",
+   "searchlight",
+   "life rafts",
+   "fences",
+   "flap tracks",
+   "dischargers",
+   "access panels",
+   "vents",
+   "nav lights"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the engine block on the nose pylon: break it and it slows (card)",
+   "the canisters on the spine (four anti-ship missiles, card)",
+   "the two wings"
+  ],
+  "how_to_fight": "card: it runs along the shore ~6 s a pass and swings out ~20 s; a surface target; kill the nose engines to slow it"
+ },
+ "questions": []
+}

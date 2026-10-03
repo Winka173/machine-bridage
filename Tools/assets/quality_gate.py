@@ -95,9 +95,16 @@ def merged_for(model):
     return out
 
 
+def def_frame(defs, own):
+    """scan_prep's frame (air / ship / ground), with a fixed-wing boss read as air even when the def leaves
+    'flying' out (wave 5: Morrigan has fixedWing but no flying field, so it was asked for tracks)."""
+    f = sp.boss_frame(defs, own)
+    return 'air' if f == 'ground' and defs.field(own, 'fixedWing') else f
+
+
 def boss_frame(defs, own, names):
     """ground / rail / air / sea (decision 5): air and sea from the def, rail from the running gear's nodes."""
-    f = sp.boss_frame(defs, own)
+    f = def_frame(defs, own)
     if f == 'ship':
         return 'sea'
     if f == 'ground' and any(RAIL_NODE.match(n) for n in names):
@@ -379,6 +386,27 @@ def grade(score):
 
 
 # ----------------------------------------------------------------------------- static (hard) checks
+def systems_absent(defs, own):
+    """Part roles the unit's def has no system for (wave 5, the lead's call on lane C's request): flare dispensers
+    without flareCharges, a canopy on a drone, a roof machine gun without an 'mg' weapon, smoke launchers without a
+    smoke system in the data, a turret and mantlet when the main gun is laid by the hull (mainAim Hull). A model may
+    still carry the part; the gate just does not ask for it."""
+    f = defs.field
+    out = set()
+    if not (f(own, 'flareCharges') or f(own, 'flares')):
+        out.add('flares')
+    if f(own, 'drone'):
+        out.add('canopy')
+    slots = [s.get('slot') for s in (f(own, 'secondary') or []) if isinstance(s, dict) and defs.armed(s.get('weapon'))]
+    if 'mg' not in slots and (f(own, 'mainSlot') or 'main') != 'mg':
+        out.add('roof_mg')
+    if not any(f(own, k) for k in ('smoke', 'smokeCharges', 'smokeScreen')):
+        out.add('smoke')
+    if f(own, 'mainAim') == 'Hull':
+        out.update(('turret', 'mantlet'))
+    return out
+
+
 def hard_checks(defs, model, own, cls, rec, m, overlap):
     """[(gate, ok, note)] for one model."""
     names = rec['nodeNames']
@@ -399,12 +427,15 @@ def hard_checks(defs, model, own, cls, rec, m, overlap):
         host = merged.get(item)
         return bool(host) and any(n == host or re.sub(r'\.\d{3}$', '', n) == host for n in have)
     if cls == 'boss':
-        frame = sp.boss_frame(defs, own)
+        frame = def_frame(defs, own)
         roles = [sp.BOSS_ROLES['body'], sp.BOSS_ROLES['weapons'], sp.BOSS_ROLES[frame]]
     else:
         roles = list(sp.ROLES.get(cls, []))
         if cls == 'tracked' and own is not None and not defs.field(own, 'turretTurnRate'):
             roles = [r for r in roles if r[0] not in ('turret', 'mantlet')]
+        if own is not None:
+            absent = systems_absent(defs, own)
+            roles = [r for r in roles if r[0] not in absent]
         if cls in ('wheeled', 'ground', 'tracked') and own is not None and not defs.armed(defs.field(own, 'weapon')):
             roles = [r for r in roles if r[0] not in ('weapon', 'barrel', 'roof_mg')]
     missing = [n for n, pat in roles if not any(sp.role(pat).match(x) for x in names)]
@@ -443,7 +474,7 @@ def hard_checks(defs, model, own, cls, rec, m, overlap):
     zn = ZONES.get(cls, 3)
     out.append(('colour_zones', m['zones'] >= zn, f"{m['zones']} materials (need {zn})"))
     bake = m.get('c0_p95', 0) - m.get('c0_p05', 0) >= 0.15 and m.get('c0_wear', 0) >= 0.005
-    if cls not in ('jet', 'helicopter', 'air_other') and not (cls == 'boss' and defs.field(own, 'flying')):
+    if cls not in ('jet', 'helicopter', 'air_other') and not (cls == 'boss' and def_frame(defs, own) == 'air'):
         bake = bake and m.get('c0_dust', 0) > 0.0
     out.append(('ao_dust_wear', bake, f"COLOR_0 p05 {m.get('c0_p05', 0):.2f} p95 {m.get('c0_p95', 0):.2f}, worn "
                 f"{m.get('c0_wear', 0):.1%}, dust {m.get('c0_dust', 0):+.2f}"))

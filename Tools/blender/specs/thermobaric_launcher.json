@@ -1,0 +1,150 @@
+{
+ "id": "thermobaric_launcher",
+ "class": "tracked",
+ "real": [
+  "TOS-1A Solntsepyok (T-72 chassis, 24-tube 220 mm launcher)"
+ ],
+ "shape": "unit_sheet.json Phương tiện: 'Khung T-72, khối 24 ống phóng lớn hình hộp đặt trên bệ nâng giữa thân. Từ trên xuống: khối ống vuông to.' Visible weapons TOS-1A 220 mm thermobaric, M2 Browning.",
+ "confidence": "xấp xỉ (TOS-1A photographs; sizes at the def's modelSize)",
+ "target_size": {
+  "L": 6.02,
+  "W": 2.85,
+  "H": 2.79,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "24-tube box launcher, armoured side panels, tube mouths 6 x 4 on its face, rear covers",
+   "nodes": [
+    "Launcher",
+    "Launcher_armor",
+    "Launcher_face",
+    "Tubes",
+    "Tube_rims",
+    "Launcher_covers"
+   ]
+  },
+  {
+   "feature": "turntable with the lifting rams and cradle",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Cradle",
+    "Rams"
+   ]
+  },
+  {
+   "feature": "T-72 hull with dozer blade, crew boxes, rubber skirts, six road wheels",
+   "nodes": [
+    "Hull",
+    "Dozer_blade",
+    "Crew_boxes",
+    "Skirts",
+    "Wheels",
+    "Tracks"
+   ]
+  },
+  {
+   "feature": "fuel drums on the rear plate, engine louvres",
+   "nodes": [
+    "Fuel_drums",
+    "Grilles"
+   ]
+  },
+  {
+   "feature": "12.7 mm self-defence gun raised on a post at the hull rear",
+   "nodes": [
+    "Mount_mg",
+    "MG",
+    "MG_post"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "thermobaric_rockets",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "hmg_selfdef_18",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "lead rule (wave 5): units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "hull, fenders, crew boxes (Team)",
+  "the launcher box and turntable (Team)",
+  "roof panel and side bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (tank wreck)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "launcher box",
+   "tracks"
+  ],
+  "tier2": [
+   "turntable",
+   "rams",
+   "cradle",
+   "armour panels",
+   "dozer blade",
+   "crew boxes",
+   "fuel drums",
+   "stowage",
+   "MG post"
+  ],
+  "tier3": [
+   "tube mouths",
+   "rivets",
+   "latches",
+   "hatches",
+   "sight",
+   "smoke launchers",
+   "lamps",
+   "tow hooks",
+   "skirt panels"
+  ]
+ },
+ "questions": []
+}

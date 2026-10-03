@@ -18061,6 +18061,68 @@ Blender and Python only (no Unity, no test, sim or measure run).
 - Full gate (--no-write) after the wave: 230 models, 71 pass; the twenty pass; no other model names one of them in its
   own-geometry check. NEEDS_HUMAN: none.
 
+## Prompt 35 wave 5 (lane A)
+
+Branch `feature/p35-w5` from `lead/integration` (2026-10-03; waves 3 and 4 merged in as they landed). Report:
+Docs/models/WAVE_5_REPORT.md. Blender and Python only: no Unity run, no test, sim or measure (the weapon audit is a
+static report the lead asked for).
+
+**Lead calls (2026-10-03)** on the wave 2 questions:
+1. The nine low-scoring structures and pads (drone_hangar family, logistics_station, artillery_emplacement_b,
+   heavy_turret, heavy_turret_b, helipad family) are accepted on the owner's look, as in wave 1. No new gold set.
+2. Helipads may get a windsock and light posts: the 10 % size rule applies to the footprint and the main body; thin
+   props above a flat pad are allowed (not used this wave: no helipad in it).
+3. gun_turret_b keeps two 57 mm barrels; its data gets `barrels: 2` with the per-shot damage and rounds adjusted so the
+   DPS and the cycle are exactly unchanged (the zu23 pattern), checked with Tools/balance/full_weapon_audit.py.
+
+Decisions:
+- **Modules.** `mb_p35_wave5_tanks` (twin_tank, titan_tank, turtle_tank, laser_tank, aa_57mm_vehicle,
+  thermobaric_launcher, gps_jammer_vehicle), `mb_p35_wave5_deploy` (bunker_vehicle, siege_tank), `mb_p35_wave5_bosses`
+  (monster, landing_hovercraft, typhon, caspian), `mb_p35_wave5_air` (stealth_bomber, wingman_drone, recon_jet,
+  sky_gunship + its `_hd`, sky_fortress, morrigan, elite_attack_helicopter); a spec each in Tools/blender/specs/; lean
+  shared helpers in `mb_p35_w5parts` (a parametric track run, side-profile hull, polygon turret, keep-aware static
+  merge). Registered last in all_builders, inside the dict.
+- **References.** Rows without a sheet entry follow what their data names: aa_57mm_vehicle = 2S38 (the weapon is
+  gun_57mm_2s38), recon_jet = SR-71 (its modelSize is exactly 0.4 x the Blackbird), gps_jammer_vehicle = an EW truck
+  after the old builder. Siblings share nothing: sky_gunship is the AC-130U (round-ring loft, four-blade props),
+  sky_fortress the AC-130J type (chined loft, six-blade scimitar props, its own gun mounts); elite_attack_helicopter is
+  an AH-64E with the Longbow radome, its own body and rotor (shared 0.6 % with anything); morrigan is a Su-57 type.
+- **Typhon's silo forward.** The real Typhoon carries its missile tubes ahead of the sail; the old file had them aft.
+  The rebuild follows the real boat (Part_doors_l / _r forward, Part_sail aft, Mount_missile on the sail, Mount_gun on
+  the forecasing); node names unchanged, only their places moved (owner question in the report).
+- **Deploy rigs.** bunker_vehicle and siege_tank keep every Deploy_* pivot where VehicleView.Deploy expects it (the
+  rig lengths of mb_p22_siege: hinge 1.2 m, leg 1.45 m, pad 0.07 m); the bodies, pods, legs, turrets and the bunker's
+  emplacement (now a swept horseshoe bank, kit sandbag runs and a kit camouflage net) are new. siege_tank merges static
+  parts per material to stay under the ground renderer cap (68 of 76).
+- **Roof guns** on raised posts or risers (twin_tank, thermobaric_launcher's self-defence gun, siege_tank); the titan's
+  machine gun is a real sub-turret on the engine deck.
+- **Gate fixes.** (a) Lane C's request: `quality_gate.systems_absent` asks flares only with flareCharges, no canopy on a
+  drone, roof_mg only with an mg weapon, smoke only with a smoke system in the data, no turret / mantlet when the main
+  gun is laid by the hull; lane C's spec "merged" notes still work. (b) A fixed-wing boss is the air frame even
+  without a `flying` field (Morrigan was asked for tracks and scored against the ground gold). (c) A part named
+  `Bogie_*` makes the gate read a ground boss as a train (RAIL_NODE): monster's strut beams are named `Strut_beams`.
+- **Kit (lane B's and lane C's requests).** mb_kit35 gets `track_run`, `sandbag_run(part=, lean=)`, `camo_net`,
+  `earth_pad(bottom=)` (lane B's wave 3 helpers) and `ring_from_half`, `section_loft`, `slab_loft`, `ellipse_half`,
+  `store` (lane C's wave 4 helpers), lifted unchanged (their modules keep their copies); `door(frame_mat=)` (default
+  Steel). Tests added to test_kit35.py (not run).
+- **Kit missile fix.** `mb_kit35.missile` built the nose towards -direction. Fixed; callers checked: stymphalos' eight
+  drones carried their missiles backwards (rebuilt, nose forward over the same span); recon_drone, strike_drone and
+  artillery_emplacement_b passed the flipped direction to get their look, so they now pass the real one (their GLBs are
+  byte-identical). fortress_bastion, fortress_hive, behemoth_inferno and behemoth_tempest do not use it.
+- **Decision 3 (gun_57_auto).** barrels 2, damage 70 -> 35 a round, clip 6 -> 12, cooldown 0.5 -> 0.25, clipReload
+  2.9 -> 2.65: cycle 5.40 s and sustained DPS 78 unchanged. Its real name now says twin ("AU-220 57 mm (tower,
+  twin)", as the bosses' twin 57 mm deck mounts), so the audit counts both barrels: flag totals unchanged (TOO FAST 80,
+  TOO SLOW 8, UNIT 1, WAVE 1 33, FAMILY 0, DISPLAY 0), its row ok at the same x1.80. gun_turret_b gets
+  Muzzle_b1_main / Muzzle_b2_main under Muzzle_main (geometry unchanged). gun_57_air (unused) left as it is.
+- **Byte-identical builds.** landing_hovercraft's first file differed build to build in COLOR_0: two CIWS stood inside
+  the wheelhouse and the tier and two hatches touched other parts, and the AO rays' hits on those coincident faces
+  depended on the object order inside a build. Parts moved apart; three builds now give one file. A full rebuild of
+  the twenty matches the committed files.
+- **NEEDS_HUMAN** (all hard gates pass): typhon 69.1 (a submarine scored against the warship gold: a smooth hull and
+  little silhouette), stealth_bomber 71.0 (a flying wing's side and front silhouette), morrigan 72.0 (a stealth
+  fighter's clean faces against the air-boss gold). More detail would be padding (prompt 35 section 1).
+- **Over budget (information).** monster 39.6k (boss), tracked 9.4-10.4k and gps_jammer_vehicle 7.4k: all under the
+  lead's 1.5 x the class maximum for units seen in numbers (10,500; light 7,500).
 ## Prompt 35 wave 7 (lane C)
 Branch `feature/p35-w7` from lead/integration (wave 4 merged), 2026-10-03: the Wave 7 models of Docs/models/WAVES_P35.md,
 one new builder each (`Tools/blender/mb_p35_<id>.py`; minefield / minefield_b and mg_bunker / mg_bunker_a share a module)

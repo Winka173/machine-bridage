@@ -1,0 +1,172 @@
+{
+ "id": "bunker_vehicle",
+ "class": "tracked",
+ "real": [
+  "tracked engineer vehicle with a dozer blade (self-entrenching)",
+  "L7 105 mm",
+  "hull-down emplacement"
+ ],
+ "shape": "unit_sheet.json Phương tiện: 'Khung xích với lưỡi ủi lớn, tháp pháo 105 mm thấp; khi triển khai hạ thân, dựng tấm giáp và bao cát quanh. Từ trên xuống: lưỡi ủi rộng, tháp thấp.' Visible weapons L7 105 mm, PKT.",
+ "confidence": "ban_dau_doan (a fictional engineer-hull bunker after the sheet; the rig after VehicleView.Deploy)",
+ "target_size": {
+  "L": 9.9,
+  "W": 4.07,
+  "H": 2.6,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "wide dozer blade on push arms and rams (bites when digging in)",
+   "nodes": [
+    "Deploy_blade",
+    "Deploy_blade_plate",
+    "Deploy_blade_arms",
+    "Deploy_blade_ribs",
+    "Deploy_blade_edge"
+   ]
+  },
+  {
+   "feature": "high flat engineer hull with sponsons, seven road wheels, skirt edge",
+   "nodes": [
+    "Hull",
+    "Sponsons",
+    "Wheels",
+    "Tracks",
+    "Skirt_edge"
+   ]
+  },
+  {
+   "feature": "low L7 105 mm turret on a telescopic riser",
+   "nodes": [
+    "Deploy_riser",
+    "Turret",
+    "Turret_body",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Mantlet"
+   ]
+  },
+  {
+   "feature": "side armour plates hinged on the hull edges (lean out dug in)",
+   "nodes": [
+    "Deploy_plate_l",
+    "Deploy_plate_r"
+   ]
+  },
+  {
+   "feature": "rear spades stowed upright on the stern",
+   "nodes": [
+    "Deploy_spade_l",
+    "Deploy_spade_r"
+   ]
+  },
+  {
+   "feature": "the emplacement: horseshoe bank, sandbags on the crest, camouflage net over the engine deck",
+   "nodes": [
+    "Deploy_berm",
+    "Berm_dirt",
+    "Berm_bags",
+    "Berm_net",
+    "Berm_posts"
+   ]
+  },
+  {
+   "feature": "coaxial MG port in the turret front",
+   "nodes": [
+    "MG_port"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_105_bunker",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "mg_coax",
+   "slot": "mg",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "lead rule (wave 5): units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "hull and sponsons (Team)",
+  "turret body (Team)",
+  "side plates (Team)",
+  "bands and roof panel (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (tank wreck)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "blade",
+   "turret",
+   "tracks",
+   "side plates"
+  ],
+  "tier2": [
+   "sponsons",
+   "push arms",
+   "rams",
+   "spades",
+   "riser",
+   "mantlet",
+   "bank",
+   "net",
+   "stowage"
+  ],
+  "tier3": [
+   "hinges",
+   "ribs",
+   "teeth",
+   "hatches",
+   "periscopes",
+   "smoke launchers",
+   "lamps",
+   "exhausts",
+   "sandbags",
+   "grass",
+   "crate"
+  ]
+ },
+ "questions": []
+}
