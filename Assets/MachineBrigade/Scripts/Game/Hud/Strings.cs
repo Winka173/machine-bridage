@@ -1422,6 +1422,14 @@ namespace MachineBrigade.Game.Hud
             ["unit.c_ram"] = ("C-RAM interceptor", "Trạm đánh chặn C-RAM"),
             ["unit.gun_pit"] = ("Hidden gun pit", "Ụ pháo ẩn"),
             ["unit.drone_hangar"] = ("Drone hangar", "Nhà chứa drone"),
+            // Play-test 14: the vehicle and aircraft hangars, the hangar rally point and the HQ tab.
+            ["unit.vehicle_hangar"] = ("Vehicle hangar", "Nhà chứa xe"),
+            ["unit.aircraft_hangar"] = ("Aircraft hangar", "Nhà chứa máy bay"),
+            ["note.vehicle_hangar"] = ("A field vehicle shed with a ramp: it sends out a light vehicle of your choice, free, every minute.", "Nhà chứa xe dã chiến có dốc ra: cứ mỗi phút gửi ra miễn phí một xe hạng nhẹ do ta chọn."),
+            ["note.aircraft_hangar"] = ("A field hangar with a pad: it launches a light helicopter or a UAV of your choice, free, every minute.", "Nhà chứa máy bay dã chiến có bãi đáp: cứ mỗi phút phóng miễn phí một trực thăng nhẹ hoặc UAV do ta chọn."),
+            ["hangar.rally"] = ("Hangar rally point", "Điểm tập kết nhà chứa"),
+            ["hangar.rally.hint"] = ("Tap the map: the hangars' units gather there", "Chạm bản đồ: quân từ nhà chứa tập kết ở đó"),
+            ["hangar.rally.set"] = ("Hangar units head there", "Quân nhà chứa đang đến đó"),
             ["unit.repair_bay"] = ("Repair bay", "Xưởng sửa chữa"),
             ["unit.airfield"] = ("Airfield", "Sân bay dã chiến"),
             ["unit.logistics_station"] = ("Logistics station", "Trạm hậu cần"),
@@ -1471,10 +1479,6 @@ namespace MachineBrigade.Game.Hud
             ["branch.heavy_turret.bastion.info"] = ("Much tougher, with two small machine-gun turrets all round for cars and drones up close.", "Chắc hơn nhiều, thêm hai tháp súng máy nhỏ xoay quanh đánh xe nhẹ và drone áp sát."),
             ["branch.aa_turret.flak"] = ("Flak tower", "Tháp cao xạ"),
             ["branch.aa_turret.flak.info"] = ("Quad 23 mm flak close in: far more fire at drones, small swarms and helicopters, no missiles.", "Pháo cao xạ 23 mm bốn nòng tầm gần: hỏa lực mạnh hơn nhiều vào drone, bầy nhỏ và trực thăng, không có tên lửa."),
-            ["branch.airfield.hangar"] = ("Hangar", "Nhà chứa máy bay"),
-            ["branch.airfield.hangar.info"] = ("One more aircraft up at once, a little tougher.", "Thêm một máy bay cùng lúc, chắc hơn một chút."),
-            ["branch.airfield.service"] = ("Fast service", "Phục vụ nhanh"),
-            ["branch.airfield.service.info"] = ("Aircraft over it rearm and mend half as fast again.", "Máy bay trên nó hồi đạn và hồi máu nhanh thêm một nửa."),
             // The tower-branch rework (DECISIONS 19T): new branches, when to pick each, the picker's words, the news.
             ["branch.rocket_turret.guided"] = ("Guided rockets", "Rốc-két dẫn đường"),
             ["branch.rocket_turret.guided.info"] = ("Two precise GMLRS rockets at long range: hard on artillery and buildings, poor against a swarm of small vehicles.", "Hai rốc-két GMLRS chính xác ở tầm xa: mạnh với pháo binh và công trình, yếu trước bầy xe nhỏ."),
@@ -1548,10 +1552,6 @@ namespace MachineBrigade.Game.Hud
             ["short.laser_ad_station.laser"] = ("Laser", "La-de"),
             ["branch.laser_ad_station.laser.info"] = ("A 50 kW laser burns drones at 40 m and shoots down rockets and missiles aimed near it; never runs out; stops no shells.", "La-de 50 kW đốt drone ở 40 m và bắn hạ rốc-két, tên lửa nhắm gần nó; không bao giờ hết đạn; không chặn đạn pháo."),
             ["branch.laser_ad_station.laser.when"] = ("Drone swarms and rocket pods.", "Bầy drone và ống phóng rốc-két."),
-            ["branch.laser_ad_station.net"] = ("Drone net", "Lưới chắn drone"),
-            ["short.laser_ad_station.net"] = ("Drone net", "Lưới drone"),
-            ["branch.laser_ad_station.net.info"] = ("A passive net corridor: catches drones that fly into it within 15 m; needs no power and does nothing else.", "Hành lang lưới thụ động: bắt drone bay vào trong 15 m; không cần điện và không làm gì khác."),
-            ["branch.laser_ad_station.net.when"] = ("FPV drones come down one lane.", "Drone FPV lao vào theo một đường."),
             ["branch.aa_turret.sam.info"] = ("Stinger missiles instead of the 23 mm guns: aircraft and helicopters out to 56 m, further than the flak; nothing on the ground.", "Tên lửa Stinger thay cho pháo 23 mm: máy bay và trực thăng tới 56 m, xa hơn pháo cao xạ; không bắn mặt đất."),
             ["campaign.power"] = ("Recommended power {wanted} · your deck {ours}", "Sức mạnh đề xuất {wanted} · bộ bài của bạn {ours}"),
             ["err.NotAvailable"] = ("Not available in this mode", "Không dùng được ở chế độ này"),
@@ -2397,6 +2397,8 @@ namespace MachineBrigade.Game.Hud
             ["short.c_ram"] = ("C-RAM", "C-RAM"),
             ["short.gun_pit"] = ("Gun pit", "Ụ pháo ẩn"),
             ["short.drone_hangar"] = ("Drone hangar", "Nhà chứa drone"),
+            ["short.vehicle_hangar"] = ("Vehicle hangar", "Nhà chứa xe"),
+            ["short.aircraft_hangar"] = ("Aircraft hangar", "Nhà chứa máy bay"),
             ["short.rocket_turret"] = ("Rockets", "Dàn rốc-két"),
             ["short.mg_bunker"] = ("MG bunker", "Lô cốt"),
             ["short.guard_tower"] = ("Guard tower", "Tháp canh"),
@@ -2406,7 +2408,6 @@ namespace MachineBrigade.Game.Hud
             ["short.hover_gunboat"] = ("Hovercraft", "Xuồng hộ tống"),
             ["short.repair_bay"] = ("Repair bay", "Xưởng sửa chữa"),
             ["short.airfield"] = ("Airfield", "Sân bay"),
-            ["short.airfield.hangar"] = ("Hangar", "Nhà chứa"),
             ["short.logistics_station"] = ("Logistics", "Trạm hậu cần"),
             ["short.guard_tower.watch"] = ("Watchtower", "Tháp quan sát"),
             ["short.guard_tower.nest"] = ("Gun nest", "Ổ súng"),
@@ -2536,9 +2537,9 @@ namespace MachineBrigade.Game.Hud
             ["note.blast_wall"] = ("A line of Hesco gabions (wire-mesh cells filled with earth): it soaks up direct fire aimed at the towers behind it.", "Một hàng rọ Hesco (ô lưới thép chứa đầy đất): hứng đạn bắn thẳng nhắm vào các tháp phía sau."),
             // dx26: Mồi nhử bơm hơi.
             // dx27: Trung tâm điều khiển hỏa lực.
-            ["unit.fire_control_centre"] = ("Fire-control centre", "Trung tâm điều khiển hỏa lực"),
-            ["short.fire_control_centre"] = ("Fire control", "TT hỏa lực"),
-            ["note.fire_control_centre"] = ("A fire-direction centre (FDC): shelters, a mast and radios that tie the base's towers into one battery.", "Trung tâm điều khiển hỏa lực (FDC): nhà chứa, cột ăng-ten và điện đài liên kết các tháp của căn cứ thành một khẩu đội."),
+            ["unit.fire_control_centre"] = ("Defence Command Centre", "Trung tâm chỉ huy phòng thủ"),
+            ["short.fire_control_centre"] = ("Defence command", "TT phòng thủ"),
+            ["note.fire_control_centre"] = ("A defence command post: shelters, a mast and radios that direct every structure of the base.", "Sở chỉ huy phòng thủ: nhà chứa, cột ăng-ten và điện đài chỉ huy mọi công trình của căn cứ."),
             // dx28: Đèn pha chiến trường.
             // dx29: Bóng chắn máy bay.
             ["unit.barrage_balloon"] = ("Radar aerostat (JLENS)", "Khí cầu neo radar (JLENS)"),
@@ -2553,8 +2554,8 @@ namespace MachineBrigade.Game.Hud
             ["short.flare_tower"] = ("Flare tower", "Tháp pháo sáng"),
             ["note.flare_tower"] = ("A small tower with a multi-tube illumination mortar: parachute flares that turn night into day over the enemy.", "Tháp nhỏ với cối pháo sáng nhiều ống: pháo sáng dù biến đêm thành ngày trên đầu địch."),
             // ct13: Trạm phòng không laser chống drone.
-            ["unit.laser_ad_station"] = ("Laser anti-drone station", "Trạm phòng không laser chống drone"),
-            ["short.laser_ad_station"] = ("Laser AD", "Trạm laser"),
+            ["unit.laser_ad_station"] = ("Laser Defence Tower", "Tháp la-de phòng thủ"),
+            ["short.laser_ad_station"] = ("Laser tower", "Tháp la-de"),
             ["note.laser_ad_station"] = ("A fixed high-energy laser site of the Iron Beam or DragonFire kind: it burns drones out of the sky, shoots down rockets and missiles aimed near it (no shells) and never runs out of rounds.", "Trạm laser năng lượng cao cố định kiểu Iron Beam hay DragonFire: đốt drone rơi khỏi bầu trời, bắn hạ rốc-két và tên lửa nhắm gần nó (không chặn đạn pháo) và không bao giờ hết đạn."),
             // ct14: Pháo phòng không 40 mm.
             ["unit.aa_gun_tower"] = ("40 mm AA gun", "Pháo phòng không 40 mm"),

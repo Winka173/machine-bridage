@@ -36,6 +36,8 @@ namespace MachineBrigade.Game.Hud
                 "gun_pit" => "t_pit",
                 "missile_battery" => "t_patriot",
                 "drone_hangar" => "t_hangar",
+                "vehicle_hangar" => "t_hangar",
+                "aircraft_hangar" => "t_hangar",
                 "heavy_turret" => "t_fortress",
                 // Prompt 16: Lighthouse Bay's capturable coastal batteries wear the heavy fortress's line.
                 "coastal_battery" => "t_coastal",

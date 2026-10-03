@@ -365,6 +365,7 @@ namespace MachineBrigade.Game.Hud
                 _deck.TipRow = id => Catalog != null && Catalog.Vehicles.TryGetValue(id, out var held) ? KitCombat.Row(held, 4) : null;
                 _deck.CardPressed += i => CardPressed?.Invoke(i);
                 _deck.SkillPressed += () => HqSkillPressed?.Invoke();
+                _deck.RallyPressed += () => HangarRallyPressed?.Invoke();
                 _deck.CpTapped += () => Toast(Strings.Get("hud.cpInfo"), seconds: 5f);
                 _safe.Add(_deck.Root);
             }
@@ -529,6 +530,11 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>Prompt 32 L4: the HQ skill button (the one new HUD button) was tapped.</summary>
         public event Action HqSkillPressed;
+
+        /// <summary>Play-test 14: the hangar rally button.</summary>
+        public event Action HangarRallyPressed;
+
+        public void SetHangarRally(bool show, bool armed) => _deck?.SetRally(show, armed);
 
         /// <summary>Prompt 32 L4: the HQ skill button's state (null icon: hidden). See <see cref="DeckBar.SetSkill"/>.</summary>
         public void SetHqSkill(string icon, string name, string tip, float share, float seconds, bool armed) =>

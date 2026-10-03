@@ -93,8 +93,6 @@
   "heavy_turret.bastion": { "real": ["pháo đài tuyến Maginot (tháp pháo ở góc)"], "media": [], "note": "ước đoán: nhánh pháo đài thép hai tháp nhỏ ở góc" },
   "repair_bay": { "real": ["nhà vòm thép Quonset / Nissen"], "media": [], "note": "ước đoán: xưởng sửa chữa xe dã chiến" },
   "airfield": { "real": ["bãi đáp trực thăng (chữ H)"], "media": [], "note": "Bãi đáp sửa chữa và nạp đạn cho máy bay" },
-  "airfield.hangar": { "real": ["nhà chứa máy bay dã chiến"], "media": [], "note": "ước đoán: nhánh nhà chứa" },
-  "airfield.service": { "real": ["FARP (điểm tiếp đạn và nhiên liệu tiền phương)"], "media": [], "note": "ước đoán: nhánh phục vụ máy bay" },
   "logistics_station": { "real": ["kho nhiên liệu dã chiến (bồn nằm trong đê đất)"], "media": [], "note": "Trạm hậu cần, thêm tiếp tế cho quân" },
   "aa_turret.flak": { "real": ["ZSU-23-4 Shilka (23 mm bốn nòng)"], "media": [], "note": "Nhánh pháo phòng không bốn nòng" },
   "aa_turret.sam": { "real": ["Mistral ATLAS", "RBS-70", "Starstreak LML"], "media": [], "note": "Nhánh trạm tên lửa phòng không" },

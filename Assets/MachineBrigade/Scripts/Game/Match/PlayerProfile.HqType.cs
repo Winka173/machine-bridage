@@ -31,6 +31,43 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>
+        /// Play-test 14: the light unit a Garrison HQ calls, chosen on the HQ tab (null: the level's mixed squad). Only a
+        /// unit the HQ may call (<see cref="HqTypeRules.Callable"/>) counts.
+        /// </summary>
+        public static string HqUnit
+        {
+            get => string.IsNullOrEmpty(D.hqUnit) ? null : D.hqUnit;
+            set
+            {
+                D.hqUnit = value ?? "";
+                Save();
+            }
+        }
+
+        /// <summary>Play-test 14: the unit a hangar card turns out (null: its first, the data's default).</summary>
+        public static string HangarUnit(string hangarId)
+        {
+            var i = D.hangarIds.IndexOf(hangarId);
+            return i >= 0 && i < D.hangarUnits.Count && !string.IsNullOrEmpty(D.hangarUnits[i]) ? D.hangarUnits[i] : null;
+        }
+
+        public static void SetHangarUnit(string hangarId, string unit)
+        {
+            var i = D.hangarIds.IndexOf(hangarId);
+            if (i < 0)
+            {
+                D.hangarIds.Add(hangarId);
+                D.hangarUnits.Add(unit ?? "");
+            }
+            else
+            {
+                while (D.hangarUnits.Count <= i) D.hangarUnits.Add("");
+                D.hangarUnits[i] = unit ?? "";
+            }
+            Save();
+        }
+
+        /// <summary>
         /// The next choice on the Base screen's HQ: Fortress (ground), Fortress (anti-air), Garrison, Shield, round again.
         /// Free: a choice in the loadout, as a deck's cards are.
         /// </summary>

@@ -43,6 +43,9 @@ namespace MachineBrigade.Sim.Commands
         /// emergency dome (Point unused).
         /// </summary>
         HqSkill,
+
+        /// <summary>Play-test 14: where the side's hangars send the units they turn out (Point).</summary>
+        HangarRally,
     }
 
     /// <summary>
@@ -78,6 +81,10 @@ namespace MachineBrigade.Sim.Commands
         /// <summary>Prompt 32 L4: the HQ's skill (a Fortress aims it at <paramref name="point"/>).</summary>
         public static Command HqSkill(int team, Vector2 point = default) =>
             new(CommandType.HqSkill, team, Array.Empty<EntityId>(), point);
+
+        /// <summary>Play-test 14: the hangars' rally point.</summary>
+        public static Command HangarRally(int team, Vector2 point) =>
+            new(CommandType.HangarRally, team, Array.Empty<EntityId>(), point);
 
         public static Command Strike(int team, string supportId, Vector2 point, Vector2 towards = default) =>
             new(CommandType.Strike, team, Array.Empty<EntityId>(), point, defId: supportId, point2: towards);

@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 
 namespace MachineBrigade.Sim.Content
 {
@@ -31,6 +32,51 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>A linked tower weighs a target another linked tower is on this many times more.</summary>
         public float Focus { get; internal set; } = 2f;
+    }
+
+    /// <summary>
+    /// Play-test 14: a hangar that turns out units by itself, free: one of <see cref="Units"/> (the player picks which on the
+    /// Base screen, the first one otherwise) every <see cref="Every"/> seconds while fewer than <see cref="Alive"/> of its
+    /// own are alive. They go to the side's hangar rally point (the player taps the map), else stay by the hangar.
+    /// </summary>
+    public sealed class HangarDef
+    {
+        public IReadOnlyList<string> Units { get; internal set; } = Array.Empty<string>();
+        public float Every { get; internal set; } = 60f;
+        public int Alive { get; internal set; } = 2;
+
+        /// <summary>How far round its post a turned-out unit fights.</summary>
+        public float Post { get; internal set; } = 20f;
+    }
+
+    /// <summary>Play-test 14: what a base aura building lifts.</summary>
+    public enum BaseAuraReach
+    {
+        /// <summary>Planes and helicopters (not drones).</summary>
+        Aircraft,
+
+        /// <summary>Ground vehicles (not aircraft, ships or structures).</summary>
+        Ground,
+
+        /// <summary>The side's structures: towers, walls, utility modules, the HQ.</summary>
+        Structures,
+    }
+
+    /// <summary>
+    /// Play-test 14: a base aura building (the airfield, the repair bay, the defence command centre). While it stands, every
+    /// unit of its side in <see cref="Reach"/> anywhere on the map gets the lifts below (shares: 0.1 = 10 % more). One of a
+    /// kind counts: two of the same lift nothing more.
+    /// </summary>
+    public sealed class BaseAuraDef
+    {
+        public BaseAuraReach Reach { get; internal set; }
+        public float Damage { get; internal set; }
+        public float Speed { get; internal set; }
+        public float Hp { get; internal set; }
+        public float Range { get; internal set; }
+
+        /// <summary>The larger of two of the same kind wins (no stacking).</summary>
+        internal float Weight => Damage + Speed + Hp + Range;
     }
 
     /// <summary>A searchlight: at night and in the murk its side sees everything within <see cref="Radius"/>, and enemies there shoot <see cref="Dazzle"/> worse.</summary>
@@ -123,6 +169,12 @@ namespace MachineBrigade.Sim.Content
         public BlastWallDef? BlastWall { get; internal set; }
         public DecoyDef? Decoy { get; internal set; }
         public FireControlDef? FireControl { get; internal set; }
+
+        /// <summary>Play-test 14: a base aura building's lifts (null on every other def).</summary>
+        public BaseAuraDef? BaseAura { get; internal set; }
+
+        /// <summary>Play-test 14: a vehicle or aircraft hangar's turn-out (null on every other def).</summary>
+        public HangarDef? Hangar { get; internal set; }
         public SearchlightDef? Searchlight { get; internal set; }
         public BalloonDef? Balloon { get; internal set; }
         public SightJammerDef? SightJammer { get; internal set; }
@@ -204,6 +256,27 @@ namespace MachineBrigade.Sim.Content
                 def.FireControl = new FireControlDef
                 {
                     Radius = MathF.Max(1f, o.Float("radius", 30f)), Damage = Math.Clamp(o.Float("damage", 0.12f), 0f, 1f), Focus = Math.Clamp(o.Float("focus", 2f), 1f, 10f),
+                };
+            }
+            if (v.Has("hangar"))
+            {
+                var o = v.Object("hangar");
+                def.Hangar = new HangarDef
+                {
+                    Units = o.StringArray("units"), Every = MathF.Max(5f, o.Float("every", 60f)), Alive = Math.Max(1, o.Int("alive", 2)),
+                    Post = MathF.Max(5f, o.Float("post", 20f)),
+                };
+            }
+            if (v.Has("aura"))
+            {
+                var o = v.Object("aura");
+                var reach = o.Has("reach") ? o.String("reach") : "Ground";
+                def.BaseAura = new BaseAuraDef
+                {
+                    Reach = reach.Equals("aircraft", StringComparison.OrdinalIgnoreCase) ? BaseAuraReach.Aircraft
+                        : reach.Equals("structures", StringComparison.OrdinalIgnoreCase) ? BaseAuraReach.Structures : BaseAuraReach.Ground,
+                    Damage = Math.Clamp(o.Float("damage", 0f), 0f, 1f), Speed = Math.Clamp(o.Float("speed", 0f), 0f, 1f),
+                    Hp = Math.Clamp(o.Float("hp", 0f), 0f, 1f), Range = Math.Clamp(o.Float("range", 0f), 0f, 1f),
                 };
             }
             if (v.Has("searchlight"))

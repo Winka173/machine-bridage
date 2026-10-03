@@ -32166,9 +32166,7 @@
    "errors": [],
    "warnings": [],
    "units": [
-    "airfield",
-    "airfield.hangar",
-    "airfield.service"
+    "airfield"
    ],
    "movingParts": 0,
    "budgetClass": "structure"

@@ -572,6 +572,24 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: bắn hạ rốc-két, tên lửa, drone và khoảng một phần ba đạn pháo nhắm vào trong 35 m, hai quả đánh chặn cùng lúc; pháo nhiều nòng 20 mm chỉ bắn đạn bay tới, không bắn máy bay.\n" +
                 "Mạnh / yếu: che căn cứ khỏi pháo binh, rốc-két và drone; không có gì đánh xe mặt đất.\n" +
                 "Mẹo: đặt nơi pháo địch sẽ gây hại nhất, giữa các tháp của ta. Ở hạng 7, [[Vòm Sắt]] đổi súng nhiều nòng lấy tên lửa đánh chặn (60 m, sáu quả một lượt, không chặn đạn bắn thẳng); Centurion giữ vai trò che chắn tầm gần bắn nhanh."),
+            ["guide.vehicle_hangar"] = (
+                "[[Vehicle hangar]] · medium structure · free light vehicles\n" +
+                "How it fights: every 60 s it sends out [[one light vehicle]] (scout jeep, armoured car or light tank: your pick on the HQ tab), free, while fewer than two of its own are alive.\n" +
+                "Strong / weak: a steady trickle of free units; they are light and come one at a time.\n" +
+                "Tip: set the hangar rally point in battle (tap its button, then the map) to send them forward.",
+                "[[Nhà chứa xe]] · công trình ô vừa · xe nhẹ miễn phí\n" +
+                "Cách đánh: cứ 60 giây gửi ra [[một xe hạng nhẹ]] (xe jeep trinh sát, xe bọc thép hoặc xe tăng hạng nhẹ: chọn ở tab Sở chỉ huy), miễn phí, khi còn ít hơn hai xe của nó.\n" +
+                "Mạnh / yếu: quân miễn phí đều đặn; chúng nhẹ và ra từng chiếc một.\n" +
+                "Mẹo: đặt điểm tập kết nhà chứa trong trận (chạm nút của nó rồi chạm bản đồ) để đưa chúng lên trước."),
+            ["guide.aircraft_hangar"] = (
+                "[[Aircraft hangar]] · medium structure · free light aircraft\n" +
+                "How it fights: every 60 s it launches [[one light aircraft]] (scout helicopter or recon UAV: your pick on the HQ tab), free, while fewer than two of its own are up.\n" +
+                "Strong / weak: free eyes and harassment in the air; weak against anti-air.\n" +
+                "Tip: put the hangar rally point where you want to see.",
+                "[[Nhà chứa máy bay]] · công trình ô vừa · máy bay nhẹ miễn phí\n" +
+                "Cách đánh: cứ 60 giây phóng [[một máy bay nhẹ]] (trực thăng trinh sát hoặc UAV trinh sát: chọn ở tab Sở chỉ huy), miễn phí, khi còn ít hơn hai chiếc của nó trên trời.\n" +
+                "Mạnh / yếu: mắt và quấy rối miễn phí trên không; yếu trước phòng không.\n" +
+                "Mẹo: đặt điểm tập kết nhà chứa ở nơi cần quan sát."),
             ["guide.drone_hangar"] = (
                 "[[Drone hangar]] · large tower · FPV drones\n" +
                 "How it fights: sends two FPV kamikaze drones every 20 s at enemies out to 70 m, heavy on armour and structures.\n" +
@@ -582,22 +600,22 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: bào mòn thứ gì đứng ngoài tầm các tháp khác; APS, la-de và máy gây nhiễu chặn được drone.\n" +
                 "Mẹo: nhánh Lancet bắn tới 85 m và săn pháo binh; nhánh Bầy đàn phóng bốn chiếc một lần."),
             ["guide.repair_bay"] = (
-                "[[Repair bay]] · utility module\n" +
-                "How it fights: vehicles within 35 m of your HQ mend 1.5% of their health a second, even in the middle of a fight.\n" +
-                "Strong / weak: keeps a defending army on its feet; it does nothing for vehicles out in the field.\n" +
-                "Tip: pair it with a base that fights at home (Defend, Siege, a pressed Conquest).",
-                "[[Xưởng sửa chữa]] · mô-đun tiện ích\n" +
-                "Cách đánh: xe trong vòng 35 m quanh sở chỉ huy hồi 1,5% máu mỗi giây, kể cả giữa trận.\n" +
-                "Mạnh / yếu: giữ quân phòng thủ đứng vững; không giúp gì xe ở ngoài chiến trường.\n" +
-                "Mẹo: dùng khi căn cứ phải đánh tại nhà (Phòng thủ, Công thành, Chiếm cứ điểm bị ép)."),
+                "[[Repair bay]] · utility module · ground aura\n" +
+                "How it fights: while it stands, [[every ground vehicle]] of yours, anywhere on the map, hits 10% harder and has 10% more health.\n" +
+                "Strong / weak: lifts a whole tank army; a second repair bay adds nothing, and losing it loses the lift.\n" +
+                "Tip: guard it well inside the base.",
+                "[[Xưởng sửa chữa]] · mô-đun tiện ích · hào quang mặt đất\n" +
+                "Cách đánh: khi nó còn đứng, [[mọi xe mặt đất]] của ta, ở bất cứ đâu trên bản đồ, gây thêm 10% sát thương và có thêm 10% máu.\n" +
+                "Mạnh / yếu: nâng cả đạo quân xe tăng; xưởng thứ hai không cộng thêm, mất nó là mất hiệu ứng.\n" +
+                "Mẹo: đặt sâu trong căn cứ và bảo vệ kỹ."),
             ["guide.airfield"] = (
-                "[[Airfield]] · utility module\n" +
-                "How it fights: aircraft over it repair 3% a second and rearm; they come back to it when out of ammunition (no trip home for being hurt).\n" +
-                "Strong / weak: keeps helicopters and jets flying longer; they still have to fly out to fight and can be shot down on the way.\n" +
+                "[[Airfield]] · utility module · air aura\n" +
+                "How it fights: while it stands, [[every aircraft]] of yours (planes and helicopters, not drones) hits 10% harder and flies 10% faster.\n" +
+                "Strong / weak: lifts a whole air wing; a second airfield adds nothing. Aircraft rearm at the HQ.\n" +
                 "Tip: take it with two or more aircraft in the deck.",
-                "[[Sân bay dã chiến]] · mô-đun tiện ích\n" +
-                "Cách đánh: máy bay bay trên nó hồi 3% máu mỗi giây và nạp đạn; chúng về đây khi hết đạn (không còn bay về vì bị thương).\n" +
-                "Mạnh / yếu: giúp trực thăng và máy bay bay được lâu hơn; chúng vẫn phải ra trận và có thể bị bắn rơi trên đường.\n" +
+                "[[Sân bay dã chiến]] · mô-đun tiện ích · hào quang trên không\n" +
+                "Cách đánh: khi nó còn đứng, [[mọi máy bay]] của ta (máy bay và trực thăng, không tính drone) gây thêm 10% sát thương và bay nhanh hơn 10%.\n" +
+                "Mạnh / yếu: nâng cả phi đội; sân bay thứ hai không cộng thêm. Máy bay nạp đạn ở sở chỉ huy.\n" +
                 "Mẹo: mang theo khi bộ bài có từ hai máy bay trở lên."),
             ["guide.logistics_station"] = (
                 "[[Logistics station]] · utility module\n" +
@@ -1154,14 +1172,14 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: giữ tháp tuyến đầu trước xe tăng; đạn cầu vồng và bom vẫn vượt qua.\n" +
                 "Mẹo: đặt trước tháp mạnh nhất."),
             ["guide.fire_control_centre"] = (
-                "[[Fire-control centre]] · utility module · links the towers\n" +
-                "How it fights: towers within 30 m hit [[12 % harder]] and gang up on one target.\n" +
-                "Strong / weak: turns a tower cluster into one block; useless for towers spread thin.\n" +
-                "Tip: put your best guns within its 30 m.",
-                "[[Trung tâm điều khiển hỏa lực]] · mô-đun tiện ích · liên kết tháp\n" +
-                "Cách đánh: tháp trong 30 m gây thêm [[12%]] sát thương và dồn hỏa lực vào một mục tiêu.\n" +
-                "Mạnh / yếu: biến cụm tháp thành một khối; vô dụng khi tháp đặt thưa.\n" +
-                "Mẹo: đặt các khẩu mạnh nhất trong vòng 30 m."),
+                "[[Defence Command Centre]] · utility module · structure aura\n" +
+                "How it fights: while it stands, [[every structure]] of yours reaches 15% further and has 10% more health.\n" +
+                "Strong / weak: lifts the whole base at once; a second centre adds nothing, and losing it loses the lift.\n" +
+                "Tip: put it behind the towers it lifts.",
+                "[[Trung tâm chỉ huy phòng thủ]] · mô-đun tiện ích · hào quang công trình\n" +
+                "Cách đánh: khi nó còn đứng, [[mọi công trình]] của ta bắn xa hơn 15% và có thêm 10% máu.\n" +
+                "Mạnh / yếu: nâng cả căn cứ cùng lúc; trung tâm thứ hai không cộng thêm, mất nó là mất hiệu ứng.\n" +
+                "Mẹo: đặt sau các tháp nó nâng."),
             ["guide.barrage_balloon"] = (
                 "[[Radar aerostat]] · small structure · AA that never fires\n" +
                 "How it fights: enemy bombing within 40 m of it [[scatters 50 % wider]]; enemy helicopters keep out; it also [[shows aircraft]] within 45 m, stealth ones too.\n" +
@@ -1181,11 +1199,11 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: tìm quân đột kích đêm, cả tàng hình; ban ngày vô dụng.\n" +
                 "Mẹo: đi cặp với đèn pha ở map đêm."),
             ["guide.laser_ad_station"] = (
-                "[[Laser anti-drone station]] · medium tower · never runs dry\n" +
+                "[[Laser Defence Tower]] · medium tower · never runs dry\n" +
                 "How it fights: a [[laser]] at drones only out to 40 m, and interceptors for rockets and mortar bombs; smoke cuts it by 80 %.\n" +
                 "Strong / weak: shuts down drone swarms and rocket rain; useless against aircraft and tanks.\n" +
                 "Tip: keep your own smoke away from it.",
-                "[[Trạm phòng không laser chống drone]] · tháp ô vừa · không bao giờ hết đạn\n" +
+                "[[Tháp la-de phòng thủ]] · tháp ô vừa · không bao giờ hết đạn\n" +
                 "Cách đánh: [[laser]] chỉ bắn drone, tầm 40 m, cùng bộ đánh chặn rốc-két và đạn cối; khói làm tia yếu 80%.\n" +
                 "Mạnh / yếu: dập bầy drone và mưa rốc-két; vô dụng trước máy bay và xe tăng.\n" +
                 "Mẹo: giữ khói của ta tránh xa nó."),

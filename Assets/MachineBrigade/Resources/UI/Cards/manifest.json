@@ -452,20 +452,6 @@
             "hash": "v2:48de9d66031c7118295cec39698b05584282c575"
         },
         {
-            "id": "airfield.hangar",
-            "kind": "tower",
-            "model": "helipad_a",
-            "source": "Models/helipad_a",
-            "hash": "v2:81008e0af727f387051a5fb66a8b7a9f86b71038"
-        },
-        {
-            "id": "airfield.service",
-            "kind": "tower",
-            "model": "helipad_b",
-            "source": "Models/helipad_b",
-            "hash": "v2:95b5df172c36f45e9cfa90ff15d80dac3b219d92"
-        },
-        {
             "id": "argus",
             "kind": "boss",
             "model": "command_airship",
@@ -982,13 +968,6 @@
             "model": "laser_ad_station",
             "source": "Models/laser_ad_station",
             "hash": "v2:dbebc38347dc20bb8fce500ccac78bf33442c30b"
-        },
-        {
-            "id": "laser_ad_station.net",
-            "kind": "tower",
-            "model": "drone_net_tower",
-            "source": "Models/drone_net_tower",
-            "hash": "v2:d33a81c56ba01fabb384ccfc45b7639c144c8417"
         },
         {
             "id": "leviathan",

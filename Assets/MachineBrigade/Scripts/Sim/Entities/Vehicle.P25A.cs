@@ -21,6 +21,12 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>A linked tower's damage multiplier (1: not linked).</summary>
         internal float LinkDamage = 1f;
 
+        /// <summary>Play-test 14: the side's base aura buildings' lifts on this unit (1: none), set each step by FieldWorksSystem.</summary>
+        internal float AuraDamage = 1f, AuraSpeed = 1f, AuraHp = 1f, AuraRange = 1f;
+
+        /// <summary>The weapons' ranges before the range aura (taken the first time it applies).</summary>
+        internal float[]? AuraBaseRange;
+
         /// <summary>A microwave's next pulse, a flare tower's next flare.</summary>
         internal double WorksNextAt;
 

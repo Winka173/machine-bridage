@@ -775,6 +775,7 @@ namespace MachineBrigade.Sim
             if (command.Type == CommandType.Strike) return Strikes.Call(command);
             if (command.Type == CommandType.CallTower) return Bases.CallTower(command);
             if (command.Type == CommandType.HqSkill) return Bases.UseSkill(command);
+            if (command.Type == CommandType.HangarRally) return Bases.SetHangarRally(command);
             if (command.Type == CommandType.Outpost) return Bases.SetUpOutpost(command);
             if (command.Type == CommandType.FocusPart) return Bosses.Focus(command);
 

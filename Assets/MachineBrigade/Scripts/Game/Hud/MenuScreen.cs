@@ -266,9 +266,11 @@ namespace MachineBrigade.Game.Hud
         {
             // The topmost dialog closes. The story card is a scrim too and stays in the menu while hidden:
             // it hides, never leaves (a Back that took it out left Start with nothing to show, DECISIONS 21B).
+            // Play-test 14: only a scrim on screen counts. The comic page waits hidden in the menu too, and Back took
+            // it out first, unseen, so after every menu build the first Back did nothing (it took two taps).
             VisualElement dialog = null;
             foreach (var scrim in Root.Query(className: KitDialog.ScrimClass).ToList())
-                if (_story == null || scrim != _story.Root || _story.Visible) dialog = scrim;
+                if (Shown(scrim) && (_story == null || scrim != _story.Root || _story.Visible)) dialog = scrim;
             if (dialog != null)
             {
                 if (_story != null && dialog == _story.Root) _story.Hide();
@@ -287,6 +289,15 @@ namespace MachineBrigade.Game.Hud
             if (_tab == Tab.Campaign && CampaignBack()) return true;
             if (_tab == Tab.Home) return false;
             ShowTab(Tab.Home);
+            return true;
+        }
+
+        /// <summary>Whether an element is on screen: it and every parent up to the menu's root are displayed and visible.</summary>
+        private bool Shown(VisualElement element)
+        {
+            for (var e = element; e != null && e != Root.parent; e = e.parent)
+                if (e.resolvedStyle.display == DisplayStyle.None || e.style.display == DisplayStyle.None || e.resolvedStyle.visibility == Visibility.Hidden)
+                    return false;
             return true;
         }
 

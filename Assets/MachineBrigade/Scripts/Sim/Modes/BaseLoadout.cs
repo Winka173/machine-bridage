@@ -22,6 +22,12 @@ namespace MachineBrigade.Sim.Modes
 
         public HqBranch HqBranch { get; set; } = HqBranch.Ground;
 
+        /// <summary>Play-test 14: the light unit a Garrison HQ calls (one of <see cref="HqTypeRules.Callable"/>; null: the level's mixed squad).</summary>
+        public string? HqUnit { get; set; }
+
+        /// <summary>Play-test 14: the unit each hangar card turns out (hangar id, unit id); a hangar not listed turns out its first.</summary>
+        public Dictionary<string, string> HangarUnits { get; set; } = new();
+
         /// <summary>
         /// Prompt 32 L3: each wall line's type, outer line first (a camp reads two, a fortress three). Empty or NONE: no wall
         /// (a loadout made in code, the modes' bare camps); the player's takes the save's, the AI's its general's.
@@ -152,7 +158,7 @@ namespace MachineBrigade.Sim.Modes
         {
             var rules = catalog.Base;
             var level = Math.Clamp(HqLevel, 1, rules.MaxLevel);
-            var fitted = new BaseLoadout { HqLevel = level, HqType = HqType, HqBranch = HqBranch, Walls = new List<WallType>(Walls), Layered = Layered, Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches), _catalogForRelays = catalog };
+            var fitted = new BaseLoadout { HqLevel = level, HqType = HqType, HqBranch = HqBranch, HqUnit = HqUnit, HangarUnits = new Dictionary<string, string>(HangarUnits), Walls = new List<WallType>(Walls), Layered = Layered, Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches), _catalogForRelays = catalog };
             foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
             {
                 var open = rules.Slots(level, size, Layered);

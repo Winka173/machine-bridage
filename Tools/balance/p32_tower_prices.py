@@ -63,7 +63,7 @@ PROVISIONAL = {
     "gun_turret.auto": 7, "laser_ad_station.laser": 7, "gun_turret.long": 6,
     "rocket_turret": 6, "rocket_turret.cluster": 6, "rocket_turret.guided": 6,
     "atgm_tower": 5, "atgm_tower.top": 5, "atgm_tower.multi": 5, "c_ram": 5, "c_ram.centurion": 5, "c_ram.dome": 5,
-    "laser_ad_station.net": 5, FORTRESS: 17, "missile_battery": 12, "missile_battery.lrr": 11,
+    FORTRESS: 17, "missile_battery": 12, "missile_battery.lrr": 11,
     "missile_battery.pac3": 9, "heavy_turret": 10, "heavy_turret.coastal": 11, "drone_hangar": 9, "drone_hangar.lancet": 9,
     "drone_hangar.swarm": 9, 
     "shield_tower": 9, "shield_tower.bulwark": 9, "shield_tower.ward": 9,

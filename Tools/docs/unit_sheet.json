@@ -25,14 +25,6 @@
    "shape": "Bãi đáp bê tông phẳng có vạch sơn và đèn. Kích thước hiện 10.0 × 10.0 × 0.1 m. Nhìn rõ từ camera chéo 45–60°; hình dạng hai nhánh phải khác nhau rõ ở zoom mặc định; vạch màu phe.",
    "description": "máy bay bay trên nó hồi 3% máu mỗi giây và nạp đạn; chỉ huy tự đưa chúng về khi dưới 35% máu hoặc hết đạn. giúp trực thăng và máy bay bay được lâu hơn; chúng vẫn phải ra trận và có thể bị bắn rơi trên đường."
   },
-  "airfield.hangar": {
-   "sheet": "Công trình",
-   "shape": "Bãi đáp bê tông phẳng có vạch sơn và đèn. Nhánh: Nhà chứa máy bay. Kích thước hiện 10.0 × 10.0 × 0.1 m. Nhìn rõ từ camera chéo 45–60°; hình dạng hai nhánh phải khác nhau rõ ở zoom mặc định; vạch màu phe."
-  },
-  "airfield.service": {
-   "sheet": "Công trình",
-   "shape": "Bãi đáp bê tông phẳng có vạch sơn và đèn. Nhánh: Xe tiếp nhiên liệu và thùng đạn. Kích thước hiện 10.0 × 10.0 × 0.1 m. Nhìn rõ từ camera chéo 45–60°; hình dạng hai nhánh phải khác nhau rõ ở zoom mặc định; vạch màu phe."
-  },
   "ammo_carrier": {
    "sheet": "Phương tiện",
    "shape": "Xe tải 8 bánh chở giá đạn kim loại mở, thùng đạn xếp tầng màu ô-liu, cần cẩu nhỏ phía sau. Từ trên xuống: các thùng đạn xếp lưới. Kích thước đề xuất khoảng 8.2 × 2.0 × 2.1 m (dài × rộng × cao; 0,8 × mẫu thật M977 HEMTT). Vũ khí nhìn thấy: M2 Browning 12.7 mm. Vạch màu phe trên nóc và hai hông; không dùng phù hiệu, cờ hay logo quốc gia thật.",

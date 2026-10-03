@@ -110,6 +110,13 @@ namespace MachineBrigade.Game.Match
             public string hqType = "";
             public string hqBranch = "";
 
+            /// <summary>Play-test 14: the light unit the Garrison HQ calls (the HQ tab); empty: the level's mixed squad.</summary>
+            public string hqUnit = "";
+
+            /// <summary>Play-test 14: the unit each hangar card turns out (hangar id, unit id), chosen on the HQ tab.</summary>
+            public List<string> hangarIds = new();
+            public List<string> hangarUnits = new();
+
             /// <summary>Prompt 32 L3: each wall line's type, outer first ("none", "hesco", "t_wall", "gun_wall"; missing: the data's default).</summary>
             public List<string> wallTypes = new();
             public int hqTypeVersion;

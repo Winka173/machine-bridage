@@ -8,8 +8,12 @@ namespace MachineBrigade.Game.Hud
     /// A tap that lands. UI Toolkit's <see cref="Clickable"/> only fires if the element still holds
     /// the pointer when it is released, and a scroll view takes the pointer as soon as a finger
     /// drifts a pixel or two, so taps on phones (and presses on a busy frame) were often lost.
-    /// This fires on release if the pointer has not travelled more than a finger's slop since it
-    /// went down, whoever holds the pointer by then; a real drag (a scroll) cancels it. The
+    /// Inside a scroll view this fires on release if the pointer has not travelled more than a
+    /// finger's slop since it went down, whoever holds the pointer by then; a real drag (a scroll)
+    /// cancels it. Outside one (the Back button, the rail, tabs, dialog buttons) nothing scrolls, so
+    /// it fires when the finger lifts over the element (its bounds grown by the slop), however far
+    /// it rolled on the way, as a platform button does (play-test 14: a thumb rolling more than the
+    /// slop, about 1.6 mm, lost the tap, so Back and tab changes often took two taps). The
     /// release is watched from the panel's root, so it is seen even when a scroll view has taken
     /// the pointer. While pressed, the element carries the "pressed" class for the pushed-in look.
     /// A hold (prompt 11: a card held shows its full name) is optional: once the finger has stayed
@@ -39,6 +43,9 @@ namespace MachineBrigade.Game.Hud
         private readonly Action<bool> _hold;
         private IVisualElementScheduledItem _holdTimer;
         private bool _holding;
+
+        /// <summary>Whether the pressed element sits in a scroll view (a drag there is a scroll, not a tap).</summary>
+        private bool _inScroll;
 
         public Tap(Action action) => _action = action;
 
@@ -108,6 +115,7 @@ namespace MachineBrigade.Game.Hud
             _pointer = evt.pointerId;
             _downStamp = evt.timestamp;
             _start = evt.position;
+            _inScroll = InScrollView(target);
             target.AddToClassList("pressed");
             if (_hold == null) return;
             _holdTimer?.Pause();
@@ -121,7 +129,7 @@ namespace MachineBrigade.Game.Hud
 
         private static void OnMove(PointerMoveEvent evt)
         {
-            if (_pending == null || evt.pointerId != _pointer) return;
+            if (_pending == null || evt.pointerId != _pointer || !_pending._inScroll) return;
             if (((Vector2)evt.position - _start).sqrMagnitude > Slop * Slop) Cancel();
         }
 
@@ -133,8 +141,24 @@ namespace MachineBrigade.Game.Hud
             var held = tap._holding;
             Cancel();
             if (held) return;
-            if (travelled > Slop * Slop || tap.target == null || tap.target.panel == null || !tap.target.enabledInHierarchy) return;
+            if (tap.target == null || tap.target.panel == null || !tap.target.enabledInHierarchy) return;
+            if (tap._inScroll ? travelled > Slop * Slop : !Over(tap.target, evt.position)) return;
             tap._action?.Invoke();
+        }
+
+        /// <summary>Whether a panel position is over the element, its bounds grown by the slop on every side.</summary>
+        private static bool Over(VisualElement element, Vector2 position)
+        {
+            var r = element.worldBound;
+            return position.x >= r.xMin - Slop && position.x <= r.xMax + Slop && position.y >= r.yMin - Slop && position.y <= r.yMax + Slop;
+        }
+
+        private static bool InScrollView(VisualElement element)
+        {
+            for (var e = element?.parent; e != null; e = e.parent)
+                if (e is ScrollView)
+                    return true;
+            return false;
         }
 
         private static void OnCancel(PointerCancelEvent evt)
