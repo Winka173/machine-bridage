@@ -170,7 +170,6 @@ namespace MachineBrigade.Game.Match
             ["ground_cruise_missile_vehicle"] = 5000,
             ["aerial_tanker"] = 3000,
             ["heavy_lift_helicopter"] = 3000,
-            ["bridging_vehicle"] = 1500,
             ["gps_jammer_vehicle"] = 1500,
             // ["drone_net_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             // ["one_shot_atgm_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).

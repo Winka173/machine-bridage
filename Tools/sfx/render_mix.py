@@ -77,6 +77,7 @@ for b in ['hit_ground_light', 'hit_concrete_light', 'hit_pen_light']:
     BANKS[b] = (3, 0.05, True, False)
 for b in ['hit_ground_heavy', 'hit_concrete_heavy', 'hit_pen_heavy']:
     BANKS[b] = (3, 0.05, False, False)
+BANKS.update({'hit_armour_light': (3, 0.05, True, False), 'hit_armour_heavy': (3, 0.05, False, False), 'hit_armour_glance': (3, 0.05, False, False)})
 BANKS.update({'hit_metal_light': (2, 0.12, True, False), 'hit_metal_heavy': (2, 0.12, False, False), 'smallarms_cluster': (2, 0.35, True, False),
               'crash_fall': (2, 0.3, False, False), 'crash_impact': (2, 0.1, False, True), 'flare_pop': (2, 0.15, False, False),
               'warn_whistle_big': (2, 0.3, False, False), 'warn_whistle': (3, 0.22, False, False), 'wreck_ship': (2, 0.2, False, True)})
@@ -294,12 +295,12 @@ class Mixer:
 
     def hit(self, t, at, size: int, surface: str):
         heavy = size >= 2
-        if surface == 'metal':
-            if not self.metal_take(t):
-                self.stats['metal_capped'] += 1
-                return
+        # play-test 13: armour not pierced knocks (hit_armour_*); a rare share (8 %) whines off as a ricochet under the cap
+        if surface == 'metal' and self.rng.random() < 0.08 and self.metal_take(t):
             self.stats['metal_played'] += 1
-        bank = {'metal': 'hit_metal_', 'pierced': 'hit_pen_', 'concrete': 'hit_concrete_', 'ground': 'hit_ground_'}[surface] + ('heavy' if heavy else 'light')
+            bank = 'hit_metal_' + ('heavy' if heavy else 'light')
+        else:
+            bank = {'metal': 'hit_armour_', 'pierced': 'hit_pen_', 'concrete': 'hit_concrete_', 'ground': 'hit_ground_'}[surface] + ('heavy' if heavy else 'light')
         self.play(t, bank, at, self.priority(size, False, False, at), 12 * size)
 
     # --- the render

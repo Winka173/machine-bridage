@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Match
         public const int GemToCoins = 15;
 
         /// <summary>The roster the save is in (see <see cref="Data.rosterVersion"/> and <see cref="CardMerges"/>).</summary>
-        internal const int RosterVersion = 7;
+        internal const int RosterVersion = 8;
 
         /// <summary>
         /// Moves progress off the cards folded into others or retired (once per save). A merged

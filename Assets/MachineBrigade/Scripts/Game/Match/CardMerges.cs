@@ -33,10 +33,10 @@ namespace MachineBrigade.Game.Match
         };
 
         /// <summary>
-        /// Cards gone with nothing in their place. None now: the sky gunship, retired in prompt 2, is the AC-130 aircraft card
-        /// again (play-test 7); a save migrated before kept the refund, one not yet migrated keeps the card.
+        /// Cards gone with nothing in their place: the bridging vehicle (play-test 13, roster version 8: the owner removed it;
+        /// it had no bridge to lay). The sky gunship, retired in prompt 2, is the AC-130 aircraft card again (play-test 7).
         /// </summary>
-        public static readonly string[] Retired = System.Array.Empty<string>();
+        public static readonly string[] Retired = { "bridging_vehicle" };
 
         /// <summary>Tower branches gone (prompt 20 L.1: the C-RAM's Hunter made way for the Iron Dome): a choice of one is dropped.</summary>
         public static readonly string[] RetiredBranches = { "c_ram.hunter" };

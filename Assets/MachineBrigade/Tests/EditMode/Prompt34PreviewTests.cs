@@ -247,5 +247,35 @@ namespace MachineBrigade.Tests
                 MatchSettings.Map = map;
             }
         }
+            /// <summary>Play-test 13: the utility vehicles do their job in the In action clip, not stand idle.</summary>
+        [Test]
+        public void UtilityVehiclesDoTheirJobInAction()
+        {
+            var c = C;
+            void Expect(string id, FiringRange.Scene scene)
+            {
+                if (c.Vehicles.TryGetValue(id, out var def)) Assert.AreEqual(scene, FiringRange.SceneFor(def), id);
+            }
+            Expect("demolition_line_vehicle", FiringRange.Scene.MineClear);
+            Expect("microwave_vehicle", FiringRange.Scene.AntiDrone);
+            Expect("drone_hijack_vehicle", FiringRange.Scene.AntiDrone);
+            Expect("heavy_lift_helicopter", FiringRange.Scene.Ferry);
+            Expect("aerial_tanker", FiringRange.Scene.Ferry);
+            Assert.IsTrue(c.Vehicles.TryGetValue("mine_layer", out var layer) && layer.Mines != null, "the mine roller's lane uses the mine layer's mines");
+        }
+
+        /// <summary>Play-test 13: a naval boss lies along the beach and its line abreast fits on the water before the sand.</summary>
+        [Test]
+        public void ANavalBossLiesAlongTheBeach()
+        {
+            var c = C;
+            foreach (var v in c.Vehicles.Values.Where(v => v.Boss && PreviewSettings.Of(v) == PreviewSetting.Sea))
+            {
+                var far = FiringRange.BossSeaStart.Y + FiringRange.BossSeaFar(c, v);
+                var shore = PreviewStage.ShoreForSea(FiringRange.BossSeaStart.Y, far, v.Width);
+                Assert.That(FiringRange.BossSeaStart.Y + FiringRange.BossSeaOffset(v) + FiringRange.BossSeaShipHalf(c), Is.LessThan(shore - 3f), v.Id);
+                Assert.That(FiringRange.BossSeaStart.Y + v.Width * 0.5f, Is.LessThan(shore), v.Id + ": the hull on the water");
+            }
+        }
     }
 }

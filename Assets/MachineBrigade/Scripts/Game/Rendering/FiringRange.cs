@@ -137,16 +137,20 @@ namespace MachineBrigade.Game.Rendering
             _start = new Vector2(0f, -distance * 0.5f);
             // Play-test 12: a naval boss mid-range, the shore well past its bow, its line abreast of targets on its beam.
             _bossShow = def.Boss;
-            if (def.Boss && Setting == PreviewSetting.Sea) _start = BossSeaStart;
-            _shooter = _world.SpawnVehicle(vehicleId, 0, _start, 0f);
+            var seaBoss = def.Boss && Setting == PreviewSetting.Sea;
+            if (seaBoss) _start = BossSeaStart;
+            // Play-test 13: a naval boss lies along the beach (its line abreast between it and the shore).
+            _shooter = _world.SpawnVehicle(vehicleId, 0, _start, seaBoss ? BossSeaHeading : 0f);
             // A tower on show never falls (a relay under fire, a shield generator shelled).
             if (def.Static) _world.MakeSparring(_shooter);
             _ground = HitsGround(def);
             _air = HitsAir(def);
             _far = new Vector2(0f, distance * 0.5f);
-            if (def.Boss && Setting == PreviewSetting.Sea) _far = new Vector2(0f, _start.Y + BossSeaFar(def));
+            if (seaBoss) _far = new Vector2(0f, _start.Y + BossSeaFar(catalog, def));
             _reach = distance;
-            _stage = PreviewStage.ForRange(materials, _root, Setting, PreviewSettings.Biome(), _start.Y, _far.Y, def.Length, def.Width);
+            // Lying along the beach, a naval boss reaches towards the shore by half its beam, not half its length.
+            _stage = PreviewStage.ForRange(materials, _root, Setting, PreviewSettings.Biome(), _start.Y, _far.Y, seaBoss ? def.Width : def.Length,
+                seaBoss ? def.Length : def.Width);
             SetLayer(_root);
         }
 
@@ -320,7 +324,9 @@ namespace MachineBrigade.Game.Rendering
                 if (_targets[i].IsAlive) continue;
                 if (double.IsNaN(due))
                 {
-                    _slots[i] = (id, at, _world.Time + ReplaceAfter);
+                    // Play-test 13: a sunk ship's replacement waits until its wreck has gone under (never one inside the other).
+                    var afloat = _world.Catalog.Vehicles.TryGetValue(id, out var lost) && lost.Naval != null;
+                    _slots[i] = (id, at, _world.Time + ReplaceAfter + (afloat ? ShipReplaceExtra : 0.0));
                     continue;
                 }
                 if (_world.Time < due) continue;

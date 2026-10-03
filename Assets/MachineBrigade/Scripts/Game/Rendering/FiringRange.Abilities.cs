@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MachineBrigade.Sim.Commands;
 using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Events;
 using UnityEngine;
@@ -18,11 +19,14 @@ namespace MachineBrigade.Game.Rendering
     /// radar finds, whose SAMs draw an aircraft's flares, that an EMP silences or a shield dome
     /// soaks up; dragon's teeth for a breacher's blade. A pulse on the ground marks an aura.
     /// Vehicles whose clip already showed their ability (mine layer, car bomb, smoke generator,
-    /// drone carriers) and plain gun vehicles keep the plain range.
+    /// drone carriers) and plain gun vehicles keep the plain range. Play-test 13: a mine roller (the demolition-line
+    /// vehicle) drives a lane through an enemy minefield, setting the mines off under its roller; a drone killer (the
+    /// microwave, the interceptor drones) downs the drones enemy carriers send at its friends; an unarmed transport (the
+    /// heavy-lift helicopter, the tanker) flies its run, the tanker with a fighter in tow.
     /// </summary>
     public sealed partial class FiringRange
     {
-        private enum Scene
+        internal enum Scene
         {
             None,
             Jammer,
@@ -46,6 +50,10 @@ namespace MachineBrigade.Game.Rendering
             Minefield,
             Depot,
             Supply,
+            // Play-test 13: utility vehicles that do not shoot do their job.
+            MineClear,
+            AntiDrone,
+            Ferry,
         }
 
         private Scene _scene;
@@ -67,7 +75,7 @@ namespace MachineBrigade.Game.Rendering
         private float _pulseAt;
         private double _homeAt = -1;
 
-        private static Scene SceneFor(VehicleDef def)
+        internal static Scene SceneFor(VehicleDef def)
         {
             if (def.Relay != null) return Scene.Relay;
             if (def.Obstacle) return Scene.Teeth;
@@ -86,6 +94,8 @@ namespace MachineBrigade.Game.Rendering
             if (def.CommandAura != null) return Scene.Command;
             if (def.CounterBattery != null) return Scene.CounterBattery;
             if (def.Breacher) return Scene.Breach;
+            if (def.MineProof) return Scene.MineClear;
+            if (def.Microwave != null || def.DroneHunt != null) return Scene.AntiDrone;
             foreach (var skill in def.Skills)
             {
                 if (def.Flying && skill.Kind == SkillKind.Flares) return Scene.Flares;
@@ -93,7 +103,16 @@ namespace MachineBrigade.Game.Rendering
             }
             // A reconnaissance drone: what it sees, its side sees.
             if (def.Flying && def.Drone && def.VisionRange >= 80f) return Scene.Recon;
+            // An unarmed aircraft (a transport, a tanker): it flies its run.
+            if (def.Flying && !Armed(def)) return Scene.Ferry;
             return Scene.None;
+        }
+
+        private static bool Armed(VehicleDef def)
+        {
+            foreach (var m in def.Mounts)
+                if (m.Weapon.Damage > 0f) return true;
+            return false;
         }
 
         private static Scene SceneFor(SupportDef support) => support?.Kind switch
@@ -231,6 +250,27 @@ namespace MachineBrigade.Game.Rendering
                     _world.MakeSparring(_shooter);
                     Attacker("aa_vehicle", _far + new Vector2(7f, 5f), leader);
                     break;
+                case Scene.MineClear:
+                    // An enemy minefield across its way: it drives the lane, the mines going off under its roller.
+                    LayLane();
+                    Widen(_start.Y + LaneRun + 6f);
+                    break;
+                case Scene.AntiDrone:
+                    // Enemy drone carriers send FPVs and Lancets at the friends beside it: it downs them in the air.
+                    var near = Friend("main_battle_tank", s + new Vector2(-6f, 4f), dummy: true);
+                    var close = Friend("ifv", s + new Vector2(6f, 3f), dummy: true);
+                    Attacker("fpv_carrier", s + new Vector2(-10f, DroneStandOff), near);
+                    Attacker("lancet_truck", s + new Vector2(10f, DroneStandOff + 4f), close);
+                    Widen(s.Y + DroneStandOff + 10f);
+                    break;
+                case Scene.Ferry:
+                    // A tanker's receiver: a fighter keeps station behind it, as if taking on fuel.
+                    if (_shooter.Def.FixedWing)
+                    {
+                        _receiver = Friend("fighter_jet", _shooter.Position - SimMath.Forward(_shooter.Heading) * ReceiverBehind);
+                        _world.MakeSparring(_receiver);
+                    }
+                    break;
                 case Scene.Shield:
                     // Enemy tanks fire on the friends under the dome: the shield takes the hits.
                     foreach (var f in _friends) _world.MakeSparring(f);
@@ -253,6 +293,8 @@ namespace MachineBrigade.Game.Rendering
         /// </summary>
         private bool Directs()
         {
+            if (_staged && _scene == Scene.MineClear) return ClearLane();
+            if (_staged && _scene == Scene.Ferry) return Ferry();
             if (_scene != Scene.Breach || !_staged) return false;
             if (!_shooter.IsAlive || _world.Tick % 20 != 1) return true;
             Vehicle nearest = null;
@@ -285,6 +327,74 @@ namespace MachineBrigade.Game.Rendering
             }
             if (_shooter.Order.Kind != OrderKind.Move || Vector2.Distance(_shooter.Order.Point, home) > 0.5f)
                 _world.Submit(new Command(CommandType.Move, 0, new[] { _shooter.Id }, home));
+            return true;
+        }
+
+        /// <summary>How far the mine roller drives up its lane, and the mines' spots along it (from its start).</summary>
+        private const float LaneRun = 22f;
+
+        private static readonly Vector2[] LaneMines = { new(0.4f, 6f), new(-0.5f, 10.5f), new(0.3f, 15f), new(-0.2f, 19f) };
+
+        /// <summary>How far ahead the drone carriers stand (inside their drones' reach of the friends).</summary>
+        private const float DroneStandOff = 48f;
+
+        /// <summary>How far behind a tanker its receiver keeps station (m), and the transports' run (half its length).</summary>
+        private const float ReceiverBehind = 12f, FerryHalf = 26f;
+
+        private bool _laneOut;
+        private Vehicle _receiver;
+
+        /// <summary>An enemy minefield across the mine roller's lane (the mine layer's own mines), armed in a moment.</summary>
+        private void LayLane()
+        {
+            if (!_world.Catalog.Vehicles.TryGetValue("mine_layer", out var layer) || layer.Mines == null) return;
+            foreach (var spot in LaneMines)
+                _world.DebugAddMine(1, _start + spot, layer.Mines, 0.6, 60.0);
+            _laneOut = true;
+        }
+
+        /// <summary>
+        /// The mine roller's clip: up the lane over the mines (each goes off under its roller, which takes the blast), back to
+        /// its start, a breather, a new minefield, again.
+        /// </summary>
+        private bool ClearLane()
+        {
+            if (!_shooter.IsAlive || _world.Tick % 20 != 1) return true;
+            var end = _start + new Vector2(0f, LaneRun);
+            var home = _start - new Vector2(0f, 2f);
+            if (_laneOut)
+            {
+                if (Vector2.Distance(_shooter.Position, end) < 2.5f) _laneOut = false;
+                else if (_shooter.Order.Kind != OrderKind.Move || Vector2.Distance(_shooter.Order.Point, end) > 0.5f)
+                    _world.Submit(new Command(CommandType.Move, 0, new[] { _shooter.Id }, end));
+                return true;
+            }
+            if (Vector2.Distance(_shooter.Position, home) < 2.5f)
+            {
+                if (_homeAt < 0) _homeAt = _world.Time;
+                if (_world.Time - _homeAt < 3.0) return true;
+                _homeAt = -1;
+                LayLane();
+                return true;
+            }
+            if (_shooter.Order.Kind != OrderKind.Move || Vector2.Distance(_shooter.Order.Point, home) > 0.5f)
+                _world.Submit(new Command(CommandType.Move, 0, new[] { _shooter.Id }, home));
+            return true;
+        }
+
+        /// <summary>An unarmed aircraft's clip: it flies its run back and forth across the range (a tanker's receiver behind it).</summary>
+        private bool Ferry()
+        {
+            if (!_shooter.IsAlive || _world.Tick % 20 != 1) return true;
+            var a = _start + new Vector2(-FerryHalf, 10f);
+            var b = _start + new Vector2(FerryHalf, 10f);
+            var to = _shooter.Order.Kind == OrderKind.Move ? _shooter.Order.Point : b;
+            if (Vector2.Distance(_shooter.Position, to) < 6f) to = Vector2.Distance(to, a) < 1f ? b : a;
+            if (_shooter.Order.Kind != OrderKind.Move || Vector2.Distance(_shooter.Order.Point, to) > 0.5f)
+                _world.Submit(new Command(CommandType.Move, 0, new[] { _shooter.Id }, to));
+            if (_receiver != null && _receiver.IsAlive)
+                _world.Submit(new Command(CommandType.Move, 0, new[] { _receiver.Id },
+                    _shooter.Position - SimMath.Forward(_shooter.Heading) * ReceiverBehind));
             return true;
         }
 

@@ -308,6 +308,13 @@ namespace MachineBrigade.Sim
         /// <summary>Device check: takes a share of a vehicle's health (a defence burning down on camera).</summary>
         public void DebugDamage(Vehicle v, float fraction) => Damage.Apply(v, v.MaxHp * fraction, DamageType.HighExplosive);
 
+        /// <summary>
+        /// Previews (play-test 13: a mine roller's clip): a side's mine of <paramref name="def"/> at a point, armed after
+        /// <paramref name="armIn"/> s, gone by itself after <paramref name="life"/> s. No battle calls it.
+        /// </summary>
+        public void DebugAddMine(int team, Vector2 at, MineLayerDef def, double armIn = 0.5, double life = 600.0) =>
+            _abilities.AddMine(team, at, def, Time + armIn, Time + life);
+
         /// <summary>Previews: empties every weapon that runs out (its shots or its stores), to show a reload.</summary>
         public void DebugEmpty(Vehicle v)
         {

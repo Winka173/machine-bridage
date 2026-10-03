@@ -388,6 +388,57 @@ def h_defence_waves(f: Filler):
             "số của Dễ / Khó ở game.json balancePack.defenceWaves, tham số ở tunables modes.defendWaves")
 
 
+def _model_length(model: str):
+    """A model's length (m, its z extent) read from its GLB (Tools/assets/glb_analyze.py); None when it cannot be read."""
+    import sys
+    from .repo import ROOT
+    path = ROOT / "Assets" / "MachineBrigade" / "Resources" / "Models" / f"{model}.glb"
+    if not path.exists():
+        return None
+    tools = str(ROOT / "Tools" / "assets")
+    if tools not in sys.path:
+        sys.path.insert(0, tools)
+    try:
+        import glb_analyze
+        a = glb_analyze.analyze(path)
+        return float(a["boundsMax"][2]) - float(a["boundsMin"][2])
+    except Exception:  # noqa: BLE001 - an unreadable model leaves the length out
+        return None
+
+
+def h_drones(f: Filler):
+    d = f.bp.get("drones") or {}
+    fid, sh = f.sheet("Drone")
+    if sh is None or not d:
+        return
+    missing = False
+    for e in d.get("rounds") or []:
+        rid = e["id"]
+        f.put(fid, sh, rid, "toc_do_m_s", e.get("speed", ""))
+        f.put(fid, sh, rid, "sat_thuong", e.get("damage", ""))
+        f.put(fid, sh, rid, "loi_m", e.get("splash", ""))
+        f.put(fid, sh, rid, "ria_m", e.get("edge", ""))
+        f.put(fid, sh, rid, "tam_m", e.get("range", ""))
+        f.put(fid, sh, rid, "thoi_gian_bay_toi_tam_s", round(float(e.get("flightAtRangeSeconds", 0)), 3))
+        f.put(fid, sh, rid, "mo_hinh", e.get("model", ""))
+        f.put(fid, sh, rid, "no_hinh_x", round(float(e.get("blastDrawScale", 1)), 3))
+        scale = float(e.get("drawnScale", 1))
+        length = float(e.get("roundLength") or 0)
+        if length <= 0:
+            model = _model_length(e.get("model", ""))
+            length = model * float(e.get("projectileScale", 1)) if model else 0
+        if length > 0:
+            f.put(fid, sh, rid, "kich_thuoc_m", round(length * scale, 2))
+        elif f.put(fid, sh, rid, "kich_thuoc_m", KHONG_AP_DUNG):
+            missing = True
+    if missing:
+        f.ctx.kad[(fid, sh.name, "kich_thuoc_m")] = scrub_str("mô hình của drone đạn không đọc được (không có GLB và dữ liệu không ghi roundLength)")
+    if "kich_thuoc_m" in sh.cols:
+        sh.cols["kich_thuoc_m"].meaning = (
+            "cỡ: drone đạn = chiều dài khi vẽ (roundLength nếu dữ liệu ghi, không thì chiều dài mô hình x projectileScale; "
+            "x SizeOf 2 và x QuadScale 1,04 cho quadcopter: WeaponEffects); máy bay drone = dài x rộng x cao (modelSize)")
+
+
 def h_bomb_sheets(f: Filler):
     """Bom_vu_khi / Bom_canh_bao / Bom_don_vi (added after the formulas: fill_late)."""
     st = f.bp.get("strikes") or {}
@@ -521,7 +572,7 @@ def _kind(v) -> str:
 
 
 HANDLERS = [h_interception, h_round_groups, h_second_rounds, h_flares, h_ripple, h_weapon_flight, h_vehicles, h_towers, h_opening,
-            h_aircraft_band, h_boss, h_economy, h_dialogue, h_missions, h_defence_waves, h_models, h_default_settings, h_cutscene,
+            h_aircraft_band, h_boss, h_economy, h_dialogue, h_missions, h_defence_waves, h_drones, h_models, h_default_settings, h_cutscene,
             h_match_end, h_wrecks, h_previews, h_audio]
 LATE_HANDLERS = [h_bomb_sheets]  # sheets added after the formulas (pack.add_bom_sheets)
 

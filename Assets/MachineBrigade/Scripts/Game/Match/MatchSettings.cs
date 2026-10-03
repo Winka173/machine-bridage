@@ -175,7 +175,6 @@ namespace MachineBrigade.Game.Match
             "ground_cruise_missile_vehicle",
             "aerial_tanker",
             "heavy_lift_helicopter",
-            "bridging_vehicle",
             "gps_jammer_vehicle",
             // (batch B cards: new entries above)
         };

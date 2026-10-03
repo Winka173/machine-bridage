@@ -161,7 +161,6 @@ import mb_p35_guard_tower_b  # noqa: E402
 import mb_p35_next_gen_tank  # noqa: E402
 import mb_p35_airborne_light_tank  # noqa: E402
 import mb_p35_airborne_vehicle  # noqa: E402
-import mb_p35_bridging_vehicle  # noqa: E402
 import mb_p35_shield_carrier  # noqa: E402
 import mb_p35_dazzler_vehicle  # noqa: E402
 import mb_p35_drone_hijack_vehicle  # noqa: E402
@@ -380,7 +379,7 @@ def all_builders():
                 **mb_p35_elite_aa.BUILDERS, **mb_p35_elite_heavy_tank.BUILDERS, **mb_p35_elite_tank_destroyer.BUILDERS, **mb_p35_elite_apc.BUILDERS, **mb_p35_radar_atgm_vehicle.BUILDERS, **mb_p35_ground_drone_carrier.BUILDERS, **mb_p35_nlos_atgm_vehicle.BUILDERS, **mb_p35_armored_car.BUILDERS, **mb_p35_scout_jeep.BUILDERS, **mb_p35_rocket_technical.BUILDERS, **mb_p35_uav_loiter_strike.BUILDERS, **mb_p35_aerial_tanker.BUILDERS, **mb_p35_command_hq.BUILDERS, **mb_p35_minefield.BUILDERS, **mb_p35_gun_turret_a.BUILDERS, **mb_p35_mg_bunker.BUILDERS, **mb_p35_guard_tower_b.BUILDERS,
                 # Prompt 35 wave 6 (lane B): tanks, ships, jets and four bosses, each from its own builder.
                 **mb_p35_next_gen_tank.BUILDERS, **mb_p35_airborne_light_tank.BUILDERS,
-                **mb_p35_airborne_vehicle.BUILDERS, **mb_p35_bridging_vehicle.BUILDERS,
+                **mb_p35_airborne_vehicle.BUILDERS,
                 **mb_p35_shield_carrier.BUILDERS, **mb_p35_dazzler_vehicle.BUILDERS,
                 **mb_p35_drone_hijack_vehicle.BUILDERS, **mb_p35_fibre_fpv_carrier.BUILDERS,
                 **mb_p35_hover_gunboat.BUILDERS, **mb_p35_landing_craft.BUILDERS, **mb_p35_missile_boat.BUILDERS,

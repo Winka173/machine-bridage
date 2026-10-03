@@ -19,8 +19,9 @@ brought to its size's loudness (momentary max LUFS, rising with size) through a 
 not a 6 ms crack, sets how loud a clip hits (prompt 34 L6 peak-normalised every clip: Docs/audio/diagnosis.md).
 
 No clip outside the armour-metal group rings: there are no damped sines between 2 and 6 kHz anywhere else (the keng the
-owner heard was prompt 34's blast_ap bell on every kinetic landing). Metal is two banks only, hit_metal_light / heavy, for a
-kinetic round that strikes armour and does not go through.
+owner heard was prompt 34's blast_ap bell on every kinetic landing). Play-test 13: a kinetic round on armour it does not go
+through plays hit_armour_light / heavy / glance (a knock and sparks, no ring); hit_metal_light / heavy are the rare ricochet's
+whine (the armour_metal group).
 """
 from __future__ import annotations
 
@@ -636,17 +637,70 @@ def metal_ring(rng, base: float, seconds: float, decay: float) -> np.ndarray:
     return out
 
 
-def hit_metal(rng, heavy: bool, k: int) -> np.ndarray:
-    """A kinetic round glancing off armour it does not pierce: a hard clank, the plate ringing briefly, a spit of sparks."""
-    seconds = 0.9 if heavy else 0.5
+def glide_band(rng, seconds: float, f0: float, f1: float, width: float = 0.18) -> np.ndarray:
+    """Noise through a narrow band whose centre glides f0 -> f1 (a ricochet's whine: the spinning, tumbling slug)."""
+    x = noise(rng, seconds)
+    out = np.zeros_like(x)
+    steps = max(8, int(seconds / 0.012))
+    edges = np.linspace(0, len(x), steps + 1).astype(int)
+    for i in range(steps):
+        a, b = edges[i], edges[i + 1]
+        f = f0 * (f1 / f0) ** (i / max(1, steps - 1))
+        pad = min(a, 2048)
+        out[a:b] = filt(x[a - pad:b], 'band', (f * (1 - width), f * (1 + width)), 2)[pad:]
+    return out
+
+
+def sparks(rng, seconds: float, gain: float, decay: float) -> np.ndarray:
+    """The spray of sparks and spall off a struck plate: a fizz above 5 kHz and a scatter of tiny ticks (noise only)."""
+    x = filt(noise(rng, seconds), 'high', 5500, 2) * env_exp(seconds, decay, 0.001) * gain
+    for _ in range(int(seconds * 60)):
+        place(x, filt(noise(rng, 0.004), 'high', 3000) * env_exp(0.004, 0.001), rng.uniform(0.005, seconds * 0.8), rng.uniform(0.05, 0.2) * gain)
+    return x
+
+
+# Play-test 13: a round on armour it does not go through is a hit, not a bell. Thick armour is a heavily damped mass: a
+# bullet goes "tack", an autocannon round "crack-thunk", a tank round a hard deep slam, each with a spray of sparks and no
+# ring. The ricochet's whine is the rare exception (hit_metal_*, the only armour_metal group left).
+def hit_armour(rng, kind: str, k: int) -> np.ndarray:
+    """kind: 'light' (machine gun, autocannon up to 40 mm), 'heavy' (a tank gun level with the armour) or 'glance' (a heavy
+    round against armour far beyond it: shorter and lighter, the slug shatters or skids off)."""
+    seconds = {'light': 0.35, 'heavy': 0.8, 'glance': 0.45}[kind]
     x = np.zeros(n(seconds))
-    place(x, crack(rng, 0.004, 2000), 0.0, 1.2)
-    place(x, metal_ring(rng, rng.uniform(380, 520) if heavy else rng.uniform(900, 1300), seconds, 0.09 if heavy else 0.05), 0.001, 0.5)
-    place(x, filt(noise(rng, 0.2), 'low', 900, 4) * env_exp(0.2, 0.05 if heavy else 0.025), 0.0, 1.2 if heavy else 0.6)
-    place(x, filt(noise(rng, 0.15), 'high', 5000) * env_exp(0.15, 0.04), 0.01, 0.15)
-    if heavy:
-        place(x, thump(0.4, 140, 70, 0.06), 0.0, 0.6)
-    return trim_tail(master(x, -16.0 if heavy else -20.0, 18.0 if heavy else 6.0))
+    place(x, crack(rng, 0.003 if kind == 'light' else 0.005, 2200), 0.0, 1.5)
+    if kind == 'light':
+        # the "tack": a bright, very short knock of the plate's surface
+        place(x, filt(noise(rng, 0.06), 'band', (700, 3200), 2) * env_exp(0.06, 0.008, 0.0004), 0.0, 1.0)
+        place(x, filt(noise(rng, 0.08), 'band', (250, 900), 2) * env_exp(0.08, 0.014, 0.0008), 0.0, 0.5)
+        place(x, sparks(rng, 0.2, 0.18, 0.05), 0.003)
+    elif kind == 'heavy':
+        # the slam: a broad knock through the hull, a short chest thump, spall rattling off
+        place(x, filt(noise(rng, 0.3), 'band', (120, 2200), 2) * env_exp(0.3, 0.05, 0.0008), 0.0, 1.6)
+        place(x, thump(0.4, 120, 55, 0.07), 0.0, 1.0)
+        place(x, sparks(rng, 0.5, 0.22, 0.12), 0.004)
+        for _ in range(7):
+            place(x, filt(noise(rng, 0.02), 'band', (400, 3000)) * env_exp(0.02, 0.005), rng.uniform(0.04, 0.35), rng.uniform(0.08, 0.2))
+    else:
+        # the glance: a hard crack-clack, less body and bass than the slam
+        place(x, filt(noise(rng, 0.15), 'band', (350, 2800), 2) * env_exp(0.15, 0.025, 0.0006), 0.0, 1.3)
+        place(x, thump(0.2, 170, 100, 0.03), 0.0, 0.45)
+        place(x, sparks(rng, 0.35, 0.22, 0.08), 0.003)
+    lufs, sub = {'light': (-21.5, 5.0), 'heavy': (-16.0, 24.0), 'glance': (-18.5, 10.0)}[kind]
+    return trim_tail(master(x, lufs, sub))
+
+
+def hit_metal(rng, heavy: bool, k: int) -> np.ndarray:
+    """A real ricochet, rare (play-test 13): the tick off the plate, then the slug's whine falling away as it tumbles off."""
+    seconds = 0.75 if heavy else 0.5
+    x = np.zeros(n(seconds))
+    place(x, crack(rng, 0.003, 2500), 0.0, 1.2)
+    place(x, filt(noise(rng, 0.05), 'band', (600, 2800), 2) * env_exp(0.05, 0.008, 0.0004), 0.0, 0.6)
+    span = seconds - 0.03
+    f0 = rng.uniform(2600, 3400) if not heavy else rng.uniform(1500, 1900)
+    whine = glide_band(rng, span, f0, f0 * (0.38 if heavy else 0.45)) * env_exp(span, span * 0.35, 0.03)
+    place(x, whine, 0.02, 1.4)
+    place(x, sparks(rng, 0.15, 0.12, 0.04), 0.002)
+    return trim_tail(master(x, -19.0 if heavy else -22.0, 6.0 if heavy else 3.0))
 
 
 def hit_pen(rng, heavy: bool, k: int) -> np.ndarray:
@@ -887,6 +941,9 @@ def banks():
     b['hit_pen_heavy'] = ('hit_pen', 's3', None, 3, lambda rng, k: hit_pen(rng, True, k))
     b['hit_metal_light'] = ('armour_metal', 's1', None, 3, lambda rng, k: hit_metal(rng, False, k))
     b['hit_metal_heavy'] = ('armour_metal', 's3', None, 3, lambda rng, k: hit_metal(rng, True, k))
+    b['hit_armour_light'] = ('hit_armour', 's1', None, 4, lambda rng, k: hit_armour(rng, 'light', k))
+    b['hit_armour_heavy'] = ('hit_armour', 's3', None, 3, lambda rng, k: hit_armour(rng, 'heavy', k))
+    b['hit_armour_glance'] = ('hit_armour', 's2', None, 3, lambda rng, k: hit_armour(rng, 'glance', k))
     for kind in ('tank', 'wheeled', 'truck', 'artillery', 'aircraft', 'heli', 'ship', 'drone'):
         b[f'wreck_{kind}'] = ('wreck', None, None, 2, lambda rng, k, kind=kind: wreck(rng, kind, k))
     b['crash_fall'] = ('aircraft', None, None, 2, lambda rng, k: crash_fall(rng))

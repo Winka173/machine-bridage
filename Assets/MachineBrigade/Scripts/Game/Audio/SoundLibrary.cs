@@ -46,11 +46,20 @@ namespace MachineBrigade.Game.Audio
         /// <summary>A building, a wall, a fixed defence: concrete.</summary>
         Concrete,
 
-        /// <summary>A kinetic round on armour it does not pierce: metal (the only metal sound; rate-capped).</summary>
+        /// <summary>
+        /// A kinetic round on armour it does not pierce, the armour within <see cref="SoundLibrary.GlanceMargin"/> of it: a hard
+        /// knock and sparks (hit_armour_*; play-test 13: thick armour does not ring).
+        /// </summary>
         Metal,
 
         /// <summary>A round that goes through (or a soft target, an aircraft's skin): a heavy, dull impact.</summary>
         Pierced,
+
+        /// <summary>
+        /// Play-test 13: a kinetic round on armour far beyond it (<see cref="SoundLibrary.GlanceMargin"/> levels or more): the
+        /// slug shatters or skids off, a shorter and lighter knock than <see cref="Metal"/> (less bass), never a bell.
+        /// </summary>
+        Glance,
     }
 
     /// <summary>The mix's four groups (prompt "Hiệu ứng / Nhạc / Thoại / Giao diện"), each under the master volume.</summary>
@@ -218,18 +227,32 @@ namespace MachineBrigade.Game.Audio
             };
         }
 
-        /// <summary>The bank a round without a blast plays on what it struck: light up to 40 mm, heavy from 57 mm.</summary>
+        /// <summary>
+        /// The bank a round without a blast plays on what it struck: light up to 40 mm, heavy from 57 mm. Armour not pierced is
+        /// a knock and sparks (hit_armour_*; a heavy round far outclassed the shorter, lighter glance); the ricochet's whine is
+        /// <see cref="RicochetBank"/>, played for a rare share of them only.
+        /// </summary>
         public static string HitBank(HitSurface surface, SizeClass size)
         {
             var heavy = size >= SizeClass.S2;
             return surface switch
             {
-                HitSurface.Metal => heavy ? "hit_metal_heavy" : "hit_metal_light",
+                HitSurface.Metal => heavy ? "hit_armour_heavy" : "hit_armour_light",
+                HitSurface.Glance => heavy ? "hit_armour_glance" : "hit_armour_light",
                 HitSurface.Pierced => heavy ? "hit_pen_heavy" : "hit_pen_light",
                 HitSurface.Concrete => heavy ? "hit_concrete_heavy" : "hit_concrete_light",
                 _ => heavy ? "hit_ground_heavy" : "hit_ground_light",
             };
         }
+
+        /// <summary>Play-test 13: a real ricochet's whine (the tick off the plate, the slug tumbling away), rare.</summary>
+        public static string RicochetBank(SizeClass size) => size >= SizeClass.S2 ? "hit_metal_heavy" : "hit_metal_light";
+
+        /// <summary>Play-test 13: the share of the rounds that do not go through that whine off as a ricochet (under the metal cap).</summary>
+        public const float RicochetShare = 0.08f;
+
+        /// <summary>Play-test 13: armour this many levels above the round's penetration makes a glance, not a knock.</summary>
+        public const float GlanceMargin = 2f;
 
         /// <summary>A round of <paramref name="penetration"/> goes through a face of <paramref name="armour"/>: level with it or better (the Sim's ✓, step 2 or under).</summary>
         public static bool Penetrates(float penetration, float armour) => penetration >= armour - 0.01f;
@@ -244,7 +267,8 @@ namespace MachineBrigade.Game.Audio
             if (!struck) return HitSurface.Ground;
             if (!vehicle || structure) return HitSurface.Concrete;
             if (flying || armour <= 0f) return HitSurface.Pierced;
-            return kinetic && !Penetrates(penetration, armour) ? HitSurface.Metal : HitSurface.Pierced;
+            if (!kinetic || Penetrates(penetration, armour)) return HitSurface.Pierced;
+            return armour - penetration >= GlanceMargin - 0.01f ? HitSurface.Glance : HitSurface.Metal;
         }
 
         // ------------------------------------------------------------------------------------------------ the mix

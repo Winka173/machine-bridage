@@ -1786,7 +1786,6 @@ BUILDERS['towed_at_gun'] = (towed_at_gun, dict(ao_distance=.6, ao_strength=.15, 
 BUILDERS['dazzler_vehicle'] = (dazzler_vehicle, dict(ao_distance=.6, ao_strength=.15, grime_height=.05))
 BUILDERS['gps_jammer_vehicle'] = (gps_jammer_vehicle, dict(ao_distance=.6, ao_strength=.15, grime_height=.05))
 BUILDERS['ground_cruise_missile_vehicle'] = (ground_cruise_missile_vehicle, dict(ao_distance=.6, ao_strength=.15, grime_height=.05))
-BUILDERS['bridging_vehicle'] = (bridging_vehicle, dict(ao_distance=.6, ao_strength=.15, grime_height=.05))
 BUILDERS['flare_searchlight_tower'] = (flare_searchlight_tower, dict(ao_distance=.4, ao_strength=.15, grime_height=.05))
 BUILDERS['recoilless_gun_tower'] = (recoilless_gun_tower, dict(ao_distance=.4, ao_strength=.15, grime_height=.05))
 BUILDERS['bunker_shelter_tower'] = (bunker_shelter_tower, dict(ao_distance=.4, ao_strength=.15, grime_height=.05))

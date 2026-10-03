@@ -1661,8 +1661,6 @@ namespace MachineBrigade.Game.Hud
                 "[[Máy bay tiếp dầu]] · không vũ trang, tạm thời\n" + "Phần cộng thời gian bay cho máy bay phe ta chưa được làm."),
             ["guide.heavy_lift_helicopter"] = ("[[Heavy-lift helicopter]] · unarmed transport, for now\n" + "Airlifting a tower anywhere seen is not modelled yet.",
                 "[[Trực thăng cẩu tháp]] · vận tải không vũ trang, tạm thời\n" + "Việc cẩu tháp đặt tùy nơi chưa được làm."),
-            ["guide.bridging_vehicle"] = ("[[Bridging vehicle]] · support vehicle, for now\n" + "Laying a bridge over a river gap is not modelled yet.",
-                "[[Xe bắc cầu]] · xe hỗ trợ, tạm thời\n" + "Việc bắc cầu qua sông chưa được làm."),
             ["guide.gps_jammer_vehicle"] = ("[[GPS jammer vehicle]] · plays as a jammer\n" + "Throws off nearby enemy fire, for now.",
                 "[[Xe gây nhiễu định vị]] · chơi như xe gây nhiễu\n" + "Làm nhiễu loạn hỏa lực địch gần đó, tạm thời."),
             ["guide.drone_net_tower"] = ("[[Drone net corridor]] · cheap, passive\n" + "Drones flying through are downed; vehicles pass freely.",

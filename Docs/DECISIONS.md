@@ -18937,3 +18937,31 @@ gameplay value changed (table and keys in Docs/export/CHANGES.md). Nothing run; 
   Normal by SiegeMode.WaveSize. The Defend curve's numbers (ModeSessions literals) and the wave-scale clamp moved to tunables.
 - **Per row.** Hanh_vi_dan_nhom is now counted per projectile kind (projectileGroups), and Thoai.so_dong_hien_thi_toi_da per line
   (perLine): both were possible, so no aggregate is left.
+
+## Play-test 13 (lane B)
+
+Branch `feature/pt13-b`. Nothing run in Unity; Sim, Game and Tests compiled with the .NET SDK; the export ran on a mock
+game.json (check: all PASS). Each fix starts from how the thing works in real life.
+
+- **bridging_vehicle deleted.** Real: an AVLB lays a bridge over a gap; the game has no gap to bridge, so the card did
+  nothing. Data, card, unlock price, deck list, strings, guide, model, card art, builders and registries are gone; a save
+  that had it gets its coins and blueprints back (CardMerges.Retired, roster version 8); decks drop it via AllVehicles.
+- **Drone table (01/Drone).** Real: a drone is judged by speed, warhead mass, size and blast. One sheet now lists every
+  drone round (speed, warhead kg, damage, blast core and edge, range, flight time, drawn length, drawn blast scale) and
+  every drone aircraft (speed, height, health, weapons and their warheads, size); the code-built values come from game.json
+  `balancePack.drones`, a GLB's length from the file.
+- **Impact sounds.** Real: thick armour is a heavily damped mass: a bullet goes "tack", an autocannon round "crack-thunk",
+  a tank round a deep slam, all with sparks and no ring; a ricochet's whine is rare. Armour not pierced now plays
+  hit_armour_light / heavy, a round against armour two or more levels above it the shorter, lighter hit_armour_glance; the
+  old metal banks are rebuilt as the ricochet whine, 8 % of those hits under the metal cap. No clip anywhere has a keng
+  (analyze_sfx).
+- **In action jobs.** Real: a mine roller earns its keep driving through a minefield; a microwave or interceptor drone
+  earns its keep against incoming drones; a transport or tanker earns its keep flying. New clips: the demolition-line
+  vehicle drives a mined lane (the mines go off under its roller), back, again; drone killers face an FPV carrier and a
+  Lancet truck attacking friends beside them; unarmed aircraft fly a run, the tanker with a fighter in tow.
+- **Leviathan preview.** Real: a ship fights broadside to the coast, and ships in line abreast stand side by side. The
+  boss now lies parallel to the beach, its line abreast between it and the shore, parallel to the beach and bows towards
+  it; the stage leaves room for the ships' length before the sand. Ship pivots are at the waterline (corvette keel -1.4 m,
+  sea at 0.04 m), so a living ship floats; a sunk ship's replacement now waits 3 s more so it never rises inside the
+  sinking wreck (what read as "ships under the sea"). Needs an eye in Unity.
+- **Models (erector, cruise box, FPV carrier):** done by a model agent on `feature/pt13-b-models` (its own section below).
