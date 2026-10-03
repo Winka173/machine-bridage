@@ -1087,6 +1087,8 @@ namespace MachineBrigade.Game.Views
             Elevate();
             RaiseSideLauncher();
             Spin(1f);
+            // Play-test 13: a launcher's modelled rounds leave as they are fired, back with the reload (VehicleView.Loaded).
+            ShowLoadedRounds();
             AnimateParts(cameraRotation);
             AnimateDeploy();
 

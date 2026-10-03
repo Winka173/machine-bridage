@@ -18989,3 +18989,11 @@ Rendering, VFX and view motion from play-test 13 (Docs/prompts/requests_vi.md). 
   train / rail supergun in their In action preview (or Boss Rush at lighthousebay) - the hull must not move when it fires,
   the main turrets swing onto their aim. Sea: `SeaShots.Run` -> Builds/sea_shots/sea.png (lighthousebay, coralisles,
   borderbridge), plus a naval unit's In action preview (the preview sea uses the shader too).
+- **Fired rounds leave the launcher (lead's item).** Real life: a TEL's erector is empty after the launch until a
+  transloader loads the next missile; a launcher's cells show what is still loaded. `VehicleView.Loaded`: every node group
+  named with an index (`missile_1`, `missile_2_fins`, `round_3`, `rocket_04`, `cruise_missile_1`, any case) is one modelled
+  round; the rounds shown follow the sim's magazine (`Vehicle.Ammo`) of the first missile/rocket mount with a magazine (scaled
+  when the magazine is larger than the model's load), the lowest index leaving first, all back with the reload. Merged parts
+  without an index (`Missiles`, `Missile_bands`) are never touched, so an old model is unchanged. Not seen against c2b75dd9
+  (the merge was refused to this lane): the lead checks that the rebuilt ballistic_launcher / ground_cruise_missile_vehicle
+  name their rounds with an index, and that LOD1 (merged per moving part) is acceptable keeping the full load far away.
