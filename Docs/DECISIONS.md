@@ -18123,3 +18123,65 @@ Decisions:
   fighter's clean faces against the air-boss gold). More detail would be padding (prompt 35 section 1).
 - **Over budget (information).** monster 39.6k (boss), tracked 9.4-10.4k and gps_jammer_vehicle 7.4k: all under the
   lead's 1.5 x the class maximum for units seen in numbers (10,500; light 7,500).
+
+## Prompt 35 wave 8 (lane A)
+
+Branch `feature/p35-w8` from `lead/integration` (2026-10-03; wave 5 merged there). Report: Docs/models/WAVE_8_REPORT.md.
+Blender and Python only: no Unity run, no test, sim or measure.
+
+**Lead calls (2026-10-03)** on the wave 5 questions:
+1. Typhon's silo ahead of the sail, as on the real boat: kept.
+2. typhon, stealth_bomber and morrigan are accepted on the owner's look (no gold set of their own).
+3. recon_jet as the SR-71, aa_57mm_vehicle as the 2S38 and gps_jammer_vehicle as an EW truck: kept; they go into the
+   owner question list.
+
+Decisions:
+- **Modules.** `mb_p35_wave8_fort` (dragons_teeth, dragons_teeth_a, headquarters), `mb_p35_wave8_trucks` (mlrs,
+  grad_truck, command_vehicle, railgun_truck, radar_scout, heavy_aa, wheeled_gun; lean layout helpers for wheels,
+  axles, frame rails and fenders), `mb_p35_wave8_ground` (heavy_tank with `_hd`, river_gunboat), `mb_p35_wave8_air`
+  (gunship_heli, mega_gunship; it imports the wave 5 loft helpers body_loft / span_loft / FOIL14), `mb_p35_wave8_bosses`
+  (behemoth, mobile_fortress, armored_train, leviathan; the helpers `twin_turret` and `per_barrel`). A spec each in
+  Tools/blender/specs/. Registered last in all_builders, inside the dict.
+- **Gold models.** attack_helicopter and fighter_jet (owner-approved, prompt 27 V2) are not rebuilt: both already pass
+  every gate with their names and nodes; nothing in their files changed.
+- **References.** Rows without a sheet entry follow their data: radar_scout = a Fennek-class 4x4 with its sensor mast
+  (the data's 4 m height), river_gunboat = a Project 1204 Shmel monitor (the old file was a Buyan-like boat with a
+  VLS), grad_truck (elite_grad's model) = the BM-21 on the Ural-375. railgun_truck is its own vehicle now (a heavy
+  8x8 carrying the twin-rail gun; it was Ixion's old stand-in source): it shares nothing with ixion.
+- **headquarters.** The HQ types of prompt 32 (fortress ground / air, garrison, shield) swap the def, not the model,
+  so the plinth (14 x 12 m, the footprint) and every pivot (Turret, the two main muzzles, coax, Radar, Mount_mg) stay
+  exactly where they were. The data's second hq_flak had no mount (gate: Mount_mg 1/2): it gets its own twin 30 mm
+  nest on the main roof's front left corner (Mount_mg.001, Muzzle_mg.001 moved there from the tower mount), under
+  the main gun's barrels. The fortress types' extra `gun` slot (turret_gun_120_long / bofors_l70) still has no mount
+  of its own on the model (as before): owner / lead question 2.
+- **Per-barrel muzzles.** behemoth's turrets (twin 152 mm, hull and sponson twin 120 mm) and leviathan's five triple
+  turrets now model all their barrels and write Muzzle_b<k>_<tag> themselves (same names and places as the wrappers
+  wrote); `mb_fix_barrels` (TWIN / EXTRA) and `mb_p34_barrels` (TARGETS) no longer list them. headquarters keeps the
+  mb_p34_barrels wrapper (its two barrels are found as before: Muzzle_b1 / b2_main unchanged).
+- **leviathan (sea-boss gold).** Every part node (Part_gun / .001 / .002, Part_sec_f / _a, Part_vls, Part_aa_l / _r,
+  Part_mg / .001, Part_radar, Part_deck, Part_welldeck, Part_engine) and every mount and muzzle stays where it was
+  (CIWS muzzles within 7 cm): NavalSystem.PreviewSalvo lays the maingun parts by Part_gun and their first mount, and
+  scylla hides the parts it drops by these nodes. The aft main turret faces forward in the file as before (the
+  runtime's arc turns it). Mount_APS added on the tower (the def has APS; it was the hard fail).
+- **armored_train (rail gold).** The three cars keep their ends, lengths and couplings (locomotive -9.4 .. -0.6,
+  gun wagon 0.6 .. 9.4, flatcar 10.31 .. 14.76 m) and the old pivots; the gate's 7 muzzles come from the data's
+  weapons: the second train_gun fires from a fixed casemate on the locomotive's rear deck (part gun_car_rear has no
+  node; a fixed piece, so no Mount_main is added that the main slot's mount mapping could confuse), and the two
+  boss_flak get their own twin flak mounts (Mount_mg.001 on the cab roof, .002 on the flatcar's tail).
+- **mega_gunship.** The data's two boss_hmg had no muzzles (gate: 7/9): door guns on Mount_mg.002 / .003 at the rear
+  cabin windows. Muzzle_missile moves 0.8 m down to the belly rack it now fires from (it stood inside the fuselage).
+- **behemoth.** Mount_APS on the turret roof rear (the hard fail); the turret's flak mounts, the hull and sponson
+  turrets and the rocket box keep their pivots. mara_behemoth / behemoth_mk0 keep working off the same nodes.
+- **Gate / validator.** validate_specs skips a variant boss's dropped parts (as quality_gate.boss_part_nodes does): the
+  stymphalos spec no longer has to name nodes its variant does not carry.
+- **Wave 1 specs.** ammo_dump, radar_site, repair_bay, rocket_turret_a, stymphalos pass validate_specs: their node
+  names follow the committed GLBs after the wave 1 renderer-cap merge (commit 0667414c); the heights are the
+  owner-approved wave 1 files (ammo_dump's whip antenna, radar_site's dish on its raised drive, rocket_turret_a's
+  pack on its cradle stand above the old heights; recorded in each spec's size source).
+- **Build-set dependence.** heavy_tank and wheeled_gun differ in two COLOR_0 vertices of the roof gun (MG) when they are
+  built together with the other wave ids instead of alone (the kit pintle's post cap is coincident with the gun's
+  base, so the AO ray hits there depend on object order); the committed files are the single-model builds. The other
+  sixteen rebuild byte-identically.
+- **Over budget (information).** Bosses 24-26k (behemoth 25.7k, mobile_fortress 25.4k, leviathan 24.4k, armored_train
+  26.5k); headquarters 18.2k; heavy_tank 9.3k (tracked cap 10,500); the wheeled units 5.4-7.5k, under the light
+  cap 7,500.
