@@ -3316,6 +3316,14 @@
    "changes": [
     "FLAG amphib_light_vehicle: triangles 9,256 -> 10,648 (+15.0%); vertices 12,440 -> 14,757 (+18.6%); meshes 46 -> 48 (+4.3%); renderers 46 -> 48 (+4.3%); materialSlots 46 -> 48 (+4.3%); fileBytes 647,920 -> 759,640 (+17.2%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "amphib_light_vehicle"
+   ],
+   "reason": "merge of feature/owner-fixes",
+   "changes": []
   }
  ],
  "models": {
