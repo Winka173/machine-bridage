@@ -19421,3 +19421,8 @@ Values: Docs/export/CHANGES.md "Play-test 14 lane D".
   "Hive" stays as the name of Venn's drone programme (the Matriarch is "the Hive's flying carrier"). CampaignText.cs was
   synced key by key from the sources (50 keys rewritten, 16 removed, 2 added); the generator's own text pass was not run,
   to keep the hand-localised words. Historical reports under Docs and the pack2 move tables still name the bosses.
+- **Owner, after session 3: Moloch is c8m10's main boss.** The last stage fights Moloch (x1.4: Kronos's 87,650 against
+  Moloch's 63,000), dragged out of the gorge it went into in chapter 6 and restarted by Thorne; Tartarus is the fight's
+  second boss: the "tartarus" mini-boss event (warned, surfacing) on that stage, triggered at Moloch's 60 % (bossHealth).
+  Chapter 8's slots: main Moloch (it holds chapter 6's too: eleven distinct mains), minis Ixion and Tartarus; the miners'
+  choice strikes at Moloch's power line. Hunt counts in the tests follow (14 mains in the story hunt, 16 slot minis).

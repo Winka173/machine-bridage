@@ -143,8 +143,8 @@ CHAPTERS = [
       'Thorne đã chạy lên Deepcut Mine ở phía bắc, nơi Hegemon đào kim loại cho những cỗ máy của nó, và ông ta không trốn. Ông ta đang cố thủ: đường hầm, boong-ke, cả một pháo đài dưới đáy mỏ, '
       'như thể chỉ cần cầm cự cho tới khi một thứ gì đó tới từ trên trời. Người của đại úy Varro thuộc mọi con đường trong vùng mỏ. '
       'Thượng sĩ Quist thì biết thứ gì đáng mang về.'),
-     ('The brigade follows Thorne into Deepcut Mine. Ixion falls, and Tartarus is stopped short of our base. Thorne escapes again, to the sea.',
-      'Lữ đoàn đuổi theo Thorne vào Deepcut Mine. Ixion gục ngã, còn Tartarus bị chặn lại trước khi tới căn cứ của ta. Thorne lại trốn thoát, ra biển.')),
+     ('The brigade follows Thorne into Deepcut Mine. Ixion falls; Moloch, pulled out of the gorge, and Tartarus under it are stopped short of our base. Thorne escapes again, to the sea.',
+      'Lữ đoàn đuổi theo Thorne vào Deepcut Mine. Ixion gục ngã; Moloch được kéo lên từ hẻm sông, cùng Tartarus dưới lòng đất, bị chặn lại trước khi tới căn cứ của ta. Thorne lại trốn thoát, ra biển.')),
     (9, 3, 0, ('Rough Water', 'Rough Water'), ['ironport', 'landingbeach', 'lighthousebay', 'coralisles'], 'hung',
      ('Thorne has found what is left of Kessler\'s fleet and made it his own. Charybdis runs troops up the coast, Scylla is back in service, '
       'and somewhere under Beacon Bay and the Coral Keys a submarine is talking to the sky. Dr Venn is listening to it. This is where Thorne has to be stopped.',
@@ -200,7 +200,7 @@ for n, act, interlude, title, maps, general, card, done in CHAPTERS:
 # Prompt 20 A-B: each chapter's boss slots, the main boss and its mini bosses (a slot is the boss's id; one not built
 # yet is fought as the stand-in its missions name as "fallback"). Prompt 22: an interlude has no main boss; chapter 7
 # brings back Inferno and Juggernaut in the city streets; Behemoth Mk.0 (interlude I) comes from part E. Play-test 14 deleted
-# ten bosses; their slots went to Matriarch (Hive), Behemoth Mk.II (Atlas), Tartarus (Kronos), Charybdis (Caspian), Harpy
+# ten bosses; their slots went to Matriarch (Hive), Behemoth Mk.II (Atlas), Moloch and Tartarus (Kronos), Charybdis (Caspian), Harpy
 # (Morrigan), Roc (Spectre) and Monster (Gungnir).
 CHAPTER_BOSSES = {
     1: ('fortress_bastion', ['bastion_mk0']),
@@ -212,7 +212,7 @@ CHAPTER_BOSSES = {
     6: ('moloch', ['landing_hovercraft', 'behemoth_mk2']),
     14: (None, ['locust']),
     7: ('nuke_train', ['behemoth_mk2', 'behemoth_inferno', 'armored_train']),
-    8: ('earth_borer', ['ixion']),
+    8: ('moloch', ['ixion', 'earth_borer']),
     9: ('typhon', ['landing_hovercraft', 'scylla']),
     15: (None, ['mega_gunship']),
     10: ('command_airship', ['icarus_mk0', 'argus', 'mega_gunship']),

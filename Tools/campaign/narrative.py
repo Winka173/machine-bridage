@@ -290,8 +290,8 @@ COMICS = {
     8: [('openpit', None, 'varro', ('The miners know every tunnel. Thorne only knows the maps.',
                                      'Thợ mỏ thuộc từng đường hầm. Thorne chỉ biết bản đồ.')),
         ('openpit', 'earth_borer', 'mai', ('Something is tunnelling down here, waiting for the sky to fall.', 'Có thứ gì đó đang đào hầm dưới này, chờ bầu trời sụp xuống.')),
-        ('openpit', None, 'khai', ('Tartarus stopped short of our base. Thorne is running for the sea.',
-                                    'Tartarus dừng lại ngay trước căn cứ của ta. Thorne đang chạy ra biển.'))],
+        ('openpit', None, 'khai', ('Moloch stopped short of our base. Thorne is running for the sea.',
+                                    'Moloch dừng lại ngay trước căn cứ của ta. Thorne đang chạy ra biển.'))],
     9: [('coralisles', None, 'sen', ('His buoys are listening. So now am I.', 'Phao của hắn đang nghe lén. Giờ tôi cũng vậy.')),
         ('lighthousebay', 'typhon', 'hung', ('Don\'t let me have been right.', 'Đừng để tôi đã đúng.')),
         ('lighthousebay', None, 'linh', ('No body in the wreck. Just a message, four minutes later.',
@@ -385,16 +385,16 @@ CHOICES = [
        ('Harbour Lights: hold the terminal until the ferries are out. Pays rare blueprints.',
         'Đèn bến cảng: giữ nhà ga cho tới khi phà ra khơi. Nhận bản thiết kế hiếm.'))]),
     ('c8.miners', 'varro', ('The Miners', 'Những người thợ mỏ'),
-     ('Thorne is holding three hundred miners in the pit\'s camps. Or we go straight for Tartarus\'s power line while his '
-      'paymaster sits beside it. We can\'t do both before Tartarus moves.',
-      'Thorne đang giữ ba trăm thợ mỏ trong các lán trại dưới hố. Hoặc ta đánh thẳng vào đường điện của Tartarus trong lúc viên '
-      'quản lương của hắn còn ngồi cạnh đó. Không kịp làm cả hai trước khi Tartarus di chuyển.'),
+     ('Thorne is holding three hundred miners in the pit\'s camps. Or we go straight for Moloch\'s power line while his '
+      'paymaster sits beside it. We can\'t do both before Moloch moves.',
+      'Thorne đang giữ ba trăm thợ mỏ trong các lán trại dưới hố. Hoặc ta đánh thẳng vào đường điện của Moloch trong lúc viên '
+      'quản lương của hắn còn ngồi cạnh đó. Không kịp làm cả hai trước khi Moloch di chuyển.'),
      [('rescue', ('Free the miners', 'Giải cứu thợ mỏ'),
        ('The Miners of Deepcut: sixty of them join the brigade, +{cp} CP at the start of every chapter 9 battle.',
         'Thợ mỏ Deepcut: sáu mươi người gia nhập lữ đoàn, +{cp} CP khi bắt đầu mỗi trận của chương 9.')),
-      ('direct', ('Strike Tartarus', 'Đánh thẳng Tartarus'),
-       ('Straight at Tartarus: cut its power and take Thorne\'s pay chest. Pays twice the coins.',
-        'Đánh thẳng vào Tartarus: cắt điện và lấy hòm lương của Thorne. Nhận gấp đôi xu.'))]),
+      ('direct', ('Strike Moloch', 'Đánh thẳng Moloch'),
+       ('Straight at Moloch: cut its power and take Thorne\'s pay chest. Pays twice the coins.',
+        'Đánh thẳng vào Moloch: cắt điện và lấy hòm lương của Thorne. Nhận gấp đôi xu.'))]),
     ('c11.radar', 'linh', ('The Array', 'Skygate Array'),
      ('The Skygate Array sees everything from here to Helion. Burn its radar first and Hegemon fights the last battle half '
       'blind. Or take the service road straight to the pads, fast, and be a day ahead.',

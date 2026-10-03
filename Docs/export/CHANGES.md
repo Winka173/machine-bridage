@@ -505,3 +505,4 @@ Nhánh `cloud/pt14-d`. Lý do: `Docs/DECISIONS.md` "Play-test 14 (lane D, cloud)
 | PT14-D9 | `mega_gunship` (Harpy) `duel` | không | `"duel": { "escorts": false }` (chỉ trong nhiệm vụ đấu tay đôi c10m12: không hộ tống, không tàng hình) | Raven đấu Hawk bằng Harpy |
 | PT14-D10 | Sự kiện mini-boss xen kẽ III | `morrigan_hunt` (Morrigan) | `harpy_hunt` (Harpy); mini của Quaden: Harpy | Morrigan bị xóa |
 | PT14-D11 | Tuyến cố định bản đồ openpit | `routes.kronos` | `routes.haul` (cùng tọa độ) | Kronos bị xóa; đường vận chuyển giữ nguyên |
+| PT14-D12 | c8m10 stage cuối và ô boss chương 8 (sửa PT14-D7/D8 theo chủ dự án) | Tartarus x2,6 là boss chính; ch.8 chính Tartarus, mini Ixion | Moloch x1,4 là boss chính (Thorne kéo nó lên từ hẻm sông); Tartarus đào hầm trồi lên khi Moloch còn 60 % (sự kiện `tartarus`, như c8m02/c8m11); ch.8 chính Moloch, mini Ixion, Tartarus | chủ dự án: Moloch boss chính, Tartarus boss phụ trong cùng trận |
