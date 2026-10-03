@@ -465,15 +465,15 @@
   },
   "dragons_teeth": {
     "file": "dragons_teeth.glb",
-    "triangles": 1508
+    "triangles": 3592
   },
   "dragons_teeth_a": {
     "file": "dragons_teeth_a.glb",
-    "triangles": 1980
+    "triangles": 4340
   },
   "dragons_teeth_b": {
     "file": "dragons_teeth_b.glb",
-    "triangles": 4088
+    "triangles": 4232
   },
   "dress_coast_buoy": {
     "file": "dress_coast_buoy.glb",
