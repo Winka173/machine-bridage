@@ -18386,3 +18386,20 @@ Unity, no test, sim or measure).
 ## Prompt 35: owner answers (2026-10-03)
 - railgun_truck as a heavy 8x8 carrying the twin-rail gun salvaged from Tempest: approved.
 - The fortress HQ types get a visible gun on the model for their `gun` weapon (Mount_* + Muzzle_*, model only): approved.
+
+## Owner: open questions settled by the lead's proposals (2026-10-03)
+Owner: "sửa theo đề xuất hết".
+1. Bomb-run fix pass 1 starts; the strategic bomber keeps its 7 bombs (data) and the card text saying 12 is corrected.
+2. amphib_light_vehicle moves off AAV-7 (prompt 24's reserved list; BMP-3F is reserved too): rebuild on a non-reserved
+   amphibious light vehicle that fits its data frame.
+3. Kept references: aa_gun_vehicle CV9040 AAV, shorad_vehicle Avenger, demolition_line_vehicle M1150 ABV,
+   river_patrol_boat PBR/SURC, towed_at_gun 2A45M, recon_jet SR-71, aa_57mm_vehicle 2S38, gps_jammer_vehicle EW truck.
+4. inflatable_decoy's modelSize is set so it draws at the real gun_turret's size.
+5. iron_beam stays a truck (the data has it mobile).
+6. kronos's gun_r part points at Mount_gun.002 (not the 57 mm Mount_gun).
+7. ballistic_launcher keeps one missile raised 22 degrees.
+8. supreme_command keeps its wheels and 11 m mast.
+9. The export counts a cited real-world source as da_kiem_chung.
+10. radar_station is split into two ids (the base module and the map prop).
+11. Defend mode reads its timeLimit (720 s) from data instead of the code's 630 s; the Normal x0.7 enemy income and the
+    Weekly fortress tactic override wait for play-tests.
