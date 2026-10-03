@@ -2268,7 +2268,7 @@
                      { "weapon": "aa_25_triple", "slot": "mg", "aim": "Free" }, { "weapon": "aa_25_triple", "slot": "mg", "aim": "Free" }, { "weapon": "sam_post", "slot": "missile", "aim": "Free" } ],
       "aps": { "radius": 30, "charges": 3, "recharge": 2.2, "rockets": true },
       "naval": { "role": "Flagship", "lanes": ["far", "near", "far"], "escapePhase": 2, "escapeSpeed": 0.75 },
-      "salvo": { "every": 60, "edge": 24, "first": 8, "warn": 3.7, "shells": 3, "damage": 2400, "radius": 14, "spread": 22, "range": 160, "sweep": 18, "blindScatter": 2.2, "weapon": "p26_leviathan_lev406", "warning": "leviathan_shell" },
+      "salvo": { "every": 60, "edge": 24, "first": 8, "warn": 3.7, "shells": 3, "damage": 2400, "radius": 14, "spread": 22, "range": 160, "sweep": 18, "blindScatter": 2.2, "weapon": "p26_leviathan_lev406" },
       "cruise": { "every": 50, "first": 20, "phase": 1, "warn": 5, "damage": 520, "radius": 10, "final": 4, "weapon": "leviathan_cruise",
                   "warning": "leviathan_cruise_mark" },
       "craft": { "unit": "landing_craft", "carries": ["main_battle_tank", "ifv", "main_battle_tank", "tank_destroyer"], "per": 2, "every": 40,
@@ -2738,7 +2738,11 @@
   // floors 2.5 s (203-240 mm and the other T4), 3.5 s (406 mm), 4 s (800 mm and the super weapons). The view shows at
   // most maxShown rings at once (super weapons always, on top), merges one shooter's rounds fired within
   // salvoMergeSeconds into one ring, and fades each in over fadeIn s.
+  // Play-test 13 (lane C): normalFire false: no weapon's ordinary fire warns (a gun fires and its shell lands at once, no
+  // ring, no added flight); only the bosses' big attacks, the super weapons' strikes, supports and bomb sticks warn. The
+  // numbers above still sort the big rounds (the preview's ring time, the export).
   "warningRules": {
+    "normalFire": false,
     "gunMinMm": 203, "bombMinKg": 400, "rocketMinMm": 300,
     "floorT4": 2.5, "floor406": 3.5, "floorT5": 4, "base": 0.5, "escapeSpeed": 4.5, "cap": 6,
     "maxShown": 6, "salvoMergeSeconds": 0.6, "fadeIn": 0.4

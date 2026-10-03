@@ -927,6 +927,7 @@ namespace MachineBrigade.Sim.Combat
             // Prompt 34 L3: a boss's T4+ round (203 mm and up, the Smerch, the 400 kg bombs) lands no sooner than its escape warning,
             // so the warning ring on its fall point shows that long. A guided round chases its target and has no fixed fall point.
             // Fix prompt L5: every shooter's warned round, not only a boss's (the view rings the enemy's; both sides alike here).
+            // Play-test 13 (lane C): off for ordinary fire (warningRules.normalFire false): a gun's shell flies its own flight.
             if (weapon.WarnSeconds > travel && _world.Catalog.Warnings.Warns(weapon)) travel = weapon.WarnSeconds;
 
             damageScale *= shooter.DamageBoost * shooter.CommandDamage * shooter.Def.DamageScale;

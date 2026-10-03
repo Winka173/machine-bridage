@@ -215,18 +215,19 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void LeviathansSalvoWarnsLongEnoughAndItsRingIsTheEdge()
+        public void LeviathansSalvoIsGunfireWithNoRing()
         {
+            // Play-test 13 (lane C): the turrets' salvo is the guns' ordinary fire: no warning ring, the shells fly their own
+            // flight (the 406 mm's speed); the big attack (leviathan_volley) keeps its warned strike.
             var c = C;
             var s = c.Vehicle("leviathan").Salvo;
-            Assert.That(s.Warn, Is.GreaterThanOrEqualTo(WeaponDef.EscapeWarning(5, "cal_406", s.Radius) - 1e-3f));
-            Assert.That(c.TryGetSupport(s.Warning, out var ring), Is.True);
-            Assert.AreEqual(s.Edge, ring.Radius, 1e-3f, "the warning ring is the edge");
-            Assert.AreEqual(s.Radius, ring.BlastRadius, 1e-3f, "its core inside");
+            Assert.IsNull(s.Warning, "no ring on a gun salvo");
+            Assert.That(c.Weapons[s.Weapon].ProjectileSpeed, Is.GreaterThan(s.Range / s.Warn), "it lands sooner than the old warning");
+            Assert.That(c.BigAttacks.ContainsKey("leviathan_volley"), Is.True, "the big attack still warns");
         }
 
         [Test]
-        public void JotunnsHowitzerShellsStayUpForTheirWarning()
+        public void JotunnsHowitzerShellsFlyTheirOwnFlight()
         {
             var world = new SimWorld(C, GameContent.LoadMap("ashfield_conquest"), seed: 2);
             foreach (var v in world.VehicleList) v.Hp = 0f;
@@ -243,7 +244,8 @@ namespace MachineBrigade.Tests
                 {
                     if (e.Kind != SimEventKind.WeaponFired || e.Entity != boss.Id || e.DefId != gun.Id) continue;
                     shots++;
-                    Assert.That(e.Value, Is.GreaterThanOrEqualTo(gun.WarnSeconds - 1e-3f), "the shell's flight is its warning");
+                    // Play-test 13 (lane C): ordinary gunfire is not held for a warning: its flight is distance / shell speed.
+                    Assert.That(e.Value, Is.LessThanOrEqualTo(gun.Range * 1.2f / gun.ProjectileSpeed + 0.05f), "the shell is not held for a warning");
                 }
                 world.ClearEvents();
             }

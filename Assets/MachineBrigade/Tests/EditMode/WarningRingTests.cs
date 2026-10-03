@@ -33,7 +33,9 @@ namespace MachineBrigade.Tests
             var c = Shipped;
             foreach (var w in c.Weapons.Values)
             {
-                if (!c.Warnings.Warns(w)) continue;
+                // Play-test 13 (lane C): IsBig sorts the big rounds; ordinary fire itself warns of none (below).
+                Assert.IsFalse(c.Warnings.Warns(w), w.Id + ": a gun's ordinary fire has no ring and no added flight (warningRules.normalFire)");
+                if (!c.Warnings.IsBig(w)) continue;
                 Assert.IsFalse(w.Guided, w.Id + ": a guided round chases its target, no ring");
                 Assert.IsFalse(w.GuidedRocket, w.Id + ": a guided rocket, no ring");
                 Assert.Greater(w.SplashRadius, 0f, w.Id + ": a ring is its blast");
@@ -43,8 +45,8 @@ namespace MachineBrigade.Tests
                 Assert.AreEqual(w.SplashEdge > w.SplashRadius ? w.SplashEdge : w.SplashRadius, w.WarnRadius, 1e-4f,
                     w.Id + ": the ring is the real damage area");
             }
-            Assert.IsFalse(c.Warnings.Warns(c.Weapons["hellfire_standoff"]), "Hellfire");
-            Assert.IsFalse(c.Warnings.Warns(c.Weapons["heli_rockets"]), "Hydra 70 mm");
+            Assert.IsFalse(c.Warnings.IsBig(c.Weapons["hellfire_standoff"]), "Hellfire");
+            Assert.IsFalse(c.Warnings.IsBig(c.Weapons["heli_rockets"]), "Hydra 70 mm");
         }
 
         [Test]
