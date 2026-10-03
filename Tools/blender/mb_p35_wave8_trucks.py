@@ -801,6 +801,102 @@ def _pantsir_turret(a):
     a.part('Team_band', 'Team', t).box((1.0, .5, .012), loc=(0, -.2, .805), bevel=0)
 
 
+# ============================================================================= wheeled_gun (Centauro II)
+def wheeled_gun(a):
+    """See the module docstring. Runtime: Turret, Main_cannon, Muzzle_brake, Muzzle_main, Muzzle_coax,
+    Mount_mg / Muzzle_mg (on the turret roof), Point_fire, Point_exhaust; Part_wheel / Part_wheelb from
+    mb_p34_parts."""
+    R, WD, HX = .46, .34, .94
+    for y in (-2.0, -.85, .65, 1.8):
+        for s in (-1, 1):
+            K.tread_wheel(a, (s * HX, y, R), R, WD, s, seg=12, nuts=0)
+            K.dust(a, (s * HX, y, .12), radius=.55, k=.22)
+        a.part('Axles', 'Undercarriage').box((2 * HX - .3, .12, .12), loc=(0, y, R), bevel=0)
+        for s in (-1, 1):
+            a.part('Axles', 'Steel').tube([(s * (HX - .2), y, R + .02), (s * .45, y - .3, R + .28)], .045, seg=5)
+    hull = a.part('Hull', 'Team')
+    k.sharp_loft(hull, [[(-.7, -2.75, .48), (.7, -2.75, .48), (.7, 2.85, .5), (-.7, 2.85, .5)],
+                        [(-1.08, -3.0, .85), (1.08, -3.0, .85), (1.08, 2.98, .88), (-1.08, 2.98, .88)],
+                        [(-1.08, -2.7, 1.05), (1.08, -2.7, 1.05), (1.08, 2.95, 1.1), (-1.08, 2.95, 1.1)],
+                        [(-.95, -2.0, 1.42), (.95, -2.0, 1.42), (.96, 2.9, 1.44), (-.96, 2.9, 1.44)]], chamfer=.04)
+    # Side bins over the wheels, the front engine deck (Centauro's engine is front right), the driver front left.
+    deck = a.part('Deck', 'Armor')
+    deck.box((1.7, 1.7, .03), loc=(0, -1.2, 1.415), bevel=0)
+    K.grille(a, (.45, -1.4, 1.43), .7, .9, facing=(0, 0, 1), slats=6, frame_mat='Armor')
+    K.grille(a, (1.085, -1.9, 1.0), .7, .22, facing=(1, 0, 0), slats=3, frame_mat='Armor')
+    hc = (-.5, -1.85, 1.42)
+    k.ring(a.part('Hatch_fittings', 'Steel'), [(.22, 0), (.27, 0), (.27, .05), (.22, .05)], loc=hc, seg=10)
+    k.lathe(a.part('Hatches', 'Armor'), [(0, .07), (.2, .065), (.24, .04), (.24, .02)], loc=hc, seg=10)
+    for dx in (-.18, 0, .18):
+        a.part('Periscope_hoods', 'Armor').box((.13, .1, .07), loc=(-.5 + dx, -2.15, 1.41), rot=(-.3, 0, 0), bevel=0)
+        a.part('Glass', 'Glass').box((.1, .01, .04), loc=(-.5 + dx, -2.205, 1.405), rot=(-.3, 0, 0), bevel=0)
+    for s in (-1, 1):
+        K.lamp(a, (s * .85, -2.95, 1.0), (0, -1, .2), r=.06, guard=True)
+        a.part('Light_rims', 'Armor').box((.18, .04, .14), loc=(s * .85, -2.93, 1.0), bevel=0)
+        a.part('Tail_lamps', 'LavaGlow').box((.1, .02, .07), loc=(s * .9, 2.99, 1.2), bevel=0)
+        K.tow_hook(a.part('Kit_tow', 'Steel'), (s * .55, -3.05, .65), facing=(0, -1, 0), size=.09)
+        for y in (-1.4, .1, 1.6):
+            K.chamfer_box(a.part('Stowage', 'Armor'), (.16, 1.2, .26), loc=(s * 1.13, y, 1.2), c=.02)
+        a.part('Team_band', 'Team').box((.012, 4.4, .08), loc=(s * 1.215, .1, 1.05), bevel=0)
+    K.exhaust(a, (-.8, 2.9, .9), r=.05, length=.25, direction=(0, 1, 0))
+    K.soot(a, (-.8, 2.95, 1.1), radius=.35, k=.4)
+    K.crate(a.part('Stowage', 'Crate'), a.part('Kit_latches', 'Steel'), (.7, .4, .3), (0, 2.6, 1.6), bands=2)
+    a.part('Trim_plate', 'Armor').box((1.6, .06, .32), loc=(0, -2.86, .72), rot=(.5, 0, 0), bevel=0)
+    _centauro_turret(a)
+    a.pivot('Point_fire', (0, 2.2, 1.5))
+    a.pivot('Point_exhaust', (-.8, 2.9, 1.1))
+    k.clean(a)
+
+
+def _centauro_turret(a):
+    """The Hitfact II turret on the Turret pivot: the faceted house with its wedge front and long bustle, the
+    mantlet, the 120 mm with thermal sleeve, fume extractor and muzzle brake, the coax, the commander's panoramic
+    sight, the gunner's sight box, smoke banks on the cheeks, the 12.7 mm on its post, the bustle rack."""
+    t = a.pivot('Turret', (0, -.1, 1.44))
+    k.lathe(a.part('Turret_ring', 'Steel', t), [(.9, 0), (.94, .02), (.94, .08), (.88, .1)], seg=16)
+    body = a.part('Turret_body', 'Team', t)
+    k.sharp_loft(body, [[(-.6, -1.55, .08), (.6, -1.55, .08), (1.05, -.9, .08), (1.05, 1.9, .08), (-1.05, 1.9, .08),
+                         (-1.05, -.9, .08)],
+                        [(-.55, -1.7, .4), (.55, -1.7, .4), (1.1, -.95, .4), (1.1, 1.95, .42), (-1.1, 1.95, .42),
+                         (-1.1, -.95, .4)],
+                        [(-.45, -1.4, .52), (.45, -1.4, .52), (.92, -.8, .55), (.92, 1.8, .55), (-.92, 1.8, .55),
+                         (-.92, -.8, .55)]], chamfer=.04)
+    arm = a.part('Turret_armor', 'Armor', t)
+    for s in (-1, 1):
+        k.extrude(arm, [(-1.62, .12), (-.95, .12), (-.95, .5), (-1.38, .46)], .1, loc=(s * .82, 0, 0), axis='X',
+                  chamfer=.01)        # the cheek armour modules
+        K.smoke_dischargers(a, s * .95, -.5, .5, s, count=4, parent=t)
+    K.chamfer_box(a.part('Mantlet', 'Armor', t), (.62, .35, .5), loc=(0, -1.55, .36), c=.04)
+    K.gun_barrel(a, 'Main_cannon', t, 0, -1.7, .32, 3.88, .085, seg=12, extractor=(.38, 1.55, .45),
+                 brake='baffle')
+    a.pivot('Muzzle_main', (0, -5.88, .32), t)
+    k.lathe(a.part('Coax', 'Steel', t), [(.03, 0), (.03, .25), (0, .26)], loc=(-.3, -1.62, .38), rot=K.FORWARD,
+            seg=6)
+    a.pivot('Muzzle_coax', (-.3, -1.86, .38), t)
+    # Commander's panoramic sight (its head on a post), the gunner's sight box, hatches.
+    a.part('Sight', 'Steel', t).cyl(.08, .2, loc=(-.45, .1, .65), seg=8, bevel=0)
+    K.chamfer_box(a.part('Sight', 'Armor', t), (.3, .3, .24), loc=(-.45, .1, .84), c=.03)
+    a.part('Glass', 'Glass', t).box((.2, .01, .14), loc=(-.45, -.055, .86), bevel=0)
+    K.chamfer_box(a.part('Sight', 'Armor', t), (.26, .3, .2), loc=(.55, -.95, .64), c=.03)
+    a.part('Glass', 'Glass', t).box((.18, .01, .12), loc=(.55, -1.105, .65), bevel=0)
+    for hx in (-.45, .45):
+        hc = (hx, .75, .55)
+        k.ring(a.part('Hatch_fittings', 'Steel', t), [(.24, 0), (.29, 0), (.29, .05), (.24, .05)], loc=hc, seg=10)
+        k.lathe(a.part('Hatches', 'Armor', t), [(0, .08), (.22, .075), (.26, .05), (.26, .02)], loc=hc, seg=10)
+    K.pintle_mg(a, t, (.5, .4, .55), length=.7, post=.07, shield=False)
+    # Bustle rack with a net roll, the antennas, the team panel.
+    rack = a.part('Bustle_rack', 'Steel', t)
+    for s in (-1, 1):
+        rack.box((.04, .5, .04), loc=(s * .9, 2.15, .45), bevel=0)
+    rack.box((1.84, .04, .04), loc=(0, 2.4, .45), bevel=0)
+    rack.box((1.84, .04, .3), loc=(0, 2.4, .3), bevel=0)
+    K.net_roll(a.part('Stowage', 'Canvas', t), a.part('Kit_straps', 'Undercarriage', t), (0, 2.2, .55), length=1.5,
+               r=.13, axis='X')
+    for x in (-.8, .8):
+        K.whip_antenna(a.part('Antennas', 'Steel', t), (x, 1.7, .55), h=.38, lean=.05)
+    a.part('Team_band', 'Team', t).box((1.2, .9, .012), loc=(0, .9, .555), bevel=0)
+
+
 BUILDERS = {
     'mlrs': (mlrs, dict(ao_distance=.5, grime_height=.5)),
     'grad_truck': (grad_truck, dict(ao_distance=.6, grime_height=.55, ao_strength=.65)),
@@ -808,4 +904,5 @@ BUILDERS = {
     'railgun_truck': (railgun_truck, dict(ao_distance=.6, grime_height=.55)),
     'radar_scout': (radar_scout, dict(ao_distance=.4, ao_strength=.65, grime_height=.4)),
     'heavy_aa': (heavy_aa, dict(ao_distance=.5, grime_height=.5)),
+    'wheeled_gun': (wheeled_gun, dict(ao_distance=.55, grime_height=.5)),
 }
