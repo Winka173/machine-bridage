@@ -3010,6 +3010,36 @@
     "FLAG typhon: triangles 6,876 -> 13,260 (+92.8%); vertices 7,134 -> 17,628 (+147.1%); meshes 31 -> 54 (+74.2%); renderers 31 -> 54 (+74.2%); materials 9 -> 10 (+11.1%); materialSlots 31 -> 54 (+74.2%); fileBytes 377,496 -> 896,544 (+137.5%); structure changed",
     "FLAG wingman_drone: triangles 1,064 -> 2,914 (+173.9%); vertices 1,248 -> 3,007 (+140.9%); meshes 9 -> 24 (+166.7%); renderers 9 -> 24 (+166.7%); materials 8 -> 9 (+12.5%); materialSlots 9 -> 24 (+166.7%); fileBytes 72,308 -> 174,072 (+140.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "aa_57mm_vehicle",
+    "bunker_vehicle",
+    "caspian",
+    "elite_attack_helicopter",
+    "gps_jammer_vehicle",
+    "gun_turret_b",
+    "landing_hovercraft",
+    "laser_tank",
+    "monster",
+    "morrigan",
+    "recon_jet",
+    "siege_tank",
+    "sky_fortress",
+    "sky_gunship",
+    "sky_gunship_hd",
+    "stealth_bomber",
+    "stymphalos",
+    "thermobaric_launcher",
+    "titan_tank",
+    "turtle_tank",
+    "twin_tank",
+    "typhon",
+    "wingman_drone"
+   ],
+   "reason": "merge of feature/p35-w5",
+   "changes": []
   }
  ],
  "models": {
