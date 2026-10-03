@@ -164,3 +164,12 @@ Questions for the owner:
 - Airdropped armour: implemented as "item use + ceil(1.5 × total) CP". Should it stop being a coin item instead?
 - Opening-squad role "radar_scout" lost all its units (Kerr, Orlov now open with one squad less): give them another role?
 - Hangars are Medium (fit from HQ level 1) and unlock at c3m04 / c7m02: OK, or another route/price?
+
+## Session 3 (queued, after session 2 is merged) → `cloud/pt14-d`
+Lead decisions on session 1's questions are in DECISIONS "Play-test 14: cloud session 1 questions". To do:
+1. `reinforcements` (Airdropped armour) stops being a coin item: a plain fire-support card paid in CP only
+   (player picks units, value cap 20 cp, price ceil(1.5 x value)); owned items refunded as coins (roster migration);
+   strings EN/VI; CHANGES.md.
+2. Update the stale EditMode tests session 1 listed (repair bay, airfield, fire-control link, Army tab order, base
+   cover strip) to the new behaviour; do not run them.
+3. Remove the deleted ids from the source xlsx files the importers read (list them; keep sheet layout).
