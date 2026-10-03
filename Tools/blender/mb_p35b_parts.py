@@ -373,3 +373,40 @@ def track_run(a, tx, tw, wheels, wr, sprocket, idler, rollers=(), roller_z=None,
         for y in rollers:
             K.return_roller(a, (s * (tx + wx - .02), y, roller_z), .08, .1, s)
         K.dust(a, (s * tx, 0, .1), radius=1.6, k=.3)
+
+
+# ============================================================================= wave 6: ships and big hulls
+def clutter(a, name, mat, x0, x1, y0, y1, z, n, seed, size=(.2, .6), height=(.12, .5), parent=None, gap=.08,
+            step=.05):
+    """Deck fittings (wave 6, ships): n small boxes of varied size (lockers, hose boxes, junction boxes, cable
+    reels' housings) scattered without overlap in the rectangle x0..x1 x y0..y1 standing on z; sizes are drawn from
+    `size` / `height` in `step` increments, so each reads as its own fitting. Plain boxes (12 triangles each)."""
+    import random
+    rng = random.Random(seed)
+    part = a.part(name, mat, parent)
+    placed = []
+    q = lambda lo, hi: round(rng.uniform(lo, hi) / step) * step or step  # noqa: E731
+    tries = 0
+    while len(placed) < n and tries < n * 40:
+        tries += 1
+        w, d, h = q(*size), q(*size), q(*height)
+        cx, cy = rng.uniform(x0 + w / 2, x1 - w / 2), rng.uniform(y0 + d / 2, y1 - d / 2)
+        if any(abs(cx - px) < (w + pw) / 2 + gap and abs(cy - py) < (d + pd) / 2 + gap for px, py, pw, pd in placed):
+            continue
+        placed.append((cx, cy, w, d))
+        part.box((w, d, h), loc=(cx, cy, z + h / 2), bevel=0)
+    return placed
+
+
+def plane(part, x0, x1, y0, y1, z):
+    """A one-sided horizontal deck plate (facing up): a deck seen only from above (half the area of a box)."""
+    part.mesh([(x0, y0, z), (x1, y0, z), (x1, y1, z), (x0, y1, z)], [(0, 1, 2, 3)])
+
+
+def portholes(a, points, normal, r=.12, parent=None, rim_mat='Steel', glass='Glass', seg=8):
+    """Portholes on a wall facing `normal`: a rim ring and the glass disc each."""
+    rot = K.rot_to(normal)
+    for p in points:
+        a.part('Porthole_rims', rim_mat, parent).cyl(r * 1.25, .03, loc=p, rot=rot, seg=seg, bevel=0)
+        q = (p[0] + normal[0] * .012, p[1] + normal[1] * .012, p[2] + normal[2] * .012)
+        a.part('Portholes', glass, parent).cyl(r, .02, loc=q, rot=rot, seg=seg, bevel=0)
