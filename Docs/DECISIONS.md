@@ -17975,3 +17975,49 @@ Docs/models/WAVE_2_REPORT.md.
 - **Review item 7.** Boss!P11 "(model tạm)" removed in the xlsx XML (sheet10.xml only); unit_sheet.py rerun (its json
   unchanged: it reads column D); the same note removed from unit_refs.json, which copies P11.
 - **Renderer caps.** logistics_station merged small parts of one material (59 -> 46 renderers, structure cap 48).
+
+## Prompt 35 wave 3 (lane B)
+Branch `feature/p35-w3` (from lead/integration; lead/integration with wave 2 merged in on 2026-10-03), the twenty models
+of wave 3 (Docs/models/WAVES_P35.md): one new builder per model (`Tools/blender/mb_p35_<id>.py`), a spec each first
+(`Tools/blender/specs/<id>.json`), registered last in build_assets.py; report Docs/models/WAVE_3_REPORT.md. Blender
+and Python only (no Unity, no test, sim or measure).
+- **Walls keep their boxes.** WallRules tiles wall_hesco / wall_t / wall_gun as 12 x 2 m segments placed by their
+  centre (BaseSystem stands the gun wall's tower at the segment's centre); blast_wall keeps its modelSize. Each new
+  file has the old bounds to the centimetre, centred, along X, front to -Y; wall_gun's platform stays 4 m wide with its
+  deck top at 1.28 m. Walls are symmetric rectangles from above, so they cannot score the asymmetry share.
+- **Styles.** Towers and structures follow the Accord's field-built notes (earth pads, sandbags, logs, sleepers,
+  nets, duckboards); troop_shelter keeps the concrete of its Strings note under the Accord's earth and sandbags;
+  super_gun is the fortress's own (cast concrete and armour, the garrison's sandbags; owner question 3). Bodies differ
+  per tower (prompt 35 section 7): troop_shelter a concrete box, bunker_shelter_tower a steel arch, fire_control_centre
+  a log dug-out; heavy_flak_tower a log octagon, aa_gun_tower a sandbag ring, one_shot_atgm_tower a sleeper crib.
+- **Cap and trims (review item 2).** Every tower under 6,000 triangles (heavy_flak_tower 8,902 -> 5,880, rebuilt rather
+  than decimated). super_gun (structure, one per fortress) 7,132 and the four vehicles (tracked, heavy class)
+  8,054-9,466 are over their class maximum as information only; hidden parts (return rollers behind skirts, the top
+  run of tracks, faces on the ground) were left out first.
+- **Sizes to the data.** troop_shelter turned to its modelSize (the old file lay across, 23 % off); fire_control_centre
+  5.25 m tall (6.8 m before, the data says 5.5); searchlight, inflatable_decoy, at_gun_emplacement and
+  heavy_flak_tower back within 10 % of modelSize; the rest within 10 % of the old file where the data has none.
+- **Runtime nodes kept**: Turret, Main_cannon[_2], Muzzle_brake[_2], Muzzle_main / coax / missile / mg, Mount_mg,
+  Mount_APS, Radar (fire_control_centre: it still spins), Blade (engineer_vehicle: now a pivot at the push arms' hinge,
+  the blade parts its children, so VehicleView.Parts rams the whole blade), Point_*. ifv's `Launcher_arm`,
+  `Launcher_box`, `Tubes` and `Muzzle_missile` are direct children of Turret (ModelLibrary.AddSideErector moves them on
+  to Deploy_atgm). one_shot_atgm_tower keeps `Muzzle_missile` beside `Muzzle_main`. inflatable_decoy has no Turret (its
+  def is unarmed, the old file had none). Non-runtime part names changed where the new build needed them (the old
+  Berm / Fill of the walls became Base / Walls for the gate's body and role readings).
+- **New gate names.** Roof guns added where the gate's roof_mg role wanted one and the real vehicle carries one: ifv
+  (the commander's pintle M240, `Mount_mg` with no data weapon, like the rocket turret's crew MG), light_tank (cupola
+  7.62 mm); engineer_vehicle's own M2 is the main weapon (`Turret`) and its spare cans are `Hmg_ammo`. mortar_carrier's
+  mantlet role is its `Elevation` mechanism, its skirts the sponson lip (`Skirt_edge`), as smoke_carrier.
+- **Helpers (lane B, mb_p35b_parts.py)**: `sandbag_run` (part name, lean bags), `Elev` (points along a laid barrel),
+  `earth_pad` (bottom=False), `camo_net`, `track_run`; requested for the kit (report). `tread_wheel` stays here (the
+  kit's copy is lane A's from wave 2).
+- **Merged kit door fix.** Six structures built before the merge (barrage_balloon, bunker_shelter_tower,
+  fire_control_centre, laser_ad_station, super_gun, troop_shelter) use `K.door`; rebuilt after merging wave 2's door fix
+  (their frame posts had stood 2 m out of the wall). All 21 files (with light_tank_hd) rebuilt from build_assets.py:
+  the other fifteen byte-identical; the six rebuilt twice byte-identical.
+- **build_assets.py**: the syntax error left by the wave 1 merge was fixed on this branch first (214d8e2f), then
+  wave 2's identical fix merged in cleanly; `python -m py_compile Tools/blender/build_assets.py` passes.
+- **NEEDS_HUMAN** (4 rounds, every hard gate passes): at_gun_emplacement 77.9, one_shot_atgm_tower 74.6,
+  laser_ad_station 73.0, heavy_flak_tower 66.6 (owner question 1). Structures and walls on the owner's look.
+- quality_report.xlsx / .csv not rewritten on this branch; full gate `--no-write`: 230 models, 59 pass, no model
+  outside the wave changed.
