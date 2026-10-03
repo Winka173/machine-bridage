@@ -6,7 +6,7 @@
  "confidence": "xấp xỉ (Object 195 published drawings and the 2017 museum photographs)",
  "target_size": {"L": 9.64, "W": 3.46, "H": 2.53, "source": "balance.json modelSize", "tolerance": 0.10},
  "features": [
-  {"feature": "very long low hull, the long glacis under reactive armour, the raised crew capsule with periscopes", "nodes": ["Hull", "Hull_lower", "Capsule", "Kit_era", "Hatches"]},
+  {"feature": "very long low hull, the long glacis under reactive armour, the raised crew capsule with periscopes", "nodes": ["Hull", "Hull_lower", "Capsule", "Era_bricks", "Hatches"]},
   {"feature": "seven large road wheels a side, front idler, rear sprocket, return rollers, linked track", "nodes": ["Wheels", "Idlers", "Sprockets", "Rollers", "Tracks", "Track_links"]},
   {"feature": "rubber side skirts with reactive armour boxes over the front half", "nodes": ["Skirts", "Skirt_era"]},
   {"feature": "the low angular unmanned turret with its bustle and gold bands", "nodes": ["Turret", "Turret_body", "Turret_roof", "Bustle"]},
