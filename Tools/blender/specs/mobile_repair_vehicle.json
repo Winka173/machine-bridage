@@ -1,0 +1,140 @@
+{
+ "id": "mobile_repair_vehicle",
+ "class": "wheeled",
+ "real": [
+  "BREM-K armoured repair and recovery vehicle on the BTR-80 8x8 hull (the def: MTO-UB-class repair)",
+  "self-defence 12.7 mm (balance.json hmg_selfdef_15)"
+ ],
+ "shape": "A BREM-K-class armoured repair vehicle: the boat-shaped BTR hull with sloped upper plates, trim vane and vision blocks, four axles on big tyres, the crane on its slewing base with the jib folded along the roof and the hook block, the bow winch, the rear spade on its rams, tow bars, toolboxes, gas bottles and ammo cans on the sponsons, the commander's cupola with the 12.7 mm on its post.",
+ "confidence": "xấp xỉ (BREM-K photographs; the def's modelSize)",
+ "target_size": {
+  "L": 6.45,
+  "W": 3.02,
+  "H": 2.02,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "boat-shaped hull with sloped plates, trim vane, vision blocks, hatches, engine grille",
+   "nodes": [
+    "Hull",
+    "Trim_vane",
+    "Visors",
+    "Hatches",
+    "Grilles"
+   ]
+  },
+  {
+   "feature": "four axles, big tyres, suspension arms, arches",
+   "nodes": [
+    "Axles",
+    "Wheels",
+    "Tyres",
+    "Suspension",
+    "Wheel_arches"
+   ]
+  },
+  {
+   "feature": "crane: slewing base, folded jib, ram, hook block",
+   "nodes": [
+    "Crane_base",
+    "Crane",
+    "Crane_ram",
+    "Hook_block"
+   ]
+  },
+  {
+   "feature": "bow winch, rear spade, tow bars",
+   "nodes": [
+    "Winch",
+    "Spade",
+    "Tow_bars"
+   ]
+  },
+  {
+   "feature": "toolboxes, gas bottles, ammo cans, jerrycans",
+   "nodes": [
+    "Stowage",
+    "Gas_bottles",
+    "Ammo_boxes",
+    "Jerrycans"
+   ]
+  },
+  {
+   "feature": "cupola and the 12.7 mm on its post",
+   "nodes": [
+    "Cupola",
+    "Turret",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "hmg_selfdef_15",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the roof gun on its post"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "note": "light wheeled: seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "hull (Team)",
+  "bins (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "Russian armoured recovery vehicle, team-coloured, crane yellow",
+ "details": {
+  "tier1": [
+   "hull",
+   "wheels",
+   "crane"
+  ],
+  "tier2": [
+   "winch",
+   "spade",
+   "tow bars",
+   "bins",
+   "cupola",
+   "roof gun"
+  ],
+  "tier3": [
+   "vision blocks",
+   "lamps",
+   "hooks",
+   "gas bottles",
+   "cans",
+   "whips"
+  ]
+ },
+ "questions": []
+}

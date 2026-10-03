@@ -1,0 +1,138 @@
+{
+ "id": "ground_cruise_missile_vehicle",
+ "class": "wheeled",
+ "real": [
+  "Typhon MRC launcher's four-cell Mk 41 box (balance.json: the Typhon-class stand-in)",
+  "FMTV-class 6x6 truck"
+ ],
+ "shape": "A Typhon-class launcher on one truck: the flat-fronted cab-forward FMTV cab with its raked split windscreen, three axles, the control box and generator behind the cab, the turntable and cradle with the 2 x 2 Mk 41 cell box lying forward (cell hatches on the front face, ribs, lifting handles, team band), the erecting rams, rear jacks, toolboxes, jerrycans, the spare wheel.",
+ "confidence": "ước đoán (Typhon launcher photographs; one truck carries the four-cell box here; the def's modelSize)",
+ "target_size": {
+  "L": 7.18,
+  "W": 2.7,
+  "H": 2.97,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "FMTV cab: windscreens, windows, doors, mirrors, grille, roof hatch",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Doors",
+    "Grilles",
+    "Hatches"
+   ]
+  },
+  {
+   "feature": "frame on three axles, lugged tyres, wings, mud flaps",
+   "nodes": [
+    "Chassis",
+    "Axles",
+    "Wheels",
+    "Tyres",
+    "Mud_wings"
+   ]
+  },
+  {
+   "feature": "control box and generator behind the cab",
+   "nodes": [
+    "Body",
+    "Doors"
+   ]
+  },
+  {
+   "feature": "turntable, cradle and the four-cell Mk 41 box",
+   "nodes": [
+    "Turret",
+    "Turret_base",
+    "Turret_steel",
+    "Launcher_box",
+    "Launcher_ribs",
+    "Hatches",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "erecting rams, rear jacks",
+   "nodes": [
+    "Launcher_rams",
+    "Outriggers"
+   ]
+  },
+  {
+   "feature": "toolboxes, jerrycans, spare wheel",
+   "nodes": [
+    "Stowage",
+    "Jerrycans",
+    "Spare_wheel"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "cruise_missile_ground",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the cell box's front face"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "note": "light wheeled: seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "cab (Team)",
+  "control box and bed (Team)",
+  "cell box (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "US-pattern launcher truck, team-coloured",
+ "details": {
+  "tier1": [
+   "cab",
+   "chassis",
+   "cell box"
+  ],
+  "tier2": [
+   "control box",
+   "turntable",
+   "rams",
+   "jacks",
+   "bins"
+  ],
+  "tier3": [
+   "mirrors",
+   "lamps",
+   "hooks",
+   "cell hatches",
+   "handles",
+   "whip"
+  ]
+ },
+ "questions": []
+}

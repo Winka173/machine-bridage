@@ -1,0 +1,152 @@
+{
+ "id": "aa_turret",
+ "class": "tower",
+ "real": [
+  "2A38 30 mm twin-barrel gun (the Tunguska's; balance.json tower_flak_30)",
+  "Stinger twin launch tubes (the def's secondary sam)",
+  "a field AA post: sandbag parapet on an earth berm"
+ ],
+ "shape": "unit_refs: Tunguska 2A38 and the Stinger; a low angular one-man gun house on a cast plinth and race ring, the 2A38's two barrels side by side pitched up, the twin Stinger tubes on an arm on its left, a small search radar spinning behind, in a sandbag-topped earth berm with a rear bay of ready rounds under a camouflage net.",
+ "confidence": "ước đoán (a field post for the Tunguska's gun and a Stinger pair; no real tower carries both)",
+ "target_size": {
+  "L": 5.44,
+  "W": 4.5,
+  "H": 3.21,
+  "source": "the old GLB (the def's 4.5 x 4.5 m tower)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "cast plinth, apron and race ring",
+   "nodes": [
+    "Base",
+    "Plinth",
+    "Race"
+   ]
+  },
+  {
+   "feature": "earth berm topped with sandbags, entry gap at the rear",
+   "nodes": [
+    "Berm",
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "angular gun house with the gunner's sight, hatch, periscopes, beacon",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Sight",
+    "Hatches",
+    "Beacon"
+   ]
+  },
+  {
+   "feature": "2A38 twin barrels with sleeves and muzzle brakes",
+   "nodes": [
+    "Main_cannon",
+    "Main_cannon_2",
+    "Muzzle_brake",
+    "Muzzle_brake_2",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "twin Stinger tubes on their arm",
+   "nodes": [
+    "Launcher_arm",
+    "Launcher_tubes",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "search radar on its mast (spins)",
+   "nodes": [
+    "Radar",
+    "Radar_dish",
+    "Radar_mast"
+   ]
+  },
+  {
+   "feature": "rear bay: duckboards, ready-round boxes, tarp, telephone post and whip, camouflage net",
+   "nodes": [
+    "Duckboards",
+    "Ammo_boxes",
+    "Tarp",
+    "Antennas",
+    "Camo_net"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "tower_flak_30",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 muzzle between the 2A38's two barrels"
+  },
+  {
+   "weapon": "sam",
+   "slot": "missile",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_missile"
+   ],
+   "note": "aim Turret: the tubes ride the gun house"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "gun house (Team)",
+  "plinth band (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "field emplacement: concrete, earth, sandbags; the gun house in the team colour",
+ "details": {
+  "tier1": [
+   "berm",
+   "plinth",
+   "gun house",
+   "barrels"
+  ],
+  "tier2": [
+   "Stinger tubes",
+   "radar",
+   "ammo boxes",
+   "camouflage net",
+   "duckboards"
+  ],
+  "tier3": [
+   "periscopes",
+   "beacon",
+   "casings",
+   "helmets",
+   "tools",
+   "whip"
+  ]
+ },
+ "questions": []
+}

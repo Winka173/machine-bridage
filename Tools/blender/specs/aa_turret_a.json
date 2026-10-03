@@ -1,0 +1,131 @@
+{
+ "id": "aa_turret_a",
+ "class": "tower",
+ "real": [
+  "ZSU-23-4 Shilka turret, four 2A7 23 mm (balance.json flak_quad)",
+  "the base post's emplacement"
+ ],
+ "shape": "the aa_turret post (same plinth, berm, sandbags and rear bay, a fourth stack of ready rounds) with the Shilka's flat slab-sided turret on the race: four 23 mm barrels in two pairs out of a wide mantlet, the RPK-2 dish on its mast at the rear, the commander's cupola.",
+ "confidence": "xấp xỉ (ZSU-23-4 turret photographs; the post is the base's)",
+ "target_size": {
+  "L": 5.44,
+  "W": 4.5,
+  "H": 3.28,
+  "source": "the old GLB (the def's 4.5 x 4.5 m tower)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the base's plinth, race, berm and sandbags",
+   "nodes": [
+    "Base",
+    "Plinth",
+    "Race",
+    "Berm",
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "Shilka slab-sided turret, cupola, hatch, beacon",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Cupola",
+    "Hatches",
+    "Beacon"
+   ]
+  },
+  {
+   "feature": "four 23 mm barrels in two pairs, mantlet",
+   "nodes": [
+    "Mantlet",
+    "Main_cannon",
+    "Main_cannon_2",
+    "Main_cannon_3",
+    "Main_cannon_4",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "RPK-2 dish on its mast (spins)",
+   "nodes": [
+    "Radar",
+    "Radar_dish",
+    "Radar_mast"
+   ]
+  },
+  {
+   "feature": "rear bay with four stacks of ready rounds, net, whip",
+   "nodes": [
+    "Ammo_boxes",
+    "Camo_net",
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "flak_quad",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 muzzle at the centre of the four barrels"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "turret (Team)",
+  "plinth band (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "field emplacement (the base post's)",
+ "details": {
+  "tier1": [
+   "berm",
+   "plinth",
+   "turret",
+   "barrels"
+  ],
+  "tier2": [
+   "dish",
+   "ammo boxes",
+   "net",
+   "duckboards",
+   "stowage bins"
+  ],
+  "tier3": [
+   "periscopes",
+   "beacon",
+   "casings",
+   "helmets",
+   "tools",
+   "whip"
+  ]
+ },
+ "questions": [
+  "The gate reads the base def's secondary sam for the branch: a plain Muzzle_missile pivot stays on the roof (no launcher drawn; the branch def has secondary [])."
+ ]
+}

@@ -1,0 +1,149 @@
+{
+ "id": "c_ram",
+ "class": "tower",
+ "real": [
+  "Centurion C-RAM: Phalanx Block 1B land mount on a trailer (unit_refs; M61 20 mm, balance.json c_ram_gatling)",
+  "LCMR counter-fire radar on a mast",
+  "FOB position: HESCO, T-wall, generator"
+ ],
+ "shape": "unit_refs: Centurion C-RAM / Phalanx M61: a low flatbed trailer on its jacks carrying the below-deck cabinet and the white mount with the radome over the six-barrel gatling and its drum; the towed generator and its cables, the LCMR head spinning on a guyed mast, an L of HESCO and a T-wall, fuel drums, ammunition cans, a floodlight and warning boards.",
+ "confidence": "xấp xỉ (Centurion C-RAM photographs, Iraq / Afghanistan FOBs)",
+ "target_size": {
+  "L": 5.59,
+  "W": 5.59,
+  "H": 5.41,
+  "source": "the old GLB (the def's 5.5 x 5.5 m tower)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "gravel patches and the trailer's jack pads",
+   "nodes": [
+    "Base",
+    "Pads",
+    "Jacks"
+   ]
+  },
+  {
+   "feature": "HESCO bastions and a T-wall",
+   "nodes": [
+    "Hesco",
+    "Wall"
+   ]
+  },
+  {
+   "feature": "flatbed trailer: deck, chassis, axles, wheels, drawbar",
+   "nodes": [
+    "Deck",
+    "Chassis",
+    "Axles",
+    "Wheels",
+    "Tyres"
+   ]
+  },
+  {
+   "feature": "Phalanx cabinet, white mount, radome, drum",
+   "nodes": [
+    "Turret",
+    "Turret_cabinet",
+    "Turret_white",
+    "Turret_body",
+    "Turret_drum",
+    "Turret_vents"
+   ]
+  },
+  {
+   "feature": "six-barrel M61 and its shroud",
+   "nodes": [
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "feature": "LCMR radar on its guyed mast (spins)",
+   "nodes": [
+    "Radar",
+    "Radar_mast",
+    "Radar_back",
+    "Radar_face",
+    "Radar_turntable"
+   ]
+  },
+  {
+   "feature": "generator, cables, fuel drums, ammo cans, floodlight, boards",
+   "nodes": [
+    "Generator",
+    "Kit_cables",
+    "Fuel_drums",
+    "Ammo_boxes",
+    "Light_poles",
+    "Signs"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "c_ram_gatling",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the old file's Muzzle_gun kept beside it"
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "trailer deck (Team)",
+  "radome band (Team)",
+  "T-wall band (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "FOB kit: white Phalanx, team-coloured trailer, earth HESCO",
+ "details": {
+  "tier1": [
+   "trailer",
+   "Phalanx",
+   "mast",
+   "HESCO"
+  ],
+  "tier2": [
+   "generator",
+   "drum",
+   "drums",
+   "T-wall",
+   "floodlight"
+  ],
+  "tier3": [
+   "jacks",
+   "boards",
+   "casings",
+   "cans",
+   "beacon",
+   "guy wires"
+  ]
+ },
+ "questions": []
+}

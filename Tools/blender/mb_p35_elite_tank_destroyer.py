@@ -1,10 +1,11 @@
 """Prompt 35 wave 7 (lane C): the elite tank destroyer rebuilt from scratch (spec: Tools/blender/specs/elite_tank_destroyer.json).
 
-A 2S25M Sprut-SDM1 (unit_refs' 2S25 Sprut-SD with its 2A75 125 mm, upgraded; the def's modelSize 9.08 x 3.01 x
-2.34 m, the gun's overhang inside the length): the long low air-droppable hull of the BMD-4M family with the boat
+A 2S25M Sprut-SDM1 hull and turret (unit_refs' 2S25 Sprut-SD, upgraded) carrying the def's long 105 mm
+(gun_105_apfsds; prompt 35 wave 9: the visible gun matches the data; the def's modelSize 9.08 x 3.01 x 2.34 m, the
+gun's overhang inside the length): the long low air-droppable hull of the BMD-4M family with the boat
 bow and its folded trim vane, seven small road wheels a side on swing arms, the front idler and the rear sprocket
 with four return rollers, black skirt edges with front flaps, the water-jet outlets on the rear plate, the engine
-grilles; the flat angular turret with bolted add-on armour boxes on its cheeks, the very long gun on its mantlet
+grilles; the flat angular turret with bolted add-on armour boxes on its cheeks, the long 105 mm on its mantlet
 (sleeve bands, fume extractor, a plain muzzle collar), the commander's panoramic sight and the gunner's sight, the
 remote 12.7 mm standing on its post (the def's free `hmg_roof`, MODEL_STANDARD "Roof guns"), smoke dischargers, the
 bustle basket with its stowage and aerials. Elite marks (DECISIONS 25B2): the team-coloured body, black armour
@@ -107,11 +108,13 @@ def _turret(a):
     man = a.part('Mantlet', BLACK, t)
     k.extrude(man, [(-.17, -.2), (.13, -.22), (.18, .2), (-.13, .22)], .56, loc=(0, -1.1, .3), axis='X',
               chamfer=.03, corner=.02)
-    C.gun_tube(a, 'Main_cannon', t, (0, -1.22, .3), 4.4, .08, seg=12, sleeve=4, extractor=(.36, 1.75),
+    # The def's gun_105_apfsds: a long 105 mm (L7 / 2A70-class barrel length, the slimmer tube, the fume extractor
+    # well forward), drawn to match the data (lead's wave 9 call; it was the 2S25's 125 mm).
+    C.gun_tube(a, 'Main_cannon', t, (0, -1.22, .3), 4.2, .066, seg=12, sleeve=3, extractor=(.45, 1.8),
                brake='plain', brake_name='Muzzle_brake')
-    a.part('Main_cannon_gilt', 'Gilded', t).cyl(.095, .08, loc=(0, -1.22 - 4.4 * .78, .3), rot=K.FORWARD, seg=12,
+    a.part('Main_cannon_gilt', 'Gilded', t).cyl(.08, .08, loc=(0, -1.22 - 4.2 * .8, .3), rot=K.FORWARD, seg=12,
                                                 bevel=0)
-    a.pivot('Muzzle_main', (0, -5.7, .3), t)
+    a.pivot('Muzzle_main', (0, -5.48, .3), t)
     # Sights: the commander's panoramic sight (right rear), the gunner's sight box (left front).
     cs = a.part('Sight', BLACK, t)
     k.lathe(cs, [(.13, 0), (.13, .2), (.16, .22), (.16, .36), (0, .38)], loc=(-.4, .2, .55), seg=10, worn=(3,))

@@ -1,0 +1,141 @@
+{
+ "id": "long_sam",
+ "class": "wheeled",
+ "real": [
+  "S-300PMU 5P85S launcher (unit_refs: 5P85, 48N6)",
+  "MAZ-543 8x8 chassis"
+ ],
+ "shape": "unit_refs: S-300PMU (5P85), S-400 (48N6), MAZ-543: the two separate two-man cabs either side of the engine bay with the grille between, the long frame on four axles in two pairs, the launch control cabin behind the cabs, the 2 x 2 pack of canisters lying on the erector with bands, end caps and covers, the rear hinge, rams and jacks.",
+ "confidence": "xấp xỉ (5P85S photographs; the def's modelSize)",
+ "target_size": {
+  "L": 11.02,
+  "W": 2.46,
+  "H": 2.59,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "two split cabs with windscreens, doors, mirrors; engine bay and grille",
+   "nodes": [
+    "Cab",
+    "Hull",
+    "Glass",
+    "Doors",
+    "Grilles"
+   ]
+  },
+  {
+   "feature": "frame on four axles in two pairs, lugged tyres, mud wings",
+   "nodes": [
+    "Chassis",
+    "Axles",
+    "Wheels",
+    "Tyres",
+    "Mud_wings"
+   ]
+  },
+  {
+   "feature": "launch control cabin with its door and steps",
+   "nodes": [
+    "Cabin",
+    "Doors",
+    "Steps"
+   ]
+  },
+  {
+   "feature": "four 48N6 canisters on the erector frame",
+   "nodes": [
+    "Turret",
+    "Launcher_tubes",
+    "Launcher_bands",
+    "Launcher_ends",
+    "Launcher_covers",
+    "Launcher_frame"
+   ]
+  },
+  {
+   "feature": "rear hinge, erecting rams, outrigger jacks",
+   "nodes": [
+    "Launcher_hinge",
+    "Launcher_rams",
+    "Outriggers"
+   ]
+  },
+  {
+   "feature": "toolboxes, jerrycans, spare wheel, exhaust, lamps",
+   "nodes": [
+    "Stowage",
+    "Jerrycans",
+    "Spare_wheel",
+    "Exhaust",
+    "Lamps"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "sam_48n6",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the canisters' rear end (they fire vertically when erected); Muzzle_missile kept beside it"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "note": "light wheeled: seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "cabs and bay (Team)",
+  "cabin (Team)",
+  "erector frame and bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "Soviet-pattern AD launcher, team-coloured truck, canvas-green canisters",
+ "details": {
+  "tier1": [
+   "cabs",
+   "chassis",
+   "canisters"
+  ],
+  "tier2": [
+   "cabin",
+   "wings",
+   "rams",
+   "jacks",
+   "bins"
+  ],
+  "tier3": [
+   "mirrors",
+   "lamps",
+   "hooks",
+   "bands",
+   "steps",
+   "whip"
+  ]
+ },
+ "questions": []
+}

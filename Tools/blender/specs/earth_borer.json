@@ -1,0 +1,177 @@
+{
+ "id": "earth_borer",
+ "class": "boss",
+ "real": [
+  "Soviet 'Battle Mole' (unit_refs)",
+  "tunnel boring machine",
+  "2A70 100 mm turrets (balance.json borer_cannon)"
+ ],
+ "shape": "unit_refs: 'Earth Worm', an armoured three-segment boring machine: the drill segment with the cutter ring and disc cutters, the conical drill head with spiral flights and teeth turning on Propeller, the riveted round middle segment with the team band, vision blocks, hatches and two 100 mm turrets, the rear segment with the engine house, stacks and fans, the spoil chute boom, conveyor and pipe, rubber bellows joints, three track units a side, lockers, the side pump unit, the sensor mast and the hydraulic jacks.",
+ "confidence": "ước đoán (TBM photographs; the old file's size)",
+ "target_size": {
+  "L": 23.45,
+  "W": 5.78,
+  "H": 6.94,
+  "source": "the old GLB (the boss scales it by size 0.85)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "drill: cutter ring, disc cutters, cone, flights, teeth (spins)",
+   "nodes": [
+    "Part_drill",
+    "Propeller",
+    "Drill_ring",
+    "Drill_cutters",
+    "Drill_cone",
+    "Drill_flights",
+    "Drill_teeth",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "three round armoured segments, bands, rivets, decks, bellows joints",
+   "nodes": [
+    "Hull",
+    "Bands",
+    "Deck",
+    "Joints"
+   ]
+  },
+  {
+   "feature": "two 100 mm turrets",
+   "nodes": [
+    "Part_gun",
+    "Mount_gun",
+    "Muzzle_gun",
+    "Part_gun.001",
+    "Mount_gun.001",
+    "Muzzle_gun.001",
+    "Gun_house"
+   ]
+  },
+  {
+   "feature": "engine house, stacks, fans",
+   "nodes": [
+    "Part_engine",
+    "Engine_house",
+    "Fans"
+   ]
+  },
+  {
+   "feature": "spoil chute boom, conveyor, pipe, pump unit",
+   "nodes": [
+    "Chute_boom",
+    "Chute",
+    "Conveyor",
+    "Spoil_pipes",
+    "Pump_unit"
+   ]
+  },
+  {
+   "feature": "three track units a side, skirts",
+   "nodes": [
+    "Tracks",
+    "Track_links",
+    "Wheels",
+    "Skirts"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running_gear"
+ ],
+ "weapons": [
+  {
+   "weapon": "borer_drill",
+   "slot": "main",
+   "mount": "Part_drill",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "aim Hull: the drill's tip"
+  },
+  {
+   "weapon": "borer_cannon",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ],
+   "note": "aim Free (gun_l)"
+  },
+  {
+   "weapon": "borer_cannon",
+   "slot": "gun",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ],
+   "note": "aim Free (gun_r)"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "cap": null,
+  "note": "boss: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "segments (Team)",
+  "turrets (Team)",
+  "side band (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "node": "Part_drill",
+   "part": "drill"
+  },
+  {
+   "node": "Part_gun",
+   "part": "gun_l"
+  },
+  {
+   "node": "Part_gun.001",
+   "part": "gun_r"
+  },
+  {
+   "node": "Part_engine",
+   "part": "engine"
+  }
+ ],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "boss: armoured TBM, team-coloured, rust spoil gear",
+ "details": {
+  "tier1": [
+   "segments",
+   "drill",
+   "tracks"
+  ],
+  "tier2": [
+   "turrets",
+   "engine house",
+   "chute boom",
+   "joints",
+   "lockers"
+  ],
+  "tier3": [
+   "teeth",
+   "cutters",
+   "rivets",
+   "vision blocks",
+   "jacks",
+   "lamps"
+  ]
+ },
+ "questions": []
+}

@@ -13,11 +13,11 @@
   },
   "aa_turret": {
     "file": "aa_turret.glb",
-    "triangles": 6306
+    "triangles": 5202
   },
   "aa_turret_a": {
     "file": "aa_turret_a.glb",
-    "triangles": 6670
+    "triangles": 5952
   },
   "aa_turret_b": {
     "file": "aa_turret_b.glb",
@@ -113,7 +113,7 @@
   },
   "artillery_emplacement": {
     "file": "artillery_emplacement.glb",
-    "triangles": 7946
+    "triangles": 4992
   },
   "artillery_emplacement_a": {
     "file": "artillery_emplacement_a.glb",
@@ -173,7 +173,7 @@
   },
   "ballistic_launcher": {
     "file": "ballistic_launcher.glb",
-    "triangles": 2818
+    "triangles": 7414
   },
   "ballistic_missile": {
     "file": "ballistic_missile.glb",
@@ -297,15 +297,15 @@
   },
   "c_ram": {
     "file": "c_ram.glb",
-    "triangles": 5806
+    "triangles": 5930
   },
   "c_ram_a": {
     "file": "c_ram_a.glb",
-    "triangles": 6254
+    "triangles": 5972
   },
   "c_ram_b": {
     "file": "c_ram_b.glb",
-    "triangles": 7150
+    "triangles": 5704
   },
   "cactus": {
     "file": "cactus.glb",
@@ -357,7 +357,7 @@
   },
   "combat_wreck_car": {
     "file": "combat_wreck_car.glb",
-    "triangles": 2794
+    "triangles": 4010
   },
   "command_airship": {
     "file": "command_airship.glb",
@@ -781,7 +781,7 @@
   },
   "earth_borer": {
     "file": "earth_borer.glb",
-    "triangles": 23130
+    "triangles": 11364
   },
   "elite_aa": {
     "file": "elite_aa.glb",
@@ -809,7 +809,7 @@
   },
   "elite_tank_destroyer": {
     "file": "elite_tank_destroyer.glb",
-    "triangles": 11184
+    "triangles": 11140
   },
   "engineer_vehicle": {
     "file": "engineer_vehicle.glb",
@@ -817,7 +817,7 @@
   },
   "ew_jammer": {
     "file": "ew_jammer.glb",
-    "triangles": 2274
+    "triangles": 7428
   },
   "ew_tower": {
     "file": "ew_tower.glb",
@@ -953,7 +953,7 @@
   },
   "ground_cruise_missile_vehicle": {
     "file": "ground_cruise_missile_vehicle.glb",
-    "triangles": 3868
+    "triangles": 5606
   },
   "ground_drone_carrier": {
     "file": "ground_drone_carrier.glb",
@@ -1025,7 +1025,7 @@
   },
   "heavy_rocket_artillery": {
     "file": "heavy_rocket_artillery.glb",
-    "triangles": 3668
+    "triangles": 7152
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",
@@ -1109,7 +1109,7 @@
   },
   "interceptor_drone_vehicle": {
     "file": "interceptor_drone_vehicle.glb",
-    "triangles": 4068
+    "triangles": 4298
   },
   "interceptor_jet": {
     "file": "interceptor_jet.glb",
@@ -1117,7 +1117,7 @@
   },
   "iron_beam": {
     "file": "iron_beam.glb",
-    "triangles": 2888
+    "triangles": 6718
   },
   "ixion": {
     "file": "ixion.glb",
@@ -1149,7 +1149,7 @@
   },
   "kronos": {
     "file": "kronos.glb",
-    "triangles": 13194
+    "triangles": 11350
   },
   "lamp_post": {
     "file": "lamp_post.glb",
@@ -1209,7 +1209,7 @@
   },
   "long_sam": {
     "file": "long_sam.glb",
-    "triangles": 2980
+    "triangles": 7456
   },
   "main_battle_tank": {
     "file": "main_battle_tank.glb",
@@ -1305,7 +1305,7 @@
   },
   "mobile_repair_vehicle": {
     "file": "mobile_repair_vehicle.glb",
-    "triangles": 3668
+    "triangles": 5920
   },
   "moloch": {
     "file": "moloch.glb",
@@ -1601,7 +1601,7 @@
   },
   "shahed_truck": {
     "file": "shahed_truck.glb",
-    "triangles": 2616
+    "triangles": 6228
   },
   "shield_carrier": {
     "file": "shield_carrier.glb",
@@ -1689,7 +1689,7 @@
   },
   "stealth_fighter": {
     "file": "stealth_fighter.glb",
-    "triangles": 3336
+    "triangles": 2976
   },
   "stealth_naval_strike": {
     "file": "stealth_naval_strike.glb",
@@ -1741,7 +1741,7 @@
   },
   "supreme_command": {
     "file": "supreme_command.glb",
-    "triangles": 10214
+    "triangles": 14610
   },
   "swarm_carrier": {
     "file": "swarm_carrier.glb",

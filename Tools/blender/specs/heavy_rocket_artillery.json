@@ -1,0 +1,142 @@
+{
+ "id": "heavy_rocket_artillery",
+ "class": "wheeled",
+ "real": [
+  "9A52-2 Smerch launcher, twelve 300 mm tubes (unit_refs: BM-30 Smerch, 9M55)",
+  "MAZ-543M 8x8 chassis"
+ ],
+ "shape": "unit_refs: BM-30 Smerch, 12 tubes: the MAZ-543M's two cabs either side of the engine bay with raked windscreens, four axles in two pairs, the rammer frame and cable reel behind the cabs, the rear turntable with its cradle and the pack of twelve tubes in three rows of four laid forward over the cabs on the travel lock, hazard-banded muzzles, rear jacks and spade.",
+ "confidence": "xấp xỉ (9A52-2 photographs; the def's modelSize)",
+ "target_size": {
+  "L": 10.0,
+  "W": 2.44,
+  "H": 3.03,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "two cabs with raked windscreens, doors, mirrors, periscopes; engine bay and grilles",
+   "nodes": [
+    "Cab",
+    "Hull",
+    "Glass",
+    "Doors",
+    "Grilles"
+   ]
+  },
+  {
+   "feature": "frame on four axles in two pairs, lugged tyres, mud wings",
+   "nodes": [
+    "Chassis",
+    "Axles",
+    "Wheels",
+    "Tyres",
+    "Mud_wings"
+   ]
+  },
+  {
+   "feature": "turntable and cradle",
+   "nodes": [
+    "Turret",
+    "Turntable",
+    "Cradle"
+   ]
+  },
+  {
+   "feature": "twelve 300 mm tubes in three rows of four, bands, rails, hazard muzzles",
+   "nodes": [
+    "Tubes",
+    "Tubes_bore",
+    "Tube_bands",
+    "Tube_marks",
+    "Rails",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "travel lock, rear jacks and spade",
+   "nodes": [
+    "Travel_lock",
+    "Outriggers",
+    "Spade"
+   ]
+  },
+  {
+   "feature": "rammer frame, cable reel, toolboxes, jerrycans, spare wheel",
+   "nodes": [
+    "Racks",
+    "Tow_cable",
+    "Stowage",
+    "Jerrycans",
+    "Spare_wheel"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "rockets_300mm",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 muzzle at the pack's centre"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "note": "light wheeled: seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "cabs and bay (Team)",
+  "tubes and turntable (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "Soviet-pattern MLRS, team-coloured",
+ "details": {
+  "tier1": [
+   "cabs",
+   "chassis",
+   "tube pack"
+  ],
+  "tier2": [
+   "turntable",
+   "cradle",
+   "wings",
+   "travel lock",
+   "bins"
+  ],
+  "tier3": [
+   "mirrors",
+   "lamps",
+   "hooks",
+   "bands",
+   "periscopes",
+   "hazard rings"
+  ]
+ },
+ "questions": [
+  "The old file's Mount_mg / Muzzle_mg stay as plain pivots on the left cab (the def has no secondary; no gun drawn)."
+ ]
+}

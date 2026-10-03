@@ -1,0 +1,144 @@
+{
+ "id": "artillery_emplacement",
+ "class": "tower",
+ "real": [
+  "towed 155 mm howitzer, M198 class (balance.json howitzer_fixed: M284 155 mm; unit_refs 2A65 / D-20 / M284)",
+  "a round gun pit with an earth revetment and sandbags"
+ ],
+ "shape": "unit_refs: a towed 152 / 155 mm howitzer in a sandbag pit: the round earth revetment with a sandbag crest (two courses in front) and the rear gap, timber baulks under the gun, the split-trail howitzer on its float (trails splayed to their spades, raised wheels, upper carriage, cradle with recoil cylinders and equilibrators, long barrel with a double-baffle brake), shells and charges on pallets in the rear arms, aiming stakes, the aiming circle, the radio and its whip, a camouflage net, pickets and wire in front.",
+ "confidence": "xấp xỉ (M198 in a gun pit, photographs)",
+ "target_size": {
+  "L": 8.54,
+  "W": 6.81,
+  "H": 3.36,
+  "source": "the old GLB (the def's 6.5 x 6.5 m tower with the barrel's overhang)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "round earth revetment with the sandbag crest, rear gap",
+   "nodes": [
+    "Berm",
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "timber baulks under the gun",
+   "nodes": [
+    "Floor"
+   ]
+  },
+  {
+   "feature": "split-trail howitzer on its float: carriage, trails, spades, wheels",
+   "nodes": [
+    "Turret",
+    "Gun_carriage",
+    "Gun_trails",
+    "Gun_spades",
+    "Wheels",
+    "Tyres"
+   ]
+  },
+  {
+   "feature": "cradle, recoil cylinders, equilibrators, breech",
+   "nodes": [
+    "Cradle",
+    "Recoil_cylinders",
+    "Equilibrators",
+    "Breech"
+   ]
+  },
+  {
+   "feature": "long barrel with the double-baffle muzzle brake",
+   "nodes": [
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "ammunition bay: shells, fuzes, charges, boxes",
+   "nodes": [
+    "Shells",
+    "Fuzes",
+    "Charges",
+    "Ammo_boxes"
+   ]
+  },
+  {
+   "feature": "aiming stakes, aiming circle, radio and whip, net, pickets",
+   "nodes": [
+    "Aiming_stakes",
+    "Tripod",
+    "Radio",
+    "Antennas",
+    "Camo_net",
+    "Pickets"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "howitzer_fixed",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 barrel"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "carriage and trails (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "field gun pit: earth, sandbags, timber; the gun in the team colour",
+ "details": {
+  "tier1": [
+   "revetment",
+   "howitzer",
+   "barrel"
+  ],
+  "tier2": [
+   "trails",
+   "spades",
+   "wheels",
+   "shell pallets",
+   "net",
+   "radio"
+  ],
+  "tier3": [
+   "fuzes",
+   "stakes",
+   "pickets",
+   "casings",
+   "helmets",
+   "tools",
+   "handwheels"
+  ]
+ },
+ "questions": [
+  "The old file's Mount_mg / Muzzle_mg stay as plain pivots on the trail (the def has no machine gun; no gun drawn)."
+ ]
+}

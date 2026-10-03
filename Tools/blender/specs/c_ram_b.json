@@ -1,0 +1,112 @@
+{
+ "id": "c_ram_b",
+ "class": "tower",
+ "real": [
+  "Iron Dome launcher: 20 Tamir cells (c_ram.dome, balance.json tamir)",
+  "EL/M-2084 radar array",
+  "the base's FOB position"
+ ],
+ "shape": "the c_ram site with the Iron Dome launcher on the trailer instead of the Phalanx: the 20-cell box raised on its rams about its hinge, the cells and their bores, hazard stripes; the EL/M-2084's flat array on the mast.",
+ "confidence": "xấp xỉ (Iron Dome launcher photographs; mounted on the site's trailer)",
+ "target_size": {
+  "L": 5.59,
+  "W": 5.59,
+  "H": 5.41,
+  "source": "the old GLB",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the base's site",
+   "nodes": [
+    "Base",
+    "Hesco",
+    "Wall",
+    "Deck",
+    "Generator"
+   ]
+  },
+  {
+   "feature": "20-cell launcher box on its frame, hinge and rams",
+   "nodes": [
+    "Turret",
+    "Launcher_box",
+    "Launcher_face",
+    "Launcher_frame",
+    "Launcher_hinge",
+    "Launcher_rams",
+    "Launcher_tubes",
+    "Launcher_tubes_bore"
+   ]
+  },
+  {
+   "feature": "EL/M-2084 array on its mast (spins)",
+   "nodes": [
+    "Radar",
+    "Radar_back",
+    "Radar_face",
+    "Radar_arm"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "tamir",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the old file's Muzzle_gun kept beside it"
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "trailer deck (Team)",
+  "launcher box and frame (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "the base's",
+ "details": {
+  "tier1": [
+   "trailer",
+   "launcher box",
+   "mast",
+   "HESCO"
+  ],
+  "tier2": [
+   "array",
+   "generator",
+   "rams",
+   "floodlight"
+  ],
+  "tier3": [
+   "cells",
+   "bores",
+   "boards",
+   "cans",
+   "beacon"
+  ]
+ },
+ "questions": []
+}

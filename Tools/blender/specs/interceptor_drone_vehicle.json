@@ -1,0 +1,147 @@
+{
+ "id": "interceptor_drone_vehicle",
+ "class": "wheeled",
+ "real": [
+  "JLTV-class 4x4 counter-drone vehicle (Coyote / LIDS mobile kits)",
+  "interceptor-drone launch box (balance.json interceptor_drone)",
+  "Coyote tubes on a roof mount (balance.json coyote_interceptor)"
+ ],
+ "shape": "A JLTV-class counter-drone 4x4: the tall angular armoured hull with its V belly, the sloped bonnet and grille, the crew cab with four doors, armoured windows and the roof hatch, big tyres on independent arms under the arches; on the bed the turntable with the six-cell interceptor-drone launch box raised at the front; on the cab roof the small remote mount with two Coyote tubes and its sensor ball; lockers, jerrycans, tow points, whips.",
+ "confidence": "ước đoán (Coyote / LIDS mobile kits on JLTV photographs; the def's modelSize)",
+ "target_size": {
+  "L": 5.0,
+  "W": 2.0,
+  "H": 2.4,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "angular armoured hull, bonnet, grilles, bumper",
+   "nodes": [
+    "Hull",
+    "Grilles",
+    "Bumper"
+   ]
+  },
+  {
+   "feature": "crew cab: windscreens, windows, doors, mirrors, roof hatch",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Doors",
+    "Hatches"
+   ]
+  },
+  {
+   "feature": "big tyres on independent arms, arches",
+   "nodes": [
+    "Wheels",
+    "Tyres",
+    "Suspension",
+    "Wheel_arches",
+    "Axles"
+   ]
+  },
+  {
+   "feature": "bed: lockers, jerrycans",
+   "nodes": [
+    "Lockers",
+    "Jerrycans"
+   ]
+  },
+  {
+   "feature": "turntable and the six-cell launch box",
+   "nodes": [
+    "Turret",
+    "Turntable",
+    "Launcher",
+    "Launcher_doors",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "roof mount with two Coyote tubes and the sensor ball",
+   "nodes": [
+    "Mount_aam",
+    "Aam_tubes",
+    "Sensor",
+    "Muzzle_aam"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "interceptor_drone",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the launch box's face"
+  },
+  {
+   "weapon": "coyote_interceptor",
+   "slot": "aam",
+   "mount": "Mount_aam",
+   "muzzles": [
+    "Muzzle_aam"
+   ],
+   "note": "aim Free"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "note": "light wheeled: seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "hull and cab (Team)",
+  "launch box (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "US-pattern 4x4, team-coloured",
+ "details": {
+  "tier1": [
+   "hull",
+   "cab",
+   "wheels",
+   "launch box"
+  ],
+  "tier2": [
+   "roof mount",
+   "lockers",
+   "arches",
+   "cradle",
+   "hatch"
+  ],
+  "tier3": [
+   "mirrors",
+   "lamps",
+   "hooks",
+   "cell doors",
+   "whips",
+   "steps"
+  ]
+ },
+ "questions": []
+}

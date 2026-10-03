@@ -1,0 +1,169 @@
+{
+ "id": "supreme_command",
+ "class": "boss",
+ "real": [
+  "MZKT-7930 chassis (unit_refs)",
+  "armoured mobile command post",
+  "boss 12.7 mm turrets (balance.json boss_hmg)"
+ ],
+ "shape": "unit_refs: Tổng Tư Lệnh, a super-heavy four-axle command vehicle: the armoured cab-forward cab with slit windows under shutters, bull bar and searchlights, four axles of big tyres under armoured arches and skirts, the tall command module with sloped riveted sides, the team band, vision blocks, doors and ladder, the roof with railings, air-con, generator, crates, satellite dishes and the flag, two boss 12.7 mm turrets forward, the guyed telescopic antenna mast at the rear.",
+ "confidence": "ước đoán (MZKT-7930-based command posts; the old file's size, its height the mast)",
+ "target_size": {
+  "L": 14.63,
+  "W": 5.04,
+  "H": 11.17,
+  "source": "the old GLB (the boss scales it by size 1.09)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "armoured cab: slits, shutters, doors, bull bar, searchlights, grille, hatches",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Shutters",
+    "Bull_bar",
+    "Searchlights",
+    "Hatches"
+   ]
+  },
+  {
+   "feature": "four axles, big tyres, armoured arches, skirts",
+   "nodes": [
+    "Chassis",
+    "Axles",
+    "Wheels",
+    "Tyres",
+    "Wheel_arches",
+    "Skirts"
+   ]
+  },
+  {
+   "feature": "command module: sloped sides, riveted plates, band, vision blocks, doors, ladder",
+   "nodes": [
+    "Hull",
+    "Armor_plates",
+    "Team_band",
+    "Visors",
+    "Doors",
+    "Ladders"
+   ]
+  },
+  {
+   "feature": "roof: railings, air-con, generator, crates, dishes, flag",
+   "nodes": [
+    "Railings",
+    "Air_con",
+    "Generator",
+    "Crates",
+    "Dish_posts",
+    "Flag",
+    "Flag_pole"
+   ]
+  },
+  {
+   "feature": "two boss 12.7 mm turrets",
+   "nodes": [
+    "Part_mg",
+    "Mount_mg",
+    "Muzzle_mg",
+    "Gun_house",
+    "MG"
+   ]
+  },
+  {
+   "feature": "telescopic antenna mast with yards, aerials, guy wires",
+   "nodes": [
+    "Part_antenna",
+    "Masts",
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running_gear"
+ ],
+ "weapons": [
+  {
+   "weapon": "boss_hmg",
+   "slot": "main",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "mount 0: the right roof turret (Part_mg)"
+  },
+  {
+   "weapon": "boss_hmg",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ],
+   "note": "mount 1: the left roof turret (Part_mg.001)"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "cap": null,
+  "note": "boss: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "cab (Team)",
+  "command module (Team)",
+  "gun houses (Team)",
+  "flag (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "node": "Part_antenna",
+   "part": "antenna"
+  },
+  {
+   "node": "Part_mg",
+   "part": "mg_l"
+  },
+  {
+   "node": "Part_mg.001",
+   "part": "mg_r"
+  }
+ ],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "boss: heavy armoured command truck, team-coloured, riveted plates",
+ "details": {
+  "tier1": [
+   "cab",
+   "module",
+   "wheels",
+   "mast"
+  ],
+  "tier2": [
+   "turrets",
+   "dishes",
+   "generator",
+   "air-con",
+   "arches",
+   "searchlights"
+  ],
+  "tier3": [
+   "rivets",
+   "vision blocks",
+   "smoke tubes",
+   "railings",
+   "crates",
+   "aerials"
+  ]
+ },
+ "questions": []
+}
