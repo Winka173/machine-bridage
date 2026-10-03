@@ -273,6 +273,8 @@ def weapon_checks(defs: Defs, own, cls: str, names):
     if cls == 'boss':
         mw = f(own, 'mountWeapons')
         need_total = len(mw) if isinstance(mw, dict) and mw else sum(b for _, _, b, _ in slots)
+        # A variant boss (keep / drop) loses the mounts only its dropped parts carried (BossTemplates.Strip).
+        need_total -= len(dropped_mounts(defs, own))
         found_total = count(names, r'^Muzzle_')
         if found_total < need_total:
             missing.append(f'muzzles {found_total}/{need_total}')
@@ -305,6 +307,19 @@ def weapon_checks(defs: Defs, own, cls: str, names):
     flare = (count(names, r'^Mount_flare(\.\d+)?$'), 2 if flares else 0)
     aps = (count(names, r'^Mount_aps(\.\d+)?$'), 1 if f(own, 'aps') else 0)
     return need_total, found_total, missing, mounts, flare, aps
+
+
+def dropped_mounts(defs: Defs, own):
+    """Mount indices a variant boss's keep / drop list removes: those carried only by dropped parts."""
+    parts = defs.field(own, 'parts') or []
+    rules = own.get('variant') if isinstance(own.get('variant'), dict) and 'parts' not in own else {}
+    if not rules.get('keep') and not rules.get('drop'):
+        return set()
+    stays = (lambda p: p.get('id') in rules['keep']) if rules.get('keep') else (lambda p: p.get('id') not in rules['drop'])
+    kept, dropped = set(), set()
+    for p in parts:
+        (kept if stays(p) else dropped).update(p.get('mounts') or [])
+    return dropped - kept
 
 
 def boss_part_nodes(defs: Defs, own, names):
