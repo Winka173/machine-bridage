@@ -423,8 +423,109 @@ def _turtle_shell(a):
     a.part('Team_band', 'Team').box((1.2, .8, .012), loc=(0, .8, zr + .02), rot=(0, 0, 0), bevel=0)
 
 
+# ============================================================================= laser_tank
+def laser_tank(a):
+    """The laser tank-hunter: see the module docstring. Runtime: Turret, Main_cannon (the beam director head, which
+    elevates), Muzzle_main (the mirror's centre), Point_fire, Point_exhaust."""
+    TX, TW, WR = 1.1, .46, .3
+    wheels = [-2.0 + i * .8 for i in range(6)]
+    W.running_gear(a, TX, TW, WR, wheels, (-2.6, .55, .25), (2.6, .58, .27), rollers=(-1.2, 1.2), roller_z=.78,
+                   top_hidden=.7, disc_mat='Armor', seg=8, link_pitch=.34, teeth=9)
+    hull = a.part('Hull', 'Team')
+    W.side_hull(hull, [(2.95, .45), (3.0, .95), (2.85, 1.24), (-1.2, 1.25), (-2.85, .9), (-2.95, .65),
+                       (-2.65, .42)], 1.86, chamfer=.05)
+    fen = a.part('Fenders', 'Team')
+    for s in (-1, 1):
+        K.fender(fen, TX, -2.85, 2.9, .88, .52, s)
+        sk = a.part('Skirts', 'Team')
+        for i in range(4):
+            yc = -2.7 + (i + .5) * 1.35
+            sk.box((.05, 1.3, .38), loc=(s * (TX + .3), yc, .7), bevel=0)
+        a.part('Team_band', 'Team').box((.012, 1.8, .09), loc=(s * (TX + .33), -.5, .74), bevel=0)
+    # Driver's hatch and vision blocks, lamps, tow hooks on the nose.
+    hc = (.45, -1.6, 1.26)
+    k.ring(a.part('Hatches', 'Armor'), [(.22, 0), (.27, 0), (.27, .05), (.22, .05)], loc=hc, seg=10)
+    k.lathe(a.part('Hatches', 'Armor'), [(0, .08), (.18, .075), (.23, .05), (.23, .02)], loc=hc, seg=10)
+    for dx in (.27, .45, .63):
+        a.part('Sight', 'Armor').box((.14, .09, .07), loc=(dx, -1.93, 1.22), rot=(-.4, 0, 0), bevel=0)
+        a.part('Glass', 'Glass').box((.11, .01, .045), loc=(dx, -1.98, 1.21), rot=(-.4, 0, 0), bevel=0)
+    for s in (-1, 1):
+        K.lamp(a, (s * .95, -2.88, .98), (0, -1, .1), r=.07, guard=False)
+        K.tow_hook(a.part('Kit_tow', 'Steel'), (s * .6, -2.97, .62), facing=(0, -1, 0), size=.1)
+    # The remote weapon station (7.62 mm, self-defence) on the hull front left: the post, the cradle, the sensor box.
+    rws = a.part('Rws', 'Armor')
+    rws.cyl(.09, .28, loc=(-.55, -1.3, 1.39), seg=8, bevel=0)
+    K.chamfer_box(rws, (.3, .42, .2), loc=(-.55, -1.32, 1.63), c=.03)
+    K.chamfer_box(rws, (.14, .16, .16), loc=(-.75, -1.42, 1.66), c=.02)
+    a.part('Glass', 'Glass').box((.1, .01, .08), loc=(-.75, -1.505, 1.67), bevel=0)
+    k.lathe(a.part('Rws_gun', 'Steel'), [(.025, 0), (.025, .7), (.035, .72), (0, .74)], loc=(-.5, -1.5, 1.64),
+            rot=K.FORWARD, seg=6)
+    K.chamfer_box(a.part('MG_ammo', 'Armor'), (.12, .22, .16), loc=(-.35, -1.25, 1.62), c=.02)
+    # Engine deck: grille, the power pack's two exhausts, the generator's louvres on the rear plate.
+    K.grille(a, (0, 2.2, 1.245), 1.2, .9, facing=(0, 0, 1), slats=5, frame_mat='Team')
+    K.grille(a, (0, 2.97, .92), 1.1, .24, facing=(0, 1, 0), slats=3, frame_mat='Armor')
+    for s in (-1, 1):
+        K.exhaust(a, (s * .8, 2.75, 1.25), r=.07, length=.42, direction=(0, .3, 1))
+        a.part('Tail_lamps', 'LavaGlow').box((.1, .02, .06), loc=(s * .95, 2.97, 1.1), bevel=0)
+    K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.42, .8, .28), (TX, 1.6, .88))
+    K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.42, .6, .28), (-TX, 1.75, .88))
+    a.pivot('Point_fire', (0, 2.1, 1.4))
+    a.pivot('Point_exhaust', (1.0, 3.0, 1.0))
+    _laser_turret(a)
+    k.clean(a)
+
+
+def _laser_turret(a):
+    t = a.pivot('Turret', (0, -.3, 1.32))
+    body = a.part('Turret_body', 'Team', t)
+    W.poly_turret(body, [
+        (-.05, [(-.8, -.95), (.8, -.95), (1.05, -.5), (1.05, 1.2), (.85, 1.45), (-.85, 1.45), (-1.05, 1.2),
+                (-1.05, -.5)]),
+        (.42, [(-.65, -.85), (.65, -.85), (.92, -.42), (.92, 1.1), (.75, 1.35), (-.75, 1.35), (-.92, 1.1),
+               (-.92, -.42)])], chamfer=.04)
+    k.ring(a.part('Turret_steel', 'Steel', t), [(.82, -.08), (.95, -.08), (.95, .02), (.82, .02)], seg=16)
+    # Radiator banks on both sides: angled panels with glowing cores and their fan housings.
+    for s in (-1, 1):
+        rad = a.part('Radiators', 'Armor', t)
+        K.chamfer_box(rad, (.14, 1.3, .55), loc=(s * 1.08, .45, .3), rot=(0, s * .25, 0), c=.02)
+        for i in range(6):
+            a.part('Radiator_glow', 'Energy', t).box((.02, .16, .4), loc=(s * 1.16, -.05 + i * .2, .32),
+                                                     rot=(0, s * .25, 0), bevel=0)
+        k.lathe(a.part('Radiator_fans', 'Steel', t), [(.2, 0), (.2, .06), (.16, .08), (0, .09)],
+                loc=(s * .55, .95, .42), seg=12)
+    # The power cabinet at the rear, the IRST ball and a whip antenna.
+    K.chamfer_box(a.part('Power_cabinet', 'Armor', t), (1.3, .5, .35), loc=(0, 1.15, .58), c=.04)
+    for i in range(4):
+        a.part('Kit_handles', 'Steel', t).box((.18, .02, .02), loc=(-.45 + i * .3, 1.41, .62), bevel=0)
+    k.lathe(a.part('Sensor', 'Armor', t), [(.0, 0), (.12, 0), (.14, .08), (.12, .18), (0, .2)], loc=(.62, -.55, .42),
+            seg=10)
+    a.part('Glass', 'Glass', t).box((.12, .02, .07), loc=(.62, -.69, .52), bevel=0)
+    K.whip_antenna(a.part('Antennas', 'Steel', t), (-.7, 1.15, .42), h=.55, lean=.3)
+    for s in (-1, 1):
+        K.smoke_dischargers(a, .85, -.6, .25, s, count=3, parent=t)
+    a.part('Team_band', 'Team', t).box((.9, .5, .012), loc=(0, .2, .425), bevel=0)
+    # The fork: two arms up from a turntable, the trunnions, the beam director head (Main_cannon) with its big
+    # round mirror, the hood over it and the lens in the middle.
+    fork = a.part('Director_trunnions', 'Armor', t)
+    k.lathe(fork, [(.5, 0), (.5, .08), (.42, .12), (0, .12)], loc=(0, -.35, .42), seg=14)
+    for s in (-1, 1):
+        fork.limb((s * .74, -.35, .48), (s * .74, -.85, .88), .14, .22, bevel=0)
+        a.part('Cradle', 'Steel', t).cyl(.1, .12, loc=(s * .68, -.85, .88), rot=(0, R90, 0), seg=10, bevel=0)
+    head = a.part('Main_cannon', 'Armor', t)
+    k.lathe(head, [(.0, -.5), (.45, -.46), (.6, -.27), (.63, .05), (.6, .12)], loc=(0, -.85, .88), rot=K.FORWARD,
+            seg=16)
+    k.lathe(a.part('Main_cannon_hood', 'Team', t), [(.64, -.02), (.67, .02), (.67, .15), (.61, .17)],
+            loc=(0, -.85, .88), rot=K.FORWARD, seg=16)
+    k.lathe(a.part('Main_cannon_lens', 'Energy', t), [(0, .14), (.36, .13), (.52, .11)], loc=(0, -.85, .88),
+            rot=K.FORWARD, seg=16, caps=(False, True))
+    k.lathe(a.part('Main_cannon_head', 'Steel', t), [(.08, .1), (.08, .2), (.05, .26), (0, .27)],
+            loc=(0, -.85, .88), rot=K.FORWARD, seg=10)
+    a.pivot('Muzzle_main', (0, -1.41, .88), t)
+
+
 BUILDERS = {
     'twin_tank': (twin_tank, dict(ao_distance=.5, grime_height=.6)),
     'titan_tank': (titan_tank, dict(ao_distance=.6, grime_height=.6)),
     'turtle_tank': (turtle_tank, dict(ao_distance=.5, grime_height=.6)),
+    'laser_tank': (laser_tank, dict(ao_distance=.5, grime_height=.6)),
 }
