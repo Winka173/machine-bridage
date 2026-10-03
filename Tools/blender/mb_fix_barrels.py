@@ -21,7 +21,7 @@ import mb_p34_barrels as P
 TWIN = {
     # Prompt 35 wave 8 (lane A): behemoth's rebuilt turrets model both barrels and their per-barrel muzzles.
     'typhon': ['Muzzle_gun'],
-    'hydra_sub': ['Muzzle_gun'],
+    # hydra_sub: play-test 14 wave M3's builder (mb_pt14_m3) models its twins and their per-barrel muzzles.
     'monster': ['Muzzle_gun', 'Muzzle_gun__001'],
 }
 # model -> muzzles that already have two barrels (only the per-barrel muzzles)
@@ -35,7 +35,6 @@ EXTRA = {
 }
 # model -> {muzzle: (barrels, gap m)} with no barrel geometry
 EMPTY = {
-    'hydra_sub': {'Muzzle_missile': (2, 0.45)},
 }
 
 

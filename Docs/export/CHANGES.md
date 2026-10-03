@@ -1163,3 +1163,16 @@ sách sheet để xác nhận đủ 4 sheet bom, số dòng không đổi.
 - Cần chạy lại từ Unity: không cột nào trong 2-5 cần game.json mới (mọi NEED_CODE_CHECK đã về 0 với snapshot hiện
   có); việc nối `WeaponDef.ProximityFuze` vào luật nổ cận đích (nếu chủ dự án muốn dùng) sẽ cần kiểm bằng Unity sau
   khi sửa luật đó — chưa sửa ở đây.
+
+## Play-test 14 model wave M3 (lane models): sea boss part places, Scylla's own model
+
+Nhánh `feature/pt14-m3`. Lý do: `Docs/DECISIONS.md` "Play-test 14 model wave M3 (lane models)". Chỉ dữ liệu vẽ /
+vị trí trúng (`at`), node và model; sát thương, máu, vũ khí không đổi.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-M3-1 | `leviathan` parts `at` | sec_fore [0, 7.2, 10.5]; ciws_aft [-2.1, -16.5, 6.9] | sec_fore [0, 6.0, 10.5]; ciws_aft [-2.6, -14.8, 7.0] | giếng tháp pháo phụ trước lùi 1.2 m để không chạm tháp B; pháo 127 mm sau đặt cạnh giếng sau |
+| PT14-M3-2 | `scylla` | vẽ bằng model leviathan (x 0.56) | `"model": "scylla"`, `"modelSize": [49.3, 9.3, 14.2]`; tune `at` turret_fore [0, 30.4, 8.88], vls [0, 12.4, 7.48], ciws_fore [0, 14.6, 15.78] (đơn vị trước khi nhân size 0.5 của variant) | model riêng (tuần dương hạm), cùng kích thước như cũ |
+| PT14-M3-3 | `kraken` tune `at` (mọi part) | theo model cũ (ô tên lửa) | turret_fore [0, 33.68, 7.93], turret_super [0, 25.09, 8.81], turret_aft [0, -42.46, 6.35], sec_fore [6.75, 15.61, 7.27], sec_aft [-6.32, -33.51, 9.08], vls [0, 18.6, 6.33], aa_port [-7.28, -8.77, 8.48], aa_starboard [6.84, -26.32, 8.48], ciws_fore [4.74, 21.4, 6.88], ciws_aft [-5.09, -45.79, 5.34], radar [6.4, 0, 16.63], flight_deck [-2.98, -26.32, 9.11], well_deck [0, -48.03, 3.92], machinery [6.4, -8.42, 14.89] (chia 1.14) | vẽ lại: tháp pháo thật ở mũi / đuôi, sàn bay chéo, đảo chỉ huy mạn phải |
+| PT14-M3-4 | `nyx` tune `at` | (không có: theo leviathan x 0.616) | turret_fore [0, 24.0, 6.96], vls [0, 15.64, 5.71], ciws_fore [0, 9.73, 12.56], ciws_aft [0, -17.82, 12.56] (chia 0.55) | vị trí của model mới (VLS ở mũi, hai pháo 127 mm trên nóc thượng tầng) |
+| PT14-M3-5 | `hydra` tune | (không có) | doors_l/r `at` [∓0.95, -7.51, 4.45], deck_gun `node` "Mount_gun.002" + `at` [0, 16.61, 6.23], rudder `at` [0, -30.45, 0.59] (chia 0.5057) | ba bệ súng của def nay có ba khẩu: Mount_gun / .001 là hai pháo đôi 57 mm, khẩu 100 mm (part deck_gun) là Mount_gun.002 |
