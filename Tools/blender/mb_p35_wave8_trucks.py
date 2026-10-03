@@ -660,10 +660,152 @@ def _scout_mast(a):
     a.part('Antenna', 'Steel').cyl(.012, .16, loc=(x + .15, y, z + .38), seg=4, bevel=0)
 
 
+# ============================================================================= heavy_aa (Pantsir-S1 on the KamAZ 8x8)
+def heavy_aa(a):
+    """See the module docstring. Runtime: Turret (the combat module's yaw pivot), Radar (the search radar, spins,
+    on the turret), Muzzle_main (the left gun), Muzzle_missile .. .003 (the tube columns), Point_fire,
+    Point_exhaust; launch pairs `Missile_pack`; Part_wheel / Part_wheelb from mb_p34_parts."""
+    R, WD, HX = .55, .4, .93
+    _wheels(a, (-3.95, -2.65, 1.45, 2.7), R, WD, HX, nuts=0, springs=False, diff_rear=False)
+    _rails(a, -4.6, 4.7, .95, .5, cross=(-4.2, -3.3, -1.5, .2, 2.1, 4.4))
+    for y0, y1 in ((-4.55, -2.05), (.85, 3.3)):
+        _fender(a, y0, y1, HX, 1.22, w=.46)
+    for s in (-1, 1):
+        for y in (-3.3, 2.07):
+            a.part('Suspension', 'Steel').box((.1, 1.3, .14), loc=(s * (HX - .32), y, .78), bevel=0)
+        a.part('Mud_flaps', 'Rubber').box((.42, .02, .4), loc=(s * HX, 3.33, .92), bevel=0)
+        a.part('Tail_lamps', 'LavaGlow').box((.12, .02, .07), loc=(s * .95, 4.85, 1.05), bevel=0)
+        K.outrigger(a.part('Outriggers', 'Armor'), a.part('Outrigger_pads', 'Steel'), (s * .75, 4.45, 1.0), s,
+                    reach=.25, drop=.62, w=.16)
+    _pantsir_cab(a)
+    _pantsir_body(a)
+    _pantsir_turret(a)
+    a.pivot('Point_fire', (0, -2.1, 2.2))
+    a.pivot('Point_exhaust', (.85, -3.1, 2.25))
+    k.clean(a)
+
+
+def _pantsir_cab(a):
+    """The KamAZ cab-over cab: the flat-fronted body with its slight rake, the split windscreen, doors with windows,
+    the grille and bumper, mirrors, the roof beacon and the exhaust stack behind it."""
+    y0, y1 = -4.92, -3.15
+    cab = a.part('Body', 'Team')
+    k.sharp_loft(cab, [[(-1.2, y0 + .05, 1.0), (1.2, y0 + .05, 1.0), (1.2, y1, 1.0), (-1.2, y1, 1.0)],
+                       [(-1.2, y0, 1.55), (1.2, y0, 1.55), (1.2, y1, 1.55), (-1.2, y1, 1.55)],
+                       [(-1.12, y0 + .25, 2.35), (1.12, y0 + .25, 2.35), (1.12, y1, 2.38), (-1.12, y1, 2.38)]],
+                 chamfer=.05)
+    for x0, x1 in ((1.0, .04), (-.04, -1.0)):
+        K.windscreen(a, [(x0, y0 + .04, 1.65), (x1, y0 + .04, 1.65), (x1, y0 + .22, 2.2), (x0, y0 + .22, 2.2)],
+                     frame_mat='Armor', wipers=1, bar=.05)
+    for s in (-1, 1):
+        a.part('Glass', 'Glass').box((.02, .6, .45), loc=(s * 1.17, -4.1, 1.95), bevel=0)
+        a.part('Door_lines', 'Armor').box((.02, .03, 1.0), loc=(s * 1.205, -3.45, 1.6), bevel=0)
+        K.handle(a.part('Kit_handles', 'Steel'), (s * 1.215, -3.65, 1.45), (s * 1.215, -3.5, 1.45), (s, 0, 0), h=.04)
+        K.mirror(a.part('Mirrors', 'Steel'), (s * 1.18, -4.75, 2.0), s, arm=.06)
+        K.lamp(a, (s * .9, y0 - .005, 1.2), (0, -1, 0), r=.08, guard=False)
+        a.part('Light_rims', 'Armor').box((.22, .03, .16), loc=(s * .9, y0 + .005, 1.2), bevel=0)
+        a.part('Steps', 'Steel').box((.3, .34, .03), loc=(s * 1.1, -3.4, .72), bevel=0)
+    K.grille(a, (0, y0 - .005, 1.3), 1.1, .3, facing=(0, -1, 0), slats=4, frame_mat='Armor')
+    a.part('Bumper', 'Armor').box((2.4, .18, .26), loc=(0, y0 - .02, .95), bevel=0)
+    for x in (-.7, .7):
+        K.tow_hook(a.part('Kit_tow', 'Steel'), (x, y0 - .1, .92), facing=(0, -1, 0), size=.09)
+    k.lathe(a.part('Exhaust', 'Steel'), [(.08, 0), (.08, .9), (.1, .92), (.1, 1.0)], loc=(.85, -3.1, 1.25), seg=8)
+    K.soot(a, (.85, -3.1, 2.25), radius=.3, k=.45)
+    a.part('Beacon', 'Alloy').cyl(.06, .08, loc=(-.7, -3.5, 2.42), seg=8, bevel=0)
+
+
+def _pantsir_body(a):
+    """The equipment body behind the cab: the power unit with its louvres and fuel tanks, the operator module under
+    the turret with its door, ladder and air conditioners, the cable tray, the tool boxes."""
+    pw = a.part('Body', 'Team')
+    k.sharp_loft(pw, [[(-1.15, -3.0, 1.2), (1.15, -3.0, 1.2), (1.15, -1.3, 1.2), (-1.15, -1.3, 1.2)],
+                      [(-1.15, -3.0, 1.95), (1.15, -3.0, 1.95), (1.15, -1.3, 1.95), (-1.15, -1.3, 1.95)],
+                      [(-.85, -2.8, 2.3), (.85, -2.8, 2.3), (.85, -1.45, 2.3), (-.85, -1.45, 2.3)]], chamfer=.04)
+    K.grille(a, (1.155, -2.15, 1.6), 1.2, .5, facing=(1, 0, 0), slats=6, frame_mat='Armor')
+    K.grille(a, (-1.155, -2.15, 1.6), 1.2, .5, facing=(-1, 0, 0), slats=6, frame_mat='Armor')
+    for s in (-1, 1):
+        a.part('Tanks', 'Armor').cyl(.26, 1.1, loc=(s * 1.0, -.6, .82), rot=K.FORWARD, seg=10, bevel=.02)
+        a.part('Kit_straps', 'Steel').box((.56, .04, .56), loc=(s * 1.0, -.8, .82), bevel=0)
+        a.part('Kit_straps', 'Steel').box((.56, .04, .56), loc=(s * 1.0, -.4, .82), bevel=0)
+    a.part('Chassis', 'Armor').box((2.4, 5.4, .1), loc=(0, 1.7, 1.15), bevel=0)
+    op = a.part('Body', 'Team')
+    k.sharp_loft(op, [[(-1.2, -.1, 1.2), (1.2, -.1, 1.2), (1.2, 3.6, 1.2), (-1.2, 3.6, 1.2)],
+                      [(-1.2, -.1, 1.25), (1.2, -.1, 1.25), (1.2, 3.6, 1.25), (-1.2, 3.6, 1.25)],
+                      [(-1.1, .05, 1.32), (1.1, .05, 1.32), (1.1, 3.5, 1.32), (-1.1, 3.5, 1.32)]], chamfer=.03)
+    a.part('Door_lines', 'Armor').box((.03, .62, .5), loc=(1.19, 3.0, .85), bevel=0)
+    K.ladder(a.part('Ladders', 'Steel'), (1.0, 3.75, .3), (1.0, 3.62, 1.2), width=.4, step=.25)
+    for y in (.4, 3.2):
+        K.chamfer_box(a.part('Ac_units', 'Armor'), (.5, .4, .2), loc=(-.75, y, 1.42), c=.02)
+    a.part('Cable_tray', 'Undercarriage').box((.15, 3.0, .08), loc=(-1.05, 1.7, 1.36), bevel=0)
+    K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.36, .9, .36), (1.0, 4.1, 1.38), bands=1)
+    a.part('Team_band', 'Team').box((1.71, .3, .012), loc=(0, -2.1, 2.305), bevel=0)
+
+
+def _pantsir_turret(a):
+    """The combat module on the Turret pivot: the faceted turret body, the search radar on its post at the rear
+    (Radar spins it: the flat array, its frame), the tracking radar head on the front (dish, mast, the search panel
+    and array), the missile packs either side (Missile_pack: six tubes each in 2 x 3, the pack frame), the twin
+    30 mm guns under them (Main_cannon left pair, Main_cannon_2 right pair, their brakes), the EO sight."""
+    t = a.pivot('Turret', (0, 1.6, 1.3))
+    k.lathe(a.part('Turret_steel', 'Steel', t), [(.85, 0), (.9, .02), (.9, .1), (.84, .12)], seg=16)
+    body = a.part('Turret_body', 'Team', t)
+    k.sharp_loft(body, [[(-.7, -1.5, .12), (.7, -1.5, .12), (.75, 1.0, .12), (-.75, 1.0, .12)],
+                        [(-.75, -1.7, .45), (.75, -1.7, .45), (.78, 1.05, .45), (-.78, 1.05, .45)],
+                        [(-.55, -1.35, .78), (.55, -1.35, .78), (.6, .95, .8), (-.6, .95, .8)]], chamfer=.04)
+    arm = a.part('Turret_armor', 'Armor', t)
+    for s in (-1, 1):
+        K.chamfer_box(arm, (.14, 1.6, .55), loc=(s * .82, -.5, .5), c=.02)      # the trunnion cheeks
+        arm.cyl(.13, .12, loc=(s * .9, -.45, .6), rot=(0, R90, 0), seg=10, bevel=0)
+    # Missile packs: each side two columns of three tubes (x .6 and 1.1), the frame round them.
+    y0, y1, zc = -1.43, 1.2, .92
+    for s in (-1, 1):
+        pack = a.part('Missile_pack', 'Team', t)
+        K.chamfer_box(pack, (.98, y1 - y0, .72), loc=(s * .85, (y0 + y1) / 2, zc), c=.03)
+        fr = a.part('Pack_frame', 'Armor', t)
+        for y in (y0 + .05, y1 - .05):
+            fr.box((1.04, .08, .78), loc=(s * .85, y, zc), bevel=0)
+        tubes = a.part('Pack_tubes', 'Undercarriage', t)
+        caps = a.part('Pack_box', 'Steel', t)
+        for x in (.6, 1.1):
+            for z in (zc - .22, zc, zc + .22):
+                tubes.cyl(.105, .05, loc=(s * x, y0 - .02, z), rot=K.FORWARD, seg=8, bevel=0)
+                caps.cyl(.075, .02, loc=(s * x, y0 - .05, z), rot=K.FORWARD, seg=6, bevel=0)
+    for i, x in enumerate((-1.1, -.6, .6, 1.1)):
+        a.pivot('Muzzle_missile' + ('' if i == 0 else f'__{i:03d}'), (x, -1.43, .92), t)
+    # The twin 30 mm guns under the packs: the receiver housing, two barrels with brakes each side.
+    for s, cn, bn in ((-1, 'Main_cannon', 'Muzzle_brake'), (1, 'Main_cannon_2', 'Muzzle_brake_2')):
+        K.chamfer_box(a.part('Turret_steel', 'Steel', t), (.3, .9, .26), loc=(s * .86, -.9, .36), c=.03)
+        for dx in (-.07, .07):
+            k.lathe(a.part(cn, 'Steel', t), [(.04, 0), (.04, .5), (.03, .52), (.03, 1.6), (0, 1.61)],
+                    loc=(s * .86 + dx, -1.3, .36), rot=K.FORWARD, seg=8)
+            k.lathe(a.part(bn, 'Undercarriage', t), [(.045, 1.48), (.045, 1.66), (0, 1.67)],
+                    loc=(s * .86 + dx, -1.3, .36), rot=K.FORWARD, seg=8)
+    a.pivot('Muzzle_main', (-.86, -2.96, .36), t)
+    # Tracking radar head at the front of the roof: its mast, the dish, the search panel and array beside it.
+    a.part('Radar_mast', 'Steel', t).cyl(.08, .25, loc=(0, -1.15, .9), seg=8, bevel=0)
+    K.chamfer_box(a.part('Search_mount', 'Armor', t), (.5, .3, .3), loc=(0, -1.15, 1.1), c=.03)
+    K.dish(a.part('Radar_dish', 'Armor', t), a.part('Dish_feed', 'Steel', t), (-.15, -1.33, 1.12), r=.2,
+           normal=(0, -1, 0), seg=10)
+    k.block(a.part('Search_panel', 'Team', t), (.26, .06, .26), loc=(.15, -1.33, .98), chamfer=.01)
+    a.part('Search_array', 'Undercarriage', t).box((.2, .02, .2), loc=(.15, -1.365, 1.11), bevel=0)
+    K.chamfer_box(a.part('Sight', 'Armor', t), (.18, .26, .2), loc=(-.4, -1.3, .9), c=.02)
+    a.part('Glass', 'Glass', t).box((.12, .01, .1), loc=(-.4, -1.435, .92), bevel=0)
+    # The search radar on its post at the rear (Radar spins it).
+    a.part('Search_post', 'Steel', t).cyl(.12, .3, loc=(0, -.3, .9), seg=8, bevel=0)
+    r = a.pivot('Radar', (0, -.3, .8), t)
+    K.chamfer_box(a.part('Search_drive', 'Armor', r), (.3, .3, .2), loc=(0, 0, .35), c=.03)
+    k.block(a.part('Radar_search', 'Team', r), (1.1, .1, .58), loc=(0, .12, .4), rot=(-.25, 0, 0), chamfer=.02)
+    a.part('Search_array', 'MetalSheet', r).box((1.0, .02, .48), loc=(0, .05, .68), rot=(-.25, 0, 0), bevel=0)
+    for s in (-1, 1):
+        a.part('Search_braces', 'Steel', r).box((.04, .2, .5), loc=(s * .5, .2, .45), bevel=0)
+    a.part('Team_band', 'Team', t).box((1.0, .5, .012), loc=(0, -.2, .805), bevel=0)
+
+
 BUILDERS = {
     'mlrs': (mlrs, dict(ao_distance=.5, grime_height=.5)),
     'grad_truck': (grad_truck, dict(ao_distance=.6, grime_height=.55, ao_strength=.65)),
     'command_vehicle': (command_vehicle, dict(ao_distance=.5, grime_height=.5, ao_strength=.65)),
     'railgun_truck': (railgun_truck, dict(ao_distance=.6, grime_height=.55)),
     'radar_scout': (radar_scout, dict(ao_distance=.4, ao_strength=.65, grime_height=.4)),
+    'heavy_aa': (heavy_aa, dict(ao_distance=.5, grime_height=.5)),
 }
