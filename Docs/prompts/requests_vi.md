@@ -283,3 +283,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 "18. chỉ tăng size; 19. theo đề xuất, boss mặt đất thì có xe hộ tống, boss biển thì thuyền hộ tống, boss trên không thì máy bay".
 - 03/10 "giữ nguyên các model đã xóa không phải chỉ ifv" (GLB chuyển sang Archive/models, builder giữ).
 - 03/10 "hủy tăng size boss 20 30%".
+- 03/10 "cái gì cloud không làm được thì đem về local làm, không cần phải ráng".

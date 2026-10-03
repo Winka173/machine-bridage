@@ -24,6 +24,10 @@ the play-test 14 sections of `Docs/CLOUD_HANDOFF.md` (those stay for history onl
 | Write tests (EditMode C#) | Run them |
 
 Consequences:
+- **Do not force it (owner, 03/10): "cái gì cloud không làm được thì đem về local làm, không cần phải ráng".** If an
+  item needs Unity to find or check (visual bugs you cannot locate by reading code, look/feel, sound, sea shader,
+  preview staging), Blender or real GLBs, skip it or do only the part you can do safely, and list it under
+  "For local" in your Cloud state note with what you found (files, likely cause). Do not guess blind fixes.
 - Game/UI C# is checked **by hand** only: C# 9 (no `required`, no file-scoped namespaces, no raw strings, no
   collection expressions), check every type/member you call exists (grep it), keep Unity APIs you already see in the
   file. Put new logic in the Sim where it belongs (deterministic, engine-free) so dotnet checks it.
