@@ -35,6 +35,67 @@ def _chapters(ctx):
     return of, order, missions
 
 
+# Boss_tam_toi_thieu (balance pack 2, section 5.1): column, unit, meaning
+MIN_RANGE_COLS = (
+    ("boss_id", "", "boss"), ("chi_so_be", "", "0 = vũ khí chính, k = secondary[k-1]"), ("vu_khi", "", "vũ khí trên bệ"),
+    ("slot", "", "loại bệ"), ("aim", "", "cách nhắm của bệ"),
+    ("lop_vu_khi", "", "lớp để lấy góc nòng mặc định: phao_boss 8 deg, phao_ham 5, sung_phu 15, phao_nho_ciws 15, sung_may 20, "
+     "phun_lua 20, be_rocket 0 (không hạ), ban_cau (bắn cầu), ten_lua, drone, bom, can_chien, phong_khong (chỉ bắn máy bay)"),
+    ("nhom", "", "chinh (nòng chính, định vùng chết) / phong_thu_gan / dan_dan (tên lửa, drone, bom: lái hoặc rơi xuống chân) / "
+     "phong_khong"),
+    ("nut_glb", "", "nút Muzzle_* / Mount_* của bệ trong GLB (VehicleView: bệ thứ k của một slot = nút thứ k theo tên)"),
+    ("cach_tim_nut", "", "muzzle / mount / thay_the (Muzzle_main hoặc Turret) / hop_bao (không có nút: 0,75 x chiều cao)"),
+    ("model", "", "model GLB (Resources/Models)"), ("ti_le_ve", "", "tỉ lệ vẽ (VehicleView.DrawScaleOf: modelSize hoặc scale)"),
+    ("do_cao_nong_m", "m", "độ cao đầu nòng so với mặt đất (máy bay: cộng độ cao bay)"),
+    ("do_cao_boss_m", "m", "độ cao boss (đỉnh model, máy bay cộng độ cao bay)"),
+    ("khoang_cach_ngang_tu_tam_boss_den_nong_m", "m", "khoảng cách ngang từ tâm boss tới đầu nòng (tư thế nghỉ)"),
+    ("nut_be_xoay", "", "trục xoay của bệ (Mount_* / Turret tổ tiên gần nhất của nòng; trống: gắn cố định)"),
+    ("khoang_cach_ngang_tu_tam_boss_den_be_m", "m", "khoảng cách ngang từ tâm boss tới trục xoay"),
+    ("khoang_cach_ngang_theo_huong_ngam_m", "m", "phần khoảng cách nằm theo hướng ngắm: trục xoay -> đầu nòng (bệ Hull: phần "
+     "về phía trước); phần lệch của trục xoay đổi dấu theo hướng nên lấy trung bình 0"),
+    ("ban_kinh_than_boss_m", "m", "bán kính thân boss (radius trong mô phỏng)"), ("do_cao_bay_m", "m", "độ cao bay (máy bay)"),
+    ("goc_ha_nong_toi_da_deg", "deg", "góc hạ nòng tối đa"), ("goc_nang_toi_da_deg", "deg", "góc nâng nòng tối đa"),
+    ("goc_nang_toi_thieu_deg", "deg", "góc nâng tối thiểu (bắn cầu)"), ("goc_quay_ngang_deg", "deg", "góc quay ngang (360: quay tròn)"),
+    ("nguon_goc_nong", "", "nguồn góc nòng: uoc_dinh (mặc định theo lớp, mục 5.2) / ma_view (VehicleView.Elevate -65 deg) / khong_ap"),
+    ("tam_toi_thieu_m", "m", "tầm tối thiểu hiện có (minRange, đo tới tâm mục tiêu)"),
+    ("tam_toi_thieu_mep_m", "m", "tầm tối thiểu hiện có đo tới mép mục tiêu, chỉ với mục tiêu mặt đất (groundMinReach; "
+     "minReach nếu lớn hơn)"), ("tam_toi_da_m", "m", "tầm tối đa"),
+    ("toc_do_dau_nong_m_s", "m/s", "tốc độ đạn trong dữ liệu (projectileSpeed: nhịp bay của game, không phải sơ tốc đạn đạo)"),
+    ("toc_do_dan_dao_game_m_s", "m/s", "tốc độ đạn đạo dùng trong công thức: sqrt(g x tầm tối đa)"),
+    ("khoang_cach_vu_trang_m", "m", "khoảng cách vũ trang tên lửa (ước định)"),
+    ("do_cao_tam_muc_tieu_m", "m", "độ cao tâm mục tiêu tham chiếu (xe tăng chủ lực, nửa chiều cao model ở Xe_tham_chieu)"),
+    ("cong_thuc", "", "ban_thang / roi_tu_do_be_co_dinh / v2_sin2theta_g / max(vu_trang, khoa) / ban_thang_may_bay / khong_ap"),
+    ("tam_toi_thieu_hinh_hoc_m", "m", "tầm tối thiểu theo hình học (mục tiêu xe tăng)"),
+    ("tam_toi_thieu_hinh_hoc_xe_nhe_m", "m", "tầm tối thiểu theo hình học (mục tiêu xe nhẹ)"),
+    ("tam_toi_thieu_hinh_hoc_hang_nang_m", "m", "tầm tối thiểu theo hình học (mục tiêu hạng nặng)"),
+    ("tam_toi_thieu_de_xuat_m", "m", "đề xuất = max(hiện có, hình học), làm tròn nửa lên 1 m; cắt còn 80 % tầm nếu chạm tầm"),
+    ("truong_ghi", "", "trường ghi vào vũ khí: groundMinReach (bắn thẳng: đo tới mép, chỉ mục tiêu mặt đất, không đổi vai pháo "
+     "binh) / minRange (vũ khí đã bắn cầu)"),
+    ("cat_theo_tam", "", "true: hình học vượt tầm, đã cắt còn 80 % tầm"),
+    ("tam_toi_thieu_ghi_m", "m", "giá trị game dùng (một vũ khí dùng ở nhiều bệ lấy đề xuất nhỏ nhất; vũ khí dùng chung với "
+     "đơn vị thường giữ nguyên)"),
+    ("vung_chet_ban_kinh_m", "m", "bán kính vùng chết của boss: nhỏ nhất của tầm tối thiểu các nòng chính"),
+    ("vu_khi_che_vung_chet_id", "", "vũ khí bắn được vào vùng chết"),
+    ("phan_tram_vung_chet_duoc_phu", "%", "phần dải chết (từ mép thân tới bán kính vùng chết) có vũ khí phủ"),
+    ("co_che_vung_chet", "", "true: phủ ít nhất 90 % dải chết (hoặc dải chết dưới 2 m)"),
+)
+
+
+def _min_range_sheet(book, d, built, wres):
+    """Boss_tam_toi_thieu: section 5 of Docs/prompts/export_pack2_vi.txt, computed by Tools/export/boss_min_range.py."""
+    import boss_min_range as BMR
+    res = BMR.compute(d, built, wres)
+    sh = book.sheet("Boss_tam_toi_thieu", "Boss: tầm tối thiểu", "Mỗi bệ của mỗi boss một dòng: độ cao nòng từ GLB, góc nòng, "
+                    "tầm tối thiểu theo hình học, đề xuất, vùng chết và vũ khí phủ (Tools/export/boss_min_range.py)")
+    fks = {"boss_id": BOSS_FK, "vu_khi": ["01_vu_khi_dan/Vu_khi"]}
+    for c, unit, m in MIN_RANGE_COLS:
+        sh.col(c, unit=unit, meaning=m, fk=fks.get(c))
+    for r in res["rows"]:
+        row = sh.row(f"{r['boss_id']}/{r['chi_so_be']}", f"{B.BALANCE}: vehicles[id={r['boss_id']}] x Resources/Models/{r['model']}.glb")
+        for c, _unit, _m in MIN_RANGE_COLS:
+            row.set(c, r.get(c, ""))
+
+
 def build(ctx):
     book = ctx.book(FILE_ID, TITLE, DESC)
     d = B.bal(ctx)
@@ -162,6 +223,8 @@ def build(ctx):
                 else:
                     old = base_mounts[k] if k < len(base_mounts) else None
                     B.set_changes(r, ["vu_khi"], {"vu_khi": wid or ""}, {"vu_khi": old or ""} if k < len(base_mounts) else None, True)
+
+    _min_range_sheet(book, d, built, wres)
 
     # ------------------------------------------------------------------ library parts, frames, ranks
     lib = book.sheet("Boss_bo_phan_thu_vien", "Thư viện bộ phận boss", "bossParts: mẫu bộ phận (máu theo phần, giáp, vũ khí, xác)")
