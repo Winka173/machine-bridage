@@ -59,6 +59,10 @@
     "file": "airborne_vehicle_chute.glb",
     "triangles": 13056
   },
+  "aircraft_hangar": {
+    "file": "aircraft_hangar.glb",
+    "triangles": 4522
+  },
   "ammo_carrier": {
     "file": "ammo_carrier.glb",
     "triangles": 7492
@@ -753,15 +757,15 @@
   },
   "drone_hangar": {
     "file": "drone_hangar.glb",
-    "triangles": 4912
+    "triangles": 4880
   },
   "drone_hangar_a": {
     "file": "drone_hangar_a.glb",
-    "triangles": 5072
+    "triangles": 4894
   },
   "drone_hangar_b": {
     "file": "drone_hangar_b.glb",
-    "triangles": 5884
+    "triangles": 5728
   },
   "drone_hijack_vehicle": {
     "file": "drone_hijack_vehicle.glb",
@@ -965,11 +969,11 @@
   },
   "guard_tower": {
     "file": "guard_tower.glb",
-    "triangles": 5796
+    "triangles": 5098
   },
   "guard_tower_a": {
     "file": "guard_tower_a.glb",
-    "triangles": 5942
+    "triangles": 5650
   },
   "guard_tower_b": {
     "file": "guard_tower_b.glb",
@@ -1173,7 +1177,7 @@
   },
   "laser_ad_station": {
     "file": "laser_ad_station.glb",
-    "triangles": 5592
+    "triangles": 5342
   },
   "laser_tank": {
     "file": "laser_tank.glb",
@@ -1241,15 +1245,15 @@
   },
   "mg_bunker": {
     "file": "mg_bunker.glb",
-    "triangles": 3748
+    "triangles": 5490
   },
   "mg_bunker_a": {
     "file": "mg_bunker_a.glb",
-    "triangles": 4996
+    "triangles": 5966
   },
   "mg_bunker_b": {
     "file": "mg_bunker_b.glb",
-    "triangles": 3602
+    "triangles": 5900
   },
   "microwave_vehicle": {
     "file": "microwave_vehicle.glb",
@@ -1870,6 +1874,10 @@
   "vehicle_hangar": {
     "file": "vehicle_hangar.glb",
     "triangles": 4280
+  },
+  "vehicle_hangar_base": {
+    "file": "vehicle_hangar_base.glb",
+    "triangles": 5744
   },
   "visual_jammer": {
     "file": "visual_jammer.glb",

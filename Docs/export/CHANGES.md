@@ -1163,3 +1163,18 @@ sách sheet để xác nhận đủ 4 sheet bom, số dòng không đổi.
 - Cần chạy lại từ Unity: không cột nào trong 2-5 cần game.json mới (mọi NEED_CODE_CHECK đã về 0 với snapshot hiện
   có); việc nối `WeaponDef.ProximityFuze` vào luật nổ cận đích (nếu chủ dự án muốn dùng) sẽ cần kiểm bằng Unity sau
   khi sửa luật đó — chưa sửa ở đây.
+
+
+## Play-test 14 model wave M4 (lane A): MG bunker port guns, hangar models, laser tower size
+
+Nhánh `feature/pt14-m4`. Lý do: `Docs/DECISIONS.md` "Play-test 14 model wave M4 (lane A)". Chỉ lý thuyết, không chạy
+Unity / test.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-M4-1 | vũ khí mới `bunker_pkm` | — | PKM 7.62 mm, kế thừa mg_coax: sát thương 5.5, hồi 0.092 s, tầm 28, băng 100, nạp 6.0 s (~60 DPS lúc bắn, ~36 DPS duy trì, thô) | súng máy trong lỗ châu mai |
+| PT14-M4-2 | `mg_bunker` `secondary` | [] | 4 x bunker_pkm, slot mg, aim Free, arc [-30,40] [30,40] [-90,40] [90,40] | chủ nhân: bunker có nhiều súng máy bắn ra; .twin kế thừa, .flame giữ [] |
+| PT14-M4-3 | sản lượng thô mg_bunker | NSV ~107 DPS duy trì | + 36 / súng trong cung: +34 % (một cung), +68 % (chính diện, hai cung chồng), 0 (phía sau >130°) | outgoingDamageMult giữ nguyên (0.6086 / twin 0.5036) |
+| PT14-M4-4 | `vehicle_hangar` `model`, `modelSize` | drone_hangar, [8, 8, 4] | vehicle_hangar_base, [8.0, 7.5, 4.93] | model riêng (prop bản đồ vehicle_hangar giữ file) |
+| PT14-M4-5 | `aircraft_hangar` `model`, `modelSize` | drone_hangar, [8, 8, 4] | aircraft_hangar, [8.0, 7.72, 5.32] | model riêng |
+| PT14-M4-6 | `laser_ad_station` `modelSize` | [6.0, 4.0, 4.6] | [6.0, 3.85, 6.6] | vẽ lại thành tháp (dài giữ 6 m) |

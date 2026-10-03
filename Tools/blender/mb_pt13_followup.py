@@ -186,6 +186,10 @@ ELEVATION = {
     'aa_turret_b': (('Launcher_frame', 'Tube_bodies', 'Tube_caps', 'Tube_caps_rear', 'Muzzle_missile', 'Round',
                      'Tube_bores'), (0.0, -0.05, 1.45)),
 }
+# Play-test 14 wave M4 (DECISIONS "Play-test 14 model wave M4 (lane A)"): these are redrawn by mb_pt14_m4 with their
+# own baked Elevation pivots (the old trunnions no longer fit), so the wrapper leaves them alone.
+for _redrawn in ('guard_tower', 'guard_tower_a', 'mg_bunker', 'mg_bunker_a', 'mg_bunker_b', 'laser_ad_station'):
+    ELEVATION.pop(_redrawn)
 
 
 def add_elevation(a, ride, trunnion, turret='Turret'):

@@ -196,6 +196,12 @@ def model_owners(defs: Defs, models_dir: Path):
         m = defs.model_of(v)
         if (models_dir / f'{m}.glb').exists():
             owners.setdefault(m, []).append(v)
+    # Play-test 14 wave M4: a branch's art file is scored for the branch that draws it ("art"), so a branch that drops
+    # or changes its parent's weapons (mg_bunker.flame keeps no port guns) is checked against its own mounts.
+    for v in defs.by_id.values():
+        art = v.get('art')
+        if art and (models_dir / f'{art}.glb').exists():
+            owners.setdefault(art, []).append(v)
     for m in list(owners):
         for letter in ('a', 'b'):
             branch = f'{m}_{letter}'
