@@ -3304,6 +3304,26 @@
    "changes": [
     "FLAG light_attack_heli: triangles 3,418 -> 4,390 (+28.4%); vertices 4,293 -> 6,816 (+58.8%); meshes 22 -> 47 (+113.6%); renderers 22 -> 47 (+113.6%); materials 7 -> 9 (+28.6%); materialSlots 22 -> 47 (+113.6%); fileBytes 233,364 -> 373,124 (+59.9%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "prop_attack_plane"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG prop_attack_plane: triangles 2,994 -> 4,068 (+35.9%); vertices 3,661 -> 5,688 (+55.4%); meshes 25 -> 45 (+80.0%); renderers 25 -> 45 (+80.0%); materials 8 -> 10 (+25.0%); materialSlots 25 -> 45 (+80.0%); fileBytes 205,640 -> 320,984 (+56.1%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "prop_attack_plane"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "prop_attack_plane: meshes 45 -> 42 (-6.7%); renderers 45 -> 42 (-6.7%); materialSlots 45 -> 42 (-6.7%); fileBytes 320,984 -> 318,148 (-0.9%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -45853,24 +45873,24 @@
   },
   "prop_attack_plane": {
    "file": "prop_attack_plane.glb",
-   "fileBytes": 205640,
-   "sha1": "87031eb46d72cea9",
+   "fileBytes": 318148,
+   "sha1": "f7a8def3ba2511d7",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 37,
-   "meshes": 25,
-   "materials": 8,
+   "nodes": 54,
+   "meshes": 42,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 25,
-   "submeshes": 25,
-   "materialSlots": 25,
-   "materialsUsed": 8,
-   "triangles": 2994,
-   "vertices": 3661,
+   "renderers": 42,
+   "submeshes": 42,
+   "materialSlots": 42,
+   "materialsUsed": 10,
+   "triangles": 4068,
+   "vertices": 5688,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -45878,36 +45898,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 57,
-   "openEdges": 34,
-   "nonManifoldEdges": 243,
+   "loosePieces": 157,
+   "openEdges": 56,
+   "nonManifoldEdges": 0,
    "boundsMin": [
-    -3.02,
-    0.0083,
-    -3.33
+    -3.06,
+    0.115,
+    -3.14
    ],
    "boundsMax": [
-    3.025,
-    1.78,
-    2.7244
+    3.06,
+    1.82,
+    2.96
    ],
    "size": [
-    6.054,
-    6.045,
-    1.772
+    6.1,
+    6.12,
+    1.705
    ],
    "center": [
-    0.003,
-    0.894,
-    -0.303
+    0.0,
+    0.968,
+    -0.09
    ],
-   "structureHash": "ebe725a1f02e2adc",
+   "structureHash": "4fc716539b206daa",
    "color0": {
-    "mean": 0.8062,
-    "min": 0.6644,
+    "mean": 0.6848,
+    "min": 0.0997,
     "max": 1.0,
-    "p05": 0.7225,
-    "p95": 0.9987,
+    "p05": 0.2786,
+    "p95": 0.8137,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -45932,17 +45952,27 @@
     "Muzzle_rocket.001"
    ],
    "nodeNames": [
-    "Armor",
-    "Armor.001",
-    "Beacon",
+    "Antennas",
     "Canopy",
     "Canopy_frames",
-    "Control_surfaces",
-    "Control_surfaces.001",
+    "Cowl_seams",
+    "Crew",
+    "Drop_tanks",
+    "Exhausts",
+    "Flap_fairings",
+    "Flap_fairings.001",
+    "Flare_mouths",
     "Flares",
-    "Flares_glow",
     "Fuselage",
-    "Fuselage.001",
+    "Gear_doors",
+    "Gear_doors.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_fairing",
+    "Guns",
+    "Intake_dark",
+    "Intakes",
+    "Kit_rivets",
     "Mount_Flare_L",
     "Mount_Flare_R",
     "Mount_Flare_TL",
@@ -45954,27 +45984,35 @@
     "Part_wing",
     "Pod_bands",
     "Pod_bands.001",
+    "Pod_face",
+    "Pod_face.001",
     "Pods",
     "Pods.001",
     "Point_exhaust",
     "Point_fire",
     "Propeller",
     "Propeller_blades",
+    "Propeller_tips",
     "Pylons",
     "Pylons.001",
+    "Seats",
     "Spinner",
-    "Steel",
-    "Steel.001",
-    "Tyres",
-    "Tyres.001",
-    "Undercarriage",
-    "Wing_lights"
+    "Tail",
+    "Tailplanes",
+    "Team_band",
+    "Wing_lights",
+    "Wing_lights.001",
+    "Wing_seams",
+    "Wing_seams.001",
+    "Wings",
+    "Wings.001"
    ],
    "category": "air",
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Muzzle_rocket.001"
+    "runtime names with a Blender suffix: Muzzle_rocket.001",
+    "renderers 42 over the jet normal budget 36"
    ],
    "units": [
     "prop_attack_plane"
