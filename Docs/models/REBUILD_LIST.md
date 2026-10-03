@@ -277,6 +277,6 @@ Not GLBs of their own: giving them a model changes the def's `model` (gameplay d
 forbids, so they are listed for the owner (QUESTIONS.md). The intentional ones of STANDIN_AUDIT.md (b)
 are left out; elites without a model wear their base model repainted by design (DECISIONS 25B2).
 
-| def | draws |
-|---|---|
-| `mara_behemoth` | `behemoth` |
+| def | draws | plan |
+|---|---|---|
+| `mara_behemoth` | `behemoth` | own id `mara_behemoth` (owner decision 7), its model built in a later wave |

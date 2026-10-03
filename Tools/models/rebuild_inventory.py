@@ -304,7 +304,11 @@ def write(rows, pointers, gold):
               'forbids, so they are listed for the owner (QUESTIONS.md). The intentional ones of STANDIN_AUDIT.md (b)',
               'are left out; elites without a model wear their base model repainted by design (DECISIONS 25B2).', '',
               '| def | draws |', '|---|---|']
-    lines += [f'| `{a}` | `{b}` |' for a, b in sorted(pointers)]
+    # Owner decision 7 (prompt 35 pilot review): these defs get a model id of their own, built in a later wave; the
+    # data pointer changes in the commit that adds the model (no copy in between: nothing reads the id before that).
+    later = {'mara_behemoth': 'own id `mara_behemoth` (owner decision 7), its model built in a later wave'}
+    lines[-2:] = ['| def | draws | plan |', '|---|---|---|']
+    lines += [f'| `{a}` | `{b}` | {later.get(a, "")} |' for a, b in sorted(pointers)]
     LIST_MD.write_text('\n'.join(lines) + '\n', encoding='utf-8')
     print(f'{len(rows)} models: P1 {count("P1")}, P2 {count("P2")}, P3 {count("P3")}; stand-ins {len(si)} {how}; '
           f'pointers {len(pointers)}')
