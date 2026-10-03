@@ -1,0 +1,118 @@
+{
+ "id": "c_ram_a",
+ "class": "tower",
+ "real": [
+  "Centurion with the Phalanx Block 1B's electro-optical sensor (c_ram.centurion)",
+  "radome on a mast",
+  "the base's FOB position"
+ ],
+ "shape": "the c_ram site (trailer, generator, HESCO, T-wall, stores) with the Block 1B mount: the FLIR box on the radome's left, a second feed chute, and the taller mast with the radome ball spinning on its neck.",
+ "confidence": "xấp xỉ (Phalanx Block 1B photographs)",
+ "target_size": {
+  "L": 5.65,
+  "W": 5.65,
+  "H": 6.26,
+  "source": "the old GLB",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the base's site",
+   "nodes": [
+    "Base",
+    "Hesco",
+    "Wall",
+    "Deck",
+    "Generator"
+   ]
+  },
+  {
+   "feature": "Block 1B mount with the FLIR box",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_eo",
+    "Glass"
+   ]
+  },
+  {
+   "feature": "six-barrel M61 and its shroud",
+   "nodes": [
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "feature": "radome ball on its mast (spins)",
+   "nodes": [
+    "Radar",
+    "Radar_ball",
+    "Radar_neck",
+    "Radar_mast"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "c_ram_gatling",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "inherited from c_ram"
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "trailer deck (Team)",
+  "radome band (Team)",
+  "radar band (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "the base's",
+ "details": {
+  "tier1": [
+   "trailer",
+   "Phalanx",
+   "mast",
+   "HESCO"
+  ],
+  "tier2": [
+   "FLIR box",
+   "generator",
+   "radome ball",
+   "floodlight"
+  ],
+  "tier3": [
+   "jacks",
+   "boards",
+   "cans",
+   "beacon",
+   "guy wires"
+  ]
+ },
+ "questions": []
+}
