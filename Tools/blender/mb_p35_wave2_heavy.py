@@ -79,7 +79,7 @@ def barbette(a, corners=False):
     cr = a.part('Crane', 'CraneYellow')
     cx, cy = 2.6, 3.3
     cr.cyl(.12, 3.6, loc=(cx, cy, APRON + 1.8), seg=8, bevel=0)
-    k.block(a.part('Crane_base', 'Concrete'), (.7, .7, .3), loc=(cx, cy, APRON), chamfer=.04)
+    k.block(a.part('Crane_base', 'Concrete'), (.7, .7, .3), loc=(cx, cy, APRON + .15), chamfer=.04)
     for z in (APRON + 3.5, APRON + 3.1):
         cr.box((.08, 2.2, .08), loc=(cx, cy - 1.0, z), bevel=0)
     tr = a.part('Crane_truss', 'Steel')
