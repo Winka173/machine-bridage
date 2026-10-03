@@ -690,7 +690,9 @@ def canonical_order(me):
 def export_collection(collection, path):
     """Export only one collection (nested ones included) to GLB. A live session's context
     scene is the user's, so the collection is linked into it only for the duration of the call.
-    Every mesh is put in canonical order first (canonical_order), so the file is the same every run."""
+    Every mesh is put in canonical order first (canonical_order), so the file is the same every run.
+    The file is then quantised (Tools/assets/glb_quantize.py, KHR_mesh_quantization: int8 normals, uint16 COLOR_0;
+    prompt 35 section 9, GLB size), which glTFast reads; positions, UVs, nodes and materials stay as exported."""
     done = set()
     for ob in collection.all_objects:
         if ob.type == 'MESH' and ob.data.name not in done:
@@ -708,6 +710,17 @@ def export_collection(collection, path):
     finally:
         if linked:
             scene.collection.children.unlink(collection)
+    _quantize(path)
+
+
+def _quantize(path):
+    import importlib.util
+    import pathlib
+    src = pathlib.Path(__file__).resolve().parents[1] / 'assets' / 'glb_quantize.py'
+    spec = importlib.util.spec_from_file_location('glb_quantize', src)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.quantize_file(path)
 
 
 def lattice_slice(bm, world, step):

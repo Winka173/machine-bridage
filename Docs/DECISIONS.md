@@ -18657,3 +18657,29 @@ Owner: "theo đề xuất".
    recoilless_jeep, airborne_light_tank_chute) are rebuilt; the three helipads get a windsock and light posts.
 6. Over-guide triangles on non-capped classes stay until the phone FPS measure.
 Owner rule (03/10): models and effects get the highest quality, no token saving (Docs/AGENT_RULES.md).
+
+## Prompt 35: GLB size (lane A)
+
+Prompt 35 section 9: the GLB total may grow by at most 25 %; after the rebuild it was +36.7 % against `01f7312b`
+(123.1 -> 168.4 MiB). Branch `feature/glb-size` from `lead/integration`.
+
+- Importer: glTFast 6.20.0; it supports KHR_mesh_quantization without extra packages (features table, supported
+  extension set, int8 / uint16 conversion jobs read). Draco and meshopt need packages the project lacks: not used.
+- New `Tools/assets/glb_quantize.py` (pure Python + numpy, no binaries downloaded): NORMAL -> normalized int8
+  (byteStride 4), COLOR_0 -> normalized uint16 (VEC3 kept, byteStride 8); POSITION, TEXCOORD_0, indices, nodes,
+  names, materials untouched. `frontier_kit.export_collection` runs it after every Blender export, so rebuilds stay
+  quantised; it was also run once over all 518 committed GLBs (deterministic, idempotent).
+- Positions stay float: an int16 position needs a dequantising node scale, which changes the transforms the runtime
+  reads. UVs stay float: they run past 0-1 (box projection) and there is no texture to carry KHR_texture_transform.
+- COLOR_0 as uint16, not 8-bit: 8-bit would save 19 MiB more but move the gate's COLOR_0 numbers by up to 0.002;
+  uint16 keeps them within rounding and the total is already under the limit.
+- `glb_analyze.accessor` decodes signed normalized types (max(c / 127, -1)), so glb_check, quality_gate and every
+  reader built on them read the quantised files.
+- Result: 131.3 MiB, +6.6 % against `01f7312b`. glb_check: 0 errors, records equal except bytes / sha1 / extensions
+  and one-step 4th-decimal COLOR_0 statistics on 34 files (baseline accepted). Gate: 199 of 230 as before;
+  triangles, parts, hard gates, scores and grades identical; 16 raw metric cells moved in the 4th decimal.
+- A Blender rebuild of ammo_crate through the hook writes a quantised file (extensionsRequired set, JSON identical)
+  but not the committed vertex order (a pre-quantisation difference in that old model's build); the committed files
+  were therefore post-processed, not rebuilt.
+- Unity check for the lead: CatalogCheck plus the card / ModelPreview renders of main_battle_tank, monster and
+  ammo_crate compared with the previous ones (REBUILD_REPORT section 9).

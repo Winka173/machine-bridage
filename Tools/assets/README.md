@@ -9,6 +9,7 @@ Static: reads `Assets/MachineBrigade/Resources/Models/*.glb` (Python 3.11 + nump
 - `glb_analyze.py` = per-file stats (triangles, vertices, renderers, slots, bounds, COLOR_0, topology, runtime nodes); `glb_check.py` = categories, rules, outputs.
 - Rules and thresholds: Docs/DECISIONS.md "27 step 0 + baseline"; budgets per class and tier: Docs/models/BUDGETS.md (`BUDGETS` in glb_check.py: over soft = warning, over hard = error). Exit code 1 when any model has an error.
 - Run it after every `build_assets.py` run, before committing new GLBs.
+- `python Tools/assets/glb_quantize.py [files]` - KHR_mesh_quantization (int8 normals, uint16 COLOR_0) over every GLB or the files named; `frontier_kit.export_collection` already runs it after each export (DECISIONS "Prompt 35: GLB size (lane A)").
 
 ## Unity preview (`--preview`, prompt 27 step 5)
 

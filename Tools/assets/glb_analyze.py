@@ -40,6 +40,8 @@ RUNTIME_PREFIX = re.compile(r'^(turret|main_cannon|muzzle|bombs|parachute|rotor|
 COMPONENTS = {5120: np.int8, 5121: np.uint8, 5122: np.int16, 5123: np.uint16, 5125: np.uint32, 5126: np.float32}
 WIDTH = {'SCALAR': 1, 'VEC2': 2, 'VEC3': 3, 'VEC4': 4, 'MAT4': 16}
 NORMALIZED_MAX = {5121: 255.0, 5123: 65535.0}
+# Signed normalized (KHR_mesh_quantization normals, glb_quantize.py): decoded max(c / max, -1) as the glTF spec says.
+SIGNED_NORMALIZED_MAX = {5120: 127.0, 5122: 32767.0}
 DEGENERATE_AREA = 1e-8  # m^2 in the mesh's own space: 0.1 mm x 0.1 mm
 
 
@@ -95,6 +97,8 @@ def accessor(doc, binary, index):
         arr = np.ascontiguousarray(rows).view(dtype).reshape(count, width)
     if acc.get('normalized') and acc['componentType'] in NORMALIZED_MAX:
         arr = arr.astype(np.float32) / NORMALIZED_MAX[acc['componentType']]
+    elif acc.get('normalized') and acc['componentType'] in SIGNED_NORMALIZED_MAX:
+        arr = np.maximum(arr.astype(np.float32) / SIGNED_NORMALIZED_MAX[acc['componentType']], -1.0)
     return arr
 
 
