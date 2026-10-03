@@ -335,7 +335,7 @@ namespace MachineBrigade.Sim.Content
                 // Play-test 8 A: a steered bomb stays steered.
                 Steered = Steered,
                 // Prompt 25 F2 batch A: the new weapons' mechanisms.
-                GroundRange = GroundRange, MinReach = MinReach, GroupPriority = GroupPriority, BigGame = BigGame, JamProof = JamProof,
+                GroundRange = GroundRange, MinReach = MinReach, GroundMinReach = GroundMinReach, GroupPriority = GroupPriority, BigGame = BigGame, JamProof = JamProof,
                 OneAtATime = OneAtATime, Lofted = Lofted, Mrsi = Mrsi, Glides = Glides, Prey = Prey,
                 // Play-test 13 (lane C): the flight profile.
                 FlightData = FlightData,

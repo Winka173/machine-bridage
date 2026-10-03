@@ -12,8 +12,10 @@ A boss's guns sit high and cannot depress onto a vehicle at its feet. This reads
   missile       max(arming distance, lock distance)
   aircraft      the view's chin-gun limit (VehicleView.Elevate: -65 deg) from the boss's altitude; bombs none
 
-Distances are from the boss's centre to the target's near face, the way WeaponDef.MinReach is measured
-(CombatSystem.InReach: distance - target.Radius < MinReach -> no shot). Proposed = max(current, geometric) rounded half up
+Distances are from the boss's centre to the target's near face, the way the weapon key groundMinReach is measured
+(CombatSystem.InReach: a ground target with distance - target.Radius < GroundMinReach is not shot; aircraft are). A
+direct-fire weapon gets groundMinReach, not minRange: minRange > 0 makes a weapon indirect (WeaponDef.Indirect: no line
+of fire, artillery role for the AI, lobbed interception rules) and minReach would also stop it shooting aircraft. Proposed = max(current, geometric) rounded half up
 to 1 m. Barrel limits: the data has none, so every one is a class default marked uoc_dinh (section 5.2).
 
     python Tools/export/boss_min_range.py            # writes the QA lists to Docs/export/current/_qa/
@@ -305,12 +307,12 @@ def compute(d: dict, built: dict, wres: dict) -> dict:
             geo_light = geometric(cls, w, b, h_m, r_aim, heights["xe_nhe"][0])[0]
             geo_heavy = geometric(cls, w, b, h_m, r_aim, heights["hang_nang"][0])[0]
             cur_min = float(w.get("minRange") or 0)
-            cur_reach = float(w.get("minReach") or 0)
+            cur_reach = max(float(w.get("minReach") or 0), float(w.get("groundMinReach") or 0))
             rng = float(w.get("range") or 0)
             prop = half_up(max(cur_min, cur_reach, geo))
-            field = "minRange" if cur_min > 0 else "minReach"
+            field = "minRange" if cur_min > 0 else "groundMinReach"
             capped = False
-            # MinRange >= Range throws at load (WeaponDef) and a MinReach past the range mutes the gun on the ground:
+            # MinRange >= Range throws at load (WeaponDef) and a GroundMinReach past the range mutes the gun on the ground:
             # a proposal within 1 m of the range is cut to 80 % of it and flagged for the owner.
             if rng and prop >= rng - 1:
                 prop, capped = max(half_up(max(cur_min, cur_reach)), int(math.floor(rng * CAP_SHARE))), True
@@ -351,7 +353,7 @@ def compute(d: dict, built: dict, wres: dict) -> dict:
 
 
 def dead_zone(brows: list, inner: float) -> dict:
-    """The boss's dead zone from the values the game will use (tam_toi_thieu_ghi_m), measured like MinReach: the
+    """The boss's dead zone from the values the game will use (tam_toi_thieu_ghi_m), measured like GroundMinReach: the
     smallest minimum of its main barrels; the band from its body's edge (inner) out to it; the weapons that reach into
     it and the share of the band they reach; the nearest weapon when nothing does."""
     ground = [r for r in brows if r["nhom"] != "phong_khong" and r["tam_toi_da_m"]]
@@ -427,7 +429,7 @@ def plan(d: dict, built: dict, wres: dict, rows: list) -> dict:
 
     intended = {}
     for wid in raw:
-        for f in ("minRange", "minReach"):
+        for f in ("minRange", "groundMinReach"):
             intended[(wid, f)] = edits.get((wid, f), float(wres.get(wid, {}).get(f) or 0))
     pins = {}
     for _ in range(6):
@@ -442,7 +444,7 @@ def plan(d: dict, built: dict, wres: dict, rows: list) -> dict:
     for wid in want:
         key = (wid, field_of[wid])
         effective[wid] = edits[key] if key in edits else \
-            half_up(max(float(wres[wid].get("minRange") or 0), float(wres[wid].get("minReach") or 0)))
+            half_up(max(float(wres[wid].get(f) or 0) for f in ("minRange", "minReach", "groundMinReach")))
     return {"edits": edits, "pins": pins, "shared": shared, "effective": effective, "proposed": want}
 
 

@@ -58,7 +58,8 @@ MIN_RANGE_COLS = (
     ("goc_nang_toi_thieu_deg", "deg", "góc nâng tối thiểu (bắn cầu)"), ("goc_quay_ngang_deg", "deg", "góc quay ngang (360: quay tròn)"),
     ("nguon_goc_nong", "", "nguồn góc nòng: uoc_dinh (mặc định theo lớp, mục 5.2) / ma_view (VehicleView.Elevate -65 deg) / khong_ap"),
     ("tam_toi_thieu_m", "m", "tầm tối thiểu hiện có (minRange, đo tới tâm mục tiêu)"),
-    ("tam_toi_thieu_mep_m", "m", "tầm tối thiểu hiện có đo tới mép mục tiêu (minReach)"), ("tam_toi_da_m", "m", "tầm tối đa"),
+    ("tam_toi_thieu_mep_m", "m", "tầm tối thiểu hiện có đo tới mép mục tiêu, chỉ với mục tiêu mặt đất (groundMinReach; "
+     "minReach nếu lớn hơn)"), ("tam_toi_da_m", "m", "tầm tối đa"),
     ("toc_do_dau_nong_m_s", "m/s", "tốc độ đạn trong dữ liệu (projectileSpeed: nhịp bay của game, không phải sơ tốc đạn đạo)"),
     ("toc_do_dan_dao_game_m_s", "m/s", "tốc độ đạn đạo dùng trong công thức: sqrt(g x tầm tối đa)"),
     ("khoang_cach_vu_trang_m", "m", "khoảng cách vũ trang tên lửa (ước định)"),
@@ -68,7 +69,8 @@ MIN_RANGE_COLS = (
     ("tam_toi_thieu_hinh_hoc_xe_nhe_m", "m", "tầm tối thiểu theo hình học (mục tiêu xe nhẹ)"),
     ("tam_toi_thieu_hinh_hoc_hang_nang_m", "m", "tầm tối thiểu theo hình học (mục tiêu hạng nặng)"),
     ("tam_toi_thieu_de_xuat_m", "m", "đề xuất = max(hiện có, hình học), làm tròn nửa lên 1 m; cắt còn 80 % tầm nếu chạm tầm"),
-    ("truong_ghi", "", "trường ghi vào vũ khí: minReach (bắn thẳng, đo tới mép, không đổi vai pháo binh) / minRange (đã bắn cầu)"),
+    ("truong_ghi", "", "trường ghi vào vũ khí: groundMinReach (bắn thẳng: đo tới mép, chỉ mục tiêu mặt đất, không đổi vai pháo "
+     "binh) / minRange (vũ khí đã bắn cầu)"),
     ("cat_theo_tam", "", "true: hình học vượt tầm, đã cắt còn 80 % tầm"),
     ("tam_toi_thieu_ghi_m", "m", "giá trị game dùng (một vũ khí dùng ở nhiều bệ lấy đề xuất nhỏ nhất; vũ khí dùng chung với "
      "đơn vị thường giữ nguyên)"),
