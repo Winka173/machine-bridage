@@ -55,3 +55,6 @@ Weapons/skills used only by deleted entries go too.
 - Q18: boss +20-30 % is VISUAL size only (hitbox/collision unchanged). Still waits for the boss confirmation.
 - Q19: boss escorts follow the boss's domain: ground boss -> ground vehicle escorts, sea boss -> boat escorts, air
   boss -> aircraft escorts (fixes Nyx). Data/rule work, allowed now (lane A).
+- Owner: "giữ nguyên các model đã xóa không phải chỉ ifv" -> deleted units/structures KEEP their models: move their
+  GLBs (git mv) from Resources/Models to Archive/models/ (outside Assets, not in the build) and keep their builders in
+  build_assets.py (mark them archived in a comment). Everything else is still deleted.

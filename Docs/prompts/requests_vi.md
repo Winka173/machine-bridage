@@ -281,3 +281,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 PLAY-TEST 14 "sửa lỗi lớn và vẽ lại toàn bộ boss" (nguyên văn: playtest14_vi.txt); ưu tiên trước Gói cân bằng 2: gộp pack2-a (công cụ), hoãn lượt 2, chưa gộp pack2-c (tính lại tầm tối thiểu boss sau khi vẽ lại).
 - 03/10 trả lời câu hỏi play-test 14: A/C/D theo đề xuất, apc_smoke xóa (giữ xe), xe tăng mồi hơi xóa, gọi quân ≤ 20 cp × 1,5; E (boss) chờ xác nhận.
 - 03/10 "18. chỉ tăng size; 19. theo đề xuất, boss mặt đất thì có xe hộ tống, boss biển thì thuyền hộ tống, boss trên không thì máy bay".
+- 03/10 "giữ nguyên các model đã xóa không phải chỉ ifv" (GLB chuyển sang Archive/models, builder giữ).
