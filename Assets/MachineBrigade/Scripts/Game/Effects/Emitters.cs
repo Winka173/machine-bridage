@@ -193,7 +193,7 @@ namespace MachineBrigade.Game.Effects
         public void Trail(Vector3 position, float size)
         {
             Emit(_trail, position, Random.insideUnitSphere * 0.2f + Vector3.up * 0.25f, size * Random.Range(0.7f, 1.2f),
-                Random.Range(0.6f, 1.1f));
+                Random.Range(0.6f, 1.1f) * SmokeTimes.Trail);
         }
 
         /// <summary>A puff of a jet's vapour trail (engine or wingtip), lingering <paramref name="life"/> seconds.</summary>
@@ -518,7 +518,7 @@ namespace MachineBrigade.Game.Effects
                 position = position + Random.insideUnitSphere * 0.3f,
                 velocity = Vector3.up * Random.Range(0.6f, 1.2f) + Random.insideUnitSphere * 0.3f,
                 startSize = size * Random.Range(0.8f, 1.2f),
-                startLifetime = Random.Range(1.6f, 2.4f),
+                startLifetime = Random.Range(1.6f, 2.4f) * SmokeTimes.Fire,
                 startColor = new Color(0.12f + 0.4f * shade, 0.12f + 0.39f * shade, 0.12f + 0.38f * shade, 0.85f),
                 rotation = Random.Range(0f, 360f),
                 applyShapeToPosition = false,

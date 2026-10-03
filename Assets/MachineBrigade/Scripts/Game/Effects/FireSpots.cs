@@ -174,7 +174,8 @@ namespace MachineBrigade.Game.Effects
                 Size = size,
                 Start = now,
                 Until = now + seconds,
-                SmokeUntil = now + seconds + Mathf.Min(45f, 8f + seconds * 0.8f) * smoke * smoke,
+                // Play-test 14 session 5: it smoulders on half as long (SmokeTimes.Smoulder).
+                SmokeUntil = now + seconds + Mathf.Min(45f, 8f + seconds * 0.8f) * smoke * smoke * SmokeTimes.Smoulder,
                 Smoke = smoke,
                 // Start part way through a flame, so a new fire shows at once.
                 FlameDebt = 0.8f,
@@ -317,7 +318,7 @@ namespace MachineBrigade.Game.Effects
                 position = f.Position + new Vector3(disc.x, 1.5f * f.Size, disc.y),
                 velocity = new Vector3(0f, Random.Range(0.3f, 0.7f), 0f),
                 startSize = Random.Range(2f, 3f) * f.Size * Mathf.Lerp(0.7f, 1.15f, thickness),
-                startLifetime = Random.Range(4.5f, 7f),
+                startLifetime = Random.Range(4.5f, 7f) * SmokeTimes.Fire,
             }, 1);
         }
 

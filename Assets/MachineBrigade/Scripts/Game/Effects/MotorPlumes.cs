@@ -191,7 +191,7 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         public float SmokeSpacing { get; private set; } = 1f;
 
-        private float _smokeLife = 3.2f;
+        private float _smokeLife = 3.2f * SmokeTimes.Trail;
         private int _segments = 4;
         private bool _glowOn = true;
 
@@ -200,7 +200,8 @@ namespace MachineBrigade.Game.Effects
         {
             var tier = MatchSettings.Tier;
             SmokeSpacing = tier switch { GraphicsQuality.Low => 1.6f, GraphicsQuality.Medium => 1.25f, _ => 1f };
-            _smokeLife = tier switch { GraphicsQuality.Low => 1.7f, GraphicsQuality.Medium => 2.5f, _ => 3.2f };
+            // Play-test 14 session 5: the trail clears in half the time (SmokeTimes.Trail).
+            _smokeLife = tier switch { GraphicsQuality.Low => 1.7f, GraphicsQuality.Medium => 2.5f, _ => 3.2f } * SmokeTimes.Trail;
             _segments = tier switch { GraphicsQuality.Low => 2, GraphicsQuality.Medium => 4, _ => 5 };
             _glowOn = tier != GraphicsQuality.Low;
         }

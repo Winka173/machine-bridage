@@ -105,8 +105,26 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         public const float TankSmokeLife = 0.4f;
 
-        /// <summary>The smoke-life factor of the impact being drawn now (1 outside a tank round's impact).</summary>
-        private float _smokeLife = 1f;
+        /// <summary>
+        /// The smoke-life factor of the blast being drawn now: play-test 14 session 5, every blast's smoke half as long
+        /// (<see cref="SmokeTimes.Blast"/>), a vehicle's death <see cref="SmokeTimes.Death"/>, a tank round's impact its 0.4.
+        /// </summary>
+        private float _smokeLife = SmokeTimes.Blast;
+
+        /// <summary>Play-test 14 session 5: draws a vehicle's death blast with the death's shorter smoke (<see cref="SmokeTimes.Death"/>).</summary>
+        private void AsDeath(Action blast)
+        {
+            var was = _smokeLife;
+            _smokeLife = SmokeTimes.Death;
+            try
+            {
+                blast();
+            }
+            finally
+            {
+                _smokeLife = was;
+            }
+        }
 
         /// <summary>A tank gun's round (the tank_gun family: tank, assault-gun and turret cannons).</summary>
         internal static bool TankRound(WeaponDef round) => round != null && round.Family == "tank_gun";
@@ -298,7 +316,7 @@ namespace MachineBrigade.Game.Effects
                         // The bomb-run fix, pass 3: a stick's bomb (its warning section goes now; its far blasts drawn lighter).
                         var chain = StickLanded(round, impact, now);
                         // Play-test 14 (lane A): a tank round's smoke clears 60 % sooner (its blast drawn whole).
-                        _smokeLife = TankRound(round) ? TankSmokeLife : 1f;
+                        _smokeLife = TankRound(round) ? TankSmokeLife : SmokeTimes.Blast;
                         // A gun's shell never flashes the screen, however big: only strikes and blasts do.
                         // Play-test 5 (DECISIONS 20V): drones, missiles, rockets, shells and the gun turret's rounds by BlastSizes.Round.
                         // Prompt 25 A5: every blast's ring on its damage radius (e.Value, the round's splash radius).
@@ -313,7 +331,7 @@ namespace MachineBrigade.Game.Effects
                         // Fix prompt L6: the smoke and dust it leaves, as long as its size band says (EffectLife).
                         var band = EffectLife.BandOf(round, e.Tier);
                         Linger(band, impact, e.Value, now, chain);
-                        _smokeLife = 1f;
+                        _smokeLife = SmokeTimes.Blast;
                         // Every blast from Medium up scorches the ground under it, as wide as it is drawn, for its band's time.
                         if (e.Tier >= ExplosionTier.Medium)
                             _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size * BlastSizes.Ground(round) * BlastSizes.Round(round),
@@ -510,7 +528,10 @@ namespace MachineBrigade.Game.Effects
                         if (_wrecks.TryGetAircraftWreck(e.Entity, out var inAir))
                         {
                             // A shot-down aircraft blows up where it is, in the air; the crash follows.
+                            // (No lambda here: one capturing the loop's event would allocate on every event.)
+                            _smokeLife = SmokeTimes.Death;
                             Airburst(inAir, ExplosionTier.Huge, now, 1f, e.Value);
+                            _smokeLife = SmokeTimes.Blast;
                             break;
                         }
                         var blast = Ground(e.Position, 0.3f);
@@ -521,11 +542,14 @@ namespace MachineBrigade.Game.Effects
                             _decals.Place(blast, 1.8f, EffectLife.Crater(1));
                             break;
                         }
-                        // Prompt 25 A5: a vehicle's, a mine's or a prop's blast drawn as wide as it reaches.
+                        // Prompt 25 A5: a vehicle's, a mine's or a prop's blast drawn as wide as it reaches. Play-test 14 session 5: its
+                        // smoke the death's, the shortest (the owner: the death blasts' smoke filled the battlefield).
+                        _smokeLife = SmokeTimes.Death;
                         Explode(e.Tier, blast, now, radius: e.Value);
                         EdgeRing(blast, e.Value, e.Target.X);
                         // Prompt 34 L5: a salvo's shell (Leviathan's 406 mm) lands as its tier.
                         TierImpact(SalvoTier(e, views), blast, e.Value, e.Target.X, now, views);
+                        _smokeLife = SmokeTimes.Blast;
                         _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f), EffectLife.Crater(EffectLife.BandOf(e.Tier)));
                         _wrecks.Blow(e.Entity, now);
                         if (e.Tier >= ExplosionTier.Huge)
@@ -593,8 +617,14 @@ namespace MachineBrigade.Game.Effects
                         if (view.Def.Static) FellDefence(view, now);
                         if (blowsUp) Pop(_kill, view.Position + Vector3.up * 0.8f, now);
                         // Aircraft burst into flames in the air, then fall (see Crash); a drone is a small blast (prompt 34 L7).
-                        else Explode(view.Flying && WreckClasses.Of(view.Def) != WreckClass.Drone ? ExplosionTier.Large : ExplosionTier.Medium,
-                            view.Position + Vector3.up, now);
+                        else
+                        {
+                            // Play-test 14 session 5: a death's smoke, the shortest.
+                            _smokeLife = SmokeTimes.Death;
+                            Explode(view.Flying && WreckClasses.Of(view.Def) != WreckClass.Drone ? ExplosionTier.Large : ExplosionTier.Medium,
+                                view.Position + Vector3.up, now);
+                            _smokeLife = SmokeTimes.Blast;
+                        }
                         // A ship lists, breaks and sinks (prompt 16); everything else leaves a burning wreck. Prompt 34 L7: a shot-down
                         // aircraft's wreck flies onto the Sim's crash plan (the event's Target, in Value seconds).
                         if (view.Def.Naval != null) _sinking.Add(view, now);
@@ -1039,7 +1069,7 @@ namespace MachineBrigade.Game.Effects
         {
             if (!_cull.Visible(position, 0.3f * size)) return;
             var scale = (tier >= ExplosionTier.Huge ? 1.8f : tier >= ExplosionTier.Large ? 1.35f : 1f) * size;
-            _airburst.Play(position, now, scale, BlastSizes.Bigger, 1f, BlastSizes.RingFor(radius, _airburst.RingReach, scale));
+            _airburst.Play(position, now, scale, BlastSizes.Bigger, 1f, BlastSizes.RingFor(radius, _airburst.RingReach, scale), 1f, _smokeLife);
             Shake(position, tier >= ExplosionTier.Large ? 0.3f : 0.1f);
         }
 
@@ -1213,7 +1243,7 @@ namespace MachineBrigade.Game.Effects
                 var grow = 0.8f + i * 0.12f;
                 Later(at, () =>
                 {
-                    Explode(tier, centre + offset, at, grow, flash: false);
+                    AsDeath(() => Explode(tier, centre + offset, at, grow, flash: false));
                     _muzzle.SparkBurst(centre + offset, Vector3.up, 20, 8f, 18f);
                 });
             }
@@ -1230,7 +1260,7 @@ namespace MachineBrigade.Game.Effects
             Flash?.Invoke(0.75f);
             Ring(blast, radius * 4.5f, new Color(2.4f, 2.1f, 1.7f, 1f));
             Ring(blast, radius * 2.6f, new Color(2.6f, 1.4f, 0.5f, 1f));
-            _explosions[ExplosionTier.Ultimate].Play(blast, now, 1.9f, BlastSizes.Bigger);
+            _explosions[ExplosionTier.Ultimate].Play(blast, now, 1.9f, BlastSizes.Bigger, 1f, 0f, 1f, SmokeTimes.Death);
             _night.Blast(blast, 45f, 1.4f);
             Shake(blast, 1.4f);
             for (var i = 0; i < 3; i++)
@@ -1238,7 +1268,7 @@ namespace MachineBrigade.Game.Effects
                 var at = now + 0.15f + i * 0.18f;
                 var angle = i * 2.1f + UnityEngine.Random.value;
                 var offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * radius * 0.6f;
-                Later(at, () => Explode(ExplosionTier.Huge, blast + offset + Vector3.up, at, 1.2f, flash: false));
+                Later(at, () => AsDeath(() => Explode(ExplosionTier.Huge, blast + offset + Vector3.up, at, 1.2f, flash: false)));
             }
             _decals.Place(blast, radius * 1.4f);
             // DECISIONS 20Y: the blaze as big, burning 24 s (was 40) under thinner, lighter smoke that clears soon after.
