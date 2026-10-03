@@ -19269,3 +19269,8 @@ py_compile, and a .NET compile of Sim + Game against the Unity DLLs (Build succe
   `.001` (the wrapper installs the rename on every model it touches).
 - Render for the lead: behemoth_inferno, behemoth (mount 6 shells from the hull gun), the gun towers in their preview
   (barrel rises with its cradle when firing at aircraft / range), the launchers above after a volley (covers / noses gone).
+
+## Play-test 14: owner answers (lead, 03/10)
+Owner: "phần A theo đề xuất hết, apc_smoke xóa luôn, giữ model; phần B xe tăng mồi hơi xóa luôn, gọi ra quân giới hạn
+tổng 20 cp, nhân 50 % ra giá gọi; C, D theo đề xuất; E khoan làm, đợi confirm boss nào vẽ lại". Full decisions and the
+deletion list: Docs/fixes/playtest14_plan.md. Read "15 cp -> 13 cp" as 23 (ceil 22.5), told the owner.
