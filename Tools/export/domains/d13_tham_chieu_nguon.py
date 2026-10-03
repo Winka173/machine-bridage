@@ -31,7 +31,8 @@ FILM_WORDS = ("Star Wars", "Star Destroyer", "The Expanse", "Galactica", "Venato
 
 def ref_sheets(ctx):
     """[(file, sheet)] of every <name>_tham_chieu sheet built."""
-    return [(fid, s) for fid in sorted(ctx.books) for s in ctx.books[fid].sheets if s.endswith("_tham_chieu")]
+    return [(fid, s) for fid in sorted(ctx.books) for s, sh in ctx.books[fid].sheets.items()
+            if s.endswith("_tham_chieu") and "loai_tham_chieu" in sh.cols]
 
 
 def build(ctx):

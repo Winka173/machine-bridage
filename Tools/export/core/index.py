@@ -357,5 +357,10 @@ def coverage_md(meta: dict, per_source, unmapped, per_file, books: dict, ctx, st
     unread = [(sid, s.error) for sid, s in sorted(ctx.sources.items()) if not s.readable] + list(ctx.unreadable)
     lines += ["", "## Nguồn không đọc được", ""]
     lines += [f"- {sid}: {why}" for sid, why in unread] or ["Không có."]
+    from . import refcheck
+    ref = refcheck.run(refcheck.from_ctx_books(books))
+    lines += ["", "## Lớp tham chiếu ngoài đời và game (spec 12.6, lượt 10)", "",
+              f"Trạng thái: {ref['status']}" + (f" ({'; '.join(ref['gaps'])})" if ref["gaps"] else "") + ". Chỉ dữ liệu trong "
+              "repo (không tra web); thiếu nguồn ghi NEED_SOURCE.", ""] + ref["lines"]
     lines += ["", f"Chế độ kiểm: {'strict (lá chờ cũng FAIL)' if strict else 'thường (lá chờ file chưa xuất được phép)'}.", ""]
     return "\n".join(lines)

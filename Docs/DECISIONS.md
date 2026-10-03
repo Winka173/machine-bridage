@@ -17723,3 +17723,67 @@ Docs/models/QUESTIONS.md go by the lead's proposals:
 11. Keep the kit's material separation (11-17 per model); merge to 6 only if the phone FPS measure later asks for it.
 Roof guns (pintle MGs, remote weapon stations, roof turrets) must read with real height: raised mount, cradle, ammo box,
 shield where the real one has it; fix Ixion's roof gun and the pilots' in wave 1, and the rule goes into MODEL_STANDARD.
+
+## Bộ xuất dữ liệu toàn bộ (lane C, pass 10)
+
+Lane C, 2026-10-03: spec 12 (the real-world and game reference layer), pass 10 of `Docs/prompts/export_full_vi.txt`.
+Owner's call: no web lookup, so the "no web" branch of 12.1: only data already in the repo, NEED_SOURCE for the rest.
+Read only; Python only, no Unity, test or sim run. Code: `Tools/export/domains/_refsrc.py` (repo sources, the citation
+registry), `_ref_common.py` (common columns, reliability rule, so_sanh_that rows), `_ref_units.py` (01-04),
+`_ref_other.py` (05-11), `d13_tham_chieu_nguon.py` (file 13, built last); `core/refcheck.py` (the 12.6 checks, into
+COVERAGE.md and SELF_CHECK.md); `core/docmd.py` (the md subsection).
+
+- **Sources.** `Tools/docs/unit_refs.json` (its claim left `_pending.py`; leaves now map to 02 / 03 / 04 and its `_about`
+  to 13/Nguon_tham_chieu), `Tools/models/reference_real.json` (via 10/Kich_thuoc_that), the REAL and WARHEAD tables of
+  `Tools/balance/full_weapon_audit.py` (read as literals), `fix_weapon_reasons.json`, `Tools/docs/unit_sheet.json`, the
+  reference columns of `Docs/balance/Machine_Brigade_Can_bang.xlsx` and `Docs/ai/Machine_Brigade_AI_Research.xlsx`
+  (openpyxl), the docstrings of the Blender builders that name references, `Tools/blender/specs/*.json`, DECISIONS
+  (searched by phrase, and its "**References**" passages), `Docs/ASSET_LICENSES.md` and the audio credits in 09/Am_thanh.
+- **A cited document is a source row.** Every document a repo note names (Wikipedia 'X', US Army FM ..., a maker's
+  specification, Army Recognition 'X', the AI research's links) is one Nguon_tham_chieu row with the title as the note
+  writes it; the URL only when the repo gives one (the 5 AI research links). A Wikipedia title without a URL counts as a
+  clearly printed document (12.6). Repo documents are rows too (id `R_<file stem>`). Document reliability: maker /
+  official manual 1, Wikipedia and articles 2, game wikis and our own repo notes 3, a game publisher's own page 1.
+- **Reliability of a reference row.** da_kiem_chung only when the repo record carrying the figure names an outside
+  document for it and is not marked as an estimate (REAL rows citing Wikipedia / FM / a maker; reference_real `high`
+  with a named page; AI research rows whose game matches a listed link). "ước đoán" (unit_refs), "est." (REAL) and
+  `approx` (reference_real) stay uoc_dinh; a name or note with no document behind it is ban_dau_doan; nothing: NEED_SOURCE.
+- **Sheet names.** `<domain>_tham_chieu` / `<domain>_so_sanh_that` with the domain's short name (02 already has
+  `Xe_tham_chieu`, the reference vehicles): Vu_khi, Phuong_tien, Boss, Can_cu, Che_do, AI, Chien_dich (+ Thoai_tham_chieu
+  for the speakers), Ban_do, Hieu_ung, Model, Meta. The comparison sheets are long (one row a parameter).
+- **Real-world columns.** Calibre from the "NN mm" of the weapon's real name in balance.json; rates, practical rates
+  and the loader kind from the REAL row; the WARHEAD figure is the warhead's mass, not its explosive, so it has its own
+  column (`ngoai_doi_khoi_luong_dau_dan_kg`) and the explosive stays NEED_SOURCE; vehicle sizes from reference_real.json
+  (live lookups through `input_kich_thuoc_that`, copy-tested); a year in brackets of the balance sheet's reference text
+  goes to `nam_ghi_trong_nguon`, never to `nam_dua_vao_su_dung` (it may be a design year); spec 02's `ngoai_doi_nam` is
+  the common `nam_dua_vao_su_dung`. Country, mass, top speed, crew, engine, range, muzzle velocity, ranges: NEED_SOURCE.
+  A support card's row leaves the vehicle columns empty (not a vehicle).
+- **Comparisons (12.4).** Rate: the gap one barrel takes for one round, exactly the audit L1 measure (its ratio is
+  01/Vu_khi_suy_ra.ty_le_chu_ky_so_voi_ngoai_doi); real gap = 60 / max rate, divided by 0.7 for guns (the game's 30 %
+  rule); band 0.6-2. Out of band is intentional when fix_weapon_reasons.json gives a reason, or when the audit raised no
+  TOO FAST / TOO SLOW flag (its own exemptions: practical rate for MGs / autocannons / AA, salvo interval for rockets and
+  stores). Size: the data's modelSize against the real size, band 0.7-1.4; aircraft (0.4 x, the balance sheet's drawing
+  guide), ships (reference_dimensions.md) and bosses (1.3-1.5 x of the base model) are intentional; proportions W/L and
+  H/L band 0.9-1.1 (MODEL_STANDARD 3.1), turtle_tank's H/L excused by its `judge`. Damage per warhead kg and core per
+  cube root of warhead kg: ratio only. 03 and 04 compare their bosses' and towers' weapons through `input_nhip_that` /
+  `input_ty_le_nhip` (copies of 01). File 10's comparison sheet is a KHONG_CO row (the sizes are compared in 02-04, so
+  no deviation is counted twice); 05-09 and 11 have no real-world number: KHONG_CO.
+- **Unexplained deviations.** Every co_lech_lon row without a reason gets a 12/Cho_quyet line (`TC####`, 139 today) and
+  its id in `cho_quyet_id`.
+- **Game mechanics.** Tham_chieu_game_co_che holds every game a reference row names (aggregated by game and mechanic,
+  with the sheets and entities), the AI research's towers, bosses, AI techniques and overview, the balance sheet's
+  proposals (`muc_ap_dung` = de_xuat) and the games named in DECISIONS "References" passages. An item of a "Tham khảo
+  game" cell that is not a game (a war, a real system, a lower-case phrase) stays out of the game columns (noted in
+  diem_giong).
+- **Edge cases.** unit_refs keys of branches that no longer exist (`minefield.at`, `minefield.scatter`,
+  `cp_relay.hardened`, `cp_relay.loot`) are rows of 04 under their base tower with the reason; HESCO and T-wall names come
+  from DECISIONS lines (ban_dau_doan), the gun wall is NEED_SOURCE; sounds are grouped by group and calibre tier, their
+  packs are source rows, the real sound's character is NEED_SOURCE. File 13 also has Tham_chieu_de_xuat (the proposal
+  sheets' references) and Tham_chieu_decisions (the 13 DECISIONS reference passages).
+- **Check 4.** `01/Vu_khi.thoi_gian_bay_toi_tam_s` gains its `_game` port (CombatSystem.cs Fire: range / speed, a warned
+  round lands at its warning time); the formula follows the port; a bomb dropped from an aircraft depends on the
+  aircraft's speed, so its `_game` is NEED_CODE_CHECK and its formula is not compared.
+- **12.6 in the reports.** COVERAGE.md and SELF_CHECK.md gain the reference section (entity coverage, orphan nguon_id,
+  real-world cells with a source or NEED_SOURCE, game mechanics, co_lech_lon counts, reliability shares by file). It is
+  reported, not a CI gate (CI still gates coverage, keys, determinism and secrets). The diff needed no change: it
+  compares every sheet of every file, so the new sheets show up as added.

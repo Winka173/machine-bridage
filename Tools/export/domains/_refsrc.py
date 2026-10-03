@@ -38,7 +38,7 @@ EST = re.compile(r"(\best\.|\(est\b|\best\b\.?\s|ước đoán|ước lượng|u
 
 
 def slug(text: str, n: int = 44) -> str:
-    t = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode()
+    t = unicodedata.normalize("NFKD", text.replace("đ", "d").replace("Đ", "D")).encode("ascii", "ignore").decode()
     t = re.sub(r"[^A-Za-z0-9]+", "_", t).strip("_").lower()
     return t[:n].rstrip("_") or "x"
 
@@ -76,7 +76,23 @@ class Registry:
         return rid
 
     def repo(self, path: str, title: str, note: str = "", url: str = "") -> str:
-        return self.add("tai_lieu_repo", title, url=url, duong_dan_repo=path, ghi_chu=note)
+        """A repo document: id R_<file stem> (the path names it; the same path is one row)."""
+        for rid, r in self.rows.items():
+            if r["loai"] == "tai_lieu_repo" and r["duong_dan_repo"] == path:
+                if note and not r["ghi_chu"]:
+                    r["ghi_chu"] = note
+                return rid
+        stem = path.rstrip("/").rsplit("/", 1)[-1].rsplit(".", 1)[0]
+        rid = f"R_{slug(stem, 40)}"
+        n = 2
+        while rid in self.rows:
+            rid = f"R_{slug(stem, 40)}_{n}"
+            n += 1
+        self.by_title[("tai_lieu_repo", title.strip().lower())] = rid
+        self.rows[rid] = {"loai": "tai_lieu_repo", "tieu_de": title.strip(), "tac_gia_to_chuc": "", "nam": "", "url": url,
+                          "ngay_truy_cap": "", "do_tin_cay": LOAI_TIN["tai_lieu_repo"], "ghi_chu": note,
+                          "duong_dan_repo": path, "trich_tu": ""}
+        return rid
 
     # ------------------------------------------------------------------ citations inside a note
     def cite(self, text: str, carrier: str, accessed: str = "") -> tuple[list[str], bool]:
