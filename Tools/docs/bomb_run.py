@@ -98,6 +98,8 @@ def parameter_table(game, h):
 
 def compare_table(h):
     import bom
+    if not hasattr(bom, 'read_trace'):  # the pack no longer carries the drop traces (pack pass 1)
+        return "<div class='pending'><div>chờ vết thả (bảng so sánh trước/sau không còn trong gói xuất)</div></div>"
     before = bom.read_trace(ROOT / bom.BEFORE)
     after = bom.read_trace(ROOT / bom.AFTER)
     if not before or not after:
