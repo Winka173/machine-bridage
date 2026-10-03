@@ -588,6 +588,13 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Aeroplanes: flying on past the target before turning in for the next run.</summary>
         internal bool RunExtending;
 
+        /// <summary>
+        /// The bomb-run fix, pass 2: a bomber laying a stick flies straight and level on <see cref="StraightHeading"/> until this
+        /// sim time (its stick's straight-flight time: the stick, the fall, a second more and 40 m clear after the last bomb).
+        /// </summary>
+        internal double StickStraightUntil = double.NegativeInfinity;
+        internal float StraightHeading;
+
         /// <summary>A VTOL jet leaving its hover turns away on this heading (not through the target), and to which side the next time.</summary>
         internal float BreakHeading;
         internal bool BreakAway;
