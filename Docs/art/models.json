@@ -1037,7 +1037,7 @@
   },
   "heavy_turret": {
     "file": "heavy_turret.glb",
-    "triangles": 9514
+    "triangles": 5630
   },
   "heavy_turret_a": {
     "file": "heavy_turret_a.glb",
@@ -1045,7 +1045,7 @@
   },
   "heavy_turret_b": {
     "file": "heavy_turret_b.glb",
-    "triangles": 11958
+    "triangles": 5910
   },
   "hedge": {
     "file": "hedge.glb",
