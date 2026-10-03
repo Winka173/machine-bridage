@@ -2788,6 +2788,16 @@
    "changes": [
     "FLAG fire_control_centre: triangles 2,874 -> 4,990 (+73.6%); vertices 2,916 -> 7,670 (+163.0%); meshes 25 -> 42 (+68.0%); renderers 25 -> 42 (+68.0%); materials 12 -> 13 (+8.3%); materialSlots 25 -> 42 (+68.0%); fileBytes 171,612 -> 408,872 (+138.3%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "troop_shelter"
+   ],
+   "reason": "P35 wave 3: troop_shelter rebuilt (lane B)",
+   "changes": [
+    "FLAG troop_shelter: triangles 3,158 -> 3,914 (+23.9%); vertices 3,155 -> 5,460 (+73.1%); meshes 16 -> 31 (+93.8%); renderers 16 -> 31 (+93.8%); materials 11 -> 15 (+36.4%); materialSlots 16 -> 31 (+93.8%); fileBytes 175,060 -> 295,336 (+68.7%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -55324,22 +55334,24 @@
   },
   "troop_shelter": {
    "file": "troop_shelter.glb",
-   "fileBytes": 175060,
-   "sha1": "b752a66e4129548f",
+   "fileBytes": 295336,
+   "sha1": "b98800ba9738f997",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 16,
-   "meshes": 16,
-   "materials": 11,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 31,
+   "meshes": 31,
+   "materials": 15,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 16,
-   "submeshes": 16,
-   "materialSlots": 16,
-   "materialsUsed": 11,
-   "triangles": 3158,
-   "vertices": 3155,
+   "renderers": 31,
+   "submeshes": 31,
+   "materialSlots": 31,
+   "materialsUsed": 15,
+   "triangles": 3914,
+   "vertices": 5460,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -55347,36 +55359,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 54,
-   "openEdges": 138,
+   "loosePieces": 152,
+   "openEdges": 4,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -3.0,
-    -0.04,
-    -2.8352
+    -2.475,
+    -0.0228,
+    -3.01
    ],
    "boundsMax": [
-    3.0,
-    2.55,
-    3.01
+    2.475,
+    2.24,
+    3.075
    ],
    "size": [
-    5.845,
-    6.0,
-    2.59
+    6.085,
+    4.95,
+    2.263
    ],
    "center": [
     0.0,
-    1.255,
-    0.087
+    1.109,
+    0.033
    ],
-   "structureHash": "a32055d5a849a297",
+   "structureHash": "10b8873c8a3b5e59",
    "color0": {
-    "mean": 0.5972,
-    "min": 0.2219,
-    "max": 0.9987,
-    "p05": 0.3066,
-    "p95": 0.8802,
+    "mean": 0.5812,
+    "min": 0.0603,
+    "max": 1.0,
+    "p05": 0.1221,
+    "p95": 0.9634,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -55386,18 +55398,33 @@
     "Antenna",
     "Base",
     "Berm",
-    "Camo_net",
-    "Camo_net_garnish",
-    "Camo_net_garnish.001",
-    "Camo_net_garnish.002",
+    "Berm_toe",
+    "Bunker",
     "Coping",
-    "Crate_bands",
+    "Door_frames",
+    "Door_slots",
+    "Doors",
     "Doorway",
+    "Duckboards",
+    "Form_ties",
+    "Glass",
+    "Jerrycans",
+    "Kit_hinges",
+    "Kit_latches",
+    "Lamp_guards",
+    "Lamp_rims",
+    "Lamps",
+    "Periscope",
     "Ramp",
+    "Ramp_walls",
     "Roof",
+    "Roof_deck",
     "Roof_ribs",
     "Sandbags",
-    "Vents"
+    "Stones",
+    "Team_band",
+    "Vents",
+    "Weeds"
    ],
    "category": "structure",
    "hd": false,
