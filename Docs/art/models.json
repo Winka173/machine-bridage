@@ -941,7 +941,7 @@
   },
   "gmlrs": {
     "file": "gmlrs.glb",
-    "triangles": 126
+    "triangles": 150
   },
   "gps_jammer_vehicle": {
     "file": "gps_jammer_vehicle.glb",
@@ -1297,7 +1297,7 @@
   },
   "mlrs": {
     "file": "mlrs.glb",
-    "triangles": 2652
+    "triangles": 7472
   },
   "mobile_fortress": {
     "file": "mobile_fortress.glb",
