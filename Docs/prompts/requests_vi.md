@@ -253,3 +253,25 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 "update lại mạnh nhất là opus, không được dùng fable mọi giá".
 - 03/10 "RÚT GỌN BỘ XUẤT THÀNH GÓI CÂN BẰNG VÀ ĐƯA MỌI GIÁ TRỊ TRONG MÃ RA DỮ LIỆU" + "BỔ SUNG: CẤU TRÚC GÓI GỌN" (nguyên văn: export_pack_vi.txt). Thay mọi tin nhắn rút gọn / vá bộ xuất trước đó.
 - 03/10 "mốc test tạm bỏ, còn 1 đợt cân bằng" (dừng chạy mốc test và kiểm hash phát lại; chỉ kiểm compile).
+
+## Play-test 13, 03/10 (bản fa4c5d4)
+- flare ngoài đời xem đúng màu chưa đáng lẽ nó phải sáng, và làm nó nhỏ lại và khói ngắn lại, nên vẽ lại cho chuẩn, ngoài ra 1 pháo sáng có thể chặn nhiều tên lửa nếu nó tới cùng lúc, cps cũng vậy, cps sẽ yếu hơn
+- các máy bay đang có bóng ô vuông màu tím, bug quan trọng
+- boss leviathan: nó nằm ngang là nằm ngang bãi biển, các phương tiện kia đang ở dưới biển, phải trên mặt biển, vẫn còn rung khi bắn, và đó là súng đại bác, bắn là bắn liền tại sao có thời gian delay, và tại sao có vùng mục tiêu, chỉ có đòn lớn với có, và tại sao vùng mục tiêu bị thành ô vuông màu tím => cái này tất cả boss và phương tiện đều bị, các model tháp súng đáng lẽ phải có thể quay để bắn
+- tất cả boss không được nhích 1 px nào khi bắn, juggernaut đang ở đường ray mà nhích nhích không hề logic
+- tacticle ballistic launcher model bị lỗi khi bắn, bệ phóng lên thì tên lửa phải theo luôn, bệ phóng đi xuyên tên lửa
+- các thứ liên quan tới drone check xem có vào bảng tống hợp data luôn chưa, tốc bay, ký bom, size drone, size nổ. ... 
+- bridging vehicle: xóa
+- fpv drone carrier nhìn như xe bus không phải, vẽ lại
+- vài phương tiện như aerial tanker, heavy lift heli sát thương súng là 0
+- xe gound cruise missle vehicle khi bắn phải nâng thùng tên lửa lên
+- thả bom nhìn ổn, nhưng ví dụ có 4 ô, mục tiêu ở ô thứ 2, máy bay luôn thả ô 2 3 4, đáng lẽ phải thả trước đó là 1 2 3, và update AI thả dính càng nhiều càng tốt
+- nhiều boss khác cũng vậy như inferno flame behemoth, đừng dùng cái gì gọi là rocket artillery, đáng lẽ là đại bác, súng bắn tên lửa khá kì, và tên lửa nó bay quá chậm
+- tiếng machine gun khi va chạm là tiếng keng keng, đổi tiếng khác thực tế hơn, cả tiếng auto canon của armoured car cũng vậy, tiếng va chạm keng keng, cả main gun của light tank, nếu do chênh giáp quá thì làm nó bớt trầm chứ không phải thành keng keng luôn
+- boss jotunn cũng có 1 vũ khí mà đạn bay siêu chậm, check xem vũ khí nào bắn
+- fenrir cũng vậy, tên lửa bay khá chậm, nếu được phóng từ ống thì phải bay lên cao và vòng xuống, nó đang đi thẳng nhìn không hợp lý => check này cho các boss và phương tiện luôn
+- biển nhìn không thực xíu nào
+- các máy bay khi mà vào chiến trường tốc độ luôn rất cao so với tốc độ chính nó, sửa lại
+- vài phương tiện vào in action preview nhưng không bắn và không làm gì hết như demolition line vehicle, nếu nó phục vụ mục đích đặc biệt thì preview phải cho nó làm
+- các boss bay như icarus mới vào cho thẳng xuống tầng bay thấp, không cần hiệu ứng hạ dần
+=> nhiều thứ đang có vẻ sai logic, trước khi làm phải suy nghĩ làm sao cho logic ngoài đời
