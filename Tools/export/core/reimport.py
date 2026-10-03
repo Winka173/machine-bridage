@@ -59,7 +59,7 @@ BALANCE = "Assets/MachineBrigade/Resources/Data/balance.json"
 class Reference:
     """The export rebuilt from the current tree, with the per-cell source leaves recorded."""
 
-    def __init__(self, ex, base_ref: str | None):
+    def __init__(self, ex, base_ref: str | None, game: dict | None = None):
         self.cells: dict[tuple, list] = {}
         orig = model.Row.mark
         cells = self.cells
@@ -70,7 +70,7 @@ class Reference:
 
         model.Row.mark = mark
         try:
-            self.ctx, *_ = ex.build(base_ref)
+            self.ctx, *_ = ex.build(base_ref, False, game)
         finally:
             model.Row.mark = orig
         smap = self.ctx.sheet_map  # the marks were recorded under the domain files' names: follow the sheets to the pack
@@ -248,7 +248,8 @@ def precondition(cur, expected, new) -> str:
 def scan(ref: Reference, target: Path) -> dict:
     root, files = resolve_inputs(target)
     meta = export_meta(root)
-    rows_out, rejected, notes = [], [], {"cells_compared": 0, "drift_cells": 0, "rows_missing": 0, "columns_missing": 0}
+    rows_out, rejected, notes = [], [], {"cells_compared": 0, "drift_cells": 0, "rows_missing": 0, "columns_missing": 0,
+                                         "game_cells_skipped": 0, "game_rows_skipped": 0}
     warnings = []
     srcs = ref.ctx.sources
     now = {"commit": repo.head_commit(),
@@ -297,6 +298,9 @@ def scan(ref: Reference, target: Path) -> dict:
                         continue
                     rid = str(line[0]) if line[0] is not None else ""
                     ref_line = ref_rows.get(rid)
+                    if ref_line is None and set(ref_rows) <= {"can_doc_ma"}:
+                        notes["game_rows_skipped"] += 1  # a sheet the game.json fills (one marker row without it)
+                        continue
                     if ref_line is None or rid in seen:
                         why = "duplicate id in the sheet" if rid in seen else \
                             "row id not in the export (adding rows or editing an id is not imported)"
@@ -316,6 +320,9 @@ def scan(ref: Reference, target: Path) -> dict:
                         before = ref_line[pos[h]]
                         notes["cells_compared"] += 1
                         if same(x, before):
+                            continue
+                        if before == model.NEED_CODE_CHECK:  # a value game.json gave the pack, which this rebuild does not have
+                            notes["game_cells_skipped"] += 1
                             continue
                         if old_line is not None and h in old_line and csv_value(x) == old_line[h] \
                                 and not (isinstance(x, str) and x.startswith("=")):
@@ -376,7 +383,7 @@ def scan(ref: Reference, target: Path) -> dict:
                             "data_file": sid, "id_path": id_path(src.data, path), "c01_path": c01_path(sid, src.data, path),
                             "precondition_now": precondition(cur, exp, new),
                         })
-                notes["rows_missing"] += sum(1 for k in ref_rows if k not in seen)
+                notes["rows_missing"] += sum(1 for k in ref_rows if k not in seen and k != "can_doc_ma")
         finally:
             wb.close()
 
@@ -385,6 +392,10 @@ def scan(ref: Reference, target: Path) -> dict:
         b = bundles.setdefault(r["bundle_id"], {"bundle_id": r["bundle_id"], "Đối tượng": r["entity_id"], "Số dòng": 0,
                                                 "Trạng thái": "DECIDE", "Cần viết code": "Không", "depends_on": ""})
         b["Số dòng"] += 1
+    if notes["game_cells_skipped"] or notes["game_rows_skipped"]:
+        warnings.append(f"{notes['game_cells_skipped']} cells and {notes['game_rows_skipped']} rows hold values from game.json "
+                        "(the pack's Phien_ban.game_json_sha256) that this rebuild does not have; they are not compared "
+                        "(pass --game-json <game.json> to compare them)")
     if notes["rows_missing"]:
         warnings.append(f"{notes['rows_missing']} export rows are missing from the xlsx: deleting rows is not imported (ignored)")
     return {"source": target.name, "sha256": digest.hexdigest(), "kind": "export_import (Tools/export import, pass 9)",
@@ -447,7 +458,7 @@ def main(args, ex) -> int:
         return 2
     meta = export_meta(root)
     base = base_from_meta(meta) if meta else (repo.resolve_ref(args.base) if args.base else None)
-    ref = Reference(ex, base)
+    ref = Reference(ex, base, ex.load_game(getattr(args, "game_json", None)))
     man = scan(ref, target)
     out = Path(args.out) if args.out else (root or target.parent) / "_qa" / "import"
     if not out.is_absolute():

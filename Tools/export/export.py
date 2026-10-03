@@ -182,7 +182,7 @@ current/
 ## Cân bằng lại: nhập ngược (5 dòng)
 
 1. Sửa số trong cột dữ liệu gốc của file xlsx (cột `Schema.sua_duoc` = co); không sửa id, nguon, raw_json, cột công thức, cột `_game`.
-2. `python Tools/export/export.py import Docs/export/current --dry-run` (hoặc một file xlsx đã sửa): so với dữ liệu hiện tại.
+2. `python Tools/export/export.py import Docs/export/current --dry-run` (hoặc một file xlsx đã sửa; thêm `--game-json <game.json>` để so cả ô lấy từ game.json): so với dữ liệu hiện tại.
 3. Ra `_qa/import/manifest_import.json` và `.md` (bundle_id, entity_id, field_path, expected_before, new_value, status = DECIDE).
 4. Đặt status APPLY cho dòng muốn áp, rồi `python Tools/balance/p29_apply.py --manifest <json> --dry-run`; OK / ALREADY_APPLIED / CONFLICT.
 5. Chạy lại không `--dry-run` để áp theo gói; không bao giờ sửa balance.json trực tiếp.
