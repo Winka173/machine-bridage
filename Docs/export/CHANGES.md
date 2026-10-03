@@ -1190,3 +1190,13 @@ Unity / test.
 | PT14-M4-4 | `vehicle_hangar` `model`, `modelSize` | drone_hangar, [8, 8, 4] | vehicle_hangar_base, [8.0, 7.5, 4.93] | model riêng (prop bản đồ vehicle_hangar giữ file) |
 | PT14-M4-5 | `aircraft_hangar` `model`, `modelSize` | drone_hangar, [8, 8, 4] | aircraft_hangar, [8.0, 7.72, 5.32] | model riêng |
 | PT14-M4-6 | `laser_ad_station` `modelSize` | [6.0, 4.0, 4.6] | [6.0, 3.85, 6.6] | vẽ lại thành tháp (dài giữ 6 m) |
+
+## Play-test 14 model wave M6 (lane A): MG bunker port guns normalised
+
+Nhánh `feature/pt14-m6`. Lý do: `Docs/DECISIONS.md` "Play-test 14 model wave M6 (lane A)". Chỉ lý thuyết, không chạy
+Unity / test.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-M6-1 | `bunker_pkm` `damage` | 5.5 (kế thừa mg_coax) | 1.6 (~10.5 DPS duy trì mỗi súng, thô) | 4 súng lỗ châu mai giữ nguyên; sản lượng chính diện mg_bunker chỉ +20 % so với trước wave M4 |
+| PT14-M6-2 | sản lượng thô mg_bunker (NSV ~106.6 DPS duy trì) | +36.2 / súng: +34 % (một cung), +68 % (chính diện) | +10.5 / súng: +9.9 % (một cung), +19.7 % (chính diện), 0 (phía sau) | outgoingDamageMult giữ nguyên (0.6086); .twin (NSV đôi ~123.4 DPS) chính diện +17 %; .flame không có súng cổng |
