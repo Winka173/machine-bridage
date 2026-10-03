@@ -3010,6 +3010,16 @@
    "changes": [
     "FLAG missile_boat: triangles 630 -> 5,752 (+813.0%); vertices 678 -> 7,933 (+1070.1%); meshes 10 -> 52 (+420.0%); renderers 10 -> 52 (+420.0%); materials 6 -> 13 (+116.7%); materialSlots 10 -> 52 (+420.0%); fileBytes 44,580 -> 433,104 (+871.5%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "sea_corvette"
+   ],
+   "reason": "P35 wave 6: sea_corvette rebuilt from scratch",
+   "changes": [
+    "FLAG sea_corvette: triangles 1,884 -> 7,638 (+305.4%); vertices 1,914 -> 11,332 (+492.1%); meshes 22 -> 59 (+168.2%); renderers 22 -> 59 (+168.2%); materials 8 -> 10 (+25.0%); materialSlots 22 -> 59 (+168.2%); fileBytes 117,832 -> 601,356 (+410.4%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -48907,22 +48917,24 @@
   },
   "sea_corvette": {
    "file": "sea_corvette.glb",
-   "fileBytes": 117832,
-   "sha1": "c8f2961cbe3291c4",
+   "fileBytes": 601356,
+   "sha1": "1b129f26aa434c28",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 29,
-   "meshes": 22,
-   "materials": 8,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 67,
+   "meshes": 59,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 22,
-   "submeshes": 22,
-   "materialSlots": 22,
-   "materialsUsed": 8,
-   "triangles": 1884,
-   "vertices": 1914,
+   "renderers": 59,
+   "submeshes": 59,
+   "materialSlots": 59,
+   "materialsUsed": 10,
+   "triangles": 7638,
+   "vertices": 11332,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -48930,36 +48942,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 32,
-   "openEdges": 0,
+   "loosePieces": 343,
+   "openEdges": 128,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -2.83,
+    -3.0927,
     -1.4,
     -15.0
    ],
    "boundsMax": [
-    2.83,
-    10.825,
+    3.075,
+    10.89,
     15.0
    ],
    "size": [
     30.0,
-    5.66,
-    12.225
+    6.168,
+    12.29
    ],
    "center": [
-    0.0,
-    4.712,
+    -0.009,
+    4.745,
     0.0
    ],
-   "structureHash": "53b09ea8ef0706e0",
+   "structureHash": "7d8ffcf4b2e0b132",
    "color0": {
-    "mean": 0.7281,
-    "min": 0.278,
-    "max": 0.9987,
-    "p05": 0.4393,
-    "p95": 0.9898,
+    "mean": 0.6495,
+    "min": 0.0619,
+    "max": 1.0,
+    "p05": 0.2048,
+    "p95": 0.8137,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -48968,6 +48980,7 @@
      "Muzzle_mg"
     ],
     "mount": [
+     "Mount_APS",
      "Mount_gun",
      "Mount_mg"
     ],
@@ -48981,44 +48994,84 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Anchor_chain",
+    "Antennas",
+    "Aps_faces",
+    "Boat_tubes",
+    "Boats",
+    "Bollards",
     "Boot_top",
+    "Breakwater",
     "Bridge_glass",
+    "Bridge_wings",
     "CIWS_armor_mg",
     "CIWS_barrels_mg",
     "CIWS_body_mg",
     "CIWS_bores_mg",
-    "CIWS_dark_mg",
     "CIWS_glass_mg",
     "CIWS_ring_mg",
+    "Canister_frames",
+    "Davits",
     "Deck",
+    "Deck_lockers",
+    "Door_slats",
+    "Doors",
+    "Exhausts",
+    "Fairleads",
+    "Foredeck_fittings",
     "Funnel",
     "Funnel_cap",
     "Gun_barrel",
+    "Gun_brake",
     "Gun_house",
+    "Gun_ring",
+    "Gun_vents",
     "Hangar",
     "Hangar_door",
+    "Hangar_fittings",
+    "Hawse",
     "Hull",
+    "Hull_low",
+    "Hull_seams",
+    "Kit_cables",
+    "Ladders",
+    "Life_rafts",
     "Mast",
+    "Mast_steel",
+    "Missile_canisters",
+    "Mount_APS",
     "Mount_gun",
     "Mount_mg",
     "Muzzle_gun",
     "Muzzle_mg",
+    "Nav_lights",
+    "Nav_lights.001",
     "Part_gun",
     "Part_mg",
+    "Porthole_rims",
+    "Portholes",
     "Radar",
     "Radar_bar",
+    "Radar_face",
     "Radar_pedestal",
     "Rails",
-    "Superstructure"
+    "Roof_fittings",
+    "Superstructure",
+    "Team_band",
+    "Vls",
+    "Vls_hatches",
+    "Windlass"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "vertices 11,332 over the ground normal budget 10,100"
+   ],
    "units": [
     "sea_corvette"
    ],
-   "movingParts": 5,
+   "movingParts": 6,
    "budgetClass": "ground"
   },
   "sea_cruiser": {
