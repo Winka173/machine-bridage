@@ -422,8 +422,152 @@ def _cv_roof(a):
     a.part('Team_band', 'Team').box((1.2, .6, .012), loc=(0, .3, 1.415), bevel=0)
 
 
+# ============================================================================= railgun_truck (its own vehicle)
+def railgun_truck(a):
+    """See the module docstring. Runtime: Turret (the gun's yaw pivot on the rear deck), Muzzle_main (the rails'
+    mouth), Point_fire, Point_exhaust. The charge glow lives in Main_cannon_glow and Radiator_glow (Energy)."""
+    R, WD, HX = .55, .4, .93
+    _wheels(a, (-3.55, -2.3, 1.55, 2.8), R, WD, HX, nuts=0, springs=False)
+    _rails(a, -4.6, 4.7, .95, .5, cross=(-4.2, -2.9, -1.0, .6, 2.2, 4.4))
+    for y0, y1 in ((-4.1, -1.75), (1.0, 3.35)):
+        _fender(a, y0, y1, HX, 1.2, w=.46)
+    for s in (-1, 1):
+        for y in (-2.92, 2.2):     # bogie beams between each axle pair
+            a.part('Suspension', 'Steel').box((.1, 1.4, .14), loc=(s * (HX - .32), y + (.0 if y > 0 else -.0), .78),
+                                              bevel=0)
+        a.part('Mud_flaps', 'Rubber').box((.42, .02, .4), loc=(s * HX, 3.38, .92), bevel=0)
+        a.part('Tail_lamps', 'LavaGlow').box((.12, .02, .07), loc=(s * .95, 4.9, 1.05), bevel=0)
+        K.outrigger(a.part('Outriggers', 'Armor'), a.part('Outrigger_pads', 'Steel'), (s * .75, 4.5, 1.0), s,
+                    reach=.25, drop=.62, w=.16)
+    _rail_cab(a)
+    _rail_power(a)
+    _rail_gun(a)
+    a.pivot('Point_fire', (0, -1.35, 2.3))
+    a.pivot('Point_exhaust', (1.0, -3.05, 2.3))
+    k.clean(a)
+
+
+def _rail_cab(a):
+    """The low armoured cab-over cab (kept under the rails' travel line): faceted front with two narrow armoured
+    windscreens, side doors with vision blocks, the bumper with the winch, lamps, the travel rest on its roof."""
+    y0, y1 = -4.86, -2.95
+    cab = a.part('Body', 'Team')
+    k.sharp_loft(cab, [[(-1.18, y0 + .05, .95), (1.18, y0 + .05, .95), (1.18, y1, .95), (-1.18, y1, .95)],
+                       [(-1.18, y0, 1.45), (1.18, y0, 1.45), (1.18, y1, 1.45), (-1.18, y1, 1.45)],
+                       [(-1.0, y0 + .45, 2.1), (1.0, y0 + .45, 2.1), (1.02, y1, 2.12), (-1.02, y1, 2.12)]],
+                 chamfer=.05)
+    for x0, x1 in ((.95, .1), (-.1, -.95)):
+        K.windscreen(a, [(x0, y0 + .06, 1.52), (x1, y0 + .06, 1.52), (x1, y0 + .38, 1.98), (x0, y0 + .38, 1.98)],
+                     frame_mat='Armor', wipers=1, bar=.07)
+    for s in (-1, 1):
+        a.part('Glass', 'Glass').box((.02, .36, .26), loc=(s * 1.13, -3.9, 1.7), bevel=0)
+        a.part('Armor', 'Armor').box((.03, .46, .36), loc=(s * 1.135, -3.9, 1.7), bevel=0)
+        a.part('Door_lines', 'Armor').box((.02, .03, .9), loc=(s * 1.18, -3.3, 1.4), bevel=0)
+        K.handle(a.part('Kit_handles', 'Steel'), (s * 1.19, -3.5, 1.35), (s * 1.19, -3.35, 1.35), (s, 0, 0), h=.04)
+        K.lamp(a, (s * .85, y0 - .005, 1.15), (0, -1, 0), r=.08, guard=True)
+        a.part('Light_rims', 'Armor').box((.22, .03, .18), loc=(s * .85, y0 + .005, 1.15), bevel=0)
+        a.part('Steps', 'Steel').box((.3, .34, .03), loc=(s * 1.1, -3.0, .72), bevel=0)
+    K.grille(a, (0, y0 - .005, 1.22), 1.0, .3, facing=(0, -1, 0), slats=4, frame_mat='Armor')
+    a.part('Bumper', 'Armor').box((2.4, .18, .26), loc=(0, y0 - .02, .92), bevel=0)
+    for x in (-.7, .7):
+        K.tow_hook(a.part('Kit_tow', 'Steel'), (x, y0 - .1, .9), facing=(0, -1, 0), size=.09)
+    # The travel rest: a padded yoke on two struts on the cab roof, under the rails.
+    rest = a.part('Rest', 'Steel')
+    for s in (-1, 1):
+        rest.tube([(s * .45, -3.6, 2.12), (s * .22, -3.6, 2.42)], .04, seg=6)
+    rest.box((.6, .16, .06), loc=(0, -3.6, 2.44), bevel=0)
+    a.part('Rest_pads', 'Rubber').box((.5, .14, .04), loc=(0, -3.6, 2.49), bevel=0)
+    K.whip_antenna(a.part('Antennas', 'Steel'), (-.9, -3.1, 2.12), h=.7, lean=.05)
+
+
+def _rail_power(a):
+    """Behind the cab: the gas-turbine generator house with its intake and the exhaust stack, the radiator banks on
+    both sides with the glowing cores (Radiator_glow), the capacitor bank (Tanks) in its shielded rack (MetalSheet),
+    the bus cables to the gun, the bed."""
+    gen = a.part('Body', 'Team')
+    K.chamfer_box(gen, (2.2, 1.8, 1.0), loc=(0, -1.85, 1.65), c=.05)
+    K.grille(a, (0, -2.76, 1.75), 1.2, .5, facing=(0, -1, 0), slats=5, frame_mat='Armor')
+    k.lathe(a.part('Exhaust', 'Steel'), [(.1, 0), (.1, .9), (.12, .92), (.12, 1.0)], loc=(1.0, -3.05, 1.3), seg=8)
+    K.soot(a, (1.0, -3.05, 2.3), radius=.35, k=.5)
+    for s in (-1, 1):
+        rad = a.part('Radiators', 'Armor')
+        K.chamfer_box(rad, (.14, 1.5, .8), loc=(s * 1.15, -1.85, 1.6), c=.02)
+        for j in range(6):
+            a.part('Radiator_glow', 'Energy').box((.02, .18, .62), loc=(s * 1.225, -2.45 + j * .24, 1.6), bevel=0)
+            a.part('Radiator_fins', 'Steel').box((.04, .03, .7), loc=(s * 1.235, -2.33 + j * .24, 1.6), bevel=0)
+    a.part('Bed', 'Armor').box((2.4, 5.6, .1), loc=(0, 1.9, 1.15), bevel=0)
+    # The capacitor bank: three rows of drums in a shielded rack, its bus bars and cables to the turret.
+    rack = a.part('Capacitor_rack', 'MetalSheet')
+    rack.box((2.1, 2.2, .06), loc=(0, .1, 1.98), bevel=0)
+    for s in (-1, 1):
+        rack.box((.06, 2.2, .78), loc=(s * 1.05, .1, 1.6), bevel=0)
+    tanks = a.part('Tanks', 'Steel')
+    for i in range(3):
+        for j in range(4):
+            tanks.cyl(.2, .7, loc=(-.62 + i * .62, -.75 + j * .55, 1.56), seg=8, bevel=0)
+            a.part('Tank_caps', 'Undercarriage').cyl(.12, .05, loc=(-.62 + i * .62, -.75 + j * .55, 1.93), seg=6,
+                                                     bevel=0)
+    bus = a.part('Bus_bars', 'Alloy')
+    for x in (-.3, .3):
+        bus.box((.05, 2.0, .04), loc=(x, .1, 2.03), bevel=0)
+    cab = a.part('Kit_cables', 'Rubber')
+    for x in (-.5, .5):
+        cab.tube([(x, 1.2, 1.95), (x * .7, 1.9, 1.6), (x * .4, 2.4, 1.5)], .05, seg=6)
+    K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.36, .9, .36), (1.0, 4.1, 1.38), bands=1)
+    K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.36, .9, .36), (-1.0, 4.1, 1.38), bands=1)
+    a.part('Team_band', 'Team').box((2.21, .3, .012), loc=(0, -1.85, 2.155), bevel=0)
+
+
+def _rail_gun(a):
+    """The gun on the Turret pivot: the turntable and the armoured mount with its trunnions, the breech block and
+    the loader, the two rails (Main_cannon_rails) held in insulator bands (Main_cannon_bands) with the glowing
+    bore between them (Main_cannon_glow), the cooling ribs, the muzzle frame (Muzzle_brake), the elevation rams."""
+    t = a.pivot('Turret', (0, 2.95, 1.3))
+    k.lathe(a.part('Turret_steel', 'Steel', t), [(.8, 0), (.84, .02), (.84, .12), (.78, .14)], seg=16)
+    K.bolt_ring(a.part('Kit_bolts', 'Steel', t), (0, 0, .14), (0, 0, 1), .72, 8)
+    body = a.part('Turret_body', 'Team', t)
+    k.sharp_loft(body, [[(-.9, -.7, .14), (.9, -.7, .14), (.9, .9, .14), (-.9, .9, .14)],
+                        [(-.75, -.5, .9), (.75, -.5, .9), (.75, .85, .9), (-.75, .85, .9)]], chamfer=.04)
+    arm = a.part('Turret_armor', 'Armor', t)
+    for s in (-1, 1):
+        K.chamfer_box(arm, (.14, 1.2, .5), loc=(s * .55, -.1, 1.15), c=.02)
+        a.part('Turret_steel', 'Steel', t).cyl(.12, .1, loc=(s * .64, 0, 1.25), rot=(0, R90, 0), seg=10, bevel=0)
+    # Breech and loader.
+    K.chamfer_box(a.part('Main_cannon_breech', 'Armor', t), (.75, 1.0, .55), loc=(0, .1, 1.35), c=.05)
+    K.chamfer_box(a.part('Breech_loader', 'Steel', t), (.4, .5, .3), loc=(0, .85, 1.3), c=.03)
+    a.part('Kit_cables', 'Rubber', t).tube([(.3, .6, 1.4), (.42, .3, 1.5), (.42, -.2, 1.42)], .04, seg=6)
+    # The rails, the bore glow between them, the insulator bands and ribs along them.
+    y0, y1, zc = -7.85, -.35, 1.35
+    rails = a.part('Main_cannon_rails', 'Steel', t)
+    for s in (-1, 1):
+        k.extrude(rails, [(s * .1 - .06, -.13), (s * .1 + .06, -.13), (s * .1 + .06, .13), (s * .1 - .06, .13)],
+                  y1 - y0, loc=(0, (y0 + y1) / 2, zc), rot=(R90, 0, 0), axis='Z', chamfer=.015, ends=(True, True))
+    a.part('Main_cannon_glow', 'Energy', t).box((.06, y1 - y0 - .2, .12), loc=(0, (y0 + y1) / 2 - .05, zc),
+                                                bevel=0)
+    bands = a.part('Main_cannon_bands', 'MetalSheet', t)
+    n = 12
+    for i in range(n):
+        y = y1 - .3 - i * (y1 - y0 - .7) / (n - 1)
+        big = i % 3 == 0
+        k.extrude(bands, [(-.27, -.22), (.27, -.22), (.27, .22), (-.27, .22)] if big else
+                  [(-.22, -.18), (.22, -.18), (.22, .18), (-.22, .18)], .12 if big else .06, loc=(0, y, zc),
+                  rot=(R90, 0, 0), axis='Z', chamfer=.02)
+    ribs = a.part('Main_cannon_ribs', 'Armor', t)
+    for s in (-1, 1):
+        ribs.box((.04, y1 - y0 - 1.2, .05), loc=(s * .18, (y0 + y1) / 2 + .2, zc + .14), bevel=0)
+    k.extrude(a.part('Muzzle_brake', 'Armor', t), [(-.32, -.26), (.32, -.26), (.32, .26), (-.32, .26)], .3,
+              loc=(0, y0 + .1, zc), rot=(R90, 0, 0), axis='Z', chamfer=.03, ends=(True, True))
+    a.pivot('Muzzle_main', (0, -7.9, 1.35), t)
+    # Elevation rams from the mount to the rail cradle.
+    for s in (-1, 1):
+        a.part('Rams', 'Armor', t).tube([(s * .4, -.55, .6), (s * .28, -1.6, 1.08)], .07, seg=8)
+        a.part('Ram_rods', 'Steel', t).tube([(s * .3, -1.4, 1.02), (s * .24, -1.9, 1.2)], .04, seg=6)
+    a.part('Team_band', 'Team', t).box((1.52, .4, .012), loc=(0, .2, .91), bevel=0)
+
+
 BUILDERS = {
     'mlrs': (mlrs, dict(ao_distance=.5, grime_height=.5)),
     'grad_truck': (grad_truck, dict(ao_distance=.6, grime_height=.55, ao_strength=.65)),
     'command_vehicle': (command_vehicle, dict(ao_distance=.5, grime_height=.5, ao_strength=.65)),
+    'railgun_truck': (railgun_truck, dict(ao_distance=.6, grime_height=.55)),
 }

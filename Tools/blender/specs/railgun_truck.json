@@ -1,0 +1,164 @@
+{
+ "id": "railgun_truck",
+ "class": "wheeled",
+ "real": [
+  "ATLA railgun (Japan) for the rail and band layout",
+  "US Navy EMRG",
+  "MZKT-7930 class 8x8 carrier"
+ ],
+ "shape": "unit_sheet.json Phuong tien: 'Xe 8 banh mang 2 ray dan song song dai co cuon tu dien va tam tan nhiet phat sang xanh. Tu tren xuong: 2 ray dai song song.' Loot text: Tempest's rail gun, Mara built a truck round it. Its own vehicle now (was Ixion's stand-in source).",
+ "confidence": "ban_dau_doan (a fictional field railgun on a heavy 8x8, real parts sized from ATLA / EMRG photos)",
+ "target_size": {
+  "L": 9.9,
+  "W": 2.48,
+  "H": 2.89,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "heavy 8x8 with bogie beams, ladder frame, fenders, rear outriggers",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Axles",
+    "Suspension",
+    "Chassis",
+    "Fenders",
+    "Outriggers",
+    "Outrigger_pads"
+   ]
+  },
+  {
+   "feature": "low armoured cab-over cab with two narrow windscreens, the travel rest on its roof",
+   "nodes": [
+    "Body",
+    "Glass",
+    "Window_frames",
+    "Rest",
+    "Rest_pads",
+    "Bumper"
+   ]
+  },
+  {
+   "feature": "generator house with radiator banks and their glowing cores, exhaust stack",
+   "nodes": [
+    "Radiators",
+    "Radiator_glow",
+    "Radiator_fins",
+    "Exhaust",
+    "Grilles"
+   ]
+  },
+  {
+   "feature": "capacitor bank in its shielded rack, bus bars and cables to the gun",
+   "nodes": [
+    "Tanks",
+    "Tank_caps",
+    "Capacitor_rack",
+    "Bus_bars",
+    "Kit_cables"
+   ]
+  },
+  {
+   "feature": "turntable mount with trunnions, breech block and loader",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor",
+    "Turret_steel",
+    "Main_cannon_breech",
+    "Breech_loader"
+   ]
+  },
+  {
+   "feature": "two rails in insulator bands with the glowing bore, ribs and the muzzle frame",
+   "nodes": [
+    "Main_cannon_rails",
+    "Main_cannon_bands",
+    "Main_cannon_glow",
+    "Main_cannon_ribs",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "elevation rams",
+   "nodes": [
+    "Rams",
+    "Ram_rods"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "railgun",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "heavy budget class (Support truck over 9 m); under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "cab and generator house (Team)",
+  "gun mount (Team)",
+  "roof bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "runtime wreck by class (unchanged)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "cab",
+   "rails",
+   "generator house",
+   "chassis"
+  ],
+  "tier2": [
+   "mount",
+   "breech",
+   "capacitor rack",
+   "radiators",
+   "bands",
+   "rams",
+   "outriggers",
+   "crates"
+  ],
+  "tier3": [
+   "capacitor caps",
+   "bus bars",
+   "cables",
+   "radiator fins",
+   "lamps",
+   "handles",
+   "tow hooks",
+   "bolts",
+   "antenna"
+  ]
+ },
+ "questions": []
+}
