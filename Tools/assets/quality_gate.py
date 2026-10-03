@@ -379,6 +379,27 @@ def grade(score):
 
 
 # ----------------------------------------------------------------------------- static (hard) checks
+def systems_absent(defs, own):
+    """Part roles the unit's def has no system for (wave 5, the lead's call on lane C's request): flare dispensers
+    without flareCharges, a canopy on a drone, a roof machine gun without an 'mg' weapon, smoke launchers without a
+    smoke system in the data, a turret and mantlet when the main gun is laid by the hull (mainAim Hull). A model may
+    still carry the part; the gate just does not ask for it."""
+    f = defs.field
+    out = set()
+    if not (f(own, 'flareCharges') or f(own, 'flares')):
+        out.add('flares')
+    if f(own, 'drone'):
+        out.add('canopy')
+    slots = [s.get('slot') for s in (f(own, 'secondary') or []) if isinstance(s, dict) and defs.armed(s.get('weapon'))]
+    if 'mg' not in slots and (f(own, 'mainSlot') or 'main') != 'mg':
+        out.add('roof_mg')
+    if not any(f(own, k) for k in ('smoke', 'smokeCharges', 'smokeScreen')):
+        out.add('smoke')
+    if f(own, 'mainAim') == 'Hull':
+        out.update(('turret', 'mantlet'))
+    return out
+
+
 def hard_checks(defs, model, own, cls, rec, m, overlap):
     """[(gate, ok, note)] for one model."""
     names = rec['nodeNames']
@@ -405,6 +426,9 @@ def hard_checks(defs, model, own, cls, rec, m, overlap):
         roles = list(sp.ROLES.get(cls, []))
         if cls == 'tracked' and own is not None and not defs.field(own, 'turretTurnRate'):
             roles = [r for r in roles if r[0] not in ('turret', 'mantlet')]
+        if own is not None:
+            absent = systems_absent(defs, own)
+            roles = [r for r in roles if r[0] not in absent]
         if cls in ('wheeled', 'ground', 'tracked') and own is not None and not defs.armed(defs.field(own, 'weapon')):
             roles = [r for r in roles if r[0] not in ('weapon', 'barrel', 'roof_mg')]
     missing = [n for n, pat in roles if not any(sp.role(pat).match(x) for x in names)]

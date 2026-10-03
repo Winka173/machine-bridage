@@ -28,6 +28,7 @@ Index (section 3 of the prompt):
   rail      rail_track, bogie
   structure footing, sandbag_wall, wire_fence, hesco, t_wall, floodlight, door, beacon (style 'accord' / 'hegemon'),
             sandbag_run, earth_pad, camo_net, track_run (wave 3 lane B's helpers)
+  bodies    ring_from_half, section_loft, slab_loft, ellipse_half; store (lean missile / bomb; wave 4 lane C's)
   boss      armour_plate, breakable_panel, fuel_drum, smokestack, gun_cluster
   colour    soot, dust, tone, team_band (COLOR_0 effects applied after the bake)
 """
@@ -805,8 +806,9 @@ def intake(shape, dark, loc, w, h, depth, facing=(0, -1, 0), lip=.04):
 
 
 def missile(a, loc, r, length, direction=(0, -1, 0), fins=4, parent=None, body='Missiles', seeker='Glass', band=True):
-    """A missile nose along `direction`: an ogive body, the seeker dome, a hazard band, 4 tail fins and 4 canards."""
-    rot = rot_to([-c for c in direction])
+    """A missile from its tail at loc, the nose `length` along `direction`: an ogive body, the seeker dome, a hazard
+    band, 4 tail fins and 4 canards. (Wave 5 fix, lane C's report: it used to build the nose towards -direction.)"""
+    rot = rot_to(direction)
     m = frame(loc, rot)
     k.lathe(a.part(body, 'Fuel', parent), [(0, 0), (r * .8, .02), (r, .08), (r, length * .82), (r * .9, length * .94),
                                            (r * .45, length), (0, length + .005)], loc=loc, rot=rot, seg=8, worn=(2,))
@@ -1288,6 +1290,84 @@ def track_run(a, tx, tw, wheels, wr, sprocket, idler, rollers=(), roller_z=None,
         for y in rollers:
             return_roller(a, (s * (tx + wx - .02), y, roller_z), .08, .1, s)
         dust(a, (s * tx, 0, .1), radius=1.6, k=.3)
+
+
+# ----------------------------------------------------------------------------- wave 4 lane C's helpers (wave 5)
+# Lifted unchanged from mb_p35c_parts.py at the lead's request: ring_from_half, section_loft, slab_loft,
+# ellipse_half (bodies through cross-sections) and store (a lean missile / bomb in two parts). mb_p35c_parts
+# keeps its copies, so lane C's models build the same.
+
+
+def ring_from_half(y, half):
+    """A full closed ring at station y from a half outline [(x, z), ...] running from the bottom centre (x = 0) up the
+    +X side to the top centre (x = 0); the -X side is the mirror. Points with x = 0 are not doubled."""
+    right = [(x, y, z) for x, z in half]
+    left = [(-x, y, z) for x, z in reversed(half) if x > 1e-6]
+    pts = right + left
+    return pts
+
+
+def section_loft(part, stations):
+    """Skin a body through stations [(y, half_outline), ...] from front to rear (every half outline the same number
+    of points, see ring_from_half)."""
+    rings = [ring_from_half(y, half) for y, half in stations]
+    n = {len(r) for r in rings}
+    if len(n) != 1:
+        raise ValueError(f'section_loft: rings differ in size {sorted(n)}')
+    part.loft(rings, bevel=0)
+    return part
+
+
+def slab_loft(part, bottom, top, z0, z1, loc=(0, 0, 0), mid=None):
+    """A prism with sloped sides: polygon `bottom` [(x, y), ...] at z0, `top` (same count) at z1, optional `mid`
+    (polygon, z) as a waist between them. Translated by loc."""
+    ox, oy, oz = loc
+    rings = [[(x + ox, y + oy, z0 + oz) for x, y in bottom]]
+    if mid:
+        poly, zm = mid
+        rings.append([(x + ox, y + oy, zm + oz) for x, y in poly])
+    rings.append([(x + ox, y + oy, z1 + oz) for x, y in top])
+    part.loft(rings, bevel=0)
+    return part
+
+
+def ellipse_half(w, h, zc, n=6, flat=0.0, xs=0.0):
+    """A half outline for section_loft: an ellipse w half-wide and h half-tall centred at zc, from the bottom centre up
+    the +X side to the top centre (n segments); flat > 0 flattens the bottom (a keel line), xs shifts nothing (kept
+    for symmetry of calls)."""
+    pts = []
+    for i in range(n + 1):
+        u = -math.pi / 2 + math.pi * i / n
+        x, z = w * math.cos(u), zc + h * math.sin(u)
+        if flat and z < zc - h * (1 - flat):
+            z = zc - h * (1 - flat)
+        pts.append((0.0 if i in (0, n) else x, z))
+    return pts
+
+
+def store(a, tail, r, length, parent=None, body='Missiles', body_mat='Fuel', fins='Missile_fins', kind='missile',
+          seg=8):
+    """A lean store pointing forward (-Y) from its tail point: 'missile' (ogive nose, tail fins and canards) or
+    'bomb' (blunt nose, a cruciform tail with its box ring). Two parts only (body, fins), so an aircraft carrying many
+    stays under the renderer cap."""
+    x, y, z = tail
+    if kind == 'bomb':
+        prof = [(0, 0), (r * .5, .03), (r * .8, length * .15), (r, length * .35), (r, length * .7),
+                (r * .7, length * .9), (r * .35, length), (0, length + .01)]
+    else:
+        prof = [(0, 0), (r * .8, .02), (r, .06), (r, length * .8), (r * .8, length * .92), (r * .35, length),
+                (0, length + .01)]
+    k.lathe(a.part(body, body_mat, parent), prof, loc=tail, rot=FORWARD, seg=seg, worn=(3,))
+    fp = a.part(fins, 'Steel', parent)
+    for i in range(4):
+        u = i * R90 + math.pi / 4
+        c, s = math.cos(u), math.sin(u)
+        span = r * (1.3 if kind == 'bomb' else 1.6)
+        fp.box((.006, length * .14, span), loc=(x + c * (r + span / 2 - .005), y - length * .08, z + s * (r + span / 2 - .005)),
+               rot=(0, u - R90, 0), bevel=0)
+        if kind != 'bomb':
+            fp.box((.005, length * .06, r * .8), loc=(x + c * (r + r * .35), y - length * .72, z + s * (r + r * .35)),
+                   rot=(0, u - R90, 0), bevel=0)
 
 
 # ============================================================================= bosses

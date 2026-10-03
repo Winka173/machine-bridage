@@ -831,7 +831,7 @@ def _drone(a, i, loc):
     # chin, the gear doors' outlines.
     for s in (-1, 1):
         a.part('Antennas', 'Steel', p).box((.05, .5, .12), loc=(s * 1.25, .9, -.05), bevel=0)
-        K.missile(a, (s * 1.25, .55, -.16), .055, 1.0, direction=(0, -1, 0), fins=4, parent=key, band=True)
+        K.missile(a, (s * 1.25, 1.55, -.16), .055, 1.0, direction=(0, -1, 0), fins=4, parent=key, band=True)
     k.lathe(a.part('Antennas', 'Steel', p), [(.02, 0), (.012, .25), (0, .3)], loc=(0, -2.5, 0), rot=K.FORWARD, seg=5)
     k.lathe(a.part('Glass', 'Glass', p), [(.14, 0), (.12, .06), (.06, .1), (0, .11)],
             loc=(0, -1.2, -.12), rot=(math.pi, 0, 0), seg=8)

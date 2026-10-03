@@ -183,6 +183,17 @@ CASES = [
     ('track_run', lambda a: K.track_run(a, 1.2, .5, [-1.5, -.5, .5, 1.5], .3, (2.0, .55, .25), (-2.0, .5, .22),
                                         rollers=(-1, 1), roller_z=.75), (None, None, None), 4000,
      ['Tracks', 'Track_links', 'Wheels', 'Sprockets', 'Idlers'], True),
+    # Wave 5 (lane C's wave 4 helpers, lifted from mb_p35c_parts): bodies through sections, the lean store.
+    ('section_loft', lambda a: K.section_loft(a.part('Hull', 'Team'), [(-2, K.ellipse_half(.8, .5, .6)),
+                                                                       (2, K.ellipse_half(1.0, .6, .7))]),
+     (2.0, 4.0, None), 200, ['Hull'], False),
+    ('slab_loft', lambda a: K.slab_loft(a.part('Turret_body', 'Team'), [(-1, -1), (1, -1), (1, 1), (-1, 1)],
+                                        [(-.8, -.8), (.8, -.8), (.8, .8), (-.8, .8)], 0, .5), (2.0, 2.0, .5), 50,
+     ['Turret_body'], False),
+    ('store_missile', lambda a: K.store(a, (0, 1, 1), .08, 1.8), (None, None, None), 300, ['Missiles', 'Missile_fins'],
+     False),
+    ('store_bomb', lambda a: K.store(a, (0, 1, 1), .15, 1.5, body='Bombs', kind='bomb'), (None, None, None), 300,
+     ['Bombs', 'Missile_fins'], False),
 ]
 
 

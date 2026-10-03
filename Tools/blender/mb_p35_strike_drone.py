@@ -110,7 +110,7 @@ def _stores(a):
         K.pylon(py, xo, -.42, -.12, WING_Z - .01, WING_Z - .12, w=.05)
         rk.box((.16, .45, .03), loc=(xo, -.3, WING_Z - .14), bevel=0)
         for dx in (-.055, .055):
-            K.missile(a, (xo + dx, -.05, WING_Z - .19), .035, .65, direction=(0, 1, 0), fins=4)
+            K.missile(a, (xo + dx, -.05, WING_Z - .19), .035, .65, direction=(0, -1, 0), fins=4)
         a.pivot(mname.replace('.001', '__001'), (xo, -.72, WING_Z - .19))
         # The inner station: a pylon with the GBU-39 rack (two bombs).
         xi = s * .95
