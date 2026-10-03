@@ -1,0 +1,120 @@
+{
+ "id": "recon_jet",
+ "class": "jet",
+ "real": [
+  "SR-71 Blackbird (0.4 x: 32.7 x 16.9 x 5.6 m)"
+ ],
+ "shape": "No unit_refs / unit_sheet row (an unarmed reconnaissance jet); modelSize is exactly 0.4 x the SR-71, so built as the Blackbird.",
+ "confidence": "xấp xỉ (SR-71 drawings at 0.4 x)",
+ "target_size": {
+  "L": 13.1,
+  "W": 6.8,
+  "H": 2.2,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "long chined fuselage, tandem cockpit",
+   "nodes": [
+    "Fuselage",
+    "Chines",
+    "Canopy"
+   ]
+  },
+  {
+   "feature": "two nacelles at mid-wing with spike inlets, bypass doors, nozzles",
+   "nodes": [
+    "Nacelles",
+    "Spikes",
+    "Intakes",
+    "Nozzles",
+    "Bypass_doors"
+   ]
+  },
+  {
+   "feature": "canted fins on the nacelles",
+   "nodes": [
+    "Fins"
+   ]
+  },
+  {
+   "feature": "delta wing with the chordwise corrugations of the inner wing",
+   "nodes": [
+    "Wings",
+    "Wing_corrugations"
+   ]
+  },
+  {
+   "feature": "sensor bays in the chines and under the body (its 'stores')",
+   "nodes": [
+    "Sensor_bays"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "canopy",
+  "wings",
+  "tail",
+  "intakes",
+  "exhaust",
+  "pylons",
+  "stores",
+  "flares"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "fuselage (Team)",
+  "nacelles (Team)",
+  "wing (Team)",
+  "fins (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "mb_p34_parts cuts Part_wing out of the left wing",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "nacelles",
+   "wing"
+  ],
+  "tier2": [
+   "chines",
+   "spikes",
+   "fins",
+   "nozzles",
+   "cockpit"
+  ],
+  "tier3": [
+   "corrugations",
+   "bypass doors",
+   "nacelle rings",
+   "sensor bays",
+   "refuel door",
+   "antenna",
+   "nav lights"
+  ]
+ },
+ "merged": {
+  "pylons": "Fuselage",
+  "stores": "Sensor_bays"
+ },
+ "questions": [
+  "recon_jet has no sheet row: built as the SR-71 its modelSize matches; the jet class asks pylons and stores, which it has not (merged into Fuselage / Sensor_bays with this note)."
+ ]
+}
