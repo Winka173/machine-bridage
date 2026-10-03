@@ -3208,6 +3208,16 @@
    "changes": [
     "FLAG bulwark_post: triangles 1,710 -> 5,140 (+200.6%); vertices 2,541 -> 6,908 (+171.9%); meshes 18 -> 34 (+88.9%); renderers 18 -> 34 (+88.9%); materials 7 -> 15 (+114.3%); materialSlots 18 -> 34 (+88.9%); fileBytes 140,892 -> 370,240 (+162.8%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "drone_net_tower"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG drone_net_tower: triangles 1,378 -> 5,802 (+321.0%); vertices 1,707 -> 8,229 (+382.1%); meshes 13 -> 34 (+161.5%); renderers 13 -> 34 (+161.5%); materials 8 -> 12 (+50.0%); materialSlots 13 -> 34 (+161.5%); fileBytes 97,700 -> 430,240 (+340.4%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -23444,24 +23454,24 @@
   },
   "drone_net_tower": {
    "file": "drone_net_tower.glb",
-   "fileBytes": 97700,
-   "sha1": "be0fd908bd68f5ae",
+   "fileBytes": 430240,
+   "sha1": "260435b45104b573",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 15,
-   "meshes": 13,
-   "materials": 8,
+   "nodes": 36,
+   "meshes": 34,
+   "materials": 12,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 13,
-   "submeshes": 13,
-   "materialSlots": 13,
-   "materialsUsed": 8,
-   "triangles": 1378,
-   "vertices": 1707,
+   "renderers": 34,
+   "submeshes": 34,
+   "materialSlots": 34,
+   "materialsUsed": 12,
+   "triangles": 5802,
+   "vertices": 8229,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -23469,36 +23479,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 43,
-   "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "loosePieces": 207,
+   "openEdges": 264,
+   "nonManifoldEdges": 360,
    "boundsMin": [
-    -2.04,
-    0.0,
-    -3.0
+    -2.076,
+    -0.125,
+    -2.99
    ],
    "boundsMax": [
-    2.04,
-    4.6,
-    3.0
+    2.076,
+    4.58,
+    2.99
    ],
    "size": [
-    6.0,
-    4.08,
-    4.6
+    5.98,
+    4.152,
+    4.705
    ],
    "center": [
     0.0,
-    2.3,
+    2.227,
     0.0
    ],
-   "structureHash": "d0d195c0e246e706",
+   "structureHash": "032f479728a2421e",
    "color0": {
-    "mean": 0.815,
-    "min": 0.5944,
+    "mean": 0.6593,
+    "min": 0.0566,
     "max": 1.0,
-    "p05": 0.6086,
-    "p95": 1.0,
+    "p05": 0.2759,
+    "p95": 0.9375,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -23511,21 +23521,42 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Antennas",
-    "Box_lamp",
-    "Control_box",
+    "Base",
     "Emitter_ball",
     "Emitter_ball2",
+    "Emitter_base",
+    "Emitter_base2",
     "Emitter_ring",
     "Emitter_ring2",
-    "Foot_pads",
-    "Footings",
+    "Emitter_spikes",
+    "Emitter_spikes2",
+    "Exhaust",
+    "Exhaust_caps",
+    "Generator",
+    "Grille_frames",
+    "Grilles",
+    "Guy_ropes",
+    "Insulators",
+    "Insulators2",
+    "Kit_bolts",
+    "Kit_cables",
+    "Kit_handles",
+    "Kit_steel",
+    "Lamp_guards",
+    "Lamp_rims",
+    "Lamps",
     "Muzzle_main",
     "Net",
+    "Net_strands",
     "Net_weights",
-    "Pole_caps",
     "Poles",
-    "Turret"
+    "Purlins",
+    "Roof_arches",
+    "Sandbags",
+    "Skids",
+    "Stakes",
+    "Turret",
+    "Warning_plates"
    ],
    "category": "structure",
    "hd": false,
