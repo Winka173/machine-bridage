@@ -3020,6 +3020,16 @@
    "changes": [
     "FLAG sea_corvette: triangles 1,884 -> 7,638 (+305.4%); vertices 1,914 -> 11,332 (+492.1%); meshes 22 -> 59 (+168.2%); renderers 22 -> 59 (+168.2%); materials 8 -> 10 (+25.0%); materialSlots 22 -> 59 (+168.2%); fileBytes 117,832 -> 601,356 (+410.4%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "sea_cruiser"
+   ],
+   "reason": "P35 wave 6: sea_cruiser rebuilt from scratch",
+   "changes": [
+    "FLAG sea_cruiser: triangles 5,416 -> 14,150 (+161.3%); vertices 6,142 -> 21,844 (+255.6%); meshes 54 -> 93 (+72.2%); renderers 54 -> 93 (+72.2%); materialSlots 54 -> 93 (+72.2%); fileBytes 351,612 -> 1,127,276 (+220.6%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -49076,24 +49086,24 @@
   },
   "sea_cruiser": {
    "file": "sea_cruiser.glb",
-   "fileBytes": 351612,
-   "sha1": "902d1560fff36785",
+   "fileBytes": 1127276,
+   "sha1": "d09502f60292c067",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 76,
-   "meshes": 54,
+   "nodes": 112,
+   "meshes": 93,
    "materials": 14,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 54,
-   "submeshes": 54,
-   "materialSlots": 54,
+   "renderers": 93,
+   "submeshes": 93,
+   "materialSlots": 93,
    "materialsUsed": 14,
-   "triangles": 5416,
-   "vertices": 6142,
+   "triangles": 14150,
+   "vertices": 21844,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -49101,36 +49111,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 126,
-   "openEdges": 0,
+   "loosePieces": 701,
+   "openEdges": 296,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -5.56,
+    -6.1,
     -2.4,
-    -32.35
+    -32.0
    ],
    "boundsMax": [
-    5.56,
-    18.32,
+    6.05,
+    18.2,
     32.0
    ],
    "size": [
-    64.35,
-    11.12,
-    20.72
+    64.0,
+    12.15,
+    20.6
    ],
    "center": [
-    0.0,
-    7.96,
-    -0.175
+    -0.025,
+    7.9,
+    0.0
    ],
-   "structureHash": "f6f8211294986bbf",
+   "structureHash": "3d370233d8928fcc",
    "color0": {
-    "mean": 0.6397,
-    "min": 0.117,
+    "mean": 0.6078,
+    "min": 0.0615,
     "max": 1.0,
-    "p05": 0.2422,
-    "p95": 0.8137,
+    "p05": 0.1468,
+    "p95": 0.8143,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -49141,6 +49151,7 @@
      "Muzzle_mg.001"
     ],
     "mount": [
+     "Mount_APS",
      "Mount_gun",
      "Mount_gun.001",
      "Mount_mg",
@@ -49164,12 +49175,18 @@
     "Muzzle_mg.001"
    ],
    "nodeNames": [
+    "Anchor_chain",
+    "Antennas",
+    "Aps_faces",
     "Barbette_gun",
     "Barbette_gun_001",
     "Barrels_gun",
     "Barrels_gun_001",
     "Blast_bags_gun",
     "Blast_bags_gun_001",
+    "Boat_tubes",
+    "Boats",
+    "Bollards",
     "Boot_top",
     "Bores_gun",
     "Bores_gun_001",
@@ -49189,26 +49206,49 @@
     "CIWS_glass_mg_001",
     "CIWS_ring_mg",
     "CIWS_ring_mg_001",
+    "Canister_frames",
+    "Capstans",
+    "Crane",
+    "Davit_platforms",
+    "Davits",
     "Deck",
-    "Deck_edge",
     "Deck_lights",
+    "Deck_lines",
+    "Deck_lockers",
     "Deck_marks",
-    "Fittings",
+    "Deck_nets",
+    "Deck_seams",
+    "Director_dish",
+    "Director_feed",
+    "Directors",
+    "Door_slats",
+    "Doors",
+    "Fire_boxes",
     "Flight_deck",
+    "Foredeck_fittings",
     "Funnel",
     "Funnel_band",
     "Funnel_cap",
-    "Gate_edges",
-    "Gate_rails",
+    "Gunhouse_fit_gun",
+    "Gunhouse_fit_gun_001",
     "Gunhouse_gun",
     "Gunhouse_gun_001",
     "Gunhouse_roof_gun",
     "Gunhouse_roof_gun_001",
-    "Hangar",
     "Hangar_door",
+    "Hawse",
+    "Hose_reels",
     "Hull",
+    "Hull_low",
+    "Hull_seams",
+    "Kit_cables",
+    "Ladder_platform",
+    "Ladders",
+    "Life_rafts",
     "Mast",
-    "Mast_lamp",
+    "Mast_steel",
+    "Missile_canisters",
+    "Mount_APS",
     "Mount_gun",
     "Mount_gun.001",
     "Mount_mg",
@@ -49221,37 +49261,48 @@
     "Muzzle_gun.001",
     "Muzzle_mg",
     "Muzzle_mg.001",
-    "Nav_green",
-    "Nav_red",
+    "Nav_lights",
+    "Nav_lights.001",
     "Part_gun",
     "Part_gun.001",
     "Part_mg",
     "Part_mg.001",
     "Part_radar",
-    "Piece_deck",
-    "Piece_engine",
-    "Piece_vls",
-    "Piece_welldeck",
+    "Porthole_rims",
+    "Portholes",
+    "Quarterdeck_fittings",
     "Radar",
-    "Radar_bar",
-    "Radar_base",
-    "Radar_panels",
-    "Stern_gate",
+    "Radar_array",
+    "Radar_face",
+    "Radar_pedestal",
+    "Railings",
+    "Rangefinder_gun",
+    "Rangefinder_gun_001",
+    "Roof_fittings",
+    "Sight_hoods_gun",
+    "Sight_hoods_gun_001",
+    "Sponsons",
     "Superstructure",
-    "Vls_block",
-    "Vls_hatches"
+    "Team_band",
+    "Vls",
+    "Vls_hatches",
+    "Walkways"
    ],
    "category": "ground",
    "hd": false,
-   "errors": [],
+   "errors": [
+    "renderers 93 over the ground normal hard cap 76",
+    "movingParts 11 over the ground normal hard cap 10"
+   ],
    "warnings": [
     "runtime names with a Blender suffix: Mount_gun.001, Mount_mg.001, Muzzle_gun.001, Muzzle_mg.001",
-    "movingParts 10 over the ground normal budget 8"
+    "triangles 14,150 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 21,844 over the ground normal hard cap 12,600 (info: kept, owner rule)"
    ],
    "units": [
     "sea_cruiser"
    ],
-   "movingParts": 10,
+   "movingParts": 11,
    "budgetClass": "ground"
   },
   "searchlight": {
