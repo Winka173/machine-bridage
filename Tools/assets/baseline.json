@@ -2910,6 +2910,16 @@
    "changes": [
     "FLAG next_gen_tank: triangles 6,620 -> 11,642 (+75.9%); vertices 7,813 -> 15,947 (+104.1%); meshes 33 -> 72 (+118.2%); renderers 33 -> 72 (+118.2%); materials 8 -> 11 (+37.5%); materialSlots 33 -> 72 (+118.2%); fileBytes 417,024 -> 842,088 (+101.9%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "airborne_light_tank"
+   ],
+   "reason": "P35 wave 6: airborne_light_tank rebuilt from scratch",
+   "changes": [
+    "FLAG airborne_light_tank: triangles 5,550 -> 10,510 (+89.4%); vertices 6,564 -> 14,127 (+115.2%); meshes 29 -> 63 (+117.2%); renderers 29 -> 63 (+117.2%); materials 7 -> 11 (+57.1%); materialSlots 29 -> 63 (+117.2%); fileBytes 351,436 -> 745,832 (+112.2%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -4428,24 +4438,24 @@
   },
   "airborne_light_tank": {
    "file": "airborne_light_tank.glb",
-   "fileBytes": 351436,
-   "sha1": "1a7e46957def37e7",
+   "fileBytes": 745832,
+   "sha1": "6af13a5e9eb956ec",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 34,
-   "meshes": 29,
-   "materials": 7,
+   "nodes": 70,
+   "meshes": 63,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 29,
-   "submeshes": 29,
-   "materialSlots": 29,
-   "materialsUsed": 7,
-   "triangles": 5550,
-   "vertices": 6564,
+   "renderers": 63,
+   "submeshes": 63,
+   "materialSlots": 63,
+   "materialsUsed": 11,
+   "triangles": 10510,
+   "vertices": 14127,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -4453,36 +4463,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 124,
+   "loosePieces": 332,
    "openEdges": 0,
-   "nonManifoldEdges": 8,
+   "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.31,
-    -0.047,
-    -3.2001
+    -1.29,
+    -0.0645,
+    -3.26
    ],
    "boundsMax": [
-    1.31,
-    1.8,
-    3.25
+    1.29,
+    1.9434,
+    3.23
    ],
    "size": [
-    6.45,
-    2.62,
-    1.847
+    6.49,
+    2.58,
+    2.008
    ],
    "center": [
     0.0,
-    0.877,
-    0.025
+    0.939,
+    -0.015
    ],
-   "structureHash": "1b4a51fb731504bc",
+   "structureHash": "405eac139d895888",
    "color0": {
-    "mean": 0.7975,
-    "min": 0.5444,
+    "mean": 0.5791,
+    "min": 0.0742,
     "max": 1.0,
-    "p05": 0.7001,
-    "p95": 0.9898,
+    "p05": 0.1454,
+    "p95": 0.8951,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -4497,7 +4507,11 @@
     ],
     "muzzle": [
      "Muzzle_coax",
-     "Muzzle_main"
+     "Muzzle_main",
+     "Muzzle_mg"
+    ],
+    "mount": [
+     "Mount_mg"
     ],
     "point": [
      "Point_exhaust",
@@ -4506,49 +4520,89 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Antennas",
+    "Ammo_can_cdr",
+    "Armor_modules",
+    "Blowout_panels",
+    "Brake_holes",
+    "Bustle",
     "Coax",
-    "Exhaust",
-    "Exhaust_louvres",
+    "Cradle_cdr",
+    "Cupola",
+    "Fenders",
+    "Fume_extractor",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_carriage_cdr",
+    "Gun_fit_cdr",
+    "Gun_ring_cdr",
     "Hatch_fittings",
     "Hatch_fittings.001",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
+    "Hull_lower",
+    "Idlers",
+    "Jerrycans",
+    "Kit_bolts",
+    "Kit_bolts.001",
+    "Kit_hooks",
+    "Kit_latches",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_housing",
+    "MG",
+    "MG_flash",
     "Main_cannon",
+    "Mantlet",
+    "Mount_mg",
     "Muzzle_brake",
     "Muzzle_coax",
     "Muzzle_main",
-    "Periscope",
-    "Periscope_hoods",
+    "Muzzle_mg",
     "Point_exhaust",
     "Point_fire",
-    "Sight_drum",
-    "Sight_glass",
+    "Racks",
+    "Receiver_cdr",
+    "Sight",
+    "Sight.001",
     "Skirt_edge",
+    "Skirt_flaps",
     "Skirts",
-    "Smoke",
     "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
-    "Tail_lights",
+    "Stowage",
+    "Tail_lamps",
+    "Tarp_roll",
+    "Team_band",
+    "Team_band.001",
+    "Toolbox",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
     "Turret",
     "Turret_armor",
     "Turret_body",
+    "Turret_steel",
     "Tyres",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 10,510 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 14,127 over the ground normal hard cap 12,600 (info: kept, owner rule)",
+    "renderers 63 over the ground normal budget 61"
+   ],
    "units": [
     "airborne_light_tank"
    ],
-   "movingParts": 2,
+   "movingParts": 3,
    "budgetClass": "ground"
   },
   "airborne_light_tank_chute": {

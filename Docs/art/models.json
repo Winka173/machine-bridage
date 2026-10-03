@@ -45,7 +45,7 @@
   },
   "airborne_light_tank": {
     "file": "airborne_light_tank.glb",
-    "triangles": 5550
+    "triangles": 10510
   },
   "airborne_light_tank_chute": {
     "file": "airborne_light_tank_chute.glb",
