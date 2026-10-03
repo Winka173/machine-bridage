@@ -584,7 +584,8 @@ namespace MachineBrigade.Game.Hud
                 // A structure does not move, and a utility module does not shoot: those rows would only say 0.
                 var key = stats[i].Key;
                 if (def.Fort != null && key == "stat.detail.speed") continue;
-                if (def.Fort is { Kind: FortKind.Utility } && key is "stat.detail.volley" or "stat.detail.dps" or "stat.detail.range") continue;
+                // Play-test 13 (lane C): an unarmed unit (a tanker, a heavy-lift helicopter) has no gun to rate either.
+                if ((def.Fort is { Kind: FortKind.Utility } || def.Unarmed) && key is "stat.detail.volley" or "stat.detail.dps" or "stat.detail.range") continue;
                 StatRow(stats[i], plain[i].Boosted, after[i].Boosted, average.TryGetValue(key, out var avg) ? avg : -1f);
             }
             var facts = Kit.Box("fc-mt-3");
@@ -592,6 +593,8 @@ namespace MachineBrigade.Game.Hud
             if (def.Fort == null) facts.Add(Rule("cp", price < def.CpCost
                 ? Strings.Format("detail.costCut", ("cp", price), ("was", def.CpCost), ("percent", CardRanks.CutBasisPoints(rank) / 100))
                 : Strings.Format("detail.cost", def.CpCost)));
+            // Play-test 13 (lane C): say it carries no weapon (its role is support), instead of a gun of 0 damage.
+            if (def.Unarmed && def.Fort == null) facts.Add(Rule("ammo", Strings.Get("detail.unarmed")));
             if (def.Weapon.Ammo > 0) facts.Add(Rule("ammo", Strings.Format("detail.magazine", ("count", def.Weapon.Ammo), ("seconds", Mathf.RoundToInt(def.Weapon.MagazineReload)))));
             if (def.Weapon.MinRange > 0f) facts.Add(Rule("crosshair", Strings.Format("detail.minRange", Mathf.RoundToInt(def.Weapon.MinRange))));
             if (now.Special != SpecialModule.None) facts.Add(Rule("star", Strings.Get("special." + GearKeys.Module(now.Special))));
@@ -732,6 +735,8 @@ namespace MachineBrigade.Game.Hud
             for (var i = 0; i < lines.Count && i < mounts.Count; i++)
             {
                 var w = mounts[i].Weapon;
+                // Play-test 13 (lane C): the placeholder "none" of an unarmed unit is no weapon: no "0 damage" line.
+                if (w.Damage <= 0f && w.Form == WeaponForm.None) continue;
                 var row = Kit.Box(KitPanel.SurfaceClass + " fc-weapon");
                 // Prompt 15 E2: the weapon's chip (its form, the damage-type mark, the extra marks) beside its name; a tap says it in words.
                 var facts = CombatFacts.Of(w, def);

@@ -249,6 +249,17 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void SupportAircraftAreUnarmedNotZeroDamageGuns()
+        {
+            // Play-test 13 (lane C): a tanker and a heavy-lift helicopter carry no weapon (their "none" placeholder): the card
+            // reads VehicleDef.Unarmed and shows no gun rows instead of a gun of 0 damage.
+            var c = Shipped;
+            Assert.IsTrue(c.Vehicles["aerial_tanker"].Unarmed, "aerial tanker");
+            Assert.IsTrue(c.Vehicles["heavy_lift_helicopter"].Unarmed, "heavy-lift helicopter");
+            Assert.IsFalse(c.Vehicles["main_battle_tank"].Unarmed, "a tank is armed");
+        }
+
+        [Test]
         public void TheShotClockIsOffOutsideABattle()
         {
             var clock = new Game.Effects.ShotClock();
