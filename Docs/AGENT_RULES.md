@@ -30,14 +30,26 @@ fixes. Nothing below asks you to cut a corner on a model or an effect.
 ## Files and tokens (routine work)
 - Scratch files go in your own subfolder of the scratchpad (e.g. `scratchpad/lane_c_w12/`) with distinctive names.
 - `Docs/DECISIONS.md` (1.7 MB) and `Docs/CHANGELOG.md`: grep, then read line ranges. Never read them whole.
-- Grep before Read; read big files with offset/limit; do not re-read a file you already have.
-- Cap command output: `| tail -20`, `| head -40`, `cut -c1-200`, quiet flags. Blender logs: grep the lines you need.
-- Batch independent tool calls in one message. Prefer the existing tools (`Tools/assets/glb_analyze.py`,
-  `Tools/assets/quality_gate.py`, `Tools/models/sheet.py`, `Tools/art/model_sheet.py`) to new one-off scripts.
+- Prefer the existing tools (`Tools/assets/glb_analyze.py`, `Tools/assets/quality_gate.py`, `Tools/models/sheet.py`,
+  `Tools/art/model_sheet.py`) to new one-off scripts.
+
+## Token hygiene (every agent; details and reasons in Docs/TOKEN_OPTIMISATION.md section 4)
+- Grep tool: `files_with_matches` or `count` first, then `content` with `-C 2` and `head_limit: 30`. `wc -l` before a
+  Read; files over ~300 lines are read with offset/limit. No re-reads, and no Read-back after Edit/Write.
+- Never print whole: DECISIONS, CHANGELOG, `balance.json` (grep `'"id": *"<id>"'` + `cut -c1-400`), other JSON/CSV
+  (Python one-liner), Unity logs (`grep -E "error CS|Exception|\[Tag\]" | tail -20`), `ls` of `Resources/Models`.
+- Blender: `--background --factory-startup --python-exit-code 1`, log to `scratchpad/<lane>/x.log`, grep it.
+- Git: `-q`, `status --short`, `log --oneline -5`, `diff --stat | tail -3`; `git -c core.safecrlf=false add` (no CRLF
+  warning floods). robocopy `/NFL /NDL /NJH /NJS /NP`. `cut -c1-200` on long lines. Every output capped.
+- Fewer turns: chain dependent shell steps in one call (`&&`); put independent calls in one message; do not poll.
+- Run slow builds/renders early while the context is small, several in one call (agent cache lives 5 minutes).
+- Results go to files; replies and briefs carry paths, never pasted content. Do not re-read what the brief summarised.
+- Commit subject under ~72 characters, body at most 3 lines. Routine reply 5-10 lines; model/VFX up to 15.
+- None of this limits model or VFX quality: gate rounds, renders and the most capable model stay (owner rule).
 
 ## Finish
 - Append your decisions to `Docs/DECISIONS.md` as a new `## <prompt/wave> (lane X)` section at the end; add one line
   under `## Unreleased` in `Docs/CHANGELOG.md`.
 - Commit with a short subject ("Prompt 35 wave 12 (lane C): ...") and the Co-Authored-By line from your brief. Do not
   push or merge unless told; the lead merges.
-- Report in 5-15 lines: commit, what changed, what failed, open questions. No file dumps.
+- Report in 5-10 lines (model/VFX work up to 15): commit, what changed, what failed, open questions. No file dumps.
