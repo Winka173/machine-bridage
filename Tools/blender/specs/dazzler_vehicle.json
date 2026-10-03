@@ -1,0 +1,170 @@
+{
+ "id": "dazzler_vehicle",
+ "class": "wheeled",
+ "real": [
+  "Peresvet-class laser dazzler on an MZKT-type 8x8 chassis; 12.7 mm RWS for self-defence"
+ ],
+ "shape": "refs: none; the old builder (mb_p27_wave1c): a Peresvet class dazzler, 9.0 x 2.76 x 3.83 m, an 8x8 EW truck whose shelter carries a lift frame with a large forward-facing housing of six glowing lenses (two rows of three, bezels and glass), a roof remote weapon station, door panels, vents and side lockers; team bands on both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 9.01,
+  "W": 2.76,
+  "H": 3.83,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the wide flat-fronted cab-over cab (Team), two-pane windscreen, side windows, four doors, steps, mirrors",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Windows",
+    "Window_frames",
+    "Door_panels",
+    "Cab_fit",
+    "Steps"
+   ]
+  },
+  {
+   "feature": "the grille, the bumper, headlamps, the beacon",
+   "nodes": [
+    "Grille",
+    "Bumper",
+    "Lamps",
+    "Beacons"
+   ]
+  },
+  {
+   "feature": "eight wheels on four axles in two pairs, walking beams, axle beams, mud flaps",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Hubs",
+    "Axles",
+    "Suspension",
+    "Mudflaps"
+   ]
+  },
+  {
+   "feature": "the long equipment shelter with doors, lockers, louvred vents, roof vents, rails, ladder, corner castings",
+   "nodes": [
+    "Shelter",
+    "Subframe",
+    "Lockers",
+    "Grilles",
+    "Vents",
+    "Racks",
+    "Ladders",
+    "Steel"
+   ]
+  },
+  {
+   "feature": "the lens housing on its scissor lift frame and rams: six lenses in two rows with bezels, glass and glowing cores, the sun hood",
+   "nodes": [
+    "Lift_frame",
+    "Lift_rams",
+    "Lens_housing",
+    "Lens_hood",
+    "Lens_bezels",
+    "Lens_glass",
+    "Lens_cores"
+   ]
+  },
+  {
+   "feature": "the rear generator with grille and exhaust stack, the cable reel, the spare wheel, stowage",
+   "nodes": [
+    "Generator",
+    "Exhaust",
+    "Point_exhaust",
+    "Cable_reel",
+    "Kit_cables",
+    "Spare_wheel",
+    "Stowage"
+   ]
+  },
+  {
+   "feature": "the remote 12.7 mm station on a raised ring over the cab, its sensor head (Turret)",
+   "nodes": [
+    "Turret",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Rws_sensor"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "hmg_selfdef_15",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "light class seen in numbers: at most 1.5 x 5,000 = 7,500 (hard gate)"
+ },
+ "team_zones": [
+  "cab, shelter, lens hood (Team), lens cores (TeamGlow)",
+  "bands on both shelter sides"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the wrappers add no part for this id; the runtime breaks the truck",
+ "faction_style": "military vehicle (both factions)",
+ "details": {
+  "tier1": [
+   "cab",
+   "shelter",
+   "chassis and wheels",
+   "lens housing"
+  ],
+  "tier2": [
+   "windscreen",
+   "doors",
+   "lockers",
+   "vents",
+   "lift frame",
+   "generator",
+   "cable reel",
+   "spare wheel",
+   "RWS"
+  ],
+  "tier3": [
+   "lenses",
+   "bezels",
+   "handles",
+   "mirrors",
+   "lamps",
+   "beacon",
+   "steps",
+   "ladder",
+   "rails",
+   "castings",
+   "cables",
+   "whip",
+   "mud flaps"
+  ]
+ },
+ "questions": []
+}

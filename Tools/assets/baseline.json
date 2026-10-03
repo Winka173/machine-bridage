@@ -2950,6 +2950,16 @@
    "changes": [
     "FLAG shield_carrier: triangles 2,476 -> 7,436 (+200.3%); vertices 2,650 -> 9,373 (+253.7%); meshes 20 -> 55 (+175.0%); renderers 20 -> 55 (+175.0%); materials 8 -> 11 (+37.5%); materialSlots 20 -> 55 (+175.0%); fileBytes 152,616 -> 511,572 (+235.2%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "dazzler_vehicle"
+   ],
+   "reason": "P35 wave 6: dazzler_vehicle rebuilt from scratch",
+   "changes": [
+    "FLAG dazzler_vehicle: triangles 4,640 -> 7,134 (+53.8%); vertices 4,898 -> 9,406 (+92.0%); meshes 29 -> 62 (+113.8%); renderers 29 -> 62 (+113.8%); materials 10 -> 14 (+40.0%); materialSlots 29 -> 62 (+113.8%); fileBytes 273,024 -> 517,688 (+89.6%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -15736,24 +15746,24 @@
   },
   "dazzler_vehicle": {
    "file": "dazzler_vehicle.glb",
-   "fileBytes": 273024,
-   "sha1": "c0e5f1f65cf808b2",
+   "fileBytes": 517688,
+   "sha1": "cb88c1d562925bc0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 33,
-   "meshes": 29,
-   "materials": 10,
+   "nodes": 66,
+   "meshes": 62,
+   "materials": 14,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 29,
-   "submeshes": 29,
-   "materialSlots": 29,
-   "materialsUsed": 10,
-   "triangles": 4640,
-   "vertices": 4898,
+   "renderers": 62,
+   "submeshes": 62,
+   "materialSlots": 62,
+   "materialsUsed": 14,
+   "triangles": 7134,
+   "vertices": 9406,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -15761,35 +15771,35 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 86,
-   "openEdges": 0,
+   "loosePieces": 232,
+   "openEdges": 128,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.4,
+    -1.41,
     0.0,
-    -4.5601
+    -4.55
    ],
    "boundsMax": [
-    1.4,
-    3.9,
-    4.59
+    1.41,
+    3.8798,
+    4.63
    ],
    "size": [
-    9.15,
-    2.8,
-    3.9
+    9.18,
+    2.82,
+    3.88
    ],
    "center": [
     0.0,
-    1.95,
-    0.015
+    1.94,
+    0.04
    ],
-   "structureHash": "74a6275474174ba1",
+   "structureHash": "37409c08470edfe2",
    "color0": {
-    "mean": 0.8272,
-    "min": 0.6105,
+    "mean": 0.611,
+    "min": 0.0537,
     "max": 1.0,
-    "p05": 0.7073,
+    "p05": 0.1382,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -15813,44 +15823,79 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Beacon",
+    "Ammo_can",
+    "Antennas",
+    "Axles",
+    "Beacon_base",
+    "Beacons",
+    "Bumper",
     "Cab",
+    "Cab_fit",
+    "Cable_reel",
     "Chassis",
+    "Cradle",
     "Door_panels",
     "Exhaust",
-    "Exhaust_louvres",
-    "Fenders",
-    "Hatch_fittings",
-    "Hatches",
+    "Exhaust_caps",
+    "Exhaust_mufflers",
+    "Exhaust_shields",
+    "Generator",
+    "Glass",
+    "Grille",
+    "Grille_frames",
+    "Grilles",
+    "Gun_carriage",
+    "Gun_fit",
+    "Gun_ring",
+    "Gun_ring_fit",
+    "Hubs",
+    "Kit_cables",
+    "Kit_hooks",
+    "Ladders",
+    "Lamp_rims",
     "Lamps",
     "Lens_bezels",
+    "Lens_cores",
     "Lens_glass",
     "Lens_hood",
     "Lens_housing",
-    "Light_housing",
+    "Lift_frame",
+    "Lift_rams",
     "Lockers",
     "Main_cannon",
+    "Mudflaps",
     "Muzzle_brake",
     "Muzzle_main",
     "Point_exhaust",
     "Point_fire",
-    "Roof_boxes",
-    "Rws_body",
-    "Rws_ring",
+    "Racks",
+    "Receiver",
     "Rws_sensor",
     "Shelter",
+    "Spare_rim",
+    "Spare_wheel",
     "Steel",
-    "Tail_lights",
+    "Steps",
+    "Stowage",
+    "Subframe",
+    "Suspension",
+    "Tail_lamps",
+    "Team_band",
     "Turret",
     "Tyres",
+    "Vent_grilles",
     "Vents",
     "Wheels",
-    "Windows"
+    "Window_frames",
+    "Windows",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "renderers 62 over the ground normal budget 61"
+   ],
    "units": [
     "dazzler_vehicle"
    ],
