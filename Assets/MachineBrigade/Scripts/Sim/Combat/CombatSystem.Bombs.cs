@@ -103,7 +103,7 @@ namespace MachineBrigade.Sim.Combat
         internal const float AxisCone = 0.70710678f;
 
         /// <summary>A cluster whose long spread is under this many times its short one has no main axis (a blob, not a line).</summary>
-        internal const float AxisRatio = 1.5f;
+        internal static float AxisRatio => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.AxisRatio;
 
         /// <summary>
         /// The way a stick runs (a unit vector): the main axis of <paramref name="points"/> (the 2 x 2 covariance's major

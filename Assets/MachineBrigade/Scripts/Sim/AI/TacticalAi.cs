@@ -26,18 +26,17 @@ namespace MachineBrigade.Sim.AI
     /// </summary>
     public sealed class TacticalAi
     {
-        private const float DecisionInterval = 0.75f;
-        private const float DamagedFraction = 0.3f;
-        private const float BoundLength = 24f;
-        private const float FlankOffset = 24f;
-        private const float FastSpeed = 11f;
-        private const float ClusterRadius = 7f;
+        private static float DecisionInterval => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DecisionInterval;
+        private static float BoundLength => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.BoundLength;
+        private static float FlankOffset => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.FlankOffset;
+        private static float FastSpeed => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.FastSpeed;
+        private static float ClusterRadius => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ClusterRadius;
         private const int ClusterSize = 3;
         private const float EdgeMargin = 6f;
 
         /// <summary>A pulled-back vehicle rejoins once repaired this far, or after this long.</summary>
         private const float RecoveredFraction = 0.6f;
-        private const float FallBackSeconds = 30f;
+        private static float FallBackSeconds => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.FallBackSeconds;
 
         private readonly int _team;
         private readonly int _enemyTeam;
@@ -118,10 +117,10 @@ namespace MachineBrigade.Sim.AI
         private float? ActiveLeash => Leash ?? HoldLeash;
 
         /// <summary>Below this ratio of our strength to theirs around the front, the army stops attacking.</summary>
-        private const float OutmatchedRatio = 0.6f;
+        private static float OutmatchedRatio => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.OutmatchedRatio;
 
         /// <summary>It attacks again once reinforcements bring the ratio back up to this.</summary>
-        private const float RecoveredRatio = 0.95f;
+        private static float RecoveredRatio => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.RecoveredRatio;
 
         /// <summary>How long a fall-back lasts at least, so the army does not bob in and out of range.</summary>
         private const float FallBackHold = 12f;
@@ -136,7 +135,7 @@ namespace MachineBrigade.Sim.AI
         /// How long a committed attack presses on before the odds are weighed again: long enough to
         /// cross open ground to a dug-in enemy and fight it out, not only to reach it and turn back.
         /// </summary>
-        private const double CommitSeconds = 60.0;
+        private static double CommitSeconds => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.CommitSeconds;
 
         /// <summary>Enemies seen near the front: their strength then, when, and where.</summary>
         private readonly Dictionary<EntityId, (float power, double seen, Vector2 at)> _seen = new();
@@ -219,10 +218,10 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>Our strength at the edge of a defended area must be this many times the defences' there to go in.</summary>
-        private const float AssaultOdds = 1.4f;
+        private static float AssaultOdds => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.AssaultOdds;
 
         /// <summary>Seconds the line gives its artillery on the towers before going in with the strength it has.</summary>
-        private const double ShellingTime = 35.0;
+        private static double ShellingTime => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ShellingTime;
 
         /// <summary>After waiting this long at the edge, it goes in anyway if it is at least a match for the towers.</summary>
         private const double EdgePatience = 70.0;
@@ -299,8 +298,8 @@ namespace MachineBrigade.Sim.AI
             if (!Layered && JudgeOdds(world, front, contact))
             {
                 // Outmatched: break contact, gather behind the front and let them come to us. Idle
-                // vehicles still fight anything that walks into range; artillery keeps shelling.
-                PullBackDamaged(world, front, Direction(front, objective));
+                // vehicles still fight anything that walks into range; artillery keeps shelling. Balance pack (lane B,
+                // rule D, locked "no retreat on health"): damaged vehicles are no longer pulled back on their own.
                 FocusBoss(world);
                 DirectArtillery(world, front, objective, Direction(front, objective), contact);
                 FallBack(world);
@@ -318,7 +317,6 @@ namespace MachineBrigade.Sim.AI
                 objective = Clamp(world, goal!.Value + forward * 5f);
             }
 
-            if (!Layered) PullBackDamaged(world, front, forward);
             GrabCrates(world);
             SendToRearm(world);
             DirectSupport(world, front, forward);
@@ -405,7 +403,7 @@ namespace MachineBrigade.Sim.AI
         private readonly List<EntityId> _staleCrates = new();
 
         /// <summary>How far a free vehicle will go out of its way for a supply crate.</summary>
-        private const float CrateDetour = 50f;
+        private static float CrateDetour => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.CrateDetour;
 
         /// <summary>
         /// A supply crate that has landed is worth fighting over: the nearest free vehicle (a
@@ -463,7 +461,7 @@ namespace MachineBrigade.Sim.AI
         private readonly HashSet<EntityId> _rearmIds = new();
 
         /// <summary>A supply vehicle closer than this is worth the drive for an empty launcher (it reloads three times as fast).</summary>
-        private const float DepotReach = 40f;
+        private static float DepotReach => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DepotReach;
 
         /// <summary>
         /// Empty launchers reload where they stand: the crew restocks only while the vehicle is
@@ -606,10 +604,10 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>How near the front an obstacle must be for the line to breach it.</summary>
-        private const float BreachReach = 30f;
+        private static float BreachReach => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.BreachReach;
 
         /// <summary>How far ahead of the front a breacher looks for an enemy structure to open the way through.</summary>
-        private const float BreacherReach = 70f;
+        private static float BreacherReach => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.BreacherReach;
 
         /// <summary>
         /// Breachers (the armoured bulldozer) open the way into an enemy base ahead of the line: the
@@ -838,7 +836,7 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>How far past its weapon's range a vehicle turns to engage a boss.</summary>
-        private const float BossReach = 30f;
+        private static float BossReach => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.BossReach;
 
         /// <summary>
         /// A boss in sight is the priority: everything that can hurt it and is close enough gets
@@ -965,23 +963,6 @@ namespace MachineBrigade.Sim.AI
                 if (v.Order.Kind == OrderKind.Attack && v.Order.Target == best.Id) continue;
                 Issue(world, CommandType.Attack, v.Id, best.Position, best.Id);
             }
-        }
-
-        /// <summary>Heavy vehicles close to death drop behind the line while others cover them.</summary>
-        private void PullBackDamaged(SimWorld world, Vector2 front, Vector2 forward)
-        {
-            if (_line.Count + _fast.Count < 3) return;
-            _ids.Clear();
-            for (var i = _line.Count - 1; i >= 0; i--)
-            {
-                var v = _line[i];
-                if (v.Armor != ArmorClass.Heavy || v.Hp / v.MaxHp > DamagedFraction || Nearest(v.Position, out _) > v.Def.VisionRange)
-                    continue;
-                _ids.Add(v.Id);
-                _fallingBack[v.Id] = world.Time;
-                _line.RemoveAt(i);
-            }
-            if (_ids.Count > 0) Issue(world, CommandType.Move, _ids, Clamp(world, front - forward * 16f));
         }
 
         private void DirectArtillery(SimWorld world, Vector2 front, Vector2 objective, Vector2 forward, bool contact)
@@ -1323,11 +1304,12 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>
-        /// Our line near <paramref name="from"/> (health counted) is at least <paramref name="odds"/>
-        /// times the known defences covering <paramref name="target"/> and the enemies round it.
+        /// Our line near <paramref name="from"/> (health counted) is at least <paramref name="oddsOrDefault"/>
+        /// (null: <see cref="AssaultOdds"/>) times the known defences covering <paramref name="target"/> and the enemies round it.
         /// </summary>
-        private bool StrongEnough(SimWorld world, Vector2 target, Vector2 from, float odds = AssaultOdds)
+        private bool StrongEnough(SimWorld world, Vector2 target, Vector2 from, float? oddsOrDefault = null)
         {
+            var odds = oddsOrDefault ?? AssaultOdds;
             var ours = 0f;
             var fast = 0f;
             var air = 0f;
@@ -1385,15 +1367,15 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>A vehicle this far from the army and this close to home is a reinforcement still to join.</summary>
-        private const float ReinforcementGap = 50f;
-        private const float HomeReach = 45f;
+        private static float ReinforcementGap => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ReinforcementGap;
+        private static float HomeReach => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.HomeReach;
 
         /// <summary>
         /// Reinforcements go forward in groups of this many (or once the first has waited this long). Play-test 6
         /// (DECISIONS 21G): 3 and 25 s left a player's single new vehicle standing at home for most of half a minute.
         /// </summary>
-        private const int WaveSize = 2;
-        private const double WaveWait = 12.0;
+        private static int WaveSize => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.WaveSize;
+        private static double WaveWait => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.WaveWait;
 
         /// <summary>Reinforcements waiting at the staging point, and since when.</summary>
         private readonly Dictionary<EntityId, double> _staged = new();

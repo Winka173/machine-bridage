@@ -71,13 +71,13 @@ namespace MachineBrigade.Sim.Bosses
         private readonly List<Vehicle> _picked = new();
 
         /// <summary>Drones and missiles are checked against the other side's anti-air this often (ticks).</summary>
-        private const int FlyerTicks = 5;
+        private static int FlyerTicks => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.FlyerTicks;
 
         /// <summary>
         /// Play-test 4 (DECISIONS 19R): a big attack's missile is never faster than the attack helicopter's Hellfire
         /// (24 m/s); a long way off it flies longer than its entry's "flight".
         /// </summary>
-        internal const float MissileTopSpeed = 24f;
+        internal static float MissileTopSpeed => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.MissileTopSpeed;
 
         // ================================================================== joining
 

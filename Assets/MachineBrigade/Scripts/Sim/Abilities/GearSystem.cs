@@ -35,9 +35,9 @@ namespace MachineBrigade.Sim.Abilities
     internal sealed partial class GearSystem
     {
         /// <summary>Seconds between two proc words over one vehicle.</summary>
-        public const double ProcGap = 2.0;
+        public static double ProcGap => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ProcGap;
 
-        private const float AuraInterval = 0.5f;
+        private static float AuraInterval => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.AuraInterval;
 
         private readonly SimWorld _world;
         private readonly List<Vehicle> _guardians = new();

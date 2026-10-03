@@ -38,7 +38,7 @@ namespace MachineBrigade.Sim.Navigation
     public sealed class LaneMap
     {
         /// <summary>A passage this wide or narrower (metres of hull-centre room across it) is a doorway.</summary>
-        public const float NarrowWidth = 6f;
+        public static float NarrowWidth => global::MachineBrigade.Sim.Content.SimTunables.Maps.LaneMap.NarrowWidth;
 
         /// <summary>A doorway only counts where it leads somewhere: this many open cells on both sides of it, along the way through.</summary>
         private const int ThroughCells = 2;
@@ -48,18 +48,18 @@ namespace MachineBrigade.Sim.Navigation
         /// passage) is no-parking. A longer one (a canyon, a long street between houses) stays a
         /// doorway without the rule, or nobody could ever stop along it.
         /// </summary>
-        private const int MaxNoParkCells = 30;
+        private static int MaxNoParkCells => global::MachineBrigade.Sim.Content.SimTunables.Maps.LaneMap.MaxNoParkCells;
 
         /// <summary>How far round a doorway its mouths reach (cells): nobody parks there either.</summary>
         private const int NoParkMouth = 2;
 
         /// <summary>The main routes are stamped this wide either side of the path (metres).</summary>
-        private const float RouteHalfWidth = 3f;
+        private static float RouteHalfWidth => global::MachineBrigade.Sim.Content.SimTunables.Maps.LaneMap.RouteHalfWidth;
 
-        private const int MaxClearance = 15;
+        private static int MaxClearance => global::MachineBrigade.Sim.Content.SimTunables.Maps.LaneMap.MaxClearance;
 
         /// <summary>After a wall falls the map is rebuilt at most this often (seconds).</summary>
-        private const double RebuildInterval = 2.0;
+        private static double RebuildInterval => global::MachineBrigade.Sim.Content.SimTunables.Maps.LaneMap.RebuildInterval;
 
         private readonly NavGrid _grid;
         private readonly LaneFlags[] _flags;
@@ -189,7 +189,7 @@ namespace MachineBrigade.Sim.Navigation
                 }
                 else
                 {
-                    _clearance[i] = MaxClearance;
+                    _clearance[i] = (byte)MaxClearance;
                 }
             }
             for (var head = 0; head < _queue.Count; head++)

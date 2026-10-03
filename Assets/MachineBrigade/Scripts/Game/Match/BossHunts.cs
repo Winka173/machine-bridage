@@ -16,7 +16,7 @@ namespace MachineBrigade.Game.Match
         /// The week's clock. Prompt 26 E.2: the targets come to about 18 minutes (7 minis at 66 s, 3 mains at 2.8 min, nine 15 s
         /// rests); 30 minutes leaves room for a weaker deck (50 before, for the old, longer hunt).
         /// </summary>
-        public const float WeeklyMinutes = 30f;
+        public static float WeeklyMinutes => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossHunts.WeeklyMinutes;
 
         /// <summary>The first clear of the week pays this (once a week, the Operations ledger).</summary>
         public const int WeeklyReward = 1500;

@@ -72,7 +72,7 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void BadlyDamagedHeavyVehiclePullsBackBehindTheLine()
+        public void BadlyDamagedHeavyVehicleIsNotPulledBack()
         {
             var world = TestWorlds.World();
             var ai = new TacticalAi(1, 0);
@@ -86,9 +86,9 @@ namespace MachineBrigade.Tests
             var before = Vector2.Distance(wounded.Position, enemy.Position);
             ai.Tick(world, 1f);
 
-            Assert.AreEqual(OrderKind.Move, wounded.Order.Kind, "the wounded tank should be ordered back");
+            // Balance pack (lane B, rule D): the locked "no retreat on health": the wounded tank stays in the line.
             TestWorlds.Run(world, 3f);
-            Assert.Greater(Vector2.Distance(wounded.Position, enemy.Position), before + 4f);
+            Assert.LessOrEqual(Vector2.Distance(wounded.Position, enemy.Position), before + 4f, "the wounded tank is not sent back");
         }
 
         private static void Run(SimWorld world, TacticalAi ai, float seconds)

@@ -39,8 +39,8 @@ namespace MachineBrigade.Sim.Bosses
         /// <summary>A coastal battery's gun (a fixed defence that fires on ships only).</summary>
         internal const string BatteryGun = "coastal_battery";
 
-        private const float CaptureRadius = 11f;
-        private const float LighthouseRadius = 14f;
+        private static float CaptureRadius => global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.CaptureRadius;
+        private static float LighthouseRadius => global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.LighthouseRadius;
 
         private readonly SimWorld _world;
         private readonly List<(string def, int team, Vector2 at, float heading, EntityId flagship, int landing, string[] cargo, Vector2? station)> _spawns = new();

@@ -75,7 +75,7 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>Share of new tower pieces that carry the Bulwark Engineering brand (the rest carry none).</summary>
-        public const float BulwarkShare = 0.35f;
+        public static float BulwarkShare => global::MachineBrigade.Sim.Content.SimTunables.Bases.Gear.BulwarkShare;
 
         /// <summary>
         /// A base type for a new tower piece of this slot and rarity: those that work for a tower

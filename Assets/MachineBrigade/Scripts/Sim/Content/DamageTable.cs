@@ -49,7 +49,7 @@ namespace MachineBrigade.Sim.Content
         }
 
         /// <summary>DECISIONS 20X: the armour and damage balance pass (prompt 15's row was 1, 0.75, 0.4, 0.15, 0.05).</summary>
-        private static readonly float[] DefaultPenetration = { 1.2f, 1f, 0.85f, 0.55f, 0.25f, 0.1f };
+        private static float[] DefaultPenetration => global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultPenetration;
 
         /// <summary>The starting values (prompt 15 B.2 and C.7; the penetration row from DECISIONS 20X).</summary>
         public static DamageTable Default { get; } = new DamageTable(new[,]

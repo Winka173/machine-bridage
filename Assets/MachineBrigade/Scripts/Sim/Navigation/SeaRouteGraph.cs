@@ -81,7 +81,7 @@ namespace MachineBrigade.Sim.Navigation
     public sealed class SeaRouteGraph
     {
         public const float NodeStep = 40f;
-        public const float ExitReach = 40f;
+        public static float ExitReach => global::MachineBrigade.Sim.Content.SimTunables.Maps.SeaRouteGraph.ExitReach;
         public const float HoldShore = 16f;
         public const float HoldSea = 18f;
         public const float HoldMargin = 12f;
@@ -89,7 +89,7 @@ namespace MachineBrigade.Sim.Navigation
         public const float DefaultCorridor = 20f;
 
         /// <summary>Every lane node has a passing bay within this far along the coast (two-way lanes).</summary>
-        public const float BayReach = 60f;
+        public static float BayReach => global::MachineBrigade.Sim.Content.SimTunables.Maps.SeaRouteGraph.BayReach;
 
         private readonly List<SeaNode> _nodes = new();
         private readonly List<SeaSegment> _segments = new();

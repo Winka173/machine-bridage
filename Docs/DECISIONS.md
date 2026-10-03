@@ -18857,3 +18857,34 @@ only. Two commits: the first recompute (cacdc9af) and the recalibration the lead
 - **Open for the lead / owner**: structure has two candidates (bulwark_post, targeting_station), so coastal_battery and
   super_gun (10 m batteries) drop to 61-64; walls have no candidate and borrow the flat set (Kém with the helipads, as
   under the old gold); the outlier screen leaves out 1-6 of the densest candidates per big set, by design.
+
+## Gói cân bằng (lane B)
+
+Game side of Docs/prompts/export_pack_vi.txt (§1 rules C / D, §3 game side, §4), branch `feature/pack-b`. Nothing run (no
+Unity, no tests); the four assemblies (Sim, Game, Editor, Tests) were compiled with the .NET SDK against the Unity 6
+managed DLLs. Every value change is in Docs/export/CHANGES.md (item, sheet, old, new, rule, reason, commit).
+
+- **Replay hash (a).** `ReplayHashTests`: 8 fixed battles (Conquest, Deathmatch, KotH, Siege, Endless, Survival, Boss Rush,
+  the framework campaign mission; fixed seeds), 2,400 ticks, `SimWorld.StateHash` every 400. Baseline
+  Docs/export/replay_hashes.txt, written on the first run (or MB_REPLAY_RECORD=1) with a `# rules: N` line;
+  `ChangedByRules` lets the scenarios a rule C / D change touches differ only against a baseline of an older rules number.
+- **Constants into data (b, b2).** Resources/Data/tunables.json (260 keys: domain → owner class → name, each with value,
+  unit, scan group, export file, code name), read by `SimTunables` (static fields defaulting to the old constants, set by
+  `GameContent.LoadCatalog` → `LoadTunables`); the old names stay as properties, so call sites are unchanged. 238 declared
+  constants + the supply / upkeep / catch-up / kill-pay formula numbers + the locked pricing rules (export only) + HOLD
+  flags. Values identical (checked by a float32 round-trip script and `TunablesTests`); compile-time-only uses fixed
+  (default parameters → nullable, `const` chains → properties, one byte cast). Left in code: 3,097 inline literals and 35
+  declarations (presentation pacing, array sizes, save layout, math tolerances; five gameplay ones listed in CHANGES.md).
+- **Rule D (c).** No retreat on health: the wave AIs' (non-layered TacticalAi) pull-back of damaged heavy vehicles and the
+  jets' dogfight break-off below 30 % health are removed (the two tests asserting them rewritten). Gungnir is a main boss:
+  never the Operations mutator's extra mini, not counted as a chapter mini. Kept and flagged: the enemy's 48-vehicle cap in
+  the big modes, smoke dischargers (concealment, not interception), the campaign general's scripted escape.
+- **Rule C (c).** Supply threshold (HOLD E2) x 1.16, the repo's average price factor (`economy.startCp.scale`), on the
+  mode's army cap only (bonuses after it). Kept: the upkeep curve, -75 % floor, catch-up, refunds (now parameters); the
+  steel fortress at 18 and the small towers' eq cap 11 (owner calls of 02/10 override the generic rules; flagged); splash
+  power bonus off, outpost forward drops and LATER events / neutrals off (flags); the 52 player-weapon cadences.
+- **Export (d).** `BalancePackFacts` (Sim, read-only) and `ExportGameDoc.Pack.cs`: game.json key `balancePack` with one
+  sub-key per NEED_CODE_CHECK sheet (listed in CHANGES.md); cells with no source in the code say KHONG_AP_DUNG and why
+  (aircraft shot band, boss compensation, deck goal, model LOD1).
+- **For lane C.** New data source Resources/Data/tunables.json; `scan_constants.py` should skip `SimTunables*.cs` and
+  `BalancePackFacts.cs`.

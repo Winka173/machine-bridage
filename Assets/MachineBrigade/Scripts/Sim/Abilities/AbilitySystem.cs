@@ -22,16 +22,16 @@ namespace MachineBrigade.Sim.Abilities
     internal sealed partial class AbilitySystem
     {
         /// <summary>Supply at home: within this distance of the team's rally point, vehicles re-arm.</summary>
-        private const float HomeReach = 20f;
+        private static float HomeReach => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.HomeReach;
 
         /// <summary>Seconds per round when re-arming at home.</summary>
-        private const float HomeRearmSeconds = 3f;
+        private static float HomeRearmSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.HomeRearmSeconds;
 
         /// <summary>Auras tick this often (seconds).</summary>
-        private const float AuraInterval = 0.5f;
+        private static float AuraInterval => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.AuraInterval;
 
         /// <summary>Enemies see a mine only this close to one of their vehicles.</summary>
-        private const float MineSpotting = 9f;
+        private static float MineSpotting => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.MineSpotting;
 
         private readonly SimWorld _world;
         private readonly List<Mine> _mines = new();

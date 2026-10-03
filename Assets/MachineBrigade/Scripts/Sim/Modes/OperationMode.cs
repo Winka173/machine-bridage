@@ -45,7 +45,7 @@ namespace MachineBrigade.Sim.Modes
         public const int EnemyTeam = MissionMode.EnemyTeam;
 
         /// <summary>Seconds the player has to choose a branch before the first option is taken.</summary>
-        public const double ChoiceSeconds = 15.0;
+        public static double ChoiceSeconds => global::MachineBrigade.Sim.Content.SimTunables.Campaign.OperationMode.ChoiceSeconds;
 
         private readonly MissionDef _def;
         private readonly SideSetup _player;

@@ -57,7 +57,7 @@ namespace MachineBrigade.Sim.Modes
     public sealed partial class BaseSystem
     {
         /// <summary>Seconds between the HQ's looks round its region (threat, garrison leash).</summary>
-        private const double LookEvery = 0.25;
+        private static double LookEvery => global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.LookEvery;
 
         /// <summary>
         /// Prompt 32 L4: the sides whose HQ skill the AI uses (when its base is threatened past the mode profile's

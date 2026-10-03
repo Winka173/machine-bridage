@@ -14,7 +14,7 @@ namespace MachineBrigade.Sim.Combat
         internal const float RelayPriority = 6f;
 
         /// <summary>A counter-battery gun weighs enemy artillery just caught firing this much more (DECISIONS 19T).</summary>
-        internal const float CounterBatteryPriority = 12f;
+        internal static float CounterBatteryPriority => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.CounterBatteryPriority;
 
         /// <summary>The nearest enemy gun a counter-battery gun's side just caught firing, in its reach (null: none, or not such a gun).</summary>
         private Vehicle? CounterBatteryTarget(Vehicle v, WeaponDef weapon)

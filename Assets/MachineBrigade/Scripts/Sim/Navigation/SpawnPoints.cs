@@ -246,7 +246,7 @@ namespace MachineBrigade.Sim.Navigation
         }
 
         /// <summary>How near a spawn point a gate of the map's data must be to take it (metres).</summary>
-        public const float GateReach = 30f;
+        public static float GateReach => global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.GateReach;
 
         /// <summary>
         /// Prompt 33 L2: the map's entry gate a point at the edge (an edge point, a rail head, the allies' behind their area within

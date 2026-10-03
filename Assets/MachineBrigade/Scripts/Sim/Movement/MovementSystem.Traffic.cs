@@ -34,7 +34,7 @@ namespace MachineBrigade.Sim.Movement
         private const double ParkedForAsk = 0.3;
 
         /// <summary>A request passed on: A asks B, B asks C, then it stops.</summary>
-        private const int MaxYieldDepth = 2;
+        private static int MaxYieldDepth => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.MaxYieldDepth;
 
         /// <summary>Sideways steps of a yield, in multiples of both hulls' radii plus a metre, and steps along the mover's way.</summary>
         private static readonly float[] LateralSteps = { 1.0f, 1.6f, 2.4f };
@@ -45,36 +45,36 @@ namespace MachineBrigade.Sim.Movement
         private const float YieldTurnCost = 3f;
 
         /// <summary>A yield lasts at most this long (which also bounds the reload it pauses).</summary>
-        private const double YieldMaxSeconds = 4.0;
+        private static double YieldMaxSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.YieldMaxSeconds;
 
         /// <summary>Once at its spot, the yielding vehicle holds until the mover is past, or this long.</summary>
-        private const double YieldHoldSeconds = 2.5;
+        private static double YieldHoldSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.YieldHoldSeconds;
 
         /// <summary>After making way it is not asked again for this long (except by priority 80 and up).</summary>
-        private const double YieldCooldown = 4.0;
+        private static double YieldCooldown => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.YieldCooldown;
 
         /// <summary>How long a mover waits behind a friend making way before it counts as stuck.</summary>
-        private const double YieldWaitSeconds = 3.0;
+        private static double YieldWaitSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.YieldWaitSeconds;
 
         /// <summary>Priorities from this up are obeyed even by a vehicle already yielding or resting after a yield.</summary>
         private const int OverridePriority = 80;
 
         /// <summary>Friends standing this close to a mover's destination are not asked to make way (the group's rendezvous, as in TacticalAi).</summary>
-        private const float GatherReach = 12f;
+        private static float GatherReach => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.GatherReach;
 
         /// <summary>A unit's routes planned round parked hulls come at least this far apart.</summary>
-        private const double MinCostRepathGap = 1.0;
+        private static double MinCostRepathGap => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.MinCostRepathGap;
 
         /// <summary>A route planned round parked hulls is kept this long before a plain replan may replace it.</summary>
         private const double CostPathKeep = 3.0;
 
         /// <summary>Cells all routes planned round hulls may expand in one step, and one of them at most.</summary>
-        internal const int PathNodeBudgetPerTick = 20000;
+        internal static int PathNodeBudgetPerTick => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.PathNodeBudgetPerTick;
 
-        private const int MaxNodesPerSearch = 8000;
+        private static int MaxNodesPerSearch => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.MaxNodesPerSearch;
 
         /// <summary>A queued search starts only with this much of the step's budget left (the first always runs).</summary>
-        private const int MinSearchBudget = 2000;
+        private static int MinSearchBudget => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.MinSearchBudget;
 
         /// <summary>
         /// Extra step cost of the cells under the hull in the way (x13 at the path finder's 0.1
@@ -83,7 +83,7 @@ namespace MachineBrigade.Sim.Movement
         private const int BlockerCost = 120, ImmovableBlockerCost = 250;
 
         /// <summary>A route round the hulls longer than this share of the plain one (plus a few metres) is no way round.</summary>
-        private const float DetourCap = 1.5f;
+        private static float DetourCap => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DetourCap;
 
         /// <summary>The detour cap on the second route planned round the hulls: still stuck behind it, a longer way round is worth it.</summary>
         private const float DetourCapLate = 3f;
@@ -91,29 +91,29 @@ namespace MachineBrigade.Sim.Movement
         private const float DetourSlack = 8f;
 
         /// <summary>A route round that still passes the blocker within this many metres is no way round either.</summary>
-        private const float NoAlternativeLength = 12f;
+        private static float NoAlternativeLength => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.NoAlternativeLength;
 
         /// <summary>How long a vehicle with no way round waits behind the hull before it tries anything else.</summary>
-        private const double QueueSeconds = 6.0;
+        private static double QueueSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.QueueSeconds;
 
         /// <summary>A head-on loser backs out at most this far, at this share of its speed, then waits this long.</summary>
-        private const float HeadOnReverseMax = 12f;
+        private static float HeadOnReverseMax => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.HeadOnReverseMax;
 
-        private const float ReverseSpeedShare = 0.5f;
-        private const double HeadOnWait = 1.5;
+        private static float ReverseSpeedShare => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ReverseSpeedShare;
+        private static double HeadOnWait => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.HeadOnWait;
 
         /// <summary>A plain back-off when wedged: this many metres straight back.</summary>
-        private const float BackOffDistance = 4f;
+        private static float BackOffDistance => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.BackOffDistance;
 
         /// <summary>Holding on a main route, a friend coming along it this close behind means stepping off.</summary>
-        private const float TrafficBehindReach = 25f;
+        private static float TrafficBehindReach => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TrafficBehindReach;
 
         /// <summary>Sideways offsets and steps ahead tried when stepping off the lane to hold fire position.</summary>
         private static readonly float[] OffLaneLateral = { 4f, 7f, 10f };
 
         private static readonly float[] OffLaneAlong = { 0f, 4f };
 
-        private const double OffLaneSeconds = 4.0;
+        private static double OffLaneSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OffLaneSeconds;
 
         private readonly List<(Vehicle blocker, EntityId mover, Vector2 dir, int depth)> _serving = new();
         private readonly List<Vector2> _single = new();
@@ -279,7 +279,7 @@ namespace MachineBrigade.Sim.Movement
         private static bool Holding(Vehicle v) => v.Order.Kind == OrderKind.Idle || !v.HasPath;
 
         /// <summary>Order points this close belong to one group's move (its formation slots).</summary>
-        private const float SameGoalReach = 18f;
+        private static float SameGoalReach => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SameGoalReach;
 
         /// <summary>Which way the mover is going past the blocker: towards its first waypoint beyond it.</summary>
         private static Vector2 MoverDirection(Vehicle mover, Vehicle blocker)
@@ -608,13 +608,13 @@ namespace MachineBrigade.Sim.Movement
         // ------------------------------------------------------------------ taking turns through a doorway
 
         /// <summary>A doorway stays one-way this many steps after the last vehicle going that way was in it or about to enter.</summary>
-        private const int GateHoldTicks = 10;
+        private static int GateHoldTicks => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.GateHoldTicks;
 
         /// <summary>One way holds a doorway at most this long while vehicles wait on the other side.</summary>
-        private const double GateTurnSeconds = 8.0;
+        private static double GateTurnSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.GateTurnSeconds;
 
         /// <summary>After waiting this long at a doorway a vehicle counts as stuck after all.</summary>
-        private const double GateWaitMax = 12.0;
+        private static double GateWaitMax => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.GateWaitMax;
 
         /// <summary>How far past its own nose a vehicle looks for the doorway it is about to enter.</summary>
         private const float GateLookAhead = 2f;
@@ -730,9 +730,9 @@ namespace MachineBrigade.Sim.Movement
         }
 
         /// <summary>Sideways offsets and steps back tried for a place to wait beside a doorway, off the route.</summary>
-        private static readonly float[] GateWaitLateral = { 5f, 7f, 9f };
+        private static float[] GateWaitLateral => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.GateWaitLateral;
 
-        private static readonly float[] GateWaitBack = { 0f, 3f, 6f };
+        private static float[] GateWaitBack => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.GateWaitBack;
 
         /// <summary>
         /// A place to wait for a doorway: to the side of the way in (the traffic coming out keeps to
@@ -852,7 +852,7 @@ namespace MachineBrigade.Sim.Movement
         }
 
         /// <summary>Two hulls nose to nose in the open both standing this long: one steps aside (keeping right failed).</summary>
-        private const double HeadOnOpenWait = 1.0;
+        private static double HeadOnOpenWait => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.HeadOnOpenWait;
 
         private bool InDoorway(Vehicle v) => (_world.Lanes.At(v.Position) & (LaneFlags.Narrow | LaneFlags.NoPark)) != 0;
 

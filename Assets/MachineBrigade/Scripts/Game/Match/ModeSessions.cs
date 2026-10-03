@@ -994,7 +994,8 @@ namespace MachineBrigade.Game.Match
                 Seed = _full ? BossHunts.FullSeed : _week, Ramp = true, FullRamp = _full, RestRepair = _full ? 0f : 0.3f,
                 // Prompt 26 E.2/E.3: P sets the health (bosses 66 s / 2.8 min in the week, 1 min / 2.5 min in the full hunt), a 15 s rest, the
                 // week's half of the CP kept, the full hunt's every boss a fresh battle.
-                Power = power, MiniSeconds = _full ? 60f : 66f, MainSeconds = _full ? 150f : 168f, Breather = 15f,
+                Power = power, MiniSeconds = _full ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.FullMiniSeconds : global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.MiniSeconds,
+                MainSeconds = _full ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.FullMainSeconds : global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.MainSeconds, Breather = 15f,
                 CpKept = _full ? 1f : 0.5f, Fresh = _full,
                 TimeLimit = _full ? float.MaxValue : BossHunts.WeeklyMinutes * 60f,
                 // Play-test 6 (DECISIONS 21G): the endless run after the last boss, and the bosses' strength by difficulty.
@@ -1508,9 +1509,11 @@ namespace MachineBrigade.Game.Match
                 if (boss.MiniBoss) return id;
                 if (boss.MiniVariant != null && catalog.Vehicles.ContainsKey(boss.MiniVariant)) return boss.MiniVariant;
             }
+            // Balance pack (lane B, rule D): a boss of the main rank in a mini slot (Gungnir, chapter 11) is a main boss, never
+            // the mutator's extra mini.
             if (Campaign.Chapter(def.Chapter) is { } chapter)
                 foreach (var mini in chapter.Minis)
-                    if (catalog.Vehicles.ContainsKey(mini)) return mini;
+                    if (catalog.Vehicles.TryGetValue(mini, out var miniDef) && miniDef.Rank != BossRank.Main) return mini;
             return id != null && catalog.Vehicles.ContainsKey(id) ? id : null;
         }
 

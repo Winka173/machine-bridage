@@ -97,7 +97,7 @@ namespace MachineBrigade.Sim.AI
     public sealed partial class ConquestAi
     {
         private const int ClusterSize = 3;
-        private const float ClusterRadius = 9f;
+        private static float ClusterRadius => global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ClusterRadius;
 
         private readonly IObjectiveMode? _mode;
         private readonly int _team;
@@ -195,7 +195,7 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>How far off the point it holds a defending army chases.</summary>
-        private const float HoldReach = 26f;
+        private static float HoldReach => global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.HoldReach;
 
         /// <summary>Which way the threat lies from the point being held: the enemy seen nearest it, else their camp.</summary>
         private Vector2? Threat(SimWorld world)

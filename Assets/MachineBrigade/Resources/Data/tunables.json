@@ -1,0 +1,380 @@
+{
+  // Balance pack (lane B, rule B, DECISIONS "Gói cân bằng (lane B)"): gameplay constants that lived in the C# code.
+  // Section = domain (weapons 01, vehicles 02, bosses 03, bases 04, modes 05, ai 06, campaign 07, maps 08), then the owner
+  // class, then the name. "value" is read by the game (SimTunables.Apply); "unit", "kind" (scan group) and "linh_vuc"
+  // (export file) describe it; "code" is the C# name that reads it. Units: s seconds of game time, ticks (20 a second),
+  // m metres, x multiplier, share 0-1 of a whole, CP command points, count, coins, deg degrees, m/s.
+  "version": 1,
+  "weapons": {
+    "combatSystem": {
+      "axisRatio": { "value": 1.5, "unit": "x", "kind": "nguong", "linh_vuc": "01", "code": "CombatSystem.AxisRatio" },
+      "counterBatteryPriority": { "value": 12.0, "unit": "score", "kind": "gioi_han_thuc_the", "linh_vuc": "01", "code": "CombatSystem.CounterBatteryPriority" },
+      "crowdMax": { "value": 4.0, "unit": "count", "kind": "tran", "linh_vuc": "01", "code": "CombatSystem.CrowdMax" },
+      "reloadStillSpeed": { "value": 0.4, "unit": "m/s", "kind": "tan_suat", "linh_vuc": "01", "code": "CombatSystem.ReloadStillSpeed" },
+      "retargetSeconds": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "CombatSystem.RetargetSeconds" },
+      "bombedRadius": { "value": 16.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "01", "code": "CombatSystem.BombedRadius" },
+      "bombedSeconds": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "CombatSystem.BombedSeconds" },
+      "twinGap": { "value": 0.15, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "CombatSystem.TwinGap" },
+      "restSeconds": { "value": 1.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "CombatSystem.RestSeconds" },
+      "runDamage": { "value": 1.7, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "CombatSystem.RunDamage" },
+      "twinOffset": { "value": 0.1, "unit": "s", "kind": "ban_kinh", "linh_vuc": "01", "code": "CombatSystem.TwinOffset" }
+    },
+    "damageSystem": {
+      "engineerBreach": { "value": 3.0, "unit": "x", "kind": "nguong", "linh_vuc": "01", "code": "DamageSystem.EngineerBreach" },
+      "fireAfterburn": { "value": 0.3, "unit": "share", "kind": "thoi_gian", "linh_vuc": "01", "code": "DamageSystem.FireAfterburn" },
+      "fireBurnSeconds": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "DamageSystem.FireBurnSeconds" },
+      "smokeEnergyCut": { "value": 0.8, "unit": "share", "kind": "nguong", "linh_vuc": "01", "code": "DamageSystem.SmokeEnergyCut" }
+    },
+    "damageTable": {
+      "defaultPenetration": { "value": [1.2, 1.0, 0.85, 0.55, 0.25, 0.1], "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageTable.DefaultPenetration" }
+    },
+    "weaponDef": {
+      "minSwitchSeconds": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "WeaponDef.MinSwitchSeconds" },
+      "roundHoldSeconds": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "WeaponDef.RoundHoldSeconds" },
+      "maxEdge": { "value": 20.0, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "WeaponDef.MaxEdge" },
+      "heArmourMax": { "value": 1, "unit": "armour level", "kind": "sat_thuong", "linh_vuc": "01", "code": "WeaponDef.HeArmourMax" },
+      "maxEdgeT5": { "value": 28.0, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "WeaponDef.MaxEdgeT5" },
+      "escapeSpeed": { "value": 4.5, "unit": "m/s", "kind": "tan_suat", "linh_vuc": "01", "code": "WeaponDef.EscapeSpeed" },
+      "maxWarning": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "WeaponDef.MaxWarning" }
+    }
+  },
+  "vehicles": {
+    "abilitySystem": {
+      "homeReach": { "value": 20.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "AbilitySystem.HomeReach" },
+      "homeRearmSeconds": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "AbilitySystem.HomeRearmSeconds" },
+      "auraInterval": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "AbilitySystem.AuraInterval" },
+      "mineSpotting": { "value": 9.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "AbilitySystem.MineSpotting" }
+    },
+    "fieldWorksSystem": {
+      "nightSight": { "value": 0.75, "unit": "x", "kind": "ban_kinh", "linh_vuc": "02", "code": "FieldWorksSystem.NightSight" },
+      "decoyCheckSeconds": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "FieldWorksSystem.DecoyCheckSeconds" },
+      "passScanSeconds": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "FieldWorksSystem.PassScanSeconds" }
+    },
+    "gearSystem": {
+      "lastStandGap": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem.LastStandGap" },
+      "killReadySeconds": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem.KillReadySeconds" },
+      "fuelBlastCap": { "value": 1500.0, "unit": "HP", "kind": "sat_thuong", "linh_vuc": "02", "code": "GearSystem.FuelBlastCap" },
+      "laserWarningCooldown": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem.LaserWarningCooldown" },
+      "procGap": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem.ProcGap" },
+      "auraInterval": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem.AuraInterval" }
+    },
+    "supplyRules": {
+      "slowShare": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "02", "code": "SupplyRules.SlowShare" },
+      "returnShare": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "02", "code": "SupplyRules.ReturnShare" },
+      "bomberShare": { "value": 0.666666687, "unit": "share", "kind": "nguong", "linh_vuc": "02", "code": "SupplyRules.BomberShare" },
+      "padRate": { "value": 2.0, "unit": "x", "kind": "tan_suat", "linh_vuc": "02", "code": "SupplyRules.PadRate" },
+      "hqRate": { "value": 1.5, "unit": "x", "kind": "tan_suat", "linh_vuc": "02", "code": "SupplyRules.HqRate" },
+      "carrierRate": { "value": 2.0, "unit": "x", "kind": "tan_suat", "linh_vuc": "02", "code": "SupplyRules.CarrierRate" }
+    },
+    "supplySystem": {
+      "safeSeconds": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "SupplySystem.SafeSeconds" },
+      "lowShare": { "value": 0.2, "unit": "share", "kind": "nguong", "linh_vuc": "02", "code": "SupplySystem.LowShare" },
+      "hqHeal": { "value": 0.01, "unit": "share/s", "kind": "sat_thuong", "linh_vuc": "02", "code": "SupplySystem.HqHeal" },
+      "hqReach": { "value": 20.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "SupplySystem.HqReach" },
+      "carrierReach": { "value": 12.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "SupplySystem.CarrierReach" }
+    },
+    "vehicleDef": {
+      "stealthSight": { "value": 0.4, "unit": "x", "kind": "ban_kinh", "linh_vuc": "02", "code": "VehicleDef.StealthSight" }
+    },
+    "relayDef": {
+      "maxPerBase": { "value": 2, "unit": "count", "kind": "tran", "linh_vuc": "02", "code": "RelayDef.MaxPerBase" }
+    },
+    "movementSystem": {
+      "ghostSeconds": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.GhostSeconds" },
+      "maxYieldDepth": { "value": 2, "unit": "count", "kind": "tran", "linh_vuc": "02", "code": "MovementSystem.MaxYieldDepth" },
+      "yieldMaxSeconds": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.YieldMaxSeconds" },
+      "yieldHoldSeconds": { "value": 2.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.YieldHoldSeconds" },
+      "yieldCooldown": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.YieldCooldown" },
+      "yieldWaitSeconds": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.YieldWaitSeconds" },
+      "gatherReach": { "value": 12.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.GatherReach" },
+      "minCostRepathGap": { "value": 1.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.MinCostRepathGap" },
+      "pathNodeBudgetPerTick": { "value": 20000, "unit": "nodes/tick", "kind": "tan_suat", "linh_vuc": "02", "code": "MovementSystem.PathNodeBudgetPerTick" },
+      "maxNodesPerSearch": { "value": 8000, "unit": "nodes", "kind": "tran", "linh_vuc": "02", "code": "MovementSystem.MaxNodesPerSearch" },
+      "minSearchBudget": { "value": 2000, "unit": "nodes", "kind": "tan_suat", "linh_vuc": "02", "code": "MovementSystem.MinSearchBudget" },
+      "detourCap": { "value": 1.5, "unit": "x", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.DetourCap" },
+      "noAlternativeLength": { "value": 12.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.NoAlternativeLength" },
+      "queueSeconds": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.QueueSeconds" },
+      "headOnReverseMax": { "value": 12.0, "unit": "m", "kind": "tran", "linh_vuc": "02", "code": "MovementSystem.HeadOnReverseMax" },
+      "reverseSpeedShare": { "value": 0.5, "unit": "share", "kind": "tan_suat", "linh_vuc": "02", "code": "MovementSystem.ReverseSpeedShare" },
+      "headOnWait": { "value": 1.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.HeadOnWait" },
+      "backOffDistance": { "value": 4.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.BackOffDistance" },
+      "trafficBehindReach": { "value": 25.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.TrafficBehindReach" },
+      "offLaneSeconds": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.OffLaneSeconds" },
+      "sameGoalReach": { "value": 18.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.SameGoalReach" },
+      "gateHoldTicks": { "value": 10, "unit": "ticks", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.GateHoldTicks" },
+      "gateTurnSeconds": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.GateTurnSeconds" },
+      "gateWaitMax": { "value": 12.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.GateWaitMax" },
+      "gateWaitLateral": { "value": [5.0, 7.0, 9.0], "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.GateWaitLateral" },
+      "gateWaitBack": { "value": [0.0, 3.0, 6.0], "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.GateWaitBack" },
+      "headOnOpenWait": { "value": 1.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.HeadOnOpenWait" },
+      "repathInterval": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.RepathInterval" },
+      "stuckDistance": { "value": 0.4, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.StuckDistance" },
+      "stuckDetourDistance": { "value": 3.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.StuckDetourDistance" },
+      "arrivalReach": { "value": 5.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.ArrivalReach" },
+      "separationSlack": { "value": 0.05, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.SeparationSlack" },
+      "settleDistance": { "value": 2.5, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.SettleDistance" },
+      "avoidSeconds": { "value": 0.9, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.AvoidSeconds" },
+      "separationStiffness": { "value": 0.55, "unit": "x", "kind": "nguong", "linh_vuc": "02", "code": "MovementSystem.SeparationStiffness" },
+      "maxPush": { "value": 0.35, "unit": "m", "kind": "tran", "linh_vuc": "02", "code": "MovementSystem.MaxPush" },
+      "guardLeash": { "value": 16.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "MovementSystem.GuardLeash" },
+      "answerFireSeconds": { "value": 5.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.AnswerFireSeconds" },
+      "manualHoldSeconds": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "MovementSystem.ManualHoldSeconds" },
+      "hoverShare": { "value": 0.6, "unit": "share", "kind": "nguong", "linh_vuc": "02", "code": "MovementSystem.HoverShare" },
+      "chaseShare": { "value": 0.55, "unit": "share", "kind": "nguong", "linh_vuc": "02", "code": "MovementSystem.ChaseShare" }
+    },
+    "railSystem": {
+      "minWarning": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "RailSystem.MinWarning" },
+      "warnFloor": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "RailSystem.WarnFloor" },
+      "clearHoldTicks": { "value": 10, "unit": "ticks", "kind": "thoi_gian", "linh_vuc": "02", "code": "RailSystem.ClearHoldTicks" },
+      "ramDamage": { "value": 600.0, "unit": "HP", "kind": "sat_thuong", "linh_vuc": "02", "code": "RailSystem.RamDamage" },
+      "supportLength": { "value": 50.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "RailSystem.SupportLength" },
+      "supportWait": { "value": 7.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "RailSystem.SupportWait" },
+      "supportHalfWidth": { "value": 1.8, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "RailSystem.SupportHalfWidth" },
+      "tellEvery": { "value": 1.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "RailSystem.TellEvery" },
+      "attachReach": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "RailSystem.AttachReach" }
+    },
+    "priceRules": {
+      "groupMaxCp": { "value": [4, 8, 13], "unit": "CP", "kind": "nguong", "linh_vuc": "02", "code": "export: price group bounds" },
+      "groupFactor": { "value": [1.0, 1.15, 1.25, 1.3], "unit": "x", "kind": "nguong", "linh_vuc": "02", "code": "export: price group factors" },
+      "bonusPerCp": { "value": 0.0125, "unit": "share/CP", "kind": "sat_thuong", "linh_vuc": "02", "code": "export: power bonus slope" },
+      "bonusFromCp": { "value": 8.0, "unit": "CP", "kind": "sat_thuong", "linh_vuc": "02", "code": "export: power bonus start" },
+      "bonusCap": { "value": 0.15, "unit": "share", "kind": "tran", "linh_vuc": "02", "code": "export: power bonus cap" },
+      "splashBonus": { "value": false, "unit": "flag", "kind": "sat_thuong", "linh_vuc": "02", "code": "HOLD: splash units get no power bonus" },
+      "dropSmallMaxCp": { "value": 4, "unit": "CP", "kind": "nguong", "linh_vuc": "02", "code": "export: drop time group" },
+      "dropLargeMinCp": { "value": 15, "unit": "CP", "kind": "nguong", "linh_vuc": "02", "code": "export: drop time group" },
+      "dropSmallSeconds": { "value": 2.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "export: drop time" },
+      "dropMiddleSeconds": { "value": 3.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "export: drop time" },
+      "dropLargeSeconds": { "value": 5.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "export: drop time" }
+    }
+  },
+  "bosses": {
+    "bossHunts": {
+      "weeklyMinutes": { "value": 30.0, "unit": "min", "kind": "thoi_gian", "linh_vuc": "03", "code": "BossHunts.WeeklyMinutes" }
+    },
+    "bossSystem": {
+      "flyerTicks": { "value": 5, "unit": "ticks", "kind": "thoi_gian", "linh_vuc": "03", "code": "BossSystem.FlyerTicks" },
+      "missileTopSpeed": { "value": 24.0, "unit": "m/s", "kind": "tan_suat", "linh_vuc": "03", "code": "BossSystem.MissileTopSpeed" },
+      "escortTicks": { "value": 10, "unit": "ticks", "kind": "thoi_gian", "linh_vuc": "03", "code": "BossSystem.EscortTicks" },
+      "bodyShare": { "value": 0.4, "unit": "share", "kind": "nguong", "linh_vuc": "03", "code": "BossSystem.BodyShare" }
+    },
+    "navalSystem": {
+      "bigShipLength": { "value": 25.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "03", "code": "NavalSystem.BigShipLength" },
+      "gapExtra": { "value": 10.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "03", "code": "NavalSystem.GapExtra" },
+      "closeRate": { "value": 0.25, "unit": "share/s", "kind": "tan_suat", "linh_vuc": "03", "code": "NavalSystem.CloseRate" },
+      "holdAfterTicks": { "value": 60, "unit": "ticks", "kind": "thoi_gian", "linh_vuc": "03", "code": "NavalSystem.HoldAfterTicks" },
+      "holdMinTicks": { "value": 40, "unit": "ticks", "kind": "thoi_gian", "linh_vuc": "03", "code": "NavalSystem.HoldMinTicks" },
+      "slotSlack": { "value": 4.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "03", "code": "NavalSystem.SlotSlack" },
+      "slotSample": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "03", "code": "NavalSystem.SlotSample" },
+      "turnWarn": { "value": 45.0, "unit": "deg", "kind": "thoi_gian", "linh_vuc": "03", "code": "NavalSystem.TurnWarn" },
+      "captureRadius": { "value": 11.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "03", "code": "NavalSystem.CaptureRadius" },
+      "lighthouseRadius": { "value": 14.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "03", "code": "NavalSystem.LighthouseRadius" }
+    },
+    "bossHunt": {
+      "weeklyMinis": { "value": 7, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "03", "code": "BossHunt.WeeklyMinis" },
+      "airDefenceMains": { "value": 1, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "03", "code": "BossHunt.AirDefenceMains" },
+      "airDefenceMinis": { "value": 3, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "03", "code": "BossHunt.AirDefenceMinis" },
+      "weeklyMains": { "value": 3, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "03", "code": "BossHunt.WeeklyMains" },
+      "fullFrom": { "value": 0.8, "unit": "x", "kind": "sat_thuong", "linh_vuc": "03", "code": "BossHunt.FullFrom" },
+      "fullTo": { "value": 1.3, "unit": "x", "kind": "sat_thuong", "linh_vuc": "03", "code": "BossHunt.FullTo" },
+      "weeklyStep": { "value": 0.06, "unit": "x", "kind": "sat_thuong", "linh_vuc": "03", "code": "BossHunt.WeeklyStep" }
+    },
+    "huntSupports": {
+      "cap": { "value": 0.4, "unit": "share", "kind": "tran", "linh_vuc": "03", "code": "HuntSupports.Cap" }
+    },
+    "bossRushRules": {
+      "miniSeconds": { "value": 66.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "03", "code": "BossRushRules.MiniSeconds" },
+      "mainSeconds": { "value": 168.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "03", "code": "BossRushRules.MainSeconds" },
+      "fullMiniSeconds": { "value": 60.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "03", "code": "BossHuntSession (full hunt)" },
+      "fullMainSeconds": { "value": 150.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "03", "code": "BossHuntSession (full hunt)" },
+      "hpShare": { "value": 0.6, "unit": "share", "kind": "sat_thuong", "linh_vuc": "03", "code": "BossRushRules.HpShare" }
+    }
+  },
+  "bases": {
+    "gear": {
+      "bulwarkShare": { "value": 0.35, "unit": "share", "kind": "nguong", "linh_vuc": "04", "code": "Gear.BulwarkShare" }
+    },
+    "baseSystem": {
+      "lookEvery": { "value": 0.25, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "BaseSystem.LookEvery" }
+    }
+  },
+  "modes": {
+    "teamEconomy": {
+      "maxVehicles": { "value": 32, "unit": "count", "kind": "tran", "linh_vuc": "05", "code": "TeamEconomy.MaxVehicles" },
+      "maxAircraft": { "value": 6, "unit": "count", "kind": "tran", "linh_vuc": "05", "code": "TeamEconomy.MaxAircraft" }
+    },
+    "economySystem": {
+      "maxCatchUp": { "value": 0.5, "unit": "share", "kind": "tran", "linh_vuc": "05", "code": "EconomySystem.MaxCatchUp" },
+      "catchUpBelow": { "value": 0.75, "unit": "share", "kind": "nguong", "linh_vuc": "05", "code": "EconomySystem.CatchUpBelow" },
+      "catchUpMinimumArmy": { "value": 14, "unit": "CP", "kind": "tran", "linh_vuc": "05", "code": "EconomySystem.CatchUpMinimumArmy" },
+      "catchUpSettle": { "value": 4.0, "unit": "s", "kind": "tan_suat", "linh_vuc": "05", "code": "EconomySystem.CatchUpSettle" },
+      "deliverySeconds": { "value": 3.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "EconomySystem.DeliverySeconds" },
+      "rollIn": { "value": 12.0, "unit": "m", "kind": "khac", "linh_vuc": "05", "code": "EconomySystem.RollIn" },
+      "killReward": { "value": 0.25, "unit": "share", "kind": "thuong", "linh_vuc": "05", "code": "EconomySystem.KillReward" },
+      "killRefundCap": { "value": 0.45, "unit": "share", "kind": "tran", "linh_vuc": "05", "code": "EconomySystem.KillRefundCap" },
+      "lossRefundCap": { "value": 0.15, "unit": "share", "kind": "tran", "linh_vuc": "05", "code": "EconomySystem.LossRefundCap" }
+    },
+    "battleEvents": {
+      "crateFall": { "value": 15.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "BattleEvents.CrateFall" },
+      "crateLife": { "value": 50.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "BattleEvents.CrateLife" },
+      "claimReach": { "value": 6.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "05", "code": "BattleEvents.ClaimReach" },
+      "claimSeconds": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "BattleEvents.ClaimSeconds" },
+      "crateCp": { "value": 10.0, "unit": "CP", "kind": "thuong", "linh_vuc": "05", "code": "BattleEvents.CrateCp" },
+      "crateRepair": { "value": 0.3, "unit": "share", "kind": "thuong", "linh_vuc": "05", "code": "BattleEvents.CrateRepair" }
+    },
+    "endlessRules": {
+      "enemyPerWave": { "value": 0.04, "unit": "share/wave", "kind": "khac", "linh_vuc": "05", "code": "EndlessRules.EnemyPerWave" },
+      "playerPerWave": { "value": 0.02, "unit": "share/wave", "kind": "khac", "linh_vuc": "05", "code": "EndlessRules.PlayerPerWave" },
+      "playerMax": { "value": 0.3, "unit": "share", "kind": "tran", "linh_vuc": "05", "code": "EndlessRules.PlayerMax" },
+      "miniBossEvery": { "value": 5, "unit": "waves", "kind": "thoi_gian", "linh_vuc": "05", "code": "EndlessRules.MiniBossEvery" },
+      "bossEvery": { "value": 10, "unit": "waves", "kind": "thoi_gian", "linh_vuc": "05", "code": "EndlessRules.BossEvery" },
+      "survivalWaves": { "value": 10, "unit": "waves", "kind": "gioi_han_thuc_the", "linh_vuc": "05", "code": "EndlessRules.SurvivalWaves" },
+      "defendFiniteWaves": { "value": 10, "unit": "waves", "kind": "gioi_han_thuc_the", "linh_vuc": "05", "code": "EndlessRules.DefendFiniteWaves" },
+      "waveCoins": { "value": 18, "unit": "coins", "kind": "thuong", "linh_vuc": "05", "code": "EndlessRules.WaveCoins" },
+      "bossCoins": { "value": 60, "unit": "coins", "kind": "thuong", "linh_vuc": "05", "code": "EndlessRules.BossCoins" },
+      "dailyCap": { "value": 600, "unit": "coins", "kind": "tran", "linh_vuc": "05", "code": "EndlessRules.DailyCap" },
+      "waveBadges": { "value": [10, 20, 30], "unit": "waves", "kind": "gioi_han_thuc_the", "linh_vuc": "05", "code": "EndlessRules.WaveBadges" },
+      "bossBadges": { "value": [5, 10], "unit": "bosses", "kind": "gioi_han_thuc_the", "linh_vuc": "05", "code": "EndlessRules.BossBadges" },
+      "enemyPerBoss": { "value": 0.08, "unit": "share/step", "kind": "khac", "linh_vuc": "05", "code": "EndlessRules.EnemyPerBoss" },
+      "coinDecay": { "value": 0.9, "unit": "x", "kind": "thuong", "linh_vuc": "05", "code": "EndlessRules.CoinDecay" }
+    },
+    "outposts": {
+      "neutralHealth": { "value": 2.0, "unit": "x", "kind": "sat_thuong", "linh_vuc": "05", "code": "Outposts.NeutralHealth" },
+      "buildSeconds": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "Outposts.BuildSeconds" },
+      "rebuildSeconds": { "value": 35.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "Outposts.RebuildSeconds" },
+      "respawnSeconds": { "value": 100.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "Outposts.RespawnSeconds" }
+    },
+    "neutralSystem": {
+      "interval": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "NeutralSystem.Interval" }
+    },
+    "sandboxMode": {
+      "firstWaveDelay": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "SandboxMode.FirstWaveDelay" },
+      "waveInterval": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "SandboxMode.WaveInterval" },
+      "reinforceCooldownSeconds": { "value": 12.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "SandboxMode.ReinforceCooldownSeconds" }
+    },
+    "sandboxBattle": {
+      "unlimitedCp": { "value": 999.0, "unit": "CP", "kind": "tran", "linh_vuc": "05", "code": "SandboxBattle.UnlimitedCp" }
+    },
+    "sandboxRules": {
+      "vehicleCap": { "value": 64, "unit": "count", "kind": "tran", "linh_vuc": "05", "code": "SandboxRules.VehicleCap" },
+      "aircraftCap": { "value": 12, "unit": "count", "kind": "tran", "linh_vuc": "05", "code": "SandboxRules.AircraftCap" },
+      "maxRank": { "value": 10, "unit": "rank", "kind": "tran", "linh_vuc": "05", "code": "SandboxRules.MaxRank" }
+    },
+    "simWorld": {
+      "homeRadius": { "value": 35.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "05", "code": "SimWorld.HomeRadius" },
+      "entrenchSeconds": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "SimWorld.EntrenchSeconds" },
+      "lighthouseSight": { "value": 170.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "05", "code": "SimWorld.LighthouseSight" }
+    },
+    "economyRules": {
+      "supplyPerArmyCap": { "value": 1.5, "unit": "x", "kind": "nguong", "linh_vuc": "05", "code": "TeamEconomy.Supply" },
+      "upkeepSlope": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "05", "code": "TeamEconomy.UpkeepFor" },
+      "upkeepFloor": { "value": 0.25, "unit": "share", "kind": "tran", "linh_vuc": "05", "code": "TeamEconomy.UpkeepFor" },
+      "catchUpOddsFloor": { "value": 0.2, "unit": "share", "kind": "nguong", "linh_vuc": "05", "code": "EconomySystem.CatchUpFor" },
+      "bountyMin": { "value": 0.5, "unit": "x", "kind": "thuong", "linh_vuc": "05", "code": "EconomySystem.Bounty" },
+      "bountyMax": { "value": 1.5, "unit": "x", "kind": "thuong", "linh_vuc": "05", "code": "EconomySystem.Bounty" },
+      "supplyPriceScale": { "value": 1.16, "unit": "x", "kind": "nguong", "linh_vuc": "05", "code": "TeamEconomy.ArmyCap (rule C, CHANGES.md)" },
+      "killCreditSeconds": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "EconomySystem.OnVehicleDestroyed" }
+    },
+    "holdFlags": {
+      "outpostForwardDropsQuickModes": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "04", "code": "HOLD: off (no code path when true)" },
+      "laterEventsQuickModes": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "07", "code": "HOLD: off (no code path when true)" },
+      "laterNeutrals": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "05", "code": "HOLD: off (no code path when true)" }
+    }
+  },
+  "ai": {
+    "conquestAi": {
+      "clusterRadius": { "value": 9.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "ConquestAi.ClusterRadius" },
+      "holdReach": { "value": 26.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "ConquestAi.HoldReach" }
+    },
+    "squadLayer": {
+      "shortMoveEvery": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "SquadLayer.ShortMoveEvery" },
+      "threatMetres": { "value": 40.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "SquadLayer.ThreatMetres" },
+      "breachMargin": { "value": 0.8, "unit": "x", "kind": "ban_kinh", "linh_vuc": "06", "code": "SquadLayer.BreachMargin" },
+      "interval": { "value": 0.25, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "SquadLayer.Interval" },
+      "minSquad": { "value": 3, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "06", "code": "SquadLayer.MinSquad" },
+      "maxSquad": { "value": 6, "unit": "count", "kind": "tran", "linh_vuc": "06", "code": "SquadLayer.MaxSquad" },
+      "gatherRadius": { "value": 25.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "SquadLayer.GatherRadius" },
+      "gatheredRadius": { "value": 12.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "SquadLayer.GatheredRadius" },
+      "joinReach": { "value": 60.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "SquadLayer.JoinReach" },
+      "supportReach": { "value": 80.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "SquadLayer.SupportReach" }
+    },
+    "tacticalAi": {
+      "decisionInterval": { "value": 0.75, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "TacticalAi.DecisionInterval" },
+      "boundLength": { "value": 24.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.BoundLength" },
+      "flankOffset": { "value": 24.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.FlankOffset" },
+      "fastSpeed": { "value": 11.0, "unit": "m/s", "kind": "tan_suat", "linh_vuc": "06", "code": "TacticalAi.FastSpeed" },
+      "clusterRadius": { "value": 7.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.ClusterRadius" },
+      "fallBackSeconds": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "TacticalAi.FallBackSeconds" },
+      "outmatchedRatio": { "value": 0.6, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "TacticalAi.OutmatchedRatio" },
+      "recoveredRatio": { "value": 0.95, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "TacticalAi.RecoveredRatio" },
+      "commitSeconds": { "value": 60.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "TacticalAi.CommitSeconds" },
+      "assaultOdds": { "value": 1.4, "unit": "x", "kind": "xac_suat", "linh_vuc": "06", "code": "TacticalAi.AssaultOdds" },
+      "shellingTime": { "value": 35.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "TacticalAi.ShellingTime" },
+      "crateDetour": { "value": 50.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.CrateDetour" },
+      "depotReach": { "value": 40.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.DepotReach" },
+      "breachReach": { "value": 30.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.BreachReach" },
+      "breacherReach": { "value": 70.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.BreacherReach" },
+      "bossReach": { "value": 30.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.BossReach" },
+      "reinforcementGap": { "value": 50.0, "unit": "m", "kind": "thoi_gian", "linh_vuc": "06", "code": "TacticalAi.ReinforcementGap" },
+      "homeReach": { "value": 45.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.HomeReach" },
+      "waveSize": { "value": 2, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "06", "code": "TacticalAi.WaveSize" },
+      "waveWait": { "value": 12.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "TacticalAi.WaveWait" }
+    }
+  },
+  "campaign": {
+    "missionDecks": {
+      "airMinimum": { "value": 3, "unit": "count", "kind": "tran", "linh_vuc": "07", "code": "MissionDecks.AirMinimum" }
+    },
+    "narrative": {
+      "minersCp": { "value": 6, "unit": "CP", "kind": "thuong", "linh_vuc": "07", "code": "Narrative.MinersCp" },
+      "radarVision": { "value": 0.75, "unit": "x", "kind": "ban_kinh", "linh_vuc": "07", "code": "Narrative.RadarVision" }
+    },
+    "missionEventSystem": {
+      "rowGap": { "value": 1.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "MissionEventSystem.RowGap" },
+      "pushSeconds": { "value": 40.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "MissionEventSystem.PushSeconds" }
+    },
+    "missionMode": {
+      "captureSeconds": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "MissionMode.CaptureSeconds" },
+      "waypointReach": { "value": 5.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "07", "code": "MissionMode.WaypointReach" },
+      "scoutSeconds": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "MissionMode.ScoutSeconds" },
+      "escortReach": { "value": 22.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "07", "code": "MissionMode.EscortReach" },
+      "reinforceFirst": { "value": 45.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "MissionMode.ReinforceFirst" },
+      "reinforceGap": { "value": 75.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "MissionMode.ReinforceGap" },
+      "reinforceBelow": { "value": 0.6, "unit": "share", "kind": "nguong", "linh_vuc": "07", "code": "MissionMode.ReinforceBelow" },
+      "fleeSeconds": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "MissionMode.FleeSeconds" }
+    },
+    "operationMode": {
+      "choiceSeconds": { "value": 15.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "OperationMode.ChoiceSeconds" }
+    }
+  },
+  "maps": {
+    "entryGate": {
+      "outerLength": { "value": 120.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "EntryGate.OuterLength" }
+    },
+    "laneMap": {
+      "narrowWidth": { "value": 6.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "LaneMap.NarrowWidth" },
+      "maxNoParkCells": { "value": 30, "unit": "cells", "kind": "tran", "linh_vuc": "08", "code": "LaneMap.MaxNoParkCells" },
+      "routeHalfWidth": { "value": 3.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "LaneMap.RouteHalfWidth" },
+      "maxClearance": { "value": 15, "unit": "cells", "kind": "tran", "linh_vuc": "08", "code": "LaneMap.MaxClearance" },
+      "rebuildInterval": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "08", "code": "LaneMap.RebuildInterval" }
+    },
+    "seaRouteGraph": {
+      "exitReach": { "value": 40.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "SeaRouteGraph.ExitReach" },
+      "bayReach": { "value": 60.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "SeaRouteGraph.BayReach" }
+    },
+    "spawnPoints": {
+      "gateReach": { "value": 30.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "SpawnPoints.GateReach" }
+    },
+    "terrainRules": {
+      "roadSpeed": { "value": 1.2, "unit": "x", "kind": "tan_suat", "linh_vuc": "08", "code": "TerrainRules.RoadSpeed" },
+      "roughSpeed": { "value": 0.85, "unit": "x", "kind": "tan_suat", "linh_vuc": "08", "code": "TerrainRules.RoughSpeed" },
+      "forestSpeed": { "value": 0.75, "unit": "x", "kind": "tan_suat", "linh_vuc": "08", "code": "TerrainRules.ForestSpeed" },
+      "waterSpeed": { "value": 0.5, "unit": "x", "kind": "tan_suat", "linh_vuc": "08", "code": "TerrainRules.WaterSpeed" },
+      "forestSight": { "value": 0.7, "unit": "x", "kind": "ban_kinh", "linh_vuc": "08", "code": "TerrainRules.ForestSight" }
+    },
+    "unitCostField": {
+      "parkedSpeed": { "value": 0.5, "unit": "x", "kind": "tan_suat", "linh_vuc": "08", "code": "UnitCostField.ParkedSpeed" },
+      "ringReach": { "value": 2.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "UnitCostField.RingReach" },
+      "refreshTicks": { "value": 10, "unit": "ticks", "kind": "thoi_gian", "linh_vuc": "08", "code": "UnitCostField.RefreshTicks" }
+    }
+  }
+}

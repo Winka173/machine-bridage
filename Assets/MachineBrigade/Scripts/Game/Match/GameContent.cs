@@ -9,11 +9,16 @@ namespace MachineBrigade.Game.Match
     {
         public static Catalog LoadCatalog()
         {
+            // Balance pack (lane B): the gameplay constants moved out of the code (Resources/Data/tunables.json).
+            LoadTunables();
             var catalog = Catalog.FromJson(Load("Data/balance"));
             // Which model and icon each tower branch wears follows the data (tower-branch prompt C).
             Rendering.TowerArt.Learn(catalog);
             return catalog;
         }
+
+        /// <summary>Sets <see cref="SimTunables"/> from Resources/Data/tunables.json (its keys over the code's defaults).</summary>
+        public static void LoadTunables() => SimTunables.Apply(Load("Data/tunables"));
 
         public static MapDefinition LoadMap(string id) => MapDefinition.FromJson(Load("Data/maps/" + id));
 
