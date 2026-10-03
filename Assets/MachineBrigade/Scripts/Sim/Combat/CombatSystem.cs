@@ -560,6 +560,8 @@ namespace MachineBrigade.Sim.Combat
             }
             // Play-test 14: a launcher fires once its erector is up (see Erected).
             else if (index == 0 && v.Def.ErectSeconds > 0f && target != null && !Erected(v)) return;
+            // Play-test 14: a gun-launched missile goes up the main gun's barrel, so the two never leave it together.
+            else if (BarrelBusy(v, index)) return;
             // Limited ammunition: one round per trigger pull (a whole salvo counts as one).
             else if (target == null || state.Ammo == 0 || !CanFire(v, index, target) || !InRhythm(v, index)) return;
             else if (weapon.Charge > 0f)
@@ -785,6 +787,33 @@ namespace MachineBrigade.Sim.Combat
             // own targets), so the mothership releases them one after another all through its pass, not only nose-on.
             if (v.Flying && v.Arms[index].Projectile == ProjectileKind.Drone) return true;
             return MathF.Abs(SimMath.WrapAngle(desired - v.MountHeading(index))) <= tolerance;
+        }
+
+        /// <summary>Seconds a shared barrel stays busy after one of its rounds (it is reloaded with the other kind).</summary>
+        private const double BarrelClear = 1.0;
+
+        /// <summary>
+        /// Play-test 14 ("tên lửa của nó phải bắn ra được"): a gun-launched missile (the light tank's 9M117-class round) is
+        /// loaded and fired through the main gun, so it is neither fired with nor straight after a shell, nor a shell straight
+        /// after it: the barrel is busy for <see cref="BarrelClear"/> after either. Only a missile on the main gun's slot and aim.
+        /// </summary>
+        private bool BarrelBusy(Vehicle v, int index)
+        {
+            var mounts = v.Def.Mounts;
+            if (mounts.Count < 2) return false;
+            var now = _world.Time;
+            if (index > 0)
+                return SharesBarrel(v, index) && (v.Weapons[0].BurstLeft > 0 || now - v.Weapons[0].FiredAt < BarrelClear);
+            for (var i = 1; i < mounts.Count; i++)
+                if (SharesBarrel(v, i) && (v.Weapons[i].BurstLeft > 0 || now - v.Weapons[i].FiredAt < BarrelClear)) return true;
+            return false;
+        }
+
+        private static bool SharesBarrel(Vehicle v, int index)
+        {
+            var mounts = v.Def.Mounts;
+            return index > 0 && mounts[index].Slot == mounts[0].Slot && mounts[index].Aim == mounts[0].Aim &&
+                v.Arms[index].Projectile == ProjectileKind.Missile && v.Arms[0].Projectile != ProjectileKind.Missile;
         }
 
         /// <summary>A broadside gun (out of the left or right side), or a mount with a firing arc of its own (prompt 9: the Bastion's corner turrets).</summary>
