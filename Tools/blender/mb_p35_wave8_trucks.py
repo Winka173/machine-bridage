@@ -565,9 +565,105 @@ def _rail_gun(a):
     a.part('Team_band', 'Team', t).box((1.52, .4, .012), loc=(0, .2, .91), bevel=0)
 
 
+# ============================================================================= radar_scout (Fennek-class with the mast)
+def radar_scout(a):
+    """See the module docstring. Runtime: Turret (the remote 12.7 mm station's yaw pivot), Muzzle_mg (on it),
+    Point_fire, Point_exhaust; Part_wheel / Part_wheelb come from mb_p34_parts out of these Tyres / Wheels."""
+    R, WD, HX = .45, .34, .82
+    for y in (-1.4, 1.35):
+        for s in (-1, 1):
+            K.tread_wheel(a, (s * HX, y, R), R, WD, s, seg=12, nuts=5)
+            K.dust(a, (s * HX, y, .12), radius=.55, k=.22)
+        K.axle(a.part('Axles', 'Undercarriage'), y, R, HX - WD / 2, r=.07)
+        for s in (-1, 1):
+            a.part('Axles', 'Steel').tube([(s * (HX - .25), y, R + .02), (s * .35, y + .3, R + .3)], .04, seg=5)
+    a.part('Chassis', 'Undercarriage').box((1.2, 4.2, .28), loc=(0, 0, .55), bevel=0)
+    hull = a.part('Hull', 'Team')
+    k.sharp_loft(hull, [[(-.7, -2.25, .5), (.7, -2.25, .5), (.7, 2.3, .55), (-.7, 2.3, .55)],
+                        [(-.97, -2.38, .82), (.97, -2.38, .82), (.97, 2.38, .86), (-.97, 2.38, .86)],
+                        [(-.97, -1.95, 1.05), (.97, -1.95, 1.05), (.97, 2.35, 1.1), (-.97, 2.35, 1.1)],
+                        [(-.8, -1.1, 1.42), (.8, -1.1, 1.42), (.82, 2.3, 1.42), (-.82, 2.3, 1.42)]], chamfer=.04)
+    fen = a.part('Fenders', 'Team')
+    for y in (-1.4, 1.35):
+        for s in (-1, 1):
+            k.extrude(fen, [(-.55, 0), (-.42, .22), (.42, .22), (.55, 0), (.5, -.04), (-.5, -.04)], .2,
+                      loc=(s * .96, y, .88), axis='X', chamfer=.01)
+    # The front: windscreen panes on the glacis, lamps, tow points; the sides: doors with vision blocks.
+    K.windscreen(a, [(.75, -1.75, 1.16), (.05, -1.75, 1.16), (.05, -1.25, 1.38), (.75, -1.25, 1.38)],
+                 frame_mat='Armor', wipers=1, bar=.05)
+    K.windscreen(a, [(-.05, -1.75, 1.16), (-.75, -1.75, 1.16), (-.75, -1.25, 1.38), (-.05, -1.25, 1.38)],
+                 frame_mat='Armor', wipers=1, bar=.05)
+    for s in (-1, 1):
+        K.lamp(a, (s * .75, -2.37, .95), (0, -1, 0), r=.06, guard=True)
+        a.part('Light_rims', 'Armor').box((.18, .04, .14), loc=(s * .75, -2.35, .95), bevel=0)
+        a.part('Tail_lamps', 'LavaGlow').box((.1, .02, .07), loc=(s * .8, 2.39, 1.0), bevel=0)
+        K.tow_hook(a.part('Kit_tow', 'Steel'), (s * .5, -2.42, .65), facing=(0, -1, 0), size=.08)
+        a.part('Glass', 'Glass').box((.02, .4, .2), loc=(s * .97, -.7, 1.2), rot=(0, s * .3, 0), bevel=0)
+        a.part('Door_lines', 'Armor').box((.02, .03, .55), loc=(s * .98, -.2, 1.0), bevel=0)
+        K.handle(a.part('Kit_handles', 'Steel'), (s * .99, -.45, .98), (s * .99, -.3, .98), (s, 0, 0), h=.04)
+        K.smoke_dischargers(a, s * .78, -1.6, 1.3, s, count=3)
+        a.part('Team_bands', 'Team').box((.012, 1.8, .1), loc=(s * .985, .9, .95), bevel=0)
+        K.jerrycan(a.part('Stowage', 'Crate'), (s * .99, 1.95, 1.0), rot=(0, 0, 0), scale=.9)
+    # Engine deck at the rear: grilles, exhaust, the hatch.
+    K.grille(a, (.35, 1.75, 1.425), .55, .8, facing=(0, 0, 1), slats=5, frame_mat='Armor')
+    a.part('Engine_deck', 'Armor').box((1.5, 1.4, .03), loc=(0, 1.6, 1.415), bevel=0)
+    K.exhaust(a, (.8, 2.2, .7), r=.05, length=.3, direction=(0, 0, 1))
+    K.soot(a, (.8, 2.2, 1.0), radius=.3, k=.4)
+    hc = (-.45, -.85, 1.42)
+    k.ring(a.part('Hatch_fittings', 'Steel'), [(.2, 0), (.25, 0), (.25, .05), (.2, .05)], loc=hc, seg=10)
+    k.lathe(a.part('Hatches', 'Armor'), [(0, .07), (.18, .065), (.22, .04), (.22, .02)], loc=hc, seg=10)
+    K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.5, .5, .25), (-.4, .4, 1.54), bands=1)
+    K.net_roll(a.part('Stowage', 'Canvas'), a.part('Kit_straps', 'Undercarriage'), (0, 2.25, 1.5), length=1.4,
+               r=.12, axis='X')
+    K.whip_antenna(a.part('Antenna', 'Steel'), (-.75, 2.0, 1.42), h=1.1, lean=.05)
+    _scout_turret(a)
+    _scout_mast(a)
+    a.pivot('Point_fire', (0, 0, 1.6))
+    a.pivot('Point_exhaust', (.8, 2.2, 1.0))
+    k.clean(a)
+
+
+def _scout_turret(a):
+    """The remote weapon station on the Turret pivot: its ring, the cradle, the 12.7 mm with the big ammunition
+    box, the sight head and the shield."""
+    k.ring(a.part('Ring', 'Steel'), [(.3, 0), (.36, 0), (.36, .05), (.3, .05)], loc=(0, -.3, 1.42), seg=12)
+    t = a.pivot('Turret', (0, -.3, 1.45))
+    K.chamfer_box(a.part('Turret_body', 'Team', t), (.5, .55, .2), loc=(0, .05, .1), c=.03)
+    for s in (-1, 1):
+        k.block(a.part('MG_shield', 'Armor', t), (.03, .5, .3), loc=(s * .2, -.05, .2), chamfer=.01)
+    k.lathe(a.part('MG', 'Steel', t), [(.04, 0), (.04, .4), (.03, .42), (.03, .7), (.04, .72), (.04, .78), (0, .79)],
+            loc=(0, -.16, .3), rot=K.FORWARD, seg=8)
+    K.chamfer_box(a.part('MG', 'Steel', t), (.12, .38, .14), loc=(0, .05, .3), c=.015)
+    K.chamfer_box(a.part('MG_ammo', 'Armor', t), (.18, .26, .2), loc=(.25, .08, .3), c=.02)
+    K.chamfer_box(a.part('Turret_sight', 'Armor', t), (.16, .2, .18), loc=(-.26, -.05, .38), c=.02)
+    a.part('Glass', 'Glass', t).box((.1, .01, .08), loc=(-.26, -.155, .4), bevel=0)
+    a.pivot('Muzzle_mg', (0, -.95, .3), t)
+
+
+def _scout_mast(a):
+    """The telescopic sensor mast at the rear left: the base housing, three sections with their collars and guy
+    clamps, the sensor head on top (EO lens, radar panel, laser window)."""
+    x, y = -.45, 1.15
+    K.chamfer_box(a.part('Mast', 'Armor'), (.4, .4, .3), loc=(x, y, 1.57), c=.03)
+    m = a.part('Mast', 'Steel')
+    z = 1.72
+    for j, (r, h) in enumerate(((.09, .85), (.07, .75), (.055, .7))):
+        m.cyl(r, h, loc=(x, y, z + h / 2), seg=8, bevel=0)
+        a.part('Mast', 'Armor').cyl(r + .025, .06, loc=(x, y, z + h), seg=8, bevel=0)
+        z += h - .05
+    head = a.part('Sensor_head', 'Armor')
+    K.chamfer_box(head, (.42, .34, .3), loc=(x, y, z + .15), c=.04)
+    head.box((.5, .06, .36), loc=(x, y + .19, z + .18), bevel=0)        # the radar panel behind
+    lens = a.part('Sensor_lens', 'Glass')
+    lens.cyl(.08, .04, loc=(x - .1, y - .18, z + .16), rot=K.FORWARD, seg=10, bevel=0)
+    lens.box((.1, .02, .07), loc=(x + .1, y - .175, z + .2), bevel=0)
+    a.part('Antenna', 'Steel').cyl(.012, .16, loc=(x + .15, y, z + .38), seg=4, bevel=0)
+
+
 BUILDERS = {
     'mlrs': (mlrs, dict(ao_distance=.5, grime_height=.5)),
     'grad_truck': (grad_truck, dict(ao_distance=.6, grime_height=.55, ao_strength=.65)),
     'command_vehicle': (command_vehicle, dict(ao_distance=.5, grime_height=.5, ao_strength=.65)),
     'railgun_truck': (railgun_truck, dict(ao_distance=.6, grime_height=.55)),
+    'radar_scout': (radar_scout, dict(ao_distance=.4, ao_strength=.65, grime_height=.4)),
 }
