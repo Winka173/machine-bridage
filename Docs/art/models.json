@@ -1521,15 +1521,15 @@
   },
   "rocket_turret": {
     "file": "rocket_turret.glb",
-    "triangles": 9052
+    "triangles": 5638
   },
   "rocket_turret_a": {
     "file": "rocket_turret_a.glb",
-    "triangles": 5554
+    "triangles": 5366
   },
   "rocket_turret_b": {
     "file": "rocket_turret_b.glb",
-    "triangles": 3526
+    "triangles": 5520
   },
   "rubble_large": {
     "file": "rubble_large.glb",
