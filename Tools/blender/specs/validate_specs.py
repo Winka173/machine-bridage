@@ -67,7 +67,14 @@ def check(spec, defs, glb=False):
             fails.append('the def has APS: Mount_APS needed')
         if defs.field(own, 'boss'):
             nodes = {b['node'] for b in spec.get('breakable', [])}
-            for p in defs.field(own, 'parts') or []:
+            parts = defs.field(own, 'parts') or []
+            # A variant boss keeps or drops some of its parent's parts (as scan_prep.boss_part_nodes reads them).
+            rules = own.get('variant') if isinstance(own.get('variant'), dict) and 'parts' not in own else {}
+            if rules.get('keep'):
+                parts = [p for p in parts if p.get('id') in rules['keep']]
+            if rules.get('drop'):
+                parts = [p for p in parts if p.get('id') not in rules['drop']]
+            for p in parts:
                 if p.get('node') and not any(n.rstrip('*') in nodes for n in p['node'].split('|')):
                     fails.append(f"boss part {p.get('id')} ({p['node']}) not in breakable")
     if glb:
