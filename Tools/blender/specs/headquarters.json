@@ -4,9 +4,10 @@
  "real": [
   "hardened concrete command post",
   "2A83 152 mm (twin, the bastion gun)",
-  "2A38 30 mm (twin flak)"
+  "2A38 30 mm (twin flak)",
+  "Rh-120 L/55 120 mm (the fortress types' gun, one barrel; prompt 35)"
  ],
- "shape": "unit_sheet.json Cong trinh: 'Nha chi huy be tong nhieu khoi, ang-ten, co phe, bao cat quanh.' unit_refs: Construction Yard (C&C) for the read. The prompt 32 HQ types (fortress ground / air, garrison, shield) use this model unchanged.",
+ "shape": "unit_sheet.json Cong trinh: 'Nha chi huy be tong nhieu khoi, ang-ten, co phe, bao cat quanh.' unit_refs: Construction Yard (C&C) for the read. The prompt 32 HQ types (fortress ground / air, garrison, shield) use this model unchanged; prompt 35 added the fortress types' gun (Mount_gun) on its own tower.",
  "confidence": "tham_khao_thuc (layout kept from the approved old file; every piece rebuilt)",
  "target_size": {
   "L": 12.73,
@@ -116,6 +117,19 @@
     "Radar_dish",
     "Generator",
     "Drums"
+   ]
+  },
+  {
+   "feature": "prompt 35: the fortress gun tower at the rear right (battered cast prism, Team band, loopholes, ladder, race) with the low casemate turret: faceted gun house, mantlet, the 120 mm L/55 with extractor and baffle brake (Mount_gun / Muzzle_gun, the fortress types' gun slot)",
+   "nodes": [
+    "Mount_gun",
+    "Gun_house",
+    "Gun_mantlet",
+    "Gun_barrel",
+    "Gun_brake",
+    "Muzzle_gun",
+    "Race",
+    "Tower_deck"
    ]
   }
  ],
