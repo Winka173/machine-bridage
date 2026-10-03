@@ -275,6 +275,10 @@ ARCHIVED = frozenset((
     'radar_atgm_vehicle', 'radar_scout', 'radar_site', 'radar_support_vehicle', 'recon_jet', 'searchlight',
     'shorad_vehicle', 'smoke_carrier', 'towed_at_gun', 'troop_shelter', 'turtle_tank', 'uav_loiter_strike',
     'visual_jammer', 'wheeled_howitzer', 'wingman_drone',
+    # archived (play-test 14, cloud session 3): the ten bosses the owner dropped, Gungnir's tractor, the Stymphalos drone and
+    # Spectre's Griffin round.
+    'caspian', 'cerberus', 'fortress_hive', 'garuda', 'griffin', 'kronos', 'morrigan', 'rail_supergun', 'rail_tractor',
+    'sky_fortress', 'stymphalos', 'stymphalos_drone', 'supreme_command',
 ))
 # Vehicles with a high-detail variant: <name>_hd is the builder called with detail=True.
 HIGH_DETAIL = ('main_battle_tank', 'light_tank', 'heavy_tank', 'apc', 'scout_jeep', 'aa_vehicle', 'artillery',

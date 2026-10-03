@@ -101,9 +101,9 @@ CHAPTERS = [
       'Dưới chân núi lửa Emberridge và tán rừng Jungle Pass, tiến sĩ Elara Venn chế tạo drone theo từng nghìn chiếc. '
       'Bà thiết kế bầy drone để tìm người sống sót dưới đống đổ nát; Aurel biến chúng thành vũ khí. Đốt xưởng drone thì bầu trời sẽ sạch. '
       'Nadia vẫn nghe lén tín hiệu của chính Venn, và chúng không giống lời của một người muốn thắng.'),
-     ('Locust, the Hive and at last the Matriarch fall over the burning canopy. Dr Venn walks out of her drone works alone, gives herself up with a drive marked "Icarus", '
+     ('Locust falls, the Matriarch is driven off once and at last brought down over the burning canopy. Dr Venn walks out of her drone works alone, gives herself up with a drive marked "Icarus", '
       'and goes to work for the Accord.',
-      'Locust, Hive rồi Matriarch lần lượt rơi trên tán rừng đang cháy. Tiến sĩ Venn một mình bước ra khỏi xưởng drone, ra hàng cùng một ổ đĩa đề "Icarus", '
+      'Locust gục ngã, Matriarch bị đẩy lui một lần rồi cuối cùng cũng rơi trên tán rừng đang cháy. Tiến sĩ Venn một mình bước ra khỏi xưởng drone, ra hàng cùng một ổ đĩa đề "Icarus", '
       'và bắt đầu làm việc cho Accord.')),
     (6, 2, 0, ('Counterstrike', 'Counterstrike'), ['ashfield', 'whiteout', 'greenvale', 'landingbeach', 'hydrodam'], 'varga',
      ('Hegemon strikes back. Varga throws everything he has left at the ground the brigade took in the first act: Ashfield, Whiteout Pass and the Hollow Dam that lights half the coast. '
@@ -133,9 +133,9 @@ CHAPTERS = [
       'Tướng Thorne kéo đạo quân lớn nhất của Accord tới cùng giải phóng, với căn cứ riêng đặt ngay cạnh căn cứ của ta. Thiếu tá Dahl đã căn pháo của lữ đoàn vào từng cây cầu. '
       'Nadia đã nói tới lần thứ ba: hãy để mắt tới Thorne. Không ai nghe.'),
      ('Veyra is free. In the middle of the last battle Thorne\'s base turned its guns on the brigade; Nadia saw it first and saved half of us. '
-      'We fought back through Atlas and stopped Nemesis at the edge of the centre. Thorne escaped with a third of the Accord\'s army.',
+      'We fought back through Behemoth Mk.II and stopped Nemesis at the edge of the centre. Thorne escaped with a third of the Accord\'s army.',
       'Veyra được giải phóng. Giữa trận cuối, căn cứ của Thorne quay pháo vào lữ đoàn; Nadia là người thấy đầu tiên và cứu được một nửa quân ta. '
-      'Ta đánh ngược lại qua Atlas và chặn Nemesis ngay rìa trung tâm. Thorne trốn thoát cùng một phần ba đạo quân của Accord.')),
+      'Ta đánh ngược lại qua Behemoth Mk.II và chặn Nemesis ngay rìa trung tâm. Thorne trốn thoát cùng một phần ba đạo quân của Accord.')),
     (8, 3, 0, ('Underworld', 'Underworld'), ['redrock', 'openpit', 'hydrodam', 'dunebreak'], 'hung',
      ('Thorne has run north to Deepcut Mine, where Hegemon digs the metal for its machines, and he is not hiding. He is digging in: tunnels, bunkers, a fortress under the pit, '
       'as if he only has to hold on until something arrives from the sky. Captain Varro\'s people know every road in the mining country. '
@@ -143,12 +143,12 @@ CHAPTERS = [
       'Thorne đã chạy lên Deepcut Mine ở phía bắc, nơi Hegemon đào kim loại cho những cỗ máy của nó, và ông ta không trốn. Ông ta đang cố thủ: đường hầm, boong-ke, cả một pháo đài dưới đáy mỏ, '
       'như thể chỉ cần cầm cự cho tới khi một thứ gì đó tới từ trên trời. Người của đại úy Varro thuộc mọi con đường trong vùng mỏ. '
       'Thượng sĩ Quist thì biết thứ gì đáng mang về.'),
-     ('The brigade follows Thorne into Deepcut Mine. Tartarus and Ixion fall, and Kronos is stopped short of our base. Thorne escapes again, to the sea.',
-      'Lữ đoàn đuổi theo Thorne vào Deepcut Mine. Tartarus và Ixion gục ngã, còn Kronos bị chặn lại trước khi tới căn cứ của ta. Thorne lại trốn thoát, ra biển.')),
+     ('The brigade follows Thorne into Deepcut Mine. Ixion falls, and Tartarus is stopped short of our base. Thorne escapes again, to the sea.',
+      'Lữ đoàn đuổi theo Thorne vào Deepcut Mine. Ixion gục ngã, còn Tartarus bị chặn lại trước khi tới căn cứ của ta. Thorne lại trốn thoát, ra biển.')),
     (9, 3, 0, ('Rough Water', 'Rough Water'), ['ironport', 'landingbeach', 'lighthousebay', 'coralisles'], 'hung',
-     ('Thorne has found what is left of Kessler\'s fleet and made it his own. Caspian skims the coast, Scylla is back in service, '
+     ('Thorne has found what is left of Kessler\'s fleet and made it his own. Charybdis runs troops up the coast, Scylla is back in service, '
       'and somewhere under Beacon Bay and the Coral Keys a submarine is talking to the sky. Dr Venn is listening to it. This is where Thorne has to be stopped.',
-      'Thorne đã tìm thấy tàn quân hạm đội của Kessler và biến nó thành của mình. Caspian lướt dọc bờ biển, Scylla trở lại hoạt động, '
+      'Thorne đã tìm thấy tàn quân hạm đội của Kessler và biến nó thành của mình. Charybdis chở quân dọc bờ biển, Scylla trở lại hoạt động, '
       'và đâu đó dưới Beacon Bay và Coral Keys, một tàu ngầm đang liên lạc với bầu trời. Tiến sĩ Venn đang nghe nó. Đây là nơi phải chặn Thorne lại.'),
      ('Typhon surfaced in the middle of the bay with Thorne on its bridge, and went down. His last message came after it sank: the coordinates of Project Icarus\'s launch site, '
       'and one line. "Don\'t let me have been right." Nobody found his body.',
@@ -156,27 +156,27 @@ CHAPTERS = [
       'và một câu: "Đừng để tôi đã đúng." Không ai tìm thấy thi thể ông ta.')),
     (15, 3, 3, ('Hawk and Raven', 'Hawk and Raven'), ['frostpeak', 'junglepass'], 'quaden',
      ('Hawk went down behind the lines last night, somewhere between the Frostpeak heights and Jungle Pass, and his beacon is still talking. '
-      'So is Raven\'s radio: he wants to finish the job himself, in Morrigan, his own fighter. Colonel Reyn\'s elite column is going in to bring Hawk home.',
+      'So is Raven\'s radio: he wants to finish the job himself, from the Harpy, Hegemon\'s heavy gunship. Colonel Reyn\'s elite column is going in to bring Hawk home.',
       'Đêm qua Hawk bị bắn rơi sau chiến tuyến, đâu đó giữa các điểm cao Frostpeak và Jungle Pass, và đèn hiệu của anh vẫn đang phát. '
-      'Bộ đàm của Raven cũng vậy: hắn muốn tự tay kết thúc, bằng Morrigan, chiếc tiêm kích riêng của hắn. Đội quân tinh nhuệ của đại tá Reyn đang tiến vào để đưa Hawk về.'),
-     ('Colonel Reyn\'s column finds Hawk and brings him out through Frostpeak and Jungle Pass, with Morrigan overhead. Raven lets him go, this time.',
-      'Đội quân của đại tá Reyn tìm thấy Hawk và đưa anh ra qua Frostpeak và Jungle Pass, với Morrigan trên đầu. Raven để anh đi, lần này.')),
+      'Bộ đàm của Raven cũng vậy: hắn muốn tự tay kết thúc, từ Harpy, pháo hạm bay hạng nặng của Hegemon. Đội quân tinh nhuệ của đại tá Reyn đang tiến vào để đưa Hawk về.'),
+     ('Colonel Reyn\'s column finds Hawk and brings him out through Frostpeak and Jungle Pass, with the Harpy overhead. Raven lets him go, this time.',
+      'Đội quân của đại tá Reyn tìm thấy Hawk và đưa anh ra qua Frostpeak và Jungle Pass, với Harpy trên đầu. Raven để anh đi, lần này.')),
     (10, 4, 0, ('War in the Sky', 'War in the Sky'), ['frostpeak', 'skyhold', 'whiteout'], 'quaden',
-     ('Thorne\'s coordinates point past Skyhold, and Raven has thrown Hegemon\'s whole air force into the sky over it. Spectre circles the passes at night; Argus spots for the guns. '
+     ('Thorne\'s coordinates point past Skyhold, and Raven has thrown Hegemon\'s whole air force into the sky over it. Roc, his flying headquarters, circles the passes at night; Argus spots for the guns. '
       'And over Skyhold something descends that is not an aircraft. Captain Okoye has fuel and shells for a long air campaign. Hawk has a debt to settle.',
-      'Tọa độ của Thorne chỉ về phía sau Skyhold, và Raven đã tung toàn bộ không quân Hegemon lên bầu trời nơi đó. Spectre bay vòng trên các con đèo trong đêm; Argus chỉ điểm cho pháo binh. '
+      'Tọa độ của Thorne chỉ về phía sau Skyhold, và Raven đã tung toàn bộ không quân Hegemon lên bầu trời nơi đó. Roc, sở chỉ huy bay của hắn, lượn vòng trên các con đèo trong đêm; Argus chỉ điểm cho pháo binh. '
       'Và trên Skyhold, có một thứ hạ xuống mà không phải máy bay. Đại úy Okoye đã chuẩn bị đủ nhiên liệu và đạn cho một chiến dịch trên không kéo dài. Hawk thì có một món nợ cần đòi.'),
      ('Icarus Mk.0 shows itself over Skyhold and runs: a test, Venn says, of something much bigger. Hawk beats Raven in the air, and in the storming of Skyhold he fires the last shot.',
       'Icarus Mk.0 lộ diện trên Skyhold rồi bỏ chạy: một bản thử nghiệm, Venn nói, cho một thứ lớn hơn nhiều. Hawk hạ Raven trên không, và trong trận đánh chiếm Skyhold, anh bắn phát cuối cùng.')),
     (11, 4, 0, ('Skygate', 'Skygate'), ['rustyard', 'skyhold', 'frostpeak', 'orbitalgate'], 'aurel',
      ('For the first time, Director Aurel speaks on the radio, and he has only one thing to say: the first satellite is in orbit. '
-      'Before Icarus can fly he needs the Skygate Array, the radars and pads that guide his ships up and down, and Orlov is waiting there with Gungnir for his last battle. '
+      'Before Icarus can fly he needs the Skygate Array, the radars and pads that guide his ships up and down, and Orlov is waiting there with Monster, his 800 mm gun, for his last battle. '
       'Above it all, Daedalus is landing troops.',
       'Lần đầu tiên, giám đốc Aurel lên bộ đàm, và ông ta chỉ nói một điều: vệ tinh đầu tiên đã lên quỹ đạo. '
-      'Trước khi Icarus cất cánh, ông ta cần Skygate Array, các trạm radar và bệ phóng dẫn đường cho tàu lên xuống, và Orlov đang chờ ở đó cùng Gungnir cho trận cuối của mình. '
+      'Trước khi Icarus cất cánh, ông ta cần Skygate Array, các trạm radar và bệ phóng dẫn đường cho tàu lên xuống, và Orlov đang chờ ở đó cùng Monster, khẩu pháo 800 mm của ông ta, cho trận cuối của mình. '
       'Phía trên tất cả, Daedalus đang đổ quân.'),
-     ('Orlov fights his last battle with Gungnir and gives himself up by radio. Venn finds her drone programme in Aurel\'s hands. Daedalus falls on the Skygate Array, and the road to Helion is open.',
-      'Orlov đánh trận cuối cùng với Gungnir rồi ra hàng qua bộ đàm. Venn phát hiện chương trình drone của mình đã nằm trong tay Aurel. Daedalus rơi xuống Skygate Array, và con đường tới Helion mở ra.')),
+     ('Orlov fights his last battle with Monster and gives himself up by radio. Venn finds her drone programme in Aurel\'s hands. Daedalus falls on the Skygate Array, and the road to Helion is open.',
+      'Orlov đánh trận cuối cùng với Monster rồi ra hàng qua bộ đàm. Venn phát hiện chương trình drone của mình đã nằm trong tay Aurel. Daedalus rơi xuống Skygate Array, và con đường tới Helion mở ra.')),
     (12, 4, 0, ('Helion', 'Helion'), ['launchsite', 'saltflat', 'dunebreak', 'lighthousebay'], 'aurel',
      ('Everything Hegemon has left is at the Helion Launch Complex: Varga with his last Behemoth, Kessler with his last ship, Venn\'s drones in Aurel\'s hands, and Icarus itself on its pad. '
       'Mara has one surprise of her own, repaired and repainted. At the end of the road Aurel waits, ready to take the sky and keep it.',
@@ -199,23 +199,24 @@ for n, act, interlude, title, maps, general, card, done in CHAPTERS:
 
 # Prompt 20 A-B: each chapter's boss slots, the main boss and its mini bosses (a slot is the boss's id; one not built
 # yet is fought as the stand-in its missions name as "fallback"). Prompt 22: an interlude has no main boss; chapter 7
-# brings back Inferno and Juggernaut in the city streets; Behemoth Mk.0 (interlude I) and Morrigan (interlude III,
-# chapter 10) come from part E (P22-content builds them; until then they are fought as their fallbacks).
+# brings back Inferno and Juggernaut in the city streets; Behemoth Mk.0 (interlude I) comes from part E. Play-test 14 deleted
+# ten bosses; their slots went to Matriarch (Hive), Behemoth Mk.II (Atlas), Tartarus (Kronos), Charybdis (Caspian), Harpy
+# (Morrigan), Roc (Spectre) and Monster (Gungnir).
 CHAPTER_BOSSES = {
     1: ('fortress_bastion', ['bastion_mk0']),
     2: ('behemoth', ['behemoth_inferno']),
     3: ('mobile_fortress', ['mega_gunship', 'fenrir']),
     13: (None, ['behemoth_mk0']),
     4: ('leviathan', ['behemoth_tempest', 'armored_train', 'scylla']),
-    5: ('drone_mothership', ['locust', 'fortress_hive']),
+    5: ('drone_mothership', ['locust']),
     6: ('moloch', ['landing_hovercraft', 'behemoth_mk2']),
     14: (None, ['locust']),
-    7: ('nuke_train', ['supreme_command', 'behemoth_inferno', 'armored_train']),
-    8: ('kronos', ['ixion', 'earth_borer']),
-    9: ('typhon', ['caspian', 'scylla']),
-    15: (None, ['morrigan']),
-    10: ('command_airship', ['sky_fortress', 'icarus_mk0', 'argus', 'morrigan']),
-    11: ('daedalus', ['rail_supergun', 'locust']),
+    7: ('nuke_train', ['behemoth_mk2', 'behemoth_inferno', 'armored_train']),
+    8: ('earth_borer', ['ixion']),
+    9: ('typhon', ['landing_hovercraft', 'scylla']),
+    15: (None, ['mega_gunship']),
+    10: ('command_airship', ['icarus_mk0', 'argus', 'mega_gunship']),
+    11: ('daedalus', ['monster', 'locust']),
     12: ('silver_bug', ['behemoth_mk2', 'scylla', 'locust']),
 }
 
@@ -318,9 +319,9 @@ CHARACTERS = [
       'Bà đánh bằng drone, xe gây nhiễu và những nhà chứa đầy cả hai thứ, và bà bắt đầu tự hỏi mình đang làm việc cho ai.')),
     ('quaden', 'hegemon', ('Kasimir Wolff', 'Kasimir Wolff'), ('Hegemon air ace · call sign Raven', 'Át chủ bài không quân Hegemon · biệt danh Raven'),
      ('Kasimir Wolff, call sign Raven, commands Hegemon\'s air wing from Skyhold and has more kills than the rest of it together. Arrogant, brilliant, bored by anyone slower than him. '
-      'He flies Morrigan, a fighter built for him alone. One of his kills was Hawk\'s wingman.',
+      'He flies whatever Hegemon has that is biggest, lately the Harpy gunship. One of his kills was Hawk\'s wingman.',
       'Kasimir Wolff, biệt danh Raven, chỉ huy không quân Hegemon từ Skyhold và có số lần hạ địch nhiều hơn cả phần còn lại cộng lại. Kiêu ngạo, tài giỏi, chán ngán bất kỳ ai chậm hơn mình. '
-      'Hắn lái Morrigan, chiếc tiêm kích làm riêng cho hắn. Một trong những người hắn bắn hạ là đồng đội bay của Hawk.')),
+      'Hắn lái thứ to nhất Hegemon có, gần đây là pháo hạm bay Harpy. Một trong những người hắn bắn hạ là đồng đội bay của Hawk.')),
     ('aurel', 'hegemon', ('Director Lucien Aurel', 'Giám đốc Lucien Aurel'), ('Head of Hegemon; Project Icarus · call sign Sol', 'Người đứng đầu Hegemon; Dự án Icarus · biệt danh Sol'),
      ('Aurel runs Project Icarus, an orbital weapon that can strike anywhere on the ground. He believes that whoever holds the sky holds the world, '
       'and he talks about war the way accountants talk about quarterly results. He plans never to be in range of anything.',
@@ -451,21 +452,12 @@ BOSS_FILES = [
     ('armored_train', ('Juggernaut', 'Juggernaut'),
      ('Kessler\'s armoured train: artillery wagons and armour that runs on time. It smokes itself when hit and patches itself on the move. Stop it before it reaches the docks.',
       'Đoàn tàu bọc thép của Kessler: toa pháo và toa giáp chạy đúng giờ. Bị bắn là nó tự thả khói, vừa chạy vừa tự vá. Phải chặn nó trước khi tới bến cảng.')),
-    ('rail_supergun', ('Gungnir', 'Gungnir'),
-     ('A gun too big for any road, pushed along the rails by two tractors. Kessler uses it to shell the port from forty kilometres off.',
-      'Một khẩu pháo quá to cho mọi con đường, được hai đầu kéo đẩy dọc đường ray. Kessler dùng nó nã vào bến cảng từ cách bốn mươi cây số.')),
     ('behemoth_tempest', ('Tempest', 'Tempest'),
      ('A Behemoth built round a railgun that charges, glows and punches through everything in a line. Two coilguns and a shield. Spread out and close in.',
       'Một chiếc Behemoth dựng quanh khẩu súng điện từ: nạp điện, phát sáng rồi xuyên thủng mọi thứ trên một đường thẳng. Hai pháo điện từ và một tấm khiên. Dàn quân ra và áp sát.')),
-    ('fortress_hive', ('The Hive', 'Hive'),
-     ('Venn\'s drone fortress: no main gun, just racks that launch swarm after swarm, a SAM battery and flak. Deadly to aircraft; tanks and artillery break it.',
-      'Pháo đài drone của Venn: không có pháo chính, chỉ có các giàn phóng hết bầy này tới bầy khác, một dàn tên lửa phòng không và pháo cao xạ. Cực nguy hiểm với máy bay; xe tăng và pháo binh mới hạ được nó.')),
     ('drone_mothership', ('Matriarch', 'Matriarch'),
      ('The Hive\'s flying carrier: it launches drones from its belly, fires flares and raises a shield when hurt. Only what shoots at the sky can finish it.',
       'Tàu sân bay biết bay của Hive: phóng drone từ bụng, bắn pháo sáng mồi bẫy và dựng khiên khi bị thương. Chỉ những gì bắn được lên trời mới kết liễu được nó.')),
-    ('sky_fortress', ('Spectre', 'Bóng Ma Spectre'),
-     ('A gunship that circles high over its prey with a 105 mm and two 40 mm guns down its side. It never comes low. Anti-air and fighters, or nothing.',
-      'Pháo hạm bay vòng trên cao quanh con mồi với khẩu 105 mm và hai khẩu 40 mm dọc sườn. Nó không bao giờ hạ thấp. Hoặc phòng không và tiêm kích, hoặc chẳng gì cả.')),
     ('earth_borer', ('Tartarus', 'Tartarus'),
      ('Varga\'s tunnelling machine, Tartarus ("the earthworm"): it grinds under walls and dams and comes up where nobody is looking. Kill it before it reaches the power station.',
       'Cỗ máy khoan của Varga, tên là Tartarus: nó nghiến xuyên dưới tường thành và thân đập rồi trồi lên đúng chỗ không ai canh. Phải tiêu diệt nó trước khi nó tới trạm phát điện.')),
@@ -501,9 +493,6 @@ BOSS_FILES = [
     ('landing_craft', ('Landing Craft', 'Tàu đổ bộ'),
      ('Leviathan\'s well deck carries three of them, each with two tanks for the beach.',
       'Khoang đổ bộ của Leviathan chở ba chiếc, mỗi chiếc hai xe tăng cho bãi biển.')),
-    ('supreme_command', ('Atlas', 'Atlas'),
-     ('Aurel\'s personal command vehicle, Atlas: the heaviest armour Hegemon ever built, around a communications suite that runs the whole launch site.',
-      'Xe chỉ huy riêng của Aurel, Atlas: lớp giáp nặng nhất Hegemon từng đúc, bao quanh hệ thống liên lạc điều hành toàn bộ bãi phóng.')),
 ]
 
 # Prompt 20: the boss slots pass 2 builds (fought as stand-ins until then). Short, in the tables, for prompt 22.
@@ -529,18 +518,12 @@ BOSS_FILES += [
     ('moloch', ('Moloch · Mobile factory', 'Moloch · Nhà máy di động'),
      ('Varga\'s mobile factory: it builds tanks as it rolls and sends them out of its doors into battle.',
       'Nhà máy di động của Varga: vừa lăn bánh vừa đóng xe tăng, rồi tung chúng ra trận qua các cửa thả.')),
-    ('kronos', ('Kronos · Mining excavator', 'Kronos · Máy xúc mỏ'),
-     ('A bucket-wheel excavator the size of a building, armoured by Thorne and pointed at the brigade.',
-      'Một máy xúc bánh gầu to bằng cả tòa nhà, được Thorne bọc thép và chĩa thẳng vào lữ đoàn.')),
     ('ixion', ('Ixion · Giant wheeled vehicle', 'Ixion · Xe bánh khổng lồ'),
      ('A war machine on two spiked wheels taller than a house, a roller of spikes across its front, built from mine machinery to batter through walls.',
       'Một cỗ máy chiến tranh trên hai bánh gai cao hơn nhà, phía trước là trục lăn đầy gai, đóng từ máy móc hầm mỏ để phá tường.')),
     ('typhon', ('Typhon · Missile submarine', 'Typhon · Tàu ngầm tên lửa'),
      ('Kessler\'s missile submarine, now Thorne\'s: it surfaces, fires a salvo and dives again.',
       'Tàu ngầm tên lửa của Kessler, giờ trong tay Thorne: nổi lên, phóng một loạt rồi lại lặn.')),
-    ('caspian', ('Caspian · Ekranoplan', 'Caspian · Ekranoplan'),
-     ('A ground-effect ship that skims the waves at the speed of an aircraft and lands troops on any beach.',
-      'Một con tàu bay sát mặt sóng với tốc độ của máy bay và đổ quân lên bất cứ bãi biển nào.')),
     ('argus', ('Argus · Recon airship', 'Argus · Khí cầu trinh sát'),
      ('Wolff\'s armoured recon airship: it sees everything and tells his jets where to go.',
       'Khí cầu trinh sát bọc giáp của Wolff: thấy hết mọi thứ và chỉ đường cho máy bay của hắn.')),
@@ -552,23 +535,18 @@ BOSS_FILES += [
       'Con tàu đưa quân của Aurel từ quỹ đạo xuống cửa ngõ quỹ đạo, từng khoang một.')),
 ]
 
-# Prompt 22 E: the two new mini bosses (P22-content builds their defs; the campaign fights them as their fallbacks until then).
+# Prompt 22 E: the new mini boss (P22-content built its def; play-test 14 deleted the other, Morrigan).
 BOSS_FILES += [
     ('behemoth_mk0', ('Behemoth Mk.0 · Prototype Behemoth', 'Behemoth Mk.0 · Behemoth nguyên mẫu'),
      ('The first Behemoth ever built, drawn by a young engineer called Mara Lind and finished by Varga. Slower, thinner and older than its sons, '
       'and still guarding the Foundry where it was born.',
       'Chiếc Behemoth đầu tiên từng được chế tạo, do một kỹ sư trẻ tên Mara Lind vẽ và Varga hoàn thiện. Chậm hơn, mỏng hơn và già hơn những đứa con của nó, '
       'và vẫn canh giữ Foundry nơi nó ra đời.')),
-    ('morrigan', ('Morrigan · Raven\'s Fighter', 'Morrigan · Tiêm kích của Raven'),
-     ('Wolff\'s own fighter, built for him alone: fast, hard to see on radar, with air-to-air missiles and guided bombs. '
-      'Its big attack is a salvo of both at our aircraft and anti-air vehicles. Watch for the warning, and break it.',
-      'Chiếc tiêm kích riêng của Wolff, làm cho một mình hắn: nhanh, khó thấy trên radar, mang tên lửa không đối không và bom dẫn đường. '
-      'Đòn lớn của nó là một loạt cả hai thứ nhắm vào máy bay và xe phòng không của ta. Để ý cảnh báo, và ngắt nó.')),
 ]
 
 for key, name, text in BOSS_FILES:
-    T(f'boss.{key}', *name, fresh=key in ('behemoth_mk0', 'morrigan'))
-    T(f'bossfile.{key}', *text, fresh=key in ('behemoth_mk0', 'morrigan'))
+    T(f'boss.{key}', *name, fresh=key == 'behemoth_mk0')
+    T(f'bossfile.{key}', *text, fresh=key == 'behemoth_mk0')
 
 # ------------------------------------------------------------------------------------------ radio everyone can fall back on
 

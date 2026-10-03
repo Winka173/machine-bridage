@@ -134,6 +134,46 @@ Card images (`Resources/UI/Cards/<id>.png`) of these were deleted with their man
   `p32_roster.py`, `steps_b.py`, `report_summary.py`, `apply_model_sizes.py`, `p32_base_audit.py`), and reports under `Docs/`
   other than `Docs/export/current` (`Docs/balance`, `Docs/models`, `Docs/stuck-report`, `Docs/checks`, `Docs/art`, `Docs/maps`, ...).
 
+## Bosses (cloud session 3, 10)
+
+The owner dropped ten bosses (Docs/DECISIONS.md "Play-test 14: bosses"). Removed from balance.json (their entries, escort
+tables, AI behaviour, the items below that only they used), the campaign (generator sources in Tools/campaign, rerun:
+campaign.json, CampaignText.cs synced key by key, StoryText.cs / Narrative.Data.cs), the Boss Rush and Hunts lists, strings
+EN/VI (names, guide, notes, radio, part radio), the card manifest and pictures, tests and doc tables. Models moved to
+`Archive/models/` (builders kept, `build_assets.ARCHIVED`). Story swaps:
+
+| id | where it was referenced, it is now |
+|---|---|
+| `fortress_hive` | `drone_mothership` (Matriarch; c5m05, driven off at 50 %) |
+| `supreme_command` | `behemoth_mk2` (Behemoth Mk.II; c7m10's last-but-one stage) |
+| `kronos` | `earth_borer` (Tartarus; c8m10, chapter 8's main slot; the open-pit route renamed "haul") |
+| `caspian` | `landing_hovercraft` (Charybdis; c9m05) |
+| `morrigan` | `mega_gunship` (Harpy; i3m02, c10m12's duel, the "harpy_hunt" event, Quaden's mini) |
+| `sky_fortress` | `command_airship` (Roc; c10m08, driven off at 50 %) |
+| `rail_supergun` | `monster` (Monster; c11m05) |
+| `stymphalos` | none (no mission used it) |
+| `cerberus` | none (no mission used it) |
+| `garuda` | none (no mission used it) |
+
+Only theirs, removed with them:
+
+| id | what it was |
+|---|---|
+| `garuda_carpet` | Garuda's big attack |
+| `kronos_bucket_sweep` | Kronos's big attack |
+| `leviathan_cruise_mark_7` | Caspian's cruise-missile warning (support) |
+| `supergun_shell` | Gungnir's shell warning (support) |
+| `supergun_800` | Gungnir's 80 cm gun (weapon) |
+| `p26_gungnir_emrg` | Gungnir's rail round (weapon) |
+| `bucket_wheel` | Kronos's crusher (weapon) |
+| `p26_kronos_close_autocannon_30` | Kronos's weapon |
+| `p26_kronos_close_boss_rockets` | Kronos's weapon |
+| `p26_kronos_direct_kr57` | Kronos's weapon |
+| `p26_kronos_kr57` | Kronos's weapon (parent of the above) |
+| `griffin` | Spectre's ramp missile (weapon and round model) |
+
+Models archived: the ten bosses' GLBs, `stymphalos_drone`, `rail_tractor` (Gungnir's tractor), `griffin`.
+
 ## Source spreadsheets (cloud session 3)
 
 The ids above are out of the spreadsheets the importers read (Can_bang, Can_bang_dot2_v2, AI_Research,

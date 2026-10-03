@@ -68,7 +68,7 @@ namespace MachineBrigade.Tests
             [11] = new[] { "drop_pods", "test_rod" },
             [12] = new[] { "enemy_all_directions", "total_offensive" },
             [14] = new[] { "hunters" },
-            [15] = new[] { "morrigan_hunt", "nightfall" },
+            [15] = new[] { "harpy_hunt", "nightfall" },
         };
 
         /// <summary>Every event a mission names: its own and every stage's.</summary>

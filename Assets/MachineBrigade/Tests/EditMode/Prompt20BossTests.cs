@@ -28,8 +28,8 @@ namespace MachineBrigade.Tests
         private static Catalog C => Lab.Catalog;
 
         private static readonly string[] NewBosses =
-            { "moloch", "daedalus", "kronos", "typhon", "ixion", "caspian", "bastion_mk0", "fenrir", "scylla", "locust", "behemoth_mk2", "icarus_mk0", "argus",
-              "kraken", "monster", "garuda", "hyperion", "stymphalos", "nyx", "cerberus", "hydra" };
+            { "moloch", "daedalus", "typhon", "ixion", "bastion_mk0", "fenrir", "scylla", "locust", "behemoth_mk2", "icarus_mk0", "argus",
+              "kraken", "monster", "hyperion", "nyx", "hydra" };
 
         private static SimWorld Field(int seed = 3)
         {
@@ -74,19 +74,20 @@ namespace MachineBrigade.Tests
             var general = new Dictionary<string, string>
             {
                 ["fortress_bastion"] = "brandt", ["bastion_mk0"] = "brandt", ["behemoth"] = "varga", ["moloch"] = "varga", ["behemoth_inferno"] = "varga",
-                ["behemoth_mk2"] = "varga", ["mobile_fortress"] = "orlov", ["fenrir"] = "orlov", ["rail_supergun"] = "orlov", ["leviathan"] = "kessler",
+                ["behemoth_mk2"] = "varga", ["mobile_fortress"] = "orlov", ["fenrir"] = "orlov", ["leviathan"] = "kessler",
                 ["behemoth_tempest"] = "kessler", ["armored_train"] = "kessler", ["scylla"] = "kessler", ["landing_hovercraft"] = "kessler",
-                ["drone_mothership"] = "sen", ["fortress_hive"] = "sen", ["locust"] = "sen", ["nuke_train"] = "hung", ["supreme_command"] = "hung",
-                ["kronos"] = "hung", ["ixion"] = "hung", ["earth_borer"] = "hung", ["typhon"] = "hung", ["caspian"] = "hung", ["command_airship"] = "quaden",
-                ["mega_gunship"] = "quaden", ["sky_fortress"] = "quaden", ["argus"] = "quaden", ["silver_bug"] = "aurel", ["daedalus"] = "aurel",
-                ["icarus_mk0"] = "aurel", ["behemoth_mk0"] = "varga", ["morrigan"] = "quaden",
+                ["drone_mothership"] = "sen", ["locust"] = "sen", ["nuke_train"] = "hung",
+                ["ixion"] = "hung", ["earth_borer"] = "hung", ["typhon"] = "hung", ["command_airship"] = "quaden",
+                ["mega_gunship"] = "quaden", ["argus"] = "quaden", ["silver_bug"] = "aurel", ["daedalus"] = "aurel",
+                ["icarus_mk0"] = "aurel", ["behemoth_mk0"] = "varga",
                 // Prompt 25 F2 batch D.
-                ["kraken"] = "kessler", ["monster"] = "orlov", ["garuda"] = "quaden", ["hyperion"] = "aurel", ["stymphalos"] = "sen", ["nyx"] = "kessler", ["cerberus"] = "varga", ["hydra"] = "hung",
+                ["kraken"] = "kessler", ["monster"] = "orlov", ["hyperion"] = "aurel", ["nyx"] = "kessler", ["hydra"] = "hung",
             };
             var bosses = C.Vehicles.Values.Where(v => v.Boss).ToList();
-            Assert.AreEqual(41, bosses.Count, "16 main bosses and 25 mini bosses (prompt 22 E's two, prompt 25 batch D's eight)");
-            Assert.AreEqual(16, bosses.Count(b => b.Rank == BossRank.Main));
-            Assert.AreEqual(25, bosses.Count(b => b.Rank == BossRank.Mini));
+            // Play-test 14 deleted ten bosses (two main: Gungnir, Kronos).
+            Assert.AreEqual(31, bosses.Count, "14 main bosses and 17 mini bosses");
+            Assert.AreEqual(14, bosses.Count(b => b.Rank == BossRank.Main));
+            Assert.AreEqual(17, bosses.Count(b => b.Rank == BossRank.Mini));
             foreach (var b in bosses)
             {
                 Assert.IsNotNull(b.Frame, b.Id + " has a body frame");
@@ -167,41 +168,6 @@ namespace MachineBrigade.Tests
             var before = moloch.FactoryBuilt;
             Run(world, 60f);
             Assert.AreEqual(before, moloch.FactoryBuilt, "both doors broken: it builds no more");
-        }
-
-        [Test]
-        public void KronosCrushesATowerInItsWayAndSwingsItsWheel()
-        {
-            var world = Field();
-            var kronos = world.SpawnVehicle("kronos", 1, new Vector2(0f, 60f), SimMath.HeadingOf(new Vector2(0f, -1f)));
-            kronos.BigAttack.Off = true;
-            // A tower just in front of its bucket wheel.
-            var tower = world.SpawnVehicle("gun_turret", 0, new Vector2(0f, 60f - kronos.Def.Length * 0.5f - 3f), 0f);
-            Run(world, 30f, () => !tower.IsAlive);
-            Assert.IsFalse(tower.IsAlive, "the bucket wheel crushes the tower in front of it");
-            // The swing: everything in the arc in front of it; the boom broken, no more.
-            var world2 = Field(4);
-            var k2 = world2.SpawnVehicle("kronos", 1, Vector2.Zero, 0f);
-            k2.Scripted = true;
-            // The wheel broken first, so only the swing (the boom's) hurts.
-            world2.Bosses.Break(k2, k2.Def.PartIndex("bucket_wheel"));
-            // Only the swing: its guns (faster since play-test 6) would reach the tanks behind it.
-            for (var m = 0; m < k2.MountOff.Length; m++) k2.MountOff[m] = true;
-            var ahead = SimMath.Forward(k2.Heading);
-            var front = Group(world2, "main_battle_tank", ahead * (k2.Def.Length * 0.5f + 8f), 2, 1f);
-            var behind = Group(world2, "main_battle_tank", -ahead * (k2.Def.Length * 0.5f + 6f), 2, 1f);
-            world2.Bosses.TriggerBig(k2);
-            Run(world2, 8f);
-            Assert.IsTrue(front.All(v => !v.IsAlive || v.Hp < v.MaxHp * 0.9f), "the tanks in the arc take the swing");
-            Assert.IsTrue(behind.All(v => v.IsAlive && v.Hp >= v.MaxHp * 0.99f), "nothing behind it");
-            world2.Bosses.Break(k2, k2.Def.PartIndex("boom"));
-            world2.Bosses.TriggerBig(k2);
-            var events = Run(world2, 8f);
-            Assert.IsFalse(events.Any(e => e.Kind == SimEventKind.BigAttack && e.Mount == 1), "the boom broken: no more sweeps");
-            // Its own route on the open-pit mine.
-            var pit = new SimWorld(C, GameContent.LoadMap("openpit_sandbox"), 1);
-            var k3 = pit.SpawnVehicle("kronos", 1, new Vector2(96f, 96f), 0f);
-            Assert.IsNotNull(k3.OwnRoute, "Kronos follows the mine's kronos route");
         }
 
         /// <summary>

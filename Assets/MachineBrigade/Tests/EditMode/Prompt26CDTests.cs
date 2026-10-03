@@ -91,20 +91,6 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void GungnirFiresOneElectromagneticSlugEveryTwentyFiveSecondsThroughALineAndBlastsAtTheLastHit()
-        {
-            var def = C.Vehicle("rail_supergun");
-            var b = def.Bombard;
-            Assert.IsNotNull(b);
-            Assert.AreEqual("p26_gungnir_emrg", b.Weapon);
-            Assert.AreEqual(25f, b.Every, 1e-3f);
-            Assert.Greater(b.PierceMax, 1, "it goes through several targets");
-            Assert.Greater(b.PierceDamage, 0f);
-            Assert.AreEqual(BossRank.Mini, def.Rank);
-            Assert.IsNull(def.BigAttack, "a mini boss has no super weapon");
-        }
-
-        [Test]
         public void IxionIsTheArmouredMineTruckOf26By12By10Metres()
         {
             var def = C.Vehicle("ixion");

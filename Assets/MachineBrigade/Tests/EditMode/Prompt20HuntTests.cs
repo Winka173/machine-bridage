@@ -241,16 +241,16 @@ namespace MachineBrigade.Tests
         {
             ["fortress_bastion"] = "brandt", ["bastion_mk0"] = "brandt",
             ["behemoth"] = "varga", ["moloch"] = "varga", ["behemoth_inferno"] = "varga", ["behemoth_mk2"] = "varga",
-            ["mobile_fortress"] = "orlov", ["fenrir"] = "orlov", ["rail_supergun"] = "orlov",
+            ["mobile_fortress"] = "orlov", ["fenrir"] = "orlov",
             ["leviathan"] = "kessler", ["behemoth_tempest"] = "kessler", ["armored_train"] = "kessler", ["scylla"] = "kessler", ["landing_hovercraft"] = "kessler",
-            ["drone_mothership"] = "sen", ["fortress_hive"] = "sen", ["locust"] = "sen",
-            ["nuke_train"] = "hung", ["supreme_command"] = "hung", ["kronos"] = "hung", ["ixion"] = "hung", ["earth_borer"] = "hung", ["typhon"] = "hung", ["caspian"] = "hung",
-            ["command_airship"] = "quaden", ["mega_gunship"] = "quaden", ["sky_fortress"] = "quaden", ["argus"] = "quaden",
+            ["drone_mothership"] = "sen", ["locust"] = "sen",
+            ["nuke_train"] = "hung", ["ixion"] = "hung", ["earth_borer"] = "hung", ["typhon"] = "hung",
+            ["command_airship"] = "quaden", ["mega_gunship"] = "quaden", ["argus"] = "quaden",
             ["silver_bug"] = "aurel", ["daedalus"] = "aurel", ["icarus_mk0"] = "aurel",
             // Prompt 22 E.
-            ["behemoth_mk0"] = "varga", ["morrigan"] = "quaden",
+            ["behemoth_mk0"] = "varga",
             // Prompt 25 F2 batch D.
-            ["kraken"] = "kessler", ["monster"] = "orlov", ["garuda"] = "quaden", ["hyperion"] = "aurel", ["stymphalos"] = "sen", ["nyx"] = "kessler", ["cerberus"] = "varga", ["hydra"] = "hung",
+            ["kraken"] = "kessler", ["monster"] = "orlov", ["hyperion"] = "aurel", ["nyx"] = "kessler", ["hydra"] = "hung",
         };
 
         [Test]
@@ -259,21 +259,23 @@ namespace MachineBrigade.Tests
             var catalog = GameContent.LoadCatalog();
             var mains = Campaign.Chapters.Select(c => c.Main).Where(id => id != null).ToList();
             Assert.AreEqual(12, mains.Distinct().Count(), "twelve main bosses (an interlude has none)");
-            Assert.AreEqual(21, Campaign.Chapters.SelectMany(c => c.Minis).Distinct().Count(), "twenty-one mini bosses (prompt 22 E's two among them)");
+            // Play-test 14 deleted ten bosses (their slots went to Matriarch, Behemoth Mk.II, Tartarus, Charybdis, Harpy, Roc, Monster).
+            Assert.AreEqual(15, Campaign.Chapters.SelectMany(c => c.Minis).Distinct().Count(), "fifteen mini bosses in the slots");
             foreach (var c in Campaign.Chapters)
                 foreach (var id in c.Minis.Append(c.Main).Where(id => id != null))
                 {
-                    // Prompt 22 E: Behemoth Mk.0 and Morrigan come with P22-content (their missions fight their fallbacks until then).
-                    if (!catalog.Vehicles.ContainsKey(id) && (id == "behemoth_mk0" || id == "morrigan")) continue;
                     Assert.IsTrue(catalog.Vehicles.TryGetValue(id, out var def) && def.Boss, $"chapter {c.Number}: {id} is a boss");
-                    Assert.AreEqual(id == c.Main ? BossRank.Main : BossRank.Mini, def.Rank, id);
+                    // Play-test 14: Tartarus (a mini boss) holds chapter 8's main slot in Kronos's place, and Monster (a main boss)
+                    // a mini slot of chapter 11 in Gungnir's (balance pack rule D: a main boss in a mini slot stays a main boss).
+                    var rank = id == "monster" || id == c.Main && id != "earth_borer" ? BossRank.Main : BossRank.Mini;
+                    Assert.AreEqual(rank, def.Rank, id);
                     Assert.AreEqual(Generals[id], def.General, id + "'s general");
                     Assert.IsTrue(Strings.Has($"char.{def.General}.name") && Strings.Has($"char.{def.General}.role"), def.General);
                     // O.2: its bar reads "Proper name · subtitle".
                     StringAssert.Contains(" · ", Strings.Card(id), id + "'s bar");
                     if (def.VariantOf != null) Assert.IsTrue(catalog.Vehicles[def.VariantOf].Rank == BossRank.Main, id + " is a variant of a main boss");
                 }
-            // The bosses outside the chapter slots (Charybdis, Harpy, Spectre, Gungnir...) keep the table's general too.
+            // The bosses outside the chapter slots keep the table's general too.
             foreach (var (id, general) in Generals) Assert.AreEqual(general, catalog.Vehicles[id].General, id);
             // Operations' extra boss is a mini boss of the operation's own chapter or boss.
             foreach (var op in Operations.Big)
@@ -323,9 +325,10 @@ namespace MachineBrigade.Tests
                     Assert.Greater(file.Props.Count(p => goal.Targets.Contains(p.DefId) &&
                         (goal.TargetNear is not { } near || Vector2.Distance(p.Position, near) <= goal.TargetRadius)), 0, $"{id}: {string.Join(",", goal.Targets)}");
             }
-            var kronos = Campaign.Get("c8m10").Stages.Select(s => s.Mission.Boss).First(b => b?.Def == "kronos");
-            var route = GameContent.LoadMap("openpit_conquest").Route("kronos");
-            Assert.Less(Vector2.Distance(kronos.Position, route[0]), 1f, "Kronos starts at the head of its route");
+            // Play-test 14: Tartarus waits at the head of the haul road (Kronos, whose road it was, was deleted).
+            var tartarus = Campaign.Get("c8m10").Stages.Select(s => s.Mission.Boss).First(b => b?.Def == "earth_borer");
+            var route = GameContent.LoadMap("openpit_conquest").Route("haul");
+            Assert.Less(Vector2.Distance(tartarus.Position, route[0]), 1f, "Tartarus starts at the head of the haul road");
         }
 
         // ------------------------------------------------------------------ helpers

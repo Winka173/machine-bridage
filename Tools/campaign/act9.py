@@ -135,9 +135,9 @@ BRANCHES = [
       '_drop': ('targets', 'protectNeeded', 'targetHealth', 'surviveSeconds')}),
     ('c8.miners', 'rescue', 'c8m13', 'c8m11', 'varro',
      ('The Miners of Deepcut', 'Thợ mỏ Deepcut'),
-     ('Thorne is holding three hundred miners in the pit\'s camps to dig for Kronos. Varro\'s militia knows the tunnels. Take '
+     ('Thorne is holding three hundred miners in the pit\'s camps to dig for Tartarus. Varro\'s militia knows the tunnels. Take '
       'the three camps and every miner walks out.',
-      'Thorne đang giữ ba trăm thợ mỏ trong các lán trại dưới hố để đào đường cho Kronos. Dân quân của Varro thuộc từng đường hầm. '
+      'Thorne đang giữ ba trăm thợ mỏ trong các lán trại dưới hố để đào đường cho Tartarus. Dân quân của Varro thuộc từng đường hầm. '
       'Chiếm cả ba lán trại và mọi người thợ mỏ sẽ được ra ngoài.'),
      (('Three hundred', 'Ba trăm người'),
       ('The miners came out blinking into the sun. Most went home. Sixty of them stayed, took rifles and trucks, and asked where '
@@ -150,10 +150,10 @@ BRANCHES = [
           'Mọi lán trại đã mở. Sáu mươi người muốn chiến đấu. Tôi đồng ý rồi.')],
      {}),
     ('c8.miners', 'direct', 'c8m14', 'c8m02', 'khai',
-     ('Straight at Kronos', 'Đánh thẳng vào Kronos'),
-     ('Kronos draws its power from one line down the pit, and Thorne\'s paymaster sits beside the switchgear with a year of '
+     ('Straight at Tartarus', 'Đánh thẳng vào Tartarus'),
+     ('Tartarus draws its power from one line down the pit, and Thorne\'s paymaster sits beside the switchgear with a year of '
       'wages. Hold the ramp while the sappers cut the line. The pay chest comes with it.',
-      'Kronos lấy điện từ một đường dây duy nhất dẫn xuống hố, và viên quản lương của Thorne ngồi ngay cạnh tủ điện với lương của '
+      'Tartarus lấy điện từ một đường dây duy nhất dẫn xuống hố, và viên quản lương của Thorne ngồi ngay cạnh tủ điện với lương của '
       'cả một năm. Giữ con dốc trong lúc công binh cắt đường dây. Hòm lương đi kèm luôn.'),
      (('The pay chest', 'Hòm lương'),
       ('A year of Thorne\'s payroll, in the Accord\'s own notes: the money the government sent him to fight Hegemon. Nadia '
@@ -162,8 +162,8 @@ BRANCHES = [
        'rồi im lặng rất lâu.')),
      [say('hung', 'Start', 'You came for the machine, not the miners. We are more alike than you think.',
           'Anh tới vì cỗ máy, không phải vì thợ mỏ. Ta giống nhau hơn anh tưởng đấy.'),
-      say('khai', 'Win', 'Line cut. Kronos runs on its batteries now, and we have Thorne\'s money.',
-          'Đã cắt đường dây. Kronos giờ chạy bằng ắc quy, còn ta giữ tiền của Thorne.')],
+      say('khai', 'Win', 'Line cut. Tartarus runs on its batteries now, and we have Thorne\'s money.',
+          'Đã cắt đường dây. Tartarus giờ chạy bằng ắc quy, còn ta giữ tiền của Thorne.')],
      {}),
     ('c11.radar', 'radar', 'c11m12', 'c11m07', 'linh',
      ('Blind the Array', 'Làm mù Skygate'),

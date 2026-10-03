@@ -52,15 +52,15 @@ namespace MachineBrigade.Tests
                 if (!c.Vehicles.TryGetValue(id, out var v)) Assert.Fail(id + " is not in the roster");
                 Assert.AreEqual(setting, PreviewSettings.Of(v), id);
             }
-            foreach (var rail in new[] { "armored_train", "nuke_train", "rail_supergun" }) Check(rail, PreviewSetting.Rail);
-            foreach (var sea in new[] { "leviathan", "typhon", "caspian", "scylla", "sea_corvette", "sea_cruiser", "missile_boat", "river_patrol_boat", "river_gunboat" })
+            foreach (var rail in new[] { "armored_train", "nuke_train" }) Check(rail, PreviewSetting.Rail);
+            foreach (var sea in new[] { "leviathan", "typhon", "scylla", "sea_corvette", "sea_cruiser", "missile_boat", "river_patrol_boat", "river_gunboat" })
                 Check(sea, PreviewSetting.Sea);
             foreach (var edge in new[] { "hover_gunboat", "landing_hovercraft" }) Check(edge, PreviewSetting.WaterEdge);
-            foreach (var air in new[] { "mega_gunship", "drone_mothership", "command_airship", "sky_fortress", "silver_bug", "attack_helicopter" })
+            foreach (var air in new[] { "mega_gunship", "drone_mothership", "command_airship", "silver_bug", "attack_helicopter" })
                 Check(air, PreviewSetting.Air);
             Check("main_battle_tank", PreviewSetting.Ground);
             Check("behemoth", PreviewSetting.Ground);
-            Check("kronos", PreviewSetting.Ground);
+            Check("earth_borer", PreviewSetting.Ground);
             Check("coastal_battery", PreviewSetting.Coast);
             Check("heavy_turret", PreviewSetting.BasePad);
         }

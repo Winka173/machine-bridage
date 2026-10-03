@@ -32,7 +32,7 @@ namespace MachineBrigade.Tests
 
         private static readonly string[] Mains =
         {
-            "fortress_bastion", "behemoth", "mobile_fortress", "leviathan", "drone_mothership", "moloch", "nuke_train", "kronos", "typhon",
+            "fortress_bastion", "behemoth", "mobile_fortress", "leviathan", "drone_mothership", "moloch", "nuke_train", "typhon",
             "command_airship", "daedalus", "silver_bug",
         };
 
@@ -221,10 +221,11 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void TheSixGroundMainBossesHaveACloseGuardAndTheMinisDoNot()
+        public void TheGroundMainBossesHaveACloseGuardAndTheMinisDoNot()
         {
             var catalog = C;
-            foreach (var id in new[] { "fortress_bastion", "behemoth", "mobile_fortress", "moloch", "nuke_train", "kronos" })
+            // Play-test 14 deleted the sixth, Kronos.
+            foreach (var id in new[] { "fortress_bastion", "behemoth", "mobile_fortress", "moloch", "nuke_train" })
             {
                 var ring = catalog.Vehicle(id).GuardRing;
                 Assert.IsNotNull(ring, id);

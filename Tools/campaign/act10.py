@@ -288,16 +288,16 @@ add_stage('c9m10', 'tempest', 'accord_artillery')
 add_stage('c9m10', 'quay', 'enemy_counterattack')
 
 # ====================================================================== interlude III: Hawk and Raven (Raven)
-# Morrigan hunts Hawk, with Raven himself flying it in the relief (i3m03); the light goes as they search.
+# The Harpy hunts Hawk, with Raven himself aboard in the relief (i3m03); the light goes as they search.
 
 add('i3m01', 'air_wave', 'nadia_intel')
 add('i3m02', 'nightfall', 'supply_drop')
 add('i3m03', general(), 'accord_relief')
-add('i3m04', 'morrigan_hunt', 'nightfall', 'supply_drop')
+add('i3m04', 'harpy_hunt', 'nightfall', 'supply_drop')
 
 # ====================================================================== chapter 10: War in the Sky (Raven)
 # Raven's bombers come again and again; Hawk strikes back; the light goes over Skyhold; Raven on the field for the duel (c10m09),
-# in a jet of his own after Morrigan's loss.
+# in a jet of his own after the Harpy's loss.
 
 add('c10m01', 'air_raids', 'hawk_strike')
 add('c10m02', intercept('c10.test'), 'nightfall')
@@ -433,11 +433,11 @@ WORDS = {
     'radio.varro.ev.sideObjective.miners.fail': ("They moved the miners. We were too slow.", "Chúng đã chuyển thợ mỏ đi. Ta chậm quá."),
     'event.neutralConvoy.oil.start': ("A neutral oil convoy is crossing: whoever knocks it out takes its CP", "Một đoàn xe dầu trung lập đi ngang: bên nào hạ được sẽ nhận CP"),
     'radio.linh.ev.neutralConvoy.oil.start': ("Oil tankers, no flag, crossing the sand. The oil goes to whoever stops them.", "Xe chở dầu không cờ đang băng qua cát. Dầu thuộc về bên nào chặn được."),
-    # D.7: Tartarus and Morrigan.
+    # D.7: Tartarus and the Harpy (play-test 14: Morrigan was deleted).
     'event.miniBoss.tartarus.warn': ("The ground is shaking: Tartarus surfaces in {seconds} s", "Mặt đất rung chuyển: Tartarus trồi lên sau {seconds} giây"),
     'radio.linh.ev.miniBoss.tartarus.warn': ("Seismic readings under us. Something is digging up. Tartarus!", "Địa chấn ngay dưới chân ta. Có thứ gì đang đào lên. Tartarus!"),
-    'event.miniBoss.morrigan.warn': ("Morrigan is diving on us in {seconds} s, {dir}", "Morrigan lao xuống phía ta sau {seconds} giây, {dir}"),
-    'radio.linh.ev.miniBoss.morrigan.warn': ("{@quaden}'s fighter on the scope. Morrigan is hunting {@dieuhau}.", "Tiêm kích của {@quaden} trên radar. Morrigan đang săn {@dieuhau}."),
+    'event.miniBoss.harpy.warn': ("The Harpy is coming over us in {seconds} s, {dir}", "Harpy bay tới phía ta sau {seconds} giây, {dir}"),
+    'radio.linh.ev.miniBoss.harpy.warn': ("{@quaden}'s gunship on the scope. The Harpy is hunting {@dieuhau}.", "Pháo hạm bay của {@quaden} trên radar. Harpy đang săn {@dieuhau}."),
     # D.8: the one plan change (c4m14).
     'radio.khai.ev.planChange.kessler.start': ("Kessler is running for the harbour. New orders: take the rail yard, now.", "Kessler đang chạy ra bến cảng. Lệnh mới: chiếm bãi đường ray, ngay."),
     # E.1: the Hollow Dam's ceasefire.

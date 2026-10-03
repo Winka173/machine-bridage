@@ -51,9 +51,9 @@ namespace MachineBrigade.Game.Hud
             "Bradley", "TOW", "Centauro", "Sprut", "PzH", "Merkava", "Trophy", "Kornet", "Iron", "Dome", "Iron Beam", "Cobra", "Lancet", "Shahed", "Hellfire", "Stinger", "Apache",
             "Little Bird", "Reaper", "Maverick", "Alligator", "Vikhr", "Igla", "JASSM", "GBU", "Wolf", "Griffin", "Centurion", "C-RAM", "Pantsir", "Tor", "Buk",
             // Bosses' and branches' code names.
-            "Argus", "Atlas", "Bastion", "Behemoth", "Caspian", "Charybdis", "Daedalus", "Fenrir", "Gungnir", "Harpy", "Hive", "Icarus", "Inferno", "Ixion",
-            "Juggernaut", "Jötunn", "Kronos", "Leviathan", "Locust", "Matriarch", "Moloch", "Nemesis", "Roc", "Scylla", "Spectre", "Tartarus", "Tempest",
-            "Typhon", "Titan", "Napalm", "Morrigan",
+            "Argus", "Bastion", "Behemoth", "Charybdis", "Daedalus", "Fenrir", "Harpy", "Hive", "Icarus", "Inferno", "Ixion",
+            "Juggernaut", "Jötunn", "Leviathan", "Locust", "Matriarch", "Moloch", "Monster", "Nemesis", "Roc", "Scylla", "Tartarus", "Tempest",
+            "Typhon", "Titan", "Napalm",
             // Equipment brands.
             "Ironclad", "Works", "Kestrel Dynamics", "Vulcan Arms", "Longbow Ordnance", "Aegis Systems", "Stormfront Aviation", "Hivemind Robotics",
             "Quartermaster", "Logistics", "Spectre Electronics", "Hammerfall Munitions", "Phoenix Recovery", "Wolfpack Tactics", "Bulwark Engineering",

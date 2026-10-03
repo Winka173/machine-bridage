@@ -433,7 +433,7 @@ namespace MachineBrigade.Sim.Content
             ["sen"] = G("sen", 5, "fpv_carrier", new[] { "edge", "air" }, "strike_drone", "fpv_carrier", "recon_drone", "ew_jammer"),
             ["quaden"] = new GeneralEventDef
             {
-                Id = "quaden", LastChapter = 10, Elite = "attack_jet", Delivery = new[] { "edge" }, Minis = new[] { "morrigan" },
+                Id = "quaden", LastChapter = 10, Elite = "attack_jet", Delivery = new[] { "edge" }, Minis = new[] { "mega_gunship" },
                 Roster = new[] { "attack_helicopter", "attack_jet", "strike_drone" },
             },
             ["hung"] = G("hung", 9, "heavy_tank", new[] { "edge", "landing" }, "main_battle_tank", "heavy_tank", "ifv", "aa_vehicle"),

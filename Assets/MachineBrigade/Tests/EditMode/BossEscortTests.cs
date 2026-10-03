@@ -108,24 +108,10 @@ namespace MachineBrigade.Tests
             Assert.IsFalse(Run(world, 10f).Any(e => e.Kind == SimEventKind.FireTrail), "no trail once its fuel tanks are gone");
         }
 
-        [Test]
-        public void TheHivesJammerThrowsGuidedRoundsWideNearItUntilItBreaks()
-        {
-            var world = Lab.Field(7, 300f);
-            var hive = world.SpawnVehicle("fortress_hive", 1, Vector2.Zero, 0f);
-            Run(world, 0.2f);
-            Assert.IsTrue(world.Abilities.Jammed(hive.Position + new Vector2(20f, 0f), 0), "within its 30 m");
-            Assert.IsFalse(world.Abilities.Jammed(hive.Position + new Vector2(40f, 0f), 0), "not beyond");
-            world.Bosses.Break(hive, hive.Def.PartIndex("jammer"));
-            Run(world, 0.2f);
-            Assert.IsFalse(world.Abilities.Jammed(hive.Position + new Vector2(20f, 0f), 0), "its jamming mast broken");
-        }
-
-        /// <summary>The new mounts that simply shoot: the Bastion's Kornet, the Doomsday Train's rocket and SAM cars, the supergun's AA, the hovercraft's rockets and CIWS.</summary>
+        /// <summary>The new mounts that simply shoot: the Bastion's Kornet, the Doomsday Train's rocket and SAM cars, the hovercraft's rockets and CIWS.</summary>
         [TestCase("fortress_bastion", "kornet_twin", "main_battle_tank", 32f)]
         [TestCase("nuke_train", "boss_rockets", "main_battle_tank", 34f)]
         [TestCase("nuke_train", "sam_battery", "attack_helicopter", 45f)]
-        [TestCase("rail_supergun", "ciws_aa", "attack_helicopter", 26f)]
         [TestCase("landing_hovercraft", "hover_rockets", "main_battle_tank", 34f)]
         public void ItsNewMountFiresAtItsKindOfTarget(string id, string weapon, string target, float distance)
         {
@@ -248,8 +234,6 @@ namespace MachineBrigade.Tests
             foreach (var boss in catalog.Vehicles.Values.Where(v => v.Boss))
             {
                 Assert.IsTrue(catalog.Escorts.TryGetValue(boss.Id, out var table), boss.Id + " has its escorts");
-                // The Supreme Commander keeps its old guard (the brief): its command aura is the help.
-                if (boss.Id == "supreme_command") continue;
                 var waves = new List<EscortWaveDef>(table.Phases);
                 if (table.Arrive != null) waves.Add(table.Arrive);
                 foreach (var w in waves) Assert.IsTrue(w.Units.Any(u => u.Helper), boss.Id + ": a helper in every wave");
@@ -261,7 +245,7 @@ namespace MachineBrigade.Tests
         // ------------------------------------------------------------------ the kill time per boss (1 seed)
 
         private static readonly string[] Changed =
-            { "armored_train", "behemoth_tempest", "behemoth", "behemoth_inferno", "fortress_hive", "fortress_bastion", "nuke_train", "rail_supergun", "landing_hovercraft" };
+            { "armored_train", "behemoth_tempest", "behemoth", "behemoth_inferno", "fortress_bastion", "nuke_train", "landing_hovercraft" };
 
         private static readonly string[] Army =
             { "main_battle_tank", "main_battle_tank", "main_battle_tank", "main_battle_tank", "tank_destroyer", "tank_destroyer", "fpv_carrier",

@@ -3594,7 +3594,7 @@ DENSIFY_P16 = {
 
 # ------------------------------------------------------------------------ prompt 20 M: Open-Pit Mine, Orbital Gateway
 # A fixed route (map data "routes": {name: [x0, z0, x1, z1, ...]}) is the road a very slow, very large
-# boss drives every time (the open-pit mine's bucket-wheel excavator, "kronos"). It is laid as a
+# boss drives every time (the open-pit mine's haul road, "haul"; play-test 14 deleted Kronos, its excavator). It is laid as a
 # ROUTE_ROAD haul road, and the ground ROUTE_HALF either side of it stays open all along: the nav
 # cells under it (sampled every ROUTE_STEP metres along, every half metre across) are kept free of
 # anything solid by the builder (clear_route), the map kit and the fill (warzone, densify), and main
@@ -3690,7 +3690,7 @@ PIT_RAMPS = {PIT_RINGS[0]: ((45.0, 24.0),), PIT_RINGS[1]: ((45.0, 24.0), (100.0,
 _KRONOS_NE = [(96.0, 96.0), polar(104.0, 30.0), polar(PIT_BENCH, 5.0), polar(PIT_BENCH, -15.0), polar(PIT_BENCH, -35.0)]
 KRONOS = [(round(x, 2), round(z, 2)) for x, z in
           _KRONOS_NE + [(0.0, 0.0)] + [mirror(*p) for p in reversed(_KRONOS_NE)] + [(-104.0, -104.0)]]
-FIXED_ROUTES['openpit'] = {'kronos': KRONOS}
+FIXED_ROUTES['openpit'] = {'haul': KRONOS}
 
 # Play-test 6 (DECISIONS 21G): the trains' lines, for the Boss Hunt (the campaign missions' own routes: c4m05's along
 # Ironport's quayside, c7m05's along Metro City's northern avenue and down its west side). Nothing solid stands on them.
@@ -3763,7 +3763,7 @@ def openpit(seed=211):
     """Open-Pit Mine (desert, prompt 20 M): the terraced pit at the centre, three broken rings of rock
     stepping down to its floor (the town objective), with ramps through each ring. The excavator's
     14 m haul road winds down round the upper bench from the north-east, crosses the floor and climbs
-    out the same way to the south-west (the fixed route "kronos"); a haul road runs from each bench
+    out the same way to the south-west (the fixed route "haul"); a haul road runs from each bench
     turn out to the crusher plant on the north-west rim (the west objective) or the ore loadout on
     the south-east one (the east objective): factories, silos, storage tanks, a gantry over the
     conveyors, ore heaps. Spoil roads lead off the rim to the spoil heaps on the flanks, where the
