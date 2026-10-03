@@ -2828,6 +2828,16 @@
    "changes": [
     "FLAG barrage_balloon: triangles 1,748 -> 3,930 (+124.8%); vertices 1,594 -> 4,752 (+198.1%); meshes 9 -> 32 (+255.6%); renderers 9 -> 32 (+255.6%); materials 6 -> 10 (+66.7%); materialSlots 9 -> 32 (+255.6%); fileBytes 90,264 -> 264,748 (+193.3%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "super_gun"
+   ],
+   "reason": "P35 wave 3: super_gun rebuilt (lane B)",
+   "changes": [
+    "FLAG super_gun: triangles 4,266 -> 7,132 (+67.2%); vertices 5,083 -> 9,754 (+91.9%); meshes 39 -> 58 (+48.7%); renderers 39 -> 58 (+48.7%); materialSlots 39 -> 58 (+48.7%); fileBytes 288,916 -> 530,052 (+83.5%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -52649,24 +52659,24 @@
   },
   "super_gun": {
    "file": "super_gun.glb",
-   "fileBytes": 288916,
-   "sha1": "168205204e02814e",
+   "fileBytes": 530052,
+   "sha1": "b42e7c229c9dd6b5",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 41,
-   "meshes": 39,
+   "nodes": 60,
+   "meshes": 58,
    "materials": 14,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 39,
-   "submeshes": 39,
-   "materialSlots": 39,
+   "renderers": 58,
+   "submeshes": 58,
+   "materialSlots": 58,
    "materialsUsed": 14,
-   "triangles": 4266,
-   "vertices": 5083,
+   "triangles": 7132,
+   "vertices": 9754,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -52674,36 +52684,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 94,
-   "openEdges": 0,
+   "loosePieces": 221,
+   "openEdges": 8,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -4.0,
+    -3.6664,
     0.0,
-    -3.925
+    -4.0664
    ],
    "boundsMax": [
-    4.0,
-    5.2086,
-    6.4533
+    3.6664,
+    4.7714,
+    5.2738
    ],
    "size": [
-    10.378,
-    8.0,
-    5.209
+    9.34,
+    7.333,
+    4.771
    ],
    "center": [
     0.0,
-    2.604,
-    1.264
+    2.386,
+    0.604
    ],
-   "structureHash": "bf2bf8ae630cb4a6",
+   "structureHash": "754e28115bcca434",
    "color0": {
-    "mean": 0.8122,
-    "min": 0.6039,
+    "mean": 0.6031,
+    "min": 0.0674,
     "max": 1.0,
-    "p05": 0.6934,
-    "p95": 0.9905,
+    "p05": 0.1557,
+    "p95": 0.9119,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -52725,28 +52735,43 @@
    "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
+    "Apron_joints",
     "Apron_kerbs",
-    "Beacon",
+    "Beacon_base",
+    "Beacons",
     "Blast_apron",
     "Citadel",
     "Collar_band",
-    "Collar_band.001",
     "Cradle",
-    "Cradle_bolts",
     "Crane",
     "Crane_cable",
+    "Crates",
     "Cupola",
     "Cupola_glass",
+    "Door_frames",
     "Door_hazard",
-    "Door_hazard.001",
+    "Door_slots",
+    "Doors",
     "Fascia",
+    "Form_ties",
     "Gun_house",
     "Hatch_fittings",
     "Hatches",
     "Hoist_door",
+    "Hoist_house",
     "Hoist_roof",
     "Hook_block",
+    "Kerb_stripes",
+    "Kit_bolts",
+    "Kit_hinges",
+    "Kit_rivets",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_guards.001",
+    "Lamp_rims",
+    "Lamp_rims.001",
     "Lamps",
+    "Lamps.001",
     "Loading_door",
     "Main_cannon",
     "Main_cannon_2",
@@ -52754,17 +52779,21 @@
     "Muzzle_brake_2",
     "Muzzle_main",
     "Race",
+    "Rail_sleepers",
     "Rails",
     "Rangefinder",
     "Rangefinder_glass",
     "Recuperators",
     "Roof_kit",
+    "Sandbags",
     "Shell_bands",
     "Shells",
+    "Team_band",
     "Trolley",
     "Turret",
     "Turret_ring",
-    "Vents"
+    "Vents",
+    "Walls"
    ],
    "category": "structure",
    "hd": false,

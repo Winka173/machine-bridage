@@ -1,0 +1,33 @@
+{
+ "id": "super_gun",
+ "class": "structure",
+ "real": ["a twin heavy coast-defence turret (BL 15-inch / Atlantikwall Batterie class) set in a cast concrete citadel, with a shell hoist and trolley rails"],
+ "shape": "unit_sheet.json Công trình (super_gun): 'Kích thước hiện 18.5 x 14.4 x 11.0 m', clear from the 45-60 degree camera, faction stripe; Strings note.super_gun: the fortress's giant twin gun; the GLB 10.4 x 8.0 x 5.2 m at scale 1.8 (kept within 10 %).",
+ "confidence": "ban_dau_doan (a fortress gun; the turret, rangefinder ears and hoist follow heavy coastal batteries)",
+ "target_size": {"L": 10.4, "W": 8.0, "H": 5.2, "source": "the old GLB (10.38 x 8.0 x 5.21; balance.json scale 1.8, no modelSize)", "tolerance": 0.1},
+ "features": [
+  {"feature": "the octagonal blast apron with hazard-striped kerbs and joints, muzzle-blast scorch", "nodes": ["Blast_apron", "Apron_kerbs", "Kerb_stripes", "Apron_joints"]},
+  {"feature": "the cast concrete citadel drum with form ties, the parapet ring with sandbags on its crest", "nodes": ["Citadel", "Form_ties", "Walls", "Sandbags"]},
+  {"feature": "the bolted turret ring and race", "nodes": ["Turret_ring", "Race", "Kit_bolts"]},
+  {"feature": "the armoured gun house (Team) turning at 12 degrees a second, riveted cheeks, the cradle", "nodes": ["Turret", "Gun_house", "Kit_rivets", "Cradle"]},
+  {"feature": "two huge barrels raised 28 degrees with collars, recuperators and multi-baffle brakes", "nodes": ["Main_cannon", "Main_cannon_2", "Collar_band", "Recuperators", "Muzzle_brake", "Muzzle_brake_2", "Muzzle_main"]},
+  {"feature": "the cupola with vision blocks, the rangefinder's arms out of both cheeks, hatches, vents, roof kit, antennas, lamps", "nodes": ["Cupola", "Cupola_glass", "Rangefinder", "Rangefinder_glass", "Hatches", "Hatch_fittings", "Vents", "Roof_kit", "Antennas", "Lamps"]},
+  {"feature": "the loading door in the citadel with its hazard frame", "nodes": ["Loading_door", "Door_hazard", "Doors"]},
+  {"feature": "the shell hoist house with its door, roof and beacon; rails on sleepers, the trolley with two giant shells; the gantry crane with cable and hook block; shell crates", "nodes": ["Hoist_house", "Hoist_door", "Hoist_roof", "Fascia", "Beacons", "Rails", "Rail_sleepers", "Trolley", "Shells", "Shell_bands", "Crane", "Crane_cable", "Hook_block", "Crates"]}
+ ],
+ "class_parts": ["base (the apron)", "walls (the parapet)", "roof (the gun house)", "antenna"],
+ "weapons": [{"weapon": "(none in data)", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "the super-gun's shot is a mode event (SiegeMode); the node names stay"}],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [2000, 6000], "floor": 1400, "lod1_share": 0.5, "lod2_share": 0.2, "note": "structure class: over the maximum is information only (one per fortress, not seen in numbers)"},
+ "team_zones": ["the gun house and the crane (Team)"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "collapses whole (no part nodes)",
+ "faction_style": "the fortress's cast concrete and armour, with the garrison's sandbags",
+ "details": {
+  "tier1": ["apron", "citadel", "gun house", "barrels", "hoist house"],
+  "tier2": ["parapet", "kerbs", "cradle", "brakes", "cupola", "rangefinder arms", "trolley", "shells", "crane", "door"],
+  "tier3": ["form ties", "bolts", "rivets", "collars", "vision blocks", "hatch handles", "vents", "whips", "lamps", "beacon", "sleepers", "cable", "hook block", "crates"]
+ },
+ "questions": []
+}
