@@ -36,6 +36,15 @@
       "maxEdgeT5": { "value": 28.0, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "WeaponDef.MaxEdgeT5" },
       "escapeSpeed": { "value": 4.5, "unit": "m/s", "kind": "tan_suat", "linh_vuc": "01", "code": "WeaponDef.EscapeSpeed" },
       "maxWarning": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "WeaponDef.MaxWarning" }
+    },
+    // Play-test 13 (lane C): one flare cloud decoys every IR missile arriving inside its window (one seeded roll per
+    // release, cued when a missile is flareCueSeconds out); one vehicle APS activation takes every round arriving within
+    // apsVolleySeconds (one charge); to pay for it a vehicle APS's interceptor comes back apsRechargeScale times slower.
+    "countermeasures": {
+      "flareCueSeconds": { "value": 1.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "Countermeasures.FlareCueSeconds" },
+      "flareGraceSeconds": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "Countermeasures.FlareGraceSeconds" },
+      "apsVolleySeconds": { "value": 0.4, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "Countermeasures.ApsVolleySeconds" },
+      "apsRechargeScale": { "value": 1.5, "unit": "x", "kind": "thoi_gian", "linh_vuc": "01", "code": "Countermeasures.ApsRechargeScale" }
     }
   },
   "vehicles": {

@@ -151,6 +151,70 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void OneFlareCloudDecoysTheWholeSalvoOrNone()
+        {
+            // Play-test 13 (lane C): a flare cloud seduces every IR seeker arriving inside its window on its one roll, so a
+            // salvo arriving together is all decoyed or all flies true; a missile still far out is left for the next release.
+            var c = Shipped;
+            for (var seed = 1; seed <= 8; seed++)
+            {
+                var world = new SimWorld(c, new MapDefinition("field", 300f,
+                    new[] { new TeamStart(0, new Vector2(-120f, -120f)), new TeamStart(1, new Vector2(120f, 120f)) },
+                    new List<PropPlacement>(), new List<UnitPlacement>()), seed);
+                var shooter = world.SpawnVehicle("aa_vehicle", 1, new Vector2(0f, -40f), 0f);
+                var jet = world.SpawnVehicle("fighter_jet", 0, new Vector2(0f, 20f), 0f);
+                jet.FlaresUntil = world.Time + 3.0;
+                var salvo = new List<Projectile>();
+                for (var k = 0; k < 3; k++)
+                {
+                    var round = new Projectile(shooter.Id, shooter.Team, c.Weapons["stinger_atas"], jet.Position, jet.Id, 1f + 0.1f * k, targetFlying: true)
+                        { Origin = shooter.Position, Shooter = shooter, LaunchedAt = world.Time };
+                    salvo.Add(round);
+                    world.Combat.AddProjectile(round);
+                }
+                var far = new Projectile(shooter.Id, shooter.Team, c.Weapons["stinger_atas"], jet.Position, jet.Id, 9f, targetFlying: true)
+                    { Origin = shooter.Position, Shooter = shooter, LaunchedAt = world.Time };
+                world.Combat.AddProjectile(far);
+                world.Step(TestWorlds.Step);
+                foreach (var round in salvo)
+                {
+                    Assert.IsTrue(round.FlareRolled, $"seed {seed}: a missile inside the cloud's window meets it");
+                    Assert.AreEqual(salvo[0].Diverted, round.Diverted, $"seed {seed}: one cloud, one outcome for the salvo");
+                }
+                Assert.IsFalse(far.FlareRolled, $"seed {seed}: a missile 9 s out is not tested by this cloud");
+            }
+        }
+
+        [Test]
+        public void OneApsActivationTakesEveryRoundArrivingTogether()
+        {
+            // Play-test 13 (lane C): one hard-kill activation meets a whole salvo for one charge; it stays open even with no
+            // charge left; the interceptor then reloads slower (SimTunables countermeasures.apsRechargeScale).
+            var c = Shipped;
+            var world = Field(c);
+            var shooter = world.SpawnVehicle("attack_helicopter", 1, new Vector2(0f, 40f), 0f);
+            var tank = world.SpawnVehicle("main_battle_tank", 0, Vector2.Zero, 0f);
+            Assert.AreEqual(InterceptionMode.SelfAps, tank.Def.InterceptionMode, "a tank's own APS");
+            tank.Aps = new ApsDef(12f, 1, 4f);
+            tank.ApsCharges = 1;
+            var missile = c.Weapons["hellfire_standoff"];
+            bool Lands()
+            {
+                tank.Hp = tank.MaxHp;
+                var round = new Projectile(shooter.Id, shooter.Team, missile, tank.Position, tank.Id, 0f)
+                    { Origin = shooter.Position, Shooter = shooter, Main = true };
+                world.Damage.ResolveImpact(round);
+                return tank.Hp < tank.MaxHp;
+            }
+            Assert.IsFalse(Lands(), "the first missile opens the activation");
+            Assert.AreEqual(0, tank.ApsCharges, "one charge spent");
+            Assert.IsFalse(Lands(), "the second, arriving together, is taken by the same activation");
+            Assert.IsFalse(Lands(), "and the third");
+            Assert.AreEqual(0, tank.ApsCharges, "still one charge for the salvo");
+            Assert.Greater(SimTunables.Weapons.Countermeasures.ApsRechargeScale, 1f, "paid for by a slower reload");
+        }
+
+        [Test]
         public void TheShotClockIsOffOutsideABattle()
         {
             var clock = new Game.Effects.ShotClock();

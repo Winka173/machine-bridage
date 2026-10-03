@@ -241,6 +241,9 @@ namespace MachineBrigade.Sim
         /// <summary>A guided missile or drone is flying at this vehicle.</summary>
         internal bool MissileIncoming(EntityId vehicle) => _combat.MissileIncoming(vehicle);
 
+        /// <summary>Play-test 13 (lane C): a guided round reaches this vehicle within the flare cue (the release moment).</summary>
+        internal bool FlareCue(EntityId vehicle) => _combat.FlareCue(vehicle);
+
         /// <summary>A guided missile (not a drone) is flying at this ground vehicle.</summary>
         internal bool AtgmIncoming(EntityId vehicle) => _combat.AtgmIncoming(vehicle);
 
