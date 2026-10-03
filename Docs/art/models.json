@@ -1301,7 +1301,7 @@
   },
   "mobile_fortress": {
     "file": "mobile_fortress.glb",
-    "triangles": 23256
+    "triangles": 25402
   },
   "mobile_repair_vehicle": {
     "file": "mobile_repair_vehicle.glb",

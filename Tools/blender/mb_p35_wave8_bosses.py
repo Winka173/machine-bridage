@@ -247,6 +247,205 @@ def _behemoth_turret(a):
     a.part('Team_band', 'Team', t).box((2.6, 1.6, .02), loc=(0, .3, 1.06), bevel=0)
 
 
+# ============================================================================= mobile_fortress
+def mobile_fortress(a):
+    """See the module docstring. Runtime (the def's parts): Main_cannon / Muzzle_brake (howitzer), Mount_rocket /
+    .001 (rockets_l / _r), Mount_mg / .001 (flak_l / _r), Radar (emp), Mount_gun (howitzer_2, on the turret roof),
+    Mount_missile.001 (sam); Turret, Muzzle_main, Mount_missile / Muzzle_missile (the silo, part missiles)."""
+    K.suffixed(a)
+    # The four crawler trucks at the corners, two track units each, their frames and jacking cylinders.
+    for yc in (-5.4, 5.3):
+        wheels = [yc - 1.2 + i * .8 for i in range(4)]
+        for tx in (2.75, 3.85):
+            W.running_gear(a, tx, .9, .36, wheels, (yc - 1.75, .5, .34), (yc + 1.72, .52, .36), rollers=(yc,),
+                           roller_z=.98, top_hidden=None, disc_mat='Armor', seg=8, link_pitch=.45, wheel_w=.2,
+                           dust=.2)
+        for s in (-1, 1):
+            K.chamfer_box(a.part('Truck_frames', 'Armor'), (2.2, 3.9, .7), loc=(s * 3.3, yc, 1.55), c=.06)
+            for dy in (-1.1, 1.1):
+                k.lathe(a.part('Jacks', 'Steel'), [(.24, 0), (.24, .5), (.18, .55), (.18, 1.0)],
+                        loc=(s * 3.3, yc + dy, 1.85), seg=10, worn=(1,))
+            a.part('Hazard_bands', 'Hazard').box((.03, 3.6, .14), loc=(s * 4.41, yc, 1.75), bevel=0)
+            K.lamp(a, (s * 3.3, yc - 1.96 if yc < 0 else yc + 1.96, 1.6), (0, -1 if yc < 0 else 1, 0), r=.12,
+                   guard=True, glow='Lamp' if yc < 0 else 'LavaGlow')
+    # The platform: a thick lofted slab with chamfered edges, the deck plates, railings, hazard edges, ladders.
+    K.section_loft(a.part('Hull', 'Team'), [
+        (-7.9, [(0, 2.85), (4.0, 2.85), (4.2, 3.3), (4.0, 3.95), (0, 3.95)]),
+        (-7.2, [(0, 2.65), (4.4, 2.65), (4.55, 3.2), (4.4, 4.0), (0, 4.0)]),
+        (7.2, [(0, 2.65), (4.4, 2.65), (4.55, 3.2), (4.4, 4.0), (0, 4.0)]),
+        (7.85, [(0, 2.85), (4.0, 2.85), (4.2, 3.3), (4.0, 3.95), (0, 3.95)])])
+    dp = a.part('Deck', 'Armor')
+    for col in range(2):
+        for y in (-4.0, 5.0):
+            K.panel(a, dp, (3.6, 1.9), (-1.95 + col * 3.9, y, 4.0), (0, 0, 1), t=.04, rivet=.5)
+    for s in (-1, 1):
+        K.railing(a.part('Railings', 'Steel'), [(s * 4.3, -7.0, 4.0), (s * 4.3, 7.0, 4.0)], h=.9, post=1.75, r=.035)
+        a.part('Plough_stripes', 'Hazard').box((.04, 14.0, .2), loc=(s * 4.56, 0, 3.2), bevel=0)
+        K.ladder(a.part('Ladders', 'Steel'), (s * 4.42, -2.6, .3), (s * 4.42, -2.6, 2.65), width=.6, step=.4)
+        a.part('Team_band', 'Team').box((.03, 12.0, .3), loc=(s * 4.42, 0, 3.7), bevel=0)
+    for j in range(3):
+        k.lathe(a.part('Fuel_tanks', 'Armor'), [(0, -.8), (.4, -.75), (.42, -.5), (.42, .5), (.4, .75), (0, .8)],
+                loc=(-3.95, -1.6 + j * 1.75, 2.2), rot=K.FORWARD, seg=10)
+    for j in range(5):
+        a.part('Spare_links', 'Undercarriage').box((.8, .22, .06), loc=(3.0, 1.0 + j * .26, 4.03), bevel=0)
+    # Deck dressing: walkway lines, more deck plates, the ammunition stack, lifting eyes, the loading crane on the
+    # left (its jib out over the side), cable runs.
+    for s in (-1, 1):
+        a.part('Hazard_bands', 'Hazard').box((.18, 14.0, .02), loc=(s * 3.75, 0, 4.01), bevel=0)
+        for y in (-2.6, .3, 3.2):
+            K.panel(a, a.part('Deck', 'Armor'), (.9, 2.6), (s * 3.85, y, 4.0), (0, 0, 1), t=.03, rivet=.4)
+    for j in range(4):
+        K.crate(a.part('Ammo_crates', 'Crate'), a.part('Kit_latches', 'Steel'), (.9, .6, .5),
+                (3.3 - (j % 2) * 1.0, -3.9 + (j // 2) * .7, 4.25), bands=2)
+    W.lifting_eyes(a.part('Kit_tow', 'Steel'), [(s * 4.1, y, 4.05) for s in (-1, 1) for y in (-6.6, 6.6)], r=.14)
+    cr = a.part('Crane', 'CraneYellow')
+    cr.cyl(.25, 2.2, loc=(-3.6, 3.4, 5.1), seg=10, bevel=0)
+    cr.limb((-3.6, 3.4, 6.0), (-4.75, 1.6, 6.4), .2, .28, bevel=0)
+    a.part('Kit_cables', 'Steel').tube([(-4.75, 1.6, 6.3), (-4.75, 1.6, 5.0)], .03, seg=4)
+    a.part('Crane_hook', 'Steel').box((.3, .3, .35), loc=(-4.75, 1.6, 4.85), bevel=0)
+    W.cable(a.part('Kit_cables', 'Rubber'), [(1.2, 6.6, 4.05), (1.0, 5.0, 4.05), (.6, 4.6, 4.3)], r=.07)
+    _fortress_bridge(a)
+    _fortress_core(a)
+    _fortress_rear(a)
+    _fortress_turret(a)
+    k.clean(a)
+
+
+def _fortress_bridge(a):
+    """The glazed command bridge on the front of the deck (the Kharkovchanka / Sandcrawler read): the raked window
+    band in its frames, the roof with its sensors, the flak cupolas on the front corners (Mount_mg, .001)."""
+    br = a.part('Bridge', 'Team')
+    W.poly_turret(br, [(4.0, [(-2.3, -7.4), (2.3, -7.4), (2.6, -6.2), (2.6, -4.6), (-2.6, -4.6), (-2.6, -6.2)]),
+                       (4.5, [(-2.3, -7.45), (2.3, -7.45), (2.6, -6.25), (2.6, -4.6), (-2.6, -4.6), (-2.6, -6.25)]),
+                       (5.6, [(-1.9, -6.75), (1.9, -6.75), (2.3, -6.0), (2.3, -4.7), (-2.3, -4.7), (-2.3, -6.0)])],
+                  chamfer=.05)
+    # The window band: panes on the raked faces between the frames.
+    for i in range(5):
+        x = -1.6 + i * .8
+        a.part('Windows', 'Glass').mesh([(x - .34, -7.47, 4.6), (x + .34, -7.47, 4.6), (x + .3, -6.82, 5.45),
+                                         (x - .3, -6.82, 5.45)], [(0, 1, 2, 3)])
+        a.part('Window_frames', 'Armor').box((.06, .1, 1.05), loc=(x + .4, -7.15, 5.02), rot=(-.85, 0, 0), bevel=0)
+    for s in (-1, 1):
+        a.part('Windows', 'Glass').mesh([(s * 2.35, -7.2, 4.6), (s * 2.62, -6.25, 4.6), (s * 2.32, -6.0, 5.45),
+                                         (s * 2.0, -6.75, 5.45)], [(0, 1, 2, 3) if s > 0 else (3, 2, 1, 0)])
+    a.part('Window_frames', 'Armor').box((4.7, .12, .1), loc=(0, -7.45, 4.55), bevel=0)
+    a.part('Bridge_roof', 'Medical').box((3.6, 1.2, .04), loc=(0, -5.4, 5.62), bevel=0)
+    a.part('Team_band', 'Team').box((4.4, .1, .25), loc=(0, -4.6, 5.2), bevel=0)
+    K.chamfer_box(a.part('Sight', 'Armor'), (.6, .5, .4), loc=(-1.2, -5.6, 5.8), c=.04)
+    a.part('Periscope', 'Glass').box((.4, .01, .2), loc=(-1.2, -5.86, 5.82), bevel=0)
+    K.whip_antenna(a.part('Antenna', 'Steel'), (1.6, -5.2, 5.6), h=2.0, lean=.05)
+    K.beacon(a, (.8, -5.0, 5.6), r=.12)
+    # Flak cupolas on the front corners of the deck.
+    for i, s in ((0, 1), (1, -1)):
+        m = a.pivot(K.name('Mount_mg', i), (s * 3.2, -6.0, 4.37))
+        tg = '' if i == 0 else '_001'
+        k.lathe(a.part(f'MG_cupola{tg}', 'Team', m), [(.75, -.37), (.75, -.1), (.7, .1), (.55, .35), (.3, .5),
+                                                      (0, .55)], seg=14)
+        k.block(a.part(f'MG_armor{tg}', 'Armor', m), (.6, .3, .4), loc=(0, -.62, .1), chamfer=.03)
+        for dx in (-.1, .1):
+            k.lathe(a.part(f'MG_guns{tg}', 'Steel', m), [(.04, 0), (.04, .25), (.03, .28), (.03, .95), (.045, .98),
+                                                         (.045, 1.05), (0, 1.06)], loc=(dx, -.58, .24),
+                    rot=K.FORWARD, seg=6)
+        a.part(f'MG_glass{tg}', 'Glass', m).box((.3, .02, .1), loc=(.3, -.62, .35), rot=(-.4, 0, .3), bevel=0)
+        a.pivot(K.name('Muzzle_mg', i), (0, -1.63, .24), m)
+
+
+def _fortress_core(a):
+    """The armoured core block in the middle of the deck carrying the turret: battered walls with the vents, the
+    hatches and the ladder up, the radar mast with its EMP dish (Radar spins), the exhaust stacks either side."""
+    core = a.part('Armor', 'Armor')
+    k.block(core, (6.2, 7.6, 2.25), loc=(0, .3, 5.12), chamfer=.08, taper=(.92, .9))
+    for s in (-1, 1):
+        K.grille(a, (s * 3.0, .3, 5.0), 3.0, .8, facing=(s, 0, 0), slats=8, frame_mat='Team')
+        K.smokestack(a, (s * 2.6, 3.6, 6.2), r=.28, h=1.1, mat='Steel')
+        K.armour_plate(a, a.part('Armor', 'Armor'), (2.6, 1.6, .12), (s * 2.9, -2.4, 5.1), rot=(0, s * 1.35, 0),
+                       rivet=.4)
+    K.hatch_round(a, (-2.2, -2.8, 6.25), r=.42, periscopes=0, seg=12)
+    K.ladder(a.part('Ladders', 'Steel'), (2.4, -3.6, 4.0), (2.4, -3.3, 6.25), width=.5, step=.35)
+    k.lathe(a.part('Radar_mast', 'Steel'), [(.3, 6.25), (.3, 6.4), (.16, 6.5), (.14, 7.35), (.2, 7.4)],
+            loc=(0, 4.2, 0), seg=10)
+    r = a.pivot('Radar', (0, 4.2, 7.48))
+    K.dish(a.part('Radar_dish', 'Medical', r), a.part('Radar_feed', 'Steel', r), (0, 0, .4), r=.75,
+           normal=(0, -.6, .8), seg=14)
+    a.part('Radar_drive', 'Armor', r).cyl(.22, .2, loc=(0, 0, .05), seg=10, bevel=0)
+    for x, y in ((1.8, -2.8), (-1.8, 3.2)):
+        a.part('Vents', 'Steel').cyl(.18, .4, loc=(x, y, 6.4), seg=8, bevel=0)
+        a.part('Vents', 'Armor').cyl(.28, .06, loc=(x, y, 6.62), r2=.18, seg=8, bevel=0)
+
+
+def _fortress_rear(a):
+    """The rear deck: the two rocket pods on their mounts (Mount_rocket left x 1.9, .001 right), the missile silo
+    between them (Mount_missile / Muzzle_missile at its hatches), the SAM box on the left rear (Mount_missile.001)."""
+    for i, s in ((0, 1), (1, -1)):
+        m = a.pivot(K.name('Mount_rocket', i), (s * 1.9, 6.0, 4.3))
+        tg = '' if i == 0 else '_001'
+        k.lathe(a.part(f'Launcher_base{tg}', 'Steel', m), [(.6, -.3), (.62, -.25), (.62, -.15), (.55, -.12)], seg=12)
+        K.chamfer_box(a.part(f'Launcher_armor{tg}', 'Armor', m), (.8, .9, .7), loc=(0, .2, .2), c=.04)
+        k.block(a.part(f'Rocket_pod{tg}', 'Team', m), (1.1, 1.8, .9), loc=(0, .1, 1.0), rot=(.5, 0, 0), chamfer=.05)
+        face = a.part(f'Tubes_bore{tg}', 'Undercarriage', m)
+        for ix in (-.3, 0, .3):
+            for iz in (-.22, .2):
+                face.cyl(.11, .04, loc=(ix, -.78, 1.34 + iz), rot=(R90 + .5, 0, 0), seg=8, bevel=0)
+        a.part(f'Launcher_steel{tg}', 'Steel', m).tube([(s * .3, .5, .0), (s * .3, -.2, .7)], .06, seg=8)
+        a.pivot(K.name('Muzzle_rocket', i), (0, -.78, 1.34), m)
+    # The silo hatches between the pods: four lids in a frame, one open with a missile nose showing.
+    sil = a.part('Silo_missiles', 'Armor')
+    for dx in (-.35, .35):
+        for dy in (-.35, .35):
+            k.block(sil, (.6, .6, .1), loc=(dx, 6.05 + dy, 4.05), chamfer=.02)
+    k.lathe(a.part('Silo_missiles', 'Fuel'), [(0, .55), (.16, .35), (.2, .1), (.2, -.2)], loc=(.35, 6.4, 4.1),
+            seg=10)
+    a.part('Hazard_bands', 'Hazard').box((1.6, 1.6, .02), loc=(0, 6.05, 4.005), bevel=0)
+    m = a.pivot('Mount_missile', (0, 6.05, 4.62))
+    a.pivot('Muzzle_missile', (0, 0, 0), m)
+    # The SAM box: base, the tilted four-cell box, its radar plate.
+    m = a.pivot('Mount_missile__001', (-2.9, 5.0, 4.3))
+    k.lathe(a.part('Sam_base', 'Steel', m), [(.5, -.3), (.52, -.25), (.52, -.15), (.45, -.12)], seg=12)
+    k.block(a.part('Sam_box', 'Team', m), (.9, 1.2, .7), loc=(0, .1, .8), rot=(.55, 0, 0), chamfer=.04)
+    for dx in (-.2, .2):
+        for dz in (-.15, .15):
+            a.part('Sam_armor', 'Undercarriage', m).cyl(.12, .03, loc=(dx, -.52, 1.15 + dz), rot=(R90 + .55, 0, 0),
+                                                        seg=8, bevel=0)
+    k.block(a.part('Sam_radar', 'Armor', m), (.7, .08, .55), loc=(0, .65, .9), chamfer=.015)
+    a.pivot('Muzzle_missile__001', (0, -.52, 1.15), m)
+
+
+def _fortress_turret(a):
+    """The main turret (2S7-class 203 mm) on the Turret pivot: the big gun house with its cheek plates, the long
+    203 mm barrel with its recoil cylinders and the brake (Main_cannon / Muzzle_brake), the loading tray, the second
+    gun on its roof mount (Mount_gun: Gun2 house, barrel, sleeve, brake), the cupola, hatches."""
+    t = a.pivot('Turret', (0, 1.0, 6.33))
+    K.turret_ring(a.part('Turret_steel', 'Steel', t), (0, 0, -.1), 2.3, h=.14)
+    W.poly_turret(a.part('Turret_body', 'Team', t), [
+        (0, [(-1.4, -2.3), (1.4, -2.3), (2.2, -1.2), (2.2, 2.3), (-2.2, 2.3), (-2.2, -1.2)]),
+        (.7, [(-1.3, -2.45), (1.3, -2.45), (2.25, -1.3), (2.25, 2.35), (-2.25, 2.35), (-2.25, -1.3)]),
+        (1.2, [(-1.1, -2.0), (1.1, -2.0), (1.95, -1.05), (1.95, 2.2), (-1.95, 2.2), (-1.95, -1.05)])], chamfer=.06)
+    for s in (-1, 1):
+        K.armour_plate(a, a.part('Turret_armor', 'Armor', t), (1.4, 1.0, .1), (s * 1.75, -1.85, .6),
+                       rot=(0, 0, s * .9), rivet=.35)
+        a.part('Turret_steel', 'Steel', t).cyl(.12, 2.0, loc=(s * .32, -2.9, .95), rot=K.FORWARD, seg=8, bevel=0)
+    K.chamfer_box(a.part('Turret_armor', 'Armor', t), (1.1, .7, .9), loc=(0, -2.5, .75), c=.06)
+    K.gun_barrel(a, 'Main_cannon', t, 0, -2.8, .75, 3.89, .17, seg=14, extractor=(.3, 1.4, .6), brake='baffle')
+    a.pivot('Muzzle_main', (0, -6.99, .75), t)
+    # The second gun on the roof (Mount_gun).
+    m = a.pivot('Mount_gun', (0, 1.0, 1.19), t)
+    k.lathe(a.part('Gun2_base', 'Steel', m), [(.6, -.08), (.63, -.04), (.63, .05), (.58, .07)], seg=12)
+    W.poly_turret(a.part('Gun2_house', 'Armor', m), [
+        (.05, [(-.4, -.7), (.4, -.7), (.6, -.3), (.6, .7), (-.6, .7), (-.6, -.3)]),
+        (.6, [(-.32, -.55), (.32, -.55), (.5, -.22), (.5, .62), (-.5, .62), (-.5, -.22)])], chamfer=.03)
+    K.gun_barrel(a, 'Gun2_barrel', m, 0, -.7, .42, 2.28, .08, seg=10, extractor=(.4, 1.5, .3),
+                 brake_name='Gun2_brake', brake='baffle')
+    a.part('Gun2_sleeve', 'Canvas', m).cyl(.15, .2, loc=(0, -.75, .42), rot=K.FORWARD, seg=8, bevel=0)
+    a.pivot('Muzzle_gun', (0, -3.28, .42), m)
+    k.ring(a.part('Cupola_top', 'Armor', t), [(.38, 0), (.45, 0), (.45, .22), (.38, .22)], loc=(-1.3, 1.2, 1.2),
+           seg=12)
+    K.hatch_round(a, (1.3, 1.4, 1.2), r=.4, parent=t, periscopes=2, seg=10, mat='Armor')
+    a.part('Hatch', 'Steel', t).box((.6, .06, .06), loc=(1.3, 1.0, 1.24), bevel=0)
+    a.part('Team_band', 'Team', t).box((2.4, 1.4, .02), loc=(0, 1.2, 1.205), bevel=0)
+    K.whip_antenna(a.part('Antenna', 'Steel', t), (-1.7, 2.0, 1.2), h=1.0, lean=.15)
+
+
 BUILDERS = {
     'behemoth': (behemoth, dict(ao_distance=.9, grime_height=.8, ao_strength=.72)),
+    'mobile_fortress': (mobile_fortress, dict(ao_distance=1.1, grime_height=1.0, ao_strength=.7)),
 }
