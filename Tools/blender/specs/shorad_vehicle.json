@@ -1,0 +1,34 @@
+{
+ "id": "shorad_vehicle",
+ "class": "wheeled",
+ "real": ["AN/TWQ-1 Avenger on the M1097 HMMWV", "FIM-92 Stinger (two 4-tube pods)", "M3P 12.7 mm"],
+ "shape": "no unit_sheet.json row: the old builder's Avenger SHORAD (HMMWV, turret with two Stinger pods, sensor box, MG); the def's avenger_stingers and hmg.",
+ "confidence": "ban_dau_doan (no unit_refs row; HMMWV / Avenger published photographs)",
+ "target_size": {"L": 3.8, "W": 1.8, "H": 2.2, "source": "balance.json modelSize", "tolerance": 0.10},
+ "features": [
+  {"feature": "HMMWV body: wide low hood with grille slots, two-door cab with flat windscreen and windows, bumper, fender flares", "nodes": ["Body", "Cab", "Glass", "Windows", "Grilles", "Bumper", "Fender_flares"]},
+  {"feature": "four big lugged tyres on independent arms with geared hubs", "nodes": ["Tyres", "Wheels", "Hubs", "Axles"]},
+  {"feature": "Avenger turret on the bed: turntable, glazed gunner's cab", "nodes": ["Turret", "Turret_ring", "Turret_body", "Turret_roof"]},
+  {"feature": "two four-tube Stinger pods on the elevating arms", "nodes": ["Launcher", "Launcher_rails", "Tubes", "Muzzle_missile"]},
+  {"feature": "FLIR / laser sensor box, the M3P .50 under the right pod on its own mount", "nodes": ["Sensor", "Mount_mg", "MG", "MG_ammo", "Muzzle_mg"]},
+  {"feature": "lamps, mirrors, jerrycan, cam-net roll, aerial", "nodes": ["Lamps", "Tail_lamps", "Jerrycans", "Stowage", "Antennas"]}
+ ],
+ "class_parts": ["wheels", "axles", "cab", "glass", "lights", "stowage", "weapon"],
+ "weapons": [
+  {"weapon": "avenger_stingers", "slot": "missile", "mount": "Turret", "muzzles": ["Muzzle_missile"], "note": "main, 1 barrel (the pods' launch face: Tubes)"},
+  {"weapon": "hmg_selfdef_21", "slot": "mg", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"], "note": "aim Free"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [3000, 5000], "floor": 2100, "cap": 7500, "lod1_share": 0.5, "lod2_share": 0.2},
+ "team_zones": ["body and cab (Team)", "turret cab and pods (Team)", "bands (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "Part_wheel / Part_wheelb come off (wrapper); the turret burns",
+ "faction_style": "light air-defence vehicle (both factions)",
+ "details": {
+  "tier1": ["body", "cab", "turret", "pods"],
+  "tier2": ["tyres", "hubs", "fender flares", "bumper", "windscreen", "sensor box", "M3P"],
+  "tier3": ["wheel nuts", "mirrors", "door handles", "wipers", "lamps", "tow hooks", "exhaust", "jerrycan", "aerial", "pod bands"]
+ },
+ "questions": ["No unit_refs or unit_sheet row: built as the Avenger after the old builder; confirm."]
+}

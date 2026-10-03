@@ -1,0 +1,33 @@
+{
+ "id": "demolition_line_vehicle",
+ "class": "tracked",
+ "real": ["M1150 Assault Breacher Vehicle (Abrams hull, full-width mine plough, two M58 MICLIC)", "M2 Browning 12.7 mm (remote weapon station)"],
+ "shape": "no unit_sheet.json row: the old builder's M58 MICLIC engineer vehicle (line charge launcher on the rear, roller / plough ahead, remote MG); built as the ABV that carries the MICLIC.",
+ "confidence": "ban_dau_doan (no unit_refs row; ABV published photographs)",
+ "target_size": {"L": 6.45, "W": 3.02, "H": 2.02, "source": "balance.json modelSize (the plough inside the length)", "tolerance": 0.10},
+ "features": [
+  {"feature": "Abrams hull: shallow glacis, flat deck, the exhaust grille across the rear plate, heavy skirts", "nodes": ["Hull", "Hull_lower", "Grilles", "Skirts"]},
+  {"feature": "seven road wheels a side, rear sprocket, front idler, return rollers", "nodes": ["Wheels", "Tyres", "Sprockets", "Idlers", "Rollers", "Tracks", "Track_links"]},
+  {"feature": "full-width mine plough: push arms, lift rams, curved mouldboard, tines, depth skids", "nodes": ["Mine_plow", "Plow_arms", "Plow_tines", "Plow_skids"]},
+  {"feature": "low armoured box turret with the two MICLIC launcher boxes tilted up on its rear", "nodes": ["Turret", "Turret_body", "Miclic_boxes", "Miclic_rockets"]},
+  {"feature": "remote weapon station: base, cradle, M2, sensor head", "nodes": ["Rws", "Cradle", "Main_cannon", "Muzzle_brake", "Muzzle_main", "Sensor"]},
+  {"feature": "lane-marking dispensers on the rear corners", "nodes": ["Lane_markers", "Lane_marker_tops"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "hmg_selfdef_15", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel (the RWS M2)"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 8.5k: over the maximum, information only"},
+ "team_zones": ["hull and skirts (Team)", "turret (Team)", "mouldboard (Team)", "bands on skirts and MICLIC lids (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (line charges)",
+ "faction_style": "combat engineer vehicle (both factions)",
+ "details": {
+  "tier1": ["hull", "turret", "plough", "tracks"],
+  "tier2": ["MICLIC boxes", "RWS", "skirts", "lane markers", "plough arms", "grilles", "bins"],
+  "tier3": ["tines", "skids", "rivets", "periscopes", "smoke tubes", "lamps", "jerrycans", "aerial", "ammunition can"]
+ },
+ "questions": ["No unit_refs or unit_sheet row: built as an M1150 ABV (it carries the M58 MICLIC); confirm."]
+}

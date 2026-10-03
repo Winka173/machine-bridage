@@ -1,0 +1,48 @@
+{
+ "id": "moloch",
+ "class": "boss",
+ "frame": "ground",
+ "real": ["tracked mobile factory (the sheet's 'xưởng cơ động bánh xích')", "Fatboy (Supreme Commander) and the C&C MCV / war factory for the look", "twin 120 mm turrets", "35 mm twin flak"],
+ "shape": "unit_sheet.json Boss: Dựa trên: xưởng cơ động bánh xích · Fatboy (Supreme Commander), MCV / War Factory (Command & Conquer) — ước đoán: nhà máy di động. Kích thước hiện 40.0 × 21.7 × 18.1 m; boss chủ lực ×1,3–1,5 so với mẫu; bộ phận phá được (tháp, xích, động cơ) phải tách thành khối riêng dễ nhìn; có bản vỡ cho từng bộ phận; vạch màu tướng sở hữu. Cách đánh: cửa xưởng ở phía sau, giáp mỏng cũng ở đó; phá cụm xích thì nó chậm lại.",
+ "confidence": "ban_dau_doan (a fictional factory after the sheet's references)",
+ "target_size": {"L": 26.5, "W": 14.4, "H": 12.1, "source": "the old GLB (26.48 x 14.4 x 12.06; the game scales it by the def's size 1.51 to the sheet's 40 m); no modelSize in data", "tolerance": 0.10},
+ "features": [
+  {"feature": "two huge track units under riveted guard plates, each a breakable part", "nodes": ["Part_track_l", "Part_track_r", "Tracks", "Track_links", "Wheels", "Sprockets", "Idlers", "Skirts"]},
+  {"feature": "hull between and over the tracks: sloped prow with the dozer bar and hazard stripes, sponson decks", "nodes": ["Hull", "Dozer_bar", "Hazard_frames", "Deck_plates"]},
+  {"feature": "armoured command bridge at the front, vision slits, sensors", "nodes": ["Bridge", "Glass", "Antennas"]},
+  {"feature": "factory hall: sloped walls with ribs, sawtooth roof with skylights, gantry crane, stacks, AC plant, pipes", "nodes": ["Body", "Hall_ribs", "Roof", "Skylights", "Crane", "Stacks", "Pipes"]},
+  {"feature": "four twin 120 mm turrets: two on the forward sponsons, two on the raised rear gun deck", "nodes": ["Turret", "Mount_gun", "Mount_gun.001", "Mount_gun.002", "Gun_deck", "Barbettes"]},
+  {"feature": "twin 35 mm flak mount on the roof", "nodes": ["Mount_mg", "Flak_house", "Flak_guns", "Muzzle_mg"]},
+  {"feature": "two factory doors in the stern with ramp, hazard frames and warning beacons (the weak rear)", "nodes": ["Part_door_l", "Part_door_r", "Hangar_frame", "Ramp"]},
+  {"feature": "conveyor arm on the right flank, spare-track rack, supply crates, drums", "nodes": ["Conveyor", "Spare_track", "Crates", "Drums"]},
+  {"feature": "the owner general's colour band round hull, hall and turrets", "nodes": ["Team_band"]}
+ ],
+ "weapons": [
+  {"weapon": "p26_moloch_main_mo120", "slot": "mount 0", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "twin barrels: Muzzle_b1/b2_main (mb_fix_barrels EXTRA)"},
+  {"weapon": "p26_moloch_tiny_zu23", "slot": "mount 1", "mount": "Mount_gun", "muzzles": ["Muzzle_gun"], "note": "the mount order of the old file is kept"},
+  {"weapon": "p26_moloch_tiny_zu23", "slot": "mount 2", "mount": "Mount_gun.001", "muzzles": ["Muzzle_gun.001"]},
+  {"weapon": "p26_moloch_main_mo120", "slot": "mount 3", "mount": "Mount_gun.002", "muzzles": ["Muzzle_gun.002"]},
+  {"weapon": "p26_moloch_direct_mo120ap", "slot": "mount 4", "mount": "Turret", "muzzles": ["Muzzle_b1_main"]},
+  {"weapon": "p26_moloch_direct_mo120ap", "slot": "mount 5", "mount": "Mount_gun", "muzzles": ["Muzzle_b1_gun"]},
+  {"weapon": "p26_moloch_close_boss_flak", "slot": "mount 6", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"]}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [10000, 20000], "floor": 7000, "note": "about 27k: over the maximum, information only (boss; ixion 36k, bastion 34k)"},
+ "team_zones": ["hull and hall (Team)", "turret houses (Team)", "track guards (Team)", "general's band (TeamGlow)"],
+ "colour_zones_min": 6,
+ "breakable": [
+  {"node": "Turret", "part": "turret_fl"}, {"node": "Mount_gun", "part": "turret_fr"},
+  {"node": "Mount_gun.001", "part": "turret_rl"}, {"node": "Mount_gun.002", "part": "turret_rr"},
+  {"node": "Mount_mg", "part": "flak"}, {"node": "Part_door_l", "part": "door_l"}, {"node": "Part_door_r", "part": "door_r"},
+  {"node": "Part_track_l", "part": "track_l"}, {"node": "Part_track_r", "part": "track_r"}
+ ],
+ "weak_points": ["the stern doors (armour 2, toned one shade off, hazard frames, beacons)", "the track units (riveted guard plates, toned)"],
+ "wreck": "every part above has its own pivot (hidden or swapped for a wreck piece by the runtime)",
+ "faction_style": "Varga's heavy industry: riveted plate, crane yellow, hazard stripes",
+ "details": {
+  "tier1": ["track units", "hull", "factory hall", "bridge"],
+  "tier2": ["turrets", "flak", "doors and ramp", "sawtooth roof", "crane", "stacks", "conveyor", "gun deck", "crates"],
+  "tier3": ["rivets", "hub bolts", "ladders", "railings", "floodlights", "beacons", "pipes", "aerials", "dish", "spare links", "drums"]
+ },
+ "questions": []
+}

@@ -1,0 +1,36 @@
+{
+ "id": "tank_destroyer",
+ "class": "tracked",
+ "real": ["2S25 Sprut-SD (BMD-3 family chassis)", "2A75 125 mm smoothbore", "M2 Browning 12.7 mm (the def's roof MG)"],
+ "shape": "unit_sheet.json Phương tiện: Pháo chống tăng thân thấp, tháp nhỏ với nòng 125 mm rất dài (gần bằng thân); từ trên xuống: nòng rất dài so với thân nhỏ; khoảng 7.8 x 2.5 x 2.4 m (0,8 x 2S25 Sprut-SD); vũ khí nhìn thấy 2A75 125 mm, M2 Browning 12.7 mm; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (2S25 published dimensions and photographs)",
+ "target_size": {"L": 7.89, "W": 2.62, "H": 2.04, "source": "balance.json modelSize (the gun's overhang inside the length)", "tolerance": 0.10},
+ "features": [
+  {"feature": "low hull with a sharp lower nose, steep glacis carrying the folded trim vane, sponsons leaning in over the tracks", "nodes": ["Hull", "Trim_vane", "Skirt_edge"]},
+  {"feature": "seven small road wheels a side on swing arms, front idler, rear sprocket, four return rollers, linked track", "nodes": ["Wheels", "Tyres", "Idlers", "Sprockets", "Rollers", "Tracks", "Track_links", "Suspension"]},
+  {"feature": "low welded turret with sloped cheeks and a bustle basket", "nodes": ["Turret", "Turret_body", "Turret_roof", "Racks"]},
+  {"feature": "very long 125 mm gun: mantlet, thermal sleeve bands, fume extractor, plain muzzle (no brake)", "nodes": ["Mantlet", "Main_cannon", "Main_cannon_sleeve", "Main_cannon_evacuator", "Muzzle_brake", "Muzzle_main"]},
+  {"feature": "commander's panoramic sight, gunner's sight and laser box, hatches", "nodes": ["Sight", "Glass", "Hatches"]},
+  {"feature": "the 12.7 mm on a raised pintle behind the gunner's hatch", "nodes": ["Mount_mg", "MG", "MG_post", "MG_cradle", "MG_ammo", "Muzzle_mg"]},
+  {"feature": "two water-jet outlets on the rear plate (amphibious)", "nodes": ["Waterjets"]},
+  {"feature": "Tucha smoke dischargers, fender bins, cable reel, jerrycan", "nodes": ["Smoke_launchers", "Smoke_brackets", "Stowage", "Tow_cable", "Jerrycans"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "gun_105_long", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel"},
+  {"weapon": "hmg_roof", "slot": "mg", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"], "note": "aim Free"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 10k, over the maximum: information only"},
+ "team_zones": ["hull (Team)", "turret (Team)", "bands on the sponsons and the bustle (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off",
+ "faction_style": "airborne tank destroyer (both factions)",
+ "details": {
+  "tier1": ["hull", "turret", "gun", "tracks"],
+  "tier2": ["trim vane", "mantlet", "fume extractor", "sights", "hatches", "bustle basket", "water jets", "fender bins", "roof MG"],
+  "tier3": ["track links", "periscopes", "smoke tubes", "lamps and guards", "tow hooks", "latches", "aerial", "sleeve bands", "MG ammunition can"]
+ },
+ "questions": []
+}

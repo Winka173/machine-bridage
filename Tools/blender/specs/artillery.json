@@ -1,0 +1,35 @@
+{
+ "id": "artillery",
+ "class": "tracked",
+ "real": ["M109A7 Paladin PIM (the sheet's choice over the CAESAR of unit_refs)", "M284 155 mm", "M2 Browning 12.7 mm"],
+ "shape": "unit_sheet.json Phương tiện: Lựu pháo tự hành xích (M109A7): tháp lớn vuông phía sau, nòng 155 mm rất dài (hơn nửa chiều dài xe), giá đỡ nòng ở mũi; từ trên xuống: tháp to, nòng dài vượt mũi xe; khoảng 7.8 x 3.1 x 2.9 m (0,8 x M109A7); vũ khí nhìn thấy M284 155 mm, M2 Browning 12.7 mm; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (M109A6 / A7 published drawings and photographs)",
+ "target_size": {"L": 7.86, "W": 3.14, "H": 2.88, "source": "balance.json modelSize (the gun's overhang inside the length)", "tolerance": 0.10},
+ "features": [
+  {"feature": "low hull: engine grilles front right, driver's hatch front left, rear door, two recoil spades folded on the rear", "nodes": ["Hull", "Hull_lower", "Grilles", "Hatches", "Spades"]},
+  {"feature": "travel lock A-frame on the nose (the sheet's barrel support)", "nodes": ["Travel_lock"]},
+  {"feature": "seven road wheels a side, front sprocket, rear idler, return rollers, light skirts", "nodes": ["Wheels", "Tyres", "Sprockets", "Idlers", "Rollers", "Tracks", "Track_links", "Skirts"]},
+  {"feature": "big flat-sided turret set aft with a long bustle, side doors, ammunition racks", "nodes": ["Turret", "Turret_body", "Turret_roof", "Turret_doors", "Racks", "Ammo_boxes"]},
+  {"feature": "M284 155 mm barrel longer than half the vehicle: mantlet, cradle with recuperators, bore evacuator, double-baffle brake", "nodes": ["Mantlet", "Main_cannon_cradle", "Main_cannon", "Main_cannon_evacuator", "Muzzle_brake", "Muzzle_main"]},
+  {"feature": "commander's cupola with periscopes and the M2 on a raised ring, loader's hatch", "nodes": ["Cupola", "Mount_mg", "MG", "MG_post", "MG_cradle", "Muzzle_mg"]},
+  {"feature": "smoke dischargers on the turret front corners", "nodes": ["Smoke_launchers"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "howitzer", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel"},
+  {"weapon": "hmg_selfdef_15", "slot": "mg", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"], "note": "aim Free"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 10k, over the maximum: information only"},
+ "team_zones": ["hull and fenders (Team)", "turret (Team)", "bands on the turret sides and a roof panel (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (ammunition)",
+ "faction_style": "self-propelled artillery (both factions)",
+ "details": {
+  "tier1": ["hull", "turret", "barrel", "tracks"],
+  "tier2": ["travel lock", "mantlet", "cradle", "muzzle brake", "side doors", "racks", "cupola", "spades", "skirts", "grilles"],
+  "tier3": ["track links", "periscopes", "ammunition cans", "hinges", "handles", "lamps", "tow hooks", "aerials", "smoke tubes", "exhaust"]
+ },
+ "questions": []
+}

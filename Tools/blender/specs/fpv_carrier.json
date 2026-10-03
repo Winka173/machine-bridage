@@ -1,0 +1,35 @@
+{
+ "id": "fpv_carrier",
+ "class": "wheeled",
+ "real": ["RG-33L 6x6 MRAP (unit_refs' second vehicle; the Typhoon-K is already the lancet truck)", "FPV quadcopter launcher (Ukraine war)", "M2 Browning 12.7 mm"],
+ "shape": "unit_sheet.json Phương tiện: Xe bọc thép MRAP thân cao chữ V, giá phóng drone FPV nhiều ngăn trên nóc sau; từ trên xuống: lưới ô vuông nhỏ ở sau; khoảng 7.2 x 2.0 x 2.6 m (0,8 x KamAZ Typhoon-K); vũ khí nhìn thấy FPV drone, M2 Browning 12.7 mm; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (RG-33L published photographs; the launcher after the sheet)",
+ "target_size": {"L": 7.41, "W": 2.04, "H": 2.88, "source": "balance.json modelSize", "tolerance": 0.10},
+ "features": [
+  {"feature": "V-hull under a tall monocoque crew capsule with big armoured side windows and a steep two-pane windscreen", "nodes": ["Hull", "Cab", "Windows", "Glass"]},
+  {"feature": "engine hood with grille and bull bar, exhaust stack, mirrors, lamps", "nodes": ["Body", "Grilles", "Bull_bar", "Exhaust", "Lamps"]},
+  {"feature": "front axle and rear tandem with lugged tyres, suspension arms", "nodes": ["Tyres", "Wheels", "Hubs", "Axles"]},
+  {"feature": "rear door with window, hinges, step", "nodes": ["Hatches", "Steps"]},
+  {"feature": "FPV launcher on its turntable on the rear roof: a 4 x 4 grid of cells with lids, quadcopters in the open row, antennas", "nodes": ["Turret", "Launcher", "Launch_cells", "Cell_lids", "Drones", "Antennas", "Muzzle_main"]},
+  {"feature": "M2 on a raised ring at the cab roof hatch", "nodes": ["Gun_ring", "Mount_mg", "MG", "MG_post", "Muzzle_mg"]},
+  {"feature": "side stowage bins, fuel tank", "nodes": ["Stowage", "Fuel_tank"]}
+ ],
+ "class_parts": ["wheels", "axles", "cab", "glass", "lights", "stowage", "weapon"],
+ "weapons": [
+  {"weapon": "fpv_swarm", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel (the launcher's open row)"},
+  {"weapon": "hmg_selfdef_18", "slot": "mg", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"], "note": "aim Free"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [3000, 5000], "floor": 2100, "cap": 7500, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 7.3k: under the 1.5 x cap"},
+ "team_zones": ["capsule (Team)", "hood (Team)", "launcher (Team)", "bands (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "Part_wheel / Part_wheelb come off (wrapper); the launcher burns",
+ "faction_style": "modern MRAP conversion (both factions)",
+ "details": {
+  "tier1": ["V-hull", "capsule", "hood", "launcher"],
+  "tier2": ["tyres", "axles", "windows", "rear door", "bull bar", "exhaust stack", "gun ring", "bins"],
+  "tier3": ["wheel nuts", "cell lids", "quadcopters", "mirrors", "wipers", "hinges", "handle", "step", "lamps", "aerials"]
+ },
+ "questions": []
+}

@@ -1,0 +1,33 @@
+{
+ "id": "amphib_light_vehicle",
+ "class": "tracked",
+ "real": ["AAV-7A1 pattern amphibious tracked carrier (boat hull, bow plane, water jets, rear ramp)", "25 mm cannon in a one-man turret (LAV-25 / up-gunned AAV pattern)"],
+ "shape": "no unit_sheet.json row: the old builder's EFV / AAV-7 (boat-hulled tracked APC, planing bow, trim vane, rear ramp, small one-man turret on the right front).",
+ "confidence": "ban_dau_doan (no unit_refs row; reference_real.json lists the M2A3 Bradley; the AAV pattern after the old builder and the id, shortened to the def's proportions)",
+ "target_size": {"L": 5.48, "W": 3.02, "H": 2.5, "source": "balance.json modelSize (wider and shorter than the real AAV)", "tolerance": 0.10},
+ "features": [
+  {"feature": "boat hull: slab sides over the tracks, long planing bow with the bow plane folded on it", "nodes": ["Hull", "Hull_lower", "Bow_plane", "Skirt_edge"]},
+  {"feature": "six road wheels a side under the hull side, front sprocket, rear idler", "nodes": ["Wheels", "Tyres", "Sprockets", "Idlers", "Tracks", "Track_links"]},
+  {"feature": "rear ramp with its troop door, water-jet ducts with deflector doors either side", "nodes": ["Ramp", "Hatches", "Waterjets", "Jet_doors"]},
+  {"feature": "four cargo hatches on the roof, the driver's and commander's cupolas on the front left", "nodes": ["Cupola", "Sight"]},
+  {"feature": "one-man turret on the front right: 25 mm cannon, mantlet, coaxial MG, sight, smoke dischargers", "nodes": ["Turret", "Turret_body", "Mantlet", "Main_cannon", "Muzzle_brake", "Muzzle_main", "Coax", "MG_coax", "Muzzle_coax", "Smoke_launchers"]},
+  {"feature": "recessed headlights, bilge outlets, engine grilles, stowage", "nodes": ["Bilge_outlets", "Grilles", "Jerrycans", "Stowage"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "autocannon_25", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel; Muzzle_coax kept from the old file"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 9.3k: over the maximum, information only"},
+ "team_zones": ["hull (Team)", "turret (Team)", "bands on the hull sides and the turret (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off",
+ "faction_style": "marine amphibious carrier (both factions)",
+ "details": {
+  "tier1": ["boat hull", "turret", "tracks"],
+  "tier2": ["bow plane", "ramp", "water jets", "cargo hatches", "cupolas", "mantlet", "grilles", "bins"],
+  "tier3": ["rivets", "periscopes", "bilge outlets", "hinges", "handles", "lamps", "tow hooks", "smoke tubes", "jerrycans", "aerial"]
+ },
+ "questions": ["No unit_refs row and reference_real.json says M2A3 Bradley: built as an AAV-7A1-pattern amphibian (the id and the old builder); confirm, or name the reference."]
+}

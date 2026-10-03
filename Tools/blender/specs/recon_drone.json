@@ -1,0 +1,35 @@
+{
+ "id": "recon_drone",
+ "class": "jet",
+ "real": ["Bayraktar TB2", "MAM-L"],
+ "shape": "unit_sheet.json Phương tiện: UAV cánh thẳng dài, thân mảnh, đuôi chữ V ngược, cánh quạt đẩy sau; từ trên xuống: chữ thập với cánh rất dài; khoảng 2.6 x 4.8 x 0.9 m (0,4 x Bayraktar TB2); vũ khí nhìn thấy MAM-L; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (TB2 published photographs; flying, gear not drawn: the def's height 0.48 m)",
+ "target_size": {"L": 2.67, "W": 4.83, "H": 0.48, "source": "balance.json modelSize", "tolerance": 0.10},
+ "features": [
+  {"feature": "slender fuselage with rounded nose, EO/IR sensor ball under the chin", "nodes": ["Fuselage", "Sensor", "Sensor_ball", "Glass", "Muzzle_gun"]},
+  {"feature": "long high straight tapered wing with ailerons and flaps, navigation lights", "nodes": ["Wings", "Flaps", "Wing_lights"]},
+  {"feature": "twin tail booms joined by the inverted-V tail", "nodes": ["Tail_booms", "Tail", "Rudders"]},
+  {"feature": "pusher propeller behind the engine bay, cooling scoops, exhaust stubs", "nodes": ["Propeller", "Propeller_hub", "Propeller_blades", "Intakes", "Exhausts"]},
+  {"feature": "MAM-L on the inner pylons, empty outer pylons", "nodes": ["Pylons", "Missiles", "Muzzle_missile"]},
+  {"feature": "satcom hump and blade aerials", "nodes": ["Antennas"]}
+ ],
+ "class_parts": ["fuselage", "canopy", "wings", "tail", "intakes", "exhaust", "pylons", "stores", "flares"],
+ "merged": {"flares": "Fuselage"},
+ "merged_note": "the TB2 has no flare dispenser (the def has no flareCharges); its canopy role is the sensor ball's glass. Gate request: the jet roles' flares only when the def has flares.",
+ "weapons": [
+  {"weapon": "recon_missile", "slot": "missile", "mount": "Pylons", "muzzles": ["Muzzle_missile"], "note": "main, 1 barrel; Muzzle_missile.001 on the other wing (kept)"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 2.9k for a 2.7 m drone: over the jet floor"},
+ "team_zones": ["fuselage (Team)", "wings (Team)", "booms and tail (Team)", "wing bands (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "falls (no parts)",
+ "faction_style": "medium-altitude UAV (both factions)",
+ "details": {
+  "tier1": ["fuselage", "wing", "booms", "tail"],
+  "tier2": ["sensor ball", "propeller", "flaps", "pylons", "missiles", "scoops"],
+  "tier3": ["exhaust stubs", "aerials", "satcom hump", "lights", "panels", "rudders", "missile fins"]
+ },
+ "questions": []
+}

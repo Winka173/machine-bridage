@@ -1,0 +1,34 @@
+{
+ "id": "armored_bulldozer",
+ "class": "tracked",
+ "real": ["IDF Caterpillar D9R armoured bulldozer", "M2 Browning 12.7 mm (cab roof)"],
+ "shape": "unit_sheet.json Phương tiện: Xe ủi xích bọc thép hộp, lưỡi ủi rất lớn, ca-bin kính chống đạn có lưới; từ trên xuống: lưỡi ủi rộng hơn thân; khoảng 6.5 x 3.7 x 3.2 m (0,8 x IDF D9R); vũ khí nhìn thấy dozer blade, M2 Browning 12.7 mm; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (D9R published photographs)",
+ "target_size": {"L": 6.13, "W": 3.7, "H": 3.53, "source": "balance.json modelSize (the blade is the width)", "tolerance": 0.10},
+ "features": [
+  {"feature": "huge semi-U blade wider than the machine on push arms and lift rams (the runtime Blade)", "nodes": ["Blade", "Blade_moldboard", "Blade_edge", "Blade_back", "Blade_pins", "Blade_rams", "Blade_arms"]},
+  {"feature": "high-drive track frames: raised sprocket, front idler, bogie rollers, armoured track guards", "nodes": ["Sprockets", "Idlers", "Wheels", "Tyres", "Rollers", "Tracks", "Track_links", "Track_frames", "Skirts"]},
+  {"feature": "long engine hood with the armoured grille and the exhaust stack", "nodes": ["Hull", "Hood_plates", "Grilles", "Exhaust_stack"]},
+  {"feature": "armoured cab with slit windows behind grilles, roof hatch, smoke dischargers, driving camera", "nodes": ["Casemate", "Cab_roof", "Glass", "Hatches", "Smoke_launchers", "Sensor"]},
+  {"feature": "12.7 mm on a raised pintle on the cab roof with its cradle, ammunition can and shield", "nodes": ["Mount_mg", "Cradle", "MG_receiver", "MG_barrel", "Muzzle_mg"]},
+  {"feature": "rear ripper with shank and tooth, fuel tank, stowage", "nodes": ["Ripper", "Ripper_shank", "Ripper_tooth", "Fuel_tank", "Stowage", "Jerrycans", "Tow_cable"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "dozer_blade", "slot": "blade", "mount": "Blade", "muzzles": ["Blade"], "note": "a blade: no muzzle in the gate (NO_MUZZLE); the Blade part rams"},
+  {"weapon": "hmg_roof", "slot": "mg", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"], "note": "aim Free"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 9.2k: over the maximum, information only"},
+ "team_zones": ["hood and chassis (Team)", "cab (Team)", "mouldboard (Team)", "track guards (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the hull burns",
+ "faction_style": "armoured engineer machine (both factions)",
+ "details": {
+  "tier1": ["blade", "hood", "cab", "track frames"],
+  "tier2": ["push arms", "rams", "ripper", "track guards", "fuel tank", "grilles", "roof gun"],
+  "tier3": ["track links", "window grilles", "rivets", "pins", "smoke tubes", "camera", "lamps", "jerrycans", "cable reel", "aerial"]
+ },
+ "questions": ["The def has turretTurnRate but no turret: the armoured cab is named Casemate for the gate's turret role (gate request: skip turret / mantlet when mainAim is Hull)."]
+}

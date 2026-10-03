@@ -18021,3 +18021,42 @@ and Python only (no Unity, no test, sim or measure).
   laser_ad_station 73.0, heavy_flak_tower 66.6 (owner question 1). Structures and walls on the owner's look.
 - quality_report.xlsx / .csv not rewritten on this branch; full gate `--no-write`: 230 models, 59 pass, no model
   outside the wave changed.
+
+## Prompt 35 wave 4 (lane C)
+Branch `feature/p35-w4`, 2026-10-03: the twenty wave 4 models of Docs/models/WAVES_P35.md, one new builder each
+(`Tools/blender/mb_p35_<id>.py`) with a spec first (`Tools/blender/specs/<id>.json`); report Docs/models/WAVE_4_REPORT.md.
+Blender and Python only (no Unity, no test, sim or measure run).
+- References. From unit_refs / unit_sheet where they exist (Gepard, Buk 9A310, TO-55 with an M67-style projector as the
+  sheet draws it, M109A7 as the sheet proposes over the CAESAR, 2S25, BMPT, GMZ-3, TB2, MQ-9, Su-25, D9R, Little Bird
+  with the sheet's five blades). fpv_carrier takes unit_refs' RG-33L because the lancet truck already is the
+  Typhoon-K. Six ids without a row follow their old builder's reference (confidence ban_dau_doan, asked in the
+  report): amphib_light_vehicle (AAV-7A1 pattern at the def's proportions; reference_real.json's Bradley noted),
+  aa_gun_vehicle (CV9040 AAV), shorad_vehicle (Avenger), demolition_line_vehicle (M1150 ABV, the MICLIC carrier),
+  river_patrol_boat (PBR / SURC pattern), towed_at_gun (2A45M). Moloch keeps the old file's 26.5 x 14.4 x 12.1 m (the
+  def scales it by its size 1.51 to the sheet's 40 m), a fictional factory after the sheet's references.
+- Helpers. `mb_p35c_parts.py` (lane C's, not the kit): section_loft / slab_loft / ellipse_half (bodies with sloped
+  faces), running_gear (a track run), lugged_tyre (about 230 triangles; each wheeled model its own lug / segment count
+  so the normalized shapes differ), roof_gun (main-weapon roof guns on posts), gun_tube, hatch, store (a two-part
+  missile / bomb under the jet renderer cap), stowage pieces. Bodies, turrets, wings and fuselages are in each script.
+- Gate roles a real vehicle lacks. Where the real vehicle has the part under another name it is named for the role
+  (the coax PKT as MG_coax, the TDA smoke vent on Soviet chassis, the gun cradle as Cradle, the D9R's armoured cab as
+  Casemate, the drones' sensor window as Glass); where it has none, the spec says `"merged"` with a note:
+  aa_vehicle roof_mg -> Launcher_box (the Gepard has no MG), recon_drone / strike_drone flares -> Fuselage (no
+  dispensers), scout_heli Turret -> Pylons (fixed guns: the whole helicopter aims). Asked lane A to gate those roles on
+  the def's systems.
+- Node names. Every runtime node of the old files kept (Turret, Main_cannon*, Muzzle_*, Mount_*, Coax, Radar*, Blade*,
+  Launcher*, Tubes, Pods, Gun, Propeller*, Rotor*, Part_*). New: Mount_missile (aa_vehicle, the free sam) and Mount_aam
+  (attack_jet, the free R-60), which the old files lacked. The wrappers still add Part_wheel / Part_wheelb, Part_wing and
+  Mount_Flare_L/R/L2/R2/TL/TR (never a bare Mount_Flare). attack_jet_hd is now built from the new Su-25 (registered after
+  the prompt 27 _hd override); aa_vehicle_hd, artillery_hd, tank_destroyer_hd follow HIGH_DETAIL as before.
+- Moloch's barrels. Its four turrets model both 120 mm barrels, so mb_fix_barrels lists moloch under EXTRA (per-barrel
+  muzzles only) instead of TWIN (which would have copied a second barrel beside each pair).
+- Budget. Light / wheeled units 4.2-7.3k (under 1.5 x 5,000, owner decision 6); tracked 8.3-10.7k and moloch 27.4k
+  over their class maxima as information only; drones and the Little Bird just over the 2,800 floor (2.9-3.9k).
+- Old vs new. scout_heli scores 95 against the old file's 100, but the old one failed three hard gates (triangle floor,
+  stub wings, main mount): the new file stays (section 1 outranks a soft score).
+- build_assets.py: the wave 1 merge's stray `}` fixed on this branch first; after merging lead/integration (wave 2) the
+  lane's registrations sit after wave 2's, last.
+- Kit note for lane A: `mb_kit35.missile` builds the nose towards `-direction` although its docstring says `direction`.
+- Full gate (--no-write) after the wave: 230 models, 71 pass; the twenty pass; no other model names one of them in its
+  own-geometry check. NEEDS_HUMAN: none.

@@ -1,0 +1,38 @@
+{
+ "id": "aa_vehicle",
+ "class": "tracked",
+ "real": ["Flakpanzer Gepard (Leopard 1 hull)", "Oerlikon KDA 35 mm (x2)", "Stinger twin box (the def's sam: an upgrade, not on the real Gepard)"],
+ "shape": "unit_sheet.json Phương tiện: Khung xích, tháp vuông với 2 pháo 35 mm hai bên tháp, radar đĩa tròn quay phía sau tháp; từ trên xuống: 2 nòng hai bên, đĩa radar; khoảng 6.2 x 3.0 x 2.4 m (0,8 x Gepard); vũ khí nhìn thấy Oerlikon KDA 35 mm, Starstreak / Stinger; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (Gepard 1A2 published drawings and photographs)",
+ "target_size": {"L": 6.44, "W": 3.06, "H": 2.92, "source": "balance.json modelSize (the search radar up)", "tolerance": 0.10},
+ "features": [
+  {"feature": "Leopard 1 hull: wedge nose, upper glacis, engine deck grilles, steel skirts", "nodes": ["Hull", "Hull_lower", "Grilles", "Skirts"]},
+  {"feature": "seven road wheels a side, front idler, rear sprocket, return rollers", "nodes": ["Wheels", "Tyres", "Idlers", "Sprockets", "Rollers", "Tracks", "Track_links"]},
+  {"feature": "big box turret", "nodes": ["Turret", "Turret_body", "Turret_roof"]},
+  {"feature": "two 35 mm guns in armoured cradle mounts outside the turret cheeks, feed covers, cooling rings, v0 radars", "nodes": ["Cradle", "Main_cannon", "Main_cannon_2", "Muzzle_brake", "Muzzle_brake_2", "Gun_feeds", "Gun_radars", "Muzzle_main"]},
+  {"feature": "round tracking radar dish on the turret front", "nodes": ["Radar_tracker", "Radar_tracker_face"]},
+  {"feature": "wide search radar turning on its mast over the turret rear", "nodes": ["Radar", "Radar_dish", "Radar_mast"]},
+  {"feature": "twin Stinger box on its own pivot on the rear roof", "nodes": ["Mount_missile", "Launcher_box", "Launcher_covers", "Muzzle_missile"]},
+  {"feature": "two banks of smoke dischargers, rear bin, hatches with periscopes, sight", "nodes": ["Smoke_launchers", "Stowage", "Hatches", "Sight"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "merged": {"roof_mg": "Launcher_box"},
+ "merged_note": "the Gepard has no roof machine gun; its roof weapon station is the Stinger box on Mount_missile (the def's free secondary). Gate request: skip roof_mg when the def has no MG.",
+ "weapons": [
+  {"weapon": "flak_35", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "barrels 1 in data (the two guns fire in turn from one point)"},
+  {"weapon": "sam", "slot": "missile", "mount": "Mount_missile", "muzzles": ["Muzzle_missile"], "note": "aim Free"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 9.6k, over the maximum: information only"},
+ "team_zones": ["hull, fenders, skirts (Team)", "turret and gun mounts (Team)", "bands on skirts and turret (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off",
+ "faction_style": "Cold War SPAAG (both factions)",
+ "details": {
+  "tier1": ["hull", "turret", "tracks", "gun mounts"],
+  "tier2": ["barrels", "search radar", "tracking radar", "Stinger box", "skirts", "hatches", "sight", "grilles", "bins"],
+  "tier3": ["track links", "periscopes", "cooling rings", "v0 radars", "smoke tubes", "rivets", "lamps", "tow hooks", "aerial"]
+ },
+ "questions": []
+}

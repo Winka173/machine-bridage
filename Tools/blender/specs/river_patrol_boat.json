@@ -1,0 +1,35 @@
+{
+ "id": "river_patrol_boat",
+ "class": "ground",
+ "real": ["riverine patrol boat in the PBR Mk II / SURC pattern", "M2 Browning 12.7 mm (bow)", "Mk 19 40 mm (aft)"],
+ "shape": "no unit_sheet.json row: the old builder's riverine command boat (shallow V hull with chines, wheelhouse and seats, two outboards, a pintle MG on the bow, a grenade launcher aft).",
+ "confidence": "ban_dau_doan (no unit_refs row; the def is a ground unit class Light, not naval)",
+ "target_size": {"L": 4.78, "W": 2.08, "H": 1.49, "source": "balance.json modelSize", "tolerance": 0.10},
+ "features": [
+  {"feature": "deep-V hull with two chines, spray strakes, the rubbing strake, boot-top line, foredeck and well", "nodes": ["Hull", "Rubbing_strake", "Spray_strakes", "Deck", "Transom"]},
+  {"feature": "centre console wheelhouse: windscreen, side windows, hard top with the radar dome, aerials, navigation lights", "nodes": ["Wheelhouse", "Glass", "Windows", "Hard_top", "Radar_dome", "Antennas", "Nav_lights"]},
+  {"feature": "ballistic panels along the gunwales, crew seats, ammunition boxes", "nodes": ["Ballistic_panels", "Seats", "Ammo_boxes"]},
+  {"feature": "two outboard motors on the transom", "nodes": ["Outboards", "Outboard_cowls"]},
+  {"feature": "12.7 mm on its raised pedestal in the bow tub behind a shield", "nodes": ["Gun_tub", "Turret", "Cradle", "MG_receiver", "Main_cannon", "Muzzle_brake", "Muzzle_main"]},
+  {"feature": "40 mm grenade launcher on its pintle aft", "nodes": ["Mount_mg", "MG", "MG_post", "Muzzle_mg"]},
+  {"feature": "life ring, bollards, fenders", "nodes": ["Life_ring", "Fenders"]}
+ ],
+ "class_parts": ["hull", "weapon"],
+ "weapons": [
+  {"weapon": "mg_jeep", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel"},
+  {"weapon": "agl_40", "slot": "mg", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"], "note": "aim Free"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [3000, 5000], "floor": 2100, "cap": 7500, "lod1_share": 0.5, "lod2_share": 0.2},
+ "team_zones": ["hull (Team)", "wheelhouse (Team)", "outboard cowls (Team)", "bands (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "sinks / burns (no parts)",
+ "faction_style": "riverine craft (both factions)",
+ "details": {
+  "tier1": ["hull", "wheelhouse", "outboards"],
+  "tier2": ["hard top", "gun tub", "ballistic panels", "seats", "rubbing strake", "deck"],
+  "tier3": ["radar dome", "aerials", "nav lights", "bollards", "fenders", "life ring", "ammunition boxes", "wipers", "spray strakes"]
+ },
+ "questions": ["No unit_refs or unit_sheet row: built as a PBR / SURC-pattern patrol boat; confirm."]
+}

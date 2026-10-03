@@ -1,0 +1,38 @@
+{
+ "id": "bmpt",
+ "class": "tracked",
+ "real": ["BMPT Terminator (T-72 chassis)", "2A42 30 mm (twin)", "PKT 7.62 mm", "9M120 Ataka", "AG-17D 30 mm (the def's agl_40)"],
+ "shape": "unit_sheet.json Phương tiện: Khung T-72, tháp thấp rộng với 2 pháo 30 mm đôi hai bên, 2 bệ tên lửa hình hộp hai bên tháp, 2 súng phóng lựu ở chắn bùn trước; từ trên xuống: tháp rộng nhiều nòng ngắn; khoảng 5.8 x 2.8 x 2.7 m (0,8 x BMPT); vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (BMPT published photographs; T-72 drawings)",
+ "target_size": {"L": 6.08, "W": 2.96, "H": 2.39, "source": "balance.json modelSize", "tolerance": 0.10},
+ "features": [
+  {"feature": "T-72 hull: glacis under Kontakt-5 blocks, splash board, engine deck grilles, fuel drums and log on the rear", "nodes": ["Hull", "Hull_lower", "Era_bricks", "Grilles", "Drums", "Log"]},
+  {"feature": "self-entrenching blade under the nose", "nodes": ["Blade", "Blade_plate"]},
+  {"feature": "six large road wheels a side, three return rollers, front idler, rear sprocket, rubber skirts with ERA cassettes", "nodes": ["Wheels", "Tyres", "Rollers", "Idlers", "Sprockets", "Tracks", "Track_links", "Skirts"]},
+  {"feature": "two AG-17D grenade launchers in armoured boxes on the front fenders", "nodes": ["Agl_boxes", "Agl_barrels", "Muzzle_agl_l", "Muzzle_agl_r"]},
+  {"feature": "low wide turret, the weapon module on its roof: twin 2A42 in one armoured cradle, coaxial PKT", "nodes": ["Turret", "Turret_body", "Mantlet", "Main_cannon", "Main_cannon_2", "Muzzle_brake", "Muzzle_brake_2", "Muzzle_main", "Coax", "MG_coax", "Muzzle_coax"]},
+  {"feature": "two armoured Ataka launcher boxes either side of the turret", "nodes": ["Missile_boxes", "Launcher_covers", "Muzzle_missile"]},
+  {"feature": "gunner's sight box, commander's panoramic sight on its pedestal, hatches, Tucha dischargers, rear basket", "nodes": ["Sight", "Glass", "Hatches", "Smoke_launchers", "Racks", "Stowage"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "twin_30_bmpt", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "barrels 1 in data"},
+  {"weapon": "mg_coax", "slot": "coax", "mount": "Coax", "muzzles": ["Muzzle_coax"], "note": "aim Turret"},
+  {"weapon": "ataka", "slot": "missile", "mount": "Turret", "muzzles": ["Muzzle_missile"], "note": "aim Turret; a second Muzzle_missile.001 on the other box (kept from the old file)"},
+  {"weapon": "agl_40", "slot": "agl_l", "mount": "Hull", "muzzles": ["Muzzle_agl_l"], "note": "aim Left"},
+  {"weapon": "agl_40", "slot": "agl_r", "mount": "Hull", "muzzles": ["Muzzle_agl_r"], "note": "aim Right"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 8.7k: over the maximum, information only"},
+ "team_zones": ["hull and fenders (Team)", "turret and launcher boxes (Team)", "bands (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off",
+ "faction_style": "tank support vehicle (both factions)",
+ "details": {
+  "tier1": ["hull", "turret", "weapon module", "tracks"],
+  "tier2": ["twin guns", "Ataka boxes", "AGL boxes", "blade", "ERA", "skirts", "sights", "drums", "log", "fuel cells", "bins"],
+  "tier3": ["track links", "periscope", "smoke tubes", "lamps", "tow hooks", "coax", "aerial", "straps", "basket rails"]
+ },
+ "questions": []
+}
