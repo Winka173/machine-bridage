@@ -1,6 +1,6 @@
 # GLB baseline (prompt 27 step 2)
 
-Generated 2026-10-03 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (517 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
+Generated 2026-10-03 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (461 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
 Rules: DECISIONS "27 step 0 + baseline"; budgets: Docs/models/BUDGETS.md (over the soft budget a warning, over
 the hard cap an error). Warnings are listed in the JSON.
 
@@ -8,17 +8,17 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| ground | 94 | 769,086 | 8,181 | main_battle_tank_hd (16,462) | 5,302 | 1 | 51 |
 | boss | 33 | 601,248 | 18,219 | monster (39,598) | 3,017 | 0 | 30 |
-| structure | 86 | 458,650 | 5,333 | headquarters (21,052) | 4,036 | 0 | 18 |
-| prop | 114 | 252,886 | 2,218 | command_hq (8,872) | 1,527 | 0 | 3 |
-| air | 31 | 168,682 | 5,441 | airborne_light_tank_chute (16,310) | 1,169 | 0 | 24 |
-| unlisted | 34 | 111,176 | 3,269 | apc_hd (14,968) | 666 | 0 | 0 |
+| ground | 66 | 563,394 | 8,536 | main_battle_tank_hd (16,462) | 3,755 | 1 | 38 |
+| structure | 69 | 371,227 | 5,380 | headquarters (21,052) | 3,434 | 0 | 14 |
+| prop | 115 | 258,170 | 2,244 | command_hq (8,872) | 1,568 | 0 | 3 |
+| unlisted | 36 | 112,970 | 3,138 | apc_hd (14,968) | 692 | 0 | 0 |
+| air | 19 | 98,286 | 5,172 | fighter_jet_hd (14,216) | 711 | 0 | 14 |
 | scenery | 96 | 40,708 | 424 | rubble_large (3,516) | 294 | 0 | 2 |
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
-| munition | 28 | 7,146 | 255 | fpv_drone (1,564) | 210 | 0 | 1 |
+| munition | 26 | 5,352 | 205 | bomb (404) | 184 | 0 | 0 |
 
-All files: 2,429,832 triangles, 1 with errors, 129 more with warnings only.
+All files: 2,071,605 triangles, 1 with errors, 101 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -42,31 +42,26 @@ All files: 2,429,832 triangles, 1 with errors, 129 more with warnings only.
 |---|---|---:|---:|---|
 | boss_s | triangles | 1 | 0 | - |
 | boss_s | vertices | 2 | 0 | - |
-| ground | movingParts | 2 | 0 | - |
-| ground | renderers | 19 | 1 | fpv_carrier |
-| ground | triangles | 35 | 0 | - |
-| ground | vertices | 42 | 0 | - |
-| helicopter | renderers | 3 | 0 | - |
+| ground | movingParts | 1 | 0 | - |
+| ground | renderers | 14 | 1 | fpv_carrier |
+| ground | triangles | 26 | 0 | - |
+| ground | vertices | 32 | 0 | - |
+| helicopter | renderers | 1 | 0 | - |
 | helicopter | triangles | 1 | 0 | - |
 | helicopter | vertices | 1 | 0 | - |
-| jet | renderers | 14 | 0 | - |
-| jet | triangles | 6 | 0 | - |
-| jet | vertices | 5 | 0 | - |
-| munition | renderers | 1 | 0 | - |
-| munition | triangles | 1 | 0 | - |
-| munition | vertices | 1 | 0 | - |
+| jet | renderers | 8 | 0 | - |
+| jet | triangles | 3 | 0 | - |
+| jet | vertices | 3 | 0 | - |
 | prop | renderers | 1 | 0 | - |
 | prop | triangles | 1 | 0 | - |
 | prop | vertices | 1 | 0 | - |
 | scenery | renderers | 2 | 0 | - |
 | structure | movingParts | 1 | 0 | - |
-| structure | renderers | 10 | 0 | - |
-| structure | triangles | 1 | 0 | - |
-| structure | vertices | 1 | 0 | - |
+| structure | renderers | 7 | 0 | - |
 | tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-87 models over a budget, 1 of them over a hard cap.
+61 models over a budget, 1 of them over a hard cap.
 
 ## Error reasons (count of models)
 
