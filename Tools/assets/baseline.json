@@ -3000,6 +3000,16 @@
    "changes": [
     "FLAG landing_craft: triangles 498 -> 8,592 (+1625.3%); vertices 581 -> 13,691 (+2256.5%); meshes 10 -> 58 (+480.0%); renderers 10 -> 58 (+480.0%); materials 6 -> 12 (+100.0%); materialSlots 10 -> 58 (+480.0%); fileBytes 38,896 -> 708,048 (+1720.4%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "missile_boat"
+   ],
+   "reason": "P35 wave 6: missile_boat rebuilt from scratch",
+   "changes": [
+    "FLAG missile_boat: triangles 630 -> 5,752 (+813.0%); vertices 678 -> 7,933 (+1070.1%); meshes 10 -> 52 (+420.0%); renderers 10 -> 52 (+420.0%); materials 6 -> 13 (+116.7%); materialSlots 10 -> 52 (+420.0%); fileBytes 44,580 -> 433,104 (+871.5%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -40527,22 +40537,24 @@
   },
   "missile_boat": {
    "file": "missile_boat.glb",
-   "fileBytes": 44580,
-   "sha1": "5d71e8adf78438de",
+   "fileBytes": 433104,
+   "sha1": "310fc02aa3818517",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 14,
-   "meshes": 10,
-   "materials": 6,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 56,
+   "meshes": 52,
+   "materials": 13,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 10,
-   "submeshes": 10,
-   "materialSlots": 10,
-   "materialsUsed": 6,
-   "triangles": 630,
-   "vertices": 678,
+   "renderers": 52,
+   "submeshes": 52,
+   "materialSlots": 52,
+   "materialsUsed": 13,
+   "triangles": 5752,
+   "vertices": 7933,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -40550,36 +40562,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 13,
-   "openEdges": 0,
+   "loosePieces": 214,
+   "openEdges": 32,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.925,
-    -0.7,
-    -7.0
+    -2.0251,
+    -0.6742,
+    -7.46
    ],
    "boundsMax": [
-    1.925,
-    3.7,
-    7.0
+    2.0251,
+    3.75,
+    6.9
    ],
    "size": [
-    14.0,
-    3.85,
-    4.4
+    14.36,
+    4.05,
+    4.424
    ],
    "center": [
     0.0,
-    1.5,
-    0.0
+    1.538,
+    -0.28
    ],
-   "structureHash": "162494b0e6d00fa2",
+   "structureHash": "6a2c35b58ce11984",
    "color0": {
-    "mean": 0.7449,
-    "min": 0.2828,
-    "max": 0.9987,
-    "p05": 0.4392,
-    "p95": 0.9987,
+    "mean": 0.6512,
+    "min": 0.0802,
+    "max": 1.0,
+    "p05": 0.2084,
+    "p95": 0.8216,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -40590,14 +40602,43 @@
     "mount": [
      "Mount_mg",
      "Mount_rocket"
+    ],
+    "loose": [
+     "Searchlight"
     ]
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Ammo_boxes",
+    "Ammo_can",
+    "Anchor_winch",
+    "Antennas",
+    "Boarding_step",
+    "Boat_cradle",
+    "Bollards",
     "Cabin",
     "Cabin_glass",
+    "Cleats",
     "Deck",
+    "Deck_fittings",
+    "Deck_lockers",
+    "Door_panels",
+    "Exhaust_outlets",
+    "Fender_lines",
+    "Fenders",
+    "Gatling",
+    "Gun_ring",
+    "Gun_shield",
+    "Hatch_fittings",
+    "Hatches",
+    "Horn",
     "Hull",
+    "Hull_low",
+    "Kit_straps",
+    "Lamps",
+    "Launcher_base",
+    "Launcher_cradle",
+    "Lifeboat_canisters",
     "Mast",
     "Mg_barrel",
     "Mg_body",
@@ -40605,9 +40646,25 @@
     "Mount_rocket",
     "Muzzle_mg",
     "Muzzle_rocket",
+    "Nav_lights",
+    "Nav_lights.001",
+    "Pod_face",
     "Pod_tubes",
+    "Porthole_rims",
+    "Portholes",
+    "Props",
+    "Radar_scanner",
+    "Railings",
+    "Reload_pods",
+    "Reload_rack",
     "Rocket_pods",
-    "Stripe"
+    "Roof_fittings",
+    "Searchlight",
+    "Spray_rails",
+    "Stern_drives",
+    "Strakes",
+    "Stripe",
+    "Team_band"
    ],
    "category": "ground",
    "hd": false,
@@ -40616,7 +40673,7 @@
    "units": [
     "missile_boat"
    ],
-   "movingParts": 2,
+   "movingParts": 3,
    "budgetClass": "ground"
   },
   "mlrs": {

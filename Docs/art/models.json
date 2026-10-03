@@ -1293,7 +1293,7 @@
   },
   "missile_boat": {
     "file": "missile_boat.glb",
-    "triangles": 630
+    "triangles": 5752
   },
   "mlrs": {
     "file": "mlrs.glb",
