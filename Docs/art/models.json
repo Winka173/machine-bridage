@@ -1613,15 +1613,15 @@
   },
   "shield_tower": {
     "file": "shield_tower.glb",
-    "triangles": 5344
+    "triangles": 4786
   },
   "shield_tower_a": {
     "file": "shield_tower_a.glb",
-    "triangles": 7200
+    "triangles": 5518
   },
   "shield_tower_b": {
     "file": "shield_tower_b.glb",
-    "triangles": 6176
+    "triangles": 6236
   },
   "shop": {
     "file": "shop.glb",
