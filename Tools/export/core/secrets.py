@@ -46,6 +46,16 @@ def scan_text(text: str, where: str, hits: list):
             hits.append((where, "local_user_name", user[:2] + "…"))
 
 
+IMAGE = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tif", ".tiff"}
+PRINTABLE_RUN = re.compile(rb"[ -~]{16,}")
+
+
+def printable_runs(data: bytes) -> str:
+    """An image's readable strings only (metadata such as an EXIF path or an author e-mail): runs of 16+ printable
+    ASCII bytes. Scanning the compressed pixel bytes whole gave chance matches of the e-mail pattern."""
+    return "\n".join(m.group(0).decode("ascii") for m in PRINTABLE_RUN.finditer(data))
+
+
 def scan_file(p: Path, where: str, hits: list):
     """Every output file (spec 9.9): zip parts (xlsx / docx) one by one, PDF streams inflated, text as UTF-8, anything
     else (images, fonts) as Latin-1 so metadata such as an EXIF path is still read."""
@@ -54,7 +64,11 @@ def scan_file(p: Path, where: str, hits: list):
     if suffix in (".xlsx", ".docx", ".pptx", ".zip") and zipfile.is_zipfile(p):
         with zipfile.ZipFile(p) as z:
             for info in z.infolist():
-                scan_text(z.read(info).decode("utf-8", "replace"), f"{where}:{info.filename}", hits)
+                raw = z.read(info)
+                if Path(info.filename).suffix.lower() in IMAGE:
+                    scan_text(printable_runs(raw), f"{where}:{info.filename}", hits)
+                else:
+                    scan_text(raw.decode("utf-8", "replace"), f"{where}:{info.filename}", hits)
     elif suffix == ".pdf":
         scan_text(data.decode("latin-1"), where, hits)
         for i, m in enumerate(PDF_STREAM.finditer(data)):
@@ -65,6 +79,8 @@ def scan_file(p: Path, where: str, hits: list):
             scan_text(body.decode("latin-1"), f"{where}:stream{i}", hits)
     elif suffix in TEXT:
         scan_text(data.decode("utf-8", "replace"), where, hits)
+    elif suffix in IMAGE:
+        scan_text(printable_runs(data), where, hits)
     else:
         scan_text(data.decode("latin-1"), where, hits)
 
