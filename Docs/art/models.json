@@ -21,7 +21,7 @@
   },
   "aa_turret_b": {
     "file": "aa_turret_b.glb",
-    "triangles": 2610
+    "triangles": 2844
   },
   "aa_vehicle": {
     "file": "aa_vehicle.glb",
@@ -121,7 +121,7 @@
   },
   "artillery_emplacement_b": {
     "file": "artillery_emplacement_b.glb",
-    "triangles": 5878
+    "triangles": 5374
   },
   "artillery_hd": {
     "file": "artillery_hd.glb",
@@ -405,7 +405,7 @@
   },
   "cp_relay_b": {
     "file": "cp_relay_b.glb",
-    "triangles": 1328
+    "triangles": 2852
   },
   "crater_large": {
     "file": "crater_large.glb",
@@ -1245,7 +1245,7 @@
   },
   "mg_bunker_b": {
     "file": "mg_bunker_b.glb",
-    "triangles": 4060
+    "triangles": 3602
   },
   "microwave_vehicle": {
     "file": "microwave_vehicle.glb",
