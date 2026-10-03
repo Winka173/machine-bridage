@@ -9,18 +9,25 @@ import json
 import re
 
 from . import paths as P
+from .scrub import GAME_TEXT, scrub_obj
 from .units import column_for, known_unitless, snake
 
 NEED_CODE_CHECK = "NEED_CODE_CHECK"
 NEED_SOURCE = "NEED_SOURCE"
 
 
+KHONG_AP_DUNG = "KHONG_AP_DUNG"
+
+
 def chua_ap(prompt) -> str:
-    """The marker of a cell a later prompt fills: CHUA_AP:prompt_N."""
+    """The build-time marker of a cell a later step fills (CHUA_AP:prompt_N); core/pack.py turns it into NEED_CODE_CHECK
+    or KHONG_AP_DUNG before anything is written: the pack never carries it."""
     return f"CHUA_AP:prompt_{prompt}"
 
 
-MARKER = re.compile(r"^(CHUA_AP:prompt_[\w.]+|NEED_CODE_CHECK|NEED_SOURCE|KHONG_CO)$")  # KHONG_CO: the thing does not exist (a marker row)
+# NEED_CODE_CHECK: only the game's code computes it; NEED_SOURCE: a real-world figure with no source in the repo;
+# KHONG_AP_DUNG: the cell has no meaning for this row (the reason is in Schema). The other two are build-time only.
+MARKER = re.compile(r"^(CHUA_AP:prompt_[\w.]+|NEED_CODE_CHECK|NEED_SOURCE|KHONG_AP_DUNG|KHONG_CO)$")
 SHEET_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,30}$")
 RAW_LIMIT = 32000  # an Excel cell holds 32,767 characters
 
@@ -232,6 +239,8 @@ class Sheet:
         self.layer = layer
         self.kind = kind
         self.parent = parent
+        self.base_name = name  # the name before a group prefix (core/pack.py)
+        self.bulk = False      # True: the sheet goes to bulk.zip as a CSV, not into the xlsx
         self.parent_col = f"{snake(parent.name)}_id" if parent is not None else None
         self.cols: dict[str, Column] = {}
         self.rows: dict[object, Row] = {}
@@ -324,7 +333,8 @@ class Sheet:
 def raw_json(r: Row) -> str:
     if r.raw is None:
         return ""
-    text = json.dumps(r.raw, ensure_ascii=False, separators=(",", ":"))
+    raw = r.raw if r.sheet.base_name in GAME_TEXT else scrub_obj(r.raw)
+    text = json.dumps(raw, ensure_ascii=False, separators=(",", ":"))
     if len(text) > RAW_LIMIT and isinstance(r.raw, dict) and r.children:
         slim = {k: (f"<sheet con: {k}>" if k in r.children else v) for k, v in r.raw.items()}
         text = json.dumps(slim, ensure_ascii=False, separators=(",", ":"))
@@ -355,7 +365,7 @@ class Book:
         s.col("khoa", meaning="khóa của lá trong khối")
         s.col("gia_tri_so", meaning="giá trị nếu là số / true-false")
         s.col("gia_tri_chu", meaning="giá trị nếu là chữ (danh sách ngăn ';')")
-        s.col("don_vi", meaning="đơn vị của giá trị (trống: không đơn vị hoặc chưa rõ; xem Don_vi_chua_ro)")
+        s.col("don_vi", meaning="đơn vị của giá trị (trống: không đơn vị hoặc chưa rõ; xem Schema)")
         return s
 
     def kv_rows(self, sheet: Sheet, obj, src: str, base: tuple, group: str, units: dict | None = None,

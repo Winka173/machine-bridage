@@ -30,6 +30,8 @@ class Coverage:
     def __init__(self):
         self.mapped: dict[tuple[str, tuple], tuple[str, str, str]] = {}
         self.duplicates: list[tuple[str, str, str, str]] = []
+        self.out_reasons: dict[str, str] = {}   # pack: sheets left out of the pack (their leaves count as Khong_xuat)
+        self.out_leaves = collections.Counter()  # sheet -> leaves
 
     def mark(self, sid: str, path: tuple, file_id: str, sheet: str, col: str):
         key = (sid, path)
@@ -56,6 +58,10 @@ class Coverage:
             for path in src.leaves():
                 stats["leaves"] += 1
                 where = self.mapped.get((sid, path))
+                if where is not None and where[0] == "_ngoai_goi":
+                    stats["khong_xuat"] += 1
+                    self.out_leaves[where[1]] += 1
+                    continue
                 if where is not None:
                     stats["mapped"] += 1
                     per_file[where[0]] += 1
