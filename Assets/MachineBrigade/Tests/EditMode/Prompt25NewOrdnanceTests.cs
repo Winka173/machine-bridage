@@ -36,14 +36,7 @@ namespace MachineBrigade.Tests
 
         public static readonly WeaponRow[] Weapons =
         {
-            new WeaponRow("cluster_at_bomb", "cbu_97_sfw", "glide_bomber", 4, 30, 35, clusterCount: 10),
-            new WeaponRow("bunker_buster_bomb", "gbu_28", "glide_bomber", 4, 30, 35),
-            new WeaponRow("thermobaric_bomb", "odab_500", "glide_bomber", 3, 28, 35),
-            new WeaponRow("anti_radar_missile", "agm_88_harm", "interceptor_jet", 3, 90, 45),
             new WeaponRow("apkws_rocket", "apkws", "attack_helicopter", 2, 40, 45),
-            new WeaponRow("coyote_interceptor", "coyote_block_2", "interceptor_drone_vehicle", 2, 45, 40),
-            new WeaponRow("smart_at_shell", "smart_155_bonus", "wheeled_howitzer", 4, 90, 45, clusterCount: 2),
-            new WeaponRow("fpv_swarm_mini", "switchblade_300", "fibre_fpv_carrier", 3, 50, 30),
             new WeaponRow("anti_ship_missile", "nsm_oniks", null, 4, 140, 30),
         };
 
@@ -76,27 +69,7 @@ namespace MachineBrigade.Tests
         public static readonly SupportRow[] Supports =
         {
             new SupportRow("glide_bomb_strike", SupportKind.CruiseMissile, 8, 90, 10, 2, 420, 2500),
-            new SupportRow("guided_shell_strike", SupportKind.Barrage, 4, 45, 1.5f, 1, 360, 1500),
-            new SupportRow("cluster_at_strike", SupportKind.Homing, 9, 90, 25, 10, 160, 2500),
-            new SupportRow("uav_loiter_strike_support", SupportKind.Escort, 6, 75, 40, 1, 0, 2500),
-            new SupportRow("ammo_resupply", SupportKind.Resupply, 3, 60, 15, 1, 0, 1500),
-            new SupportRow("jam_storm", SupportKind.JamStorm, 5, 90, 30, 1, 0, 1500),
-            new SupportRow("illum_flare_strike", SupportKind.Scan, 1, 30, 35, 1, 0, 1500),
-            new SupportRow("decoy_paradrop", SupportKind.Reinforce, 2, 45, 6, 3, 0, 1500),
-            new SupportRow("instant_counter_battery", SupportKind.CounterBattery, 6, 75, 60, 4, 320, 2500),
-            new SupportRow("drone_intercept_strike", SupportKind.Homing, 3, 40, 40, 6, 120, 1500, dronesOnly: true),
-            new SupportRow("chaff_strike", SupportKind.Smoke, 2, 45, 30, 1, 0, 1500),
         };
-
-        /// <summary>The sheet's duplicates of batch A / 25G content: no new weapon, just the tracker pointed at the existing one.</summary>
-        [TestCase("glide_fab500")]
-        [TestCase("r37m")]
-        [TestCase("spike_nlos")]
-        public void DuplicateOrdnanceAlreadyExists(string id)
-        {
-            var catalog = GameContent.LoadCatalog();
-            Assert.IsTrue(catalog.Weapons.ContainsKey(id), id);
-        }
 
         /// <summary>tl08: the guided-shell secondRounds 25G built, on the mobile howitzer's own gun.</summary>
         [Test]
@@ -166,17 +139,6 @@ namespace MachineBrigade.Tests
             Assert.IsNull(Progression.UnlockMission(row.Id), "the shop is its one source");
             Assert.IsTrue(Progression.EnemyMayUse(row.Id), "the enemy may field it");
             CollectionAssert.Contains(MatchSettings.AllSupports, row.Id);
-        }
-
-        /// <summary>ht04's loaned drone and ht08's decoy tank: spawned-only vehicles, not sold on their own.</summary>
-        [TestCase("uav_loiter_strike")]
-        [TestCase("decoy_tank")]
-        public void SpawnedVehicleExistsAndIsNotSoldSeparately(string id)
-        {
-            var catalog = GameContent.LoadCatalog();
-            Assert.IsTrue(catalog.Vehicles.ContainsKey(id), id);
-            Assert.IsFalse(Progression.IsNewContent(id), "spawned by its support card, not a card of its own");
-            Assert.IsTrue(Strings.Has("unit." + id));
         }
     }
 }

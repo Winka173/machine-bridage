@@ -72,7 +72,7 @@ namespace MachineBrigade.Tests
         public void TheTwoAppendixGunsHitTheGroundOnly()
         {
             var c = Shipped;
-            foreach (var id in new[] { "gun_100_river", "gun_155_crusader" })
+            foreach (var id in new[] { "gun_100_river" })
             {
                 var gun = c.Weapons[id];
                 // B6-mask: All -> Ground, unless a second round of the gun damaged aircraft (none does; DECISIONS).

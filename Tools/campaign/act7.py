@@ -72,7 +72,7 @@ texts(d, ('Storm over Veyra', 'Bão trên Veyra'),
        say('khai', 'Win', 'The sky over Veyra is ours.', 'Bầu trời Veyra là của ta.')])
 
 d = clone('c7m01', 'c7m16', 7, flip=True, weather='Overcast', playerBase='None', general='aurel', enemyDeck=AUREL_CITY, speaker='linh')
-d['ally'] = ally((-96, -80), ['main_battle_tank', 'heavy_tank', 'ifv', 'aa_vehicle', 'mlrs'], later=[(200, ['main_battle_tank', 'bmpt'])])
+d['ally'] = ally((-96, -80), ['main_battle_tank', 'heavy_tank', 'ifv', 'aa_vehicle', 'mlrs'], later=[(200, ['main_battle_tank', 'ifv'])])
 texts(d, ('Thorne\'s Wing', 'Cánh quân của Thorne'),
       ('General Thorne\'s army has joined us in Metro City. His wing takes the northern streets with ours: the park, the plaza and the car park, from the east side. '
        'Nadia has asked to ride with his staff.',
@@ -143,7 +143,7 @@ texts(d, ('The Bridges at Night', 'Những cây cầu trong đêm'),
 
 d = clone('c2m01', 'c7m18', 7, map_='capital', weather='Fog', playerBase='None', general='aurel', enemyDeck=AUREL_CITY, speaker='dahl')
 d['waves'].pop('spawns', None)
-d['waves']['roster'] = ['main_battle_tank', 'bmpt', 'ifv', 'heavy_tank', 'gunship_heli']
+d['waves']['roster'] = ['main_battle_tank', 'ifv', 'heavy_tank', 'attack_helicopter']
 texts(d, ('The River Line', 'Tuyến sông'),
       ('Aurel\'s guard is throwing everything it has at our river line before the last battle. Survive for five minutes; Dahl\'s guns will do the rest.',
        'Cận vệ của Aurel đang dồn mọi thứ vào tuyến sông của ta trước trận đánh cuối. Trụ vững năm phút; pháo của Dahl sẽ lo phần còn lại.'),

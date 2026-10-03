@@ -52,7 +52,7 @@ namespace MachineBrigade.Tests
             new() { Name = "tank: IFV vs MBT, flank", Shooters = N("ifv", 1), Targets = N("main_battle_tank", 1), Distance = 22f, Facing = DuelFacing.Side },
             new() { Name = "AT: tank destroyer vs MBT, front", Shooters = N("tank_destroyer", 1), Targets = N("main_battle_tank", 1), Distance = 30f },
             new() { Name = "AT: FPV carrier vs MBT", Shooters = N("fpv_carrier", 1), Targets = N("main_battle_tank", 1), Distance = 50f },
-            new() { Name = "AT: Lancet truck vs heavy tank", Shooters = N("lancet_truck", 1), Targets = N("heavy_tank", 1), Distance = 60f },
+            new() { Name = "AT: FPV carrier vs heavy tank", Shooters = N("fpv_carrier", 1), Targets = N("heavy_tank", 1), Distance = 60f },
             new() { Name = "AT: armoured car vs MBT, front (wrong tool)", Shooters = N("armored_car", 2), Targets = N("main_battle_tank", 1), Distance = 20f },
             new() { Name = "AA: AA vehicle vs attack helicopter", Shooters = N("aa_vehicle", 1), Targets = N("attack_helicopter", 1), Distance = 30f },
             new() { Name = "AA: SAM launcher vs attack jet", Shooters = N("sam_launcher", 1), Targets = N("attack_jet", 1), Distance = 60f, TargetAi = SandboxAi.Combat },

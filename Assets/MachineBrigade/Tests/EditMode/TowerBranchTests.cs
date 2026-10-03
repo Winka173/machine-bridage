@@ -136,7 +136,7 @@ namespace MachineBrigade.Tests
         // ------------------------------------------------------------------ B.12 the emplacement
 
         [Test]
-        public void TheHeavyMortarFiresOverAWallIntoTheYard()
+        public void LobbedRocketsFireOverAWallIntoTheYard()
         {
             // A walled yard: a ring of wall round the target.
             var walls = new List<PropPlacement>();
@@ -145,7 +145,8 @@ namespace MachineBrigade.Tests
                 walls.Add(new PropPlacement("base_wall", new Vector2(x, 28f), 0));
                 walls.Add(new PropPlacement("base_wall", new Vector2(x, 52f), 0));
             }
-            foreach (var branch in new[] { "artillery_emplacement.mortar", "gun_turret.long" })
+            // Play-test 14 deleted the emplacement and its heavy mortar; the rocket tower (minimum range: lobbed) fires over instead.
+            foreach (var branch in new[] { "rocket_turret", "gun_turret.long" })
             {
                 var world = new SimWorld(C, new MapDefinition("yard", 260f,
                     new[] { new TeamStart(0, new Vector2(0f, -120f)), new TeamStart(1, new Vector2(0f, 120f)) }, walls, new List<UnitPlacement>()), seed: 7);
@@ -156,38 +157,9 @@ namespace MachineBrigade.Tests
                 DamageSystem.DamageLog = (by, victim, amount, kind, weapon) => { if (victim == target) dealt += amount; };
                 try { Run(world, 40f); }
                 finally { DamageSystem.DamageLog = null; }
-                if (branch.EndsWith("mortar")) Assert.Greater(dealt, 300f, "the mortar's bombs come down inside the walls");
+                if (branch == "rocket_turret") Assert.Greater(dealt, 100f, "the rockets come down inside the walls");
                 else Assert.AreEqual(0f, dealt, 1e-3f, "a direct-fire gun cannot see over the wall");
             }
-        }
-
-        [Test]
-        public void TheCounterBatteryHowitzerGoesForTheGunThatJustFired()
-        {
-            var world = Lab.Field(9);
-            world.RevealAll = false;
-            var cb = Tower(world, "artillery_emplacement.cb", 0, Vector2.Zero);
-            // A spotter so both targets are seen; the tank is nearer.
-            Dummy(world, "scout_jeep", 0, new Vector2(0f, 40f)).HoldFire = true;
-            var tank = Dummy(world, "main_battle_tank", 1, new Vector2(0f, 45f));
-            var gun = world.SpawnVehicle("artillery", 1, new Vector2(0f, 85f), System.MathF.PI);
-            gun.Scripted = true;
-            gun.HpScale = 50f;
-            gun.Hp = gun.MaxHp;
-            var bait = Dummy(world, "armored_car", 0, new Vector2(12f, 10f));
-            world.Submit(new Sim.Commands.Command(Sim.Commands.CommandType.Attack, 1, new[] { gun.Id }, bait.Position, bait.Id));
-            var fired = -1.0;
-            var onGun = false;
-            Run(world, 60f, e =>
-            {
-                if (e.Kind == SimEventKind.WeaponFired && e.Entity == gun.Id && fired < 0) fired = world.Time;
-            }, () =>
-            {
-                if (fired >= 0 && cb.MountTarget(0) == gun.Id) onGun = true;
-                return onGun;
-            });
-            Assert.GreaterOrEqual(fired, 0.0, "the enemy gun fired");
-            Assert.IsTrue(onGun, "the counter-battery howitzer turned on the gun that fired, not the nearer tank");
         }
 
         // ------------------------------------------------------------------ B.14 the Patriot
@@ -345,12 +317,12 @@ namespace MachineBrigade.Tests
             Assert.AreEqual("gun_turret.long", Pick("gun_turret", "main_battle_tank", "heavy_tank", "tank_destroyer", "twin_tank"));
             Assert.AreEqual("gun_turret.auto", Pick("gun_turret", "armored_car", "scout_jeep", "vbied", "armored_car"));
             Assert.AreEqual("missile_battery.pac3", Pick("missile_battery", "ballistic_launcher", "heavy_bomber", "main_battle_tank"));
-            Assert.AreEqual("missile_battery.lrr", Pick("missile_battery", "attack_helicopter", "attack_jet", "gunship_heli", "stealth_fighter"));
+            Assert.AreEqual("missile_battery.lrr", Pick("missile_battery", "attack_helicopter", "attack_jet", "attack_helicopter", "stealth_fighter"));
             Assert.AreEqual("shield_tower.bulwark", Pick("shield_tower", "artillery", "mlrs", "heavy_rocket_artillery", "mortar_carrier"));
             Assert.AreEqual("shield_tower.ward", Pick("shield_tower", "main_battle_tank", "heavy_tank", "tank_destroyer", "attack_helicopter"));
-            // A general's taste: Orlov (artillery) likes the counter-battery howitzer.
+            // A general's taste: Orlov (artillery) likes the guided rocket tower.
             var orlov = C.Base.Style("orlov");
-            Assert.Greater(orlov["artillery_emplacement.cb"], 1f);
+            Assert.Greater(orlov["rocket_turret.guided"], 1f);
         }
 
         // ------------------------------------------------------------------ E the save

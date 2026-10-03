@@ -341,7 +341,7 @@ namespace MachineBrigade.Tests
         public void ARaidGoesForThePlayersSupplies()
         {
             var b = Start(Mission("{\"id\": \"s\", \"kind\": \"SupplyRaid\", \"trigger\": {\"at\": 1}, \"params\": {\"size\": 3}}", "\"s\""));
-            var depot = b.World.SpawnVehicle("ammo_depot", 0, new Vector2(-70f, -40f), 0f);
+            var depot = b.World.SpawnVehicle("logistics_station", 0, new Vector2(-70f, -40f), 0f);
             Run(b, 1f + 10f + 1f);
             var raiders = b.Brought(1);
             Assert.AreEqual(3, raiders.Count);

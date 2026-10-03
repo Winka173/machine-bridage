@@ -49,7 +49,6 @@ namespace MachineBrigade.Sim.Combat
                 case "atgm_tower":
                 case "one_shot_atgm_tower":
                 case "recoilless_gun_tower":
-                case "at_gun_emplacement":
                     // No missile on a light vehicle while armour is in reach.
                     if (other.Armor == ArmorClass.Light && ArmourInReach(v, weapon)) worth *= 0.05f;
                     break;

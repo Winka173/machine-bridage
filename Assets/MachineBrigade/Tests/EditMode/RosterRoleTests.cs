@@ -44,7 +44,7 @@ namespace MachineBrigade.Tests
         {
             var world = Field();
             var lancet = world.Catalog.Weapons["lancet"];
-            var hunter = world.SpawnVehicle("lancet_truck", 0, new Vector2(-40f, 0f), 0f);
+            var hunter = world.SpawnVehicle("fpv_carrier", 0, new Vector2(-40f, 0f), 0f);
             var gun = world.SpawnVehicle("artillery", 1, new Vector2(40f, 0f), 0f);
             var tank = world.SpawnVehicle("main_battle_tank", 1, new Vector2(40f, 20f), 0f);
             var tower = world.SpawnVehicle("gun_turret", 1, new Vector2(40f, -20f), 0f);
@@ -154,23 +154,6 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void TheRadarRevealsGunsThatFireAndOurArtilleryHitsThemHarder()
-        {
-            var world = Field();
-            var radar = world.SpawnVehicle("counter_battery_radar", 0, new Vector2(0f, -40f), 0f);
-            var gun = world.SpawnVehicle("artillery", 1, new Vector2(0f, 60f), 3.14f);
-            var target = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 0f), 0f);
-            var spotter = world.SpawnVehicle("scout_jeep", 1, new Vector2(0f, 26f), 3.14f);
-            world.Submit(new Command(CommandType.Attack, 1, new[] { gun.Id }, target: target.Id));
-            var revealed = false;
-            Run(world, 15f, e => revealed |= e.Kind == SimEventKind.GunRevealed, spotter);
-            Assert.IsTrue(revealed, "the gun that fired within 120 m was found");
-            Assert.IsTrue(gun.IsVisibleTo(0), "and shows to the radar's side (100 m out, beyond its sight)");
-            ref var reveal = ref gun.Statuses[(int)StatusKind.Reveal];
-            Assert.AreEqual(0.15f, reveal.Value, 1e-4f, "our artillery does 15 % more to it");
-        }
-
-        [Test]
         public void TheLongRangeSamOnlyShootsAircraftFromFarOff()
         {
             var catalog = GameContent.LoadCatalog();
@@ -180,25 +163,6 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(95f, sam.Range);
             Assert.AreEqual(20f, sam.MinRange);
             Assert.AreEqual(1, catalog.Vehicles["long_sam"].Mounts.Count, "nothing for the ground");
-        }
-
-        [Test]
-        public void AUavScanShowsEverythingUnderItForTenSeconds()
-        {
-            var world = Field();
-            world.EnableEconomy(new TeamEconomy(0, 30f, bank: 60f));
-            world.SpawnVehicle("scout_jeep", 0, new Vector2(-70f, -70f), 0f);
-            var bomber = world.SpawnVehicle("stealth_bomber", 1, new Vector2(30f, 30f), 0f);
-            var tank = world.SpawnVehicle("main_battle_tank", 1, new Vector2(35f, 25f), 0f);
-            world.Submit(new Command(CommandType.Stop, 1, new[] { bomber.Id, tank.Id }));
-            Run(world, 0.5f);
-            Assert.IsFalse(tank.IsVisibleTo(0), "far beyond our sight");
-            Assert.IsTrue(world.Submit(Command.Strike(0, "uav_scan", new Vector2(32f, 28f))).Accepted);
-            Run(world, 2.5f);
-            Assert.IsTrue(tank.IsVisibleTo(0), "the scan shows it");
-            Assert.IsTrue(bomber.IsVisibleTo(0) || Vector2.Distance(bomber.Position, new Vector2(32f, 28f)) > 30f, "stealth too, while inside");
-            Run(world, 10.5f);
-            Assert.IsFalse(tank.IsVisibleTo(0), "and stops after 10 s");
         }
 
         [Test]
@@ -239,24 +203,6 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(ranked.Submit(Command.Strike(0, "field_tower", new Vector2(0f, 0f))).Accepted);
             Run(ranked, 5f);
             Assert.IsTrue(ranked.VehicleList.Any(v => v.IsAlive && v.Def.Id == "atgm_tower"), "an ATGM tower from rank 5");
-        }
-
-        [Test]
-        public void SeadHitsTheNearestAirDefenceAndKnocksItOut()
-        {
-            var world = Field();
-            world.EnableEconomy(new TeamEconomy(0, 30f, bank: 60f));
-            var aa = world.SpawnVehicle("aa_vehicle", 1, new Vector2(10f, 0f), 0f);
-            var tank = world.SpawnVehicle("main_battle_tank", 1, new Vector2(2f, 0f), 0f);
-            world.Submit(new Command(CommandType.Stop, 1, new[] { aa.Id, tank.Id }));
-            var tankHp = tank.Hp;
-            Assert.IsTrue(world.Submit(Command.Strike(0, "sead_strike", new Vector2(0f, 0f))).Accepted);
-            Run(world, 3f);
-            Assert.Less(aa.Hp, aa.MaxHp - 400f, "about 500 damage on the anti-air vehicle");
-            Assert.IsTrue(aa.Stunned || !aa.IsAlive, "and knocked out");
-            Assert.AreEqual(tankHp, tank.Hp, 1f, "the tank beside it is not the missile's target");
-            Run(world, 8.5f);
-            Assert.IsFalse(aa.Stunned, "for 8 s");
         }
 
         [Test]

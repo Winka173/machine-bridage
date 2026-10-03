@@ -3,9 +3,9 @@
 from campaign_kit import T, add_mission, ring, say, scripted, units, waves
 from act2 import WEAKEN, choice_income, choice_strikes, strikes
 
-QUADEN = ['attack_helicopter', 'gunship_heli', 'attack_jet', 'fighter_jet', 'strike_drone', 'aa_vehicle', 'main_battle_tank', 'sam_launcher']
-AUREL = ['heavy_tank', 'bmpt', 'railgun_truck', 'attack_helicopter', 'long_sam', 'heavy_rocket_artillery', 'main_battle_tank', 'fighter_jet']
-AUREL_CITY = ['main_battle_tank', 'heavy_tank', 'bmpt', 'ifv', 'aa_vehicle', 'sam_launcher', 'gunship_heli', 'mlrs']
+QUADEN = ['attack_helicopter', 'attack_jet', 'fighter_jet', 'strike_drone', 'aa_vehicle', 'main_battle_tank', 'sam_launcher']
+AUREL = ['heavy_tank', 'ifv', 'railgun_truck', 'attack_helicopter', 'long_sam', 'heavy_rocket_artillery', 'main_battle_tank', 'fighter_jet']
+AUREL_CITY = ['main_battle_tank', 'heavy_tank', 'ifv', 'aa_vehicle', 'sam_launcher', 'attack_helicopter', 'mlrs']
 HUNG = ['main_battle_tank', 'heavy_tank', 'ifv', 'aa_vehicle', 'mlrs', 'tank_destroyer']
 
 
@@ -15,14 +15,14 @@ def m(mid, chapter, map_, goal, weather, **kw):
     return d
 
 
-AIR_WAVES = ['attack_helicopter', 'attack_jet', 'strike_drone', 'gunship_heli', 'fighter_jet', 'main_battle_tank']
+AIR_WAVES = ['attack_helicopter', 'attack_jet', 'strike_drone', 'fighter_jet', 'main_battle_tank']
 
 # ================================================================================ CHAPTER 7: WAR IN THE AIR
 
 add_mission(m('c10m01', 10, 'frostpeak', 'ShootDown', 'Clear', reversed=True, killsNeeded=12, timeLimit=1200, general='quaden',
               enemyAi='waves', difficulty='Normal', playerCp=30, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(AIR_WAVES, first=30, interval=42, size=3, grow=0.4, max_size=7, max_alive=14),
-              unlocks=['sead_strike'], starTime=600, starLosses=10),
+              unlocks=[], starTime=600, starLosses=10),
             ('Crows over the Pass', 'Bầy quạ trên đèo'),
             ('With Venn\'s files in hand, the brigade turns towards Skyhold. Raven\'s air wing meets us over Frostpeak, coming from the south this time. Bring twelve of them down.',
              'Cầm trong tay hồ sơ của Venn, lữ đoàn quay mũi về Skyhold. Phi đội của Raven đón đánh ta trên Frostpeak, lần này từ phía nam. Bắn rơi mười hai chiếc.'),
@@ -73,7 +73,7 @@ add_mission(m('c10m05', 10, 'skyhold', 'Boss', 'Clear', general='aurel', timeLim
               boss=scripted('silver_bug', (84, 84), heading=225, route=[(45, 45), (-45, 60), (-60, -15), (0, -50), (60, -30)], fleeAt=0.5, health=4.4),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=14, enemyIncome=0.9,
               enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'ifv', 'tank_destroyer', 'attack_jet'],
-              playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor', hqLevel=4, unlocks=['gunship_heli'], starTime=600, starLosses=12),
+              playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor', hqLevel=4, unlocks=[], starTime=600, starLosses=12),
             ('Icarus', 'Icarus'),
             ('The welded hangar opened at dawn. Icarus is in the air over Skyhold: Aurel\'s orbital spacecraft, silver-hulled and short-winged, with a main engine that could outrun anything we have. '
              'It is not finished, Venn says. Hurt it badly enough, and it will run.',
@@ -89,7 +89,7 @@ add_mission(m('c10m05', 10, 'skyhold', 'Boss', 'Clear', general='aurel', timeLim
 add_mission(m('c10m06', 10, 'frostpeak', 'Hunt', 'Fog', reversed=True, general='quaden', timeLimit=1100, targetHealth=2.5, reinforcements=2,
               hunt=[scripted('long_sam', (60, 70), route=[(80, 90), (40, 60), (70, 40)]),
                     scripted('sam_launcher', (-20, 100), route=[(-40, 120), (0, 90), (-30, 80)]),
-                    scripted('counter_battery_radar', (100, 20), route=[(110, -10), (90, 40), (120, 30)])],
+                    scripted('command_vehicle', (100, 20), route=[(110, -10), (90, 40), (120, 30)])],
               units=units(1, ['main_battle_tank', 'aa_vehicle'], (60, 70), 7) + units(1, ['ifv', 'heavy_aa'], (-20, 100), 6) + units(1, ['heavy_tank', 'aa_vehicle'], (100, 20), 6),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=15, enemyIncome=0.9, enemyDeck=QUADEN,
               playerCp=30, playerIncome=1.5, playerCap=38, playerBase='Anchor', unlocks=['remote_mines'], starTime=660, starLosses=10, challenge={'kind': 'Kills', 'value': 25}),
@@ -103,7 +103,7 @@ add_mission(m('c10m06', 10, 'frostpeak', 'Hunt', 'Fog', reversed=True, general='
 
 add_mission(m('c10m07', 10, 'skyhold', 'ShootDown', 'Rain', legacy='m20', killsNeeded=16, timeLimit=1200, general='quaden',
               enemyAi='waves', difficulty='Normal', playerCp=30, playerIncome=1.5, playerCap=38, playerBase='Anchor',
-              waves=waves(['attack_helicopter', 'attack_jet', 'strike_drone', 'gunship_heli', 'heavy_bomber', 'elite_attack_helicopter', 'main_battle_tank'],
+              waves=waves(['attack_helicopter', 'attack_jet', 'strike_drone', 'heavy_bomber', 'elite_attack_helicopter', 'main_battle_tank'],
                           first=30, interval=45, size=3, grow=0.4, max_size=7, max_alive=14),
               starTime=660, starLosses=10),
             ('Air Raid', 'Không kích'),
@@ -144,7 +144,7 @@ add_mission(m('c10m09', 10, 'skyhold', 'Duel', 'Overcast', targetHealth=0.3, gen
 add_mission(m('c10m10', 10, 'skyhold', 'Destroy', 'Fog', variant='siege', operation=True, general='quaden', reinforcements=3,
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=1.0, enemyDeck=QUADEN,
               playerCp=32, playerIncome=2.0, playerCap=44, playerBase='Anchor', enemyHq=4, towerGear='Epic',
-              waves=waves(['attack_helicopter', 'attack_jet', 'main_battle_tank', 'ifv', 'gunship_heli'], first=80, interval=60, size=2, grow=0.3, max_size=5, max_alive=12,
+              waves=waves(['attack_helicopter', 'attack_jet', 'main_battle_tank', 'ifv'], first=80, interval=60, size=2, grow=0.3, max_size=5, max_alive=12,
                           spawns=[(100, 60), (60, 100)]),
               stages=[
                   {'stage': 'radars', 'goal': 'Destroy', 'targets': ['radar_station_prop'], 'targetX': 79, 'targetZ': 79, 'targetRadius': 46, 'targetHealth': 2, 'cp': 8,
@@ -157,12 +157,12 @@ add_mission(m('c10m10', 10, 'skyhold', 'Destroy', 'Fog', variant='siege', operat
                                                                        fallback='sky_fortress', fallbackHealth=0.9, name='command_airship'), 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.quaden.c10m10.s3'}]},
                   {'stage': 'crow', 'goal': 'ShootDown', 'killsNeeded': 12, 'cp': 6,
-                   'waves': waves(['attack_jet', 'fighter_jet', 'gunship_heli', 'attack_helicopter'], first=8, interval=30, size=3, grow=0.4, max_size=6, max_alive=12),
+                   'waves': waves(['attack_jet', 'fighter_jet', 'attack_helicopter'], first=8, interval=30, size=3, grow=0.4, max_size=6, max_alive=12),
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.dieuhau.c10m10.s4'}]},
                   {'stage': 'counter', 'goal': 'Survive', 'surviveSeconds': 480,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c10m10.s6'},
-                              {'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'long_sam', 'bmpt', 'attack_helicopter']},
-                              {'at': '190', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'gunship_heli', 'ifv']}]},
+                              {'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'long_sam', 'ifv', 'attack_helicopter']},
+                              {'at': '190', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'attack_helicopter', 'ifv']}]},
               ],
               starTime=1440, starLosses=18),
             ('Storm Skyhold', 'Tấn công Skyhold'),
@@ -223,7 +223,7 @@ add_mission(m('c7m01', 7, 'metrocity', 'Capture', 'Fog', points=['west', 'town',
 
 add_mission(m('c7m02', 7, 'capital', 'Recon', 'Overcast', points=['west', 'town', 'east'], timeLimit=900, speaker='linh', general='aurel', reinforcements=2,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=0.95, enemyDeck=AUREL_CITY,
-              playerCp=30, playerIncome=1.55, playerCap=40, unlocks=['turtle_tank'], starTime=420, starLosses=10, challenge={'kind': 'NoAircraft'}),
+              playerCp=30, playerIncome=1.55, playerCap=40, unlocks=[], starTime=420, starLosses=10, challenge={'kind': 'NoAircraft'}),
             ('The Bridges of Veyra', 'Những cây cầu Veyra'),
             ('The capital sits on a river island. Before General Thorne arrives, Nadia wants eyes on the gardens, the palace square and the station.',
              'Thủ đô nằm trên một hòn đảo giữa sông. Trước khi tướng Thorne tới, Nadia muốn quan sát khu vườn, quảng trường cung điện và nhà ga.'),
@@ -235,11 +235,11 @@ add_mission(m('c7m02', 7, 'capital', 'Recon', 'Overcast', points=['west', 'town'
 add_mission(m('c7m03', 7, 'metrocity', 'Relieve', 'Rain', targetHealth=2.2, reinforcements=3, timeLimit=1000, general='aurel',
               ally={'x': 0, 'z': 0, 'hq': 'headquarters', 'structures': units(0, ['mg_bunker', 'gun_turret', 'aa_turret', 'atgm_tower'], (0, 0), 15),
                     'units': units(0, ['ifv', 'main_battle_tank'], (-6, -6), 4)},
-              hunt=[scripted(d, p) for d, p in zip(['heavy_tank', 'bmpt', 'main_battle_tank', 'mlrs', 'ifv', 'sam_launcher', 'main_battle_tank'], ring((0, 0), 40, 7, 0.1))],
+              hunt=[scripted(d, p) for d, p in zip(['heavy_tank', 'ifv', 'main_battle_tank', 'mlrs', 'ifv', 'sam_launcher', 'main_battle_tank'], ring((0, 0), 40, 7, 0.1))],
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=AUREL_CITY,
               playerCp=30, playerIncome=1.6, playerCap=40, playerBase='Anchor',
-              waves=waves(['main_battle_tank', 'ifv', 'bmpt', 'gunship_heli'], first=70, interval=60, size=2, grow=0.3, max_size=4, max_alive=12, spawns=[(60, 80), (80, 30)]),
-              unlocks=['bmpt'], starTime=540, starLosses=12),
+              waves=waves(['main_battle_tank', 'ifv', 'attack_helicopter'], first=70, interval=60, size=2, grow=0.3, max_size=4, max_alive=12, spawns=[(60, 80), (80, 30)]),
+              unlocks=[], starTime=540, starLosses=12),
             ('The Plaza Uprising', 'Khởi nghĩa quảng trường'),
             ('The city has risen: the resistance holds the plaza, and Aurel\'s guard has it surrounded. Break the ring before their HQ falls; the besiegers are marked.',
              'Thành phố đã nổi dậy: quân kháng chiến giữ quảng trường, và vệ binh của Aurel đã vây kín họ. Phá vòng vây trước khi sở chỉ huy của họ thất thủ; quân vây được đánh dấu.'),
@@ -248,10 +248,10 @@ add_mission(m('c7m03', 7, 'metrocity', 'Relieve', 'Rain', targetHealth=2.2, rein
               'Trời mưa cả ngày. Người dân ở quảng trường giương ô che cho thương binh trong khi xe tăng giao chiến quanh họ. Có người chụp lại; tới chiều tối, bức ảnh đã dán trên mọi bức tường.')),
             [say('khai', 'Start', 'The city is fighting for itself. We fight with it.', 'Thành phố đang tự chiến đấu. Ta chiến đấu cùng nó.')])
 
-add_mission(m('c7m04', 7, 'metrocity', 'Protect', 'Clear', reversed=True, targets=['skyscraper', 'highrise_b', 'office_block'], protectNeeded=1, targetHealth=14, surviveSeconds=360, general='aurel', reinforcements=2, unlocks=['smoke_carrier'],
+add_mission(m('c7m04', 7, 'metrocity', 'Protect', 'Clear', reversed=True, targets=['skyscraper', 'highrise_b', 'office_block'], protectNeeded=1, targetHealth=14, surviveSeconds=360, general='aurel', reinforcements=2, unlocks=[],
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=AUREL_CITY,
               playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor',
-              waves=waves(['main_battle_tank', 'bmpt', 'heavy_rocket_artillery', 'gunship_heli'], first=90, interval=65, size=2, grow=0.3, max_size=4, max_alive=10),
+              waves=waves(['main_battle_tank', 'ifv', 'heavy_rocket_artillery', 'attack_helicopter'], first=90, interval=65, size=2, grow=0.3, max_size=4, max_alive=10),
               starTime=0, starLosses=12, challenge={'kind': 'NoAircraft'}),
             ('The Towers', 'Những tòa tháp'),
             ('Aurel has ordered the city\'s towers shelled rather than leave them to us: thousands of people live in them. Keep at least one standing for seven minutes.',
@@ -266,7 +266,7 @@ add_mission(m('c7m05', 7, 'metrocity', 'Intercept', 'Night', legacy='m16', launc
               units=[{'def': 'main_battle_tank', 'team': 0, 'x': -75, 'z': -18.75, 'heading': 0}, {'def': 'tank_destroyer', 'team': 0, 'x': -82.5, 'z': -11.25, 'heading': 0},
                      {'def': 'heavy_tank', 'team': 0, 'x': -67.5, 'z': -7.5, 'heading': 0}, {'def': 'mlrs', 'team': 0, 'x': -93.75, 'z': -37.5, 'heading': 0}],
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9,
-              enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'sam_launcher', 'gunship_heli', 'attack_jet'],
+              enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'sam_launcher', 'attack_helicopter', 'attack_jet'],
               playerCp=30, playerIncome=1.6, playerCap=40, unlocks=['shahed_truck'], starTime=480, starLosses=12),
             ('Nemesis', 'Đoàn tàu tận thế'),
             ('A missile train is crossing Metro City to its launch siding. When it gets there, a sixty-second countdown starts. Stop it first.',
@@ -281,8 +281,8 @@ add_mission(m('c7m06', 7, 'capital', 'Hold', 'Fog', points=['town'], holdSeconds
               units=units(0, ['heavy_tank', 'main_battle_tank', 'tank_destroyer', 'heavy_aa', 'mlrs', 'ifv'], (-6, -8), 9),
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=AUREL_CITY,
               playerCp=30, playerIncome=1.5, playerCap=44, playerBase='Anchor',
-              waves=waves(['main_battle_tank', 'bmpt', 'ifv', 'heavy_tank', 'gunship_heli'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12),
-              unlocks=['counter_battery_radar'], starTime=0, starLosses=14),
+              waves=waves(['main_battle_tank', 'ifv', 'heavy_tank', 'attack_helicopter'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12),
+              unlocks=[], starTime=0, starLosses=14),
             ('The Palace Square', 'Quảng trường cung điện'),
             ('A foothold in the capital: the palace square. Aurel\'s guard wants it back. Hold it in the fog for four minutes.',
              'Một chỗ đứng chân trong thủ đô: quảng trường cung điện. Vệ binh của Aurel muốn giành lại. Giữ nó trong sương mù bốn phút.'),
@@ -295,7 +295,7 @@ add_mission(m('c7m07', 7, 'metrocity', 'Hunt', 'Storm', general='aurel', timeLim
               hunt=[scripted('command_vehicle', (60, 60), route=[(80, 40), (40, 80), (60, 100)]),
                     scripted('command_vehicle', (-30, 90), route=[(-60, 100), (0, 80), (-20, 60)]),
                     scripted('command_vehicle', (90, -20), route=[(110, -40), (80, 10), (110, 20)])],
-              units=units(1, ['heavy_tank', 'aa_vehicle'], (60, 60), 7) + units(1, ['bmpt', 'sam_launcher'], (-30, 90), 6) + units(1, ['main_battle_tank', 'ifv'], (90, -20), 6),
+              units=units(1, ['heavy_tank', 'aa_vehicle'], (60, 60), 7) + units(1, ['ifv', 'sam_launcher'], (-30, 90), 6) + units(1, ['main_battle_tank', 'ifv'], (90, -20), 6),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=0.95, enemyDeck=AUREL_CITY,
               playerCp=32, playerIncome=1.6, playerCap=40, playerBase='Anchor', starTime=660, starLosses=12, challenge={'kind': 'Kills', 'value': 28}),
             ('The Commissars', 'Các chính ủy'),
@@ -311,7 +311,7 @@ add_mission(m('c7m08', 7, 'capital', 'Evacuate', 'Night', convoyCount=6, convoyN
               units=units(0, ['heavy_tank', 'heavy_aa', 'tank_destroyer', 'ifv'], (-6, -6), 8),
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=AUREL_CITY,
               playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor',
-              waves=waves(['main_battle_tank', 'bmpt', 'ifv', 'gunship_heli'], first=50, interval=50, size=2, grow=0.35, max_size=5, max_alive=12, spawns=[(80, 60), (40, 100), (100, 10)]),
+              waves=waves(['main_battle_tank', 'ifv', 'attack_helicopter'], first=50, interval=50, size=2, grow=0.35, max_size=5, max_alive=12, spawns=[(80, 60), (40, 100), (100, 10)]),
               starTime=600, starLosses=10),
             ('Out of the Palace', 'Rời cung điện'),
             ('The families sheltering in the palace have to get out before the final battle: six trucks across the west bridge, one every few seconds. Four must make it.',
@@ -322,7 +322,7 @@ add_mission(m('c7m08', 7, 'capital', 'Evacuate', 'Night', convoyCount=6, convoyN
             [say('khai', 'Start', 'Nobody stays in the palace tonight. Hold the square till the last truck leaves.', 'Đêm nay không ai ở lại cung điện. Giữ quảng trường cho tới khi xe cuối cùng rời đi.')])
 
 add_mission(m('c7m09', 7, 'capital', 'Destroy', 'Clear', targets=['radar_dome'], targetHealth=4, timeLimit=900, general='aurel', reinforcements=3,
-              units=units(1, ['heavy_tank', 'long_sam', 'bmpt', 'aa_vehicle'], (10, -20), 12),
+              units=units(1, ['heavy_tank', 'long_sam', 'ifv', 'aa_vehicle'], (10, -20), 12),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=0.95, enemyDeck=AUREL_CITY,
               playerCp=32, playerIncome=1.6, playerCap=40, playerBase='Anchor', starTime=540, starLosses=12, challenge={'kind': 'NoStrikes'}),
             ('Silence the Broadcast', 'Dập tắt đài phát'),
@@ -337,7 +337,7 @@ add_mission(m('c7m10', 7, 'capital', 'Capture', 'Rain', operation=True, general=
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=AUREL_CITY,
               playerCp=32, playerIncome=1.8, playerCap=44, playerBase='Anchor', towerGear='Epic',
-              waves=waves(['main_battle_tank', 'bmpt', 'ifv', 'heavy_tank', 'gunship_heli'], first=90, interval=65, size=2, grow=0.3, max_size=5, max_alive=12),
+              waves=waves(['main_battle_tank', 'ifv', 'heavy_tank', 'attack_helicopter'], first=90, interval=65, size=2, grow=0.3, max_size=5, max_alive=12),
               ally={'x': -118, 'z': 30, 'heading': 45, 'hq': 'headquarters',
                     'structures': units(0, ['gun_turret', 'aa_turret', 'mg_bunker', 'missile_battery', 'atgm_tower'], (-118, 30), 16),
                     'units': units(0, HUNG, (-100, 30), 7),
@@ -350,9 +350,9 @@ add_mission(m('c7m10', 7, 'capital', 'Capture', 'Rain', operation=True, general=
                    'events': WEAKEN},
                   {'stage': 'gardens', 'goal': 'Survive', 'points': ['west'], 'surviveSeconds': 150, 'cp': 6, 'next': 'palace', 'events': strikes(55)},
                   {'stage': 'palace', 'goal': 'Capture', 'points': ['town'], 'enemyOwns': ['town'], 'cp': 6,
-                   'events': [{'at': 'start', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'bmpt', 'long_sam']}]},
+                   'events': [{'at': 'start', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'ifv', 'long_sam']}]},
                   {'stage': 'square', 'goal': 'Survive', 'points': ['town'], 'surviveSeconds': 180, 'cp': 6,
-                   'events': [{'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'gunship_heli']}]},
+                   'events': [{'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'attack_helicopter']}]},
                   {'stage': 'betrayal', 'goal': 'Survive', 'surviveSeconds': 300, 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Betrayal'}, {'at': '2', 'kind': 'Radio', 'key': 'radio.hung.c7m10.s4'},
                               {'at': '6', 'kind': 'Radio', 'key': 'radio.khai.c7m10.s4'}]},
@@ -392,7 +392,7 @@ add_mission(m('c7s1', 7, 'metrocity', 'Recon', 'Overcast', side=True, after='c7m
 
 add_mission(m('c7s2', 7, 'capital', 'ShootDown', 'Storm', side=True, after='c7m06', speaker='dieuhau', killsNeeded=14, timeLimit=1200,
               enemyAi='waves', difficulty='Normal', playerCp=30, playerIncome=1.5, playerCap=38, playerBase='Anchor',
-              waves=waves(['gunship_heli', 'attack_jet', 'attack_helicopter', 'strike_drone', 'main_battle_tank'], first=30, interval=42, size=3, grow=0.4, max_size=6, max_alive=14),
+              waves=waves(['attack_jet', 'attack_helicopter', 'strike_drone', 'main_battle_tank'], first=30, interval=42, size=3, grow=0.4, max_size=6, max_alive=14),
               towerGear='Epic', starTime=600, starLosses=10),
             ('Storm over the Capital', 'Bão trên thủ đô'),
             ('Aurel\'s guard helicopters are hunting the resistance over the rooftops in the storm. Fourteen of them, down.',
@@ -405,7 +405,7 @@ add_mission(m('c7s2', 7, 'capital', 'ShootDown', 'Storm', side=True, after='c7m0
 # ================================================================================ CHAPTER 9: THE LAUNCH SITE
 
 add_mission(m('c12m01', 12, 'dunebreak', 'Capture', 'Sandstorm', reversed=True, points=['west', 'town', 'east'], enemyOwns=['town'], general='varga', reinforcements=3,
-              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=['main_battle_tank', 'heavy_tank', 'twin_tank', 'tank_destroyer', 'bmpt', 'fpv_carrier', 'ifv'],
+              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=['main_battle_tank', 'heavy_tank', 'twin_tank', 'tank_destroyer', 'fpv_carrier', 'ifv'],
               playerCp=32, playerIncome=1.7, playerCap=42, playerBase='Anchor', unlocks=['railgun_truck', 'stealth_fighter'], starTime=720, starLosses=14),
             ('Back to Dunebreak', 'Trở lại Dunebreak'),
             ('The road to the launch site runs through Dunebreak again, from the south this time. Varga\'s last armour holds the refinery. Take the oasis, the refinery and the oil field.',
@@ -482,7 +482,7 @@ add_mission(m('c12m07', 12, 'dunebreak', 'Hunt', 'Overcast', reversed=True, gene
               hunt=[scripted('supply_truck', (60, 70), route=[(80, 90), (40, 60), (70, 40)]),
                     scripted('supply_truck', (-20, 100), route=[(-40, 120), (0, 90), (-30, 80)]),
                     scripted('supply_truck', (100, 20), route=[(110, -10), (90, 40), (120, 30)])],
-              units=units(1, ['heavy_tank', 'long_sam'], (60, 70), 7) + units(1, ['bmpt', 'aa_vehicle'], (-20, 100), 6) + units(1, ['railgun_truck', 'main_battle_tank'], (100, 20), 6),
+              units=units(1, ['heavy_tank', 'long_sam'], (60, 70), 7) + units(1, ['ifv', 'aa_vehicle'], (-20, 100), 6) + units(1, ['railgun_truck', 'main_battle_tank'], (100, 20), 6),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=AUREL,
               playerCp=34, playerIncome=1.75, playerCap=42, playerBase='Anchor', starTime=660, starLosses=12, challenge={'kind': 'Kills', 'value': 30}),
             ('Fuel for the Bug', 'Nhiên liệu cho Icarus'),
@@ -494,7 +494,7 @@ add_mission(m('c12m07', 12, 'dunebreak', 'Hunt', 'Overcast', reversed=True, gene
             [say('linh', 'Start', 'Three trucks. Every one of them counts.', 'Ba xe tải. Chiếc nào cũng quan trọng.')])
 
 add_mission(m('c12m08', 12, 'launchsite', 'Destroy', 'Sandstorm', targets=['radar_station_prop'], targetHealth=3, timeLimit=1000, general='aurel', reinforcements=3,
-              units=units(1, ['long_sam', 'heavy_tank'], (74, 16), 8) + units(1, ['aa_vehicle', 'bmpt'], (-74, -16), 8),
+              units=units(1, ['long_sam', 'heavy_tank'], (74, 16), 8) + units(1, ['aa_vehicle', 'ifv'], (-74, -16), 8),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=AUREL,
               playerCp=34, playerIncome=1.75, playerCap=42, playerBase='Anchor', starTime=600, starLosses=12, challenge={'kind': 'NoStrikes'}),
             ('Blind the Launch Site', 'Làm mù bãi phóng'),
@@ -507,10 +507,10 @@ add_mission(m('c12m08', 12, 'launchsite', 'Destroy', 'Sandstorm', targets=['rada
 
 add_mission(m('c12m09', 12, 'dunebreak', 'Hold', 'Clear', reversed=True, points=['town'], holdSeconds=240, general='aurel', reinforcements=3,
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
-              units=units(0, ['heavy_tank', 'bmpt', 'railgun_truck', 'long_sam', 'heavy_rocket_artillery'], (-6, -8), 9),
+              units=units(0, ['heavy_tank', 'ifv', 'railgun_truck', 'long_sam', 'heavy_rocket_artillery'], (-6, -8), 9),
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.95, enemyDeck=AUREL,
               playerCp=32, playerIncome=1.6, playerCap=46, playerBase='Anchor',
-              waves=waves(['heavy_tank', 'bmpt', 'main_battle_tank', 'attack_helicopter', 'railgun_truck'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12),
+              waves=waves(['heavy_tank', 'ifv', 'main_battle_tank', 'attack_helicopter', 'railgun_truck'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12),
               starTime=0, starLosses=14),
             ('The Refinery Rearguard', 'Hậu vệ nhà máy lọc dầu'),
             ('While the brigade gathers for the final battle, Aurel throws his guard at the refinery, our supply depot now. Hold it for four minutes.',
@@ -524,7 +524,7 @@ add_mission(m('c12m10', 12, 'launchsite', 'Capture', 'Clear', operation=True, ge
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=18, enemyIncome=1.05, enemyDeck=AUREL,
               playerCp=34, playerIncome=1.9, playerCap=46, playerBase='Anchor', towerGear='Legendary',
-              waves=waves(['heavy_tank', 'bmpt', 'railgun_truck', 'attack_helicopter', 'long_sam', 'main_battle_tank'], first=90, interval=65, size=2, grow=0.3, max_size=5, max_alive=12),
+              waves=waves(['heavy_tank', 'ifv', 'railgun_truck', 'attack_helicopter', 'long_sam', 'main_battle_tank'], first=90, interval=65, size=2, grow=0.3, max_size=5, max_alive=12),
               stages=[
                   {'stage': 'approach', 'goal': 'Capture', 'points': ['east'], 'enemyOwns': ['west', 'town', 'east'], 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c12m10.s1'}],
@@ -534,16 +534,16 @@ add_mission(m('c12m10', 12, 'launchsite', 'Capture', 'Clear', operation=True, ge
                   {'stage': 'radars', 'goal': 'Destroy', 'targets': ['radar_station_prop'], 'targetX': -74, 'targetZ': -16, 'targetRadius': 15, 'targetHealth': 2, 'cp': 6, 'next': 'assembly',
                    'events': strikes(50)},
                   {'stage': 'assembly', 'goal': 'Capture', 'points': ['west'], 'cp': 8,
-                   'events': [{'at': 'start', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'bmpt', 'long_sam', 'railgun_truck']}]},
+                   'events': [{'at': 'start', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'ifv', 'long_sam', 'railgun_truck']}]},
                   {'stage': 'command', 'goal': 'Boss', 'boss': scripted('supreme_command', (60, 60), heading=225, route=[(40, 40), (10, 20), (30, -10)],
                                                                        fallback='fortress_bastion', fallbackHealth=1.0, name='supreme_command'), 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.aurel.c12m10.s4'}]},
                   {'stage': 'countdown', 'goal': 'Survive', 'surviveSeconds': 300, 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.linh.c12m10.s5'},
-                              {'at': '40', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'bmpt', 'railgun_truck', 'long_sam']},
-                              {'at': '200', 'kind': 'Reinforce', 'team': 1, 'units': ['attack_helicopter', 'heavy_tank', 'bmpt']}]},
+                              {'at': '40', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'ifv', 'railgun_truck', 'long_sam']},
+                              {'at': '200', 'kind': 'Reinforce', 'team': 1, 'units': ['attack_helicopter', 'heavy_tank', 'ifv']}]},
                   {'stage': 'pad', 'goal': 'Survive', 'points': ['town'], 'surviveSeconds': 180, 'cp': 10,
-                   'events': [{'at': '20', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'attack_helicopter', 'bmpt', 'titan_tank']},
+                   'events': [{'at': '20', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'attack_helicopter', 'ifv', 'titan_tank']},
                               {'at': '100', 'kind': 'Reinforce', 'team': 1, 'units': ['railgun_truck', 'long_sam', 'heavy_tank']}]},
                   {'stage': 'bug', 'goal': 'Boss', 'boss': scripted('silver_bug', (0, 30), heading=180, route=[(0, 30), (-40, 0), (0, -40), (40, 0)], health=2.2, name='silver_bug_complete'),
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.aurel.c12m10.s6'}, {'at': 'start', 'kind': 'Radio', 'key': 'radio.sen.c12m10.s6'}]},
@@ -584,7 +584,7 @@ add_mission(m('c12s1', 12, 'launchsite', 'Recon', 'Sandstorm', side=True, revers
 add_mission(m('c12s2', 12, 'dunebreak', 'ShootDown', 'Sandstorm', side=True, reversed=True, after='c12m05', speaker='dieuhau', killsNeeded=16, timeLimit=1200,
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
               enemyAi='waves', difficulty='Normal', playerCp=32, playerIncome=1.6, playerCap=40, playerBase='Anchor',
-              waves=waves(['attack_helicopter', 'attack_jet', 'fighter_jet', 'strike_drone', 'gunship_heli', 'heavy_tank'], first=30, interval=42, size=3, grow=0.4, max_size=7, max_alive=14),
+              waves=waves(['attack_helicopter', 'attack_jet', 'fighter_jet', 'strike_drone', 'heavy_tank'], first=30, interval=42, size=3, grow=0.4, max_size=7, max_alive=14),
               towerGear='Legendary', starTime=660, starLosses=10),
             ('The Last Air Wing', 'Phi đội cuối cùng'),
             ('What is left of Hegemon\'s air force is coming over the dunes for the brigade\'s supply lines. Sixteen of them, down, in the sandstorm.',

@@ -62,7 +62,7 @@ namespace MachineBrigade.Tests
         [Test]
         public void EachRoleTakesTheDecksCheapestCard()
         {
-            var deck = new[] { "heavy_tank", "main_battle_tank", "scout_jeep", "radar_scout", "armored_car" };
+            var deck = new[] { "heavy_tank", "main_battle_tank", "scout_jeep", "armored_car" };
             var squad = OpeningSquads.Pick(C, O.CommanderRoles("kade"), deck, 100f);
             var mbt = new[] { "main_battle_tank" };
             Assert.AreEqual(2, squad.Count);

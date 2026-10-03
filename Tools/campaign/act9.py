@@ -28,10 +28,9 @@ SWAPS = [
     ('railgun_truck', 'c11m01', 'c4m10'), ('laser_tank', 'c4m10', 'c11m01'),
     # Venn brings the drone mothership over (chapter 5's operation); the drone hangar goes to chapter 12.
     ('swarm_carrier', 'c12m04', 'c5m10'), ('drone_hangar', 'c5m10', 'c12m04'),
-    # Moloch's deployable bunker (chapter 6's operation); the Lancet truck goes to chapter 8.
-    ('bunker_vehicle', 'c8m04', 'c6m10'), ('lancet_truck', 'c6m06', 'c8m04'),
-    # Roc's wingman drone (chapter 10's operation); the jammer goes to chapter 9's listening war.
-    ('wingman_drone', 'c9m01', 'c10m10'), ('ew_jammer', 'c10m04', 'c9m01'),
+    # The jammer goes to chapter 9's listening war (play-test 14 deleted the deployable bunker, the Lancet truck and the
+    # wingman drone, whose swaps stood here).
+    ('ew_jammer', 'c10m04', 'c9m01'),
 ]
 
 for card, frm, to in SWAPS:

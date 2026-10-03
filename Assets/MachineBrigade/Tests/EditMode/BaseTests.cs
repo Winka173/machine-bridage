@@ -29,13 +29,13 @@ namespace MachineBrigade.Tests
         public void AnOldPointLoadoutIsSortedIntoTheSizedSlots()
         {
             // A saved base from the fortification-point days: one list, heavy towers first.
-            PlayerProfile.LoadForTests("{\"baseLevel\":5,\"baseTowers\":[\"heavy_turret\",\"missile_battery\",\"artillery_emplacement\",\"gun_turret\",\"rocket_turret\",\"gun_turret\",\"atgm_tower\",\"aa_turret\",\"guard_tower\"]}");
+            PlayerProfile.LoadForTests("{\"baseLevel\":5,\"baseTowers\":[\"heavy_turret\",\"missile_battery\",\"drone_hangar\",\"gun_turret\",\"rocket_turret\",\"gun_turret\",\"atgm_tower\",\"aa_turret\",\"guard_tower\"]}");
             var loadout = PlayerProfile.BaseLoadout;
             Assert.AreEqual(5, loadout.HqLevel);
             CollectionAssert.AreEqual(new[] { "heavy_turret", "missile_battery" }, loadout.Large, "the heavy towers take the two large slots");
             CollectionAssert.AreEqual(new[] { "gun_turret", "rocket_turret", "gun_turret" }, loadout.Medium, "the medium ones the medium slots");
             CollectionAssert.AreEqual(new[] { "aa_turret", "guard_tower" }, loadout.Small, "the light ones the small slots");
-            Assert.IsFalse(loadout.Towers.Contains("artillery_emplacement") || loadout.Towers.Contains("atgm_tower"),
+            Assert.IsFalse(loadout.Towers.Contains("drone_hangar") || loadout.Towers.Contains("atgm_tower"),
                 "what finds no slot is left out (its card keeps its rank and gear)");
             var json = PlayerProfile.JsonForTests();
             PlayerProfile.LoadForTests(json);
@@ -70,7 +70,7 @@ namespace MachineBrigade.Tests
                 HqLevel = 1,
                 Small = { "guard_tower", "gun_turret", "aa_turret", "mg_bunker", "guard_tower" },
                 Medium = { "heavy_turret", "rocket_turret", "gun_turret" },
-                Large = { "artillery_emplacement" },
+                Large = { "missile_battery" },
             }.Fitted(catalog);
             CollectionAssert.AreEqual(new[] { "guard_tower", "aa_turret", "mg_bunker" }, loadout.Small, "3 small slots, light towers only");
             CollectionAssert.AreEqual(new[] { "rocket_turret" }, loadout.Medium, "1 medium slot, no heavy tower in it");
@@ -85,7 +85,7 @@ namespace MachineBrigade.Tests
                      {
                          ("guard_tower", SlotSize.Small), ("mg_bunker", SlotSize.Small), ("aa_turret", SlotSize.Small),
                          ("gun_turret", SlotSize.Medium), ("rocket_turret", SlotSize.Medium), ("atgm_tower", SlotSize.Medium),
-                         ("artillery_emplacement", SlotSize.Large), ("missile_battery", SlotSize.Large), ("heavy_turret", SlotSize.Large),
+                         ("drone_hangar", SlotSize.Large), ("missile_battery", SlotSize.Large), ("heavy_turret", SlotSize.Large),
                      })
                 Assert.AreEqual(size, catalog.Vehicles[id].Fort.Size, id);
             Assert.IsTrue(catalog.Vehicles["guard_tower"].Fort.Fits(SlotSize.Large), "a light tower goes anywhere");

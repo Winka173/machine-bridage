@@ -239,11 +239,11 @@ namespace MachineBrigade.Tests
         {
             const string power = "{\"id\": \"bo\", \"kind\": \"CityBlackout\", \"trigger\": {\"at\": 1}, \"lead\": 10, \"params\": {\"seconds\": 20, \"outage\": 40}}";
             var (world, mode) = Start(Mission(power, "\"bo\""));
-            var ours = world.SpawnVehicle("radar_station", 0, new Vector2(-60f, -60f), 0f);
-            var theirs = world.SpawnVehicle("radar_station", 1, new Vector2(60f, 60f), 0f);
+            var ours = world.SpawnVehicle("ew_tower", 0, new Vector2(-60f, -60f), 0f);
+            var theirs = world.SpawnVehicle("ew_tower", 1, new Vector2(60f, 60f), 0f);
             var gun = world.SpawnVehicle("gun_turret", 1, new Vector2(60f, 40f), 0f);
             Run(world, mode, 2f);
-            Assert.AreEqual(2, mode.Events.States[0].Marks.Count, "both radars on the minimap");
+            Assert.AreEqual(2, mode.Events.States[0].Marks.Count, "both EW towers on the minimap");
             Run(world, mode, 12f);
             Assert.IsTrue(ours.Stunned && theirs.Stunned, "both sides' grid towers are off");
             Assert.IsFalse(gun.Stunned, "a gun turret is not on the grid");

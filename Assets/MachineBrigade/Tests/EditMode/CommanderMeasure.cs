@@ -38,26 +38,26 @@ namespace MachineBrigade.Tests
             public float Minutes = 6f;
         }
 
-        private static readonly string[] Supports = { "artillery_barrage", "airstrike", "smoke_screen", "repair_drop" };
+        private static readonly string[] Supports = { "artillery_barrage", "airstrike", "cruise_missile", "repair_drop" };
 
         internal static readonly Style[] Styles =
         {
             new() { Name = "Balanced", Deck = ModeBalanceMeasure.SampleDeck },
-            new() { Name = "Sustain", Deck = new[] { "engineer_vehicle", "main_battle_tank", "ifv", "bunker_vehicle", "tank_destroyer", "aa_vehicle", "ammo_carrier", "heavy_tank" } },
-            new() { Name = "Air", Deck = new[] { "attack_helicopter", "gunship_heli", "fighter_jet", "attack_jet", "scout_heli", "aa_vehicle", "ifv", "main_battle_tank" } },
-            new() { Name = "Recon", Deck = new[] { "scout_jeep", "armored_car", "tank_destroyer", "wheeled_gun", "recon_drone", "counter_battery_radar", "mlrs", "ifv" } },
-            new() { Name = "Drones", Deck = new[] { "strike_drone", "fpv_carrier", "lancet_truck", "recon_drone", "swarm_carrier", "ew_jammer", "ifv", "aa_vehicle" } },
+            new() { Name = "Sustain", Deck = new[] { "engineer_vehicle", "main_battle_tank", "ifv", "siege_tank", "tank_destroyer", "aa_vehicle", "ammo_carrier", "heavy_tank" } },
+            new() { Name = "Air", Deck = new[] { "attack_helicopter", "sky_gunship", "fighter_jet", "attack_jet", "scout_heli", "aa_vehicle", "ifv", "main_battle_tank" } },
+            new() { Name = "Recon", Deck = new[] { "scout_jeep", "armored_car", "tank_destroyer", "wheeled_gun", "recon_drone", "command_vehicle", "mlrs", "ifv" } },
+            new() { Name = "Drones", Deck = new[] { "strike_drone", "fpv_carrier", "shahed_truck", "recon_drone", "swarm_carrier", "ew_jammer", "ifv", "aa_vehicle" } },
             new() { Name = "Blitz", Deck = new[] { "scout_jeep", "armored_car", "light_tank", "rocket_technical", "wheeled_gun", "ifv", "zu23_technical", "vbied" } },
             // Towers are fought over in Defend (the base's) more than in Conquest.
-            new() { Name = "Fortress", Deck = new[] { "bunker_vehicle", "engineer_vehicle", "main_battle_tank", "tank_destroyer", "mlrs", "aa_vehicle", "ifv", "heavy_tank" },
-                Supports = new[] { "field_tower", "artillery_barrage", "repair_drop", "smoke_screen" }, Mode = GameModeKind.Defend },
-            new() { Name = "Artillery", Deck = new[] { "artillery", "mlrs", "mortar_carrier", "heavy_rocket_artillery", "siege_tank", "counter_battery_radar", "ifv", "main_battle_tank" } },
+            new() { Name = "Fortress", Deck = new[] { "siege_tank", "engineer_vehicle", "main_battle_tank", "tank_destroyer", "mlrs", "aa_vehicle", "ifv", "heavy_tank" },
+                Supports = new[] { "field_tower", "artillery_barrage", "repair_drop", "remote_mines" }, Mode = GameModeKind.Defend },
+            new() { Name = "Artillery", Deck = new[] { "artillery", "mlrs", "mortar_carrier", "heavy_rocket_artillery", "siege_tank", "command_vehicle", "ifv", "main_battle_tank" } },
             new() { Name = "LongGame", Deck = ModeBalanceMeasure.SampleDeck, Minutes = 12f },
             new() { Name = "Points", Deck = new[] { "ifv", "armored_car", "light_tank", "main_battle_tank", "scout_jeep", "tank_destroyer", "aa_vehicle", "mlrs" } },
             new() { Name = "NoPoints", Deck = ModeBalanceMeasure.SampleDeck, Mode = GameModeKind.Deathmatch },
             new() { Name = "Swarm", Deck = new[] { "scout_jeep", "armored_car", "light_tank", "rocket_technical", "zu23_technical", "mortar_carrier", "aa_vehicle", "flame_tank" } },
-            new() { Name = "Heavy", Deck = new[] { "twin_tank", "railgun_truck", "bmpt", "laser_tank", "heavy_tank", "attack_helicopter", "titan_tank", "long_sam" } },
-            new() { Name = "Attrition", Deck = new[] { "tank_destroyer", "wheeled_gun", "railgun_truck", "ifv", "main_battle_tank", "aa_vehicle", "lancet_truck", "light_tank" } },
+            new() { Name = "Heavy", Deck = new[] { "twin_tank", "railgun_truck", "ifv", "laser_tank", "heavy_tank", "attack_helicopter", "titan_tank", "long_sam" } },
+            new() { Name = "Attrition", Deck = new[] { "tank_destroyer", "wheeled_gun", "railgun_truck", "ifv", "main_battle_tank", "aa_vehicle", "fpv_carrier", "light_tank" } },
             new() { Name = "Hoard", Deck = new[] { "heavy_tank", "twin_tank", "attack_helicopter", "main_battle_tank", "railgun_truck", "ifv", "aa_vehicle", "heavy_rocket_artillery" }, Minutes = 12f },
             new() { Name = "Short", Deck = ModeBalanceMeasure.SampleDeck, Minutes = 3f },
         };

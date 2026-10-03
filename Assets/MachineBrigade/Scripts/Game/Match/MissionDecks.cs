@@ -17,7 +17,7 @@ namespace MachineBrigade.Game.Match
         public static int AirMinimum => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionDecks.AirMinimum;
 
         /// <summary>The aircraft a duel's deck is topped up from, best first.</summary>
-        public static readonly string[] AirFallback = { "fighter_jet", "stealth_fighter", "wingman_drone", "attack_jet", "attack_helicopter" };
+        public static readonly string[] AirFallback = { "fighter_jet", "stealth_fighter", "attack_jet", "attack_helicopter" };
 
         public static bool AirOnly(MissionDef mission) => mission?.PlayerDeck == "air";
 

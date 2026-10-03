@@ -188,7 +188,7 @@ def muzzles(data):
 
 # ---------------------------------------------------------------------------------------------------- 5. previews
 
-AMPHIBIOUS = {"amphib_light_vehicle", "light_tank", "hover_gunboat", "landing_hovercraft"}
+AMPHIBIOUS = {"light_tank", "hover_gunboat", "landing_hovercraft"}
 RAIL_UNITS = {"armored_train", "nuke_train", "rail_supergun"}
 FRAMES = None
 

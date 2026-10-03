@@ -67,15 +67,6 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void TheTurtleShedStopsMostOfADronesDamage()
-        {
-            var catalog = GameContent.LoadCatalog();
-            Assert.Less(catalog.Vehicles["turtle_tank"].DroneArmor, 0.5f);
-            Assert.IsTrue(catalog.Vehicles["turtle_tank"].MineProof);
-            Assert.AreEqual(MountAim.Hull, catalog.Vehicles["turtle_tank"].Mounts[0].Aim, "its gun cannot turn under the shed");
-        }
-
-        [Test]
         public void TheEngineerMendsATowerSlowly()
         {
             var world = Field();

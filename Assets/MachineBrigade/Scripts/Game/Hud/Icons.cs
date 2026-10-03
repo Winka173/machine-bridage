@@ -147,7 +147,6 @@ namespace MachineBrigade.Game.Hud
             ["atgm"] = "<rect x=\"2\" y=\"14\" width=\"17\" height=\"6\" rx=\"3\"/><path d=\"M4 14l2-3h10l2 3M9 11l9-5M11 11l9-4\"/>",
             ["siegemortar"] = "<rect x=\"2\" y=\"14\" width=\"17\" height=\"6\" rx=\"3\"/><path d=\"M4 14l2-3h8l2 3M13 11 7 4M15 11 9 4M6.5 4h3\"/>",
             ["turtle"] = "<rect x=\"3\" y=\"15\" width=\"16\" height=\"5\" rx=\"2.5\"/><path d=\"M2 15l3-6h13l2 6ZM18 12h4\"/><circle cx=\"21.5\" cy=\"18\" r=\"1.5\"/>",
-            ["bmpt"] = "<rect x=\"2\" y=\"14\" width=\"18\" height=\"6\" rx=\"3\"/><path d=\"M6 14v-3h9v3M15 11.5h7M15 13h6M7 11V9h4v2M20 14l2-1\"/>",
             ["truckgun"] = "<path d=\"M2 16v-4h4l2-2h3v6M11 16h9v-3h-9ZM14 13l8-6\"/><circle cx=\"5\" cy=\"17.5\" r=\"1.8\"/><circle cx=\"13\" cy=\"17.5\" r=\"1.8\"/><circle cx=\"18\" cy=\"17.5\" r=\"1.8\"/>",
             ["grad"] = "<path d=\"M2 16v-4h4l2-3h2v7\"/><rect x=\"10\" y=\"10\" width=\"11\" height=\"5\" rx=\"1\"/><path d=\"M11 12h9M11 13.5h9\"/><circle cx=\"5\" cy=\"17.5\" r=\"1.8\"/><circle cx=\"12\" cy=\"17.5\" r=\"1.8\"/><circle cx=\"18\" cy=\"17.5\" r=\"1.8\"/>",
             ["thermo"] = "<rect x=\"2\" y=\"15\" width=\"16\" height=\"5\" rx=\"2.5\"/><path d=\"M5 15l3-5h10l2 3-12 2M9 12h8\"/>",

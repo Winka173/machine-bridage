@@ -40,9 +40,9 @@ namespace MachineBrigade.Tests
         {
             var catalog = GameContent.LoadCatalog();
             // Prompt 32 L1: the cards that gained branches by the merge have no <tower>_a/_b art yet (Docs/ai/LOCAL_TODO.md).
-            var artPending = new HashSet<string> { "at_gun_emplacement", "searchlight", "inflatable_decoy", "heavy_flak_tower", "laser_ad_station" };
+            var artPending = new HashSet<string> { "laser_ad_station" };
             var towers = TowerCards.All(catalog).Where(t => TowerCards.Branches(catalog, t).Count == 2 && !artPending.Contains(t)).ToList();
-            Assert.GreaterOrEqual(towers.Count, 16, "every tower of the spec has two branches");
+            Assert.GreaterOrEqual(towers.Count, 12, "every tower of the spec has two branches (14 cards after play-test 14)");
             var problems = new List<string>();
             foreach (var tower in towers)
             {
@@ -86,7 +86,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual((3, 1), TowerRankDetails.Tier(3));
             Assert.AreEqual((5, 2), TowerRankDetails.Tier(5));
             Assert.AreEqual((6, 2), TowerRankDetails.Tier(7), "a branch keeps six bars and the heavy plates");
-            foreach (var model in new[] { "gun_turret", "mg_bunker", "guard_tower", "heavy_turret", "gun_turret_b", "minefield" })
+            foreach (var model in new[] { "gun_turret", "mg_bunker", "guard_tower", "heavy_turret", "gun_turret_b" })
             {
                 var one = TowerRankDetails.For(model, 1, false);
                 var three = TowerRankDetails.For(model, 3, false);
@@ -97,12 +97,9 @@ namespace MachineBrigade.Tests
                 Assert.Less(three.vertexCount, five.vertexCount, model + ": more at rank 5");
                 Assert.LessOrEqual(lean.vertexCount, five.vertexCount, model + ": leaner on Low graphics");
                 Assert.AreEqual(2, five.subMeshCount, model + ": plates and bars");
-                if (model != "minefield")
-                {
-                    Assert.AreEqual(0, one.GetTriangles(0).Length, model + ": no plates below rank 3");
-                    Assert.Greater(three.GetTriangles(0).Length, 0, model + ": plates at rank 3");
-                    Assert.Greater(five.bounds.size.magnitude, 0.5f);
-                }
+                Assert.AreEqual(0, one.GetTriangles(0).Length, model + ": no plates below rank 3");
+                Assert.Greater(three.GetTriangles(0).Length, 0, model + ": plates at rank 3");
+                Assert.Greater(five.bounds.size.magnitude, 0.5f);
                 // Faces point out (wound clockwise seen from outside, as Unity draws them).
                 var verts = five.vertices;
                 var normals = five.normals;

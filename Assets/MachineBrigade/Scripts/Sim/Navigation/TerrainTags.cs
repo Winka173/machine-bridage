@@ -74,7 +74,7 @@ namespace MachineBrigade.Sim.Navigation
         public static float MinPathCost => 1f / RoadSpeed;
 
         /// <summary>The amphibious and air-cushion vehicles, by id (the light tank is the amphibious light tank in the game's names).</summary>
-        private static readonly HashSet<string> Waders = new() { "light_tank", "amphib_light_vehicle", "hover_gunboat", "landing_hovercraft" };
+        private static readonly HashSet<string> Waders = new() { "light_tank", "hover_gunboat", "landing_hovercraft" };
 
         /// <summary>Whether shallow water does not slow it: an amphibious vehicle, an air-cushion one (the hovercraft frame).</summary>
         public static bool Wades(VehicleDef def) => Waders.Contains(def.Id) || def.FrameId == "hovercraft";

@@ -63,7 +63,7 @@ OPEN = {'helipad': '#d8d8d0', 'base_gate': '#ffd000'}
 LABELLED = {'hangar', 'highrise_a', 'highrise_b', 'skyscraper', 'parking_garage', 'temple_ruin', 'fuel_depot',
             'vehicle_hangar', 'ammo_dump', 'stilt_hut', 'control_tower', 'radar_dome'}
 UNIT_LABELS = {'gun_turret': 'GT', 'aa_turret': 'AA', 'rocket_turret': 'RT', 'mg_bunker': 'MG',
-               'artillery_emplacement': 'AR', 'guard_tower': 'TW'}
+               'guard_tower': 'TW'}
 GROUND = {'volcanic': '#4a4442', 'jungle': '#4f6a3e', 'urban': '#8a8a86', 'snow': '#dfe6ea', 'desert': '#cfae7c'}
 
 

@@ -109,16 +109,16 @@ namespace MachineBrigade.Tests
         {
             // Few towers: a bare HQ (the fortress's walls, gates and buildings stay).
             "light" => BaseLoadout.HqOnly(1),
-            // Every hardpoint filled, any tower (the dragon's teeth and minefields among them).
+            // Every hardpoint filled, any tower.
             "full" => BaseLoadout.ForAi(world.Catalog, "Hard", "kessler", seed * 3 + team),
-            // Obstacles in the hardpoints: dragon's teeth in the small ones, gun pits and big turrets.
+            // Every hardpoint filled by hand (play-test 14 deleted the dragon's teeth and minefields that blocked the small ones).
             _ => new BaseLoadout
             {
                 HqLevel = 5,
-                Small = { "dragons_teeth", "dragons_teeth", "minefield", "dragons_teeth", "dragons_teeth", "aa_turret" },
+                Small = { "guard_tower", "mg_bunker", "cp_relay", "ew_tower", "guard_tower", "aa_turret" },
                 Medium = { "gun_turret", "c_ram", "gun_turret" },
                 Large = { "heavy_turret", "drone_hangar" },
-                Utilities = { "repair_bay", "ammo_depot", "radar_station" },
+                Utilities = { "repair_bay", "logistics_station", "airfield" },
             },
         };
 

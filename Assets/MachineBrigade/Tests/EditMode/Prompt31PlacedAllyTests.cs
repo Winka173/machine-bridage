@@ -121,7 +121,7 @@ namespace MachineBrigade.Tests
         // ================================================================== the battle
 
         private const string Deck = "\"vehicleIds\": [\"scout_jeep\", \"armored_car\", \"ifv\", \"main_battle_tank\", \"light_tank\", \"tank_destroyer\", " +
-                                    "\"aa_vehicle\", \"mortar_carrier\"], \"supportIds\": [\"smoke_screen\", \"artillery_barrage\"], \"loanedCards\": [], " +
+                                    "\"aa_vehicle\", \"mortar_carrier\"], \"supportIds\": [\"repair_drop\", \"artillery_barrage\"], \"loanedCards\": [], " +
                                     "\"specialRules\": [], \"status\": \"MAKE_LATER\"";
 
         private static MissionDef Escort() => MissionDef.ListFromJson("{\"missions\": [{\"id\": \"p31esc\", \"map\": \"field\", \"goal\": \"Escort\", " +

@@ -203,13 +203,12 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>
         /// Play-test 6 (DECISIONS 21H): launchers whose erector is drawn under other names than the barrel parts: they
         /// join the elevating group, so the view can raise them to fire (the Iskander's erector and missiles, the Shahed
-        /// truck's launch rack and drone, the Lancet truck's cell box).
+        /// truck's launch rack and drone).
         /// </summary>
         private static readonly Dictionary<string, Regex> ErectorParts = new()
         {
             ["ballistic_launcher"] = new Regex("^(erector|missile_)", RegexOptions.IgnoreCase),
             ["shahed_truck"] = new Regex("^(drone_|rack|ram_rods|rams)", RegexOptions.IgnoreCase),
-            ["lancet_truck"] = new Regex("^(box_|cell|munition|ram_rods|rams|stripes)", RegexOptions.IgnoreCase),
         };
 
         /// <summary>

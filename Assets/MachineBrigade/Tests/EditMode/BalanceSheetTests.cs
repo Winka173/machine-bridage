@@ -145,7 +145,7 @@ namespace MachineBrigade.Tests
             var launcher = System.Text.RegularExpressions.Regex.Replace(text.Substring(s, e - s), "\"weapon\": \"[^\"]+\"", "\"weapon\": \"" + missile + "\"");
             launcher = System.Text.RegularExpressions.Regex.Replace(launcher, "\"secondary\": \\[[^\\]]*\\]", "\"secondary\": []");
             text = text.Substring(0, s) + launcher + text.Substring(e);
-            foreach (var id in new[] { "fighter_jet", "wingman_drone" })
+            foreach (var id in new[] { "fighter_jet", "strike_drone" })
             {
                 (s, e) = EntrySpan(text, id);
                 var entry = System.Text.RegularExpressions.Regex.Replace(text.Substring(s, e - s), "\"skills\": \\[[^\\]]*\\]", "\"skills\": []");
@@ -210,7 +210,7 @@ namespace MachineBrigade.Tests
                 var w = catalog.Weapons[id];
                 // Long enough for about 30 missiles a seed (a launcher's magazine and restock counted).
                 var seconds = Math.Min(400f, 30f * w.CycleSeconds / Math.Max(1, w.RoundsPerCycle) + (w.Ammo > 0 ? 30f / w.Ammo * w.MagazineReload : 0f));
-                foreach (var target in new[] { "fighter_jet", "wingman_drone" })
+                foreach (var target in new[] { "fighter_jet", "strike_drone" })
                 {
                     int fired = 0, hits = 0;
                     foreach (var seed in new[] { 3, 7, 11, 19 })

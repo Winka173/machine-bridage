@@ -48,9 +48,8 @@ namespace MachineBrigade.Tests
             var d = catalog.Vehicle("armored_bulldozer");
             Assert.AreEqual(7, d.CpCost);
             // The brief asked for 3,500; 3,250 (the turtle tank's) keeps the turtle the better sponge (see DECISIONS).
-            // DECISIONS 20X: toughness 2.2 (was 2.5), so 1,300 in the data is 2,860 in game; the turtle's the same.
+            // DECISIONS 20X: toughness 2.2 (was 2.5), so 1,300 in the data is 2,860 in game.
             Assert.AreEqual(2860f, d.MaxHp, 1f, "2,860 health in game");
-            Assert.AreEqual(catalog.Vehicle("turtle_tank").MaxHp, d.MaxHp, 1f, "the turtle tank's health");
             Assert.AreEqual(ArmorClass.Heavy, d.Armor);
             Assert.AreEqual(4f, d.Speed, 1e-3f, "prompt 25's balance sheet: 4 m/s (a D9R does about 15 km/h)");
             Assert.AreEqual(UnitClass.Heavy, d.Class);
@@ -65,7 +64,7 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void TheBladeTearsDownATowerFasterThanATurtleTankAndNotATank()
+        public void TheBladeTearsDownATowerFasterThanATanksGunAndNotATank()
         {
             float Seconds(string attacker, string target)
             {
@@ -83,23 +82,11 @@ namespace MachineBrigade.Tests
                 return s;
             }
             var dozer = Seconds("armored_bulldozer", "gun_turret");
-            var turtle = Seconds("turtle_tank", "gun_turret");
-            UnityEngine.Debug.Log($"BULLDOZER gun tower down in {dozer:0.0} s (turtle {turtle:0.0} s)");
-            Assert.Less(dozer * 2f, turtle, "at least twice as fast as the turtle tank's gun at the same price and less");
+            var gunned = Seconds("main_battle_tank", "gun_turret");
+            UnityEngine.Debug.Log($"BULLDOZER gun tower down in {dozer:0.0} s (battle tank {gunned:0.0} s)");
+            Assert.Less(dozer * 2f, gunned, "at least twice as fast as a battle tank's gun (play-test 14 deleted the turtle tank)");
             var tank = Seconds("armored_bulldozer", "main_battle_tank");
             Assert.Greater(tank, dozer, "a tank takes it longer than a tower: it is no tank killer");
-        }
-
-        [Test]
-        public void TheBulldozerPloughsDragonsTeethFlat()
-        {
-            var world = Field();
-            var dozer = world.SpawnVehicle("armored_bulldozer", 0, new Vector2(0f, -10f), 0f);
-            var teeth = world.SpawnVehicle("dragons_teeth", 1, new Vector2(0f, 4f), 0f);
-            world.Submit(new Command(CommandType.Attack, 0, new[] { dozer.Id }, teeth.Position, teeth.Id));
-            var events = Run(world, 12f);
-            Assert.IsFalse(teeth.IsAlive, "flattened");
-            Assert.IsTrue(events.Any(e => e.Kind == SimEventKind.TraitProc && e.DefId == "plough"));
         }
 
         [Test]

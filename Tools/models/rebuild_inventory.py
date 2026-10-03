@@ -40,8 +40,8 @@ PROGRESSION = ROOT / 'Assets' / 'MachineBrigade' / 'Scripts' / 'Game' / 'Match' 
 NOTE = re.compile(r'(model tạm|stand-?ins?|stand in|dùng tạm|temporary|placeholder)', re.I)
 DOC_NOTE = re.compile(r'(model tạm|stand-in model|placeholder|temporary model)', re.I)
 # The defs drawing another model on purpose (Docs/models/STANDIN_AUDIT.md (b), "INTENTIONAL").
-INTENTIONAL = {'elite_grad', 'spawn_bastion', 'ammo_depot', 'airfield', 'airfield.hangar', 'airfield.service',
-               'radar_station', 'shield_tower.ward', 'cp_relay.loot', 'decoy_tank', 'hydra'}
+INTENTIONAL = {'elite_grad', 'spawn_bastion', 'airfield', 'airfield.hangar', 'airfield.service',
+               'shield_tower.ward', 'cp_relay.loot', 'hydra'}
 GROUND_AIR_SEA = ('tracked', 'wheeled', 'ground', 'jet', 'helicopter', 'air_other', 'ship')
 STATIC = ('tower', 'structure', 'hq', 'obstacle')
 RANK = {'Kém': 0, 'Cần sửa': 1, 'Tốt': 2}

@@ -114,14 +114,48 @@ namespace MachineBrigade.Game.Match
         /// <summary>Owners of the APS tank get this piece: its active protection as an Epic Trophy APS module.</summary>
         public const string ApsTank = "aps_tank";
 
-        /// <summary>The card an old id stands for now (itself when it was not merged; null when it was retired).</summary>
+        /// <summary>
+        /// Play-test 14 (roster version 9, Docs/fixes/playtest14_deleted.md): the units, supports and structures the owner
+        /// deleted, with the coins a player paid for one bought in the shop or unlocked early (the price list before the
+        /// deletion). PlayerProfile.MigratePlaytest14 pays them back with the coins and blueprints spent on the card's rank.
+        /// </summary>
+        public static readonly IReadOnlyDictionary<string, int> DeletedPt14 = new Dictionary<string, int>
+        {
+            ["aa_57mm_vehicle"] = 1500, ["aerial_tanker"] = 3000, ["airborne_light_tank"] = 1500,
+            ["airborne_vehicle"] = 1500, ["ammo_depot"] = 300, ["ammo_resupply"] = 1500,
+            ["amphib_light_vehicle"] = 1500, ["artillery_emplacement"] = 300, ["at_gun_emplacement"] = 2000,
+            ["auto_loader_howitzer"] = 3000, ["bmpt"] = 800, ["bunker_vehicle"] = 1350, ["chaff_strike"] = 1500,
+            ["cluster_at_strike"] = 2500, ["coastal_ashm_vehicle"] = 3000, ["combat_wreck_car"] = 1500,
+            ["counter_battery_radar"] = 300, ["dazzler_vehicle"] = 1500, ["decoy_paradrop"] = 1500,
+            ["dragons_teeth"] = 300, ["drone_hijack_vehicle"] = 1500, ["drone_intercept_strike"] = 1500,
+            ["fibre_fpv_carrier"] = 3000, ["glide_bomber"] = 5000, ["ground_drone_carrier"] = 1500,
+            ["guided_shell_strike"] = 1500, ["gunship_heli"] = 800, ["heavy_flak_tower"] = 3000,
+            ["heavy_lift_helicopter"] = 3000, ["illum_flare_strike"] = 1500, ["inflatable_decoy"] = 2000,
+            ["instant_counter_battery"] = 2500, ["interceptor_drone_vehicle"] = 1500, ["interceptor_jet"] = 5000,
+            ["jam_storm"] = 1500, ["lancet_truck"] = 800, ["light_attack_heli"] = 3000, ["microwave_vehicle"] = 1500,
+            ["mine_rocket_truck"] = 3000, ["minefield"] = 300, ["mobile_repair_vehicle"] = 1500,
+            ["nlos_atgm_vehicle"] = 3000, ["prop_attack_plane"] = 3000, ["radar_atgm_vehicle"] = 3000,
+            ["radar_scout"] = 1500, ["radar_station"] = 300, ["radar_support_vehicle"] = 1500, ["recon_jet"] = 3000,
+            ["sead_strike"] = 1350, ["searchlight"] = 2000, ["shorad_vehicle"] = 1500, ["smoke_carrier"] = 300,
+            ["smoke_screen"] = 600, ["towed_at_gun"] = 1500, ["troop_shelter"] = 3000, ["turtle_tank"] = 800,
+            ["uav_loiter_strike_support"] = 2500, ["uav_scan"] = 600, ["visual_jammer"] = 3000,
+            ["wheeled_howitzer"] = 1500, ["wingman_drone"] = 1350,
+        };
+
+        /// <summary>Play-test 14: the deleted gunship item, and the coins one item cost (a pack of two was 1,000).</summary>
+        public const string DeletedItemPt14 = "gunship_support";
+
+        public const int DeletedItemPricePt14 = 500;
+
+        /// <summary>The card an old id stands for now (itself when it was not merged; null when it was retired or deleted).</summary>
         public static string Resolve(string id)
         {
             if (id == null) return null;
             if (Into.TryGetValue(id, out var to)) return to;
-            return Array.IndexOf(Retired, id) >= 0 ? null : id;
+            return Array.IndexOf(Retired, id) >= 0 || DeletedPt14.ContainsKey(id) ? null : id;
         }
 
-        public static bool IsGone(string id) => id != null && (Into.ContainsKey(id) || Array.IndexOf(Retired, id) >= 0);
+        public static bool IsGone(string id) =>
+            id != null && (Into.ContainsKey(id) || Array.IndexOf(Retired, id) >= 0 || DeletedPt14.ContainsKey(id));
     }
 }

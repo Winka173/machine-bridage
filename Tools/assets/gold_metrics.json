@@ -3,8 +3,6 @@
  "rule": "V2 + top 10 % per gold set (split classes, boss frames) of: visual Tốt (pass 8, not rebuilt) or rebuilt with every hard gate and soft >= 80 against the previous gold; outliers out; widened 20 / 25 % / median until every member and V2 scores 80 leave-one-out; set value = median of the members; repeated to a fixed point",
  "members": {
   "air_other": [
-   "airborne_light_tank_chute",
-   "airborne_vehicle_chute"
   ],
   "boss": [
    "drone_mothership",
@@ -44,7 +42,6 @@
    "elite_attack_helicopter"
   ],
   "helicopter_light": [
-   "light_attack_heli",
    "scout_heli"
   ],
   "hq": [
@@ -54,32 +51,23 @@
   "jet": [
    "attack_jet",
    "fighter_jet",
-   "prop_attack_plane",
-   "strike_drone",
-   "uav_loiter_strike",
-   "wingman_drone"
+   "strike_drone"
   ],
   "jet_drone": [
    "recon_drone",
    "strike_drone"
   ],
   "jet_fighter": [
-   "fighter_jet",
-   "prop_attack_plane"
+   "fighter_jet"
   ],
   "jet_heavy": [
    "heavy_bomber",
    "swarm_carrier"
   ],
   "obstacle": [
-   "drone_net_tower",
-   "minefield",
-   "minefield_a",
-   "minefield_b"
+   "drone_net_tower"
   ],
   "obstacle_flat": [
-   "dragons_teeth_a",
-   "minefield_a"
   ],
   "obstacle_tall": [
    "drone_net_tower"
@@ -97,46 +85,37 @@
    "gun_turret_a",
    "manpads_tower",
    "mg_bunker_a",
-   "recoilless_gun_tower",
-   "searchlight"
+   "recoilless_gun_tower"
   ],
   "tower_big": [
    "c_ram_b",
    "gun_turret",
-   "gun_turret_b",
-   "visual_jammer"
+   "gun_turret_b"
   ],
   "tower_mast": [
    "ew_tower_a",
    "ew_tower_b"
   ],
   "tower_small": [
-   "mg_bunker_a",
-   "searchlight"
+   "mg_bunker_a"
   ],
   "tracked": [
-   "airborne_light_tank",
-   "amphib_light_vehicle",
    "artillery",
    "elite_heavy_tank",
    "elite_mbt",
    "elite_tank_destroyer",
    "engineer_vehicle",
    "flame_tank",
-   "ground_drone_carrier",
    "heavy_tank",
    "main_battle_tank",
    "mine_layer",
    "mortar_carrier",
    "next_gen_tank",
-   "radar_atgm_vehicle",
    "sam_launcher",
-   "smoke_carrier",
    "tank_destroyer",
    "twin_tank"
   ],
   "tracked_heavy": [
-   "airborne_light_tank",
    "artillery",
    "elite_mbt",
    "heavy_tank",
@@ -145,21 +124,15 @@
    "twin_tank"
   ],
   "tracked_light": [
-   "airborne_vehicle",
-   "ground_drone_carrier"
   ],
   "wheeled": [
-   "fibre_fpv_carrier",
    "long_sam",
-   "radar_support_vehicle",
    "railgun_truck",
    "vbied"
   ],
   "wheeled_heavy": [
-   "lancet_truck",
    "long_sam",
-   "railgun_truck",
-   "wheeled_howitzer"
+   "railgun_truck"
   ],
   "wheeled_light": [
    "recoilless_jeep",
@@ -562,61 +535,6 @@
   "wheeled_light": "top 20 % of 11 candidates; outliers left out: scout_jeep"
  },
  "member_metrics": {
-  "airborne_light_tank": {
-   "silhouette": 1.3552,
-   "edges": 0.2867,
-   "regions": 7.4634,
-   "parts_m2": 0.622,
-   "tier2_m2": 1.122,
-   "tier3_m2": 0.8293,
-   "asym_raw": 0.005,
-   "sloped_dirs": 6.0,
-   "zones": 11.0
-  },
-  "airborne_light_tank_chute": {
-   "silhouette": 3.1335,
-   "edges": 0.2284,
-   "regions": 7.7304,
-   "parts_m2": 0.7059,
-   "tier2_m2": 0.8916,
-   "tier3_m2": 1.2213,
-   "asym_raw": 0.0092,
-   "sloped_dirs": 6.0,
-   "zones": 13.0
-  },
-  "airborne_vehicle": {
-   "silhouette": 1.5827,
-   "edges": 0.3322,
-   "regions": 12.588,
-   "parts_m2": 0.702,
-   "tier2_m2": 1.3578,
-   "tier3_m2": 0.8563,
-   "asym_raw": 0.0028,
-   "sloped_dirs": 6.0,
-   "zones": 10.0
-  },
-  "airborne_vehicle_chute": {
-   "silhouette": 3.3146,
-   "edges": 0.1843,
-   "regions": 6.233,
-   "parts_m2": 0.9068,
-   "tier2_m2": 0.573,
-   "tier3_m2": 1.6498,
-   "asym_raw": 0.4845,
-   "sloped_dirs": 3.0,
-   "zones": 12.0
-  },
-  "amphib_light_vehicle": {
-   "silhouette": 1.3994,
-   "edges": 0.2015,
-   "regions": 5.6118,
-   "parts_m2": 0.6569,
-   "tier2_m2": 1.3995,
-   "tier3_m2": 1.171,
-   "asym_raw": 0.0086,
-   "sloped_dirs": 6.0,
-   "zones": 8.0
-  },
   "armored_train": {
    "silhouette": 1.6263,
    "edges": 0.2394,
@@ -693,17 +611,6 @@
    "asym_raw": 0.001,
    "sloped_dirs": 4.0,
    "zones": 22.0
-  },
-  "dragons_teeth_a": {
-   "silhouette": 2.9043,
-   "edges": 0.2157,
-   "regions": 9.4157,
-   "parts_m2": 1.6331,
-   "tier2_m2": 0.6268,
-   "tier3_m2": 6.3345,
-   "asym_raw": 0.1359,
-   "sloped_dirs": 26.0,
-   "zones": 11.0
   },
   "drone_mothership": {
    "silhouette": 1.9328,
@@ -804,17 +711,6 @@
    "sloped_dirs": 18.0,
    "zones": 17.0
   },
-  "fibre_fpv_carrier": {
-   "silhouette": 1.7341,
-   "edges": 0.2622,
-   "regions": 10.3585,
-   "parts_m2": 1.0259,
-   "tier2_m2": 1.0813,
-   "tier3_m2": 1.8992,
-   "asym_raw": 0.015,
-   "sloped_dirs": 4.0,
-   "zones": 12.0
-  },
   "fighter_jet": {
    "silhouette": 1.4455,
    "edges": 0.229,
@@ -858,17 +754,6 @@
    "asym_raw": 0.0738,
    "sloped_dirs": 6.0,
    "zones": 10.0
-  },
-  "ground_drone_carrier": {
-   "silhouette": 1.5515,
-   "edges": 0.2894,
-   "regions": 8.2902,
-   "parts_m2": 0.7975,
-   "tier2_m2": 1.393,
-   "tier3_m2": 1.2315,
-   "asym_raw": 0.0007,
-   "sloped_dirs": 6.0,
-   "zones": 8.0
   },
   "guard_tower": {
    "silhouette": 2.98,
@@ -958,17 +843,6 @@
    "sloped_dirs": 6.0,
    "zones": 9.0
   },
-  "lancet_truck": {
-   "silhouette": 1.8937,
-   "edges": 0.2699,
-   "regions": 7.4263,
-   "parts_m2": 0.854,
-   "tier2_m2": 1.0741,
-   "tier3_m2": 0.9068,
-   "asym_raw": 0.029,
-   "sloped_dirs": 6.0,
-   "zones": 10.0
-  },
   "leviathan": {
    "silhouette": 1.4244,
    "edges": 0.113,
@@ -979,17 +853,6 @@
    "asym_raw": 0.0148,
    "sloped_dirs": 8.0,
    "zones": 17.0
-  },
-  "light_attack_heli": {
-   "silhouette": 2.0899,
-   "edges": 0.373,
-   "regions": 24.7902,
-   "parts_m2": 3.5441,
-   "tier2_m2": 2.8035,
-   "tier3_m2": 7.8287,
-   "asym_raw": 0.0777,
-   "sloped_dirs": 35.0,
-   "zones": 9.0
   },
   "long_sam": {
    "silhouette": 1.7703,
@@ -1057,39 +920,6 @@
    "sloped_dirs": 5.0,
    "zones": 9.0
   },
-  "minefield": {
-   "silhouette": 2.6594,
-   "edges": 0.2166,
-   "regions": 11.4589,
-   "parts_m2": 0.9798,
-   "tier2_m2": 2.5268,
-   "tier3_m2": 1.186,
-   "asym_raw": 0.0027,
-   "sloped_dirs": 4.0,
-   "zones": 12.0
-  },
-  "minefield_a": {
-   "silhouette": 2.5345,
-   "edges": 0.257,
-   "regions": 13.064,
-   "parts_m2": 1.3968,
-   "tier2_m2": 2.5753,
-   "tier3_m2": 1.4986,
-   "asym_raw": 0.0007,
-   "sloped_dirs": 18.0,
-   "zones": 14.0
-  },
-  "minefield_b": {
-   "silhouette": 2.5137,
-   "edges": 0.2351,
-   "regions": 10.8654,
-   "parts_m2": 1.271,
-   "tier2_m2": 2.4954,
-   "tier3_m2": 1.1935,
-   "asym_raw": 0.002,
-   "sloped_dirs": 19.0,
-   "zones": 13.0
-  },
   "missile_boat": {
    "silhouette": 1.7201,
    "edges": 0.2122,
@@ -1132,39 +962,6 @@
    "tier3_m2": 5.4153,
    "asym_raw": 0.0173,
    "sloped_dirs": 15.0,
-   "zones": 11.0
-  },
-  "prop_attack_plane": {
-   "silhouette": 1.5707,
-   "edges": 0.2957,
-   "regions": 12.8858,
-   "parts_m2": 1.7281,
-   "tier2_m2": 1.4645,
-   "tier3_m2": 3.0169,
-   "asym_raw": 0.0214,
-   "sloped_dirs": 16.0,
-   "zones": 10.0
-  },
-  "radar_atgm_vehicle": {
-   "silhouette": 1.6549,
-   "edges": 0.3207,
-   "regions": 10.1414,
-   "parts_m2": 0.4818,
-   "tier2_m2": 1.3542,
-   "tier3_m2": 0.7292,
-   "asym_raw": 0.0006,
-   "sloped_dirs": 5.0,
-   "zones": 8.0
-  },
-  "radar_support_vehicle": {
-   "silhouette": 1.7752,
-   "edges": 0.2626,
-   "regions": 10.8223,
-   "parts_m2": 1.0299,
-   "tier2_m2": 1.114,
-   "tier3_m2": 1.198,
-   "asym_raw": 0.0123,
-   "sloped_dirs": 5.0,
    "zones": 11.0
   },
   "rail_supergun": {
@@ -1266,17 +1063,6 @@
    "sloped_dirs": 48.0,
    "zones": 8.0
   },
-  "searchlight": {
-   "silhouette": 1.8197,
-   "edges": 0.2987,
-   "regions": 13.0109,
-   "parts_m2": 0.9608,
-   "tier2_m2": 0.7112,
-   "tier3_m2": 0.811,
-   "asym_raw": 0.054,
-   "sloped_dirs": 5.0,
-   "zones": 12.0
-  },
   "silver_bug": {
    "silhouette": 1.3485,
    "edges": 0.1301,
@@ -1287,17 +1073,6 @@
    "asym_raw": 0.0173,
    "sloped_dirs": 17.0,
    "zones": 12.0
-  },
-  "smoke_carrier": {
-   "silhouette": 1.5235,
-   "edges": 0.2897,
-   "regions": 10.307,
-   "parts_m2": 0.8197,
-   "tier2_m2": 1.3816,
-   "tier3_m2": 0.8842,
-   "asym_raw": 0.1218,
-   "sloped_dirs": 10.0,
-   "zones": 11.0
   },
   "strike_drone": {
    "silhouette": 1.3868,
@@ -1376,17 +1151,6 @@
    "sloped_dirs": 7.0,
    "zones": 10.0
   },
-  "uav_loiter_strike": {
-   "silhouette": 1.3436,
-   "edges": 0.1917,
-   "regions": 14.1363,
-   "parts_m2": 2.7948,
-   "tier2_m2": 1.8884,
-   "tier3_m2": 4.6076,
-   "asym_raw": 0.0316,
-   "sloped_dirs": 32.0,
-   "zones": 8.0
-  },
   "vbied": {
    "silhouette": 1.3296,
    "edges": 0.315,
@@ -1397,39 +1161,6 @@
    "asym_raw": 0.0316,
    "sloped_dirs": 12.0,
    "zones": 11.0
-  },
-  "visual_jammer": {
-   "silhouette": 2.8148,
-   "edges": 0.2137,
-   "regions": 8.4724,
-   "parts_m2": 0.5904,
-   "tier2_m2": 0.8117,
-   "tier3_m2": 0.3736,
-   "asym_raw": 0.0769,
-   "sloped_dirs": 4.0,
-   "zones": 19.0
-  },
-  "wheeled_howitzer": {
-   "silhouette": 1.5733,
-   "edges": 0.3152,
-   "regions": 11.3434,
-   "parts_m2": 0.8726,
-   "tier2_m2": 1.0972,
-   "tier3_m2": 0.743,
-   "asym_raw": 0.0066,
-   "sloped_dirs": 4.0,
-   "zones": 13.0
-  },
-  "wingman_drone": {
-   "silhouette": 1.3941,
-   "edges": 0.3381,
-   "regions": 18.5847,
-   "parts_m2": 1.8961,
-   "tier2_m2": 1.5315,
-   "tier3_m2": 2.4796,
-   "asym_raw": 0.017,
-   "sloped_dirs": 30.0,
-   "zones": 9.0
   },
   "zu23_technical": {
    "silhouette": 1.573,
@@ -1452,66 +1183,44 @@
    "silver_bug"
   ],
   "gate": [
-   "aa_57mm_vehicle",
    "aa_gun_tower",
    "aa_gun_vehicle",
    "aa_turret",
    "aa_turret_a",
    "aa_turret_b",
    "aa_vehicle",
-   "aerial_tanker",
-   "airborne_light_tank",
-   "airborne_light_tank_chute",
-   "airborne_vehicle",
-   "airborne_vehicle_chute",
    "ammo_carrier",
-   "amphib_light_vehicle",
    "armored_bulldozer",
    "armored_car",
    "armored_train",
    "artillery",
-   "artillery_emplacement",
-   "artillery_emplacement_a",
-   "artillery_emplacement_b",
-   "at_gun_emplacement",
    "atgm_tower",
    "atgm_tower_a",
    "atgm_tower_b",
    "attack_jet",
-   "auto_loader_howitzer",
    "ballistic_launcher",
    "barrage_balloon",
    "behemoth",
    "behemoth_inferno",
    "behemoth_tempest",
-   "bmpt",
    "bridging_vehicle",
    "bulwark_post",
-   "bunker_vehicle",
    "c_ram",
    "c_ram_a",
    "c_ram_b",
    "caspian",
    "cerberus",
-   "coastal_ashm_vehicle",
-   "combat_wreck_car",
    "command_airship",
    "command_hq",
    "command_vehicle",
-   "counter_battery_radar",
    "cp_relay",
    "cp_relay_a",
    "cp_relay_b",
    "daedalus",
-   "dazzler_vehicle",
    "demolition_line_vehicle",
-   "dragons_teeth",
-   "dragons_teeth_a",
-   "dragons_teeth_b",
    "drone_hangar",
    "drone_hangar_a",
    "drone_hangar_b",
-   "drone_hijack_vehicle",
    "drone_mothership",
    "drone_net_tower",
    "earth_borer",
@@ -1527,29 +1236,23 @@
    "ew_tower",
    "ew_tower_a",
    "ew_tower_b",
-   "fibre_fpv_carrier",
    "flame_tank",
    "flare_searchlight_tower",
    "flare_tower",
    "fortress_bastion",
    "fortress_hive",
-   "glide_bomber",
    "gps_jammer_vehicle",
    "grad_truck",
    "ground_cruise_missile_vehicle",
-   "ground_drone_carrier",
    "guard_tower",
    "guard_tower_a",
    "guard_tower_b",
    "gun_turret",
    "gun_turret_a",
    "gun_turret_b",
-   "gunship_heli",
    "headquarters",
    "heavy_aa",
    "heavy_bomber",
-   "heavy_flak_tower",
-   "heavy_lift_helicopter",
    "heavy_rocket_artillery",
    "heavy_tank",
    "heavy_turret",
@@ -1559,18 +1262,15 @@
    "hydra_sub",
    "hyperion",
    "ifv",
-   "interceptor_jet",
    "iron_beam",
    "ixion",
    "kraken",
    "kronos",
-   "lancet_truck",
    "landing_craft",
    "landing_hovercraft",
    "laser_ad_station",
    "laser_tank",
    "leviathan",
-   "light_attack_heli",
    "light_tank",
    "logistics_station",
    "long_sam",
@@ -1580,30 +1280,19 @@
    "mg_bunker_a",
    "mg_bunker_b",
    "mine_layer",
-   "mine_rocket_truck",
-   "minefield",
-   "minefield_a",
-   "minefield_b",
    "missile_battery",
    "missile_battery_a",
    "missile_battery_b",
    "missile_boat",
    "mlrs",
    "mobile_fortress",
-   "mobile_repair_vehicle",
    "moloch",
    "monster",
    "mortar_carrier",
    "next_gen_tank",
-   "nlos_atgm_vehicle",
    "nuke_train",
    "nyx",
    "one_shot_atgm_tower",
-   "prop_attack_plane",
-   "radar_atgm_vehicle",
-   "radar_scout",
-   "radar_site",
-   "radar_support_vehicle",
    "rail_supergun",
    "railgun_truck",
    "recoilless_gun_tower",
@@ -1620,17 +1309,14 @@
    "scout_jeep",
    "sea_corvette",
    "sea_cruiser",
-   "searchlight",
    "shahed_truck",
    "shield_carrier",
    "shield_tower",
    "shield_tower_a",
    "shield_tower_b",
-   "shorad_vehicle",
    "siege_tank",
    "sky_fortress",
    "sky_gunship",
-   "smoke_carrier",
    "sp_mortar",
    "strike_drone",
    "stymphalos",
@@ -1641,17 +1327,11 @@
    "targeting_station",
    "thermobaric_launcher",
    "titan_tank",
-   "towed_at_gun",
-   "turtle_tank",
    "twin_rotor_gunship",
    "twin_tank",
    "typhon",
-   "uav_loiter_strike",
    "vbied",
-   "visual_jammer",
    "wheeled_gun",
-   "wheeled_howitzer",
-   "wingman_drone",
    "zu23_technical"
   ]
  },

@@ -38,7 +38,7 @@ namespace MachineBrigade.Game.Match
         public static readonly string[] FormerStarters = { "light_tank", "aa_vehicle", "artillery" };
 
         /// <summary>The sheet's story loot: won with its story beat, never sold (<see cref="CanBuyEarly"/>).</summary>
-        public static readonly string[] SheetLoot = { "wingman_drone", "swarm_carrier", "bunker_vehicle", "railgun_truck" };
+        public static readonly string[] SheetLoot = { "swarm_carrier", "railgun_truck" };
 
         /// <summary>The sheet's "Mua sớm": coins that open a campaign vehicle before its mission is won.</summary>
         private static readonly Dictionary<string, int> EarlyPrices = new()
@@ -51,9 +51,7 @@ namespace MachineBrigade.Game.Match
             ["aa_vehicle"] = 300,
             ["ammo_carrier"] = 300,
             ["artillery"] = 300,
-            ["counter_battery_radar"] = 300,
             ["flame_tank"] = 300,
-            ["smoke_carrier"] = 300,
             ["vbied"] = 300,
             ["attack_helicopter"] = 300,
             ["fighter_jet"] = 300,
@@ -62,7 +60,6 @@ namespace MachineBrigade.Game.Match
             ["sam_launcher"] = 300,
             ["scout_heli"] = 300,
             ["armored_bulldozer"] = 800,
-            ["bmpt"] = 800,
             ["command_vehicle"] = 800,
             ["heavy_aa"] = 800,
             ["mlrs"] = 800,
@@ -70,10 +67,8 @@ namespace MachineBrigade.Game.Match
             ["wheeled_gun"] = 800,
             ["ew_jammer"] = 800,
             ["fpv_carrier"] = 800,
-            ["lancet_truck"] = 800,
             ["shahed_truck"] = 800,
             ["strike_drone"] = 800,
-            ["gunship_heli"] = 800,
             ["heavy_tank"] = 800,
             ["iron_beam"] = 800,
             ["twin_tank"] = 800,
@@ -89,12 +84,11 @@ namespace MachineBrigade.Game.Match
             ["sky_gunship"] = 2500,
             ["stealth_bomber"] = 2500,
             ["titan_tank"] = 2500,
-            ["turtle_tank"] = 800,
             ["shield_carrier"] = 1500,
         };
         // </unlock-sheet>
 
-        public static readonly string[] StarterSupports = { "artillery_barrage", "smoke_screen" };
+        public static readonly string[] StarterSupports = { "artillery_barrage", "repair_drop" };
 
         /// <summary>The towers a new base has: light towers and the gun turret (HQ level 1 opens three small slots and one medium).</summary>
         public static readonly string[] StarterTowers = { "guard_tower", "mg_bunker", "aa_turret", "gun_turret" };
@@ -113,63 +107,28 @@ namespace MachineBrigade.Game.Match
         /// </summary>
         private static readonly Dictionary<string, int> NewContentPrices = new()
         {
-            ["heavy_flak_tower"] = 3000,
             ["aa_gun_vehicle"] = 1500,
-            ["shorad_vehicle"] = 1500,
-            ["microwave_vehicle"] = 1500,
-            ["at_gun_emplacement"] = 2000,
-            ["nlos_atgm_vehicle"] = 3000,
-            ["radar_atgm_vehicle"] = 3000,
             ["recoilless_jeep"] = 1500,
-            ["airborne_vehicle"] = 1500,
-            ["wheeled_howitzer"] = 1500,
             ["sp_mortar"] = 1500,
-            ["glide_bomber"] = 5000,
-            ["recon_jet"] = 3000,
-            ["interceptor_jet"] = 5000,
-            ["radar_scout"] = 1500,
             // ["blast_wall"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
-            ["inflatable_decoy"] = 2000,
             ["fire_control_centre"] = 3000,
-            ["searchlight"] = 2000,
             // ["barrage_balloon"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
-            ["visual_jammer"] = 3000,
-            ["fibre_fpv_carrier"] = 3000,
-            ["interceptor_drone_vehicle"] = 1500,
-            ["troop_shelter"] = 3000,
             // ["flare_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             ["laser_ad_station"] = 3000,
             // ["aa_gun_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             // (batch A: new entries above)
             // Prompt 25 F2 batch B (DECISIONS 25F2-B): the 33 Thấp-priority items' D2-planned prices (dx23 not in this pass).
-            ["aa_57mm_vehicle"] = 1500,
-            ["mine_rocket_truck"] = 3000,
-            ["prop_attack_plane"] = 3000,
-            ["light_attack_heli"] = 3000,
             ["next_gen_tank"] = 3000,
             ["demolition_line_vehicle"] = 1500,
-            ["combat_wreck_car"] = 1500,
-            ["drone_hijack_vehicle"] = 1500,
             // ["manpads_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             ["river_patrol_boat"] = 1500,
             ["river_gunboat"] = 3000,
-            ["coastal_ashm_vehicle"] = 3000,
-            ["auto_loader_howitzer"] = 3000,
-            ["amphib_light_vehicle"] = 1500,
-            ["airborne_light_tank"] = 1500,
             ["stealth_naval_strike"] = 5000,
             ["twin_rotor_gunship"] = 5000,
-            ["ground_drone_carrier"] = 1500,
-            ["mobile_repair_vehicle"] = 1500,
-            ["radar_support_vehicle"] = 1500,
-            ["towed_at_gun"] = 1500,
             // ["flare_searchlight_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             // ["recoilless_gun_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             // ["bunker_shelter_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
-            ["dazzler_vehicle"] = 1500,
             ["ground_cruise_missile_vehicle"] = 5000,
-            ["aerial_tanker"] = 3000,
-            ["heavy_lift_helicopter"] = 3000,
             ["gps_jammer_vehicle"] = 1500,
             // ["drone_net_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             // ["one_shot_atgm_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
@@ -177,16 +136,6 @@ namespace MachineBrigade.Game.Match
             // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards, one unlock source each (the shop; the
             // sheet's "or a chapter reward" waits for those rewards, as batch A's units did).
             ["glide_bomb_strike"] = 2500,
-            ["guided_shell_strike"] = 1500,
-            ["cluster_at_strike"] = 2500,
-            ["uav_loiter_strike_support"] = 2500,
-            ["ammo_resupply"] = 1500,
-            ["jam_storm"] = 1500,
-            ["illum_flare_strike"] = 1500,
-            ["decoy_paradrop"] = 1500,
-            ["instant_counter_battery"] = 2500,
-            ["drone_intercept_strike"] = 1500,
-            ["chaff_strike"] = 1500,
         };
 
         /// <summary>The premium cards, in the shop's order (the new content after the premium strike).</summary>
@@ -214,11 +163,10 @@ namespace MachineBrigade.Game.Match
             ["field_repair"] = 500,
             ["emp_blast"] = 700,
             ["shield_dome"] = 600,
-            ["gunship_support"] = 1000,
         };
 
         public static readonly string[] Items =
-            { "moab", "cluster_strike", "reinforcements", "field_repair", "emp_blast", "shield_dome", "gunship_support" };
+            { "moab", "cluster_strike", "reinforcements", "field_repair", "emp_blast", "shield_dome" };
 
         /// <summary>Items come in packs of this many.</summary>
         public const int ItemPack = 2;

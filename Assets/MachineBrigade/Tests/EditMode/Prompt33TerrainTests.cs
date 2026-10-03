@@ -72,7 +72,6 @@ namespace MachineBrigade.Tests
             Assert.Less(Driven(TerrainTag.ShallowWater, "main_battle_tank") / plain, 0.6f, "shallow water: -50 %");
             var amphibious = Driven(null, "light_tank");
             Assert.Greater(Driven(TerrainTag.ShallowWater, "light_tank") / amphibious, 0.95f, "the amphibious light tank keeps its pace in the water");
-            Assert.IsTrue(TerrainRules.Wades(Catalog.Vehicle("amphib_light_vehicle")), "the amphibious light vehicle wades");
             Assert.IsTrue(TerrainRules.Wades(Catalog.Vehicle("hover_gunboat")), "the air-cushion gunboat wades");
             Assert.IsFalse(TerrainRules.Wades(Catalog.Vehicle("main_battle_tank")), "a tank does not");
         }

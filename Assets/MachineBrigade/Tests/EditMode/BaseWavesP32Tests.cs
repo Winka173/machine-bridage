@@ -56,7 +56,7 @@ namespace MachineBrigade.Tests
             var bare = Defend(new BaseLoadout { HqLevel = 3 });
             var full = Defend(new BaseLoadout
             {
-                HqLevel = 3, Small = { "guard_tower", "mg_bunker", "aa_turret", "at_gun_emplacement" }, Medium = { "gun_turret", "atgm_tower" },
+                HqLevel = 3, Small = { "guard_tower", "mg_bunker", "aa_turret", "ew_tower" }, Medium = { "gun_turret", "atgm_tower" },
                 Large = { "heavy_turret" }, Utilities = { "repair_bay" },
             });
             Assert.AreEqual(3, bare.ReferenceLevel);

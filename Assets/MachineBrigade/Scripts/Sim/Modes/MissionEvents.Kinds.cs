@@ -279,8 +279,7 @@ namespace MachineBrigade.Sim.Modes
         {
             Vehicle? target = null;
             foreach (var v in world.VehicleList)
-                if (v.IsAlive && v.Team == Player && v.Def.Static && (v.Def.Id.StartsWith("logistics_station", StringComparison.Ordinal) ||
-                                                                      v.Def.Id.StartsWith("ammo_depot", StringComparison.Ordinal)))
+                if (v.IsAlive && v.Team == Player && v.Def.Static && (v.Def.Id.StartsWith("logistics_station", StringComparison.Ordinal)))
                 {
                     target = v;
                     break;

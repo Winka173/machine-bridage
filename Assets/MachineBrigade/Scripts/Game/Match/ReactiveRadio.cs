@@ -49,7 +49,7 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>A drone card: a drone, or a truck or aircraft that carries them.</summary>
         public static bool IsDroneCard(VehicleDef def) =>
-            def.Drone || def.Id.Contains("drone") || def.Id is "fpv_carrier" or "lancet_truck" or "shahed_truck" or "swarm_carrier";
+            def.Drone || def.Id.Contains("drone") || def.Id is "fpv_carrier" or "shahed_truck" or "swarm_carrier";
 
         /// <summary>The player sent a vehicle into the battle.</summary>
         public void Deployed(VehicleDef def)

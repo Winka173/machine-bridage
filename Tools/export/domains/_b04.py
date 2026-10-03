@@ -76,7 +76,7 @@ def build(ctx, book, d, res):
             ("so_xe_nhom", "", "số xe trong nhóm so sánh"),
             ("he_so_dung_yen", "", "hệ số đứng yên theo tầm (<= 30 m 0,575; <= 50 m 0,625; xa hơn / gián tiếp 0,725)"),
             ("gia_tri_tien_ich", "", "giá trị tiện ích (intercept / protect: p32 utility_value; relay: CP trong 120 s)"),
-            ("gia_tri_moc", "", "giá trị tiện ích của tháp mốc (c_ram / troop_shelter)"),
+            ("gia_tri_moc", "", "giá trị tiện ích của tháp mốc (c_ram / shield_tower)"),
             ("gia_moc_cp", "CP", "giá tạm của tháp mốc"),
             ("can_duoi_cp", "CP", "cận dưới theo cỡ (Small 3, Medium 5, Large 9)"),
             ("can_tren_cp", "CP", "cận trên theo cỡ (Small 6, Medium 11, Large 18)")):

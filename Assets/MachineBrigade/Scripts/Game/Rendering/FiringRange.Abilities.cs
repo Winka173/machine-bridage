@@ -155,7 +155,7 @@ namespace MachineBrigade.Game.Rendering
                     var tank = Friend("main_battle_tank", s + new Vector2(-6f, 4f), dummy: true);
                     var ifv = Friend("ifv", s + new Vector2(6f, 3f), dummy: true);
                     Attacker("atgm_tower", new Vector2(-7f, _far.Y + 18f), tank);
-                    Attacker("lancet_truck", new Vector2(8f, _far.Y + 20f), ifv);
+                    Attacker("shahed_truck", new Vector2(8f, _far.Y + 20f), ifv);
                     Widen(_far.Y + 24f);
                     break;
                 case Scene.Interceptor:
@@ -260,7 +260,7 @@ namespace MachineBrigade.Game.Rendering
                     var near = Friend("main_battle_tank", s + new Vector2(-6f, 4f), dummy: true);
                     var close = Friend("ifv", s + new Vector2(6f, 3f), dummy: true);
                     Attacker("fpv_carrier", s + new Vector2(-10f, DroneStandOff), near);
-                    Attacker("lancet_truck", s + new Vector2(10f, DroneStandOff + 4f), close);
+                    Attacker("swarm_carrier", s + new Vector2(10f, DroneStandOff + 4f), close);
                     Widen(s.Y + DroneStandOff + 10f);
                     break;
                 case Scene.Ferry:
@@ -398,14 +398,14 @@ namespace MachineBrigade.Game.Rendering
             return true;
         }
 
-        /// <summary>A row of enemy dragon's teeth across the breacher's way, between it and the targets.</summary>
+        /// <summary>A row of enemy blast walls across the breacher's way, between it and the targets.</summary>
         private void Obstacles()
         {
             _obstacles.Clear();
             foreach (var x in new[] { -3f, 3f })
             {
                 var at = new Vector2(x, _start.Y + 5.5f);
-                if (_world.Map.Contains(at)) _obstacles.Add(_world.SpawnVehicle("dragons_teeth", 1, at, 0f));
+                if (_world.Map.Contains(at)) _obstacles.Add(_world.SpawnVehicle("blast_wall", 1, at, 0f));
             }
         }
 

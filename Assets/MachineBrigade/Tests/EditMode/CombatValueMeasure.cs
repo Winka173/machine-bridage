@@ -217,8 +217,8 @@ namespace MachineBrigade.Tests
 
         /// <summary>
         /// Prompt 13 E.2: what point defence is worth. Four battle tanks that cannot die (holding their fire)
-        /// stand under 45 s of missiles, drones, rockets and a helicopter (two ATGM carriers, an MLRS, a
-        /// Lancet truck, an FPV carrier and an attack helicopter, all undying); the health they lose alone,
+        /// stand under 45 s of missiles, drones, rockets and a helicopter (two IFVs with ATGMs, an MLRS, a
+        /// two FPV carriers and an attack helicopter, all undying); the health they lose alone,
         /// then with an Iron Beam, two AA vehicles or a C-RAM beside them (the same 8-9 CP). Three seeds.
         /// </summary>
         [Test, Explicit("a measurement: run it by name with MB_BALANCE=1"), Category("Balance")]
@@ -249,7 +249,7 @@ namespace MachineBrigade.Tests
                         var g = world.SpawnVehicle(guards[i], 0, new Vector2(-3f + i * 6f, -6f), 0f);
                         world.MakeSparring(g);
                     }
-                    var attackers = new[] { "bmpt", "bmpt", "mlrs", "lancet_truck", "fpv_carrier", "attack_helicopter" };
+                    var attackers = new[] { "ifv", "ifv", "mlrs", "fpv_carrier", "fpv_carrier", "attack_helicopter" };
                     for (var i = 0; i < attackers.Length; i++)
                     {
                         var a = world.SpawnVehicle(attackers[i], 1, new Vector2(-20f + i * 8f, attackers[i] == "mlrs" ? 70f : 38f), MathF.PI);
@@ -290,8 +290,8 @@ namespace MachineBrigade.Tests
 
         /// <summary>
         /// Prompt 20 L.4: the three tower changes, one seed each (the owner's rule: short). Point defence: four undying
-        /// battle tanks (holding fire) under 45 s of direct fire (two BMPTs' ATGMs, an attack helicopter, an FPV carrier)
-        /// or of lobbed fire (an MLRS, a howitzer, a mortar carrier, a Lancet truck), alone, then with the C-RAM, its
+        /// battle tanks (holding fire) under 45 s of direct fire (two IFVs' ATGMs, an attack helicopter, an FPV carrier)
+        /// or of lobbed fire (an MLRS, a howitzer, a mortar carrier, a Shahed truck), alone, then with the C-RAM, its
         /// Centurion or its Iron Dome beside them: health lost and interceptions. Anti-air: the AA tower, its flak and SAM
         /// branches and the Patriot against two attack helicopters, an attack jet or three strike drones for 90 s: damage
         /// dealt and the longest range it hit from. The rocket battery and its branches 10 m behind a wall against two
@@ -305,8 +305,8 @@ namespace MachineBrigade.Tests
             var sb = new StringBuilder("POINT DEFENCE (4 tanks, 45 s, HP lost / interceptions)\n");
             foreach (var (fire, attackers) in new[]
                      {
-                         ("direct", new[] { "bmpt", "bmpt", "attack_helicopter", "fpv_carrier" }),
-                         ("lobbed", new[] { "mlrs", "artillery", "mortar_carrier", "lancet_truck" }),
+                         ("direct", new[] { "ifv", "ifv", "attack_helicopter", "fpv_carrier" }),
+                         ("lobbed", new[] { "mlrs", "artillery", "mortar_carrier", "shahed_truck" }),
                      })
                 foreach (var guard in new[] { "none", "c_ram", "c_ram.centurion", "c_ram.dome" })
                 {

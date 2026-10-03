@@ -178,7 +178,7 @@ namespace MachineBrigade.Game.Match
         /// The heavy fortress and the artillery emplacement: measured best of the candidates against
         /// a mixed army with the attackers knowing the towers (DECISIONS 3, "Base table").
         /// </summary>
-        public static readonly string[] DefaultLarge = { "heavy_turret", "artillery_emplacement" };
+        public static readonly string[] DefaultLarge = { "heavy_turret", "missile_battery" };
 
         /// <summary>2: the base loadout is in sized lists (see <see cref="Data.baseVersion"/>).</summary>
         internal const int BaseVersion = 2;

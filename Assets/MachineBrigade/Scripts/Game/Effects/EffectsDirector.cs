@@ -1471,7 +1471,6 @@ namespace MachineBrigade.Game.Effects
             "stealth_bomber" => (Engine.Fan, new[] { -0.16f, 0.16f }, -0.25f, 0.3f),
             // Prompt 17 C.
             "stealth_fighter" => (Engine.Afterburner, new[] { -0.09f, 0.09f }, -1f, 0f),
-            "wingman_drone" => (Engine.Hot, new[] { 0f }, -1f, 0.1f),
             "swarm_carrier" => (Engine.Prop, new[] { -0.55f, -0.28f, 0.28f, 0.55f }, 0.05f, 0.35f),
             "sky_gunship" or "transport_plane" => (Engine.Prop, new[] { -0.5f, -0.25f, 0.25f, 0.5f }, 0.05f, 0.35f),
             "strike_drone" or "recon_drone" => (Engine.Prop, new[] { 0f }, -1f, 0f),

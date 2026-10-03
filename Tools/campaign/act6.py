@@ -199,7 +199,7 @@ texts(d, ('Brandt\'s Line', 'Phòng tuyến của Brandt'),
 # The ceasefire at the Hollow Dam: Varga's guns silent until noon, Aurel's drones not; the only time Varga and Kade speak.
 d = clone('c7m08', 'c6m14', 6, map_='hydrodam', weather='Clear', general='varga', enemyAi='waves', enemyDeck=SEN, speaker='khai')
 d['convoy'] = dict(d['convoy'], x=0, z=0, heading=225, route=[-30, 0, -52, -12, -80, -60, -108, -104])
-d['waves'] = dict(d['waves'], roster=['strike_drone', 'fpv_carrier', 'lancet_truck', 'recon_drone'])
+d['waves'] = dict(d['waves'], roster=['strike_drone', 'fpv_carrier', 'recon_drone'])
 d['waves'].pop('spawns', None)
 mark(d, set_piece=True)
 texts(d, ('The Ceasefire', 'Ngừng bắn'),

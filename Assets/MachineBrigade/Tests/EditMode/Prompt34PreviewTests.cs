@@ -55,7 +55,7 @@ namespace MachineBrigade.Tests
             foreach (var rail in new[] { "armored_train", "nuke_train", "rail_supergun" }) Check(rail, PreviewSetting.Rail);
             foreach (var sea in new[] { "leviathan", "typhon", "caspian", "scylla", "sea_corvette", "sea_cruiser", "missile_boat", "river_patrol_boat", "river_gunboat" })
                 Check(sea, PreviewSetting.Sea);
-            foreach (var edge in new[] { "amphib_light_vehicle", "hover_gunboat", "landing_hovercraft" }) Check(edge, PreviewSetting.WaterEdge);
+            foreach (var edge in new[] { "hover_gunboat", "landing_hovercraft" }) Check(edge, PreviewSetting.WaterEdge);
             foreach (var air in new[] { "mega_gunship", "drone_mothership", "command_airship", "sky_fortress", "silver_bug", "attack_helicopter" })
                 Check(air, PreviewSetting.Air);
             Check("main_battle_tank", PreviewSetting.Ground);
@@ -259,10 +259,6 @@ namespace MachineBrigade.Tests
                 if (c.Vehicles.TryGetValue(id, out var def)) Assert.AreEqual(scene, FiringRange.SceneFor(def), id);
             }
             Expect("demolition_line_vehicle", FiringRange.Scene.MineClear);
-            Expect("microwave_vehicle", FiringRange.Scene.AntiDrone);
-            Expect("drone_hijack_vehicle", FiringRange.Scene.AntiDrone);
-            Expect("heavy_lift_helicopter", FiringRange.Scene.Ferry);
-            Expect("aerial_tanker", FiringRange.Scene.Ferry);
             Assert.IsTrue(c.Vehicles.TryGetValue("mine_layer", out var layer) && layer.Mines != null, "the mine roller's lane uses the mine layer's mines");
         }
 

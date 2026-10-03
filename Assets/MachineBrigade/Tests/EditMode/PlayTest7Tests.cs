@@ -52,7 +52,6 @@ namespace MachineBrigade.Tests
                 Strings.Vietnamese = false;
                 // Prompt 25 D1 (DECISIONS 25D1): the spreadsheet's name; the AC-130 is on its reference line.
                 Assert.AreEqual("Airborne gunship", Strings.Card("sky_gunship"));
-                Assert.AreNotEqual(Strings.Card("sky_gunship"), Strings.Card("gunship_heli"), "not the Mi-24");
                 Strings.Vietnamese = true;
                 Assert.AreEqual("Pháo hạm bay", Strings.Card("sky_gunship"));
             }
@@ -67,7 +66,7 @@ namespace MachineBrigade.Tests
         /// timing (two different mounts fire within a tenth of a second of each other), and twin mounts (the same weapon)
         /// never open fire less than <see cref="CombatSystem.TwinOffset"/> apart.
         /// </summary>
-        [TestCase("main_battle_tank"), TestCase("gunship_heli"), TestCase("sky_gunship"), TestCase("heavy_turret.bastion"), TestCase("mega_gunship")]
+        [TestCase("main_battle_tank"), TestCase("attack_helicopter"), TestCase("sky_gunship"), TestCase("heavy_turret.bastion"), TestCase("mega_gunship")]
         public void SeveralMountsFireTogether(string id)
         {
             var catalog = GameContent.LoadCatalog();
@@ -117,7 +116,6 @@ namespace MachineBrigade.Tests
             var w = GameContent.LoadCatalog().Weapons;
             // 30 % slower than play-test 6's.
             Assert.AreEqual(26.9f, w["gunship_rockets"].ProjectileSpeed, 1e-3f);
-            Assert.AreEqual(11.8f, w["heli_atgm"].ProjectileSpeed, 1e-3f);
             Assert.AreEqual(20.2f, w["s8_pods"].ProjectileSpeed, 1e-3f);
             Assert.AreEqual(9.7f, w["kh29"].ProjectileSpeed, 1e-3f);
             Assert.AreEqual(10.1f, w["r60"].ProjectileSpeed, 1e-3f);
@@ -129,9 +127,9 @@ namespace MachineBrigade.Tests
         {
             var catalog = GameContent.LoadCatalog();
             var full = catalog.Weapons["hmg_roof"].Range;
-            foreach (var id in new[] { "artillery", "mlrs", "heavy_rocket_artillery", "ballistic_launcher", "lancet_truck", "shahed_truck", "elite_mlrs",
+            foreach (var id in new[] { "artillery", "mlrs", "heavy_rocket_artillery", "ballistic_launcher", "shahed_truck", "elite_mlrs",
                          "elite_grad", "sam_launcher", "mortar_carrier", "thermobaric_launcher", "fpv_carrier", "siege_tank", "rocket_technical",
-                         "counter_battery_radar", "command_vehicle", "ammo_carrier", "ew_jammer", "mine_layer", "smoke_carrier", "shield_carrier",
+                         "command_vehicle", "ammo_carrier", "ew_jammer", "mine_layer", "shield_carrier",
                          "engineer_vehicle" })
             {
                 var guns = catalog.Vehicles[id].Mounts.Where(m => m.Weapon.Family == "mg").ToList();
@@ -161,7 +159,7 @@ namespace MachineBrigade.Tests
             {
                 string[] Parts(string model) => models.Spawn(model, 0, root).Root.GetComponentsInChildren<Transform>(true).Select(t => t.name).ToArray();
                 foreach (var model in new[] { "heavy_turret", "heavy_turret_a", "gun_turret", "gun_turret_a", "gun_turret_b", "missile_battery", "rocket_turret",
-                             "artillery_emplacement", "mg_bunker", "guard_tower" })
+                             "mg_bunker", "guard_tower" })
                 {
                     if (!models.Has(model)) continue;
                     var parts = Parts(model);

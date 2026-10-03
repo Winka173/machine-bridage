@@ -129,8 +129,6 @@ namespace MachineBrigade.Game.Match
         {
             ("railgun_truck", "c4m10"),
             ("swarm_carrier", "c5m10"),
-            ("bunker_vehicle", "c6m10"),
-            ("wingman_drone", "c10m10"),
             ("cruise_missile", "c12m02"),
         };
 

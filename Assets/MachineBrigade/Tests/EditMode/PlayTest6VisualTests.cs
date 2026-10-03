@@ -81,7 +81,7 @@ namespace MachineBrigade.Tests
                 Assert.That(model.RestPitch + erector.Raise, Is.InRange(-5f, 92f), $"{id}: raised no further than upright");
                 Assert.That(erector.Seconds, Is.InRange(0.5f, 2.5f));
             }
-            foreach (var (id, parts) in new[] { ("ballistic_launcher", "Missile_body"), ("shahed_truck", "Rack"), ("lancet_truck", "Cells") })
+            foreach (var (id, parts) in new[] { ("ballistic_launcher", "Missile_body"), ("shahed_truck", "Rack") })
             {
                 var model = _models.Spawn(id, 0, _root.transform);
                 Assert.IsTrue(Find(model.Root.transform, parts).IsChildOf(model.Elevation), $"{id}: {parts} rides the erector");

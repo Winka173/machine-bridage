@@ -74,7 +74,7 @@ namespace MachineBrigade.Tests
             var boss = world.SpawnVehicle(id, 1, Vector2.Zero, 0f);
             boss.HpScale = 50f;
             boss.Hp = boss.MaxHp;
-            for (var k = 0; k < 2; k++) Tough(world, "bmpt", 0, new Vector2(-8f + 16f * k, -34f));
+            for (var k = 0; k < 2; k++) Tough(world, "ifv", 0, new Vector2(-8f + 16f * k, -34f));
             var before = Run(world, 14f).Count(e => e.Kind == SimEventKind.Intercepted && e.Entity == boss.Id);
             Assert.Greater(before, 0, id + " shoots anti-tank missiles down");
             for (var k = 0; k < parts.Length; k++)

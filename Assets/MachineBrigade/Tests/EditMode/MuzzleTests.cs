@@ -66,7 +66,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(1.1f, Size("atgm", "atgm_tow"), 1e-4f, "a ground ATGM");
             Assert.AreEqual(1.1f, Size("stinger_atas", "stinger"), 1e-4f, "MANPADS");
             Assert.AreEqual(1.2f, Size("sam", "shorad_dart"), 1e-4f, "a SAM");
-            Assert.AreEqual(1.2f, Size("heli_atgm", "hellfire", air: true), 1e-4f, "air-to-ground");
+            Assert.AreEqual(1.2f, Size("hellfire_volley", "hellfire", air: true), 1e-4f, "air-to-ground");
             Assert.AreEqual(1.2f, Size("air_cruise_missile", "cruise_missile", air: true), 1e-4f, "a cruise missile");
             Assert.AreEqual(1.15f, Size("grad_rockets", "grad"), 1e-4f, "rockets in between");
             Assert.AreEqual(1f, Size("howitzer", "shell_155"), 1e-4f, "gun shells as they were");

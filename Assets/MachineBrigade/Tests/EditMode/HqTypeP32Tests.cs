@@ -237,7 +237,7 @@ namespace MachineBrigade.Tests
             var target = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 0f), 0f);
             var near = world.SpawnVehicle("laser_ad_station", 0, new Vector2(8f, 0f), 0f);
             var far = world.SpawnVehicle("laser_ad_station", 0, new Vector2(-20f, 0f), 0f);
-            world.SpawnVehicle("nlos_atgm_vehicle", 1, new Vector2(0f, 60f), MathF.PI);
+            world.SpawnVehicle("mlrs", 1, new Vector2(0f, 60f), MathF.PI);
             int nearFull = near.ApsCharges, farFull = far.ApsCharges;
             for (var t = 0f; t < 30f; t += TestWorlds.Step)
             {

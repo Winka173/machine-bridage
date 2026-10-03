@@ -179,10 +179,10 @@ GROUPS = ["Armour", "Light", "AntiTank", "Artillery", "AntiAir", "Helicopter", "
 # The sheet "Công trình" rows -> the tower ids they cover.
 TOWERS = {
     "Tháp canh": ["guard_tower"], "Lô cốt súng máy": ["mg_bunker"],
-    "Tháp phòng không": ["aa_gun_tower", "aa_turret", "heavy_flak_tower", "manpads_tower"], "Tháp gây nhiễu EW": ["ew_tower"],
-    "Tháp pháo": ["gun_turret"], "Tháp ATGM": ["atgm_tower", "one_shot_atgm_tower", "recoilless_gun_tower", "at_gun_emplacement"],
+    "Tháp phòng không": ["aa_gun_tower", "aa_turret", "manpads_tower"], "Tháp gây nhiễu EW": ["ew_tower"],
+    "Tháp pháo": ["gun_turret"], "Tháp ATGM": ["atgm_tower", "one_shot_atgm_tower", "recoilless_gun_tower"],
     "Dàn rốc-két": ["rocket_turret"], "Trạm C-RAM / Vòm Sắt": ["c_ram", "laser_ad_station"],
-    "Trận địa pháo": ["artillery_emplacement"], "Patriot": ["missile_battery"], "Nhà chứa drone": ["drone_hangar"],
+    "Patriot": ["missile_battery"], "Nhà chứa drone": ["drone_hangar"],
     "Tháp pháo hạng nặng": ["heavy_turret", "coastal_battery"], "Máy phát khiên": ["shield_tower"],
 }
 MODES = {"gần nhất": "Nearest", "mạnh nhất": "Strongest", "yếu nhất": "Weakest", "đầu đoàn": "Lead",

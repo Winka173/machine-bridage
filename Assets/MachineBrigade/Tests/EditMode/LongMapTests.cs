@@ -128,7 +128,7 @@ namespace MachineBrigade.Tests
                           keys.Any(k => k.Place == SlotPlace.Yard) && keys.Any(k => k.Place == SlotPlace.InnerWall), "the new labels");
             var plan = new BasePlan();
             var towers = camp.Slots.Select(s => s.Kind == HardpointKind.Utility ? "repair_bay" : s.Class == SlotSize.Small ? "guard_tower"
-                : s.Class == SlotSize.Medium ? "gun_turret" : "artillery_emplacement").ToArray();
+                : s.Class == SlotSize.Medium ? "gun_turret" : "missile_battery").ToArray();
             plan.FromCamp(camp, towers);
             var before = plan.Assign(camp, out _);
             // Not laid out for the long battlefields yet: the layered base borrows the camp's towers by place.

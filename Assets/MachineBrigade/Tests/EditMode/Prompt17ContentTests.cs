@@ -16,8 +16,8 @@ namespace MachineBrigade.Tests
 {
     /// <summary>
     /// Prompt 17 C: one behaviour test for each new unit and tower (the brief's E list): the stealth fighter's
-    /// reveal and detection, the wingman pulling missiles, the laser's ramp and its reset, the shield domes (they
-    /// absorb, energy goes through, they never add up), the bunker vehicle's states and timings, the swarm
+    /// reveal and detection, the laser's ramp and its reset, the shield domes (they
+    /// absorb, energy goes through, they never add up), the swarm
     /// carrier's drones outside the aircraft cap, and the CP relay's pay, its two-a-base cap and that the AI does
     /// not take it everywhere.
     /// </summary>
@@ -80,59 +80,7 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(stealth.IsVisibleTo(0), "its bay doors open as it fires: it shows");
             Run(world, 3f, each: Hold);
             Assert.IsFalse(stealth.IsVisibleTo(0), "and is gone again a few seconds later");
-            Assert.IsTrue(world.Submit(Command.Strike(0, "uav_scan", new Vector2(20f, 0f))).Accepted);
-            Run(world, 2.5f, each: Hold);
-            Assert.IsTrue(stealth.IsVisibleTo(0), "a UAV scan shows it");
-
-            // A base's radar station: stealth over the base shows.
-            var catalog = GameContent.LoadCatalog();
-            var based = new SimWorld(catalog, GameContent.LoadMap("ashfield_conquest"), seed: 3);
-            var b = based.Bases.Establish(0, new BaseLoadout { HqLevel = 5, Utilities = { "radar_station" } }, BaseRole.Anchor);
-            var over = based.SpawnVehicle("stealth_fighter", 1, b.HqPosition + new Vector2(10f, 0f), 0f);
-            based.Submit(new Command(CommandType.Stop, 1, new[] { over.Id }));
-            Run(based, 1f, each: () => Pin(over, b.HqPosition + new Vector2(10f, 0f), 0f));
-            Assert.IsTrue(over.IsVisibleTo(0), "a radar station shows stealth over its base");
-        }
-
-        [Test]
-        public void TheWingmanFliesWithItsLeaderAndPullsSomeMissilesOntoItself()
-        {
-            var world = Field();
-            var fighter = world.SpawnVehicle("fighter_jet", 1, new Vector2(0f, 40f), 0f);
-            var wingman = world.SpawnVehicle("wingman_drone", 1, new Vector2(8f, 30f), 0f);
-            var sam = world.SpawnVehicle("sam_launcher", 0, new Vector2(0f, 0f), 0f);
-            var second = world.SpawnVehicle("sam_launcher", 0, new Vector2(10f, 0f), 0f);
-            world.Submit(new Command(CommandType.Stop, 1, new[] { fighter.Id }));
-            // Neither can be shot down here (a Buk takes a wingman in one hit): the test counts where the missiles go.
-            world.MakeSparring(fighter);
-            world.MakeSparring(wingman);
-            var atFighter = 0;
-            var atWingman = 0;
-            void Seen(SimEvent e)
-            {
-                if (e.Kind != SimEventKind.WeaponFired || (e.Entity != sam.Id && e.Entity != second.Id)) return;
-                if (e.Other == fighter.Id) atFighter++;
-                else if (e.Other == wingman.Id) atWingman++;
-            }
-            // The launchers are told to shoot the fighter only: a missile at the wingman was pulled onto it.
-            void Hold()
-            {
-                fighter.Hp = fighter.MaxHp;
-                wingman.Hp = wingman.MaxHp;
-                sam.Hp = sam.MaxHp;
-                second.Hp = second.MaxHp;
-                Pin(fighter, new Vector2(0f, 40f), 1.57f);
-                fighter.Speed = 0f;
-                if (world.Tick % 20 == 1) world.Submit(new Command(CommandType.Attack, 0, new[] { sam.Id, second.Id }, default, fighter.Id));
-            }
-            Run(world, 3f, Seen, Hold);
-            Assert.AreEqual(fighter.Id, wingman.WingLeader, "the wingman takes the nearest manned aircraft of its side as its leader");
-            Assert.Less(Vector2.Distance(wingman.Position, fighter.Position), 35f, "and keeps near it");
-            Run(world, 60f, Seen, Hold);
-            Assert.Greater(atFighter + atWingman, 6, "the launchers fired");
-            Assert.Greater(atWingman, 0, "some missiles aimed at the fighter turned onto its wingman");
-            Assert.Greater(atFighter, 0, "not all of them");
-            Assert.AreEqual(1, world.Economy.AircraftCount(1), "the wingman is outside the aircraft cap");
+            // Play-test 14 deleted the UAV scan and the base's radar station that also showed it.
         }
 
         [Test]
@@ -253,52 +201,6 @@ namespace MachineBrigade.Tests
             // The enemy base picker places it (a large slot) now and then.
             var placed = Enumerable.Range(1, 30).Count(seed => BaseLoadout.ForAi(catalog, "Hard", "default", seed).Large.Contains("shield_tower"));
             Assert.Greater(placed, 0, "the AI puts a shield generator in its base");
-        }
-
-        [Test]
-        public void TheBunkerVehicleDigsInAndPacksUpInThreeSecondsEach()
-        {
-            var world = Field();
-            var bunker = world.SpawnVehicle("bunker_vehicle", 0, Vector2.Zero, 0f);
-            var target = world.SpawnVehicle("main_battle_tank", 1, new Vector2(0f, 28f), 3.14159f);
-            world.MakeDummy(target);
-            world.Submit(new Command(CommandType.Stop, 0, new[] { bunker.Id }));
-            var fired = new List<double>();
-            void Seen(SimEvent e)
-            {
-                if (e.Kind == SimEventKind.WeaponFired && e.Entity == bunker.Id) fired.Add(world.Time);
-            }
-            Assert.AreEqual(2f, bunker.ArmourOn(ArmorFace.Front), "front level 2 on its tracks");
-            double began = -1, dug = -1;
-            Run(world, 6f, Seen, () =>
-            {
-                if (began < 0 && bunker.Deploy == DeployState.Deploying) began = world.Time;
-                if (dug < 0 && bunker.Deploy == DeployState.Deployed) dug = world.Time;
-            });
-            Assert.Greater(began, 0, "standing with an enemy in its dug-in reach, it digs in");
-            Assert.AreEqual(3.0, dug - began, 0.11, "in 3 s");
-            Assert.IsFalse(fired.Any(t => t >= began && t < dug), "not firing while it digs in");
-            Assert.AreEqual(4f, bunker.ArmourOn(ArmorFace.Front), "dug in: front two levels thicker");
-            Assert.AreEqual(1.3f, bunker.RangeFactor, 1e-3f, "and 30 % more reach");
-            Assert.IsTrue(fired.Any(t => t > dug), "dug in, it fires again");
-
-            fired.Clear();
-            var at = bunker.Position;
-            world.Submit(new Command(CommandType.Move, 0, new[] { bunker.Id }, new Vector2(-30f, 0f)));
-            double packed = -1;
-            var start = world.Time;
-            Run(world, 5f, Seen, () =>
-            {
-                if (packed < 0 && bunker.Deploy == DeployState.Mobile) packed = world.Time;
-                if (bunker.Deploy == DeployState.Packing)
-                {
-                    Assert.AreEqual(2f, bunker.ArmourOn(ArmorFace.Front), "packing up it has its moving armour");
-                    Assert.Less(Vector2.Distance(bunker.Position, at), 0.05f, "and does not move");
-                }
-            });
-            Assert.AreEqual(3.0, packed - start, 0.2, "packing up takes 3 s");
-            Assert.IsFalse(fired.Any(t => t < packed), "not firing while it packs up");
-            Assert.Greater(Vector2.Distance(bunker.Position, at), 1f, "then it drives");
         }
 
         [Test]

@@ -28,14 +28,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SHEET = json.load(open(os.path.join(HERE, 'unlocks_sheet.json'), encoding='utf-8'))
 
 # The supports and towers a new player owns (Progression.StarterSupports / StarterTowers: no row of the sheet).
-STARTER_REST = ['artillery_barrage', 'smoke_screen', 'guard_tower', 'mg_bunker', 'aa_turret', 'gun_turret']
+STARTER_REST = ['artillery_barrage', 'repair_drop', 'guard_tower', 'mg_bunker', 'aa_turret', 'gun_turret']
 STARTER_VEHICLES = list(SHEET['starters'])
 STARTERS = STARTER_VEHICLES + STARTER_REST
 
-# Towers no mission opened (prompt 20's route dropped them; prompt 4 had the minefield in chapter 1 and the Patriot in
-# chapter 3). The minefield goes back to chapter 1, where the first base is built; the long-range SAM site goes to chapter 8,
+# Towers no mission opened (prompt 20's route dropped them; prompt 4 had the Patriot in chapter 3; play-test 14 deleted
+# the fixed mine card, which went back to chapter 1). The long-range SAM site goes to chapter 8,
 # the chapter of the long-range SAM vehicle, which the sheet leaves with three cards (chapter 3 opens eight already).
-ORPHANS = {'minefield': 1, 'missile_battery': 8}
+ORPHANS = {'missile_battery': 8}
 
 # Progression.StarterVehicles before prompt 25 D2 (a former starter that moves into a chapter opens first there).
 OLD_STARTERS = ['scout_jeep', 'armored_car', 'ifv', 'light_tank', 'main_battle_tank', 'aa_vehicle', 'artillery']

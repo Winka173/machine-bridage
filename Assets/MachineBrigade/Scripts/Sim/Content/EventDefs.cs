@@ -430,14 +430,14 @@ namespace MachineBrigade.Sim.Content
             ["varga"] = G("varga", 12, "heavy_tank", new[] { "edge" }, "light_tank", "main_battle_tank", "heavy_tank", "tank_destroyer", "twin_tank"),
             ["orlov"] = G("orlov", 11, "mlrs", new[] { "edge" }, "mlrs", "artillery", "mortar_carrier", "heavy_rocket_artillery", "aa_vehicle"),
             ["kessler"] = G("kessler", 12, "main_battle_tank", new[] { "sea", "rail", "landing", "edge" }, "ifv", "wheeled_gun", "main_battle_tank", "mine_layer", "sam_launcher"),
-            ["sen"] = G("sen", 5, "fpv_carrier", new[] { "edge", "air" }, "strike_drone", "fpv_carrier", "lancet_truck", "recon_drone", "ew_jammer"),
+            ["sen"] = G("sen", 5, "fpv_carrier", new[] { "edge", "air" }, "strike_drone", "fpv_carrier", "recon_drone", "ew_jammer"),
             ["quaden"] = new GeneralEventDef
             {
                 Id = "quaden", LastChapter = 10, Elite = "attack_jet", Delivery = new[] { "edge" }, Minis = new[] { "morrigan" },
-                Roster = new[] { "attack_helicopter", "gunship_heli", "attack_jet", "strike_drone" },
+                Roster = new[] { "attack_helicopter", "attack_jet", "strike_drone" },
             },
-            ["hung"] = G("hung", 9, "heavy_tank", new[] { "edge", "landing" }, "main_battle_tank", "heavy_tank", "ifv", "bmpt", "aa_vehicle"),
-            ["aurel"] = G("aurel", 12, "heavy_tank", new[] { "pods", "air", "edge" }, "strike_drone", "fpv_carrier", "heavy_tank", "bmpt", "railgun_truck"),
+            ["hung"] = G("hung", 9, "heavy_tank", new[] { "edge", "landing" }, "main_battle_tank", "heavy_tank", "ifv", "aa_vehicle"),
+            ["aurel"] = G("aurel", 12, "heavy_tank", new[] { "pods", "air", "edge" }, "strike_drone", "fpv_carrier", "heavy_tank", "ifv", "railgun_truck"),
         };
 
         private static GeneralEventDef G(string id, int last, string elite, string[] delivery, params string[] roster) =>

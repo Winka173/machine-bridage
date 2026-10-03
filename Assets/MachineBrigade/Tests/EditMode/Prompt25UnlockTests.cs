@@ -80,7 +80,7 @@ namespace MachineBrigade.Tests
         }
 
         /// <summary>
-        /// Story loot (the rail gun, the drone mothership, the bunker vehicle, the wingman drone, and the story's fifth, Kessler's
+        /// Story loot (the rail gun, the drone mothership, and Kessler's
         /// cruise missiles) opens with its story beat and a line in both languages that says why; the shop never sells it
         /// early. Every other campaign card is for sale early.
         /// </summary>
@@ -89,7 +89,7 @@ namespace MachineBrigade.Tests
         {
             var catalog = GameContent.LoadCatalog();
             var story = Narrative.Loot.Select(l => l.card).ToList();
-            CollectionAssert.IsSubsetOf(new[] { "railgun_truck", "swarm_carrier", "bunker_vehicle", "wingman_drone" }, Progression.SheetLoot, "the spec's four");
+            CollectionAssert.IsSubsetOf(new[] { "railgun_truck", "swarm_carrier" }, Progression.SheetLoot, "the spec's two left after play-test 14");
             CollectionAssert.IsSubsetOf(Progression.SheetLoot, story, "the sheet's loot is the story's");
             var was = Strings.Vietnamese;
             try

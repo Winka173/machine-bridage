@@ -8,11 +8,12 @@ using MachineBrigade.Sim.Modes;
 namespace MachineBrigade.Tests
 {
     /// <summary>
-    /// Prompt 32 L1 (DECISIONS "Prompt 32 L0/L1/L2"): the tower roster 32 -> 22 and the branch rule. The data: 22 cards
-    /// (10 small, 7 medium, 5 large), each with two declared branches of its size or noBranch, a role tag on every branch
-    /// that no other card's branch shares and its sibling never does, the folded and retired towers kept as defs but no
-    /// cards. The changed branches (the Stinger post, the light-only 57 mm, the lasers' shells, the one minefield). The save
-    /// migration (roster version 7). The same validator is Tools/balance/p32_roster.py --check. Written, not run.
+    /// Prompt 32 L1 (DECISIONS "Prompt 32 L0/L1/L2"): the tower roster 32 -> 22 and the branch rule; play-test 14 deleted
+    /// eight more cards (22 -> 14). The data: 14 cards (5 small, 5 medium, 4 large), each with two declared branches of its
+    /// size or noBranch, a role tag on every branch that no other card's branch shares and its sibling never does, the
+    /// folded and retired towers kept as defs but no cards. The changed branches (the Stinger post, the light-only 57 mm,
+    /// the lasers' shells). The save migration (roster version 7). The same validator is Tools/balance/p32_roster.py
+    /// --check. Written, not run.
     /// </summary>
     public class TowerRosterP32Tests
     {
@@ -20,20 +21,21 @@ namespace MachineBrigade.Tests
         private static Catalog C => _catalog ??= GameContent.LoadCatalog();
 
         [Test]
-        public void TheRosterHas22CardsTenSmallSevenMediumFiveLarge()
+        public void TheRosterHas14CardsFiveSmallFiveMediumFourLarge()
         {
             var cards = TowerCards.All(C);
-            Assert.AreEqual(22, cards.Count, string.Join(", ", cards));
-            Assert.AreEqual(10, cards.Count(c => C.Vehicles[c].Fort.Size == SlotSize.Small));
-            Assert.AreEqual(7, cards.Count(c => C.Vehicles[c].Fort.Size == SlotSize.Medium));
-            Assert.AreEqual(5, cards.Count(c => C.Vehicles[c].Fort.Size == SlotSize.Large));
+            Assert.AreEqual(14, cards.Count, string.Join(", ", cards));
+            Assert.AreEqual(5, cards.Count(c => C.Vehicles[c].Fort.Size == SlotSize.Small));
+            Assert.AreEqual(5, cards.Count(c => C.Vehicles[c].Fort.Size == SlotSize.Medium));
+            Assert.AreEqual(4, cards.Count(c => C.Vehicles[c].Fort.Size == SlotSize.Large));
             foreach (var gone in CardMerges.TowerInto.Keys.Concat(CardMerges.RetiredTowers))
             {
                 Assert.IsTrue(C.Vehicles.ContainsKey(gone), $"{gone} stays a def (maps, missions)");
                 Assert.IsFalse(cards.Contains(gone), $"{gone} is no card");
                 Assert.IsFalse(TowerCards.IsCard(C, C.Vehicles[gone]), gone);
             }
-            foreach (var to in CardMerges.TowerInto.Values) Assert.IsTrue(cards.Contains(to), to);
+            // Play-test 14 deleted some of the cards the folded towers went into (a v7 save migrates on through version 9).
+            foreach (var to in CardMerges.TowerInto.Values) Assert.IsTrue(cards.Contains(to) || CardMerges.DeletedPt14.ContainsKey(to), to);
         }
 
         [Test]
@@ -66,7 +68,7 @@ namespace MachineBrigade.Tests
                 if (d.BranchOf != null && TowerCards.All(C).Contains(d.BranchOf) && !TowerCards.Branches(C, d.BranchOf).Contains(d.Id))
                     failures.Add($"{d.Id}: a branch row of {d.BranchOf} the card does not declare");
             Assert.IsEmpty(failures, string.Join("\n", failures));
-            CollectionAssert.AreEquivalent(new[] { "minefield", "cp_relay", "troop_shelter" }, TowerCards.All(C).Where(c => C.Vehicles[c].NoBranch));
+            CollectionAssert.AreEquivalent(new[] { "cp_relay" }, TowerCards.All(C).Where(c => C.Vehicles[c].NoBranch));
         }
 
         [Test]
@@ -106,8 +108,6 @@ namespace MachineBrigade.Tests
             // The lasers stop no shells.
             Assert.AreEqual(0f, C.Vehicles["iron_beam"].Aps.Shells, 1e-6f);
             Assert.AreEqual(0f, C.Vehicles["laser_ad_station"].Aps.Shells, 1e-6f);
-            // One minefield: the AT branch's five heavy mines.
-            Assert.AreEqual(5, C.Vehicles["minefield"].Mines.Max);
             // The guard tower's Watch branch replaces the tower's aura (the precheck: no stacking).
             Assert.AreEqual(0.15f, C.Vehicles["guard_tower.watch"].TowerRangeAura.Rate, 1e-6f);
         }
@@ -118,18 +118,19 @@ namespace MachineBrigade.Tests
         [Test]
         public void TheSaveMovesOntoThe22Cards()
         {
+            // Play-test 14 deleted the heavy flak and lighting cards, so the fold under test is the drone net into the
+            // laser station (a card that survives version 9).
             PlayerProfile.LoadForTests(@"{ ""rosterVersion"": 6, ""coins"": 0,
-                ""owned"": [ ""manpads_tower"", ""blast_wall"", ""aa_gun_tower"", ""heavy_flak_tower"" ], ""unlocked"": [ ""flare_tower"" ],
-                ""rankIds"": [ ""aa_gun_tower"", ""heavy_flak_tower"", ""blast_wall"", ""cp_relay"", ""aa_turret"" ], ""ranks"": [ 5, 3, 2, 7, 7 ],
+                ""owned"": [ ""manpads_tower"", ""blast_wall"", ""drone_net_tower"", ""laser_ad_station"" ],
+                ""rankIds"": [ ""drone_net_tower"", ""laser_ad_station"", ""blast_wall"", ""cp_relay"", ""aa_turret"" ], ""ranks"": [ 5, 3, 2, 7, 7 ],
                 ""prints"": [ 0, 0, 0, 0, 0 ],
                 ""branchTowers"": [ ""cp_relay"", ""aa_turret"" ], ""branchChoices"": [ ""cp_relay.loot"", ""aa_turret.sam"" ],
                 ""baseSmall"": [ ""blast_wall"", ""guard_tower"", ""manpads_tower"" ] }");
             // The folded card keeps the higher rank; the duplicates' and the retired card's coins come back.
-            Assert.AreEqual(5, PlayerProfile.Rank("heavy_flak_tower"), "the higher of the two ranks");
-            Assert.IsFalse(PlayerProfile.Owns("aa_gun_tower") || PlayerProfile.Owns("manpads_tower") || PlayerProfile.Owns("blast_wall"));
-            Assert.IsTrue(PlayerProfile.Owns("heavy_flak_tower"));
-            Assert.IsTrue(PlayerProfile.IsUnlocked("searchlight"), "the flare tower's unlock moved to the lighting card");
-            var expected = CardMerges.TowerPrices["manpads_tower"] + CardMerges.TowerPrices["aa_gun_tower"] + CardMerges.TowerPrices["blast_wall"]
+            Assert.AreEqual(5, PlayerProfile.Rank("laser_ad_station"), "the higher of the two ranks");
+            Assert.IsFalse(PlayerProfile.Owns("drone_net_tower") || PlayerProfile.Owns("manpads_tower") || PlayerProfile.Owns("blast_wall"));
+            Assert.IsTrue(PlayerProfile.Owns("laser_ad_station"));
+            var expected = CardMerges.TowerPrices["manpads_tower"] + CardMerges.TowerPrices["drone_net_tower"] + CardMerges.TowerPrices["blast_wall"]
                            + CardRanks.CoinsSpent(2) + CardRanks.CoinsSpent(3);
             Assert.AreEqual(expected, PlayerProfile.Coins, "duplicates at their price, the retired card at its price and rank, the lower rank's spend");
             // Branches: none on a card without branches; a reworked branch kept with one free change and a notice.

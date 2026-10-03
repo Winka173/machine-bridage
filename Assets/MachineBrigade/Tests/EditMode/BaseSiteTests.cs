@@ -49,7 +49,7 @@ namespace MachineBrigade.Tests
         /// <summary>Towers the fill may use, biggest first (the fill falls back to a plain footprint).</summary>
         private static readonly string[] Structures =
         {
-            "missile_battery", "heavy_turret", "flak_tower", "artillery_emplacement", "gun_turret", "rocket_turret",
+            "missile_battery", "heavy_turret", "flak_tower", "gun_turret", "rocket_turret",
             "aa_turret", "mg_bunker", "guard_tower", "point_tower",
         };
 

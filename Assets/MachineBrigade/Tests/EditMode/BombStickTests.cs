@@ -36,7 +36,7 @@ namespace MachineBrigade.Tests
         /// <summary>The guided bombs (POINT) on one carrier each.</summary>
         private static readonly (string unit, string weapon)[] PointCarriers =
         {
-            ("stealth_bomber", "stealth_payload"), ("strike_drone", "guided_bomb"), ("glide_bomber", "glide_fab500"),
+            ("stealth_bomber", "stealth_payload"), ("strike_drone", "guided_bomb"),
         };
 
         private static Catalog _catalog;

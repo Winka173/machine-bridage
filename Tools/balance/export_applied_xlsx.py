@@ -421,8 +421,8 @@ def vehicles_sheet(now):
 
 
 SUPPORT_CARDS = {"Không kích": ["airstrike"], "Pháo kích": ["artillery_barrage"], "Tên lửa hành trình": ["cruise_missile"],
-                 "Bom napalm": ["napalm_strike"], "Đòn SEAD": ["sead_strike"],
-                 "Màn khói, UAV quét, Sửa chữa, Tháp dã chiến": ["smoke_screen", "uav_scan", "repair_drop", "field_tower"]}
+                 "Bom napalm": ["napalm_strike"],
+                 "Màn khói, UAV quét, Sửa chữa, Tháp dã chiến": ["repair_drop", "field_tower"]}
 
 
 def support_sheet(now):

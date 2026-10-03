@@ -69,20 +69,6 @@
    "Xe công binh"
   ]
  },
- "smoke_carrier": {
-  "unit": [
-   "Smoke generator carrier",
-   "Xe tạo khói"
-  ],
-  "short": [
-   "Smoke car",
-   "Xe khói"
-  ],
-  "guide": [
-   "Smoke carrier",
-   "Xe tạo khói"
-  ]
- },
  "ammo_carrier": {
   "unit": [
    "Ammunition carrier",
@@ -95,20 +81,6 @@
   "guide": [
    "Ammunition carrier",
    "Xe tiếp đạn"
-  ]
- },
- "counter_battery_radar": {
-  "unit": [
-   "Counter-battery radar",
-   "Radar phản pháo"
-  ],
-  "short": [
-   "CB radar",
-   "Phản pháo"
-  ],
-  "guide": [
-   "Counter-battery radar",
-   "Radar phản pháo"
   ]
  },
  "ew_jammer": {
@@ -221,34 +193,6 @@
   "guide": [
    "Flame tank",
    "Tăng phun lửa"
-  ]
- },
- "turtle_tank": {
-  "unit": [
-   "Turtle tank",
-   "Xe tăng rùa"
-  ],
-  "short": [
-   "Turtle",
-   "Xe rùa"
-  ],
-  "guide": [
-   "Turtle tank",
-   "Xe tăng rùa"
-  ]
- },
- "bmpt": {
-  "unit": [
-   "BMPT Terminator",
-   "BMPT Terminator"
-  ],
-  "short": [
-   "BMPT",
-   "BMPT"
-  ],
-  "guide": [
-   "Tank support",
-   "Xe yểm trợ tăng"
   ]
  },
  "rocket_technical": {
@@ -489,20 +433,6 @@
    "UAV trinh sát"
   ]
  },
- "wingman_drone": {
-  "unit": [
-   "Loyal wingman",
-   "Drone hộ vệ"
-  ],
-  "short": [
-   "Wingman",
-   "Drone hộ vệ"
-  ],
-  "guide": [
-   "Loyal wingman",
-   "Drone hộ vệ"
-  ]
- },
  "strike_drone": {
   "unit": [
    "Strike drone",
@@ -573,20 +503,6 @@
    "Tiêm kích tàng hình"
   ]
  },
- "gunship_heli": {
-  "unit": [
-   "Heavy gunship",
-   "Trực thăng hạng nặng"
-  ],
-  "short": [
-   "Heavy gunship",
-   "TT hỏa lực"
-  ],
-  "guide": [
-   "Flying IFV",
-   "Xe bộ binh bay"
-  ]
- },
  "attack_jet": {
   "unit": [
    "Attack jet",
@@ -641,20 +557,6 @@
   "guide": [
    "AC-130 Gunship",
    "Pháo hạm AC-130"
-  ]
- },
- "bunker_vehicle": {
-  "unit": [
-   "Bunker vehicle",
-   "Xe công sự"
-  ],
-  "short": [
-   "Bunker",
-   "Xe công sự"
-  ],
-  "guide": [
-   "Bunker vehicle",
-   "Xe công sự"
   ]
  },
  "armored_bulldozer": {
@@ -739,20 +641,6 @@
   "guide": [
    "FPV drone carrier",
    "Xe phóng drone FPV"
-  ]
- },
- "lancet_truck": {
-  "unit": [
-   "Loitering munition truck",
-   "Xe phóng Lancet"
-  ],
-  "short": [
-   "Lancet",
-   "Lancet"
-  ],
-  "guide": [
-   "Artillery hunter",
-   "Săn pháo binh"
   ]
  },
  "wheeled_gun": {

@@ -87,9 +87,9 @@ namespace MachineBrigade.Tests
         [Test]
         public void TheRuntimePriceIsTheBaseUnderBrandtRoundedHalfUp()
         {
-            var (world, _, slot, economy) = Fallen("heavy_flak_tower", SlotSize.Medium);
+            var (world, _, slot, economy) = Fallen("atgm_tower", SlotSize.Medium);
             var baseCp = world.Bases.CostOf(slot);
-            Assert.AreEqual(C.Vehicles["heavy_flak_tower"].BaseRebuildCp, baseCp, "baseRebuildCP from the data");
+            Assert.AreEqual(C.Vehicles["atgm_tower"].BaseRebuildCp, baseCp, "baseRebuildCP from the data");
             Assert.AreEqual(baseCp, world.Bases.RuntimeCostOf(0, slot), "no commander: the base price");
             world.SetCommander(0, Commanders.Get("brandt"));
             var runtime = world.Bases.RuntimeCostOf(0, slot);

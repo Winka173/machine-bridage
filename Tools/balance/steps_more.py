@@ -61,7 +61,7 @@ INTRO["B8"] = ("The sheet names cards by their Vietnamese titles; the table belo
                "the data holds half. Where a row offers two options, the one taken is in the detail (DECISIONS 25A).")
 
 SUPPORT_IDS = {"Không kích": "airstrike", "Pháo kích": "artillery_barrage", "Tên lửa hành trình": "cruise_missile",
-               "Bom napalm": "napalm_strike", "Đòn SEAD": "sead_strike", "Màn khói": "smoke_screen", "UAV quét": "uav_scan",
+               "Bom napalm": "napalm_strike",
                "Sửa chữa": "repair_drop", "Tháp dã chiến": "field_tower"}
 
 

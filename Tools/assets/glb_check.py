@@ -73,7 +73,7 @@ LENGTH_TOLERANCE = 0.25      # absolute length: only reported (the view fits the
 DEGENERATE_ERROR = 0.005     # share of a model's triangles below 1e-8 m^2 that makes an error; fewer: a warning
 REGRESSION = 0.10            # --compare: a change above 10 % in a counted metric is flagged
 DARK, BRIGHT = 0.15, 0.95    # COLOR_0 mean luminance outside this band: suspicious
-SCENERY = re.compile(r'^(birch|bush|pine|snow_pine|tree_|rock_|mountain_|debris_|rubble_|wreck_|dragons_teeth|minefield|'
+SCENERY = re.compile(r'^(birch|bush|pine|snow_pine|tree_|rock_|mountain_|debris_|rubble_|wreck_|'
                      r'mine$|supply_crate|repair_crate|dress_)')
 
 

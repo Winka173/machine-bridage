@@ -28,8 +28,8 @@ namespace MachineBrigade.Tests
             ("missile_battery", "sam_battery", "attack_jet", false), ("long_sam", "sam_48n6", "attack_jet", false),
             ("sam_launcher", "sam_long", "attack_helicopter", false), ("aa_vehicle", "sam", "attack_helicopter", false),
             ("fighter_jet", "air_to_air", "attack_jet", false), ("fighter_jet", "wvr_aam", "attack_helicopter", false),
-            ("bmpt", "ataka", "main_battle_tank", true), ("attack_helicopter", "hellfire_standoff", "main_battle_tank", true),
-            ("bmpt", "ataka", "main_battle_tank", false),
+            ("ifv", "atgm", "main_battle_tank", true), ("attack_helicopter", "hellfire_standoff", "main_battle_tank", true),
+            ("ifv", "atgm", "main_battle_tank", false),
         };
 
         /// <summary>Variants: (name, edits of weapon fields: id, field, value); no edits is the data as it is.</summary>
@@ -39,7 +39,7 @@ namespace MachineBrigade.Tests
             ("sam-10%", new[] { ("sam", "projectileSpeed", 36f), ("sam_long", "projectileSpeed", 41f), ("sam_battery", "projectileSpeed", 41f), ("sam_48n6", "projectileSpeed", 56f) }),
             ("sam-10%+resist", new[] { ("sam", "projectileSpeed", 36f), ("sam_long", "projectileSpeed", 41f), ("sam_battery", "projectileSpeed", 41f), ("sam_48n6", "projectileSpeed", 56f),
                 ("sam", "flareResist", 0.5f), ("sam_long", "flareResist", 0.8f), ("sam_battery", "flareResist", 0.85f), ("sam_48n6", "flareResist", 0.85f) }),
-            ("11C", new[] { ("air_to_air", "projectileSpeed", 48f), ("wvr_aam", "projectileSpeed", 48f), ("heli_atgm", "projectileSpeed", 30f), ("vikhr", "projectileSpeed", 34f), ("atgm_heavy", "projectileSpeed", 24f) }),
+            ("11C", new[] { ("air_to_air", "projectileSpeed", 48f), ("wvr_aam", "projectileSpeed", 48f), ("vikhr", "projectileSpeed", 34f), ("atgm_heavy", "projectileSpeed", 24f) }),
         };
 
         /// <summary>The catalog with some weapon fields changed (a field the weapon's line lacks is added to it).</summary>

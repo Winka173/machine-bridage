@@ -293,8 +293,8 @@ namespace MachineBrigade.Tests
                     _root.transform);
                 var land = Vector3.zero;
                 var from = land + Vector3.left * 24f + Vector3.up * 58f;
-                // Smoke shells, mine rockets and the SEAD missile are their own rounds, not the barrage's glowing HE shell.
-                foreach (var id in new[] { "smoke_screen", "remote_mines", "sead_strike" })
+                // Mine rockets are their own rounds, not the barrage's glowing HE shell.
+                foreach (var id in new[] { "remote_mines" })
                     Assert.IsTrue(strikes.Inbound(catalog.Supports[id], Vector3.left, from, land, 0.9f, 0f), id + " draws its own round");
                 Assert.IsFalse(strikes.Inbound(catalog.Supports["artillery_barrage"], Vector3.left, from, land, 0.9f, 0f),
                     "a barrage keeps its glowing HE shell (with the shell inside)");
