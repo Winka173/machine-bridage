@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 163d0e46, ngày 2026-10-03. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 9e1e95b4, ngày 2026-10-03. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -86,7 +86,7 @@ Sheet 01_chien_dau/Do_ben — Hệ số độ bền (2 dòng, 8 cột)
 | bosses | toughness | bosses | 0.85 |
 | vehicles | toughness | vehicles | 2.2 |
 
-Bảng đầy đủ: xem sheet `Xe` (120 dòng), `Xe_vu_khi` (99 dòng), `Ky_nang` (24 dòng), `May_bay_so_phat` (26 dòng).
+Bảng đầy đủ: xem sheet `Xe` (119 dòng), `Xe_vu_khi` (99 dòng), `Ky_nang` (24 dòng), `May_bay_so_phat` (26 dòng).
 
 ## Bảng DPS tổng hợp
 
@@ -129,7 +129,7 @@ Sheet 01_chien_dau/Hoi_quy — Hồi quy theo CP (12 dòng, 5 cột)
 | trung_vi_mau_tren_cp_ge16 | 146.66339285714287 | trung vị máu / CP, dải >=16 |
 | trung_vi_mau_tren_cp_le8 | 187.0 | trung vị máu / CP, dải <=8 |
 
-Bảng đầy đủ: xem sheet `Xe_suy_ra` (120 dòng), `Hoi_quy_du_lieu` (79 dòng).
+Bảng đầy đủ: xem sheet `Xe_suy_ra` (119 dòng), `Hoi_quy_du_lieu` (79 dòng).
 
 ## Vũ khí và bảng sát thương
 
@@ -506,6 +506,31 @@ Sheet 01_chien_dau/Canh_bao_vong — Vòng cảnh báo (12 dòng, 8 cột)
 | rocketMinMm | warningRules | rocketMinMm | 300 | mm |
 | salvoMergeSeconds | warningRules | salvoMergeSeconds | 0.6 | s |
 
+Sheet 01_chien_dau/Drone — Drone: tốc độ, đầu nổ, cỡ, vụ nổ (18 dòng, 19 cột)
+
+| id | loai | ten_that | mang_boi | toc_do_m_s | do_cao_m | dau_no_kg | sat_thuong | loi_m | ria_m |
+|---|---|---|---|---|---|---|---|---|---|
+| airship_drones | dan_drone | FPV drone (1.5 kg) |  | 26 |  | 1.5 | 140 | 2.5 | 0 |
+| coyote_interceptor | dan_drone | Coyote Block 2 | interceptor_drone_vehicle | 40 |  | 5 | 120 | 2 | 0 |
+| fpv_fibre | dan_drone | Fibre-optic FPV drone (1.5 kg) | fibre_fpv_carrier | 16 |  | 1.5 | 160 | 2.5 | 0 |
+| fpv_hangar | dan_drone | FPV drone (1.5 kg) | drone_hangar | 26 |  | 1.5 | 140 | 2.5 | 0 |
+| fpv_hangar_swarm | dan_drone | FPV drone (1.5 kg) | drone_hangar.swarm | 26 |  | 1.5 | 140 | 2.5 | 0 |
+| fpv_swarm | dan_drone | FPV drone (1.5 kg) | elite_fpv_carrier;fpv_carrier | 26 |  | 1.5 | 140 | 2.5 | 0 |
+| fpv_swarm_mini | dan_drone | Switchblade 300 | fibre_fpv_carrier | 30 |  | 3 | 90 | 2 | 0 |
+| interceptor_drone | dan_drone | Interceptor drone (1 kg) | interceptor_drone_vehicle | 40 |  | 1 | 120 | 1.5 | 0 |
+| lancet | dan_drone | ZALA Lancet-3 (3 kg) | lancet_truck | 28 |  | 3 | 240 | 3 | 0 |
+| lancet_hangar | dan_drone | ZALA Lancet-3 (3 kg) | drone_hangar.lancet | 28 |  | 3 | 240 | 3 | 0 |
+| mothership_drones | dan_drone | ZALA Lancet-3 (3 kg) | drone_bay;fortress_hive | 28 |  | 3 | 240 | 3 | 0 |
+| p26_matriarch_ma_drones | dan_drone | ZALA Lancet-3 swarm | drone_mothership;locust;stymphalos | 28 |  | 3 | 320 | 3 | 6 |
+| recon_drone | may_bay_drone |  |  | 13 | 34 | recon_missile:22 |  |  |  |
+| shahed | dan_drone | Shahed-136 (50 kg) | shahed_truck | 20 |  | 50 | 344 | 4.5 | 0 |
+| strike_drone | may_bay_drone |  |  | 13.9 | 30 | drone_missile:9;guided_bomb:110 |  |  |  |
+| swarm_drones | dan_drone | FPV drone (1.5 kg) | swarm_carrier | 26 |  | 1.5 | 140 | 2.5 | 0 |
+| uav_loiter_strike | may_bay_drone |  |  | 20 | 22 | uav_loiter_missile:9 |  |  |  |
+| wingman_drone | may_bay_drone |  |  | 46 | 32 | aim9:9.4 |  |  |  |
+
+*In 10 / 19 cột; 7 cột khác: xem sheet.*
+
 Bảng đầy đủ: xem sheet `Ho_vu_khi` (105 dòng).
 
 ## Hỗ trợ hỏa lực
@@ -724,7 +749,7 @@ Thông số ngoài đời lấy từ nguồn trong repo (sheet Nguon_tham_chieu 
 
 ### Phuong_tien_tham_chieu
 
-160 dòng. Độ tin cậy: da_kiem_chung 26, uoc_dinh 33, ban_dau_doan 17, NEED_SOURCE 84. Loại: NEED_SOURCE 84, doi_that 76.
+159 dòng. Độ tin cậy: da_kiem_chung 26, uoc_dinh 33, ban_dau_doan 17, NEED_SOURCE 83. Loại: NEED_SOURCE 83, doi_that 76.
 
 - `aa_vehicle` (Pháo cao xạ tự hành): mẫu thật: Flakpanzer Gepard (Oerlikon KDA 35 mm);Stinger / Starstreak; giống: Pháo phòng không tự hành hai nòng 35 mm có radar; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_flakpanzer_gepard, R_unit_sheet, R_machine_brigade_can_bang, R_aa_vehicle.
 - `ammo_carrier` (Xe tiếp đạn): mẫu thật: M977 HEMTT;KamAZ-5350;M2 Browning 12,7 mm; giống: xe tải hậu cần chở đạn, súng máy trên vòng nóc; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_heavy_expanded_mobility_tactical_t, R_unit_sheet, R_machine_brigade_can_bang, R_ammo_carrier.
@@ -798,12 +823,13 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Phao_sang` (18 dòng): Pháo sáng — Mỗi đơn vị có pháo sáng: số lần, hồi, điểm phát Mount_Flare
 - `Hanh_vi_dan` (11 dòng): Hành vi đạn: luật chung — munitionRules: pháo sáng mồi, ngòi cận đích, dẫn đường
 - `Hanh_vi_dan_nhom` (7 dòng): Hành vi đạn theo nhóm — Mỗi dạng đạn (projectile): cách nhắm, khi nổ, cảnh báo (luật trong mã)
+- `Drone` (18 dòng): Drone: tốc độ, đầu nổ, cỡ, vụ nổ — Mọi drone của game một dòng: drone đạn (FPV, Lancet, Shahed do xe phóng) và máy bay drone; tốc độ bay, đầu nổ (kg), sát thương, bán kính nổ lõi / rìa…
 - `Canh_bao_vong` (12 dòng): Vòng cảnh báo — warningRules: loại đòn có vòng, sàn thời gian theo bậc, số vùng tối đa
 - `Bom_rai_tham` (10 dòng): Ném bom rải thảm (liên kết) — Mỗi vũ khí thả bom một dòng: tham số dải chính (weapons[*].stick) và câu thẻ; bảng đủ (Bom_vu_khi, Bom_don_vi, Bom_hanh_vi, Bom_vet_tha, Bom_canh_bao…
 - `Vu_khi_suy_ra` (372 dòng): Vũ khí: suy ra — Lớp B: chu kỳ, sát thương loạt, DPS duy trì theo giáp / công trình / máy bay, cảnh báo: công thức sống trên Vu_khi và các bảng hệ số, kèm cột _game (…
 - `Vu_khi_tham_chieu` (372 dòng): Vũ khí: tham chiếu ngoài đời — Mỗi vũ khí một dòng: mẫu thật (tên thật balance.json), nhịp thật (bảng REAL), đầu đạn (WARHEAD), ghi chú bảng cân bằng (spec 12.2; chỉ dữ liệu có tro…
 - `Vu_khi_so_sanh_that` (279 dòng): Vũ khí: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
-- `Xe` (120 dòng): Xe — Mỗi xe / máy bay / tàu của người chơi và địch, cả tinh nhuệ (elite): giá trị game và trường gốc
+- `Xe` (119 dòng): Xe — Mỗi xe / máy bay / tàu của người chơi và địch, cả tinh nhuệ (elite): giá trị game và trường gốc
 - `Xe_vu_khi` (99 dòng): Xe: bệ vũ khí phụ — secondary[]: bệ phụ (chỉ số bệ = thu_tu + 1; bệ 0 là vũ khí chính)
 - `Xe_ten_lua` (5 dòng): Xe: tên lửa mang — missiles[]
 - `Xe_bo_phan` (6 dòng): Xe: bộ phận — parts[] của xe không phải boss
@@ -824,12 +850,12 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Doi_mo_man_vai_tro` (19 dòng): Đội mở màn: vai trò — openingSquads.roles: thẻ chọn được cho mỗi vai trò
 - `Doi_mo_man_luat` (3 dòng): Đội mở màn: luật — openingSquads.share / modes / enemyModes
 - `Xe_tham_chieu` (6 dòng): Xe tham chiếu — Xe tham chiếu của Boss_hieu_qua (spec 03 B) và xe chậm tham chiếu của vòng cảnh báo
-- `Xe_suy_ra` (120 dòng): Xe: suy ra — Lớp B: DPS vũ khí chính trên xe (màn chi tiết), máu / CP, DPS / CP, tỷ lệ so với đường cong máu của đội hình (Hoi_quy)
+- `Xe_suy_ra` (119 dòng): Xe: suy ra — Lớp B: DPS vũ khí chính trên xe (màn chi tiết), máu / CP, DPS / CP, tỷ lệ so với đường cong máu của đội hình (Hoi_quy)
 - `Hoi_quy_du_lieu` (79 dòng): Hồi quy: dữ liệu — Xe vào hồi quy (bộ lọc chuẩn: bỏ CP 0, Support, Scout; chỉ xe thẻ, không tinh nhuệ, có máu): ln CP, ln máu, ln DPS = max(nhẹ giáp 1, nặng giáp 3, máy…
 - `Hoi_quy` (12 dòng): Hồi quy theo CP — Số mũ và hệ số của máu và DPS theo CP (máu = a x CP^b, bình phương nhỏ nhất trên ln), N, trung vị máu / CP và DPS / CP theo dải CP (<= 8, 9-15, >= 16)
 - `May_bay_so_phat` (26 dòng): Máy bay: số phát để hạ — Mỗi máy bay: máu trong trận, giáp, sát thương một phát và số phát của tên lửa tham chiếu (Stinger, Buk, AMRAAM) để hạ (DamageTable.Effective, Air)
 - `Doi_mo_man_suy_ra` (23 dòng): Đội mở màn: suy ra — baseCP ước tính của đội mở màn (bộ bài trống: thẻ rẻ nhất mỗi vai trò, Doi_mo_man_vai_tro.re_nhat_cp); % CP khởi đầu theo chế độ cần CP khởi đầu của…
-- `Phuong_tien_tham_chieu` (160 dòng): Phương tiện: tham chiếu ngoài đời — Mỗi xe và thẻ hỗ trợ một dòng: mẫu thật, phim / game (unit_refs.json), kích thước thật (reference_real.json), bảng cân bằng (spec 12.2; chỉ dữ liệu c…
+- `Phuong_tien_tham_chieu` (159 dòng): Phương tiện: tham chiếu ngoài đời — Mỗi xe và thẻ hỗ trợ một dòng: mẫu thật, phim / game (unit_refs.json), kích thước thật (reference_real.json), bảng cân bằng (spec 12.2; chỉ dữ liệu c…
 - `Phuong_tien_so_sanh_that` (269 dòng): Phương tiện: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
 - `So_tay_dan` (2 dòng): Sổ tay đạn — balance.json handbook: xe mẫu bắn và xe mẫu bị bắn của sổ tay đạn trên giao diện
 - `Hang_so_vu_khi` (28 dòng): Hằng số vũ khí, đạn, sát thương và nổ — Assets/MachineBrigade/Resources/Data/tunables.json: 'weapons' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…

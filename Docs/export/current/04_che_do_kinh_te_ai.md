@@ -2,7 +2,7 @@
 
 Chế độ chơi, độ khó, kinh tế, tác chiến, AI, thăng hạng, mở khóa, cửa hàng, giao diện.
 
-Gói cân bằng Machine Brigade, commit 163d0e46, ngày 2026-10-03. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 9e1e95b4, ngày 2026-10-03. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng quan
 
@@ -503,7 +503,7 @@ Sheet 04_che_do_kinh_te_ai/Nhiem_vu_ngay — Nhiệm vụ ngày (8 dòng, 6 cộ
 | strikes | strikes | 6;10;15 | 120 |
 | wins | wins | 1;2;3 | 180 |
 
-Bảng đầy đủ: xem sheet `Cai_dat_mac_dinh` (22 dòng), `Huong_dan` (403 dòng, bulk.zip), `Ban_do_menu` (25 dòng), `Mo_khoa` (102 dòng).
+Bảng đầy đủ: xem sheet `Cai_dat_mac_dinh` (22 dòng), `Huong_dan` (402 dòng, bulk.zip), `Ban_do_menu` (25 dòng), `Mo_khoa` (102 dòng).
 
 ## Tham khảo ngoài đời và game
 
@@ -587,13 +587,13 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Nhiem_vu_ngay` (8 dòng): Nhiệm vụ ngày — DailyMissions.cs Pool: loại, mục tiêu theo bậc (ngăn ';'), thưởng xu
 - `Skin` (10 dòng): Skin — Skins.cs All: id, giá, màu
 - `Ban_do_menu` (25 dòng): Bản đồ trên menu — MatchSettings.cs AllMaps: id, chủ đề, biểu tượng, thời tiết có thể
-- `Meta_bang_hang` (167 dòng): Bảng hằng meta (C#) — Mọi bảng static readonly còn lại của các file meta (tự tìm): mỗi phần tử một dòng (bang = <file>#<mảng>)
+- `Meta_bang_hang` (166 dòng): Bảng hằng meta (C#) — Mọi bảng static readonly còn lại của các file meta (tự tìm): mỗi phần tử một dòng (bang = <file>#<mảng>)
 - `Mo_khoa` (102 dòng): Mở khóa — Tools/campaign/unlocks_sheet.json: thẻ -> chương mở khóa; thẻ mở khi thắng nhiệm vụ: 05_chien_dich/Nhiem_vu.unlocks
 - `Mo_khoa_chung` (3 dòng): Mở khóa: ghi chú — unlocks_sheet.json: khóa ngoài bảng
 - `Meta_kinh_te_nguon` (23 dòng): Meta: nguồn và chỗ tiêu xu — Mỗi nguồn xu (thưởng trận, nhiệm vụ, hòm, nhiệm vụ ngày, Vô tận, cửa hàng) và chỗ tiêu xu (nâng hạng, hòm, skin): số xu, đơn vị, trần; số trong mã (R…
 - `Meta_kinh_te_tran` (12 dòng): Meta: xu mỗi trận nhanh — Xu một trận nhanh theo độ khó x kết quả (Rewards.Quick: cơ bản + min(hạ, trần) x xu + min(phút, trần) x xu, x hệ số độ khó), ở trận tham chiếu 20 xe…
 - `Meta_kinh_te` (10 dòng): Meta: kinh tế nâng hạng — Một thẻ từ hạng 1 lên hạng h: xu và bản thiết kế cho lần nâng, tổng từ hạng 1 (CardRanks.CoinsSpent / BlueprintsSpent), số trận thắng nhanh Bình thườ…
-- `Huong_dan` [bulk.zip] (403 dòng): Hướng dẫn người chơi — Chuỗi hướng dẫn trong game: thẻ Hướng dẫn của trang chi tiết (guide.<id>: GuideText, BossText, BigAttackText...), mẹo (tip.*) và gợi ý thao tác (hint…
+- `Huong_dan` [bulk.zip] (402 dòng): Hướng dẫn người chơi — Chuỗi hướng dẫn trong game: thẻ Hướng dẫn của trang chi tiết (guide.<id>: GuideText, BossText, BigAttackText...), mẹo (tip.*) và gợi ý thao tác (hint…
 - `Cai_dat_mac_dinh` (22 dòng): Cài đặt mặc định — Cài đặt mặc định của người chơi mới (âm lượng, đồ họa, rung, hỗ trợ, ngôn ngữ), đọc từ mã bởi ExportGameDoc
 - `Mutator_tuan` (1 dòng): Mutator tuần — Mutator tuần của Tác chiến
 - `Thu_hang` (1 dòng): Thứ hạng — Bảng xếp hạng
