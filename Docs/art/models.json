@@ -977,7 +977,7 @@
   },
   "gun_turret": {
     "file": "gun_turret.glb",
-    "triangles": 6430
+    "triangles": 5089
   },
   "gun_turret_a": {
     "file": "gun_turret_a.glb",
@@ -985,7 +985,7 @@
   },
   "gun_turret_b": {
     "file": "gun_turret_b.glb",
-    "triangles": 7006
+    "triangles": 4241
   },
   "gunship_heli": {
     "file": "gunship_heli.glb",
