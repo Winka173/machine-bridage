@@ -9,8 +9,8 @@ the hard cap an error). Warnings are listed in the JSON.
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
 | boss | 26 | 813,805 | 31,300 | leviathan (62,916) | 3,227 | 2 | 24 |
-| ground | 66 | 563,394 | 8,536 | main_battle_tank_hd (16,462) | 3,755 | 1 | 38 |
-| structure | 71 | 384,897 | 5,421 | headquarters (21,052) | 3,580 | 2 | 16 |
+| ground | 66 | 568,066 | 8,607 | main_battle_tank_hd (16,462) | 3,788 | 2 | 38 |
+| structure | 71 | 412,111 | 5,804 | headquarters (21,052) | 3,809 | 2 | 18 |
 | prop | 115 | 258,170 | 2,244 | command_hq (8,872) | 1,568 | 0 | 3 |
 | unlisted | 34 | 108,062 | 3,178 | apc_hd (14,968) | 668 | 0 | 0 |
 | air | 19 | 98,286 | 5,172 | fighter_jet_hd (14,216) | 711 | 0 | 14 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 25 | 5,154 | 206 | bomb (404) | 175 | 0 | 0 |
 
-All files: 2,292,726 triangles, 5 with errors, 95 more with warnings only.
+All files: 2,324,612 triangles, 6 with errors, 94 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -48,8 +48,8 @@ All files: 2,292,726 triangles, 5 with errors, 95 more with warnings only.
 | boss_s | renderers | 1 | 2 | fortress_bastion, ixion |
 | boss_s | triangles | 3 | 0 | - |
 | boss_s | vertices | 5 | 0 | - |
-| ground | movingParts | 1 | 0 | - |
-| ground | renderers | 14 | 1 | fpv_carrier |
+| ground | movingParts | 2 | 0 | - |
+| ground | renderers | 14 | 2 | fpv_carrier, heavy_aa |
 | ground | triangles | 26 | 0 | - |
 | ground | vertices | 32 | 0 | - |
 | helicopter | renderers | 1 | 0 | - |
@@ -64,20 +64,23 @@ All files: 2,292,726 triangles, 5 with errors, 95 more with warnings only.
 | scenery | renderers | 2 | 0 | - |
 | structure | movingParts | 1 | 0 | - |
 | structure | renderers | 7 | 2 | aircraft_hangar, vehicle_hangar_base |
+| structure | triangles | 2 | 0 | - |
+| structure | vertices | 2 | 0 | - |
 | tower | movingParts | 1 | 0 | - |
 | tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-71 models over a budget, 5 of them over a hard cap.
+71 models over a budget, 6 of them over a hard cap.
 
 ## Error reasons (count of models)
 
-- over a budget hard cap: 5
+- over a budget hard cap: 6
 
-## Flagged models (5)
+## Flagged models (6)
 
-- **aircraft_hangar** (structure): renderers 51 over the structure normal hard cap 48
+- **aircraft_hangar** (structure): renderers 93 over the structure normal hard cap 48
 - **fortress_bastion** (boss): renderers 168 over the boss_s normal hard cap 162
 - **fpv_carrier** (ground): renderers 78 over the ground normal hard cap 76
+- **heavy_aa** (ground): renderers 77 over the ground normal hard cap 76
 - **ixion** (boss): renderers 173 over the boss_s normal hard cap 162
-- **vehicle_hangar_base** (structure): renderers 71 over the structure normal hard cap 48
+- **vehicle_hangar_base** (structure): renderers 129 over the structure normal hard cap 48
