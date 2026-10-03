@@ -1,0 +1,32 @@
+{
+ "id": "wall_hesco",
+ "class": "obstacle",
+ "real": ["HESCO MIL 7-class bastion: welded wire-mesh cells with a geotextile liner, filled with earth (2.21 m tall, 2.13 m wide cells)", "concertina razor wire on angle-iron pickets"],
+ "shape": "Strings note.wall_hesco: a segment of earth-filled gabions; prompt 32 L3: one logic segment 12 x 2 m, tiled end to end by WallRules (the size stays exact); Accord field-built.",
+ "confidence": "xấp xỉ (HESCO published cell sizes; the segment's box is the wall system's)",
+ "target_size": {"L": 2.0, "W": 12.02, "H": 2.75, "source": "the old GLB (2.0 x 12.02 x 2.75; balance.json length 2, width 12): kept exactly, the wall system tiles it", "tolerance": 0.02},
+ "features": [
+  {"feature": "eight 1.5 m cells, the beige geotextile bulging through the mesh, heaped earth tops sagging between cells", "nodes": ["Walls", "Fill_top", "Liner"]},
+  {"feature": "welded wire mesh on both faces, the joining coil pins at every cell junction, the cross mesh on top", "nodes": ["Mesh", "Kit_pins"]},
+  {"feature": "a two-slope earth berm the full length, spilled earth at the foot", "nodes": ["Base", "Spill"]},
+  {"feature": "concertina razor wire on angle-iron pickets along the top", "nodes": ["Razor_wire", "Pickets"]},
+  {"feature": "the Team band painted on the liner caps, stencilled cell ID tags (no insignia)", "nodes": ["Wall_band", "Stencil"]},
+  {"feature": "field clutter: weeds on the fill, sandbags weighing the liner, a shovel left in a cell, a drainage pipe", "nodes": ["Weeds", "Sandbags", "Tools", "Drain"]}
+ ],
+ "class_parts": [],
+ "weapons": [],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [0, 6000], "floor": 0, "lod1_share": 0.5, "lod2_share": 0.2, "note": "obstacle class: no floor, over the maximum is information only"},
+ "team_zones": ["a band along both faces on the liner caps (Team)"],
+ "colour_zones_min": 2,
+ "breakable": [],
+ "wreck": "a fallen segment is drawn by the view as a slumped, burnt ruin (VehicleView.BecomeWreck): no part nodes",
+ "faction_style": "Accord (field-built: earth-filled gabions, wire, sandbags)",
+ "details": {
+  "tier1": ["eight cells", "berm"],
+  "tier2": ["heaped tops", "liner bands", "mesh wires", "razor wire", "pickets", "spill mounds"],
+  "tier3": ["coil pins", "ID tags", "weeds", "sandbags", "shovel", "drain pipe"]
+ },
+ "pivot": "centred on the origin, the ground at z = 0, along X, the front to -Y (as the old file; WallRules places the segment by its centre)",
+ "questions": []
+}
