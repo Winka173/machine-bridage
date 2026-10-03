@@ -19205,3 +19205,6 @@ Owner: "check file tối ưu, dùng sonnet là dùng sonnet 5.0 mới đúng, kh
 pinned to Sonnet 5.0 (ANTHROPIC_DEFAULT_SONNET_MODEL with the exact model id, only on the owner's word). Earlier today
 one agent ran on the `sonnet` alias (the balance-pack export lane, lane C); its work was checked (15/15 export checks)
 and merged. TOKEN_OPTIMISATION.md section 5 and AGENT_RULES.md updated.
+- (03/10, owner "cho phép" + model id table) The `sonnet` alias is pinned to Sonnet 5.0: user settings
+  `env.ANTHROPIC_DEFAULT_SONNET_MODEL = "claude-sonnet-5"`. It applies to sessions started after the change; the lead keeps
+  using opus for mid-tier jobs until a fresh session.
