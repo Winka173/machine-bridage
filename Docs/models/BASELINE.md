@@ -24,13 +24,13 @@ All files: 2,413,774 triangles, 0 with errors, 122 more with warnings only.
 
 | model | category | triangles | vertices | renderers | materials | slots | KiB | L x W x H (m) | COLOR_0 mean |
 |---|---|---:|---:|---:|---:|---:|---:|---|---:|
-| main_battle_tank (MBT) | ground | 7,196 | 8,446 | 38 | 8 | 38 | 442 | 7.79 x 3.07 x 2.31 | 0.6229 |
-| main_battle_tank_hd (MBT) | ground | 16,462 | 21,877 | 56 | 9 | 56 | 1090 | 7.79 x 3.07 x 2.35 | 0.5504 |
-| fighter_jet (Su-27) | air | 4,308 | 5,571 | 40 | 9 | 40 | 305 | 8.64 x 5.85 x 2.15 | 0.7461 |
-| fighter_jet_hd (Su-27) | air | 14,216 | 21,233 | 51 | 9 | 51 | 1047 | 8.64 x 5.85 x 2.14 | 0.7036 |
-| silver_bug (Icarus) | boss | 21,760 | 29,716 | 120 | 12 | 120 | 1499 | 36.32 x 18.23 x 13.15 | 0.7421 |
-| attack_helicopter (complex unit) | air | 4,722 | 5,896 | 30 | 9 | 30 | 312 | 6.35 x 4.44 x 2.02 | 0.7192 |
-| attack_helicopter_hd (complex unit) | air | 6,902 | 9,300 | 38 | 9 | 38 | 479 | 6.35 x 4.44 x 2.02 | 0.6856 |
+| main_battle_tank (MBT) | ground | 7,196 | 8,446 | 38 | 8 | 38 | 345 | 7.79 x 3.07 x 2.31 | 0.6229 |
+| main_battle_tank_hd (MBT) | ground | 16,462 | 21,877 | 56 | 9 | 56 | 837 | 7.79 x 3.07 x 2.35 | 0.5504 |
+| fighter_jet (Su-27) | air | 4,308 | 5,571 | 40 | 9 | 40 | 243 | 8.64 x 5.85 x 2.15 | 0.7461 |
+| fighter_jet_hd (Su-27) | air | 14,216 | 21,233 | 51 | 9 | 51 | 802 | 8.64 x 5.85 x 2.14 | 0.7036 |
+| silver_bug (Icarus) | boss | 21,760 | 29,716 | 120 | 12 | 120 | 1158 | 36.32 x 18.23 x 13.15 | 0.7421 |
+| attack_helicopter (complex unit) | air | 4,722 | 5,896 | 30 | 9 | 30 | 245 | 6.35 x 4.44 x 2.02 | 0.7192 |
+| attack_helicopter_hd (complex unit) | air | 6,902 | 9,300 | 38 | 9 | 38 | 372 | 6.35 x 4.44 x 2.02 | 0.6856 |
 
 - fighter_jet: renderers 40 over the jet normal budget 36
 - fighter_jet_hd: triangles 14,216 over the jet hd budget 12,300; vertices 21,233 over the jet hd budget 19,200; renderers 51 over the jet hd budget 49
