@@ -317,8 +317,9 @@ def camo_net(a, poles, sag, z0, part='Camo_net', mat='Canvas', pole_part='Net_po
         p, q = pts[i], pts[(i + 1) % n]
         m = ((p[0] + q[0]) / 2, (p[1] + q[1]) / 2, (p[2] + q[2]) / 2 - sag * .45)
         b = len(verts)
-        verts += [p, m, q, (cx, cy, cz)]
-        faces += [(b, b + 1, b + 3), (b + 1, b + 2, b + 3), (b + 3, b + 1, b), (b + 3, b + 2, b + 1)]
+        c = (cx, cy, cz)
+        verts += [p, m, q, c] + [(v[0], v[1], v[2] - .012) for v in (p, m, q, c)]   # the underside 12 mm lower
+        faces += [(b, b + 1, b + 3), (b + 1, b + 2, b + 3), (b + 7, b + 5, b + 4), (b + 7, b + 6, b + 5)]
     net.mesh(verts, faces)
     if garnish:
         g = a.part(part + '_garnish', 'FoliageDark', parent)
