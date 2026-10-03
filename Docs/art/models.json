@@ -1657,11 +1657,11 @@
   },
   "sky_gunship": {
     "file": "sky_gunship.glb",
-    "triangles": 3652
+    "triangles": 3562
   },
   "sky_gunship_hd": {
     "file": "sky_gunship_hd.glb",
-    "triangles": 4492
+    "triangles": 3562
   },
   "skyscraper": {
     "file": "skyscraper.glb",

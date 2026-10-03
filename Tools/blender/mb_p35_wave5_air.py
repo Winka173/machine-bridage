@@ -302,8 +302,115 @@ def recon_jet(a):
     k.clean(a)
 
 
+# ============================================================================= sky_gunship
+def _c130_wing(a, part, span, root, tip, z, t=.13):
+    """A C-130-type straight tapered high wing across the span (both halves in one loft), its dihedral slight."""
+    st = []
+    for f in (-1.0, -.75, -.5, -.3, -.12, 0.0, .12, .3, .5, .75, 1.0):
+        x = f * span / 2
+        lead_r, chord_r = root
+        lead_t, chord_t = tip
+        g = abs(f)
+        lead, chord = lead_r + (lead_t - lead_r) * g, chord_r + (chord_t - chord_r) * g
+        st.append((x, lead, lead + chord, z + g * span * .5 * .03, t))
+    span_loft(part, st, foil=FOIL14)
+
+
+def _gunship_prop(a, name, loc, R, blades, phase=0.0):
+    """A turboprop's propeller on its spinning pivot (Propeller / Propeller_2 ..): the spinner and the blades."""
+    p = a.pivot(name, loc)
+    bl = a.part('Prop_blades', 'Undercarriage', p)
+    for j in range(blades):
+        u = j * TAU / blades + phase
+        bl.box((R * .16, .05, R * .9), loc=(math.cos(u) * R * .5, 0, math.sin(u) * R * .5), rot=(.3, -u + R90, 0),
+               bevel=0, taper=(.55, 1))
+    k.lathe(a.part('Spinners', 'Steel', p), [(0, -.3), (.08, -.25), (.14, -.1), (.15, .05)], rot=K.FORWARD, seg=10)
+
+
+def sky_gunship(a, detail=False):
+    """AC-130U Spooky at 0.4 x: the C-130 fuselage (lofted round section, upswept tail with the ramp), the high wing
+    with four turboprop nacelles and four-blade propellers (Propeller .. Propeller_4), the tall fin and tailplane,
+    the left-side gun deck (M102 105 mm aft, Bofors 40 mm, GAU-12 25 mm forward, their ports), the sensor turrets
+    (nose radar blister, IR / TV balls), landing-gear sponsons, flare dispensers, the cockpit glazing. `detail` is
+    the PC High twin's flag (the same model). Runtime: Muzzle_main, Muzzle_gun, Muzzle_mg (the left side),
+    Propeller .. Propeller_4, Point_fire, Point_exhaust; mb_flare_mounts adds Mount_Flare_*, mb_p34_parts
+    Part_wing."""
+    fus = a.part('Fuselage', 'Team')
+    rings = []
+    for y, r, zc, zsq in ((-5.95, .1, .1, 1.0), (-5.7, .45, .05, 1.0), (-5.2, .72, .1, 1.0), (-4.4, .86, .25, 1.0),
+                          (-3.0, .88, .35, 1.0), (1.5, .88, .35, 1.0), (2.6, .82, .5, .95), (3.8, .62, .78, .85),
+                          (4.9, .38, 1.1, .8), (5.8, .14, 1.4, .8)):
+        rings.append([(math.cos(u) * r, y, zc + math.sin(u) * r * zsq) for u in (i * TAU / 16 for i in range(16))])
+    fus.loft(rings, bevel=0)
+    # Cockpit glazing, the nose radome line, the side door, the ramp lines, the gear sponsons.
+    gl = a.part('Canopy', 'Glass')
+    for s in (-1, 1):
+        gl.mesh([(s * .2, -5.32, .62), (s * .62, -5.0, .6), (s * .64, -4.78, .78), (s * .22, -5.05, .86)],
+                [(0, 1, 2, 3) if s > 0 else (3, 2, 1, 0)])
+        gl.mesh([(s * .68, -4.75, .52), (s * .8, -4.3, .52), (s * .8, -4.3, .72), (s * .68, -4.75, .72)],
+                [(0, 1, 2, 3) if s > 0 else (3, 2, 1, 0)])
+    sp = a.part('Undercarriage', 'Armor')
+    for s in (-1, 1):
+        k.sharp_loft(sp, [[(s * .7, -1.3, -.42), (s * 1.08, -1.2, -.42), (s * 1.08, 1.2, -.42), (s * .7, 1.3, -.42)],
+                          [(s * .7, -1.1, .1), (s * 1.0, -1.0, .05), (s * 1.0, 1.0, .05), (s * .7, 1.1, .1)]],
+                     chamfer=.03)
+    a.part('Ramp_lines', 'Armor').box((1.0, 1.6, .02), loc=(0, 4.2, .25), rot=(.42, 0, 0), bevel=0)
+    a.part('Doors', 'Armor').box((.02, .5, .9), loc=(-.88, -3.6, .3), bevel=0)
+    # High wing, the four nacelles, the propellers.
+    wing = a.part('Wings', 'Team')
+    _c130_wing(a, wing, 16.3, (-1.0, 1.95), (-.62, 1.05), 1.18)
+    for i, x in enumerate((-4.7, -2.4, 2.4, 4.7)):
+        k.lathe(a.part('Nacelles', 'Team'), [(.1, -1.75), (.24, -1.6), (.3, -1.2), (.32, .2), (.24, .9), (.1, 1.2)],
+                loc=(x, 0, 1.0), rot=(-R90, 0, 0), seg=12)
+        a.part('Intakes', 'Undercarriage').box((.22, .05, .12), loc=(x, -1.6, .82), bevel=0)
+        a.part('Exhaust', 'Steel').cyl(.06, .3, loc=(x + .22, .4, 1.15), rot=K.FORWARD, seg=6, bevel=0)
+        _gunship_prop(a, 'Propeller' if i == 0 else f'Propeller_{i + 1}', (x, -1.85, 1.0), .82, 4, phase=i * .3)
+    # Tall fin, tailplane, the dorsal fillet.
+    K.fin(a.part('Fins', 'Team'), (3.6, 2.2), (5.2, 1.0), 2.95, z0=1.0, t=.1)
+    # External fuel tanks on pylons between the inner and outer engines (the C-130's 1,360-gallon tanks).
+    for s in (-1, 1):
+        a.part('Pylons', 'Armor').box((.08, .9, .3), loc=(s * 3.55, -.4, .93), bevel=0)
+        K.drop_tank(a.part('Drop_tanks', 'Team'), (s * 3.55, -.45, .62), .2, 2.4)
+    K.wing(a.part('Tailplanes', 'Team'), (4.4, 1.5), (5.2, .7), 2.6, x0=.15, z=1.45, t=.1)
+    # The gun deck on the left (+X): M102 105 mm aft, Bofors 40 mm, GAU-12 25 mm forward, ports, a blast panel.
+    gd = a.part('Gun_ports', 'Undercarriage')
+    guns = a.part('Guns', 'Steel')
+    for (y, z, r, L, tip) in ((3.05, -.15, .07, 1.25, 2.03), (1.55, -.1, .04, .95, 1.67), (-2.9, -.15, .03, .7, 1.44)):
+        gd.box((.04, .6, .45), loc=(.86, y, z), bevel=0)
+        k.lathe(guns, [(r * 1.6, 0), (r * 1.6, .25), (r, .3), (r, L - .12), (r * 1.4, L - .1), (r * 1.4, L)],
+                loc=(tip - L, y, z), rot=(0, R90, 0), seg=8)
+    k.lathe(a.part('Howitzer_brake', 'Armor'), [(.11, 0), (.11, .16), (0, .16)], loc=(1.88, 3.05, -.15),
+            rot=(0, R90, 0), seg=8)
+    a.part('Gun_bores', 'Undercarriage').cyl(.05, .01, loc=(2.04, 3.05, -.15), rot=ACROSS, seg=8, bevel=0)
+    K.panel(a, a.part('Armor', 'Armor'), (1.2, .8), (.86, 2.3, .2), (1, 0, 0), t=.03, rivet=.25)
+    a.part('Gun_deck_windows', 'Glass').box((.02, .3, .2), loc=(.87, -1.6, .45), bevel=0)
+    # Sensor turrets: the nose radar blister (left), IR / TV balls under the forward fuselage, the ALLTV pod.
+    k.lathe(a.part('Sensor', 'PlasterWhite'), [(0, -.4), (.25, -.3), (.3, .1), (.25, .35)], loc=(.55, -5.0, .1),
+            rot=K.FORWARD, seg=10)
+    st_ = a.part('Sensor_turrets', 'Armor')
+    for (x, y) in ((.35, -3.9), (.5, -.8)):
+        k.lathe(st_, [(0, 0), (.16, -.02), (.18, -.12), (.14, -.24), (0, -.26)], loc=(x, y, -.48), seg=10)
+    # Flare dispensers on the rear fuselage, antennas, beacon, wing lights.
+    for s in (-1, 1):
+        K.flare_dispenser(a, (s * .62, 3.1, -.1), normal=(s, 0, -.4), cols=4, rows=2, cell=.06)
+        a.part('Wing_lights', 'LavaGlow' if s > 0 else 'SignalGreen').box((.1, .15, .05), loc=(s * 8.1, -.6, 1.4),
+                                                                          bevel=0)
+    for y in (-2.0, 0.5):
+        K.blade_antenna(a.part('Antennas', 'Steel'), (0, y, 1.23), h=.18, chord=.2)
+    K.beacon(a, (0, 1.8, 1.24), r=.07)
+    a.part('Team_band', 'Team').box((.02, 4.0, .18), loc=(-.88, 0.0, .65), bevel=0)
+    a.pivot('Muzzle_main', (2.03, 3.05, -.15))
+    a.pivot('Muzzle_gun', (1.67, 1.55, -.1))
+    a.pivot('Muzzle_mg', (1.44, -2.9, -.15))
+    a.pivot('Point_fire', (0, -.2, .95))
+    a.pivot('Point_exhaust', (-3.96, -.51, .84))
+    k.clean(a)
+    W.merge_static(a)
+
+
 BUILDERS = {
     'stealth_bomber': (stealth_bomber, dict(ao_distance=.6, grime_height=0, ground=False)),
     'wingman_drone': (wingman_drone, dict(ao_distance=.25, grime_height=0, ground=False)),
     'recon_jet': (recon_jet, dict(ao_distance=.5, grime_height=0, ground=False)),
+    'sky_gunship': (sky_gunship, dict(ao_distance=.5, grime_height=0, ground=False)),
 }
