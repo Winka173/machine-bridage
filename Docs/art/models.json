@@ -13,11 +13,11 @@
   },
   "aa_turret": {
     "file": "aa_turret.glb",
-    "triangles": 6306
+    "triangles": 5202
   },
   "aa_turret_a": {
     "file": "aa_turret_a.glb",
-    "triangles": 6670
+    "triangles": 5952
   },
   "aa_turret_b": {
     "file": "aa_turret_b.glb",

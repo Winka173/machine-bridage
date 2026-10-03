@@ -375,3 +375,75 @@ def store(a, tail, r, length, parent=None, body='Missiles', body_mat='Fuel', fin
         if kind != 'bomb':
             fp.box((.005, length * .06, r * .8), loc=(x + c * (r + r * .35), y - length * .72, z + s * (r + r * .35)),
                    rot=(0, u - R90, 0), bevel=0)
+
+
+# ----------------------------------------------------------------------------- yard clutter (wave 9)
+def casings(a, centre, radius, n, r=.016, length=(.1, .2), seed=0, part='Casings', mat='Steel', z=0.0, parent=None):
+    """Spent cartridge cases lying round a gun (n small cylinders, each its own length and yaw)."""
+    import random
+    rng = random.Random(seed)
+    sp = a.part(part, mat, parent)
+    cx, cy = centre[0], centre[1]
+    for i in range(n):
+        u = rng.uniform(0, TAU)
+        d = rng.uniform(.2, 1) * radius
+        ln = rng.uniform(*length)
+        sp.cyl(r * rng.uniform(.9, 1.15), ln, loc=(cx + math.cos(u) * d, cy + math.sin(u) * d, z + r),
+               rot=(R90, 0, rng.uniform(0, TAU)), seg=5, bevel=0)
+
+
+def duckboard(a, loc, w, l, planks=8, seed=0, part='Duckboards', mat='Wood', parent=None, axis='X'):
+    """Duckboards: two bearers and `planks` slats (each its own length, a little askew)."""
+    import random
+    rng = random.Random(seed)
+    x, y, z = loc
+    p = a.part(part, mat, parent)
+    for s in (-1, 1):
+        if axis == 'X':
+            p.box((.06, l, .05), loc=(x + s * w * .35, y, z + .025), bevel=0)
+        else:
+            p.box((w, .06, .05), loc=(x, y + s * l * .35, z + .025), bevel=0)
+    for i in range(planks):
+        f = (i + .5) / planks - .5
+        jit = rng.uniform(-.06, .06)
+        if axis == 'X':
+            p.box((w + jit, .11, .025), loc=(x + rng.uniform(-.03, .03), y + f * l, z + .062),
+                  rot=(0, 0, rng.uniform(-.04, .04)), bevel=0)
+        else:
+            p.box((.11, l + jit, .025), loc=(x + f * w, y + rng.uniform(-.03, .03), z + .062),
+                  rot=(0, 0, rng.uniform(-.04, .04)), bevel=0)
+
+
+def entrenching_tools(a, loc, yaw=0.0, lean=.35, parent=None):
+    """A shovel and a pickaxe leaning on a wall (handles Wood, heads Steel)."""
+    from mathutils import Matrix
+    x, y, z = loc
+    m = Matrix.Rotation(yaw, 3, 'Z')
+    hw = a.part('Tools_wood', 'Wood', parent)
+    hs = a.part('Tools_steel', 'Steel', parent)
+    for j, (off, ln) in enumerate(((-.12, 1.0), (.14, .85))):
+        b = m @ Vector((off, 0, 0))
+        t = m @ Vector((off, math.sin(lean) * ln, math.cos(lean) * ln))
+        hw.limb((x + b.x, y + b.y, z), (x + t.x, y + t.y, z + t.z), .018, .018, bevel=0)
+        if j == 0:
+            hs.box((.18, .03, .26), loc=(x + b.x, y + b.y, z + .13), rot=(lean, 0, yaw), bevel=0)
+        else:
+            hs.box((.5, .04, .05), loc=(x + t.x, y + t.y, z + t.z), rot=(0, 0, yaw), bevel=0)
+
+
+def helmets(a, spots, parent=None, mat='Armor'):
+    """Steel helmets set down (a squat dome each, about 30 triangles)."""
+    hp = a.part('Helmets', mat, parent)
+    for x, y, z in spots:
+        k.lathe(hp, [(.15, 0), (.15, .03), (.13, .1), (.07, .15), (0, .16)], loc=(x, y, z), seg=7, caps=(False, True))
+
+
+def pickets(a, points, h=.9, parent=None, wire=True):
+    """U-pickets along a line with two wire strands between them (the concertina is the caller's)."""
+    pp = a.part('Pickets', 'Steel', parent)
+    for x, y, z in points:
+        pp.box((.04, .03, h), loc=(x, y, z + h / 2), bevel=0)
+    if wire:
+        wp = a.part('Kit_fence', 'Steel', parent)
+        for zz in (.35, .75):
+            wp.tube([(x, y, z + zz * h) for x, y, z in points], .006, seg=3, caps=False)
