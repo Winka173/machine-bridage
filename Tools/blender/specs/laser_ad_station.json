@@ -1,0 +1,32 @@
+{
+ "id": "laser_ad_station",
+ "class": "tower",
+ "real": ["Iron Beam / DragonFire-class high-energy laser: a beam director turret on a power and cooling shelter", "a search radar panel and an APS sensor on a mast"],
+ "shape": "Strings note.laser_ad_station: a fixed high-energy laser site of the Iron Beam or DragonFire kind: burns drones, shoots down rockets and missiles aimed near it, never runs out of rounds; modelSize 6.0 x 4.0 x 4.6 m; APS (laser) on the def.",
+ "confidence": "xấp xỉ (published Iron Beam / DragonFire layouts: director on a container module; the site dressing is a field set-up)",
+ "target_size": {"L": 6.0, "W": 4.0, "H": 4.6, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "a gravel pad with stones", "nodes": ["Base", "Stones"]},
+  {"feature": "the power and cooling shelter (Team): corrugation ribs, corner castings, roof panel, rear doors with locking bars, side vents, personnel door and steps", "nodes": ["Shelter", "Shelter_ribs", "Corner_castings", "Roof", "Shelter_doors", "Kit_bars", "Grilles", "Doors", "Steps"]},
+  {"feature": "laser-hazard placards, roof handrails, the rear roof ladder, a camouflage net over the back half", "nodes": ["Placards", "Railings", "Ladders", "Camo_net"]},
+  {"feature": "the chiller on the roof: two fans, fins, the cable trough with clamps, lifting lugs", "nodes": ["Coolers", "Cooler_fans", "Fins", "Cable_trough", "Kit_clamps", "Kit_lugs"]},
+  {"feature": "the beam director: bolted pedestal, yoke, trunnions, the drum (Team) with the big aperture and its riveted rim, the tracking sensor pod", "nodes": ["Pedestal", "Turret", "Yoke", "Trunnions", "Director", "Aperture", "Aperture_rim", "Muzzle_main", "Sensor_pod", "Sensor_lens"]},
+  {"feature": "the mast with the search radar panel, the APS sensor, obstruction lamps and a whip", "nodes": ["Mast", "Search_panel", "Panel_face", "Mount_APS", "APS_sensor", "Obstruction_lamps", "Antennas"]},
+  {"feature": "the generator skid with vents and exhaust stack, its cable; sandbags, gas bottles, an extinguisher, a picket-and-tape fence", "nodes": ["Generator_skid", "Generator", "Generator_vents", "Generator_stack", "Kit_cables", "Sandbags", "Gas_bottles", "Extinguishers", "Pickets", "Tape"]}
+ ],
+ "class_parts": ["base", "walls (sandbags)", "roof", "antenna"],
+ "weapons": [{"weapon": "laser_50kw", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]}],
+ "flare": false, "aps": true,
+ "budget": {"lod0": [2000, 4000], "floor": 1400, "cap": 6000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "owner decision 6"},
+ "team_zones": ["the shelter and the director drum (Team)"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord set-up of a high-tech system: gravel pad, sandbags, net, pickets",
+ "details": {
+  "tier1": ["shelter", "director turret", "mast"],
+  "tier2": ["chiller", "doors", "pedestal and yoke", "sensor pod", "radar panel", "generator", "net", "railings", "ladder", "gas bottles"],
+  "tier3": ["ribs", "castings", "locking bars and handles", "placards", "fans", "fins", "clamps", "lugs", "rivets", "lens", "lamps", "whip", "stones", "tape"]
+ },
+ "questions": []
+}

@@ -291,10 +291,11 @@ class Elev:
         return (bx + dx, by - t * c - up * s, bz + t * s + up * c)
 
 
-def earth_pad(a, outline, h, part='Base', mat='Dirt', taper=.94, parent=None):
-    """A dug earth pad of irregular outline (a field earthwork), its sides sloped by `taper` (wave 3 towers)."""
+def earth_pad(a, outline, h, part='Base', mat='Dirt', taper=.94, parent=None, bottom=True):
+    """A dug earth pad of irregular outline (a field earthwork), its sides sloped by `taper` (wave 3 towers);
+    bottom=False leaves out the face on the ground (never seen)."""
     k.extrude(a.part(part, mat, parent), outline, h, loc=(0, 0, h / 2), axis='Z', chamfer=min(.08, h * .3),
-              corner=.12, taper=(taper, taper))
+              corner=.12, taper=(taper, taper), caps=(bottom, True))
 
 
 def camo_net(a, poles, sag, z0, part='Camo_net', mat='Canvas', pole_part='Net_poles', parent=None, garnish=0, seed=0):
