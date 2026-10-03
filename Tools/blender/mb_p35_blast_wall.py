@@ -44,20 +44,20 @@ def _course(a, rng, z0, depth, h, yc, n, tag):
         # The frame: corner posts, rims top and bottom, the mid lacing wire, a diaphragm on top between baskets.
         for sx in (-1, 1):
             for sy in (-1, 1):
-                frame.box((.03, .03, h), loc=(cx + sx * (bw / 2 - .015), yc + sy * (depth / 2 - .005), z0 + h / 2),
+                frame.box((.03, .03, h), loc=(cx + sx * (bw / 2 - .015), yc + sy * (depth / 2 - .015), z0 + h / 2),
                           bevel=0)
         for z in (z0 + .02, z0 + h * .5, z0 + h - .015):
             for sy in (-1, 1):
-                frame.box((bw - .02, .02, .02), loc=(cx, yc + sy * (depth / 2 - .002), z), bevel=0)
+                frame.box((bw - .02, .02, .02), loc=(cx, yc + sy * (depth / 2 - .01), z), bevel=0)
         frame.box((.02, depth, .02), loc=(cx + bw / 2 - .01, yc, z0 + h - .01), bevel=0)
         for f in (-.25, .25):
-            frame.box((.014, .014, h - .04), loc=(cx + f * bw, yc - (depth / 2 - .002), z0 + h / 2), bevel=0)
+            frame.box((.014, .014, h - .04), loc=(cx + f * bw, yc - (depth / 2 - .01), z0 + h / 2), bevel=0)
         # Stones pressing against the mesh on the front and back faces (rotated rough blocks).
         st = a.part('Stones', 'Rock')
         for j in range(5):
             sy = -1 if j < 3 else 1
             s = rng.uniform(.1, .17)
-            st.box((s, s * .7, s * .8), loc=(cx + rng.uniform(-.45, .45) * bw, yc + sy * (depth / 2 - .08),
+            st.box((s, s * .7, s * .8), loc=(cx + rng.uniform(-.45, .45) * bw, yc + sy * (depth / 2 - .12),
                                              z0 + rng.uniform(.15, h - .15)),
                    rot=(rng.uniform(-.5, .5), rng.uniform(-.5, .5), rng.uniform(0, 3)), bevel=0)
 

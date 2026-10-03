@@ -2708,6 +2708,16 @@
    "changes": [
     "FLAG blast_wall: triangles 792 -> 3,500 (+341.9%); vertices 990 -> 5,368 (+442.2%); meshes 3 -> 8 (+166.7%); renderers 3 -> 8 (+166.7%); materials 3 -> 5 (+66.7%); materialSlots 3 -> 8 (+166.7%); fileBytes 51,904 -> 265,836 (+412.2%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "blast_wall"
+   ],
+   "reason": "P35 wave 3: blast_wall box kept to 1.9 m deep",
+   "changes": [
+    "blast_wall: bytes only"
+   ]
   }
  ],
  "models": {
@@ -10265,7 +10275,7 @@
   "blast_wall": {
    "file": "blast_wall.glb",
    "fileBytes": 265836,
-   "sha1": "3cea9c04582f9b69",
+   "sha1": "4bcde812789e6a46",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 8,
@@ -10287,32 +10297,32 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 166,
+   "loosePieces": 150,
    "openEdges": 0,
    "nonManifoldEdges": 91,
    "boundsMin": [
     -2.375,
     0.005,
-    -0.9802
+    -0.961
    ],
    "boundsMax": [
     2.375,
     2.404,
-    0.9837
+    0.9504
    ],
    "size": [
-    1.964,
+    1.911,
     4.75,
     2.399
    ],
    "center": [
     0.0,
     1.204,
-    0.002
+    -0.005
    ],
    "structureHash": "85339e490d21edff",
    "color0": {
-    "mean": 0.5755,
+    "mean": 0.5723,
     "min": 0.0757,
     "max": 0.9987,
     "p05": 0.1618,
