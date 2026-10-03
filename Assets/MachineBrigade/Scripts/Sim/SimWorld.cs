@@ -459,6 +459,9 @@ namespace MachineBrigade.Sim
                 at = open;
             if (!def.Flying && !def.Static && !afloat) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
+            // Play-test 13 (lane C): an aircraft comes onto the battlefield already flying at its own cruise speed (it does
+            // not hang still in the air and accelerate); a tiered boss and a falling pod keep their own schedules.
+            if (def.Flying && !def.Static && def.Tiers == null && def.Speed > 0f) vehicle.Speed = def.Speed;
             // A side's own loadout towers carry their card's rank and equipment; other fixed defences
             // (a fortress, a point's watchtower) only when the side boosts everything.
             VehicleBoost? boost = null;

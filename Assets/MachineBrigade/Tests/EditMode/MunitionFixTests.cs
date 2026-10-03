@@ -260,6 +260,24 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void AircraftEnterAtTheirOwnCruiseSpeed()
+        {
+            // Play-test 13 (lane C): an aircraft comes onto the battlefield flying at its own speed (never faster), not
+            // hanging still and racing to catch up; a ground vehicle still starts at rest.
+            var c = Shipped;
+            var world = Field(c);
+            var jet = world.SpawnVehicle("fighter_jet", 0, new Vector2(0f, 20f), 0f);
+            var heli = world.SpawnVehicle("attack_helicopter", 0, new Vector2(20f, 20f), 0f);
+            var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(-20f, 0f), 0f);
+            Assert.AreEqual(jet.Def.Speed, jet.Speed, 1e-4f, "the jet at its cruise speed");
+            Assert.AreEqual(heli.Def.Speed, heli.Speed, 1e-4f, "the helicopter too");
+            Assert.AreEqual(0f, tank.Speed, 1e-4f, "a tank starts at rest");
+            var from = jet.Position;
+            world.Step(TestWorlds.Step);
+            Assert.LessOrEqual(Vector2.Distance(from, jet.Position), jet.Def.Speed * TestWorlds.Step + 1e-3f, "never faster than its own speed");
+        }
+
+        [Test]
         public void TheShotClockIsOffOutsideABattle()
         {
             var clock = new Game.Effects.ShotClock();
