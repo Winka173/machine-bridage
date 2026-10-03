@@ -52,7 +52,7 @@ Weapons/skills used only by deleted entries go too.
   laser_ad_station, mg_bunker (several MGs firing), drone hangar + vehicle hangar + aircraft hangar.
 
 ## Owner follow-up (03/10)
-- Q18: boss +20-30 % is VISUAL size only (hitbox/collision unchanged). Still waits for the boss confirmation.
+- Q18: boss +20-30 % size CANCELLED by the owner (03/10): bosses keep their current size.
 - Q19: boss escorts follow the boss's domain: ground boss -> ground vehicle escorts, sea boss -> boat escorts, air
   boss -> aircraft escorts (fixes Nyx). Data/rule work, allowed now (lane A).
 - Owner: "giữ nguyên các model đã xóa không phải chỉ ifv" -> deleted units/structures KEEP their models: move their
