@@ -1469,7 +1469,7 @@
   },
   "recon_jet": {
     "file": "recon_jet.glb",
-    "triangles": 768
+    "triangles": 3068
   },
   "refinery_tower": {
     "file": "refinery_tower.glb",
@@ -1685,7 +1685,7 @@
   },
   "stealth_bomber": {
     "file": "stealth_bomber.glb",
-    "triangles": 2096
+    "triangles": 3564
   },
   "stealth_fighter": {
     "file": "stealth_fighter.glb",
@@ -1913,7 +1913,7 @@
   },
   "wingman_drone": {
     "file": "wingman_drone.glb",
-    "triangles": 1064
+    "triangles": 2914
   },
   "wreck_barrel": {
     "file": "wreck_barrel.glb",
