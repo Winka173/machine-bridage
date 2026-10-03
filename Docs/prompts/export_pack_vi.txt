@@ -1,0 +1,119 @@
+(03/10, chủ dự án — nguyên văn; prompt + phần bổ sung cấu trúc gói gọn)
+
+----- prompt -----
+RÚT GỌN BỘ XUẤT THÀNH GÓI CÂN BẰNG VÀ ĐƯA MỌI GIÁ TRỊ TRONG MÃ RA DỮ LIỆU (không đổi hành vi game)
+
+Bạn làm việc tự chủ trong repo Machine Brigade (Unity). Mọi quyết định ghi vào docs/DECISIONS.md mục "Gói cân bằng", mỗi lượt có commit. Prompt này THAY MỌI tin nhắn rút gọn hoặc vá bộ xuất trước đó.
+
+## 0. MỤC TIÊU
+Bộ xuất dữ liệu chỉ phục vụ CÂN BẰNG SAU NÀY. Chủ dự án sẽ sửa số trong dữ liệu; vì vậy MỌI giá trị ảnh hưởng lối chơi phải (1) nằm trong dữ liệu sửa được và (2) hiện đúng trong gói xuất. Mọi prompt trước đã chạy xong; không cần thông tin quy trình trong gói.
+Gói chỉ giữ: giá trị cấu hình có thể chỉnh; cột suy ra phục vụ cân bằng (DPS, máu/CP, số phát để hạ, so với ngoài đời…); tham chiếu ngoài đời và game; Schema có đơn vị, Muc_luc, Phien_ban, README.
+KHÔNG giữ trong gói: lịch sử, trạng thái prompt, log quyết định, test, validator, danh sách việc, số đo cũ, dòng đánh dấu rỗng. Chúng đã có trong git, CI và docs/DECISIONS.md.
+
+## 1. QUYỀN VÀ LUẬT TỰ QUYẾT
+Bạn được SỬA CODE và DỮ LIỆU để đưa giá trị ra, nhưng KHÔNG đổi hành vi game của bản hiện tại, trừ trường hợp luật (D) dưới đây.
+Với mỗi ô đang NEED_CODE_CHECK, HOLD, REBALANCE_STATS hoặc "chờ quyết", làm theo thứ tự:
+A. Giá trị đã nằm trong mã hoặc dữ liệu nhưng bộ xuất chưa đọc: sửa bộ xuất (gọi chính hàm C# của game qua Unity batchmode, ExportGameDoc) và điền giá trị.
+B. Giá trị là hằng số hoặc công thức cứng trong C# ảnh hưởng lối chơi: chuyển ra dữ liệu (balance.json hoặc một file dữ liệu mới có schema), GIỮ NGUYÊN giá trị, để mã đọc từ dữ liệu; bộ xuất đọc từ dữ liệu đó. Mỗi công thức đưa thành các tham số tên rõ (ví dụ ngưỡng, hệ số, trần, đường cong).
+C. Giá trị chưa được quyết (HOLD, chưa chốt): nguyên tắc "giữ hành vi hiện tại, đưa thành tham số". Chỉ đổi giá trị khi trong repo đã có luật hoặc công thức cho nó (docs/prompts, DECISIONS, các bảng đã chốt); khi đó áp luật đó. Không có luật thì giữ giá trị hiện tại.
+D. Mã mâu thuẫn trực tiếp với một quyết định đã khóa của chủ dự án: sửa mã cho khớp quyết định. Quyết định đã khóa: kinh tế chỉ có tiếp tế; không rút theo máu; trần 32 xe + 6 máy bay; chỉ pháo sáng và APS là tự vệ của xe; POINT_DEFENSE không chặn đạn pháo xe tăng; nhóm giá ≤ 4 CP ×1,0, 5–8 ×1,15, 9–13 ×1,25, ≥ 14 ×1,3 làm tròn nửa lên; thưởng sức mạnh = min(15%, 1,25% × (baseCP − 8)); vũ khí càng to thì mỗi phát càng mạnh, nạp càng lâu; Gungnir là boss chủ lực; đội mở màn trừ vào CP khởi đầu (tối đa 60%).
+Mọi lần quyết định hoặc đổi giá trị (C và D) ghi vào docs/export/CHANGES.md (nằm NGOÀI gói): mục, sheet / cột, giá trị cũ, giá trị mới (hoặc "giữ"), luật dùng, lý do, commit. Không đổi âm thầm.
+
+Các ô HOLD đã biết (quyết theo luật C):
+- Ngưỡng tiếp tế (gồm đường phạt, tối đa −75%, bắt kịp, hoàn CP): đọc công thức từ mã, đưa thành tham số trong dữ liệu. Nếu giá quân đã tăng theo nhóm giá, đưa ngưỡng tương quan theo hệ số trung bình đã tính được (từ dữ liệu giá), ghi công thức và con số; ngược lại giữ giá trị hiện tại.
+- Pháo đài thép (giá xây lại, chỉ số): áp luật của prompt hệ căn cứ (nếu giá theo công thức > 15 thì giảm chỉ số tới khi 13–15).
+- Thưởng sức mạnh cho đơn vị nổ lan: giữ hành vi hiện tại (chưa áp phần thưởng), đưa cờ thành tham số.
+- Thả quân tiền phương ở tiền đồn; biến cố và trung lập loại LATER: giữ hiện tại (tắt), đưa cờ thành tham số.
+- Tháp nhỏ cờ REBALANCE_STATS: áp luật đã ghi (giảm DPS giữ máu tới khi giá trị tương đương ≤ 8 CP).
+- Xe người chơi chờ quyết về nhịp bắn: chỉ sửa lỗi đơn vị rõ ràng; còn lại giữ và ghi cờ.
+
+## 2. GIỮ / BỎ / CHUYỂN
+2.1 BỎ khỏi gói (giữ nguồn trong repo, CI): Trang_thai_prompt, DECISIONS, Cho_quyet, Kiem_tra_ma, Kiem_tra_file, Test, Test_kich_ban*, Validator, Validator_ket_qua, Validator_model, Validator_vu_khi, Manifest_ap, Manifest_ap_goi, Lich_su_do, Chuyen_doi_save, Bang_don_vi_tai_lieu, Bang_don_vi_tai_lieu_chung, Truong_du_lieu, Thieu_nguon, Tham_chieu_decisions.
+2.2 CHUYỂN sang _qa/ (chỉ sinh khi chạy CI, không nằm trong gói): Van_de, Kiem_cong_thuc, Khoa_ngoai, Khong_xuat, Nguon_du_lieu, Phu, Nguon_khong_doc_duoc, Cho_anh_xa, COVERAGE.md, SELF_CHECK.md. MANIFEST.json (băm file) vẫn nằm trong 00_chi_muc.
+2.3 CHUYỂN sang bulk/ (chỉ CSV, không xlsx): Ban_do_vat_the, Ban_do_tag_dia_hinh, Ban_do_trang_tri, Ban_do_can_cu_o, Ban_do_phao_dai_o, Ban_do_duong, Ban_do_tuong_doan, Ban_do_lien_ket_canh, Ban_do_canh, Ban_do_goc_canh, Model_nut, Dia_phuong_hoa, Dia_phuong_hoa_van_de, Anh_the, Kich_ban_goc, Thoai, Thoai_thong_ke_nhom, Nhiem_vu_radio, Giay_phep_noi_dung, Huong_dan, Am_thanh_envelope. Trong file bản đồ, mỗi bản đồ giữ MỘT dòng tóm tắt (số vật thể theo loại, diện tích mỗi tag địa hình theo phần trăm, số ô căn cứ, số làn, số điểm nghẽn); trong file chiến dịch giữ Thoai_thong_ke theo nhiệm vụ, không giữ toàn văn.
+2.4 input_*: giữ (cần cho công thức Excel sống); ghi rõ trong README.
+2.5 Sheet 1 dòng chỉ có dấu hiệu:
+  - KHONG_CO (game không có): xóa sheet (Telemetry, Thanh_tuu, Thu_hang, Thuong, Mutator_tuan và các sheet *_so_sanh_that rỗng).
+  - Chỗ chưa đọc được: xử lý theo mục 3, không để dấu hiệu.
+2.6 Don_vi_chua_ro: điền đơn vị vào Schema.don_vi (từ mã C# hoặc chú thích); rồi bỏ sheet; ô không xác định được ghi "khong_ro" trong Schema.
+2.7 Khac_chua_phan_loai: phân loại các mục vào file lĩnh vực đúng; không phân loại được thì ghi vào Schema.
+2.8 Đổi số file liền mạch: 01–11 lĩnh vực, 99_hang_so_trong_ma (nếu còn mục sau 4), 00_chi_muc. Cập nhật Muc_luc_file, README, Schema.
+
+## 3. ĐỌC NỐT MỌI Ô NEED_CODE_CHECK (theo luật A hoặc B)
+Danh sách tối thiểu; cuối lượt NEED_CODE_CHECK trong gói phải bằng 0 (ô nào thật sự không tính được thì ghi KHONG_AP_DUNG kèm lý do trong Schema):
+- 01_vu_khi_dan: Khac_che (9 cột chan_*), Hanh_vi_dan_nhom (cách nhắm, khi nổ, khi trượt, cảnh báo, thời gian bay tối đa, tương tác APS / pháo sáng / gây nhiễu), Dan_thay_the (điều kiện tự đổi, thời gian đổi, thời gian giữ), Phao_sang.so_qua_moi_lan, Vu_khi.thoi_gian_bay_toi_tam_s_game.
+- 02_phuong_tien: Xe (nhom_gia, mo_khoa, hoi_tu_ve_s, mau_trong_tran_hp), Xe_suy_ra (he_so_gia, nhom_gia, thuong_suc_manh, tha_du_theo_nhom_s), Doi_mo_man_suy_ra.phan_tram_cp_khoi_dau, May_bay_so_phat.dai_muc_tieu.
+- 03_boss: thoi_gian_ha_muc_tieu_s, Boss_dps.cach_bu, Sanhunt (phong_khong, tuan).
+- 04_can_cu_thap: Thap (co_can_bang, mo_khoa, the_cu_gop_vao, hoi_tu_ve_s).
+- 05_che_do_kinh_te: Kinh_te (công thức tiếp tế, ngưỡng, đường phạt), Vo_han.he_so_tang_thuong.
+- 07_chien_dich_cot_truyen: Thoai (so_dong_hien_thi_toi_da: chạy validator render ở màn nhỏ nhất, cỡ chữ lớn, có chân dung; chan_dung), Nhan_vat.chan_dung, Trigger_thoai.hoi_chieu_so_lan, Nhiem_vu.trang_thai_kich_ban, Bo_bai_game.muc_tieu_goc_giu, Ket_tran, Cutscene_khoanh_khac.
+- 09_hieu_ung_am_thanh: Am_thanh_mixer, Xac_vo, Am_thanh_thu_vien.
+- 10_model_tai_san: Model.tam_giac_lod (số tam giác từng LOD), Xem_truoc.
+- 11_meta_giao_dien: Cai_dat_mac_dinh.
+Phương pháp: nếu giá trị do hàm C# tính, thêm hàm xuất công khai (không đổi hành vi) và gọi qua ExportGameDoc; nếu là công thức cố định thì áp luật B (chuyển ra dữ liệu với đúng giá trị).
+
+## 4. HẰNG SỐ TRONG MÃ → DỮ LIỆU (luật B)
+- Từ Hang_so_trong_ma (7.249 dòng): lọc những hằng số ảnh hưởng lối chơi (hệ số sát thương, thời gian, bán kính, ngưỡng, xác suất, trần, tần suất cập nhật, giới hạn thực thể) mà CHƯA có trong dữ liệu.
+- Mỗi hằng số đó: chuyển ra dữ liệu (nhóm theo lĩnh vực, tên và đơn vị rõ), mã đọc từ dữ liệu, giữ nguyên giá trị; bộ xuất đọc từ dữ liệu và đặt vào sheet của lĩnh vực tương ứng (ví dụ ngưỡng tiếp tế vào 05, bán kính nổ vào 01).
+- Hằng số hạ tầng (âm thanh kênh, shader, UI layout, tên tệp, chỉ số nội bộ) KHÔNG đưa ra: ghi đánh dấu khong_anh_huong_loi_choi và bỏ khỏi gói.
+- Không làm theo từng đợt kéo dài: ưu tiên nhóm sát thương, thời gian, hồi chiêu, tầm, bán kính, tiếp tế, thưởng, trần, xác suất; còn lại làm tới đâu ghi vào CHANGES.md "chưa đưa ra" kèm số lượng.
+- Test: sau khi chuyển, mọi test hiện có pass; hash trạng thái phát lại (replay) của bộ test mô phỏng xác định giống hệt trước khi chuyển (chỉ đổi giá trị theo luật C và D, liệt kê trong CHANGES.md).
+
+## 5. MARKDOWN VÀ PDF
+- Bỏ mọi dòng "Trạng thái: …" kiểu theo dõi prompt, "Nguồn dữ liệu" kiểu theo dõi prompt, mục "Chưa áp", mọi mục kể lại lịch sử và changelog (ví dụ §17 Kiểm thử và phép đo còn lại, §16b Sửa sau buổi chơi thử, P2 Lịch sử đo, P3 Quyết định và chờ quyết, P4 Trạng thái prompt, P5).
+- Giữ luật, giải thích, tham khảo, bảng dữ liệu. Bảng quá 40 dòng chỉ in 15 dòng đầu + "xem sheet".
+- Bỏ Machine_Brigade_Design_FULL.md (trùng với md theo lĩnh vực); PDF sinh từ md theo lĩnh vực.
+- Bỏ mọi cụm "prompt N", "lượt N", "CHUA_AP:prompt_N" khỏi nội dung xuất. Dấu hiệu thiếu dữ liệu chỉ dùng NEED_SOURCE (nguồn ngoài đời) và KHONG_AP_DUNG.
+- Cột _truoc / _sau: giữ nếu so được với commit ngay trước prompt cân bằng đợt 2 (Tools/export diff); không so được thì bỏ cột.
+
+## 6. NHẬP NGƯỢC ĐỂ CÂN BẰNG SAU NÀY
+- Lệnh Tools/export import <thư mục hoặc file xlsx đã sửa> --dry-run: so với dữ liệu hiện tại; xuất danh sách thay đổi dạng manifest (bundle_id, entity_id, field_path, expected_before, new_value, status = DECIDE).
+- KHÔNG ghi đè trực tiếp balance.json. Thay đổi chỉ áp qua manifest có trạng thái APPLY bằng công cụ áp manifest hiện có, với kiểm tra điều kiện (OK / ALREADY_APPLIED / CONFLICT) và áp theo gói.
+- Chỉ cho sửa cột dữ liệu gốc (Schema.nguon_khoa không phải công thức hay "python:"); không cho sửa cột suy ra, id, nguon, raw_json.
+- Test: nhập ngược bộ xuất chưa sửa cho 0 thay đổi; sửa một ô và chạy import --dry-run cho đúng một dòng manifest.
+- Ghi cách dùng (5 dòng) vào README.
+
+## 7. TEST VÀ TỰ KIỂM
+1. Gói cân bằng không chứa sheet nào trong danh sách mục 2.1–2.3; không ô nào chứa "prompt_", "luot", "CHUA_AP", "HOLD".
+2. NEED_CODE_CHECK = 0 trong gói (hoặc KHONG_AP_DUNG kèm lý do); NEED_SOURCE chỉ còn ở cột thông số ngoài đời.
+3. Độ phủ khóa vẫn đạt (lá chuyển sang bulk/ tính là đã ánh xạ; lá của hằng số đã chuyển ra dữ liệu có chỗ trong Excel).
+4. Khóa ngoại hợp lệ; công thức Excel khớp giá trị mã game; số trong Excel khớp md và pdf (mẫu 200 ô, seed cố định); hai lần xuất cho file giống hệt.
+5. Test hiện có của game pass; hash phát lại giống hệt (trừ các thay đổi liệt kê trong CHANGES.md).
+6. Báo cáo số sheet, dòng, NEED_CODE_CHECK trước / sau vào docs/export/report_export.md; số hằng số đã chuyển và số còn lại trong CHANGES.md.
+
+## 8. CÁC LƯỢT
+- Lượt 1: bỏ, chuyển (mục 2), dọn md / pdf (mục 5); sửa Schema và README.
+- Lượt 2: đọc nốt ô NEED_CODE_CHECK (mục 3), điền Don_vi_chua_ro và Khac_chua_phan_loai.
+- Lượt 3: luật quyết định cho các ô HOLD (mục 1) và ghi CHANGES.md.
+- Lượt 4: hằng số trong mã → dữ liệu (mục 4), kèm test hash phát lại.
+- Lượt 5: nhập ngược dry-run (mục 6).
+- Lượt 6: tự kiểm (mục 7), CI, xuất lại gói đầy đủ.
+Báo cáo cuối docs/export/report_export.md: số sheet, dòng, cột mỗi file trước / sau; số ô NEED_CODE_CHECK trước / sau; số hằng số đã chuyển; số thay đổi giá trị (C, D) và đường dẫn CHANGES.md; các chỗ không đọc được; chỗ tự quyết.
+----- end -----
+
+----- prompt -----
+## BỔ SUNG: CẤU TRÚC GÓI GỌN (thay mọi mục nói về số file, thư mục, md, csv, pdf, đặt tên)
+
+1. Thư mục xuất cố định: docs/export/current/ (ghi đè mỗi lần chạy; lịch sử nằm trong git). Không tạo thư mục theo ngày, không bom_<ngày>, không diff_<ngày> trong gói. Ngày và commit ghi trong 00_index.xlsx (sheet Phien_ban) và README.md.
+2. Gói gồm ĐÚNG các file sau (và thư mục images/):
+   - README.md
+   - 00_index.xlsx: sheet Muc_luc_file, Muc_luc_sheet, Schema (có đơn vị), Phien_ban (ngày, commit, hash balance.json và campaign.json, băm sha256 của từng file trong gói thay cho MANIFEST.json)
+   - 8 cặp file cùng tên (xlsx + md):
+     01_chien_dau (vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, ném bom: gộp cũ 01 + 02 + các sheet Bom_*)
+     02_boss (cũ 03)
+     03_can_cu (cũ 04)
+     04_che_do_kinh_te_ai (gộp cũ 05 + 06 + 11: chế độ, kinh tế, AI, meta, giao diện)
+     05_chien_dich (cũ 07)
+     06_ban_do (cũ 08)
+     07_hinh_anh_am_thanh_model (gộp cũ 09 + 10)
+     08_tham_chieu (nguồn ngoài đời, cơ chế lấy ý từ game, học thuyết; cũ 13)
+   - bulk.zip: các CSV bố cục và văn bản lớn (mục 2.3 của prompt trước) gom trong MỘT file zip; mỗi CSV một tên rõ.
+   - images/: phẳng (không thư mục con theo lĩnh vực); chỉ ảnh mà md dẫn tới; tên file có tiền tố lĩnh vực.
+3. KHÔNG nằm trong gói: csv theo từng sheet, PDF, Machine_Brigade_Design_FULL.md, MANIFEST.json, COVERAGE.md, SELF_CHECK.md, report_export.md, thư mục diff, thư mục bom. QA (độ phủ, khóa ngoại, tự kiểm) chỉ sinh khi chạy CI vào thư mục _qa/ (không commit). PDF chỉ xuất khi gọi lệnh export.py pdf (ghi ra _qa/, không vào gói). Lệnh export.py diff ghi ra _qa/diff/.
+4. Gộp sheet: sheet cùng tên ở các file bị gộp (ví dụ input_*, *_tham_chieu, *_so_sanh_that) giữ ở file mới, thêm tiền tố nhóm nếu trùng tên. Khóa ngoại giữa các file cũ nay có thể nằm cùng file; công thức Excel vẫn chỉ tham chiếu sheet CÙNG file.
+5. md mỗi nhóm: chỉ viết luật, giải thích, lý do thiết kế, tham khảo ngoài đời và game, và bảng nhỏ (tối đa 20 dòng). Không chép bảng dữ liệu đầy đủ (chỉ ghi "xem sheet <tên>"). Không dòng trạng thái prompt, không mục lịch sử.
+6. Một file duy nhất ngoài gói: docs/export/CHANGES.md (gộp report_export.md và danh sách mọi giá trị agent tự quyết hoặc đổi).
+7. Không còn 99_hang_so_trong_ma: hằng số đã chuyển ra dữ liệu nằm ngay sheet của lĩnh vực; hằng số chưa chuyển chỉ liệt kê trong CHANGES.md với số lượng.
+8. Test cấu trúc: thư mục current/ chứa đúng danh sách ở mục 2 (không thừa, không thiếu file); mọi ảnh trong images/ được ít nhất một md dẫn tới; mọi md dẫn tới ảnh tồn tại; CI chạy trên current/.
+9. Cập nhật README.md: cây thư mục 19 file, cách đọc từng nhóm, cách nhập ngược (Tools/export import ... --dry-run), lệnh export.py / pdf / diff.
+----- end -----
