@@ -43,7 +43,7 @@ add_mission(m('c10m02', 10, 'skyhold', 'Recon', 'Overcast', points=['west', 'tow
               'Tổ trinh sát chụp được một nhà chứa máy bay cửa bị hàn chết, ống làm lạnh chạy xuống lòng đất. Venn nhìn tấm ảnh rất lâu. "Chính là nó," bà nói.')),
             [say('linh', 'Start', 'Look at the hangars. All of them.', 'Nhìn các nhà chứa máy bay. Tất cả.')])
 
-add_mission(m('c10m03', 10, 'frostpeak', 'Protect', 'Snow', reversed=True, targets=['radar_station', 'church'], protectNeeded=1, targetHealth=14, surviveSeconds=420,
+add_mission(m('c10m03', 10, 'frostpeak', 'Protect', 'Snow', reversed=True, targets=['radar_station_prop', 'church'], protectNeeded=1, targetHealth=14, surviveSeconds=420,
               general='quaden', reinforcements=2,
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=QUADEN,
               playerCp=30, playerIncome=1.5, playerCap=38, playerBase='Anchor',
@@ -147,7 +147,7 @@ add_mission(m('c10m10', 10, 'skyhold', 'Destroy', 'Fog', variant='siege', operat
               waves=waves(['attack_helicopter', 'attack_jet', 'main_battle_tank', 'ifv', 'gunship_heli'], first=80, interval=60, size=2, grow=0.3, max_size=5, max_alive=12,
                           spawns=[(100, 60), (60, 100)]),
               stages=[
-                  {'stage': 'radars', 'goal': 'Destroy', 'targets': ['radar_station'], 'targetX': 79, 'targetZ': 79, 'targetRadius': 46, 'targetHealth': 2, 'cp': 8,
+                  {'stage': 'radars', 'goal': 'Destroy', 'targets': ['radar_station_prop'], 'targetX': 79, 'targetZ': 79, 'targetRadius': 46, 'targetHealth': 2, 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c10m10.s1'}],
                    'choices': [{'key': 'fuel', 'next': 'fuel'}, {'key': 'tower', 'next': 'tower'}]},
                   {'stage': 'fuel', 'goal': 'Destroy', 'targets': ['fuel_tank', 'fuel_truck'], 'targetX': 30, 'targetZ': 90, 'targetRadius': 30, 'targetHealth': 2, 'cp': 6, 'next': 'airship',
@@ -493,7 +493,7 @@ add_mission(m('c12m07', 12, 'dunebreak', 'Hunt', 'Overcast', reversed=True, gene
               'Venn nói về nhiên liệu lò phản ứng: "Không có nó, Icarus hoàn chỉnh bay được một giờ. Có nó, bay được một năm." Sau buổi chiều hôm đó, nó chỉ còn một giờ.')),
             [say('linh', 'Start', 'Three trucks. Every one of them counts.', 'Ba xe tải. Chiếc nào cũng quan trọng.')])
 
-add_mission(m('c12m08', 12, 'launchsite', 'Destroy', 'Sandstorm', targets=['radar_station'], targetHealth=3, timeLimit=1000, general='aurel', reinforcements=3,
+add_mission(m('c12m08', 12, 'launchsite', 'Destroy', 'Sandstorm', targets=['radar_station_prop'], targetHealth=3, timeLimit=1000, general='aurel', reinforcements=3,
               units=units(1, ['long_sam', 'heavy_tank'], (74, 16), 8) + units(1, ['aa_vehicle', 'bmpt'], (-74, -16), 8),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=AUREL,
               playerCp=34, playerIncome=1.75, playerCap=42, playerBase='Anchor', starTime=600, starLosses=12, challenge={'kind': 'NoStrikes'}),
@@ -531,7 +531,7 @@ add_mission(m('c12m10', 12, 'launchsite', 'Capture', 'Clear', operation=True, ge
                    'choices': [{'key': 'propellant', 'next': 'propellant'}, {'key': 'radars', 'next': 'radars'}]},
                   {'stage': 'propellant', 'goal': 'Destroy', 'targets': ['storage_tank'], 'targetX': 68, 'targetZ': -54, 'targetRadius': 15, 'targetHealth': 2, 'cp': 6, 'next': 'assembly',
                    'events': WEAKEN},
-                  {'stage': 'radars', 'goal': 'Destroy', 'targets': ['radar_station'], 'targetX': -74, 'targetZ': -16, 'targetRadius': 15, 'targetHealth': 2, 'cp': 6, 'next': 'assembly',
+                  {'stage': 'radars', 'goal': 'Destroy', 'targets': ['radar_station_prop'], 'targetX': -74, 'targetZ': -16, 'targetRadius': 15, 'targetHealth': 2, 'cp': 6, 'next': 'assembly',
                    'events': strikes(50)},
                   {'stage': 'assembly', 'goal': 'Capture', 'points': ['west'], 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'bmpt', 'long_sam', 'railgun_truck']}]},

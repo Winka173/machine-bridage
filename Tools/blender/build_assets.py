@@ -129,7 +129,7 @@ import mb_p35_fpv_carrier  # noqa: E402
 import mb_p35_shorad_vehicle  # noqa: E402
 import mb_p35_armored_bulldozer  # noqa: E402
 import mb_p35_sam_launcher  # noqa: E402
-import mb_p35_amphib_light_vehicle  # noqa: E402
+import mb_fix_amphib_light_vehicle  # noqa: E402
 import mb_p35_mine_layer  # noqa: E402
 import mb_p35_demolition_line_vehicle  # noqa: E402
 import mb_p35_bmpt  # noqa: E402
@@ -364,7 +364,7 @@ def all_builders():
                 **mb_p35_barrage_balloon.BUILDERS, **mb_p35_super_gun.BUILDERS, **mb_p35_ifv.BUILDERS,
                 **mb_p35_light_tank.BUILDERS, **mb_p35_engineer_vehicle.BUILDERS, **mb_p35_mortar_carrier.BUILDERS,
                 # Prompt 35 wave 4, lane C (DECISIONS "Prompt 35 wave 4 (lane C)"): rebuilt from scratch (last).
-                **mb_p35_flame_tank.BUILDERS, **mb_p35_moloch.BUILDERS, **mb_p35_attack_jet.BUILDERS, **mb_p35_strike_drone.BUILDERS, **mb_p35_recon_drone.BUILDERS, **mb_p35_scout_heli.BUILDERS, **mb_p35_river_patrol_boat.BUILDERS, **mb_p35_towed_at_gun.BUILDERS, **mb_p35_fpv_carrier.BUILDERS, **mb_p35_shorad_vehicle.BUILDERS, **mb_p35_armored_bulldozer.BUILDERS, **mb_p35_sam_launcher.BUILDERS, **mb_p35_amphib_light_vehicle.BUILDERS, **mb_p35_mine_layer.BUILDERS, **mb_p35_demolition_line_vehicle.BUILDERS, **mb_p35_bmpt.BUILDERS, **mb_p35_aa_gun_vehicle.BUILDERS, **mb_p35_aa_vehicle.BUILDERS, **mb_p35_artillery.BUILDERS, **mb_p35_tank_destroyer.BUILDERS,
+                **mb_p35_flame_tank.BUILDERS, **mb_p35_moloch.BUILDERS, **mb_p35_attack_jet.BUILDERS, **mb_p35_strike_drone.BUILDERS, **mb_p35_recon_drone.BUILDERS, **mb_p35_scout_heli.BUILDERS, **mb_p35_river_patrol_boat.BUILDERS, **mb_p35_towed_at_gun.BUILDERS, **mb_p35_fpv_carrier.BUILDERS, **mb_p35_shorad_vehicle.BUILDERS, **mb_p35_armored_bulldozer.BUILDERS, **mb_p35_sam_launcher.BUILDERS, **mb_fix_amphib_light_vehicle.BUILDERS, **mb_p35_mine_layer.BUILDERS, **mb_p35_demolition_line_vehicle.BUILDERS, **mb_p35_bmpt.BUILDERS, **mb_p35_aa_gun_vehicle.BUILDERS, **mb_p35_aa_vehicle.BUILDERS, **mb_p35_artillery.BUILDERS, **mb_p35_tank_destroyer.BUILDERS,
                 # Prompt 35 wave 5 lane A (DECISIONS "Prompt 35 wave 5 (lane A)"): bosses, tanks, aircraft (last).
                 **mb_p35_wave5_tanks.BUILDERS, **mb_p35_wave5_deploy.BUILDERS,
                 **mb_p35_wave5_bosses.BUILDERS, **mb_p35_wave5_air.BUILDERS,

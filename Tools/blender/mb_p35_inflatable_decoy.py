@@ -15,8 +15,8 @@ Its own geometry: the gun turret's dimensions are followed, no mesh is taken fro
 `Painted_hatches`, `Patches`, `Antenna`, `Tethers`, `Stakes`, `Blower*`, `Hose`, `Jerrycans`, `Transport_bag`.
 The turret stands traversed 38 degrees to the front left: with the gun straight ahead the replica is 8.97 x 5.25 x 4.0 m,
 which the def's modelSize (5.0 x 4.6 x 2.6) cannot hold; traversed it is about 7.6 x 6.8 x 4.0 m, the modelSize's
-proportions, so the size gate and glb_check pass, and the runtime draws it at 5.0 / 7.6 = 0.66 x the real tower. A
-modelSize of its own size would draw it 1:1 (lead / owner question, WAVE_6_REPORT.md). Metres, +Z up, -Y front,
+proportions, so the size gate and glb_check passed, and the runtime drew it at 5.0 / 7.6 = 0.66 x the real tower. A
+modelSize of its own size draws it 1:1 (owner fix 4, 2026-10-03: modelSize 7.81 x 6.74 x 3.96). Metres, +Z up, -Y front,
 +X left.
 """
 import math

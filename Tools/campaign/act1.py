@@ -39,7 +39,7 @@ add_mission(m('c1m01', 1, 'landingbeach', 'Capture', 'Clear', points=['east', 't
                  'Hawk trên đầu các anh đây. Cửa ra bãi biển là của ta rồi, từ đây tôi thấy cả vịnh!', arg='east'),
              say('khai', 'Win', 'Beachhead secured. Now we find somewhere to build.', 'Đầu cầu đã an toàn. Giờ tìm chỗ dựng căn cứ.')])
 
-add_mission(m('c1m02', 1, 'landingbeach', 'Destroy', 'Overcast', targets=['radar_station'], targetHealth=3, timeLimit=900, reinforcements=1,
+add_mission(m('c1m02', 1, 'landingbeach', 'Destroy', 'Overcast', targets=['radar_station_prop'], targetHealth=3, timeLimit=900, reinforcements=1,
               enemyAi='commander', enemyStance='Defend', difficulty='Easy', enemyCp=10, enemyIncome=0.7,
               enemyDeck=GARRISON, playerCp=20, playerIncome=1.3,
               unlocks=['mortar_carrier'], starTime=420, challenge={'kind': 'NoStrikes'}),
@@ -183,7 +183,7 @@ add_mission(m('c1m10', 1, 'ashfield', 'Destroy', 'Fog', variant='siege', operati
                    'choices': [{'key': 'dump', 'next': 'dump'}, {'key': 'radar', 'next': 'radar'}]},
                   {'stage': 'dump', 'goal': 'Destroy', 'targets': ['ammo_dump'], 'targetHealth': 2, 'cp': 6, 'next': 'bastion',
                    'events': [{'at': 'end', 'kind': 'Income', 'team': 1, 'amount': 0.7}, {'at': 'end', 'kind': 'Radio', 'key': 'radio.enemyWeakened'}]},
-                  {'stage': 'radar', 'goal': 'Destroy', 'targets': ['radar_station'], 'targetHealth': 2, 'cp': 6, 'next': 'bastion',
+                  {'stage': 'radar', 'goal': 'Destroy', 'targets': ['radar_station_prop'], 'targetHealth': 2, 'cp': 6, 'next': 'bastion',
                    'events': [{'at': 'end', 'kind': 'Strike', 'team': 0, 'support': 'airstrike', 'every': 55}, {'at': 'end', 'kind': 'Radio', 'key': 'radio.alliedStrikes'}]},
                   {'stage': 'bastion', 'goal': 'Boss', 'boss': scripted('fortress_bastion', (92, 92), heading=225, health=0.55), 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.mai.c1m10.s3'}]},
@@ -471,7 +471,7 @@ add_mission(m('c3m01', 3, 'whiteout', 'Capture', 'Snow', points=['west', 'town',
             [say('orlov', 'Start', 'Welcome to the highlands, Colonel. You are a coordinate now.', 'Chào mừng tới cao nguyên, đại tá. Giờ ngươi chỉ là một tọa độ.'),
              say('khai', 'Start', 'Keep moving. Coordinates that move are harder to hit.', 'Cứ di chuyển. Tọa độ biết chạy thì khó bắn trúng hơn.')])
 
-add_mission(m('c3m02', 3, 'frostpeak', 'Destroy', 'Snow', legacy='m07', targets=['radar_station'], timeLimit=840, targetHealth=5, general='orlov', reinforcements=2,
+add_mission(m('c3m02', 3, 'frostpeak', 'Destroy', 'Snow', legacy='m07', targets=['radar_station_prop'], timeLimit=840, targetHealth=5, general='orlov', reinforcements=2,
               units=[{'def': 'heavy_tank', 'team': 1, 'x': -56.25, 'z': 93.75, 'heading': 225}, {'def': 'sam_launcher', 'team': 1, 'x': -75, 'z': 116.25, 'heading': 225},
                      {'def': 'aa_vehicle', 'team': 1, 'x': -37.5, 'z': 112.5, 'heading': 225}, {'def': 'main_battle_tank', 'team': 1, 'x': -41.25, 'z': 97.5, 'heading': 225},
                      {'def': 'mortar_carrier', 'team': 1, 'x': -60, 'z': 128, 'heading': 225}],
@@ -604,12 +604,12 @@ add_mission(m('c3m10', 3, 'frostpeak', 'Destroy', 'Overcast', variant='siege', l
               waves=waves(['main_battle_tank', 'ifv', 'mlrs', 'attack_helicopter', 'heavy_tank'], first=80, interval=60, size=2, grow=0.3, max_size=5, max_alive=12,
                           spawns=[(100, 60), (60, 100)]),
               stages=[
-                  {'stage': 'radar', 'goal': 'Destroy', 'targets': ['radar_station'], 'targetX': -56.25, 'targetZ': 116, 'targetRadius': 20, 'targetHealth': 3, 'cp': 8,
+                  {'stage': 'radar', 'goal': 'Destroy', 'targets': ['radar_station_prop'], 'targetX': -56.25, 'targetZ': 116, 'targetRadius': 20, 'targetHealth': 3, 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c3m10.s1'}],
                    'choices': [{'key': 'depots', 'next': 'depots'}, {'key': 'radars', 'next': 'radars'}]},
                   {'stage': 'depots', 'goal': 'Destroy', 'targets': ['fuel_depot'], 'targetHealth': 2, 'cp': 6, 'next': 'fortress',
                    'events': [{'at': 'end', 'kind': 'Income', 'team': 1, 'amount': 0.7}, {'at': 'end', 'kind': 'Radio', 'key': 'radio.enemyWeakened'}]},
-                  {'stage': 'radars', 'goal': 'Destroy', 'targets': ['radar_station'], 'targetX': 79, 'targetZ': 79, 'targetRadius': 46, 'targetHealth': 2, 'cp': 6, 'next': 'fortress',
+                  {'stage': 'radars', 'goal': 'Destroy', 'targets': ['radar_station_prop'], 'targetX': 79, 'targetZ': 79, 'targetRadius': 46, 'targetHealth': 2, 'cp': 6, 'next': 'fortress',
                    'events': [{'at': 'end', 'kind': 'Strike', 'team': 0, 'support': 'airstrike', 'every': 50}, {'at': 'end', 'kind': 'Radio', 'key': 'radio.alliedStrikes'}]},
                   {'stage': 'fortress', 'goal': 'Boss', 'boss': scripted('mobile_fortress', (90, 90), heading=225, health=1.3), 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.orlov.c3m10.s4'}]},

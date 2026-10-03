@@ -47,7 +47,7 @@ namespace MachineBrigade.Tests
                 var path = new List<Vector2>();
                 var goals = new List<(string what, Vector2 at)> { ("the defenders' drop zone", defender), ("the HQ", map.Fortress!.Hq) };
                 foreach (var p in world.Props)
-                    if (p.IsAlive && p.Def.Id is "radar_station" or "shield_generator") goals.Add((p.Def.Id, p.Position));
+                    if (p.IsAlive && p.Def.Id is "radar_station_prop" or "shield_generator") goals.Add((p.Def.Id, p.Position));
                 foreach (var (what, at) in goals)
                 {
                     Assert.IsTrue(finder.TryFindPath(attacker, at, path), $"{id}: a route from the attack to {what}");

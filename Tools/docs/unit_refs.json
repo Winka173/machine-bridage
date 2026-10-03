@@ -173,5 +173,6 @@
   "heavy_flak_tower": { "real": ["KS-19 100 mm (1947)"], "media": ["Red Alert 2 (Flak Cannon)"], "note": "Tháp cao xạ hạng nặng 100 mm, nổ chậm, nổ to" },
   "barrage_balloon": { "real": ["JLENS (khí cầu neo radar)"], "media": [], "note": "Khí cầu neo radar: bom địch kém chính xác, lộ máy bay tàng hình gần" },
   "at_gun_emplacement": { "real": ["2A45 Sprut-B 125 mm"], "media": ["Company of Heroes (pháo chống tăng)"], "note": "Ụ pháo chống tăng" },
-  "behemoth_mk0": { "real": ["Object 279 (1959)", "giáp composite, APS và cảm biến hiện đại"], "media": ["Baneblade (Warhammer 40,000)"], "note": "ước đoán: Behemoth đời đầu, nhỏ hơn" }
+  "behemoth_mk0": { "real": ["Object 279 (1959)", "giáp composite, APS và cảm biến hiện đại"], "media": ["Baneblade (Warhammer 40,000)"], "note": "ước đoán: Behemoth đời đầu, nhỏ hơn" },
+  "amphib_light_vehicle": { "real": ["AMX-10P / AMX-10P Marine (lội nước bằng hai chân vịt phản lực nước)", "pháo tự động 25 mm (bản thật: 20 mm M693)"], "media": [], "note": "Xe chiến đấu bộ binh bánh xích lội nước, tháp pháo hai người lệch trái; chuyển khỏi AAV-7 (prompt 24 giữ AAV-7 cho thẻ sau, sửa theo chủ dự án 03/10)" }
 }

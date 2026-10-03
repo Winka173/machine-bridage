@@ -32,7 +32,7 @@ namespace MachineBrigade.Tests
             var second = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap("greenvale_siege"), seed: 7);
             var resumed = Siege(second, 2);
             Assert.AreEqual(2, resumed.Stage, "the outer line was broken earlier this week");
-            Assert.IsTrue(second.Props.Where(p => p.Def.Id == "radar_station").All(p => !p.IsAlive), "its relays are gone");
+            Assert.IsTrue(second.Props.Where(p => p.Def.Id == "radar_station_prop").All(p => !p.IsAlive), "its relays are gone");
             Assert.Less(second.VehicleList.Count(v => v.Team == 1 && v.Def.Static), defencesAtStart, "and its guns");
             Assert.Greater(resumed.SecondsLeft(second), full.SecondsLeft(fresh), "the clock carries the stage's bonus");
 

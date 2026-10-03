@@ -91,7 +91,7 @@ namespace MachineBrigade.Tests
             Assert.Greater(outer.Count, 5, "the outer line is manned");
             world.TryGetEconomy(SiegeMode.PlayerTeam, out var ours);
             var cp = ours.Cp;
-            foreach (var relay in world.Props.Where(p => p.IsAlive && p.Def.Id == "radar_station").ToList()) world.DebugDestroyProp(relay);
+            foreach (var relay in world.Props.Where(p => p.IsAlive && p.Def.Id == "radar_station_prop").ToList()) world.DebugDestroyProp(relay);
             Run(world, mode, 0.2f);
             Assert.AreEqual(2, mode.Stage, "the outer line is lost");
             Assert.GreaterOrEqual(ours.Cp, cp + mode.Rules.RetreatCp[0] - 0.5f, "the player gets a retreat reward to spend on the next line");

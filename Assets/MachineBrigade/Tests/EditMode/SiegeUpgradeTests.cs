@@ -150,7 +150,7 @@ namespace MachineBrigade.Tests
         public void AGateBlocksUntilItIsBlownIn()
         {
             var (world, mode) = Siege("ashfield");
-            Destroy(world, "radar_station");
+            Destroy(world, "radar_station_prop");
             var events = new List<SimEvent>();
             Run(world, mode, 0.5f, events);
             Assert.AreEqual(2, mode.Stage, "the relays down: the walls are next");
@@ -181,7 +181,7 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(mode.DomeUp, "the dome is up");
             Assert.Greater(mode.DomeRadius, 20f, "it covers the keep");
             Assert.IsTrue(keepTowers.All(id => world.TryGetVehicle(id, out var v) && v.Invulnerable), "under the dome the keep's guns cannot be hurt");
-            Destroy(world, "radar_station");
+            Destroy(world, "radar_station_prop");
             var events = new List<SimEvent>();
             Run(world, mode, 0.5f, events);
             Assert.IsTrue(mode.DomeUp, "the outer line down, the dome still stands");
