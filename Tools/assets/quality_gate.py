@@ -69,6 +69,26 @@ BOSS_FRAMES = ('ground', 'rail', 'air', 'sea')
 RAIL_NODE = re.compile(r'^(Bogies?|Wheel_flanges|Sleepers|Rail_wheels)(?:$|[._0-9])', re.I)
 for _f in BOSS_FRAMES:
     NEAREST[f'boss_{_f}'] = 'boss'
+# Prompt 35 gold recalibration (lane A, the lead's review of the first recompute): mixed classes are split into gold
+# sets of like models (gold_class), the key is '<class>_<set>'. A set without gold, or a sole member scored
+# leave-one-out, borrows a SIMILAR set first, then its parent class, then NEAREST.
+SIMILAR = {
+    'wheeled_light': 'wheeled_heavy', 'wheeled_heavy': 'tracked_heavy',
+    'tracked_light': 'tracked_heavy', 'tracked_heavy': 'tracked_light',
+    'jet_drone': 'jet_fighter', 'jet_fighter': 'jet_heavy', 'jet_heavy': 'jet_fighter',
+    'helicopter_light': 'helicopter_heavy', 'helicopter_heavy': 'helicopter_light', 'air_other': 'helicopter_heavy',
+    'obstacle_flat': 'obstacle_wall', 'obstacle_wall': 'obstacle_flat', 'obstacle_pad': 'obstacle_flat',
+    'obstacle_tall': 'tower_mast',
+    'tower_mast': 'tower_small', 'tower_small': 'tower_big', 'tower_big': 'structure',
+    'structure': 'tower_big', 'hq': 'tower_big',
+    'ground': 'ship', 'ship': 'boss_sea', 'boss_sea': 'ship', 'boss_air': 'jet_heavy',
+}
+GOLD_PARENT = {k: k.split('_')[0] for k in SIMILAR if k.split('_')[0] in ('wheeled', 'tracked', 'jet', 'helicopter',
+                                                                            'obstacle', 'tower')}
+GOLD_PARENT.update({f'boss_{f}': 'boss' for f in BOSS_FRAMES})
+# Widening (the anchor rule): top 10 % of the set, then 20 %, 25 %, then down to the candidates' median.
+WIDEN = (0.10, 0.20, 0.25, 'median')
+ANCHOR = 80.0
 # Owner decision 6: units seen in numbers (technicals, light vehicles, towers) stay under 1.5 x the class maximum; a
 # hard gate for these budget classes only (over-budget stays information for the others).
 NUMBERS_CAP = {'light': 1.5, 'tower': 1.5}
@@ -112,9 +132,44 @@ def boss_frame(defs, own, names):
     return f
 
 
-def gold_class(defs, model, own, cls, names):
-    """The key of the gold set a model is scored against."""
-    return f'boss_{boss_frame(defs, own, names)}' if cls == 'boss' and own is not None else cls
+def gold_class(defs, model, own, cls, names, dims=None):
+    """The key of the gold set a model is scored against. dims = (length, height) in m (the longer of x / z, y).
+    Splits (prompt 35 gold recalibration): wheeled light (< 5.5 m: jeeps, technicals, cars, scouts) / heavy (trucks,
+    launchers, howitzers); tracked light (< 6 m: carriers, IFVs) / heavy; jet drone (drone / uav) / fighter (< 12 m) /
+    heavy (bombers, gunships, tanker); helicopter light (< 5 m) / heavy; obstacle wall / pad (helipads) / tall (3 m and
+    up: nets) / flat (minefields, dragon's teeth); tower mast (<= 5.5 m long and 1.4 x as tall) / small (<= 5.5 m:
+    bunkers, turrets) / big (emplacements, shelters, hangars, batteries)."""
+    if cls == 'boss':
+        return f'boss_{boss_frame(defs, own, names)}' if own is not None else cls
+    if dims is None:
+        return cls
+    length, height = dims
+    if cls == 'wheeled':
+        return 'wheeled_light' if length < 5.5 else 'wheeled_heavy'
+    if cls == 'tracked':
+        return 'tracked_light' if length < 6.0 else 'tracked_heavy'
+    if cls == 'jet':
+        drone = re.search(r'drone|uav', model) or (own is not None and defs.field(own, 'drone'))
+        return 'jet_drone' if drone else 'jet_fighter' if length < 12 else 'jet_heavy'
+    if cls == 'helicopter':
+        return 'helicopter_light' if length < 5 else 'helicopter_heavy'
+    if cls == 'obstacle':
+        if re.match(r'(wall_|blast_wall)', model) or (own is not None and defs.field(own, 'wall')):
+            return 'obstacle_wall'
+        if 'helipad' in model:
+            return 'obstacle_pad'
+        return 'obstacle_tall' if height >= 3.0 else 'obstacle_flat'
+    if cls == 'tower':
+        if length <= 5.5:
+            return 'tower_mast' if height >= 1.4 * length else 'tower_small'
+        return 'tower_big'
+    return cls
+
+
+def mesh_dims(mesh):
+    lo, hi = mesh.bounds()
+    d = hi - lo
+    return float(max(d[0], d[2])), float(d[1])
 FLARE = re.compile(r'^Mount_flare(_[a-z]+)?(\.\d+)?$', re.I)
 FAMILY_SUFFIX = re.compile(r'(_hd|_a|_b|_chute|_wreck|_deployed|_dug|_dugin|_open|_mk\d|_old|_lod\d)$')
 # Kit component pieces (frontier_kit, mb_parts27, mb_kit35 names): allowed to repeat across models.
@@ -570,7 +625,7 @@ def evaluate(ids=None, overlap=None, gold=None, quiet=False):
         mesh = gm.load(path)
         m = metrics(mesh, structure=cls in ('tower', 'structure', 'hq'))
         hard = hard_checks(defs, model, own, cls, rec, m, overlap)
-        gcls = gold_class(defs, model, own, cls, rec['nodeNames'])
+        gcls = gold_class(defs, model, own, cls, rec['nodeNames'], mesh_dims(mesh))
         gset, g = gold_for_model(gold, gcls, model)
         score, shares = soft_score(m, g) if g else (None, {})
         hard_ok = all(ok for _, ok, _ in hard)
@@ -593,13 +648,21 @@ def evaluate(ids=None, overlap=None, gold=None, quiet=False):
     return rows
 
 
+def fallback_chain(key):
+    """The sets a gold key is scored against, in order: its own, a SIMILAR set, the parent class, then NEAREST."""
+    out = [key]
+    if SIMILAR.get(key):
+        out.append(SIMILAR[key])
+    nxt = GOLD_PARENT.get(key, key)
+    while nxt and nxt not in out[2:]:
+        out.append(nxt)
+        nxt = NEAREST.get(nxt)
+    return list(dict.fromkeys(k for k in out if k))
+
+
 def gold_key(gold, cls):
-    """The gold set a class is scored against (its own, else the nearest class's; '' when none)."""
-    seen = set()
-    while cls and cls not in gold.get('classes', {}) and cls not in seen:
-        seen.add(cls)
-        cls = NEAREST.get(cls)
-    return cls if cls in gold.get('classes', {}) else ''
+    """The gold set a class is scored against (the first of fallback_chain with a gold; '' when none)."""
+    return next((k for k in fallback_chain(cls) if k in gold.get('classes', {})), '') if cls else ''
 
 
 def gold_for(gold, cls):
@@ -609,18 +672,16 @@ def gold_for(gold, cls):
 def gold_for_model(gold, cls, model):
     """(set label, gold means) a model is scored against. Leave-one-out (prompt 35, lane A): a gold member is scored
     against the mean of the other members of its set; a sole member against the next class's gold (NEAREST)."""
-    key = gold_key(gold, cls)
     mm = gold.get('member_metrics', {})
-    seen = set()
-    while key and key not in seen:
-        seen.add(key)
+    for key in fallback_chain(cls) if cls else []:
+        if key not in gold.get('classes', {}):
+            continue
         mem = gold.get('members', {}).get(key, [])
         if model not in mem or not mm:
             return key, gold['classes'][key]
         others = [n for n in mem if n != model and n in mm]
         if others:
-            return f'{key} (LOO)', {k: float(np.mean([mm[n][k] for n in others])) for k in KEYS}
-        key = gold_key(gold, NEAREST.get(key))
+            return f'{key} (LOO)', {k: float(np.median([mm[n][k] for n in others])) for k in KEYS}
     key = gold_key(gold, cls)       # no other gold anywhere: the own set, self included
     return key, gold.get('classes', {}).get(key)
 
@@ -636,13 +697,14 @@ GOLD_ROUNDS = 8
 
 
 def compute_gold(quiet=False, overlap=None):
-    """Gold = the four V2 models + the top 10 % of each class (and of each boss frame) among the gold candidates,
-    ranked by the mean percentile of their soft metrics within the class. Candidates (owner, prompt 35 section 8 item
-    1): models the pass 8 scan graded Tốt visually (not rebuilt since), and rebuilt models that pass every hard gate
-    with soft >= 80. No circularity: a rebuilt model's candidacy is judged against the previous gold (leave-one-out
-    when it is a member there: evaluate() scores every gold member against the other members, gold_for_model), and the
-    recompute repeats until the gold reproduces itself (a fixed point: every rebuilt member passes its own set
-    leave-one-out), so a second `--gold` run changes nothing."""
+    """Gold per gold set (gold_class: split classes and boss frames; _gold_set has the rule): the V2 models in the
+    set + the top 10 % of its candidates, dense outliers left out, widened to 20 / 25 % / the candidates' median until
+    every member and V2 model scores ANCHOR leave-one-out; the set value is the median of its members. Candidates
+    (owner, prompt 35 section 8 item 1): pass 8 visual Tốt models (not rebuilt since) and rebuilt models that pass
+    every hard gate with soft >= 80 against the previous gold. No circularity: candidacy is judged against the previous
+    gold, every gold member is scored leave-one-out (gold_for_model), and the recompute repeats until the gold
+    reproduces itself (a two-round swap is settled by the union of the swapping rounds' candidates); a second `--gold`
+    run gives the same members."""
     if overlap is None:
         overlap = geometry_overlap(list(scored_models(sp.Defs(sp.load_balance()))))
     prev = load_gold()
@@ -683,6 +745,85 @@ def compute_gold(quiet=False, overlap=None):
     return gold
 
 
+DENSE = ('edges', 'regions', 'parts_m2', 'tier2_m2', 'tier3_m2')
+
+
+def _outliers(names, raw):
+    """Candidates far denser than the rest on some metric (never allowed to define a set alone): above Q3 + 1.5 IQR
+    with four or more candidates, above 2 x the median of the other two with three (two cannot tell which is odd)."""
+    out = set()
+    if len(names) < 3:
+        return out
+    for k in DENSE:
+        vals = {n: raw[n][1][k] for n in names}
+        if len(names) >= 4:
+            q1, q3 = np.percentile(list(vals.values()), [25, 75])
+            out |= {n for n, v in vals.items() if v > q3 + 1.5 * (q3 - q1)}
+        else:
+            for n, v in vals.items():
+                rest = [x for m, x in vals.items() if m != n]
+                if v > 2 * float(np.median(rest)) > 0:
+                    out.add(n)
+    return out
+
+
+def _anchor_fails(mem, raw, full):
+    """Members (V2 included) that score under ANCHOR against the median of the other members (leave-one-out)."""
+    if len(mem) < 2:
+        return []
+    bad = []
+    for n in mem:
+        g = {k: float(np.median([raw[o][1][k] for o in mem if o != n])) for k in KEYS}
+        if soft_score(full[n], g)[0] < ANCHOR:
+            bad.append(n)
+    return bad
+
+
+def _gold_set(key, names, candidates, raw, full):
+    """(members, note) of one gold set: the V2 models in it plus the top share of its candidates by mean density
+    percentile (at least two when two exist), widened (WIDEN) until every member and V2 model scores ANCHOR
+    leave-one-out; dense outliers are left out. None when the set has no candidate and no V2 model."""
+    v2 = sorted(n for n in names if n in GOLD_V2)
+    cands = [n for n in names if n in candidates and n not in v2]
+    odd = _outliers(cands, raw)
+    pool = [n for n in cands if n not in odd]
+    if not pool and not v2:
+        return None
+    ranks = {}
+    for k in ('silhouette',) + DENSE:
+        vals = sorted(raw[n][1][k] for n in names)
+        for n in names:
+            ranks.setdefault(n, []).append(np.searchsorted(vals, raw[n][1][k]) / max(1, len(vals) - 1))
+    ranked = sorted(pool, key=lambda n: (-np.mean(ranks[n]), n))
+    mem, bad, rung, prev_n = [], [], None, 0
+    for rung in WIDEN:
+        n_top = int(math.ceil(len(ranked) / 2)) if rung == 'median' else int(math.ceil(rung * len(names)))
+        n_top = max(n_top, min(len(ranked), 2 - len(v2)), 1 if ranked else 0, prev_n)
+        prev_n = n_top
+        mem = sorted(set(ranked[:n_top]) | set(v2))
+        bad = _anchor_fails(mem, raw, full)
+        if not bad:
+            break
+    dropped = []
+    while bad and any(n not in v2 for n in bad):
+        # Widest rung and still under: a candidate that cannot meet its own set's bar does not stand for it (the
+        # weakest goes first); a V2 model always stays.
+        worst = min((n for n in bad if n not in v2), key=lambda n: (np.mean(ranks[n]), n))
+        dropped.append(worst)
+        mem = [n for n in mem if n != worst]
+        bad = _anchor_fails(mem, raw, full)
+    note = f"{'top ' + str(int(rung * 100)) + ' %' if rung != 'median' else 'down to the median'} of {len(cands)} candidates"
+    if odd:
+        note += '; outliers left out: ' + ', '.join(sorted(odd))
+    if dropped:
+        note += '; under the anchor, left out: ' + ', '.join(dropped)
+    if len(mem) == 1:
+        note += '; sole member'
+    if bad:
+        note += '; under the anchor at the widest: ' + ', '.join(bad)
+    return mem, note
+
+
 def _select_gold(rows, extra=()):
     """One gold from one gate run (rows scored against the previous gold); `extra`: more gate candidates."""
     vis = visual_grades()
@@ -695,48 +836,31 @@ def _select_gold(rows, extra=()):
         with (DOCS / 'rebuild_list.csv').open(encoding='utf-8') as fh:
             borrowed = {r['model'] for r in csv.DictReader(fh) if r.get('stand_in') == 'yes'} - reb
     raw = {r['model']: (r['class'], {k: float(r[k]) for k in KEYS}) for r in rows}
-    frames = {r['model']: r['_gold_class'] for r in rows if r['_gold_class'].startswith('boss_')}
+    full = {r['model']: r for r in rows}
     by_visual = {n for n in raw if vis.get(n, ('', ''))[0] == 'Tốt'}
     by_gate = {r['model'] for r in rows if r['model'] in reb and r['hard_pass'] and r['soft_score'] is not None
                and r['soft_score'] >= 80} | set(extra)
     candidates = (by_visual | by_gate) - borrowed
-    classes = {}
-    members = {}
-    for cls in sorted({c for c, _ in raw.values()}):
-        in_cls = [n for n, (c, _) in raw.items() if c == cls]
-        good = [n for n in in_cls if n in candidates]
-        ranks = {}
-        for key in ('silhouette', 'edges', 'regions', 'parts_m2', 'tier2_m2', 'tier3_m2'):
-            vals = sorted(raw[n][1][key] for n in in_cls)
-            for n in in_cls:
-                ranks.setdefault(n, []).append(np.searchsorted(vals, raw[n][1][key]) / max(1, len(vals) - 1))
-        top_n = max(1, int(math.ceil(TOP_SHARE * len(in_cls))))
-        top = sorted(good, key=lambda n: (-np.mean(ranks[n]), n))[:top_n]
-        gold_set = sorted(set(top) | {n for n, c in GOLD_V2.items() if c == cls and n in raw})
-        if not gold_set:
+    sets = {}
+    for r in rows:
+        sets.setdefault(r['_gold_class'], []).append(r['model'])
+        if r['_gold_class'] != r['class']:
+            sets.setdefault(r['class'], []).append(r['model'])      # the parent class: the last fallback
+    classes, members, notes = {}, {}, {}
+    for key in sorted(sets):
+        got = _gold_set(key, sets[key], candidates, raw, full)
+        if got is None:
             continue
-        members[cls] = gold_set
-        classes[cls] = {k: round(float(np.mean([raw[n][1][k] for n in gold_set])), 4) for k in KEYS}
-        classes[cls]['count'] = len(in_cls)
-        if cls != 'boss':
-            continue
-        # Decision 5: the same rule inside each boss frame (a frame with no candidate and no V2 model uses the
-        # whole boss gold through NEAREST).
-        for fk in sorted(set(frames.values())):
-            in_f = [n for n in in_cls if frames.get(n) == fk]
-            good_f = [n for n in in_f if n in good]
-            top_f = sorted(good_f, key=lambda n: (-np.mean(ranks[n]), n))[:max(1, int(math.ceil(TOP_SHARE * len(in_f))))]
-            set_f = sorted(set(top_f) | {n for n, c in GOLD_V2.items() if c == 'boss' and frames.get(n) == fk})
-            if set_f:
-                members[fk] = set_f
-                classes[fk] = {k: round(float(np.mean([raw[n][1][k] for n in set_f])), 4) for k in KEYS}
-                classes[fk]['count'] = len(in_f)
+        members[key], notes[key] = got
+        classes[key] = {k: round(float(np.median([raw[n][1][k] for n in members[key]])), 4) for k in KEYS}
+        classes[key]['count'] = len(sets[key])
     in_gold = sorted({n for v in members.values() for n in v})
     gold = {'about': 'prompt 35 section 5.3: class means of the gold set (quality_gate.compute_gold)',
-            'rule': 'V2 + top 10 % per class / boss frame of: visual Tốt (pass 8, not rebuilt) or rebuilt with every '
-                    'hard gate and soft >= 80 against the previous gold, repeated to a fixed point; members scored '
-                    'leave-one-out',
-            'members': members, 'classes': classes,
+            'rule': 'V2 + top 10 % per gold set (split classes, boss frames) of: visual Tốt (pass 8, not rebuilt) or '
+                    'rebuilt with every hard gate and soft >= 80 against the previous gold; outliers out; widened '
+                    '20 / 25 % / median until every member and V2 scores 80 leave-one-out; set value = median of '
+                    'the members; repeated to a fixed point',
+            'members': members, 'classes': classes, 'notes': notes,
             'member_metrics': {n: {k: round(raw[n][1][k], 4) for k in KEYS} for n in in_gold},
             'candidates': {'count': len(candidates), 'visual': sorted(by_visual - borrowed),
                            'gate': sorted(by_gate - borrowed)},
@@ -748,15 +872,24 @@ def write_gold_md(gold):
     lines = ['# Gold metrics (prompt 35 section 5.3)', '',
              'Generated by `python Tools/assets/quality_gate.py --gold` (data: `Tools/assets/gold_metrics.json`). Gold =',
              'the four V2 models the owner approved in prompt 27 EXPERIMENT_1 (main_battle_tank, fighter_jet,',
-             'attack_helicopter, silver_bug) plus the top 10 % of each class and of each boss frame (ground, rail, air,',
-             'sea) among the candidates, ranked by the mean percentile of their soft metrics in the class. Candidates',
-             '(owner, prompt 35 section 8 item 1): models the pass 8 scan graded Tốt visually (not rebuilt since), and',
-             'rebuilt models that pass every hard gate with soft >= 80 against the previous gold. A class with no gold',
-             "uses the nearest class's (`NEAREST` in quality_gate.py: " + ', '.join(f'{a} -> {b}' for a, b in NEAREST.items()) + ').',
-             '', 'No circularity: a gold member is scored leave-one-out (against the mean of the other members of its set;',
-             "a sole member against the nearest class's gold, the report's gold_set column says `(LOO)`). The recompute",
-             'repeats until the gold reproduces itself; a two-round swap of sole members in small classes is settled by',
-             'the union of the candidates of the swapping rounds; the class ranking then picks.',
+             'attack_helicopter, silver_bug) plus, per gold set, the top 10 % of its candidates ranked by the mean',
+             'percentile of their soft metrics in the set. Candidates (owner, prompt 35 section 8 item 1): models the pass 8',
+             'scan graded Tốt visually (not rebuilt since), and rebuilt models that pass every hard gate with soft >= 80',
+             'against the previous gold. The set value of each metric is the median of its members.', '',
+             'Gold sets (prompt 35 recalibration, `gold_class`): boss by frame (ground, rail, air, sea); wheeled light',
+             '(< 5.5 m) / heavy; tracked light (< 6 m) / heavy; jet drone / fighter (< 12 m) / heavy; helicopter light',
+             '(< 5 m) / heavy; obstacle wall / pad (helipads) / tall (>= 3 m: nets) / flat (minefields, dragon teeth);',
+             'tower mast (<= 5.5 m long, 1.4 x as tall) / small (<= 5.5 m) / big; the parent classes are computed too, as',
+             'the last fallback. Anchor: every member and every V2 model must score >= 80 against its own set',
+             'leave-one-out; a set that fails is widened to the top 20 %, 25 %, then down to the candidates median; at',
+             'the widest a non-V2 member still under 80 is left out. Dense outliers (above Q3 + 1.5 IQR of the set',
+             'candidates on edges, regions, parts or tiers; above 2 x the other two with three candidates) never stand',
+             'for gold. A set without gold, or a sole member, borrows a similar set, then its parent, then NEAREST:',
+             ', '.join(f'{a} -> {b}' for a, b in SIMILAR.items()) + '.',
+             '', 'No circularity: a gold member is scored leave-one-out (the median of the other members of its set; a',
+             "sole member against the next set with gold; the report's gold_set column says `(LOO)`). The recompute",
+             'repeats until the gold reproduces itself; a two-round swap is settled by the union of the swapping rounds',
+             'candidates, the set ranking then picks.',
              f"This gold: {sum(len(v) for v in gold['members'].values())} places in {len(gold['members'])} sets, "
              f"{len(gold.get('candidates', {}).get('gate', []))} gate candidates and "
              f"{len(gold.get('candidates', {}).get('visual', []))} visual ones; {gold.get('rounds', '?')} rounds, "
@@ -769,10 +902,10 @@ def write_gold_md(gold):
              '- tier2_m2 / tier3_m2: pieces 0.3 m .. 25 % of the length / under 0.3 m (scaled the same way) per m2;',
              '- asym_raw: 1 - IoU of the top view and its mirror (0 = perfectly symmetric);',
              '- sloped_dirs: sloped face directions on the hull / turret; zones: materials.', '',
-             '| class | models in class | gold set | ' + ' | '.join(KEYS) + ' |',
-             '|---|---|---|' + '---|' * len(KEYS)]
+             '| set | models in set | gold set | how chosen | ' + ' | '.join(KEYS) + ' |',
+             '|---|---|---|---|' + '---|' * len(KEYS)]
     for cls, g in gold['classes'].items():
-        lines.append(f"| {cls} | {g['count']} | {', '.join(gold['members'][cls])} | " +
+        lines.append(f"| {cls} | {g['count']} | {', '.join(gold['members'][cls])} | {gold.get('notes', {}).get(cls, '')} | " +
                      ' | '.join(f'{g[k]:.3f}' if isinstance(g[k], float) else str(g[k]) for k in KEYS) + ' |')
     lines += ['', '## The four V2 models', '', '| model | ' + ' | '.join(KEYS) + ' |', '|---|' + '---|' * len(KEYS)]
     for n, g in gold['v2'].items():

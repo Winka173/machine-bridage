@@ -18825,27 +18825,35 @@ section 9.
   (owner answer 1) is left to the lead.
 
 ## Prompt 35: gold recompute with rebuilt models (lane A)
-Owner answer 1 (section 8, "theo đề xuất"). Branch feature/p35-gold from lead/integration (f1741c99). Gate code and docs only.
-- **Rule** (`compute_gold` / `_select_gold`): candidates = pass 8 visual Tốt models not rebuilt since (4) + rebuilt
-  models with every hard gate and soft >= 80; borrowed stand-ins stay out, but a rebuilt stand-in is a candidate (its
-  own geometry is checked by the own_geometry gate). Gold = top 10 % per class and per boss frame (ground, rail, air,
-  sea) by mean density percentile, plus the four V2 models always. A class / frame without candidates borrows NEAREST.
-- **Circularity**: both guards. (1) A rebuilt model's candidacy is judged against the previous gold. (2) Every gold
-  member is scored leave-one-out (`gold_for_model`: mean of the other members; a sole member against the nearest
-  class's gold); `gold_metrics.json` now stores `member_metrics` for this. The recompute repeats until the gold
-  reproduces itself (`GOLD_ROUNDS` 8). It does not settle by itself: sole members of hq, boss_sea, air_other and ship
-  swap every round (each fails the nearest class leave-one-out, its rival passes against it). A detected cycle is
-  settled by the union of the cycle's gate candidates (each passed once against a gold without itself), the ranking
-  picks. A second `--gold` run gives the same members (checked).
-- **Result**: 40 places in 16 sets (GOLD_METRICS.md); gate 199 -> 105 of 230, hard 230 of 230; 94 drop, none rises;
-  soft grades Tốt -> Cần sửa 86, Tốt -> Kém 8, Cần sửa -> Kém 12. Per set: tower 44 -> 18, wheeled 43 -> 10, jet
-  15 -> 6, boss_ground 15 -> 8, obstacle 7 -> 2, tracked 39 -> 38 (table in REBUILD_REPORT section 2).
-- **Why**: the gold is now the densest tenth of the rebuilt models; parts / tier 3 per m2 are 1.3-7 x the old gold.
-  A fair, higher bar; the rule is not watered down. For the owner / lead to judge:
-  wheeled and jet gold are small dense models (jeeps, technicals, towed gun; recon / strike drones) against which trucks,
-  bombers and the tanker fall; obstacle gold holds drone_net_tower (32.7 regions from the net), so helipads (42-44)
-  and walls (37-47) are Kém; three V2 models fail (fighter_jet 67.9, main_battle_tank 71.8, silver_bug 55.5;
-  attack_helicopter 78.4); sole gold members fail against the nearest class (leviathan, command_hq,
-  airborne_light_tank_chute, missile_boat). Possible next steps (not done): split wheeled into light / truck and jet
-  into drone / manned, move helipads and walls out of the obstacle set, or score a sole member against itself.
-- Run time: `--gold` + full gate about 4 minutes (four gate passes for the rounds).
+Owner answer 1 (section 8, "theo đề xuất"). Branch feature/p35-gold from lead/integration (f1741c99). Gate code and docs
+only. Two commits: the first recompute (cacdc9af) and the recalibration the lead asked for after reviewing it.
+- **Candidates**: pass 8 visual Tốt models not rebuilt since (4) + rebuilt models with every hard gate and soft >= 80;
+  borrowed stand-ins stay out, a rebuilt stand-in is a candidate (own_geometry gate checks it). V2 models always gold.
+- **First recompute (cacdc9af)**: one set per class / boss frame, top 10 %, set value = mean. Gate 199 -> 105 of 230.
+  The lead held it back: 3 of the 4 V2 models failed it (fighter_jet 67.9, main_battle_tank 71.8, silver_bug 55.5),
+  so the gold was miscalibrated (mixed classes: jeeps vs trucks, drones vs bombers, the drone_net_tower net in the
+  obstacle gold), not a fair higher bar.
+- **Recalibration** (`gold_class`, `_gold_set`): mixed classes split by size / kind: wheeled light < 5.5 m / heavy;
+  tracked light < 6 m / heavy; jet drone (drone / uav) / fighter < 12 m / heavy; helicopter light < 5 m / heavy;
+  obstacle wall / pad (helipads) / tall >= 3 m (nets) / flat; tower mast (<= 5.5 m, 1.4 x as tall) / small <= 5.5 m /
+  big. Lengths are the GLB's longer horizontal side. Parent classes are computed as the last fallback.
+  Anchor: every member and every V2 model must score >= 80 against its set leave-one-out; else widen to the top 20 %,
+  25 %, then down to the candidates' median; at the widest a non-V2 member still under 80 is left out (sea_cruiser,
+  swarm_carrier in the jet parent). Outliers (above Q3 + 1.5 IQR of the set's candidates on edges, regions, parts_m2,
+  tier2, tier3; with three candidates above 2 x the other two) never stand for gold. Set value = median of members
+  (mean with two): one dense member cannot drag the bar (stymphalos' tier 3 had silver_bug failing boss_air).
+  Lone sets borrow a similar set (SIMILAR: boss_sea <-> ship, hq / structure -> tower_big, ground (river boats) ->
+  ship, boss_air -> jet_heavy, obstacle_tall -> tower_mast, walls / pads -> obstacle_flat ...), then the parent.
+- **Circularity**: candidacy is judged against the previous gold; every gold member is scored leave-one-out
+  (`gold_for_model`, median of the other members; a sole member against the next set with gold); `gold_metrics.json`
+  keeps `member_metrics`. The recompute repeats to a fixed point (GOLD_ROUNDS 8); a two-round swap (small sets) is
+  settled by the union of the swapping rounds' candidates. Recompute run from the pre-rebuild gold; a second `--gold`
+  run gives the same members (checked).
+- **Result**: 104 places in 30 sets (GOLD_METRICS.md). Gate 199 (old gold) -> 105 (first) -> **202** of 230; hard
+  230 of 230; soft Tốt 202, Cần sửa 21, Kém 7. V2: main_battle_tank 82.8, fighter_jet 81.6, attack_helicopter 98.3,
+  silver_bug 81.5. Against the old gold 33 grades change (Tốt -> Cần sửa 11, Cần sửa -> Tốt 14, Kém -> Cần sửa 4,
+  Cần sửa -> Kém 4). Per set in REBUILD_REPORT section 2: tower_big 17 -> 28 up; wheeled_light 12 -> 9,
+  wheeled_heavy 31 -> 29, structure 4 -> 2, jet_heavy 5 -> 4, jet_fighter 6 -> 5, air_other 3 -> 2, ship 3 -> 2 down.
+- **Open for the lead / owner**: structure has two candidates (bulwark_post, targeting_station), so coastal_battery and
+  super_gun (10 m batteries) drop to 61-64; walls have no candidate and borrow the flat set (Kém with the helipads, as
+  under the old gold); the outlier screen leaves out 1-6 of the densest candidates per big set, by design.
