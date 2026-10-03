@@ -2900,6 +2900,16 @@
    ],
    "reason": "merge of feature/p35-w3",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "next_gen_tank"
+   ],
+   "reason": "P35 wave 6: rebuilt from scratch (T-14)",
+   "changes": [
+    "FLAG next_gen_tank: triangles 6,620 -> 11,642 (+75.9%); vertices 7,813 -> 15,947 (+104.1%); meshes 33 -> 72 (+118.2%); renderers 33 -> 72 (+118.2%); materials 8 -> 11 (+37.5%); materialSlots 33 -> 72 (+118.2%); fileBytes 417,024 -> 842,088 (+101.9%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -41660,24 +41670,24 @@
   },
   "next_gen_tank": {
    "file": "next_gen_tank.glb",
-   "fileBytes": 417024,
-   "sha1": "b447875500b971ec",
+   "fileBytes": 842088,
+   "sha1": "0b4fee847c75618b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 40,
-   "meshes": 33,
-   "materials": 8,
+   "nodes": 80,
+   "meshes": 72,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 33,
-   "submeshes": 33,
-   "materialSlots": 33,
-   "materialsUsed": 8,
-   "triangles": 6620,
-   "vertices": 7813,
+   "renderers": 72,
+   "submeshes": 72,
+   "materialSlots": 72,
+   "materialsUsed": 11,
+   "triangles": 11642,
+   "vertices": 15947,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -41685,36 +41695,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 162,
+   "loosePieces": 394,
    "openEdges": 0,
-   "nonManifoldEdges": 8,
+   "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.55,
-    -0.047,
-    -3.9001
+    -1.605,
+    -0.0645,
+    -4.025
    ],
    "boundsMax": [
-    1.55,
-    2.24,
-    3.89
+    1.605,
+    2.28,
+    3.86
    ],
    "size": [
-    7.79,
-    3.1,
-    2.287
+    7.885,
+    3.21,
+    2.344
    ],
    "center": [
     0.0,
-    1.097,
-    -0.005
+    1.108,
+    -0.083
    ],
-   "structureHash": "2bbcc4875779995b",
+   "structureHash": "455750f89088006e",
    "color0": {
-    "mean": 0.7924,
-    "min": 0.5444,
+    "mean": 0.6062,
+    "min": 0.0765,
     "max": 1.0,
-    "p05": 0.6857,
-    "p95": 0.9816,
+    "p05": 0.1557,
+    "p95": 0.882,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -41733,6 +41743,7 @@
      "Muzzle_mg"
     ],
     "mount": [
+     "Mount_APS",
      "Mount_mg"
     ],
     "point": [
@@ -41742,55 +41753,99 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Antennas",
+    "Ammo_can_rws",
     "Aps_cluster",
     "Aps_cluster_panels",
+    "Aps_faces",
     "Aps_panels",
-    "Armor",
-    "Cage_grille",
+    "Barrel_clamps",
+    "Bustle",
     "Coax",
-    "Deck_grille",
-    "Exhaust",
-    "Exhaust_louvres",
+    "Cradle_rws",
+    "Deck_plates",
+    "Era_bricks",
+    "Fenders",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_carriage_rws",
+    "Gun_fit_rws",
+    "Gun_ring_fit_rws",
+    "Gun_ring_rws",
     "Hatch_fittings",
+    "Hatch_fittings.001",
     "Hatches",
+    "Hatches.001",
     "Hubs",
     "Hull",
-    "Hull_tub",
+    "Hull_lower",
+    "Idlers",
+    "Jerrycans",
+    "Kit_hooks",
+    "Kit_latches",
+    "Kit_rivets",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_housing",
     "MG",
-    "MG_ammo",
+    "MG_flash",
     "Main_cannon",
+    "Mantlet",
+    "Mantlet_gaiter",
+    "Mount_APS",
     "Mount_mg",
+    "Mudflaps",
     "Muzzle_brake",
     "Muzzle_coax",
     "Muzzle_main",
     "Muzzle_mg",
     "Point_exhaust",
     "Point_fire",
+    "Racks",
+    "Receiver_rws",
+    "Sight",
+    "Sight.001",
     "Sight_drum",
     "Sight_glass",
     "Sight_mast",
     "Skirt_edge",
+    "Skirt_flaps",
     "Skirts",
+    "Slat_armour",
+    "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
-    "Tail_lights",
+    "Stowage",
+    "Tail_lamps",
+    "Tarp_roll",
+    "Team_band",
+    "Team_band.001",
+    "Toolbox",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
     "Turret",
     "Turret_armor",
     "Turret_body",
+    "Turret_dark",
+    "Turret_steel",
     "Tyres",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 11,642 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 15,947 over the ground normal hard cap 12,600 (info: kept, owner rule)",
+    "renderers 72 over the ground normal budget 61"
+   ],
    "units": [
     "next_gen_tank"
    ],
-   "movingParts": 3,
+   "movingParts": 4,
    "budgetClass": "ground"
   },
   "nlos_atgm_vehicle": {
