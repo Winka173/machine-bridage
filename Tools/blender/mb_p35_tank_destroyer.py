@@ -79,7 +79,7 @@ def _running_gear(a):
     for s in (-1, 1):
         C.running_gear(a, s, TX, TW, WHEELS, WR, sprocket=(2.42, .44, .23), idler=(-2.38, .46, .22),
                        rollers=[(-1.6, .63), (-.35, .64), (.95, .64), (2.0, .63)], pitch=.22, disc_mat='Armor',
-                       wheel_w=.16, seg=8, teeth=11, idler_spokes=4)
+                       wheel_w=.16, seg=10, teeth=13, idler_spokes=4)
         arms = a.part('Suspension', 'Undercarriage')
         for y in WHEELS:
             C.wheel_arm(arms, s, TX - .17, y, WR, length=.32, back=1, r=.04)

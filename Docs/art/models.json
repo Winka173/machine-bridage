@@ -1753,11 +1753,11 @@
   },
   "tank_destroyer": {
     "file": "tank_destroyer.glb",
-    "triangles": 9998
+    "triangles": 10558
   },
   "tank_destroyer_hd": {
     "file": "tank_destroyer_hd.glb",
-    "triangles": 9998
+    "triangles": 10558
   },
   "tank_ditch": {
     "file": "tank_ditch.glb",

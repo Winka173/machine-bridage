@@ -2870,6 +2870,18 @@
    "changes": [
     "FLAG moloch: triangles 10,244 -> 27,426 (+167.7%); vertices 10,602 -> 36,853 (+247.6%); meshes 52 -> 115 (+121.2%); renderers 52 -> 115 (+121.2%); materials 9 -> 13 (+44.4%); materialSlots 52 -> 115 (+121.2%); fileBytes 570,828 -> 1,859,472 (+225.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "tank_destroyer",
+    "tank_destroyer_hd"
+   ],
+   "reason": "P35 wave 4",
+   "changes": [
+    "tank_destroyer: triangles 9,998 -> 10,558 (+5.6%); vertices 13,611 -> 14,143 (+3.9%); fileBytes 712,720 -> 739,492 (+3.8%); structure changed",
+    "tank_destroyer_hd: triangles 9,998 -> 10,558 (+5.6%); vertices 13,611 -> 14,143 (+3.9%); fileBytes 712,724 -> 739,496 (+3.8%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -53972,8 +53984,8 @@
   },
   "tank_destroyer": {
    "file": "tank_destroyer.glb",
-   "fileBytes": 712720,
-   "sha1": "0f9bfee07c63e2ff",
+   "fileBytes": 739492,
+   "sha1": "3c7623bdf487f9af",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -53988,8 +54000,8 @@
    "submeshes": 54,
    "materialSlots": 54,
    "materialsUsed": 10,
-   "triangles": 9998,
-   "vertices": 13611,
+   "triangles": 10558,
+   "vertices": 14143,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -54020,12 +54032,12 @@
     1.05,
     1.11
    ],
-   "structureHash": "ed3874850e3a6acb",
+   "structureHash": "a7175a40fc570a52",
    "color0": {
-    "mean": 0.5792,
+    "mean": 0.5746,
     "min": 0.0766,
     "max": 1.0,
-    "p05": 0.1976,
+    "p05": 0.1869,
     "p95": 0.8064,
     "outOfRange": 0
    },
@@ -54120,8 +54132,8 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "triangles 9,998 over the ground normal hard cap 9,700 (info: kept, owner rule)",
-    "vertices 13,611 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+    "triangles 10,558 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 14,143 over the ground normal hard cap 12,600 (info: kept, owner rule)"
    ],
    "units": [
     "tank_destroyer"
@@ -54131,8 +54143,8 @@
   },
   "tank_destroyer_hd": {
    "file": "tank_destroyer_hd.glb",
-   "fileBytes": 712724,
-   "sha1": "6933bbd06ea6a000",
+   "fileBytes": 739496,
+   "sha1": "f24fc0d03f144ddc",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -54147,8 +54159,8 @@
    "submeshes": 54,
    "materialSlots": 54,
    "materialsUsed": 10,
-   "triangles": 9998,
-   "vertices": 13611,
+   "triangles": 10558,
+   "vertices": 14143,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -54179,12 +54191,12 @@
     1.05,
     1.11
    ],
-   "structureHash": "ed3874850e3a6acb",
+   "structureHash": "a7175a40fc570a52",
    "color0": {
-    "mean": 0.5792,
+    "mean": 0.5746,
     "min": 0.0766,
     "max": 1.0,
-    "p05": 0.1976,
+    "p05": 0.1869,
     "p95": 0.8064,
     "outOfRange": 0
    },
