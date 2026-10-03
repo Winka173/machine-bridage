@@ -65,8 +65,13 @@ def _pylons(a):
     """The forward pylon over the cockpit, the tall aft pylon with the engine pods."""
     fp = a.part('Fuselage_pylon', 'Team')
     k.extrude(fp, [(-.5, 0), (.5, 0), (.35, .95), (-.35, .95)], 2.4, loc=(0, -3.0, 2.3), axis='Y', chamfer=.06)
-    k.extrude(fp, [(-.7, 0), (.7, 0), (.42, 2.0), (-.42, 2.0)], 2.8, loc=(0, 2.7, 2.3), axis='Y', chamfer=.06,
-              taper=(1, .85))
+    # The aft pylon: a swept fairing rising from the roof to the rear head, narrowing to its top.
+    aft = a.part('Fuselage_pylon_aft', 'Team')
+
+    def half(w, zt):
+        return [(0, 2.3), (w, 2.3), (w, 2.5), (w * .8, zt - .25), (w * .45, zt), (0, zt)]
+    K.section_loft(aft, [(1.0, half(.45, 2.42)), (1.7, half(.58, 3.3)), (2.3, half(.55, 4.2)),
+                         (3.5, half(.5, 4.25)), (4.2, half(.4, 3.4)), (4.35, half(.3, 2.9))])
     a.part('Rotor_mast', 'Steel').cyl(.1, .3, loc=(0, -2.75, 3.3), seg=8, bevel=0)
     a.part('Rotor_mast', 'Steel').cyl(.1, .2, loc=(0, 2.85, 4.25), seg=8, bevel=0)
     for s in (-1, 1):
