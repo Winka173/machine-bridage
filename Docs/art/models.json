@@ -1189,11 +1189,11 @@
   },
   "light_tank": {
     "file": "light_tank.glb",
-    "triangles": 4350
+    "triangles": 8054
   },
   "light_tank_hd": {
     "file": "light_tank_hd.glb",
-    "triangles": 10762
+    "triangles": 9118
   },
   "lighthouse": {
     "file": "lighthouse.glb",

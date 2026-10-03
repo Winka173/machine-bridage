@@ -2858,6 +2858,18 @@
    "changes": [
     "FLAG ifv: triangles 5,040 -> 9,466 (+87.8%); vertices 6,000 -> 12,809 (+113.5%); meshes 31 -> 61 (+96.8%); renderers 31 -> 61 (+96.8%); materials 7 -> 11 (+57.1%); materialSlots 31 -> 61 (+96.8%); fileBytes 325,304 -> 680,520 (+109.2%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "light_tank",
+    "light_tank_hd"
+   ],
+   "reason": "P35 wave 3: light_tank rebuilt (lane B), its _hd twin from the same builder",
+   "changes": [
+    "FLAG light_tank: triangles 4,350 -> 8,054 (+85.1%); vertices 5,001 -> 10,927 (+118.5%); meshes 25 -> 53 (+112.0%); renderers 25 -> 53 (+112.0%); materials 7 -> 11 (+57.1%); materialSlots 25 -> 53 (+112.0%); fileBytes 271,352 -> 580,056 (+113.8%); structure changed",
+    "FLAG light_tank_hd: triangles 10,762 -> 9,118 (-15.3%); vertices 13,571 -> 12,091 (-10.9%); meshes 33 -> 53 (+60.6%); renderers 33 -> 53 (+60.6%); materials 7 -> 11 (+57.1%); materialSlots 33 -> 53 (+60.6%); fileBytes 693,504 -> 637,664 (-8.1%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -36639,24 +36651,24 @@
   },
   "light_tank": {
    "file": "light_tank.glb",
-   "fileBytes": 271352,
-   "sha1": "9562f2260fb8ba00",
+   "fileBytes": 580056,
+   "sha1": "6b70762b64fe99c9",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 30,
-   "meshes": 25,
-   "materials": 7,
+   "nodes": 60,
+   "meshes": 53,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 25,
-   "submeshes": 25,
-   "materialSlots": 25,
-   "materialsUsed": 7,
-   "triangles": 4350,
-   "vertices": 5001,
+   "renderers": 53,
+   "submeshes": 53,
+   "materialSlots": 53,
+   "materialsUsed": 11,
+   "triangles": 8054,
+   "vertices": 10927,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -36664,36 +36676,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 92,
+   "loosePieces": 256,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.31,
-    -0.047,
-    -2.675
+    -1.2475,
+    -0.0645,
+    -2.7595
    ],
    "boundsMax": [
-    1.31,
-    1.82,
-    3.67
+    1.2475,
+    1.9534,
+    3.76
    ],
    "size": [
-    6.345,
-    2.62,
-    1.867
+    6.519,
+    2.495,
+    2.018
    ],
    "center": [
     0.0,
-    0.887,
-    0.498
+    0.944,
+    0.5
    ],
-   "structureHash": "e3a1eb1714556ae3",
+   "structureHash": "5683d7b335509a95",
    "color0": {
-    "mean": 0.6178,
-    "min": 0.0863,
+    "mean": 0.601,
+    "min": 0.0801,
     "max": 1.0,
-    "p05": 0.2107,
-    "p95": 0.9553,
+    "p05": 0.1603,
+    "p95": 0.8877,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -36708,7 +36720,11 @@
     ],
     "muzzle": [
      "Muzzle_coax",
-     "Muzzle_main"
+     "Muzzle_main",
+     "Muzzle_mg"
+    ],
+    "mount": [
+     "Mount_mg"
     ],
     "point": [
      "Point_exhaust",
@@ -36717,67 +36733,100 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
+    "Ammo_can_cdr",
+    "Brake_ports",
     "Coax",
-    "Cupola",
-    "Deck",
+    "Cradle_cdr",
+    "Exhaust_louvres",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_carriage_cdr",
+    "Gun_fit_cdr",
+    "Gun_ring_cdr",
     "Hatch_fittings",
     "Hatch_fittings.001",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
+    "Idlers",
+    "Jet_covers",
     "Jet_ports",
+    "Kit_hinges",
+    "Kit_hooks",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
+    "MG",
+    "MG_flash",
     "Main_cannon",
+    "Mantlet",
+    "Mount_mg",
     "Muzzle_brake",
     "Muzzle_coax",
     "Muzzle_main",
-    "Periscope",
-    "Periscope_hoods",
+    "Muzzle_mg",
     "Point_exhaust",
     "Point_fire",
+    "Receiver_cdr",
+    "Sight",
+    "Skirt_flaps",
+    "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
+    "Snorkel",
     "Sprockets",
-    "Steel",
+    "Stowage",
     "Tail_lamps",
+    "Tarp_roll",
+    "Team_band",
+    "Team_band.001",
+    "Track_links",
     "Tracks",
+    "Trim_vane",
     "Turret",
     "Turret_armor",
     "Turret_body",
+    "Turret_steel",
     "Tyres",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 8,054 over the ground normal budget 7,800",
+    "vertices 10,927 over the ground normal budget 10,100"
+   ],
    "units": [
     "light_tank"
    ],
-   "movingParts": 2,
+   "movingParts": 3,
    "budgetClass": "ground"
   },
   "light_tank_hd": {
    "file": "light_tank_hd.glb",
-   "fileBytes": 693504,
-   "sha1": "b7ab35870c3e3219",
+   "fileBytes": 637664,
+   "sha1": "948628c1d78d35cf",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 38,
-   "meshes": 33,
-   "materials": 7,
+   "nodes": 60,
+   "meshes": 53,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 33,
-   "submeshes": 33,
-   "materialSlots": 33,
-   "materialsUsed": 7,
-   "triangles": 10762,
-   "vertices": 13571,
+   "renderers": 53,
+   "submeshes": 53,
+   "materialSlots": 53,
+   "materialsUsed": 11,
+   "triangles": 9118,
+   "vertices": 12091,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -36785,36 +36834,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 275,
+   "loosePieces": 276,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.315,
-    -0.047,
-    -2.675
+    -1.2475,
+    -0.0645,
+    -2.7595
    ],
    "boundsMax": [
-    1.315,
-    1.878,
-    3.67
+    1.2475,
+    1.9534,
+    3.76
    ],
    "size": [
-    6.345,
-    2.63,
-    1.925
+    6.519,
+    2.495,
+    2.018
    ],
    "center": [
     0.0,
-    0.916,
-    0.498
+    0.944,
+    0.5
    ],
-   "structureHash": "4589491d61727a4e",
+   "structureHash": "49c235fffb4333a1",
    "color0": {
-    "mean": 0.547,
-    "min": 0.0769,
+    "mean": 0.5945,
+    "min": 0.0801,
     "max": 1.0,
-    "p05": 0.1299,
-    "p95": 0.8643,
+    "p05": 0.1744,
+    "p95": 0.8675,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -36829,7 +36878,11 @@
     ],
     "muzzle": [
      "Muzzle_coax",
-     "Muzzle_main"
+     "Muzzle_main",
+     "Muzzle_mg"
+    ],
+    "mount": [
+     "Mount_mg"
     ],
     "point": [
      "Point_exhaust",
@@ -36838,43 +36891,65 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
+    "Ammo_can_cdr",
+    "Brake_ports",
     "Coax",
-    "Cupola",
-    "Deck",
+    "Cradle_cdr",
+    "Exhaust_louvres",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_carriage_cdr",
+    "Gun_fit_cdr",
+    "Gun_ring_cdr",
     "Hatch_fittings",
     "Hatch_fittings.001",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
-    "Hull_bolts",
+    "Idlers",
+    "Jet_covers",
     "Jet_ports",
+    "Kit_hinges",
+    "Kit_hooks",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Lifting_eyes",
-    "Light_rims",
+    "MG",
+    "MG_flash",
     "Main_cannon",
+    "Mantlet",
+    "Mount_mg",
     "Muzzle_brake",
     "Muzzle_coax",
     "Muzzle_main",
-    "Periscope",
-    "Periscope.001",
-    "Periscope_guards",
-    "Periscope_guards.001",
-    "Periscope_hoods",
-    "Periscope_hoods.001",
+    "Muzzle_mg",
     "Point_exhaust",
     "Point_fire",
+    "Receiver_cdr",
+    "Sight",
+    "Skirt_flaps",
+    "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
+    "Snorkel",
     "Sprockets",
-    "Steel",
+    "Stowage",
     "Tail_lamps",
+    "Tarp_roll",
+    "Team_band",
+    "Team_band.001",
+    "Track_links",
     "Tracks",
+    "Trim_vane",
     "Turret",
     "Turret_armor",
     "Turret_body",
-    "Turret_bolts",
+    "Turret_steel",
     "Tyres",
-    "Wheel_bolts",
     "Wheels"
    ],
    "category": "ground",
@@ -36884,7 +36959,7 @@
    "units": [
     "light_tank"
    ],
-   "movingParts": 2,
+   "movingParts": 3,
    "budgetClass": "ground"
   },
   "lighthouse": {

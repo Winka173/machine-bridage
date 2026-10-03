@@ -1,0 +1,37 @@
+{
+ "id": "light_tank",
+ "class": "tracked",
+ "real": ["PT-76 / ZBD-05 amphibious light tank line (unit_sheet: S-60 57 mm (2A91), PKT / M240 coax)"],
+ "shape": "unit_sheet.json Phương tiện: a low boat-shaped (amphibious) hull, a small turret set forward, a long slim 57 mm gun; from above the bow pointed like a boat; about 6.1 x 2.6 x 1.8 m (0.8 x PT-76 / ZBD-05); team stripes on the roof and both sides; no real insignia.",
+ "confidence": "xấp xỉ (PT-76 / ZBD-05 published layout; the turret is a compact modern design for the 57 mm)",
+ "target_size": {"L": 6.39, "W": 2.61, "H": 1.89, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "the welded boat hull (Team) pointed in plan, the folded trim vane on the bow with hinges", "nodes": ["Hull", "Trim_vane", "Kit_hinges"]},
+  {"feature": "the driver's hatch with periscopes, engine deck grilles, exhaust louvres at the stern", "nodes": ["Hatches", "Hatch_fittings", "Grilles", "Exhaust_louvres", "Point_exhaust"]},
+  {"feature": "two water-jet ports and their covers at the stern, tail lamps, tow hooks, headlamps", "nodes": ["Jet_ports", "Jet_covers", "Tail_lamps", "Kit_hooks", "Lamps"]},
+  {"feature": "six road wheels, rear sprocket, front idler on its arm, a linked track", "nodes": ["Wheels", "Tyres", "Sprockets", "Idlers", "Tracks", "Track_links"]},
+  {"feature": "side skirts with rubber flaps over the top run", "nodes": ["Skirts", "Skirt_flaps"]},
+  {"feature": "the compact angular turret forward of the middle with its rear bin, the mantlet, the long 57 mm with fume extractor and slotted brake, the coax", "nodes": ["Turret", "Turret_body", "Turret_armor", "Mantlet", "Main_cannon", "Muzzle_brake", "Brake_ports", "Coax"]},
+  {"feature": "the gunner's sight head, the commander's cupola with a 7.62 mm pintle gun on its post, smoke launchers on both flanks", "nodes": ["Sight", "Glass", "Mount_mg", "MG", "Muzzle_mg", "Smoke_launchers"]},
+  {"feature": "deck stowage: the snorkel tube, a tarpaulin roll, two crates; Team bands", "nodes": ["Snorkel", "Tarp_roll", "Stowage", "Team_band"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "gun_57mm", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]},
+  {"weapon": "mg_coax", "slot": "coax", "mount": "Turret", "muzzles": ["Muzzle_coax"]},
+  {"weapon": "gun_launched_atgm", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "fired through the gun's bore"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "heavy class (tracked): over the maximum is information only; the _hd twin (detail=True) for PC High"},
+ "team_zones": ["hull and turret (Team)", "bands on both hull sides and the turret roof"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the wrappers add the tracked wreck parts; the turret flies off",
+ "faction_style": "military light tank (both factions)",
+ "details": {
+  "tier1": ["boat hull", "turret", "tracks and wheels", "gun"],
+  "tier2": ["trim vane", "skirts", "rear bin", "mantlet", "sight", "cupola", "snorkel", "crates", "jet ports"],
+  "tier3": ["hinges", "lamps", "hooks", "grilles", "periscopes", "brake ports", "coax", "smoke tubes", "pintle MG", "whip", "tarp roll"]
+ },
+ "questions": []
+}
