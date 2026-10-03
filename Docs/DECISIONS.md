@@ -18567,3 +18567,38 @@ The lead's four failing tests after merging passes 1-2 (a8bea43a); branch featur
 - Prompt34Tests.TheSameFamilyFiresTheSameRoundOnEveryBoss: weaponFamilyTable cal_23 boss.damage 7 -> 3.5, matching the
   owner-approved zu23 at 2 barrels x 3.5 a round (DECISIONS "Prompt 35: owner review of the pilot", item 2). The table's
   boss block is a reference only (no Sim code applies it); DPS unchanged.
+
+## Prompt 35 wave 11 (lane C)
+
+Branch feature/p35-w11 (from lead/integration after wave 9's merge; waves 8 and 10 merged in before the report).
+Report: Docs/models/WAVE_11_REPORT.md; the prompt's final report: Docs/models/REBUILD_REPORT.md.
+- Thirteen models, each its own script `Tools/blender/mb_p35_<id>.py` and spec; every old pivot kept at its place
+  (checked against the old files to the centimetre); new pivots: hyperion `Mount_APS` (the def has APS),
+  light_attack_heli `Mount_gun` / `.001` (its main minigun is aimed by Turret: the pods' pivots now carry the old
+  `Muzzle_gun` / `.001`) and `Muzzle_missile` / `.001` (the def's heli_atgm).
+- Plain pivots kept without a drawn weapon where the data has none: light_attack_heli `Muzzle_rocket` / `.001`,
+  auto_loader_howitzer `Mount_mg` / `Muzzle_mg`, cerberus `Mount_gun` / `Muzzle_gun` and `Muzzle_missile` / `.001`
+  (the variant drops the gun_120 and missile parts).
+- airborne_vehicle_chute calls lane B's `mb_p35_airborne_vehicle.airborne_vehicle` unchanged and adds the drop rig,
+  so the vehicle, its node names and pivots stay the ground model's. The vehicle alone has 52 renderers; the chute
+  variant folds its static parts by material and pivot (`_merge_static`, runtime and rig names kept apart) to 43 of the
+  air class's 44. 13,056 triangles (air_other guide 7,000: kept, owner rule). The old mesh name `Fenders` is gone
+  (the BMD has skirts); `Pallet`, `Canopies`, `Risers`, `Team_bands` kept.
+- wheeled_howitzer keeps fix L8's CAESAR layout (forward armoured cab, crew compartment, platform and lockers, travel
+  lock, mount with cheeks, recoil cylinders, 52-calibre barrel, spade, node places); the cab is lowered under the
+  barrel (it used to cut through it) and the wheels pulled in, so the width and height now meet the modelSize.
+- light_attack_heli moves to a Kiowa Warrior / ARH-70 airframe: scout_heli (wave 4) already is the Little Bird with
+  the same modelSize, and the gate's own-geometry rule wants each its own body.
+- cerberus is drawn on the LeTourneau Overland Train pattern (giant wheels far out on each car) so it is as wide as
+  its modelSize (the old file was 17 % narrow). Its twin 152 mm is modelled by the builder: `mb_fix_barrels` lists
+  cerberus under EXTRA (per-barrel muzzles only) instead of TWIN. The merge with wave 8 resolved TWIN without behemoth
+  (wave 8) and without cerberus (this wave).
+- drone_net_tower is a section of anti-drone net tunnel (the weapon's `real`), the corridor along Y as the old file's
+  net ran; mine_rocket_truck is a Zemledeliye-pattern launcher on a shorter 6x6 (the def's 6.09 m).
+- k.block is centred on its loc (an extrude about the origin): the generator boxes and entry bags that sat half in the
+  ground were raised (a fix commit for drone_net_tower and bulwark_post).
+- After the merge, the thirteen rebuilt singly: twelve byte-identical; hyperion differs by 27 bytes of bake noise, so
+  the gated file is kept.
+- Full gate after the wave and the merge (`quality_gate.py`, report written): 230 models, 199 pass; the thirteen pass
+  every hard gate with soft 83.5-100. GLB total against the pre-prompt-35 tree (01f7312b): 123.1 -> 168.3 MiB
+  (+36.7 %), over section 9's 25 %: REBUILD_REPORT proposes vertex quantisation (no model changed for it).
