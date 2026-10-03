@@ -40,7 +40,7 @@ namespace MachineBrigade.Sim.Content
         {
             var w = v.Weapon;
             if (w == null) return false;
-            return w.Indirect || w.MinRange > 0f || w.Projectile == ProjectileKind.Bomb || w.Glides;
+            return w.Indirect || w.Glides;
         }
 
         /// <summary>
@@ -71,6 +71,93 @@ namespace MachineBrigade.Sim.Content
             var cap = (int)MathF.Round(data * SimTunables.Modes.EconomyRules.SupplyPriceScale * catalog.SupplyScale);
             var supply = (int)Math.Floor(cap * (double)SimTunables.Modes.EconomyRules.SupplyPerArmyCap);
             return (data, cap, supply);
+        }
+
+        /// <summary>The round kinds of the interception table (Khac_che chan_*), in its column order.</summary>
+        public static readonly string[] RoundKinds =
+            { "directMissile", "heavyMissile", "drone", "directRocket", "artilleryRocket", "mortarShell", "artilleryShell", "tankShell", "bomb" };
+
+        /// <summary>A weapon's round kind for the interception table ("other": bullets, flames, beams, which nothing takes).</summary>
+        public static string RoundKind(WeaponDef w)
+        {
+            if (w.Beam || w.DamageType == DamageType.Energy) return "other";
+            if (Combat.DamageSystem.IsHeavyMissile(w)) return "heavyMissile";
+            switch (w.Projectile)
+            {
+                case ProjectileKind.Missile: return "directMissile";
+                case ProjectileKind.Drone: return "drone";
+                case ProjectileKind.Rocket: return w.MinRange > 0f ? "artilleryRocket" : "directRocket";
+                case ProjectileKind.Bomb: return "bomb";
+                case ProjectileKind.Shell:
+                    if (!w.Indirect) return "tankShell";
+                    var mortar = (w.Family ?? "").Contains("mortar") || w.Id.Contains("mortar");
+                    return mortar ? "mortarShell" : "artilleryShell";
+                default: return "other";
+            }
+        }
+
+        /// <summary>
+        /// Whether <paramref name="carrier"/>'s protection system may take <paramref name="w"/>'s round at all, by the static
+        /// rules of DamageSystem.TryIntercept (a vehicle's own APS, a point defence, a boss's) and DamageSystem.GunTakes (a gun
+        /// point defence with a burst): reach, interceptors left, smoke, stuns and the rolls are left out.
+        /// <paramref name="shellShare"/>: the share of lobbed shells it takes (1 for the rest).
+        /// </summary>
+        public static bool MayIntercept(VehicleDef carrier, WeaponDef w, out float shellShare)
+        {
+            shellShare = 1f;
+            var a = carrier.Aps;
+            if (a == null) return false;
+            if (a.Burst > 0f)
+            {
+                if (!Combat.DamageSystem.GunTakes(a, w, out var partial)) return false;
+                if (partial) shellShare = a.Shells;
+                return true;
+            }
+            if (w.Beam || w.DamageType == DamageType.Energy || w.Interceptable == false) return false;
+            var kind = w.Projectile;
+            var direct = w.Guided || w.Glides || (kind == ProjectileKind.Rocket && w.MinRange <= 0f);
+            var rocket = kind == ProjectileKind.Rocket;
+            var shell = kind == ProjectileKind.Shell && w.Indirect;
+            var heavy = Combat.DamageSystem.IsHeavyMissile(w);
+            if (!direct && !rocket && !shell && !heavy) return false;
+            var lobbed = kind == ProjectileKind.Drone || w.Glides || (w.MinRange > 0f && kind is ProjectileKind.Rocket or ProjectileKind.Missile);
+            if (a.Heavy && !heavy) return false;
+            if (carrier.InterceptionMode == InterceptionMode.SelfAps && (w.ApsEligible == false || !(direct || kind == ProjectileKind.Drone))) return false;
+            if (!a.Heavy && !direct && rocket && !a.Rockets) return false;
+            if (!a.Heavy && !a.Direct && direct && !lobbed) return false;
+            if (!a.Heavy && !direct && shell)
+            {
+                if (a.Shells <= 0f) return false;
+                shellShare = a.Shells;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// A ground shooter's round flight in seconds over <paramref name="distance"/> (CombatSystem's launch rule: distance /
+        /// speed; a warned round lands no sooner than its warning); bombs from aircraft and salvo timing are left out.
+        /// </summary>
+        public static float FlightSeconds(Catalog catalog, WeaponDef w, float distance)
+        {
+            if (w.ProjectileSpeed <= 0f) return 0f;
+            var travel = distance / w.ProjectileSpeed;
+            if (w.WarnSeconds > travel && catalog.Warnings.Warns(w)) travel = w.WarnSeconds;
+            return travel;
+        }
+
+        /// <summary>
+        /// A vehicle's self-defence (Xe / Thap: tu_ve, so_lan, hoi_tu_ve_s): "aps" (its protection system: interceptors and
+        /// seconds per interceptor), "flare" (charges and the seconds to get one back) or "none".
+        /// </summary>
+        public static (string kind, int charges, float rechargeSeconds) SelfDefence(VehicleDef v)
+        {
+            if (v.Aps is { } aps) return ("aps", aps.Charges, aps.Recharge);
+            SkillDef? flare = null;
+            foreach (var s in v.Skills)
+                if (s.Kind == SkillKind.Flares) flare = s;
+            if (v.FlareCharges > 0) return ("flare", v.FlareCharges, v.FlareRecharge ?? flare?.Cooldown ?? 0f);
+            if (flare != null) return ("flare", 1, flare.Cooldown);
+            return ("none", 0, 0f);
         }
 
         /// <summary>The upkeep (income share kept) at an army value of <paramref name="armyCp"/> against <paramref name="supply"/>.</summary>

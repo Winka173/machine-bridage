@@ -21,7 +21,7 @@ namespace MachineBrigade.Tests
     /// one JSON file for the design document (Tools/docs/build_doc.py). Runs only with the
     /// environment variable MB_EXPORT set to the output path.
     /// </summary>
-    public class ExportGameDoc
+    public partial class ExportGameDoc
     {
         [Test, Category("Export")]
         public void ExportTheGameForTheDesignDocument()
@@ -96,6 +96,8 @@ namespace MachineBrigade.Tests
                     // Full fix L10 (lane C, DECISIONS "Sửa lỗi tổng hợp L9.7/L10 (lane C)"): the warning and munition rules, the
                     // effects by tier and the audio mix, as the code holds them (the design document's sections 10 and C / D).
                     ["fixDoc"] = FixDoc(catalog),
+                    // Balance pack (lane B, §3; ExportGameDoc.Pack.cs): the NEED_CODE_CHECK cells' values from the game's code.
+                    ["balancePack"] = BalancePack(catalog),
                 };
                 File.WriteAllText(path, Json(doc), new UTF8Encoding(false));
             }
