@@ -328,7 +328,102 @@ def _grad_pack(a):
     rest.box((.5, .2, .06), loc=(0, -.35, 1.97), bevel=0)
 
 
+# ============================================================================= command_vehicle (M1130 Stryker CV)
+def command_vehicle(a):
+    """See the module docstring. Runtime: Mount_mg / Muzzle_mg (the commander's 12.7 mm on its riser),
+    Point_fire, Point_exhaust."""
+    R, WD, HX = .38, .3, .82
+    for i, y in enumerate((-1.95, -.85, .6, 1.7)):
+        for s in (-1, 1):
+            K.tread_wheel(a, (s * HX, y, R), R, WD, s, seg=12, nuts=0)
+            K.dust(a, (s * HX, y, .12), radius=.5, k=.22)
+        a.part('Undercarriage', 'Undercarriage').box((2 * HX - .3, .12, .12), loc=(0, y, R), bevel=0)
+        for s in (-1, 1):
+            a.part('Undercarriage', 'Undercarriage').tube([(s * (HX - .2), y, R), (s * .45, y - .25, R + .25)], .045,
+                                                          seg=5)
+    hull = a.part('Hull', 'Team')
+    k.sharp_loft(hull, [[(-.62, -2.45, .42), (.62, -2.45, .42), (.62, 2.7, .42), (-.62, 2.7, .42)],
+                        [(-.98, -2.78, .78), (.98, -2.78, .78), (.98, 2.82, .78), (-.98, 2.82, .78)],
+                        [(-.98, -2.6, 1.0), (.98, -2.6, 1.0), (.98, 2.84, 1.02), (-.98, 2.84, 1.02)],
+                        [(-.84, -1.95, 1.4), (.84, -1.95, 1.4), (.86, 2.8, 1.42), (-.86, 2.8, 1.42)]],
+                 chamfer=.04)
+    # Add-on armour panels on the sides (bolted), the rear ramp outline, the bow's trim plate.
+    arm = a.part('Armor', 'Armor')
+    for s in (-1, 1):
+        for i, y in enumerate((-1.75, -.65, .45, 1.55, 2.4)):
+            K.chamfer_box(arm, (.04, 1.0 if i < 4 else .6, .3), loc=(s * .995, y + (.0 if i < 4 else -.1), .92),
+                          c=.01)
+        K.rivet_line(a.part('Kit_bolts', 'Steel'), (s * 1.02, -2.2, 1.04), (s * 1.02, 2.6, 1.04), (s, 0, 0),
+                     pitch=.45)
+        a.part('Team_band', 'Team').box((.012, 2.4, .1), loc=(s * 1.02, .3, .76), bevel=0)
+    a.part('Ramp_lines', 'Undercarriage').box((1.3, .02, .04), loc=(0, 2.845, .5), bevel=0)
+    for s in (-1, 1):
+        a.part('Ramp_lines', 'Undercarriage').box((.04, .02, .85), loc=(s * .63, 2.85, .9), bevel=0)
+        K.lamp(a, (s * .8, -2.72, .98), (0, -1, .2), r=.06, guard=True)
+        a.part('Light_rims', 'Armor').box((.18, .04, .14), loc=(s * .8, -2.7, .98), bevel=0)
+        a.part('Tail_lamps', 'LavaGlow').box((.1, .02, .07), loc=(s * .85, 2.86, 1.2), bevel=0)
+        K.tow_hook(a.part('Kit_tow', 'Steel'), (s * .5, -2.82, .62), facing=(0, -1, 0), size=.09)
+    a.part('Trim_plate', 'Armor').box((1.5, .06, .3), loc=(0, -2.72, .7), rot=(.5, 0, 0), bevel=0)
+    _cv_roof(a)
+    a.pivot('Point_fire', (0, .8, 1.6))
+    a.pivot('Point_exhaust', (-.7, 2.85, .7))
+    k.clean(a)
+
+
+def _cv_roof(a):
+    """The roof: the driver's hatch with three periscopes and vision blocks, the commander's cupola with its vision
+    ring and the 12.7 mm on its riser, the exhaust louvres on the right front, the folded telescopic mast in its
+    cradles along the roof with the sensor head, the SATCOM dish, a row of whip antennas on their bases, the tent
+    rolled on the rear deck under straps, the beacons, stowage bins."""
+    # Driver (front left): hatch, three periscope hoods with glass.
+    hc = (-.45, -1.75, 1.4)
+    k.ring(a.part('Hatch_fittings', 'Steel'), [(.22, 0), (.27, 0), (.27, .05), (.22, .05)], loc=hc, seg=10)
+    k.lathe(a.part('Hatches', 'Armor'), [(0, .07), (.2, .065), (.24, .04), (.24, .02)], loc=hc, seg=10)
+    for dx in (-.2, 0, .2):
+        a.part('Periscope_hoods', 'Armor').box((.14, .1, .07), loc=(-.45 + dx, -2.03, 1.41), rot=(-.3, 0, 0), bevel=0)
+        a.part('Periscope', 'Glass').box((.11, .01, .04), loc=(-.45 + dx, -2.085, 1.405), rot=(-.3, 0, 0), bevel=0)
+    # Exhaust louvres (the engine is front right).
+    K.grille(a, (.45, -1.6, 1.405), .55, .5, facing=(0, 0, 1), slats=5, frame_mat='Armor')
+    a.part('Exhaust_louvres', 'Armor').box((.04, .5, .25), loc=(.99, -1.25, 1.15), bevel=0)
+    a.part('Exhaust', 'Undercarriage').box((.02, .4, .15), loc=(1.0, -1.25, 1.15), bevel=0)
+    # Commander's cupola with its vision blocks, the gun on the riser (roof-gun rule).
+    k.ring(a.part('Hatch_fittings', 'Steel'), [(.3, 0), (.36, 0), (.36, .06), (.3, .06)], loc=(.5, -1.4, 1.4),
+           seg=12)
+    for i in range(6):
+        u = i * TAU / 6 + .26
+        a.part('Glass', 'Glass').box((.07, .015, .04), loc=(.5 + math.cos(u) * .34, -1.4 + math.sin(u) * .34, 1.43),
+                                     rot=(0, 0, u + R90), bevel=0)
+    K.pintle_mg(a, None, (.5, -1.4, 1.46), length=.7, post=.06, shield=True)
+    # The telescopic mast folded along the roof's left in two cradles, its sensor head forward.
+    mast = a.part('Mast', 'Steel')
+    for j, r in enumerate((.09, .07, .05)):
+        mast.cyl(r, 2.6 - j * .3, loc=(-.55, .9 - j * .1, 1.6), rot=K.FORWARD, seg=8, bevel=0)
+    for y in (-.2, 1.9):
+        a.part('Mast', 'Armor').box((.3, .1, .2), loc=(-.55, y, 1.5), bevel=0)
+    k.lathe(a.part('Mast', 'Armor'), [(.16, -.1), (.16, .12), (0, .14)], loc=(-.55, 2.3, 1.6), rot=K.BACKWARD, seg=10)
+    K.chamfer_box(a.part('Sensor', 'Armor'), (.26, .3, .24), loc=(-.55, -.55, 1.62), c=.03)
+    a.part('Glass', 'Glass').box((.14, .01, .1), loc=(-.55, -.705, 1.64), bevel=0)
+    # The SATCOM dish on its pedestal, antenna row along the right edge.
+    K.dish(a.part('Dish', 'Medical'), a.part('Dish', 'Steel'), (.45, .3, 1.75), r=.28, normal=(0, -.4, 1), seg=12)
+    a.part('Dish', 'Steel').cyl(.04, .3, loc=(.45, .3, 1.55), seg=6, bevel=0)
+    ant = a.part('Antenna', 'Steel')
+    for j, (x, y, h) in enumerate(((.78, .9, .65), (.78, 1.45, .7), (.78, 2.0, .6), (-.8, 2.5, .68), (.2, 2.55, .55))):
+        ant.cyl(.05, .06, loc=(x, y, 1.45), seg=6, bevel=0)
+        K.whip_antenna(ant, (x, y, 1.48), h=h, lean=.05)
+    # The command tent rolled across the rear deck under its straps, beacons, bins.
+    a.part('Tent', 'Canvas').cyl(.16, 1.5, loc=(.0, 2.45, 1.58), rot=(0, R90, 0), seg=10, bevel=.02)
+    for x in (-.5, .5):
+        a.part('Straps', 'Undercarriage').box((.05, .34, .34), loc=(x, 2.45, 1.58), bevel=0)
+    for x in (-.8, .8):
+        a.part('Beacons', 'TeamGlow').cyl(.05, .08, loc=(x, 2.7, 1.47), seg=8, bevel=0)
+        a.part('Beacons', 'Armor').cyl(.06, .03, loc=(x, 2.7, 1.42), seg=8, bevel=0)
+    K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.4, .7, .25), (.4, 1.3, 1.53), bands=1)
+    K.jerrycan(a.part('Stowage', 'Armor'), (-.85, 2.9, .85), rot=(0, 0, R90))
+    a.part('Team_band', 'Team').box((1.2, .6, .012), loc=(0, .3, 1.415), bevel=0)
+
+
 BUILDERS = {
     'mlrs': (mlrs, dict(ao_distance=.5, grime_height=.5)),
     'grad_truck': (grad_truck, dict(ao_distance=.6, grime_height=.55, ao_strength=.65)),
+    'command_vehicle': (command_vehicle, dict(ao_distance=.5, grime_height=.5, ao_strength=.65)),
 }

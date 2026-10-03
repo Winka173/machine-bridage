@@ -373,7 +373,7 @@
   },
   "command_vehicle": {
     "file": "command_vehicle.glb",
-    "triangles": 3084
+    "triangles": 6096
   },
   "container": {
     "file": "container.glb",
