@@ -405,6 +405,15 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The neutral bombing raid of the battle events: a heavy bomber rather than the strike jet.</summary>
         private static bool IsBomberRaid(SupportDef support) => support.Id == "air_raid";
 
+        /// <summary>
+        /// Balance pack (lane B): the height the view drops a support's bombs from (Bom_don_vi.do_cao_tha_m), in metres: a
+        /// bombing run's jet or bomber (ScheduleBombs); 0 when no aircraft drops them (a glide bomb or cruise missile flies
+        /// in as a missile, LaunchCruise; the rest have no aircraft pass). The simulation lands bombs on its own schedule
+        /// (StrikeSystem), so this height is the picture only.
+        /// </summary>
+        internal static float ReleaseAltitude(SupportDef support) =>
+            support.Kind == SupportKind.Airstrike ? IsBomberRaid(support) ? BomberAltitude : JetAltitude : 0f;
+
         /// <summary>The MOAB: dropped from a transport, not flown in like the cruise missile it shares its kind with.</summary>
         private static bool IsMoab(SupportDef support) => support.Id == "moab";
 

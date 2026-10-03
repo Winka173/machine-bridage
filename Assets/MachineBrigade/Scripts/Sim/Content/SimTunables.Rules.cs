@@ -121,8 +121,111 @@ namespace MachineBrigade.Sim.Content
             }
         }
 
+        // ------------------------------------------------------------------ balance pack pass 2 (lane B, rule B)
+        public static partial class Weapons
+        {
+            /// <summary>The blast falloff of a plain splash (DamageSystem.ApplyFalloff; was DamageSystem.EdgeFalloff).</summary>
+            public static class DamageRules
+            {
+                /// <summary>Damage at the rim of a one-layer blast, relative to the centre (support strikes, plain splash).</summary>
+                public static float EdgeFalloff = 0.25f;
+            }
+
+            /// <summary>What an enemy jammer does (CombatSystem.Launch, StrikeSystem.Launch, BossSystem.BigAttacks swarm).</summary>
+            public static class JamRules
+            {
+                /// <summary>A jammed (or lock-lost) guided round lands this far off its mark at least (m; was 5f).</summary>
+                public static float GuidedMissMin = 5f;
+
+                /// <summary>Plus up to this much more, rolled (m; was 6f).</summary>
+                public static float GuidedMissSpread = 6f;
+
+                /// <summary>Fire support called into an enemy jammer's bubble lands this many times as wide (x; was 2.2f).</summary>
+                public static float StrikeScatter = 2.2f;
+
+                /// <summary>The chance a boss's swarm drone over an enemy jammer loses its target (was 0.5).</summary>
+                public static double SwarmJamChance = 0.5;
+            }
+        }
+
+        public static partial class Vehicles
+        {
+            /// <summary>The Trophy APS module (GearSystem.Equip, prompt 29 B2-APS-trophy D7).</summary>
+            public static class TrophyRules
+            {
+                /// <summary>RETROFIT_ELIGIBLE: the fitted APS's radius when the vehicle has none of its own (m).</summary>
+                public static float Radius = 20f;
+
+                /// <summary>RETROFIT_ELIGIBLE: its interceptors.</summary>
+                public static int Charges = 2;
+
+                /// <summary>RETROFIT_ELIGIBLE: seconds to get one interceptor back.</summary>
+                public static float Recharge = 20f;
+
+                /// <summary>BUILT_IN: interceptors added to its own APS.</summary>
+                public static int BuiltInExtraCharges = 1;
+
+                /// <summary>BUILT_IN: its own recharge times this.</summary>
+                public static float BuiltInRechargeScale = 0.75f;
+            }
+        }
+
+        public static partial class Modes
+        {
+            /// <summary>Defend and its endless run: the wave curve's numbers by difficulty (ModeSessions DefendSession.Build).</summary>
+            public static class DefendWaves
+            {
+                /// <summary>Vehicles in wave 1 (Easy / Normal / Hard and above).</summary>
+                public static int StartEasy = 2, StartNormal = 3, StartHard = 4;
+
+                /// <summary>The endless run's wave 1.</summary>
+                public static int EndlessStartEasy = 4, EndlessStartNormal = 5, EndlessStartHard = 6;
+
+                /// <summary>Vehicles added per wave (Normal and Easy / Hard and above / endless).</summary>
+                public static float Growth = 1.8f, GrowthHard = 2.0f, EndlessGrowth = 1.2f;
+
+                /// <summary>Endless: each wave this share bigger than the last.</summary>
+                public static float EndlessCompound = 0.06f;
+
+                /// <summary>The most vehicles in one wave.</summary>
+                public static int WaveMax = 36;
+            }
+
+            /// <summary>The waves' size factor by the reference base (BaseStrength.WaveScale).</summary>
+            public static class BaseStrengthRules
+            {
+                /// <summary>Wave scale = clamp((score / 100) ^ exponent, min, max).</summary>
+                public static float WaveScaleExponent = 0.75f, WaveScaleMin = 0.75f, WaveScaleMax = 2.5f;
+            }
+        }
+
         private static readonly Entry[] RuleEntries =
         {
+            new Entry("weapons.damageRules.edgeFalloff", "share", () => Weapons.DamageRules.EdgeFalloff, v => Weapons.DamageRules.EdgeFalloff = (float)v),
+            new Entry("weapons.jamRules.guidedMissMin", "m", () => Weapons.JamRules.GuidedMissMin, v => Weapons.JamRules.GuidedMissMin = (float)v),
+            new Entry("weapons.jamRules.guidedMissSpread", "m", () => Weapons.JamRules.GuidedMissSpread, v => Weapons.JamRules.GuidedMissSpread = (float)v),
+            new Entry("weapons.jamRules.strikeScatter", "x", () => Weapons.JamRules.StrikeScatter, v => Weapons.JamRules.StrikeScatter = (float)v),
+            new Entry("weapons.jamRules.swarmJamChance", "share", () => Weapons.JamRules.SwarmJamChance, v => Weapons.JamRules.SwarmJamChance = v),
+            new Entry("vehicles.trophyRules.radius", "m", () => Vehicles.TrophyRules.Radius, v => Vehicles.TrophyRules.Radius = (float)v),
+            new Entry("vehicles.trophyRules.charges", "count", () => Vehicles.TrophyRules.Charges, v => Vehicles.TrophyRules.Charges = (int)System.Math.Round(v)),
+            new Entry("vehicles.trophyRules.recharge", "s", () => Vehicles.TrophyRules.Recharge, v => Vehicles.TrophyRules.Recharge = (float)v),
+            new Entry("vehicles.trophyRules.builtInExtraCharges", "count", () => Vehicles.TrophyRules.BuiltInExtraCharges,
+                v => Vehicles.TrophyRules.BuiltInExtraCharges = (int)System.Math.Round(v)),
+            new Entry("vehicles.trophyRules.builtInRechargeScale", "x", () => Vehicles.TrophyRules.BuiltInRechargeScale, v => Vehicles.TrophyRules.BuiltInRechargeScale = (float)v),
+            new Entry("modes.defendWaves.startEasy", "count", () => Modes.DefendWaves.StartEasy, v => Modes.DefendWaves.StartEasy = (int)System.Math.Round(v)),
+            new Entry("modes.defendWaves.startNormal", "count", () => Modes.DefendWaves.StartNormal, v => Modes.DefendWaves.StartNormal = (int)System.Math.Round(v)),
+            new Entry("modes.defendWaves.startHard", "count", () => Modes.DefendWaves.StartHard, v => Modes.DefendWaves.StartHard = (int)System.Math.Round(v)),
+            new Entry("modes.defendWaves.endlessStartEasy", "count", () => Modes.DefendWaves.EndlessStartEasy, v => Modes.DefendWaves.EndlessStartEasy = (int)System.Math.Round(v)),
+            new Entry("modes.defendWaves.endlessStartNormal", "count", () => Modes.DefendWaves.EndlessStartNormal, v => Modes.DefendWaves.EndlessStartNormal = (int)System.Math.Round(v)),
+            new Entry("modes.defendWaves.endlessStartHard", "count", () => Modes.DefendWaves.EndlessStartHard, v => Modes.DefendWaves.EndlessStartHard = (int)System.Math.Round(v)),
+            new Entry("modes.defendWaves.growth", "count/wave", () => Modes.DefendWaves.Growth, v => Modes.DefendWaves.Growth = (float)v),
+            new Entry("modes.defendWaves.growthHard", "count/wave", () => Modes.DefendWaves.GrowthHard, v => Modes.DefendWaves.GrowthHard = (float)v),
+            new Entry("modes.defendWaves.endlessGrowth", "count/wave", () => Modes.DefendWaves.EndlessGrowth, v => Modes.DefendWaves.EndlessGrowth = (float)v),
+            new Entry("modes.defendWaves.endlessCompound", "share/wave", () => Modes.DefendWaves.EndlessCompound, v => Modes.DefendWaves.EndlessCompound = (float)v),
+            new Entry("modes.defendWaves.waveMax", "count", () => Modes.DefendWaves.WaveMax, v => Modes.DefendWaves.WaveMax = (int)System.Math.Round(v)),
+            new Entry("modes.baseStrengthRules.waveScaleExponent", "x", () => Modes.BaseStrengthRules.WaveScaleExponent, v => Modes.BaseStrengthRules.WaveScaleExponent = (float)v),
+            new Entry("modes.baseStrengthRules.waveScaleMin", "x", () => Modes.BaseStrengthRules.WaveScaleMin, v => Modes.BaseStrengthRules.WaveScaleMin = (float)v),
+            new Entry("modes.baseStrengthRules.waveScaleMax", "x", () => Modes.BaseStrengthRules.WaveScaleMax, v => Modes.BaseStrengthRules.WaveScaleMax = (float)v),
             new Entry("modes.economyRules.supplyPerArmyCap", "x", () => Modes.EconomyRules.SupplyPerArmyCap, v => Modes.EconomyRules.SupplyPerArmyCap = (float)v),
             new Entry("modes.economyRules.upkeepSlope", "share", () => Modes.EconomyRules.UpkeepSlope, v => Modes.EconomyRules.UpkeepSlope = (float)v),
             new Entry("modes.economyRules.upkeepFloor", "share", () => Modes.EconomyRules.UpkeepFloor, v => Modes.EconomyRules.UpkeepFloor = (float)v),

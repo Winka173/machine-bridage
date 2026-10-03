@@ -190,6 +190,7 @@ def restructure(ctx, game: dict | None = None):
     _classify_markers(ctx)
     _scrub_cells(ctx)
     ctx.game_filled = 0
+    ctx.game = game  # add_bom_sheets fills the bomb sheets' cells from it (they join file 01 after the formulas)
     if game:
         from . import gamefill
         ctx.game_filled = gamefill.fill(ctx, game)
@@ -364,6 +365,10 @@ def add_bom_sheets(ctx):
             for h in data_cols:
                 v = d.get(h)
                 r.values[h] = scrub_str(v) if isinstance(v, str) else v
+    game = getattr(ctx, "game", None)
+    if game:
+        from . import gamefill
+        ctx.game_filled = getattr(ctx, "game_filled", 0) + gamefill.fill_late(ctx, game)
 
 
 def add_map_summary(ctx):

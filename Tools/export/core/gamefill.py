@@ -2,7 +2,8 @@
 
 ExportGameDoc (lane B) writes game.json with a top-level `balancePack`: one key per sheet it answers (tunables, interception,
 roundGroups, secondRounds, flaresPerRelease, weaponFlight, vehicles, openingSquads, aircraftShotBand, boss, towers, economy,
-dialogue, missions, matchEnd, cutscene, audio, wrecks, models, previews, defaultSettings). Each handler below maps one key to the
+dialogue, missions, matchEnd, cutscene, audio, wrecks, models, previews, defaultSettings, strikes, defenceWaves). The bomb sheets
+(Bom_*) join file 01 after the formulas run, so their cells are filled by fill_late (pack.add_bom_sheets). Each handler below maps one key to the
 cells it answers, by sheet and row id; a cell the game.json has no value for stays NEED_CODE_CHECK (listed in _qa and
 SELF_CHECK.md), a cell the game says has no meaning becomes KHONG_AP_DUNG with the reason in Schema.ly_do_khong_ap_dung.
 The six sheets that were one marker row (settings, cutscene moments, match end, wrecks, previews, mixer) become real sheets.
@@ -77,6 +78,24 @@ def h_interception(f: Filler):
         for k in kinds:
             f.put(fid, sh, car["id"], f"chan_{k}", (car.get("blocks") or {}).get(k, ""))
     cols = [c[len("chan_"):] for c in sh.cols if c.startswith("chan_")]
+    upgrades = {u["id"]: u for u in ic.get("upgrades") or []}
+    retrofit = [rid for rid in sh.rows if rid not in have and rid in upgrades]
+    if retrofit:
+        # Only flares and APS are a vehicle's self-defence: a RETROFIT_ELIGIBLE vehicle has APS only with the Trophy module.
+        # chan_* is the vehicle as it comes (no APS: nothing blocked); the upgrade's own blocks go in chan_khi_nang_cap.
+        sh.col("aps_nang_cap", meaning="APS có được nhờ nâng cấp (mô-đun đặc biệt Trophy, GearSystem.TrophyAps): bán kính, số đạn chặn, "
+                                       "giây hồi một đạn chặn; trống: không có nâng cấp APS", auto=False)
+        sh.col("chan_khi_nang_cap", meaning="chặn được gì khi lắp nâng cấp APS (loại đạn:co/khong/mot_phan); các cột chan_* là xe "
+                                            "khi chưa lắp", auto=False)
+        for rid in retrofit:
+            u = upgrades[rid]
+            row = sh.rows[rid]
+            for k in cols:
+                f.put(fid, sh, rid, f"chan_{k}", "khong")
+            row.values["aps_nang_cap"] = f"{u.get('module', '')}: r {u.get('radius', '')} m, {u.get('charges', '')} đạn chặn, " \
+                                         f"{u.get('recharge', '')} s/đạn chặn ({u.get('capability', '')})"
+            blocks = u.get("blocks") or {}
+            row.values["chan_khi_nang_cap"] = ";".join(f"{k}:{blocks.get(k, 'khong')}" for k in cols)
     for rid, row in sh.rows.items():
         for k in cols:
             if k not in kinds and rid in have:
@@ -93,10 +112,25 @@ def h_round_groups(f: Filler):
         return
     rules = rg.get("rules") or {}
     groups = {g["kind"]: g for g in rg.get("groups") or []}
-    # the sheet counts weapons by projectile kind, the game groups them by what intercepts them
+    per_row = {g["projectile"]: g for g in rg.get("projectileGroups") or []}
+    # the sheet counts weapons by projectile kind; the game's projectileGroups are those rows exactly. An older game.json has
+    # only the interception groups: then a row is the weighted mean of the groups it spans
     which = {"Bomb": ["bomb"], "Bullet": ["other"], "Flame": ["other"], "Drone": ["drone"],
              "Missile": ["directMissile", "heavyMissile"], "Rocket": ["directRocket", "artilleryRocket"],
              "Shell": ["mortarShell", "artilleryShell", "tankShell"]}
+    if per_row:
+        which = {pid: [pid] for pid in per_row}
+        groups = per_row
+        for c, m in (("cach_nham", "cách nhắm của nhóm (tỷ lệ vũ khí dẫn đường / đón đầu, đếm trên chính dạng đạn này)"),
+                     ("co_canh_bao", "tỷ lệ vũ khí của dạng đạn này có vòng cảnh báo"),
+                     ("thoi_gian_bay_toi_da_s", "thời gian bay tới tầm lâu nhất trong các vũ khí của dạng đạn này")):
+            if c in sh.cols:
+                sh.cols[c].meaning = m
+    if "tuong_tac_gay_nhieu" in sh.cols:
+        sh.cols["tuong_tac_gay_nhieu"].meaning = (
+            "tương tác với xe gây nhiễu địch (CombatSystem.Launch): đạn dẫn đường (tên lửa, drone) bắn từ hoặc nhắm vào điểm trong "
+            "vòng nhiễu thì trượt; trừ vũ khí jamProof và tướng có ưu thế drone; hỏa lực hỗ trợ gọi vào vòng nhiễu rơi rộng "
+            f"×{rules.get('jamStrikeScatter', '')}; drone bầy của boss mất mục tiêu với xác suất {rules.get('jamSwarmChance', '')}")
     for pid, names in which.items():
         gs = [groups[n] for n in names if n in groups]
         w = sum(g["weapons"] for g in gs)
@@ -121,6 +155,12 @@ def h_round_groups(f: Filler):
                                                       f"{rules.get('flareDecoyChance', '')})")
         f.put(fid, sh, pid, "tuong_tac_aps", f"APS chặn được {pct(mean('apsEligible'))}, CIWS {pct(mean('ciwsEligible'))} "
                                               f"vũ khí")
+        if all("jamTakes" in g for g in gs):
+            j = mean("jamTakes")
+            miss = f"trượt {_num(rules.get('jamMissMinM'), 0)}–{_num(rules.get('jamMissMinM'), rules.get('jamMissSpreadM'))} m"
+            f.put(fid, sh, pid, "tuong_tac_gay_nhieu",
+                  "không bị nhiễu (không phải đạn dẫn đường)" if j < 0.001 else
+                  f"bị nhiễu {pct(j)} vũ khí (đạn dẫn đường trong vòng nhiễu địch: {miss})")
 
 
 def h_second_rounds(f: Filler):
@@ -243,9 +283,25 @@ def h_boss(f: Filler):
     if comp.get("status") == KHONG_AP_DUNG:
         f.not_applicable("Boss_dps", "cach_bu", comp.get("reason", ""))
     fh, hs = f.sheet("Sanhunt")
+    hunt = b.get("hunt") or {}
     if hs is not None:
-        for e in (b.get("hunt") or {}).get("bosses") or []:
+        for e in hunt.get("bosses") or []:
             f.put(fh, hs, e["id"], "phong_khong", bool(e.get("airDefence")))
+    weeks = hunt.get("weeks") or []
+    if hs is not None and weeks:
+        year = hunt.get("weeksYear", "")
+        seen = collections.defaultdict(list)  # boss -> [(week number, place in the run)]
+        for w in weeks:
+            for place, bid in enumerate(w.get("run") or [], 1):
+                seen[bid].append((int(w["week"]) % 100, place))
+        for rid in hs.rows:
+            got = seen.get(rid, [])
+            f.put(fh, hs, rid, "tuan", f"{len(got)}/{len(weeks)} tuần" + (": " + ",".join(f"W{wk:02d}#{pl}" for wk, pl in got)
+                                                                       if got else ""))
+        if "tuan" in hs.cols:
+            hs.cols["tuan"].meaning = (
+                f"boss có trong Săn trùm tuần nào của năm ISO {year} (BossHunts.Weekly(năm×100+tuần), cùng kết quả mọi máy): "
+                "số tuần / tổng số tuần, rồi từng tuần Wnn#vị trí trong danh sách 10 boss của tuần")
 
 
 def h_economy(f: Filler):
@@ -285,15 +341,20 @@ def h_dialogue(f: Filler):
     mv = d.get("maxVisibleLines") or {}
     worst = max((mv.get(k, {}).get("maxLinesVi", 0) for k in ("raised", "normal")), default=0)
     worst = max([worst] + [mv.get(k, {}).get("maxLinesEn", 0) for k in ("raised", "normal")])
-    if th is not None and worst:
+    per_line = mv.get("perLine") or {}
+    if th is not None and (worst or per_line):
         for rid, row in th.rows.items():
-            f.put(fl, th, rid, "so_dong_hien_thi_toi_da", worst)
+            key = row.values.get("khoa_loc") or rid
+            f.put(fl, th, rid, "so_dong_hien_thi_toi_da", per_line.get(key, per_line.get(rid, worst)) if per_line else worst)
             sp = row.values.get("nguoi_noi")
             if sp in portrait:
                 f.put(fl, th, rid, "chan_dung", portrait[sp])
         th.cols["so_dong_hien_thi_toi_da"].meaning = (
+            f"số dòng câu thoại này chiếm (tiếng Việt hoặc Anh, lấy số lớn) ở dải hẹp nhất, cỡ chữ {mv.get('fontSizePx', '')} px, "
+            f"có chân dung ({mv.get('method', '')})" if per_line else
             f"số dòng tối đa của dòng thoại tệ nhất ({mv.get('raised', {}).get('worstKey', '')}) ở dải hẹp nhất, cỡ chữ "
-            f"{mv.get('fontSizePx', '')} px, có chân dung ({mv.get('method', '')}); cùng một số cho mọi dòng")
+            f"{mv.get('fontSizePx', '')} px, có chân dung ({mv.get('method', '')}); cùng một số cho mọi dòng (game.json cũ không có "
+            "số từng dòng)")
 
 
 def h_missions(f: Filler):
@@ -305,6 +366,88 @@ def h_missions(f: Filler):
     reason = next((m["deckGoal"] for m in ms if str(m.get("deckGoal", "")).startswith(KHONG_AP_DUNG)), "")
     if reason:
         f.not_applicable("Bo_bai_game", "muc_tieu_goc_giu", reason.split(":", 1)[-1].strip())
+
+
+def h_defence_waves(f: Filler):
+    d = f.bp.get("defenceWaves") or {}
+    fid, sh = f.sheet("Dot_phong_thu")
+    if sh is None or not d:
+        return
+    for lv in d.get("levels") or []:
+        rid = f"hq{lv['level']}"
+        f.put(fid, sh, rid, "he_so_do_kho", round(float(lv.get("waveScale", 0)), 4))
+        waves = (lv.get("waves") or {}).get("Normal") or []
+        f.put(fid, sh, rid, "duong_cong_dot", ";".join(str(n) for n in waves))
+    if "he_so_do_kho" in sh.cols:
+        sh.cols["he_so_do_kho"].meaning = (
+            "hệ số cỡ đợt của Phòng thủ theo căn cứ tham chiếu của cấp HQ (BaseStrength.WaveScale(ReferenceScore)): "
+            "clamp((điểm / 100)^mũ, min, max), tham số ở tunables modes.baseStrengthRules; thu nhập bên tấn công × căn bậc hai của nó")
+    if "duong_cong_dot" in sh.cols:
+        sh.cols["duong_cong_dot"].meaning = (
+            f"số xe đợt 1..{d.get('waveCount', '')} ở Thường (SiegeMode.WaveSize: min(trần, round((đầu + tăng × (n-1)) × hệ số))); "
+            "số của Dễ / Khó ở game.json balancePack.defenceWaves, tham số ở tunables modes.defendWaves")
+
+
+def h_bomb_sheets(f: Filler):
+    """Bom_vu_khi / Bom_canh_bao / Bom_don_vi (added after the formulas: fill_late)."""
+    st = f.bp.get("strikes") or {}
+    if not st:
+        return
+    sup = {s["id"]: s for s in st.get("supports") or []}
+    big = {b["id"]: b for b in st.get("bigAttacks") or []}
+    car = {c["id"]: c for c in st.get("carriers") or []}
+
+    def edge(rid):
+        if rid in sup:
+            return sup[rid].get("edgeRadius", 0)
+        strikes = (big.get(rid) or {}).get("strikes") or []
+        return round(float(strikes[0].get("edgeRadius", 0)), 3) if strikes else None
+
+    for base, col in (("Bom_vu_khi", "ria_m"), ("Bom_canh_bao", "ban_kinh_ria_m")):
+        fid, sh = f.sheet(base)
+        if sh is None:
+            continue
+        for rid in sh.rows:
+            e = edge(rid)
+            if e is not None:
+                f.put(fid, sh, rid, col, e)
+        if col in sh.cols:
+            sh.cols[col].meaning = (
+                "bán kính rìa nổ (lớp ngoài, ăn edgeShare sát thương). Thẻ hỗ trợ: 0, nổ một lớp, sát thương giảm dần tới "
+                "rimShare ở mép (DamageSystem.Splash, tunables weapons.damageRules.edgeFalloff); siêu vũ khí boss: BigStrikeDef.EdgeRadius "
+                "(gấp đôi lõi, tối đa 20 m)")
+    fid, sh = f.sheet("Bom_vu_khi")
+    if sh is not None:
+        for rid in sh.rows:
+            if rid in sup:
+                f.put(fid, sh, rid, "loai_sat_thuong", sup[rid].get("type", ""))
+    fid, sh = f.sheet("Bom_don_vi")
+    if sh is None:
+        return
+    no_drop, no_rearm = False, False
+    for rid in sh.rows:
+        if rid in sup:
+            alt = sup[rid].get("releaseAltitude", 0) or 0
+            if f.put(fid, sh, rid, "do_cao_tha_m", alt if alt > 0 else KHONG_AP_DUNG) and not alt > 0:
+                no_drop = True
+        c = car.get(rid)
+        if c is not None:
+            if f.put(fid, sh, rid, "nap_lai_s", c.get("rearmSeconds", "") if c.get("loaded") else KHONG_AP_DUNG) and not c.get("loaded"):
+                no_rearm = True
+    if no_drop:
+        f.ctx.kad[(fid, sh.name, "do_cao_tha_m")] = scrub_str(
+            "thẻ hỗ trợ không có máy bay thả bom: bom lượn bay tới như tên lửa hành trình (StrikeEffects.LaunchCruise), bom con chống "
+            "tăng (Homing) rơi thẳng lên xe; độ cao của thẻ ném bom là hình (StrikeEffects.ReleaseAltitude), mô phỏng không dùng")
+    if no_rearm:
+        f.ctx.kad[(fid, sh.name, "nap_lai_s")] = scrub_str(
+            "boss không có kho bom (VehicleDef.LoadOf = 0 với boss): không về nạp, bắn theo thời gian nạp của vũ khí (cooldown)")
+
+
+def _num(a, b) -> str:
+    try:
+        return f"{float(a) + float(b):g}"
+    except (TypeError, ValueError):
+        return ""
 
 
 def h_models(f: Filler):
@@ -378,23 +521,34 @@ def _kind(v) -> str:
 
 
 HANDLERS = [h_interception, h_round_groups, h_second_rounds, h_flares, h_ripple, h_weapon_flight, h_vehicles, h_towers, h_opening,
-            h_aircraft_band, h_boss, h_economy, h_dialogue, h_missions, h_models, h_default_settings, h_cutscene,
+            h_aircraft_band, h_boss, h_economy, h_dialogue, h_missions, h_defence_waves, h_models, h_default_settings, h_cutscene,
             h_match_end, h_wrecks, h_previews, h_audio]
+LATE_HANDLERS = [h_bomb_sheets]  # sheets added after the formulas (pack.add_bom_sheets)
 
 
 def fill(ctx, game: dict) -> int:
+    return _run(ctx, game, HANDLERS, report_errors=True)
+
+
+def fill_late(ctx, game: dict) -> int:
+    """The bomb sheets' cells (they join 01_chien_dau after the formulas run)."""
+    return _run(ctx, game, LATE_HANDLERS, report_errors=False)
+
+
+def _run(ctx, game: dict, handlers, report_errors: bool) -> int:
     bp = game.get("balancePack") or {}
     f = Filler(ctx, bp)
     errors = []
-    for h in HANDLERS:
+    for h in handlers:
         try:
             h(f)
         except (KeyError, TypeError, ValueError) as e:  # a handler the game.json does not fit: its cells stay NEED_CODE_CHECK
             errors.append(f"{h.__name__}: {type(e).__name__} {e}")
-    for k, v in bp.items():
-        if isinstance(v, dict) and "error" in v:
-            errors.append(f"game.json balancePack.{k}: {v['error']}")
+    if report_errors:
+        for k, v in bp.items():
+            if isinstance(v, dict) and "error" in v:
+                errors.append(f"game.json balancePack.{k}: {v['error']}")
     for e in errors:
         ctx.issue("gamefill: " + e)
-    ctx.game_not_applicable = f.kad
+    ctx.game_not_applicable = getattr(ctx, "game_not_applicable", 0) + f.kad if not report_errors else f.kad
     return f.filled

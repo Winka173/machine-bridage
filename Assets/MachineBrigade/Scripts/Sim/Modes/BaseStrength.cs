@@ -99,8 +99,10 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>
         /// How much bigger the Defend and Endless waves come against a base of this score: the score's
         /// share of the 100 mark to the power 0.75, between 0.75 and 2.5 (a base twice the mark faces
-        /// waves 1.7 times the size; a bare HQ about three quarters).
+        /// waves 1.7 times the size; a bare HQ about three quarters). Tunables modes.baseStrengthRules.
         /// </summary>
-        public static float WaveScale(float score) => Math.Clamp(MathF.Pow(MathF.Max(0.01f, score / 100f), 0.75f), 0.75f, 2.5f);
+        public static float WaveScale(float score) =>
+            Math.Clamp(MathF.Pow(MathF.Max(0.01f, score / 100f), SimTunables.Modes.BaseStrengthRules.WaveScaleExponent),
+                SimTunables.Modes.BaseStrengthRules.WaveScaleMin, SimTunables.Modes.BaseStrengthRules.WaveScaleMax);
     }
 }

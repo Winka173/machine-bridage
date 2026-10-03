@@ -1141,7 +1141,7 @@ namespace MachineBrigade.Sim.Bosses
                 if (st.Fire is { } fire) Burn(boss, f.To, fire, default, now);
                 return;
             }
-            var jammed = _world.Abilities.Jammed(f.To, boss.Team) && _world.Random.NextDouble() < 0.5;
+            var jammed = _world.Abilities.Jammed(f.To, boss.Team) && _world.Random.NextDouble() < global::MachineBrigade.Sim.Content.SimTunables.Weapons.JamRules.SwarmJamChance;
             Vehicle? target = null;
             if (!jammed && f.Target.IsValid && _world.TryGetVehicle(f.Target, out var t) && t.IsAlive && Vector2.Distance(t.Position, f.To) < 8f) target = t;
             if (!jammed && target == null)

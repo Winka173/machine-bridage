@@ -702,7 +702,9 @@ namespace MachineBrigade.Game.Match
                 LineDamage = _endless ? new[] { 1.05f, 1.15f, 1.25f } : new[] { 1.3f, 1.1f, 1.2f },
                 // Swarms that grow in numbers, not heavier (up to the ceiling of attackers alive).
                 WaveRoster = Available(world, Swarm), WaveHeavy = Available(world, Heavy),
-                WaveStart = _endless ? (hard ? 6 : easy ? 4 : 5) : hard ? 4 : easy ? 2 : 3, WaveGrowth = _endless ? 1.2f : hard ? 2.0f : 1.8f, WaveCompound = _endless ? 0.06f : 0f, WaveMax = 36, HeavyEvery = 3,
+                // Balance pack (lane B, rule B): the wave curve's numbers are tunables modes.defendWaves.
+                WaveStart = SiegeMode.DefendWaveStart(_endless, Difficulty), WaveGrowth = SiegeMode.DefendWaveGrowth(_endless, Difficulty),
+                WaveCompound = SiegeMode.DefendWaveCompound(_endless), WaveMax = SiegeMode.DefendWaveMax, HeavyEvery = 3,
                 EliteFrom = _endless ? 6 : 99, WaveSeed = seed,
                 // Prompt 13 H.7-H.8: the waves by the base they face, drawn against it, with siege breakers.
                 ScaleToBase = true, CounterBase = true, BreachWave = true, WaveBreachers = Available(world, Breachers), BreachFrom = 2, BreachEvery = 3,

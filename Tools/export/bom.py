@@ -356,7 +356,7 @@ def sheet_hanh_vi():
         ("thoi_gian_roi", "BombFall = √(2 × max(4, độ cao) / 40) (BombGravity 40 m/s², theo tỉ lệ bản đồ); bom có cảnh báo (≥ 400 kg) rơi không sớm hơn thời gian cảnh báo.",
          f"{S}:874, {S}:883; {B}:25, {B}:35", "bom rơi tự do"),
         ("ngoi_no", "Không có ngòi riêng: quả bom nổ khi hết thời gian bay tại điểm aim (UpdateProjectiles → Damage.ResolveImpact); bom chùm tung bom con ở đó.",
-         f"{S}: UpdateProjectiles; {C}Combat/DamageSystem (ResolveImpact) {NEED_CODE_CHECK}", "mọi bom"),
+         f"{S}: UpdateProjectiles; {C}Combat/DamageSystem (ResolveImpact)", "mọi bom"),
         ("an_toan_quan_ta", "Lượt 2: dải STICK xét TỪNG quả: điểm rơi (sau lệch) trong stick.safety (+ bán kính xe) quanh xe mặt đất phe ta thì quả đó không thả; các quả khác giữ điểm của mình. Cả dải chỉ bị giữ lại khi mọi quả đều không an toàn. Bom rơi tự do POINT: StickNearOwn như cũ; bom khác: OwnNear quanh mục tiêu, lõi + 3 m.",
          f"{S} CanFire, Launch; {B} StickAllUnsafe, StickNearOwn", "mọi vũ khí bom"),
         ("vong_lai", "Lượt 2: thả quả đầu của dải STICK thì máy bay giữ hướng, tốc độ, độ cao trong stick.straightTime (dải / tốc độ + thời gian rơi + 1 s, và ≥ 40 m sau quả cuối) (StickStraightUntil); sau đó như cũ: kéo ra (RunExtending) khi gần / đã qua mục tiêu, xa hơn max(0,85 × tầm, 2,2 × bán kính quay) thì quay lại. Glide bomber quay đi trước khi tới mục tiêu.",
@@ -401,7 +401,7 @@ def sheet_canh_bao(vk, wids, sup, big, big_strikes, bomb_rows_vk):
                      "dải dọc đường bay từ điểm chọn tới điểm + hướng × length" if line else "vòng tròn quanh điểm chọn",
                      num(s.get("length_m")) if line else "", r3(2 * fnum(s.get("radius_m"))) if line else "",
                      num(s.get("radius_m")) if not line else "", NEED_CODE_CHECK, num(s.get("delay_s")),
-                     f"{C}Strikes/StrikeSystem.cs:165-166 StrikeWarning; :111 Incoming (bán kính max(radius, length/2)); Game/Effects/StrikeEffects.cs (vẽ) {NEED_CODE_CHECK}",
+                     f"{C}Strikes/StrikeSystem.cs:165-166 StrikeWarning; :111 Incoming (bán kính max(radius, length/2)); Game/Effects/StrikeEffects.cs (vẽ)",
                      s.get("nguon", ""), ""])
     for bid, b in big.items():
         st = big_strikes[bid]

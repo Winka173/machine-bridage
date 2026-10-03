@@ -293,8 +293,36 @@ namespace MachineBrigade.Sim.Modes
         }
 
         /// <summary>A wave's size before the endless cap.</summary>
-        private int SizeAt(int wave) =>
-            Math.Min(_rules.WaveMax, (int)MathF.Round((_rules.WaveStart + _rules.WaveGrowth * (wave - 1)) * MathF.Pow(1f + _rules.WaveCompound, wave - 1) * _waveScale));
+        private int SizeAt(int wave) => WaveSize(_rules.WaveStart, _rules.WaveGrowth, _rules.WaveCompound, _rules.WaveMax, _waveScale, wave);
+
+        /// <summary>
+        /// The wave curve: wave <paramref name="wave"/>'s vehicles, min(max, round((start + growth x (wave - 1)) x
+        /// (1 + compound)^(wave - 1) x scale)) (scale: <see cref="BaseStrength.WaveScale"/> of the reference base x the
+        /// progress factor). The export reads it too (balancePack.defenceWaves).
+        /// </summary>
+        public static int WaveSize(int start, float growth, float compound, int max, float scale, int wave) =>
+            Math.Min(max, (int)MathF.Round((start + growth * (wave - 1)) * MathF.Pow(1f + compound, wave - 1) * scale));
+
+        /// <summary>Defend's (or its endless run's) wave 1 by difficulty (tunables modes.defendWaves).</summary>
+        public static int DefendWaveStart(bool endless, global::MachineBrigade.Sim.AI.AiDifficulty difficulty)
+        {
+            var hard = difficulty >= global::MachineBrigade.Sim.AI.AiDifficulty.Hard;
+            var easy = difficulty == global::MachineBrigade.Sim.AI.AiDifficulty.Easy;
+            return endless
+                ? hard ? SimTunables.Modes.DefendWaves.EndlessStartHard : easy ? SimTunables.Modes.DefendWaves.EndlessStartEasy : SimTunables.Modes.DefendWaves.EndlessStartNormal
+                : hard ? SimTunables.Modes.DefendWaves.StartHard : easy ? SimTunables.Modes.DefendWaves.StartEasy : SimTunables.Modes.DefendWaves.StartNormal;
+        }
+
+        /// <summary>Defend's (or its endless run's) vehicles added per wave by difficulty.</summary>
+        public static float DefendWaveGrowth(bool endless, global::MachineBrigade.Sim.AI.AiDifficulty difficulty) =>
+            endless ? SimTunables.Modes.DefendWaves.EndlessGrowth
+            : difficulty >= global::MachineBrigade.Sim.AI.AiDifficulty.Hard ? SimTunables.Modes.DefendWaves.GrowthHard : SimTunables.Modes.DefendWaves.Growth;
+
+        /// <summary>Defend's (or its endless run's) compound growth per wave.</summary>
+        public static float DefendWaveCompound(bool endless) => endless ? SimTunables.Modes.DefendWaves.EndlessCompound : 0f;
+
+        /// <summary>Defend's most vehicles in one wave.</summary>
+        public static int DefendWaveMax => SimTunables.Modes.DefendWaves.WaveMax;
 
         public const int PlayerTeam = 0;
         public const int EnemyTeam = 1;
@@ -1190,8 +1218,7 @@ namespace MachineBrigade.Sim.Modes
             IReadOnlyList<string> swarm = _counterRoster != null ? _counterRoster : _rules.WaveRoster.Count > 0 ? _rules.WaveRoster
                 : world.TryGetEconomy(Attacker, out var own) ? own.Vehicles : Array.Empty<string>();
             if (swarm.Count == 0) return;
-            var raw = (_rules.WaveStart + _rules.WaveGrowth * (wave - 1)) * MathF.Pow(1f + _rules.WaveCompound, wave - 1) * _waveScale;
-            var count = Math.Min(_rules.WaveMax, (int)MathF.Round(raw));
+            var count = SizeAt(wave);
             // Prompt 30 L5: the endless part grows in stats only, never in numbers past the finite part's last wave.
             if (InEndless) count = Math.Min(count, SizeAt(_finiteWaves > 0 ? _finiteWaves : EndlessRules.DefendFiniteWaves));
             var heavies = _rules.WaveHeavy.Count > 0 && _rules.HeavyEvery > 0 ? Math.Min(count / 4, wave / _rules.HeavyEvery) : 0;
