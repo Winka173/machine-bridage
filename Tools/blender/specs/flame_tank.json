@@ -1,0 +1,37 @@
+{
+ "id": "flame_tank",
+ "class": "tracked",
+ "real": ["TO-55 (T-55 hull, ATO-200 flame projector)", "M67 'Zippo' (the short thick projector in place of the gun)", "PKT 7.62 mm coaxial", "DShKM 12.7 mm (loader's ring)"],
+ "shape": "unit_sheet.json Phương tiện: Tăng thân T-55, tháp tròn, vòi phun ngắn to thay nòng pháo, 2 bình nhiên liệu bọc giáp trên sàn sau; từ trên xuống: vòi ngắn, hai bình tròn đỏ sẫm ở đuôi; khoảng 7.2 x 2.6 x 1.9 m (0,8 x TO-55); vũ khí nhìn thấy flamethrower, PKT / M240 7.62 mm; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (T-55 / TO-55 published drawings and photographs; the projector after the sheet and the M67)",
+ "target_size": {"L": 7.12, "W": 2.66, "H": 1.87, "source": "balance.json modelSize (the height squeezed like the sheet's 1.9 m: dome and DShK kept low)", "tolerance": 0.10},
+ "features": [
+  {"feature": "T-55 hull: lower and long upper glacis with the splash board, flat engine deck with radiator louvres, sloped rear plate", "nodes": ["Hull", "Hull_lower", "Grilles", "Deck_plates"]},
+  {"feature": "cast dome turret set forward, thick front band, mantlet cover", "nodes": ["Turret", "Turret_body", "Mantlet"]},
+  {"feature": "short thick flame projector with clamping bands, nozzle and pilot flame", "nodes": ["Main_cannon", "Mantlet_bands", "Muzzle_brake", "Muzzle_brake_glow", "Muzzle_main"]},
+  {"feature": "two armoured flame-fuel tanks, dark red, across the rear deck in cradles", "nodes": ["Fuel_tanks", "Fuel_caps"]},
+  {"feature": "five large road wheels a side, no return rollers, front idler, rear sprocket, linked track, swing arms", "nodes": ["Wheels", "Tyres", "Idlers", "Sprockets", "Tracks", "Track_links", "Suspension"]},
+  {"feature": "commander's cupola with periscopes (left), loader's hatch with the DShK on its ring (right)", "nodes": ["Cupola", "Hatches", "MG_dshk", "MG_ammo"]},
+  {"feature": "L-2 searchlight and gunner's sight beside the projector, coaxial MG", "nodes": ["Searchlight", "Sight", "Coax", "MG_coax"]},
+  {"feature": "Tucha smoke dischargers either side, snorkel stowed on the turret rear, rubber side skirts", "nodes": ["Smoke_launchers", "Smoke_brackets", "Snorkel", "Skirts"]},
+  {"feature": "fender fuel cells (right), stowage bins and cable reel (left), unditching log and 200 l drums on the rear", "nodes": ["Fuel_cells", "Stowage", "Tow_cable", "Log", "Drums"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "flamethrower", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel"},
+  {"weapon": "mg_coax", "slot": "coax", "mount": "Coax", "muzzles": ["Muzzle_coax"], "note": "aim Turret"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 10.9k: over the maximum, information only (owner 02/10); not a unit seen in numbers"},
+ "team_zones": ["hull and fenders (Team)", "turret dome (Team)", "bands on the hull sides and the turret skirt (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off; the fuel tanks burn",
+ "faction_style": "Cold War tank conversion (both factions)",
+ "details": {
+  "tier1": ["hull", "turret dome", "tracks", "fuel tanks"],
+  "tier2": ["projector", "mantlet", "cupola", "loader's hatch", "searchlight", "fenders", "skirts", "fuel cells", "stowage bins", "log", "drums", "grilles"],
+  "tier3": ["track links", "periscopes", "DShK and its ammunition can", "smoke tubes", "straps", "filler caps", "rivets", "lamps and guards", "tow hooks", "hoses", "aerial"]
+ },
+ "questions": []
+}
