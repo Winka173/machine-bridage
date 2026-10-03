@@ -1,0 +1,136 @@
+{
+ "id": "iron_beam",
+ "class": "wheeled",
+ "real": [
+  "Rafael Iron Beam 100 kW laser (unit_refs; balance.json hel_beam)",
+  "the mobile Iron Beam-M pattern on an 8x8 tactical truck"
+ ],
+ "shape": "unit_refs: Rafael Iron Beam: laser air defence, no gun and no shells: a short cab-forward cab, four axles, the equipment shelter with doors, lockers, the power unit's grilles and the chiller's fans, the search radar's flat face spinning on its mast, and on the rear the beam director: turntable, yoke and the big white telescope with its glowing aperture and the tracker's sensor box.",
+ "confidence": "ước đoán (Iron Beam-M renderings; the def's modelSize)",
+ "target_size": {
+  "L": 8.2,
+  "W": 2.05,
+  "H": 2.86,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "cab-forward cab: windscreen, windows, doors, mirrors, grille; engine box and exhaust",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Doors",
+    "Grilles",
+    "Hull",
+    "Exhaust"
+   ]
+  },
+  {
+   "feature": "frame on four axles, lugged tyres, wings, mud flaps",
+   "nodes": [
+    "Chassis",
+    "Axles",
+    "Wheels",
+    "Tyres",
+    "Mud_wings"
+   ]
+  },
+  {
+   "feature": "equipment shelter: doors, lockers, grilles, roof fans, cables",
+   "nodes": [
+    "Body",
+    "Doors",
+    "Lockers",
+    "Fan_housings",
+    "Kit_cables"
+   ]
+  },
+  {
+   "feature": "search radar face on its mast (spins)",
+   "nodes": [
+    "Radar",
+    "Radar_panel",
+    "Radar_face"
+   ]
+  },
+  {
+   "feature": "beam director: turntable, yoke, telescope, glowing aperture, tracker",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor",
+    "Main_cannon",
+    "Main_cannon_lens",
+    "Sensor",
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "hel_beam",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the aperture's centre (a beam, no barrel)"
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "note": "light wheeled: seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "cab (Team)",
+  "shelter (Team)",
+  "beam director (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "Israeli AD truck, team-coloured, white optics",
+ "details": {
+  "tier1": [
+   "cab",
+   "chassis",
+   "shelter",
+   "beam director"
+  ],
+  "tier2": [
+   "radar",
+   "fans",
+   "grilles",
+   "lockers",
+   "wings"
+  ],
+  "tier3": [
+   "mirrors",
+   "lamps",
+   "hooks",
+   "sensor window",
+   "whips",
+   "cables"
+  ]
+ },
+ "questions": []
+}

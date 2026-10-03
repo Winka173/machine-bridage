@@ -8,7 +8,7 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| ground | 95 | 646,298 | 6,803 | main_battle_tank_hd (16,462) | 4,182 | 0 | 36 |
+| ground | 95 | 650,128 | 6,843 | main_battle_tank_hd (16,462) | 4,216 | 0 | 35 |
 | boss | 33 | 615,250 | 18,643 | monster (39,598) | 2,619 | 0 | 28 |
 | structure | 86 | 417,681 | 4,856 | headquarters (14,164) | 3,638 | 0 | 14 |
 | prop | 115 | 256,808 | 2,233 | command_hq (8,872) | 1,565 | 0 | 3 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 7,146 | 255 | fpv_drone (1,564) | 210 | 0 | 1 |
 
-All files: 2,238,837 triangles, 0 with errors, 103 more with warnings only.
+All files: 2,242,667 triangles, 0 with errors, 102 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -42,7 +42,7 @@ All files: 2,238,837 triangles, 0 with errors, 103 more with warnings only.
 |---|---|---:|---:|---|
 | boss_s | triangles | 1 | 0 | - |
 | boss_s | vertices | 2 | 0 | - |
-| ground | movingParts | 3 | 0 | - |
+| ground | movingParts | 2 | 0 | - |
 | ground | renderers | 7 | 0 | - |
 | ground | triangles | 28 | 0 | - |
 | ground | vertices | 32 | 0 | - |
@@ -60,7 +60,7 @@ All files: 2,238,837 triangles, 0 with errors, 103 more with warnings only.
 | structure | renderers | 6 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-55 models over a budget, 0 of them over a hard cap.
+54 models over a budget, 0 of them over a hard cap.
 
 ## Error reasons (count of models)
 

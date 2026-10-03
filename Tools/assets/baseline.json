@@ -3146,6 +3146,16 @@
    "changes": [
     "FLAG ew_jammer: triangles 2,274 -> 7,428 (+226.6%); vertices 2,677 -> 9,775 (+265.1%); meshes 18 -> 59 (+227.8%); renderers 18 -> 59 (+227.8%); materials 8 -> 9 (+12.5%); materialSlots 18 -> 59 (+227.8%); fileBytes 150,504 -> 532,080 (+253.5%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "iron_beam"
+   ],
+   "reason": "P35 wave 9",
+   "changes": [
+    "FLAG iron_beam: triangles 2,888 -> 6,718 (+132.6%); vertices 3,604 -> 8,466 (+134.9%); meshes 26 -> 60 (+130.8%); renderers 26 -> 60 (+130.8%); materials 8 -> 10 (+25.0%); materialSlots 26 -> 60 (+130.8%); fileBytes 202,352 -> 471,220 (+132.9%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -35085,24 +35095,24 @@
   },
   "iron_beam": {
    "file": "iron_beam.glb",
-   "fileBytes": 202352,
-   "sha1": "0fc3bbea7f090ab6",
+   "fileBytes": 471220,
+   "sha1": "dcc365baf4bf1b38",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 33,
-   "meshes": 26,
-   "materials": 8,
+   "nodes": 68,
+   "meshes": 60,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 26,
-   "submeshes": 26,
-   "materialSlots": 26,
-   "materialsUsed": 8,
-   "triangles": 2888,
-   "vertices": 3604,
+   "renderers": 60,
+   "submeshes": 60,
+   "materialSlots": 60,
+   "materialsUsed": 10,
+   "triangles": 6718,
+   "vertices": 8466,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -35110,36 +35120,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 91,
-   "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "loosePieces": 184,
+   "openEdges": 4,
+   "nonManifoldEdges": 4,
    "boundsMin": [
-    -1.0232,
+    -1.095,
     0.0,
-    -4.065
+    -4.09
    ],
    "boundsMax": [
-    1.0232,
-    2.8824,
-    4.14
+    1.0683,
+    2.9561,
+    4.2567
    ],
    "size": [
-    8.205,
-    2.046,
-    2.882
+    8.347,
+    2.163,
+    2.956
    ],
    "center": [
-    0.0,
-    1.441,
-    0.037
+    -0.013,
+    1.478,
+    0.083
    ],
-   "structureHash": "11eb1071cedb35c6",
+   "structureHash": "d00b618a0d56fd21",
    "color0": {
-    "mean": 0.6888,
-    "min": 0.0802,
+    "mean": 0.6198,
+    "min": 0.0588,
     "max": 1.0,
-    "p05": 0.2459,
-    "p95": 0.9987,
+    "p05": 0.1694,
+    "p95": 0.956,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -35147,14 +35157,15 @@
      "Turret"
     ],
     "main_cannon": [
-     "Main_cannon_glow",
-     "Main_cannon_lens",
-     "Main_cannon_pod",
-     "Main_cannon_sensor",
-     "Main_cannon_window"
+     "Main_cannon",
+     "Main_cannon_bezel",
+     "Main_cannon_lens"
     ],
     "muzzle": [
      "Muzzle_main"
+    ],
+    "mount": [
+     "Mount_APS"
     ],
     "radar": [
      "Radar"
@@ -35170,19 +35181,45 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
+    "Antennas",
+    "Axles",
     "Body",
+    "Bumper",
+    "Cab",
     "Chassis",
-    "Coolant_pipes",
+    "Door_frames",
+    "Door_slots",
+    "Doors",
+    "Exhaust",
+    "Exhaust_caps",
+    "Exhaust_mufflers",
+    "Exhaust_shields",
     "Fan_grilles",
+    "Fan_grilles.001",
+    "Fan_housings",
     "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grille_frames.001",
+    "Grilles",
+    "Hubs",
+    "Hubs.001",
+    "Hubs.002",
+    "Hull",
+    "Kit_cables",
+    "Kit_hinges",
+    "Kit_latches",
+    "Kit_steel",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
-    "Main_cannon_glow",
+    "Lockers",
+    "Main_cannon",
+    "Main_cannon_bezel",
     "Main_cannon_lens",
-    "Main_cannon_pod",
-    "Main_cannon_sensor",
-    "Main_cannon_window",
+    "Mount_APS",
+    "Mud_wings",
+    "Mudflaps",
     "Muzzle_main",
     "Part_wheel",
     "Part_wheelb",
@@ -35190,30 +35227,37 @@
     "Point_fire",
     "Radar",
     "Radar_face",
+    "Radar_mast",
     "Radar_panel",
-    "Steel",
+    "Sensor",
+    "Spare_wheel",
+    "Spare_wheel_rim",
+    "Steps",
+    "Stowage",
     "Tail_lamps",
-    "Tanks",
+    "Team_band",
     "Turret",
     "Turret_armor",
     "Turret_body",
+    "Turret_cooling",
+    "Turret_steel",
     "Tyres",
     "Tyres.001",
     "Tyres.002",
     "Wheels",
     "Wheels.001",
-    "Wheels.002"
+    "Wheels.002",
+    "Window_frames",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "movingParts 9 over the ground normal budget 8"
-   ],
+   "warnings": [],
    "units": [
     "iron_beam"
    ],
-   "movingParts": 9,
+   "movingParts": 8,
    "budgetClass": "ground"
   },
   "ixion": {
