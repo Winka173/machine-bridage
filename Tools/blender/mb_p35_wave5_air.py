@@ -691,6 +691,134 @@ def morrigan(a):
     k.clean(a)
 
 
+# ============================================================================= elite_attack_helicopter
+def elite_attack_helicopter(a):
+    """The elite Apache: an AH-64E Guardian at the old file's size, its own fuselage (not the V2 attack_helicopter's):
+    the narrow tandem-cockpit body with its flat-plate canopy, the TADS / PNVS nose turret, the M230 chin gun
+    (Mount_gun), the engine nacelles with the 'black hole' exhaust suppressors, the mast with the Longbow radome
+    over the four-blade rotor (Rotor spins), the stub wings with rocket pods inboard (Pods / Pod_face), four
+    Hellfires a side outboard (Missiles) and the ATAS Stinger pairs at the tips (Stinger_tubes; Mount_aam merged in
+    them as on the V2 model), the tail boom, fin, stabilator and the scissor tail rotor (Tail_rotor, the right
+    side), the tail-wheel gear. Elite marks (DECISIONS 25B2): team body, black armour panels, gilt bands, red
+    sights. Runtime: Rotor, Tail_rotor, Mount_gun / Muzzle_gun, Muzzle_missile, Muzzle_rocket, Muzzle_aam, Pods,
+    Pod_face, Point_fire, Point_exhaust; mb_flare_mounts adds Mount_Flare_*."""
+    fus = a.part('Fuselage', 'Team')
+    body_loft(fus, resample([(-3.15, .08, .45, .62, .5), (-2.95, .26, .3, .82, .45), (-2.5, .36, .22, 1.05, .42),
+                             (-1.8, .4, .2, 1.28, .4), (-1.0, .45, .2, 1.36, .4), (-.2, .5, .22, 1.4, .42),
+                             (.5, .46, .3, 1.35, .45), (1.0, .3, .55, 1.2, .5), (2.0, .16, .78, 1.08, .5),
+                             (3.0, .12, .85, 1.08, .5), (3.35, .06, .88, 1.05, .5)], 24), smooth=.06)
+    # The tandem flat-plate canopy and its frames, the elite's red-glowing sights.
+    cg = a.part('Canopy', 'Glass')
+    for (y0, y1, z0, z1, w0, w1) in ((-2.75, -2.15, .9, 1.22, .3, .34), (-2.05, -1.25, 1.12, 1.48, .34, .36)):
+        cg.mesh([(-w0, y0, z0), (w0, y0, z0), (w1 * .7, y1, z1), (-w1 * .7, y1, z1)], [(0, 1, 2, 3)])
+        for s in (-1, 1):
+            cg.mesh([(s * w0, y0, z0), (s * w1, y1, z0 + .02), (s * w1 * .72, y1, z1), (s * w0 * .7, y0, z0 + .2)],
+                    [(0, 1, 2, 3) if s > 0 else (3, 2, 1, 0)])
+    fr = a.part('Canopy_frames', 'EliteBlack')
+    for y in (-2.75, -2.15, -2.05, -1.25):
+        fr.box((.72, .04, .06), loc=(0, y, 1.0 + (y + 2.75) * .5), bevel=0)
+    # TADS / PNVS nose turret, the chin gun on its turret mount.
+    k.lathe(a.part('Sensor', 'EliteBlack'), [(0, -.18), (.18, -.15), (.22, 0), (.18, .16), (0, .2)],
+            loc=(0, -3.2, .5), seg=12)
+    a.part('Sight_glow', 'EliteGlow').box((.22, .02, .1), loc=(0, -3.42, .5), bevel=0)
+    a.part('Sensor', 'EliteBlack').box((.16, .2, .12), loc=(0, -3.05, .78), bevel=0)
+    m = a.pivot('Mount_gun', (0, -2.53, .42))
+    k.lathe(a.part('Gun_turret', 'EliteBlack', m), [(.16, -.06), (.17, .02), (.12, .1), (0, .12)], seg=10)
+    k.lathe(a.part('Gun', 'Steel', m), [(.035, 0), (.035, .7), (.05, .72), (.05, .82), (0, .84)], loc=(0, -.02, -.07),
+            rot=K.FORWARD, seg=8)
+    a.part('Gun', 'Steel', m).box((.12, .3, .12), loc=(0, .05, -.07), bevel=0)
+    a.pivot('Muzzle_gun', (0, -.84, -.07), m)
+    # Engine nacelles with the exhaust suppressors, the avionics bays (cheek sponsons), armour panels.
+    nac = a.part('Engine_nacelles', 'Team')
+    for s in (-1, 1):
+        k.lathe(nac, [(.05, -.7), (.18, -.6), (.22, -.2), (.22, .5), (.15, .8)], loc=(s * .45, .2, 1.3),
+                rot=(-R90, 0, 0), seg=12)
+        a.part('Intakes', 'Undercarriage').cyl(.15, .02, loc=(s * .45, -.52, 1.3), rot=K.FORWARD, seg=10, bevel=0)
+        k.lathe(a.part('Exhausts', 'EliteBlack'), [(.14, 0), (.16, .25), (.12, .4)], loc=(s * .58, 1.0, 1.32),
+                rot=(-R90, 0, s * .6), seg=10)
+        vn = a.part('Exhaust_vanes', 'Steel')
+        for j in range(3):
+            vn.box((.02, .14, .2), loc=(s * (.62 + j * .05), 1.2 + j * .05, 1.32), rot=(0, 0, s * .6), bevel=0)
+        k.sharp_loft(a.part('Avionics_bays', 'Team'), [[(s * .4, -2.2, .35), (s * .62, -2.0, .35), (s * .62, -.4, .35),
+                                                         (s * .4, -.3, .35)],
+                                                        [(s * .4, -2.1, .78), (s * .56, -1.95, .74), (s * .56, -.5, .74),
+                                                         (s * .4, -.4, .78)]], chamfer=.02)
+        K.panel(a, a.part('Armor', 'EliteBlack'), (.9, .3), (s * .62, -1.25, .55), (s, 0, 0), t=.02, rivet=.15)
+        a.part('Elite_gilt', 'Gilded').box((.02, 1.4, .05), loc=(s * .52, .2, 1.12), bevel=0)
+    # Mast, rotor head and the four blades (Rotor), the Longbow radome over them.
+    k.lathe(a.part('Mast', 'Steel'), [(.1, 1.4), (.08, 1.62), (.07, 1.74)], loc=(0, -.5, 0), seg=10)
+    r = a.pivot('Rotor', (0, -.5, 1.74))
+    k.lathe(a.part('Rotor_hub', 'EliteBlack', r), [(.2, -.06), (.22, .02), (.16, .1), (.08, .12)], seg=12)
+    gr = a.part('Rotor_grips', 'Steel', r)
+    bl = a.part('Rotor_blades', 'EliteBlack', r)
+    tp = a.part('Rotor_tips', 'Gilded', r)
+    for j in range(4):
+        u = j * R90 + .3
+        c, s_ = math.cos(u), math.sin(u)
+        gr.box((.35, .1, .06), loc=(c * .3, s_ * .3, .02), rot=(0, 0, u), bevel=0)
+        for f0, f1, ch in ((.45, 1.4, .17), (1.4, 2.2, .16)):
+            L = f1 - f0
+            bl.box((L, ch, .03), loc=(c * (f0 + L / 2), s_ * (f0 + L / 2), .03 - f0 * .01), rot=(.04, 0, u), bevel=0)
+        tp.box((.24, .16, .032), loc=(c * 2.32, s_ * 2.32, .0), rot=(0, 0, u + .15), bevel=0)
+    k.lathe(a.part('Radome', 'EliteBlack'), [(.0, 1.86), (.2, 1.88), (.28, 2.0), (.24, 2.14), (0, 2.2)],
+            loc=(0, -.5, 0), seg=12)
+    a.part('Steel', 'Steel').cyl(.05, .14, loc=(0, -.5, 1.82), seg=6, bevel=0)
+    # Stub wings, pylons, rocket pods inboard, Hellfire racks outboard, ATAS Stinger pairs at the tips.
+    wg = a.part('Stub_wings', 'Team')
+    for s in (-1, 1):
+        fs = (0, .5, 1.0)
+        span_loft(wg, [(s * (.45 + 1.1 * f), -.95 + .1 * f, -.95 + .1 * f + .62 - .12 * f, .78 - .06 * f, .14)
+                       for f in (fs if s > 0 else fs[::-1])], foil=FOIL14)
+        for x in (.85, 1.35):
+            a.part('Pylons', 'EliteBlack').box((.06, .4, .2), loc=(s * x, -.7, .64), bevel=0)
+        k.lathe(a.part('Pods', 'Team'), [(0, -.4), (.15, -.35), (.16, .3), (.14, .45)], loc=(s * .85, -.7, .45),
+                rot=(-R90, 0, 0), seg=10)
+        a.part('Pod_face', 'Undercarriage').cyl(.14, .02, loc=(s * .85, -1.11, .45), rot=K.FORWARD, seg=10, bevel=0)
+        a.part('Pod_bands', 'Gilded').cyl(.165, .04, loc=(s * .85, -.85, .45), rot=K.FORWARD, seg=10, bevel=0)
+        a.part('Missile_racks', 'Steel').box((.32, .5, .04), loc=(s * 1.35, -.7, .53), bevel=0)
+        for dx in (-.08, .08):
+            for dz in (0, -.17):
+                K.store(a, (s * 1.35 + dx, -.45, .44 + dz), .035, .62, body='Missiles', body_mat='Fuel', fins='Missile_fins',
+                        seg=8)
+                a.part('Missile_seekers', 'Glass').cyl(.02, .02, loc=(s * 1.35 + dx, -1.07, .44 + dz), rot=K.FORWARD,
+                                                       seg=6, bevel=0)
+        for dz in (.06, -.06):
+            k.lathe(a.part('Stinger_tubes', 'EliteBlack'), [(.04, -.3), (.045, -.25), (.045, .3)],
+                    loc=(s * 1.6, -.75, .73 + dz), rot=(-R90, 0, 0), seg=8)
+        a.part('Wing_lights', 'EliteGlow' if s > 0 else 'SignalGreen').box((.04, .08, .04), loc=(s * 1.58, -.55, .82),
+                                                                           bevel=0)
+    a.pivot('Muzzle_missile', (0, -.7, .65))
+    a.pivot('Muzzle_rocket', (0, -.79, .62))
+    a.pivot('Muzzle_aam', (0, -.75, .9))
+    # Tail boom fin, stabilator, the scissor tail rotor (Tail_rotor) on the right, the tail wheel.
+    K.fin(a.part('Fins', 'Team'), (2.55, .8), (2.95, .45), .95, z0=1.0, t=.1)
+    span_loft(a.part('Stabilator', 'Team'), [(-.6, 3.0, 3.38, .95, .1), (0, 2.95, 3.4, .95, .1), (.6, 3.0, 3.38, .95, .1)],
+              foil=FOIL14)
+    tr = a.pivot('Tail_rotor', (-.18, 3.1, 1.6))
+    k.lathe(a.part('Tail_rotor_hub', 'Steel', tr), [(0, -.06), (.06, -.04), (.06, .04), (0, .06)], rot=ACROSS, seg=8)
+    tb = a.part('Tail_rotor_blades', 'EliteBlack', tr)
+    for u in (.35, .35 + math.pi, 1.9, 1.9 + math.pi):
+        tb.box((.03, .1, .5), loc=(0, math.cos(u) * .27, math.sin(u) * .27), rot=(-u + R90, 0, 0), bevel=0)
+    a.part('Tail_rotor_tips', 'Gilded', tr).box((.035, .1, .06), loc=(0, math.cos(.35) * .5, math.sin(.35) * .5),
+                                               rot=(-.35 + R90, 0, 0), bevel=0)
+    # Main gear legs and wheels under the stub roots, the tail wheel, the antennas and the beacon.
+    gear = a.part('Undercarriage', 'Steel')
+    for s in (-1, 1):
+        gear.limb((s * .45, -1.1, .45), (s * .7, -1.25, .16), .05, .05, bevel=0)
+        k.lathe(a.part('Tyres', 'Rubber'), [(.1, -.05), (.16, -.04), (.16, .04), (.1, .05)], loc=(s * .74, -1.25, .16),
+                rot=ACROSS, seg=10)
+    gear.limb((0, 2.7, .85), (0, 2.85, .1), .04, .04, bevel=0)
+    k.lathe(a.part('Tyres', 'Rubber'), [(.06, -.03), (.1, -.025), (.1, .025), (.06, .03)], loc=(0, 2.85, .1),
+            rot=ACROSS, seg=8)
+    K.blade_antenna(a.part('Antennas', 'Steel'), (0, .6, 1.38), h=.12, chord=.15)
+    K.blade_antenna(a.part('Antennas', 'Steel'), (0, -1.2, .2), h=.1, chord=.12, normal=(0, 0, -1))
+    K.beacon(a, (0, 2.6, 1.95), r=.04)
+    a.part('Elite_gilt', 'Gilded').box((.03, .5, .12), loc=(.13, 2.2, 1.4), bevel=0)
+    a.pivot('Point_fire', (0, -.22, 1.21))
+    a.pivot('Point_exhaust', (.5, .88, 1.24))
+    k.clean(a)
+
+
 BUILDERS = {
     'stealth_bomber': (stealth_bomber, dict(ao_distance=.6, grime_height=0, ground=False)),
     'wingman_drone': (wingman_drone, dict(ao_distance=.25, grime_height=0, ground=False)),
@@ -698,4 +826,5 @@ BUILDERS = {
     'sky_gunship': (sky_gunship, dict(ao_distance=.5, grime_height=0, ground=False)),
     'sky_fortress': (sky_fortress, dict(ao_distance=.7, grime_height=0, ground=False)),
     'morrigan': (morrigan, dict(ao_distance=.5, grime_height=0, ground=False)),
+    'elite_attack_helicopter': (elite_attack_helicopter, dict(ao_distance=.3, grime_height=0, ground=False)),
 }
