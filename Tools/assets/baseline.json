@@ -2996,6 +2996,32 @@
    "changes": [
     "FLAG elite_apc: triangles 5,480 -> 11,260 (+105.5%); vertices 6,673 -> 14,910 (+123.4%); meshes 41 -> 59 (+43.9%); renderers 41 -> 59 (+43.9%); materials 9 -> 11 (+22.2%); materialSlots 41 -> 59 (+43.9%); fileBytes 367,256 -> 781,456 (+112.8%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "radar_atgm_vehicle"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG radar_atgm_vehicle: triangles 2,672 -> 10,290 (+285.1%); vertices 3,716 -> 13,765 (+270.4%); meshes 11 -> 51 (+363.6%); renderers 11 -> 51 (+363.6%); materials 5 -> 8 (+60.0%); materialSlots 11 -> 51 (+363.6%); fileBytes 191,476 -> 716,700 (+274.3%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "radar_atgm_vehicle"
+   ],
+   "reason": "P35 wave 7",
+   "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "radar_atgm_vehicle"
+   ],
+   "reason": "P35 wave 7",
+   "changes": []
   }
  ],
  "models": {
@@ -44196,22 +44222,24 @@
   },
   "radar_atgm_vehicle": {
    "file": "radar_atgm_vehicle.glb",
-   "fileBytes": 191476,
-   "sha1": "7f2fdff579ae3958",
+   "fileBytes": 716700,
+   "sha1": "3ae2569189887d1e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 16,
-   "meshes": 11,
-   "materials": 5,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 56,
+   "meshes": 51,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 11,
-   "submeshes": 11,
-   "materialSlots": 11,
-   "materialsUsed": 5,
-   "triangles": 2672,
-   "vertices": 3716,
+   "renderers": 51,
+   "submeshes": 51,
+   "materialSlots": 51,
+   "materialsUsed": 8,
+   "triangles": 10290,
+   "vertices": 13765,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -44219,36 +44247,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 94,
+   "loosePieces": 337,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.32,
-    -0.01,
-    -2.8406
+    -1.316,
+    -0.067,
+    -2.99
    ],
    "boundsMax": [
-    1.32,
-    2.5315,
-    2.8342
+    1.316,
+    2.23,
+    2.9743
    ],
    "size": [
-    5.675,
-    2.64,
-    2.542
+    5.964,
+    2.632,
+    2.297
    ],
    "center": [
     0.0,
-    1.261,
-    -0.003
+    1.082,
+    -0.008
    ],
-   "structureHash": "69a89b6cd123d3e7",
+   "structureHash": "7a9edc464ea87397",
    "color0": {
-    "mean": 0.5781,
-    "min": 0.0651,
-    "max": 0.9987,
-    "p05": 0.2305,
-    "p95": 0.806,
+    "mean": 0.5413,
+    "min": 0.0668,
+    "max": 1.0,
+    "p05": 0.138,
+    "p95": 0.8382,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -44268,19 +44296,59 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antennas",
+    "Cradle",
+    "Doors",
+    "Exhaust",
     "Fenders",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Hatches",
     "Hubs",
     "Hull",
+    "Hull_lower",
+    "Idlers",
+    "Kit_latches",
+    "Kit_steel",
+    "Kit_steel.001",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
+    "Lamps",
+    "Launcher",
     "Missiles",
     "Muzzle_missile",
     "Point_exhaust",
     "Point_fire",
+    "Racks",
     "Radar",
+    "Radar_arm",
     "Radar_box",
-    "Rails",
+    "Radar_dome",
+    "Radar_face",
+    "Reload_tubes",
+    "Rollers",
+    "Sight",
+    "Sight.001",
+    "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
-    "Team_bands",
+    "Steps",
+    "Stowage",
+    "Suspension",
+    "Tail_lamps",
+    "Team_band",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
+    "Trim_vane",
+    "Trim_vane_ribs",
+    "Tube_caps",
+    "Tubes",
+    "Turntable",
     "Turret",
     "Tyres",
     "Wheels"
@@ -44288,7 +44356,10 @@
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 10,290 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 13,765 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
    "units": [
     "radar_atgm_vehicle"
    ],

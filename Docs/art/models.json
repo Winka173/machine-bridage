@@ -1405,7 +1405,7 @@
   },
   "radar_atgm_vehicle": {
     "file": "radar_atgm_vehicle.glb",
-    "triangles": 3194
+    "triangles": 10290
   },
   "radar_dome": {
     "file": "radar_dome.glb",
