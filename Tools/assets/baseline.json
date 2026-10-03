@@ -3102,6 +3102,26 @@
    "changes": [
     "FLAG uav_loiter_strike: triangles 1,084 -> 3,504 (+223.2%); vertices 1,472 -> 3,838 (+160.7%); meshes 13 -> 25 (+92.3%); renderers 13 -> 25 (+92.3%); materials 7 -> 8 (+14.3%); materialSlots 13 -> 25 (+92.3%); fileBytes 85,888 -> 215,640 (+151.1%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "aerial_tanker"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG aerial_tanker: triangles 4,164 -> 5,454 (+31.0%); vertices 5,041 -> 6,181 (+22.6%); meshes 23 -> 42 (+82.6%); renderers 23 -> 42 (+82.6%); materials 8 -> 9 (+12.5%); materialSlots 23 -> 42 (+82.6%); fileBytes 271,584 -> 348,140 (+28.2%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "aerial_tanker"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "aerial_tanker: vertices 6,181 -> 6,177 (-0.1%); fileBytes 348,140 -> 347,964 (-0.1%)"
+   ]
   }
  ],
  "models": {
@@ -4423,24 +4443,24 @@
   },
   "aerial_tanker": {
    "file": "aerial_tanker.glb",
-   "fileBytes": 271584,
-   "sha1": "6b3558147cd8e8a5",
+   "fileBytes": 347964,
+   "sha1": "ccc92be454458796",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 33,
-   "meshes": 23,
-   "materials": 8,
+   "nodes": 52,
+   "meshes": 42,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 23,
-   "submeshes": 23,
-   "materialSlots": 23,
-   "materialsUsed": 8,
-   "triangles": 4164,
-   "vertices": 5041,
+   "renderers": 42,
+   "submeshes": 42,
+   "materialSlots": 42,
+   "materialsUsed": 9,
+   "triangles": 5454,
+   "vertices": 6177,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -4448,36 +4468,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 83,
-   "openEdges": 132,
-   "nonManifoldEdges": 200,
+   "loosePieces": 129,
+   "openEdges": 88,
+   "nonManifoldEdges": 0,
    "boundsMin": [
-    -11.31,
-    0.02,
-    -10.0754
+    -11.38,
+    -1.4,
+    -10.55
    ],
    "boundsMax": [
-    11.31,
-    5.7,
-    9.9
+    11.38,
+    4.63,
+    9.94
    ],
    "size": [
-    19.975,
-    22.62,
-    5.68
+    20.49,
+    22.76,
+    6.03
    ],
    "center": [
     -0.0,
-    2.86,
-    -0.088
+    1.615,
+    -0.305
    ],
-   "structureHash": "a27a3be993e4359c",
+   "structureHash": "ae030b04d939b499",
    "color0": {
-    "mean": 0.8166,
-    "min": 0.6785,
+    "mean": 0.8057,
+    "min": 0.6172,
     "max": 1.0,
-    "p05": 0.7225,
-    "p95": 1.0,
+    "p05": 0.7146,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -4494,21 +4514,23 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Armor.001",
-    "Beacon",
-    "Boom_tip",
-    "Canopy",
-    "Canopy_frames",
-    "Cheat_line",
-    "Control_surfaces",
-    "Control_surfaces.001",
+    "Antennas",
+    "Beacon_base",
+    "Beacons",
+    "Drogues",
+    "Drogues.001",
+    "Engines",
+    "Engines.001",
+    "Flaps",
+    "Flaps.001",
+    "Flare_mouths",
     "Flares",
-    "Flares_glow",
     "Fuselage",
-    "Fuselage.001",
-    "Hose_pods",
-    "Hose_pods.001",
+    "Glass",
+    "Hoses",
+    "Hoses.001",
+    "Intake_ducts",
+    "Intake_ducts.001",
     "Intakes",
     "Intakes.001",
     "Mount_Flare_L",
@@ -4518,20 +4540,40 @@
     "Mount_Flare_TL",
     "Mount_Flare_TR",
     "Muzzle_gun",
-    "Nacelles",
-    "Nacelles.001",
+    "Nozzle_cascades",
+    "Nozzle_cascades.001",
+    "Nozzles",
+    "Nozzles.001",
+    "Panels",
     "Part_wing",
+    "Pod_turbines",
+    "Pod_turbines.001",
+    "Pods",
+    "Pods.001",
     "Point_exhaust",
     "Point_fire",
-    "Steel",
-    "Steel.001",
+    "Pylons",
+    "Pylons.001",
+    "Radome",
+    "Rudders",
+    "Sponsons",
+    "Tail",
+    "Tail_cap",
+    "Tail_turret",
+    "Team_band",
     "Wing_lights",
-    "Wing_lights.001"
+    "Wing_lights.001",
+    "Wing_root",
+    "Wings",
+    "Wings.001"
    ],
    "category": "air",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 5,454 over the jet normal budget 5,100",
+    "renderers 42 over the jet normal budget 36"
+   ],
    "units": [
     "aerial_tanker"
    ],
