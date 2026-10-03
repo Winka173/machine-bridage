@@ -1,0 +1,35 @@
+{
+ "id": "heavy_flak_tower",
+ "class": "tower",
+ "real": ["KS-19 100 mm heavy anti-aircraft gun (1947) on a fixed pedestal", "an optical rangefinder on a tripod"],
+ "shape": "Strings note.heavy_flak_tower: a heavy anti-aircraft gun of the KS-19 100 mm class: slow, big air bursts; modelSize 7.0 x 6.0 x 3.4 m; trimmed under the tower cap (owner decision 6; DECISIONS 'Prompt 35: owner review of wave 1' item 2).",
+ "confidence": "xấp xỉ (KS-19 layout: shield, fuse setter, loading tray, multi-baffle brake; the site is a field-built log pit)",
+ "target_size": {"L": 7.0, "W": 6.0, "H": 3.4, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "an octagonal pit revetted with stacked logs (each cut differently), corner posts, a sandbag course on the crest, an earth berm outside, open at the rear with log steps", "nodes": ["Revetment", "Revetment_posts", "Sandbags", "Berm"]},
+  {"feature": "the timber floor (base) with planks, the pedestal on cross beams, bolted race", "nodes": ["Base", "Floor_planks", "Platform", "Pedestal", "Kit_bolts"]},
+  {"feature": "the turning mount: carriage cheeks, trunnions, cradle, recuperator over and buffer under the barrel", "nodes": ["Turret", "Carriage", "Trunnions", "Cradle", "Recuperators"]},
+  {"feature": "the long barrel raised 15 degrees with its multi-baffle muzzle brake", "nodes": ["Main_cannon", "Muzzle_brake"]},
+  {"feature": "breech, loading tray and fuse setter", "nodes": ["Breech", "Loading_tray", "Fuse_setter", "Fuse_dials"]},
+  {"feature": "the wide gun shield with angled wings (Team), riveted", "nodes": ["Gun_shield", "Kit_rivets"]},
+  {"feature": "layers' seats, sight boxes, handwheels", "nodes": ["Seats", "Sight_box", "Glass", "Handwheels"]},
+  {"feature": "ammunition boxes in the wall's niches, ready shells in racks, spent cases", "nodes": ["Ammo_boxes", "Crate_bands", "Shells", "Shell_tips", "Shell_racks"]},
+  {"feature": "the optical rangefinder on its tripod, a field telephone, a whip antenna and its cable", "nodes": ["Rangefinder", "Rangefinder_tripod", "Field_phone", "Antenna", "Kit_cables"]},
+  {"feature": "crew kit: helmets, jerrycan, extinguisher, shovel and pick; stones round the berm", "nodes": ["Helmets", "Jerrycans", "Extinguishers", "Tools", "Stones"]}
+ ],
+ "class_parts": ["base", "walls", "roof (the turning mount)", "antenna"],
+ "weapons": [{"weapon": "flak_88", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]}],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [2000, 4000], "floor": 1400, "cap": 6000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "owner decision 6: trimmed from 8,902"},
+ "team_zones": ["the carriage and the gun shield (Team)"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (field-built: logs, sandbags, earth berm, timber floor)",
+ "details": {
+  "tier1": ["log revetment and berm", "mount and barrel", "shield"],
+  "tier2": ["pedestal", "cradle and cylinders", "breech and tray", "fuse setter", "seats", "racks", "rangefinder", "crest sandbags"],
+  "tier3": ["bolts", "rivets", "dials", "sight glass", "handwheels", "shell tips", "spent cases", "phone", "whip", "helmets", "tools", "stones", "planks"]
+ },
+ "questions": []
+}

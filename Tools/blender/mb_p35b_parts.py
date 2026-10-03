@@ -245,3 +245,131 @@ def canvas_roll(a, loc, length, r=.1, parent=None, mat='Canvas'):
                                                (r * .8, length / 2)], loc=loc, rot=(0, R90, 0), seg=8)
     for f in (-.3, .3):
         a.part('Kit_straps', 'Steel', parent).box((.04, r * 2.1, r * 2.1), loc=(x + f * length, y, z), bevel=0)
+
+
+def sandbag_run(a, path, courses=2, bag=(.6, .32, .15), part='Sandbags', mat='Sandbag', seed=0, parent=None,
+                closed=False, lean=False):
+    """Sandbags laid along a polyline (wave 3): `courses` high, each course offset by half a bag and set back a
+    little (a battered face), every bag a pillow block with jitter in size and yaw; the part name is the caller's
+    (Parapet, Walls, Sandbags) so a structure's gate roles can read it. lean=True: square-cornered bags (about 36
+    triangles instead of 60) for long runs on towers under the triangle cap."""
+    import random
+    shape = a.part(part, mat, parent)
+    rng = random.Random(seed * 7919 + len(path))
+    L, W, H = bag
+    pts = list(path) + [path[0]] if closed else list(path)
+    for c in range(courses):
+        for p, t in k.along(pts, pitch=L * .96, start=L / 2 * (c % 2)):
+            yaw = math.atan2(t.y, t.x)
+            j = rng.uniform(-.04, .04)
+            size = (L * (.95 + j), W * (1 + j), H)
+            loc = (p.x, p.y, p.z + H / 2 + c * H * .9)
+            rot = (0, 0, yaw + rng.uniform(-.07, .07))
+            if lean:
+                sx, sy = size[0] / 2, size[1] / 2
+                k.extrude(shape, [(-sx, -sy), (sx, -sy), (sx, sy), (-sx, sy)], H, loc=loc, rot=rot, axis='Z',
+                          chamfer=H * .4, ends=(False, True))
+            else:
+                k.block(shape, size, loc=loc, rot=rot, chamfer=H * .4, ends=(False, True))
+    return shape
+
+
+class Elev:
+    """A barrel laid at elevation e (radians) from a base point, pointing to -Y (wave 3 towers): at(t) is the point t
+    metres up the bore, lathe_rot turns a lathe's +Z onto the bore, box_rot turns a box's -Y onto it."""
+
+    def __init__(self, base, e):
+        self.base, self.e = base, e
+        self.d = (0.0, -math.cos(e), math.sin(e))
+        self.lathe_rot = (R90 - e, 0, 0)
+        self.box_rot = (-e, 0, 0)
+
+    def at(self, t, dx=0.0, up=0.0):
+        """The point t along the bore, dx to the side, `up` metres off the bore (perpendicular, upward)."""
+        bx, by, bz = self.base
+        c, s = math.cos(self.e), math.sin(self.e)
+        return (bx + dx, by - t * c - up * s, bz + t * s + up * c)
+
+
+def earth_pad(a, outline, h, part='Base', mat='Dirt', taper=.94, parent=None, bottom=True):
+    """A dug earth pad of irregular outline (a field earthwork), its sides sloped by `taper` (wave 3 towers);
+    bottom=False leaves out the face on the ground (never seen)."""
+    k.extrude(a.part(part, mat, parent), outline, h, loc=(0, 0, h / 2), axis='Z', chamfer=min(.08, h * .3),
+              corner=.12, taper=(taper, taper), caps=(bottom, True))
+
+
+def camo_net(a, poles, sag, z0, part='Camo_net', mat='Canvas', pole_part='Net_poles', parent=None, garnish=0, seed=0):
+    """A camouflage net on poles [(x, y, height)]: the net sags to a centre point `sag` below the mean pole height,
+    two-sided; garnish adds that many hanging scrim tufts (thin dangling flaps) along its edge."""
+    import random
+    rng = random.Random(seed)
+    pp = a.part(pole_part, 'Wood', parent)
+    pts = []
+    for x, y, h in poles:
+        pp.cyl(.04, h, loc=(x, y, z0 + h / 2), seg=5, bevel=0)
+        pts.append((x, y, z0 + h))
+    n = len(pts)
+    cx = sum(p[0] for p in pts) / n
+    cy = sum(p[1] for p in pts) / n
+    cz = sum(p[2] for p in pts) / n - sag
+    net = a.part(part, mat, parent)
+    verts, faces = [], []
+    for i in range(n):
+        p, q = pts[i], pts[(i + 1) % n]
+        m = ((p[0] + q[0]) / 2, (p[1] + q[1]) / 2, (p[2] + q[2]) / 2 - sag * .45)
+        b = len(verts)
+        c = (cx, cy, cz)
+        verts += [p, m, q, c] + [(v[0], v[1], v[2] - .012) for v in (p, m, q, c)]   # the underside 12 mm lower
+        faces += [(b, b + 1, b + 3), (b + 1, b + 2, b + 3), (b + 7, b + 5, b + 4), (b + 7, b + 6, b + 5)]
+    net.mesh(verts, faces)
+    if garnish:
+        g = a.part(part + '_garnish', 'FoliageDark', parent)
+        for j in range(garnish):
+            i = j % n
+            p, q = pts[i], pts[(i + 1) % n]
+            f = rng.uniform(.15, .85)
+            x, y = p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f
+            z = p[2] + (q[2] - p[2]) * f - sag * .45 * math.sin(math.pi * f)
+            g.box((.25, .02, .35), loc=(x, y, z - .17), rot=(0, 0, math.atan2(q[1] - p[1], q[0] - p[0])), bevel=0)
+
+
+def track_run(a, tx, tw, wheels, wr, sprocket, idler, rollers=(), roller_z=None, link_pitch=.24, wheel_w=.18,
+              disc_mat='Armor', hide_top=None, teeth=10, inset=.12, wheel_seg=10):
+    """Both tracks of a tracked hull (wave 3): the belt round the sprocket, the idler and the road wheels (its outline
+    the hull of their circles), a link block every link_pitch all round (hide_top = (y0, y1, z) leaves out the top
+    run between y0 and y1 above z, where the skirts hide it), road wheels, the toothed sprocket, a spoked idler on its
+    tensioner arm, return rollers. sprocket / idler = (y, z, r); tx is the track's centre line, tw its width."""
+    import mb_parts27 as p27
+    import mb_vehicles as mv
+    belt = a.part('Tracks', 'Undercarriage')
+    links = a.part('Track_links', 'Undercarriage')
+    pts = []
+    for cy, cz, r in ((sprocket[0], sprocket[1], sprocket[2] + .04), (idler[0], idler[1], idler[2] + .04)) + \
+            tuple((y, wr, wr + .035) for y in wheels):
+        for i in range(20):
+            u = i * TAU / 20
+            pts.append((cy + r * math.cos(u), cz + r * math.sin(u)))
+    outline = mv._hull2d(pts)
+    wx = tw / 2 - inset
+    for s in (-1, 1):
+        k.extrude(belt, outline, tw, loc=(s * tx, 0, 0), axis='X', chamfer=0)
+        for (py, pz), (ty, tz) in mv._perimeter(outline, link_pitch, .0):
+            if hide_top and pz > hide_top[2] and hide_top[0] < py < hide_top[1]:
+                continue
+            ny, nz = tz, -ty
+            k.block(links, (tw + .03, .06, .035), loc=(s * tx, py + ny * .012, pz + nz * .012),
+                    rot=(math.atan2(tz, ty), 0, 0), chamfer=0)
+        for y in wheels:
+            p27.road_wheel(a, (s * (tx + wx), y, wr), wr, wheel_w, s, seg=wheel_seg, disc_mat=disc_mat)
+        p27.sprocket(a, (s * (tx + wx), sprocket[0], sprocket[1]), sprocket[2], teeth, wheel_w * .75, s)
+        ri = idler[2]
+        k.lathe(a.part('Idlers', disc_mat), [(0, .09), (ri * .3, .09), (ri * .4, .07), (ri * .85, .07), (ri, .04),
+                                             (ri, -.06), (ri * .85, -.07), (0, -.07)],
+                loc=(s * (tx + wx), idler[0], idler[1]), rot=p27.side_rot(s), seg=wheel_seg, worn=(4,))
+        arm_dir = 1 if idler[0] > sprocket[0] else -1
+        a.part('Idlers', disc_mat).limb((s * (tx - .05), idler[0], idler[1]),
+                                         (s * (tx - .05), idler[0] - arm_dir * .35, idler[1] + .15), .06, .08,
+                                         bevel=0)
+        for y in rollers:
+            K.return_roller(a, (s * (tx + wx - .02), y, roller_z), .08, .1, s)
+        K.dust(a, (s * tx, 0, .1), radius=1.6, k=.3)

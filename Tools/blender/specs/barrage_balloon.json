@@ -1,0 +1,32 @@
+{
+ "id": "barrage_balloon",
+ "class": "tower",
+ "real": ["JLENS (Raytheon / TCOM 74M-class tethered radar aerostat) on its mobile mooring station"],
+ "shape": "Strings note.barrage_balloon: a tethered radar aerostat in the style of the US Army JLENS: enemy bombs near it fall wide, aircraft close to it show on the map; modelSize 9.0 x 4.0 x 16.0 m (the envelope rides at the top of the box).",
+ "confidence": "xấp xỉ (JLENS envelope, inverted-Y fins, belly radome, mobile mooring station; scaled to the box)",
+ "target_size": {"L": 9.0, "W": 4.0, "H": 16.0, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "the streamlined white envelope with ballonet seams and two Team bands", "nodes": ["Envelope", "Envelope_seams", "Team_bands"]},
+  {"feature": "three tail fins in an inverted Y with Team trailing edges", "nodes": ["Fins", "Fin_edges"]},
+  {"feature": "the radar radome under the forward belly, the equipment gondola", "nodes": ["Radome", "Gondola"]},
+  {"feature": "rigging lines to the confluence point, the tether to the mooring mast", "nodes": ["Rigging", "Cable"]},
+  {"feature": "the mobile mooring station: turning platform on outriggers and jack pads, carrier wheels, lattice mooring mast, tether drum and winch", "nodes": ["Pad", "Outriggers", "Jack_pads", "Tyres", "Hubs", "Mast", "Drum", "Drum_flanges", "Winch"]},
+  {"feature": "the operator shelter with ribs, door, whips and a link dish; the generator and its cable", "nodes": ["Shelter", "Shelter_ribs", "Doors", "Antennas", "Dish", "Generator", "Generator_stack", "Kit_cables"]},
+  {"feature": "a wire fence round the site with a warning sign", "nodes": ["Fence", "Signs"]}
+ ],
+ "class_parts": ["base (the mooring platform)", "walls (the fence)", "roof (the shelter)", "antenna"],
+ "weapons": [],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [2000, 4000], "floor": 1400, "cap": 6000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "owner decision 6"},
+ "team_zones": ["two bands round the envelope, the fins' trailing edges, the drum and the shelter (Team)"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "a fielded system; the site dressing (fence, generator, jack pads) the Accord's",
+ "details": {
+  "tier1": ["envelope", "fins", "mooring station", "mast"],
+  "tier2": ["radome", "gondola", "drum and winch", "shelter", "generator", "outriggers"],
+  "tier3": ["seams", "rigging", "tether", "jack pads", "whips", "dish", "fence posts and strands", "sign"]
+ },
+ "questions": []
+}

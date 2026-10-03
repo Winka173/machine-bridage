@@ -1,0 +1,36 @@
+{
+ "id": "mortar_carrier",
+ "class": "tracked",
+ "real": ["M1064 120 mm mortar carrier (M113 hull; unit_sheet: 2B11-class 120 mm, M2 Browning 12.7 mm)"],
+ "shape": "unit_sheet.json Phương tiện: an M113 hull with the rear roof hatch opened wide and the 120 mm mortar pointing up through it; from above the big roof hatch and the mortar tube; about 3.9 x 2.2 x 2.0 m (0.8 x M1064); the def's modelSize 4.21 x 2.3 x 3.2 m (the tube up) wins; team stripes; no insignia.",
+ "confidence": "xấp xỉ (M113 / M1064 published layout)",
+ "target_size": {"L": 4.21, "W": 2.3, "H": 3.2, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "the M113 box hull (Team) with rounded plate edges, the sponson lip over the top run, the lower hull", "nodes": ["Hull", "Hull_lower", "Skirt_edge"]},
+  {"feature": "the folded trim vane on the glacis, hinges, lamps, tow hooks, smoke launchers on the glacis corners", "nodes": ["Trim_vane", "Kit_hinges", "Lamps", "Kit_hooks", "Smoke_launchers"]},
+  {"feature": "driver's hatch and periscopes, engine grilles, the exhaust on the right side", "nodes": ["Hatches", "Grilles", "Exhaust", "Point_exhaust"]},
+  {"feature": "the three-leaf mortar hatch over the rear roof folded open: coaming, the leaves, hinges, the well floor", "nodes": ["Hatch_well", "Hatch_lids", "Hatch_fittings", "Hatch_floor"]},
+  {"feature": "the mortar on its turntable: traverse ring, the long tube raised 70 degrees with its blast ring, bipod and elevation mechanism, traversing screw, sight, ready rounds in a rack", "nodes": ["Turret", "Turret_steel", "Turret_armor", "Mortar_tube", "Mortar_tube_ring", "Muzzle_main", "Elevation", "Elevation_screw", "Sight", "Round_rack", "Rounds"]},
+  {"feature": "the commander's cupola with vision blocks and the M2 on its raised ring with shield, its ammunition can", "nodes": ["Cupola", "Mount_mg", "MG", "Muzzle_mg", "Gun_shield_cdr", "MG_ammo"]},
+  {"feature": "the dismount baseplate on the left side, the aiming stakes and their bag, a crate and a jerrycan", "nodes": ["Baseplate", "Stowage", "Aiming_posts", "Crates", "Jerrycans"]},
+  {"feature": "five road wheels, front sprocket, rear idler on its arm, the track; the rear ramp with its door, the armoured fuel tanks, tail lamps; Team bands", "nodes": ["Wheels", "Tyres", "Sprockets", "Idlers", "Tracks", "Track_links", "Hull_dark", "Fuel_tanks", "Tail_lamps", "Team_band"]}
+ ],
+ "class_parts": ["hull", "turret (the mortar's turntable)", "mantlet (the elevation mechanism)", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts (the sponson lip)", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "mortar_120", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]},
+  {"weapon": "hmg_selfdef_18", "slot": "mg", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"]}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "heavy class (tracked): over the maximum is information only"},
+ "team_zones": ["the hull (Team)", "bands on both sides"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the wrappers add the tracked wreck parts",
+ "faction_style": "military mortar carrier (both factions)",
+ "details": {
+  "tier1": ["hull", "tracks and wheels", "mortar tube", "open hatch leaves"],
+  "tier2": ["trim vane", "cupola and M2", "baseplate", "fuel tanks", "ramp", "rack", "elevation mechanism"],
+  "tier3": ["hinges", "lamps", "hooks", "grilles", "periscopes", "sight", "rounds", "stakes", "crate", "jerrycan", "smoke tubes", "ammunition can"]
+ },
+ "questions": []
+}
