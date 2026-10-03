@@ -1,0 +1,135 @@
+{
+ "id": "command_hq",
+ "class": "hq",
+ "real": [
+  "Hardened command bunker of the Cold War / modern pattern (cast concrete, battered walls)",
+  "precast T-wall blast barriers",
+  "15 m lattice communications mast, satellite dish"
+ ],
+ "shape": "balance.json: the Siege fortress's target ('command_hq', 16 x 14 m, blocks, an Ultimate explosion). The old builder (mb_siege) drew a fortified command bunker: a battered concrete block with a parapet, a raised command room with armoured lit windows and a Team roof plate under a dish turning on `Radar`, an entrance portal with a hazard-framed blast door, T-walls with Team bands, two Team flags, a workshop annex with a roller door, a generator yard under a camouflage net, a roof lookout ring of sandbags and a 15 m lattice mast. Rebuilt on the same brief with its own geometry and named volumes.",
+ "confidence": "ban_dau_doan (no sheet row; the old builder's brief)",
+ "target_size": {
+  "L": 13.87,
+  "W": 16.05,
+  "H": 17.57,
+  "source": "the old GLB (the def's 16 x 14 m footprint)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the apron slab with its joints and the drainage kerb",
+   "nodes": [
+    "Base",
+    "Base_joints"
+   ]
+  },
+  {
+   "feature": "the battered cast-concrete bunker with its parapet, Team bands, form ties",
+   "nodes": [
+    "Walls",
+    "Parapet",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "the raised command room with armoured lit windows, the roof slab and the Team roof plate",
+   "nodes": [
+    "Command_room",
+    "Lit_windows",
+    "Window_visors",
+    "Roof"
+   ]
+  },
+  {
+   "feature": "the entrance portal with the blast door and the hazard frame, lamps, the lit sign",
+   "nodes": [
+    "Portal",
+    "Doors",
+    "Hazard_marks",
+    "Lamps"
+   ]
+  },
+  {
+   "feature": "the satellite dish turning on the roof",
+   "nodes": [
+    "Radar",
+    "Radar_dish"
+   ]
+  },
+  {
+   "feature": "the lattice comms mast with antennas and the obstruction light",
+   "nodes": [
+    "Masts",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "T-walls with Team bands, the workshop annex with its roller door, the generator yard under a camouflage net, roof sandbags, flags",
+   "nodes": [
+    "T_walls",
+    "Annex",
+    "Roller_door",
+    "Generators",
+    "Camo_net",
+    "Sandbags",
+    "Flags"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   6000
+  ],
+  "floor": 1400,
+  "cap": null,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "a set-piece target; renderers under the prop cap 58"
+ },
+ "team_zones": [
+  "bands (Team)",
+  "roof plate (Team)",
+  "flags (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "fortified concrete (both factions)",
+ "details": {
+  "tier1": [
+   "apron",
+   "bunker",
+   "command room",
+   "mast"
+  ],
+  "tier2": [
+   "portal",
+   "annex",
+   "T-walls",
+   "dish",
+   "generators",
+   "parapet"
+  ],
+  "tier3": [
+   "windows",
+   "visors",
+   "lamps",
+   "sandbags",
+   "flags",
+   "vents",
+   "antennas",
+   "ladders"
+  ]
+ },
+ "questions": []
+}

@@ -3122,6 +3122,24 @@
    "changes": [
     "aerial_tanker: vertices 6,181 -> 6,177 (-0.1%); fileBytes 348,140 -> 347,964 (-0.1%)"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "command_hq"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG command_hq: triangles 5,982 -> 8,872 (+48.3%); vertices 9,184 -> 12,909 (+40.6%); meshes 27 -> 52 (+92.6%); renderers 27 -> 52 (+92.6%); materials 23 -> 22 (-4.3%); materialSlots 27 -> 52 (+92.6%); fileBytes 470,904 -> 675,148 (+43.4%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "command_hq"
+   ],
+   "reason": "P35 wave 7",
+   "changes": []
   }
  ],
  "models": {
@@ -14641,24 +14659,24 @@
   },
   "command_hq": {
    "file": "command_hq.glb",
-   "fileBytes": 470904,
-   "sha1": "d19cd4a68e5a66c0",
+   "fileBytes": 675148,
+   "sha1": "20a1ab93bd039be9",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 28,
-   "meshes": 27,
-   "materials": 23,
+   "nodes": 53,
+   "meshes": 52,
+   "materials": 22,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 27,
-   "submeshes": 27,
-   "materialSlots": 27,
-   "materialsUsed": 23,
-   "triangles": 5982,
-   "vertices": 9184,
+   "renderers": 52,
+   "submeshes": 52,
+   "materialSlots": 52,
+   "materialsUsed": 22,
+   "triangles": 8872,
+   "vertices": 12909,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -14666,36 +14684,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 298,
-   "openEdges": 270,
-   "nonManifoldEdges": 12,
+   "loosePieces": 362,
+   "openEdges": 96,
+   "nonManifoldEdges": 2,
    "boundsMin": [
-    -7.9898,
-    -0.02,
-    -6.9723
+    -7.9,
+    0.0,
+    -6.9
    ],
    "boundsMax": [
-    8.0598,
-    17.55,
+    7.9,
+    17.27,
     6.9
    ],
    "size": [
-    13.872,
-    16.05,
-    17.57
+    13.8,
+    15.8,
+    17.27
    ],
    "center": [
-    0.035,
-    8.765,
-    -0.036
+    0.0,
+    8.635,
+    0.0
    ],
-   "structureHash": "144458586f84249d",
+   "structureHash": "e11b5bf03e8e4946",
    "color0": {
-    "mean": 0.6197,
-    "min": 0.0651,
+    "mean": 0.5755,
+    "min": 0.0578,
     "max": 1.0,
-    "p05": 0.1958,
-    "p95": 1.0,
+    "p05": 0.1411,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -14705,39 +14723,68 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Aircon",
-    "Aircon_fans",
-    "Apron",
-    "Beacon",
+    "Annex",
+    "Antennas",
+    "Antennas.001",
+    "Base",
+    "Base_joints",
+    "Beacon_base",
+    "Beacons",
     "Camo_net",
-    "Camo_net_garnish",
-    "Camo_net_garnish.001",
-    "Camo_net_garnish.002",
+    "Command_room",
+    "Crates",
     "Dish_pedestal",
-    "Door_hazard",
-    "Door_hazard.001",
-    "Drums",
-    "Generator_skid",
+    "Door_frames",
+    "Door_slots",
+    "Doors",
+    "Exhaust",
+    "Exhaust_caps",
+    "Flags",
+    "Fuel_drums",
+    "Generators",
+    "Grille_frames",
+    "Grilles",
+    "Hazard_marks",
+    "Hesco",
+    "Hesco_liner",
+    "Hesco_mesh",
+    "Kit_hinges",
+    "Kit_steel",
+    "Kit_straps",
+    "Ladders",
+    "Lamp_guards",
+    "Lamp_rims",
+    "Lamps",
     "Lit_windows",
+    "Masts",
     "Net_poles",
-    "Obstruction_lights",
-    "Panel_antennas",
+    "Obstruction_light",
+    "Parapet",
+    "Portal",
     "Radar",
     "Radar_dish",
     "Radar_frame",
     "Radar_horn",
-    "Radar_turntable",
     "Roller_door",
-    "Roof_deck",
-    "Roof_plate",
-    "Roof_sandbags",
-    "Window_frames",
-    "Windows"
+    "Roller_door_ribs",
+    "Roof",
+    "Roof.001",
+    "Sandbags",
+    "T_walls",
+    "Team_band",
+    "Vents",
+    "Walls",
+    "Walls.001",
+    "Window_visors"
    ],
    "category": "prop",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 8,872 over the prop normal hard cap 8,600 (info: kept, owner rule)",
+    "vertices 12,909 over the prop normal hard cap 12,300 (info: kept, owner rule)",
+    "renderers 52 over the prop normal budget 46"
+   ],
    "units": [],
    "movingParts": 1,
    "budgetClass": "prop"
