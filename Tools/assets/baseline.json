@@ -3176,6 +3176,16 @@
    "changes": [
     "FLAG interceptor_drone_vehicle: triangles 4,068 -> 4,298 (+5.7%); vertices 4,588 -> 5,905 (+28.7%); meshes 39 -> 49 (+25.6%); renderers 39 -> 49 (+25.6%); materials 8 -> 11 (+37.5%); materialSlots 39 -> 49 (+25.6%); fileBytes 264,948 -> 334,508 (+26.3%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "mobile_repair_vehicle"
+   ],
+   "reason": "P35 wave 9",
+   "changes": [
+    "FLAG mobile_repair_vehicle: triangles 3,668 -> 5,920 (+61.4%); vertices 3,886 -> 7,422 (+91.0%); meshes 28 -> 54 (+92.9%); renderers 28 -> 54 (+92.9%); materials 10 -> 13 (+30.0%); materialSlots 28 -> 54 (+92.9%); fileBytes 221,756 -> 415,348 (+87.3%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -41866,24 +41876,24 @@
   },
   "mobile_repair_vehicle": {
    "file": "mobile_repair_vehicle.glb",
-   "fileBytes": 221756,
-   "sha1": "d58b90c47e892f2a",
+   "fileBytes": 415348,
+   "sha1": "00885aaa2eb4aa48",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 32,
-   "meshes": 28,
-   "materials": 10,
+   "nodes": 58,
+   "meshes": 54,
+   "materials": 13,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 28,
-   "submeshes": 28,
-   "materialSlots": 28,
-   "materialsUsed": 10,
-   "triangles": 3668,
-   "vertices": 3886,
+   "renderers": 54,
+   "submeshes": 54,
+   "materialSlots": 54,
+   "materialsUsed": 13,
+   "triangles": 5920,
+   "vertices": 7422,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -41891,36 +41901,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 70,
+   "loosePieces": 164,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.5,
+    -1.52,
     0.0,
-    -3.28
+    -3.4247
    ],
    "boundsMax": [
-    1.5,
-    2.06,
-    3.21
+    1.52,
+    2.2129,
+    3.3067
    ],
    "size": [
-    6.49,
-    3.0,
-    2.06
+    6.731,
+    3.04,
+    2.213
    ],
    "center": [
     0.0,
-    1.03,
-    -0.035
+    1.106,
+    -0.059
    ],
-   "structureHash": "f1d1cef3b39d64c5",
+   "structureHash": "b681096a97eb2287",
    "color0": {
-    "mean": 0.8117,
-    "min": 0.5743,
+    "mean": 0.6377,
+    "min": 0.06,
     "max": 1.0,
-    "p05": 0.6862,
-    "p95": 0.9987,
+    "p05": 0.1504,
+    "p95": 0.9473,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -41943,38 +41953,64 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Cab",
-    "Cable_drum",
-    "Chassis",
+    "Ammo_boxes",
+    "Ammo_boxes.001",
+    "Antennas",
+    "Axles",
+    "Cradle",
     "Crane",
-    "Deck",
-    "Fenders",
+    "Crane_base",
+    "Crane_ram",
+    "Crane_rest",
+    "Cupola",
+    "Exhaust",
+    "Exhaust_caps",
+    "Exhaust_mufflers",
+    "Exhaust_shields",
     "Gas_bottles",
-    "Gas_caps",
-    "Hatch_fittings",
+    "Glass",
+    "Grille_frames",
+    "Grilles",
+    "Gun_belt",
+    "Gun_bracket",
+    "Gun_post",
+    "Gun_shield",
     "Hatches",
+    "Hazard_marks",
+    "Hook_block",
+    "Hubs",
+    "Hull",
+    "Jerrycans",
+    "Kit_cables",
+    "Kit_handles",
+    "Kit_latches",
+    "Kit_racks",
+    "Kit_steel",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_housing",
-    "Lockers",
+    "MG_receiver",
     "Main_cannon",
     "Muzzle_brake",
     "Muzzle_main",
     "Point_exhaust",
     "Point_fire",
-    "Roof_boxes",
-    "Rws_body",
-    "Rws_ring",
-    "Rws_sensor",
-    "Steel",
-    "Tail_lights",
+    "Sight",
+    "Spade",
+    "Spade_rams",
+    "Stowage",
+    "Suspension",
+    "Tail_lamps",
+    "Tow_bars",
+    "Tow_cable",
+    "Trim_vane",
     "Turret",
     "Tyres",
-    "Vents",
-    "Weld_lamp",
+    "Visors",
+    "Wheel_arches",
     "Wheels",
-    "Windows",
-    "Workshop"
+    "Winch"
    ],
    "category": "ground",
    "hd": false,
