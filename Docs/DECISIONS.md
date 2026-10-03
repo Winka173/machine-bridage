@@ -17723,3 +17723,70 @@ Docs/models/QUESTIONS.md go by the lead's proposals:
 11. Keep the kit's material separation (11-17 per model); merge to 6 only if the phone FPS measure later asks for it.
 Roof guns (pintle MGs, remote weapon stations, roof turrets) must read with real height: raised mount, cradle, ammo box,
 shield where the real one has it; fix Ixion's roof gun and the pilots' in wave 1, and the rule goes into MODEL_STANDARD.
+
+
+## Prompt 35 wave 1 (lane A)
+
+Branch `feature/p35-w1a` (2026-10-03), the owner's pilot review above. Report: Docs/models/WAVE_1_REPORT.md.
+
+- **Models.** Rebuilt from scratch in two new modules registered after the pilots (`mb_p35_wave1_bosses.py`,
+  `mb_p35_wave1_towers.py`), each from its own spec (Tools/blender/specs/<id>.json): fortress_bastion, fortress_hive,
+  behemoth_inferno, behemoth_tempest, stymphalos, repair_bay, radar_site, ammo_dump; the rocket turret's branches
+  rocket_turret_a / _b on the base's emplacement (decision 4); touch-ups: Ixion's and the pilots' roof guns, zu23's two
+  barrels. Siblings share no hull: bastion a Sandcrawler-like riveted casemate on two tracks, hive a crawler-transporter
+  platform on four double-track trucks; inferno an Object 279 shell over four tracks, tempest a slab hull with rhomboid
+  track guards; stymphalos eight Loyal-Wingman drones of its own design (the separate stymphalos_drone unit untouched).
+- **Runtime nodes.** Every parts[].node, Mount_* and Muzzle_* of the old files kept, near the data's part positions
+  (the hive's rear racks 0.35 m forward and its trucks inward, so the operator cabs keep the old length). Added only
+  where a gate or the data asks: Mount_APS on tempest (the def has APS, the old file lacked it), per-barrel muzzles
+  (zu23_technical Muzzle_b1/b2_main; bastion's ZU-23 pair Muzzle_b1/b2_mg[_001]; its twin 100 mm guns get theirs from
+  mb_fix_barrels as before). Inferno's pilot-flame tip sits in Muzzle_brake[_2]_glow (one runtime name a material).
+- **Faction styles.** One model draws a structure for both sides: repair_bay and ammo_dump Accord (field-built:
+  corrugated sheet, timber, sandbags, nets), radar_site Hegemon (cast pad, jersey barriers, a container), so the set
+  shows both styles.
+- **Roof guns** (MODEL_STANDARD "Roof guns"): kit35 `pintle_mg(post=)` builds the fixed post (base plate, gussets,
+  column, collar), the cradle and the big ammunition can; post 0 keeps the pilot's gun (backward compatible for lane
+  B). Ixion's two MGs on 0.9 m posts, the rocket turret family's crew MG on 0.5 m, bastion's ZU-23 pair on 0.95 m
+  pedestals; zu23_technical's gun: pedestal +5 cm with collar and gussets, upright magazines, the AA ring sight (its
+  height stays within 10 % of modelSize, so it cannot rise more).
+- **Decision 2 (zu23 barrels 2).** zu23 is a magazine gun (clip 50) and a magazine fires its barrels in turn (RIPPLE;
+  SIMULTANEOUS is refused with a clip), so half the damage a round keeps the DPS only with twice the rounds: barrels 2,
+  clip 100 (the ZU-23-2's 2 x 50 boxes), cooldown 0.02, clipReload 3.02, damage 3.5: cycle 5.00 s, sustained DPS 70,
+  both unchanged; zu23_ap damage 3.5. The bosses' copies follow (p26_bastion_tiny_zu23, p26_moloch_tiny_zu23: damage
+  3.5, clipReload 2.98, cycle 4.96 s, DPS 70.6 unchanged; the audit's FAMILY rule wants one damage a real weapon on
+  bosses); aa_25_triple, which inherits zu23, gets barrels 1 written in (unchanged). full_weapon_audit counts a twin's
+  magazine as a box a barrel for the wave 1 check; flag totals unchanged (TOO FAST 80, TOO SLOW 8, UNIT 1, WAVE 1 33,
+  FAMILY 0, DISPLAY 0).
+- **Decision 5 (gold per boss frame).** Classes boss_ground / boss_rail / boss_air / boss_sea (rail = Bogies /
+  Wheel_flanges / Sleepers / Rail_wheels nodes); a frame without gold uses the whole boss gold. A borrowed model
+  (REBUILD_LIST stand_in) is never gold: the ground set had become fortress_bastion + behemoth_tempest, two stand-ins
+  being rebuilt. Sets: ground behemoth, mobile_fortress; rail nuke_train; air mega_gunship, silver_bug; sea leviathan.
+  The other classes' gold is unchanged. The pilots move: Ixion 79.7 -> 87.5 (90.1 after its touch-up).
+- **Decision 6 (cap).** Hard gate `triangles_cap` for the budget classes light and tower: 1.5 x the class maximum
+  (7,500 / 6,000). The rocket turret 9,052 -> 5,638 (exposed tubes without caps, two courses of bigger sandbags), its
+  branches 5,366 / 5,520, zu23_technical 7,368, the three structures 5,284-5,970. Old models over the cap now fail
+  the gate (WAVE_1_REPORT lists them).
+- **Decision 8 (merged nodes).** quality_gate.MERGED clears a role / mount the kit merged into a named node for the four
+  V2 models (MBT mantlet in Turret_body, idler in Wheels; fighter tail in Fuselage, Mount_aam in Wingtip_missiles;
+  Apache rockets in Pods, Mount_aam in Stinger_tubes; Icarus APS in Pd_base); a spec may declare `"merged"`. The four
+  pass every hard gate now.
+- **Decision 9 (byte-identical builds).** frontier_kit.export_collection puts every mesh in canonical order before the
+  glTF export (vertices by position, edges and faces by vertex order, each face's loop from its lowest vertex):
+  merge-by-distance / dissolve left element order changing run to run, and the exporter's triangle order and ngon
+  diagonals followed it (geometry, normals, UVs and colours were the same). Checked: rocket_turret_a three builds and
+  ixion (36k triangles) two builds give the same md5.
+- **Decision 7.** mara_behemoth: no copy and no pointer now (nothing reads the id); REBUILD_LIST notes the plan
+  (rebuild_inventory.py writes it); the model and the data pointer land together in a later wave.
+- **Decision 10.** Only cell D11 of the sheet Boss changed (edited in the xlsx XML, the rest byte-identical);
+  unit_sheet.json regenerated by Tools/docs/unit_sheet.py. P11 ("Tham khảo") still says "(model tạm)" and
+  unit_refs.json reads it: left, the decision names the shape cell only.
+- **Gate and validator fixes found on the way.** A boss part node ending in `*` is a prefix (the runtime's rule;
+  bastion's and tempest's Main_cannon*); a variant boss needs muzzles only for the mounts it keeps
+  (BossTemplates.Strip: stymphalos 5 of 9); for the sloped-face gate a structure takes the better of two readings
+  (its base and fittings as before, or with its roof / walls / berm / shelter), so no tower that passed fails. validate_specs takes the same two boss rules. glb_check's renderer caps (an error gate) made
+  repair_bay, radar_site and stymphalos merge small parts of one material.
+- **NEEDS_HUMAN.** repair_bay 66.9, radar_site 71.2, ammo_dump 57.8 after 4 rounds each (all hard gates pass; the
+  old files 32.5 / 54.2 / 56.5): at the 6,000-triangle cap the tower gold set (small gun towers dense in railings and
+  ladders) holds an edge density and brightness-region count per pixel that a 6-15 m building's roof cannot reach;
+  more detail would go over the cap. Owner question: a structure gold set (as decision 5), or the owner's look.
+- **Over budget (information).** fortress_bastion 34.2k, behemoth_inferno 23.6k triangles (boss class 10-20k).

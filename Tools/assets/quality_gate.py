@@ -327,7 +327,9 @@ def metrics(model, length_ref=7.0, structure=False):
     out['tier2_m2'] = tiers[1] / max(area, 1e-3)
     out['tier3_m2'] = tiers[2] / max(area, 1e-3)
     out['area_scaled'] = area
-    out['sloped_dirs'] = _sloped_directions(model, structure)
+    # A structure takes the better of the two readings (its base and fittings, or its roof / walls / berm too), so a
+    # tower that passed on its base alone still passes.
+    out['sloped_dirs'] = max(_sloped_directions(model), _sloped_directions(model, True)) if structure else         _sloped_directions(model)
     out['zones'] = len({p.material for p in model.pieces if len(p.tris)})
     lum = np.concatenate([p.lum for p in model.pieces if p.has_color]) if any(p.has_color for p in model.pieces) \
         else np.zeros(0)
