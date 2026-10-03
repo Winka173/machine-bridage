@@ -570,7 +570,214 @@ def landing_hovercraft(a):
     k.clean(a)
 
 
+# ============================================================================= typhon
+T_DECK = 3.8            # the casing deck
+
+
+def typhon(a):
+    """Project 941 Akula (Typhoon) at the game's scale: the very wide flat hull (two pressure hulls under one casing),
+    the 20 missile tubes in two rows FORWARD of the sail (as on the real boat) under the hinged doors (Part_doors_l,
+    Part_doors_r), the long low sail aft of them with its masts and the SAM post (Mount_missile), the retractable
+    bow planes, the chin sonar dome (Part_sonar), the cruciform stern with the end-plated planes and the twin
+    shrouded screws (Part_rudder), a deck gun on the forecasing (Mount_gun; single barrel, mb_fix_barrels twins it).
+    The boss parts sit where the real boat has them (the old file had the silo aft of the sail); nodes are named as
+    before. Runtime: Part_sail, Part_doors_l, Part_doors_r, Part_rudder, Part_sonar, Mount_missile / Muzzle_missile,
+    Mount_gun / Muzzle_gun."""
+    K.suffixed(a)
+    hull = a.part('Hull', 'Armor')
+    # Stations bow (-Y) to stern: a flattened ellipse, widest amidships, tapering to the screws.
+    st = []
+    for y, w, h, zc in ((-29.5, .4, .4, .5), (-28.6, 2.6, 2.0, .45), (-26.5, 4.4, 3.0, .4), (-22.0, 5.4, 3.4, .35),
+                        (-12.0, 5.75, 3.5, .3), (8.0, 5.75, 3.5, .3), (16.0, 5.4, 3.2, .3), (22.0, 3.6, 2.4, .35),
+                        (26.0, 1.6, 1.3, .4), (27.6, .5, .5, .4)):
+        st.append((y, K.ellipse_half(w, h, zc, n=8)))
+    K.section_loft(hull, st)
+    # The casing deck on top, the limber holes along its sides, the waterline band.
+    casing = a.part('Deck_casing', 'Armor')
+    W.poly_turret(casing, [(T_DECK - .7, [(-3.6, -25.0), (3.6, -25.0), (4.1, -18.0), (4.1, 14.0), (2.8, 19.5),
+                                          (-2.8, 19.5), (-4.1, 14.0), (-4.1, -18.0)]),
+                           (T_DECK, [(-3.0, -24.0), (3.0, -24.0), (3.6, -18.0), (3.6, 13.5), (2.4, 18.6),
+                                     (-2.4, 18.6), (-3.6, 13.5), (-3.6, -18.0)])], chamfer=.06)
+    holes = a.part('Limber_holes', 'Undercarriage')
+    for s in (-1, 1):
+        for j in range(34):
+            y = -21.0 + j * 1.05
+            holes.box((.05, .55, .16), loc=(s * (4.1 - .02 if -18 < y < 14 else 3.7), y, T_DECK - .45), bevel=0)
+        a.part('Waterline_band', 'BarrelRed').box((.04, 40.0, .3), loc=(s * 6.07, -2.0, .3), bevel=0)
+        a.part('Team_band', 'Team').box((.04, 30.0, .25), loc=(s * 5.95, -2.0, 1.6), bevel=0)
+    # Anechoic tile seams on the upper hull (thin dark lines), cleats, an escape hatch row, the anchor recess.
+    seams = a.part('Tile_seams', 'Undercarriage')
+    for j in range(12):
+        y = -18.0 + j * 3.0
+        seams.tube([(-5.6, y, 1.9), (-4.4, y, 3.0)], .03, seg=3, caps=False)
+        seams.tube([(5.6, y, 1.9), (4.4, y, 3.0)], .03, seg=3, caps=False)
+    # The anechoic coating on the casing: big tiles in rows, some darker (renewed) and some fallen off (the bare
+    # steel shows dark), the look of the real boats.
+    tiles = a.part('Deck_tiles', 'Team')
+    dark = a.part('Deck_tiles_new', 'Armor')
+    bare = a.part('Deck_tiles_bare', 'Undercarriage')
+    for j in range(17):
+        y = -23.0 + j * 2.45
+        if -17.2 < y < -.8:
+            continue
+        half = 3.0 if y < -18 else 3.5 if y < 13.5 else 2.6
+        n = 3 if half > 2.8 else 2
+        for c in range(n):
+            x = -half + (c + .5) * (2 * half / n)
+            code = (j * 7 + c * 3) % 11
+            part = bare if code == 0 else dark if code in (3, 7) else tiles
+            part.box((2 * half / n - .12, 2.33, .05), loc=(x, y, T_DECK + .02), bevel=0)
+    for s in (-1, 1):
+        for j in range(13):
+            y = -19.0 + j * 2.9
+            code = (j * 5 + (s > 0)) % 7
+            part = bare if code == 0 else dark if code == 4 else tiles
+            part.box((.05, 2.75, 1.0), loc=(s * 5.66, y, 2.05), rot=(0, s * -.55, 0), bevel=0)
+    cl = a.part('Cleats', 'Steel')
+    for s in (-1, 1):
+        for y in (-22.0, -17.5, 11.0, 15.0):
+            cl.box((.15, .5, .12), loc=(s * 3.2, y, T_DECK + .06), bevel=0)
+    for y in (-21.5, 12.5, 16.5):
+        K.hatch_round(a, (0, y, T_DECK), r=.45, periscopes=0, seg=10)
+    a.part('Anchor_recess', 'Undercarriage').box((.6, .9, .5), loc=(1.6, -26.0, 2.2), rot=(0, 0, .3), bevel=0)
+    # Surfaced fittings: the stanchions and lifelines rigged along the casing, mooring bollards, the two rescue buoy
+    # hatches (yellow-marked), ventilation grilles aft, a coiled line.
+    rail = a.part('Railings', 'Steel')
+    for s in (-1, 1):
+        K.railing(rail, [(s * 3.3, -22.5, T_DECK), (s * 3.3, -17.6, T_DECK)], h=.9, post=1.0, r=.03)
+        K.railing(rail, [(s * 3.3, 9.5, T_DECK), (s * 3.3, 17.0, T_DECK)], h=.9, post=1.0, r=.03)
+        bl = a.part('Bollards', 'Steel')
+        for y in (-23.0, -18.5, 10.0, 14.0, 17.5):
+            for dy in (-.25, .25):
+                bl.cyl(.13, .4, loc=(s * 2.6, y + dy, T_DECK + .2), seg=8, bevel=0)
+    for y in (-.2, 1.6):
+        K.chamfer_box(a.part('Rescue_buoys', 'Hazard'), (1.6, 1.0, .12), loc=(-2.6, y, T_DECK + .05), c=.03)
+    for (x, y) in ((1.8, 15.5), (-1.8, 15.5), (0, 18.0)):
+        K.grille(a, (x, y, T_DECK + .03), 1.2, .8, facing=(0, 0, 1), slats=5, frame_mat='Armor')
+    k.ring(a.part('Rope_coil', 'Canvas'), [(.25, 0), (.45, 0), (.45, .12), (.25, .12)], loc=(2.0, -20.0, T_DECK), seg=10)
+    # Bow planes (retracted into the casing sides), the chin sonar dome on Part_sonar.
+    for s in (-1, 1):
+        K.wing(a.part('Bow_planes', 'Armor'), (-21.8, 1.8), (-21.3, 1.2), 1.4, x0=5.25, z=1.0, t=.12, sides=(s,))
+    ps = a.pivot('Part_sonar', (0, -26.0, 1.2))
+    k.lathe(a.part('Sonar_dome', 'Armor', ps), [(0, -1.0), (1.5, -.8), (2.0, 0), (1.6, .9), (0, 1.1)],
+            loc=(0, .4, -1.6), rot=K.FORWARD, seg=14)
+    a.part('Sonar_band', 'Hazard', ps).cyl(1.95, .2, loc=(0, .3, -1.6), rot=K.FORWARD, seg=14, bevel=0)
+    a.part('Sonar_emitter', 'Glass', ps).box((1.4, .05, .6), loc=(0, -.62, -1.6), bevel=0)
+    K.tone(a, 'Part_sonar', k=.85)
+    _typhon_silo(a)
+    _typhon_sail(a)
+    _typhon_stern(a)
+    _typhon_gun(a)
+    k.clean(a)
+
+
+def _typhon_silo(a):
+    """The missile deck forward of the sail: a raised flat hump, 20 tube doors in two rows of ten, each door on its
+    hinge with a rim; the left row on Part_doors_l, the right on Part_doors_r (breakable)."""
+    hump = a.part('Missile_hump', 'Obsidian')
+    W.poly_turret(hump, [(T_DECK - .05, [(-3.4, -17.0), (3.4, -17.0), (3.4, -1.0), (-3.4, -1.0)]),
+                         (T_DECK + .55, [(-3.1, -16.6), (3.1, -16.6), (3.1, -1.3), (-3.1, -1.3)])], chamfer=.06)
+    for i, (s, nm) in enumerate(((1, 'Part_doors_l'), (-1, 'Part_doors_r'))):
+        p = a.pivot(nm, (s * 1.6, -9.0, T_DECK + .55))
+        lids = a.part(f'Doors_{nm[5:]}', 'Team', p)
+        rims = a.part(f'Doors_rim_{nm[5:]}', 'Steel', p)
+        hinges = a.part(f'Doors_hinge_{nm[5:]}', 'Steel', p)
+        for j in range(10):
+            y = -6.75 + j * 1.5
+            k.lathe(rims, [(.62, -.02), (.7, -.02), (.7, .06), (.62, .06)], loc=(0, y, 0), seg=14)
+            k.lathe(lids, [(0, .12), (.5, .1), (.62, .05), (.62, .02)], loc=(0, y, 0), seg=14)
+            hinges.box((.12, .3, .12), loc=(s * .72, y, .06), bevel=0)
+        K.tone(a, nm, k=.88)
+
+
+def _typhon_sail(a):
+    """The long low sail (Part_sail) aft of the silo: a streamlined fin with the ice-breaking rounded top, the
+    bridge windows, the mast and periscope stubs, the snorkel head, and the SAM post on its top (Mount_missile)."""
+    p = a.pivot('Part_sail', (0, 4.0, 3.6))
+    body = a.part('Sail_body', 'Armor', p)
+    rings = []
+    for z, sc in ((.1, 1.0), (4.5, .97), (6.6, .88), (7.0, .7)):
+        pts = [(-1.6 * sc, -3.2 * sc), (-1.3 * sc, -4.4 * sc), (0, -5.0 * sc), (1.3 * sc, -4.4 * sc),
+               (1.6 * sc, -3.2 * sc), (1.5 * sc, 2.5 * sc), (.8 * sc, 4.6 * sc), (0, 5.0 * sc), (-.8 * sc, 4.6 * sc),
+               (-1.5 * sc, 2.5 * sc)]
+        rings.append((z, pts))
+    W.poly_turret(body, rings, chamfer=.06)
+    top = a.part('Sail_top', 'Team', p)
+    top.box((2.2, 6.0, .1), loc=(0, -.5, 7.0), bevel=0)
+    win = a.part('Sail_windows', 'Glass', p)
+    for s in (-1, 1):
+        for j in range(3):
+            win.box((.02, .5, .3), loc=(s * 1.32, -3.2 + j * .6, 6.4), bevel=0)
+    win.box((1.6, .02, .3), loc=(0, -4.35, 6.5), rot=(-.4, 0, 0), bevel=0)
+    masts = a.part('Sail_masts', 'Steel', p)
+    for (y, h, r) in ((-.6, .6, .16), (.2, .9, .13), (1.0, .7, .2), (1.9, .5, .24)):
+        k.lathe(masts, [(r, 7.0), (r, 7.0 + h), (r * 1.3, 7.0 + h + .05), (r * 1.3, 7.0 + h + .35), (0, 7.0 + h + .4)],
+                loc=(0, y, 0), seg=8)
+    a.part('Sail_planes', 'Armor', p).box((.6, 1.4, .5), loc=(0, 3.4, 6.8), bevel=0)
+    for sx in (-1, 1):
+        K.ladder(a.part('Railings', 'Steel', p), (sx * 1.6, 1.5, .2), (sx * 1.55, 1.5, 6.9), width=.45, step=.35)
+        k.ring(a.part('Life_rings', 'BarrelRed', p), [(.28, -.05), (.4, -.05), (.4, .05), (.28, .05)],
+               loc=(sx * 1.58, -1.0, 5.6), rot=(0, R90, 0), seg=10)
+    K.railing(a.part('Railings', 'Steel', p), [(-1.0, -4.0, 7.05), (1.0, -4.0, 7.05), (1.2, 2.0, 7.05),
+                                               (-1.2, 2.0, 7.05), (-1.0, -4.0, 7.05)], h=.9, post=.9, r=.025)
+    for s in (-1, 1):
+        K.lamp(a, (s * .5, -4.6, 6.4), (0, -1, 0), r=.12, parent=p, guard=False)
+    m = a.pivot('Mount_missile', (0, -2.6, 7.05), p)
+    k.lathe(a.part('R_base_Mount_missile', 'Armor', m), [(.45, -.4), (.45, .1), (.3, .2), (0, .2)], seg=10)
+    K.chamfer_box(a.part('R_box_Mount_missile', 'Team', m), (1.2, 1.6, .7), loc=(0, -.2, .6), rot=(-.3, 0, 0), c=.05)
+    tb = a.part('R_tubes_Mount_missile', 'Undercarriage', m)
+    for dx in (-.3, .3):
+        for dz in (-.15, .15):
+            tb.cyl(.13, .02, loc=(dx, -.98, .85 + dz), rot=_lift(.3), seg=8, bevel=0)
+    a.pivot('Muzzle_missile', (0, -.95, .85), m)
+    K.tone(a, 'Part_sail', k=.92)
+
+
+def _typhon_stern(a):
+    """Part_rudder: the cruciform stern, the upper rudder with the towed-array pod, the stern planes with their end
+    fins, the twin seven-blade screws in their shrouds."""
+    p = a.pivot('Part_rudder', (0, 27.0, 1.0))
+    fins = a.part('Rudder_fins', 'Armor', p)
+    K.fin(fins, (-3.0, 4.0), (-1.2, 2.6), 4.6, z0=.2, t=.12)
+    K.fin(fins, (-3.0, 3.6), (-1.6, 2.4), -3.2, z0=-.2, t=.12)
+    K.wing(fins, (-3.5, 4.0), (-2.0, 2.4), 3.6, x0=.6, z=-.1, t=.1)
+    for s in (-1, 1):
+        fins.box((.12, 2.2, 1.6), loc=(s * 4.2, -1.8, -.1), bevel=0)
+    k.lathe(a.part('Rudder_pod', 'Armor', p), [(0, -1.0), (.35, -.8), (.35, 1.2), (0, 1.5)], loc=(0, -.2, 4.8),
+            rot=(-R90, 0, 0), seg=10)
+    for s in (-1, 1):
+        x = s * 2.4
+        k.ring(a.part('Screw_shrouds', 'Armor', p), [(1.25, -1.0), (1.45, -.9), (1.45, .7), (1.25, .8)],
+               loc=(x, -2.8, -.3), rot=K.FORWARD, seg=16)
+        sc = a.part('Screws', 'Steel', p)
+        for j in range(7):
+            u = j * TAU / 7
+            sc.box((.35, .06, 1.15), loc=(x + math.cos(u) * .65, -2.8, -.3 + math.sin(u) * .65),
+                   rot=(.35, -u + R90, 0), bevel=0, taper=(.5, 1))
+        k.lathe(a.part('Screw_hubs', 'Steel', p), [(0, -.7), (.4, -.5), (.4, .5), (0, .8)], loc=(x, -2.8, -.3),
+                rot=(-R90, 0, 0), seg=10)
+    K.tone(a, 'Part_rudder', k=.9)
+
+
+def _typhon_gun(a):
+    """A deck gun on the forecasing (the game's addition: the def's 57 / 100 mm), on Mount_gun: a low turret, one
+    barrel (mb_fix_barrels makes the pair)."""
+    k.ring(a.part('Turret_rings', 'Steel'), [(1.1, -.05), (1.25, -.05), (1.25, .12), (1.1, .12)],
+           loc=(0, -19.5, T_DECK), seg=16)
+    m = a.pivot('Mount_gun', (0, -19.5, T_DECK))
+    house = a.part('Gun_house_gun', 'Armor', m)
+    W.poly_turret(house, [(0, [(-1.1, -1.2), (1.1, -1.2), (1.2, .5), (.8, 1.3), (-.8, 1.3), (-1.2, .5)]),
+                          (1.1, [(-.75, -.9), (.75, -.9), (.85, .4), (.55, 1.05), (-.55, 1.05), (-.85, .4)])],
+                  chamfer=.06)
+    K.chamfer_box(a.part('Gun_armor_gun', 'Team', m), (.6, .4, .5), loc=(0, -1.25, .52), c=.04)
+    K.gun_barrel(a, 'Gun_barrel_gun', m, 0, -1.4, .52, 3.76, .1, seg=12, extractor=(.45, 1.5, .4),
+                 brake_name='Gun_brake_gun', brake='collar')
+    K.periscope(a, (.45, .3, 1.1), facing=(0, -1, 0), parent=m, size=(.24, .22, .2))
+    a.pivot('Muzzle_gun', (0, -5.3, .52), m)
+
+
 BUILDERS = {
     'monster': (monster, dict(ao_distance=1.6, grime_height=1.6)),
     'landing_hovercraft': (landing_hovercraft, dict(ao_distance=1.0, grime_height=2.2)),
+    'typhon': (typhon, dict(ao_distance=1.0, grime_height=2.5)),
 }
