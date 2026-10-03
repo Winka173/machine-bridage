@@ -1,0 +1,307 @@
+{
+ "id": "drone_mothership",
+ "class": "boss",
+ "real": [
+  "USS Akron / Macon (the rigid airship 'flying aircraft carrier': internal hangar, trapeze)",
+  "Zeppelin NT / Airlander 10 X tail and vectoring ducted fans",
+  "twin 30 mm chin turret, quad 23-30 mm flak turrets, Shadow-class recon UAV, FPV drones"
+ ],
+ "shape": "The old file's armoured drone-carrier airship (origin at the envelope centre, 28.3 x 14 x 11.9 m, every pivot kept to the centimetre) rebuilt: rigid envelope with strakes, ring frames, nose battens, armoured nose cap and tail cone, riveted spine and flank armour, the general's stripe; X tail with rudder-vators; four vectoring ducted fans on outriggers; chin twin 30 mm turret, the command gondola with glazing, armour skirt, searchlights, sensor ball and bomb bay doors, the twin cannon ball under it, two hanging gun pods; the keel, the drone hangar with open doors and six FPV drones, the rotary drop launcher, the trapeze with a recon UAV; two quad flak turrets on the back and the shield-generator belt between them; hatch, antennas, datalink, beacons, flare dispensers.",
+ "confidence": "ước đoán (a game boss; USS Akron / Macon hangar and trapeze, Zeppelin NT / Airlander X tail and ducted fans for the parts)",
+ "target_size": {
+  "L": 28.3,
+  "W": 14.04,
+  "H": 11.86,
+  "source": "the old GLB (the def has no modelSize; scale 1.15)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "rigid envelope, strakes, ring frames, nose battens and cap, tail cone, armour plates, general's stripe",
+   "nodes": [
+    "Envelope",
+    "Strakes",
+    "Ring_frames",
+    "Nose_battens",
+    "Plates",
+    "General_stripe"
+   ]
+  },
+  {
+   "feature": "X tail with control surfaces and nav lights",
+   "nodes": [
+    "Fins",
+    "Control_surfaces"
+   ]
+  },
+  {
+   "feature": "four ducted fans with stators, nacelles, outriggers",
+   "nodes": [
+    "Propeller",
+    "Propeller_2",
+    "Propeller_3",
+    "Propeller_4",
+    "Ducts",
+    "Stators",
+    "Nacelles",
+    "Outriggers"
+   ]
+  },
+  {
+   "feature": "chin twin 30 mm turret",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Main_cannon",
+    "Main_cannon_2",
+    "Muzzle_brake",
+    "Muzzle_brake_2",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "command gondola, glazing, armour skirt, searchlights, sensor ball, bomb bay doors",
+   "nodes": [
+    "Gondola",
+    "Windows",
+    "Gondola_armor",
+    "Searchlights",
+    "Bombbay_doors"
+   ]
+  },
+  {
+   "feature": "gondola cannon ball and hanging gun pods",
+   "nodes": [
+    "Mount_main.001",
+    "Muzzle_main.001",
+    "Mount_gun",
+    "Muzzle_gun",
+    "Mount_gun.001",
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "feature": "keel, drone hangar with doors and FPV drones, rotary drop launcher, trapeze with UAV",
+   "nodes": [
+    "Keel",
+    "Bay",
+    "Bay_doors",
+    "Drone_frames",
+    "Muzzle_missile",
+    "Mount_missile.001",
+    "Muzzle_missile.001",
+    "Uav_trapeze",
+    "Uav_body"
+   ]
+  },
+  {
+   "feature": "two quad flak turrets, shield belt with coil and emitters",
+   "nodes": [
+    "Mount_mg",
+    "Muzzle_mg",
+    "Mount_mg.001",
+    "Muzzle_mg.001",
+    "Flak_body",
+    "Shield_band",
+    "Shield_coil",
+    "Shield_emitters"
+   ]
+  },
+  {
+   "feature": "hatch, antennas, datalink, beacons, flare dispensers",
+   "nodes": [
+    "Hatch",
+    "Antennas",
+    "Datalink",
+    "Flares"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "lift"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_matriarch_tiny_mothership_cannon",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "mount 0: the chin twin 30 mm (cannon_bow)"
+  },
+  {
+   "weapon": "p26_matriarch_ma_drones",
+   "slot": "missile",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_missile"
+   ],
+   "note": "mount 1: the drone hangar (drone_bay)"
+  },
+  {
+   "weapon": "p26_matriarch_close_boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "mount 2: forward quad flak (flak_top)"
+  },
+  {
+   "weapon": "p26_matriarch_close_boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ],
+   "note": "mount 3: aft quad flak (flak_rear)"
+  },
+  {
+   "weapon": "p26_matriarch_tiny_mothership_cannon",
+   "slot": "main",
+   "mount": "Mount_main.001",
+   "muzzles": [
+    "Muzzle_main.001"
+   ],
+   "note": "mount 4: the gondola cannon ball"
+  },
+  {
+   "weapon": "p26_matriarch_direct_ma_atgm",
+   "slot": "missile",
+   "mount": "Mount_missile.001",
+   "muzzles": [
+    "Muzzle_missile.001"
+   ],
+   "note": "mount 5 (uav_bay, no node of its own: the drop launcher beside the trapeze)"
+  },
+  {
+   "weapon": "p26_matriarch_sec_autocannon_30",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ],
+   "note": "mount 6: the left gun pod"
+  },
+  {
+   "weapon": "p26_matriarch_sec_autocannon_30",
+   "slot": "gun",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ],
+   "note": "mount 7: the right gun pod"
+  },
+  {
+   "weapon": "p26_matriarch_direct_ma_atgm",
+   "slot": "missile",
+   "mount": "Mount_missile.001",
+   "muzzles": [
+    "Muzzle_missile.001"
+   ],
+   "note": "mount 8: the rotary drop launcher (drone_bay_2)"
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "cap": null,
+  "note": "boss: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "envelope and strakes (Team)",
+  "general's stripe (Team)",
+  "fins (Team)",
+  "gondola (Team)",
+  "turret houses (Team)",
+  "duct bands (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "node": "Turret",
+   "part": "cannon_bow"
+  },
+  {
+   "node": "Mount_main.001",
+   "part": "cannon_gondola"
+  },
+  {
+   "node": "Mount_mg",
+   "part": "flak_top"
+  },
+  {
+   "node": "Mount_mg.001",
+   "part": "flak_rear"
+  },
+  {
+   "node": "Mount_gun",
+   "part": "belly_gun_l"
+  },
+  {
+   "node": "Mount_gun.001",
+   "part": "belly_gun_r"
+  },
+  {
+   "node": "Mount_missile.001",
+   "part": "drone_bay_2"
+  },
+  {
+   "node": "Bay",
+   "part": "drone_bay (no node: toned panel)"
+  },
+  {
+   "node": "Uav_trapeze",
+   "part": "uav_bay (no node: toned panel)"
+  },
+  {
+   "node": "Shield_band",
+   "part": "shield (no node: toned belt)"
+  },
+  {
+   "node": "Bombbay_doors",
+   "part": "bomb_bay (no node: toned doors)"
+  }
+ ],
+ "wreck": "the runtime breaks the boss parts off",
+ "faction_style": "Sen's armoured airship: team-colour envelope and gondola, dark riveted armour, glowing shield coil",
+ "details": {
+  "tier1": [
+   "envelope",
+   "gondola",
+   "fins",
+   "fans"
+  ],
+  "tier2": [
+   "turrets",
+   "hangar",
+   "launcher",
+   "trapeze",
+   "shield belt",
+   "pods"
+  ],
+  "tier3": [
+   "rivets",
+   "strakes",
+   "battens",
+   "windows",
+   "searchlights",
+   "drones",
+   "UAV",
+   "antennas",
+   "flares",
+   "lights"
+  ]
+ },
+ "questions": []
+}
