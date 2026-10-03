@@ -330,7 +330,7 @@ namespace MachineBrigade.Game.Views
         // ------------------------------------------------------------------------------------------ water meshes
 
         /// <summary>The edge sea (near and far) and the rivers running out, on the theme's water material.</summary>
-        private void BuildEdgeWater(MaterialLibrary materials)
+        private void BuildEdgeWater(MaterialLibrary materials, SimWorld world)
         {
             if (!HasEdges) return;
             if (_edges.HasSea)
@@ -338,11 +338,13 @@ namespace MachineBrigade.Game.Views
                 // Cells that fit the decorated square exactly, so the near and far sheets meet at its edge without a gap.
                 var near = Extent * 2f / Mathf.Ceil(Extent);
                 var far = Extent * 2f / Mathf.Max(1f, Mathf.Round(Extent * 2f / 20f));
-                Place("Edge Sea", Own(SeaMesh(Extent, near, 0f)), materials.Water);
-                Place("Far Sea", Own(SeaMesh(Extent * 3f, far, Extent)), materials.Water);
+                // Play-test 13: shallow and foaming at the coast, deep offshore (Surroundings.Water).
+                var sea = EdgeWater(materials, world);
+                Place("Edge Sea", Own(SeaMesh(Extent, near, 0f)), sea);
+                Place("Far Sea", Own(SeaMesh(Extent * 3f, far, Extent)), sea);
             }
             foreach (var r in _edgeRivers)
-                Place("Edge River", Own(RiverMesh(r)), materials.Water);
+                Place("Edge River", Own(RiverMesh(r)), CalmWater(materials));
         }
 
         /// <summary>The sea as runs of cells (one quad per run of a row) over a square of half-size <paramref name="half"/>, leaving out the inner square <paramref name="hole"/>.</summary>

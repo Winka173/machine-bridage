@@ -19,7 +19,7 @@ namespace MachineBrigade.Tests
         {
             "MachineBrigade/Lit", "MachineBrigade/Unlit", "MachineBrigade/Particle", "MachineBrigade/GroundMark",
             "MachineBrigade/Flipbook", "MachineBrigade/Beam", "MachineBrigade/Shield", "MachineBrigade/Impostor",
-            "MachineBrigade/Outline",
+            "MachineBrigade/Outline", "MachineBrigade/Water",
         };
 
         [Test]

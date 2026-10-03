@@ -121,9 +121,11 @@ namespace MachineBrigade.Game.Views
 
             materials.Water.SetColor("_BaseColor", theme.WaterColour);
             materials.Water.SetFloat("_Roughness", theme.WaterRoughness);
+            // Play-test 13: the water at the shore (the water shader shades from it to the deep colour offshore).
+            materials.Water.SetColor("_ShallowColor", MaterialLibrary.ShallowOf(theme.WaterColour, theme.Palette.Sand));
             if (theme.Water is ThemeWater.River or ThemeWater.FrozenRiver or ThemeWater.Canal)
             {
-                var river = Place("River", Own(Plane(1f, 1)), materials.Water);
+                var river = Place("River", Own(Plane(1f, 1)), CalmWater(materials));
                 river.transform.position = new Vector3(_centre.x, -0.01f, RiverZ);
                 river.transform.localScale = new Vector3(Extent * 2f, 1f, RiverWidth);
             }
@@ -144,7 +146,7 @@ namespace MachineBrigade.Game.Views
             }
 
             // Prompt 33 L2 (view): with edges data the sea follows the SEA stretches (not the theme's north shore).
-            BuildEdgeWater(materials);
+            BuildEdgeWater(materials, world);
 
             if (theme.Skyline != null) BuildSkyline(models);
             if (_field.HasOutline) ScatterBays(models);
@@ -253,6 +255,7 @@ namespace MachineBrigade.Game.Views
             if (_texture != null) Object.Destroy(_texture);
             if (_palette != null) Object.Destroy(_palette);
             if (_lavaMaterial != null) Object.Destroy(_lavaMaterial);
+            DisposeWater();
         }
 
         /// <summary>

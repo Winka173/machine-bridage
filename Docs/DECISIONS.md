@@ -18962,3 +18962,19 @@ Rendering, VFX and view motion from play-test 13 (Docs/prompts/requests_vi.md). 
   current target inside the mount's own arc (an aft turret never swings across the bridge). The rail supergun's turret
   traverses onto its laid heading and stays there (its design). View only; the sim's aim and hits are unchanged. Lane C
   could lay the guns a few seconds before the shot so the turret is on target when it fires (the view then shows it).
+- **The sea redrawn (`MachineBrigade/Water`).** Real life: from above, coastal water is turquoise over the sand in the
+  shallows and turns deep blue-green within a few tens of metres; waves bend the surface, so the sun breaks into a moving
+  glitter path and the sky's reflection shifts; surf foams in a band on the beach; far off the sea fades into haze. Before:
+  one flat plane on the Lit shader (one colour, roughness 0.08, no waves). Now one opaque, texture-light shader for every
+  water surface (no depth or opaque texture, nothing screen-space, so it holds on phones): three analytic swells (23, 13,
+  7.5 m) and two ripple layers from the shared `_MbNoise` bend the normal; colour from shallow (`_ShallowColor`, the deep
+  colour lightened toward the theme's sand and a touch turquoise) to deep (`_BaseColor`, the theme's water) by distance from
+  the shore; the sun's diffuse and shadows (hull shadows on the water), a sharp specular plus a glitter inside a wider lobe,
+  Fresnel sky reflection (lifted: at the camera's 52 degrees the real 2 % read as paint), night lights glinting; a swash line
+  and washing foam bands at the shore and sparse whitecaps offshore; the battle's linear fog. The shore distance comes from
+  data: MapView's water gets r = depth, g = open water from a 1 m chamfer distance to the bank (`ShoreField`; beyond the
+  map's edge the water runs on, so no false shore there; a ford stays shallow); the edge sea reads a 4 m shore-distance
+  texture over the decorated square (`Surroundings.Water`; the map's own water counts as sea). Rivers, canals and the
+  in-map water of non-sea maps are calm (no swell); a frozen river has neither ripples nor foam. Low graphics keeps its
+  unlit in-map water. Old property names kept (`_BaseColor`, `_Roughness`), so themes and maps set it as before.
+  Check: `-executeMethod MachineBrigade.Editor.SeaShots.Run` (Builds/sea_shots/sea.png).

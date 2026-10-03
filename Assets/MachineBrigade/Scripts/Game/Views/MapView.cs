@@ -723,10 +723,23 @@ namespace MachineBrigade.Game.Views
                     Mathf.Clamp01(_theme.WaterColour.b / Mathf.Max(0.01f, shallow.b)));
                 var (mesh, verts, fields) = Contour("River", water, deep, bounds);
                 var colours = new Color32[verts.Count];
+                // Play-test 13: the water shader reads r = depth, g = open water (0 on the shore), b = brightness, from the
+                // distance to the bank (metres, 1 m cells; beyond the map's edge the water runs on). Low graphics keeps the
+                // unlit tint from shallow to deep.
+                var shore = _lowWater ? null : new ShoreField(water, bounds);
                 for (var i = 0; i < verts.Count; i++)
                 {
                     var depth = Edge(0.3f, 0.85f, fields[i].y);
-                    colours[i] = Primitives.Linear(Color.Lerp(Color.white, ratio, depth));
+                    if (shore == null)
+                    {
+                        colours[i] = Primitives.Linear(Color.Lerp(Color.white, ratio, depth));
+                        continue;
+                    }
+                    var metres = shore.Metres(verts[i].x, verts[i].z);
+                    var open = Mathf.Clamp01(metres / 4f);
+                    // Shallow at the bank, deep by ~18 m out; a ford stays shallow.
+                    var deepness = Mathf.Clamp01(metres / 18f) * Mathf.Lerp(0.3f, 1f, depth);
+                    colours[i] = new Color32((byte)Mathf.RoundToInt(deepness * 255f), (byte)Mathf.RoundToInt(open * 255f), 255, 255);
                 }
                 mesh.colors32 = colours;
                 Material material;
@@ -737,12 +750,104 @@ namespace MachineBrigade.Game.Views
                 }
                 else
                 {
+                    // Play-test 13: the water shader: the theme's deep colour, shading to the shallow one at the banks; a sea
+                    // (a naval map, a sea theme) has its swell, rivers and fords are calm.
                     material = new Material(_materials.Water) { name = "River" };
-                    material.SetColor("_BaseColor", shallow);
+                    material.SetColor("_BaseColor", _theme.WaterColour);
+                    material.SetColor("_ShallowColor", MaterialLibrary.ShallowOf(_theme.WaterColour, _theme.Palette.Sand));
                     material.SetFloat("_Roughness", _theme.WaterRoughness);
+                    material.SetFloat("_Calm", world.Map.Sea != null || _theme.Water == ThemeWater.Sea ? 0f : 1f);
                 }
                 _ownedMaterials.Add(material);
                 Place("River", mesh, material, castShadows: false).transform.position = new Vector3(0f, 0.04f, 0f);
+            }
+        }
+
+        /// <summary>
+        /// Play-test 13: metres from each point of the water to the nearest bank, on a 1 m grid over the water tiles (a cell is
+        /// water when its centre is on a tile; outside the map's rectangle the water runs on, so the map's edge is no bank).
+        /// Two-pass chamfer distance, sampled bilinearly.
+        /// </summary>
+        private sealed class ShoreField
+        {
+            private readonly float[] _metres;
+            private readonly float _x0, _z0;
+            private readonly int _nx, _nz;
+
+            public ShoreField(List<Prop> tiles, (Vector2 min, Vector2 max) edge)
+            {
+                float minX = float.MaxValue, minZ = float.MaxValue, maxX = float.MinValue, maxZ = float.MinValue;
+                foreach (var t in tiles)
+                {
+                    minX = Mathf.Min(minX, t.Position.X - t.Width * 0.5f);
+                    maxX = Mathf.Max(maxX, t.Position.X + t.Width * 0.5f);
+                    minZ = Mathf.Min(minZ, t.Position.Y - t.Depth * 0.5f);
+                    maxZ = Mathf.Max(maxZ, t.Position.Y + t.Depth * 0.5f);
+                }
+                _x0 = Mathf.Floor(minX) - 4f;
+                _z0 = Mathf.Floor(minZ) - 4f;
+                _nx = Mathf.Max(2, Mathf.CeilToInt(maxX + 4f - _x0));
+                _nz = Mathf.Max(2, Mathf.CeilToInt(maxZ + 4f - _z0));
+                var n = _nx * _nz;
+                var water = new bool[n];
+                foreach (var t in tiles)
+                {
+                    var x0 = Mathf.Max(0, Mathf.CeilToInt(t.Position.X - t.Width * 0.5f - _x0 - 0.5f));
+                    var x1 = Mathf.Min(_nx - 1, Mathf.FloorToInt(t.Position.X + t.Width * 0.5f - _x0 - 0.5f));
+                    var z0 = Mathf.Max(0, Mathf.CeilToInt(t.Position.Y - t.Depth * 0.5f - _z0 - 0.5f));
+                    var z1 = Mathf.Min(_nz - 1, Mathf.FloorToInt(t.Position.Y + t.Depth * 0.5f - _z0 - 0.5f));
+                    for (var z = z0; z <= z1; z++)
+                    for (var x = x0; x <= x1; x++)
+                        water[z * _nx + x] = true;
+                }
+                for (var z = 0; z < _nz; z++)
+                for (var x = 0; x < _nx; x++)
+                {
+                    var cx = _x0 + x + 0.5f;
+                    var cz = _z0 + z + 0.5f;
+                    if (cx < edge.min.X || cx > edge.max.X || cz < edge.min.Y || cz > edge.max.Y) water[z * _nx + x] = true;
+                }
+                _metres = new float[n];
+                for (var i = 0; i < n; i++) _metres[i] = water[i] ? float.MaxValue : 0f;
+                const float straight = 1f, diagonal = 1.41421f;
+                for (var z = 0; z < _nz; z++)
+                for (var x = 0; x < _nx; x++)
+                {
+                    var i = z * _nx + x;
+                    var v = _metres[i];
+                    if (x > 0) v = Mathf.Min(v, _metres[i - 1] + straight);
+                    if (z > 0) v = Mathf.Min(v, _metres[i - _nx] + straight);
+                    if (x > 0 && z > 0) v = Mathf.Min(v, _metres[i - _nx - 1] + diagonal);
+                    if (x + 1 < _nx && z > 0) v = Mathf.Min(v, _metres[i - _nx + 1] + diagonal);
+                    _metres[i] = v;
+                }
+                for (var z = _nz - 1; z >= 0; z--)
+                for (var x = _nx - 1; x >= 0; x--)
+                {
+                    var i = z * _nx + x;
+                    var v = _metres[i];
+                    if (x + 1 < _nx) v = Mathf.Min(v, _metres[i + 1] + straight);
+                    if (z + 1 < _nz) v = Mathf.Min(v, _metres[i + _nx] + straight);
+                    if (x + 1 < _nx && z + 1 < _nz) v = Mathf.Min(v, _metres[i + _nx + 1] + diagonal);
+                    if (x > 0 && z + 1 < _nz) v = Mathf.Min(v, _metres[i + _nx - 1] + diagonal);
+                    _metres[i] = v;
+                }
+                // No land in reach at all (the whole box is water): open water everywhere.
+                for (var i = 0; i < n; i++)
+                    if (_metres[i] > 1e6f) _metres[i] = 999f;
+            }
+
+            /// <summary>Metres to the bank at a world point (0 on it; the bank runs between a land and a water cell).</summary>
+            public float Metres(float x, float z)
+            {
+                var fx = Mathf.Clamp(x - _x0 - 0.5f, 0f, _nx - 1.001f);
+                var fz = Mathf.Clamp(z - _z0 - 0.5f, 0f, _nz - 1.001f);
+                int ix = (int)fx, iz = (int)fz;
+                float tx = fx - ix, tz = fz - iz;
+                var i = iz * _nx + ix;
+                var a = Mathf.Lerp(_metres[i], _metres[i + 1], tx);
+                var b = Mathf.Lerp(_metres[i + _nx], _metres[i + _nx + 1], tx);
+                return Mathf.Max(0f, Mathf.Lerp(a, b, tz) - 0.5f);
             }
         }
 

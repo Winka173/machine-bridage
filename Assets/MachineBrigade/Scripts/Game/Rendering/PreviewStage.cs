@@ -205,11 +205,15 @@ namespace MachineBrigade.Game.Rendering
             return m;
         }
 
-        /// <summary>The biome's water: the shallow colour on the material, the vertices darken it out to sea (as MapView's rivers).</summary>
+        /// <summary>
+        /// The biome's water (play-test 13: the water shader): the deep colour offshore, the shallow one at the shore; the
+        /// vertices carry the depth (r), the open water (g) and a fade into the backdrop (b), as MapView's water.
+        /// </summary>
         private Material WaterMaterial(MaterialLibrary materials)
         {
             var m = new Material(materials.Water) { name = "Preview Water" };
-            m.SetColor("_BaseColor", Color.Lerp(_theme.WaterColour, _theme.Palette.Sand, 0.25f));
+            m.SetColor("_BaseColor", _theme.WaterColour);
+            m.SetColor("_ShallowColor", MaterialLibrary.ShallowOf(_theme.WaterColour, _theme.Palette.Sand));
             m.SetFloat("_Roughness", Mathf.Min(_theme.WaterRoughness, 0.2f));
             _materials.Add(m);
             return m;
@@ -236,9 +240,14 @@ namespace MachineBrigade.Game.Rendering
 
         private void Water(MaterialLibrary materials, float x0, float x1, float z0, float z1, float cell)
         {
-            var deep = new Color(0.62f, 0.7f, 0.76f);
-            var mesh = GridMesh(WaterName, x0, x1, z0, z1, cell, SeaLevel,
-                (x, z) => Color.Lerp(Color.white, deep, Mathf.Clamp01(Mathf.Min(Mathf.Abs(z - z1), Mathf.Abs(z - z0)) / 30f)));
+            // Play-test 13: r = depth (deep 30 m from the shore), g = open water (foam in the first 4 m), b = 1.
+            var mesh = GridMesh(WaterName, x0, x1, z0, z1, cell, SeaLevel, (x, z) =>
+            {
+                var metres = Mathf.Min(Mathf.Abs(z - z1), Mathf.Abs(z - z0));
+                // GridMesh linearises its colours; these are data, so they go in pre-gamma'd to arrive as written.
+                var data = new Color(Mathf.Clamp01(metres / 30f), Mathf.Clamp01(metres / 4f), 1f, 1f);
+                return QualitySettings.activeColorSpace == ColorSpace.Linear ? data.gamma : data;
+            });
             mesh.MarkDynamic();
             Place(WaterName, mesh, WaterMaterial(materials));
             AddWaves(mesh);
@@ -280,8 +289,8 @@ namespace MachineBrigade.Game.Rendering
             {
                 var v = verts[i];
                 var rim = Mathf.Pow(Mathf.Clamp01(new Vector2(v.x, v.z).magnitude / radius), 3f);
-                var c = waves ? Color.white : GroundColour(v.x, v.z);
-                colours[i] = Primitives.Linear(c * Mathf.Lerp(1f, 0.5f, rim));
+                // Play-test 13: water vertices carry deep open water and the rim's fade in b (the water shader's inputs).
+                colours[i] = waves ? new Color(1f, 1f, Mathf.Lerp(1f, 0.5f, rim), 1f) : Primitives.Linear(GroundColour(v.x, v.z) * Mathf.Lerp(1f, 0.5f, rim));
             }
             var name = waves ? WaterName : GroundName;
             var mesh = new Mesh { name = name };
