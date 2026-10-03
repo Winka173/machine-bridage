@@ -2,7 +2,7 @@
 
 Chế độ chơi, độ khó, kinh tế, tác chiến, AI, thăng hạng, mở khóa, cửa hàng, giao diện.
 
-Gói cân bằng Machine Brigade, commit 5f613736, ngày 2026-10-03. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 163d0e46, ngày 2026-10-03. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng quan
 
@@ -599,5 +599,5 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Thu_hang` (1 dòng): Thứ hạng — Bảng xếp hạng
 - `Thuong` (1 dòng): Thưởng — Thưởng trận / chiến dịch
 - `Meta_tham_chieu` (13 dòng): Meta: game tham khảo cơ chế — Mỗi cơ chế ngoài trận một dòng (theo sheet): game tham khảo (nâng hạng, hòm đồ, nhiệm vụ ngày...) (spec 12.2; chỉ dữ liệu có trong repo)
-- `Hang_so_che_do` (57 dòng): Hằng số chế độ, tiếp tế và cờ chế độ — Assets/MachineBrigade/Resources/Data/tunables.json: 'modes' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị kh…
+- `Hang_so_che_do` (71 dòng): Hằng số chế độ, tiếp tế và cờ chế độ — Assets/MachineBrigade/Resources/Data/tunables.json: 'modes' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị kh…
 - `Hang_so_ai` (32 dòng): Hằng số AI — Assets/MachineBrigade/Resources/Data/tunables.json: 'ai' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị khi c…

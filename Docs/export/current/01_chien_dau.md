@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 5f613736, ngày 2026-10-03. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 163d0e46, ngày 2026-10-03. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -293,8 +293,8 @@ Sheet 01_chien_dau/Phao_sang — Pháo sáng (18 dòng, 19 cột)
 | attack_helicopter | xe | attack_helicopter | 0 | 4;8 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 2 |  |  |
 | attack_jet | xe | attack_jet | 0 | 4;6 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 2 |  |  |
 | fighter_jet | xe | fighter_jet | 0 | 4;6 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 2 |  |  |
-| flare_searchlight_tower | thap | flare_searchlight_tower | 0 | NEED_CODE_CHECK | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | giong |  |  | 15 |
-| flare_tower | thap | flare_tower | 0 | NEED_CODE_CHECK | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | giong |  |  | 15 |
+| flare_searchlight_tower | thap | flare_searchlight_tower | 0 | 1;1 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | giong |  |  | 15 |
+| flare_tower | thap | flare_tower | 0 | 1;1 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | giong |  |  | 15 |
 | glide_bomber | xe | glide_bomber | 0 | 8;16 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 2 |  |  |
 | gunship_heli | xe | gunship_heli | 0 | 4;8 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 2 |  |  |
 | heavy_bomber | xe | heavy_bomber | 0 | 8;16 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 3 |  |  |
@@ -481,13 +481,13 @@ Sheet 01_chien_dau/Hanh_vi_dan_nhom — Hành vi đạn theo nhóm (7 dòng, 12 
 
 | id | so_vu_khi | cach_nham | khi_no | khi_truot | co_canh_bao | thoi_gian_bay_toi_da_s | tuong_tac_phao_sang | tuong_tac_aps | tuong_tac_gay_nhieu |
 |---|---|---|---|---|---|---|---|---|---|
-| Bomb | 10 | dẫn đường 30% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 80% vũ khí có vòng cảnh báo | 4.5 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | NEED_CODE_CHECK |
-| Bullet | 116 | đón đầu (led, trần 3 s) | nổ lan 37% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.5263 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | NEED_CODE_CHECK |
-| Drone | 14 | dẫn đường (homing) | nổ lan 100% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 7.5 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | NEED_CODE_CHECK |
-| Flame | 3 | đón đầu (led, trần 3 s) | nổ lan 37% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.5263 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | NEED_CODE_CHECK |
-| Missile | 58 | dẫn đường 98% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 46% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 2% vũ khí có vòng cảnh báo | 16.6667 | pháo sáng mồi 78% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | NEED_CODE_CHECK |
-| Rocket | 29 | dẫn đường 4% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 29% vũ khí có vòng cảnh báo | 2.5455 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | NEED_CODE_CHECK |
-| Shell | 142 | dẫn đường 11% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 79% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 9% vũ khí có vòng cảnh báo | 3.3333 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 99%, CIWS 100% vũ khí | NEED_CODE_CHECK |
+| Bomb | 10 | dẫn đường 30% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 80% vũ khí có vòng cảnh báo | 4.5 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Bullet | 116 | đón đầu (led, trần 3 s) | nổ lan 35% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.4286 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Drone | 14 | dẫn đường (homing) | nổ lan 100% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 7.5 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | bị nhiễu 93% vũ khí (đạn dẫn đường trong vòng nhiễu địch: t… |
+| Flame | 3 | đón đầu (led, trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.5263 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Missile | 58 | dẫn đường (homing) | nổ lan 45% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 16.6667 | pháo sáng mồi 79% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | bị nhiễu 100% vũ khí (đạn dẫn đường trong vòng nhiễu địch:… |
+| Rocket | 29 | dẫn đường 3% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 31% vũ khí có vòng cảnh báo | 3.6 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Shell | 142 | dẫn đường 11% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 79% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 9% vũ khí có vòng cảnh báo | 3.3333 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 99%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
 
 Sheet 01_chien_dau/Canh_bao_vong — Vòng cảnh báo (12 dòng, 8 cột)
 
@@ -832,8 +832,8 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Phuong_tien_tham_chieu` (160 dòng): Phương tiện: tham chiếu ngoài đời — Mỗi xe và thẻ hỗ trợ một dòng: mẫu thật, phim / game (unit_refs.json), kích thước thật (reference_real.json), bảng cân bằng (spec 12.2; chỉ dữ liệu c…
 - `Phuong_tien_so_sanh_that` (269 dòng): Phương tiện: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
 - `So_tay_dan` (2 dòng): Sổ tay đạn — balance.json handbook: xe mẫu bắn và xe mẫu bị bắn của sổ tay đạn trên giao diện
-- `Hang_so_vu_khi` (23 dòng): Hằng số vũ khí, đạn, sát thương và nổ — Assets/MachineBrigade/Resources/Data/tunables.json: 'weapons' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
-- `Hang_so_phuong_tien` (87 dòng): Hằng số phương tiện: giá, thả dù, hồi đạn, tiếp tế, kỹ năng — Assets/MachineBrigade/Resources/Data/tunables.json: 'vehicles' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
+- `Hang_so_vu_khi` (28 dòng): Hằng số vũ khí, đạn, sát thương và nổ — Assets/MachineBrigade/Resources/Data/tunables.json: 'weapons' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
+- `Hang_so_phuong_tien` (92 dòng): Hằng số phương tiện: giá, thả dù, hồi đạn, tiếp tế, kỹ năng — Assets/MachineBrigade/Resources/Data/tunables.json: 'vehicles' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
 - `Bom_vu_khi` (20 dòng): Ném bom: vũ khí — Mỗi vũ khí thả bom và mỗi đòn không kích / đòn lớn của boss một dòng: tham số dải bom (stick), khoảng cách giữa bom, độ dài dải, cảnh báo, đường thả…
 - `Bom_don_vi` (22 dòng): Ném bom: đơn vị mang — Đơn vị mang bom: tốc độ, bán kính quay, độ cao thả, vũ khí bom, số bom mỗi lượt
 - `Bom_hanh_vi` (18 dòng): Ném bom: hành vi theo mã — Từng bước hành vi ném bom theo mã (chọn mục tiêu, hướng vào, thả, rơi) và file hàm
