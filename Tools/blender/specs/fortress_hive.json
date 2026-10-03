@@ -1,0 +1,229 @@
+{
+ "id": "fortress_hive",
+ "class": "boss",
+ "frame": "ground",
+ "real": [
+  "NASA Crawler-Transporter (the platform on four double-track trucks)",
+  "ZALA Lancet-3 loitering munition",
+  "MIM-104 Patriot launcher box",
+  "Gepard twin 35 mm turret"
+ ],
+ "shape": "unit_sheet.json Boss: Dựa trên: NASA Crawler-Transporter, ZALA Lancet-3, MIM-104 Patriot · Sandcrawler (Star Wars) — ước đoán: pháo đài bánh xích mang tổ drone. Kích thước hiện 16.4 × 9.3 × 8.5 m; boss chủ lực ×1,3–1,5 so với mẫu, mini boss nhỏ hơn boss chủ lực cùng dòng; bộ phận phá được (tháp, xích, động cơ) phải tách thành khối riêng dễ nhìn; có bản vỡ cho từng bộ phận; vạch màu tướng sở hữu.",
+ "confidence": "ban_dau_doan (a fictional fortress after the sheet's references)",
+ "target_size": {
+  "L": 16.1,
+  "W": 9.1,
+  "H": 8.3,
+  "source": "the old GLB (16.09 x 9.1 x 8.31); no modelSize in data",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "crawler-transporter platform on four corner trucks of two treads each, levelling rams",
+   "nodes": [
+    "Deck",
+    "Girders",
+    "Tracks",
+    "Track_shoes",
+    "Truck_frames",
+    "Truck_steel"
+   ]
+  },
+  {
+   "feature": "two operator cabs on opposite corners, generator houses with stacks",
+   "nodes": [
+    "Cab",
+    "Windows",
+    "Generator_houses",
+    "Stacks"
+   ]
+  },
+  {
+   "feature": "vaulted drone hangar with three bay openings a side and parked drones",
+   "nodes": [
+    "Body_hangar",
+    "Hangar_ribs",
+    "Bay_openings",
+    "Drone_airframe"
+   ]
+  },
+  {
+   "feature": "EMP emitter dome on the hangar roof (part emp, a weak point)",
+   "nodes": [
+    "Emp_dome",
+    "Emp_coils",
+    "Emp_drum",
+    "Emp_hazard"
+   ]
+  },
+  {
+   "feature": "jammer array at the hangar's front (part jammer, a weak point)",
+   "nodes": [
+    "Jammer_box",
+    "Jammer_mast",
+    "Jammer_panels"
+   ]
+  },
+  {
+   "feature": "two Lancet launch rails at the rear (parts rack_l/r)",
+   "nodes": [
+    "Mount_missile",
+    "Mount_missile.001",
+    "Rack_rails",
+    "Rack_drones"
+   ]
+  },
+  {
+   "feature": "SAM box raised between the racks (part sam)",
+   "nodes": [
+    "Mount_rocket",
+    "Sam_box",
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "feature": "twin flak turrets at the front corners (parts flak_l/r)",
+   "nodes": [
+    "Mount_mg",
+    "Mount_mg.001",
+    "Flak_house",
+    "Flak_barrels"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "mothership_drones",
+   "slot": "main",
+   "mount": "Mount_missile",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "mothership_drones",
+   "slot": "missile",
+   "mount": "Mount_missile.001",
+   "muzzles": [
+    "Muzzle_missile.001"
+   ]
+  },
+  {
+   "weapon": "sam_battery",
+   "slot": "rocket",
+   "mount": "Mount_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "weapon": "boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  }
+ ],
+ "aps": false,
+ "flare": false,
+ "colour_zones_min": 6,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "the deck and the hangar (Team)",
+  "gear cases",
+  "the SAM box"
+ ],
+ "faction_style": "Matriarch's (Sen) drone fortress: industrial crawler platform, modular hangar",
+ "details": {
+  "tier1": [
+   "platform",
+   "four trucks",
+   "hangar",
+   "EMP dome"
+  ],
+  "tier2": [
+   "girders",
+   "cabs",
+   "generator houses",
+   "racks",
+   "SAM",
+   "flak turrets",
+   "jammer"
+  ],
+  "tier3": [
+   "track shoes",
+   "hubs",
+   "railings",
+   "ladders",
+   "parked drones",
+   "coils",
+   "whips",
+   "lamps",
+   "beacon",
+   "stacks"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the EMP dome glows on the hangar roof inside a hazard ring",
+   "the jammer's three panels stand on a mast at the hangar's front"
+  ],
+  "how_to_fight": "leave aircraft at home; APS tanks or laser AA against the drones, then tanks and artillery"
+ },
+ "breakable": [
+  {
+   "part": "rack_l",
+   "node": "Mount_missile"
+  },
+  {
+   "part": "rack_r",
+   "node": "Mount_missile.001"
+  },
+  {
+   "part": "sam",
+   "node": "Mount_rocket"
+  },
+  {
+   "part": "flak_l",
+   "node": "Mount_mg"
+  },
+  {
+   "part": "flak_r",
+   "node": "Mount_mg.001"
+  },
+  {
+   "part": "emp",
+   "node": "(no node: a hit area at [0, -1.0, 7.4])"
+  },
+  {
+   "part": "jammer",
+   "node": "(no node: a hit area at [0, 3.0, 6.6])"
+  }
+ ],
+ "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
+ "questions": []
+}

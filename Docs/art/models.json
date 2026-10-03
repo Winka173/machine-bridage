@@ -885,11 +885,11 @@
   },
   "fortress_bastion": {
     "file": "fortress_bastion.glb",
-    "triangles": 25064
+    "triangles": 34218
   },
   "fortress_hive": {
     "file": "fortress_hive.glb",
-    "triangles": 19334
+    "triangles": 19476
   },
   "foxhole": {
     "file": "foxhole.glb",
