@@ -27,7 +27,7 @@ TWIN = {
 }
 # model -> muzzles that already have two barrels (only the per-barrel muzzles)
 EXTRA = {
-    'fortress_bastion': ['Muzzle_gun', 'Muzzle_gun__001'],
+    # fortress_bastion: play-test 14 wave M1's builder (mb_pt14_m1) models its twins' per-barrel muzzles itself.
     # Prompt 35 wave 4 (lane C): moloch's rebuilt turrets model both barrels themselves.
     'moloch': ['Muzzle_main', 'Muzzle_gun', 'Muzzle_gun__001', 'Muzzle_gun__002'],
     # Prompt 35 wave 11 (lane C): cerberus's rebuilt turret models both 152 mm barrels itself.

@@ -239,6 +239,7 @@ import mb_p35_airborne_light_tank_chute  # noqa: E402
 import mb_p35_recoilless_jeep  # noqa: E402
 import mb_p35_ew_tower  # noqa: E402
 import mb_p35_dragons_teeth_b  # noqa: E402
+import mb_pt14_m1  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -420,7 +421,10 @@ def all_builders():
                 # Prompt 35 wave 11, lane C (DECISIONS "Prompt 35 wave 11 (lane C)"): rebuilt from scratch (last).
                 **mb_p35_drop_pod.BUILDERS, **mb_p35_bulwark_post.BUILDERS, **mb_p35_drone_net_tower.BUILDERS, **mb_p35_flare_searchlight_tower.BUILDERS, **mb_p35_targeting_station.BUILDERS, **mb_p35_mine_rocket_truck.BUILDERS, **mb_p35_wheeled_howitzer.BUILDERS, **mb_p35_auto_loader_howitzer.BUILDERS, **mb_p35_light_attack_heli.BUILDERS, **mb_p35_prop_attack_plane.BUILDERS, **mb_p35_airborne_vehicle_chute.BUILDERS, **mb_p35_cerberus.BUILDERS, **mb_p35_hyperion.BUILDERS,
                 # Prompt 35 wave 12, lane C (DECISIONS "Prompt 35 wave 12 (lane C)"): the P3 models rebuilt (last).
-                **mb_p35_minefield_a.BUILDERS, **mb_p35_nuke_train.BUILDERS, **mb_p35_drone_mothership.BUILDERS, **mb_p35_helipads.BUILDERS, **mb_p35_airborne_light_tank_chute.BUILDERS, **mb_p35_recoilless_jeep.BUILDERS, **mb_p35_ew_tower.BUILDERS, **mb_p35_dragons_teeth_b.BUILDERS}
+                **mb_p35_minefield_a.BUILDERS, **mb_p35_nuke_train.BUILDERS, **mb_p35_drone_mothership.BUILDERS, **mb_p35_helipads.BUILDERS, **mb_p35_airborne_light_tank_chute.BUILDERS, **mb_p35_recoilless_jeep.BUILDERS, **mb_p35_ew_tower.BUILDERS, **mb_p35_dragons_teeth_b.BUILDERS,
+                # Play-test 14 wave M1 (DECISIONS "Play-test 14 model wave M1 (lane models)"): the ground bosses
+                # redrawn, bastion_mk0 and fenrir with their own models (last, so they win).
+                **mb_pt14_m1.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

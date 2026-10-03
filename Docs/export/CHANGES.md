@@ -1025,3 +1025,15 @@ Nhánh `cloud/pt14-d`. Lý do: `Docs/DECISIONS.md` "Play-test 14 (lane D, cloud)
 | PT14-D10 | Sự kiện mini-boss xen kẽ III | `morrigan_hunt` (Morrigan) | `harpy_hunt` (Harpy); mini của Quaden: Harpy | Morrigan bị xóa |
 | PT14-D11 | Tuyến cố định bản đồ openpit | `routes.kronos` | `routes.haul` (cùng tọa độ) | Kronos bị xóa; đường vận chuyển giữ nguyên |
 | PT14-D12 | c8m10 stage cuối và ô boss chương 8 (sửa PT14-D7/D8 theo chủ dự án) | Tartarus x2,6 là boss chính; ch.8 chính Tartarus, mini Ixion | Moloch x1,4 là boss chính (Thorne kéo nó lên từ hẻm sông); Tartarus đào hầm trồi lên khi Moloch còn 60 % (sự kiện `tartarus`, như c8m02/c8m11); ch.8 chính Moloch, mini Ixion, Tartarus | chủ dự án: Moloch boss chính, Tartarus boss phụ trong cùng trận |
+
+## Play-test 14 model wave M1 (lane models): boss part places and two own models
+
+Nhánh `feature/pt14-models`. Lý do: `Docs/DECISIONS.md` "Play-test 14 model wave M1 (lane models)". Chỉ dữ liệu vẽ /
+vị trí trúng (`at`) và model; sát thương, máu, vũ khí không đổi.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-M1-1 | `fortress_bastion` parts `at` | turret_fl/fr [∓3.2, 6.0, 4.7], rl/rr [∓2.6, -6.25, 4.7], kornet [-0.85, -3.75, 6.3], casemate [0, 7.6, 3.2], zu23 [∓3.9, -1.5, 5.2] | turrets [∓4.1, 4.35, 3.3] / [∓4.1, -4.25, 3.3] (sponson hai bên hông), kornet [-1.42, -2.75, 6.4], casemate [0, 8.7, 3.2], zu23 [∓3.42, -1.25, 5.4] | súng dời xuống sponson hai bên hông và hành lang bên (chủ: đặt cả ngay hông) |
+| PT14-M1-2 | `mobile_fortress` parts `at` | howitzer [0, 3.0, 7.1], rockets [∓1.9, -6.0, 4.6], missiles [0, -6.05, 4.6], howitzer_2 [0, -2.0, 7.4], sam [2.6, -4.4, 5.6] | howitzer [0, 4.0, 7.0], rockets [∓2.15, -6.0, 5.0], missiles [0, 9.0, 3.3] (pháo 125 mm mũi), howitzer_2 [0, -2.1, 7.7], sam [1.25, 5.5, 6.3] (nóc cầu chỉ huy) | đúng 2 bệ phóng đối xứng phía sau; mount 5 bắn đạn 125 mm nên ra từ nòng pháo mũi chứ không từ nắp silo |
+| PT14-M1-3 | `bastion_mk0` | vẽ bằng model fortress_bastion | `"model": "bastion_mk0"`; tune mortar `at` [0, -0.83, 9.66] (đơn vị đã nhân size 1.51 của cha) | model riêng (nguyên mẫu) |
+| PT14-M1-4 | `fenrir` | vẽ bằng model mobile_fortress | `"model": "fenrir"`; tune `at` rockets_l/r [∓2.02, -6.3, 5.63], flak_l [0, 4.23, 5.47] (đã nhân size 1.657 của cha) | model riêng (xe xích hai khoang mùa đông) |
