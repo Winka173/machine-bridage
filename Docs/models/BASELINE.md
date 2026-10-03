@@ -8,7 +8,7 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| ground | 95 | 585,712 | 6,165 | main_battle_tank_hd (16,462) | 3,752 | 0 | 32 |
+| ground | 95 | 588,234 | 6,191 | main_battle_tank_hd (16,462) | 3,771 | 0 | 33 |
 | boss | 33 | 576,184 | 17,460 | rail_supergun (36,726) | 2,439 | 0 | 27 |
 | structure | 86 | 421,804 | 4,904 | headquarters (14,164) | 3,545 | 0 | 14 |
 | prop | 115 | 253,918 | 2,207 | apartment (6,128) | 1,540 | 0 | 2 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 7,146 | 255 | fpv_drone (1,564) | 210 | 0 | 1 |
 
-All files: 2,130,902 triangles, 0 with errors, 96 more with warnings only.
+All files: 2,133,424 triangles, 0 with errors, 97 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -45,7 +45,7 @@ All files: 2,130,902 triangles, 0 with errors, 96 more with warnings only.
 | ground | movingParts | 3 | 0 | - |
 | ground | renderers | 4 | 0 | - |
 | ground | triangles | 24 | 0 | - |
-| ground | vertices | 26 | 0 | - |
+| ground | vertices | 27 | 0 | - |
 | jet | renderers | 4 | 0 | - |
 | jet | triangles | 1 | 0 | - |
 | jet | vertices | 1 | 0 | - |
@@ -57,7 +57,7 @@ All files: 2,130,902 triangles, 0 with errors, 96 more with warnings only.
 | structure | renderers | 6 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-48 models over a budget, 0 of them over a hard cap.
+49 models over a budget, 0 of them over a hard cap.
 
 ## Error reasons (count of models)
 

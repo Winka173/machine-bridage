@@ -3032,6 +3032,16 @@
    "changes": [
     "FLAG ground_drone_carrier: triangles 4,274 -> 8,736 (+104.4%); vertices 5,125 -> 11,543 (+125.2%); meshes 37 -> 59 (+59.5%); renderers 37 -> 59 (+59.5%); materials 7 -> 8 (+14.3%); materialSlots 37 -> 59 (+59.5%); fileBytes 285,460 -> 613,632 (+115.0%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "nlos_atgm_vehicle"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG nlos_atgm_vehicle: triangles 4,918 -> 7,440 (+51.3%); vertices 5,468 -> 10,270 (+87.8%); meshes 41 -> 60 (+46.3%); renderers 41 -> 60 (+46.3%); materials 8 -> 9 (+12.5%); materialSlots 41 -> 60 (+46.3%); fileBytes 310,732 -> 555,344 (+78.7%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -42496,24 +42506,24 @@
   },
   "nlos_atgm_vehicle": {
    "file": "nlos_atgm_vehicle.glb",
-   "fileBytes": 310732,
-   "sha1": "66f02ec02340d7fe",
+   "fileBytes": 555344,
+   "sha1": "76805189e50223c4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 49,
-   "meshes": 41,
-   "materials": 8,
+   "nodes": 68,
+   "meshes": 60,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 41,
-   "submeshes": 41,
-   "materialSlots": 41,
-   "materialsUsed": 8,
-   "triangles": 4918,
-   "vertices": 5468,
+   "renderers": 60,
+   "submeshes": 60,
+   "materialSlots": 60,
+   "materialsUsed": 9,
+   "triangles": 7440,
+   "vertices": 10270,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -42521,36 +42531,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 108,
-   "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "loosePieces": 266,
+   "openEdges": 8,
+   "nonManifoldEdges": 38,
    "boundsMin": [
-    -1.175,
-    0.0,
-    -3.3
+    -1.11,
+    -0.0046,
+    -2.97
    ],
    "boundsMax": [
-    1.185,
-    2.84,
-    3.15
+    1.11,
+    2.8198,
+    3.2667
    ],
    "size": [
-    6.45,
-    2.36,
-    2.84
+    6.237,
+    2.22,
+    2.824
    ],
    "center": [
-    0.005,
-    1.42,
-    -0.075
+    0.0,
+    1.408,
+    0.148
    ],
-   "structureHash": "1586a1b42c0ef859",
+   "structureHash": "eb5adcbebb8a1468",
    "color0": {
-    "mean": 0.7027,
-    "min": 0.2771,
+    "mean": 0.5589,
+    "min": 0.062,
     "max": 1.0,
-    "p05": 0.381,
-    "p95": 0.9722,
+    "p05": 0.0953,
+    "p95": 0.9091,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -42571,30 +42581,48 @@
     "point": [
      "Point_exhaust",
      "Point_fire"
+    ],
+    "launch": [
+     "Launch_cells"
     ]
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antennas",
     "Axles",
-    "Bed",
+    "Body",
+    "Bumper",
     "Cab",
-    "Canister_caps",
-    "Canister_rims",
+    "Cell_lids",
     "Chassis",
-    "Deck_plate",
+    "Doors",
     "Exhaust",
-    "Fenders",
+    "Exhaust_caps",
+    "Exhaust_mufflers",
+    "Exhaust_shields",
+    "Fender_flares",
     "Fuel_tank",
     "Glass",
-    "Grille",
-    "Hatch_fittings",
+    "Grille_frames",
+    "Grilles",
+    "Gun_ring",
     "Hatches",
-    "Hinge",
+    "Hubs",
+    "Hubs.001",
+    "Hubs.002",
+    "Kit_latches",
+    "Kit_steel",
+    "Kit_steel.001",
+    "Kit_straps",
+    "Lamp_rims",
     "Lamps",
+    "Launch_cells",
     "Launcher",
-    "Light_rims",
+    "Launcher_arm",
     "MG",
     "MG_ammo",
+    "MG_cradle",
+    "MG_post",
     "MG_shield",
     "Mast",
     "Mount_mg",
@@ -42606,29 +42634,35 @@
     "Point_fire",
     "Racks",
     "Rams",
-    "Reloads",
-    "Rub_rails",
-    "Sensor",
-    "Sensor_body",
-    "Steel",
+    "Reload_canisters",
+    "Sensor_head",
+    "Steps",
     "Stowage",
     "Tail_lamps",
-    "Team_bands",
-    "Tool_box",
+    "Team_band",
+    "Team_band.001",
     "Turntable",
     "Turret",
     "Tyres",
     "Tyres.001",
     "Tyres.002",
     "Visor",
+    "Wheel_nuts",
+    "Wheel_nuts.001",
+    "Wheel_nuts.002",
     "Wheels",
     "Wheels.001",
-    "Wheels.002"
+    "Wheels.002",
+    "Window_frames",
+    "Windows",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "vertices 10,270 over the ground normal budget 10,100"
+   ],
    "units": [
     "nlos_atgm_vehicle"
    ],
