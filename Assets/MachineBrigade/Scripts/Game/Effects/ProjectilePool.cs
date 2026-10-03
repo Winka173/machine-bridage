@@ -63,6 +63,21 @@ namespace MachineBrigade.Game.Effects
             public float JamAt;
             public bool Tumble, JamShown;
 
+            /// <summary>
+            /// Play-test 13 follow-up (lane A): a flight-profile path (<see cref="FlyLoft"/>, <see cref="FlyBallistic"/>): a
+            /// cubic curve from <see cref="From"/> through <c>From + Out</c> (the climb out of the tube or barrel) and
+            /// <c>To + up x Rise - ahead x Back x ground</c> (the dive or fall, kept on the live aim point) to <see cref="To"/>.
+            /// <see cref="Level"/>: paced evenly over the ground (a ballistic round), else evenly along its length (a missile).
+            /// </summary>
+            public bool Curve, Level;
+            public Vector3 Out;
+            public float Rise, Back;
+
+            /// <summary>The curve's running length at <see cref="CurveSteps"/> even steps of its parameter, for the aim point <see cref="LutTo"/>.</summary>
+            public float[] Lut;
+            public Vector3 LutTo;
+            public bool LutValid;
+
             /// <summary>An FPV quadcopter: flown level and nose-down with its rotors, buzzing about its line (see FlyAsDrone).</summary>
             public bool Drone;
             public Vector3 Spread;
@@ -194,6 +209,7 @@ namespace MachineBrigade.Game.Effects
             shot.Wide = Vector3.zero;
             shot.JamAt = 0f;
             shot.Tumble = shot.JamShown = shot.Drone = false;
+            shot.Curve = shot.Level = shot.LutValid = false;
             shot.Target = default;
             shot.Spread = Vector3.zero;
             shot.Phase = UnityEngine.Random.value * 100f;
@@ -247,6 +263,161 @@ namespace MachineBrigade.Game.Effects
             _launched.Wide = wide;
             _launched.JamAt = Mathf.Clamp(at, 0.05f, 0.9f);
             _launched.Tumble = tumble;
+        }
+
+        /// <summary>
+        /// Play-test 13 follow-up (lane A), FlightProfile.Loft: the round just launched (a tube- or box-launched missile: top
+        /// attack, VLS, coastal box, SAM box) climbs out along <paramref name="launch"/> (a steep climb, see
+        /// WeaponEffects.LoftLaunch), arcs over at about <paramref name="peak"/> m above the line (the Sim's ArcShare x ground
+        /// distance) and dives steeply onto its target (<see cref="LoftDive"/>). It still lands on its aim point at the end of
+        /// its flight (the ShotClock rule): only the shape of the path changes.
+        /// </summary>
+        public void FlyLoft(Vector3 launch, float peak)
+        {
+            if (_launched == null) return;
+            Curve(_launched, launch, peak, false);
+        }
+
+        /// <summary>
+        /// Play-test 13 follow-up (lane A), FlightProfile.Ballistic: the round just launched (an artillery shell or rocket, a
+        /// ballistic missile) flies a high arc peaking <paramref name="peak"/> m above the line (the Sim's ArcShare x ground
+        /// distance), at an even pace over the ground like a real ballistic round (fast off the barrel, slow over the top,
+        /// plunging at the end). It leaves along <paramref name="launch"/> (the raised barrel, tubes or erector; zero: the
+        /// plain parabola's angle) and comes down at least as steeply as it went up. It lands on its aim point on time.
+        /// </summary>
+        public void FlyBallistic(Vector3 launch, float peak)
+        {
+            if (_launched == null) return;
+            Curve(_launched, launch, peak, true);
+        }
+
+        /// <summary>A lofted round's dive: its last inner control point sits this share of the ground distance short of the target (a 55-60 degree dive).</summary>
+        internal const float LoftDive = 0.18f;
+
+        /// <summary>Even steps of a profile curve's length table (enough for a smooth pace; rebuilt once a frame for a homing round).</summary>
+        internal const int CurveSteps = 16;
+
+        private static void Curve(Shot shot, Vector3 launch, float peak, bool level)
+        {
+            var flat = new Vector3(shot.To.x - shot.From.x, 0f, shot.To.z - shot.From.z);
+            var ground = flat.magnitude;
+            var ahead = ground > 1e-3f ? flat / ground : new Vector3(shot.Transform.forward.x, 0f, shot.Transform.forward.z);
+            if (ahead.sqrMagnitude < 1e-6f) ahead = Vector3.forward;
+            ahead.Normalize();
+            var (rise, sideways, back, along) = CurveShape(launch, ahead, ground, peak, level);
+            shot.Curve = true;
+            shot.Level = level;
+            shot.Bent = false;
+            shot.Rise = rise;
+            shot.Out = Vector3.up * rise + along * sideways;
+            shot.Back = ground > 1e-3f ? back / ground : 0f;
+            shot.LutValid = false;
+            // Its smoke and streak puffs keep their spacing along the longer path.
+            var length = CurveLength(shot);
+            shot.Arc = Mathf.Max(0f, length - Vector3.Distance(shot.From, shot.To));
+            shot.PuffStep = TrailSpacing / Mathf.Max(1f, length);
+            shot.StreakStep = StreakSpacing / Mathf.Max(1f, length);
+            Place(shot, 0f);
+        }
+
+        /// <summary>
+        /// A profile curve's shape: the height of both inner control points (<c>peak / 0.75</c>: a cubic whose inner points
+        /// stand level peaks at three quarters of their height), how far out over the ground the first one stands and which
+        /// way (along the launch's heading, else straight at the target; the launch's angle sets the distance), and how far
+        /// short of the target the second one stands (the fall's or dive's steepness). A ballistic round's first point stands
+        /// 0.15-0.6 of the ground distance out (a third with a third back is the plain parabola, paced exactly like the Sim's
+        /// round height), its second one as far back up to a third (a low barrel's round comes down steeper than it went up,
+        /// as a real shell does); the two never cross, so the ground run only goes forward. A lofted one's first point stands
+        /// 0.04-0.4 out (0.04: near straight up out of a VLS cell), its second <see cref="LoftDive"/> back.
+        /// </summary>
+        internal static (float rise, float sideways, float back, Vector3 along) CurveShape(Vector3 launch, Vector3 ahead, float ground, float peak, bool level)
+        {
+            var rise = Mathf.Max(peak, 0.6f) / 0.75f;
+            var along = ahead;
+            var sideways = ground / 3f;
+            if (launch.sqrMagnitude > 1e-4f)
+            {
+                var dir = launch.normalized;
+                var heading = new Vector3(dir.x, 0f, dir.z);
+                var outward = heading.magnitude;
+                // A launch that points back or far off the target's way (a launcher not laid yet) is not followed.
+                if (outward > 0.05f && Vector3.Dot(heading / outward, ahead) > 0.5f) along = heading / outward;
+                if (dir.y > 0.02f) sideways = rise * outward / dir.y;
+            }
+            // A lofted round always leans a little toward its target (a VLS cell's too), so its heading is never undefined.
+            if (!level) return (rise, Mathf.Clamp(sideways, ground * 0.04f, ground * 0.4f), ground * LoftDive, along);
+            sideways = Mathf.Clamp(sideways, ground * 0.15f, ground * 0.6f);
+            return (rise, sideways, Mathf.Min(sideways, ground / 3f), along);
+        }
+
+        /// <summary>A point on a cubic curve.</summary>
+        internal static Vector3 Cubic(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float u)
+        {
+            var v = 1f - u;
+            return v * v * v * a + 3f * v * v * u * b + 3f * v * u * u * c + u * u * u * d;
+        }
+
+        /// <summary>The curve's two inner control points for the shot's live aim point.</summary>
+        private static void Controls(Shot shot, out Vector3 b, out Vector3 c)
+        {
+            var flat = new Vector3(shot.To.x - shot.From.x, 0f, shot.To.z - shot.From.z);
+            var ground = flat.magnitude;
+            b = shot.From + shot.Out;
+            c = shot.To + Vector3.up * shot.Rise - (ground > 1e-3f ? flat / ground : Vector3.zero) * (shot.Back * ground);
+        }
+
+        private static float CurveLength(Shot shot)
+        {
+            Controls(shot, out var b, out var c);
+            var length = 0f;
+            var last = shot.From;
+            for (var i = 1; i <= CurveSteps; i++)
+            {
+                var q = Cubic(shot.From, b, c, shot.To, i / (float)CurveSteps);
+                length += Vector3.Distance(last, q);
+                last = q;
+            }
+            return length;
+        }
+
+        /// <summary>
+        /// Where a profile round is at <paramref name="s"/> of its way (after the boost's pacing): the curve's parameter that
+        /// covers that share of its length (a lofted missile) or of its ground run (a ballistic round), from a small length
+        /// table rebuilt when the aim point moves.
+        /// </summary>
+        private static Vector3 CurveAt(Shot shot, float s)
+        {
+            Controls(shot, out var b, out var c);
+            var lut = shot.Lut ??= new float[CurveSteps + 1];
+            if (!shot.LutValid || (shot.To - shot.LutTo).sqrMagnitude > 1e-4f)
+            {
+                lut[0] = 0f;
+                var last = shot.From;
+                for (var i = 1; i <= CurveSteps; i++)
+                {
+                    var q = Cubic(shot.From, b, c, shot.To, i / (float)CurveSteps);
+                    var step = q - last;
+                    if (shot.Level) step.y = 0f;
+                    lut[i] = lut[i - 1] + step.magnitude;
+                    last = q;
+                }
+                shot.LutTo = shot.To;
+                shot.LutValid = true;
+            }
+            return Cubic(shot.From, b, c, shot.To, CurveParameter(lut, Mathf.Clamp01(s)));
+        }
+
+        /// <summary>The curve's parameter that covers <paramref name="s"/> of a running-length table (linear between its steps).</summary>
+        internal static float CurveParameter(float[] lut, float s)
+        {
+            var steps = lut.Length - 1;
+            var total = lut[steps];
+            if (total <= 1e-4f) return s;
+            var want = s * total;
+            var k = 1;
+            while (k < steps && lut[k] < want) k++;
+            var span = lut[k] - lut[k - 1];
+            return (k - 1 + (span > 1e-6f ? Mathf.Clamp01((want - lut[k - 1]) / span) : 0f)) / steps;
         }
 
         /// <summary>
@@ -429,8 +600,8 @@ namespace MachineBrigade.Game.Effects
         private static Vector3 PositionAt(Shot shot, float t)
         {
             t = Progress(shot.Boost, t);
-            var p = shot.Bent
-                ? Vector3.Lerp(Vector3.Lerp(shot.From, shot.Mid, t), Vector3.Lerp(shot.Mid, shot.To, t), t)
+            var p = shot.Curve ? CurveAt(shot, t)
+                : shot.Bent ? Vector3.Lerp(Vector3.Lerp(shot.From, shot.Mid, t), Vector3.Lerp(shot.Mid, shot.To, t), t)
                 : Vector3.Lerp(shot.From, shot.To, t) + Vector3.up * (shot.Arc * 4f * t * (1f - t));
             var side = Vector3.Cross(Vector3.up, (shot.To - shot.From).normalized);
             if (shot.Drone)

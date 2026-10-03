@@ -248,17 +248,25 @@ namespace MachineBrigade.Game.Effects
                     // flame cone and leaving a smoke trail (Plume).
                     var missile = Model("missile");
                     var airborne = shooter != null && shooter.Flying;
-                    // It leaves along its tube or rail (a raised SAM box, a tilted rack), then turns onto its target.
+                    // Play-test 13 follow-up (lane A): on its flight profile (WeaponDef.Flight), its hump the Sim's own
+                    // (ArcShare x ground distance, CombatSystem.RoundHeight). Direct (an ATGM on its beam): a flat run that
+                    // leaves along its tube or rail and turns onto the target. Loft (a top-attack, VLS or box-launched
+                    // missile): a steep climb, over, and a dive onto the target. Ballistic: a high arc.
+                    var flight = weapon?.Flight ?? FlightProfile.Direct;
+                    var peak = Ground(from, to) * (weapon?.ArcShare ?? 0.04f);
                     if (_hasMissile)
                     {
-                        _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId, weapon != null && weapon.TopAttack ? null : from),
-                            boost: 0.55f, scale: Sized(missile) * SizeOf(weapon, kind, missile, airborne), control: Leave(from, to, _shotBarrel, distance * 0.06f),
+                        _projectiles.Launch(_models.Merged(missile), from, to, e.Value, peak, 0.7f, now, Homing(views, targetId, weapon != null && weapon.TopAttack ? null : from),
+                            boost: 0.55f, scale: Sized(missile) * SizeOf(weapon, kind, missile, airborne),
+                            control: flight == FlightProfile.Direct ? Leave(from, to, _shotBarrel, peak) : null,
                             plume: Plume.For(weapon, kind, missile, airborne));
+                        if (flight == FlightProfile.Loft) _projectiles.FlyLoft(LoftLaunch(from, to, _shotBarrel, airborne), peak);
+                        else if (flight == FlightProfile.Ballistic) _projectiles.FlyBallistic(Raised(_shotBarrel), peak);
                         // Fix prompt L4: the Sim may divert it in flight (a flare, lost sight, out of reach).
                         _projectiles.Tag(targetId);
                         Veer(e, views, targetId);
                     }
-                    else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
+                    else _tracers.Launch(from, to, e.Value, peak, 0.2f, 1.2f, now, 0f, 0.7f);
                     Flash(MuzzleFx.Kind.Missile, from, Tube(aim), now, 1f, groundY);
                     FiringShake(from, 0.05f);
                     break;
@@ -274,6 +282,9 @@ namespace MachineBrigade.Game.Effects
                     {
                         _projectiles.Launch(_models.Merged(drone), from, to, e.Value, distance * (quad ? 0.1f : 0.12f), quad ? 0f : 0.35f, now,
                             Homing(views, targetId), wobble: quad ? 0f : 0.6f, scale: Sized(drone) * SizeOf(weapon, kind, drone, false) * (quad ? QuadScale : 1f));
+                        // Play-test 13 follow-up (lane A): a winged loitering drone (a Lancet, a Shahed) flies its Loft profile:
+                        // up off the rack, over at the Sim's height, and down onto the target (the quadcopter keeps its own flight).
+                        if (!quad) _projectiles.FlyLoft(LoftLaunch(from, to, _shotBarrel, false, DroneClimb), Ground(from, to) * (weapon?.ArcShare ?? 0.2f));
                         _projectiles.Tag(targetId);
                         if (quad)
                         {
@@ -291,8 +302,11 @@ namespace MachineBrigade.Game.Effects
                 }
 
                 case ProjectileKind.Rocket:
-                    var artillery = weapon != null && weapon.MinRange > 0f;
-                    var arc = artillery ? ArcFor(pitch, distance, 0.28f) : distance * 0.02f;
+                    // Play-test 13 follow-up (lane A): a ballistic rocket (an artillery rocket, a boss's Grad or Smerch pod, a
+                    // ballistic missile: WeaponDef.Flight) flies a high arc at the Sim's height (ArcShare x ground distance), out
+                    // along its raised tubes or erector; a direct one (a rocket pod, the APKWS) a flat run off its rail.
+                    var artillery = weapon != null && weapon.Flight == FlightProfile.Ballistic;
+                    var arc = Ground(from, to) * (weapon?.ArcShare ?? 0.02f);
                     // Heavy rockets and ballistic missiles fly their own models where they exist.
                     var rocket = Model(weapon?.Id switch
                     {
@@ -300,7 +314,6 @@ namespace MachineBrigade.Game.Effects
                         "ballistic_missile" when _models.Has("ballistic_missile") => "ballistic_missile",
                         _ => "rocket",
                     });
-                    if (weapon?.Id == "ballistic_missile") arc = distance * 0.45f;
                     var ballistic = weapon?.Id == "ballistic_missile";
                     // A second launcher (not the main, elevating one) lobs along its own tubes too.
                     if (barrel.sqrMagnitude < 0.01f) barrel = _shotBarrel;
@@ -311,8 +324,9 @@ namespace MachineBrigade.Game.Effects
                         _projectiles.Launch(_models.Merged(rocket), from, to, e.Value, arc, 0.55f, now, steered ? Homing(views, targetId, from) : null,
                             wobble: artillery && !ballistic ? 0.7f : steered ? 0f : 0.3f,
                             boost: ballistic ? 0.6f : artillery ? 0.2f : 0.3f, scale: Sized(rocket) * SizeOf(weapon, kind, rocket, false),
-                            control: artillery && !ballistic ? Bend(from, to, barrel) : artillery ? null : Leave(from, to, _shotBarrel, arc),
+                            control: artillery ? null : Leave(from, to, _shotBarrel, arc),
                             plume: Plume.For(weapon, kind, rocket, false));
+                        if (artillery) _projectiles.FlyBallistic(Raised(barrel), arc);
                         if (steered) _projectiles.Tag(targetId);
                     }
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
@@ -524,15 +538,40 @@ namespace MachineBrigade.Game.Effects
             else Flash(MuzzleFx.Kind.Autocannon, from, Barrel(aim), now, Mathf.Lerp(0.85f, 1.2f, Mathf.InverseLerp(12f, 30f, damage)), groundY);
         }
 
+        /// <summary>The ground distance a round covers (what the Sim's ArcShare is a share of: CombatSystem.RoundHeight).</summary>
+        internal static float Ground(Vector3 from, Vector3 to) => new Vector2(to.x - from.x, to.z - from.z).magnitude;
+
+        /// <summary>A raised barrel, tube or erector's direction (a lobbed round leaves along it), else zero (the plain arc's angle).</summary>
+        internal static Vector3 Raised(Vector3 barrel) =>
+            barrel.sqrMagnitude > 0.01f && barrel.normalized.y > 0.05f ? barrel.normalized : Vector3.zero;
+
+        /// <summary>A lofted missile's least climb off a ground launcher (degrees): a flat tube's top-attack round still pitches up hard.</summary>
+        internal const float LoftClimb = 45f;
+
+        /// <summary>A winged loitering drone's least climb off its rack, and an air-launched lofted missile's (degrees).</summary>
+        internal const float DroneClimb = 25f, AirLoftClimb = 12f;
+
         /// <summary>
-        /// The peak height of a lobbed round's path that leaves at the barrel's angle: the path
-        /// rises at 4 x peak / distance at the start, so the peak is distance x tan(angle) / 4.
-        /// Without a barrel angle, the old fixed share of the distance.
+        /// Play-test 13 follow-up (lane A): which way a lofted round climbs out: along its drawn tube or box (its heading, and
+        /// its angle when steeper: a VLS cell straight up, a raised SAM box at its 40-60 degrees), pitched up to at least
+        /// <paramref name="least"/> degrees (a ground launcher's <see cref="LoftClimb"/>; <see cref="AirLoftClimb"/> off an aircraft).
         /// </summary>
-        private static float ArcFor(float pitch, float distance, float fallback)
+        internal static Vector3 LoftLaunch(Vector3 from, Vector3 to, Vector3 tube, bool airborne, float least = float.NaN)
         {
-            if (float.IsNaN(pitch)) return distance * fallback;
-            return distance * Mathf.Tan(Mathf.Clamp(pitch, 12f, 80f) * Mathf.Deg2Rad) * 0.25f;
+            if (float.IsNaN(least)) least = airborne ? AirLoftClimb : LoftClimb;
+            var ahead = new Vector3(to.x - from.x, 0f, to.z - from.z);
+            ahead = ahead.sqrMagnitude > 1e-4f ? ahead.normalized : Vector3.forward;
+            var heading = ahead;
+            var angle = least;
+            if (tube.sqrMagnitude > 0.5f)
+            {
+                var dir = tube.normalized;
+                var flat = new Vector3(dir.x, 0f, dir.z);
+                if (flat.sqrMagnitude > 0.04f && Vector3.Dot(flat.normalized, ahead) > 0.5f) heading = flat.normalized;
+                angle = Mathf.Max(least, Mathf.Asin(Mathf.Clamp(dir.y, -1f, 1f)) * Mathf.Rad2Deg);
+            }
+            var a = Mathf.Min(angle, 90f) * Mathf.Deg2Rad;
+            return heading * Mathf.Cos(a) + Vector3.up * Mathf.Sin(a);
         }
 
         /// <summary>
@@ -615,10 +654,15 @@ namespace MachineBrigade.Game.Effects
             }
             // Artillery: a high arc, leaving at the barrel's angle, with a thin trail of hot gas;
             // the shell or mortar bomb itself where it has a model.
+            // Play-test 13 follow-up (lane A): at the Sim's height (ArcShare x ground distance, CombatSystem.RoundHeight), so a
+            // C-RAM's burst meets the shell where it is drawn; it leaves along the laid barrel (FlyBallistic).
+            var peak = Ground(from, to) * (weapon != null && weapon.Flight == FlightProfile.Ballistic ? weapon.ArcShare : 0.3f);
             if (model != null)
-                _projectiles.Launch(_models.Merged(model), from, to, travel, ArcFor(pitch, distance, 0.3f), 0.35f, now, scale: scale,
-                    control: Bend(from, to, barrel));
-            else _tracers.Launch(from, to, travel, ArcFor(pitch, distance, 0.3f), 0.32f, 1.1f, now, 0f, 0.55f);
+            {
+                _projectiles.Launch(_models.Merged(model), from, to, travel, peak, 0.35f, now, scale: scale);
+                _projectiles.FlyBallistic(Raised(barrel), peak);
+            }
+            else _tracers.Launch(from, to, travel, peak, 0.32f, 1.1f, now, 0f, 0.55f);
             // A mortar's flash is small: at the artillery size it covered the carrier seen from above.
             var mortar = weapon != null && weapon.Id.Contains("mortar");
             Flash(MuzzleFx.Kind.Artillery, from, Launch(barrel, forward, 0.9f), now, mortar ? 0.55f : 1f, groundY);

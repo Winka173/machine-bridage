@@ -23,7 +23,10 @@ namespace MachineBrigade.Editor
     /// fires its first missile or rocket at a target (an aircraft for anti-air weapons), frozen at
     /// launch beside its launcher (to judge its size), then at three moments of its flight closed
     /// on the round, its flame and its smoke trail. Several sheets of up to six launchers
-    /// (missiles_N.png). Batch mode (with graphics):
+    /// (missiles_N.png). Play-test 13 follow-up (lane A): a fifth column seen side-on at 0.8 of the flight, framed on the
+    /// whole path (launcher to target), to judge its flight profile (Direct flat, Loft climb-and-dive, Ballistic high arc);
+    /// missiles.txt gives each round's profile, its drawn peak against the Sim's (ArcShare x ground distance) and when and
+    /// where it lands against the Sim's flight time and aim point. Batch mode (with graphics):
     /// -executeMethod MachineBrigade.Editor.MissileShots.Run -mbShotsOut &lt;folder&gt; [-mbShotsIds a+b].
     /// </summary>
     public static class MissileShots
@@ -41,7 +44,12 @@ namespace MachineBrigade.Editor
             ("attack_helicopter", false), ("elite_attack_helicopter", false), ("gunship_heli", false), ("scout_heli", false), ("strike_drone", false),
             ("attack_jet", false), ("fighter_jet", true), ("recon_drone", false), ("stealth_bomber", false), ("heavy_bomber", false),
             ("mlrs", false), ("thermobaric_launcher", false), ("heavy_rocket_artillery", false), ("ballistic_launcher", false), ("rocket_turret", false), ("rocket_technical", false),
+            // Play-test 13 follow-up (lane A): the lofted box launchers (NSM, Typhon) and the PAC-3 tower.
+            ("coastal_ashm_vehicle", false), ("ground_cruise_missile_vehicle", false), ("missile_battery.pac3", true),
         };
+
+        /// <summary>The side-on column showing the whole flight path (after the moments' columns).</summary>
+        private const int PathColumn = 4;
 
         private sealed class Kit
         {
@@ -82,7 +90,7 @@ namespace MachineBrigade.Editor
             for (int first = 0, n = 1; first < rows.Count; first += RowsPerSheet, n++)
             {
                 var count = Mathf.Min(RowsPerSheet, rows.Count - first);
-                var sheet = new Texture2D(CellW * Moments.Length, CellH * count, TextureFormat.RGB24, false);
+                var sheet = new Texture2D(CellW * (PathColumn + 1), CellH * count, TextureFormat.RGB24, false);
                 for (var r = 0; r < count; r++)
                 {
                     var (id, air) = rows[first + r];
@@ -99,10 +107,15 @@ namespace MachineBrigade.Editor
                     var time = 0f;
                     const float step = 1f / 60f;
                     var line = $"{id}: {e.DefId} {duration:0.00} s";
-                    for (var m = 0; m < Moments.Length; m++)
+                    // Play-test 13 follow-up (lane A): the drawn path against the Sim's (its peak over the line, where and when it lands).
+                    var aim = WeaponEffects.AimPoint(e, kit.Views);
+                    var start = Round(kit, out _, out _);
+                    var top = 0f;
+                    var last = start;
+                    var landed = -1f;
+                    void Advance(float until)
                     {
-                        var at = m == 0 ? Mathf.Min(Moments[0], duration * 0.3f) : Moments[m] * duration;
-                        while (time + 1e-4f < at)
+                        while (time + 1e-4f < until)
                         {
                             time += step;
                             kit.Tracers.Tick(time, kit.Emitters);
@@ -110,7 +123,22 @@ namespace MachineBrigade.Editor
                             kit.Muzzle.Tick(time);
                             kit.Emitters.Tick(time, step);
                             SimulateParticles(kit.Holder, step);
+                            if (!Flying(kit))
+                            {
+                                if (landed < 0f) landed = time;
+                                continue;
+                            }
+                            var p = Round(kit, out _, out _);
+                            var run = WeaponEffects.Ground(start, aim);
+                            var share = run > 1e-3f ? Mathf.Clamp01(WeaponEffects.Ground(start, p) / run) : 0f;
+                            top = Mathf.Max(top, p.y - Mathf.Lerp(start.y, aim.y, share));
+                            last = p;
                         }
+                    }
+                    for (var m = 0; m < Moments.Length; m++)
+                    {
+                        var at = m == 0 ? Mathf.Min(Moments[0], duration * 0.3f) : Moments[m] * duration;
+                        Advance(at);
                         var round = Round(kit, out var forward, out var length);
                         if (m == 0)
                         {
@@ -128,7 +156,14 @@ namespace MachineBrigade.Editor
                             foreach (var ps in kit.Holder.GetComponentsInChildren<ParticleSystem>())
                                 if (ps.name.StartsWith("Motor")) line += $" {ps.name.Substring(6)} {ps.particleCount}";
                         }
+                        if (m == Moments.Length - 1) SideOn(camera, rt, sheet, count - 1 - r, start, aim, top);
                     }
+                    // On to the end of the flight: it must land on the Sim's aim point when the Sim scores it.
+                    Advance(duration + 0.5f);
+                    var weapon = catalog.Weapons.TryGetValue(e.DefId, out var fired) ? fired : null;
+                    var simPeak = weapon != null ? weapon.ArcShare * WeaponEffects.Ground(start, aim) : 0f;
+                    line += $" | {weapon?.Flight} peak {top:0.0} m (Sim {simPeak:0.0} m), lands {landed:0.00} s (Sim {duration:0.00} s)"
+                            + $" {Vector3.Distance(last, aim):0.0} m from its aim point";
                     log.AppendLine(line);
                     Object.DestroyImmediate(kit.Holder.gameObject);
                 }
@@ -208,6 +243,34 @@ namespace MachineBrigade.Editor
             forward = Vector3.forward;
             length = 0f;
             return Vector3.zero;
+        }
+
+        /// <summary>Whether a round is still in the air.</summary>
+        private static bool Flying(Kit kit)
+        {
+            foreach (Transform t in kit.Holder.Find("Projectiles"))
+                if (t.gameObject.activeSelf) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Play-test 13 follow-up (lane A): the whole flight seen side-on (a little from above), framed on the launcher, the
+        /// target and the path's peak, so the smoke trail draws the profile; the game's camera angle is put back after.
+        /// </summary>
+        private static void SideOn(Camera camera, RenderTexture rt, Texture2D sheet, int row, Vector3 from, Vector3 to, float top)
+        {
+            var rotation = camera.transform.rotation;
+            var size = camera.orthographicSize;
+            var chord = new Vector3(to.x - from.x, 0f, to.z - from.z);
+            var ahead = chord.sqrMagnitude > 1e-4f ? chord.normalized : Vector3.forward;
+            var side = Vector3.Cross(Vector3.up, ahead);
+            camera.transform.rotation = Quaternion.LookRotation(side * Mathf.Cos(10f * Mathf.Deg2Rad) - Vector3.up * Mathf.Sin(10f * Mathf.Deg2Rad));
+            var centre = (from + to) * 0.5f + Vector3.up * (Mathf.Max(top, 1f) * 0.5f);
+            var half = Mathf.Max((chord.magnitude * 0.5f + 4f) * CellH / (float)CellW, Mathf.Max(top, 1f) * 0.5f + 4f);
+            Frame(camera, centre, half);
+            Snap(camera, rt, sheet, PathColumn, row);
+            camera.transform.rotation = rotation;
+            camera.orthographicSize = size;
         }
 
         private static void SimulateParticles(Transform root, float dt)
