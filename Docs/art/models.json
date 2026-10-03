@@ -953,7 +953,7 @@
   },
   "ground_cruise_missile_vehicle": {
     "file": "ground_cruise_missile_vehicle.glb",
-    "triangles": 3868
+    "triangles": 5606
   },
   "ground_drone_carrier": {
     "file": "ground_drone_carrier.glb",
