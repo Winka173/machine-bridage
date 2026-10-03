@@ -558,6 +558,8 @@ namespace MachineBrigade.Sim.Combat
                 state.ChargeLeft = 0f;
                 if (target == null || !InReach(v, target, weapon)) return;
             }
+            // Play-test 14: a launcher fires once its erector is up (see Erected).
+            else if (index == 0 && v.Def.ErectSeconds > 0f && target != null && !Erected(v)) return;
             // Limited ammunition: one round per trigger pull (a whole salvo counts as one).
             else if (target == null || state.Ammo == 0 || !CanFire(v, index, target) || !InRhythm(v, index)) return;
             else if (weapon.Charge > 0f)
@@ -634,6 +636,22 @@ namespace MachineBrigade.Sim.Combat
             {
                 state.Cooldown = weapon.Cooldown * Jitter();
             }
+        }
+
+        /// <summary>Play-test 14: how long a launcher stays up without a target before its erector goes down again (the view's hold).</summary>
+        private const double ErectHold = 1.2;
+
+        /// <summary>
+        /// Play-test 14: whether a launcher's erector is up: it starts up when the launcher takes a target (after more than
+        /// <see cref="ErectHold"/> s without one) and is up <see cref="VehicleDef.ErectSeconds"/> later, so the view raises it at
+        /// its own pace instead of snapping it up for a round fired at once.
+        /// </summary>
+        private bool Erected(Vehicle v)
+        {
+            var now = _world.Time;
+            if (now - v.ErectLast > ErectHold) v.ErectFrom = now;
+            v.ErectLast = now;
+            return now - v.ErectFrom >= v.Def.ErectSeconds - 1e-6;
         }
 
         /// <summary>Seconds between a single-shot gun's round and the second one Twin Feed adds.</summary>

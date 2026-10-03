@@ -21,6 +21,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>A linked tower's damage multiplier (1: not linked).</summary>
         internal float LinkDamage = 1f;
 
+        /// <summary>Play-test 14: since when a launcher's erector has been coming up, and when it last had a target.</summary>
+        internal double ErectFrom = double.NegativeInfinity, ErectLast = double.NegativeInfinity;
+
         /// <summary>A microwave's next pulse, a flare tower's next flare.</summary>
         internal double WorksNextAt;
 

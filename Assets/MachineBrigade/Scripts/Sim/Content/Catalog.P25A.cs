@@ -123,6 +123,12 @@ namespace MachineBrigade.Sim.Content
         public BlastWallDef? BlastWall { get; internal set; }
         public DecoyDef? Decoy { get; internal set; }
         public FireControlDef? FireControl { get; internal set; }
+
+        /// <summary>
+        /// Play-test 14: a launcher's erector, seconds from travel to firing pose (0: none). Its main weapon fires once it has
+        /// had a target that long (the view raises it at that pace; a launcher fired before it was up snapped up at once).
+        /// </summary>
+        public float ErectSeconds { get; internal set; }
         public SearchlightDef? Searchlight { get; internal set; }
         public BalloonDef? Balloon { get; internal set; }
         public SightJammerDef? SightJammer { get; internal set; }
@@ -198,6 +204,7 @@ namespace MachineBrigade.Sim.Content
                 };
             }
             if (v.Has("decoy")) def.Decoy = new DecoyDef { Mimic = v.Object("decoy").Has("mimic") ? v.Object("decoy").String("mimic") : "gun_turret" };
+            def.ErectSeconds = Math.Max(0f, v.Float("erectSeconds", 0f));
             if (v.Has("fireControl"))
             {
                 var o = v.Object("fireControl");
