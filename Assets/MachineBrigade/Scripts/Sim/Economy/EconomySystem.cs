@@ -89,10 +89,11 @@ namespace MachineBrigade.Sim.Economy
         public float Bank => _bank + (Commander?.BankBonus ?? 0f);
 
         /// <summary>Supply: the army value the side keeps up at full income; above it, upkeep sets in.</summary>
-        public int ArmyCap => (int)MathF.Round((_armyCap + SupplyBonus) * SupplyScale * (Commander?.Supply ?? 1f));
+        public int ArmyCap => (int)MathF.Round((_armyCap * global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomyRules.SupplyPriceScale + SupplyBonus) *
+                                               SupplyScale * (Commander?.Supply ?? 1f));
 
         /// <summary>Vehicles one side may have on the field (and on the way) at once: a safety limit for performance.</summary>
-        public const int MaxVehicles = 32;
+        public static int MaxVehicles => global::MachineBrigade.Sim.Content.SimTunables.Modes.TeamEconomy.MaxVehicles;
 
         /// <summary>
         /// Most vehicles this side may have in the field or on the way (balance.json
@@ -104,13 +105,13 @@ namespace MachineBrigade.Sim.Economy
         /// Aircraft one side may have up at once (and on the way), like the air slots of Wargame
         /// and World in Conflict: air power is a scarce, dear asset, not a swarm.
         /// </summary>
-        public const int MaxAircraft = 6;
+        public static int MaxAircraft => global::MachineBrigade.Sim.Content.SimTunables.Modes.TeamEconomy.MaxAircraft;
 
         /// <summary>
         /// Army value kept up at full income: half again the mode's old army cap, so a normal
         /// army never pays upkeep and only a swarm does.
         /// </summary>
-        public int Supply => ArmyCap * 3 / 2;
+        public int Supply => (int)Math.Floor(ArmyCap * (double)global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomyRules.SupplyPerArmyCap);
 
         /// <summary>
         /// Share of the income left after upkeep: full up to the supply, then falling steadily
@@ -121,7 +122,7 @@ namespace MachineBrigade.Sim.Economy
         public static float UpkeepFor(int armyCp, int supply)
         {
             if (supply <= 0 || armyCp <= supply) return 1f;
-            return MathF.Max(0.25f, 1f - 0.5f * (armyCp - supply) / supply);
+            return MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomyRules.UpkeepFloor, 1f - global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomyRules.UpkeepSlope * (armyCp - supply) / supply);
         }
 
         /// <summary>
@@ -198,28 +199,28 @@ namespace MachineBrigade.Sim.Economy
     internal sealed partial class EconomySystem
     {
         /// <summary>The underdog's biggest reinforcement boost (0.5: half again the income).</summary>
-        public const float MaxCatchUp = 0.5f;
+        public static float MaxCatchUp => global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.MaxCatchUp;
 
         /// <summary>The underdog's boost starts once its army falls under this share of the other's.</summary>
-        private const float CatchUpBelow = 0.75f;
+        private static float CatchUpBelow => global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.CatchUpBelow;
 
         /// <summary>Armies too small to judge (the opening, a wiped board) change nothing.</summary>
-        private const int CatchUpMinimumArmy = 14;
+        private static int CatchUpMinimumArmy => global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.CatchUpMinimumArmy;
 
         /// <summary>Seconds for the boost to settle to a change in the odds (no flicker as units die and arrive).</summary>
-        private const float CatchUpSettle = 4f;
+        private static float CatchUpSettle => global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.CatchUpSettle;
 
         /// <summary>
         /// Seconds between buying a vehicle and it arriving: long enough for the transport to fly
         /// over and the vehicle to come down under its parachute onto its landing point (the drop
         /// is drawn by the game; aircraft fly in from the map's edge instead).
         /// </summary>
-        public const float DeliverySeconds = 3.5f;
+        public static float DeliverySeconds => global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.DeliverySeconds;
 
         /// <summary>How far past the drop zone a delivered vehicle drives, so the zone stays clear.</summary>
-        private const float RollIn = 12f;
+        private static float RollIn => global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.RollIn;
 
-        private const float KillReward = 0.25f;
+        private static float KillReward => global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.KillReward;
 
         private readonly SimWorld _world;
         private readonly Dictionary<int, TeamEconomy> _teams = new();
@@ -414,7 +415,7 @@ namespace MachineBrigade.Sim.Economy
             var team = victim.LastAttackerTeam;
             var paid = 0f;
             // Prompt 32 L4: a garrison squad pays nobody.
-            if (team >= 0 && team != victim.Team && victim.Def.Fort == null && !victim.Def.Wall && !victim.Garrison && _world.Time - victim.LastHitTime <= 10.0 && _teams.TryGetValue(team, out var economy))
+            if (team >= 0 && team != victim.Team && victim.Def.Fort == null && !victim.Def.Wall && !victim.Garrison && _world.Time - victim.LastHitTime <= global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomyRules.KillCreditSeconds && _teams.TryGetValue(team, out var economy))
             {
                 paid = KillShare(Bounty(economy, victim), KillerBonus(killer, team), economy.Commander?.KillRefund ?? KillReward);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * paid);
@@ -453,13 +454,14 @@ namespace MachineBrigade.Sim.Economy
         internal Action<Vehicle, Vehicle, float>? LootPaid;
 
         /// <summary>The most a kill may refund, as a share of the victim's price, whatever pays it (prompt 8 I.6).</summary>
-        internal const float KillRefundCap = 0.45f;
+        internal static float KillRefundCap => global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.KillRefundCap;
 
         /// <summary>The most one's own loss may refund (Quartermaster's four pieces), as a share of its price.</summary>
-        internal const float LossRefundCap = 0.15f;
+        internal static float LossRefundCap => global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.LossRefundCap;
 
         /// <summary>A kill's refund as a share of the victim's price: the base quarter, the odds, the killer's equipment, capped.</summary>
-        internal static float KillShare(float bounty, float killerBonus, float reward = KillReward) => MathF.Min(KillRefundCap, reward * bounty * killerBonus);
+        internal static float KillShare(float bounty, float killerBonus, float? rewardOrDefault = null) =>
+            MathF.Min(KillRefundCap, (rewardOrDefault ?? KillReward) * bounty * killerBonus);
 
         /// <summary>
         /// Prompt 22 F: the commander's income multiplier now: its flat rate (Ledger's), a battle without capture points
@@ -490,11 +492,12 @@ namespace MachineBrigade.Sim.Economy
         /// <paramref name="rival"/>: none down to three quarters of the rival's, then rising to
         /// <see cref="MaxCatchUp"/> at a fifth.
         /// </summary>
-        public static float CatchUpFor(int own, int rival, float max = MaxCatchUp)
+        public static float CatchUpFor(int own, int rival, float? maxOrDefault = null)
         {
+            var max = maxOrDefault ?? MaxCatchUp;
             if (rival < CatchUpMinimumArmy) return 1f;
             var odds = own / (float)rival;
-            return 1f + max * Math.Clamp((CatchUpBelow - odds) / (CatchUpBelow - 0.2f), 0f, 1f);
+            return 1f + max * Math.Clamp((CatchUpBelow - odds) / (CatchUpBelow - global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomyRules.CatchUpOddsFloor), 0f, 1f);
         }
 
         /// <summary>
@@ -507,7 +510,7 @@ namespace MachineBrigade.Sim.Economy
             // The victim still counts: it was part of the army the killer was up against.
             var theirs = MathF.Max(CatchUpMinimumArmy, loser.ArmyCp + victim.Def.ArmyCost);
             var ours = MathF.Max(CatchUpMinimumArmy, killer.ArmyCp);
-            return Math.Clamp(MathF.Sqrt(theirs / ours), 0.5f, 1.5f);
+            return Math.Clamp(MathF.Sqrt(theirs / ours), global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomyRules.BountyMin, global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomyRules.BountyMax);
         }
 
         /// <summary>The one other side with an economy (the catch-up compares two armies).</summary>

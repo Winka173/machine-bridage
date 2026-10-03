@@ -53,7 +53,8 @@ namespace MachineBrigade.Sim.Sandbox
         public const float RotationStep = 15f;
 
         /// <summary>The starting ceiling per side (B.10): 64 ground vehicles and 12 aircraft.</summary>
-        public const int VehicleCap = 64, AircraftCap = 12;
+        public static int VehicleCap => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxRules.VehicleCap;
+        public static int AircraftCap => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxRules.AircraftCap;
 
         /// <summary>A tap this close to a free hardpoint snaps the tower onto it.</summary>
         public const float HardpointSnap = 8f;
@@ -106,7 +107,7 @@ namespace MachineBrigade.Sim.Sandbox
         public const int BranchRank = Modes.TowerCards.BranchRank;
 
         /// <summary>The highest card rank (the game's CardRanks.Max).</summary>
-        public const int MaxRank = 10;
+        public static int MaxRank => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxRules.MaxRank;
 
         /// <summary>
         /// The picker's list for a tab (B.3), filtered: a name that contains <paramref name="search"/> (by

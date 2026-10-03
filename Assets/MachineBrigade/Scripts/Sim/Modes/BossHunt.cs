@@ -46,11 +46,12 @@ namespace MachineBrigade.Sim.Modes
     /// </summary>
     public static class BossHunt
     {
-        public const int WeeklyMains = 3;
-        public const int WeeklyMinis = 7;
+        public static int WeeklyMains => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossHunt.WeeklyMains;
+        public static int WeeklyMinis => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossHunt.WeeklyMinis;
 
         /// <summary>Play-test 6 (DECISIONS 21G): the week's run has at least this many main and mini bosses that answer aircraft.</summary>
-        public const int AirDefenceMains = 1, AirDefenceMinis = 3;
+        public static int AirDefenceMains => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossHunt.AirDefenceMains;
+        public static int AirDefenceMinis => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossHunt.AirDefenceMinis;
 
         /// <summary>The week's run (fewer when the chapters switched on have fewer bosses).</summary>
         public static IReadOnlyList<string> Weekly(int week, IReadOnlyList<HuntBoss> story)
@@ -90,10 +91,11 @@ namespace MachineBrigade.Sim.Modes
         }
 
         /// <summary>The full hunt's first and last boss multipliers (prompt 26 E.3).</summary>
-        public const float FullFrom = 0.8f, FullTo = 1.3f;
+        public static float FullFrom => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossHunt.FullFrom;
+        public static float FullTo => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossHunt.FullTo;
 
         /// <summary>The week's step per boss (prompt 26 E.2: 1 + 0.06 (i - 1), x1.0 to x1.54 over ten).</summary>
-        public const float WeeklyStep = 0.06f;
+        public static float WeeklyStep => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossHunt.WeeklyStep;
 
         /// <summary>
         /// Prompt 26 E.2/E.3: the i-th (0-based) of n bosses' multiplier m on its health and damage. The week's hunt: 1 + 0.06 i.
@@ -216,7 +218,7 @@ namespace MachineBrigade.Sim.Modes
         public const int Offered = 3;
 
         /// <summary>Prompt 26 E.2: all the supports together add at most this much army strength (+40 %).</summary>
-        public const float Cap = 0.40f;
+        public static float Cap => global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.Cap;
 
         public static readonly IReadOnlyList<HuntSupportDef> All = new[]
         {
@@ -356,12 +358,12 @@ namespace MachineBrigade.Sim.Modes
         public float Power { get; set; }
 
         /// <summary>Seconds a mini and a main boss should take to bring down (weekly 66 s / 2.8 min; the full hunt 1 / 2.5 min).</summary>
-        public float MiniSeconds { get; set; } = 66f;
+        public float MiniSeconds { get; set; } = global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.MiniSeconds;
 
-        public float MainSeconds { get; set; } = 168f;
+        public float MainSeconds { get; set; } = global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.MainSeconds;
 
         /// <summary>The share of P x t the boss's health is (0.6: the army does not hit all the time).</summary>
-        public float HpShare { get; set; } = 0.6f;
+        public float HpShare { get; set; } = global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.HpShare;
 
         /// <summary>Prompt 26 E.3: the ramp is the full hunt's (x0.8 to x1.3 in story order), not the week's.</summary>
         public bool FullRamp { get; set; }

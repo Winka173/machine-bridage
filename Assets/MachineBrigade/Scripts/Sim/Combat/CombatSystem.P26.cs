@@ -17,7 +17,7 @@ namespace MachineBrigade.Sim.Combat
         internal const float CrowdFrom = 3f;
 
         /// <summary>The most a crowd in the core can raise a target's weight (and a dear target's, over the ordinary worth rule).</summary>
-        internal const float CrowdMax = 4f;
+        internal static float CrowdMax => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.CrowdMax;
 
         /// <summary>The boss's weighting of a ground target by weapon type; 1 for everyone else's fire.</summary>
         private float P26Worth(Vehicle v, Vehicle other, WeaponDef weapon)

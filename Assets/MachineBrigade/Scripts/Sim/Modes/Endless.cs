@@ -27,27 +27,33 @@ namespace MachineBrigade.Sim.Modes
     public static class EndlessRules
     {
         /// <summary>Defend, Endless, Survival: the enemy +4 % a wave beyond the finite part.</summary>
-        public const float EnemyPerWave = 0.04f;
+        public static float EnemyPerWave => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.EnemyPerWave;
 
         /// <summary>The player +2 % a wave, at most +30 %.</summary>
-        public const float PlayerPerWave = 0.02f, PlayerMax = 0.30f;
+        public static float PlayerPerWave => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.PlayerPerWave;
+        public static float PlayerMax => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.PlayerMax;
 
         /// <summary>Boss Rush: the enemy +8 % a boss; the player gets nothing more (its support already goes to +40 %).</summary>
-        public const float EnemyPerBoss = 0.08f;
+        public static float EnemyPerBoss => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.EnemyPerBoss;
 
         /// <summary>Survival: a mini boss every 5 waves, a main boss every 10 (instead of the mini boss); 10 waves finite.</summary>
-        public const int MiniBossEvery = 5, BossEvery = 10, SurvivalWaves = 10;
+        public static int MiniBossEvery => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.MiniBossEvery;
+        public static int BossEvery => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.BossEvery;
+        public static int SurvivalWaves => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.SurvivalWaves;
 
         /// <summary>Endless (the menu entry): the waves stop growing in number after this one (Defend's finite length).</summary>
-        public const int DefendFiniteWaves = 10;
+        public static int DefendFiniteWaves => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.DefendFiniteWaves;
 
         /// <summary>Coins: 18 x 0.9^k a wave beyond (Boss Rush 60 x 0.9^k a boss), at most 600 a day over every mode.</summary>
-        public const int WaveCoins = 18, BossCoins = 60, DailyCap = 600;
+        public static int WaveCoins => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.WaveCoins;
+        public static int BossCoins => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.BossCoins;
+        public static int DailyCap => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.DailyCap;
 
-        public const double CoinDecay = 0.9;
+        public static double CoinDecay => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.CoinDecay;
 
         /// <summary>Badges at +10, +20, +30 waves and +5, +10 bosses.</summary>
-        public static readonly int[] WaveBadges = { 10, 20, 30 }, BossBadges = { 5, 10 };
+        public static int[] WaveBadges => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.WaveBadges;
+        public static int[] BossBadges => global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.BossBadges;
 
         public static float EnemyScale(int steps, bool bosses = false) => 1f + Math.Max(0, steps) * (bosses ? EnemyPerBoss : EnemyPerWave);
 

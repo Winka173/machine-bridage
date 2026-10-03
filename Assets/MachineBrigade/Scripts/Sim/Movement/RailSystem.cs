@@ -120,37 +120,37 @@ namespace MachineBrigade.Sim.Movement
         public const float SlowReference = 4.5f;
 
         /// <summary>A crossing warns at least this long (s).</summary>
-        public const float MinWarning = 4f;
+        public static float MinWarning => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.MinWarning;
 
         /// <summary>The barriers are down this long before the train (s), or when it is this near (m).</summary>
         public const float CloseLead = 1.5f;
         public const float CloseFloor = 3f;
 
         /// <summary>A crossing warns whenever a train is this near it (m), however slowly it comes.</summary>
-        public const float WarnFloor = 8f;
+        public static float WarnFloor => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.WarnFloor;
 
         /// <summary>A crossing stays TRAIN_PASSING this long after the train has gone (ticks: 0.5 s).</summary>
-        public const int ClearHoldTicks = 10;
+        public static int ClearHoldTicks => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.ClearHoldTicks;
 
         /// <summary>A boss train's ram (damage to one enemy, at most once in 2 s) and its crush on fixed defences (a second).</summary>
-        public const float RamDamage = 600f;
+        public static float RamDamage => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.RamDamage;
         public const float CrushDps = 600f;
 
         /// <summary>The support train: its length, its front's stand back from the line's end, its curve (the view's).</summary>
-        public const float SupportLength = 50f;
+        public static float SupportLength => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.SupportLength;
         public const float SupportStopBack = 12.5f;
         public const float SupportTravel = 9f;
-        public const float SupportWait = 7f;
+        public static float SupportWait => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.SupportWait;
         public const float SupportRun = 110f;
-        public const float SupportHalfWidth = 1.8f;
+        public static float SupportHalfWidth => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.SupportHalfWidth;
 
         /// <summary>A vehicle on the line ahead of a train is told again at most this often (s).</summary>
-        public const double TellEvery = 1.0;
+        public static double TellEvery => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.TellEvery;
 
         public const string OpenState = "open";
         public const string ClosedState = "closed";
 
-        private const float AttachReach = 8f;
+        private static float AttachReach => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.AttachReach;
 
         private readonly SimWorld _world;
         private readonly List<RailCrossing> _crossings = new();

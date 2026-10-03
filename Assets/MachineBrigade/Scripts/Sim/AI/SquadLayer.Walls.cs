@@ -25,10 +25,10 @@ namespace MachineBrigade.Sim.AI
     public sealed partial class SquadLayer
     {
         /// <summary>Metres a unit of route threat (over the squad's strength) counts.</summary>
-        internal const float ThreatMetres = 40f;
+        internal static float ThreatMetres => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ThreatMetres;
 
         /// <summary>A breach must cost this share less than the best open way.</summary>
-        internal const float BreachMargin = 0.8f;
+        internal static float BreachMargin => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BreachMargin;
 
         /// <summary>The segment a squad has chosen to break (squad id -> entity).</summary>
         private readonly Dictionary<int, EntityId> _breach = new();

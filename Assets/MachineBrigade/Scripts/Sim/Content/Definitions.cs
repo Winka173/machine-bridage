@@ -552,7 +552,7 @@ namespace MachineBrigade.Sim.Content
         public bool Stealth { get; internal set; }
 
         /// <summary>Share of a spotter's sight at which a stealthy aircraft shows.</summary>
-        public const float StealthSight = 0.4f;
+        public static float StealthSight => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleDef.StealthSight;
 
         /// <summary>
         /// Prompt 25 A1 (the scout jeep): a scout that hides when it stands. Once it has stood still a second, and until

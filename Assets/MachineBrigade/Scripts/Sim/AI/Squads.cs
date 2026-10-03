@@ -126,13 +126,13 @@ namespace MachineBrigade.Sim.AI
     /// </summary>
     public sealed partial class SquadLayer
     {
-        public const float Interval = 0.25f;
-        public const int MinSquad = 3;
-        public const int MaxSquad = 6;
-        private const float GatherRadius = 25f;
-        private const float GatheredRadius = 12f;
-        private const float JoinReach = 60f;
-        private const float SupportReach = 80f;
+        public static float Interval => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.Interval;
+        public static int MinSquad => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.MinSquad;
+        public static int MaxSquad => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.MaxSquad;
+        private static float GatherRadius => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.GatherRadius;
+        private static float GatheredRadius => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.GatheredRadius;
+        private static float JoinReach => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.JoinReach;
+        private static float SupportReach => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SupportReach;
 
         private readonly AiCommander _commander;
         private readonly List<Squad> _squads = new();

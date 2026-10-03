@@ -55,7 +55,7 @@ namespace MachineBrigade.Sim.Content
         public float EdgeShare { get; internal set; } = 0.4f;
 
         /// <summary>Prompt 26 B.3: the edge reaches at most this far, whatever the core.</summary>
-        public const float MaxEdge = 20f;
+        public static float MaxEdge => global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.MaxEdge;
 
         /// <summary>Prompt 17 C: its damage ramps up on one target (null: it does not).</summary>
         public RampDef? Ramp { get; internal set; }
@@ -74,7 +74,7 @@ namespace MachineBrigade.Sim.Content
         public WeaponDef? HeRound { get; internal set; }
 
         /// <summary>Armour at or below this front level takes the high-explosive round (light vehicles).</summary>
-        public const int HeArmourMax = 1;
+        public static int HeArmourMax => global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.HeArmourMax;
 
         /// <summary>Whether a dual-purpose gun loads its high-explosive round for this target (a structure, light armour).</summary>
         public static bool WantsHe(ArmorClass armor, ArmourLevels levels, bool isStatic) =>

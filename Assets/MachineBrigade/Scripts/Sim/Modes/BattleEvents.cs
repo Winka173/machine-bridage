@@ -16,12 +16,12 @@ namespace MachineBrigade.Sim.Modes
     public sealed partial class BattleEvents
     {
         /// <summary>Prompt 30 L6: the contested drop is announced (and marked) 15 s before it lands (5 s before).</summary>
-        private const float CrateFall = 15f;
-        private const float CrateLife = 50f;
-        private const float ClaimReach = 6f;
-        private const float ClaimSeconds = 2f;
-        private const float CrateCp = 10f;
-        private const float CrateRepair = 0.3f;
+        private static float CrateFall => global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.CrateFall;
+        private static float CrateLife => global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.CrateLife;
+        private static float ClaimReach => global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.ClaimReach;
+        private static float ClaimSeconds => global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.ClaimSeconds;
+        private static float CrateCp => global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.CrateCp;
+        private static float CrateRepair => global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.CrateRepair;
         private const string RaidSupport = "air_raid";
 
         private readonly Random _random;

@@ -65,10 +65,10 @@ namespace MachineBrigade.Sim.Content
     public sealed partial class WeaponDef
     {
         /// <summary>A switch between rounds takes at least this long (the owner's 0.5 s).</summary>
-        public const float MinSwitchSeconds = 0.5f;
+        public static float MinSwitchSeconds => global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.MinSwitchSeconds;
 
         /// <summary>A loaded round stays in at least this long, so a gun never flickers between rounds.</summary>
-        public const float RoundHoldSeconds = 2f;
+        public static float RoundHoldSeconds => global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.RoundHoldSeconds;
 
         private static readonly IReadOnlyList<SecondRound> NoRounds = System.Array.Empty<SecondRound>();
 

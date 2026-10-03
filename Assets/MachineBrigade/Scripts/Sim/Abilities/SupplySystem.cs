@@ -29,40 +29,47 @@ namespace MachineBrigade.Sim.Abilities
     public static class SupplyRules
     {
         /// <summary>The slow rate (attacking, or in danger), against the full one.</summary>
-        public const float SlowShare = 0.5f;
+        public static float SlowShare => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplyRules.SlowShare;
 
         /// <summary>Share of its stores an aircraft goes back to fighting with; a bomber's share of its bombs.</summary>
-        public const float ReturnShare = 0.5f, BomberShare = 2f / 3f;
+        public static float ReturnShare => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplyRules.ReturnShare;
+        public static float BomberShare => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplyRules.BomberShare;
 
         /// <summary>How much faster than the holding pattern a landing pad, the HQ and an ammunition carrier (helicopters) rearm.</summary>
-        public const float PadRate = 2f, HqRate = 1.5f, CarrierRate = 2f;
+        public static float PadRate => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplyRules.PadRate;
+        public static float HqRate => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplyRules.HqRate;
+        public static float CarrierRate => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplyRules.CarrierRate;
 
         /// <summary>Seconds out of danger (and not attacking) before the full rate starts.</summary>
-        public const float SafeSeconds = 3f;
+        public static float SafeSeconds => (float)SupplySystem.SafeSeconds;
     }
 
     internal sealed class SupplySystem
     {
         /// <summary>The slow rate (attacking, or in danger), against the full one.</summary>
-        internal const float SlowShare = SupplyRules.SlowShare;
+        internal static float SlowShare => SupplyRules.SlowShare;
 
         /// <summary>Seconds out of danger (and not attacking) before the full rate starts.</summary>
-        internal const double SafeSeconds = 3.0;
+        internal static double SafeSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.SafeSeconds;
 
         /// <summary>Share of its stores an aircraft goes back to fighting with; a bomber's share of its bombs.</summary>
-        internal const float ReturnShare = SupplyRules.ReturnShare, BomberShare = SupplyRules.BomberShare;
+        internal static float ReturnShare => SupplyRules.ReturnShare;
+        internal static float BomberShare => SupplyRules.BomberShare;
 
         /// <summary>Below this share of its stores the commander may send it to rearm early in a lull.</summary>
-        internal const float LowShare = 0.2f;
+        internal static float LowShare => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.LowShare;
 
         /// <summary>How much faster than the holding pattern the other sites rearm.</summary>
-        internal const float PadRate = SupplyRules.PadRate, HqRate = SupplyRules.HqRate, CarrierRate = SupplyRules.CarrierRate;
+        internal static float PadRate => SupplyRules.PadRate;
+        internal static float HqRate => SupplyRules.HqRate;
+        internal static float CarrierRate => SupplyRules.CarrierRate;
 
         /// <summary>The HQ's basic mending for aircraft over it (a share of health a second; a landing pad's is its module's).</summary>
-        internal const float HqHeal = 0.01f;
+        internal static float HqHeal => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HqHeal;
 
         /// <summary>How near the HQ and an ammunition carrier count as there.</summary>
-        internal const float HqReach = 20f, CarrierReach = 12f;
+        internal static float HqReach => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HqReach;
+        internal static float CarrierReach => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.CarrierReach;
 
         /// <summary>Metres kept outside an enemy anti-aircraft weapon's reach.</summary>
         internal const float Margin = 6f;

@@ -31,9 +31,9 @@ namespace MachineBrigade.Sim.Bosses
     internal sealed partial class BossSystem
     {
         /// <summary>Escort orders and helper effects are worked out this often (ticks).</summary>
-        private const int EscortTicks = 10;
+        private static int EscortTicks => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.EscortTicks;
 
-        private const float EscortSeconds = EscortTicks * 0.05f;
+        private static float EscortSeconds => EscortTicks * 0.05f;
 
         /// <summary>A boss's escorts and how many of its waves have come.</summary>
         private sealed class EscortGroup

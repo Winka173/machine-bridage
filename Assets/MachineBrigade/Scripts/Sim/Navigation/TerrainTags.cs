@@ -62,16 +62,16 @@ namespace MachineBrigade.Sim.Navigation
     /// </summary>
     public static class TerrainRules
     {
-        public const float RoadSpeed = 1.2f;
-        public const float RoughSpeed = 0.85f;
-        public const float ForestSpeed = 0.75f;
-        public const float WaterSpeed = 0.5f;
+        public static float RoadSpeed => global::MachineBrigade.Sim.Content.SimTunables.Maps.TerrainRules.RoadSpeed;
+        public static float RoughSpeed => global::MachineBrigade.Sim.Content.SimTunables.Maps.TerrainRules.RoughSpeed;
+        public static float ForestSpeed => global::MachineBrigade.Sim.Content.SimTunables.Maps.TerrainRules.ForestSpeed;
+        public static float WaterSpeed => global::MachineBrigade.Sim.Content.SimTunables.Maps.TerrainRules.WaterSpeed;
 
         /// <summary>The enemy's sight on a ground vehicle in a forest.</summary>
-        public const float ForestSight = 0.7f;
+        public static float ForestSight => global::MachineBrigade.Sim.Content.SimTunables.Maps.TerrainRules.ForestSight;
 
         /// <summary>The cheapest cell's path cost (a road's): the A* heuristic is scaled by it to stay admissible.</summary>
-        public const float MinPathCost = 1f / RoadSpeed;
+        public static float MinPathCost => 1f / RoadSpeed;
 
         /// <summary>The amphibious and air-cushion vehicles, by id (the light tank is the amphibious light tank in the game's names).</summary>
         private static readonly HashSet<string> Waders = new() { "light_tank", "amphib_light_vehicle", "hover_gunboat", "landing_hovercraft" };

@@ -34,7 +34,7 @@ namespace MachineBrigade.Sim.Bosses
     internal sealed partial class BossSystem
     {
         /// <summary>The share of rounds at an unlocked boss that go at its body rather than a part.</summary>
-        internal const double BodyShare = 0.4;
+        internal static double BodyShare => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BodyShare;
 
         /// <summary>Each side's part order: which boss and which of its parts.</summary>
         private readonly Dictionary<int, (EntityId boss, int part)> _focus = new();

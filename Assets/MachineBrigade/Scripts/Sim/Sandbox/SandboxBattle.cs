@@ -260,7 +260,7 @@ namespace MachineBrigade.Sim.Sandbox
         }
 
         /// <summary>CP that never runs out (topped up every step).</summary>
-        public const float UnlimitedCp = 999f;
+        public static float UnlimitedCp => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxBattle.UnlimitedCp;
 
         /// <summary>The full AI's deck when the scenario names none: the kinds of the side's placed units it could buy.</summary>
         private static List<string> FieldDeck(Catalog catalog, SandboxScenario s, int team)

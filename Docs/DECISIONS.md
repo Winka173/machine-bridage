@@ -18823,3 +18823,68 @@ section 9.
 - Full gate after the wave (`quality_gate.py --no-write`): 230 models, 199 pass, hard gates 230 of 230; the eleven
   pass every hard gate (the helipads 70.2-74.5, accepted on the look since wave 2). The gold recompute after wave 12
   (owner answer 1) is left to the lead.
+
+## Prompt 35: gold recompute with rebuilt models (lane A)
+Owner answer 1 (section 8, "theo đề xuất"). Branch feature/p35-gold from lead/integration (f1741c99). Gate code and docs
+only. Two commits: the first recompute (cacdc9af) and the recalibration the lead asked for after reviewing it.
+- **Candidates**: pass 8 visual Tốt models not rebuilt since (4) + rebuilt models with every hard gate and soft >= 80;
+  borrowed stand-ins stay out, a rebuilt stand-in is a candidate (own_geometry gate checks it). V2 models always gold.
+- **First recompute (cacdc9af)**: one set per class / boss frame, top 10 %, set value = mean. Gate 199 -> 105 of 230.
+  The lead held it back: 3 of the 4 V2 models failed it (fighter_jet 67.9, main_battle_tank 71.8, silver_bug 55.5),
+  so the gold was miscalibrated (mixed classes: jeeps vs trucks, drones vs bombers, the drone_net_tower net in the
+  obstacle gold), not a fair higher bar.
+- **Recalibration** (`gold_class`, `_gold_set`): mixed classes split by size / kind: wheeled light < 5.5 m / heavy;
+  tracked light < 6 m / heavy; jet drone (drone / uav) / fighter < 12 m / heavy; helicopter light < 5 m / heavy;
+  obstacle wall / pad (helipads) / tall >= 3 m (nets) / flat; tower mast (<= 5.5 m, 1.4 x as tall) / small <= 5.5 m /
+  big. Lengths are the GLB's longer horizontal side. Parent classes are computed as the last fallback.
+  Anchor: every member and every V2 model must score >= 80 against its set leave-one-out; else widen to the top 20 %,
+  25 %, then down to the candidates' median; at the widest a non-V2 member still under 80 is left out (sea_cruiser,
+  swarm_carrier in the jet parent). Outliers (above Q3 + 1.5 IQR of the set's candidates on edges, regions, parts_m2,
+  tier2, tier3; with three candidates above 2 x the other two) never stand for gold. Set value = median of members
+  (mean with two): one dense member cannot drag the bar (stymphalos' tier 3 had silver_bug failing boss_air).
+  Lone sets borrow a similar set (SIMILAR: boss_sea <-> ship, hq / structure -> tower_big, ground (river boats) ->
+  ship, boss_air -> jet_heavy, obstacle_tall -> tower_mast, walls / pads -> obstacle_flat ...), then the parent.
+- **Circularity**: candidacy is judged against the previous gold; every gold member is scored leave-one-out
+  (`gold_for_model`, median of the other members; a sole member against the next set with gold); `gold_metrics.json`
+  keeps `member_metrics`. The recompute repeats to a fixed point (GOLD_ROUNDS 8); a two-round swap (small sets) is
+  settled by the union of the swapping rounds' candidates. Recompute run from the pre-rebuild gold; a second `--gold`
+  run gives the same members (checked).
+- **Result**: 104 places in 30 sets (GOLD_METRICS.md). Gate 199 (old gold) -> 105 (first) -> **202** of 230; hard
+  230 of 230; soft Tốt 202, Cần sửa 21, Kém 7. V2: main_battle_tank 82.8, fighter_jet 81.6, attack_helicopter 98.3,
+  silver_bug 81.5. Against the old gold 33 grades change (Tốt -> Cần sửa 11, Cần sửa -> Tốt 14, Kém -> Cần sửa 4,
+  Cần sửa -> Kém 4). Per set in REBUILD_REPORT section 2: tower_big 17 -> 28 up; wheeled_light 12 -> 9,
+  wheeled_heavy 31 -> 29, structure 4 -> 2, jet_heavy 5 -> 4, jet_fighter 6 -> 5, air_other 3 -> 2, ship 3 -> 2 down.
+- **Open for the lead / owner**: structure has two candidates (bulwark_post, targeting_station), so coastal_battery and
+  super_gun (10 m batteries) drop to 61-64; walls have no candidate and borrow the flat set (Kém with the helipads, as
+  under the old gold); the outlier screen leaves out 1-6 of the densest candidates per big set, by design.
+
+## Gói cân bằng (lane B)
+
+Game side of Docs/prompts/export_pack_vi.txt (§1 rules C / D, §3 game side, §4), branch `feature/pack-b`. Nothing run (no
+Unity, no tests); the four assemblies (Sim, Game, Editor, Tests) were compiled with the .NET SDK against the Unity 6
+managed DLLs. Every value change is in Docs/export/CHANGES.md (item, sheet, old, new, rule, reason, commit).
+
+- **Replay hash (a).** `ReplayHashTests`: 8 fixed battles (Conquest, Deathmatch, KotH, Siege, Endless, Survival, Boss Rush,
+  the framework campaign mission; fixed seeds), 2,400 ticks, `SimWorld.StateHash` every 400. Baseline
+  Docs/export/replay_hashes.txt, written on the first run (or MB_REPLAY_RECORD=1) with a `# rules: N` line;
+  `ChangedByRules` lets the scenarios a rule C / D change touches differ only against a baseline of an older rules number.
+- **Constants into data (b, b2).** Resources/Data/tunables.json (260 keys: domain → owner class → name, each with value,
+  unit, scan group, export file, code name), read by `SimTunables` (static fields defaulting to the old constants, set by
+  `GameContent.LoadCatalog` → `LoadTunables`); the old names stay as properties, so call sites are unchanged. 238 declared
+  constants + the supply / upkeep / catch-up / kill-pay formula numbers + the locked pricing rules (export only) + HOLD
+  flags. Values identical (checked by a float32 round-trip script and `TunablesTests`); compile-time-only uses fixed
+  (default parameters → nullable, `const` chains → properties, one byte cast). Left in code: 3,097 inline literals and 35
+  declarations (presentation pacing, array sizes, save layout, math tolerances; five gameplay ones listed in CHANGES.md).
+- **Rule D (c).** No retreat on health: the wave AIs' (non-layered TacticalAi) pull-back of damaged heavy vehicles and the
+  jets' dogfight break-off below 30 % health are removed (the two tests asserting them rewritten). Gungnir is a main boss:
+  never the Operations mutator's extra mini, not counted as a chapter mini. Kept and flagged: the enemy's 48-vehicle cap in
+  the big modes, smoke dischargers (concealment, not interception), the campaign general's scripted escape.
+- **Rule C (c).** Supply threshold (HOLD E2) x 1.16, the repo's average price factor (`economy.startCp.scale`), on the
+  mode's army cap only (bonuses after it). Kept: the upkeep curve, -75 % floor, catch-up, refunds (now parameters); the
+  steel fortress at 18 and the small towers' eq cap 11 (owner calls of 02/10 override the generic rules; flagged); splash
+  power bonus off, outpost forward drops and LATER events / neutrals off (flags); the 52 player-weapon cadences.
+- **Export (d).** `BalancePackFacts` (Sim, read-only) and `ExportGameDoc.Pack.cs`: game.json key `balancePack` with one
+  sub-key per NEED_CODE_CHECK sheet (listed in CHANGES.md); cells with no source in the code say KHONG_AP_DUNG and why
+  (aircraft shot band, boss compensation, deck goal, model LOD1).
+- **For lane C.** New data source Resources/Data/tunables.json; `scan_constants.py` should skip `SimTunables*.cs` and
+  `BalancePackFacts.cs`.

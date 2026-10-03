@@ -142,7 +142,7 @@ namespace MachineBrigade.Sim.Combat
         }
 
         /// <summary>Below this speed a vehicle counts as standing still, and its crew can reload.</summary>
-        internal const float ReloadStillSpeed = 0.4f;
+        internal static float ReloadStillSpeed => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ReloadStillSpeed;
 
         /// <summary>
         /// Seconds to reload a whole magazine in place: the weapon's own figure, else two fifths of
@@ -223,7 +223,7 @@ namespace MachineBrigade.Sim.Combat
         /// (not only when that one dies or leaves its reach), and how much better another must score to take over, so a
         /// unit never flickers between two targets of about the same worth.
         /// </summary>
-        internal const float RetargetSeconds = 0.5f;
+        internal static float RetargetSeconds => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.RetargetSeconds;
 
         internal const float SwitchMargin = 1.3f;
 
@@ -426,8 +426,8 @@ namespace MachineBrigade.Sim.Combat
         /// <summary>Where each side's sticks of bombs fell, and when (a pause between runs on one place).</summary>
         private readonly List<(int team, Vector2 at, double when)> _bombed = new();
 
-        private const float BombedRadius = 16f;
-        private const double BombedSeconds = 10.0;
+        private static float BombedRadius => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BombedRadius;
+        private static double BombedSeconds => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BombedSeconds;
 
         internal bool RecentlyBombed(int team, Vector2 at)
         {
@@ -626,7 +626,7 @@ namespace MachineBrigade.Sim.Combat
         }
 
         /// <summary>Seconds between a single-shot gun's round and the second one Twin Feed adds.</summary>
-        private const float TwinGap = 0.15f;
+        private static float TwinGap => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TwinGap;
 
         /// <summary>
         /// Sustained fire from a magazine (test feedback 11C): the rounds due this step, one
@@ -669,20 +669,20 @@ namespace MachineBrigade.Sim.Combat
 
         /// <summary>Rounds per run of machine-gun fire, and the pause after it.</summary>
         private const int RunShortest = 6, RunLongest = 10;
-        private const float RestSeconds = 1.0f;
+        private static float RestSeconds => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.RestSeconds;
 
         /// <summary>
         /// Machine-gun rounds carry the damage of the pauses between runs, so a gun firing in
         /// bursts hurts as much per minute as one that never let go: (run + pause) / run for an
         /// average run of 8 rounds at a typical 0.18 s and a 1 s pause.
         /// </summary>
-        private const float RunDamage = 1.7f;
+        private static float RunDamage => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.RunDamage;
 
         /// <summary>No two shots are exactly as far apart: up to 10 % either way, so identical vehicles fall out of step.</summary>
         private float Jitter() => 0.9f + 0.2f * (float)_world.Random.NextDouble();
 
         /// <summary>Twin barrels (two mounts of one weapon) open fire at least this many seconds apart, never in lockstep.</summary>
-        internal const float TwinOffset = 0.1f;
+        internal static float TwinOffset => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TwinOffset;
 
         /// <summary>
         /// Play-test 7 (DECISIONS 22P): every mount fires on its own timing, as a real crew's guns do. The main gun, the

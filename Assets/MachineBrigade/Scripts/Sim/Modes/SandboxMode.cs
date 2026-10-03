@@ -66,12 +66,12 @@ namespace MachineBrigade.Sim.Modes
         public const int PlayerTeam = 0;
         public const int EnemyTeam = 1;
 
-        private const float FirstWaveDelay = 20f;
-        private const float WaveInterval = 30f;
+        private static float FirstWaveDelay => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.FirstWaveDelay;
+        private static float WaveInterval => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.WaveInterval;
 
         /// <summary>Enemies alive at once: 14, one and a half more each wave, up to 48 (prompt 13 H.9).</summary>
         private int MaxEnemies => Math.Min(48, 14 + Wave * 3 / 2);
-        public const float ReinforceCooldownSeconds = 12f;
+        public static float ReinforceCooldownSeconds => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.ReinforceCooldownSeconds;
 
         private static readonly string[] WaveRoster =
         {
