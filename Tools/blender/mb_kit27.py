@@ -211,9 +211,17 @@ def _tangents(pts, closed):
     return out
 
 
-def sweep(shape, profile, path, closed=False, caps=True, up=None, worn=()):
+def sweep(shape, profile, path, closed=False, caps=True, up=None, worn=(), v_up=False):
     """Sweep a 2D profile [(u, v)...] (u along the path's side normal, v along its binormal) along a 3D polyline,
-    with parallel-transported frames and mitred joints. up fixes the first frame's v direction."""
+    with parallel-transported frames and mitred joints. up fixes the first frame: side = tangent x up, and v runs
+    along tangent x side, which is -up. So on a horizontal path (the default up is +Z) the profile's v points DOWN
+    (a berm drawn with v up comes out underground; wave 9's report).
+    v_up=True (prompt 35, lane A) mirrors the profile so its v follows `up` (+Z by default on a flat path); u keeps
+    its side. The default False keeps the old frame (every committed model)."""
+    if v_up:
+        n0 = len(profile)
+        profile = [(u, -v) for u, v in reversed(profile)]
+        worn = tuple(n0 - 1 - j for j in worn)
     pts = [Vector(p) for p in path]
     tans = _tangents(pts, closed)
     t0 = tans[0]
