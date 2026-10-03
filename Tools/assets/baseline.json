@@ -3050,6 +3050,14 @@
    "changes": [
     "FLAG aa_turret: triangles 6,306 -> 5,202 (-17.5%); vertices 8,105 -> 6,936 (-14.4%); meshes 30 -> 51 (+70.0%); renderers 30 -> 51 (+70.0%); materials 13 -> 15 (+15.4%); materialSlots 30 -> 51 (+70.0%); fileBytes 426,372 -> 387,600 (-9.1%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "aa_turret_a"
+   ],
+   "reason": "P35 wave 9",
+   "changes": []
   }
  ],
  "models": {
