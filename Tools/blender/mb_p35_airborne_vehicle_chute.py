@@ -109,13 +109,15 @@ KEEP = re.compile(r'^(Hull|Tracks|Track_links|Sprockets|Tyres|Wheels|Hubs|Pallet
                   r'Coax|Mantlet|Pallet_rails|Skid_beams|Crush_pads|Kit_straps|Probes|Slings|Canopy_gores|Canopy_hem)$')
 
 
-def _merge_static(a):
+def _merge_static(a, keep=None):
     """Join the parts that share a material and a pivot into one mesh each (the vehicle's 52 renderers plus the rig
-    would pass the air class's 44-renderer cap); runtime-named and KEEP parts stay their own meshes."""
+    would pass the air class's 44-renderer cap); runtime-named and KEEP parts stay their own meshes. `keep` (wave 12's
+    airborne_light_tank_chute): another pattern of names to keep apart."""
+    keep = keep or KEEP
     groups = {}
     for key in list(a.order):
         name, mat, parent = key
-        if KEEP.match(name) or kit.RUNTIME.match(name) or kit.RIG.match(name):
+        if keep.match(name) or kit.RUNTIME.match(name) or kit.RIG.match(name):
             continue
         groups.setdefault((mat, parent), []).append(key)
     for (mat, parent), keys in groups.items():

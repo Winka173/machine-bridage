@@ -1,0 +1,111 @@
+{
+ "id": "airborne_light_tank_chute",
+ "class": "air_other",
+ "real": [
+  "M8 AGS / M10 Booker-class light tank (lane B's wave 6 airborne_light_tank, built by its own builder)",
+  "Type V airdrop platform with paper honeycomb",
+  "G-11 cargo parachute cluster with the M-2 release"
+ ],
+ "shape": "the airborne_light_tank model unchanged on a Type V platform (aluminium deck panels with joints, side rails with tie-down rings, end plates, honeycomb stacks with straps, team stripes), tie-down chains with load binders, two ground-sensing probes; four slings to the M-2 release, riser extensions to four confluence clevises, eight lines to each of four G-11 canopies in a square cluster (thin shells with radial tapes, hem, Team band, apex vent).",
+ "confidence": "xấp xỉ (US heavy-drop rigging photographs; the canopies are game-sized)",
+ "target_size": {
+  "L": 9.0,
+  "W": 9.0,
+  "H": 11.0,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the airborne light tank (the ground model's builder)",
+   "nodes": [
+    "Hull",
+    "Turret",
+    "Turret_body",
+    "Main_cannon",
+    "Muzzle_main",
+    "Coax",
+    "Muzzle_coax",
+    "Mantlet",
+    "Tracks",
+    "Wheels"
+   ]
+  },
+  {
+   "feature": "Type V platform: deck, rails, tie-down rings, honeycomb, straps, stripes",
+   "nodes": [
+    "Platform"
+   ]
+  },
+  {
+   "feature": "tie-down chains and load binders, ground probes",
+   "nodes": [
+    "Honeycomb"
+   ]
+  },
+  {
+   "feature": "slings, M-2 release, risers and suspension lines",
+   "nodes": [
+    "Rigging"
+   ]
+  },
+  {
+   "feature": "four G-11 canopies with tapes, hem, Team band and vent",
+   "nodes": [
+    "Canopy",
+    "Canopy_stripe"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   7000
+  ],
+  "floor": 0,
+  "cap": null,
+  "note": "drop pods and parachute loads: at most 7,000 (information only)",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "vehicle (Team, the ground model's)",
+  "canopy bands (Team)",
+  "platform stripes (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime's drone wreck class (WreckClasses: id contains 'chute')",
+ "faction_style": "Russian airborne: the BMD in its colours, olive canopies with team hems",
+ "details": {
+  "tier1": [
+   "canopies",
+   "vehicle",
+   "platform"
+  ],
+  "tier2": [
+   "slings",
+   "risers",
+   "crush pads",
+   "rails",
+   "skids"
+  ],
+  "tier3": [
+   "suspension lines",
+   "gores",
+   "vent rings",
+   "straps",
+   "probes",
+   "the vehicle's own detail"
+  ]
+ },
+ "questions": [
+  "The vehicle's static fittings are merged by material (52 + rig renderers over the air class's 44 cap); runtime-named parts stay apart. 13,056 triangles: over the air_other 7,000 guide (owner rule: kept)."
+ ]
+}
