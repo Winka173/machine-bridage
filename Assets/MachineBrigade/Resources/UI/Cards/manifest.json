@@ -43,7 +43,7 @@
             "kind": "vehicle",
             "model": "heavy_tank",
             "source": "Models/heavy_tank_hd",
-            "hash": "v2:5cabb24cc052624f25809e1ef02cc87301693529"
+            "hash": "v2:947d7bb7a6d8723e785cbb866339c70a37b5b694"
         },
         {
             "id": "tank_destroyer",
@@ -78,7 +78,7 @@
             "kind": "vehicle",
             "model": "mlrs",
             "source": "Models/mlrs",
-            "hash": "v2:d5dddba28b0155e9e0aea9832b5044b903e48eb3"
+            "hash": "v2:4778709edc89fe633396a95baba6aa7f00d99cc5"
         },
         {
             "id": "aa_vehicle",
@@ -113,7 +113,7 @@
             "kind": "vehicle",
             "model": "gunship_heli",
             "source": "Models/gunship_heli",
-            "hash": "v2:c1d730cd93d2a6e482bf3d3ee0dd6325f3d8332c"
+            "hash": "v2:0495ccc0daec31416e674739a3afa06df4556768"
         },
         {
             "id": "strike_drone",
@@ -148,7 +148,7 @@
             "kind": "vehicle",
             "model": "heavy_aa",
             "source": "Models/heavy_aa",
-            "hash": "v2:92f89b7deb846765cb695cc069bf40d09b106c1a"
+            "hash": "v2:b0836d4f892c3eb25c96514f329145d5df29a802"
         },
         {
             "id": "titan_tank",
@@ -302,7 +302,7 @@
             "kind": "vehicle",
             "model": "railgun_truck",
             "source": "Models/railgun_truck",
-            "hash": "v2:b0325a972c91297c487fe5eefb4832e1e4a00d01"
+            "hash": "v2:5668d90f4e73960d87f2ac013805d79c586a1be5"
         },
         {
             "id": "turtle_tank",
@@ -323,14 +323,14 @@
             "kind": "vehicle",
             "model": "command_vehicle",
             "source": "Models/command_vehicle",
-            "hash": "v2:f43512be6917c5f212798ecd87536e1614cedd20"
+            "hash": "v2:badc2e3d94f32b3802e046c712004a022f6e1488"
         },
         {
             "id": "wheeled_gun",
             "kind": "vehicle",
             "model": "wheeled_gun",
             "source": "Models/wheeled_gun",
-            "hash": "v2:214e45be06943fb9afe595a49742948a06fa6761"
+            "hash": "v2:9c3a611dc8412a339fec1ea78e56751c5b1a449e"
         },
         {
             "id": "counter_battery_radar",
@@ -484,7 +484,7 @@
             "kind": "vehicle",
             "model": "radar_scout",
             "source": "Models/radar_scout",
-            "hash": "v2:57d33fc6652994b13a0a43f36057a703863a087c"
+            "hash": "v2:ee9ac6d299727d439bd43a45877f92aac81d48b9"
         },
         {
             "id": "fibre_fpv_carrier",
@@ -568,7 +568,7 @@
             "kind": "vehicle",
             "model": "river_gunboat",
             "source": "Models/river_gunboat",
-            "hash": "v2:901c402cd11b98dc82730d52e31168d7da570e30"
+            "hash": "v2:289b156335133738bc697d52616929a306420bfe"
         },
         {
             "id": "coastal_ashm_vehicle",
@@ -750,7 +750,7 @@
             "kind": "boss",
             "model": "armored_train",
             "source": "Models/armored_train",
-            "hash": "v2:575ee4ad71948e4c15532c356c423ec57d97b82d"
+            "hash": "v2:b9e5347dea6035d899b65290b839d846f0c23b54"
         },
         {
             "id": "artillery_emplacement",
@@ -834,7 +834,7 @@
             "kind": "boss",
             "model": "behemoth",
             "source": "Models/behemoth",
-            "hash": "v2:0e5f1db739b89fe4fdfdff8b0c3e337d7af6cc3e"
+            "hash": "v2:27041ca2349aa943e94b1fe9cddc644243f877db"
         },
         {
             "id": "behemoth_inferno",
@@ -848,14 +848,14 @@
             "kind": "boss",
             "model": "behemoth",
             "source": "Models/behemoth",
-            "hash": "v2:0e5f1db739b89fe4fdfdff8b0c3e337d7af6cc3e"
+            "hash": "v2:27041ca2349aa943e94b1fe9cddc644243f877db"
         },
         {
             "id": "behemoth_mk2",
             "kind": "boss",
             "model": "behemoth",
             "source": "Models/behemoth",
-            "hash": "v2:0e5f1db739b89fe4fdfdff8b0c3e337d7af6cc3e"
+            "hash": "v2:27041ca2349aa943e94b1fe9cddc644243f877db"
         },
         {
             "id": "behemoth_tempest",
@@ -960,14 +960,14 @@
             "kind": "tower",
             "model": "dragons_teeth",
             "source": "Models/dragons_teeth",
-            "hash": "v2:8209253818a687d7acd33bee773b63d20dab5b70"
+            "hash": "v2:64d821c5d0dbb8f10d567d9d8fdd8fd0d1578dea"
         },
         {
             "id": "dragons_teeth.hedgehog",
             "kind": "tower",
             "model": "dragons_teeth_a",
             "source": "Models/dragons_teeth_a",
-            "hash": "v2:228785f7619cc9c93b3a8a5c26bdf21fd8741d3e"
+            "hash": "v2:b33979a577d8ad53d32a7f4880d4584c32fac000"
         },
         {
             "id": "dragons_teeth.wire",
@@ -1065,7 +1065,7 @@
             "kind": "elite",
             "model": "grad_truck",
             "source": "Models/grad_truck",
-            "hash": "v2:fcbf694eda0434ec7dcd0e667bf09fca5184f716"
+            "hash": "v2:79253adf2af211434f0f3d2bb3c2a2aad4937ffe"
         },
         {
             "id": "elite_heavy_tank",
@@ -1128,7 +1128,7 @@
             "kind": "boss",
             "model": "mobile_fortress",
             "source": "Models/mobile_fortress",
-            "hash": "v2:4d1448ae2c8f4872a83f647bab78d02d4fdcba1c"
+            "hash": "v2:95a76357003a2caa60489f7af9ef5c398ab6865b"
         },
         {
             "id": "fire_control_centre",
@@ -1219,28 +1219,28 @@
             "kind": "tower",
             "model": "headquarters",
             "source": "Models/headquarters",
-            "hash": "v2:a2f32cdfd12de167b67f01b8b0fdc8c1416591d7"
+            "hash": "v2:96daab7c4090ba0fc8a6eac855e6fdcea22fca6f"
         },
         {
             "id": "headquarters.fortress_air",
             "kind": "tower",
             "model": "headquarters",
             "source": "Models/headquarters",
-            "hash": "v2:a2f32cdfd12de167b67f01b8b0fdc8c1416591d7"
+            "hash": "v2:96daab7c4090ba0fc8a6eac855e6fdcea22fca6f"
         },
         {
             "id": "headquarters.fortress_ground",
             "kind": "tower",
             "model": "headquarters",
             "source": "Models/headquarters",
-            "hash": "v2:a2f32cdfd12de167b67f01b8b0fdc8c1416591d7"
+            "hash": "v2:96daab7c4090ba0fc8a6eac855e6fdcea22fca6f"
         },
         {
             "id": "headquarters.shield",
             "kind": "tower",
             "model": "headquarters",
             "source": "Models/headquarters",
-            "hash": "v2:a2f32cdfd12de167b67f01b8b0fdc8c1416591d7"
+            "hash": "v2:96daab7c4090ba0fc8a6eac855e6fdcea22fca6f"
         },
         {
             "id": "heavy_flak_tower",
@@ -1380,7 +1380,7 @@
             "kind": "boss",
             "model": "leviathan",
             "source": "Models/leviathan",
-            "hash": "v2:1ee455840c6feb4a3161bdd9a2be7cf7baf52911"
+            "hash": "v2:7b0d7865f7572a100f95a188bd30727f807aad91"
         },
         {
             "id": "locust",
@@ -1408,7 +1408,7 @@
             "kind": "boss",
             "model": "mega_gunship",
             "source": "Models/mega_gunship",
-            "hash": "v2:b6231857ae9e9644f97e6728da9d86b0f2874cf5"
+            "hash": "v2:f1388f4b5023a24d1ecdd70bc077ec0c0c6411bc"
         },
         {
             "id": "mg_bunker",
@@ -1464,7 +1464,7 @@
             "kind": "boss",
             "model": "mobile_fortress",
             "source": "Models/mobile_fortress",
-            "hash": "v2:4d1448ae2c8f4872a83f647bab78d02d4fdcba1c"
+            "hash": "v2:95a76357003a2caa60489f7af9ef5c398ab6865b"
         },
         {
             "id": "moloch",
@@ -1562,7 +1562,7 @@
             "kind": "boss",
             "model": "leviathan",
             "source": "Models/leviathan",
-            "hash": "v2:1ee455840c6feb4a3161bdd9a2be7cf7baf52911"
+            "hash": "v2:7b0d7865f7572a100f95a188bd30727f807aad91"
         },
         {
             "id": "searchlight",
