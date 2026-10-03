@@ -41,7 +41,8 @@ def check(spec, defs, glb=False):
     if own is not None:
         want = []
         if defs.field(own, 'boss') and isinstance(defs.field(own, 'mountWeapons'), dict):
-            want = [(w, 1) for _, w in sorted(defs.field(own, 'mountWeapons').items())]
+            dropped = sp.dropped_mounts(defs, own)     # a variant boss keeps only some mounts (prompt 35 wave 1)
+            want = [(w, 1) for i, w in sorted(defs.field(own, 'mountWeapons').items()) if int(i) not in dropped]
         else:
             main = defs.field(own, 'weapon')
             if defs.armed(main):
@@ -67,7 +68,7 @@ def check(spec, defs, glb=False):
         if defs.field(own, 'boss'):
             nodes = {b['node'] for b in spec.get('breakable', [])}
             for p in defs.field(own, 'parts') or []:
-                if p.get('node') and not any(n in nodes for n in p['node'].split('|')):
+                if p.get('node') and not any(n.rstrip('*') in nodes for n in p['node'].split('|')):
                     fails.append(f"boss part {p.get('id')} ({p['node']}) not in breakable")
     if glb:
         path = sp.MODELS / f"{spec['id']}.glb"

@@ -641,9 +641,61 @@ class Asset:
                 o.location.y += dy
 
 
+def _vkey(v):
+    """A vertex's canonical sort key: its position, then its neighbours' (two pieces may touch at one point)."""
+    return (tuple(v.co), tuple(sorted(tuple(e.other_vert(v).co) for e in v.link_edges)))
+
+
+def canonical_order(me):
+    """Prompt 35 (owner decision 9): put a mesh's vertices, edges and faces in an order that depends only on the
+    geometry, and start every face's loop at its lowest vertex. Some bmesh operations (merge by distance, dissolve)
+    leave elements in an order that changes from run to run (pointer-keyed tables); the glTF exporter then wrote the
+    same triangles in another order, and ngons / quads split along another diagonal. With this, a builder gives a
+    byte-identical GLB every run. Geometry, normals (the modifier runs after), UVs and colours are unchanged."""
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    keys = {v: _vkey(v) for v in bm.verts}
+    uv_layers = list(bm.loops.layers.uv.values())
+    col_layers = list(bm.loops.layers.color.values()) + list(bm.loops.layers.float_color.values())
+    for f in list(bm.faces):
+        loops = list(f.loops)
+        start = min(range(len(loops)), key=lambda i: keys[loops[i].vert])
+        if start == 0:
+            continue
+        order = loops[start:] + loops[:start]
+        verts = [lp.vert for lp in order]
+        uvs = [[lp[u].uv.copy() for u in uv_layers] for lp in order]
+        cols = [[tuple(lp[c]) for c in col_layers] for lp in order]
+        smooth, mat = f.smooth, f.material_index
+        bm.faces.remove(f)
+        new = bm.faces.new(verts)
+        new.smooth, new.material_index = smooth, mat
+        for lp, uv, col in zip(new.loops, uvs, cols):
+            for u, val in zip(uv_layers, uv):
+                lp[u].uv = val
+            for c, val in zip(col_layers, col):
+                lp[c] = val
+    def by_rank(seq, key):     # bmesh sorts by a number: the element's rank under a tuple key
+        rank = {e: i for i, e in enumerate(sorted(seq, key=key))}
+        seq.sort(key=lambda e: rank[e])
+        seq.index_update()
+
+    by_rank(bm.verts, lambda v: keys[v])
+    by_rank(bm.edges, lambda e: tuple(sorted(v.index for v in e.verts)))
+    by_rank(bm.faces, lambda f: tuple(v.index for v in f.verts))
+    bm.to_mesh(me)
+    bm.free()
+
+
 def export_collection(collection, path):
     """Export only one collection (nested ones included) to GLB. A live session's context
-    scene is the user's, so the collection is linked into it only for the duration of the call."""
+    scene is the user's, so the collection is linked into it only for the duration of the call.
+    Every mesh is put in canonical order first (canonical_order), so the file is the same every run."""
+    done = set()
+    for ob in collection.all_objects:
+        if ob.type == 'MESH' and ob.data.name not in done:
+            done.add(ob.data.name)
+            canonical_order(ob.data)
     scene = bpy.context.scene
     linked = collection.name not in {c.name for c in scene.collection.children_recursive}
     if linked:

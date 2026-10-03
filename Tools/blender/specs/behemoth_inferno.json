@@ -1,0 +1,187 @@
+{
+ "id": "behemoth_inferno",
+ "class": "boss",
+ "frame": "ground",
+ "real": [
+  "TOS-1A Solntsepyok (the thermobaric rocket box)",
+  "Object 279 (1959: four tracks, the elliptical hull)",
+  "Baneblade (Warhammer 40,000) for the scale"
+ ],
+ "shape": "unit_sheet.json Boss: Dựa trên: TOS-1A, Object 279 (1959) · Baneblade (Warhammer 40,000) — ước đoán: Behemoth phun lửa, thùng nhiên liệu đỏ. Kích thước hiện 17.0 × 8.8 × 7.5 m; boss chủ lực ×1,3–1,5 so với mẫu, mini boss nhỏ hơn boss chủ lực cùng dòng; bộ phận phá được (tháp, xích, động cơ) phải tách thành khối riêng dễ nhìn; có bản vỡ cho từng bộ phận; vạch màu tướng sở hữu.",
+ "confidence": "ban_dau_doan (a fictional variant after the sheet's references)",
+ "target_size": {
+  "L": 12.6,
+  "W": 6.5,
+  "H": 5.5,
+  "source": "the old GLB (12.59 x 6.5 x 5.53); no modelSize in data",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "Object 279 elliptical hull shell over four narrow tracks",
+   "nodes": [
+    "Hull",
+    "Tracks",
+    "Wheels"
+   ]
+  },
+  {
+   "feature": "squat cast turret with twin flame projectors, their jackets, hoses, nozzles and pilot flames (parts flamer_r / flamer_l)",
+   "nodes": [
+    "Turret",
+    "Main_cannon",
+    "Main_cannon_hose",
+    "Main_cannon_jacket",
+    "Muzzle_brake",
+    "Muzzle_brake_glow",
+    "Muzzle_brake_pilot",
+    "Main_cannon_2",
+    "Main_cannon_2_hose",
+    "Main_cannon_2_jacket",
+    "Muzzle_brake_2",
+    "Muzzle_brake_2_glow",
+    "Muzzle_brake_2_pilot",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "TOS-1A-style thermobaric rocket box on the glacis (part thermo)",
+   "nodes": [
+    "Mount_rocket",
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "feature": "flak gun on the turret roof (part flak)",
+   "nodes": [
+    "Mount_mg",
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "feature": "red fuel tanks on the rear deck with straps and hazard marks (part fuel, a weak point)",
+   "nodes": [
+    "Fuel_tanks",
+    "Tank_straps",
+    "Tank_hazard"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "boss_flamer",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "boss_thermo",
+   "slot": "rocket",
+   "mount": "Mount_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "weapon": "boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "boss_flamer",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "aps": false,
+ "flare": false,
+ "colour_zones_min": 6,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "the hull shell (Team)",
+  "the turret"
+ ],
+ "faction_style": "Hegemon general's flame tank: heat-stained, fuel lines",
+ "details": {
+  "tier1": [
+   "hull shell",
+   "four tracks",
+   "turret",
+   "fuel tanks"
+  ],
+  "tier2": [
+   "flame projectors",
+   "rocket box",
+   "flak",
+   "heat shields",
+   "hoses"
+  ],
+  "tier3": [
+   "nozzles",
+   "pilot flames",
+   "straps",
+   "hatches",
+   "periscopes",
+   "lamps",
+   "exhausts",
+   "extinguishers",
+   "chevrons"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the red fuel tanks stand bare on the rear deck, strapped and hazard-marked (the fuel part)"
+  ],
+  "how_to_fight": "keep your distance: tank destroyers and artillery beyond 46 m, aircraft from above (one flak gun)"
+ },
+ "breakable": [
+  {
+   "part": "flamer_r",
+   "node": "Main_cannon",
+   "data_node": "Main_cannon|Main_cannon_hose|Main_cannon_jacket|Muzzle_brake|Muzzle_brake_glow|Muzzle_brake_pilot"
+  },
+  {
+   "part": "flamer_l",
+   "node": "Main_cannon_2",
+   "data_node": "Main_cannon_2|Main_cannon_2_hose|Main_cannon_2_jacket|Muzzle_brake_2|Muzzle_brake_2_glow|Muzzle_brake_2_pilot"
+  },
+  {
+   "part": "thermo",
+   "node": "Mount_rocket"
+  },
+  {
+   "part": "flak",
+   "node": "Mount_mg"
+  },
+  {
+   "part": "fuel",
+   "node": "Fuel_tanks",
+   "data_node": "Fuel_tanks|Tank_straps|Tank_hazard"
+  }
+ ],
+ "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
+ "questions": []
+}

@@ -69,7 +69,7 @@
   },
   "ammo_dump": {
     "file": "ammo_dump.glb",
-    "triangles": 3484
+    "triangles": 5284
   },
   "amphib_light_vehicle": {
     "file": "amphib_light_vehicle.glb",
@@ -225,11 +225,11 @@
   },
   "behemoth_inferno": {
     "file": "behemoth_inferno.glb",
-    "triangles": 20046
+    "triangles": 23648
   },
   "behemoth_tempest": {
     "file": "behemoth_tempest.glb",
-    "triangles": 17418
+    "triangles": 16670
   },
   "billboard": {
     "file": "billboard.glb",
@@ -885,11 +885,11 @@
   },
   "fortress_bastion": {
     "file": "fortress_bastion.glb",
-    "triangles": 25064
+    "triangles": 34218
   },
   "fortress_hive": {
     "file": "fortress_hive.glb",
-    "triangles": 19334
+    "triangles": 19476
   },
   "foxhole": {
     "file": "foxhole.glb",
@@ -1121,7 +1121,7 @@
   },
   "ixion": {
     "file": "ixion.glb",
-    "triangles": 35714
+    "triangles": 36022
   },
   "jersey_barrier": {
     "file": "jersey_barrier.glb",
@@ -1417,7 +1417,7 @@
   },
   "radar_site": {
     "file": "radar_site.glb",
-    "triangles": 4252
+    "triangles": 5830
   },
   "radar_station": {
     "file": "radar_station.glb",
@@ -1477,7 +1477,7 @@
   },
   "repair_bay": {
     "file": "repair_bay.glb",
-    "triangles": 5214
+    "triangles": 5970
   },
   "repair_crate": {
     "file": "repair_crate.glb",
@@ -1521,15 +1521,15 @@
   },
   "rocket_turret": {
     "file": "rocket_turret.glb",
-    "triangles": 9052
+    "triangles": 5638
   },
   "rocket_turret_a": {
     "file": "rocket_turret_a.glb",
-    "triangles": 5554
+    "triangles": 5366
   },
   "rocket_turret_b": {
     "file": "rocket_turret_b.glb",
-    "triangles": 3526
+    "triangles": 5520
   },
   "rubble_large": {
     "file": "rubble_large.glb",
@@ -1717,7 +1717,7 @@
   },
   "stymphalos": {
     "file": "stymphalos.glb",
-    "triangles": 4186
+    "triangles": 10794
   },
   "stymphalos_drone": {
     "file": "stymphalos_drone.glb",
@@ -1949,6 +1949,6 @@
   },
   "zu23_technical": {
     "file": "zu23_technical.glb",
-    "triangles": 7436
+    "triangles": 7368
   }
 }

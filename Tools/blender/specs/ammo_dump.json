@@ -1,0 +1,133 @@
+{
+ "id": "ammo_dump",
+ "real": [
+  "a field ammunition supply point: a semi-sunken bunker behind an earth berm, crates on pallets under a camouflage net"
+ ],
+ "shape": "unit_sheet.json Công trình (ammo_depot): a semi-sunken store with an earth berm, ammunition crates stacked outside; 4.9 x 6.1 x 2.9 m; clear from the 45-60 degree camera; faction stripe.",
+ "confidence": "ban_dau_doan (a base building after the sheet's description)",
+ "target_size": {
+  "L": 4.9,
+  "W": 6.1,
+  "H": 2.9,
+  "source": "unit_sheet and the old GLB (4.92 x 6.09 x 2.88)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "earth berm round a semi-sunken bunker, turf laid on it, sandbags along its crest",
+   "nodes": [
+    "Berm",
+    "Turf",
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "timber revetment framing the entrance, the steel door, steps and a ditch",
+   "nodes": [
+    "Revetment",
+    "Doors",
+    "Steps",
+    "Ditch",
+    "Wattle"
+   ]
+  },
+  {
+   "feature": "corrugated roof under sandbags, a vent pipe",
+   "nodes": [
+    "Roof",
+    "Vent"
+   ]
+  },
+  {
+   "feature": "ammunition crates on pallets in two stacks with a timber blast traverse, an open crate, shell cases",
+   "nodes": [
+    "Crates",
+    "Pallets",
+    "Traverse",
+    "Shell_cases",
+    "Loose_rounds"
+   ]
+  },
+  {
+   "feature": "camouflage net on poles over the stacks",
+   "nodes": [
+    "Camo_net",
+    "Net_poles",
+    "Camo_garnish"
+   ]
+  },
+  {
+   "feature": "red ammunition flag (no insignia), hazard sign, extinguisher stand, sentry post and field telephone",
+   "nodes": [
+    "Flag",
+    "Flag_pole",
+    "Signs",
+    "Extinguishers",
+    "Field_phone"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls (berm, sandbags)",
+  "roof",
+  "antenna (flag pole, whip)"
+ ],
+ "weapons": [],
+ "team_zones": [
+  "none on the model besides the kit materials (Accord field style)"
+ ],
+ "faction_style": "Accord (practical, field-built): earth berm, timber, sandbags, nets",
+ "details": {
+  "tier1": [
+   "ground pad",
+   "berm",
+   "bunker face",
+   "crate stacks",
+   "net"
+  ],
+  "tier2": [
+   "revetment",
+   "door",
+   "traverse",
+   "pallets",
+   "sandbag crest",
+   "sentry ring"
+  ],
+  "tier3": [
+   "crate bands and handles",
+   "shell cases",
+   "turf",
+   "stakes",
+   "steps",
+   "flag",
+   "lamp",
+   "vent",
+   "phone",
+   "trolley",
+   "extinguishers",
+   "tally board"
+  ]
+ },
+ "runtime_nodes": [],
+ "class": "tower",
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum"
+ },
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "structures collapse whole (no part nodes)",
+ "questions": [
+  "As repair_bay: the tower gold set and the cap hold the soft score; the owner's look decides."
+ ]
+}

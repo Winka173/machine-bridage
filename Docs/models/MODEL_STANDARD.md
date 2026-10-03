@@ -98,3 +98,5 @@ structure; otherwise tracked (Tracks / Sprockets nodes), wheeled (Tyres / Wheels
 Roof-mounted guns (pintle MGs, remote weapon stations, small roof turrets) must not look flat: build the raised mount
 or pintle post, the cradle, the ammo box and the gun shield where the real one has them, so the gun stands clear of the
 roof line at the battle camera's distance.
+Kit (wave 1): `mb_kit35.pintle_mg(..., post=<metres>)` builds the post (base plate, gussets, column, collar), the
+cradle and the big ammunition can; `post=0` (the default) is the pilot's low gun.

@@ -525,7 +525,9 @@ def audit(data):
         wave1 = ""
         if srow:
             off = abs(nb["cycle"] / srow["cycle"] - 1) if srow["cycle"] > 0 else 0
-            n_off = srow["n"] != nb["n"] and not (srow["n"] == nb["n"] * 1 or (nb["sim"] and srow["n"] == nb["barrels"]))
+            # A twin gun's magazine is a box a barrel (ZU-23-2: 2 x 50, prompt 35 owner decision 2): the sheet's rounds a barrel.
+            n_off = srow["n"] != nb["n"] and not (srow["n"] == nb["n"] * 1 or (nb["sim"] and srow["n"] == nb["barrels"]) or
+                                                  (nb["mode"] == "magazine" and srow["n"] * nb["barrels"] == nb["n"]))
             if (off > 0.2 or n_off) and wid not in reasons:
                 flags.append("WAVE 1")
             wave1 = f"`{sid}`: {srow['n']} / {srow['cycle']:.2f} s"

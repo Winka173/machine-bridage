@@ -1,0 +1,154 @@
+{
+ "id": "repair_bay",
+ "real": [
+  "a field vehicle workshop: a steel-framed shed under corrugated sheet",
+  "a rail-mounted gantry crane (5 t class) over the work area"
+ ],
+ "shape": "unit_sheet.json Công trình (repair_bay): a workshop with a corrugated roof and a gantry crane; 10.1 x 14.2 x 6.4 m in the sheet, the GLB 14.5 x 10 x 8.7 m (kept within 10 %); clear from the 45-60 degree camera; faction stripe.",
+ "confidence": "ban_dau_doan (a base building; the shed and crane follow common field workshops, no single real model)",
+ "target_size": {
+  "L": 14.5,
+  "W": 10.0,
+  "H": 8.7,
+  "source": "the old GLB (14.5 x 10.0 x 8.68): no modelSize in data",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "cast slab with ramps front and back, expansion joints, painted bay lines",
+   "nodes": [
+    "Base",
+    "Slab_joints",
+    "Bay_lines"
+   ]
+  },
+  {
+   "feature": "open steel-framed shed: I-beam columns, rafters, purlins",
+   "nodes": [
+    "Frame"
+   ]
+  },
+  {
+   "feature": "corrugated gable roof with ribs, overlap seams, skylights, ridge cap and ventilators",
+   "nodes": [
+    "Roof",
+    "Roof_ribs",
+    "Roof_seams",
+    "Skylights",
+    "Ridge",
+    "Ridge_vents"
+   ]
+  },
+  {
+   "feature": "corrugated back wall with a door, a window and the extractor; half-height side walls",
+   "nodes": [
+    "Wall",
+    "Wall_seams",
+    "Windows",
+    "Doors"
+   ]
+  },
+  {
+   "feature": "gantry crane on rails over the work area: A-frame legs, box girder, hoist, hook and chain lifting an engine pack",
+   "nodes": [
+    "Gantry",
+    "Crane_rails",
+    "Hoist",
+    "Hook_chain",
+    "Hook_block",
+    "Engine_pack"
+   ]
+  },
+  {
+   "feature": "inspection pit with its hazard kerb",
+   "nodes": [
+    "Pit",
+    "Pit_kerb"
+   ]
+  },
+  {
+   "feature": "workshop kit: bench and vice, tool chests, compressor, gas bottles, tyre stack, drums, jerrycans",
+   "nodes": [
+    "Workbench",
+    "Tool_chests",
+    "Compressor",
+    "Gas_bottles",
+    "Tyres",
+    "Fuel_drums"
+   ]
+  },
+  {
+   "feature": "antenna and floodlight",
+   "nodes": [
+    "Antennas",
+    "Light_housing"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [],
+ "team_zones": [
+  "a Team band along both eaves"
+ ],
+ "faction_style": "Accord (practical, field-built): corrugated sheet, timber, sandbag corners",
+ "details": {
+  "tier1": [
+   "slab",
+   "shed",
+   "roof",
+   "gantry"
+  ],
+  "tier2": [
+   "columns and rafters",
+   "back wall",
+   "hoist",
+   "engine pack",
+   "tool chests",
+   "compressor",
+   "bench",
+   "sandbag corners"
+  ],
+  "tier3": [
+   "roof seams and ribs",
+   "skylights",
+   "ridge vents",
+   "drawer pulls",
+   "vice",
+   "gas bottles",
+   "jerrycans",
+   "extinguisher",
+   "axle stands",
+   "lamp",
+   "antenna",
+   "sign"
+  ]
+ },
+ "runtime_nodes": [
+  "Point_fire"
+ ],
+ "class": "tower",
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum"
+ },
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "structures collapse whole (no part nodes)",
+ "questions": [
+  "Structures are scored against the tower gold set (small gun towers dense in railings and ladders): at the 6,000-triangle cap a large building cannot match its edge density per pixel. A structure gold set (like decision 5 for bosses), or the owner's look?"
+ ]
+}

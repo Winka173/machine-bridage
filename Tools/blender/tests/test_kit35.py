@@ -84,6 +84,9 @@ CASES = [
     ('roof_mg', lambda a: K.roof_mg(a, None, (0, 0, 0)), (None, None, None), 900, ['MG'], True),
     ('pintle_mg', lambda a: (K.pintle_mg(a, None, (0, 0, 0)), K.pintle_mg(a, None, (1, 0, 0), index=1)),
      (None, None, None), 1200, ['Mount_mg', 'Mount_mg.001', 'Muzzle_mg', 'Muzzle_mg.001'], True),
+    # Wave 1 (the roof-gun rule): the raised post, its cradle and the big ammunition can.
+    ('pintle_mg_post', lambda a: K.pintle_mg(a, None, (0, 0, 0), post=.5), (None, None, None), 900,
+     ['Mount_mg', 'Muzzle_mg', 'MG_post', 'MG_cradle', 'MG_ammo'], True),
     ('smoke_dischargers', lambda a: K.smoke_dischargers(a, .5, 0, 1, 1), (None, None, None), 500, ['Smoke_launchers'],
      True),
     ('era_bricks', lambda a: K.era_bricks(a, (0, 0, 1), (1, 0, 0), (0, 1, 0), 4, 3), (1.3, .7, None), 2500,

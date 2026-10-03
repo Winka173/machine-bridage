@@ -273,6 +273,8 @@ def weapon_checks(defs: Defs, own, cls: str, names):
     if cls == 'boss':
         mw = f(own, 'mountWeapons')
         need_total = len(mw) if isinstance(mw, dict) and mw else sum(b for _, _, b, _ in slots)
+        # A variant boss (keep / drop) loses the mounts only its dropped parts carried (BossTemplates.Strip).
+        need_total -= len(dropped_mounts(defs, own))
         found_total = count(names, r'^Muzzle_')
         if found_total < need_total:
             missing.append(f'muzzles {found_total}/{need_total}')
@@ -307,6 +309,19 @@ def weapon_checks(defs: Defs, own, cls: str, names):
     return need_total, found_total, missing, mounts, flare, aps
 
 
+def dropped_mounts(defs: Defs, own):
+    """Mount indices a variant boss's keep / drop list removes: those carried only by dropped parts."""
+    parts = defs.field(own, 'parts') or []
+    rules = own.get('variant') if isinstance(own.get('variant'), dict) and 'parts' not in own else {}
+    if not rules.get('keep') and not rules.get('drop'):
+        return set()
+    stays = (lambda p: p.get('id') in rules['keep']) if rules.get('keep') else (lambda p: p.get('id') not in rules['drop'])
+    kept, dropped = set(), set()
+    for p in parts:
+        (kept if stays(p) else dropped).update(p.get('mounts') or [])
+    return dropped - kept
+
+
 def boss_part_nodes(defs: Defs, own, names):
     parts = defs.field(own, 'parts') or []
     rules = own.get('variant') if isinstance(own.get('variant'), dict) and 'parts' not in own else {}
@@ -318,7 +333,9 @@ def boss_part_nodes(defs: Defs, own, names):
     out = []
     for p in parts:
         node = p.get('node')
-        if node and not any(alt in have for alt in node.split('|')):
+        # A trailing '*' is a prefix, as the runtime reads it (VehicleView.BossParts).
+        if node and not any(alt in have if not alt.endswith('*') else any(n.startswith(alt[:-1]) for n in have)
+                            for alt in node.split('|')):
             out.append(f"{p.get('id')}:{node.split('|')[0]}")
     return out
 

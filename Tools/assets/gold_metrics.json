@@ -11,6 +11,20 @@
    "rail_supergun",
    "silver_bug"
   ],
+  "boss_air": [
+   "mega_gunship",
+   "silver_bug"
+  ],
+  "boss_ground": [
+   "behemoth",
+   "mobile_fortress"
+  ],
+  "boss_rail": [
+   "nuke_train"
+  ],
+  "boss_sea": [
+   "leviathan"
+  ],
   "helicopter": [
    "attack_helicopter",
    "scout_heli"
@@ -76,6 +90,54 @@
    "sloped_dirs": 11.4,
    "zones": 12.2,
    "count": 33
+  },
+  "boss_air": {
+   "silhouette": 1.7565,
+   "edges": 0.1503,
+   "regions": 3.992,
+   "parts_m2": 1.63,
+   "tier2_m2": 1.0992,
+   "tier3_m2": 4.1074,
+   "asym_raw": 0.0238,
+   "sloped_dirs": 18.5,
+   "zones": 11.5,
+   "count": 8
+  },
+  "boss_ground": {
+   "silhouette": 1.7552,
+   "edges": 0.2456,
+   "regions": 7.5275,
+   "parts_m2": 0.5233,
+   "tier2_m2": 1.0204,
+   "tier3_m2": 0.9476,
+   "asym_raw": 0.0129,
+   "sloped_dirs": 8.5,
+   "zones": 12.0,
+   "count": 16
+  },
+  "boss_rail": {
+   "silhouette": 1.5181,
+   "edges": 0.2189,
+   "regions": 6.3064,
+   "parts_m2": 3.5351,
+   "tier2_m2": 3.0264,
+   "tier3_m2": 19.9643,
+   "asym_raw": 0.0404,
+   "sloped_dirs": 7.0,
+   "zones": 15.0,
+   "count": 3
+  },
+  "boss_sea": {
+   "silhouette": 1.4831,
+   "edges": 0.1241,
+   "regions": 2.8214,
+   "parts_m2": 1.9009,
+   "tier2_m2": 1.4958,
+   "tier3_m2": 7.9619,
+   "asym_raw": 0.0299,
+   "sloped_dirs": 8.0,
+   "zones": 15.0,
+   "count": 6
   },
   "helicopter": {
    "silhouette": 2.1247,

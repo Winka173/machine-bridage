@@ -1,0 +1,178 @@
+{
+ "id": "behemoth_tempest",
+ "class": "boss",
+ "frame": "ground",
+ "real": [
+  "US Navy EMRG (electromagnetic railgun)",
+  "Object 279 / Baneblade for the superheavy hull"
+ ],
+ "shape": "unit_sheet.json Boss: Dựa trên: US Navy EMRG (pháo điện từ), Object 279 (1959) · Baneblade (Warhammer 40,000) — ước đoán: Behemoth hai tháp pháo điện từ. Kích thước hiện 17.0 × 7.0 × 6.8 m; boss chủ lực ×1,3–1,5 so với mẫu, mini boss nhỏ hơn boss chủ lực cùng dòng; bộ phận phá được (tháp, xích, động cơ) phải tách thành khối riêng dễ nhìn; có bản vỡ cho từng bộ phận; vạch màu tướng sở hữu.",
+ "confidence": "ban_dau_doan (a fictional variant after the sheet's references)",
+ "target_size": {
+  "L": 15.8,
+  "W": 6.5,
+  "H": 6.3,
+  "source": "the old GLB (15.84 x 6.5 x 6.3, length with the railgun); no modelSize in data",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "tall slab-sided superheavy hull with rhomboid track guards (its own hull, not inferno's)",
+   "nodes": [
+    "Hull",
+    "Skirts",
+    "Tracks"
+   ]
+  },
+  {
+   "feature": "railgun turret: the long twin-rail barrel, coil rings, sleeve (part railgun, Main_cannon*)",
+   "nodes": [
+    "Turret",
+    "Main_cannon",
+    "Main_cannon_rails",
+    "Main_cannon_coils",
+    "Main_cannon_sleeve",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "two coilguns in the glacis mounts (parts coil_l / coil_r)",
+   "nodes": [
+    "Mount_gun",
+    "Mount_gun.001",
+    "Muzzle_gun",
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "feature": "shield generator emitter on its rotating mast (part shield, node Radar)",
+   "nodes": [
+    "Radar"
+   ]
+  },
+  {
+   "feature": "interceptor laser on the turret roof (part interceptor; Mount_APS)",
+   "nodes": [
+    "Aps_faces",
+    "Aps_tubes",
+    "Aps_tubes_bore",
+    "Mount_APS"
+   ]
+  },
+  {
+   "feature": "capacitor banks and cooling fins on the rear deck",
+   "nodes": [
+    "Capacitors",
+    "Cooling_fins"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "boss_railgun",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "coilgun",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "coilgun",
+   "slot": "gun",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  }
+ ],
+ "aps": true,
+ "flare": false,
+ "colour_zones_min": 6,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "the hull and track guards (Team)",
+  "the turret"
+ ],
+ "faction_style": "Hegemon general's energy weapon tank: clean slabs, glowing coils",
+ "details": {
+  "tier1": [
+   "hull",
+   "track guards",
+   "turret",
+   "railgun barrel"
+  ],
+  "tier2": [
+   "coilgun mounts",
+   "shield mast",
+   "capacitor banks",
+   "laser turret",
+   "skirts"
+  ],
+  "tier3": [
+   "coil rings",
+   "cable runs",
+   "hatches",
+   "periscopes",
+   "lamps",
+   "vents",
+   "bolts"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the shield emitter turns on its mast over the rear deck",
+   "the coils glow along the railgun before it fires (the card's warning)"
+  ],
+  "how_to_fight": "spread out and close in from several sides; when the coils glow, leave the line it aims along"
+ },
+ "breakable": [
+  {
+   "part": "railgun",
+   "node": "Main_cannon",
+   "data_node": "Main_cannon*"
+  },
+  {
+   "part": "coil_l",
+   "node": "Mount_gun"
+  },
+  {
+   "part": "coil_r",
+   "node": "Mount_gun.001"
+  },
+  {
+   "part": "shield",
+   "node": "Radar"
+  },
+  {
+   "part": "interceptor",
+   "node": "Aps_faces",
+   "data_node": "Aps_faces|Aps_tubes|Aps_tubes_bore"
+  }
+ ],
+ "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
+ "questions": []
+}

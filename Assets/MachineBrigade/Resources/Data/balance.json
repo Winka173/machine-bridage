@@ -536,7 +536,7 @@
       { "id": "twin_30_bmpt_flak", "roundOf": "twin_30_bmpt", "inherits": "twin_30_bmpt", "weaponVariantId": "flak", "weaponFamily": "2a42_30_mm_air_burst", "round": "flak", "for": ["air"], "real": "2A42 30 mm air-burst (twin)", "damageType": "Fragmentation", "pen": 2, "damage": 22, "splash": 2.5, "form": "Airburst", "piercing": false, "targets": "Air" },
       { "id": "twin_30_flak_ap", "roundOf": "twin_30_flak", "inherits": "twin_30_flak", "weaponVariantId": "", "weaponFamily": "2a38_30_mm_ap", "round": "ap", "for": ["ground"], "real": "2A38 30 mm AP (twin)", "damageType": "Kinetic", "pen": 2, "damage": 7.5, "splash": 0, "form": "BeltedAutocannon", "piercing": true, "targets": "Ground", "bonuses": [] },
       { "id": "twin_35_ahead_ap", "roundOf": "twin_35_ahead", "inherits": "twin_35_ahead", "weaponVariantId": "ap", "weaponFamily": "", "round": "ap", "for": ["ground"], "real": "Skyranger 35 mm AHEAD AP", "damageType": "Kinetic", "pen": 2, "damage": 26, "splash": 0, "form": "BeltedAutocannon", "piercing": true, "targets": "Ground", "bonuses": [] },
-      { "id": "zu23_ap", "roundOf": "zu23", "inherits": "zu23", "weaponFamily": "", "round": "ap", "for": ["ground"], "real": "ZU-23-2 23 mm AP", "damageType": "Kinetic", "pen": 2, "damage": 7, "splash": 0, "form": "BeltedAutocannon", "piercing": true, "targets": "Ground" }
+      { "id": "zu23_ap", "roundOf": "zu23", "inherits": "zu23", "weaponFamily": "", "round": "ap", "for": ["ground"], "real": "ZU-23-2 23 mm AP", "damageType": "Kinetic", "pen": 2, "damage": 3.5, "splash": 0, "form": "BeltedAutocannon", "piercing": true, "targets": "Ground" }
     ]
   },
 
@@ -822,7 +822,7 @@
     // Round 5 vehicles: car bomb, twin 23 mm, loitering munitions, Shahed, laser, railgun, BMPT guns.
     { "id": "detonator", "weaponFamilyId": "bomb_car_bomb", "real": "car bomb (900 kg)", "family": "bomb", "size": 900, "warheadKg": 900,         "pen": 4, "form": "CarBomb", "damageType": "HighExplosive", "damage": 770, "cooldown": 1,    "range": 3, "projectileSpeed": 100, "splash": 10, "impactTier": "Ultimate",
       "bonuses": [ { "armor": "Structure", "mult": 0.5 } ] },
-    { "id": "zu23", "weaponFamilyId": "cal_23", "real": "ZU-23-2 23 mm", "family": "autocannon", "size": 23, "caliberMm": 23,              "pen": 1, "damageType": "Fragmentation",          "damage": 7,  "cooldown": 0.04,  "range": 38, "projectileSpeed": 240, "spread": 1.6, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 50, "clipReload": 3.04 },
+    { "id": "zu23", "weaponFamilyId": "cal_23", "real": "ZU-23-2 23 mm", "family": "autocannon", "size": 23, "caliberMm": 23, "barrels": 2, "pen": 1, "damageType": "Fragmentation",          "damage": 3.5,  "cooldown": 0.02,  "range": 38, "projectileSpeed": 240, "spread": 1.6, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 100, "clipReload": 3.02 },
     { "id": "lancet", "weaponFamilyId": "drone_zala_lancet_3", "weaponFamily": "zala_lancet_3", "real": "ZALA Lancet-3 (3 kg)", "family": "drone", "size": 3, "warheadKg": 3,            "pen": 4, "topAttack": true, "piercing": true, "damageType": "ShapedCharge", "damage": 240, "cooldown": 8.372,   "range": 100, "impactTier": "Medium", "impactScale": 1.2, "projectile": "Drone", "ammo": 8,
       "bonuses": [ { "class": "Artillery", "mult": 2 }, { "still": 3, "mult": 2 }, { "armor": "Structure", "mult": 1.5 } ] },
     { "id": "shahed", "weaponFamilyId": "drone_shahed_136", "real": "Shahed-136 (50 kg)", "family": "drone", "size": 50, "warheadKg": 50,            "pen": 3, "topAttack": true, "projectileModel": "shahed", "damageType": "HighExplosive", "damage": 344, "cooldown": 8.5,   "range": 150, "minRange": 20, "projectileSpeed": 20, "splash": 4.5, "impactTier": "Huge", "projectile": "Drone", "ammo": 5, "reload": 8.5 },
@@ -944,7 +944,7 @@
     { "id": "p26_bastion_close_boss_hmg", "inherits": "boss_hmg", "clipReload": 5, "weaponFamily": "", "damage": 15 },
     { "id": "p26_bastion_tiny_autocannon_40", "inherits": "autocannon_40", "clipReload": 1.52, "splash": 0, "damage": 30 },
     { "id": "p26_bastion_tiny_kornet_twin", "inherits": "kornet_twin", "cooldown": 19.4, "weaponFamily": "", "damage": 230 },
-    { "id": "p26_bastion_tiny_zu23", "inherits": "zu23", "clipReload": 3, "damage": 7 },
+    { "id": "p26_bastion_tiny_zu23", "inherits": "zu23", "clipReload": 2.98, "damage": 3.5 },
     { "id": "p26_behemoth_be152", "inherits": "gun_behemoth", "real": "2A65 152 mm", "damage": 590, "cooldown": 2, "burst": 1, "splash": 8.5, "edge": 17 },
     { "id": "p26_behemoth_be_rockets", "inherits": "boss_rockets", "damageType": "HighExplosive", "projectileSpeed": 45, "real": "BM-21 Grad 122 mm (dorsal)", "damage": 160, "burst": 8, "burstInterval": 0.3, "cooldown": 5.9, "splash": 5, "edge": 10 },
     { "id": "p26_behemoth_be120", "inherits": "gun_120mm", "weaponFamily": "", "real": "Rh-120 L/44 120 mm", "damage": 260, "cooldown": 4, "pen": 5, "splash": 0 },
@@ -981,7 +981,7 @@
     { "id": "p26_moloch_main_mo120", "inherits": "p26_moloch_mo120", "real": "Rh-120 L/44 120 mm HE (twin)", "salvoMode": "SIMULTANEOUS", "barrels": 2, "cooldown": 7.5, "damage": 340 },
     { "id": "p26_moloch_direct_mo120ap", "inherits": "p26_moloch_mo120ap", "real": "Rh-120 L/44 120 mm AP (twin)", "salvoMode": "SIMULTANEOUS", "barrels": 2, "cooldown": 7.5, "damage": 260 },
     { "id": "p26_moloch_close_boss_flak", "inherits": "boss_flak", "clipReload": 3.38, "cooldown": 0.05, "weaponFamily": "", "damage": 25 },
-    { "id": "p26_moloch_tiny_zu23", "inherits": "zu23", "clipReload": 3, "damage": 7 },
+    { "id": "p26_moloch_tiny_zu23", "inherits": "zu23", "clipReload": 2.98, "damage": 3.5 },
     { "id": "p26_nemesis_ne152", "inherits": "gun_behemoth", "real": "152 mm railcar gun", "damage": 620, "burst": 4, "burstInterval": 0.5, "cooldown": 3.5, "splash": 8.5, "edge": 17 },
     { "id": "p26_nemesis_ne125", "inherits": "gun_120mm", "weaponFamilyId": "cal_125_ap", "weaponFamily": "", "real": "2A46 125 mm", "size": 125, "caliberMm": 125, "damage": 280, "cooldown": 2, "pen": 5, "splash": 0, "range": 38 },
     { "id": "p26_nemesis_main_ne152", "inherits": "p26_nemesis_ne152", "burst": 1, "edge": 14, "splash": 7, "cooldown": 7.5, "damage": 600 },
@@ -1142,7 +1142,7 @@
     // dx56: the one-shot ATGM salvo tower's Kornet, a clip of eight that does not refill: it must be bought again once spent.
     { "id": "one_shot_kornet", "inherits": "tower_kornet", "real": "9M133 Kornet", "burst": 1, "cooldown": 1.2, "clip": 8, "clipReload": 999999 },
     // (batch B weapons: new entries above)
-    { "id": "aa_25_triple", "inherits": "zu23", "weaponFamilyId": "cal_25", "weaponVariantId": "flak", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "caliberMm": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4},
+    { "id": "aa_25_triple", "inherits": "zu23", "barrels": 1, "weaponFamilyId": "cal_25", "weaponVariantId": "flak", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "caliberMm": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4},
     // tl02: CBU-97-class cluster bomb (glide_bomber secondary): 10 top-attack bomblets that only matter against vehicles.
     { "id": "cluster_at_bomb", "weaponFamilyId": "bomb_cbu_97_sensor_fuzed_weapon", "real": "CBU-97 Sensor Fuzed Weapon", "weaponFamily": "cbu_97_sfw", "family": "bomb", "size": 450, "warheadKg": 450, "pen": 4, "damageType": "ShapedCharge", "damage": 0, "cooldown": 90, "range": 30, "projectileSpeed": 35, "impactTier": "Medium", "projectile": "Bomb", "projectileModel": "cbu_97", "roundLength": 1.17, "cluster": { "count": 10, "radius": 12.5, "damage": 160, "splash": 3, "pen": 4, "tier": "Medium" } },
     // tl03: GBU-28-class bunker buster (glide_bomber secondary): x2 against structures, small blast.
