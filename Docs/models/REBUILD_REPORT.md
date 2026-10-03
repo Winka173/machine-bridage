@@ -150,7 +150,7 @@ smooth submarine against the warship gold).
 
 ## 6. Integration (section 9)
 
-- **GLB size: over the limit.** Total of `Assets/MachineBrigade/Resources/Models/*.glb` (git LFS sizes; 518 files in
+- **GLB size: over the limit (fixed by quantisation, now +6.6 %: section 9).** Total of `Assets/MachineBrigade/Resources/Models/*.glb` (git LFS sizes; 518 files in
   both trees): pre-prompt-35 tree `01f7312b` 123.1 MiB -> now 168.4 MiB, **+36.7 %, over the 25 % limit**. All of the
   growth is in the 226 rebuilt files (218 models and their `_hd` twins: 80.4 -> 125.6 MiB, +56 %); no other file
   changed. (Against `07444b14`, 99.6 MiB with 400 files, the growth reads +69 %, but 118 files were added between the
@@ -208,7 +208,7 @@ in each wave's DECISIONS.
 
 **Still open**
 
-1. **GLB size** is 36.7 % over the pre-prompt-35 tree (limit 25 %): quantise vertex attributes at export (proposal
+1. **GLB size** was 36.7 % over the pre-prompt-35 tree (limit 25 %); lane A quantised the vertex attributes, now +6.6 % (section 9). Was: quantise vertex attributes at export (proposal
    in section 6), or simplify the largest files?
 2. **Gold for rebuilt models**: allow a rebuilt model with every hard gate and soft >= 80 to stand for gold (lane A's
    question after its recompute), so the gold sets refill, or keep the pre-rebuild gold?
@@ -261,3 +261,34 @@ in each wave's DECISIONS.
 24. Wave 10: rail_supergun's lighter 11.9k file is fine; the gold recompute was tried and dropped by the lead (open
     question 2).
 25. Wave 11: no new question; the GLB size (open question 1) comes from section 9.
+
+## 9. GLB size (section 9, lane A)
+
+The over-limit size of section 6 is fixed by vertex quantisation; no model's look, geometry, nodes or materials changed.
+
+- **Importer**: `com.unity.cloud.gltfast` 6.20.0 (Packages/manifest.json). It reads `KHR_mesh_quantization` out of
+  the box (Documentation~/features.md; `GltfImport.k_SupportedExtensions`; int8 normalized normals and uint16 colours
+  have their own Burst jobs, strided views included). Draco and `EXT_meshopt_compression` need the
+  `com.unity.cloud.draco` / meshopt packages, which the project does not have: not used.
+- **What is written** (`Tools/assets/glb_quantize.py`, pure Python + numpy, run by `frontier_kit.export_collection`
+  right after Blender's glTF export, and once over all 518 committed files): NORMAL float32 -> normalized int8 (unit
+  length first, worst error 0.33 degree; glTFast renormalises on import); COLOR_0 float32 -> normalized uint16, still
+  VEC3 (error under 8e-6). Kept as float32: POSITION (an int16 position needs a scale on the node, which would change
+  the hierarchy's transforms) and TEXCOORD_0 (the box-projected UVs run past 0-1, and unnormalized int16 needs
+  KHR_texture_transform on a texture these flat materials do not have). Node names, hierarchy, materials, extras and
+  indices are untouched; `KHR_mesh_quantization` is added to extensionsUsed and extensionsRequired. Deterministic
+  and idempotent (a second pass changes 0 files).
+- **Size** (518 files, git LFS sizes): pre-prompt-35 tree `01f7312b` 123.1 MiB (129,124,680 bytes); before this
+  change 168.4 MiB (+36.7 %); **now 131.3 MiB (137,671,980 bytes), +6.6 %**, under the 25 % limit (-22.0 % on the
+  files). NORMAL 38.1 -> 12.7 MiB, COLOR_0 38.1 -> 25.4 MiB.
+- **Checks** (readers dequantise: `glb_analyze.accessor` now decodes signed normalized as max(c / 127, -1)):
+  glb_check: 518 files, 0 errors; every record identical except fileBytes, sha1, extensions, and COLOR_0 statistics
+  on 34 files that move by one step in the 4th decimal (rounding); baseline accepted with a reason. Full gate: 230
+  models, 199 pass (as before); triangles, parts, hard gates, soft scores and grades identical for every model; 16
+  raw metric cells moved in the 4th decimal (c0_p05 x 11, c0_dust x 2, c0_p95 x 2, recoilless_jeep edges 0.3986 ->
+  0.3983), no score moved.
+- Not taken: COLOR_0 as 8-bit (total about 112 MiB, -9 % against `01f7312b`) shifts the COLOR_0 numbers by up to
+  0.002 in linear light, so the gate would not read the same; it stays an option.
+- **Unity check (lead)**: reimport the GLBs, CatalogCheck, then render the cards / ModelPreview sheets of
+  main_battle_tank, monster and ammo_crate and compare them with the previous renders (luma within the 1 % card
+  gate, no "unsupported extension" or ColorFormatUnsupported errors in the import log).
