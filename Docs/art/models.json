@@ -821,7 +821,7 @@
   },
   "ew_tower": {
     "file": "ew_tower.glb",
-    "triangles": 5936
+    "triangles": 5998
   },
   "ew_tower_a": {
     "file": "ew_tower_a.glb",
@@ -829,7 +829,7 @@
   },
   "ew_tower_b": {
     "file": "ew_tower_b.glb",
-    "triangles": 5376
+    "triangles": 5740
   },
   "factory": {
     "file": "factory.glb",

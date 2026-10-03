@@ -1,0 +1,156 @@
+{
+ "id": "ew_tower",
+ "class": "tower",
+ "real": [
+  "Pole-21 / R-934-style sector jammer heads",
+  "galvanised four-legged telecom lattice mast",
+  "equipment shelter with air conditioner, skid diesel generator"
+ ],
+ "shape": "The old tower family's layout kept (ew_tower_a, trimmed in wave 2, keeps the old build): pad, mast axis (0.3, -0.25), platform at 6.6 m, Radar at 7.07 m, shelter, generator, drums, reel where the old file had them. The jamming head: three directional panel arrays round a steel column (the biggest facing -Y with Muzzle_main), two datalink dishes, the LPDA, GNSS puck, whip with the red light.",
+ "confidence": "xấp xỉ (jammer mast and telecom tower photographs)",
+ "target_size": {
+  "L": 3.99,
+  "W": 3.99,
+  "H": 10.08,
+  "source": "the old GLB (the def's 4 x 4 m)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the cast pad with joints, the cable trench plates, the earthing rod",
+   "nodes": [
+    "Pad",
+    "Pad_joints",
+    "Trench_plates",
+    "Earth_rod"
+   ]
+  },
+  {
+   "feature": "the four-legged lattice mast on pedestals and base plates, K / X bracing, ladder with cage, cable ladder and feeders, obstruction lights",
+   "nodes": [
+    "Mast",
+    "Mast_braces",
+    "Footings",
+    "Base_plates",
+    "Mast_ladder",
+    "Ladder_cage",
+    "Cable_ladder",
+    "Cable_run",
+    "Obstruction_lights"
+   ]
+  },
+  {
+   "feature": "the head platform: grating, railing, Team toe boards, bearing housing",
+   "nodes": [
+    "Platform",
+    "Grating",
+    "Railing",
+    "Kick_plates",
+    "Bearing"
+   ]
+  },
+  {
+   "feature": "the equipment shelter with ribs, roof, door, window, lamp, air conditioner, gland plate",
+   "nodes": [
+    "Shelter",
+    "Shelter_roof",
+    "Shelter_door",
+    "Shelter_window",
+    "Aircon",
+    "Cable_entry"
+   ]
+  },
+  {
+   "feature": "the skid generator, fuel drums, cable reel, warning sign, extinguisher",
+   "nodes": [
+    "Generator",
+    "Generator_doors",
+    "Drums",
+    "Cable_reel",
+    "Signs",
+    "Extinguisher"
+   ]
+  },
+  {
+   "feature": "the turning head: column, three sector arrays (Team backs with fins, white radome faces with seams), dishes, LPDA, GNSS puck, whip, light",
+   "nodes": [
+    "Radar",
+    "Muzzle_main",
+    "Head_steel",
+    "Array_back",
+    "Array_radome",
+    "Dishes",
+    "LPDA_elements"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "none",
+   "slot": "jammer",
+   "mount": "Radar",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the jamming face (jammer 30)"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "shelter (Team)",
+  "array backs (Team)",
+  "toe boards (Team)",
+  "generator doors (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "galvanised lattice mast, Team shelter and array backs, white radomes",
+ "details": {
+  "tier1": [
+   "pad",
+   "mast",
+   "shelter",
+   "head"
+  ],
+  "tier2": [
+   "platform",
+   "arrays",
+   "dishes",
+   "generator",
+   "drums",
+   "reel"
+  ],
+  "tier3": [
+   "bolts",
+   "ladder cage",
+   "cable ladder",
+   "fins",
+   "seams",
+   "lights",
+   "handles",
+   "whip",
+   "beacon",
+   "sign"
+  ]
+ },
+ "questions": []
+}
