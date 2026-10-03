@@ -4977,6 +4977,36 @@
     "FLAG nuke_train: triangles 36,310 -> 28,910 (-20.4%); vertices 43,505 -> 38,307 (-11.9%); meshes 95 -> 136 (+43.2%); renderers 95 -> 136 (+43.2%); materials 15 -> 16 (+6.7%); materialSlots 95 -> 136 (+43.2%); fileBytes 1,708,716 -> 1,988,044 (+16.3%); structure changed",
     "FLAG recoilless_jeep: triangles 3,386 -> 7,328 (+116.4%); vertices 3,529 -> 10,113 (+186.6%); meshes 29 -> 59 (+103.4%); renderers 29 -> 59 (+103.4%); materials 9 -> 11 (+22.2%); materialSlots 29 -> 59 (+103.4%); fileBytes 165,064 -> 547,296 (+231.6%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "airborne_light_tank_chute",
+    "dragons_teeth_b",
+    "drone_mothership",
+    "ew_tower",
+    "ew_tower_b",
+    "helipad",
+    "helipad_a",
+    "helipad_b",
+    "minefield_a",
+    "nuke_train",
+    "recoilless_jeep"
+   ],
+   "reason": "wave 12 GLBs quantised (KHR_mesh_quantization)",
+   "changes": [
+    "FLAG airborne_light_tank_chute: triangles 0 -> 16,310 (+100.0%); vertices 0 -> 21,363 (+100.0%); meshes 0 -> 38 (+100.0%); renderers 0 -> 38 (+100.0%); materials 0 -> 13 (+100.0%); materialSlots 0 -> 38 (+100.0%); fileBytes 0 -> 823,728 (+100.0%); structure changed",
+    "FLAG dragons_teeth_b: triangles 0 -> 8,378 (+100.0%); vertices 0 -> 11,965 (+100.0%); meshes 0 -> 23 (+100.0%); renderers 0 -> 23 (+100.0%); materials 0 -> 14 (+100.0%); materialSlots 0 -> 23 (+100.0%); fileBytes 0 -> 458,784 (+100.0%); structure changed",
+    "FLAG drone_mothership: triangles 0 -> 18,880 (+100.0%); vertices 0 -> 23,331 (+100.0%); meshes 0 -> 113 (+100.0%); renderers 0 -> 113 (+100.0%); materials 0 -> 13 (+100.0%); materialSlots 0 -> 113 (+100.0%); fileBytes 0 -> 967,916 (+100.0%); structure changed",
+    "FLAG ew_tower: triangles 0 -> 5,998 (+100.0%); vertices 0 -> 9,447 (+100.0%); meshes 0 -> 77 (+100.0%); renderers 0 -> 77 (+100.0%); materials 0 -> 18 (+100.0%); materialSlots 0 -> 77 (+100.0%); fileBytes 0 -> 418,980 (+100.0%); structure changed",
+    "FLAG ew_tower_b: triangles 0 -> 5,740 (+100.0%); vertices 0 -> 9,034 (+100.0%); meshes 0 -> 77 (+100.0%); renderers 0 -> 77 (+100.0%); materials 0 -> 17 (+100.0%); materialSlots 0 -> 77 (+100.0%); fileBytes 0 -> 403,996 (+100.0%); structure changed",
+    "FLAG helipad: triangles 0 -> 4,370 (+100.0%); vertices 0 -> 6,698 (+100.0%); meshes 0 -> 30 (+100.0%); renderers 0 -> 30 (+100.0%); materials 0 -> 13 (+100.0%); materialSlots 0 -> 30 (+100.0%); fileBytes 0 -> 273,748 (+100.0%); structure changed",
+    "FLAG helipad_a: triangles 0 -> 6,422 (+100.0%); vertices 0 -> 9,308 (+100.0%); meshes 0 -> 40 (+100.0%); renderers 0 -> 40 (+100.0%); materials 0 -> 17 (+100.0%); materialSlots 0 -> 40 (+100.0%); fileBytes 0 -> 380,924 (+100.0%); structure changed",
+    "FLAG helipad_b: triangles 0 -> 5,582 (+100.0%); vertices 0 -> 8,710 (+100.0%); meshes 0 -> 35 (+100.0%); renderers 0 -> 35 (+100.0%); materials 0 -> 17 (+100.0%); materialSlots 0 -> 35 (+100.0%); fileBytes 0 -> 351,596 (+100.0%); structure changed",
+    "FLAG minefield_a: triangles 0 -> 6,730 (+100.0%); vertices 0 -> 9,673 (+100.0%); meshes 0 -> 33 (+100.0%); renderers 0 -> 33 (+100.0%); materials 0 -> 14 (+100.0%); materialSlots 0 -> 33 (+100.0%); fileBytes 0 -> 386,532 (+100.0%); structure changed",
+    "FLAG nuke_train: fileBytes 1,988,044 -> 1,537,236 (-22.7%)",
+    "FLAG recoilless_jeep: fileBytes 547,296 -> 429,844 (-21.5%)"
+   ]
   }
  ],
  "models": {
@@ -6844,13 +6874,148 @@
   },
   "airborne_light_tank_chute": {
    "file": "airborne_light_tank_chute.glb",
-   "loadError": "not a glTF binary (bad magic)",
+   "fileBytes": 823728,
+   "sha1": "2f0b27de3d75ed25",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 45,
+   "meshes": 38,
+   "materials": 13,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 38,
+   "submeshes": 38,
+   "materialSlots": 38,
+   "materialsUsed": 13,
+   "triangles": 16310,
+   "vertices": 21363,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 502,
+   "openEdges": 384,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -4.3565,
+    -0.985,
+    -4.3583
+   ],
+   "boundsMax": [
+    4.3565,
+    10.1895,
+    4.3583
+   ],
+   "size": [
+    8.717,
+    8.713,
+    11.174
+   ],
+   "center": [
+    0.0,
+    4.602,
+    0.0
+   ],
+   "structureHash": "979763d0d9e8dc1c",
+   "color0": {
+    "mean": 0.5987,
+    "min": 0.0567,
+    "max": 1.0,
+    "p05": 0.157,
+    "p95": 0.8216,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "turret": [
+     "Turret"
+    ],
+    "main_cannon": [
+     "Main_cannon"
+    ],
+    "muzzle_brake": [
+     "Muzzle_brake"
+    ],
+    "muzzle": [
+     "Muzzle_coax",
+     "Muzzle_main",
+     "Muzzle_mg"
+    ],
+    "mount": [
+     "Mount_mg"
+    ],
+    "point": [
+     "Point_exhaust",
+     "Point_fire"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Ammo_can_cdr",
+    "Blowout_panels",
+    "Brake_holes",
+    "Bustle",
+    "Canopy",
+    "Canopy_stripe",
+    "Canopy_stripe.001",
+    "Coax",
+    "Cradle_cdr",
+    "Fenders",
+    "Glass",
+    "Glass.001",
+    "Grilles",
+    "Gun_carriage_cdr",
+    "Honeycomb",
+    "Hull",
+    "Hull_lower",
+    "Jerrycans",
+    "Kit_bolts",
+    "Kit_bolts.001",
+    "Lamps",
+    "Main_cannon",
+    "Mantlet",
+    "Mount_mg",
+    "Muzzle_brake",
+    "Muzzle_coax",
+    "Muzzle_main",
+    "Muzzle_mg",
+    "Platform",
+    "Point_exhaust",
+    "Point_fire",
+    "Receiver_cdr",
+    "Release_cover",
+    "Rigging",
+    "Skirt_flaps",
+    "Stowage",
+    "Tail_lamps",
+    "Tarp_roll",
+    "Tracks",
+    "Turret",
+    "Turret_armor",
+    "Turret_body",
+    "Turret_steel",
+    "Tyres",
+    "Wheels"
+   ],
    "category": "air",
    "hd": false,
-   "errors": [
-    "load failed: not a glTF binary (bad magic)"
+   "errors": [],
+   "warnings": [
+    "triangles 16,310 over the jet normal hard cap 6,400 (info: kept, owner rule)",
+    "vertices 21,363 over the jet normal hard cap 8,900 (info: kept, owner rule)",
+    "renderers 38 over the jet normal budget 36"
    ],
-   "warnings": []
+   "units": [
+    "airborne_light_tank_chute"
+   ],
+   "movingParts": 3,
+   "budgetClass": "jet"
   },
   "airborne_vehicle": {
    "file": "airborne_vehicle.glb",
@@ -19881,13 +20046,100 @@
   },
   "dragons_teeth_b": {
    "file": "dragons_teeth_b.glb",
-   "loadError": "not a glTF binary (bad magic)",
+   "fileBytes": 458784,
+   "sha1": "4e0c6079792b6760",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 23,
+   "meshes": 23,
+   "materials": 14,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 23,
+   "submeshes": 23,
+   "materialSlots": 23,
+   "materialsUsed": 14,
+   "triangles": 8378,
+   "vertices": 11965,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 359,
+   "openEdges": 654,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -2.5092,
+    -0.13,
+    -1.1815
+   ],
+   "boundsMax": [
+    2.5643,
+    1.2611,
+    1.2634
+   ],
+   "size": [
+    2.445,
+    5.073,
+    1.391
+   ],
+   "center": [
+    0.028,
+    0.566,
+    0.041
+   ],
+   "structureHash": "d393acc345d52ddc",
+   "color0": {
+    "mean": 0.6618,
+    "min": 0.3075,
+    "max": 0.9987,
+    "p05": 0.3702,
+    "p95": 0.7985,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Alarm_cans",
+    "Anchor_pickets",
+    "Barbed_wire",
+    "Barbs",
+    "Footing",
+    "Footing_dirt",
+    "Footing_joints",
+    "Gloves",
+    "Picket_caps",
+    "Picket_eyes",
+    "Pickets",
+    "Razor_wire",
+    "Rust_stains",
+    "Stake_bands",
+    "Stake_reflectors",
+    "Stakes",
+    "Stones",
+    "Tufts",
+    "Warning_marks",
+    "Warning_tags",
+    "Wire_clips",
+    "Wire_spool",
+    "Wire_spool.001"
+   ],
    "category": "structure",
    "hd": false,
-   "errors": [
-    "load failed: not a glTF binary (bad magic)"
+   "errors": [],
+   "warnings": [
+    "triangles 8,378 over the structure normal budget 7,900",
+    "vertices 11,965 over the structure normal budget 9,800"
    ],
-   "warnings": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "dress_coast_buoy": {
    "file": "dress_coast_buoy.glb",
@@ -25568,13 +25820,263 @@
   },
   "drone_mothership": {
    "file": "drone_mothership.glb",
-   "loadError": "not a glTF binary (bad magic)",
+   "fileBytes": 967916,
+   "sha1": "37669f53d6088ac7",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 138,
+   "meshes": 113,
+   "materials": 13,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 113,
+   "submeshes": 113,
+   "materialSlots": 113,
+   "materialsUsed": 13,
+   "triangles": 18880,
+   "vertices": 23331,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 470,
+   "openEdges": 144,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -7.05,
+    -6.02,
+    -14.2546
+   ],
+   "boundsMax": [
+    7.05,
+    5.0803,
+    14.36
+   ],
+   "size": [
+    28.615,
+    14.1,
+    11.1
+   ],
+   "center": [
+    0.0,
+    -0.47,
+    0.053
+   ],
+   "structureHash": "ed8adb97c69955ba",
+   "color0": {
+    "mean": 0.6709,
+    "min": 0.078,
+    "max": 1.0,
+    "p05": 0.212,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "turret": [
+     "Turret"
+    ],
+    "main_cannon": [
+     "Main_cannon",
+     "Main_cannon_2"
+    ],
+    "muzzle_brake": [
+     "Muzzle_brake",
+     "Muzzle_brake_2"
+    ],
+    "muzzle": [
+     "Muzzle_gun",
+     "Muzzle_gun.001",
+     "Muzzle_main",
+     "Muzzle_main.001",
+     "Muzzle_mg",
+     "Muzzle_mg.001",
+     "Muzzle_missile",
+     "Muzzle_missile.001"
+    ],
+    "mount": [
+     "Mount_gun",
+     "Mount_gun.001",
+     "Mount_main.001",
+     "Mount_mg",
+     "Mount_mg.001",
+     "Mount_missile.001"
+    ],
+    "propeller": [
+     "Propeller",
+     "Propeller_2",
+     "Propeller_3",
+     "Propeller_4"
+    ]
+   },
+   "runtimeSuffixed": [
+    "Mount_gun.001",
+    "Mount_main.001",
+    "Mount_mg.001",
+    "Mount_missile.001",
+    "Muzzle_gun.001",
+    "Muzzle_main.001",
+    "Muzzle_mg.001",
+    "Muzzle_missile.001"
+   ],
+   "nodeNames": [
+    "Antennas",
+    "Armor",
+    "Bay",
+    "Bay_door_bands",
+    "Bay_doors",
+    "Bay_hinges",
+    "Bay_rail",
+    "Bay_well",
+    "Beacon",
+    "Beacon.001",
+    "Bombbay_doors",
+    "Bombbay_frame",
+    "Bombbay_hinges",
+    "Control_surfaces",
+    "Datalink",
+    "Datalink.001",
+    "Drone_bodies",
+    "Drone_clamps",
+    "Drone_frames",
+    "Drone_motors",
+    "Drone_props",
+    "Drone_warheads",
+    "Duct_bands",
+    "Ducts",
+    "Envelope",
+    "Fins",
+    "Flak_ammo",
+    "Flak_ammo.001",
+    "Flak_band",
+    "Flak_band.001",
+    "Flak_body",
+    "Flak_body.001",
+    "Flak_brakes",
+    "Flak_brakes.001",
+    "Flak_guns",
+    "Flak_guns.001",
+    "Flak_ring",
+    "Flak_shield",
+    "Flak_shield.001",
+    "Flak_sight",
+    "Flak_sight.001",
+    "Flare_holes",
+    "Flares",
+    "General_stripe",
+    "Gondola",
+    "Gondola_armor",
+    "Gondola_gun_armor",
+    "Gondola_gun_body",
+    "Gondola_gun_brakes",
+    "Gondola_guns",
+    "Hatch",
+    "Keel",
+    "Kit_rivets",
+    "Lamps",
+    "Launcher_drum",
+    "Launcher_drum.001",
+    "Launcher_ring",
+    "Launcher_tubes",
+    "Main_cannon",
+    "Main_cannon_2",
+    "Mount_Flare_L",
+    "Mount_Flare_L2",
+    "Mount_Flare_R",
+    "Mount_Flare_R2",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
+    "Mount_gun",
+    "Mount_gun.001",
+    "Mount_main.001",
+    "Mount_mg",
+    "Mount_mg.001",
+    "Mount_missile.001",
+    "Muzzle_brake",
+    "Muzzle_brake_2",
+    "Muzzle_gun",
+    "Muzzle_gun.001",
+    "Muzzle_main",
+    "Muzzle_main.001",
+    "Muzzle_mg",
+    "Muzzle_mg.001",
+    "Muzzle_missile",
+    "Muzzle_missile.001",
+    "Nacelles",
+    "Nav_lights",
+    "Nav_lights.001",
+    "Nose_battens",
+    "Outriggers",
+    "Outriggers.001",
+    "Plates",
+    "Pod_bands",
+    "Pod_bands.001",
+    "Pod_barrels",
+    "Pod_barrels.001",
+    "Pod_body",
+    "Pod_body.001",
+    "Pod_brakes",
+    "Pod_brakes.001",
+    "Pod_pylons",
+    "Propeller",
+    "Propeller_2",
+    "Propeller_2_blades",
+    "Propeller_2_hub",
+    "Propeller_3",
+    "Propeller_3_blades",
+    "Propeller_3_hub",
+    "Propeller_4",
+    "Propeller_4_blades",
+    "Propeller_4_hub",
+    "Propeller_blades",
+    "Propeller_hub",
+    "Pylon",
+    "Ring_frames",
+    "Searchlights",
+    "Sensor_ball",
+    "Sensor_ball.001",
+    "Shield_band",
+    "Shield_coil",
+    "Shield_emitters",
+    "Shield_tips",
+    "Stators",
+    "Steel",
+    "Strakes",
+    "Stripe_trim",
+    "Tail_light",
+    "Turret",
+    "Turret_armor",
+    "Turret_body",
+    "Turret_sight",
+    "Uav_body",
+    "Uav_booms",
+    "Uav_hook",
+    "Uav_prop",
+    "Uav_sensor",
+    "Uav_trapeze",
+    "Uav_trapeze.001",
+    "Uav_wing",
+    "Window_frames",
+    "Windows"
+   ],
    "category": "boss",
    "hd": false,
-   "errors": [
-    "load failed: not a glTF binary (bad magic)"
+   "errors": [],
+   "warnings": [
+    "runtime names with a Blender suffix: Mount_gun.001, Mount_main.001, Mount_mg.001, Mount_missile.001"
    ],
-   "warnings": []
+   "units": [
+    "drone_mothership",
+    "locust"
+   ],
+   "movingParts": 13,
+   "budgetClass": "boss_s"
   },
   "drone_net_tower": {
    "file": "drone_net_tower.glb",
@@ -27469,13 +27971,163 @@
   },
   "ew_tower": {
    "file": "ew_tower.glb",
-   "loadError": "not a glTF binary (bad magic)",
+   "fileBytes": 418980,
+   "sha1": "1d553ad7665ae919",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 79,
+   "meshes": 77,
+   "materials": 18,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 77,
+   "submeshes": 77,
+   "materialSlots": 77,
+   "materialsUsed": 18,
+   "triangles": 5998,
+   "vertices": 9447,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 296,
+   "openEdges": 42,
+   "nonManifoldEdges": 32,
+   "boundsMin": [
+    -1.995,
+    -0.06,
+    -1.995
+   ],
+   "boundsMax": [
+    1.995,
+    10.045,
+    1.995
+   ],
+   "size": [
+    3.99,
+    3.99,
+    10.105
+   ],
+   "center": [
+    0.0,
+    4.993,
+    0.0
+   ],
+   "structureHash": "54c79438abf515a2",
+   "color0": {
+    "mean": 0.6392,
+    "min": 0.0438,
+    "max": 1.0,
+    "p05": 0.2539,
+    "p95": 0.9119,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_main"
+    ],
+    "radar": [
+     "Radar"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Aircon",
+    "Aircon_fan",
+    "Aircon_grille",
+    "Antennas",
+    "Array_back",
+    "Array_fins",
+    "Array_plugs",
+    "Array_radome",
+    "Array_seams",
+    "Base_plates",
+    "Beacon_base",
+    "Beacons",
+    "Bearing",
+    "Cable_clamps",
+    "Cable_entry",
+    "Cable_ladder",
+    "Cable_reel",
+    "Cable_reel_core",
+    "Cable_reel_hub",
+    "Cable_run",
+    "Dish_feeds",
+    "Dishes",
+    "Drum_rims",
+    "Drums",
+    "Earth_rod",
+    "Exhaust",
+    "Exhaust_caps",
+    "Extinguisher",
+    "Footings",
+    "Generator",
+    "Generator_doors",
+    "Generator_louvres",
+    "Generator_panel",
+    "Generator_skid",
+    "Generator_stripe",
+    "Gnss_puck",
+    "Grating",
+    "Grille_frames",
+    "Grilles",
+    "Head_arms",
+    "Head_cables",
+    "Head_light",
+    "Head_steel",
+    "Head_whip",
+    "Kick_plates",
+    "Kit_bolts",
+    "Kit_cables",
+    "Kit_handles",
+    "Kit_hinges",
+    "LPDA_elements",
+    "Ladder_cage",
+    "Light_brackets",
+    "Mast",
+    "Mast_braces",
+    "Mast_ladder",
+    "Muzzle_main",
+    "Obstruction_lights",
+    "Pad",
+    "Pad_joints",
+    "Platform",
+    "Radar",
+    "Railing",
+    "Shelter",
+    "Shelter_blocks",
+    "Shelter_door",
+    "Shelter_frame",
+    "Shelter_ribs",
+    "Shelter_roof",
+    "Shelter_stencil",
+    "Shelter_step",
+    "Shelter_window",
+    "Sign_marks",
+    "Sign_posts",
+    "Signs",
+    "Trench_edge",
+    "Trench_plates",
+    "Tufts",
+    "Wall_lamp",
+    "Wall_lamp_base"
+   ],
    "category": "structure",
    "hd": false,
-   "errors": [
-    "load failed: not a glTF binary (bad magic)"
+   "errors": [],
+   "warnings": [],
+   "units": [
+    "ew_tower"
    ],
-   "warnings": []
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "ew_tower_a": {
    "file": "ew_tower_a.glb",
@@ -27618,13 +28270,161 @@
   },
   "ew_tower_b": {
    "file": "ew_tower_b.glb",
-   "loadError": "not a glTF binary (bad magic)",
+   "fileBytes": 403996,
+   "sha1": "8696e9c46c879b98",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 79,
+   "meshes": 77,
+   "materials": 17,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 77,
+   "submeshes": 77,
+   "materialSlots": 77,
+   "materialsUsed": 17,
+   "triangles": 5740,
+   "vertices": 9034,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 280,
+   "openEdges": 42,
+   "nonManifoldEdges": 32,
+   "boundsMin": [
+    -1.995,
+    -0.06,
+    -1.995
+   ],
+   "boundsMax": [
+    1.995,
+    9.5742,
+    1.995
+   ],
+   "size": [
+    3.99,
+    3.99,
+    9.634
+   ],
+   "center": [
+    0.0,
+    4.757,
+    0.0
+   ],
+   "structureHash": "e551d2a9b2c0bac9",
+   "color0": {
+    "mean": 0.6264,
+    "min": 0.0438,
+    "max": 1.0,
+    "p05": 0.2348,
+    "p95": 0.8143,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_main"
+    ],
+    "radar": [
+     "Radar"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Aircon",
+    "Aircon_fan",
+    "Aircon_grille",
+    "Antennas",
+    "Array_band",
+    "Array_bearings",
+    "Array_box",
+    "Array_brace",
+    "Array_fan_guard",
+    "Array_fans",
+    "Array_frame",
+    "Array_horns",
+    "Array_panel",
+    "Array_shade",
+    "Array_tiles",
+    "Array_yoke",
+    "Base_plates",
+    "Beacon_base",
+    "Beacons",
+    "Bearing",
+    "Cable_clamps",
+    "Cable_entry",
+    "Cable_ladder",
+    "Cable_reel",
+    "Cable_reel_core",
+    "Cable_reel_hub",
+    "Cable_run",
+    "Drum_rims",
+    "Drums",
+    "Earth_rod",
+    "Exhaust",
+    "Exhaust_caps",
+    "Extinguisher",
+    "Footings",
+    "Generator",
+    "Generator_doors",
+    "Generator_louvres",
+    "Generator_panel",
+    "Generator_skid",
+    "Generator_stripe",
+    "Grating",
+    "Grille_frames",
+    "Grilles",
+    "Head_cables",
+    "Head_steel",
+    "Kick_plates",
+    "Kit_bolts",
+    "Kit_cables",
+    "Kit_handles",
+    "Kit_hinges",
+    "Ladder_cage",
+    "Light_brackets",
+    "Mast",
+    "Mast_braces",
+    "Mast_ladder",
+    "Muzzle_main",
+    "Obstruction_lights",
+    "Pad",
+    "Pad_joints",
+    "Platform",
+    "Radar",
+    "Railing",
+    "Shelter",
+    "Shelter_blocks",
+    "Shelter_door",
+    "Shelter_frame",
+    "Shelter_ribs",
+    "Shelter_roof",
+    "Shelter_stencil",
+    "Shelter_step",
+    "Shelter_window",
+    "Sign_marks",
+    "Sign_posts",
+    "Signs",
+    "Trench_edge",
+    "Trench_plates",
+    "Tufts",
+    "Wall_lamp",
+    "Wall_lamp_base"
+   ],
    "category": "structure",
    "hd": false,
-   "errors": [
-    "load failed: not a glTF binary (bad magic)"
-   ],
-   "warnings": []
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "factory": {
    "file": "factory.glb",
@@ -35591,33 +36391,330 @@
   },
   "helipad": {
    "file": "helipad.glb",
-   "loadError": "not a glTF binary (bad magic)",
+   "fileBytes": 273748,
+   "sha1": "48de9d66031c7118",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 30,
+   "meshes": 30,
+   "materials": 13,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 30,
+   "submeshes": 30,
+   "materialSlots": 30,
+   "materialsUsed": 13,
+   "triangles": 4370,
+   "vertices": 6698,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 193,
+   "openEdges": 110,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -5.0,
+    0.0,
+    -5.0
+   ],
+   "boundsMax": [
+    5.0,
+    3.3919,
+    5.0
+   ],
+   "size": [
+    10.0,
+    10.0,
+    3.392
+   ],
+   "center": [
+    0.0,
+    1.696,
+    0.0
+   ],
+   "structureHash": "b32175df36769ce7",
+   "color0": {
+    "mean": 0.7244,
+    "min": 0.3912,
+    "max": 1.0,
+    "p05": 0.456,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Base",
+    "Base_joints",
+    "Cabinet_sign",
+    "Cart_frame",
+    "Cart_wheels",
+    "Drain_grates",
+    "Extinguishers",
+    "Fuel_cabinet",
+    "Fuel_cabinet_door",
+    "Hose_reels",
+    "Hose_reels.001",
+    "Hoses",
+    "Hoses.001",
+    "Kit_cables",
+    "Lamp_rims",
+    "Lamps",
+    "Light_housing",
+    "Light_poles",
+    "Obstruction_light",
+    "Paint_edge",
+    "Paint_white",
+    "Paint_yellow",
+    "Perimeter_lights",
+    "Stains",
+    "Team_band",
+    "Tie_down_cups",
+    "Tie_downs",
+    "Windsock",
+    "Windsock.001",
+    "Windsock_pole"
+   ],
    "category": "structure",
    "hd": false,
-   "errors": [
-    "load failed: not a glTF binary (bad magic)"
+   "errors": [],
+   "warnings": [],
+   "units": [
+    "airfield",
+    "airfield.hangar",
+    "airfield.service"
    ],
-   "warnings": []
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "helipad_a": {
    "file": "helipad_a.glb",
-   "loadError": "not a glTF binary (bad magic)",
+   "fileBytes": 380924,
+   "sha1": "81008e0af727f387",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 40,
+   "meshes": 40,
+   "materials": 17,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 40,
+   "submeshes": 40,
+   "materialSlots": 40,
+   "materialsUsed": 17,
+   "triangles": 6422,
+   "vertices": 9308,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 248,
+   "openEdges": 160,
+   "nonManifoldEdges": 29,
+   "boundsMin": [
+    -5.25,
+    0.0,
+    -5.2
+   ],
+   "boundsMax": [
+    5.0,
+    3.545,
+    5.0
+   ],
+   "size": [
+    10.2,
+    10.25,
+    3.545
+   ],
+   "center": [
+    -0.125,
+    1.772,
+    -0.1
+   ],
+   "structureHash": "97e84bbe0e4464cc",
+   "color0": {
+    "mean": 0.6798,
+    "min": 0.3156,
+    "max": 1.0,
+    "p05": 0.3997,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Ammo_boxes",
+    "Axles",
+    "Ballast",
+    "Base",
+    "Base_joints",
+    "Bowser_bands",
+    "Bowser_frame",
+    "Bowser_tank",
+    "Cart_wheels",
+    "Curtain",
+    "Drain_grates",
+    "Guy_ropes",
+    "Hose_reels",
+    "Hoses",
+    "Hubs",
+    "Kit_cables",
+    "Kit_latches",
+    "Lamp_rims",
+    "Lamps",
+    "Light_housing",
+    "Light_poles",
+    "Obstruction_light",
+    "Paint_edge",
+    "Paint_white",
+    "Paint_yellow",
+    "Perimeter_lights",
+    "Roof",
+    "Rotor_blade",
+    "Shelter_arches",
+    "Stains",
+    "Team_band",
+    "Tie_down_cups",
+    "Tie_downs",
+    "Tool_cart",
+    "Trestles",
+    "Tyres",
+    "Wheels",
+    "Windsock",
+    "Windsock.001",
+    "Windsock_pole"
+   ],
    "category": "structure",
    "hd": false,
-   "errors": [
-    "load failed: not a glTF binary (bad magic)"
+   "errors": [],
+   "warnings": [
+    "renderers 40 over the structure normal budget 39"
    ],
-   "warnings": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "helipad_b": {
    "file": "helipad_b.glb",
-   "loadError": "not a glTF binary (bad magic)",
+   "fileBytes": 351596,
+   "sha1": "95b5df172c36f45e",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 35,
+   "meshes": 35,
+   "materials": 17,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 35,
+   "submeshes": 35,
+   "materialSlots": 35,
+   "materialsUsed": 17,
+   "triangles": 5582,
+   "vertices": 8710,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 262,
+   "openEdges": 110,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -5.0,
+    0.0,
+    -5.0
+   ],
+   "boundsMax": [
+    5.1131,
+    3.3919,
+    5.0
+   ],
+   "size": [
+    10.0,
+    10.113,
+    3.392
+   ],
+   "center": [
+    0.057,
+    1.696,
+    0.0
+   ],
+   "structureHash": "e1d21e2405496cc4",
+   "color0": {
+    "mean": 0.6576,
+    "min": 0.3365,
+    "max": 1.0,
+    "p05": 0.3861,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Ammo_boxes",
+    "Base",
+    "Base_joints",
+    "Bladder_valves",
+    "Cart_wheels",
+    "Drain_grates",
+    "Extinguishers",
+    "Fuel_bladders",
+    "Grille_frames",
+    "Grilles",
+    "Hose_reels",
+    "Hoses",
+    "Kit_cables",
+    "Kit_latches",
+    "Lamp_rims",
+    "Lamps",
+    "Light_housing",
+    "Light_poles",
+    "Obstruction_light",
+    "Paint_edge",
+    "Paint_white",
+    "Paint_yellow",
+    "Pallets",
+    "Perimeter_lights",
+    "Pump_skid",
+    "Rocket_rack",
+    "Sandbags",
+    "Spare_rockets",
+    "Stains",
+    "Team_band",
+    "Tie_down_cups",
+    "Tie_downs",
+    "Windsock",
+    "Windsock.001",
+    "Windsock_pole"
+   ],
    "category": "structure",
    "hd": false,
-   "errors": [
-    "load failed: not a glTF binary (bad magic)"
-   ],
-   "warnings": []
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "hellfire": {
    "file": "hellfire.glb",
@@ -43441,13 +44538,108 @@
   },
   "minefield_a": {
    "file": "minefield_a.glb",
-   "loadError": "not a glTF binary (bad magic)",
+   "fileBytes": 386532,
+   "sha1": "29030b98af9edd06",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 33,
+   "meshes": 33,
+   "materials": 14,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 33,
+   "submeshes": 33,
+   "materialSlots": 33,
+   "materialsUsed": 14,
+   "triangles": 6730,
+   "vertices": 9673,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 286,
+   "openEdges": 100,
+   "nonManifoldEdges": 1,
+   "boundsMin": [
+    -2.5542,
+    -0.0452,
+    -2.5425
+   ],
+   "boundsMax": [
+    2.5542,
+    1.1211,
+    2.5478
+   ],
+   "size": [
+    5.09,
+    5.108,
+    1.166
+   ],
+   "center": [
+    0.0,
+    0.538,
+    0.003
+   ],
+   "structureHash": "a836e92f13c7cd02",
+   "color0": {
+    "mean": 0.5949,
+    "min": 0.0469,
+    "max": 1.0,
+    "p05": 0.1345,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Crate_bands",
+    "Ground_patch",
+    "Lane_pegs",
+    "Lane_sign_mark",
+    "Lane_tape",
+    "Mine_bands",
+    "Mine_bodies",
+    "Mine_cables",
+    "Mine_crate",
+    "Mine_earth",
+    "Mine_fuzes",
+    "Mine_plates",
+    "Mine_rims",
+    "Mine_stake",
+    "Mine_stake.001",
+    "Pickets",
+    "Ruts",
+    "Sensor_spike",
+    "Sensor_spike.001",
+    "Side_mine",
+    "Side_mine_band",
+    "Side_mine_face",
+    "Sign_backs",
+    "Sign_marks",
+    "Sign_stakes",
+    "Signs",
+    "Stones",
+    "Tape",
+    "Tilt_rods",
+    "Tilt_rods.001",
+    "Tools_steel",
+    "Tools_wood",
+    "Tufts"
+   ],
    "category": "structure",
    "hd": false,
-   "errors": [
-    "load failed: not a glTF binary (bad magic)"
-   ],
-   "warnings": []
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "minefield_b": {
    "file": "minefield_b.glb",
@@ -46349,11 +47541,12 @@
   },
   "nuke_train": {
    "file": "nuke_train.glb",
-   "fileBytes": 1988044,
-   "sha1": "a39013ae32a3fbe2",
+   "fileBytes": 1537236,
+   "sha1": "a2e56cdf018048c6",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
-    "KHR_materials_emissive_strength"
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
    ],
    "nodes": 158,
    "meshes": 136,
@@ -49872,11 +51065,12 @@
   },
   "recoilless_jeep": {
    "file": "recoilless_jeep.glb",
-   "fileBytes": 547296,
-   "sha1": "1f434f4fc095732e",
+   "fileBytes": 429844,
+   "sha1": "5b892348e074201c",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
-    "KHR_materials_emissive_strength"
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
    ],
    "nodes": 65,
    "meshes": 59,
