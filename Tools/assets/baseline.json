@@ -3058,6 +3058,16 @@
    "changes": [
     "FLAG interceptor_jet: triangles 1,500 -> 3,436 (+129.1%); vertices 1,696 -> 5,013 (+195.6%); meshes 11 -> 40 (+263.6%); renderers 11 -> 40 (+263.6%); materials 5 -> 10 (+100.0%); materialSlots 11 -> 40 (+263.6%); fileBytes 95,992 -> 282,200 (+194.0%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "glide_bomber"
+   ],
+   "reason": "P35 wave 6: glide_bomber rebuilt from scratch",
+   "changes": [
+    "FLAG glide_bomber: triangles 1,624 -> 3,184 (+96.1%); vertices 1,862 -> 4,539 (+143.8%); meshes 14 -> 37 (+164.3%); renderers 14 -> 37 (+164.3%); materials 5 -> 10 (+100.0%); materialSlots 14 -> 37 (+164.3%); fileBytes 107,120 -> 256,880 (+139.8%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -27977,24 +27987,24 @@
   },
   "glide_bomber": {
    "file": "glide_bomber.glb",
-   "fileBytes": 107120,
-   "sha1": "3b6faf95b9f4ed7e",
+   "fileBytes": 256880,
+   "sha1": "0a422ae28d8b6056",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 22,
-   "meshes": 14,
-   "materials": 5,
+   "nodes": 47,
+   "meshes": 37,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 14,
-   "submeshes": 14,
-   "materialSlots": 14,
-   "materialsUsed": 5,
-   "triangles": 1624,
-   "vertices": 1862,
+   "renderers": 37,
+   "submeshes": 37,
+   "materialSlots": 37,
+   "materialsUsed": 10,
+   "triangles": 3184,
+   "vertices": 4539,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -28002,36 +28012,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 36,
-   "openEdges": 48,
-   "nonManifoldEdges": 10,
+   "loosePieces": 140,
+   "openEdges": 132,
+   "nonManifoldEdges": 0,
    "boundsMin": [
-    -2.95,
-    -0.56,
+    -3.0176,
+    -0.82,
     -4.7
    ],
    "boundsMax": [
-    2.95,
-    1.3792,
-    4.65
+    3.0176,
+    1.52,
+    4.7
    ],
    "size": [
-    9.35,
-    5.9,
-    1.939
+    9.4,
+    6.035,
+    2.34
    ],
    "center": [
-    0.0,
-    0.41,
-    -0.025
+    -0.0,
+    0.35,
+    0.0
    ],
-   "structureHash": "cacb3d5956a4aa15",
+   "structureHash": "1b7c7798500c57ff",
    "color0": {
-    "mean": 0.811,
-    "min": 0.5643,
+    "mean": 0.6927,
+    "min": 0.0801,
     "max": 1.0,
-    "p05": 0.6167,
-    "p95": 1.0,
+    "p05": 0.2459,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -28043,18 +28053,35 @@
     ],
     "part": [
      "Part_wing"
+    ],
+    "point": [
+     "Point_exhaust",
+     "Point_fire"
     ]
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antennas",
+    "Beacons",
+    "Bomb_bands",
+    "Bomb_bands.001",
     "Bomb_wings",
     "Bomb_wings.001",
     "Bombs",
     "Canopy",
+    "Canopy.001",
+    "Exhaust_glow",
     "Fins",
+    "Flare_mouths",
     "Flares",
-    "Flares_glow",
     "Fuselage",
+    "Intake_dark",
+    "Intake_dark.001",
+    "Intakes",
+    "Intakes.001",
+    "Lamps",
+    "Missiles",
+    "Missiles.001",
     "Mount_Flare_L",
     "Mount_Flare_L2",
     "Mount_Flare_R",
@@ -28065,15 +28092,29 @@
     "Nacelles",
     "Nacelles.001",
     "Nose_flat",
+    "Nozzle_petals",
+    "Nozzles",
     "Part_wing",
+    "Point_exhaust",
+    "Point_fire",
+    "Pylons",
+    "Pylons.001",
+    "Racks",
+    "Rudders",
     "Tails",
+    "Tails.001",
+    "Team_band",
+    "Wing_lights",
+    "Wing_lights.001",
     "Wings",
     "Wings.001"
    ],
    "category": "air",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "renderers 37 over the jet normal budget 36"
+   ],
    "units": [
     "glide_bomber"
    ],
