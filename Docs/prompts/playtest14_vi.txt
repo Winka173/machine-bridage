@@ -89,3 +89,13 @@ ixion: thêm súng / tên lửa, khoảng 4-5 vũ khí
 Locust: tốc độ gọi quăng drone quá nhanh, mỗi 2s quăng 1 drone thôi
 list vẽ lại:
 - jotunn, cả 2 bastion, Fenrir, Harpy, Daedalus (sẽ có 500% budget tam giác) Leviathan (sẽ có 500% budget tam giác) Scylla,  (sẽ có 400% budget tam giác) Kraken (sẽ có 500% budget tam giác) Nyx  (sẽ có 400% budget tam giác) , Hydra (sẽ có 400% budget tam giác)
+
+=== Bổ sung 03/10 (thử trên Unity, nguyên văn; kèm 2 ảnh mép biển) ===
+1. Napalm / không kích:  => máy bay phải là máy bay ném bom chứ không phải máy bay chiến đấu, và cục bom nó to hơn cả máy bay
+2. như hình, chỉ bị khai rìa của biển và mặt đất
+3. trong in action preview của boss
+4. Leviathan: ngủ thì giấu đi, phải có hoạt ảnh tháp súng trồi lên gì đó khi bắt đầu hoạt động
+- boss vào phase mới không cần "cutscreen"
+- vẽ lại model nhớ mọi đạn bay ra phải từ nòng / bệ phóng đầy đủ
+- các hangar unit chọn trong hq nên cân bằng, nếu chọn light tank thì được 1, jeep thì được 2 kiểu vậy
+- giảm toàn bộ thời gian các khói, kể cả khói tên lửa, khói cháy nổ, khói sát thương khi nổ chết (cái này đáng kể nhất) do nó làm chiến trường toàn khói

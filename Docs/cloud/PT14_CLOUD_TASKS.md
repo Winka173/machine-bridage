@@ -214,6 +214,7 @@ and write that in Cloud state** (the local lead then builds them; do not force i
 | M5 vehicles | ew_jammer, iron_beam (Laser AA), command_vehicle, wheeled_gun (smaller turret) |
 | M6 vehicles | stealth_naval_strike, aa_vehicle + heavy_aa (twin autocannons spaced like the real designs), laser_ad_station (Laser Defence Tower) |
 
+Owner (03/10): every round leaves from a muzzle or launcher on the model: every weapon mount needs its gun barrel / tube / rail and a Muzzle_* point at its mouth (no shots out of bare hull or roof).
 Units seen in numbers (M4-M6) stay at or under 1.5x their class maximum. Push GLBs as LFS objects. The local lead
 then checks LFS, quantises, renders cards and Unity scans, and merges.
 ## Cloud state 2026-10-03 (session 2)
@@ -253,3 +254,24 @@ For local (needs Unity):
 - Replay hashes change (Sim: A1-A6 in CHANGES).
 
 Questions for the owner: none.
+
+## Session 5: owner's Unity play-test notes (03/10) → `cloud/pt14-e`
+Owner's words: last block of Docs/prompts/playtest14_vi.txt. Lead's decisions (owner: "tự quyết luôn"):
+1. napalm_strike / airstrike: the aircraft must be a **bomber** (use the heavy_bomber / attack-bomber model the
+   bomb-run system already uses for bombers, not a fighter), and the bombs are drawn far too big (bigger than the
+   plane): scale the dropped bomb / canister meshes to real size relative to the aircraft (500 kg bomb ~2.5 m long).
+2. Sea: along diagonal coasts the water stops in a staircase and brown seabed/land shows in wedges between the steps
+   (the shore foam line is diagonal, the water fill is not). Make the water fill reach the shoreline everywhere
+   (water mesh / shader / coast mask code; find where sea tiles and the coast edge are built).
+3. Nyx: the tanks come from the **boss in-action preview** (preview escort staging), not the match: stage escorts by
+   the boss's domain there too (sea boss -> boats).
+4. Leviathan: secondary turrets that sleep before phase 1 are hidden (lowered into the hull), and rise with a short
+   animation (~1.5 s, raise + unfold) when they wake; runtime transform only, no model edit.
+5. Boss phase changes: no "cutscene" (no camera grab / pause / letterbox / slow-mo); keep only the HUD/radio line.
+6. Hangar picks in the HQ tab are balanced by cost: units alive per hangar = floor(budget / unit value), e.g.
+   light_tank 1, scout_jeep 2 (pick a budget that gives that; armored_car and the aircraft accordingly); spawn cycle
+   unchanged. CHANGES.md.
+7. Smoke everywhere lasts shorter (the battlefield is full of smoke): missile/rocket trails x0.5, fire and explosion
+   smoke x0.5, **death-explosion smoke x0.35** (the worst one), lingering wreck smoke x0.5. Do not shrink fire or the
+   explosion flash itself. Tank-round impact smoke already x0.4: leave it.
+Items that need a look in Unity to be sure: do what the code shows, list the rest under "For local".
