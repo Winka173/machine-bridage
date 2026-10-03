@@ -95,9 +95,16 @@ def merged_for(model):
     return out
 
 
+def def_frame(defs, own):
+    """scan_prep's frame (air / ship / ground), with a fixed-wing boss read as air even when the def leaves
+    'flying' out (wave 5: Morrigan has fixedWing but no flying field, so it was asked for tracks)."""
+    f = sp.boss_frame(defs, own)
+    return 'air' if f == 'ground' and defs.field(own, 'fixedWing') else f
+
+
 def boss_frame(defs, own, names):
     """ground / rail / air / sea (decision 5): air and sea from the def, rail from the running gear's nodes."""
-    f = sp.boss_frame(defs, own)
+    f = def_frame(defs, own)
     if f == 'ship':
         return 'sea'
     if f == 'ground' and any(RAIL_NODE.match(n) for n in names):
@@ -420,7 +427,7 @@ def hard_checks(defs, model, own, cls, rec, m, overlap):
         host = merged.get(item)
         return bool(host) and any(n == host or re.sub(r'\.\d{3}$', '', n) == host for n in have)
     if cls == 'boss':
-        frame = sp.boss_frame(defs, own)
+        frame = def_frame(defs, own)
         roles = [sp.BOSS_ROLES['body'], sp.BOSS_ROLES['weapons'], sp.BOSS_ROLES[frame]]
     else:
         roles = list(sp.ROLES.get(cls, []))
@@ -467,7 +474,7 @@ def hard_checks(defs, model, own, cls, rec, m, overlap):
     zn = ZONES.get(cls, 3)
     out.append(('colour_zones', m['zones'] >= zn, f"{m['zones']} materials (need {zn})"))
     bake = m.get('c0_p95', 0) - m.get('c0_p05', 0) >= 0.15 and m.get('c0_wear', 0) >= 0.005
-    if cls not in ('jet', 'helicopter', 'air_other') and not (cls == 'boss' and defs.field(own, 'flying')):
+    if cls not in ('jet', 'helicopter', 'air_other') and not (cls == 'boss' and def_frame(defs, own) == 'air'):
         bake = bake and m.get('c0_dust', 0) > 0.0
     out.append(('ao_dust_wear', bake, f"COLOR_0 p05 {m.get('c0_p05', 0):.2f} p95 {m.get('c0_p95', 0):.2f}, worn "
                 f"{m.get('c0_wear', 0):.1%}, dust {m.get('c0_dust', 0):+.2f}"))

@@ -65,6 +65,17 @@ def body_loft(part, stations, smooth=0):
     part.loft(rings, bevel=0)
 
 
+def resample(stations, n):
+    """Linear re-sampling of a station list [(y, a, b, c, ...)] to n stations (a smoother loft)."""
+    out = []
+    for i in range(n):
+        t = i / (n - 1) * (len(stations) - 1)
+        j = min(int(t), len(stations) - 2)
+        f = t - j
+        out.append(tuple(p + (q - p) * f for p, q in zip(stations[j], stations[j + 1])))
+    return out
+
+
 FOIL14 = [(1.0, 0.0), (.8, .35), (.55, .62), (.3, .85), (.05, 1.0), (-.3, .9), (-.65, .55), (-1.0, 0.0),
           (-.65, -.4), (-.3, -.6), (.05, -.7), (.3, -.6), (.55, -.45), (.8, -.25)]
 
@@ -528,10 +539,163 @@ def sky_fortress(a):
     k.clean(a)
 
 
+# ============================================================================= morrigan
+def morrigan(a):
+    """Morrigan, Wolff's stealth fighter boss: a Su-57 type (the sheet's refs: Su-57, F-22) at the old file's size
+    (20.8 m). The flattened lifting body with the chined nose and bubble canopy, the IRST ball ahead of it, the
+    LEVCONs at the wing roots, the two widely spaced nacelles with the weapons tunnel between them, the side bays
+    under the LEVCON roots (Part_bay_l / _r, open, an R-77 on its trapeze each), the tandem main bay in the
+    tunnel (Part_bomb_bay, open, a guided bomb), the cropped delta wing, the all-moving canted fins and
+    stabilators, the two 3D nozzles and the tail sting (Part_engines), the right-side gun port. Runtime:
+    Part_bay_l, Part_bay_r, Part_bomb_bay, Part_engines, Muzzle_missile / .001, Muzzle_bomb, Muzzle_gun;
+    mb_flare_mounts adds Mount_Flare_*."""
+    K.suffixed(a)
+    fus = a.part('Fuselage', 'Team')
+    body_loft(fus, [(-11.2, .04, .15, .2, .5), (-10.8, .25, -.05, .35, .5), (-10.0, .5, -.25, .55, .48),
+                    (-9.0, .72, -.4, .78, .45), (-8.0, .85, -.48, 1.05, .42), (-7.0, .95, -.52, 1.25, .4),
+                    (-6.0, 1.05, -.55, 1.3, .38), (-4.5, 1.15, -.55, 1.2, .38), (-3.0, 1.1, -.5, 1.05, .4),
+                    (-1.0, 1.0, -.45, .95, .42), (1.5, .95, -.4, .9, .44), (4.0, .85, -.35, .85, .45),
+                    (6.0, .7, -.3, .75, .47), (7.6, .5, -.25, .6, .5), (8.8, .28, -.15, .45, .5),
+                    (9.6, .08, -.05, .3, .5)][:0] or resample([(-11.2, .04, .15, .2, .5), (-10.8, .25, -.05, .35, .5),
+                    (-10.0, .5, -.25, .55, .48), (-9.0, .72, -.4, .78, .45), (-8.0, .85, -.48, 1.05, .42),
+                    (-7.0, .95, -.52, 1.25, .4), (-6.0, 1.05, -.55, 1.3, .38), (-4.5, 1.15, -.55, 1.2, .38),
+                    (-3.0, 1.1, -.5, 1.05, .4), (-1.0, 1.0, -.45, .95, .42), (1.5, .95, -.4, .9, .44),
+                    (4.0, .85, -.35, .85, .45), (6.0, .7, -.3, .75, .47), (7.6, .5, -.25, .6, .5),
+                    (8.8, .28, -.15, .45, .5), (9.6, .08, -.05, .3, .5)], 70), smooth=.05)
+    # Bubble canopy with its frame, the IRST ball ahead of it, the probe door.
+    k.lathe(a.part('Canopy', 'Glass'), [(0, -1.6), (.35, -1.4), (.55, -.6), (.58, .3), (.45, 1.1), (0, 1.5)],
+            loc=(0, -7.1, 1.1), rot=(-R90, 0, 0), seg=16)
+    a.part('Canopy_frame', 'Obsidian').box((1.0, .08, .4), loc=(0, -7.4, 1.5), bevel=0)
+    a.part('Sensor', 'Steel').sphere(.18, loc=(.35, -8.6, .85), seg=10, rings=6)
+    # Under the glass: the ejection seat, the instrument coaming and the HUD frame.
+    ck = a.part('Cockpit_interior', 'Undercarriage')
+    ck.box((.5, .5, .7), loc=(0, -6.6, 1.25), bevel=0)
+    ck.box((.4, .2, .9), loc=(0, -6.3, 1.4), bevel=0)
+    ck.box((.8, .4, .25), loc=(0, -7.7, 1.2), bevel=0)
+    a.part('Hud_frame', 'Steel').box((.3, .03, .25), loc=(0, -7.95, 1.42), rot=(-.4, 0, 0), bevel=0)
+    a.part('Landing_light', 'Lamp').cyl(.08, .03, loc=(0, -9.0, -.4), seg=8, bevel=0)
+    a.part('Sensor_glass', 'Glass').box((.16, .02, .12), loc=(.35, -8.78, .87), bevel=0)
+    # Nacelles: boxy intakes under the LEVCON roots, running back to the nozzles; the tunnel between them.
+    nac = a.part('Nacelles', 'Team')
+    for s in (-1, 1):
+        x = s * 1.45
+        rings = []
+        for y, w, zb, zt in resample(((-5.3, .5, -.62, .2), (-4.6, .58, -.66, .3), (-3.0, .62, -.66, .38),
+                                      (0.0, .62, -.64, .42), (3.0, .6, -.6, .42), (5.6, .55, -.52, .38),
+                                      (7.4, .48, -.45, .32)), 16):
+            rings.append([(x - w, y, zb), (x - w * .2, y, zb - .03), (x + w * .2, y, zb - .03), (x + w, y, zb),
+                          (x + w * .97, y, (zb + zt) / 2), (x + w * .9, y, zt), (x, y, zt + .05), (x - w * .9, y, zt),
+                          (x - w * .97, y, (zb + zt) / 2)])
+        nac.loft(rings, bevel=0)
+        a.part('Intakes', 'Undercarriage').box((1.0, .04, .7), loc=(x, -5.32, -.22), rot=(.15, 0, s * .2), bevel=0)
+        a.part('Intake_lips', 'Obsidian').box((1.15, .08, .06), loc=(x, -5.34, .2), rot=(0, 0, s * .2), bevel=0)
+    a.part('Tunnel', 'Undercarriage').box((1.6, 9.0, .05), loc=(0, 1.2, -.6), bevel=0)
+    # LEVCONs, the cropped delta wing, the flaperons and ailerons.
+    lv = a.part('Levcons', 'Team')
+    for s in (-1, 1):
+        lv.mesh([(s * 1.0, -6.6, .32), (s * 2.3, -3.4, .32), (s * 1.9, -3.1, .3), (s * 1.0, -4.0, .34)],
+                [(0, 1, 2, 3) if s > 0 else (3, 2, 1, 0)])
+        lv.mesh([(s * 1.0, -6.6, .26), (s * 1.0, -4.0, .28), (s * 1.9, -3.1, .24), (s * 2.3, -3.4, .26)],
+                [(0, 1, 2, 3) if s > 0 else (3, 2, 1, 0)])
+    wg = a.part('Wings', 'Team')
+    for s in (-1, 1):
+        fs = tuple(i / 19 for i in range(20))
+        st = [(s * (1.9 + 4.85 * f), -3.3 + 5.4 * f, -3.3 + 5.4 * f + 7.6 - 6.2 * f, .28 - .05 * f, .06)
+              for f in (fs if s > 0 else fs[::-1])]
+        span_loft(wg, st, foil=FOIL14)
+        fl = a.part('Flaperons', 'Obsidian')
+        fl.box((2.0, .5, .05), loc=(s * 3.0, 3.6, .25), rot=(0, 0, -s * .05), bevel=0)
+        fl.box((1.6, .45, .05), loc=(s * 5.3, 3.3, .22), rot=(0, 0, -s * .2), bevel=0)
+        a.part('Wing_lights', 'LavaGlow' if s > 0 else 'SignalGreen').box((.08, .3, .05), loc=(s * 6.72, 2.4, .25),
+                                                                          bevel=0)
+    # Canted all-moving fins and the stabilators.
+    for s in (-1, 1):
+        rings = []
+        for f in tuple(i / 7 for i in range(8)):
+            lead, chord = 4.4 + 2.0 * f, 3.6 - 2.2 * f
+            zz, xx = .45 + 2.0 * f * math.cos(.45), s * (1.9 + 2.0 * f * math.sin(.45))
+            rings.append([(xx + v * .05 * chord * .5, lead + chord * (1 - u) / 2, zz) for u, v in FOIL14])
+        a.part('Fins', 'Team').loft(rings, bevel=0)
+        fs = tuple(i / 6 for i in range(7))
+        span_loft(a.part('Stabilators', 'Team'), [(s * (2.1 + 3.0 * f), 6.0 + 1.6 * f, 6.0 + 1.6 * f + 3.2 - 1.9 * f,
+                                                   .05, .05) for f in (fs if s > 0 else fs[::-1])], foil=FOIL14)
+    # The side bays (Part_bay_l / _r) open, an R-77 on each trapeze.
+    for i, (s, nm) in enumerate(((1, 'Part_bay_l'), (-1, 'Part_bay_r'))):
+        p = a.pivot(nm, (s * .45, -1.3, -.6))
+        a.part(f'Bay_liner_{nm[9:]}', 'Undercarriage', p).box((.5, 2.6, .02), loc=(s * .4, -.6, .05), bevel=0)
+        a.part(f'Bay_door_{nm[9:]}', 'Obsidian', p).box((.03, 2.5, .45), loc=(s * .7, -.6, -.2), rot=(0, s * .3, 0),
+                                                       bevel=0)
+        a.part(f'Bay_trapeze_{nm[9:]}', 'Steel', p).box((.05, .3, .3), loc=(s * .4, -.6, -.15), bevel=0)
+        for yy in (-1.6, -.6, .4):
+            a.part(f'Bay_hinges_{nm[9:]}', 'Steel', p).cyl(.03, .25, loc=(s * .68, yy, 0), rot=K.FORWARD, seg=6,
+                                                            bevel=0)
+        K.store(a, (s * .4, .3, -.38), .085, 1.85, parent=nm, body=f'Aam_{nm[9:]}', body_mat='Fuel',
+                fins=f'Aam_fins_{nm[9:]}', seg=16)
+        a.pivot(K.name('Muzzle_missile', i), (0, -1.51, -.38), nm)
+        K.tone(a, nm, k=.88)
+    # The tandem main bay in the tunnel (Part_bomb_bay), open, a guided bomb on its rack.
+    p = a.pivot('Part_bomb_bay', (0, 2.5, -.56))
+    a.part('Bomb_liner', 'Undercarriage', p).box((1.1, 3.4, .02), loc=(0, 0, .02), bevel=0)
+    for s in (-1, 1):
+        a.part('Bomb_doors', 'Obsidian', p).box((.03, 3.3, .5), loc=(s * .62, 0, -.25), bevel=0)
+    a.part('Bomb_rack', 'Steel', p).box((.15, 1.4, .15), loc=(0, 0, -.08), bevel=0)
+    K.store(a, (0, 1.3, -.25), .14, 2.4, parent='Part_bomb_bay', body='Bay_stores', body_mat='Armor',
+            fins='Bomb_fins', kind='bomb', seg=10)
+    a.pivot('Muzzle_bomb', (0, -.91, -.25), 'Part_bomb_bay')
+    K.tone(a, 'Part_bomb_bay', k=.88)
+    # The engines' aft end (Part_engines): the two 3D nozzles with their petals and glow, the tail sting.
+    p = a.pivot('Part_engines', (0, 7.9, .3))
+    for s in (-1, 1):
+        x = s * 1.45
+        k.lathe(a.part('Nozzles', 'Steel', p), [(.5, -.6), (.52, -.2), (.48, .5), (.44, .9)], loc=(x, 0, -.45),
+                rot=(-R90, 0, 0), seg=16)
+        pt = a.part('Nozzle_petals', 'Obsidian', p)
+        for j in range(8):
+            u = j * TAU / 8
+            pt.box((.18, .4, .03), loc=(x + math.cos(u) * .46, .75, -.45 + math.sin(u) * .46), rot=(0, -u + R90, 0),
+                   bevel=0)
+        a.part('Exhaust_glow', 'LavaGlow', p).cyl(.38, .02, loc=(x, .88, -.45), rot=K.FORWARD, seg=14, bevel=0)
+    k.lathe(a.part('Sting', 'Team', p), [(.32, -1.0), (.3, .6), (.2, 1.2), (0, 1.6)], loc=(0, 0, -.1),
+            rot=(-R90, 0, 0), seg=10)
+    K.tone(a, 'Part_engines', k=.9)
+    # Gun port (right side), panel saw-teeth, antennas, gear doors, the general's marks, the beacon.
+    a.part('Gun_port', 'Undercarriage').box((.03, .7, .18), loc=(1.15, -5.0, .2), bevel=0)
+    a.pivot('Muzzle_gun', (1.4, -5.01, .16))
+    pl = a.part('Panel_lines', 'Obsidian')
+    for y in (-8.5, -6.0, -2.0, 1.0, 4.5):
+        pl.box((1.2, .04, .02), loc=(0, y, 1.0 if y < -5 else .95), bevel=0)
+    for s in (-1, 1):
+        for y in (-6.5, -2.5):
+            a.part('Gear_doors', 'Undercarriage').box((.4, 1.4, .02), loc=(s * .7, y, -.55), bevel=0)
+        a.part('Team_band', 'Team').box((.02, 3.0, .2), loc=(s * 1.17, -2.0, .4), bevel=0)
+        a.part('Fin_marks', 'Hazard').box((.04, .8, .4), loc=(s * 2.6, 6.6, 1.9), rot=(0, s * -.45, 0), bevel=0)
+    for y in (-4.0, 2.0):
+        K.blade_antenna(a.part('Antennas', 'Steel'), (0, y, .95), h=.2, chord=.3)
+    # Cheek radar arrays, the nacelles' auxiliary louvres, the saw-tooth door edges, the pitot and AoA vanes, the
+    # flare dispensers in the sting, the formation light strips.
+    for s in (-1, 1):
+        a.part('Cheek_arrays', 'Obsidian').box((.03, 1.0, .35), loc=(s * .88, -8.4, .25), rot=(0, s * .3, 0), bevel=0)
+        lv = a.part('Louvres', 'Obsidian')
+        for j in range(5):
+            lv.box((.6, .08, .02), loc=(s * 1.45, -2.4 + j * .18, .42), bevel=0)
+        st_ = a.part('Sawteeth', 'Obsidian')
+        for j in range(4):
+            st_.box((.25, .25, .02), loc=(s * (.9 + j * .1), -3.6 + j * .22, -.58), rot=(0, 0, .785), bevel=0)
+        a.part('Formation_lights', 'SignalGreen').box((.02, .6, .04), loc=(s * 1.06, -4.0, .55), bevel=0)
+        a.part('Aoa_vanes', 'Steel').box((.02, .15, .08), loc=(s * .55, -9.6, .35), bevel=0)
+        K.flare_dispenser(a, (s * .32, 8.3, -.2), normal=(s, 0, -.4), cols=3, rows=2, cell=.06)
+    a.part('Pitot', 'Steel').tube([(0, -11.15, .18), (0, -11.9, .18)], .025, seg=6)
+    for (x, y, w, l) in ((.5, -5.5, .4, .5), (-.5, -1.5, .5, .4), (.4, 2.8, .45, .6), (-.4, 5.8, .35, .4)):
+        a.part('Access_panels', 'Obsidian').box((w, l, .02), loc=(x, y, .97), rot=(0, 0, .785), bevel=0)
+    K.beacon(a, (0, 5.0, .85), r=.06)
+    k.clean(a)
+
+
 BUILDERS = {
     'stealth_bomber': (stealth_bomber, dict(ao_distance=.6, grime_height=0, ground=False)),
     'wingman_drone': (wingman_drone, dict(ao_distance=.25, grime_height=0, ground=False)),
     'recon_jet': (recon_jet, dict(ao_distance=.5, grime_height=0, ground=False)),
     'sky_gunship': (sky_gunship, dict(ao_distance=.5, grime_height=0, ground=False)),
     'sky_fortress': (sky_fortress, dict(ao_distance=.7, grime_height=0, ground=False)),
+    'morrigan': (morrigan, dict(ao_distance=.5, grime_height=0, ground=False)),
 }

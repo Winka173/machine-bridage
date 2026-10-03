@@ -1,0 +1,200 @@
+{
+ "id": "morrigan",
+ "class": "boss",
+ "frame": "air",
+ "real": [
+  "Su-57",
+  "F-22 Raptor"
+ ],
+ "shape": "unit_sheet.json Boss: 'Dựa trên: . Kích thước hiện 12.9 × 8.4 × 2.2 m ...' (empty reference cell); unit_refs: Su-57, F-22 Raptor, Ace Combat.",
+ "confidence": "xấp xỉ (Su-57 drawings at the old file's size)",
+ "target_size": {
+  "L": 20.8,
+  "W": 13.49,
+  "H": 3.58,
+  "source": "the old GLB (20.8 x 13.5 x 3.6; no modelSize in data)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "flattened lifting body with the chined nose, bubble canopy with seat and HUD under it, IRST ball",
+   "nodes": [
+    "Fuselage",
+    "Canopy",
+    "Cockpit_interior",
+    "Sensor"
+   ]
+  },
+  {
+   "feature": "LEVCONs at the wing roots, cropped delta wing with flaperons",
+   "nodes": [
+    "Levcons",
+    "Wings",
+    "Flaperons"
+   ]
+  },
+  {
+   "feature": "two widely spaced nacelles with boxy intakes, the weapons tunnel between them",
+   "nodes": [
+    "Nacelles",
+    "Intakes",
+    "Intake_lips",
+    "Tunnel"
+   ]
+  },
+  {
+   "feature": "side bays open with an R-77 each on its trapeze (breakable)",
+   "nodes": [
+    "Part_bay_l",
+    "Part_bay_r"
+   ]
+  },
+  {
+   "feature": "tandem main bay open with a guided bomb (breakable)",
+   "nodes": [
+    "Part_bomb_bay",
+    "Bomb_doors",
+    "Bay_stores"
+   ]
+  },
+  {
+   "feature": "two 3D nozzles with petals and the tail sting (the engines: breakable)",
+   "nodes": [
+    "Part_engines",
+    "Nozzles",
+    "Nozzle_petals",
+    "Sting"
+   ]
+  },
+  {
+   "feature": "all-moving canted fins and stabilators",
+   "nodes": [
+    "Fins",
+    "Stabilators"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "air_to_air",
+   "slot": "missile (main)",
+   "mount": "Part_bay_l",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "air_to_air",
+   "slot": "missile",
+   "mount": "Part_bay_r",
+   "muzzles": [
+    "Muzzle_missile.001"
+   ]
+  },
+  {
+   "weapon": "guided_bomb",
+   "slot": "bomb",
+   "mount": "Part_bomb_bay",
+   "muzzles": [
+    "Muzzle_bomb"
+   ]
+  },
+  {
+   "weapon": "fighter_cannon",
+   "slot": "gun",
+   "mount": "Fuselage",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "fuselage (Team)",
+  "wings (Team)",
+  "LEVCONs (Team)",
+  "nacelles (Team)",
+  "fins and stabilators (Team)",
+  "side bands (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "bay_l",
+   "node": "Part_bay_l"
+  },
+  {
+   "part": "bay_r",
+   "node": "Part_bay_r"
+  },
+  {
+   "part": "bomb_bay",
+   "node": "Part_bomb_bay"
+  },
+  {
+   "part": "engines",
+   "node": "Part_engines"
+  }
+ ],
+ "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
+ "faction_style": "Hegemon ace's fighter",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "wings",
+   "nacelles"
+  ],
+  "tier2": [
+   "canopy",
+   "LEVCONs",
+   "fins",
+   "stabilators",
+   "nozzles",
+   "sting",
+   "bays",
+   "intakes"
+  ],
+  "tier3": [
+   "IRST",
+   "seat",
+   "HUD",
+   "pitot",
+   "AoA vanes",
+   "louvres",
+   "saw-teeth",
+   "cheek arrays",
+   "antennas",
+   "flare dispensers",
+   "lights",
+   "missiles",
+   "bomb"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the bays open when it fires (card: seen briefly after firing)",
+   "the engines and the sting at the tail"
+  ],
+  "how_to_fight": "card: faster than our fighters and stealthy; seen only close or just after it fires; thin armour, bays and engines break"
+ },
+ "questions": [
+  "Morrigan's def has fixedWing but no 'flying' field, so the gate asked it for tracks; quality_gate now reads a fixed-wing boss as the air frame (scored against the air gold)."
+ ]
+}
