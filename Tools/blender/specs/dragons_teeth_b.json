@@ -1,0 +1,106 @@
+{
+ "class": "obstacle",
+ "confidence": "xấp xỉ (FM 5-34 triple-standard concertina fence; razor-wire concertina photographs)",
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   6000
+  ],
+  "floor": 0,
+  "cap": null,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "a flat prop"
+ },
+ "breakable": [],
+ "wreck": "none (passable)",
+ "faction_style": "field obstacle (both factions)",
+ "questions": [],
+ "id": "dragons_teeth_b",
+ "real": [
+  "triple-standard concertina fence (FM 5-34)",
+  "U-section steel long pickets and anchor pickets",
+  "razor-wire concertina coils"
+ ],
+ "shape": "dragons_teeth.wire (towerRole wire_slow, passable): the old file's two rows of concertina on pickets along the footing with top wire and warning tags, rebuilt as a triple-standard fence on lane A's wave 8 footing (spine, earth bed, stones, grass, the marker stakes with Team bands at both ends): two rows of U pickets in sockets, two base coils and the top coil (helices repeating every 5 m), barbed strands with barbs, wire clips, anchor pickets with guy wires, warning tags, tin-can rattles, a barbed-wire spool, gloves.",
+ "target_size": {
+  "L": 2.44,
+  "W": 5.09,
+  "H": 1.37,
+  "source": "the old GLB (the def's 5 x 2.5 m)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "lane A's footing: spine, earth bed, stones, grass",
+   "nodes": [
+    "Footing",
+    "Footing_dirt",
+    "Tufts"
+   ]
+  },
+  {
+   "feature": "two rows of U-section long pickets with caps and strand eyes; anchor pickets",
+   "nodes": [
+    "Pickets",
+    "Picket_caps",
+    "Picket_eyes",
+    "Anchor_pickets"
+   ]
+  },
+  {
+   "feature": "two base coils and the top coil of razor wire, barbed strands, clips",
+   "nodes": [
+    "Razor_wire",
+    "Barbed_wire",
+    "Wire_clips"
+   ]
+  },
+  {
+   "feature": "warning tags, tin-can rattles, the wire spool, gloves",
+   "nodes": [
+    "Warning_tags",
+    "Alarm_cans",
+    "Wire_spool"
+   ]
+  },
+  {
+   "feature": "the family's marker stakes with Team bands at both ends",
+   "nodes": [
+    "Stakes",
+    "Stake_bands",
+    "Stake_reflectors"
+   ]
+  }
+ ],
+ "class_parts": [],
+ "team_zones": [
+  "marker stake bands (Team)"
+ ],
+ "colour_zones_min": 2,
+ "details": {
+  "tier1": [
+   "footing",
+   "coils"
+  ],
+  "tier2": [
+   "pickets",
+   "strands",
+   "stakes"
+  ],
+  "tier3": [
+   "caps",
+   "eyes",
+   "clips",
+   "barbs",
+   "tags",
+   "cans",
+   "spool",
+   "gloves",
+   "stones"
+  ]
+ }
+}
