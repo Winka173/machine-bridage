@@ -342,6 +342,235 @@ def _monster_secondaries(a):
     a.pivot('Muzzle_missile', (.5, -1.35, 1.44), mm)
 
 
+# ============================================================================= landing_hovercraft
+H_DECK = 4.2            # the side structures' weather deck
+
+
+def _hover_ciws(a, part_name, i, slot, loc):
+    """An AK-630-class six-barrel mount on its Part_* pivot (breakable): the pedestal ring, the turning mount
+    (Mount_<slot>), the domed gun house, the barrel cluster with its cooling jacket and the radar-guided sight."""
+    p = a.pivot(K.name(part_name, i), loc)
+    k.lathe(a.part(K.name(f'Ciws_base_{slot}', i), 'Armor', p), [(.85, -.05), (.85, .15), (.6, .25), (0, .25)],
+            seg=14)
+    m = a.pivot(K.name(f'Mount_{slot}', i), (0, 0, .02), p)
+    body = a.part(K.name(f'Ciws_body_{slot}', i), 'Team', m)
+    W.poly_turret(body, [(.2, [(-.6, -.55), (.6, -.55), (.7, .2), (.5, .75), (-.5, .75), (-.7, .2)]),
+                         (1.05, [(-.42, -.4), (.42, -.4), (.5, .15), (.36, .6), (-.36, .6), (-.5, .15)])],
+                  chamfer=.05)
+    g = a.part(K.name(f'Ciws_barrels_{slot}', i), 'Steel', m)
+    k.lathe(g, [(.17, 0), (.17, 1.9), (.14, 1.95), (0, 1.96)], loc=(0, -.5, .62), rot=K.FORWARD, seg=10)
+    k.lathe(g, [(.21, .1), (.21, .5), (.18, .55), (0, .56)], loc=(0, -.5, .62), rot=K.FORWARD, seg=10)
+    a.part(K.name(f'Ciws_bores_{slot}', i), 'Undercarriage', m).cyl(.12, .02, loc=(0, -2.47, .62), rot=K.FORWARD,
+                                                                   seg=10, bevel=0)
+    k.lathe(a.part(K.name(f'Ciws_dome_{slot}', i), 'PlasterWhite', m), [(.3, 0), (.32, .18), (.2, .34), (0, .38)],
+            loc=(.35, .25, 1.02), seg=10)
+    a.pivot(K.name(f'Muzzle_{slot}', i), (0, -2.67, .62), m)
+
+
+def _hover_rockets(a, i, loc):
+    """An A-22 Ogon 140 mm launcher on its Part_rocket pivot: the turntable, the cradle and the 22-tube box with
+    its armoured covers."""
+    p = a.pivot(K.name('Part_rocket', i), loc)
+    k.lathe(a.part(K.name('Launcher_base_rocket', i), 'Armor', p), [(.9, -.1), (.9, .1), (.6, .2), (0, .2)], seg=14)
+    m = a.pivot(K.name('Mount_rocket', i), (0, 0, .02), p)
+    for s in (-1, 1):
+        a.part(K.name('Launcher_cheeks_rocket', i), 'Armor', m).box((.14, .9, .9), loc=(s * .8, .1, .5), bevel=0)
+    a.part(K.name('Launcher_pin_rocket', i), 'Steel', m).cyl(.12, 1.8, loc=(0, .1, .7), rot=ACROSS, seg=8, bevel=0)
+    e = .35
+    box = a.part(K.name('Rocket_box_rocket', i), 'Team', m)
+    K.chamfer_box(box, (1.4, 1.9, 1.0), loc=(0, -.3, .95), rot=(-e, 0, 0), c=.05)
+    d = Vector((0, -math.cos(e), math.sin(e)))
+    up = Vector((0, math.sin(e), math.cos(e)))
+    face = Vector((0, -.3, .95)) + d * .96
+    tb = a.part('Launcher_tubes_bore', 'Undercarriage', m)
+    for c in range(5):
+        for r in range(4):
+            q = face + Vector(((c - 2) * .25, 0, 0)) + up * ((r - 1.5) * .22)
+            tb.cyl(.075, .02, loc=tuple(q), rot=_lift(e), seg=8, bevel=0)
+    a.part(K.name('Launcher_bands_rocket', i), 'Hazard', m).box((1.42, .1, 1.02), loc=tuple(Vector((0, -.3, .95)) +
+                                                                                          d * .6), rot=(-e, 0, 0),
+                                                                bevel=0)
+    a.pivot(K.name('Muzzle_rocket', i), (0, -.68, .81), m)
+
+
+def _hover_fan(a, i, loc):
+    """A ducted propeller on its Part_fan pivot: the duct ring with its band and stators, the rudder vanes behind
+    it, the pylon under it, the four-blade propeller (Propeller / Propeller_2 spins)."""
+    p = a.pivot(K.name('Part_fan', i), loc)
+    R = 2.35
+    duct = a.part(K.name('Duct_fan', i), 'Team', p)
+    k.ring(duct, [(R, -.7), (R + .25, -.65), (R + .3, .5), (R + .2, .8), (R, .75)], rot=K.FORWARD, seg=24)
+    k.ring(a.part(K.name('Duct_band_fan', i), 'Hazard', p), [(R + .05, -.5), (R + .32, -.5), (R + .32, -.25),
+                                                            (R + .05, -.25)], rot=K.FORWARD, seg=24)
+    st = a.part(K.name('Fan_stators_fan', i), 'Armor', p)
+    for j in range(4):
+        u = j * TAU / 4 + TAU / 8
+        st.box((.12, .14, R * 2), loc=(0, .5, 0), rot=(0, u, 0), bevel=0)
+    for j in range(3):
+        a.part(K.name('Fan_armor_fan', i), 'Armor', p).box((.12, .9, R * 1.8), loc=((j - 1) * 1.2, 1.3, 0),
+                                                            bevel=0)
+    a.part(K.name('Fan_armor_fan', i), 'Armor', p).box((1.0, 2.0, 2.2), loc=(0, .2, -R - .9), bevel=0)
+    pr = a.pivot('Propeller' if i == 0 else 'Propeller_2', (0, -.1, 0), p)
+    bl = a.part('Propeller_blades' if i == 0 else 'Propeller_2_blades', 'Undercarriage', pr)
+    for j in range(4):
+        u = j * TAU / 4 + i * .4
+        bl.box((.5, .08, R * .92), loc=(math.cos(u) * R * .47, 0, math.sin(u) * R * .47), rot=(.25, -u + R90, 0),
+               bevel=0, taper=(.6, 1))
+    k.lathe(a.part('Propeller_hub' if i == 0 else 'Propeller_2_hub', 'Steel', pr), [(0, -.5), (.35, -.3), (.4, .2),
+                                                                                    (.3, .4)], rot=K.FORWARD,
+            seg=10)
+
+
+def landing_hovercraft(a):
+    """Zubr / LCAC air-cushion landing craft: see the module docstring. Runtime: Part_ramp / Muzzle_ramp, Part_fan /
+    .001 with Propeller / Propeller_2, Part_gun / .001 and Part_mg / .001 (CIWS, each with Mount_ and Muzzle_),
+    Part_rocket / .001 (A-22, with Mount_ / Muzzle_), Mount_APS (added: the def has APS)."""
+    K.suffixed(a)
+    # The black skirt with its finger segments, the buoyancy hull above it, the rub rail.
+    skirt = a.part('Skirt', 'Rubber')
+    ring = [(-7.6, -13.0), (-6.6, -15.4), (6.6, -15.4), (7.6, -13.0), (7.9, 11.5), (6.8, 13.5), (-6.8, 13.5),
+            (-7.9, 11.5)]
+    inner = [(x * .92, y * .95) for x, y in ring]
+    k.sharp_loft(skirt, [[(x * .94, y * .96, 0) for x, y in ring], [(x, y, .9) for x, y in ring],
+                         [(x * .99, y * .99, 2.1) for x, y in ring]], chamfer=.05)
+    fing = a.part('Skirt_fingers', 'Rubber')
+    for (x0, y0), (x1, y1) in zip(ring, ring[1:] + ring[:1]):
+        n = max(2, int(math.hypot(x1 - x0, y1 - y0) / 1.1))
+        for j in range(n):
+            f = (j + .5) / n
+            x, y = x0 + (x1 - x0) * f, y0 + (y1 - y0) * f
+            fing.box((.55, .5, 1.1), loc=(x * 1.0, y * 1.0, .55), rot=(0, 0, math.atan2(y1 - y0, x1 - x0)), bevel=0,
+                     taper=(.7, 1.3))
+    hull = a.part('Hull', 'Team')
+    k.sharp_loft(hull, [[(x, y, 2.05) for x, y in ring], [(x * 1.01, y * 1.01, 2.45) for x, y in ring],
+                        [(x * .93, y * .96, 3.1) for x, y in ring]], chamfer=.06)
+    a.part('Rub_rail', 'Undercarriage').tube([(x * 1.005, y * 1.005, 2.2) for x, y in ring + ring[:1]], .14, seg=6)
+    # Cargo deck between the side structures, its tie-down rows and the markings.
+    deck = a.part('Cargo_deck', 'Armor')
+    deck.box((6.8, 22.0, .1), loc=(0, -.5, 3.12), bevel=0)
+    td = a.part('Tie_downs', 'Steel')
+    for x in (-2.4, -.8, .8, 2.4):
+        for j in range(9):
+            td.cyl(.08, .06, loc=(x, -10.0 + j * 2.3, 3.18), seg=6, bevel=0)
+    mk = a.part('Deck_markings', 'Hazard')
+    for x in (-3.2, 3.2):
+        mk.box((.15, 21.0, .02), loc=(x, -.5, 3.18), bevel=0)
+    mk.box((6.2, .15, .02), loc=(0, 9.8, 3.18), bevel=0)
+    # The two side structures: lower block, upper tier with windows, the wheelhouse on the left front.
+    for s in (-1, 1):
+        ss = a.part('Side_structures', 'Team')
+        W.poly_turret(ss, [(3.0, [(s * 3.5, -12.2), (s * 7.6, -11.0), (s * 7.6, 11.4), (s * 3.5, 11.4)]),
+                           (H_DECK, [(s * 3.6, -11.7), (s * 7.4, -10.7), (s * 7.4, 11.2), (s * 3.6, 11.2)])][::1]
+                      if s > 0 else
+                      [(3.0, [(s * 3.5, -12.2), (s * 3.5, 11.4), (s * 7.6, 11.4), (s * 7.6, -11.0)]),
+                       (H_DECK, [(s * 3.6, -11.7), (s * 3.6, 11.2), (s * 7.4, 11.2), (s * 7.4, -10.7)])],
+                      chamfer=.08)
+        tier = a.part('Superstructure', 'Team')
+        W.poly_turret(tier, [(H_DECK, [(s * 4.1, -3.5), (s * 6.9, -3.5), (s * 6.9, 2.5), (s * 4.1, 2.5)]),
+                             (H_DECK + 1.3, [(s * 4.4, -3.0), (s * 6.6, -3.0), (s * 6.6, 2.2), (s * 4.4, 2.2)])],
+                      chamfer=.06)
+        # Gas-turbine exhausts aft of the tier, louvred vent boxes, deck hatches.
+        for j, y in enumerate((-9.6, -5.0, 9.6)):
+            K.hatch_rect(a, (s * 5.0, y, H_DECK), size=(.7, .9), normal=(0, 0, 1))
+        K.exhaust(a, (s * 6.4, 9.6, H_DECK), r=.35, length=1.3, direction=(0, .3, 1), muffler=False)
+        K.exhaust(a, (s * 4.6, 9.6, H_DECK), r=.35, length=1.3, direction=(0, .3, 1), muffler=False)
+        for y in (-1.8, .6):
+            K.grille(a, (s * 4.08, y, H_DECK + .6), 1.4, .6, facing=(-s, 0, 0), slats=4, frame_mat='Armor')
+        win = a.part('Cabin_glass', 'Glass')
+        for j in range(5):
+            win.box((.02, .7, .45), loc=(s * 6.91, -2.8 + j * 1.15, H_DECK + .8), bevel=0)
+            win.box((.02, .7, .45), loc=(s * 4.09, -2.8 + j * 1.15, H_DECK + .8), bevel=0)
+        # Lift-fan intakes (louvred) aft of the tier, life-raft canisters along the outer edge, railings.
+        for y in (4.8, 7.6):
+            K.chamfer_box(a.part('Intakes', 'Armor'), (2.6, 2.2, 1.6), loc=(s * 5.6, y, H_DECK + .8), c=.06)
+            K.grille(a, (s * 5.6, y, H_DECK + 1.62), 2.2, 1.8, facing=(0, 0, 1), slats=6, frame_mat='Armor')
+        for j in range(6):
+            k.lathe(a.part('Life_rafts', 'PlasterWhite'), [(.28, -.45), (.3, -.4), (.3, .4), (.28, .45)],
+                    loc=(s * 7.25, -9.0 + j * .9, H_DECK + .32), rot=K.FORWARD, seg=8)
+        K.railing(a.part('Railings', 'Steel'), [(s * 7.45, -10.5, H_DECK), (s * 7.45, 9.6, H_DECK)], h=.9, post=1.6,
+                  r=.03)
+        K.ladder(a.part('Railings', 'Steel'), (s * 3.5, 8.0, 3.15), (s * 3.5, 8.0, H_DECK), width=.5, step=.3)
+        a.part('Team_band', 'Team').box((.03, 18.0, .35), loc=(s * 7.62, -.5, 3.6), bevel=0)
+        for j in range(6):
+            K.panel(a, a.part('Side_panels', 'Armor'), (2.6, .8), (s * 7.6, -9.0 + j * 3.2, 3.55), (s, 0, 0), t=.04,
+                    rivet=.5)
+            K.panel(a, a.part('Side_panels', 'Armor'), (2.4, .7), (s * 3.5, -9.0 + j * 3.2, 3.6), (-s, 0, 0), t=.04,
+                    rivet=0)
+        K.railing(a.part('Railings', 'Steel'), [(s * 3.65, -10.8, H_DECK), (s * 3.65, 9.6, H_DECK)], h=.9, post=1.8,
+                  r=.03)
+        bl = a.part('Bollards', 'Steel')
+        for y in (-10.2, -4.0, 2.0, 8.6):
+            bl.cyl(.12, .35, loc=(s * 7.1, y, H_DECK + .17), seg=8, bevel=0)
+        a.part('Hazard_stripes', 'Hazard').box((.2, 21.0, .02), loc=(s * 7.2, -.3, H_DECK + .01), bevel=0)
+        K.dust(a, (s * 7.6, -.5, .3), radius=6.0, k=.3)
+        a.part('Nav_red' if s > 0 else 'Nav_green', 'LavaGlow' if s > 0 else 'SignalGreen').box(
+            (.1, .3, .15), loc=(s * 7.45, -10.6, H_DECK + .2), bevel=0)
+        a.part('Stern_lights', 'Lamp').box((.3, .1, .2), loc=(s * 6.0, 11.25, H_DECK - .2), bevel=0)
+    cab = a.part('Cabin', 'Team')
+    W.poly_turret(cab, [(H_DECK + 1.3, [(3.9, -9.6), (7.1, -9.6), (7.1, -6.4), (3.9, -6.4)]),
+                        (H_DECK + 2.6, [(4.1, -9.0), (6.9, -9.0), (6.9, -6.6), (4.1, -6.6)])], chamfer=.06)
+    K.chamfer_box(cab, (3.2, 3.2, 1.3), loc=(5.5, -8.0, H_DECK + .65), c=.06)
+    win = a.part('Cabin_glass', 'Glass')
+    win.box((2.6, .02, .5), loc=(5.5, -9.32, H_DECK + 1.95), rot=(-.43, 0, 0), bevel=0)
+    for s in (-1, 1):
+        win.box((.02, 1.8, .45), loc=(5.5 + s * 1.5, -7.8, H_DECK + 1.95), bevel=0)
+    # Mast with the radar dome, antennas, the beacon and the APS sensor head.
+    mast = a.part('Antenna', 'Steel')
+    mast.cyl(.12, 2.0, loc=(5.5, -7.2, H_DECK + 3.6), seg=8, bevel=0)
+    mast.box((1.8, .08, .08), loc=(5.5, -7.2, H_DECK + 4.1), bevel=0)
+    k.lathe(a.part('Radar_dome', 'PlasterWhite'), [(.5, 0), (.55, .25), (.35, .55), (0, .62)],
+            loc=(5.5, -7.2, H_DECK + 4.55), seg=12)
+    K.whip_antenna(a.part('Antenna', 'Steel'), (4.3, -6.7, H_DECK + 2.6), h=1.6)
+    K.beacon(a, (6.8, -6.8, H_DECK + 2.6), r=.15)
+    K.chamfer_box(a.part('Mast_lights', 'Armor'), (.5, .5, .4), loc=(4.4, -8.9, H_DECK + 2.8), c=.04)
+    K.radar_mast(a, (-5.5, -8.4, H_DECK), h=3.4)
+    a.pivot('Mount_APS', (4.4, -8.9, H_DECK + 3.0))
+    # Cargo: two tarp-covered vehicles chained down and a pallet row (the troops it lands).
+    for j, y in enumerate((-6.8, 1.0)):
+        tarp = a.part('Cargo_tarps', 'Canvas')
+        W.poly_turret(tarp, [(3.17, [(-1.55, y - 3.2), (1.55, y - 3.2), (1.55, y + 3.2), (-1.55, y + 3.2)]),
+                             (4.4, [(-1.3, y - 2.6), (1.3, y - 2.6), (1.3, y + 3.0), (-1.3, y + 3.0)]),
+                             (5.3, [(-.9, y - 1.2), (.9, y - 1.2), (.9, y + 2.2), (-.9, y + 2.2)])], chamfer=.1)
+        ch = a.part('Kit_cables', 'Steel')
+        for dy in (-2.6, 2.6):
+            for sx in (-1, 1):
+                ch.tube([(sx * 1.4, y + dy, 3.9), (sx * 2.4, y + dy * 1.2, 3.18)], .04, seg=4)
+        for dy in (-1.8, 0, 1.8):
+            a.part('Kit_straps', 'Crate').box((3.2, .12, .04), loc=(0, y + dy, 4.42), bevel=0)
+    for j in range(3):
+        K.crate(a.part('Cargo_pallets', 'Crate'), a.part('Kit_latches', 'Steel'), (1.2, 1.0, .9),
+                (-1.4 + j * 1.4, 6.8, 3.17), bands=2)
+    # A boat davit at the stern's left with the rescue boat hung out behind (the Zubr's port quarter).
+    dv = a.part('Davit', 'Steel')
+    dv.cyl(.15, 2.5, loc=(-5.2, 12.6, H_DECK + 1.25), seg=8, bevel=0)
+    dv.limb((-5.2, 12.6, H_DECK + 2.4), (-5.2, 14.6, H_DECK + 2.1), .14, .14, bevel=0)
+    K.rhib(a.part('Rhib', 'Armor'), a.part('Rhib_tube', 'Rubber'), (-5.2, 14.7, H_DECK + .2), length=3.2, beam=1.5)
+    # Bow: the ramp on Part_ramp (raised for transit), bow lamps; Muzzle_ramp where the vehicles leave.
+    pr = a.pivot('Part_ramp', (0, -12.5, 2.3))
+    ramp = a.part('Ramp', 'Team', pr)
+    ramp.box((6.6, .3, 4.2), loc=(0, -.3, 2.1), rot=(-.18, 0, 0), bevel=.04)
+    ribs = a.part('Ramp_ribs', 'Armor', pr)
+    for x in (-2.4, -.8, .8, 2.4):
+        ribs.box((.15, .2, 4.0), loc=(x, -.62, 2.05), rot=(-.18, 0, 0), bevel=0)
+    a.part('Ramp_edges', 'Hazard', pr).box((6.65, .32, .25), loc=(0, -.68, 4.0), rot=(-.18, 0, 0), bevel=0)
+    a.part('Ramp_steel', 'Steel', pr).cyl(.18, 6.4, rot=ACROSS, seg=8, bevel=0)
+    for s in (-1, 1):
+        a.part('Ramp_steel', 'Steel', pr).limb((s * 3.0, .3, .3), (s * 3.0, -.4, 3.2), .14, .14, bevel=0)
+    a.pivot('Muzzle_ramp', (0, -3.16, -2.2), pr)
+    for s in (-1, 1):
+        K.lamp(a, (s * 4.5, -12.0, H_DECK - .5), (0, -1, 0), r=.18)
+    # Weapons: four CIWS (asymmetric as before), two A-22 launchers, the stern fans.
+    _hover_ciws(a, 'Part_gun', 0, 'gun', (5.3, -6.4, 4.3))
+    _hover_ciws(a, 'Part_gun', 1, 'gun', (-5.3, -3.0, 4.3))
+    for i, s in enumerate((1, -1)):
+        k.lathe(a.part('Weapon_columns', 'Armor'), [(.7, 0), (.7, .6), (.85, .62)], loc=(s * 5.3, 3.7, H_DECK), seg=12)
+        _hover_ciws(a, 'Part_mg', i, 'mg', (s * 5.3, 3.7, 4.8))
+        _hover_rockets(a, i, (s * 5.3, -11.2, 4.45))
+        _hover_fan(a, i, (s * 5.3, 10.9, 6.55))
+    k.clean(a)
+
+
 BUILDERS = {
     'monster': (monster, dict(ao_distance=1.6, grime_height=1.6)),
+    'landing_hovercraft': (landing_hovercraft, dict(ao_distance=1.0, grime_height=2.2)),
 }
