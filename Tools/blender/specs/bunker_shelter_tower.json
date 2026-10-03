@@ -1,0 +1,31 @@
+{
+ "id": "bunker_shelter_tower",
+ "class": "tower",
+ "real": ["a corrugated steel arch shelter of the Elephant / Nissen kind, earthed over on its flanks"],
+ "shape": "Strings note.bunker_shelter_tower: the same troop shelter as the small-slot card in a bigger medium-slot card (a wider radius); modelSize 6.0 x 5.0 x 2.2 m; its body differs from troop_shelter's (prompt 35 section 7: each tower its own body).",
+ "confidence": "xấp xỉ (Elephant shelter arch proportions; the earthing and porch are field practice)",
+ "target_size": {"L": 6.0, "W": 5.0, "H": 2.2, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "the corrugated steel half-arch on sleeper sills, rib arcs every 0.3 m, sheet seams", "nodes": ["Slab", "Roof", "Roof_ribs", "Roof_seams"]},
+  {"feature": "earth heaped against both flanks (toe and shoulder), two sandbag rows along the crest, stones", "nodes": ["Berm", "Sandbags", "Stones"]},
+  {"feature": "the front end closed by a curved sandbag wall stepped to the arch", "nodes": ["Sandbags"]},
+  {"feature": "the plank end wall with the door, a door lamp", "nodes": ["Walls", "Doors", "Lamps", "Door_lamp"]},
+  {"feature": "the entrance porch: sandbag walls under a corrugated sheet roof, an amber beacon, the Team band", "nodes": ["Porch", "Porch_roof", "Porch_ribs", "Beacons", "Team_bands"]},
+  {"feature": "a stove pipe and a ventilation cowl through the arch, a whip antenna, crates and a water drum", "nodes": ["Vents", "Antennas", "Crates", "Drums"]}
+ ],
+ "class_parts": ["base (the sills)", "walls", "roof (the arch)", "antenna"],
+ "weapons": [],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [2000, 4000], "floor": 1400, "cap": 6000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "owner decision 6"},
+ "team_zones": ["a band across the porch and one painted on the arch's left flank (Team)"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (field-built: steel arch, earth, sandbags, planks)",
+ "details": {
+  "tier1": ["arch", "berms"],
+  "tier2": ["front sandbag wall", "end wall", "porch", "crest sandbags", "sills"],
+  "tier3": ["ribs", "seams", "door and hinges", "lamp", "beacon", "vents", "whip", "crates", "drum", "stones"]
+ },
+ "questions": []
+}

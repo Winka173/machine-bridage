@@ -2798,6 +2798,16 @@
    "changes": [
     "FLAG troop_shelter: triangles 3,158 -> 3,914 (+23.9%); vertices 3,155 -> 5,460 (+73.1%); meshes 16 -> 31 (+93.8%); renderers 16 -> 31 (+93.8%); materials 11 -> 15 (+36.4%); materialSlots 16 -> 31 (+93.8%); fileBytes 175,060 -> 295,336 (+68.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "bunker_shelter_tower"
+   ],
+   "reason": "P35 wave 3: bunker_shelter_tower rebuilt (lane B)",
+   "changes": [
+    "FLAG bunker_shelter_tower: triangles 1,228 -> 5,034 (+309.9%); vertices 1,607 -> 6,808 (+323.6%); meshes 16 -> 28 (+75.0%); renderers 16 -> 28 (+75.0%); materials 8 -> 15 (+87.5%); materialSlots 16 -> 28 (+75.0%); fileBytes 94,148 -> 359,324 (+281.7%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -11432,24 +11442,24 @@
   },
   "bunker_shelter_tower": {
    "file": "bunker_shelter_tower.glb",
-   "fileBytes": 94148,
-   "sha1": "3eeab58930e9847c",
+   "fileBytes": 359324,
+   "sha1": "6ec8dbc57383adee",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 16,
-   "meshes": 16,
-   "materials": 8,
+   "nodes": 28,
+   "meshes": 28,
+   "materials": 15,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 16,
-   "submeshes": 16,
-   "materialSlots": 16,
-   "materialsUsed": 8,
-   "triangles": 1228,
-   "vertices": 1607,
+   "renderers": 28,
+   "submeshes": 28,
+   "materialSlots": 28,
+   "materialsUsed": 15,
+   "triangles": 5034,
+   "vertices": 6808,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -11457,54 +11467,66 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 38,
+   "loosePieces": 171,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -2.5,
-    0.0,
-    -3.0
+    -2.575,
+    -0.0167,
+    -3.07
    ],
    "boundsMax": [
-    2.5,
-    2.23,
-    3.055
+    2.575,
+    2.2948,
+    3.0914
    ],
    "size": [
-    6.055,
-    5.0,
-    2.23
+    6.161,
+    5.15,
+    2.311
    ],
    "center": [
     0.0,
-    1.115,
-    0.028
+    1.139,
+    0.011
    ],
-   "structureHash": "b04886e17d5e835e",
+   "structureHash": "47c1e39ae513be99",
    "color0": {
-    "mean": 0.8038,
-    "min": 0.5822,
+    "mean": 0.5758,
+    "min": 0.0554,
     "max": 1.0,
-    "p05": 0.5968,
-    "p95": 0.9987,
+    "p05": 0.2051,
+    "p95": 0.9381,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
-    "Armor",
-    "Beacon",
+    "Beacon_base",
+    "Beacons",
     "Berm",
+    "Crates",
+    "Door_frames",
     "Door_lamp",
-    "Hatch_fittings",
-    "Hatches",
+    "Door_slots",
+    "Doors",
+    "Drum_bands",
+    "Drums",
+    "Kit_hinges",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
+    "Lamps",
     "Porch",
+    "Porch_ribs",
     "Porch_roof",
     "Roof",
-    "Roof_boxes",
+    "Roof_ribs",
+    "Roof_seams",
     "Sandbags",
     "Slab",
+    "Stones",
     "Team_bands",
     "Vents",
     "Walls"
