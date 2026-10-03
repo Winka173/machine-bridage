@@ -1013,7 +1013,7 @@
   },
   "heavy_flak_tower": {
     "file": "heavy_flak_tower.glb",
-    "triangles": 8902
+    "triangles": 5880
   },
   "heavy_lift_helicopter": {
     "file": "heavy_lift_helicopter.glb",
