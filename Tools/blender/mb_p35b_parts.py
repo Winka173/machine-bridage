@@ -331,3 +331,45 @@ def camo_net(a, poles, sag, z0, part='Camo_net', mat='Canvas', pole_part='Net_po
             x, y = p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f
             z = p[2] + (q[2] - p[2]) * f - sag * .45 * math.sin(math.pi * f)
             g.box((.25, .02, .35), loc=(x, y, z - .17), rot=(0, 0, math.atan2(q[1] - p[1], q[0] - p[0])), bevel=0)
+
+
+def track_run(a, tx, tw, wheels, wr, sprocket, idler, rollers=(), roller_z=None, link_pitch=.24, wheel_w=.18,
+              disc_mat='Armor', hide_top=None, teeth=10, inset=.12, wheel_seg=10):
+    """Both tracks of a tracked hull (wave 3): the belt round the sprocket, the idler and the road wheels (its outline
+    the hull of their circles), a link block every link_pitch all round (hide_top = (y0, y1, z) leaves out the top
+    run between y0 and y1 above z, where the skirts hide it), road wheels, the toothed sprocket, a spoked idler on its
+    tensioner arm, return rollers. sprocket / idler = (y, z, r); tx is the track's centre line, tw its width."""
+    import mb_parts27 as p27
+    import mb_vehicles as mv
+    belt = a.part('Tracks', 'Undercarriage')
+    links = a.part('Track_links', 'Undercarriage')
+    pts = []
+    for cy, cz, r in ((sprocket[0], sprocket[1], sprocket[2] + .04), (idler[0], idler[1], idler[2] + .04)) + \
+            tuple((y, wr, wr + .035) for y in wheels):
+        for i in range(20):
+            u = i * TAU / 20
+            pts.append((cy + r * math.cos(u), cz + r * math.sin(u)))
+    outline = mv._hull2d(pts)
+    wx = tw / 2 - inset
+    for s in (-1, 1):
+        k.extrude(belt, outline, tw, loc=(s * tx, 0, 0), axis='X', chamfer=0)
+        for (py, pz), (ty, tz) in mv._perimeter(outline, link_pitch, .0):
+            if hide_top and pz > hide_top[2] and hide_top[0] < py < hide_top[1]:
+                continue
+            ny, nz = tz, -ty
+            k.block(links, (tw + .03, .06, .035), loc=(s * tx, py + ny * .012, pz + nz * .012),
+                    rot=(math.atan2(tz, ty), 0, 0), chamfer=0)
+        for y in wheels:
+            p27.road_wheel(a, (s * (tx + wx), y, wr), wr, wheel_w, s, seg=wheel_seg, disc_mat=disc_mat)
+        p27.sprocket(a, (s * (tx + wx), sprocket[0], sprocket[1]), sprocket[2], teeth, wheel_w * .75, s)
+        ri = idler[2]
+        k.lathe(a.part('Idlers', disc_mat), [(0, .09), (ri * .3, .09), (ri * .4, .07), (ri * .85, .07), (ri, .04),
+                                             (ri, -.06), (ri * .85, -.07), (0, -.07)],
+                loc=(s * (tx + wx), idler[0], idler[1]), rot=p27.side_rot(s), seg=wheel_seg, worn=(4,))
+        arm_dir = 1 if idler[0] > sprocket[0] else -1
+        a.part('Idlers', disc_mat).limb((s * (tx - .05), idler[0], idler[1]),
+                                         (s * (tx - .05), idler[0] - arm_dir * .35, idler[1] + .15), .06, .08,
+                                         bevel=0)
+        for y in rollers:
+            K.return_roller(a, (s * (tx + wx - .02), y, roller_z), .08, .1, s)
+        K.dust(a, (s * tx, 0, .1), radius=1.6, k=.3)

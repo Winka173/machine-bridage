@@ -1,0 +1,39 @@
+{
+ "id": "ifv",
+ "class": "tracked",
+ "real": ["M2A2 Bradley (unit_sheet: 2A42 / Bushmaster-class 30 mm, PKT / M240 coax, BGM-71 TOW-2 twin launcher)"],
+ "shape": "unit_sheet.json Phương tiện: six road wheels, a hull taller than a tank's, the turret set off to the left with a short 30 mm gun and the TOW box on the turret's side, a big rear ramp; from above a rectangle with the square missile box at the turret's side; about 5.2 x 2.9 x 2.4 m (0.8 x the real M2 Bradley); team stripes on the roof and both sides; no real insignia.",
+ "confidence": "xấp xỉ (M2A2 published dimensions and layout)",
+ "target_size": {"L": 5.48, "W": 3.02, "H": 2.5, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "the tall box hull (Team): steep upper glacis, lower nose plate, the lower hull", "nodes": ["Hull", "Hull_lower"]},
+  {"feature": "driver's hatch and periscopes front left, engine grilles front right, exhaust louvre on the right side", "nodes": ["Hatches", "Hatch_fittings", "Grilles", "Point_exhaust"]},
+  {"feature": "the rear ramp with its door, hinges, handle, tail lamps", "nodes": ["Hull_dark", "Kit_hinges", "Kit_handles", "Tail_lamps"]},
+  {"feature": "six road wheels, front sprocket, rear idler on its arm, a linked track", "nodes": ["Wheels", "Tyres", "Sprockets", "Idlers", "Tracks", "Track_links"]},
+  {"feature": "bolted armour skirts (four panels a side) with a rubber lower edge", "nodes": ["Skirts", "Skirt_edge", "Kit_bolts"]},
+  {"feature": "the turret set off to the left, spaced armour on its cheeks, the mantlet, the 30 mm gun and its brake, the coax", "nodes": ["Turret", "Turret_body", "Turret_armor", "Mantlet", "Main_cannon", "Muzzle_brake", "Coax"]},
+  {"feature": "the twin TOW launcher box on its arm on the turret's left cheek (raised by the runtime)", "nodes": ["Launcher_arm", "Launcher_box", "Tubes"]},
+  {"feature": "the gunner's sight head, the commander's viewer, two hatches, three-tube smoke launchers on both front corners", "nodes": ["Sight", "Glass", "Smoke_launchers"]},
+  {"feature": "the commander's pintle M240 on a post (MODEL_STANDARD 'Roof guns')", "nodes": ["Mount_mg", "MG", "Muzzle_mg"]},
+  {"feature": "the turret's rear stowage basket with bags and a rolled tarp; stowage boxes, water cans, fenders, lamps, tow hooks, Team bands", "nodes": ["Stowage", "Racks", "Tarp_roll", "Toolbox", "Jerrycans", "Fenders", "Lamps", "Kit_hooks", "Team_band"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "ifv_30", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]},
+  {"weapon": "mg_coax", "slot": "coax", "mount": "Turret", "muzzles": ["Muzzle_coax"]},
+  {"weapon": "atgm", "slot": "missile", "mount": "Turret", "muzzles": ["Muzzle_missile"], "note": "the TOW box: ModelLibrary.SideLaunchers raises Launcher*/Tubes/Muzzle_missile on Deploy_atgm"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "heavy class: over the maximum is information only (not a light unit seen in numbers)"},
+ "team_zones": ["hull, turret, skirts, TOW box (Team)", "bands on the hull sides and the turret roof"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the wrappers add the tracked wreck parts; the turret flies off",
+ "faction_style": "military IFV (both factions)",
+ "details": {
+  "tier1": ["hull", "turret", "tracks and wheels", "skirts"],
+  "tier2": ["glacis", "ramp", "mantlet", "gun", "TOW box", "sight", "stowage basket", "toolboxes", "fenders"],
+  "tier3": ["periscopes", "hatches", "grilles", "lamps", "hooks", "hinges", "handles", "bolts", "smoke tubes", "coax", "whips", "pintle MG", "water cans"]
+ },
+ "questions": []
+}

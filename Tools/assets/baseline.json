@@ -2848,6 +2848,16 @@
    "changes": [
     "super_gun: bytes only"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "ifv"
+   ],
+   "reason": "P35 wave 3: ifv rebuilt (lane B)",
+   "changes": [
+    "FLAG ifv: triangles 5,040 -> 9,466 (+87.8%); vertices 6,000 -> 12,809 (+113.5%); meshes 31 -> 61 (+96.8%); renderers 31 -> 61 (+96.8%); materials 7 -> 11 (+57.1%); materialSlots 31 -> 61 (+96.8%); fileBytes 325,304 -> 680,520 (+109.2%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -33213,24 +33223,24 @@
   },
   "ifv": {
    "file": "ifv.glb",
-   "fileBytes": 325304,
-   "sha1": "b699dc526bf5355b",
+   "fileBytes": 680520,
+   "sha1": "741ca913ec40d6f3",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 37,
-   "meshes": 31,
-   "materials": 7,
+   "nodes": 69,
+   "meshes": 61,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 31,
-   "submeshes": 31,
-   "materialSlots": 31,
-   "materialsUsed": 7,
-   "triangles": 5040,
-   "vertices": 6000,
+   "renderers": 61,
+   "submeshes": 61,
+   "materialSlots": 61,
+   "materialsUsed": 11,
+   "triangles": 9466,
+   "vertices": 12809,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -33238,36 +33248,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 117,
+   "loosePieces": 302,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.52,
-    -0.0378,
-    -2.635
+    -1.48,
+    -0.0645,
+    -2.7233
    ],
    "boundsMax": [
-    1.52,
-    2.46,
-    2.92
+    1.51,
+    2.5534,
+    3.03
    ],
    "size": [
-    5.555,
-    3.04,
-    2.498
+    5.753,
+    2.99,
+    2.618
    ],
    "center": [
-    0.0,
-    1.211,
-    0.143
+    0.015,
+    1.244,
+    0.153
    ],
-   "structureHash": "9ab3a85f6ee6173a",
+   "structureHash": "1d958cb284673803",
    "color0": {
-    "mean": 0.6423,
-    "min": 0.0802,
+    "mean": 0.6,
+    "min": 0.0689,
     "max": 1.0,
-    "p05": 0.2063,
-    "p95": 0.9722,
+    "p05": 0.1786,
+    "p95": 0.9289,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -33283,7 +33293,11 @@
     "muzzle": [
      "Muzzle_coax",
      "Muzzle_main",
+     "Muzzle_mg",
      "Muzzle_missile"
+    ],
+    "mount": [
+     "Mount_mg"
     ],
     "point": [
      "Point_exhaust",
@@ -33292,52 +33306,87 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
+    "Ammo_can_cdr",
     "Coax",
-    "Deck",
+    "Cradle_cdr",
+    "Fenders",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_carriage_cdr",
+    "Gun_fit_cdr",
+    "Gun_ring_cdr",
     "Hatch_fittings",
     "Hatch_fittings.001",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
+    "Hull_dark",
+    "Hull_lower",
+    "Idlers",
+    "Jerrycans",
+    "Kit_bolts",
+    "Kit_handles",
+    "Kit_hinges",
+    "Kit_hooks",
+    "Kit_latches",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
     "Launcher_arm",
     "Launcher_box",
-    "Light_rims",
+    "MG",
+    "MG_flash",
     "Main_cannon",
+    "Mantlet",
+    "Mount_mg",
     "Muzzle_brake",
     "Muzzle_coax",
     "Muzzle_main",
+    "Muzzle_mg",
     "Muzzle_missile",
-    "Periscope",
-    "Periscope_hoods",
     "Point_exhaust",
     "Point_fire",
+    "Racks",
+    "Receiver_cdr",
     "Sight",
+    "Sight.001",
     "Skirt_edge",
     "Skirts",
-    "Smoke",
     "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
-    "Steel",
+    "Stowage",
     "Tail_lamps",
+    "Tarp_roll",
+    "Team_band",
+    "Team_band.001",
+    "Toolbox",
+    "Track_links",
     "Tracks",
+    "Tube_rims",
     "Tubes",
     "Turret",
     "Turret_armor",
     "Turret_body",
+    "Turret_steel",
     "Tyres",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 9,466 over the ground normal budget 7,800",
+    "vertices 12,809 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
    "units": [
     "ifv"
    ],
-   "movingParts": 2,
+   "movingParts": 3,
    "budgetClass": "ground"
   },
   "igla": {
