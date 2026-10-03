@@ -240,6 +240,7 @@ import mb_p35_recoilless_jeep  # noqa: E402
 import mb_p35_ew_tower  # noqa: E402
 import mb_p35_dragons_teeth_b  # noqa: E402
 import mb_pt14_m1  # noqa: E402
+import mb_pt14_m2  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -424,7 +425,10 @@ def all_builders():
                 **mb_p35_minefield_a.BUILDERS, **mb_p35_nuke_train.BUILDERS, **mb_p35_drone_mothership.BUILDERS, **mb_p35_helipads.BUILDERS, **mb_p35_airborne_light_tank_chute.BUILDERS, **mb_p35_recoilless_jeep.BUILDERS, **mb_p35_ew_tower.BUILDERS, **mb_p35_dragons_teeth_b.BUILDERS,
                 # Play-test 14 wave M1 (DECISIONS "Play-test 14 model wave M1 (lane models)"): the ground bosses
                 # redrawn, bastion_mk0 and fenrir with their own models (last, so they win).
-                **mb_pt14_m1.BUILDERS}
+                **mb_pt14_m1.BUILDERS,
+                # Play-test 14 wave M2 (DECISIONS "Play-test 14 model wave M2 (lane models)"): the trains' added cars,
+                # Ixion's added weapons, Harpy and Daedalus redrawn (last, so they win).
+                **mb_pt14_m2.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

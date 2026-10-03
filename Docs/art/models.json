@@ -105,7 +105,7 @@
   },
   "armored_train": {
     "file": "armored_train.glb",
-    "triangles": 26470
+    "triangles": 51170
   },
   "artillery": {
     "file": "artillery.glb",
@@ -417,7 +417,7 @@
   },
   "daedalus": {
     "file": "daedalus.glb",
-    "triangles": 13190
+    "triangles": 28160
   },
   "dazzler_vehicle": {
     "file": "dazzler_vehicle.glb",
@@ -1125,7 +1125,7 @@
   },
   "ixion": {
     "file": "ixion.glb",
-    "triangles": 36022
+    "triangles": 40940
   },
   "jersey_barrier": {
     "file": "jersey_barrier.glb",
@@ -1233,7 +1233,7 @@
   },
   "mega_gunship": {
     "file": "mega_gunship.glb",
-    "triangles": 9284
+    "triangles": 26228
   },
   "mesa": {
     "file": "mesa.glb",
@@ -1353,7 +1353,7 @@
   },
   "nuke_train": {
     "file": "nuke_train.glb",
-    "triangles": 28910
+    "triangles": 40684
   },
   "nyx": {
     "file": "nyx.glb",

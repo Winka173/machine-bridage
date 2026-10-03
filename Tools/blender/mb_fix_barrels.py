@@ -22,11 +22,11 @@ TWIN = {
     # Prompt 35 wave 8 (lane A): behemoth's rebuilt turrets model both barrels and their per-barrel muzzles.
     'typhon': ['Muzzle_gun'],
     'hydra_sub': ['Muzzle_gun'],
-    'daedalus': ['Muzzle_gun', 'Muzzle_gun__001'],
     'monster': ['Muzzle_gun', 'Muzzle_gun__001'],
 }
 # model -> muzzles that already have two barrels (only the per-barrel muzzles)
 EXTRA = {
+    # daedalus: play-test 14 wave M2's builder (mb_pt14_m2) models both barrels and their per-barrel muzzles.
     # fortress_bastion: play-test 14 wave M1's builder (mb_pt14_m1) models its twins' per-barrel muzzles itself.
     # Prompt 35 wave 4 (lane C): moloch's rebuilt turrets model both barrels themselves.
     'moloch': ['Muzzle_main', 'Muzzle_gun', 'Muzzle_gun__001', 'Muzzle_gun__002'],
