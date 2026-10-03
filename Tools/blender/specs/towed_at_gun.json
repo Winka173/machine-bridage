@@ -1,0 +1,33 @@
+{
+ "id": "towed_at_gun",
+ "class": "wheeled",
+ "real": ["2A45M Sprut-B 125 mm towed anti-tank gun (with its auxiliary power unit)"],
+ "shape": "no unit_sheet.json row: the old builder's 2A45 Sprut-B class towed anti-tank gun (long smoothbore with a baffle brake, shield, two road wheels, split trail with spades).",
+ "confidence": "ban_dau_doan (no unit_refs row; 2A45M published photographs)",
+ "target_size": {"L": 7.89, "W": 2.62, "H": 2.04, "source": "balance.json modelSize", "tolerance": 0.10},
+ "features": [
+  {"feature": "long 125 mm smoothbore: sleeve bands, multi-baffle muzzle brake", "nodes": ["Main_cannon", "Main_cannon_sleeve", "Muzzle_brake", "Muzzle_brake_ports", "Muzzle_main"]},
+  {"feature": "cradle with recoil and recuperator cylinders and equilibrator, breech", "nodes": ["Cradle", "Breech"]},
+  {"feature": "upper carriage with the bent armoured shield, sight window, sight", "nodes": ["Turret", "Body", "Shield", "Glass", "Sight"]},
+  {"feature": "lower carriage: two road wheels on the swing axle, spread trails with spades, front leg", "nodes": ["Carriage", "Tyres", "Wheels", "Axles", "Trails", "Spades", "Front_leg"]},
+  {"feature": "auxiliary power unit on the right trail with convoy lamps and exhaust", "nodes": ["Apu", "Lamps", "Exhaust"]},
+  {"feature": "ammunition crates and a round between the trails", "nodes": ["Crates", "Ammo_round"]}
+ ],
+ "class_parts": ["wheels", "axles", "cab", "glass", "lights", "stowage", "weapon"],
+ "weapons": [
+  {"weapon": "gun_125_armata_ke", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [3000, 5000], "floor": 2100, "cap": 7500, "lod1_share": 0.5, "lod2_share": 0.2},
+ "team_zones": ["carriage and trails (Team)", "upper carriage (Team)", "wheel rims (Team)", "shield band (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "Part_wheel / Part_wheelb come off (wrapper)",
+ "faction_style": "towed artillery (both factions); the cab role is the upper carriage (Body), the glass the sight window",
+ "details": {
+  "tier1": ["barrel", "shield", "carriage", "trails"],
+  "tier2": ["cradle", "breech", "wheels", "spades", "front leg", "APU", "crates"],
+  "tier3": ["rivets", "sight", "lamps", "handles", "sleeve bands", "crate bands", "round", "exhaust"]
+ },
+ "questions": ["No unit_refs or unit_sheet row: built as the 2A45M Sprut-B after the old builder; confirm."]
+}
