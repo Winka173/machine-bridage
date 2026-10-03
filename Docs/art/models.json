@@ -161,11 +161,11 @@
   },
   "attack_jet": {
     "file": "attack_jet.glb",
-    "triangles": 2732
+    "triangles": 4914
   },
   "attack_jet_hd": {
     "file": "attack_jet_hd.glb",
-    "triangles": 3800
+    "triangles": 4914
   },
   "auto_loader_howitzer": {
     "file": "auto_loader_howitzer.glb",
@@ -1465,7 +1465,7 @@
   },
   "recon_drone": {
     "file": "recon_drone.glb",
-    "triangles": 890
+    "triangles": 2936
   },
   "recon_jet": {
     "file": "recon_jet.glb",
@@ -1577,7 +1577,7 @@
   },
   "scout_heli": {
     "file": "scout_heli.glb",
-    "triangles": 2602
+    "triangles": 3898
   },
   "scout_jeep": {
     "file": "scout_jeep.glb",
@@ -1709,7 +1709,7 @@
   },
   "strike_drone": {
     "file": "strike_drone.glb",
-    "triangles": 1968
+    "triangles": 3672
   },
   "strike_jet": {
     "file": "strike_jet.glb",

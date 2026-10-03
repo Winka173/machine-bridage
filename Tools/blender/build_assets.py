@@ -98,6 +98,10 @@ import mb_p35_wave2_branches  # noqa: E402
 import mb_p35_wave2_support  # noqa: E402
 import mb_p35_trims  # noqa: E402
 import mb_p35_flame_tank  # noqa: E402
+import mb_p35_attack_jet  # noqa: E402
+import mb_p35_strike_drone  # noqa: E402
+import mb_p35_recon_drone  # noqa: E402
+import mb_p35_scout_heli  # noqa: E402
 import mb_p35_river_patrol_boat  # noqa: E402
 import mb_p35_towed_at_gun  # noqa: E402
 import mb_p35_fpv_carrier  # noqa: E402
@@ -235,7 +239,7 @@ def all_builders():
                 **mb_p35_wave2_shield.BUILDERS, **mb_p35_wave2_branches.BUILDERS,
                 **mb_p35_wave2_support.BUILDERS,
                 # Prompt 35 wave 4, lane C (DECISIONS "Prompt 35 wave 4 (lane C)"): rebuilt from scratch (last).
-                **mb_p35_flame_tank.BUILDERS, **mb_p35_river_patrol_boat.BUILDERS, **mb_p35_towed_at_gun.BUILDERS, **mb_p35_fpv_carrier.BUILDERS, **mb_p35_shorad_vehicle.BUILDERS, **mb_p35_armored_bulldozer.BUILDERS, **mb_p35_sam_launcher.BUILDERS, **mb_p35_amphib_light_vehicle.BUILDERS, **mb_p35_mine_layer.BUILDERS, **mb_p35_demolition_line_vehicle.BUILDERS, **mb_p35_bmpt.BUILDERS, **mb_p35_aa_gun_vehicle.BUILDERS, **mb_p35_aa_vehicle.BUILDERS, **mb_p35_artillery.BUILDERS, **mb_p35_tank_destroyer.BUILDERS}
+                **mb_p35_flame_tank.BUILDERS, **mb_p35_attack_jet.BUILDERS, **mb_p35_strike_drone.BUILDERS, **mb_p35_recon_drone.BUILDERS, **mb_p35_scout_heli.BUILDERS, **mb_p35_river_patrol_boat.BUILDERS, **mb_p35_towed_at_gun.BUILDERS, **mb_p35_fpv_carrier.BUILDERS, **mb_p35_shorad_vehicle.BUILDERS, **mb_p35_armored_bulldozer.BUILDERS, **mb_p35_sam_launcher.BUILDERS, **mb_p35_amphib_light_vehicle.BUILDERS, **mb_p35_mine_layer.BUILDERS, **mb_p35_demolition_line_vehicle.BUILDERS, **mb_p35_bmpt.BUILDERS, **mb_p35_aa_gun_vehicle.BUILDERS, **mb_p35_aa_vehicle.BUILDERS, **mb_p35_artillery.BUILDERS, **mb_p35_tank_destroyer.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
@@ -245,6 +249,8 @@ def all_builders():
     builders.update({k: v for k, v in mb_p25_models2.BUILDERS.items() if k.endswith('_hd')})
     # Prompt 27 wave 4b: attack_jet_hd on the V2 parts (nozzle, canopy frame) over the old one.
     builders.update({k: v for k, v in mb_p27_wave4.BUILDERS.items() if k.endswith('_hd')})
+    # Prompt 35 wave 4 lane C: attack_jet_hd is the rebuilt Su-25 (over the prompt 27 one).
+    builders.update({k: v for k, v in mb_p35_attack_jet.BUILDERS.items() if k.endswith('_hd')})
     # Prompt 34 L4: a muzzle for every barrel of the guns that fire their barrels together (after every other builder).
     builders = mb_p34_barrels.wrap(builders)
     # Full fix L3: the bosses' twin guns (a second barrel where one was) and their per-barrel muzzles.

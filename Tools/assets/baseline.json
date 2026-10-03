@@ -2820,6 +2820,45 @@
     "FLAG tank_destroyer_hd: triangles 11,494 -> 9,998 (-13.0%); vertices 14,365 -> 13,611 (-5.2%); meshes 35 -> 54 (+54.3%); renderers 35 -> 54 (+54.3%); materials 8 -> 10 (+25.0%); materialSlots 35 -> 54 (+54.3%); fileBytes 735,028 -> 712,724 (-3.0%); structure changed",
     "FLAG towed_at_gun: triangles 1,996 -> 4,166 (+108.7%); vertices 2,010 -> 5,489 (+173.1%); meshes 18 -> 39 (+116.7%); renderers 18 -> 39 (+116.7%); materials 7 -> 9 (+28.6%); materialSlots 18 -> 39 (+116.7%); fileBytes 119,364 -> 306,388 (+156.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "scout_heli",
+    "scout_heli"
+   ],
+   "reason": "P35 wave 4",
+   "changes": [
+    "FLAG scout_heli: triangles 2,602 -> 3,898 (+49.8%); vertices 3,459 -> 5,636 (+62.9%); meshes 21 -> 36 (+71.4%); renderers 21 -> 36 (+71.4%); materials 7 -> 8 (+14.3%); materialSlots 21 -> 36 (+71.4%); fileBytes 190,844 -> 308,184 (+61.5%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "recon_drone",
+    "recon_drone"
+   ],
+   "reason": "P35 wave 4",
+   "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "strike_drone",
+    "strike_drone"
+   ],
+   "reason": "P35 wave 4",
+   "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "attack_jet",
+    "attack_jet",
+    "attack_jet_hd"
+   ],
+   "reason": "P35 wave 4",
+   "changes": []
   }
  ],
  "models": {
@@ -8523,24 +8562,24 @@
   },
   "attack_jet": {
    "file": "attack_jet.glb",
-   "fileBytes": 230576,
-   "sha1": "ee55588fdb3282fe",
+   "fileBytes": 343492,
+   "sha1": "f64404bb7b399ecd",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 58,
-   "meshes": 44,
-   "materials": 9,
+   "nodes": 57,
+   "meshes": 40,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 44,
-   "submeshes": 44,
-   "materialSlots": 44,
-   "materialsUsed": 9,
-   "triangles": 2732,
-   "vertices": 3864,
+   "renderers": 40,
+   "submeshes": 40,
+   "materialSlots": 40,
+   "materialsUsed": 8,
+   "triangles": 4914,
+   "vertices": 6182,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -8548,36 +8587,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 101,
-   "openEdges": 16,
+   "loosePieces": 160,
+   "openEdges": 164,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -3.0218,
-    -0.34,
-    -3.05
+    -3.02,
+    -0.36,
+    -3.35
    ],
    "boundsMax": [
-    3.0218,
-    1.5,
-    3.1
+    3.02,
+    1.48,
+    3.09
    ],
    "size": [
-    6.15,
-    6.044,
+    6.44,
+    6.04,
     1.84
    ],
    "center": [
-    -0.0,
-    0.58,
-    0.025
+    0.0,
+    0.56,
+    -0.13
    ],
-   "structureHash": "e2e806d5a19c0cc0",
+   "structureHash": "054c2c6f4927ae4a",
    "color0": {
-    "mean": 0.7104,
-    "min": 0.1587,
+    "mean": 0.5452,
+    "min": 0.0751,
     "max": 1.0,
-    "p05": 0.3281,
-    "p95": 1.0,
+    "p05": 0.2316,
+    "p95": 0.7907,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -8589,6 +8628,9 @@
      "Muzzle_missile.001",
      "Muzzle_rocket",
      "Muzzle_rocket.001"
+    ],
+    "mount": [
+     "Mount_aam"
     ],
     "part": [
      "Part_wing"
@@ -8603,28 +8645,34 @@
     "Muzzle_rocket.001"
    ],
    "nodeNames": [
+    "Antennas",
+    "Bombs_body",
     "Canopy",
-    "Exhaust_glow",
-    "Exhaust_glow.001",
+    "Canopy_frames",
+    "Flare_mouths",
+    "Flare_mouths.001",
     "Flares",
-    "Flares_glow",
+    "Flares.001",
     "Fuselage",
-    "Fuselage.001",
+    "Glass",
     "Gun",
-    "Intake",
-    "Intake.001",
-    "Missile_bands",
-    "Missile_bands.001",
+    "Intake_ducts",
+    "Intake_ducts.001",
+    "Intakes",
+    "Intakes.001",
     "Missile_fins",
     "Missile_fins.001",
-    "Missile_seekers",
-    "Missile_seekers.001",
+    "Missile_fins.002",
     "Missiles",
     "Missiles.001",
+    "Missiles.002",
     "Mount_Flare_L",
+    "Mount_Flare_L2",
     "Mount_Flare_R",
+    "Mount_Flare_R2",
     "Mount_Flare_TL",
     "Mount_Flare_TR",
+    "Mount_aam",
     "Muzzle_aam",
     "Muzzle_gun",
     "Muzzle_main",
@@ -8632,69 +8680,62 @@
     "Muzzle_missile.001",
     "Muzzle_rocket",
     "Muzzle_rocket.001",
-    "Ordnance_bands",
-    "Ordnance_bands.001",
-    "Ordnance_bodies",
-    "Ordnance_bodies.001",
-    "Ordnance_fuzes",
-    "Ordnance_fuzes.001",
+    "Nacelles",
+    "Nacelles.001",
+    "Nozzles",
     "Part_wing",
     "Pod_bands",
     "Pod_bands.001",
-    "Pod_tubes_bore",
-    "Pod_tubes_bore.001",
+    "Pod_face",
+    "Pod_face.001",
     "Pods",
     "Pods.001",
-    "Pods_outer",
-    "Pods_outer.001",
     "Point_exhaust",
     "Point_fire",
     "Pylons",
     "Pylons.001",
+    "Tail",
+    "Tailplane",
+    "Wing",
+    "Wing.001",
     "Wing_lights",
     "Wing_lights.001",
-    "Wingtip_missile_bands",
-    "Wingtip_missile_bands.001",
-    "Wingtip_missile_fins",
-    "Wingtip_missile_fins.001",
-    "Wingtip_missile_seekers",
-    "Wingtip_missile_seekers.001",
-    "Wingtip_missiles",
-    "Wingtip_missiles.001"
+    "Wingtip_pods",
+    "Wingtip_pods.001"
    ],
    "category": "air",
    "hd": false,
    "errors": [],
    "warnings": [
     "runtime names with a Blender suffix: Muzzle_missile.001, Muzzle_rocket.001",
-    "renderers 44 over the jet normal budget 36"
+    "renderers 40 over the jet normal budget 36"
    ],
    "units": [
     "attack_jet"
    ],
-   "movingParts": 1,
+   "movingParts": 2,
    "budgetClass": "jet"
   },
   "attack_jet_hd": {
    "file": "attack_jet_hd.glb",
-   "fileBytes": 309352,
-   "sha1": "b93671965d2c9e01",
+   "fileBytes": 343496,
+   "sha1": "f42a24cc5df56c5f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 65,
-   "meshes": 51,
-   "materials": 9,
+   "nodes": 57,
+   "meshes": 40,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 51,
-   "submeshes": 51,
-   "materialSlots": 51,
-   "materialsUsed": 9,
-   "triangles": 3800,
-   "vertices": 5352,
+   "renderers": 40,
+   "submeshes": 40,
+   "materialSlots": 40,
+   "materialsUsed": 8,
+   "triangles": 4914,
+   "vertices": 6182,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -8702,36 +8743,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 142,
-   "openEdges": 240,
+   "loosePieces": 160,
+   "openEdges": 164,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -3.0218,
-    -0.34,
-    -3.05
+    -3.02,
+    -0.36,
+    -3.35
    ],
    "boundsMax": [
-    3.0218,
-    1.5,
-    3.1
+    3.02,
+    1.48,
+    3.09
    ],
    "size": [
-    6.15,
-    6.044,
+    6.44,
+    6.04,
     1.84
    ],
    "center": [
-    -0.0,
-    0.58,
-    0.025
+    0.0,
+    0.56,
+    -0.13
    ],
-   "structureHash": "25a689fc373bfbff",
+   "structureHash": "054c2c6f4927ae4a",
    "color0": {
-    "mean": 0.7138,
-    "min": 0.1557,
+    "mean": 0.5452,
+    "min": 0.0751,
     "max": 1.0,
-    "p05": 0.262,
-    "p95": 1.0,
+    "p05": 0.2316,
+    "p95": 0.7907,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -8743,6 +8784,9 @@
      "Muzzle_missile.001",
      "Muzzle_rocket",
      "Muzzle_rocket.001"
+    ],
+    "mount": [
+     "Mount_aam"
     ],
     "part": [
      "Part_wing"
@@ -8757,29 +8801,34 @@
     "Muzzle_rocket.001"
    ],
    "nodeNames": [
+    "Antennas",
+    "Bombs_body",
     "Canopy",
     "Canopy_frames",
-    "Exhaust_glow",
-    "Exhaust_glow.001",
+    "Flare_mouths",
+    "Flare_mouths.001",
     "Flares",
-    "Flares_glow",
+    "Flares.001",
     "Fuselage",
-    "Fuselage.001",
+    "Glass",
     "Gun",
-    "Intake",
-    "Intake.001",
-    "Missile_bands",
-    "Missile_bands.001",
+    "Intake_ducts",
+    "Intake_ducts.001",
+    "Intakes",
+    "Intakes.001",
     "Missile_fins",
     "Missile_fins.001",
-    "Missile_seekers",
-    "Missile_seekers.001",
+    "Missile_fins.002",
     "Missiles",
     "Missiles.001",
+    "Missiles.002",
     "Mount_Flare_L",
+    "Mount_Flare_L2",
     "Mount_Flare_R",
+    "Mount_Flare_R2",
     "Mount_Flare_TL",
     "Mount_Flare_TR",
+    "Mount_aam",
     "Muzzle_aam",
     "Muzzle_gun",
     "Muzzle_main",
@@ -8787,53 +8836,39 @@
     "Muzzle_missile.001",
     "Muzzle_rocket",
     "Muzzle_rocket.001",
-    "Nozzle_liners",
-    "Nozzle_liners.001",
-    "Nozzle_petals",
-    "Nozzle_petals.001",
+    "Nacelles",
+    "Nacelles.001",
     "Nozzles",
-    "Nozzles.001",
-    "Ordnance_bands",
-    "Ordnance_bands.001",
-    "Ordnance_bodies",
-    "Ordnance_bodies.001",
-    "Ordnance_fuzes",
-    "Ordnance_fuzes.001",
     "Part_wing",
     "Pod_bands",
     "Pod_bands.001",
-    "Pod_tubes_bore",
-    "Pod_tubes_bore.001",
+    "Pod_face",
+    "Pod_face.001",
     "Pods",
     "Pods.001",
-    "Pods_outer",
-    "Pods_outer.001",
     "Point_exhaust",
     "Point_fire",
     "Pylons",
     "Pylons.001",
+    "Tail",
+    "Tailplane",
+    "Wing",
+    "Wing.001",
     "Wing_lights",
     "Wing_lights.001",
-    "Wingtip_missile_bands",
-    "Wingtip_missile_bands.001",
-    "Wingtip_missile_fins",
-    "Wingtip_missile_fins.001",
-    "Wingtip_missile_seekers",
-    "Wingtip_missile_seekers.001",
-    "Wingtip_missiles",
-    "Wingtip_missiles.001"
+    "Wingtip_pods",
+    "Wingtip_pods.001"
    ],
    "category": "air",
    "hd": true,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Muzzle_missile.001, Muzzle_rocket.001",
-    "renderers 51 over the jet hd budget 49"
+    "runtime names with a Blender suffix: Muzzle_missile.001, Muzzle_rocket.001"
    ],
    "units": [
     "attack_jet"
    ],
-   "movingParts": 1,
+   "movingParts": 2,
    "budgetClass": "jet"
   },
   "auto_loader_howitzer": {
@@ -45185,24 +45220,24 @@
   },
   "recon_drone": {
    "file": "recon_drone.glb",
-   "fileBytes": 70036,
-   "sha1": "ba6c15a8c45e0eec",
+   "fileBytes": 182748,
+   "sha1": "03c86c20164b9a41",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 18,
-   "meshes": 12,
-   "materials": 7,
+   "nodes": 31,
+   "meshes": 25,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 12,
-   "submeshes": 12,
-   "materialSlots": 12,
-   "materialsUsed": 7,
-   "triangles": 890,
-   "vertices": 1159,
+   "renderers": 25,
+   "submeshes": 25,
+   "materialSlots": 25,
+   "materialsUsed": 9,
+   "triangles": 2936,
+   "vertices": 3158,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -45210,36 +45245,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 28,
-   "openEdges": 0,
-   "nonManifoldEdges": 39,
+   "loosePieces": 72,
+   "openEdges": 16,
+   "nonManifoldEdges": 0,
    "boundsMin": [
     -2.415,
-    -0.3,
-    -1.39
+    -0.28,
+    -1.35
    ],
    "boundsMax": [
     2.415,
-    0.1848,
-    1.28
+    0.22,
+    1.3
    ],
    "size": [
-    2.67,
+    2.65,
     4.83,
-    0.485
+    0.5
    ],
    "center": [
     0.0,
-    -0.058,
-    -0.055
+    -0.03,
+    -0.025
    ],
-   "structureHash": "e0fa3337d225737e",
+   "structureHash": "be9bb1c3513b405a",
    "color0": {
-    "mean": 0.8036,
-    "min": 0.5579,
+    "mean": 0.6094,
+    "min": 0.0769,
     "max": 1.0,
-    "p05": 0.7079,
-    "p95": 0.9987,
+    "p05": 0.3002,
+    "p95": 0.7985,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -45260,7 +45295,14 @@
     "Muzzle_missile.001"
    ],
    "nodeNames": [
+    "Antennas",
+    "Antennas.001",
+    "Exhausts",
+    "Flaps",
     "Fuselage",
+    "Glass",
+    "Intake_ducts",
+    "Intakes",
     "Missile_bands",
     "Missile_fins",
     "Missile_seekers",
@@ -45268,15 +45310,21 @@
     "Muzzle_gun",
     "Muzzle_missile",
     "Muzzle_missile.001",
+    "Panels",
     "Point_exhaust",
     "Point_fire",
     "Propeller",
     "Propeller_blades",
     "Propeller_hub",
     "Pylons",
+    "Rudders",
     "Sensor",
-    "Sensor_mount",
+    "Sensor_ball",
+    "Tail",
+    "Tail_booms",
+    "Team_band",
     "Wing_lights",
+    "Wing_lights.001",
     "Wings"
    ],
    "category": "air",
@@ -47937,24 +47985,24 @@
   },
   "scout_heli": {
    "file": "scout_heli.glb",
-   "fileBytes": 190844,
-   "sha1": "fcba6e2eb20730ef",
+   "fileBytes": 308184,
+   "sha1": "710e4c108591d8f4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 33,
-   "meshes": 21,
-   "materials": 7,
+   "nodes": 48,
+   "meshes": 36,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 21,
-   "submeshes": 21,
-   "materialSlots": 21,
-   "materialsUsed": 7,
-   "triangles": 2602,
-   "vertices": 3459,
+   "renderers": 36,
+   "submeshes": 36,
+   "materialSlots": 36,
+   "materialsUsed": 8,
+   "triangles": 3898,
+   "vertices": 5636,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -47962,36 +48010,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 82,
-   "openEdges": 32,
-   "nonManifoldEdges": 0,
+   "loosePieces": 145,
+   "openEdges": 40,
+   "nonManifoldEdges": 12,
    "boundsMin": [
-    -1.5841,
-    0.005,
-    -2.47
+    -1.3835,
+    0.0029,
+    -2.4076
    ],
    "boundsMax": [
-    1.5751,
-    1.56,
-    1.4123
+    1.66,
+    1.65,
+    1.6275
    ],
    "size": [
-    3.882,
-    3.159,
-    1.555
+    4.035,
+    3.043,
+    1.647
    ],
    "center": [
-    -0.004,
-    0.783,
-    -0.529
+    0.138,
+    0.826,
+    -0.39
    ],
-   "structureHash": "3a9faefcc3936e5c",
+   "structureHash": "d23c77725aecca02",
    "color0": {
-    "mean": 0.7393,
-    "min": 0.2655,
+    "mean": 0.6703,
+    "min": 0.0782,
     "max": 1.0,
-    "p05": 0.3908,
-    "p95": 0.9898,
+    "p05": 0.2623,
+    "p95": 0.8064,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -48018,13 +48066,19 @@
    ],
    "nodeNames": [
     "Antennas",
-    "Beacon",
     "Canopy",
     "Canopy_frames",
+    "Doorways",
+    "Engine_cowl",
+    "Exhausts",
+    "Flare_mouths",
     "Flares",
-    "Flares_glow",
     "Fuselage",
-    "Minigun_housings",
+    "Grille_frames",
+    "Grilles",
+    "Gun_feeds",
+    "Gun_housings",
+    "Lamps",
     "Miniguns",
     "Mount_Flare_L",
     "Mount_Flare_R",
@@ -48039,17 +48093,26 @@
     "Pods",
     "Point_exhaust",
     "Point_fire",
+    "Pylons",
     "Rotor",
     "Rotor_blades",
+    "Rotor_bolts",
     "Rotor_grips",
     "Rotor_hub",
+    "Rotor_mast",
     "Rotor_tips",
-    "Steel",
+    "Seats",
+    "Skids",
+    "Tail",
+    "Tail_boom",
     "Tail_rotor",
     "Tail_rotor_blades",
     "Tail_rotor_hub",
+    "Tail_rotor_links",
     "Tail_rotor_tips",
-    "Undercarriage"
+    "Tailplane",
+    "Team_band",
+    "Wing_lights"
    ],
    "category": "air",
    "hd": false,
@@ -52418,24 +52481,24 @@
   },
   "strike_drone": {
    "file": "strike_drone.glb",
-   "fileBytes": 152060,
-   "sha1": "c411576ba03b5e08",
+   "fileBytes": 245000,
+   "sha1": "d0af226c38903a77",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 23,
-   "meshes": 16,
-   "materials": 8,
+   "nodes": 34,
+   "meshes": 27,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 16,
-   "submeshes": 16,
-   "materialSlots": 16,
-   "materialsUsed": 8,
-   "triangles": 1968,
-   "vertices": 2791,
+   "renderers": 27,
+   "submeshes": 27,
+   "materialSlots": 27,
+   "materialsUsed": 9,
+   "triangles": 3672,
+   "vertices": 4438,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -52443,36 +52506,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 73,
-   "openEdges": 0,
+   "loosePieces": 119,
+   "openEdges": 32,
    "nonManifoldEdges": 0,
    "boundsMin": [
     -4.02,
-    -0.58,
-    -2.015
+    -0.5123,
+    -2.16
    ],
    "boundsMax": [
     4.02,
-    0.6601,
-    2.15
+    0.68,
+    2.12
    ],
    "size": [
-    4.165,
+    4.28,
     8.04,
-    1.24
+    1.192
    ],
    "center": [
     0.0,
-    0.04,
-    0.068
+    0.084,
+    -0.02
    ],
-   "structureHash": "a66b336080d37d43",
+   "structureHash": "b12bb6f023fd8306",
    "color0": {
-    "mean": 0.7548,
-    "min": 0.2915,
+    "mean": 0.5823,
+    "min": 0.0842,
     "max": 1.0,
-    "p05": 0.5145,
-    "p95": 0.8143,
+    "p05": 0.2865,
+    "p95": 0.798,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -52496,7 +52559,15 @@
    ],
    "nodeNames": [
     "Antennas",
+    "Antennas.001",
+    "Bomb_fins",
+    "Bombs_body",
+    "Exhausts",
+    "Flaps",
     "Fuselage",
+    "Glass",
+    "Intake_ducts",
+    "Intakes",
     "Missile_bands",
     "Missile_fins",
     "Missile_seekers",
@@ -52505,19 +52576,22 @@
     "Muzzle_missile.001",
     "Muzzle_rocket",
     "Muzzle_rocket.001",
-    "Ordnance_bands",
-    "Ordnance_bodies",
-    "Ordnance_fuzes",
-    "Ordnance_seekers",
+    "Panels",
     "Point_exhaust",
     "Point_fire",
     "Propeller",
     "Propeller_blades",
     "Propeller_hub",
     "Pylons",
+    "Racks",
+    "Rudders",
     "Sensor",
-    "Sensor_mount",
-    "Wing_lights"
+    "Sensor_ball",
+    "Tail",
+    "Team_band",
+    "Wing_lights",
+    "Wing_lights.001",
+    "Wings"
    ],
    "category": "air",
    "hd": false,

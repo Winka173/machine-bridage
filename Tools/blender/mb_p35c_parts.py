@@ -336,3 +336,42 @@ def hatch(a, loc, r=.25, parent=None, mat='Armor', periscope=False, facing=(0, -
     if periscope:
         K.periscope(a, (x + facing[0] * r * 1.2, y + facing[1] * r * 1.2, z), facing=facing, parent=parent,
                     size=(.12, .07, .06))
+
+
+def ellipse_half(w, h, zc, n=6, flat=0.0, xs=0.0):
+    """A half outline for section_loft: an ellipse w half-wide and h half-tall centred at zc, from the bottom centre up
+    the +X side to the top centre (n segments); flat > 0 flattens the bottom (a keel line), xs shifts nothing (kept
+    for symmetry of calls)."""
+    pts = []
+    for i in range(n + 1):
+        u = -math.pi / 2 + math.pi * i / n
+        x, z = w * math.cos(u), zc + h * math.sin(u)
+        if flat and z < zc - h * (1 - flat):
+            z = zc - h * (1 - flat)
+        pts.append((0.0 if i in (0, n) else x, z))
+    return pts
+
+
+def store(a, tail, r, length, parent=None, body='Missiles', body_mat='Fuel', fins='Missile_fins', kind='missile',
+          seg=8):
+    """A lean store pointing forward (-Y) from its tail point: 'missile' (ogive nose, tail fins and canards) or
+    'bomb' (blunt nose, a cruciform tail with its box ring). Two parts only (body, fins), so an aircraft carrying many
+    stays under the renderer cap."""
+    x, y, z = tail
+    if kind == 'bomb':
+        prof = [(0, 0), (r * .5, .03), (r * .8, length * .15), (r, length * .35), (r, length * .7),
+                (r * .7, length * .9), (r * .35, length), (0, length + .01)]
+    else:
+        prof = [(0, 0), (r * .8, .02), (r, .06), (r, length * .8), (r * .8, length * .92), (r * .35, length),
+                (0, length + .01)]
+    k.lathe(a.part(body, body_mat, parent), prof, loc=tail, rot=K.FORWARD, seg=seg, worn=(3,))
+    fp = a.part(fins, 'Steel', parent)
+    for i in range(4):
+        u = i * R90 + math.pi / 4
+        c, s = math.cos(u), math.sin(u)
+        span = r * (1.3 if kind == 'bomb' else 1.6)
+        fp.box((.006, length * .14, span), loc=(x + c * (r + span / 2 - .005), y - length * .08, z + s * (r + span / 2 - .005)),
+               rot=(0, u - R90, 0), bevel=0)
+        if kind != 'bomb':
+            fp.box((.005, length * .06, r * .8), loc=(x + c * (r + r * .35), y - length * .72, z + s * (r + r * .35)),
+                   rot=(0, u - R90, 0), bevel=0)
