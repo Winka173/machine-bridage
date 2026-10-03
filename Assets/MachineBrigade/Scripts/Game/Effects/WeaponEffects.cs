@@ -641,7 +641,8 @@ namespace MachineBrigade.Game.Effects
         {
             // Only guns that lob their shells (artillery with a minimum range, howitzers) fly an arc;
             // a tank or turret gun fires straight down its barrel however big its shell is.
-            var lobs = weapon != null ? weapon.Indirect || weapon.Id.Contains("howitzer") : e.Tier > ExplosionTier.Medium;
+            // Play-test 14: and the boss howitzers ("lobs" in the data; their per-boss ids lost the word).
+            var lobs = weapon != null ? weapon.LobbedLook : e.Tier > ExplosionTier.Medium;
             // Prompt 34 L4: a later barrel of a simultaneous volley is drawn a moment later and flies that much shorter (it lands with the Sim).
             var travel = Mathf.Max(0.05f, e.Value - TravelCut);
             if (!lobs)

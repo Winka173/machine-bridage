@@ -105,7 +105,7 @@ namespace MachineBrigade.Game.Hud
                     return ("mg", "mg");
                 default:
                     if (id.Contains("mortar")) return ("mortar", "mortar");
-                    return w.Indirect || id.Contains("howitzer") ? ("howitzer", "artillery") : ("gun", "cannon");
+                    return w.LobbedLook || id.Contains("howitzer") ? ("howitzer", "artillery") : ("gun", "cannon");
             }
         }
     }

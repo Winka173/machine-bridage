@@ -45,6 +45,16 @@ namespace MachineBrigade.Sim.Content
         public bool Indirect => MinRange > 0f || Lofted || Projectile is ProjectileKind.Bomb or ProjectileKind.Drone;
 
         /// <summary>
+        /// Play-test 14 (data "lobs", inherited): a howitzer the view draws as artillery (muzzle blast, arcing shell, artillery
+        /// impact) though the Sim fires it direct: the boss howitzer and its per-boss copies (p26_jotunn_jo203), whose ids no
+        /// longer say "howitzer". Looks only; the Sim never reads it.
+        /// </summary>
+        public bool Lobs { get; internal set; }
+
+        /// <summary>Drawn as artillery: <see cref="Indirect"/>, <see cref="Lobs"/>, or a howitzer by its id.</summary>
+        public bool LobbedLook => Indirect || Lobs || Id.Contains("howitzer");
+
+        /// <summary>
         /// Shots (trigger pulls) carried, or 0 for unlimited. Long-range weapons run dry so they
         /// cannot be spammed; the vehicle then fights with its other mounts until it re-arms.
         /// </summary>
