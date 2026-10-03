@@ -2698,6 +2698,16 @@
    "changes": [
     "FLAG wall_t: triangles 1,798 -> 4,722 (+162.6%); vertices 1,896 -> 7,096 (+274.3%); meshes 7 -> 16 (+128.6%); renderers 7 -> 16 (+128.6%); materials 4 -> 10 (+150.0%); materialSlots 7 -> 16 (+128.6%); fileBytes 101,656 -> 357,748 (+251.9%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "blast_wall"
+   ],
+   "reason": "P35 wave 3: blast_wall rebuilt (lane B)",
+   "changes": [
+    "FLAG blast_wall: triangles 792 -> 3,500 (+341.9%); vertices 990 -> 5,368 (+442.2%); meshes 3 -> 8 (+166.7%); renderers 3 -> 8 (+166.7%); materials 3 -> 5 (+66.7%); materialSlots 3 -> 8 (+166.7%); fileBytes 51,904 -> 265,836 (+412.2%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -10254,22 +10264,22 @@
   },
   "blast_wall": {
    "file": "blast_wall.glb",
-   "fileBytes": 51904,
-   "sha1": "5358586743e6c79d",
+   "fileBytes": 265836,
+   "sha1": "3cea9c04582f9b69",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 3,
-   "meshes": 3,
-   "materials": 3,
+   "nodes": 8,
+   "meshes": 8,
+   "materials": 5,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 3,
-   "submeshes": 3,
-   "materialSlots": 3,
-   "materialsUsed": 3,
-   "triangles": 792,
-   "vertices": 990,
+   "renderers": 8,
+   "submeshes": 8,
+   "materialSlots": 8,
+   "materialsUsed": 5,
+   "triangles": 3500,
+   "vertices": 5368,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -10277,44 +10287,49 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 18,
+   "loosePieces": 166,
    "openEdges": 0,
-   "nonManifoldEdges": 32,
+   "nonManifoldEdges": 91,
    "boundsMin": [
     -2.375,
     0.005,
-    -0.95
+    -0.9802
    ],
    "boundsMax": [
     2.375,
-    2.415,
-    0.95
+    2.404,
+    0.9837
    ],
    "size": [
-    1.9,
+    1.964,
     4.75,
-    2.41
+    2.399
    ],
    "center": [
     0.0,
-    1.21,
-    0.0
+    1.204,
+    0.002
    ],
-   "structureHash": "c8115a21a830aeea",
+   "structureHash": "85339e490d21edff",
    "color0": {
-    "mean": 0.4589,
-    "min": 0.0693,
-    "max": 0.8143,
-    "p05": 0.0731,
-    "p95": 0.798,
+    "mean": 0.5755,
+    "min": 0.0757,
+    "max": 0.9987,
+    "p05": 0.1618,
+    "p95": 0.879,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Base",
     "Frames",
     "Gabions",
-    "Team_bands"
+    "Sandbags",
+    "Split_bag",
+    "Stones",
+    "Team_bands",
+    "Tools"
    ],
    "category": "structure",
    "hd": false,

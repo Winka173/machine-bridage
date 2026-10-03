@@ -241,7 +241,7 @@
   },
   "blast_wall": {
     "file": "blast_wall.glb",
-    "triangles": 792
+    "triangles": 3500
   },
   "bmpt": {
     "file": "bmpt.glb",

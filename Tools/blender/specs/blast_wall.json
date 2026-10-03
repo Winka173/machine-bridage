@@ -1,0 +1,32 @@
+{
+ "id": "blast_wall",
+ "class": "obstacle",
+ "real": ["stone-filled welded-mesh gabion baskets (1 m class) stepped as a blast wall, a sandbag crest"],
+ "shape": "Strings unit.blast_wall 'Gabion blast wall', note: a line of gabions (wire-mesh cells filled with earth) that soaks up direct fire aimed at the towers behind it; modelSize 1.9 x 4.8 x 2.4 m; a retired tower card (CardMerges.RetiredTowers) whose model still ships; box kept exactly.",
+ "confidence": "xấp xỉ (common gabion basket sizes; the box is the old file's and the def's)",
+ "target_size": {"L": 1.9, "W": 4.75, "H": 2.41, "source": "balance.json modelSize [1.9, 4.8, 2.4] and the old GLB (1.9 x 4.75 x 2.41): kept exactly", "tolerance": 0.02},
+ "features": [
+  {"feature": "a bottom course of four stone-filled baskets the full depth, a middle course set back (the step)", "nodes": ["Gabions"]},
+  {"feature": "welded mesh frames: corner posts, rims, lacing wire, diaphragms", "nodes": ["Frames"]},
+  {"feature": "stones pressing against the mesh, loose stones at the foot", "nodes": ["Stones"]},
+  {"feature": "two sandbag courses on top (a gap at one end), one course on the step's front edge, a split bag", "nodes": ["Sandbags", "Split_bag"]},
+  {"feature": "the Team bands painted on the middle course's mesh", "nodes": ["Team_bands"]},
+  {"feature": "a tamped earth pad with two slopes a side, a pick leaning on the end basket", "nodes": ["Base", "Tools"]}
+ ],
+ "class_parts": [],
+ "weapons": [],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [0, 6000], "floor": 0, "lod1_share": 0.5, "lod2_share": 0.2, "note": "obstacle class"},
+ "team_zones": ["bands on both faces of the middle course (Team)"],
+ "colour_zones_min": 2,
+ "breakable": [],
+ "wreck": "collapses whole (no part nodes)",
+ "faction_style": "Accord (field-built: stone, wire, sandbags)",
+ "details": {
+  "tier1": ["bottom course", "middle course", "sandbag crest"],
+  "tier2": ["baskets", "step bags", "earth pad"],
+  "tier3": ["mesh posts and rims", "lacing wire", "stones", "split bag", "pick"]
+ },
+ "pivot": "centred on the origin, the ground at z = 0, along X, the front to -Y (as the old file)",
+ "questions": []
+}
