@@ -3098,6 +3098,16 @@
    "changes": [
     "FLAG hydra_sub: triangles 7,548 -> 7,912 (+4.8%); vertices 8,763 -> 11,660 (+33.1%); meshes 54 -> 76 (+40.7%); renderers 54 -> 76 (+40.7%); materials 8 -> 11 (+37.5%); materialSlots 54 -> 76 (+40.7%); fileBytes 461,148 -> 620,716 (+34.6%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "nyx"
+   ],
+   "reason": "P35 wave 6: nyx rebuilt from scratch",
+   "changes": [
+    "FLAG nyx: triangles 3,526 -> 7,602 (+115.6%); vertices 3,633 -> 10,989 (+202.5%); meshes 29 -> 60 (+106.9%); renderers 29 -> 60 (+106.9%); materials 8 -> 11 (+37.5%); materialSlots 29 -> 60 (+106.9%); fileBytes 207,184 -> 582,140 (+181.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -42860,22 +42870,24 @@
   },
   "nyx": {
    "file": "nyx.glb",
-   "fileBytes": 207184,
-   "sha1": "a237c57326dfed43",
+   "fileBytes": 582140,
+   "sha1": "c9b4a0c48e8de44f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 39,
-   "meshes": 29,
-   "materials": 8,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 71,
+   "meshes": 60,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 29,
-   "submeshes": 29,
-   "materialSlots": 29,
-   "materialsUsed": 8,
-   "triangles": 3526,
-   "vertices": 3633,
+   "renderers": 60,
+   "submeshes": 60,
+   "materialSlots": 60,
+   "materialsUsed": 11,
+   "triangles": 7602,
+   "vertices": 10989,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -42883,36 +42895,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 58,
-   "openEdges": 0,
+   "loosePieces": 349,
+   "openEdges": 240,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -4.45,
+    -4.4739,
     -1.6,
-    -26.4
+    -26.45
    ],
    "boundsMax": [
-    4.45,
-    9.4,
+    4.4739,
+    9.87,
     26.5
    ],
    "size": [
-    52.9,
-    8.9,
-    11.0
+    52.95,
+    8.948,
+    11.47
    ],
    "center": [
     0.0,
-    3.9,
-    0.05
+    4.135,
+    0.025
    ],
-   "structureHash": "9c6b90d452d0db7b",
+   "structureHash": "c30a232bf86a6ca8",
    "color0": {
-    "mean": 0.6865,
-    "min": 0.0802,
-    "max": 0.9987,
-    "p05": 0.2871,
-    "p95": 0.9722,
+    "mean": 0.6027,
+    "min": 0.0603,
+    "max": 1.0,
+    "p05": 0.1717,
+    "p95": 0.9125,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -42922,6 +42934,7 @@
      "Muzzle_mg.001"
     ],
     "mount": [
+     "Mount_APS",
      "Mount_gun",
      "Mount_mg",
      "Mount_mg.001"
@@ -42938,7 +42951,13 @@
     "Muzzle_mg.001"
    ],
    "nodeNames": [
-    "Armor",
+    "Anchor_recess",
+    "Boat_bay",
+    "Boat_tubes",
+    "Boats",
+    "Bollards",
+    "Boot_top",
+    "Bridge_glass",
     "CIWS_armor_mg",
     "CIWS_armor_mg_001",
     "CIWS_barrels_mg",
@@ -42947,24 +42966,40 @@
     "CIWS_body_mg_001",
     "CIWS_bores_mg",
     "CIWS_bores_mg_001",
-    "CIWS_dark_mg",
-    "CIWS_dark_mg_001",
     "CIWS_glass_mg",
     "CIWS_glass_mg_001",
     "CIWS_ring_mg",
     "CIWS_ring_mg_001",
-    "Ciws_base.mg",
-    "Ciws_base_001",
-    "Ciws_bracket.mg",
-    "Dark",
+    "Capacitor_cells",
+    "Capacitors",
+    "Comms_mast",
+    "Deck",
+    "Deck_fittings",
+    "Deck_lights",
+    "Deck_lines",
     "Deck_marks",
+    "Deck_nets",
+    "Deck_seams",
+    "Deckhouse",
+    "Deckhouse_hatches",
+    "Deckhouse_panels",
+    "Deckhouse_seams",
+    "Door_slats",
+    "Fairleads",
+    "Flight_deck",
     "Gun_bands",
     "Gun_bore",
     "Gun_house",
     "Gun_rails",
     "Gun_ring",
-    "Helo_deck",
+    "Hangar_door",
     "Hull",
+    "Hull_low",
+    "Hull_panels",
+    "Hull_seams",
+    "Kit_cables",
+    "Kit_rivets",
+    "Mount_APS",
     "Mount_gun",
     "Mount_mg",
     "Mount_mg.001",
@@ -42975,8 +43010,18 @@
     "Part_mg",
     "Part_mg.001",
     "Part_vls",
+    "Porthole_rims",
+    "Portholes",
     "Radar_faces",
-    "Vls_hatches"
+    "Roof_fittings",
+    "Sponsons",
+    "Team_band",
+    "Uplift_grilles",
+    "Uplifts",
+    "Vls_hatches",
+    "Vls_plates",
+    "Walkways",
+    "Warning_lights"
    ],
    "category": "boss",
    "hd": false,
@@ -42987,7 +43032,7 @@
    "units": [
     "nyx"
    ],
-   "movingParts": 7,
+   "movingParts": 8,
    "budgetClass": "boss_m"
   },
   "obsidian_spire": {
