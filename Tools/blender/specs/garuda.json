@@ -1,0 +1,294 @@
+{
+ "id": "garuda",
+ "class": "boss",
+ "real": [
+  "Northrop Grumman B-2 Spirit / B-21 Raider (unit_refs): a giant flying-wing bomber"
+ ],
+ "shape": "unit_refs: a giant flying-wing bomber; BossText note.garuda: a huge flying wing with defensive turrets, escorted, and a carpet of bombs; modelSize 27.9 x 70 x 4.5 m.",
+ "confidence": "xấp xỉ (B-2 / B-21 layout; BossText note and tip; the old builder)",
+ "target_size": {
+  "L": 27.9,
+  "W": 70.0,
+  "H": 4.5,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the flying wing (Team, the lift role): one airfoil loft tip to tip, the straight swept leading edge, the double-W sawtooth trailing edge",
+   "nodes": [
+    "Wing"
+   ]
+  },
+  {
+   "feature": "elevon and drag-rudder seams, wingtip lights",
+   "nodes": [
+    "Elevon_seams",
+    "Wing_lights"
+   ]
+  },
+  {
+   "feature": "the blended centre body (body) with the cockpit hump, the four-pane windscreen and frames",
+   "nodes": [
+    "Fuselage",
+    "Cockpit_glass",
+    "Canopy_frames"
+   ]
+  },
+  {
+   "feature": "weak point: four buried engines with serrated dorsal intakes, riveted covers one shade off (engine_fl/fr/rl/rr)",
+   "nodes": [
+    "Part_engine",
+    "Part_engine.001",
+    "Part_engine.002",
+    "Part_engine.003",
+    "Engine_cover_0",
+    "Intakes_0",
+    "Intake_lips_0"
+   ]
+  },
+  {
+   "feature": "exhaust troughs over the wing with their glow",
+   "nodes": [
+    "Exhaust_trough",
+    "Exhaust_glow",
+    "Point_exhaust"
+   ]
+  },
+  {
+   "feature": "weak point: the two bomb bay doors with the carpet load racked between them (bomb_bay)",
+   "nodes": [
+    "Part_bay",
+    "Part_bay.001",
+    "Bay_doors",
+    "Bay_doors_r",
+    "Bomb_racks",
+    "Bay_bands"
+   ]
+  },
+  {
+   "feature": "the two drone bays with doors and launch rails (hangar_l, hangar_r)",
+   "nodes": [
+    "Part_hangar",
+    "Part_hangar.001",
+    "Hangar_doors",
+    "Launch_rails",
+    "Muzzle_door_l",
+    "Muzzle_door_r"
+   ]
+  },
+  {
+   "feature": "the nose radar panel (radar)",
+   "nodes": [
+    "Part_radar",
+    "Radar_panel",
+    "Radar_frame"
+   ]
+  },
+  {
+   "feature": "twin 30 mm dorsal turrets on raised barbettes, one muzzle a barrel",
+   "nodes": [
+    "Mount_gun",
+    "Mount_gun.001",
+    "Turret_dome",
+    "Gun_barrels",
+    "Muzzle_b1_gun",
+    "Muzzle_b2_gun",
+    "Muzzle_b1_gun_001",
+    "Muzzle_b2_gun_001"
+   ]
+  },
+  {
+   "feature": "the 105 mm pods under the outer wing (pod_105_l, pod_105_r), two fixed tail barbettes",
+   "nodes": [
+    "Mount_gun.002",
+    "Mount_gun.003",
+    "Gun_pod_002",
+    "Pod_barrel_002",
+    "Tail_barbettes",
+    "Barbette_guns"
+   ]
+  },
+  {
+   "feature": "radar-absorbent edge bands, seam tape, sawtooth panel outlines, RAM panel patchwork (paint), beacons, rivets, Quaden colour bands",
+   "nodes": [
+    "Ram_edges",
+    "Ram_tape",
+    "Panel_lines",
+    "Ram_panels",
+    "Beacons",
+    "Body_rivets",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_roc_main_roc_bombs",
+   "slot": "mountWeapons 0",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "p26_roc_main_roc_bombs",
+   "slot": "mountWeapons 1",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "weapon": "p26_roc_direct_roc_atgm",
+   "slot": "mountWeapons 2",
+   "mount": "Part_hangar",
+   "muzzles": [
+    "Muzzle_door_l"
+   ]
+  },
+  {
+   "weapon": "p26_roc_direct_roc_atgm",
+   "slot": "mountWeapons 3",
+   "mount": "Part_hangar.001",
+   "muzzles": [
+    "Muzzle_door_r"
+   ]
+  },
+  {
+   "weapon": "p26_roc_close_twin_30_bmpt",
+   "slot": "mountWeapons 4",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_b1_gun"
+   ]
+  },
+  {
+   "weapon": "p26_roc_close_twin_30_bmpt",
+   "slot": "mountWeapons 5",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_b1_gun_001"
+   ]
+  },
+  {
+   "weapon": "p26_roc_roc105",
+   "slot": "mountWeapons 6",
+   "mount": "Mount_gun.002",
+   "muzzles": [
+    "Muzzle_gun.002"
+   ]
+  },
+  {
+   "weapon": "p26_roc_roc105",
+   "slot": "mountWeapons 7",
+   "mount": "Mount_gun.003",
+   "muzzles": [
+    "Muzzle_gun.003"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "the wing and centre body (Team) in Quaden colours",
+  "bands on both outer wings"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "engine_fl",
+   "node": "Part_engine"
+  },
+  {
+   "part": "engine_fr",
+   "node": "Part_engine.001"
+  },
+  {
+   "part": "engine_rl",
+   "node": "Part_engine.002"
+  },
+  {
+   "part": "engine_rr",
+   "node": "Part_engine.003"
+  },
+  {
+   "part": "hangar_l",
+   "node": "Part_hangar"
+  },
+  {
+   "part": "hangar_r",
+   "node": "Part_hangar.001"
+  },
+  {
+   "part": "radar",
+   "node": "Part_radar"
+  },
+  {
+   "part": "pod_105_l",
+   "node": "Mount_gun.002"
+  },
+  {
+   "part": "pod_105_r",
+   "node": "Mount_gun.003"
+  },
+  {
+   "part": "bomb_bay",
+   "node": "(no node: a hit area at [0, 8.5, -3.0]; drawn on Part_bay / Part_bay.001)"
+  }
+ ],
+ "wreck": "bosses break up on their Part_* nodes",
+ "faction_style": "Quaden's (Raven) air force: smooth radar-absorbent skin, patchwork panels",
+ "details": {
+  "tier1": [
+   "wing",
+   "centre body"
+  ],
+  "tier2": [
+   "engine covers",
+   "exhaust troughs",
+   "bay doors",
+   "drone bays",
+   "turrets",
+   "pods",
+   "radar panel"
+  ],
+  "tier3": [
+   "intake lips",
+   "rivets",
+   "tape",
+   "panel outlines",
+   "RAM patches",
+   "beacons",
+   "lights",
+   "barrels",
+   "barbettes",
+   "windscreen"
+  ]
+ },
+ "questions": [
+  "NEEDS_HUMAN: a 70 m flying wing stays near-convex from every side (silhouette 1.16 against the air boss gold 1.76) and its smooth skin holds few brightness regions at the battle camera; 67.2 after four rounds. Accept on the look?"
+ ],
+ "frame": "air",
+ "weak_points": [
+  "break the bomb bay and the carpet is gone (tip): two riveted bay doors one shade off, hazard bands",
+  "the engines slow it down (tip): four engine covers, riveted, one shade off"
+ ],
+ "scale_note": "a B-2 class wing drawn 1.3-1.5 x up for the boss read"
+}
