@@ -64,7 +64,9 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         /// <param name="stick">The bomb-run fix, pass 3: the bombs of the stick this blast is one of (0: none); a long stick's far
         /// bombs get their overlay one level lighter before the budget counts them (<see cref="TierFx.StickDetail"/>).</param>
-        private void TierImpact(int tier, Vector3 at, float core, float edge, float now, ViewRegistry views, int stick = 0)
+        /// <param name="rings">Play-test 14 (lane A): false for a bomb or an artillery shell (Zoneless): no rings on its exact
+        /// core and edge; the crater, shake and overlay blast as ever.</param>
+        private void TierImpact(int tier, Vector3 at, float core, float edge, float now, ViewRegistry views, int stick = 0, bool rings = true)
         {
             if (tier < 2) return;
             var reach = edge > core ? edge : core;
@@ -73,13 +75,16 @@ namespace MachineBrigade.Game.Effects
             if (tier >= 4)
             {
                 // The shockwave exactly on the edge (T4); T5's two rings, the core's first and the edge's after it.
-                if (tier >= 5 && core > 0f && edge > core)
+                if (!rings)
+                {
+                }
+                else if (tier >= 5 && core > 0f && edge > core)
                 {
                     TierRing(at, core, TierShockColour, 0.6f);
                     Later(now + 0.25f, () => TierRing(at, edge, TierShockColour, 0.85f));
                 }
                 else if (reach > 0f) TierRing(at, reach, TierShockColour, 0.7f);
-                if (reach > 0f) Later(now + (tier >= 5 ? 0.4f : 0.12f), () => TierRing(at, reach, TierDustRingColour, 1.2f));
+                if (rings && reach > 0f) Later(now + (tier >= 5 ? 0.4f : 0.12f), () => TierRing(at, reach, TierDustRingColour, 1.2f));
                 // A big crater, very big and lasting for T5.
                 // Fix prompt L6: for its band's time (45 s, 60 s for T5), closing slowly.
                 _decals.Place(at, Mathf.Max(4f, (core > 0f ? core : 4f) * (tier >= 5 ? 1.5f : 1.2f)), EffectLife.Crater(tier));
@@ -98,7 +103,7 @@ namespace MachineBrigade.Game.Effects
                 return;
             }
             // A lower graphics tier draws its share of the overlay too (all on High, 80 % on Medium, half on Low).
-            _tierBlasts[tier].Play(at, now, scale, 1f, 1f, 0f, TierFx.ShareOf(detail) * ExplosionEffect.RichShare);
+            _tierBlasts[tier].Play(at, now, scale, 1f, 1f, 0f, TierFx.ShareOf(detail) * ExplosionEffect.RichShare, _smokeLife);
             _night.Blast(at, 6f * tier * scale, tier >= 4 ? 1.1f : 0.6f);
             if (tier >= 3 && detail == TierFx.Detail.Full)
                 _fires.Ignite(at, tier >= 5 ? 2f : tier >= 4 ? 1.3f : 0.6f, tier >= 5 ? 40f : tier >= 4 ? 24f : 10f, now);

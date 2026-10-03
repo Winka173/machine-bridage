@@ -425,9 +425,10 @@ namespace MachineBrigade.Game.Effects
         private readonly struct Pending
         {
             public Pending(float at, int burst, Vector3 position, float scale, float grow, float density, float life, float ring,
-                float share = 1f)
+                float share = 1f, float smoke = 1f)
             {
                 Share = share;
+                Smoke = smoke;
                 At = at;
                 BurstIndex = burst;
                 Position = position;
@@ -449,6 +450,9 @@ namespace MachineBrigade.Game.Effects
 
             /// <summary>Prompt 34 L5: the share of a tier overlay's particles its distance and budget allow (1: all).</summary>
             public float Share { get; }
+
+            /// <summary>Play-test 14 (lane A): its smoke and dust's life against the recipe's (1: as drawn).</summary>
+            public float Smoke { get; }
         }
 
         /// <summary>How a layer grows when a blast is enlarged (see <see cref="Play"/>).</summary>
@@ -556,7 +560,9 @@ namespace MachineBrigade.Game.Effects
         /// Only the tier overlays (<see cref="CreateTier"/>) are played below 1, by distance and the concurrency budget
         /// (<see cref="TierFx"/>); every older recipe is played whole.
         /// </summary>
-        public void Play(Vector3 position, float now, float scale, float grow, float life, float ring, float share)
+        /// <param name="smoke">Play-test 14 (lane A): the life of its smoke, dust and smoke column alone against the recipe's
+        /// (a tank round's 0.4: its smoke clears 60 % sooner); the fire, flash, sparks and debris are never cut.</param>
+        public void Play(Vector3 position, float now, float scale, float grow, float life, float ring, float share, float smoke = 1f)
         {
             grow = Mathf.Max(1f, grow);
             var density = grow > 1f ? Density : 1f;
@@ -564,8 +570,8 @@ namespace MachineBrigade.Game.Effects
             share = Mathf.Clamp01(share);
             for (var i = 0; i < _bursts.Count; i++)
             {
-                if (_bursts[i].Time <= 0f) EmitBurst(i, position, scale, grow, density, life, ring, share);
-                else _pending.Add(new Pending(now + _bursts[i].Time, i, position, scale, grow, density, life, ring, share));
+                if (_bursts[i].Time <= 0f) EmitBurst(i, position, scale, grow, density, life, ring, share, smoke);
+                else _pending.Add(new Pending(now + _bursts[i].Time, i, position, scale, grow, density, life, ring, share, smoke));
             }
             if (share >= 0.99f) _layers.Chunks?.Throw(_chunks, position, scale * grow, now);
         }
@@ -580,7 +586,7 @@ namespace MachineBrigade.Game.Effects
             {
                 var p = _pending[i];
                 if (now < p.At) continue;
-                EmitBurst(p.BurstIndex, p.Position, p.Scale, p.Grow, p.Density, p.Life, p.Ring, p.Share);
+                EmitBurst(p.BurstIndex, p.Position, p.Scale, p.Grow, p.Density, p.Life, p.Ring, p.Share, p.Smoke);
                 _pending[i] = _pending[_pending.Count - 1];
                 _pending.RemoveAt(_pending.Count - 1);
             }
@@ -635,7 +641,11 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The layers a lingering blast (<see cref="Play"/>'s life) keeps longer: fire, smoke, dust and embers.</summary>
         private bool Lingers(ParticleSystem s) => s == _layers.Embers || LookOf(s) == Look.Volume;
 
-        private void Emit(in Burst b, Vector3 position, float scale, float grow, float density, float life, float ring, float share)
+        /// <summary>Play-test 14 (lane A): the layers a shorter smoke life cuts: the smoke, the dust cloud and the smoke column.</summary>
+        private bool Smokes(ParticleSystem s) => s == _layers.Smoke || s == _layers.Dust || s == _layers.Column;
+
+        private void Emit(in Burst b, Vector3 position, float scale, float grow, float density, float life, float ring, float share,
+            float smoke = 1f)
         {
             // At grow 1 and life 1 every factor below is exactly the old one.
             var look = LookOf(b.System);
@@ -669,6 +679,7 @@ namespace MachineBrigade.Game.Effects
             main.startSize = new ParticleSystem.MinMaxCurve(b.Size.x * size, b.Size.y * size);
             main.startSpeed = new ParticleSystem.MinMaxCurve(b.Speed.x * speed, b.Speed.y * speed);
             var linger = Lingers(b.System) ? life : 1f;
+            if (smoke != 1f && Smokes(b.System)) linger *= Mathf.Max(0.05f, smoke);
             main.startLifetime = new ParticleSystem.MinMaxCurve(b.Lifetime.x * linger, b.Lifetime.y * linger);
             var shape = ps.shape;
             if (shape.enabled)
@@ -693,7 +704,8 @@ namespace MachineBrigade.Game.Effects
             }, count);
         }
 
-        private void EmitBurst(int index, Vector3 position, float scale, float grow, float density, float life, float ring, float share = 1f)
+        private void EmitBurst(int index, Vector3 position, float scale, float grow, float density, float life, float ring, float share = 1f,
+            float smoke = 1f)
         {
             var b = _bursts[index];
             if (b.System == _layers.GroundLight)
@@ -701,7 +713,7 @@ namespace MachineBrigade.Game.Effects
                 var main = b.System.main;
                 main.startColor = new Color(1f, 1f, 1f, Mathf.Clamp01(_glow));
             }
-            Emit(b, position, scale, grow, density, life, ring, Mathf.Min(share, index >= _richFrom ? RichShare : 1f));
+            Emit(b, position, scale, grow, density, life, ring, Mathf.Min(share, index >= _richFrom ? RichShare : 1f), smoke);
         }
 
         /// <summary>Particles this blast emits enlarged by <paramref name="grow"/> at a tier's <paramref name="density"/> (for the budget log and tests).</summary>

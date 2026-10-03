@@ -95,8 +95,21 @@ namespace MachineBrigade.Game.Effects
         private void Linger(int band, Vector3 at, float core, float now, int stick = 0)
         {
             if (!_cull.Visible(at, band >= 4 ? 1.2f : 0.4f)) return;
-            _smoke.Linger(band, at, core, now, StickDetailAt(at, stick));
+            _smoke.Linger(band, at, core, now, StickDetailAt(at, stick), _smokeLife);
         }
+
+        /// <summary>
+        /// Play-test 14 (lane A): a tank gun's round leaves its smoke and dust 60 % shorter (x 0.4) than its band's: the owner
+        /// found the black smoke after every tank shot hanging too long. Only the smoke, dust and smoke column are cut; the
+        /// flash, fireball, sparks, debris, ring and crater stay exactly as drawn (never shrink a blast).
+        /// </summary>
+        public const float TankSmokeLife = 0.4f;
+
+        /// <summary>The smoke-life factor of the impact being drawn now (1 outside a tank round's impact).</summary>
+        private float _smokeLife = 1f;
+
+        /// <summary>A tank gun's round (the tank_gun family: tank, assault-gun and turret cannons).</summary>
+        internal static bool TankRound(WeaponDef round) => round != null && round.Family == "tank_gun";
         private readonly WeaponEffects _weapons;
         private readonly LaserBeams _lasers;
 
@@ -284,17 +297,23 @@ namespace MachineBrigade.Game.Effects
                         var size = round?.ImpactScale ?? 1f;
                         // The bomb-run fix, pass 3: a stick's bomb (its warning section goes now; its far blasts drawn lighter).
                         var chain = StickLanded(round, impact, now);
+                        // Play-test 14 (lane A): a tank round's smoke clears 60 % sooner (its blast drawn whole).
+                        _smokeLife = TankRound(round) ? TankSmokeLife : 1f;
                         // A gun's shell never flashes the screen, however big: only strikes and blasts do.
                         // Play-test 5 (DECISIONS 20V): drones, missiles, rockets, shells and the gun turret's rounds by BlastSizes.Round.
                         // Prompt 25 A5: every blast's ring on its damage radius (e.Value, the round's splash radius).
-                        if (!ImpactOfKind(round, e, impact, now, size, chain)) Explode(e.Tier, impact, now, size, flash: false, grow: BlastSizes.Round(round), radius: e.Value);
+                        // Play-test 14 (lane A): a bomb's or an artillery shell's blast marks no zone (no radius rings; Zoneless).
+                        var zoneless = Zoneless(round);
+                        if (!ImpactOfKind(round, e, impact, now, size, chain))
+                            Explode(e.Tier, impact, now, size, flash: false, grow: BlastSizes.Round(round), radius: zoneless ? 0f : e.Value);
                         // Prompt 26 B.3: a two-layer blast shows its edge too, a second ring on the edge's radius beyond the core's.
-                        EdgeRing(impact, e.Value, e.Target.X);
+                        if (!zoneless) EdgeRing(impact, e.Value, e.Target.X);
                         // Prompt 34 L5: its tier's redrawn blast on top, the exact shockwave rings, the shake.
-                        TierImpact(TierFx.Of(round), impact, e.Value, e.Target.X, now, views, chain);
+                        TierImpact(TierFx.Of(round), impact, e.Value, e.Target.X, now, views, chain, rings: !zoneless);
                         // Fix prompt L6: the smoke and dust it leaves, as long as its size band says (EffectLife).
                         var band = EffectLife.BandOf(round, e.Tier);
                         Linger(band, impact, e.Value, now, chain);
+                        _smokeLife = 1f;
                         // Every blast from Medium up scorches the ground under it, as wide as it is drawn, for its band's time.
                         if (e.Tier >= ExplosionTier.Medium)
                             _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size * BlastSizes.Ground(round) * BlastSizes.Round(round),
@@ -1253,7 +1272,8 @@ namespace MachineBrigade.Game.Effects
                         var grow = BlastSizes.CalibreShell(round) * BlastSizes.Bigger;
                         var hitAt = impact + Vector3.up * 0.8f;
                         var hitScale = (heavy ? 1f : 0.75f) * (0.9f + 0.2f * UnityEngine.Random.value) * Mathf.Max(1f, size);
-                        _shellHit.Play(hitAt, now, hitScale, grow, BlastSizes.ShellLife(round), BlastSizes.RingFor(e.Value, _shellHit.RingReach, hitScale));
+                        _shellHit.Play(hitAt, now, hitScale, grow, BlastSizes.ShellLife(round), BlastSizes.RingFor(e.Value, _shellHit.RingReach, hitScale),
+                            1f, _smokeLife);
                         // Prompt 34 L5: an AP round's sparks grow by its tier (1 to T2, +15 % a tier above).
                         var sparks = Mathf.RoundToInt((heavy ? 36 : 16) * TierFx.Extra(TierFx.Of(round)));
                         sparks += Mathf.RoundToInt(sparks * (grow - 1f) * ExplosionEffect.Density);
@@ -1302,10 +1322,14 @@ namespace MachineBrigade.Game.Effects
                     // heavy tank's round, and the ring and smoke are a tenth bigger again; 12C.)
                     // Artillery and mortar shells a fifth bigger again (play-test 5, DECISIONS 20V).
                     var siege = BlastSizes.Artillery(round);
-                    Explode(e.Tier, impact, now, size, flash: false, grow: siege, life: BlastSizes.GroundLife(round), radius: e.Value);
+                    // Play-test 14 (lane A): an artillery shell marks no zone: its shockwave by the blast's own size, not snapped to
+                    // the damage radius, and no dust ring on the radius (Zoneless).
+                    var shellZone = !Zoneless(round);
+                    Explode(e.Tier, impact, now, size, flash: false, grow: siege, life: BlastSizes.GroundLife(round), radius: shellZone ? e.Value : 0f);
                     siege *= BlastSizes.Bigger;
                     // Prompt 25 A5: the dust ring on the damage radius too (it was 1.2 times it).
-                    Ring(impact, e.Value > 0f ? BlastSizes.RingQuad(e.Value) : 4f * 2.2f * siege, new Color(0.75f, 0.66f, 0.5f, 0.55f));
+                    if (shellZone)
+                        Ring(impact, e.Value > 0f ? BlastSizes.RingQuad(e.Value) : 4f * 2.2f * siege, new Color(0.75f, 0.66f, 0.5f, 0.55f));
                     var mortar = round.Id.StartsWith("mortar");
                     for (var i = 0; i < (mortar ? 2 : 3); i++)
                         _emitters.DamageSmoke(impact + UnityEngine.Random.insideUnitSphere * 1.2f * siege + Vector3.up * (1f + i) * siege,
@@ -1331,11 +1355,14 @@ namespace MachineBrigade.Game.Effects
                     // A bomb: the fireball, a shock ring on the ground and a column of dust and smoke,
                     // drawn bigger by the bomb's weight (DECISIONS 11A).
                     var bomb = BlastSizes.Bomb(round.Id);
-                    Explode(e.Tier, impact, now, size, flash: false, grow: bomb, radius: e.Value);
+                    // Play-test 14 (lane A): a bomb marks no zone either (a T5 one keeps its ring on the radius; Zoneless).
+                    var bombZone = !Zoneless(round);
+                    Explode(e.Tier, impact, now, size, flash: false, grow: bomb, radius: bombZone ? e.Value : 0f);
                     // The column a tenth bigger again, like the blast (DECISIONS 12C); the shock ring on the damage radius
                     // (prompt 25 A5: it was twice it).
                     bomb *= BlastSizes.Bigger;
-                    Ring(impact, e.Value > 0f ? BlastSizes.RingQuad(e.Value) : 6f * 3f * bomb, new Color(1.2f, 1.1f, 0.9f, 0.7f));
+                    if (bombZone)
+                        Ring(impact, e.Value > 0f ? BlastSizes.RingQuad(e.Value) : 6f * 3f * bomb, new Color(1.2f, 1.1f, 0.9f, 0.7f));
                     // The bomb-run fix, pass 3: a long stick's far bombs raise fewer smoke puffs (their blast and ring as ever), so
                     // the stick reads as a chain of blasts, not one wall of smoke.
                     var puffs = chain <= 0 ? 3 : StickDetailAt(impact, chain) switch
@@ -1378,7 +1405,7 @@ namespace MachineBrigade.Game.Effects
             scale *= exact ? 0.97f + 0.06f * UnityEngine.Random.value : 0.85f + 0.35f * UnityEngine.Random.value;
             position += new Vector3(UnityEngine.Random.Range(-0.4f, 0.4f), 0f, UnityEngine.Random.Range(-0.4f, 0.4f)) * scale;
             if (radius > 0f) ring = BlastSizes.RingFor(radius, _explosions[tier].RingReach, scale);
-            _explosions[tier].Play(position, now, scale, grow, life, ring);
+            _explosions[tier].Play(position, now, scale, grow, life, ring, 1f, _smokeLife);
             // A blast with no ring of its own (the Small tier: flak, grenades) gets a faint lone one on its radius.
             if (radius > 0f && _explosions[tier].RingReach <= 0f) Ring(position, BlastSizes.RingQuad(radius), LoneRing);
             scale *= Mathf.Max(1f, grow);

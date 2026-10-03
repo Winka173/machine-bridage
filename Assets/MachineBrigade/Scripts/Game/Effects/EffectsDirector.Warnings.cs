@@ -39,6 +39,21 @@ namespace MachineBrigade.Game.Effects
             _bigZones.Gate = _gate;
         }
 
+        /// <summary>
+        /// Play-test 14 (lane A), owner: "các vùng nổ của bom, đạn pháo không cần hiện vùng va chạm". A bomb's or an artillery
+        /// shell's (howitzer, mortar, any lofted or indirect shell) blast shows no zone on the ground: no warning ring or stick
+        /// rectangle before it lands (battle or preview) and no ring marking its damage radius when it bursts; its blast itself
+        /// (fireball, smoke, the recipe's own shockwave, crater) is drawn whole. Flak, guided rounds and the T5 super weapons
+        /// (the 406 mm, the 800 mm, a nuclear bomb) keep their warnings; fire supports keep their strike zones.
+        /// </summary>
+        internal static bool Zoneless(WeaponDef round)
+        {
+            if (round == null || round.Flak || round.Tier >= 5) return false;
+            if (round.Projectile == ProjectileKind.Bomb) return true;
+            return round.Projectile == ProjectileKind.Shell &&
+                (round.Indirect || round.Family == "howitzer" || round.Family == "mortar");
+        }
+
         /// <summary>Tests: rings the gate shows now.</summary>
         internal int WarningsShown => _gate.ShownCount;
 
@@ -57,6 +72,7 @@ namespace MachineBrigade.Game.Effects
         private bool EscapeRing(SimEvent e, VehicleView shooter, WeaponDef weapon, float now)
         {
             var round = FiredRound(e, shooter, weapon);
+            if (Zoneless(round)) return false;
             var warn = round.WarnSeconds;
             // Fix prompt L5: only the rounds the rules warn of (never a guided one, nor a beam).
             if (warn <= 0f || !_catalog.Warnings.Warns(round)) return false;
@@ -88,6 +104,7 @@ namespace MachineBrigade.Game.Effects
         public static bool PreviewRingFor(WeaponDef round, bool boss)
         {
             if (round == null || round.Guided || round.Laid || round.SplashRadius <= 0f) return false;
+            if (Zoneless(round)) return false;
             return !boss || (round.WarnSeconds <= 0f && round.SplashRadius < BossShellWarnFrom);
         }
 
