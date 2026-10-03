@@ -169,6 +169,20 @@ CASES = [
     ('smokestack', lambda a: K.smokestack(a, (0, 0, 0)), (None, None, 2.0), 300, ['Stacks'], True),
     ('gun_cluster', lambda a: K.gun_cluster(a, 'Mount_gun', (0, 0, 1), barrels=3), (None, None, None), 3000,
      ['Mount_gun', 'Muzzle_gun', 'Muzzle_gun.001', 'Muzzle_gun.002'], True),
+    # Wave 5 (lane B's wave 3 requests, lifted from mb_p35b_parts): runs of sandbags, earth pads, nets, track runs.
+    ('door_frame_mat', lambda a: K.door(a, (0, 0, 0), frame_mat='Armor'), (None, None, None), 300,
+     ['Doors', 'Door_frames'], True),
+    ('sandbag_run', lambda a: K.sandbag_run(a, [(0, 0, 0), (3, 0, 0)], courses=2, part='Parapet'), (None, None, None),
+     900, ['Parapet'], True),
+    ('sandbag_run_lean', lambda a: K.sandbag_run(a, [(0, 0, 0), (3, 0, 0)], courses=2, lean=True), (None, None, None),
+     600, ['Sandbags'], True),
+    ('earth_pad', lambda a: K.earth_pad(a, [(-2, -2), (2, -2), (2, 2), (-2, 2)], .4, bottom=False), (4.0, 4.0, .4),
+     200, ['Base'], True),
+    ('camo_net', lambda a: K.camo_net(a, [(-2, -2, 2), (2, -2, 2), (2, 2, 2), (-2, 2, 2)], .3, 0, garnish=6),
+     (None, None, None), 400, ['Camo_net', 'Net_poles'], False),
+    ('track_run', lambda a: K.track_run(a, 1.2, .5, [-1.5, -.5, .5, 1.5], .3, (2.0, .55, .25), (-2.0, .5, .22),
+                                        rollers=(-1, 1), roller_z=.75), (None, None, None), 4000,
+     ['Tracks', 'Track_links', 'Wheels', 'Sprockets', 'Idlers'], True),
 ]
 
 
