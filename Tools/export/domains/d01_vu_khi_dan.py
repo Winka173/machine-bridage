@@ -89,6 +89,25 @@ def effective(w: dict, tiers: dict) -> dict:
     return out
 
 
+FLIGHT = ("=IF(AND({co_vong_canh_bao},{thoi_gian_canh_bao_s}>{tam_m}/{toc_do_dan_m_s}),{thoi_gian_canh_bao_s},"
+          "{tam_m}/{toc_do_dan_m_s})")
+FLIGHT_REF = "game: Sim/Combat/CombatSystem.cs Fire (travel)"
+
+
+def flight_time(e, tier, warn_rules):
+    """CombatSystem.cs Fire, the first round at full range from a ground shooter: travel = range / ProjectileSpeed; a warned
+    round (Warns and WarnSeconds > travel) lands at WarnSeconds. None without a projectile speed."""
+    speed = G.f(e, "projectileSpeed")
+    if speed <= 0:
+        return None
+    travel = G.f(e, "range") / speed
+    if G.warns(e, tier, warn_rules):
+        ws = G.warn_seconds(e, tier, warn_rules)
+        if ws > travel:
+            travel = ws
+    return travel
+
+
 def real_rates():
     """The REAL table of Tools/balance/full_weapon_audit.py (pattern on the real name, max rpm, practical rpm, kind,
     mount, source), read as a literal (the module is not run)."""
@@ -131,8 +150,12 @@ def build(ctx):
     vk.col("co_vong_canh_bao", meaning="có vòng cảnh báo: WarningRules.Warns (port FixRules.cs; công thức sống ở Vu_khi_suy_ra)",
            source_note="port Sim/Content/FixRules.cs WarningRules.Warns")
     vk.col("lech_nong_s", unit="s", meaning="lệch giữa các nòng RIPPLE (hằng số trong mã)")
-    vk.col("thoi_gian_bay_toi_tam_s", unit="s", meaning="tầm / tốc độ đạn (lớp B: công thức sống; CombatSystem.cs bay "
-           "khoảng cách / projectileSpeed, bom và MRSI riêng)", formula="={tam_m}/{toc_do_dan_m_s}")
+    vk.col("thoi_gian_bay_toi_tam_s", unit="s", meaning="thời gian bay tới tầm tối đa, phát đầu: tầm / tốc độ đạn, kéo dài tới "
+           "thời gian cảnh báo khi vũ khí có vòng (lớp B: công thức sống; port CombatSystem.cs Fire: travel = distance / "
+           "ProjectileSpeed, WarnSeconds > travel và Warns -> WarnSeconds; bom thả từ máy bay phụ thuộc tốc độ máy bay: "
+           "_game NEED_CODE_CHECK)", formula=FLIGHT, source_note=FLIGHT_REF)
+    vk.col("thoi_gian_bay_toi_tam_s_game", unit="s", meaning="thoi_gian_bay_toi_tam_s: giá trị mã game tính (port Python của "
+           + FLIGHT_REF + ")", source_note="port Python của " + FLIGHT_REF)
     vk.col("ngoai_doi_phat_phut_toi_da", unit="phát/phút",
            meaning="nhịp tối đa ngoài đời (bảng REAL của Tools/balance/full_weapon_audit.py)")
     vk.col("ngoai_doi_phat_phut_duy_tri", unit="phát/phút", meaning="nhịp thực tế / duy trì ngoài đời (bảng REAL)")
@@ -166,9 +189,11 @@ def build(ctx):
         r.set("thoi_gian_canh_bao_s", G.warn_seconds(e, tier, warn_rules))
         r.set("co_vong_canh_bao", G.warns(e, tier, warn_rules))
         r.set("lech_nong_s", NEED_CODE_CHECK if (eff["so_nong"] or 1) > 1 and eff["che_do_nong"] == "RIPPLE" else "")
-        flight = (G.f(e, "range") / G.f(e, "projectileSpeed")) if G.f(e, "projectileSpeed") > 0 else None
-        r.set("thoi_gian_bay_toi_tam_s", F("={tam_m}/{toc_do_dan_m_s}", expect=flight, ref="python: tam_m / toc_do_dan_m_s")
-              if flight is not None else "")
+        flight = flight_time(e, tier, warn_rules)
+        bomb = G.projectile(e) == "Bomb"
+        r.set("thoi_gian_bay_toi_tam_s", F(FLIGHT, expect=None if bomb else flight, ref=FLIGHT_REF) if flight is not None else "")
+        r.set("thoi_gian_bay_toi_tam_s_game", NEED_CODE_CHECK if bomb and flight is not None else
+              (flight if flight is not None else ""))
         name = (e.get("real") or "").lower()
         hit = next((x for x in real if re.search(x[0], name)), None) if name else None
         if hit:

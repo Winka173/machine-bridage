@@ -12,5 +12,4 @@ CLAIMS = [
     # ---------------------------------------------------------------- balance.json blocks of later files
     # ---------------------------------------------------------------- other data files
     # ---------------------------------------------------------------- Tools data
-    ("Tools/docs/unit_refs.json", "**", "13_tham_chieu_nguon", "tham chiếu ngoài đời / game theo đơn vị (spec 12.1)"),
 ]

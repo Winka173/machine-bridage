@@ -9,6 +9,7 @@ same data gives the same bytes. The PDF (docpdf.py) is rendered from FULL.md.
 """
 from __future__ import annotations
 
+import collections
 import re
 import shutil
 from pathlib import Path
@@ -552,6 +553,7 @@ class Doc:
                   else "Mục: (không có mục riêng trong tài liệu thiết kế; chỉ bảng).", ""]
         for _, body in parts:
             lines += body
+        lines += self.ref_md(fid)
         rest = [s for s in sorted(self.books.get(fid, {})) if (fid, s) not in self.used_sheets and not s.startswith("input_")]
         if rest:
             lines += ["## Các sheet khác của file", "",
@@ -562,6 +564,65 @@ class Doc:
                 label = {"da": "Đã áp", "mot_phan": "Một phần — " + _why(mark), "chua": "Chưa áp — " + _why(mark)}[st]
                 lines += [f"### {s}", "", f"Trạng thái: {label}", "", f"Nguồn dữ liệu: {fid}/{s}.", ""]
                 lines += table_md(fid, s, h, rows, self.names)
+        return lines
+
+    def ref_md(self, fid: str, level: int = 2) -> list[str]:
+        """Spec 12.6: the subsection "Tham khảo ngoài đời và game" of a domain: reliability counts, the rows with a reference
+        (first 15), the sources with their URL, the so_sanh_that table. Our own summary of repo notes only."""
+        sheets = self.books.get(fid, {})
+        refs = [s for s in sorted(sheets) if s.endswith("_tham_chieu") and "loai_tham_chieu" in sheets[s][0]]
+        cmps = [s for s in sorted(sheets) if s.endswith("_so_sanh_that")]
+        if not refs and not cmps:
+            return []
+        h1, h2 = "#" * level, "#" * (level + 1)
+        nguon = {r.get("id", ""): r for r in self._dicts("13_tham_chieu_nguon", "Nguon_tham_chieu")}
+        title = self.file_titles.get(fid, {}).get("tieu_de") or fid
+        lines = [f"{h1} Tham khảo ngoài đời và game ({fid}: {title})" if level > 2 else f"{h1} Tham khảo ngoài đời và game", "",
+                 "Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).", "",
+                 "Nguồn dữ liệu: " + "; ".join(f"{fid}/{s}" for s in refs + cmps) + "; 13_tham_chieu_nguon/Nguon_tham_chieu.", ""]
+        used = set()
+        for s in refs:
+            rows = self._dicts(fid, s)
+            tin = collections.Counter(r.get("do_tin_cay", "") for r in rows)
+            loai = collections.Counter(r.get("loai_tham_chieu", "") for r in rows)
+            lines += [f"{h2} {s}", "",
+                      f"{len(rows)} dòng. Độ tin cậy: " + ", ".join(f"{k} {tin[k]}" for k in
+                                                                   ("da_kiem_chung", "uoc_dinh", "ban_dau_doan", "NEED_SOURCE"))
+                      + ". Loại: " + ", ".join(f"{k} {v}" for k, v in sorted(loai.items()) if k) + ".", ""]
+            shown = [r for r in rows if any(r.get(c) not in ("", "NEED_SOURCE", None)
+                                            for c in ("ten_mau_that", "ten_game", "ten_phim_truyen", "hoc_thuyet_quan_su"))]
+            for r in shown[:HEAD_ROWS]:
+                bits = []
+                for c, label in (("ten_mau_that", "mẫu thật"), ("hoc_thuyet_quan_su", "học thuyết"), ("ten_game", "game"),
+                                 ("ten_phim_truyen", "phim / truyện"), ("diem_giong", "giống"),
+                                 ("diem_khac_co_chu_dich", "khác có chủ đích")):
+                    v = r.get(c, "")
+                    if v and v != "NEED_SOURCE":
+                        bits.append(f"{label}: {_cell(v, 90)}")
+                ids = [x for x in r.get("nguon_id", "").split(";") if x]
+                used.update(ids)
+                lines.append(f"- `{r.get('id', '')}` ({_cell(r.get('ten_hien_thi', ''), 40)}): " + "; ".join(bits)
+                             + f"; độ tin: {r.get('do_tin_cay', '')}; nguồn: {', '.join(ids) or 'không'}.")
+            for r in shown[HEAD_ROWS:]:
+                used.update(x for x in r.get("nguon_id", "").split(";") if x)
+            if len(shown) > HEAD_ROWS:
+                lines.append(f"- … {len(shown) - HEAD_ROWS} dòng có tham chiếu nữa: xem sheet {fid}/{s}.")
+            if not shown:
+                lines.append(f"- Chưa dòng nào có tham chiếu trong repo (xem 13_tham_chieu_nguon/Thieu_nguon).")
+            lines.append("")
+            self.used_sheets.add((fid, s))
+        if used:
+            lines += ["Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):", ""]
+            for nid in sorted(used):
+                d = nguon.get(nid, {})
+                url = d.get("url", "")
+                lines.append(f"- `{nid}`: {_cell(d.get('tieu_de', nid), 120)}" + (f" — <{url}>" if url else "")
+                             + (f" (độ tin {d.get('do_tin_cay')})" if d.get("do_tin_cay") else ""))
+            lines.append("")
+        for s in cmps:
+            h, rows = sheets[s]
+            lines += table_md(fid, s, h, rows, self.names)
+            self.used_sheets.add((fid, s))
         return lines
 
     def full_md(self, rendered) -> list[str]:
@@ -580,6 +641,11 @@ class Doc:
         lines.append("")
         for _, body in rendered:
             lines += body
+        ref = [x for fid in sorted(self.books) if re.match(r"(0[1-9]|1[01])_", fid) for x in self.ref_md(fid, level=3)]
+        if ref:
+            lines += ["## Tham khảo ngoài đời và game (lượt 10, spec 12)", "",
+                      "Mỗi lĩnh vực: tóm tắt sheet <tên>_tham_chieu, nguồn (13_tham_chieu_nguon/Nguon_tham_chieu) và bảng "
+                      "<tên>_so_sanh_that. Chỉ dữ liệu trong repo; thiếu nguồn ghi NEED_SOURCE (13/Thieu_nguon).", ""] + ref
         lines += ["## Mục \"Chưa áp\"", ""]
         ca = self.chua_ap()
         lines += [f"- {n}. {t}: {s}" for n, t, s in ca] if ca else ["(không có)"]

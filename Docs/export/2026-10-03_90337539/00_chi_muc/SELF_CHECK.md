@@ -1,14 +1,14 @@
 # Tự kiểm bộ xuất (spec 9)
 
-Commit be7d9f51, ngày 2026-10-03, bản gốc so sánh `origin/main`. Lệnh: `python Tools/export/export.py check`.
+Commit 90337539, ngày 2026-10-03, bản gốc so sánh `origin/main`. Lệnh: `python Tools/export/export.py check`.
 Trạng thái: DAT = đạt; CHUA_DAT = có thiếu (liệt kê); CHUA_AP = phần của lượt sau. CI (.github/workflows/export.yml) chặn khi độ phủ, khóa ngoại, đồng nhất hoặc bí mật không đạt.
 
 | # | Kiểm | Trạng thái | Thiếu |
 |---|---|---|---|
-| 1 | Mọi file và sheet của mục 4 tồn tại; sheet rỗng chỉ khi có dòng CHUA_AP | CHUA_DAT | file 13_tham_chieu_nguon chưa xuất (lượt 10, spec 12.3) |
+| 1 | Mọi file và sheet của mục 4 tồn tại; sheet rỗng chỉ khi có dòng CHUA_AP | DAT |  |
 | 2 | Độ phủ khóa, khóa ngoại, không (id, cột) nào hai giá trị giữa các file | DAT |  |
 | 3 | Mỗi id đúng một dòng; số dòng khớp dữ liệu | DAT |  |
-| 4 | Công thức khớp mã game; input chép khớp nguồn | CHUA_DAT | 1 cột công thức không có cột _game |
+| 4 | Công thức khớp mã game; input chép khớp nguồn | DAT |  |
 | 5 | Số trong Excel khớp md và pdf (mẫu 200 ô, seed 20261003) | DAT |  |
 | 6 | Không ô số chứa chữ đơn vị; không ô trống ở cột bắt buộc | DAT |  |
 | 7 | Hai lần xuất liên tiếp cho file giống hệt | DAT |  |
@@ -17,29 +17,29 @@ Trạng thái: DAT = đạt; CHUA_DAT = có thiếu (liệt kê); CHUA_AP = ph�
 
 CI: coverage DAT, foreign_keys DAT, determinism DAT, secrets DAT
 
-Lớp tham chiếu (spec 12.6): CHUA_AP:prompt_xuat_luot10 (file 13 và sheet <tên>_tham_chieu chưa dựng; diff đã so mọi sheet nên sẽ báo thay đổi ở sheet tham chiếu).
+Lớp tham chiếu (spec 12.6): DAT; chi tiết ở mục 12.6 cuối file. Diff (lượt 7) so mọi sheet, nên báo cả thay đổi ở sheet tham chiếu.
 
 ## 1. Mọi file và sheet của mục 4 tồn tại; sheet rỗng chỉ khi có dòng CHUA_AP
 
-Trạng thái: CHUA_DAT.
+Trạng thái: DAT.
 
 Files:
 
 | file | có | số sheet |
 |---|---|---|
-| 01_vu_khi_dan | có | 15 |
-| 02_phuong_tien | có | 29 |
-| 03_boss | có | 39 |
-| 04_can_cu_thap | có | 24 |
-| 05_che_do_kinh_te | có | 11 |
-| 06_ai | có | 13 |
-| 07_chien_dich_cot_truyen | có | 32 |
-| 08_ban_do | có | 39 |
-| 09_hieu_ung_am_thanh | có | 18 |
-| 10_model_tai_san | có | 21 |
-| 11_meta_giao_dien | có | 24 |
+| 01_vu_khi_dan | có | 17 |
+| 02_phuong_tien | có | 32 |
+| 03_boss | có | 44 |
+| 04_can_cu_thap | có | 28 |
+| 05_che_do_kinh_te | có | 13 |
+| 06_ai | có | 15 |
+| 07_chien_dich_cot_truyen | có | 35 |
+| 08_ban_do | có | 41 |
+| 09_hieu_ung_am_thanh | có | 20 |
+| 10_model_tai_san | có | 23 |
+| 11_meta_giao_dien | có | 26 |
 | 12_he_thong_trang_thai | có | 23 |
-| 13_tham_chieu_nguon | không | 0 |
+| 13_tham_chieu_nguon | có | 7 |
 
 Sheet spec 4 nêu mà chưa có:
 
@@ -49,13 +49,13 @@ Sheet rỗng (0 dòng, không có dòng CHUA_AP):
 
 (không có)
 
-Sheet chỉ có dòng đánh dấu (CHUA_AP / NEED_CODE_CHECK / KHONG_CO): 33.
+Sheet chỉ có dòng đánh dấu (CHUA_AP / NEED_CODE_CHECK / KHONG_CO): 48.
 
 ## 2. Độ phủ khóa, khóa ngoại, không (id, cột) nào hai giá trị giữa các file
 
 Trạng thái: DAT.
 
-Nguồn 1003, lá 803070; chưa ánh xạ 0; ánh xạ hai lần 0; chờ file chưa dựng 696 (Cho_anh_xa: file 13, lượt 10). Khóa ngoại: {'OK': 260}.
+Nguồn 1003, lá 803070; chưa ánh xạ 0; ánh xạ hai lần 0; chờ file chưa dựng 0 (Cho_anh_xa: file 13, lượt 10). Khóa ngoại: {'OK': 309}.
 
 Khóa ngoại FAIL:
 
@@ -92,16 +92,14 @@ Sheet có id trùng (mọi file):
 
 ## 4. Công thức khớp mã game; input chép khớp nguồn
 
-Trạng thái: CHUA_DAT.
+Trạng thái: DAT.
 
-Cột công thức (Schema.cong_thuc): 189; cột _game: 51; cột phân tích so với bản Python (Schema.nguon_khoa 'python:', không cần _game): 140; sheet input_: 11.
+Cột công thức (Schema.cong_thuc): 217; cột _game: 82; cột phân tích so với bản Python (Schema.nguon_khoa 'python:', không cần _game): 168; sheet input_: 17.
 So công thức với _game (sai số 1e-6) là test của lượt 5; ở đây: mỗi cột công thức có cột _game, và mọi ô input_ bằng giá trị ở file nguồn (cùng id, cùng cột).
 
 Cột công thức thiếu _game:
 
-| file | sheet | cột |
-|---|---|---|
-| 01_vu_khi_dan | Vu_khi | thoi_gian_bay_toi_tam_s |
+(không có)
 
 Ô input_ khác nguồn:
 
@@ -111,7 +109,7 @@ Cột công thức thiếu _game:
 
 Trạng thái: DAT.
 
-Ô số trong bảng md (mọi file md/, bảng có dòng 'Sheet: <file>/<sheet>'): 14120; mẫu 200 (seed 20261003); khác csv: 0. pdf Machine_Brigade_Design_2026-10-03.pdf: 120 trang; mẫu 200 ô của Machine_Brigade_Design_FULL_2026-10-03.md (seed 20261004); khác csv hoặc không thấy trên trang có id dòng: 0.
+Ô số trong bảng md (mọi file md/, bảng có dòng 'Sheet: <file>/<sheet>'): 14979; mẫu 200 (seed 20261003); khác csv: 0. pdf Machine_Brigade_Design_2026-10-03.pdf: 133 trang; mẫu 200 ô của Machine_Brigade_Design_FULL_2026-10-03.md (seed 20261004); khác csv hoặc không thấy trên trang có id dòng: 0.
 
 Ô md khác csv:
 
@@ -141,7 +139,7 @@ Cột bắt buộc (Schema bat_buoc) có ô trống:
 
 Trạng thái: DAT.
 
-Hai lần xuất (hai tiến trình riêng) trên cùng dữ liệu: 365 file so băm sha256 (trừ README.md, MANIFEST.json, SELF_CHECK.md); khác: 0.
+Hai lần xuất (hai tiến trình riêng) trên cùng dữ liệu: 403 file so băm sha256 (trừ README.md, MANIFEST.json, SELF_CHECK.md); khác: 0.
 
 (không có)
 
@@ -149,7 +147,7 @@ Hai lần xuất (hai tiến trình riêng) trên cùng dữ liệu: 365 file so
 
 Trạng thái: DAT.
 
-Khong_xuat: 21 luật; nguồn không đọc được: 0; cột có NEED_CODE_CHECK: 51 (5690 ô).
+Khong_xuat: 21 luật; nguồn không đọc được: 0; cột có NEED_CODE_CHECK: 52 (5698 ô).
 
 Khong_xuat (mẫu đường dẫn, lý do, số lá):
 
@@ -206,6 +204,7 @@ Cột NEED_CODE_CHECK:
 | 01_vu_khi_dan | Khac_che | chan_mortarShell | 22 |
 | 01_vu_khi_dan | Khac_che | chan_tankShell | 22 |
 | 01_vu_khi_dan | Phao_sang | so_qua_moi_lan | 18 |
+| 01_vu_khi_dan | Vu_khi | thoi_gian_bay_toi_tam_s_game | 8 |
 | 02_phuong_tien | Doi_mo_man_suy_ra | phan_tram_cp_khoi_dau | 23 |
 | 02_phuong_tien | May_bay_so_phat | dai_muc_tieu | 26 |
 | 02_phuong_tien | Xe | hoi_tu_ve_s | 11 |
@@ -241,7 +240,57 @@ Cột NEED_CODE_CHECK:
 
 Trạng thái: DAT.
 
-Quét 395 file (mọi file của bộ xuất và các thư mục diff_*; xlsx từng phần, pdf giải nén luồng, ảnh đọc thô): khóa API (Google, AWS, GitHub, Slack, sk-), khóa riêng, mật khẩu / keystore, JWT, bearer, api_key=, email, đường dẫn tuyệt đối máy cá nhân, tên người dùng máy.
+Quét 433 file (mọi file của bộ xuất và các thư mục diff_*; xlsx từng phần, pdf giải nén luồng, ảnh đọc thô): khóa API (Google, AWS, GitHub, Slack, sk-), khóa riêng, mật khẩu / keystore, JWT, bearer, api_key=, email, đường dẫn tuyệt đối máy cá nhân, tên người dùng máy.
 
 (không có)
+
+## 12.6 Lớp tham chiếu ngoài đời và game
+
+Trạng thái: DAT.
+
+**1. Phủ thực thể** (mỗi xe, vũ khí, tháp, boss, nhà chính, tường có dòng tham chiếu; gia_tuong phải có ly_do):
+
+| loại | số thực thể | có dòng | có tham chiếu | NEED_SOURCE | gia_tuong | gia_tuong thiếu ly_do |
+|---|---:|---:|---:|---:|---:|---:|
+| xe | 120 | 120 | 75 | 45 | 0 | 0 |
+| vũ khí | 372 | 372 | 371 | 1 | 0 | 0 |
+| tháp | 76 | 76 | 52 | 24 | 0 | 0 |
+| boss | 41 | 41 | 35 | 6 | 2 | 0 |
+| nhà chính | 4 | 4 | 1 | 3 | 0 | 0 |
+| tường | 3 | 3 | 2 | 1 | 0 | 0 |
+
+**2. Nguồn:** 179 dòng Nguon_tham_chieu; 5431 lần trỏ nguon_id; mồ côi (nguon_id không có ở Nguon_tham_chieu): 0; nguồn không có URL lẫn tiêu đề: 0; có tiêu đề in rõ nhưng không URL (repo không ghi URL): 174; nguồn không ai trỏ: 4.
+
+**3. Cột thông số ngoài đời** (ngoai_doi_*, quoc_gia, nam_dua_vao_su_dung): 1812 ô có giá trị (mỗi ô trên dòng có nguon_id), 4353 ô NEED_SOURCE; ô có giá trị mà dòng không có nguon_id: 0.
+
+**4. Cơ chế lấy ý từ game:** 182 dòng Tham_chieu_game_co_che; 115 lần một dòng tham chiếu nêu game; thiếu dòng cơ chế: 0.
+
+**5. So sánh game với thật** (co_lech_lon = ngoài khoảng mà không có chủ đích):
+
+| sheet | dòng | ngoài khoảng có chủ đích (có ly_do) | co_lech_lon | trong đó có ly_do | có dòng Cho_quyet | không ly_do, không Cho_quyet |
+|---|---:|---:|---:|---:|---:|---:|
+| 01_vu_khi_dan/Vu_khi_so_sanh_that | 279 | 58 | 77 | 0 | 77 | 0 |
+| 02_phuong_tien/Phuong_tien_so_sanh_that | 269 | 51 | 39 | 0 | 39 | 0 |
+| 03_boss/Boss_so_sanh_that | 122 | 40 | 6 | 0 | 6 | 0 |
+| 04_can_cu_thap/Can_cu_so_sanh_that | 37 | 6 | 17 | 0 | 17 | 0 |
+| tổng | 707 | 155 | 139 | 0 | 139 | 0 |
+
+**6. Độ tin cậy theo lĩnh vực** (dòng của các sheet <tên>_tham_chieu):
+
+| file | dòng | da_kiem_chung | uoc_dinh | ban_dau_doan | NEED_SOURCE | gia_tuong (loại) |
+|---|---:|---:|---:|---:|---:|---:|
+| 01_vu_khi_dan | 372 | 263 (71%) | 60 (16%) | 48 (13%) | 1 (0%) | 0 |
+| 02_phuong_tien | 160 | 26 (16%) | 32 (20%) | 17 (11%) | 85 (53%) | 0 |
+| 03_boss | 41 | 9 (22%) | 18 (44%) | 8 (20%) | 6 (15%) | 2 |
+| 04_can_cu_thap | 96 | 0 (0%) | 22 (23%) | 44 (46%) | 30 (31%) | 0 |
+| 05_che_do_kinh_te | 12 | 0 (0%) | 0 (0%) | 1 (8%) | 11 (92%) | 0 |
+| 06_ai | 56 | 14 (25%) | 0 (0%) | 30 (54%) | 12 (21%) | 0 |
+| 07_chien_dich_cot_truyen | 252 | 0 (0%) | 0 (0%) | 0 (0%) | 252 (100%) | 0 |
+| 08_ban_do | 33 | 0 (0%) | 0 (0%) | 0 (0%) | 33 (100%) | 0 |
+| 09_hieu_ung_am_thanh | 55 | 0 (0%) | 0 (0%) | 0 (0%) | 55 (100%) | 0 |
+| 10_model_tai_san | 107 | 41 (38%) | 34 (32%) | 31 (29%) | 1 (1%) | 21 |
+| 11_meta_giao_dien | 13 | 0 (0%) | 0 (0%) | 0 (0%) | 13 (100%) | 0 |
+| tổng | 1197 | 353 (29%) | 166 (14%) | 179 (15%) | 499 (42%) | |
+
+Thiếu nguồn (13/Thieu_nguon): 5840 ô NEED_SOURCE (ưu tiên 1: 4028, 2: 528, 3: 1284).
 

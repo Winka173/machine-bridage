@@ -1,6 +1,6 @@
 # 08_ban_do — Bản đồ
 
-Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit 90337539, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 100 file bản đồ (25 bản đồ x 4 biến thể): bãi thả, cứ điểm, căn cứ, tường, pháo đài, cạnh, cổng vào, tag địa hình, địa danh, ray, tuyến biển, trung lập, vật thể, trang trí, đường, quân đặt sẵn; bản đồ gốc, biome, loại vật thể, thời tiết
 
@@ -701,6 +701,24 @@ Sheet: 08_ban_do/Ban_do_cu_diem_bai_tha_can_cu — Bản đồ: cứ điểm, b�
 | coralisles_sandbox | coralisles_sandbox | 0 | 2 | 0 | 0 | 0 | 0 | 28 | 8 |
 
 *15 / 100 dòng đầu: xem sheet 08_ban_do/Ban_do_cu_diem_bai_tha_can_cu; in 10 / 13 cột; 1 cột khác (và raw_json, nguon): xem sheet.*
+
+## Tham khảo ngoài đời và game
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 08_ban_do/Ban_do_tham_chieu; 08_ban_do/Ban_do_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+### Ban_do_tham_chieu
+
+33 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 0, NEED_SOURCE 33. Loại: NEED_SOURCE 33.
+
+- Chưa dòng nào có tham chiếu trong repo (xem 13_tham_chieu_nguon/Thieu_nguon).
+
+Sheet: 08_ban_do/Ban_do_so_sanh_that — Bản đồ: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | bản đồ không có thông số ngoài đời để đối chiếu |
 
 ## Các sheet khác của file
 

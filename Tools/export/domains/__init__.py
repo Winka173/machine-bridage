@@ -22,7 +22,7 @@ DOMAINS = [
     "d10_model_tai_san",
     "d11_meta_giao_dien",
     "d12_he_thong_trang_thai",
-    # pass 10 (spec 12): "d13_tham_chieu_nguon",
+    "d13_tham_chieu_nguon",  # pass 10 (spec 12): also adds <name>_tham_chieu / _so_sanh_that to 01-11
 ]
 
 # Every file of the spec (1 and 12.3), for Muc_luc_file: the ones not built yet are listed as not exported.

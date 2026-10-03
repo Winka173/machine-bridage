@@ -1,6 +1,6 @@
 # 02_phuong_tien — Phương tiện
 
-Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit 90337539, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Xe, bệ vũ khí, thẻ hỗ trợ, kỹ năng, trang bị, commander, đội mở màn, xe tham chiếu, hệ số độ bền
 
@@ -963,6 +963,107 @@ Sheet: 11_meta_giao_dien/Trang_bi_hang — Trang bị theo độ hiếm (27 dòn
 | Top/3 | Top | 3 |  | 0.03 | 0.05 | 0.08 | 0.11 | 0.14 |
 | Top/4 | Top | 4 |  | 0.02 | 0.035 | 0.05 | 0.065 | 0.08 |
 | Top/5 | Top | 5 |  | 0.002 | 0.004 | 0.006 | 0.008 | 0.01 |
+
+## Tham khảo ngoài đời và game
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 02_phuong_tien/Phuong_tien_tham_chieu; 02_phuong_tien/Phuong_tien_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+### Phuong_tien_tham_chieu
+
+160 dòng. Độ tin cậy: da_kiem_chung 26, uoc_dinh 32, ban_dau_doan 17, NEED_SOURCE 85. Loại: NEED_SOURCE 85, doi_that 75.
+
+- `aa_vehicle` (Pháo cao xạ tự hành): mẫu thật: Flakpanzer Gepard (Oerlikon KDA 35 mm);Stinger / Starstreak; giống: Pháo phòng không tự hành hai nòng 35 mm có radar; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_flakpanzer_gepard, R_unit_sheet, R_machine_brigade_can_bang.
+- `ammo_carrier` (Xe tiếp đạn): mẫu thật: M977 HEMTT;KamAZ-5350;M2 Browning 12,7 mm; giống: xe tải hậu cần chở đạn, súng máy trên vòng nóc; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_heavy_expanded_mobility_tactical_t, R_unit_sheet, R_machine_brigade_can_bang.
+- `armored_bulldozer` (Xe ủi bọc thép): mẫu thật: IDF Caterpillar D9R; giống: Xe ủi bọc thép chiến đấu; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, D_caterpillar_d9r_specifications, R_unit_sheet, R_machine_brigade_can_bang.
+- `armored_car` (Xe bọc thép bánh lốp): mẫu thật: Pandur I 6x6;M242 Bushmaster 25 mm; giống: xe bọc thép 6x6 bánh lộ ngoài, tháp pháo tự động nhỏ; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_steyr_pandur, R_unit_sheet, R_machine_brigade_can_bang.
+- `artillery` (Lựu pháo tự hành): mẫu thật: CAESAR 155 mm;M284 155 mm (M109A6/A7); giống: Lựu pháo tự hành bánh lốp 6x6, nòng 155 mm đặt sau sàn xe; độ tin: da_kiem_chung; nguồn: R_unit_refs, R_reference_real, W_wikipedia_m109_howitzer, R_unit_sheet, R_machine_brigade_can_bang.
+- `attack_helicopter` (Trực thăng tấn công): mẫu thật: AH-64D Apache Longbow;AGM-114L Hellfire Longbow;Ka-52 Alligator (model thay thế); giống: Trực thăng tấn công hai chỗ ngồi nối tiếp, radar trên trục rô-to; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_boeing_ah_64_apache, R_unit_sheet, R_machine_brigade_can_bang.
+- `attack_jet` (Máy bay cường kích): mẫu thật: Su-25 Frogfoot;A-10 Thunderbolt II (model tank_buster);GSh-30-2 30 mm; giống: Máy bay cường kích yểm trợ mặt đất; độ tin: da_kiem_chung; nguồn: R_unit_refs, R_reference_real, W_wikipedia_sukhoi_su_25, R_unit_sheet, R_machine_brigade_can_bang.
+- `ballistic_launcher` (Xe phóng tên lửa chiến thuật): mẫu thật: 9K720 Iskander (9M723); giống: Xe phóng tên lửa đạn đạo, dựng đứng tên lửa khi phóng; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_9k720_iskander, R_unit_sheet, R_machine_brigade_can_bang.
+- `bmpt` (Xe hỗ trợ tăng): mẫu thật: BMPT Terminator (khung T-72);9M120 Ataka; giống: Xe hỗ trợ xe tăng, hai pháo 30 mm; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_reference_real, R_unit_sheet, R_machine_brigade_can_bang.
+- `bunker_vehicle` (Xe công sự triển khai): mẫu thật: xe công binh bánh xích có lưỡi ủi;L7 105 mm;công sự 'hull-down'; game: Red Alert 2: Yuri's Revenge; giống: xe tự đào ụ thành lô cốt; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang.
+- `command_vehicle` (Xe chỉ huy): mẫu thật: M1130 Stryker CV;BTR-80 KShM;LAV-C2; giống: Xe chỉ huy 8x8, cột ăng-ten kính viễn vọng gập; độ tin: da_kiem_chung; nguồn: R_unit_refs, R_reference_real, W_wikipedia_stryker, R_unit_sheet, R_machine_brigade_can_bang.
+- `counter_battery_radar` (Xe radar phản pháo): mẫu thật: AN/TPQ-53;Zoopark-1;COBRA; giống: Xe radar phản pháo 6x6; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_reference_real, R_unit_sheet, R_machine_brigade_can_bang.
+- `drop_pod` (Khoang đổ bộ): mẫu thật: khoang hồi quyển Soyuz (tên lửa hãm); game: Halo;Warhammer 40,000; giống: khoang thả xe từ quỹ đạo; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_soyuz_spacecraft.
+- `elite_aa` (Phòng không tinh nhuệ): mẫu thật: Rheinmetall Skyranger 35 (đạn AHEAD);Gepard (khung gốc); giống: Phòng không tinh nhuệ, đạn nổ trên không AHEAD; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_flakpanzer_gepard.
+- `elite_apc` (Xe bọc thép tinh nhuệ): mẫu thật: M2 Bradley / BMP-3 (khung gốc);2A42 30 mm; giống: Xe chiến đấu bộ binh tinh nhuệ; độ tin: da_kiem_chung; nguồn: R_unit_refs, R_reference_real, W_wikipedia_m2_bradley.
+- … 60 dòng có tham chiếu nữa: xem sheet 02_phuong_tien/Phuong_tien_tham_chieu.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `D_army_recognition_buk_m1_2`: Army Recognition 'Buk-M1-2' (độ tin 2)
+- `D_caterpillar_d9r_specifications`: Caterpillar D9R specifications (độ tin 1)
+- `D_toyota_hilux_an10_an20_specifications`: Toyota Hilux AN10/AN20 specifications (độ tin 1)
+- `R_machine_brigade_can_bang`: Rà soát cân bằng (Machine_Brigade_Can_bang.xlsx) (độ tin 3)
+- `R_reference_real`: reference_real.json (kích thước thật, độ tin conf) (độ tin 3)
+- `R_unit_refs`: unit_refs.json (tham chiếu ngoài đời / phim / game theo đơn vị) (độ tin 3)
+- `R_unit_sheet`: unit_sheet.json (hình dạng, mô tả từ bảng cân bằng) (độ tin 3)
+- `R_zu23_technical`: spec dựng lại zu23_technical (prompt 35) (độ tin 3)
+- `W_wikipedia_2s25_sprut_sd`: Wikipedia '2S25 Sprut-SD' (độ tin 2)
+- `W_wikipedia_2s4_tyulpan`: Wikipedia '2S4 Tyulpan' (độ tin 2)
+- `W_wikipedia_9k720_iskander`: Wikipedia '9K720 Iskander' (độ tin 2)
+- `W_wikipedia_b1_centauro`: Wikipedia 'B1 Centauro' (độ tin 2)
+- `W_wikipedia_baykar_bayraktar_tb2`: Wikipedia 'Baykar Bayraktar TB2' (độ tin 2)
+- `W_wikipedia_bm_21_grad`: Wikipedia 'BM-21 Grad' (độ tin 2)
+- `W_wikipedia_bm_30_smerch`: Wikipedia 'BM-30 Smerch' (độ tin 2)
+- `W_wikipedia_boeing_ah_64_apache`: Wikipedia 'Boeing AH-64 Apache' (độ tin 2)
+- `W_wikipedia_boeing_b_52_stratofortress`: Wikipedia 'Boeing B-52 Stratofortress' (độ tin 2)
+- `W_wikipedia_boxer_armoured_fighting_vehicle`: Wikipedia 'Boxer (armoured fighting vehicle)' (độ tin 2)
+- `W_wikipedia_caesar_self_propelled_howitzer`: Wikipedia 'CAESAR self-propelled howitzer' (độ tin 2)
+- `W_wikipedia_flakpanzer_gepard`: Wikipedia 'Flakpanzer Gepard' (độ tin 2)
+- `W_wikipedia_general_atomics_mq_9_reaper`: Wikipedia 'General Atomics MQ-9 Reaper' (độ tin 2)
+- `W_wikipedia_heavy_expanded_mobility_tactical_t`: Wikipedia 'Heavy Expanded Mobility Tactical Truck' (độ tin 2)
+- `W_wikipedia_kamaz_typhoon`: Wikipedia 'KamAZ Typhoon' (độ tin 2)
+- `W_wikipedia_kirov_class_battlecruiser`: Wikipedia 'Kirov-class battlecruiser' (độ tin 2)
+- `W_wikipedia_kratos_xq_58_valkyrie`: Wikipedia 'Kratos XQ-58 Valkyrie' (độ tin 2)
+- `W_wikipedia_lcm_8`: Wikipedia 'LCM-8' (độ tin 2)
+- `W_wikipedia_leopard_2`: Wikipedia 'Leopard 2' (độ tin 2)
+- `W_wikipedia_lockheed_ac_130`: Wikipedia 'Lockheed AC-130' (độ tin 2)
+- `W_wikipedia_lockheed_c_130_hercules`: Wikipedia 'Lockheed C-130 Hercules' (độ tin 2)
+- `W_wikipedia_lockheed_martin_f_22_raptor`: Wikipedia 'Lockheed Martin F-22 Raptor' (độ tin 2)
+- `W_wikipedia_m109_howitzer`: Wikipedia 'M109 howitzer' (độ tin 2)
+- `W_wikipedia_m113_armored_personnel_carrier`: Wikipedia 'M113 armored personnel carrier' (độ tin 2)
+- `W_wikipedia_m142_himars`: Wikipedia 'M142 HIMARS' (độ tin 2)
+- `W_wikipedia_m151_mutt`: Wikipedia 'M151 MUTT' (độ tin 2)
+- `W_wikipedia_m2_bradley`: Wikipedia 'M2 Bradley' (độ tin 2)
+- `W_wikipedia_m88_recovery_vehicle`: Wikipedia 'M88 Recovery Vehicle' (độ tin 2)
+- `W_wikipedia_md_helicopters_mh_6_little_bird`: Wikipedia 'MD Helicopters MH-6 Little Bird' (độ tin 2)
+- `W_wikipedia_mil_mi_24`: Wikipedia 'Mil Mi-24' (độ tin 2)
+- `W_wikipedia_northrop_b_2_spirit`: Wikipedia 'Northrop B-2 Spirit' (độ tin 2)
+- `W_wikipedia_pt_76`: Wikipedia 'PT-76' (độ tin 2)
+- `W_wikipedia_soyuz_spacecraft`: Wikipedia 'Soyuz (spacecraft)' (độ tin 2)
+- `W_wikipedia_steyr_pandur`: Wikipedia 'Steyr Pandur' (độ tin 2)
+- `W_wikipedia_stryker`: Wikipedia 'Stryker' (độ tin 2)
+- `W_wikipedia_sukhoi_su_25`: Wikipedia 'Sukhoi Su-25' (độ tin 2)
+- `W_wikipedia_sukhoi_su_27`: Wikipedia 'Sukhoi Su-27' (độ tin 2)
+- `W_wikipedia_t_54_t_55`: Wikipedia 'T-54/T-55' (độ tin 2)
+- `W_wikipedia_t_72`: Wikipedia 'T-72' (độ tin 2)
+- `W_wikipedia_t_90`: Wikipedia 'T-90' (độ tin 2)
+- `W_wikipedia_tos_1`: Wikipedia 'TOS-1' (độ tin 2)
+
+Sheet: 02_phuong_tien/Phuong_tien_so_sanh_that — Phương tiện: so sánh với thật (269 dòng, 17 cột)
+
+| id | entity_id | thong_so | don_vi | gia_tri_game | gia_tri_that | ty_le | khoang_min | khoang_max | co_chu_dich |
+|---|---|---|---|---|---|---|---|---|---|
+| aa_vehicle/cao_m | aa_vehicle | cao_m | m | 2.92 | 3.29 | 0.8875379939209727 | 0.7 | 1.4 | FALSE |
+| aa_vehicle/cao_tren_dai | aa_vehicle | cao_tren_dai |  | 0.45341614906832295 | 0.4283854166666667 | 1.0584304026883649 | 0.9 | 1.1 | FALSE |
+| aa_vehicle/dai_m | aa_vehicle | dai_m | m | 6.44 | 7.68 | 0.8385416666666667 | 0.7 | 1.4 | FALSE |
+| aa_vehicle/rong_m | aa_vehicle | rong_m | m | 3.06 | 3.71 | 0.8247978436657682 | 0.7 | 1.4 | FALSE |
+| aa_vehicle/rong_tren_dai | aa_vehicle | rong_tren_dai |  | 0.47515527950310554 | 0.4830729166666667 | 0.9836098508312265 | 0.9 | 1.1 | FALSE |
+| aerial_tanker/cao_m | aerial_tanker | cao_m | m | 5.7 | 12.4 | 0.4596774193548387 | 0.7 | 1.4 | TRUE |
+| aerial_tanker/cao_tren_dai | aerial_tanker | cao_tren_dai |  | 0.2878787878787879 | 0.2556701030927835 | 1.1259775171065496 | 0.9 | 1.1 | FALSE |
+| aerial_tanker/dai_m | aerial_tanker | dai_m | m | 19.8 | 48.5 | 0.40824742268041236 | 0.7 | 1.4 | TRUE |
+| aerial_tanker/rong_m | aerial_tanker | rong_m | m | 22.62 | 56.4 | 0.4010638297872341 | 0.7 | 1.4 | TRUE |
+| aerial_tanker/rong_tren_dai | aerial_tanker | rong_tren_dai |  | 1.1424242424242423 | 1.1628865979381442 | 0.9824038254889319 | 0.9 | 1.1 | FALSE |
+| ammo_carrier/cao_m | ammo_carrier | cao_m | m | 2.46 | 2.84 | 0.8661971830985916 | 0.7 | 1.4 | FALSE |
+| ammo_carrier/cao_tren_dai | ammo_carrier | cao_tren_dai |  | 0.29425837320574166 | 0.27925270403146507 | 1.0537350899656313 | 0.9 | 1.1 | FALSE |
+| ammo_carrier/dai_m | ammo_carrier | dai_m | m | 8.36 | 10.17 | 0.8220255653883972 | 0.7 | 1.4 | FALSE |
+| ammo_carrier/rong_m | ammo_carrier | rong_m | m | 2.02 | 2.44 | 0.8278688524590164 | 0.7 | 1.4 | FALSE |
+| ammo_carrier/rong_tren_dai | ammo_carrier | rong_tren_dai |  | 0.24162679425837322 | 0.23992133726647 | 1.0071084006588753 | 0.9 | 1.1 | FALSE |
+
+*15 / 269 dòng đầu: xem sheet 02_phuong_tien/Phuong_tien_so_sanh_that; in 10 / 17 cột; 5 cột khác (và raw_json, nguon): xem sheet.*
 
 ## Các sheet khác của file
 

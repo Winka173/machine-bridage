@@ -518,6 +518,8 @@ def main(args, ex) -> int:
         ]
     finally:
         shutil.rmtree(work, ignore_errors=True)
+    from . import refcheck
+    ref = refcheck.run(books)
     cov_ok, fk_ok = results[1][3], results[1][4]
     ci = {"coverage": cov_ok, "foreign_keys": fk_ok, "determinism": results[6][0] == "DAT", "secrets": results[8][0] == "DAT"}
     lines = ["# Tự kiểm bộ xuất (spec 9)", "",
@@ -528,10 +530,11 @@ def main(args, ex) -> int:
     for title, r in zip(TITLES, results):
         lines.append(f"| {title.split('.')[0]} | {_md(title.split('. ', 1)[1])} | {r[0]} | {_md('; '.join(r[1]), 600)} |")
     lines += ["", "CI: " + ", ".join(f"{k} {'DAT' if v else 'CHUA_DAT'}" for k, v in ci.items()), "",
-              "Lớp tham chiếu (spec 12.6): CHUA_AP:prompt_xuat_luot10 (file 13 và sheet <tên>_tham_chieu chưa dựng; "
-              "diff đã so mọi sheet nên sẽ báo thay đổi ở sheet tham chiếu).", ""]
+              f"Lớp tham chiếu (spec 12.6): {ref['status']}" + (f" ({'; '.join(ref['gaps'])})" if ref["gaps"] else "")
+              + "; chi tiết ở mục 12.6 cuối file. Diff (lượt 7) so mọi sheet, nên báo cả thay đổi ở sheet tham chiếu.", ""]
     for title, r in zip(TITLES, results):
         lines += [f"## {title}", "", f"Trạng thái: {r[0]}.", ""] + r[2]
+    lines += ["## 12.6 Lớp tham chiếu ngoài đời và game", "", f"Trạng thái: {ref['status']}.", ""] + ref["lines"]
     text = "\n".join(lines) + "\n"
     (out / "00_chi_muc" / "SELF_CHECK.md").write_bytes(text.encode("utf-8"))
     _manifest_add(out, "00_chi_muc/SELF_CHECK.md")
@@ -539,6 +542,8 @@ def main(args, ex) -> int:
     print(f"check: wrote {out.name}/00_chi_muc/SELF_CHECK.md")
     for title, r in zip(TITLES, results):
         print(f"  {title.split('.')[0]}: {r[0]}" + (f"  ({'; '.join(r[1])})" if r[1] else ""))
+    print(f"  12.6: {ref['status']}" + (f"  ({'; '.join(ref['gaps'])})" if ref["gaps"] else "")
+          + f"  co_lech_lon {ref.get('co_lech_lon', {})}  NEED_SOURCE rows {ref.get('need_source')}")
     print("  CI: " + ", ".join(f"{k} {'ok' if v else 'FAIL'}" for k, v in ci.items()))
     return 0 if all(ci.values()) else 1
 

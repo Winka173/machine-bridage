@@ -1,6 +1,6 @@
 # 04_can_cu_thap — Căn cứ và tháp
 
-Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit 90337539, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Tháp và nhánh, tường, nhà chính (kiểu x cấp), mô-đun tiện ích, ô căn cứ theo cấp HQ, xây lại, loadout tham chiếu, AI xây căn cứ
 
@@ -49,7 +49,7 @@ Căn cứ là một loadout chọn trước trận như bộ bài: sở chỉ hu
 
 | Mô-đun | Tác dụng |
 |---|---|
-| **Sân bay dã chiến** | **Sân bay dã chiến · mô-đun tiện ích** Cách đánh: máy bay bay trên nó hồi 3% máu mỗi giây và nạp đạn; chỉ huy tự đưa chúng về khi hết đạn. Mạnh / yếu: giúp trực thăng và máy bay bay… |
+| **Sân bay dã chiến** | **Sân bay dã chiến · mô-đun tiện ích** Cách đánh: máy bay bay trên nó hồi 3% máu mỗi giây và nạp đạn; chúng về đây khi hết đạn (không còn bay về vì bị thương). Mạnh / yếu: giúp trực thăng và máy bay… |
 | **Sân bay dã chiến · Nhà chứa máy bay** |  |
 | **Sân bay dã chiến · Phục vụ nhanh** |  |
 | **Kho đạn** | **Kho đạn · mô-đun tiện ích** Cách đánh: xe nạp đạn tại căn cứ nhanh gấp đôi. Mạnh / yếu: rất hợp với giàn phóng và pháo binh hay hết đạn; nổ rất mạnh khi bị phá. Mẹo: mang theo khi bộ bài nhiều pháo… |
@@ -367,6 +367,85 @@ Sheet: 04_can_cu_thap/Can_cu_AI_cap — AI xây căn cứ: cấp HQ theo độ k
 | Hard | base.ai.levels | Hard | 5 |
 | Normal | base.ai.levels | Normal | 3 |
 | VeryHard | base.ai.levels | VeryHard | 5 |
+
+## Tham khảo ngoài đời và game
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 04_can_cu_thap/Can_cu_tham_chieu; 04_can_cu_thap/Can_cu_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+### Can_cu_tham_chieu
+
+96 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 22, ban_dau_doan 44, NEED_SOURCE 30. Loại: NEED_SOURCE 30, doi_that 63, game 3.
+
+- `aa_turret` (Tháp phòng không): mẫu thật: 2K22 Tunguska (2A38 30 mm);Stinger; game: WARNO; giống: pháo phòng không hai nòng 35 mm trên ụ bao cát; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_machine_brigade_ai_research.
+- `aa_turret.flak` (aa_turret.flak): mẫu thật: ZSU-23-4 Shilka (23 mm bốn nòng); giống: Nhánh pháo phòng không bốn nòng; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `aa_turret.sam` (aa_turret.sam): mẫu thật: Mistral ATLAS;RBS-70;Starstreak LML; giống: Nhánh trạm tên lửa phòng không; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `airfield` (Sân bay dã chiến): mẫu thật: bãi đáp trực thăng (chữ H); giống: Bãi đáp sửa chữa và nạp đạn cho máy bay; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `airfield.hangar` (airfield.hangar): mẫu thật: nhà chứa máy bay dã chiến; giống: nhánh nhà chứa; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `airfield.service` (airfield.service): mẫu thật: FARP (điểm tiếp đạn và nhiên liệu tiền phương); giống: nhánh phục vụ máy bay; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `ammo_depot` (Kho đạn): mẫu thật: kho đạn dã chiến dưới lưới ngụy trang; giống: Kho đạn, nổ lớn khi bị phá; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `artillery_emplacement` (Trận địa pháo): mẫu thật: 2A65 Msta-B / D-20 152 mm (lựu pháo kéo);M284 155 mm; game: WARNO; giống: lựu pháo kéo trong ụ bao cát; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_machine_brigade_ai_research.
+- `artillery_emplacement.cb` (artillery_emplacement.cb): mẫu thật: M284 155 mm; giống: Nhánh lựu pháo phản pháo; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `artillery_emplacement.mortar` (artillery_emplacement.mortar): mẫu thật: 2B8 240 mm;2S4 Tyulpan;M-240 (cối kéo 240 mm); giống: Nhánh cối 240 mm bắn cầu vồng; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `at_gun_emplacement` (Ụ pháo chống tăng): mẫu thật: 2A45 Sprut-B 125 mm; game: Company of Heroes; giống: Ụ pháo chống tăng; độ tin: ban_dau_doan; nguồn: R_unit_refs.
+- `atgm_tower` (Tháp tên lửa chống tăng): mẫu thật: 9M133 Kornet; giống: Tháp bê tông phóng tên lửa chống tăng; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `atgm_tower.multi` (atgm_tower.multi): mẫu thật: 9M133 Kornet;Kornet-EM (bệ nhiều ống); giống: ước đoán (Kornet-EM): nhánh đa năng bốn ống và radar nhỏ; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `atgm_tower.top` (atgm_tower.top): mẫu thật: 9M133 Kornet;FGM-148 Javelin (đánh nóc); giống: ước đoán (Javelin): nhánh tên lửa đánh nóc; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `barrage_balloon` (Khí cầu neo radar (JLENS)): mẫu thật: JLENS (khí cầu neo radar); giống: Khí cầu neo radar: bom địch kém chính xác, lộ máy bay tàng hình gần; độ tin: ban_dau_doan; nguồn: R_unit_refs.
+- … 51 dòng có tham chiếu nữa: xem sheet 04_can_cu_thap/Can_cu_tham_chieu.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `R_decisions`: Docs/DECISIONS.md (nhật ký quyết định) (độ tin 3)
+- `R_machine_brigade_ai_research`: Nghiên cứu AI (Machine_Brigade_AI_Research.xlsx) (độ tin 3)
+- `R_machine_brigade_can_bang`: Rà soát cân bằng (Machine_Brigade_Can_bang.xlsx) (độ tin 3)
+- `R_rocket_turret`: spec dựng lại rocket_turret (prompt 35) (độ tin 3)
+- `R_unit_refs`: unit_refs.json (tham chiếu ngoài đời / phim / game theo đơn vị) (độ tin 3)
+
+Sheet: 04_can_cu_thap/Can_cu_so_sanh_that — Căn cứ và tháp: so sánh với thật (37 dòng, 18 cột)
+
+| id | entity_id | thong_so | don_vi | gia_tri_game | gia_tri_that | ty_le | khoang_min | khoang_max | co_chu_dich |
+|---|---|---|---|---|---|---|---|---|---|
+| aa_gun_tower/bofors_l70/nhip | aa_gun_tower | khe_mot_nong_mot_vien | s | 0.3875 | 0.18181818181818182 | 2.13125 | 0.6 | 2.0 | TRUE |
+| aa_turret.flak/flak_quad/nhip | aa_turret.flak | khe_mot_nong_mot_vien | s | 0.23831112 | 0.06 | 3.9718519999999997 | 0.6 | 2.0 | TRUE |
+| aa_turret.sam/stinger_post/nhip | aa_turret.sam | khe_mot_nong_mot_vien | s | 4.452 | 3.0 | 1.484 | 0.6 | 2.0 | FALSE |
+| aa_turret/sam/nhip | aa_turret | khe_mot_nong_mot_vien | s | 4.452 | 3.0 | 1.484 | 0.6 | 2.0 | FALSE |
+| aa_turret/tower_flak_30/nhip | aa_turret | khe_mot_nong_mot_vien | s | 0.107200008 | 0.024 | 4.466667 | 0.6 | 2.0 | TRUE |
+| artillery_emplacement.cb/howitzer_cb/nhip | artillery_emplacement.cb | khe_mot_nong_mot_vien | s | 4.549992857 | 21.42857142857143 | 0.21233299999333333 | 0.6 | 2.0 | FALSE |
+| artillery_emplacement.mortar/mortar_240_fixed/nhip | artillery_emplacement.mortar | khe_mot_nong_mot_vien | s | 6.75 | 85.71428571428572 | 0.07874999999999999 | 0.6 | 2.0 | FALSE |
+| artillery_emplacement/howitzer_fixed/nhip | artillery_emplacement | khe_mot_nong_mot_vien | s | 4.549992857 | 21.42857142857143 | 0.21233299999333333 | 0.6 | 2.0 | FALSE |
+| at_gun_emplacement/at_gun_100/nhip | at_gun_emplacement | khe_mot_nong_mot_vien | s | 5.000002041 | 6.122448979591837 | 0.8166670000299999 | 0.6 | 2.0 | FALSE |
+| atgm_tower.multi/kornet_multi/nhip | atgm_tower.multi | khe_mot_nong_mot_vien | s | 5.55 | 20.0 | 0.27749999999999997 | 0.6 | 2.0 | FALSE |
+| atgm_tower.top/kornet_top/nhip | atgm_tower.top | khe_mot_nong_mot_vien | s | 5.2 | 20.0 | 0.26 | 0.6 | 2.0 | FALSE |
+| atgm_tower/tower_kornet/nhip | atgm_tower | khe_mot_nong_mot_vien | s | 5.55 | 20.0 | 0.27749999999999997 | 0.6 | 2.0 | FALSE |
+| bulwark_post/bunker_hmg/nhip | bulwark_post | khe_mot_nong_mot_vien | s | 0.08866665 | 0.075 | 1.182222 | 0.6 | 2.0 | FALSE |
+| c_ram.dome/tamir/nhip | c_ram.dome | khe_mot_nong_mot_vien | s | 6.833333 | 1.0 | 6.833333 | 0.6 | 2.0 | FALSE |
+| c_ram/c_ram_gatling/nhip | c_ram | khe_mot_nong_mot_vien | s | 0.035 | 0.013333333333333334 | 2.625 | 0.6 | 2.0 | TRUE |
+| coastal_battery/gun_155_coastal/nhip | coastal_battery | khe_mot_nong_mot_vien | s | 4.420007143 | 21.42857142857143 | 0.20626700000666667 | 0.6 | 2.0 | FALSE |
+| guard_tower.nest/tower_ac25/nhip | guard_tower.nest | khe_mot_nong_mot_vien | s | 0.255 | 0.12 | 2.125 | 0.6 | 2.0 | TRUE |
+| guard_tower/tower_hmg/nhip | guard_tower | khe_mot_nong_mot_vien | s | 0.125 | 0.1 | 1.25 | 0.6 | 2.0 | FALSE |
+| gun_turret.auto/gun_57_auto/nhip | gun_turret.auto | khe_mot_nong_mot_vien | s | 0.9 | 0.5 | 1.8 | 0.6 | 2.0 | FALSE |
+| gun_turret.long/turret_gun_120_long/nhip | gun_turret.long | khe_mot_nong_mot_vien | s | 3.9 | 10.714285714285715 | 0.36399999999999993 | 0.6 | 2.0 | FALSE |
+| gun_turret/turret_gun_120/nhip | gun_turret | khe_mot_nong_mot_vien | s | 2.88 | 10.714285714285715 | 0.2688 | 0.6 | 2.0 | FALSE |
+| heavy_flak_tower/flak_88/nhip | heavy_flak_tower | khe_mot_nong_mot_vien | s | 2.0 | 4.0 | 0.5 | 0.6 | 2.0 | FALSE |
+| heavy_turret.bastion/hmg_roof/nhip | heavy_turret.bastion | khe_mot_nong_mot_vien | s | 0.1611 | 0.1 | 1.6109999999999998 | 0.6 | 2.0 | FALSE |
+| heavy_turret.coastal/gun_155_twin_coastlr/nhip | heavy_turret.coastal | khe_mot_nong_mot_vien | s | 5.55 | 21.42857142857143 | 0.25899999999999995 | 0.6 | 2.0 | FALSE |
+| heavy_turret/gun_155_twin_ap/nhip | heavy_turret | khe_mot_nong_mot_vien | s | 5.55 | 21.42857142857143 | 0.25899999999999995 | 0.6 | 2.0 | FALSE |
+| manpads_tower/sam/nhip | manpads_tower | khe_mot_nong_mot_vien | s | 4.452 | 3.0 | 1.484 | 0.6 | 2.0 | FALSE |
+| mg_bunker.twin/bunker_hmg_twin/nhip | mg_bunker.twin | khe_mot_nong_mot_vien | s | 0.1533333 | 0.075 | 2.0444440000000004 | 0.6 | 2.0 | TRUE |
+| mg_bunker/bunker_hmg/nhip | mg_bunker | khe_mot_nong_mot_vien | s | 0.08866665 | 0.075 | 1.182222 | 0.6 | 2.0 | FALSE |
+| missile_battery.lrr/sam_battery_lrr/nhip | missile_battery.lrr | khe_mot_nong_mot_vien | s | 1.95 | 3.0 | 0.65 | 0.6 | 2.0 | FALSE |
+| missile_battery.pac3/sam_pac3/nhip | missile_battery.pac3 | khe_mot_nong_mot_vien | s | 3.350001 | 3.0 | 1.1166669999999999 | 0.6 | 2.0 | FALSE |
+| missile_battery/patriot/nhip | missile_battery | khe_mot_nong_mot_vien | s | 1.599999 | 3.0 | 0.533333 | 0.6 | 2.0 | FALSE |
+| one_shot_atgm_tower/one_shot_kornet/nhip | one_shot_atgm_tower | khe_mot_nong_mot_vien | s | 1.2 | 20.0 | 0.06 | 0.6 | 2.0 | FALSE |
+| recoilless_gun_tower/spg9_73mm/nhip | recoilless_gun_tower | khe_mot_nong_mot_vien | s | 6.67 | 14.285714285714286 | 0.4669 | 0.6 | 2.0 | FALSE |
+| rocket_turret.cluster/turret_rockets_cluster/nhip | rocket_turret.cluster | khe_mot_nong_mot_vien | s | 0.5 | 0.5 | 1.0 | 0.6 | 2.0 | FALSE |
+| rocket_turret.guided/turret_gmlrs/nhip | rocket_turret.guided | khe_mot_nong_mot_vien | s | 0.5 | 5.0 | 0.1 | 0.6 | 2.0 | FALSE |
+| rocket_turret/turret_rockets/nhip | rocket_turret | khe_mot_nong_mot_vien | s | 0.5 | 0.5 | 1.0 | 0.6 | 2.0 | FALSE |
+| spawn_bastion/bastion_gun/nhip | spawn_bastion | khe_mot_nong_mot_vien | s | 5.209997143 | 8.571428571428571 | 0.6078330000166666 | 0.6 | 2.0 | FALSE |
+
+*in 10 / 18 cột; 6 cột khác (và raw_json, nguon): xem sheet.*
 
 ## Các sheet khác của file
 

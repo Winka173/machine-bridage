@@ -1,19 +1,19 @@
 # Machine Brigade — Tài liệu thiết kế toàn văn (2026-10-03)
 
-Commit be7d9f51. Sinh bởi `python Tools/export/export.py` (spec 6): ghép theo mục lục của tài liệu thiết kế (mục 1–19) cùng các mục mới 3b, 3c, 10i, 15b, 16b, 20, 21 và phụ lục P1–P5. Bảng in đúng ô của sheet (csv / xlsx cùng bộ xuất); bảng quá 40 dòng in 15 dòng đầu. PDF cùng ngày sinh từ chính file này.
+Commit 90337539. Sinh bởi `python Tools/export/export.py` (spec 6): ghép theo mục lục của tài liệu thiết kế (mục 1–19) cùng các mục mới 3b, 3c, 10i, 15b, 16b, 20, 21 và phụ lục P1–P5. Bảng in đúng ô của sheet (csv / xlsx cùng bộ xuất); bảng quá 40 dòng in 15 dòng đầu. PDF cùng ngày sinh từ chính file này.
 
 <!-- SELF_CHECK -->
 ## Tự kiểm bộ xuất (spec 9; 00_chi_muc/SELF_CHECK.md)
 
-Commit be7d9f51, ngày 2026-10-03, bản gốc so sánh `origin/main`. Lệnh: `python Tools/export/export.py check`.
+Commit 90337539, ngày 2026-10-03, bản gốc so sánh `origin/main`. Lệnh: `python Tools/export/export.py check`.
 Trạng thái: DAT = đạt; CHUA_DAT = có thiếu (liệt kê); CHUA_AP = phần của lượt sau. CI (.github/workflows/export.yml) chặn khi độ phủ, khóa ngoại, đồng nhất hoặc bí mật không đạt.
 
 | # | Kiểm | Trạng thái | Thiếu |
 |---|---|---|---|
-| 1 | Mọi file và sheet của mục 4 tồn tại; sheet rỗng chỉ khi có dòng CHUA_AP | CHUA_DAT | file 13_tham_chieu_nguon chưa xuất (lượt 10, spec 12.3) |
+| 1 | Mọi file và sheet của mục 4 tồn tại; sheet rỗng chỉ khi có dòng CHUA_AP | DAT |  |
 | 2 | Độ phủ khóa, khóa ngoại, không (id, cột) nào hai giá trị giữa các file | DAT |  |
 | 3 | Mỗi id đúng một dòng; số dòng khớp dữ liệu | DAT |  |
-| 4 | Công thức khớp mã game; input chép khớp nguồn | CHUA_DAT | 1 cột công thức không có cột _game |
+| 4 | Công thức khớp mã game; input chép khớp nguồn | DAT |  |
 | 5 | Số trong Excel khớp md và pdf (mẫu 200 ô, seed 20261003) | DAT |  |
 | 6 | Không ô số chứa chữ đơn vị; không ô trống ở cột bắt buộc | DAT |  |
 | 7 | Hai lần xuất liên tiếp cho file giống hệt | DAT |  |
@@ -22,29 +22,29 @@ Trạng thái: DAT = đạt; CHUA_DAT = có thiếu (liệt kê); CHUA_AP = ph�
 
 CI: coverage DAT, foreign_keys DAT, determinism DAT, secrets DAT
 
-Lớp tham chiếu (spec 12.6): CHUA_AP:prompt_xuat_luot10 (file 13 và sheet <tên>_tham_chieu chưa dựng; diff đã so mọi sheet nên sẽ báo thay đổi ở sheet tham chiếu).
+Lớp tham chiếu (spec 12.6): DAT; chi tiết ở mục 12.6 cuối file. Diff (lượt 7) so mọi sheet, nên báo cả thay đổi ở sheet tham chiếu.
 
 ### 1. Mọi file và sheet của mục 4 tồn tại; sheet rỗng chỉ khi có dòng CHUA_AP
 
-Trạng thái: CHUA_DAT.
+Trạng thái: DAT.
 
 Files:
 
 | file | có | số sheet |
 |---|---|---|
-| 01_vu_khi_dan | có | 15 |
-| 02_phuong_tien | có | 29 |
-| 03_boss | có | 39 |
-| 04_can_cu_thap | có | 24 |
-| 05_che_do_kinh_te | có | 11 |
-| 06_ai | có | 13 |
-| 07_chien_dich_cot_truyen | có | 32 |
-| 08_ban_do | có | 39 |
-| 09_hieu_ung_am_thanh | có | 18 |
-| 10_model_tai_san | có | 21 |
-| 11_meta_giao_dien | có | 24 |
+| 01_vu_khi_dan | có | 17 |
+| 02_phuong_tien | có | 32 |
+| 03_boss | có | 44 |
+| 04_can_cu_thap | có | 28 |
+| 05_che_do_kinh_te | có | 13 |
+| 06_ai | có | 15 |
+| 07_chien_dich_cot_truyen | có | 35 |
+| 08_ban_do | có | 41 |
+| 09_hieu_ung_am_thanh | có | 20 |
+| 10_model_tai_san | có | 23 |
+| 11_meta_giao_dien | có | 26 |
 | 12_he_thong_trang_thai | có | 23 |
-| 13_tham_chieu_nguon | không | 0 |
+| 13_tham_chieu_nguon | có | 7 |
 
 Sheet spec 4 nêu mà chưa có:
 
@@ -54,13 +54,13 @@ Sheet rỗng (0 dòng, không có dòng CHUA_AP):
 
 (không có)
 
-Sheet chỉ có dòng đánh dấu (CHUA_AP / NEED_CODE_CHECK / KHONG_CO): 33.
+Sheet chỉ có dòng đánh dấu (CHUA_AP / NEED_CODE_CHECK / KHONG_CO): 48.
 
 ### 2. Độ phủ khóa, khóa ngoại, không (id, cột) nào hai giá trị giữa các file
 
 Trạng thái: DAT.
 
-Nguồn 1003, lá 803070; chưa ánh xạ 0; ánh xạ hai lần 0; chờ file chưa dựng 696 (Cho_anh_xa: file 13, lượt 10). Khóa ngoại: {'OK': 260}.
+Nguồn 1003, lá 803070; chưa ánh xạ 0; ánh xạ hai lần 0; chờ file chưa dựng 0 (Cho_anh_xa: file 13, lượt 10). Khóa ngoại: {'OK': 309}.
 
 Khóa ngoại FAIL:
 
@@ -97,16 +97,14 @@ Sheet có id trùng (mọi file):
 
 ### 4. Công thức khớp mã game; input chép khớp nguồn
 
-Trạng thái: CHUA_DAT.
+Trạng thái: DAT.
 
-Cột công thức (Schema.cong_thuc): 189; cột _game: 51; cột phân tích so với bản Python (Schema.nguon_khoa 'python:', không cần _game): 140; sheet input_: 11.
+Cột công thức (Schema.cong_thuc): 217; cột _game: 82; cột phân tích so với bản Python (Schema.nguon_khoa 'python:', không cần _game): 168; sheet input_: 17.
 So công thức với _game (sai số 1e-6) là test của lượt 5; ở đây: mỗi cột công thức có cột _game, và mọi ô input_ bằng giá trị ở file nguồn (cùng id, cùng cột).
 
 Cột công thức thiếu _game:
 
-| file | sheet | cột |
-|---|---|---|
-| 01_vu_khi_dan | Vu_khi | thoi_gian_bay_toi_tam_s |
+(không có)
 
 Ô input_ khác nguồn:
 
@@ -116,7 +114,7 @@ Cột công thức thiếu _game:
 
 Trạng thái: DAT.
 
-Ô số trong bảng md (mọi file md/, bảng có dòng 'Sheet: <file>/<sheet>'): 14120; mẫu 200 (seed 20261003); khác csv: 0. pdf Machine_Brigade_Design_2026-10-03.pdf: 120 trang; mẫu 200 ô của Machine_Brigade_Design_FULL_2026-10-03.md (seed 20261004); khác csv hoặc không thấy trên trang có id dòng: 0.
+Ô số trong bảng md (mọi file md/, bảng có dòng 'Sheet: <file>/<sheet>'): 14979; mẫu 200 (seed 20261003); khác csv: 0. pdf Machine_Brigade_Design_2026-10-03.pdf: 133 trang; mẫu 200 ô của Machine_Brigade_Design_FULL_2026-10-03.md (seed 20261004); khác csv hoặc không thấy trên trang có id dòng: 0.
 
 Ô md khác csv:
 
@@ -146,7 +144,7 @@ Cột bắt buộc (Schema bat_buoc) có ô trống:
 
 Trạng thái: DAT.
 
-Hai lần xuất (hai tiến trình riêng) trên cùng dữ liệu: 365 file so băm sha256 (trừ README.md, MANIFEST.json, SELF_CHECK.md); khác: 0.
+Hai lần xuất (hai tiến trình riêng) trên cùng dữ liệu: 403 file so băm sha256 (trừ README.md, MANIFEST.json, SELF_CHECK.md); khác: 0.
 
 (không có)
 
@@ -154,7 +152,7 @@ Hai lần xuất (hai tiến trình riêng) trên cùng dữ liệu: 365 file so
 
 Trạng thái: DAT.
 
-Khong_xuat: 21 luật; nguồn không đọc được: 0; cột có NEED_CODE_CHECK: 51 (5690 ô).
+Khong_xuat: 21 luật; nguồn không đọc được: 0; cột có NEED_CODE_CHECK: 52 (5698 ô).
 
 Khong_xuat (mẫu đường dẫn, lý do, số lá):
 
@@ -211,6 +209,7 @@ Cột NEED_CODE_CHECK:
 | 01_vu_khi_dan | Khac_che | chan_mortarShell | 22 |
 | 01_vu_khi_dan | Khac_che | chan_tankShell | 22 |
 | 01_vu_khi_dan | Phao_sang | so_qua_moi_lan | 18 |
+| 01_vu_khi_dan | Vu_khi | thoi_gian_bay_toi_tam_s_game | 8 |
 | 02_phuong_tien | Doi_mo_man_suy_ra | phan_tram_cp_khoi_dau | 23 |
 | 02_phuong_tien | May_bay_so_phat | dai_muc_tieu | 26 |
 | 02_phuong_tien | Xe | hoi_tu_ve_s | 11 |
@@ -246,9 +245,59 @@ Cột NEED_CODE_CHECK:
 
 Trạng thái: DAT.
 
-Quét 395 file (mọi file của bộ xuất và các thư mục diff_*; xlsx từng phần, pdf giải nén luồng, ảnh đọc thô): khóa API (Google, AWS, GitHub, Slack, sk-), khóa riêng, mật khẩu / keystore, JWT, bearer, api_key=, email, đường dẫn tuyệt đối máy cá nhân, tên người dùng máy.
+Quét 433 file (mọi file của bộ xuất và các thư mục diff_*; xlsx từng phần, pdf giải nén luồng, ảnh đọc thô): khóa API (Google, AWS, GitHub, Slack, sk-), khóa riêng, mật khẩu / keystore, JWT, bearer, api_key=, email, đường dẫn tuyệt đối máy cá nhân, tên người dùng máy.
 
 (không có)
+
+### 12.6 Lớp tham chiếu ngoài đời và game
+
+Trạng thái: DAT.
+
+**1. Phủ thực thể** (mỗi xe, vũ khí, tháp, boss, nhà chính, tường có dòng tham chiếu; gia_tuong phải có ly_do):
+
+| loại | số thực thể | có dòng | có tham chiếu | NEED_SOURCE | gia_tuong | gia_tuong thiếu ly_do |
+|---|---:|---:|---:|---:|---:|---:|
+| xe | 120 | 120 | 75 | 45 | 0 | 0 |
+| vũ khí | 372 | 372 | 371 | 1 | 0 | 0 |
+| tháp | 76 | 76 | 52 | 24 | 0 | 0 |
+| boss | 41 | 41 | 35 | 6 | 2 | 0 |
+| nhà chính | 4 | 4 | 1 | 3 | 0 | 0 |
+| tường | 3 | 3 | 2 | 1 | 0 | 0 |
+
+**2. Nguồn:** 179 dòng Nguon_tham_chieu; 5431 lần trỏ nguon_id; mồ côi (nguon_id không có ở Nguon_tham_chieu): 0; nguồn không có URL lẫn tiêu đề: 0; có tiêu đề in rõ nhưng không URL (repo không ghi URL): 174; nguồn không ai trỏ: 4.
+
+**3. Cột thông số ngoài đời** (ngoai_doi_*, quoc_gia, nam_dua_vao_su_dung): 1812 ô có giá trị (mỗi ô trên dòng có nguon_id), 4353 ô NEED_SOURCE; ô có giá trị mà dòng không có nguon_id: 0.
+
+**4. Cơ chế lấy ý từ game:** 182 dòng Tham_chieu_game_co_che; 115 lần một dòng tham chiếu nêu game; thiếu dòng cơ chế: 0.
+
+**5. So sánh game với thật** (co_lech_lon = ngoài khoảng mà không có chủ đích):
+
+| sheet | dòng | ngoài khoảng có chủ đích (có ly_do) | co_lech_lon | trong đó có ly_do | có dòng Cho_quyet | không ly_do, không Cho_quyet |
+|---|---:|---:|---:|---:|---:|---:|
+| 01_vu_khi_dan/Vu_khi_so_sanh_that | 279 | 58 | 77 | 0 | 77 | 0 |
+| 02_phuong_tien/Phuong_tien_so_sanh_that | 269 | 51 | 39 | 0 | 39 | 0 |
+| 03_boss/Boss_so_sanh_that | 122 | 40 | 6 | 0 | 6 | 0 |
+| 04_can_cu_thap/Can_cu_so_sanh_that | 37 | 6 | 17 | 0 | 17 | 0 |
+| tổng | 707 | 155 | 139 | 0 | 139 | 0 |
+
+**6. Độ tin cậy theo lĩnh vực** (dòng của các sheet <tên>_tham_chieu):
+
+| file | dòng | da_kiem_chung | uoc_dinh | ban_dau_doan | NEED_SOURCE | gia_tuong (loại) |
+|---|---:|---:|---:|---:|---:|---:|
+| 01_vu_khi_dan | 372 | 263 (71%) | 60 (16%) | 48 (13%) | 1 (0%) | 0 |
+| 02_phuong_tien | 160 | 26 (16%) | 32 (20%) | 17 (11%) | 85 (53%) | 0 |
+| 03_boss | 41 | 9 (22%) | 18 (44%) | 8 (20%) | 6 (15%) | 2 |
+| 04_can_cu_thap | 96 | 0 (0%) | 22 (23%) | 44 (46%) | 30 (31%) | 0 |
+| 05_che_do_kinh_te | 12 | 0 (0%) | 0 (0%) | 1 (8%) | 11 (92%) | 0 |
+| 06_ai | 56 | 14 (25%) | 0 (0%) | 30 (54%) | 12 (21%) | 0 |
+| 07_chien_dich_cot_truyen | 252 | 0 (0%) | 0 (0%) | 0 (0%) | 252 (100%) | 0 |
+| 08_ban_do | 33 | 0 (0%) | 0 (0%) | 0 (0%) | 33 (100%) | 0 |
+| 09_hieu_ung_am_thanh | 55 | 0 (0%) | 0 (0%) | 0 (0%) | 55 (100%) | 0 |
+| 10_model_tai_san | 107 | 41 (38%) | 34 (32%) | 31 (29%) | 1 (1%) | 21 |
+| 11_meta_giao_dien | 13 | 0 (0%) | 0 (0%) | 0 (0%) | 13 (100%) | 0 |
+| tổng | 1197 | 353 (29%) | 166 (14%) | 179 (15%) | 499 (42%) | |
+
+Thiếu nguồn (13/Thieu_nguon): 5840 ô NEED_SOURCE (ưu tiên 1: 4028, 2: 528, 3: 1284).
 
 <!-- /SELF_CHECK -->
 
@@ -1151,7 +1200,7 @@ Mỗi nhiệm vụ ghép từ thư viện sự kiện dạng dữ liệu (67 s�
 
 #### Thoại trong trận
 
-Mọi lời nhân vật trong trận là một dòng chữ kiểu phụ đề ngay trên khay thẻ: tên người nói in đậm, màu theo phe (ta xanh nhạt, địch đỏ đậm), rồi câu thoại; nền chỉ là một dải tối mờ, rộng tối đa nửa màn hình, tối đa 2 dòng, có chân dung nhỏ của người nói, không lồng tiếng. Một câu một lúc, theo mức ưu tiên: cốt truyện, cảnh báo, sự kiện, phản ứng. Câu cốt truyện và cảnh báo xếp hàng (cảnh báo quá 12 s thì bỏ); câu sự kiện và phản ứng hiện ngay hoặc bỏ, cách nhau tối thiểu 9 s (20 s cho câu phản ứng khi có boss trên sân). Mỗi câu hiện 3–6 s theo độ dài, mờ dần 0,25 s, không bao giờ dừng trận. Nhật ký 20 câu gần nhất mở từ menu tạm dừng. Cài đặt: Đầy đủ / Chỉ quan trọng / Tắt (câu cốt truyện luôn hiện). Sáu khoảnh khắc cốt truyện làm trận chậm 0,5 lần trong khi 2–3 câu liên tiếp chạy: Hollow Dam, Venn mất bầy drone, Thorne phản bội, Thorne trên Typhon, Varga ngã xuống, Icarus rơi.
+Mọi lời nhân vật trong trận là một dòng chữ kiểu phụ đề ngay trên khay thẻ: tên người nói in đậm, màu theo phe (ta xanh nhạt, địch đỏ đậm), rồi câu thoại; nền chỉ là một dải tối mờ, rộng tối đa nửa màn hình, tối đa 2 dòng, mở đầu bằng chân dung nhỏ của người nói (thiếu chân dung thì ô tạm theo phe với chữ cái đầu; DialogueViews), không lồng tiếng. Một câu một lúc, theo mức ưu tiên: cốt truyện, cảnh báo, sự kiện, phản ứng. Câu cốt truyện và cảnh báo xếp hàng (cảnh báo quá 12 s thì bỏ); câu sự kiện và phản ứng hiện ngay hoặc bỏ, cách nhau tối thiểu 9 s (20 s cho câu phản ứng khi có boss trên sân). Mỗi câu hiện 3–6 s theo độ dài, mờ dần 0,25 s, không bao giờ dừng trận. Nhật ký 20 câu gần nhất mở từ menu tạm dừng. Cài đặt: Đầy đủ / Chỉ quan trọng / Tắt (câu cốt truyện luôn hiện). Sáu khoảnh khắc cốt truyện làm trận chậm 0,5 lần trong khi 2–3 câu liên tiếp chạy: Hollow Dam, Venn mất bầy drone, Thorne phản bội, Thorne trên Typhon, Varga ngã xuống, Icarus rơi.
 
 Sheet: 07_chien_dich_cot_truyen/Bien_co — Biến cố (67 dòng, 89 cột)
 
@@ -1384,7 +1433,7 @@ Menu gồm 5 mục: Trang chủ, Chiến dịch, **Tác chiến**, Quân đội,
 
 #### Cấp độ
 
-Huyền thoại mở sau khi thắng c12m10 (màn kết của chương 12). **Điểm** một trận thắng: 5000 + tối đa 3000 theo thời gian dưới 25 phút + tối đa 2000 theo tổn thất (150 xe mất thì bằng 0) + tối đa 2000 theo máu sở chỉ huy; nhân hệ số cấp cộng phần của mỗi mutator. Thua: 0 điểm. Kỷ lục (điểm cao nhất, thắng nhanh nhất) lưu riêng cho từng trận và từng cấp.
+Huyền thoại mở sau khi thắng **c12m10** (Icarus rơi, trận cuối chiến dịch; Operations.LegendMission). **Điểm** một trận thắng: 5000 + tối đa 3000 theo thời gian dưới 25 phút + tối đa 2000 theo tổn thất (150 xe mất thì bằng 0) + tối đa 2000 theo máu sở chỉ huy; nhân hệ số cấp cộng phần của mỗi mutator. Thua: 0 điểm. Kỷ lục (điểm cao nhất, thắng nhanh nhất) lưu riêng cho từng trận và từng cấp.
 
 **Thưởng tuần gộp chung một sổ:** thắng lần đầu trong tuần Pháo đài tuần 600 xu, chiến dịch của tuần 800 xu.
 
@@ -1519,7 +1568,7 @@ Căn cứ là một loadout chọn trước trận như bộ bài: sở chỉ hu
 
 | Mô-đun | Tác dụng |
 |---|---|
-| **Sân bay dã chiến** | **Sân bay dã chiến · mô-đun tiện ích** Cách đánh: máy bay bay trên nó hồi 3% máu mỗi giây và nạp đạn; chỉ huy tự đưa chúng về khi hết đạn. Mạnh / yếu: giúp trực thăng và máy bay bay… |
+| **Sân bay dã chiến** | **Sân bay dã chiến · mô-đun tiện ích** Cách đánh: máy bay bay trên nó hồi 3% máu mỗi giây và nạp đạn; chúng về đây khi hết đạn (không còn bay về vì bị thương). Mạnh / yếu: giúp trực thăng và máy bay… |
 | **Sân bay dã chiến · Nhà chứa máy bay** |  |
 | **Sân bay dã chiến · Phục vụ nhanh** |  |
 | **Kho đạn** | **Kho đạn · mô-đun tiện ích** Cách đánh: xe nạp đạn tại căn cứ nhanh gấp đôi. Mạnh / yếu: rất hợp với giàn phóng và pháo binh hay hết đạn; nổ rất mạnh khi bị phá. Mẹo: mang theo khi bộ bài nhiều pháo… |
@@ -2443,6 +2492,10 @@ Luật này được test `ArmourTests.CountersFollowTheTable` kiểm tra (bản
 
 Đọc thẳng từ dữ liệu game. **Viên/s** là nhịp khi đang bắn (trong một loạt, hoặc giữa hai phát). **Xả** là thời gian hết một băng hay một loạt. **Nghỉ/nạp** là thời gian thay băng hay nghỉ giữa hai loạt. **Bệ phóng** là số lượt bắn trước khi phải nạp lại cả bệ. **TB viên/s** tính cả thời gian nghỉ và nạp. **DPS khi xả** là sát thương mỗi giây trong lúc bắn, trước giáp; **DPS duy trì** tính cả thời gian nạp (prompt 13). **Xoay thân / tháp** tính bằng độ mỗi giây, như balance.json (mã giữ radian mỗi giây; bản trước in số radian dưới nhãn °/s, prompt 25 C.4).
 
+#### Đường đạn
+
+★: vũ khí đổi số trong lần sửa tổng hợp (so với commit 07444b14). Cỡ (mm) chỉ cho súng, pháo, cối, rốc-két; đầu nổ (kg) cho tên lửa, bom, drone. Nhịp ngoài đời: tối đa / duy trì (phát mỗi phút một nòng, nguồn ở bảng A8). DPS duy trì: một mục tiêu, cả nạp, hệ số của xe mang.
+
 #### Kích thước đạn (55 model)
 
 Kích thước model đạn nhân tỷ lệ của vũ khí (projectileScale).
@@ -2652,7 +2705,7 @@ Sheet: 01_vu_khi_dan/He_so_toan_cuc — Hệ số toàn cục (4 dòng, 8 cột)
 | firepower.strikes | firepower | strikes | 2.0 |
 | firepower.vehicleBlasts | firepower | vehicleBlasts | 2.0 |
 
-Sheet: 01_vu_khi_dan/Vu_khi — Vũ khí (372 dòng, 174 cột)
+Sheet: 01_vu_khi_dan/Vu_khi — Vũ khí (372 dòng, 175 cột)
 
 | id | ten_that | ho_id | bien_the_id | dong_vu_khi_id | nhom | co_mm | dau_no_kg | loai_sat_thuong | xuyen |
 |---|---|---|---|---|---|---|---|---|---|
@@ -2672,7 +2725,7 @@ Sheet: 01_vu_khi_dan/Vu_khi — Vũ khí (372 dòng, 174 cột)
 | ataka | 9M120 Ataka | atgm_9m120_ataka |  | 9m120_ataka | atgm |  | 7.4 | ShapedCharge | 4 |
 | atgm | BGM-71 TOW-2 | atgm_bgm_71_tow_2 |  |  | atgm |  | 5.9 | ShapedCharge | 4 |
 
-*15 / 372 dòng đầu: xem sheet 01_vu_khi_dan/Vu_khi; in 10 / 174 cột; 82 cột khác (và raw_json, nguon): xem sheet.*
+*15 / 372 dòng đầu: xem sheet 01_vu_khi_dan/Vu_khi; in 10 / 175 cột; 83 cột khác (và raw_json, nguon): xem sheet.*
 
 Sheet: 01_vu_khi_dan/Vu_khi_suy_ra — Vũ khí: suy ra (372 dòng, 55 cột)
 
@@ -3112,7 +3165,7 @@ Như mục "Bậc cỡ nòng T0–T5" của Sổ tay đạn trong game. Bậc l�
 | T0 | 12.7 mm heavy machine gun, 14.5 mm heavy machine gun, 7.62 mm machine gun, melee_bucket_wheel, melee_dozer_blade, melee_drill_head (+3) | Súng nhỏ: chớp mảnh, tiếng nổ giòn ngắn. | Small arms: a thin flash and a short crack. |
 | T1 | 20 mm, 23 mm, 25 mm, 30 mm, 35 mm Oerlikon, 40 mm Bofors (+8) | Pháo tự động: chớp nhỏ, khói mỏng; nhiều súng cùng bắn nghe thành một trận đấu súng. | Autocannon: a small flash and thin smoke; many guns at once are heard as one firefight. |
 | T2 | atgm_9k121_vikhr, atgm_9m113_konkurs, atgm_9m120_ataka, atgm_9m123_khrizantema, atgm_agm_114_hellfire, atgm_agm_114l_hellfire_longbow (+36) | Pháo vừa và rocket nhẹ: chớp vừa, quả cầu lửa nhỏ, bụi và đất tung lên. | Medium guns and light rockets: a medium flash, a small hot fireball, dust and earth thrown up. |
-| T3 | atgm_agm_65_maverick, bomb_fab_250, 120 mm AP, 120 mm HE, 125 mm AP, 125 mm HE (+9) | Pháo nặng: chớp lớn, cầu lửa đầu nòng, khói dài và chậm, cột bụi; thân xe giật lùi. | Heavy guns: a big flash and muzzle fireball, long slow smoke, a dust column; the hull rocks back. |
+| T3 | atgm_agm_65_maverick, bomb_fab_250, 120 mm AP, 120 mm HE, 125 mm AP, 125 mm HE (+10) | Pháo nặng: chớp lớn, cầu lửa đầu nòng, khói dài và chậm, cột bụi; thân xe giật lùi. | Heavy guns: a big flash and muzzle fireball, long slow smoke, a dust column; the hull rocks back. |
 | T4 | atgm_kh_29l, bal_9m723_iskander, 400 kg bomb, bomb_car_bomb, bomb_cbu_97_sensor_fuzed_weapon, bomb_fab_500 (+15) | Pháo rất nặng, Smerch, bom 400 kg: chớp rất lớn, cầu lửa cuộn, sóng xung kích trên mép vụ nổ, máy quay rung ngắn. | Very heavy guns, Smerch, 400 kg bombs: a very big flash, a rolling fireball, a shockwave on the blast's edge, a short camera shake. |
 | T5 | 406 mm, 800 mm super-gun, EMRG electromagnetic railgun (Gungnir) | Siêu vũ khí: chớp sáng cả cảnh, đám mây hình nấm nhỏ, vòng trên lõi rồi trên mép, rung mạnh nhất. | Super weapons: a flash that lights the scene, a small mushroom cloud, rings on the core then the edge, the strongest shake. |
 
@@ -6077,6 +6130,11 @@ Own def = the def whose id is the model, else the first def drawing it. HQ ids -
 `obstacle`, `passable` or a wall / teeth / minefield id), tower (`fort` or `branchOf`; the `_a` / `_b` files) or
 structure; otherwise tracked (Tracks / Sprockets nodes), wheeled (Tyres / Wheels nodes) or ground.
 
+###### Roof guns (owner, prompt 35 pilot review, 2026-10-03)
+Roof-mounted guns (pintle MGs, remote weapon stations, small roof turrets) must not look flat: build the raised mount
+or pintle post, the cradle, the ammo box and the gun shield where the real one has them, so the gun stands clear of the
+roof line at the battle camera's distance.
+
 ![ixion: trước / sau dựng lại (front, rear, side, top, 3/4, zoom trận x2)](../images/10_model_tai_san/ixion_before_after.png)
 
 *Hình: ixion: trước / sau dựng lại (front, rear, side, top, 3/4, zoom trận x2). Đơn vị: m; ảnh không có lưới mét; model ixion 27.02 × 13.03 × 10.372 m (glb x × y × z); thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
@@ -6294,7 +6352,7 @@ Trạng thái: Đã áp
 
 Nguồn dữ liệu: 12_he_thong_trang_thai/DECISIONS; 12_he_thong_trang_thai/Cho_quyet.
 
-Sheet: 12_he_thong_trang_thai/DECISIONS — DECISIONS (708 dòng, 7 cột)
+Sheet: 12_he_thong_trang_thai/DECISIONS — DECISIONS (711 dòng, 7 cột)
 
 | id | cap | tieu_de | dong | muc_cha |
 |---|---|---|---|---|
@@ -6314,9 +6372,9 @@ Sheet: 12_he_thong_trang_thai/DECISIONS — DECISIONS (708 dòng, 7 cột)
 | D0014 | 3 | A. Vehicles | 1141 | D0013 |
 | D0015 | 3 | B. New base types (values at Legendary, top level; the lowe… | 1173 | D0013 |
 
-*15 / 708 dòng đầu: xem sheet 12_he_thong_trang_thai/DECISIONS.*
+*15 / 711 dòng đầu: xem sheet 12_he_thong_trang_thai/DECISIONS.*
 
-Sheet: 12_he_thong_trang_thai/Cho_quyet — Chờ quyết (146 dòng, 6 cột)
+Sheet: 12_he_thong_trang_thai/Cho_quyet — Chờ quyết (291 dòng, 6 cột)
 
 | id | dong | muc | noi_dung |
 |---|---|---|---|
@@ -6336,7 +6394,7 @@ Sheet: 12_he_thong_trang_thai/Cho_quyet — Chờ quyết (146 dòng, 6 cột)
 | Q0014 | 2875 | D0054 | - **Inside a flak gun's reach (+6 m) it never hangs** (the… |
 | Q0015 | 2876 | D0054 | becomes a half-speed run, over the target in about a second… |
 
-*15 / 146 dòng đầu: xem sheet 12_he_thong_trang_thai/Cho_quyet.*
+*15 / 291 dòng đầu: xem sheet 12_he_thong_trang_thai/Cho_quyet.*
 
 ## P4. Trạng thái prompt, validator, manifest và save
 
@@ -6478,16 +6536,640 @@ Nguồn dữ liệu: (không có sheet; chỉ văn bản).
 
 | văn bản cũ (mẫu) | thay bằng | căn cứ trong mã / dữ liệu | số chỗ |
 |---|---|---|---|
-| Huyền thoại mở sau khi thắng chiến dịch lớn cuối cùng | Huyền thoại mở sau khi thắng c12m10 (màn kết của chương 12) | Operations.LegendMission = "c12m10" (Operations.cs) | 1 chỗ |
-| tối đa 2 dòng, không chân dung, không lồng tiếng | tối đa 2 dòng, có chân dung nhỏ của người nói, không lồng tiếng | DialogueViews vẽ chân dung nhỏ trên dải thoại trong trận (fix L10 mục 14) | 1 chỗ |
-| chỉ huy tự đưa chúng về khi dưới 35% máu hoặc hết đạn | chỉ huy tự đưa chúng về khi hết đạn | TacticalAi.Refit: không còn ngưỡng 35 % máu từ prompt 29 B3-AI (fix L10 mục 17) | 1 chỗ |
+| Huyền thoại mở sau khi thắng chiến dịch lớn cuối cùng | Huyền thoại mở sau khi thắng c12m10 (màn kết của chương 12) | Operations.LegendMission = "c12m10" (Operations.cs) | 0 chỗ |
+| tối đa 2 dòng, không chân dung, không lồng tiếng | tối đa 2 dòng, có chân dung nhỏ của người nói, không lồng tiếng | DialogueViews vẽ chân dung nhỏ trên dải thoại trong trận (fix L10 mục 14) | 0 chỗ |
+| chỉ huy tự đưa chúng về khi dưới 35% máu hoặc hết đạn | chỉ huy tự đưa chúng về khi hết đạn | TacticalAi.Refit: không còn ngưỡng 35 % máu từ prompt 29 B3-AI (fix L10 mục 17) | 0 chỗ |
 | phí duy trì | tiếp tế | thuật ngữ trong mã và chuỗi: tiếp tế (supply), fix L10 mục 16 | 1 chỗ |
 | tháp canh thấy tàng hình và tăng 10% tầm cho tháp gần | tháp canh thấy tàng hình và tăng 10% tầm cho tháp trong 25 m (nhánh Tháp quan sát: 15% trong 30 m, thay mức 10%, không… | balance.json guard_tower.towerRangeAura {radius 25, range 0.1}, guard_tower.watch {radius 30, range 0.15}; chuỗi branch.guard_tower.watch.info | 1 chỗ |
 | 15 chương trong 4 hồi | (giữ: đúng với mã) | campaign.json chapters[].act: 1-4 (4, 4, 4, 3 chương): đúng | 2 chỗ |
 | C-RAM 30%, la-de 0% | (giữ: đúng với mã) | c_ram aps.shells 0.3, iron_beam / laser_ad_station aps.shells 0: đúng | 1 chỗ |
 | không chặn đạn pháo | (giữ: đúng với mã) | laser_ad_station aps.shells 0 (Trạm la-de): đúng | 4 chỗ |
 
-Bản PDF cũ: 102 bảng số bỏ (các sheet thay), 234 thẻ đơn vị bỏ (chỉ số ở sheet, lời hướng dẫn từ chuỗi), 308 ảnh ngoài repo bỏ.
+Bản PDF cũ: 201 bảng số bỏ (các sheet thay), 234 thẻ đơn vị bỏ (chỉ số ở sheet, lời hướng dẫn từ chuỗi), 1203 ảnh ngoài repo bỏ.
+
+Mục của bản PDF cũ không dùng: 10j. Sửa lỗi tổng hợp: nhịp bắn boss, họ vũ khí, hành vi đạn, vòng cảnh báo, hiệu ứng; 21. Sửa lỗi tổng hợp: phụ lục A–E.
+
+## Tham khảo ngoài đời và game (lượt 10, spec 12)
+
+Mỗi lĩnh vực: tóm tắt sheet <tên>_tham_chieu, nguồn (13_tham_chieu_nguon/Nguon_tham_chieu) và bảng <tên>_so_sanh_that. Chỉ dữ liệu trong repo; thiếu nguồn ghi NEED_SOURCE (13/Thieu_nguon).
+
+### Tham khảo ngoài đời và game (01_vu_khi_dan: Vũ khí và đạn)
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 01_vu_khi_dan/Vu_khi_tham_chieu; 01_vu_khi_dan/Vu_khi_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+#### Vu_khi_tham_chieu
+
+372 dòng. Độ tin cậy: da_kiem_chung 263, uoc_dinh 60, ban_dau_doan 48, NEED_SOURCE 1. Loại: NEED_SOURCE 1, doi_that 371.
+
+- `aa_25_triple` (Type 96 25 mm (triple)): mẫu thật: Type 96 25 mm (triple); độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_type_96_25_mm_at_aa_gun, R_machine_brigade_can_bang.
+- `aa_25_triple_ap` (Type 96 25 mm AP (triple)): mẫu thật: Type 96 25 mm AP (triple); độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_type_96_25_mm_at_aa_gun.
+- `agl_40` (Mk 19 40 mm): mẫu thật: Mk 19 40 mm; độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, D_us_army_fm_3_22_27, R_machine_brigade_can_bang.
+- `aim9` (AIM-9 Sidewinder): mẫu thật: AIM-9 Sidewinder; độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, R_machine_brigade_can_bang.
+- `air_cruise_missile` (Kh-101 (400 kg)): mẫu thật: Kh-101 (400 kg); độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, R_machine_brigade_can_bang.
+- `air_to_air` (AIM-120 AMRAAM): mẫu thật: AIM-120 AMRAAM; độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, R_machine_brigade_can_bang.
+- `airship_drones` (FPV drone (1.5 kg)): mẫu thật: FPV drone (1.5 kg); độ tin: ban_dau_doan; nguồn: R_balance, R_machine_brigade_can_bang.
+- `airship_flak` (S-60 57 mm): mẫu thật: S-60 57 mm; độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_azp_s_60, R_machine_brigade_can_bang.
+- `amos_120` (120 mm AMOS (twin)): mẫu thật: 120 mm AMOS (twin); khác có chủ đích: nhịp chậm hơn 30 % và mạnh hơn tương ứng (luật súng của game); độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_amos.
+- `anti_radar_missile` (AGM-88 HARM): mẫu thật: AGM-88 HARM; độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_bai_cua_tung_ten_lua_bang_warhead.
+- `anti_ship_missile` (NSM / P-800 Oniks): mẫu thật: NSM / P-800 Oniks; độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_bai_cua_tung_ten_lua_bang_warhead.
+- `apkws_rocket` (APKWS (laser-guided Hydra 70)): mẫu thật: APKWS (laser-guided Hydra 70); độ tin: ban_dau_doan; nguồn: R_balance, R_full_weapon_audit, R_decisions.
+- `at_gun_100` (MT-12 Rapira 100 mm): mẫu thật: MT-12 Rapira 100 mm; khác có chủ đích: nhịp chậm hơn 30 % và mạnh hơn tương ứng (luật súng của game); độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_mt_12_rapira.
+- `ataka` (9M120 Ataka): mẫu thật: 9M120 Ataka; độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_bai_cua_tung_ten_lua_bang_warhead, R_machine_brigade_can_bang.
+- `atgm` (BGM-71 TOW-2): mẫu thật: BGM-71 TOW-2; độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_bgm_71_tow, W_wikipedia_bai_cua_tung_ten_lua_bang_warhead, R_machine_brigade_can_bang.
+- … 356 dòng có tham chiếu nữa: xem sheet 01_vu_khi_dan/Vu_khi_tham_chieu.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `D_rheinmetall_skyranger_30_35`: Rheinmetall Skyranger 30/35 (độ tin 1)
+- `D_us_army_fm_3_22_27`: US Army FM 3-22.27 (độ tin 1)
+- `D_us_army_fm_3_22_65`: US Army FM 3-22.65 (độ tin 1)
+- `D_us_army_m109a7_fact_file`: US Army M109A7 fact file (độ tin 1)
+- `R_balance`: balance.json: tên thật của vũ khí (weapons[].real) (độ tin 3)
+- `R_decisions`: Docs/DECISIONS.md (nhật ký quyết định) (độ tin 3)
+- `R_full_weapon_audit`: full_weapon_audit.py: bảng REAL (nhịp bắn thật, mỗi dòng kèm nguồn) và WARHEAD (độ tin 3)
+- `R_machine_brigade_can_bang`: Rà soát cân bằng (Machine_Brigade_Can_bang.xlsx) (độ tin 3)
+- `W_wikipedia_15_2_cm_57_b_38`: Wikipedia '15.2 cm/57 B-38' (độ tin 2)
+- `W_wikipedia_15_5_cm_60_3rd_year_type`: Wikipedia '15.5 cm/60 3rd Year Type' (độ tin 2)
+- `W_wikipedia_16_50_caliber_mark_7`: Wikipedia '16"/50 caliber Mark 7' (độ tin 2)
+- `W_wikipedia_2a38`: Wikipedia '2A38' (độ tin 2)
+- `W_wikipedia_2a42`: Wikipedia '2A42' (độ tin 2)
+- `W_wikipedia_2a46`: Wikipedia '2A46' (độ tin 2)
+- `W_wikipedia_2a65_msta_b`: Wikipedia '2A65 Msta-B' (độ tin 2)
+- `W_wikipedia_2a70`: Wikipedia '2A70' (độ tin 2)
+- `W_wikipedia_2b11`: Wikipedia '2B11' (độ tin 2)
+- `W_wikipedia_2s25_sprut_sd`: Wikipedia '2S25 Sprut-SD' (độ tin 2)
+- `W_wikipedia_2s4_tyulpan`: Wikipedia '2S4 Tyulpan' (độ tin 2)
+- `W_wikipedia_2s7_pion`: Wikipedia '2S7 Pion' (độ tin 2)
+- `W_wikipedia_5_54_caliber_mark_45`: Wikipedia '5"/54 caliber Mark 45' (độ tin 2)
+- `W_wikipedia_8_55_caliber_mark_71`: Wikipedia '8"/55 caliber Mark 71' (độ tin 2)
+- `W_wikipedia_9k720_iskander`: Wikipedia '9K720 Iskander' (độ tin 2)
+- `W_wikipedia_9m113_konkurs`: Wikipedia '9M113 Konkurs' (độ tin 2)
+- `W_wikipedia_9m133_kornet`: Wikipedia '9M133 Kornet' (độ tin 2)
+- `W_wikipedia_a_190`: Wikipedia 'A-190' (độ tin 2)
+- `W_wikipedia_a_192`: Wikipedia 'A-192' (độ tin 2)
+- `W_wikipedia_ak_100_naval_gun`: Wikipedia 'AK-100 (naval gun)' (độ tin 2)
+- `W_wikipedia_ak_130`: Wikipedia 'AK-130' (độ tin 2)
+- `W_wikipedia_ak_630`: Wikipedia 'AK-630' (độ tin 2)
+- `W_wikipedia_amos`: Wikipedia 'AMOS' (độ tin 2)
+- `W_wikipedia_au_220m`: Wikipedia 'AU-220M' (độ tin 2)
+- `W_wikipedia_azp_s_60`: Wikipedia 'AZP S-60' (độ tin 2)
+- `W_wikipedia_bai_cua_tung_ten_lua_bang_warhead`: Wikipedia (bài của từng tên lửa; bảng WARHEAD: Wikipedia (each missile's article)) (độ tin 2)
+- `W_wikipedia_bgm_71_tow`: Wikipedia 'BGM-71 TOW' (độ tin 2)
+- `W_wikipedia_bm_21_grad`: Wikipedia 'BM-21 Grad' (độ tin 2)
+- `W_wikipedia_bm_30_smerch`: Wikipedia 'BM-30 Smerch' (độ tin 2)
+- `W_wikipedia_bofors_40_mm_l_60`: Wikipedia 'Bofors 40 mm L/60' (độ tin 2)
+- `W_wikipedia_bofors_40_mm_l_70`: Wikipedia 'Bofors 40 mm L/70' (độ tin 2)
+- `W_wikipedia_buk_missile_system`: Wikipedia 'Buk missile system' (độ tin 2)
+- `W_wikipedia_d_10_tank_gun`: Wikipedia 'D-10 tank gun' (độ tin 2)
+- `W_wikipedia_gau_12_equalizer`: Wikipedia 'GAU-12 Equalizer' (độ tin 2)
+- `W_wikipedia_gau_22_a`: Wikipedia 'GAU-22/A' (độ tin 2)
+- `W_wikipedia_gau_8_avenger`: Wikipedia 'GAU-8 Avenger' (độ tin 2)
+- `W_wikipedia_gryazev_shipunov_gsh_23`: Wikipedia 'Gryazev-Shipunov GSh-23' (độ tin 2)
+- `W_wikipedia_gsh_30_2`: Wikipedia 'GSh-30-2' (độ tin 2)
+- `W_wikipedia_gshg_7_62`: Wikipedia 'GShG-7.62' (độ tin 2)
+- `W_wikipedia_ks_19`: Wikipedia 'KS-19' (độ tin 2)
+- `W_wikipedia_m102_howitzer`: Wikipedia 'M102 howitzer' (độ tin 2)
+- `W_wikipedia_m110_howitzer`: Wikipedia 'M110 howitzer' (độ tin 2)
+- `W_wikipedia_m134_minigun`: Wikipedia 'M134 Minigun' (độ tin 2)
+- `W_wikipedia_m230_chain_gun`: Wikipedia 'M230 chain gun' (độ tin 2)
+- `W_wikipedia_m242_bushmaster`: Wikipedia 'M242 Bushmaster' (độ tin 2)
+- `W_wikipedia_m270_mlrs`: Wikipedia 'M270 MLRS' (độ tin 2)
+- `W_wikipedia_m3_browning`: Wikipedia 'M3 Browning' (độ tin 2)
+- `W_wikipedia_m40_recoilless_rifle`: Wikipedia 'M40 recoilless rifle' (độ tin 2)
+- `W_wikipedia_mim_104_patriot`: Wikipedia 'MIM-104 Patriot' (độ tin 2)
+- `W_wikipedia_mt_12_rapira`: Wikipedia 'MT-12 Rapira' (độ tin 2)
+- `W_wikipedia_nsv_machine_gun`: Wikipedia 'NSV machine gun' (độ tin 2)
+- `W_wikipedia_oerlikon_gdf`: Wikipedia 'Oerlikon GDF' (độ tin 2)
+- `W_wikipedia_oto_melara_76_mm`: Wikipedia 'OTO Melara 76 mm' (độ tin 2)
+- `W_wikipedia_pantsir`: Wikipedia 'Pantsir' (độ tin 2)
+- `W_wikipedia_phalanx_ciws`: Wikipedia 'Phalanx CIWS' (độ tin 2)
+- `W_wikipedia_pk_machine_gun`: Wikipedia 'PK machine gun' (độ tin 2)
+- `W_wikipedia_pzh_2000`: Wikipedia 'PzH 2000' (độ tin 2)
+- `W_wikipedia_rheinmetall_120_mm_gun`: Wikipedia 'Rheinmetall 120 mm gun' (độ tin 2)
+- `W_wikipedia_royal_ordnance_l7`: Wikipedia 'Royal Ordnance L7' (độ tin 2)
+- `W_wikipedia_s_400`: Wikipedia 'S-400' (độ tin 2)
+- `W_wikipedia_spg_9`: Wikipedia 'SPG-9' (độ tin 2)
+- `W_wikipedia_tos_1`: Wikipedia 'TOS-1' (độ tin 2)
+- `W_wikipedia_type_63_mrl`: Wikipedia 'Type 63 MRL' (độ tin 2)
+- `W_wikipedia_type_96_25_mm_at_aa_gun`: Wikipedia 'Type 96 25 mm AT/AA gun' (độ tin 2)
+- `W_wikipedia_xm2001_crusader`: Wikipedia 'XM2001 Crusader' (độ tin 2)
+- `W_wikipedia_zsu_23_4_shilka`: Wikipedia 'ZSU-23-4 Shilka' (độ tin 2)
+- `W_wikipedia_zu_23_2`: Wikipedia 'ZU-23-2' (độ tin 2)
+
+Sheet: 01_vu_khi_dan/Vu_khi_so_sanh_that — Vũ khí: so sánh với thật (279 dòng, 17 cột)
+
+| id | entity_id | thong_so | don_vi | gia_tri_game | gia_tri_that | ty_le | khoang_min | khoang_max | co_chu_dich |
+|---|---|---|---|---|---|---|---|---|---|
+| aa_25_triple/nhip | aa_25_triple | khe_mot_nong_mot_vien | s | 0.620000077 | 0.23076923076923078 | 2.6866670003333333 | 0.6 | 2.0 | TRUE |
+| agl_40/nhip | agl_40 | khe_mot_nong_mot_vien | s | 0.7 | 0.16 | 4.375 | 0.6 | 2.0 | TRUE |
+| airship_flak/nhip | airship_flak | khe_mot_nong_mot_vien | s | 0.61 | 0.5 | 1.22 | 0.6 | 2.0 | FALSE |
+| amos_120/nhip | amos_120 | khe_mot_nong_mot_vien | s | 5.374997802 | 6.593406593406593 | 0.81520799997 | 0.6 | 2.0 | FALSE |
+| anti_radar_missile/loi_no | anti_radar_missile | loi_m_tren_can_bac_ba_kg_dau_dan | m/kg^(1/3) | 4 | 4.081655101917348 | 0.9799946100592892 |  |  | FALSE |
+| anti_radar_missile/nhip | anti_radar_missile | khe_mot_nong_mot_vien | s | 8.0 | 1.0 | 8.0 | 0.6 | 2.0 | TRUE |
+| anti_radar_missile/sat_thuong | anti_radar_missile | sat_thuong_tren_kg_dau_dan | hp/kg | 300 | 68 | 4.411764705882353 |  |  | FALSE |
+| anti_ship_missile/loi_no | anti_ship_missile | loi_m_tren_can_bac_ba_kg_dau_dan | m/kg^(1/3) | 7 | 6.299605249474365 | 1.1111807363777397 |  |  | FALSE |
+| anti_ship_missile/nhip | anti_ship_missile | khe_mot_nong_mot_vien | s | 30.0 | 3.0 | 10.0 | 0.6 | 2.0 | FALSE |
+| anti_ship_missile/sat_thuong | anti_ship_missile | sat_thuong_tren_kg_dau_dan | hp/kg | 450 | 250 | 1.8 |  |  | FALSE |
+| apkws_rocket/nhip | apkws_rocket | khe_mot_nong_mot_vien | s | 1.0 | 0.06666666666666667 | 15.0 | 0.6 | 2.0 | TRUE |
+| at_gun_100/nhip | at_gun_100 | khe_mot_nong_mot_vien | s | 5.000002041 | 6.122448979591837 | 0.8166670000299999 | 0.6 | 2.0 | FALSE |
+| ataka/nhip | ataka | khe_mot_nong_mot_vien | s | 11.419995 | 15.0 | 0.761333 | 0.6 | 2.0 | FALSE |
+| ataka/sat_thuong | ataka | sat_thuong_tren_kg_dau_dan | hp/kg | 247 | 7.4 | 33.37837837837838 |  |  | FALSE |
+| atgm/nhip | atgm | khe_mot_nong_mot_vien | s | 12.33 | 20.0 | 0.6165 | 0.6 | 2.0 | FALSE |
+
+*15 / 279 dòng đầu: xem sheet 01_vu_khi_dan/Vu_khi_so_sanh_that; in 10 / 17 cột; 5 cột khác (và raw_json, nguon): xem sheet.*
+
+### Tham khảo ngoài đời và game (02_phuong_tien: Phương tiện)
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 02_phuong_tien/Phuong_tien_tham_chieu; 02_phuong_tien/Phuong_tien_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+#### Phuong_tien_tham_chieu
+
+160 dòng. Độ tin cậy: da_kiem_chung 26, uoc_dinh 32, ban_dau_doan 17, NEED_SOURCE 85. Loại: NEED_SOURCE 85, doi_that 75.
+
+- `aa_vehicle` (Pháo cao xạ tự hành): mẫu thật: Flakpanzer Gepard (Oerlikon KDA 35 mm);Stinger / Starstreak; giống: Pháo phòng không tự hành hai nòng 35 mm có radar; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_flakpanzer_gepard, R_unit_sheet, R_machine_brigade_can_bang.
+- `ammo_carrier` (Xe tiếp đạn): mẫu thật: M977 HEMTT;KamAZ-5350;M2 Browning 12,7 mm; giống: xe tải hậu cần chở đạn, súng máy trên vòng nóc; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_heavy_expanded_mobility_tactical_t, R_unit_sheet, R_machine_brigade_can_bang.
+- `armored_bulldozer` (Xe ủi bọc thép): mẫu thật: IDF Caterpillar D9R; giống: Xe ủi bọc thép chiến đấu; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, D_caterpillar_d9r_specifications, R_unit_sheet, R_machine_brigade_can_bang.
+- `armored_car` (Xe bọc thép bánh lốp): mẫu thật: Pandur I 6x6;M242 Bushmaster 25 mm; giống: xe bọc thép 6x6 bánh lộ ngoài, tháp pháo tự động nhỏ; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_steyr_pandur, R_unit_sheet, R_machine_brigade_can_bang.
+- `artillery` (Lựu pháo tự hành): mẫu thật: CAESAR 155 mm;M284 155 mm (M109A6/A7); giống: Lựu pháo tự hành bánh lốp 6x6, nòng 155 mm đặt sau sàn xe; độ tin: da_kiem_chung; nguồn: R_unit_refs, R_reference_real, W_wikipedia_m109_howitzer, R_unit_sheet, R_machine_brigade_can_bang.
+- `attack_helicopter` (Trực thăng tấn công): mẫu thật: AH-64D Apache Longbow;AGM-114L Hellfire Longbow;Ka-52 Alligator (model thay thế); giống: Trực thăng tấn công hai chỗ ngồi nối tiếp, radar trên trục rô-to; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_boeing_ah_64_apache, R_unit_sheet, R_machine_brigade_can_bang.
+- `attack_jet` (Máy bay cường kích): mẫu thật: Su-25 Frogfoot;A-10 Thunderbolt II (model tank_buster);GSh-30-2 30 mm; giống: Máy bay cường kích yểm trợ mặt đất; độ tin: da_kiem_chung; nguồn: R_unit_refs, R_reference_real, W_wikipedia_sukhoi_su_25, R_unit_sheet, R_machine_brigade_can_bang.
+- `ballistic_launcher` (Xe phóng tên lửa chiến thuật): mẫu thật: 9K720 Iskander (9M723); giống: Xe phóng tên lửa đạn đạo, dựng đứng tên lửa khi phóng; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_9k720_iskander, R_unit_sheet, R_machine_brigade_can_bang.
+- `bmpt` (Xe hỗ trợ tăng): mẫu thật: BMPT Terminator (khung T-72);9M120 Ataka; giống: Xe hỗ trợ xe tăng, hai pháo 30 mm; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_reference_real, R_unit_sheet, R_machine_brigade_can_bang.
+- `bunker_vehicle` (Xe công sự triển khai): mẫu thật: xe công binh bánh xích có lưỡi ủi;L7 105 mm;công sự 'hull-down'; game: Red Alert 2: Yuri's Revenge; giống: xe tự đào ụ thành lô cốt; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang.
+- `command_vehicle` (Xe chỉ huy): mẫu thật: M1130 Stryker CV;BTR-80 KShM;LAV-C2; giống: Xe chỉ huy 8x8, cột ăng-ten kính viễn vọng gập; độ tin: da_kiem_chung; nguồn: R_unit_refs, R_reference_real, W_wikipedia_stryker, R_unit_sheet, R_machine_brigade_can_bang.
+- `counter_battery_radar` (Xe radar phản pháo): mẫu thật: AN/TPQ-53;Zoopark-1;COBRA; giống: Xe radar phản pháo 6x6; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_reference_real, R_unit_sheet, R_machine_brigade_can_bang.
+- `drop_pod` (Khoang đổ bộ): mẫu thật: khoang hồi quyển Soyuz (tên lửa hãm); game: Halo;Warhammer 40,000; giống: khoang thả xe từ quỹ đạo; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_soyuz_spacecraft.
+- `elite_aa` (Phòng không tinh nhuệ): mẫu thật: Rheinmetall Skyranger 35 (đạn AHEAD);Gepard (khung gốc); giống: Phòng không tinh nhuệ, đạn nổ trên không AHEAD; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_flakpanzer_gepard.
+- `elite_apc` (Xe bọc thép tinh nhuệ): mẫu thật: M2 Bradley / BMP-3 (khung gốc);2A42 30 mm; giống: Xe chiến đấu bộ binh tinh nhuệ; độ tin: da_kiem_chung; nguồn: R_unit_refs, R_reference_real, W_wikipedia_m2_bradley.
+- … 60 dòng có tham chiếu nữa: xem sheet 02_phuong_tien/Phuong_tien_tham_chieu.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `D_army_recognition_buk_m1_2`: Army Recognition 'Buk-M1-2' (độ tin 2)
+- `D_caterpillar_d9r_specifications`: Caterpillar D9R specifications (độ tin 1)
+- `D_toyota_hilux_an10_an20_specifications`: Toyota Hilux AN10/AN20 specifications (độ tin 1)
+- `R_machine_brigade_can_bang`: Rà soát cân bằng (Machine_Brigade_Can_bang.xlsx) (độ tin 3)
+- `R_reference_real`: reference_real.json (kích thước thật, độ tin conf) (độ tin 3)
+- `R_unit_refs`: unit_refs.json (tham chiếu ngoài đời / phim / game theo đơn vị) (độ tin 3)
+- `R_unit_sheet`: unit_sheet.json (hình dạng, mô tả từ bảng cân bằng) (độ tin 3)
+- `R_zu23_technical`: spec dựng lại zu23_technical (prompt 35) (độ tin 3)
+- `W_wikipedia_2s25_sprut_sd`: Wikipedia '2S25 Sprut-SD' (độ tin 2)
+- `W_wikipedia_2s4_tyulpan`: Wikipedia '2S4 Tyulpan' (độ tin 2)
+- `W_wikipedia_9k720_iskander`: Wikipedia '9K720 Iskander' (độ tin 2)
+- `W_wikipedia_b1_centauro`: Wikipedia 'B1 Centauro' (độ tin 2)
+- `W_wikipedia_baykar_bayraktar_tb2`: Wikipedia 'Baykar Bayraktar TB2' (độ tin 2)
+- `W_wikipedia_bm_21_grad`: Wikipedia 'BM-21 Grad' (độ tin 2)
+- `W_wikipedia_bm_30_smerch`: Wikipedia 'BM-30 Smerch' (độ tin 2)
+- `W_wikipedia_boeing_ah_64_apache`: Wikipedia 'Boeing AH-64 Apache' (độ tin 2)
+- `W_wikipedia_boeing_b_52_stratofortress`: Wikipedia 'Boeing B-52 Stratofortress' (độ tin 2)
+- `W_wikipedia_boxer_armoured_fighting_vehicle`: Wikipedia 'Boxer (armoured fighting vehicle)' (độ tin 2)
+- `W_wikipedia_caesar_self_propelled_howitzer`: Wikipedia 'CAESAR self-propelled howitzer' (độ tin 2)
+- `W_wikipedia_flakpanzer_gepard`: Wikipedia 'Flakpanzer Gepard' (độ tin 2)
+- `W_wikipedia_general_atomics_mq_9_reaper`: Wikipedia 'General Atomics MQ-9 Reaper' (độ tin 2)
+- `W_wikipedia_heavy_expanded_mobility_tactical_t`: Wikipedia 'Heavy Expanded Mobility Tactical Truck' (độ tin 2)
+- `W_wikipedia_kamaz_typhoon`: Wikipedia 'KamAZ Typhoon' (độ tin 2)
+- `W_wikipedia_kirov_class_battlecruiser`: Wikipedia 'Kirov-class battlecruiser' (độ tin 2)
+- `W_wikipedia_kratos_xq_58_valkyrie`: Wikipedia 'Kratos XQ-58 Valkyrie' (độ tin 2)
+- `W_wikipedia_lcm_8`: Wikipedia 'LCM-8' (độ tin 2)
+- `W_wikipedia_leopard_2`: Wikipedia 'Leopard 2' (độ tin 2)
+- `W_wikipedia_lockheed_ac_130`: Wikipedia 'Lockheed AC-130' (độ tin 2)
+- `W_wikipedia_lockheed_c_130_hercules`: Wikipedia 'Lockheed C-130 Hercules' (độ tin 2)
+- `W_wikipedia_lockheed_martin_f_22_raptor`: Wikipedia 'Lockheed Martin F-22 Raptor' (độ tin 2)
+- `W_wikipedia_m109_howitzer`: Wikipedia 'M109 howitzer' (độ tin 2)
+- `W_wikipedia_m113_armored_personnel_carrier`: Wikipedia 'M113 armored personnel carrier' (độ tin 2)
+- `W_wikipedia_m142_himars`: Wikipedia 'M142 HIMARS' (độ tin 2)
+- `W_wikipedia_m151_mutt`: Wikipedia 'M151 MUTT' (độ tin 2)
+- `W_wikipedia_m2_bradley`: Wikipedia 'M2 Bradley' (độ tin 2)
+- `W_wikipedia_m88_recovery_vehicle`: Wikipedia 'M88 Recovery Vehicle' (độ tin 2)
+- `W_wikipedia_md_helicopters_mh_6_little_bird`: Wikipedia 'MD Helicopters MH-6 Little Bird' (độ tin 2)
+- `W_wikipedia_mil_mi_24`: Wikipedia 'Mil Mi-24' (độ tin 2)
+- `W_wikipedia_northrop_b_2_spirit`: Wikipedia 'Northrop B-2 Spirit' (độ tin 2)
+- `W_wikipedia_pt_76`: Wikipedia 'PT-76' (độ tin 2)
+- `W_wikipedia_soyuz_spacecraft`: Wikipedia 'Soyuz (spacecraft)' (độ tin 2)
+- `W_wikipedia_steyr_pandur`: Wikipedia 'Steyr Pandur' (độ tin 2)
+- `W_wikipedia_stryker`: Wikipedia 'Stryker' (độ tin 2)
+- `W_wikipedia_sukhoi_su_25`: Wikipedia 'Sukhoi Su-25' (độ tin 2)
+- `W_wikipedia_sukhoi_su_27`: Wikipedia 'Sukhoi Su-27' (độ tin 2)
+- `W_wikipedia_t_54_t_55`: Wikipedia 'T-54/T-55' (độ tin 2)
+- `W_wikipedia_t_72`: Wikipedia 'T-72' (độ tin 2)
+- `W_wikipedia_t_90`: Wikipedia 'T-90' (độ tin 2)
+- `W_wikipedia_tos_1`: Wikipedia 'TOS-1' (độ tin 2)
+
+Sheet: 02_phuong_tien/Phuong_tien_so_sanh_that — Phương tiện: so sánh với thật (269 dòng, 17 cột)
+
+| id | entity_id | thong_so | don_vi | gia_tri_game | gia_tri_that | ty_le | khoang_min | khoang_max | co_chu_dich |
+|---|---|---|---|---|---|---|---|---|---|
+| aa_vehicle/cao_m | aa_vehicle | cao_m | m | 2.92 | 3.29 | 0.8875379939209727 | 0.7 | 1.4 | FALSE |
+| aa_vehicle/cao_tren_dai | aa_vehicle | cao_tren_dai |  | 0.45341614906832295 | 0.4283854166666667 | 1.0584304026883649 | 0.9 | 1.1 | FALSE |
+| aa_vehicle/dai_m | aa_vehicle | dai_m | m | 6.44 | 7.68 | 0.8385416666666667 | 0.7 | 1.4 | FALSE |
+| aa_vehicle/rong_m | aa_vehicle | rong_m | m | 3.06 | 3.71 | 0.8247978436657682 | 0.7 | 1.4 | FALSE |
+| aa_vehicle/rong_tren_dai | aa_vehicle | rong_tren_dai |  | 0.47515527950310554 | 0.4830729166666667 | 0.9836098508312265 | 0.9 | 1.1 | FALSE |
+| aerial_tanker/cao_m | aerial_tanker | cao_m | m | 5.7 | 12.4 | 0.4596774193548387 | 0.7 | 1.4 | TRUE |
+| aerial_tanker/cao_tren_dai | aerial_tanker | cao_tren_dai |  | 0.2878787878787879 | 0.2556701030927835 | 1.1259775171065496 | 0.9 | 1.1 | FALSE |
+| aerial_tanker/dai_m | aerial_tanker | dai_m | m | 19.8 | 48.5 | 0.40824742268041236 | 0.7 | 1.4 | TRUE |
+| aerial_tanker/rong_m | aerial_tanker | rong_m | m | 22.62 | 56.4 | 0.4010638297872341 | 0.7 | 1.4 | TRUE |
+| aerial_tanker/rong_tren_dai | aerial_tanker | rong_tren_dai |  | 1.1424242424242423 | 1.1628865979381442 | 0.9824038254889319 | 0.9 | 1.1 | FALSE |
+| ammo_carrier/cao_m | ammo_carrier | cao_m | m | 2.46 | 2.84 | 0.8661971830985916 | 0.7 | 1.4 | FALSE |
+| ammo_carrier/cao_tren_dai | ammo_carrier | cao_tren_dai |  | 0.29425837320574166 | 0.27925270403146507 | 1.0537350899656313 | 0.9 | 1.1 | FALSE |
+| ammo_carrier/dai_m | ammo_carrier | dai_m | m | 8.36 | 10.17 | 0.8220255653883972 | 0.7 | 1.4 | FALSE |
+| ammo_carrier/rong_m | ammo_carrier | rong_m | m | 2.02 | 2.44 | 0.8278688524590164 | 0.7 | 1.4 | FALSE |
+| ammo_carrier/rong_tren_dai | ammo_carrier | rong_tren_dai |  | 0.24162679425837322 | 0.23992133726647 | 1.0071084006588753 | 0.9 | 1.1 | FALSE |
+
+*15 / 269 dòng đầu: xem sheet 02_phuong_tien/Phuong_tien_so_sanh_that; in 10 / 17 cột; 5 cột khác (và raw_json, nguon): xem sheet.*
+
+### Tham khảo ngoài đời và game (03_boss: Boss)
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 03_boss/Boss_tham_chieu; 03_boss/Boss_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+#### Boss_tham_chieu
+
+41 dòng. Độ tin cậy: da_kiem_chung 9, uoc_dinh 18, ban_dau_doan 8, NEED_SOURCE 6. Loại: NEED_SOURCE 6, doi_that 32, game 1, gia_tuong 2.
+
+- `argus` (Argus · Khí cầu trinh sát): mẫu thật: JLENS (khí cầu radar neo); game: Red Alert 2; giống: biến thể của khí cầu chỉ huy, khí cầu radar neo; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
+- `armored_train` (Juggernaut · Đoàn tàu bọc thép): mẫu thật: tàu bọc thép Liên Xô BP-35;B-38 152 mm;2B11 120 mm; giống: đầu máy diesel bọc thép kéo toa pháo; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_unit_sheet.
+- `bastion_mk0` (Bastion Mk.0 · Pháo đài nguyên mẫu): mẫu thật: 2B8 240 mm;Bofors 40 mm; phim / truyện: Star Wars; giống: bản đầu, nhỏ của Bastion; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
+- `behemoth` (Behemoth · Quái vật thép): mẫu thật: Object 279 (1959: bốn dải xích, thân dẹt);giáp composite, APS và cảm biến hiện đại;2A65 1…; game: Warhammer 40,000; giống: 'thiết giáp hạm trên cạn' bốn cụm xích; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_object_279, R_machine_brigade_can_bang, R_unit_sheet.
+- `behemoth_inferno` (Inferno · Behemoth phun lửa): mẫu thật: TOS-1A;Object 279 (1959); game: Warhammer 40,000; giống: Behemoth phun lửa, thùng nhiên liệu đỏ; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_unit_sheet.
+- `behemoth_mk0` (Behemoth Mk.0 · Behemoth nguyên mẫu): mẫu thật: Object 279 (1959);giáp composite, APS và cảm biến hiện đại; game: Warhammer 40,000; giống: Behemoth đời đầu, nhỏ hơn; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
+- `behemoth_mk2` (Behemoth Mk.II · Behemoth nâng cấp): mẫu thật: Object 279 (1959);giáp composite, APS và cảm biến hiện đại; game: Warhammer 40,000; giống: Behemoth đời hai; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
+- `behemoth_tempest` (Tempest · Behemoth pháo điện từ): mẫu thật: US Navy EMRG (pháo điện từ);Object 279 (1959); game: Warhammer 40,000; giống: Behemoth hai tháp pháo điện từ; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_unit_sheet.
+- `caspian` (Caspian · Tàu bay sát mặt nước): mẫu thật: ekranoplan lớp Lun MD-160 ('Quái vật biển Caspi'); giống: Thủy phi cơ hiệu ứng mặt đất; độ tin: da_kiem_chung; nguồn: R_unit_refs, R_reference_real, W_wikipedia_lun_class_ekranoplan, R_machine_brigade_can_bang, R_mb_p20_bosses, R_unit_sheet.
+- `command_airship` (Roc · Khí cầu chỉ huy): mẫu thật: Airlander 10;Lockheed P-791 (khí cầu lai hiện đại); game: Red Alert 2; giống: 'Sky Admiral', thiết giáp hạm bay hai túi khí; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_hybrid_air_vehicles_airlander_10, R_machine_brigade_can_bang, R_unit_sheet.
+- `daedalus` (Daedalus · Tàu đổ bộ quỹ đạo): phim / truyện: Star Wars: Attack of the Clones; giống: Tàu đổ bộ tấn công của Aurel; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_mb_p20_bosses, R_unit_sheet.
+- `drone_mothership` (Matriarch · Tàu mẹ drone): mẫu thật: Airlander 10 (khí cầu mẹ hiện đại);drone FPV; game: Red Alert 2; giống: khí cầu bọc thép phóng drone; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_hybrid_air_vehicles_airlander_10, R_machine_brigade_can_bang, R_unit_sheet.
+- `earth_borer` (Tartarus · Máy khoan): mẫu thật: 'Battle Mole' của Liên Xô;máy khoan hầm TBM;2A70 100 mm; giống: 'Earth Worm': máy khoan đất bọc thép ba đốt; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_unit_sheet.
+- `fenrir` (Fenrir · Xe tiên phong): mẫu thật: NASA Crawler-Transporter;Kharkovchanka (1959); phim / truyện: Star Wars; giống: biến thể của pháo đài di động; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
+- `fortress_bastion` (Bastion · Pháo đài): mẫu thật: 2B8 240 mm;Bofors 40 mm;9M133 Kornet; phim / truyện: Star Wars; giống: pháo đài bánh xích bọc giáp tấm dày; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_unit_sheet.
+- … 20 dòng có tham chiếu nữa: xem sheet 03_boss/Boss_tham_chieu.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `R_ixion`: spec dựng lại ixion (prompt 35) (độ tin 3)
+- `R_machine_brigade_can_bang`: Rà soát cân bằng (Machine_Brigade_Can_bang.xlsx) (độ tin 3)
+- `R_mb_p20_bosses`: script Blender mb_p20_bosses.py (docstring) (độ tin 3)
+- `R_mb_p22_content`: script Blender mb_p22_content.py (docstring) (độ tin 3)
+- `R_mb_redesign_20y`: script Blender mb_redesign_20y.py (docstring) (độ tin 3)
+- `R_reference_real`: reference_real.json (kích thước thật, độ tin conf) (độ tin 3)
+- `R_unit_refs`: unit_refs.json (tham chiếu ngoài đời / phim / game theo đơn vị) (độ tin 3)
+- `R_unit_sheet`: unit_sheet.json (hình dạng, mô tả từ bảng cân bằng) (độ tin 3)
+- `W_wikipedia_bagger_288`: Wikipedia 'Bagger 288' (độ tin 2)
+- `W_wikipedia_belaz_75710`: Wikipedia 'BelAZ 75710' (độ tin 2)
+- `W_wikipedia_boeing_ch_47_chinook`: Wikipedia 'Boeing CH-47 Chinook' (độ tin 2)
+- `W_wikipedia_crawler_transporter`: Wikipedia 'Crawler-transporter' (độ tin 2)
+- `W_wikipedia_hybrid_air_vehicles_airlander_10`: Wikipedia 'Hybrid Air Vehicles Airlander 10' (độ tin 2)
+- `W_wikipedia_iowa_class_battleship`: Wikipedia 'Iowa-class battleship' (độ tin 2)
+- `W_wikipedia_landing_craft_air_cushion`: Wikipedia 'Landing Craft Air Cushion' (độ tin 2)
+- `W_wikipedia_lockheed_ac_130`: Wikipedia 'Lockheed AC-130' (độ tin 2)
+- `W_wikipedia_lun_class_ekranoplan`: Wikipedia 'Lun-class ekranoplan' (độ tin 2)
+- `W_wikipedia_northrop_b_2_spirit`: Wikipedia 'Northrop B-2 Spirit' (độ tin 2)
+- `W_wikipedia_object_279`: Wikipedia 'Object 279' (độ tin 2)
+- `W_wikipedia_sukhoi_su_57`: Wikipedia 'Sukhoi Su-57' (độ tin 2)
+- `W_wikipedia_typhoon_class_submarine`: Wikipedia 'Typhoon-class submarine' (độ tin 2)
+
+Sheet: 03_boss/Boss_so_sanh_that — Boss: so sánh với thật (122 dòng, 18 cột)
+
+| id | entity_id | thong_so | don_vi | gia_tri_game | gia_tri_that | ty_le | khoang_min | khoang_max | co_chu_dich |
+|---|---|---|---|---|---|---|---|---|---|
+| argus/p26_roc_main_roc_bombs/nhip | argus | khe_mot_nong_mot_vien | s | 0.3 | 0.1 | 2.9999999999999996 | 0.6 | 2.0 | TRUE |
+| armored_train/boss_flak/nhip | armored_train | khe_mot_nong_mot_vien | s | 0.262439018 | 0.10909090909090909 | 2.4056909983333337 | 0.6 | 2.0 | TRUE |
+| armored_train/boss_hmg/nhip | armored_train | khe_mot_nong_mot_vien | s | 0.132467025 | 0.075 | 1.766227 | 0.6 | 2.0 | FALSE |
+| armored_train/boss_rockets/nhip | armored_train | khe_mot_nong_mot_vien | s | 0.5 | 0.5 | 1.0 | 0.6 | 2.0 | FALSE |
+| armored_train/train_gun/nhip | armored_train | khe_mot_nong_mot_vien | s | 8.0 | 11.428571428571429 | 0.7 | 0.6 | 2.0 | FALSE |
+| bastion_mk0/p26_bastion_direct_b100/nhip | bastion_mk0 | khe_mot_nong_mot_vien | s | 8.599995918 | 12.244897959183675 | 0.7023329999699999 | 0.6 | 2.0 | FALSE |
+| bastion_mk0/p26_bastion_sec_b240/nhip | bastion_mk0 | khe_mot_nong_mot_vien | s | 60.0 | 85.71428571428572 | 0.7 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_close_boss_flak/nhip | behemoth | khe_mot_nong_mot_vien | s | 0.262439018 | 0.10909090909090909 | 2.4056909983333337 | 0.6 | 2.0 | TRUE |
+| behemoth/p26_behemoth_direct_be120/nhip | behemoth | khe_mot_nong_mot_vien | s | 7.5 | 10.714285714285715 | 0.7 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_main_be152/nhip | behemoth | khe_mot_nong_mot_vien | s | 8.979996429 | 10.714285714285715 | 0.8381330000399999 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_sec_be_rockets/nhip | behemoth | khe_mot_nong_mot_vien | s | 0.5 | 0.5 | 1.0 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_tiny_be120/nhip | behemoth | khe_mot_nong_mot_vien | s | 7.5 | 10.714285714285715 | 0.7 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_tiny_boss_missiles/nhip | behemoth | khe_mot_nong_mot_vien | s | 20.0 | 20.0 | 1.0 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_tiny_kornet_twin/nhip | behemoth | khe_mot_nong_mot_vien | s | 20.0 | 20.0 | 1.0 | 0.6 | 2.0 | FALSE |
+| behemoth_inferno/boss_thermo/nhip | behemoth_inferno | khe_mot_nong_mot_vien | s | 0.3 | 0.25 | 1.2 | 0.6 | 2.0 | FALSE |
+
+*15 / 122 dòng đầu: xem sheet 03_boss/Boss_so_sanh_that; in 10 / 18 cột; 5 cột khác (và raw_json, nguon): xem sheet.*
+
+### Tham khảo ngoài đời và game (04_can_cu_thap: Căn cứ và tháp)
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 04_can_cu_thap/Can_cu_tham_chieu; 04_can_cu_thap/Can_cu_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+#### Can_cu_tham_chieu
+
+96 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 22, ban_dau_doan 44, NEED_SOURCE 30. Loại: NEED_SOURCE 30, doi_that 63, game 3.
+
+- `aa_turret` (Tháp phòng không): mẫu thật: 2K22 Tunguska (2A38 30 mm);Stinger; game: WARNO; giống: pháo phòng không hai nòng 35 mm trên ụ bao cát; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_machine_brigade_ai_research.
+- `aa_turret.flak` (aa_turret.flak): mẫu thật: ZSU-23-4 Shilka (23 mm bốn nòng); giống: Nhánh pháo phòng không bốn nòng; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `aa_turret.sam` (aa_turret.sam): mẫu thật: Mistral ATLAS;RBS-70;Starstreak LML; giống: Nhánh trạm tên lửa phòng không; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `airfield` (Sân bay dã chiến): mẫu thật: bãi đáp trực thăng (chữ H); giống: Bãi đáp sửa chữa và nạp đạn cho máy bay; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `airfield.hangar` (airfield.hangar): mẫu thật: nhà chứa máy bay dã chiến; giống: nhánh nhà chứa; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `airfield.service` (airfield.service): mẫu thật: FARP (điểm tiếp đạn và nhiên liệu tiền phương); giống: nhánh phục vụ máy bay; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `ammo_depot` (Kho đạn): mẫu thật: kho đạn dã chiến dưới lưới ngụy trang; giống: Kho đạn, nổ lớn khi bị phá; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `artillery_emplacement` (Trận địa pháo): mẫu thật: 2A65 Msta-B / D-20 152 mm (lựu pháo kéo);M284 155 mm; game: WARNO; giống: lựu pháo kéo trong ụ bao cát; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_machine_brigade_ai_research.
+- `artillery_emplacement.cb` (artillery_emplacement.cb): mẫu thật: M284 155 mm; giống: Nhánh lựu pháo phản pháo; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `artillery_emplacement.mortar` (artillery_emplacement.mortar): mẫu thật: 2B8 240 mm;2S4 Tyulpan;M-240 (cối kéo 240 mm); giống: Nhánh cối 240 mm bắn cầu vồng; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `at_gun_emplacement` (Ụ pháo chống tăng): mẫu thật: 2A45 Sprut-B 125 mm; game: Company of Heroes; giống: Ụ pháo chống tăng; độ tin: ban_dau_doan; nguồn: R_unit_refs.
+- `atgm_tower` (Tháp tên lửa chống tăng): mẫu thật: 9M133 Kornet; giống: Tháp bê tông phóng tên lửa chống tăng; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `atgm_tower.multi` (atgm_tower.multi): mẫu thật: 9M133 Kornet;Kornet-EM (bệ nhiều ống); giống: ước đoán (Kornet-EM): nhánh đa năng bốn ống và radar nhỏ; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `atgm_tower.top` (atgm_tower.top): mẫu thật: 9M133 Kornet;FGM-148 Javelin (đánh nóc); giống: ước đoán (Javelin): nhánh tên lửa đánh nóc; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `barrage_balloon` (Khí cầu neo radar (JLENS)): mẫu thật: JLENS (khí cầu neo radar); giống: Khí cầu neo radar: bom địch kém chính xác, lộ máy bay tàng hình gần; độ tin: ban_dau_doan; nguồn: R_unit_refs.
+- … 51 dòng có tham chiếu nữa: xem sheet 04_can_cu_thap/Can_cu_tham_chieu.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `R_decisions`: Docs/DECISIONS.md (nhật ký quyết định) (độ tin 3)
+- `R_machine_brigade_ai_research`: Nghiên cứu AI (Machine_Brigade_AI_Research.xlsx) (độ tin 3)
+- `R_machine_brigade_can_bang`: Rà soát cân bằng (Machine_Brigade_Can_bang.xlsx) (độ tin 3)
+- `R_rocket_turret`: spec dựng lại rocket_turret (prompt 35) (độ tin 3)
+- `R_unit_refs`: unit_refs.json (tham chiếu ngoài đời / phim / game theo đơn vị) (độ tin 3)
+
+Sheet: 04_can_cu_thap/Can_cu_so_sanh_that — Căn cứ và tháp: so sánh với thật (37 dòng, 18 cột)
+
+| id | entity_id | thong_so | don_vi | gia_tri_game | gia_tri_that | ty_le | khoang_min | khoang_max | co_chu_dich |
+|---|---|---|---|---|---|---|---|---|---|
+| aa_gun_tower/bofors_l70/nhip | aa_gun_tower | khe_mot_nong_mot_vien | s | 0.3875 | 0.18181818181818182 | 2.13125 | 0.6 | 2.0 | TRUE |
+| aa_turret.flak/flak_quad/nhip | aa_turret.flak | khe_mot_nong_mot_vien | s | 0.23831112 | 0.06 | 3.9718519999999997 | 0.6 | 2.0 | TRUE |
+| aa_turret.sam/stinger_post/nhip | aa_turret.sam | khe_mot_nong_mot_vien | s | 4.452 | 3.0 | 1.484 | 0.6 | 2.0 | FALSE |
+| aa_turret/sam/nhip | aa_turret | khe_mot_nong_mot_vien | s | 4.452 | 3.0 | 1.484 | 0.6 | 2.0 | FALSE |
+| aa_turret/tower_flak_30/nhip | aa_turret | khe_mot_nong_mot_vien | s | 0.107200008 | 0.024 | 4.466667 | 0.6 | 2.0 | TRUE |
+| artillery_emplacement.cb/howitzer_cb/nhip | artillery_emplacement.cb | khe_mot_nong_mot_vien | s | 4.549992857 | 21.42857142857143 | 0.21233299999333333 | 0.6 | 2.0 | FALSE |
+| artillery_emplacement.mortar/mortar_240_fixed/nhip | artillery_emplacement.mortar | khe_mot_nong_mot_vien | s | 6.75 | 85.71428571428572 | 0.07874999999999999 | 0.6 | 2.0 | FALSE |
+| artillery_emplacement/howitzer_fixed/nhip | artillery_emplacement | khe_mot_nong_mot_vien | s | 4.549992857 | 21.42857142857143 | 0.21233299999333333 | 0.6 | 2.0 | FALSE |
+| at_gun_emplacement/at_gun_100/nhip | at_gun_emplacement | khe_mot_nong_mot_vien | s | 5.000002041 | 6.122448979591837 | 0.8166670000299999 | 0.6 | 2.0 | FALSE |
+| atgm_tower.multi/kornet_multi/nhip | atgm_tower.multi | khe_mot_nong_mot_vien | s | 5.55 | 20.0 | 0.27749999999999997 | 0.6 | 2.0 | FALSE |
+| atgm_tower.top/kornet_top/nhip | atgm_tower.top | khe_mot_nong_mot_vien | s | 5.2 | 20.0 | 0.26 | 0.6 | 2.0 | FALSE |
+| atgm_tower/tower_kornet/nhip | atgm_tower | khe_mot_nong_mot_vien | s | 5.55 | 20.0 | 0.27749999999999997 | 0.6 | 2.0 | FALSE |
+| bulwark_post/bunker_hmg/nhip | bulwark_post | khe_mot_nong_mot_vien | s | 0.08866665 | 0.075 | 1.182222 | 0.6 | 2.0 | FALSE |
+| c_ram.dome/tamir/nhip | c_ram.dome | khe_mot_nong_mot_vien | s | 6.833333 | 1.0 | 6.833333 | 0.6 | 2.0 | FALSE |
+| c_ram/c_ram_gatling/nhip | c_ram | khe_mot_nong_mot_vien | s | 0.035 | 0.013333333333333334 | 2.625 | 0.6 | 2.0 | TRUE |
+| coastal_battery/gun_155_coastal/nhip | coastal_battery | khe_mot_nong_mot_vien | s | 4.420007143 | 21.42857142857143 | 0.20626700000666667 | 0.6 | 2.0 | FALSE |
+| guard_tower.nest/tower_ac25/nhip | guard_tower.nest | khe_mot_nong_mot_vien | s | 0.255 | 0.12 | 2.125 | 0.6 | 2.0 | TRUE |
+| guard_tower/tower_hmg/nhip | guard_tower | khe_mot_nong_mot_vien | s | 0.125 | 0.1 | 1.25 | 0.6 | 2.0 | FALSE |
+| gun_turret.auto/gun_57_auto/nhip | gun_turret.auto | khe_mot_nong_mot_vien | s | 0.9 | 0.5 | 1.8 | 0.6 | 2.0 | FALSE |
+| gun_turret.long/turret_gun_120_long/nhip | gun_turret.long | khe_mot_nong_mot_vien | s | 3.9 | 10.714285714285715 | 0.36399999999999993 | 0.6 | 2.0 | FALSE |
+| gun_turret/turret_gun_120/nhip | gun_turret | khe_mot_nong_mot_vien | s | 2.88 | 10.714285714285715 | 0.2688 | 0.6 | 2.0 | FALSE |
+| heavy_flak_tower/flak_88/nhip | heavy_flak_tower | khe_mot_nong_mot_vien | s | 2.0 | 4.0 | 0.5 | 0.6 | 2.0 | FALSE |
+| heavy_turret.bastion/hmg_roof/nhip | heavy_turret.bastion | khe_mot_nong_mot_vien | s | 0.1611 | 0.1 | 1.6109999999999998 | 0.6 | 2.0 | FALSE |
+| heavy_turret.coastal/gun_155_twin_coastlr/nhip | heavy_turret.coastal | khe_mot_nong_mot_vien | s | 5.55 | 21.42857142857143 | 0.25899999999999995 | 0.6 | 2.0 | FALSE |
+| heavy_turret/gun_155_twin_ap/nhip | heavy_turret | khe_mot_nong_mot_vien | s | 5.55 | 21.42857142857143 | 0.25899999999999995 | 0.6 | 2.0 | FALSE |
+| manpads_tower/sam/nhip | manpads_tower | khe_mot_nong_mot_vien | s | 4.452 | 3.0 | 1.484 | 0.6 | 2.0 | FALSE |
+| mg_bunker.twin/bunker_hmg_twin/nhip | mg_bunker.twin | khe_mot_nong_mot_vien | s | 0.1533333 | 0.075 | 2.0444440000000004 | 0.6 | 2.0 | TRUE |
+| mg_bunker/bunker_hmg/nhip | mg_bunker | khe_mot_nong_mot_vien | s | 0.08866665 | 0.075 | 1.182222 | 0.6 | 2.0 | FALSE |
+| missile_battery.lrr/sam_battery_lrr/nhip | missile_battery.lrr | khe_mot_nong_mot_vien | s | 1.95 | 3.0 | 0.65 | 0.6 | 2.0 | FALSE |
+| missile_battery.pac3/sam_pac3/nhip | missile_battery.pac3 | khe_mot_nong_mot_vien | s | 3.350001 | 3.0 | 1.1166669999999999 | 0.6 | 2.0 | FALSE |
+| missile_battery/patriot/nhip | missile_battery | khe_mot_nong_mot_vien | s | 1.599999 | 3.0 | 0.533333 | 0.6 | 2.0 | FALSE |
+| one_shot_atgm_tower/one_shot_kornet/nhip | one_shot_atgm_tower | khe_mot_nong_mot_vien | s | 1.2 | 20.0 | 0.06 | 0.6 | 2.0 | FALSE |
+| recoilless_gun_tower/spg9_73mm/nhip | recoilless_gun_tower | khe_mot_nong_mot_vien | s | 6.67 | 14.285714285714286 | 0.4669 | 0.6 | 2.0 | FALSE |
+| rocket_turret.cluster/turret_rockets_cluster/nhip | rocket_turret.cluster | khe_mot_nong_mot_vien | s | 0.5 | 0.5 | 1.0 | 0.6 | 2.0 | FALSE |
+| rocket_turret.guided/turret_gmlrs/nhip | rocket_turret.guided | khe_mot_nong_mot_vien | s | 0.5 | 5.0 | 0.1 | 0.6 | 2.0 | FALSE |
+| rocket_turret/turret_rockets/nhip | rocket_turret | khe_mot_nong_mot_vien | s | 0.5 | 0.5 | 1.0 | 0.6 | 2.0 | FALSE |
+| spawn_bastion/bastion_gun/nhip | spawn_bastion | khe_mot_nong_mot_vien | s | 5.209997143 | 8.571428571428571 | 0.6078330000166666 | 0.6 | 2.0 | FALSE |
+
+*in 10 / 18 cột; 6 cột khác (và raw_json, nguon): xem sheet.*
+
+### Tham khảo ngoài đời và game (05_che_do_kinh_te: Chế độ và kinh tế)
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 05_che_do_kinh_te/Che_do_tham_chieu; 05_che_do_kinh_te/Che_do_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+#### Che_do_tham_chieu
+
+12 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 1, NEED_SOURCE 11. Loại: NEED_SOURCE 11, game 1.
+
+- `conquest` (Conquest): game: Company of Heroes; giống: DECISIONS mục '28 5 (cloud, 2026-10-02)': Conquest đã trừ dần bên giữ ít điểm hơn; độ tin: ban_dau_doan; nguồn: R_decisions.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `R_decisions`: Docs/DECISIONS.md (nhật ký quyết định) (độ tin 3)
+
+Sheet: 05_che_do_kinh_te/Che_do_so_sanh_that — Chế độ: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | chế độ chơi không có thông số ngoài đời để đối chiếu |
+
+### Tham khảo ngoài đời và game (06_ai: AI)
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 06_ai/AI_tham_chieu; 06_ai/AI_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+#### AI_tham_chieu
+
+56 dòng. Độ tin cậy: da_kiem_chung 14, uoc_dinh 0, ban_dau_doan 30, NEED_SOURCE 12. Loại: NEED_SOURCE 12, hoc_thuyet_quan_su 44.
+
+- `chien_thuat/air_superiority` (Ưu thế trên không): học thuyết: Ưu thế trên không; game: Hearts of Iron IV;Ace Combat; giống: Tạo cửa sổ trên không rồi mới đưa đội mặt đất; khác có chủ đích: Tướng AI mua tiêm kích và phòng không trước; đội mặt đất chờ tới khi máy bay địch bị hạ h…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
+- `chien_thuat/all_out` (Tổng tấn công): học thuyết: Tập trung lực lượng, đòn quyết định; game: StarCraft; giống: Để dành rồi tung một đợt lớn cùng lúc; khác có chủ đích: Tướng AI để dành CP tới ngưỡng rồi mua cả đợt; mọi đội cùng tấn công; thẻ hỗ trợ dồn cùng…; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
+- `chien_thuat/ambush` (Phục kích): học thuyết: Phục kích, giữ lửa; game: Command: Modern Operations;Company of Heroes; giống: Ẩn và kỷ luật hỏa lực, phát đầu đồng loạt; khác có chủ đích: Đội dừng ở chỗ có vật che; giữ lửa tới khi địch vào ~60% tầm hoặc bị phát hiện; phát đầu…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_command_modern_operations_weapon_release_aut.
+- `chien_thuat/attrition` (Tiêu hao): học thuyết: Chiến tranh tiêu hao; game: Hearts of Iron IV; giống: Đổi lãnh thổ lấy thời gian, quấy rối từ xa; khác có chủ đích: Ngưỡng tấn công 1,5 lần; ưu tiên vũ khí tầm xa và giữ khoảng cách; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
+- `chien_thuat/balanced` (Cân bằng): học thuyết: Vũ khí phối hợp (combined arms); giống: Phối hợp nhiều vai trò, không thiên lệch; khác có chủ đích: Không đổi tham số; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
+- `chien_thuat/base_defence` (Bảo vệ căn cứ): học thuyết: Phòng thủ cố định; game: Tower defense;C&C; giống: Giữ quanh căn cứ và tháp; khác có chủ đích: Đội giữ trong vùng căn cứ; tháp ưu tiên chế độ Đầu đoàn; mua quân phòng thủ; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
+- `chien_thuat/blitz` (Tấn công chớp nhoáng): học thuyết: Chiến tranh cơ động; game: Hearts of Iron IV; giống: Giữ đà tiến, đánh trước khi địch kịp dựng phòng tuyến; khác có chủ đích: Ngưỡng tấn công 1,2 → 0,9 lần sức mạnh địch; đội không chờ xe chậm; xe nhanh được ưu tiên…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
+- `chien_thuat/bounding` (Yểm hộ luân phiên): học thuyết: Bounding overwatch; game: Steel Beasts;ArmA; giống: Tiến chậm, an toàn, một nhóm luôn yểm hộ; khác có chủ đích: Đội chia 2 nhóm; nhóm tiến không vượt quá tầm yểm hộ của nhóm dừng; tốc độ tiến giảm ~30%; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, W_bounding_overwatch.
+- `chien_thuat/breakthrough` (Tập trung đột phá): học thuyết: Schwerpunkt (điểm trọng tâm); game: Hearts of Iron IV;Total War; giống: Dồn gần hết quân vào một điểm để chọc thủng; khác có chủ đích: Tướng AI dồn ≥ 70% quân vào một hướng; xe hạng nặng đi đầu; bỏ giữ các điểm phụ; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
+- `chien_thuat/decapitation` (Săn đầu): học thuyết: Đánh vào chỉ huy và hậu cần (decapitation); game: Company of Heroes;WARNO; giống: Đánh sâu vào hỗ trợ, pháo, chỉ huy; khác có chủ đích: Ưu tiên mục tiêu: xe hỗ trợ, pháo, xe chỉ huy, radar; đội đánh sườn sâu; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
+- `chien_thuat/depth` (Phòng thủ chiều sâu): học thuyết: Phòng thủ đàn hồi (elastic defense); game: Hearts of Iron IV; giống: Hấp thụ đợt tấn công qua nhiều tuyến, rồi phản công; khác có chủ đích: Đội giữ điểm gần tháp; khi tuyến trước thất thủ (sức mạnh ta dưới 0,6 lần địch trong vùng…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
+- `chien_thuat/dispersal` (Phân tán): học thuyết: Phân tán chống hỏa lực; game: Supreme Commander; giống: Dàn rộng để vô hiệu bắn lan và siêu vũ khí (tham khảo khác: chiến sự drone hiện đại); khác có chủ đích: Khoảng cách tối thiểu giữa xe ×2; giảm dồn hỏa lực; né cảnh báo sớm hơn; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
+- `chien_thuat/encircle` (Bao vây): học thuyết: Gọng kìm, bao vây; game: Total War;Hearts of Iron IV; giống: Đánh hai hướng cùng lúc vào hông và sau; khác có chủ đích: Tướng AI chia 2–3 đội theo hai hướng; trọng số đánh sườn tăng; hẹn giờ cho các đội cùng c…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
+- `chien_thuat/firepower` (Hỏa lực áp đảo): học thuyết: Hỏa lực vượt trội; game: Hearts of Iron IV; giống: Pháo dọn đường rồi mới tiến; khác có chủ đích: Tướng AI ưu tiên mua pháo binh; đội chờ 1 đợt pháo trước khi tiến; pháo được giao mục tiê…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
+- `chien_thuat/hit_and_run` (Bắn và chạy): học thuyết: Kiting, giữ cự ly; game: StarCraft II; giống: Giữ cự ly tối đa, không để địch áp sát; khác có chủ đích: Khoảng cách giao chiến 90–100% tầm; lùi khi địch vào 70% tầm; ưu tiên mua xe nhanh bắn xa; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
+- … 29 dòng có tham chiếu nữa: xem sheet 06_ai/AI_tham_chieu.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `D_command_modern_operations_weapon_release_aut`: Command: Modern Operations · Weapon Release Authorization — <https://command.matrixgames.com/?p=3598> (độ tin 1)
+- `D_hearts_of_iron_iv_land_doctrine`: Hearts of Iron IV · Land doctrine — <https://hoi4.paradoxwikis.com/Land_doctrine> (độ tin 3)
+- `R_machine_brigade_ai_research`: Nghiên cứu AI (Machine_Brigade_AI_Research.xlsx) (độ tin 3)
+- `W_bounding_overwatch`: Bounding overwatch — <https://en.wikipedia.org/wiki/Bounding_overwatch> (độ tin 2)
+
+Sheet: 06_ai/AI_so_sanh_that — AI: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | AI không có thông số ngoài đời để đối chiếu (học thuyết là… |
+
+### Tham khảo ngoài đời và game (07_chien_dich_cot_truyen: Chiến dịch và cốt truyện)
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 07_chien_dich_cot_truyen/Chien_dich_tham_chieu; 07_chien_dich_cot_truyen/Thoai_tham_chieu; 07_chien_dich_cot_truyen/Chien_dich_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+#### Chien_dich_tham_chieu
+
+231 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 0, NEED_SOURCE 231. Loại: NEED_SOURCE 231.
+
+- Chưa dòng nào có tham chiếu trong repo (xem 13_tham_chieu_nguon/Thieu_nguon).
+
+#### Thoai_tham_chieu
+
+21 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 0, NEED_SOURCE 21. Loại: NEED_SOURCE 21.
+
+- Chưa dòng nào có tham chiếu trong repo (xem 13_tham_chieu_nguon/Thieu_nguon).
+
+Sheet: 07_chien_dich_cot_truyen/Chien_dich_so_sanh_that — Chiến dịch: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | chiến dịch và thoại không có thông số ngoài đời để đối chiếu |
+
+### Tham khảo ngoài đời và game (08_ban_do: Bản đồ)
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 08_ban_do/Ban_do_tham_chieu; 08_ban_do/Ban_do_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+#### Ban_do_tham_chieu
+
+33 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 0, NEED_SOURCE 33. Loại: NEED_SOURCE 33.
+
+- Chưa dòng nào có tham chiếu trong repo (xem 13_tham_chieu_nguon/Thieu_nguon).
+
+Sheet: 08_ban_do/Ban_do_so_sanh_that — Bản đồ: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | bản đồ không có thông số ngoài đời để đối chiếu |
+
+### Tham khảo ngoài đời và game (09_hieu_ung_am_thanh: Hiệu ứng và âm thanh)
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 09_hieu_ung_am_thanh/Hieu_ung_tham_chieu; 09_hieu_ung_am_thanh/Hieu_ung_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+#### Hieu_ung_tham_chieu
+
+55 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 0, NEED_SOURCE 55. Loại: NEED_SOURCE 55.
+
+- Chưa dòng nào có tham chiếu trong repo (xem 13_tham_chieu_nguon/Thieu_nguon).
+
+Sheet: 09_hieu_ung_am_thanh/Hieu_ung_so_sanh_that — Hiệu ứng: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | chưa có số đo tiếng / hình thật để đối chiếu (đặc điểm tiến… |
+
+### Tham khảo ngoài đời và game (10_model_tai_san: Model và tài sản)
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 10_model_tai_san/Model_tham_chieu; 10_model_tai_san/Model_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+#### Model_tham_chieu
+
+107 dòng. Độ tin cậy: da_kiem_chung 41, uoc_dinh 34, ban_dau_doan 31, NEED_SOURCE 1. Loại: NEED_SOURCE 1, doi_that 85, gia_tuong 21.
+
+- `aa_vehicle` (aa_vehicle): mẫu thật: Flakpanzer Gepard 1A2; độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_flakpanzer_gepard.
+- `aerial_tanker` (aerial_tanker): mẫu thật: B-52H (same frame as the heavy bomber); độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_boeing_b_52_stratofortress.
+- `ammo_carrier` (ammo_carrier): mẫu thật: M977 / M985 HEMTT; độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_heavy_expanded_mobility_tactical_t.
+- `amphib_light_vehicle` (amphib_light_vehicle): mẫu thật: M2A3 Bradley (same frame as the IFV); độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_m2_bradley.
+- `armored_bulldozer` (armored_bulldozer): mẫu thật: Caterpillar D9R (IDF kit); độ tin: uoc_dinh; nguồn: R_reference_real, D_caterpillar_d9r_specifications.
+- `armored_car` (armored_car): mẫu thật: Pandur I 6x6; độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_steyr_pandur.
+- `armored_train` (armored_train): mẫu thật: BP-35 armoured train; độ tin: ban_dau_doan; nguồn: R_reference_real.
+- `artillery` (artillery): mẫu thật: M109A6 Paladin; độ tin: da_kiem_chung; nguồn: R_reference_real, W_wikipedia_m109_howitzer.
+- `attack_helicopter` (attack_helicopter): mẫu thật: AH-64D Apache Longbow; độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_boeing_ah_64_apache.
+- `attack_jet` (attack_jet): mẫu thật: Su-25 Frogfoot; độ tin: da_kiem_chung; nguồn: R_reference_real, W_wikipedia_sukhoi_su_25.
+- `ballistic_launcher` (ballistic_launcher): mẫu thật: 9P78-1 Iskander-M TEL (MZKT-7930); độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_9k720_iskander.
+- `behemoth` (behemoth): mẫu thật: Object 279 (four tracks, flat hull), a giant; độ tin: ban_dau_doan; nguồn: R_reference_real, W_wikipedia_object_279.
+- `behemoth_inferno` (behemoth_inferno): mẫu thật: Object 279 with a TOS-1A pack; độ tin: ban_dau_doan; nguồn: R_reference_real.
+- `behemoth_tempest` (behemoth_tempest): mẫu thật: Object 279 with a railgun; độ tin: ban_dau_doan; nguồn: R_reference_real.
+- `bmpt` (bmpt): mẫu thật: BMPT Terminator; độ tin: ban_dau_doan; nguồn: R_reference_real.
+- … 91 dòng có tham chiếu nữa: xem sheet 10_model_tai_san/Model_tham_chieu.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `D_army_recognition_buk_m1_2`: Army Recognition 'Buk-M1-2' (độ tin 2)
+- `D_caterpillar_d9r_specifications`: Caterpillar D9R specifications (độ tin 1)
+- `D_toyota_hilux_an10_an20_specifications`: Toyota Hilux AN10/AN20 specifications (độ tin 1)
+- `R_ixion`: spec dựng lại ixion (prompt 35) (độ tin 3)
+- `R_mb_p20_bosses`: script Blender mb_p20_bosses.py (docstring) (độ tin 3)
+- `R_mb_p22_content`: script Blender mb_p22_content.py (docstring) (độ tin 3)
+- `R_mb_redesign_20y`: script Blender mb_redesign_20y.py (docstring) (độ tin 3)
+- `R_reference_real`: reference_real.json (kích thước thật, độ tin conf) (độ tin 3)
+- `R_rocket_turret`: spec dựng lại rocket_turret (prompt 35) (độ tin 3)
+- `R_zu23_technical`: spec dựng lại zu23_technical (prompt 35) (độ tin 3)
+- `W_wikipedia_2s25_sprut_sd`: Wikipedia '2S25 Sprut-SD' (độ tin 2)
+- `W_wikipedia_2s4_tyulpan`: Wikipedia '2S4 Tyulpan' (độ tin 2)
+- `W_wikipedia_9k720_iskander`: Wikipedia '9K720 Iskander' (độ tin 2)
+- `W_wikipedia_b1_centauro`: Wikipedia 'B1 Centauro' (độ tin 2)
+- `W_wikipedia_bagger_288`: Wikipedia 'Bagger 288' (độ tin 2)
+- `W_wikipedia_baykar_bayraktar_tb2`: Wikipedia 'Baykar Bayraktar TB2' (độ tin 2)
+- `W_wikipedia_belaz_75710`: Wikipedia 'BelAZ 75710' (độ tin 2)
+- `W_wikipedia_bm_21_grad`: Wikipedia 'BM-21 Grad' (độ tin 2)
+- `W_wikipedia_bm_30_smerch`: Wikipedia 'BM-30 Smerch' (độ tin 2)
+- `W_wikipedia_boeing_ah_64_apache`: Wikipedia 'Boeing AH-64 Apache' (độ tin 2)
+- `W_wikipedia_boeing_b_52_stratofortress`: Wikipedia 'Boeing B-52 Stratofortress' (độ tin 2)
+- `W_wikipedia_boeing_ch_47_chinook`: Wikipedia 'Boeing CH-47 Chinook' (độ tin 2)
+- `W_wikipedia_boxer_armoured_fighting_vehicle`: Wikipedia 'Boxer (armoured fighting vehicle)' (độ tin 2)
+- `W_wikipedia_caesar_self_propelled_howitzer`: Wikipedia 'CAESAR self-propelled howitzer' (độ tin 2)
+- `W_wikipedia_crawler_transporter`: Wikipedia 'Crawler-transporter' (độ tin 2)
+- `W_wikipedia_flakpanzer_gepard`: Wikipedia 'Flakpanzer Gepard' (độ tin 2)
+- `W_wikipedia_general_atomics_mq_9_reaper`: Wikipedia 'General Atomics MQ-9 Reaper' (độ tin 2)
+- `W_wikipedia_heavy_expanded_mobility_tactical_t`: Wikipedia 'Heavy Expanded Mobility Tactical Truck' (độ tin 2)
+- `W_wikipedia_hybrid_air_vehicles_airlander_10`: Wikipedia 'Hybrid Air Vehicles Airlander 10' (độ tin 2)
+- `W_wikipedia_iowa_class_battleship`: Wikipedia 'Iowa-class battleship' (độ tin 2)
+- `W_wikipedia_kamaz_typhoon`: Wikipedia 'KamAZ Typhoon' (độ tin 2)
+- `W_wikipedia_kirov_class_battlecruiser`: Wikipedia 'Kirov-class battlecruiser' (độ tin 2)
+- `W_wikipedia_kratos_xq_58_valkyrie`: Wikipedia 'Kratos XQ-58 Valkyrie' (độ tin 2)
+- `W_wikipedia_landing_craft_air_cushion`: Wikipedia 'Landing Craft Air Cushion' (độ tin 2)
+- `W_wikipedia_lcm_8`: Wikipedia 'LCM-8' (độ tin 2)
+- `W_wikipedia_leopard_2`: Wikipedia 'Leopard 2' (độ tin 2)
+- `W_wikipedia_lockheed_ac_130`: Wikipedia 'Lockheed AC-130' (độ tin 2)
+- `W_wikipedia_lockheed_c_130_hercules`: Wikipedia 'Lockheed C-130 Hercules' (độ tin 2)
+- `W_wikipedia_lockheed_martin_f_22_raptor`: Wikipedia 'Lockheed Martin F-22 Raptor' (độ tin 2)
+- `W_wikipedia_lun_class_ekranoplan`: Wikipedia 'Lun-class ekranoplan' (độ tin 2)
+- `W_wikipedia_m109_howitzer`: Wikipedia 'M109 howitzer' (độ tin 2)
+- `W_wikipedia_m113_armored_personnel_carrier`: Wikipedia 'M113 armored personnel carrier' (độ tin 2)
+- `W_wikipedia_m142_himars`: Wikipedia 'M142 HIMARS' (độ tin 2)
+- `W_wikipedia_m151_mutt`: Wikipedia 'M151 MUTT' (độ tin 2)
+- `W_wikipedia_m2_bradley`: Wikipedia 'M2 Bradley' (độ tin 2)
+- `W_wikipedia_m88_recovery_vehicle`: Wikipedia 'M88 Recovery Vehicle' (độ tin 2)
+- `W_wikipedia_md_helicopters_mh_6_little_bird`: Wikipedia 'MD Helicopters MH-6 Little Bird' (độ tin 2)
+- `W_wikipedia_mil_mi_24`: Wikipedia 'Mil Mi-24' (độ tin 2)
+- `W_wikipedia_northrop_b_2_spirit`: Wikipedia 'Northrop B-2 Spirit' (độ tin 2)
+- `W_wikipedia_object_279`: Wikipedia 'Object 279' (độ tin 2)
+- `W_wikipedia_pt_76`: Wikipedia 'PT-76' (độ tin 2)
+- `W_wikipedia_soyuz_spacecraft`: Wikipedia 'Soyuz (spacecraft)' (độ tin 2)
+- `W_wikipedia_steyr_pandur`: Wikipedia 'Steyr Pandur' (độ tin 2)
+- `W_wikipedia_stryker`: Wikipedia 'Stryker' (độ tin 2)
+- `W_wikipedia_sukhoi_su_25`: Wikipedia 'Sukhoi Su-25' (độ tin 2)
+- `W_wikipedia_sukhoi_su_27`: Wikipedia 'Sukhoi Su-27' (độ tin 2)
+- `W_wikipedia_sukhoi_su_57`: Wikipedia 'Sukhoi Su-57' (độ tin 2)
+- `W_wikipedia_t_54_t_55`: Wikipedia 'T-54/T-55' (độ tin 2)
+- `W_wikipedia_t_72`: Wikipedia 'T-72' (độ tin 2)
+- `W_wikipedia_t_90`: Wikipedia 'T-90' (độ tin 2)
+- `W_wikipedia_tos_1`: Wikipedia 'TOS-1' (độ tin 2)
+- `W_wikipedia_typhoon_class_submarine`: Wikipedia 'Typhoon-class submarine' (độ tin 2)
+
+Sheet: 10_model_tai_san/Model_so_sanh_that — Model: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | kích thước model so với mẫu thật nằm ở 02/Phuong_tien_so_sa… |
+
+### Tham khảo ngoài đời và game (11_meta_giao_dien: Meta và giao diện)
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 11_meta_giao_dien/Meta_tham_chieu; 11_meta_giao_dien/Meta_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+#### Meta_tham_chieu
+
+13 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 0, NEED_SOURCE 13. Loại: NEED_SOURCE 13.
+
+- Chưa dòng nào có tham chiếu trong repo (xem 13_tham_chieu_nguon/Thieu_nguon).
+
+Sheet: 11_meta_giao_dien/Meta_so_sanh_that — Meta: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | meta không có thông số ngoài đời để đối chiếu |
 
 ## Mục "Chưa áp"
 
