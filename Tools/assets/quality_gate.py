@@ -571,13 +571,13 @@ def evaluate(ids=None, overlap=None, gold=None, quiet=False):
         m = metrics(mesh, structure=cls in ('tower', 'structure', 'hq'))
         hard = hard_checks(defs, model, own, cls, rec, m, overlap)
         gcls = gold_class(defs, model, own, cls, rec['nodeNames'])
-        g = gold_for(gold, gcls)
+        gset, g = gold_for_model(gold, gcls, model)
         score, shares = soft_score(m, g) if g else (None, {})
         hard_ok = all(ok for _, ok, _ in hard)
         sg = grade(score) if score is not None else 'NA'
         v, final8 = vis.get(model, ('', ''))
         rows.append({
-            'model': model, 'class': cls, 'gold_set': gold_key(gold, gcls), 'units': ' '.join(x['id'] for x in vs[:3]), 'triangles': rec['triangles'],
+            'model': model, 'class': cls, 'gold_set': gset, '_gold_class': gcls, 'units': ' '.join(x['id'] for x in vs[:3]), 'triangles': rec['triangles'],
             'hard_pass': hard_ok, 'hard_fails': ' | '.join(f'{k}: {n}' for k, ok, n in hard if not ok),
             'soft_score': score, 'soft_grade': sg, 'gate': 'PASS' if hard_ok and sg == 'Tốt' else 'FAIL',
             'l8_visual': v, 'l8_final': final8, 'agent_visual': 'NA',
@@ -606,6 +606,25 @@ def gold_for(gold, cls):
     return gold.get('classes', {}).get(gold_key(gold, cls))
 
 
+def gold_for_model(gold, cls, model):
+    """(set label, gold means) a model is scored against. Leave-one-out (prompt 35, lane A): a gold member is scored
+    against the mean of the other members of its set; a sole member against the next class's gold (NEAREST)."""
+    key = gold_key(gold, cls)
+    mm = gold.get('member_metrics', {})
+    seen = set()
+    while key and key not in seen:
+        seen.add(key)
+        mem = gold.get('members', {}).get(key, [])
+        if model not in mem or not mm:
+            return key, gold['classes'][key]
+        others = [n for n in mem if n != model and n in mm]
+        if others:
+            return f'{key} (LOO)', {k: float(np.mean([mm[n][k] for n in others])) for k in KEYS}
+        key = gold_key(gold, NEAREST.get(key))
+    key = gold_key(gold, cls)       # no other gold anywhere: the own set, self included
+    return key, gold.get('classes', {}).get(key)
+
+
 def load_gold():
     return json.loads(GOLD_JSON.read_text(encoding='utf-8')) if GOLD_JSON.exists() else {}
 
@@ -613,40 +632,86 @@ def load_gold():
 KEYS = ('silhouette', 'edges', 'regions', 'parts_m2', 'tier2_m2', 'tier3_m2', 'asym_raw', 'sloped_dirs', 'zones')
 
 
-def compute_gold(quiet=False):
-    """Gold = the four V2 models + the top 10 % of each class: models the pass 8 scan graded Tốt visually
-    ranked by the mean percentile of their soft metrics within the class (the soft score needs a gold to exist)."""
-    balance = sp.load_balance()
-    defs = sp.Defs(balance)
-    owners = scored_models(defs)
+GOLD_ROUNDS = 8
+
+
+def compute_gold(quiet=False, overlap=None):
+    """Gold = the four V2 models + the top 10 % of each class (and of each boss frame) among the gold candidates,
+    ranked by the mean percentile of their soft metrics within the class. Candidates (owner, prompt 35 section 8 item
+    1): models the pass 8 scan graded Tốt visually (not rebuilt since), and rebuilt models that pass every hard gate
+    with soft >= 80. No circularity: a rebuilt model's candidacy is judged against the previous gold (leave-one-out
+    when it is a member there: evaluate() scores every gold member against the other members, gold_for_model), and the
+    recompute repeats until the gold reproduces itself (a fixed point: every rebuilt member passes its own set
+    leave-one-out), so a second `--gold` run changes nothing."""
+    if overlap is None:
+        overlap = geometry_overlap(list(scored_models(sp.Defs(sp.load_balance()))))
+    prev = load_gold()
+    seen = []                       # (members, gate candidates) of each round
+    settled = 'fixed point'
+    for rnd in range(1, GOLD_ROUNDS + 1):
+        rows = evaluate(None, overlap=overlap, gold=prev, quiet=True)
+        gold = _select_gold(rows)
+        done = gold['members'] == prev.get('members')
+        if not quiet:
+            print(f"gold round {rnd}: {sum(len(v) for v in gold['members'].values())} places in "
+                  f"{len(gold['members'])} sets; candidates {gold['candidates']['count']}"
+                  f"{' (fixed point)' if done else ''}")
+        if done:
+            break
+        past = [m for m, _ in seen]
+        if gold['members'] in past:
+            # A cycle: a sole member of a small class is scored against the nearest class (leave-one-out) and drops
+            # out, its rival wins, and the two swap each round. Settle it with the union of the cycle's gate
+            # candidates: each passed against a gold without itself in some round; the class ranking then picks.
+            first = past.index(gold['members'])
+            union = set(gold['candidates']['gate'])
+            for _, c in seen[first:]:
+                union |= set(c)
+            gold = _select_gold(rows, extra=union)
+            settled = f'cycle settled by the union of the candidates of rounds {first + 1}-{rnd}'
+            if not quiet:
+                print(f'gold: {settled}')
+            break
+        seen.append((gold['members'], gold['candidates']['gate']))
+        prev = gold
+    else:
+        settled = f'stopped after {GOLD_ROUNDS} rounds'
+    gold['rounds'] = rnd
+    gold['settled'] = settled
+    GOLD_JSON.write_text(json.dumps(gold, indent=1, ensure_ascii=False) + '\n', encoding='utf-8')
+    write_gold_md(gold)
+    return gold
+
+
+def _select_gold(rows, extra=()):
+    """One gold from one gate run (rows scored against the previous gold); `extra`: more gate candidates."""
     vis = visual_grades()
-    raw = {}
-    frames = {}
+    reb = rebuilt()
     # A borrowed model (REBUILD_LIST stand_in) is never gold: its density is another model's (wave 1 found the
-    # ground boss gold made of fortress_bastion and behemoth_tempest, both stand-ins being rebuilt).
+    # ground boss gold made of fortress_bastion and behemoth_tempest, both stand-ins being rebuilt). A stand-in that
+    # was rebuilt has its own geometry now (the own_geometry hard gate checks it) and is a candidate like any other.
     borrowed = set()
     if (DOCS / 'rebuild_list.csv').exists():
         with (DOCS / 'rebuild_list.csv').open(encoding='utf-8') as fh:
-            borrowed = {r['model'] for r in csv.DictReader(fh) if r.get('stand_in') == 'yes'}
-    for model, vs in owners.items():
-        rec = glb_analyze.analyze(MODELS / f'{model}.glb')
-        own = vs[0] if vs else None
-        cls = sp.classify(defs, model, own, rec['nodeNames'])
-        raw[model] = (cls, metrics(gm.load(MODELS / f'{model}.glb')))
-        if cls == 'boss' and own is not None:
-            frames[model] = gold_class(defs, model, own, cls, rec['nodeNames'])
+            borrowed = {r['model'] for r in csv.DictReader(fh) if r.get('stand_in') == 'yes'} - reb
+    raw = {r['model']: (r['class'], {k: float(r[k]) for k in KEYS}) for r in rows}
+    frames = {r['model']: r['_gold_class'] for r in rows if r['_gold_class'].startswith('boss_')}
+    by_visual = {n for n in raw if vis.get(n, ('', ''))[0] == 'Tốt'}
+    by_gate = {r['model'] for r in rows if r['model'] in reb and r['hard_pass'] and r['soft_score'] is not None
+               and r['soft_score'] >= 80} | set(extra)
+    candidates = (by_visual | by_gate) - borrowed
     classes = {}
     members = {}
     for cls in sorted({c for c, _ in raw.values()}):
         in_cls = [n for n, (c, _) in raw.items() if c == cls]
-        good = [n for n in in_cls if vis.get(n, ('', ''))[0] == 'Tốt' and n not in borrowed]
+        good = [n for n in in_cls if n in candidates]
         ranks = {}
         for key in ('silhouette', 'edges', 'regions', 'parts_m2', 'tier2_m2', 'tier3_m2'):
             vals = sorted(raw[n][1][key] for n in in_cls)
             for n in in_cls:
                 ranks.setdefault(n, []).append(np.searchsorted(vals, raw[n][1][key]) / max(1, len(vals) - 1))
         top_n = max(1, int(math.ceil(TOP_SHARE * len(in_cls))))
-        top = sorted(good, key=lambda n: -np.mean(ranks[n]))[:top_n]
+        top = sorted(good, key=lambda n: (-np.mean(ranks[n]), n))[:top_n]
         gold_set = sorted(set(top) | {n for n, c in GOLD_V2.items() if c == cls and n in raw})
         if not gold_set:
             continue
@@ -655,22 +720,27 @@ def compute_gold(quiet=False):
         classes[cls]['count'] = len(in_cls)
         if cls != 'boss':
             continue
-        # Decision 5: the same rule inside each boss frame (a frame with no visual Tốt model and no V2 model uses the
+        # Decision 5: the same rule inside each boss frame (a frame with no candidate and no V2 model uses the
         # whole boss gold through NEAREST).
         for fk in sorted(set(frames.values())):
             in_f = [n for n in in_cls if frames.get(n) == fk]
             good_f = [n for n in in_f if n in good]
-            top_f = sorted(good_f, key=lambda n: -np.mean(ranks[n]))[:max(1, int(math.ceil(TOP_SHARE * len(in_f))))]
+            top_f = sorted(good_f, key=lambda n: (-np.mean(ranks[n]), n))[:max(1, int(math.ceil(TOP_SHARE * len(in_f))))]
             set_f = sorted(set(top_f) | {n for n, c in GOLD_V2.items() if c == 'boss' and frames.get(n) == fk})
             if set_f:
                 members[fk] = set_f
                 classes[fk] = {k: round(float(np.mean([raw[n][1][k] for n in set_f])), 4) for k in KEYS}
                 classes[fk]['count'] = len(in_f)
+    in_gold = sorted({n for v in members.values() for n in v})
     gold = {'about': 'prompt 35 section 5.3: class means of the gold set (quality_gate.compute_gold)',
+            'rule': 'V2 + top 10 % per class / boss frame of: visual Tốt (pass 8, not rebuilt) or rebuilt with every '
+                    'hard gate and soft >= 80 against the previous gold, repeated to a fixed point; members scored '
+                    'leave-one-out',
             'members': members, 'classes': classes,
+            'member_metrics': {n: {k: round(raw[n][1][k], 4) for k in KEYS} for n in in_gold},
+            'candidates': {'count': len(candidates), 'visual': sorted(by_visual - borrowed),
+                           'gate': sorted(by_gate - borrowed)},
             'v2': {n: {k: round(float(raw[n][1][k]), 4) for k in KEYS} for n in GOLD_V2 if n in raw}}
-    GOLD_JSON.write_text(json.dumps(gold, indent=1, ensure_ascii=False) + '\n', encoding='utf-8')
-    write_gold_md(gold)
     return gold
 
 
@@ -678,9 +748,19 @@ def write_gold_md(gold):
     lines = ['# Gold metrics (prompt 35 section 5.3)', '',
              'Generated by `python Tools/assets/quality_gate.py --gold` (data: `Tools/assets/gold_metrics.json`). Gold =',
              'the four V2 models the owner approved in prompt 27 EXPERIMENT_1 (main_battle_tank, fighter_jet,',
-             'attack_helicopter, silver_bug) plus the top 10 % of each class: models the pass 8 scan graded Tốt visually,',
-             'ranked by the mean percentile of their soft metrics in the class. A class with no gold uses the nearest',
-             "class's (`NEAREST` in quality_gate.py: " + ', '.join(f'{a} -> {b}' for a, b in NEAREST.items()) + ').',
+             'attack_helicopter, silver_bug) plus the top 10 % of each class and of each boss frame (ground, rail, air,',
+             'sea) among the candidates, ranked by the mean percentile of their soft metrics in the class. Candidates',
+             '(owner, prompt 35 section 8 item 1): models the pass 8 scan graded Tốt visually (not rebuilt since), and',
+             'rebuilt models that pass every hard gate with soft >= 80 against the previous gold. A class with no gold',
+             "uses the nearest class's (`NEAREST` in quality_gate.py: " + ', '.join(f'{a} -> {b}' for a, b in NEAREST.items()) + ').',
+             '', 'No circularity: a gold member is scored leave-one-out (against the mean of the other members of its set;',
+             "a sole member against the nearest class's gold, the report's gold_set column says `(LOO)`). The recompute",
+             'repeats until the gold reproduces itself; a two-round swap of sole members in small classes is settled by',
+             'the union of the candidates of the swapping rounds; the class ranking then picks.',
+             f"This gold: {sum(len(v) for v in gold['members'].values())} places in {len(gold['members'])} sets, "
+             f"{len(gold.get('candidates', {}).get('gate', []))} gate candidates and "
+             f"{len(gold.get('candidates', {}).get('visual', []))} visual ones; {gold.get('rounds', '?')} rounds, "
+             f"{gold.get('settled', '')}.",
              '', 'Metrics (glb_mesh pictures, every model drawn the same way):', '',
              '- silhouette: silhouette boundary / convex hull boundary, mean of side, front, top (256 px on the long side; 1 = convex);',
              '- edges: share of model pixels on a shading edge, battle view (28.4 px/m, pitch 52, yaw -45);',
@@ -706,7 +786,7 @@ def write_report(rows, merge=True):
         with REPORT_CSV.open(encoding='utf-8') as fh:
             old = {r['model']: r for r in csv.DictReader(fh)}
     for r in rows:
-        old[r['model']] = r
+        old[r['model']] = {k: x for k, x in r.items() if not k.startswith('_')}
     allrows = [old[k] for k in sorted(old)]
     fields = []
     for r in allrows:
@@ -737,10 +817,12 @@ def main():
     ap.add_argument('--gold', action='store_true', help='recompute the gold metrics first')
     ap.add_argument('--no-write', action='store_true')
     args = ap.parse_args()
-    if args.gold or not GOLD_JSON.exists():
-        compute_gold()
     ids = [x for x in (args.ids or '').split(',') if x] or None
-    rows = evaluate(ids)
+    overlap = None
+    if args.gold or not GOLD_JSON.exists():
+        overlap = geometry_overlap(list(scored_models(sp.Defs(sp.load_balance()))))
+        compute_gold(overlap=overlap)
+    rows = evaluate(ids, overlap=overlap if ids is None else None)
     if not args.no_write:
         write_report(rows, merge=bool(ids))
     fails = sum(1 for r in rows if r['gate'] != 'PASS')

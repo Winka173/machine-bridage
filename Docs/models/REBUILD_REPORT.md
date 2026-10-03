@@ -16,7 +16,7 @@ recompute dropped"), the DECISIONS "Prompt 35" sections, and git (sizes, times).
 | P3 not rebuilt | 8 -> 0 | minefield_a, dragons_teeth_b, drone_mothership, ew_tower, ew_tower_b, nuke_train, recoilless_jeep, airborne_light_tank_chute: rebuilt in wave 12 (section 9) |
 | NEEDS_HUMAN raised | **25** | pilot 2, wave 1 3, wave 2 10, wave 3 4, wave 5 3, wave 6 2, wave 7 1; waves 4, 8, 9, 10, 11: none |
 | NEEDS_HUMAN still under 80 | 23 | ixion (89.8) and rocket_turret (83.5) now pass; the other 23 pass every hard gate (the 3 wave 1 structures accepted on the owner's look still score 57.6-70.9; list in section 5) |
-| whole gate now | **199 of 230** | hard gates 230 of 230; soft Tốt 199, Cần sửa 24, Kém 7 (pass 0: Tốt 78, Cần sửa 89, Kém 63) |
+| whole gate now | **105 of 230** | gold recomputed with the rebuilt models (owner answer 1, section 2 end): hard gates 230 of 230; soft Tốt 105, Cần sửa 98, Kém 27. Against the pre-rebuild gold: 199 (Tốt 199, Cần sửa 24, Kém 7; pass 0: Tốt 78, Cần sửa 89, Kém 63) |
 
 Every rebuilt model is its own script and spec (`Tools/blender/mb_p35_<id>.py` or a wave module,
 `Tools/blender/specs/<id>.json`), with a before / after sheet in `Docs/models/rebuild/<id>/` and the lead's Unity
@@ -78,6 +78,44 @@ rails and sleepers count as thousands of small parts).
 
 The gold sets were not recomputed (lead, 2026-10-03): rebuilt models carry no pass 8 visual grade, so a recompute
 would shrink the sets to the old models left and drop 24 passes (lane A's run: 163 of 230).
+
+### Gold recomputed with the rebuilt models (owner answer 1, lane A, 2026-10-03)
+
+The owner allowed a rebuilt model that passes every hard gate with soft >= 80 to stand for gold (section 8 item 1).
+`quality_gate.py --gold` now takes as candidates the pass 8 visual Tốt models (not rebuilt) and those rebuilt models
+(soft judged against the previous gold), keeps the top 10 % per class and per boss frame plus the four V2 models, and
+scores every gold member leave-one-out (DECISIONS "Prompt 35: gold recompute with rebuilt models (lane A)"). The
+tables above (sections 1-2) are against the pre-rebuild gold; after the recompute the gate passes **105 of 230** (was
+199): 94 models drop, none rises; 106 soft grades change (Tốt -> Cần sửa 86, Tốt -> Kém 8, Cần sửa -> Kém 12).
+"scored on it" counts each model under the set it is scored against now (a sole gold member under the nearest set).
+
+| gold set | new members | scored on it | pass before | after | parts_m2 old / new gold | tier3_m2 old / new | regions old / new |
+|---|---|---|---|---|---|---|---|
+| tower | cp_relay, cp_relay_a, ew_tower, ew_tower_a, ew_tower_b, guard_tower, guard_tower_a | 63 | 44 | 18 | 0.95 / 1.22 | 0.66 / 0.83 | 12.37 / 13.31 |
+| wheeled | recoilless_jeep, rocket_technical, scout_jeep, towed_at_gun, zu23_technical | 43 | 43 | 10 | 0.70 / 1.69 | 0.48 / 3.40 | 14.92 / 18.32 |
+| tracked | airborne_vehicle, ground_drone_carrier, main_battle_tank, radar_atgm_vehicle, smoke_carrier | 39 | 39 | 38 | 0.40 / 0.65 | 0.30 / 0.80 | 9.51 / 10.11 |
+| jet | fighter_jet, recon_drone, strike_drone | 17 | 15 | 6 | 0.88 / 2.21 | 1.36 / 4.59 | 6.32 / 18.41 |
+| boss_ground | kronos, supreme_command | 15 | 15 | 8 | 0.52 / 1.14 | 0.95 / 2.94 | 7.53 / 4.12 |
+| obstacle | dragons_teeth_b, drone_net_tower | 14 | 7 | 2 | 0.64 / 1.27 | 1.23 / 3.74 | 10.83 / 32.68 |
+| boss_air | hyperion, silver_bug | 9 | 7 | 4 | 1.63 / 2.09 | 4.11 / 11.81 | 3.99 / 4.70 |
+| helicopter | attack_helicopter, light_attack_heli | 8 | 8 | 6 | 2.43 / 2.55 | 2.48 / 4.94 | 23.01 / 20.80 |
+| boss_sea | leviathan | 5 | 4 | 4 | 1.90 / 1.84 | 7.96 / 7.32 | 2.82 / 2.40 |
+| structure | targeting_station | 4 | 4 | 1 | 0.62 / 1.45 | 0.26 / 1.06 | 5.85 / 9.85 |
+| ship | missile_boat | 3 | 3 | 2 | - / 1.25 | - / 1.99 | - / 7.94 |
+| boss | armored_train, hyperion, nuke_train, silver_bug, stymphalos | 3 | 3 | 1 | 2.16 / 2.60 | 10.08 / 16.72 | 4.65 / 5.50 |
+| air_other | airborne_light_tank_chute | 2 | 2 | 1 | 0.23 / 0.71 | 0.18 / 1.22 | 2.18 / 7.73 |
+| boss_rail | nuke_train | 2 | 2 | 1 | 3.54 / 5.07 | 19.96 / 22.66 | 6.31 / 6.52 |
+| ground | river_patrol_boat | 2 | 2 | 2 | - / 0.98 | - / 0.65 | - / 11.78 |
+| hq | command_hq | 1 | 1 | 1 | 0.44 / 0.58 | 0.48 / 0.73 | 4.63 / 2.79 |
+
+Reading: the new gold is the densest 10 % of the rebuilt models, so detail density per m2 (parts, tier 3) rose 1.3-7 x
+over the old gold; the scores fall mostly on tiers (mean share of the dropped models 0.86 -> 0.54), parts_m2 (0.95 ->
+0.66) and regions (0.79 -> 0.65). Tracked holds (38 of 39). Wheeled (43 -> 10) and jet (15 -> 6) are scored against
+small dense models (jeeps / technicals / a towed gun; two drones), so trucks, bombers and the tanker fall. Obstacle
+gold is dragons_teeth_b and drone_net_tower (the net makes 32.7 regions per 1000 px): helipads 42-44 and walls 37-47
+are Kém against it. Three of the four V2 models fail now (fighter_jet 67.9, main_battle_tank 71.8, silver_bug 55.5;
+attack_helicopter 78.4), and sole gold members scored against the nearest class fail too (leviathan 69.0,
+command_hq 58.9, airborne_light_tank_chute 62.2, missile_boat 79.7). Per-model scores: quality_report.csv.
 
 ## 3. Kit components added
 
