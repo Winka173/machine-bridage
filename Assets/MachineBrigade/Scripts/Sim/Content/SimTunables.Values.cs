@@ -15,7 +15,7 @@ namespace MachineBrigade.Sim.Content
     {
         public static partial class Weapons
         {
-            public static class CombatSystem
+            public static partial class CombatSystem
             {
                 /// <summary>weapons.combatSystem.axisRatio (x; nguong, was Sim/Combat/CombatSystem.Bombs.cs:106).</summary>
                 public static float AxisRatio = 1.5f;
@@ -40,7 +40,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>weapons.combatSystem.twinOffset (s; ban_kinh, was Sim/Combat/CombatSystem.cs:685).</summary>
                 public static float TwinOffset = 0.1f;
             }
-            public static class DamageSystem
+            public static partial class DamageSystem
             {
                 /// <summary>weapons.damageSystem.engineerBreach (x; nguong, was Sim/Combat/DamageSystem.cs:258).</summary>
                 public static float EngineerBreach = 3f;
@@ -51,12 +51,12 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>weapons.damageSystem.smokeEnergyCut (share; nguong, was Sim/Combat/DamageSystem.cs:750).</summary>
                 public static float SmokeEnergyCut = 0.8f;
             }
-            public static class DamageTable
+            public static partial class DamageTable
             {
                 /// <summary>weapons.damageTable.defaultPenetration (x; sat_thuong, was Sim/Content/DamageTable.cs:52).</summary>
                 public static float[] DefaultPenetration = { 1.2f, 1f, 0.85f, 0.55f, 0.25f, 0.1f };
             }
-            public static class WeaponDef
+            public static partial class WeaponDef
             {
                 /// <summary>weapons.weaponDef.minSwitchSeconds (s; thoi_gian, was Sim/Content/SecondRounds.cs:68).</summary>
                 public static float MinSwitchSeconds = 0.5f;
@@ -76,7 +76,7 @@ namespace MachineBrigade.Sim.Content
         }
         public static partial class Vehicles
         {
-            public static class AbilitySystem
+            public static partial class AbilitySystem
             {
                 /// <summary>vehicles.abilitySystem.homeReach (m; ban_kinh, was Sim/Abilities/AbilitySystem.cs:25).</summary>
                 public static float HomeReach = 20f;
@@ -87,7 +87,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>vehicles.abilitySystem.mineSpotting (m; ban_kinh, was Sim/Abilities/AbilitySystem.cs:34).</summary>
                 public static float MineSpotting = 9f;
             }
-            public static class FieldWorksSystem
+            public static partial class FieldWorksSystem
             {
                 /// <summary>vehicles.fieldWorksSystem.nightSight (x; ban_kinh, was Sim/Abilities/FieldWorksSystem.cs:59).</summary>
                 public static float NightSight = 0.75f;
@@ -96,7 +96,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>vehicles.fieldWorksSystem.passScanSeconds (s; thoi_gian, was Sim/Abilities/FieldWorksSystem.cs:362).</summary>
                 public static double PassScanSeconds = 0.5;
             }
-            public static class GearSystem
+            public static partial class GearSystem
             {
                 /// <summary>vehicles.gearSystem.lastStandGap (s; thoi_gian, was Sim/Abilities/GearSystem.Lines.cs:30).</summary>
                 public static float LastStandGap = 6f;
@@ -111,7 +111,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>vehicles.gearSystem.auraInterval (s; thoi_gian, was Sim/Abilities/GearSystem.cs:40).</summary>
                 public static float AuraInterval = 0.5f;
             }
-            public static class SupplyRules
+            public static partial class SupplyRules
             {
                 /// <summary>vehicles.supplyRules.slowShare (share; nguong, was Sim/Abilities/SupplySystem.cs:32).</summary>
                 public static float SlowShare = 0.5f;
@@ -126,7 +126,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>vehicles.supplyRules.carrierRate (x; tan_suat, was Sim/Abilities/SupplySystem.cs:38).</summary>
                 public static float CarrierRate = 2f;
             }
-            public static class SupplySystem
+            public static partial class SupplySystem
             {
                 /// <summary>vehicles.supplySystem.safeSeconds (s; thoi_gian, was Sim/Abilities/SupplySystem.cs:53).</summary>
                 public static double SafeSeconds = 3.0;
@@ -139,17 +139,17 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>vehicles.supplySystem.carrierReach (m; ban_kinh, was Sim/Abilities/SupplySystem.cs:65).</summary>
                 public static float CarrierReach = 12f;
             }
-            public static class VehicleDef
+            public static partial class VehicleDef
             {
                 /// <summary>vehicles.vehicleDef.stealthSight (x; ban_kinh, was Sim/Content/Definitions.cs:555).</summary>
                 public static float StealthSight = 0.4f;
             }
-            public static class RelayDef
+            public static partial class RelayDef
             {
                 /// <summary>vehicles.relayDef.maxPerBase (count; tran, was Sim/Content/VehicleDef.P17.cs:80).</summary>
                 public static int MaxPerBase = 2;
             }
-            public static class MovementSystem
+            public static partial class MovementSystem
             {
                 /// <summary>vehicles.movementSystem.ghostSeconds (s; thoi_gian, was Sim/Movement/MovementSystem.Rescue.cs:39).</summary>
                 public static double GhostSeconds = 4.0;
@@ -234,7 +234,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>vehicles.movementSystem.chaseShare (share; nguong, was Sim/Movement/MovementSystem.cs:1023).</summary>
                 public static float ChaseShare = 0.55f;
             }
-            public static class RailSystem
+            public static partial class RailSystem
             {
                 /// <summary>vehicles.railSystem.minWarning (s; thoi_gian, was Sim/Movement/RailSystem.cs:123).</summary>
                 public static float MinWarning = 4f;
@@ -258,12 +258,12 @@ namespace MachineBrigade.Sim.Content
         }
         public static partial class Bosses
         {
-            public static class BossHunts
+            public static partial class BossHunts
             {
                 /// <summary>bosses.bossHunts.weeklyMinutes (min; thoi_gian, was Game/Match/BossHunts.cs:19).</summary>
                 public static float WeeklyMinutes = 30f;
             }
-            public static class BossSystem
+            public static partial class BossSystem
             {
                 /// <summary>bosses.bossSystem.flyerTicks (ticks; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:74).</summary>
                 public static int FlyerTicks = 5;
@@ -274,7 +274,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>bosses.bossSystem.bodyShare (share; nguong, was Sim/Bosses/BossSystem.Parts.cs:37).</summary>
                 public static double BodyShare = 0.4;
             }
-            public static class NavalSystem
+            public static partial class NavalSystem
             {
                 /// <summary>bosses.navalSystem.bigShipLength (m; ban_kinh, was Sim/Bosses/NavalSystem.Routes.cs:38).</summary>
                 public static float BigShipLength = 25f;
@@ -306,7 +306,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>bosses.bossHunt.airDefenceMinis (count; gioi_han_thuc_the, was Sim/Modes/BossHunt.cs:53).</summary>
                 public static int AirDefenceMinis = 3;
             }
-            public static class HuntSupports
+            public static partial class HuntSupports
             {
                 /// <summary>bosses.huntSupports.cap (share; tran, was Sim/Modes/BossHunt.cs:219).</summary>
                 public static float Cap = 0.40f;
@@ -314,12 +314,12 @@ namespace MachineBrigade.Sim.Content
         }
         public static partial class Bases
         {
-            public static class Gear
+            public static partial class Gear
             {
                 /// <summary>bases.gear.bulwarkShare (share; nguong, was Game/Match/Gear.Tower.cs:78).</summary>
                 public static float BulwarkShare = 0.35f;
             }
-            public static class BaseSystem
+            public static partial class BaseSystem
             {
                 /// <summary>bases.baseSystem.lookEvery (s; thoi_gian, was Sim/Modes/BaseSystem.HqTypes.cs:60).</summary>
                 public static double LookEvery = 0.25;
@@ -327,14 +327,14 @@ namespace MachineBrigade.Sim.Content
         }
         public static partial class Modes
         {
-            public static class TeamEconomy
+            public static partial class TeamEconomy
             {
                 /// <summary>modes.teamEconomy.maxVehicles (count; tran, was Sim/Economy/EconomySystem.cs:95).</summary>
                 public static int MaxVehicles = 32;
                 /// <summary>modes.teamEconomy.maxAircraft (count; tran, was Sim/Economy/EconomySystem.cs:107).</summary>
                 public static int MaxAircraft = 6;
             }
-            public static class EconomySystem
+            public static partial class EconomySystem
             {
                 /// <summary>modes.economySystem.maxCatchUp (share; tran, was Sim/Economy/EconomySystem.cs:201).</summary>
                 public static float MaxCatchUp = 0.5f;
@@ -355,7 +355,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>modes.economySystem.lossRefundCap (share; tran, was Sim/Economy/EconomySystem.cs:459).</summary>
                 public static float LossRefundCap = 0.15f;
             }
-            public static class BattleEvents
+            public static partial class BattleEvents
             {
                 /// <summary>modes.battleEvents.crateFall (s; thoi_gian, was Sim/Modes/BattleEvents.cs:19).</summary>
                 public static float CrateFall = 15f;
@@ -397,7 +397,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>modes.endlessRules.bossBadges (bosses; gioi_han_thuc_the, was Sim/Modes/Endless.cs:50).</summary>
                 public static int[] BossBadges = { 5, 10 };
             }
-            public static class Outposts
+            public static partial class Outposts
             {
                 /// <summary>modes.outposts.neutralHealth (x; sat_thuong, was Sim/Modes/ModeSupport.cs:154).</summary>
                 public static float NeutralHealth = 2f;
@@ -408,12 +408,12 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>modes.outposts.respawnSeconds (s; thoi_gian, was Sim/Modes/ModeSupport.cs:157).</summary>
                 public static float RespawnSeconds = 100f;
             }
-            public static class NeutralSystem
+            public static partial class NeutralSystem
             {
                 /// <summary>modes.neutralSystem.interval (s; thoi_gian, was Sim/Modes/Neutrals.cs:38).</summary>
                 public static float Interval = 0.5f;
             }
-            public static class SandboxMode
+            public static partial class SandboxMode
             {
                 /// <summary>modes.sandboxMode.firstWaveDelay (s; thoi_gian, was Sim/Modes/SandboxMode.cs:69).</summary>
                 public static float FirstWaveDelay = 20f;
@@ -422,12 +422,12 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>modes.sandboxMode.reinforceCooldownSeconds (s; thoi_gian, was Sim/Modes/SandboxMode.cs:74).</summary>
                 public static float ReinforceCooldownSeconds = 12f;
             }
-            public static class SandboxBattle
+            public static partial class SandboxBattle
             {
                 /// <summary>modes.sandboxBattle.unlimitedCp (CP; tran, was Sim/Sandbox/SandboxBattle.cs:263).</summary>
                 public static float UnlimitedCp = 999f;
             }
-            public static class SandboxRules
+            public static partial class SandboxRules
             {
                 /// <summary>modes.sandboxRules.vehicleCap (count; tran, was Sim/Sandbox/SandboxRules.cs:56).</summary>
                 public static int VehicleCap = 64;
@@ -436,7 +436,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>modes.sandboxRules.maxRank (rank; tran, was Sim/Sandbox/SandboxRules.cs:109).</summary>
                 public static int MaxRank = 10;
             }
-            public static class SimWorld
+            public static partial class SimWorld
             {
                 /// <summary>modes.simWorld.homeRadius (m; ban_kinh, was Sim/SimWorld.cs:256).</summary>
                 public static float HomeRadius = 35f;
@@ -448,14 +448,14 @@ namespace MachineBrigade.Sim.Content
         }
         public static partial class Ai
         {
-            public static class ConquestAi
+            public static partial class ConquestAi
             {
                 /// <summary>ai.conquestAi.clusterRadius (m; ban_kinh, was Sim/AI/ConquestAi.cs:100).</summary>
                 public static float ClusterRadius = 9f;
                 /// <summary>ai.conquestAi.holdReach (m; ban_kinh, was Sim/AI/ConquestAi.cs:198).</summary>
                 public static float HoldReach = 26f;
             }
-            public static class SquadLayer
+            public static partial class SquadLayer
             {
                 /// <summary>ai.squadLayer.shortMoveEvery (s; thoi_gian, was Sim/AI/SquadLayer.Units.cs:20).</summary>
                 public static double ShortMoveEvery = 8.0;
@@ -478,7 +478,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>ai.squadLayer.supportReach (m; ban_kinh, was Sim/AI/Squads.cs:135).</summary>
                 public static float SupportReach = 80f;
             }
-            public static class TacticalAi
+            public static partial class TacticalAi
             {
                 /// <summary>ai.tacticalAi.decisionInterval (s; thoi_gian, was Sim/AI/TacticalAi.cs:29).</summary>
                 public static float DecisionInterval = 0.75f;
@@ -524,26 +524,26 @@ namespace MachineBrigade.Sim.Content
         }
         public static partial class Campaign
         {
-            public static class MissionDecks
+            public static partial class MissionDecks
             {
                 /// <summary>campaign.missionDecks.airMinimum (count; tran, was Game/Match/MissionDecks.cs:17).</summary>
                 public static int AirMinimum = 3;
             }
-            public static class Narrative
+            public static partial class Narrative
             {
                 /// <summary>campaign.narrative.minersCp (CP; thuong, was Game/Match/Narrative.cs:81).</summary>
                 public static int MinersCp = 6;
                 /// <summary>campaign.narrative.radarVision (x; ban_kinh, was Game/Match/Narrative.cs:84).</summary>
                 public static float RadarVision = 0.75f;
             }
-            public static class MissionEventSystem
+            public static partial class MissionEventSystem
             {
                 /// <summary>campaign.missionEventSystem.rowGap (s; thoi_gian, was Sim/Modes/MissionEvents.Ingress.cs:21).</summary>
                 public static double RowGap = 1.0;
                 /// <summary>campaign.missionEventSystem.pushSeconds (s; thoi_gian, was Sim/Modes/MissionEvents.cs:644).</summary>
                 public static double PushSeconds = 40.0;
             }
-            public static class MissionMode
+            public static partial class MissionMode
             {
                 /// <summary>campaign.missionMode.captureSeconds (s; thoi_gian, was Sim/Modes/MissionMode.cs:60).</summary>
                 public static float CaptureSeconds = 10f;
@@ -562,7 +562,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>campaign.missionMode.fleeSeconds (s; thoi_gian, was Sim/Modes/MissionMode.cs:157).</summary>
                 public static double FleeSeconds = 8.0;
             }
-            public static class OperationMode
+            public static partial class OperationMode
             {
                 /// <summary>campaign.operationMode.choiceSeconds (s; thoi_gian, was Sim/Modes/OperationMode.cs:48).</summary>
                 public static double ChoiceSeconds = 15.0;
@@ -570,12 +570,12 @@ namespace MachineBrigade.Sim.Content
         }
         public static partial class Maps
         {
-            public static class EntryGate
+            public static partial class EntryGate
             {
                 /// <summary>maps.entryGate.outerLength (m; ban_kinh, was Sim/Navigation/EntryGate.cs:31).</summary>
                 public static float OuterLength = 120f;
             }
-            public static class LaneMap
+            public static partial class LaneMap
             {
                 /// <summary>maps.laneMap.narrowWidth (m; ban_kinh, was Sim/Navigation/LaneMap.cs:41).</summary>
                 public static float NarrowWidth = 6f;
@@ -588,19 +588,19 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>maps.laneMap.rebuildInterval (s; thoi_gian, was Sim/Navigation/LaneMap.cs:62).</summary>
                 public static double RebuildInterval = 2.0;
             }
-            public static class SeaRouteGraph
+            public static partial class SeaRouteGraph
             {
                 /// <summary>maps.seaRouteGraph.exitReach (m; ban_kinh, was Sim/Navigation/SeaRouteGraph.cs:84).</summary>
                 public static float ExitReach = 40f;
                 /// <summary>maps.seaRouteGraph.bayReach (m; ban_kinh, was Sim/Navigation/SeaRouteGraph.cs:92).</summary>
                 public static float BayReach = 60f;
             }
-            public static class SpawnPoints
+            public static partial class SpawnPoints
             {
                 /// <summary>maps.spawnPoints.gateReach (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:249).</summary>
                 public static float GateReach = 30f;
             }
-            public static class TerrainRules
+            public static partial class TerrainRules
             {
                 /// <summary>maps.terrainRules.roadSpeed (x; tan_suat, was Sim/Navigation/TerrainTags.cs:65).</summary>
                 public static float RoadSpeed = 1.2f;
@@ -613,7 +613,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>maps.terrainRules.forestSight (x; ban_kinh, was Sim/Navigation/TerrainTags.cs:71).</summary>
                 public static float ForestSight = 0.7f;
             }
-            public static class UnitCostField
+            public static partial class UnitCostField
             {
                 /// <summary>maps.unitCostField.parkedSpeed (x; tan_suat, was Sim/Navigation/UnitCostField.cs:23).</summary>
                 public static float ParkedSpeed = 0.5f;

@@ -54,6 +54,9 @@
       "flareGraceSeconds": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "Countermeasures.FlareGraceSeconds" },
       "apsVolleySeconds": { "value": 0.4, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "Countermeasures.ApsVolleySeconds" },
       "apsRechargeScale": { "value": 1.5, "unit": "x", "kind": "thoi_gian", "linh_vuc": "01", "code": "Countermeasures.ApsRechargeScale" }
+    },
+    "armour": {
+      "fragmentPenetration": { "value": 1, "unit": "level", "kind": "sat_thuong", "linh_vuc": "01", "code": "Armour (pack 2, was Sim/Content/Armour.cs:115)" }
     }
   },
   "vehicles": {
@@ -81,7 +84,9 @@
       "fuelBlastCap": { "value": 1500.0, "unit": "HP", "kind": "sat_thuong", "linh_vuc": "02", "code": "GearSystem.FuelBlastCap" },
       "laserWarningCooldown": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem.LaserWarningCooldown" },
       "procGap": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem.ProcGap" },
-      "auraInterval": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem.AuraInterval" }
+      "auraInterval": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem.AuraInterval" },
+      "domeRadius": { "value": 10.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "GearSystem (pack 2, was Sim/Abilities/GearSystem.cs:523)" },
+      "domeUnderFireSeconds": { "value": 1.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "GearSystem (pack 2, was Sim/Abilities/GearSystem.cs:526)" }
     },
     "supplyRules": {
       "slowShare": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "02", "code": "SupplyRules.SlowShare" },

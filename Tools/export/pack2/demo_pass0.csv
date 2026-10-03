@@ -1,0 +1,4 @@
+file,line,literal,key,unit,kind,linh_vuc,occurrence,mode,note
+Sim/Abilities/GearSystem.cs,523,10f,vehicles.gearSystem.domeRadius,m,ban_kinh,02,,,Aegis Dome: allies under fire within this radius count
+Sim/Abilities/GearSystem.cs,526,1.0,vehicles.gearSystem.domeUnderFireSeconds,s,thoi_gian,02,,,Aegis Dome: an ally hit this recently is under fire
+Sim/Content/Armour.cs,115,1,weapons.armour.fragmentPenetration,level,sat_thuong,01,,,penetration of a blast's fragments against vehicle armour
