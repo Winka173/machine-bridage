@@ -387,7 +387,83 @@ namespace MachineBrigade.Sim.Content
         /// The escort tables: each entry with "template" built on that general's (balance.json "escortTemplates"), and
         /// a boss with no entry given its general's (a new boss needs none of its own).
         /// </summary>
-        public static List<JsonObject> Escorts(JsonObject root, IEnumerable<VehicleDef> bosses)
+        public static List<JsonObject> Escorts(JsonObject root, IEnumerable<VehicleDef> bosses, IReadOnlyDictionary<string, VehicleDef>? vehicles = null)
+        {
+            var built = EscortTables(root, bosses);
+            if (vehicles == null) return built;
+            // Play-test 14: an escort keeps to its boss's domain (a ground boss ground vehicles, a ship boats, an aircraft
+            // aircraft); a unit of another domain in its table stands down for the domain's unit of its role
+            // (balance.json escortRules.domains), so Nyx never brings tanks out to sea.
+            var domains = root.Has("escortRules") && root.Object("escortRules").Has("domains") ? root.Object("escortRules").Object("domains").Raw : null;
+            if (domains == null) return built;
+            var result = new List<JsonObject>();
+            foreach (var e in built)
+            {
+                var raw = e.Raw;
+                if (raw.TryGetValue("boss", out var b) && b is string boss && vehicles.TryGetValue(boss, out var bossDef) &&
+                    domains.TryGetValue(Domain(bossDef), out var dv) && dv is Dictionary<string, object?> table)
+                {
+                    raw = Copy(raw);
+                    KeepDomain(raw, Domain(bossDef), table, vehicles);
+                }
+                result.Add(new JsonObject(raw, e.Path));
+            }
+            return result;
+        }
+
+        /// <summary>Play-test 14: a unit's domain: "sea" (a ship), "air" (it flies) or "ground".</summary>
+        internal static string Domain(VehicleDef def) => def.Naval != null || def.NavalOnly ? "sea" : def.Flying ? "air" : "ground";
+
+        /// <summary>Every "unit" in the table of another domain than <paramref name="domain"/> becomes the domain's unit of its role.</summary>
+        private static void KeepDomain(Dictionary<string, object?> raw, string domain, Dictionary<string, object?> table,
+            IReadOnlyDictionary<string, VehicleDef> vehicles)
+        {
+            if (raw.TryGetValue("unit", out var u) && u is string unit && vehicles.TryGetValue(unit, out var def) && Domain(def) != domain)
+            {
+                var role = raw.TryGetValue("role", out var r) && r is string roleName ? roleName.ToLowerInvariant() : "guard";
+                var swap = table.TryGetValue(role, out var s) && s is string byRole ? byRole : table.TryGetValue("default", out var d) && d is string fallback ? fallback : null;
+                // "unit:role": the stand-in takes another role (a jammer's place in the air is air cover).
+                string? newRole = null;
+                if (swap != null && swap.IndexOf(':') > 0)
+                {
+                    newRole = swap.Substring(swap.IndexOf(':') + 1);
+                    swap = swap.Substring(0, swap.IndexOf(':'));
+                }
+                if (swap != null && vehicles.ContainsKey(swap))
+                {
+                    raw["unit"] = swap;
+                    raw.Remove("elite");
+                    if (newRole != null) raw["role"] = newRole;
+                }
+            }
+            foreach (var key in new List<string>(raw.Keys))
+            {
+                if (key == "fleet") continue;
+                switch (raw[key])
+                {
+                    case Dictionary<string, object?> child:
+                        raw[key] = child = Copy(child);
+                        KeepDomain(child, domain, table, vehicles);
+                        break;
+                    case List<object?> list:
+                        var copy = new List<object?>(list.Count);
+                        foreach (var item in list)
+                        {
+                            if (item is Dictionary<string, object?> c)
+                            {
+                                var cc = Copy(c);
+                                KeepDomain(cc, domain, table, vehicles);
+                                copy.Add(cc);
+                            }
+                            else copy.Add(item);
+                        }
+                        raw[key] = copy;
+                        break;
+                }
+            }
+        }
+
+        private static List<JsonObject> EscortTables(JsonObject root, IEnumerable<VehicleDef> bosses)
         {
             var templates = Raw(root, "escortTemplates");
             var result = new List<JsonObject>();

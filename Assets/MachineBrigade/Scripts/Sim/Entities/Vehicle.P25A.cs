@@ -26,6 +26,8 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>The weapons' ranges before the range aura (taken the first time it applies).</summary>
         internal float[]? AuraBaseRange;
+        /// <summary>Play-test 14: since when a launcher's erector has been coming up, and when it last had a target.</summary>
+        internal double ErectFrom = double.NegativeInfinity, ErectLast = double.NegativeInfinity;
 
         /// <summary>A microwave's next pulse, a flare tower's next flare.</summary>
         internal double WorksNextAt;

@@ -133,6 +133,16 @@ namespace MachineBrigade.Game.Rendering
     {
         private static readonly Regex RecoilPattern = new("^(main_cannon|muzzle_brake)", RegexOptions.IgnoreCase);
 
+        /// <summary>
+        /// Play-test 14: the barrels (and their muzzle ends) on a free mount's pivot, e.g. the Leviathan's `Gun_barrels` and
+        /// `Sec_barrels_003` under `Mount_gun`: kept as their own parts so they kick back as the mount fires (VehicleView.MountKick).
+        /// </summary>
+        private static readonly Regex MountBarrelPattern = new(@"^[a-z]+_(barrels|muzzles)(_\d+)?$", RegexOptions.IgnoreCase);
+
+        /// <summary>Whether <paramref name="t"/> is a barrel part on a weapon mount's pivot (see <see cref="MountBarrelPattern"/>).</summary>
+        internal static bool IsMountBarrel(Transform t) =>
+            t != null && t.parent != null && MountBarrelPattern.IsMatch(t.name) && MountPattern.IsMatch(t.parent.name);
+
         /// <summary>Blender may suffix duplicate names (Turret.001); accept those too.</summary>
         private static readonly Regex TurretPattern = new(@"^Turret(\.\d+)?$");
 
@@ -1341,6 +1351,7 @@ namespace MachineBrigade.Game.Rendering
             if (name == ElevationName && t.parent != null && TurretPattern.IsMatch(t.parent.name)) return true;
             if (RecoilPattern.IsMatch(name) && t.parent != null &&
                 (TurretPattern.IsMatch(t.parent.name) || t.parent.name == ElevationName)) return true;
+            if (IsMountBarrel(t)) return true;
             foreach (var (pattern, _, _) in SpinnerPatterns)
                 if (pattern.IsMatch(name)) return true;
             return false;

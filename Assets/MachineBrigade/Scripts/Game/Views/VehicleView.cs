@@ -1080,6 +1080,8 @@ namespace MachineBrigade.Game.Views
                 var parentYaw = mount.parent != null ? mount.parent.eulerAngles.y : 0f;
                 mount.localRotation = Quaternion.Euler(0f, Mathf.DeltaAngle(parentYaw, heading), 0f);
             }
+            // Play-test 14: guns on their own mounts kick back as they fire (VehicleView.MountKick).
+            KickMountBarrels();
 
             Elevate();
             RaiseSideLauncher();

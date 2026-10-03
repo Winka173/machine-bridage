@@ -278,6 +278,10 @@ namespace MachineBrigade.Game.Audio
         {
             var priority = PriorityOf(weapon, e.Position, false);
             if (SmallArms(weapon) && SoundLibrary.SizeOf(weapon) == SizeClass.S0 && Clustered(e.Position, e.Entity)) return;
+            // Play-test 14: a gunship's side guns are heard louder, farther and (the single shots) a size up.
+            var gunship = Gunship(e.Entity);
+            var gain = gunship ? GunshipGain : 1f;
+            var carry = SoundLibrary.Carry(SoundLibrary.SizeOf(weapon)) + (gunship ? GunshipCarry : 0f);
             var burstName = SoundLibrary.BurstBank(weapon, out var burstPitch, out var segment);
             if (burstName != null && _tierBanks.TryGetValue(burstName, out var burstBank))
             {
@@ -286,12 +290,38 @@ namespace MachineBrigade.Game.Audio
                 if (_bursts.TryGetValue(key, out var until) && now < until - BurstSlack) return;
                 if (_bursts.Count > 256) _bursts.Clear();
                 _bursts[key] = now + segment;
-                Play(burstBank, e.Position, 1f, SoundLibrary.Carry(SoundLibrary.SizeOf(weapon)), priority, burstPitch);
+                Play(burstBank, e.Position, gain, carry, priority, burstPitch);
                 return;
             }
-            var name = ShotBank(weapon);
-            if (name != null && _tierBanks.TryGetValue(name, out var bank)) Play(bank, e.Position, 1f, SoundLibrary.Carry(SoundLibrary.SizeOf(weapon)), priority);
-            else Play(_banks[WeaponSound(weapon)], e.Position, 1f, 0f, priority);
+            var name = gunship ? GunshipBank(weapon) : ShotBank(weapon);
+            if (name != null && _tierBanks.TryGetValue(name, out var bank)) Play(bank, e.Position, gain, carry, priority);
+            else Play(_banks[WeaponSound(weapon)], e.Position, gain, 0f, priority);
+        }
+
+        /// <summary>Play-test 14: how much louder a gunship's guns are heard (linear; the compressor and limiter still hold the mix).</summary>
+        private const float GunshipGain = 1.5f;
+
+        /// <summary>Play-test 14: how much farther a gunship's guns carry (m): they fire from the sky, over the whole fight.</summary>
+        private const float GunshipCarry = 20f;
+
+        /// <summary>
+        /// Play-test 14 ("tiếng bắn của sky_gunship yếu, làm cho mạnh"): an orbiting gunship (the AC-130 class) fires a 105 mm
+        /// howitzer, a 40 mm Bofors and a 25 mm Gatling out of its side; they boom over the battlefield, but the shots played
+        /// the banks of their size class like any ground gun (the 105 mm the 57 mm's). Whether the shooter is one.
+        /// </summary>
+        private bool Gunship(EntityId shooter) =>
+            _views != null && shooter.IsValid && _views.TryGet(shooter, out var view) && view != null && view.Def != null &&
+            view.Def.Orbit && view.Def.FixedWing;
+
+        /// <summary>A gunship's single shot: the bank a size class up (the 105 mm as a 155 mm's boom), else its own.</summary>
+        private string GunshipBank(WeaponDef weapon)
+        {
+            var own = ShotBank(weapon);
+            if (weapon == null || weapon.Projectile is ProjectileKind.Rocket or ProjectileKind.Missile) return own;
+            var size = SoundLibrary.SizeOf(weapon);
+            if (size >= SizeClass.S4) return own;
+            var up = "shot_s" + ((int)size + 1);
+            return _tierBanks.ContainsKey(up) ? up : own;
         }
 
         /// <summary>

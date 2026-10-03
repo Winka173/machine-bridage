@@ -158,13 +158,17 @@ Shader "MachineBrigade/Water"
                 float height = 0.0;
                 float2 slope = 0.0;
                 half swell = (1.0h - calm) * _WaveStrength;
-                slope += Swell(p, float2(0.8, 0.6), 23.0, 0.35, t, height) * swell;
-                slope += Swell(p, float2(-0.45, 0.89), 13.0, 0.2, t * 1.1, height) * swell;
-                slope += Swell(p, float2(0.96, -0.28), 7.5, 0.1, t * 1.2, height) * swell;
+                // Play-test 14 ("sóng chạy từ dưới lên, sóng phải theo gió"): every swell and ripple runs downwind, the
+                // smoke's wind (ParticleBuilder.Wind, x 0.9 z 0.6, ~34 degrees off +x): the swells within 25 degrees of it
+                // (one had run up the screen, +z), both ripple layers drifting with it (the first had drifted against it).
+                slope += Swell(p, float2(0.832, 0.555), 23.0, 0.35, t, height) * swell;
+                slope += Swell(p, float2(0.520, 0.854), 13.0, 0.2, t * 1.1, height) * swell;
+                slope += Swell(p, float2(0.972, 0.237), 7.5, 0.1, t * 1.2, height) * swell;
                 float2 drift = float2(0.9, 0.6) * t;
                 half ripple = _WaveStrength * lerp(1.0h, 0.45h, calm);
-                slope += RippleSlope(p + drift * 0.35, 0.16) * 0.55 * ripple;
-                slope += RippleSlope(p.yx * float2(1.0, -1.0) - drift * 0.22, 0.37) * 0.32 * ripple;
+                slope += RippleSlope(p - drift * 0.35, 0.16) * 0.55 * ripple;
+                // This layer is read in swapped axes (z, -x): the wind there is (0.6, -0.9).
+                slope += RippleSlope(p.yx * float2(1.0, -1.0) - float2(0.6, -0.9) * t * 0.22, 0.37) * 0.32 * ripple;
                 // Calmer and flatter in the shallows (the waves break there; the foam takes over).
                 slope *= lerp(0.45, 1.0, open);
                 half3 normalWS = normalize(half3(-slope.x, 1.0h, -slope.y));

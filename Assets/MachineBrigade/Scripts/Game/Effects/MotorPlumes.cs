@@ -84,9 +84,10 @@ namespace MachineBrigade.Game.Effects
                 case ProjectileKind.Drone:
                     return default;
                 case ProjectileKind.Rocket:
-                    if (weapon?.Id == "ballistic_missile") return new Plume(1.5f, 0.24f, 1.8f, 0.75f, 0.3f);
-                    // Artillery rockets burn out before they land; direct-fire rockets all the way in.
-                    return weapon != null && weapon.MinRange > 0f ? new Plume(1.6f, 0.26f, 1.7f, 0.85f, 0.45f) : new Plume(1.7f, 0.3f, 1.6f, 1f, 0.4f);
+                    // Play-test 14: every rocket's motor and smoke trail last to the detonation (owner: "vệt khói phải kéo đến lúc
+                    // nổ"); the artillery rockets and the ballistic missile used to burn out at 85 % and 75 % of the flight.
+                    if (weapon?.Id == "ballistic_missile") return new Plume(1.5f, 0.24f, 1.8f, 1f, 0.3f);
+                    return weapon != null && weapon.MinRange > 0f ? new Plume(1.6f, 0.26f, 1.7f, 1f, 0.45f) : new Plume(1.7f, 0.3f, 1.6f, 1f, 0.4f);
                 case ProjectileKind.Missile:
                     if (model is "cruise_missile" or "jassm") return new Plume(0.6f, 0.13f, 1.4f, 1f, 0.35f);
                     if (model is "stinger" or "igla") return new Plume(2f, 0.28f, 1.7f, 1f);

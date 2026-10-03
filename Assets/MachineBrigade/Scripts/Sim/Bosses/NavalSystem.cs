@@ -182,6 +182,8 @@ namespace MachineBrigade.Sim.Bosses
 
         public void Step(float dt)
         {
+            // Play-test 14: main turrets traverse at their turret rate, on the sea and in the menu's preview alike.
+            TrainLaid(dt);
             var sea = Sea;
             if (sea == null) return;
             var now = _world.Time;
@@ -353,7 +355,12 @@ namespace MachineBrigade.Sim.Bosses
             }
             // Prompt 20 J.4: a submarine fires nothing under water.
             if (v.Transforming || v.HoldFire || v.Burrow != Vehicle.BurrowState.Surface) return;
-            if (v.Def.Salvo is { } salvo && now >= v.SalvoNext) Salvo(v, salvo, sea, now);
+            if (v.Def.Salvo is { } salvo)
+            {
+                // Play-test 14: a laid salvo goes when every turret is on its aim (a real gun is trained, then fired).
+                if (v.Laying) { if (!v.LayPreview && LaidOn(v, now)) FireSalvo(v, salvo, sea, now); }
+                else if (now >= v.SalvoNext) Salvo(v, salvo, sea, now);
+            }
             if (v.Def.Cruise is { } cruise && phase >= cruise.Phase && now >= v.CruiseNext && !v.CruiseOff)
             {
                 v.CruiseNext = now + cruise.Every * v.PartCadence;
@@ -427,6 +434,22 @@ namespace MachineBrigade.Sim.Bosses
             else if (BiggestGroup(v, salvo.Range, out var near, sweep, 24f) > 0) aim = near;
             else aim = sweep;
             if (Vector2.Distance(aim, v.Position) > salvo.Range) return;
+            // Play-test 14: the turrets are trained onto the aim first (TrainLaid); the salvo goes once they are on.
+            v.SalvoAim = aim;
+            v.LayOrders.Clear();
+            for (var i = 0; i < parts.Count; i++)
+                if (parts[i].Kind == "maingun" && !v.IsPartBroken(i) && parts[i].Mounts.Count > 0) v.LayOrders.Add((i, parts[i].Mounts[0], aim));
+            v.Laying = true;
+            v.LayPreview = false;
+            v.LayFrom = now;
+        }
+
+        /// <summary>The salvo laid by <see cref="Salvo"/>, now that its turrets are on their aim.</summary>
+        private void FireSalvo(Vehicle v, SalvoDef salvo, SeaDef sea, double now)
+        {
+            v.Laying = false;
+            var parts = v.Def.Parts;
+            var aim = v.SalvoAim;
             var blind = v.RadarOff;
             var scatter = 3.5f * (blind ? salvo.BlindScatter : 1f);
             var spread = salvo.Spread * (blind ? salvo.BlindScatter : 1f);

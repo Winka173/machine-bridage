@@ -209,6 +209,7 @@ namespace MachineBrigade.Game.Rendering
                     Widen(_far.Y + 12f);
                     break;
                 case Scene.Breach:
+                    _world.MakeSparring(_shooter);
                     Obstacles();
                     Widen(_far.Y + 10f);
                     break;
@@ -288,8 +289,8 @@ namespace MachineBrigade.Game.Rendering
         }
 
         /// <summary>
-        /// The scene steers the shooter itself: a breacher drives into a row of dragon's teeth
-        /// (its blade flattens them), backs off to its start, and a new row goes up. Else the usual targets.
+        /// The scene steers the shooter itself: a breacher drives into a wall and a watchtower
+        /// (its blade knocks them down), backs off to its start, and new ones go up. Else the usual targets.
         /// </summary>
         private bool Directs()
         {
@@ -398,14 +399,27 @@ namespace MachineBrigade.Game.Rendering
             return true;
         }
 
-        /// <summary>A row of enemy blast walls across the breacher's way, between it and the targets.</summary>
+        /// <summary>
+        /// Play-test 14 ("ủi sập tường và tháp canh"): what the bulldozer breaks: a HESCO wall across its way, then the
+        /// watchtower behind it (its machine gun firing on the dozer, which cannot fall here). Both already battered, so the
+        /// clip shows them coming down in a few strokes each.
+        /// </summary>
         private void Obstacles()
         {
             _obstacles.Clear();
-            foreach (var x in new[] { -3f, 3f })
+            var wallAt = new Vector2(0f, _start.Y + 6.5f);
+            if (_world.Map.Contains(wallAt))
             {
-                var at = new Vector2(x, _start.Y + 5.5f);
-                if (_world.Map.Contains(at)) _obstacles.Add(_world.SpawnVehicle("blast_wall", 1, at, 0f));
+                var wall = _world.SpawnVehicle("wall_hesco", 1, wallAt, 0f);
+                _world.DebugDamage(wall, 0.6f);
+                _obstacles.Add(wall);
+            }
+            var towerAt = new Vector2(3.5f, _start.Y + 13f);
+            if (_world.Map.Contains(towerAt))
+            {
+                var tower = _world.SpawnVehicle("guard_tower.watch", 1, towerAt, SimMath.HeadingOf(_start - towerAt));
+                _world.DebugDamage(tower, 0.4f);
+                _obstacles.Add(tower);
             }
         }
 

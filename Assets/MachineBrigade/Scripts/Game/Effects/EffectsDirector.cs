@@ -1315,7 +1315,8 @@ namespace MachineBrigade.Game.Effects
                     _muzzle.SparkBurst(impact + Vector3.up, Vector3.up, Mathf.RoundToInt(18 * TierFx.Extra(TierFx.Of(round))), 10f, 22f);
                     _emitters.DamageSmoke(impact + Vector3.up * 1.2f, 1.6f, 0.08f);
                     return true;
-                case ProjectileKind.Shell when round.DamageType == DamageType.HighExplosive && round.Indirect:
+                // Play-test 14: a boss howitzer (Lobs) lands as artillery too.
+                case ProjectileKind.Shell when round.DamageType == DamageType.HighExplosive && (round.Indirect || round.Lobs):
                 {
                     // An HE shell or mortar bomb: the blast, then earth and black smoke hanging over it.
                     // (The siege tank's 203 mm is drawn half as big again; DECISIONS 11A. It lingers like a

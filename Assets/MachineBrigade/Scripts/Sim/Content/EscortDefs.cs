@@ -253,7 +253,7 @@ namespace MachineBrigade.Sim.Content
             var bosses = new List<VehicleDef>();
             foreach (var v in _vehicles.Values)
                 if (v.Boss) bosses.Add(v);
-            foreach (var e in BossTemplates.Escorts(root, bosses))
+            foreach (var e in BossTemplates.Escorts(root, bosses, _vehicles))
             {
                 var boss = e.String("boss");
                 if (!_vehicles.TryGetValue(boss, out var bossDef) || !bossDef.Boss) throw new FormatException($"balance.escorts: '{boss}' is not a boss.");

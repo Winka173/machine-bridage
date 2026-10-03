@@ -87,8 +87,8 @@ namespace MachineBrigade.Game.Rendering
             {
                 while (!anchors.Contains(t)) t = t.parent;
                 // A recoiling barrel is part of its mount far away (the kick is too small to see).
-                while (t != root && RecoilPattern.IsMatch(t.name) && t.parent != null &&
-                       (TurretPattern.IsMatch(t.parent.name) || t.parent.name == ElevationName))
+                while (t != root && t.parent != null && (IsMountBarrel(t) || RecoilPattern.IsMatch(t.name) &&
+                       (TurretPattern.IsMatch(t.parent.name) || t.parent.name == ElevationName)))
                 {
                     t = t.parent;
                     while (!anchors.Contains(t)) t = t.parent;

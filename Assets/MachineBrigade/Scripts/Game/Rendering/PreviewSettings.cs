@@ -46,10 +46,13 @@ namespace MachineBrigade.Game.Rendering
     /// </summary>
     public static class PreviewSettings
     {
-        /// <summary>Ground units that swim or hover: shown on the water's edge (their names say so; the Sim drives them on land).</summary>
+        /// <summary>
+        /// Ground units that swim or hover: shown on the water's edge (their names say so; the Sim drives them on land).
+        /// Play-test 14: the light tank is shown on land, where it fights (owner: "preview trên đất liền").
+        /// </summary>
         public static readonly HashSet<string> Amphibious = new HashSet<string>
         {
-            "light_tank", "hover_gunboat", "landing_hovercraft",
+            "hover_gunboat", "landing_hovercraft",
         };
 
         /// <summary>The rail bosses by id (their frame and route say so too; the list keeps a variant without them on its track).</summary>

@@ -470,3 +470,20 @@ Danh sách id đã xóa và thay thế: `Docs/fixes/playtest14_deleted.md`. Khô
 |---|---|---|---|
 | commanders.kerr opening roles | scout, light (radar_scout emptied) | scout, scout, light | keeps 3 squads; recon role -> scout jeep |
 | generals.orlov opening roles | artillery (radar_scout emptied) | artillery, scout | keeps 2 squads; spotter for the guns |
+## Play-test 14 lane A (cloud session 2): gameplay + VFX
+
+Nhánh `cloud/pt14-a`. Lý do ngoài đời: `Docs/DECISIONS.md` "Play-test 14 (lane A, cloud)". Sát thương không đổi.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-A1 | `armored_car` súng máy đồng trục | `mg_coax` (tầm 20 m) | `mg_coax_long` (kế thừa mg_coax, tầm **30 m**) | pháo 25 mm tầm 30 m: hai súng cùng bắn mục tiêu tháp pháo đang ngắm |
+| PT14-A2 | `erectSeconds` (mới) — xe phóng chỉ bắn khi bệ đã dựng | bắn ngay khi có mục tiêu (bệ bật lên tức thì) | phát đầu chờ bệ dựng: mlrs 1,1 s, elite_mlrs 1,1, elite_grad 1,0, heavy_rocket_artillery 1,3, thermobaric_launcher 1,2, rocket_technical 0,7, sam_launcher 0,9, long_sam 1,6, elite_long_sam 1,6, ballistic_launcher 2,2, ground_cruise_missile_vehicle 2,2, missile_battery 1,2, shahed_truck 1,0, lancet_truck 0,8 (giữ dựng 1,2 s sau phát cuối) | bệ phóng nâng với tốc độ thường |
+| PT14-A3 | Hộ tống boss (`escortRules.domains`) | bảng hộ tống có thể đưa xe tăng cho boss biển/trên không | xe khác miền đổi theo vai của nó: mặt đất main_battle_tank / light_tank / aa_vehicle / armored_car / engineer_vehicle / ew_jammer; trên không attack_helicopter / fighter_jet / scout_heli; biển missile_boat / hover_gunboat / sea_corvette / river_patrol_boat / river_gunboat | boss nào hộ tống miền đó |
+| PT14-A4 | Tàu bọc thép, Nemesis (boss ray) | thân xoay về mục tiêu / hướng hỏa lực khi đứng | thân luôn theo ray, chỉ tháp pháo xoay | xe chạy trên ray |
+| PT14-A5 | Leviathan loạt pháo chính | bắn ngay lúc chọn điểm ngắm (tháp nhảy tới hướng) | tháp xoay theo `turretTurnRate` (36°/s, tối thiểu 20°/s) rồi mới bắn khi lệch ≤ 2° (tối đa chờ 10 s); giữa hai loạt bám mục tiêu hiện tại | ngắm xong mới bắn; chu kỳ 60 s giữ nguyên, phát bắn trễ vài giây |
+| PT14-A6 | `light_tank` tên lửa bắn qua nòng | có thể bắn cùng lúc với đạn pháo | nòng bận 1 s sau mỗi phát (tên lửa hoặc đạn), hai loại không ra cùng lúc | một nòng nạp một loại đạn |
+| PT14-A7 | `boss_howitzer` cờ `"lobs": true` (kế thừa: p26_jotunn_jo203, boss_howitzer_guided) | vẽ như đạn xe tăng | vẽ như pháo binh (đường cầu vồng, lửa đầu nòng, nổ pháo) — chỉ hình ảnh, Sim không đọc | khôi phục hình pháo của boss |
+| PT14-A8 | Âm thanh súng sky_gunship (bay vòng, cánh cố định) | như súng mặt đất cùng cỡ | to x1,5, vang xa thêm 20 m, phát đơn dùng bank cỡ lớn hơn một bậc (105 mm nghe như 155 mm) | chủ dự án: tiếng bắn phải mạnh |
+| PT14-A9 | Động cơ rocket pháo binh / tên lửa đạn đạo (hình) | tắt ở 85 % / 75 % đường bay | cháy tới lúc nổ; khói kéo tới điểm nổ | vệt khói tới lúc nổ |
+
+Trận replay bị ảnh hưởng: PT14-A1, A2, A3, A4, A5, A6 đổi Sim — baseline của ReplayHashTests cần ghi lại.

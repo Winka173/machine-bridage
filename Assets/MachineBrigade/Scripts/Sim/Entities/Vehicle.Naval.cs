@@ -40,6 +40,15 @@ namespace MachineBrigade.Sim.Entities
         internal bool SweepSet;
         internal int NavalPhaseSeen = -1;
 
+        /// <summary>
+        /// Play-test 14: a salvo being laid. Each standing main turret's order (its part, its mount, its aim point); the
+        /// turrets traverse onto them at the turret rate and the salvo goes once all are on (or the lay ran too long).
+        /// </summary>
+        internal readonly System.Collections.Generic.List<(int part, int mount, Vector2 aim)> LayOrders = new();
+        internal bool Laying, LayPreview;
+        internal double LayFrom;
+        internal Vector2 SalvoAim;
+
         /// <summary>Mechanisms its broken parts have stopped (prompt 16): cruise missiles, landing craft, fire-control radar (its CIWS is part 2's "aps").</summary>
         internal bool CruiseOff, CraftOff, RadarOff;
 

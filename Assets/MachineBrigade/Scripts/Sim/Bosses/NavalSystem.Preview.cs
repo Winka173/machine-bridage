@@ -22,29 +22,47 @@ namespace MachineBrigade.Sim.Bosses
     {
         private readonly List<EntityId> _previewTaken = new();
 
-        /// <summary>Previews: one salvo from each standing main turret, each at its own enemy in its arc and reach.</summary>
+        /// <summary>
+        /// Previews: one salvo from each standing main turret, each at its own enemy in its arc and reach. Play-test 14: the
+        /// first call lays the turrets (they traverse in <see cref="TrainLaid"/>); a later one fires once they are on, so the
+        /// caller calls it again while <see cref="Vehicle.Laying"/>. True when it fired.
+        /// </summary>
         internal bool PreviewSalvo(Vehicle v)
         {
             if (!v.IsAlive || v.Def.Salvo is not { } salvo) return false;
             var parts = v.Def.Parts;
+            if (!v.Laying)
+            {
+                _previewTaken.Clear();
+                v.LayOrders.Clear();
+                for (var i = 0; i < parts.Count; i++)
+                {
+                    if (parts[i].Kind != "maingun" || v.IsPartBroken(i) || parts[i].Mounts.Count == 0) continue;
+                    var m = parts[i].Mounts[0];
+                    var foe = PreviewFoe(v, m, v.PartPosition(i), salvo.Range);
+                    if (foe == null) continue;
+                    _previewTaken.Add(foe.Id);
+                    v.LayOrders.Add((i, m, foe.Position));
+                }
+                if (v.LayOrders.Count == 0) return false;
+                v.Laying = true;
+                v.LayPreview = true;
+                v.LayFrom = _world.Time;
+                return false;
+            }
+            if (!v.LayPreview || !LaidOn(v, _world.Time)) return false;
+            v.Laying = false;
             var warning = salvo.Warning != null && _world.Catalog.TryGetSupport(salvo.Warning, out var w) ? w : null;
             var gun = salvo.Weapon != null && _world.Catalog.Weapons.TryGetValue(salvo.Weapon, out var g) ? g : null;
             var together = gun is { Simultaneous: true };
-            _previewTaken.Clear();
             var fired = false;
             var turret = -1;
-            for (var i = 0; i < parts.Count; i++)
+            foreach (var (i, m, aim) in v.LayOrders)
             {
-                if (parts[i].Kind != "maingun" || v.IsPartBroken(i)) continue;
+                if (v.IsPartBroken(i)) continue;
                 turret++;
-                var mounts = parts[i].Mounts;
-                var m = mounts.Count > 0 ? mounts[0] : -1;
                 var from = v.PartPosition(i);
-                var foe = PreviewFoe(v, m, from, salvo.Range);
-                if (foe == null) continue;
-                _previewTaken.Add(foe.Id);
-                var aim = foe.Position;
-                if (m >= 0) Lay(v, m, SimMath.HeadingOf(aim - v.Position));
+                Lay(v, m, SimMath.HeadingOf(aim - v.Position));
                 // The turret's shells a few metres apart across the line of fire, as a battle's ripple lies along the shore.
                 var line = aim - from;
                 var across = line.LengthSquared() > 1e-4f ? Vector2.Normalize(new Vector2(line.Y, -line.X)) : new Vector2(1f, 0f);
@@ -57,7 +75,7 @@ namespace MachineBrigade.Sim.Bosses
                     if (warning != null) _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, salvo.Warn));
                     _world.Damage.Queue(at, salvo.Blast(ExplosionTier.Huge), salvo.Warn + 0.15 * (together ? turret : s), v.Team, v,
                         HitKind.Strike, v.Id);
-                    if (m >= 0 && gun != null) _world.Emit(SimEvent.Fired(v, m, from, at, salvo.Warn, EntityId.None));
+                    if (gun != null) _world.Emit(SimEvent.Fired(v, m, from, at, salvo.Warn, EntityId.None));
                 }
                 fired = true;
             }

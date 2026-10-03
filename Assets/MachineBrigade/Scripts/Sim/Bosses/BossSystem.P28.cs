@@ -39,6 +39,8 @@ namespace MachineBrigade.Sim.Bosses
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || !v.Def.Boss || v.Flying) continue;
+                // Play-test 14: a train's body stays on its track; only its turrets bear.
+                if (v.Def.Frame?.Move == BossMove.Rail) { v.FaceHeading = null; continue; }
                 // F.4: the front (armour 5) to where most firepower comes from; slowly (half the turn rate), so it can be flanked.
                 v.FaceHeading = Firepower(v, 100f) is { } bearing ? bearing : null;
             }

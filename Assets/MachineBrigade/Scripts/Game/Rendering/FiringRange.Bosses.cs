@@ -259,9 +259,10 @@ namespace MachineBrigade.Game.Rendering
             if (!_bossShow || !_targetsUp || _shooter == null || !_shooter.IsAlive) return;
             _world.Hasten(_shooter, ShowCadence);
             if (_shooter.HoldFire) return;
-            if (_shooter.Def.Salvo != null && _world.Time >= _salvoAt)
+            // Play-test 14: the salvo is laid first (the turrets traverse) and fires on a later call once they are on.
+            if (_shooter.Def.Salvo != null && (_world.Time >= _salvoAt || _world.SalvoLaying(_shooter)))
             {
-                _salvoAt = _world.Time + SalvoEvery;
+                if (!_world.SalvoLaying(_shooter)) _salvoAt = _world.Time + SalvoEvery;
                 _world.PreviewSalvo(_shooter);
             }
             if (_shooter.Def.Cruise != null && _world.Time >= _cruiseAt)

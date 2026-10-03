@@ -19336,3 +19336,54 @@ Redraw: Jötunn, both Bastions, Fenrir, Harpy, Daedalus 5x, Leviathan 5x, Scylla
 cars, Inferno from the Behemoth model, Ixion 4-5 weapons, Locust 1 drone per 2 s. The 10 dropped bosses are deleted
 with the story swaps proposed earlier (no objection from the owner). Work: cloud sessions 3 (deletes, Locust) and
 4 (model waves M1-M6, Blender trial; falls back to local). Boss min range (pack2-c) recomputed after M1-M3.
+
+## Play-test 14 (lane A, cloud)
+Cloud session 2, branch `cloud/pt14-a` (from feature/visual-overhaul 4ff17fba). Items 3-14 of
+Docs/cloud/PT14_CLOUD_TASKS.md section 6. Sim built with dotnet; Game files checked by hand and for syntax only (no
+Unity, no tests, as the owner asked). Value changes: Docs/export/CHANGES.md "Play-test 14 lane A".
+- **3 armoured car, both guns together.** Real life: the coax is laid with the cannon and fires where the turret points.
+  The coax (mg_coax, 20 m) never reached the 25 mm's 30 m, so at the cannon's range only the cannon fired. New weapon
+  `mg_coax_long` (mg_coax at 30 m) on armored_car only; the other coaxes are unchanged.
+- **7 launchers raise at the normal speed.** The view snaps an erector up when the Sim fires at once
+  (VehicleView.LayForShot), so the raise looked instant and the lowering normal. The Sim now holds the first round of
+  mount 0 until the erector is up: `erectSeconds` per launcher (the same times as VehicleView's Erectors), counted from
+  when it first wants to fire and kept up 1.2 s after the last shot (CombatSystem.Erected). Not done: the side ATGM box
+  (AtgmSeconds 0.6) still snaps up; for local.
+- **14 escorts by domain.** `BossTemplates.Escorts` filters every escort table by the boss's domain (sea: naval or
+  naval-only; air: flying; else ground): an off-domain unit becomes the domain's unit for its role
+  (`escortRules.domains`), "unit:role" also changes the role (an aircraft cannot jam: the air and sea jam slot becomes a
+  cover fighter / corvette). Not found: where Nyx got tanks at sea (sea bosses have no escort tables; maybe a mode's or
+  a mission's waves); for local.
+- **10 rail bosses stay on the track.** MovementSystem turned a standing boss's hull toward its target (hull-aimed main)
+  or toward the threat (FaceHeading, BossSystem.P28); off its rail (the preview) the train yawed. A `BossMove.Rail` boss
+  skips both, and StepP28 sets no FaceHeading for it.
+- **9 Leviathan.** Real life: a battleship trains its turrets, then fires when the director has them on. The salvo set
+  the turrets' heading in the shot's step (the view then swung them after the shells left). NavalSystem.Lay: Salvo
+  picks the aim and lays; each step the standing main turrets traverse at max(turret rate, 20 deg/s) inside their arcs;
+  FireSalvo goes when all are within 2 deg (or after 10 s). Between salvos they follow the boss's target. The preview's
+  PreviewSalvo lays first and fires on a later call (FiringRange polls while SimWorld.SalvoLaying). The view no longer
+  trains these mounts itself (ViewTrained). Barrel recoil: `*_barrels` / `*_muzzles` parts on a `Mount_*` pivot
+  (the Leviathan's Gun_barrels, Sec_barrels_003) are kept as their own parts (ModelLibrary.IsMountBarrel) and kick back
+  0.6 s when that mount fires (VehicleView.MountKick). Secondary turrets: mounts 3 and 4 sleep until phase 1 (`wake`),
+  so they stand still before; awake, the Sim trains them (300 deg/s) and the view draws that. Not changed; for local.
+- **5 light tank.** Shown on land in its clip (removed from PreviewSettings.Amphibious). Its gun-launched ATGM fires
+  through the main gun, so the two never leave together: the barrel is busy 1 s after either (CombatSystem.BarrelBusy;
+  only a missile on the main gun's slot and aim, i.e. light_tank). Whether that makes it visible enough: for local.
+- **11 bulldozer's clip.** The breach scene stands a HESCO wall (battered to 40 %) and a watchtower
+  (guard_tower.watch, 60 %) in its way instead of dragon's teeth; the dozer is sparring (the tower's MG fires on it).
+- **6 gunship sound.** Real life the AC-130's guns boom over the whole fight. Shots from an orbiting fixed-wing unit
+  play 1.5x louder, carry 20 m farther, and single shots take the bank a size class up (105 mm as a 155 mm). Not heard;
+  for local.
+- **8 boss howitzers.** The prompt 26 per-boss copies (p26_jotunn_jo203) lost "howitzer" from their ids, which the view
+  used to lob them. Data flag `"lobs"` on boss_howitzer (inherited), WeaponDef.Lobs / LobbedLook: arc, artillery muzzle
+  and artillery impact. View only; the Sim's flight is unchanged. Behemoth's direct 152 mm never lobbed and still does not.
+- **4 smoke trails.** The motor's smoke leaves the flame's tip, a flame's length behind the round, and the round was
+  hidden at its impact frame, so the last stretch had no smoke. ProjectilePool.FinishTrail lays the remaining puffs to
+  the impact as it lands; artillery rockets and the ballistic missile burn to the end (were 85 % / 75 %). The drawn
+  missile's flight is the Sim's flight time (e.Value) already; whether it meets the hit frame exactly: for local.
+- **12 sea.** Waves follow the smoke's wind (ParticleBuilder.Wind): the three swells within 25 deg of it (one ran +z, up
+  the screen) and both ripple layers drift downwind (the first drifted against it). Tiles without water: not found
+  without Unity; for local.
+- **13 napalm / airstrike aircraft.** StrikeEffects already flies strike_jet / heavy_bomber over (LaunchJet) and drops
+  bombs or napalm canisters (ScheduleBombs, DropsOwnRounds); the Sim emits AircraftPass. No cause found by reading;
+  for local (check in a match which part is missing).
