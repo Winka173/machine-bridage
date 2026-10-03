@@ -1,0 +1,33 @@
+{
+ "id": "wall_t",
+ "class": "obstacle",
+ "real": ["Bremer-class precast concrete T-wall panels (3.66 m tall, 1.52 m wide, inverted-T foot with forklift slots and lifting loops)", "concertina razor wire"],
+ "shape": "Strings note.wall_t: a segment of precast concrete T-walls, 1.6 times as tough as HESCO; prompt 32 L3: one logic segment 12 x 2 m, tiled end to end by WallRules (the size stays exact).",
+ "confidence": "xấp xỉ (published T-wall sizes; eight 1.5 m panels fill the 12 m segment)",
+ "target_size": {"L": 1.9, "W": 12.0, "H": 3.92, "source": "the old GLB (1.9 x 12.0 x 3.92): kept exactly, the wall system tiles it", "tolerance": 0.02},
+ "features": [
+  {"feature": "eight precast panels: the stem tapering 0.3 -> 0.2 m, fillets into a 1.3 m foot, two casting batches in two shades", "nodes": ["Panels", "Panels_b"]},
+  {"feature": "forklift slots in the foot, cast lifting loops on the cap", "nodes": ["Panel_slots", "Kit_loops"]},
+  {"feature": "weathering: rain streaks from the cap, chipped arrises", "nodes": ["Streaks", "Spalls"]},
+  {"feature": "the Team stripe sprayed across both faces, stencilled panel numbers, a hazard chevron board on the end panel (no insignia)", "nodes": ["Wall_band", "Stencil", "Hazard", "Hazard_stripes"]},
+  {"feature": "a concertina coil clipped along the top", "nodes": ["Razor_wire", "Wire_clips"]},
+  {"feature": "field work on the inner side: sandbags packed into the joints at the foot, a cable run on stakes", "nodes": ["Sandbags", "Stakes", "Kit_cables"]},
+  {"feature": "a two-slope gravel bed under the panels", "nodes": ["Base"]}
+ ],
+ "class_parts": [],
+ "weapons": [],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [0, 6000], "floor": 0, "lod1_share": 0.5, "lod2_share": 0.2, "note": "obstacle class"},
+ "team_zones": ["a sprayed stripe across both faces (Team)"],
+ "colour_zones_min": 2,
+ "breakable": [],
+ "wreck": "a fallen segment is drawn by the view as a slumped, burnt ruin: no part nodes",
+ "faction_style": "precast panels; the Accord's field work round them (sandbags, wire, sprayed marks)",
+ "details": {
+  "tier1": ["eight panels", "gravel bed"],
+  "tier2": ["feet and fillets", "razor wire", "sandbagged joints", "hazard board"],
+  "tier3": ["lifting loops", "forklift slots", "streaks", "spalls", "stencils", "wire clips", "stakes and cable"]
+ },
+ "pivot": "centred on the origin, the ground at z = 0, along X, the front to -Y (as the old file)",
+ "questions": []
+}

@@ -2688,6 +2688,16 @@
    "changes": [
     "FLAG wall_gun: triangles 2,672 -> 5,440 (+103.6%); vertices 3,720 -> 7,896 (+112.3%); meshes 13 -> 16 (+23.1%); renderers 13 -> 16 (+23.1%); materials 7 -> 9 (+28.6%); materialSlots 13 -> 16 (+23.1%); fileBytes 191,296 -> 396,816 (+107.4%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "wall_t"
+   ],
+   "reason": "P35 wave 3: wall_t rebuilt (lane B)",
+   "changes": [
+    "FLAG wall_t: triangles 1,798 -> 4,722 (+162.6%); vertices 1,896 -> 7,096 (+274.3%); meshes 7 -> 16 (+128.6%); renderers 7 -> 16 (+128.6%); materials 4 -> 10 (+150.0%); materialSlots 7 -> 16 (+128.6%); fileBytes 101,656 -> 357,748 (+251.9%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -56475,22 +56485,22 @@
   },
   "wall_t": {
    "file": "wall_t.glb",
-   "fileBytes": 101656,
-   "sha1": "ca4f45e17e80453d",
+   "fileBytes": 357748,
+   "sha1": "fc65d41f2e66a6b0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 7,
-   "meshes": 7,
-   "materials": 4,
+   "nodes": 16,
+   "meshes": 16,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 7,
-   "submeshes": 7,
-   "materialSlots": 7,
-   "materialsUsed": 4,
-   "triangles": 1798,
-   "vertices": 1896,
+   "renderers": 16,
+   "submeshes": 16,
+   "materialSlots": 16,
+   "materialsUsed": 10,
+   "triangles": 4722,
+   "vertices": 7096,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -56498,48 +56508,57 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 37,
+   "loosePieces": 150,
    "openEdges": 6,
    "nonManifoldEdges": 0,
    "boundsMin": [
     -6.0,
     0.0,
-    -0.95
+    -0.953
    ],
    "boundsMax": [
-    6.0,
-    3.92,
+    6.0017,
+    3.9207,
     0.95
    ],
    "size": [
-    1.9,
-    12.0,
-    3.92
+    1.903,
+    12.002,
+    3.921
    ],
    "center": [
-    0.0,
+    0.001,
     1.96,
-    0.0
+    -0.001
    ],
-   "structureHash": "91e5d84ca61468a4",
+   "structureHash": "37b0669fe836e06a",
    "color0": {
-    "mean": 0.6881,
-    "min": 0.2485,
+    "mean": 0.5873,
+    "min": 0.1524,
     "max": 0.9987,
-    "p05": 0.4279,
-    "p95": 0.981,
+    "p05": 0.262,
+    "p95": 0.8064,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Eyes",
-    "Feet",
+    "Base",
     "Hazard",
+    "Hazard_stripes",
+    "Kit_cables",
+    "Kit_loops",
+    "Panel_slots",
     "Panels",
+    "Panels_b",
+    "Razor_wire",
+    "Sandbags",
+    "Spalls",
+    "Stakes",
+    "Stencil",
+    "Streaks",
     "Wall_band",
-    "Wire",
-    "Wire_posts"
+    "Wire_clips"
    ],
    "category": "structure",
    "hd": false,
