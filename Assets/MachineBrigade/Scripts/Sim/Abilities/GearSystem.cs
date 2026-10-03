@@ -843,8 +843,8 @@ namespace MachineBrigade.Sim.Abilities
                     var firestorm = g.Has(TraitId.SetFirestorm);
                     if (g.Has(TraitId.IncendiaryRounds) || (firestorm && weapon.DamageType == DamageType.Fire))
                     {
-                        var seconds = weapon.Projectile == ProjectileKind.Flame ? 6f : 4f;
-                        var share = g.Has(TraitId.IncendiaryRounds) ? g.Trait(TraitId.IncendiaryRounds).A : 0.1f;
+                        var seconds = weapon.Projectile == ProjectileKind.Flame ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Fire.IncendiaryFlameSeconds : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Fire.IncendiaryOtherSeconds;
+                        var share = g.Has(TraitId.IncendiaryRounds) ? g.Trait(TraitId.IncendiaryRounds).A : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Fire.FirestormShare;
                         // Each hit's fire adds to the one burning (a fast gun's many small fires are one big one).
                         _world.Status.Burn(tv, dealt * share * (1f + g.Stat(StatId.BurnDamage)) / seconds, seconds, v.Team, v.Id, firestorm, stack: true);
                         if (g.Has(TraitId.IncendiaryRounds)) Proc(v, TraitId.IncendiaryRounds);
@@ -1253,7 +1253,7 @@ namespace MachineBrigade.Sim.Abilities
             if (burn.Flag && burn.Until > now)
             {
                 Vehicle? next = null;
-                var best = 36f;
+                var best = global::MachineBrigade.Sim.Content.SimTunables.Weapons.Fire.FirestormSpreadRadiusSqM;
                 foreach (var v in _world.VehicleList)
                 {
                     if (!v.IsAlive || v == victim || v.Team != victim.Team) continue;
@@ -1262,7 +1262,7 @@ namespace MachineBrigade.Sim.Abilities
                     best = d;
                     next = v;
                 }
-                if (next != null) _world.Status.Burn(next, burn.Value, 4f, burn.Team, burn.Source, true);
+                if (next != null) _world.Status.Burn(next, burn.Value, global::MachineBrigade.Sim.Content.SimTunables.Weapons.Fire.FirestormSpreadSeconds, burn.Team, burn.Source, true);
             }
         }
 

@@ -39,6 +39,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The view: how long one flare burns (s), min and max.</summary>
         public (float min, float max) FlareBurn { get; internal set; } = (3f, 4f);
 
+        /// <summary>
+        /// Balance pack 2 addendum item 2: a weapon's own proximity fuze (data "proximityFuze"), else the shared group
+        /// value. No weapon overrides it today (nothing yet reads this per-weapon; same as before the move).
+        /// </summary>
+        public float Effective(WeaponDef w) => w.ProximityFuze ?? ProximityFuze;
+
         public bool IsRadarGuided(WeaponDef w) => w.WeaponFamilyId != null && Contains(RadarGuided, w.WeaponFamilyId);
 
         public bool IsSightGuided(WeaponDef w) => w.WeaponFamilyId != null && Contains(SightGuided, w.WeaponFamilyId);

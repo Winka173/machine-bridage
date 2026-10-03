@@ -2,7 +2,7 @@
 
 Boss, bộ phận, siêu vũ khí, hộ tống, pha, Săn trùm.
 
-Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit ab1de758, ngày 2026-10-03. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng hợp boss
 
@@ -14,9 +14,9 @@ Bảng đầy đủ: xem sheet `Boss_dps` (31 dòng), `Boss_hieu_qua` (155 dòng
 
 **Lõi** (bán kính nổ của vũ khí) nhận đủ sát thương; **rìa** (gấp đôi lõi, tối đa 20 m) nhận 40% sát thương. Vũ khí không có rìa nổ một lớp, giảm dần theo khoảng cách. Máu, vũ khí và cỡ của boss được làm lại theo chương (mục tiêu hạ boss chủ lực từ 2,5 phút ở chương 1 tới 4 phút ở chương 12, mini boss 60 đến 90 giây); Ixion và Gungnir được làm lại; mỗi boss có mốc thời đại ở dòng Tham khảo của thẻ. Pha: hệ số nhân vào từ mốc máu đó trở đi.
 
-### Pha, giáp và cỡ model (41 boss)
+### Pha, giáp và cỡ model (31 boss)
 
-Bảng 41 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
+Bảng 31 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
 
 Sheet 02_boss/Boss_phase — Boss: pha (6 dòng, 11 cột)
 
@@ -35,7 +35,7 @@ Bảng đầy đủ: xem sheet `Boss_be_goc` (86 dòng).
 
 - **Sức mạnh P:** đo một lần lúc bắt đầu từ bộ bài mang theo (sát thương giấy mỗi giây của các thẻ chiến đấu, tính cả hạng thẻ, trang bị và chỉ huy) × 10 xe ra trận × 0,3 trúng boss, tối thiểu 60. Máu boss = P × thời gian mục tiêu × 0,6 × hệ số m × hệ số bậc; sát thương boss là của dữ liệu × m × hệ số bậc.
 - **Tuần:** 10 boss (3 chủ lực, 7 mini; nhóm 3, 2, 2 mini dẫn tới mỗi boss chủ lực), mục tiêu mini 66 s, chủ lực 2.8 phút; m = 1 + 0.06 × số thứ tự (×1 tới ×1,54); nghỉ 15 s giữa các boss, quân sống sót được sửa 30% và chỉ giữ 50% CP; điểm hồi sinh sau mỗi boss chủ lực; đồng hồ 30 phút.
-- **Toàn bộ:** 41 boss (17 chủ lực) theo thứ tự cốt truyện, chủ lực 2,5 phút, mini 1 phút; m từ ×0.8 tới ×1.3; điểm hồi sinh và lưu sau mỗi boss; mỗi boss là một trận mới (không giữ quân, CP khởi đầu như nhau), chỉ hỗ trợ tác chiến được giữ.
+- **Toàn bộ:** 31 boss (14 chủ lực) theo thứ tự cốt truyện, chủ lực 2,5 phút, mini 1 phút; m từ ×0.8 tới ×1.3; điểm hồi sinh và lưu sau mỗi boss; mỗi boss là một trận mới (không giữ quân, CP khởi đầu như nhau), chỉ hỗ trợ tác chiến được giữ.
 - **Hỗ trợ tác chiến:** sau mỗi boss chủ lực chọn 1 trong 3; tổng sức mạnh quân từ hỗ trợ tối đa +40%; khi đã chạm trần chỉ còn các hỗ trợ đổi cách chơi (thẻ bắn nhanh hơn, thả xe).
 - **Bậc:** bốn độ khó của bảng chọn là bốn bậc (bảng dưới). Chưa làm: bậc Huyền thoại và các biến thể (mutator) cho Săn trùm.
 
@@ -43,7 +43,7 @@ Bảng đầy đủ: xem sheet `Boss_be_goc` (86 dòng).
 
 Tuần: 10 boss tuần này: 7 mini boss dẫn tới 3 boss chủ lực, boss sau mạnh hơn boss trước. Máu boss theo sức mạnh bộ bài bạn mang. Nghỉ 15 giây giữa các boss, xe còn sống được sửa 30% và giữ 50% CP; sau mỗi boss chủ lực (tối đa +40% sức mạnh đội quân từ hỗ trợ), chọn một trong ba hỗ trợ tác chiến và lưu điểm hồi sinh. Đồng hồ 30 phút.
 
-Toàn bộ: Toàn bộ 41 boss chủ lực và mini boss của các chương đang mở, theo đúng thứ tự cốt truyện. Có điểm hồi sinh sau mỗi boss: chơi dần qua bao nhiêu lần cũng được. Mỗi boss là một trận mới: quân không được giữ và bạn bắt đầu với cùng lượng CP; chỉ hỗ trợ tác chiến được giữ (chọn sau mỗi boss chủ lực, tối đa +40% sức mạnh đội quân, sau đó chỉ còn các hỗ trợ đổi cách chơi). Xếp hạng theo tổng thời gian.
+Toàn bộ: Toàn bộ 31 boss chủ lực và mini boss của các chương đang mở, theo đúng thứ tự cốt truyện. Có điểm hồi sinh sau mỗi boss: chơi dần qua bao nhiêu lần cũng được. Mỗi boss là một trận mới: quân không được giữ và bạn bắt đầu với cùng lượng CP; chỉ hỗ trợ tác chiến được giữ (chọn sau mỗi boss chủ lực, tối đa +40% sức mạnh đội quân, sau đó chỉ còn các hỗ trợ đổi cách chơi). Xếp hạng theo tổng thời gian.
 
 ### Hỗ trợ tác chiến (12)
 
@@ -192,23 +192,11 @@ giáp thân trước 4 / hông 4 / sau 3 / nóc 2; Tổng 35% máu thân trong 4
 
 Tàu khu trục kiểu Zumwalt mà hạm đội không bao giờ ghi tên: nó chỉ hiện trên radar khi nó muốn.
 
-giáp thân trước 4 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 6 bộ phận; pha ở 45%.
-
-**Mẹo:** hai **giàn phóng drone** nuôi bầy drone của nó: phá cả hai là hết phóng. **Cột gây nhiễu** làm tên lửa dẫn đường trong 30 m bay lệch: phá nó bằng pháo trước khi trông vào tên lửa. Nên phá bộ phát EMP trước khi áp sát.
-
-Pháo đài drone của Venn: không có pháo chính, chỉ có các giàn phóng hết bầy này tới bầy khác, một dàn tên lửa phòng không và pháo cao xạ. Cực nguy hiểm với máy bay; xe tăng và pháo binh mới hạ được nó.
-
 giáp thân trước 1 / hông 1 / sau 1 / nóc 1; Tổng 35% máu thân trong 2 bộ phận; pha ở 45%.
 
 **Mẹo: khoang drone** là tất cả những gì nó có.
 
 Một tàu mang drone cỡ nhỏ trong chương trình drone của Venn. Aurel vẫn cho đóng tiếp sau khi bà bỏ đi.
-
-giáp thân trước 1 / hông 1 / sau 1 / nóc 1; Tổng 35% máu thân trong 3 bộ phận; pha ở 45%.
-
-**Mẹo: khoang drone** là vũ khí của nó; phá cả hai thì chỉ còn cao xạ.
-
-Tám drone phản lực nhỏ bay như một, theo kiểu Loyal Wingman; câu trả lời của Matriarch khi mất tàu mẹ.
 
 giáp thân trước 5 / hông 3 / sau 2 / nóc 3; Tổng 35% máu thân trong 9 bộ phận; tự sửa một bộ phận một lần mỗi trận; pha ở 60%, 25%.
 
@@ -228,23 +216,11 @@ giáp thân trước 4 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 4
 
 Chiếc Behemoth của Varga dựng lại sau lần bại trận đầu tiên: nặng hơn, lắp hệ sưởi cho mùa đông, và hung hãn hơn.
 
-giáp thân trước 3 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 4 bộ phận; pha ở 45%.
-
-**Mẹo:** cao xạ đuổi máy bay; **pháo chính** là vũ khí mạnh nhất.
-
-Đoàn xe tải quân sự nối rơ-moóc, mỗi xe mang một vũ khí: toán lính hoang mạc trên đường.
-
 giáp thân trước 5 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 10 bộ phận; pha ở 60%, 25%.
 
 **Mẹo:** cho xe tăng dồn bắn **pháo chính**: mất cặp nòng đó nó chỉ còn là khối thép chậm chạp với cao xạ và tên lửa. **Hệ thống bảo vệ chủ động** bắn hạ hai tên lửa chống tăng mỗi lượt: phá nó, hoặc dùng pháo. Phòng không nên phá cao xạ trước nếu máy bay ta ở gần.
 
 Chiến hạm mặt đất của Varga: pháo chính mỗi phát hạ một xe tăng, đội hộ tống bám theo vào trận và lớp vỏ chịu được gần hết hỏa lực của lữ đoàn. Mara nói các tấm giáp phía sau là điểm yếu của nó.
-
-giáp thân trước 4 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 3 bộ phận; pha ở 45%.
-
-**Mẹo:** phá **ăng-ten chỉ huy** trước tiên: quân của nó mất ngay hào quang chỉ huy.
-
-Xe chỉ huy riêng của Aurel, Atlas: lớp giáp nặng nhất Hegemon từng đúc, bao quanh hệ thống liên lạc điều hành toàn bộ bãi phóng.
 
 giáp thân trước 4 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 4 bộ phận; pha ở 45%.
 
@@ -264,29 +240,11 @@ giáp thân trước 5 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 9
 
 Mỏ neo của tuyến Frostpeak: một pháo đài di động với lựu pháo, đội hộ tống và xung EMP làm tê liệt mọi thứ xung quanh.
 
-giáp thân trước 2 / hông 2 / sau 2 / nóc 1; Tổng 35% máu thân trong 4 bộ phận; pha ở 45%.
-
-**Mẹo:** phá **bệ tên lửa** trên lưng để chặn tên lửa của nó; phá **cụm động cơ** ở mũi để các lượt lao chậm lại.
-
-Một con tàu bay sát mặt sóng với tốc độ của máy bay và đổ quân lên bất cứ bãi biển nào.
-
 giáp thân trước 4 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 4 bộ phận; pha ở 45%.
 
 **Mẹo: cửa ống phóng** mang tên lửa của nó; pháo boong chỉ bắn khi nổi.
 
 Tàu ngầm mang drone theo khái niệm: nhỏ hơn Typhon, nhanh hơn, và im lặng cho tới khi nắp ống mở.
-
-giáp thân trước 1 / hông 1 / sau 1 / nóc 1; Tổng 35% máu thân trong 4 bộ phận; pha ở 45%.
-
-**Mẹo:** phá cả hai **khoang tên lửa** là hết tên lửa; phá **động cơ** thì nó chậm lại.
-
-Chiếc tiêm kích riêng của Wolff, làm cho một mình hắn: nhanh, khó thấy trên radar, mang tên lửa không đối không và bom dẫn đường.
-
-giáp thân trước 2 / hông 2 / sau 2 / nóc 2; Tổng 35% máu thân trong 8 bộ phận; pha ở 45%.
-
-**Mẹo:** mỗi **động cơ** bị phá làm vòng bay chậm 15%: bay chậm hơn là phòng không ta có thêm thời gian. Khẩu 105 mm là thứ giết xe tăng.
-
-Pháo hạm bay vòng trên cao quanh con mồi với khẩu 105 mm và hai khẩu 40 mm dọc sườn. Nó không bao giờ hạ thấp. Hoặc phòng không và tiêm kích, hoặc chẳng gì cả.
 
 giáp thân trước 4 / hông 4 / sau 4 / nóc 4; Tổng 35% máu thân trong 3 bộ phận.
 
@@ -324,17 +282,11 @@ giáp thân trước 5 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 9
 
 Một đoàn tàu tên lửa đang băng qua Metro City tới bãi phóng. Tới nơi là đếm ngược bắt đầu. Đừng để nó tới nơi.
 
-giáp thân trước 5 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 10 bộ phận; pha ở 60%, 25%.
-
-**Mẹo:** mỗi **cụm xích** (giáp cấp 2) bị phá là nó chậm lại; **cần gầu** mang đòn quét; **bánh gầu** (giáp cấp 4) là thứ nghiền.
-
-Một máy xúc bánh gầu to bằng cả tòa nhà, được Thorne bọc thép và chĩa thẳng vào lữ đoàn.
-
 giáp thân trước 5 / hông 3 / sau 2 / nóc 3; Tổng 35% máu thân trong 9 bộ phận; tự sửa một bộ phận một lần mỗi trận; pha ở 60%, 25%.
 
 **Mẹo: khẩu cối** là nòng dài có máu riêng; phá nó là hết quả đạn 800 mm. Bốn tháp pháo chỉ để tự vệ.
 
-Một khẩu pháo cỡ 2B1 Oka thay Gungnir làm mối đe dọa lớn của quân đội: chậm, to và tự tin.
+Một pháo đài biết đi dựng quanh khẩu pháo cỡ 2B1 Oka, mối đe dọa lớn của Orlov: chậm, to và tự tin.
 
 giáp thân trước 5 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 7 bộ phận; pha ở 60%, 25%.
 
@@ -353,18 +305,6 @@ giáp thân trước 2 / hông 2 / sau 2 / nóc 2; Tổng 35% máu thân trong 1
 **Mẹo:** phá hai **động cơ** để mở thân; sau đó tới các nhà chứa drone và radar ngắm cao xạ.
 
 Sở chỉ huy bay của Wolff trên Skyhold: radar, tên lửa và một khoang chứa drone. Nó điều khiển mọi máy bay Hegemon trên Meridian Coast.
-
-giáp thân trước 2 / hông 2 / sau 2 / nóc 2; Tổng 35% máu thân trong 10 bộ phận; thân không nhận sát thương tới khi vỡ động cơ ×2; pha ở 60%, 25%.
-
-**Mẹo:** phá khoang bom là hết thảm bom; phá động cơ thì nó chậm lại.
-
-Người kế nhiệm máy bay ném bom của Wolff: một cánh bay to bằng nhà chứa máy bay, có tiêm kích hộ tống.
-
-giáp thân trước 3 / hông 2 / sau 1 / nóc 1; Tổng 35% máu thân trong 8 bộ phận; pha ở 45%.
-
-**Mẹo:** phá **trạm chỉ thị mục tiêu** là đạn rơi lệch; mỗi **đầu máy kéo** bị phá làm nó bắn thưa hơn; phá **pháo chính** là nó hết bắn.
-
-Một khẩu pháo điện từ trên đoàn tàu: toa pháo ray điện từ, các toa tụ điện và đầu máy diesel hiện đại. Kessler dùng nó bắn một phát xuyên cả đội hình từ cách bốn mươi cây số.
 
 giáp thân trước 3 / hông 3 / sau 3 / nóc 3; Tổng 35% máu thân trong 8 bộ phận.
 

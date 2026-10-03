@@ -165,6 +165,10 @@ namespace MachineBrigade.Sim.Content
                     ProjectileModel = w.Has("projectileModel") ? w.String("projectileModel") : null,
                     ProjectileScale = w.Float("projectileScale", 1f), RoundLength = Math.Max(0f, w.Float("roundLength", 0f)),
                     Charge = w.Float("charge", 0f), FlareResist = Math.Clamp(w.Float("flareResist", 0f), 0f, 1f),
+                    // Balance pack 2 addendum item 2: optional per-weapon fuze / jam-miss overrides (null: group default).
+                    ProximityFuze = w.Has("proximityFuze") ? w.Float("proximityFuze") : null,
+                    JamMissMin = w.Has("jamMissMin") ? w.Float("jamMissMin") : null,
+                    JamMissSpread = w.Has("jamMissSpread") ? w.Float("jamMissSpread") : null,
                     // Prompt 29 S05: optional capability overrides.
                     Interceptable = w.Has("interceptable") ? w.Bool("interceptable", true) : null,
                     FlareEligible = w.Has("flareEligible") ? w.Bool("flareEligible", true) : null,

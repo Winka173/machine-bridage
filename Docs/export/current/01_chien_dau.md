@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit ab1de758, ngày 2026-10-03. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -18,9 +18,9 @@ Chỉ số gốc (hạng 1, chưa trang bị). DPS = sát thương mỗi loạt 
 
 Miêu tả: dòng Cách đánh và Mạnh / yếu của thẻ Hướng dẫn trong game. Hình dạng: cột "Hình dạng (cho AI vẽ)" của file cân bằng (sheet Phương tiện, Công trình, Boss), bản mô tả để dựng model (Tools/docs/unit_sheet.json).
 
-### Boss (41)
+### Boss (31)
 
-Bảng 41 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
+Bảng 31 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
 
 Sheet 01_chien_dau/Xe_bo_phan — Xe: bộ phận (6 dòng, 17 cột)
 
@@ -125,8 +125,6 @@ Xe hỗ trợ không gây sát thương nên giá trị thực chiến bỏ sót
 |---|---|---|---|---|---|---|---|
 | **Xe công binh** | 3 | sửa 2,5% máu/s trong 14 m | — | — | — | — | — |
 | **Xe tiếp đạn** | 4 | nạp đạn trong 14 m (1 viên mỗi 4 s, nạp tại chỗ nhanh ×3); trực thăng nạp đạn cạnh xe (trong 12 m) | — | — | — | — | — |
-| **Xe sửa chữa lưu động** | 4 | sửa 1,5% máu/s trong 20 m | — | — | — | — | — |
-| **Xe laser chói lóa** | 6 | gây nhiễu đạn dẫn đường trong 30 m | — | — | — | — | — |
 | **Xe gây nhiễu điện tử** | 6 | gây nhiễu đạn dẫn đường trong 32 m | — | — | — | — | — |
 | **Xe gây nhiễu định vị** | 6 | gây nhiễu đạn dẫn đường trong 28 m | — | — | — | — | — |
 | **Xe phát khiên** | 8 | khiên 1.000 máu, bán kính 12 m, đầy lại sau 20 s | — | — | — | — | — |
@@ -179,7 +177,7 @@ Giáp có hướng (giáp mặt trước dày hơn hông/sau), đạn lệch the
 
 ★: vũ khí đổi số trong lần sửa tổng hợp (so với commit 07444b14). Cỡ (mm) chỉ cho súng, pháo, cối, rốc-két; đầu nổ (kg) cho tên lửa, bom, drone. Nhịp ngoài đời: tối đa / duy trì (phát mỗi phút một nòng, nguồn ở bảng A8). DPS duy trì: một mục tiêu, cả nạp, hệ số của xe mang.
 
-### Kích thước đạn (55 model)
+### Kích thước đạn (40 model)
 
 Kích thước model đạn nhân tỷ lệ của vũ khí (projectileScale).
 
@@ -189,25 +187,25 @@ Bán kính nổ lan (m) của mọi bom, tên lửa, rốc-két, đạn pháo v�
 
 ### DPS theo cấp giáp, tên lửa, kích thước và siêu vũ khí
 
-### DPS theo cấp giáp (234 vũ khí)
+### DPS theo cấp giáp (194 vũ khí)
 
 Mặt trúng là mặt trước ở cấp đó. Thưởng theo lớp giáp (ví dụ phá công sự) tính luôn; thưởng theo loại xe, đứng yên hay đánh sườn ghi ở thẻ xe.
 
-### Tên lửa: tốc độ bay và thời gian bay (61)
+### Tên lửa: tốc độ bay và thời gian bay (43)
 
-Tốc độ bay (m/s) và thời gian bay tới tầm xa nhất (tầm / tốc độ; tên lửa dẫn đường bay một thời gian định lúc phóng và trúng nơi mục tiêu đang đứng khi tới). Cột nhanh hơn: tốc độ tên lửa phòng không so với máy bay nhanh nhất trong game (60 m/s; file cân bằng nhắm 1,2–1,5 lần mục tiêu nhanh nhất cần bắt).
+Tốc độ bay (m/s) và thời gian bay tới tầm xa nhất (tầm / tốc độ; tên lửa dẫn đường bay một thời gian định lúc phóng và trúng nơi mục tiêu đang đứng khi tới). Cột nhanh hơn: tốc độ tên lửa phòng không so với máy bay nhanh nhất trong game (44 m/s; file cân bằng nhắm 1,2–1,5 lần mục tiêu nhanh nhất cần bắt).
 
-### Kích thước model theo dữ liệu (151 đơn vị)
+### Kích thước model theo dữ liệu (93 đơn vị)
 
 Thân va chạm: dài và rộng.
 
-### Kích thước đạn theo dữ liệu (54 vũ khí)
+### Kích thước đạn theo dữ liệu (41 vũ khí)
 
 Game vẽ model đạn khớp chiều dài này.
 
-Bảng 54 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
+Bảng 41 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
 
-### Siêu vũ khí của boss chủ lực (16)
+### Siêu vũ khí của boss chủ lực (14)
 
 Mỗi siêu vũ khí có âm cảnh báo riêng. Số ở đây là số gốc; trong trận cộng hệ số của cấp boss chủ lực (sát thương ×1,2, hồi ×0,85) và của độ khó.
 
@@ -220,12 +218,10 @@ Mỗi siêu vũ khí có âm cảnh báo riêng. Số ở đây là số gốc; 
 | **Matriarch · Tàu mẹ drone** | **Bom trượt hạng nặng** Một quả bom trượt hạng nặng từ khoang bom: 1.600 trong lõi 16 m, còn 40% tới rìa 20 m, gấp đôi lên công trình và tháp; bom lượn chậm tới vòng đánh dấu, ít nhất 3 giây. Cứ 45 g… | tên lửa, 1 × 1.600, nổ 16 m, 250 máu, bắn hạ được | 45 s | 3,5 s | Chạy ra khỏi vòng; khi khoang bom mở, phòng không trúng tàu mẹ mạnh hơn 30%. | Phá khoang bom, hoặc bắn hạ quả bom khi nó lượn (máu 250): phòng không, C-RAM, la-de PK. |
 | **Moloch · Nhà máy di động** | **Xả xưởng** Cửa xưởng mở 4 giây, rồi mọi cửa cùng xả: sáu xe một lúc, kèm tám phát pháo 152 mm nổ mạnh (mỗi phát 350, lõi 6 m, rìa 12 m còn 40%) vào cụm quân gần nhất. Cứ 50 giây. | thả quân, 6 xe; loạt nổ, 8 × 350, nổ 6 m, trong vòng 12 m | 50 s | 4 s | Đưa cụm quân ra khỏi vùng đánh dấu; sẵn sàng đón thêm sáu xe. | Phá một cửa xưởng lúc cảnh báo: chỉ ra một nửa; phá cả hai thì chỉ còn loạt pháo. |
 | **Nemesis · Đoàn tàu tên lửa** | **Tên lửa Tận thế** Bốn giây dựng bệ phóng, rồi một tên lửa nhiệt áp bay vào HQ hoặc cụm quân lớn nhất, có đồng hồ bay (6 giây, xa hơn thì lâu hơn): 3.500 trong lõi 18 m, còn 40% tới rìa 20 m, mạnh h… | tên lửa, 1 × 3.500, nổ 18 m, 600 máu, bắn hạ được | 50 s | 4 s | Dàn quân ra khỏi điểm rơi được đánh dấu trước khi hết giờ. | Phá bệ phóng trong lúc dựng, hoặc bắn hạ tên lửa trên đường bay (máu 600): khẩu đội PAC-3 và Vòm Sắt, cùng mọi phòng không, C-RAM hay la-de PK bên dưới. |
-| **Kronos · Máy xúc mỏ** | **Quét gầu** Bánh gầu quét cung 120° dài 25 m phía trước: khoảng 2.500 động năng (xuyên cao) mỗi đơn vị, gấp đôi lên công trình và tháp. Cứ 45 giây. | quét hình quạt, 120° × 25 m, 2.500 | 45 s | 4 s | Ra khỏi cung đánh dấu phía trước; đánh vào hông và sau. | Phá cần gầu (lúc cảnh báo hoặc trước đó). |
 | **Monster · Pháo tự hành 800 mm** | **Đạn 800 mm** Một quả đạn 800 mm: 4.000 trong lõi 20 m, còn 40% tới rìa 20 m, nặng gấp đôi với công trình; nòng nâng từ từ, vòng đỏ hiện 4 giây. Mỗi 50 giây. | loạt nổ, 1 × 4.000, nổ 20 m | 50 s | 4 s | Ra khỏi vòng đỏ; vòng rất rộng nên đi sớm. | Phá khẩu cối (nòng): mất luôn phát đạn. |
 | **Typhon · Tàu ngầm tên lửa** | **Phóng tên lửa từ dưới nước** Sáu tên lửa vào căn cứ ta: mỗi quả khoảng 700 nổ mạnh (lõi 9 m, rìa 18 m còn 40%), gấp đôi lên công trình; sau 4 giây cảnh báo có đồng hồ bay. Cứ 50 giây. | tên lửa, 6 × 700, nổ 9 m, 250 máu, bắn hạ được | 50 s | 4 s | Đưa quân ra khỏi các điểm đánh dấu; tháp không di chuyển được nên hãy che chắn. | Phá cửa ống phóng lúc cảnh báo (cửa lộ trên mặt nước), hoặc bắn hạ tên lửa (mỗi quả 250 máu). |
 | **Kraken · Tàu sân bay** | **Đợt không kích** Mười hai quả bom, mỗi quả 400 (lõi 9 m, rìa 18 m còn 40%), thành dải 90 × 14 m theo hướng tàu; cảnh báo 4 giây. Mỗi 50 giây. | dải bom, 12 × 400, nổ 9 m, dải 90 × 14 m | 50 s | 4 s | Bước ngang ra khỏi dải đỏ. | Phá boong cất cánh trong lúc cảnh báo: đợt không kích và máy bay đều dừng. |
 | **Roc · Khí cầu chỉ huy** | **Rải thảm** Mười sáu quả bom 250 kg, mỗi quả 400 (lõi 7 m, rìa 14 m còn 40%), thành dải 80 × 12 m theo đường bay; cảnh báo 4 giây. Cứ 50 giây. | dải bom, 16 × 400, nổ 7 m, dải 80 × 12 m | 50 s | 4 s | Bước ngang ra khỏi dải, tránh khỏi đường bay của nó. | Phá khoang bom. |
-| **Garuda · Cánh bay ném bom khổng lồ** | **Rải thảm** Hai mươi quả bom, mỗi quả 350 (lõi 7 m, rìa 14 m còn 40%), thành dải 100 × 14 m theo đường bay; cảnh báo 4 giây. Mỗi 50 giây. | dải bom, 20 × 350, nổ 7 m, dải 100 × 14 m | 50 s | 4 s | Bước ngang ra khỏi dải. | Phá khoang bom. |
 | **Daedalus · Tàu đổ bộ quỹ đạo** | **Đổ bộ ồ ạt từ quỹ đạo** Tám khoang cùng rơi vào một cụm quân: mỗi khoang chạm đất gây 600 động năng (xuyên cao, lõi 6 m, rìa 12 m còn 40%) rồi thả một xe; cảnh báo 4 giây. Cứ 50 giây. | loạt nổ, 8 × 600, nổ 6 m, trong vòng 12 m | 50 s | 4 s | Tản cụm quân bị đánh dấu ra; giáp dày cũng không cứu được. | Phá một cửa thả khoang lúc cảnh báo: chỉ còn bốn khoang rơi. |
 | **Icarus · Phi thuyền quỹ đạo** | **Mưa thanh vonfram** Bảy thanh vonfram rơi xuống các cụm quân, ưu tiên xe tăng giáp dày, từ vệ tinh nó để lại trên quỹ đạo: 1.800 động năng mỗi thanh, xuyên rất cao, bán kính 7 m, có 4 giây cột sáng… | thanh tungsten từ vệ tinh, 7 × 1.800, nổ 7 m; từ pha 3: 9 phát, hồi 45 s | 45 s | 4 s | Ra khỏi các vòng tròn; khói và APS không chặn được. Vòm khiên hấp thụ một phần sát thương trong lúc còn hoạt động. | Phá ăng-ten liên kết vệ tinh trong lúc cảnh báo để hủy thanh đang rơi; phá hẳn thì hết mưa thanh vonfram cho tới khi nó tự vá lại. Ăng-ten bắn được ở tầng cao, tầng thấp, và cả khi đã rơi xuống đất. |
 | **Hyperion · Trạm gương quỹ đạo** | **Tia mặt trời** Một tia đốt dải 70 × 6 m trong 4 giây, 500 mỗi giây; cảnh báo 4 giây. Mỗi 50 giây. | dải bom, 4 × 500, nổ 3 m, dải 70 × 6 m | 50 s | 4 s | Rời ngay dải hẹp. | Phá tia la-de chính trong lúc cảnh báo. |
@@ -271,7 +267,7 @@ SELF_APS chỉ chặn tên lửa dẫn đường, drone, rốc-két bắn thẳn
 
 ### Gungnir
 
-Boss chủ lực chương 11: máu 133.365; siêu vũ khí mỗi 45 s, nhắm toàn bản đồ, cảnh báo 3 s có đường ngắm; xuyên tối đa 5 xe × 1.000 rồi nổ 2.000 ở xe cuối (lõi 12 m, rìa 20 m còn 40%); không bắn máy bay, không chặn được, pháo sáng và APS không có tác dụng.
+Boss chủ lực chương 11: máu 0; siêu vũ khí mỗi ? s, nhắm toàn bản đồ, cảnh báo 3 s có đường ngắm; xuyên tối đa 5 xe × 1.000 rồi nổ 2.000 ở xe cuối (lõi 12 m, rìa 20 m còn 40%); không bắn máy bay, không chặn được, pháo sáng và APS không có tác dụng.
 
 Sheet 01_chien_dau/Bang_sat_thuong — Bảng sát thương (6 dòng, 6 cột)
 
@@ -332,15 +328,15 @@ Sinh từ dữ liệu (balance.json) như mục Sổ tay đạn trong Hồ sơ c
 
 ### Sổ tay đạn (tiếng Việt)
 
-**Động năng**: mạnh với Mặt đất (×1), yếu với Máy bay (×0,3). Ví dụ: M2 Browning 12.7 mm, PKT / M240 7.62 mm, M242 Bushmaster 25 mm.
+**Động năng**: mạnh với Mặt đất (×1), yếu với Máy bay (×0,3). Ví dụ: M2 Browning 12.7 mm, PKT / M240 7.62 mm, M230 30 mm.
 
-**Nổ lõm**: mạnh với Mặt đất (×1), yếu với Máy bay (×0,3). Ví dụ: BGM-71 TOW-2, APKWS (laser-guided Hydra 70), 9M120 Ataka.
+**Nổ lõm**: mạnh với Mặt đất (×1), yếu với Máy bay (×0,3). Ví dụ: BGM-71 TOW-2, APKWS (laser-guided Hydra 70), Typhon MRC (ground-launched Tomahawk).
 
 **Nổ mạnh**: mạnh với Công trình (×1,5), yếu với Máy bay (×0). Ví dụ: Mk 19 40 mm, GBU-39 SDB (110 kg), AGM-158 JASSM (450 kg).
 
 **Lửa**: mạnh với Mặt đất (×1,5), yếu với Máy bay (×0). Ví dụ: flamethrower.
 
-**Mảnh**: mạnh với Máy bay (×1,3), yếu với Công trình (×0,1). Ví dụ: AIM-120 AMRAAM, GAU-22/A 25 mm, AIM-9 Sidewinder.
+**Mảnh**: mạnh với Máy bay (×1,3), yếu với Công trình (×0,1). Ví dụ: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70.
 
 **Năng lượng**: mạnh với Máy bay (×1,5), yếu với Công trình (×0,5). Ví dụ: focused laser (300 kW), Iron Beam laser (100 kW).
 
@@ -350,12 +346,12 @@ Ví dụ: một phát 2A42 30 mm của ifv (xuyên 2, sát thương 22) lên mai
 
 | Dấu | Nghĩa |
 |---|---|
-| Đánh nóc | Trúng giáp nóc, mặt mỏng nhất. Ví dụ: Fibre-optic FPV drone (1.5 kg), FPV drone (1.5 kg), Switchblade 300 |
-| Nhiệt áp | ×2 lên công trình thay cho ×1,5 của nổ mạnh (thay, không nhân thêm). Ví dụ: ODAB-500, TOS-1A 220 mm thermobaric |
+| Đánh nóc | Trúng giáp nóc, mặt mỏng nhất. Ví dụ: FPV drone (1.5 kg), Shahed-136 (50 kg) |
+| Nhiệt áp | ×2 lên công trình thay cho ×1,5 của nổ mạnh (thay, không nhân thêm). Ví dụ: TOS-1A 220 mm thermobaric |
 | Dẫn đường | Bám mục tiêu; APS / phòng thủ điểm bắn hạ được, pháo sáng đánh lừa loại nhắm máy bay. Ví dụ: AIM-120 AMRAAM, BGM-71 TOW-2, AGM-158 JASSM (450 kg) |
-| Nổ trên không | Đạn mảnh: ×1,3 lên máy bay. Ví dụ: AIM-120 AMRAAM, GAU-22/A 25 mm, AIM-9 Sidewinder |
+| Nổ trên không | Đạn mảnh: ×1,3 lên máy bay. Ví dụ: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70 |
 | Đạn thay thế | Súng tự đổi khi mục tiêu hợp; giữ đạn ít nhất 2 s, đổi mất ít nhất 0,5 s. |
-| Tầm tối thiểu | 120 mm AMOS (twin) (10 m), 9M723 Iskander (700 kg) (40 m), 155 mm L/52 (CAESAR) (25 m) |
+| Tầm tối thiểu | 120 mm AMOS (twin) (10 m), 9M723 Iskander (700 kg) (40 m), FPV drone (1.5 kg) (12 m) |
 
 | Hệ | Chặn |
 |---|---|
@@ -372,15 +368,15 @@ Xe phá tường (armored_bulldozer, engineer_vehicle, demolition_line_vehicle) 
 
 ### Ammunition handbook (English)
 
-**Kinetic**: strong against Ground (×1), weak against Air (×0.3). For example: M2 Browning 12.7 mm, PKT / M240 7.62 mm, M242 Bushmaster 25 mm.
+**Kinetic**: strong against Ground (×1), weak against Air (×0.3). For example: M2 Browning 12.7 mm, PKT / M240 7.62 mm, M230 30 mm.
 
-**Shaped charge**: strong against Ground (×1), weak against Air (×0.3). For example: BGM-71 TOW-2, APKWS (laser-guided Hydra 70), 9M120 Ataka.
+**Shaped charge**: strong against Ground (×1), weak against Air (×0.3). For example: BGM-71 TOW-2, APKWS (laser-guided Hydra 70), Typhon MRC (ground-launched Tomahawk).
 
 **High explosive**: strong against Structures (×1.5), weak against Air (×0). For example: Mk 19 40 mm, GBU-39 SDB (110 kg), AGM-158 JASSM (450 kg).
 
 **Fire**: strong against Ground (×1.5), weak against Air (×0). For example: flamethrower.
 
-**Fragmentation**: strong against Air (×1.3), weak against Structures (×0.1). For example: AIM-120 AMRAAM, GAU-22/A 25 mm, AIM-9 Sidewinder.
+**Fragmentation**: strong against Air (×1.3), weak against Structures (×0.1). For example: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70.
 
 **Energy**: strong against Air (×1.5), weak against Structures (×0.5). For example: focused laser (300 kW), Iron Beam laser (100 kW).
 
@@ -390,12 +386,12 @@ Worked example: one shot of the ifv's 2A42 30 mm (penetration 2, 22 damage) on a
 
 | Mark | Meaning |
 |---|---|
-| Top attack | Strikes the roof armour, the thinnest face. For example: Fibre-optic FPV drone (1.5 kg), FPV drone (1.5 kg), Switchblade 300 |
-| Thermobaric | ×2 on structures instead of high explosive's ×1.5 (replaces, never adds). For example: ODAB-500, TOS-1A 220 mm thermobaric |
+| Top attack | Strikes the roof armour, the thinnest face. For example: FPV drone (1.5 kg), Shahed-136 (50 kg) |
+| Thermobaric | ×2 on structures instead of high explosive's ×1.5 (replaces, never adds). For example: TOS-1A 220 mm thermobaric |
 | Guided | Follows its target; APS and point defence can shoot it down, flares draw off those aimed at aircraft. For example: AIM-120 AMRAAM, BGM-71 TOW-2, AGM-158 JASSM (450 kg) |
-| Airburst | Fragmentation: ×1.3 against aircraft. For example: AIM-120 AMRAAM, GAU-22/A 25 mm, AIM-9 Sidewinder |
+| Airburst | Fragmentation: ×1.3 against aircraft. For example: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70 |
 | Second rounds | The gun switches on its own when the target suits; a round stays in 2 s at least, a switch takes 0.5 s at least. |
-| Minimum range | 120 mm AMOS (twin) (10 m), 9M723 Iskander (700 kg) (40 m), 155 mm L/52 (CAESAR) (25 m) |
+| Minimum range | 120 mm AMOS (twin) (10 m), 9M723 Iskander (700 kg) (40 m), FPV drone (1.5 kg) (12 m) |
 
 | System | Stops |
 |---|---|
@@ -438,7 +434,7 @@ Bảng đầy đủ: xem sheet `Dong_vu_khi` (55 dòng).
 
 Mỗi vũ khí có `weaponFamilyId` (súng: lớp cỡ nòng; còn lại: vũ khí thật) và `weaponVariantId` khi đạn hay cách bắn khác (có lý do trong bảng). Bậc T0–T5 theo họ. Ở boss, cùng họ là cùng viên đạn (sát thương, lõi, rìa, tốc độ, loại); DPS của từng vũ khí giữ nguyên bằng chu kỳ dài hơn, và lõi rộng hơn 1,25 lần thì chu kỳ dài thêm đúng tỉ lệ đó. Vũ khí người chơi chỉ gắn nhãn (danh sách lệch: Docs/checks/player_weapon_family.md). Kiểm: `Tools/balance/p34_validate.py`.
 
-### Vũ khí boss theo họ (136)
+### Vũ khí boss theo họ (107)
 
 Sát thương một viên; lõi nhận đủ sát thương, rìa 40%. Hồi: thời gian hồi của vũ khí (loạt và băng giữ nhịp riêng). Cảnh báo: thời gian đạn T4+ không dẫn đường báo chỗ rơi (đạn ở trên không ít nhất bấy lâu).
 
@@ -557,7 +553,7 @@ Bảng đầy đủ: xem sheet `The_ho_tro` (24 dòng).
 
 Mọi giá trong game ở một chỗ. **CP** là điểm chỉ huy trả mỗi lần gọi trong trận. **Xu** là tiền duy nhất ngoài trận: mua thẻ cao cấp, mua sớm thẻ chiến dịch trước khi thắng màn mở khóa, mua vật phẩm. Thẻ có sẵn không cần mua. Giá lên hạng thẻ, hòm và gói xu ở phần kinh tế.
 
-### Tháp căn cứ (22)
+### Tháp căn cứ (16)
 
 Tháp không tốn CP khi đặt vào căn cứ: nó chiếm một ô theo cỡ. Bị phá trong trận thì xây lại bằng CP sau một thời gian chờ.
 
@@ -832,6 +828,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Hanh_vi_dan` (11 dòng): Hành vi đạn: luật chung — munitionRules: pháo sáng mồi, ngòi cận đích, dẫn đường
 - `Hanh_vi_dan_nhom` (7 dòng): Hành vi đạn theo nhóm — Mỗi dạng đạn (projectile): cách nhắm, khi nổ, cảnh báo (luật trong mã)
 - `Drone` (13 dòng): Drone: tốc độ, đầu nổ, cỡ, vụ nổ — Mọi drone của game một dòng: drone đạn (FPV, Lancet, Shahed do xe phóng) và máy bay drone; tốc độ bay, đầu nổ (kg), sát thương, bán kính nổ lõi / rìa…
+- `Ten_lua_tham_so` (45 dòng): Tên lửa: tham số — Mỗi vũ khí tên lửa (projectile = Missile) một dòng: kiểu dẫn, cận đích, trúng / chệch, jam; mọi cột khác (sát thương, tầm, tốc độ đạn, pháo sáng, APS…
 - `Canh_bao_vong` (13 dòng): Vòng cảnh báo — warningRules: loại đòn có vòng, sàn thời gian theo bậc, số vùng tối đa
 - `Bom_rai_tham` (6 dòng): Ném bom rải thảm (liên kết) — Mỗi vũ khí thả bom một dòng: tham số dải chính (weapons[*].stick) và câu thẻ; bảng đủ (Bom_vu_khi, Bom_don_vi, Bom_hanh_vi, Bom_vet_tha, Bom_canh_bao…
 - `Vu_khi_suy_ra` (332 dòng): Vũ khí: suy ra — Lớp B: chu kỳ, sát thương loạt, DPS duy trì theo giáp / công trình / máy bay, cảnh báo: công thức sống trên Vu_khi và các bảng hệ số, kèm cột _game (…
@@ -866,7 +863,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Phuong_tien_tham_chieu` (103 dòng): Phương tiện: tham chiếu ngoài đời — Mỗi xe và thẻ hỗ trợ một dòng: mẫu thật, phim / game (unit_refs.json), kích thước thật (reference_real.json), bảng cân bằng (spec 12.2; chỉ dữ liệu c…
 - `Phuong_tien_so_sanh_that` (221 dòng): Phương tiện: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
 - `So_tay_dan` (2 dòng): Sổ tay đạn — balance.json handbook: xe mẫu bắn và xe mẫu bị bắn của sổ tay đạn trên giao diện
-- `Hang_so_vu_khi` (33 dòng): Hằng số vũ khí, đạn, sát thương và nổ — Assets/MachineBrigade/Resources/Data/tunables.json: 'weapons' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
+- `Hang_so_vu_khi` (40 dòng): Hằng số vũ khí, đạn, sát thương và nổ — Assets/MachineBrigade/Resources/Data/tunables.json: 'weapons' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
 - `Hang_so_phuong_tien` (94 dòng): Hằng số phương tiện: giá, thả dù, hồi đạn, tiếp tế, kỹ năng — Assets/MachineBrigade/Resources/Data/tunables.json: 'vehicles' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
 - `Bom_vu_khi` (14 dòng): Ném bom: vũ khí — Mỗi vũ khí thả bom và mỗi đòn không kích / đòn lớn của boss một dòng: tham số dải bom (stick), khoảng cách giữa bom, độ dài dải, cảnh báo, đường thả…
 - `Bom_don_vi` (17 dòng): Ném bom: đơn vị mang — Đơn vị mang bom: tốc độ, bán kính quay, độ cao thả, vũ khí bom, số bom mỗi lượt

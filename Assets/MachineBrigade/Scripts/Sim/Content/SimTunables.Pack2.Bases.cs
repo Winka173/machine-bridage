@@ -8,10 +8,150 @@ namespace MachineBrigade.Sim.Content
     {
         public static partial class Bases
         {
+            public static partial class Balloon
+            {
+                /// <summary>bases.balloon.radiusM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:314).</summary>
+                public static float RadiusM = 40f;
+                /// <summary>bases.balloon.scatterShare (share; khac, was Sim/Content/Catalog.P25A.cs:314).</summary>
+                public static float ScatterShare = 0.5f;
+            }
+
+            public static partial class BlastWall
+            {
+                /// <summary>bases.blastWall.radiusM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:270).</summary>
+                public static float RadiusM = 8f;
+                /// <summary>bases.blastWall.cutShare (share; khac, was Sim/Content/Catalog.P25A.cs:270).</summary>
+                public static float CutShare = 0.3f;
+                /// <summary>bases.blastWall.coneDeg (deg; khac, was Sim/Content/Catalog.P25A.cs:271).</summary>
+                public static float ConeDeg = 50f;
+            }
+
+            public static partial class DroneHunt
+            {
+                /// <summary>bases.droneHunt.reachM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:344).</summary>
+                public static float ReachM = 60f;
+            }
+
+            public static partial class FireControl
+            {
+                /// <summary>bases.fireControl.radiusM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:282).</summary>
+                public static float RadiusM = 30f;
+                /// <summary>bases.fireControl.damageShare (share; khac, was Sim/Content/Catalog.P25A.cs:282).</summary>
+                public static float DamageShare = 0.12f;
+                /// <summary>bases.fireControl.focus (x; khac, was Sim/Content/Catalog.P25A.cs:282).</summary>
+                public static float Focus = 2f;
+            }
+
+            public static partial class FlareTower
+            {
+                /// <summary>bases.flareTower.everySeconds (s; thoi_gian, was Sim/Content/Catalog.P25A.cs:331).</summary>
+                public static float EverySeconds = 15f;
+                /// <summary>bases.flareTower.rangeM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:331).</summary>
+                public static float RangeM = 40f;
+                /// <summary>bases.flareTower.radiusM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:332).</summary>
+                public static float RadiusM = 30f;
+                /// <summary>bases.flareTower.seconds (s; thoi_gian, was Sim/Content/Catalog.P25A.cs:332).</summary>
+                public static float Seconds = 15f;
+            }
+
+            public static partial class Hangar
+            {
+                /// <summary>bases.hangar.everySeconds (s; thoi_gian, was Sim/Content/Catalog.P25A.cs:290).</summary>
+                public static float EverySeconds = 60f;
+                /// <summary>bases.hangar.alive (count; khac, was Sim/Content/Catalog.P25A.cs:290).</summary>
+                public static int Alive = 2;
+                /// <summary>bases.hangar.postM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:291).</summary>
+                public static float PostM = 20f;
+                /// <summary>bases.hangar.budget (x; khac, was Sim/Content/Catalog.P25A.cs:291).</summary>
+                public static float Budget = 0f;
+            }
+
+            public static partial class Microwave
+            {
+                /// <summary>bases.microwave.rangeM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:340).</summary>
+                public static float RangeM = 30f;
+                /// <summary>bases.microwave.arcDeg (deg; khac, was Sim/Content/Catalog.P25A.cs:340).</summary>
+                public static float ArcDeg = 60f;
+                /// <summary>bases.microwave.cooldownSeconds (s; thoi_gian, was Sim/Content/Catalog.P25A.cs:341).</summary>
+                public static float CooldownSeconds = 8f;
+            }
+
+            public static partial class Paradrop
+            {
+                /// <summary>bases.paradrop.fallSeconds (s; thoi_gian, was Sim/Content/Catalog.P25A.cs:350).</summary>
+                public static float FallSeconds = 6f;
+                /// <summary>bases.paradrop.heightM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:350).</summary>
+                public static float HeightM = 30f;
+                /// <summary>bases.paradrop.baseKeepOutM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:351).</summary>
+                public static float BaseKeepOutM = 45f;
+            }
+
+            public static partial class ReconPass
+            {
+                /// <summary>bases.reconPass.widthM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:357).</summary>
+                public static float WidthM = 60f;
+                /// <summary>bases.reconPass.seconds (s; thoi_gian, was Sim/Content/Catalog.P25A.cs:357).</summary>
+                public static float Seconds = 20f;
+            }
+
+            public static partial class Searchlight
+            {
+                /// <summary>bases.searchlight.radiusM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:309).</summary>
+                public static float RadiusM = 35f;
+                /// <summary>bases.searchlight.dazzleShare (share; khac, was Sim/Content/Catalog.P25A.cs:309).</summary>
+                public static float DazzleShare = 0.2f;
+            }
+
+            public static partial class Shelter
+            {
+                /// <summary>bases.shelter.radiusM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:324).</summary>
+                public static float RadiusM = 15f;
+                /// <summary>bases.shelter.cutShare (share; khac, was Sim/Content/Catalog.P25A.cs:324).</summary>
+                public static float CutShare = 0.5f;
+            }
+
+            public static partial class SightJammer
+            {
+                /// <summary>bases.sightJammer.radiusM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:319).</summary>
+                public static float RadiusM = 35f;
+                /// <summary>bases.sightJammer.closeM (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:319).</summary>
+                public static float CloseM = 15f;
+            }
         }
 
         private static readonly Entry[] Pack2Bases =
         {
+            new Entry("bases.balloon.radiusM", "m", () => Bases.Balloon.RadiusM, v => Bases.Balloon.RadiusM = (float)v),
+            new Entry("bases.balloon.scatterShare", "share", () => Bases.Balloon.ScatterShare, v => Bases.Balloon.ScatterShare = (float)v),
+            new Entry("bases.blastWall.radiusM", "m", () => Bases.BlastWall.RadiusM, v => Bases.BlastWall.RadiusM = (float)v),
+            new Entry("bases.blastWall.cutShare", "share", () => Bases.BlastWall.CutShare, v => Bases.BlastWall.CutShare = (float)v),
+            new Entry("bases.blastWall.coneDeg", "deg", () => Bases.BlastWall.ConeDeg, v => Bases.BlastWall.ConeDeg = (float)v),
+            new Entry("bases.droneHunt.reachM", "m", () => Bases.DroneHunt.ReachM, v => Bases.DroneHunt.ReachM = (float)v),
+            new Entry("bases.fireControl.radiusM", "m", () => Bases.FireControl.RadiusM, v => Bases.FireControl.RadiusM = (float)v),
+            new Entry("bases.fireControl.damageShare", "share", () => Bases.FireControl.DamageShare, v => Bases.FireControl.DamageShare = (float)v),
+            new Entry("bases.fireControl.focus", "x", () => Bases.FireControl.Focus, v => Bases.FireControl.Focus = (float)v),
+            new Entry("bases.flareTower.everySeconds", "s", () => Bases.FlareTower.EverySeconds, v => Bases.FlareTower.EverySeconds = (float)v),
+            new Entry("bases.flareTower.rangeM", "m", () => Bases.FlareTower.RangeM, v => Bases.FlareTower.RangeM = (float)v),
+            new Entry("bases.flareTower.radiusM", "m", () => Bases.FlareTower.RadiusM, v => Bases.FlareTower.RadiusM = (float)v),
+            new Entry("bases.flareTower.seconds", "s", () => Bases.FlareTower.Seconds, v => Bases.FlareTower.Seconds = (float)v),
+            new Entry("bases.hangar.everySeconds", "s", () => Bases.Hangar.EverySeconds, v => Bases.Hangar.EverySeconds = (float)v),
+            new Entry("bases.hangar.alive", "count", () => Bases.Hangar.Alive, v => Bases.Hangar.Alive = (int)System.Math.Round(v)),
+            new Entry("bases.hangar.postM", "m", () => Bases.Hangar.PostM, v => Bases.Hangar.PostM = (float)v),
+            new Entry("bases.hangar.budget", "x", () => Bases.Hangar.Budget, v => Bases.Hangar.Budget = (float)v),
+            new Entry("bases.microwave.rangeM", "m", () => Bases.Microwave.RangeM, v => Bases.Microwave.RangeM = (float)v),
+            new Entry("bases.microwave.arcDeg", "deg", () => Bases.Microwave.ArcDeg, v => Bases.Microwave.ArcDeg = (float)v),
+            new Entry("bases.microwave.cooldownSeconds", "s", () => Bases.Microwave.CooldownSeconds, v => Bases.Microwave.CooldownSeconds = (float)v),
+            new Entry("bases.paradrop.fallSeconds", "s", () => Bases.Paradrop.FallSeconds, v => Bases.Paradrop.FallSeconds = (float)v),
+            new Entry("bases.paradrop.heightM", "m", () => Bases.Paradrop.HeightM, v => Bases.Paradrop.HeightM = (float)v),
+            new Entry("bases.paradrop.baseKeepOutM", "m", () => Bases.Paradrop.BaseKeepOutM, v => Bases.Paradrop.BaseKeepOutM = (float)v),
+            new Entry("bases.reconPass.widthM", "m", () => Bases.ReconPass.WidthM, v => Bases.ReconPass.WidthM = (float)v),
+            new Entry("bases.reconPass.seconds", "s", () => Bases.ReconPass.Seconds, v => Bases.ReconPass.Seconds = (float)v),
+            new Entry("bases.searchlight.radiusM", "m", () => Bases.Searchlight.RadiusM, v => Bases.Searchlight.RadiusM = (float)v),
+            new Entry("bases.searchlight.dazzleShare", "share", () => Bases.Searchlight.DazzleShare, v => Bases.Searchlight.DazzleShare = (float)v),
+            new Entry("bases.shelter.radiusM", "m", () => Bases.Shelter.RadiusM, v => Bases.Shelter.RadiusM = (float)v),
+            new Entry("bases.shelter.cutShare", "share", () => Bases.Shelter.CutShare, v => Bases.Shelter.CutShare = (float)v),
+            new Entry("bases.sightJammer.radiusM", "m", () => Bases.SightJammer.RadiusM, v => Bases.SightJammer.RadiusM = (float)v),
+            new Entry("bases.sightJammer.closeM", "m", () => Bases.SightJammer.CloseM, v => Bases.SightJammer.CloseM = (float)v),
         };
     }
 }

@@ -13,11 +13,40 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>weapons.armour.fragmentPenetration (level; sat_thuong, was Sim/Content/Armour.cs:115). penetration of a blast's fragments against vehicle armour</summary>
                 public static int FragmentPenetration = 1;
             }
+
+            public static partial class Fire
+            {
+                /// <summary>weapons.fire.incendiaryFlameSeconds (s; thoi_gian, was Sim/Abilities/GearSystem.cs:846).</summary>
+                public static float IncendiaryFlameSeconds = 6f;
+                /// <summary>weapons.fire.incendiaryOtherSeconds (s; thoi_gian, was Sim/Abilities/GearSystem.cs:846).</summary>
+                public static float IncendiaryOtherSeconds = 4f;
+                /// <summary>weapons.fire.firestormShare (share; khac, was Sim/Abilities/GearSystem.cs:847).</summary>
+                public static float FirestormShare = 0.1f;
+                /// <summary>weapons.fire.firestormSpreadRadiusSqM (m2; ban_kinh, was Sim/Abilities/GearSystem.cs:1256).</summary>
+                public static float FirestormSpreadRadiusSqM = 36f;
+                /// <summary>weapons.fire.firestormSpreadSeconds (s; thoi_gian, was Sim/Abilities/GearSystem.cs:1265).</summary>
+                public static float FirestormSpreadSeconds = 4f;
+            }
+
+            public static partial class Guidance
+            {
+                /// <summary>weapons.guidance.baseFailChance (share; xac_suat, was Sim/Combat/CombatSystem.cs:1021).</summary>
+                public static double BaseFailChance = 0.02;
+                /// <summary>weapons.guidance.rangeFailCoeff (share; xac_suat, was Sim/Combat/CombatSystem.cs:1021).</summary>
+                public static double RangeFailCoeff = 0.08;
+            }
         }
 
         private static readonly Entry[] Pack2Weapons =
         {
             new Entry("weapons.armour.fragmentPenetration", "level", () => Weapons.Armour.FragmentPenetration, v => Weapons.Armour.FragmentPenetration = (int)System.Math.Round(v)),
+            new Entry("weapons.fire.incendiaryFlameSeconds", "s", () => Weapons.Fire.IncendiaryFlameSeconds, v => Weapons.Fire.IncendiaryFlameSeconds = (float)v),
+            new Entry("weapons.fire.incendiaryOtherSeconds", "s", () => Weapons.Fire.IncendiaryOtherSeconds, v => Weapons.Fire.IncendiaryOtherSeconds = (float)v),
+            new Entry("weapons.fire.firestormShare", "share", () => Weapons.Fire.FirestormShare, v => Weapons.Fire.FirestormShare = (float)v),
+            new Entry("weapons.fire.firestormSpreadRadiusSqM", "m2", () => Weapons.Fire.FirestormSpreadRadiusSqM, v => Weapons.Fire.FirestormSpreadRadiusSqM = (float)v),
+            new Entry("weapons.fire.firestormSpreadSeconds", "s", () => Weapons.Fire.FirestormSpreadSeconds, v => Weapons.Fire.FirestormSpreadSeconds = (float)v),
+            new Entry("weapons.guidance.baseFailChance", "share", () => Weapons.Guidance.BaseFailChance, v => Weapons.Guidance.BaseFailChance = v),
+            new Entry("weapons.guidance.rangeFailCoeff", "share", () => Weapons.Guidance.RangeFailCoeff, v => Weapons.Guidance.RangeFailCoeff = v),
         };
     }
 }

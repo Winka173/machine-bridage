@@ -2,7 +2,7 @@
 
 Hiệu ứng, âm thanh, hậu kỳ hình ảnh, model và số đo model, tài sản, giấy phép.
 
-Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit ab1de758, ngày 2026-10-03. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Hình ảnh
 
@@ -256,7 +256,7 @@ Sheet 07_hinh_anh_am_thanh_model/Giay_phep_tai_san — Giấy phép tài sản (
 | OFL-Inter | OFL-Inter.txt | Inter | SIL Open Font License | 75 |
 | OFL-JetBrainsMono | OFL-JetBrainsMono.txt | JetBrainsMono | SIL Open Font License | 74 |
 
-Bảng đầy đủ: xem sheet `Model` (448 dòng), `Model_kiem_chuan` (448 dòng), `Kich_thuoc_that` (84 dòng), `Kit_chi_tiet` (70 dòng), `Xem_truoc` (177 dòng).
+Bảng đầy đủ: xem sheet `Model` (450 dòng), `Model_kiem_chuan` (450 dòng), `Kich_thuoc_that` (84 dòng), `Kit_chi_tiet` (70 dòng), `Xem_truoc` (177 dòng).
 
 ### Model standard (fix pass 8)
 
@@ -453,9 +453,9 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `VFX_ngan_sach` (8 dòng): VFX: ngân sách — Ngân sách hiệu ứng: theo bậc T0-T5 (TierFx.cs: số vụ nổ chi tiết đầy đủ cùng lúc FullCap, trọng số với trần WeightCap, thời gian tính là đang chạy Bu…
 - `VFX_ngan_sach_hat` (9 dòng): VFX: trần hạt mỗi bộ phát — Mọi chỗ Game/Effects đặt maxParticles bằng một số cố định (file:dòng); bộ phát đặt theo biến (max) không có số cố định
 - `Hieu_ung_tham_chieu` (58 dòng): Hiệu ứng và âm thanh: nguồn và tham chiếu — Mỗi bậc VFX và mỗi nhóm âm thanh (nhóm × bậc cỡ) một dòng: nguồn ghi âm / tổng hợp, giấy phép, đặc điểm tiếng thật, game tham chiếu cảm giác (spec 12…
-- `Model` (448 dòng): Model — Mỗi GLB một dòng (đọc bằng Tools/assets/glb_analyze.read_glb): tam giác, nút, vật liệu, mesh, số Part_* / Mount_* / Muzzle_*, Mount_Flare / Mount_APS…
-- `Model_nut` [bulk.zip] (14477 dòng): Model: nút — nodes[].name: mọi nút của mọi GLB một dòng
-- `Model_kiem_chuan` (448 dòng): Model: kiểm chuẩn (baseline) — Tools/assets/baseline.json models: số liệu kiểm máy của mỗi model (tam giác, đỉnh, renderer, bộ phận chạy, lỗi, cảnh báo, nút runtime, kích thước, ha…
+- `Model` (450 dòng): Model — Mỗi GLB một dòng (đọc bằng Tools/assets/glb_analyze.read_glb): tam giác, nút, vật liệu, mesh, số Part_* / Mount_* / Muzzle_*, Mount_Flare / Mount_APS…
+- `Model_nut` [bulk.zip] (14808 dòng): Model: nút — nodes[].name: mọi nút của mọi GLB một dòng
+- `Model_kiem_chuan` (450 dòng): Model: kiểm chuẩn (baseline) — Tools/assets/baseline.json models: số liệu kiểm máy của mỗi model (tam giác, đỉnh, renderer, bộ phận chạy, lỗi, cảnh báo, nút runtime, kích thước, ha…
 - `Model_tieu_chuan` (14 dòng): Model: tiêu chuẩn — baseline.json budgets: ngân sách theo lớp x bậc (normal / hd): tam giác, đỉnh, renderer, bộ phận chạy [mức, trần]; ngân sách là hướng dẫn, không phải…
 - `Model_kiem_chuan_chung` (3 dòng): Model: kiểm chuẩn (chung) — baseline.json: số model, ngày sinh
 - `Kich_thuoc_that` (84 dòng): Kích thước thật tham chiếu — Tools/models/reference_real.json: mẫu thật, kích thước dài / rộng / cao (m), nguồn, độ tin (conf); dùng ở 13

@@ -57,6 +57,17 @@
     },
     "armour": {
       "fragmentPenetration": { "value": 1, "unit": "level", "kind": "sat_thuong", "linh_vuc": "01", "code": "Armour (pack 2, was Sim/Content/Armour.cs:115)" }
+    },
+    "fire": {
+      "incendiaryFlameSeconds": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "GearSystem (pack 2, was Sim/Abilities/GearSystem.cs:846)" },
+      "incendiaryOtherSeconds": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "GearSystem (pack 2, was Sim/Abilities/GearSystem.cs:846)" },
+      "firestormShare": { "value": 0.1, "unit": "share", "kind": "khac", "linh_vuc": "01", "code": "GearSystem (pack 2, was Sim/Abilities/GearSystem.cs:847)" },
+      "firestormSpreadRadiusSqM": { "value": 36.0, "unit": "m2", "kind": "ban_kinh", "linh_vuc": "01", "code": "GearSystem (pack 2, was Sim/Abilities/GearSystem.cs:1256)" },
+      "firestormSpreadSeconds": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "GearSystem (pack 2, was Sim/Abilities/GearSystem.cs:1265)" }
+    },
+    "guidance": {
+      "baseFailChance": { "value": 0.02, "unit": "share", "kind": "xac_suat", "linh_vuc": "01", "code": "CombatSystem (pack 2, was Sim/Combat/CombatSystem.cs:1021)" },
+      "rangeFailCoeff": { "value": 0.08, "unit": "share", "kind": "xac_suat", "linh_vuc": "01", "code": "CombatSystem (pack 2, was Sim/Combat/CombatSystem.cs:1021)" }
     }
   },
   "vehicles": {
@@ -225,6 +236,61 @@
     },
     "baseSystem": {
       "lookEvery": { "value": 0.25, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "BaseSystem.LookEvery" }
+    },
+    "blastWall": {
+      "radiusM": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:270)" },
+      "cutShare": { "value": 0.3, "unit": "share", "kind": "khac", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:270)" },
+      "coneDeg": { "value": 50.0, "unit": "deg", "kind": "khac", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:271)" }
+    },
+    "fireControl": {
+      "radiusM": { "value": 30.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:282)" },
+      "damageShare": { "value": 0.12, "unit": "share", "kind": "khac", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:282)" },
+      "focus": { "value": 2.0, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:282)" }
+    },
+    "hangar": {
+      "everySeconds": { "value": 60.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:290)" },
+      "alive": { "value": 2, "unit": "count", "kind": "khac", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:290)" },
+      "postM": { "value": 20.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:291)" },
+      "budget": { "value": 0.0, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:291)" }
+    },
+    "searchlight": {
+      "radiusM": { "value": 35.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:309)" },
+      "dazzleShare": { "value": 0.2, "unit": "share", "kind": "khac", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:309)" }
+    },
+    "balloon": {
+      "radiusM": { "value": 40.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:314)" },
+      "scatterShare": { "value": 0.5, "unit": "share", "kind": "khac", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:314)" }
+    },
+    "sightJammer": {
+      "radiusM": { "value": 35.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:319)" },
+      "closeM": { "value": 15.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:319)" }
+    },
+    "shelter": {
+      "radiusM": { "value": 15.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:324)" },
+      "cutShare": { "value": 0.5, "unit": "share", "kind": "khac", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:324)" }
+    },
+    "flareTower": {
+      "everySeconds": { "value": 15.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:331)" },
+      "rangeM": { "value": 40.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:331)" },
+      "radiusM": { "value": 30.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:332)" },
+      "seconds": { "value": 15.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:332)" }
+    },
+    "microwave": {
+      "rangeM": { "value": 30.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:340)" },
+      "arcDeg": { "value": 60.0, "unit": "deg", "kind": "khac", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:340)" },
+      "cooldownSeconds": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:341)" }
+    },
+    "droneHunt": {
+      "reachM": { "value": 60.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:344)" }
+    },
+    "paradrop": {
+      "fallSeconds": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:350)" },
+      "heightM": { "value": 30.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:350)" },
+      "baseKeepOutM": { "value": 45.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:351)" }
+    },
+    "reconPass": {
+      "widthM": { "value": 60.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:357)" },
+      "seconds": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:357)" }
     }
   },
   "modes": {
