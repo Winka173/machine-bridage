@@ -8,17 +8,17 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| boss | 33 | 615,250 | 18,643 | monster (39,598) | 2,619 | 0 | 28 |
-| ground | 95 | 574,016 | 6,042 | main_battle_tank_hd (16,462) | 3,757 | 0 | 29 |
-| structure | 86 | 421,804 | 4,904 | headquarters (14,164) | 3,545 | 0 | 14 |
+| boss | 33 | 621,416 | 18,830 | monster (39,598) | 2,708 | 0 | 29 |
+| ground | 95 | 604,476 | 6,362 | main_battle_tank_hd (16,462) | 4,047 | 0 | 31 |
+| structure | 86 | 430,120 | 5,001 | headquarters (18,228) | 3,569 | 0 | 14 |
 | prop | 115 | 253,918 | 2,207 | apartment (6,128) | 1,540 | 0 | 2 |
-| air | 31 | 123,732 | 3,991 | fighter_jet_hd (14,216) | 873 | 0 | 17 |
+| air | 31 | 124,696 | 4,022 | fighter_jet_hd (14,216) | 896 | 0 | 17 |
 | unlisted | 33 | 107,254 | 3,250 | apc_hd (14,968) | 628 | 0 | 0 |
 | scenery | 96 | 40,708 | 424 | rubble_large (3,516) | 294 | 0 | 2 |
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 7,146 | 255 | fpv_drone (1,564) | 210 | 0 | 1 |
 
-All files: 2,164,078 triangles, 0 with errors, 94 more with warnings only.
+All files: 2,209,984 triangles, 0 with errors, 97 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -43,9 +43,10 @@ All files: 2,164,078 triangles, 0 with errors, 94 more with warnings only.
 | boss_s | triangles | 1 | 0 | - |
 | boss_s | vertices | 2 | 0 | - |
 | ground | movingParts | 3 | 0 | - |
-| ground | renderers | 4 | 0 | - |
-| ground | triangles | 22 | 0 | - |
-| ground | vertices | 25 | 0 | - |
+| ground | renderers | 6 | 0 | - |
+| ground | triangles | 23 | 0 | - |
+| ground | vertices | 27 | 0 | - |
+| helicopter | renderers | 1 | 0 | - |
 | jet | renderers | 5 | 0 | - |
 | jet | triangles | 1 | 0 | - |
 | jet | vertices | 1 | 0 | - |
@@ -55,9 +56,10 @@ All files: 2,164,078 triangles, 0 with errors, 94 more with warnings only.
 | scenery | renderers | 2 | 0 | - |
 | structure | movingParts | 1 | 0 | - |
 | structure | renderers | 6 | 0 | - |
+| tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-46 models over a budget, 0 of them over a hard cap.
+50 models over a budget, 0 of them over a hard cap.
 
 ## Error reasons (count of models)
 
