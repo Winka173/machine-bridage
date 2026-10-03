@@ -63,6 +63,9 @@ namespace MachineBrigade.Editor
             public string Slot;
             public int Tier;
             public bool Salvo;
+
+            /// <summary>The bomb-run fix, pass 4: a stick of bombs (EffectShots.Sticks: before / after the fix), not a gun.</summary>
+            public bool Stick;
         }
 
         /// <summary>A frame to take: when (on the rig's clock), where the camera looks, how much it shows, the file.</summary>
@@ -96,7 +99,7 @@ namespace MachineBrigade.Editor
             {
                 try
                 {
-                    var files = FxRender(catalog, job, output);
+                    var files = job.Stick ? FxStickRender(catalog, job, output) : FxRender(catalog, job, output);
                     entries.Add(FxIndexEntry(job, files));
                     Debug.Log($"[EffectShots] {job.Key}: {job.Weapon.Id} on {job.Carrier.Id}, {files.Count} frames");
                 }
@@ -111,6 +114,8 @@ namespace MachineBrigade.Editor
             index.Append("frames at fire +0 / 0.2 / 1 s and impact +0 / 0.5 / 2 / 10 / 30 s, a salvo for a multi-barrel gun; 1 m grid, ");
             index.Append("5 m lines darker; core ring red, edge ring orange; a main battle tank for scale.\",\n");
             index.Append("  \"failed\": [").Append(string.Join(", ", failed.Select(FxQuote))).Append("],\n");
+            // The bomb-run fix, pass 4: a run for some keys only (-mbFxIds) keeps the other keys' entries already in the index.
+            entries.AddRange(FxKeptEntries(Path.Combine(output, "index.json"), jobs.Select(j => j.Key)));
             index.Append("  \"jobs\": [\n").Append(string.Join(",\n", entries)).Append("\n  ]\n}\n");
             File.WriteAllText(Path.Combine(output, "index.json"), index.ToString(), new UTF8Encoding(false));
             Debug.Log($"[EffectShots] wrote {entries.Count} subjects to {output} ({failed.Count} failed)");
@@ -152,9 +157,12 @@ namespace MachineBrigade.Editor
                 var (def, slot) = carriers[w.Id];
                 jobs.Add(new FxJob { Key = w.Id, Weapon = w, Carrier = def, Slot = slot, Tier = Mathf.Max(0, TierFx.Of(w)), Salvo = w.Barrels > 1 });
             }
+            // The bomb-run fix, pass 4: the bomb sticks, before and after the fix (EffectShots.Sticks).
+            FxStickJobs(catalog, jobs);
             if (string.IsNullOrEmpty(only)) return jobs;
             var keep = new HashSet<string>(only.Split(',').Select(x => x.Trim()).Where(x => x.Length > 0), StringComparer.Ordinal);
-            return jobs.Where(j => keep.Contains(j.Key) || keep.Contains(j.Weapon.Id) || (keep.Contains("tiers") && j.Key.StartsWith("tier_T", StringComparison.Ordinal))).ToList();
+            return jobs.Where(j => keep.Contains(j.Key) || keep.Contains(j.Weapon.Id) || (keep.Contains("tiers") && j.Key.StartsWith("tier_T", StringComparison.Ordinal))
+                || (keep.Contains("sticks") && j.Stick)).ToList();
         }
 
         private static string FxQuote(string s) => "\"" + (s ?? "").Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
@@ -282,49 +290,7 @@ namespace MachineBrigade.Editor
                 // The salvo: every barrel's flash and every fall point in one frame, then their landings.
                 if (job.Salvo) FxSalvo(rig, job, models, catalog, root, salvoAt, events, captures, folder, grid, gridBold, coreRing, edgeRing);
 
-                camera = Camera(root);
-                camera.aspect = FxWidth / (float)FxHeight;
-                camera.farClipPlane = 400f;
-                camera.targetTexture = rt;
-                // The first render compiles the shaders (drawn magenta): thrown away.
-                camera.Render();
-                frame = new Texture2D(FxWidth, FxHeight, TextureFormat.RGB24, false);
-                var systems = root.GetComponentsInChildren<ParticleSystem>(true);
-                var end = captures.Count > 0 ? captures.Max(c => c.At) + FxStep : FxStart;
-                var time = 0f;
-                var nextEvent = 0;
-                var nextCapture = 0;
-                events.Sort((a, b) => a.at.CompareTo(b.at));
-                captures.Sort((a, b) => a.At.CompareTo(b.At));
-                while (time <= end)
-                {
-                    time += FxStep;
-                    var ran = false;
-                    // Events may add later ones (a T5 ring after the first): sort what is left each time one runs.
-                    while (nextEvent < events.Count && events[nextEvent].at <= time + 1e-4f)
-                    {
-                        events[nextEvent++].run(time);
-                        ran = true;
-                        if (nextEvent < events.Count) events.Sort(nextEvent, events.Count - nextEvent, Comparer<(float at, Action<float> run)>.Create((a, b) => a.at.CompareTo(b.at)));
-                    }
-                    if (ran) systems = root.GetComponentsInChildren<ParticleSystem>(true);
-                    rig.Tick(time, FxStep);
-                    foreach (var ps in systems) ps.Simulate(FxStep, false, false, false);
-                    while (nextCapture < captures.Count && captures[nextCapture].At <= time + 1e-4f)
-                    {
-                        var c = captures[nextCapture++];
-                        camera.orthographicSize = c.View;
-                        camera.transform.position = c.Focus - camera.transform.forward * 150f;
-                        rig.Debris.Draw(time);
-                        camera.Render();
-                        RenderTexture.active = rt;
-                        frame.ReadPixels(new Rect(0, 0, FxWidth, FxHeight), 0, 0);
-                        frame.Apply();
-                        RenderTexture.active = null;
-                        File.WriteAllBytes(c.File, frame.EncodeToPNG());
-                        written.Add(Path.GetFileName(c.File));
-                    }
-                }
+                FxShoot(rig, root, events, captures, rt, written, ref camera, ref frame);
             }
             finally
             {
@@ -341,6 +307,58 @@ namespace MachineBrigade.Editor
                 RenderSettings.fog = fog;
             }
             return written;
+        }
+
+        /// <summary>
+        /// Runs the rig's clock from 0 to the last capture: the events as they fall due, the effect systems stepped, each
+        /// capture rendered to its file (the first render is thrown away: it compiles the shaders).
+        /// </summary>
+        private static void FxShoot(FxRig rig, Transform root, List<(float at, Action<float> run)> events, List<FxCapture> captures,
+            RenderTexture rt, List<string> written, ref Camera camera, ref Texture2D frame)
+        {
+            camera = Camera(root);
+            camera.aspect = FxWidth / (float)FxHeight;
+            camera.farClipPlane = 400f;
+            camera.targetTexture = rt;
+            // The first render compiles the shaders (drawn magenta): thrown away.
+            camera.Render();
+            frame = new Texture2D(FxWidth, FxHeight, TextureFormat.RGB24, false);
+            var systems = root.GetComponentsInChildren<ParticleSystem>(true);
+            var end = captures.Count > 0 ? captures.Max(c => c.At) + FxStep : FxStart;
+            var time = 0f;
+            var nextEvent = 0;
+            var nextCapture = 0;
+            events.Sort((a, b) => a.at.CompareTo(b.at));
+            captures.Sort((a, b) => a.At.CompareTo(b.At));
+            while (time <= end)
+            {
+                time += FxStep;
+                var ran = false;
+                // Events may add later ones (a T5 ring after the first): sort what is left each time one runs.
+                while (nextEvent < events.Count && events[nextEvent].at <= time + 1e-4f)
+                {
+                    events[nextEvent++].run(time);
+                    ran = true;
+                    if (nextEvent < events.Count) events.Sort(nextEvent, events.Count - nextEvent, Comparer<(float at, Action<float> run)>.Create((a, b) => a.at.CompareTo(b.at)));
+                }
+                if (ran) systems = root.GetComponentsInChildren<ParticleSystem>(true);
+                rig.Tick(time, FxStep);
+                foreach (var ps in systems) ps.Simulate(FxStep, false, false, false);
+                while (nextCapture < captures.Count && captures[nextCapture].At <= time + 1e-4f)
+                {
+                    var c = captures[nextCapture++];
+                    camera.orthographicSize = c.View;
+                    camera.transform.position = c.Focus - camera.transform.forward * 150f;
+                    rig.Debris.Draw(time);
+                    camera.Render();
+                    RenderTexture.active = rt;
+                    frame.ReadPixels(new Rect(0, 0, FxWidth, FxHeight), 0, 0);
+                    frame.Apply();
+                    RenderTexture.active = null;
+                    File.WriteAllBytes(c.File, frame.EncodeToPNG());
+                    written.Add(Path.GetFileName(c.File));
+                }
+            }
         }
 
         // ------------------------------------------------------------------------------------------------ the gun

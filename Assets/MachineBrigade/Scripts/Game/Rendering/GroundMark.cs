@@ -21,6 +21,13 @@ namespace MachineBrigade.Game.Rendering
 
             /// <summary>Fix prompt L5: a warning ring (a thin edge, a faint fill heavier toward the middle, the time left round the edge).</summary>
             Warning = 5,
+
+            /// <summary>
+            /// The bomb-run fix, pass 3: a stick's warning rectangle (STICK_RECT): a thin edge, a faint fill heavier toward its
+            /// long middle line and the flight line dashed along it. The quad is scaled to the rectangle (x: half its width, z:
+            /// half its length, its local z along the stick).
+            /// </summary>
+            WarningRect = 6,
         }
 
         private static readonly int ColorId = Shader.PropertyToID("_Color");

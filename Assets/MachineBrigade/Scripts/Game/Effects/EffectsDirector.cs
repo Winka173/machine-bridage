@@ -90,10 +90,12 @@ namespace MachineBrigade.Game.Effects
         private readonly ImpactSmoke _smoke;
 
         /// <summary>Fix prompt L6: a blast's lingering smoke at its distance's detail (on screen, or a big column near it).</summary>
-        private void Linger(int band, Vector3 at, float core, float now)
+        /// <param name="stick">The bombs of the stick it is one of (0: none); the bomb-run fix, pass 3: a long stick's far
+        /// bombs linger lighter (<see cref="TierFx.StickDetail"/>).</param>
+        private void Linger(int band, Vector3 at, float core, float now, int stick = 0)
         {
             if (!_cull.Visible(at, band >= 4 ? 1.2f : 0.4f)) return;
-            _smoke.Linger(band, at, core, now, TierFx.DetailAt(Vector3.Distance(at, _camera.Focus), _camera.Zoom));
+            _smoke.Linger(band, at, core, now, StickDetailAt(at, stick));
         }
         private readonly WeaponEffects _weapons;
         private readonly LaserBeams _lasers;
@@ -181,6 +183,8 @@ namespace MachineBrigade.Game.Effects
             _smoke = new ImpactSmoke(_root);
             // Fix prompt L5: one gate decides which warning rings are drawn (data warningRules).
             InitWarningGate();
+            // The bomb-run fix, pass 3: the sticks being laid, their warning rectangles and the bay doors.
+            InitSticks(materials, meshes);
             _aimLines = new AimLines(materials, _root);
             _drops = new AirDrops(catalog, models, meshes, materials, _emitters, _root);
             _ingress = new IngressStandIns(catalog, models, _root);
@@ -278,17 +282,19 @@ namespace MachineBrigade.Game.Effects
                         }
                         var impact = Ground(e.Position, 0.15f);
                         var size = round?.ImpactScale ?? 1f;
+                        // The bomb-run fix, pass 3: a stick's bomb (its warning section goes now; its far blasts drawn lighter).
+                        var chain = StickLanded(round, impact, now);
                         // A gun's shell never flashes the screen, however big: only strikes and blasts do.
                         // Play-test 5 (DECISIONS 20V): drones, missiles, rockets, shells and the gun turret's rounds by BlastSizes.Round.
                         // Prompt 25 A5: every blast's ring on its damage radius (e.Value, the round's splash radius).
-                        if (!ImpactOfKind(round, e, impact, now, size)) Explode(e.Tier, impact, now, size, flash: false, grow: BlastSizes.Round(round), radius: e.Value);
+                        if (!ImpactOfKind(round, e, impact, now, size, chain)) Explode(e.Tier, impact, now, size, flash: false, grow: BlastSizes.Round(round), radius: e.Value);
                         // Prompt 26 B.3: a two-layer blast shows its edge too, a second ring on the edge's radius beyond the core's.
                         EdgeRing(impact, e.Value, e.Target.X);
                         // Prompt 34 L5: its tier's redrawn blast on top, the exact shockwave rings, the shake.
-                        TierImpact(TierFx.Of(round), impact, e.Value, e.Target.X, now, views);
+                        TierImpact(TierFx.Of(round), impact, e.Value, e.Target.X, now, views, chain);
                         // Fix prompt L6: the smoke and dust it leaves, as long as its size band says (EffectLife).
                         var band = EffectLife.BandOf(round, e.Tier);
-                        Linger(band, impact, e.Value, now);
+                        Linger(band, impact, e.Value, now, chain);
                         // Every blast from Medium up scorches the ground under it, as wide as it is drawn, for its band's time.
                         if (e.Tier >= ExplosionTier.Medium)
                             _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size * BlastSizes.Ground(round) * BlastSizes.Round(round),
@@ -665,6 +671,9 @@ namespace MachineBrigade.Game.Effects
                 if (shooter != null && e.Kind == SimEventKind.WeaponFired && shooter.Sim.Def.Bombard is { PierceMax: > 0 } pierce &&
                     e.DefId != null && e.DefId == pierce.Weapon && e.Value > 0.2f)
                     _aimLines.Show(Ground(e.Position, 0.6f), Ground(e.Target, 0.6f), e.Value, now);
+                // The bomb-run fix, pass 3: a stick's bomb goes on its run (every bomb, drawn or not, so the stick keeps its count);
+                // a STICK_RECT stick warns with one rectangle, not a ring per bomb.
+                var stickWarned = StickFired(e, shooter, views, now);
                 // Shots entirely off screen are not drawn (the sound still plays).
                 if (!_cull.Visible(Ground(e.Position, 1f), 0.15f) && !_cull.Visible(Ground(e.Target, 1f), 0.15f)) continue;
                 // Prompt 34 L4: a simultaneous volley's barrels flash one after another, BarrelGap apart.
@@ -675,10 +684,10 @@ namespace MachineBrigade.Game.Effects
                 // not only a boss) warns by escape time, its edge and its core, for its whole warning. Nothing of ours, and no
                 // small or medium shell (prompt 26 B.4's 0.8 s ring on a boss's 5 m shells is gone).
                 if (shooter != null && shooter.Sim.Team != views.PlayerTeam && e.Kind == SimEventKind.WeaponFired && e.DefId != null &&
-                    _catalog.Weapons.TryGetValue(e.DefId, out var big) && !big.Laid)
+                    !stickWarned && _catalog.Weapons.TryGetValue(e.DefId, out var big) && !big.Laid)
                     EscapeRing(e, shooter, big, now);
                 // Prompt 34 L8: a preview shows every blast round of its unit landing inside its ring, at the round's real size.
-                if (PreviewRings && shooter != null && e.Kind == SimEventKind.WeaponFired && shooter.Sim.Team == 0 && e.DefId != null &&
+                if (PreviewRings && !stickWarned && shooter != null && e.Kind == SimEventKind.WeaponFired && shooter.Sim.Team == 0 && e.DefId != null &&
                     _catalog.Weapons.TryGetValue(e.DefId, out var shown))
                     PreviewRing(e, shooter, shown, now);
                 // At night the flash lights the ground at the muzzle.
@@ -738,6 +747,8 @@ namespace MachineBrigade.Game.Effects
             _strikes.Tick(now);
             _bigZones.Tick(views, now);
             _escape.Tick(now);
+            // The bomb-run fix, pass 3: the sticks' rectangles (offered to the gate before it resolves) and the bay doors.
+            TickSticks(views, now);
             // Fix prompt L6: the lingering smoke columns and the craters' lives.
             _smoke.Tick(now);
             _decals.Tick(now);
@@ -1223,7 +1234,7 @@ namespace MachineBrigade.Game.Effects
         /// explosive shell throws up earth and black smoke; a mortar bomb a round dust dome;
         /// thermobaric fuel ignites a second, bigger fireball; a bomb a shock ring and a column.
         /// </summary>
-        private bool ImpactOfKind(WeaponDef round, in SimEvent e, Vector3 impact, float now, float size)
+        private bool ImpactOfKind(WeaponDef round, in SimEvent e, Vector3 impact, float now, float size, int chain = 0)
         {
             if (round == null || !_cull.Visible(impact, 0.3f)) return false;
             var from = new Vector3(e.Position.X, 0f, e.Position.Y);
@@ -1325,7 +1336,15 @@ namespace MachineBrigade.Game.Effects
                     // (prompt 25 A5: it was twice it).
                     bomb *= BlastSizes.Bigger;
                     Ring(impact, e.Value > 0f ? BlastSizes.RingQuad(e.Value) : 6f * 3f * bomb, new Color(1.2f, 1.1f, 0.9f, 0.7f));
-                    for (var i = 0; i < 3; i++)
+                    // The bomb-run fix, pass 3: a long stick's far bombs raise fewer smoke puffs (their blast and ring as ever), so
+                    // the stick reads as a chain of blasts, not one wall of smoke.
+                    var puffs = chain <= 0 ? 3 : StickDetailAt(impact, chain) switch
+                    {
+                        TierFx.Detail.Full => 3,
+                        TierFx.Detail.Reduced => 2,
+                        _ => 1,
+                    };
+                    for (var i = 0; i < puffs; i++)
                         _emitters.DamageSmoke(impact + (Vector3.up * (1.5f + i * 1.5f) + UnityEngine.Random.insideUnitSphere) * bomb,
                             Mathf.Max(2.5f, e.Value * 0.6f) * Mathf.Pow(bomb, 0.65f), 0.3f);
                     return true;

@@ -398,20 +398,20 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: mua ngay khi địch đưa bất cứ thứ gì lên trời; nó dọn sạch bầu trời cho máy bay của ta."),
             ["guide.attack_jet"] = (
                 "[[Attack jet]] · armoured · not a fighter\n" +
-                "How it fights: [[strafing runs]] with its 30 mm cannon, 80 mm rocket pods and 250 kg [[bombs]], and two Kh-29 [[anti-tank missiles]] from 40 m; two R-60s only for self-defence against aircraft; [[flares]].\n" +
+                "How it fights: [[strafing runs]] with its 30 mm cannon, 80 mm rocket pods and 250 kg [[bombs]] ({{stick}}), and two Kh-29 [[anti-tank missiles]] from 40 m; two R-60s only for self-defence against aircraft; [[flares]].\n" +
                 "Strong / weak: smashes light vehicles, tanks, heavy tanks, artillery and [[towers]], and takes more hits than other jets; AA vehicles, SAMs and enemy fighters still bring it down.\n" +
                 "Tip: send it at the enemy's armour push once their AA is thinned out; to clear the sky buy a fighter.",
                 "[[Máy bay cường kích]] · bọc giáp · không phải tiêm kích\n" +
-                "Cách đánh: bổ nhào [[càn quét]] bằng pháo 30 mm, giàn rốc-két 80 mm và [[bom]] 250 kg, kèm hai [[tên lửa chống tăng]] Kh-29 từ 40 m; hai R-60 chỉ để tự vệ trước máy bay; có [[mồi nhiệt]].\n" +
+                "Cách đánh: bổ nhào [[càn quét]] bằng pháo 30 mm, giàn rốc-két 80 mm và [[bom]] 250 kg ({{stick}}), kèm hai [[tên lửa chống tăng]] Kh-29 từ 40 m; hai R-60 chỉ để tự vệ trước máy bay; có [[mồi nhiệt]].\n" +
                 "Mạnh / yếu: đập nát xe nhẹ, xe tăng, tăng nặng, pháo binh và [[công sự]], chịu đòn tốt hơn máy bay khác; xe phòng không, tên lửa phòng không và tiêm kích địch vẫn hạ được.\n" +
                 "Mẹo: tung vào mũi thiết giáp địch khi phòng không của chúng đã thưa; muốn giành bầu trời hãy mua tiêm kích."),
             ["guide.heavy_bomber"] = (
                 "[[Strategic bomber]] · flying · carpet of bombs\n" +
-                "How it fights: flies over and lays a line of twelve heavy [[bombs]]; fires [[cruise missiles]] from 110 m; tail guns shoot at aircraft.\n" +
+                "How it fights: flies over and lays a stick of heavy [[bombs]] along its track ({{stick}}); fires [[cruise missiles]] from 110 m; tail guns shoot at aircraft.\n" +
                 "Strong / weak: flattens [[towers]], artillery and groups of light vehicles; SAMs and fighters are its danger.\n" +
                 "Tip: send it at enemy defences and gun lines once your fighters or AA have cleared the sky.",
                 "[[Oanh tạc cơ chiến lược]] · bay · rải thảm bom\n" +
-                "Cách đánh: bay qua và thả một hàng 12 quả [[bom]] nặng; phóng [[tên lửa hành trình]] từ 110 m; súng đuôi bắn máy bay.\n" +
+                "Cách đánh: bay qua và rải một dải [[bom]] nặng dọc đường bay ({{stick}}); phóng [[tên lửa hành trình]] từ 110 m; súng đuôi bắn máy bay.\n" +
                 "Mạnh / yếu: san phẳng [[công sự]], pháo binh và cụm xe nhẹ; sợ tên lửa phòng không và tiêm kích.\n" +
                 "Mẹo: tung vào công sự và trận địa pháo địch sau khi tiêm kích hoặc phòng không ta đã dọn sạch bầu trời."),
             ["guide.stealth_bomber"] = (
@@ -518,11 +518,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: thấy vòng vàng thì dàn xe tăng ra, tung xe bọc thép hoặc trực thăng lao thẳng vào nó."),
             ["guide.elite_attack_jet"] = (
                 "[[Elite attack jet]] · enemy only · long-lasting flares\n" +
-                "How it fights: the attack jet's cannon, rockets and bombs, with 60% more health; its [[flares]] come back every 14 s and last twice as long.\n" +
+                "How it fights: the attack jet's cannon, rockets and bombs ({{stick}}), with 60% more health; its [[flares]] come back every 14 s and last twice as long.\n" +
                 "Strong / weak: guts ground columns and towers; flak guns ignore flares, and fighters catch it.\n" +
                 "Tip: missiles struggle against it: answer with [[flak]] (AA vehicle, Tunguska) or a fighter.",
                 "[[Cường kích tinh nhuệ]] · chỉ phe địch · mồi nhiệt bền\n" +
-                "Cách đánh: pháo, rốc-két và bom như máy bay cường kích, máu nhiều hơn 60%; [[mồi nhiệt]] 14 giây lại có và kéo dài gấp đôi.\n" +
+                "Cách đánh: pháo, rốc-két và bom như máy bay cường kích ({{stick}}), máu nhiều hơn 60%; [[mồi nhiệt]] 14 giây lại có và kéo dài gấp đôi.\n" +
                 "Mạnh / yếu: xé nát đoàn xe mặt đất và tháp canh; pháo cao xạ không bị mồi nhiệt lừa, tiêm kích đuổi kịp nó.\n" +
                 "Mẹo: tên lửa khó hạ nó: đáp trả bằng [[cao xạ]] (xe phòng không, Tunguska) hoặc tiêm kích."),
             ["guide.elite_long_sam"] = (

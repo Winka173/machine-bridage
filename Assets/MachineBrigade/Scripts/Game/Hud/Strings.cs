@@ -2880,8 +2880,8 @@ namespace MachineBrigade.Game.Hud
             DialogueText.Table.TryGetValue(key, out text) || EventText.Table.TryGetValue(key, out text) || TacticText.Table.TryGetValue(key, out text) ||
             BaseText.Table.TryGetValue(key, out text) ||
             (key.StartsWith("script.", System.StringComparison.Ordinal) && ScriptText.TryGet(key, out text))
-                // A support card's numbers come from its data (the balance pass after prompt 18, C.3); proper names come from NameText.
-                ? NameText.Expand(SupportLines.Fill(key, Vietnamese ? text.vi : text.en)) : key;
+                // A support card's numbers come from its data (the balance pass after prompt 18, C.3); proper names come from NameText; an aircraft's stick of bombs from its weapon's data (StickLines, the bomb-run fix).
+                ? NameText.Expand(StickLines.Fill(key, SupportLines.Fill(key, Vietnamese ? text.vi : text.en), Vietnamese)) : key;
 
         /// <summary>A text with one named placeholder ("{count} xe"): the value fills it.</summary>
         public static string Format(string key, object value) => Fill(Get(key), null, value);

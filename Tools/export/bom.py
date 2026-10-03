@@ -586,6 +586,43 @@ def vung_rows(stage: str, trace: list[dict], mirror: list[dict], unit_pairs) -> 
     return rows
 
 
+AFTER = "Docs/export/bom_2026-10-03/vet_tha_unity.csv"  # the Unity trace after pass 2 (the fix): "after"
+COMPARE_FORMATIONS = ("HANG_DOC_8M", "CUM_8M")  # the spec's two standard formations: a row along the track, a cluster
+
+
+def compare_rows(before: list[dict], after: list[dict]) -> tuple[list[str], list[list]]:
+    """The bomb-run fix, pass 4: per weapon and carrier, the three-seed means BEFORE (the pass 0 trace) and AFTER (the fix's
+    Unity trace): distinct impact points (impacts closer than SAME_POINT_M count as one), the stick's length along the track,
+    and the vehicles hit (core or edge) in the two standard formations (5 in a row along the track 8 m apart; 5 in an 8 m
+    cluster), centred on the aim. Read by the design document (Tools/docs/bomb_run.py) and Docs/fixes/report_bomb_run.md."""
+    def stage(trace):
+        out: dict[tuple, dict[str, list]] = {}
+        for (wid, uid, _seed), bombs in drops(trace).items():
+            st = drop_stats(bombs)
+            acc = out.setdefault((wid, uid), {})
+            acc.setdefault("so_bom", []).append(st["so_bom"])
+            acc.setdefault("diem", []).append(st["so_diem_roi_khac_nhau"])
+            acc.setdefault("dai", []).append(st["do_dai_dai_m"])
+        for r in vung_rows("X", trace, [], []):
+            if r[5] in COMPARE_FORMATIONS and isinstance(r[10], (int, float)):
+                out.setdefault((r[2], r[3]), {}).setdefault(r[5], []).append(r[10])
+        return {k: {n: sum(v) / len(v) for n, v in d.items() if v} for k, d in out.items()}
+
+    b, a = stage(before), stage(after)
+    header = ["vu_khi_id", "don_vi_id", "so_bom", "diem_roi_truoc", "diem_roi_sau", "do_dai_dai_truoc_m", "do_dai_dai_sau_m"]
+    for f in COMPARE_FORMATIONS:
+        header += [f"xe_trung_{f.lower()}_truoc", f"xe_trung_{f.lower()}_sau"]
+    rows = []
+    for key in sorted(set(b) | set(a)):
+        x, y = b.get(key, {}), a.get(key, {})
+        row = [key[0], key[1], r3(y.get("so_bom", x.get("so_bom", 0))), r3(x.get("diem", 0)) if x else "", r3(y.get("diem", 0)) if y else "",
+               r3(x.get("dai", 0)) if x else "", r3(y.get("dai", 0)) if y else ""]
+        for f in COMPARE_FORMATIONS:
+            row += [r3(x[f]) if f in x else "", r3(y[f]) if f in y else ""]
+        rows.append(row)
+    return header, rows
+
+
 def before_after(sheets) -> tuple[list[str], list[list]]:
     """Per weapon and carrier, the three-seed mean of each formation's hits, BEFORE against AFTER (Bom_ket_qua_vung)."""
     h, rows = sheets["Bom_ket_qua_vung"]

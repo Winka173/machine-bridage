@@ -88,6 +88,13 @@ namespace MachineBrigade.Game.Audio
 
             /// <summary>Prompt 34 L6: what this sound counts for when the voices run out (<see cref="SoundPriority"/>, 1-7).</summary>
             public int Priority;
+
+            /// <summary>
+            /// The bomb-run fix, pass 3: the stick this blast is one of (0: none), and when it was choked (the next bomb of its
+            /// stick took over its tail; below 0: not choked).
+            /// </summary>
+            public int Run;
+            public float Choke = -1f;
         }
 
         private const int Voices = 32;
@@ -134,7 +141,7 @@ namespace MachineBrigade.Game.Audio
         private readonly Dictionary<string, AudioClip> _superCues = new();
         private readonly Dictionary<Sound, Bank> _banks = new();
         private readonly List<AudioClip> _owned = new();
-        private readonly List<(float at, Bank bank, System.Numerics.Vector2 where, float volume, int priority)> _delayed = new();
+        private readonly List<(float at, Bank bank, System.Numerics.Vector2 where, float volume, int priority, int run)> _delayed = new();
         private readonly List<(Vector3 at, float until)> _fires = new();
         private readonly System.Random _rng = new(5);
         private float _duckUntil;
@@ -328,8 +335,12 @@ namespace MachineBrigade.Game.Audio
                 {
                     case SimEventKind.WeaponFired:
                         var weapon = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var w) ? w : null;
-                        // Bombs are released silently; the blast is the sound.
-                        if (weapon != null && weapon.Projectile == ProjectileKind.Bomb) break;
+                        // Bombs are released silently; the blast is the sound (the bomb-run fix, pass 3: a stick whistles down once).
+                        if (weapon != null && weapon.Projectile == ProjectileKind.Bomb)
+                        {
+                            StickWhistle(e, weapon);
+                            break;
+                        }
                         if (weapon != null && weapon.Beam)
                         {
                             Beam(weapon, e.Position);
@@ -504,7 +515,7 @@ namespace MachineBrigade.Game.Audio
                 var d = _delayed[i];
                 if (now < d.at) continue;
                 _delayed.RemoveAt(i);
-                Start(d.bank, d.where, d.volume, 0f, d.priority);
+                Start(d.bank, d.where, d.volume, 0f, d.priority, 1f, d.run);
             }
             for (var i = _scheduled.Count - 1; i >= 0; i--)
             {
@@ -518,7 +529,7 @@ namespace MachineBrigade.Game.Audio
             Compress(Time.unscaledDeltaTime);
             var duck = Duck(now);
             foreach (var v in _voices)
-                if (v.Bank != null && v.Source.isPlaying) v.Source.volume = v.Level * (v.Bank.Light ? duck : 1f) * _busGain;
+                if (v.Bank != null && v.Source.isPlaying) v.Source.volume = v.Level * (v.Bank.Light ? duck : 1f) * _busGain * Choked(v, now);
         }
 
         /// <summary>Prompt 34 L9: the voices playing now, of 32 (the stress scene's count).</summary>
@@ -634,7 +645,8 @@ namespace MachineBrigade.Game.Audio
         /// Plays a bank's next clip at <paramref name="at"/>: through its cooldown, its reach and (far off, for big blasts)
         /// the speed of sound. <paramref name="priority"/> is the 7-step priority it plays at (-1: the bank's own).
         /// </summary>
-        private void Play(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority, float pitch = 1f)
+        /// <param name="run">The bomb-run fix, pass 3: the stick the sound is a blast of (0: none; see AudioDirector.Sticks).</param>
+        private void Play(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority, float pitch = 1f, int run = 0)
         {
             if (_ranging) volume *= RangeGain;
             var now = Time.unscaledTime;
@@ -644,11 +656,11 @@ namespace MachineBrigade.Game.Audio
             bank.LastPlayed = now;
             // Big blasts far off arrive a moment after the flash (capped: a few tenths at most).
             var delay = bank.Delayed ? Mathf.Min(0.3f, Mathf.Max(0f, distance - 30f) / SpeedOfSound) : 0f;
-            if (delay > 0.02f) _delayed.Add((now + delay, bank, at, volume, priority));
-            else Start(bank, at, volume, reachBonus, priority, pitch);
+            if (delay > 0.02f) _delayed.Add((now + delay, bank, at, volume, priority, run));
+            else Start(bank, at, volume, reachBonus, priority, pitch, run);
         }
 
-        private void Start(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority, float pitch = 1f)
+        private void Start(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority, float pitch = 1f, int run = 0)
         {
             var now = Time.unscaledTime;
             var world = new Vector3(at.X, 0f, at.Y);
@@ -669,6 +681,8 @@ namespace MachineBrigade.Game.Audio
             if (voice == null) return;
             if (priority >= SoundPriority.NearBlast) _duckUntil = now + 0.35f;
             voice.Priority = priority;
+            voice.Run = run;
+            voice.Choke = -1f;
             voice.Bank = bank;
             voice.Level = level;
             voice.Started = now;

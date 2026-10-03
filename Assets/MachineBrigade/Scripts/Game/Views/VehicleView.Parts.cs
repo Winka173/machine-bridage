@@ -30,6 +30,8 @@ namespace MachineBrigade.Game.Views
                 }
             InitBossParts(models, meshes, materials);
             EliteRepaint(materials);
+            // The bomb-run fix, pass 3: the bay doors on their hinges (VehicleView.BayDoors.cs).
+            InitBayDoors();
         }
 
         /// <summary>
@@ -76,6 +78,7 @@ namespace MachineBrigade.Game.Views
                 _blade.localRotation = _bladeRest * Quaternion.Euler(pitch, 0f, 0f);
             }
             AnimateBossParts();
+            AnimateBayDoors();
         }
 
         // Filled in by the boss parts (see InitBossParts / AnimateBossParts below).

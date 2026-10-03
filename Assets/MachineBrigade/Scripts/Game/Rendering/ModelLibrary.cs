@@ -166,6 +166,13 @@ namespace MachineBrigade.Game.Rendering
         internal static readonly Regex PartPattern = new(@"^Part_[a-z]+(\.\d+)?$", RegexOptions.IgnoreCase);
 
         /// <summary>
+        /// The bomb-run fix, pass 3 (DECISIONS "Ném bom rải thảm"): a bomber's bay doors on their hinge pivots
+        /// (Part_bay_door_L / _R, prompt 35 wave 10: heavy_bomber, command_airship), each its own rigid group so
+        /// VehicleView.BayDoors can swing it open. PartPattern does not take them (underscores in the name).
+        /// </summary>
+        internal static readonly Regex BayDoorPattern = new(@"^Part_bay_door_[LR](\.\d+)?$");
+
+        /// <summary>
         /// Play-test 4 (DECISIONS 19R): the bunker vehicle's digging-in parts (Deploy_blade, Deploy_plate_l, Deploy_berm
         /// ...), each its own rigid group so VehicleView.Deploy can swing, raise or grow it at every detail level.
         /// </summary>
@@ -1288,7 +1295,7 @@ namespace MachineBrigade.Game.Rendering
         {
             var name = t.name;
             if (TurretPattern.IsMatch(name) || MountPattern.IsMatch(name) || LoosePattern.IsMatch(name) || PartPattern.IsMatch(name) ||
-                DeployPattern.IsMatch(name)) return true;
+                DeployPattern.IsMatch(name) || BayDoorPattern.IsMatch(name)) return true;
             if (name == ElevationName && t.parent != null && TurretPattern.IsMatch(t.parent.name)) return true;
             if (RecoilPattern.IsMatch(name) && t.parent != null &&
                 (TurretPattern.IsMatch(t.parent.name) || t.parent.name == ElevationName)) return true;

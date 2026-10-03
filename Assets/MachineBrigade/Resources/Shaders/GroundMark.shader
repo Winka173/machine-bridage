@@ -5,7 +5,8 @@
 // from a MaterialPropertyBlock:
 //   _Color   main colour (HDR glows through bloom)
 //   _Accent  second colour (capture progress, strike fill)
-//   _Params  x: style (0 objective, 1 strike, 2 selection, 3 move marker, 4 aircraft ring, 5 warning ring)
+//   _Params  x: style (0 objective, 1 strike, 2 selection, 3 move marker, 4 aircraft ring, 5 warning ring,
+//            6 stick warning rectangle: the quad scaled to the rectangle, its edge drawn in screen pixels)
 //            y: progress 0..1 (capture, time to impact)
 //            z: pulse 0..1 (contested point, imminent strike)
 //            w: seed (desynchronises animation between marks)
@@ -130,6 +131,24 @@ Shader "MachineBrigade/GroundMark"
                     half sweep = saturate((progress - turn) / aaTurn + 0.5) * step(r, 0.9) * 0.22;
                     colour = lerp(_Color.rgb, _Accent.rgb, sweep > 0.01 ? 0.35 : 0.0) * beat;
                     alpha = saturate(rim + dashes * 0.85 + crosshair * 0.8 + centreDot + sweep) * step(r, 1.0);
+                }
+                else if (style > 5.5)
+                {
+                    // The bomb-run fix, pass 3: a stick's warning rectangle (STICK_RECT). The quad is stretched to the
+                    // rectangle, so the edge is measured in screen pixels on each axis (a thin line at any size and zoom); a
+                    // faint fill heavier toward the long middle line; the flight line dashed down the middle, running the
+                    // way the bombs walk. _Color.a fades it in, _Accent.a sets the fill.
+                    float2 q = abs(p);
+                    float2 px = max(fwidth(p), float2(1e-5, 1e-5));
+                    float inside = min((1.0 - q.x) / px.x, (1.0 - q.y) / px.y);
+                    half cover = (half)saturate(inside + 0.5);
+                    half rim = (half)saturate(2.6 - inside) * cover;
+                    half fill = (half)(0.07 + 0.11 * saturate(1.0 - q.x)) * cover;
+                    half line = (half)saturate(1.4 - q.x / px.x) * step(q.y, 0.97);
+                    half dash = (half)step(frac(p.y / (px.y * 28.0) - time * 1.2), 0.55);
+                    half beat = 1.0 + pulse * 0.25 * sin(time * 14.0);
+                    colour = lerp(_Color.rgb, _Accent.rgb, saturate(fill * 2.0)) * beat;
+                    alpha = saturate(rim + line * dash * 0.55 + fill * _Accent.a);
                 }
                 else if (style > 4.5)
                 {

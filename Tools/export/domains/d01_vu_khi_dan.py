@@ -118,6 +118,62 @@ def real_rates():
     return []
 
 
+BOM_STICK_COLS = [
+    # (column, stick key, unit, meaning): the bomb-run fix's stick parameters (weapons[*].stick); the full set is in the bomb export
+    ("che_do_tha", "mode", "", "POINT / STICK / PATTERN"),
+    ("cach_tha", "drop", "", "OVERFLY (bay qua, bom rơi tự do) / BAY (khoang bom boss, dải đặt quanh điểm nhắm)"),
+    ("so_bom_dai_n", "bombs", "", "số bom một lượt (n)"),
+    ("khoang_cach_giua_bom_m", "spacing", "m", "spacing = 1,1 × lõi"),
+    ("do_dai_dai_m", "length", "m", "(n − 1) × spacing"),
+    ("chu_ky_tha_giua_bom_s", "interval", "s", "spacing / tốc độ lúc thả"),
+    ("ty_le_chong_lan", "overlap", "", "lõi / spacing (0,8–1,2)"),
+    ("do_rong_dai_m", "width", "m", "2 × rìa + 2 × lệch ngang"),
+    ("canh_bao_dang", "warnShape", "", "NONE / RING / STICK_RECT"),
+]
+
+
+def _bom_link(ctx, book, res, users):
+    """The bomb-run fix, pass 4: file 01 links the bomb export (Docs/export/bom_<date>/, `export.py bom`: the six Bom_* sheets,
+    the drop trace before / after) with one row per bomb weapon: its main stick numbers and the card's words. The values are
+    the stick block's (already mapped by the Vu_khi columns: nothing is marked twice here)."""
+    folders = sorted(p for p in (ROOT / "Docs" / "export").glob("bom_*") if p.is_dir())
+    where = folders[-1].relative_to(ROOT).as_posix() if folders else "Docs/export/bom_<ngay>"
+    stem = f"Machine_Brigade_Bom_{where.rsplit('bom_', 1)[-1]}"
+    sh = book.sheet("Bom_rai_tham", "Ném bom rải thảm (liên kết)",
+                    f"Mỗi vũ khí thả bom một dòng: tham số dải chính (weapons[*].stick) và câu thẻ; bảng đủ (Bom_vu_khi, Bom_don_vi, "
+                    f"Bom_hanh_vi, Bom_vet_tha, Bom_canh_bao, Bom_ket_qua_vung) ở {where}/{stem}.xlsx và .md")
+    sh.col("vu_khi_id", meaning="vũ khí (Vu_khi)", fk=["01_vu_khi_dan/Vu_khi"])
+    for col, _key, unit, meaning in BOM_STICK_COLS:
+        sh.col(col, unit=unit, meaning=meaning)
+    sh.col("mang_boi", meaning="id đơn vị mang (ngăn ';')", kind="text")
+    sh.col("the_vi", meaning="câu thẻ máy bay sinh từ dữ liệu (StickLines.Words, tiếng Việt)", kind="text")
+    sh.col("the_en", meaning="câu thẻ máy bay sinh từ dữ liệu (StickLines.Words, tiếng Anh)", kind="text")
+    sh.col("bang_day_du", meaning="file của bản xuất ném bom (đủ cột, vết thả trước / sau)", kind="text")
+    for wid in sorted(res):
+        stick = res[wid].get("stick")
+        if not isinstance(stick, dict):
+            continue
+        r = sh.row(wid, f"{B.BALANCE}: weapons[{wid}].stick (giá trị game sau inherits); bản đủ: {where}/")
+        r.set("vu_khi_id", wid)
+        for col, key, _unit, _meaning in BOM_STICK_COLS:
+            r.set(col, stick.get(key, ""))
+        r.set("mang_boi", ";".join(sorted({u[1] for u in users.get(wid, [])})))
+        n, spacing = int(stick.get("bombs") or 0), float(stick.get("spacing") or 0)
+        laid = stick.get("mode") == "STICK" and n > 1
+        r.set("the_vi", _card(n, spacing, True) if laid else "")
+        r.set("the_en", _card(n, spacing, False) if laid else "")
+        r.set("bang_day_du", f"{where}/{stem}.xlsx; {where}/{stem}.md; {where}/BOM_REPORT.md")
+
+
+def _card(n: int, spacing: float, vietnamese: bool) -> str:
+    """StickLines.Words (Game/Hud/StickLines.cs): "thả N quả, cách nhau X m, dải Y m" / "N bombs X m apart, a Y m stick"."""
+    def f(v: float) -> str:
+        t = f"{v:.0f}" if v >= 10 or abs(v - round(v)) < 0.05 else f"{v:.1f}"
+        return t.replace(".", ",") if vietnamese else t
+    length = max(0, n - 1) * spacing
+    return f"thả {n} quả, cách nhau {f(spacing)} m, dải {f(length)} m" if vietnamese else f"{n} bombs {f(spacing)} m apart, a {f(length)} m stick"
+
+
 def build(ctx):
     book = ctx.book(FILE_ID, TITLE, DESC)
     d = B.bal(ctx)
@@ -401,6 +457,7 @@ def build(ctx):
                  units={"gunMinMm": "mm", "bombMinKg": "kg", "rocketMinMm": "mm", "floorT4": "s", "floor406": "s",
                         "floorT5": "s", "base": "s", "escapeSpeed": "m/s", "cap": "s", "maxShown": "",
                         "salvoMergeSeconds": "s", "fadeIn": "s"})
+    _bom_link(ctx, book, res, users)
     _b01.build(ctx, book, d, res, tiers, warn_rules)
     _unit_settle.apply(book)
     ctx.note("01_canh_bao", "Canh_bao_vong.cap đọc là giây (trần thời gian cảnh báo) và base là giây: suy từ tên khóa; "

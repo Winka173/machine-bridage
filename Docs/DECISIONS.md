@@ -18695,3 +18695,93 @@ Prompt 35 section 9: the GLB total may grow by at most 25 %; after the rebuild i
 Owner: "update lại mạnh nhất là opus, không được dùng fable mọi giá". Supersedes the token guide v2 line above that
 named `fable` as most capable: models, VFX, Sim fixes and balance use `opus`; `fable` is never used (agents, lead, or the
 `best` alias). Docs/TOKEN_OPTIMISATION.md section 5 and Docs/AGENT_RULES.md updated.
+
+## Ném bom rải thảm (pass 3, lane B, 2026-10-03)
+The look of a stick (spec pass 3), branch feature/bomb-p34. View only: no Sim file changed; the Sim already drops every bomb
+on its own point one release interval apart (pass 2). Not compiled or run here (the lead compiles; BombStickViewTests are
+written, not run).
+- **Bay doors**: only the models with hinge pivots open: heavy_bomber and command_airship (`Part_bay_door_L` / `_R`, prompt
+  35 wave 10). The other bomb carriers (stealth_bomber, stealth_naval_strike, garuda, morrigan, silver_bug, stymphalos,
+  drone_mothership, attack jets) have their doors as plain meshes (`Bay_doors`, `Bay_door_l`) merged into the hull, no hinge:
+  skipped. ModelLibrary.PartPattern (`^Part_[a-z]+`) did not take the door pivots (underscores), so their meshes were merged
+  into the hull and could not move: new `BayDoorPattern` makes each door its own rigid group. VehicleView.BayDoors swings
+  each door 80 degrees about the hull's long axis, the way that sends its free edge down (worked out once from its mesh),
+  over the stick's bayOpen; a free-falling bomber opens as it runs in (its mount's target ahead within lead + half the stick
+  + release speed x bayOpen + 6 m, EffectsDirector.TickBayDoors, reading Vehicle.MountTarget / Heading only); a boss bay
+  (it fires from a stand-off, no run in) with its first stick, then bayOpen + 0.3 s before each next one (its target within
+  1.1 x range and the bay's cycle, cooldown + (n - 1) x burst interval, nearly round since the last stick began); held open
+  for the rest of the stick + 1.2 s, then closing.
+- **Bombs drawn as they drop**: each bomb is already its own fired event on the stick interval; an unguided bomb now leaves
+  a thin pale trail (ProjectilePool streak: contrail puffs every 0.8 m, 0.6 s, size 0.36 x the bomb's BlastSizes.Bomb,
+  ~0.5 m for the FAB-500, no motor; ~45 puffs a bomb, inside the contrail system's 1600); guided and gliding bombs none. The boss bay's bomb keeps the falling-bomb curve from its bay to its point (the
+  stand-off is the Sim's; drawing it straight down would put it under the boss, not on its point).
+- **The stick as the view sees it** (StickRuns, pure): a stick's first bomb fixes its line (bomb 0's point; a free-falling
+  bomber's heading; a boss bay's way from bomb 0 to its aim, the stick being laid round the aim (CENTER), else away from the
+  boss); each later bomb of that shooter's mount takes the nearest free section; a section whose bomb never comes (dropped
+  for a friend, or the stick cut to max(2, ceil(n/3)) on few targets) is let go 0.75 x interval (>= 0.35 s) after its release
+  time. The Sim's stick state is internal, so the view reads only the events (no Sim change).
+- **STICK_RECT warning** (StickWarnings, GroundMark style 6 WarningRect, new shader branch): one rectangle per stick in place
+  of an escape ring per bomb (one shooter's rings merged into one big circle): thin edge (screen-pixel line), faint fill
+  heavier toward the middle line, a darker core band (core + jitter across wide), the flight line dashed down the middle,
+  running the way the bombs walk; the escape rings' colours and fade-in; and the next bomb's core ring (the escape ring's
+  Warning style) on its point with its countdown running round it from the blast before (the first from the release), so
+  the eye follows the chain in its rhythm. It covers the stick from its first bomb (the end bombs' blast edge and jitter
+  along included; width = stick.width) and gives up its ground section by section: each section goes the frame its
+  bomb's blast is drawn, the front edge gliding on to the next bomb in 0.15 s (no jump). Offered to the WarningGate as a
+  rectangle (new OfferRect: the player's units inside the rectangle count as threatened, not a circle round it; the
+  Settings level applies; a T5 or a preview's stick is a super weapon's). Only for the enemy (and the preview's own), only where the data says STICK_RECT
+  (bomber_payload, both boss bays); jet_bombs (NONE) has none, as before.
+- **Blasts**: each bomb its own event, so they chain along the line as they land. Effects by tier as before (the round's own
+  blast always whole); TierFx.StickDetail: on a stick of 6+ bombs a bomb more than 35 m from the view's focus gets its tier
+  overlay and lingering smoke one level lighter before the tiers' concurrent budget counts it (so the near bombs keep the
+  full slots), and on a stick of 12+ (a 20-bomb carpet) the ones past 70 m the flash and rings only; the bomb's three smoke
+  puffs drop to two / one at those levels. No fire or blast is smaller. No MaterialPropertyBlock on Lit renderers (the
+  rectangle is a GroundMark).
+- **Sound**: each blast cracks at its own point; the one before of the same stick fades out over 0.4 s when the next goes
+  off (AudioDirector.Sticks: same weapon within 2.5 intervals + 0.25 s and 2.5 spacings), so the stick ends on one tail
+  (the last bomb's) instead of a pile of tails and the bomb bank's three voices cut dead. One falling whistle per stick
+  (warn_whistle_big from T4), timed to end as its first bomb lands; bombs were released silent.
+- **Clock**: runs, rectangles and the doors' run-in use the owning EffectsDirector's ShotClock (play-test 12); the doors
+  animate on the render clock (a pose, not a timing).
+- **Tests** (written, not run): BombStickViewTests (runs and sections, the rectangle shrinking, a skipped bomb, a cut stick,
+  a landing bomb's section, the front edge's glide, the gate's rectangle, the far-bomb detail, the door pattern, the trail,
+  the audio stick rule, the data's shapes).
+- **Owner rule (lead, 03/10): visual effects at the highest quality.** Checked against the tier rules (TierFx, the T4 overlay,
+  shock and dust rings on the edge, crater, rocking, EffectLife smoke): every bomb of a stick keeps its whole tier look;
+  only the overlay and lingering smoke of the far bombs of a long stick step down, and only before the tier budget counts
+  them, so the bombs where the player looks keep the full-detail slots (T4: 3 at once, weight 12).
+
+## Ném bom rải thảm (pass 4, lane B, 2026-10-03)
+Docs and report (spec pass 4), branch feature/bomb-p34. Not compiled or run here; the export tool was run (coverage 0
+unmapped, check below).
+- **Export**: the bomb export stays its own folder (`export.py bom`, Docs/export/bom_<date>/: the six Bom_* sheets, md,
+  BOM_REPORT.md) and file 01_vu_khi_dan links it: new sheet Bom_rai_tham, one row per weapon with a stick (che_do_tha,
+  cach_tha, n, spacing, length, interval, overlap, width, warning shape, carriers, the card's words EN / VI, the bomb
+  export's files). Its values are set without source paths (the stick leaves are already mapped by Vu_khi), so coverage
+  and the foreign keys are untouched; the md follows from the csv. Merging the Bom_* sheets into file 01 would have mapped
+  the stick leaves twice and dragged the Unity trace into the full export.
+- **bom.py compare_rows**: per weapon and carrier, the 3-seed means before (vet_tha_truoc_luot2.csv) and after
+  (vet_tha_unity.csv): distinct points, stick length, vehicles hit in the row and the cluster (the spec's two standard
+  formations). Read by the PDF and the report.
+- **PDF**: Tools/docs/bomb_run.py, section 22 "Ném bom rải thảm" after the appendix (build_doc.py): the stick parameter
+  table from balance.json (weapons[*].stick after inherits; carriers from game.json; the card's words), the before / after
+  table, and the stick pictures fx/stick_heavy_bomber/ and fx/stick_command_airship/ ({before,after}_impact_{0,1,3}s.png),
+  a grey "shot pending" box for a missing one (fix_full._shot).
+- **Pictures** (EffectShots.Sticks.cs, FxBatch): keys stick_heavy_bomber (bomber_payload) and stick_command_airship
+  (p26_roc_main_roc_bombs); each stick laid twice on the metre grid along the screen's diagonal, an MBT beside it, each
+  bomb's core and edge rings: before (the bomber's release speed x burst interval, 3.5 m; a boss bay's eight on one point
+  in a small scatter) and after (the data's spacing, a small schematic jitter), landing one gap after another (burst
+  interval before, stick interval after) as EffectsDirector draws a bomb (FxImpact); the bomber flown past its stick end,
+  the airship off to the side. FxRender's frame loop moved into FxShoot (shared). A run for some keys (-mbFxIds) now keeps
+  the other keys' entries in index.json (FxKeptEntries). Unity (the lead renders):
+  `Unity.exe -batchmode -force-d3d11 -quit -projectPath <repo> -executeMethod MachineBrigade.Editor.EffectShots.FxBatch -mbFxOut <repo>\Builds\effect_shots -mbFxIds sticks -logFile <tmp>\fx_sticks.log`, then copy Builds/effect_shots to <imgdir>/fx (Docs/doc-images/README.md)
+- **Cards**: GuideText writes {{stick}} where the heavy bomber, the attack jet and the elite attack jet name their bombs;
+  Strings.Get fills it through StickLines (Game/Hud/StickLines.cs) from the unit's first stick weapon: "thả 7 quả, cách
+  nhau 11 m, dải 66 m" / "7 bombs 11 m apart, a 66 m stick". The stale "12 quả" / "twelve heavy bombs" are gone (EN and
+  VI). The export's guide sheets show the raw {{stick}}, as they already show the supports' {{count}}.
+- **Report**: Docs/fixes/report_bomb_run.md (cause, before / after, weapons changed, own decisions, what to look at).
+- **export.py check**: passes (coverage, foreign keys, determinism, secrets; run on this branch into a temp folder). The
+  secret scan read PNG / JPEG pictures raw and matched the email pattern in compressed pixels of seven model sheets
+  (Docs/models pictures copied into 10_model_tai_san: "PK@Oh.cR"); core/secrets.py now reads a picture's metadata only
+  (PNG text / EXIF chunks, a JPEG's segments before its scan data), where a path or address would actually sit.
+- **Tests** (written, not run): BombStickViewTests.TheAircraftCardsSayTheirStickFromTheData.
