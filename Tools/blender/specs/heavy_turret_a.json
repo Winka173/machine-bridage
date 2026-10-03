@@ -1,0 +1,146 @@
+{
+ "id": "heavy_turret_a",
+ "class": "tower",
+ "real": [
+  "A-222 Bereg / AK-130 on shore, M284 long range (unit_refs heavy_turret.coastal)"
+ ],
+ "shape": "heavy_turret.coastal (gun_155_twin_coastlr): the coastal long-range branch; an upgrade of the wave 2 heavy_turret on the same barbette; the old file 12.66 x 7.99 x 6.11 m (no modelSize).",
+ "confidence": "xấp xỉ (AK-130-class house stretched for L/52 barrels; coastal fire control as on Bereg)",
+ "target_size": {
+  "L": 12.66,
+  "W": 7.99,
+  "H": 6.11,
+  "source": "the old file (branch art: no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the base's Hegemon barbette: battered octagonal drum, lift joints, Team band, race, porch and door, jib crane with a shell, pallets, sandbags, wire, floodlights, range post",
+   "nodes": [
+    "Base",
+    "Base_apron",
+    "Lift_joints",
+    "Team_band",
+    "Race",
+    "Door_porch",
+    "Crane",
+    "Pallets",
+    "Sandbags",
+    "Kit_fence"
+   ]
+  },
+  {
+   "feature": "the stretched faceted gun house (Turret) with the raised charge bustle, Team side bands, seams and welds",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_bustle",
+    "Turret_band",
+    "Panel_seams",
+    "Kit_welds"
+   ]
+  },
+  {
+   "feature": "two gun ports with cast mantlets and canvas blast covers, two long 155 mm barrels with thermal sleeves, double-baffle brakes and red bands, the coax",
+   "nodes": [
+    "Mantlet",
+    "Blast_covers",
+    "Main_cannon",
+    "Thermal_sleeves",
+    "Muzzle_brake",
+    "Brake_bands",
+    "Coax",
+    "Muzzle_coax"
+   ]
+  },
+  {
+   "feature": "the coastal fire control: rangefinder bar with ears, the spinning search radar on its lattice post, the optical director",
+   "nodes": [
+    "Sight",
+    "Radar",
+    "Radar_array",
+    "Radar_post",
+    "Radar_collar",
+    "Director"
+   ]
+  },
+  {
+   "feature": "cupola, hatch, vents, the raised pintle MG, whip, lamps, ladder, railings, stowage bins, charge cans",
+   "nodes": [
+    "Cupola",
+    "Hatches",
+    "Vents",
+    "Mount_mg",
+    "Antennas",
+    "Lamps",
+    "Ladders",
+    "Railings",
+    "Bins",
+    "Charge_cans"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_155_twin_ap",
+   "slot": "main (heavy_turret.coastal fires gun_155_twin_coastlr from the same barrels)",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_b1_main",
+    "Muzzle_b2_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: towers seen in numbers stay under 1.5 x 4,000"
+ },
+ "team_zones": [
+  "the barbette band, the gun house side bands (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Hegemon prefabricated (cast concrete barbette, as heavy_turret)",
+ "details": {
+  "tier1": [
+   "barbette",
+   "gun house",
+   "barrels"
+  ],
+  "tier2": [
+   "bustle",
+   "mantlets",
+   "radar",
+   "rangefinder",
+   "crane",
+   "pallets"
+  ],
+  "tier3": [
+   "bolts",
+   "welds",
+   "sleeves",
+   "brake ports",
+   "handles",
+   "lamps",
+   "shells",
+   "charge cans"
+  ]
+ },
+ "questions": []
+}

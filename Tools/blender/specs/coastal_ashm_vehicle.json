@@ -1,0 +1,148 @@
+{
+ "id": "coastal_ashm_vehicle",
+ "class": "wheeled",
+ "real": [
+  "NSM Coastal Defence System launcher on a MAN SX / Scania 6x6"
+ ],
+ "shape": "the old builder: an NSM coastal defence truck, 6x6 with a forward cab, four angled canisters 2 x 2 on a turntable, stabiliser jacks; modelSize 7.18 x 2.7 x 2.97 m; nsm_coastal.",
+ "confidence": "xấp xỉ (NSM CDS layout; truck drawn 0.8 x)",
+ "target_size": {
+  "L": 7.18,
+  "W": 2.7,
+  "H": 2.97,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the forward-control cab (Team): windscreen with wipers, side windows, doors and steps, roof hatch, grille, bumper, mirrors, lamps, whip",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Grilles",
+    "Bumper",
+    "Hatches",
+    "Lamps",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "the ladder chassis with six wheels on three axles, leaf springs, fenders and mud flaps",
+   "nodes": [
+    "Chassis",
+    "Tyres",
+    "Wheels",
+    "Axles",
+    "Suspension",
+    "Fenders",
+    "Mudflaps"
+   ]
+  },
+  {
+   "feature": "fuel tank, toolbox, battery box, spare wheel, the exhaust stack",
+   "nodes": [
+    "Fuel_tanks",
+    "Toolbox",
+    "Battery_box",
+    "Spare_wheel",
+    "Exhaust"
+   ]
+  },
+  {
+   "feature": "the bed with rails and Team bands, the fire-control box with louvre and door, four stabiliser jacks",
+   "nodes": [
+    "Bed",
+    "Bed_rails",
+    "Team_band",
+    "Equipment_box",
+    "Outriggers",
+    "Jack_pads"
+   ]
+  },
+  {
+   "feature": "the launcher turntable (Turret) with frame, rams and cradle, the 2 x 2 NSM canister pack (Team) with caps, frames and lugs",
+   "nodes": [
+    "Turret",
+    "Turntable",
+    "Launcher_frame",
+    "Rams",
+    "Cradle",
+    "Launcher",
+    "Canister_caps",
+    "Canister_frames",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "cable reel, jerrycans",
+   "nodes": [
+    "Cable_reel",
+    "Jerrycans"
+   ]
+  }
+ ],
+ "class_parts": [
+  "every wheel",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "nsm_coastal",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: light units seen in numbers stay under 1.5 x 5,000"
+ },
+ "team_zones": [
+  "the cab, the canister pack, the bed bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "vehicles break into Part_wheel / Part_wheelb (prompt 34 wrapper) and burn",
+ "faction_style": "modern tactical truck",
+ "details": {
+  "tier1": [
+   "cab",
+   "chassis",
+   "canister pack"
+  ],
+  "tier2": [
+   "wheels",
+   "equipment box",
+   "turntable",
+   "jacks",
+   "exhaust stack"
+  ],
+  "tier3": [
+   "wipers",
+   "lamps",
+   "handles",
+   "lugs",
+   "caps",
+   "springs",
+   "jerrycans",
+   "nuts"
+  ]
+ },
+ "questions": []
+}

@@ -1,0 +1,246 @@
+{
+ "id": "daedalus",
+ "class": "boss",
+ "real": [
+  "media: Acclamator-class assault ship (Star Wars: Attack of the Clones) (unit_refs)"
+ ],
+ "shape": "unit_sheet: Aurel's assault ship after the Acclamator; ~10 s in orbit (out of reach), then fixed high / low passes; no modelSize (the old file 37.1 x 20.4 x 12.8 m).",
+ "confidence": "ước đoán (media reference; the breakable parts at the def's places)",
+ "target_size": {
+  "L": 37.08,
+  "W": 20.42,
+  "H": 12.79,
+  "source": "the old file (the def has no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the arrowhead hull: the upper hull (Plaster) sloping up from the nose, the lower hull (Keel) to the belly, the hard chine with Aurel's stripe",
+   "nodes": [
+    "Upper_hull",
+    "Keel",
+    "Aurel_stripes"
+   ]
+  },
+  {
+   "feature": "the serrated chine: side step blocks with window slots, flank plates, belly plates, the sensor blister on the right flank",
+   "nodes": [
+    "Step_recesses",
+    "Step_windows",
+    "Flank_plates",
+    "Belly_plates",
+    "Sensor_blister"
+   ]
+  },
+  {
+   "feature": "the dorsal trench with its spine and lights, deck lines, window rows, the hull plating patchwork in three tones, deck greebles and fittings",
+   "nodes": [
+    "Trench",
+    "Spine",
+    "Spine_lights",
+    "Deck_lines",
+    "Windows",
+    "Greebles",
+    "Greebles_light",
+    "Deck_fittings"
+   ]
+  },
+  {
+   "feature": "the stepped superstructure (Hull) and the bridge tower with its window band, two sensor dishes, two comm towers, masts",
+   "nodes": [
+    "Hull",
+    "Hull_tower",
+    "Hull_bridge",
+    "Bridge_windows",
+    "Tower_dishes",
+    "Comm_towers",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "the APS emitter on the tower roof (Mount_APS)",
+   "nodes": [
+    "Mount_APS",
+    "Aps_emitter",
+    "Aps_glow"
+   ]
+  },
+  {
+   "feature": "four turbolaser turrets on the upper slopes",
+   "nodes": [
+    "Turbolasers",
+    "Turbolaser_barrels"
+   ]
+  },
+  {
+   "feature": "weak point: the two point-defence lasers forward, one shade off",
+   "nodes": [
+    "Pd_laser_l",
+    "Pd_laser_r",
+    "Pd_dome",
+    "Pd_emitter"
+   ]
+  },
+  {
+   "feature": "weak point: the two forward ball guns under the chine, twin barrels with a muzzle each",
+   "nodes": [
+    "Mount_gun",
+    "Mount_gun.001",
+    "Gun_ball",
+    "Gun_barrel",
+    "Muzzle_b1_gun",
+    "Muzzle_b2_gun",
+    "Muzzle_b1_gun_001",
+    "Muzzle_b2_gun_001"
+   ]
+  },
+  {
+   "feature": "the three drop-pod bays in the belly: ring, glowing pod and frame each",
+   "nodes": [
+    "Pod_bay_1",
+    "Pod_bay_2",
+    "Pod_bay_3"
+   ]
+  },
+  {
+   "feature": "four landing legs folded under the belly (the running gear) with pads",
+   "nodes": [
+    "Legs",
+    "Leg_pads"
+   ]
+  },
+  {
+   "feature": "weak point: the main thruster block with six nozzles and their glow, stern vanes",
+   "nodes": [
+    "Thruster_main",
+    "Engine_housing",
+    "Engine_nozzles",
+    "Engine_glow",
+    "Stern_vanes"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear (folded landing legs)",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_daedalus_direct_dae_laser",
+   "slot": "mountWeapons 0",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_b1_gun"
+   ]
+  },
+  {
+   "weapon": "p26_daedalus_sec_dae57",
+   "slot": "mountWeapons 1",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_b2_gun"
+   ]
+  },
+  {
+   "weapon": "p26_daedalus_sec_dae57",
+   "slot": "mountWeapons 2",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_b1_gun_001"
+   ]
+  },
+  {
+   "weapon": "p26_daedalus_direct_dae_laser",
+   "slot": "mountWeapons 3",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_b2_gun_001"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "the chine stripes and the bridge band (Aurel), the drop pods"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "gun_l",
+   "node": "Mount_gun"
+  },
+  {
+   "part": "gun_r",
+   "node": "Mount_gun.001"
+  },
+  {
+   "part": "pd_laser_l",
+   "node": "Pd_laser_l"
+  },
+  {
+   "part": "pd_laser_r",
+   "node": "Pd_laser_r"
+  },
+  {
+   "part": "engine",
+   "node": "Thruster_main"
+  },
+  {
+   "part": "pod_bay_1",
+   "node": "Pod_bay_1"
+  },
+  {
+   "part": "pod_bay_2",
+   "node": "Pod_bay_2"
+  },
+  {
+   "part": "pod_bay_3",
+   "node": "Pod_bay_3"
+  }
+ ],
+ "wreck": "bosses break up on their Part_* and part nodes",
+ "faction_style": "Aurel: pale armoured hull plates, glowing energy fittings",
+ "details": {
+  "tier1": [
+   "upper hull",
+   "keel",
+   "superstructure"
+  ],
+  "tier2": [
+   "tower",
+   "turrets",
+   "thruster block",
+   "pod bays",
+   "legs",
+   "step blocks"
+  ],
+  "tier3": [
+   "windows",
+   "lights",
+   "plates",
+   "greebles",
+   "antennas",
+   "dishes",
+   "rivets",
+   "glows"
+  ]
+ },
+ "questions": [],
+ "frame": "ground",
+ "weak_points": [
+  "the point-defence lasers, the ball guns, the thrusters and the pod bays on their own nodes, one shade off"
+ ],
+ "scale_note": "the old file's 37 m (the def has no modelSize)"
+}

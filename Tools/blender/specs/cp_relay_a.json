@@ -1,0 +1,132 @@
+{
+ "id": "cp_relay_a",
+ "class": "tower",
+ "real": [
+  "field radio relay station: a guyed lattice mast with microwave dishes (unit_refs cp_relay)",
+  "a 10 ft comms container with a satellite dish"
+ ],
+ "shape": "unit_refs cp_relay: a CP relay post, a lattice mast with two dishes; the def's length / width 4 x 4 m; the old file 4.0 x 4.0 x 7.76 m; the supply relay of the old files: a comms container with a big dish replaces the crates.",
+ "confidence": "xấp xỉ (generic field relay; the compound matches the wave 2 cp_relay_b)",
+ "target_size": {
+  "L": 4.0,
+  "W": 4.0,
+  "H": 7.76,
+  "source": "the old file (the def has length / width 4 x 4, no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the cast pad with joints and a cut rear corner",
+   "nodes": [
+    "Base",
+    "Base_joints"
+   ]
+  },
+  {
+   "feature": "three HESCO cells across the front, two down the right, a wire fence with gate posts round the left and rear",
+   "nodes": [
+    "Hesco",
+    "Hesco_mesh",
+    "Kit_fence"
+   ]
+  },
+  {
+   "feature": "the guyed three-legged lattice mast 7.3 m with bracing, rungs and a rest platform",
+   "nodes": [
+    "Mast",
+    "Ladders",
+    "Railings"
+   ]
+  },
+  {
+   "feature": "two microwave dishes facing opposite ways, sector panels, the whip and the obstruction beacon",
+   "nodes": [
+    "Dish",
+    "Dish_feed",
+    "Antennas",
+    "Obstruction_light"
+   ]
+  },
+  {
+   "feature": "the prefabricated comms shelter: roof, door, A/C unit, cable tray, Team band",
+   "nodes": [
+    "Shelter",
+    "Roof",
+    "Doors",
+    "Grilles",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "the generator on its skid with exhaust, fuel drums, the flag",
+   "nodes": [
+    "Generator",
+    "Exhaust",
+    "Fuel_drums",
+    "Flag"
+   ]
+  },
+  {
+   "feature": "the second comms container with its ribs, doors and locking bars, the big dish on its roof and a second whip",
+   "nodes": [
+    "Shelter",
+    "Container_ribs",
+    "Doors",
+    "Dish",
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: towers seen in numbers stay under 1.5 x 4,000"
+ },
+ "team_zones": [
+  "the shelter band, the mast band, the flag (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "field-built (HESCO, wire, a prefabricated shelter), as cp_relay_b",
+ "details": {
+  "tier1": [
+   "pad",
+   "mast",
+   "shelter"
+  ],
+  "tier2": [
+   "HESCO",
+   "dishes",
+   "generator",
+   "fence",
+   "crates / container"
+  ],
+  "tier3": [
+   "rungs",
+   "bracing",
+   "guy wires",
+   "rivets",
+   "lamp",
+   "drums",
+   "cables",
+   "beacon"
+  ]
+ },
+ "questions": []
+}

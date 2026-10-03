@@ -1,0 +1,135 @@
+{
+ "id": "visual_jammer",
+ "class": "tower",
+ "real": [
+  "a dazzler / decoy-light post: a lattice mast with a lamp drum and strobes, smoke generators, a control shelter"
+ ],
+ "shape": "fix L8's post (cast pad, ribbed shelter, blast wall, braced mast with the floodlight drum, smoke drums, generator, net, aerials); modelSize 6.0 x 5.0 x 6.5 m; fort Medium Utility, unarmed.",
+ "confidence": "ước đoán (no real reference; L8's layout kept)",
+ "target_size": {
+  "L": 6.0,
+  "W": 5.0,
+  "H": 6.5,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the battered cast pad with a cut corner and joints",
+   "nodes": [
+    "Base",
+    "Base_joints"
+   ]
+  },
+  {
+   "feature": "the control shelter: walls (Team band), mono-pitch roof, door, louvres, A/C unit, ladder, rivets, aerials",
+   "nodes": [
+    "Shelter",
+    "Roof",
+    "Team_band",
+    "Doors",
+    "Grilles",
+    "Ac_unit",
+    "Ladders",
+    "Kit_rivets",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "the three-course sandbag blast wall",
+   "nodes": [
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "the four-legged lattice mast with X-bracing, rest platform and rail, cable run",
+   "nodes": [
+    "Mast",
+    "Railings",
+    "Kit_cables"
+   ]
+  },
+  {
+   "feature": "the dazzler head: the drum of glowing lamp panels with rims under its Team hood, strobe bars, the laser box, the beacon",
+   "nodes": [
+    "Head_drum",
+    "Lamps",
+    "Lamp_rims",
+    "Head_hood",
+    "Glass",
+    "Beacons"
+   ]
+  },
+  {
+   "feature": "the smoke-generator drums on their rack with hoses to two nozzles",
+   "nodes": [
+    "Racks",
+    "Smoke_drums",
+    "Hoses"
+   ]
+  },
+  {
+   "feature": "the generator with exhaust and jerrycans, two floodlights, the camouflage net with scrim",
+   "nodes": [
+    "Generator",
+    "Exhaust",
+    "Jerrycans",
+    "Lamps",
+    "Camo_net",
+    "Camo_net_garnish"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: towers seen in numbers stay under 1.5 x 4,000"
+ },
+ "team_zones": [
+  "the shelter band, the head hood (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "prefabricated (cast pad, steel shelter, lattice mast)",
+ "details": {
+  "tier1": [
+   "pad",
+   "shelter",
+   "mast"
+  ],
+  "tier2": [
+   "blast wall",
+   "head drum",
+   "smoke rack",
+   "generator",
+   "net"
+  ],
+  "tier3": [
+   "lamp panels",
+   "rims",
+   "valves",
+   "nozzles",
+   "rivets",
+   "jerrycans",
+   "stones",
+   "beacon"
+  ]
+ },
+ "questions": []
+}

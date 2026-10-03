@@ -200,6 +200,24 @@ import mb_p35_wave8_trucks  # noqa: E402
 import mb_p35_wave8_ground  # noqa: E402
 import mb_p35_wave8_air  # noqa: E402
 import mb_p35_wave8_bosses  # noqa: E402
+import mb_p35_cp_relay  # noqa: E402
+import mb_p35_rail_supergun  # noqa: E402
+import mb_p35_daedalus  # noqa: E402
+import mb_p35_command_airship  # noqa: E402
+import mb_p35_heavy_bomber  # noqa: E402
+import mb_p35_twin_rotor_gunship  # noqa: E402
+import mb_p35_heavy_lift_helicopter  # noqa: E402
+import mb_p35_radar_support_vehicle  # noqa: E402
+import mb_p35_coastal_ashm_vehicle  # noqa: E402
+import mb_p35_sp_mortar  # noqa: E402
+import mb_p35_coastal_battery  # noqa: E402
+import mb_p35_artillery_emplacement_a  # noqa: E402
+import mb_p35_shield_tower_b  # noqa: E402
+import mb_p35_heavy_turret_a  # noqa: E402
+import mb_p35_visual_jammer  # noqa: E402
+import mb_p35_flare_tower  # noqa: E402
+import mb_p35_recoilless_gun_tower  # noqa: E402
+import mb_p35_manpads_tower  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -354,7 +372,9 @@ def all_builders():
                 # Prompt 35 wave 8 lane A (DECISIONS "Prompt 35 wave 8 (lane A)"): bosses, trucks, base pieces (last).
                 **mb_p35_wave8_fort.BUILDERS, **mb_p35_wave8_trucks.BUILDERS,
                 **mb_p35_wave8_ground.BUILDERS, **mb_p35_wave8_air.BUILDERS,
-                **mb_p35_wave8_bosses.BUILDERS}
+                **mb_p35_wave8_bosses.BUILDERS,
+                # Prompt 35 wave 10 (lane B): bosses, tower branches, helicopters and vehicles, each from its own builder.
+                **mb_p35_cp_relay.BUILDERS, **mb_p35_rail_supergun.BUILDERS, **mb_p35_daedalus.BUILDERS, **mb_p35_command_airship.BUILDERS, **mb_p35_heavy_bomber.BUILDERS, **mb_p35_twin_rotor_gunship.BUILDERS, **mb_p35_heavy_lift_helicopter.BUILDERS, **mb_p35_radar_support_vehicle.BUILDERS, **mb_p35_coastal_ashm_vehicle.BUILDERS, **mb_p35_sp_mortar.BUILDERS, **mb_p35_coastal_battery.BUILDERS, **mb_p35_artillery_emplacement_a.BUILDERS, **mb_p35_shield_tower_b.BUILDERS, **mb_p35_heavy_turret_a.BUILDERS, **mb_p35_visual_jammer.BUILDERS, **mb_p35_flare_tower.BUILDERS, **mb_p35_recoilless_gun_tower.BUILDERS, **mb_p35_manpads_tower.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

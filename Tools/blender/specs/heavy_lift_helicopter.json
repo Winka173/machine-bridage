@@ -1,0 +1,152 @@
+{
+ "id": "heavy_lift_helicopter",
+ "class": "helicopter",
+ "real": [
+  "Mil Mi-26 heavy-lift helicopter"
+ ],
+ "shape": "the old builder: a Mi-26 class heavy-lift helicopter, one six-blade rotor (the Mi-26 has eight: drawn with eight here) over a deep cabin with nose glazing, roof engines, thin tail boom with fin and tail rotor, sponsons with wheels, clamshell doors, cargo hook; modelSize 7.59 x 6.58 x 2.1 m; unarmed, flares.",
+ "confidence": "cao (Mi-26 layout well documented; drawn at modelSize)",
+ "target_size": {
+  "L": 7.59,
+  "W": 6.58,
+  "H": 2.1,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the deep box cabin (Team) with the rounded belly, panel seams, Team bands",
+   "nodes": [
+    "Fuselage",
+    "Panel_seams",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "the glazed nose: framed windscreen, side blisters, chin windows; the round cabin windows; the crew door and step",
+   "nodes": [
+    "Glass",
+    "Canopy_frames",
+    "Portholes",
+    "Porthole_rims",
+    "Doors",
+    "Steps"
+   ]
+  },
+  {
+   "feature": "two roof engines with dust-filter intakes, seams and angled exhausts on the gearbox fairing, the mast",
+   "nodes": [
+    "Engines",
+    "Intakes",
+    "Intake_screens",
+    "Exhaust",
+    "Engine_seams",
+    "Fuselage_fairing",
+    "Rotor_mast"
+   ]
+  },
+  {
+   "feature": "the eight-blade main rotor (Rotor) with hub, grips, blades and tips",
+   "nodes": [
+    "Rotor",
+    "Rotor_hub",
+    "Rotor_grips",
+    "Rotor_blades",
+    "Rotor_tips"
+   ]
+  },
+  {
+   "feature": "the swept fin, stabilisers, the five-blade tail rotor on the right, the tail skid",
+   "nodes": [
+    "Tail_fin",
+    "Tailplanes",
+    "Tail_rotor",
+    "Tail_rotor_blades",
+    "Tail_skid"
+   ]
+  },
+  {
+   "feature": "main gear sponsons with twin wheels, the twin nose wheel",
+   "nodes": [
+    "Sponsons",
+    "Gear",
+    "Gear_tyres",
+    "Gear_hubs"
+   ]
+  },
+  {
+   "feature": "rear clamshell doors and ramp, cargo hook, UV-26 flare launchers, beacons, nav lights, antennas, pitot",
+   "nodes": [
+    "Hatches",
+    "Ramp_seam",
+    "Cargo_hook",
+    "Launchers_flares",
+    "Flare_cells",
+    "Beacons",
+    "Nav_lights",
+    "Antennas",
+    "Pitot"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "glass",
+  "rotor hub",
+  "every blade",
+  "tail rotor",
+  "gear",
+  "stub wings",
+  "weapons"
+ ],
+ "weapons": [],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only (owner rule 02/10)"
+ },
+ "team_zones": [
+  "the fuselage, the fin and tailplanes (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "aircraft break into Part_* by class (prompt 34 wrapper) and fall",
+ "faction_style": "Soviet-era transport, panel seams",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "rotor disc",
+   "tail boom"
+  ],
+  "tier2": [
+   "engines",
+   "sponsons",
+   "fin",
+   "doors",
+   "gear"
+  ],
+  "tier3": [
+   "windows",
+   "screens",
+   "seams",
+   "hook",
+   "flare cells",
+   "beacons",
+   "antennas",
+   "pitot"
+  ]
+ },
+ "questions": [],
+ "merged": {
+  "stub_wings": "Sponsons",
+  "weapons": "Launchers_flares"
+ },
+ "merged_note": "the Mi-26 has no stub wings: its main gear sponsons stand in the role; unarmed: its UV-26 flare launchers are the only stores."
+}

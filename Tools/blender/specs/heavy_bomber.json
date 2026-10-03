@@ -1,0 +1,179 @@
+{
+ "id": "heavy_bomber",
+ "class": "jet",
+ "real": [
+  "Boeing B-52 Stratofortress (unit_refs)",
+  "FAB-500 bombs, Kh-101 cruise missiles"
+ ],
+ "shape": "unit_sheet: an eight-engined bomber, four engine pairs under a long swept wing, long body, tall fin; ~19.4 x 22.6 x 5.0 m (0.4 x a B-52); visible weapons FAB-500, quad M3 12.7 mm tail, Kh-101; modelSize 19.8 x 22.62 x 5.7 m.",
+ "confidence": "cao (B-52H layout; drawn 0.4 x)",
+ "target_size": {
+  "L": 19.8,
+  "W": 22.62,
+  "H": 5.7,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the long slab-sided fuselage (Team) with panel lines as paint, the Team stripes on spine and flanks, the refuelling receptacle",
+   "nodes": [
+    "Fuselage",
+    "Panel_lines",
+    "Refuel_receptacle"
+   ]
+  },
+  {
+   "feature": "the stepped cockpit: four windscreen panes, eyebrow windows, the nose radome and the chin sensor turrets",
+   "nodes": [
+    "Cockpit_glass",
+    "Nozzles"
+   ]
+  },
+  {
+   "feature": "the shoulder wing, 35 degrees of sweep with anhedral, flap seams (paint), outrigger gear pods, tip tanks, wing lights",
+   "nodes": [
+    "Wing",
+    "Engine_pods",
+    "Wing_lights"
+   ]
+  },
+  {
+   "feature": "four twin-engine pods on pylons: intake lips and fan faces, nozzles",
+   "nodes": [
+    "Engine_pods",
+    "Pylons",
+    "Intake_lips",
+    "Nozzles"
+   ]
+  },
+  {
+   "feature": "the tall fin with its rudder seam and Team band, the tailplane, the beacon",
+   "nodes": [
+    "Tail_fin",
+    "Beacons"
+   ]
+  },
+  {
+   "feature": "the quad 12.7 mm tail turret (Mount_gun) with its glazing",
+   "nodes": [
+    "Mount_gun",
+    "Tail_turret",
+    "Guns",
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "feature": "the bomb bay: two doors on their hinge pivots (a later bomb-run pass opens them), hazard bands, the racked FAB-500 load, the drop point",
+   "nodes": [
+    "Part_bay_door_L",
+    "Part_bay_door_R",
+    "Bay_door_l",
+    "Bay_door_r",
+    "Bay_bands",
+    "Kit_hinges",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "the Kh-101 cruise missiles on the inner-wing pylons",
+   "nodes": [
+    "Missiles",
+    "Missile_fins",
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "feature": "flare dispensers, blade antennas, beacons",
+   "nodes": [
+    "Flares",
+    "Antennas",
+    "Beacons"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "cockpit glass",
+  "wings",
+  "tail",
+  "intakes",
+  "exhausts",
+  "pylons",
+  "stores",
+  "flares"
+ ],
+ "weapons": [
+  {
+   "weapon": "bomber_payload",
+   "slot": "main",
+   "mount": "Part_bay_door_L",
+   "muzzles": [
+    "Muzzle_missile"
+   ],
+   "note": "the bombs drop from the bay; the doors are separate pivots for the pending bomb-run pass"
+  },
+  {
+   "weapon": "bomber_tail_guns",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "air_cruise_missile",
+   "slot": "rocket",
+   "mount": "Muzzle_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ],
+   "note": "aim Hull; the right missile's Muzzle_rocket.001 kept"
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only (owner rule 02/10)"
+ },
+ "team_zones": [
+  "the fuselage, the wing, the fin (Team), the spine and flank stripes"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "aircraft break into Part_wing (prompt 34 wrapper) and fall",
+ "faction_style": "Cold War strategic bomber; no real insignia",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "wing",
+   "fin"
+  ],
+  "tier2": [
+   "engine pods",
+   "pylons",
+   "tail turret",
+   "bay doors",
+   "missiles",
+   "tailplane"
+  ],
+  "tier3": [
+   "intake lips",
+   "nozzles",
+   "glazing",
+   "bombs",
+   "hinges",
+   "antennas",
+   "beacons",
+   "flare cells"
+  ]
+ },
+ "questions": []
+}

@@ -1,0 +1,125 @@
+{
+ "id": "shield_tower_b",
+ "class": "tower",
+ "real": [
+  "no real reference (unit_refs shield_tower.ward: Shield Battery, StarCraft II)"
+ ],
+ "shape": "shield_tower.ward: projects shields onto the towers round it; an upgrade of the wave 2 shield_tower (same plinth, cabins and emitter rings) that keeps the old file's low wide outline 8.3 x 8.3 x 4.5 m.",
+ "confidence": "ước đoán (built as Hegemon field equipment, as the base)",
+ "target_size": {
+  "L": 8.34,
+  "W": 8.34,
+  "H": 4.5,
+  "source": "the old file (branch art: no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the base's hexagonal cast plinth with joints and hazard ring, the broken ring of jersey barriers with stripes",
+   "nodes": [
+    "Base",
+    "Base_joints",
+    "Base_ring",
+    "Barriers",
+    "Barrier_stripes"
+   ]
+  },
+  {
+   "feature": "three capacitor cabins (the third bank of the branch): walls, roofs, louvres, doors, Team bands, vents, capacitor caps",
+   "nodes": [
+    "Shelter",
+    "Roof",
+    "Grilles",
+    "Doors",
+    "Team_band",
+    "Vents",
+    "Capacitor_caps"
+   ]
+  },
+  {
+   "feature": "the short tapered core with conduits, insulators and TeamGlow rings, the railed service deck with its band, the ladder",
+   "nodes": [
+    "Walls_core",
+    "Conduits",
+    "Insulators",
+    "Emitter_rings",
+    "Roof_deck",
+    "Platform_band",
+    "Railings",
+    "Ladders"
+   ]
+  },
+  {
+   "feature": "three lattice emitter arms with struts and cable runs, each carrying a ward projector dish of glowing segments in a steel rim",
+   "nodes": [
+    "Mast",
+    "Kit_cables",
+    "Ward_dishes",
+    "Ward_segments",
+    "Ward_rims",
+    "Emitter_tips"
+   ]
+  },
+  {
+   "feature": "the central emitter on its collar, the whip, beacons, junction box, floodlight",
+   "nodes": [
+    "Emitter",
+    "Emitter_collar",
+    "Antennas",
+    "Beacons",
+    "Junction_box"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: towers seen in numbers stay under 1.5 x 4,000"
+ },
+ "team_zones": [
+  "the cabin bands, the deck band, the glowing rings and projectors (Team, TeamGlow)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Hegemon prefabricated (cast plinth, modular cabins), as shield_tower",
+ "details": {
+  "tier1": [
+   "plinth",
+   "core",
+   "arms"
+  ],
+  "tier2": [
+   "cabins",
+   "barriers",
+   "projectors",
+   "deck",
+   "struts"
+  ],
+  "tier3": [
+   "insulators",
+   "bolts",
+   "caps",
+   "segments",
+   "beacons",
+   "rims",
+   "vents"
+  ]
+ },
+ "questions": []
+}

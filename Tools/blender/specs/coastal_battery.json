@@ -1,0 +1,161 @@
+{
+ "id": "coastal_battery",
+ "class": "structure",
+ "real": [
+  "A-222 Bereg (240 mm)",
+  "AK-130 130 mm naval mount set ashore",
+  "K-300P Bastion-P",
+  "M284 155 mm (unit_refs coastal_battery)"
+ ],
+ "shape": "unit_refs: a shore artillery position (Trận địa pháo bờ biển); gun_155_coastal, one barrel, turretTurnRate 18; no modelSize (the old file 10.25 x 8.21 x 4.63 m).",
+ "confidence": "xấp xỉ (an AK-130 single-type house in a sunken cast gun pit; the fire-control post and ready magazines as on shore batteries)",
+ "target_size": {
+  "L": 10.25,
+  "W": 8.21,
+  "H": 4.63,
+  "source": "the old file (the def has no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the battered cast apron with joints, the round gun well with lift joints, the race and its bolts",
+   "nodes": [
+    "Base",
+    "Base_joints",
+    "Block_well",
+    "Lift_joints",
+    "Race",
+    "Kit_bolts"
+   ]
+  },
+  {
+   "feature": "the curved stepped front parapet with drain slots and a Team band",
+   "nodes": [
+    "Walls",
+    "Drain_slots",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "the faceted gun house (Turret) with its Team band, the gun offset left in its mantlet, the long barrel with fume extractor and brake",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_band",
+    "Mantlet",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Brake_ports",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "the layer's cabin with vision blocks and the sight hood, the loading hatch, hoist trunk, vents, pintle MG, whip, seams",
+   "nodes": [
+    "Turret_cab",
+    "Glass",
+    "Sight",
+    "Hatches",
+    "Hoist_trunk",
+    "Vents",
+    "Mount_mg",
+    "Antennas",
+    "Panel_seams"
+   ]
+  },
+  {
+   "feature": "the earth traverse with sod, two ready magazines in cast portals with doors and vent pipes, the shell rail with shells",
+   "nodes": [
+    "Berm",
+    "Berm_sod",
+    "Walls_portals",
+    "Doors",
+    "Vent_pipes",
+    "Shell_rail",
+    "Shells"
+   ]
+  },
+  {
+   "feature": "the fire-control post: cast tower, roof, rangefinder bar, the radar on its mast, ladder",
+   "nodes": [
+    "Walls_post",
+    "Roof",
+    "Rangefinder",
+    "Mast",
+    "Radar",
+    "Ladders"
+   ]
+  },
+  {
+   "feature": "floodlight, camouflage net over the magazine, sandbags, ammunition stack, extinguisher",
+   "nodes": [
+    "Light_housing",
+    "Camo_net",
+    "Sandbags",
+    "Ammo_boxes",
+    "Extinguishers"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_155_coastal",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   6000
+  ],
+  "floor": 1400,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only (owner rule 02/10)"
+ },
+ "team_zones": [
+  "the parapet band, the gun house band (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "structures collapse whole (no part nodes)",
+ "faction_style": "Hegemon prefabricated (cast concrete pit and portals)",
+ "details": {
+  "tier1": [
+   "apron and well",
+   "gun house",
+   "traverse"
+  ],
+  "tier2": [
+   "parapet",
+   "barrel",
+   "cabin",
+   "magazine portals",
+   "fire-control post",
+   "net"
+  ],
+  "tier3": [
+   "bolts",
+   "drain slots",
+   "vision blocks",
+   "vents",
+   "shells",
+   "rungs",
+   "extinguisher",
+   "handles"
+  ]
+ },
+ "questions": []
+}
