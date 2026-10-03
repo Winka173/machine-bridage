@@ -278,3 +278,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 "check file tối ưu, dùng sonnet là dùng sonnet 5.0 mới đúng, không bao giờ được dùng sonnet 5.5".
 - 03/10 "cho phép" + bảng mã model (Sonnet 5.0 = claude-sonnet-5): ghim alias sonnet vào Sonnet 5.0.
 - 03/10 "file khá tốt, nhưng cần update thêm các thứ này" + "ĐƯA NỐT SỐ LỐI CHƠI TRONG MÃ RA DỮ LIỆU ... THÊM TẦM TỐI THIỂU CHO BOSS" (nguyên văn: export_pack2_vi.txt). Chỉ lý thuyết, không chạy Unity/test/ExportGameDoc.
+- 03/10 PLAY-TEST 14 "sửa lỗi lớn và vẽ lại toàn bộ boss" (nguyên văn: playtest14_vi.txt); ưu tiên trước Gói cân bằng 2: gộp pack2-a (công cụ), hoãn lượt 2, chưa gộp pack2-c (tính lại tầm tối thiểu boss sau khi vẽ lại).

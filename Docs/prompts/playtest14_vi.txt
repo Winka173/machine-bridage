@@ -1,0 +1,83 @@
+Play-test 14 / đợt "sửa lỗi lớn và vẽ lại toàn bộ boss" (03/10/2026). Nguyên văn lời chủ dự án.
+Ưu tiên TRƯỚC Gói cân bằng 2 (Docs/prompts/export_pack2_vi.txt).
+
+=== Phần hướng dẫn ===
+
+Bối cảnh phiên trước (dừng vì auto mode chặn thao tác ghi, nên HANDOFF và bộ nhớ chưa ghi phần này):
+
+Prompt "Gói cân bằng 2" đã lưu ở Docs/prompts/export_pack2_vi.txt (commit a7fcba7). Lượt 3 của nó, tầm tối thiểu cho boss, đã xong trên nhánh feature/pack2-c (worktree MachineBrigade-art3) nhưng CHƯA gộp. Lượt 0–1 (công cụ literal_to_tunable, bộ kiểm tương đương, danh sách số cần chuyển trong Tools/export/pack2/) nằm trên nhánh feature/pack2-a (worktree MachineBrigade-art), có thể còn dở.
+Đợt dưới đây được ưu tiên TRƯỚC Gói cân bằng 2. Đợt này xóa nhiều đơn vị, vẽ lại boss và đổi kích thước boss, nên phần số liệu phải làm lại sau. Cụ thể:
+gộp feature/pack2-a (các công cụ dùng lại được), nhưng tạm hoãn lượt 2 (chuyển số);
+KHÔNG gộp feature/pack2-c lúc này, vì tầm tối thiểu boss tính từ GLB cũ. Sau khi vẽ lại và phóng to boss thì chạy lại Tools/export/boss_min_range.py, hoặc gộp rồi tính lại;
+sau đợt này mới chạy lại quét số và làm tiếp Gói cân bằng 2 từ lượt 2.
+Đợt mới: sửa lỗi lớn và vẽ lại toàn bộ boss. Danh sách nguyên văn của tôi ở ngay dưới.
+
+Lưu nguyên văn danh sách vào Docs/prompts (file mới, ví dụ playtest14_vi.txt, kèm một dòng trong requests_vi.md) trước khi làm.
+Trước khi làm, đọc kỹ và hỏi tôi mọi chỗ chưa rõ trong một lần, kèm đề xuất cho từng câu. Ví dụ:
+"xóa" và "bỏ" có khác nhau không;
+vài tên đơn vị viết sai hoặc trùng (wreck turret car xuất hiện hai lần);
+boss bị bỏ mà cốt truyện đang dùng thì thay bằng boss nào;
+tên mới cho fire control centre và laser anti drone station;
+ba hangar gọi được đúng những xe nào.
+Luật của đợt này:
+Model và hiệu ứng làm chất lượng cao nhất, không tiết kiệm token. Boss được tăng ngân sách tam giác 250–500% và kích thước thêm 20–30%.
+Mỗi agent vẽ boss làm 4–6 boss (theo Docs/TOKEN_OPTIMISATION.md).
+Luôn ghi model khi giao việc: opus cho model, hiệu ứng, sửa lỗi gameplay, cân bằng; không bao giờ dùng fable; "sonnet" chỉ là Sonnet 5.0.
+Xóa đơn vị thì xóa sạch: dữ liệu, thẻ, deck, chiến dịch, chuỗi dịch, GLB, builder, gói xuất; file lưu cũ được hoàn lại.
+Sau mỗi lần gộp model: kiểm không còn con trỏ LFS, chạy glb_quantize, render card và ảnh Unity bằng render_wave.sh.
+Ghi mọi thay đổi giá trị vào Docs/export/CHANGES.md.
+Chia đợt thành các phần độc lập cho 3 lane: sửa lỗi gameplay và hiệu ứng; UI (tab commander/tactic, nút back, tab căn cứ, cài đặt HQ); xóa đơn vị và đổi thẻ hỗ trợ; vẽ lại model và boss. Xong thì cập nhật thư mục Unity của tôi để tôi test.
+Cập nhật HANDOFF_machine_brigade.md và bộ nhớ (machine-brigade-p28-cloud.md) khi xong từng phần lớn.
+
+=== Danh sách ===
+
+- khói từ vụ nổ đạn bắn xe tăng: giảm thời gian tồn tại 60%
+- các vùng nổ của bom, đạn pháo không cần hiện vùng va chạm
+- tab commander và tactic nên ra 1 tab riêng, config quân khởi đầu theo commander xem ở đâu
+- rất nhiều lần bấm nút back ngay góc trái phải 2 lần mới ăn, cả chuyển tab
+- bỏ item gọi gunship
+
+in action preview
+- armoured card: không bắn cùng lúc 2 súng nó có
+- rocket technical, guide mlrs, self propelled aa gun, medium range sam, strike uav: tôi thấy khi tên lửa bay, có vẻ là tất cả phương tiện nào bắn tên lửa đó, đột nhiên gần tới mục tiêu thì khói bị mất xong tên lửa bay 1 xíu mới nổ, đường khói bị mất khúc cuối
+- amphibious light tank: nên ở môi trường mặt đất, và tôi không thấy nó bắn tên lửa mà nó có
+- self propelled aa gun, gun missile aa: check lại model, tôi thấy 2 nòng súng auto canon có vẻ sai, nó hơi xa, check design thật tế
+- tiếng bắn của airbonrne gunship khá tệ, không có lực
+- toàn bộ các xe launcher khi đưa bệ phóng lên thì siêu lẹ nhưng đưa xuống thì về tốc độ bình thường, chỉnh lại tốc độ khi đưa lên
+- xe ew hammer+ laser aa + command vehicle có vẻ xấu, nên vẽ lại
+- wheeled tank thì tháp súng to quá nhìn kì
+- stealth carrier strike jet: nhìn hơi xấu, nên vẽ lại
+- mobile repair: nhìn hơi xấu, và không bắn súng
+- wreck turret car, towed anti tank gun, aerial tanker, heavy lift helicopter, armoured gunship helicopter, smoke carrier, loitering munition truck, tank support vehicle, counter battery radar, high speed recon jet, interceptor: xóa
+- wingman drone, deployable bunker, light sam vehicle, anti drone microwave vehicle, beyond sight atgm vehicle, radar-guided atgm vehicle, airborne fighting vehicle, shoot and scoot howitzer, long range glide bomber, radar scout car: xóa
+- fibre optic fpv carrier, interceptor drone vehicle, 57mm aa vehicle, mine layting rocket truck, light prop attack plane, light attack helicopter, turtle tank, wreack turret car, drone hijact vehicle, coastal ashm vehicle: bỏ
+- auto loading howitzer, amphibious light vehicle, airborne light tank, gournd rone carrier, mobie repair vehicle, mobie aa radar, laser dazzler vehicle: bỏ
+- các phương tiện nào vốn được triệu hồi từ fire support như decoy paradrop thì nên thêm vào tab trong fire support đó, bỏ bên ngoài để không chọn deck được như field tower hay gọi airborne light tank
+- list fire support bỏ: illumination flare , instant counter battery, drone intercept strike, radar chaff, uav scan, sead strike, guided shell, at cluster bomb, loitering uav strikem ammo respuply, jamming storm, smoke
+- công trình bỏ: anti tank gun emplacement, dragon teeth, inflatable decoy, minefield, searchlight, heavy flak tower, troop shelter, artillery emplacement, radar station, ammunition depot, visual jammer, anti tank gun emplacement: bỏ
+- ngoài drone hangar nên thêm hangar cho xe tăng và máy bay, nhớ vẽ lại toàn bộ 3 hangar, chỉ được gọi các xe hạng nhẹ như light tank và trực thăng chiến đấu nhẹ, sẽ có set rally point
+- airfield và repair bay, fire control centre đổi chức năng thành khi có trong căn cứ, mọi unit được hưởng tăng chỉ số như aura, 1 cái cho air, 1 cái cho phương tiện mặt đất, 1 cái cho công trình (fire control centre đổi thành tên khác cho phù hợp)
+- guard tower và laser anti drone station nên vẽ lại, drone station đổi tên thành cái khác luôn bởi vì không liên quan gì drone
+- mg bunker nên có thêm súng, bunker vốn có nhiều súng máy ở trong bắn ra
+- fire support napalm strike, airstrike: đổi lại bom, và máy bay thả bom
+- armoured bulldozer: preview nên phá tường và tháp canh
+- biển nhìn đỡ, nhưng khá lạ có vài ô không hề có biển cứ đi từ dưới lên trên
+
+boss in action preview:
+- các boss có pháp howitzer bị mất hiệu ứng bắn pháo vậy, sao nó biến thành đạn như xe tăng
+- boss leviathan: súng chưa quay xong đã bắn, khi bắn thiếu hiệu ứng nòng súng bị thụt, và các tháp pháo phụ không hề quay để bắn
+- inferno flame behemoth sao lại thành hình bầu dục, lấy model behemoth thu nhỏ lại, bỏ súng, thu nhỏ cỡ nòng
+- 2 model bastion boss đang khá xấu thiếu chi tiết, nên vẽ lại, đặt súng cho hợp lý, đặt cả ngay hông chứ không phải nóc không
+- harpy cũng vậy, không thấy bệ phóng tên lửa hay súng mà lại bắn được, nên cho nó đôi cánh như attack helicopter và gắn vào ở đó
+- jotunn: đằng sau có 3 bệ tên lửa không hợp lý không đối xứng, chỉ 2 thôi
+- juggernaut , nemesisvẫn xoay người lệch khỏi đường ray khi bắn
+- bỏ các boss stymphalos, hive, cerberusm atlas, kronos, caspian, morrigan, spectre,garuda , gungnir,  nếu cốt truyện dùng thì thay bằng boss khác,
+- nyx: sao có xe tank hỗ trợ của boss dưới biển được
+- vẽ lại toàn bộ các boss, ngân sách tam giác cho các boss tăng 250%-500% tùy boss càng đẹp càng chi tiết càng tốt, thoải mái sáng tạo, size toàn bộ boss tăng thêm 20-30%,
+
+
+base tab:
+- không kéo xuống đượcm UI nhìn có vẻ phức tạp (do bị phần ase cover che mất text mà không kéo xuống được)
+- chỗ để setting cho hq ở đâu, như triệu hồi quân gì, hay gắn súng gì, thêm tab mới cũng được
+
+có gì không hiểu hỏi tôi trước
