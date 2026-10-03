@@ -3042,6 +3042,24 @@
    "changes": [
     "FLAG nlos_atgm_vehicle: triangles 4,918 -> 7,440 (+51.3%); vertices 5,468 -> 10,270 (+87.8%); meshes 41 -> 60 (+46.3%); renderers 41 -> 60 (+46.3%); materials 8 -> 9 (+12.5%); materialSlots 41 -> 60 (+46.3%); fileBytes 310,732 -> 555,344 (+78.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "armored_car"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG armored_car: triangles 2,622 -> 6,804 (+159.5%); vertices 3,081 -> 9,530 (+209.3%); meshes 30 -> 46 (+53.3%); renderers 30 -> 46 (+53.3%); materials 7 -> 8 (+14.3%); materialSlots 30 -> 46 (+53.3%); fileBytes 180,844 -> 505,736 (+179.7%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "armored_car"
+   ],
+   "reason": "P35 wave 7",
+   "changes": []
   }
  ],
  "models": {
@@ -6432,24 +6450,24 @@
   },
   "armored_car": {
    "file": "armored_car.glb",
-   "fileBytes": 180844,
-   "sha1": "c5e4f948931fe0fd",
+   "fileBytes": 505736,
+   "sha1": "0322be161e484cc4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 37,
-   "meshes": 30,
-   "materials": 7,
+   "nodes": 53,
+   "meshes": 46,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 30,
-   "submeshes": 30,
-   "materialSlots": 30,
-   "materialsUsed": 7,
-   "triangles": 2622,
-   "vertices": 3081,
+   "renderers": 46,
+   "submeshes": 46,
+   "materialSlots": 46,
+   "materialsUsed": 8,
+   "triangles": 6804,
+   "vertices": 9530,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -6457,36 +6475,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 64,
+   "loosePieces": 243,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.04,
-    0.0,
-    -2.2101
+    -1.019,
+    -0.0038,
+    -2.28
    ],
    "boundsMax": [
-    1.04,
-    1.49,
-    2.66
+    1.019,
+    1.5509,
+    2.5944
    ],
    "size": [
-    4.87,
-    2.08,
-    1.49
+    4.874,
+    2.038,
+    1.555
    ],
    "center": [
     0.0,
-    0.745,
-    0.225
+    0.774,
+    0.157
    ],
-   "structureHash": "1413446cad776c92",
+   "structureHash": "606933c2b0f77302",
    "color0": {
-    "mean": 0.7086,
-    "min": 0.2646,
+    "mean": 0.5652,
+    "min": 0.0619,
     "max": 1.0,
-    "p05": 0.3659,
-    "p95": 0.9987,
+    "p05": 0.0952,
+    "p95": 0.8544,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -6514,40 +6532,56 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
+    "Antennas",
+    "Axles",
     "Coax",
-    "Deck",
-    "Exhaust",
-    "Exhaust_louvres",
-    "Hatch_fittings",
-    "Hatch_fittings.001",
+    "Doors",
+    "Fender_flares",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
     "Hatches",
     "Hatches.001",
+    "Hubs",
+    "Hubs.001",
+    "Hubs.002",
     "Hull",
+    "Hull_lower",
+    "Kit_latches",
+    "Kit_steel",
+    "Kit_steel.001",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
     "Main_cannon",
+    "Mantlet",
     "Muzzle_brake",
     "Muzzle_coax",
     "Muzzle_main",
     "Part_wheel",
     "Part_wheelb",
-    "Periscope",
-    "Periscope_hoods",
     "Point_exhaust",
     "Point_fire",
     "Sight",
-    "Smoke",
-    "Smoke_brackets",
-    "Steel",
+    "Smoke_launchers",
+    "Steps",
+    "Stowage",
+    "Suspension",
     "Tail_lamps",
+    "Team_band",
+    "Team_band.001",
+    "Trim_plate",
     "Turret",
-    "Turret_armor",
     "Turret_body",
+    "Turret_ring",
+    "Turret_roof",
     "Tyres",
     "Tyres.001",
     "Tyres.002",
-    "Undercarriage",
+    "Wheel_nuts",
+    "Wheel_nuts.001",
+    "Wheel_nuts.002",
     "Wheels",
     "Wheels.001",
     "Wheels.002"

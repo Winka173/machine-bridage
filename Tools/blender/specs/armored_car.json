@@ -1,0 +1,151 @@
+{
+ "id": "armored_car",
+ "class": "wheeled",
+ "real": [
+  "Steyr Pandur I 6x6 (unit_refs, sheet)",
+  "M242 Bushmaster 25 mm",
+  "M240 / PKT 7.62 mm coaxial"
+ ],
+ "shape": "unit_sheet.json Phương tiện: Xe 6 bánh lộ ngoài, thân hình hộp vát nghiêng phía trước, tháp pháo nhỏ ở giữa với nòng 25 mm dài. Từ trên xuống: chữ nhật hẹp, 3 cặp bánh nhô ra hai bên, tháp tròn giữa thân. Kích thước đề xuất khoảng 4.6 × 2.0 × 1.4 m (0,8 × Pandur I 6x6); vũ khí nhìn thấy M242 Bushmaster 25 mm, PKT / M240 7.62 mm; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (Pandur I published photographs and drawings)",
+ "target_size": {
+  "L": 4.78,
+  "W": 2.08,
+  "H": 1.49,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "boxy welded hull with the sharp V nose and sloped glacis, sloped upper sides, the driver's hatch and vision blocks",
+   "nodes": [
+    "Hull",
+    "Hull_lower",
+    "Glass",
+    "Hatches"
+   ]
+  },
+  {
+   "feature": "three exposed axles with lugged tyres, hubs, suspension arms",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Hubs",
+    "Axles",
+    "Suspension"
+   ]
+  },
+  {
+   "feature": "rear door with its window and step, roof hatches, side vision blocks",
+   "nodes": [
+    "Doors",
+    "Steps"
+   ]
+  },
+  {
+   "feature": "the small one-man turret in the middle with the long 25 mm gun and the coaxial MG",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Mantlet",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Coax",
+    "Muzzle_coax"
+   ]
+  },
+  {
+   "feature": "the gunner's sight, smoke dischargers on the turret",
+   "nodes": [
+    "Sight",
+    "Smoke_launchers"
+   ]
+  },
+  {
+   "feature": "headlamps in guards, tail lamps, stowage bins, tow points, aerials",
+   "nodes": [
+    "Lamps",
+    "Tail_lamps",
+    "Stowage",
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "autocannon_25",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "1 barrel"
+  },
+  {
+   "weapon": "mg_coax",
+   "slot": "coax",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_coax"
+   ],
+   "note": "aim Turret"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "a starter unit seen in numbers: under the 1.5 x cap"
+ },
+ "team_zones": [
+  "hull (Team)",
+  "turret (Team)",
+  "bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "Part_wheel / Part_wheelb come off (wrapper)",
+ "faction_style": "modern wheeled armour (both factions)",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "wheels"
+  ],
+  "tier2": [
+   "axles",
+   "door",
+   "hatches",
+   "gun",
+   "bins",
+   "lamps"
+  ],
+  "tier3": [
+   "vision blocks",
+   "wheel nuts",
+   "smoke tubes",
+   "handles",
+   "hinges",
+   "aerials",
+   "tow hooks"
+  ]
+ },
+ "questions": []
+}
