@@ -173,7 +173,7 @@
   },
   "ballistic_launcher": {
     "file": "ballistic_launcher.glb",
-    "triangles": 2818
+    "triangles": 7414
   },
   "ballistic_missile": {
     "file": "ballistic_missile.glb",

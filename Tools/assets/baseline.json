@@ -3126,6 +3126,16 @@
    "changes": [
     "FLAG heavy_rocket_artillery: triangles 3,668 -> 7,152 (+95.0%); vertices 4,392 -> 8,794 (+100.2%); meshes 19 -> 46 (+142.1%); renderers 19 -> 46 (+142.1%); materials 7 -> 10 (+42.9%); materialSlots 19 -> 46 (+142.1%); fileBytes 235,300 -> 475,896 (+102.3%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "ballistic_launcher"
+   ],
+   "reason": "P35 wave 9",
+   "changes": [
+    "FLAG ballistic_launcher: triangles 2,818 -> 7,414 (+163.1%); vertices 3,269 -> 9,077 (+177.7%); meshes 22 -> 51 (+131.8%); renderers 22 -> 51 (+131.8%); materials 10 -> 11 (+10.0%); materialSlots 22 -> 51 (+131.8%); fileBytes 183,412 -> 494,556 (+169.6%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -9459,24 +9469,24 @@
   },
   "ballistic_launcher": {
    "file": "ballistic_launcher.glb",
-   "fileBytes": 183412,
-   "sha1": "ff7fc94acb80c7ad",
+   "fileBytes": 494556,
+   "sha1": "3e066b5ca5651ed2",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 28,
-   "meshes": 22,
-   "materials": 10,
+   "nodes": 57,
+   "meshes": 51,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 22,
-   "submeshes": 22,
-   "materialSlots": 22,
-   "materialsUsed": 10,
-   "triangles": 2818,
-   "vertices": 3269,
+   "renderers": 51,
+   "submeshes": 51,
+   "materialSlots": 51,
+   "materialsUsed": 11,
+   "triangles": 7414,
+   "vertices": 9077,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -9484,36 +9494,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 76,
-   "openEdges": 0,
+   "loosePieces": 204,
+   "openEdges": 8,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.265,
+    -1.32,
     0.0,
-    -5.315
+    -5.34
    ],
    "boundsMax": [
-    1.265,
-    4.2049,
-    5.39
+    1.3185,
+    4.2079,
+    5.5291
    ],
    "size": [
-    10.705,
-    2.53,
-    4.205
+    10.869,
+    2.638,
+    4.208
    ],
    "center": [
-    0.0,
-    2.102,
-    0.037
+    -0.001,
+    2.104,
+    0.095
    ],
-   "structureHash": "d8eea7032d2c7365",
+   "structureHash": "6a85c262fcde110a",
    "color0": {
-    "mean": 0.6393,
-    "min": 0.0953,
+    "mean": 0.6126,
+    "min": 0.0584,
     "max": 1.0,
-    "p05": 0.2084,
-    "p95": 0.9898,
+    "p05": 0.1689,
+    "p95": 0.9547,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -9527,9 +9537,6 @@
     "mount": [
      "Mount_mg"
     ],
-    "loose": [
-     "Erector"
-    ],
     "point": [
      "Point_exhaust",
      "Point_fire"
@@ -9537,34 +9544,63 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Body",
+    "Antennas",
+    "Axles",
+    "Bumper",
+    "Cab",
     "Chassis",
-    "Erector",
-    "Erector_arms",
+    "Cover",
+    "Cover_hinges",
+    "Cover_rams",
+    "Cover_ribs",
+    "Doors",
+    "Erector_arm",
+    "Exhaust",
+    "Exhaust_caps",
+    "Exhaust_mufflers",
+    "Exhaust_shields",
+    "Floor",
     "Glass",
+    "Grille_frames",
+    "Grilles",
+    "Hubs",
+    "Hull",
+    "Jerrycans",
+    "Kit_latches",
+    "Kit_racks",
+    "Kit_steel",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
-    "MG",
-    "MG_ammo",
-    "MG_shield",
-    "Missile_band",
-    "Missile_body",
-    "Missile_casing",
-    "Missile_grid_fins",
-    "Missile_nose",
-    "Missile_tail",
+    "Launcher_beam",
+    "Launcher_cradles",
+    "Launcher_rams",
+    "Missile_bands",
+    "Missile_fins",
+    "Missile_seekers",
+    "Missiles",
     "Mount_mg",
+    "Mud_wings",
     "Muzzle_main",
     "Muzzle_mg",
+    "Nozzles",
+    "Outrigger_pads",
+    "Outriggers",
     "Point_exhaust",
     "Point_fire",
-    "Steel",
+    "Racks",
+    "Spare_wheel",
+    "Spare_wheel_rim",
+    "Steps",
+    "Stowage",
+    "Stowage.001",
     "Tail_lamps",
-    "Tanks",
+    "Team_band",
     "Turret",
     "Tyres",
-    "Wheels"
+    "Wheels",
+    "Window_frames",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,
@@ -9573,7 +9609,7 @@
    "units": [
     "ballistic_launcher"
    ],
-   "movingParts": 3,
+   "movingParts": 2,
    "budgetClass": "ground"
   },
   "ballistic_missile": {

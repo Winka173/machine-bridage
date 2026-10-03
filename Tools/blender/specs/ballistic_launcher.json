@@ -1,0 +1,139 @@
+{
+ "id": "ballistic_launcher",
+ "class": "wheeled",
+ "real": [
+  "Iskander-M 9P78-1 launcher, two 9M723 missiles (unit_refs: 9K720 Iskander)",
+  "MZKT-7930 8x8 chassis"
+ ],
+ "shape": "unit_refs: 9K720 Iskander (9M723), raising its missile to launch: the full-width four-seat cab with the raked split windscreen and sloped upper sides, four evenly spaced axles, the launcher bay with its two cover halves swung open and hanging along the sides, the left missile raised 22 degrees on its erector arm and the right one lying on the launch beam, fins, nozzles, seeker windows, rear and middle jacks.",
+ "confidence": "xấp xỉ (9P78-1 photographs; the def's modelSize, its height the raised missile)",
+ "target_size": {
+  "L": 10.7,
+  "W": 2.53,
+  "H": 4.18,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "full-width cab: windscreens, side windows, doors, steps, roof rack, whips",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Doors",
+    "Steps",
+    "Racks",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "frame on four axles, lugged tyres, wings",
+   "nodes": [
+    "Chassis",
+    "Axles",
+    "Wheels",
+    "Tyres",
+    "Mud_wings"
+   ]
+  },
+  {
+   "feature": "launcher bay with the cover halves hanging open",
+   "nodes": [
+    "Hull",
+    "Cover",
+    "Cover_ribs",
+    "Cover_hinges",
+    "Floor"
+   ]
+  },
+  {
+   "feature": "launch beam, the raised missile on its erector, the lying missile",
+   "nodes": [
+    "Turret",
+    "Launcher_beam",
+    "Erector_arm",
+    "Missiles",
+    "Missile_fins",
+    "Nozzles",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "jacks, toolboxes, jerrycans, spare wheel, exhaust",
+   "nodes": [
+    "Outriggers",
+    "Stowage",
+    "Jerrycans",
+    "Spare_wheel",
+    "Exhaust"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "ballistic_missile",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the raised missile's nose"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "note": "light wheeled: seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "cab (Team)",
+  "bay and cover (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "Russian TEL, team-coloured",
+ "details": {
+  "tier1": [
+   "cab",
+   "chassis",
+   "bay",
+   "missiles"
+  ],
+  "tier2": [
+   "cover halves",
+   "erector",
+   "jacks",
+   "bins",
+   "roof rack"
+  ],
+  "tier3": [
+   "mirrors",
+   "lamps",
+   "hooks",
+   "fins",
+   "ribs",
+   "whips"
+  ]
+ },
+ "questions": [
+  "The old file's Mount_mg / Muzzle_mg stay as plain pivots on the cab roof (the def has no secondary; no gun drawn)."
+ ]
+}
