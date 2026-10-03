@@ -1,0 +1,340 @@
+{
+ "id": "kraken",
+ "class": "boss",
+ "real": [
+  "Kuznetsov / Nimitz-line aircraft carrier: ski-jump, angled deck, island to starboard, Granit-style cells, CIWS galleries"
+ ],
+ "shape": "BossText note.kraken: the longest ship afloat, a flat flight deck with aircraft parked on it and a CIWS ring; modelSize 110 x 18.4 x 24 m (waterline z 0, keel -3, flight deck z 9).",
+ "confidence": "ban_dau_doan (no sheet shape note; BossText note and tip, the old builder)",
+ "target_size": {
+  "L": 110.0,
+  "W": 18.4,
+  "H": 24.0,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the flared hull (Armor) with the bulbous bow, dark bottom, boot-top, seams, portholes, anchors, Kessler bands",
+   "nodes": [
+    "Hull",
+    "Hull_low",
+    "Boot_top",
+    "Hull_seams",
+    "Portholes",
+    "Anchors",
+    "Team_band"
+   ]
+  },
+  {
+   "feature": "the overhanging flight deck (body) with the angled deck lines, runway marks, the ski-jump, lifts, sponsons, nets, lights",
+   "nodes": [
+    "Flight_deck",
+    "Deck_lines",
+    "Deck_marks",
+    "Ski_jump",
+    "Lifts",
+    "Lift_edges",
+    "Sponsons",
+    "Deck_nets",
+    "Deck_lights"
+   ]
+  },
+  {
+   "feature": "the island to starboard (superstructure): stepped blocks, bridge windows, array faces (Mount_APS), whips",
+   "nodes": [
+    "Island",
+    "Bridge_glass",
+    "Array_faces",
+    "Mount_APS",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "the main mast with the spinning search radar (radar)",
+   "nodes": [
+    "Mast",
+    "Part_radar",
+    "Radar",
+    "Radar_array"
+   ]
+  },
+  {
+   "feature": "the funnel on the island, one shade off (machinery)",
+   "nodes": [
+    "Part_engine",
+    "Funnel",
+    "Funnel_caps"
+   ]
+  },
+  {
+   "feature": "three heavy missile cells flush in the deck (turret_fore, turret_super, turret_aft)",
+   "nodes": [
+    "Part_gun",
+    "Part_gun.001",
+    "Part_gun.002",
+    "Mount_gun",
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Cell_plate",
+    "Cell_lids"
+   ]
+  },
+  {
+   "feature": "the VLS block (vls)",
+   "nodes": [
+    "Part_vls",
+    "Vls",
+    "Vls_hatches"
+   ]
+  },
+  {
+   "feature": "two SAM box launchers on sponsons (sec_fore, sec_aft)",
+   "nodes": [
+    "Part_sec_f",
+    "Part_sec_a",
+    "Mount_gun.003",
+    "Mount_gun.004",
+    "Sam_box_f",
+    "Sam_box_a"
+   ]
+  },
+  {
+   "feature": "two CIWS on sponsons (ciws_fore, ciws_aft) and the two four-mount gun galleries (aa_port, aa_starboard)",
+   "nodes": [
+    "Part_mg",
+    "Part_mg.001",
+    "Part_aa_l",
+    "Part_aa_r",
+    "Mount_mg",
+    "Mount_mg.009",
+    "Gallery_l",
+    "Gallery_r"
+   ]
+  },
+  {
+   "feature": "weak point: the landing area with four arresting wires, riveted plates one shade off and parked jets (flight_deck)",
+   "nodes": [
+    "Part_deck",
+    "Deck_plates",
+    "Kit_rivets",
+    "Arresting_wires",
+    "Jets",
+    "Jet_wings"
+   ]
+  },
+  {
+   "feature": "more jets and a helicopter forward, deck tractors and carts",
+   "nodes": [
+    "Jets",
+    "Jet_canopies",
+    "Helicopter",
+    "Heli_rotors",
+    "Deck_tractors",
+    "Deck_carts"
+   ]
+  },
+  {
+   "feature": "the stern boat bay with its RHIB (well_deck)",
+   "nodes": [
+    "Part_welldeck",
+    "Bay_frame",
+    "Bay_dark",
+    "Boats"
+   ]
+  },
+  {
+   "feature": "railings, life rafts, bollards, navigation lights, island and stern fittings",
+   "nodes": [
+    "Railings",
+    "Life_rafts",
+    "Bollards",
+    "Nav_lights",
+    "Island_fittings",
+    "Hangar_fittings"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_leviathan_lev406",
+   "slot": "mountWeapons 0",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_lev406",
+   "slot": "mountWeapons 1",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_lev406",
+   "slot": "mountWeapons 2",
+   "mount": "Mount_gun.002",
+   "muzzles": [
+    "Muzzle_gun.002"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_sec_lev155",
+   "slot": "mountWeapons 3",
+   "mount": "Mount_gun.003",
+   "muzzles": [
+    "Muzzle_gun.003"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_sec_lev155",
+   "slot": "mountWeapons 4",
+   "mount": "Mount_gun.004",
+   "muzzles": [
+    "Muzzle_gun.004"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_direct_lev127",
+   "slot": "mountWeapons 5",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "p26_leviathan_direct_lev127",
+   "slot": "mountWeapons 6",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "flight deck, island, funnel (Team) in Kessler colours",
+  "bands on both hull sides"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "turret_fore",
+   "node": "Part_gun"
+  },
+  {
+   "part": "turret_super",
+   "node": "Part_gun.001"
+  },
+  {
+   "part": "turret_aft",
+   "node": "Part_gun.002"
+  },
+  {
+   "part": "sec_fore",
+   "node": "Part_sec_f"
+  },
+  {
+   "part": "sec_aft",
+   "node": "Part_sec_a"
+  },
+  {
+   "part": "vls",
+   "node": "Part_vls"
+  },
+  {
+   "part": "aa_port",
+   "node": "Part_aa_l"
+  },
+  {
+   "part": "aa_starboard",
+   "node": "Part_aa_r"
+  },
+  {
+   "part": "ciws_fore",
+   "node": "Part_mg"
+  },
+  {
+   "part": "ciws_aft",
+   "node": "Part_mg.001"
+  },
+  {
+   "part": "radar",
+   "node": "Part_radar"
+  },
+  {
+   "part": "flight_deck",
+   "node": "Part_deck"
+  },
+  {
+   "part": "well_deck",
+   "node": "Part_welldeck"
+  },
+  {
+   "part": "machinery",
+   "node": "Part_engine"
+  }
+ ],
+ "wreck": "ShipSinking; parts break off on their Part_* nodes",
+ "faction_style": "General Kessler's navy: grey steel, Team flight deck and island",
+ "details": {
+  "tier1": [
+   "hull",
+   "flight deck",
+   "island"
+  ],
+  "tier2": [
+   "ski-jump",
+   "lifts",
+   "sponsons",
+   "galleries",
+   "mast",
+   "funnel",
+   "cell plates",
+   "SAM boxes",
+   "landing area plates",
+   "boat bay"
+  ],
+  "tier3": [
+   "jets",
+   "helicopter",
+   "tractors",
+   "carts",
+   "CIWS",
+   "nets",
+   "lights",
+   "life rafts",
+   "railings",
+   "portholes",
+   "wires",
+   "rivets",
+   "whips"
+  ]
+ },
+ "questions": [],
+ "frame": "sea",
+ "weak_points": [
+  "the flight deck feeds its aircraft and carries the air raid (tip): the landing area with wires and jets, riveted plates one shade off",
+  "the CIWS shoot missiles down (tip): two CIWS and two galleries on their own nodes, toned"
+ ],
+ "scale_note": "the real-type features (island, mast radar, cells, CIWS, jets) drawn 1.3-1.5 x for the boss read"
+}
