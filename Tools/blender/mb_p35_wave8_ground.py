@@ -127,6 +127,132 @@ def _heavy_turret(a, detail):
         hd.bolt_line(a.part('Turret_bolts', 'Steel', t), (-.8, 1.4, .5), (.8, 1.4, .5), 10)
 
 
+# ============================================================================= river_gunboat (Shmel-class monitor)
+def _hull_rings(y_stations):
+    """Hard-chine sections [(y, half_beam_deck, half_beam_chine, deck_z, chine_z, keel_z)] -> loft rings."""
+    rings = []
+    for y, hd_, hc, zd, zc, zk in y_stations:
+        rings.append([(-hd_, y, zd), (-hc, y, zc), (-hc * .35, y, zk + .06), (0, y, zk), (hc * .35, y, zk + .06),
+                      (hc, y, zc), (hd_, y, zd)])
+    return rings
+
+
+def river_gunboat(a):
+    """See the module docstring. Runtime: Turret, Main_cannon, Muzzle_brake, Muzzle_main (the 100 mm forward),
+    Mount_mg / Muzzle_mg (the aft gun tub), Point_fire, Point_exhaust."""
+    st = [(4.0, 1.42, 1.38, .82, .32, .12), (3.0, 1.5, 1.45, .8, .3, .1), (1.5, 1.52, 1.47, .8, .28, .1),
+          (0.0, 1.52, 1.45, .82, .28, .1), (-1.5, 1.42, 1.3, .86, .32, .12), (-2.6, 1.1, .9, .93, .42, .18),
+          (-3.3, .55, .35, 1.0, .6, .35), (-3.6, .06, .04, 1.06, .85, .7)]
+    a.part('Hull', 'Team').loft(_hull_rings(st), bevel=0)
+    deck = a.part('Deck', 'Armor')
+    k.extrude(deck, [(-1.4, 3.9), (1.4, 3.9), (1.44, -1.4), (1.0, -2.6), (.4, -3.3), (-.4, -3.3), (-1.0, -2.6),
+                     (-1.44, -1.4)], .04, loc=(0, 0, .84), axis='Z')
+    # Rub rail and spray strakes along the sides, old tyres hung as fenders, the boot-top band.
+    for s in (-1, 1):
+        a.part('Undercarriage', 'Undercarriage').tube([(s * 1.42, 3.95, .8), (s * 1.53, 1.5, .79),
+                                                       (s * 1.5, -1.5, .84), (s * 1.08, -2.6, .92),
+                                                       (s * .5, -3.3, 1.0)], .045, seg=5)
+        for z, y1 in ((.45, -2.9), (.6, -3.15)):
+            a.part('Strakes', 'Armor').tube([(s * 1.47, 2.5, z), (s * 1.42, -1.5, z + .03), (s * .9 * (1.1 - z), y1,
+                                                                                           z + .12)], .025, seg=4)
+        for y in (-.6, 1.0, 2.6):
+            a.part('Fender_tyres', 'Rubber').torus(.16, .06, loc=(s * 1.55, y, .55), rot=(0, R90, 0), seg=10, ring=5)
+            a.part('Fender_ropes', 'Canvas').cyl(.012, .25, loc=(s * 1.54, y, .78), seg=4, bevel=0)
+        a.part('Team_band', 'Team').box((.012, 4.6, .1), loc=(s * 1.53, .6, .68), bevel=0)
+        K.railing(a.part('Railings', 'Steel'), [(s * 1.36, 3.85, .86), (s * 1.38, 2.2, .86)], h=.5, post=.55,
+                  r=.016)
+        K.railing(a.part('Railings', 'Steel'), [(s * 1.38, -.4, .86), (s * 1.3, -1.7, .88), (s * .9, -2.6, .95)],
+                  h=.45, post=.6, r=.016)
+        for y in (3.6, -2.3):
+            k.lathe(a.part('Bollards', 'Steel'), [(.07, 0), (.07, .16), (.1, .18), (.1, .22), (0, .22)],
+                    loc=(s * 1.1 * (1 if y > 0 else .7), y, .86), seg=8)
+    # Anchor and its windlass on the forecastle, the jack staff.
+    k.lathe(a.part('Windlass', 'Armor'), [(.12, -.2), (.12, .2)], loc=(0, -2.85, 1.02), rot=(0, R90, 0), seg=10)
+    a.part('Anchor', 'Steel').box((.08, .05, .4), loc=(.35, -3.32, .82), rot=(.4, 0, 0), bevel=0)
+    a.part('Anchor', 'Steel').box((.32, .05, .06), loc=(.35, -3.4, .64), rot=(.4, 0, 0), bevel=0)
+    a.part('Antennas', 'Steel').cyl(.015, .6, loc=(0, -3.5, 1.35), seg=4, bevel=0)
+    _boat_turret(a)
+    _boat_wheelhouse(a)
+    _boat_aft(a)
+    a.pivot('Point_fire', (0, .5, 1.1))
+    a.pivot('Point_exhaust', (.8, 3.76, .5))
+    k.clean(a)
+
+
+def _boat_turret(a):
+    """The tank-type turret forward on its barbette: the cast-look house (lofted), the mantlet, the 100 mm with its
+    bore evacuator and baffle brake, the commander's cupola, the sight drum, the stowage on the turret rear."""
+    k.lathe(a.part('Barbette', 'Armor'), [(.95, 0), (.95, .1), (.88, .14)], loc=(0, -1.3, .84), seg=16)
+    t = a.pivot('Turret', (0, -1.3, .98))
+    body = a.part('Turret_body', 'Team', t)
+    W.poly_turret(body, [
+        (0, [(-.55, -.85), (.55, -.85), (.85, -.3), (.85, .55), (.6, .85), (-.6, .85), (-.85, .55), (-.85, -.3)]),
+        (.3, [(-.5, -.9), (.5, -.9), (.82, -.35), (.82, .6), (.58, .9), (-.58, .9), (-.82, .6), (-.82, -.35)]),
+        (.5, [(-.35, -.62), (.35, -.62), (.6, -.25), (.6, .5), (.45, .72), (-.45, .72), (-.6, .5), (-.6, -.25)])])
+    K.chamfer_box(a.part('Turret_armor', 'Armor', t), (.42, .3, .34), loc=(0, -.92, .2), c=.04)
+    K.gun_barrel(a, 'Main_cannon', t, 0, -1.02, .3, 1.23, .065, seg=10, extractor=(.45, 1.6, .3), brake='baffle')
+    a.pivot('Muzzle_main', (0, -2.55, .3), t)
+    k.ring(a.part('Turret_armor', 'Armor', t), [(.2, 0), (.25, 0), (.25, .1), (.2, .1)], loc=(.28, .2, .5), seg=10)
+    k.lathe(a.part('Turret_armor', 'Armor', t), [(0, .16), (.18, .15), (.22, .12), (.22, .1)], loc=(.28, .2, .5),
+            seg=10)
+    a.part('Sight_drum', 'Armor', t).cyl(.11, .16, loc=(-.3, -.3, .58), seg=10, bevel=0)
+    a.part('Sight_glass', 'Glass', t).box((.1, .01, .06), loc=(-.3, -.41, .6), bevel=0)
+    K.crate(a.part('Stowage', 'Armor', t), a.part('Kit_latches', 'Steel', t), (.7, .25, .22), (0, .93, .12), bands=1)
+    a.part('Team_band', 'Team', t).box((.6, .5, .012), loc=(0, .05, .505), bevel=0)
+
+
+def _boat_wheelhouse(a):
+    """The low armoured wheelhouse: sloped faces with slit windows, the roof with its searchlight, the mast with
+    the navigation radar array and the yard with antennas, the life rings on its sides, the engine vents behind."""
+    wh = a.part('Deckhouse', 'Team')
+    W.poly_turret(wh, [(.84, [(-1.0, -.35), (1.0, -.35), (1.0, 1.6), (-1.0, 1.6)]),
+                       (1.4, [(-1.0, -.42), (1.0, -.42), (1.0, 1.6), (-1.0, 1.6)]),
+                       (1.75, [(-.8, -.05), (.8, -.05), (.8, 1.45), (-.8, 1.45)])], chamfer=.04)
+    for x in (-.5, 0, .5):
+        a.part('Windows', 'Glass').box((.36, .02, .1), loc=(x, -.24, 1.58), rot=(-.75, 0, 0), bevel=0)
+    for s in (-1, 1):
+        a.part('Windows', 'Glass').box((.02, .3, .1), loc=(s * .91, .3, 1.58), rot=(0, s * .5, 0), bevel=0)
+        K.door(a, (s * 1.0, 1.0, .86), size=(.5, .8), normal=(s, 0, 0), mat='Team', frame_mat='Armor')
+        k.ring(a.part('Life_rings', 'BarrelRed'), [(.13, -.03), (.2, -.03), (.2, .03), (.13, .03)],
+               loc=(s * 1.03, .2, 1.15), rot=(0, R90, 0), seg=10)
+    # Searchlight, the mast with the radar array and yard, whips.
+    a.part('Steel', 'Steel').cyl(.05, .15, loc=(.5, .2, 1.83), seg=6, bevel=0)
+    k.lathe(a.part('Lamps', 'Armor'), [(.12, -.12), (.12, .12), (.09, .14)], loc=(.5, .14, 1.98), rot=K.FORWARD,
+            seg=10)
+    a.part('Lamps', 'Lamp').cyl(.1, .02, loc=(.5, .01, 1.98), rot=K.FORWARD, seg=10, bevel=0)
+    m = a.part('Steel', 'Steel')
+    m.cyl(.06, 1.0, loc=(-.2, .9, 2.25), seg=8, bevel=0)
+    m.box((1.3, .05, .05), loc=(-.2, .9, 2.55), bevel=0)
+    a.part('Radar_back', 'Armor').box((.12, .2, .12), loc=(-.2, .9, 2.72), bevel=0)
+    a.part('Radar_array', 'Armor').box((.8, .08, .1), loc=(-.2, .82, 2.8), bevel=0)
+    for x in (-.8, .4):
+        K.whip_antenna(a.part('Antennas', 'Steel'), (x, .9, 2.57), h=.3, lean=.0)
+    a.part('Team_band', 'Team').box((1.4, .9, .012), loc=(0, .7, 1.755), bevel=0)
+    # Engine room vents and the funnel-less exhausts behind the wheelhouse.
+    for x in (-.6, .6):
+        k.lathe(a.part('Vents', 'Armor'), [(.1, 0), (.1, .3), (.14, .32), (.16, .4), (.14, .5), (0, .5)],
+                loc=(x, 2.0, .86), seg=8)
+    K.grille(a, (0, 2.3, .875), 1.0, .5, facing=(0, 0, 1), slats=5, frame_mat='Armor')
+
+
+def _boat_aft(a):
+    """The aft deck: the gun tub (sandbagged ring) with the heavy machine gun on its pedestal (Mount_mg), ammunition
+    boxes, the smoke pots on the transom, the twin exhausts, the ensign staff, the rope coil."""
+    k.ring(a.part('Ciws_tub', 'Armor'), [(.55, 0), (.6, 0), (.6, .35), (.55, .35)], loc=(0, 3.1, .86), seg=14)
+    K.pintle_mg(a, None, (0, 3.1, .9), scale=1.5, length=.4, post=0, shield=True)
+    K.crate(a.part('Stowage', 'Crate'), a.part('Kit_latches', 'Steel'), (.4, .25, .2), (.85, 3.0, .96), bands=1)
+    K.crate(a.part('Stowage', 'Crate'), a.part('Kit_latches', 'Steel'), (.4, .25, .2), (-.85, 3.2, .96), bands=1)
+    for x in (-.8, .8):
+        a.part('Exhaust', 'Steel').cyl(.08, .3, loc=(x, 3.95, .55), rot=K.BACKWARD, seg=8, bevel=0)
+        K.soot(a, (x, 4.05, .55), radius=.3, k=.45)
+    for x in (-.4, .4):
+        a.part('Smoke_pots', 'Armor').cyl(.12, .3, loc=(x, 3.85, .99), seg=8, bevel=0)
+    a.part('Steel', 'Steel').cyl(.015, .8, loc=(0, 3.95, 1.25), seg=4, bevel=0)
+    a.part('Ensign', 'Team').box((.01, .3, .2), loc=(0, 4.1, 1.55), bevel=0)
+    a.part('Rope_coil', 'Canvas').torus(.15, .04, loc=(-1.0, 2.7, .9), seg=10, ring=4)
+
+
 BUILDERS = {
     'heavy_tank': (heavy_tank, dict(ao_distance=.6, grime_height=.55)),
+    'river_gunboat': (river_gunboat, dict(ao_distance=.6, ao_strength=.5, grime_height=.05)),
 }
