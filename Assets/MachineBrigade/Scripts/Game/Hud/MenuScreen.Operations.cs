@@ -202,7 +202,7 @@ namespace MachineBrigade.Game.Hud
             }
             body.Add(Kit.Text(Kit.Caps(Strings.Get(full ? "hunt.fullRoster" : "hunt.roster")), "fc-panel-title fc-section__title fc-mt-4"));
             var bosses = Kit.Box("fc-row fc-row--wrap fc-row--top fc-mt-2");
-            // Prompt 29 C11: the draw's main flag (Gungnir in chapter 11's mini slot is a main), not the rank alone.
+            // Prompt 29 C11: the draw's main flag (Monster in chapter 11's mini slot is a main), not the rank alone.
             var mainIds = BossHunts.MainIds();
             foreach (var id in run)
             {

@@ -52,7 +52,7 @@ namespace MachineBrigade.Game.Match
                     {
                         if (slots.Contains(id) && catalog.Vehicles.TryGetValue(id, out var def) && (!OnRails(def) || def.Arena != null) && seen.Add(id))
                             // Prompt 29 C11: a boss of the main rank counts as a main boss in the hunts even where its chapter
-                            // lists it in a mini slot (Gungnir, chapter 11: 17 mains and 24 minis to draw 3 and 7 from).
+                            // lists it in a mini slot (Monster, chapter 11).
                             list.Add(new HuntBoss(id, id == chapter.Main || def.Rank == BossRank.Main, chapter.Number, AirDefence(def)));
                     }
                     foreach (var m in Campaign.MissionsOf(chapter.Number))
@@ -119,7 +119,7 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>
         /// Prompt 29 C11 (checked in the G1 pass): the bosses the hunts count as main, the draw's own flag (a chapter's main, or
-        /// a boss of the main rank in a mini slot: Gungnir), so the rules line and the roster's marks agree with the draw (17 mains).
+        /// a boss of the main rank in a mini slot: Monster), so the rules line and the roster's marks agree with the draw (17 mains).
         /// </summary>
         public static HashSet<string> MainIds()
         {
