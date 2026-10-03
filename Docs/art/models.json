@@ -1053,15 +1053,15 @@
   },
   "helipad": {
     "file": "helipad.glb",
-    "triangles": 2224
+    "triangles": 4370
   },
   "helipad_a": {
     "file": "helipad_a.glb",
-    "triangles": 3614
+    "triangles": 6422
   },
   "helipad_b": {
     "file": "helipad_b.glb",
-    "triangles": 4140
+    "triangles": 5582
   },
   "highrise_a": {
     "file": "highrise_a.glb",

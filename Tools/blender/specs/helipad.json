@@ -4,13 +4,13 @@
  "real": [
   "helicopter landing pad (the H)"
  ],
- "shape": "unit_sheet.json Công trình (airfield): a flat concrete landing pad with paint marks and lights, 10.0 x 10.0 x 0.1 m; passable, kept flat.",
+ "shape": "unit_sheet.json Công trình (airfield): a flat concrete landing pad with paint marks and lights, 10.0 x 10.0 x 0.1 m; passable, kept flat. Wave 12 (lane C): the paint over the stains (the H clear), elevated perimeter lights, tie-down cups, the windsock and two floodlight posts, a hose-reel fuel cabinet and an extinguisher trolley.",
  "confidence": "ban_dau_doan",
  "target_size": {
   "L": 10.0,
   "W": 10.0,
-  "H": 0.115,
-  "source": "the old GLB (wave 2 keeps sizes within 10 %)",
+  "H": 3.39,
+  "source": "the old GLB's footprint (kept exactly); the height is wave 12's windsock and light posts (thin props above the flat pad, the lead's allowance)",
   "tolerance": 0.1
  },
  "features": [
@@ -38,6 +38,38 @@
     "Lamp_rims",
     "Tie_downs",
     "Drain_grates"
+   ]
+  },
+  {
+   "feature": "wave 12: elevated green FATO perimeter lights, tie-down cups and rings, flush lamps in rims",
+   "nodes": [
+    "Perimeter_lights",
+    "Lamp_rims",
+    "Tie_down_cups",
+    "Tie_downs"
+   ]
+  },
+  {
+   "feature": "wave 12: the ICAO windsock (frangible mast, swivel frame, five-band sock, obstruction light)",
+   "nodes": [
+    "Windsock_pole",
+    "Obstruction_light",
+    "Windsock"
+   ]
+  },
+  {
+   "feature": "wave 12: two floodlight posts at the front corners",
+   "nodes": [
+    "Light_poles",
+    "Light_housing"
+   ]
+  },
+  {
+   "feature": "wave 12: the hose-reel fuel cabinet and the extinguisher trolley by the cut corner",
+   "nodes": [
+    "Fuel_cabinet",
+    "Hose_reels",
+    "Extinguishers"
    ]
   }
  ],
