@@ -112,7 +112,7 @@ namespace MachineBrigade.Sim.Content
         /// The penetration a blast's fragments carry against a vehicle's armour (prompt 15 B.1: level 1, a heavy
         /// machine gun's), whatever made the blast; against structures and aircraft the blast keeps the round's own.
         /// </summary>
-        public const int FragmentPenetration = 1;
+        public static int FragmentPenetration => global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.FragmentPenetration;
 
         /// <summary>Penetration of a splash from a round of <paramref name="penetration"/> against <paramref name="kind"/>.</summary>
         public static float SplashPenetration(float penetration, TargetKind kind) =>

@@ -1,0 +1,421 @@
+file,line,literal,key,unit,kind,linh_vuc,occurrence,mode,note,context
+Sim/Combat/CombatSystem.Bombs.cs,26,40f,weapons.combatSystem.bombGravity,x,khac,01,1,const_to_property,,const_field: internal const float BombGravity = 40f;
+Sim/Combat/CombatSystem.Bombs.cs,29,0.5f,weapons.combatSystem.freeFallScatter,x,khac,01,1,const_to_property,,const_field: internal const float FreeFallScatter = 0.5f;
+Sim/Combat/CombatSystem.Bombs.cs,47,2f,weapons.combatSystem.bombFallMaxScale,count,ban_kinh,01,1,inline,,"multiply: internal static float BombFall(Vehicle shooter) => MathF.Sqrt(2f * MathF.Max(4f, shooter.Height) / BombGravity);"
+Sim/Combat/CombatSystem.Bombs.cs,47,4f,weapons.combatSystem.bombFallHeightFloor,m,ban_kinh,01,1,inline,,"math_max: internal static float BombFall(Vehicle shooter) => MathF.Sqrt(2f * MathF.Max(4f, shooter.Height) / BombGravity);"
+Sim/Combat/CombatSystem.Bombs.cs,68,0.5f,weapons.combatSystem.bombReachStickLengthScale,m,sat_thuong,01,1,inline,,"multiply: v.Speed * BombFall(v) + StickLength(v, weapon, weapon.Burst) * 0.5f + weapon.SplashRadius;"
+Sim/Combat/CombatSystem.Bombs.cs,92,0.5f,weapons.combatSystem.stickStraddlesBlastScale,x,sat_thuong,01,1,inline,,multiply: if (across > blast || along < fall - blast * 0.5f) return false;
+Sim/Combat/CombatSystem.Bombs.cs,93,0.5f,weapons.combatSystem.stickStraddlesBlastScale,x,sat_thuong,01,1,inline,,"multiply: if (weapon.Stick is { Laid: true, Anchor: StickAnchor.Start }) return along <= fall + blast * 0.5f;"
+Sim/Combat/CombatSystem.Bombs.cs,95,0.5f,weapons.combatSystem.stickStraddlesStickScale,s,thoi_gian,01,1,inline,,"multiply: return Vector2.Dot(centre - v.Position, forward) <= fall + stick * 0.5f;"
+Sim/Combat/CombatSystem.Bombs.cs,103,0.5f,weapons.combatSystem.groupCentreLengthScale,x,sat_thuong,01,1,inline,,"multiply: StickTargets(v, target.Position, length * 0.5f + weapon.SplashRadius + weapon.WarnRadius, out _);"
+Sim/Combat/CombatSystem.Bombs.cs,119,0.5f,weapons.combatSystem.bestStickCentreSpacingScale,s,thoi_gian,01,1,inline,,"multiply: var step = MathF.Max(1f, spacing * 0.5f);"
+Sim/Combat/CombatSystem.Bombs.cs,120,0.5f,weapons.combatSystem.bestStickCentreLengthScale,s,thoi_gian,01,1,inline,,multiply: var alongSteps = length > 0f ? (int)MathF.Floor(length * 0.5f / step + 1e-4f) : 0;
+Sim/Combat/CombatSystem.Bombs.cs,121,2,weapons.combatSystem.bestStickCentreLateralTrue,s,thoi_gian,01,1,inline,,conditional: var sideSteps = lateral > 0f ? 2 : 0;
+Sim/Combat/CombatSystem.Bombs.cs,136,2,weapons.combatSystem.bestStickCentreCountScale,s,thoi_gian,01,1,inline,,"multiply: var score = count * 2 + (UnderStick(target, centre, dir, bombs, spacing, reach) ? 1 : 0);"
+Sim/Combat/CombatSystem.Bombs.cs,151,0.5f,weapons.combatSystem.underStickBombsScale,s,thoi_gian,01,1,inline,,"multiply: if (Vector2.DistanceSquared(point, centre + dir * ((k - (bombs - 1) * 0.5f) * spacing)) <= reach) return true;"
+Sim/Combat/CombatSystem.Bombs.cs,160,0.5f,weapons.combatSystem.stickNearOwnStickScale,s,thoi_gian,01,1,inline,,multiply: var middle = BombImpact(v) + SimMath.Forward(v.Heading) * (stick * 0.5f);
+Sim/Combat/CombatSystem.Bombs.cs,161,0.5f,weapons.combatSystem.stickNearOwnStickScale,x,sat_thuong,01,1,inline,,"multiply: return OwnNear(v.Team, middle, weapon.SplashRadius + stick * 0.5f + 3f);"
+Sim/Combat/CombatSystem.Bombs.cs,161,3f,weapons.combatSystem.stickNearOwnSplashRadiusAdd,m,sat_thuong,01,1,inline,,"add: return OwnNear(v.Team, middle, weapon.SplashRadius + stick * 0.5f + 3f);"
+Sim/Combat/CombatSystem.Bombs.cs,167,0.70710678f,weapons.combatSystem.axisCone,deg,khac,01,1,const_to_property,,const_field: internal const float AxisCone = 0.70710678f;
+Sim/Combat/CombatSystem.Bombs.cs,180,2,weapons.combatSystem.stickDirectionCountMax,count,thoi_gian,01,1,inline,,compare: if (points.Count < 2) return way;
+Sim/Combat/CombatSystem.Bombs.cs,195,0.5f,weapons.combatSystem.stickDirectionCxxScale,s,thoi_gian,01,1,inline,,multiply: var half = 0.5f * (cxx - cyy);
+Sim/Combat/CombatSystem.Bombs.cs,201,0.5f,weapons.combatSystem.stickDirectionAtan2Scale,s,thoi_gian,01,1,inline,,"multiply: var angle = 0.5f * MathF.Atan2(2f * cxy, cxx - cyy);"
+Sim/Combat/CombatSystem.Bombs.cs,201,2f,weapons.combatSystem.stickDirectionCxyScale,s,thoi_gian,01,1,inline,,"multiply: var angle = 0.5f * MathF.Atan2(2f * cxy, cxx - cyy);"
+Sim/Combat/CombatSystem.Bombs.cs,242,0.5f,weapons.combatSystem.stickCountStickLengthScale,m,thoi_gian,01,1,inline,,"multiply: var count = StickTargets(v, target.Position, StickLength(v, weapon, s.Bombs) * 0.5f + weapon.WarnRadius, out var structures);"
+Sim/Combat/CombatSystem.Bombs.cs,243,2,weapons.combatSystem.stickCountStructuresMin,count,thoi_gian,01,1,inline,,"compare: return count >= s.MinTargets || structures >= 2 ? salvo : Math.Min(salvo, s.Reduced);"
+Sim/Combat/CombatSystem.Bombs.cs,272,0.5f,weapons.combatSystem.stickLineLengthScale,x,sat_thuong,01,1,inline,,"multiply: StickTargets(v, aim, length * 0.5f + weapon.SplashRadius + weapon.WarnRadius, out _);"
+Sim/Combat/CombatSystem.Bombs.cs,273,0.5f,weapons.combatSystem.stickLineSplashRadiusScale,m,sat_thuong,01,1,inline,,"multiply: var centre = BestStickCentre(aim, dir, bombs, s.Spacing, weapon.SplashRadius, weapon.SplashRadius * 0.5f, _stickPoints, out _);"
+Sim/Combat/CombatSystem.Bombs.cs,274,0.5f,weapons.combatSystem.stickLineLengthScale,s,thoi_gian,01,1,inline,,multiply: start = centre - dir * (length * 0.5f);
+Sim/Combat/CombatSystem.Bombs.cs,282,0.5f,weapons.combatSystem.axisAtLengthScale,s,thoi_gian,01,1,inline,,"multiply: StickTargets(v, aim, length * 0.5f + weapon.WarnRadius, out _);"
+Sim/Combat/CombatSystem.Bombs.cs,339,0.5f,weapons.combatSystem.stickEntryLengthScale,s,thoi_gian,01,1,inline,,multiply: var back = v.Speed * BombFall(v) + length * 0.5f + turnRadius;
+Sim/Combat/CombatSystem.Bombs.cs,340,1e-3f,weapons.combatSystem.stickEntryDistanceMax,s,thoi_gian,01,1,inline,,compare: if (distance < 1e-3f || distance <= back + turnRadius * 2f) return goal;
+Sim/Combat/CombatSystem.Bombs.cs,340,2f,weapons.combatSystem.stickEntryTurnRadiusScale,m,thoi_gian,01,1,inline,,multiply: if (distance < 1e-3f || distance <= back + turnRadius * 2f) return goal;
+Sim/Combat/CombatSystem.Bombs.cs,342,0.996f,weapons.combatSystem.stickEntryDotMin,s,thoi_gian,01,1,inline,,"compare: if (Vector2.Dot(dir, offset / distance) > 0.996f) return goal;"
+Sim/Combat/CombatSystem.Bombs.cs,345,0.5f,weapons.combatSystem.stickEntrySplashRadiusScale,m,sat_thuong,01,1,inline,,"multiply: var centre = BestStickCentre(target.Position, dir, s.Bombs, s.Spacing, weapon.SplashRadius, weapon.SplashRadius * 0.5f, _stickPoints, out _);"
+Sim/Combat/CombatSystem.Munitions.cs,50,2,weapons.combatSystem.leadPointPassMax,x,nguong,01,1,inline,,compare: for (var pass = 0; pass < 2; pass++)
+Sim/Combat/CombatSystem.Munitions.cs,54,0.8f,weapons.combatSystem.leadPointDistanceFloor,m,ban_kinh,01,1,inline,,"math_max: ? MathF.Max(0.8f, distance / MathF.Max(8f, shooter.Speed))"
+Sim/Combat/CombatSystem.Munitions.cs,54,8f,weapons.combatSystem.leadPointSpeedFloor,m/s,ban_kinh,01,1,inline,,"math_max: ? MathF.Max(0.8f, distance / MathF.Max(8f, shooter.Speed))"
+Sim/Combat/CombatSystem.Munitions.cs,132,0.5,weapons.combatSystem.flarePointNextDoubleMax,share,xac_suat,01,1,inline,,"compare: var side = new Vector2(back.Y, -back.X) * (_world.Random.NextDouble() < 0.5 ? -1f : 1f);"
+Sim/Combat/CombatSystem.Munitions.cs,134,0.8f,weapons.combatSystem.flarePointBackScale,m,ban_kinh,01,1,inline,,multiply: return flyer.Position + Vector2.Normalize(back * 0.8f + side * 0.6f) * reach;
+Sim/Combat/CombatSystem.Munitions.cs,134,0.6f,weapons.combatSystem.flarePointSideScale,m,ban_kinh,01,1,inline,,multiply: return flyer.Position + Vector2.Normalize(back * 0.8f + side * 0.6f) * reach;
+Sim/Combat/CombatSystem.P17.cs,14,6f,weapons.combatSystem.relayPriority,x,khac,01,1,const_to_property,,const_field: internal const float RelayPriority = 6f;
+Sim/Combat/CombatSystem.P17.cs,41,31,weapons.combatSystem.revealedToTeamMax,s,thoi_gian,01,1,inline,,compare: return s.Until > _world.Time && team >= 0 && team < 31 && (s.Stacks & (1 << team)) != 0;
+Sim/Combat/CombatSystem.P17.cs,45,3f,weapons.combatSystem.seadPriority,x,khac,01,1,const_to_property,,const_field: internal const float SeadPriority = 3f;
+Sim/Combat/CombatSystem.P17.cs,129,0.01f,weapons.combatSystem.swarmTargetSqrtScale,x,sat_thuong,01,1,inline,,"multiply: var score = due / MathF.Max(1f, other.Hp) + MathF.Sqrt(d2) * 0.01f;"
+Sim/Combat/CombatSystem.P17.cs,130,10f,weapons.combatSystem.swarmTargetScore,x,khac,01,1,inline,,compound_assign: if (other.Def.Obstacle) score += 10f;
+Sim/Combat/CombatSystem.P17.cs,132,0.5f,weapons.combatSystem.swarmTargetIdFalse,x,khac,01,1,inline,,conditional: if (singles != null && (other.Id == singles.SwarmLast || other.Id == singles.SwarmBefore)) score += other.Id == singles.SwarmLast ? 1f : 0.5f;
+Sim/Combat/CombatSystem.P25A.cs,20,0.5f,weapons.combatSystem.groupWeight,x,khac,01,1,const_to_property,,const_field: internal const float GroupWeight = 0.5f;
+Sim/Combat/CombatSystem.P25A.cs,23,12f,weapons.combatSystem.bigAircraft,x,khac,01,1,manual:const used in a constant context (pattern at Game/Audio/AudioDirector.P34.cs:249),,const_field: internal const float BigAircraft = 12f;
+Sim/Combat/CombatSystem.P25A.cs,26,1.5f,weapons.combatSystem.decoyBait,x,khac,01,1,const_to_property,,const_field: internal const float DecoyBait = 1.5f;
+Sim/Combat/CombatSystem.P25A.cs,47,4f,weapons.combatSystem.p25WorthSplashRadiusAdd,m,sat_thuong,01,1,inline,,add: var reach = weapon.SplashRadius + 4f;
+Sim/Combat/CombatSystem.P25A.cs,52,1.5f,weapons.combatSystem.p25WorthF,x,khac,01,1,inline,,compound_assign: if (Worth(other) >= BigAircraft) f *= 1.5f;
+Sim/Combat/CombatSystem.P25A.cs,54,3f,weapons.combatSystem.p25WorthWorthTrue,x,khac,01,1,inline,,conditional: if (other.Flying && weapon.BigGame) f *= Worth(other) >= BigAircraft || other.Def.Orbit ? 3f : 0.6f;
+Sim/Combat/CombatSystem.P25A.cs,54,0.6f,weapons.combatSystem.p25WorthWorthFalse,x,khac,01,1,inline,,conditional: if (other.Flying && weapon.BigGame) f *= Worth(other) >= BigAircraft || other.Def.Orbit ? 3f : 0.6f;
+Sim/Combat/CombatSystem.P25A.cs,60,250f,weapons.combatSystem.p25WorthMaxHpDivisor,count,nguong,01,1,inline,,"divide: f *= MathF.Sqrt(Math.Clamp(mimic.MaxHp / 250f, 2f, 25f) / Math.Clamp(Worth(other), 2f, 25f)) * (ThreatWeight / 0.3f) * DecoyBait;"
+Sim/Combat/CombatSystem.P25A.cs,60,2f,weapons.combatSystem.p25WorthMaxHpMin,count,nguong,01,1,inline,,"math_clamp: f *= MathF.Sqrt(Math.Clamp(mimic.MaxHp / 250f, 2f, 25f) / Math.Clamp(Worth(other), 2f, 25f)) * (ThreatWeight / 0.3f) * DecoyBait;"
+Sim/Combat/CombatSystem.P25A.cs,60,25f,weapons.combatSystem.p25WorthMaxHpMax,count,nguong,01,1,inline,,"math_clamp: f *= MathF.Sqrt(Math.Clamp(mimic.MaxHp / 250f, 2f, 25f) / Math.Clamp(Worth(other), 2f, 25f)) * (ThreatWeight / 0.3f) * DecoyBait;"
+Sim/Combat/CombatSystem.P25A.cs,60,0.3f,weapons.combatSystem.p25WorthThreatWeightDivisor,x,nguong,01,1,inline,,"divide: f *= MathF.Sqrt(Math.Clamp(mimic.MaxHp / 250f, 2f, 25f) / Math.Clamp(Worth(other), 2f, 25f)) * (ThreatWeight / 0.3f) * DecoyBait;"
+Sim/Combat/CombatSystem.P25A.cs,60,2f,weapons.combatSystem.p25WorthWorthMin,x,nguong,01,2,inline,,"math_clamp: f *= MathF.Sqrt(Math.Clamp(mimic.MaxHp / 250f, 2f, 25f) / Math.Clamp(Worth(other), 2f, 25f)) * (ThreatWeight / 0.3f) * DecoyBait;"
+Sim/Combat/CombatSystem.P25A.cs,60,25f,weapons.combatSystem.p25WorthWorthMax,x,nguong,01,2,inline,,"math_clamp: f *= MathF.Sqrt(Math.Clamp(mimic.MaxHp / 250f, 2f, 25f) / Math.Clamp(Worth(other), 2f, 25f)) * (ThreatWeight / 0.3f) * DecoyBait;"
+Sim/Combat/CombatSystem.P25A.cs,99,0.3f,weapons.combatSystem.mrsiTravelMrsiLandsFloor,s,thoi_gian,01,1,inline,,"math_max: return MathF.Max(0.3f, (float)(shooter.MrsiLands - now));"
+Sim/Combat/CombatSystem.P25A.cs,188,0.3f,weapons.combatSystem.huntDistanceFloor,m,ban_kinh,01,1,inline,,"math_max: var flight = MathF.Max(0.3f, Vector2.Distance(v.Position, at) / MathF.Max(1f, weapon.ProjectileSpeed));"
+Sim/Combat/CombatSystem.P25A.cs,194,0.6f,weapons.combatSystem.huntCatch,x,khac,01,1,const_to_property,,const_field: private const float HuntCatch = 0.6f;
+Sim/Combat/CombatSystem.P26.cs,17,3f,weapons.combatSystem.crowdFrom,x,khac,01,1,const_to_property,,const_field: internal const float CrowdFrom = 3f;
+Sim/Combat/CombatSystem.P26.cs,26,2f,weapons.combatSystem.p26WorthWorthMin,x,nguong,01,1,inline,,"math_clamp: var worth = Math.Clamp(Worth(other), 2f, 25f);"
+Sim/Combat/CombatSystem.P26.cs,26,25f,weapons.combatSystem.p26WorthWorthMax,x,nguong,01,1,inline,,"math_clamp: var worth = Math.Clamp(Worth(other), 2f, 25f);"
+Sim/Combat/CombatSystem.P26.cs,35,25f,weapons.combatSystem.p26WorthWorthMax,m,ban_kinh,01,1,inline,,"math_clamp: if (Vector2.DistanceSquared(e.Position, other.Position) <= (core + e.Radius) * (core + e.Radius)) crowd += Math.Clamp(Worth(e), 1f, 25f);"
+Sim/Combat/CombatSystem.P26.cs,40,10f,weapons.combatSystem.p26WorthWorthDivisor,x,khac,01,1,inline,,divide: return MathF.Sqrt(worth / 10f);
+Sim/Combat/CombatSystem.P28.cs,21,0.6f,weapons.combatSystem.p28WorthClampScale,count,gioi_han_thuc_the,01,1,inline,,"multiply: if (v.SquadFocus.IsValid && v.SquadFocus.Value == other.Id.Value) worth *= 1f + 0.6f * Math.Clamp(v.SquadFocusWeight, 0f, 2f);"
+Sim/Combat/CombatSystem.P28.cs,21,2f,weapons.combatSystem.p28WorthSquadFocusWeightMax,count,gioi_han_thuc_the,01,1,inline,,"math_clamp: if (v.SquadFocus.IsValid && v.SquadFocus.Value == other.Id.Value) worth *= 1f + 0.6f * Math.Clamp(v.SquadFocusWeight, 0f, 2f);"
+Sim/Combat/CombatSystem.P28.cs,26,1.8f,weapons.combatSystem.p28WorthWorth,x,khac,01,1,inline,,compound_assign: worth *= 1.8f;
+Sim/Combat/CombatSystem.P28.cs,29,0.6f,weapons.combatSystem.p28WorthWorth2,m,ban_kinh,01,1,inline,,"compound_assign: if (!v.Flying && weapon.MinRange <= 0f && weapon.Projectile != ProjectileKind.Bomb && FriendInLine(v, other)) worth *= 0.6f;"
+Sim/Combat/CombatSystem.P28.cs,41,4f,weapons.combatSystem.friendInLineLengthMax,m,ban_kinh,01,1,inline,,compare: if (length < 4f) return false;
+Sim/Combat/CombatSystem.P28.cs,48,2f,weapons.combatSystem.friendInLineAlongMax,m,ban_kinh,01,1,inline,,compare: if (along <= 2f || along >= length - 2f || along > 60f) continue;
+Sim/Combat/CombatSystem.P28.cs,48,60f,weapons.combatSystem.friendInLineAlongMin,m,ban_kinh,01,1,inline,,compare: if (along <= 2f || along >= length - 2f || along > 60f) continue;
+Sim/Combat/CombatSystem.P28.cs,48,2f,weapons.combatSystem.friendInLineLengthSub,m,ban_kinh,01,2,inline,,subtract: if (along <= 2f || along >= length - 2f || along > 60f) continue;
+Sim/Combat/CombatSystem.P28Structures.cs,36,2f,weapons.combatSystem.towerWorthDistanceScale,m,ban_kinh,01,1,inline,,"multiply: TowerMode.Nearest or TowerMode.NearestRound or TowerMode.ShieldKey => 1f / (1f + 2f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range)"
+Sim/Combat/CombatSystem.P28Structures.cs,37,0.5f,weapons.combatSystem.towerWorthStrengthOfFloor,x,nguong,01,1,inline,,"math_max: TowerMode.Strongest => MathF.Sqrt(MathF.Max(0.5f, TeamIntel.StrengthOf(other))),"
+Sim/Combat/CombatSystem.P28Structures.cs,38,1.6f,weapons.combatSystem.towerWorthHpSub,x,sat_thuong,01,1,inline,,"subtract: TowerMode.Weakest => 1.6f - other.Hp / MathF.Max(1f, other.MaxHp) + 200f / MathF.Max(50f, other.Hp),"
+Sim/Combat/CombatSystem.P28Structures.cs,38,200f,weapons.combatSystem.towerWorthMaxDivisor,count,sat_thuong,01,1,inline,,"divide_num: TowerMode.Weakest => 1.6f - other.Hp / MathF.Max(1f, other.MaxHp) + 200f / MathF.Max(50f, other.Hp),"
+Sim/Combat/CombatSystem.P28Structures.cs,38,50f,weapons.combatSystem.towerWorthHpFloor,x,sat_thuong,01,1,inline,,"math_max: TowerMode.Weakest => 1.6f - other.Hp / MathF.Max(1f, other.MaxHp) + 200f / MathF.Max(50f, other.Hp),"
+Sim/Combat/CombatSystem.P28Structures.cs,40,3f,weapons.combatSystem.towerWorthFlyingTrue,x,khac,01,1,inline,,"conditional: TowerMode.AirFirst or TowerMode.MissilesFirst => other.Flying ? 3f : 1f,"
+Sim/Combat/CombatSystem.P28Structures.cs,41,300f,weapons.combatSystem.towerWorthMaxHpDivisor,count,nguong,01,1,inline,,"divide: TowerMode.BiggestAircraft => other.Flying ? 1f + other.MaxHp / 300f : 0.5f,"
+Sim/Combat/CombatSystem.P28Structures.cs,41,0.5f,weapons.combatSystem.towerWorthFlyingFalse,x,nguong,01,1,inline,,"conditional: TowerMode.BiggestAircraft => other.Flying ? 1f + other.MaxHp / 300f : 0.5f,"
+Sim/Combat/CombatSystem.P28Structures.cs,42,0.5f,weapons.combatSystem.towerWorthCrowdScale,x,khac,01,1,inline,,"multiply: TowerMode.Cluster => 1f + 0.5f * Crowd(other, 8f),"
+Sim/Combat/CombatSystem.P28Structures.cs,42,8f,weapons.combatSystem.towerWorthRadius,m,ban_kinh,01,1,inline,,"arg:CombatSystem.Crowd: TowerMode.Cluster => 1f + 0.5f * Crowd(other, 8f),"
+Sim/Combat/CombatSystem.P28Structures.cs,43,3f,weapons.combatSystem.towerWorthMinRangeTrue,m,ban_kinh,01,1,inline,,"conditional: TowerMode.ArtilleryFirst => other.Def.Weapon.MinRange > 0f ? 3f : 1f,"
+Sim/Combat/CombatSystem.P28Structures.cs,54,0.05f,weapons.combatSystem.towerWorthWorth,x,sat_thuong,01,1,inline,,"compound_assign: if (other.Armor == ArmorClass.Light && ArmourInReach(v, weapon)) worth *= 0.05f;"
+Sim/Combat/CombatSystem.P28Structures.cs,57,1.5f,weapons.combatSystem.towerWorthWorth2,x,sat_thuong,01,1,inline,,compound_assign: if (other.Armor == ArmorClass.Light || other.Def.Class == UnitClass.Scout) worth *= 1.5f;
+Sim/Combat/CombatSystem.P28Structures.cs,60,0.3f,weapons.combatSystem.towerWorthCrowdScale2,x,sat_thuong,01,1,inline,,"multiply: if (other.Armor == ArmorClass.Light) worth *= 1f + 0.3f * Crowd(other, 8f);"
+Sim/Combat/CombatSystem.P28Structures.cs,60,8f,weapons.combatSystem.towerWorthRadius,x,sat_thuong,01,1,inline,,"arg:CombatSystem.Crowd: if (other.Armor == ArmorClass.Light) worth *= 1f + 0.3f * Crowd(other, 8f);"
+Sim/Combat/CombatSystem.P28Structures.cs,63,8f,weapons.combatSystem.towerWorthRadius,s,thoi_gian,01,1,inline,,"arg:CombatSystem.Crowd: worth *= Crowd(other, 8f) >= 2 ? 2f : 0.6f; // waits for a group of three or more where it can"
+Sim/Combat/CombatSystem.P28Structures.cs,63,2,weapons.combatSystem.towerWorthCrowdMin,s,thoi_gian,01,1,inline,,"compare: worth *= Crowd(other, 8f) >= 2 ? 2f : 0.6f; // waits for a group of three or more where it can"
+Sim/Combat/CombatSystem.P28Structures.cs,63,2f,weapons.combatSystem.towerWorthCrowdTrue,s,thoi_gian,01,1,inline,,"conditional: worth *= Crowd(other, 8f) >= 2 ? 2f : 0.6f; // waits for a group of three or more where it can"
+Sim/Combat/CombatSystem.P28Structures.cs,63,0.6f,weapons.combatSystem.towerWorthCrowdFalse,s,thoi_gian,01,1,inline,,"conditional: worth *= Crowd(other, 8f) >= 2 ? 2f : 0.6f; // waits for a group of three or more where it can"
+Sim/Combat/CombatSystem.P28Structures.cs,66,2f,weapons.combatSystem.towerWorthWorth3,m,ban_kinh,01,1,inline,,compound_assign: if (other.Def.Weapon.MinRange > 0f || !other.IsMoving) worth *= 2f;
+Sim/Combat/CombatSystem.P28Structures.cs,70,0.5f,weapons.combatSystem.towerWorthMaxHpScale,count,sat_thuong,01,1,inline,,multiply: if (other.Hp < other.MaxHp * 0.5f)
+Sim/Combat/CombatSystem.P28Structures.cs,73,40f,weapons.combatSystem.towerWorthScale,m,ban_kinh,01,1,inline,,"multiply: Vector2.DistanceSquared(f.Position, v.Position) < 40f * 40f)"
+Sim/Combat/CombatSystem.P28Structures.cs,73,40f,weapons.combatSystem.towerWorthScale,m,ban_kinh,01,2,inline,,"multiply: Vector2.DistanceSquared(f.Position, v.Position) < 40f * 40f)"
+Sim/Combat/CombatSystem.P28Structures.cs,75,1.4f,weapons.combatSystem.towerWorthWorth4,x,khac,01,1,inline,,compound_assign: worth *= 1.4f;
+Sim/Combat/CombatSystem.P28Structures.cs,85,60f,weapons.combatSystem.leadMaxDivisor,count,ban_kinh,01,1,inline,,"divide_num: return 1f + 60f / MathF.Max(10f, Vector2.Distance(other.Position, home));"
+Sim/Combat/CombatSystem.P28Structures.cs,85,10f,weapons.combatSystem.leadDistanceFloor,m,ban_kinh,01,1,inline,,"math_max: return 1f + 60f / MathF.Max(10f, Vector2.Distance(other.Position, home));"
+Sim/Combat/CombatSystem.P28Structures.cs,114,1.2f,weapons.combatSystem.bossWorthTargetTrue,x,khac,01,1,inline,,conditional: var worth = other.Target == v.Id ? 1.2f : 1f;
+Sim/Combat/CombatSystem.P28Structures.cs,118,0.4f,weapons.combatSystem.bossWorthCrowdScale,x,khac,01,1,inline,,"multiply: BossBehaviour.AntiBlob => 1f + 0.4f * Crowd(other, 10f),"
+Sim/Combat/CombatSystem.P28Structures.cs,118,10f,weapons.combatSystem.bossWorthRadius,m,ban_kinh,01,1,inline,,"arg:CombatSystem.Crowd: BossBehaviour.AntiBlob => 1f + 0.4f * Crowd(other, 10f),"
+Sim/Combat/CombatSystem.P28Structures.cs,119,2.5f,weapons.combatSystem.bossWorthFlyingTrue,x,khac,01,1,inline,,"conditional: BossBehaviour.AntiAir => other.Flying ? 2.5f : 1f,"
+Sim/Combat/CombatSystem.P28Structures.cs,120,3f,weapons.combatSystem.bossWorthMinRangeTrue,m,ban_kinh,01,1,inline,,"conditional: BossBehaviour.AntiArtillery => other.Def.Weapon.MinRange > 0f ? 3f : other.IsMoving ? 1f : 1.3f,"
+Sim/Combat/CombatSystem.P28Structures.cs,120,1.3f,weapons.combatSystem.bossWorthIsMovingFalse,m,ban_kinh,01,1,inline,,"conditional: BossBehaviour.AntiArtillery => other.Def.Weapon.MinRange > 0f ? 3f : other.IsMoving ? 1f : 1.3f,"
+Sim/Combat/CombatSystem.P28Structures.cs,121,30f,weapons.combatSystem.bossWorthDistanceMax,m,ban_kinh,01,1,inline,,"compare: BossBehaviour.CoreProtection => other.Target == v.Id && Vector2.Distance(other.Position, v.Position) < 30f ? 1.8f : 1f,"
+Sim/Combat/CombatSystem.P28Structures.cs,121,1.8f,weapons.combatSystem.bossWorthTargetTrue2,m,ban_kinh,01,1,inline,,"conditional: BossBehaviour.CoreProtection => other.Target == v.Id && Vector2.Distance(other.Position, v.Position) < 30f ? 1.8f : 1f,"
+Sim/Combat/CombatSystem.P28Structures.cs,122,2.2f,weapons.combatSystem.bossWorthBehindTrue,x,khac,01,1,inline,,"conditional: BossBehaviour.FlankPunishment => BossSystem.Behind(v, other) ? 2.2f : 1f,"
+Sim/Combat/CombatSystem.P28Structures.cs,123,1.6f,weapons.combatSystem.bossWorthIsMovingFalse2,x,khac,01,1,inline,,"conditional: BossBehaviour.AreaDenial => other.IsMoving ? 1f : 1.6f,"
+Sim/Combat/CombatSystem.PointDefence.cs,22,3f,weapons.combatSystem.engageWindow,x,khac,01,1,manual:field declares several variables (split first),,"const_field: internal const float EngageWindow = 3f, ShortestBurst = 0.2f;"
+Sim/Combat/CombatSystem.PointDefence.cs,22,0.2f,weapons.combatSystem.shortestBurst,x,khac,01,1,manual:field declares several variables (split first),,"const_field: internal const float EngageWindow = 3f, ShortestBurst = 0.2f;"
+Sim/Combat/CombatSystem.PointDefence.cs,25,3,weapons.combatSystem.burstRoundsPerStep,x,khac,01,1,const_to_property,,const_field: private const int BurstRoundsPerStep = 3;
+Sim/Combat/CombatSystem.PointDefence.cs,51,720f,weapons.combatSystem.engageIncomingDtScale,x,khac,01,1,inline,,"multiply: v.TurretHeading = SimMath.RotateTowards(v.TurretHeading, SimMath.HeadingOf(at - v.Position), 720f * dt);"
+Sim/Combat/CombatSystem.PointDefence.cs,119,1.5f,weapons.combatSystem.roundHeightDistanceAdd,m,ban_kinh,01,1,inline,,"add: return 1.5f + Vector2.Distance(p.Origin, p.AimPoint) * share * 4f * done * (1f - done);"
+Sim/Combat/CombatSystem.PointDefence.cs,119,4f,weapons.combatSystem.roundHeightDistanceScale,m,ban_kinh,01,1,inline,,"multiply: return 1.5f + Vector2.Distance(p.Origin, p.AimPoint) * share * 4f * done * (1f - done);"
+Sim/Combat/CombatSystem.PointDefence.cs,132,0.01f,weapons.combatSystem.removeRoundDueMin,x,nguong,01,1,inline,,compare: if (due - p.Incoming > 0.01f) _incoming[p.Target] = due - p.Incoming;
+Sim/Combat/CombatSystem.Rounds.cs,81,4f,weapons.combatSystem.clusteredSplashRadiusFloor,m,sat_thuong,01,1,inline,,"math_max: var reach = System.MathF.Max(4f, round.SplashRadius);"
+Sim/Combat/CombatSystem.Rounds.cs,88,2,weapons.combatSystem.clusteredNearMin,x,nguong,01,1,inline,,compare: if (++near >= 2) return true;
+Sim/Combat/CombatSystem.cs,21,4f,weapons.combatSystem.turretToleranceDegrees,x,khac,01,1,manual:static initializer is an expression,,arg:SimMath.DegToRad: private static readonly float TurretTolerance = SimMath.DegToRad(4f);
+Sim/Combat/CombatSystem.cs,22,6f,weapons.combatSystem.freeToleranceDegrees,x,khac,01,1,manual:static initializer is an expression,,arg:SimMath.DegToRad: private static readonly float FreeTolerance = SimMath.DegToRad(6f);
+Sim/Combat/CombatSystem.cs,23,12f,weapons.combatSystem.hullToleranceDegrees,x,khac,01,1,manual:static initializer is an expression,,arg:SimMath.DegToRad: private static readonly float HullTolerance = SimMath.DegToRad(12f);
+Sim/Combat/CombatSystem.cs,24,300f,weapons.combatSystem.freeMountTurnRateDegrees,x,tan_suat,01,1,manual:static initializer is an expression,,arg:SimMath.DegToRad: private static readonly float FreeMountTurnRate = SimMath.DegToRad(300f);
+Sim/Combat/CombatSystem.cs,239,1.3f,weapons.combatSystem.switchMargin,x,khac,01,1,const_to_property,,const_field: internal const float SwitchMargin = 1.3f;
+Sim/Combat/CombatSystem.cs,242,5f,weapons.combatSystem.orderMargin,x,khac,01,1,const_to_property,,const_field: internal const float OrderMargin = 5f;
+Sim/Combat/CombatSystem.cs,245,1.15f,weapons.combatSystem.threatWeight,x,khac,01,1,const_to_property,,const_field: internal const float ThreatWeight = 1.15f;
+Sim/Combat/CombatSystem.cs,355,0.4f,weapons.combatSystem.scoreEffectAdd,x,sat_thuong,01,1,inline,,add: var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
+Sim/Combat/CombatSystem.cs,355,1.6f,weapons.combatSystem.scoreHpSub,x,sat_thuong,01,1,inline,,subtract: var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
+Sim/Combat/CombatSystem.cs,359,0.02f,weapons.combatSystem.scoreScore,m,ban_kinh,01,1,inline,,compound_assign: if (other.Flying != IsAntiAir(weapon) && other.Tier == AltitudeTier.None) score *= 0.02f;
+Sim/Combat/CombatSystem.cs,360,1.5f,weapons.combatSystem.scoreScore2,x,sat_thuong,01,1,inline,,compound_assign: if (other.Hp <= round.Damage * effect) score *= 1.5f;
+Sim/Combat/CombatSystem.cs,362,0.05f,weapons.combatSystem.scoreScore3,x,khac,01,1,inline,,compound_assign: if (other.Def.Obstacle) score *= 0.05f;
+Sim/Combat/CombatSystem.cs,363,1.3f,weapons.combatSystem.scoreScore4,x,khac,01,1,inline,,"compound_assign: if (_focus.Contains((v.Team, other.Id)) || other.Id == favoured) score *= 1.3f;"
+Sim/Combat/CombatSystem.cs,365,4f,weapons.combatSystem.scoreScore5,x,khac,01,1,inline,,"compound_assign: if (other.HasParts && _world.Bosses.IsFocused(v.Team, other.Id)) score *= 4f;"
+Sim/Combat/CombatSystem.cs,367,1.4f,weapons.combatSystem.scoreScore6,x,khac,01,1,inline,,"compound_assign: if (other.Gear != null && _world.Gear.Taunts(other, v)) score *= 1.4f;"
+Sim/Combat/CombatSystem.cs,370,2f,weapons.combatSystem.scoreWorthMin,x,nguong,01,1,inline,,"math_clamp: score *= MathF.Sqrt(Math.Clamp(Worth(other), 2f, 25f) / 10f);"
+Sim/Combat/CombatSystem.cs,370,25f,weapons.combatSystem.scoreWorthMax,x,nguong,01,1,inline,,"math_clamp: score *= MathF.Sqrt(Math.Clamp(Worth(other), 2f, 25f) / 10f);"
+Sim/Combat/CombatSystem.cs,370,10f,weapons.combatSystem.scoreClampDivisor,x,khac,01,1,inline,,"divide: score *= MathF.Sqrt(Math.Clamp(Worth(other), 2f, 25f) / 10f);"
+Sim/Combat/CombatSystem.cs,371,1.2f,weapons.combatSystem.scoreScore7,x,khac,01,1,inline,,compound_assign: if (other.Target == v.Id) score *= 1.2f;
+Sim/Combat/CombatSystem.cs,372,0.3f,weapons.combatSystem.scoreScore8,x,sat_thuong,01,1,inline,,compound_assign: if (other.Def.Weapon.Damage <= 0f) score *= 0.3f;
+Sim/Combat/CombatSystem.cs,377,2f,weapons.combatSystem.scoreCooldownMin,s,sat_thuong,01,1,inline,,"compare: if (weapon.Cooldown >= 2f && _incoming.TryGetValue(other.Id, out var incoming) && incoming >= other.Hp * 1.1f) score *= 0.05f;"
+Sim/Combat/CombatSystem.cs,377,1.1f,weapons.combatSystem.scoreHpScale,x,sat_thuong,01,1,inline,,"multiply: if (weapon.Cooldown >= 2f && _incoming.TryGetValue(other.Id, out var incoming) && incoming >= other.Hp * 1.1f) score *= 0.05f;"
+Sim/Combat/CombatSystem.cs,377,0.05f,weapons.combatSystem.scoreScore3,x,sat_thuong,01,1,inline,,"compound_assign: if (weapon.Cooldown >= 2f && _incoming.TryGetValue(other.Id, out var incoming) && incoming >= other.Hp * 1.1f) score *= 0.05f;"
+Sim/Combat/CombatSystem.cs,388,0.5f,weapons.combatSystem.scoreDistanceScale,m,ban_kinh,01,1,inline,,"multiply: score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);"
+Sim/Combat/CombatSystem.cs,420,4f,weapons.combatSystem.bombWorthSplashRadiusAdd,m,sat_thuong,01,1,inline,,add: var reach = bombs.SplashRadius + 4f;
+Sim/Combat/CombatSystem.cs,427,25f,weapons.combatSystem.bombWorthWorthMax,x,nguong,01,1,inline,,"math_clamp: worth += Math.Clamp(Worth(e), 1f, 25f);"
+Sim/Combat/CombatSystem.cs,430,25f,weapons.combatSystem.bombWorthWorthMax,x,nguong,01,1,inline,,"math_clamp: var factor = worth / Math.Clamp(Worth(target), 1f, 25f);"
+Sim/Combat/CombatSystem.cs,431,1.5f,weapons.combatSystem.bombWorthFactor,x,khac,01,1,inline,,compound_assign: if (target.Def.Static) factor *= 1.5f;
+Sim/Combat/CombatSystem.cs,432,7f,weapons.combatSystem.bombWorthWorthMax2,x,sat_thuong,01,1,inline,,compare: else if (others == 0 && target.Armor == ArmorClass.Light && Worth(target) < 7f) factor *= 0.25f;
+Sim/Combat/CombatSystem.cs,432,0.25f,weapons.combatSystem.bombWorthFactor2,x,sat_thuong,01,1,inline,,compound_assign: else if (others == 0 && target.Armor == ArmorClass.Light && Worth(target) < 7f) factor *= 0.25f;
+Sim/Combat/CombatSystem.cs,433,0.33f,weapons.combatSystem.bombWorthFactor3,x,khac,01,1,inline,,"compound_assign: if (RecentlyBombed(team, target.Position)) factor *= 0.33f;"
+Sim/Combat/CombatSystem.cs,468,25f,weapons.combatSystem.worthBossTrue,x,nguong,01,1,inline,,conditional: internal static float Worth(Vehicle v) => v.Def.CpCost > 0 ? v.Def.CpCost : v.Def.Boss ? 25f : v.MaxHp / 250f;
+Sim/Combat/CombatSystem.cs,468,250f,weapons.combatSystem.worthMaxHpDivisor,count,nguong,01,1,inline,,divide: internal static float Worth(Vehicle v) => v.Def.CpCost > 0 ? v.Def.CpCost : v.Def.Boss ? 25f : v.MaxHp / 250f;
+Sim/Combat/CombatSystem.cs,496,0.6f,weapons.combatSystem.hasLineOfFireRadiusScale,m,ban_kinh,01,1,inline,,"multiply: return !_world.Cover.TryFirstHit(v.Position, target.Position, v.Radius * 0.6f, target is Vehicle ? target.Radius * 0.5f : 0f,"
+Sim/Combat/CombatSystem.cs,496,0.5f,weapons.combatSystem.hasLineOfFireRadiusScale2,m,ban_kinh,01,1,inline,,"multiply: return !_world.Cover.TryFirstHit(v.Position, target.Position, v.Radius * 0.6f, target is Vehicle ? target.Radius * 0.5f : 0f,"
+Sim/Combat/CombatSystem.cs,515,0.5f,weapons.combatSystem.inReachStatMax,m,ban_kinh,01,1,inline,,"math_clamp: if (weapon.Projectile == ProjectileKind.Missile && target is Vehicle { Gear: { } coated }) reach *= 1f - Math.Clamp(coated.Stat(StatId.LockRange), 0f, 0.5f);"
+Sim/Combat/CombatSystem.cs,621,0.7f,weapons.combatSystem.operateNextDoubleAdd,s,thoi_gian,01,1,inline,,add: if (--state.RunLeft <= 0) state.Cooldown = RestSeconds * (0.7f + 0.6f * (float)_world.Random.NextDouble());
+Sim/Combat/CombatSystem.cs,621,0.6f,weapons.combatSystem.operateNextDoubleScale,s,thoi_gian,01,1,inline,,multiply: if (--state.RunLeft <= 0) state.Cooldown = RestSeconds * (0.7f + 0.6f * (float)_world.Random.NextDouble());
+Sim/Combat/CombatSystem.cs,655,0.06,weapons.combatSystem.streamCooldownAdd,s,thoi_gian,01,1,inline,,"add: if (now - state.LastRoundAt > weapon.Cooldown + 0.06) state.Cooldown = MathF.Max(0f, state.Cooldown);"
+Sim/Combat/CombatSystem.cs,656,0.5f,weapons.combatSystem.streamClipReloadFloor,s,thoi_gian,01,1,inline,,"math_max: if (state.ClipLeft <= 0 || now - state.LastRoundAt >= MathF.Max(0.5f, weapon.ClipReload)) state.ClipLeft = weapon.Clip;"
+Sim/Combat/CombatSystem.cs,659,3,weapons.combatSystem.streamKMax,s,thoi_gian,01,1,inline,,compare: for (var k = 0; k < 3 && state.Cooldown <= 0f && state.ClipLeft > 0; k++)
+Sim/Combat/CombatSystem.cs,668,0.9f,weapons.combatSystem.streamNextDoubleAdd,s,thoi_gian,01,1,inline,,"add: if (state.ClipLeft <= 0) state.Cooldown = MathF.Max(state.Cooldown, weapon.ClipReload * (0.9f + 0.2f * (float)_world.Random.NextDouble()));"
+Sim/Combat/CombatSystem.cs,668,0.2f,weapons.combatSystem.streamNextDoubleScale,s,thoi_gian,01,1,inline,,"multiply: if (state.ClipLeft <= 0) state.Cooldown = MathF.Max(state.Cooldown, weapon.ClipReload * (0.9f + 0.2f * (float)_world.Random.NextDouble()));"
+Sim/Combat/CombatSystem.cs,673,0.35f,weapons.combatSystem.isMachineGunCooldownMax,s,thoi_gian,01,1,inline,,compare: weapon.Clip <= 0 && weapon.Projectile == ProjectileKind.Bullet && weapon.Cooldown < 0.35f && weapon.Burst <= 1;
+Sim/Combat/CombatSystem.cs,682,6,weapons.combatSystem.runShortest,x,khac,01,1,manual:field declares several variables (split first),,"const_field: private const int RunShortest = 6, RunLongest = 10;"
+Sim/Combat/CombatSystem.cs,682,10,weapons.combatSystem.runLongest,x,khac,01,1,manual:field declares several variables (split first),,"const_field: private const int RunShortest = 6, RunLongest = 10;"
+Sim/Combat/CombatSystem.cs,693,0.9f,weapons.combatSystem.jitterNextDoubleAdd,share,xac_suat,01,1,inline,,add: private float Jitter() => 0.9f + 0.2f * (float)_world.Random.NextDouble();
+Sim/Combat/CombatSystem.cs,693,0.2f,weapons.combatSystem.jitterNextDoubleScale,share,xac_suat,01,1,inline,,multiply: private float Jitter() => 0.9f + 0.2f * (float)_world.Random.NextDouble();
+Sim/Combat/CombatSystem.cs,715,0.2f,weapons.combatSystem.inRhythmNextDoubleAdd,s,thoi_gian,01,1,inline,,add: state.Cooldown = 0.2f + 0.8f * (float)_world.Random.NextDouble();
+Sim/Combat/CombatSystem.cs,715,0.8f,weapons.combatSystem.inRhythmNextDoubleScale,s,thoi_gian,01,1,inline,,multiply: state.Cooldown = 0.2f + 0.8f * (float)_world.Random.NextDouble();
+Sim/Combat/CombatSystem.cs,719,1.1f,weapons.combatSystem.inRhythmCooldownScale,s,thoi_gian,01,1,inline,,multiply: if (now - state.FiredAt > weapon.Cooldown * 1.1f + 0.06f)
+Sim/Combat/CombatSystem.cs,719,0.06f,weapons.combatSystem.inRhythmCooldownAdd,s,thoi_gian,01,1,inline,,add: if (now - state.FiredAt > weapon.Cooldown * 1.1f + 0.06f)
+Sim/Combat/CombatSystem.cs,751,3f,weapons.combatSystem.canFireSplashRadiusAdd,m,sat_thuong,01,1,inline,,"add: : freeFall ? StickNearOwn(v, index) : OwnNear(v.Team, target.Position, v.Arms[index].SplashRadius + 3f))) return false;"
+Sim/Combat/CombatSystem.cs,776,3f,weapons.combatSystem.sideArcPIDivisor,deg,khac,01,1,manual:const initializer is an expression,,divide: private const float SideArc = MathF.PI / 3f;
+Sim/Combat/CombatSystem.cs,783,0.5f,weapons.combatSystem.sideCentrePIScale,x,khac,01,1,inline,,multiply: return v.Heading + (mount.Aim == MountAim.Left ? -MathF.PI * 0.5f : MathF.PI * 0.5f);
+Sim/Combat/CombatSystem.cs,783,0.5f,weapons.combatSystem.sideCentrePIScale,x,khac,01,2,inline,,multiply: return v.Heading + (mount.Aim == MountAim.Left ? -MathF.PI * 0.5f : MathF.PI * 0.5f);
+Sim/Combat/CombatSystem.cs,805,1f,weapons.combatSystem.launchDamageScale,x,sat_thuong,01,1,manual:parameter default,,"param_default: private void Launch(Vehicle shooter, int index, Vector2 aimAt, EntityId target, bool targetFlying, float damageScale = 1f, bool pull = true,"
+Sim/Combat/CombatSystem.cs,861,1.2f,weapons.combatSystem.launchDistanceMax,m,ban_kinh,01,1,inline,,"math_clamp: var reach = Math.Clamp(distance / shooter.Arms[index].Range, 0f, 1.2f);"
+Sim/Combat/CombatSystem.cs,862,0.35f,weapons.combatSystem.launchPowAdd,s,thoi_gian,01,1,inline,,"add: var spread = stick || weapon.Guided || weapon.GuidedRocket ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach,"
+Sim/Combat/CombatSystem.cs,862,1.25f,weapons.combatSystem.launchPowScale,s,thoi_gian,01,1,inline,,"multiply: var spread = stick || weapon.Guided || weapon.GuidedRocket ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach,"
+Sim/Combat/CombatSystem.cs,862,1.4f,weapons.combatSystem.launchReachExponent,s,thoi_gian,01,1,inline,,"math_pow: var spread = stick || weapon.Guided || weapon.GuidedRocket ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach,"
+Sim/Combat/CombatSystem.cs,866,1.3f,weapons.combatSystem.launchSpread,x,khac,01,1,inline,,compound_assign: if (shooter.AiKiting && shooter.IsMoving) spread *= 1.3f;
+Sim/Combat/CombatSystem.cs,882,0.4f,weapons.combatSystem.launchPowFloor,x,nguong,01,1,inline,,"math_max: spread *= MathF.Max(0.4f, 1.6f * MathF.Pow(0.7f, state.BracketShots));"
+Sim/Combat/CombatSystem.cs,882,1.6f,weapons.combatSystem.launchPowScale2,x,nguong,01,1,inline,,"multiply: spread *= MathF.Max(0.4f, 1.6f * MathF.Pow(0.7f, state.BracketShots));"
+Sim/Combat/CombatSystem.cs,882,0.7f,weapons.combatSystem.launchBracketShotsExponent,x,nguong,01,1,inline,,"math_pow: spread *= MathF.Max(0.4f, 1.6f * MathF.Pow(0.7f, state.BracketShots));"
+Sim/Combat/CombatSystem.cs,899,2f,weapons.combatSystem.launchNextDoubleScale,share,xac_suat,01,1,inline,,multiply: var along = ((float)_world.Random.NextDouble() * 2f - 1f) * laid.JitterAlong * widen;
+Sim/Combat/CombatSystem.cs,900,2f,weapons.combatSystem.launchNextDoubleScale,share,xac_suat,01,1,inline,,multiply: var across = ((float)_world.Random.NextDouble() * 2f - 1f) * laid.JitterAcross * widen;
+Sim/Combat/CombatSystem.cs,910,0.2f,weapons.combatSystem.launchSkipStart,x,khac,01,1,inline,,"arg:CoverGrid.TryFirstHit: if (_world.Cover.TryFirstHit(origin, aim, 0.2f, 0f, aimed as Prop, out var wall))"
+Sim/Combat/CombatSystem.cs,923,0.8f,weapons.combatSystem.launchDistanceFloor,m,ban_kinh,01,1,inline,,"math_max: travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));"
+Sim/Combat/CombatSystem.cs,923,8f,weapons.combatSystem.launchSpeedFloor,m/s,ban_kinh,01,1,inline,,"math_max: travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));"
+Sim/Combat/CombatSystem.cs,961,0.02,weapons.combatSystem.launchReachAdd,m,ban_kinh,01,1,inline,,add: if (weapon.Guided && _world.Random.NextDouble() < 0.02 + 0.08 * reach * reach + fail) projectile.Failed = true;
+Sim/Combat/CombatSystem.cs,961,0.08,weapons.combatSystem.launchReachScale,m,ban_kinh,01,1,inline,,multiply: if (weapon.Guided && _world.Random.NextDouble() < 0.02 + 0.08 * reach * reach + fail) projectile.Failed = true;
+Sim/Combat/CombatSystem.cs,986,31,weapons.combatSystem.markedThoi,s,thoi_gian,01,1,manual:pattern,,relational_pattern: if (reveal.Until > now && team is >= 0 and < 31 && (reveal.Stacks & (1 << team)) != 0) return true;
+Sim/Combat/CombatSystem.cs,987,31,weapons.combatSystem.markedValue,x,khac,01,1,manual:pattern,,"relational_pattern: return team is >= 0 and < 31 && (_world.Strikes.ScanMask(target.Position, target.Team) & (1 << team)) != 0;"
+Sim/Combat/CombatSystem.cs,1004,0.01f,weapons.combatSystem.updateProjectilesDueMin,x,nguong,01,1,inline,,compare: if (due - p.Incoming > 0.01f) _incoming[p.Target] = due - p.Incoming;
+Sim/Combat/DamageSystem.cs,86,1.5f,weapons.damageSystem.resolveImpactRadiusAdd,m,ban_kinh,01,1,inline,,"add: Vector2.Distance(partBoss.PartPosition(p.Part), at) > partBoss.Def.Parts[p.Part].Radius + 1.5f)) p.Part = -1;"
+Sim/Combat/DamageSystem.cs,88,0.5f,weapons.damageSystem.resolveImpactRadiusAdd2,m,ban_kinh,01,1,inline,,"add: if (!decoyed && !lured && (p.Part >= 0 || Vector2.Distance(target.Position, at) <= target.Radius + 0.5f))"
+Sim/Combat/DamageSystem.cs,126,0.85f,weapons.damageSystem.burstNextDoubleAdd,x,sat_thuong,01,1,inline,,"add: Splash(at, weapon.SplashRadius * (0.85f + 0.3f * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,"
+Sim/Combat/DamageSystem.cs,126,0.3f,weapons.damageSystem.burstNextDoubleScale,x,sat_thuong,01,1,inline,,"multiply: Splash(at, weapon.SplashRadius * (0.85f + 0.3f * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,"
+Sim/Combat/DamageSystem.cs,131,0.5f,weapons.damageSystem.burstDamageScale,x,sat_thuong,01,1,inline,,"multiply: Splash(at, p.ExtraSplash, weapon.Damage * p.DamageScale * 0.5f, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying,"
+Sim/Combat/DamageSystem.cs,255,1.5f,weapons.damageSystem.bossFlankBonus,x,khac,01,1,const_to_property,,const_field: internal const float BossFlankBonus = 1.5f;
+Sim/Combat/DamageSystem.cs,257,1.25f,weapons.damageSystem.lightTowerAirBonus,x,khac,01,1,const_to_property,,const_field: internal const float LightTowerAirBonus = 1.25f;
+Sim/Combat/DamageSystem.cs,270,0.15f,weapons.damageSystem.scatterNextDoubleAdd,m,ban_kinh,01,1,inline,,add: var reach = cluster.Radius * MathF.Sqrt(0.15f + 0.85f * (float)rng.NextDouble());
+Sim/Combat/DamageSystem.cs,270,0.85f,weapons.damageSystem.scatterNextDoubleScale,m,ban_kinh,01,1,inline,,multiply: var reach = cluster.Radius * MathF.Sqrt(0.15f + 0.85f * (float)rng.NextDouble());
+Sim/Combat/DamageSystem.cs,272,0.12,weapons.damageSystem.scatterTimeAdd,s,sat_thuong,01,1,inline,,"add: _pending.Add(new PendingExplosion(_world.Time + 0.12 + 0.06 * k + 0.1 * rng.NextDouble(), spot, blast, EntityId.None, team, attacker, HitKind.Splash,"
+Sim/Combat/DamageSystem.cs,272,0.06,weapons.damageSystem.scatterKScale,x,sat_thuong,01,1,inline,,"multiply: _pending.Add(new PendingExplosion(_world.Time + 0.12 + 0.06 * k + 0.1 * rng.NextDouble(), spot, blast, EntityId.None, team, attacker, HitKind.Splash,"
+Sim/Combat/DamageSystem.cs,272,0.1,weapons.damageSystem.scatterNextDoubleScale2,x,sat_thuong,01,1,inline,,"multiply: _pending.Add(new PendingExplosion(_world.Time + 0.12 + 0.06 * k + 0.1 * rng.NextDouble(), spot, blast, EntityId.None, team, attacker, HitKind.Splash,"
+Sim/Combat/DamageSystem.cs,422,10f,weapons.damageSystem.tryInterceptForwardScale,x,khac,01,1,inline,,"multiply: var from = _world.TryGetVehicle(p.Owner, out var shooter) ? shooter.Position : mark + SimMath.Forward(v.Heading) * 10f;"
+Sim/Combat/DamageSystem.cs,426,0.01f,weapons.damageSystem.tryInterceptLengthSquaredMin,m,ban_kinh,01,1,inline,,"compare: var meet = back.LengthSquared() > 0.01f ? mark + Vector2.Normalize(back) * MathF.Min(10f, back.Length() * 0.5f) : mark;"
+Sim/Combat/DamageSystem.cs,426,10f,weapons.damageSystem.tryInterceptLengthCap,m,ban_kinh,01,1,inline,,"math_min: var meet = back.LengthSquared() > 0.01f ? mark + Vector2.Normalize(back) * MathF.Min(10f, back.Length() * 0.5f) : mark;"
+Sim/Combat/DamageSystem.cs,426,0.5f,weapons.damageSystem.tryInterceptLengthScale,m,ban_kinh,01,1,inline,,"multiply: var meet = back.LengthSquared() > 0.01f ? mark + Vector2.Normalize(back) * MathF.Min(10f, back.Length() * 0.5f) : mark;"
+Sim/Combat/DamageSystem.cs,431,0.01f,weapons.damageSystem.tryInterceptLengthSquaredMin,m,ban_kinh,01,1,inline,,compare: toward = toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
+Sim/Combat/DamageSystem.cs,432,3f,weapons.damageSystem.tryInterceptHullBoundAdd,x,khac,01,1,inline,,"add: _world.Emit(SimEvent.Intercept(v, weapon, v.Position + toward * (v.Def.HullBound + 3f), v.ApsLeft));"
+Sim/Combat/DamageSystem.cs,441,0f,weapons.damageSystem.splashEdgeRadius,m,sat_thuong,01,1,manual:parameter default,,"param_default: EntityId attacker = default, bool airborne = false, in HitInfo info = default, float edgeRadius = 0f, float edgeShare = 0.4f)"
+Sim/Combat/DamageSystem.cs,441,0.4f,weapons.damageSystem.splashEdgeShare,share,sat_thuong,01,1,manual:parameter default,,"param_default: EntityId attacker = default, bool airborne = false, in HitInfo info = default, float edgeRadius = 0f, float edgeShare = 0.4f)"
+Sim/Combat/DamageSystem.cs,511,0.5f,weapons.damageSystem.applyThermobaricTrue,x,sat_thuong,01,1,inline,,conditional: if (target is Vehicle { Lowered: true } pit && pit.Def.Hidden is { } hide) damage *= 1f - hide.Cut * (Thermobaric(hit) ? 0.5f : 1f);
+Sim/Combat/DamageSystem.cs,547,0.2f,weapons.damageSystem.hitVehicleDamage,x,sat_thuong,01,1,inline,,compound_assign: if (vehicle.GraceUntil > now) damage *= 0.2f;
+Sim/Combat/DamageSystem.cs,583,1e6f,weapons.damageSystem.hitVehicleDamageMax,x,sat_thuong,01,1,inline,,"compare: if (damage >= vehicle.Hp && vehicle.Gear != null && damage < 1e6f && _world.Gear.Survives(vehicle)) damage = MathF.Max(0f, vehicle.Hp - 1f);"
+Sim/Combat/DamageSystem.cs,602,0.25f,weapons.damageSystem.hitVehicleMaxHpScale,count,sat_thuong,01,1,inline,,"multiply: if (vehicle.Unkillable) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);"
+Sim/Combat/DamageSystem.cs,678,0f,weapons.damageSystem.applyFalloffEdgeRadius,m,ban_kinh,01,1,manual:parameter default,,"param_default: float edgeRadius = 0f, float edgeShare = 0.4f)"
+Sim/Combat/DamageSystem.cs,678,0.4f,weapons.damageSystem.applyFalloffEdgeShare,share,ban_kinh,01,1,manual:parameter default,,"param_default: float edgeRadius = 0f, float edgeShare = 0.4f)"
+Sim/Combat/DamageSystem.cs,719,0.1f,weapons.damageSystem.pierceLineLengthMax,m,ban_kinh,01,1,inline,,compare: if (length < 0.1f) return;
+Sim/Combat/DamageSystem.cs,730,12f,weapons.damageSystem.pierceLineLengthAdd,m,ban_kinh,01,1,inline,,add: if (t < 0f || t > length + 12f) continue;
+Sim/Combat/DamageSystem.cs,731,1.2f,weapons.damageSystem.pierceLineRadiusAdd,m,ban_kinh,01,1,inline,,add: if ((offset - along * t).Length() > v.Radius + 1.2f) continue;
+Sim/Combat/DamageSystem.cs,774,10.0,weapons.damageSystem.onVehicleDestroyedTimeMax,s,sat_thuong,01,1,inline,,compare: if (killer == null && vehicle.LastAttacker.IsValid && _world.Time - vehicle.LastHitTime <= 10.0 &&
+Sim/Combat/DamageSystem.cs,805,2f,weapons.damageSystem.crashPlanMaxScale,count,ban_kinh,01,1,inline,,"multiply: var fall = MathF.Sqrt(2f * MathF.Max(1f, vehicle.Height) / (def.FixedWing ? 11f : 7f));"
+Sim/Combat/DamageSystem.cs,805,11f,weapons.damageSystem.crashPlanFixedWingTrue,m,ban_kinh,01,1,inline,,"conditional: var fall = MathF.Sqrt(2f * MathF.Max(1f, vehicle.Height) / (def.FixedWing ? 11f : 7f));"
+Sim/Combat/DamageSystem.cs,805,7f,weapons.damageSystem.crashPlanFixedWingFalse,m,ban_kinh,01,1,inline,,"conditional: var fall = MathF.Sqrt(2f * MathF.Max(1f, vehicle.Height) / (def.FixedWing ? 11f : 7f));"
+Sim/Combat/DamageSystem.cs,806,0.35f,weapons.damageSystem.crashPlanFixedWingTrue2,x,khac,01,1,inline,,conditional: var fade = def.FixedWing ? 0.35f : 0.5f;
+Sim/Combat/DamageSystem.cs,806,0.5f,weapons.damageSystem.crashPlanFixedWingFalse2,x,khac,01,1,inline,,conditional: var fade = def.FixedWing ? 0.35f : 0.5f;
+Sim/Combat/DamageSystem.cs,808,0.8f,weapons.damageSystem.crashPlanSpeedScale,x,tan_suat,01,1,inline,,multiply: var carry = 0.8f * speed * (glide - 0.5f * fade * glide * glide);
+Sim/Combat/DamageSystem.cs,808,0.5f,weapons.damageSystem.crashPlanFadeScale,x,tan_suat,01,1,inline,,multiply: var carry = 0.8f * speed * (glide - 0.5f * fade * glide * glide);
+Sim/Combat/DamageSystem.cs,815,0.08f,weapons.damageSystem.crashBlastMaxHpScale,count,sat_thuong,01,1,inline,,"multiply: new(Math.Clamp(def.MaxHp * 0.08f, 60f, 450f), Math.Clamp(3.5f + def.MaxHp / 800f, 4f, 10f), 0f,"
+Sim/Combat/DamageSystem.cs,815,60f,weapons.damageSystem.crashBlastMaxHpMin,count,sat_thuong,01,1,inline,,"math_clamp: new(Math.Clamp(def.MaxHp * 0.08f, 60f, 450f), Math.Clamp(3.5f + def.MaxHp / 800f, 4f, 10f), 0f,"
+Sim/Combat/DamageSystem.cs,815,450f,weapons.damageSystem.crashBlastMaxHpMax,count,sat_thuong,01,1,inline,,"math_clamp: new(Math.Clamp(def.MaxHp * 0.08f, 60f, 450f), Math.Clamp(3.5f + def.MaxHp / 800f, 4f, 10f), 0f,"
+Sim/Combat/DamageSystem.cs,815,3.5f,weapons.damageSystem.crashBlastMaxHpAdd,count,sat_thuong,01,1,inline,,"add: new(Math.Clamp(def.MaxHp * 0.08f, 60f, 450f), Math.Clamp(3.5f + def.MaxHp / 800f, 4f, 10f), 0f,"
+Sim/Combat/DamageSystem.cs,815,800f,weapons.damageSystem.crashBlastMaxHpDivisor,count,sat_thuong,01,1,inline,,"divide: new(Math.Clamp(def.MaxHp * 0.08f, 60f, 450f), Math.Clamp(3.5f + def.MaxHp / 800f, 4f, 10f), 0f,"
+Sim/Combat/DamageSystem.cs,815,4f,weapons.damageSystem.crashBlastMaxHpMin2,count,sat_thuong,01,1,inline,,"math_clamp: new(Math.Clamp(def.MaxHp * 0.08f, 60f, 450f), Math.Clamp(3.5f + def.MaxHp / 800f, 4f, 10f), 0f,"
+Sim/Combat/DamageSystem.cs,815,10f,weapons.damageSystem.crashBlastMaxHpMax2,count,sat_thuong,01,1,inline,,"math_clamp: new(Math.Clamp(def.MaxHp * 0.08f, 60f, 450f), Math.Clamp(3.5f + def.MaxHp / 800f, 4f, 10f), 0f,"
+Sim/Combat/DamageSystem.cs,816,3000f,weapons.damageSystem.crashBlastMaxHpMin3,count,sat_thuong,01,1,inline,,compare: def.MaxHp > 3000f ? ExplosionTier.Huge : ExplosionTier.Large);
+Sim/Combat/FirePower.cs,37,0.05f,weapons.firePower.onPaperCycleSecondsFloor,s,thoi_gian,01,1,inline,,"math_max: var cycle = MathF.Max(0.05f, w.CycleSeconds);"
+Sim/Combat/HullContact.cs,19,4f,weapons.hullContact.bigFrom,x,khac,01,1,const_to_property,,const_field: public const float BigFrom = 4f;
+Sim/Combat/HullContact.cs,25,0.5f,weapons.hullContact.edgeWidthFloor,m,ban_kinh,01,1,inline,,"math_max: public static float Edge(VehicleDef def) => MathF.Max(0.5f, def.Width * 0.5f);"
+Sim/Combat/HullContact.cs,25,0.5f,weapons.hullContact.edgeWidthScale,m,ban_kinh,01,2,inline,,"multiply: public static float Edge(VehicleDef def) => MathF.Max(0.5f, def.Width * 0.5f);"
+Sim/Combat/HullContact.cs,37,18,weapons.hullContact.onIMax,x,nguong,01,1,inline,,compare: for (var i = 0; i < 18; i++)
+Sim/Combat/StatusSystem.cs,50,0.6f,weapons.statusSystem.durationFactorStatMax,s,thoi_gian,01,1,inline,,"math_clamp: var f = 1f - Math.Clamp(v.Gear.Stat(StatId.StatusDuration), 0f, 0.6f);"
+Sim/Combat/StatusSystem.cs,51,2f,weapons.statusSystem.durationFactorStatScale,s,thoi_gian,01,1,inline,,"multiply: if (fire) f *= 1f - Math.Clamp(v.Gear.Stat(StatId.ResistFire) * 2f, 0f, 0.5f);"
+Sim/Combat/StatusSystem.cs,51,0.5f,weapons.statusSystem.durationFactorStatMax2,s,thoi_gian,01,1,inline,,"math_clamp: if (fire) f *= 1f - Math.Clamp(v.Gear.Stat(StatId.ResistFire) * 2f, 0f, 0.5f);"
+Sim/Combat/StatusSystem.cs,94,0.5f,weapons.statusSystem.slowShare,x,nguong,01,1,inline,,compound_assign: if (target.Flying) share *= 0.5f;
+Sim/Combat/StatusSystem.cs,105,5,weapons.statusSystem.shredMaxStacks,s,thoi_gian,01,1,manual:parameter default,,"param_default: public void Shred(Vehicle target, float perStack, float seconds, int maxStacks = 5, float stacks = 1f)"
+Sim/Combat/StatusSystem.cs,161,0.01f,weapons.statusSystem.absorbValueMax,x,nguong,01,1,inline,,compare: if (s.Value <= 0.01f)
+Sim/Content/Armour.cs,16,5,weapons.armourLevels.max,x,nguong,01,1,manual:const used in a constant context (const initializer at Game/Hud/CombatFacts.cs:82),,const_field: public const int Max = 5;
+Sim/Content/Armour.cs,19,4,weapons.armourLevels.maxUnit,count,nguong,01,1,const_to_property,,const_field: public const int MaxUnit = 4;
+Sim/Content/Armour.cs,43,2,weapons.armourLevels.vehicleFrontSub,x,sat_thuong,01,1,inline,,"subtract: public static ArmourLevels Vehicle(int front) => new(front, front - 1, front - 2, front - 2);"
+Sim/Content/Armour.cs,43,2,weapons.armourLevels.vehicleFrontSub,x,sat_thuong,01,2,inline,,"subtract: public static ArmourLevels Vehicle(int front) => new(front, front - 1, front - 2, front - 2);"
+Sim/Content/Armour.cs,57,3,weapons.armourLevels.ofClassFront,x,sat_thuong,01,1,inline,,"arg:ArmourLevels.Vehicle: ArmorClass.Heavy => Vehicle(3),"
+Sim/Content/Armour.cs,59,2,weapons.armourLevels.ofClassLevel,x,sat_thuong,01,1,inline,,"arg:ArmourLevels.Uniform: ArmorClass.Structure => Uniform(2),"
+Sim/Content/Armour.cs,64,3,weapons.armourLevels.groundClassFrontMin,x,sat_thuong,01,1,inline,,compare: public ArmorClass GroundClass => Front >= 3 ? ArmorClass.Heavy : ArmorClass.Light;
+Sim/Content/Armour.cs,87,40f,weapons.armour.frontArcDegrees,deg,khac,01,1,manual:static initializer is an expression,,arg:SimMath.DegToRad: public static readonly float FrontArc = SimMath.DegToRad(40f);
+Sim/Content/Armour.cs,89,50f,weapons.armour.rearArcDegrees,deg,khac,01,1,manual:static initializer is an expression,,arg:SimMath.DegToRad: public static readonly float RearArc = SimMath.DegToRad(50f);
+Sim/Content/Armour.cs,99,0.01f,weapons.armour.faceFromLengthSquaredMax,m,sat_thuong,01,1,inline,,compare: if (toShooter.LengthSquared() < 0.01f) return ArmorFace.Front;
+Sim/Content/Armour.cs,127,4,weapons.armour.defaultPenetrationTypeValue,x,sat_thuong,01,1,inline,,"switch_arm: DamageType.ShapedCharge => 4,"
+Sim/Content/Armour.cs,128,2,weapons.armour.defaultPenetrationTypeValue2,x,sat_thuong,01,1,inline,,"switch_arm: DamageType.Energy => 2,"
+Sim/Content/Armour.cs,144,12f,weapons.armour.defaultPenetrationSizeMin,x,sat_thuong,01,1,inline,,"compare: case ""mg"": return size >= 12f ? 1 : 0;"
+Sim/Content/Armour.cs,146,30f,weapons.armour.defaultPenetrationSizeMin2,x,sat_thuong,01,1,inline,,compare: if (w.DamageType == DamageType.Fragmentation) return size >= 30f ? 2 : 1;
+Sim/Content/Armour.cs,146,2,weapons.armour.defaultPenetrationSizeTrue,x,sat_thuong,01,1,inline,,conditional: if (w.DamageType == DamageType.Fragmentation) return size >= 30f ? 2 : 1;
+Sim/Content/Armour.cs,147,57f,weapons.armour.defaultPenetrationSizeMin3,x,sat_thuong,01,1,inline,,compare: return size >= 57f ? 3 : 2;
+Sim/Content/Armour.cs,147,3,weapons.armour.defaultPenetrationSizeTrue2,x,sat_thuong,01,1,inline,,conditional: return size >= 57f ? 3 : 2;
+Sim/Content/Armour.cs,147,2,weapons.armour.defaultPenetrationSizeFalse,x,sat_thuong,01,1,inline,,conditional: return size >= 57f ? 3 : 2;
+Sim/Content/Armour.cs,148,2,weapons.armour.defaultPenetrationDefaultPenetration,x,sat_thuong,01,1,inline,,"return: case ""grenade"": return 2;"
+Sim/Content/Armour.cs,149,120f,weapons.armour.defaultPenetrationSizeMin4,x,sat_thuong,01,1,inline,,"compare: case ""tank_gun"": return size >= 120f ? 4 : size >= 76f ? 3 : 2;"
+Sim/Content/Armour.cs,149,4,weapons.armour.defaultPenetrationSizeTrue3,x,sat_thuong,01,1,inline,,"conditional: case ""tank_gun"": return size >= 120f ? 4 : size >= 76f ? 3 : 2;"
+Sim/Content/Armour.cs,149,76f,weapons.armour.defaultPenetrationSizeMin5,x,sat_thuong,01,1,inline,,"compare: case ""tank_gun"": return size >= 120f ? 4 : size >= 76f ? 3 : 2;"
+Sim/Content/Armour.cs,149,3,weapons.armour.defaultPenetrationSizeTrue2,x,sat_thuong,01,1,inline,,"conditional: case ""tank_gun"": return size >= 120f ? 4 : size >= 76f ? 3 : 2;"
+Sim/Content/Armour.cs,149,2,weapons.armour.defaultPenetrationSizeFalse,x,sat_thuong,01,1,inline,,"conditional: case ""tank_gun"": return size >= 120f ? 4 : size >= 76f ? 3 : 2;"
+Sim/Content/Armour.cs,150,200f,weapons.armour.defaultPenetrationSizeMin6,x,sat_thuong,01,1,inline,,"compare: case ""howitzer"": return size >= 200f ? 4 : size >= 150f ? 3 : 2;"
+Sim/Content/Armour.cs,150,4,weapons.armour.defaultPenetrationSizeTrue3,x,sat_thuong,01,1,inline,,"conditional: case ""howitzer"": return size >= 200f ? 4 : size >= 150f ? 3 : 2;"
+Sim/Content/Armour.cs,150,150f,weapons.armour.defaultPenetrationSizeMin7,x,sat_thuong,01,1,inline,,"compare: case ""howitzer"": return size >= 200f ? 4 : size >= 150f ? 3 : 2;"
+Sim/Content/Armour.cs,150,3,weapons.armour.defaultPenetrationSizeTrue2,x,sat_thuong,01,1,inline,,"conditional: case ""howitzer"": return size >= 200f ? 4 : size >= 150f ? 3 : 2;"
+Sim/Content/Armour.cs,150,2,weapons.armour.defaultPenetrationSizeFalse,x,sat_thuong,01,1,inline,,"conditional: case ""howitzer"": return size >= 200f ? 4 : size >= 150f ? 3 : 2;"
+Sim/Content/Armour.cs,151,200f,weapons.armour.defaultPenetrationSizeMin6,x,sat_thuong,01,1,inline,,"compare: case ""mortar"": return size >= 200f ? 4 : 2;"
+Sim/Content/Armour.cs,151,4,weapons.armour.defaultPenetrationSizeTrue3,x,sat_thuong,01,1,inline,,"conditional: case ""mortar"": return size >= 200f ? 4 : 2;"
+Sim/Content/Armour.cs,151,2,weapons.armour.defaultPenetrationSizeFalse,x,sat_thuong,01,1,inline,,"conditional: case ""mortar"": return size >= 200f ? 4 : 2;"
+Sim/Content/Armour.cs,152,200f,weapons.armour.defaultPenetrationSizeMin6,x,sat_thuong,01,1,inline,,"compare: case ""rocket"": return size >= 200f ? 3 : 2;"
+Sim/Content/Armour.cs,152,3,weapons.armour.defaultPenetrationSizeTrue2,x,sat_thuong,01,1,inline,,"conditional: case ""rocket"": return size >= 200f ? 3 : 2;"
+Sim/Content/Armour.cs,152,2,weapons.armour.defaultPenetrationSizeFalse,x,sat_thuong,01,1,inline,,"conditional: case ""rocket"": return size >= 200f ? 3 : 2;"
+Sim/Content/Armour.cs,153,26f,weapons.armour.defaultPenetrationSizeMin8,x,sat_thuong,01,1,inline,,"compare: case ""atgm"": return size >= 26f ? 4 : 3;"
+Sim/Content/Armour.cs,153,4,weapons.armour.defaultPenetrationSizeTrue3,x,sat_thuong,01,1,inline,,"conditional: case ""atgm"": return size >= 26f ? 4 : 3;"
+Sim/Content/Armour.cs,153,3,weapons.armour.defaultPenetrationSizeFalse2,x,sat_thuong,01,1,inline,,"conditional: case ""atgm"": return size >= 26f ? 4 : 3;"
+Sim/Content/Armour.cs,154,20f,weapons.armour.defaultPenetrationSizeMin9,x,sat_thuong,01,1,inline,,"compare: case ""aa_missile"": return size >= 20f ? 3 : 2;"
+Sim/Content/Armour.cs,154,3,weapons.armour.defaultPenetrationSizeTrue2,x,sat_thuong,01,1,inline,,"conditional: case ""aa_missile"": return size >= 20f ? 3 : 2;"
+Sim/Content/Armour.cs,154,2,weapons.armour.defaultPenetrationSizeFalse,x,sat_thuong,01,1,inline,,"conditional: case ""aa_missile"": return size >= 20f ? 3 : 2;"
+Sim/Content/Armour.cs,155,900f,weapons.armour.defaultPenetrationSizeMin10,x,sat_thuong,01,1,inline,,"compare: case ""bomb"": return size >= 900f ? 4 : size >= 500f ? 3 : 2;"
+Sim/Content/Armour.cs,155,4,weapons.armour.defaultPenetrationSizeTrue3,x,sat_thuong,01,1,inline,,"conditional: case ""bomb"": return size >= 900f ? 4 : size >= 500f ? 3 : 2;"
+Sim/Content/Armour.cs,155,500f,weapons.armour.defaultPenetrationSizeMin11,x,sat_thuong,01,1,inline,,"compare: case ""bomb"": return size >= 900f ? 4 : size >= 500f ? 3 : 2;"
+Sim/Content/Armour.cs,155,3,weapons.armour.defaultPenetrationSizeTrue2,x,sat_thuong,01,1,inline,,"conditional: case ""bomb"": return size >= 900f ? 4 : size >= 500f ? 3 : 2;"
+Sim/Content/Armour.cs,155,2,weapons.armour.defaultPenetrationSizeFalse,x,sat_thuong,01,1,inline,,"conditional: case ""bomb"": return size >= 900f ? 4 : size >= 500f ? 3 : 2;"
+Sim/Content/Armour.cs,156,3,weapons.armour.defaultPenetrationDefaultPenetration2,x,sat_thuong,01,1,inline,,"return: case ""cruise"": return 3;"
+Sim/Content/Armour.cs,157,4,weapons.armour.defaultPenetrationDefaultPenetration3,x,sat_thuong,01,1,inline,,"return: case ""ballistic"": return 4;"
+Sim/Content/Armour.cs,158,3f,weapons.armour.defaultPenetrationSizeMin12,x,sat_thuong,01,1,inline,,"compare: case ""drone"": return w.DamageType == DamageType.ShapedCharge ? (size >= 3f ? 4 : 3) : 3;"
+Sim/Content/Armour.cs,158,4,weapons.armour.defaultPenetrationSizeTrue3,x,sat_thuong,01,1,inline,,"conditional: case ""drone"": return w.DamageType == DamageType.ShapedCharge ? (size >= 3f ? 4 : 3) : 3;"
+Sim/Content/Armour.cs,158,3,weapons.armour.defaultPenetrationSizeFalse2,x,sat_thuong,01,1,inline,,"conditional: case ""drone"": return w.DamageType == DamageType.ShapedCharge ? (size >= 3f ? 4 : 3) : 3;"
+Sim/Content/Armour.cs,158,3,weapons.armour.defaultPenetrationDamageTypeFalse,x,sat_thuong,01,2,inline,,"conditional: case ""drone"": return w.DamageType == DamageType.ShapedCharge ? (size >= 3f ? 4 : 3) : 3;"
+Sim/Content/Armour.cs,159,3f,weapons.armour.defaultPenetrationSizeMin12,x,sat_thuong,01,1,inline,,"compare: case ""flame"": return size >= 3f ? 2 : 1;"
+Sim/Content/Armour.cs,159,2,weapons.armour.defaultPenetrationSizeTrue,x,sat_thuong,01,1,inline,,"conditional: case ""flame"": return size >= 3f ? 2 : 1;"
+Sim/Content/Armour.cs,160,150f,weapons.armour.defaultPenetrationSizeMin7,x,sat_thuong,01,1,inline,,"compare: case ""laser"": return size >= 150f ? 3 : 2;"
+Sim/Content/Armour.cs,160,3,weapons.armour.defaultPenetrationSizeTrue2,x,sat_thuong,01,1,inline,,"conditional: case ""laser"": return size >= 150f ? 3 : 2;"
+Sim/Content/Armour.cs,160,2,weapons.armour.defaultPenetrationSizeFalse,x,sat_thuong,01,1,inline,,"conditional: case ""laser"": return size >= 150f ? 3 : 2;"
+Sim/Content/Armour.cs,161,4,weapons.armour.defaultPenetrationDefaultPenetration3,x,sat_thuong,01,1,inline,,"return: case ""railgun"": return 4;"
+Sim/Content/Armour.cs,162,3,weapons.armour.defaultPenetrationDefaultPenetration2,x,sat_thuong,01,1,inline,,"return: case ""melee"": return 3;"
+Sim/Content/Armour.cs,163,4,weapons.armour.defaultPenetrationDefaultPenetration3,x,sat_thuong,01,1,inline,,"return: case ""special"": return 4;"
+Sim/Content/Armour.cs,176,12f,weapons.armour.defaultFormSizeMin,x,nguong,01,1,inline,,"compare: case ""mg"": return size >= 12f ? WeaponForm.BulletBig : WeaponForm.BulletSmall;"
+Sim/Content/Armour.cs,181,120f,weapons.armour.defaultFormSizeMin2,x,nguong,01,1,inline,,"compare: case ""tank_gun"": return size >= 120f ? WeaponForm.DoubleDart : WeaponForm.Dart;"
+Sim/Content/Armour.cs,184,200f,weapons.armour.defaultFormSizeMin3,x,nguong,01,1,inline,,"compare: case ""rocket"": return size >= 200f ? WeaponForm.RocketBig : WeaponForm.RocketSmall;"
+Sim/Content/Armour.cs,187,900f,weapons.armour.defaultFormSizeMin4,x,nguong,01,1,inline,,"compare: case ""bomb"": return size >= 900f ? WeaponForm.HeavyBomb : w.Projectile == ProjectileKind.Bomb && w.Guided ? WeaponForm.GuidedBomb : WeaponForm.Bomb;"
+Sim/Content/Armour.cs,192,3f,weapons.armour.defaultFormSizeMin5,x,nguong,01,1,inline,,compare: return size >= 3f ? WeaponForm.Lancet : WeaponForm.Fpv;
+Sim/Content/Armour.cs,196,2f,weapons.armour.defaultFormSizeMin6,x,nguong,01,1,inline,,"compare: case ""melee"": return size >= 2f ? WeaponForm.Drill : WeaponForm.Blade;"
+Sim/Content/DamageTable.cs,30,6,weapons.damageTable.penetrationSteps,x,nguong,01,1,manual:const used in a constant context (pattern at Sim/Content/DamageTable.cs:40),,const_field: public const int PenetrationSteps = 6;
+Sim/Content/DamageTable.cs,32,2f,weapons.damageTable.ctorThermobaricStructure,x,sat_thuong,01,1,manual:parameter default,,"param_default: public DamageTable(float[,] types, float[]? penetration = null, float thermobaricStructure = 2f)"
+Sim/Content/DamageTable.cs,58,0.30f,weapons.damageTable.defaultValue,x,khac,01,1,manual:static property initializer,,"table: { 1.00f, 0.30f, 0.60f }, // Kinetic"
+Sim/Content/DamageTable.cs,58,0.60f,weapons.damageTable.defaultValue2,x,khac,01,1,manual:static property initializer,,"table: { 1.00f, 0.30f, 0.60f }, // Kinetic"
+Sim/Content/DamageTable.cs,59,0.30f,weapons.damageTable.defaultValue,x,khac,01,1,manual:static property initializer,,"table: { 1.00f, 0.30f, 0.60f }, // ShapedCharge"
+Sim/Content/DamageTable.cs,59,0.60f,weapons.damageTable.defaultValue2,x,khac,01,1,manual:static property initializer,,"table: { 1.00f, 0.30f, 0.60f }, // ShapedCharge"
+Sim/Content/DamageTable.cs,60,1.50f,weapons.damageTable.defaultValue3,x,khac,01,1,manual:static property initializer,,"table: { 1.00f, 0.00f, 1.50f }, // HighExplosive"
+Sim/Content/DamageTable.cs,61,1.50f,weapons.damageTable.defaultValue3,x,khac,01,1,manual:static property initializer,,"table: { 1.50f, 0.00f, 1.00f }, // Fire"
+Sim/Content/DamageTable.cs,62,0.50f,weapons.damageTable.defaultValue4,x,khac,01,1,manual:static property initializer,,"table: { 0.50f, 1.50f, 0.10f }, // Fragmentation"
+Sim/Content/DamageTable.cs,62,1.50f,weapons.damageTable.defaultValue3,x,khac,01,1,manual:static property initializer,,"table: { 0.50f, 1.50f, 0.10f }, // Fragmentation"
+Sim/Content/DamageTable.cs,62,0.10f,weapons.damageTable.defaultValue5,x,khac,01,1,manual:static property initializer,,"table: { 0.50f, 1.50f, 0.10f }, // Fragmentation"
+Sim/Content/DamageTable.cs,63,1.50f,weapons.damageTable.defaultValue3,x,khac,01,1,manual:static property initializer,,"table: { 1.00f, 1.50f, 0.50f }, // Energy"
+Sim/Content/DamageTable.cs,63,0.50f,weapons.damageTable.defaultValue4,x,khac,01,1,manual:static property initializer,,"table: { 1.00f, 1.50f, 0.50f }, // Energy"
+Sim/Content/DamageTable.cs,91,2f,weapons.damageTable.penetrationPenetrationSub,x,sat_thuong,01,1,inline,,subtract: var step = 2f - (penetration - armour);
+Sim/Content/FixRules.cs,14,0.35f,weapons.munitionRules.flareDecoyChance,share,xac_suat,01,1,inline,,property_init: public float FlareDecoyChance { get; internal set; } = 0.35f;
+Sim/Content/FixRules.cs,17,10f,weapons.munitionRules.flareOffset,m,ban_kinh,01,1,inline,,property_init: public float FlareOffset { get; internal set; } = 10f;
+Sim/Content/FixRules.cs,20,7f,weapons.munitionRules.proximityFuze,x,khac,01,1,inline,,property_init: public float ProximityFuze { get; internal set; } = 7f;
+Sim/Content/FixRules.cs,23,1.3f,weapons.munitionRules.reachScale,m,ban_kinh,01,1,inline,,property_init: public float ReachScale { get; internal set; } = 1.3f;
+Sim/Content/FixRules.cs,26,3f,weapons.munitionRules.leadCap,count,tran,01,1,inline,,property_init: public float LeadCap { get; internal set; } = 3f;
+Sim/Content/FixRules.cs,35,4,weapons.munitionRules.flaresFighterNguong,x,nguong,01,1,inline,,"tuple: public (int min, int max) FlaresFighter { get; internal set; } = (4, 6);"
+Sim/Content/FixRules.cs,35,6,weapons.munitionRules.flaresFighterNguong2,x,nguong,01,1,inline,,"tuple: public (int min, int max) FlaresFighter { get; internal set; } = (4, 6);"
+Sim/Content/FixRules.cs,36,4,weapons.munitionRules.flaresHelicopterNguong,x,nguong,01,1,inline,,"tuple: public (int min, int max) FlaresHelicopter { get; internal set; } = (4, 8);"
+Sim/Content/FixRules.cs,36,8,weapons.munitionRules.flaresHelicopterNguong2,x,nguong,01,1,inline,,"tuple: public (int min, int max) FlaresHelicopter { get; internal set; } = (4, 8);"
+Sim/Content/FixRules.cs,37,8,weapons.munitionRules.flaresLargeNguong,x,nguong,01,1,inline,,"tuple: public (int min, int max) FlaresLarge { get; internal set; } = (8, 16);"
+Sim/Content/FixRules.cs,37,16,weapons.munitionRules.flaresLargeNguong2,x,nguong,01,1,inline,,"tuple: public (int min, int max) FlaresLarge { get; internal set; } = (8, 16);"
+Sim/Content/FixRules.cs,40,3f,weapons.munitionRules.flareBurnNguong,x,nguong,01,1,inline,,"tuple: public (float min, float max) FlareBurn { get; internal set; } = (3f, 4f);"
+Sim/Content/FixRules.cs,40,4f,weapons.munitionRules.flareBurnNguong2,x,nguong,01,1,inline,,"tuple: public (float min, float max) FlareBurn { get; internal set; } = (3f, 4f);"
+Sim/Content/FixRules.cs,82,2,weapons.munitionRules.pairCountIs,count,gioi_han_thuc_the,01,1,inline,,"equals: if (a.Count != 2 || a[0] < 1f || a[1] < a[0]) throw new FormatException($""{o.Path}.{key}: [min, max] flares."");"
+Sim/Content/FixRules.cs,97,203f,weapons.warningRules.gunMinMm,x,nguong,01,1,inline,,property_init: public float GunMinMm { get; internal set; } = 203f;
+Sim/Content/FixRules.cs,98,400f,weapons.warningRules.bombMinKg,x,nguong,01,1,inline,,property_init: public float BombMinKg { get; internal set; } = 400f;
+Sim/Content/FixRules.cs,99,300f,weapons.warningRules.rocketMinMm,x,nguong,01,1,inline,,property_init: public float RocketMinMm { get; internal set; } = 300f;
+Sim/Content/FixRules.cs,102,2.5f,weapons.warningRules.floorT4,x,khac,01,1,inline,,property_init: public float FloorT4 { get; internal set; } = 2.5f;
+Sim/Content/FixRules.cs,103,3.5f,weapons.warningRules.floor406,x,khac,01,1,inline,,property_init: public float Floor406 { get; internal set; } = 3.5f;
+Sim/Content/FixRules.cs,104,4f,weapons.warningRules.floorT5,x,khac,01,1,inline,,property_init: public float FloorT5 { get; internal set; } = 4f;
+Sim/Content/FixRules.cs,107,0.5f,weapons.warningRules.base,x,khac,01,1,inline,,property_init: public float Base { get; internal set; } = 0.5f;
+Sim/Content/FixRules.cs,108,4.5f,weapons.warningRules.escapeSpeed,m/s,tan_suat,01,1,inline,,property_init: public float EscapeSpeed { get; internal set; } = 4.5f;
+Sim/Content/FixRules.cs,111,6f,weapons.warningRules.cap,count,tran,01,1,inline,,property_init: public float Cap { get; internal set; } = 6f;
+Sim/Content/FixRules.cs,133,4,weapons.warningRules.secondsTierMax,s,thoi_gian,01,1,inline,,compare: if (tier < 4) return 0f;
+Sim/Content/FixRules.cs,134,5,weapons.warningRules.secondsTierMin,s,thoi_gian,01,1,inline,,"compare: var floor = familyId == ""cal_406"" ? Floor406 : tier >= 5 ? FloorT5 : FloorT4;"
+Sim/Content/FixRules.cs,135,0.1f,weapons.warningRules.secondsEscapeSpeedFloor,s,thoi_gian,01,1,inline,,"math_max: return MathF.Min(Cap, MathF.Max(floor, Base + MathF.Max(0f, core) / MathF.Max(0.1f, EscapeSpeed)));"
+Sim/Content/FixRules.cs,152,4,weapons.warningRules.isBigTierMin,x,nguong,01,1,inline,,compare: if (w.Tier >= 0) return w.Tier >= 4;
+Sim/Content/SecondRounds.cs,218,0f,weapons.catalog.resolveSecondRoundsSwitchSeconds,s,thoi_gian,01,1,inline,,"ctor_arg:SecondRound: if (gun.HeRound is { } he) Add(gun, new SecondRound(he, RoundUse.Light | RoundUse.Structure, false, 0f));"
+Sim/Content/SecondRounds.cs,219,0f,weapons.catalog.resolveSecondRoundsSwitchSeconds,s,thoi_gian,01,1,inline,,"ctor_arg:SecondRound: if (gun.AirRound is { } air) Add(gun, new SecondRound(air, RoundUse.Air, false, 0f));"
+Sim/Content/WeaponDef.P17.cs,13,0.3f,weapons.rampDef.from,x,khac,01,1,inline,,property_init: public float From { get; internal set; } = 0.3f;
+Sim/Content/WeaponDef.P17.cs,14,2f,weapons.rampDef.to,x,khac,01,1,inline,,property_init: public float To { get; internal set; } = 2f;
+Sim/Content/WeaponDef.P17.cs,15,6f,weapons.rampDef.seconds,s,thoi_gian,01,1,inline,,property_init: public float Seconds { get; internal set; } = 6f;
+Sim/Content/WeaponDef.P17.cs,16,1.5f,weapons.rampDef.grace,x,khac,01,1,inline,,property_init: public float Grace { get; internal set; } = 1.5f;
+Sim/Content/WeaponDef.P17.cs,19,0.1,weapons.rampDef.atSecondsFloor,s,thoi_gian,01,1,inline,,"math_max: public float At(double onTarget) => From + (To - From) * (float)Math.Clamp(onTarget / Math.Max(0.1, Seconds), 0.0, 1.0);"
+Sim/Content/WeaponDef.P17.cs,55,0.4f,weapons.weaponDef.edgeShare,share,khac,01,1,inline,,property_init: public float EdgeShare { get; internal set; } = 0.4f;
+Sim/Content/WeaponDef.P34.cs,20,5,weapons.weaponFamilyInfo.ctorTierMax,x,nguong,01,1,inline,,"math_clamp: Tier = Math.Clamp(tier, 0, 5);"
+Sim/Content/WeaponDef.P34.cs,64,4,weapons.weaponDef.warnSecondsTierTrue,s,sat_thuong,01,1,inline,,"conditional: public float WarnSeconds => EscapeWarning(Tier < 0 && WarningRules.Shared.IsBig(this) ? 4 : Tier, WeaponFamilyId, SplashRadius);"
+Sim/Content/WeaponDef.P34.cs,90,0.28f,weapons.weaponDef.arcShareFlightValue,share,khac,01,1,inline,,"switch_arm: FlightProfile.Ballistic => 0.28f,"
+Sim/Content/WeaponDef.P34.cs,91,0.2f,weapons.weaponDef.arcShareFlightValue2,share,khac,01,1,inline,,"switch_arm: FlightProfile.Loft => 0.2f,"
+Sim/Content/WeaponDef.P34.cs,92,0.04f,weapons.weaponDef.arcShareProjectileTrue,share,khac,01,1,inline,,"conditional: _ => Projectile == ProjectileKind.Missile ? 0.04f : 0.02f,"
+Sim/Content/WeaponDef.P34.cs,92,0.02f,weapons.weaponDef.arcShareProjectileFalse,share,khac,01,1,inline,,"conditional: _ => Projectile == ProjectileKind.Missile ? 0.04f : 0.02f,"
+Sim/Content/WeaponDef.Stick.cs,92,2,weapons.stickDef.reducedBombsFloor,x,nguong,01,1,inline,,"math_max: public int Reduced => Math.Min(Bombs, Math.Max(2, (Bombs + 2) / 3));"
+Sim/Content/WeaponDef.Stick.cs,92,3,weapons.stickDef.reducedBombsDivisor,x,nguong,01,1,inline,,"divide: public int Reduced => Math.Min(Bombs, Math.Max(2, (Bombs + 2) / 3));"
+Sim/Content/WeaponDef.Stick.cs,92,2,weapons.stickDef.reducedBombsAdd,x,nguong,01,2,inline,,"add: public int Reduced => Math.Min(Bombs, Math.Max(2, (Bombs + 2) / 3));"
+Sim/Content/WeaponDef.Stick.cs,110,0.02f,weapons.catalog.stickTolerance,s,thoi_gian,01,1,const_to_property,,const_field: private const float StickTolerance = 0.02f;
+Sim/Content/WeaponDef.Stick.cs,158,0.05f,weapons.catalog.nearAbsFloor,s,thoi_gian,01,1,inline,,"math_max: if (MathF.Abs(value - formula) > MathF.Max(0.05f, MathF.Abs(formula) * StickTolerance))"
+Sim/Entities/Projectile.cs,69,1f,weapons.projectile.damageScale,x,sat_thuong,01,1,inline,,property_init: public float DamageScale { get; set; } = 1f;
+Sim/Entities/WeaponState.cs,12,1f,weapons.weaponState.damageScale,x,sat_thuong,01,1,inline,,"field_init: public float DamageScale = 1f, RateScale = 1f;"
+Sim/Entities/WeaponState.cs,12,1f,weapons.weaponState.rateScale,x,sat_thuong,01,2,inline,,"field_init: public float DamageScale = 1f, RateScale = 1f;"
+Sim/Entities/WeaponState.cs,51,1f,weapons.weaponState.burstScale,x,khac,01,1,inline,,field_init: public float BurstScale = 1f;
+Sim/Strikes/StrikeSystem.cs,36,70f,weapons.strikeSystem.approach,x,khac,01,1,manual:const used in a constant context (pattern at Sim/AI/Squads.cs:535),,const_field: private const float Approach = 70f;
+Sim/Strikes/StrikeSystem.cs,39,1.4f,weapons.strikeSystem.runIn,x,khac,01,1,const_to_property,,const_field: private const float RunIn = 1.4f;
+Sim/Strikes/StrikeSystem.cs,66,0.9f,weapons.strikeSystem.shellFall,x,khac,01,1,const_to_property,,const_field: private const float ShellFall = 0.9f;
+Sim/Strikes/StrikeSystem.cs,97,31,weapons.strikeSystem.scanMaskTeamMax,m,ban_kinh,01,1,inline,,"compare: if (z.Team != owner && z.Team >= 0 && z.Team < 31 && Vector2.DistanceSquared(z.Centre, at) <= z.Radius * z.Radius) mask |= 1 << z.Team;"
+Sim/Strikes/StrikeSystem.cs,112,0.5f,weapons.strikeSystem.incomingLengthScale,m,thoi_gian,01,1,inline,,"multiply: into.Add((s.Team, s.Point, MathF.Max(s.Support.Radius, s.Length * 0.5f), s.Start + s.Support.Delay));"
+Sim/Strikes/StrikeSystem.cs,153,0.01f,weapons.strikeSystem.launchLengthSquaredMin,m,ban_kinh,01,1,inline,,compare: direction = direction.LengthSquared() > 0.01f ? Vector2.Normalize(direction) : Vector2.UnitX;
+Sim/Strikes/StrikeSystem.cs,208,36f,weapons.strikeSystem.obscuresDistanceSquaredMax,m,ban_kinh,01,1,inline,,"compare: if (Vector2.DistanceSquared(from, to) < 36f) return false;"
+Sim/Strikes/StrikeSystem.cs,216,0.6f,weapons.strikeSystem.obscuresR2Scale,m,ban_kinh,01,1,inline,,"multiply: if (Vector2.DistanceSquared(zone.Centre, from + d * t) < r2 * 0.6f) return true;"
+Sim/Strikes/StrikeSystem.cs,239,0.15,weapons.strikeSystem.advanceLandsFloor,s,thoi_gian,01,1,inline,,"math_max: _world.Emit(SimEvent.ShellInbound(s.Team, support, at, FireFrom(s), (float)Math.Max(0.15, lands - now)));"
+Sim/Strikes/StrikeSystem.cs,256,0.2f,weapons.strikeSystem.advanceDurationFloor,s,thoi_gian,01,1,inline,,"math_max: var speed = s.Length / MathF.Max(0.2f, s.Duration);"
+Sim/Strikes/StrikeSystem.cs,257,0.2f,weapons.strikeSystem.advanceLengthScale,m,thoi_gian,01,1,inline,,"multiply: var lead = MathF.Min(Approach + s.Length * 0.2f, speed * MathF.Max(0.3f, support.Delay - 0.1f));"
+Sim/Strikes/StrikeSystem.cs,257,0.3f,weapons.strikeSystem.advanceDelayFloor,s,thoi_gian,01,1,inline,,"math_max: var lead = MathF.Min(Approach + s.Length * 0.2f, speed * MathF.Max(0.3f, support.Delay - 0.1f));"
+Sim/Strikes/StrikeSystem.cs,257,0.1f,weapons.strikeSystem.advanceDelaySub,s,thoi_gian,01,1,inline,,"subtract: var lead = MathF.Min(Approach + s.Length * 0.2f, speed * MathF.Max(0.3f, support.Delay - 0.1f));"
+Sim/Strikes/StrikeSystem.cs,269,0.5f,weapons.strikeSystem.advanceCountFalse,count,gioi_han_thuc_the,01,1,inline,,conditional: var along = s.Count > 1 ? s.Done / (float)(s.Count - 1) : 0.5f;
+Sim/Strikes/StrikeSystem.cs,270,0.5f,weapons.strikeSystem.advanceNextDoubleSub,m,ban_kinh,01,1,inline,,"subtract: var side = new Vector2(-s.Direction.Y, s.Direction.X) * (((float)_world.Random.NextDouble() - 0.5f) * support.Radius);"
+Sim/Strikes/StrikeSystem.cs,281,40f,weapons.strikeSystem.advanceApproachAdd,x,khac,01,1,inline,,add: var from = s.Point - s.Direction * (Approach + 40f);
+Sim/Strikes/StrikeSystem.cs,291,0.5f,weapons.strikeSystem.advanceCountScale,count,sat_thuong,01,1,inline,,"multiply: var at = s.Count > 1 ? s.Point + side * ((k - (s.Count - 1) * 0.5f) * MathF.Max(4f, support.BlastRadius * 0.8f)) : s.Point;"
+Sim/Strikes/StrikeSystem.cs,291,4f,weapons.strikeSystem.advanceBlastRadiusFloor,m,sat_thuong,01,1,inline,,"math_max: var at = s.Count > 1 ? s.Point + side * ((k - (s.Count - 1) * 0.5f) * MathF.Max(4f, support.BlastRadius * 0.8f)) : s.Point;"
+Sim/Strikes/StrikeSystem.cs,291,0.8f,weapons.strikeSystem.advanceBlastRadiusScale,m,sat_thuong,01,1,inline,,"multiply: var at = s.Count > 1 ? s.Point + side * ((k - (s.Count - 1) * 0.5f) * MathF.Max(4f, support.BlastRadius * 0.8f)) : s.Point;"
+Sim/Strikes/StrikeSystem.cs,304,5,weapons.strikeSystem.advanceKMax,x,nguong,01,1,inline,,compare: for (var k = 0; k < 5; k++)
+Sim/Strikes/StrikeSystem.cs,306,4f,weapons.strikeSystem.advanceKDivisor,x,khac,01,1,inline,,divide: var angle = k * SimMath.Tau / 4f + 0.8f;
+Sim/Strikes/StrikeSystem.cs,306,0.8f,weapons.strikeSystem.advanceKAdd,x,khac,01,1,inline,,add: var angle = k * SimMath.Tau / 4f + 0.8f;
+Sim/Strikes/StrikeSystem.cs,307,0.5f,weapons.strikeSystem.advanceRadiusScale,m,ban_kinh,01,1,inline,,"multiply: var at = k == 0 ? s.Point : s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (support.Radius * 0.5f);"
+Sim/Strikes/StrikeSystem.cs,309,0.15,weapons.strikeSystem.advanceStartFloor,s,thoi_gian,01,1,inline,,"math_max: (float)Math.Max(0.15, s.Start - now + k * 0.08)));"
+Sim/Strikes/StrikeSystem.cs,309,0.08,weapons.strikeSystem.advanceKScale,s,thoi_gian,01,1,inline,,"multiply: (float)Math.Max(0.15, s.Start - now + k * 0.08)));"
+Sim/Strikes/StrikeSystem.cs,351,0.9f,weapons.strikeSystem.advanceDamageMax,x,sat_thuong,01,1,inline,,"math_clamp: v.ShieldAmount = Math.Clamp(support.Damage, 0f, 0.9f);"
+Sim/Strikes/StrikeSystem.cs,365,6f,weapons.strikeSystem.advanceCountTrue,count,gioi_han_thuc_the,01,1,inline,,"conditional: var at = s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (units.Count > 1 ? 6f : 0f);"
+Sim/Strikes/StrikeSystem.cs,372,12f,weapons.strikeSystem.advanceRadiusFloor,m,ban_kinh,01,1,inline,,"math_max: unit.PostRadius = MathF.Max(support.Radius, 12f);"
+Sim/Strikes/StrikeSystem.cs,384,30f,weapons.strikeSystem.advanceApproachAdd2,x,khac,01,1,inline,,add: var from = s.Point - s.Direction * (Approach + 30f);
+Sim/Strikes/StrikeSystem.cs,399,0.1f,weapons.strikeSystem.advanceNextDoubleAdd,m,ban_kinh,01,1,inline,,add: var r = support.Radius * MathF.Sqrt(0.1f + 0.9f * (float)_world.Random.NextDouble());
+Sim/Strikes/StrikeSystem.cs,399,0.9f,weapons.strikeSystem.advanceNextDoubleScale,m,ban_kinh,01,1,inline,,multiply: var r = support.Radius * MathF.Sqrt(0.1f + 0.9f * (float)_world.Random.NextDouble());
+Sim/Strikes/StrikeSystem.cs,406,0.15,weapons.strikeSystem.advanceStartFloor,s,thoi_gian,01,1,inline,,"math_max: _world.Emit(SimEvent.ShellInbound(s.Team, support, s.Planned[k], FireFrom(s), (float)Math.Max(0.15, s.Start - now + k * 0.06)));"
+Sim/Strikes/StrikeSystem.cs,406,0.06,weapons.strikeSystem.advanceKScale2,s,thoi_gian,01,1,inline,,"multiply: _world.Emit(SimEvent.ShellInbound(s.Team, support, s.Planned[k], FireFrom(s), (float)Math.Max(0.15, s.Start - now + k * 0.06)));"
+Sim/Strikes/StrikeSystem.cs,434,40f,weapons.strikeSystem.advanceApproachAdd,x,khac,01,1,inline,,add: var from = s.Point - s.Direction * (Approach + 40f);
+Sim/Strikes/StrikeSystem.cs,435,1.6f,weapons.strikeSystem.advanceRunInScale,x,khac,01,1,inline,,"multiply: _world.Emit(SimEvent.AircraftPass(s.Team, support, from, s.Point + s.Direction * Approach, RunIn * 1.6f));"
+Sim/Strikes/StrikeSystem.cs,443,0.15,weapons.strikeSystem.advanceStartFloor,s,thoi_gian,01,1,inline,,"math_max: _world.Emit(SimEvent.ShellInbound(s.Team, support, aim, FireFrom(s), (float)Math.Max(0.15, s.Start - now)));"
+Sim/Strikes/StrikeSystem.cs,535,10.0,weapons.strikeSystem.advanceNowMin,s,thoi_gian,01,1,inline,,compare: if (now - v.LastFiredAt > 10.0) continue;
+Sim/Strikes/StrikeSystem.cs,563,2.2f,weapons.strikeSystem.minesOfTrigger,x,sat_thuong,01,1,inline,,"ctor_arg:MineLayerDef: def = new MineLayerDef(1f, Math.Max(1, support.Count), new ExplosionDef(support.Damage, MathF.Max(1f, support.BlastRadius), 0f, support.Tier), 2.2f);"
+Sim/Strikes/StrikeSystem.cs,620,6f,weapons.strikeSystem.scatteredRadiusFloor,m,ban_kinh,01,1,inline,,"math_max: var off = (s.Scatter - 1f) * MathF.Max(6f, support.Radius) * MathF.Sqrt((float)_world.Random.NextDouble());"
+Sim/Strikes/StrikeSystem.cs,638,0.01f,weapons.strikeSystem.fireFromLengthSquaredMin,m,ban_kinh,01,1,inline,,compare: return s.Direction.LengthSquared() > 0.01f ? -Vector2.Normalize(s.Direction) : Vector2.UnitY;

@@ -1,0 +1,1088 @@
+file,line,literal,key,unit,kind,linh_vuc,occurrence,mode,note,context
+Game/Match/Arsenal.cs,126,10,ai.cardRanks.max,x,nguong,06,1,manual:const used in a constant context (const initializer at Game/Hud/CombatFacts.cs:82),,const_field: public const int Max = 10;
+Game/Match/Arsenal.cs,128,50,ai.cardRanks.coinsValue,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Coins = { 0, 50, 100, 200, 400, 700, 1200, 2000, 3200, 5000 };"
+Game/Match/Arsenal.cs,128,100,ai.cardRanks.coinsValue2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Coins = { 0, 50, 100, 200, 400, 700, 1200, 2000, 3200, 5000 };"
+Game/Match/Arsenal.cs,128,200,ai.cardRanks.coinsValue3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Coins = { 0, 50, 100, 200, 400, 700, 1200, 2000, 3200, 5000 };"
+Game/Match/Arsenal.cs,128,400,ai.cardRanks.coinsValue4,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Coins = { 0, 50, 100, 200, 400, 700, 1200, 2000, 3200, 5000 };"
+Game/Match/Arsenal.cs,128,700,ai.cardRanks.coinsValue5,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Coins = { 0, 50, 100, 200, 400, 700, 1200, 2000, 3200, 5000 };"
+Game/Match/Arsenal.cs,128,1200,ai.cardRanks.coinsValue6,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Coins = { 0, 50, 100, 200, 400, 700, 1200, 2000, 3200, 5000 };"
+Game/Match/Arsenal.cs,128,2000,ai.cardRanks.coinsValue7,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Coins = { 0, 50, 100, 200, 400, 700, 1200, 2000, 3200, 5000 };"
+Game/Match/Arsenal.cs,128,3200,ai.cardRanks.coinsValue8,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Coins = { 0, 50, 100, 200, 400, 700, 1200, 2000, 3200, 5000 };"
+Game/Match/Arsenal.cs,128,5000,ai.cardRanks.coinsValue9,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Coins = { 0, 50, 100, 200, 400, 700, 1200, 2000, 3200, 5000 };"
+Game/Match/Arsenal.cs,129,2,ai.cardRanks.printsValue,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Prints = { 0, 2, 4, 8, 12, 20, 30, 45, 65, 90 };"
+Game/Match/Arsenal.cs,129,4,ai.cardRanks.printsValue2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Prints = { 0, 2, 4, 8, 12, 20, 30, 45, 65, 90 };"
+Game/Match/Arsenal.cs,129,8,ai.cardRanks.printsValue3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Prints = { 0, 2, 4, 8, 12, 20, 30, 45, 65, 90 };"
+Game/Match/Arsenal.cs,129,12,ai.cardRanks.printsValue4,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Prints = { 0, 2, 4, 8, 12, 20, 30, 45, 65, 90 };"
+Game/Match/Arsenal.cs,129,20,ai.cardRanks.printsValue5,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Prints = { 0, 2, 4, 8, 12, 20, 30, 45, 65, 90 };"
+Game/Match/Arsenal.cs,129,30,ai.cardRanks.printsValue6,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Prints = { 0, 2, 4, 8, 12, 20, 30, 45, 65, 90 };"
+Game/Match/Arsenal.cs,129,45,ai.cardRanks.printsValue7,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Prints = { 0, 2, 4, 8, 12, 20, 30, 45, 65, 90 };"
+Game/Match/Arsenal.cs,129,65,ai.cardRanks.printsValue8,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Prints = { 0, 2, 4, 8, 12, 20, 30, 45, 65, 90 };"
+Game/Match/Arsenal.cs,129,90,ai.cardRanks.printsValue9,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly int[] Prints = { 0, 2, 4, 8, 12, 20, 30, 45, 65, 90 };"
+Game/Match/Arsenal.cs,153,0.05f,ai.cardRanks.bonusClampScale,x,nguong,06,1,inline,,"multiply: public static float Bonus(int rank) => 0.05f * (Mathf.Clamp(rank, 1, Max) - 1);"
+Game/Match/Arsenal.cs,156,9,ai.cardRanks.cutBasisPointsRankMin,x,nguong,06,1,inline,,compare: public static int CutBasisPoints(int rank) => rank >= 9 ? 1000 : rank >= 7 ? 500 : 0;
+Game/Match/Arsenal.cs,156,1000,ai.cardRanks.cutBasisPointsRankTrue,x,khac,06,1,inline,,conditional: public static int CutBasisPoints(int rank) => rank >= 9 ? 1000 : rank >= 7 ? 500 : 0;
+Game/Match/Arsenal.cs,156,7,ai.cardRanks.cutBasisPointsRankMin2,x,nguong,06,1,inline,,compare: public static int CutBasisPoints(int rank) => rank >= 9 ? 1000 : rank >= 7 ? 500 : 0;
+Game/Match/Arsenal.cs,156,500,ai.cardRanks.cutBasisPointsRankTrue2,x,khac,06,1,inline,,conditional: public static int CutBasisPoints(int rank) => rank >= 9 ? 1000 : rank >= 7 ? 500 : 0;
+Game/Match/Arsenal.cs,165,5,ai.cardRanks.callCostCostMax,CP,nguong,06,1,inline,,compare: if (cost <= 5 || bp == 0) return cost;
+Game/Match/Arsenal.cs,166,5000,ai.cardRanks.callCostCostAdd,CP,khac,06,1,inline,,add: return cost - (cost * bp + 5000) / 10000;
+Game/Match/Arsenal.cs,166,10000,ai.cardRanks.callCostCostDivisor,CP,khac,06,1,inline,,divide: return cost - (cost * bp + 5000) / 10000;
+Game/Match/Arsenal.cs,177,7,ai.gear.slots,count,gioi_han_thuc_the,06,1,const_to_property,,const_field: public const int Slots = 7;
+Game/Match/Arsenal.cs,180,5,ai.gear.levelCapTran,count,tran,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly int[] LevelCap = { 5, 10, 15, 20, 25 };"
+Game/Match/Arsenal.cs,180,10,ai.gear.levelCapTran2,count,tran,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly int[] LevelCap = { 5, 10, 15, 20, 25 };"
+Game/Match/Arsenal.cs,180,15,ai.gear.levelCapTran3,count,tran,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly int[] LevelCap = { 5, 10, 15, 20, 25 };"
+Game/Match/Arsenal.cs,180,20,ai.gear.levelCapTran4,count,tran,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly int[] LevelCap = { 5, 10, 15, 20, 25 };"
+Game/Match/Arsenal.cs,180,25,ai.gear.levelCapTran5,count,tran,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly int[] LevelCap = { 5, 10, 15, 20, 25 };"
+Game/Match/Arsenal.cs,185,0.03f,ai.gear.topValue,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,185,0.05f,ai.gear.topValue2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,185,0.08f,ai.gear.topValue3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,185,0.11f,ai.gear.topValue4,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,185,0.14f,ai.gear.topValue5,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,186,0.03f,ai.gear.topValue,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,186,0.05f,ai.gear.topValue2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,186,0.08f,ai.gear.topValue3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,186,0.11f,ai.gear.topValue4,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,186,0.14f,ai.gear.topValue5,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,187,0.03f,ai.gear.topValue,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,187,0.05f,ai.gear.topValue2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,187,0.08f,ai.gear.topValue3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,187,0.11f,ai.gear.topValue4,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,187,0.14f,ai.gear.topValue5,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,188,0.03f,ai.gear.topValue,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,188,0.05f,ai.gear.topValue2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,188,0.08f,ai.gear.topValue3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,188,0.11f,ai.gear.topValue4,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,188,0.14f,ai.gear.topValue5,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.03f, 0.05f, 0.08f, 0.11f, 0.14f },"
+Game/Match/Arsenal.cs,189,0.02f,ai.gear.topValue6,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.02f, 0.035f, 0.05f, 0.065f, 0.08f },"
+Game/Match/Arsenal.cs,189,0.035f,ai.gear.topValue7,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.02f, 0.035f, 0.05f, 0.065f, 0.08f },"
+Game/Match/Arsenal.cs,189,0.05f,ai.gear.topValue2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.02f, 0.035f, 0.05f, 0.065f, 0.08f },"
+Game/Match/Arsenal.cs,189,0.065f,ai.gear.topValue8,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.02f, 0.035f, 0.05f, 0.065f, 0.08f },"
+Game/Match/Arsenal.cs,189,0.08f,ai.gear.topValue3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.02f, 0.035f, 0.05f, 0.065f, 0.08f },"
+Game/Match/Arsenal.cs,190,0.002f,ai.gear.topValue9,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.002f, 0.004f, 0.006f, 0.008f, 0.01f },"
+Game/Match/Arsenal.cs,190,0.004f,ai.gear.topValue10,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.002f, 0.004f, 0.006f, 0.008f, 0.01f },"
+Game/Match/Arsenal.cs,190,0.006f,ai.gear.topValue11,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.002f, 0.004f, 0.006f, 0.008f, 0.01f },"
+Game/Match/Arsenal.cs,190,0.008f,ai.gear.topValue12,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.002f, 0.004f, 0.006f, 0.008f, 0.01f },"
+Game/Match/Arsenal.cs,190,0.01f,ai.gear.topValue13,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: new[] { 0.002f, 0.004f, 0.006f, 0.008f, 0.01f },"
+Game/Match/Arsenal.cs,305,2,ai.gear.boostBrandsMin,x,nguong,06,1,inline,,compare: if (brands[i] >= 2)
+Game/Match/Arsenal.cs,310,4,ai.gear.boostBrandsMin2,x,nguong,06,1,inline,,compare: if (brands[i] >= 4) traits.Add(brand.FourPiece);
+Game/Match/Arsenal.cs,359,0.1f,ai.enemyScaling.powerDamageTakenFloor,x,sat_thuong,06,1,inline,,"math_max: sum += Mathf.Sqrt(b.Hp / Mathf.Max(0.1f, b.DamageTaken) * b.Damage * b.FireRate);"
+Game/Match/Arsenal.cs,362,100,ai.enemyScaling.powerNTrue,x,khac,06,1,inline,,conditional: return n == 0 ? 100 : Mathf.RoundToInt(100f * sum / n);
+Game/Match/Arsenal.cs,362,100f,ai.enemyScaling.powerSumScale,x,khac,06,1,inline,,multiply: return n == 0 ? 100 : Mathf.RoundToInt(100f * sum / n);
+Game/Match/Arsenal.cs,374,1f,ai.enemyScaling.withElitesFireRate,x,sat_thuong,06,3,inline,,"ctor_arg:VehicleBoost: return new VehicleBoost(Mathf.Max(1f, matched.Hp / f), Mathf.Max(1f, matched.Damage / f), 1f, 1f, 1f, 0f, SpecialModule.None, 0f);"
+Game/Match/Arsenal.cs,384,0.1f,ai.enemyScaling.matchDamageTakenFloor,x,sat_thuong,06,1,inline,,"math_max: tough += b.Hp / Mathf.Max(0.1f, b.DamageTaken);"
+Game/Match/Arsenal.cs,391,1f,ai.enemyScaling.matchFireRate,x,sat_thuong,06,1,inline,,"ctor_arg:VehicleBoost: return new VehicleBoost(hp, damage, 1f, 1f, 1f, 0f, SpecialModule.None, 0f);"
+Game/Match/Arsenal.cs,562,5,ai.dailyCrates.winCrates,x,tan_suat,06,1,const_to_property,,const_field: public const int WinCrates = 5;
+Game/Match/Cinematics.cs,13,25f,ai.cinematics.cooldown,s,thoi_gian,06,1,const_to_property,,const_field: private const float Cooldown = 25f;
+Game/Match/Cinematics.cs,14,0.14f,ai.cinematics.easeIn,x,khac,06,1,const_to_property,,const_field: private const float EaseIn = 0.14f;
+Game/Match/Cinematics.cs,15,0.95f,ai.cinematics.hold,x,khac,06,1,manual:const used in a constant context (pattern at Game/Hud/MenuScreen.Campaign.cs:738),,const_field: private const float Hold = 0.95f;
+Game/Match/Cinematics.cs,16,0.7f,ai.cinematics.easeOut,x,khac,06,1,const_to_property,,const_field: private const float EaseOut = 0.7f;
+Game/Match/Cinematics.cs,19,100f,ai.cinematics.start,x,khac,06,1,inline,,"field_init: private float _start = -100f, _last = -100f;"
+Game/Match/Cinematics.cs,19,100f,ai.cinematics.last,x,khac,06,2,inline,,"field_init: private float _start = -100f, _last = -100f;"
+Game/Match/CrowdCheck.cs,25,7f,ai.crowdCheck.gap,m,ban_kinh,06,1,const_to_property,,const_field: private const float Gap = 7f;
+Game/Match/CrowdCheck.cs,26,8,ai.crowdCheck.perTick,ticks,thoi_gian,06,1,const_to_property,,const_field: private const int PerTick = 8;
+Game/Match/CrowdCheck.cs,46,200,ai.crowdCheck.createNMax,x,nguong,06,1,inline,,"math_clamp: var perSide = int.TryParse(DebugFlags.Value(""-mb-crowd=""), out var n) ? Mathf.Clamp(n, 1, 200) : 50;"
+Game/Match/CrowdCheck.cs,46,50,ai.crowdCheck.createTryParseFalse,x,khac,06,1,inline,,"conditional: var perSide = int.TryParse(DebugFlags.Value(""-mb-crowd=""), out var n) ? Mathf.Clamp(n, 1, 200) : 50;"
+Game/Match/CrowdCheck.cs,54,0.5f,ai.crowdCheck.tickNowAdd,ticks,thoi_gian,06,1,inline,,add: _nextAt = now + 0.5f;
+Game/Match/CrowdCheck.cs,65,10,ai.crowdCheck.tickSlotMod,ticks,thoi_gian,06,1,inline,,modulo: var row = slot % 10 - 4.5f;
+Game/Match/CrowdCheck.cs,65,4.5f,ai.crowdCheck.tickSlotSub,ticks,thoi_gian,06,1,inline,,subtract: var row = slot % 10 - 4.5f;
+Game/Match/CrowdCheck.cs,66,10,ai.crowdCheck.tickSlotDivisor,ticks,thoi_gian,06,1,inline,,divide: var rank = (slot / 10) % 5;
+Game/Match/CrowdCheck.cs,66,5,ai.crowdCheck.tickSlotMod2,ticks,thoi_gian,06,1,inline,,modulo: var rank = (slot / 10) % 5;
+Game/Match/CrowdCheck.cs,67,14f,ai.crowdCheck.tickRankAdd,ticks,thoi_gian,06,1,inline,,add: var at = _centre + across * (side * (14f + rank * Gap)) + along * (row * Gap);
+Game/Match/DefeatHints.cs,31,2,ai.defeatHints.most,x,khac,06,1,const_to_property,,const_field: public const int Most = 2;
+Game/Match/DefeatHints.cs,46,4,ai.defeatHints.forAirMin,x,nguong,06,1,inline,,"compare: if (tally.Air >= 4 && tally.Air >= 0.2f * enemies) Add(Strings.Get(cover.AntiAir ? ""result.hint.airMore"" : ""result.hint.air""));"
+Game/Match/DefeatHints.cs,46,0.2f,ai.defeatHints.forEnemiesScale,x,khac,06,1,inline,,"multiply: if (tally.Air >= 4 && tally.Air >= 0.2f * enemies) Add(Strings.Get(cover.AntiAir ? ""result.hint.airMore"" : ""result.hint.air""));"
+Game/Match/DefeatHints.cs,47,6,ai.defeatHints.forArmourMin,x,sat_thuong,06,1,inline,,"compare: if (tally.Armour >= 6 && tally.Armour >= 0.3f * enemies && !cover.AntiTank) Add(Strings.Get(""result.hint.armour""));"
+Game/Match/DefeatHints.cs,47,0.3f,ai.defeatHints.forEnemiesScale2,x,sat_thuong,06,1,inline,,"multiply: if (tally.Armour >= 6 && tally.Armour >= 0.3f * enemies && !cover.AntiTank) Add(Strings.Get(""result.hint.armour""));"
+Game/Match/DefeatHints.cs,50,12,ai.defeatHints.forLossesMin,x,nguong,06,1,inline,,"compare: if (!cover.Repair && losses >= 12) Add(Strings.Get(""result.hint.repair""));"
+Game/Match/Dialogue.cs,122,9.0,ai.dialogueDirector.gap,m,ban_kinh,06,1,const_to_property,,const_field: public const double Gap = 9.0;
+Game/Match/Dialogue.cs,125,20.0,ai.dialogueDirector.bossGap,m,ban_kinh,06,1,manual:const used in a constant context (const initializer at Game/Match/Dialogue.cs:128),,const_field: public const double BossGap = 20.0;
+Game/Match/Dialogue.cs,130,3.0,ai.dialogueDirector.minSeconds,s,thoi_gian,06,1,manual:field declares several variables (split first),,"const_field: public const double MinSeconds = 3.0, MaxSeconds = 6.0;"
+Game/Match/Dialogue.cs,130,6.0,ai.dialogueDirector.maxSeconds,s,thoi_gian,06,1,manual:field declares several variables (split first),,"const_field: public const double MinSeconds = 3.0, MaxSeconds = 6.0;"
+Game/Match/Dialogue.cs,133,0.25,ai.dialogueDirector.fadeSeconds,s,thoi_gian,06,1,const_to_property,,const_field: public const double FadeSeconds = 0.25;
+Game/Match/Dialogue.cs,136,1.0,ai.dialogueDirector.minShown,x,nguong,06,1,const_to_property,,const_field: public const double MinShown = 1.0;
+Game/Match/Dialogue.cs,139,12.0,ai.dialogueDirector.warningShelf,s,thoi_gian,06,1,const_to_property,,const_field: public const double WarningShelf = 12.0;
+Game/Match/Dialogue.cs,142,12.0,ai.dialogueDirector.eventShelf,x,khac,06,1,const_to_property,,const_field: public const double EventShelf = 12.0;
+Game/Match/Dialogue.cs,145,8.0,ai.dialogueDirector.reactionShelf,x,khac,06,1,const_to_property,,const_field: public const double ReactionShelf = 8.0;
+Game/Match/Dialogue.cs,147,20,ai.dialogueDirector.logSize,x,khac,06,1,manual:field declares several variables (split first),,"const_field: public const int LogSize = 20, QueueSize = 6;"
+Game/Match/Dialogue.cs,147,6,ai.dialogueDirector.queueSize,x,khac,06,1,manual:field declares several variables (split first),,"const_field: public const int LogSize = 20, QueueSize = 6;"
+Game/Match/Dialogue.cs,152,3,ai.dialogueDirector.momentLines,x,khac,06,1,const_to_property,,const_field: public const int MomentLines = 3;
+Game/Match/Dialogue.cs,154,14.0,ai.dialogueDirector.momentMax,x,nguong,06,1,manual:field declares several variables (split first),,"const_field: public const double MomentMax = 14.0, MomentEaseIn = 0.4, MomentEaseOut = 0.6;"
+Game/Match/Dialogue.cs,202,2,ai.dialogueDirector.levelPriorityValue,x,khac,06,1,inline,,"switch_arm: DialoguePriority.Event => 2,"
+Game/Match/Dialogue.cs,203,3,ai.dialogueDirector.levelPriorityValue2,x,khac,06,1,inline,,"switch_arm: DialoguePriority.Reaction => 3,"
+Game/Match/Dialogue.cs,204,4,ai.dialogueDirector.levelPriorityValue3,x,khac,06,1,inline,,"switch_arm: _ => 4,"
+Game/Match/Dialogue.cs,223,1.75,ai.dialogueDirector.secondsForLettersAdd,s,thoi_gian,06,1,inline,,"add: public static double SecondsFor(int letters) => Math.Clamp(1.75 + letters * 0.05, MinSeconds, MaxSeconds);"
+Game/Match/Dialogue.cs,223,0.05,ai.dialogueDirector.secondsForLettersScale,s,thoi_gian,06,1,inline,,"multiply: public static double SecondsFor(int letters) => Math.Clamp(1.75 + letters * 0.05, MinSeconds, MaxSeconds);"
+Game/Match/Dialogue.cs,274,2,ai.dialogueDirector.tickLevelMin,ticks,thoi_gian,06,1,inline,,compare: Level(_queue[0].line.Priority) == 1 && level >= 2 && now - _shownAt >= MinShown);
+Game/Match/Dialogue.cs,282,2,ai.dialogueDirector.tickNextLevelMin,ticks,thoi_gian,06,1,inline,,compare: if (nextLevel >= 2 && now - _lastStart < (BossBattle ? BossGap : Gap)) return;
+Game/Match/Dialogue.cs,427,4,ai.dialogueRules.fromEventValue,x,khac,06,1,manual:pattern,,relational_pattern: DialoguePriority? priority = level is >= 1 and <= 4 ? (DialoguePriority)(level - 1) : null;
+Game/Match/FrameRateGovernor.cs,25,60,ai.frameRateGovernor.ctorStart,count,tran,06,1,manual:parameter default,,"param_default: public FrameRateGovernor(int start = 60, int cap = 60)"
+Game/Match/FrameRateGovernor.cs,25,60,ai.frameRateGovernor.ctorCap,count,tran,06,2,manual:parameter default,,"param_default: public FrameRateGovernor(int start = 60, int cap = 60)"
+Game/Match/FrameRateGovernor.cs,27,30,ai.frameRateGovernor.ctorCapFloor,count,tran,06,1,inline,,"math_max: _cap = Mathf.Max(30, cap);"
+Game/Match/GraphicsOptions.cs,27,2,ai.graphicsOptions.antiAliasing,x,khac,06,1,inline,,property_init: public int AntiAliasing { get; set; } = 2;
+Game/Match/GraphicsOptions.cs,30,60,ai.graphicsOptions.frameRate,x,tan_suat,06,1,inline,,property_init: public int FrameRate { get; set; } = 60;
+Game/Match/GraphicsOptions.cs,33,2,ai.graphicsOptions.bloom,x,khac,06,1,inline,,property_init: public int Bloom { get; set; } = 2;
+Game/Match/GraphicsOptions.cs,45,2,ai.graphicsOptions.antiAliasingLevelsValue,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly int[] AntiAliasingLevels = { 1, 2, 4 };"
+Game/Match/GraphicsOptions.cs,45,4,ai.graphicsOptions.antiAliasingLevelsValue2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly int[] AntiAliasingLevels = { 1, 2, 4 };"
+Game/Match/GraphicsOptions.cs,46,30,ai.graphicsOptions.frameRatesTan,x,tan_suat,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly int[] FrameRates = { 30, 60, 90, 120 };"
+Game/Match/GraphicsOptions.cs,46,60,ai.graphicsOptions.frameRatesTan2,x,tan_suat,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly int[] FrameRates = { 30, 60, 90, 120 };"
+Game/Match/GraphicsOptions.cs,46,90,ai.graphicsOptions.frameRatesTan3,x,tan_suat,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly int[] FrameRates = { 30, 60, 90, 120 };"
+Game/Match/GraphicsOptions.cs,46,120,ai.graphicsOptions.frameRatesTan4,x,tan_suat,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly int[] FrameRates = { 30, 60, 90, 120 };"
+Game/Match/GraphicsOptions.cs,53,30,ai.graphicsOptions.forFrameRate,x,tan_suat,06,1,inline,,"object_init: Shadows = ShadowLevel.Low, RenderScale = 70, AntiAliasing = 1, FrameRate = 30, Bloom = 1, RichScenery = false,"
+Game/Match/GraphicsOptions.cs,58,2,ai.graphicsOptions.forAntiAliasing,x,tan_suat,06,1,inline,,"object_init: Shadows = ShadowLevel.Medium, RenderScale = 85, AntiAliasing = 2, FrameRate = 60, Bloom = 1, RichScenery = true,"
+Game/Match/GraphicsOptions.cs,58,60,ai.graphicsOptions.forFrameRate2,x,tan_suat,06,1,inline,,"object_init: Shadows = ShadowLevel.Medium, RenderScale = 85, AntiAliasing = 2, FrameRate = 60, Bloom = 1, RichScenery = true,"
+Game/Match/GraphicsOptions.cs,63,4,ai.graphicsOptions.forAntiAliasing2,x,tan_suat,06,1,inline,,"object_init: Shadows = ShadowLevel.High, RenderScale = 100, AntiAliasing = 4, FrameRate = 60,"
+Game/Match/GraphicsOptions.cs,63,60,ai.graphicsOptions.forFrameRate2,x,tan_suat,06,1,inline,,"object_init: Shadows = ShadowLevel.High, RenderScale = 100, AntiAliasing = 4, FrameRate = 60,"
+Game/Match/GraphicsOptions.cs,64,2,ai.graphicsOptions.forBloom,x,nguong,06,1,inline,,"object_init: Bloom = 2, RichScenery = true, MaxEffects = true,"
+Game/Match/Haptics.cs,43,0.15f,ai.haptics.pulseUnscaledTimeMax,s,thoi_gian,06,1,inline,,compare: if (!MatchSettings.Haptics || Time.unscaledTime - _lastPulse < 0.15f) return;
+Game/Match/MatchRunner.Tactics.cs,40,5f,ai.matchRunner.tapFallenTowerScale,x,khac,06,1,inline,,multiply: var best = 5f * 5f;
+Game/Match/MatchRunner.Tactics.cs,40,5f,ai.matchRunner.tapFallenTowerScale,x,khac,06,2,inline,,multiply: var best = 5f * 5f;
+Game/Match/MatchRunner.Tactics.cs,63,4,ai.matchRunner.updateTacticsPressureTierMax,x,nguong,06,1,inline,,compare: if (_world.PressureTier > _pressureShown && _world.PressureTier <= 4)
+Game/Match/MatchRunner.Tactics.cs,66,4f,ai.matchRunner.updateTacticsSeconds,s,thoi_gian,06,1,inline,,"arg:BattleHud.Toast: _hud.Toast(Strings.Get(""pressure.tier"" + _pressureShown), seconds: 4f);"
+Game/Match/MatchRunner.Tactics.cs,71,4f,ai.matchRunner.updateTacticsSeconds,s,thoi_gian,06,1,inline,,"arg:BattleHud.Toast: _hud.Toast(Strings.Get(""pressure.final""), seconds: 4f);"
+Game/Match/MatchRunner.Tactics.cs,77,4f,ai.matchRunner.updateTacticsSeconds,s,thoi_gian,06,1,inline,,"arg:BattleHud.Toast: _hud.Toast(Strings.Get(""pressure.alarm""), error: true, seconds: 4f, kind: NoticeKind.Objective);"
+Game/Match/MatchRunner.Tactics.cs,98,4f,ai.matchRunner.updateTacticsSeconds,s,thoi_gian,06,1,inline,,"arg:BattleHud.Toast: _hud.Toast(Strings.Format(""tactic.line.enemySwitched"", (""tactic"", TacticText.Name(enemy.CurrentTactic))), seconds: 4f);"
+Game/Match/MatchRunner.Warnings.cs,20,0.05f,ai.matchRunner.escapeMarkValueFloor,s,thoi_gian,06,1,inline,,"math_max: _warnings.Add((new Vector2(e.Target.X, e.Target.Y), round.WarnRadius, Time.time + Mathf.Max(0.05f, e.Value) + 0.2f));"
+Game/Match/MatchRunner.Warnings.cs,20,0.2f,ai.matchRunner.escapeMarkTimeAdd,s,thoi_gian,06,1,inline,,"add: _warnings.Add((new Vector2(e.Target.X, e.Target.Y), round.WarnRadius, Time.time + Mathf.Max(0.05f, e.Value) + 0.2f));"
+Game/Match/MatchRunner.cs,37,0.1f,ai.matchRunner.minimapInterval,s,thoi_gian,06,1,const_to_property,,const_field: private const float MinimapInterval = 0.1f;
+Game/Match/MatchRunner.cs,107,21f,ai.matchRunner.longZoom,x,nguong,06,1,manual:field declares several variables (split first),,"const_field: internal const float LongZoom = 21f, LongMaxZoom = 50f;"
+Game/Match/MatchRunner.cs,107,50f,ai.matchRunner.longMaxZoom,count,nguong,06,1,manual:field declares several variables (split first),,"const_field: internal const float LongZoom = 21f, LongMaxZoom = 50f;"
+Game/Match/MatchRunner.cs,119,60f,ai.matchRunner.fps,x,khac,06,1,inline,,"field_init: private float _fps = 60f, _minimapAt, _attractAt;"
+Game/Match/MatchRunner.cs,133,60,ai.matchRunner.frameRateTarget,x,tan_suat,06,1,manual:static field assigned somewhere,,static_field: private static int _frameRateTarget = 60;
+Game/Match/MatchRunner.cs,160,30,ai.matchRunner.startSavingBatteryTrue,x,tan_suat,06,1,inline,,"conditional: _frameRate = new FrameRateGovernor(_frameRateTarget, MatchSettings.SavingBattery ? 30 : MatchSettings.Options.FrameRate);"
+Game/Match/MatchRunner.cs,209,1234,ai.matchRunner.startDifficultyAdd,x,khac,06,1,inline,,add: : 1234 + (int)MatchSettings.Difficulty * 7;
+Game/Match/MatchRunner.cs,209,7,ai.matchRunner.startDifficultyScale,x,khac,06,1,inline,,multiply: : 1234 + (int)MatchSettings.Difficulty * 7;
+Game/Match/MatchRunner.cs,211,0.05f,ai.matchRunner.startDone,x,khac,06,1,inline,,arg:Curtain.Progress: Curtain.Progress(0.05f);
+Game/Match/MatchRunner.cs,224,2,ai.matchRunner.startHqLevelScale,x,nguong,06,1,inline,,"multiply: : Mathf.Clamp(2 * (ranked.Bases.Of(team)?.Loadout.HqLevel ?? 1) - 1, 1, TowerArt.MaxBars);"
+Game/Match/MatchRunner.cs,225,0.1f,ai.matchRunner.startDone2,x,khac,06,1,inline,,arg:Curtain.Progress: Curtain.Progress(0.1f);
+Game/Match/MatchRunner.cs,285,0.15f,ai.matchRunner.startDone3,x,khac,06,1,inline,,arg:Curtain.Progress: Curtain.Progress(0.15f);
+Game/Match/MatchRunner.cs,325,0.4f,ai.matchRunner.startDone4,x,khac,06,1,inline,,arg:Curtain.Progress: Curtain.Progress(0.4f);
+Game/Match/MatchRunner.cs,345,22f,ai.matchRunner.startZ,x,khac,06,1,inline,,"ctor_arg:Vector3: var ahead = longMap ? new Vector3(0f, 0f, 22f) : new Vector3(16f, 0f, 16f);"
+Game/Match/MatchRunner.cs,345,16f,ai.matchRunner.startX,x,khac,06,1,inline,,"ctor_arg:Vector3: var ahead = longMap ? new Vector3(0f, 0f, 22f) : new Vector3(16f, 0f, 16f);"
+Game/Match/MatchRunner.cs,345,16f,ai.matchRunner.startZ2,x,khac,06,2,inline,,"ctor_arg:Vector3: var ahead = longMap ? new Vector3(0f, 0f, 22f) : new Vector3(16f, 0f, 16f);"
+Game/Match/MatchRunner.cs,348,30f,ai.matchRunner.startMenuTrue,x,khac,06,1,inline,,"conditional: _menu ? 30f : longMap ? LongZoom : 19f, longMap ? RtsCamera.LongYaw : RtsCamera.SquareYaw)"
+Game/Match/MatchRunner.cs,348,19f,ai.matchRunner.startLongMapFalse,x,khac,06,1,inline,,"conditional: _menu ? 30f : longMap ? LongZoom : 19f, longMap ? RtsCamera.LongYaw : RtsCamera.SquareYaw)"
+Game/Match/MatchRunner.cs,359,95f,ai.matchRunner.startMaxZoom,count,nguong,06,1,inline,,assign: _camera.MaxZoom = 95f;
+Game/Match/MatchRunner.cs,360,0.05f,ai.matchRunner.startFactor,m,ban_kinh,06,1,inline,,"arg:RtsCamera.ZoomBy: _camera.ZoomBy(0.05f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));"
+Game/Match/MatchRunner.cs,360,0.5f,ai.matchRunner.startWidthScale,m,ban_kinh,06,1,inline,,"multiply: _camera.ZoomBy(0.05f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));"
+Game/Match/MatchRunner.cs,360,0.5f,ai.matchRunner.startHeightScale,m,ban_kinh,06,2,inline,,"multiply: _camera.ZoomBy(0.05f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));"
+Game/Match/MatchRunner.cs,368,0.5f,ai.matchRunner.startWidthScale,m,ban_kinh,06,1,inline,,"multiply: _camera.ZoomBy(_camera.Zoom / zoom, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));"
+Game/Match/MatchRunner.cs,368,0.5f,ai.matchRunner.startHeightScale,m,ban_kinh,06,2,inline,,"multiply: _camera.ZoomBy(_camera.Zoom / zoom, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));"
+Game/Match/MatchRunner.cs,375,0.1f,ai.matchRunner.startFactor2,m,ban_kinh,06,1,inline,,"arg:RtsCamera.ZoomBy: _camera.ZoomBy(0.1f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));"
+Game/Match/MatchRunner.cs,375,0.5f,ai.matchRunner.startWidthScale,m,ban_kinh,06,1,inline,,"multiply: _camera.ZoomBy(0.1f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));"
+Game/Match/MatchRunner.cs,375,0.5f,ai.matchRunner.startHeightScale,m,ban_kinh,06,2,inline,,"multiply: _camera.ZoomBy(0.1f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));"
+Game/Match/MatchRunner.cs,377,0.1f,ai.matchRunner.startWidthScale2,m,ban_kinh,06,1,inline,,"multiply: _camera.FocusOn(new Vector3(map.Min.X + map.Width * 0.1f, 0f, map.Max.Y - map.Length * 0.1f));"
+Game/Match/MatchRunner.cs,377,0.1f,ai.matchRunner.startLengthScale,m,ban_kinh,06,2,inline,,"multiply: _camera.FocusOn(new Vector3(map.Min.X + map.Width * 0.1f, 0f, map.Max.Y - map.Length * 0.1f));"
+Game/Match/MatchRunner.cs,382,0.5f,ai.matchRunner.startWidthScale,m,ban_kinh,06,1,inline,,"multiply: _effects.SetMapBounds(new Vector3(map.Centre.X, 0f, map.Centre.Y), map.Width * 0.5f, map.Length * 0.5f);"
+Game/Match/MatchRunner.cs,382,0.5f,ai.matchRunner.startLengthScale2,m,ban_kinh,06,2,inline,,"multiply: _effects.SetMapBounds(new Vector3(map.Centre.X, 0f, map.Centre.Y), map.Width * 0.5f, map.Length * 0.5f);"
+Game/Match/MatchRunner.cs,393,6,ai.matchRunner.startIMod,x,khac,06,1,inline,,modulo: if (i % 6 != 5) continue;
+Game/Match/MatchRunner.cs,393,5,ai.matchRunner.startIIs,x,khac,06,1,inline,,equals: if (i % 6 != 5) continue;
+Game/Match/MatchRunner.cs,394,0.45f,ai.matchRunner.startIAdd,count,gioi_han_thuc_the,06,1,inline,,add: Curtain.Progress(0.45f + 0.3f * i / fieldable.Count);
+Game/Match/MatchRunner.cs,394,0.3f,ai.matchRunner.startIScale,count,gioi_han_thuc_the,06,1,inline,,multiply: Curtain.Progress(0.45f + 0.3f * i / fieldable.Count);
+Game/Match/MatchRunner.cs,402,0.85f,ai.matchRunner.startDone5,x,khac,06,1,inline,,arg:Curtain.Progress: Curtain.Progress(0.85f);
+Game/Match/MatchRunner.cs,437,150,ai.matchRunner.startNextDoubleAdd,share,xac_suat,06,1,inline,,add: if (!_menu && mission == null && kind != GameModeKind.Sandbox) _nextWeatherShift = 150 + new System.Random(seed).NextDouble() * 120;
+Game/Match/MatchRunner.cs,437,120,ai.matchRunner.startNextDoubleScale,share,xac_suat,06,1,inline,,multiply: if (!_menu && mission == null && kind != GameModeKind.Sandbox) _nextWeatherShift = 150 + new System.Random(seed).NextDouble() * 120;
+Game/Match/MatchRunner.cs,653,0.8f,ai.matchRunner.applyRankDiscountsPaidScale,count,gioi_han_thuc_the,06,1,inline,,multiply: foe.ScaleIncome(1f + 0.8f * (1f - paid / full));
+Game/Match/MatchRunner.cs,682,4,ai.matchRunner.applyPostLowTrue,x,nguong,06,1,inline,,conditional: bloom.maxIterations.Override(low ? 4 : 6);
+Game/Match/MatchRunner.cs,682,6,ai.matchRunner.applyPostLowFalse,x,nguong,06,1,inline,,conditional: bloom.maxIterations.Override(low ? 4 : 6);
+Game/Match/MatchRunner.cs,687,100,ai.matchRunner.applyPostBrightnessIs,x,khac,06,1,inline,,equals: if (brightness != 100 && profile.TryGet<UnityEngine.Rendering.Universal.ColorAdjustments>(out var colour))
+Game/Match/MatchRunner.cs,960,6f,ai.matchRunner.raidAt,x,khac,06,1,inline,,"field_init: private float _watchHitAt, _watchUntil, _raidAt = 6f;"
+Game/Match/MatchRunner.cs,1002,18f,ai.matchRunner.watchBastionTimeAdd,s,thoi_gian,06,1,inline,,add: _raidAt = Time.time + 18f;
+Game/Match/MatchRunner.cs,1003,20f,ai.matchRunner.watchBastionX,x,khac,06,1,inline,,"ctor_arg:Vector2: var at = bastion.Position + new System.Numerics.Vector2(20f, 20f);"
+Game/Match/MatchRunner.cs,1003,20f,ai.matchRunner.watchBastionY,x,khac,06,2,inline,,"ctor_arg:Vector2: var at = bastion.Position + new System.Numerics.Vector2(20f, 20f);"
+Game/Match/MatchRunner.cs,1005,6f,ai.matchRunner.watchBastionMinInclusive,m,ban_kinh,06,1,inline,,"arg:Random.Range: _world.SpawnVehicle(id, EnemyTeam, at + new System.Numerics.Vector2(UnityEngine.Random.Range(-6f, 6f), UnityEngine.Random.Range(-6f, 6f)), 3.9f);"
+Game/Match/MatchRunner.cs,1005,3.9f,ai.matchRunner.watchBastionHeading,m,ban_kinh,06,1,inline,,"arg:SimWorld.SpawnVehicle: _world.SpawnVehicle(id, EnemyTeam, at + new System.Numerics.Vector2(UnityEngine.Random.Range(-6f, 6f), UnityEngine.Random.Range(-6f, 6f)), 3.9f);"
+Game/Match/MatchRunner.cs,1005,6f,ai.matchRunner.watchBastionMaxInclusive,m,ban_kinh,06,2,inline,,"arg:Random.Range: _world.SpawnVehicle(id, EnemyTeam, at + new System.Numerics.Vector2(UnityEngine.Random.Range(-6f, 6f), UnityEngine.Random.Range(-6f, 6f)), 3.9f);"
+Game/Match/MatchRunner.cs,1005,6f,ai.matchRunner.watchBastionMinInclusive,m,ban_kinh,06,3,inline,,"arg:Random.Range: _world.SpawnVehicle(id, EnemyTeam, at + new System.Numerics.Vector2(UnityEngine.Random.Range(-6f, 6f), UnityEngine.Random.Range(-6f, 6f)), 3.9f);"
+Game/Match/MatchRunner.cs,1005,6f,ai.matchRunner.watchBastionMaxInclusive,m,ban_kinh,06,4,inline,,"arg:Random.Range: _world.SpawnVehicle(id, EnemyTeam, at + new System.Numerics.Vector2(UnityEngine.Random.Range(-6f, 6f), UnityEngine.Random.Range(-6f, 6f)), 3.9f);"
+Game/Match/MatchRunner.cs,1036,3.5f,ai.matchRunner.storyPanSeconds,s,thoi_gian,06,1,manual:parameter default,,"param_default: private void StoryPan(System.Numerics.Vector2 at, float seconds = 3.5f)"
+Game/Match/MatchRunner.cs,1038,2f,ai.matchRunner.storyPanUnscaledTimeMax,s,thoi_gian,06,1,inline,,compare: if (_menu || !_cinematics.Enabled || Time.unscaledTime - _lastInput < 2f) return;
+Game/Match/MatchRunner.cs,1063,0.05f,ai.matchRunner.startCinematicXMax,x,nguong,06,1,inline,,compare: if (viewport.x < 0.05f || viewport.x > 0.95f || viewport.y < 0.05f || viewport.y > 0.95f) return;
+Game/Match/MatchRunner.cs,1063,0.95f,ai.matchRunner.startCinematicXMin,x,nguong,06,1,inline,,compare: if (viewport.x < 0.05f || viewport.x > 0.95f || viewport.y < 0.05f || viewport.y > 0.95f) return;
+Game/Match/MatchRunner.cs,1063,0.05f,ai.matchRunner.startCinematicYMax,x,nguong,06,2,inline,,compare: if (viewport.x < 0.05f || viewport.x > 0.95f || viewport.y < 0.05f || viewport.y > 0.95f) return;
+Game/Match/MatchRunner.cs,1063,0.95f,ai.matchRunner.startCinematicYMin,x,nguong,06,2,inline,,compare: if (viewport.x < 0.05f || viewport.x > 0.95f || viewport.y < 0.05f || viewport.y > 0.95f) return;
+Game/Match/MatchRunner.cs,1065,70,ai.matchRunner.startCinematicMilliseconds,s,thoi_gian,06,1,inline,,"arg:Haptics.Pulse: Haptics.Pulse(70, 190);"
+Game/Match/MatchRunner.cs,1065,190,ai.matchRunner.startCinematicStrength,x,khac,06,1,inline,,"arg:Haptics.Pulse: Haptics.Pulse(70, 190);"
+Game/Match/MatchRunner.cs,1070,0.6f,ai.matchRunner.startCinematicAmount,x,khac,06,1,inline,,arg:RtsCamera.AddTrauma: _camera.AddTrauma(0.6f);
+Game/Match/MatchRunner.cs,1148,3.2f,ai.matchRunner.showTraitWordUpScale,x,khac,06,1,inline,,multiply: at = view.Position + Vector3.up * 3.2f;
+Game/Match/MatchRunner.cs,1150,3.2f,ai.matchRunner.showTraitWordY,x,khac,06,1,inline,,"ctor_arg:Vector3: else at = new Vector3(e.Position.X, 3.2f, e.Position.Y);"
+Game/Match/MatchRunner.cs,1163,3.5f,ai.matchRunner.dispatchEventsIntroDefault,x,khac,06,1,inline,,"coalesce: if (!_menu && _sandbox == null && vehicle.Def.Boss && vehicle.Team == EnemyTeam) StoryPan(vehicle.Position, vehicle.Def.RankDef?.Intro ?? 3.5f);"
+Game/Match/MatchRunner.cs,1169,3f,ai.matchRunner.dispatchEventsSeconds,s,thoi_gian,06,1,inline,,"arg:BattleHud.Toast: _hud.Toast(Strings.Get(""toast.airDefence""), error: true, seconds: 3f, kind: NoticeKind.Air);"
+Game/Match/MatchRunner.cs,1188,180,ai.matchRunner.dispatchEventsMilliseconds,s,thoi_gian,06,1,inline,,"arg:Haptics.Pulse: Haptics.Pulse(180, 255);"
+Game/Match/MatchRunner.cs,1188,255,ai.matchRunner.dispatchEventsStrength,x,khac,06,1,inline,,"arg:Haptics.Pulse: Haptics.Pulse(180, 255);"
+Game/Match/MatchRunner.cs,1196,160,ai.matchRunner.dispatchEventsMilliseconds2,s,thoi_gian,06,1,inline,,"arg:Haptics.Pulse: Haptics.Pulse(160, 255);"
+Game/Match/MatchRunner.cs,1196,255,ai.matchRunner.dispatchEventsStrength,x,khac,06,1,inline,,"arg:Haptics.Pulse: Haptics.Pulse(160, 255);"
+Game/Match/MatchRunner.cs,1201,3f,ai.matchRunner.dispatchEventsSpokenTrue,s,thoi_gian,06,1,inline,,"conditional: error: true, seconds: spoken ? 3f : 5f, kind: NoticeKind.Boss);"
+Game/Match/MatchRunner.cs,1201,5f,ai.matchRunner.dispatchEventsSpokenFalse,s,thoi_gian,06,1,inline,,"conditional: error: true, seconds: spoken ? 3f : 5f, kind: NoticeKind.Boss);"
+Game/Match/MatchRunner.cs,1214,0.5f,ai.matchRunner.dispatchEventsValueMax,s,thoi_gian,06,1,inline,,"compare: if (e.Value < 0.5f) _hud.Toast(Strings.Get(""toast.burrow""), error: true, seconds: 3f, kind: NoticeKind.Boss);"
+Game/Match/MatchRunner.cs,1214,3f,ai.matchRunner.dispatchEventsSeconds,s,thoi_gian,06,1,inline,,"arg:BattleHud.Toast: if (e.Value < 0.5f) _hud.Toast(Strings.Get(""toast.burrow""), error: true, seconds: 3f, kind: NoticeKind.Boss);"
+Game/Match/MatchRunner.cs,1215,1.5f,ai.matchRunner.dispatchEventsValueMax2,x,nguong,06,1,inline,,"compare: else if (e.Value < 1.5f && _world.TryGetVehicle(e.Entity, out var borer) && borer.Def.Burrow is { } bore)"
+Game/Match/MatchRunner.cs,1217,0.5f,ai.matchRunner.dispatchEventsTimeAdd,s,thoi_gian,06,1,inline,,"add: _warnings.Add((new Vector2(e.Position.X, e.Position.Y), bore.Radius, Time.time + e.Target.X + 0.5f));"
+Game/Match/MatchRunner.cs,1218,2.5f,ai.matchRunner.dispatchEventsSeconds2,s,thoi_gian,06,1,inline,,"arg:BattleHud.Toast: _hud.Toast(Strings.Get(""toast.cracking""), error: true, seconds: 2.5f, kind: NoticeKind.Boss);"
+Game/Match/MatchRunner.cs,1222,3f,ai.matchRunner.dispatchEventsSeconds,s,thoi_gian,06,1,inline,,"arg:BattleHud.Toast: _hud.Toast(Strings.Format(""toast.landing"", Mathf.RoundToInt(e.Value)), error: true, seconds: 3f, kind: NoticeKind.Landing);"
+Game/Match/MatchRunner.cs,1241,90,ai.matchRunner.dispatchEventsMilliseconds3,s,thoi_gian,06,1,inline,,"arg:Haptics.Pulse: Haptics.Pulse(90, 200);"
+Game/Match/MatchRunner.cs,1241,200,ai.matchRunner.dispatchEventsStrength2,x,khac,06,1,inline,,"arg:Haptics.Pulse: Haptics.Pulse(90, 200);"
+Game/Match/MatchRunner.cs,1246,4f,ai.matchRunner.dispatchEventsSeconds3,s,thoi_gian,06,1,inline,,"arg:BattleHud.Toast: if (!_menu && _world.Time > 1.0) _hud.Toast(Strings.Get(e.Value > 0f ? ""toast.areaChanged"" : ""toast.areaOpened""), seconds: 4f, kind: NoticeKind.Area);"
+Game/Match/MatchRunner.cs,1256,90,ai.matchRunner.dispatchEventsMilliseconds3,s,thoi_gian,06,1,inline,,"arg:Haptics.Pulse: if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);"
+Game/Match/MatchRunner.cs,1256,200,ai.matchRunner.dispatchEventsStrength2,x,khac,06,1,inline,,"arg:Haptics.Pulse: if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);"
+Game/Match/MatchRunner.cs,1263,4f,ai.matchRunner.dispatchEventsDefIdTrue,s,thoi_gian,06,1,inline,,"conditional: Mathf.RoundToInt(e.Value)), seconds: e.DefId == ""retreat"" ? 4f : 2f, kind: NoticeKind.Reward);"
+Game/Match/MatchRunner.cs,1263,2f,ai.matchRunner.dispatchEventsDefIdFalse,s,thoi_gian,06,1,inline,,"conditional: Mathf.RoundToInt(e.Value)), seconds: e.DefId == ""retreat"" ? 4f : 2f, kind: NoticeKind.Reward);"
+Game/Match/MatchRunner.cs,1283,3f,ai.matchRunner.dispatchEventsSeconds,s,thoi_gian,06,1,inline,,"arg:BattleHud.Toast: error: e.DefId != ""pods"", seconds: 3f, kind: NoticeKind.Boss);"
+Game/Match/MatchRunner.cs,1305,0.5f,ai.matchRunner.dispatchEventsLengthScale,m,thoi_gian,06,1,inline,,"multiply: _warnings.Add((new Vector2(e.Position.X, e.Position.Y), raid.Length * 0.5f, Time.time + e.Value + raid.Duration + 0.5f));"
+Game/Match/MatchRunner.cs,1305,0.5f,ai.matchRunner.dispatchEventsTimeAdd,s,thoi_gian,06,2,inline,,"add: _warnings.Add((new Vector2(e.Position.X, e.Position.Y), raid.Length * 0.5f, Time.time + e.Value + raid.Duration + 0.5f));"
+Game/Match/MatchRunner.cs,1309,0.5f,ai.matchRunner.dispatchEventsLengthScale,m,thoi_gian,06,1,inline,,"multiply: _warnings.Add((new Vector2(e.Position.X, e.Position.Y), support.IsLine ? support.Length * 0.5f : support.Radius,"
+Game/Match/MatchRunner.cs,1310,0.5f,ai.matchRunner.dispatchEventsTimeAdd,s,thoi_gian,06,1,inline,,add: Time.time + e.Value + support.Duration + 0.5f));
+Game/Match/MatchRunner.cs,1366,0.5f,ai.matchRunner.wireWidthScale,m,ban_kinh,06,1,inline,,"multiply: _camera.ZoomBy(factor, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));"
+Game/Match/MatchRunner.cs,1366,0.5f,ai.matchRunner.wireHeightScale,m,ban_kinh,06,2,inline,,"multiply: _camera.ZoomBy(factor, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));"
+Game/Match/MatchRunner.cs,1427,2,ai.matchRunner.wireWatchedTrue,x,khac,06,1,inline,,conditional: _reward.Claim(watched ? 2 : 1);
+Game/Match/MatchRunner.cs,1428,2,ai.matchRunner.wireWatchedTrue,x,khac,06,1,inline,,"conditional: _hud.ShowRewardClaimed(_reward.Coins * (watched ? 2 : 1), watched);"
+Game/Match/MatchRunner.cs,1484,5f,ai.matchRunner.wireSeconds,s,thoi_gian,06,1,inline,,"arg:BattleHud.Toast: _hud.Toast(_session.StartToast, seconds: 5f);"
+Game/Match/MatchRunner.cs,1588,0.05f,ai.matchRunner.updateStatusFpsLerp,s,thoi_gian,06,1,inline,,"math_lerp: if (Time.unscaledDeltaTime > 0f) _fps = Mathf.Lerp(_fps, 1f / Time.unscaledDeltaTime, 0.05f);"
+Game/Match/MatchRunner.cs,1637,15f,ai.matchRunner.updateMinimapLandsAtDivisor,s,thoi_gian,06,1,inline,,"divide: minimap.Drop(new Vector2(crate.Position.X, crate.Position.Y), Mathf.Clamp01(1f - (float)(crate.LandsAt - _world.Time) / 15f));"
+Game/Match/MatchRunner.cs,1664,2,ai.matchRunner.updateMinimapTeamTrue,count,gioi_han_thuc_the,06,1,inline,,conditional: var blip = v.Team == PlayerTeam ? IsAccord(v) ? Minimap.AccordTeam : 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1;
+Game/Match/MatchRunner.cs,1680,4,ai.matchRunner.minimapViewIMax,x,nguong,06,1,inline,,compare: for (var i = 0; i < 4 && ok; i++)
+Game/Match/MatchRunner.cs,1733,7919,ai.matchRunner.showOutcomeCountScale,count,thoi_gian,06,1,inline,,"multiply: Rewards.AddElites(_reward, outcome.Rows, _elitesSlain, _world.Catalog, _elitesSlain.Count * 7919 + (int)_world.Time);"
+Game/Match/MatchRunner.cs,1795,500,ai.matchRunner.replaySteps,x,khac,06,1,inline,,"arg:CheckpointReplay.Advance: while (replay.Advance(dt, 500))"
+Game/Match/MatchRunner.cs,1797,0.15f,ai.matchRunner.replayProgressAdd,x,khac,06,1,inline,,add: Curtain.Progress(0.15f + 0.25f * replay.Progress);
+Game/Match/MatchRunner.cs,1797,0.25f,ai.matchRunner.replayProgressScale,x,khac,06,1,inline,,multiply: Curtain.Progress(0.15f + 0.25f * replay.Progress);
+Game/Match/MatchSettings.cs,110,8,ai.matchSettings.deckVehicleSlots,count,gioi_han_thuc_the,06,1,const_to_property,,const_field: public const int DeckVehicleSlots = 8;
+Game/Match/MatchSettings.cs,111,2,ai.matchSettings.deckSupportSlots,count,gioi_han_thuc_the,06,1,const_to_property,,const_field: public const int DeckSupportSlots = 2;
+Game/Match/MatchSettings.cs,364,0.8f,ai.matchSettings.volume,x,khac,06,1,manual:static property initializer,,property_init: public static float Volume { get; set; } = 0.8f;
+Game/Match/MatchSettings.cs,367,0.7f,ai.matchSettings.musicVolume,x,khac,06,1,manual:static property initializer,,property_init: public static float MusicVolume { get; set; } = 0.7f;
+Game/Match/MatchSettings.cs,428,1,ai.matchSettings.cameraSpeed,m/s,tan_suat,06,1,manual:static property initializer,,property_init: public static int CameraSpeed { get; set; } = 1;
+Game/Match/MatchSettings.cs,439,2,ai.matchSettings.savingBatteryBatterySaverIs,x,khac,06,1,inline,,equals: public static bool SavingBattery => BatterySaver == 1 || (BatterySaver == 2 && SystemInfo.batteryLevel >= 0f &&
+Game/Match/MatchSettings.cs,440,0.2f,ai.matchSettings.savingBatteryBatteryLevelMax,x,nguong,06,1,inline,,compare: SystemInfo.batteryLevel < 0.2f && SystemInfo.batteryStatus == BatteryStatus.Discharging);
+Game/Match/MatchSettings.cs,443,100,ai.matchSettings.brightness,x,khac,06,1,manual:static property initializer,,property_init: public static int Brightness { get; set; } = 100;
+Game/Match/MatchSettings.cs,460,7000,ai.matchSettings.detectTierMemoryMin,x,nguong,06,1,inline,,compare: if (memory >= 7000 && cores >= 8) return GraphicsQuality.High;
+Game/Match/MatchSettings.cs,460,8,ai.matchSettings.detectTierCoresMin,x,nguong,06,1,inline,,compare: if (memory >= 7000 && cores >= 8) return GraphicsQuality.High;
+Game/Match/MatchSettings.cs,461,3500,ai.matchSettings.detectTierMemoryMin2,x,nguong,06,1,inline,,compare: if (memory >= 3500 && cores >= 6) return GraphicsQuality.Medium;
+Game/Match/MatchSettings.cs,461,6,ai.matchSettings.detectTierCoresMin2,x,nguong,06,1,inline,,compare: if (memory >= 3500 && cores >= 6) return GraphicsQuality.Medium;
+Game/Match/MatchSettings.cs,492,3,ai.matchSettings.startHintMatches,x,khac,06,1,const_to_property,,const_field: public const int StartHintMatches = 3;
+Game/Match/P34StressCheck.cs,31,32,ai.p34StressCheck.perSide,x,khac,06,1,const_to_property,,const_field: public const int PerSide = 32;
+Game/Match/P34StressCheck.cs,40,7f,ai.p34StressCheck.gap,m,ban_kinh,06,1,const_to_property,,const_field: private const float Gap = 7f;
+Game/Match/P34StressCheck.cs,41,8,ai.p34StressCheck.perTick,ticks,thoi_gian,06,1,const_to_property,,const_field: private const int PerTick = 8;
+Game/Match/P34StressCheck.cs,69,10f,ai.p34StressCheck.createSMin,s,thoi_gian,06,1,inline,,"math_clamp: var seconds = float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var s) ? Mathf.Clamp(s, 10f, 1800f) : 120f;"
+Game/Match/P34StressCheck.cs,69,1800f,ai.p34StressCheck.createSMax,s,thoi_gian,06,1,inline,,"math_clamp: var seconds = float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var s) ? Mathf.Clamp(s, 10f, 1800f) : 120f;"
+Game/Match/P34StressCheck.cs,69,120f,ai.p34StressCheck.createTryParseFalse,s,thoi_gian,06,1,inline,,"conditional: var seconds = float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var s) ? Mathf.Clamp(s, 10f, 1800f) : 120f;"
+Game/Match/P34StressCheck.cs,99,10f,ai.p34StressCheck.keepBossesNowAdd,s,thoi_gian,06,1,inline,,add: if (boss != null && !_bossDue.ContainsKey(id)) _bossDue[id] = now + 10f;
+Game/Match/P34StressCheck.cs,102,30f,ai.p34StressCheck.keepBossesX,x,khac,06,1,inline,,"ctor_arg:Vector2: var at = _centre + new Vector2(30f, 30f);"
+Game/Match/P34StressCheck.cs,102,30f,ai.p34StressCheck.keepBossesY,x,khac,06,2,inline,,"ctor_arg:Vector2: var at = _centre + new Vector2(30f, 30f);"
+Game/Match/P34StressCheck.cs,105,2,ai.p34StressCheck.keepBossesCountDivisor,count,gioi_han_thuc_the,06,1,inline,,divide: var w = sea.Lanes.Count > 0 ? sea.Lanes[sea.Lanes.Count / 2].W : 0f;
+Game/Match/P34StressCheck.cs,108,45f,ai.p34StressCheck.keepBossesX2,x,khac,06,1,inline,,"ctor_arg:Vector2: else if (def.Flying) at = _centre + new Vector2(45f, 45f);"
+Game/Match/P34StressCheck.cs,108,45f,ai.p34StressCheck.keepBossesY2,x,khac,06,2,inline,,"ctor_arg:Vector2: else if (def.Flying) at = _centre + new Vector2(45f, 45f);"
+Game/Match/P34StressCheck.cs,109,1.25f,ai.p34StressCheck.keepBossesPIScale,x,khac,06,1,inline,,"multiply: _bosses[id] = world.SpawnVehicle(id, 1, at, Mathf.PI * 1.25f);"
+Game/Match/P34StressCheck.cs,117,0.5f,ai.p34StressCheck.keepArmiesNowAdd,s,thoi_gian,06,1,inline,,add: _nextAt = now + 0.5f;
+Game/Match/P34StressCheck.cs,131,8,ai.p34StressCheck.keepArmiesSlotMod,x,khac,06,1,inline,,modulo: var row = slot % 8 - 3.5f;
+Game/Match/P34StressCheck.cs,131,3.5f,ai.p34StressCheck.keepArmiesSlotSub,count,gioi_han_thuc_the,06,1,inline,,subtract: var row = slot % 8 - 3.5f;
+Game/Match/P34StressCheck.cs,132,8,ai.p34StressCheck.keepArmiesSlotDivisor,x,khac,06,1,inline,,divide: var rank = (slot / 8) % 4;
+Game/Match/P34StressCheck.cs,132,4,ai.p34StressCheck.keepArmiesSlotMod2,x,khac,06,1,inline,,modulo: var rank = (slot / 8) % 4;
+Game/Match/P34StressCheck.cs,133,16f,ai.p34StressCheck.keepArmiesRankAdd,m,ban_kinh,06,1,inline,,add: var at = _centre + across * (side * (16f + rank * Gap)) + along * (row * Gap);
+Game/Match/PerfProbe.cs,30,5f,ai.perfProbe.reportSeconds,s,thoi_gian,06,1,const_to_property,,const_field: private const float ReportSeconds = 5f;
+Game/Match/PerfProbe.cs,61,15,ai.perfProbe.ctorCapacity,count,gioi_han_thuc_the,06,1,inline,,"arg:ProfilerRecorder.StartNew: _mainThread = ProfilerRecorder.StartNew(ProfilerCategory.Internal, ""Main Thread"", 15);"
+Game/Match/PlayerProfile.Arsenal.cs,15,4,ai.playerProfile.branches,x,khac,06,1,const_to_property,,const_field: private const int Branches = 4;
+Game/Match/PlayerProfile.Arsenal.cs,29,2,ai.playerProfile.fixArsenalGearVersionMax,x,tan_suat,06,1,inline,,compare: if (d.gearVersion < 2) MigrateGear(d);
+Game/Match/PlayerProfile.Arsenal.cs,41,15,ai.playerProfile.gemToCoins,x,khac,06,1,const_to_property,,const_field: public const int GemToCoins = 15;
+Game/Match/PlayerProfile.Arsenal.cs,471,6,ai.playerProfile.mainDeckTowersMin,x,nguong,06,1,inline,,compare: if (towers >= 6 || string.IsNullOrEmpty(id) || cards.Contains(id)) continue;
+Game/Match/PlayerProfile.Arsenal.cs,836,2024,ai.playerProfile.todayYear,s,thoi_gian,06,1,inline,,"ctor_arg:DateTime: private static int Today => (int)(DateTime.Now.Date - new DateTime(2024, 1, 1)).TotalDays;"
+Game/Match/PlayerProfile.Hunt.cs,33,5,ai.playerProfile.fullHuntBoard,x,khac,06,1,const_to_property,,const_field: public const int FullHuntBoard = 5;
+Game/Match/PlayerProfile.Story.cs,50,200,ai.playerProfile.comicSeenChapterAdd,x,khac,06,1,inline,,add: public static int ComicSeen(int chapter) => 200 + chapter;
+Game/Match/PlayerProfile.cs,207,1500,ai.playerProfile.oldDoctrinePrice,CP,khac,06,1,const_to_property,,const_field: internal const int OldDoctrinePrice = 1500;
+Game/Match/PlayerProfile.cs,259,300,ai.playerProfile.xpForLevelMaxAdd,count,nguong,06,1,inline,,"add: public static int XpForLevel(int level) => 300 + 200 * (Mathf.Max(1, level) - 1);"
+Game/Match/PlayerProfile.cs,259,200,ai.playerProfile.xpForLevelMaxScale,count,nguong,06,1,inline,,"multiply: public static int XpForLevel(int level) => 300 + 200 * (Mathf.Max(1, level) - 1);"
+Game/Match/PlayerProfile.cs,262,150,ai.playerProfile.levelBonusLevelScale,x,khac,06,1,inline,,multiply: public static int LevelBonus(int level) => 150 * level;
+Game/Match/PlayerProfile.cs,282,3,ai.playerProfile.dailyResetCountIs,count,gioi_han_thuc_the,06,1,inline,,equals: if (D.dailyDay == day && D.dailyProgress.Count == 3 && D.dailyClaimed.Count == 3) return;
+Game/Match/PlayerProfile.cs,282,3,ai.playerProfile.dailyResetCountIs,count,gioi_han_thuc_the,06,2,inline,,equals: if (D.dailyDay == day && D.dailyProgress.Count == 3 && D.dailyClaimed.Count == 3) return;
+Game/Match/PlayerProfile.cs,580,3,ai.playerProfile.recordWeeklyStageMax,x,nguong,06,1,inline,,"math_clamp: D.weeklyStage = Math.Max(D.weeklyStage, Math.Clamp(stage, 1, 3));"
+Game/Match/Progression.cs,452,1e-3f,ai.campaign.switchedAbsMin,x,nguong,06,1,inline,,"compare: if (Meta.PayScale.TryGetValue(lastAct, out var scale) && System.Math.Abs(scale - 1f) > 1e-3f)"
+Game/Match/Progression.cs,455,5f,ai.campaign.switchedRewardCoinsDivisor,x,khac,06,1,inline,,divide: m.RewardCoins = (int)System.Math.Round(m.RewardCoins * scale / 5f) * 5;
+Game/Match/Progression.cs,455,5,ai.campaign.switchedRoundScale,x,khac,06,1,inline,,multiply: m.RewardCoins = (int)System.Math.Round(m.RewardCoins * scale / 5f) * 5;
+Game/Match/Progression.cs,456,5f,ai.campaign.switchedRewardXpDivisor,x,khac,06,1,inline,,divide: m.RewardXp = (int)System.Math.Round(m.RewardXp * scale / 5f) * 5;
+Game/Match/Progression.cs,456,5,ai.campaign.switchedRoundScale,x,khac,06,1,inline,,multiply: m.RewardXp = (int)System.Math.Round(m.RewardXp * scale / 5f) * 5;
+Game/Match/Progression.cs,619,5,ai.campaign.maxHqLevel,count,nguong,06,1,const_to_property,,const_field: public const int MaxHqLevel = 5;
+Game/Match/Progression.cs,677,4,ai.campaign.expectedRankValue,x,khac,06,1,manual:pattern,,relational_pattern: if (Chapter(All[i].Chapter) is { Act: >= 4 })
+Game/Match/Progression.cs,682,6f,ai.campaign.expectedRankIndexScale,count,gioi_han_thuc_the,06,1,inline,,"multiply: if (actFour <= 0) return 1f + 6f * index / System.Math.Max(1, All.Count - 1);"
+Game/Match/Progression.cs,683,6f,ai.campaign.expectedRankIndexScale,x,khac,06,1,inline,,multiply: if (index <= actFour) return 1f + 6f * index / actFour;
+Game/Match/Progression.cs,684,7f,ai.campaign.expectedRankIndexAdd,count,gioi_han_thuc_the,06,1,inline,,"add: return 7f + (float)(index - actFour) / System.Math.Max(1, All.Count - 1 - actFour);"
+Game/Match/RadioDirector.cs,53,35.0,ai.radioDirector.genericGap,m,ban_kinh,06,1,const_to_property,,const_field: private const double GenericGap = 35.0;
+Game/Match/RadioDirector.cs,77,31,ai.radioDirector.ctorSeedScale,share,xac_suat,06,1,inline,,multiply: _random = new Random(seed * 31 + def.Id.GetHashCode());
+Game/Match/RadioDirector.cs,109,2,ai.radioDirector.speakerOfLengthMin,m,ban_kinh,06,1,inline,,"compare: return parts.Length > 2 && SpeakerIds.Contains(parts[1]) ? parts[1] : ""hq"";"
+Game/Match/RadioDirector.cs,189,2,ai.radioDirector.consumeExpensiveLostMax,x,nguong,06,1,inline,,"compare: if (_expensiveLost < 2 && e.DefId != null && world.Catalog.Vehicles.TryGetValue(e.DefId, out var lost) &&"
+Game/Match/RadioDirector.cs,211,30.0,ai.radioDirector.consumeTimeMin,s,thoi_gian,06,1,inline,,compare: case SimEventKind.NeutralCaptured when e.Team == 0 && world.Time - _neutralAt >= 30.0:
+Game/Match/RadioDirector.cs,218,2,ai.radioDirector.consumeMountIs,x,khac,06,1,inline,,equals: case SimEventKind.BigAttack when e.Mount == 2:
+Game/Match/RadioDirector.cs,289,15,ai.radioDirector.expensiveCp,CP,khac,06,1,const_to_property,,const_field: public const int ExpensiveCp = 15;
+Game/Match/RadioDirector.cs,292,10.0,ai.radioDirector.bossOverlap,x,khac,06,1,const_to_property,,const_field: public const double BossOverlap = 10.0;
+Game/Match/RadioDirector.cs,377,20.0,ai.radioDirector.playScriptNowMax,s,thoi_gian,06,1,inline,,"compare: if (_scriptLast.TryGetValue(line, out var last) && now - last < 20.0) return false;"
+Game/Match/RadioDirector.cs,381,2,ai.radioDirector.playScriptLevelMax,s,thoi_gian,06,1,inline,,compare: if (DialogueDirector.Level(priority) <= 2) _lastImportantAt = now;
+Game/Match/RangeCapture.cs,19,30,ai.rangeCapture.rate,x,tan_suat,06,1,manual:const used in a constant context (const initializer at Game/Audio/SoundSynth.cs:111),,const_field: private const int Rate = 30;
+Game/Match/RangeCapture.cs,45,1280,ai.rangeCapture.tryStartWidth,m,ban_kinh,06,1,inline,,"arg:UnitPreview.Resize: if (DebugFlags.Has(""-mb-range-hd"")) preview.Resize(1280, 960);"
+Game/Match/RangeCapture.cs,45,960,ai.rangeCapture.tryStartHeight,m,ban_kinh,06,1,inline,,"arg:UnitPreview.Resize: if (DebugFlags.Has(""-mb-range-hd"")) preview.Resize(1280, 960);"
+Game/Match/ReactiveRadio.cs,21,25.0,ai.reactiveRadio.gap,m,ban_kinh,06,1,const_to_property,,const_field: public const double Gap = 25.0;
+Game/Match/SandboxController.cs,28,0.25f,ai.sandboxController.speedsTan,m/s,tan_suat,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly float[] Speeds = { 0.25f, 0.5f, 1f, 2f, 4f };"
+Game/Match/SandboxController.cs,28,0.5f,ai.sandboxController.speedsTan2,m/s,tan_suat,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly float[] Speeds = { 0.25f, 0.5f, 1f, 2f, 4f };"
+Game/Match/SandboxController.cs,28,2f,ai.sandboxController.speedsTan3,m/s,tan_suat,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly float[] Speeds = { 0.25f, 0.5f, 1f, 2f, 4f };"
+Game/Match/SandboxController.cs,28,4f,ai.sandboxController.speedsTan4,m/s,tan_suat,06,1,manual:static array table (FloatArray / IntArray entry),,"table: public static readonly float[] Speeds = { 0.25f, 0.5f, 1f, 2f, 4f };"
+Game/Match/SandboxController.cs,220,60f,ai.sandboxController.dragTurnsDistanceMax,m,ban_kinh,06,1,inline,,"compare: if (p.z > 0f && Vector2.Distance(new Vector2(p.x, p.y), _pressAt) < 60f) return true;"
+Game/Match/SandboxController.cs,275,3f,ai.sandboxController.tapEditingReach,m,ban_kinh,06,1,inline,,"arg:SandboxEditor.NearestUnit: if (index < 0) index = Editor.NearestUnit(at, 3f);"
+Game/Match/SandboxSession.cs,138,17,ai.sandboxGearKit.suggestedSeed,x,khac,06,1,inline,,local_init: var seed = 17;
+Game/Match/SandboxSession.cs,139,31,ai.sandboxGearKit.suggestedSeedScale,m,ban_kinh,06,1,inline,,multiply: foreach (var ch in def.CardId) seed = unchecked(seed * 31 + ch);
+Game/Match/SandboxSession.cs,142,7,ai.sandboxGearKit.suggestedSeedScale2,share,xac_suat,06,1,inline,,multiply: var rng = new System.Random(unchecked(seed * 7 + slot));
+Game/Match/SandboxSession.cs,143,10,ai.sandboxGearKit.suggestedLevel,share,xac_suat,06,1,inline,,"object_init: var item = new GearItem { id = -1 - slot, slot = slot, rarity = (int)Rarity.Epic, level = 10, seed = rng.Next(1, int.MaxValue) };"
+Game/Match/SandboxSession.cs,150,8,ai.sandboxGearKit.suggestedTriesMax,x,nguong,06,1,inline,,"compare: for (var tries = 0; tries < 8 && !VehicleFit.WorksOn(item, def); tries++)"
+Game/Match/Skins.cs,17,0.35f,ai.skin.ctorScale,s,thoi_gian,06,1,manual:parameter default,,"param_default: public Skin(string id, int price, string baseHex, string secondHex, string thirdHex, CamoPattern pattern, float scale = 0.35f,"
+Game/Match/Skins.cs,18,0.25f,ai.skin.ctorMetallic,x,khac,06,1,manual:parameter default,,"param_default: float metallic = 0.25f, float roughness = 0.42f)"
+Game/Match/Skins.cs,18,0.42f,ai.skin.ctorRoughness,x,khac,06,1,manual:parameter default,,"param_default: float metallic = 0.25f, float roughness = 0.42f)"
+Game/Match/Skins.cs,55,500,ai.skins.allPrice,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""desert"", 500, ""#c7a46a"", ""#9a7646"", ""#6f5535"", CamoPattern.Blotches, 0.32f),"
+Game/Match/Skins.cs,55,0.32f,ai.skins.allScale,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""desert"", 500, ""#c7a46a"", ""#9a7646"", ""#6f5535"", CamoPattern.Blotches, 0.32f),"
+Game/Match/Skins.cs,56,800,ai.skins.allPrice2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""woodland"", 800, ""#617540"", ""#3c4a29"", ""#6d5436"", CamoPattern.Blotches, 0.36f),"
+Game/Match/Skins.cs,56,0.36f,ai.skins.allScale2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""woodland"", 800, ""#617540"", ""#3c4a29"", ""#6d5436"", CamoPattern.Blotches, 0.36f),"
+Game/Match/Skins.cs,57,900,ai.skins.allPrice3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""arctic"", 900, ""#e4e9ec"", ""#b4bec5"", ""#7b8790"", CamoPattern.Blotches, 0.34f),"
+Game/Match/Skins.cs,57,0.34f,ai.skins.allScale3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""arctic"", 900, ""#e4e9ec"", ""#b4bec5"", ""#7b8790"", CamoPattern.Blotches, 0.34f),"
+Game/Match/Skins.cs,58,1200,ai.skins.allPrice4,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""urban"", 1200, ""#8b9197"", ""#5a6066"", ""#b9bdc1"", CamoPattern.Digital, 0.55f),"
+Game/Match/Skins.cs,58,0.55f,ai.skins.allScale4,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""urban"", 1200, ""#8b9197"", ""#5a6066"", ""#b9bdc1"", CamoPattern.Digital, 0.55f),"
+Game/Match/Skins.cs,59,1500,ai.skins.allPrice5,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""ocean"", 1500, ""#4b6b8c"", ""#2c435e"", ""#8aa7c4"", CamoPattern.Digital, 0.55f),"
+Game/Match/Skins.cs,59,0.55f,ai.skins.allScale4,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""ocean"", 1500, ""#4b6b8c"", ""#2c435e"", ""#8aa7c4"", CamoPattern.Digital, 0.55f),"
+Game/Match/Skins.cs,60,2500,ai.skins.allPrice6,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""tiger"", 2500, ""#d9832c"", ""#1e1b18"", ""#d9832c"", CamoPattern.Stripes, 0.5f),"
+Game/Match/Skins.cs,60,0.5f,ai.skins.allScale5,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""tiger"", 2500, ""#d9832c"", ""#1e1b18"", ""#d9832c"", CamoPattern.Stripes, 0.5f),"
+Game/Match/Skins.cs,61,3000,ai.skins.allPrice7,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""midnight"", 3000, ""#272b31"", ""#3b4550"", ""#4fd7ff"", CamoPattern.Digital, 0.6f, 0.35f, 0.35f),"
+Game/Match/Skins.cs,61,0.6f,ai.skins.allScale6,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""midnight"", 3000, ""#272b31"", ""#3b4550"", ""#4fd7ff"", CamoPattern.Digital, 0.6f, 0.35f, 0.35f),"
+Game/Match/Skins.cs,61,0.35f,ai.skins.allMetallic,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""midnight"", 3000, ""#272b31"", ""#3b4550"", ""#4fd7ff"", CamoPattern.Digital, 0.6f, 0.35f, 0.35f),"
+Game/Match/Skins.cs,61,0.35f,ai.skins.allRoughness,x,khac,06,2,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""midnight"", 3000, ""#272b31"", ""#3b4550"", ""#4fd7ff"", CamoPattern.Digital, 0.6f, 0.35f, 0.35f),"
+Game/Match/Skins.cs,62,4500,ai.skins.allPrice8,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""steel"", 4500, ""#b3bcc3"", ""#8c969e"", ""#d7dde2"", CamoPattern.Plain, 0.35f, 0.9f, 0.24f),"
+Game/Match/Skins.cs,62,0.35f,ai.skins.allScale7,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""steel"", 4500, ""#b3bcc3"", ""#8c969e"", ""#d7dde2"", CamoPattern.Plain, 0.35f, 0.9f, 0.24f),"
+Game/Match/Skins.cs,62,0.9f,ai.skins.allMetallic2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""steel"", 4500, ""#b3bcc3"", ""#8c969e"", ""#d7dde2"", CamoPattern.Plain, 0.35f, 0.9f, 0.24f),"
+Game/Match/Skins.cs,62,0.24f,ai.skins.allRoughness2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""steel"", 4500, ""#b3bcc3"", ""#8c969e"", ""#d7dde2"", CamoPattern.Plain, 0.35f, 0.9f, 0.24f),"
+Game/Match/Skins.cs,63,6000,ai.skins.allPrice9,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""gold"", 6000, ""#d5a63c"", ""#b8872a"", ""#f0cd6c"", CamoPattern.Plain, 0.35f, 0.92f, 0.26f),"
+Game/Match/Skins.cs,63,0.35f,ai.skins.allScale7,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""gold"", 6000, ""#d5a63c"", ""#b8872a"", ""#f0cd6c"", CamoPattern.Plain, 0.35f, 0.92f, 0.26f),"
+Game/Match/Skins.cs,63,0.92f,ai.skins.allMetallic3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""gold"", 6000, ""#d5a63c"", ""#b8872a"", ""#f0cd6c"", CamoPattern.Plain, 0.35f, 0.92f, 0.26f),"
+Game/Match/Skins.cs,63,0.26f,ai.skins.allRoughness3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"ctor_arg:Skin: new(""gold"", 6000, ""#d5a63c"", ""#b8872a"", ""#f0cd6c"", CamoPattern.Plain, 0.35f, 0.92f, 0.26f),"
+Game/Match/TacticPick.cs,23,2,ai.tacticPick.chapterReachedC,m,ban_kinh,06,1,inline,,declarator: for (var c = 2; c <= count; c++)
+Game/Match/TacticPick.cs,45,6,ai.tacticPick.squadTacticsOpenChapter,x,sat_thuong,06,1,inline,,arg:Campaign.ChapterDone: public static bool SquadTacticsOpen => Progression.TestUnlockAll || Campaign.ChapterDone(6);
+Sim/AI/DecisionLog.cs,81,3,ai.why.splitCountMin,count,ban_kinh,06,1,inline,,"compare: if (plus.Count > 3) plus.RemoveRange(3, plus.Count - 3);"
+Sim/AI/DecisionLog.cs,81,3,ai.why.splitIndex,m,ban_kinh,06,2,inline,,"arg:List.RemoveRange: if (plus.Count > 3) plus.RemoveRange(3, plus.Count - 3);"
+Sim/AI/DecisionLog.cs,81,3,ai.why.splitCountSub,count,ban_kinh,06,3,inline,,"subtract: if (plus.Count > 3) plus.RemoveRange(3, plus.Count - 3);"
+Sim/AI/DecisionLog.cs,82,2,ai.why.splitCountMin2,count,ban_kinh,06,1,inline,,"compare: if (minus.Count > 2) minus.RemoveRange(2, minus.Count - 2);"
+Sim/AI/DecisionLog.cs,82,2,ai.why.splitIndex2,m,ban_kinh,06,2,inline,,"arg:List.RemoveRange: if (minus.Count > 2) minus.RemoveRange(2, minus.Count - 2);"
+Sim/AI/DecisionLog.cs,82,2,ai.why.splitCountSub2,count,ban_kinh,06,3,inline,,"subtract: if (minus.Count > 2) minus.RemoveRange(2, minus.Count - 2);"
+Sim/AI/DecisionLog.cs,197,60.0,ai.churn.addNowMin,s,thoi_gian,06,1,inline,,compare: while (_recent.Count > 0 && now - _recent.Peek().at > 60.0) _recent.Dequeue();
+Sim/AI/SquadLayer.Units.cs,35,1.5f,ai.squadLayer.unitsReachScale,m,ban_kinh,06,1,inline,,"multiply: v.FaceHeading = !v.IsMoving && threat is { } t && Vector2.Distance(t, v.Position) <= s.Reach * 1.5f &&"
+Sim/AI/SquadLayer.Units.cs,43,0.75f,ai.squadLayer.unitsVisionRangeScale,m,ban_kinh,06,1,inline,,"multiply: Vector2.Distance(seen, v.Position) < v.Def.VisionRange * 0.75f && !v.IsMoving)"
+Sim/AI/SquadLayer.Units.cs,45,0.9f,ai.squadLayer.unitsDirectionScale,m,ban_kinh,06,1,inline,,"multiply: var back = world.Map.Clamp(seen + Direction(seen, v.Position) * v.Def.VisionRange * 0.9f, 6f);"
+Sim/AI/SquadLayer.Units.cs,45,6f,ai.squadLayer.unitsMargin,m,ban_kinh,06,1,inline,,"arg:MapDefinition.Clamp: var back = world.Map.Clamp(seen + Direction(seen, v.Position) * v.Def.VisionRange * 0.9f, 6f);"
+Sim/AI/SquadLayer.Units.cs,70,0.3f,ai.squadLayer.explainTargetMaxHpScale,count,sat_thuong,06,1,inline,,"multiply: if (t.Hp < t.MaxHp * 0.3f) factors.Add(new Factor(""nearlyDead"", 1f));"
+Sim/AI/SquadLayer.Units.cs,95,4f,ai.squadLayer.shortMoveRadiusAdd,m,ban_kinh,06,1,inline,,"add: spot = z.Centre + Direction(z.Centre, v.Position) * (z.Radius + 4f);"
+Sim/AI/SquadLayer.Units.cs,100,2,ai.squadLayer.shortMoveK,x,khac,06,1,inline,,declarator: for (var k = -2; k <= 2; k++)
+Sim/AI/SquadLayer.Units.cs,100,2,ai.squadLayer.shortMoveKMax,x,nguong,06,2,inline,,compare: for (var k = -2; k <= 2; k++)
+Sim/AI/SquadLayer.Units.cs,102,6f,ai.squadLayer.shortMoveKScale,x,khac,06,1,inline,,multiply: var p = v.Position + side * (k * 6f) + away * 6f;
+Sim/AI/SquadLayer.Units.cs,102,6f,ai.squadLayer.shortMoveAwayScale,x,khac,06,2,inline,,multiply: var p = v.Position + side * (k * 6f) + away * 6f;
+Sim/AI/SquadLayer.Units.cs,112,20f,ai.squadLayer.shortMoveSideScale,x,khac,06,1,inline,,multiply: spot = v.Position + side * 20f;
+Sim/AI/SquadLayer.Units.cs,116,4f,ai.squadLayer.shortMoveMargin,x,khac,06,1,inline,,"arg:MapDefinition.Clamp: to = world.Map.Clamp(to, 4f);"
+Sim/AI/SquadLayer.Units.cs,127,40f,ai.squadLayer.crowdedDistanceCap,m,ban_kinh,06,1,inline,,"math_min: var end = from + dir * MathF.Min(40f, Vector2.Distance(from, to));"
+Sim/AI/SquadLayer.Units.cs,132,12f,ai.squadLayer.crowdedDistanceMax,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(from + dir * along, p) < 12f && intel.Density[c] >= 3) return true;"
+Sim/AI/SquadLayer.Units.cs,132,3,ai.squadLayer.crowdedDensityMin,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(from + dir * along, p) < 12f && intel.Density[c] >= 3) return true;"
+Sim/AI/Squads.cs,149,0.5f,ai.squadLayer.ctorIntervalScale,s,thoi_gian,06,1,inline,,multiply: _timer = commander.Team == 1 ? Interval * 0.5f : 0f;
+Sim/AI/Squads.cs,175,11f,ai.squadLayer.enlistSpeedMin,m/s,tan_suat,06,1,inline,,compare: var fast = v.Def.Speed >= 11f;
+Sim/AI/Squads.cs,177,40f,ai.squadLayer.enlistBestDistance,m,ban_kinh,06,1,inline,,local_init: var bestDistance = 40f;
+Sim/AI/Squads.cs,269,2,ai.squadLayer.measureCountDivisor,count,ban_kinh,06,1,inline,,divide: s.Reach = reaches[reaches.Count / 2];
+Sim/AI/Squads.cs,271,0.5f,ai.squadLayer.measureLastHpSub,x,sat_thuong,06,1,inline,,subtract: if (hp < s.LastHp - 0.5f) s.HoldReleased = true;
+Sim/AI/Squads.cs,336,40f,ai.squadLayer.scoreReachFloor,m,ban_kinh,06,1,inline,,"math_max: var radius = MathF.Max(40f, s.Reach * 1.2f);"
+Sim/AI/Squads.cs,336,1.2f,ai.squadLayer.scoreReachScale,m,ban_kinh,06,1,inline,,"multiply: var radius = MathF.Max(40f, s.Reach * 1.2f);"
+Sim/AI/Squads.cs,339,0.5f,ai.squadLayer.scoreOwnGoalScale,x,khac,06,1,inline,,multiply: var own = s.Strength + ownGoal * 0.5f;
+Sim/AI/Squads.cs,341,0.01f,ai.squadLayer.scoreEnemyGoalFloor,x,nguong,06,1,inline,,"math_max: var ratio = own / MathF.Max(0.01f, enemyGoal);"
+Sim/AI/Squads.cs,349,25f,ai.squadLayer.scoreRatioScale,x,nguong,06,1,inline,,"multiply: if (enemyGoal > 0f) f.Add(new Factor(""ratio"", Math.Clamp((ratio / threshold - 1f) * 25f, -25f, 25f)));"
+Sim/AI/Squads.cs,349,25f,ai.squadLayer.scoreRatioMin,x,nguong,06,2,inline,,"math_clamp: if (enemyGoal > 0f) f.Add(new Factor(""ratio"", Math.Clamp((ratio / threshold - 1f) * 25f, -25f, 25f)));"
+Sim/AI/Squads.cs,349,25f,ai.squadLayer.scoreRatioMax,x,nguong,06,3,inline,,"math_clamp: if (enemyGoal > 0f) f.Add(new Factor(""ratio"", Math.Clamp((ratio / threshold - 1f) * 25f, -25f, 25f)));"
+Sim/AI/Squads.cs,350,12f,ai.squadLayer.scorePoints,x,khac,06,1,inline,,"ctor_arg:Factor: else f.Add(new Factor(""undefended"", 12f));"
+Sim/AI/Squads.cs,351,15f,ai.squadLayer.scorePoints2,x,khac,06,1,inline,,"ctor_arg:Factor: if (s.Task.Window) f.Add(new Factor(""window"", 15f));"
+Sim/AI/Squads.cs,352,10f,ai.squadLayer.scorePoints3,m,ban_kinh,06,1,inline,,"ctor_arg:Factor: if (HighValueNear(intel, goal, radius)) f.Add(new Factor(""highValue"", 10f));"
+Sim/AI/Squads.cs,353,8f,ai.squadLayer.scorePoints4,x,khac,06,1,inline,,"ctor_arg:Factor: if (s.Task.Kind == TaskKind.Primary && !s.Task.Hold) f.Add(new Factor(""primary"", 8f));"
+Sim/AI/Squads.cs,354,15f,ai.squadLayer.scorePoints2,count,gioi_han_thuc_the,06,1,inline,,"ctor_arg:Factor: if (m.Counterattack > 0f && enemyGoal > 0f && ratio >= m.Counterattack) f.Add(new Factor(""counterattack"", 15f));"
+Sim/AI/Squads.cs,355,12f,ai.squadLayer.scorePoints,x,khac,06,1,inline,,"ctor_arg:Factor: if (m.Hold || s.Task.Hold) f.Add(new Factor(""holdTactic"", -12f));"
+Sim/AI/Squads.cs,356,15f,ai.squadLayer.scoreConfidenceScale,x,khac,06,1,inline,,"multiply: if (enemyGoal > 0f) f.Add(new Factor(""lowConfidence"", -(1f - confidence) * 15f));"
+Sim/AI/Squads.cs,358,15f,ai.squadLayer.scoreRouteThreatCap,count,tran,06,1,inline,,"math_min: if (routeThreat > 0f) f.Add(new Factor(""routeThreat"", -MathF.Min(15f, routeThreat / MathF.Max(1f, s.Strength) * 6f)));"
+Sim/AI/Squads.cs,358,6f,ai.squadLayer.scoreRouteThreatScale,x,nguong,06,1,inline,,"multiply: if (routeThreat > 0f) f.Add(new Factor(""routeThreat"", -MathF.Min(15f, routeThreat / MathF.Max(1f, s.Strength) * 6f)));"
+Sim/AI/Squads.cs,359,10f,ai.squadLayer.scoreCohesionScale,m,ban_kinh,06,1,inline,,"multiply: if (s.Spread > GatherRadius && m.Cohesion > 0f) f.Add(new Factor(""notGathered"", -10f * m.Cohesion));"
+Sim/AI/Squads.cs,360,30f,ai.squadLayer.scorePoints5,x,khac,06,1,inline,,"ctor_arg:Factor: if (transitioning) f.Add(new Factor(""transition"", -30f));"
+Sim/AI/Squads.cs,361,20f,ai.squadLayer.scorePoints6,s,thoi_gian,06,1,inline,,"ctor_arg:Factor: if (_commander.WaitingForAir) f.Add(new Factor(""waitAir"", -20f));"
+Sim/AI/Squads.cs,362,15f,ai.squadLayer.scorePoints2,s,thoi_gian,06,1,inline,,"ctor_arg:Factor: if (_commander.WaitingForArtillery) f.Add(new Factor(""artilleryPrep"", -15f));"
+Sim/AI/Squads.cs,363,40f,ai.squadLayer.scoreBaseScore,count,gioi_han_thuc_the,06,1,inline,,"arg:SquadLayer.Add: Add(SquadAction.Attack, 40f, f);"
+Sim/AI/Squads.cs,369,25f,ai.squadLayer.scorePoints7,x,khac,06,1,inline,,"ctor_arg:Factor: if (s.Task.Hold || m.Hold) f.Add(new Factor(""holdTask"", 25f));"
+Sim/AI/Squads.cs,370,15f,ai.squadLayer.scorePoints2,x,khac,06,1,inline,,"ctor_arg:Factor: if (m.Stance == FireStance.HoldFire) f.Add(new Factor(""ambush"", 15f));"
+Sim/AI/Squads.cs,371,10f,ai.squadLayer.scorePoints3,s,thoi_gian,06,1,inline,,"ctor_arg:Factor: if (_commander.WaitingForAir || _commander.WaitingForArtillery || transitioning) f.Add(new Factor(""waiting"", 10f));"
+Sim/AI/Squads.cs,372,20f,ai.squadLayer.scorePoints6,x,khac,06,1,inline,,"ctor_arg:Factor: if (PointPressure(intel, goal)) f.Add(new Factor(""losingPoint"", -20f));"
+Sim/AI/Squads.cs,374,15f,ai.squadLayer.scorePoints2,x,sat_thuong,06,1,inline,,"ctor_arg:Factor: f.Add(new Factor(""inSplash"", -15f));"
+Sim/AI/Squads.cs,375,10f,ai.squadLayer.scorePoints3,x,khac,06,1,inline,,"ctor_arg:Factor: if (!s.Task.Hold && !m.Hold && s.Task.Window) f.Add(new Factor(""window"", -10f));"
+Sim/AI/Squads.cs,376,30f,ai.squadLayer.scoreBaseScore2,count,gioi_han_thuc_the,06,1,inline,,"arg:SquadLayer.Add: Add(SquadAction.Hold, 30f, f);"
+Sim/AI/Squads.cs,380,2,ai.squadLayer.scoreCountMin,count,ban_kinh,06,1,inline,,"compare: if (s.MemberList.Count >= 2 && Vector2.Distance(s.Centre, goal) > 30f)"
+Sim/AI/Squads.cs,380,30f,ai.squadLayer.scoreDistanceMin,m,ban_kinh,06,1,inline,,"compare: if (s.MemberList.Count >= 2 && Vector2.Distance(s.Centre, goal) > 30f)"
+Sim/AI/Squads.cs,381,2,ai.squadLayer.scoreSide,x,khac,06,1,inline,,compound_assign: for (var side = -1; side <= 1; side += 2)
+Sim/AI/Squads.cs,387,15f,ai.squadLayer.scoreEnemyGoalScale,x,khac,06,1,inline,,"multiply: if (enemyGoal > 0f) f.Add(new Factor(""weakFlank"", Math.Clamp((enemyGoal - sideEnemy) / enemyGoal * 15f, -10f, 15f)));"
+Sim/AI/Squads.cs,387,10f,ai.squadLayer.scoreEnemyGoalMin,x,nguong,06,1,inline,,"math_clamp: if (enemyGoal > 0f) f.Add(new Factor(""weakFlank"", Math.Clamp((enemyGoal - sideEnemy) / enemyGoal * 15f, -10f, 15f)));"
+Sim/AI/Squads.cs,387,15f,ai.squadLayer.scoreEnemyGoalMax,x,nguong,06,2,inline,,"math_clamp: if (enemyGoal > 0f) f.Add(new Factor(""weakFlank"", Math.Clamp((enemyGoal - sideEnemy) / enemyGoal * 15f, -10f, 15f)));"
+Sim/AI/Squads.cs,388,12f,ai.squadLayer.scorePoints,x,khac,06,1,inline,,"ctor_arg:Factor: if (s.Fast) f.Add(new Factor(""mobile"", 12f));"
+Sim/AI/Squads.cs,390,0.01f,ai.squadLayer.scoreAbsMin,x,nguong,06,1,inline,,"compare: if (MathF.Abs(weight - 1f) > 0.01f) f.Add(new Factor(""flankTactic"", (weight - 1f) * 20f));"
+Sim/AI/Squads.cs,390,20f,ai.squadLayer.scoreWeightScale,x,khac,06,1,inline,,"multiply: if (MathF.Abs(weight - 1f) > 0.01f) f.Add(new Factor(""flankTactic"", (weight - 1f) * 20f));"
+Sim/AI/Squads.cs,391,15f,ai.squadLayer.scorePoints2,x,khac,06,1,inline,,"ctor_arg:Factor: if (s.Task.FlankSide == side) f.Add(new Factor(""pincer"", 15f));"
+Sim/AI/Squads.cs,392,8f,ai.squadLayer.scoreCohesionScale2,x,khac,06,1,inline,,"multiply: f.Add(new Factor(""cohesionRisk"", -8f * ai.Cohesion));"
+Sim/AI/Squads.cs,393,10f,ai.squadLayer.scoreSideEnemyCap,count,tran,06,1,inline,,"math_min: if (sideEnemy > 0f) f.Add(new Factor(""reserveThatWay"", -MathF.Min(10f, sideEnemy / MathF.Max(1f, s.Strength) * 5f)));"
+Sim/AI/Squads.cs,393,5f,ai.squadLayer.scoreSideEnemyScale,x,nguong,06,1,inline,,"multiply: if (sideEnemy > 0f) f.Add(new Factor(""reserveThatWay"", -MathF.Min(10f, sideEnemy / MathF.Max(1f, s.Strength) * 5f)));"
+Sim/AI/Squads.cs,394,10f,ai.squadLayer.scoreThreatCap,count,tran,06,1,inline,,"math_min: if (threat > 0f) f.Add(new Factor(""routeThreat"", -MathF.Min(10f, threat / MathF.Max(1f, s.Strength) * 4f)));"
+Sim/AI/Squads.cs,394,4f,ai.squadLayer.scoreThreatScale,x,nguong,06,1,inline,,"multiply: if (threat > 0f) f.Add(new Factor(""routeThreat"", -MathF.Min(10f, threat / MathF.Max(1f, s.Strength) * 4f)));"
+Sim/AI/Squads.cs,395,30f,ai.squadLayer.scorePoints5,x,khac,06,1,inline,,"ctor_arg:Factor: if (transitioning) f.Add(new Factor(""transition"", -30f));"
+Sim/AI/Squads.cs,396,30f,ai.squadLayer.scoreBaseScore2,count,gioi_han_thuc_the,06,1,inline,,"arg:SquadLayer.Add: Add(side < 0 ? SquadAction.FlankLeft : SquadAction.FlankRight, 30f, f);"
+Sim/AI/Squads.cs,400,40f,ai.squadLayer.scoreReachMin,m,ban_kinh,06,1,inline,,"compare: if (s.Reach >= 40f && AdvancingFriend(intel, s) is { } friend)"
+Sim/AI/Squads.cs,403,15f,ai.squadLayer.scorePoints2,x,khac,06,1,inline,,"ctor_arg:Factor: if (intel.Know(ThreatKind.AntiTank, friend.Goal) == Knowledge.Unknown) f.Add(new Factor(""unknownGround"", 15f));"
+Sim/AI/Squads.cs,404,20f,ai.squadLayer.scorePoints6,x,khac,06,1,inline,,"ctor_arg:Factor: if (m.Bounding) f.Add(new Factor(""bounding"", 20f));"
+Sim/AI/Squads.cs,405,10f,ai.squadLayer.scorePoints3,x,khac,06,1,inline,,"ctor_arg:Factor: if (s.Task.Kind == TaskKind.Primary && s.Task.Window) f.Add(new Factor(""window"", -10f));"
+Sim/AI/Squads.cs,406,25f,ai.squadLayer.scoreBaseScore3,count,gioi_han_thuc_the,06,1,inline,,"arg:SquadLayer.Add: Add(SquadAction.Overwatch, 25f, f);"
+Sim/AI/Squads.cs,413,35f,ai.squadLayer.scorePoints8,x,khac,06,1,inline,,"ctor_arg:Factor: if (fallback) f.Add(new Factor(""fallbackLine"", 35f));"
+Sim/AI/Squads.cs,414,25f,ai.squadLayer.scoreGainCap,count,tran,06,1,inline,,"math_min: if (gain > 0f) f.Add(new Factor(""underFire"", MathF.Min(25f, gain)));"
+Sim/AI/Squads.cs,415,15f,ai.squadLayer.scorePoints2,x,khac,06,1,inline,,"ctor_arg:Factor: if (s.Focus.IsValid) f.Add(new Factor(""focusing"", -15f));"
+Sim/AI/Squads.cs,416,20f,ai.squadLayer.scoreBaseScore4,count,gioi_han_thuc_the,06,1,inline,,"arg:SquadLayer.Add: Add(SquadAction.Reposition, 20f, f);"
+Sim/AI/Squads.cs,425,0.01f,ai.squadLayer.scoreFeFloor,x,nguong,06,1,inline,,"math_max: f.Add(new Factor(""friendLosing"", Math.Clamp((1f - fo / MathF.Max(0.01f, fe)) * 25f, 0f, 25f)));"
+Sim/AI/Squads.cs,425,25f,ai.squadLayer.scoreFoScale,x,nguong,06,1,inline,,"multiply: f.Add(new Factor(""friendLosing"", Math.Clamp((1f - fo / MathF.Max(0.01f, fe)) * 25f, 0f, 25f)));"
+Sim/AI/Squads.cs,425,25f,ai.squadLayer.scoreFoMax,x,nguong,06,2,inline,,"math_clamp: f.Add(new Factor(""friendLosing"", Math.Clamp((1f - fo / MathF.Max(0.01f, fe)) * 25f, 0f, 25f)));"
+Sim/AI/Squads.cs,426,10f,ai.squadLayer.scorePoints3,x,khac,06,1,inline,,"ctor_arg:Factor: if (enemyHere <= 0f) f.Add(new Factor(""free"", 10f));"
+Sim/AI/Squads.cs,427,15f,ai.squadLayer.scorePoints2,x,khac,06,1,inline,,"ctor_arg:Factor: if (s.Task.Kind == TaskKind.Primary) f.Add(new Factor(""leavesTask"", -15f));"
+Sim/AI/Squads.cs,428,30f,ai.squadLayer.scoreBaseScore2,count,gioi_han_thuc_the,06,1,inline,,"arg:SquadLayer.Add: Add(SquadAction.Support, 30f, f);"
+Sim/AI/Squads.cs,435,35f,ai.squadLayer.scoreBaseScore5,count,gioi_han_thuc_the,06,1,inline,,"arg:SquadLayer.Add: Add(SquadAction.Join, 35f, new List<Factor> { new(""belowMinimum"", 25f) });"
+Sim/AI/Squads.cs,435,25f,ai.squadLayer.scorePoints7,count,gioi_han_thuc_the,06,1,inline,,"ctor_arg:Factor: Add(SquadAction.Join, 35f, new List<Factor> { new(""belowMinimum"", 25f) });"
+Sim/AI/Squads.cs,441,25f,ai.squadLayer.scoreSpreadCap,count,ban_kinh,06,1,inline,,"math_min: var f = new List<Factor> { new(""scattered"", MathF.Min(25f, (s.Spread - GatheredRadius) * 1.2f)) };"
+Sim/AI/Squads.cs,441,1.2f,ai.squadLayer.scoreSpreadScale,m,ban_kinh,06,1,inline,,"multiply: var f = new List<Factor> { new(""scattered"", MathF.Min(25f, (s.Spread - GatheredRadius) * 1.2f)) };"
+Sim/AI/Squads.cs,442,20f,ai.squadLayer.scorePoints6,x,khac,06,1,inline,,"ctor_arg:Factor: if (transitioning) f.Add(new Factor(""tacticChanged"", 20f));"
+Sim/AI/Squads.cs,443,15f,ai.squadLayer.scorePoints2,x,khac,06,1,inline,,"ctor_arg:Factor: if (s.Task.Window) f.Add(new Factor(""window"", -15f));"
+Sim/AI/Squads.cs,444,25f,ai.squadLayer.scoreBaseScore3,count,gioi_han_thuc_the,06,1,inline,,"arg:SquadLayer.Add: Add(SquadAction.Regroup, 25f, f);"
+Sim/AI/Squads.cs,456,100f,ai.squadLayer.scoreScoreMax,x,nguong,06,1,inline,,"math_clamp: _options.Add((a, Math.Clamp(score, 0f, 100f), factors));"
+Sim/AI/Squads.cs,480,30f,ai.squadLayer.urgentDistanceMin,m,ban_kinh,06,1,inline,,"compare: Vector2.Distance(o, s.Goal) > 30f) return true;"
+Sim/AI/Squads.cs,491,3.0,ai.squadLayer.idleTooLongNowMax,s,thoi_gian,06,1,inline,,compare: if (v.IsMoving || now - v.LastFiredAt < 3.0 || v.OutOfAmmo || v.DeployBusy || v.Target.IsValid) reason = true;
+Sim/AI/Squads.cs,522,1.5f,ai.squadLayer.setStateReachScale,m,ban_kinh,06,1,inline,,multiply: next = nearest <= s.Reach ? SquadState.Combat : nearest <= s.Reach * 1.5f ? SquadState.Approach : SquadState.Travel;
+Sim/AI/Squads.cs,552,4f,ai.squadLayer.dodgeXScale,x,khac,06,1,inline,,"multiply: var key = ((int)MathF.Round(w.Centre.X * 4f) * 7919 + (int)MathF.Round(w.Centre.Y * 4f), (int)(w.Due * 10.0));"
+Sim/AI/Squads.cs,552,7919,ai.squadLayer.dodgeRoundScale,x,khac,06,1,inline,,"multiply: var key = ((int)MathF.Round(w.Centre.X * 4f) * 7919 + (int)MathF.Round(w.Centre.Y * 4f), (int)(w.Due * 10.0));"
+Sim/AI/Squads.cs,552,10.0,ai.squadLayer.dodgeDueScale,x,khac,06,1,inline,,"multiply: var key = ((int)MathF.Round(w.Centre.X * 4f) * 7919 + (int)MathF.Round(w.Centre.Y * 4f), (int)(w.Due * 10.0));"
+Sim/AI/Squads.cs,552,4f,ai.squadLayer.dodgeYScale,x,khac,06,2,inline,,"multiply: var key = ((int)MathF.Round(w.Centre.X * 4f) * 7919 + (int)MathF.Round(w.Centre.Y * 4f), (int)(w.Due * 10.0));"
+Sim/AI/Squads.cs,557,2f,ai.squadLayer.dodgeRadiusAdd,m,ban_kinh,06,1,inline,,"add: if (!world.TryGetVehicle(id, out var v) || Vector2.Distance(v.Position, w.Centre) > w.Radius + v.Radius + 2f) continue;"
+Sim/AI/Squads.cs,560,0.01f,ai.squadLayer.dodgeLengthSquaredMin,m,ban_kinh,06,1,inline,,compare: away = away.LengthSquared() > 0.01f ? Vector2.Normalize(away) : SimMath.Forward(v.Heading + MathF.PI * 0.5f);
+Sim/AI/Squads.cs,560,0.5f,ai.squadLayer.dodgePIScale,m,ban_kinh,06,1,inline,,multiply: away = away.LengthSquared() > 0.01f ? Vector2.Normalize(away) : SimMath.Forward(v.Heading + MathF.PI * 0.5f);
+Sim/AI/Squads.cs,561,6f,ai.squadLayer.dodgeRadiusAdd2,m,ban_kinh,06,1,inline,,"add: var exit = world.Map.Clamp(w.Centre + away * (w.Radius + v.Radius + 6f), 4f);"
+Sim/AI/Squads.cs,561,4f,ai.squadLayer.dodgeMargin,m,ban_kinh,06,1,inline,,"arg:MapDefinition.Clamp: var exit = world.Map.Clamp(w.Centre + away * (w.Radius + v.Radius + 6f), 4f);"
+Sim/AI/Squads.cs,562,4f,ai.squadLayer.dodgeDistanceMin,m,ban_kinh,06,1,inline,,"compare: if (!v.HasPath || Vector2.Distance(v.Order.Point, exit) > 4f)"
+Sim/AI/Squads.cs,567,64,ai.squadLayer.dodgeCountMin,count,thoi_gian,06,1,inline,,compare: if (_warningsSeen.Count > 64) Prune(now);
+Sim/AI/Squads.cs,583,30.0,ai.squadLayer.pruneNowMin,s,thoi_gian,06,1,inline,,compare: if (now - kv.Value > 30.0) old.Add(kv.Key);
+Sim/AI/Squads.cs,589,40f,ai.squadLayer.overwhelmedReachFloor,m,ban_kinh,06,1,inline,,"math_max: var (own, enemy) = intel.StrengthAround(s.Centre, MathF.Max(40f, s.Reach));"
+Sim/AI/Squads.cs,592,80f,ai.squadLayer.overwhelmedPriorityMin,x,nguong,06,1,inline,,compare: if (e.Kind == IntelEventKind.Threat && e.Priority >= 80f && e.Confidence >= 0.5f &&
+Sim/AI/Squads.cs,592,0.5f,ai.squadLayer.overwhelmedConfidenceMin,x,nguong,06,1,inline,,compare: if (e.Kind == IntelEventKind.Threat && e.Priority >= 80f && e.Confidence >= 0.5f &&
+Sim/AI/Squads.cs,593,10f,ai.squadLayer.overwhelmedRadiusAdd,m,ban_kinh,06,1,inline,,"add: Vector2.Distance(e.Centre, s.Centre) <= e.Radius + s.Spread + 10f) return true;"
+Sim/AI/Squads.cs,601,120f,ai.squadLayer.gatherOnFriendsBest,x,khac,06,1,inline,,local_init: var best = 120f;
+Sim/AI/Squads.cs,606,8f,ai.squadLayer.gatherOnFriendsDMin,x,nguong,06,1,inline,,compare: if (d < best && d > 8f)
+Sim/AI/Squads.cs,653,0.8f,ai.squadLayer.executeReachScale,m,ban_kinh,06,1,inline,,multiply: if (band > 0f && (m.Standoff || m.Kite > 0f || nearest < s.Reach * band * 0.8f))
+Sim/AI/Squads.cs,658,40f,ai.squadLayer.executeDistanceMin,m,ban_kinh,06,1,inline,,"compare: else if (m.Cohesion > 0f && s.State == SquadState.Travel && Vector2.Distance(s.Centre, target) > 40f)"
+Sim/AI/Squads.cs,661,24f,ai.squadLayer.executeBoundingTrue,x,khac,06,1,inline,,conditional: var step = (m.Bounding ? 24f : 32f) * m.Pace;
+Sim/AI/Squads.cs,661,32f,ai.squadLayer.executeBoundingFalse,x,khac,06,1,inline,,conditional: var step = (m.Bounding ? 24f : 32f) * m.Pace;
+Sim/AI/Squads.cs,663,12f,ai.squadLayer.executeDistanceMin2,m,ban_kinh,06,1,inline,,"compare: goal = !float.IsNaN(s.IssuedGoal.X) && s.IssuedAction == s.Action && Vector2.Distance(s.Centre, s.IssuedGoal) > 12f"
+Sim/AI/Squads.cs,680,12f,ai.squadLayer.executeDistanceMax,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(s.Centre, w) < 12f) s.FlankReached = true;"
+Sim/AI/Squads.cs,696,20f,ai.squadLayer.executeDirectionScale,x,khac,06,1,inline,,"multiply: goal = AdvancingFriend(intel, s) is { } friend ? friend.Centre - Direction(friend.Centre, friend.Goal) * 20f : s.Centre;"
+Sim/AI/Squads.cs,710,15f,ai.squadLayer.executeDistanceMax2,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(into.Centre, s.Centre) < 15f)"
+Sim/AI/Squads.cs,720,2f,ai.squadLayer.executeGatherRadiusScale,m,ban_kinh,06,1,inline,,"multiply: goal = !float.IsNaN(s.IssuedGoal.X) && s.IssuedAction == SquadAction.Regroup && Vector2.Distance(s.IssuedGoal, s.Centre) < GatherRadius * 2f"
+Sim/AI/Squads.cs,726,6f,ai.squadLayer.executeMargin,x,khac,06,1,inline,,"arg:MapDefinition.Clamp: goal = world.Map.Clamp(goal, 6f);"
+Sim/AI/Squads.cs,732,10f,ai.squadLayer.executeStateTrue,m,ban_kinh,06,1,inline,,"conditional: Vector2.Distance(goal, s.IssuedGoal) > (s.State == SquadState.Combat ? 10f : 6f);"
+Sim/AI/Squads.cs,732,6f,ai.squadLayer.executeStateFalse,m,ban_kinh,06,1,inline,,"conditional: Vector2.Distance(goal, s.IssuedGoal) > (s.State == SquadState.Combat ? 10f : 6f);"
+Sim/AI/Squads.cs,746,2,ai.squadLayer.boundCountMax,count,gioi_han_thuc_the,06,1,inline,,compare: if (s.MemberList.Count < 2) return false;
+Sim/AI/Squads.cs,750,6.0,ai.squadLayer.boundNowAdd,s,thoi_gian,06,1,inline,,add: s.BoundSwapAt = now + 6.0;
+Sim/AI/Squads.cs,754,2,ai.squadLayer.boundIMod,x,khac,06,1,inline,,modulo: (i % 2 == (s.BoundPhase ? 0 : 1) ? moving : standing).Add(s.MemberList[i]);
+Sim/AI/Squads.cs,755,0.8f,ai.squadLayer.boundReachScale,m,ban_kinh,06,1,inline,,"multiply: var cover = MathF.Min(s.Reach * 0.8f, 30f);"
+Sim/AI/Squads.cs,755,30f,ai.squadLayer.boundReachCap,m,ban_kinh,06,1,inline,,"math_min: var cover = MathF.Min(s.Reach * 0.8f, 30f);"
+Sim/AI/Squads.cs,756,6f,ai.squadLayer.boundMargin,x,khac,06,1,inline,,"arg:MapDefinition.Clamp: var to = world.Map.Clamp(s.Centre + forward * cover, 6f);"
+Sim/AI/Squads.cs,774,9f,ai.squadLayer.slotsModeValue,count,gioi_han_thuc_the,06,1,inline,,"switch_arm: FormationMode.Hold => 9f,"
+Sim/AI/Squads.cs,775,5f,ai.squadLayer.slotsModeValue2,count,gioi_han_thuc_the,06,1,inline,,"switch_arm: FormationMode.Regroup => 5f,"
+Sim/AI/Squads.cs,776,6f,ai.squadLayer.slotsModeValue3,count,gioi_han_thuc_the,06,1,inline,,"switch_arm: _ => 6f,"
+Sim/AI/Squads.cs,786,2,ai.squadLayer.slotsCountMin,count,thoi_gian,06,1,inline,,"compare: var wait = mode == FormationMode.Travel && order.Count > 2 && Crowded(world.Intel.For(_commander.Team), s.Centre, goal);"
+Sim/AI/Squads.cs,787,3.0,ai.squadLayer.slotsTimeAdd,s,thoi_gian,06,1,inline,,add: if (wait) s.StaggerUntil = world.Time + 3.0;
+Sim/AI/Squads.cs,804,2f,ai.squadLayer.slotsIScale,count,gioi_han_thuc_the,06,1,inline,,multiply: var angle = i * MathF.PI * 2f / n;
+Sim/AI/Squads.cs,808,0.5f,ai.squadLayer.slotsNScale,count,ban_kinh,06,1,inline,,multiply: slot = goal + side * ((i - (n - 1) * 0.5f) * spacing);
+Sim/AI/Squads.cs,811,4f,ai.squadLayer.slotsMargin,count,gioi_han_thuc_the,06,1,inline,,"arg:MapDefinition.Clamp: slot = world.Map.Clamp(slot, 4f);"
+Sim/AI/Squads.cs,824,6f,ai.squadLayer.spreadDistanceBlastFloor,m,sat_thuong,06,1,inline,,"math_max: return MathF.Max(6f, blast * 2f);"
+Sim/AI/Squads.cs,824,2f,ai.squadLayer.spreadDistanceBlastScale,m,sat_thuong,06,1,inline,,"multiply: return MathF.Max(6f, blast * 2f);"
+Sim/AI/Squads.cs,841,6f,ai.squadLayer.unstickDistanceMin,m,thoi_gian,06,1,inline,,"compare: var moving = v.HasPath && Vector2.Distance(v.Position, v.Order.Point) > 6f;"
+Sim/AI/Squads.cs,842,2f,ai.squadLayer.unstickDistanceMin2,m,thoi_gian,06,1,inline,,"compare: if (!moving || Vector2.Distance(v.Position, p.at) > 2f)"
+Sim/AI/Squads.cs,846,15f,ai.squadLayer.unstickDistanceMin3,m,thoi_gian,06,1,inline,,"compare: if (!moving && v.Order.Kind == OrderKind.Idle && !v.Target.IsValid && Vector2.Distance(v.Position, goal) > 15f && now >= s.StaggerUntil &&"
+Sim/AI/Squads.cs,856,4f,ai.squadLayer.unstickAwayScale,s,thoi_gian,06,1,inline,,"multiply: world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, world.Map.Clamp(v.Position - away * 4f, 4f)));"
+Sim/AI/Squads.cs,856,4f,ai.squadLayer.unstickMargin,s,thoi_gian,06,2,inline,,"arg:MapDefinition.Clamp: world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, world.Map.Clamp(v.Position - away * 4f, 4f)));"
+Sim/AI/Squads.cs,859,8f,ai.squadLayer.unstickValueTrue,s,thoi_gian,06,1,inline,,"conditional: var sideStep = new Vector2(away.Y, -away.X) * ((id.Value & 1) == 0 ? 8f : -8f);"
+Sim/AI/Squads.cs,859,8f,ai.squadLayer.unstickValueFalse,s,thoi_gian,06,2,inline,,"conditional: var sideStep = new Vector2(away.Y, -away.X) * ((id.Value & 1) == 0 ? 8f : -8f);"
+Sim/AI/Squads.cs,860,4f,ai.squadLayer.unstickMargin,s,thoi_gian,06,1,inline,,"arg:MapDefinition.Clamp: world.Submit(new Command(type, _commander.Team, new[] { id }, world.Map.Clamp(goal + sideStep, 4f)));"
+Sim/AI/Squads.cs,864,0.01f,ai.squadLayer.unstickLengthSquaredMin,m,thoi_gian,06,1,inline,,"compare: out_ = out_.LengthSquared() > 0.01f ? Vector2.Normalize(out_) : new Vector2(away.Y, -away.X);"
+Sim/AI/Squads.cs,865,8f,ai.squadLayer.unstickOutScale,s,thoi_gian,06,1,inline,,"multiply: world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, world.Map.Clamp(v.Position + out_ * 8f, 4f)));"
+Sim/AI/Squads.cs,865,4f,ai.squadLayer.unstickMargin,s,thoi_gian,06,1,inline,,"arg:MapDefinition.Clamp: world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, world.Map.Clamp(v.Position + out_ * 8f, 4f)));"
+Sim/AI/Squads.cs,871,3,ai.squadLayer.unstickRungCap,count,thoi_gian,06,1,inline,,"math_min: s.Progress[id] = (v.Position, now, Math.Min(3, p.rung + 1));"
+Sim/AI/Squads.cs,880,3,ai.squadLayer.unstickRungMin,s,thoi_gian,06,1,inline,,"compare: if (s.Progress.TryGetValue(id, out var p) && p.rung >= 3) s.Progress[id] = (p.at, now, 0);"
+Sim/AI/Squads.cs,893,0.6f,ai.squadLayer.stanceHoldFireFalse,x,nguong,06,1,inline,,conditional: var share = m.HoldFire > 0f ? m.HoldFire : world.Catalog.Ai.HoldFire > 0f ? world.Catalog.Ai.HoldFire : 0.6f;
+Sim/AI/Squads.cs,922,0.01f,ai.squadLayer.focusWeightMin,count,gioi_han_thuc_the,06,1,inline,,compare: if (weight > 0.01f && s.State == SquadState.Combat)
+Sim/AI/Squads.cs,927,10f,ai.squadLayer.focusReachAdd,m,ban_kinh,06,1,inline,,"add: if (!c.InSight || c.Flying || Vector2.Distance(c.Position, s.Centre) > s.Reach + 10f) continue;"
+Sim/AI/Squads.cs,930,0.5f,ai.squadLayer.focusStrengthFloor,x,sat_thuong,06,1,inline,,"math_max: var value = MathF.Max(0.5f, c.Strength) * (1.6f - v.Hp / MathF.Max(1f, v.MaxHp));"
+Sim/AI/Squads.cs,930,1.6f,ai.squadLayer.focusHpSub,x,sat_thuong,06,1,inline,,"subtract: var value = MathF.Max(0.5f, c.Strength) * (1.6f - v.Hp / MathF.Max(1f, v.MaxHp));"
+Sim/AI/Squads.cs,933,2f,ai.squadLayer.focusValue,x,khac,06,1,inline,,compound_assign: if (t == g) value *= 2f;
+Sim/AI/Squads.cs,934,10f,ai.squadLayer.focusReachFloor,m,sat_thuong,06,1,inline,,"math_max: var score = value * s.Strength / MathF.Max(1f, v.Hp) / (1f + Vector2.Distance(c.Position, s.Centre) / MathF.Max(10f, s.Reach));"
+Sim/AI/Squads.cs,935,1.3f,ai.squadLayer.focusScore,x,khac,06,1,inline,,compound_assign: if (c.Id == old) score *= 1.3f; // keep the focus unless another is clearly better
+Sim/AI/Squads.cs,1033,20f,ai.squadLayer.pointPressureRadiusAdd,m,ban_kinh,06,1,inline,,"add: if (e.Kind == IntelEventKind.ObjectivePressure && Vector2.Distance(e.Centre, at) <= e.Radius + 20f) return true;"
+Sim/AI/Squads.cs,1057,30f,ai.squadLayer.flankPointDistanceCap,count,ban_kinh,06,1,inline,,"math_min: point = world.Map.Clamp(goal - forward * MathF.Min(30f, distance * 0.4f) + lateral * Math.Clamp(distance * 0.5f, 25f, 45f), 8f);"
+Sim/AI/Squads.cs,1057,0.4f,ai.squadLayer.flankPointDistanceScale,m,ban_kinh,06,1,inline,,"multiply: point = world.Map.Clamp(goal - forward * MathF.Min(30f, distance * 0.4f) + lateral * Math.Clamp(distance * 0.5f, 25f, 45f), 8f);"
+Sim/AI/Squads.cs,1057,0.5f,ai.squadLayer.flankPointDistanceScale2,m,ban_kinh,06,1,inline,,"multiply: point = world.Map.Clamp(goal - forward * MathF.Min(30f, distance * 0.4f) + lateral * Math.Clamp(distance * 0.5f, 25f, 45f), 8f);"
+Sim/AI/Squads.cs,1057,25f,ai.squadLayer.flankPointDistanceMin,m,ban_kinh,06,1,inline,,"math_clamp: point = world.Map.Clamp(goal - forward * MathF.Min(30f, distance * 0.4f) + lateral * Math.Clamp(distance * 0.5f, 25f, 45f), 8f);"
+Sim/AI/Squads.cs,1057,45f,ai.squadLayer.flankPointDistanceMax,m,ban_kinh,06,1,inline,,"math_clamp: point = world.Map.Clamp(goal - forward * MathF.Min(30f, distance * 0.4f) + lateral * Math.Clamp(distance * 0.5f, 25f, 45f), 8f);"
+Sim/AI/Squads.cs,1057,8f,ai.squadLayer.flankPointMargin,m,ban_kinh,06,1,inline,,"arg:MapDefinition.Clamp: point = world.Map.Clamp(goal - forward * MathF.Min(30f, distance * 0.4f) + lateral * Math.Clamp(distance * 0.5f, 25f, 45f), 8f);"
+Sim/AI/Squads.cs,1059,15f,ai.squadLayer.flankPointDistanceMax2,m,ban_kinh,06,1,inline,,"compare: if (!world.Grid.IsWalkable(point) || Vector2.Distance(point, goal) < 15f) return false;"
+Sim/AI/Squads.cs,1060,1.5f,ai.squadLayer.flankPointMaxScale,count,nguong,06,1,inline,,"multiply: return threat <= MathF.Max(1f, s.Strength) * 1.5f;"
+Sim/AI/Squads.cs,1067,60f,ai.squadLayer.advancingFriendDistanceMax,m,ban_kinh,06,1,inline,,"compare: (o.State is SquadState.Travel or SquadState.Approach) && Vector2.Distance(o.Centre, s.Centre) <= 60f) return o;"
+Sim/AI/Squads.cs,1078,40f,ai.squadLayer.losingFriendReachFloor,m,ban_kinh,06,1,inline,,"math_max: var (own, enemy) = intel.StrengthAround(o.Centre, MathF.Max(40f, o.Reach));"
+Sim/AI/Squads.cs,1079,0.01f,ai.squadLayer.losingFriendEnemyFloor,x,nguong,06,1,inline,,"math_max: var ratio = own / MathF.Max(0.01f, enemy);"
+Sim/AI/Squads.cs,1114,40f,ai.squadLayer.betterSpotReachFloor,m,ban_kinh,06,1,inline,,"math_max: var (own, enemy) = intel.StrengthAround(s.Centre, MathF.Max(40f, s.Reach));"
+Sim/AI/Squads.cs,1118,35f,ai.squadLayer.betterSpotDirectionScale,x,khac,06,1,inline,,"multiply: spot = world.Map.Clamp(s.Centre + Direction(s.Centre, home) * 35f, 6f);"
+Sim/AI/Squads.cs,1118,6f,ai.squadLayer.betterSpotMargin,x,khac,06,1,inline,,"arg:MapDefinition.Clamp: spot = world.Map.Clamp(s.Centre + Direction(s.Centre, home) * 35f, 6f);"
+Sim/AI/Squads.cs,1123,0.5f,ai.squadLayer.betterSpotThreatAtScale,x,sat_thuong,06,1,inline,,"multiply: float Danger(Vector2 p) => intel.ThreatAt(ThreatKind.Splash, p) + intel.ThreatAt(ThreatKind.Artillery, p) + 0.5f * intel.ThreatAt(ThreatKind.AntiTank, p);"
+Sim/AI/Squads.cs,1127,8,ai.squadLayer.betterSpotKMax,x,nguong,06,1,inline,,compare: for (var k = 0; k < 8; k++)
+Sim/AI/Squads.cs,1129,4f,ai.squadLayer.betterSpotKDivisor,x,khac,06,1,inline,,divide: var angle = k * MathF.PI / 4f;
+Sim/AI/Squads.cs,1130,25f,ai.squadLayer.betterSpotScale,x,khac,06,1,inline,,"multiply: var p = world.Map.Clamp(s.Centre + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * 25f, 6f);"
+Sim/AI/Squads.cs,1130,6f,ai.squadLayer.betterSpotMargin,x,khac,06,1,inline,,"arg:MapDefinition.Clamp: var p = world.Map.Clamp(s.Centre + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * 25f, 6f);"
+Sim/AI/Squads.cs,1133,0.6f,ai.squadLayer.betterSpotBestScale,x,khac,06,1,inline,,multiply: if (d < best * 0.6f)
+Sim/AI/Squads.cs,1140,10f,ai.squadLayer.betterSpotHereScale,x,nguong,06,1,inline,,"multiply: gain = (here - best) / MathF.Max(1f, s.Strength) * 10f;"
+Sim/AI/Squads.cs,1147,0.01f,ai.squadLayer.directionLengthSquaredMin,m,ban_kinh,06,1,inline,,compare: return d.LengthSquared() > 0.01f ? Vector2.Normalize(d) : Vector2.UnitY;
+Sim/AI/TacticalAi.cs,34,3,ai.tacticalAi.clusterSize,x,khac,06,1,const_to_property,,const_field: private const int ClusterSize = 3;
+Sim/AI/TacticalAi.cs,35,6f,ai.tacticalAi.edgeMargin,x,khac,06,1,const_to_property,,const_field: private const float EdgeMargin = 6f;
+Sim/AI/TacticalAi.cs,38,0.6f,ai.tacticalAi.recoveredFraction,share,khac,06,1,const_to_property,,const_field: private const float RecoveredFraction = 0.6f;
+Sim/AI/TacticalAi.cs,77,12.0,ai.tacticalAi.staleIdle,x,khac,06,1,const_to_property,,const_field: private const double StaleIdle = 12.0;
+Sim/AI/TacticalAi.cs,126,12f,ai.tacticalAi.fallBackHold,x,khac,06,1,const_to_property,,const_field: private const float FallBackHold = 12f;
+Sim/AI/TacticalAi.cs,132,30f,ai.tacticalAi.patience,x,khac,06,1,const_to_property,,const_field: private const float Patience = 30f;
+Sim/AI/TacticalAi.cs,227,70.0,ai.tacticalAi.edgePatience,x,khac,06,1,const_to_property,,const_field: private const double EdgePatience = 70.0;
+Sim/AI/TacticalAi.cs,238,0.25f,ai.tacticalAi.alliesDecisionIntervalScale,s,thoi_gian,06,1,inline,,multiply: if (value && !_allies) _timer += DecisionInterval * 0.25f;
+Sim/AI/TacticalAi.cs,245,7,ai.tacticalAi.ctorSeed,x,khac,06,1,manual:parameter default,,"param_default: public TacticalAi(int team, int enemyTeam, int seed = 7)"
+Sim/AI/TacticalAi.cs,249,2,ai.tacticalAi.ctorMaxValue,share,xac_suat,06,1,inline,,arg:Random.Next: _flankSide = new Random(seed).Next(2) == 0 ? -1f : 1f;
+Sim/AI/TacticalAi.cs,252,0.5f,ai.tacticalAi.ctorDecisionIntervalScale,s,thoi_gian,06,1,inline,,multiply: _timer = team == 1 ? DecisionInterval * 0.5f : 0f;
+Sim/AI/TacticalAi.cs,287,45f,ai.tacticalAi.tickNearestGroundMax,ticks,thoi_gian,06,1,inline,,"compare: if (chase && (goal == null || NearestGround(front, out _) < 45f)) objective = NearestCluster(front);"
+Sim/AI/TacticalAi.cs,295,18f,ai.tacticalAi.tickHomeRadiusAdd,ticks,thoi_gian,06,1,inline,,add: objective += inward * (SimWorld.HomeRadius + 18f);
+Sim/AI/TacticalAi.cs,309,20f,ai.tacticalAi.tickDistanceMin,ticks,thoi_gian,06,1,inline,,"compare: if (Vector2.Distance(objective, _lastObjective) > 20f) _flanked.Clear();"
+Sim/AI/TacticalAi.cs,317,5f,ai.tacticalAi.tickForwardScale,ticks,thoi_gian,06,1,inline,,"multiply: objective = Clamp(world, goal!.Value + forward * 5f);"
+Sim/AI/TacticalAi.cs,347,55f,ai.tacticalAi.judgeOddsDistanceMax,m,sat_thuong,06,1,inline,,"compare: if (Vector2.Distance(v.Position, front) < 55f) ours += v.Def.Power * (v.Hp / v.MaxHp);"
+Sim/AI/TacticalAi.cs,352,60f,ai.tacticalAi.judgeOddsDistanceMax2,m,sat_thuong,06,1,inline,,"compare: if (!e.Def.Static && Vector2.Distance(e.Position, front) < 60f) _seen[e.Id] = (e.Def.Power * (e.Hp / e.MaxHp), world.Time, e.Position);"
+Sim/AI/TacticalAi.cs,361,120.0,ai.tacticalAi.judgeOddsAgeMin,share,xac_suat,06,1,inline,,"compare: if (!world.TryGetVehicle(id, out var known) || !known.IsAlive || age > 120.0)"
+Sim/AI/TacticalAi.cs,367,70f,ai.tacticalAi.judgeOddsDistanceMax3,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(at, front) < 70f) theirs += power * (float)Math.Pow(0.5, age / 45.0);"
+Sim/AI/TacticalAi.cs,367,0.5,ai.tacticalAi.judgeOddsAgeExponent,share,ban_kinh,06,1,inline,,"math_pow: if (Vector2.Distance(at, front) < 70f) theirs += power * (float)Math.Pow(0.5, age / 45.0);"
+Sim/AI/TacticalAi.cs,367,45.0,ai.tacticalAi.judgeOddsAgeDivisor,share,ban_kinh,06,1,inline,,"divide: if (Vector2.Distance(at, front) < 70f) theirs += power * (float)Math.Pow(0.5, age / 45.0);"
+Sim/AI/TacticalAi.cs,370,0.5f,ai.tacticalAi.judgeOddsTheirsMin,share,xac_suat,06,1,inline,,compare: StrengthRatio = theirs > 0.5f ? ours / theirs : 1f;
+Sim/AI/TacticalAi.cs,380,0.5f,ai.tacticalAi.judgeOddsTheirsMax,share,xac_suat,06,1,inline,,compare: if (held && (StrengthRatio >= RecoveredRatio || theirs <= 0.5f)) _outmatched = false;
+Sim/AI/TacticalAi.cs,387,3f,ai.tacticalAi.judgeOddsTheirsMin2,share,thoi_gian,06,1,inline,,compare: else if (contact && theirs > 3f && StrengthRatio < OutmatchedRatio && world.Time >= _committedUntil)
+Sim/AI/TacticalAi.cs,394,30f,ai.tacticalAi.judgeOddsDistanceCap,m,ban_kinh,06,1,inline,,"math_min: var distance = MathF.Min(30f, Vector2.Distance(front, home));"
+Sim/AI/TacticalAi.cs,428,2f,ai.tacticalAi.grabCratesMargin,x,tan_suat,06,1,inline,,"arg:TacticalAi.Exposed: if (TowerSense && Exposed(crate.Position, 2f)) continue;"
+Sim/AI/TacticalAi.cs,438,2.5f,ai.tacticalAi.grabCratesDistanceMax,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(runner.Position, crate.Position) < 2.5f) continue;"
+Sim/AI/TacticalAi.cs,439,2f,ai.tacticalAi.grabCratesDistanceMax2,m,ban_kinh,06,1,inline,,"compare: if (runner.Order.Kind == OrderKind.Move && Vector2.Distance(runner.Order.Point, crate.Position) < 2f) continue;"
+Sim/AI/TacticalAi.cs,481,0.8f,ai.tacticalAi.sendToRearmSpeedScale,m/s,thoi_gian,06,1,inline,,"multiply: var speed = MathF.Max(1f, v.Def.Speed * 0.8f);"
+Sim/AI/TacticalAi.cs,487,1.5f,ai.tacticalAi.sendToRearmDepotReachScale,m,thoi_gian,06,1,inline,,multiply: if (d > DepotReach * 1.5f) return;
+Sim/AI/TacticalAi.cs,488,3f,ai.tacticalAi.sendToRearmLeftDivisor,s,thoi_gian,06,1,inline,,divide: var time = d / speed + left / 3f + 2f;
+Sim/AI/TacticalAi.cs,488,2f,ai.tacticalAi.sendToRearmDAdd,s,thoi_gian,06,1,inline,,add: var time = d / speed + left / 3f + 2f;
+Sim/AI/TacticalAi.cs,494,0.6f,ai.tacticalAi.sendToRearmRadiusScale,m,thoi_gian,06,1,inline,,"multiply: if (e.IsAlive && e.Team == _team && e.Def.RearmAura != null && e != v) Offer(e.Position, e.Def.RearmAura.Radius * 0.6f);"
+Sim/AI/TacticalAi.cs,495,12f,ai.tacticalAi.sendToRearmReach,s,thoi_gian,06,1,inline,,"arg:TacticalAi.Offer: if (world.TryGetRally(_team, out var camp)) Offer(camp, 12f);"
+Sim/AI/TacticalAi.cs,496,8f,ai.tacticalAi.sendToRearmDistanceMin,m,thoi_gian,06,1,inline,,"compare: if (depot != null && Vector2.Distance(v.Position, depot.Value) > 8f && !world.InEnemyHome(depot.Value, _team))"
+Sim/AI/TacticalAi.cs,498,6f,ai.tacticalAi.sendToRearmDistanceMin2,m,thoi_gian,06,1,inline,,"compare: if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, depot.Value) > 6f)"
+Sim/AI/TacticalAi.cs,503,4f,ai.tacticalAi.sendToRearmRangeAdd,m,thoi_gian,06,1,inline,,add: if (threat != null && threat.Def.Weapon.CanTarget(false) && closest < threat.Def.Weapon.Range + 4f &&
+Sim/AI/TacticalAi.cs,504,10f,ai.tacticalAi.sendToRearmRangeAdd2,m,thoi_gian,06,1,inline,,"add: world.EscapeRoute(v, threat.Position, threat.Def.Weapon.Range + 10f - closest) is { } away)"
+Sim/AI/TacticalAi.cs,506,6f,ai.tacticalAi.sendToRearmDistanceMin2,m,thoi_gian,06,1,inline,,"compare: if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, away) > 6f) Issue(world, CommandType.Move, v.Id, away);"
+Sim/AI/TacticalAi.cs,510,3f,ai.tacticalAi.sendToRearmDistanceMin3,m,thoi_gian,06,1,inline,,"compare: if (v.Order.Kind == OrderKind.Move && v.HasPath && Vector2.Distance(v.Position, v.Order.Point) > 3f &&"
+Sim/AI/TacticalAi.cs,511,14f,ai.tacticalAi.sendToRearmRangeAdd3,m,thoi_gian,06,1,inline,,add: threat != null && closest < threat.Def.Weapon.Range + 14f) continue;
+Sim/AI/TacticalAi.cs,519,0.9f,ai.tacticalAi.refitUntil,s,khac,06,1,const_to_property,,const_field: private const float RefitUntil = 0.9f;
+Sim/AI/TacticalAi.cs,550,4f,ai.tacticalAi.refitDistanceMin,m,ban_kinh,06,1,inline,,"compare: if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, field.Position) > 4f)"
+Sim/AI/TacticalAi.cs,562,4.0,ai.tacticalAi.rearmInLullsTimeMax,s,thoi_gian,06,1,inline,,compare: if (v.Target.IsValid || world.Time - v.LastFiredAt < 4.0) return;
+Sim/AI/TacticalAi.cs,563,15f,ai.tacticalAi.rearmInLullsVisionRangeAdd,m,thoi_gian,06,1,inline,,add: var reach = v.Def.VisionRange + 15f;
+Sim/AI/TacticalAi.cs,589,4f,ai.tacticalAi.breachObstaclesAlongMax,m,ban_kinh,06,1,inline,,compare: if (along < -4f || (off - dir * along).Length() > 18f) continue;
+Sim/AI/TacticalAi.cs,589,18f,ai.tacticalAi.breachObstaclesLengthMin,m,ban_kinh,06,1,inline,,compare: if (along < -4f || (off - dir * along).Length() > 18f) continue;
+Sim/AI/TacticalAi.cs,597,25f,ai.tacticalAi.breachObstaclesDistanceMax,m,ban_kinh,06,1,inline,,"compare: if (!e.Def.Obstacle && !e.Def.Passive && Vector2.Distance(e.Position, block.Position) < 25f) return;"
+Sim/AI/TacticalAi.cs,633,10f,ai.tacticalAi.directBreachersAlongMax,m,ban_kinh,06,1,inline,,compare: if (along < -10f || along > BreacherReach) continue;
+Sim/AI/TacticalAi.cs,634,1.5f,ai.tacticalAi.directBreachersLengthScale,m,ban_kinh,06,1,inline,,"multiply: var score = Vector2.Distance(e.Position, v.Position) + (off - dir * along).Length() * 1.5f - (e.Def.Obstacle ? 25f : 0f);"
+Sim/AI/TacticalAi.cs,634,25f,ai.tacticalAi.directBreachersObstacleTrue,m,ban_kinh,06,1,inline,,"conditional: var score = Vector2.Distance(e.Position, v.Position) + (off - dir * along).Length() * 1.5f - (e.Def.Obstacle ? 25f : 0f);"
+Sim/AI/TacticalAi.cs,655,9f,ai.tacticalAi.directSupportForwardScale,x,khac,06,1,inline,,"multiply: var spot = Clamp(world, front - forward * 9f);"
+Sim/AI/TacticalAi.cs,665,6f,ai.tacticalAi.directSupportDistanceMax,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(v.Position, at) < 6f) continue;"
+Sim/AI/TacticalAi.cs,666,5f,ai.tacticalAi.directSupportDistanceMax2,m,ban_kinh,06,1,inline,,"compare: if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, at) < 5f) continue;"
+Sim/AI/TacticalAi.cs,673,3f,ai.tacticalAi.directSupportForwardScale2,x,khac,06,1,inline,,"multiply: var cover = world.Lanes.OffLane(Clamp(world, front - forward * 3f), 6f);"
+Sim/AI/TacticalAi.cs,673,6f,ai.tacticalAi.directSupportReach,m,ban_kinh,06,1,inline,,"arg:LaneMap.OffLane: var cover = world.Lanes.OffLane(Clamp(world, front - forward * 3f), 6f);"
+Sim/AI/TacticalAi.cs,674,5f,ai.tacticalAi.directSupportDistanceMax2,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(v.Position, cover) < 5f) continue;"
+Sim/AI/TacticalAi.cs,675,4f,ai.tacticalAi.directSupportDistanceMax3,m,ban_kinh,06,1,inline,,"compare: if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, cover) < 4f) continue;"
+Sim/AI/TacticalAi.cs,679,10f,ai.tacticalAi.directSupportDistanceMax4,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(v.Position, spot) < 10f) continue;"
+Sim/AI/TacticalAi.cs,680,8f,ai.tacticalAi.directSupportDistanceMax5,m,ban_kinh,06,1,inline,,"compare: if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, spot) < 8f) continue;"
+Sim/AI/TacticalAi.cs,701,6f,ai.tacticalAi.resupplySpotForwardScale,x,khac,06,1,inline,,"multiply: var at = world.Lanes.OffLane(Clamp(world, sum / n - forward * 6f), 8f);"
+Sim/AI/TacticalAi.cs,701,8f,ai.tacticalAi.resupplySpotReach,m,ban_kinh,06,1,inline,,"arg:LaneMap.OffLane: var at = world.Lanes.OffLane(Clamp(world, sum / n - forward * 6f), 8f);"
+Sim/AI/TacticalAi.cs,702,2f,ai.tacticalAi.resupplySpotMargin,x,khac,06,1,inline,,"arg:TacticalAi.Exposed: return Exposed(at, 2f) ? null : at;"
+Sim/AI/TacticalAi.cs,718,12f,ai.tacticalAi.collectFallBackDistanceMax,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(v.Position, _fallBackPoint) < 12f) continue;"
+Sim/AI/TacticalAi.cs,804,150f,ai.tacticalAi.huntRearmingBest,s,thoi_gian,06,1,inline,,local_init: var best = 150f;
+Sim/AI/TacticalAi.cs,817,3,ai.tacticalAi.huntRearmingAircraftMax,s,thoi_gian,06,1,inline,,compare: if (aircraft < 3) return;
+Sim/AI/TacticalAi.cs,831,120f,ai.tacticalAi.huntRearmingStrikeTrue,s,thoi_gian,06,1,inline,,conditional: if (d > w.Range + (strike ? 120f : 20f) || d < w.MinRange) continue;
+Sim/AI/TacticalAi.cs,831,20f,ai.tacticalAi.huntRearmingStrikeFalse,s,thoi_gian,06,1,inline,,conditional: if (d > w.Range + (strike ? 120f : 20f) || d < w.MinRange) continue;
+Sim/AI/TacticalAi.cs,950,8f,ai.tacticalAi.plunderWithRangeAdd,m,ban_kinh,06,1,inline,,"add: if (NearestGround(v.Position, out _) < weapon.Range + 8f) continue;"
+Sim/AI/TacticalAi.cs,952,2f,ai.tacticalAi.plunderWithRangeAdd2,m,ban_kinh,06,1,inline,,add: var bestDistance = weapon.Range + 2f;
+Sim/AI/TacticalAi.cs,979,6f,ai.tacticalAi.directArtilleryMinRangeAdd,m,ban_kinh,06,1,inline,,add: if (threat != null && closest < weapon.MinRange + 6f && a.Def.Deploy is { Siege: true } siege && siege.TankMount < a.Arms.Length &&
+Sim/AI/TacticalAi.cs,980,4f,ai.tacticalAi.directArtilleryRangeAdd,m,ban_kinh,06,1,inline,,add: closest <= a.Arms[siege.TankMount].Range + 4f)
+Sim/AI/TacticalAi.cs,985,6f,ai.tacticalAi.directArtilleryMinRangeAdd,m,ban_kinh,06,1,inline,,add: if (threat != null && closest < weapon.MinRange + 6f)
+Sim/AI/TacticalAi.cs,989,14f,ai.tacticalAi.directArtilleryMinRangeAdd2,m,ban_kinh,06,1,inline,,"add: if (world.EscapeRoute(a, threat.Position, weapon.MinRange + 14f - closest) is { } escape)"
+Sim/AI/TacticalAi.cs,996,6f,ai.tacticalAi.directArtilleryReachAdd,m,ban_kinh,06,1,inline,,add: if (reach > 0f && weapon.Range >= reach + 6f && closest < reach + 3f && a.Order.Kind != OrderKind.Move &&
+Sim/AI/TacticalAi.cs,996,3f,ai.tacticalAi.directArtilleryReachAdd2,m,ban_kinh,06,1,inline,,add: if (reach > 0f && weapon.Range >= reach + 6f && closest < reach + 3f && a.Order.Kind != OrderKind.Move &&
+Sim/AI/TacticalAi.cs,997,10f,ai.tacticalAi.directArtilleryReachAdd3,m,ban_kinh,06,1,inline,,"add: world.EscapeRoute(a, threat!.Position, reach + 10f - closest) is { } kite)"
+Sim/AI/TacticalAi.cs,1019,0.7f,ai.tacticalAi.directArtilleryRangeScale,m,ban_kinh,06,1,inline,,multiply: var standoff = contact || alone ? objective - forward * (weapon.Range * 0.7f) : front - forward * 18f;
+Sim/AI/TacticalAi.cs,1019,18f,ai.tacticalAi.directArtilleryForwardScale,m,ban_kinh,06,1,inline,,multiply: var standoff = contact || alone ? objective - forward * (weapon.Range * 0.7f) : front - forward * 18f;
+Sim/AI/TacticalAi.cs,1020,10f,ai.tacticalAi.directArtilleryForwardScale2,m,ban_kinh,06,1,inline,,"multiply: if (!alone && Vector2.Distance(standoff, objective) < Vector2.Distance(front, objective)) standoff = front - forward * 10f;"
+Sim/AI/TacticalAi.cs,1022,8,ai.tacticalAi.directArtilleryStepMax,x,nguong,06,1,inline,,"compare: for (var step = 0; step < 8 && Exposed(standoff, StandoffMargin); step++) standoff -= forward * 6f;"
+Sim/AI/TacticalAi.cs,1022,6f,ai.tacticalAi.directArtilleryForwardScale3,x,khac,06,1,inline,,"multiply: for (var step = 0; step < 8 && Exposed(standoff, StandoffMargin); step++) standoff -= forward * 6f;"
+Sim/AI/TacticalAi.cs,1025,10f,ai.tacticalAi.directArtilleryReach,m,ban_kinh,06,1,inline,,"arg:LaneMap.OffLane: var stand = world.Lanes.OffLane(Clamp(world, standoff), 10f);"
+Sim/AI/TacticalAi.cs,1027,10f,ai.tacticalAi.directArtilleryDistanceMin,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(a.Position, stand) > 10f)"
+Sim/AI/TacticalAi.cs,1033,4f,ai.tacticalAi.standoffMargin,x,khac,06,1,const_to_property,,const_field: private const float StandoffMargin = 4f;
+Sim/AI/TacticalAi.cs,1036,45f,ai.tacticalAi.defenceSearch,x,khac,06,1,const_to_property,,const_field: private const float DefenceSearch = 45f;
+Sim/AI/TacticalAi.cs,1059,3f,ai.tacticalAi.standingDistanceMax,m,ban_kinh,06,1,inline,,"compare: private static bool Standing(Vehicle v) => !v.HasPath || Vector2.Distance(v.Position, v.Order.Point) < 3f;"
+Sim/AI/TacticalAi.cs,1062,12f,ai.tacticalAi.spotRoadPenalty,x,khac,06,1,manual:field declares several variables (split first),,"const_field: private const float SpotRoadPenalty = 12f, SpotRoutePenalty = 20f, SpotCrowdPenalty = 8f, SpotOpenBonus = 6f;"
+Sim/AI/TacticalAi.cs,1062,20f,ai.tacticalAi.spotRoutePenalty,x,khac,06,1,manual:field declares several variables (split first),,"const_field: private const float SpotRoadPenalty = 12f, SpotRoutePenalty = 20f, SpotCrowdPenalty = 8f, SpotOpenBonus = 6f;"
+Sim/AI/TacticalAi.cs,1062,8f,ai.tacticalAi.spotCrowdPenalty,x,khac,06,1,manual:field declares several variables (split first),,"const_field: private const float SpotRoadPenalty = 12f, SpotRoutePenalty = 20f, SpotCrowdPenalty = 8f, SpotOpenBonus = 6f;"
+Sim/AI/TacticalAi.cs,1062,6f,ai.tacticalAi.spotOpenBonus,x,khac,06,1,manual:field declares several variables (split first),,"const_field: private const float SpotRoadPenalty = 12f, SpotRoutePenalty = 20f, SpotCrowdPenalty = 8f, SpotOpenBonus = 6f;"
+Sim/AI/TacticalAi.cs,1074,0.95f,ai.tacticalAi.spotRingsValue,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly float[] SpotRings = { 0.95f, 0.85f, 0.75f, 0.65f, 0.55f };"
+Sim/AI/TacticalAi.cs,1074,0.85f,ai.tacticalAi.spotRingsValue2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly float[] SpotRings = { 0.95f, 0.85f, 0.75f, 0.65f, 0.55f };"
+Sim/AI/TacticalAi.cs,1074,0.75f,ai.tacticalAi.spotRingsValue3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly float[] SpotRings = { 0.95f, 0.85f, 0.75f, 0.65f, 0.55f };"
+Sim/AI/TacticalAi.cs,1074,0.65f,ai.tacticalAi.spotRingsValue4,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly float[] SpotRings = { 0.95f, 0.85f, 0.75f, 0.65f, 0.55f };"
+Sim/AI/TacticalAi.cs,1074,0.55f,ai.tacticalAi.spotRingsValue5,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"table: private static readonly float[] SpotRings = { 0.95f, 0.85f, 0.75f, 0.65f, 0.55f };"
+Sim/AI/TacticalAi.cs,1080,2f,ai.tacticalAi.firingSpotMinRangeAdd,m,ban_kinh,06,1,inline,,add: var low = weapon.MinRange + 2f;
+Sim/AI/TacticalAi.cs,1087,0.5f,ai.tacticalAi.firingSpotTargetRadiusScale,m,ban_kinh,06,1,inline,,"multiply: var distance = MathF.Max(low, weapon.Range * fraction + targetRadius * 0.5f);"
+Sim/AI/TacticalAi.cs,1090,0.95f,ai.tacticalAi.firingSpotFractionSub,m,ban_kinh,06,1,inline,,subtract: var ringPenalty = (0.95f - fraction) * weapon.Range * 0.5f;
+Sim/AI/TacticalAi.cs,1090,0.5f,ai.tacticalAi.firingSpotFractionScale,m,ban_kinh,06,1,inline,,multiply: var ringPenalty = (0.95f - fraction) * weapon.Range * 0.5f;
+Sim/AI/TacticalAi.cs,1091,24,ai.tacticalAi.firingSpotKMax,x,nguong,06,1,inline,,compare: for (var k = 0; k < 24; k++)
+Sim/AI/TacticalAi.cs,1094,15f,ai.tacticalAi.firingSpotDegrees,x,khac,06,1,inline,,arg:SimMath.DegToRad: var turn = ((k + 1) / 2) * (k % 2 == 0 ? 1f : -1f) * SimMath.DegToRad(15f);
+Sim/AI/TacticalAi.cs,1094,2,ai.tacticalAi.firingSpotKMod,x,khac,06,2,inline,,modulo: var turn = ((k + 1) / 2) * (k % 2 == 0 ? 1f : -1f) * SimMath.DegToRad(15f);
+Sim/AI/TacticalAi.cs,1099,4f,ai.tacticalAi.firingSpotAbsScale,m,ban_kinh,06,1,inline,,"multiply: var score = Vector2.Distance(p, shooter.Position) + MathF.Abs(turn) * 4f + ringPenalty +"
+Sim/AI/TacticalAi.cs,1102,4,ai.tacticalAi.firingSpotClearanceAtMin,x,nguong,06,1,inline,,compare: (lanes.ClearanceAt(p) >= 4 ? SpotOpenBonus : 0f);
+Sim/AI/TacticalAi.cs,1107,7f,ai.tacticalAi.firingSpotRadius,m,ban_kinh,06,1,inline,,"arg:TacticalAi.FriendsParkedNear: score += SpotCrowdPenalty * FriendsParkedNear(world, p, 7f, shooter);"
+Sim/AI/TacticalAi.cs,1154,2f,ai.tacticalAi.shellStructureDefenceSearchScale,m,ban_kinh,06,1,inline,,"multiply: if (!weapon.CanTarget(false) || Vector2.Distance(a.Position, at) > weapon.Range + DefenceSearch * 2f) return false;"
+Sim/AI/TacticalAi.cs,1162,0.5f,ai.tacticalAi.shellFromSafetyRangeSub,m,ban_kinh,06,1,inline,,subtract: var inRange = distance <= weapon.Range - 0.5f && distance >= weapon.MinRange + 1f;
+Sim/AI/TacticalAi.cs,1176,4f,ai.tacticalAi.shellFromSafetyDistanceMin,m,ban_kinh,06,1,inline,,"compare: if (a.Order.Kind != OrderKind.Move || Vector2.Distance(a.Order.Point, spot) > 4f) Issue(world, CommandType.Move, a.Id, spot);"
+Sim/AI/TacticalAi.cs,1183,2,ai.tacticalAi.directFlankersCountMax,count,gioi_han_thuc_the,06,1,inline,,compare: if (!contact || _fast.Count < 2 || _line.Count < 2)
+Sim/AI/TacticalAi.cs,1183,2,ai.tacticalAi.directFlankersCountMax,count,gioi_han_thuc_the,06,2,inline,,compare: if (!contact || _fast.Count < 2 || _line.Count < 2)
+Sim/AI/TacticalAi.cs,1189,6f,ai.tacticalAi.directFlankersForwardScale,m,ban_kinh,06,1,inline,,"multiply: var flankPoint = Clamp(world, objective + side * FlankOffset - forward * 6f);"
+Sim/AI/TacticalAi.cs,1191,2f,ai.tacticalAi.directFlankersMargin,count,gioi_han_thuc_the,06,1,inline,,"arg:TacticalAi.Exposed: if (TowerSense && _defences.Count > 0 && Exposed(flankPoint, 2f))"
+Sim/AI/TacticalAi.cs,1201,9f,ai.tacticalAi.directFlankersDistanceMax,m,ban_kinh,06,1,inline,,"compare: if (!_flanked.Contains(f.Id) && Vector2.Distance(f.Position, flankPoint) < 9f) _flanked.Add(f.Id);"
+Sim/AI/TacticalAi.cs,1239,8f,ai.tacticalAi.directMainBodyDistanceMax,m,ban_kinh,06,1,inline,,"compare: if (world.TryGetVehicle(_ids[i], out var there) && Vector2.Distance(there.Position, objective) < 8f)"
+Sim/AI/TacticalAi.cs,1252,2f,ai.tacticalAi.directMainBodyMargin,count,gioi_han_thuc_the,06,1,inline,,"arg:TacticalAi.Exposed: if (TowerSense && _defences.Count > 0 && Exposed(into, 2f) && !StrongEnough(world, into, lead.Position))"
+Sim/AI/TacticalAi.cs,1257,0.75f,ai.tacticalAi.directMainBodyCountScale,count,gioi_han_thuc_the,06,1,inline,,multiply: if (_ids.Count < MathF.Ceiling(_line.Count * 0.75f))
+Sim/AI/TacticalAi.cs,1270,1.5f,ai.tacticalAi.directMainBodyBoundLengthScale,m,ban_kinh,06,1,inline,,"multiply: var goal = Clamp(world, leadDistance > BoundLength * 1.5f ? lead.Position + Direction(lead.Position, objective) * BoundLength : objective);"
+Sim/AI/TacticalAi.cs,1273,2f,ai.tacticalAi.directMainBodyMargin,count,gioi_han_thuc_the,06,1,inline,,"arg:TacticalAi.Exposed: if (_defences.Count > 0 && Exposed(goal, 2f))"
+Sim/AI/TacticalAi.cs,1277,14,ai.tacticalAi.directMainBodyStepMax,x,nguong,06,1,inline,,"compare: for (var step = 0; step < 14 && Exposed(edge, 2f); step++) edge += back * 4f;"
+Sim/AI/TacticalAi.cs,1277,2f,ai.tacticalAi.directMainBodyMargin,x,khac,06,1,inline,,"arg:TacticalAi.Exposed: for (var step = 0; step < 14 && Exposed(edge, 2f); step++) edge += back * 4f;"
+Sim/AI/TacticalAi.cs,1277,4f,ai.tacticalAi.directMainBodyBackScale,x,khac,06,1,inline,,"multiply: for (var step = 0; step < 14 && Exposed(edge, 2f); step++) edge += back * 4f;"
+Sim/AI/TacticalAi.cs,1281,16f,ai.tacticalAi.directMainBodyDistanceMax2,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(v.Position, edge) < 16f) gathered++;"
+Sim/AI/TacticalAi.cs,1282,0.8f,ai.tacticalAi.directMainBodyCountScale2,count,gioi_han_thuc_the,06,1,inline,,multiply: var together = gathered >= MathF.Ceiling(_line.Count * 0.8f);
+Sim/AI/TacticalAi.cs,1318,35f,ai.tacticalAi.strongEnoughDistanceMin,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(v.Position, from) >= 35f) return;"
+Sim/AI/TacticalAi.cs,1329,8f,ai.tacticalAi.strongEnoughGroundReachAdd,m,ban_kinh,06,1,inline,,add: var reach = GroundReach(d) + d.Radius + 8f;
+Sim/AI/TacticalAi.cs,1333,30f,ai.tacticalAi.strongEnoughDistanceMax,m,sat_thuong,06,1,inline,,"compare: if (!e.Def.Static && !e.Flying && Vector2.Distance(e.Position, target) < 30f) theirs += e.Def.Power * (e.Hp / e.MaxHp);"
+Sim/AI/TacticalAi.cs,1334,0.5f,ai.tacticalAi.strongEnoughTheirsMax,share,xac_suat,06,1,inline,,compare: return theirs <= 0.5f || ours >= theirs * odds;
+Sim/AI/TacticalAi.cs,1352,60f,ai.tacticalAi.threatTurretTurnRateMax,m,ban_kinh,06,1,inline,,compare: var slowCannon = d.Def.TurretTurnRate < 60f && d.Def.Weapon.Projectile == ProjectileKind.Shell && d.Def.Weapon.MinRange <= 0f;
+Sim/AI/TacticalAi.cs,1355,0.5f,ai.tacticalAi.threatFastScale,x,nguong,06,1,inline,,multiply: if (ground) share += groundShare - (slowCannon ? 0.5f * fast / ours : 0f);
+Sim/AI/TacticalAi.cs,1365,16,ai.tacticalAi.edgeBeforeStepMax,x,nguong,06,1,inline,,"compare: for (var step = 0; step < 16 && Exposed(edge, 2f); step++) edge += back * 4f;"
+Sim/AI/TacticalAi.cs,1365,2f,ai.tacticalAi.edgeBeforeMargin,x,khac,06,1,inline,,"arg:TacticalAi.Exposed: for (var step = 0; step < 16 && Exposed(edge, 2f); step++) edge += back * 4f;"
+Sim/AI/TacticalAi.cs,1365,4f,ai.tacticalAi.edgeBeforeBackScale,x,khac,06,1,inline,,"multiply: for (var step = 0; step < 16 && Exposed(edge, 2f); step++) edge += back * 4f;"
+Sim/AI/TacticalAi.cs,1397,2,ai.tacticalAi.frontOfCountMin,count,gioi_han_thuc_the,06,1,inline,,compare: return count >= 2 ? sum / count : Centre(body);
+Sim/AI/TacticalAi.cs,1409,0.5f,ai.tacticalAi.gatherReinforcementsHomeReachScale,m,ban_kinh,06,1,inline,,"multiply: if (!world.TryGetRally(_team, out var home) || Vector2.Distance(front, home) < ReinforcementGap + HomeReach * 0.5f)"
+Sim/AI/TacticalAi.cs,1414,22f,ai.tacticalAi.gatherReinforcementsDirectionScale,x,khac,06,1,inline,,"multiply: var staging = Clamp(world, home + Direction(home, front) * 22f);"
+Sim/AI/TacticalAi.cs,1418,2,ai.tacticalAi.gatherReinforcementsCountMax,count,gioi_han_thuc_the,06,1,inline,,compare: if (_joining.Count == 0 || _line.Count + _fast.Count - _joining.Count < 2)
+Sim/AI/TacticalAi.cs,1432,12f,ai.tacticalAi.gatherReinforcementsDistanceMin,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(v.Position, staging) > 12f) continue;"
+Sim/AI/TacticalAi.cs,1448,10f,ai.tacticalAi.gatherReinforcementsDistanceMax,m,ban_kinh,06,1,inline,,"compare: if (Vector2.Distance(v.Position, staging) < 10f) continue;"
+Sim/AI/TacticalAi.cs,1449,8f,ai.tacticalAi.gatherReinforcementsDistanceMax2,m,ban_kinh,06,1,inline,,"compare: if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, staging) < 8f) continue;"
+Sim/AI/TacticalAi.cs,1464,12f,ai.tacticalAi.sameRendezvous,x,khac,06,1,const_to_property,,const_field: private const float SameRendezvous = 12f;
+Sim/AI/TacticalAi.cs,1481,0.5f,ai.tacticalAi.pushStaleSameRendezvousScale,m,ban_kinh,06,1,inline,,"multiply: if (Vector2.Distance(v.Position, to) < SameRendezvous * 0.5f) continue;"
+Sim/AI/TacticalAi.cs,1530,12f,ai.tacticalAi.nearestClusterDistanceMin,m,ban_kinh,06,1,inline,,"compare: if (e.Flying || Vector2.Distance(e.Position, lead.Position) > 12f) continue;"
+Sim/AI/TacticalAi.cs,1547,2f,ai.tacticalAi.tryFindClusterMinRangeAdd,m,ban_kinh,06,1,inline,,add: if (distance < weapon.MinRange + 2f || distance > weapon.Range) continue;
+Sim/AI/TacticalAi.cs,1593,0.01f,ai.tacticalAi.directionLengthMin,m,ban_kinh,06,1,inline,,compare: return length > 0.01f ? d / length : Vector2.UnitX;
+Sim/AI/WorldModel.cs,179,0.1f,ai.worldModel.forWorldRateFloor,x,tan_suat,06,1,inline,,"math_max: var rate = MathF.Max(0.1f, _world.Catalog.Ai.WorldRate);"
+Sim/AI/WorldModel.cs,195,8,ai.teamIntel.groups,x,khac,06,1,const_to_property,,const_field: private const int Groups = 8;
+Sim/AI/WorldModel.cs,196,4,ai.teamIntel.threats,x,khac,06,1,const_to_property,,const_field: private const int Threats = 4;
+Sim/AI/WorldModel.cs,218,2f,ai.teamIntel.ctorWorldCellFloor,x,nguong,06,1,inline,,"math_max: Cell = MathF.Max(2f, world.Catalog.Ai.WorldCell);"
+Sim/AI/WorldModel.cs,296,0.5f,ai.teamIntel.cellCentreIndexAdd,x,khac,06,1,inline,,"add: _min + new Vector2((index % Columns + 0.5f) * Cell, (index / Columns + 0.5f) * Cell);"
+Sim/AI/WorldModel.cs,296,0.5f,ai.teamIntel.cellCentreIndexAdd,x,khac,06,2,inline,,"add: _min + new Vector2((index % Columns + 0.5f) * Cell, (index / Columns + 0.5f) * Cell);"
+Sim/AI/WorldModel.cs,301,3f,ai.teamIntel.knowFreshSeconds,s,thoi_gian,06,1,manual:parameter default,,"param_default: public Knowledge Know(ThreatKind kind, Vector2 p, float freshSeconds = 3f)"
+Sim/AI/WorldModel.cs,338,150f,ai.teamIntel.strengthOfMaxHpDivisor,count,nguong,06,1,inline,,divide: var power = v.Def.Boss ? v.MaxHp / 150f : v.Def.Power;
+Sim/AI/WorldModel.cs,483,0.5f,ai.teamIntel.forCellsCellScale,m,ban_kinh,06,1,inline,,multiply: var r2 = (radius + Cell * 0.5f) * (radius + Cell * 0.5f);
+Sim/AI/WorldModel.cs,483,0.5f,ai.teamIntel.forCellsCellScale,m,ban_kinh,06,2,inline,,multiply: var r2 = (radius + Cell * 0.5f) * (radius + Cell * 0.5f);
+Sim/AI/WorldModel.cs,522,0.5f,ai.teamIntel.frontLineMaxScale,count,nguong,06,1,inline,,"multiply: if (own > 0f && enemy > 0f && MathF.Abs(own - enemy) <= 0.5f * MathF.Max(own, enemy)) _contested.Add(i);"
+Sim/AI/WorldModel.cs,553,2,ai.teamIntel.findChokepointsDensityMin,x,nguong,06,1,inline,,compare: if (_narrow[i] && Density[i] >= 2) _chokepoints.Add(i);
+Sim/AI/WorldModel.cs,565,2,ai.teamIntel.narrowCellsSy,x,khac,06,1,inline,,declarator: for (var sy = -2; sy <= 2; sy++)
+Sim/AI/WorldModel.cs,565,2,ai.teamIntel.narrowCellsSyMax,x,nguong,06,2,inline,,compare: for (var sy = -2; sy <= 2; sy++)
+Sim/AI/WorldModel.cs,566,2,ai.teamIntel.narrowCellsSx,x,khac,06,1,inline,,declarator: for (var sx = -2; sx <= 2; sx++)
+Sim/AI/WorldModel.cs,566,2,ai.teamIntel.narrowCellsSxMax,x,nguong,06,2,inline,,compare: for (var sx = -2; sx <= 2; sx++)
+Sim/AI/WorldModel.cs,569,0.2f,ai.teamIntel.narrowCellsCellScale,x,sat_thuong,06,1,inline,,"multiply: if (grid.IsWalkable(centre + new Vector2(sx, sy) * (Cell * 0.2f))) open++;"
+Sim/AI/WorldModel.cs,571,0.6f,ai.teamIntel.narrowCellsAllScale,x,sat_thuong,06,1,inline,,multiply: narrow[i] = open > 0 && open <= all * 0.6f;
+Sim/AI/WorldModel.cs,579,25f,ai.teamIntel.clusterReach,m,ban_kinh,06,1,local_const,,const_local: const float reach = 25f;
+Sim/AI/WorldModel.cs,593,0.01f,ai.teamIntel.clusterStrengthFloor,x,nguong,06,1,inline,,"math_max: var w = MathF.Max(0.01f, b.Strength);"
+Sim/AI/WorldModel.cs,617,50f,ai.teamIntel.detectMinAdd,x,nguong,06,1,inline,,"add: Raise(IntelEventKind.Opportunity, $""{c.Group?.ToString() ?? c.Unit} spotted"", 50f + 10f * MathF.Min(3f, c.Strength / MathF.Max(1f, EnemyTotal / MathF.Max(1, _co"
+Sim/AI/WorldModel.cs,617,10f,ai.teamIntel.detectMinScale,x,nguong,06,1,inline,,"multiply: Raise(IntelEventKind.Opportunity, $""{c.Group?.ToString() ?? c.Unit} spotted"", 50f + 10f * MathF.Min(3f, c.Strength / MathF.Max(1f, EnemyTotal / MathF.Max(1, _co"
+Sim/AI/WorldModel.cs,617,3f,ai.teamIntel.detectStrengthCap,count,tran,06,1,inline,,"math_min: Raise(IntelEventKind.Opportunity, $""{c.Group?.ToString() ?? c.Unit} spotted"", 50f + 10f * MathF.Min(3f, c.Strength / MathF.Max(1f, EnemyTotal / MathF.Max(1, _co"
+Sim/AI/WorldModel.cs,620,2f,ai.teamIntel.detectCellScale,m,ban_kinh,06,1,inline,,"multiply: if (c.WasInSight && c.Group == ForceGroup.AntiAir && Vector2.Distance(c.PreviousPosition, c.Position) > Cell * 2f)"
+Sim/AI/WorldModel.cs,621,60f,ai.teamIntel.detectPriority,s,thoi_gian,06,1,inline,,"arg:TeamIntel.Raise: Raise(IntelEventKind.Window, ""enemy anti-air moved off"", 60f, 1f, now + life, c.PreviousPosition, c.Reach, c.Id);"
+Sim/AI/WorldModel.cs,623,55f,ai.teamIntel.detectPriority2,s,thoi_gian,06,1,inline,,"arg:TeamIntel.Raise: Raise(IntelEventKind.Window, $""{c.Unit} reloading"", 55f, 1f, now + life * 0.5f, c.Position, Cell, c.Id);"
+Sim/AI/WorldModel.cs,623,0.5f,ai.teamIntel.detectLifeScale,s,thoi_gian,06,1,inline,,"multiply: Raise(IntelEventKind.Window, $""{c.Unit} reloading"", 55f, 1f, now + life * 0.5f, c.Position, Cell, c.Id);"
+Sim/AI/WorldModel.cs,632,95f,ai.teamIntel.detectBigTrue,m,ban_kinh,06,1,inline,,"conditional: Raise(IntelEventKind.Threat, w.Big ? ""big attack incoming"" : ""strike incoming"", w.Big ? 95f : 85f, 1f, w.Due, w.Centre, w.Radius, EntityId.None);"
+Sim/AI/WorldModel.cs,632,85f,ai.teamIntel.detectBigFalse,m,ban_kinh,06,1,inline,,"conditional: Raise(IntelEventKind.Threat, w.Big ? ""big attack incoming"" : ""strike incoming"", w.Big ? 95f : 85f, 1f, w.Due, w.Centre, w.Radius, EntityId.None);"
+Sim/AI/WorldModel.cs,638,0.25f,ai.teamIntel.detectLengthSquaredMax,m,ban_kinh,06,1,inline,,compare: if (g.Velocity.LengthSquared() < 0.25f) continue;
+Sim/AI/WorldModel.cs,639,3f,ai.teamIntel.detectNormalizeScale,x,khac,06,1,inline,,multiply: var ahead = g.Centre + Vector2.Normalize(g.Velocity) * Cell * 3f;
+Sim/AI/WorldModel.cs,640,3f,ai.teamIntel.detectCellScale2,x,khac,06,1,inline,,"multiply: var (own, _) = StrengthAround(ahead, Cell * 3f);"
+Sim/AI/WorldModel.cs,643,70f,ai.teamIntel.detectPriority3,s,thoi_gian,06,1,inline,,"arg:TeamIntel.Raise: Raise(IntelEventKind.Threat, ""enemy aircraft inbound"", 70f, g.Confidence, now + life, ahead, Cell * 3f, EntityId.None, null, i);"
+Sim/AI/WorldModel.cs,643,3f,ai.teamIntel.detectCellScale2,s,thoi_gian,06,1,inline,,"multiply: Raise(IntelEventKind.Threat, ""enemy aircraft inbound"", 70f, g.Confidence, now + life, ahead, Cell * 3f, EntityId.None, null, i);"
+Sim/AI/WorldModel.cs,645,80f,ai.teamIntel.detectPriority4,s,thoi_gian,06,1,inline,,"arg:TeamIntel.Raise: Raise(IntelEventKind.Threat, ""overwhelming enemy force closing"", 80f, g.Confidence, now + life, ahead, Cell * 3f, EntityId.None, null, i);"
+Sim/AI/WorldModel.cs,645,3f,ai.teamIntel.detectCellScale2,s,thoi_gian,06,1,inline,,"multiply: Raise(IntelEventKind.Threat, ""overwhelming enemy force closing"", 80f, g.Confidence, now + life, ahead, Cell * 3f, EntityId.None, null, i);"
+Sim/AI/WorldModel.cs,654,65f,ai.teamIntel.detectPriority5,s,thoi_gian,06,1,inline,,"arg:TeamIntel.Raise: Raise(IntelEventKind.Mismatch, ""no anti-air against many aircraft"", 65f, AverageConfidence(now, decay), now + life * 2f,"
+Sim/AI/WorldModel.cs,654,2f,ai.teamIntel.detectLifeScale2,s,thoi_gian,06,1,inline,,"multiply: Raise(IntelEventKind.Mismatch, ""no anti-air against many aircraft"", 65f, AverageConfidence(now, decay), now + life * 2f,"
+Sim/AI/WorldModel.cs,657,0.5f,ai.teamIntel.detectOwnCompositionScale,x,sat_thuong,06,1,inline,,multiply: var at = (OwnComposition[(int)ForceGroup.AntiTank] + OwnComposition[(int)ForceGroup.Armour] * 0.5f) / OwnTotal;
+Sim/AI/WorldModel.cs,659,60f,ai.teamIntel.detectPriority,s,thoi_gian,06,1,inline,,"arg:TeamIntel.Raise: Raise(IntelEventKind.Mismatch, ""no anti-tank against many tanks"", 60f, AverageConfidence(now, decay), now + life * 2f,"
+Sim/AI/WorldModel.cs,659,2f,ai.teamIntel.detectLifeScale2,s,thoi_gian,06,1,inline,,"multiply: Raise(IntelEventKind.Mismatch, ""no anti-tank against many tanks"", 60f, AverageConfidence(now, decay), now + life * 2f,"
+Sim/AI/WorldModel.cs,670,55f,ai.teamIntel.detectPriority2,s,thoi_gian,06,1,inline,,"arg:TeamIntel.Raise: Raise(IntelEventKind.ObjectivePressure, $""point {p.Def.Name} worth more"", 55f, 1f, now + life, p.Def.Position, p.Def.Radius,"
+Sim/AI/WorldModel.cs,673,75f,ai.teamIntel.detectPriority6,s,thoi_gian,06,1,inline,,"arg:TeamIntel.Raise: Raise(IntelEventKind.ObjectivePressure, $""losing point {p.Def.Name}"", 75f, 1f, now + life, p.Def.Position, p.Def.Radius,"
+Sim/Content/AiBehaviour.cs,159,4,ai.aiBehaviour.tacticDepthMax,x,nguong,06,1,inline,,"compare: for (var depth = 0; depth < 4 && id != null && _tactics.TryGetValue(id, out var t); depth++)"
+Sim/Content/AiBehaviour.cs,172,4,ai.aiBehaviour.generalTacticStartIndex,x,khac,06,1,inline,,"arg:String.Substring: var key = general == null ? ""default"" : general.StartsWith(""gen."", StringComparison.Ordinal) ? general.Substring(4) : general;"
+Sim/Content/AiBehaviour.cs,185,2,ai.aiBehaviour.suitedToCountMax,count,gioi_han_thuc_the,06,1,inline,,compare: if (t.MergedInto == null && list.Count < 2)
+Sim/Content/AiBehaviour.cs,197,0.25f,ai.aiBehaviour.balancedValue,x,khac,06,1,manual:static initializer is an expression,,"table: private static readonly TacticDef Balanced = new() { Id = ""balanced"", Cp = new[] { 0.25f, 0.2f, 0.12f, 0.12f, 0.1f, 0.08f, 0.05f, 0.08f } };"
+Sim/Content/AiBehaviour.cs,197,0.2f,ai.aiBehaviour.balancedValue2,x,khac,06,1,manual:static initializer is an expression,,"table: private static readonly TacticDef Balanced = new() { Id = ""balanced"", Cp = new[] { 0.25f, 0.2f, 0.12f, 0.12f, 0.1f, 0.08f, 0.05f, 0.08f } };"
+Sim/Content/AiBehaviour.cs,197,0.12f,ai.aiBehaviour.balancedValue3,x,khac,06,1,manual:static initializer is an expression,,"table: private static readonly TacticDef Balanced = new() { Id = ""balanced"", Cp = new[] { 0.25f, 0.2f, 0.12f, 0.12f, 0.1f, 0.08f, 0.05f, 0.08f } };"
+Sim/Content/AiBehaviour.cs,197,0.1f,ai.aiBehaviour.balancedValue4,x,khac,06,1,manual:static initializer is an expression,,"table: private static readonly TacticDef Balanced = new() { Id = ""balanced"", Cp = new[] { 0.25f, 0.2f, 0.12f, 0.12f, 0.1f, 0.08f, 0.05f, 0.08f } };"
+Sim/Content/AiBehaviour.cs,197,0.08f,ai.aiBehaviour.balancedValue5,x,khac,06,1,manual:static initializer is an expression,,"table: private static readonly TacticDef Balanced = new() { Id = ""balanced"", Cp = new[] { 0.25f, 0.2f, 0.12f, 0.12f, 0.1f, 0.08f, 0.05f, 0.08f } };"
+Sim/Content/AiBehaviour.cs,197,0.05f,ai.aiBehaviour.balancedValue6,x,khac,06,1,manual:static initializer is an expression,,"table: private static readonly TacticDef Balanced = new() { Id = ""balanced"", Cp = new[] { 0.25f, 0.2f, 0.12f, 0.12f, 0.1f, 0.08f, 0.05f, 0.08f } };"
+Sim/Content/AiBehaviour.cs,197,0.12f,ai.aiBehaviour.balancedValue3,x,khac,06,2,manual:static initializer is an expression,,"table: private static readonly TacticDef Balanced = new() { Id = ""balanced"", Cp = new[] { 0.25f, 0.2f, 0.12f, 0.12f, 0.1f, 0.08f, 0.05f, 0.08f } };"
+Sim/Content/AiBehaviour.cs,197,0.08f,ai.aiBehaviour.balancedValue5,x,khac,06,2,manual:static initializer is an expression,,"table: private static readonly TacticDef Balanced = new() { Id = ""balanced"", Cp = new[] { 0.25f, 0.2f, 0.12f, 0.12f, 0.1f, 0.08f, 0.05f, 0.08f } };"
+Sim/Content/AiBehaviour.cs,282,2,ai.aiBehaviour.modulesCountIs,count,gioi_han_thuc_the,06,1,inline,,"equals: EngageMin = engage.Count == 2 ? engage[0] : 0f, EngageMax = engage.Count == 2 ? engage[1] : 0f,"
+Sim/Content/AiBehaviour.cs,282,2,ai.aiBehaviour.modulesCountIs,count,gioi_han_thuc_the,06,2,inline,,"equals: EngageMin = engage.Count == 2 ? engage[0] : 0f, EngageMax = engage.Count == 2 ? engage[1] : 0f,"
+Sim/Content/AiModeProfile.cs,57,12f,ai.escortParams.safeZoneRadius,m,ban_kinh,06,1,inline,,property_init: public float SafeZoneRadius { get; internal set; } = 12f;
+Sim/Content/AiModeProfile.cs,128,8f,ai.aiModeProfile.hqSkillThreat,x,sat_thuong,06,1,inline,,property_init: public float HqSkillThreat { get; internal set; } = 8f;
+Sim/Content/AiModeProfile.cs,135,1f,ai.aiModeProfile.wallRouteCost,CP,khac,06,1,inline,,property_init: public float WallRouteCost { get; internal set; } = 1f;
+Sim/Content/AiModeProfile.cs,136,1f,ai.aiModeProfile.wallThreatCost,CP,khac,06,1,inline,,property_init: public float WallThreatCost { get; internal set; } = 1f;
+Sim/Content/AiModeProfile.cs,137,1f,ai.aiModeProfile.wallBreachCost,CP,ban_kinh,06,1,inline,,property_init: public float WallBreachCost { get; internal set; } = 1f;
+Sim/Content/EventDefs.cs,179,1,ai.eventTrigger.times,s,thoi_gian,06,1,inline,,property_init: public int Times { get; set; } = 1;
+Sim/Content/EventDefs.cs,330,2,ai.eventDifficulty.minDirections,x,nguong,06,1,inline,,property_init: public int MinDirections { get; set; } = 2;
+Sim/Content/EventDefs.cs,332,2,ai.eventDifficulty.maxDirections,count,nguong,06,1,inline,,property_init: public int MaxDirections { get; set; } = 2;
+Sim/Content/EventDefs.cs,335,10f,ai.eventDifficulty.warning,s,thoi_gian,06,1,inline,,property_init: public float Warning { get; set; } = 10f;
+Sim/Content/EventDefs.cs,338,0.5f,ai.eventDifficulty.allyShare,share,khac,06,1,inline,,property_init: public float AllyShare { get; set; } = 0.5f;
+Sim/Content/EventDefs.cs,341,1f,ai.eventDifficulty.waveScale,count,gioi_han_thuc_the,06,1,inline,,property_init: public float WaveScale { get; set; } = 1f;
+Sim/Content/EventDefs.cs,350,3,ai.eventDifficulty.escorts,x,khac,06,1,inline,,property_init: public int Escorts { get; set; } = 3;
+Sim/Content/EventDefs.cs,394,12,ai.generalEventDef.lastChapter,x,khac,06,1,inline,,property_init: public int LastChapter { get; set; } = 12;
+Sim/Content/EventDefs.cs,416,1,ai.eventRules.levelsMinDirections,s,thoi_gian,06,1,inline,,"object_init: [EventLevel.Easy] = new EventDifficulty { MinDirections = 1, MaxDirections = 2, Warning = 15f, AllyShare = 0.7f, WaveScale = 0.7f, Escorts = 2, Step = 0 },"
+Sim/Content/EventDefs.cs,416,2,ai.eventRules.levelsMaxDirections,count,thoi_gian,06,1,inline,,"object_init: [EventLevel.Easy] = new EventDifficulty { MinDirections = 1, MaxDirections = 2, Warning = 15f, AllyShare = 0.7f, WaveScale = 0.7f, Escorts = 2, Step = 0 },"
+Sim/Content/EventDefs.cs,416,15f,ai.eventRules.levelsWarning,s,thoi_gian,06,1,inline,,"object_init: [EventLevel.Easy] = new EventDifficulty { MinDirections = 1, MaxDirections = 2, Warning = 15f, AllyShare = 0.7f, WaveScale = 0.7f, Escorts = 2, Step = 0 },"
+Sim/Content/EventDefs.cs,416,0.7f,ai.eventRules.levelsAllyShare,share,thoi_gian,06,1,inline,,"object_init: [EventLevel.Easy] = new EventDifficulty { MinDirections = 1, MaxDirections = 2, Warning = 15f, AllyShare = 0.7f, WaveScale = 0.7f, Escorts = 2, Step = 0 },"
+Sim/Content/EventDefs.cs,416,0.7f,ai.eventRules.levelsWaveScale,count,thoi_gian,06,2,inline,,"object_init: [EventLevel.Easy] = new EventDifficulty { MinDirections = 1, MaxDirections = 2, Warning = 15f, AllyShare = 0.7f, WaveScale = 0.7f, Escorts = 2, Step = 0 },"
+Sim/Content/EventDefs.cs,416,2,ai.eventRules.levelsEscorts,s,thoi_gian,06,2,inline,,"object_init: [EventLevel.Easy] = new EventDifficulty { MinDirections = 1, MaxDirections = 2, Warning = 15f, AllyShare = 0.7f, WaveScale = 0.7f, Escorts = 2, Step = 0 },"
+Sim/Content/EventDefs.cs,417,2,ai.eventRules.levelsMinDirections2,s,thoi_gian,06,1,inline,,"object_init: [EventLevel.Normal] = new EventDifficulty { MinDirections = 2, MaxDirections = 2, Warning = 10f, AllyShare = 0.5f, WaveScale = 1f, Escorts = 3, Step = 1 },"
+Sim/Content/EventDefs.cs,417,10f,ai.eventRules.levelsWarning2,s,thoi_gian,06,1,inline,,"object_init: [EventLevel.Normal] = new EventDifficulty { MinDirections = 2, MaxDirections = 2, Warning = 10f, AllyShare = 0.5f, WaveScale = 1f, Escorts = 3, Step = 1 },"
+Sim/Content/EventDefs.cs,417,0.5f,ai.eventRules.levelsAllyShare2,share,thoi_gian,06,1,inline,,"object_init: [EventLevel.Normal] = new EventDifficulty { MinDirections = 2, MaxDirections = 2, Warning = 10f, AllyShare = 0.5f, WaveScale = 1f, Escorts = 3, Step = 1 },"
+Sim/Content/EventDefs.cs,417,1f,ai.eventRules.levelsWaveScale2,count,thoi_gian,06,1,inline,,"object_init: [EventLevel.Normal] = new EventDifficulty { MinDirections = 2, MaxDirections = 2, Warning = 10f, AllyShare = 0.5f, WaveScale = 1f, Escorts = 3, Step = 1 },"
+Sim/Content/EventDefs.cs,417,3,ai.eventRules.levelsEscorts2,s,thoi_gian,06,1,inline,,"object_init: [EventLevel.Normal] = new EventDifficulty { MinDirections = 2, MaxDirections = 2, Warning = 10f, AllyShare = 0.5f, WaveScale = 1f, Escorts = 3, Step = 1 },"
+Sim/Content/EventDefs.cs,417,2,ai.eventRules.levelsMaxDirections,count,thoi_gian,06,2,inline,,"object_init: [EventLevel.Normal] = new EventDifficulty { MinDirections = 2, MaxDirections = 2, Warning = 10f, AllyShare = 0.5f, WaveScale = 1f, Escorts = 3, Step = 1 },"
+Sim/Content/EventDefs.cs,418,2,ai.eventRules.levelsMinDirections2,s,thoi_gian,06,1,inline,,"object_init: [EventLevel.Hard] = new EventDifficulty { MinDirections = 2, MaxDirections = 3, Warning = 8f, AllyShare = 0.3f, WaveScale = 1.15f, Escorts = 4, Step = 2 },"
+Sim/Content/EventDefs.cs,418,3,ai.eventRules.levelsMaxDirections2,count,thoi_gian,06,1,inline,,"object_init: [EventLevel.Hard] = new EventDifficulty { MinDirections = 2, MaxDirections = 3, Warning = 8f, AllyShare = 0.3f, WaveScale = 1.15f, Escorts = 4, Step = 2 },"
+Sim/Content/EventDefs.cs,418,8f,ai.eventRules.levelsWarning3,s,thoi_gian,06,1,inline,,"object_init: [EventLevel.Hard] = new EventDifficulty { MinDirections = 2, MaxDirections = 3, Warning = 8f, AllyShare = 0.3f, WaveScale = 1.15f, Escorts = 4, Step = 2 },"
+Sim/Content/EventDefs.cs,418,0.3f,ai.eventRules.levelsAllyShare3,share,thoi_gian,06,1,inline,,"object_init: [EventLevel.Hard] = new EventDifficulty { MinDirections = 2, MaxDirections = 3, Warning = 8f, AllyShare = 0.3f, WaveScale = 1.15f, Escorts = 4, Step = 2 },"
+Sim/Content/EventDefs.cs,418,1.15f,ai.eventRules.levelsWaveScale3,count,thoi_gian,06,1,inline,,"object_init: [EventLevel.Hard] = new EventDifficulty { MinDirections = 2, MaxDirections = 3, Warning = 8f, AllyShare = 0.3f, WaveScale = 1.15f, Escorts = 4, Step = 2 },"
+Sim/Content/EventDefs.cs,418,4,ai.eventRules.levelsEscorts3,s,thoi_gian,06,1,inline,,"object_init: [EventLevel.Hard] = new EventDifficulty { MinDirections = 2, MaxDirections = 3, Warning = 8f, AllyShare = 0.3f, WaveScale = 1.15f, Escorts = 4, Step = 2 },"
+Sim/Content/EventDefs.cs,418,2,ai.eventRules.levelsStep,s,thoi_gian,06,2,inline,,"object_init: [EventLevel.Hard] = new EventDifficulty { MinDirections = 2, MaxDirections = 3, Warning = 8f, AllyShare = 0.3f, WaveScale = 1.15f, Escorts = 4, Step = 2 },"
+Sim/Content/EventDefs.cs,421,3,ai.eventRules.levelsMinDirections3,s,thoi_gian,06,1,inline,,"object_init: MinDirections = 3, MaxDirections = 4, Warning = 6f, AllyShare = 0.15f, WaveScale = 1.3f, Elites = true, AllyWaves = 1, Escorts = 5, Step = 3,"
+Sim/Content/EventDefs.cs,421,4,ai.eventRules.levelsMaxDirections3,count,thoi_gian,06,1,inline,,"object_init: MinDirections = 3, MaxDirections = 4, Warning = 6f, AllyShare = 0.15f, WaveScale = 1.3f, Elites = true, AllyWaves = 1, Escorts = 5, Step = 3,"
+Sim/Content/EventDefs.cs,421,6f,ai.eventRules.levelsWarning4,s,thoi_gian,06,1,inline,,"object_init: MinDirections = 3, MaxDirections = 4, Warning = 6f, AllyShare = 0.15f, WaveScale = 1.3f, Elites = true, AllyWaves = 1, Escorts = 5, Step = 3,"
+Sim/Content/EventDefs.cs,421,0.15f,ai.eventRules.levelsAllyShare4,share,thoi_gian,06,1,inline,,"object_init: MinDirections = 3, MaxDirections = 4, Warning = 6f, AllyShare = 0.15f, WaveScale = 1.3f, Elites = true, AllyWaves = 1, Escorts = 5, Step = 3,"
+Sim/Content/EventDefs.cs,421,1.3f,ai.eventRules.levelsWaveScale4,count,thoi_gian,06,1,inline,,"object_init: MinDirections = 3, MaxDirections = 4, Warning = 6f, AllyShare = 0.15f, WaveScale = 1.3f, Elites = true, AllyWaves = 1, Escorts = 5, Step = 3,"
+Sim/Content/EventDefs.cs,421,5,ai.eventRules.levelsEscorts4,s,thoi_gian,06,1,inline,,"object_init: MinDirections = 3, MaxDirections = 4, Warning = 6f, AllyShare = 0.15f, WaveScale = 1.3f, Elites = true, AllyWaves = 1, Escorts = 5, Step = 3,"
+Sim/Content/EventDefs.cs,421,3,ai.eventRules.levelsStep2,s,thoi_gian,06,2,inline,,"object_init: MinDirections = 3, MaxDirections = 4, Warning = 6f, AllyShare = 0.15f, WaveScale = 1.3f, Elites = true, AllyWaves = 1, Escorts = 5, Step = 3,"
+Sim/Content/EventDefs.cs,430,12,ai.eventRules.generalsLast,x,khac,06,1,inline,,"arg:EventRules.G: [""varga""] = G(""varga"", 12, ""heavy_tank"", new[] { ""edge"" }, ""light_tank"", ""main_battle_tank"", ""heavy_tank"", ""tank_destroyer"", ""twin_tank""),"
+Sim/Content/EventDefs.cs,431,11,ai.eventRules.generalsLast2,x,khac,06,1,inline,,"arg:EventRules.G: [""orlov""] = G(""orlov"", 11, ""mlrs"", new[] { ""edge"" }, ""mlrs"", ""artillery"", ""mortar_carrier"", ""heavy_rocket_artillery"", ""aa_vehicle""),"
+Sim/Content/EventDefs.cs,432,12,ai.eventRules.generalsLast,x,khac,06,1,inline,,"arg:EventRules.G: [""kessler""] = G(""kessler"", 12, ""main_battle_tank"", new[] { ""sea"", ""rail"", ""landing"", ""edge"" }, ""ifv"", ""wheeled_gun"", ""main_battle_tank"", ""mine_layer"", ""sam_laun"
+Sim/Content/EventDefs.cs,433,5,ai.eventRules.generalsLast3,x,khac,06,1,inline,,"arg:EventRules.G: [""sen""] = G(""sen"", 5, ""fpv_carrier"", new[] { ""edge"", ""air"" }, ""strike_drone"", ""fpv_carrier"", ""lancet_truck"", ""recon_drone"", ""ew_jammer""),"
+Sim/Content/EventDefs.cs,436,10,ai.eventRules.generalsLastChapter,x,nguong,06,1,inline,,"object_init: Id = ""quaden"", LastChapter = 10, Elite = ""attack_jet"", Delivery = new[] { ""edge"" }, Minis = new[] { ""morrigan"" },"
+Sim/Content/EventDefs.cs,439,9,ai.eventRules.generalsLast4,x,khac,06,1,inline,,"arg:EventRules.G: [""hung""] = G(""hung"", 9, ""heavy_tank"", new[] { ""edge"", ""landing"" }, ""main_battle_tank"", ""heavy_tank"", ""ifv"", ""bmpt"", ""aa_vehicle""),"
+Sim/Content/EventDefs.cs,440,12,ai.eventRules.generalsLast,x,khac,06,1,inline,,"arg:EventRules.G: [""aurel""] = G(""aurel"", 12, ""heavy_tank"", new[] { ""pods"", ""air"", ""edge"" }, ""strike_drone"", ""fpv_carrier"", ""heavy_tank"", ""bmpt"", ""railgun_truck""),"
+Sim/Content/EventDefs.cs,453,16,ai.eventRules.enemyCap,count,tran,06,1,inline,,property_init: public int EnemyCap { get; set; } = 16;
+Sim/Content/EventDefs.cs,455,10,ai.eventRules.allyCap,count,tran,06,1,inline,,property_init: public int AllyCap { get; set; } = 10;
+Sim/Content/EventDefs.cs,458,45f,ai.eventRules.nearSight,m,ban_kinh,06,1,inline,,property_init: public float NearSight { get; set; } = 45f;
+Sim/Content/EventDefs.cs,461,4,ai.eventRules.miniFrom,x,nguong,06,1,inline,,property_init: public int MiniFrom { get; set; } = 4;
+Sim/Content/EventDefs.cs,464,0.3f,ai.eventRules.retreatAt,x,khac,06,1,inline,,property_init: public float RetreatAt { get; set; } = 0.3f;
+Sim/Content/EventDefs.cs,576,2,ai.eventLibrary.resolveN,x,khac,06,1,inline,,"declarator: for (var n = 2; !seen.Add(e.Instance); n++) e.Instance = name + ""#"" + n;"
+Sim/Content/EventDefs.cs,598,3,ai.eventLevels.fromBaseLevelMax,x,nguong,06,1,inline,,"math_clamp: return (EventLevel)Math.Clamp((int)baseLevel + Math.Max(0, tier), 0, 3);"
+Sim/Content/MapDefinition.cs,138,0.5f,maps.mapDefinition.ctorSizeScale,x,nguong,08,1,inline,,multiply: Min = new Vector2(-Size * 0.5f);
+Sim/Content/MapDefinition.cs,139,0.5f,maps.mapDefinition.ctorSizeScale,x,nguong,08,1,inline,,multiply: Max = new Vector2(Size * 0.5f);
+Sim/Content/MapDefinition.cs,152,0.5f,maps.mapDefinition.halfSizeSizeScale,x,khac,08,1,inline,,multiply: public float HalfSize => Size * 0.5f;
+Sim/Content/MapDefinition.cs,170,1.2f,maps.mapDefinition.isLongWidthScale,m,ban_kinh,08,1,inline,,multiply: public bool IsLong => Length > Width * 1.2f;
+Sim/Content/MapDefinition.cs,233,3,maps.mapDefinition.insideBoundaryCountMax,count,gioi_han_thuc_the,08,1,inline,,compare: if (poly.Count < 3) return Contains(p);
+Sim/Content/MapDefinition.cs,314,0.5f,maps.mapDefinition.isSquareSizeScale,x,nguong,08,1,inline,,multiply: private bool IsSquare => Min == new Vector2(-Size * 0.5f) && Max == new Vector2(Size * 0.5f);
+Sim/Content/MapDefinition.cs,314,0.5f,maps.mapDefinition.isSquareSizeScale,x,nguong,08,2,inline,,multiply: private bool IsSquare => Min == new Vector2(-Size * 0.5f) && Max == new Vector2(Size * 0.5f);
+Sim/Content/MapDefinition.cs,325,4,maps.mapDefinition.fromJsonCountIs,count,gioi_han_thuc_the,08,1,inline,,"equals: if (b.Count != 4) throw new FormatException(""map.bounds: needs min x, min z, max x, max z."");"
+Sim/Content/MapDefinition.cs,337,45,maps.mapDefinition.fromJsonRotationMod,x,khac,08,1,inline,,"modulo: if (rotation % 45 != 0) throw new FormatException($""{p.Path}.rot: must be a multiple of 45."");"
+Sim/Content/MapDefinition.cs,338,360,maps.mapDefinition.fromJsonRotationMod2,x,khac,08,1,inline,,"modulo: props.Add(new PropPlacement(p.String(""def""), new Vector2(p.Float(""x""), p.Float(""z"")), ((rotation % 360) + 360) % 360));"
+Sim/Content/MapDefinition.cs,338,360,maps.mapDefinition.fromJsonRotationAdd,x,khac,08,2,inline,,"add: props.Add(new PropPlacement(p.String(""def""), new Vector2(p.Float(""x""), p.Float(""z"")), ((rotation % 360) + 360) % 360));"
+Sim/Content/MapDefinition.cs,338,360,maps.mapDefinition.fromJsonRotationMod2,x,khac,08,3,inline,,"modulo: props.Add(new PropPlacement(p.String(""def""), new Vector2(p.Float(""x""), p.Float(""z"")), ((rotation % 360) + 360) % 360));"
+Sim/Content/MapDefinition.cs,368,4,maps.mapDefinition.fromJsonCountMax,count,gioi_han_thuc_the,08,1,inline,,"compare: if (flat.Count < 4 || flat.Count % 2 != 0) throw new FormatException($""{r.Path}.points: needs x, z pairs."");"
+Sim/Content/MapDefinition.cs,368,2,maps.mapDefinition.fromJsonCountMod,count,gioi_han_thuc_the,08,1,inline,,"modulo: if (flat.Count < 4 || flat.Count % 2 != 0) throw new FormatException($""{r.Path}.points: needs x, z pairs."");"
+Sim/Content/MapDefinition.cs,370,2,maps.mapDefinition.fromJsonI,count,gioi_han_thuc_the,08,1,inline,,"compound_assign: for (var i = 0; i < flat.Count; i += 2) line.Add(new Vector2(flat[i], flat[i + 1]));"
+Sim/Content/MapDefinition.cs,379,6,maps.mapDefinition.fromJsonCountMax2,count,gioi_han_thuc_the,08,1,inline,,"compare: if (flat.Count < 6 || flat.Count % 2 != 0) throw new FormatException(""map.boundary: needs at least three x, z pairs."");"
+Sim/Content/MapDefinition.cs,379,2,maps.mapDefinition.fromJsonCountMod,count,gioi_han_thuc_the,08,1,inline,,"modulo: if (flat.Count < 6 || flat.Count % 2 != 0) throw new FormatException(""map.boundary: needs at least three x, z pairs."");"
+Sim/Content/MapDefinition.cs,380,2,maps.mapDefinition.fromJsonI,count,gioi_han_thuc_the,08,1,inline,,"compound_assign: for (var i = 0; i < flat.Count; i += 2) boundary.Add(new Vector2(flat[i], flat[i + 1]));"
+Sim/Content/MapDefinition.cs,388,360,maps.mapDefinition.fromJsonIntMod,x,khac,08,1,inline,,"modulo: var rotation = ((p.Int(""rot"", 0) % 360) + 360) % 360;"
+Sim/Content/MapDefinition.cs,388,360,maps.mapDefinition.fromJsonIntAdd,x,khac,08,2,inline,,"add: var rotation = ((p.Int(""rot"", 0) % 360) + 360) % 360;"
+Sim/Content/MapDefinition.cs,388,360,maps.mapDefinition.fromJsonIntMod,x,khac,08,3,inline,,"modulo: var rotation = ((p.Int(""rot"", 0) % 360) + 360) % 360;"
+Sim/Content/MapDefinition.cs,389,45,maps.mapDefinition.fromJsonRotationMod,x,khac,08,1,inline,,"modulo: decor.Add(new PropPlacement(p.String(""def""), new Vector2(p.Float(""x""), p.Float(""z"")), rotation - rotation % 45));"
+Sim/Content/MapDefinition.cs,403,4,maps.mapDefinition.fromJsonCountMax,count,gioi_han_thuc_the,08,1,inline,,"compare: if (flat.Count < 4 || flat.Count % 2 != 0) throw new FormatException($""map.routes.{key}: needs at least two x, z pairs."");"
+Sim/Content/MapDefinition.cs,403,2,maps.mapDefinition.fromJsonCountMod,count,gioi_han_thuc_the,08,1,inline,,"modulo: if (flat.Count < 4 || flat.Count % 2 != 0) throw new FormatException($""map.routes.{key}: needs at least two x, z pairs."");"
+Sim/Content/MapDefinition.cs,405,2,maps.mapDefinition.fromJsonI,count,gioi_han_thuc_the,08,1,inline,,"compound_assign: for (var i = 0; i < flat.Count; i += 2) line.Add(new Vector2(flat[i], flat[i + 1]));"
+Sim/Content/MatchRules.cs,99,1e-3f,ai.campaignStars.metValueSub,x,khac,06,1,inline,,"subtract: ""ConvoyShare"" => f.ConvoySent > 0 && f.ConvoyArrived >= rule.Value * f.ConvoySent - 1e-3f,"
+Sim/Content/MatchRules.cs,101,1e-3f,ai.campaignStars.metValueSub,x,khac,06,1,inline,,"subtract: ""ProtectShare"" => f.ProtectTotal > 0 && f.ProtectStanding >= rule.Value * f.ProtectTotal - 1e-3f,"
+Sim/Content/MatchRules.cs,106,1e-3f,ai.campaignStars.metValueSub,x,khac,06,1,inline,,"subtract: ""ReconQuiet"" => f.ReconTotal > 0 && f.ReconQuiet >= rule.Value * f.ReconTotal - 1e-3f,"
+Sim/Content/Matchup.cs,93,2,ai.matchup.structureLevel,x,khac,06,1,const_to_property,,const_field: public const int StructureLevel = 2;
+Sim/Content/Matchup.cs,96,0.6f,ai.matchup.goodAt,x,khac,06,1,manual:const used in a constant context (const initializer at Game/Hud/CombatFacts.cs:84),,const_field: public const float GoodAt = 0.6f;
+Sim/Content/Matchup.cs,99,0.12f,ai.matchup.poorAt,x,khac,06,1,manual:const used in a constant context (const initializer at Game/Hud/CombatFacts.cs:85),,const_field: public const float PoorAt = 0.12f;
+Sim/Content/NavalDefs.cs,40,0.6f,ai.navalDef.escapeSpeed,m/s,tan_suat,06,1,inline,,property_init: public float EscapeSpeed { get; internal set; } = 0.6f;
+Sim/Content/NavalDefs.cs,47,48f,ai.navalDef.dashW,x,khac,06,1,inline,,property_init: public float DashW { get; internal set; } = 48f;
+Sim/Content/NavalDefs.cs,48,26f,ai.navalDef.dashEvery,x,tan_suat,06,1,inline,,property_init: public float DashEvery { get; internal set; } = 26f;
+Sim/Content/NavalDefs.cs,49,7f,ai.navalDef.dashHold,x,khac,06,1,inline,,property_init: public float DashHold { get; internal set; } = 7f;
+Sim/Content/NavalDefs.cs,75,10f,ai.salvoDef.every,x,tan_suat,06,1,inline,,property_init: public float Every { get; internal set; } = 10f;
+Sim/Content/NavalDefs.cs,76,8f,ai.salvoDef.first,x,khac,06,1,inline,,property_init: public float First { get; internal set; } = 8f;
+Sim/Content/NavalDefs.cs,77,2.6f,ai.salvoDef.warn,s,thoi_gian,06,1,inline,,property_init: public float Warn { get; internal set; } = 2.6f;
+Sim/Content/NavalDefs.cs,78,3,ai.salvoDef.shells,x,khac,06,1,inline,,property_init: public int Shells { get; internal set; } = 3;
+Sim/Content/NavalDefs.cs,79,300f,ai.salvoDef.damage,x,sat_thuong,06,1,inline,,property_init: public float Damage { get; internal set; } = 300f;
+Sim/Content/NavalDefs.cs,80,7f,ai.salvoDef.radius,m,ban_kinh,06,1,inline,,property_init: public float Radius { get; internal set; } = 7f;
+Sim/Content/NavalDefs.cs,83,16f,ai.salvoDef.spread,x,khac,06,1,inline,,property_init: public float Spread { get; internal set; } = 16f;
+Sim/Content/NavalDefs.cs,86,150f,ai.salvoDef.range,m,ban_kinh,06,1,inline,,property_init: public float Range { get; internal set; } = 150f;
+Sim/Content/NavalDefs.cs,88,18f,ai.salvoDef.sweep,x,khac,06,1,inline,,property_init: public float Sweep { get; internal set; } = 18f;
+Sim/Content/NavalDefs.cs,91,2.2f,ai.salvoDef.blindScatter,x,khac,06,1,inline,,property_init: public float BlindScatter { get; internal set; } = 2.2f;
+Sim/Content/NavalDefs.cs,113,48f,ai.cruiseDef.every,x,tan_suat,06,1,inline,,property_init: public float Every { get; internal set; } = 48f;
+Sim/Content/NavalDefs.cs,114,18f,ai.cruiseDef.first,x,khac,06,1,inline,,property_init: public float First { get; internal set; } = 18f;
+Sim/Content/NavalDefs.cs,116,4.5f,ai.cruiseDef.warn,s,thoi_gian,06,1,inline,,property_init: public float Warn { get; internal set; } = 4.5f;
+Sim/Content/NavalDefs.cs,117,520f,ai.cruiseDef.damage,x,sat_thuong,06,1,inline,,property_init: public float Damage { get; internal set; } = 520f;
+Sim/Content/NavalDefs.cs,118,16f,ai.cruiseDef.radius,m,ban_kinh,06,1,inline,,property_init: public float Radius { get; internal set; } = 16f;
+Sim/Content/NavalDefs.cs,119,4,ai.cruiseDef.final,x,khac,06,1,inline,,property_init: public int Final { get; internal set; } = 4;
+Sim/Content/NavalDefs.cs,134,2,ai.craftDef.per,x,khac,06,1,inline,,property_init: public int Per { get; internal set; } = 2;
+Sim/Content/NavalDefs.cs,135,42f,ai.craftDef.every,x,tan_suat,06,1,inline,,property_init: public float Every { get; internal set; } = 42f;
+Sim/Content/NavalDefs.cs,136,6f,ai.craftDef.first,x,khac,06,1,inline,,property_init: public float First { get; internal set; } = 6f;
+Sim/Content/NavalDefs.cs,138,3,ai.craftDef.max,x,nguong,06,1,inline,,property_init: public int Max { get; internal set; } = 3;
+Sim/Content/NavalDefs.cs,145,1,ai.fleetShipDef.count,count,gioi_han_thuc_the,06,1,inline,,property_init: public int Count { get; internal set; } = 1;
+Sim/Content/OpeningRules.cs,17,1f,ai.openingRules.startCpScale,CP,khac,06,1,inline,,property_init: public float StartCpScale { get; internal set; } = 1f;
+Sim/Content/OpeningRules.cs,22,0.6f,ai.openingRules.share,share,khac,06,1,inline,,property_init: public float Share { get; internal set; } = 0.6f;
+Sim/Content/ScriptDefs.cs,20,2,ai.scriptLineDef.priority,x,khac,06,1,inline,,property_init: public int Priority { get; internal set; } = 2;
+Sim/Content/SeaDef.cs,53,0.5f,ai.seaDef.alongX,x,khac,06,1,inline,,"arg:MathF.Sqrt: public Vector2 Along { get; private set; } = new(MathF.Sqrt(0.5f), MathF.Sqrt(0.5f));"
+Sim/Content/SeaDef.cs,53,0.5f,ai.seaDef.alongX,x,khac,06,2,inline,,"arg:MathF.Sqrt: public Vector2 Along { get; private set; } = new(MathF.Sqrt(0.5f), MathF.Sqrt(0.5f));"
+Sim/Content/SeaDef.cs,90,1e-3f,ai.seaDef.shoreAtShoreUFloor,x,nguong,06,1,inline,,"math_max: var t = (u - _shoreU[i]) / MathF.Max(1e-3f, _shoreU[i + 1] - _shoreU[i]);"
+Sim/Content/SkillDef.cs,188,0.95f,ai.hiddenDef.ctorCutMax,x,nguong,06,1,inline,,"math_clamp: Cut = Math.Clamp(cut, 0f, 0.95f);"
+Sim/Content/SkillDef.cs,266,1f,ai.damageBonus.mult,x,khac,06,1,inline,,property_init: public float Mult { get; internal set; } = 1f;
+Sim/Content/SupportDef.cs,78,0f,ai.supportDef.ctorBlastRadius,m,sat_thuong,06,1,manual:parameter default,,param_default: float blastRadius = 0f)
+Sim/Content/SupportDef.cs,92,6f,ai.supportDef.ctorRadiusCap,count,sat_thuong,06,1,inline,,"math_min: BlastRadius = blastRadius > 0f ? blastRadius : Math.Min(radius, 6f);"
+Sim/Content/SupportDef.cs,159,1f,ai.supportDef.lineScale,x,khac,06,1,inline,,property_init: public float LineScale { get; internal set; } = 1f;
+Sim/Core/SimClock.cs,25,20,ai.simClock.ctorTicksPerSecond,s,thoi_gian,06,1,manual:parameter default,,"param_default: public SimClock(int ticksPerSecond = 20, int maxStepsPerFrame = 5)"
+Sim/Core/SimClock.cs,25,5,ai.simClock.ctorMaxStepsPerFrame,s,thoi_gian,06,1,manual:parameter default,,"param_default: public SimClock(int ticksPerSecond = 20, int maxStepsPerFrame = 5)"
+Sim/Core/SimMath.cs,24,2f,ai.simMath.tauPIScale,x,khac,06,1,manual:const initializer is an expression,,multiply: public const float Tau = MathF.PI * 2f;
+Sim/Navigation/CoverGrid.cs,20,0.35f,maps.coverGrid.inset,x,khac,08,1,const_to_property,,const_field: private const float Inset = 0.35f;
+Sim/Navigation/CoverGrid.cs,23,0.5f,maps.coverGrid.step,x,khac,08,1,const_to_property,,const_field: private const float Step = 0.5f;
+Sim/Navigation/CoverGrid.cs,53,0.5f,maps.coverGrid.blockWhereXAdd,x,khac,08,1,inline,,"add: var centre = new Vector2(_origin.X + (x + 0.5f) * CellSize, _origin.Y + (y + 0.5f) * CellSize);"
+Sim/Navigation/CoverGrid.cs,53,0.5f,maps.coverGrid.blockWhereYAdd,x,khac,08,2,inline,,"add: var centre = new Vector2(_origin.X + (x + 0.5f) * CellSize, _origin.Y + (y + 0.5f) * CellSize);"
+Sim/Navigation/CoverGrid.cs,78,1e-3f,maps.coverGrid.tryFirstHitLengthMax,m,ban_kinh,08,1,inline,,compare: if (length < 1e-3f) return false;
+Sim/Navigation/CoverGrid.cs,93,0.5f,maps.coverGrid.insideWidthScale,m,ban_kinh,08,1,inline,,multiply: MathF.Abs(p.X - prop.Position.X) <= prop.Width * 0.5f + CellSize * 0.5f &&
+Sim/Navigation/CoverGrid.cs,93,0.5f,maps.coverGrid.insideCellSizeScale,m,ban_kinh,08,2,inline,,multiply: MathF.Abs(p.X - prop.Position.X) <= prop.Width * 0.5f + CellSize * 0.5f &&
+Sim/Navigation/CoverGrid.cs,94,0.5f,maps.coverGrid.insideDepthScale,x,khac,08,1,inline,,multiply: MathF.Abs(p.Y - prop.Position.Y) <= prop.Depth * 0.5f + CellSize * 0.5f;
+Sim/Navigation/CoverGrid.cs,94,0.5f,maps.coverGrid.insideCellSizeScale,x,khac,08,2,inline,,multiply: MathF.Abs(p.Y - prop.Position.Y) <= prop.Depth * 0.5f + CellSize * 0.5f;
+Sim/Navigation/CoverGrid.cs,98,0.1f,maps.coverGrid.changeWidthFloor,m,ban_kinh,08,1,inline,,"math_max: var hw = MathF.Max(0.1f, prop.Width * 0.5f - Inset);"
+Sim/Navigation/CoverGrid.cs,98,0.5f,maps.coverGrid.changeWidthScale,m,ban_kinh,08,1,inline,,"multiply: var hw = MathF.Max(0.1f, prop.Width * 0.5f - Inset);"
+Sim/Navigation/CoverGrid.cs,99,0.1f,maps.coverGrid.changeDepthFloor,x,nguong,08,1,inline,,"math_max: var hd = MathF.Max(0.1f, prop.Depth * 0.5f - Inset);"
+Sim/Navigation/CoverGrid.cs,99,0.5f,maps.coverGrid.changeDepthScale,x,nguong,08,1,inline,,"multiply: var hd = MathF.Max(0.1f, prop.Depth * 0.5f - Inset);"
+Sim/Navigation/EntryGate.cs,120,2,maps.entryGate.nearestPassMax,x,nguong,08,1,inline,,compare: for (var pass = 0; pass < 2 && best == null; pass++)
+Sim/Navigation/LaneMap.cs,44,2,maps.laneMap.throughCells,x,khac,08,1,const_to_property,,const_field: private const int ThroughCells = 2;
+Sim/Navigation/LaneMap.cs,54,2,maps.laneMap.noParkMouth,x,khac,08,1,const_to_property,,const_field: private const int NoParkMouth = 2;
+Sim/Navigation/LaneMap.cs,161,0.5f,maps.laneMap.buildWidthScale,m,ban_kinh,08,1,inline,,"multiply: StampSegment(road.Points[i], road.Points[i + 1], road.Width * 0.5f, LaneFlags.Road, count: false);"
+Sim/Navigation/LaneMap.cs,257,255,maps.laneMap.stampSegmentRouteCountMax,count,gioi_han_thuc_the,08,1,inline,,compare: if (_routeCount[i] < 255) _routeCount[i]++;
+Sim/Navigation/LaneMap.cs,277,4,maps.laneMap.findDoorwaysAxisMax,x,nguong,08,1,inline,,compare: for (var axis = 0; axis < 4; axis++)
+Sim/Navigation/LaneMap.cs,280,1.41421356f,maps.laneMap.findDoorwaysAxTrue,x,khac,08,1,inline,,conditional: var step = (ax != 0 && ay != 0 ? 1.41421356f : 1f) * _grid.CellSize;
+Sim/Navigation/LaneMap.cs,283,0.01f,maps.laneMap.findDoorwaysNarrowWidthAdd,m,ban_kinh,08,1,inline,,add: if (across * step > NarrowWidth + 0.01f) continue;
+Sim/Navigation/LaneMap.cs,393,2f,maps.laneMap.offLaneRingScale,m,ban_kinh,08,1,inline,,multiply: for (var ring = 1; ring * 2f <= reach; ring++)
+Sim/Navigation/LaneMap.cs,395,8,maps.laneMap.offLaneRingScale2,x,khac,08,1,inline,,multiply: var around = 8 * ring;
+Sim/Navigation/LaneMap.cs,398,2f,maps.laneMap.offLaneRingScale,x,khac,08,1,inline,,multiply: var c = p + SimMath.Forward(k * SimMath.Tau / around) * (ring * 2f);
+Sim/Navigation/LaneMap.cs,400,2f,maps.laneMap.offLaneRingScale,x,khac,08,1,inline,,multiply: var score = StandCost(c) + ring * 2f;
+Sim/Navigation/LaneMap.cs,413,1000f,maps.laneMap.standCostStandCost,CP,khac,08,1,inline,,return: if ((f & LaneFlags.NoPark) != 0) return 1000f;
+Sim/Navigation/LaneMap.cs,414,12f,maps.laneMap.standCostFTrue,CP,gioi_han_thuc_the,08,1,inline,,conditional: return ((f & LaneFlags.Road) != 0 ? 12f : 0f) + ((f & LaneFlags.Route) != 0 ? 20f * RouteCountAt(p) : 0f);
+Sim/Navigation/LaneMap.cs,414,20f,maps.laneMap.standCostRouteCountAtScale,CP,gioi_han_thuc_the,08,1,inline,,multiply: return ((f & LaneFlags.Road) != 0 ? 12f : 0f) + ((f & LaneFlags.Route) != 0 ? 20f * RouteCountAt(p) : 0f);
+Sim/Navigation/LaneMap.cs,451,2,maps.laneMap.reservedByOtherCySub,x,khac,08,1,inline,,subtract: for (var y = cy - 2; y <= cy + 2; y++)
+Sim/Navigation/LaneMap.cs,451,2,maps.laneMap.reservedByOtherCyAdd,x,khac,08,2,inline,,add: for (var y = cy - 2; y <= cy + 2; y++)
+Sim/Navigation/LaneMap.cs,452,2,maps.laneMap.reservedByOtherCxSub,x,khac,08,1,inline,,subtract: for (var x = cx - 2; x <= cx + 2; x++)
+Sim/Navigation/LaneMap.cs,452,2,maps.laneMap.reservedByOtherCxAdd,x,khac,08,2,inline,,add: for (var x = cx - 2; x <= cx + 2; x++)
+Sim/Navigation/LaneMap.cs,467,36f,maps.laneMap.inUseDistanceSquaredMax,m,ban_kinh,08,1,inline,,"compare: return Vector2.DistanceSquared(o.Position, at) < 36f || Vector2.DistanceSquared(o.Order.Point, at) < 36f;"
+Sim/Navigation/LaneMap.cs,467,36f,maps.laneMap.inUseDistanceSquaredMax,m,ban_kinh,08,2,inline,,"compare: return Vector2.DistanceSquared(o.Position, at) < 36f || Vector2.DistanceSquared(o.Order.Point, at) < 36f;"
+Sim/Navigation/NavGrid.cs,72,0.5f,maps.navGrid.setTerrainXSub,x,nguong,08,1,inline,,"subtract: var x0 = Math.Max(0, (int)MathF.Ceiling((z.Min.X - Origin.X) / CellSize - 0.5f));"
+Sim/Navigation/NavGrid.cs,73,0.5f,maps.navGrid.setTerrainYSub,x,nguong,08,1,inline,,"subtract: var y0 = Math.Max(0, (int)MathF.Ceiling((z.Min.Y - Origin.Y) / CellSize - 0.5f));"
+Sim/Navigation/NavGrid.cs,74,0.5f,maps.navGrid.setTerrainXSub,m,ban_kinh,08,1,inline,,"subtract: var x1 = Math.Min(Width - 1, (int)MathF.Ceiling((z.Max.X - Origin.X) / CellSize - 0.5f) - 1);"
+Sim/Navigation/NavGrid.cs,75,0.5f,maps.navGrid.setTerrainYSub,m,ban_kinh,08,1,inline,,"subtract: var y1 = Math.Min(Height - 1, (int)MathF.Ceiling((z.Max.Y - Origin.Y) / CellSize - 0.5f) - 1);"
+Sim/Navigation/NavGrid.cs,106,0.5f,maps.navGrid.cellCenterXAdd,x,khac,08,1,inline,,"add: new Vector2(Origin.X + (x + 0.5f) * CellSize, Origin.Y + (y + 0.5f) * CellSize);"
+Sim/Navigation/NavGrid.cs,106,0.5f,maps.navGrid.cellCenterYAdd,x,khac,08,2,inline,,"add: new Vector2(Origin.X + (x + 0.5f) * CellSize, Origin.Y + (y + 0.5f) * CellSize);"
+Sim/Navigation/NavGrid.cs,122,2f,maps.navGrid.addBlockerClearanceScale,m,ban_kinh,08,1,inline,,"multiply: ChangeRect(center, width + 2f * clearance, depth + 2f * clearance, +1);"
+Sim/Navigation/NavGrid.cs,122,2f,maps.navGrid.addBlockerClearanceScale,m,ban_kinh,08,2,inline,,"multiply: ChangeRect(center, width + 2f * clearance, depth + 2f * clearance, +1);"
+Sim/Navigation/NavGrid.cs,124,0.5f,maps.navGrid.addBlockerWidthScale,m,ban_kinh,08,1,inline,,"multiply: var half = new Vector2(width * 0.5f + clearance, depth * 0.5f + clearance);"
+Sim/Navigation/NavGrid.cs,124,0.5f,maps.navGrid.addBlockerDepthScale,m,ban_kinh,08,2,inline,,"multiply: var half = new Vector2(width * 0.5f + clearance, depth * 0.5f + clearance);"
+Sim/Navigation/NavGrid.cs,129,2f,maps.navGrid.removeBlockerClearanceScale,m,ban_kinh,08,1,inline,,"multiply: ChangeRect(center, width + 2f * clearance, depth + 2f * clearance, -1);"
+Sim/Navigation/NavGrid.cs,129,2f,maps.navGrid.removeBlockerClearanceScale,m,ban_kinh,08,2,inline,,"multiply: ChangeRect(center, width + 2f * clearance, depth + 2f * clearance, -1);"
+Sim/Navigation/NavGrid.cs,136,2f,maps.navGrid.markClearanceScale,m,ban_kinh,08,1,inline,,"multiply: ChangeRect(block.Center, block.Width + 2f * block.Clearance, block.Depth + 2f * block.Clearance, delta);"
+Sim/Navigation/NavGrid.cs,136,2f,maps.navGrid.markClearanceScale,m,ban_kinh,08,2,inline,,"multiply: ChangeRect(block.Center, block.Width + 2f * block.Clearance, block.Depth + 2f * block.Clearance, delta);"
+Sim/Navigation/NavGrid.cs,149,0.5f,maps.navGrid.changeRectWidthScale,m,ban_kinh,08,1,inline,,"multiply: var half = new Vector2(width * 0.5f, depth * 0.5f);"
+Sim/Navigation/NavGrid.cs,149,0.5f,maps.navGrid.changeRectDepthScale,m,ban_kinh,08,2,inline,,"multiply: var half = new Vector2(width * 0.5f, depth * 0.5f);"
+Sim/Navigation/NavGrid.cs,289,1.42f,maps.navGrid.tryNearestInRegionRingScale,x,nguong,08,1,inline,,"multiply: if (found == float.MaxValue) last = Math.Min(maxRings, (int)MathF.Ceiling(ring * 1.42f));"
+Sim/Navigation/NavGrid.cs,333,4,maps.navGrid.walkFromKMax,x,nguong,08,1,inline,,compare: for (var k = 0; k < 4; k++)
+Sim/Navigation/NavGrid.cs,335,2,maps.navGrid.walkFromKIs,x,khac,08,1,inline,,"equals: int nx = x + (k == 0 ? 1 : k == 1 ? -1 : 0), ny = y + (k == 2 ? 1 : k == 3 ? -1 : 0);"
+Sim/Navigation/NavGrid.cs,335,3,maps.navGrid.walkFromKIs2,x,khac,08,1,inline,,"equals: int nx = x + (k == 0 ? 1 : k == 1 ? -1 : 0), ny = y + (k == 2 ? 1 : k == 3 ? -1 : 0);"
+Sim/Navigation/NavGrid.cs,363,0.25f,maps.navGrid.lineOfSightCellSizeScale,m,ban_kinh,08,1,inline,,"multiply: var side = length > 1e-5f ? new Vector2(-delta.Y, delta.X) * (CellSize * 0.25f / length) : Vector2.Zero;"
+Sim/Navigation/NavGrid.cs,364,0.25f,maps.navGrid.lineOfSightCellSizeScale,m,ban_kinh,08,1,inline,,"multiply: var steps = Math.Max(1, (int)MathF.Ceiling(length / (CellSize * 0.25f)));"
+Sim/Navigation/NavStates.cs,53,2,maps.navSiteDef.ctorCountMax,count,gioi_han_thuc_the,08,1,inline,,"compare: if (states == null || states.Count < 2) throw new ArgumentException($""Nav site {id}: two or more states."");"
+Sim/Navigation/NavStates.cs,131,6,maps.navStates.pocketCells,x,khac,08,1,const_to_property,,const_field: public const int PocketCells = 6;
+Sim/Navigation/NavStates.cs,257,5,maps.navStates.anchorRegionMaxRings,x,sat_thuong,08,1,inline,,"arg:NavGrid.TryNearestWalkable: return _grid.TryNearestWalkable(p, 5, out var open) ? _grid.RegionOf(open) : 0;"
+Sim/Navigation/NavStates.cs,321,24,maps.navStates.switchMaxRings,x,sat_thuong,08,1,inline,,"arg:NavGrid.TryNearestInRegion: if (!_grid.TryNearestInRegion(v.Position, main, 24, out var open)) continue;"
+Sim/Navigation/PathFinder.cs,18,0.1f,maps.pathCosts.scale,x,khac,08,1,inline,,field_init: public float Scale = 0.1f;
+Sim/Navigation/PathFinder.cs,28,120,maps.pathCosts.blockerCost,CP,khac,08,1,inline,,field_init: public int BlockerCost = 120;
+Sim/Navigation/PathFinder.cs,35,120,maps.pathCosts.avoidCost,CP,khac,08,1,inline,,field_init: public int AvoidCost = 120;
+Sim/Navigation/PathFinder.cs,44,20,maps.pathCosts.smoothLimit,count,khac,08,1,inline,,field_init: public int SmoothLimit = 20;
+Sim/Navigation/PathFinder.cs,57,1.41421356f,maps.pathFinder.diagonal,x,khac,08,1,const_to_property,,const_field: private const float Diagonal = 1.41421356f;
+Sim/Navigation/PathFinder.cs,80,256,maps.pathFinder.ctorCapacity,x,sat_thuong,08,1,inline,,ctor_arg:MinHeap: _open = new MinHeap(256);
+Sim/Navigation/PathFinder.cs,104,4,maps.pathFinder.tryFindPathMaxRings,x,khac,08,1,inline,,"arg:NavGrid.TryNearestWalkable: if (!_grid.TryNearestWalkable(from, 4, out var start)) return false;"
+Sim/Navigation/PathFinder.cs,107,16,maps.pathFinder.tryFindPathMaxRings2,x,khac,08,1,inline,,"arg:NavGrid.TryNearestInRegion: if (!_grid.TryNearestInRegion(to, _grid.RegionOf(sx, sy), 16, out var goal)) return false;"
+Sim/Navigation/PathFinder.cs,145,8,maps.pathFinder.tryFindPathKMax,x,nguong,08,1,inline,,compare: for (var k = 0; k < 8; k++)
+Sim/Navigation/PathFinder.cs,149,4,maps.pathFinder.tryFindPathKMin,x,nguong,08,1,inline,,compare: var diagonal = k >= 4;
+Sim/Navigation/PathFinder.cs,255,0.25f,maps.pathFinder.maxTerrainAlongCellSizeScale,count,ban_kinh,08,1,inline,,"multiply: var steps = Math.Max(1, (int)MathF.Ceiling(delta.Length() / (_grid.CellSize * 0.25f)));"
+Sim/Navigation/PathFinder.cs,273,0.25f,maps.pathFinder.maxExtraAlongCellSizeScale,count,ban_kinh,08,1,inline,,"multiply: var steps = Math.Max(1, (int)MathF.Ceiling(delta.Length() / (_grid.CellSize * 0.25f)));"
+Sim/Navigation/PathFinder.cs,291,2f,maps.pathFinder.heuristicDiagonalSub,x,nguong,08,1,inline,,"subtract: return dx + dy + (Diagonal - 2f) * Math.Min(dx, dy);"
+Sim/Navigation/PathFinder.cs,314,2,maps.minHeap.pushCountScale,count,gioi_han_thuc_the,08,1,inline,,"multiply: Array.Resize(ref _items, Count * 2);"
+Sim/Navigation/PathFinder.cs,315,2,maps.minHeap.pushCountScale,count,gioi_han_thuc_the,08,1,inline,,"multiply: Array.Resize(ref _priorities, Count * 2);"
+Sim/Navigation/PathFinder.cs,320,2,maps.minHeap.pushIDivisor,x,khac,08,1,inline,,divide: var parent = (i - 1) / 2;
+Sim/Navigation/PathFinder.cs,338,2,maps.minHeap.popIScale,x,khac,08,1,inline,,multiply: var child = 2 * i + 1;
+Sim/Navigation/SeaRouteGraph.cs,83,40f,maps.seaRouteGraph.nodeStep,x,khac,08,1,const_to_property,,const_field: public const float NodeStep = 40f;
+Sim/Navigation/SeaRouteGraph.cs,85,16f,maps.seaRouteGraph.holdShore,x,khac,08,1,const_to_property,,const_field: public const float HoldShore = 16f;
+Sim/Navigation/SeaRouteGraph.cs,86,18f,maps.seaRouteGraph.holdSea,x,khac,08,1,const_to_property,,const_field: public const float HoldSea = 18f;
+Sim/Navigation/SeaRouteGraph.cs,87,12f,maps.seaRouteGraph.holdMargin,x,khac,08,1,const_to_property,,const_field: public const float HoldMargin = 12f;
+Sim/Navigation/SeaRouteGraph.cs,88,8f,maps.seaRouteGraph.holdWater,x,khac,08,1,const_to_property,,const_field: public const float HoldWater = 8f;
+Sim/Navigation/SeaRouteGraph.cs,89,20f,maps.seaRouteGraph.defaultCorridor,x,khac,08,1,const_to_property,,const_field: public const float DefaultCorridor = 20f;
+Sim/Navigation/SeaRouteGraph.cs,194,0.01f,maps.seaRouteGraph.fromSeaAbsMax,x,nguong,08,1,inline,,"compare: if (MathF.Abs(frames[tracks[l][i]].X - frames[tracks[l + 1][j]].X) < 0.01f) g.AddSegment(tracks[l][i], tracks[l + 1][j], false);"
+Sim/Navigation/SpawnPoints.cs,78,7f,maps.spawnPoints.edgeMargin,x,khac,08,1,const_to_property,,const_field: private const float EdgeMargin = 7f;
+Sim/Navigation/SpawnPoints.cs,81,95f,maps.spawnPoints.campClearance,x,khac,08,1,const_to_property,,const_field: public const float CampClearance = 95f;
+Sim/Navigation/SpawnPoints.cs,118,45f,maps.spawnPoints.bearingOfAbsMax,x,nguong,08,1,inline,,compare: return MathF.Abs(angle) <= 45f ? SpawnBearing.Front : angle > 45f && angle <= 135f ? SpawnBearing.Left
+Sim/Navigation/SpawnPoints.cs,118,135f,maps.spawnPoints.bearingOfAngleMax,x,nguong,08,1,inline,,compare: return MathF.Abs(angle) <= 45f ? SpawnBearing.Front : angle > 45f && angle <= 135f ? SpawnBearing.Left
+Sim/Navigation/SpawnPoints.cs,118,45f,maps.spawnPoints.bearingOfAngleMin,x,nguong,08,2,inline,,compare: return MathF.Abs(angle) <= 45f ? SpawnBearing.Front : angle > 45f && angle <= 135f ? SpawnBearing.Left
+Sim/Navigation/SpawnPoints.cs,119,45f,maps.spawnPoints.bearingOfAngleMax2,x,nguong,08,1,inline,,compare: : angle < -45f && angle >= -135f ? SpawnBearing.Right : SpawnBearing.Rear;
+Sim/Navigation/SpawnPoints.cs,119,135f,maps.spawnPoints.bearingOfAngleMin2,x,nguong,08,1,inline,,compare: : angle < -45f && angle >= -135f ? SpawnBearing.Right : SpawnBearing.Rear;
+Sim/Navigation/SpawnPoints.cs,144,16,maps.spawnPoints.buildKMax,x,nguong,08,1,inline,,compare: for (var k = 0; k < 16; k++)
+Sim/Navigation/SpawnPoints.cs,146,8f,maps.spawnPoints.buildKDivisor,x,khac,08,1,inline,,"divide: var dir = Rotate(axis, k * MathF.PI / 8f);"
+Sim/Navigation/SpawnPoints.cs,150,22f,maps.spawnPoints.buildScale,m,ban_kinh,08,1,inline,,"multiply: if (Vector2.DistanceSquared(e, at) < 22f * 22f) near = true;"
+Sim/Navigation/SpawnPoints.cs,150,22f,maps.spawnPoints.buildScale,m,ban_kinh,08,2,inline,,"multiply: if (Vector2.DistanceSquared(e, at) < 22f * 22f) near = true;"
+Sim/Navigation/SpawnPoints.cs,154,25f,maps.spawnPoints.buildDotMax,x,nguong,08,1,inline,,"compare: else if (Vector2.Dot(at - home, axis) < 25f) sp.Add(world, SpawnSide.Ally, SpawnKind.Behind, at, at, centre, home);"
+Sim/Navigation/SpawnPoints.cs,158,2,maps.spawnPoints.buildGioi,count,gioi_han_thuc_the,08,1,manual:pattern,,"relational_pattern: if (map.Route(""rail"") is { Count: >= 2 } rail)"
+Sim/Navigation/SpawnPoints.cs,201,0.45f,maps.spawnPoints.buildCentreLerp,m,ban_kinh,08,1,inline,,"math_lerp: if (Snap(world, Vector2.Lerp(centre, e, 0.45f), main, out var drop) && Vector2.Distance(drop, home) >= CampClearance * 0.8f)"
+Sim/Navigation/SpawnPoints.cs,201,0.8f,maps.spawnPoints.buildCampClearanceScale,m,ban_kinh,08,1,inline,,"multiply: if (Snap(world, Vector2.Lerp(centre, e, 0.45f), main, out var drop) && Vector2.Distance(drop, home) >= CampClearance * 0.8f)"
+Sim/Navigation/SpawnPoints.cs,206,22f,maps.spawnPoints.buildAxisScale,x,khac,08,1,inline,,multiply: var back = home - axis * 22f;
+Sim/Navigation/SpawnPoints.cs,208,20f,maps.spawnPoints.buildBan,m,ban_kinh,08,1,inline,,"table: foreach (var off in new[] { 0f, 20f, -20f })"
+Sim/Navigation/SpawnPoints.cs,208,20f,maps.spawnPoints.buildBan,m,ban_kinh,08,2,inline,,"table: foreach (var off in new[] { 0f, 20f, -20f })"
+Sim/Navigation/SpawnPoints.cs,221,12f,maps.spawnPoints.addScale,m,ban_kinh,08,1,inline,,"multiply: if (p.Side == side && p.Kind == kind && Vector2.DistanceSquared(p.Position, at) < 12f * 12f) return;"
+Sim/Navigation/SpawnPoints.cs,221,12f,maps.spawnPoints.addScale,m,ban_kinh,08,2,inline,,"multiply: if (p.Side == side && p.Kind == kind && Vector2.DistanceSquared(p.Position, at) < 12f * 12f) return;"
+Sim/Navigation/SpawnPoints.cs,236,22f,maps.spawnPoints.addBan,m,ban_kinh,08,1,inline,,"table: foreach (var off in new[] { 22f, -22f, 40f, -40f })"
+Sim/Navigation/SpawnPoints.cs,236,40f,maps.spawnPoints.addBan2,m,ban_kinh,08,1,inline,,"table: foreach (var off in new[] { 22f, -22f, 40f, -40f })"
+Sim/Navigation/SpawnPoints.cs,236,22f,maps.spawnPoints.addBan,m,ban_kinh,08,2,inline,,"table: foreach (var off in new[] { 22f, -22f, 40f, -40f })"
+Sim/Navigation/SpawnPoints.cs,236,40f,maps.spawnPoints.addBan2,m,ban_kinh,08,2,inline,,"table: foreach (var off in new[] { 22f, -22f, 40f, -40f })"
+Sim/Navigation/SpawnPoints.cs,237,100f,maps.spawnPoints.addDistanceSquaredMin,m,ban_kinh,08,1,inline,,"compare: if (Snap(world, at + across * off, main, out var alt) && Vector2.DistanceSquared(alt, at) > 100f &&"
+Sim/Navigation/SpawnPoints.cs,238,0.9f,maps.spawnPoints.addCampClearanceScale,m,ban_kinh,08,1,inline,,"multiply: (side == SpawnSide.Ally || Vector2.Distance(alt, home) >= CampClearance * 0.9f))"
+Sim/Navigation/SpawnPoints.cs,261,14f,maps.spawnPoints.gateForEdgeDistanceMax,m,ban_kinh,08,1,inline,,compare: var edgeKind = kind is SpawnKind.Edge or SpawnKind.Rail || kind == SpawnKind.Behind && map.EdgeDistance(at) <= 14f;
+Sim/Navigation/SpawnPoints.cs,266,0.9f,maps.spawnPoints.gateForCampClearanceScale,m,ban_kinh,08,1,inline,,"multiply: if (side == SpawnSide.Enemy && Vector2.Distance(gate.Position, home) < CampClearance * 0.9f) return null;"
+Sim/Navigation/SpawnPoints.cs,333,30f,maps.spawnPoints.edgePointTMin,x,nguong,08,1,inline,,compare: for (; t > 30f; t -= 3f)
+Sim/Navigation/SpawnPoints.cs,333,3f,maps.spawnPoints.edgePointT,x,khac,08,1,inline,,compound_assign: for (; t > 30f; t -= 3f)
+Sim/Navigation/SpawnPoints.cs,336,0.5f,maps.spawnPoints.edgePointEdgeMarginSub,x,sat_thuong,08,1,inline,,"subtract: if (map.Contains(p) && map.EdgeDistance(p) >= EdgeMargin - 0.5f && Open(world, p, main))"
+Sim/Navigation/SpawnPoints.cs,352,0.5f,maps.spawnPoints.snapEdgeMarginScale,x,khac,08,1,inline,,"multiply: p = world.Map.Clamp(p, EdgeMargin * 0.5f);"
+Sim/Navigation/SpawnPoints.cs,358,8,maps.spawnPoints.snapMaxRings,x,khac,08,1,inline,,"arg:NavGrid.TryNearestInRegion: if (world.Grid.TryNearestInRegion(p, main, 8, out at) && world.Map.Contains(at)) return true;"
+Sim/Navigation/SpawnPoints.cs,369,25f,maps.spawnPoints.waterLandingsEdgeDistanceMin,m,ban_kinh,08,1,inline,,"compare: if (!prop.Def.Id.Contains(""water"") || world.Map.EdgeDistance(prop.Position) > 25f || Vector2.Distance(prop.Position, home) < CampClearance + 10f) continue;"
+Sim/Navigation/SpawnPoints.cs,369,10f,maps.spawnPoints.waterLandingsCampClearanceAdd,m,ban_kinh,08,1,inline,,"add: if (!prop.Def.Id.Contains(""water"") || world.Map.EdgeDistance(prop.Position) > 25f || Vector2.Distance(prop.Position, home) < CampClearance + 10f) continue;"
+Sim/Navigation/SpawnPoints.cs,374,40f,maps.spawnPoints.waterLandingsDistanceMin,m,ban_kinh,08,1,inline,,"compare: if (Vector2.Distance(sum / n, prop.Position) > 40f) continue;"
+Sim/Navigation/SpawnPoints.cs,382,3,maps.spawnPoints.waterLandingsIMax,count,gioi_han_thuc_the,08,1,inline,,compare: for (var i = 0; i < clusters.Count && i < 3; i++)
+Sim/Navigation/SpawnPoints.cs,388,8f,maps.spawnPoints.waterLandingsD,x,khac,08,1,inline,,declarator: for (var d = 8f; d <= 40f; d += 4f)
+Sim/Navigation/SpawnPoints.cs,388,40f,maps.spawnPoints.waterLandingsDMax,x,nguong,08,1,inline,,compare: for (var d = 8f; d <= 40f; d += 4f)
+Sim/Navigation/SpawnPoints.cs,388,4f,maps.spawnPoints.waterLandingsD2,x,khac,08,1,inline,,compound_assign: for (var d = 8f; d <= 40f; d += 4f)
+Sim/Navigation/StuckWatch.cs,63,1,maps.stuckRecord.endTime,s,thoi_gian,08,1,inline,,field_init: public double EndTime = -1;
+Sim/Navigation/StuckWatch.cs,100,8f,maps.stuckWatch.threshold,x,khac,08,1,inline,,field_init: public float Threshold = 8f;
+Sim/Navigation/StuckWatch.cs,103,2.5f,maps.stuckWatch.tolerance,x,khac,08,1,inline,,field_init: public float Tolerance = 2.5f;
+Sim/Navigation/StuckWatch.cs,109,10,maps.stuckWatch.sampleTicks,ticks,thoi_gian,08,1,inline,,field_init: public int SampleTicks = 10;
+Sim/Navigation/StuckWatch.cs,146,6f,maps.stuckWatch.grace,x,khac,08,1,inline,,field_init: public float Grace = 6f;
+Sim/Navigation/StuckWatch.cs,257,1.5,maps.stuckWatch.wantsTimeMax,s,thoi_gian,08,1,inline,,compare: else if (world.Time - v.Traffic.PathFailedAt < 1.5) goal = v.Traffic.PathFailedGoal;
+Sim/Navigation/StuckWatch.cs,259,6f,maps.stuckWatch.wantsHullBoundFloor,m,ban_kinh,08,1,inline,,"math_max: return Vector2.Distance(goal, v.Position) > MathF.Max(6f, v.Def.HullBound * 2f);"
+Sim/Navigation/StuckWatch.cs,259,2f,maps.stuckWatch.wantsHullBoundScale,m,ban_kinh,08,1,inline,,"multiply: return Vector2.Distance(goal, v.Position) > MathF.Max(6f, v.Def.HullBound * 2f);"
+Sim/Navigation/StuckWatch.cs,284,2.0,maps.stuckWatch.classifyTimeMax,s,thoi_gian,08,1,inline,,compare: if (world.Time - t.PathFailedAt < 2.0)
+Sim/Navigation/StuckWatch.cs,311,1.5f,maps.stuckWatch.classifyHullHalfAdd,x,khac,08,1,inline,,add: var probe = v.Position + forward * (v.Def.HullHalf + 1.5f);
+Sim/Navigation/StuckWatch.cs,327,1.5f,maps.stuckWatch.aheadHullBoundAdd,x,khac,08,1,inline,,add: if (d > v.Def.HullBound + o.Def.HullBound + 1.5f || d >= bestD) continue;
+Sim/Navigation/StuckWatch.cs,328,0.01f,maps.stuckWatch.aheadDMin,x,nguong,08,1,inline,,"compare: if (d > 0.01f && Vector2.Dot(off / d, forward) < 0.2f) continue;"
+Sim/Navigation/StuckWatch.cs,328,0.2f,maps.stuckWatch.aheadDotMax,x,nguong,08,1,inline,,"compare: if (d > 0.01f && Vector2.Dot(off / d, forward) < 0.2f) continue;"
+Sim/Navigation/StuckWatch.cs,339,16,maps.stuckWatch.reachesMaxRings,m,ban_kinh,08,1,inline,,"arg:NavGrid.TryNearestInRegion: from == 0 || world.Grid.TryNearestInRegion(goal, from, 16, out _);"
+Sim/Navigation/StuckWatch.cs,378,0.5f,maps.stuckWatch.blockerAtWidthScale,m,ban_kinh,08,1,inline,,multiply: if (prop.IsAlive && prop.Def.BlocksMovement && MathF.Abs(prop.Position.X - p.X) <= prop.Width * 0.5f + reach &&
+Sim/Navigation/StuckWatch.cs,379,0.5f,maps.stuckWatch.blockerAtDepthScale,m,ban_kinh,08,1,inline,,multiply: MathF.Abs(prop.Position.Y - p.Y) <= prop.Depth * 0.5f + reach) return prop.Def.Id;
+Sim/Navigation/StuckWatch.cs,383,0.4f,maps.stuckWatch.blockerAtMaxScale,count,ban_kinh,08,1,inline,,"multiply: var half = MathF.Max(o.Def.Length, o.Def.Width) * 0.4f + reach;"
+Sim/Navigation/StuckWatch.cs,392,0.5f,maps.stuckWatch.blockedLineDistanceDivisor,m,ban_kinh,08,1,inline,,"divide: var steps = Math.Max(1, (int)MathF.Ceiling(Vector2.Distance(a, b) / 0.5f));"
+Sim/Navigation/StuckWatch.cs,400,0.5f,maps.stuckWatch.blockerOnLineDistanceDivisor,m,ban_kinh,08,1,inline,,"divide: var steps = Math.Max(1, (int)MathF.Ceiling(Vector2.Distance(a, b) / 0.5f));"
+Sim/Navigation/StuckWatch.cs,407,0.25f,maps.stuckWatch.blockerOnLineCellSizeScale,m,ban_kinh,08,1,inline,,"multiply: side = side.LengthSquared() > 1e-4f ? Vector2.Normalize(new Vector2(-side.Y, side.X)) * (world.Grid.CellSize * 0.25f) : Vector2.Zero;"
+Sim/Navigation/StuckWatch.cs,424,10f,maps.stuckWatch.nearbyTextDMin,x,nguong,08,1,inline,,compare: if (d > 10f) continue;
+Sim/Navigation/StuckWatch.cs,432,10f,maps.stuckWatch.nearbyTextDMin,x,nguong,08,1,inline,,compare: if (d > 10f) continue;
+Sim/Navigation/UnitCostField.cs,20,3,maps.unitCostField.layers,x,khac,08,1,const_to_property,,const_field: public const int Layers = 3;
+Sim/Navigation/UnitCostField.cs,26,40,maps.unitCostField.friendParkedCost,CP,khac,08,1,manual:int narrowed to byte,,"const_field: public const byte FriendParkedCost = 40, EnemyParkedCost = 80, StunnedCost = 250, RingCost = 10;"
+Sim/Navigation/UnitCostField.cs,26,80,maps.unitCostField.enemyParkedCost,CP,khac,08,1,manual:int narrowed to byte,,"const_field: public const byte FriendParkedCost = 40, EnemyParkedCost = 80, StunnedCost = 250, RingCost = 10;"
+Sim/Navigation/UnitCostField.cs,26,250,maps.unitCostField.stunnedCost,CP,khac,08,1,manual:int narrowed to byte,,"const_field: public const byte FriendParkedCost = 40, EnemyParkedCost = 80, StunnedCost = 250, RingCost = 10;"
+Sim/Navigation/UnitCostField.cs,26,10,maps.unitCostField.ringCost,CP,khac,08,1,manual:int narrowed to byte,,"const_field: public const byte FriendParkedCost = 40, EnemyParkedCost = 80, StunnedCost = 250, RingCost = 10;"
+Sim/Navigation/UnitCostField.cs,75,0.5f,maps.unitCostField.stampHullRadiusAdd,m,ban_kinh,08,1,inline,,add: var inner = v.Def.HullRadius + 0.5f;
+Sim/SimWorld.cs,26,1.5f,ai.simWorld.obstacleClearance,x,khac,06,1,manual:const used in a constant context (parameter default at Sim/Navigation/NavStates.cs:12),,const_field: public const float ObstacleClearance = 1.5f;
+Sim/SimWorld.cs,51,2f,ai.simWorld.ctorCellSize,m,ban_kinh,06,1,inline,,"ctor_arg:NavGrid: Grid = new NavGrid(map.Min, map.Width, map.Length, 2f);"
+Sim/SimWorld.cs,53,3,ai.simWorld.ctorCountMin,count,gioi_han_thuc_the,06,1,inline,,compare: if (map.Boundary.Count >= 3)
+Sim/SimWorld.cs,342,0.2f,ai.simWorld.entrenchReduction,x,khac,06,1,const_to_property,,const_field: public const float EntrenchReduction = 0.2f;
+Sim/SimWorld.cs,461,8,ai.simWorld.spawnVehicleMaxRings,x,khac,06,1,inline,,"arg:NavGrid.TryNearestWalkable: var at = def.Flying || afloat ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;"
+Sim/SimWorld.cs,465,8,ai.simWorld.spawnVehicleRegionSizeScale,x,sat_thuong,06,1,inline,,"multiply: Grid.RegionSize(region) * 8 < Grid.RegionSize(Grid.MainRegion) && Grid.TryNearestInRegion(at, Grid.MainRegion, 12, out var open))"
+Sim/SimWorld.cs,465,12,ai.simWorld.spawnVehicleMaxRings2,x,sat_thuong,06,1,inline,,"arg:NavGrid.TryNearestInRegion: Grid.RegionSize(region) * 8 < Grid.RegionSize(Grid.MainRegion) && Grid.TryNearestInRegion(at, Grid.MainRegion, 12, out var open))"
+Sim/SimWorld.cs,513,5.0,ai.simWorld.spawnVehicleTimeAdd,s,thoi_gian,06,1,inline,,add: if (HomeZones && !vehicle.Def.Static) vehicle.GraceUntil = Time + 5.0;
+Sim/SimWorld.cs,610,0.5f,ai.simWorld.clearSpotHullBoundAdd,m,ban_kinh,06,1,inline,,add: var reach = def.HullBound + 0.5f;
+Sim/SimWorld.cs,611,8,ai.simWorld.clearSpotRingMax,x,nguong,06,1,inline,,compare: for (var ring = 0; ring <= 8; ring++)
+Sim/SimWorld.cs,613,8,ai.simWorld.clearSpotRingScale,x,khac,06,1,inline,,multiply: var steps = ring == 0 ? 1 : ring * 8;
+Sim/SimWorld.cs,617,2f,ai.simWorld.clearSpotRingScale2,x,khac,06,1,inline,,"multiply: var p = at + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * 2f);"
+Sim/SimWorld.cs,624,0.5f,ai.simWorld.clearSpotHullBoundAdd,m,ban_kinh,06,1,inline,,add: var gap = def.HullBound + other.Def.HullBound + 0.5f;
+Sim/SimWorld.cs,637,8,ai.simWorld.footprintOpenKMax,x,sat_thuong,06,1,inline,,compare: for (var k = 0; k < 8; k++)
+Sim/SimWorld.cs,639,8f,ai.simWorld.footprintOpenKDivisor,x,sat_thuong,06,1,inline,,divide: var angle = k * SimMath.Tau / 8f;
+Sim/SimWorld.cs,652,6,ai.simWorld.freeSpotRingMax,x,nguong,06,1,inline,,compare: for (var ring = 0; ring <= 6; ring++)
+Sim/SimWorld.cs,654,8,ai.simWorld.freeSpotRingScale,x,khac,06,1,inline,,multiply: var steps = ring == 0 ? 1 : ring * 8;
+Sim/SimWorld.cs,658,2.5f,ai.simWorld.freeSpotRingScale2,x,khac,06,1,inline,,"multiply: var p = at + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * 2.5f);"
+Sim/SimWorld.cs,664,0.8f,ai.simWorld.freeSpotHullBoundScale,m,ban_kinh,06,1,inline,,multiply: var gap = def.HullBound * 0.8f + other.Def.HullBound * 0.8f;
+Sim/SimWorld.cs,664,0.8f,ai.simWorld.freeSpotHullBoundScale,m,ban_kinh,06,2,inline,,multiply: var gap = def.HullBound * 0.8f + other.Def.HullBound * 0.8f;
+Sim/SimWorld.cs,819,0.999f,ai.simWorld.applyStoresShareMin,share,nguong,06,1,inline,,compare: if (!v.HasStores || v.Supply != SupplyState.Fighting || v.StoresShare >= 0.999f) continue;
+Sim/SimWorld.cs,907,1000.0,ai.simWorld.profiledStepNowScale,s,thoi_gian,06,1,inline,,multiply: row[i] = (now - ticks) * 1000.0 / System.Diagnostics.Stopwatch.Frequency;
+Sim/SimWorld.cs,915,2,ai.simWorld.profiledStepI,x,khac,06,1,inline,,arg:SimWorld.Lap: Lap(2);
+Sim/SimWorld.cs,917,3,ai.simWorld.profiledStepI2,x,khac,06,1,inline,,arg:SimWorld.Lap: Lap(3);
+Sim/SimWorld.cs,919,4,ai.simWorld.profiledStepI3,x,khac,06,1,inline,,arg:SimWorld.Lap: Lap(4);
+Sim/SimWorld.cs,925,5,ai.simWorld.profiledStepI4,x,khac,06,1,inline,,arg:SimWorld.Lap: Lap(5);
+Sim/SimWorld.cs,927,6,ai.simWorld.profiledStepI5,x,khac,06,1,inline,,arg:SimWorld.Lap: Lap(6);
+Sim/SimWorld.cs,932,7,ai.simWorld.profiledStepI6,x,khac,06,1,inline,,arg:SimWorld.Lap: Lap(7);
+Sim/SimWorld.cs,934,8,ai.simWorld.profiledStepI7,x,khac,06,1,inline,,arg:SimWorld.Lap: Lap(8);
+Sim/SimWorld.cs,936,9,ai.simWorld.profiledStepI8,x,khac,06,1,inline,,arg:SimWorld.Lap: Lap(9);
+Sim/SimWorld.cs,938,10,ai.simWorld.profiledStepI9,x,khac,06,1,inline,,arg:SimWorld.Lap: Lap(10);
+Sim/SimWorld.cs,940,11,ai.simWorld.profiledStepI10,x,khac,06,1,inline,,arg:SimWorld.Lap: Lap(11);
+Sim/SimWorld.cs,975,2.0,ai.simWorld.refillTimeAdd,s,thoi_gian,06,1,inline,,add: if (v.MineLayer is { Spread: > 0f } field && v.NextMineAt > Time + 2.0)
+Sim/SimWorld.cs,980,2,ai.simWorld.refillAliveScale,s,thoi_gian,06,1,inline,,multiply: if (alive * 2 < field.Max) v.NextMineAt = Time + 2.0;
+Sim/SimWorld.cs,980,2.0,ai.simWorld.refillTimeAdd,s,thoi_gian,06,1,inline,,add: if (alive * 2 < field.Max) v.NextMineAt = Time + 2.0;
+Sim/SimWorld.cs,1004,6f,ai.simWorld.crushCell,x,khac,06,1,const_to_property,,const_field: private const float CrushCell = 6f;
+Sim/SimWorld.cs,1024,0.5f,ai.simWorld.crushVegetationSpeedMax,m/s,tan_suat,06,1,inline,,compare: if (!v.IsAlive || v.Flying || v.Def.Static || v.Speed < 0.5f) continue;
+Sim/SimWorld.cs,1034,0.3f,ai.simWorld.crushVegetationHullRadiusAdd,m,ban_kinh,06,1,inline,,add: var reach = v.Def.HullRadius + 0.3f + prop.Radius * 0.5f;
+Sim/SimWorld.cs,1034,0.5f,ai.simWorld.crushVegetationRadiusScale,m,ban_kinh,06,1,inline,,multiply: var reach = v.Def.HullRadius + 0.3f + prop.Radius * 0.5f;
+Sim/SimWorld.cs,1058,6,ai.simWorld.pathsPerStep,x,khac,06,1,const_to_property,,const_field: internal const int PathsPerStep = 6;
+Sim/SimWorld.cs,1072,0.5f,ai.simWorld.pathToRepathTimer,s,thoi_gian,06,1,inline,,assign: vehicle.RepathTimer = 0.5f;
+Sim/SimWorld.cs,1127,35f,ai.simWorld.escapeBearingsDegrees,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"arg:SimMath.DegToRad: 0f, SimMath.DegToRad(35f), -SimMath.DegToRad(35f), SimMath.DegToRad(70f), -SimMath.DegToRad(70f),"
+Sim/SimWorld.cs,1127,70f,ai.simWorld.escapeBearingsDegrees2,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"arg:SimMath.DegToRad: 0f, SimMath.DegToRad(35f), -SimMath.DegToRad(35f), SimMath.DegToRad(70f), -SimMath.DegToRad(70f),"
+Sim/SimWorld.cs,1127,35f,ai.simWorld.escapeBearingsDegrees,x,khac,06,2,manual:static array table (FloatArray / IntArray entry),,"arg:SimMath.DegToRad: 0f, SimMath.DegToRad(35f), -SimMath.DegToRad(35f), SimMath.DegToRad(70f), -SimMath.DegToRad(70f),"
+Sim/SimWorld.cs,1127,70f,ai.simWorld.escapeBearingsDegrees2,x,khac,06,2,manual:static array table (FloatArray / IntArray entry),,"arg:SimMath.DegToRad: 0f, SimMath.DegToRad(35f), -SimMath.DegToRad(35f), SimMath.DegToRad(70f), -SimMath.DegToRad(70f),"
+Sim/SimWorld.cs,1128,110f,ai.simWorld.escapeBearingsDegrees3,x,khac,06,1,manual:static array table (FloatArray / IntArray entry),,"arg:SimMath.DegToRad: SimMath.DegToRad(110f), -SimMath.DegToRad(110f),"
+Sim/SimWorld.cs,1128,110f,ai.simWorld.escapeBearingsDegrees3,x,khac,06,2,manual:static array table (FloatArray / IntArray entry),,"arg:SimMath.DegToRad: SimMath.DegToRad(110f), -SimMath.DegToRad(110f),"
+Sim/SimWorld.cs,1140,6f,ai.simWorld.escapeRouteDistanceFloor,m,ban_kinh,06,1,inline,,"math_max: distance = MathF.Max(distance, 6f);"
+Sim/SimWorld.cs,1142,0.01f,ai.simWorld.escapeRouteLengthSquaredMin,m,ban_kinh,06,1,inline,,compare: var back = away.LengthSquared() > 0.01f ? Vector2.Normalize(away) : SimMath.Forward(v.Heading + MathF.PI);
+Sim/SimWorld.cs,1150,16f,ai.simWorld.escapeRouteDistanceSquaredMin,m,ban_kinh,06,1,inline,,"compare: if (TryGetRally(v.Team, out var home) && Vector2.DistanceSquared(home, v.Position) > 16f)"
+Sim/SimWorld.cs,1156,4f,ai.simWorld.escapeRouteDMin,m,ban_kinh,06,1,inline,,compare: for (var d = distance; d >= 4f; d -= 3f)
+Sim/SimWorld.cs,1156,3f,ai.simWorld.escapeRouteD,m,ban_kinh,06,1,inline,,compound_assign: for (var d = distance; d >= 4f; d -= 3f)
+Sim/SimWorld.cs,1161,4f,ai.simWorld.escapeRouteMovedMax,x,nguong,06,1,inline,,compare: if (moved < 4f) break;
+Sim/SimWorld.cs,1164,0.2f,ai.simWorld.escapeRouteMovedScale,m,ban_kinh,06,1,inline,,"multiply: var score = Vector2.Distance(p, threat) - here + moved * 0.2f - MathF.Max(0f, 10f - edge) -"
+Sim/SimWorld.cs,1164,10f,ai.simWorld.escapeRouteEdgeSub,m,ban_kinh,06,1,inline,,"subtract: var score = Vector2.Distance(p, threat) - here + moved * 0.2f - MathF.Max(0f, 10f - edge) -"
+Sim/SimWorld.cs,1165,8f,ai.simWorld.escapeRouteFlyingTrue,x,khac,06,1,inline,,conditional: (!v.Flying && Lanes.NoParkAt(p) ? 8f : 0f);
+Sim/SimWorld.cs,1176,0f,ai.simWorld.findNearestEnemyMinRange,m,ban_kinh,06,1,manual:parameter default,,"param_default: internal Vehicle? FindNearestEnemy(Vehicle from, float range, bool requireVisible, float minRange = 0f,"
+Sim/SimWorld.cs,1196,1.5f,ai.simWorld.issueGroupMoveSpacing,m,ban_kinh,06,1,inline,,local_init: var spacing = 1.5f;
+Sim/SimWorld.cs,1197,2f,ai.simWorld.issueGroupMoveRadiusScale,m,ban_kinh,06,1,inline,,"multiply: foreach (var v in _unitBuffer) spacing = MathF.Max(spacing, v.Radius * 2f + 1.5f);"
+Sim/SimWorld.cs,1197,1.5f,ai.simWorld.issueGroupMoveRadiusAdd,m,ban_kinh,06,1,inline,,"add: foreach (var v in _unitBuffer) spacing = MathF.Max(spacing, v.Radius * 2f + 1.5f);"
+Sim/SimWorld.cs,1238,2.5,ai.simWorld.stealthReveal,x,khac,06,1,const_to_property,,const_field: private const double StealthReveal = 2.5;
+Sim/SimWorld.cs,1282,31,ai.simWorld.refreshVisibilityValue,x,khac,06,1,manual:pattern,,relational_pattern: target.SeenByMask = target.VisibleToMask = target.Team is >= 0 and < 31 ? 1 << target.Team : 0;
+Sim/SimWorld.cs,1299,0.5f,ai.simWorld.refreshVisibilityStatMax,s,thoi_gian,06,1,inline,,"math_clamp: if (!target.IsMoving && Time - target.StillSince >= 1.0) sight *= 1f - Math.Clamp(tg.Stat(StatId.Camouflage), 0f, 0.5f);"
+Sim/SimWorld.cs,1306,31,ai.simWorld.refreshVisibilityValue,x,khac,06,1,manual:pattern,,relational_pattern: if (naval && Naval.Rules.LighthouseOwner is >= 0 and < 31 && target.Team != Naval.Rules.LighthouseOwner && !BlackedOut(Naval.Rules.LighthouseOwner) &&
+Sim/SimWorld.cs,1312,30,ai.simWorld.refreshVisibilityTeamMin,x,nguong,06,1,inline,,compare: if (!spotter.IsAlive || spotter.Team < 0 || spotter.Team > 30) continue;
+Sim/SimWorld.cs,1360,8f,ai.simWorld.ghillieReveal,x,khac,06,1,const_to_property,,const_field: public const float GhillieReveal = 8f;
+Sim/SimWorld.cs,1402,0.8f,ai.simWorld.staticFootprintMaxScale,count,ban_kinh,06,1,inline,,"multiply: private static float StaticFootprint(VehicleDef def) => MathF.Max(def.Length, def.Width) * 0.8f;"

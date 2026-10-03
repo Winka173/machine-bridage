@@ -520,10 +520,10 @@ namespace MachineBrigade.Sim.Abilities
         /// <summary>Aegis Dome: once a life, three or more allies under fire round it and all of them (itself too) turn invulnerable.</summary>
         private void Dome(Vehicle v, GearState g, double now)
         {
-            const float radius = 10f;
+            float radius = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DomeRadius;
             var pressed = 0;
             foreach (var ally in _world.VehicleList)
-                if (ally.IsAlive && ally.Team == v.Team && now - ally.LastHitTime < 1.0 && Vector2.DistanceSquared(ally.Position, v.Position) <= radius * radius)
+                if (ally.IsAlive && ally.Team == v.Team && now - ally.LastHitTime < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DomeUnderFireSeconds && Vector2.DistanceSquared(ally.Position, v.Position) <= radius * radius)
                     pressed++;
             if (pressed < 3) return;
             g.DomeUsed = true;

@@ -12,7 +12,7 @@ namespace MachineBrigade.Sim.Content
         public static partial class Modes
         {
             /// <summary>The supply (upkeep) curve, the underdog's catch-up and the kill pay (TeamEconomy / EconomySystem).</summary>
-            public static class EconomyRules
+            public static partial class EconomyRules
             {
                 /// <summary>Supply = floor(army cap x this): the army value kept up at full income (was "ArmyCap * 3 / 2").</summary>
                 public static float SupplyPerArmyCap = 1.5f;
@@ -41,7 +41,7 @@ namespace MachineBrigade.Sim.Content
             }
 
             /// <summary>Flags for rules kept off (HOLD): true has no code path yet; off is today's behaviour.</summary>
-            public static class HoldFlags
+            public static partial class HoldFlags
             {
                 /// <summary>Forward drops at a held outpost in the quick modes (today: only campaign missions that mark outposts).</summary>
                 public static bool OutpostForwardDropsQuickModes;
@@ -69,7 +69,7 @@ namespace MachineBrigade.Sim.Content
             }
 
             /// <summary>The Boss Hunt's time-to-kill targets (BossRushRules; seconds a mini and a main boss should take).</summary>
-            public static class BossRushRules
+            public static partial class BossRushRules
             {
                 public static float MiniSeconds = 66f, MainSeconds = 168f;
 
@@ -87,7 +87,7 @@ namespace MachineBrigade.Sim.Content
             /// Play-test 13 (lane C): the two vehicle self-defences (flares, hard-kill APS) work on every threat that arrives
             /// together, as a flare cloud or one APS activation does in real life; the APS reloads slower to pay for it.
             /// </summary>
-            public static class Countermeasures
+            public static partial class Countermeasures
             {
                 /// <summary>A flare release is cued when an IR missile is this close to arriving (s): the missile warner's terminal cue.</summary>
                 public static float FlareCueSeconds = 1.5f;
@@ -121,7 +121,7 @@ namespace MachineBrigade.Sim.Content
             /// The locked pricing rules (owner, balance round 2; manifest_v2 B1 / B5 / S04): the data's prices, outgoing damage
             /// and drop times were built by them. The game reads the built numbers; the export reads these (Xe_suy_ra).
             /// </summary>
-            public static class PriceRules
+            public static partial class PriceRules
             {
                 /// <summary>Upper baseCP of each price group but the last (≤ 4, 5-8, 9-13, ≥ 14).</summary>
                 public static int[] GroupMaxCp = { 4, 8, 13 };
@@ -147,14 +147,14 @@ namespace MachineBrigade.Sim.Content
         public static partial class Weapons
         {
             /// <summary>The blast falloff of a plain splash (DamageSystem.ApplyFalloff; was DamageSystem.EdgeFalloff).</summary>
-            public static class DamageRules
+            public static partial class DamageRules
             {
                 /// <summary>Damage at the rim of a one-layer blast, relative to the centre (support strikes, plain splash).</summary>
                 public static float EdgeFalloff = 0.25f;
             }
 
             /// <summary>What an enemy jammer does (CombatSystem.Launch, StrikeSystem.Launch, BossSystem.BigAttacks swarm).</summary>
-            public static class JamRules
+            public static partial class JamRules
             {
                 /// <summary>A jammed (or lock-lost) guided round lands this far off its mark at least (m; was 5f).</summary>
                 public static float GuidedMissMin = 5f;
@@ -173,7 +173,7 @@ namespace MachineBrigade.Sim.Content
         public static partial class Vehicles
         {
             /// <summary>The Trophy APS module (GearSystem.Equip, prompt 29 B2-APS-trophy D7).</summary>
-            public static class TrophyRules
+            public static partial class TrophyRules
             {
                 /// <summary>RETROFIT_ELIGIBLE: the fitted APS's radius when the vehicle has none of its own (m).</summary>
                 public static float Radius = 20f;
@@ -195,7 +195,7 @@ namespace MachineBrigade.Sim.Content
         public static partial class Modes
         {
             /// <summary>Defend and its endless run: the wave curve's numbers by difficulty (ModeSessions DefendSession.Build).</summary>
-            public static class DefendWaves
+            public static partial class DefendWaves
             {
                 /// <summary>Vehicles in wave 1 (Easy / Normal / Hard and above).</summary>
                 public static int StartEasy = 2, StartNormal = 3, StartHard = 4;
@@ -214,7 +214,7 @@ namespace MachineBrigade.Sim.Content
             }
 
             /// <summary>The waves' size factor by the reference base (BaseStrength.WaveScale).</summary>
-            public static class BaseStrengthRules
+            public static partial class BaseStrengthRules
             {
                 /// <summary>Wave scale = clamp((score / 100) ^ exponent, min, max).</summary>
                 public static float WaveScaleExponent = 0.75f, WaveScaleMin = 0.75f, WaveScaleMax = 2.5f;
