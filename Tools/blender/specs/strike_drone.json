@@ -1,0 +1,36 @@
+{
+ "id": "strike_drone",
+ "class": "jet",
+ "real": ["MQ-9 Reaper", "AGM-114 Hellfire", "GBU-39 SDB"],
+ "shape": "unit_sheet.json Phương tiện: UAV lớn cánh thẳng rất dài, mũi phình (radar), đuôi chữ Y, tên lửa dưới cánh; từ trên xuống: cánh dài gấp đôi thân; khoảng 4.4 x 8.0 x 1.5 m (0,4 x MQ-9 Reaper); vũ khí nhìn thấy AGM-114 Hellfire, GBU-39 SDB; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (MQ-9 published photographs; flying, gear retracted)",
+ "target_size": {"L": 4.25, "W": 8.04, "H": 1.24, "source": "balance.json modelSize", "tolerance": 0.10},
+ "features": [
+  {"feature": "fuselage with the bulbous satcom nose, EO/IR turret under the chin", "nodes": ["Fuselage", "Sensor", "Sensor_ball", "Glass"]},
+  {"feature": "very long straight wing (twice the fuselage) with flaps and ailerons, lights", "nodes": ["Wings", "Flaps", "Wing_lights"]},
+  {"feature": "Y tail: two fins canted up, the ventral fin down", "nodes": ["Tail", "Rudders"]},
+  {"feature": "three-bladed pusher propeller, dorsal intake, ventral cooler scoop, exhaust stubs", "nodes": ["Propeller", "Propeller_hub", "Propeller_blades", "Intakes", "Exhausts"]},
+  {"feature": "outer stations with twin Hellfire rails, inner stations with GBU-39 racks", "nodes": ["Pylons", "Racks", "Missiles", "Bombs_body", "Muzzle_missile", "Muzzle_rocket"]},
+  {"feature": "satcom and blade aerials, access panels", "nodes": ["Antennas", "Panels"]}
+ ],
+ "class_parts": ["fuselage", "canopy", "wings", "tail", "intakes", "exhaust", "pylons", "stores", "flares"],
+ "merged": {"flares": "Fuselage"},
+ "merged_note": "the Reaper has no flare dispenser (the def has no flareCharges); its canopy role is the EO/IR window. Gate request: the jet roles' flares only when the def has flares.",
+ "weapons": [
+  {"weapon": "drone_missile", "slot": "missile", "mount": "Pylons", "muzzles": ["Muzzle_missile"], "note": "main, 1 barrel; Muzzle_missile.001 on the other wing (kept)"},
+  {"weapon": "guided_bomb", "slot": "rocket", "mount": "Pylons", "muzzles": ["Muzzle_rocket"], "note": "aim Hull; Muzzle_rocket.001 on the other wing (kept)"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 3.7k: under the class minimum, over the floor"},
+ "team_zones": ["fuselage (Team)", "wings (Team)", "tail (Team)", "wing bands (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "falls (no parts)",
+ "faction_style": "MALE strike UAV (both factions)",
+ "details": {
+  "tier1": ["fuselage", "wing", "Y tail"],
+  "tier2": ["sensor turret", "propeller", "flaps", "pylons", "Hellfires", "GBU-39s", "intakes"],
+  "tier3": ["exhaust stubs", "aerials", "satcom hump", "panels", "lights", "missile and bomb fins", "racks"]
+ },
+ "questions": []
+}
