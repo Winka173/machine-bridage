@@ -1176,252 +1176,583 @@ vị trí trúng (`at`), node và model; sát thương, máu, vũ khí không đ
 | PT14-M3-3 | `kraken` tune `at` (mọi part) | theo model cũ (ô tên lửa) | turret_fore [0, 33.68, 7.93], turret_super [0, 25.09, 8.81], turret_aft [0, -42.46, 6.35], sec_fore [6.75, 15.61, 7.27], sec_aft [-6.32, -33.51, 9.08], vls [0, 18.6, 6.33], aa_port [-7.28, -8.77, 8.48], aa_starboard [6.84, -26.32, 8.48], ciws_fore [4.74, 21.4, 6.88], ciws_aft [-5.09, -45.79, 5.34], radar [6.4, 0, 16.63], flight_deck [-2.98, -26.32, 9.11], well_deck [0, -48.03, 3.92], machinery [6.4, -8.42, 14.89] (chia 1.14) | vẽ lại: tháp pháo thật ở mũi / đuôi, sàn bay chéo, đảo chỉ huy mạn phải |
 | PT14-M3-4 | `nyx` tune `at` | (không có: theo leviathan x 0.616) | turret_fore [0, 24.0, 6.96], vls [0, 15.64, 5.71], ciws_fore [0, 9.73, 12.56], ciws_aft [0, -17.82, 12.56] (chia 0.55) | vị trí của model mới (VLS ở mũi, hai pháo 127 mm trên nóc thượng tầng) |
 | PT14-M3-5 | `hydra` tune | (không có) | doors_l/r `at` [∓0.95, -7.51, 4.45], deck_gun `node` "Mount_gun.002" + `at` [0, 16.61, 6.23], rudder `at` [0, -30.45, 0.59] (chia 0.5057) | ba bệ súng của def nay có ba khẩu: Mount_gun / .001 là hai pháo đôi 57 mm, khẩu 100 mm (part deck_gun) là Mount_gun.002 |
+
 ## Gói cân bằng 2, mục 5 — tầm tối thiểu cho boss (lane C)
 
-Nhánh `feature/pack2-c`. Thay đổi lối chơi do chủ dự án yêu cầu (`Docs/prompts/export_pack2_vi.txt` mục 5). Tính tĩnh hoàn
-toàn: `python Tools/export/boss_min_range.py` đọc boss như loader dựng (`Tools/balance/p26_ab.expand` + `bossFrames.defaults`),
-vũ khí đã phân giải (inherits) và GLB của boss (nút `Muzzle_*` / `Mount_*`, cách VehicleView gán bệ thứ k của một slot cho nút thứ
-k theo tên; tỉ lệ vẽ = `modelSize` hoặc `scale`). Kết quả: sheet `Boss_tam_toi_thieu` trong 02_boss (223 dòng, mỗi bệ một dòng,
-đủ cột mục 5.1); QA: `_qa/boss_tam_toi_thieu.csv`, `_qa/boss_goc_nong_uoc_dinh.md` (sinh khi chạy, không commit). Không chạy
-Unity, test hay ExportGameDoc. Gói `Docs/export/current/` chưa xuất lại (lead xuất sau khi gộp các lane).
+Bản tính của nhánh `feature/pack2-c` (03/10: 65 vũ khí boss, model trước khi vẽ lại, bỏ qua `size`) đã gộp nhưng **không áp**: thay bằng mục "Gói cân bằng 2, bổ sung 03/10, mục 1" ngay dưới (cùng công cụ và khóa `groundMinReach`, tính lại).
 
-### Cách tính (đo từ tâm boss tới mép gần của mục tiêu)
+## Gói cân bằng 2, bổ sung 03/10, mục 1 — tầm tối thiểu cho boss (lane C)
 
-- Bắn thẳng: `max(0, (độ cao nòng − độ cao tâm mục tiêu) / tan(góc hạ)) + khoảng cách ngang theo hướng ngắm` (trục xoay → đầu
-  nòng; phần lệch của trục xoay so với tâm boss đổi dấu theo hướng nên lấy trung bình 0; bệ Hull: phần về phía trước).
-- Bệ rocket không hạ được (0°): phóng ngang rồi rơi: `sqrt(2 × tầm × độ chênh cao) + khoảng cách theo hướng ngắm`.
-- Bắn cầu: `v² sin(2θ)/g` với `v = sqrt(g × tầm tối đa)` (tốc độ đạn đạo của game: `projectileSpeed` là nhịp bay, dùng nó cho ra
-  hơn 1 km, vượt mọi tầm game) = `tầm × min(sin 2θmin, sin 2θmax)`; cối 45–85°, pháo / rocket bắn cầu 5–70°.
-- Tên lửa, drone: `max(khoảng cách vũ trang, khoảng cách khóa)` = 1 m (ước định: 65–100 m ngoài đời × tỉ lệ tầm game); bom: 0.
-- Boss bay: góc nhìn xuống tối đa 65° của VehicleView.Elevate, từ độ cao bay. Vũ khí chỉ bắn máy bay: không áp.
-- Độ cao tâm mục tiêu: nửa chiều cao model của xe ở `Xe_tham_chieu`: xe tăng chủ lực 1,13 m (dùng cho đề xuất), xe bọc thép bánh
-  lốp 1,0 → 0,76 m, tăng hạng nặng 1,07 m (cột riêng cho xe nhẹ và hạng nặng).
-- Góc nòng: dữ liệu vũ khí và bệ không có; mặc định theo lớp mục 5.2, đánh dấu `uoc_dinh` (danh sách cho chủ dự án kiểm:
-  `_qa/boss_goc_nong_uoc_dinh.md`, 144 bệ): pháo boss 8°, pháo hạm 5°, súng phụ (dưới 100 mm, hạm dưới 130 mm) 15°, pháo nhỏ /
-  CIWS / cao xạ ≤ 40 mm 15°, súng máy và phun lửa 20°, bệ rocket 0°.
-- Đề xuất = max(hiện có, hình học), làm tròn nửa lên 1 m. Đề xuất chạm tầm (≥ tầm − 1 m) bị cắt còn 80 % tầm (`cat_theo_tam`):
-  minRange ≥ range làm WeaponDef ném lỗi lúc nạp, và tầm tối thiểu vượt tầm thì súng câm với mặt đất.
-- Vùng chết của boss = nhỏ nhất của tầm tối thiểu các nòng chính (pháo, rocket, bắn cầu); dải chết = từ mép thân (bán kính boss;
-  boss bay: 0) tới đó. Vũ khí phủ: mọi vũ khí bắn được mặt đất có tầm tối thiểu nhỏ hơn bán kính vùng chết (súng máy, CIWS,
-  cao xạ, phun lửa, tên lửa, drone, bom, cận chiến). `co_che_vung_chet` = phủ ≥ 90 % dải chết (hoặc dải dưới 2 m).
+Nhánh `feature/pack2-minrange` (gộp `feature/pack2-c`, tính lại với các boss đã vẽ lại). Thay đổi lối chơi do chủ dự án yêu cầu
+(`Docs/prompts/export_pack2_vi.txt` mục 5 và "Bổ sung 03/10" mục 1 a-d). Bản tính cũ của `feature/pack2-c` (65 vũ khí, model
+trước khi vẽ lại, không tính `size`) **không áp**: khi gộp, `balance.json` giữ bản của lead rồi tính lại từ đầu. Chỉ lý thuyết:
+không chạy Unity, test hay ExportGameDoc; Sim biên dịch bằng .NET SDK (0 lỗi, cảnh báo cũ); gói xuất lại, `export.py check` 15/15.
 
-### Mã: boss có bị miễn tầm tối thiểu không — KHÔNG
+Công cụ: `python Tools/export/boss_min_range.py [--apply]` (đọc boss như loader dựng: `p26_ab.expand` + `bossFrames.defaults` +
+`BossTemplates.Resize`, vũ khí đã phân giải, GLB đã vẽ lại, `barrelLimits`). Sheet `Boss_tam_toi_thieu` (184 dòng, mỗi bệ một
+dòng) và `Boss_goc_nong` (góc nòng) trong 02_boss. QA (không commit): `_qa/boss_tam_toi_thieu.csv`, `_qa/boss_goc_nong_uoc_dinh.md`.
 
-`CombatSystem.InReach` (mọi bệ, mọi người bắn, cả boss: chọn mục tiêu qua `IsValidAutoTarget` / `BestInRange` và chặn bắn ở
-`Fire`) đã áp `MinRange` (tới tâm) và `MinReach` (tới mép); không có miễn trừ cho boss nên **không thêm cờ
-`ap_dung_tam_toi_thieu`**. Nhưng không ghi vào `minRange`: `minRange > 0` biến vũ khí thành bắn cầu (`WeaponDef.Indirect`,
-Definitions.cs: bỏ kiểm đường bắn, luật đánh chặn đạn cầu, vai pháo binh trong Commander / ConquestAi / TacticalAi, radar phản
-pháo) — tức đổi hành vi AI, điều mục 5.2 cấm. `minReach` cũng không hợp: nó chặn cả máy bay (cao xạ của boss không bắn được
-trực thăng ngay trên đầu). Nên thêm khóa vũ khí **`groundMinReach`** (m, chỉ mục tiêu mặt đất, đo như minReach):
+### 1a. Độ cao nòng — cách quy đổi
 
-- `Scripts/Sim/Combat/CombatSystem.cs` InReach: `if (weapon.GroundMinReach > 0f && !IsFlying(target) && distance - target.Radius < weapon.GroundMinReach) return false;`
-- `Scripts/Sim/Content/Catalog.P25A.cs`: thuộc tính `WeaponDef.GroundMinReach`, đọc `"groundMinReach"` (mặc định 0).
-- `Scripts/Sim/Content/Definitions.cs` `Tuned`: bản sao vũ khí mang theo `GroundMinReach`.
-- `Tools/export/core/units.py`: `groundMinReach` có đơn vị m.
+- `Boss_bo_phan.at` là `[phải, trước, cao]` trong khung boss (`BossDefs.At` = X, Y; `Height` = phần tử thứ ba): **`at_z_m` là độ
+  cao, `at_y_m` là phía trước** (không phải độ cao như bổ sung giả định). Gốc là mặt đất / mặt nước (boss bay cộng `altitude`).
+- `do_cao_nong_m` lấy nút `Muzzle_<slot>` / `Mount_<slot>` của GLB đã vẽ lại × tỉ lệ vẽ (bệ thứ k của một slot = nút thứ k theo
+  tên, như VehicleView), vì `at` của bộ phận là điểm trúng, không phải đầu nòng, và nhiều biến thể mang `at` của boss cha (vd.
+  monster dùng `at` của fortress_bastion nhưng model riêng to hơn). Khi model không có nút cho bệ: độ cao bộ phận trong dữ liệu
+  (`cach_tim_nut = bo_phan`, 1 bệ). Cột `do_cao_be_du_lieu_m` / `lech_glb_du_lieu_m` để kiểm (bảng cuối mục).
+- **Sửa lỗi bản cũ**: `p26_ab.expand` (bản Python của BossTemplates) bỏ qua `BossTemplates.Resize`: `size` nhân `scale`, bán kính
+  và `at` của bộ phận (biến thể: size cha × `variant.size`, mặc định 0,7; `at` trong `tune` đã ở đơn vị của cha). Bản cũ vẽ
+  behemoth ở 1,2 thay vì 1,885 (size 1,5712). Nay tính đúng (cột `he_so_size`).
 
-Biên dịch Sim bằng .NET SDK (netstandard2.1, C# 9): thành công, 0 lỗi, 2 cảnh báo có từ trước. AI (đi tới mục tiêu, vai trò,
-né pháo binh) vẫn đọc `MinRange` như cũ; vũ khí có vùng chết chỉ không bắn được và đổi sang mục tiêu khác trong tầm.
+### 1b. Giới hạn nòng — đọc mã, đưa ra dữ liệu
 
-### Số đổi trong balance.json
+Đọc `Sim/**`: **không có** hằng số pitch / elevation / depression nào; ngưỡng ngắm duy nhất của vũ khí là `MinRange`, `MinReach`,
+`GroundMinReach` và `GroundRange` trong `CombatSystem.InReach`. Góc nòng chỉ có ở phần vẽ (`Game/Views/VehicleView.Elevate`,
+hình ảnh, không đổi): máy bay -65..+5°, bắn máy bay 8..78°, bắn thẳng 0,5..4°, cối 55..72°, bệ phóng 28..48°, bắn cầu 24..50°.
+Theo luật B, giới hạn nòng của vũ khí boss nay nằm ở `balance.json` khối mới **`barrelLimits`** (giữ giá trị; sheet `Boss_goc_nong`):
 
-65 vũ khí boss: 63 nhận `groundMinReach`, 2 vũ khí đã bắn cầu nâng `minRange` (`supergun_800` 30 → 69, `p26_bastion_sec_b240`
-12 → 14). 3 vũ khí không phải của boss được ghim `groundMinReach: 0` để không thừa hưởng qua `inherits` (`p26_behemoth_be_rockets`,
-`p26_jotunn_jo_rockets`, `p26_icarus_ic_coil`: giá trị game không đổi). 6 đạn thứ hai của súng boss (`roundOf`, cùng nòng)
-thừa hưởng tầm tối thiểu của súng: `autocannon_40_flak` 16, `p26_ixion_125_he` 30, `borer_cannon_he` 20, `boss_heli_gun_flak`
-12, `boss_hmg_api` 8, `train_gun_he` 19. Không thêm vũ khí, không đổi máu boss, không đổi AI.
-
-Một vũ khí dùng ở nhiều bệ / nhiều boss có một giá trị: lấy đề xuất **nhỏ nhất** (không bắt bệ thấp chịu vùng chết của bệ cao);
-các bệ bị tính thấp hơn hình học ghi ở cột ghi chú. Muốn đúng từng bệ: tách id vũ khí hoặc thêm ghi đè theo boss (chủ dự án
-quyết). Vũ khí boss mà đơn vị thường cũng mang **giữ nguyên** (đề xuất trong ngoặc): `boss_flak` (mara_behemoth; 5),
-`hover_ciws` (hover_gunboat, sea_corvette, sea_cruiser; 17), `zu23` (zu23_technical; 29), `gunship_rockets` (gunship_heli; 10),
-`fighter_cannon` (fighter_jet, stealth_fighter; 21), `gunship_105` / `gunship_40mm` / `gunship_25mm` (sky_gunship; 22 / 22 / 21).
-
-Bị cắt còn 80 % tầm vì hình học vượt tầm (ghi / tầm, m): `p26_bastion_direct_b100` 28/36 (bastion_mk0, fortress_bastion,
-monster: hình học 36–53), `p26_ixion_125` 30/38 (68), `p26_kronos_direct_kr57` 22/28 (37), `p26_kronos_close_autocannon_30`
-24/30 (38), `p26_moloch_main_mo120` 25/32 (40), `p26_moloch_direct_mo120ap` 25/32 (65), `p26_jotunn_jo203` 48/60 (64),
-bệ cao của `p26_leviathan_sec_lev155` (114 → 88, ghi 82), `p26_typhon_sec_ty57` trên hydra (48 → 32, ghi 10) và
-`p26_bastion_tiny_autocannon_40` trên monster (30 → 22, ghi 20). Các súng này gần như chỉ còn bắn được ở vòng ngoài của tầm.
-
-### Theo boss và vũ khí (cũ → mới, m; cột trường: trường đã ghi, `-` không đổi)
-| boss | vũ khí (bệ) | lớp | cũ | mới | trường | ghi chú |
-|---|---|---|---|---|---|---|
-| argus | p26_roc_main_roc_bombs (0,1) | bom | 0 | 0 | - |  |
-| armored_train | train_gun (0,4) | phao_boss | 0 | 19 | groundMinReach | đề xuất của bệ 19/32 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| armored_train | boss_rockets (1) | be_rocket | 0 | 17 | groundMinReach |  |
-| armored_train | boss_hmg (2) | sung_may | 0 | 8 | groundMinReach |  |
-| armored_train | boss_flak (3,5) | phao_nho_ciws | 0 | 0 | - | dùng chung với mara_behemoth: giữ nguyên |
-| bastion_mk0 | p26_bastion_sec_b240 (0) | ban_cau | 12 | 14 | minRange |  |
-| bastion_mk0 | p26_bastion_direct_b100 (1,2) | phao_boss | 0 | 28 | groundMinReach | hình học 36/36 >= tầm 36: cắt 80 % |
-| behemoth | p26_behemoth_main_be152 (0) | phao_boss | 0 | 21 | groundMinReach | đề xuất của bệ 36 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| behemoth | p26_behemoth_tiny_be120 (1) | phao_boss | 0 | 21 | groundMinReach |  |
-| behemoth | p26_behemoth_close_boss_flak (2,3) | phao_nho_ciws | 0 | 13 | groundMinReach | đề xuất của bệ 20 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| behemoth | p26_behemoth_tiny_boss_missiles (4,5) | ten_lua | 0 | 1 | groundMinReach |  |
-| behemoth | p26_behemoth_tiny_kornet_twin (6) | phao_boss | 0 | 21 | groundMinReach |  |
-| behemoth | p26_behemoth_direct_be120 (7,8) | phao_boss | 0 | 21 | groundMinReach | đề xuất của bệ 24 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| behemoth | p26_behemoth_sec_be_rockets (9) | be_rocket | 0 | 15 | groundMinReach | đề xuất của bệ 23 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| behemoth_inferno | boss_flamer (0,2) | phun_lua | 0 | 18 | groundMinReach |  |
-| behemoth_inferno | boss_thermo (1) | phao_boss | 0 | 21 | groundMinReach |  |
-| behemoth_mk0 | p26_behemoth_main_be152 (0) | phao_boss | 0 | 21 | groundMinReach | đề xuất của bệ 36 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| behemoth_mk0 | p26_behemoth_direct_be120 (1,2) | phao_boss | 0 | 21 | groundMinReach | đề xuất của bệ 21/24 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| behemoth_mk0 | p26_behemoth_sec_be_rockets (3) | be_rocket | 0 | 15 | groundMinReach | đề xuất của bệ 23 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| behemoth_mk2 | p26_behemoth_main_be152 (0) | phao_boss | 0 | 21 | groundMinReach | đề xuất của bệ 36 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| behemoth_mk2 | p26_behemoth_close_boss_flak (1,2) | phao_nho_ciws | 0 | 13 | groundMinReach | đề xuất của bệ 20 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| behemoth_tempest | boss_railgun (0) | phao_boss | 0 | 39 | groundMinReach |  |
-| behemoth_tempest | coilgun (1,2) | phao_boss | 0 | 21 | groundMinReach |  |
-| caspian | hover_ciws (0) | phao_nho_ciws | 0 | 0 | - | dùng chung với hover_gunboat, sea_corvette, sea_cruiser: giữ nguyên |
-| caspian | zu23 (1,2) | phao_nho_ciws | 0 | 0 | - | dùng chung với zu23_technical: giữ nguyên |
-| cerberus | p26_behemoth_main_be152 (0) | phao_boss | 0 | 21 | groundMinReach |  |
-| cerberus | p26_behemoth_close_boss_flak (1,2) | phao_nho_ciws | 0 | 13 | groundMinReach |  |
-| cerberus | p26_behemoth_sec_be_rockets (3) | be_rocket | 0 | 15 | groundMinReach |  |
-| command_airship | p26_roc_main_roc_bombs (0,1) | bom | 0 | 0 | - |  |
-| command_airship | p26_roc_direct_roc_atgm (2,3) | ten_lua | 0 | 1 | groundMinReach |  |
-| command_airship | p26_roc_close_twin_30_bmpt (4,5) | phao_nho_ciws | 0 | 15 | groundMinReach |  |
-| command_airship | p26_roc_roc105 (6,7) | phao_boss | 0 | 17 | groundMinReach | đề xuất của bệ 18 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| daedalus | p26_daedalus_direct_dae_laser (0,3) | phao_boss | 0 | 12 | groundMinReach |  |
-| daedalus | p26_daedalus_sec_dae57 (1,2) | sung_phu | 0 | 12 | groundMinReach |  |
-| drone_mothership | p26_matriarch_tiny_mothership_cannon (0,4) | phao_boss | 0 | 11 | groundMinReach | đề xuất của bệ 11/13 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| drone_mothership | p26_matriarch_ma_drones (1) | drone | 0 | 1 | groundMinReach |  |
-| drone_mothership | p26_matriarch_close_boss_flak (2,3) | phao_nho_ciws | 0 | 14 | groundMinReach | đề xuất của bệ 17 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| drone_mothership | p26_matriarch_direct_ma_atgm (5,8) | ten_lua | 0 | 1 | groundMinReach |  |
-| drone_mothership | p26_matriarch_sec_autocannon_30 (6,7) | phao_nho_ciws | 0 | 12 | groundMinReach |  |
-| earth_borer | borer_drill (0) | can_chien | 0 | 0 | - |  |
-| earth_borer | borer_cannon (1,2) | sung_phu | 0 | 20 | groundMinReach |  |
-| fenrir | p26_jotunn_sec_jo_rockets (0,1) | be_rocket | 0 | 23 | groundMinReach | đề xuất của bệ 23/34 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| fenrir | p26_jotunn_close_boss_flak (2) | phao_nho_ciws | 0 | 18 | groundMinReach |  |
-| fortress_bastion | p26_bastion_sec_b240 (0) | ban_cau | 12 | 14 | minRange |  |
-| fortress_bastion | p26_bastion_direct_b100 (1,2) | phao_boss | 0 | 28 | groundMinReach | hình học 36/36 >= tầm 36: cắt 80 % |
-| fortress_bastion | p26_bastion_tiny_autocannon_40 (3,4) | phao_nho_ciws | 0 | 20 | groundMinReach |  |
-| fortress_bastion | p26_bastion_tiny_kornet_twin (5) | ten_lua | 0 | 1 | groundMinReach |  |
-| fortress_bastion | p26_bastion_close_boss_hmg (6,7) | sung_may | 0 | 18 | groundMinReach |  |
-| fortress_bastion | p26_bastion_main_b155 (8) | ban_cau | 20 | 20 | - |  |
-| fortress_bastion | p26_bastion_tiny_zu23 (9,10) | phao_nho_ciws | 0 | 23 | groundMinReach |  |
-| fortress_hive | mothership_drones (0,1) | drone | 0 | 1 | groundMinReach |  |
-| fortress_hive | boss_flak (2,3) | phao_nho_ciws | 0 | 0 | - | dùng chung với mara_behemoth: giữ nguyên |
-| garuda | p26_roc_main_roc_bombs (0,1) | bom | 0 | 0 | - |  |
-| garuda | p26_roc_direct_roc_atgm (2,3) | ten_lua | 0 | 1 | groundMinReach |  |
-| garuda | p26_roc_close_twin_30_bmpt (4,5) | phao_nho_ciws | 0 | 15 | groundMinReach | đề xuất của bệ 17 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| garuda | p26_roc_roc105 (6,7) | phao_boss | 0 | 17 | groundMinReach |  |
-| hydra | p26_typhon_sec_ty57 (0,1) | phao_ham | 0 | 10 | groundMinReach | đề xuất của bệ 10/32 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất); hình học 48 >= tầm 40: cắt 80 % |
-| hydra | p26_typhon_direct_ty100 (2) | sung_phu | 0 | 10 | groundMinReach |  |
-| hyperion | p26_icarus_sec_orbital_laser (0) | phao_boss | 0 | 11 | groundMinReach | đề xuất của bệ 14 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| hyperion | p26_icarus_main_ic_coil (1,2) | phao_boss | 0 | 13 | groundMinReach | đề xuất của bệ 21 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| hyperion | p26_icarus_direct_ic_laser (3,4) | phao_boss | 0 | 14 | groundMinReach | đề xuất của bệ 18 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| icarus_mk0 | p26_icarus_sec_orbital_laser (0) | phao_boss | 0 | 11 | groundMinReach |  |
-| ixion | p26_ixion_125 (0) | phao_boss | 0 | 30 | groundMinReach | hình học 68 >= tầm 38: cắt 80 % |
-| ixion | p26_ixion_mg (1,2) | sung_may | 0 | 26 | groundMinReach |  |
-| kraken | p26_leviathan_lev406 (0,1,2) | phao_ham | 0 | 65 | groundMinReach | đề xuất của bệ 97 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| kraken | p26_leviathan_sec_lev155 (3,4) | phao_ham | 0 | 82 | groundMinReach | đề xuất của bệ 84 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| kraken | p26_leviathan_direct_lev127 (5,6) | sung_phu | 0 | 13 | groundMinReach | đề xuất của bệ 35 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| kraken | aa_25_triple (7,8,9,10,11,12,13,14) | phong_khong | 0 | 0 | - | chỉ bắn máy bay |
-| kraken | sam_post (15) | phong_khong | 0 | 0 | - | chỉ bắn máy bay |
-| kronos | p26_kronos_close_autocannon_30 (0,4) | phao_nho_ciws | 0 | 24 | groundMinReach | hình học 38/37 >= tầm 30: cắt 80 % |
-| kronos | p26_kronos_direct_kr57 (1,2) | sung_phu | 0 | 22 | groundMinReach | hình học 37/37 >= tầm 28: cắt 80 % |
-| kronos | bucket_wheel (3) | can_chien | 0 | 0 | - |  |
-| kronos | p26_kronos_close_boss_rockets (5) | be_rocket | 0 | 30 | groundMinReach |  |
-| landing_hovercraft | hover_ciws (0,1) | phao_nho_ciws | 0 | 0 | - | dùng chung với hover_gunboat, sea_corvette, sea_cruiser: giữ nguyên |
-| landing_hovercraft | ciws_aa (2) | phong_khong | 0 | 0 | - | chỉ bắn máy bay |
-| landing_hovercraft | hover_rockets (3,4) | ban_cau | 12 | 12 | - |  |
-| leviathan | p26_leviathan_lev406 (0,1,2) | phao_ham | 0 | 65 | groundMinReach | đề xuất của bệ 65/72/92 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| leviathan | p26_leviathan_sec_lev155 (3,4) | phao_ham | 0 | 82 | groundMinReach | đề xuất của bệ 82/88 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất); hình học 114 >= tầm 110: cắt 80 % |
-| leviathan | p26_leviathan_direct_lev127 (5,6) | sung_phu | 0 | 13 | groundMinReach | đề xuất của bệ 24/35 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| leviathan | aa_25_triple (7,8,9,10,11,12,13,14) | phong_khong | 0 | 0 | - | chỉ bắn máy bay |
-| leviathan | sam_post (15) | phong_khong | 0 | 0 | - | chỉ bắn máy bay |
-| locust | p26_matriarch_ma_drones (0) | drone | 0 | 1 | groundMinReach |  |
-| locust | p26_matriarch_close_boss_flak (1) | phao_nho_ciws | 0 | 14 | groundMinReach | đề xuất của bệ 17 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| mega_gunship | gunship_rockets (0,4) | be_rocket | 0 | 0 | - | dùng chung với gunship_heli: giữ nguyên |
-| mega_gunship | boss_heli_gun (1,2) | phao_nho_ciws | 0 | 12 | groundMinReach |  |
-| mega_gunship | boss_minigun (3) | sung_may | 0 | 12 | groundMinReach |  |
-| mega_gunship | boss_hmg (5,6) | sung_may | 0 | 8 | groundMinReach | đề xuất của bệ 12 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| mobile_fortress | p26_jotunn_jo203 (0,7) | phao_boss | 0 | 48 | groundMinReach | hình học 61/64 >= tầm 60: cắt 80 % |
-| mobile_fortress | p26_jotunn_sec_jo_rockets (1,2) | be_rocket | 0 | 23 | groundMinReach |  |
-| mobile_fortress | p26_jotunn_close_boss_flak (3,4) | phao_nho_ciws | 0 | 18 | groundMinReach |  |
-| mobile_fortress | p26_jotunn_direct_jo125 (5) | phao_boss | 0 | 31 | groundMinReach |  |
-| mobile_fortress | p26_jotunn_tiny_twin_30_flak (6) | phao_nho_ciws | 0 | 18 | groundMinReach |  |
-| mobile_fortress | sam_post (8) | phong_khong | 0 | 0 | - | chỉ bắn máy bay |
-| moloch | p26_moloch_main_mo120 (0,3) | phao_boss | 0 | 25 | groundMinReach | hình học 40/40 >= tầm 32: cắt 80 % |
-| moloch | p26_moloch_tiny_zu23 (1,2) | phao_nho_ciws | 0 | 35 | groundMinReach |  |
-| moloch | p26_moloch_direct_mo120ap (4,5) | phao_boss | 0 | 25 | groundMinReach | hình học 65/65 >= tầm 32: cắt 80 % |
-| moloch | p26_moloch_close_boss_flak (6) | phao_nho_ciws | 0 | 35 | groundMinReach |  |
-| monster | p26_bastion_sec_b240 (0) | ban_cau | 12 | 14 | minRange |  |
-| monster | p26_bastion_direct_b100 (1,2) | phao_boss | 0 | 28 | groundMinReach | hình học 53/53 >= tầm 36: cắt 80 % |
-| monster | p26_bastion_tiny_autocannon_40 (3,4) | phao_nho_ciws | 0 | 20 | groundMinReach | đề xuất của bệ 22 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất); hình học 30/30 >= tầm 28: cắt 80 % |
-| monster | p26_bastion_tiny_kornet_twin (5) | ten_lua | 0 | 1 | groundMinReach |  |
-| monster | p26_bastion_close_boss_hmg (6,7) | sung_may | 0 | 18 | groundMinReach | đề xuất của bệ 20 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| monster | p26_bastion_main_b155 (8) | ban_cau | 20 | 20 | - |  |
-| monster | p26_bastion_tiny_zu23 (9,10) | phao_nho_ciws | 0 | 23 | groundMinReach | đề xuất của bệ 26 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| morrigan | air_to_air (0,1) | phong_khong | 0 | 0 | - | chỉ bắn máy bay |
-| morrigan | guided_bomb (2) | bom | 0 | 0 | - |  |
-| morrigan | fighter_cannon (3) | phao_nho_ciws | 0 | 0 | - | dùng chung với fighter_jet, stealth_fighter: giữ nguyên |
-| nuke_train | p26_nemesis_main_ne152 (0) | phao_boss | 0 | 33 | groundMinReach |  |
-| nuke_train | p26_nemesis_close_boss_flak (1,2,6) | phao_nho_ciws | 0 | 9 | groundMinReach | đề xuất của bệ 9/13 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| nuke_train | p26_nemesis_sec_boss_rockets (3) | be_rocket | 0 | 15 | groundMinReach |  |
-| nuke_train | sam_battery (4) | phong_khong | 20 | 20 | - | chỉ bắn máy bay |
-| nuke_train | p26_nemesis_direct_ne125 (5) | phao_boss | 0 | 19 | groundMinReach |  |
-| nyx | boss_railgun (0) | phao_ham | 0 | 39 | groundMinReach | đề xuất của bệ 42 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| nyx | p26_leviathan_direct_lev127 (1,2) | sung_phu | 0 | 13 | groundMinReach | đề xuất của bệ 13/25 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| rail_supergun | supergun_800 (0) | ban_cau | 30 | 69 | minRange |  |
-| rail_supergun | autocannon_40 (1,2) | phao_nho_ciws | 0 | 16 | groundMinReach |  |
-| rail_supergun | ciws_aa (3,4) | phong_khong | 0 | 0 | - | chỉ bắn máy bay |
-| scylla | naval_130_twin (0) | phao_ham | 0 | 72 | groundMinReach |  |
-| scylla | p26_leviathan_direct_lev127 (1) | sung_phu | 0 | 13 | groundMinReach | đề xuất của bệ 35 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| silver_bug | p26_icarus_sec_orbital_laser (0) | phao_boss | 0 | 11 | groundMinReach |  |
-| silver_bug | p26_icarus_main_ic_coil (1,2) | phao_boss | 0 | 13 | groundMinReach |  |
-| silver_bug | p26_icarus_direct_ic_laser (3,4) | phao_boss | 0 | 14 | groundMinReach |  |
-| silver_bug | p26_icarus_close_autocannon_40 (5,6) | phao_nho_ciws | 0 | 13 | groundMinReach |  |
-| sky_fortress | gunship_105 (0) | phao_boss | 0 | 0 | - | dùng chung với sky_gunship: giữ nguyên |
-| sky_fortress | gunship_40mm (1) | phao_nho_ciws | 0 | 0 | - | dùng chung với sky_gunship: giữ nguyên |
-| sky_fortress | gunship_25mm (2) | phao_nho_ciws | 0 | 0 | - | dùng chung với sky_gunship: giữ nguyên |
-| sky_fortress | griffin (3) | ten_lua | 0 | 1 | groundMinReach |  |
-| stymphalos | p26_matriarch_ma_drones (0) | drone | 0 | 1 | groundMinReach |  |
-| stymphalos | p26_matriarch_close_boss_flak (1) | phao_nho_ciws | 0 | 14 | groundMinReach |  |
-| stymphalos | p26_matriarch_direct_ma_atgm (2) | ten_lua | 0 | 1 | groundMinReach |  |
-| supreme_command | boss_hmg (0,1) | sung_may | 0 | 8 | groundMinReach | đề xuất của bệ 15 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| typhon | sam_post (0) | phong_khong | 0 | 0 | - | chỉ bắn máy bay |
-| typhon | p26_typhon_sec_ty57 (1,2) | sung_phu | 0 | 10 | groundMinReach | đề xuất của bệ 17 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-| typhon | p26_typhon_direct_ty100 (3) | sung_phu | 0 | 10 | groundMinReach | đề xuất của bệ 17 (vũ khí dùng ở bệ thấp hơn: lấy nhỏ nhất) |
-
-### Boss có vùng chết chưa được phủ (`co_che_vung_chet = false`) — chủ dự án quyết thêm vũ khí phụ hay đổi bệ
-
-| boss | vùng chết (m, từ tâm) | dải chết (m) | phủ | vũ khí gần nhất (tầm tối thiểu) |
+| lớp / họ | hạ tối đa (deg) | nâng min (deg) | nâng max (deg) | nguồn |
 |---|---|---|---|---|
-| ixion | 30 | 19 | 21 % | p26_ixion_mg (26) |
-| fenrir | 23 | 15,5 | 32 % | p26_jotunn_close_boss_flak (18) |
-| mobile_fortress | 23 | 15,5 | 32 % | p26_jotunn_close_boss_flak (18), p26_jotunn_tiny_twin_30_flak |
-| behemoth_inferno | 21 | 14,6 | 21 % | boss_flamer (18) |
-| behemoth_mk2 | 21 | 14,6 | 55 % | p26_behemoth_close_boss_flak (13) |
-| behemoth_tempest | 21 | 14,6 | 0 % | boss_railgun (39); coilgun đặt vùng chết |
-| moloch | 25 | 14 | 0 % | p26_moloch_tiny_zu23 (35) |
-| daedalus (bay) | 12 | 12 | 0 % | không có (mọi vũ khí cùng 12) |
-| nuke_train | 15 | 11,2 | 54 % | p26_nemesis_close_boss_flak (9) |
-| hyperion (bay) | 11 | 11 | 0 % | p26_icarus_main_ic_coil (13) |
-| icarus_mk0 (bay) | 11 | 11 | 0 % | không có (một vũ khí) |
-| silver_bug (bay) | 11 | 11 | 0 % | p26_icarus_close_autocannon_40 (13) |
-| behemoth_mk0 | 15 | 8,6 | 0 % | p26_behemoth_main_be152 (21) |
-| cerberus | 15 | 8,6 | 23 % | p26_behemoth_close_boss_flak (13) |
-| kronos | 22 | 8 | 0 % | p26_kronos_close_autocannon_30 (24); bucket_wheel chỉ 6 m |
-| bastion_mk0 | 14 | 6,5 | 0 % | p26_bastion_direct_b100 (28) |
-| supreme_command | 8 | 3,5 | 0 % | không có (chỉ boss_hmg) |
+| phao_boss (pháo boss) | 8 | - | 70 | uoc_dinh (mục 5.2) |
+| phao_ham (pháo hạm) | 5 | - | 45 | uoc_dinh |
+| sung_phu (súng phụ: < 100 mm, hạm < 130 mm, không phải bệ chính) | 15 | - | 70 | uoc_dinh |
+| phao_nho_ciws (pháo tự động ≤ 40 mm, CIWS) | 15 | - | 85 | uoc_dinh |
+| sung_may | 20 | - | 70 | uoc_dinh |
+| phun_lua | 20 | - | 45 | uoc_dinh |
+| be_rocket (bệ cố định) | 0 (không hạ) | - | 50 | uoc_dinh |
+| ban_cau (bắn cầu) | - | 5 | 70 | uoc_dinh |
+| họ `mortar` (ghi đè ban_cau) | - | 45 | 85 | uoc_dinh |
+| may_bay (boss bay) | 65 | - | 5 | mã: VehicleView.Elevate |
 
-### Xem lại thời gian hạ (dải chết ≥ 8 m; không đổi máu)
+Thứ tự tra: `"barrel": {..}` riêng của bệ (secondary) > của vũ khí > `families[họ]` > `classes[lớp]`; chưa vũ khí / bệ nào có
+giá trị riêng. Cũng ra dữ liệu: `classRules` (100 / 130 / 40 mm), `targetCentreHeightM` (xe nhẹ 1,0; xe tăng 1,3 — dùng cho đề
+xuất; hạng nặng 1,6: theo bổ sung 1c, thay cho nửa chiều cao model 1,13 m của bản cũ), `missileArmingM` 1, `capShare` 0,8,
+`coverShare` 0,9, `largeBandM` 8, `negligibleBandM` 2. 122 bệ dùng góc ước định (danh sách: `_qa/boss_goc_nong_uoc_dinh.md`).
 
-Công thức máu = P × t × 0,6 giả định đòn đánh gần cũng bị bắn; nay xe áp sát vào dải chết chỉ chịu vũ khí phủ nên thời gian hạ
-mục tiêu của boss tăng: **xem lại thời gian hạ** cho rail_supergun (dải 55 m), ixion (19), command_airship và garuda (17, bay),
-fenrir và mobile_fortress (15,5), behemoth_inferno, behemoth_mk2, behemoth_tempest (14,6), earth_borer, moloch (14),
-armored_train (13,4), daedalus (12), nuke_train (11,2), drone_mothership, hyperion, icarus_mk0, silver_bug (11), behemoth,
-behemoth_mk0, cerberus (8,6), kronos (8).
+### 1c. Công thức
+
+- Bắn thẳng: `tam_toi_thieu_hinh_hoc_tu_nong_m = max(0, (do_cao_nong_m − 1,3) / tan(goc_ha))` (công thức bổ sung 1c, tính từ đầu
+  nòng); `tam_toi_thieu_hinh_hoc_m` = cái đó + khoảng cách ngang theo hướng ngắm (trục xoay → đầu nòng; bệ Hull: phần về phía
+  trước), vì game đo từ tâm boss tới mép mục tiêu. Bệ rocket không hạ: `sqrt(2 × tầm × độ chênh cao)` + phần đó. Bắn cầu:
+  `v² sin(2θ)/g` với `v = sqrt(g × tầm)` = `tầm × min(sin 2θmin, sin 2θmax)`. Tên lửa / drone: 1 m. Bom, cận chiến, chỉ bắn máy bay: 0.
+- Đề xuất = làm tròn nửa lên 1 m của max(hiện tại, hình học); đề xuất ≥ tầm − 1 m bị cắt còn 80 % tầm (`cat_theo_tam`, 21 bệ):
+  `minRange ≥ range` làm WeaponDef ném lỗi, tầm tối thiểu vượt tầm làm súng câm với mặt đất.
+- Một id vũ khí có một giá trị: đề xuất **nhỏ nhất** trong các bệ mang nó (40 bệ bị ghi thấp hơn hình học của chúng, dấu `↓`).
+- Vùng chết = nhỏ nhất của giá trị ghi trên các nòng chính; dải chết từ mép thân (bán kính sau `size`; boss bay 0) tới đó; phủ khi
+  vũ khí bắn mặt đất có tầm tối thiểu nhỏ hơn với tới ≥ 90 % dải.
+
+### 1d. Áp dụng và đọc mã
+
+- **Không áp cho phòng thủ gần** (súng máy, phun lửa, pháo nhỏ / CIWS ≤ 40 mm, cận chiến: 51 bệ; sheet vẫn ghi công thức), vũ khí
+  chỉ bắn máy bay và bom. Vũ khí boss mà đơn vị thường cũng mang: giữ nguyên (đợt này không còn vũ khí nào như vậy).
+- Trường ghi: vũ khí bắn thẳng nhận **`groundMinReach`** (khóa của `feature/pack2-c`: m, đo tới mép, chỉ mục tiêu mặt đất,
+  `CombatSystem.InReach`), không phải `minRange`: `minRange > 0` làm vũ khí thành bắn cầu (`WeaponDef.Indirect`: bỏ kiểm đường
+  bắn, luật đánh chặn đạn cầu) và đưa xe vào vai pháo binh của Commander / ConquestAi / TacticalAi / WorldModel (`MinRange > 0`),
+  tức đổi AI — điều bổ sung 1d cấm. Vũ khí đã bắn cầu (`minRange > 0`) nâng `minRange`. `Vu_khi.min_range_m` vì thế chỉ đổi ở
+  vũ khí bắn cầu; giá trị mới của vũ khí bắn thẳng nằm ở `Vu_khi.ground_min_reach_m`.
+- Đọc mã: chọn mục tiêu (`IsValidAutoTarget` → `InReach`, cho cả `BestInRange` / `Retarget` / bệ phụ / bệ có cung) và bắn
+  (`CanFire` / vũ khí nạp điện → `InReach`) đều áp `MinRange`, `MinReach`, `GroundMinReach` cho mọi người bắn, **boss không được
+  miễn** → không cần cờ `ap_dung_tam_toi_thieu`. Lệnh tấn công có chỉ định vẫn qua `InReach` lúc bắn. Ngoài phạm vi: đòn lớn
+  (`BossSystem.BigAttacks`, loạt pháo `salvo` của tàu) là đòn kịch bản theo vùng, không đi qua tầm tối thiểu. AI (vai trò, đi
+  tới mục tiêu) vẫn đọc `MinRange` như cũ: súng có vùng chết chỉ đổi sang mục tiêu khác trong tầm.
+- 3 vũ khí không phải của boss ghim `groundMinReach: 0` để không thừa hưởng qua `inherits` (`p26_behemoth_be_rockets`,
+  `p26_jotunn_jo_rockets`, `p26_icarus_ic_coil`). Đạn thứ hai cùng nòng thừa hưởng: `p26_ixion_125_he` 30, `borer_cannon_he` 16,
+  `train_gun_he` 14. Không thêm vũ khí, không đổi máu, không đổi AI.
+
+### Kèm theo (chủ dự án duyệt): bệ có cung bắn bắt đầu ở giữa cung
+
+`Sim/Entities/Vehicle.cs` (hàm tạo): bệ có `arc` riêng (`ArcHalf > 0`) nay khởi đầu ở `heading + ArcCentre` thay vì hướng thân, nên
+tháp pháo sau (Bastion, Kraken…) không quay về phía trước trước lần ngắm đầu. Hash phát lại đổi (đằng nào cũng đổi vì tầm tối thiểu).
+
+### Chờ chạy game (chủ dự án chạy khi muốn)
+
+Unity Test Runner, EditMode: `CatalogCheck`, `TunablesTests`, `ReplayHashTests` (baseline mới: mọi trận có boss đổi). Unity
+`ExportGameDoc` xuất lại `Docs/export/game_snapshot.json`: bản chụp hiện tại có trước thay đổi, nên các cột lấy từ game.json của
+vũ khí boss (tầm tối thiểu đã dựng) còn giá trị cũ cho tới lần xuất đó; gói đã xuất lại từ dữ liệu.
 
 ### Hệ quả cân bằng
 
-- Áp sát boss để né pháo chính thì chịu: súng máy / cao xạ / CIWS đặt thấp (armored_train: boss_hmg + boss_flak phủ 100 %;
-  behemoth: cao xạ + ATGM; rail_supergun: Bofors 40 mm phủ 96 %), mũi khoan (earth_borer: phủ 100 %), Kornet đôi
-  (fortress_bastion, monster), bom / ATGM / 30 mm của khí cầu chỉ huy (command_airship, garuda), ATGM và drone (drone_mothership).
-  Boss mà vũ khí dùng chung với đơn vị thường được giữ 0 (sky_fortress, mega_gunship, caspian, fortress_hive) không có vùng chết.
-- Dễ bị áp sát nhất (dải chết lớn, phủ yếu): ixion (19 m, chỉ súng máy đặt cao phủ 21 %), moloch và behemoth_tempest (14 m,
-  không gì phủ), fenrir / mobile_fortress (15,5 m, cao xạ 32 %), behemoth_inferno (phun lửa chỉ phủ 21 %), và các tàu vũ trụ
-  bay thấp (daedalus, hyperion, icarus_mk0, silver_bug: 11–12 m ngay dưới bụng, không gì phủ).
-- Tàu: pháo chính 406 mm không bắn được mặt đất trong 65 m, 155 mm trong 82 m; vùng chết của tàu do pháo phụ 127 mm đặt (13 m,
-  lấy theo bệ thấp của nyx / scylla; bệ của leviathan / kraken cho 24–35 m). Cao xạ của tàu chỉ bắn máy bay.
-- Pháo phòng thủ gần đặt cao cũng có vùng chết theo công thức (không ép về 0): moloch zu23 35 m, caspian zu23 29 m (giữ 0 vì dùng
-  chung), behemoth cao xạ 20 m (ghi 13 theo bệ thấp của cerberus).
-- Trận phát lại bị ảnh hưởng: mọi trận có boss — baseline của ReplayHashTests cần ghi lại; CatalogCheck cần chạy với khóa mới
-  `groundMinReach` (chủ dự án chạy khi muốn: Unity Test Runner, EditMode, lọc `ReplayHashTests` và `CatalogCheck`).
+- Áp sát để né pháo chính thì chịu súng máy / cao xạ / CIWS / phun lửa đặt thấp (không áp tầm tối thiểu): armored_train (HMG +
+  cao xạ), behemoth / behemoth_mk2 (cao xạ), behemoth_inferno (phun lửa), earth_borer (mũi khoan), moloch (ZU-23 + cao xạ),
+  nuke_train, fenrir, mobile_fortress (cao xạ), command_airship / drone_mothership (ATGM, bom, 30 mm, drone).
+- Dễ bị áp sát nhất (vùng chết không vũ khí nào phủ): các tàu (leviathan, kraken, nyx, scylla: pháo 127 mm là nòng chính thấp
+  nhất, 23 m; cao xạ và SAM chỉ bắn máy bay), tàu vũ trụ bay (daedalus, hyperion, icarus_mk0: 11–13 m ngay dưới bụng),
+  behemoth_mk0 và behemoth_tempest (không có súng phòng thủ gần bắn mặt đất), bastion_mk0.
+- Súng có hình học vượt tầm (cắt còn 80 %) gần như chỉ bắn được ở vòng ngoài: pháo chính behemoth (hình học 61 m / tầm 40),
+  moloch 120 mm (63–102 / 32), jotunn 203 mm (105–110 / 60) và 125 mm, ixion 125 mm, bastion 100 mm, nemesis 152 mm, pháo 155 mm
+  của tàu. Muốn khác: ghi `"barrel": {"depressionDeg": ..}` cho vũ khí / bệ rồi chạy lại `--apply` (chủ dự án quyết).
+
+### Theo boss và vũ khí (cũ → mới, m)
+
+Mỗi bệ một dòng (`chi_so_be` 0 = vũ khí chính). Cột: độ cao nòng (GLB vẽ lại; `bp` = độ cao bộ phận trong dữ liệu khi không có nút), góc hạ, hình học từ tâm boss, đề xuất, trường ghi, cũ → mới (giá trị game dùng; `=` không đổi). `†` cắt còn 80 % tầm; `↓` vũ khí dùng ở nhiều bệ lấy đề xuất nhỏ nhất (bệ này bị ghi thấp hơn hình học của nó); `PTG` phòng thủ gần, không áp (giữ hiện tại).
+
+**argus**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_roc_main_roc_bombs | bom | 32.56 | - | 0 | 0 | khong_ap | = 0 |
+| 1 | p26_roc_main_roc_bombs | bom | 32.56 | - | 0 | 0 | khong_ap | = 0 |
+
+**armored_train**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | train_gun | phao_boss | 3.71 | 8 | 24.72 | 25 | groundMinReach | 0 → 14 ↓ |
+| 1 | boss_rockets | be_rocket | 3.25 | 0 | 14.12 | 14 | groundMinReach | 0 → 14 |
+| 2 | boss_hmg | sung_may | 2.82 | 20 | 5.5 | 0 | PTG | = 0 |
+| 3 | boss_flak | phao_nho_ciws | 3.67 | 15 | 10 | 0 | PTG | = 0 |
+| 4 | train_gun | phao_boss | 3.23 | 8 | 13.7 | 14 | groundMinReach | 0 → 14 |
+| 5 | boss_flak | phao_nho_ciws | 1.81 | 15 | 2.97 | 0 | PTG | = 0 |
+
+**bastion_mk0**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_bastion_sec_b240 | ban_cau | 9.68 | - | 13.89 | 14 | minRange | 12 → 14 |
+| 1 | p26_bastion_direct_b100 | phao_boss | 3.39 | 8 | 19.39 | 19 | groundMinReach | 0 → 19 |
+| 2 | p26_bastion_direct_b100 | phao_boss | 3.39 | 8 | 19.39 | 19 | groundMinReach | 0 → 19 |
+
+**behemoth**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_behemoth_main_be152 | phao_boss | 7.67 | 8 | 60.53 | 32 | groundMinReach | 0 → 32 † |
+| 1 | p26_behemoth_tiny_be120 | phao_boss | 5.53 | 8 | 36.73 | 25 | groundMinReach | 0 → 25 † |
+| 2 | p26_behemoth_close_boss_flak | phao_nho_ciws | 9.46 | 15 | 33.49 | 0 | PTG | = 0 |
+| 3 | p26_behemoth_close_boss_flak | phao_nho_ciws | 9.46 | 15 | 33.49 | 0 | PTG | = 0 |
+| 4 | p26_behemoth_tiny_boss_missiles | ten_lua | 4 | - | 1 | 1 | groundMinReach | 0 → 1 |
+| 5 | p26_behemoth_tiny_boss_missiles | ten_lua | 4 | - | 1 | 1 | groundMinReach | 0 → 1 |
+| 6 | p26_behemoth_tiny_kornet_twin | phao_boss | 5.53 | 8 | 36.74 | 25 | groundMinReach | 0 → 25 † |
+| 7 | p26_behemoth_direct_be120 | phao_boss | 5.73 | 8 | 40.96 | 25 | groundMinReach | 0 → 21 † ↓ |
+| 8 | p26_behemoth_direct_be120 | phao_boss | 5.73 | 8 | 40.96 | 25 | groundMinReach | 0 → 21 † ↓ |
+| 9 | p26_behemoth_sec_be_rockets | be_rocket | 9.99 | 0 | 29.95 | 30 | groundMinReach | 0 → 23 ↓ |
+
+**behemoth_inferno**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | boss_flamer | phun_lua | 4.79 | 20 | 18.05 | 0 | PTG | = 0 |
+| 1 | boss_thermo | phao_boss | 3.67 | 8 | 20.55 | 21 | groundMinReach | 0 → 21 |
+| 2 | boss_flamer | phun_lua | 4.79 | 20 | 18.05 | 0 | PTG | = 0 |
+
+**behemoth_mk0**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_behemoth_main_be152 | phao_boss | 5.02 | 8 | 36.37 | 36 | groundMinReach | 0 → 32 ↓ |
+| 1 | p26_behemoth_direct_be120 | phao_boss | 3.61 | 8 | 20.81 | 21 | groundMinReach | 0 → 21 |
+| 2 | p26_behemoth_direct_be120 | phao_boss | 3.75 | 8 | 23.58 | 24 | groundMinReach | 0 → 21 ↓ |
+| 3 | p26_behemoth_sec_be_rockets | be_rocket | 6.53 | 0 | 23 | 23 | groundMinReach | 0 → 23 |
+
+**behemoth_mk2**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_behemoth_main_be152 | phao_boss | 5.31 | 8 | 39.06 | 32 | groundMinReach | 0 → 32 † |
+| 1 | p26_behemoth_close_boss_flak | phao_nho_ciws | 6.55 | 15 | 21.69 | 0 | PTG | = 0 |
+| 2 | p26_behemoth_close_boss_flak | phao_nho_ciws | 6.55 | 15 | 21.69 | 0 | PTG | = 0 |
+
+**behemoth_tempest**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | boss_railgun | phao_boss | 4.39 | 8 | 32.55 | 33 | groundMinReach | 0 → 33 |
+| 1 | coilgun | phao_boss | 3.16 | 8 | 16.78 | 17 | groundMinReach | 0 → 17 |
+| 2 | coilgun | phao_boss | 3.16 | 8 | 16.78 | 17 | groundMinReach | 0 → 17 |
+
+**command_airship**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_roc_main_roc_bombs | bom | 35.85 | - | 0 | 0 | khong_ap | = 0 |
+| 1 | p26_roc_main_roc_bombs | bom | 35.85 | - | 0 | 0 | khong_ap | = 0 |
+| 2 | p26_roc_direct_roc_atgm | ten_lua | 22.54 | - | 1 | 1 | groundMinReach | 0 → 1 |
+| 3 | p26_roc_direct_roc_atgm | ten_lua | 22.54 | - | 1 | 1 | groundMinReach | 0 → 1 |
+| 4 | p26_roc_close_twin_30_bmpt | phao_nho_ciws | 23.24 | 65 | 16.03 | 0 | PTG | = 0 |
+| 5 | p26_roc_close_twin_30_bmpt | phao_nho_ciws | 23.24 | 65 | 16.03 | 0 | PTG | = 0 |
+| 6 | p26_roc_roc105 | phao_boss | 35.85 | 65 | 21.82 | 22 | groundMinReach | 0 → 22 |
+| 7 | p26_roc_roc105 | phao_boss | 35.85 | 65 | 21.82 | 22 | groundMinReach | 0 → 22 |
+
+**daedalus**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_daedalus_direct_dae_laser | phao_boss | 19.04 | 65 | 12.93 | 13 | groundMinReach | 0 → 13 |
+| 1 | p26_daedalus_sec_dae57 | sung_phu | 19.04 | 65 | 12.93 | 13 | groundMinReach | 0 → 13 |
+| 2 | p26_daedalus_sec_dae57 | sung_phu | 19.04 | 65 | 12.93 | 13 | groundMinReach | 0 → 13 |
+| 3 | p26_daedalus_direct_dae_laser | phao_boss | 19.04 | 65 | 12.93 | 13 | groundMinReach | 0 → 13 |
+
+**drone_mothership**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_matriarch_tiny_mothership_cannon | phao_boss | 18.36 | 65 | 13.32 | 13 | groundMinReach | 0 → 11 ↓ |
+| 1 | p26_matriarch_ma_drones | drone | 17.02 | - | 1 | 1 | groundMinReach | 0 → 1 |
+| 2 | p26_matriarch_close_boss_flak | phao_nho_ciws | 34.81 | 65 | 20.58 | 0 | PTG | = 0 |
+| 3 | p26_matriarch_close_boss_flak | phao_nho_ciws | 34.44 | 65 | 20.41 | 0 | PTG | = 0 |
+| 4 | p26_matriarch_tiny_mothership_cannon | sung_phu | 14.96 | 65 | 10.68 | 11 | groundMinReach | 0 → 11 |
+| 5 | p26_matriarch_direct_ma_atgm | ten_lua | 16.86 | - | 1 | 1 | groundMinReach | 0 → 1 |
+| 6 | p26_matriarch_sec_autocannon_30 | phao_nho_ciws | 15.02 | 65 | 11.64 | 0 | PTG | = 0 |
+| 7 | p26_matriarch_sec_autocannon_30 | phao_nho_ciws | 15.02 | 65 | 11.64 | 0 | PTG | = 0 |
+| 8 | p26_matriarch_direct_ma_atgm | ten_lua | 17.02 | - | 1 | 1 | groundMinReach | 0 → 1 |
+
+**earth_borer**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | borer_drill | can_chien | 2.8 | - | 0 | 0 | PTG | = 0 |
+| 1 | borer_cannon | sung_phu | 5.04 | 15 | 15.91 | 16 | groundMinReach | 0 → 16 |
+| 2 | borer_cannon | sung_phu | 5.04 | 15 | 15.91 | 16 | groundMinReach | 0 → 16 |
+
+**fenrir**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_jotunn_sec_jo_rockets | be_rocket | 2.84 bp | 0 | 11.79 | 12 | groundMinReach | 0 → 12 |
+| 1 | p26_jotunn_sec_jo_rockets | be_rocket | 3.68 | 0 | 16.06 | 16 | groundMinReach | 0 → 12 ↓ |
+| 2 | p26_jotunn_close_boss_flak | phao_nho_ciws | 3.27 | 15 | 10.38 | 0 | PTG | = 0 |
+
+**fortress_bastion**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_bastion_sec_b240 | ban_cau | 17.97 | - | 13.89 | 14 | minRange | 12 → 14 |
+| 1 | p26_bastion_direct_b100 | phao_boss | 5.98 | 8 | 42.14 | 28 | groundMinReach | 0 → 19 † ↓ |
+| 2 | p26_bastion_direct_b100 | phao_boss | 5.98 | 8 | 42.14 | 28 | groundMinReach | 0 → 19 † ↓ |
+| 3 | p26_bastion_tiny_autocannon_40 | phao_nho_ciws | 5.83 | 15 | 24.74 | 0 | PTG | = 0 |
+| 4 | p26_bastion_tiny_autocannon_40 | phao_nho_ciws | 5.83 | 15 | 24.74 | 0 | PTG | = 0 |
+| 5 | p26_bastion_tiny_kornet_twin | ten_lua | 12.6 | - | 1 | 1 | groundMinReach | 0 → 1 |
+| 6 | p26_bastion_close_boss_hmg | sung_may | 10.33 | 20 | 29.19 | 0 | PTG | = 0 |
+| 7 | p26_bastion_close_boss_hmg | sung_may | 10.33 | 20 | 29.19 | 0 | PTG | = 0 |
+| 8 | p26_bastion_main_b155 | ban_cau | 5.8 | - | 13.02 | 20 | minRange | = 20 |
+| 9 | p26_bastion_tiny_zu23 | phao_nho_ciws | 10.33 | 15 | 38.08 | 0 | PTG | = 0 |
+| 10 | p26_bastion_tiny_zu23 | phao_nho_ciws | 10.33 | 15 | 38.08 | 0 | PTG | = 0 |
+
+**hydra**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_typhon_sec_ty57 | phao_ham | 4.4 | 5 | 35.43 | 35 | groundMinReach | 0 → 8 ↓ |
+| 1 | p26_typhon_sec_ty57 | sung_phu | 2.61 | 15 | 8.1 | 8 | groundMinReach | 0 → 8 |
+| 2 | p26_typhon_direct_ty100 | sung_phu | 2.53 | 15 | 7.8 | 8 | groundMinReach | 0 → 8 |
+
+**hyperion**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_icarus_sec_orbital_laser | phao_boss | 23.38 | 65 | 14.15 | 14 | groundMinReach | 0 → 11 ↓ |
+| 1 | p26_icarus_main_ic_coil | phao_boss | 32.76 | 65 | 20.5 | 21 | groundMinReach | 0 → 19 ↓ |
+| 2 | p26_icarus_main_ic_coil | phao_boss | 32.76 | 65 | 20.5 | 21 | groundMinReach | 0 → 19 ↓ |
+| 3 | p26_icarus_direct_ic_laser | phao_boss | 32.68 | 65 | 18.09 | 18 | groundMinReach | 0 → 18 |
+| 4 | p26_icarus_direct_ic_laser | phao_boss | 32.68 | 65 | 18.09 | 18 | groundMinReach | 0 → 18 |
+
+**icarus_mk0**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_icarus_sec_orbital_laser | phao_boss | 18.57 | 65 | 10.58 | 11 | groundMinReach | 0 → 11 |
+
+**ixion**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_ixion_125 | phao_boss | 9 | 8 | 66.52 | 30 | groundMinReach | 0 → 30 † |
+| 1 | p26_ixion_mg | sung_may | 9.61 | 20 | 25.32 | 0 | PTG | = 0 |
+| 2 | p26_ixion_mg | sung_may | 9.61 | 20 | 25.32 | 0 | PTG | = 0 |
+| 3 | pt14_ixion_30 | phao_nho_ciws | 8.55 | 15 | 31.95 | 0 | PTG | = 0 |
+| 4 | pt14_ixion_kornet | ten_lua | 8.57 | - | 1 | 1 | groundMinReach | 0 → 1 |
+| 5 | pt14_ixion_kornet | ten_lua | 8.57 | - | 1 | 1 | groundMinReach | 0 → 1 |
+| 6 | pt14_ixion_grad | ban_cau | 9.27 | - | 9.55 | 18 | minRange | = 18 |
+
+**kraken**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_leviathan_lev406 | phao_ham | 8.9 | 5 | 100.15 | 100 | groundMinReach | 0 → 72 ↓ |
+| 1 | p26_leviathan_lev406 | phao_ham | 10.97 | 5 | 123.78 | 124 | groundMinReach | 0 → 72 ↓ |
+| 2 | p26_leviathan_lev406 | phao_ham | 7.12 | 5 | 79.86 | 80 | groundMinReach | 0 → 72 ↓ |
+| 3 | p26_leviathan_sec_lev155 | phao_ham | 8.27 | 5 | 87.36 | 87 | groundMinReach | 0 → 87 |
+| 4 | p26_leviathan_sec_lev155 | phao_ham | 10.25 | 5 | 109.99 | 88 | groundMinReach | 0 → 87 † ↓ |
+| 5 | p26_leviathan_direct_lev127 | sung_phu | 7.58 | 15 | 29.04 | 29 | groundMinReach | 0 → 23 ↓ |
+| 6 | p26_leviathan_direct_lev127 | sung_phu | 5.85 | 15 | 22.6 | 23 | groundMinReach | 0 → 23 |
+| 7 | aa_25_triple | phong_khong | 9.9 | - | 0 | 0 | khong_ap | = 0 |
+| 8 | aa_25_triple | phong_khong | 9.9 | - | 0 | 0 | khong_ap | = 0 |
+| 9 | aa_25_triple | phong_khong | 9.9 | - | 0 | 0 | khong_ap | = 0 |
+| 10 | aa_25_triple | phong_khong | 9.9 | - | 0 | 0 | khong_ap | = 0 |
+| 11 | aa_25_triple | phong_khong | 9.9 | - | 0 | 0 | khong_ap | = 0 |
+| 12 | aa_25_triple | phong_khong | 9.9 | - | 0 | 0 | khong_ap | = 0 |
+| 13 | aa_25_triple | phong_khong | 9.9 | - | 0 | 0 | khong_ap | = 0 |
+| 14 | aa_25_triple | phong_khong | 9.9 | - | 0 | 0 | khong_ap | = 0 |
+| 15 | sam_post | phong_khong | 11.06 | - | 0 | 0 | khong_ap | = 0 |
+
+**landing_hovercraft**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | hover_ciws | phao_nho_ciws | 4.2 | 15 | 13.09 | 0 | PTG | = 0 |
+| 1 | hover_ciws | phao_nho_ciws | 4.2 | 15 | 13.09 | 0 | PTG | = 0 |
+| 2 | ciws_aa | phong_khong | 4.62 | - | 0 | 0 | khong_ap | = 0 |
+| 3 | hover_rockets | ban_cau | 4.49 | - | 9.55 | 12 | minRange | = 12 |
+| 4 | hover_rockets | ban_cau | 4.49 | - | 9.55 | 12 | minRange | = 12 |
+
+**leviathan**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_leviathan_lev406 | phao_ham | 7.09 | 5 | 80.79 | 81 | groundMinReach | 0 → 72 ↓ |
+| 1 | p26_leviathan_lev406 | phao_ham | 8.99 | 5 | 102.55 | 103 | groundMinReach | 0 → 72 ↓ |
+| 2 | p26_leviathan_lev406 | phao_ham | 6.35 | 5 | 72.34 | 72 | groundMinReach | 0 → 72 |
+| 3 | p26_leviathan_sec_lev155 | phao_ham | 11.55 | 5 | 125.64 | 88 | groundMinReach | 0 → 87 † ↓ |
+| 4 | p26_leviathan_sec_lev155 | phao_ham | 8.42 | 5 | 89.92 | 90 | groundMinReach | 0 → 87 ↓ |
+| 5 | p26_leviathan_direct_lev127 | sung_phu | 11.06 | 15 | 42.49 | 42 | groundMinReach | 0 → 23 ↓ |
+| 6 | p26_leviathan_direct_lev127 | sung_phu | 7.66 | 15 | 29.78 | 30 | groundMinReach | 0 → 23 ↓ |
+| 7 | aa_25_triple | phong_khong | 5.52 | - | 0 | 0 | khong_ap | = 0 |
+| 8 | aa_25_triple | phong_khong | 5.52 | - | 0 | 0 | khong_ap | = 0 |
+| 9 | aa_25_triple | phong_khong | 5.52 | - | 0 | 0 | khong_ap | = 0 |
+| 10 | aa_25_triple | phong_khong | 5.52 | - | 0 | 0 | khong_ap | = 0 |
+| 11 | aa_25_triple | phong_khong | 5.52 | - | 0 | 0 | khong_ap | = 0 |
+| 12 | aa_25_triple | phong_khong | 5.52 | - | 0 | 0 | khong_ap | = 0 |
+| 13 | aa_25_triple | phong_khong | 5.52 | - | 0 | 0 | khong_ap | = 0 |
+| 14 | aa_25_triple | phong_khong | 5.52 | - | 0 | 0 | khong_ap | = 0 |
+| 15 | sam_post | phong_khong | 9.27 | - | 0 | 0 | khong_ap | = 0 |
+
+**locust**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | locust_drones | drone | 22.47 | - | 1 | 1 | groundMinReach | 0 → 1 |
+| 1 | p26_matriarch_close_boss_flak | phao_nho_ciws | 30.06 | 65 | 15.7 | 0 | PTG | = 0 |
+
+**mega_gunship**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | gunship_rockets | be_rocket | 21.31 | 65 | 9.33 | 9 | groundMinReach | 0 → 9 |
+| 1 | boss_heli_gun | phao_nho_ciws | 20.93 | 65 | 11.76 | 0 | PTG | = 0 |
+| 2 | boss_heli_gun | phao_nho_ciws | 20.93 | 65 | 11.76 | 0 | PTG | = 0 |
+| 3 | boss_minigun | sung_may | 22.43 | 65 | 11.02 | 0 | PTG | = 0 |
+| 4 | gunship_rockets | be_rocket | 21.31 | 65 | 10.4 | 10 | groundMinReach | 0 → 9 ↓ |
+| 5 | boss_hmg | sung_may | 22.43 | 65 | 11.02 | 0 | PTG | = 0 |
+| 6 | boss_hmg | sung_may | 22.75 | 65 | 12.08 | 0 | PTG | = 0 |
+
+**mobile_fortress**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_jotunn_jo203 | phao_boss | 13.98 | 8 | 105.03 | 48 | groundMinReach | 0 → 48 † |
+| 1 | p26_jotunn_sec_jo_rockets | be_rocket | 10.79 | 0 | 32.17 | 32 | groundMinReach | 0 → 12 ↓ |
+| 2 | p26_jotunn_sec_jo_rockets | be_rocket | 10.79 | 0 | 32.17 | 32 | groundMinReach | 0 → 12 ↓ |
+| 3 | p26_jotunn_close_boss_flak | phao_nho_ciws | 9.23 | 15 | 35.03 | 0 | PTG | = 0 |
+| 4 | p26_jotunn_close_boss_flak | phao_nho_ciws | 9.23 | 15 | 35.03 | 0 | PTG | = 0 |
+| 5 | p26_jotunn_direct_jo125 | phao_boss | 6.56 | 8 | 43.92 | 30 | groundMinReach | 0 → 30 † |
+| 6 | p26_jotunn_tiny_twin_30_flak | phao_nho_ciws | 9.23 | 15 | 35.03 | 0 | PTG | = 0 |
+| 7 | p26_jotunn_jo203 | phao_boss | 15.75 | 8 | 109.76 | 48 | groundMinReach | 0 → 48 † |
+| 8 | sam_post | phong_khong | 13.13 | - | 0 | 0 | khong_ap | = 0 |
+
+**moloch**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_moloch_main_mo120 | phao_boss | 8.55 | 8 | 62.9 | 25 | groundMinReach | 0 → 25 † |
+| 1 | p26_moloch_tiny_zu23 | phao_nho_ciws | 14.35 | 15 | 54.06 | 0 | PTG | = 0 |
+| 2 | p26_moloch_tiny_zu23 | phao_nho_ciws | 14.35 | 15 | 54.06 | 0 | PTG | = 0 |
+| 3 | p26_moloch_main_mo120 | phao_boss | 8.55 | 8 | 62.9 | 25 | groundMinReach | 0 → 25 † |
+| 4 | p26_moloch_direct_mo120ap | phao_boss | 13.99 | 8 | 101.59 | 25 | groundMinReach | 0 → 25 † |
+| 5 | p26_moloch_direct_mo120ap | phao_boss | 13.99 | 8 | 101.59 | 25 | groundMinReach | 0 → 25 † |
+| 6 | p26_moloch_close_boss_flak | phao_nho_ciws | 14.35 | 15 | 54.06 | 0 | PTG | = 0 |
+
+**monster**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_bastion_sec_b240 | ban_cau | 12.09 | - | 13.89 | 14 | minRange | 12 → 14 |
+| 1 | p26_bastion_direct_b100 | phao_boss | 7.95 | 8 | 51.63 | 28 | groundMinReach | 0 → 19 † ↓ |
+| 2 | p26_bastion_direct_b100 | phao_boss | 7.95 | 8 | 51.63 | 28 | groundMinReach | 0 → 19 † ↓ |
+| 3 | p26_bastion_tiny_autocannon_40 | phao_nho_ciws | 7.95 | 15 | 29.14 | 0 | PTG | = 0 |
+| 4 | p26_bastion_tiny_autocannon_40 | phao_nho_ciws | 7.95 | 15 | 29.14 | 0 | PTG | = 0 |
+| 5 | p26_bastion_tiny_kornet_twin | ten_lua | 10.51 | - | 1 | 1 | groundMinReach | 0 → 1 |
+| 6 | p26_bastion_close_boss_hmg | sung_may | 7.18 | 20 | 19.45 | 0 | PTG | = 0 |
+| 7 | p26_bastion_close_boss_hmg | sung_may | 7.18 | 20 | 19.45 | 0 | PTG | = 0 |
+| 8 | p26_bastion_main_b155 | ban_cau | 7.24 | - | 13.02 | 20 | minRange | = 20 |
+| 9 | p26_bastion_tiny_zu23 | phao_nho_ciws | 7.18 | 15 | 25.24 | 0 | PTG | = 0 |
+| 10 | p26_bastion_tiny_zu23 | phao_nho_ciws | 7.18 | 15 | 25.24 | 0 | PTG | = 0 |
+
+**nuke_train**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_nemesis_main_ne152 | phao_boss | 7.39 | 8 | 50.7 | 32 | groundMinReach | 0 → 32 † |
+| 1 | p26_nemesis_close_boss_flak | phao_nho_ciws | 6.26 | 15 | 20.65 | 0 | PTG | = 0 |
+| 2 | p26_nemesis_close_boss_flak | phao_nho_ciws | 6.21 | 15 | 20.46 | 0 | PTG | = 0 |
+| 3 | p26_nemesis_sec_boss_rockets | be_rocket | 4.99 | 0 | 19.75 | 20 | groundMinReach | 0 → 20 |
+| 4 | sam_battery | phong_khong | 7.45 | - | 0 | 20 | khong_ap | = 20 |
+| 5 | p26_nemesis_direct_ne125 | phao_boss | 3.96 | 8 | 30.27 | 30 | groundMinReach | 0 → 30 |
+| 6 | p26_nemesis_close_boss_flak | phao_nho_ciws | 3.53 | 15 | 14.01 | 0 | PTG | = 0 |
+
+**nyx**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | boss_railgun | phao_ham | 3.82 | 5 | 39.06 | 39 | groundMinReach | 0 → 33 ↓ |
+| 1 | p26_leviathan_direct_lev127 | sung_phu | 6.87 | 15 | 24.75 | 25 | groundMinReach | 0 → 23 ↓ |
+| 2 | p26_leviathan_direct_lev127 | sung_phu | 6.87 | 15 | 24.75 | 25 | groundMinReach | 0 → 23 ↓ |
+
+**scylla**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | naval_130_twin | phao_ham | 4.32 | 5 | 41.48 | 41 | groundMinReach | 0 → 41 |
+| 1 | p26_leviathan_direct_lev127 | sung_phu | 7.8 | 15 | 28.23 | 28 | groundMinReach | 0 → 23 ↓ |
+
+**silver_bug**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | p26_icarus_sec_orbital_laser | phao_boss | 13.43 | 65 | 11.97 | 12 | groundMinReach | 0 → 11 ↓ |
+| 1 | p26_icarus_main_ic_coil | phao_boss | 28.97 | 65 | 18.75 | 19 | groundMinReach | 0 → 19 |
+| 2 | p26_icarus_main_ic_coil | phao_boss | 28.97 | 65 | 18.75 | 19 | groundMinReach | 0 → 19 |
+| 3 | p26_icarus_direct_ic_laser | phao_boss | 28.25 | 65 | 20.62 | 21 | groundMinReach | 0 → 18 ↓ |
+| 4 | p26_icarus_direct_ic_laser | phao_boss | 28.25 | 65 | 20.62 | 21 | groundMinReach | 0 → 18 ↓ |
+| 5 | p26_icarus_close_autocannon_40 | phao_nho_ciws | 28.97 | 65 | 18.75 | 0 | PTG | = 0 |
+| 6 | p26_icarus_close_autocannon_40 | phao_nho_ciws | 28.97 | 65 | 18.75 | 0 | PTG | = 0 |
+
+**typhon**
+
+| bệ | vũ khí | lớp | cao nòng | góc hạ | hình học | đề xuất | trường | cũ → mới |
+|---|---|---|---|---|---|---|---|---|
+| 0 | sam_post | phong_khong | 13.64 | - | 0 | 0 | khong_ap | = 0 |
+| 1 | p26_typhon_sec_ty57 | sung_phu | 5.13 | 15 | 20.56 | 21 | groundMinReach | 0 → 8 ↓ |
+| 2 | p26_typhon_sec_ty57 | sung_phu | 5.13 | 15 | 20.56 | 21 | groundMinReach | 0 → 8 ↓ |
+| 3 | p26_typhon_direct_ty100 | sung_phu | 5.13 | 15 | 20.56 | 21 | groundMinReach | 0 → 8 ↓ |
+
+### Theo vũ khí (balance.json `weapons[]`, cũ → mới)
+
+| vũ khí | trường | cũ | mới | boss dùng |
+|---|---|---|---|---|
+| borer_cannon | groundMinReach | 0 | 16 | earth_borer |
+| boss_railgun | groundMinReach | 0 | 33 | behemoth_tempest, nyx |
+| boss_rockets | groundMinReach | 0 | 14 | armored_train |
+| boss_thermo | groundMinReach | 0 | 21 | behemoth_inferno |
+| coilgun | groundMinReach | 0 | 17 | behemoth_tempest |
+| gunship_rockets | groundMinReach | 0 | 9 | mega_gunship |
+| locust_drones | groundMinReach | 0 | 1 | locust |
+| naval_130_twin | groundMinReach | 0 | 41 | scylla |
+| p26_bastion_direct_b100 | groundMinReach | 0 | 19 | bastion_mk0, fortress_bastion, monster |
+| p26_bastion_sec_b240 | minRange | 12 | 14 | bastion_mk0, fortress_bastion, monster |
+| p26_bastion_tiny_kornet_twin | groundMinReach | 0 | 1 | fortress_bastion, monster |
+| p26_behemoth_direct_be120 | groundMinReach | 0 | 21 | behemoth, behemoth_mk0 |
+| p26_behemoth_main_be152 | groundMinReach | 0 | 32 | behemoth, behemoth_mk0, behemoth_mk2 |
+| p26_behemoth_sec_be_rockets | groundMinReach | 0 | 23 | behemoth, behemoth_mk0 |
+| p26_behemoth_tiny_be120 | groundMinReach | 0 | 25 | behemoth |
+| p26_behemoth_tiny_boss_missiles | groundMinReach | 0 | 1 | behemoth |
+| p26_behemoth_tiny_kornet_twin | groundMinReach | 0 | 25 | behemoth |
+| p26_daedalus_direct_dae_laser | groundMinReach | 0 | 13 | daedalus |
+| p26_daedalus_sec_dae57 | groundMinReach | 0 | 13 | daedalus |
+| p26_icarus_direct_ic_laser | groundMinReach | 0 | 18 | hyperion, silver_bug |
+| p26_icarus_main_ic_coil | groundMinReach | 0 | 19 | hyperion, silver_bug |
+| p26_icarus_sec_orbital_laser | groundMinReach | 0 | 11 | hyperion, icarus_mk0, silver_bug |
+| p26_ixion_125 | groundMinReach | 0 | 30 | ixion |
+| p26_jotunn_direct_jo125 | groundMinReach | 0 | 30 | mobile_fortress |
+| p26_jotunn_jo203 | groundMinReach | 0 | 48 | mobile_fortress |
+| p26_jotunn_sec_jo_rockets | groundMinReach | 0 | 12 | fenrir, mobile_fortress |
+| p26_leviathan_direct_lev127 | groundMinReach | 0 | 23 | kraken, leviathan, nyx, scylla |
+| p26_leviathan_lev406 | groundMinReach | 0 | 72 | kraken, leviathan |
+| p26_leviathan_sec_lev155 | groundMinReach | 0 | 87 | kraken, leviathan |
+| p26_matriarch_direct_ma_atgm | groundMinReach | 0 | 1 | drone_mothership |
+| p26_matriarch_ma_drones | groundMinReach | 0 | 1 | drone_mothership |
+| p26_matriarch_tiny_mothership_cannon | groundMinReach | 0 | 11 | drone_mothership |
+| p26_moloch_direct_mo120ap | groundMinReach | 0 | 25 | moloch |
+| p26_moloch_main_mo120 | groundMinReach | 0 | 25 | moloch |
+| p26_nemesis_direct_ne125 | groundMinReach | 0 | 30 | nuke_train |
+| p26_nemesis_main_ne152 | groundMinReach | 0 | 32 | nuke_train |
+| p26_nemesis_sec_boss_rockets | groundMinReach | 0 | 20 | nuke_train |
+| p26_roc_direct_roc_atgm | groundMinReach | 0 | 1 | command_airship |
+| p26_roc_roc105 | groundMinReach | 0 | 22 | command_airship |
+| p26_typhon_direct_ty100 | groundMinReach | 0 | 8 | hydra, typhon |
+| p26_typhon_sec_ty57 | groundMinReach | 0 | 8 | hydra, typhon |
+| pt14_ixion_kornet | groundMinReach | 0 | 1 | ixion |
+| train_gun | groundMinReach | 0 | 14 | armored_train |
+
+Tổng: 43 vũ khí boss đổi.
+
+### Boss có vùng chết chưa được phủ (`co_che_vung_chet = false`) — xem lại thời gian hạ
+
+Chủ dự án quyết thêm vũ khí phụ hay đổi bệ (không thêm vũ khí, không đổi AI, không đổi máu ở lượt này).
+
+| boss | bán kính thân | vùng chết (từ tâm) | dải chết | % phủ | vũ khí chính định vùng chết | vũ khí gần nhất (tầm min) |
+|---|---|---|---|---|---|---|
+| bastion_mk0 | 6.8 | 14 | 7.21 | 0.0 | p26_bastion_sec_b240 | p26_bastion_direct_b100 (19 m) |
+| behemoth_mk0 | 6.6 | 21 | 14.43 | 0.0 | p26_behemoth_direct_be120 | p26_behemoth_sec_be_rockets (23 m) |
+| behemoth_tempest | 5.7 | 17 | 11.28 | 0.0 | coilgun | boss_railgun (33 m) |
+| daedalus | 0.0 | 13 | 13.0 | 0.0 | p26_daedalus_direct_dae_laser;p26_daedalus_sec_dae57 | không có vũ khí mặt đất nào khác |
+| hyperion | 0.0 | 11 | 11.0 | 0.0 | p26_icarus_sec_orbital_laser | p26_icarus_direct_ic_laser (18 m) |
+| icarus_mk0 | 0.0 | 11 | 11.0 | 0.0 | p26_icarus_sec_orbital_laser | không có vũ khí mặt đất nào khác |
+| kraken | 14.3 | 23 | 8.7 | 0.0 | p26_leviathan_direct_lev127 | p26_leviathan_lev406 (72 m) |
+| leviathan | 12.5 | 23 | 10.46 | 0.0 | p26_leviathan_direct_lev127 | p26_leviathan_lev406 (72 m) |
+| nyx | 6.9 | 23 | 16.1 | 0.0 | p26_leviathan_direct_lev127 | boss_railgun (33 m) |
+| scylla | 6.3 | 23 | 16.73 | 0.0 | p26_leviathan_direct_lev127 | naval_130_twin (41 m) |
+
+### Xem lại thời gian hạ (dải chết ≥ 8 m; không đổi máu)
+
+| boss | dải chết (m) | phủ | vũ khí phủ |
+|---|---|---|---|
+| armored_train | 10.94 | có | boss_flak;boss_hmg |
+| behemoth | 10.94 | có | p26_behemoth_close_boss_flak;p26_behemoth_tiny_boss_missiles |
+| behemoth_inferno | 13.8 | có | boss_flamer |
+| behemoth_mk0 | 14.43 | KHÔNG | - |
+| behemoth_mk2 | 25.04 | có | p26_behemoth_close_boss_flak |
+| behemoth_tempest | 11.28 | KHÔNG | - |
+| command_airship | 22.0 | có | p26_roc_close_twin_30_bmpt;p26_roc_direct_roc_atgm;p26_roc_main_roc_bombs |
+| daedalus | 13.0 | KHÔNG | - |
+| drone_mothership | 11.0 | có | p26_matriarch_close_boss_flak;p26_matriarch_direct_ma_atgm;p26_matriarch_ma_drones;p26_matriarch_sec_autocannon_30 |
+| earth_borer | 10.9 | có | borer_drill |
+| hyperion | 11.0 | KHÔNG | - |
+| icarus_mk0 | 11.0 | KHÔNG | - |
+| kraken | 8.7 | KHÔNG | - |
+| leviathan | 10.46 | KHÔNG | - |
+| mega_gunship | 9.0 | có | boss_heli_gun;boss_hmg;boss_minigun |
+| moloch | 8.39 | có | p26_moloch_close_boss_flak;p26_moloch_tiny_zu23 |
+| nuke_train | 14.39 | có | p26_nemesis_close_boss_flak |
+| nyx | 16.1 | KHÔNG | - |
+| scylla | 16.73 | KHÔNG | - |
+| silver_bug | 11.0 | có | p26_icarus_close_autocannon_40 |
+
+### Độ cao bộ phận trong dữ liệu khác nòng đã vẽ lại > 2 m (kiểm; không sửa ở lượt này)
+
+| boss | bệ | bộ phận | cao bộ phận (dữ liệu, sau size) | cao nòng (GLB) | lệch |
+|---|---|---|---|---|---|
+| bastion_mk0 | 0 | mortar | 5.8 | 9.68 | 3.89 |
+| behemoth | 9 | rocket_pod | 6.91 | 9.99 | 3.08 |
+| behemoth_mk0 | 3 | rocket_pod | 4.52 | 6.53 | 2.01 |
+| command_airship | 2 | hangar_l | 26.14 | 22.54 | -3.6 |
+| command_airship | 3 | hangar_r | 26.14 | 22.54 | -3.6 |
+| command_airship | 6 | pod_105_l | 24.73 | 35.85 | 11.12 |
+| command_airship | 7 | pod_105_r | 24.73 | 35.85 | 11.12 |
+| drone_mothership | 5 | uav_bay | 20.08 | 16.86 | -3.22 |
+| fortress_bastion | 0 | mortar | 11.32 | 17.97 | 6.64 |
+| fortress_bastion | 5 | kornet | 9.66 | 12.6 | 2.93 |
+| fortress_bastion | 6 | turret_rl | 4.98 | 10.33 | 5.35 |
+| fortress_bastion | 7 | turret_rr | 4.98 | 10.33 | 5.35 |
+| fortress_bastion | 9 | zu23_l | 8.15 | 10.33 | 2.17 |
+| fortress_bastion | 10 | zu23_r | 8.15 | 10.33 | 2.17 |
+| ixion | 0 | gun | 6.5 | 9.0 | 2.5 |
+| ixion | 1 | cab | 5.0 | 9.61 | 4.61 |
+| ixion | 2 | cab | 5.0 | 9.61 | 4.61 |
+| kraken | 15 | radar | 18.96 | 11.06 | -7.9 |
+| leviathan | 15 | radar | 21.84 | 9.27 | -12.57 |
+| mobile_fortress | 0 | howitzer | 11.6 | 13.98 | 2.38 |
+| mobile_fortress | 1 | rockets_l | 8.29 | 10.79 | 2.51 |
+| mobile_fortress | 2 | rockets_r | 8.29 | 10.79 | 2.51 |
+| mobile_fortress | 7 | howitzer_2 | 12.76 | 15.75 | 2.99 |
+| mobile_fortress | 8 | sam | 10.44 | 13.13 | 2.69 |
+| moloch | 0 | turret_fl | 11.18 | 8.55 | -2.63 |
+| moloch | 3 | turret_fr | 11.18 | 8.55 | -2.63 |
+| moloch | 4 | turret_rl | 11.18 | 13.99 | 2.81 |
+| moloch | 5 | turret_rr | 11.18 | 13.99 | 2.81 |
+| monster | 1 | turret_fl | 5.23 | 7.95 | 2.72 |
+| monster | 2 | turret_fr | 5.23 | 7.95 | 2.72 |
+| monster | 3 | turret_rl | 5.23 | 7.95 | 2.72 |
+| monster | 4 | turret_rr | 5.23 | 7.95 | 2.72 |
+| monster | 8 | casemate | 5.07 | 7.24 | 2.16 |
+| nuke_train | 4 | sam_car | 4.13 | 7.45 | 3.32 |
+| typhon | 0 | sam | 10.68 | 13.64 | 2.97 |
