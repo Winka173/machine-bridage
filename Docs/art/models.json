@@ -225,11 +225,11 @@
   },
   "behemoth_inferno": {
     "file": "behemoth_inferno.glb",
-    "triangles": 20046
+    "triangles": 23648
   },
   "behemoth_tempest": {
     "file": "behemoth_tempest.glb",
-    "triangles": 17418
+    "triangles": 16670
   },
   "billboard": {
     "file": "billboard.glb",
@@ -1717,7 +1717,7 @@
   },
   "stymphalos": {
     "file": "stymphalos.glb",
-    "triangles": 4186
+    "triangles": 10794
   },
   "stymphalos_drone": {
     "file": "stymphalos_drone.glb",
