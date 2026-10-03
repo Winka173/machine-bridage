@@ -2956,6 +2956,16 @@
     "FLAG tank_destroyer_hd: triangles 11,494 -> 10,558 (-8.1%); vertices 14,365 -> 14,143 (-1.5%); meshes 35 -> 54 (+54.3%); renderers 35 -> 54 (+54.3%); materials 8 -> 10 (+25.0%); materialSlots 35 -> 54 (+54.3%); fileBytes 735,028 -> 739,496 (+0.6%); structure changed",
     "FLAG towed_at_gun: triangles 1,996 -> 4,166 (+108.7%); vertices 2,010 -> 5,489 (+173.1%); meshes 18 -> 39 (+116.7%); renderers 18 -> 39 (+116.7%); materials 7 -> 9 (+28.6%); materialSlots 18 -> 39 (+116.7%); fileBytes 119,364 -> 306,388 (+156.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "elite_aa"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG elite_aa: triangles 5,456 -> 11,904 (+118.2%); vertices 6,428 -> 15,448 (+140.3%); meshes 41 -> 70 (+70.7%); renderers 41 -> 70 (+70.7%); materials 9 -> 13 (+44.4%); materialSlots 41 -> 70 (+70.7%); fileBytes 356,672 -> 819,188 (+129.7%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -23075,24 +23085,24 @@
   },
   "elite_aa": {
    "file": "elite_aa.glb",
-   "fileBytes": 356672,
-   "sha1": "51a62c0eeb1eb718",
+   "fileBytes": 819188,
+   "sha1": "4cefe758a67d5cd0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 47,
-   "meshes": 41,
-   "materials": 9,
+   "nodes": 76,
+   "meshes": 70,
+   "materials": 13,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 41,
-   "submeshes": 41,
-   "materialSlots": 41,
-   "materialsUsed": 9,
-   "triangles": 5456,
-   "vertices": 6428,
+   "renderers": 70,
+   "submeshes": 70,
+   "materialSlots": 70,
+   "materialsUsed": 13,
+   "triangles": 11904,
+   "vertices": 15448,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -23100,36 +23110,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 121,
+   "loosePieces": 363,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.771,
-    -0.0115,
-    -3.3867
+    -1.77,
+    -0.0704,
+    -3.5671
    ],
    "boundsMax": [
-    1.771,
-    3.3009,
-    4.071
+    1.77,
+    3.35,
+    3.866
    ],
    "size": [
-    7.458,
-    3.542,
-    3.312
+    7.433,
+    3.54,
+    3.42
    ],
    "center": [
     0.0,
-    1.645,
-    0.342
+    1.64,
+    0.149
    ],
-   "structureHash": "bd05365f9cd73840",
+   "structureHash": "c27637e34e3e78f3",
    "color0": {
-    "mean": 0.6271,
-    "min": 0.0769,
+    "mean": 0.5732,
+    "min": 0.0704,
     "max": 1.0,
-    "p05": 0.1431,
-    "p95": 0.981,
+    "p05": 0.1354,
+    "p95": 0.8963,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -23139,8 +23149,8 @@
     "main_cannon": [
      "Main_cannon",
      "Main_cannon_2",
-     "Main_cannon_2_gilt",
-     "Main_cannon_gilt"
+     "Main_cannon_2_ribs",
+     "Main_cannon_ribs"
     ],
     "muzzle_brake": [
      "Muzzle_brake",
@@ -23156,65 +23166,95 @@
     "point": [
      "Point_exhaust",
      "Point_fire"
-    ],
-    "launch": [
-     "Launch_tubes"
     ]
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "APS",
-    "APS_glow",
-    "APS_post",
-    "APS_sensors",
-    "Armor",
-    "Cdr_sight",
-    "Cdr_sight_glass",
-    "Cdr_sight_post",
-    "Chevrons",
-    "Deck",
-    "Elite_glow",
-    "Hatch_fittings",
-    "Hatch_fittings.001",
+    "Antennas",
+    "Deck_plates",
+    "Exhaust",
+    "Feed_covers",
+    "Fenders",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_pod_band",
+    "Gun_pods",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
+    "Hull_lower",
+    "Idlers",
+    "Jerrycans",
+    "Kit_latches",
+    "Kit_latches.001",
+    "Kit_racks",
+    "Kit_steel",
+    "Kit_steel.001",
+    "Kit_welds",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Launch_tubes",
     "Launcher_box",
-    "Light_rims",
     "Main_cannon",
     "Main_cannon_2",
-    "Main_cannon_2_gilt",
-    "Main_cannon_gilt",
+    "Main_cannon_2_ribs",
+    "Main_cannon_ribs",
+    "Mantlet",
+    "Missile_caps",
+    "Missiles",
     "Muzzle_brake",
     "Muzzle_brake_2",
     "Muzzle_main",
     "Muzzle_missile",
+    "Muzzle_sensor",
     "Point_exhaust",
     "Point_fire",
     "Radar",
+    "Radar_array",
     "Radar_dish",
+    "Radar_face",
+    "Radar_frame",
+    "Radar_glow",
     "Radar_mast",
-    "Skirt_edge",
+    "Radar_panel",
+    "Rollers",
+    "Sight",
+    "Sight.001",
+    "Sight_glow",
+    "Skirt_flaps",
     "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
+    "Spare_track",
     "Sprockets",
-    "Steel",
+    "Stowage",
+    "Stowage.001",
+    "Suspension",
     "Tail_lamps",
-    "Tracking_radar",
+    "Team_band",
+    "Team_band.001",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
     "Turret",
-    "Turret_armor",
     "Turret_body",
-    "Turret_steel",
+    "Turret_ring",
+    "Turret_roof",
     "Tyres",
+    "Vents",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 11,904 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 15,448 over the ground normal hard cap 12,600 (info: kept, owner rule)",
+    "renderers 70 over the ground normal budget 61"
+   ],
    "units": [
     "elite_aa"
    ],

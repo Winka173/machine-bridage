@@ -1,0 +1,37 @@
+{
+ "id": "elite_aa",
+ "class": "tracked",
+ "real": ["Rheinmetall Skyranger 35 turret on the Leopard 1 hull (the 2024 Leopard 1 / Gepard-successor pattern)", "Gepard (base chassis, unit_refs)", "FIM-92 Stinger twin launcher"],
+ "shape": "unit_refs: Rheinmetall Skyranger 35 (AHEAD rounds), Gepard (base chassis); elite of aa_vehicle. Leopard 1 hull with seven road wheels, the angular unmanned Skyranger-style turret carrying the def's twin 35 mm guns in armoured side pods, the search radar turning on a rear mast, the electro-optical sensor head, a Stinger box on the right; team-coloured body, black armour, gold bands, red-glowing sights (DECISIONS 25B2).",
+ "confidence": "xấp xỉ (Skyranger 30/35 and Leopard 1 photographs; the twin guns after the def's twin_35)",
+ "target_size": {"L": 7.41, "W": 3.52, "H": 3.36, "source": "balance.json modelSize", "tolerance": 0.10},
+ "features": [
+  {"feature": "Leopard 1 hull: the wedge nose, the long upper glacis, vertical sides behind skirts, the engine deck with grilles and exhausts", "nodes": ["Hull", "Hull_lower", "Fenders", "Skirts", "Grilles", "Point_exhaust"]},
+  {"feature": "seven road wheels a side, the front idler, the rear sprocket, four return rollers, a linked track", "nodes": ["Wheels", "Idlers", "Sprockets", "Rollers", "Tracks", "Track_links"]},
+  {"feature": "the angular unmanned turret with faceted cheeks, hatches and the team bands", "nodes": ["Turret", "Turret_body", "Turret_roof", "Hatches"]},
+  {"feature": "two 35 mm revolver guns in armoured side pods with their cradles and feed covers", "nodes": ["Mantlet", "Gun_pods", "Main_cannon", "Main_cannon_2", "Muzzle_brake", "Muzzle_brake_2", "Muzzle_main"]},
+  {"feature": "the search radar turning on its rear mast and the fixed fire-control radar panel", "nodes": ["Radar", "Radar_mast", "Radar_dish", "Radar_panel"]},
+  {"feature": "the electro-optical sensor head with its glowing window", "nodes": ["Sight", "Glass", "Sight_glow"]},
+  {"feature": "the twin Stinger box on the turret's right side", "nodes": ["Launcher_box", "Missiles", "Muzzle_missile"]},
+  {"feature": "smoke dischargers, stowage bins, jerrycans, aerials", "nodes": ["Smoke_launchers", "Stowage", "Jerrycans", "Antennas"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "smoke", "stowage"],
+ "merged": {"roof_mg": "Launcher_box"},
+ "weapons": [
+  {"weapon": "twin_35_ahead", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "barrels 1 in data (the two guns fire in turn from one point)"},
+  {"weapon": "sam", "slot": "missile", "mount": "Turret", "muzzles": ["Muzzle_missile"], "note": "aim Turret"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "cap": null, "lod1_share": 0.5, "lod2_share": 0.2, "note": "tracked: over the class maximum is information only"},
+ "team_zones": ["hull (Team)", "turret (Team)", "bands (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the turret burns; the runtime builds the wreck",
+ "faction_style": "elite: team body, EliteBlack armour, Gilded bands, EliteGlow sights (DECISIONS 25B2)",
+ "details": {
+  "tier1": ["hull", "turret", "gun pods", "running gear"],
+  "tier2": ["skirts", "radar mast", "sensor head", "Stinger box", "grilles", "hatches", "bins"],
+  "tier3": ["periscopes", "smoke tubes", "lamps", "tow hooks", "handles", "aerials", "bolts", "track links"]
+ },
+ "questions": []
+}
