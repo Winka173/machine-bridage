@@ -46,25 +46,23 @@
    "feature": "left-side gun deck: 105 mm aft, 40 mm, 25 mm forward, their ports",
    "nodes": [
     "Guns",
-    "Howitzer_brake",
     "Gun_ports",
+    "Gun_deck_windows",
     "Muzzle_main",
     "Muzzle_gun",
     "Muzzle_mg"
    ]
   },
   {
-   "feature": "sensor turrets: nose radar blister, IR / TV balls",
+   "feature": "sensor turrets: nose radar blister, IR / TV balls (merged per material)",
    "nodes": [
-    "Sensor",
-    "Sensor_turrets"
+    "Sensor"
    ]
   },
   {
-   "feature": "external tanks on pylons between the engines, flare dispensers",
+   "feature": "external tanks on pylons between the engines (tanks merged with the Team parts), flare dispensers",
    "nodes": [
     "Pylons",
-    "Drop_tanks",
     "Flares"
    ]
   }
