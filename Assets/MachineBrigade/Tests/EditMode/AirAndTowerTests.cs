@@ -98,17 +98,47 @@ namespace MachineBrigade.Tests
             world.Step(TestWorlds.Step);
             world.ClearEvents();
             world.Submit(new Command(CommandType.Attack, 0, new[] { bomber.Id }, target.Position, target.Id));
-            var gaps = new List<float>();
-            for (var t = 0f; t < 40f && gaps.Count < 6; t += TestWorlds.Step)
+            // The bomb-run fix (DECISIONS "Ném bom rải thảm", pass 2 follow-up): a stick's bomb i falls on the bomber's track,
+            // the lead (its speed over the fall) ahead of where the first bomb was let go, plus i spacings. The FAB-500's
+            // escape warning (T4) holds each landing back to its warning time, by when the bomber has flown on, so the bombs
+            // are measured against the track at release, not against the bomber at impact.
+            var stick = bomber.Arms[0].Stick;
+            Assert.IsNotNull(stick, "bomber_payload lays a stick");
+            var drops = new List<(double at, Vector2 origin, Vector2 aim, float heading, float speed)>();
+            var impacts = new List<Vector2>();
+            var start = Vector2.Zero;
+            for (var t = 0f; t < 40f && impacts.Count < 3; t += TestWorlds.Step)
             {
                 world.Step(TestWorlds.Step);
                 foreach (var e in world.Events)
-                    if (e.Kind == SimEventKind.ProjectileImpact && e.DefId == "bomber_payload" && bomber.IsAlive)
-                        gaps.Add(Vector2.Distance(bomber.Position, e.Position));
+                {
+                    if (e.DefId != "bomber_payload" || !bomber.IsAlive) continue;
+                    if (e.Kind == SimEventKind.ProjectileImpact) impacts.Add(e.Position);
+                    if (e.Kind != SimEventKind.WeaponFired) continue;
+                    // The stick's line as the game fixed it with its first bomb (the mount's state).
+                    if (drops.Count == 0) start = bomber.Weapons[0].StickStart;
+                    drops.Add((world.Time, e.Position, e.Target, bomber.StraightHeading, bomber.Speed));
+                }
                 world.ClearEvents();
             }
-            Assert.IsNotEmpty(gaps, "the bomber drops its load");
-            Assert.Less(gaps.Average(), 14f, "and the bombs land as it passes over, not ahead of it");
+            Assert.GreaterOrEqual(drops.Count, 2, "the bomber drops its load");
+            var first = drops.TakeWhile((d, i) => i == 0 || d.at - drops[i - 1].at < 1.0).ToList();
+            var forward = MachineBrigade.Sim.Core.SimMath.Forward(first[0].heading);
+            var side = new Vector2(-forward.Y, forward.X);
+            // The stick starts the lead ahead of where the first bomb was let go (the event's origin is the bomber's position
+            // plus its radius along the mount, so within a radius of it).
+            var lead = first[0].speed * MachineBrigade.Sim.Combat.CombatSystem.BombFall(bomber);
+            Assert.AreEqual(lead, Vector2.Dot(start - first[0].origin, forward), bomber.Radius + 0.1f, "the stick starts the lead ahead of the release");
+            for (var i = 0; i < first.Count; i++)
+            {
+                Assert.AreEqual(first[0].heading, first[i].heading, 1e-5f, "bomb " + i + ": the bomber holds its heading through the stick");
+                var off = first[i].aim - start;
+                Assert.AreEqual(i * stick.Spacing, Vector2.Dot(off, forward), stick.JitterAlong + 0.05f, "bomb " + i + ": on the track at the lead plus i spacings");
+                Assert.LessOrEqual(System.MathF.Abs(Vector2.Dot(off, side)), stick.JitterAcross + 0.05f, "bomb " + i + ": not off the track");
+                Assert.Greater(Vector2.Dot(first[i].aim - first[i].origin, forward), 0f, "bomb " + i + ": falls ahead of where it was let go");
+            }
+            foreach (var hit in impacts)
+                Assert.Less(drops.Min(d => Vector2.Distance(d.aim, hit)), 0.05f, "a bomb lands where it was dropped towards");
         }
     }
 }

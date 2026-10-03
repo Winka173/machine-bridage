@@ -277,9 +277,12 @@ namespace MachineBrigade.Tests
             {
                 var clean = Lay(unit, weapon, 7);
                 var s = clean.Round.Stick;
-                // A friendly tank 3 m off the line beside the stick's first bomb, and (a stick of 4 or more) one beside its last.
-                var friends = new List<Vector2> { CombatSystem.StickPoint(clean.Start, clean.Dir, s.Spacing, 0) + new Vector2(3f, 0f) };
-                if (s.Bombs >= 4) friends.Add(CombatSystem.StickPoint(clean.Start, clean.Dir, s.Spacing, s.Bombs - 1) + new Vector2(3f, 0f));
+                // A friendly tank half the safety distance behind the stick's first bomb and (a stick of 4 or more) beyond its
+                // last: those bombs fall by it, the next ones a spacing further on do not (beside a bomb, 3 m off the line, a
+                // friend was within the safety distance plus its own radius of the jet's second bomb too, 8.8 m on).
+                var back = 0.5f * s.Safety;
+                var friends = new List<Vector2> { CombatSystem.StickPoint(clean.Start, clean.Dir, s.Spacing, 0) - clean.Dir * back };
+                if (s.Bombs >= 4) friends.Add(CombatSystem.StickPoint(clean.Start, clean.Dir, s.Spacing, s.Bombs - 1) + clean.Dir * back);
                 var d = Lay(unit, weapon, 7, friends);
                 Assert.Greater(d.Impacts.Count, 0, weapon + ": the safe bombs still drop");
                 Assert.Less(d.Impacts.Count, s.Bombs, weapon + ": the bombs by friends are skipped");

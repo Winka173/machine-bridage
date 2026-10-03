@@ -18551,3 +18551,19 @@ cycle do not. Not compiled or run here (the lead compiles and runs the bomb test
   drawn falling from its stand-off), pass 4 (cards "N bombs, X m apart, Y m stick" from data; the bomber's "12 bombs" line;
   report). To check in play: the heavy bomber's release speed (the data assumes the run's 0.8 throttle; at release it may
   still be at 22 m/s, then its bombs fall a little behind it), the AXIS run in, and the few-target cut.
+
+## Ném bom rải thảm (pass 2 follow-up, lane B, 2026-10-03)
+The lead's four failing tests after merging passes 1-2 (a8bea43a); branch feature/bomb-p12b.
+- AirAndTowerTests.BombsLandUnderTheBomber was stale, not the lead: the FAB-500 is T4, so each landing is held to its
+  escape warning (2.7 s) while the bomber flies on, and the gap at impact measured that delay. It now checks each bomb
+  against the track: the stick starts the lead (speed x fall) ahead of the release, bomb i i spacings on (jitter
+  tolerance), the heading held, every impact on its aim.
+- BombStickTests.NoBombFallsInsideTheSafetyDistanceOfFriends: test setup. A friend 3 m beside the jet's first bomb was
+  also within safety 8 m + its 2.2 m radius of the second bomb (8.8 m on), so both were rightly skipped. The friend now
+  stands half the safety distance behind the first bomb (and beyond the last on sticks of 4+); the per-bomb skip is right.
+- PlayTest8ATests.SiegeBlastIsSmallerAndTheLongRangeSamsBigger: the siege mortar's 7.2 m (play-test 8 A) went back to
+  its 2B8 240 mm family's 9 m in prompt 25 A3 (4bb7b7a4, DECISIONS "25A", "A3 Weapon families": members share the
+  blast); the owner keeps it (play-test 12). Test expects 9; data unchanged.
+- Prompt34Tests.TheSameFamilyFiresTheSameRoundOnEveryBoss: weaponFamilyTable cal_23 boss.damage 7 -> 3.5, matching the
+  owner-approved zu23 at 2 barrels x 3.5 a round (DECISIONS "Prompt 35: owner review of the pilot", item 2). The table's
+  boss block is a reference only (no Sim code applies it); DPS unchanged.

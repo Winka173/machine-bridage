@@ -601,7 +601,7 @@
     { "id": "cal_12_7", "name": "12.7 mm heavy machine gun", "tier": 0, "boss": { "damage": 15, "core": 0, "edge": 0 } },
     { "id": "cal_14_5", "name": "14.5 mm heavy machine gun", "tier": 0 },
     { "id": "cal_20", "name": "20 mm", "tier": 1 },
-    { "id": "cal_23", "name": "23 mm", "tier": 1, "boss": { "damage": 7, "core": 0, "edge": 0 } },
+    { "id": "cal_23", "name": "23 mm", "tier": 1, "boss": { "damage": 3.5, "core": 0, "edge": 0 } },
     { "id": "cal_25", "name": "25 mm", "tier": 1, "variants": { "flak": "air-burst rounds against aircraft, the family's others are plain belted rounds" } },
     { "id": "cal_30", "name": "30 mm", "tier": 1, "boss": { "damage": 22, "core": 0, "edge": 0 }, "variants": { "flak": "the 2A38 / AK-630 air-burst (fragmentation, a 2.5 m burst) against aircraft; the family's round is a plain AP / HE belt", "ciws": "the AK-630 close-in weapon of the ships and hovercraft: a six-barrel 5,000 rpm belt of light rounds (12 a round at 300 m/s) against the 22 of the 2A42 / M230 class" } },
     { "id": "cal_35", "name": "35 mm Oerlikon", "tier": 1, "boss": { "damage": 25, "core": 2.5, "edge": 0 }, "variants": { "ap": "AP rounds (no burst) loaded against ground targets instead of the air-burst" } },
