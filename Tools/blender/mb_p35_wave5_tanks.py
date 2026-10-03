@@ -357,7 +357,7 @@ def _turtle_shell(a):
     with its ribs, the front with the gun slot and two vision slits, a side door each side, patches of rusty and
     fresh sheet, the anti-drone net hung on a tube frame over the front and the roof."""
     shell = a.part('Shell', 'MetalSheet')
-    half, y0, y1, zb, ze, zr = 1.48, -2.95, 3.15, .62, 2.05, 2.75
+    half, y0, y1, zb, ze, zr = 1.41, -2.95, 3.15, .62, 2.05, 2.75
     prof = [(-half, zb), (half, zb), (half, ze), (half * .55, zr - .08), (0, zr), (-half * .55, zr - .08),
             (-half, ze)]
     # Front and back as their own panels (the slot for the gun in the front), the long sides and the roof lofted.
@@ -406,7 +406,7 @@ def _turtle_shell(a):
         lg.cyl(.09, 2.2, loc=(0, y1 + .1, .9 + i * .19), rot=(0, R90, 0), seg=7, bevel=0)
     for x in (-1.0, 1.0):
         a.part('Kit_straps', 'Steel').box((.04, .25, .65), loc=(x, y1 + .1, 1.1), bevel=0)
-    K.jerrycan(a.part('Jerrycans', 'Crate'), (-(half + .1), 1.9, .62), rot=(0, 0, R90))
+    K.jerrycan(a.part('Jerrycans', 'Crate'), (.8, y1 + .12, .45))
     # The anti-drone net: a tube frame standing off the front and over the front half of the roof, the net on it.
     W.cable(a.part('Net_frame', 'Steel'), [(-half, y0 - .5, zb + .3), (-half, y0 - .5, ze + .2),
                                           (half, y0 - .5, ze + .2), (half, y0 - .5, zb + .3)], r=.03)
