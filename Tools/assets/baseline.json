@@ -3226,6 +3226,16 @@
    "changes": [
     "FLAG stealth_fighter: meshes 53 -> 38 (-28.3%); renderers 53 -> 38 (-28.3%); materialSlots 53 -> 38 (-28.3%); fileBytes 251,108 -> 238,316 (-5.1%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "elite_tank_destroyer"
+   ],
+   "reason": "P35 wave 9",
+   "changes": [
+    "elite_tank_destroyer: triangles 11,184 -> 11,140 (-0.4%); vertices 15,057 -> 15,019 (-0.3%); fileBytes 792,888 -> 790,948 (-0.2%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -24603,8 +24613,8 @@
   },
   "elite_tank_destroyer": {
    "file": "elite_tank_destroyer.glb",
-   "fileBytes": 792888,
-   "sha1": "59c90f142a88a44d",
+   "fileBytes": 790948,
+   "sha1": "680b9912e681c483",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -24619,8 +24629,8 @@
    "submeshes": 64,
    "materialSlots": 64,
    "materialsUsed": 13,
-   "triangles": 11184,
-   "vertices": 15057,
+   "triangles": 11140,
+   "vertices": 15019,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -24628,7 +24638,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 370,
+   "loosePieces": 369,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -24639,25 +24649,25 @@
    "boundsMax": [
     1.465,
     2.2249,
-    5.516
+    5.2992
    ],
    "size": [
-    8.886,
+    8.669,
     2.93,
     2.294
    ],
    "center": [
     0.0,
     1.078,
-    1.073
+    0.965
    ],
-   "structureHash": "f50e44acd792d0a8",
+   "structureHash": "98187e962df72238",
    "color0": {
-    "mean": 0.5805,
+    "mean": 0.5806,
     "min": 0.078,
     "max": 1.0,
-    "p05": 0.1878,
-    "p95": 0.8143,
+    "p05": 0.1876,
+    "p95": 0.8148,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -24762,8 +24772,8 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "triangles 11,184 over the ground normal hard cap 9,700 (info: kept, owner rule)",
-    "vertices 15,057 over the ground normal hard cap 12,600 (info: kept, owner rule)",
+    "triangles 11,140 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 15,019 over the ground normal hard cap 12,600 (info: kept, owner rule)",
     "renderers 64 over the ground normal budget 61"
    ],
    "units": [

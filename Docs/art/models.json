@@ -809,7 +809,7 @@
   },
   "elite_tank_destroyer": {
     "file": "elite_tank_destroyer.glb",
-    "triangles": 11184
+    "triangles": 11140
   },
   "engineer_vehicle": {
     "file": "engineer_vehicle.glb",

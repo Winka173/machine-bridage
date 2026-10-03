@@ -5,7 +5,7 @@
   "2S25M Sprut-SDM1 (the upgraded 2S25 on the BMD-4M chassis; unit_refs: 2S25 Sprut-SD, 2A75 125 mm APFSDS)",
   "remote 12.7 mm weapon station"
  ],
- "shape": "unit_refs: 2S25 Sprut-SD (2A75 125 mm APFSDS), elite of tank_destroyer: the upgraded Sprut-SDM1, a long low air-droppable hull with seven small road wheels, the boat bow with its folded trim vane, the flat angular turret with add-on armour boxes, the very long gun, the commander's panoramic sight and the remote 12.7 mm on its post; team body, black armour, gold bands, red-glowing sights (DECISIONS 25B2).",
+ "shape": "unit_refs: 2S25 Sprut-SD (2A75 125 mm APFSDS), elite of tank_destroyer: the upgraded Sprut-SDM1, a long low air-droppable hull with seven small road wheels, the boat bow with its folded trim vane, the flat angular turret with add-on armour boxes, the long 105 mm gun, the commander's panoramic sight and the remote 12.7 mm on its post; team body, black armour, gold bands, red-glowing sights (DECISIONS 25B2).",
  "confidence": "xấp xỉ (2S25M photographs, Army-2018 / 2020)",
  "target_size": {
   "L": 9.08,
@@ -52,7 +52,7 @@
    ]
   },
   {
-   "feature": "the very long 125 mm gun on its mantlet, thermal sleeve bands, fume extractor",
+   "feature": "the long 105 mm gun (the def's gun_105_apfsds) on its mantlet, thermal sleeve bands, fume extractor",
    "nodes": [
     "Mantlet",
     "Main_cannon",
@@ -111,7 +111,7 @@
    "muzzles": [
     "Muzzle_main"
    ],
-   "note": "1 barrel; the long gun after unit_refs"
+   "note": "1 barrel; a long 105 mm to match the data (wave 9)"
   },
   {
    "weapon": "hmg_roof",
