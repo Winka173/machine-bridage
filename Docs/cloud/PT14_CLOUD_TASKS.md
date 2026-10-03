@@ -135,3 +135,32 @@ the change minimal; the lead resolves conflicts.
    done and why, what needs a Unity look, questions for the owner.
 4. Push. The owner tells the local lead, who merges, compiles in Unity, checks LFS, renders, and updates the
    owner's test copy.
+
+## Cloud state 2026-10-03 (session 1)
+
+Branch `cloud/pt14-c`; commits on top of feature/visual-overhaul 4ff17fba: part 1 8f1354f1 (deletions), part 2
+0cb69985, 523e4117 and the docs commit after them (`git log --oneline origin/feature/visual-overhaul..cloud/pt14-c`).
+`dotnet build Tools/simbuild/Sim.csproj` succeeds. No tests written or run (owner: "không cần viết test").
+
+Done: part 1 entirely (list: Docs/fixes/playtest14_deleted.md; refunds = roster v9); part 2 items 1-8 (DECISIONS
+"Play-test 14 (lane C + lane B, cloud session 1)"; values in Docs/export/CHANGES.md PT14 and PT14-B).
+
+For local (Unity / LFS / owner):
+- Compile in Unity: Game/UI code was only syntax-checked. New files: MenuScreen.Command.cs, MenuScreen.Calls.cs,
+  Sim/Modes/BaseSystem.Hangars.cs, Sim/Abilities/FieldWorksSystem.Auras.cs (metas written by hand).
+- EditMode tests: part 1 tests were updated; part 2 changed behaviour that existing tests still assert (repair bay
+  repair, airfield pads and branches, fire-control link, laser_ad_station.net, Army tab order, Base strip/walls). They
+  were not updated (owner said no tests): expect failures there.
+- Look on device: one tap on Back / tabs (Tap.cs, MenuScreen.Back); the Base tab layout (strip now in the right panel,
+  bar on one row); the new Commander and HQ tabs; the support "Units called" tab; the hangar rally button in the deck bar.
+- Re-export Docs/export/current (needs the local Docs/Machine_Brigade_Design_Review.html; on the cloud 9 pictures drop).
+- Card renders for vehicle_hangar / aircraft_hangar (manifest entries not added) and the 3 hangar models (placeholder
+  drone_hangar model). Archived GLBs: check `git lfs` sees Archive/models/*.glb after the merge.
+- Regenerating CampaignText.cs with build_campaign.py reorders boss lines and undoes hand edits: kept the committed file.
+- The xlsx sources (Machine_Brigade_Can_bang.xlsx -> unlocks_sheet.json / NameSheetData; the AI sheet) still list the
+  deleted ids; re-importing them would bring them back.
+
+Questions for the owner:
+- Airdropped armour: implemented as "item use + ceil(1.5 × total) CP". Should it stop being a coin item instead?
+- Opening-squad role "radar_scout" lost all its units (Kerr, Orlov now open with one squad less): give them another role?
+- Hangars are Medium (fit from HQ level 1) and unlock at c3m04 / c7m02: OK, or another route/price?

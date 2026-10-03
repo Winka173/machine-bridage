@@ -450,3 +450,17 @@ Danh sách id đã xóa và thay thế: `Docs/fixes/playtest14_deleted.md`. Khô
 | PT14-15 | IFV `skills` | ["apc_smoke"] | [] | chủ dự án bỏ apc_smoke |
 | PT14-16 | Giá tháp `p32_tower_prices.py`: mốc "protect" | troop_shelter = 5 | shield_tower = 9 (giá tạm của nó) | troop_shelter bị xóa; chỉ là công cụ, không ghi dữ liệu |
 | PT14-17 | Save cũ (roster version 9) | - | hoàn tiền thẻ đã mua (`CardMerges.DeletedPt14`), xu + bản vẽ của cấp thẻ, 500 xu mỗi vật phẩm gunship | yêu cầu "file lưu cũ được hoàn lại" |
+
+## Play-test 14 lane B (cloud session 1): UI and base systems
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-B1 | repair_bay | sửa 1,5 %/s xe trong căn cứ | hào quang: mọi xe mặt đất +10 % sát thương, +10 % máu tối đa | kế hoạch PT14 |
+| PT14-B2 | airfield | bãi đáp: sửa 3 %/s, nạp đạn; nhánh hangar/service | hào quang: mọi máy bay (không tính drone) +10 % sát thương, +10 % tốc độ; nạp đạn ở HQ; bỏ 2 nhánh | kế hoạch PT14 |
+| PT14-B3 | fire_control_centre → Defence Command Centre | tháp trong 30 m +12 % sát thương, dồn mục tiêu | mọi công trình +15 % tầm, +10 % máu | kế hoạch PT14 |
+| PT14-B4 | laser_ad_station | nhánh .laser / .net | chỉ .laser; tên Laser Defence Tower | kế hoạch PT14 |
+| PT14-B5 | vehicle_hangar, aircraft_hangar (mới) | - | Medium, máu 1800, giáp 2, rebuildCp 8; 1 quân/60 s, tối đa 2 còn sống; mở ở c3m04 / c7m02; AI style mặc định 0,5 / 0,3 | kế hoạch PT14 |
+| PT14-B6 | base.roster | 14 | 16 | thêm 2 hangar |
+| PT14-B7 | reinforcements | thả 2 MBT + 1 IFV, chỉ tốn vật phẩm | người chơi chọn quân ≤ 20 CP gốc; gọi tốn ceil(1,5 × tổng) CP (và vật phẩm) | chủ dự án 03/10 |
+| PT14-B8 | Garrison HQ | đội hỗn hợp theo cấp | tùy chọn: đội là đơn vị người chơi chọn (số lượng = số xe của đội cấp đó) | kế hoạch PT14 |
+| PT14-B9 | Giá tháp p32_tower_prices | - | bỏ laser_ad_station.net | biến thể bị xóa |
