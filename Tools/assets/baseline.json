@@ -3274,6 +3274,16 @@
    "changes": [
     "FLAG mine_rocket_truck: triangles 5,012 -> 7,340 (+46.4%); vertices 5,589 -> 9,871 (+76.6%); meshes 21 -> 56 (+166.7%); renderers 21 -> 56 (+166.7%); materials 8 -> 13 (+62.5%); materialSlots 21 -> 56 (+166.7%); fileBytes 298,264 -> 534,008 (+79.0%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "wheeled_howitzer"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG wheeled_howitzer: triangles 5,026 -> 7,342 (+46.1%); vertices 5,420 -> 9,451 (+74.4%); meshes 35 -> 60 (+71.4%); renderers 35 -> 60 (+71.4%); materials 8 -> 13 (+62.5%); materialSlots 35 -> 60 (+71.4%); fileBytes 303,388 -> 519,188 (+71.1%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -60905,24 +60915,24 @@
   },
   "wheeled_howitzer": {
    "file": "wheeled_howitzer.glb",
-   "fileBytes": 303388,
-   "sha1": "94847d16d840a0ec",
+   "fileBytes": 519188,
+   "sha1": "fc59a557b943bf6f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 39,
-   "meshes": 35,
-   "materials": 8,
+   "nodes": 64,
+   "meshes": 60,
+   "materials": 13,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 35,
-   "submeshes": 35,
-   "materialSlots": 35,
-   "materialsUsed": 8,
-   "triangles": 5026,
-   "vertices": 5420,
+   "renderers": 60,
+   "submeshes": 60,
+   "materialSlots": 60,
+   "materialsUsed": 13,
+   "triangles": 7342,
+   "vertices": 9451,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -60930,36 +60940,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 101,
-   "openEdges": 0,
+   "loosePieces": 224,
+   "openEdges": 8,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.175,
+    -1.0433,
     0.0,
-    -3.9089
+    -4.117
    ],
    "boundsMax": [
-    1.185,
-    2.6462,
-    3.995
+    1.0433,
+    2.976,
+    4.1512
    ],
    "size": [
-    7.904,
-    2.36,
-    2.646
+    8.268,
+    2.087,
+    2.976
    ],
    "center": [
-    0.005,
-    1.323,
-    0.043
+    0.0,
+    1.488,
+    0.017
    ],
-   "structureHash": "1ce636997c96eb9a",
+   "structureHash": "ea2205f8a2f54f9f",
    "color0": {
-    "mean": 0.7011,
-    "min": 0.2813,
+    "mean": 0.6111,
+    "min": 0.0572,
     "max": 1.0,
-    "p05": 0.3792,
-    "p95": 0.981,
+    "p05": 0.1746,
+    "p95": 0.9628,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -60967,7 +60977,8 @@
      "Turret"
     ],
     "main_cannon": [
-     "Main_cannon"
+     "Main_cannon",
+     "Main_cannon_evacuator"
     ],
     "muzzle_brake": [
      "Muzzle_brake"
@@ -60982,45 +60993,70 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Ammo_boxes",
+    "Air_tanks",
+    "Antennas",
     "Axles",
+    "Beacon_base",
+    "Beacons",
     "Bed",
     "Breech",
+    "Bumper",
     "Cab",
     "Chassis",
     "Cheeks",
+    "Cleaning_staff",
     "Cradle",
-    "Crate_bands",
-    "Crew_cab",
     "Deck_plate",
-    "Fenders",
+    "Doors",
+    "Elevating_arcs",
+    "Exhaust",
+    "Exhaust_caps",
+    "Exhaust_mufflers",
+    "Exhaust_shields",
     "Fuel_tank",
     "Glass",
-    "Grille",
-    "Hatch_fittings",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
     "Hatches",
+    "Hubs",
+    "Jack_pads",
+    "Jerrycans",
+    "Kit_handles",
+    "Kit_latches",
+    "Kit_racks",
+    "Kit_steel",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
+    "Leaf_springs",
+    "Loading_tray",
     "Lockers",
     "Main_cannon",
+    "Main_cannon_evacuator",
     "Mount",
+    "Mud_wings",
     "Muzzle_brake",
     "Muzzle_main",
+    "Outriggers",
     "Point_exhaust",
     "Point_fire",
-    "Racks",
+    "Rammer",
     "Recoil_cylinders",
+    "Sight",
     "Spade",
     "Spade_arms",
-    "Steel",
-    "Stowage",
-    "Team_bands",
-    "Tool_box",
+    "Steps",
+    "Tail_lamps",
+    "Tarp",
+    "Team_band",
     "Travel_lock",
     "Turret",
     "Tyres",
-    "Visor",
-    "Wheels"
+    "Wheels",
+    "Window_frames",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,
@@ -61029,7 +61065,7 @@
    "units": [
     "wheeled_howitzer"
    ],
-   "movingParts": 2,
+   "movingParts": 3,
    "budgetClass": "ground"
   },
   "wingman_drone": {

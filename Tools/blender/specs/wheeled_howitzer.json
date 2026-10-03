@@ -1,0 +1,166 @@
+{
+ "id": "wheeled_howitzer",
+ "class": "wheeled",
+ "real": [
+  "CAESAR 155 mm 52-calibre self-propelled howitzer (balance.json caesar_155)",
+  "Renault Sherpa 5 / Arquus 6x6 armoured-cab chassis"
+ ],
+ "shape": "the CAESAR 6x6 at 0.8 scale: forward armoured cab with crew compartment (raked framed windscreen, side windows, four doors, grille, guarded lamps, roof hatch, whips, beacon), ladder frame on three axles with leaf springs and lugged tyres under wings, fuel and air tanks, exhaust; the long gun platform with ammunition lockers and hinged lids, the travel-lock A-frame behind the cab carrying the barrel, jerrycans, tarp, cleaning staff; at the rear the gun mount with trunnion cheeks, elevating arcs, equilibrators, cradle, recoil cylinders, breech, loading tray, rammer, layer's sight and seat, the 52-calibre barrel with bore evacuator and double-baffle brake lying forward over the cab; rear jacks and the firing spade on its arms and rams.",
+ "confidence": "xấp xỉ (CAESAR photographs and drawings; the fix L8 layout kept)",
+ "target_size": {
+  "L": 8.0,
+  "W": 2.1,
+  "H": 3.0,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "armoured cab and crew compartment: windscreen, windows, doors, grille, lamps, hatch",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Window_frames",
+    "Doors",
+    "Grilles",
+    "Hatches"
+   ]
+  },
+  {
+   "feature": "frame on three axles, leaf springs, lugged tyres, wings, tanks, exhaust",
+   "nodes": [
+    "Chassis",
+    "Axles",
+    "Leaf_springs",
+    "Wheels",
+    "Tyres",
+    "Mud_wings",
+    "Fuel_tank",
+    "Air_tanks"
+   ]
+  },
+  {
+   "feature": "gun platform, lockers, travel lock, stowage",
+   "nodes": [
+    "Bed",
+    "Lockers",
+    "Travel_lock",
+    "Jerrycans",
+    "Tarp",
+    "Cleaning_staff"
+   ]
+  },
+  {
+   "feature": "gun mount: cheeks, arcs, cradle, recoil cylinders, breech, tray, rammer, sight",
+   "nodes": [
+    "Turret",
+    "Mount",
+    "Cheeks",
+    "Elevating_arcs",
+    "Cradle",
+    "Recoil_cylinders",
+    "Breech",
+    "Loading_tray",
+    "Rammer",
+    "Sight"
+   ]
+  },
+  {
+   "feature": "52-calibre barrel, evacuator, double-baffle brake",
+   "nodes": [
+    "Main_cannon",
+    "Main_cannon_evacuator",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "rear jacks, firing spade, arms",
+   "nodes": [
+    "Outriggers",
+    "Jack_pads",
+    "Spade",
+    "Spade_arms"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "caesar_155",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the gun lies forward over the cab"
+  },
+  {
+   "weapon": "smart_at_shell",
+   "slot": "gun",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "an alternate round from the same barrel"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "cap": 7500,
+  "note": "light wheeled: seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "cab (Team)",
+  "lockers (Team)",
+  "gun mount (Team)",
+  "wings (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "French artillery truck: team colour cab and lockers, armour-grey platform and gun",
+ "details": {
+  "tier1": [
+   "cab",
+   "platform",
+   "barrel",
+   "wheels"
+  ],
+  "tier2": [
+   "lockers",
+   "travel lock",
+   "gun mount",
+   "spade",
+   "jacks",
+   "tanks"
+  ],
+  "tier3": [
+   "lamps",
+   "handles",
+   "latches",
+   "whips",
+   "beacon",
+   "jerrycans",
+   "sight",
+   "rammer"
+  ]
+ },
+ "questions": []
+}
