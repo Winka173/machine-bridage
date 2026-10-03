@@ -2,7 +2,7 @@
 
 Tháp và nhánh, tường, nhà chính, mô-đun tiện ích, xây lại, AI căn cứ.
 
-Gói cân bằng Machine Brigade, commit 37f753af, ngày 2026-10-04. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit e52fb814, ngày 2026-10-04. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Căn cứ và tháp
 
@@ -148,13 +148,17 @@ CP khởi đầu x1.16 ở Conquest, Deathmatch, KingOfTheHill, Assault, Siege, 
 | aurel | heavy |
 | default | scout, light |
 
-Sheet 03_can_cu/Thap_vu_khi — Tháp: bệ vũ khí phụ (3 dòng, 8 cột)
+Sheet 03_can_cu/Thap_vu_khi — Tháp: bệ vũ khí phụ (7 dòng, 10 cột)
 
-| id | thap_id | thu_tu | weapon | aim | slot |
-|---|---|---|---|---|---|
-| aa_turret/0 | aa_turret | 0 | sam | Turret | missile |
-| heavy_turret.bastion/0 | heavy_turret.bastion | 0 | hmg_roof | Free | gun |
-| heavy_turret.bastion/1 | heavy_turret.bastion | 1 | hmg_roof | Free | gun |
+| id | thap_id | thu_tu | weapon | aim | arc_deg_center_deg | arc_deg_half_deg | slot |
+|---|---|---|---|---|---|---|---|
+| aa_turret/0 | aa_turret | 0 | sam | Turret |  |  | missile |
+| heavy_turret.bastion/0 | heavy_turret.bastion | 0 | hmg_roof | Free |  |  | gun |
+| heavy_turret.bastion/1 | heavy_turret.bastion | 1 | hmg_roof | Free |  |  | gun |
+| mg_bunker/0 | mg_bunker | 0 | bunker_pkm | Free | -30 | 40 | mg |
+| mg_bunker/1 | mg_bunker | 1 | bunker_pkm | Free | 30 | 40 | mg |
+| mg_bunker/2 | mg_bunker | 2 | bunker_pkm | Free | -90 | 40 | mg |
+| mg_bunker/3 | mg_bunker | 3 | bunker_pkm | Free | 90 | 40 | mg |
 
 Sheet 03_can_cu/Tuong — Tường (3 dòng, 81 cột)
 
@@ -326,7 +330,7 @@ Sheet 03_can_cu/Can_cu_so_sanh_that — Căn cứ và tháp: so sánh với th�
 Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_sheet, Schema). Sheet `input_<tên>` là bản chép của một sheet nguồn để công thức Excel đọc cùng file; sửa ở sheet nguồn, không sửa bản chép.
 
 - `Thap` (56 dòng): Tháp — Mỗi tháp (thẻ và nhánh bậc 7) một dòng
-- `Thap_vu_khi` (3 dòng): Tháp: bệ vũ khí phụ — secondary[]: bệ phụ (chỉ số bệ = thu_tu + 1; bệ 0 là vũ khí chính)
+- `Thap_vu_khi` (7 dòng): Tháp: bệ vũ khí phụ — secondary[]: bệ phụ (chỉ số bệ = thu_tu + 1; bệ 0 là vũ khí chính)
 - `Tuong` (3 dòng): Tường — Mỗi loại tường một dòng (def + base.walls.types)
 - `Tuong_luat` (11 dòng): Tường: luật — base.walls: xe phá tường, máu đoạn, số tuyến, mặc định, tường theo tướng
 - `Nha_chinh` (4 dòng): Nhà chính — Nhà chính và các kiểu (fortress / shield...)
