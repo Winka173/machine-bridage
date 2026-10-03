@@ -708,28 +708,28 @@
             "kind": "tower",
             "model": "aa_turret_b",
             "source": "Models/aa_turret_b",
-            "hash": "v2:7e53712ff36be3f744fd6f2b6aada66cf57615d1"
+            "hash": "v2:5d7fb0c85b71ca127d570cc962e0e4c1493fabaf"
         },
         {
             "id": "airfield",
             "kind": "tower",
             "model": "helipad",
             "source": "Models/helipad",
-            "hash": "v2:8632041388de13a52d29dd466a586f52537c2c7f"
+            "hash": "v2:2d5b9368b133f635acde3f852a5d1c30e14a3641"
         },
         {
             "id": "airfield.hangar",
             "kind": "tower",
             "model": "helipad_a",
             "source": "Models/helipad_a",
-            "hash": "v2:50d7f6fdbd14fc77ec64f4f7af9c3edcec4ffaef"
+            "hash": "v2:9823cde8df546aeef432892fd257f83c35536f9d"
         },
         {
             "id": "airfield.service",
             "kind": "tower",
             "model": "helipad_b",
             "source": "Models/helipad_b",
-            "hash": "v2:2d958e133edb19b63ebf5fdf1b49ead6a07c2014"
+            "hash": "v2:6ab9c8a899c8e7c226bb95853051f04f6a9cde97"
         },
         {
             "id": "ammo_depot",
@@ -771,7 +771,7 @@
             "kind": "tower",
             "model": "artillery_emplacement_b",
             "source": "Models/artillery_emplacement_b",
-            "hash": "v2:54107544029317ef96055fe23bcf2d1f7d7b0acd"
+            "hash": "v2:281d5e3879b693eac5518ba9926be52cbddc6d99"
         },
         {
             "id": "at_gun_emplacement",
@@ -799,21 +799,21 @@
             "kind": "tower",
             "model": "atgm_tower",
             "source": "Models/atgm_tower",
-            "hash": "v2:58aad1e40f6ea7dd9a2da68e7e9927033d71aa1e"
+            "hash": "v2:35574736d837f297fcbfce46eacc054bb592eca6"
         },
         {
             "id": "atgm_tower.multi",
             "kind": "tower",
             "model": "atgm_tower_b",
             "source": "Models/atgm_tower_b",
-            "hash": "v2:f514a220c4e9a6dc41afeada790e1ff934012e97"
+            "hash": "v2:c390fa83ba608f05b572158d7900ddd9c0aee307"
         },
         {
             "id": "atgm_tower.top",
             "kind": "tower",
             "model": "atgm_tower_a",
             "source": "Models/atgm_tower_a",
-            "hash": "v2:220a4973854b33c7790d179fad213e46a945875b"
+            "hash": "v2:e6323f8ff3bce39a1f56670cfc3b8936f0dd0c77"
         },
         {
             "id": "barrage_balloon",
@@ -981,21 +981,21 @@
             "kind": "tower",
             "model": "drone_hangar",
             "source": "Models/drone_hangar",
-            "hash": "v2:6a0bb9dc4fcbf35fa10714b953bdc50459971741"
+            "hash": "v2:eaed7160b8f87d365bbf4df1111e149e382d9d76"
         },
         {
             "id": "drone_hangar.lancet",
             "kind": "tower",
             "model": "drone_hangar_a",
             "source": "Models/drone_hangar_a",
-            "hash": "v2:69bae7890fa27e54e683d9102b1bccd6e2f4c05c"
+            "hash": "v2:a3c290ce89b5a5e049dc8a75848b40b0ecd9cfbe"
         },
         {
             "id": "drone_hangar.swarm",
             "kind": "tower",
             "model": "drone_hangar_b",
             "source": "Models/drone_hangar_b",
-            "hash": "v2:c1be443d08210fc1c4da0f7972af032b19f198df"
+            "hash": "v2:1bdfd51d855486014394de12a9b17808a4d00bab"
         },
         {
             "id": "drone_mothership",
@@ -1114,7 +1114,7 @@
             "kind": "tower",
             "model": "ew_tower_a",
             "source": "Models/ew_tower_a",
-            "hash": "v2:73b30f7ce5ab502aa75b502b29775f6f70deaa19"
+            "hash": "v2:cc2e41c007c461f857b9732b0145f01663de9f2b"
         },
         {
             "id": "ew_tower.spoof",
@@ -1177,7 +1177,7 @@
             "kind": "tower",
             "model": "guard_tower",
             "source": "Models/guard_tower",
-            "hash": "v2:66b655b8f78c91de63ffcab5c3aa8593c8cee0e5"
+            "hash": "v2:1adb801fe194292461a27a6e1aa770723f765e3d"
         },
         {
             "id": "guard_tower.nest",
@@ -1191,21 +1191,21 @@
             "kind": "tower",
             "model": "guard_tower_a",
             "source": "Models/guard_tower_a",
-            "hash": "v2:086ff33131a5d0a441c3682c19f63302783e320a"
+            "hash": "v2:b1d5501dcb08b3be8ae8a37ef70fbb1694cff450"
         },
         {
             "id": "gun_turret",
             "kind": "tower",
             "model": "gun_turret",
             "source": "Models/gun_turret",
-            "hash": "v2:7e8073b46e80db212fd6223654b92b30a475084e"
+            "hash": "v2:bbb34ea59ee9dd184c63a4735cd348e0d33f786f"
         },
         {
             "id": "gun_turret.auto",
             "kind": "tower",
             "model": "gun_turret_b",
             "source": "Models/gun_turret_b",
-            "hash": "v2:74db164988057cdc1bc7377da64bf7e402a6afc7"
+            "hash": "v2:f8cb5b8ec8c62b56f5a7abbbc0001f92c576d174"
         },
         {
             "id": "gun_turret.long",
@@ -1268,14 +1268,14 @@
             "kind": "tower",
             "model": "heavy_turret",
             "source": "Models/heavy_turret",
-            "hash": "v2:07db06b6a981d80e4a3cea82c291060d51c75446"
+            "hash": "v2:9fb2ed6505f4844c06ca98eefbcab3141c8709a0"
         },
         {
             "id": "heavy_turret.bastion",
             "kind": "tower",
             "model": "heavy_turret_b",
             "source": "Models/heavy_turret_b",
-            "hash": "v2:b8e6ef3af8eed6f4cec27e1d6cb8b3f8588ae8fe"
+            "hash": "v2:005da18810f4bc5a44bb68fc4aa0a4534cde1368"
         },
         {
             "id": "heavy_turret.coastal",
@@ -1394,7 +1394,7 @@
             "kind": "tower",
             "model": "logistics_station",
             "source": "Models/logistics_station",
-            "hash": "v2:de667b75428db808a2539d35115fc6ad7922d995"
+            "hash": "v2:333a8171b3e63984bde44ce598a76496ce55fea7"
         },
         {
             "id": "manpads_tower",
@@ -1422,7 +1422,7 @@
             "kind": "tower",
             "model": "mg_bunker_b",
             "source": "Models/mg_bunker_b",
-            "hash": "v2:eb01f1a906d667ab9d96cab99cf65d6af6389c94"
+            "hash": "v2:b443b8873e150a253d64d845ac7bc0e05531a612"
         },
         {
             "id": "mg_bunker.twin",
@@ -1443,21 +1443,21 @@
             "kind": "tower",
             "model": "missile_battery",
             "source": "Models/missile_battery",
-            "hash": "v2:d888c2a990b17fd9683cf3fdf09daa77708e3c35"
+            "hash": "v2:69689fc7de1edb4834c2bd4d8f7777cb15271ced"
         },
         {
             "id": "missile_battery.lrr",
             "kind": "tower",
             "model": "missile_battery_b",
             "source": "Models/missile_battery_b",
-            "hash": "v2:a955b476277a10049b0747bf4468d266276f357c"
+            "hash": "v2:586758153914e0b0c3fe10217257b0626d5265ea"
         },
         {
             "id": "missile_battery.pac3",
             "kind": "tower",
             "model": "missile_battery_a",
             "source": "Models/missile_battery_a",
-            "hash": "v2:15ee93fc292c5611403fc7654a2f710fcd06ffab"
+            "hash": "v2:dc1e758ca647c0f339402d5fdff88c90cd58db4c"
         },
         {
             "id": "mobile_fortress",
@@ -1590,14 +1590,14 @@
             "kind": "tower",
             "model": "shield_tower",
             "source": "Models/shield_tower",
-            "hash": "v2:0befb816fe5e23d9e115f283a2a1bac2131aace4"
+            "hash": "v2:bf9bf7b6c7a73208e20ab2f2c0c8013ad68e37b9"
         },
         {
             "id": "shield_tower.bulwark",
             "kind": "tower",
             "model": "shield_tower_a",
             "source": "Models/shield_tower_a",
-            "hash": "v2:edea238755fe12bc3f048c81f5b27fd2bafd9c40"
+            "hash": "v2:618638908ab1f410139bbe396ce0639bafe2ea6a"
         },
         {
             "id": "shield_tower.ward",
@@ -1625,7 +1625,7 @@
             "kind": "structure",
             "model": "heavy_turret",
             "source": "Models/heavy_turret",
-            "hash": "v2:07db06b6a981d80e4a3cea82c291060d51c75446"
+            "hash": "v2:9fb2ed6505f4844c06ca98eefbcab3141c8709a0"
         },
         {
             "id": "stymphalos",
