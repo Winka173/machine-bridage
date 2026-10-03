@@ -18978,3 +18978,14 @@ Rendering, VFX and view motion from play-test 13 (Docs/prompts/requests_vi.md). 
   in-map water of non-sea maps are calm (no swell); a frozen river has neither ripples nor foam. Low graphics keeps its
   unlit in-map water. Old property names kept (`_BaseColor`, `_Roughness`), so themes and maps set it as before.
   Check: `-executeMethod MachineBrigade.Editor.SeaShots.Run` (Builds/sea_shots/sea.png).
+- **Target zones (optional item, checked).** The view draws a zone only from data the Sim also uses or from the Sim's own
+  events: escape rings for rounds `warningRules` warns of with `warnSeconds` > 0 (the Sim holds those rounds in the air that
+  long), stick rectangles for STICK_RECT sticks, and the Sim's StrikeWarning / big-attack events. No view-made ring is left
+  for an ordinary shell (prompt 26 B.4's 0.8 s boss-shell ring is gone). So when lane C narrows which attacks warn, the
+  rings follow with no view change.
+- **Render to check (lead).** Magenta: any battle or `EffectShots.FxBatch -mbFxIds sticks` (stick rectangles), an aircraft
+  in any preview (its ground ring), a boss big attack (warning ring); and run `ShaderHealthTests` when tests are allowed.
+  Flares: `FlareShots.Run` -> Builds/flare_shots/flares.png. Boss stillness and turret aim: the Leviathan and the armoured
+  train / rail supergun in their In action preview (or Boss Rush at lighthousebay) - the hull must not move when it fires,
+  the main turrets swing onto their aim. Sea: `SeaShots.Run` -> Builds/sea_shots/sea.png (lighthousebay, coralisles,
+  borderbridge), plus a naval unit's In action preview (the preview sea uses the shader too).
