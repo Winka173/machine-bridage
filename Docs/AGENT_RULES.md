@@ -8,7 +8,8 @@ the renders, use the strongest model. Token saving applies only to routine work:
 fixes. Nothing below asks you to cut a corner on a model or an effect.
 
 **Models (owner, 03/10): the strongest model is `opus`. Never use `fable`, at any cost** (any Agent call you make
-names `opus`, `sonnet` or `haiku` explicitly; never the `best` alias).
+names `opus` or `haiku` explicitly; never the `best` alias). **"Sonnet" means Sonnet 5.0 only, never Sonnet 5.5**: the
+`sonnet` alias resolves to 5.5 here, so do not use it unless the lead says it is pinned to 5.0.
 
 ## Never, unless the owner's word is in your brief
 - No Unity runs, EditMode/PlayMode tests, sims, sweeps or measurements. Write tests if asked; do not run them.

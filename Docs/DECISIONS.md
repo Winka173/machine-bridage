@@ -19198,3 +19198,10 @@ and package DLLs), 0 errors.
   artillery card or a C-RAM base); the aircraft entry only shows in motion: Play mode, call an
   aircraft (or spawn Icarus / Daedalus in the Sandbox) and watch the first 3 s; `PlayShots -mbPlayShotsOnly air,gunship,boss`
   for stills.
+
+## Owner: Sonnet means 5.0, never 5.5 (2026-10-03)
+Owner: "check file tối ưu, dùng sonnet là dùng sonnet 5.0 mới đúng, không bao giờ được dùng sonnet 5.5". The Agent tool's
+`sonnet` alias resolves to the newest Sonnet (5.5), so it is no longer used; mid-tier jobs go to `opus` until the alias is
+pinned to Sonnet 5.0 (ANTHROPIC_DEFAULT_SONNET_MODEL with the exact model id, only on the owner's word). Earlier today
+two agents ran on the `sonnet` alias (the balance-pack export lane and nothing else model-related); their work was checked
+and merged. TOKEN_OPTIMISATION.md section 5 and AGENT_RULES.md updated.

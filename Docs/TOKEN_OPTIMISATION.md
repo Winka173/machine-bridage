@@ -252,6 +252,12 @@ Fewer turns
 
 The Agent tool's `model` option takes `opus`, `sonnet`, `haiku` or `fable`.
 
+**Owner rule (03/10): "sonnet" means Sonnet 5.0 only. NEVER use Sonnet 5.5.** The Agent tool's `sonnet` alias
+resolves to the newest Sonnet (5.5 in this setup), so it must NOT be used unless the alias is pinned to Sonnet 5.0
+(Claude Code reads `ANTHROPIC_DEFAULT_SONNET_MODEL` from the environment or settings to pin an alias to a full model
+id; set it only with the owner's word and the exact Sonnet 5.0 id). Until it is pinned, the mid-tier jobs below use
+`opus` (or `haiku` where the job is routine).
+
 **Owner rule (03/10): the strongest model used here is `opus`. NEVER use `fable`, at any cost** (not for agents, not
 for the lead, not through the `best` alias, which can resolve to Fable: always name `opus` explicitly).
 
@@ -272,11 +278,11 @@ decides how they look use the most capable allowed model, `opus`, with no token 
 | Model rebuild waves, new builders, kit parts, spec writing/research for models | `opus` | Owner rule; long multi-model runs with many gate rounds need the strongest allowed model |
 | VFX / effects (explosions, smoke, rings, wrecks), card/render look | `opus` | Owner rule; visual judgement on renders |
 | Gameplay / Sim bug fixes, AI and tactics, balance design | `opus` | Root-cause work across systems; a wrong fix costs more than the tokens |
-| Code-reading audits, export passes (`Docs/export`), doc generators, PDF build fixes | `sonnet` | Mechanical but needs reading code correctly |
-| Writing tests (not running them) | `sonnet` | Follows existing test patterns; the lead or a reviewer checks |
+| Code-reading audits, export passes (`Docs/export`), doc generators, PDF build fixes | Sonnet 5.0 if pinned, else `opus` | Mechanical but needs reading code correctly |
+| Writing tests (not running them) | Sonnet 5.0 if pinned, else `opus` | Follows existing test patterns; the lead or a reviewer checks |
 | Routine docs, CHANGELOG/DECISIONS bookkeeping, log summaries, report formatting | `haiku` | Simple text work; spot-check its first runs (not yet tried on this repo) |
 | File moves, archive passes, simple greps and counts | `haiku` | Deterministic steps; mistakes show in `git status` |
-| Broad read-only searches ("where is X used") | Explore agent, `model: haiku` or `sonnet` | Read-only, skips CLAUDE.md and git status so it starts cheaper [4]; cannot be resumed |
+| Broad read-only searches ("where is X used") | Explore agent, `model: haiku` (or Sonnet 5.0 if pinned) | Read-only, skips CLAUDE.md and git status so it starts cheaper [4]; cannot be resumed |
 | Merges, renders, owner-facing image checks | the lead itself | `merge_lane.sh` / `render_wave.sh` are one call each; the lead needs the outcome in its own context |
 | The lead session | `opus` (never `fable`) | Judgement, owner dialogue, reviewing reports; never switch mid-session (cache) |
 
@@ -359,8 +365,8 @@ Before any task
 
 Lead
 - [ ] Brief = "Read Docs/AGENT_RULES.md first" + task, paths, ids, checks, report format; inputs by path.
-- [ ] Model per section 5: opus for models, VFX, Sim fixes, balance (never fable); sonnet for audits, exports, tests;
-      haiku for routine docs, moves, greps; Explore (haiku/sonnet) for broad searches.
+- [ ] Model per section 5: opus for models, VFX, Sim fixes, balance (never fable); Sonnet 5.0 (never 5.5; only if the alias is pinned, else opus) for audits, exports, tests;
+      haiku for routine docs, moves, greps; Explore (haiku) for broad searches.
 - [ ] Read the handback, not the files; no re-reading what it summarised.
 - [ ] Merge in batches: `merge_lane.sh ... 2>&1 | tail -15`; `--stat` only.
 - [ ] One `render_wave.sh` per wave; numbers before pictures; small contact sheets; images only owner-facing.

@@ -275,3 +275,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - vài phương tiện vào in action preview nhưng không bắn và không làm gì hết như demolition line vehicle, nếu nó phục vụ mục đích đặc biệt thì preview phải cho nó làm
 - các boss bay như icarus mới vào cho thẳng xuống tầng bay thấp, không cần hiệu ứng hạ dần
 => nhiều thứ đang có vẻ sai logic, trước khi làm phải suy nghĩ làm sao cho logic ngoài đời
+- 03/10 "check file tối ưu, dùng sonnet là dùng sonnet 5.0 mới đúng, không bao giờ được dùng sonnet 5.5".
