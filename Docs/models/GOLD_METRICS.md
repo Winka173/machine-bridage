@@ -19,19 +19,15 @@ Metrics (glb_mesh pictures, every model drawn the same way):
 | class | models in class | gold set | silhouette | edges | regions | parts_m2 | tier2_m2 | tier3_m2 | asym_raw | sloped_dirs | zones |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | air_other | 3 | airborne_light_tank_chute | 2.793 | 0.102 | 2.185 | 0.229 | 0.287 | 0.177 | 0.000 | 11.000 | 7.000 |
-| boss | 33 | armored_train, mega_gunship, nuke_train, rail_supergun, silver_bug | 1.605 | 0.173 | 4.651 | 2.163 | 1.783 | 10.081 | 0.021 | 11.400 | 12.200 |
-| boss_air | 8 | mega_gunship, silver_bug | 1.756 | 0.150 | 3.992 | 1.630 | 1.099 | 4.107 | 0.024 | 18.500 | 11.500 |
-| boss_ground | 16 | behemoth, mobile_fortress | 1.755 | 0.246 | 7.527 | 0.523 | 1.020 | 0.948 | 0.013 | 8.500 | 12.000 |
+| boss | 33 | drone_mothership, hyperion, nuke_train, silver_bug | 1.615 | 0.145 | 3.452 | 1.790 | 1.671 | 7.378 | 0.034 | 16.500 | 11.750 |
+| boss_air | 9 | drone_mothership, silver_bug | 1.591 | 0.139 | 3.030 | 1.359 | 1.053 | 3.765 | 0.025 | 21.500 | 12.000 |
 | boss_rail | 3 | nuke_train | 1.518 | 0.219 | 6.306 | 3.535 | 3.026 | 19.964 | 0.040 | 7.000 | 15.000 |
-| boss_sea | 6 | leviathan | 1.483 | 0.124 | 2.821 | 1.901 | 1.496 | 7.962 | 0.030 | 8.000 | 15.000 |
-| helicopter | 7 | attack_helicopter, scout_heli | 2.125 | 0.324 | 23.009 | 2.426 | 1.763 | 2.480 | 0.087 | 37.500 | 8.000 |
-| hq | 2 | headquarters | 1.800 | 0.159 | 4.625 | 0.439 | 0.769 | 0.482 | 0.017 | 5.000 | 21.000 |
-| jet | 17 | aerial_tanker, fighter_jet | 1.423 | 0.176 | 6.324 | 0.878 | 0.646 | 1.358 | 0.021 | 14.000 | 8.500 |
-| obstacle | 14 | dragons_teeth_b, minefield | 2.862 | 0.267 | 10.825 | 0.644 | 0.748 | 1.227 | 0.015 | 35.000 | 11.000 |
+| helicopter | 7 | attack_helicopter, light_attack_heli | 2.198 | 0.286 | 19.614 | 1.905 | 1.670 | 2.487 | 0.053 | 24.000 | 8.000 |
+| jet | 17 | fighter_jet, prop_attack_plane | 1.568 | 0.202 | 7.914 | 0.790 | 0.592 | 0.958 | 0.021 | 17.500 | 8.500 |
+| obstacle | 14 | dragons_teeth_b | 2.823 | 0.323 | 14.800 | 0.337 | 0.249 | 0.425 | 0.029 | 56.000 | 9.000 |
 | structure | 4 | targeting_station | 2.210 | 0.168 | 5.847 | 0.615 | 1.004 | 0.256 | 0.034 | 0.000 | 13.000 |
-| tower | 62 | aa_turret_a, cp_relay, ew_tower, ew_tower_a, ew_tower_b, guard_tower, guard_tower_a | 2.471 | 0.296 | 12.366 | 0.953 | 1.417 | 0.664 | 0.057 | 12.714 | 16.000 |
-| tracked | 38 | demolition_line_vehicle, main_battle_tank, siege_tank, titan_tank | 1.460 | 0.272 | 9.507 | 0.397 | 0.728 | 0.303 | 0.002 | 7.500 | 8.000 |
-| wheeled | 43 | armored_car, grad_truck, scout_jeep, shahed_truck, towed_at_gun | 1.621 | 0.334 | 14.916 | 0.701 | 0.631 | 0.476 | 0.042 | 11.000 | 8.400 |
+| tower | 62 | ew_tower, ew_tower_b, flare_searchlight_tower | 2.610 | 0.338 | 14.238 | 0.926 | 1.414 | 0.549 | 0.012 | 12.667 | 15.667 |
+| tracked | 38 | main_battle_tank | 1.307 | 0.274 | 9.237 | 0.428 | 0.662 | 0.285 | 0.002 | 8.000 | 8.000 |
 
 ## The four V2 models
 
