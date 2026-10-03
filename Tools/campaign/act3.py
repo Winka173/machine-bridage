@@ -154,7 +154,7 @@ add_mission(m('c10m10', 10, 'skyhold', 'Destroy', 'Fog', variant='siege', operat
                    'events': WEAKEN},
                   {'stage': 'tower', 'goal': 'Destroy', 'targets': ['control_tower', 'radar_dome'], 'targetHealth': 2, 'cp': 6, 'next': 'airship', 'events': strikes(50)},
                   {'stage': 'airship', 'goal': 'Boss', 'boss': scripted('command_airship', (90, 90), heading=225, route=[(60, 60), (0, 40), (-30, -10), (40, -20)],
-                                                                       fallback='sky_fortress', fallbackHealth=0.9, name='command_airship'), 'cp': 10,
+                                                                       name='command_airship'), 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.quaden.c10m10.s3'}]},
                   {'stage': 'crow', 'goal': 'ShootDown', 'killsNeeded': 12, 'cp': 6,
                    'waves': waves(['attack_jet', 'fighter_jet', 'attack_helicopter'], first=8, interval=30, size=3, grow=0.4, max_size=6, max_alive=12),
@@ -535,8 +535,8 @@ add_mission(m('c12m10', 12, 'launchsite', 'Capture', 'Clear', operation=True, ge
                    'events': strikes(50)},
                   {'stage': 'assembly', 'goal': 'Capture', 'points': ['west'], 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'ifv', 'long_sam', 'railgun_truck']}]},
-                  {'stage': 'command', 'goal': 'Boss', 'boss': scripted('supreme_command', (60, 60), heading=225, route=[(40, 40), (10, 20), (30, -10)],
-                                                                       fallback='fortress_bastion', fallbackHealth=1.0, name='supreme_command'), 'cp': 10,
+                  {'stage': 'command', 'goal': 'Boss', 'boss': scripted('behemoth_mk2', (60, 60), heading=225, route=[(40, 40), (10, 20), (30, -10)],
+                                                                       fallback='behemoth', fallbackHealth=1.0, name='behemoth_mk2'), 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.aurel.c12m10.s4'}]},
                   {'stage': 'countdown', 'goal': 'Survive', 'surviveSeconds': 300, 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.linh.c12m10.s5'},
@@ -550,9 +550,9 @@ add_mission(m('c12m10', 12, 'launchsite', 'Capture', 'Clear', operation=True, ge
               ],
               starTime=1680, starLosses=26),
             ('Silver Sky Falls', 'Bầu trời bạc sụp đổ'),
-            ('The last battle. Take the propellant farm, choose your blow, take the assembly building, destroy Aurel\'s command vehicle, hold the launch pad, '
+            ('The last battle. Take the propellant farm, choose your blow, take the assembly building, break Varga\'s last Behemoth, hold the launch pad, '
              'and when Icarus lifts off for orbit in its complete form, turn it back and bring it down.',
-             'Trận cuối cùng. Chiếm khu nhiên liệu, chọn đòn đánh, chiếm nhà lắp ráp, tiêu diệt xe chỉ huy của Aurel, giữ bệ phóng, '
+             'Trận cuối cùng. Chiếm khu nhiên liệu, chọn đòn đánh, chiếm nhà lắp ráp, đập tan chiếc Behemoth cuối cùng của Varga, giữ bệ phóng, '
              'và khi Icarus rời bệ phóng lên quỹ đạo trong hình dạng hoàn chỉnh, buộc nó quay lại và bắn hạ.'),
             (('Clear sky', 'Bầu trời trong'),
              ('Icarus never reached orbit: it came down burning a kilometre short, out past the dunes, at 17:42. The brigade\'s radio log for the next minute holds no orders, only people cheering, and one voice, Colonel Kade\'s, saying "Thank you."',
@@ -561,7 +561,7 @@ add_mission(m('c12m10', 12, 'launchsite', 'Capture', 'Clear', operation=True, ge
              say('khai', 'Win', 'It is over. Brigade, stand down. We go home.', 'Kết thúc rồi. Lữ đoàn, nghỉ. Ta về nhà.')],
             stages_text={'approach': ('The Propellant Farm', 'Khu nhiên liệu đẩy'), 'propellant': ('Burn the Propellant', 'Đốt nhiên liệu đẩy'),
                          'radars': ('Blind the West Radars', 'Làm mù radar phía tây'), 'assembly': ('The Assembly Building', 'Nhà lắp ráp'),
-                         'command': ('Atlas', 'Atlas'), 'countdown': ('The Countdown', 'Đếm ngược'), 'pad': ('Hold the Launch Pad', 'Giữ bệ phóng'), 'bug': ('Icarus', 'Icarus')},
+                         'command': ('Varga\'s Last Stand', 'Trận cuối của Varga'), 'countdown': ('The Countdown', 'Đếm ngược'), 'pad': ('Hold the Launch Pad', 'Giữ bệ phóng'), 'bug': ('Icarus', 'Icarus')},
             choices_text={'propellant': choice_income('Burn the propellant tanks', 'Đốt các bồn nhiên liệu đẩy', 'Aurel', 'Aurel'),
                           'radars': choice_strikes('Destroy the west radars', 'Phá radar phía tây', 50)})
 T('radio.khai.c12m10.s1', 'The propellant farm first. Then we choose.', 'Khu nhiên liệu đẩy trước. Rồi ta sẽ chọn.')

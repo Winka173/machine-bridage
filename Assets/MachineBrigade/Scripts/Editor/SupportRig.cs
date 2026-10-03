@@ -170,7 +170,7 @@ namespace MachineBrigade.Editor
         {
             ("artillery_barrage", 14f), ("remote_mines", 14f), ("airstrike", 24f),
             ("napalm_strike", 24f), ("cluster_strike", 24f), ("air_raid", 28f), ("cruise_missile", 22f), ("moab", 34f), ("emp_blast", 18f),
-            ("repair_drop", 11f), ("reinforcements", 14f), ("supergun_shell", 20f),
+            ("repair_drop", 11f), ("reinforcements", 14f),
         };
 
         public static IEnumerable<string> Ids

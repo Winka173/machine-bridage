@@ -35,7 +35,9 @@ STARTERS = STARTER_VEHICLES + STARTER_REST
 # Towers no mission opened (prompt 20's route dropped them; prompt 4 had the Patriot in chapter 3; play-test 14 deleted
 # the fixed mine card, which went back to chapter 1). The long-range SAM site goes to chapter 8,
 # the chapter of the long-range SAM vehicle, which the sheet leaves with three cards (chapter 3 opens eight already).
-ORPHANS = {'missile_battery': 8}
+# Play-test 14 (cloud session 3): Airdropped armour stopped being a coin item; it is a support card now and opens in
+# chapter 4 (mid-campaign, when its 20 CP of armour is no longer a whole army).
+ORPHANS = {'missile_battery': 8, 'reinforcements': 4}
 
 # Progression.StarterVehicles before prompt 25 D2 (a former starter that moves into a chapter opens first there).
 OLD_STARTERS = ['scout_jeep', 'armored_car', 'ifv', 'light_tank', 'main_battle_tank', 'aa_vehicle', 'artillery']

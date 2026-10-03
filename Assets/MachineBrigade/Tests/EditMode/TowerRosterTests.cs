@@ -163,21 +163,25 @@ namespace MachineBrigade.Tests
             {
                 HqLevel = 5, Utilities = { "repair_bay", "logistics_station", "airfield" },
             }, BaseRole.Anchor);
-            Assert.AreEqual(3, world.Bases.Towers(0).Count(t => t.Def.Utility != null), "three modules stand");
+            Assert.AreEqual(3, world.Bases.Towers(0).Count(t => t.Def.Fort is { Kind: FortKind.Utility }), "three modules stand");
             world.TryGetEconomy(0, out var economy);
             var supply = economy.ArmyCap;
+            // Play-test 14: the repair bay and the airfield are aura buildings now (no repair, no landing pad): while they stand,
+            // their side's ground vehicles get +10 % damage and health, its aircraft +10 % damage and speed, anywhere.
             var tank = world.SpawnVehicle("main_battle_tank", 0, b.HqPosition + new Vector2(8f, 0f), 0f);
-            world.Damage.Apply(tank, tank.MaxHp * 0.5f / world.Catalog.Damage.Type(DamageType.ShapedCharge, TargetKind.Ground), DamageType.ShapedCharge);
-            var hurt = tank.Hp;
+            var heli = world.SpawnVehicle("attack_helicopter", 0, b.HqPosition + new Vector2(-8f, 0f), 0f);
+            world.Submit(new Command(CommandType.Stop, 0, new[] { heli.Id }));
             Run(world, 2f);
             Assert.Greater(economy.ArmyCap, supply, "the logistics station adds supply");
-            Assert.Greater(tank.Hp, hurt + tank.MaxHp * 0.02f, "the repair bay mends vehicles in the base, even straight after a hit");
-            var field = world.Bases.Towers(0).First(t => t.Def.Id == "airfield");
-            var heli = world.SpawnVehicle("attack_helicopter", 0, field.Position, 0f);
-            heli.Hp = heli.MaxHp * 0.3f;
-            world.Submit(new Command(CommandType.Stop, 0, new[] { heli.Id }));
-            Run(world, 5f);
-            Assert.Greater(heli.Hp, heli.MaxHp * 0.3f + heli.MaxHp * 0.1f, "the airfield repairs aircraft over it");
+            Assert.AreEqual(tank.Def.MaxHp * 1.1f, tank.MaxHp, 1f, "the repair bay: ground vehicles +10 % health");
+            Assert.AreEqual(1.1f, tank.AuraDamage, 1e-4f, "and +10 % damage");
+            Assert.AreEqual(1.1f, heli.AuraDamage, 1e-4f, "the airfield: aircraft +10 % damage");
+            Assert.AreEqual(1.1f, heli.AuraSpeed, 1e-4f, "and +10 % speed");
+            Assert.AreEqual(1f, tank.AuraSpeed, 1e-4f, "the airfield's lift is for aircraft only");
+            var bay = world.Bases.Towers(0).First(t => t.Def.Id == "repair_bay");
+            world.Damage.Apply(bay, 1e7f, DamageType.HighExplosive);
+            Run(world, 1f);
+            Assert.AreEqual(tank.Def.MaxHp, tank.MaxHp, 1f, "the lift goes with the building");
         }
 
         [Test]

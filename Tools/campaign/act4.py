@@ -185,27 +185,27 @@ rewrite('c8m05', name=('Tartarus', 'Tartarus'),
         lines=[say('hung', 'Start', 'You will not see it coming, Kade.', 'Các người sẽ không thấy nó tới đâu, Kade.'),
                say('mai', 'Win', 'Tartarus is stuck in its own tunnel.', 'Tartarus kẹt luôn trong đường hầm của nó.')])
 
-# c10m08: Spectre (old c6m05) flies for Wolff over the Whiteout now.
+# c10m08: Roc (play-test 14: Spectre was deleted) spots for Wolff over the Whiteout now, and goes home hurt (the main fight is c10m10).
 d = mission('c10m08')
 d['general'] = 'quaden'
 d['enemyDeck'] = QUADEN
-rewrite('c10m08', name=('Spectre', 'Spectre'),
-        brief=('Wolff\'s gunship aircraft circles high over the Whiteout pass, shelling our convoys to Skyhold. Bring Spectre down with everything that reaches the sky.',
-               'Máy bay pháo của Wolff bay vòng trên cao quanh Whiteout Pass, nã vào các đoàn xe của ta tới Skyhold. Bắn rơi Spectre bằng mọi thứ với tới được bầu trời.'),
-        lines=[say('dieuhau', 'Start', 'Spectre is up there. Keep the launchers busy.', 'Spectre đang ở trên đó. Cho các bệ phóng làm việc liên tục.')])
+rewrite('c10m08', name=('Roc over the Whiteout', 'Roc trên Whiteout'),
+        brief=('Wolff\'s flying headquarters, Roc, circles high over the Whiteout pass, calling fire on our convoys to Skyhold. Hurt it with everything that reaches the sky until it runs home.',
+               'Sở chỉ huy bay của Wolff, Roc, lượn vòng trên cao quanh Whiteout Pass, gọi hỏa lực vào các đoàn xe của ta tới Skyhold. Đánh nó bằng mọi thứ với tới được bầu trời cho tới khi nó chạy về.'),
+        lines=[say('dieuhau', 'Start', 'Roc is up there. Keep the launchers busy.', 'Roc đang ở trên đó. Cho các bệ phóng làm việc liên tục.')])
 
-# c11m05: the rail supergun (old c4m06) is Gungnir, Orlov's last battle, at the orbital gate's rail yard.
+# c11m05: Orlov's last battle at the orbital gate's rail yard (old c4m06), with Monster (play-test 14: Gungnir was deleted).
 d = mission('c11m05')
 d['general'] = 'orlov'
 d['enemyDeck'] = ORLOV
 pace(d, 11)
-rewrite('c11m05', name=('Gungnir', 'Gungnir'),
-        brief=('Orlov guards the orbital gate with Gungnir, the biggest gun he ever had, on the rails of the Rust Yard. This is his last battle. Silence the gun.',
-               'Orlov canh giữ cửa ngõ quỹ đạo bằng Gungnir, khẩu pháo lớn nhất hắn từng có, trên đường ray của Rust Yard. Đây là trận cuối của hắn. Bắt khẩu pháo câm họng.'),
+rewrite('c11m05', name=('Monster', 'Monster'),
+        brief=('Orlov guards the orbital gate with Monster, a walking fortress round the biggest gun he ever had, in the Rust Yard. This is his last battle. Silence the gun.',
+               'Orlov canh giữ cửa ngõ quỹ đạo bằng Monster, một pháo đài biết đi dựng quanh khẩu pháo lớn nhất hắn từng có, ở Rust Yard. Đây là trận cuối của hắn. Bắt khẩu pháo câm họng.'),
         fragment=(('The last coordinate', 'Tọa độ cuối cùng'),
                   ('Orlov gave himself up by radio, reading out his own position like a fire mission. Then he asked for tea.',
                    'Orlov ra hàng qua bộ đàm, đọc tọa độ của chính mình như một nhiệm vụ bắn. Rồi hắn xin một ấm trà.')),
-        lines=[say('orlov', 'Start', 'Gungnir has your grid, Colonel. Fire mission.', 'Gungnir có tọa độ của ngươi rồi, đại tá. Nhiệm vụ bắn.'),
+        lines=[say('orlov', 'Start', 'Monster has your grid, Colonel. Fire mission.', 'Monster có tọa độ của ngươi rồi, đại tá. Nhiệm vụ bắn.'),
                say('orlov', 'Win', 'Recalculating... no. Cease fire. It is over.', 'Tính lại... không. Ngừng bắn. Hết rồi.')])
 
 # ====================================================================== boss slots on missions that stayed
@@ -244,11 +244,12 @@ stage_line(d, 'monster', 'varga', 's3', 'Moloch builds faster than you can burn,
 retext('mission.c6m10.brief', 'Varga\'s last card is Moloch, a factory on tracks that builds tanks as it rolls, and it is coming for the dam. Hold the crest until Thorne\'s army arrives.',
        'Quân bài cuối của Varga là Moloch, một nhà máy bánh xích vừa lăn vừa đóng xe tăng, và nó đang tiến về con đập. Giữ đỉnh đập cho tới khi quân của Thorne tới.')
 
-# Chapter 7: Nemesis (the missile train) stays the fifth mission; Atlas covers Thorne's escape after the betrayal.
+# Chapter 7: Nemesis (the missile train) stays the fifth mission; Behemoth Mk.II covers Thorne's escape after the betrayal
+# (play-test 14: Atlas was deleted).
 d = mission('c7m10')
 s = stage(d, 'strikeback')
-boss(s, 'supreme_command', health=0.8, x=60, z=60, heading=225, route=[70, 70, 100, 90], fleeAt=0.5)
-s['events'].append({'at': 'start', 'kind': 'Radio', 'key': retext('radio.hung.c7m10.atlas', 'Atlas, cover me. We are leaving the city.', 'Atlas, yểm trợ ta. Ta rời thành phố.')})
+boss(s, 'behemoth_mk2', health=0.95, x=60, z=60, heading=225, route=[70, 70, 100, 90], fleeAt=0.5)
+s['events'].append({'at': 'start', 'kind': 'Radio', 'key': retext('radio.hung.c7m10.atlas', 'Behemoth, cover me. We are leaving the city.', 'Behemoth, yểm trợ ta. Ta rời thành phố.')})
 
 # Chapter 10: the Icarus seen over Skyhold is the unfinished prototype; Argus watches the side mission.
 boss(mission('c10m05'), 'icarus_mk0', fallback='silver_bug', health=4.4)
@@ -398,14 +399,15 @@ new(d, ('Thorne\'s Camp', 'Trại của Thorne'),
     [say('hung', 'Start', 'I earned this country before you were a colonel.', 'Ta đã giành lấy đất nước này khi ngươi còn chưa là đại tá.')])
 
 d = clone('c2m10', 'c8m10', weather='Clear', playerBase='None', operation=True, **H8)
-boss(stage(d, 'inferno'), 'kronos', fallback='mobile_fortress', health=1.3)
-copy_stage_texts('c2m10', 'c8m10', {'inferno': ('Kronos', 'Kronos')})
-stage(d, 'inferno')['events'].append({'at': 'start', 'kind': 'Radio', 'key': T('radio.hung.c8m10.s5', 'Wake up, Kronos. Dig them a grave.', 'Thức dậy đi, Kronos. Đào cho chúng một nấm mồ.')})
+# Play-test 14: Tartarus waits at the bottom (Kronos was deleted).
+boss(stage(d, 'inferno'), 'earth_borer', health=2.6)
+copy_stage_texts('c2m10', 'c8m10', {'inferno': ('Tartarus', 'Tartarus')})
+stage(d, 'inferno')['events'].append({'at': 'start', 'kind': 'Radio', 'key': retext('radio.hung.c8m10.s5', 'Wake up, Tartarus. Dig them a grave.', 'Thức dậy đi, Tartarus. Đào cho chúng một nấm mồ.')})
 new(d, ('The Deepest Pit', 'Hố sâu nhất'),
-    ('The operation into Thorne\'s mine: take the pit\'s rim, choose what to hit next, blow the works, then face what waits at the bottom: Kronos.',
-     'Chiến dịch vào khu mỏ của Thorne: chiếm miệng hố, chọn mục tiêu kế tiếp, phá các xưởng, rồi đối mặt với thứ đang chờ dưới đáy: Kronos.'),
-    (('Buried', 'Chôn vùi'), ('Kronos went down into its own pit. Thorne was already on a boat.',
-                                'Kronos sụp xuống chính hố mỏ của nó. Thorne thì đã ở trên một con tàu.')),
+    ('The operation into Thorne\'s mine: take the pit\'s rim, choose what to hit next, blow the works, then face what waits at the bottom: Tartarus.',
+     'Chiến dịch vào khu mỏ của Thorne: chiếm miệng hố, chọn mục tiêu kế tiếp, phá các xưởng, rồi đối mặt với thứ đang chờ dưới đáy: Tartarus.'),
+    (('Buried', 'Chôn vùi'), ('Tartarus went down into its own tunnel. Thorne was already on a boat.',
+                                'Tartarus sụp xuống chính đường hầm của nó. Thorne thì đã ở trên một con tàu.')),
     [say('khai', 'Start', 'Into the pit, Brigade.', 'Xuống hố, Lữ đoàn.'),
      say('linh', 'Win', 'Thorne has reached the coast. He is heading for Kessler\'s old ships.', 'Thorne đã tới bờ biển. Hắn đang tìm tới những con tàu cũ của Kessler.')])
 
@@ -456,13 +458,14 @@ new(d, ('The Coastal Guns', 'Pháo bờ biển'),
     [say('mai', 'Start', 'Same guns. Same weak mounts.', 'Vẫn những khẩu pháo đó. Vẫn những bệ yếu đó.')])
 
 d = clone('c6m08', 'c9m05', weather='Fog', playerBase='None', **H9)
-boss(d, 'caspian', fallback='landing_hovercraft', health=1.0)
-new(d, ('Caspian', 'Caspian'),
-    ('Out of the fog comes Caspian, a ground-effect ship that skims the waves and lands troops. Bring it down before it reaches the beach.',
-     'Từ trong sương lao ra Caspian, một con tàu bay sát mặt sóng và đổ quân. Hạ nó trước khi nó tới bãi biển.'),
-    (('Wings', 'Cánh'), ('Caspian\'s wing floated for a week. Children from the village swam out to sit on it.',
-                           'Cánh của Caspian nổi trên mặt nước suốt một tuần. Trẻ con trong làng bơi ra ngồi lên nó.')),
-    [say('linh', 'Boss', 'Caspian, low over the water. Fast.', 'Caspian, bay thấp trên mặt nước. Rất nhanh.')])
+# Play-test 14: Charybdis comes out of the fog (Caspian was deleted).
+boss(d, 'landing_hovercraft', health=1.5)
+new(d, ('Charybdis', 'Charybdis'),
+    ('Out of the fog comes Charybdis, an assault hovercraft that runs up the beach at sixty knots and lands armour. Bring it down before it unloads.',
+     'Từ trong sương lao ra Charybdis, một tàu đệm khí đổ bộ lao lên bãi biển với tốc độ sáu mươi hải lý và đổ thiết giáp. Hạ nó trước khi nó kịp đổ quân.'),
+    (('Skirt', 'Váy đệm khí'), ('Charybdis\'s torn skirt floated for a week. Children from the village swam out to sit on it.',
+                           'Tấm váy đệm khí rách của Charybdis nổi trên mặt nước suốt một tuần. Trẻ con trong làng bơi ra ngồi lên nó.')),
+    [say('linh', 'Boss', 'Charybdis, on the water. Fast.', 'Charybdis, trên mặt nước. Rất nhanh.')])
 
 d = clone('c4m09', 'c9m06', flip=True, weather='Fog', **H9)
 new(d, ('Thorne\'s Harbour HQ', 'Sở chỉ huy bến cảng'),
@@ -625,13 +628,13 @@ def move(mid, map_id, **over):
 
 move('c8m02', 'openpit')
 move('c8m07', 'openpit')
-# Ixion comes down the haul road the excavator uses.
+# Ixion comes down the haul road.
 mission('c8m07')['boss'].update(x=90, z=52, heading=200)
 d = move('c8m10', 'openpit')
 stage(d, 'tanks').update(targets=['storage_tank'], targetX=-110, targetZ=78, targetRadius=20)
 stage(d, 'wells').update(targets=['silo'], targetX=61, targetZ=-115, targetRadius=12)
 stage(d, 'refinery').update(targets=['factory', 'gantry_crane'], targetX=91, targetZ=-104, targetRadius=20)
-# Kronos starts at the head of its route (map "routes.kronos") and walks the whole haul road to the player's base.
+# Tartarus starts at the head of the haul road and tunnels to the player's base.
 stage(d, 'inferno')['boss'].update(x=96, z=96, heading=225)
 
 move('c11m04', 'orbitalgate')

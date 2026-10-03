@@ -79,7 +79,6 @@ namespace MachineBrigade.Tests
             Assert.That(t["bomb_400"].Tier, Is.EqualTo(4));
             Assert.That(t["cal_406"].Tier, Is.EqualTo(5));
             Assert.That(t["gungnir_emrg"].Tier, Is.EqualTo(5));
-            Assert.That(C.Weapons["p26_gungnir_emrg"].Tier, Is.EqualTo(5));
         }
 
         [Test]
@@ -111,13 +110,12 @@ namespace MachineBrigade.Tests
         {
             var c = C;
             var players = PlayerWeapons(c);
-            var gungnir = new HashSet<string>(c.Vehicle("rail_supergun").Mounts.Select(m => m.Weapon.Id));
             var seen = new Dictionary<string, (string id, float damage, float speed, float core, float edge, DamageType type)>();
             foreach (var boss in c.Vehicles.Values.Where(v => v.Boss))
                 foreach (var m in boss.Mounts)
                 {
                     var w = m.Weapon;
-                    if (w.WeaponFamilyId == null || players.Contains(w.Id) || gungnir.Contains(w.Id) || (w.Laid && w.Id != "p26_leviathan_lev406")) continue;
+                    if (w.WeaponFamilyId == null || players.Contains(w.Id) || (w.Laid && w.Id != "p26_leviathan_lev406")) continue;
                     var family = c.WeaponFamilyTable[w.WeaponFamilyId];
                     if (family.BossDamage == null) continue;
                     Assert.AreEqual(family.BossDamage.Value, w.Damage, 1e-3f, boss.Id + ": " + w.Id);
@@ -167,18 +165,6 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(8f * 700f / 35.44f, bombs.SustainedDps, 3f);
             // Leviathan's 155 mm/60: the triple turret, 3 x 600 every 10.5 s (wave 1).
             Assert.AreEqual(3f * 600f / 10.5f, c.Weapons["p26_leviathan_sec_lev155"].SustainedDps, 1f);
-        }
-
-        [Test]
-        public void GungnirKeepsItsSuperWeapon()
-        {
-            var c = C;
-            var gun = c.Weapons["p26_gungnir_emrg"];
-            Assert.AreEqual(2000f, gun.Damage, 1e-3f);
-            Assert.AreEqual(12f, gun.SplashRadius, 1e-3f);
-            Assert.AreEqual(20f, gun.SplashEdge, 1e-3f);
-            Assert.AreEqual(45f, c.Vehicle("rail_supergun").Bombard.Every, 1e-3f);
-            Assert.AreEqual("gungnir_emrg", gun.WeaponFamilyId);
         }
 
         // ------------------------------------------------------------------------------------------------ L3 warnings

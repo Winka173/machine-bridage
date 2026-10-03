@@ -229,7 +229,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual("nuke_train", liberation.Stages[liberation.Stages.Count - 1].Mission.Boss.Def, "Nemesis is stopped last");
             Assert.IsTrue(Says("c7m10", "Tôi thì thấy rồi"), "Thorne: have you seen what they are about to launch?");
             Assert.IsTrue(Says("c9m10", "Đừng để tôi đã đúng."), "Thorne's last message");
-            Assert.AreEqual("morrigan", Campaign.Get("c10m12").Boss.Def, "Hawk and Raven's duel");
+            Assert.AreEqual("mega_gunship", Campaign.Get("c10m12").Boss.Def, "Hawk and Raven's duel (the Harpy since play-test 14)");
             Assert.IsTrue(Says("c11m01", "vệ tinh đầu tiên"), "Aurel's first words on the radio");
             Assert.IsFalse(Campaign.All.TakeWhile(m => m.Chapter != 11).SelectMany(LinesOf).Any(k => k.StartsWith("radio.aurel.")), "Aurel is not on the radio before chapter 11");
             Assert.IsTrue(Says("c12m10", "Họ vẫn chưa hiểu."), "Aurel's last words echo the flash-forward");

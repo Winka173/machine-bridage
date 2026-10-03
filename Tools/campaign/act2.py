@@ -105,18 +105,18 @@ add_mission(m('c4m05', 4, 'ironport', 'Intercept', 'Night', legacy='m12', timeLi
              say('kessler', 'Win', 'Cancel the timetable.', 'Hủy lịch trình.')])
 
 add_mission(m('c11m05', 11, 'rustyard', 'Boss', 'Clear', timeLimit=1200, general='kessler', reinforcements=3,
-              boss=scripted('rail_supergun', (140, 11.25), heading=270, name='rail_supergun'),
+              boss=scripted('monster', (140, 11.25), heading=270, name='monster', health=1.5),
               units=units(0, ['main_battle_tank', 'tank_destroyer', 'heavy_tank', 'wheeled_gun'], (-70, -40), 8),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.85, enemyDeck=KESSLER,
               playerCp=28, playerIncome=1.45, playerCap=36, playerBase='Anchor', starTime=540, starLosses=10),
-            ('The Gungnir', 'Gungnir'),
-            ('Kessler has a gun too big for any road, parked on the rails at the edge of the Rust Yard. Every twenty seconds it drops a shell on us, and the ground warns us three seconds before. Fight through its guard and destroy it.',
-             'Kessler có một khẩu pháo quá to cho mọi con đường, đậu trên đường ray ở rìa Rust Yard. Cứ hai mươi giây nó lại nã một phát vào ta, và mặt đất báo trước ba giây. Đánh xuyên qua đội canh gác và phá hủy nó.'),
-            (('Forty kilometres', 'Bốn mươi cây số'),
-             ('The supergun\'s range card says forty kilometres. Its crew manual says: "Do not fire within forty kilometres of the Admiral." He was never that far from it.',
-              'Bảng tầm bắn của siêu pháo ghi bốn mươi cây số. Sổ tay kíp pháo ghi: "Không được bắn khi Đô đốc ở trong vòng bốn mươi cây số." Ông ta chưa từng rời xa nó tới thế.')),
-            [say('linh', 'Start', 'The supergun is on the east rails. Watch the ground: where it cracks red, a shell lands three seconds later.', 'Siêu pháo nằm trên đường ray phía đông. Để ý mặt đất: chỗ nào nứt đỏ, ba giây sau đạn rơi xuống đó.'),
-             say('mai', 'BossHalf', 'Take out its targeting station and its shells go wide.', 'Phá trạm chỉ thị mục tiêu của nó là đạn sẽ rơi lệch.')])
+            ('The Monster', 'Monster'),
+            ('Monster has walked out of the Rust Yard: a fortress on legs built round an 800 mm gun, and every shell it fires flattens a block. The ground warns us before each one lands. Fight through its guard and destroy it.',
+             'Monster đã bước ra khỏi Rust Yard: một pháo đài biết đi dựng quanh khẩu pháo 800 mm, mỗi phát đạn san phẳng cả một khu nhà. Mặt đất báo trước mỗi lần đạn rơi. Đánh xuyên qua đội canh gác và phá hủy nó.'),
+            (('Seven tonnes', 'Bảy tấn'),
+             ('Monster\'s shell weighs seven tonnes. Its crew manual says: "Do not fire within a kilometre of the General." Orlov never stood further away than that.',
+              'Đạn của Monster nặng bảy tấn. Sổ tay kíp pháo ghi: "Không được bắn khi Đại tướng ở trong vòng một cây số." Orlov chưa bao giờ đứng xa hơn thế.')),
+            [say('linh', 'Start', 'Monster is coming in from the east rails. Watch the ground: where it cracks red, a shell lands seconds later.', 'Monster đang tiến vào từ phía đường ray phía đông. Để ý mặt đất: chỗ nào nứt đỏ, vài giây sau đạn rơi xuống đó.'),
+             say('mai', 'BossHalf', 'Break its barrel and the big shell stops.', 'Phá nòng pháo của nó là phát đạn lớn sẽ dừng.')])
 
 add_mission(m('c4m07', 4, 'ironport', 'Protect', 'Overcast', reversed=True, targets=['factory', 'office_block'], protectNeeded=1, targetHealth=14, surviveSeconds=420,
               general='kessler', reinforcements=2,
@@ -324,17 +324,17 @@ add_mission(m('c5m04', 5, 'emberridge', 'Outpost', 'Clear', points=['town'], hol
              say('sen', 'At', 'You are sitting on a volcano, Engineer. I would not get comfortable.', 'Cô đang ngồi trên núi lửa đấy, kỹ sư. Tôi mà là cô thì không ngồi yên đâu.', at=120)])
 
 add_mission(m('c5m05', 5, 'junglepass', 'Boss', 'Storm', general='sen', timeLimit=1200, reinforcements=3,
-              boss=scripted('fortress_hive', (84, 84), heading=225, route=[(60, 60), (20, 30), (-20, 10), (30, -20)], health=1.1),
+              boss=scripted('drone_mothership', (84, 84), heading=225, route=[(60, 60), (20, 30), (-20, 10), (30, -20)], health=0.9, fleeAt=0.5),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.85, enemyDeck=SEN,
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor', hqLevel=3, unlocks=['long_sam'], starTime=780, starLosses=12, challenge={'kind': 'NoAircraft'}),
-            ('The Hive', 'Hive'),
-            ('Venn\'s drone fortress is crawling down the pass in the storm, swarms rising from its racks. It has no main gun and fears no aircraft. Break it with tanks and artillery.',
-             'Pháo đài drone của Venn đang bò xuống con đèo trong cơn bão, bầy drone bốc lên từ các giàn phóng. Nó không có pháo chính và chẳng sợ máy bay nào. Đập vỡ nó bằng xe tăng và pháo binh.'),
+            ('The Matriarch', 'Matriarch'),
+            ('Venn\'s drone carrier, the Matriarch, is coming down the pass in the storm, swarms pouring from its belly. Our aircraft cannot fly in this. Anti-air and every gun that reaches the sky: hurt it badly enough and it turns back.',
+             'Tàu sân bay drone của Venn, Matriarch, đang hạ xuống con đèo trong cơn bão, bầy drone tuôn ra từ bụng nó. Máy bay của ta không bay nổi trong thời tiết này. Phòng không và mọi khẩu pháo với tới trời: đánh nó đủ đau là nó quay đầu.'),
             (('Rescue system', 'Hệ thống cứu hộ'),
-             ('The Hive\'s original design document, found in its wreck: "Autonomous swarm for search and rescue in disaster zones." The word "rescue" had been crossed out, by someone else.',
-              'Tài liệu thiết kế gốc của Hive, tìm thấy trong xác nó: "Bầy drone tự hành phục vụ tìm kiếm cứu nạn ở vùng thảm họa." Chữ "cứu nạn" đã bị gạch đi, bởi một người khác.')),
+             ('A page of the Hive programme\'s design document, dropped from the Matriarch\'s bay as it turned back: "Autonomous swarm for search and rescue in disaster zones." The word "rescue" had been crossed out, by someone else.',
+              'Một trang tài liệu thiết kế của chương trình Hive, rơi ra từ khoang Matriarch khi nó quay đầu: "Bầy drone tự hành phục vụ tìm kiếm cứu nạn ở vùng thảm họa." Chữ "cứu nạn" đã bị gạch đi, bởi một người khác.')),
             [say('sen', 'Start', 'Seven hundred drones in the air. Count them if you like.', 'Bảy trăm drone đang trên trời. Các anh cứ đếm nếu thích.'),
-             say('khai', 'Boss', 'Ground guns on it. Keep the aircraft home.', 'Pháo mặt đất dồn vào nó. Máy bay ở nhà.'),
+             say('khai', 'Boss', 'Anti-air on it. Keep the aircraft home in this storm.', 'Phòng không dồn vào nó. Máy bay ở nhà trong cơn bão này.'),
              say('sen', 'Win', 'Enough. Stand the swarm down.', 'Đủ rồi. Cho bầy drone hạ cánh.')])
 
 add_mission(m('c5m06', 5, 'emberridge', 'Destroy', 'Night', variant='siege', legacy='m13', targets=['command_hq'], targetHealth=0.8, timeLimit=1500, replay=True,
@@ -413,9 +413,9 @@ add_mission(m('c5m10', 5, 'emberridge', 'Capture', 'Storm', legacy='m15', operat
               ],
               starTime=1380, starLosses=18),
             ('The Mothership', 'Tàu mẹ'),
-            ('The Hive\'s mothership is over Emberridge, feeding swarms to every Hegemon unit in the jungle. Take the causeways, choose your next blow, '
+            ('The Matriarch is back over Emberridge, feeding swarms to every Hegemon unit in the jungle. Take the causeways, choose your next blow, '
              'survive the swarm it throws at you, then bring the mothership down.',
-             'Tàu mẹ của Hive đang lơ lửng trên Emberridge, tiếp bầy drone cho mọi đơn vị Hegemon trong rừng. Chiếm các đường đắp, chọn đòn kế tiếp, '
+             'Matriarch đã quay lại lơ lửng trên Emberridge, tiếp bầy drone cho mọi đơn vị Hegemon trong rừng. Chiếm các đường đắp, chọn đòn kế tiếp, '
              'trụ vững trước bầy drone nó tung ra, rồi bắn rơi tàu mẹ.'),
             (('Venn', 'Venn'),
              ('Dr Venn walked out of the burning works with her hands up and a hard drive in each. "Icarus," she said. "You need to see this. Now."',
@@ -528,20 +528,20 @@ add_mission(m('c6m04', 6, 'hydrodam', 'Capture', 'Rain', points=['west', 'town',
             [say('linh', 'Start', 'Varga\'s scouts are at the power station already.', 'Trinh sát của Varga đã tới trạm phát điện rồi.')])
 
 add_mission(m('c10m08', 10, 'whiteout', 'Boss', 'Night', reversed=True, general='varga', timeLimit=1200, reinforcements=3,
-              boss=scripted('sky_fortress', (84, 84), heading=225, route=[(50, 50), (-30, 40), (-40, -30), (30, -40)], health=3.5),
+              boss=scripted('command_airship', (84, 84), heading=225, route=[(50, 50), (-30, 40), (-40, -30), (30, -40)], health=2.7, fleeAt=0.5),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.9,
               enemyDeck=['main_battle_tank', 'heavy_tank', 'ifv', 'aa_vehicle', 'mlrs', 'tank_destroyer'],
               playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor', starTime=780, starLosses=12),
-            ('Spectre', 'Bóng ma Spectre'),
-            ('Something is circling high over the pass at night, and every time it passes, a tank burns. Spectre: a gunship that never comes low. '
-             'Only anti-air and fighters can reach it. Bring it down.',
-             'Có thứ gì đó bay vòng trên cao trên đèo trong đêm, và mỗi lần nó lướt qua là một chiếc xe tăng bốc cháy. Spectre: pháo hạm bay không bao giờ hạ thấp. '
-             'Chỉ phòng không và tiêm kích với tới nó. Bắn rơi nó.'),
+            ('Roc over the Pass', 'Roc trên đèo'),
+            ('Something is circling high over the pass at night, and every time it passes, our tanks are found and shelled. Roc, Raven\'s flying headquarters, is spotting for the whole front. '
+             'Only anti-air and fighters can reach it. Hurt it enough to send it home.',
+             'Có thứ gì đó bay vòng trên cao trên đèo trong đêm, và mỗi lần nó lướt qua là xe tăng của ta bị phát hiện và nã pháo. Roc, sở chỉ huy bay của Raven, đang chỉ điểm cho cả mặt trận. '
+             'Chỉ phòng không và tiêm kích với tới nó. Đánh nó đủ đau để nó phải về.'),
             (('The ghost', 'Bóng ma'),
-             ('Spectre\'s crew called themselves "the Ghosts" and never landed at the same base twice. They landed once more, in pieces, on the frozen lake.',
-              'Kíp lái Spectre tự gọi mình là "những Bóng Ma" và không bao giờ hạ cánh hai lần ở cùng một căn cứ. Chúng đã hạ cánh thêm một lần nữa, thành từng mảnh, trên hồ băng.')),
+             ('Roc\'s crew called themselves "the Ghosts" and never landed at the same base twice. That night they went home with their radar on fire.',
+              'Kíp lái Roc tự gọi mình là "những Bóng Ma" và không bao giờ hạ cánh hai lần ở cùng một căn cứ. Đêm đó chúng bay về với radar bốc cháy.')),
             [say('dieuhau', 'Start', 'It flies above my ceiling at night. The SAMs will have to do this one.', 'Ban đêm nó bay cao hơn trần bay của tôi. Lần này phải nhờ tên lửa phòng không rồi.'),
-             say('dieuhau', 'Win', 'The ghost is down. Sleep well tonight, everyone.', 'Bóng ma rơi rồi. Đêm nay mọi người ngủ ngon nhé.')])
+             say('dieuhau', 'Win', 'The ghost is running home. Sleep well tonight, everyone.', 'Bóng ma đang chạy về nhà. Đêm nay mọi người ngủ ngon nhé.')])
 
 add_mission(m('c6m06', 6, 'hydrodam', 'Hold', 'Fog', points=['town'], holdSeconds=240, general='varga', reinforcements=3,
               units=units(0, ['main_battle_tank', 'heavy_tank', 'tank_destroyer', 'heavy_aa', 'mlrs'], (-6, -8), 8),

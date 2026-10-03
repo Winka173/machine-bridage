@@ -19387,3 +19387,37 @@ Unity, no tests, as the owner asked). Value changes: Docs/export/CHANGES.md "Pla
 - **13 napalm / airstrike aircraft.** StrikeEffects already flies strike_jet / heavy_bomber over (LaunchJet) and drops
   bombs or napalm canisters (ScheduleBombs, DropsOwnRounds); the Sim emits AircraftPass. No cause found by reading;
   for local (check in a match which part is missing).
+
+## Play-test 14 (lane D, cloud)
+Cloud session 3, branch `cloud/pt14-d` (from feature/visual-overhaul ece66216). Items 1-5 of the "Session 3" list in
+Docs/cloud/PT14_CLOUD_TASKS.md. Sim built with dotnet; Game, Editor and test files syntax-checked only; no tests run.
+Values: Docs/export/CHANGES.md "Play-test 14 lane D".
+- **1 Airdropped armour is a fire-support card.** `reinforcements` loses "consumable": a plain support card, its own CP 0,
+  paid by the call: ceil(1.5 x the chosen drop's base CP), drop capped at 20 CP (the session 1 call rules). The deck card
+  shows that price (PlayerCommander.CallCost, from the Units called tab's saved drop). A call that names no units (the AI)
+  drops the data's "units" that fit under the cap (StrikeSystem.DefaultCall); the AI never values it (its CP is 0), so it
+  is in practice the player's. Off the shop's item list; it opens in chapter 4 (c4m08, act11.ORPHANS: mid-campaign, when
+  20 CP of armour is no longer a whole army) and can be bought early at a support's price. Roster version 10 refunds every
+  item still in the bag at 450 coins (a pack of two was 900). The generator's rerun moved acts I-II pay from x1.64 to x1.66.
+- **5 Locust.** Its own weapon `locust_drones` (Matriarch's drone, one per pull, 2 s cooldown) through its
+  "mountWeapons"; Matriarch keeps its six-drone salvo.
+- **2 Stale tests.** Rewritten to session 1's behaviour (not run): the utility modules (repair bay and airfield auras, not
+  repair or pads; the lift goes with the building), the defence command centre (structures +15 % range and +10 % health
+  anywhere, no tower link), the airfield's unit lines, the airfield balance check (aircraft home is the HQ), Airdropped
+  armour paid in CP. New: the Army tabs' order and the Base cover inside the panel's scroll (CampaignStartTests); the
+  Commander and HQ screens join MenuScreen.ScreenNames, so the layout and language checks cover them. No test asserting
+  the old tab order or the bottom strip was found; the new one pins the new layout.
+- **3 Source spreadsheets.** `Tools/balance/pt14_xlsx_prune.py` takes every id of Docs/fixes/playtest14_deleted.md out of
+  the four workbooks the importers read, editing their XML so layout, styles, formulas and computed values stay (openpyxl
+  would drop the cached results): rows keyed by a deleted id emptied, id lists trimmed, four prose notes left (history).
+  Report: Docs/fixes/playtest14_xlsx.md. `import_names.py` fails the same way before and after (an older issue).
+- **4 Ten bosses deleted** (Docs/fixes/playtest14_deleted.md), with what only they used (2 big attacks, 2 warning supports,
+  7 weapons). The story swaps follow the lead's list; where the new boss is also fought later in its chapter (Matriarch in
+  c5m10, Roc in c10m10) the earlier mission makes it break off at 50 % (fleeAt) instead of dying. Health multipliers keep
+  the damage each fight asks for about the same (CHANGES PT14-D7). Raven flies the Harpy now: it is Quaden's mini, hunts
+  Hawk in interlude III ("harpy_hunt") and fights the Skyhold duel alone (a "duel" block with no escorts and no vanishing;
+  its ".duel" radio line is Morrigan's). Tartarus (a mini boss) holds chapter 8's main slot; the hunt test allows that, as
+  rule D allows Monster's main rank in chapter 11's mini slot. The open-pit route keeps its road under the name "haul".
+  "Hive" stays as the name of Venn's drone programme (the Matriarch is "the Hive's flying carrier"). CampaignText.cs was
+  synced key by key from the sources (50 keys rewritten, 16 removed, 2 added); the generator's own text pass was not run,
+  to keep the hand-localised words. Historical reports under Docs and the pack2 move tables still name the bosses.

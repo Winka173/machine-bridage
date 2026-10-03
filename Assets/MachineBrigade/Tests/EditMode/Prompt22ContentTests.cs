@@ -128,83 +128,23 @@ namespace MachineBrigade.Tests
             Assert.IsNull(boss.BigAttack);
         }
 
-        // ------------------------------------------------------------------ E.3: Morrigan
+        // ------------------------------------------------------------------ E.3: the duel (Raven's Harpy since play-test 14)
 
+        /// <summary>Play-test 14: Raven fights the Skyhold duel in the Harpy (Morrigan was deleted): alone, and it never goes dark.</summary>
         [Test]
-        public void MorriganIsAFastStealthFighterWithMissilesAndGuidedBombs()
-        {
-            var m = C.Vehicle("morrigan");
-            Assert.AreEqual(BossRank.Mini, m.Rank);
-            Assert.AreEqual("quaden", m.General, "Wolff's");
-            Assert.AreEqual("morrigan", m.Model);
-            Assert.IsNotNull(Resources.Load<GameObject>("Models/morrigan"), "its own model");
-            Assert.IsTrue(m.Flying && m.FixedWing && m.Stealth, "a stealth fighter under the aircraft rules");
-            Assert.Greater(m.Speed, C.Vehicle("fighter_jet").Speed, "faster than our fighters");
-            // Prompt 25 (the balance sheet): the stealth fighter cruises at 44 m/s, as fast as Morrigan.
-            Assert.GreaterOrEqual(m.Speed, C.Vehicle("stealth_fighter").Speed, "at least as fast as our stealth fighter");
-            var weapons = m.Mounts.Select(x => x.Weapon.Id).ToList();
-            Assert.Contains("air_to_air", weapons);
-            Assert.Contains("guided_bomb", weapons);
-            Assert.IsNotNull(m.Duel, "a duel mode");
-            Assert.IsNull(m.BigAttack, "prompt 25 C1: a mini boss has no super weapon");
-            Assert.IsNull(m.Duel.BigAttack, "nor has its duel");
-            // Stealth: seen only close up by a spotter on the ground.
-            var world = new SimWorld(C, new MapDefinition("lab", 320f,
-                new[] { new TeamStart(0, new Vector2(-120f, -120f)), new TeamStart(1, new Vector2(120f, 120f)) },
-                new List<PropPlacement>(), new List<UnitPlacement>()), 5);
-            var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 0f), 0f);
-            tank.HoldFire = true;
-            var d = tank.Def.VisionRange * 0.75f;
-            var boss = world.SpawnVehicle("morrigan", 1, new Vector2(0f, d), 0f);
-            boss.HoldFire = true;
-            var seenFar = 0;
-            var checkedFar = 0;
-            for (var i = 0; i < 40; i++)
-            {
-                world.Step(Step);
-                world.ClearEvents();
-                var gap = Vector2.Distance(boss.Position, tank.Position);
-                if (gap < tank.Def.VisionRange * VehicleDef.StealthSight + boss.Radius + 3f || gap > tank.Def.VisionRange - 2f) continue;
-                checkedFar++;
-                if (boss.IsVisibleTo(0)) seenFar++;
-            }
-            Assert.Greater(checkedFar, 0, "it flew inside the tank's sight but beyond its stealth range");
-            Assert.AreEqual(0, seenFar, "a plain aircraft would be seen there; the stealth fighter is not");
-        }
-
-        /// <summary>Prompt 25 C1: Morrigan's salvo went with the mini bosses' big attacks; its bays' missiles and its bomb are ordinary weapons.</summary>
-        [Test]
-        public void MorriganFightsWithItsBaysMissilesAndItsBomb()
-        {
-            var m = C.Vehicle("morrigan");
-            Assert.IsNull(m.BigAttack);
-            foreach (var bay in new[] { "bay_l", "bay_r", "bomb_bay" })
-                Assert.Greater(m.Parts[m.PartIndex(bay)].Mounts.Count, 0, bay + " carries a weapon (broken, it falls silent)");
-        }
-
-        [Test]
-        public void MorrigansDuelModeFliesAloneAndGoesDark()
+        public void TheHarpysDuelModeFliesAlone()
         {
             var world = Field();
-            var boss = world.SpawnVehicle("morrigan", 1, new Vector2(0f, 60f), 0f);
+            var boss = world.SpawnVehicle("mega_gunship", 1, new Vector2(0f, 60f), 0f);
+            Assert.IsNotNull(boss.Def.Duel, "a duel mode");
             Run(world, 1f);
             Assert.IsTrue(world.Bosses.Duel(boss), "into its duel mode");
             Assert.IsFalse(world.Bosses.Duel(boss), "once");
             Run(world, 2f);
             Assert.AreEqual(0, world.EscortsAlive(boss.Id), "no escorts in the duel");
-            Assert.IsNull(boss.BigAttack, "prompt 25 C1: no salvo in the duel either (a mini boss has no super weapon)");
-            Assert.IsFalse(boss.DuelDark);
-            boss.Hp = boss.MaxHp * 0.65f;
-            Run(world, 0.5f);
-            Assert.IsTrue(boss.DuelDark && boss.HoldFire, "dark at 70 %: no fire, hidden by its stealth");
-            Run(world, boss.Def.Duel.VanishSeconds + 0.5f);
-            Assert.IsFalse(boss.DuelDark || boss.HoldFire, "back in the fight");
-            boss.Hp = boss.MaxHp * 0.6f;
-            Run(world, 0.5f);
-            Assert.IsFalse(boss.DuelDark, "each mark once");
             boss.Hp = boss.MaxHp * 0.35f;
             Run(world, 0.5f);
-            Assert.IsTrue(boss.DuelDark, "dark again at 40 %");
+            Assert.IsFalse(boss.DuelDark, "a gunship never goes dark");
             // A plain boss has no duel mode.
             Assert.IsFalse(world.Bosses.Duel(world.SpawnVehicle("behemoth_mk0", 1, new Vector2(60f, 60f), 0f)));
         }
@@ -213,7 +153,7 @@ namespace MachineBrigade.Tests
         public void ADuelMissionFliesTheDecksAircraftOnly()
         {
             const string json = "{\"missions\": [{\"id\": \"duel_test\", \"chapter\": 10, \"map\": \"skyhold\", \"goal\": \"Boss\", \"duel\": true, " +
-                                "\"boss\": {\"def\": \"morrigan\", \"x\": 80, \"z\": 80}}]}";
+                                "\"boss\": {\"def\": \"mega_gunship\", \"x\": 80, \"z\": 80}}]}";
             var mission = MissionDef.ListFromJson(json)[0];
             Assert.IsTrue(mission.Duel);
             Assert.AreEqual("air", mission.PlayerDeck);
@@ -229,7 +169,7 @@ namespace MachineBrigade.Tests
             var world = new SimWorld(C, GameContent.LoadMap("skyhold_conquest"), 7);
             var mode = new MissionMode(mission, new SideSetup(), null);
             mode.Setup(world);
-            var boss = world.VehicleList.First(v => v.Def.Id == "morrigan");
+            var boss = world.VehicleList.First(v => v.Def.Id == "mega_gunship");
             Assert.IsTrue(boss.InDuel, "the duel's boss flies its duel mode");
         }
 
@@ -270,31 +210,23 @@ namespace MachineBrigade.Tests
 
         // ------------------------------------------------------------------ E.5: the Boss Hunts
 
+        /// <summary>Prompt 22 E's new mini boss in the hunts (play-test 14 deleted the other, Morrigan).</summary>
         [Test]
-        public void BothNewMiniBossesAreInTheBossHunts()
+        public void TheNewMiniBossIsInTheBossHunts()
         {
             var story = BossHunts.Story;
-            var full = BossHunts.Full;
-            foreach (var id in new[] { "behemoth_mk0", "morrigan" })
-            {
-                Assert.IsTrue(full.Contains(id), id + " in the full Boss Hunt");
-                var entry = story.First(b => b.Id == id);
-                Assert.IsFalse(entry.Main, id + " is a mini boss");
-            }
-            // In story order: Mk.0 after chapter 3's bosses (interlude I), Morrigan after chapter 9's (interlude III).
+            Assert.IsTrue(BossHunts.Full.Contains("behemoth_mk0"), "in the full Boss Hunt");
+            Assert.IsFalse(story.First(b => b.Id == "behemoth_mk0").Main, "a mini boss");
+            // In story order: Mk.0 after chapter 3's bosses (interlude I).
             var list = story.ToList();
-            int IndexOf(string id) => list.FindIndex(b => b.Id == id);
-            // Interludes are numbered 13-15 but played between chapters, so compare play order, not numbers.
-            var order = Campaign.Chapters.Select(c => c.Number).ToList();
-            Assert.Less(IndexOf("behemoth_mk0"), list.FindIndex(b => b.Chapter == 4));
-            Assert.Greater(order.IndexOf(list[IndexOf("morrigan")].Chapter), order.IndexOf(9));
-            // The week's hunt draws them too (minis drawn from the story's): within a year of weeks each comes up.
+            Assert.Less(list.FindIndex(b => b.Id == "behemoth_mk0"), list.FindIndex(b => b.Chapter == 4));
+            // The week's hunt draws it too (minis drawn from the story's): within a year of weeks it comes up.
             var drawn = new HashSet<string>();
             for (var week = 202601; week <= 202652; week++)
                 foreach (var id in BossHunts.Weekly(week))
                     drawn.Add(id);
-            Assert.IsTrue(drawn.Contains("behemoth_mk0") && drawn.Contains("morrigan"), "drawn in the week's hunt");
-            Assert.IsTrue(BossRushRules.Kinds.Any(k => k.Contains("behemoth_mk0")) && BossRushRules.Kinds.Any(k => k.Contains("morrigan")));
+            Assert.IsTrue(drawn.Contains("behemoth_mk0"), "drawn in the week's hunt");
+            Assert.IsTrue(BossRushRules.Kinds.Any(k => k.Contains("behemoth_mk0")));
         }
     }
 }

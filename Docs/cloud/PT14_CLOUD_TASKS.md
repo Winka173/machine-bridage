@@ -275,3 +275,35 @@ Owner's words: last block of Docs/prompts/playtest14_vi.txt. Lead's decisions (o
    smoke x0.5, **death-explosion smoke x0.35** (the worst one), lingering wreck smoke x0.5. Do not shrink fire or the
    explosion flash itself. Tank-round impact smoke already x0.4: leave it.
 Items that need a look in Unity to be sure: do what the code shows, list the rest under "For local".
+## Cloud state 2026-10-03 (session 3)
+Branch `cloud/pt14-d` (from feature/visual-overhaul ece66216); last commit: the one adding this note. Sim builds
+(`dotnet build Tools/simbuild/Sim.csproj`: 0 errors); the catalog loads (31 bosses: 14 main, 17 mini). No tests run. Game,
+Editor and test C# only syntax-checked (C# 9). Details: Docs/DECISIONS.md "Play-test 14 (lane D, cloud)"; values:
+Docs/export/CHANGES.md "Play-test 14 lane D"; deletions: Docs/fixes/playtest14_deleted.md (bosses section) and
+Docs/fixes/playtest14_xlsx.md.
+
+Done:
+- 1 `reinforcements` is a CP fire-support card (call price on the deck card, AI default drop, chapter 4 unlock, roster v10
+  refund 450 coins an item).
+- 2 Stale EditMode tests rewritten (repair bay / airfield / defence command centre auras, airfield lines, Army tab order,
+  Base cover in the panel scroll, Airdropped armour); Commander and HQ screens in MenuScreen.ScreenNames.
+- 3 Deleted ids out of the four source workbooks (`Tools/balance/pt14_xlsx_prune.py`, XML-level edits).
+- 4 Ten bosses deleted with their own big attacks, supports and weapons; story swaps as listed; models in Archive/models.
+- 5 Locust: own `locust_drones`, one drone every 2 s.
+
+For local (needs Unity):
+- Compile Game, Editor and tests; run the EditMode suite (many tests touched: BossParts, Prompt20Boss/Hunt/TowersMaps,
+  Prompt22Content/Story, Prompt23CampaignEvent, Prompt25Boss, Prompt26AB/CD, Prompt33SeaRoute, Prompt34/Preview,
+  Prompt8Content, TowerIcon, BossEscort, FireRhythm, FixValidator, FixedDeck, Model, BalancePackRule, Item, TowerRoster,
+  Prompt25NewContent, UnitLines, BaseBalance, CampaignStart). Replay hashes change.
+- Play the swapped missions: c5m05 (Matriarch breaks off), c7m10, c8m10 (Tartarus at 2.6x), c9m05, i3m02 / c10m12
+  (Harpy at 2.9x; the duel), c10m08 (Roc at 2.7x breaks off), c11m05 (Monster at the rail yard). Health multipliers are
+  arithmetic, not measured.
+- Airdropped armour in battle: the card's price follows the Units called tab; check the tab and the card after a change.
+- `git lfs` sees the archived GLBs (git mv kept their pointers); card renders for the removed bosses are gone.
+- Docs/export/current still lists the deleted bosses (re-export with ExportGameDoc, owner's word first); the pack2
+  move tables (Tools/export/pack2/*.csv) still quote old code lines.
+- `Tools/balance/import_names.py` fails (AttributeError in insert_after) on the committed sheet, before and after this
+  session's edit.
+
+Questions for the owner: none.

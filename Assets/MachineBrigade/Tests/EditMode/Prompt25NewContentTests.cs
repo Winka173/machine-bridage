@@ -50,7 +50,8 @@ namespace MachineBrigade.Tests
             new Row("recoilless_jeep", 350, 3, 0, -1, "recoilless_106", 220, 32, 33, "ambush"),
             new Row("sp_mortar", 1200, 5, 2, -1, "amos_120", 150, 60, -1, "mrsi"),
             new Row("blast_wall", 3000, 0, 3, -1, "none", -1, -1, -1, "wall"),
-            new Row("fire_control_centre", 2500, 0, 1, 40, "none", -1, -1, -1, "link"),
+            // Play-test 14: the defence command centre (renamed): its tower link became an aura for every structure of its side.
+            new Row("fire_control_centre", 2500, 0, 1, 40, "none", -1, -1, -1, "aura"),
             new Row("barrage_balloon", 800, 0, 0, -1, "none", -1, -1, -1, "balloon"),
             new Row("flare_tower", 1000, 0, 1, 60, "illum_flare", -1, 40, -1, "flares"),
             new Row("laser_ad_station", 2500, 0, 1, 56, "laser_50kw", 6, 40, 90, "drones"),
@@ -187,13 +188,20 @@ namespace MachineBrigade.Tests
                     Assert.AreEqual(Hit(world, tower, "howitzer", new Vector2(0f, -60f)), Hit(world, tower, "howitzer", new Vector2(0f, 60f)), 0.01f, "shells come over it");
                     break;
                 }
-                case "link":
+                case "aura":
                 {
                     world.SpawnVehicle(row.Id, 0, here, 0f);
                     var near = world.SpawnVehicle("gun_turret", 0, new Vector2(20f, 0f), 0f);
-                    var far = world.SpawnVehicle("gun_turret", 0, new Vector2(-50f, 0f), 0f);
+                    var far = world.SpawnVehicle("gun_turret", 0, new Vector2(-70f, 0f), 0f);
+                    var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, -20f), 0f);
                     Run(world, 0.2f);
-                    Assert.IsTrue(near.FireLinked && !far.FireLinked, "linked within 30 m only");
+                    foreach (var t in new[] { near, far })
+                    {
+                        Assert.AreEqual(t.Def.Mounts[0].Weapon.Range * 1.15f, t.Arms[0].Range, 0.01f, "structures +15 % range, near or far");
+                        Assert.AreEqual(t.Def.MaxHp * 1.1f, t.MaxHp, 1f, "and +10 % health");
+                    }
+                    Assert.IsFalse(near.FireLinked, "no tower link any more");
+                    Assert.AreEqual(tank.Def.MaxHp, tank.MaxHp, 1f, "not for vehicles");
                     break;
                 }
                 case "balloon":

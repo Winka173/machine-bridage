@@ -18,7 +18,7 @@ namespace MachineBrigade.Sim.Bosses
     /// quickens, capped apart from its escorts.</item>
     /// <item>A crusher (<see cref="CrushDef"/>, Kronos, Ixion): what is in front of its hull is crushed as it goes,
     /// walls and towers too; an HQ it reaches is flattened.</item>
-    /// <item>Its own route (Kronos's "kronos" on the open-pit mine) when the mode gives it none.</item>
+    /// <item>Its own route (the open-pit mine's "haul") when the mode gives it none.</item>
     /// <item>Argus's fire direction: its side's artillery falls tighter while it and its radar live.</item>
     /// <item>The big-attack library's new shapes: the swing (<see cref="BigShape.Arc"/>), the charge
     /// (<see cref="BigShape.Charge"/>), pods that land troops (a circle's "seats"), a submarine up to launch.</item>

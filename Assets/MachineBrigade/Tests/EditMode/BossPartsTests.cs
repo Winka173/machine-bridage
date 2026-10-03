@@ -43,15 +43,15 @@ namespace MachineBrigade.Tests
         internal static readonly Dictionary<string, int> Expected = new()
         {
             ["armored_train"] = 5, ["nuke_train"] = 9, ["behemoth"] = 10, ["behemoth_tempest"] = 5, ["behemoth_inferno"] = 4,
-            ["fortress_hive"] = 6, ["mobile_fortress"] = 9, ["fortress_bastion"] = 9, ["silver_bug"] = 12, ["sky_fortress"] = 8,
-            ["mega_gunship"] = 6, ["drone_mothership"] = 11, ["rail_supergun"] = 8, ["earth_borer"] = 4, ["command_airship"] = 10,
-            ["landing_hovercraft"] = 8, ["supreme_command"] = 3, ["leviathan"] = 14,
-            ["moloch"] = 9, ["daedalus"] = 8, ["kronos"] = 10, ["typhon"] = 7, ["ixion"] = 8, ["caspian"] = 4,
+            ["mobile_fortress"] = 9, ["fortress_bastion"] = 9, ["silver_bug"] = 12,
+            ["mega_gunship"] = 6, ["drone_mothership"] = 11, ["earth_borer"] = 4, ["command_airship"] = 10,
+            ["landing_hovercraft"] = 8, ["leviathan"] = 14,
+            ["moloch"] = 9, ["daedalus"] = 8, ["typhon"] = 7, ["ixion"] = 8,
             ["bastion_mk0"] = 3, ["fenrir"] = 3, ["scylla"] = 3, ["locust"] = 2, ["behemoth_mk2"] = 4, ["icarus_mk0"] = 3, ["argus"] = 3,
-            // Prompt 22 E: Behemoth Mk.0 (a variant) and Morrigan (two missile bays, the bomb bay, the engines).
-            ["behemoth_mk0"] = 4, ["morrigan"] = 4,
+            // Prompt 22 E: Behemoth Mk.0 (a variant). Play-test 14 deleted ten bosses (Docs/fixes/playtest14_deleted.md).
+            ["behemoth_mk0"] = 4,
             // Prompt 25 F2 batch D: the stand-ins (a main boss keeps all its parent's parts; Hyperion drops the two crash turrets and the uplink).
-            ["kraken"] = 14, ["monster"] = 9, ["garuda"] = 10, ["hyperion"] = 9, ["stymphalos"] = 3, ["nyx"] = 4, ["cerberus"] = 4, ["hydra"] = 4,
+            ["kraken"] = 14, ["monster"] = 9, ["hyperion"] = 9, ["nyx"] = 4, ["hydra"] = 4,
         };
 
         private static Catalog C => GameContent.LoadCatalog();
@@ -80,7 +80,7 @@ namespace MachineBrigade.Tests
                 // A mount is on one part at most.
                 var mounts = def.Parts.SelectMany(p => p.Mounts).ToList();
                 Assert.AreEqual(mounts.Count, mounts.Distinct().Count(), id + ": no mount on two parts");
-                Assert.AreEqual(id is "command_airship" or "garuda" ? 0f : 0.3f, def.Parts[0].BreakDamage, 1e-4f, id + ": the body takes 30 % of a broken part");
+                Assert.AreEqual(id is "command_airship" ? 0f : 0.3f, def.Parts[0].BreakDamage, 1e-4f, id + ": the body takes 30 % of a broken part");
             }
         }
 
@@ -211,11 +211,6 @@ namespace MachineBrigade.Tests
             world.Bosses.Break(heli, heli.Def.PartIndex("rotor_rear"));
             Assert.AreEqual(turn * 0.5f, heli.TurnFactor, 1e-4f, "the rear rotor down: it turns at half the rate");
 
-            var spectre = world.SpawnVehicle("sky_fortress", 1, new Vector2(0f, 80f), 0f);
-            world.Bosses.Break(spectre, spectre.Def.PartIndex("engine_1"));
-            world.Bosses.Break(spectre, spectre.Def.PartIndex("engine_2"));
-            Assert.AreEqual(0.85f * 0.85f, spectre.PartSpeed, 1e-4f, "each engine 15 % slower");
-
             var worm = world.SpawnVehicle("earth_borer", 1, new Vector2(0f, -80f), 0f);
             world.Bosses.Break(worm, worm.Def.PartIndex("drill"));
             Assert.IsTrue(worm.BurrowOff);
@@ -224,32 +219,10 @@ namespace MachineBrigade.Tests
             world.Bosses.Break(craft, craft.Def.PartIndex("fan_l"));
             Assert.IsTrue(craft.LandingOff);
             Assert.AreEqual(0.7f, craft.PartSpeed, 1e-4f, "a fan down: 30 % slower");
-            var gun = world.SpawnVehicle("rail_supergun", 1, new Vector2(-100f, 100f), 0f);
-            world.Bosses.Break(gun, gun.Def.PartIndex("fire_control"));
-            world.Bosses.Break(gun, gun.Def.PartIndex("tractor_l"));
-            Assert.IsTrue(gun.SpotterOff, "its shells fall wide");
-            Assert.AreEqual(1.3f, gun.PartCadence, 1e-4f, "and come slower");
-            world.Bosses.Break(gun, gun.Def.PartIndex("main_gun"));
-            Assert.IsTrue(gun.BombardOff);
 
             var events = Run(world, 60f);
             Assert.IsFalse(events.Any(e => e.Kind == SimEventKind.Burrowing && e.Entity == worm.Id), "a worm without its drill never goes under");
             Assert.IsFalse(events.Any(e => e.Kind == SimEventKind.TroopsLanding && e.Entity == craft.Id), "no landings without the ramp");
-            Assert.IsFalse(events.Any(e => e.Kind == SimEventKind.StrikeWarning && e.Team == 1), "no shells without the gun");
-        }
-
-        [Test]
-        public void TheCommandAntennaTakesTheAuraWithIt()
-        {
-            var world = Lab.Field(2);
-            var boss = world.SpawnVehicle("supreme_command", 1, Vector2.Zero, 0f);
-            var near = world.SpawnVehicle("main_battle_tank", 1, new Vector2(20f, 0f), 0f);
-            Run(world, 0.5f);
-            Assert.AreEqual(1.2f, near.CommandDamage, 1e-4f);
-            world.Bosses.Break(boss, boss.Def.PartIndex("antenna"));
-            Run(world, 0.5f);
-            Assert.AreEqual(1f, near.CommandDamage, 1e-4f, "the antenna down: no aura");
-            Assert.AreEqual(1f, near.CommandFire, 1e-4f);
         }
 
         [Test]

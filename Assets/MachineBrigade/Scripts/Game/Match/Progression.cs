@@ -159,14 +159,13 @@ namespace MachineBrigade.Game.Match
         {
             ["moab"] = 1200,
             ["cluster_strike"] = 600,
-            ["reinforcements"] = 900,
             ["field_repair"] = 500,
             ["emp_blast"] = 700,
             ["shield_dome"] = 600,
         };
 
         public static readonly string[] Items =
-            { "moab", "cluster_strike", "reinforcements", "field_repair", "emp_blast", "shield_dome" };
+            { "moab", "cluster_strike", "field_repair", "emp_blast", "shield_dome" };
 
         /// <summary>Items come in packs of this many.</summary>
         public const int ItemPack = 2;

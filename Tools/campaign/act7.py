@@ -34,7 +34,7 @@ rewrite('c7m05', keep=False, name=('Juggernaut in the Streets', 'Juggernaut gi�
                say('khai', 'Boss', 'Stop it before the depot. Everything on the train.', 'Chặn nó trước kho ga. Dồn hết vào đoàn tàu.'),
                say('khai', 'Win', 'Derailed twice. Kessler will send us the bill.', 'Hai lần trật bánh. Kessler sẽ gửi hóa đơn cho ta.')])
 
-# c7m10: the liberation of Veyra; Thorne turns in the middle of it (prompt 5's ally who changes sides), Atlas covers his escape,
+# c7m10: the liberation of Veyra; Thorne turns in the middle of it (prompt 5's ally who changes sides), Behemoth Mk.II covers his escape,
 # and Nemesis is stopped at the edge of the centre.
 d = mission('c7m10')
 retext('mission.c7m10.name', 'Liberate Veyra', 'Giải phóng Veyra')
@@ -249,15 +249,16 @@ texts(d, ('Hawk Down', 'Hawk bị bắn rơi'),
        say('reyn', 'Win', 'Crash site found. He walked away from it. Follow the tracks.', 'Đã tìm thấy chỗ máy bay rơi. Cậu ấy đã tự đi khỏi đó. Lần theo dấu chân.')])
 
 d = clone('c12m05', 'i3m02', 15, map_='junglepass', weather='Fog', playerBase='None', general='quaden', enemyDeck=QUADEN, speaker='reyn')
-boss(d, 'morrigan', fallback='sky_fortress', health=0.5, name='morrigan', fleeAt=0.5)
-mark(d, awaits=('boss:morrigan',))
-texts(d, ('Morrigan', 'Morrigan'),
-      ('Raven is hunting the rescue column himself, in Morrigan: fast, hard to see, and armed for our anti-air. Keep the launchers moving, watch for its strike, and drive it off.',
-       'Raven đang tự mình săn đoàn cứu hộ, bằng Morrigan: nhanh, khó thấy, và mang vũ khí nhắm vào phòng không của ta. Cho bệ phóng di chuyển liên tục, để ý đòn tấn công của nó, và đuổi nó đi.'),
+# Play-test 14: Raven hunts the column from the Harpy (Morrigan was deleted).
+boss(d, 'mega_gunship', health=2.9, name='mega_gunship', fleeAt=0.5)
+mark(d, awaits=('boss:mega_gunship',))
+texts(d, ('Harpy', 'Harpy'),
+      ('Raven is hunting the rescue column himself, from the Harpy: a gunship as big as a ship, rocket pods and an escort of helicopters. Keep the launchers moving, watch for its strike, and drive it off.',
+       'Raven đang tự mình săn đoàn cứu hộ, từ Harpy: pháo hạm bay to như con tàu, ổ rocket và một tốp trực thăng hộ tống. Cho bệ phóng di chuyển liên tục, để ý đòn tấn công của nó, và đuổi nó đi.'),
       (('A black shape', 'Một bóng đen'),
-       ('Morrigan never came close enough to photograph. The only picture the brigade has is a black shape against the canopy, and Hawk says it does not do it justice.',
-        'Morrigan chưa bao giờ bay đủ gần để chụp ảnh. Tấm hình duy nhất lữ đoàn có là một bóng đen trên nền tán rừng, và Hawk nói nó chẳng lột tả được gì.')),
-      [say('quaden', 'Boss', 'Morrigan, weapons free. Hawk, I know you are listening.', 'Morrigan, tự do khai hỏa. Hawk, ta biết ngươi đang nghe.'),
+       ('The only picture the brigade has of the Harpy that night is a black shape against the canopy, lit by its own rockets, and Hawk says it does not do it justice.',
+        'Tấm hình duy nhất lữ đoàn có về Harpy đêm đó là một bóng đen trên nền tán rừng, sáng lên bởi chính loạt rocket của nó, và Hawk nói nó chẳng lột tả được gì.')),
+      [say('quaden', 'Boss', 'Harpy, weapons free. Hawk, I know you are listening.', 'Harpy, tự do khai hỏa. Hawk, ta biết ngươi đang nghe.'),
        say('dieuhau', 'Boss', 'I\'m listening, Raven. Next time I\'ll be flying.', 'Tôi đang nghe đây, Raven. Lần sau tôi sẽ ở trên trời.'),
        say('khai', 'Win', 'It broke off. Keep moving before it comes back.', 'Nó bỏ đi rồi. Đi tiếp trước khi nó quay lại.')])
 

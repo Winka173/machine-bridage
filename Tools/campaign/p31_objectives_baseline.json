@@ -16,10 +16,10 @@
   "c8m11": {"goal": "Capture", "points": ["west", "town", "east"], "enemyOwns": ["west", "town", "east"], "timeLimit": 1000},
   "c9m08": {"goal": "Boss", "timeLimit": 1500, "boss": "scylla"},
   "c9m12": {"goal": "Capture", "points": ["west", "town", "east"]},
-  "i3m02": {"goal": "Boss", "timeLimit": 1260, "boss": "morrigan"},
+  "i3m02": {"goal": "Boss", "timeLimit": 1260, "boss": "mega_gunship"},
   "i3m03": {"goal": "Relieve", "timeLimit": 1000, "hunt": ["main_battle_tank", "tank_destroyer", "light_tank", "mortar_carrier", "ifv", "main_battle_tank"]},
   "c10m11": {"goal": "Hold", "points": ["town"], "holdSeconds": 210},
-  "c10m12": {"goal": "Boss", "timeLimit": 1200, "boss": "morrigan"},
+  "c10m12": {"goal": "Boss", "timeLimit": 1200, "boss": "mega_gunship"},
   "c11m13": {"goal": "Recon", "points": ["west", "town", "east"], "timeLimit": 600},
   "c12m03": {"goal": "Duel", "timeLimit": 1800}
 }

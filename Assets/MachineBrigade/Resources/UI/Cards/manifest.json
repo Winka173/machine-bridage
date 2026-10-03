@@ -578,20 +578,6 @@
             "hash": "v2:5f1c0c1de2ad239329dab04eb47322667b2c1974"
         },
         {
-            "id": "caspian",
-            "kind": "boss",
-            "model": "caspian",
-            "source": "Models/caspian",
-            "hash": "v2:e2f74be4ca335e91818a44c789671619480d84eb"
-        },
-        {
-            "id": "cerberus",
-            "kind": "boss",
-            "model": "cerberus",
-            "source": "Models/cerberus",
-            "hash": "v2:019c5f219383a0d7cd40f56f45d3006d51b40ece"
-        },
-        {
             "id": "coastal_battery",
             "kind": "structure",
             "model": "coastal_battery",
@@ -802,20 +788,6 @@
             "hash": "v2:692848da1cc3ae2ad5d0547ca44b0aef0ce18f78"
         },
         {
-            "id": "fortress_hive",
-            "kind": "boss",
-            "model": "fortress_hive",
-            "source": "Models/fortress_hive",
-            "hash": "v2:e7cab340c053607c46fbeaa19f97f428c6a349e6"
-        },
-        {
-            "id": "garuda",
-            "kind": "boss",
-            "model": "garuda",
-            "source": "Models/garuda",
-            "hash": "v2:87d9151b77c9c0e287c464cf9b6e4cd949d4da62"
-        },
-        {
             "id": "guard_tower",
             "kind": "tower",
             "model": "guard_tower",
@@ -942,13 +914,6 @@
             "hash": "v2:2d8e2d895e47e6d4d9139c2fed550278b51bbbfc"
         },
         {
-            "id": "kronos",
-            "kind": "boss",
-            "model": "kronos",
-            "source": "Models/kronos",
-            "hash": "v2:19d8d557732dd4d244f446bfa20e669b433461dd"
-        },
-        {
             "id": "landing_hovercraft",
             "kind": "boss",
             "model": "landing_hovercraft",
@@ -1068,13 +1033,6 @@
             "hash": "v2:8ea389fbdf5ef92b393ab16d7b28de0266d624b0"
         },
         {
-            "id": "morrigan",
-            "kind": "boss",
-            "model": "morrigan",
-            "source": "Models/morrigan",
-            "hash": "v2:3f6b020479465a4452bc156b8a11bec986a0a14b"
-        },
-        {
             "id": "nuke_train",
             "kind": "boss",
             "model": "nuke_train",
@@ -1094,13 +1052,6 @@
             "model": "one_shot_atgm_tower",
             "source": "Models/one_shot_atgm_tower",
             "hash": "v2:efabf77717b0f73ccfaf6ed9d67d9d45425dc116"
-        },
-        {
-            "id": "rail_supergun",
-            "kind": "boss",
-            "model": "rail_supergun",
-            "source": "Models/rail_supergun",
-            "hash": "v2:38d9b96c057eef588c93acf002c137e03539b9b2"
         },
         {
             "id": "recoilless_gun_tower",
@@ -1173,13 +1124,6 @@
             "hash": "v2:5c9e40c9cfb8276a8c409e198d38f1b523e7e44c"
         },
         {
-            "id": "sky_fortress",
-            "kind": "boss",
-            "model": "sky_fortress",
-            "source": "Models/sky_fortress",
-            "hash": "v2:a84ed785ff85a43f36d15ad11eabc3f4d9314191"
-        },
-        {
             "id": "spawn_bastion",
             "kind": "structure",
             "model": "heavy_turret",
@@ -1187,25 +1131,11 @@
             "hash": "v2:3d16ba437d2078bceeebdd6ddcb32cbf85e3aff0"
         },
         {
-            "id": "stymphalos",
-            "kind": "boss",
-            "model": "stymphalos",
-            "source": "Models/stymphalos",
-            "hash": "v2:a5fd28b26745a260a951c670ee28e389b01dcd90"
-        },
-        {
             "id": "super_gun",
             "kind": "structure",
             "model": "super_gun",
             "source": "Models/super_gun",
             "hash": "v2:cf4b5ebaf3fb69b4ad077cf2d32d03022d144acb"
-        },
-        {
-            "id": "supreme_command",
-            "kind": "boss",
-            "model": "supreme_command",
-            "source": "Models/supreme_command",
-            "hash": "v2:c280dd78ba527d2445b1c98396eea7dfa4a21012"
         },
         {
             "id": "targeting_station",

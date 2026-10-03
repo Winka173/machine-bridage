@@ -134,7 +134,6 @@ namespace MachineBrigade.Game.Audio
             ["leviathan_volley"] = new(2508, 165f, 2, 0.7f, 0.2f, 0f, 0.45f, 0.7f),
             ["moloch_factory_dump"] = new(2509, 620f, 4, 0.22f, 0.04f, 0f, 1f, 0.2f, 0.72f),
             ["daedalus_mass_drop"] = new(2510, 700f, 3, 0.2f, 0.08f, 0.45f, 0.1f, 0.05f),
-            ["kronos_bucket_sweep"] = new(2511, 250f, 4, 0.18f, 0.08f, -0.05f, 0.6f, 0.9f),
             ["typhon_underwater_launch"] = new(2512, 1480f, 2, 0.35f, 0.45f, -0.02f, 0f, 0f),
         };
 

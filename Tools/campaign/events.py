@@ -33,9 +33,9 @@ RULES = {
                     'elite': 'main_battle_tank', 'lastChapter': 12},
         'sen': {'roster': ['strike_drone', 'fpv_carrier', 'recon_drone', 'ew_jammer'], 'delivery': ['edge', 'air'],
                 'elite': 'fpv_carrier', 'lastChapter': 5},
-        # E.1: Raven takes the field in Morrigan, the fighter built for him (interlude III: he hunts Hawk in it).
+        # E.1: Raven takes the field in the Harpy (play-test 14: Morrigan was deleted; interlude III: he hunts Hawk in it).
         'quaden': {'roster': ['attack_helicopter', 'attack_jet', 'strike_drone'], 'delivery': ['edge'],
-                   'elite': 'attack_jet', 'minis': ['morrigan'], 'lastChapter': 10},
+                   'elite': 'attack_jet', 'minis': ['mega_gunship'], 'lastChapter': 10},
         # Thorne's columns are the Accord's own, turned.
         'hung': {'roster': ['main_battle_tank', 'heavy_tank', 'ifv', 'aa_vehicle'], 'delivery': ['edge', 'landing'],
                  'elite': 'heavy_tank', 'lastChapter': 9},
@@ -154,9 +154,9 @@ EVENTS = [
     # E.1 (chapter 8): Tartarus, Thorne's earth borer, comes up out of the ground mid-battle.
     E('tartarus', 'MiniBoss', {'progress': 0.45}, {'boss': ['earth_borer'], 'surface': True},
       notices={'warn': 'event.miniBoss.tartarus.warn'}, lines={'warn': 'radio.linh.ev.miniBoss.tartarus.warn'}),
-    # E.1 (interlude III): Morrigan, Raven's own fighter, hunting Hawk.
-    E('morrigan_hunt', 'MiniBoss', {'progress': 0.4}, {'boss': ['morrigan']},
-      notices={'warn': 'event.miniBoss.morrigan.warn'}, lines={'warn': 'radio.linh.ev.miniBoss.morrigan.warn'}),
+    # E.1 (interlude III): the Harpy, with Raven aboard, hunting Hawk (play-test 14: Morrigan was deleted).
+    E('harpy_hunt', 'MiniBoss', {'progress': 0.4}, {'boss': ['mega_gunship']},
+      notices={'warn': 'event.miniBoss.harpy.warn'}, lines={'warn': 'radio.linh.ev.miniBoss.harpy.warn'}),
     E('plan_change', 'PlanChange', {'progress': 0.5}, priority=0),
     # D.9: the weather turns (20-30 s).
     E('snowstorm', 'WeatherShift', {'at': 180}, {'to': 'Snow', 'seconds': 25}),
@@ -201,7 +201,7 @@ SIGNATURES = {
     11: ['drop_pods', 'test_rod'],
     12: ['enemy_all_directions', 'total_offensive'],
     14: ['hunters'],
-    15: ['morrigan_hunt', 'nightfall'],
+    15: ['harpy_hunt', 'nightfall'],
 }
 # E.1: the events tied to prompt 22's story choices, by the option that plays them (the chapter's choice decides whether they come).
 CHOICE_EVENTS = {'ferries': 'harbour', 'miners_held': 'rescue'}

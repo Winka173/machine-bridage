@@ -35,17 +35,17 @@ texts(d, ('Vault\'s Airstrip', 'Sân bay dã chiến của Vault'),
       [say('okoye', 'Start', 'Every flight that lands is a week of war we can afford. Hold the strip.', 'Mỗi chuyến bay hạ cánh là thêm một tuần chiến tranh ta gánh nổi. Giữ đường băng.'),
        say('okoye', 'Win', 'Hundredth flight down. The reserve is full, and the reserve\'s reserve.', 'Chuyến thứ một trăm đã hạ cánh. Dự trữ đã đầy, cả dự trữ của dự trữ.')])
 
-# c10m12: the duel over Skyhold. Prompt 22 E.3 gives Morrigan a mode of its own for it (the player flies only aircraft)
-# and F.1 fixes Hawk as its commander; both come later, the mission awaits them.
+# c10m12: the duel over Skyhold. Prompt 22 E.3 gives Raven's boss a duel mode for it (the player flies only aircraft) and F.1
+# fixes Hawk as its commander. Play-test 14: Raven flies the Harpy (Morrigan was deleted).
 d = clone('c10m05', 'c10m12', 10, flip=True, playerBase='None', general='quaden', enemyDeck=QUADEN, speaker='dieuhau', commander='reyes')
-boss(d, 'morrigan', fallback='sky_fortress', health=0.6, name='morrigan')
-mark(d, set_piece=True, awaits=('boss:morrigan', 'mode:air_duel'))
+boss(d, 'mega_gunship', health=2.9, name='mega_gunship')
+mark(d, set_piece=True, awaits=('boss:mega_gunship', 'mode:air_duel'))
 texts(d, ('Hawk and Raven', 'Hawk và Raven'),
-      ('Raven has sent word through the Skyhold tower: him and Hawk, over the runway, at noon. Hawk has already said yes. Keep the rest of Raven\'s wing off him and bring Morrigan down.',
-       'Raven gửi lời qua tháp điều khiển Skyhold: hắn và Hawk, trên đường băng, giữa trưa. Hawk đã nhận lời. Giữ phần còn lại của phi đội Raven tránh xa anh và hạ Morrigan.'),
+      ('Raven has sent word through the Skyhold tower: him and Hawk, over the runway, at noon. Hawk has already said yes. Keep the rest of Raven\'s wing off him and bring the Harpy down.',
+       'Raven gửi lời qua tháp điều khiển Skyhold: hắn và Hawk, trên đường băng, giữa trưa. Hawk đã nhận lời. Giữ phần còn lại của phi đội Raven tránh xa anh và hạ Harpy.'),
       (('Noon', 'Giữa trưa'),
-       ('The duel lasted six minutes. Morrigan broke off trailing smoke, and Hawk flew home in a jet with forty holes in it. He asked for it to be repaired, not replaced.',
-        'Trận tay đôi kéo dài sáu phút. Morrigan bỏ chạy, kéo theo một vệt khói, và Hawk bay về trên chiếc phản lực thủng bốn mươi lỗ. Anh xin sửa nó, chứ không thay chiếc mới.')),
+       ('The duel lasted six minutes. The Harpy broke off trailing smoke, and Hawk flew home in a jet with forty holes in it. He asked for it to be repaired, not replaced.',
+        'Trận tay đôi kéo dài sáu phút. Harpy bỏ chạy, kéo theo một vệt khói, và Hawk bay về trên chiếc phản lực thủng bốn mươi lỗ. Anh xin sửa nó, chứ không thay chiếc mới.')),
       [say('quaden', 'Start', 'Noon, little Hawk. Just you and me.', 'Giữa trưa, chim ưng non. Chỉ ngươi và ta.'),
        say('dieuhau', None, 'This one is for my wingman, Raven.', 'Trận này là cho đồng đội của tôi, Raven.', at=6),
        say('dieuhau', 'Win', 'He ran! Raven ran!', 'Hắn chạy rồi! Raven chạy rồi!'),
@@ -53,13 +53,13 @@ texts(d, ('Hawk and Raven', 'Hawk và Raven'),
 
 d = clone('c3m01', 'c10m13', 10, flip=True, weather='Clear', playerBase='None', general='quaden', enemyDeck=QUADEN)
 texts(d, ('The Passes at Dawn', 'Các con đèo lúc bình minh'),
-      ('Spectre hunts the passes at night. By day we can take them: the signal post, the frozen lake and the sawmill, from the north side, before Raven\'s wing is up.',
-       'Spectre săn trên các con đèo trong đêm. Ban ngày thì ta chiếm được chúng: trạm tín hiệu, hồ băng và xưởng cưa, từ phía bắc, trước khi phi đội của Raven cất cánh.'),
+      ('Roc hunts the passes at night. By day we can take them: the signal post, the frozen lake and the sawmill, from the north side, before Raven\'s wing is up.',
+       'Roc săn trên các con đèo trong đêm. Ban ngày thì ta chiếm được chúng: trạm tín hiệu, hồ băng và xưởng cưa, từ phía bắc, trước khi phi đội của Raven cất cánh.'),
       (('First light', 'Tia sáng đầu tiên'),
-       ('The brigade took the last outpost as the sun came over the pass, and Spectre\'s contrail turned for home above it.',
-        'Lữ đoàn chiếm tiền đồn cuối cùng đúng lúc mặt trời nhô qua đèo, và vệt khói của Spectre quay đầu về căn cứ ngay phía trên.')),
-      [say('khai', 'Start', 'Dawn. The gunship is going home. We go up the pass.', 'Bình minh. Pháo hạm bay đang về căn cứ. Ta tiến lên đèo.'),
-       say('dieuhau', 'Win', 'The passes are ours. Spectre will have to come to us tonight.', 'Các con đèo là của ta. Đêm nay Spectre sẽ phải tự tìm tới ta.')])
+       ('The brigade took the last outpost as the sun came over the pass, and Roc\'s contrail turned for home above it.',
+        'Lữ đoàn chiếm tiền đồn cuối cùng đúng lúc mặt trời nhô qua đèo, và vệt khói của Roc quay đầu về căn cứ ngay phía trên.')),
+      [say('khai', 'Start', 'Dawn. Roc is going home. We go up the pass.', 'Bình minh. Roc đang về căn cứ. Ta tiến lên đèo.'),
+       say('dieuhau', 'Win', 'The passes are ours. Roc will have to come to us tonight.', 'Các con đèo là của ta. Đêm nay Roc sẽ phải tự tìm tới ta.')])
 
 d = clone('c7m01', 'c10m14', 10, flip=True, map_='skyhold', weather='Overcast', playerBase='Anchor', general='quaden', enemyDeck=QUADEN, speaker='linh')
 texts(d, ('The Refuelling Hour', 'Giờ tiếp nhiên liệu'),
@@ -76,8 +76,8 @@ texts(d, ('The Refuelling Hour', 'Giờ tiếp nhiên liệu'),
 mark(mission('c11m05'), set_piece=True)
 rewrite('c11m01', lines=[say('aurel', None, 'Director Aurel. For the record: our first satellite reached orbit this morning.',
                              'Giám đốc Aurel. Xin thông báo: vệ tinh đầu tiên của chúng tôi đã lên quỹ đạo sáng nay.', at=10)])
-retext('mission.c11m05.brief', 'Orlov is waiting at the Skygate Array\'s railhead in the Rust Yard with Gungnir, the biggest gun he ever had. This is his last battle. Silence the gun.',
-       'Orlov đang chờ ở đầu mối đường sắt của Skygate Array trong Rust Yard cùng Gungnir, khẩu pháo lớn nhất ông ta từng có. Đây là trận cuối của ông ta. Bắt khẩu pháo câm họng.')
+retext('mission.c11m05.brief', 'Orlov is waiting at the Skygate Array\'s railhead in the Rust Yard with Monster, a walking fortress round the biggest gun he ever had. This is his last battle. Silence the gun.',
+       'Orlov đang chờ ở đầu mối đường sắt của Skygate Array trong Rust Yard cùng Monster, một pháo đài biết đi dựng quanh khẩu pháo lớn nhất ông ta từng có. Đây là trận cuối của ông ta. Bắt khẩu pháo câm họng.')
 rewrite('c11m10', lines=[say('khai', 'Win', 'The Skygate is down. Next stop, Helion.', 'Skygate đã sụp. Điểm dừng tiếp theo: Helion.')])
 mission('c11s1')['towerGear'] = 'Legendary'  # chapter 12's side mission paid the campaign's legendary tower piece
 
@@ -183,8 +183,8 @@ retext('mission.c7m09.fragment', 'The station\'s last broadcast was cut off mid-
 # Prompt 22 C.7: a radio line fits in one or two lines on a phone (100 characters at most).
 retext('radio.sen.c12m10.s6', 'That is 01, complete. It climbs past most of your reach. Do not let it level out.',
        'Đó là chiếc 01, hoàn chỉnh. Nó sẽ vượt tầm với của phần lớn các anh. Đừng để nó bay ổn định.')
-retext('radio.linh.c11m05.1', 'Gungnir is on the east rails. Where the ground cracks red, a shell lands three seconds later.',
-       'Gungnir nằm trên đường ray phía đông. Chỗ nào mặt đất nứt đỏ, ba giây sau đạn rơi xuống đó.')
+retext('radio.linh.c11m05.1', 'Monster is coming in by the east rails. Where the ground cracks red, a shell lands seconds later.',
+       'Monster đang tiến vào theo đường ray phía đông. Chỗ nào mặt đất nứt đỏ, vài giây sau đạn rơi xuống đó.')
 # The old chapter and act names, as the words of a mission.
 retext('mission.c12m10.name', 'Icarus Falls', 'Icarus rơi')
 retext('mission.c2m01.fragment.title', 'Crude', 'Dầu thô')
@@ -193,5 +193,5 @@ retext('mission.c2m01.fragment.title', 'Crude', 'Dầu thô')
 # The mission after which each choice of D.5 comes (the flag it sets is the choice's id); the chapter-end comics (D.8) hang
 # off each chapter's "comic" key in campaign.json. Nothing reads them yet.
 mission('c4m14')['storyChoice'] = 'c4.pursuit'   # chase Kessler out to sea at once, or stay and save the civilian ships
-mission('c8m09')['storyChoice'] = 'c8.miners'    # free the miners Thorne holds (help in chapter 9), or strike at Kronos (more coins)
+mission('c8m09')['storyChoice'] = 'c8.miners'    # free the miners Thorne holds (help in chapter 9), or strike at Tartarus (more coins)
 mission('c11m09')['storyChoice'] = 'c11.radar'   # the Skygate radars first (less enemy sight in chapter 12), or straight to Helion

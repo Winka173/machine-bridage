@@ -278,7 +278,7 @@ namespace MachineBrigade.Sim.Content
         }
 
         /// <summary>
-        /// Prompt 20 M: fixed routes by name (map data "routes": {"kronos": [x, z, ...]}), for a slow boss that
+        /// Prompt 20 M: fixed routes by name (map data "routes": {"haul": [x, z, ...]}), for a slow boss that
         /// drives the same road every time toward the player's camp (the open-pit mine's excavator). Empty on most maps.
         /// </summary>
         public IReadOnlyDictionary<string, IReadOnlyList<Vector2>> Routes { get; internal set; } = new Dictionary<string, IReadOnlyList<Vector2>>();

@@ -62,8 +62,10 @@ namespace MachineBrigade.Tests
             {
                 Assert.IsTrue(UnitLines.Ammo(catalog, bomber).Any(l => l.StartsWith(bomber.LoadOf(bomber.Weapon) + " bombs")), "the bomber's bombs");
                 Assert.IsTrue(UnitLines.Behaviour(catalog, bomber).Any(l => l.Contains("two thirds")), "a bomber goes in with two thirds of its bombs");
-                var pad = catalog.Vehicles["airfield"];
-                Assert.IsTrue(UnitLines.Ammo(catalog, pad).Any(l => l.Contains("2 times as fast") && l.Contains("3 %")), "the landing pad's rates");
+                // Play-test 14: the airfield is an aura building (no landing pad): its lifts for every aircraft of its side.
+                var field = catalog.Vehicles["airfield"];
+                Assert.IsTrue(UnitLines.Ammo(catalog, field).Any(l => l.Contains("aircraft") && l.Contains("+10% damage")), "the airfield's damage lift");
+                Assert.IsTrue(UnitLines.Ammo(catalog, field).Any(l => l.Contains("aircraft") && l.Contains("+10% speed")), "and its speed lift");
                 Assert.IsTrue(UnitLines.Behaviour(catalog, catalog.Vehicles["ammo_carrier"]).Any(l => l.StartsWith("Launchers within")), "the carrier's aura");
             }
             finally { Strings.Vietnamese = was; }

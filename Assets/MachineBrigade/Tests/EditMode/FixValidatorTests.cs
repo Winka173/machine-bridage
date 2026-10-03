@@ -278,7 +278,7 @@ namespace MachineBrigade.Tests
         /// <summary>Flare units whose model is not yet built with Mount_Flare_* points: the list stays the truth (fixing one fails here).</summary>
         private static readonly Dictionary<string, string> FlareKnownMissing = new Dictionary<string, string>
         {
-            ["stymphalos"] = "built after the flare kit (Tools/blender/mb_flare_mounts.FLARE_UNITS has no entry): waits for a Blender rebuild",
+            // Play-test 14 deleted Stymphalos, the one unit listed here.
         };
 
         [Test]

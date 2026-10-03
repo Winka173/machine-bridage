@@ -1390,43 +1390,38 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>
         /// Every kind of boss and its variants (at most three of a kind): the super-heavy tank
-        /// (Behemoth, Inferno, Tempest), the gunship (Iron Bird, Spectre), the mobile fortress
-        /// (Citadel, Hive, Bastion), the drone mothership, the Silver Bug, and prompt 8's five: the rail
-        /// supergun, the Earth Worm, the command airship, the landing hovercraft and the Supreme Commander.
+        /// (Behemoth, Inferno, Tempest), the gunship (Iron Bird), the mobile fortress (Citadel, Bastion),
+        /// the drone mothership, the Silver Bug, and prompt 8's: the Earth Worm, the command airship and the
+        /// landing hovercraft. Play-test 14 deleted Spectre, Hive, Gungnir, Atlas, Kronos, Morrigan, Caspian,
+        /// Garuda, Stymphalos and Cerberus.
         /// </summary>
         public static readonly IReadOnlyList<string[]> Kinds = new[]
         {
             new[] { "behemoth", "behemoth_inferno", "behemoth_tempest" },
-            new[] { "mega_gunship", "sky_fortress" },
-            new[] { "mobile_fortress", "fortress_hive", "fortress_bastion" },
+            new[] { "mega_gunship" },
+            new[] { "mobile_fortress", "fortress_bastion" },
             new[] { "drone_mothership" },
             new[] { "silver_bug" },
-            new[] { "rail_supergun" },
             new[] { "earth_borer" },
             new[] { "command_airship" },
             new[] { "landing_hovercraft" },
             // Prompt 16: Kessler's Leviathan, on the sea (Boss Rush switches to Lighthouse Bay for it).
             new[] { "leviathan" },
-            new[] { "supreme_command" },
-            // Prompt 20 H-J: the new main bosses (Kronos on the open-pit mine, Typhon at sea) and the new mini bosses
+            // Prompt 20 H-J: the new main bosses (Typhon at sea) and the new mini bosses
             // by where they fight (prompt 20 pass 3 reworks the rush round the two ranks).
             new[] { "moloch" },
             new[] { "daedalus" },
-            new[] { "kronos" },
             new[] { "typhon" },
             new[] { "behemoth_mk2", "bastion_mk0", "fenrir", "ixion" },
             new[] { "locust", "argus", "icarus_mk0" },
             // Prompt 22 E: the two new mini bosses.
-            new[] { "behemoth_mk0", "morrigan" },
-            new[] { "scylla", "caspian" },
+            new[] { "behemoth_mk0" },
+            new[] { "scylla" },
             // Prompt 25 F2 batch D: the eight new bosses (stand-ins), the sea ones together, each of the rest alone.
             new[] { "kraken" },
             new[] { "monster" },
-            new[] { "garuda" },
             new[] { "hyperion" },
             new[] { "nyx", "hydra" },
-            new[] { "stymphalos" },
-            new[] { "cerberus" },
         };
 
         /// <summary>One boss of each kind, in the usual order, the variant drawn by <paramref name="seed"/>.</summary>

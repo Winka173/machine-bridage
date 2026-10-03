@@ -56,7 +56,7 @@ namespace MachineBrigade.Game.Rendering
         };
 
         /// <summary>The rail bosses by id (their frame and route say so too; the list keeps a variant without them on its track).</summary>
-        public static readonly HashSet<string> RailUnits = new HashSet<string> { "armored_train", "nuke_train", "rail_supergun" };
+        public static readonly HashSet<string> RailUnits = new HashSet<string> { "armored_train", "nuke_train" };
 
         public static PreviewSetting Of(VehicleDef def)
         {

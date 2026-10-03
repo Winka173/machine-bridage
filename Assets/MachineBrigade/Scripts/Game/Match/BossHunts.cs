@@ -52,7 +52,7 @@ namespace MachineBrigade.Game.Match
                     {
                         if (slots.Contains(id) && catalog.Vehicles.TryGetValue(id, out var def) && (!OnRails(def) || def.Arena != null) && seen.Add(id))
                             // Prompt 29 C11: a boss of the main rank counts as a main boss in the hunts even where its chapter
-                            // lists it in a mini slot (Gungnir, chapter 11: 17 mains and 24 minis to draw 3 and 7 from).
+                            // lists it in a mini slot (Monster, chapter 11).
                             list.Add(new HuntBoss(id, id == chapter.Main || def.Rank == BossRank.Main, chapter.Number, AirDefence(def)));
                     }
                     foreach (var m in Campaign.MissionsOf(chapter.Number))
@@ -71,14 +71,14 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>
         /// Prompt 22 E (DECISIONS 22E): the new mini bosses and the chapter whose interlude they fight in (Behemoth Mk.0 in
-        /// interlude I after chapter 3, Morrigan in interlude III after chapter 9), for the hunts until the campaign lists
-        /// them in a chapter's slots; once it does, the slot wins and this is not used.
+        /// interlude I after chapter 3), for the hunts until the campaign lists them in a chapter's slots; once it does, the
+        /// slot wins and this is not used. Play-test 14 deleted Morrigan, Stymphalos, Cerberus and Garuda.
         /// </summary>
         public static readonly (string id, int after)[] Unslotted =
         {
-            ("behemoth_mk0", 3), ("morrigan", 9),
+            ("behemoth_mk0", 3),
             // Prompt 25 F2 batch D (DECISIONS 25F2-D): the eight new bosses, by the chapter their general or season belongs to.
-            ("nyx", 4), ("stymphalos", 5), ("cerberus", 6), ("monster", 8), ("kraken", 9), ("hydra", 9), ("garuda", 10), ("hyperion", 12),
+            ("nyx", 4), ("monster", 8), ("kraken", 9), ("hydra", 9), ("hyperion", 12),
         };
 
         private static bool Listed(string id)
@@ -119,7 +119,7 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>
         /// Prompt 29 C11 (checked in the G1 pass): the bosses the hunts count as main, the draw's own flag (a chapter's main, or
-        /// a boss of the main rank in a mini slot: Gungnir), so the rules line and the roster's marks agree with the draw (17 mains).
+        /// a boss of the main rank in a mini slot: Monster), so the rules line and the roster's marks agree with the draw (17 mains).
         /// </summary>
         public static HashSet<string> MainIds()
         {

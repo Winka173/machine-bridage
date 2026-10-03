@@ -185,7 +185,7 @@ namespace MachineBrigade.Tests
                 bad.AddRange(Run(world, 60f, m.Id));
             }
             // Every flagship on every lane, at both ends of its patrol and in the middle; with an operation's extra escort.
-            foreach (var bossId in new[] { "leviathan", "typhon", "caspian" })
+            foreach (var bossId in new[] { "leviathan", "typhon" })
             {
                 if (!Catalog.Vehicles.ContainsKey(bossId)) continue;
                 var probe = Bay();

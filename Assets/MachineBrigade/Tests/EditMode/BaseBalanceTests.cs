@@ -300,7 +300,10 @@ namespace MachineBrigade.Tests
             Debug.Log(report.ToString());
         }
 
-        /// <summary>An airfield keeps aircraft flying, not parked: over five battles they spend most of their time away from it, and still get shot down.</summary>
+        /// <summary>
+        /// An airfield keeps aircraft flying, not parked: over five battles they spend most of their time away from home, and
+        /// still get shot down. Play-test 14: the airfield is an aura building and aircraft rearm at the HQ, so "home" is the HQ.
+        /// </summary>
         [Test, Category("Balance")]
         public void TheAirfieldDoesNotMakeAircraftImmortal()
         {
@@ -322,7 +325,7 @@ namespace MachineBrigade.Tests
                 });
                 mode.Setup(world);
                 var ais = new[] { new ConquestAi(mode, 0, 1, AiDifficulty.Hard, seed), new ConquestAi(mode, 1, 0, AiDifficulty.Hard, seed + 3) };
-                var fields = world.VehicleList.Where(v => v.Def.Id == "airfield").ToList();
+                var homes = new[] { 0, 1 }.Where(t => world.Bases.Of(t) != null).Select(t => (team: t, at: world.Bases.Of(t).HqPosition)).ToList();
                 for (var i = 0; i < 8 * 60 * 20 && !world.IsOver; i++)
                 {
                     mode.Tick(world, TestWorlds.Step);
@@ -336,12 +339,12 @@ namespace MachineBrigade.Tests
                     {
                         if (!v.IsAlive || !v.Flying) continue;
                         aloft++;
-                        if (fields.Any(f => f.Team == v.Team && Vector2.Distance(f.Position, v.Position) < 20f)) atField++;
+                        if (homes.Any(h => h.team == v.Team && Vector2.Distance(h.at, v.Position) < 20f)) atField++;
                     }
                 }
             }
             var share = aloft > 0 ? atField / (float)aloft : 0f;
-            Debug.Log($"AIRFIELD aircraft at the airfield {share:P0} of their time, {lost} shot down over 5 battles");
+            Debug.Log($"AIRFIELD aircraft at their HQ {share:P0} of their time, {lost} shot down over 5 battles");
             Assert.Less(share, 0.4f, "aircraft spend most of their time in the fight");
             Assert.Greater(lost, 0, "and still get shot down");
         }

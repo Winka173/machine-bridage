@@ -231,8 +231,9 @@ namespace MachineBrigade.Tests
         public void TheMineHasAFixedRouteOnOpenGroundToThePlayersCamp()
         {
             var map = GameContent.LoadMap("openpit_conquest");
-            var route = map.Route("kronos");
-            Assert.IsNotNull(route, "the excavator's route");
+            // Play-test 14: the haul road (the route Kronos drove, renamed when it was deleted).
+            var route = map.Route("haul");
+            Assert.IsNotNull(route, "the haul road");
             Assert.GreaterOrEqual(route.Count, 2);
             var camp = map.BaseOf(0).Hq;
             Assert.Greater(route[0].X + route[0].Y, 0f, "it starts on the enemy's side");
@@ -252,7 +253,7 @@ namespace MachineBrigade.Tests
                 }
             }
             // A campaign mission from the other side walks it the other way.
-            var back = map.Reversed().Route("kronos");
+            var back = map.Reversed().Route("haul");
             Assert.AreEqual(route[0], back[back.Count - 1]);
         }
     }

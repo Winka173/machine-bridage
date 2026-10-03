@@ -54,12 +54,12 @@ STARTERS = act11.STARTERS
 MODULES = {'repair_bay', 'airfield', 'logistics_station'}
 # Cards that shoot at aircraft from the ground (and the fighter), for the anti-air rule.
 ANTI_AIR = {'aa_vehicle', 'sam_launcher', 'heavy_aa', 'zu23_technical', 'long_sam', 'fighter_jet', 'aa_turret', 'missile_battery', 'iron_beam'}
-FLYING_BOSSES = {'mega_gunship', 'drone_mothership', 'sky_fortress', 'silver_bug', 'command_airship',
-                 'locust', 'argus', 'icarus_mk0', 'daedalus', 'morrigan'}
+FLYING_BOSSES = {'mega_gunship', 'drone_mothership', 'silver_bug', 'command_airship',
+                 'locust', 'argus', 'icarus_mk0', 'daedalus'}
 CHAPTERS = 12
 ACT_IV = 10  # the first chapter of act IV
 # Prompt 22 E: the bosses and battlefields P22-content builds (a mission on one says so: "awaits").
-PENDING_BOSSES = {'behemoth_mk0', 'morrigan'}
+PENDING_BOSSES = {'behemoth_mk0'}
 PENDING_MAPS = {'foundry', 'veyra_old_quarter'}
 VEHICLES = set()
 

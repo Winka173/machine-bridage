@@ -67,7 +67,7 @@ namespace MachineBrigade.Game.Match
         private float Price(MachineBrigade.Sim.Economy.TeamEconomy economy, CardInfo card)
         {
             if (economy.Commander == null) return card.Cost;
-            if (card.Support) return _world.Catalog.TryGetSupport(card.Id, out var s) ? economy.PriceOf(card.Id, s.CpCost) : card.Cost;
+            if (card.Support) return _world.Catalog.TryGetSupport(card.Id, out var s) ? economy.PriceOf(card.Id, s.CpCost) + CallCost(_world, s) : card.Cost;
             return _world.Catalog.Vehicles.TryGetValue(card.Id, out var v) ? economy.PriceOf(card.Id, v.CpCost) : card.Cost;
         }
 
@@ -82,8 +82,21 @@ namespace MachineBrigade.Game.Match
                     cards.Add(new CardInfo(id, false, economy?.CostOf(id, v.CpCost) ?? v.CpCost, CardIcons.For(id), StoresStrip.MissileLoad(v), v.FlareCharges));
             foreach (var id in supports)
                 if (world.Catalog.TryGetSupport(id, out var s))
-                    cards.Add(new CardInfo(id, true, economy?.CostOf(id, s.CpCost) ?? s.CpCost, CardIcons.For(id)));
+                    cards.Add(new CardInfo(id, true, (economy?.CostOf(id, s.CpCost) ?? s.CpCost) + CallCost(world, s), CardIcons.For(id)));
             return cards;
+        }
+
+        /// <summary>
+        /// Play-test 14 (cloud session 3): a call the player fills (Airdropped armour) is paid in CP for the drop saved on its
+        /// Units called tab: ceil(scale x their total CP) on top of the card's own price (0 for it). 0 for every other card.
+        /// </summary>
+        private static int CallCost(SimWorld world, MachineBrigade.Sim.Content.SupportDef support)
+        {
+            if (support.CallMaxCp <= 0f) return 0;
+            var total = 0f;
+            foreach (var u in PlayerProfile.CallUnits(support.Id, support, world.Catalog))
+                if (world.Catalog.Vehicles.TryGetValue(u, out var def)) total += def.BaseCp;
+            return support.CallPrice(total);
         }
 
         /// <summary>Tap interceptor: while a strike is armed, the tap chooses its target.</summary>

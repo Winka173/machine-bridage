@@ -487,3 +487,21 @@ Nhánh `cloud/pt14-a`. Lý do ngoài đời: `Docs/DECISIONS.md` "Play-test 14 (
 | PT14-A9 | Động cơ rocket pháo binh / tên lửa đạn đạo (hình) | tắt ở 85 % / 75 % đường bay | cháy tới lúc nổ; khói kéo tới điểm nổ | vệt khói tới lúc nổ |
 
 Trận replay bị ảnh hưởng: PT14-A1, A2, A3, A4, A5, A6 đổi Sim — baseline của ReplayHashTests cần ghi lại.
+
+## Play-test 14 lane D (cloud session 3)
+
+Nhánh `cloud/pt14-d`. Lý do: `Docs/DECISIONS.md` "Play-test 14 (lane D, cloud)".
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-D1 | `reinforcements` (Tiếp viện thả dù) | vật phẩm mua bằng xu (900 xu / 2 cái), không tốn CP | thẻ hỗ trợ hỏa lực thường: thẻ 0 CP + giá gọi ceil(1,5 x CP quân chọn, tối đa 20 CP); hồi 30 s như cũ; lệnh gọi không kèm quân (AI) thả `units` vừa giới hạn | lead/chủ dự án: không còn là vật phẩm xu |
+| PT14-D2 | Mở khóa `reinforcements` | cửa hàng vật phẩm | chiến dịch chương 4 (c4m08, `act11.ORPHANS`); mua sớm theo giá thẻ hỗ trợ | thẻ thường cần đường mở khóa |
+| PT14-D3 | Save cũ (roster version 10) | - | mỗi vật phẩm `reinforcements` còn trong túi hoàn 450 xu (`CardMerges.CallItemPricePt14`) | hoàn tiền vật phẩm |
+| PT14-D4 | Kinh tế chiến dịch (generator tính lại) | hồi I-II trả x1,64 | x1,66 | thêm một thẻ trên đường mở khóa |
+| PT14-D5 | Locust (biến thể drone_mothership) vũ khí drone | dùng chung `p26_matriarch_ma_drones`: loạt 6 drone cách 0,2 s, hồi 4 s (~6 drone / 5 s) | vũ khí riêng `locust_drones`: 1 drone, hồi 2 s (1 drone / 2 s); sát thương mỗi drone giữ nguyên; Matriarch không đổi | chủ dự án: Locust 1 drone mỗi 2 s |
+| PT14-D6 | Xóa 10 boss (Stymphalos, Hive, Cerberus, Atlas, Kronos, Caspian, Morrigan, Spectre, Garuda, Gungnir) và các mục chỉ chúng dùng | 41 boss (16 chính, 25 mini) | 31 boss (14 chính, 17 mini); danh sách: `Docs/fixes/playtest14_deleted.md` | chủ dự án bỏ 10 boss |
+| PT14-D7 | Boss thay thế trong chiến dịch (máu nhân, bỏ chạy) | c5m05 Hive x1,1; c7m10 Atlas x0,8 chạy 50 %; c8m10 Kronos x1; c9m05 Caspian x1; i3m02 Morrigan x1 chạy 50 %; c10m08 Spectre x3,5; c10m12 Morrigan x1 chạy 50 %; c11m05 Gungnir x1 | c5m05 Matriarch x0,9 chạy 50 %; c7m10 Behemoth Mk.II x0,95 chạy 50 %; c8m10 Tartarus x2,6; c9m05 Charybdis x1,5; i3m02 Harpy x2,9 chạy 50 %; c10m08 Roc x2,7 chạy 50 %; c10m12 Harpy x2,9 chạy 50 %; c11m05 Monster x1,5 | giữ tổng sát thương cần gây ra gần như cũ (máu gốc boss mới x hệ số x phần phải đánh) |
+| PT14-D8 | Ô boss các chương | ch.5 mini Locust, Hive; ch.7 Atlas, ...; ch.8 chính Kronos, mini Ixion, Tartarus; ch.9 Caspian, Scylla; ch.10 Spectre, Icarus Mk.0, Argus, Morrigan; ch.11 Gungnir, Locust; III Morrigan | ch.5 Locust; ch.7 Behemoth Mk.II, ...; ch.8 chính Tartarus, mini Ixion; ch.9 Charybdis, Scylla; ch.10 Icarus Mk.0, Argus, Harpy; ch.11 Monster, Locust; III Harpy | thay thế theo truyện |
+| PT14-D9 | `mega_gunship` (Harpy) `duel` | không | `"duel": { "escorts": false }` (chỉ trong nhiệm vụ đấu tay đôi c10m12: không hộ tống, không tàng hình) | Raven đấu Hawk bằng Harpy |
+| PT14-D10 | Sự kiện mini-boss xen kẽ III | `morrigan_hunt` (Morrigan) | `harpy_hunt` (Harpy); mini của Quaden: Harpy | Morrigan bị xóa |
+| PT14-D11 | Tuyến cố định bản đồ openpit | `routes.kronos` | `routes.haul` (cùng tọa độ) | Kronos bị xóa; đường vận chuyển giữ nguyên |

@@ -58,16 +58,24 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void ReinforcementsDropInAndStay()
+        public void ReinforcementsArePaidInCpAndStay()
         {
-            // Play-test 14 deleted the gunship item whose escort flew home; the dropped armour stays.
+            // Play-test 14 (cloud session 3): Airdropped armour is a fire-support card paid in CP, no longer an item: the
+            // chosen drop costs ceil(1.5 x its CP); the dropped armour stays.
             var world = Field(out var economy);
-            economy.Items["reinforcements"] = 1;
-            world.Submit(Command.Strike(0, "reinforcements", new Vector2(-20f, -20f), new Vector2(-20f, -20f)));
+            Assert.IsTrue(world.Catalog.TryGetSupport("reinforcements", out var support));
+            Assert.IsFalse(support.Consumable, "not an item any more");
+            Assert.IsFalse(Progression.IsItem("reinforcements"), "not sold for coins");
+            var drop = new List<string> { "main_battle_tank", "main_battle_tank" };
+            var price = support.CallPrice(2 * world.Catalog.Vehicles["main_battle_tank"].BaseCp);
+            Assert.IsFalse(world.Submit(Command.Call(0, "reinforcements", new Vector2(-20f, -20f), drop)).Accepted, "no CP: rejected");
+            economy.Cp = price + 1;
+            Assert.IsTrue(world.Submit(Command.Call(0, "reinforcements", new Vector2(-20f, -20f), drop)).Accepted, "paid in CP");
+            Assert.AreEqual(1f, economy.Cp, 1e-3f, "the call's price is spent");
             Run(world, 5f);
-            Assert.AreEqual(3, world.CountAlive(0), "two tanks and an IFV arrive");
+            Assert.AreEqual(2, world.CountAlive(0), "the two chosen tanks arrive");
             Run(world, 35f);
-            Assert.AreEqual(3, world.CountAlive(0), "the dropped armour stays");
+            Assert.AreEqual(2, world.CountAlive(0), "the dropped armour stays");
         }
 
         [Test]

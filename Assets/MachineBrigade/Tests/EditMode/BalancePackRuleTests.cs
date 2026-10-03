@@ -10,9 +10,9 @@ namespace MachineBrigade.Tests
         [Test]
         public void AMainRankBossIsNeverTheMutatorsExtraMini()
         {
-            // D3: Gungnir (rail_supergun) sits in chapter 11's mini slots but is a main boss.
+            // D3: Monster sits in chapter 11's mini slots but is a main boss (play-test 14: in Gungnir's place).
             var catalog = GameContent.LoadCatalog();
-            Assert.AreEqual(BossRank.Main, catalog.Vehicles["rail_supergun"].Rank);
+            Assert.AreEqual(BossRank.Main, catalog.Vehicles["monster"].Rank);
             foreach (var mission in Campaign.Everything)
             {
                 var extra = MissionSession.ExtraBossFor(mission, catalog);

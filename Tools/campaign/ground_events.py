@@ -185,7 +185,7 @@ events.add('c6m14', {'id': 'dam_breach', 'trigger': {'at': 240, 'every': 150, 't
 
 
 # ---------------------------------------------------------------------- Sập hầm mỏ (the mine collapses): c8m10
-# Kronos pit's two adits through the rock, mirrored across the pit: the north-east one (x 28..42, z 52..64, the enemy's side) is
+# Tartarus pit's two adits through the rock, mirrored across the pit: the north-east one (x 28..42, z 52..64, the enemy's side) is
 # open when the battle starts and the south-west one (x -42..-28, z -64..-52, by our camp) is sealed. At 240 s the north-east
 # adit caves in and the miners blast the south-west one open (one switch of one site: "north" -> "south"; the minimap marks
 # both). Neither adit is the only way between its two sides of the rock, so each state keeps the battlefield joined.

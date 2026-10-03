@@ -184,7 +184,7 @@ namespace MachineBrigade.Sim.Content
         public FactoryDef? Factory { get; internal set; }
         public CrushDef? Crush { get; internal set; }
 
-        /// <summary>A named route of the battlefield it follows when the mode gives it none (Kronos's "kronos" on the open-pit mine).</summary>
+        /// <summary>A named route of the battlefield it follows when the mode gives it none (the open-pit mine's "haul").</summary>
         public string? RouteName { get; internal set; }
 
         /// <summary>Prompt 20 I.7 (Argus): while it lives, its side's artillery scatters this share as widely (1: no effect).</summary>

@@ -68,7 +68,6 @@ namespace MachineBrigade.Game.Hud
                 "spawn_bastion" => "t_bastion",
                 "bulwark_post" => "t_post",
                 "super_gun" => "t_supergun",
-                "rail_supergun" => "t_supergun",
                 "targeting_station" => "t_targeting",
                 _ => null,
             };

@@ -39,7 +39,7 @@ namespace MachineBrigade.Tests
             ["c7m11"] = (MissionGoal.ShootDown, "", "", 14, 1200f, null, ""),
             ["c8m11"] = (MissionGoal.Capture, "west,town,east", "", -1, 1000f, null, ""),
             ["c9m08"] = (MissionGoal.Boss, "", "", -1, 1500f, "scylla", ""),
-            ["i3m02"] = (MissionGoal.Boss, "", "", -1, 1260f, "morrigan", ""),
+            ["i3m02"] = (MissionGoal.Boss, "", "", -1, 1260f, "mega_gunship", ""),
             ["i3m03"] = (MissionGoal.Relieve, "", "", -1, 1000f, null, "main_battle_tank,tank_destroyer,light_tank,mortar_carrier,ifv,main_battle_tank"),
             ["c11m13"] = (MissionGoal.Recon, "west,town,east", "", -1, 600f, null, ""),
         };

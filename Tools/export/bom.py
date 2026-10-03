@@ -348,7 +348,7 @@ def sheet_hanh_vi():
         ("diem_nham_tung_qua", "Lượt 2: quả đầu cố định dải (PlanStick): đầu dải = BombImpact lúc thả (vị trí máy bay + hướng mũi × tốc độ × thời gian rơi = khoảng dẫn đầu), hướng = hướng mũi; quả i rơi tại đầu dải + hướng × i × spacing (StickPoint), không bao giờ một điểm nhắm chung. Một quả rơi tự do (POINT n 1) vẫn nhắm BombImpact.",
          f"{S} Launch; {B} PlanStick, StickLine, StickPoint, BombImpact", "bom rơi tự do (FREE_FALL_STICK)"),
         ("diem_nham_bom_boss", "Lượt 2: bom khoang của boss (p26_roc_roc_bombs, p26_roc_main_roc_bombs) là Projectile Bomb, stick.drop BAY: dải 8 quả đặt quanh điểm nhắm (CENTER), hướng = trục chính của cụm mục tiêu trong ±45° so với đường boss → điểm nhắm, không thì đường đó; quả i tại đầu dải + hướng × i × spacing; rơi ít nhất BombFall (thời gian bay cũ nếu dài hơn). Khoang vẫn nhả cách 0,3 s.",
-         f"{S} Launch; {B} BayStick, StickLine, AxisAt; {BALANCE}: weapons p26_roc_roc_bombs.stick", "argus, garuda, command_airship"),
+         f"{S} Launch; {B} BayStick, StickLine, AxisAt; {BALANCE}: weapons p26_roc_roc_bombs.stick", "argus, command_airship"),
         ("diem_nham_bom_dan_duong", "Bom dẫn đường (data guided hoặc form GuidedBomb: SDB, JDAM, UMPK): aimAt = mục tiêu (dẫn trước nếu mục tiêu chạy), độ tản thường theo tầm; bom lượn bay tới bằng tốc độ riêng.",
          f"{S}:805-806 LeadPoint; {S}:829; {S}:875-878; {C}Content/Definitions.cs:224 GuidedBomb", "stealth_payload, guided_bomb, glide_fab500"),
         ("tan_xa", "Lượt 2: quả của dải STICK lệch theo seed (world Random) ±jitterAlong dọc và ±jitterAcross ngang dải (không còn vòng tản), × hệ số khinh khí cầu / đèn chiếu (Works.SpreadFactor). Bom rơi tự do POINT: vòng Spread × 0,5 như cũ.",
@@ -366,7 +366,7 @@ def sheet_hanh_vi():
         ("the_ho_tro_khong_kich", "Airstrike: Count quả rải đều từ Point tới Point + hướng × Length (Lerp), lệch ngang ngẫu nhiên ±Radius/2, cách nhau Duration/(Count−1) s; máy bay bay với tốc độ Length/Duration. Đã là dải (không dồn một điểm).",
          f"{C}Strikes/StrikeSystem.cs:250-275", "airstrike, napalm_strike, air_raid, cluster_strike"),
         ("sieu_vu_khi_boss_strip", "Strip: n quả cách đều dọc trục (−L/2 + L(k+0,5)/n), lệch ngang ±0,35 × W (khi không có interval), rơi trải trong Duration. Đã là dải.",
-         f"{C}Bosses/BossSystem.BigAttacks.cs:708-720 (rơi), :492-505 (vùng cảnh báo)", "airship_carpet, garuda_carpet, kraken_air_raid"),
+         f"{C}Bosses/BossSystem.BigAttacks.cs:708-720 (rơi), :492-505 (vùng cảnh báo)", "airship_carpet, kraken_air_raid"),
         ("the_12_qua", "Hướng dẫn của Oanh tạc cơ chiến lược nói 'thả một hàng 12 quả', dữ liệu bomber_payload có burst 7, load 7 (một lần thả 7 quả).",
          "Assets/MachineBrigade/Scripts/Game/Hud/GuideText.cs:410, :414; " + BALANCE + ": weapons bomber_payload", "heavy_bomber"),
     ]

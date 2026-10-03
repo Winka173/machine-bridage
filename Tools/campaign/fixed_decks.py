@@ -43,7 +43,7 @@ RULES = {
     'airCap6': 'the aircraft cap is 6 in every battle',
     'patchworkDeck': 'the deck itself (cheap cards, many of them)',
     'ciwsSaturate': "Scylla's ciws_fore part shoots missiles down (CombatSystem.PointDefence); mass them or break it",
-    'morriganDecoys': "Morrigan's big attack goes for anti-air (BigAttackDefs); the decoy paradrop draws fire",
+    'morriganDecoys': "the Harpy (Raven's boss since play-test 14) hunts anti-air; the decoy paradrop draws fire",
     'eliteRank': 'the cards fight one rank above the curve (rankBonus 1)',
     'timedRecon': 'Recon against the time limit; the test_rod event is Skygate turning its gun',
     'cityBlackout': 'the city_blackout event (prompt 31 L3): night falls and the towers on the grid shut down, both sides',
@@ -68,7 +68,7 @@ PENDING = {
     'c4m05': 'mines on the rails slow the train: mines damage it, no slow yet',
     'c5m07': 'the canopy hides ground vehicles from drones: no canopy cover in the Sim yet',
     'c7m11': 'the storm cutting radar range (no Sim rule yet); the city blackout is in since prompt 31 L3',
-    'i3m02': 'Morrigan prefers anti-air that stands still: its big attack picks anti-air, moving or not',
+    'i3m02': 'the Harpy goes for anti-air first: keep the launchers moving',
     # Prompt 31 L4 (MAKE LATER).
     'i1m01': '3 stars for no alarm: the stars are time and losses; no star rule of its own yet',
     'i2m01': "Venn's convoy as a scripted object in the background (optional); 3 stars before dusk (the stars are time and losses)",
@@ -169,7 +169,7 @@ DECKS = {
         allies=[{'def': 'behemoth', 'x': -100, 'z': -100, 'heading': 45, 'name': 'behemoth_mara', 'convoy': True, 'lossIfDestroyed': True}],
         rules=['behemothOurs'], status='MAKE_LATER'),
     # c10m12 (Hawk and Raven): Hawk's own fighter as a placed ally (the allied AI, the general order), lost if it falls; the
-    # Boss objective (Morrigan) kept. The sheet's five locked vehicle cards and one support: loaned the wingman drone (Hawk's
+    # Boss objective (the Harpy, Morrigan's slot since play-test 14) kept. The sheet's five locked vehicle cards and one support: loaned the wingman drone (Hawk's
     # wingman) and the chaff (the duel's defence); the rest went to owned cards (recon drone, heavy AA, a second fighter, the
     # AA vehicle). Play-test 14 deleted the wingman and the chaff: the strike drone and the glide bomb strike stand in.
     'c10m12': dict(

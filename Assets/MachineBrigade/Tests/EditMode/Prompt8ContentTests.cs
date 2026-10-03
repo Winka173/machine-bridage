@@ -305,27 +305,6 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(plain * 1.5f, hp - worm.Hp, 1e-2f);
         }
 
-        // ------------------------------------------------------------------ the rail supergun
-
-        [Test]
-        public void TheSupergunMarksWhereItsShellWillFallAndHitsThere()
-        {
-            var world = Field();
-            world.SetBoosts(0, _ => Lab.Harmless);
-            var gun = world.SpawnVehicle("rail_supergun", 1, new Vector2(0f, 100f), (float)Math.PI);
-            // Prompt 9: its fire control is one of its parts (the generator), no longer a post in the field.
-            Assert.GreaterOrEqual(gun.Def.PartIndex("fire_control"), 0, "its fire-control part");
-            Assert.GreaterOrEqual(world.Vehicles.Count(v => v.Team == 1 && v.Def.Static && v.Def.Fort != null), 6, "walls and guns round the bed");
-            var group = new List<Vehicle>();
-            for (var i = 0; i < 4; i++) group.Add(world.SpawnVehicle("main_battle_tank", 0, new Vector2(-60f + i * 5f, -80f), 0f));
-            var events = Run(world, 34f);
-            var warnings = events.Where(e => e.Kind == SimEventKind.StrikeWarning && e.Team == 1).ToList();
-            Assert.AreEqual(2, warnings.Count, "one shell every 20 s (the first after 10)");
-            Assert.AreEqual(3f, warnings[0].Value, 1e-3f, "3 s warning");
-            Assert.Less(Vector2.Distance(warnings[0].Position, new Vector2(-52.5f, -80f)), 8f, "on the group, clear across the map");
-            Assert.IsTrue(group.Any(g => g.Hp < g.MaxHp), "and it hurt");
-        }
-
         // ------------------------------------------------------------------ the landing hovercraft
 
         [Test]
@@ -341,31 +320,14 @@ namespace MachineBrigade.Tests
             Assert.GreaterOrEqual(landed, 15);
         }
 
-        // ------------------------------------------------------------------ the Supreme Commander
-
-        [Test]
-        public void TheSupremeCommanderMakesItsArmyHitHarderAndFireFaster()
-        {
-            var world = Field();
-            var boss = world.SpawnVehicle("supreme_command", 1, Vector2.Zero, 0f);
-            var near = world.SpawnVehicle("main_battle_tank", 1, new Vector2(20f, 0f), 0f);
-            var far = world.SpawnVehicle("main_battle_tank", 1, new Vector2(70f, 0f), 0f);
-            var enemy = world.SpawnVehicle("main_battle_tank", 0, new Vector2(20f, 80f), 0f);
-            Run(world, 1f);
-            Assert.AreEqual(1.2f, near.CommandFire, 1e-4f);
-            Assert.AreEqual(1.2f, near.CommandDamage, 1e-4f);
-            Assert.AreEqual(1f, far.CommandFire, 1e-4f, "40 m at most");
-            Assert.AreEqual(1f, boss.CommandDamage, 1e-4f, "not itself");
-            Assert.IsTrue(enemy.IsAlive);
-        }
-
         // ------------------------------------------------------------------ Boss Rush and the guide
 
         [Test]
-        public void BossRushBringsTheFiveNewBosses()
+        public void BossRushBringsPrompt8sBosses()
         {
             var all = BossRushRules.Everyone().ToList();
-            foreach (var id in new[] { "rail_supergun", "earth_borer", "command_airship", "landing_hovercraft", "supreme_command" })
+            // Play-test 14 deleted two of the five (the rail supergun, the Supreme Commander).
+            foreach (var id in new[] { "earth_borer", "command_airship", "landing_hovercraft" })
             {
                 CollectionAssert.Contains(all, id);
                 Assert.IsTrue(GameContent.LoadCatalog().Escorts.ContainsKey(id), id + " has its escort table (prompt 16 F)");
