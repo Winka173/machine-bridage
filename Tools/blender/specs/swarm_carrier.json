@@ -1,0 +1,35 @@
+{
+ "id": "swarm_carrier",
+ "class": "jet",
+ "real": ["C-130J Super Hercules (four turboprops, six-bladed scimitar propellers)", "FPV drones dropped from the open cargo ramp", "stand-off missiles (the def's jassm loads)"],
+ "shape": "unit_sheet.json Phương tiện: a four-engined propeller transport, high wing, high tail, the rear door open dropping drones; same frame and size as the sky gunship; from above a long straight wing and four engines; about 11.9 x 16.2 x 4.6 m (0.4 x the real C-130 Hercules); visible weapons FPV drone (1.5 kg), GBU-39 SDB (110 kg); team stripes on the roof and both sides; no real insignia, flags or logos.",
+ "confidence": "xấp xỉ (C-130J published dimensions and drawings)",
+ "target_size": {"L": 11.93, "W": 16.3, "H": 4.79, "source": "balance.json modelSize (0.4 x the C-130J's 29.8 x 40.4 x 11.8 m)", "tolerance": 0.10},
+ "features": [
+  {"feature": "round fuselage with stepped cockpit and window band, radome, main-gear sponsons", "nodes": ["Fuselage", "Canopy", "Radome", "Gear_pods"]},
+  {"feature": "straight high wing with four turboprop nacelles, chin intakes and outboard exhausts", "nodes": ["Wings", "Nacelles", "Intakes", "Exhausts"]},
+  {"feature": "six-bladed scimitar propellers on spinners", "nodes": ["Propeller", "Propeller_2", "Propeller_3", "Propeller_4", "Prop_blades"]},
+  {"feature": "high tail: tall fin with dorsal fillet, tailplane", "nodes": ["Tail_fin", "Tailplanes"]},
+  {"feature": "the cargo ramp lowered under the upswept tail, the drone rack on it, a drone dropping", "nodes": ["Ramp", "Hull_dark", "Drone_rack", "Drone_frames", "Muzzle_drone"]},
+  {"feature": "two stand-off missiles on underwing pylons", "nodes": ["Pylons", "Missiles"]},
+  {"feature": "chaff / flare dispensers in two rows on each side of the rear fuselage", "nodes": ["Flares"]}
+ ],
+ "class_parts": ["fuselage", "canopy", "wings", "tail", "intakes", "exhaust", "pylons", "stores", "flares"],
+ "weapons": [
+  {"weapon": "swarm_drones", "slot": "drone", "mount": "Muzzle_drone", "muzzles": ["Muzzle_drone"], "note": "the ramp's lip"},
+  {"weapon": "jassm", "slot": "drone", "mount": "Muzzle_drone", "muzzles": ["Muzzle_drone"], "note": "secondary on the main slot: shares its muzzle (MODEL_STANDARD section 4)"}
+ ],
+ "flare": true, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2},
+ "team_zones": ["fuselage, wings and tail (Team)", "the drones' warheads (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [{"part": "left wing", "node": "Part_wing"}],
+ "wreck": "loses its left wing (mb_p34_parts Part_wing), falls",
+ "faction_style": "Hegemon heavy transport",
+ "details": {
+  "tier1": ["fuselage", "wing", "fin", "tailplane", "four nacelles"],
+  "tier2": ["propellers", "sponsons", "ramp", "upper door", "pylons", "missiles", "wing-root fairing", "radome", "flare dispensers", "drone rack"],
+  "tier3": ["cockpit windows", "portholes", "crew door", "blade antennas", "beacon", "navigation lights", "flap seams", "rudder seam", "exhaust stubs", "intake lips", "FPV drones"]
+ },
+ "questions": []
+}

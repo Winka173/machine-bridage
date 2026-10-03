@@ -2766,6 +2766,26 @@
    "changes": [
     "elite_mbt: triangles 10,210 -> 10,002 (-2.0%); vertices 13,574 -> 13,210 (-2.7%); meshes 67 -> 61 (-9.0%); renderers 67 -> 61 (-9.0%); materialSlots 67 -> 61 (-9.0%); fileBytes 724,176 -> 701,164 (-3.2%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "swarm_carrier"
+   ],
+   "reason": "P35 wave 1",
+   "changes": [
+    "FLAG swarm_carrier: triangles 3,464 -> 4,918 (+42.0%); vertices 4,797 -> 6,792 (+41.6%); meshes 26 -> 62 (+138.5%); renderers 26 -> 62 (+138.5%); materials 7 -> 6 (-14.3%); materialSlots 26 -> 62 (+138.5%); fileBytes 257,812 -> 387,684 (+50.4%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "swarm_carrier"
+   ],
+   "reason": "P35 wave 1",
+   "changes": [
+    "FLAG swarm_carrier: meshes 62 -> 38 (-38.7%); renderers 62 -> 38 (-38.7%); materialSlots 62 -> 38 (-38.7%); fileBytes 387,684 -> 367,496 (-5.2%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -52772,24 +52792,24 @@
   },
   "swarm_carrier": {
    "file": "swarm_carrier.glb",
-   "fileBytes": 257812,
-   "sha1": "5e24d2d9368d0cb5",
+   "fileBytes": 367496,
+   "sha1": "67c3ccb56bc3a2c4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 40,
-   "meshes": 26,
-   "materials": 7,
+   "nodes": 52,
+   "meshes": 38,
+   "materials": 6,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 26,
-   "submeshes": 26,
-   "materialSlots": 26,
-   "materialsUsed": 7,
-   "triangles": 3464,
-   "vertices": 4797,
+   "renderers": 38,
+   "submeshes": 38,
+   "materialSlots": 38,
+   "materialsUsed": 6,
+   "triangles": 4918,
+   "vertices": 6792,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -52797,36 +52817,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 121,
-   "openEdges": 19,
-   "nonManifoldEdges": 35,
+   "loosePieces": 185,
+   "openEdges": 22,
+   "nonManifoldEdges": 16,
    "boundsMin": [
-    -8.15,
-    -1.2028,
-    -5.96
+    -8.16,
+    -1.4581,
+    -5.975
    ],
    "boundsMax": [
-    8.15,
-    3.59,
-    5.97
+    8.16,
+    3.45,
+    5.98
    ],
    "size": [
-    11.93,
-    16.3,
-    4.793
+    11.955,
+    16.32,
+    4.908
    ],
    "center": [
     0.0,
-    1.194,
-    0.005
+    0.996,
+    0.003
    ],
-   "structureHash": "22c8dc53bcc21885",
+   "structureHash": "cf80c48a22ac35e7",
    "color0": {
-    "mean": 0.6629,
-    "min": 0.0801,
+    "mean": 0.7094,
+    "min": 0.0999,
     "max": 1.0,
-    "p05": 0.1557,
-    "p95": 1.0,
+    "p05": 0.2481,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -52846,18 +52866,26 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Armor.001",
-    "Beacon",
+    "Antennas",
+    "Bands",
+    "Bands.001",
     "Canopy",
     "Drone_frames",
-    "Drone_lights",
-    "Drone_motors",
+    "Drone_rack",
     "Drone_warheads",
+    "Exhausts",
+    "Exhausts.001",
+    "Flare_mouths",
     "Flares",
-    "Flares_glow",
     "Fuselage",
-    "Fuselage.001",
+    "Gear_pods",
+    "Glass",
+    "Hull_dark",
+    "Hull_dark.001",
+    "Intakes",
+    "Intakes.001",
+    "Missiles",
+    "Missiles.001",
     "Mount_Flare_L",
     "Mount_Flare_L2",
     "Mount_Flare_R",
@@ -52865,6 +52893,10 @@
     "Mount_Flare_TL",
     "Mount_Flare_TR",
     "Muzzle_drone",
+    "Nacelles",
+    "Nacelles.001",
+    "Nav_lights",
+    "Nav_lights.001",
     "Part_wing",
     "Point_exhaust",
     "Point_fire",
@@ -52876,21 +52908,23 @@
     "Propeller_2",
     "Propeller_3",
     "Propeller_4",
+    "Pylons",
+    "Pylons.001",
+    "Radome",
     "Ramp",
-    "Spinners",
-    "Spinners.001",
-    "Spinners.002",
-    "Spinners.003",
-    "Steel",
-    "Undercarriage",
-    "Undercarriage.001",
-    "Wing_lights",
-    "Wing_lights.001"
+    "Tail_fin",
+    "Tailplanes",
+    "Window_frames",
+    "Wings",
+    "Wings.001",
+    "Wipers"
    ],
    "category": "air",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "renderers 38 over the jet normal budget 36"
+   ],
    "units": [
     "swarm_carrier"
    ],
