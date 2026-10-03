@@ -1219,28 +1219,28 @@
             "kind": "tower",
             "model": "headquarters",
             "source": "Models/headquarters",
-            "hash": "v2:96daab7c4090ba0fc8a6eac855e6fdcea22fca6f"
+            "hash": "v2:d5be954c5e3ccaa5d7627c181cf4d16ad2ce2465"
         },
         {
             "id": "headquarters.fortress_air",
             "kind": "tower",
             "model": "headquarters",
             "source": "Models/headquarters",
-            "hash": "v2:96daab7c4090ba0fc8a6eac855e6fdcea22fca6f"
+            "hash": "v2:d5be954c5e3ccaa5d7627c181cf4d16ad2ce2465"
         },
         {
             "id": "headquarters.fortress_ground",
             "kind": "tower",
             "model": "headquarters",
             "source": "Models/headquarters",
-            "hash": "v2:96daab7c4090ba0fc8a6eac855e6fdcea22fca6f"
+            "hash": "v2:d5be954c5e3ccaa5d7627c181cf4d16ad2ce2465"
         },
         {
             "id": "headquarters.shield",
             "kind": "tower",
             "model": "headquarters",
             "source": "Models/headquarters",
-            "hash": "v2:96daab7c4090ba0fc8a6eac855e6fdcea22fca6f"
+            "hash": "v2:d5be954c5e3ccaa5d7627c181cf4d16ad2ce2465"
         },
         {
             "id": "heavy_flak_tower",
