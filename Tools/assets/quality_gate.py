@@ -256,12 +256,17 @@ def _area(model):
 
 BODY = re.compile(r'^(Hull|Body|Chassis|Turret|Turret_body|Casemate|Fuselage|Superstructure|Deck|Cab|Base|Block|Team)',
                   re.I)
+# A structure's main volumes are its roof, walls, berm and shelter, not only its base (wave 1: a shed with a gable roof
+# read as "0 sloped directions" because only the slab was looked at).
+BODY_STRUCTURE = re.compile(BODY.pattern + r'|^(Roof|Walls?|Berm|Shelter|Bunker|Revetment)', re.I)
 
 
-def _sloped_directions(model):
+def _sloped_directions(model, structure=False):
     """Distinct sloped face directions (not within 15 degrees of an axis, at least 0.5 % of the body's area) on the
-    hull / turret / body pieces (or the two largest pieces when none is named so)."""
-    body = [p for p in model.pieces if BODY.match(p.node) and len(p.tris)]
+    hull / turret / body pieces (or the two largest pieces when none is named so); a structure's roof, walls and berm
+    count as its body."""
+    rx = BODY_STRUCTURE if structure else BODY
+    body = [p for p in model.pieces if rx.match(p.node) and len(p.tris)]
     if not body:
         body = sorted((p for p in model.pieces if len(p.tris)), key=lambda p: -len(p.tris))[:2]
     dirs, areas = [], []
@@ -286,7 +291,7 @@ def _sloped_directions(model):
     return int((sums >= 0.005 * sum(x.sum() for x in areas)).sum())
 
 
-def metrics(model, length_ref=7.0):
+def metrics(model, length_ref=7.0, structure=False):
     """The soft metrics of one model (see the module notes)."""
     out = {}
     sil = []
@@ -322,7 +327,7 @@ def metrics(model, length_ref=7.0):
     out['tier2_m2'] = tiers[1] / max(area, 1e-3)
     out['tier3_m2'] = tiers[2] / max(area, 1e-3)
     out['area_scaled'] = area
-    out['sloped_dirs'] = _sloped_directions(model)
+    out['sloped_dirs'] = _sloped_directions(model, structure)
     out['zones'] = len({p.material for p in model.pieces if len(p.tris)})
     lum = np.concatenate([p.lum for p in model.pieces if p.has_color]) if any(p.has_color for p in model.pieces) \
         else np.zeros(0)
@@ -487,7 +492,7 @@ def evaluate(ids=None, overlap=None, gold=None, quiet=False):
         rec = glb_analyze.analyze(path)
         cls = sp.classify(defs, model, own, rec['nodeNames'])
         mesh = gm.load(path)
-        m = metrics(mesh)
+        m = metrics(mesh, structure=cls in ('tower', 'structure', 'hq'))
         hard = hard_checks(defs, model, own, cls, rec, m, overlap)
         gcls = gold_class(defs, model, own, cls, rec['nodeNames'])
         g = gold_for(gold, gcls)
