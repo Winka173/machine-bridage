@@ -58,6 +58,51 @@ SOFT = (  # (metric, weight, share of the gold mean that scores full marks)
     ('silhouette', 25, 0.85), ('edges', 15, 0.80), ('regions', 15, 0.80), ('parts_m2', 20, 0.80),
     ('tiers', 15, 1.00), ('asymmetry', 10, 1.00))
 TOP_SHARE = 0.10
+# Owner decision 5 (prompt 35 pilot review): each boss frame has its own gold set (a ground boss is not scored against
+# trains). The class key is 'boss_<frame>'; a frame without a gold model uses the whole boss gold.
+BOSS_FRAMES = ('ground', 'rail', 'air', 'sea')
+RAIL_NODE = re.compile(r'^(Bogies?|Wheel_flanges|Sleepers|Rail_wheels)(?:$|[._0-9])', re.I)
+for _f in BOSS_FRAMES:
+    NEAREST[f'boss_{_f}'] = 'boss'
+# Owner decision 6: units seen in numbers (technicals, light vehicles, towers) stay under 1.5 x the class maximum; a
+# hard gate for these budget classes only (over-budget stays information for the others).
+NUMBERS_CAP = {'light': 1.5, 'tower': 1.5}
+# Owner decision 8: a role, muzzle or mount the kit merged into another node counts when that node is there
+# (MODEL_STANDARD section 4: a part the sheet shows inside a merged node is cleared). {model: {item: host node}};
+# the four V2 gold models here, a rebuilt model in its spec ("merged": {...}, Tools/blender/specs/<id>.json).
+MERGED = {
+    'main_battle_tank': {'mantlet': 'Turret_body', 'idler': 'Wheels'},
+    'fighter_jet': {'tail': 'Fuselage', 'Mount_aam': 'Wingtip_missiles'},
+    'attack_helicopter': {'Muzzle_rocket': 'Pods', 'Mount_rocket': 'Pods', 'Mount_aam': 'Stinger_tubes'},
+    'silver_bug': {'Mount_APS': 'Pd_base'},
+}
+SPECS = ROOT / 'Tools' / 'blender' / 'specs'
+
+
+def merged_for(model):
+    out = dict(MERGED.get(model, {}))
+    spec = SPECS / f'{model}.json'
+    if spec.exists():
+        try:
+            out.update(json.loads(spec.read_text(encoding='utf-8')).get('merged') or {})
+        except ValueError:
+            pass
+    return out
+
+
+def boss_frame(defs, own, names):
+    """ground / rail / air / sea (decision 5): air and sea from the def, rail from the running gear's nodes."""
+    f = sp.boss_frame(defs, own)
+    if f == 'ship':
+        return 'sea'
+    if f == 'ground' and any(RAIL_NODE.match(n) for n in names):
+        return 'rail'
+    return f
+
+
+def gold_class(defs, model, own, cls, names):
+    """The key of the gold set a model is scored against."""
+    return f'boss_{boss_frame(defs, own, names)}' if cls == 'boss' and own is not None else cls
 FLARE = re.compile(r'^Mount_flare(_[a-z]+)?(\.\d+)?$', re.I)
 FAMILY_SUFFIX = re.compile(r'(_hd|_a|_b|_chute|_wreck|_deployed|_dug|_dugin|_open|_mk\d|_old|_lod\d)$')
 # Kit component pieces (frontier_kit, mb_parts27, mb_kit35 names): allowed to repeat across models.
@@ -328,8 +373,19 @@ def hard_checks(defs, model, own, cls, rec, m, overlap):
     bcls = sp.budget_class(defs, cls, own)
     lo, hi = sp.BUDGET[bcls]
     tris = rec['triangles']
+    cap = NUMBERS_CAP.get(bcls)
     out = [('triangles_floor', tris >= FLOOR * lo, f'{tris} (floor {int(FLOOR * lo)}, class {lo}-{hi}'
-            + (f'; over max +{tris / hi - 1:.0%}, information only' if tris > hi else '') + ')')]
+            + (f'; over max +{tris / hi - 1:.0%}' + ('' if cap else ', information only') if tris > hi else '')
+            + ')')]
+    if cap:
+        out.append(('triangles_cap', tris <= cap * hi, f'{tris} (seen in numbers: at most {cap:g} x {hi} = '
+                    f'{int(cap * hi)})'))
+    merged = merged_for(model)
+    have = set(names)
+
+    def cleared(item):
+        host = merged.get(item)
+        return bool(host) and any(n == host or re.sub(r'\.\d{3}$', '', n) == host for n in have)
     if cls == 'boss':
         frame = sp.boss_frame(defs, own)
         roles = [sp.BOSS_ROLES['body'], sp.BOSS_ROLES['weapons'], sp.BOSS_ROLES[frame]]
@@ -340,7 +396,10 @@ def hard_checks(defs, model, own, cls, rec, m, overlap):
         if cls in ('wheeled', 'ground', 'tracked') and own is not None and not defs.armed(defs.field(own, 'weapon')):
             roles = [r for r in roles if r[0] not in ('weapon', 'barrel', 'roof_mg')]
     missing = [n for n, pat in roles if not any(sp.role(pat).match(x) for x in names)]
-    out.append(('parts', not missing, 'missing ' + ', '.join(missing) if missing else f'{len(roles)} roles'))
+    inside = [n for n in missing if cleared(n)]
+    missing = [n for n in missing if n not in inside]
+    out.append(('parts', not missing, ('missing ' + ', '.join(missing) if missing else f'{len(roles)} roles') +
+                (f" (merged: {', '.join(f'{n} in {merged[n]}' for n in inside)})" if inside else '')))
     if own is not None and cls != 'obstacle':
         need, found, mz, mounts, flare, aps = sp.weapon_checks(defs, own, cls, names)
         # The flare points are Mount_Flare_L / _R / _TL / _TR (a bare Mount_Flare reads as a weapon pivot).
@@ -349,7 +408,10 @@ def hard_checks(defs, model, own, cls, rec, m, overlap):
             (['Mount_APS'] if aps[0] < aps[1] else [])
         if cls == 'boss':
             bad += ['part ' + p for p in sp.boss_part_nodes(defs, own, names)]
-        out.append(('mounts', not bad, '; '.join(bad) if bad else f'muzzles {found}/{need}'))
+        inside = [b for b in bad if cleared(b.split(' ')[0])]
+        bad = [b for b in bad if b not in inside]
+        out.append(('mounts', not bad, ('; '.join(bad) if bad else f'muzzles {found}/{need}') +
+                    (f" (merged: {', '.join(inside)})" if inside else '')))
     size = rec['size']
     want = defs.field(own, 'modelSize') if own is not None else None
     if want and size[0] > 0.01:
@@ -427,13 +489,14 @@ def evaluate(ids=None, overlap=None, gold=None, quiet=False):
         mesh = gm.load(path)
         m = metrics(mesh)
         hard = hard_checks(defs, model, own, cls, rec, m, overlap)
-        g = gold_for(gold, cls)
+        gcls = gold_class(defs, model, own, cls, rec['nodeNames'])
+        g = gold_for(gold, gcls)
         score, shares = soft_score(m, g) if g else (None, {})
         hard_ok = all(ok for _, ok, _ in hard)
         sg = grade(score) if score is not None else 'NA'
         v, final8 = vis.get(model, ('', ''))
         rows.append({
-            'model': model, 'class': cls, 'units': ' '.join(x['id'] for x in vs[:3]), 'triangles': rec['triangles'],
+            'model': model, 'class': cls, 'gold_set': gold_key(gold, gcls), 'units': ' '.join(x['id'] for x in vs[:3]), 'triangles': rec['triangles'],
             'hard_pass': hard_ok, 'hard_fails': ' | '.join(f'{k}: {n}' for k, ok, n in hard if not ok),
             'soft_score': score, 'soft_grade': sg, 'gate': 'PASS' if hard_ok and sg == 'Tốt' else 'FAIL',
             'l8_visual': v, 'l8_final': final8, 'agent_visual': 'NA',
@@ -449,12 +512,17 @@ def evaluate(ids=None, overlap=None, gold=None, quiet=False):
     return rows
 
 
-def gold_for(gold, cls):
+def gold_key(gold, cls):
+    """The gold set a class is scored against (its own, else the nearest class's; '' when none)."""
     seen = set()
     while cls and cls not in gold.get('classes', {}) and cls not in seen:
         seen.add(cls)
         cls = NEAREST.get(cls)
-    return gold.get('classes', {}).get(cls)
+    return cls if cls in gold.get('classes', {}) else ''
+
+
+def gold_for(gold, cls):
+    return gold.get('classes', {}).get(gold_key(gold, cls))
 
 
 def load_gold():
@@ -472,16 +540,25 @@ def compute_gold(quiet=False):
     owners = scored_models(defs)
     vis = visual_grades()
     raw = {}
+    frames = {}
+    # A borrowed model (REBUILD_LIST stand_in) is never gold: its density is another model's (wave 1 found the
+    # ground boss gold made of fortress_bastion and behemoth_tempest, both stand-ins being rebuilt).
+    borrowed = set()
+    if (DOCS / 'rebuild_list.csv').exists():
+        with (DOCS / 'rebuild_list.csv').open(encoding='utf-8') as fh:
+            borrowed = {r['model'] for r in csv.DictReader(fh) if r.get('stand_in') == 'yes'}
     for model, vs in owners.items():
         rec = glb_analyze.analyze(MODELS / f'{model}.glb')
         own = vs[0] if vs else None
         cls = sp.classify(defs, model, own, rec['nodeNames'])
         raw[model] = (cls, metrics(gm.load(MODELS / f'{model}.glb')))
+        if cls == 'boss' and own is not None:
+            frames[model] = gold_class(defs, model, own, cls, rec['nodeNames'])
     classes = {}
     members = {}
     for cls in sorted({c for c, _ in raw.values()}):
         in_cls = [n for n, (c, _) in raw.items() if c == cls]
-        good = [n for n in in_cls if vis.get(n, ('', ''))[0] == 'Tốt']
+        good = [n for n in in_cls if vis.get(n, ('', ''))[0] == 'Tốt' and n not in borrowed]
         ranks = {}
         for key in ('silhouette', 'edges', 'regions', 'parts_m2', 'tier2_m2', 'tier3_m2'):
             vals = sorted(raw[n][1][key] for n in in_cls)
@@ -495,6 +572,19 @@ def compute_gold(quiet=False):
         members[cls] = gold_set
         classes[cls] = {k: round(float(np.mean([raw[n][1][k] for n in gold_set])), 4) for k in KEYS}
         classes[cls]['count'] = len(in_cls)
+        if cls != 'boss':
+            continue
+        # Decision 5: the same rule inside each boss frame (a frame with no visual Tốt model and no V2 model uses the
+        # whole boss gold through NEAREST).
+        for fk in sorted(set(frames.values())):
+            in_f = [n for n in in_cls if frames.get(n) == fk]
+            good_f = [n for n in in_f if n in good]
+            top_f = sorted(good_f, key=lambda n: -np.mean(ranks[n]))[:max(1, int(math.ceil(TOP_SHARE * len(in_f))))]
+            set_f = sorted(set(top_f) | {n for n, c in GOLD_V2.items() if c == 'boss' and frames.get(n) == fk})
+            if set_f:
+                members[fk] = set_f
+                classes[fk] = {k: round(float(np.mean([raw[n][1][k] for n in set_f])), 4) for k in KEYS}
+                classes[fk]['count'] = len(in_f)
     gold = {'about': 'prompt 35 section 5.3: class means of the gold set (quality_gate.compute_gold)',
             'members': members, 'classes': classes,
             'v2': {n: {k: round(float(raw[n][1][k]), 4) for k in KEYS} for n in GOLD_V2 if n in raw}}

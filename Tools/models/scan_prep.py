@@ -318,7 +318,9 @@ def boss_part_nodes(defs: Defs, own, names):
     out = []
     for p in parts:
         node = p.get('node')
-        if node and not any(alt in have for alt in node.split('|')):
+        # A trailing '*' is a prefix, as the runtime reads it (VehicleView.BossParts).
+        if node and not any(alt in have if not alt.endswith('*') else any(n.startswith(alt[:-1]) for n in have)
+                            for alt in node.split('|')):
             out.append(f"{p.get('id')}:{node.split('|')[0]}")
     return out
 
