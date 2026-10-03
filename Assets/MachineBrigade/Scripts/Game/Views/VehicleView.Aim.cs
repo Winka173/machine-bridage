@@ -41,9 +41,12 @@ namespace MachineBrigade.Game.Views
         private float _drawnTurret = float.NaN;
         private float _turretLaidAt = -10f;
 
-        /// <summary>Whether the sim lays this mount (or does not train it at all), so the view trains it.</summary>
+        /// <summary>
+        /// Whether the sim lays this mount (or does not train it at all), so the view trains it. Play-test 14: a flagship's
+        /// salvo turrets are trained by the sim now (NavalSystem.Lay), so they are drawn as it has them.
+        /// </summary>
         private bool ViewTrained(int i) =>
-            i < Def.Mounts.Count && Def.Mounts[i].Aim == MountAim.Free && (i == 0 || Sim.Arm(i).Laid);
+            i < Def.Mounts.Count && Def.Mounts[i].Aim == MountAim.Free && (Sim.Arm(i).Laid ? Def.Salvo == null : i == 0);
 
         /// <summary>From <see cref="Snapshot"/>: notes the steps in which the sim laid a gun (its heading jumped).</summary>
         private void NoteLays()

@@ -995,6 +995,9 @@ namespace MachineBrigade.Sim
         /// <summary>Play-test 12, previews only (no sea there): a flagship's main turrets fire a salvo, each at an enemy of its own.</summary>
         public bool PreviewSalvo(Vehicle v) => Naval.PreviewSalvo(v);
 
+        /// <summary>Play-test 14: whether a flagship's main turrets are being laid for a salvo (the preview calls <see cref="PreviewSalvo"/> again until it fires).</summary>
+        public bool SalvoLaying(Vehicle v) => v.Laying;
+
         /// <summary>Play-test 12, previews only: a flagship's launch cells fire a cruise missile at the farthest enemy.</summary>
         public bool PreviewCruise(Vehicle v) => Naval.PreviewCruise(v);
 

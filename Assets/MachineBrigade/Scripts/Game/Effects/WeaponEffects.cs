@@ -167,6 +167,8 @@ namespace MachineBrigade.Game.Effects
                     return;
                 }
                 if (e.Mount == 0) shooter.Recoil();
+                // Play-test 14: a gun on its own mount (the Leviathan's turrets) kicks its barrels back too.
+                shooter.MountRecoil(e.Mount);
                 // The barrel is laid first, so the round leaves from where its muzzle now is.
                 if (e.Mount == 0 && !shooter.Flying)
                 {
