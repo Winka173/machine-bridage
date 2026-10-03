@@ -1,6 +1,6 @@
 # GLB baseline (prompt 27 step 2)
 
-Generated 2026-10-04 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (450 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
+Generated 2026-10-04 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (451 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
 Rules: DECISIONS "27 step 0 + baseline"; budgets: Docs/models/BUDGETS.md (over the soft budget a warning, over
 the hard cap an error). Warnings are listed in the JSON.
 
@@ -8,7 +8,7 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| boss | 25 | 681,917 | 27,276 | fortress_bastion (56,092) | 2,815 | 2 | 23 |
+| boss | 26 | 813,805 | 31,300 | leviathan (62,916) | 3,227 | 2 | 24 |
 | ground | 66 | 563,394 | 8,536 | main_battle_tank_hd (16,462) | 3,755 | 1 | 38 |
 | structure | 69 | 371,227 | 5,380 | headquarters (21,052) | 3,434 | 0 | 14 |
 | prop | 115 | 258,170 | 2,244 | command_hq (8,872) | 1,568 | 0 | 3 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 25 | 5,154 | 206 | bomb (404) | 175 | 0 | 0 |
 
-All files: 2,147,168 triangles, 3 with errors, 92 more with warnings only.
+All files: 2,279,056 triangles, 3 with errors, 93 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -40,6 +40,9 @@ All files: 2,147,168 triangles, 3 with errors, 92 more with warnings only.
 
 | class | metric | over soft (warning) | over hard (error) | over the hard cap |
 |---|---|---:|---:|---|
+| boss_l | renderers | 2 | 0 | - |
+| boss_l | triangles | 2 | 0 | - |
+| boss_l | vertices | 2 | 0 | - |
 | boss_m | triangles | 1 | 0 | - |
 | boss_m | vertices | 1 | 0 | - |
 | boss_s | renderers | 1 | 2 | fortress_bastion, ixion |
@@ -64,7 +67,7 @@ All files: 2,147,168 triangles, 3 with errors, 92 more with warnings only.
 | tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-66 models over a budget, 3 of them over a hard cap.
+68 models over a budget, 3 of them over a hard cap.
 
 ## Error reasons (count of models)
 
