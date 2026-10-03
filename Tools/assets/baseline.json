@@ -3294,6 +3294,16 @@
    "changes": [
     "FLAG auto_loader_howitzer: triangles 6,520 -> 9,464 (+45.2%); vertices 7,687 -> 12,678 (+64.9%); meshes 34 -> 55 (+61.8%); renderers 34 -> 55 (+61.8%); materials 7 -> 10 (+42.9%); materialSlots 34 -> 55 (+61.8%); fileBytes 411,304 -> 668,104 (+62.4%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "light_attack_heli"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG light_attack_heli: triangles 3,418 -> 4,390 (+28.4%); vertices 4,293 -> 6,816 (+58.8%); meshes 22 -> 47 (+113.6%); renderers 22 -> 47 (+113.6%); materials 7 -> 9 (+28.6%); materialSlots 22 -> 47 (+113.6%); fileBytes 233,364 -> 373,124 (+59.9%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -38687,24 +38697,24 @@
   },
   "light_attack_heli": {
    "file": "light_attack_heli.glb",
-   "fileBytes": 233364,
-   "sha1": "8c494cdde973cf70",
+   "fileBytes": 373124,
+   "sha1": "758140da6694bc38",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 34,
-   "meshes": 22,
-   "materials": 7,
+   "nodes": 63,
+   "meshes": 47,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 22,
-   "submeshes": 22,
-   "materialSlots": 22,
-   "materialsUsed": 7,
-   "triangles": 3418,
-   "vertices": 4293,
+   "renderers": 47,
+   "submeshes": 47,
+   "materialSlots": 47,
+   "materialsUsed": 9,
+   "triangles": 4390,
+   "vertices": 6816,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -38712,44 +38722,50 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 95,
-   "openEdges": 72,
-   "nonManifoldEdges": 0,
+   "loosePieces": 206,
+   "openEdges": 48,
+   "nonManifoldEdges": 12,
    "boundsMin": [
-    -1.605,
-    -0.0,
-    -2.1328
+    -1.56,
+    0.0027,
+    -2.16
    ],
    "boundsMax": [
-    1.605,
-    1.53,
-    1.72
+    1.56,
+    1.63,
+    1.66
    ],
    "size": [
-    3.853,
-    3.21,
-    1.53
+    3.82,
+    3.12,
+    1.627
    ],
    "center": [
     0.0,
-    0.765,
-    -0.206
+    0.816,
+    -0.25
    ],
-   "structureHash": "356ee816a2aeccd0",
+   "structureHash": "a3a94c2ae9a292c4",
    "color0": {
-    "mean": 0.8099,
-    "min": 0.5827,
+    "mean": 0.6593,
+    "min": 0.0801,
     "max": 1.0,
-    "p05": 0.7006,
-    "p95": 0.9987,
+    "p05": 0.2048,
+    "p95": 0.8064,
     "outOfRange": 0
    },
    "runtimeNodes": {
     "muzzle": [
      "Muzzle_gun",
      "Muzzle_gun.001",
+     "Muzzle_missile",
+     "Muzzle_missile.001",
      "Muzzle_rocket",
      "Muzzle_rocket.001"
+    ],
+    "mount": [
+     "Mount_gun",
+     "Mount_gun.001"
     ],
     "rotor": [
      "Rotor"
@@ -38763,55 +38779,87 @@
     ]
    },
    "runtimeSuffixed": [
+    "Mount_gun.001",
     "Muzzle_gun.001",
+    "Muzzle_missile.001",
     "Muzzle_rocket.001"
    ],
    "nodeNames": [
     "Antennas",
-    "Armor",
     "Canopy",
     "Canopy_frames",
+    "Crew",
+    "Door_frames",
+    "Engine_cowl",
+    "Exhausts",
+    "Flare_mouths",
     "Flares",
-    "Flares_glow",
     "Fuselage",
+    "Glass",
+    "Grille_frames",
+    "Grilles",
+    "Gun_pods",
+    "Gun_pods.001",
+    "Kit_handles",
+    "Kit_hinges",
+    "Kit_rivets",
+    "Lamps",
+    "Mast_sight",
+    "Miniguns",
+    "Miniguns.001",
+    "Missile_bands",
+    "Missile_tubes",
     "Mount_Flare_L",
     "Mount_Flare_R",
     "Mount_Flare_TL",
     "Mount_Flare_TR",
+    "Mount_gun",
+    "Mount_gun.001",
     "Muzzle_gun",
     "Muzzle_gun.001",
+    "Muzzle_missile",
+    "Muzzle_missile.001",
     "Muzzle_rocket",
     "Muzzle_rocket.001",
-    "Pod_bands",
-    "Pod_face",
-    "Pods",
+    "Pitot",
     "Point_exhaust",
     "Point_fire",
     "Pylons",
     "Rotor",
     "Rotor_blades",
+    "Rotor_bolts",
     "Rotor_grips",
     "Rotor_hub",
+    "Rotor_mast",
     "Rotor_tips",
-    "Sensor",
-    "Steel",
+    "Sight_glass",
+    "Skids",
+    "Tail",
+    "Tail_boom",
     "Tail_rotor",
     "Tail_rotor_blades",
     "Tail_rotor_hub",
+    "Tail_rotor_links",
     "Tail_rotor_tips",
-    "Undercarriage",
-    "Wing_lights"
+    "Tail_skid",
+    "Tailplane",
+    "Team_band",
+    "Wing_lights",
+    "Wing_struts",
+    "Wings",
+    "Wire_cutter"
    ],
    "category": "air",
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Muzzle_gun.001, Muzzle_rocket.001"
+    "runtime names with a Blender suffix: Mount_gun.001, Muzzle_gun.001, Muzzle_missile.001, Muzzle_rocket.001",
+    "renderers 47 over the helicopter normal budget 45"
    ],
    "units": [
     "light_attack_heli"
    ],
-   "movingParts": 2,
+   "movingParts": 4,
    "budgetClass": "helicopter"
   },
   "light_tank": {

@@ -1185,7 +1185,7 @@
   },
   "light_attack_heli": {
     "file": "light_attack_heli.glb",
-    "triangles": 3418
+    "triangles": 4390
   },
   "light_tank": {
     "file": "light_tank.glb",

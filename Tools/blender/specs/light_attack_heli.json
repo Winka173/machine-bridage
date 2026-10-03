@@ -1,0 +1,165 @@
+{
+ "id": "light_attack_heli",
+ "class": "helicopter",
+ "real": [
+  "Bell OH-58D Kiowa Warrior / ARH-70 Arapaho armed light helicopter",
+  "M134 minigun pods (balance.json minigun)",
+  "9M120 Ataka tubes (balance.json heli_atgm, model atgm_ataka)"
+ ],
+ "shape": "an angular Bell 206-style cabin with a stepped framed windscreen, chin windows, door windows and frames, two helmeted crew, the engine fairing with intakes and the exhaust, the mast-mounted sight ball over the four-bladed rotor, a tapering boom with the horizontal stabiliser and end plates, swept upper and ventral fins with tail skid, the two-bladed tail rotor on the right; high skids with steps; stub wings with anhedral and struts, an M134 pod under each tip on its pivot, two Ataka tubes on each inner station; flare dispensers, wire cutter, pitot, aerials, lights, team bands.",
+ "confidence": "xấp xỉ (OH-58D and ARH-70 photographs; the weapons follow the data)",
+ "target_size": {
+  "L": 3.88,
+  "W": 3.16,
+  "H": 1.56,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "Bell 206-style cabin, windscreen, chin windows, doors, crew",
+   "nodes": [
+    "Fuselage",
+    "Canopy",
+    "Canopy_frames",
+    "Glass",
+    "Door_frames",
+    "Crew"
+   ]
+  },
+  {
+   "feature": "engine fairing, intakes, exhaust",
+   "nodes": [
+    "Engine_cowl",
+    "Grilles",
+    "Exhausts"
+   ]
+  },
+  {
+   "feature": "four-bladed rotor and mast-mounted sight",
+   "nodes": [
+    "Rotor",
+    "Rotor_hub",
+    "Rotor_blades",
+    "Mast_sight",
+    "Sight_glass"
+   ]
+  },
+  {
+   "feature": "tail boom, stabiliser, fins, tail rotor",
+   "nodes": [
+    "Tail_boom",
+    "Tailplane",
+    "Tail",
+    "Tail_rotor",
+    "Tail_skid"
+   ]
+  },
+  {
+   "feature": "skids, stub wings, pylons",
+   "nodes": [
+    "Skids",
+    "Wings",
+    "Wing_struts",
+    "Pylons"
+   ]
+  },
+  {
+   "feature": "M134 pods on their mounts",
+   "nodes": [
+    "Mount_gun",
+    "Gun_pods",
+    "Miniguns",
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "feature": "Ataka tubes",
+   "nodes": [
+    "Missile_tubes",
+    "Missile_bands",
+    "Muzzle_missile"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "glass",
+  "rotor_hub",
+  "blades",
+  "tail_rotor",
+  "gear",
+  "stub_wings",
+  "weapons"
+ ],
+ "weapons": [
+  {
+   "weapon": "minigun",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ],
+   "note": "one pod per wing tip (Mount_gun, Mount_gun.001)"
+  },
+  {
+   "weapon": "heli_atgm",
+   "slot": "missile",
+   "mount": "Missile_tubes",
+   "muzzles": [
+    "Muzzle_missile"
+   ],
+   "note": "aim Hull: fixed tubes on the inner stations"
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "cap": null,
+  "note": "helicopter: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "fuselage (Team)",
+  "boom and fins (Team)",
+  "frames and bands (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck (rotor and tail rotor are their own nodes)",
+ "faction_style": "army aviation: team colour airframe, armour-grey wings and pods",
+ "details": {
+  "tier1": [
+   "cabin",
+   "boom",
+   "rotor",
+   "wings"
+  ],
+  "tier2": [
+   "sight ball",
+   "gun pods",
+   "ATGM tubes",
+   "skids",
+   "fins",
+   "engine fairing"
+  ],
+  "tier3": [
+   "rivets",
+   "hinges",
+   "handles",
+   "pitot",
+   "aerials",
+   "flare dispensers",
+   "crew"
+  ]
+ },
+ "questions": [
+  "Muzzle_rocket / Muzzle_rocket.001 kept as plain pivots on the inner stations: the def has no rockets (secondary heli_atgm)."
+ ]
+}
