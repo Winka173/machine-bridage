@@ -241,3 +241,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - các logic bể xác khi nổ mỗi loại nên có 2-3 loại random nhau, tôi coi trực thăng có đúng 1 kiểu là mất cánh quạt
 về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 duyệt pilot prompt 35: "súng trên nóc nhìn hơi dẹp, nhưng approve" (11 câu hỏi: theo đề xuất của lead). Lượt 10 bộ xuất: "có tra web để điền số liệu ngoài đời kèm nguồn không => không".
+- 03/10 duyệt đợt 1 prompt 35: "tiếp tục" (7 câu hỏi theo đề xuất mặc định của lead).

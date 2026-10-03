@@ -17898,3 +17898,14 @@ Blender and Python only (no Unity, no test, sim or measure run).
 - quality_report.xlsx / .csv are not rewritten on this branch (lane A writes them too): the lead's full gate run after
   the merge refreshes them. Full gate on this branch (--no-write): 230 models, the ten pass; no other model's
   own-geometry check names one of the ten.
+
+## Prompt 35: owner review of wave 1 (2026-10-03)
+Owner: "tiếp tục"; the seven wave 1 questions go by the lead's defaults:
+1. repair_bay, radar_site and ammo_dump are accepted on the owner's look (no separate structure gold set for now).
+2. The 25 old towers over the 1.5 x cap are trimmed when their wave rebuilds them (lane A trims any left over).
+3. zu23 at 2 x 50 rounds, 3.5 damage a round (DPS 70 unchanged) is fine on the card.
+4. microwave_vehicle as a Leonidas-type emitter on a JLTV-type 4x4: kept.
+5. elite_mlrs as M270-style twin pods on a HIMARS-type truck: kept.
+6. Elites keep team-coloured bodies with black armour parts (DECISIONS 25B2).
+7. Remove the "(model tạm)" note from spreadsheet cell P11 too.
+Waves 2-11 run back to back (plan: Docs/models/WAVES_P35.md).
