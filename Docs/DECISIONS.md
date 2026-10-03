@@ -17909,3 +17909,25 @@ Owner: "tiếp tục"; the seven wave 1 questions go by the lead's defaults:
 6. Elites keep team-coloured bodies with black armour parts (DECISIONS 25B2).
 7. Remove the "(model tạm)" note from spreadsheet cell P11 too.
 Waves 2-11 run back to back (plan: Docs/models/WAVES_P35.md).
+
+## Ném bom rải thảm (pass 0, lane C, 2026-10-03)
+Owner's bomb-run fix (Docs/prompts/bomb_run_vi.txt), pass 0 only: export and diagnose, nothing changed in the game.
+- Cause as read in the code: free-fall bombs are NOT aimed at one shared point. CombatSystem.Launch re-aims every bomb at
+  BombImpact (aircraft position + nose × speed × fall time, CombatSystem.cs:820-821), so the stick spacing is speed ×
+  BurstInterval (CombatSystem.Bombs.cs:42-43): the strategic bomber's 22 m/s × 0.2 s = 4.4 m (3.5 m at the 0.8 run
+  throttle) against a 10 m core, 7 bombs in ~21-26 m, so it reads as one pile. The bosses' bomb-bay sticks
+  (p26_roc_roc_bombs / p26_roc_main_roc_bombs on argus, garuda, command_airship) inherit boss_howitzer and fly as
+  shells: all 8 aim at the target itself (CombatSystem.cs:529, :611): a true one-point drop. Guided bombs are POINT by
+  design; the fire supports' airstrikes and the bosses' strip attacks already lay sticks. The heavy bomber's guide text
+  says 12 bombs, its data 7. Friendly safety drops the whole stick, never single bombs; no "2/3 of the bombs" rule.
+- Tools/export/bom.py (`python Tools/export/export.py bom [--trace CSV]`) writes Docs/export/bom_<date>/ (xlsx with
+  Bom_vu_khi, Bom_don_vi, Bom_hanh_vi, Bom_vet_tha, Bom_canh_bao, Bom_ket_qua_vung; csv; md; BOM_REPORT.md), reusing the
+  full export's 01/02/03 rows (same column rules, nguon, raw_json, NEED_CODE_CHECK).
+- Bom_vet_tha's unit rows come from the EditMode test MachineBrigade.Tests.BombStickTrace.WriteTheBombDropTrace
+  (env MB_BOMB_TRACE = csv path): it calls the private CombatSystem.CanFire and Launch by reflection on an empty field
+  (aim (0,0), heading 0, seeds 1-3, every bomb weapon on every unit, car bombs excluded) and repeats only Operate's
+  salvo timer and MovementSystem's run throttle between bombs; no battle is stepped. Until the lead runs it those rows
+  read CHUA_CHAY. Supports and boss strips have no flying unit, so their rows are a python mirror of
+  StrikeSystem.cs:250-275 and BossSystem.BigAttacks.cs:708-720 (python Random for the lateral offsets).
+- Bom_ket_qua_vung: three formations (5 in a row along the track 8 m apart, 5 across, 5 in an 8 m square cluster),
+  vehicles as points, centred on the aim (an airstrike's on its line's middle: its Point is the line's start).
