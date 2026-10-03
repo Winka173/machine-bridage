@@ -19387,3 +19387,35 @@ Unity, no tests, as the owner asked). Value changes: Docs/export/CHANGES.md "Pla
 - **13 napalm / airstrike aircraft.** StrikeEffects already flies strike_jet / heavy_bomber over (LaunchJet) and drops
   bombs or napalm canisters (ScheduleBombs, DropsOwnRounds); the Sim emits AircraftPass. No cause found by reading;
   for local (check in a match which part is missing).
+
+## Play-test 14 model wave M1 (lane models)
+
+Owner: Docs/prompts/playtest14_vi.txt (boss lines, "Bổ sung 03/10"); spec Docs/cloud/PT14_CLOUD_TASKS.md session 4 row M1.
+Builder `Tools/blender/mb_pt14_m1.py` (registered last in build_assets' dict). Budget 3.5 x the boss class cap
+(157,500); used 31-56k: detail went where it reads (sponsons, launchers, rivets, kit), not into hidden faces. No size
+change: each GLB keeps its old length (fenrir and bastion_mk0 keep their parents' model length, so in-game sizes stay).
+- **mobile_fortress (Jötunn)**: crawler platform kept. Rear: exactly two rocket pods, one each side (Mount_rocket left,
+  .001 right, 12-tube 300 mm pods pitched nose-up), the generator housing between them. The SAM (Mount_missile.001)
+  moved to the bridge roof. Mount 5 (part "missiles", slot missile, aim Hull) fires p26_jotunn_direct_jo125, a 125 mm
+  gun round: it now leaves a 125 mm bow casemate gun (Mount_missile / Muzzle_missile), not a silo hatch. Open
+  question: the part's kind is still "missiles" (UI text/wreck say launcher); rename to a gun kind if the lead wants.
+- **fortress_bastion**: the four deck-corner turrets became turning sponsons on the hull sides (twin 100 mm front, Bofors
+  rear, matching their data arcs), the ZU-23-2 pair on side galleries at mid length, bow 155 mm, mortar turret and
+  Kornet on the citadel. Data mg slot has 4 mounts (hmg 6, 7 and zu23 9, 10) on 2 Mount_mg: the hmg rounds fire from
+  the ZU barrels (k % 2), as before; a fix needs part node changes that monster (variant of fortress_bastion) inherits,
+  so left. mb_fix_barrels no longer adds fortress_bastion's per-barrel muzzles (the builder does).
+- **bastion_mk0**: own model (balance `"model"`). Riveted girder box on exposed sprung bogies, mortar on an open
+  pedestal, two twin 100 mm half-drum sponsons, tarpaulin, scaffold, one-sided trials rack. Bogie frames are named
+  `Suspension_arms`: a `Bogie*` node makes the gate score a ground boss against the rail gold set.
+- **fenrir**: own model. Articulated DT-30-style winter raider: front unit cab + V snow plough + twin 35 mm flak turret
+  (Mount_mg), rear unit with the two 300 mm six-tube pods (Mount_rocket / .001) and the target-marking radar (Radar).
+  It uses none of the names its dropped parts hide (Main_cannon, Mount_gun, Mount_mg.001, Mount_missile.001).
+- **behemoth_inferno**: the Behemoth's layout (four tracks, wide flat hull, sloped glacis, raised superstructure, long
+  faceted turret), no oval shell; side guns, missiles, rocket box, second flak and APS gone; flame projectors 75-85 mm
+  tubes (Behemoth 130 mm barrels); 125 mm thermobaric turret on the glacis; flak on the roof; fuel tanks at the rear.
+  Own geometry (2 % shared). Main_cannon is now on the right (x -0.45), matching flamer_r's data side.
+- Data (CHANGES "Play-test 14 model wave M1"): part `at` moved to the new places; bastion_mk0 / fenrir `model` and
+  `tune.at` (tune values are in the parent's resized units: model place x parent size). monster inherits Bastion's
+  new `at`; its own model was already off them.
+- Gate (quality_gate, after glb_quantize): Jötunn 100, Bastion 100, Mk0 100, Fenrir 94.6, Inferno 96.4; all hard ok.
+  Needs Unity: card renders / ModelScan, the launch points of the new pods, sponson traverse in the preview.
