@@ -187,7 +187,7 @@ def roof_gun(a, loc, parent=None, pivot='Turret', barrel='Main_cannon', brake='M
         k.block(cr, (.025 * sc, .22 * sc, .16 * sc), loc=(s * .09 * sc, 0, .02 * sc), chamfer=.006)
     cr.box((.2 * sc, .1 * sc, .03 * sc), loc=(0, 0, .02 * sc), bevel=0)
     zg = .15 * sc
-    rc = a.part(f'Gun_receiver{tag}', 'Undercarriage', p)
+    rc = a.part(f'MG_receiver{tag}', 'Undercarriage', p)
     k.extrude(rc, [(-.25 * sc, -.065 * sc), (.2 * sc, -.065 * sc), (.22 * sc, .045 * sc), (.06 * sc, .075 * sc),
                    (-.25 * sc, .065 * sc)], .14 * sc, loc=(0, 0, zg), axis='X', chamfer=.01, corner=.01)
     for s in (-1, 1):

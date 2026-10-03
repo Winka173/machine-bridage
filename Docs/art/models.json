@@ -9,7 +9,7 @@
   },
   "aa_gun_vehicle": {
     "file": "aa_gun_vehicle.glb",
-    "triangles": 3556
+    "triangles": 8256
   },
   "aa_turret": {
     "file": "aa_turret.glb",
@@ -73,7 +73,7 @@
   },
   "amphib_light_vehicle": {
     "file": "amphib_light_vehicle.glb",
-    "triangles": 4606
+    "triangles": 9256
   },
   "apartment": {
     "file": "apartment.glb",
@@ -97,7 +97,7 @@
   },
   "armored_bulldozer": {
     "file": "armored_bulldozer.glb",
-    "triangles": 3244
+    "triangles": 9246
   },
   "armored_car": {
     "file": "armored_car.glb",
@@ -245,7 +245,7 @@
   },
   "bmpt": {
     "file": "bmpt.glb",
-    "triangles": 5056
+    "triangles": 8706
   },
   "bomb": {
     "file": "bomb.glb",
@@ -453,7 +453,7 @@
   },
   "demolition_line_vehicle": {
     "file": "demolition_line_vehicle.glb",
-    "triangles": 6202
+    "triangles": 8546
   },
   "dirt_mound": {
     "file": "dirt_mound.glb",
@@ -1257,7 +1257,7 @@
   },
   "mine_layer": {
     "file": "mine_layer.glb",
-    "triangles": 3872
+    "triangles": 9902
   },
   "mine_rocket_truck": {
     "file": "mine_rocket_truck.glb",
@@ -1561,7 +1561,7 @@
   },
   "sam_launcher": {
     "file": "sam_launcher.glb",
-    "triangles": 4418
+    "triangles": 8446
   },
   "sandbag_wall": {
     "file": "sandbag_wall.glb",

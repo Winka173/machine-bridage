@@ -90,6 +90,13 @@ import mb_p35_smoke_carrier  # noqa: E402
 import mb_p35_elite_mbt  # noqa: E402
 import mb_p35_swarm_carrier  # noqa: E402
 import mb_p35_flame_tank  # noqa: E402
+import mb_p35_armored_bulldozer  # noqa: E402
+import mb_p35_sam_launcher  # noqa: E402
+import mb_p35_amphib_light_vehicle  # noqa: E402
+import mb_p35_mine_layer  # noqa: E402
+import mb_p35_demolition_line_vehicle  # noqa: E402
+import mb_p35_bmpt  # noqa: E402
+import mb_p35_aa_gun_vehicle  # noqa: E402
 import mb_p35_aa_vehicle  # noqa: E402
 import mb_p35_artillery  # noqa: E402
 import mb_p35_tank_destroyer  # noqa: E402
@@ -211,7 +218,7 @@ def all_builders():
                 **mb_p35_microwave_vehicle.BUILDERS, **mb_p35_smoke_carrier.BUILDERS,
                 **mb_p35_elite_mbt.BUILDERS, **mb_p35_swarm_carrier.BUILDERS,
                 # Prompt 35 wave 4, lane C (DECISIONS "Prompt 35 wave 4 (lane C)"): rebuilt from scratch (last).
-                **mb_p35_flame_tank.BUILDERS, **mb_p35_aa_vehicle.BUILDERS, **mb_p35_artillery.BUILDERS, **mb_p35_tank_destroyer.BUILDERS}
+                **mb_p35_flame_tank.BUILDERS, **mb_p35_armored_bulldozer.BUILDERS, **mb_p35_sam_launcher.BUILDERS, **mb_p35_amphib_light_vehicle.BUILDERS, **mb_p35_mine_layer.BUILDERS, **mb_p35_demolition_line_vehicle.BUILDERS, **mb_p35_bmpt.BUILDERS, **mb_p35_aa_gun_vehicle.BUILDERS, **mb_p35_aa_vehicle.BUILDERS, **mb_p35_artillery.BUILDERS, **mb_p35_tank_destroyer.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
