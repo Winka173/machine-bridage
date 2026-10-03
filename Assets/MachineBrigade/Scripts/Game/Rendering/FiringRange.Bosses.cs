@@ -13,7 +13,9 @@ namespace MachineBrigade.Game.Rendering
     /// of a boss's guns silent (an aft turret's arc, a laid main battery, a 60 s main gun), so a boss gets one enemy per gun
     /// mount, each inside that mount's reach and arc, laid out for its domain:
     /// <list type="bullet">
-    /// <item>at sea: a line abreast of ships off its port side, bows on, along its length (every turret bears on the beam);
+    /// <item>at sea (play-test 13): the ship lies along the beach (bow along the shore line), and the line abreast of ships
+    /// stands between it and the shore, parallel to the beach, bows towards it, along its length (every turret bears on the
+    /// beam); a sunk ship's replacement comes back once the wreck has gone under;
     /// the main battery and the launch cells, which only the naval system fires at sea, are fired by the range
     /// (SimWorld.PreviewSalvo / PreviewCruise), each turret at a ship of its own;</item>
     /// <item>on the ground: the main gun's target nearest and dead ahead (the hull-aimed launchers fire on it too), the
@@ -51,10 +53,41 @@ namespace MachineBrigade.Game.Rendering
 
         private static readonly string[] BossShipTargets = { "sea_corvette", "missile_boat", "missile_boat" };
 
-        /// <summary>A naval boss's scene: the ship mid-range, the shore past its bow, the line abreast on its port side.</summary>
+        /// <summary>A naval boss's scene: the ship mid-range, lying along the beach, the line abreast on its port side, shoreward.</summary>
         internal static Vector2 BossSeaStart => Vector2.Zero;
 
-        internal static float BossSeaFar(VehicleDef def) => def.Length * 0.5f + 26f;
+        /// <summary>Play-test 13: a naval boss on show lies parallel to the beach (bow along +x; its port side faces the shore).</summary>
+        internal const float BossSeaHeading = MathF.PI * 0.5f;
+
+        /// <summary>A sunk ship of the line comes back this much later than a ground target (its wreck goes under first).</summary>
+        private const double ShipReplaceExtra = 3.0;
+
+        /// <summary>How far off its beam the line abreast stands: most of its shortest (not laid) gun's reach, clear of its own beam.</summary>
+        internal static float BossSeaOffset(VehicleDef def)
+        {
+            var reach = float.MaxValue;
+            foreach (var m in def.Mounts)
+            {
+                var w = m.Weapon;
+                if (w.Damage <= 0f || w.Laid || !w.CanEngage(false, def)) continue;
+                reach = Mathf.Min(reach, w.Range);
+            }
+            if (reach == float.MaxValue) reach = 60f;
+            return Mathf.Clamp(reach * 0.55f, def.Width * 0.5f + 14f, Mathf.Max(def.Width * 0.5f + 14f, 60f));
+        }
+
+        /// <summary>Half the longest ship of the line (it lies bows-on, across the shore line).</summary>
+        internal static float BossSeaShipHalf(Catalog catalog)
+        {
+            var half = 8f;
+            foreach (var id in BossShipTargets)
+                if (catalog.Vehicles.TryGetValue(id, out var ship)) half = Mathf.Max(half, ship.Length * 0.5f);
+            return half;
+        }
+
+        /// <summary>The far edge of a naval boss's scene: the line abreast, its ships' length, then the shore gap to the beach.</summary>
+        internal static float BossSeaFar(Catalog catalog, VehicleDef def) =>
+            BossSeaOffset(def) + BossSeaShipHalf(catalog) + 8f + PreviewSettings.ShoreGap;
 
         /// <summary>The boss's targets, one per gun mount, set up once (see the class notes).</summary>
         private void BossTargets()
@@ -99,7 +132,7 @@ namespace MachineBrigade.Game.Rendering
                 for (var k = 0; k < count; k++)
                 {
                     // Sea: over the line of ships; else up front, either side.
-                    var bearing = Setting == PreviewSetting.Sea ? -MathF.PI * 0.5f + (k == 0 ? -0.35f : 0.35f)
+                    var bearing = Setting == PreviewSetting.Sea ? BossSeaHeading - MathF.PI * 0.5f + (k == 0 ? -0.35f : 0.35f)
                         : count == 1 ? 0.3f : (k == 0 ? -0.45f : 0.45f);
                     var at = Setting == PreviewSetting.Air ? _far + new Vector2(k == 0 ? -12f : 12f, -6f) : _start + SimMath.Forward(bearing) * d;
                     spots.Add(("attack_helicopter", Inside(at), MathF.PI));
@@ -107,9 +140,11 @@ namespace MachineBrigade.Game.Rendering
             }
             foreach (var (id, at, heading) in spots) Target(id, at, heading);
             if (Setting == PreviewSetting.Air) return;
-            // The scene framed whole: the boss's hull and every target.
-            float minX = _start.X - def.Width * 0.5f, maxX = _start.X + def.Width * 0.5f;
-            float minY = _start.Y - def.Length * 0.5f, maxY = _start.Y + def.Length * 0.5f;
+            // The scene framed whole: the boss's hull (lying along x at sea) and every target.
+            var along = Setting == PreviewSetting.Sea;
+            float halfX = (along ? def.Length : def.Width) * 0.5f, halfY = (along ? def.Width : def.Length) * 0.5f;
+            float minX = _start.X - halfX, maxX = _start.X + halfX;
+            float minY = _start.Y - halfY, maxY = _start.Y + halfY;
             foreach (var (_, at, _) in spots)
             {
                 minX = Mathf.Min(minX, at.X - 3f);
@@ -140,29 +175,26 @@ namespace MachineBrigade.Game.Rendering
         }
 
         /// <summary>
-        /// A naval boss's targets: a line abreast of ships off its port side (bows towards it), along its length, as far off
-        /// as most of its shortest gun's reach; every turret, fore, aft and amidships, bears on the beam.
+        /// A naval boss's targets (play-test 13): the boss lies along the beach; a line abreast of ships on its port side,
+        /// between it and the shore and parallel to the beach (bows towards it), along its length, as far off as most of its
+        /// shortest gun's reach; every turret, fore, aft and amidships, bears on the beam.
         /// </summary>
         private void LineAbreast(VehicleDef def, List<int> guns, List<(string id, Vector2 at, float heading)> spots)
         {
             var n = Math.Min(Math.Max(guns.Count, 2), MostBossTargets);
-            var reach = float.MaxValue;
-            foreach (var i in guns)
-                if (!def.Mounts[i].Weapon.Laid) reach = Mathf.Min(reach, def.Mounts[i].Weapon.Range);
-            if (reach == float.MaxValue) reach = 60f;
-            var off = Mathf.Clamp(reach * 0.55f, def.Width * 0.5f + 14f, Mathf.Max(def.Width * 0.5f + 14f, 60f));
+            var off = BossSeaOffset(def);
             // Side by side a beam and a gap apart, the line no longer than the hull (so its ends stay in reach).
             var beam = 0f;
             for (var k = 0; k < n; k++)
                 if (_world.Catalog.Vehicles.TryGetValue(Ship(k), out var ship)) beam = Mathf.Max(beam, ship.Width);
             var gap = n > 1 ? Mathf.Clamp(def.Length * 0.9f / (n - 1), beam + 4f, Mathf.Max(beam + 4f, 16f)) : 0f;
-            // Every ship on the water: short of the shore past the boss's bow.
-            var shore = PreviewStage.ShoreForSea(_start.Y, _far.Y, def.Length);
-            var top = shore - 8f;
-            var first = _start.Y + (n - 1) * gap * 0.5f;
-            if (first > top) first = top;
+            // On the port beam (towards the shore), side by side along the hull, each bow towards the boss; every ship on the
+            // water, its far end short of the beach (BossSeaFar left the room).
+            var port = SimMath.Forward(BossSeaHeading - MathF.PI * 0.5f);
+            var ahead = SimMath.Forward(BossSeaHeading);
+            var facing = SimMath.HeadingOf(-port);
             for (var k = 0; k < n; k++)
-                spots.Add((Ship(k), Inside(new Vector2(_start.X - off, first - k * gap)), MathF.PI * 0.5f));
+                spots.Add((Ship(k), Inside(_start + port * off + ahead * ((k - (n - 1) * 0.5f) * gap)), facing));
         }
 
         /// <summary>
