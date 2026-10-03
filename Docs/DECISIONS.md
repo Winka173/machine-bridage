@@ -18916,3 +18916,26 @@ sheet list are in `Docs/export/CHANGES.md` ("Lane C"). No game value changed.
 - **Import.** `export.py import <pack|xlsx> --dry-run`: the pack is rebuilt from the tree and compared cell by cell; only raw
   columns (Schema.sua_duoc) become manifest rows; the manifest goes through `p29_apply.py --manifest`. Unedited pack: 0 rows;
   one edited cell: exactly one row (`tests/test_import_demo.py`).
+
+## Play-test 13 (lane A)
+Rendering, VFX and view motion from play-test 13 (Docs/prompts/requests_vi.md). Each item starts with the real-world reasoning
+(owner: "trước khi làm phải suy nghĩ làm sao cho logic ngoài đời").
+- **Magenta squares (aircraft "shadow", every target zone and warning).** Real life: a mark on the ground is paint or light,
+  never a hole in the picture; magenta is Unity's "this shader failed". Root cause: the bomb-run fix pass 3 (1ad2dd0a) added
+  the STICK_RECT branch to `GroundMark.shader` with a variable named `line`, an HLSL keyword (geometry-shader primitive type).
+  The compile error failed the whole shader, so every GroundMark style drew magenta: the aircraft ring (style 4, the "square
+  purple shadow" under every aircraft), warning rings (5), stick rectangles (6), strike telegraphs (1), selection, objectives.
+  Fix: renamed to `midLine`. Build safety checked: all project shaders sit in `Resources/Shaders` (always in a build), every
+  `Shader.Find` name matches a shader there, fog stripping keeps Linear (the mode Atmosphere sets), instancing variants are
+  kept (`m_InstancingStripping: 2`), strict variant matching is off. Guard: `ShaderHealthTests` (no shader with compile
+  errors, every runtime name found, no variable named after an HLSL keyword; written, not run).
+- **Flares redrawn.** Real life: an MTV (magnesium/Teflon/Viton) decoy burns at 2000-2200 C; to the eye it is a blinding
+  white point with a halo, white for the whole burn and yellow-white only as the pellet dies; the pellet is a few cm, so the
+  light is small; it leaves a white MgO/carbon smoke trail that thins out fast. What was wrong: particle vertex colours are
+  0..1, so the L4 HDR gradient (6.5 / 5 / 2.4) clamped to white then (1, 0.9, 0.25), orange; the core was 0.6-0.85 m on a
+  flat dot; the trail lived 1.8 s and spread to 3 m. Now three parts on one flight (same start, gravity and drag, so they
+  stay together): a small steep core (`MaterialLibrary.FlareCore`, intensity 7, 0.32-0.42 m x the aircraft scale, never
+  under 0.4 % of the view), a faint warm-white halo 3.4x its size (`FlareGlow`, an ignition pop in the first 8 % of the burn),
+  both flickering in size only (noise on size, none on position); a thin trail (0.75 s, width 0.4 -> 1.1 x the core,
+  alpha 0.6). Burn time unchanged (data `flareBurn`, play-test 12); the flight physics unchanged (`Fly`, the PT12 values).
+  Check: `-executeMethod MachineBrigade.Editor.FlareShots.Run` (Builds/flare_shots/flares.png, day and night rows).
