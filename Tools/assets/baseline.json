@@ -1,7 +1,7 @@
 {
  "generated": "2026-10-03",
  "tool": "Tools/assets/glb_check.py",
- "count": 518,
+ "count": 517,
  "budgets": {
   "ground": {
    "normal": {
@@ -5007,6 +5007,14 @@
     "FLAG nuke_train: fileBytes 1,988,044 -> 1,537,236 (-22.7%)",
     "FLAG recoilless_jeep: fileBytes 547,296 -> 429,844 (-21.5%)"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "bridging_vehicle"
+   ],
+   "reason": "merge of feature/pt13-b",
+   "changes": []
   }
  ],
  "models": {

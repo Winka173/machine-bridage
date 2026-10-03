@@ -1,6 +1,6 @@
 # GLB baseline (prompt 27 step 2)
 
-Generated 2026-10-03 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (518 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
+Generated 2026-10-03 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (517 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
 Rules: DECISIONS "27 step 0 + baseline"; budgets: Docs/models/BUDGETS.md (over the soft budget a warning, over
 the hard cap an error). Warnings are listed in the JSON.
 
@@ -8,7 +8,7 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| ground | 95 | 777,056 | 8,179 | main_battle_tank_hd (16,462) | 5,268 | 0 | 48 |
+| ground | 94 | 767,404 | 8,163 | main_battle_tank_hd (16,462) | 5,215 | 0 | 47 |
 | boss | 33 | 599,186 | 18,157 | monster (39,598) | 3,002 | 0 | 30 |
 | structure | 86 | 458,614 | 5,332 | headquarters (21,052) | 4,018 | 0 | 17 |
 | prop | 114 | 252,886 | 2,218 | command_hq (8,872) | 1,527 | 0 | 3 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 7,146 | 255 | fpv_drone (1,564) | 210 | 0 | 1 |
 
-All files: 2,435,704 triangles, 0 with errors, 126 more with warnings only.
+All files: 2,426,052 triangles, 0 with errors, 125 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -44,8 +44,8 @@ All files: 2,435,704 triangles, 0 with errors, 126 more with warnings only.
 | boss_s | vertices | 2 | 0 | - |
 | ground | movingParts | 2 | 0 | - |
 | ground | renderers | 15 | 0 | - |
-| ground | triangles | 36 | 0 | - |
-| ground | vertices | 43 | 0 | - |
+| ground | triangles | 35 | 0 | - |
+| ground | vertices | 42 | 0 | - |
 | helicopter | renderers | 3 | 0 | - |
 | helicopter | triangles | 1 | 0 | - |
 | helicopter | vertices | 1 | 0 | - |
@@ -66,7 +66,7 @@ All files: 2,435,704 triangles, 0 with errors, 126 more with warnings only.
 | tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-84 models over a budget, 0 of them over a hard cap.
+83 models over a budget, 0 of them over a hard cap.
 
 ## Error reasons (count of models)
 
