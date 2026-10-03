@@ -1,0 +1,136 @@
+{
+ "id": "bulwark_post",
+ "class": "structure",
+ "real": [
+  "NSV 12.7 mm on the 6T7 tripod (unit_refs; balance.json bunker_hmg)",
+  "a mushroom-covered field MG post (unit_refs: lô cốt hình nấm)"
+ ],
+ "shape": "unit_refs: the improvised MG post left when the Bulwark tower falls. A ring of three sandbag courses on an earth berm with the entry at the rear, a duckboard floor, the NSV on its tripod with a bent shield, ammunition box and belt, a mushroom cover: four timber posts under a low hipped corrugated roof weighed down with sandbags, a scrim edge; a broken slab of the fallen tower with rebar leaning on the wall, a flag, a beacon, ready rounds, a spare barrel, casings, helmets, tools.",
+ "confidence": "xấp xỉ (NSV / 6T7 photographs; the post is a field improvisation)",
+ "target_size": {
+  "L": 4.23,
+  "W": 4.44,
+  "H": 2.39,
+  "source": "the old GLB (4.4 x 4.4 x 2.4 m; no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "earth berm, duckboard floor",
+   "nodes": [
+    "Berm",
+    "Floor_boards"
+   ]
+  },
+  {
+   "feature": "three sandbag courses with the rear entry",
+   "nodes": [
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "NSV on its tripod: cradle, receiver, ribbed barrel, flash hider, shield, ammo box",
+   "nodes": [
+    "Turret",
+    "Tripod",
+    "Cradle",
+    "MG_receiver",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Gun_shield",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "mushroom cover: posts, hipped corrugated roof, roof sandbags, scrim",
+   "nodes": [
+    "Posts",
+    "Roof",
+    "Roof_ribs",
+    "Roof_sandbags",
+    "Scrim"
+   ]
+  },
+  {
+   "feature": "fallen-tower slab with rebar",
+   "nodes": [
+    "Rubble",
+    "Rebar"
+   ]
+  },
+  {
+   "feature": "flag, beacon, ready rounds, spare barrel, casings, helmets, tools",
+   "nodes": [
+    "Flag",
+    "Flag_pole",
+    "Beacons",
+    "Ammo_boxes",
+    "Spare_barrel",
+    "Casings",
+    "Helmets"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "bunker_hmg",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the NSV turns on its tripod (turretTurnRate 160)"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   6000
+  ],
+  "floor": 1400,
+  "cap": null,
+  "note": "structure: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "flag (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "field improvisation: earth, sandbags, timber, corrugated sheet, the team flag",
+ "details": {
+  "tier1": [
+   "berm",
+   "sandbag ring",
+   "roof"
+  ],
+  "tier2": [
+   "NSV",
+   "tripod",
+   "posts",
+   "slab",
+   "ammo boxes",
+   "duckboards"
+  ],
+  "tier3": [
+   "casings",
+   "helmets",
+   "tools",
+   "rebar",
+   "roof bags",
+   "scrim",
+   "beacon"
+  ]
+ },
+ "questions": []
+}

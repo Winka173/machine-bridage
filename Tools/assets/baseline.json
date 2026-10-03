@@ -3198,6 +3198,16 @@
    "changes": [
     "FLAG drop_pod: triangles 2,612 -> 6,090 (+133.2%); vertices 3,493 -> 8,643 (+147.4%); meshes 13 -> 29 (+123.1%); renderers 13 -> 29 (+123.1%); materials 7 -> 9 (+28.6%); materialSlots 13 -> 29 (+123.1%); fileBytes 183,384 -> 446,936 (+143.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "bulwark_post"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG bulwark_post: triangles 1,710 -> 5,140 (+200.6%); vertices 2,541 -> 6,908 (+171.9%); meshes 18 -> 34 (+88.9%); renderers 18 -> 34 (+88.9%); materials 7 -> 15 (+114.3%); materialSlots 18 -> 34 (+88.9%); fileBytes 140,892 -> 370,240 (+162.8%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -12327,24 +12337,24 @@
   },
   "bulwark_post": {
    "file": "bulwark_post.glb",
-   "fileBytes": 140892,
-   "sha1": "3686ca6da036b42d",
+   "fileBytes": 370240,
+   "sha1": "719b96bcf2ee3eab",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 20,
-   "meshes": 18,
-   "materials": 7,
+   "nodes": 36,
+   "meshes": 34,
+   "materials": 15,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 18,
-   "submeshes": 18,
-   "materialSlots": 18,
-   "materialsUsed": 7,
-   "triangles": 1710,
-   "vertices": 2541,
+   "renderers": 34,
+   "submeshes": 34,
+   "materialSlots": 34,
+   "materialsUsed": 15,
+   "triangles": 5140,
+   "vertices": 6908,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -12352,36 +12362,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 81,
-   "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "loosePieces": 189,
+   "openEdges": 52,
+   "nonManifoldEdges": 120,
    "boundsMin": [
-    -2.1613,
+    -2.298,
     0.0,
-    -2.2043
+    -2.0668
    ],
    "boundsMax": [
-    2.195,
-    2.4,
-    2.1677
+    2.1459,
+    2.3868,
+    2.1596
    ],
    "size": [
-    4.372,
-    4.356,
-    2.4
+    4.226,
+    4.444,
+    2.387
    ],
    "center": [
-    0.017,
-    1.2,
-    -0.018
+    -0.076,
+    1.193,
+    0.046
    ],
-   "structureHash": "f6848f2b5e0dc1bc",
+   "structureHash": "15c10d7aa1dbc7df",
    "color0": {
-    "mean": 0.7934,
-    "min": 0.562,
+    "mean": 0.6261,
+    "min": 0.0638,
     "max": 1.0,
-    "p05": 0.5944,
-    "p95": 0.9816,
+    "p05": 0.1817,
+    "p95": 0.9547,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -12400,25 +12410,41 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Ammo_box",
-    "Antennas",
+    "Ammo_boxes",
+    "Ammo_boxes.001",
     "Beacon",
+    "Beacon_base",
+    "Beacons",
+    "Berm",
+    "Casings",
     "Cradle",
-    "Crates",
-    "Feed_cover",
     "Flag",
     "Flag_pole",
-    "Floor",
-    "Grips",
+    "Floor_boards",
+    "Glass",
+    "Gun_belt",
+    "Gun_bracket",
     "Gun_shield",
+    "Helmets",
+    "Kit_bolts",
+    "Kit_handles",
+    "MG_receiver",
     "Main_cannon",
     "Muzzle_brake",
     "Muzzle_main",
-    "Radio",
-    "Receiver",
+    "Posts",
+    "Rebar",
+    "Roof",
+    "Roof_ribs",
+    "Roof_sandbags",
+    "Rubble",
     "Sandbags",
+    "Scrim",
+    "Sight",
+    "Spare_barrel",
+    "Tools_steel",
+    "Tools_wood",
     "Tripod",
-    "Tripod_head",
     "Turret"
    ],
    "category": "structure",
