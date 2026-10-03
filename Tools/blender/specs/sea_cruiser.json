@@ -21,17 +21,14 @@
     "Hull_low",
     "Boot_top",
     "Hull_seams",
-    "Portholes",
-    "Hawse"
+    "Porthole_rims"
    ]
   },
   {
    "feature": "the decks with seam lines, non-skid walkways, yellow safety lines",
    "nodes": [
     "Deck",
-    "Deck_seams",
-    "Walkways",
-    "Deck_lines"
+    "Walkways"
    ]
   },
   {
@@ -41,7 +38,7 @@
     "Mount_gun",
     "Barbette_gun",
     "Gunhouse_gun",
-    "Sight_hoods_gun",
+    "Rangefinder_gun",
     "Blast_bags_gun",
     "Barrels_gun",
     "Muzzle_gun"
@@ -70,8 +67,6 @@
    "nodes": [
     "Superstructure",
     "Bridge_glass",
-    "Bridge_wing",
-    "Doors",
     "Ladders"
    ]
   },
@@ -84,18 +79,14 @@
     "Radar",
     "Radar_array",
     "Aps_faces",
-    "Mount_APS",
-    "Directors",
-    "Director_dish",
-    "Antennas"
+    "Directors"
    ]
   },
   {
    "feature": "the twin-uptake funnel and the aft lattice mast",
    "nodes": [
     "Funnel",
-    "Funnel_band",
-    "Funnel_cap"
+    "Funnel_band"
    ]
   },
   {
@@ -117,7 +108,7 @@
    "feature": "quad anti-ship canisters both sides",
    "nodes": [
     "Missile_canisters",
-    "Canister_frames"
+    "Davits"
    ]
   },
   {
@@ -126,16 +117,12 @@
     "Boats",
     "Boat_tubes",
     "Davits",
-    "Davit_platforms",
     "Crane"
    ]
   },
   {
    "feature": "the hangar door and the flight deck with its markings, nets and lights",
    "nodes": [
-    "Hangar_door",
-    "Door_slats",
-    "Flight_deck",
     "Deck_marks",
     "Deck_nets",
     "Deck_lights"
@@ -147,13 +134,9 @@
     "Railings",
     "Life_rafts",
     "Bollards",
-    "Capstans",
-    "Anchor_chain",
     "Fire_boxes",
-    "Hose_reels",
     "Deck_lockers",
-    "Foredeck_fittings",
-    "Roof_fittings",
+    "Fittings",
     "Nav_lights",
     "Team_band"
    ]
@@ -174,7 +157,6 @@
    "slot": "gun",
    "mount": "Mount_gun",
    "muzzles": [
-    "Muzzle_gun",
     "Muzzle_b1_gun",
     "Muzzle_b2_gun"
    ]
@@ -184,7 +166,6 @@
    "slot": "gun",
    "mount": "Mount_gun.001",
    "muzzles": [
-    "Muzzle_gun.001",
     "Muzzle_b1_gun_001",
     "Muzzle_b2_gun_001"
    ]
@@ -263,5 +244,8 @@
    "door slats"
   ]
  },
- "questions": []
+ "questions": [],
+ "merged": {
+  "Mount_APS": "Aps_faces"
+ }
 }

@@ -7,14 +7,15 @@ sheer, the dark bottom and boot-top, the transom; two twin 203 mm turrets (`Part
 with their muzzles: the wrapper adds one muzzle a barrel), VLS fields fore and aft of the forward turret; the tall
 stepped superstructure with the bridge window band, bridge wings and the flag deck, the main pyramid mast with its
 yards and the spinning air-search radar (`Part_radar` > `Radar`), the fire-control directors, the point-defence
-radar faces (`Mount_APS`: the def's interceptor), the twin-uptake funnel, the aft lattice mast; two CIWS on
+radar faces (the def's interceptor: `Mount_APS` is merged into `Aps_faces`, spec "merged", so the moving
+parts stay at glb_check's cap of 10), the twin-uptake funnel, the aft lattice mast; two CIWS on
 sponsons (`Part_mg` > `Mount_mg` starboard forward, `Part_mg.001` > `Mount_mg.001` port aft), the quad anti-ship
 canisters, two RHIBs in davits (the boats), the hangar and the flight deck with its markings and nets aft;
 railings, ladders, life-raft canisters, bollards, capstans, vents, lockers, portholes and Team bands.
 
 Its own hull and superstructure (not sea_corvette's or the bosses'). Runtime nodes kept: `Part_gun`, `Mount_gun`,
 `Muzzle_gun`, `Part_gun.001`, `Mount_gun.001`, `Muzzle_gun.001`, `Part_mg`, `Mount_mg`, `Muzzle_mg`, `Part_mg.001`,
-`Mount_mg.001`, `Muzzle_mg.001`, `Part_radar`, `Radar`; new: `Mount_APS`. The muzzles sit at the new barrels' ends
+`Mount_mg.001`, `Muzzle_mg.001`, `Part_radar`, `Radar`; static parts are folded into fewer meshes (`MERGE`). The muzzles sit at the new barrels' ends
 (10.4 m ahead of the mount instead of 12.4 m: the old barrels were 30 % longer than the hull allows). The runtime
 sinks ships whole (ShipSinking). Metres, +Z up, -Y front, +X left.
 """
@@ -156,7 +157,6 @@ def _superstructure(a):
     faces = a.part('Aps_faces', 'Glass')
     for (nx, ny) in ((0, -1), (1, 0), (-1, 0), (0, 1)):
         faces.box((1.1, 1.0, .04), loc=(nx * .95, -3.0 + ny * .95, 14.8), rot=K.rot_to((nx, ny, .35)), bevel=0)
-    a.pivot('Mount_APS', (0, -3.0, 15.4))
     for x, y, z in ((0, -6.0, 13.6), (0, 9.0, 10.0)):
         k.lathe(a.part('Directors', 'Armor'), [(.7, 0), (.7, .5), (.5, .8), (0, .8)], loc=(x, y, z), seg=12)
         K.dish(a.part('Director_dish', 'Steel'), a.part('Director_feed', 'Steel'), (x, y - .5, z + 1.2), r=.6,
@@ -323,6 +323,19 @@ def _paint(a):
     cr.limb((3.4, -1.2, 10.0), (4.9, 1.6, 12.2), .3, .3, bevel=0)
     a.part('Kit_cables', 'Undercarriage').tube([(4.9, 1.6, 12.2), (4.9, 1.8, 9.6)], .03, seg=3)
 
+# Static parts folded into fewer meshes (glb_check's renderer cap): source name -> mesh it joins.
+MERGE = {'Ladder_platform': 'Sponsons', 'Davit_platforms': 'Sponsons', 'Hangar_door': 'Deck_lockers',
+         'Anchor_chain': 'Hull_seams', 'Hawse': 'Hull_seams', 'Deck_seams': 'Walkways', 'Door_slats': 'Walkways',
+         'Doors': 'Walkways', 'Kit_cables': 'Funnel_band', 'Capstans': 'Bollards', 'Canister_frames': 'Davits',
+         'Director_dish': 'Mast_steel', 'Director_feed': 'Mast_steel', 'Antennas': 'Mast_steel',
+         'Funnel_cap': 'Mast_steel', 'Foredeck_fittings': 'Fittings', 'Quarterdeck_fittings': 'Fittings',
+         'Roof_fittings': 'Fittings', 'Hose_reels': 'Life_rafts', 'Deck_lines': 'Boot_top',
+         'Bridge_wing': 'Superstructure', 'Flight_deck': 'Deck', 'Portholes': 'Bridge_glass',
+         'Gunhouse_fit_gun': 'Rangefinder_gun', 'Gunhouse_fit_gun_001': 'Rangefinder_gun_001',
+         'Sight_hoods_gun': 'Barbette_gun', 'Gunhouse_roof_gun': 'Barbette_gun',
+         'Sight_hoods_gun_001': 'Barbette_gun_001', 'Gunhouse_roof_gun_001': 'Barbette_gun_001',
+         'CIWS_dark_mg': 'CIWS_bores_mg', 'CIWS_dark_mg_001': 'CIWS_bores_mg_001'}
+
 
 def sea_cruiser(a):
     """The sea cruiser: see the module docstring."""
@@ -333,6 +346,7 @@ def sea_cruiser(a):
     _aft(a)
     _boats_and_fittings(a)
     _paint(a)
+    P.merge_parts(a, MERGE)
     k.clean(a)
 
 

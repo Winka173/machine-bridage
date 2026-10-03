@@ -410,3 +410,31 @@ def portholes(a, points, normal, r=.12, parent=None, rim_mat='Steel', glass='Gla
         a.part('Porthole_rims', rim_mat, parent).cyl(r * 1.25, .03, loc=p, rot=rot, seg=seg, bevel=0)
         q = (p[0] + normal[0] * .012, p[1] + normal[1] * .012, p[2] + normal[2] * .012)
         a.part('Portholes', glass, parent).cyl(r, .02, loc=q, rot=rot, seg=seg, bevel=0)
+
+
+def merge_parts(a, mapping):
+    """Fold static parts into fewer meshes (wave 6: glb_check's renderer cap on ships): every shape whose name is a
+    key of `mapping` is appended to the shape named mapping[name] with the same material and parent (its vertex
+    layers kept), then dropped. Call at the end of a builder, before the finish."""
+    for key in list(a.order):
+        name, mat, parent = key
+        target = mapping.get(name)
+        if not target or target == name:
+            continue
+        src = a.shapes[key]
+        dst = a.part(target, mat, parent)
+        sl = list(src.bm.verts.layers.float)
+        layers = [(l, dst.bm.verts.layers.float.get(l.name) or dst.bm.verts.layers.float.new(l.name)) for l in sl]
+        vmap = {}
+        for v in src.bm.verts:
+            nv = dst.bm.verts.new(v.co)
+            for ls, ld in layers:
+                nv[ld] = v[ls]
+            vmap[v] = nv
+        for f in src.bm.faces:
+            try:
+                dst.bm.faces.new([vmap[v] for v in f.verts])
+            except ValueError:
+                pass
+        del a.shapes[key]
+        a.order.remove(key)
