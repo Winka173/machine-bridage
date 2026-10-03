@@ -141,15 +141,15 @@
   },
   "atgm_tower": {
     "file": "atgm_tower.glb",
-    "triangles": 5374
+    "triangles": 5408
   },
   "atgm_tower_a": {
     "file": "atgm_tower_a.glb",
-    "triangles": 5926
+    "triangles": 5744
   },
   "atgm_tower_b": {
     "file": "atgm_tower_b.glb",
-    "triangles": 5974
+    "triangles": 5788
   },
   "attack_helicopter": {
     "file": "attack_helicopter.glb",

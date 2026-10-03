@@ -89,6 +89,7 @@ import mb_p35_microwave_vehicle  # noqa: E402
 import mb_p35_smoke_carrier  # noqa: E402
 import mb_p35_elite_mbt  # noqa: E402
 import mb_p35_swarm_carrier  # noqa: E402
+import mb_p35_wave2_atgm  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -205,7 +206,9 @@ def all_builders():
                 **mb_p35_vbied.BUILDERS, **mb_p35_elite_mlrs.BUILDERS,
                 **mb_p35_counter_battery_radar.BUILDERS, **mb_p35_lancet_truck.BUILDERS,
                 **mb_p35_microwave_vehicle.BUILDERS, **mb_p35_smoke_carrier.BUILDERS,
-                **mb_p35_elite_mbt.BUILDERS, **mb_p35_swarm_carrier.BUILDERS}
+                **mb_p35_elite_mbt.BUILDERS, **mb_p35_swarm_carrier.BUILDERS,
+                # Prompt 35 wave 2 lane A (DECISIONS "Prompt 35 wave 2 (lane A)"): towers with their branches (last).
+                **mb_p35_wave2_atgm.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
