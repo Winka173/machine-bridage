@@ -2,7 +2,7 @@
 
 Hiệu ứng, âm thanh, hậu kỳ hình ảnh, model và số đo model, tài sản, giấy phép.
 
-Gói cân bằng Machine Brigade, commit 9e1e95b4, ngày 2026-10-03. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Hình ảnh
 
@@ -86,7 +86,7 @@ Gói cân bằng Machine Brigade, commit 9e1e95b4, ngày 2026-10-03. Số liệu
 
 *Hình: Docs/doc-images/shots/siege.png. Đơn vị: ảnh chụp trong game, không lưới mét; thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (07_hinh_anh_am_thanh_model/Model).*
 
-Bảng đầy đủ: xem sheet `Anh_the` (240 dòng, bulk.zip).
+Bảng đầy đủ: xem sheet `Anh_the` (164 dòng, bulk.zip).
 
 ## Âm thanh
 
@@ -211,7 +211,7 @@ Sheet 07_hinh_anh_am_thanh_model/Xac_vo — Xác vỡ (3 dòng, 7 cột)
 | Low | 6 | 20.1 | 30.15 | 60.3 |
 | Medium | 9 | 30 | 45 | 90 |
 
-Bảng đầy đủ: xem sheet `VFX_vu_khi` (70 dòng), `Hau_ky_hinh_anh` (52 dòng).
+Bảng đầy đủ: xem sheet `VFX_vu_khi` (64 dòng), `Hau_ky_hinh_anh` (52 dòng).
 
 ## Model
 
@@ -256,7 +256,7 @@ Sheet 07_hinh_anh_am_thanh_model/Giay_phep_tai_san — Giấy phép tài sản (
 | OFL-Inter | OFL-Inter.txt | Inter | SIL Open Font License | 75 |
 | OFL-JetBrainsMono | OFL-JetBrainsMono.txt | JetBrainsMono | SIL Open Font License | 74 |
 
-Bảng đầy đủ: xem sheet `Model` (517 dòng), `Model_kiem_chuan` (517 dòng), `Kich_thuoc_that` (105 dòng), `Kit_chi_tiet` (70 dòng), `Xem_truoc` (252 dòng).
+Bảng đầy đủ: xem sheet `Model` (448 dòng), `Model_kiem_chuan` (448 dòng), `Kich_thuoc_that` (84 dòng), `Kit_chi_tiet` (70 dòng), `Xem_truoc` (177 dòng).
 
 ### Model standard (fix pass 8)
 
@@ -377,58 +377,58 @@ Thông số ngoài đời lấy từ nguồn trong repo (sheet Nguon_tham_chieu 
 
 ### Model_tham_chieu
 
-228 dòng. Độ tin cậy: da_kiem_chung 41, uoc_dinh 34, ban_dau_doan 150, NEED_SOURCE 3. Loại: NEED_SOURCE 3, doi_that 204, gia_tuong 21.
+162 dòng. Độ tin cậy: da_kiem_chung 34, uoc_dinh 26, ban_dau_doan 99, NEED_SOURCE 3. Loại: NEED_SOURCE 3, doi_that 142, gia_tuong 17.
 
-- `aa_57mm_vehicle` (aa_57mm_vehicle): mẫu thật: 2S38 Derivatsiya-PVO (BMP-3 chassis, AU-220M 57 mm module); độ tin: ban_dau_doan; nguồn: R_aa_57mm_vehicle.
 - `aa_gun_tower` (aa_gun_tower): mẫu thật: Bofors 40 mm L/70 (towed carriage emplaced on its four outriggers);a small fire-control r…; độ tin: ban_dau_doan; nguồn: R_aa_gun_tower.
 - `aa_gun_vehicle` (aa_gun_vehicle): mẫu thật: CV9040 AAV (CV90 hull, Bofors 40 mm L/70 turret, PS-70 search radar);Bofors 40 mm L/70; độ tin: ban_dau_doan; nguồn: R_aa_gun_vehicle.
 - `aa_turret` (aa_turret): mẫu thật: 2A38 30 mm twin-barrel gun (the Tunguska's; balance.json tower_flak_30);Stinger twin laun…; độ tin: ban_dau_doan; nguồn: R_aa_turret.
 - `aa_turret_a` (aa_turret_a): mẫu thật: ZSU-23-4 Shilka turret, four 2A7 23 mm (balance.json flak_quad);the base post's emplaceme…; độ tin: ban_dau_doan; nguồn: R_aa_turret_a.
 - `aa_turret_b` (aa_turret_b): mẫu thật: Starstreak LML;Mistral ATLAS;RBS-70; độ tin: ban_dau_doan; nguồn: R_aa_turret_b.
 - `aa_vehicle` (aa_vehicle): mẫu thật: Flakpanzer Gepard 1A2; độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_flakpanzer_gepard, R_aa_vehicle.
-- `aerial_tanker` (aerial_tanker): mẫu thật: B-52H (same frame as the heavy bomber); độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_boeing_b_52_stratofortress, R_aerial_tanker.
-- `airborne_light_tank` (airborne_light_tank): mẫu thật: M8 Armored Gun System / M10 Booker (XM35 105 mm with pepper-pot brake, coax M240, command…; độ tin: ban_dau_doan; nguồn: R_airborne_light_tank.
-- `airborne_light_tank_chute` (airborne_light_tank_chute): mẫu thật: M8 AGS / M10 Booker-class light tank (lane B's wave 6 airborne_light_tank, built by its o…; độ tin: ban_dau_doan; nguồn: R_airborne_light_tank_chute.
-- `airborne_vehicle` (airborne_vehicle): mẫu thật: BMD-4M (Bakhcha-U turret: 2A70 100 mm, 2A72 30 mm coaxial, PKT; two bow PKT); độ tin: ban_dau_doan; nguồn: R_airborne_vehicle.
-- `airborne_vehicle_chute` (airborne_vehicle_chute): mẫu thật: BMD-4M (lane B's wave 6 airborne_vehicle, built by its own builder);P-7 / PBS-950 airdrop…; độ tin: ban_dau_doan; nguồn: R_airborne_vehicle_chute.
 - `ammo_carrier` (ammo_carrier): mẫu thật: M977 / M985 HEMTT; độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_heavy_expanded_mobility_tactical_t, R_ammo_carrier.
 - `ammo_dump` (ammo_dump): mẫu thật: a field ammunition supply point: a semi-sunken bunker behind an earth berm, crates on pal…; độ tin: ban_dau_doan; nguồn: R_ammo_dump.
-- `amphib_light_vehicle` (amphib_light_vehicle): mẫu thật: M2A3 Bradley (same frame as the IFV); độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_m2_bradley, R_amphib_light_vehicle.
-- … 210 dòng có tham chiếu nữa: xem sheet Model_tham_chieu.
+- `armored_bulldozer` (armored_bulldozer): mẫu thật: Caterpillar D9R (IDF kit); độ tin: uoc_dinh; nguồn: R_reference_real, D_caterpillar_d9r_specifications, R_armored_bulldozer.
+- `armored_car` (armored_car): mẫu thật: Pandur I 6x6; độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_steyr_pandur, R_armored_car.
+- `armored_train` (armored_train): mẫu thật: BP-35 armoured train; độ tin: ban_dau_doan; nguồn: R_reference_real, R_armored_train.
+- `artillery` (artillery): mẫu thật: M109A6 Paladin; độ tin: da_kiem_chung; nguồn: R_reference_real, W_wikipedia_m109_howitzer, R_artillery.
+- `atgm_tower` (atgm_tower): mẫu thật: 9M133 Kornet (Kornet-EM twin launcher);1P163-class guidance unit; độ tin: ban_dau_doan; nguồn: R_atgm_tower.
+- `atgm_tower_a` (atgm_tower_a): mẫu thật: 9M133 Kornet;FGM-148 Javelin (top attack, command launch unit); độ tin: ban_dau_doan; nguồn: R_atgm_tower_a.
+- `atgm_tower_b` (atgm_tower_b): mẫu thật: 9M133 Kornet;Kornet-EM (multi-tube launcher with a small radar); độ tin: ban_dau_doan; nguồn: R_atgm_tower_b.
+- … 144 dòng có tham chiếu nữa: xem sheet Model_tham_chieu.
 
 Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
 
 - `D_army_recognition_buk_m1_2`: Army Recognition 'Buk-M1-2' (độ tin 2)
 - `D_caterpillar_d9r_specifications`: Caterpillar D9R specifications (độ tin 1)
 - `D_toyota_hilux_an10_an20_specifications`: Toyota Hilux AN10/AN20 specifications (độ tin 1)
-- `R_aa_57mm_vehicle`: spec dựng lại aa_57mm_vehicle (độ tin 3)
 - `R_aa_gun_tower`: spec dựng lại aa_gun_tower (độ tin 3)
 - `R_aa_gun_vehicle`: spec dựng lại aa_gun_vehicle (độ tin 3)
 - `R_aa_turret`: spec dựng lại aa_turret (độ tin 3)
 - `R_aa_turret_a`: spec dựng lại aa_turret_a (độ tin 3)
 - `R_aa_turret_b`: spec dựng lại aa_turret_b (độ tin 3)
 - `R_aa_vehicle`: spec dựng lại aa_vehicle (độ tin 3)
-- `R_aerial_tanker`: spec dựng lại aerial_tanker (độ tin 3)
-- `R_airborne_light_tank`: spec dựng lại airborne_light_tank (độ tin 3)
-- `R_airborne_light_tank_chute`: spec dựng lại airborne_light_tank_chute (độ tin 3)
-- `R_airborne_vehicle`: spec dựng lại airborne_vehicle (độ tin 3)
-- `R_airborne_vehicle_chute`: spec dựng lại airborne_vehicle_chute (độ tin 3)
 - `R_ammo_carrier`: spec dựng lại ammo_carrier (độ tin 3)
 - `R_ammo_dump`: spec dựng lại ammo_dump (độ tin 3)
-- `R_amphib_light_vehicle`: spec dựng lại amphib_light_vehicle (độ tin 3)
 - `R_armored_bulldozer`: spec dựng lại armored_bulldozer (độ tin 3)
 - `R_armored_car`: spec dựng lại armored_car (độ tin 3)
 - `R_armored_train`: spec dựng lại armored_train (độ tin 3)
 - `R_artillery`: spec dựng lại artillery (độ tin 3)
-- `R_artillery_emplacement`: spec dựng lại artillery_emplacement (độ tin 3)
-- `R_artillery_emplacement_a`: spec dựng lại artillery_emplacement_a (độ tin 3)
-- `R_artillery_emplacement_b`: spec dựng lại artillery_emplacement_b (độ tin 3)
-- `R_at_gun_emplacement`: spec dựng lại at_gun_emplacement (độ tin 3)
 - `R_atgm_tower`: spec dựng lại atgm_tower (độ tin 3)
 - `R_atgm_tower_a`: spec dựng lại atgm_tower_a (độ tin 3)
 - `R_atgm_tower_b`: spec dựng lại atgm_tower_b (độ tin 3)
 - `R_attack_jet`: spec dựng lại attack_jet (độ tin 3)
-- … 246 nguồn nữa: xem sheet Nguon_tham_chieu của 08_tham_chieu.
+- `R_ballistic_launcher`: spec dựng lại ballistic_launcher (độ tin 3)
+- `R_barrage_balloon`: spec dựng lại barrage_balloon (độ tin 3)
+- `R_behemoth`: spec dựng lại behemoth (độ tin 3)
+- `R_behemoth_inferno`: spec dựng lại behemoth_inferno (độ tin 3)
+- `R_behemoth_tempest`: spec dựng lại behemoth_tempest (độ tin 3)
+- `R_blast_wall`: spec dựng lại blast_wall (độ tin 3)
+- `R_bulwark_post`: spec dựng lại bulwark_post (độ tin 3)
+- `R_bunker_shelter_tower`: spec dựng lại bunker_shelter_tower (độ tin 3)
+- `R_c_ram`: spec dựng lại c_ram (độ tin 3)
+- `R_c_ram_a`: spec dựng lại c_ram_a (độ tin 3)
+- `R_c_ram_b`: spec dựng lại c_ram_b (độ tin 3)
+- … 173 nguồn nữa: xem sheet Nguon_tham_chieu của 08_tham_chieu.
 
 ## Các sheet của file
 
@@ -446,30 +446,30 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Am_thanh_mixer` (8 dòng): Âm thanh: mixer — Mixer âm thanh: nhóm kênh và âm lượng mặc định
 - `Am_thanh_mau` (3 dòng): Âm thanh: bản ghi mẫu — Docs/audio/samples: 3 bản trộn trận mẫu (Tools/sfx/render_mix.py): file, độ dài, số sự kiện / phát / cắt, limiter, compressor, độ to (mixes.json); mố…
 - `Am_thanh_mau_moc` (24 dòng): Âm thanh mẫu: mốc tiếng lớn — Mỗi bản trộn: các cửa sổ 400 ms to nhất (bước 100 ms, K-weighting BS.1770 của Tools/sfx/analyze_sfx.py trên kênh trộn mono) không dưới 6 LU so với cử…
-- `VFX_vu_khi` (70 dòng): VFX theo vũ khí — EffectShots.FxBatch: mỗi bậc T0-T5 (vũ khí đại diện chọn lúc chụp) và mỗi vũ khí >= 120 mm có đơn vị mang: bậc, cỡ, số nòng, thư mục ảnh, số ảnh có /…
-- `VFX_vu_khi_anh` (584 dòng): VFX theo vũ khí: ảnh — Mỗi ảnh của mỗi chủ đề: khung (fire / impact / salvo), giây sau phát bắn / lúc chạm, đường dẫn tương đối Builds/effect_shots/<key>/<ảnh>, present / p…
+- `VFX_vu_khi` (64 dòng): VFX theo vũ khí — EffectShots.FxBatch: mỗi bậc T0-T5 (vũ khí đại diện chọn lúc chụp) và mỗi vũ khí >= 120 mm có đơn vị mang: bậc, cỡ, số nòng, thư mục ảnh, số ảnh có /…
+- `VFX_vu_khi_anh` (536 dòng): VFX theo vũ khí: ảnh — Mỗi ảnh của mỗi chủ đề: khung (fire / impact / salvo), giây sau phát bắn / lúc chạm, đường dẫn tương đối Builds/effect_shots/<key>/<ảnh>, present / p…
 - `Am_thanh_so_do` (221 dòng): Âm thanh: số đo — Mỗi clip trận (không gồm nhạc): LUFS, đỉnh dB, tỷ lệ năng lượng dưới 150 Hz, đuôi, phát hiện 'keng' (Docs/audio/metrics.json của Tools/sfx/analyze_sf…
 - `Am_thanh_so_do_bac` (15 dòng): Âm thanh: bảng theo bậc cỡ — Mỗi bậc cỡ x vai (bắn / nổ): trung bình M-max, LUFS, tỷ lệ dưới 150 Hz, đuôi của các bank hàng đó (metrics.json sizes); phải tăng đều từ <= 14,5 mm t…
 - `VFX_ngan_sach` (8 dòng): VFX: ngân sách — Ngân sách hiệu ứng: theo bậc T0-T5 (TierFx.cs: số vụ nổ chi tiết đầy đủ cùng lúc FullCap, trọng số với trần WeightCap, thời gian tính là đang chạy Bu…
 - `VFX_ngan_sach_hat` (9 dòng): VFX: trần hạt mỗi bộ phát — Mọi chỗ Game/Effects đặt maxParticles bằng một số cố định (file:dòng); bộ phát đặt theo biến (max) không có số cố định
 - `Hieu_ung_tham_chieu` (58 dòng): Hiệu ứng và âm thanh: nguồn và tham chiếu — Mỗi bậc VFX và mỗi nhóm âm thanh (nhóm × bậc cỡ) một dòng: nguồn ghi âm / tổng hợp, giấy phép, đặc điểm tiếng thật, game tham chiếu cảm giác (spec 12…
-- `Model` (517 dòng): Model — Mỗi GLB một dòng (đọc bằng Tools/assets/glb_analyze.read_glb): tam giác, nút, vật liệu, mesh, số Part_* / Mount_* / Muzzle_*, Mount_Flare / Mount_APS…
-- `Model_nut` [bulk.zip] (18197 dòng): Model: nút — nodes[].name: mọi nút của mọi GLB một dòng
-- `Model_kiem_chuan` (517 dòng): Model: kiểm chuẩn (baseline) — Tools/assets/baseline.json models: số liệu kiểm máy của mỗi model (tam giác, đỉnh, renderer, bộ phận chạy, lỗi, cảnh báo, nút runtime, kích thước, ha…
+- `Model` (448 dòng): Model — Mỗi GLB một dòng (đọc bằng Tools/assets/glb_analyze.read_glb): tam giác, nút, vật liệu, mesh, số Part_* / Mount_* / Muzzle_*, Mount_Flare / Mount_APS…
+- `Model_nut` [bulk.zip] (14477 dòng): Model: nút — nodes[].name: mọi nút của mọi GLB một dòng
+- `Model_kiem_chuan` (448 dòng): Model: kiểm chuẩn (baseline) — Tools/assets/baseline.json models: số liệu kiểm máy của mỗi model (tam giác, đỉnh, renderer, bộ phận chạy, lỗi, cảnh báo, nút runtime, kích thước, ha…
 - `Model_tieu_chuan` (14 dòng): Model: tiêu chuẩn — baseline.json budgets: ngân sách theo lớp x bậc (normal / hd): tam giác, đỉnh, renderer, bộ phận chạy [mức, trần]; ngân sách là hướng dẫn, không phải…
 - `Model_kiem_chuan_chung` (3 dòng): Model: kiểm chuẩn (chung) — baseline.json: số model, ngày sinh
-- `Kich_thuoc_that` (105 dòng): Kích thước thật tham chiếu — Tools/models/reference_real.json: mẫu thật, kích thước dài / rộng / cao (m), nguồn, độ tin (conf); dùng ở 13
+- `Kich_thuoc_that` (84 dòng): Kích thước thật tham chiếu — Tools/models/reference_real.json: mẫu thật, kích thước dài / rộng / cao (m), nguồn, độ tin (conf); dùng ở 13
 - `Kich_thuoc_that_chung` (1 dòng): Kích thước thật: ghi chú — reference_real.json: khóa ngoài units
-- `Model_chuan_vang` (1123 dòng): Model: số đo bộ mẫu vàng — Tools/assets/gold_metrics.json: trung bình theo lớp của bộ model mẫu (quality_gate.compute_gold,)
-- `Model_spec_dung` (11743 dòng): Model: spec dựng lại — Tools/blender/specs/<model>.json: spec dựng lại model (mẫu thật, kích thước đích, bộ phận, vũ khí, ngân sách, vùng màu;); id = <model>.<đường dẫn>
-- `Anh_the` [bulk.zip] (240 dòng): Ảnh thẻ — Resources/UI/Cards/manifest.json entries: ảnh thẻ render từ model (loại, model, nguồn, hash)
+- `Model_chuan_vang` (925 dòng): Model: số đo bộ mẫu vàng — Tools/assets/gold_metrics.json: trung bình theo lớp của bộ model mẫu (quality_gate.compute_gold,)
+- `Model_spec_dung` (11798 dòng): Model: spec dựng lại — Tools/blender/specs/<model>.json: spec dựng lại model (mẫu thật, kích thước đích, bộ phận, vũ khí, ngân sách, vùng màu;); id = <model>.<đường dẫn>
+- `Anh_the` [bulk.zip] (164 dòng): Ảnh thẻ — Resources/UI/Cards/manifest.json entries: ảnh thẻ render từ model (loại, model, nguồn, hash)
 - `Anh_the_chung` (3 dòng): Ảnh thẻ: cài đặt render — manifest.json: camera, cỡ ảnh, phiên bản
-- `Dia_phuong_hoa` [bulk.zip] (6531 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
+- `Dia_phuong_hoa` [bulk.zip] (6174 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
 - `Giay_phep_tai_san` (5 dòng): Giấy phép tài sản — Resources/Licenses/*.txt: mỗi file giấy phép một dòng (phông chữ OFL); nội dung từng dòng ở Giay_phep_noi_dung; âm thanh: 07_hinh_anh_am_thanh_model/…
 - `Giay_phep_noi_dung` [bulk.zip] (374 dòng): Giấy phép: nội dung — mỗi dòng không trống của file giấy phép
-- `Xem_truoc` (252 dòng): Màn xem trước — Màn xem trước của từng đơn vị: cảnh nền
+- `Xem_truoc` (177 dòng): Màn xem trước — Màn xem trước của từng đơn vị: cảnh nền
 - `Kit_chi_tiet` (70 dòng): Bộ chi tiết kit35 — Docs/models/kit_catalog/kit35_components.json: 70 chi tiết của Tools/blender/mb_kit35.py (tam giác, kích thước, lỗi kiểm); ảnh: kit35_catalog.png (An…
-- `Model_cham_diem` (229 dòng): Model: chấm điểm — Chấm điểm theo Docs/models/MODEL_STANDARD.md: tam giác trong ngân sách, Part_* thiếu, Mount / Muzzle thiếu, sai tỷ lệ, hình bóng (quét hình); điểm; x…
-- `Dia_phuong_hoa_van_de` [bulk.zip] (271 dòng): Địa phương hóa: khóa có vấn đề — Mỗi khóa chữ có vấn đề một dòng: thiếu tiếng Anh / Việt, khai hai lần, tên riêng chỉ có ở một thứ tiếng (danh sách tên của Tools/story/script_build.p…
+- `Model_cham_diem` (163 dòng): Model: chấm điểm — Chấm điểm theo Docs/models/MODEL_STANDARD.md: tam giác trong ngân sách, Part_* thiếu, Mount / Muzzle thiếu, sai tỷ lệ, hình bóng (quét hình); điểm; x…
+- `Dia_phuong_hoa_van_de` [bulk.zip] (270 dòng): Địa phương hóa: khóa có vấn đề — Mỗi khóa chữ có vấn đề một dòng: thiếu tiếng Anh / Việt, khai hai lần, tên riêng chỉ có ở một thứ tiếng (danh sách tên của Tools/story/script_build.p…
 - `Dia_phuong_hoa_thong_ke` (15 dòng): Địa phương hóa: thống kê — Mỗi bảng chữ C#: số khóa, khóa thiếu tiếng Anh / Việt, khai hai lần, có tên riêng ở một thứ tiếng, không thấy trong mã (COUNTIFS trên Dia_phuong_hoa…
-- `Model_tham_chieu` (228 dòng): Model: tài liệu tham chiếu hình dạng và kích thước — Mỗi model có mẫu thật một dòng: tài liệu hình dạng / kích thước (chỉ nguồn và URL, không nhúng ảnh), kích thước thật (tra sống Kich_thuoc_that), ghi…
+- `Model_tham_chieu` (162 dòng): Model: tài liệu tham chiếu hình dạng và kích thước — Mỗi model có mẫu thật một dòng: tài liệu hình dạng / kích thước (chỉ nguồn và URL, không nhúng ảnh), kích thước thật (tra sống Kich_thuoc_that), ghi…

@@ -2,7 +2,7 @@
 
 Chế độ chơi, độ khó, kinh tế, tác chiến, AI, thăng hạng, mở khóa, cửa hàng, giao diện.
 
-Gói cân bằng Machine Brigade, commit 9e1e95b4, ngày 2026-10-03. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng quan
 
@@ -311,7 +311,7 @@ Sheet 04_che_do_kinh_te_ai/Kinh_te — Kinh tế (18 dòng, 8 cột)
 
 | id | nhom | khoa | gia_tri_so | gia_tri_chu |
 |---|---|---|---|---|
-| campaign.economy.payScale["2"] | economy | 2 | 3.0 |  |
+| campaign.economy.payScale["2"] | economy | 2 | 1.66 |  |
 | campaign.economy.payScale["3"] | economy | 3 | 1.0 |  |
 | economy.armyCap.Campaign | economy | Campaign | 24 |  |
 | economy.armyCap.Survival | economy | Survival | 30 |  |
@@ -397,22 +397,22 @@ Sheet 04_che_do_kinh_te_ai/Chien_thuat — Chiến thuật (16 dòng, 41 cột)
 
 | id | counters | countered_by | prefer | commanders | chapter | check_with | cp | interlude | modules_artillery_prep |
 |---|---|---|---|---|---|---|---|---|---|
-| air_superiority | hit_and_run | blitz | fighter_jet;stealth_fighter;wingman_drone;sam_launcher;long… | reyes | 3 | sead | 0.15;0.12;0.08;0.08;0.2;0.1;0.22;0.05 | 0 |  |
+| air_superiority | hit_and_run | blitz | fighter_jet;stealth_fighter;sam_launcher;long_sam;heavy_aa | reyes | 3 | sead | 0.15;0.12;0.08;0.08;0.2;0.1;0.22;0.05 | 0 |  |
 | all_out | depth | blitz | main_battle_tank;heavy_tank;attack_jet;heavy_bomber | okoye | 10 | breakthrough | 0.3;0.2;0.1;0.1;0.1;0.08;0.07;0.05 | 0 |  |
 | ambush | blitz | bounding | tank_destroyer;railgun_truck;fpv_carrier;scout_jeep;ew_jamm… | kerr | 0 |  | 0.15;0.15;0.3;0.1;0.12;0.08;0.02;0.08 | 1 |  |
-| attrition | breakthrough | blitz;encircle | mlrs;shahed_truck;ballistic_launcher;lancet_truck;recon_dro… | quist | 8 |  | 0.1;0.1;0.2;0.3;0.1;0.05;0.05;0.1 | 0 |  |
+| attrition | breakthrough | blitz;encircle | mlrs;shahed_truck;ballistic_launcher;recon_drone | quist | 8 |  | 0.1;0.1;0.2;0.3;0.1;0.05;0.05;0.1 | 0 |  |
 | balanced |  |  |  | kade | 0 |  | 0.25;0.2;0.12;0.12;0.1;0.08;0.05;0.08 | 0 |  |
-| base_defence | blitz | firepower;attrition | bunker_vehicle;tank_destroyer;aa_vehicle;mine_layer;enginee… | brandt | 1 |  | 0.25;0.15;0.2;0.15;0.15;0.02;0.0;0.08 | 0 |  |
+| base_defence | blitz | firepower;attrition | tank_destroyer;aa_vehicle;mine_layer;engineer_vehicle | brandt | 1 |  | 0.25;0.15;0.2;0.15;0.15;0.02;0.0;0.08 | 0 |  |
 | blitz | firepower | depth;ambush | armored_car;ifv;wheeled_gun;main_battle_tank;attack_helicop… | mendez | 2 |  | 0.25;0.3;0.1;0.05;0.08;0.1;0.04;0.08 | 0 |  |
-| bounding | ambush | blitz;firepower | main_battle_tank;ifv;bmpt;smoke_carrier | kade | 3 |  | 0.3;0.25;0.12;0.1;0.1;0.05;0.0;0.08 | 0 |  |
+| bounding | ambush | blitz;firepower | main_battle_tank;ifv | kade | 3 |  | 0.3;0.25;0.12;0.1;0.1;0.05;0.0;0.08 | 0 |  |
 | breakthrough | depth;encircle | encircle;dispersal | heavy_tank;titan_tank;twin_tank;armored_bulldozer;engineer_… | reyn | 6 | all_out | 0.4;0.15;0.08;0.12;0.1;0.05;0.02;0.08 | 0 |  |
-| decapitation | firepower | depth | armored_car;scout_heli;attack_helicopter;lancet_truck;steal… | kerr | 9 |  | 0.12;0.28;0.15;0.1;0.08;0.15;0.07;0.05 | 0 |  |
-| depth | blitz;breakthrough | firepower;encircle | bunker_vehicle;tank_destroyer;main_battle_tank;mine_layer;m… | brandt | 1 |  | 0.25;0.15;0.18;0.15;0.12;0.05;0.02;0.08 | 0 |  |
+| decapitation | firepower | depth | armored_car;scout_heli;attack_helicopter;stealth_fighter | kerr | 9 |  | 0.12;0.28;0.15;0.1;0.08;0.15;0.07;0.05 | 0 |  |
+| depth | blitz;breakthrough | firepower;encircle | tank_destroyer;main_battle_tank;mine_layer;mortar_carrier;s… | brandt | 1 |  | 0.25;0.15;0.18;0.15;0.12;0.05;0.02;0.08 | 0 |  |
 | dispersal | firepower;breakthrough | blitz | armored_car;light_tank;fpv_carrier;mortar_carrier | venn | 6 | hit_and_run | 0.15;0.25;0.15;0.15;0.1;0.1;0.03;0.07 | 0 |  |
 | encircle | depth;base_defence | breakthrough | armored_car;ifv;wheeled_gun;light_tank;attack_helicopter | adler | 4 |  | 0.22;0.28;0.15;0.08;0.1;0.1;0.02;0.05 | 0 |  |
-| firepower | depth;base_defence | blitz;hit_and_run;dispersal | artillery;mlrs;heavy_rocket_artillery;mortar_carrier;counte… | dahl | 3 |  | 0.2;0.12;0.08;0.3;0.12;0.05;0.05;0.08 | 0 | 1.0 |
+| firepower | depth;base_defence | blitz;hit_and_run;dispersal | artillery;mlrs;heavy_rocket_artillery;mortar_carrier;ammo_c… | dahl | 3 |  | 0.2;0.12;0.08;0.3;0.12;0.05;0.05;0.08 | 0 | 1.0 |
 | hit_and_run | firepower | blitz;air_superiority | wheeled_gun;armored_car;tank_destroyer;attack_helicopter;st… | mendez | 5 | dispersal | 0.1;0.25;0.25;0.1;0.1;0.12;0.03;0.05 | 0 |  |
-| sead |  |  | attack_jet;stealth_fighter;ew_jammer;lancet_truck;ballistic… | reyes | 7 | air_superiority | 0.15;0.12;0.1;0.15;0.1;0.1;0.2;0.08 | 0 |  |
+| sead |  |  | attack_jet;stealth_fighter;ew_jammer;ballistic_launcher | reyes | 7 | air_superiority | 0.15;0.12;0.1;0.15;0.1;0.1;0.2;0.08 | 0 |  |
 
 *In 10 / 41 cột; 28 cột khác: xem sheet.*
 
@@ -503,7 +503,7 @@ Sheet 04_che_do_kinh_te_ai/Nhiem_vu_ngay — Nhiệm vụ ngày (8 dòng, 6 cộ
 | strikes | strikes | 6;10;15 | 120 |
 | wins | wins | 1;2;3 | 180 |
 
-Bảng đầy đủ: xem sheet `Cai_dat_mac_dinh` (22 dòng), `Huong_dan` (402 dòng, bulk.zip), `Ban_do_menu` (25 dòng), `Mo_khoa` (102 dòng).
+Bảng đầy đủ: xem sheet `Cai_dat_mac_dinh` (22 dòng), `Huong_dan` (316 dòng, bulk.zip), `Ban_do_menu` (25 dòng), `Mo_khoa` (88 dòng).
 
 ## Tham khảo ngoài đời và game
 
@@ -573,10 +573,10 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `AI_tuong` (12 dòng): Tướng địch — Mỗi tướng một dòng: campaign.json generals (bộ bài, hỗ trợ, thế, phong cách), balance.json generals (elite ưa thích, bài thêm), aiBehaviour.generals…
 - `AI_tham_so` (49 dòng): Tham số AI — balance.json ai.economy / ai.params / ai.world: giá trị, khoảng cho phép, chỉ số đo, lý do; danh sách bậc (escalation) một dòng mỗi bậc
 - `AI_vai_tro` (28 dòng): Vai trò đơn vị — aiBehaviour.roles: ngưỡng giao chiến, phản ứng khi bị áp đảo
-- `AI_don_vi` (58 dòng): Vai trò của từng đơn vị — aiBehaviour.units: đơn vị -> vai trò AI
+- `AI_don_vi` (50 dòng): Vai trò của từng đơn vị — aiBehaviour.units: đơn vị -> vai trò AI
 - `AI_trang_thai` (7 dòng): Trạng thái đội — aiBehaviour.states: ưu tiên và thời gian cam kết mỗi trạng thái
-- `AI_thap` (21 dòng): Hành vi tháp — aiBehaviour.towers: cách chọn mục tiêu mặc định và các cách đổi được
-- `AI_boss` (12 dòng): Hành vi boss — aiBehaviour.bosses: kiểu hành vi của boss (ngăn ';')
+- `AI_thap` (18 dòng): Hành vi tháp — aiBehaviour.towers: cách chọn mục tiêu mặc định và các cách đổi được
+- `AI_boss` (11 dòng): Hành vi boss — aiBehaviour.bosses: kiểu hành vi của boss (ngăn ';')
 - `AI_xung_dot` (348 dòng): AI: xung đột ghi đè — Mỗi chế độ / kiểu mục tiêu nhiệm vụ (AI_ho_so_anh_xa) x tướng (AI_tuong): chiến thuật tướng ưa thích, hồ sơ có dùng nó không, chiến thuật vào trận th…
 - `AI_xung_dot_do_kho` (80 dòng): AI: độ khó x hồ sơ — Mỗi hồ sơ AI x độ khó: cách đổi chiến thuật giữa trận của độ khó (AiSkill.For: Never / WhenLosing / Counter) và việc hồ sơ chặn nó (không chiến thuật…
 - `AI_tham_chieu` (56 dòng): AI: học thuyết và game tham khảo — Chiến thuật, vai trò AI, tướng địch: học thuyết quân sự (nghiên cứu AI), game AI tham khảo, kiểu chỉ huy (spec 12.2; chỉ dữ liệu có trong repo)
@@ -587,13 +587,13 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Nhiem_vu_ngay` (8 dòng): Nhiệm vụ ngày — DailyMissions.cs Pool: loại, mục tiêu theo bậc (ngăn ';'), thưởng xu
 - `Skin` (10 dòng): Skin — Skins.cs All: id, giá, màu
 - `Ban_do_menu` (25 dòng): Bản đồ trên menu — MatchSettings.cs AllMaps: id, chủ đề, biểu tượng, thời tiết có thể
-- `Meta_bang_hang` (166 dòng): Bảng hằng meta (C#) — Mọi bảng static readonly còn lại của các file meta (tự tìm): mỗi phần tử một dòng (bang = <file>#<mảng>)
-- `Mo_khoa` (102 dòng): Mở khóa — Tools/campaign/unlocks_sheet.json: thẻ -> chương mở khóa; thẻ mở khi thắng nhiệm vụ: 05_chien_dich/Nhiem_vu.unlocks
+- `Meta_bang_hang` (112 dòng): Bảng hằng meta (C#) — Mọi bảng static readonly còn lại của các file meta (tự tìm): mỗi phần tử một dòng (bang = <file>#<mảng>)
+- `Mo_khoa` (88 dòng): Mở khóa — Tools/campaign/unlocks_sheet.json: thẻ -> chương mở khóa; thẻ mở khi thắng nhiệm vụ: 05_chien_dich/Nhiem_vu.unlocks
 - `Mo_khoa_chung` (3 dòng): Mở khóa: ghi chú — unlocks_sheet.json: khóa ngoài bảng
 - `Meta_kinh_te_nguon` (23 dòng): Meta: nguồn và chỗ tiêu xu — Mỗi nguồn xu (thưởng trận, nhiệm vụ, hòm, nhiệm vụ ngày, Vô tận, cửa hàng) và chỗ tiêu xu (nâng hạng, hòm, skin): số xu, đơn vị, trần; số trong mã (R…
 - `Meta_kinh_te_tran` (12 dòng): Meta: xu mỗi trận nhanh — Xu một trận nhanh theo độ khó x kết quả (Rewards.Quick: cơ bản + min(hạ, trần) x xu + min(phút, trần) x xu, x hệ số độ khó), ở trận tham chiếu 20 xe…
 - `Meta_kinh_te` (10 dòng): Meta: kinh tế nâng hạng — Một thẻ từ hạng 1 lên hạng h: xu và bản thiết kế cho lần nâng, tổng từ hạng 1 (CardRanks.CoinsSpent / BlueprintsSpent), số trận thắng nhanh Bình thườ…
-- `Huong_dan` [bulk.zip] (402 dòng): Hướng dẫn người chơi — Chuỗi hướng dẫn trong game: thẻ Hướng dẫn của trang chi tiết (guide.<id>: GuideText, BossText, BigAttackText...), mẹo (tip.*) và gợi ý thao tác (hint…
+- `Huong_dan` [bulk.zip] (316 dòng): Hướng dẫn người chơi — Chuỗi hướng dẫn trong game: thẻ Hướng dẫn của trang chi tiết (guide.<id>: GuideText, BossText, BigAttackText...), mẹo (tip.*) và gợi ý thao tác (hint…
 - `Cai_dat_mac_dinh` (22 dòng): Cài đặt mặc định — Cài đặt mặc định của người chơi mới (âm lượng, đồ họa, rung, hỗ trợ, ngôn ngữ), đọc từ mã bởi ExportGameDoc
 - `Mutator_tuan` (1 dòng): Mutator tuần — Mutator tuần của Tác chiến
 - `Thu_hang` (1 dòng): Thứ hạng — Bảng xếp hạng

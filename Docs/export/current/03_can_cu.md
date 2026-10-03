@@ -2,7 +2,7 @@
 
 Tháp và nhánh, tường, nhà chính, mô-đun tiện ích, xây lại, AI căn cứ.
 
-Gói cân bằng Machine Brigade, commit 9e1e95b4, ngày 2026-10-03. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Căn cứ và tháp
 
@@ -164,31 +164,26 @@ Sheet 03_can_cu/Nha_chinh — Nhà chính (4 dòng, 84 cột)
 
 *In 10 / 84 cột; 46 cột khác: xem sheet.*
 
-Sheet 03_can_cu/Nha_chinh_kieu — Nhà chính: kiểu (3 dòng, 14 cột)
+Sheet 03_can_cu/Nha_chinh_kieu — Nhà chính: kiểu (3 dòng, 15 cột)
 
-| id | nha_chinh | ai_air_share | air | barrage | charges | clear | dome_seconds_s | ground | hq |
+| id | nha_chinh | ai_air_share | air | barrage | callable | charges | clear | dome_seconds_s | ground |
 |---|---|---|---|---|---|---|---|---|---|
-| fortress | headquarters.fortress_ground;headquarters.fortress_air | 0.3 | headquarters.fortress_air | hq_barrage |  |  |  | headquarters.fortress_ground |  |
-| garrison |  |  |  |  |  | 30 |  |  |  |
-| shield | headquarters.shield |  |  |  | 4 |  | 10 |  | headquarters.shield |
+| fortress | headquarters.fortress_ground;headquarters.fortress_air | 0.3 | headquarters.fortress_air | hq_barrage |  |  |  |  | headquarters.fortress_ground |
+| garrison |  |  |  |  | scout_jeep;armored_car;light_tank |  | 30 |  |  |
+| shield | headquarters.shield |  |  |  |  | 4 |  | 10 |  |
 
-*In 10 / 14 cột; 2 cột khác: xem sheet.*
+*In 10 / 15 cột; 3 cột khác: xem sheet.*
 
-Sheet 03_can_cu/Mo_dun_tien_ich — Mô-đun tiện ích (9 dòng, 101 cột)
+Sheet 03_can_cu/Mo_dun_tien_ich — Mô-đun tiện ích (4 dòng, 90 cột)
 
 | id | ten_en | ten_vi | ten_ngan_vi | base_cp | mau_hp | mau_trong_tran_hp | giap_hong | giap_noc | cong_trinh |
 |---|---|---|---|---|---|---|---|---|---|
 | airfield | Airfield | Sân bay dã chiến | Sân bay | 0 | 1600 | 3520.0 | 1 | 1 | TRUE |
-| airfield.hangar |  |  | Nhà chứa | 0 | 1800 | 3960.0 | 2 | 2 | TRUE |
-| airfield.service |  |  |  | 0 | 1600 | 3520.0 | 1 | 1 | TRUE |
-| ammo_depot | Ammunition depot | Kho đạn | Kho đạn | 0 | 1200 | 2640.0 | 2 | 2 | TRUE |
-| fire_control_centre | Fire-control centre | Trung tâm điều khiển hỏa lực | TT hỏa lực | 0 | 1136 | 2499.2 | 1 | 1 | TRUE |
+| fire_control_centre | Defence Command Centre | Trung tâm chỉ huy phòng thủ | TT phòng thủ | 0 | 1136 | 2499.2 | 1 | 1 | TRUE |
 | logistics_station | Logistics station | Trạm hậu cần | Trạm hậu cần | 0 | 1400 | 3080.0 | 1 | 1 | TRUE |
-| radar_station | Radar station | Trạm radar | Trạm radar | 0 | 1200 | 2640.0 | 1 | 1 | TRUE |
 | repair_bay | Repair bay | Xưởng sửa chữa | Xưởng sửa chữa | 0 | 1600 | 3520.0 | 2 | 2 | TRUE |
-| visual_jammer | Visual jammer | Máy tạo nhiễu tầm nhìn | Nhiễu tầm nhìn | 0 | 909 | 1999.8 | 1 | 1 | TRUE |
 
-*In 10 / 101 cột; 58 cột khác: xem sheet.*
+*In 10 / 90 cột; 47 cột khác: xem sheet.*
 
 Sheet 03_can_cu/Loadout_can_cu — Ô căn cứ theo cấp HQ (10 dòng, 9 cột)
 
@@ -213,7 +208,7 @@ Sheet 03_can_cu/Xay_lai — Xây lại tháp theo cỡ ô (3 dòng, 6 cột)
 | medium | 40 | 4 | 3.5 |
 | small | 25 | 2 | 2.5 |
 
-Bảng đầy đủ: xem sheet `Thap` (76 dòng), `Thap_gia_cong_thuc` (60 dòng), `Can_cu_luat` (21 dòng).
+Bảng đầy đủ: xem sheet `Thap` (56 dòng), `Thap_gia_cong_thuc` (41 dòng), `Can_cu_luat` (21 dòng).
 
 ## Công thành và Phòng thủ
 
@@ -228,10 +223,10 @@ Sheet 03_can_cu/Dot_phong_thu — Loadout phòng thủ tham chiếu (5 dòng, 10
 | id | small | medium | large | utilities | he_so_do_kho | duong_cong_dot | cap_hq |
 |---|---|---|---|---|---|---|---|
 | hq1 | guard_tower;mg_bunker;aa_turret | gun_turret |  | repair_bay | 0.75 | 2;4;5;6;8;9;10;12;13;14 | 1 |
-| hq2 | guard_tower;mg_bunker;aa_turret;at_gun_emplacement | gun_turret;atgm_tower |  | repair_bay | 0.8722 | 3;4;6;7;9;10;12;14;15;17 | 2 |
-| hq3 | guard_tower;mg_bunker;aa_turret;at_gun_emplacement | gun_turret;heavy_flak_tower | heavy_turret | repair_bay;radar_station | 1.0414 | 3;5;7;9;11;12;14;16;18;20 | 3 |
-| hq4 | guard_tower;mg_bunker;aa_turret;at_gun_emplacement;minefield | gun_turret;atgm_tower;heavy_flak_tower | heavy_turret | repair_bay;radar_station | 1.1492 | 3;6;8;10;12;14;16;18;20;22 | 4 |
-| hq5 | guard_tower;mg_bunker;aa_turret;at_gun_emplacement;minefiel… | gun_turret;atgm_tower;c_ram | heavy_turret;missile_battery | repair_bay;radar_station;ammo_depot | 1.3176 | 4;6;9;11;13;16;18;21;23;25 | 5 |
+| hq2 | guard_tower;mg_bunker;aa_turret;mg_bunker | gun_turret;atgm_tower |  | repair_bay | 0.8722 | 3;4;6;7;9;10;12;14;15;17 | 2 |
+| hq3 | guard_tower;mg_bunker;aa_turret;mg_bunker | gun_turret;rocket_turret | heavy_turret | repair_bay;logistics_station | 1.0414 | 3;5;7;9;11;12;14;16;18;20 | 3 |
+| hq4 | guard_tower;mg_bunker;aa_turret;mg_bunker;guard_tower | gun_turret;atgm_tower;rocket_turret | heavy_turret | repair_bay;logistics_station | 1.1887 | 4;6;8;10;12;14;16;19;21;23 | 4 |
+| hq5 | guard_tower;mg_bunker;aa_turret;mg_bunker;guard_tower;ew_to… | gun_turret;atgm_tower;c_ram | heavy_turret;missile_battery | repair_bay;logistics_station;airfield | 1.3554 | 4;7;9;11;14;16;19;21;24;26 | 5 |
 
 Sheet 03_can_cu/Can_cu_AI_cap — AI xây căn cứ: cấp HQ theo độ khó (4 dòng, 8 cột)
 
@@ -248,30 +243,28 @@ Thông số ngoài đời lấy từ nguồn trong repo (sheet Nguon_tham_chieu 
 
 ### Can_cu_tham_chieu
 
-96 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 22, ban_dau_doan 44, NEED_SOURCE 30. Loại: NEED_SOURCE 30, doi_that 63, game 3.
+69 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 17, ban_dau_doan 34, NEED_SOURCE 18. Loại: NEED_SOURCE 18, doi_that 48, game 3.
 
 - `aa_turret` (Tháp phòng không): mẫu thật: 2K22 Tunguska (2A38 30 mm);Stinger; game: WARNO; giống: pháo phòng không hai nòng 35 mm trên ụ bao cát; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_aa_turret, R_machine_brigade_ai_research.
 - `aa_turret.flak` (aa_turret.flak): mẫu thật: ZSU-23-4 Shilka (23 mm bốn nòng); giống: Nhánh pháo phòng không bốn nòng; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
 - `aa_turret.sam` (aa_turret.sam): mẫu thật: Mistral ATLAS;RBS-70;Starstreak LML; giống: Nhánh trạm tên lửa phòng không; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
 - `airfield` (Sân bay dã chiến): mẫu thật: bãi đáp trực thăng (chữ H); giống: Bãi đáp sửa chữa và nạp đạn cho máy bay; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
-- `airfield.hangar` (airfield.hangar): mẫu thật: nhà chứa máy bay dã chiến; giống: nhánh nhà chứa; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
-- `airfield.service` (airfield.service): mẫu thật: FARP (điểm tiếp đạn và nhiên liệu tiền phương); giống: nhánh phục vụ máy bay; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
-- `ammo_depot` (Kho đạn): mẫu thật: kho đạn dã chiến dưới lưới ngụy trang; giống: Kho đạn, nổ lớn khi bị phá; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
-- `artillery_emplacement` (Trận địa pháo): mẫu thật: 2A65 Msta-B / D-20 152 mm (lựu pháo kéo);M284 155 mm; game: WARNO; giống: lựu pháo kéo trong ụ bao cát; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_artillery_emplacement, R_machine_brigade_ai_research.
-- `artillery_emplacement.cb` (artillery_emplacement.cb): mẫu thật: M284 155 mm; giống: Nhánh lựu pháo phản pháo; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
-- `artillery_emplacement.mortar` (artillery_emplacement.mortar): mẫu thật: 2B8 240 mm;2S4 Tyulpan;M-240 (cối kéo 240 mm); giống: Nhánh cối 240 mm bắn cầu vồng; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
-- `at_gun_emplacement` (Ụ pháo chống tăng): mẫu thật: 2A45 Sprut-B 125 mm; game: Company of Heroes; giống: Ụ pháo chống tăng; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_at_gun_emplacement.
 - `atgm_tower` (Tháp tên lửa chống tăng): mẫu thật: 9M133 Kornet; giống: Tháp bê tông phóng tên lửa chống tăng; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_atgm_tower.
 - `atgm_tower.multi` (atgm_tower.multi): mẫu thật: 9M133 Kornet;Kornet-EM (bệ nhiều ống); giống: ước đoán (Kornet-EM): nhánh đa năng bốn ống và radar nhỏ; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
 - `atgm_tower.top` (atgm_tower.top): mẫu thật: 9M133 Kornet;FGM-148 Javelin (đánh nóc); giống: ước đoán (Javelin): nhánh tên lửa đánh nóc; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang.
 - `barrage_balloon` (Khí cầu neo radar (JLENS)): mẫu thật: JLENS (khí cầu neo radar); giống: Khí cầu neo radar: bom địch kém chính xác, lộ máy bay tàng hình gần; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_barrage_balloon.
-- … 51 dòng có tham chiếu nữa: xem sheet Can_cu_tham_chieu.
+- `bulwark_post` (Ụ súng dã chiến): mẫu thật: NSV 12,7 mm;lô cốt hình nấm; giống: Ụ súng máy tạm sau khi tháp đổ (trang bị Bulwark); độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_bulwark_post.
+- `c_ram` (Trạm đánh chặn C-RAM): mẫu thật: Centurion C-RAM;Phalanx Block 1B (M61 20 mm); giống: Pháo phòng thủ tầm gần chống rốc-két, pháo và cối; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_c_ram.
+- `c_ram.centurion` (c_ram.centurion): mẫu thật: Centurion C-RAM;Phalanx CIWS; giống: Nhánh C-RAM tầm gần; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `c_ram.dome` (c_ram.dome): mẫu thật: Iron Dome (tên lửa Tamir); giống: Nhánh Vòm Sắt đánh chặn rốc-két; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang.
+- `coastal_battery` (Trận địa pháo bờ biển): mẫu thật: A-222 Bereg (240 mm);AK-130 130 mm (tháp pháo hạm đặt trên bờ);K-300P Bastion-P;M284 155…; giống: Trận địa pháo bờ biển; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_coastal_battery.
+- `cp_relay` (Trạm tiếp tế CP): mẫu thật: trạm tiếp sóng thông tin dã chiến; giống: Trạm tiếp sóng CP, cột lưới hai chảo ăng-ten; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_cp_relay.
+- `cp_relay.hardened` (Trạm tiếp tế CP (cp_relay.hardened)): mẫu thật: trạm tiếp tế kiên cố; giống: nhánh trạm tiếp tế; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_cp_relay.
+- … 36 dòng có tham chiếu nữa: xem sheet Can_cu_tham_chieu.
 
 Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
 
 - `R_aa_turret`: spec dựng lại aa_turret (độ tin 3)
-- `R_artillery_emplacement`: spec dựng lại artillery_emplacement (độ tin 3)
-- `R_at_gun_emplacement`: spec dựng lại at_gun_emplacement (độ tin 3)
 - `R_atgm_tower`: spec dựng lại atgm_tower (độ tin 3)
 - `R_barrage_balloon`: spec dựng lại barrage_balloon (độ tin 3)
 - `R_bulwark_post`: spec dựng lại bulwark_post (độ tin 3)
@@ -279,18 +272,15 @@ Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
 - `R_coastal_battery`: spec dựng lại coastal_battery (độ tin 3)
 - `R_cp_relay`: spec dựng lại cp_relay (độ tin 3)
 - `R_decisions`: Docs/DECISIONS.md (nhật ký quyết định) (độ tin 3)
-- `R_dragons_teeth`: spec dựng lại dragons_teeth (độ tin 3)
 - `R_drone_hangar`: spec dựng lại drone_hangar (độ tin 3)
 - `R_ew_tower`: spec dựng lại ew_tower (độ tin 3)
 - `R_gun_turret`: spec dựng lại gun_turret (độ tin 3)
 - `R_headquarters`: spec dựng lại headquarters (độ tin 3)
-- `R_heavy_flak_tower`: spec dựng lại heavy_flak_tower (độ tin 3)
 - `R_heavy_turret`: spec dựng lại heavy_turret (độ tin 3)
 - `R_logistics_station`: spec dựng lại logistics_station (độ tin 3)
 - `R_machine_brigade_ai_research`: Nghiên cứu AI (Machine_Brigade_AI_Research.xlsx) (độ tin 3)
 - `R_machine_brigade_can_bang`: Rà soát cân bằng (Machine_Brigade_Can_bang.xlsx) (độ tin 3)
 - `R_mg_bunker`: spec dựng lại mg_bunker (độ tin 3)
-- `R_minefield`: spec dựng lại minefield (độ tin 3)
 - `R_repair_bay`: spec dựng lại repair_bay (độ tin 3)
 - `R_rocket_turret`: spec dựng lại rocket_turret (độ tin 3)
 - `R_shield_tower`: spec dựng lại shield_tower (độ tin 3)
@@ -300,13 +290,13 @@ Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
 - `R_wall_hesco`: spec dựng lại wall_hesco (độ tin 3)
 - `R_wall_t`: spec dựng lại wall_t (độ tin 3)
 
-Sheet 03_can_cu/Can_cu_so_sanh_that — Căn cứ và tháp: so sánh với thật: 37 dòng, 18 cột; bảng đầy đủ: xem sheet Can_cu_so_sanh_that.
+Sheet 03_can_cu/Can_cu_so_sanh_that — Căn cứ và tháp: so sánh với thật: 32 dòng, 18 cột; bảng đầy đủ: xem sheet Can_cu_so_sanh_that.
 
 ## Các sheet của file
 
 Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_sheet, Schema). Sheet `input_<tên>` là bản chép của một sheet nguồn để công thức Excel đọc cùng file; sửa ở sheet nguồn, không sửa bản chép.
 
-- `Thap` (76 dòng): Tháp — Mỗi tháp (thẻ và nhánh bậc 7) một dòng
+- `Thap` (56 dòng): Tháp — Mỗi tháp (thẻ và nhánh bậc 7) một dòng
 - `Thap_vu_khi` (3 dòng): Tháp: bệ vũ khí phụ — secondary[]: bệ phụ (chỉ số bệ = thu_tu + 1; bệ 0 là vũ khí chính)
 - `Tuong` (3 dòng): Tường — Mỗi loại tường một dòng (def + base.walls.types)
 - `Tuong_luat` (11 dòng): Tường: luật — base.walls: xe phá tường, máu đoạn, số tuyến, mặc định, tường theo tướng
@@ -315,18 +305,18 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Nha_chinh_kieu` (3 dòng): Nhà chính: kiểu — hqTypes.<kiểu>: trường không theo cấp
 - `Nha_chinh_kieu_cap` (15 dòng): Nhà chính: kiểu x cấp HQ — hqTypes.<kiểu>.<danh sách>[cấp-1]: sức mạnh, đồn trú, khiên theo HQ 1-5
 - `Nha_chinh_luat` (13 dòng): Nhà chính: luật — base.hq, hqTypes.default / skillCooldown / radius / ai (kiểu theo tướng, độ khó)
-- `Mo_dun_tien_ich` (9 dòng): Mô-đun tiện ích — Trạm sửa, kho đạn, sân bay, trạm hậu cần, radar (ô tiện ích)
+- `Mo_dun_tien_ich` (4 dòng): Mô-đun tiện ích — Trạm sửa, kho đạn, sân bay, trạm hậu cần, radar (ô tiện ích)
 - `Loadout_can_cu` (10 dòng): Ô căn cứ theo cấp HQ — base.levels (thường) và base.longLevels (bản đồ dài): số ô mỗi cỡ
 - `Xay_lai` (3 dòng): Xây lại tháp theo cỡ ô — base.rebuild.<cỡ>: CP, thời gian chờ, thời gian thả
 - `Can_cu_luat` (21 dòng): Căn cứ: luật — base.rebuild (chung), longForward, outpost, roles (vai trò căn cứ theo chế độ), roster
 - `Dot_phong_thu` (5 dòng): Loadout phòng thủ tham chiếu — base.reference: 5 loadout tham chiếu theo cấp HQ
-- `Can_cu_AI_kieu` (112 dòng): AI xây căn cứ: trọng số — base.ai.styles.<kiểu>.<tháp>: trọng số chọn tháp ('*' = mọi tháp khác)
-- `Thap_gia_cong_thuc` (60 dòng): Tháp: công thức giá xây lại — Từng bước giá xây lại (Tools/balance/p32_tower_prices.py): effectiveHP, roleDPS, equivalentCP, hệ số đứng yên, x 1,25, cận cỡ; so với giá game (BaseR…
-- `Tuong_duong_xe_cong_trinh` (60 dòng): Tháp: tương đương xe — Giá trị tương đương xe (equivalentCP), tỷ lệ so với giá game, số phát của từng mối đe dọa tham chiếu theo cỡ ô để hạ tháp (DamageTable.Effective, Str…
+- `Can_cu_AI_kieu` (87 dòng): AI xây căn cứ: trọng số — base.ai.styles.<kiểu>.<tháp>: trọng số chọn tháp ('*' = mọi tháp khác)
+- `Thap_gia_cong_thuc` (41 dòng): Tháp: công thức giá xây lại — Từng bước giá xây lại (Tools/balance/p32_tower_prices.py): effectiveHP, roleDPS, equivalentCP, hệ số đứng yên, x 1,25, cận cỡ; so với giá game (BaseR…
+- `Tuong_duong_xe_cong_trinh` (41 dòng): Tháp: tương đương xe — Giá trị tương đương xe (equivalentCP), tỷ lệ so với giá game, số phát của từng mối đe dọa tham chiếu theo cỡ ô để hạ tháp (DamageTable.Effective, Str…
 - `Nha_chinh_so_sanh` (20 dòng): Nhà chính: so sánh kiểu — Giá trị phòng thủ tương đương mỗi phút căn cứ bị đánh (CP), 3 kiểu (Pháo đài mặt đất / phòng không, Đồn trú, Khiên) x HQ 1-5 (Tools/balance/p32_hq_ty…
 - `Can_cu_AI_cap` (4 dòng): AI xây căn cứ: cấp HQ theo độ khó — base.ai.levels
-- `Can_cu_tham_chieu` (96 dòng): Căn cứ và tháp: tham chiếu ngoài đời — Mỗi tháp / nhánh, tường, nhà chính, mô-đun một dòng: mẫu thật, game tham khảo cơ chế, kích thước thật (spec 12.2; chỉ dữ liệu có trong repo)
-- `Can_cu_so_sanh_that` (37 dòng): Căn cứ và tháp: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
+- `Can_cu_tham_chieu` (69 dòng): Căn cứ và tháp: tham chiếu ngoài đời — Mỗi tháp / nhánh, tường, nhà chính, mô-đun một dòng: mẫu thật, game tham khảo cơ chế, kích thước thật (spec 12.2; chỉ dữ liệu có trong repo)
+- `Can_cu_so_sanh_that` (32 dòng): Căn cứ và tháp: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
 - `Anh_can_cu` (20 dòng): Ảnh bản đồ căn cứ — Resources/UI/Bases/*.json: ảnh nhìn từ trên của căn cứ trên màn Căn cứ (bản đồ, tâm, hướng, bãi thả, HQ, mét mỗi ảnh, viền, mũi tên)
 - `Anh_can_cu_vien` (142 dòng): Ảnh căn cứ: viền — outline[]: điểm viền căn cứ trên ảnh
 - `Anh_can_cu_mui_ten` (52 dòng): Ảnh căn cứ: mũi tên — arrows[]: mũi tên hướng tấn công trên ảnh

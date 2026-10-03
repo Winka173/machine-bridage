@@ -2,7 +2,7 @@
 
 Chương, nhiệm vụ, biến cố, bộ bài game, nhân vật, thống kê thoại.
 
-Gói cân bằng Machine Brigade, commit 9e1e95b4, ngày 2026-10-03. Số liệu đầy đủ ở 05_chien_dich.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu đầy đủ ở 05_chien_dich.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Chiến dịch
 
@@ -347,17 +347,17 @@ Sheet 05_chien_dich/Chuong — Chương (15 dòng, 14 cột)
 | 2 | dunebreak;redrock | behemoth | behemoth_inferno | varga | 2 | ch02.json | 108 | 1 | comic.2 |
 | 3 | whiteout;frostpeak | mobile_fortress | mega_gunship;fenrir | orlov | 3 | ch03.json | 111 | 1 | comic.3 |
 | 4 | rustyard;ironport;lighthousebay | leviathan | behemoth_tempest;armored_train;scylla | kessler | 4 | ch04.json | 164 | 2 | comic.4 |
-| 5 | junglepass;emberridge | drone_mothership | locust;fortress_hive | sen | 5 | ch05.json | 121 | 2 | comic.5 |
+| 5 | junglepass;emberridge | drone_mothership | locust | sen | 5 | ch05.json | 121 | 2 | comic.5 |
 | 6 | ashfield;whiteout;greenvale;landingbeach;hydrodam | moloch | landing_hovercraft;behemoth_mk2 | varga | 6 | ch06.json | 153 | 2 | comic.6 |
-| 7 | metrocity;veyra_old_quarter;capital | nuke_train | supreme_command;behemoth_inferno;armored_train | hung | 7 | ch07.json | 149 | 3 | comic.7 |
-| 8 | redrock;openpit;hydrodam;dunebreak | kronos | ixion;earth_borer | hung | 8 | ch08.json | 129 | 3 | comic.8 |
-| 9 | ironport;landingbeach;lighthousebay;coralisles | typhon | caspian;scylla | hung | 9 | ch09.json | 131 | 3 | comic.9 |
-| 10 | frostpeak;skyhold;whiteout | command_airship | sky_fortress;icarus_mk0;argus;morrigan | quaden | 10 | ch10.json | 134 | 4 | comic.10 |
-| 11 | rustyard;skyhold;frostpeak;orbitalgate | daedalus | rail_supergun;locust | aurel | 11 | ch11.json | 120 | 4 | comic.11 |
+| 7 | metrocity;veyra_old_quarter;capital | nuke_train | behemoth_mk2;behemoth_inferno;armored_train | hung | 7 | ch07.json | 149 | 3 | comic.7 |
+| 8 | redrock;openpit;hydrodam;dunebreak | moloch | ixion;earth_borer | hung | 8 | ch08.json | 129 | 3 | comic.8 |
+| 9 | ironport;landingbeach;lighthousebay;coralisles | typhon | landing_hovercraft;scylla | hung | 9 | ch09.json | 131 | 3 | comic.9 |
+| 10 | frostpeak;skyhold;whiteout | command_airship | icarus_mk0;argus;mega_gunship | quaden | 10 | ch10.json | 134 | 4 | comic.10 |
+| 11 | rustyard;skyhold;frostpeak;orbitalgate | daedalus | monster;locust | aurel | 11 | ch11.json | 120 | 4 | comic.11 |
 | 12 | launchsite;saltflat;dunebreak;lighthousebay | silver_bug | behemoth_mk2;scylla;locust | aurel | 12 | ch12.json | 93 | 4 | comic.12 |
 | 13 | foundry |  | behemoth_mk0 | varga | 13 | ch13.json | 35 | 1 | comic.13 |
 | 14 | swamp;borderbridge |  | locust |  | 14 | ch14.json | 44 | 2 | comic.14 |
-| 15 | frostpeak;junglepass |  | morrigan | quaden | 15 | ch15.json | 40 | 3 | comic.15 |
+| 15 | frostpeak;junglepass |  | mega_gunship | quaden | 15 | ch15.json | 40 | 3 | comic.15 |
 
 *In 10 / 14 cột; 2 cột khác: xem sheet.*
 
@@ -520,7 +520,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Nhiem_vu_giai_doan` (90 dòng): Nhiệm vụ: giai đoạn — missions[].stages: mục tiêu, CP, lựa chọn, sóng địch, biến cố mỗi giai đoạn
 - `Nhiem_vu_giai_doan_su_kien` (145 dòng): Giai đoạn: sự kiện — stages[].events: radio, quân, hỗ trợ
 - `Nhiem_vu_giai_doan_lua_chon` (28 dòng): Giai đoạn: lựa chọn — stages[].choices: khóa và giai đoạn kế
-- `Nhiem_vu_giai_doan_bien_co` (55 dòng): Giai đoạn: biến cố — stages[].missionEvents
+- `Nhiem_vu_giai_doan_bien_co` (56 dòng): Giai đoạn: biến cố — stages[].missionEvents
 - `Nhiem_vu_nav_state` (13 dòng): Nhiệm vụ: trạng thái nav dựng sẵn — missions[].navStates: vùng đổi trạng thái (thủy triều, cầu)
 - `Nhiem_vu_nav_state_trang_thai` (34 dòng): Trạng thái nav: các trạng thái — navStates[].states
 - `Nhiem_vu_nav_chan` (25 dòng): Trạng thái nav: khối chặn — navStates[].states[].blocks: hình chữ nhật chặn

@@ -19,6 +19,7 @@ SHARED = [
     ("Assets/MachineBrigade/Scenes/*.unity", "**",
      "cảnh Unity: chỉ bố cục khởi động; lối chơi đọc từ dữ liệu lúc chạy (SceneBuilder dựng cảnh)"),
     # tool-only files: the Python requirements of the music tool
+    ("Tools/export/pack2/*.csv", "**", "danh sách việc của công cụ chuyển số vào dữ liệu (không phải dữ liệu game)"),
     ("Tools/music/requirements.txt", "**", "danh sách gói Python của công cụ nhạc (không phải dữ liệu game)"),
     # Unity YAML bookkeeping of every document (object ids, hide flags): not data
     ("*.asset", "docs[*]._class", "mã lớp Unity của tài liệu YAML (siêu dữ liệu)"),

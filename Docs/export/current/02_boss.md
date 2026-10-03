@@ -2,13 +2,13 @@
 
 Boss, bộ phận, siêu vũ khí, hộ tống, pha, Săn trùm.
 
-Gói cân bằng Machine Brigade, commit 9e1e95b4, ngày 2026-10-03. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng hợp boss
 
 Mọi boss và mini boss cạnh nhau, đọc từ dữ liệu hiện tại: máu thân (trước hệ số độ khó), giáp trước/hông/sau/nóc, số bộ phận và phần máu của chúng, DPS duy trì lên xe nhẹ, xe nặng, máy bay và công trình (trước giáp), đòn lớn đầu tiên và số hộ tống trong mọi đợt.
 
-Bảng đầy đủ: xem sheet `Boss_dps` (41 dòng), `Boss_hieu_qua` (205 dòng).
+Bảng đầy đủ: xem sheet `Boss_dps` (31 dòng), `Boss_hieu_qua` (155 dòng).
 
 ## Boss: vụ nổ hai lớp, pha, giáp và cỡ
 
@@ -18,22 +18,18 @@ Bảng đầy đủ: xem sheet `Boss_dps` (41 dòng), `Boss_hieu_qua` (205 dòng
 
 Bảng 41 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
 
-Sheet 02_boss/Boss_phase — Boss: pha (10 dòng, 12 cột)
+Sheet 02_boss/Boss_phase — Boss: pha (6 dòng, 11 cột)
 
-| id | boss_id | thu_tu | at | damage | fire_rate | heal | radio | speed_m_s | transform |
-|---|---|---|---|---|---|---|---|---|---|
-| command_airship/0 | command_airship | 0 | 0.6 | 1.1 |  |  | radio.quaden.airship.phase2 |  | 2.5 |
-| command_airship/1 | command_airship | 1 | 0.25 | 1.25 | 1.25 |  | radio.quaden.airship.half |  | 3 |
-| earth_borer/0 | earth_borer | 0 | 0.45 |  |  |  | radio.hung.borer.half | 1.15 | 2.5 |
-| kronos/0 | kronos | 0 | 0.6 |  |  |  | radio.hung.kronos.phase2 | 1.45 | 2.5 |
-| kronos/1 | kronos | 1 | 0.25 | 1.3 | 1.25 |  | radio.hung.kronos.phase3 |  | 3 |
-| landing_hovercraft/0 | landing_hovercraft | 0 | 0.45 |  |  |  | radio.kessler.hovercraft.half | 1.2 | 2.5 |
-| leviathan/0 | leviathan | 0 | 0.6 |  |  |  | radio.kessler.leviathan.phase2 |  | 2.5 |
-| leviathan/1 | leviathan | 1 | 0.25 |  | 1.25 |  | radio.kessler.leviathan.phase3 |  | 3 |
-| rail_supergun/0 | rail_supergun | 0 | 0.45 | 1.2 |  |  | radio.orlov.supergun.half |  | 3 |
-| supreme_command/0 | supreme_command | 0 | 0.45 |  |  | 0.08 | radio.hung.supreme.half |  | 3 |
+| id | boss_id | thu_tu | at | damage | fire_rate | radio | speed_m_s | transform |
+|---|---|---|---|---|---|---|---|---|
+| command_airship/0 | command_airship | 0 | 0.6 | 1.1 |  | radio.quaden.airship.phase2 |  | 2.5 |
+| command_airship/1 | command_airship | 1 | 0.25 | 1.25 | 1.25 | radio.quaden.airship.half |  | 3 |
+| earth_borer/0 | earth_borer | 0 | 0.45 |  |  | radio.hung.borer.half | 1.15 | 2.5 |
+| landing_hovercraft/0 | landing_hovercraft | 0 | 0.45 |  |  | radio.kessler.hovercraft.half | 1.2 | 2.5 |
+| leviathan/0 | leviathan | 0 | 0.6 |  |  | radio.kessler.leviathan.phase2 |  | 2.5 |
+| leviathan/1 | leviathan | 1 | 0.25 |  | 1.25 | radio.kessler.leviathan.phase3 |  | 3 |
 
-Bảng đầy đủ: xem sheet `Boss_be_goc` (107 dòng).
+Bảng đầy đủ: xem sheet `Boss_be_goc` (86 dòng).
 
 ## Săn trùm (Boss Hunt)
 
@@ -83,22 +79,18 @@ Sheet 02_boss/Sanhunt_ho_tro — Săn trùm: hỗ trợ tác chiến (12 dòng, 
 | warchest | Quỹ chiến tranh | coin | WarChest | 0.05 | 35 |
 | workshop | Xưởng lưu động | gear | Workshop | 0.05 | 1 |
 
-Sheet 02_boss/Sanhunt_chua_xep — Săn trùm: boss chưa có ô chương (10 dòng, 4 cột)
+Sheet 02_boss/Sanhunt_chua_xep — Săn trùm: boss chưa có ô chương (6 dòng, 4 cột)
 
 | id | sau_chuong |
 |---|---|
 | behemoth_mk0 | 3 |
-| cerberus | 6 |
-| garuda | 10 |
 | hydra | 9 |
 | hyperion | 12 |
 | kraken | 9 |
 | monster | 8 |
-| morrigan | 9 |
 | nyx | 4 |
-| stymphalos | 5 |
 
-Bảng đầy đủ: xem sheet `Sanhunt` (41 dòng).
+Bảng đầy đủ: xem sheet `Sanhunt` (31 dòng).
 
 ## Tháp canh, xe tinh nhuệ và boss
 
@@ -392,7 +384,7 @@ giáp thân trước 4 / hông 4 / sau 4 / nóc 4; Tổng 35% máu thân trong 9
 
 Một trong những chấm sáng cuối cùng còn trên quỹ đạo sau phần kết: trạm gương kiểu Znamya.
 
-Sheet 02_boss/Boss_sieu_vu_khi — Siêu vũ khí (17 dòng, 18 cột)
+Sheet 02_boss/Boss_sieu_vu_khi — Siêu vũ khí (15 dòng, 18 cột)
 
 | id | dung_boi | aim | cooldown_s | exposed_s | first | halt_s | hold | icon | late_cooldown_s |
 |---|---|---|---|---|---|---|---|---|---|
@@ -404,11 +396,9 @@ Sheet 02_boss/Boss_sieu_vu_khi — Siêu vũ khí (17 dòng, 18 cột)
 | daedalus_mass_drop | daedalus | group | 50 |  |  |  |  | reinforce |  |
 | doomsday_missile | nuke_train | hq | 50 |  |  |  |  | ballistic |  |
 | fortress_203_barrage | mobile_fortress | group | 50 |  |  |  |  | artillery |  |
-| garuda_carpet | garuda | group | 50 |  |  |  |  | bomb |  |
 | hyperion_sun_beam | hyperion | group | 50 |  |  |  |  | ballistic |  |
 | ixion_crush_charge | ixion | group | 10 |  | 6 |  |  | barrage |  |
 | kraken_air_raid | kraken | group | 50 |  |  |  |  | bomb |  |
-| kronos_bucket_sweep | kronos | self | 45 |  |  |  |  | dune |  |
 | leviathan_volley | leviathan | base | 50 |  |  |  | cruise | artillery |  |
 | moloch_factory_dump | moloch | group | 50 |  |  |  |  | reinforce |  |
 | monster_800_shell | monster | group | 50 |  |  |  |  | mortar |  |
@@ -416,7 +406,7 @@ Sheet 02_boss/Boss_sieu_vu_khi — Siêu vũ khí (17 dòng, 18 cột)
 
 *In 10 / 18 cột; 6 cột khác: xem sheet.*
 
-Sheet 02_boss/Boss_ho_tong — Hộ tống boss (17 dòng, 9 cột)
+Sheet 02_boss/Boss_ho_tong — Hộ tống boss (13 dòng, 9 cột)
 
 | id | boss | marks | on | phase_drop | phase_halt_s | phase_refill |
 |---|---|---|---|---|---|---|
@@ -428,17 +418,13 @@ Sheet 02_boss/Boss_ho_tong — Hộ tống boss (17 dòng, 9 cột)
 | drone_mothership | drone_mothership |  |  |  |  |  |
 | earth_borer | earth_borer |  | surface | para |  |  |
 | fortress_bastion | fortress_bastion |  |  |  |  |  |
-| fortress_hive | fortress_hive |  |  |  |  |  |
 | landing_hovercraft | landing_hovercraft |  |  |  |  |  |
 | mega_gunship | mega_gunship |  |  |  |  |  |
 | mobile_fortress | mobile_fortress |  |  |  |  |  |
 | nuke_train | nuke_train |  |  |  |  |  |
-| rail_supergun | rail_supergun |  |  |  |  |  |
 | silver_bug | silver_bug | 0.6;0.25 |  |  |  |  |
-| sky_fortress | sky_fortress |  |  |  |  |  |
-| supreme_command | supreme_command | 0.6 |  |  |  |  |
 
-Bảng đầy đủ: xem sheet `Boss` (41 dòng), `Boss_vu_khi` (223 dòng), `Boss_bo_phan` (198 dòng), `Boss_hang` (42 dòng).
+Bảng đầy đủ: xem sheet `Boss` (31 dòng), `Boss_vu_khi` (180 dòng), `Boss_bo_phan` (153 dòng), `Boss_hang` (42 dòng).
 
 ## Tham khảo ngoài đời và game
 
@@ -446,7 +432,7 @@ Thông số ngoài đời lấy từ nguồn trong repo (sheet Nguon_tham_chieu 
 
 ### Boss_tham_chieu
 
-41 dòng. Độ tin cậy: da_kiem_chung 9, uoc_dinh 18, ban_dau_doan 8, NEED_SOURCE 6. Loại: NEED_SOURCE 6, doi_that 32, game 1, gia_tuong 2.
+31 dòng. Độ tin cậy: da_kiem_chung 4, uoc_dinh 17, ban_dau_doan 6, NEED_SOURCE 4. Loại: NEED_SOURCE 4, doi_that 24, game 1, gia_tuong 2.
 
 - `argus` (Argus · Khí cầu trinh sát): mẫu thật: JLENS (khí cầu radar neo); game: Red Alert 2; giống: biến thể của khí cầu chỉ huy, khí cầu radar neo; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
 - `armored_train` (Juggernaut · Đoàn tàu bọc thép): mẫu thật: tàu bọc thép Liên Xô BP-35;B-38 152 mm;2B11 120 mm; giống: đầu máy diesel bọc thép kéo toa pháo; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_armored_train, R_unit_sheet.
@@ -456,14 +442,14 @@ Thông số ngoài đời lấy từ nguồn trong repo (sheet Nguon_tham_chieu 
 - `behemoth_mk0` (Behemoth Mk.0 · Behemoth nguyên mẫu): mẫu thật: Object 279 (1959);giáp composite, APS và cảm biến hiện đại; game: Warhammer 40,000; giống: Behemoth đời đầu, nhỏ hơn; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
 - `behemoth_mk2` (Behemoth Mk.II · Behemoth nâng cấp): mẫu thật: Object 279 (1959);giáp composite, APS và cảm biến hiện đại; game: Warhammer 40,000; giống: Behemoth đời hai; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
 - `behemoth_tempest` (Tempest · Behemoth pháo điện từ): mẫu thật: US Navy EMRG (pháo điện từ);Object 279 (1959); game: Warhammer 40,000; giống: Behemoth hai tháp pháo điện từ; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_behemoth_tempest, R_unit_sheet.
-- `caspian` (Caspian · Tàu bay sát mặt nước): mẫu thật: ekranoplan lớp Lun MD-160 ('Quái vật biển Caspi'); giống: Thủy phi cơ hiệu ứng mặt đất; độ tin: da_kiem_chung; nguồn: R_unit_refs, R_reference_real, W_wikipedia_lun_class_ekranoplan, R_machine_brigade_can_bang, R_caspian, R_mb_p20_bosses, R_unit_sheet.
 - `command_airship` (Roc · Khí cầu chỉ huy): mẫu thật: Airlander 10;Lockheed P-791 (khí cầu lai hiện đại); game: Red Alert 2; giống: 'Sky Admiral', thiết giáp hạm bay hai túi khí; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_hybrid_air_vehicles_airlander_10, R_machine_brigade_can_bang, R_command_airship, R_unit_sheet.
 - `daedalus` (Daedalus · Tàu đổ bộ quỹ đạo): phim / truyện: Star Wars: Attack of the Clones; giống: Tàu đổ bộ tấn công của Aurel; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_daedalus, R_mb_p20_bosses, R_unit_sheet.
 - `drone_mothership` (Matriarch · Tàu mẹ drone): mẫu thật: Airlander 10 (khí cầu mẹ hiện đại);drone FPV; game: Red Alert 2; giống: khí cầu bọc thép phóng drone; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_hybrid_air_vehicles_airlander_10, R_machine_brigade_can_bang, R_drone_mothership, R_unit_sheet.
 - `earth_borer` (Tartarus · Máy khoan): mẫu thật: 'Battle Mole' của Liên Xô;máy khoan hầm TBM;2A70 100 mm; giống: 'Earth Worm': máy khoan đất bọc thép ba đốt; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_earth_borer, R_unit_sheet.
 - `fenrir` (Fenrir · Xe tiên phong): mẫu thật: NASA Crawler-Transporter;Kharkovchanka (1959); phim / truyện: Star Wars; giống: biến thể của pháo đài di động; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
 - `fortress_bastion` (Bastion · Pháo đài): mẫu thật: 2B8 240 mm;Bofors 40 mm;9M133 Kornet; phim / truyện: Star Wars; giống: pháo đài bánh xích bọc giáp tấm dày; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_fortress_bastion, R_unit_sheet.
-- … 20 dòng có tham chiếu nữa: xem sheet Boss_tham_chieu.
+- `icarus_mk0` (Icarus Mk.0 · Phi thuyền nguyên mẫu): game: Halo; phim / truyện: Star Wars;The Expanse; giống: Bản đầu của Icarus (chiến hạm vũ trụ, nhỏ hơn); độ tin: ban_dau_doan; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
+- … 12 dòng có tham chiếu nữa: xem sheet Boss_tham_chieu.
 
 Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
 
@@ -471,62 +457,60 @@ Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
 - `R_behemoth`: spec dựng lại behemoth (độ tin 3)
 - `R_behemoth_inferno`: spec dựng lại behemoth_inferno (độ tin 3)
 - `R_behemoth_tempest`: spec dựng lại behemoth_tempest (độ tin 3)
-- `R_caspian`: spec dựng lại caspian (độ tin 3)
 - `R_command_airship`: spec dựng lại command_airship (độ tin 3)
 - `R_daedalus`: spec dựng lại daedalus (độ tin 3)
 - `R_drone_mothership`: spec dựng lại drone_mothership (độ tin 3)
 - `R_earth_borer`: spec dựng lại earth_borer (độ tin 3)
 - `R_fortress_bastion`: spec dựng lại fortress_bastion (độ tin 3)
-- `R_fortress_hive`: spec dựng lại fortress_hive (độ tin 3)
-- `R_garuda`: spec dựng lại garuda (độ tin 3)
 - `R_ixion`: spec dựng lại ixion (độ tin 3)
-- `R_kronos`: spec dựng lại kronos (độ tin 3)
 - `R_landing_hovercraft`: spec dựng lại landing_hovercraft (độ tin 3)
 - `R_leviathan`: spec dựng lại leviathan (độ tin 3)
 - `R_machine_brigade_can_bang`: Rà soát cân bằng (Machine_Brigade_Can_bang.xlsx) (độ tin 3)
 - `R_mb_p20_bosses`: script Blender mb_p20_bosses.py (docstring) (độ tin 3)
-- `R_mb_p22_content`: script Blender mb_p22_content.py (docstring) (độ tin 3)
 - `R_mb_redesign_20y`: script Blender mb_redesign_20y.py (docstring) (độ tin 3)
 - `R_mega_gunship`: spec dựng lại mega_gunship (độ tin 3)
 - `R_mobile_fortress`: spec dựng lại mobile_fortress (độ tin 3)
 - `R_moloch`: spec dựng lại moloch (độ tin 3)
 - `R_monster`: spec dựng lại monster (độ tin 3)
-- `R_morrigan`: spec dựng lại morrigan (độ tin 3)
 - `R_nuke_train`: spec dựng lại nuke_train (độ tin 3)
-- `R_rail_supergun`: spec dựng lại rail_supergun (độ tin 3)
 - `R_reference_real`: reference_real.json (kích thước thật, độ tin conf) (độ tin 3)
-- `R_sky_fortress`: spec dựng lại sky_fortress (độ tin 3)
-- `R_supreme_command`: spec dựng lại supreme_command (độ tin 3)
-- … 16 nguồn nữa: xem sheet Nguon_tham_chieu của 08_tham_chieu.
+- `R_typhon`: spec dựng lại typhon (độ tin 3)
+- `R_unit_refs`: unit_refs.json (tham chiếu ngoài đời / phim / game theo đơn vị) (độ tin 3)
+- `R_unit_sheet`: unit_sheet.json (hình dạng, mô tả từ bảng cân bằng) (độ tin 3)
+- `W_wikipedia_belaz_75710`: Wikipedia 'BelAZ 75710' (độ tin 2)
+- `W_wikipedia_boeing_ch_47_chinook`: Wikipedia 'Boeing CH-47 Chinook' (độ tin 2)
+- `W_wikipedia_crawler_transporter`: Wikipedia 'Crawler-transporter' (độ tin 2)
+- `W_wikipedia_hybrid_air_vehicles_airlander_10`: Wikipedia 'Hybrid Air Vehicles Airlander 10' (độ tin 2)
+- `W_wikipedia_iowa_class_battleship`: Wikipedia 'Iowa-class battleship' (độ tin 2)
+- `W_wikipedia_landing_craft_air_cushion`: Wikipedia 'Landing Craft Air Cushion' (độ tin 2)
+- … 2 nguồn nữa: xem sheet Nguon_tham_chieu của 08_tham_chieu.
 
-Sheet 02_boss/Boss_so_sanh_that — Boss: so sánh với thật: 122 dòng, 18 cột; bảng đầy đủ: xem sheet Boss_so_sanh_that.
+Sheet 02_boss/Boss_so_sanh_that — Boss: so sánh với thật: 95 dòng, 18 cột; bảng đầy đủ: xem sheet Boss_so_sanh_that.
 
 ## Các sheet của file
 
 Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_sheet, Schema). Sheet `input_<tên>` là bản chép của một sheet nguồn để công thức Excel đọc cùng file; sửa ở sheet nguồn, không sửa bản chép.
 
-- `Boss` (41 dòng): Boss — Mỗi boss (41: chủ lực, mini, biến thể) một dòng: giá trị game (đã dựng) và trường gốc
-- `Boss_be_goc` (107 dòng): Boss: bệ phụ gốc — secondary[]: bệ phụ (chỉ số bệ = thu_tu + 1; bệ 0 là vũ khí chính)
-- `Boss_bo_phan` (198 dòng): Boss: bộ phận — parts[]: bộ phận phá được (use = mẫu ở Boss_bo_phan_thu_vien)
-- `Boss_phase` (10 dòng): Boss: pha — phases[]: ngưỡng máu, biến hình, đổi vũ khí / sát thương
-- `Boss_bien_the_chinh` (73 dòng): Boss: chỉnh bộ phận của biến thể — variant.tune: bộ phận -> trường đổi
+- `Boss` (31 dòng): Boss — Mỗi boss (41: chủ lực, mini, biến thể) một dòng: giá trị game (đã dựng) và trường gốc
+- `Boss_be_goc` (86 dòng): Boss: bệ phụ gốc — secondary[]: bệ phụ (chỉ số bệ = thu_tu + 1; bệ 0 là vũ khí chính)
+- `Boss_bo_phan` (153 dòng): Boss: bộ phận — parts[]: bộ phận phá được (use = mẫu ở Boss_bo_phan_thu_vien)
+- `Boss_phase` (6 dòng): Boss: pha — phases[]: ngưỡng máu, biến hình, đổi vũ khí / sát thương
+- `Boss_bien_the_chinh` (56 dòng): Boss: chỉnh bộ phận của biến thể — variant.tune: bộ phận -> trường đổi
 - `Boss_ham_doi` (8 dòng): Boss: hạm đội đi kèm — fleet[]
 - `Boss_tiers_schedule` (10 dòng): Boss: tiers_schedule — Danh sách con 'tiers_schedule' của Boss (tự sinh).
 - `Boss_tiers_schedule_steps` (16 dòng): Boss: tiers_schedule: steps — Danh sách con 'steps' của Boss_tiers_schedule (tự sinh).
-- `Boss_guards` (9 dòng): Boss: guards — Danh sách con 'guards' của Boss (tự sinh).
-- `Boss_attach` (2 dòng): Boss: attach — Danh sách con 'attach' của Boss (tự sinh).
 - `Boss_air` (1 dòng): Boss: air — Danh sách con 'air' của Boss (tự sinh).
-- `Boss_vu_khi` (223 dòng): Boss: vũ khí theo bệ — Mỗi bệ của boss khi dựng (thư viện bộ phận, mountWeapons, biến thể): một dòng; số lấy từ 01_chien_dau/Vu_khi (giá trị game)
+- `Boss_vu_khi` (180 dòng): Boss: vũ khí theo bệ — Mỗi bệ của boss khi dựng (thư viện bộ phận, mountWeapons, biến thể): một dòng; số lấy từ 01_chien_dau/Vu_khi (giá trị game)
 - `Boss_bo_phan_thu_vien` (19 dòng): Thư viện bộ phận boss — bossParts: mẫu bộ phận (máu theo phần, giáp, vũ khí, xác)
 - `Boss_khung` (8 dòng): Khung boss — bossFrames: kiểu di chuyển và trường mặc định theo khung
 - `Boss_hang` (42 dòng): Hạng boss — bossRanks: main / mini: hệ số sát thương, nhịp, máu, pha, thưởng
-- `Boss_sieu_vu_khi` (17 dòng): Siêu vũ khí — bigAttacks: cảnh báo, chu kỳ, cách nhắm, tầm, mục tiêu
-- `Boss_sieu_vu_khi_don` (18 dòng): Siêu vũ khí: đòn — strikes[]: hình, số lượng, sát thương, bán kính
+- `Boss_sieu_vu_khi` (15 dòng): Siêu vũ khí — bigAttacks: cảnh báo, chu kỳ, cách nhắm, tầm, mục tiêu
+- `Boss_sieu_vu_khi_don` (16 dòng): Siêu vũ khí: đòn — strikes[]: hình, số lượng, sát thương, bán kính
 - `Boss_sieu_vu_khi_luat` (34 dòng): Siêu vũ khí: luật — bigAttackRules: lần đầu, chặn, né, theo độ khó
-- `Boss_ho_tong` (17 dòng): Hộ tống boss — escorts[]: đội đến cùng boss và đội gọi thêm ở pha sau
-- `Boss_ho_tong_den` (62 dòng): Hộ tống: đến cùng boss — escorts[].arrive[]
+- `Boss_ho_tong` (13 dòng): Hộ tống boss — escorts[]: đội đến cùng boss và đội gọi thêm ở pha sau
+- `Boss_ho_tong_den` (48 dòng): Hộ tống: đến cùng boss — escorts[].arrive[]
 - `Boss_ho_tong_pha` (8 dòng): Hộ tống: gọi ở pha sau — escorts[].phase.units[]
-- `Boss_ho_tong_phase` (28 dòng): Hộ tống boss: phase — Danh sách con 'phase' của Boss_ho_tong (tự sinh).
+- `Boss_ho_tong_phase` (17 dòng): Hộ tống boss: phase — Danh sách con 'phase' của Boss_ho_tong (tự sinh).
 - `Boss_ho_tong_phases` (2 dòng): Hộ tống boss: phases — Danh sách con 'phases' của Boss_ho_tong (tự sinh).
 - `Boss_ho_tong_phases_units` (4 dòng): Hộ tống boss: phases: units — Danh sách con 'units' của Boss_ho_tong_phases (tự sinh).
 - `Boss_ho_tong_mau` (8 dòng): Hộ tống mẫu theo tướng — escortTemplates: đội hộ tống mặc định của mỗi tướng
@@ -534,12 +518,12 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Boss_ho_tong_mau_pha` (14 dòng): Hộ tống mẫu: pha sau — escortTemplates.*.phase[]
 - `Boss_ho_tong_mau_phases` (2 dòng): Hộ tống mẫu theo tướng: phases — Danh sách con 'phases' của Boss_ho_tong_mau (tự sinh).
 - `Boss_ho_tong_mau_phases_units` (4 dòng): Hộ tống mẫu theo tướng: phases: units — Danh sách con 'units' của Boss_ho_tong_mau_phases (tự sinh).
-- `Boss_ho_tong_luat` (18 dòng): Hộ tống: luật — escortRules: trần theo độ khó, Săn trùm, dây buộc, thưởng
-- `Sanhunt` (41 dòng): Săn trùm — Boss của Săn trùm theo thứ tự cốt truyện (port BossHunts.Story: chương theo thứ tự dữ liệu, boss theo nhiệm vụ đầu tiên đánh nó, rồi ô chương, rồi Un…
-- `Boss_dps` (41 dòng): Boss: DPS duy trì — Tổng DPS duy trì của boss (FirePower.Sustained mọi bệ, trên mặt đất, trước bảng sát thương; chưa nhân hạng / pha / fireRate) bây giờ và ở bản gốc
-- `Boss_hieu_qua` (205 dòng): Boss: hiệu quả vũ khí chính — Mỗi boss x vũ khí chính (bệ 0) x xe tham chiếu (spec 03 B): số đòn để hạ, thời gian hạ khi dồn hỏa lực, số xe trúng lõi / rìa (5 xe cách 8 m: hàng và…
-- `Sanhunt_chua_xep` (10 dòng): Săn trùm: boss chưa có ô chương — BossHunts.Unslotted: boss mới và chương nó đứng sau
+- `Boss_ho_tong_luat` (42 dòng): Hộ tống: luật — escortRules: trần theo độ khó, Săn trùm, dây buộc, thưởng
+- `Sanhunt` (31 dòng): Săn trùm — Boss của Săn trùm theo thứ tự cốt truyện (port BossHunts.Story: chương theo thứ tự dữ liệu, boss theo nhiệm vụ đầu tiên đánh nó, rồi ô chương, rồi Un…
+- `Boss_dps` (31 dòng): Boss: DPS duy trì — Tổng DPS duy trì của boss (FirePower.Sustained mọi bệ, trên mặt đất, trước bảng sát thương; chưa nhân hạng / pha / fireRate) bây giờ và ở bản gốc
+- `Boss_hieu_qua` (155 dòng): Boss: hiệu quả vũ khí chính — Mỗi boss x vũ khí chính (bệ 0) x xe tham chiếu (spec 03 B): số đòn để hạ, thời gian hạ khi dồn hỏa lực, số xe trúng lõi / rìa (5 xe cách 8 m: hàng và…
+- `Sanhunt_chua_xep` (6 dòng): Săn trùm: boss chưa có ô chương — BossHunts.Unslotted: boss mới và chương nó đứng sau
 - `Sanhunt_ho_tro` (12 dòng): Săn trùm: hỗ trợ tác chiến — HuntSupports.All (BossHunt.cs): 12 hỗ trợ chọn sau boss chủ lực
-- `Boss_tham_chieu` (41 dòng): Boss: tham chiếu ngoài đời — Mỗi boss một dòng: nguồn cảm hứng, phần lấy từ mẫu nào, hệ số phóng to, phần giả tưởng (spec 12.2; chỉ dữ liệu có trong repo)
-- `Boss_so_sanh_that` (122 dòng): Boss: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
+- `Boss_tham_chieu` (31 dòng): Boss: tham chiếu ngoài đời — Mỗi boss một dòng: nguồn cảm hứng, phần lấy từ mẫu nào, hệ số phóng to, phần giả tưởng (spec 12.2; chỉ dữ liệu có trong repo)
+- `Boss_so_sanh_that` (95 dòng): Boss: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
 - `Hang_so_boss` (28 dòng): Hằng số boss: đòn lớn, pha, hộ tống — Assets/MachineBrigade/Resources/Data/tunables.json: 'bosses' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị k…

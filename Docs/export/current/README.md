@@ -1,6 +1,6 @@
 # Machine Brigade: gói cân bằng
 
-Xuất từ commit 9e1e95b4 (ngày 2026-10-03); so sánh `_truoc` / `_sau` với bản 5f5b3247 (5f5b3247). Gói chỉ phục vụ cân
+Xuất từ commit 0cafe94b (ngày 2026-10-03); so sánh `_truoc` / `_sau` với bản 5f5b3247 (5f5b3247). Gói chỉ phục vụ cân
 bằng: giá trị cấu hình sửa được, cột suy ra để cân bằng (DPS, máu trên CP, số phát để hạ, so với ngoài đời), tham chiếu ngoài đời
 và game. Ghi đè mỗi lần chạy; lịch sử nằm trong git.
 
@@ -24,7 +24,7 @@ current/
 
 ## Cách đọc
 
-- Bắt đầu ở 00_index.xlsx: `Muc_luc_file` (mỗi file có gì), `Muc_luc_sheet` (280 sheet trong xlsx, 21 trong bulk.zip),
+- Bắt đầu ở 00_index.xlsx: `Muc_luc_file` (mỗi file có gì), `Muc_luc_sheet` (278 sheet trong xlsx, 21 trong bulk.zip),
   `Schema` (mỗi cột: kiểu, đơn vị `don_vi`, nguồn khóa, công thức, `sua_duoc`), `Phien_ban` (ngày, commit, băm balance.json và
   campaign.json, băm từng file).
 - 01_chien_dau: vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom. 02_boss, 03_can_cu: boss, tháp.
