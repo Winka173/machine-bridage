@@ -466,20 +466,23 @@ def landing_hovercraft(a):
                        (H_DECK, [(s * 3.6, -11.7), (s * 3.6, 11.2), (s * 7.4, 11.2), (s * 7.4, -10.7)])],
                       chamfer=.08)
         tier = a.part('Superstructure', 'Team')
-        W.poly_turret(tier, [(H_DECK, [(s * 4.1, -3.5), (s * 6.9, -3.5), (s * 6.9, 2.5), (s * 4.1, 2.5)]),
-                             (H_DECK + 1.3, [(s * 4.4, -3.0), (s * 6.6, -3.0), (s * 6.6, 2.2), (s * 4.4, 2.2)])],
+        # The left tier starts aft of the left CIWS (Part_gun.001 at y -3.0), the right one ahead of it.
+        ty0, ty1 = (-3.5, 2.5) if s > 0 else (-1.9, 3.4)
+        W.poly_turret(tier, [(H_DECK, [(s * 4.1, ty0), (s * 6.9, ty0), (s * 6.9, ty1), (s * 4.1, ty1)]),
+                             (H_DECK + 1.3, [(s * 4.4, ty0 + .5), (s * 6.6, ty0 + .5), (s * 6.6, ty1 - .3),
+                                             (s * 4.4, ty1 - .3)])],
                       chamfer=.06)
-        # Gas-turbine exhausts aft of the tier, louvred vent boxes, deck hatches.
-        for j, y in enumerate((-9.6, -5.0, 9.6)):
+        # Gas-turbine exhausts aft of the tier, louvred vent boxes, deck hatches (clear of the mounts and cabin).
+        for j, y in enumerate((-5.0,) if s > 0 else (-9.6, -5.0)):
             K.hatch_rect(a, (s * 5.0, y, H_DECK), size=(.7, .9), normal=(0, 0, 1))
         K.exhaust(a, (s * 6.4, 9.6, H_DECK), r=.35, length=1.3, direction=(0, .3, 1), muffler=False)
         K.exhaust(a, (s * 4.6, 9.6, H_DECK), r=.35, length=1.3, direction=(0, .3, 1), muffler=False)
-        for y in (-1.8, .6):
+        for y in (ty0 + 1.7, ty0 + 4.1):
             K.grille(a, (s * 4.08, y, H_DECK + .6), 1.4, .6, facing=(-s, 0, 0), slats=4, frame_mat='Armor')
         win = a.part('Cabin_glass', 'Glass')
-        for j in range(5):
-            win.box((.02, .7, .45), loc=(s * 6.91, -2.8 + j * 1.15, H_DECK + .8), bevel=0)
-            win.box((.02, .7, .45), loc=(s * 4.09, -2.8 + j * 1.15, H_DECK + .8), bevel=0)
+        for j in range(5 if s > 0 else 4):
+            win.box((.02, .7, .45), loc=(s * 6.91, ty0 + .7 + j * 1.15, H_DECK + .8), bevel=0)
+            win.box((.02, .7, .45), loc=(s * 4.09, ty0 + .7 + j * 1.15, H_DECK + .8), bevel=0)
         # Lift-fan intakes (louvred) aft of the tier, life-raft canisters along the outer edge, railings.
         for y in (4.8, 7.6):
             K.chamfer_box(a.part('Intakes', 'Armor'), (2.6, 2.2, 1.6), loc=(s * 5.6, y, H_DECK + .8), c=.06)
@@ -507,24 +510,25 @@ def landing_hovercraft(a):
             (.1, .3, .15), loc=(s * 7.45, -10.6, H_DECK + .2), bevel=0)
         a.part('Stern_lights', 'Lamp').box((.3, .1, .2), loc=(s * 6.0, 11.25, H_DECK - .2), bevel=0)
     cab = a.part('Cabin', 'Team')
-    W.poly_turret(cab, [(H_DECK + 1.3, [(3.9, -9.6), (7.1, -9.6), (7.1, -6.4), (3.9, -6.4)]),
-                        (H_DECK + 2.6, [(4.1, -9.0), (6.9, -9.0), (6.9, -6.6), (4.1, -6.6)])], chamfer=.06)
-    K.chamfer_box(cab, (3.2, 3.2, 1.3), loc=(5.5, -8.0, H_DECK + .65), c=.06)
+    # The wheelhouse ahead of the right CIWS (Part_gun at y -6.4) and inboard of the life rafts.
+    W.poly_turret(cab, [(H_DECK + 1.3, [(3.9, -10.6), (6.8, -10.6), (6.8, -7.4), (3.9, -7.4)]),
+                        (H_DECK + 2.6, [(4.1, -10.0), (6.6, -10.0), (6.6, -7.6), (4.1, -7.6)])], chamfer=.06)
+    K.chamfer_box(cab, (2.9, 3.2, 1.3), loc=(5.35, -9.0, H_DECK + .65), c=.06)
     win = a.part('Cabin_glass', 'Glass')
-    win.box((2.6, .02, .5), loc=(5.5, -9.32, H_DECK + 1.95), rot=(-.43, 0, 0), bevel=0)
+    win.box((2.4, .02, .5), loc=(5.35, -10.32, H_DECK + 1.95), rot=(-.43, 0, 0), bevel=0)
     for s in (-1, 1):
-        win.box((.02, 1.8, .45), loc=(5.5 + s * 1.5, -7.8, H_DECK + 1.95), bevel=0)
+        win.box((.02, 1.8, .45), loc=(5.35 + s * 1.36, -8.8, H_DECK + 1.95), bevel=0)
     # Mast with the radar dome, antennas, the beacon and the APS sensor head.
     mast = a.part('Antenna', 'Steel')
-    mast.cyl(.12, 2.0, loc=(5.5, -7.2, H_DECK + 3.6), seg=8, bevel=0)
-    mast.box((1.8, .08, .08), loc=(5.5, -7.2, H_DECK + 4.1), bevel=0)
+    mast.cyl(.12, 2.0, loc=(5.35, -8.2, H_DECK + 3.6), seg=8, bevel=0)
+    mast.box((1.8, .08, .08), loc=(5.35, -8.2, H_DECK + 4.1), bevel=0)
     k.lathe(a.part('Radar_dome', 'PlasterWhite'), [(.5, 0), (.55, .25), (.35, .55), (0, .62)],
-            loc=(5.5, -7.2, H_DECK + 4.55), seg=12)
-    K.whip_antenna(a.part('Antenna', 'Steel'), (4.3, -6.7, H_DECK + 2.6), h=1.6)
-    K.beacon(a, (6.8, -6.8, H_DECK + 2.6), r=.15)
-    K.chamfer_box(a.part('Mast_lights', 'Armor'), (.5, .5, .4), loc=(4.4, -8.9, H_DECK + 2.8), c=.04)
+            loc=(5.35, -8.2, H_DECK + 4.55), seg=12)
+    K.whip_antenna(a.part('Antenna', 'Steel'), (4.3, -7.9, H_DECK + 2.6), h=1.6)
+    K.beacon(a, (6.4, -7.9, H_DECK + 2.6), r=.15)
+    K.chamfer_box(a.part('Mast_lights', 'Armor'), (.5, .5, .4), loc=(4.4, -9.9, H_DECK + 2.8), c=.04)
     K.radar_mast(a, (-5.5, -8.4, H_DECK), h=3.4)
-    a.pivot('Mount_APS', (4.4, -8.9, H_DECK + 3.0))
+    a.pivot('Mount_APS', (4.4, -9.9, H_DECK + 3.0))
     # Cargo: two tarp-covered vehicles chained down and a pallet row (the troops it lands).
     for j, y in enumerate((-6.8, 1.0)):
         tarp = a.part('Cargo_tarps', 'Canvas')
