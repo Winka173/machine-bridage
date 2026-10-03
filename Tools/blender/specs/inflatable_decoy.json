@@ -4,13 +4,13 @@
  "real": [
   "inflatable military decoys (gun and turret dummies as used in the war in Ukraine), here a replica of the wave 2 gun_turret (def decoy.mimic gun_turret)"
  ],
- "shape": "Strings note.inflatable_decoy: an inflatable gun turret, cheap, flimsy, taken for the real thing; the lead (wave 3 call 2): follow the wave 2 gun_turret outline closely so it reads as the real tower at battle distance; modelSize 5.0 x 4.6 x 2.6 m.",
+ "shape": "Strings note.inflatable_decoy: an inflatable gun turret, cheap, flimsy, taken for the real thing; the lead (wave 3 call 2): follow the wave 2 gun_turret outline closely so it reads as the real tower at battle distance; modelSize 7.81 x 6.74 x 3.96 m (owner fix 4, 2026-10-03: the replica's own box, drawn 1:1 with gun_turret).",
  "confidence": "xấp xỉ (the gun_turret builder dimensions; published inflatable decoys)",
  "target_size": {
   "L": 7.81,
   "W": 6.74,
   "H": 3.96,
-  "source": "the replica at the gun turret dimensions, turret traversed 38 degrees (the runtime fits its length to the modelSize 5.0 x 4.6 x 2.6, whose proportions it keeps)",
+  "source": "the replica at the gun turret dimensions, turret traversed 38 degrees (the modelSize 7.81 x 6.74 x 3.96 is its own box, so the runtime draws it at scale 1 like the real tower)",
   "tolerance": 0.1
  },
  "features": [
@@ -123,6 +123,6 @@
   ]
  },
  "questions": [
-  "The def's modelSize (5.0 x 4.6 x 2.6) cannot hold a replica of the gun turret with its gun straight ahead (8.97 x 5.25 x 4.0); the turret stands traversed 38 degrees (7.6 x 6.8 x 4.0, the modelSize's proportions) and is drawn at 0.66 x the real tower. Set the decoy's modelSize to its own size for a 1:1 copy?"
+  "The def's modelSize (5.0 x 4.6 x 2.6) cannot hold a replica of the gun turret with its gun straight ahead (8.97 x 5.25 x 4.0); the turret stands traversed 38 degrees (7.6 x 6.8 x 4.0, the modelSize's proportions) and is drawn at 0.66 x the real tower. Settled (owner, 2026-10-03): modelSize is now its own box (7.81 x 6.74 x 3.96), drawn 1:1."
  ]
 }

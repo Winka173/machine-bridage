@@ -3298,6 +3298,14 @@
    ],
    "reason": "merge of feature/p35-hqgun",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "inflatable_decoy"
+   ],
+   "reason": "owner fix 4: modelSize follows the gun_turret replica",
+   "changes": []
   }
  ],
  "models": {
@@ -35960,9 +35968,7 @@
    "category": "structure",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "inflatable_decoy: length 7.81 m vs modelSize 5.0 m (fitted at runtime)"
-   ],
+   "warnings": [],
    "units": [
     "inflatable_decoy"
    ],

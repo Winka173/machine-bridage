@@ -1739,7 +1739,8 @@
     { "id": "blast_wall", "modelSize": [1.9, 4.8, 2.4], "fort": { "size": "Small" }, "static": true, "passable": true, "armour": 3, "hp": 1364, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "length": 1.9, "width": 4.8, "cp": 0, "vision": 1,
       "weapon": "none", "blastWall": { "radius": 10, "cut": 0.3, "cone": 50 } },
     // dx26: the inflatable decoy: it passes for a gun turret and draws the enemy's fire until one of their scouts, radars, drones or scans sees it for what it is.
-    { "id": "inflatable_decoy", "rebuildCp": 3, "branches": ["inflatable_decoy.inflatable", "inflatable_decoy.balloon"], "modelSize": [5.0, 4.6, 2.6], "fort": { "size": "Small" }, "static": true, "armour": 0, "hp": 136, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.3, "length": 4.6, "width": 4.6, "cp": 0, "vision": 1,
+    // Owner fix 4 (2026-10-03): modelSize is the replica's own box (turret traversed 38 degrees), so it is drawn at scale 1 like the real gun_turret.
+    { "id": "inflatable_decoy", "rebuildCp": 3, "branches": ["inflatable_decoy.inflatable", "inflatable_decoy.balloon"], "modelSize": [7.81, 6.74, 3.96], "fort": { "size": "Small" }, "static": true, "armour": 0, "hp": 136, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.3, "length": 4.6, "width": 4.6, "cp": 0, "vision": 1,
       "weapon": "none", "decoy": { "mimic": "gun_turret" } },
     { "id": "inflatable_decoy.inflatable", "rebuildCp": 3, "inherits": "inflatable_decoy", "branchOf": "inflatable_decoy", "towerRole": "decoy_draw_fire" },
     { "id": "inflatable_decoy.balloon", "rebuildCp": 3, "inherits": "barrage_balloon", "branchOf": "inflatable_decoy", "towerRole": "balloon_scatter_reveal" },
