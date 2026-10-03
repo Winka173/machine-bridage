@@ -3088,6 +3088,14 @@
    ],
    "reason": "P35 wave 9",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "c_ram_b"
+   ],
+   "reason": "P35 wave 9",
+   "changes": []
   }
  ],
  "models": {
