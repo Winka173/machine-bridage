@@ -1,0 +1,146 @@
+{
+ "id": "recoilless_gun_tower",
+ "class": "tower",
+ "real": [
+  "SPG-9 Kopyo 73 mm recoilless gun on its tripod",
+  "a sandbagged field pit"
+ ],
+ "shape": "the old builder: an SPG-9 emplacement, a round sandbagged pit with a rear entrance and the tube behind a split shield; modelSize 4.2 x 4.2 x 3.0 m; weapon spg9_73mm.",
+ "confidence": "cao (SPG-9 tube, venturi, PGO-9 sight and tripod are well documented)",
+ "target_size": {
+  "L": 4.2,
+  "W": 4.2,
+  "H": 3.0,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the dug earth pad, a horseshoe of sandbags (with ties) open at the rear, timber revetment, duckboards",
+   "nodes": [
+    "Base",
+    "Sandbags",
+    "Bag_ties",
+    "Revetment",
+    "Floor"
+   ]
+  },
+  {
+   "feature": "the scorched back-blast trench behind the gun",
+   "nodes": [
+    "Trench",
+    "Scorch"
+   ]
+  },
+  {
+   "feature": "the tripod with spades and the traversing head (Turret), the cradle",
+   "nodes": [
+    "Tripod",
+    "Spades",
+    "Turret",
+    "Turret_head",
+    "Cradle"
+   ]
+  },
+  {
+   "feature": "the 2.1 m tube (Team) with venturi breech, bands and mouth ring",
+   "nodes": [
+    "Main_cannon",
+    "Venturi",
+    "Tube_bands",
+    "Muzzle_brake"
+   ]
+  },
+  {
+   "feature": "the PGO-9 sight on its bracket, the grip, the split shield",
+   "nodes": [
+    "Sight",
+    "Sight_bracket",
+    "Grip",
+    "Gun_shield"
+   ]
+  },
+  {
+   "feature": "ammunition cases, loose rounds on a tray, ammunition box, spent caps, stones",
+   "nodes": [
+    "Ammo_cases",
+    "Rounds",
+    "Round_tray",
+    "Ammo_boxes",
+    "Spent_caps",
+    "Stones"
+   ]
+  },
+  {
+   "feature": "a stake fence with tape at the rear, the flag pole, the radio with its whip",
+   "nodes": [
+    "Stakes",
+    "Tape",
+    "Flag",
+    "Radio_box",
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof (the turning head)",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "spg9_73mm",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: towers seen in numbers stay under 1.5 x 4,000"
+ },
+ "team_zones": [
+  "the tube, the shield band, the flag (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "field-built (earth, sandbags, timber stakes)",
+ "details": {
+  "tier1": [
+   "pit",
+   "tripod",
+   "tube"
+  ],
+  "tier2": [
+   "sandbag horseshoe",
+   "shield",
+   "sight",
+   "cases",
+   "fence"
+  ],
+  "tier3": [
+   "spades",
+   "bands",
+   "venturi",
+   "rounds",
+   "caps",
+   "stones",
+   "ties",
+   "whip"
+  ]
+ },
+ "questions": []
+}
