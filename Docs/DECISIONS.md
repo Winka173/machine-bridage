@@ -18645,3 +18645,15 @@ Report: Docs/models/WAVE_11_REPORT.md; the prompt's final report: Docs/models/RE
 - Full gate after the wave and the merge (`quality_gate.py`, report written): 230 models, 199 pass; the thirteen pass
   every hard gate with soft 83.5-100. GLB total against the pre-prompt-35 tree (01f7312b): 123.1 -> 168.3 MiB
   (+36.7 %), over section 9's 25 %: REBUILD_REPORT proposes vertex quantisation (no model changed for it).
+
+## Prompt 35: owner answers on REBUILD_REPORT section 8 (2026-10-03)
+Owner: "theo đề xuất".
+1. Gold: a rebuilt model that passes every hard gate with soft >= 80 may stand for gold; recompute the gold after
+   wave 12 (it refills the sets the first recompute emptied).
+2. The 31 rebuilt models under 80 are accepted on the look; the owner checks them in play.
+3. fortress_air's Bofors look: later (needs a model id of its own).
+4. kronos gun_r's hit point `at` moves to its real gun at (3, -7, 9.6).
+5. Wave 12: the eight P3 models (minefield_a, dragons_teeth_b, drone_mothership, ew_tower, ew_tower_b, nuke_train,
+   recoilless_jeep, airborne_light_tank_chute) are rebuilt; the three helipads get a windsock and light posts.
+6. Over-guide triangles on non-capped classes stay until the phone FPS measure.
+Owner rule (03/10): models and effects get the highest quality, no token saving (Docs/AGENT_RULES.md).

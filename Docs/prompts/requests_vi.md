@@ -248,3 +248,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 trả lời danh sách 11 câu hỏi: "sửa theo đề xuất hết".
 - 03/10 "cho 1 agent tìm hiểu cách tối ưu token project này và viết thành 1 file commit lên luôn".
 - 03/10 "nhớ đối với các task cần sự chi tiết cao như làm model, và các hiệu ứng thì không cần tiết kiệm token, tôi muốn chất lượng cao nhất có thể".
+- 03/10 7 câu hỏi prompt 35 (REBUILD_REPORT §8): "theo đề xuất".
