@@ -5037,6 +5037,16 @@
    "changes": [
     "FLAG fpv_carrier: triangles 7,310 -> 7,452 (+1.9%); vertices 11,049 -> 10,550 (-4.5%); meshes 51 -> 78 (+52.9%); renderers 51 -> 78 (+52.9%); materials 9 -> 11 (+22.2%); materialSlots 51 -> 78 (+52.9%); fileBytes 451,820 -> 462,084 (+2.3%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "behemoth_inferno"
+   ],
+   "reason": "play-test 13 follow-up: 125 mm thermobaric gun turret replaces the rocket box",
+   "changes": [
+    "FLAG behemoth_inferno: triangles 23,648 -> 25,710 (+8.7%); vertices 28,914 -> 30,715 (+6.2%); meshes 68 -> 83 (+22.1%); renderers 68 -> 83 (+22.1%); materialSlots 68 -> 83 (+22.1%); fileBytes 1,140,244 -> 1,224,300 (+7.4%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -13012,25 +13022,25 @@
   },
   "behemoth_inferno": {
    "file": "behemoth_inferno.glb",
-   "fileBytes": 1140244,
-   "sha1": "612d937a76dd2425",
+   "fileBytes": 1224300,
+   "sha1": "b7bc00bcf91a87c8",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 74,
-   "meshes": 68,
+   "nodes": 89,
+   "meshes": 83,
    "materials": 14,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 68,
-   "submeshes": 68,
-   "materialSlots": 68,
+   "renderers": 83,
+   "submeshes": 83,
+   "materialSlots": 83,
    "materialsUsed": 14,
-   "triangles": 23648,
-   "vertices": 28914,
+   "triangles": 25710,
+   "vertices": 30715,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -13038,7 +13048,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 557,
+   "loosePieces": 564,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -13049,25 +13059,25 @@
    "boundsMax": [
     3.3282,
     5.67,
-    6.4
+    6.43
    ],
    "size": [
-    12.549,
+    12.579,
     6.656,
     5.68
    ],
    "center": [
     0.0,
     2.83,
-    0.125
+    0.14
    ],
-   "structureHash": "eba0cc74b4d9be85",
+   "structureHash": "538094d3dd5621c1",
    "color0": {
-    "mean": 0.4921,
+    "mean": 0.4994,
     "min": 0.0467,
     "max": 1.0,
-    "p05": 0.1029,
-    "p95": 0.8064,
+    "p05": 0.1031,
+    "p95": 0.8143,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -13119,11 +13129,17 @@
     "Glass.001",
     "Grab_rails",
     "Grille_frames",
+    "Grille_frames.001",
     "Grilles",
+    "Grilles.001",
+    "Gun_barbette",
+    "Gun_barbette_bolts",
     "Hatch_fittings",
     "Hatch_fittings.001",
+    "Hatch_fittings.002",
     "Hatches",
     "Hatches.001",
+    "Hatches.002",
     "Heat_shields",
     "Hoses",
     "Hubs",
@@ -13154,21 +13170,30 @@
     "Muzzle_mg",
     "Muzzle_rocket",
     "Ring",
-    "Rocket_box",
-    "Rocket_mouths",
-    "Rocket_pedestal",
-    "Rocket_rims",
     "Shell_ribs",
     "Sight",
     "Sight.001",
     "Smoke_brackets",
+    "Smoke_brackets.001",
     "Smoke_launchers",
+    "Smoke_launchers.001",
     "Spare_links",
     "Sprockets",
     "Stowage",
     "Tank_hazard",
     "Tank_straps",
     "Team_band",
+    "Thermo_antenna",
+    "Thermo_barrel",
+    "Thermo_bustle",
+    "Thermo_collar",
+    "Thermo_eyes",
+    "Thermo_glass",
+    "Thermo_hazard",
+    "Thermo_house",
+    "Thermo_mantlet",
+    "Thermo_ring",
+    "Thermo_sight",
     "Tracks",
     "Turret",
     "Turret_armor",

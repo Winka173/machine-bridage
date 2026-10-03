@@ -3,7 +3,7 @@
  "class": "boss",
  "frame": "ground",
  "real": [
-  "TOS-1A Solntsepyok (the thermobaric rocket box)",
+  "2A46M 125 mm smoothbore firing the 3VOF128 thermobaric round, in a small unmanned casemate turret (play-test 13: was the TOS-1A rocket box)",
   "Object 279 (1959: four tracks, the elliptical hull)",
   "Baneblade (Warhammer 40,000) for the scale"
  ],
@@ -45,10 +45,14 @@
    ]
   },
   {
-   "feature": "TOS-1A-style thermobaric rocket box on the glacis (part thermo)",
+   "feature": "125 mm thermobaric gun in a small cast casemate turret on a raised barbette on the glacis: short heavy barrel (sleeve, extractor, muzzle collar), cast mantlet, autoloader bustle with hatch, sight, smoke dischargers (part thermo)",
    "nodes": [
     "Mount_rocket",
-    "Muzzle_rocket"
+    "Muzzle_rocket",
+    "Thermo_house",
+    "Thermo_barrel",
+    "Thermo_mantlet",
+    "Thermo_bustle"
    ]
   },
   {
@@ -134,7 +138,7 @@
   ],
   "tier2": [
    "flame projectors",
-   "rocket box",
+   "125 mm gun turret",
    "flak",
    "heat shields",
    "hoses"
@@ -182,6 +186,6 @@
    "data_node": "Fuel_tanks|Tank_straps|Tank_hazard"
   }
  ],
- "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
+ "wreck": "runtime wreck models per part (wreck_turret for the thermo gun turret since play-test 13 follow-up, wreck_barrel, wreck_stump)",
  "questions": []
 }
