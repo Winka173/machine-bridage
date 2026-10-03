@@ -1,0 +1,136 @@
+{
+ "id": "flare_searchlight_tower",
+ "class": "tower",
+ "real": [
+  "Soviet 60 cm searchlight on a turntable (border and airfield posts)",
+  "a six-tube illumination flare pack (balance.json illum_flare)",
+  "a four-legged steel watchtower"
+ ],
+ "shape": "four splayed steel legs on concrete footings with X bracing and a rear ladder, sandbags at two feet, a generator box and the cable up a leg; the chequer-plate deck at 3.4 m with steel parapet plates and ribs, a lean-to corrugated shelter over the rear with a canvas side, a short mast with whip and team pennant, a beacon, flare boxes; on the turntable the yoke with the searchlight drum (lens, louvres, cooling fins, handles) and the six-tube flare pack raised 35 degrees on top.",
+ "confidence": "xấp xỉ (searchlight tower photographs; the flare pack is the game's weapon)",
+ "target_size": {
+  "L": 3.6,
+  "W": 3.6,
+  "H": 5.0,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "concrete footings, splayed legs, X bracing, ladder",
+   "nodes": [
+    "Base",
+    "Legs",
+    "Braces",
+    "Ladders"
+   ]
+  },
+  {
+   "feature": "deck, parapet with ribs, lean-to shelter",
+   "nodes": [
+    "Tower_deck",
+    "Parapet",
+    "Parapet_ribs",
+    "Roof",
+    "Shelter_posts"
+   ]
+  },
+  {
+   "feature": "searchlight on the turntable and yoke",
+   "nodes": [
+    "Turret",
+    "Turntable",
+    "Yoke",
+    "Armor",
+    "Lamps",
+    "Louvres",
+    "Cooling_fins"
+   ]
+  },
+  {
+   "feature": "six-tube flare pack",
+   "nodes": [
+    "Launcher_body",
+    "Launcher_bands",
+    "Tubes",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "mast, whip, pennant, beacon, flare boxes, generator, sandbags",
+   "nodes": [
+    "Masts",
+    "Antennas",
+    "Pennant",
+    "Beacon",
+    "Ammo_boxes",
+    "Generator",
+    "Sandbags"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "illum_flare",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the flare pack's mouths"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "yoke and drum (Team)",
+  "launcher bands (Team)",
+  "pennant, generator (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "field steel tower: galvanised legs, armour-grey parapet, team-coloured light",
+ "details": {
+  "tier1": [
+   "legs",
+   "deck",
+   "parapet",
+   "shelter"
+  ],
+  "tier2": [
+   "searchlight",
+   "flare pack",
+   "ladder",
+   "generator",
+   "boxes"
+  ],
+  "tier3": [
+   "bolts",
+   "fins",
+   "louvres",
+   "handles",
+   "whip",
+   "beacon",
+   "cable"
+  ]
+ },
+ "questions": []
+}

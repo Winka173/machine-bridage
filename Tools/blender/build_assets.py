@@ -198,6 +198,7 @@ import mb_p35_earth_borer  # noqa: E402
 import mb_p35_drop_pod  # noqa: E402
 import mb_p35_bulwark_post  # noqa: E402
 import mb_p35_drone_net_tower  # noqa: E402
+import mb_p35_flare_searchlight_tower  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -350,7 +351,7 @@ def all_builders():
                 # Prompt 35 wave 9, lane C (DECISIONS "Prompt 35 wave 9 (lane C)"): rebuilt from scratch (last).
                 **mb_p35_aa_turret.BUILDERS, **mb_p35_c_ram.BUILDERS, **mb_p35_artillery_emplacement.BUILDERS, **mb_p35_long_sam.BUILDERS, **mb_p35_heavy_rocket_artillery.BUILDERS, **mb_p35_ballistic_launcher.BUILDERS, **mb_p35_ew_jammer.BUILDERS, **mb_p35_iron_beam.BUILDERS, **mb_p35_shahed_truck.BUILDERS, **mb_p35_interceptor_drone_vehicle.BUILDERS, **mb_p35_mobile_repair_vehicle.BUILDERS, **mb_p35_ground_cruise_missile_vehicle.BUILDERS, **mb_p35_combat_wreck_car.BUILDERS, **mb_p35_stealth_fighter.BUILDERS, **mb_p35_supreme_command.BUILDERS, **mb_p35_kronos.BUILDERS, **mb_p35_earth_borer.BUILDERS,
                 # Prompt 35 wave 11, lane C (DECISIONS "Prompt 35 wave 11 (lane C)"): rebuilt from scratch (last).
-                **mb_p35_drop_pod.BUILDERS, **mb_p35_bulwark_post.BUILDERS, **mb_p35_drone_net_tower.BUILDERS}
+                **mb_p35_drop_pod.BUILDERS, **mb_p35_bulwark_post.BUILDERS, **mb_p35_drone_net_tower.BUILDERS, **mb_p35_flare_searchlight_tower.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

@@ -3218,6 +3218,16 @@
    "changes": [
     "FLAG drone_net_tower: triangles 1,378 -> 5,802 (+321.0%); vertices 1,707 -> 8,229 (+382.1%); meshes 13 -> 34 (+161.5%); renderers 13 -> 34 (+161.5%); materials 8 -> 12 (+50.0%); materialSlots 13 -> 34 (+161.5%); fileBytes 97,700 -> 430,240 (+340.4%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "flare_searchlight_tower"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG flare_searchlight_tower: triangles 2,296 -> 4,162 (+81.3%); vertices 2,672 -> 5,959 (+123.0%); meshes 19 -> 42 (+121.1%); renderers 19 -> 42 (+121.1%); materials 9 -> 14 (+55.6%); materialSlots 19 -> 42 (+121.1%); fileBytes 151,716 -> 329,660 (+117.3%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -12348,7 +12358,7 @@
   "bulwark_post": {
    "file": "bulwark_post.glb",
    "fileBytes": 370240,
-   "sha1": "719b96bcf2ee3eab",
+   "sha1": "40349ec14586aaa4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -12397,11 +12407,11 @@
    ],
    "structureHash": "15c10d7aa1dbc7df",
    "color0": {
-    "mean": 0.6261,
+    "mean": 0.6294,
     "min": 0.0638,
     "max": 1.0,
-    "p05": 0.1817,
-    "p95": 0.9547,
+    "p05": 0.1814,
+    "p95": 0.9541,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -23455,7 +23465,7 @@
   "drone_net_tower": {
    "file": "drone_net_tower.glb",
    "fileBytes": 430240,
-   "sha1": "260435b45104b573",
+   "sha1": "d33a81c56ba01fab",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -23484,7 +23494,7 @@
    "nonManifoldEdges": 360,
    "boundsMin": [
     -2.076,
-    -0.125,
+    -0.0453,
     -2.99
    ],
    "boundsMax": [
@@ -23495,19 +23505,19 @@
    "size": [
     5.98,
     4.152,
-    4.705
+    4.625
    ],
    "center": [
     0.0,
-    2.227,
+    2.267,
     0.0
    ],
    "structureHash": "032f479728a2421e",
    "color0": {
-    "mean": 0.6593,
+    "mean": 0.6599,
     "min": 0.0566,
     "max": 1.0,
-    "p05": 0.2759,
+    "p05": 0.2744,
     "p95": 0.9375,
     "outOfRange": 0
    },
@@ -27070,24 +27080,24 @@
   },
   "flare_searchlight_tower": {
    "file": "flare_searchlight_tower.glb",
-   "fileBytes": 151716,
-   "sha1": "1c09b753e9e6ca12",
+   "fileBytes": 329660,
+   "sha1": "6ca5cc56deb6e153",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 21,
-   "meshes": 19,
-   "materials": 9,
+   "nodes": 44,
+   "meshes": 42,
+   "materials": 14,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 19,
-   "submeshes": 19,
-   "materialSlots": 19,
-   "materialsUsed": 9,
-   "triangles": 2296,
-   "vertices": 2672,
+   "renderers": 42,
+   "submeshes": 42,
+   "materialSlots": 42,
+   "materialsUsed": 14,
+   "triangles": 4162,
+   "vertices": 5959,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -27095,36 +27105,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 58,
-   "openEdges": 0,
+   "loosePieces": 161,
+   "openEdges": 54,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.8,
+    -1.8069,
     0.0,
-    -1.8
+    -1.7836
    ],
    "boundsMax": [
-    1.8,
-    5.02,
-    1.8
+    1.7978,
+    5.3089,
+    1.7836
    ],
    "size": [
-    3.6,
-    3.6,
-    5.02
+    3.567,
+    3.605,
+    5.309
    ],
    "center": [
-    0.0,
-    2.51,
+    -0.005,
+    2.654,
     0.0
    ],
-   "structureHash": "1d10dcd0cad801e4",
+   "structureHash": "73b8bfa793a95d6f",
    "color0": {
-    "mean": 0.8363,
-    "min": 0.6019,
+    "mean": 0.6021,
+    "min": 0.0555,
     "max": 1.0,
-    "p05": 0.7006,
-    "p95": 1.0,
+    "p05": 0.1329,
+    "p95": 0.9313,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -27137,27 +27147,50 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Ammo_boxes",
     "Antennas",
     "Armor",
+    "Base",
     "Beacon",
+    "Beacon_base",
+    "Beacons",
     "Braces",
-    "Crates",
-    "Deck",
-    "Deck_ring",
-    "Flare_drums",
-    "Floodlamp",
-    "Floodlight",
-    "Footings",
-    "Ladder",
+    "Canvas_side",
+    "Cooling_fins",
+    "Deck_plate",
+    "Exhaust",
+    "Exhaust_caps",
+    "Generator",
+    "Glass",
+    "Grille_frames",
+    "Grilles",
+    "Kit_bolts",
+    "Kit_cables",
+    "Kit_handles",
+    "Kit_handles.001",
+    "Ladders",
+    "Lamps",
     "Launcher_bands",
     "Launcher_body",
+    "Launcher_bracket",
     "Legs",
-    "Light_mast",
+    "Louvres",
+    "Masts",
     "Muzzle_main",
-    "Tube_caps",
+    "Parapet",
+    "Parapet_ribs",
+    "Pennant",
+    "Railings",
+    "Roof",
+    "Sandbags",
+    "Shelter_posts",
+    "Sight",
+    "Tower_deck",
+    "Trunnions",
     "Tubes",
     "Turntable",
-    "Turret"
+    "Turret",
+    "Yoke"
    ],
    "category": "structure",
    "hd": false,
