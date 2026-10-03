@@ -1,0 +1,134 @@
+{
+ "class": "tower",
+ "confidence": "xấp xỉ (cast pillbox with a turning cupola: Soviet DOT / Finnish cupola photographs; NSV on a fortress mount)",
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "drum band (Team)",
+  "cupola band (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "cast pillbox in an earth mound (lane A's mg_bunker_b style)",
+ "questions": [],
+ "id": "mg_bunker",
+ "real": [
+  "NSV 12.7 mm on a fortress mount (balance.json bunker_hmg)",
+  "cast concrete pillbox with a turning cast-steel cupola"
+ ],
+ "shape": "The base of mg_bunker_b (lane A, wave 2: a round cast pillbox in an earth mound with a turning cupola), so the flame branch reads as its upgrade: the same mound, drum with firing slits and race; the cupola (`Turret`) carries the NSV in its embrasure; behind, a sandbagged ammunition pit, the entry trench with steps down to the door, the vent stack and the whip; wire in front.",
+ "target_size": {
+  "L": 4.4,
+  "W": 4.44,
+  "H": 3.33,
+  "source": "the old GLB (wave 7 keeps sizes within 10 %)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the earth mound with turf and a sandbag course on its rear crest",
+   "nodes": [
+    "Berm",
+    "Berm_turf",
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "the cast drum with firing slits, the Team band, the race ring",
+   "nodes": [
+    "Walls",
+    "Slits",
+    "Team_band",
+    "Race"
+   ]
+  },
+  {
+   "feature": "the turning cast-steel cupola with its embrasure, periscope, hatch and bolt ring",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Embrasure",
+    "Hatches"
+   ]
+  },
+  {
+   "feature": "the NSV 12.7 mm in the embrasure on its cradle, the flash hider",
+   "nodes": [
+    "Mantlet",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "the rear: the ammunition pit, the entry trench with steps and the door, the vent stack, the whip antenna",
+   "nodes": [
+    "Base",
+    "Ammo_boxes",
+    "Door_well",
+    "Doors",
+    "Vents",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "wire and pickets in front, stones",
+   "nodes": [
+    "Kit_fence",
+    "Pickets",
+    "Stones"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "bunker_hmg",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "details": {
+  "tier1": [
+   "mound",
+   "drum",
+   "cupola"
+  ],
+  "tier2": [
+   "embrasure",
+   "gun",
+   "pit",
+   "trench",
+   "vent"
+  ],
+  "tier3": [
+   "slits",
+   "bolts",
+   "periscope",
+   "hatch handle",
+   "pickets",
+   "stones",
+   "ammo boxes"
+  ]
+ }
+}

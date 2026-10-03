@@ -1237,11 +1237,11 @@
   },
   "mg_bunker": {
     "file": "mg_bunker.glb",
-    "triangles": 3904
+    "triangles": 3748
   },
   "mg_bunker_a": {
     "file": "mg_bunker_a.glb",
-    "triangles": 4204
+    "triangles": 4996
   },
   "mg_bunker_b": {
     "file": "mg_bunker_b.glb",
