@@ -449,7 +449,7 @@
             "kind": "vehicle",
             "model": "wheeled_howitzer",
             "source": "Models/wheeled_howitzer",
-            "hash": "v2:94847d16d840a0ec66974ddf65e0cfe3bb02e4fb"
+            "hash": "v2:fc59a557b943bf6f6a63378eb4cb7a2b61cc2652"
         },
         {
             "id": "sp_mortar",
@@ -512,21 +512,21 @@
             "kind": "vehicle",
             "model": "mine_rocket_truck",
             "source": "Models/mine_rocket_truck",
-            "hash": "v2:199a011e5257abd635edea0f2422c1f2f036309f"
+            "hash": "v2:990163ad5f8c7a37ecf55c10b570954b74480cbb"
         },
         {
             "id": "prop_attack_plane",
             "kind": "vehicle",
             "model": "prop_attack_plane",
             "source": "Models/prop_attack_plane",
-            "hash": "v2:e742f426d792371291556dd95f41c31d2a4e834c"
+            "hash": "v2:f7a8def3ba2511d7f626fc22536759f88023606f"
         },
         {
             "id": "light_attack_heli",
             "kind": "vehicle",
             "model": "light_attack_heli",
             "source": "Models/light_attack_heli",
-            "hash": "v2:75354507c6397a870da115d3207dce21ba6c12c1"
+            "hash": "v2:758140da6694bc387e08eb23f92c4e545af6c6ba"
         },
         {
             "id": "next_gen_tank",
@@ -582,7 +582,7 @@
             "kind": "vehicle",
             "model": "auto_loader_howitzer",
             "source": "Models/auto_loader_howitzer",
-            "hash": "v2:25f3b009b5810341b546367c192e9ee5abe1bfe7"
+            "hash": "v2:4ec0d03440d2b4b84551e99ea9b5d47b32a8912a"
         },
         {
             "id": "amphib_light_vehicle",
@@ -876,7 +876,7 @@
             "kind": "structure",
             "model": "bulwark_post",
             "source": "Models/bulwark_post",
-            "hash": "v2:3686ca6da036b42d556335eb9d571420cf64f4a5"
+            "hash": "v2:40349ec14586aaa42df3dea51fe7de6dab3160f8"
         },
         {
             "id": "bunker_shelter_tower",
@@ -918,7 +918,7 @@
             "kind": "boss",
             "model": "cerberus",
             "source": "Models/cerberus",
-            "hash": "v2:ad8e816bcd1adc7786800ac60a4e277a435d333b"
+            "hash": "v2:019c5f219383a0d7cd40f56f45d3006d51b40ece"
         },
         {
             "id": "coastal_battery",
@@ -1009,7 +1009,7 @@
             "kind": "tower",
             "model": "drone_net_tower",
             "source": "Models/drone_net_tower",
-            "hash": "v2:be0fd908bd68f5aec5da84658b4ebac70fd5c4b2"
+            "hash": "v2:d33a81c56ba01fabb384ccfc45b7639c144c8417"
         },
         {
             "id": "earth_borer",
@@ -1142,7 +1142,7 @@
             "kind": "tower",
             "model": "flare_searchlight_tower",
             "source": "Models/flare_searchlight_tower",
-            "hash": "v2:1c09b753e9e6ca121893758d886e9a19267618a8"
+            "hash": "v2:6ca5cc56deb6e153f72492e0c8de7bad49ca5b97"
         },
         {
             "id": "flare_tower",
@@ -1296,7 +1296,7 @@
             "kind": "boss",
             "model": "hyperion",
             "source": "Models/hyperion",
-            "hash": "v2:55953863ac366e186965bcff076806ddb811cbb4"
+            "hash": "v2:1e0a395168b162c18aa5140cd2b0c3bc34a6b934"
         },
         {
             "id": "icarus_mk0",
@@ -1373,7 +1373,7 @@
             "kind": "tower",
             "model": "drone_net_tower",
             "source": "Models/drone_net_tower",
-            "hash": "v2:be0fd908bd68f5aec5da84658b4ebac70fd5c4b2"
+            "hash": "v2:d33a81c56ba01fabb384ccfc45b7639c144c8417"
         },
         {
             "id": "leviathan",
@@ -1653,7 +1653,7 @@
             "kind": "structure",
             "model": "targeting_station",
             "source": "Models/targeting_station",
-            "hash": "v2:5612835f7b00258f58afa434a8eddf02cf0b8b2c"
+            "hash": "v2:784a0353ba3dc67881ca70dcde6c9d778607158b"
         },
         {
             "id": "troop_shelter",
