@@ -1105,7 +1105,7 @@
   },
   "inflatable_decoy": {
     "file": "inflatable_decoy.glb",
-    "triangles": 1090
+    "triangles": 3088
   },
   "interceptor_drone_vehicle": {
     "file": "interceptor_drone_vehicle.glb",

@@ -2808,6 +2808,16 @@
    "changes": [
     "FLAG bunker_shelter_tower: triangles 1,228 -> 5,034 (+309.9%); vertices 1,607 -> 6,808 (+323.6%); meshes 16 -> 28 (+75.0%); renderers 16 -> 28 (+75.0%); materials 8 -> 15 (+87.5%); materialSlots 16 -> 28 (+75.0%); fileBytes 94,148 -> 359,324 (+281.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "inflatable_decoy"
+   ],
+   "reason": "P35 wave 3: inflatable_decoy rebuilt (lane B)",
+   "changes": [
+    "FLAG inflatable_decoy: triangles 1,378 -> 3,088 (+124.1%); vertices 1,278 -> 3,748 (+193.3%); meshes 6 -> 19 (+216.7%); renderers 6 -> 19 (+216.7%); materials 6 -> 9 (+50.0%); materialSlots 6 -> 19 (+216.7%); fileBytes 71,440 -> 203,072 (+184.3%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -33359,22 +33369,22 @@
   },
   "inflatable_decoy": {
    "file": "inflatable_decoy.glb",
-   "fileBytes": 71440,
-   "sha1": "2f9256e8cc4d8481",
+   "fileBytes": 203072,
+   "sha1": "d64fea2ec8536799",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 6,
-   "meshes": 6,
-   "materials": 6,
+   "nodes": 19,
+   "meshes": 19,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 6,
-   "submeshes": 6,
-   "materialSlots": 6,
-   "materialsUsed": 6,
-   "triangles": 1378,
-   "vertices": 1278,
+   "renderers": 19,
+   "submeshes": 19,
+   "materialSlots": 19,
+   "materialsUsed": 9,
+   "triangles": 3088,
+   "vertices": 3748,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -33382,47 +33392,60 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 15,
+   "loosePieces": 81,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -2.3216,
-    -0.0233,
-    -2.2246
+    -2.4188,
+    -0.0477,
+    -2.2842
    ],
    "boundsMax": [
-    2.5,
-    2.3,
-    3.1
+    2.4188,
+    2.4932,
+    3.0489
    ],
    "size": [
-    5.325,
-    4.822,
-    2.323
+    5.333,
+    4.838,
+    2.541
    ],
    "center": [
-    0.089,
-    1.138,
-    0.438
+    0.0,
+    1.223,
+    0.382
    ],
-   "structureHash": "6e28f1febe85aca5",
+   "structureHash": "f375cae5e1d85667",
    "color0": {
-    "mean": 0.6703,
-    "min": 0.1221,
-    "max": 0.9987,
-    "p05": 0.3268,
-    "p95": 0.9307,
+    "mean": 0.5481,
+    "min": 0.0601,
+    "max": 0.9898,
+    "p05": 0.1086,
+    "p95": 0.8058,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antenna",
     "Blower",
+    "Blower_frame",
+    "Blower_guard",
+    "Dome",
     "Fabric",
+    "Hose",
+    "Jerrycans",
+    "Lobe_print",
+    "Pad",
+    "Painted_hatches",
+    "Patches",
     "Seams",
     "Skin",
     "Stakes",
-    "Tethers"
+    "Team_band",
+    "Tethers",
+    "Transport_bag",
+    "Walls"
    ],
    "category": "structure",
    "hd": false,
