@@ -132,6 +132,42 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>
+        /// Play-test 14 (cloud session 1): the Army page's tabs in their order (Commander and HQ have their own), each screen on
+        /// its own tab; the Base tab's cover and strength sit in the panel's scroll, no longer in a fixed strip along the bottom.
+        /// </summary>
+        [Test]
+        public void TheArmyTabsAreInTheirOrder()
+        {
+            DemoProfile.Use();
+            try
+            {
+                var menu = Menu(() => { });
+                var screens = new[] { "army-deck", "army-commander", "army-towers", "army-gear", "army-base", "army-hq", "army-outpost" };
+                var labels = new[] { "army.deck", "army.commander", "army.towers", "army.equipment", "army.base", "army.hq", "army.outpost" };
+                for (var i = 0; i < screens.Length; i++)
+                {
+                    menu.DebugShow(screens[i]);
+                    Frames(2);
+                    var tabs = menu.Root.Query<KitTabs>().ToList().First(t => t.Tabs.Count == screens.Length);
+                    Assert.AreEqual(i, tabs.Selected, screens[i] + " is tab " + i);
+                    var text = string.Join("|", tabs.Tabs[i].Query<Label>().ToList().Select(l => l.text)).ToUpperInvariant();
+                    StringAssert.Contains(Strings.Get(labels[i]).ToUpperInvariant(), text, screens[i] + ": its label");
+                }
+                menu.DebugShow("army-base");
+                Frames(3);
+                var strip = menu.Root.Q(className: "fc-base__strip");
+                Assert.IsNotNull(strip, "the cover and strength");
+                var scroll = strip.GetFirstAncestorOfType<ScrollView>();
+                Assert.IsNotNull(scroll, "in a scroll");
+                Assert.IsTrue(scroll.ClassListContains("fc-base__panel-scroll"), "the panel's scroll");
+            }
+            finally
+            {
+                DemoProfile.Restore();
+            }
+        }
+
         /// <summary>A boss's page: no Equipment tab, no level, blueprint, deck or upgrade controls; its file and numbers.</summary>
         [TestCase("detail-boss")]
         [TestCase("detail-boss-stats")]

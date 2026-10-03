@@ -676,6 +676,8 @@ namespace MachineBrigade.Game.Hud
             "legend", "detail-weapons", "detail-armour", "detail-boss", "detail-boss-stats",
             // Prompt 22 F.4: the commander picker and the dossier's commander pages.
             "commanders", "dossier-commanders",
+            // Play-test 14: the Army page's Commander and HQ tabs.
+            "army-commander", "army-hq",
         };
 
         /// <summary>Opens one of <see cref="ScreenNames"/> (a fresh menu shows home).</summary>
