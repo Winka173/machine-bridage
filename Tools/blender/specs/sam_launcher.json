@@ -1,0 +1,33 @@
+{
+ "id": "sam_launcher",
+ "class": "tracked",
+ "real": ["9A310 Buk TELAR (GM-569 chassis)", "9M317", "M2 Browning 12.7 mm (the sheet's visible weapon; Mount_mg kept)"],
+ "shape": "unit_sheet.json Phương tiện: Khung xích, bệ phóng xoay mang 4 tên lửa lớn chĩa lên, radar hình trụ phía trước bệ; từ trên xuống: 4 tên lửa dài song song; khoảng 7.4 x 2.6 x 3.0 m (0,8 x 9A310 Buk TELAR); vũ khí nhìn thấy 9M317 Buk, M2 Browning 12.7 mm; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (9A310 published photographs)",
+ "target_size": {"L": 7.18, "W": 2.7, "H": 2.97, "source": "balance.json modelSize (the missiles raised)", "tolerance": 0.10},
+ "features": [
+  {"feature": "long GM-569 hull with the crew cab across the front (vision blocks, hatches), engine louvres at the rear, side skirts", "nodes": ["Hull", "Cab", "Glass", "Hatches", "Grilles", "Skirts"]},
+  {"feature": "six road wheels a side, rear sprocket, front idler, return rollers", "nodes": ["Wheels", "Tyres", "Sprockets", "Idlers", "Rollers", "Tracks", "Track_links"]},
+  {"feature": "turret platform with the cylindrical Fire Dome radar at its front, the flat array forward", "nodes": ["Turret", "Turret_body", "Radar_dome", "Radar_array"]},
+  {"feature": "launcher cradle on its trunnion frame with four 9M317 missiles on rails, raised", "nodes": ["Launcher_cradle", "Cradle_trunnion", "Launcher_frame", "Launcher_rails", "Launcher_missiles", "Launcher_missiles_fins", "Launcher_face", "Muzzle_main"]},
+  {"feature": "pintle 12.7 mm on a raised post at the commander's hatch", "nodes": ["Mount_mg", "MG", "MG_post", "Muzzle_mg"]},
+  {"feature": "TDA thermal smoke vent at the exhaust, bins", "nodes": ["Smoke_tda", "Stowage"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "buk_launcher", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel (the launch face)"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 8.4k: over the maximum, information only"},
+ "team_zones": ["hull and cab (Team)", "turret platform and radar housing (Team)", "bands (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (the missiles)",
+ "faction_style": "Soviet-pattern SAM (both factions)",
+ "details": {
+  "tier1": ["hull", "turret platform", "radar", "missiles"],
+  "tier2": ["cab", "cradle", "rails", "frame", "skirts", "grilles", "bins", "roof MG"],
+  "tier3": ["track links", "fins", "missile bands", "vision blocks", "periscope", "cable trunk", "lamps", "tow hooks", "aerial"]
+ },
+ "questions": []
+}

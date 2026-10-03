@@ -1,0 +1,33 @@
+{
+ "id": "aa_gun_vehicle",
+ "class": "tracked",
+ "real": ["CV9040 AAV (CV90 hull, Bofors 40 mm L/70 turret, PS-70 search radar)", "Bofors 40 mm L/70"],
+ "shape": "no unit_sheet.json row: the old builder's CV90 AA (40 mm SPAAG with the search radar on a mast); the def's weapon bofors_l70.",
+ "confidence": "ban_dau_doan (no unit_refs row; the def's weapon and the old builder's reference; CV90 published dimensions)",
+ "target_size": {"L": 5.9, "W": 2.5, "H": 2.7, "source": "balance.json modelSize (the radar up)", "tolerance": 0.10},
+ "features": [
+  {"feature": "CV90 hull: sharp wedge nose, long upper glacis, tall troop hull leaning in, rear door, steel skirts", "nodes": ["Hull", "Skirts", "Hatches"]},
+  {"feature": "seven road wheels a side, front sprocket, rear idler, return rollers", "nodes": ["Wheels", "Tyres", "Sprockets", "Idlers", "Rollers", "Tracks", "Track_links"]},
+  {"feature": "Bofors turret with sloped cheeks and a bustle bin", "nodes": ["Turret", "Turret_body", "Turret_roof", "Stowage"]},
+  {"feature": "long 40 mm L/70: mantlet, perforated cooling jacket, flash suppressor; coaxial 7.62 mm", "nodes": ["Mantlet", "Main_cannon", "Main_cannon_holes", "Muzzle_brake", "Muzzle_main", "MG_coax"]},
+  {"feature": "search radar array turning on its mast over the turret rear", "nodes": ["Radar", "Radar_mast", "Radar_panel", "Radar_face"]},
+  {"feature": "commander's sight head, gunner's window, smoke dischargers", "nodes": ["Sight", "Glass", "Smoke_launchers"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "bofors_l70", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "1 barrel"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 8.3k: over the maximum, information only"},
+ "team_zones": ["hull and skirts (Team)", "turret (Team)", "bands on the hull sides and the turret (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off",
+ "faction_style": "modern SPAAG (both factions)",
+ "details": {
+  "tier1": ["hull", "turret", "gun", "tracks"],
+  "tier2": ["mantlet", "radar mast and array", "rear door", "roof hatches", "skirts", "sight", "bins", "grilles"],
+  "tier3": ["track links", "jacket holes", "periscopes", "smoke tubes", "hinges", "handle", "lamps", "tow hooks", "exhaust", "aerial"]
+ },
+ "questions": ["No unit_refs or unit_sheet row: built as a CV9040 AAV after the old builder and the def's Bofors 40 mm; confirm the reference."]
+}

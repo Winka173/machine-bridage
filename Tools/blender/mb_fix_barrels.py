@@ -21,7 +21,6 @@ import mb_p34_barrels as P
 TWIN = {
     'behemoth': ['Muzzle_gun', 'Muzzle_gun__001', 'Muzzle_gun__002'],
     'cerberus': ['Muzzle_main'],
-    'moloch': ['Muzzle_main', 'Muzzle_gun', 'Muzzle_gun__001', 'Muzzle_gun__002'],
     'typhon': ['Muzzle_gun'],
     'hydra_sub': ['Muzzle_gun'],
     'daedalus': ['Muzzle_gun', 'Muzzle_gun__001'],
@@ -31,6 +30,8 @@ TWIN = {
 EXTRA = {
     'behemoth': ['Muzzle_main'],
     'fortress_bastion': ['Muzzle_gun', 'Muzzle_gun__001'],
+    # Prompt 35 wave 4 (lane C): moloch's rebuilt turrets model both barrels themselves.
+    'moloch': ['Muzzle_main', 'Muzzle_gun', 'Muzzle_gun__001', 'Muzzle_gun__002'],
 }
 # model -> {muzzle: (barrels, gap m)} with no barrel geometry
 EMPTY = {

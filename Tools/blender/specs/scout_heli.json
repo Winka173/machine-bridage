@@ -1,0 +1,37 @@
+{
+ "id": "scout_heli",
+ "class": "helicopter",
+ "real": ["AH-6 / MH-6 Little Bird", "M134 Minigun 7.62 mm (x2)", "Hydra 70 mm seven-tube pods (x2)"],
+ "shape": "unit_sheet.json Phương tiện: Trực thăng nhỏ thân hình quả trứng, rô-to 5 cánh, càng trượt, 2 bệ vũ khí nhỏ hai bên; từ trên xuống: đĩa rô-to tròn lớn so với thân nhỏ; khoảng 4.0 x 3.3 x 1.0 m (0,4 x MH-6 Little Bird); vũ khí nhìn thấy M134 Minigun 7.62 mm, Hydra 70 mm; vạch màu phe trên nóc và hai hông; không phù hiệu thật.",
+ "confidence": "xấp xỉ (AH-6 published photographs; five blades after the sheet)",
+ "target_size": {"L": 3.88, "W": 3.16, "H": 1.56, "source": "balance.json modelSize (the rotor disc is the width)", "tolerance": 0.10},
+ "features": [
+  {"feature": "egg-shaped cabin with the big glazed nose and its frame, open doorways with bench seats", "nodes": ["Fuselage", "Canopy", "Canopy_frames", "Doorways", "Seats"]},
+  {"feature": "engine hump, exhaust and intake grilles behind the mast", "nodes": ["Engine_cowl", "Exhausts", "Grilles", "Rotor_mast"]},
+  {"feature": "five-bladed main rotor", "nodes": ["Rotor", "Rotor_hub", "Rotor_grips", "Rotor_blades", "Rotor_tips"]},
+  {"feature": "slim tail boom with the T-tail (stabiliser with end plates, upper and lower fins), two-bladed tail rotor", "nodes": ["Tail_boom", "Tail", "Tailplane", "Tail_rotor", "Tail_rotor_blades", "Tail_rotor_hub"]},
+  {"feature": "skids on cross tubes", "nodes": ["Skids"]},
+  {"feature": "weapons plank across the cabin: two miniguns outboard, two seven-tube pods inboard", "nodes": ["Pylons", "Miniguns", "Gun_housings", "Gun_feeds", "Pods", "Muzzle_gun", "Muzzle_rocket"]},
+  {"feature": "flare dispensers on the boom", "nodes": ["Flares", "Mount_Flare_L", "Mount_Flare_R"]}
+ ],
+ "class_parts": ["fuselage", "glass", "rotor_hub", "blades", "tail_rotor", "gear", "stub_wings", "weapons"],
+ "merged": {"Turret": "Pylons"},
+ "merged_note": "the guns are fixed on the weapons plank: the whole helicopter aims (turretTurnRate 360 is the body's); the main mount is the plank",
+ "weapons": [
+  {"weapon": "minigun", "slot": "gun", "mount": "Pylons", "muzzles": ["Muzzle_gun"], "note": "1 barrel in data; Muzzle_gun.001 on the other gun (kept)"},
+  {"weapon": "scout_rockets", "slot": "rocket", "mount": "Pylons", "muzzles": ["Muzzle_rocket"], "note": "aim Hull; Muzzle_rocket.001 on the other pod (kept)"}
+ ],
+ "flare": true, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2, "note": "about 3.9k: just under the class minimum, over the floor (a 4 m helicopter)"},
+ "team_zones": ["cabin (Team)", "boom and tail (Team)", "engine hump (Team)", "bands (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "Rotor and Tail_rotor fly off",
+ "faction_style": "light attack / scout helicopter (both factions)",
+ "details": {
+  "tier1": ["cabin", "rotor disc", "tail boom"],
+  "tier2": ["glazing", "engine hump", "T-tail", "skids", "weapons plank", "miniguns", "pods"],
+  "tier3": ["canopy frames", "rotor bolts", "flare mouths", "grilles", "seats", "aerials", "lights", "gun feeds"]
+ },
+ "questions": []
+}
