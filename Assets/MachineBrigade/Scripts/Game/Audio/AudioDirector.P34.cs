@@ -354,7 +354,10 @@ namespace MachineBrigade.Game.Audio
                 name = SoundLibrary.HitBank(surface, size);
             }
             if (!_tierBanks.TryGetValue(name, out var bank)) return false;
-            Play(bank, e.Position, 1f, SoundLibrary.Carry(size), PriorityOf(round, e.Position, blast));
+            // The bomb-run fix, pass 3: a stick's blasts each crack at their own point; the one before gives up its tail as the
+            // next goes off, so the stick rolls on as one tail (AudioDirector.Sticks).
+            var run = blast ? StickRun(round, e.Position) : 0;
+            Play(bank, e.Position, 1f, SoundLibrary.Carry(size), PriorityOf(round, e.Position, blast), 1f, run);
             return true;
         }
 

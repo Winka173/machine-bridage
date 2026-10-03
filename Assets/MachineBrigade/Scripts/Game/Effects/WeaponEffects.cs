@@ -323,10 +323,12 @@ namespace MachineBrigade.Game.Effects
                 case ProjectileKind.Bomb:
                     // Released from the wing: play-test 8 A (DECISIONS 22Q), it keeps the aircraft's forward speed and falls,
                     // level at first and ever steeper (a steered bomb glides down onto its target on a flatter curve).
+                    // The bomb-run fix, pass 3: an unguided bomb falls with a thin trail, a stick's bombs one after another on their
+                    // release interval (each its own fired event), so the stick reads as it is dropped.
                     var bomb = Model("bomb");
                     if (_hasBomb)
                         _projectiles.Launch(_models.Merged(bomb), from, to, Mathf.Max(0.4f, e.Value), 0f, 0f, now, scale: Sized(bomb),
-                            control: BombPath(from, to, weapon != null && weapon.GuidedBomb));
+                            control: BombPath(from, to, weapon != null && weapon.GuidedBomb), streak: BombStreak(weapon));
                     else _tracers.Launch(from, to, e.Value, 0f, 0.3f, 1f, now);
                     break;
 
@@ -542,6 +544,16 @@ namespace MachineBrigade.Game.Effects
         {
             var level = new Vector3((from.x + to.x) * 0.5f, from.y, (from.z + to.z) * 0.5f);
             return steered ? Vector3.Lerp(level, (from + to) * 0.5f, 0.35f) : level;
+        }
+
+        /// <summary>
+        /// The bomb-run fix, pass 3: the trail a falling bomb leaves (puff size, m): a free-falling bomb's by its weight
+        /// (BlastSizes.Bomb), none for a guided or gliding one (they fly their own way onto the target).
+        /// </summary>
+        internal static float BombStreak(WeaponDef weapon)
+        {
+            if (weapon == null || weapon.GuidedBomb || weapon.Guided || weapon.Glides) return 0f;
+            return 0.36f * Mathf.Clamp(BlastSizes.Bomb(weapon.Id), 0.8f, 1.6f);
         }
 
         /// <summary>

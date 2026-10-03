@@ -85,6 +85,30 @@ namespace MachineBrigade.Game.Effects
             _ => 0f,
         };
 
+        // ------------------------------------------------------------------------------------------------ bomb sticks
+
+        /// <summary>
+        /// The bomb-run fix, pass 3 (DECISIONS "Ném bom rải thảm"): a stick from this many bombs draws its far bombs lighter,
+        /// and from <see cref="LongStick"/> its farthest with the flash and rings only.
+        /// </summary>
+        public const int StickFrom = 6, LongStick = 12;
+
+        /// <summary>A stick's bomb this near the view's focus (m) keeps its detail; the far ones of a long stick past <see cref="NearView"/>.</summary>
+        public const float StickNear = 35f;
+
+        /// <summary>
+        /// The detail of a stick's bomb <paramref name="distance"/> m from the view's focus that wanted <paramref name="wanted"/>
+        /// (<paramref name="bombs"/> in its stick): the near ones as they are, so the chain reads bomb by bomb where the player
+        /// looks; one level less farther out on a stick of <see cref="StickFrom"/>+; only the flash and the rings past
+        /// <see cref="NearView"/> on a stick of <see cref="LongStick"/>+ (a 20-bomb carpet). The round's own blast always plays
+        /// whole: this is the tier overlay and the lingering smoke only, never a smaller fire or blast.
+        /// </summary>
+        public static Detail StickDetail(Detail wanted, int bombs, float distance)
+        {
+            if (bombs < StickFrom || wanted == Detail.Far || distance < StickNear) return wanted;
+            return bombs >= LongStick && distance >= NearView ? Detail.Far : Lower(wanted);
+        }
+
         /// <summary>One level less detail (a blast over its tier's cap).</summary>
         public static Detail Lower(Detail detail) => detail == Detail.Full ? Detail.Reduced : Detail.Far;
 

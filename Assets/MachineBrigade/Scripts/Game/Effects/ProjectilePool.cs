@@ -19,6 +19,9 @@ namespace MachineBrigade.Game.Effects
     {
         private const float TrailSpacing = 0.55f;
 
+        /// <summary>The bomb-run fix, pass 3: a falling bomb's trail puffs, this far apart (m) and lasting this long (s).</summary>
+        internal const float StreakSpacing = 0.8f, StreakLife = 0.6f;
+
         /// <summary>A boosted munition's speed as it leaves the rail, as a share of its cruise speed.</summary>
         internal const float RailSpeed = 0.2f;
 
@@ -47,6 +50,9 @@ namespace MachineBrigade.Game.Effects
 
             /// <summary>The model's tail along its length (local metres; negative: behind the pivot).</summary>
             public float Tail;
+
+            /// <summary>The bomb-run fix, pass 3: a falling bomb's thin trail (puff size; 0: none) and its puffs' spacing along the path.</summary>
+            public float Streak, StreakStep;
 
             /// <summary>
             /// Test feedback 19P: a guided round that will miss (the sim's Offset): from <see cref="JamAt"/> of its
@@ -130,6 +136,10 @@ namespace MachineBrigade.Game.Effects
         /// from <paramref name="from"/> to <paramref name="to"/>): set along the barrel, the round
         /// leaves down its barrel and bends onto where it lands, its trail on the same curve.
         /// </param>
+        /// <param name="streak">
+        /// The bomb-run fix, pass 3: a falling bomb's thin trail (no motor): small pale puffs along its path, this big, every
+        /// <see cref="StreakSpacing"/> m, gone in <see cref="StreakLife"/> s. 0: none.
+        /// </param>
         /// <param name="plume">
         /// The motor's flame and smoke, in lengths of the model as drawn: with one, the flame cone
         /// burns from the model's tail and the smoke trail leaves the tip of the flame (in place of
@@ -137,7 +147,7 @@ namespace MachineBrigade.Game.Effects
         /// </param>
         public void Launch(ChunkModel model, Vector3 from, Vector3 to, float duration, float arc, float trail, float now,
             Func<Vector3?> homing = null, float wobble = 0f, float delay = 0f, float boost = 0f, float scale = 1f, Vector3? control = null,
-            Plume plume = default)
+            Plume plume = default, float streak = 0f)
         {
             // A free slot if there is one, so a missile in flight does not teleport.
             var shot = _shots[_next];
@@ -179,6 +189,8 @@ namespace MachineBrigade.Game.Effects
             shot.PuffT = 0f;
             shot.PuffSpacing = Mathf.Max(0.15f, shot.PlumeSmoke * plume.Puffs);
             shot.PuffStep = TrailSpacing / Mathf.Max(1f, Vector3.Distance(from, to) + arc);
+            shot.Streak = Mathf.Max(0f, streak);
+            shot.StreakStep = StreakSpacing / Mathf.Max(1f, Vector3.Distance(from, to) + arc);
             shot.Wide = Vector3.zero;
             shot.JamAt = 0f;
             shot.Tumble = shot.JamShown = shot.Drone = false;
@@ -363,6 +375,16 @@ namespace MachineBrigade.Game.Effects
                     {
                         shot.PuffT += step;
                         plumes.Smoke(PositionAt(shot, shot.PuffT), -forward, shot.PlumeSmoke);
+                    }
+                    continue;
+                }
+                if (shot.Streak > 0f)
+                {
+                    // A falling bomb's trail: pale puffs left along its path, no motor.
+                    while (shot.PuffT + shot.StreakStep <= t)
+                    {
+                        shot.PuffT += shot.StreakStep;
+                        emitters.Contrail(PositionAt(shot, shot.PuffT), shot.Streak, StreakLife);
                     }
                     continue;
                 }

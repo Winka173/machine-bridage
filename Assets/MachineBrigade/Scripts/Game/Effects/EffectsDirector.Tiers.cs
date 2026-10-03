@@ -62,7 +62,9 @@ namespace MachineBrigade.Game.Effects
         /// A round of <paramref name="tier"/> landed at <paramref name="at"/> (its core and edge radii, m): its tier's blast on
         /// top of the round's own, the exact rings, the crater, the shake and the light vehicles rocked.
         /// </summary>
-        private void TierImpact(int tier, Vector3 at, float core, float edge, float now, ViewRegistry views)
+        /// <param name="stick">The bomb-run fix, pass 3: the bombs of the stick this blast is one of (0: none); a long stick's far
+        /// bombs get their overlay one level lighter before the budget counts them (<see cref="TierFx.StickDetail"/>).</param>
+        private void TierImpact(int tier, Vector3 at, float core, float edge, float now, ViewRegistry views, int stick = 0)
         {
             if (tier < 2) return;
             var reach = edge > core ? edge : core;
@@ -86,7 +88,7 @@ namespace MachineBrigade.Game.Effects
                 if (tier >= 5 && onScreen && Flash != null) Flash(0.16f / (1f + distance / 40f));
             }
             if (!onScreen) return;
-            var detail = _tierBudget.Admit(tier, TierFx.DetailAt(distance, _camera.Zoom), now);
+            var detail = _tierBudget.Admit(tier, TierFx.StickDetail(TierFx.DetailAt(distance, _camera.Zoom), stick, distance), now);
             TierPlayed?.Invoke(tier, detail, at);
             var scale = TierFx.OverlayScale(tier, core);
             if (detail == TierFx.Detail.Far)

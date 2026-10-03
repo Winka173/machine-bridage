@@ -40,18 +40,26 @@ namespace MachineBrigade.Game.Effects
 
         private readonly struct Offered
         {
-            public Offered(object key, Vector3 at, float radius, WarningKind kind)
+            public Offered(object key, Vector3 at, float radius, WarningKind kind, Vector3 axis = default, float halfLength = 0f)
             {
                 Key = key;
                 At = at;
                 Radius = radius;
                 Kind = kind;
+                Axis = axis;
+                HalfLength = halfLength;
             }
 
             public object Key { get; }
             public Vector3 At { get; }
+
+            /// <summary>A ring's radius, or a rectangle's half width.</summary>
             public float Radius { get; }
             public WarningKind Kind { get; }
+
+            /// <summary>The bomb-run fix, pass 3: a rectangle's long axis (flat, unit) and half length (0: a ring).</summary>
+            public Vector3 Axis { get; }
+            public float HalfLength { get; }
         }
 
         private readonly List<Offered> _offers = new();
@@ -63,6 +71,18 @@ namespace MachineBrigade.Game.Effects
         {
             if (key == null) return;
             _offers.Add(new Offered(key, at, radius, kind));
+        }
+
+        /// <summary>
+        /// The bomb-run fix, pass 3: a live rectangle this frame (a stick's warning), centred on <paramref name="centre"/>, its
+        /// long axis <paramref name="axis"/>: it threatens the player's units inside the rectangle, not a circle round it.
+        /// </summary>
+        public void OfferRect(object key, Vector3 centre, Vector3 axis, float halfLength, float halfWidth, WarningKind kind)
+        {
+            if (key == null) return;
+            axis.y = 0f;
+            axis = axis.sqrMagnitude > 1e-6f ? axis.normalized : Vector3.forward;
+            _offers.Add(new Offered(key, centre, Mathf.Max(0.1f, halfWidth), kind, axis, Mathf.Max(0.1f, halfLength)));
         }
 
         /// <summary>Whether the ring <paramref name="key"/> is drawn (a super weapon always is).</summary>
@@ -84,7 +104,7 @@ namespace MachineBrigade.Game.Effects
                     continue;
                 }
                 if (Level >= 2) continue;
-                var threat = Threat(views, o.At, o.Radius);
+                var threat = o.HalfLength > 0f ? ThreatRect(views, o) : Threat(views, o.At, o.Radius);
                 if (Level == 1 && threat <= 0) continue;
                 var near = 1f / (1f + Vector3.Distance(new Vector3(o.At.x, 0f, o.At.z), new Vector3(focus.x, 0f, focus.z)) / 40f);
                 _ranked.Add((threat * 10f + near, o.Key));
@@ -92,6 +112,25 @@ namespace MachineBrigade.Game.Effects
             _offers.Clear();
             _ranked.Sort((a, b) => b.score.CompareTo(a.score));
             for (var i = 0; i < _ranked.Count && i < Mathf.Max(1, MaxShown); i++) _shown.Add(_ranked[i].key);
+        }
+
+        /// <summary>The player's units a rectangle reaches (their hulls inside it).</summary>
+        private int ThreatRect(ViewRegistry views, in Offered o)
+        {
+            if (views == null) return 0;
+            var n = 0;
+            var all = views.All;
+            for (var i = 0; i < all.Count; i++)
+            {
+                var v = all[i];
+                if (v == null || v.Sim == null || !v.Sim.IsAlive || v.Sim.Team != PlayerTeam) continue;
+                var dx = v.Sim.Position.X - o.At.x;
+                var dz = v.Sim.Position.Y - o.At.z;
+                var along = Mathf.Abs(dx * o.Axis.x + dz * o.Axis.z);
+                var across = Mathf.Abs(dx * o.Axis.z - dz * o.Axis.x);
+                if (along <= o.HalfLength + v.Sim.Radius && across <= o.Radius + v.Sim.Radius) n++;
+            }
+            return n;
         }
 
         /// <summary>The player's units the ring at <paramref name="at"/> reaches (their hulls inside it).</summary>
