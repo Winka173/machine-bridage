@@ -1,6 +1,6 @@
 # GLB baseline (prompt 27 step 2)
 
-Generated 2026-10-04 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (451 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
+Generated 2026-10-04 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (453 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
 Rules: DECISIONS "27 step 0 + baseline"; budgets: Docs/models/BUDGETS.md (over the soft budget a warning, over
 the hard cap an error). Warnings are listed in the JSON.
 
@@ -10,7 +10,7 @@ the hard cap an error). Warnings are listed in the JSON.
 |---|---:|---:|---:|---|---:|---:|---:|
 | boss | 26 | 813,805 | 31,300 | leviathan (62,916) | 3,227 | 2 | 24 |
 | ground | 66 | 563,394 | 8,536 | main_battle_tank_hd (16,462) | 3,755 | 1 | 38 |
-| structure | 69 | 371,227 | 5,380 | headquarters (21,052) | 3,434 | 0 | 14 |
+| structure | 71 | 384,897 | 5,421 | headquarters (21,052) | 3,580 | 2 | 16 |
 | prop | 115 | 258,170 | 2,244 | command_hq (8,872) | 1,568 | 0 | 3 |
 | unlisted | 34 | 108,062 | 3,178 | apc_hd (14,968) | 668 | 0 | 0 |
 | air | 19 | 98,286 | 5,172 | fighter_jet_hd (14,216) | 711 | 0 | 14 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 25 | 5,154 | 206 | bomb (404) | 175 | 0 | 0 |
 
-All files: 2,279,056 triangles, 3 with errors, 93 more with warnings only.
+All files: 2,292,726 triangles, 5 with errors, 95 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -63,18 +63,21 @@ All files: 2,279,056 triangles, 3 with errors, 93 more with warnings only.
 | prop | vertices | 1 | 0 | - |
 | scenery | renderers | 2 | 0 | - |
 | structure | movingParts | 1 | 0 | - |
-| structure | renderers | 7 | 0 | - |
+| structure | renderers | 7 | 2 | aircraft_hangar, vehicle_hangar_base |
+| tower | movingParts | 1 | 0 | - |
 | tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-68 models over a budget, 3 of them over a hard cap.
+71 models over a budget, 5 of them over a hard cap.
 
 ## Error reasons (count of models)
 
-- over a budget hard cap: 3
+- over a budget hard cap: 5
 
-## Flagged models (3)
+## Flagged models (5)
 
+- **aircraft_hangar** (structure): renderers 51 over the structure normal hard cap 48
 - **fortress_bastion** (boss): renderers 168 over the boss_s normal hard cap 162
 - **fpv_carrier** (ground): renderers 78 over the ground normal hard cap 76
 - **ixion** (boss): renderers 173 over the boss_s normal hard cap 162
+- **vehicle_hangar_base** (structure): renderers 71 over the structure normal hard cap 48
