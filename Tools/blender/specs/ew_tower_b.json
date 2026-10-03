@@ -1,0 +1,156 @@
+{
+ "id": "ew_tower_b",
+ "class": "tower",
+ "real": [
+  "DRFM radar-spoofer planar array (counter-battery deception)",
+  "galvanised four-legged telecom lattice mast",
+  "equipment shelter with air conditioner, skid diesel generator"
+ ],
+ "shape": "ew_tower.spoof (radar_spoof_counterbattery): the same site as ew_tower; the head is the old file's big phased-array panel leaning back (2.5 x 1.9 m, 4 x 3 tiles), now on a trunnion yoke with side bearings, framed radome tiles, the sun shade, two receiving horns, the electronics box with cooling fans and the elevation jack on the back.",
+ "confidence": "xấp xỉ (planar array and jammer mast photographs; the spoofer is the game's)",
+ "target_size": {
+  "L": 3.99,
+  "W": 3.99,
+  "H": 9.64,
+  "source": "the old GLB (the def's 4 x 4 m)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the cast pad with joints, the cable trench plates, the earthing rod",
+   "nodes": [
+    "Pad",
+    "Pad_joints",
+    "Trench_plates",
+    "Earth_rod"
+   ]
+  },
+  {
+   "feature": "the four-legged lattice mast on pedestals and base plates, K / X bracing, ladder with cage, cable ladder and feeders, obstruction lights",
+   "nodes": [
+    "Mast",
+    "Mast_braces",
+    "Footings",
+    "Base_plates",
+    "Mast_ladder",
+    "Ladder_cage",
+    "Cable_ladder",
+    "Cable_run",
+    "Obstruction_lights"
+   ]
+  },
+  {
+   "feature": "the head platform: grating, railing, Team toe boards, bearing housing",
+   "nodes": [
+    "Platform",
+    "Grating",
+    "Railing",
+    "Kick_plates",
+    "Bearing"
+   ]
+  },
+  {
+   "feature": "the equipment shelter with ribs, roof, door, window, lamp, air conditioner, gland plate",
+   "nodes": [
+    "Shelter",
+    "Shelter_roof",
+    "Shelter_door",
+    "Shelter_window",
+    "Aircon",
+    "Cable_entry"
+   ]
+  },
+  {
+   "feature": "the skid generator, fuel drums, cable reel, warning sign, extinguisher",
+   "nodes": [
+    "Generator",
+    "Generator_doors",
+    "Drums",
+    "Cable_reel",
+    "Signs",
+    "Extinguisher"
+   ]
+  },
+  {
+   "feature": "the turning head: yoke and bearings, the leaning planar array with framed tiles, shade, side horns, back box with fans and the jack",
+   "nodes": [
+    "Radar",
+    "Muzzle_main",
+    "Array_yoke",
+    "Array_panel",
+    "Array_tiles",
+    "Array_horns",
+    "Array_box",
+    "Array_brace"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [
+  {
+   "weapon": "none",
+   "slot": "spoofer",
+   "mount": "Radar",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the array's face"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "shelter (Team)",
+  "array panel (Team)",
+  "toe boards (Team)",
+  "generator doors (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "galvanised lattice mast, Team shelter and array backs, white radomes",
+ "details": {
+  "tier1": [
+   "pad",
+   "mast",
+   "shelter",
+   "array"
+  ],
+  "tier2": [
+   "platform",
+   "yoke",
+   "tiles",
+   "generator",
+   "drums",
+   "reel"
+  ],
+  "tier3": [
+   "bolts",
+   "ladder cage",
+   "horns",
+   "fans",
+   "frame",
+   "lights",
+   "handles",
+   "beacon",
+   "sign"
+  ]
+ },
+ "questions": []
+}

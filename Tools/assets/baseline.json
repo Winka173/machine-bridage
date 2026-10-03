@@ -3408,6 +3408,14 @@
    "changes": [
     "FLAG ew_tower: triangles 5,936 -> 5,998 (+1.0%); vertices 8,548 -> 9,447 (+10.5%); meshes 63 -> 77 (+22.2%); renderers 63 -> 77 (+22.2%); materials 19 -> 18 (-5.3%); materialSlots 63 -> 77 (+22.2%); fileBytes 472,864 -> 527,288 (+11.5%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "ew_tower_b"
+   ],
+   "reason": "P35 wave 12",
+   "changes": []
   }
  ],
  "models": {
