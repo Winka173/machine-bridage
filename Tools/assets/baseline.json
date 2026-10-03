@@ -3454,6 +3454,14 @@
    ],
    "reason": "P35 wave 12",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "helipad_b"
+   ],
+   "reason": "P35 wave 12",
+   "changes": []
   }
  ],
  "models": {
