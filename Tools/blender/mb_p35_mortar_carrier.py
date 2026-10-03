@@ -24,12 +24,12 @@ import mb_kit35 as K
 import mb_p35b_parts as P
 
 R90 = math.pi / 2
-HALF = 1.13
+HALF = 1.02
 ROOF = 1.5
 LIP = .82
 WR = .26
 WHEELS = (-1.28, -.65, -.02, .61, 1.24)
-TX, TW = .88, .38
+TX, TW = .8, .36
 HATCH = (0, .85, ROOF)           # the mortar hatch's centre
 ELEV = math.radians(70)
 
@@ -77,14 +77,14 @@ def _hull(a):
 def _mortar_hatch(a):
     """The three-leaf mortar hatch over the rear roof, folded open: the well's coaming and the leaves standing out."""
     x0, y0, z0 = HATCH
-    k.ring(a.part('Hatch_well', 'Armor'), [(.66, 0), (.74, 0), (.74, .06), (.66, .06)], loc=HATCH, seg=18)
+    k.ring(a.part('Hatch_well', 'Armor'), [(.62, 0), (.7, 0), (.7, .06), (.62, .06)], loc=HATCH, seg=18)
     k.lathe(a.part('Hatch_floor', 'Undercarriage'), [(.66, -.02), (0, -.02)], loc=(x0, y0, z0 - .3), seg=14)
     lids = a.part('Hatch_lids', 'Armor')
     hin = a.part('Hatch_fittings', 'Steel')
     for i, u in enumerate((math.radians(90), math.radians(210), math.radians(330))):
-        cx, cy = x0 + math.cos(u) * .74, y0 + math.sin(u) * .74
+        cx, cy = x0 + math.cos(u) * .7, y0 + math.sin(u) * .7
         # Each leaf hinged on the coaming, swung up past vertical and leaning out.
-        k.block(lids, (.75, .05, .62), loc=(cx + math.cos(u) * .12, cy + math.sin(u) * .12, z0 + .32),
+        k.block(lids, (.72, .05, .58), loc=(cx + math.cos(u) * .1, cy + math.sin(u) * .1, z0 + .3),
                 rot=(.25, 0, u - R90), chamfer=.015)
         K.hinge(hin, (cx - math.sin(u) * .25, cy + math.cos(u) * .25, z0 + .05),
                 (cx + math.sin(u) * .25, cy - math.cos(u) * .25, z0 + .05), r=.022, knuckles=2)
@@ -141,16 +141,16 @@ def _cupola(a):
 def _stowage(a):
     """The dismount baseplate on the left side, the bipod legs and aiming stakes stowed, crates on the roof."""
     bp = a.part('Baseplate', 'Armor')
-    k.lathe(bp, [(.42, 0), (.42, .05), (.3, .09), (.12, .12), (0, .12)], loc=(HALF + .06, .7, 1.1), rot=(0, R90, 0),
+    k.lathe(bp, [(.42, 0), (.42, .04), (.3, .08), (.12, .1), (0, .1)], loc=(HALF + .02, .7, 1.1), rot=(0, R90, 0),
             seg=14, worn=(1,))
-    a.part('Kit_straps', 'Steel').box((.02, .06, .9), loc=(HALF + .19, .7, 1.1), bevel=0)
+    a.part('Kit_straps', 'Steel').box((.02, .06, .9), loc=(HALF + .12, .7, 1.1), bevel=0)
     for s in (-1, 1):
-        a.part('Kit_brackets', 'Steel').box((.12, .06, .06), loc=(HALF + .04, .7 + s * .35, 1.1), bevel=0)
+        a.part('Kit_brackets', 'Steel').box((.1, .06, .06), loc=(HALF + .03, .7 + s * .35, 1.1), bevel=0)
     st = a.part('Stowage', 'Canvas')
-    k.lathe(st, [(.07, -.7), (.07, .7)], loc=(-HALF - .07, .9, 1.25), rot=K.FORWARD, seg=8)    # the stakes' bag
+    k.lathe(st, [(.06, -.7), (.06, .7)], loc=(-HALF - .05, .9, 1.25), rot=K.FORWARD, seg=8)    # the stakes' bag
     poles = a.part('Aiming_posts', 'Hazard')
     for j in range(3):
-        poles.cyl(.018, 1.2, loc=(-HALF - .05, .9 + (j - 1) * .05, 1.38), rot=(R90, 0, 0), seg=5, bevel=0)
+        poles.cyl(.018, 1.2, loc=(-HALF - .04, .9 + (j - 1) * .05, 1.36), rot=(R90, 0, 0), seg=5, bevel=0)
     K.crate(a.part('Crates', 'Crate'), a.part('Kit_straps', 'Steel'), (.5, .4, .25), (.6, -.25, ROOF), bands=1)
     K.jerrycan(a.part('Jerrycans', 'Fuel'), (-HALF + .15, 1.85, ROOF), rot=(0, 0, R90))
 

@@ -2842,6 +2842,16 @@
    "changes": [
     "FLAG mortar_carrier: triangles 3,242 -> 8,422 (+159.8%); vertices 3,999 -> 11,021 (+175.6%); meshes 23 -> 61 (+165.2%); renderers 23 -> 61 (+165.2%); materials 7 -> 12 (+71.4%); materialSlots 23 -> 61 (+165.2%); fileBytes 219,040 -> 595,828 (+172.0%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "mortar_carrier"
+   ],
+   "reason": "P35 wave 3: mortar_carrier to its modelSize width",
+   "changes": [
+    "mortar_carrier: fileBytes 595,828 -> 595,820 (-0.0%)"
+   ]
   }
  ],
  "models": {
@@ -41227,8 +41237,8 @@
   },
   "mortar_carrier": {
    "file": "mortar_carrier.glb",
-   "fileBytes": 595828,
-   "sha1": "7bce3937c272486f",
+   "fileBytes": 595820,
+   "sha1": "37db206bba2a9b3b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -41256,32 +41266,32 @@
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.27,
+    -1.1332,
     -0.0645,
     -2.33
    ],
    "boundsMax": [
-    1.33,
+    1.15,
     3.2238,
     2.2056
    ],
    "size": [
     4.536,
-    2.6,
+    2.283,
     3.288
    ],
    "center": [
-    0.03,
+    0.008,
     1.58,
     -0.062
    ],
    "structureHash": "d8f807d5c2be858b",
    "color0": {
-    "mean": 0.5938,
+    "mean": 0.5849,
     "min": 0.0498,
     "max": 1.0,
-    "p05": 0.1588,
-    "p95": 0.9125,
+    "p05": 0.1587,
+    "p95": 0.9119,
     "outOfRange": 0
    },
    "runtimeNodes": {
