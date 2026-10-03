@@ -2606,6 +2606,36 @@
    ],
    "reason": "merge of feature/p35-a",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "supply_truck"
+   ],
+   "reason": "P35 wave 1",
+   "changes": [
+    "FLAG supply_truck: triangles 2,862 -> 7,494 (+161.8%); vertices 3,559 -> 10,134 (+184.7%); meshes 23 -> 64 (+178.3%); renderers 23 -> 64 (+178.3%); materials 10 -> 12 (+20.0%); materialSlots 23 -> 64 (+178.3%); fileBytes 197,416 -> 553,492 (+180.4%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "supply_truck"
+   ],
+   "reason": "P35 wave 1",
+   "changes": [
+    "supply_truck: meshes 64 -> 58 (-9.4%); renderers 64 -> 58 (-9.4%); materialSlots 64 -> 58 (-9.4%); fileBytes 553,492 -> 548,488 (-0.9%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "supply_truck"
+   ],
+   "reason": "P35 wave 1",
+   "changes": [
+    "supply_truck: fileBytes 548,488 -> 548,492 (+0.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -52073,24 +52103,24 @@
   },
   "supply_truck": {
    "file": "supply_truck.glb",
-   "fileBytes": 197416,
-   "sha1": "3e9295284435cac2",
+   "fileBytes": 548492,
+   "sha1": "8d305169b56a2926",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 27,
-   "meshes": 23,
-   "materials": 10,
+   "nodes": 62,
+   "meshes": 58,
+   "materials": 12,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 23,
-   "submeshes": 23,
-   "materialSlots": 23,
-   "materialsUsed": 10,
-   "triangles": 2862,
-   "vertices": 3559,
+   "renderers": 58,
+   "submeshes": 58,
+   "materialSlots": 58,
+   "materialsUsed": 12,
+   "triangles": 7494,
+   "vertices": 10134,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -52098,36 +52128,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 94,
-   "openEdges": 0,
+   "loosePieces": 272,
+   "openEdges": 8,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.01,
+    -1.06,
     0.0,
-    -4.13
+    -4.2591
    ],
    "boundsMax": [
-    1.01,
-    2.445,
-    4.24
+    1.06,
+    2.6244,
+    4.225
    ],
    "size": [
-    8.37,
-    2.02,
-    2.445
+    8.484,
+    2.12,
+    2.624
    ],
    "center": [
     0.0,
-    1.222,
-    0.055
+    1.312,
+    -0.017
    ],
-   "structureHash": "456fff785a6969da",
+   "structureHash": "571ea5ff3cb641fe",
    "color0": {
-    "mean": 0.6544,
-    "min": 0.0801,
+    "mean": 0.5857,
+    "min": 0.0517,
     "max": 1.0,
-    "p05": 0.143,
-    "p95": 0.9987,
+    "p05": 0.1557,
+    "p95": 0.9295,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -52150,38 +52180,75 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Ammo_box",
+    "Air_intake",
     "Ammo_boxes",
-    "Armor",
+    "Ammo_can",
+    "Antennas",
+    "Axles",
     "Bed",
-    "Body",
+    "Bed_floor",
+    "Bed_frame",
+    "Bed_sides",
+    "Bows",
+    "Bumper",
+    "Cab",
+    "Cab_dark",
+    "Cab_fit",
     "Chassis",
-    "Crate_lids",
+    "Cradle",
     "Crates",
-    "Fuel_cans",
+    "Exhaust",
+    "Exhaust_caps",
+    "Fender_flares",
+    "Fenders",
+    "Fuel_caps",
+    "Fuel_tanks",
     "Glass",
+    "Grille_frames",
+    "Grilles",
+    "Gun_carriage",
+    "Gun_fit",
+    "Gun_ring",
+    "Gun_ring_fit",
+    "Gun_shield",
+    "Hubs",
+    "Kit_hinges",
+    "Kit_hooks",
+    "Kit_latches",
+    "Kit_straps",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
     "Main_cannon",
-    "Mount",
+    "Marker_lamps",
+    "Mudflaps",
     "Muzzle_brake",
     "Muzzle_main",
     "Point_exhaust",
     "Point_fire",
-    "Ring",
-    "Steel",
-    "Straps",
+    "Receiver",
+    "Reflectors",
+    "Spare_rim",
+    "Spare_wheel",
+    "Steps",
+    "Suspension",
     "Tail_lamps",
-    "Tanks",
+    "Tail_lenses",
     "Tarp",
+    "Tarp_roll",
+    "Team_band",
+    "Toolbox",
     "Turret",
     "Tyres",
-    "Wheels"
+    "Wheels",
+    "Window_frames",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "vertices 10,134 over the ground normal budget 10,100"
+   ],
    "units": [
     "supply_truck"
    ],
