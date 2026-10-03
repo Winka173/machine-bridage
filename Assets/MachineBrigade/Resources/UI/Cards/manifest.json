@@ -445,6 +445,13 @@
             "hash": "v2:3c6612b7005d52502316f6de11496b49a62b541b"
         },
         {
+            "id": "aircraft_hangar",
+            "kind": "tower",
+            "model": "drone_hangar",
+            "source": "Models/drone_hangar",
+            "hash": "v2:eaed7160b8f87d365bbf4df1111e149e382d9d76"
+        },
+        {
             "id": "airfield",
             "kind": "tower",
             "model": "helipad",
@@ -494,13 +501,6 @@
             "hash": "v2:c71cff088978b1975e16c396decafff5fecea059"
         },
         {
-            "id": "bastion_mk0",
-            "kind": "boss",
-            "model": "fortress_bastion",
-            "source": "Models/fortress_bastion",
-            "hash": "v2:692848da1cc3ae2ad5d0547ca44b0aef0ce18f78"
-        },
-        {
             "id": "behemoth",
             "kind": "boss",
             "model": "behemoth",
@@ -512,7 +512,7 @@
             "kind": "boss",
             "model": "behemoth_inferno",
             "source": "Models/behemoth_inferno",
-            "hash": "v2:b7bc00bcf91a87c88d8109b92f5e64f0433cf8f3"
+            "hash": "v2:12485cf2efc2eaeb141888c2baf3acc998651870"
         },
         {
             "id": "behemoth_mk0",
@@ -753,13 +753,6 @@
             "hash": "v2:8696e9c46c879b9832c6bec7f772b4c52e244c19"
         },
         {
-            "id": "fenrir",
-            "kind": "boss",
-            "model": "mobile_fortress",
-            "source": "Models/mobile_fortress",
-            "hash": "v2:95a76357003a2caa60489f7af9ef5c398ab6865b"
-        },
-        {
             "id": "fire_control_centre",
             "kind": "tower",
             "model": "fire_control_centre",
@@ -785,7 +778,7 @@
             "kind": "boss",
             "model": "fortress_bastion",
             "source": "Models/fortress_bastion",
-            "hash": "v2:692848da1cc3ae2ad5d0547ca44b0aef0ce18f78"
+            "hash": "v2:e5af165bac5d4b32922f0b9792036a3d89bf0459"
         },
         {
             "id": "guard_tower",
@@ -1016,7 +1009,7 @@
             "kind": "boss",
             "model": "mobile_fortress",
             "source": "Models/mobile_fortress",
-            "hash": "v2:95a76357003a2caa60489f7af9ef5c398ab6865b"
+            "hash": "v2:f564bef16ce2b2ffb302dbde01063edcc59bf26e"
         },
         {
             "id": "moloch",
@@ -1150,6 +1143,13 @@
             "model": "typhon",
             "source": "Models/typhon",
             "hash": "v2:3cfca548f5afe76bd80b373c5e794b0955d8839f"
+        },
+        {
+            "id": "vehicle_hangar",
+            "kind": "tower",
+            "model": "drone_hangar",
+            "source": "Models/drone_hangar",
+            "hash": "v2:eaed7160b8f87d365bbf4df1111e149e382d9d76"
         }
     ]
 }
