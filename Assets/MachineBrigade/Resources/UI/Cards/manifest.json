@@ -435,7 +435,7 @@
             "kind": "vehicle",
             "model": "recoilless_jeep",
             "source": "Models/recoilless_jeep",
-            "hash": "v2:687a08f9389a659f950dfec4dd32f27a42d70526"
+            "hash": "v2:5b892348e074201cd037dcc98b82b09e553dc5ef"
         },
         {
             "id": "airborne_vehicle",
@@ -715,21 +715,21 @@
             "kind": "tower",
             "model": "helipad",
             "source": "Models/helipad",
-            "hash": "v2:2d5b9368b133f635acde3f852a5d1c30e14a3641"
+            "hash": "v2:48de9d66031c7118295cec39698b05584282c575"
         },
         {
             "id": "airfield.hangar",
             "kind": "tower",
             "model": "helipad_a",
             "source": "Models/helipad_a",
-            "hash": "v2:9823cde8df546aeef432892fd257f83c35536f9d"
+            "hash": "v2:81008e0af727f387051a5fb66a8b7a9f86b71038"
         },
         {
             "id": "airfield.service",
             "kind": "tower",
             "model": "helipad_b",
             "source": "Models/helipad_b",
-            "hash": "v2:6ab9c8a899c8e7c226bb95853051f04f6a9cde97"
+            "hash": "v2:95b5df172c36f45e9cfa90ff15d80dac3b219d92"
         },
         {
             "id": "ammo_depot",
@@ -974,7 +974,7 @@
             "kind": "tower",
             "model": "dragons_teeth_b",
             "source": "Models/dragons_teeth_b",
-            "hash": "v2:179c25307f5843f95bdecd3572f28794fe7b0a0b"
+            "hash": "v2:4e0c6079792b6760010123d4bf0ed05924f975cc"
         },
         {
             "id": "drone_hangar",
@@ -1002,7 +1002,7 @@
             "kind": "boss",
             "model": "drone_mothership",
             "source": "Models/drone_mothership",
-            "hash": "v2:cb19814a92d23605cdc5775ef8b8dc4a2556e1c4"
+            "hash": "v2:37669f53d6088ac7c2a170240fc4024e457f376d"
         },
         {
             "id": "drone_net_tower",
@@ -1107,7 +1107,7 @@
             "kind": "tower",
             "model": "ew_tower",
             "source": "Models/ew_tower",
-            "hash": "v2:47950057153d125f0fd087853b4a86b03b375665"
+            "hash": "v2:1d553ad7665ae91919628754ba472a26b6ea8011"
         },
         {
             "id": "ew_tower.drone",
@@ -1121,7 +1121,7 @@
             "kind": "tower",
             "model": "ew_tower_b",
             "source": "Models/ew_tower_b",
-            "hash": "v2:14af8b37d21a35ae7956fecc5823ae8d748eb04d"
+            "hash": "v2:8696e9c46c879b9832c6bec7f772b4c52e244c19"
         },
         {
             "id": "fenrir",
@@ -1387,7 +1387,7 @@
             "kind": "boss",
             "model": "drone_mothership",
             "source": "Models/drone_mothership",
-            "hash": "v2:cb19814a92d23605cdc5775ef8b8dc4a2556e1c4"
+            "hash": "v2:37669f53d6088ac7c2a170240fc4024e457f376d"
         },
         {
             "id": "logistics_station",
@@ -1492,7 +1492,7 @@
             "kind": "boss",
             "model": "nuke_train",
             "source": "Models/nuke_train",
-            "hash": "v2:c809a29b0cb10eeb0167b9f2b95f8a1add90ca9a"
+            "hash": "v2:a2e56cdf018048c6815d27f456edba6fac61808f"
         },
         {
             "id": "nyx",
