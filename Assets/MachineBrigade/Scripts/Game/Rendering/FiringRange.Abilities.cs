@@ -122,6 +122,60 @@ namespace MachineBrigade.Game.Rendering
             _ => Scene.None,
         };
 
+        /// <summary>
+        /// Play-test 14 session 5 ("nyx: sao có xe tank hỗ trợ của boss dưới biển được"): a ship's scene (a sea boss's, a
+        /// warship's) is staged on the water: its friends are boats, its attackers missile boats.
+        /// </summary>
+        private bool AtSea => Setting == PreviewSetting.Sea;
+
+        /// <summary>A unit of the catalog, or <paramref name="fallback"/> when it has none of that id.</summary>
+        private string Have(string id, string fallback) => _world.Catalog.Vehicles.ContainsKey(id) ? id : fallback;
+
+        /// <summary>
+        /// The jammer's or the interceptor's scene at sea: two friendly boats on the ship's starboard beam (away from the shore
+        /// and the line abreast), fore and aft; missile boats beyond the ends of the line abreast (a sea boss's) or out ahead (a
+        /// warship's) fire at them, and the ship's field or guns turn the missiles away.
+        /// </summary>
+        private void SeaGuard()
+        {
+            var def = _shooter.Def;
+            var heading = _bossShow ? BossSeaHeading : 0f;
+            var ahead = SimMath.Forward(heading);
+            var starboard = SimMath.Forward(heading + MathF.PI * 0.5f);
+            var friendId = Have("sea_corvette", ShipTarget);
+            var friendDef = _world.Catalog.Vehicles.TryGetValue(friendId, out var fd) ? fd : null;
+            var beam = friendDef != null ? friendDef.Width : 6f;
+            var off = def.Width * 0.5f + beam * 0.5f + 6f;
+            var along = Mathf.Max(def.Length * 0.28f, (friendDef != null ? friendDef.Length : 12f) * 0.6f);
+            var fore = Friend(friendId, Inside(_start + starboard * off + ahead * along), dummy: true, heading: heading);
+            var aft = Friend(Have("river_gunboat", friendId), Inside(_start + starboard * off - ahead * along), dummy: true, heading: heading);
+            Vector2 left, right;
+            if (_bossShow)
+            {
+                var line = _start - starboard * BossSeaOffset(def);
+                var past = def.Length * 0.5f + 10f;
+                left = Inside(line - ahead * past);
+                right = Inside(line + ahead * past);
+            }
+            else
+            {
+                left = Inside(new Vector2(-8f, _far.Y + 6f));
+                right = Inside(new Vector2(9f, _far.Y + 4f));
+                Widen(_far.Y + 8f);
+            }
+            Attacker(Have("missile_boat", ShipTarget), left, fore);
+            Attacker(Have("missile_boat", ShipTarget), right, aft);
+            foreach (var at in new[] { fore.Position, aft.Position, left, right }) FrameIn(at);
+        }
+
+        /// <summary>Widens a boss's framed scene to take in a vehicle the ability scene added at <paramref name="at"/>.</summary>
+        private void FrameIn(Vector2 at)
+        {
+            if (_bossBox is not { } box) return;
+            _bossBox = Rect.MinMaxRect(Mathf.Min(box.xMin, at.X - 3f), Mathf.Min(box.yMin, at.Y - 3f), Mathf.Max(box.xMax, at.X + 3f),
+                Mathf.Max(box.yMax, at.Y + 3f));
+        }
+
         /// <summary>Once the targets are up: the scene's other vehicles (see the class notes). Then, every step, keeps it going.</summary>
         private void Stage()
         {
@@ -149,6 +203,11 @@ namespace MachineBrigade.Game.Rendering
             var s = _start;
             switch (_scene)
             {
+                case Scene.Jammer when AtSea:
+                case Scene.Interceptor when AtSea:
+                    // Play-test 14 session 5: a ship guards boats from missile boats, never tanks on the water.
+                    SeaGuard();
+                    break;
                 case Scene.Jammer:
                     // Enemy missiles and a loitering drone go for the jammer's friends: inside its
                     // field they lose their lock and fly wide.
@@ -465,9 +524,9 @@ namespace MachineBrigade.Game.Rendering
             _effects.AbilityRing(new Vector3(at.x, 0.1f, at.z), size, colour);
         }
 
-        private Vehicle Friend(string id, Vector2 at, bool dummy = false)
+        private Vehicle Friend(string id, Vector2 at, bool dummy = false, float heading = 0f)
         {
-            var friend = _world.SpawnVehicle(id, 0, at, 0f);
+            var friend = _world.SpawnVehicle(id, 0, at, heading);
             if (dummy) _world.MakeDummy(friend);
             _friends.Add(friend);
             return friend;
