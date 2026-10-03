@@ -1372,7 +1372,8 @@
       "firesWhileMoving": false, "weapon": "rockets_300mm",
       "secondary": [],
       "deathExplosion": { "damage": 200, "radius": 11, "delay": 0.4, "tier": "Ultimate" } },
-    { "id": "ballistic_launcher", "outgoingDamageMult": 1.2727, "value": 1.18, "scale": 1, "modelSize": [10.7, 2.53, 4.18], "armour": 1, "hp": 595, "speed": 6.5, "turnRate": 55, "turretTurnRate": 35, "radius": 2.6, "length": 10.7, "width": 2.53, "cp": 14, "vision": 26,
+    // Play-test 13 (lane C): a TEL / box launcher does not traverse: the whole vehicle turns to face the target (mainAim Hull, the turret locked to the hull), then the erector raises.
+    { "id": "ballistic_launcher", "mainAim": "Hull", "outgoingDamageMult": 1.2727, "value": 1.18, "scale": 1, "modelSize": [10.7, 2.53, 4.18], "armour": 1, "hp": 595, "speed": 6.5, "turnRate": 55, "turretTurnRate": 35, "radius": 2.6, "length": 10.7, "width": 2.53, "cp": 14, "vision": 26,
       "firesWhileMoving": false, "weapon": "ballistic_missile",
       "secondary": [],
       "deathExplosion": { "damage": 260, "radius": 13, "delay": 0.4, "tier": "Ultimate" } },
@@ -1825,7 +1826,8 @@
     { "id": "river_gunboat", "outgoingDamageMult": 1.2681, "model": "river_gunboat", "modelSize": [7.86, 3.14, 2.88], "armour": [2, 1, 1, 0], "hp": 1432, "speed": 6, "turnRate": 50, "turretTurnRate": 45, "radius": 2.7, "length": 7.86, "width": 3.14, "cp": 11, "vision": 34,
       "weapon": "gun_100_river", "deathExplosion": { "damage": 130, "radius": 8, "delay": 0.4, "tier": "Huge" } },
     // dx34: the NSM Coastal Defence-class anti-ship vehicle stand-in (sam_launcher's hull): very long reach, slow to reload; the sim has no ship-only filter yet, so it also lands on ground targets (DECISIONS 25F2-B).
-    { "id": "coastal_ashm_vehicle", "outgoingDamageMult": 1.3, "model": "coastal_ashm_vehicle", "modelSize": [7.18, 2.7, 2.97], "armour": 1, "hp": 555, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.3, "length": 7.18, "width": 2.7, "cp": 13, "vision": 35,
+    // Play-test 13 (lane C): a TEL / box launcher does not traverse: the whole vehicle turns to face the target (mainAim Hull, the turret locked to the hull), then the erector raises.
+    { "id": "coastal_ashm_vehicle", "mainAim": "Hull", "outgoingDamageMult": 1.3, "model": "coastal_ashm_vehicle", "modelSize": [7.18, 2.7, 2.97], "armour": 1, "hp": 555, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.3, "length": 7.18, "width": 2.7, "cp": 13, "vision": 35,
       "weapon": "nsm_coastal", "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // dx35: the XM2001 Crusader-class auto-loading howitzer stand-in (artillery's hull): a four-round burst that lands together (mrsi), then a long reload.
     { "id": "auto_loader_howitzer", "outgoingDamageMult": 1.125, "model": "auto_loader_howitzer", "modelSize": [7.86, 3.14, 2.88], "armour": [2, 1, 1, 0], "hp": 832, "speed": 6, "turnRate": 60, "turretTurnRate": 45, "radius": 2.5, "length": 7.86, "width": 3.14, "cp": 9, "vision": 30,
@@ -1871,7 +1873,8 @@
     { "id": "dazzler_vehicle", "outgoingDamageMult": 1.2, "model": "dazzler_vehicle", "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 505, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 6, "vision": 35,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "jammer": 30, "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // dx50: the Typhon MRC-class ground-launched cruise missile vehicle stand-in (sam_launcher's hull).
-    { "id": "ground_cruise_missile_vehicle", "dropDelay": 5, "outgoingDamageMult": 1.25, "model": "ground_cruise_missile_vehicle", "modelSize": [7.18, 2.7, 2.97], "armour": 1, "hp": 586, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.3, "length": 7.18, "width": 2.7, "cp": 15, "vision": 35,
+    // Play-test 13 (lane C): a TEL / box launcher does not traverse: the whole vehicle turns to face the target (mainAim Hull, the turret locked to the hull), then the erector raises.
+    { "id": "ground_cruise_missile_vehicle", "mainAim": "Hull", "dropDelay": 5, "outgoingDamageMult": 1.25, "model": "ground_cruise_missile_vehicle", "modelSize": [7.18, 2.7, 2.97], "armour": 1, "hp": 586, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.3, "length": 7.18, "width": 2.7, "cp": 15, "vision": 35,
       "weapon": "cruise_missile_ground", "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // dx51: the KC-135 / Il-78-class aerial tanker stand-in (heavy_bomber's hull): unarmed and high-flying in this pass; the endurance aura is not modelled yet (no aircraft-fuel field exists: DECISIONS 25F2-B).
     { "id": "aerial_tanker", "flareRecharge": 20, "flareCharges": 3, "outgoingDamageMult": 1.1391, "model": "aerial_tanker", "rearmTime": 0, "modelSize": [19.8, 22.62, 5.7], "armour": 0, "hp": 1300, "speed": 20, "turnRate": 68, "turretTurnRate": 360, "radius": 7.5, "cp": 9, "vision": 55,

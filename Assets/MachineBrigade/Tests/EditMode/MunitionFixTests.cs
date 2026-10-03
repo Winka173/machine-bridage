@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using NUnit.Framework;
@@ -275,6 +276,25 @@ namespace MachineBrigade.Tests
             var from = jet.Position;
             world.Step(TestWorlds.Step);
             Assert.LessOrEqual(Vector2.Distance(from, jet.Position), jet.Def.Speed * TestWorlds.Step + 1e-3f, "never faster than its own speed");
+        }
+
+        [Test]
+        public void ErectorLaunchersTurnTheWholeVehicleNotATurret()
+        {
+            // Play-test 13 (lane C): a TEL (Iskander) and a cruise-missile box launcher do not traverse: the vehicle turns to
+            // face the target, the erector stays on the hull's line; a rocket pack on a turntable (MLRS, Grad) still traverses.
+            var c = Shipped;
+            foreach (var id in new[] { "ballistic_launcher", "ground_cruise_missile_vehicle", "coastal_ashm_vehicle" })
+                Assert.AreEqual(MountAim.Hull, c.Vehicles[id].Mounts[0].Aim, id + ": aims with its hull");
+            Assert.AreEqual(MountAim.Turret, c.Vehicles["mlrs"].Mounts[0].Aim, "an MLRS launcher pack traverses");
+            var world = Field(c);
+            var tel = world.SpawnVehicle("ballistic_launcher", 0, new Vector2(0f, -60f), MathF.PI);
+            world.SpawnVehicle("main_battle_tank", 1, new Vector2(0f, 40f), 0f);
+            for (var i = 0; i < 40; i++)
+            {
+                world.Step(TestWorlds.Step);
+                Assert.AreEqual(tel.Heading, tel.TurretHeading, 1e-5f, "the erector never swings off the hull");
+            }
         }
 
         [Test]
