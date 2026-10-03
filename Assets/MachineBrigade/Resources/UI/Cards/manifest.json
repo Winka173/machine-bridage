@@ -904,7 +904,7 @@
             "kind": "boss",
             "model": "kraken",
             "source": "Models/kraken",
-            "hash": "v2:2d8e2d895e47e6d4d9139c2fed550278b51bbbfc"
+            "hash": "v2:23001c949dd26ab616cdae006bbeb1c042c32da9"
         },
         {
             "id": "landing_hovercraft",
@@ -932,7 +932,7 @@
             "kind": "boss",
             "model": "leviathan",
             "source": "Models/leviathan",
-            "hash": "v2:c5f29df0724dbb572b800ad2feaaae91215c3bcd"
+            "hash": "v2:c11f817cfba1412e27bb57e8bbed681661cd7a00"
         },
         {
             "id": "locust",
@@ -1037,7 +1037,7 @@
             "kind": "boss",
             "model": "nyx",
             "source": "Models/nyx",
-            "hash": "v2:c9b4a0c48e8de44f54369cc10f01781d9a946bf1"
+            "hash": "v2:30207c94ce35a101a12d1bddca2659b5328990cb"
         },
         {
             "id": "one_shot_atgm_tower",
@@ -1080,13 +1080,6 @@
             "model": "rocket_turret_b",
             "source": "Models/rocket_turret_b",
             "hash": "v2:f0a434cb07251a05f064174dd3ddecbf31295db7"
-        },
-        {
-            "id": "scylla",
-            "kind": "boss",
-            "model": "leviathan",
-            "source": "Models/leviathan",
-            "hash": "v2:c5f29df0724dbb572b800ad2feaaae91215c3bcd"
         },
         {
             "id": "shield_tower",
