@@ -314,14 +314,14 @@ def artillery_emplacement_b(a):
     a.part('Crane_truss', 'Steel').tube([(jx, jy, G + 2.2), (jx + .6, jy - 1.3, G + 2.72)], .02, seg=3)
     a.part('Kit_cables', 'Undercarriage').tube([(jx + .65, jy - 1.3, G + 2.7), (jx + .65, jy - 1.3, G + 1.6)], .012,
                                                seg=3)
-    K.missile(a, (jx + .65, jy - 1.3, G + 1.55), .12, 1.0, direction=(0, 0, -1), fins=4, body='Mortar_bombs',
+    K.missile(a, (jx + .65, jy - 1.3, G + 1.55), .12, 1.0, direction=(0, 0, 1), fins=4, body='Mortar_bombs',
               seeker='Steel', band=False)
     k.block(a.part('Crane_base', 'Concrete'), (.6, .6, .3), loc=(jx, jy, G + .15), chamfer=.04)
     pal = a.part('Pallets', 'Wood')
     for (x, y) in ((1.9, 1.0), (1.9, 1.95)):
         pal.box((1.2, .8, .12), loc=(x, y, G + .06), bevel=0)
         for i in range(3):
-            K.missile(a, (x - .4 + i * .4, y + .38, G + .27), .12, .95, direction=(0, -1, 0), fins=4,
+            K.missile(a, (x - .4 + i * .4, y + .38, G + .27), .12, .95, direction=(0, 1, 0), fins=4,
                       body='Mortar_bombs', seeker='Steel', band=False)
     k.block(a.part('Loading_tray', 'Steel'), (.5, 1.4, .1), loc=(-.7, 1.4, G + .55), chamfer=0)
     for (x, y) in ((-.9, .8), (-.5, .8), (-.9, 2.0), (-.5, 2.0)):

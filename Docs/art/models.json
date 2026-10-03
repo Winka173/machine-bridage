@@ -1,7 +1,7 @@
 {
   "aa_57mm_vehicle": {
     "file": "aa_57mm_vehicle.glb",
-    "triangles": 6028
+    "triangles": 7096
   },
   "aa_gun_tower": {
     "file": "aa_gun_tower.glb",
@@ -285,7 +285,7 @@
   },
   "bunker_vehicle": {
     "file": "bunker_vehicle.glb",
-    "triangles": 7792
+    "triangles": 9356
   },
   "bus": {
     "file": "bus.glb",
@@ -321,7 +321,7 @@
   },
   "caspian": {
     "file": "caspian.glb",
-    "triangles": 6766
+    "triangles": 11042
   },
   "cerberus": {
     "file": "cerberus.glb",
@@ -793,7 +793,7 @@
   },
   "elite_attack_helicopter": {
     "file": "elite_attack_helicopter.glb",
-    "triangles": 4398
+    "triangles": 5606
   },
   "elite_heavy_tank": {
     "file": "elite_heavy_tank.glb",
@@ -945,7 +945,7 @@
   },
   "gps_jammer_vehicle": {
     "file": "gps_jammer_vehicle.glb",
-    "triangles": 4396
+    "triangles": 7444
   },
   "grad_truck": {
     "file": "grad_truck.glb",
@@ -1165,7 +1165,7 @@
   },
   "landing_hovercraft": {
     "file": "landing_hovercraft.glb",
-    "triangles": 16984
+    "triangles": 18890
   },
   "laser_ad_station": {
     "file": "laser_ad_station.glb",
@@ -1173,7 +1173,7 @@
   },
   "laser_tank": {
     "file": "laser_tank.glb",
-    "triangles": 3844
+    "triangles": 7266
   },
   "lava_vent": {
     "file": "lava_vent.glb",
@@ -1313,11 +1313,11 @@
   },
   "monster": {
     "file": "monster.glb",
-    "triangles": 23626
+    "triangles": 39598
   },
   "morrigan": {
     "file": "morrigan.glb",
-    "triangles": 1344
+    "triangles": 7656
   },
   "mortar_bomb": {
     "file": "mortar_bomb.glb",
@@ -1469,7 +1469,7 @@
   },
   "recon_jet": {
     "file": "recon_jet.glb",
-    "triangles": 768
+    "triangles": 3068
   },
   "refinery_tower": {
     "file": "refinery_tower.glb",
@@ -1637,7 +1637,7 @@
   },
   "siege_tank": {
     "file": "siege_tank.glb",
-    "triangles": 5924
+    "triangles": 10350
   },
   "silo": {
     "file": "silo.glb",
@@ -1653,15 +1653,15 @@
   },
   "sky_fortress": {
     "file": "sky_fortress.glb",
-    "triangles": 3084
+    "triangles": 7300
   },
   "sky_gunship": {
     "file": "sky_gunship.glb",
-    "triangles": 3652
+    "triangles": 3562
   },
   "sky_gunship_hd": {
     "file": "sky_gunship_hd.glb",
-    "triangles": 4492
+    "triangles": 3562
   },
   "skyscraper": {
     "file": "skyscraper.glb",
@@ -1685,7 +1685,7 @@
   },
   "stealth_bomber": {
     "file": "stealth_bomber.glb",
-    "triangles": 2096
+    "triangles": 3564
   },
   "stealth_fighter": {
     "file": "stealth_fighter.glb",
@@ -1781,11 +1781,11 @@
   },
   "thermobaric_launcher": {
     "file": "thermobaric_launcher.glb",
-    "triangles": 4982
+    "triangles": 10028
   },
   "titan_tank": {
     "file": "titan_tank.glb",
-    "triangles": 8384
+    "triangles": 10282
   },
   "tos_rocket": {
     "file": "tos_rocket.glb",
@@ -1841,7 +1841,7 @@
   },
   "turtle_tank": {
     "file": "turtle_tank.glb",
-    "triangles": 2540
+    "triangles": 7348
   },
   "twin_rotor_gunship": {
     "file": "twin_rotor_gunship.glb",
@@ -1849,11 +1849,11 @@
   },
   "twin_tank": {
     "file": "twin_tank.glb",
-    "triangles": 7154
+    "triangles": 9870
   },
   "typhon": {
     "file": "typhon.glb",
-    "triangles": 6876
+    "triangles": 13260
   },
   "uav_loiter_strike": {
     "file": "uav_loiter_strike.glb",
@@ -1913,7 +1913,7 @@
   },
   "wingman_drone": {
     "file": "wingman_drone.glb",
-    "triangles": 1064
+    "triangles": 2914
   },
   "wreck_barrel": {
     "file": "wreck_barrel.glb",

@@ -1,0 +1,196 @@
+{
+ "id": "titan_tank",
+ "class": "tracked",
+ "real": [
+  "Rheinmetall NPzK 140 mm (twin)",
+  "a future concept super tank: composite armour, APS (Trophy-class), sub-turret"
+ ],
+ "shape": "unit_sheet.json Phương tiện: 'Siêu tăng 4 dải xích (2 mỗi bên), tháp lớn với 2 nòng 140 mm, các tháp phụ súng máy. To hơn Tăng hạng nặng ≥ 20%. Từ trên xuống: rộng như 2 xe tăng.' Visible weapons NPzK 140 mm (twin), PKT, M2, TOW-2.",
+ "confidence": "ban_dau_doan (a concept tank after the sheet; gun and APS sized from NPzK / Trophy)",
+ "target_size": {
+  "L": 11.3,
+  "W": 5.3,
+  "H": 2.84,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "four tracks, two a side, the outer pair under armoured skirts",
+   "nodes": [
+    "Tracks",
+    "Track_links",
+    "Wheels",
+    "Skirts"
+   ]
+  },
+  {
+   "feature": "broad hull over all four tracks, glacis composite modules",
+   "nodes": [
+    "Hull",
+    "Hull_lower",
+    "Glacis_armor"
+   ]
+  },
+  {
+   "feature": "big faceted turret with cheek composite modules",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor"
+   ]
+  },
+  {
+   "feature": "twin 140 mm in one broad mantlet, baffle brakes",
+   "nodes": [
+    "Main_cannon",
+    "Main_cannon_2",
+    "Muzzle_brake",
+    "Muzzle_brake_2",
+    "Mantlet"
+   ]
+  },
+  {
+   "feature": "TOW-class launcher boxes on both cheeks",
+   "nodes": [
+    "ATGM_pod",
+    "ATGM_mount",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "APS radar panels on the turret corners, launcher clusters on the roof",
+   "nodes": [
+    "APS",
+    "Aps_cluster_panels",
+    "Aps_cluster",
+    "Mount_APS"
+   ]
+  },
+  {
+   "feature": "rear machine-gun sub-turret on the engine deck",
+   "nodes": [
+    "Mount_mg",
+    "Sub_turrets",
+    "MG"
+   ]
+  },
+  {
+   "feature": "commander's cupola with vision blocks, gunner's sight, loader's hatch",
+   "nodes": [
+    "Cupola",
+    "Sight",
+    "Hatches"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_140_twin",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_b1_main",
+    "Muzzle_b2_main"
+   ]
+  },
+  {
+   "weapon": "mg_coax",
+   "slot": "coax",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_coax"
+   ]
+  },
+  {
+   "weapon": "hmg_roof",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "atgm",
+   "slot": "missile",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "lead rule (wave 5): units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "hull, skirts and turret body (Team)",
+  "roof panel (Team)",
+  "bands along both sides (Team)",
+  "the sub-turret (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (tank wreck)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "four tracks",
+   "turret",
+   "twin guns"
+  ],
+  "tier2": [
+   "mantlet",
+   "cheek modules",
+   "glacis modules",
+   "TOW boxes",
+   "APS panels",
+   "sub-turret",
+   "skirts",
+   "cupola",
+   "sights",
+   "stowage",
+   "grilles",
+   "exhausts"
+  ],
+  "tier3": [
+   "track links",
+   "road wheels",
+   "rivets",
+   "vision blocks",
+   "smoke dischargers",
+   "antennas",
+   "lamps",
+   "tow hooks",
+   "hinge rail",
+   "launcher tubes"
+  ]
+ },
+ "questions": []
+}

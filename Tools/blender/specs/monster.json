@@ -1,0 +1,303 @@
+{
+ "id": "monster",
+ "class": "boss",
+ "frame": "ground",
+ "real": [
+  "2B1 Oka (420 mm self-propelled mortar)",
+  "Object 271 (1957)",
+  "the def's 800 mm siege gun"
+ ],
+ "shape": "unit_refs: 'Pháo tự hành 800 mm khổng lồ trên xích' (no Boss sheet row for monster). Built as a giant gun carriage on four tracked bogie units, the barrel on a slab-sided gun house.",
+ "confidence": "ban_dau_doan (a fictional super-heavy SPG after the 2B1 Oka / Object 271 layout; no card text)",
+ "target_size": {
+  "L": 40.3,
+  "W": 22.1,
+  "H": 13.0,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "huge 800 mm barrel tilted up on its cradle with recoil cylinders and muzzle bell (part mortar)",
+   "nodes": [
+    "Part_barrel",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Barrel_cradle",
+    "Recoil_cylinders"
+   ]
+  },
+  {
+   "feature": "slab-sided gun house with riveted cheek plates and the shell hoist",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor",
+    "Shell_hoist",
+    "Shell"
+   ]
+  },
+  {
+   "feature": "long carriage hull with sloped glacis and shoulders, riveted side plates",
+   "nodes": [
+    "Hull",
+    "Chassis",
+    "Armor_plates"
+   ]
+  },
+  {
+   "feature": "four tracked bogie units in armoured pods at the corners (breakable)",
+   "nodes": [
+    "Part_track",
+    "Track_pods",
+    "Skirts",
+    "Strut_beams"
+   ]
+  },
+  {
+   "feature": "twin 100 mm turrets on the front corners, 40 mm Bofors turrets aft",
+   "nodes": [
+    "Mount_gun",
+    "Gun_house",
+    "Bofors_mount"
+   ]
+  },
+  {
+   "feature": "155 mm casemate gun in a ball mount in the glacis",
+   "nodes": [
+    "Mount_gun.004",
+    "Casemate_ball"
+   ]
+  },
+  {
+   "feature": "ZU-23-2 on raised pedestals on side balconies",
+   "nodes": [
+    "Mount_mg",
+    "Mount_mg.001",
+    "Balconies",
+    "Zu_pedestals"
+   ]
+  },
+  {
+   "feature": "twin Kornet launcher on a pedestal on the rear deck (breakable)",
+   "nodes": [
+    "Part_missile",
+    "Mount_missile",
+    "Launch_tubes"
+   ]
+  },
+  {
+   "feature": "engine house with louvres and two smokestacks; deck plates, ammunition, loading crane, fuel cells",
+   "nodes": [
+    "Engine_house",
+    "Stacks",
+    "Deck_plates",
+    "Shell_racks",
+    "Crane",
+    "Fuel_cells"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_bastion_sec_b240",
+   "slot": "mount 0",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_direct_b100",
+   "slot": "mount 1",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_direct_b100",
+   "slot": "mount 2",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_tiny_autocannon_40",
+   "slot": "mount 3",
+   "mount": "Mount_gun.002",
+   "muzzles": [
+    "Muzzle_gun.002"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_tiny_autocannon_40",
+   "slot": "mount 4",
+   "mount": "Mount_gun.003",
+   "muzzles": [
+    "Muzzle_gun.003"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_tiny_kornet_twin",
+   "slot": "mount 5",
+   "mount": "Mount_missile",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_close_boss_hmg",
+   "slot": "mount 6",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_close_boss_hmg",
+   "slot": "mount 7",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_main_b155",
+   "slot": "mount 8",
+   "mount": "Mount_gun.004",
+   "muzzles": [
+    "Muzzle_gun.004"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_tiny_zu23",
+   "slot": "mount 9",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_tiny_zu23",
+   "slot": "mount 10",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "hull and engine house (Team)",
+  "gun house (Team)",
+  "track pods (Team)",
+  "turret houses and shields (Team)",
+  "side bands and roof panel (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "mortar",
+   "node": "Main_cannon",
+   "data_node": "Main_cannon*"
+  },
+  {
+   "part": "turret_fl",
+   "node": "Mount_gun"
+  },
+  {
+   "part": "turret_fr",
+   "node": "Mount_gun.001"
+  },
+  {
+   "part": "turret_rl",
+   "node": "Mount_gun.002"
+  },
+  {
+   "part": "turret_rr",
+   "node": "Mount_gun.003"
+  },
+  {
+   "part": "kornet",
+   "node": "Part_missile"
+  },
+  {
+   "part": "casemate",
+   "node": "Mount_gun.004"
+  },
+  {
+   "part": "zu23_l",
+   "node": "Mount_mg"
+  },
+  {
+   "part": "zu23_r",
+   "node": "Mount_mg.001"
+  }
+ ],
+ "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
+ "faction_style": "Hegemon general's siege gun: riveted plate, hazard markings, warning beacons",
+ "details": {
+  "tier1": [
+   "carriage hull",
+   "gun house",
+   "barrel",
+   "four track pods"
+  ],
+  "tier2": [
+   "front turrets",
+   "aft turrets",
+   "casemate",
+   "balconies",
+   "ZU-23s",
+   "Kornet",
+   "engine house",
+   "stacks",
+   "crane",
+   "fuel cells",
+   "shell hoist"
+  ],
+  "tier3": [
+   "rivets",
+   "railings",
+   "ladders",
+   "hatches",
+   "periscopes",
+   "beacons",
+   "lamps",
+   "grilles",
+   "deck plates",
+   "crates",
+   "shells",
+   "cables",
+   "lifting eyes"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the four track pods break off (Part_track) and the carriage slows",
+   "the barrel on its cradle (Main_cannon*) is the big target over the deck",
+   "the Kornet pedestal stands alone on the rear deck"
+  ],
+  "how_to_fight": "no card text for monster; the parts are the def's"
+ },
+ "questions": []
+}

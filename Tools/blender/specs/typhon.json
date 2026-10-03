@@ -1,0 +1,216 @@
+{
+ "id": "typhon",
+ "class": "boss",
+ "frame": "sea",
+ "real": [
+  "Project 941 Akula (Typhoon)"
+ ],
+ "shape": "unit_sheet.json Boss: 'Dựa trên: Project 941 Akula (Typhoon) · The Hunt for Red October (1990) — Tàu ngầm tên lửa. Kích thước hiện 70.0 × 14.5 × 16.7 m ...'",
+ "confidence": "xấp xỉ (Typhoon photographs and drawings; at the old file's size)",
+ "target_size": {
+  "L": 59.0,
+  "W": 12.25,
+  "H": 14.05,
+  "source": "the old GLB (59.0 x 12.25 x 14.05; no modelSize in data)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "very wide flat hull (two pressure hulls under one casing), anechoic tiles with renewed and fallen tiles",
+   "nodes": [
+    "Hull",
+    "Deck_casing",
+    "Deck_tiles",
+    "Deck_tiles_new",
+    "Deck_tiles_bare"
+   ]
+  },
+  {
+   "feature": "20 missile tubes in two rows forward of the sail under hinged doors (breakable rows)",
+   "nodes": [
+    "Missile_hump",
+    "Part_doors_l",
+    "Part_doors_r"
+   ]
+  },
+  {
+   "feature": "long low sail aft of the silo: rounded top, bridge windows, masts, ladders, the SAM post",
+   "nodes": [
+    "Part_sail",
+    "Sail_body",
+    "Sail_masts",
+    "Sail_windows",
+    "Mount_missile"
+   ]
+  },
+  {
+   "feature": "chin sonar dome (breakable)",
+   "nodes": [
+    "Part_sonar",
+    "Sonar_dome"
+   ]
+  },
+  {
+   "feature": "cruciform stern with end-plated planes, towed-array pod, twin shrouded screws (breakable)",
+   "nodes": [
+    "Part_rudder",
+    "Rudder_fins",
+    "Screw_shrouds",
+    "Screws"
+   ]
+  },
+  {
+   "feature": "retractable bow planes, limber holes along the casing, waterline band",
+   "nodes": [
+    "Bow_planes",
+    "Limber_holes",
+    "Waterline_band"
+   ]
+  },
+  {
+   "feature": "deck gun on the forecasing (single barrel; mb_fix_barrels makes the pair)",
+   "nodes": [
+    "Mount_gun",
+    "Gun_house_gun"
+   ]
+  },
+  {
+   "feature": "surfaced fittings: stanchions and lifelines, bollards, rescue buoys, vents, life rings",
+   "nodes": [
+    "Railings",
+    "Bollards",
+    "Rescue_buoys",
+    "Life_rings"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_typhon_sec_ty57",
+   "slot": "mount 1",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "p26_typhon_sec_ty57",
+   "slot": "mount 2",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_b1_gun"
+   ]
+  },
+  {
+   "weapon": "p26_typhon_direct_ty100",
+   "slot": "mount 3",
+   "mount": "Mount_missile",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "deck tiles (Team)",
+  "silo doors (Team)",
+  "sail top (Team)",
+  "SAM box (Team)",
+  "gun mantlet (Team)",
+  "side bands (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "sail",
+   "node": "Part_sail"
+  },
+  {
+   "part": "doors_l",
+   "node": "Part_doors_l"
+  },
+  {
+   "part": "doors_r",
+   "node": "Part_doors_r"
+  },
+  {
+   "part": "rudder",
+   "node": "Part_rudder"
+  },
+  {
+   "part": "sonar",
+   "node": "Part_sonar"
+  },
+  {
+   "part": "sam",
+   "node": "Mount_missile"
+  },
+  {
+   "part": "deck_gun",
+   "node": "Mount_gun"
+  }
+ ],
+ "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
+ "faction_style": "Hegemon general's missile submarine: black hull, worn anechoic tiles",
+ "details": {
+  "tier1": [
+   "hull",
+   "casing",
+   "sail",
+   "stern"
+  ],
+  "tier2": [
+   "silo hump",
+   "door rows",
+   "deck tiles",
+   "bow planes",
+   "sonar dome",
+   "rudder and planes",
+   "screw shrouds",
+   "deck gun",
+   "SAM box"
+  ],
+  "tier3": [
+   "door rims and hinges",
+   "limber holes",
+   "masts",
+   "windows",
+   "ladders",
+   "railings",
+   "bollards",
+   "cleats",
+   "hatches",
+   "life rings",
+   "vents",
+   "rope coil"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the deck (armour 2) between the silo doors: artillery, bombs and top attacks (card)",
+   "the sail (tháp chỉ huy) with the SAM post",
+   "the two silo door rows"
+  ],
+  "how_to_fight": "card: it dives and surfaces by phase; bubbles warn where; hit the deck from above when it is up"
+ },
+ "questions": [
+  "The old file had the missile silo aft of the sail; the real Typhoon (and this rebuild) has it forward. Node names are kept; only their places moved. Keep?"
+ ]
+}

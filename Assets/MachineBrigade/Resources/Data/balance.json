@@ -890,8 +890,8 @@
     { "id": "turret_gun_120_auto", "weaponFamily": "rh_120_l_44_120_mm", "real": "Rh-120 L/44 120 mm (autoloader)", "family": "tank_gun", "size": 120, "caliberMm": 120, "pen": 4, "inherits": "turret_gun_120", "cooldown": 2.53 },
     // Tower branches (DECISIONS 19T): the gun turret's 57 mm branch, a fast dual-purpose gun; its air-burst round
     // (fragmentation, a proximity fuze) for helicopters, aircraft and drones.
-    { "id": "gun_57_auto", "weaponFamilyId": "cal_57", "weaponVariantId": "ap", "prey": "Light", "real": "AU-220 57 mm (tower)", "family": "autocannon", "size": 57, "caliberMm": 57, "pen": 2, "damageType": "Kinetic", "damage": 70,
-      "cooldown": 0.5, "clip": 6, "clipReload": 2.9, "range": 40, "projectileSpeed": 260, "splash": 1.5, "spread": 0.9, "impactTier": "Medium",
+    { "id": "gun_57_auto", "weaponFamilyId": "cal_57", "weaponVariantId": "ap", "prey": "Light", "real": "AU-220 57 mm (tower, twin)", "family": "autocannon", "size": 57, "caliberMm": 57, "barrels": 2, "pen": 2, "damageType": "Kinetic", "damage": 35,
+      "cooldown": 0.25, "clip": 12, "clipReload": 2.65, "range": 40, "projectileSpeed": 260, "splash": 1.5, "spread": 0.9, "impactTier": "Medium",
       "projectile": "Bullet", "targets": "Ground", "roundWeight": 70 },
     { "id": "gun_57_air", "weaponFamilyId": "cal_57", "weaponVariantId": "flak", "real": "AU-220 57 mm (air burst)", "family": "autocannon", "size": 57, "caliberMm": 57, "pen": 2, "damageType": "Fragmentation", "damage": 70,
       "cooldown": 0.5, "clip": 6, "clipReload": 2.4, "range": 40, "projectileSpeed": 260, "splash": 3, "spread": 1.2, "impactTier": "Medium",

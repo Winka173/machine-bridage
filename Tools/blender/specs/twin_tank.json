@@ -1,0 +1,178 @@
+{
+ "id": "twin_tank",
+ "class": "tracked",
+ "real": [
+  "Rh-120 L/44 x 2 (sheet: a tank ~15 % bigger than the MBT with two parallel guns)",
+  "Mammoth Tank (C&C) / Apocalypse Tank (RA2) for the twin-gun idea"
+ ],
+ "shape": "unit_sheet.json Phương tiện: 'Tăng lớn hơn MBT ~15%, tháp rộng mang 2 nòng song song. Từ trên xuống: 2 nòng song song nổi bật.' Visible weapons Rh-120 (twin), PKT / M240, M2.",
+ "confidence": "ban_dau_doan (a fictional twin-gun tank after the sheet; real parts sized from Leopard 2 / M1 practice)",
+ "target_size": {
+  "L": 8.96,
+  "W": 3.53,
+  "H": 2.64,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "long low hull, seven road wheels, armoured side skirts with a hinge rail",
+   "nodes": [
+    "Hull",
+    "Hull_lower",
+    "Skirts",
+    "Wheels",
+    "Tracks"
+   ]
+  },
+  {
+   "feature": "very wide flat turret, faceted front either side of the gun ports",
+   "nodes": [
+    "Turret",
+    "Turret_body"
+   ]
+  },
+  {
+   "feature": "two 120 mm guns side by side, each in its own mantlet with a dust cover",
+   "nodes": [
+    "Main_cannon",
+    "Main_cannon_2",
+    "Muzzle_brake",
+    "Muzzle_brake_2",
+    "Mantlet",
+    "Mantlet_cover"
+   ]
+  },
+  {
+   "feature": "coaxial MG between the guns in its own housing",
+   "nodes": [
+    "Coax",
+    "Coax_housing",
+    "Muzzle_coax"
+   ]
+  },
+  {
+   "feature": "commander's 12.7 mm on riser and post (roof-gun rule), sight box, panoramic sight",
+   "nodes": [
+    "Mount_mg",
+    "MG",
+    "MG_post",
+    "Sight"
+   ]
+  },
+  {
+   "feature": "bustle rack with net roll and ammunition box, stowage boxes on the turret sides",
+   "nodes": [
+    "Bustle_rack",
+    "Stowage",
+    "Ammo_boxes"
+   ]
+  },
+  {
+   "feature": "engine deck grilles, rear louvre, tail lamps",
+   "nodes": [
+    "Grilles",
+    "Tail_lamps"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_120_twin",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "mg_coax",
+   "slot": "coax",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_coax"
+   ]
+  },
+  {
+   "weapon": "hmg_roof",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "lead rule (wave 5): units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "hull, fenders, skirts and turret body (Team)",
+  "roof panel on the turret (Team)",
+  "a band along both hull sides (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret flies off (tank wreck)",
+ "faction_style": "team paint, gunmetal armour",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "two guns",
+   "tracks"
+  ],
+  "tier2": [
+   "mantlets",
+   "skirts",
+   "fenders",
+   "sight boxes",
+   "hatches",
+   "bustle rack",
+   "smoke dischargers",
+   "stowage boxes",
+   "grilles",
+   "road wheels",
+   "sprocket",
+   "idler"
+  ],
+  "tier3": [
+   "track links",
+   "return rollers",
+   "periscopes",
+   "coax",
+   "antennas",
+   "lamps",
+   "tow hooks",
+   "jerrycan",
+   "spare links",
+   "handles"
+  ]
+ },
+ "questions": []
+}

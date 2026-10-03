@@ -173,6 +173,9 @@ def gun_turret_b(a):
         for f in (2.36, 2.44):
             bp.box((.15, .025, .025), loc=(x, -1.75 - f, .58), bevel=0)
     a.pivot('Muzzle_main', (-.17, -4.27, .58), t)
+    # Wave 5 (lead call 3): gun_57_auto fires its two barrels in turn (barrels 2): a muzzle per barrel.
+    a.pivot('Muzzle_b1_main', (0, 0, 0), 'Muzzle_main')
+    a.pivot('Muzzle_b2_main', (.34, 0, 0), 'Muzzle_main')
     a.part('Coax', 'Steel', t).cyl(.03, .9, loc=(.42, -2.43, .47), rot=(R90, 0, 0), seg=6, bevel=0)
     a.pivot('Muzzle_coax', (.42, -2.88, .47), t)
     # The ammunition feed housing on the left, its chute; the sight ball on the roof right; a hatch; vents.

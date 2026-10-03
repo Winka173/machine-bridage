@@ -1,0 +1,198 @@
+{
+ "id": "elite_attack_helicopter",
+ "class": "helicopter",
+ "real": [
+  "AH-64E Apache Guardian",
+  "AGM-114L Hellfire Longbow"
+ ],
+ "shape": "No unit_sheet row (the elite is not a sheet row); unit_refs: 'AH-64 Apache, AGM-114L Hellfire Longbow', note 'Apache tinh nhuệ, bắn loạt Hellfire'. Built as the AH-64E with the Longbow radome so it is not the V2 attack_helicopter with paint.",
+ "confidence": "xấp xỉ (AH-64E photographs at the def's modelSize)",
+ "target_size": {
+  "L": 6.98,
+  "W": 4.88,
+  "H": 2.22,
+  "source": "balance.json modelSize (the old GLB is within it)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "narrow tandem-cockpit body with the flat-plate canopy and frames",
+   "nodes": [
+    "Fuselage",
+    "Canopy",
+    "Canopy_frames"
+   ]
+  },
+  {
+   "feature": "TADS / PNVS nose turret, M230 chin gun on its turret",
+   "nodes": [
+    "Sensor",
+    "Mount_gun",
+    "Gun_turret",
+    "Gun"
+   ]
+  },
+  {
+   "feature": "engine nacelles with the 'black hole' exhaust suppressors, cheek avionics bays",
+   "nodes": [
+    "Engine_nacelles",
+    "Intakes",
+    "Exhausts",
+    "Exhaust_vanes",
+    "Avionics_bays"
+   ]
+  },
+  {
+   "feature": "four-blade main rotor under the mast-mounted Longbow radome",
+   "nodes": [
+    "Rotor",
+    "Rotor_hub",
+    "Rotor_blades",
+    "Rotor_grips",
+    "Radome"
+   ]
+  },
+  {
+   "feature": "stub wings: rocket pods inboard, four Hellfires a side outboard, ATAS Stinger pairs at the tips",
+   "nodes": [
+    "Stub_wings",
+    "Pylons",
+    "Pods",
+    "Pod_face",
+    "Missiles",
+    "Missile_racks",
+    "Stinger_tubes"
+   ]
+  },
+  {
+   "feature": "tail boom, fin, stabilator, scissor tail rotor on the right",
+   "nodes": [
+    "Fins",
+    "Stabilator",
+    "Tail_rotor",
+    "Tail_rotor_blades"
+   ]
+  },
+  {
+   "feature": "tail-wheel landing gear",
+   "nodes": [
+    "Undercarriage",
+    "Tyres"
+   ]
+  },
+  {
+   "feature": "elite marks: black armour panels and blades, gilt bands and tips, red sights",
+   "nodes": [
+    "Elite_gilt",
+    "Rotor_tips",
+    "Sight_glow"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "glass",
+  "rotor_hub",
+  "blades",
+  "tail_rotor",
+  "gear",
+  "stub_wings",
+  "weapons"
+ ],
+ "weapons": [
+  {
+   "weapon": "hellfire_volley",
+   "slot": "missile (main)",
+   "mount": "Missile_racks",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "heli_gun",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "heli_rockets",
+   "slot": "rocket",
+   "mount": "Pods",
+   "muzzles": [
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "weapon": "stinger_atas",
+   "slot": "aam",
+   "mount": "Stinger_tubes",
+   "muzzles": [
+    "Muzzle_aam"
+   ]
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "cap": 10500,
+  "note": "units seen in numbers stay under 1.5 x the class maximum"
+ },
+ "team_zones": [
+  "fuselage (Team)",
+  "nacelles (Team)",
+  "stub wings (Team)",
+  "fin and stabilator (Team)",
+  "rocket pods (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Rotor and Tail_rotor fly off (helicopter wreck)",
+ "faction_style": "elite (team paint, black armour, gold marks; DECISIONS 25B2)",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "tail boom",
+   "rotor"
+  ],
+  "tier2": [
+   "canopy",
+   "nose turret",
+   "nacelles",
+   "stub wings",
+   "rocket pods",
+   "Hellfire racks",
+   "fin",
+   "stabilator",
+   "tail rotor",
+   "radome"
+  ],
+  "tier3": [
+   "frames",
+   "gun",
+   "exhaust vanes",
+   "grips",
+   "tips",
+   "Stingers",
+   "seekers",
+   "pylons",
+   "gear",
+   "antennas",
+   "beacon",
+   "gilt bands",
+   "armour panels"
+  ]
+ },
+ "merged": {
+  "Mount_aam": "Stinger_tubes"
+ },
+ "questions": []
+}

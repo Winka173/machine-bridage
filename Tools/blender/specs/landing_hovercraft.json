@@ -1,0 +1,257 @@
+{
+ "id": "landing_hovercraft",
+ "class": "boss",
+ "frame": "ground",
+ "real": [
+  "LCAC",
+  "Zubr (Project 1232.2)",
+  "A-22 Ogon 140 mm",
+  "AK-630"
+ ],
+ "shape": "unit_sheet.json Boss: 'Dựa trên: LCAC, Zubr (Project 1232.2), A-22 Ogon 140 mm, AK-630 — Tàu đổ bộ đệm khí. Kích thước hiện 24.9 × 13.5 × 7.7 m ...' (the def scales the model).",
+ "confidence": "xấp xỉ (Zubr / LCAC photographs; at the old file's size)",
+ "target_size": {
+  "L": 29.29,
+  "W": 15.9,
+  "H": 9.08,
+  "source": "the old GLB (29.3 x 15.9 x 9.1; no modelSize in data); the stern davit adds 0.9 m",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "black air-cushion skirt with finger segments, the buoyancy hull and rub rail",
+   "nodes": [
+    "Skirt",
+    "Skirt_fingers",
+    "Hull",
+    "Rub_rail"
+   ]
+  },
+  {
+   "feature": "open cargo deck between the side structures, tie-downs, two tarp-covered vehicles chained down",
+   "nodes": [
+    "Cargo_deck",
+    "Tie_downs",
+    "Cargo_tarps",
+    "Cargo_pallets"
+   ]
+  },
+  {
+   "feature": "side structures with the windowed tier, lift-fan intakes, gas-turbine exhausts, life rafts",
+   "nodes": [
+    "Side_structures",
+    "Superstructure",
+    "Intakes",
+    "Exhaust",
+    "Life_rafts"
+   ]
+  },
+  {
+   "feature": "wheelhouse on the left front, mast with radar dome, the turning search radar, APS head",
+   "nodes": [
+    "Cabin",
+    "Cabin_glass",
+    "Radar_dome",
+    "Radar",
+    "Mount_APS"
+   ]
+  },
+  {
+   "feature": "bow ramp, raised for transit (breakable)",
+   "nodes": [
+    "Part_ramp",
+    "Ramp",
+    "Ramp_ribs"
+   ]
+  },
+  {
+   "feature": "two big ducted propellers at the stern (breakable)",
+   "nodes": [
+    "Part_fan",
+    "Part_fan.001",
+    "Propeller",
+    "Propeller_2",
+    "Duct_fan"
+   ]
+  },
+  {
+   "feature": "four AK-630 six-barrel mounts and two A-22 launchers (breakable)",
+   "nodes": [
+    "Part_gun",
+    "Part_gun.001",
+    "Part_mg",
+    "Part_mg.001",
+    "Part_rocket",
+    "Part_rocket.001"
+   ]
+  },
+  {
+   "feature": "rescue boat on a davit at the port quarter",
+   "nodes": [
+    "Davit",
+    "Rhib"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "hover_ciws",
+   "slot": "main",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "hover_ciws",
+   "slot": "gun",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "weapon": "ciws_aa",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "ciws_aa",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  },
+  {
+   "weapon": "hover_rockets",
+   "slot": "rocket",
+   "mount": "Mount_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "weapon": "hover_rockets",
+   "slot": "rocket",
+   "mount": "Mount_rocket.001",
+   "muzzles": [
+    "Muzzle_rocket.001"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": true,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "hull (Team)",
+  "side structures and tier (Team)",
+  "wheelhouse (Team)",
+  "ramp (Team)",
+  "fan ducts and CIWS houses (Team)",
+  "side bands (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "ramp",
+   "node": "Part_ramp"
+  },
+  {
+   "part": "fan_l",
+   "node": "Part_fan"
+  },
+  {
+   "part": "fan_r",
+   "node": "Part_fan.001"
+  },
+  {
+   "part": "gun_l",
+   "node": "Part_gun"
+  },
+  {
+   "part": "gun_r",
+   "node": "Part_gun.001"
+  },
+  {
+   "part": "ciws_l",
+   "node": "Part_mg"
+  },
+  {
+   "part": "ciws_r",
+   "node": "Part_mg.001"
+  },
+  {
+   "part": "rockets_l",
+   "node": "Part_rocket"
+  },
+  {
+   "part": "rockets_r",
+   "node": "Part_rocket.001"
+  }
+ ],
+ "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
+ "faction_style": "Hegemon general's landing craft: grey hull, black skirt, hazard edges",
+ "details": {
+  "tier1": [
+   "skirt",
+   "hull",
+   "side structures",
+   "fans",
+   "ramp"
+  ],
+  "tier2": [
+   "tier",
+   "wheelhouse",
+   "intakes",
+   "exhausts",
+   "CIWS",
+   "rocket launchers",
+   "cargo",
+   "mast",
+   "radar",
+   "davit and boat"
+  ],
+  "tier3": [
+   "fingers",
+   "tie-downs",
+   "life rafts",
+   "railings",
+   "bollards",
+   "hatches",
+   "windows",
+   "lamps",
+   "nav lights",
+   "chains",
+   "straps",
+   "panels"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the bow ramp it lowers every 35 s to land 3-4 vehicles",
+   "the two stern fans (it slows)",
+   "the four six-barrel CIWS covering each landing"
+  ],
+  "how_to_fight": "card: hit it on its way in to cut the number of landings; the CIWS cover each landing"
+ },
+ "questions": []
+}

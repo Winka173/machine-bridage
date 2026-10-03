@@ -1,0 +1,217 @@
+{
+ "id": "sky_fortress",
+ "class": "boss",
+ "frame": "air",
+ "real": [
+  "AC-130 Spectre (sheet), built as the AC-130J Ghostrider type so it shares nothing with sky_gunship (the AC-130U)"
+ ],
+ "shape": "unit_sheet.json Boss: 'Dựa trên: AC-130 Spectre — Pháo hạm bay AC-130 phóng to 1,3 lần, sơn tối. Kích thước hiện 15.5 × 21.2 × 6.1 m ...'",
+ "confidence": "xấp xỉ (AC-130J photographs; the old file's size)",
+ "target_size": {
+  "L": 17.62,
+  "W": 24.08,
+  "H": 6.93,
+  "source": "the old GLB (17.6 x 24.1 x 6.9; no modelSize in data)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "dark chined C-130J fuselage, flat sensor nose with the big ball, refuelling probe",
+   "nodes": [
+    "Fuselage",
+    "Sensor",
+    "Sensor_glass",
+    "Probe",
+    "Canopy"
+   ]
+  },
+  {
+   "feature": "high wing with four slim nacelles and six-blade scimitar propellers (the engines: boss parts)",
+   "nodes": [
+    "Wings",
+    "Nacelles",
+    "Propeller",
+    "Propeller_2",
+    "Propeller_3",
+    "Propeller_4"
+   ]
+  },
+  {
+   "feature": "left-side guns on their own mounts: 105 mm aft, two 40 mm, 25 mm forward (boss parts)",
+   "nodes": [
+    "Mount_main",
+    "Mount_gun",
+    "Mount_gun.001",
+    "Mount_mg"
+   ]
+  },
+  {
+   "feature": "Griffin launcher in the ramp door",
+   "nodes": [
+    "Ramp_door",
+    "Griffin_launcher",
+    "Muzzle_ramp"
+   ]
+  },
+  {
+   "feature": "wing pylons with GBU-39s, IR jammer turrets, antenna farm, flare dispensers",
+   "nodes": [
+    "Pylons",
+    "Jammers",
+    "Antennas",
+    "Flares"
+   ]
+  },
+  {
+   "feature": "tall fin with the general's band, tailplane, gear sponsons",
+   "nodes": [
+    "Fins",
+    "Fin_band",
+    "Tailplanes",
+    "Sponsons"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "gunship_105",
+   "slot": "main",
+   "mount": "Mount_main",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "gunship_40mm",
+   "slot": "gun",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "gunship_40mm",
+   "slot": "gun",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "weapon": "gunship_25mm",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "griffin",
+   "slot": "ramp",
+   "mount": "Ramp_door",
+   "muzzles": [
+    "Muzzle_ramp"
+   ]
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "wing (Team)",
+  "fin and tailplane (Team)",
+  "wing bands (Team)",
+  "side bands (Team)",
+  "wing centre (Team)",
+  "the fin band (Hazard)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "part": "gun_105",
+   "node": "Mount_main"
+  },
+  {
+   "part": "gun_40a",
+   "node": "Mount_gun"
+  },
+  {
+   "part": "gun_40b",
+   "node": "Mount_gun.001"
+  },
+  {
+   "part": "gun_25",
+   "node": "Mount_mg"
+  },
+  {
+   "part": "engine_1",
+   "node": "Propeller"
+  },
+  {
+   "part": "engine_2",
+   "node": "Propeller_2"
+  },
+  {
+   "part": "engine_3",
+   "node": "Propeller_3"
+  },
+  {
+   "part": "engine_4",
+   "node": "Propeller_4"
+  }
+ ],
+ "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
+ "faction_style": "Hegemon general's gunship: dark paint, team bands",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "wing",
+   "fin"
+  ],
+  "tier2": [
+   "nacelles",
+   "propellers",
+   "tailplane",
+   "sponsons",
+   "guns",
+   "sensor ball",
+   "ramp door",
+   "pylons"
+  ],
+  "tier3": [
+   "glazing",
+   "probe",
+   "door lines",
+   "GBU-39s",
+   "jammers",
+   "antennas",
+   "flare dispensers",
+   "beacon",
+   "nav lights",
+   "armour plates"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the guns out of the left side (each its own part)",
+   "the four engines and their propellers"
+  ],
+  "how_to_fight": "card: it circles and fires from the left (50-58 m) and cannot shoot aircraft; only air defence and fighters reach it"
+ },
+ "questions": []
+}
