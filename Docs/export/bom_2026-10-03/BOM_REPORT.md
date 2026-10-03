@@ -11,30 +11,35 @@
 
 ## Số đo (Bom_vet_tha)
 
-Vũ khí của đơn vị: **CHUA_CHAY** (chờ test Unity). Lệnh cho người chạy Unity:
-
-```
-set MB_BOMB_TRACE=<repo>\Docs\export\bom_2026-10-03\vet_tha_unity.csv
-Unity.exe -batchmode -projectPath <repo> -runTests -testPlatform EditMode -testFilter MachineBrigade.Tests.BombStickTrace.WriteTheBombDropTrace -testResults <tmp>\bom_results.xml
-python Tools/export/export.py bom
-```
-
-Thẻ hỗ trợ và strip boss (python theo công thức trong mã):
-
 | id | so_bom | so_diem_roi_khac_nhau | khoang_cach_xa_nhat_m | do_dai_dai_m | do_lech_ngang_m | khoang_cach_tb_giua_bom_m | ty_le_chong_lan |
 |---|---|---|---|---|---|---|---|
 | air_raid/(the_ho_tro)/TONG_KET | 10.0 | 10.0 | 70.011 | 70.0 | 5.086 | 7.778 | 1.029 |
 | airship_carpet/command_airship/TONG_KET | 16.0 | 16.0 | 75.055 | 75.0 | 7.745 | 5.0 | 1.4 |
 | airstrike/(the_ho_tro)/TONG_KET | 4.0 | 4.0 | 60.091 | 60.0 | 3.957 | 20.0 | 0.5 |
+| bomber_payload/heavy_bomber/TONG_KET | 7.0 | 7.0 | 19.729 | 19.671 | 3.962 | 3.278 | 3.111 |
+| bunker_buster_bomb/glide_bomber/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| cluster_at_bomb/glide_bomber/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | cluster_strike/(the_ho_tro)/TONG_KET | 30.0 | 30.0 | 60.39 | 60.0 | 9.655 | 2.069 | 2.658 |
 | garuda_carpet/garuda/TONG_KET | 20.0 | 20.0 | 95.124 | 95.0 | 9.355 | 5.0 | 1.4 |
+| glide_fab500/glide_bomber/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| guided_bomb/morrigan/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| guided_bomb/stealth_fighter/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| guided_bomb/strike_drone/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| jet_bombs/attack_jet/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| jet_bombs/elite_attack_jet/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| jet_bombs/stealth_naval_strike/TONG_KET | 2.0 | 2.0 | 9.15 | 9.099 | 0.899 | 9.099 | 0.907 |
 | kraken_air_raid/kraken/TONG_KET | 12.0 | 12.0 | 82.651 | 82.5 | 8.823 | 7.5 | 1.2 |
 | napalm_strike/(the_ho_tro)/TONG_KET | 8.0 | 8.0 | 55.091 | 55.0 | 4.061 | 7.857 | 1.145 |
+| p26_roc_main_roc_bombs/argus/TONG_KET | 8.0 | 5.667 | 4.142 | 3.751 | 3.458 | 0.536 | 18.797 |
+| p26_roc_main_roc_bombs/command_airship/TONG_KET | 8.0 | 5.667 | 4.142 | 3.751 | 3.458 | 0.536 | 18.797 |
+| p26_roc_main_roc_bombs/garuda/TONG_KET | 8.0 | 5.333 | 3.974 | 3.597 | 3.239 | 0.514 | 19.677 |
+| stealth_payload/stealth_bomber/TONG_KET | 2.0 | 2.0 | 1.839 | 1.539 | 0.758 | 1.539 | 14.42 |
+| thermobaric_bomb/glide_bomber/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 
 ## File
 
 - Docs/export/bom_2026-10-03/Machine_Brigade_Bom_2026-10-03.xlsx (6 sheet), Docs/export/bom_2026-10-03/csv/<sheet>.csv, Docs/export/bom_2026-10-03/Machine_Brigade_Bom_2026-10-03.md, Docs/export/bom_2026-10-03/BOM_REPORT.md
-- Vết thả từ Unity: vet_tha_unity.csv (chưa có); test: Assets/MachineBrigade/Tests/EditMode/BombStickTrace.cs
+- Vết thả từ Unity: vet_tha_unity.csv (có); test: Assets/MachineBrigade/Tests/EditMode/BombStickTrace.cs
 - Bộ xuất: Tools/export/bom.py (`python Tools/export/export.py bom [--trace CSV]`)
 - Mã: Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs, Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs (CanFire, Operate, Launch), Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs (BombTarget, chạy vào), Assets/MachineBrigade/Scripts/Sim/Strikes/StrikeSystem.cs (Airstrike), Assets/MachineBrigade/Scripts/Sim/Bosses/BossSystem.BigAttacks.cs (Strip)
 
