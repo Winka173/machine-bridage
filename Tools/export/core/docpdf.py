@@ -163,7 +163,7 @@ def render(md_path: Path, pdf_path: Path, date: str, commit: str) -> int:
     if toc:
         doc.set_toc(toc)
     stamp = "D:" + date.replace("-", "") + "000000Z"
-    doc.set_metadata({"title": f"Machine Brigade — Tài liệu thiết kế {date}", "author": "Tools/export (lượt 6)",
+    doc.set_metadata({"title": f"Machine Brigade — Tài liệu thiết kế {date}", "author": "Tools/export",
                       "subject": f"commit {commit}", "creator": "Tools/export/core/docpdf.py", "producer": "PyMuPDF",
                       "creationDate": stamp, "modDate": stamp, "keywords": "", "trapped": ""})
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
