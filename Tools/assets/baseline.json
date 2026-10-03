@@ -3140,6 +3140,24 @@
    ],
    "reason": "P35 wave 7",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "minefield_b"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG minefield_b: triangles 4,560 -> 4,194 (-8.0%); vertices 7,015 -> 6,941 (-1.1%); meshes 20 -> 21 (+5.0%); renderers 20 -> 21 (+5.0%); materials 15 -> 13 (-13.3%); materialSlots 20 -> 21 (+5.0%); fileBytes 356,904 -> 353,080 (-1.1%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "minefield"
+   ],
+   "reason": "P35 wave 7",
+   "changes": []
   }
  ],
  "models": {
@@ -40041,22 +40059,22 @@
   },
   "minefield": {
    "file": "minefield.glb",
-   "fileBytes": 289296,
-   "sha1": "e4df1b826752f245",
+   "fileBytes": 350292,
+   "sha1": "435753870128b712",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 23,
-   "meshes": 23,
-   "materials": 13,
+   "nodes": 14,
+   "meshes": 14,
+   "materials": 12,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 23,
-   "submeshes": 23,
-   "materialSlots": 23,
-   "materialsUsed": 13,
-   "triangles": 3198,
-   "vertices": 5621,
+   "renderers": 14,
+   "submeshes": 14,
+   "materialSlots": 14,
+   "materialsUsed": 12,
+   "triangles": 4746,
+   "vertices": 6956,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -40064,64 +40082,55 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 159,
-   "openEdges": 124,
-   "nonManifoldEdges": 4,
+   "loosePieces": 219,
+   "openEdges": 136,
+   "nonManifoldEdges": 0,
    "boundsMin": [
-    -2.4329,
-    -0.0729,
-    -2.4329
+    -2.5542,
+    -0.0452,
+    -2.5425
    ],
    "boundsMax": [
-    2.4329,
-    1.0382,
-    2.4329
+    2.5542,
+    1.05,
+    2.5478
    ],
    "size": [
-    4.866,
-    4.866,
-    1.111
+    5.09,
+    5.108,
+    1.095
    ],
    "center": [
     0.0,
-    0.483,
-    0.0
+    0.502,
+    0.003
    ],
-   "structureHash": "e3534a16d3ea3356",
+   "structureHash": "cf57c32d4ac3eda1",
    "color0": {
-    "mean": 0.6573,
-    "min": 0.2744,
-    "max": 0.8222,
-    "p05": 0.381,
-    "p95": 0.8058,
+    "mean": 0.5687,
+    "min": 0.0567,
+    "max": 0.9216,
+    "p05": 0.145,
+    "p95": 0.806,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Barbed_wire",
-    "Ground",
-    "Kerb",
+    "Ground_patch",
     "Mine_bodies",
     "Mine_earth",
     "Mine_fuzes",
     "Mine_plates",
-    "Mounds",
     "Pickets",
-    "Posts",
-    "Sign_edges",
-    "Sign_eyes",
+    "Ruts",
+    "Sign_backs",
     "Sign_marks",
-    "Sign_plates",
-    "Stake_mine",
-    "Stake_mine_fuze",
-    "Stake_mine_post",
-    "Tape_red",
-    "Tape_white",
-    "Tripwire",
-    "Tripwire_peg",
-    "Tufts",
-    "Tufts_dry"
+    "Sign_stakes",
+    "Signs",
+    "Stones",
+    "Tape",
+    "Tufts"
    ],
    "category": "structure",
    "hd": false,
@@ -40224,22 +40233,22 @@
   },
   "minefield_b": {
    "file": "minefield_b.glb",
-   "fileBytes": 356904,
-   "sha1": "efa42b24d693cd2d",
+   "fileBytes": 353080,
+   "sha1": "a4ed2c9d645b403b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 20,
-   "meshes": 20,
-   "materials": 15,
+   "nodes": 21,
+   "meshes": 21,
+   "materials": 13,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 20,
-   "submeshes": 20,
-   "materialSlots": 20,
-   "materialsUsed": 15,
-   "triangles": 4560,
-   "vertices": 7015,
+   "renderers": 21,
+   "submeshes": 21,
+   "materialSlots": 21,
+   "materialsUsed": 13,
+   "triangles": 4194,
+   "vertices": 6941,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -40247,61 +40256,62 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 180,
-   "openEdges": 44,
-   "nonManifoldEdges": 4,
+   "loosePieces": 244,
+   "openEdges": 16,
+   "nonManifoldEdges": 0,
    "boundsMin": [
-    -2.4329,
-    -0.0729,
-    -2.4329
+    -2.5542,
+    -0.0452,
+    -2.5425
    ],
    "boundsMax": [
-    2.4329,
-    1.0382,
-    2.4329
+    2.5542,
+    1.1294,
+    2.5478
    ],
    "size": [
-    4.866,
-    4.866,
-    1.111
+    5.09,
+    5.108,
+    1.175
    ],
    "center": [
     0.0,
-    0.483,
-    0.0
+    0.542,
+    0.003
    ],
-   "structureHash": "766a6137cfcc8658",
+   "structureHash": "a3041f48579bdf2d",
    "color0": {
-    "mean": 0.6223,
-    "min": 0.2143,
-    "max": 0.8222,
-    "p05": 0.3228,
-    "p95": 0.8064,
+    "mean": 0.5864,
+    "min": 0.0473,
+    "max": 0.9987,
+    "p05": 0.1399,
+    "p95": 0.882,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Barbed_wire",
+    "Control_box",
     "Dispenser",
-    "Dispenser_skid",
     "Dispenser_tubes",
-    "Dispenser_tubes_bore",
-    "Ground",
-    "Kerb",
+    "Ground_patch",
+    "Kit_reel",
     "Mine_bodies",
     "Mine_caps",
-    "Mounds",
+    "Mine_earth",
     "Pickets",
-    "Posts",
-    "Sign_edges",
-    "Sign_eyes",
+    "Ruts",
+    "Sign_backs",
     "Sign_marks",
-    "Sign_plates",
-    "Tape_red",
-    "Tape_white",
-    "Tufts",
-    "Tufts_dry"
+    "Sign_stakes",
+    "Signs",
+    "Skid",
+    "Stones",
+    "Tape",
+    "Tow_cable",
+    "Tow_cable.001",
+    "Tube_mouths",
+    "Tufts"
    ],
    "category": "structure",
    "hd": false,

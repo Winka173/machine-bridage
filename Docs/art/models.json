@@ -1265,7 +1265,7 @@
   },
   "minefield": {
     "file": "minefield.glb",
-    "triangles": 3198
+    "triangles": 4746
   },
   "minefield_a": {
     "file": "minefield_a.glb",
@@ -1273,7 +1273,7 @@
   },
   "minefield_b": {
     "file": "minefield_b.glb",
-    "triangles": 4560
+    "triangles": 4194
   },
   "missile": {
     "file": "missile.glb",
