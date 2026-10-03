@@ -277,3 +277,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 => nhiều thứ đang có vẻ sai logic, trước khi làm phải suy nghĩ làm sao cho logic ngoài đời
 - 03/10 "check file tối ưu, dùng sonnet là dùng sonnet 5.0 mới đúng, không bao giờ được dùng sonnet 5.5".
 - 03/10 "cho phép" + bảng mã model (Sonnet 5.0 = claude-sonnet-5): ghim alias sonnet vào Sonnet 5.0.
+- 03/10 "file khá tốt, nhưng cần update thêm các thứ này" + "ĐƯA NỐT SỐ LỐI CHƠI TRONG MÃ RA DỮ LIỆU ... THÊM TẦM TỐI THIỂU CHO BOSS" (nguyên văn: export_pack2_vi.txt). Chỉ lý thuyết, không chạy Unity/test/ExportGameDoc.

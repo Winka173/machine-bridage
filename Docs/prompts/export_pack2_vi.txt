@@ -1,0 +1,135 @@
+(03/10, chủ dự án — nguyên văn; giai đoạn 2 của gói cân bằng)
+
+file khá tốt, nhưng cần upadte thêm các thứ này: 
+
+----- prompt -----
+ĐƯA NỐT SỐ LỐI CHƠI TRONG MÃ RA DỮ LIỆU, TỰ TÌM THAM SỐ CHƯA LIỆT KÊ, VÀ THÊM TẦM TỐI THIỂU CHO BOSS (giai đoạn 2 của gói cân bằng, CHỈ LÝ THUYẾT)
+
+Bạn làm việc tự chủ trong repo Machine Brigade (Unity). Ghi quyết định vào docs/DECISIONS.md mục "Gói cân bằng 2", mỗi lượt có commit. Tiếp nối Docs/prompts/export_pack_vi.txt (luật A, B, C, D vẫn áp dụng; Resources/Data/tunables.json, SimTunables, BalancePackFacts, ExportGameDoc đã có).
+
+## 0. BỐI CẢNH (từ CHANGES.md)
+- Đã đưa ra dữ liệu: 284 khóa trong tunables.json.
+- Còn trong mã: 3.132 dòng ứng viên lối chơi (3.097 số viết thẳng: ban_kinh 882, sat_thuong 709, thoi_gian 626, gioi_han_thuc_the 239, tran 199, nguong 195, tan_suat 192, xac_suat 55; 35 khai báo, trong đó còn ảnh hưởng lối chơi: Armour.FragmentPenetration, ClusterDef.DefaultPenetration, FixedDeckDef.MaxLoaned, WorldModel reach 25, GearSystem radius 10). CP khởi đầu từng chế độ vẫn nằm trong các SideSetup.
+- Mục tiêu: chủ dự án sửa MỌI số ảnh hưởng lối chơi bằng dữ liệu (rồi nhập ngược).
+
+## 1. LUẬT CHUNG
+- CHỈ LÝ THUYẾT. KHÔNG chạy Unity, KHÔNG chạy test, KHÔNG chạy ExportGameDoc (chạy tốn kém). Được: đọc mã, phân tích tĩnh, biên dịch bằng .NET SDK để kiểm cú pháp, chạy script Python đọc mã, dữ liệu và GLB.
+- Chuyển số ra dữ liệu GIỮ NGUYÊN GIÁ TRỊ. Không đổi hành vi game, trừ luật D, các thay đổi đã ghi ở CHANGES.md (C1, D1, D2, D3) và Mục 5 (tầm tối thiểu boss, thay đổi do chủ dự án yêu cầu).
+- Mọi quyết định và thay đổi giá trị ghi vào docs/export/CHANGES.md (file duy nhất ngoài gói).
+- KHÔNG thêm file vào gói Docs/export/current/ (19 file). Sheet mới đặt trong file lĩnh vực hiện có; kết quả QA ghi vào _qa/ (không commit).
+- Ô nào cần chạy game mới biết (cùng 103 ô NEED_CODE_CHECK còn lại): giữ NEED_CODE_CHECK kèm cột ly_do_chua_doc, ghi vào CHANGES.md mục "chờ chạy game.json" để chủ dự án chạy một lần khi cần. Không tự chạy.
+- Dòng "Xem lại" trong file Excel nào: không áp.
+
+## 2. CHỨNG MINH TƯƠNG ĐƯƠNG BẰNG PHÂN TÍCH TĨNH (thay cho chạy test)
+Tất cả việc chuyển số dùng CÔNG CỤ, không sửa tay:
+1. Viết Tools/export/literal_to_tunable.py (hoặc dùng Roslyn): cho danh sách (tệp, dòng, literal, tên khóa), tự thay literal bằng SimTunables.<Tên> và tự thêm khóa vào tunables.json với value = literal gốc. Việc sửa tay chỉ cho trường hợp công cụ không xử lý được (ghi lý do).
+2. Script kiểm tương đương (chạy sau mỗi lượt, không cần Unity), ghi _qa/equivalence.md:
+   a) mọi dòng C# đổi so với commit trước chỉ khác ở chỗ thay literal bằng SimTunables.X (so sánh cây cú pháp sau khi chuẩn hóa);
+   b) với mỗi X: mặc định trong SimTunables.cs == value trong tunables.json == literal gốc (cùng kiểu, cùng hậu tố f/m);
+   c) không khóa nào có hai literal khác nhau cùng gán một khóa (nếu hai chỗ cùng số nhưng khác nghĩa thì hai khóa khác nhau);
+   d) biên dịch .NET SDK thành công; không cảnh báo mới về chuyển kiểu (int / float) hoặc làm tròn;
+   e) thứ tự tính toán và kiểu số học giữ nguyên (ví dụ hằng số nguyên chia nguyên không biến thành chia thực): kiểm bằng so sánh kiểu của biểu thức trước / sau.
+3. Viết sẵn các test (ReplayHashTests với baseline, TunablesTests…) nhưng KHÔNG chạy; ghi lệnh chạy vào CHANGES.md để chủ dự án chạy khi muốn.
+4. Mọi lượt phải qua mục 2.2 trước khi commit; không qua thì sửa tới khi qua.
+
+## 3. CÁCH TỰ TÌM MỌI THAM SỐ (kể cả thứ KHÔNG nằm trong danh sách mục 4)
+Danh sách mục 4 chỉ là TỐI THIỂU. Bạn phải tự phát hiện phần còn lại, không chỉ làm theo danh sách.
+
+3.1 "Số lối chơi" = số mà nếu đổi, kết quả mô phỏng hoặc quyết định của AI có thể đổi. Xác định bằng PHÂN TÍCH ĐỒ THỊ GỌI TĨNH (Roslyn): đi từ các điểm vào mô phỏng (SimWorld.Step / Tick, các *System.Update, hàm tạo SideSetup, hàm khởi tạo trận); mọi literal số trong hàm đạt được từ các điểm vào đó là SỐ LỐI CHƠI, trừ khi chứng minh là hình ảnh, hạ tầng hoặc chỉ mục (ghi lý do). Hàm không đạt được từ mô phỏng (UI, hiệu ứng, âm thanh, công cụ) là hình ảnh. Nghi ngờ thì coi là số lối chơi ("thừa còn hơn thiếu").
+
+3.2 Sáu cách quét độc lập (chạy cả sáu, so kết quả; chỗ chỉ một cách thấy thì xem kỹ):
+ a) Số viết thẳng bằng cây cú pháp (không dùng regex): literal số trong biểu thức, so sánh (< 0.3f), nhân / chia, Clamp / Lerp / Min / Max, ngưỡng if, điều kiện vòng lặp, Random (xác suất, seed), bộ đếm tick.
+ b) Bảng ẩn: mảng và danh sách literal, từ điển, switch / case trả số, AnimationCurve, enum có số, chuỗi định dạng có số.
+ c) Mã cứng theo ID hoặc tên: mọi == "<id>", switch (id), StartsWith / Contains / EndsWith trên ID, tên, tag của vũ khí, xe, boss, tháp. Chuyển thành cờ hoặc thuộc tính trong dữ liệu (role, tag, flag); ghi danh sách.
+ d) Số trong tài sản Unity mà mô phỏng đọc: prefab, ScriptableObject, collider (nếu dùng để phát hiện trúng), NavMeshAgent (tốc độ, bán kính), Animator (nếu thời gian ảnh hưởng mô phỏng). Đọc bằng phân tích tệp YAML, không cần chạy Unity.
+ e) Theo vòng đời thực thể: với mỗi loại thực thể (xe mặt đất, máy bay, trực thăng, tàu, drone, tên lửa, bom, đạn pháo, boss, tháp, tường, nhà chính, quân đồn trú, đồng minh, thẻ hỗ trợ), đi qua: triển khai → di chuyển → phát hiện → chọn mục tiêu → bắn → đạn bay → trúng → sát thương → chết / xác → hoàn CP / xây lại; liệt kê MỌI số quyết định hành vi ở mỗi bước, kể cả số ẩn trong hàm gọi.
+ f) Theo hệ thống: với mỗi lớp *System, *Director, *Mode, *Session, *Ai trong Sim/** và Game/Match/**, liệt kê mọi field, hằng, tham số hàm có số; mỗi mục có quyết định: ra dữ liệu / đã nằm trong dữ liệu / hình ảnh hạ tầng (kèm lý do).
+
+3.3 Kiểm chéo (đều là phân tích tĩnh):
+ a) Đếm: tổng ứng viên = (đã chuyển) + (loại, có lý do) + (còn lại); không lỗ hổng.
+ b) Mỗi khóa tunables có ít nhất một chỗ trong mã tham chiếu tới nó; mỗi chỗ tham chiếu tới khóa không tồn tại là lỗi.
+ c) Lấy mẫu phản chứng: chọn ngẫu nhiên 150 literal đã loại là hình ảnh hoặc hạ tầng (seed cố định) và kiểm lại; sai > 2% thì quét lại toàn bộ nhóm đó.
+ d) Đối chiếu với Excel: mỗi sheet và cột trong gói có mã đọc nó; mỗi hành vi ở mục 4 có số quyết định nó; số nào có trong mã mà không có trong gói thì báo.
+ e) Số trong script Python chỉ để sinh dữ liệu không tính; số trong C# đọc lúc chạy thì tính.
+
+3.4 Ghi _qa/Chua_nhac_toi.md: mọi nhóm tham số tìm thấy mà KHÔNG khớp mục 4, kèm quyết định (ra dữ liệu / loại + lý do), ví dụ nơi tìm thấy, số lượng. Tổng kết vào CHANGES.md.
+
+3.5 Chặn về sau: thêm kiểm tra build (analyzer hoặc script CI) không cho số cứng mới trong phần mô phỏng, trừ danh sách trắng (0, 1, 2, hằng toán học, chỉ số vòng lặp, có ghi chú). Số mới thì CI fail.
+
+## 4. DANH SÁCH THAM SỐ TỐI THIỂU
+Mỗi mục: nếu mã có cơ chế đó thì MỌI số của nó nằm trong dữ liệu và trong gói; không có cơ chế thì ghi KHONG_CO kèm lý do. Quy ước dữ liệu: hai tầng, mặc định theo HỌ hoặc NHÓM, ghi đè theo từng vũ khí hoặc đơn vị. Tên cột ASCII snake_case, đơn vị ở tên cột.
+
+4.1 BOM VÀ NÉM BOM (sheet Bom_tham_so trong 01_chien_dau; mỗi bom và mỗi đơn vị mang bom một dòng)
+- Cách thả: che_do_tha (POINT | STICK), so_bom_moi_luot, khoang_cach_giua_bom_m, do_dai_dai_m, do_rong_dai_m, chu_ky_tha_giua_bom_s, toc_do_bay_luc_tha_m_s, do_cao_tha_m (ghi rõ mô phỏng có dùng không), thoi_gian_roi_s, khoang_dan_dau_m, huong_ra_tham, tam_dai (START | CENTER), lech_ngang_m, lech_doc_m, do_tan_m theo loại, ty_le_chong_lan (lõi / khoảng cách), so_muc_tieu_toi_thieu, quy tắc giảm số bom khi ít mục tiêu.
+- An toàn: khoang_cach_an_toan_m, kiem_tra_an_toan_tung_qua, phạm vi áp với quân ta và đồng minh.
+- Chuyến bay: thoi_gian_bay_thang_s, khoang_thoat_m, so_lan_vao, thoi_gian_giua_luot_vao_s, ban_kinh_vong_lai_m, so_luot_toi_da_truoc_nap, nap_lai_s, quy tắc khi bị bắn trúng lúc đang thả.
+- Sát thương: sat_thuong_moi_qua, loai_sat_thuong, xuyen, loi_m, ria_m, rim_share, edge_falloff, he_so_cong_trinh, hệ số nhiệt áp và thứ tự nhân.
+- Biến thể:
+  • napalm: dps_chay, thoi_gian_chay_s, ban_kinh_chay_m;
+  • bom chùm: so_bom_con, ban_kinh_rai_m, thoi_gian_no_con_s, sat_thuong_con, xuyen_con, ty_le_khong_no;
+  • bom xuyên boongke: xuyen, độ sâu, hệ số công trình;
+  • bom lượn và dẫn đường: ti_so_luot, tam_luot_m, do_tan_m, thoi_gian_khoa_s, bi_gay_nhieu_khong;
+  • bom lớn của boss (BigStrikeDef): chu kỳ, cảnh báo, EdgeRadius, EdgeShare, falloff.
+- Nếu mã chưa có chế độ STICK (rải thảm): ghi KHONG_CO trong CHANGES.md và báo chủ dự án, KHÔNG tự thêm cơ chế.
+
+4.2 TÊN LỬA (sheet Ten_lua_tham_so trong 01_chien_dau; theo họ, ghi đè theo vũ khí)
+- Dẫn hướng: kieu_dan (khong_dan | bam_nhiet | bam_radar | tam_nhin_SACLOS | laser | hong_ngoai_anh | GPS_quan_tinh), co_can_tam_nhin, mat_ngam_khi (khói, vật che, hạ bên bắn), toc_do_quay_deg_s, gia_toc_ngang_m_s2, ban_kinh_quay_m, he_so_bam (tỉ lệ dẫn đường), thoi_gian_khoa_s.
+- Bay: toc_do_m_s, gia_toc_m_s2, thoi_gian_bay_toi_da_s, tam_m, tam_toi_thieu_m, khoang_cach_vu_trang_m (arming), do_cao_bay_m, kieu_quy_dao (thang | tren_xuong_top_attack | sat_mat_nuoc | vong_cung), do_cao_dinh_m, goc_lao_deg, goc_phong_deg, thoi_gian_khoi_dong_s.
+- Nổ: kieu_ngoi (cham | can_dich | hen_gio | cam_ung), ban_kinh_can_dich_m, goc_can_dich_deg, thoi_gian_hen_gio_s, so_dau_no (tandem), hành vi khi hết giờ và khi mất mục tiêu.
+- Trúng: ty_le_trung_co_ban, cach_tung_xac_suat (theo seed lúc bắn, không phụ thuộc chuyển động), he_so_chinh_xac_theo_tam, he_so_theo_toc_do_muc_tieu, he_so_che_khuat, toc_do_muc_tieu_toi_da_ne (mặc định: không né được bằng cách chạy với tên lửa dẫn đường).
+- Đối kháng: aps_eligible, flare_eligible, flare_resist, so_lan_tung_phao_sang, jam_proof, jam_miss_min_m, jam_miss_spread_m, ciws_eligible, interceptable, do_bam_o_khoi.
+- Phóng: thoi_gian_nap_lai_s, so_ten_lua_moi_bang, thoi_gian_giua_hai_ten_lua_s, so_luong_tren_be, vertical_launch (có / không).
+- Phòng không: ban_kinh_cam_ung_m, ty_le_diet_that, khoảng cách ngòi nổ.
+- Hành trình / chống hạm: do_cao_bay_m, so_diem_trung_gian, bi_phong_thu_diem_ban_ha.
+- Drone tự sát (nhóm đạn): thoi_gian_bay_s, ban_kinh_no_m, toc_do_m_s, cach_khoa_muc_tieu.
+
+4.3 PHÁO SÁNG VÀ APS
+- Pháo sáng: so_lan, hoi_s, so_qua_hinh_anh, ty_le_lua theo độ kháng đầu dò, thoi_gian_chay_s, ban_kinh_lua_m, điểm phát (Mount_Flare), đồ nâng cấp.
+- APS: so_lan, hoi_s, ban_kinh_m, loai_chan_duoc (9 loại), ty_le_chan, thoi_gian_phan_ung_s, bão hòa khi nhiều đạn cùng lúc, luật Trophy (đã có), POINT_DEFENSE: lượng chặn, hồi, vùng phủ.
+
+4.4 ĐẠN PHÁO, CỐI, RỐC-KÉT, ĐẠN BẮN THẲNG
+- Đường cong: do_cao_dinh_m, goc_nang_toi_thieu_deg, goc_nang_toi_da_deg, tam_toi_thieu_m, thoi_gian_bay, du_doan_dich (hệ số đón đầu), do_tan_m theo tầm, độ tản theo tốc độ mục tiêu.
+- Bắn thẳng: độ chính xác theo tầm, bù chuyển động, hệ số khi đang di chuyển, xuyên giảm theo tầm, thời gian ngắm, ngưỡng ngừng bắn.
+- Chung: nạp, băng, loạt, nòng, đổi đạn thay thế (điều kiện, thời gian đổi, thời gian giữ).
+
+4.5 PHÁT HIỆN VÀ TẦM NHÌN: tầm nhìn theo lớp, phát hiện tàng hình, hệ số rừng / khói / đêm / mưa, thời gian lộ sau khi bắn, chia sẻ tầm nhìn, radar và UAV, định vị phản pháo.
+4.6 DI CHUYỂN VÀ ĐỊA HÌNH: tốc độ, gia tốc, tốc độ xoay, bán kính quay, hệ số địa hình (ROAD / ROUGH / FOREST / SHALLOW_WATER), đẩy nhau, phát hiện kẹt, tránh nhau.
+4.7 CHỌN MỤC TIÊU VÀ AI ĐƠN VỊ: trọng số, ngưỡng đổi mục tiêu, cam kết tối thiểu, bán kính tìm, tần suất.
+4.8 TRIỂN KHAI VÀ KINH TẾ: thả dù (thời gian, vùng, khoảng cách giữ), đội mở màn, trần quân, CP khởi đầu từng chế độ (SideSetup), thu nhập, tiếp tế, bắt kịp, hoàn CP, thưởng, độ khó, mutator.
+4.9 BOSS: ngưỡng pha, đòn lớn (chu kỳ, cảnh báo), hộ tống, triệu hồi, mẫu di chuyển và húc, bộ phận (máu, giáp, sát thương lan), điểm yếu, nổ chết, xác; tầm tối thiểu (mục 5).
+4.10 THÁP, CĂN CỨ, TƯỜNG: chọn mục tiêu, hào quang, thời gian xây lại, thả dù, giá, kỹ năng nhà chính, đồn trú, khiên.
+4.11 CHẾ ĐỘ VÀ CHIẾN DỊCH: điểm, bleed, hiệp phụ, đợt, tăng cấp, vô hạn, thưởng, thời gian biến cố, cảnh báo, trigger, tăng viện.
+4.12 MÁY BAY: vòng chờ, hover, độ cao, tốc độ vào, bán kính quay, số lượt tấn công, tiêu hao, mục tiêu ưu tiên. TÀU VÀ RAY: tốc độ, khoảng đệm giữ chỗ, thời gian cảnh báo ray, luật hất xe.
+4.13 HƯ HẠI VÀ HỒI: nổ khi chết (bán kính, sát thương), cháy lan, nổ dây chuyền, thời gian xác; sửa chữa, tiếp đạn (tốc độ, bán kính, giới hạn).
+4.14 THỜI GIAN TOÀN CỤC: mọi bộ đếm tick.
+
+## 5. TẦM TỐI THIỂU CHO BOSS (thay đổi lối chơi do chủ dự án yêu cầu)
+Vấn đề: boss rất cao, súng đặt cao nhưng bắn được mục tiêu sát chân boss. Thực tế nòng không hạ thấp tới mức đó nên có vùng chết quanh boss. Mọi vũ khí của mọi boss phải có tầm tối thiểu hợp lý.
+5.1 Dữ liệu cần xuất (sheet Boss_tam_toi_thieu trong 02_boss; mỗi vũ khí của mỗi boss một dòng; thêm vào Boss_vu_khi nếu hợp):
+- Hình học (tính tĩnh bằng script đọc GLB, glTF JSON, không cần Unity): do_cao_nong_m (độ cao của Muzzle_* / Mount_* so với mặt đất), do_cao_boss_m, khoang_cach_ngang_tu_tam_boss_den_nong_m, ban_kinh_than_boss_m.
+- Khả năng nòng (đọc từ dữ liệu vũ khí hoặc bệ; thiếu thì dùng mặc định theo lớp, đánh dấu uoc_dinh): goc_ha_nong_toi_da_deg, goc_nang_toi_da_deg, goc_nang_toi_thieu_deg (pháo bắn cầu), goc_quay_ngang_deg (nếu giới hạn).
+- Tầm hiện có: tam_toi_thieu_m (hiện tại, có thể 0), tam_toi_da_m.
+- Tầm tính theo hình học:
+  • bắn thẳng: tam_toi_thieu_hinh_hoc_m = max(0, (do_cao_nong_m − do_cao_tam_muc_tieu_m) / tan(goc_ha_nong_toi_da_deg)) + (khoảng cách ngang từ tâm boss tới nòng, theo hướng ngắm);
+  • bắn cầu: tam_toi_thieu_hinh_hoc_m = v² × sin(2 × goc_nang_toi_thieu) / g (v là tốc độ đầu nòng);
+  • tên lửa: = max(khoang_cach_vu_trang_m, khoảng cách khóa mục tiêu); tên lửa phóng thẳng đứng hoặc đánh từ trên xuống: ghi do_cao_dinh_m và tam_toi_thieu_m theo hình học quỹ đạo.
+- do_cao_tam_muc_tieu_m mặc định: xe nhẹ 1,0 m, xe tăng 1,3 m, hạng nặng 1,6 m (dùng xe tham chiếu ở Xe_tham_chieu; đánh dấu uoc_dinh nếu chưa có dữ liệu).
+- Kết quả đề xuất: tam_toi_thieu_de_xuat_m = max(tam_toi_thieu_m hiện tại, tam_toi_thieu_hinh_hoc_m), làm tròn nửa lên 1 m; vung_chet_ban_kinh_m của boss = nhỏ nhất của tam_toi_thieu_de_xuat_m trong các vũ khí chính (tính từ tâm boss).
+- Vũ khí phủ vùng chết: vu_khi_che_vung_chet_id (vũ khí có tam_toi_thieu_m ≤ khoảng cách ngang cần phủ, như súng máy, CIWS, cao xạ, súng phun lửa), phan_tram_vung_chet_duoc_phu (theo bán kính), co_che_vung_chet (true / false).
+5.2 Luật áp dụng:
+- Đặt tam_toi_thieu_m của MỌI vũ khí boss = tam_toi_thieu_de_xuat_m (thay đổi lối chơi; ghi từng boss, từng vũ khí vào CHANGES.md với giá trị cũ và mới). Vũ khí phòng thủ gần (CIWS, súng máy, cao xạ nhỏ, phun lửa) giữ 0 hoặc giá trị nhỏ vì nòng chúng quay và hạ được: dùng chính công thức (độ cao nòng thấp hoặc góc hạ lớn), không ép.
+- Kiểm bằng ĐỌC MÃ (không chạy): cách chọn mục tiêu và bắn xử lý tam_toi_thieu_m cho vũ khí boss (có miễn trừ không); nếu mã bỏ qua tam_toi_thieu_m cho boss thì bật qua cờ dữ liệu ap_dung_tam_toi_thieu = true, ghi chỗ sửa vào CHANGES.md.
+- KHÔNG tự thêm vũ khí hoặc đổi hành vi AI. Boss nào sau khi áp mà có vùng chết lớn mà không có vũ khí nào phủ (co_che_vung_chet = false): LIỆT KÊ vào CHANGES.md (boss, vùng chết, vũ khí nào gần nhất) để chủ dự án quyết thêm vũ khí phụ hay đổi bệ.
+- KHÔNG tự đổi máu boss. Vùng chết làm tăng thời gian hạ mục tiêu của boss (công thức máu = P × t × 0,6 giả định đòn đánh gần cũng bị bắn): ghi "xem lại thời gian hạ" cho từng boss có vùng chết lớn trong CHANGES.md, đừng đổi số.
+- Ghi hệ quả cân bằng vào CHANGES.md: người chơi áp sát boss để né pháo chính thì chịu vũ khí phủ vùng chết nào; boss nào dễ bị áp sát nhất (vùng chết lớn mà vũ khí phủ yếu).
+- Mọi vũ khí chưa có dữ liệu góc nòng: dùng mặc định theo lớp (pháo xe tăng và pháo boss hạ nòng 8° làm điểm khởi đầu; pháo hạm 5°; súng phụ và CIWS 15–20°; bệ rocket cố định: không hạ), đánh dấu uoc_dinh, liệt kê trong _qa/ để chủ dự án kiểm.
+5.3 Không cần chạy gì: toàn bộ tính tĩnh từ dữ liệu và GLB.
+
+## 6. CÁC LƯỢT
+- Lượt 0: kiểm tĩnh (mục 2.2 cho bản hiện có; biên dịch .NET); ghi _qa/equivalence.md.
+- Lượt 1: quét mục 3 (sáu cách) và ghi _qa/ ứng viên, phân loại, Chua_nhac_toi.md.
+- Lượt 2: chuyển số lối chơi bằng công cụ (mục 2.1), theo thứ tự lĩnh vực: vũ khí và đạn (4.1–4.4), phương tiện (4.5–4.8, 4.12–4.13), boss (4.9), tháp (4.10), chế độ và chiến dịch (4.8, 4.11), AI và còn lại; mỗi lĩnh vực qua 2.2.
+- Lượt 3: tầm tối thiểu boss (mục 5).
+- Lượt 4: chặn về sau (3.5), cập nhật Schema, sheet và md của các file lĩnh vực, README.
+- Lượt 5: tổng kết CHANGES.md: số đã chuyển theo lĩnh vực; số loại và lý do; số còn lại (phải về 0 với phương tiện, vũ khí, boss, căn cứ và tháp); danh sách ô chờ chạy game.json; các thay đổi giá trị (mục 5); danh sách boss có vùng chết chưa được phủ; các thay đổi đã có ở CHANGES.md (C1, D1, D2, D3) giữ nguyên.
+----- end -----
