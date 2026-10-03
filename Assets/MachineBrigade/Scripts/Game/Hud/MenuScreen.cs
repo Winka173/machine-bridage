@@ -729,9 +729,12 @@ namespace MachineBrigade.Game.Hud
                 case "army-gear":
                 case "army-base":
                 case "army-outpost":
+                case "army-commander":
+                case "army-hq":
                     _armyView = screen switch
                     {
                         "army-deck" => ArmyView.Deck, "army-towers" => ArmyView.Towers, "army-gear" => ArmyView.Equipment, "army-outpost" => ArmyView.Outpost,
+                        "army-commander" => ArmyView.Commander, "army-hq" => ArmyView.Hq,
                         _ => ArmyView.Base,
                     };
                     ShowTab(Tab.Army);

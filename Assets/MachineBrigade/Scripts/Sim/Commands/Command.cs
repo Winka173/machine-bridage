@@ -82,6 +82,13 @@ namespace MachineBrigade.Sim.Commands
         public static Command HqSkill(int team, Vector2 point = default) =>
             new(CommandType.HqSkill, team, Array.Empty<EntityId>(), point);
 
+        /// <summary>Play-test 14: a call the player fills (<see cref="Content.SupportDef.CallMaxCp"/>): the support and the units chosen.</summary>
+        public static Command Call(int team, string supportId, Vector2 point, IReadOnlyList<string> units) =>
+            new(CommandType.Strike, team, Array.Empty<EntityId>(), point, defId: supportId, point2: point) { Calls = units };
+
+        /// <summary>Play-test 14: the units a filled call drops (null: the support's own).</summary>
+        public IReadOnlyList<string>? Calls { get; private set; }
+
         /// <summary>Play-test 14: the hangars' rally point.</summary>
         public static Command HangarRally(int team, Vector2 point) =>
             new(CommandType.HangarRally, team, Array.Empty<EntityId>(), point);

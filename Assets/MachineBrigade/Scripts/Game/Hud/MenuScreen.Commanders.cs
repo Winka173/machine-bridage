@@ -14,7 +14,7 @@ namespace MachineBrigade.Game.Hud
     /// </summary>
     internal sealed partial class MenuScreen
     {
-        private VisualElement _commanderPage, _commanderBody, _deckCommander;
+        private VisualElement _commanderPage, _commanderBody;
         private StyleSheet _commanderSheet;
 
         private void BuildCommanderPage()

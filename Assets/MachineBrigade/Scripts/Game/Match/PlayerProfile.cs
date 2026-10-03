@@ -117,6 +117,9 @@ namespace MachineBrigade.Game.Match
             public List<string> hangarIds = new();
             public List<string> hangarUnits = new();
 
+            /// <summary>Play-test 14: the drop of each call the player fills ("support=unit,unit"), set on its Units called tab.</summary>
+            public List<string> calls = new();
+
             /// <summary>Prompt 32 L3: each wall line's type, outer first ("none", "hesco", "t_wall", "gun_wall"; missing: the data's default).</summary>
             public List<string> wallTypes = new();
             public int hqTypeVersion;

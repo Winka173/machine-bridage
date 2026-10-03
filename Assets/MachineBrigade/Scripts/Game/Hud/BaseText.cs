@@ -32,7 +32,7 @@ namespace MachineBrigade.Game.Hud
             ["hq.skill.shield.tip"] = ("Emergency dome: for {seconds} s the base's dome absorbs {share}% of the HQ's health. Every {cooldown} s.",
                 "Vòm khiên khẩn cấp: trong {seconds} s vòm hấp thụ {share}% máu tối đa của nhà chính. Mỗi {cooldown} s."),
             ["target.hqSkill"] = ("Tap where the HQ's barrage lands", "Chạm vào nơi loạt bắn của nhà chính rơi xuống"),
-            ["camp.hqType"] = ("HQ type: {type} · tap to change", "Kiểu nhà chính: {type} · chạm để đổi"),
+            ["camp.hqType"] = ("HQ type: {type} · tap: HQ tab", "Kiểu nhà chính: {type} · chạm: tab Sở chỉ huy"),
             ["camp.hqTypeFortress"] = ("{type} ({branch})", "{type} ({branch})"),
             ["hq.news.title"] = ("HQ types", "Kiểu nhà chính"),
             ["news.hqType"] = ("The HQ doctrine is now the HQ type: Fortress, Garrison or Shield. Choose one free on the Base screen (tap the HQ).",

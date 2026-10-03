@@ -21,12 +21,12 @@ namespace MachineBrigade.Tests
         private static Catalog C => _catalog ??= GameContent.LoadCatalog();
 
         [Test]
-        public void TheRosterHas14CardsFiveSmallFiveMediumFourLarge()
+        public void TheRosterHas16CardsFiveSmallSevenMediumFourLarge()
         {
             var cards = TowerCards.All(C);
-            Assert.AreEqual(14, cards.Count, string.Join(", ", cards));
+            Assert.AreEqual(16, cards.Count, string.Join(", ", cards));
             Assert.AreEqual(5, cards.Count(c => C.Vehicles[c].Fort.Size == SlotSize.Small));
-            Assert.AreEqual(5, cards.Count(c => C.Vehicles[c].Fort.Size == SlotSize.Medium));
+            Assert.AreEqual(7, cards.Count(c => C.Vehicles[c].Fort.Size == SlotSize.Medium));
             Assert.AreEqual(4, cards.Count(c => C.Vehicles[c].Fort.Size == SlotSize.Large));
             foreach (var gone in CardMerges.TowerInto.Keys.Concat(CardMerges.RetiredTowers))
             {

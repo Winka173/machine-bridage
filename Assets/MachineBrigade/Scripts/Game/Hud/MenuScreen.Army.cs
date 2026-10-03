@@ -24,12 +24,15 @@ namespace MachineBrigade.Game.Hud
     /// </summary>
     internal sealed partial class MenuScreen
     {
+        /// <summary>The Army page's tabs, in their order (play-test 14: Commander and HQ have their own).</summary>
         private enum ArmyView
         {
             Deck,
+            Commander,
             Towers,
             Equipment,
             Base,
+            Hq,
             Outpost,
         }
 
@@ -68,7 +71,8 @@ namespace MachineBrigade.Game.Hud
         private void BuildArmyPage()
         {
             var page = TabPage(Tab.Army, "fc-page--opaque fc-army");
-            _armyTabs = new KitTabs(new[] { Strings.Get("army.deck"), Strings.Get("army.towers"), Strings.Get("army.equipment"), Strings.Get("army.base"), Strings.Get("army.outpost") }, 0, i =>
+            _armyTabs = new KitTabs(new[] { Strings.Get("army.deck"), Strings.Get("army.commander"), Strings.Get("army.towers"), Strings.Get("army.equipment"), Strings.Get("army.base"),
+                Strings.Get("army.hq"), Strings.Get("army.outpost") }, 0, i =>
             {
                 _armyView = (ArmyView)i;
                 Refresh();
@@ -83,9 +87,6 @@ namespace MachineBrigade.Game.Hud
             deckBody.Add(deckStrip);
             _deckOverview = Kit.Box(KitPanel.SurfaceClass + " fc-panel fc-army__overview");
             deckBody.Add(_deckOverview);
-            // Prompt 22 F.1: the commander for the next battle, beside the deck (its own row under the overview).
-            _deckCommander = Kit.Box(KitPanel.SurfaceClass + " fc-panel fc-mb-2");
-            deckBody.Add(_deckCommander);
             var chips = new List<VisualElement>();
             foreach (CardFilter filter in Enum.GetValues(typeof(CardFilter)))
             {
@@ -102,6 +103,9 @@ namespace MachineBrigade.Game.Hud
             deckBody.Add(_collection);
             _deckView.Add(deckBody);
             page.Add(_deckView);
+
+            // Play-test 14: the Commander and HQ tabs.
+            BuildCommandViews(page);
 
             // Towers and modules ------------------------------------------------------------------------
             _towersView = Kit.Scroll(ScrollViewMode.Vertical, "fc-page__scroll");
@@ -147,7 +151,15 @@ namespace MachineBrigade.Game.Hud
             page.Add(_gearView);
 
             // Base ---------------------------------------------------------------------------------------
-            _base = new BaseScreen(_catalog, (text, warn) => Note(text, warn), Refresh) { OpenDetail = OpenDetail };
+            _base = new BaseScreen(_catalog, (text, warn) => Note(text, warn), Refresh)
+            {
+                OpenDetail = OpenDetail,
+                OpenHq = () =>
+                {
+                    _armyView = ArmyView.Hq;
+                    Refresh();
+                },
+            };
             _base.Root.AddToClassList("fc-army__base");
             page.Add(_base.Root);
 
@@ -220,6 +232,8 @@ namespace MachineBrigade.Game.Hud
             _deckView.style.display = _armyView == ArmyView.Deck ? DisplayStyle.Flex : DisplayStyle.None;
             _gearView.style.display = _armyView == ArmyView.Equipment ? DisplayStyle.Flex : DisplayStyle.None;
             _towersView.style.display = _armyView == ArmyView.Towers ? DisplayStyle.Flex : DisplayStyle.None;
+            _commandView.style.display = _armyView == ArmyView.Commander ? DisplayStyle.Flex : DisplayStyle.None;
+            _hqView.style.display = _armyView == ArmyView.Hq ? DisplayStyle.Flex : DisplayStyle.None;
             var onBase = _tab == Tab.Army && _armyView == ArmyView.Base && _overlays.Count == 0;
             _base.Root.style.display = _armyView == ArmyView.Base ? DisplayStyle.Flex : DisplayStyle.None;
             _outpost.Root.style.display = _armyView == ArmyView.Outpost ? DisplayStyle.Flex : DisplayStyle.None;
@@ -229,6 +243,8 @@ namespace MachineBrigade.Game.Hud
             if (_tab != Tab.Army) return;
             if (_armyView == ArmyView.Deck) RefreshDeck();
             else if (_armyView == ArmyView.Towers) RefreshTowers();
+            else if (_armyView == ArmyView.Commander) RefreshCommand();
+            else if (_armyView == ArmyView.Hq) RefreshHq();
             else if (_armyView == ArmyView.Equipment) RefreshGear();
             else if (_armyView == ArmyView.Outpost) _outpost.Refresh();
             else _base.Refresh();
@@ -297,10 +313,6 @@ namespace MachineBrigade.Game.Hud
                 roles.Add(Tag(has ? icon : "info", Strings.Get(key), has ? "fc-tag--ok" : "fc-tag--missing"));
             cover.Add(roles);
             _deckOverview.Add(cover);
-            _deckCommander.Clear();
-            _deckCommander.Add(CommanderSlot());
-            // Prompt 28 H.4: the tactic beside the commander.
-            _deckCommander.Add(TacticSlot());
 
             foreach (var (chip, filter) in _filterChips) chip.Selected = filter == _filter;
             _sortButton.Value = SortName(_sort);

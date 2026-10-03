@@ -167,6 +167,12 @@ namespace MachineBrigade.Game.Match
                 d.freeBranchSwaps?.Remove(gone);
                 d.branchNews?.Remove(gone);
             }
+            for (var k = d.branchChoices.Count - 1; k >= 0; k--)
+            {
+                if (Array.IndexOf(CardMerges.RetiredBranchesPt14, d.branchChoices[k]) < 0) continue;
+                d.branchChoices.RemoveAt(k);
+                if (k < d.branchTowers.Count) d.branchTowers.RemoveAt(k);
+            }
             var item = d.itemIds.IndexOf(CardMerges.DeletedItemPt14);
             if (item >= 0)
             {

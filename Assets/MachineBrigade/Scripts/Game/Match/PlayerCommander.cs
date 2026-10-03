@@ -134,7 +134,10 @@ namespace MachineBrigade.Game.Match
                 point -= along * (support.Length * 0.5f);
                 towards = point + along;
             }
-            var result = _world.SubmitPlayer(Command.Strike(_team, id, point, towards));
+            // Play-test 14: a call the player fills drops the units saved on its Units called tab.
+            var result = support is { CallMaxCp: > 0f }
+                ? _world.SubmitPlayer(Command.Call(_team, id, point, PlayerProfile.CallUnits(id, support, _world.Catalog)))
+                : _world.SubmitPlayer(Command.Strike(_team, id, point, towards));
             if (!result.Accepted) _hud.ShowError(result.Error);
             else Disarm();
             return true;

@@ -142,6 +142,9 @@ namespace MachineBrigade.Game.Match
             ["wheeled_howitzer"] = 1500, ["wingman_drone"] = 1350,
         };
 
+        /// <summary>Play-test 14: branches gone (the laser tower's drone net, the airfield's hangar and service): a choice of one is dropped.</summary>
+        public static readonly string[] RetiredBranchesPt14 = { "laser_ad_station.net", "airfield.hangar", "airfield.service" };
+
         /// <summary>Play-test 14: the deleted gunship item, and the coins one item cost (a pack of two was 1,000).</summary>
         public const string DeletedItemPt14 = "gunship_support";
 

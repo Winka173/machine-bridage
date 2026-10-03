@@ -155,6 +155,15 @@ namespace MachineBrigade.Game.Match
               // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
               "glide_bomb_strike" };
 
+        /// <summary>Play-test 14: the base roster's hangars that turn out units (the vehicle and aircraft hangars).</summary>
+        public static List<string> BaseHangars(MachineBrigade.Sim.Content.Catalog catalog)
+        {
+            var list = new List<string>();
+            foreach (var id in catalog.Base.Roster)
+                if (catalog.Vehicles.TryGetValue(id, out var def) && def.Hangar != null) list.Add(id);
+            return list;
+        }
+
         // A new player's deck: the starter cards (the rest are won in the campaign or bought).
         private static readonly string[] DefaultVehicles = Progression.StarterVehicles;
         private static readonly string[] DefaultSupports = Progression.StarterSupports;
