@@ -18939,3 +18939,13 @@ Rendering, VFX and view motion from play-test 13 (Docs/prompts/requests_vi.md). 
   both flickering in size only (noise on size, none on position); a thin trail (0.75 s, width 0.4 -> 1.1 x the core,
   alpha 0.6). Burn time unchanged (data `flareBurn`, play-test 12); the flight physics unchanged (`Fly`, the PT12 values).
   Check: `-executeMethod MachineBrigade.Editor.FlareShots.Run` (Builds/flare_shots/flares.png, day and night rows).
+- **Bosses still when they fire; the Juggernaut steady on its rails.** Real life: a battleship's broadside or a railway
+  gun's shot does not move the hull; the gun's recoil system takes it and only the barrel runs back; a train on rails
+  cannot move sideways. Play-test 12 took the camera kick off boss fire (`WeaponEffects.FiringShake`, `TierShot`), but
+  three things still moved the body: (1) `TierShot` squatted every T3+ shooter 1.6-3.2 degrees per barrel of a volley
+  (`VehicleView.Rock`) - the Leviathan's and Juggernaut's "shake when firing"; (2) the hull pitched with acceleration (up to 4
+  degrees) when a boss halted to fire and set off again, plus the move bounce and the heavy-hit jolt; (3) the `Steady` filter
+  predicted along the smoothed velocity, so a sudden halt carried the hull past the stop and back (on a curve, sideways off
+  the rail). Now `VehicleView.Massive` (a boss, or anything on a rail) is drawn still: no squat or blast rock, no pitch,
+  bounce or hit jolt; `Steady` does not predict for a boss and is skipped on a rail (the rail system's position is drawn
+  as is). Barrels still recoil and turrets still turn. Impact shakes stay (a boss's shells landing near the camera).
