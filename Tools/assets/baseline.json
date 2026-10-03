@@ -3244,6 +3244,26 @@
    ],
    "reason": "P35 wave 11",
    "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "targeting_station"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG targeting_station: triangles 4,446 -> 6,486 (+45.9%); vertices 6,239 -> 8,948 (+43.4%); meshes 39 -> 52 (+33.3%); renderers 39 -> 52 (+33.3%); materials 13 -> 12 (-7.7%); materialSlots 39 -> 52 (+33.3%); fileBytes 340,152 -> 484,800 (+42.5%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "targeting_station"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG targeting_station: meshes 52 -> 46 (-11.5%); renderers 52 -> 46 (-11.5%); materialSlots 52 -> 46 (-11.5%); fileBytes 484,800 -> 479,056 (-1.2%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -57231,24 +57251,24 @@
   },
   "targeting_station": {
    "file": "targeting_station.glb",
-   "fileBytes": 340152,
-   "sha1": "5612835f7b00258f",
+   "fileBytes": 479056,
+   "sha1": "784a0353ba3dc678",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 42,
-   "meshes": 39,
-   "materials": 13,
+   "nodes": 49,
+   "meshes": 46,
+   "materials": 12,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 39,
-   "submeshes": 39,
-   "materialSlots": 39,
-   "materialsUsed": 13,
-   "triangles": 4446,
-   "vertices": 6239,
+   "renderers": 46,
+   "submeshes": 46,
+   "materialSlots": 46,
+   "materialsUsed": 12,
+   "triangles": 6486,
+   "vertices": 8948,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -57256,36 +57276,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 187,
-   "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "loosePieces": 242,
+   "openEdges": 52,
+   "nonManifoldEdges": 31,
    "boundsMin": [
-    -4.0,
-    -0.05,
-    -3.25
+    -3.8592,
+    -0.0098,
+    -3.5211
    ],
    "boundsMax": [
-    4.15,
+    4.201,
     10.98,
-    3.25
+    2.6666
    ],
    "size": [
-    6.5,
-    8.15,
-    11.03
+    6.188,
+    8.06,
+    10.99
    ],
    "center": [
-    0.075,
-    5.465,
-    -0.0
+    0.171,
+    5.485,
+    -0.427
    ],
-   "structureHash": "ac954733468f889a",
+   "structureHash": "3ca2c6a0754ed7b4",
    "color0": {
-    "mean": 0.6594,
-    "min": 0.0689,
+    "mean": 0.6727,
+    "min": 0.0441,
     "max": 1.0,
-    "p05": 0.2661,
-    "p95": 0.9461,
+    "p05": 0.2056,
+    "p95": 0.9641,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -57299,36 +57319,42 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Cabin",
-    "Cabin_roof",
-    "Cable_reel",
-    "Cables",
+    "Antennas",
+    "Base",
+    "Cupola",
     "Dipoles",
-    "Floodlights_bracket",
+    "Door_frames",
+    "Door_slots",
+    "Doors",
+    "Exhaust",
+    "Exhaust_caps",
     "Floodlights_housing",
     "Floodlights_lens",
+    "Fuel_drums",
     "Generator",
-    "Generator_doors",
-    "Generator_exhaust",
-    "Generator_louvres",
-    "Generator_panel",
-    "Generator_roof",
-    "Generator_skid",
-    "Generator_stripe",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
     "Guy_anchors",
     "Guy_wires",
-    "Ladder",
+    "Kit_bolts",
+    "Kit_cables",
+    "Kit_hinges",
+    "Kit_steel",
+    "Ladders",
+    "Lamp_guards",
+    "Lamp_rims",
+    "Lamps",
     "Link_dish",
-    "Lit_slits",
     "Mast",
     "Mast_footing",
     "Mast_head",
     "Obstruction_light",
-    "Pad",
     "Part_antenna",
     "Part_radar",
     "Radar",
+    "Radar_cabin",
     "Radar_cable",
     "Radar_dish",
     "Radar_pedestal",
@@ -57336,16 +57362,18 @@
     "Radar_steel",
     "Radar_yoke",
     "Rangefinder",
-    "Rangefinder_glass",
+    "Roof",
     "Sandbags",
-    "Steel",
-    "Vent",
-    "Visors"
+    "Sight",
+    "Slit",
+    "Team_band",
+    "Walls"
    ],
    "category": "structure",
    "hd": false,
    "errors": [],
    "warnings": [
+    "renderers 46 over the structure normal budget 39",
     "movingParts 3 over the structure normal budget 2"
    ],
    "units": [

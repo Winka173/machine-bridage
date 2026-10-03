@@ -1,0 +1,140 @@
+{
+ "id": "targeting_station",
+ "class": "structure",
+ "real": [
+  "Würzburg-Riese (FuSE 65) fire-control radar (unit_refs)",
+  "a coastal battery's rangefinder post (unit_refs: trạm đo xa pháo bờ biển)"
+ ],
+ "shape": "unit_refs: the super gun's fire-control station. A battered reinforced-concrete blockhouse with a thick chamfered roof slab, the seaward observation slit under a visor, a rear steel door and steps, vents, sandbags; an armoured cupola with the long stereo rangefinder arms on the roof; the Würzburg-Riese on its pedestal: yoke, ribbed parabolic dish raised 20 degrees, feed on four struts, the operator's cabin behind the dish; a guyed three-legged lattice signal mast with dipoles, link dish, floodlights, obstruction light and ladder; a generator, fuel drums, a cable run.",
+ "confidence": "xấp xỉ (Würzburg-Riese and Atlantic Wall fire-control post photographs)",
+ "target_size": {
+  "L": 6.19,
+  "W": 8.06,
+  "H": 10.99,
+  "source": "the old GLB (6.5 x 8.15 x 11.0 m; the def's footprint 8 x 6.5 m)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "blockhouse: slab, battered walls, chamfered roof, slit and visor, door, steps (in Base), vents (Kit_steel)",
+   "nodes": [
+    "Base",
+    "Walls",
+    "Roof",
+    "Slit",
+    "Kit_steel"
+   ]
+  },
+  {
+   "feature": "armoured cupola with the stereo rangefinder",
+   "nodes": [
+    "Cupola",
+    "Rangefinder",
+    "Sight"
+   ]
+  },
+  {
+   "feature": "Würzburg-Riese: pedestal, turning head, dish, feed, cabin",
+   "nodes": [
+    "Part_radar",
+    "Radar_pedestal",
+    "Radar_ring",
+    "Radar",
+    "Radar_yoke",
+    "Radar_dish",
+    "Radar_steel",
+    "Radar_cabin",
+    "Radar_cable"
+   ]
+  },
+  {
+   "feature": "lattice signal mast with dipoles, link dish, lights, guys",
+   "nodes": [
+    "Part_antenna",
+    "Mast",
+    "Mast_head",
+    "Mast_footing",
+    "Dipoles",
+    "Link_dish",
+    "Floodlights_housing",
+    "Obstruction_light",
+    "Guy_wires",
+    "Guy_anchors"
+   ]
+  },
+  {
+   "feature": "generator, fuel drums, sandbags, cables",
+   "nodes": [
+    "Generator",
+    "Fuel_drums",
+    "Sandbags",
+    "Kit_cables"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   6000
+  ],
+  "floor": 1400,
+  "cap": null,
+  "note": "structure: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "rangefinder (Team)",
+  "radar yoke and cabin (Team)",
+  "mast head, generator, wall band (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [
+  {
+   "node": "Part_radar",
+   "part": "the radar (runtime part)"
+  },
+  {
+   "node": "Part_antenna",
+   "part": "the mast (runtime part)"
+  }
+ ],
+ "wreck": "the runtime collapses it; Part_radar and Part_antenna break off",
+ "faction_style": "coastal fortification: grey concrete, steel radar, team-coloured instruments",
+ "details": {
+  "tier1": [
+   "blockhouse",
+   "roof slab",
+   "dish",
+   "mast"
+  ],
+  "tier2": [
+   "cupola",
+   "rangefinder",
+   "cabin",
+   "pedestal",
+   "generator",
+   "dipoles"
+  ],
+  "tier3": [
+   "bolts",
+   "vents",
+   "guys",
+   "anchors",
+   "lights",
+   "drums",
+   "periscopes",
+   "ladder"
+  ]
+ },
+ "questions": []
+}
