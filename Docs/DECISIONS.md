@@ -19146,3 +19146,64 @@ carries its one-line reasoning. Written blind: no Unity run, no tests run (owner
   turretTurnRate cannot be 0 (Guard.Positive), so it stays and is unused. MLRS / Grad / Smerch packs keep traversing (real
   turntables).
 - Not merged: `git merge lead/integration` was refused by the session's permission guard; the lead merges.
+
+## Play-test 13 follow-up (lane B)
+
+Branch `feature/pt13-b2` (from `lead/integration` f450ba37). No Unity run, no tests; Blender builds, glb_check --accept,
+quality_gate (all touched models pass; coastal_battery's soft 61 and fpv_carrier's renderer error were there before),
+py_compile, and a .NET compile of Sim + Game against the Unity DLLs (Build succeeded). Code: `Tools/blender/mb_pt13_followup.py`
+(a wrapper registered after every other builder and wrapper in build_assets.all_builders).
+
+- **Inferno's thermobaric gun (lane C: boss_thermo is a 125 mm 3VOF128 gun).** Real life: the Telnik thermobaric round is
+  fired from a 2A46-class smoothbore. The glacis rocket box (`Mount_rocket`) is now a small cast unmanned casemate turret
+  on a raised bolted barbette: a short heavy barrel (r 0.12, 1.8 m: sleeve, fume extractor, a muzzle reference collar, no
+  brake on a smoothbore), a cast mantlet with cheek plates, the autoloader bustle with its loading hatch, grille and hazard
+  band, the gunner's sight and a sensor head, smoke dischargers, lifting eyes, an antenna. `Muzzle_rocket` at the mouth
+  (one barrel). It traverses freely: clear of the flame projectors above and (3 cm) of the main turret ring astern.
+  Data: the thermo part's wreck `wreck_launcher` -> `wreck_turret` (a visual id, no gameplay value). 25,710 triangles
+  (boss: information only), soft 86.3.
+- **Behemoth's 120 mm side gun (lane C: mount 6 fires that gun's shells).** The model already showed a gun there (the
+  twin 120 mm hull turret `Mount_gun`), but mount 6 is the data's third `missile` mount, and VehicleView gives the k-th
+  mount of a slot the k-th muzzle of it: it fired from the left missile rack (`Muzzle_missile`). A `Muzzle_missile.002` at
+  the hull gun's second barrel mouth (under `Mount_gun`) puts its shells out of the gun, turning with it. No data change.
+  No other boss changed from rockets to a cannon in lane C's pass (CHANGES.md: only these two).
+- **Gun towers elevate on a baked `Elevation` pivot.** Real life: a gun elevates on its trunnions with its whole cradle
+  (barrel, brake, mantlet, breech, recuperators, coax, the sight fixed to the cradle); the shield, carriage, yoke and
+  seats stay. Finding: most towers did already pitch, but on a pivot ModelLibrary.AddElevation built at runtime from the
+  barrel-named parts only (Main_cannon, Muzzle_brake, Coax, guessed 6 % in from their rear and 30 % up), so cradles,
+  jackets, sleeves, brake bands and recuperators stood still while the barrel rose (heavy_turret_a's thermal sleeves and
+  brake bands, aa_turret_a's barrel jackets, the flak and AT guns' cradles); the laser's director had none (no barrel
+  name). Now 29 models carry `Elevation` under `Turret` at the trunnion with the riding parts (node names and world
+  positions kept; table `ELEVATION` in the wrapper): gun_turret(_a/_b), heavy_turret(_a/_b), aa_turret(_a/_b), c_ram(_a)
+  (the Phalanx's whole upper mass with the radome tilts on its side arms), aa_gun_tower, heavy_flak_tower,
+  at_gun_emplacement, artillery_emplacement(_a, _b: the mortar on its baseplate socket), coastal_battery,
+  recoilless_gun_tower, guard_tower(_a/_b), mg_bunker(_a/_b), bulwark_post, laser_ad_station, headquarters, manpads_tower.
+  Posed renders checked at -25 / +30 degrees. Not done: c_ram_b and the missile batteries (their launcher-named parts
+  already all ride the runtime pivot); flak_tower is retired.
+- **Same path as vehicles (code).** `ModelLibrary.AddElevation` used to skip a model that brings an `Elevation` node (no
+  rest pitch, no kind). It now measures it (`MeasureBaked`): the rest pitch from Muzzle_main as before, the kind from the
+  parts on it (`KindOf`, shared), so drawn-raised barrels (AA guns, the howitzers, the mortar) keep their rest pitch and
+  the mortar its Mortar kind; VehicleView.Elevate then drives it exactly like a built one. A childless mesh named
+  Elevation (mortar_carrier's elevating gear) is left as before. Open (not this lane): that mesh blocks the runtime pivot,
+  so mortar_carrier's tube never rises and the view turns the gear alone; renaming it fixes it (its spec lists the name).
+- **Hide fired rounds needed a code fix.** `ModelLibrary.MergeRigidParts` merged every rigid mesh into its moving part, so
+  a launcher's round meshes (lane A's VehicleView.Loaded) no longer existed as separate renderers and could not be hidden.
+  Indexed round nodes (`ModelLibrary.RoundPattern`, now shared with Loaded) are kept as their own meshes; the far detail
+  level still merges them (BuildLod uses IsMovingPart).
+- **Indexed rounds (14 models).** Real life: a fired round leaves its cell; the canister or tube stays, its frangible front
+  cover goes and the dark bore shows; an open tube shows the rocket until it fires. So: ballistic_launcher `Missile_1_*` /
+  `Missile_2_*` (body, fins, nozzle, seeker, bands; 1 is the one at Muzzle_main); covers as `Round_N` with a dark bore quad
+  behind each, inside the cover: ground_cruise_missile_vehicle (hatch + its fittings), coastal_ashm_vehicle (front + rear
+  cap; the caps were drawn flush with the canister ends, coplanar: lifted 6.5 cm, the plate in the gap),
+  missile_battery / _b (canister covers), missile_battery_a (one cover per 2 x 2 PAC-3 canister), mlrs (a canvas cap on
+  all six tubes, two were open), elite_mlrs (hex caps, by row and pod), grad_truck (its steel tube-end caps by row and
+  side, a dark bore behind), manpads_tower and aa_turret_b (seeker / tube caps); rocket noses `Rocket_N` by row (and
+  side): heavy_rocket_artillery, thermobaric_launcher, rocket_technical. Groups keep the renderers few (3-8 per launcher).
+  Rounds under a runtime-built pivot hang under a group pivot named so it rides (`Launcher_rounds`, `Tubes_rounds`,
+  `Rocket_tubes_rounds`). Units seen in numbers stay under 1.5 x their class cap (flat caps, quads). Note: Loaded follows a
+  magazine (`ammo` > 0); ground_cruise_missile_vehicle, coastal_ashm_vehicle, the missile batteries, manpads_tower and
+  aa_turret_b have none, so their rounds stay shown until a magazine is given (data, not this lane).
+- **Muzzle names.** manpads_tower exported `Muzzle_missile__001` (no kit rename), which the runtime does not read: now
+  `.001` (the wrapper installs the rename on every model it touches).
+- Render for the lead: behemoth_inferno, behemoth (mount 6 shells from the hull gun), the gun towers in their preview
+  (barrel rises with its cradle when firing at aircraft / range), the launchers above after a volley (covers / noses gone).
