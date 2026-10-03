@@ -18382,3 +18382,7 @@ Unity, no test, sim or measure).
   `python -m py_compile Tools/blender/build_assets.py` passes. glb_check: 0 errors, baseline accepts for the 19.
 - quality_report.xlsx / .csv not rewritten on this branch; full gate `--no-write`: 230 models, 151 pass; compared with
   the csv no model outside waves 6, 7 and 10 changed.
+
+## Prompt 35: owner answers (2026-10-03)
+- railgun_truck as a heavy 8x8 carrying the twin-rail gun salvaged from Tempest: approved.
+- The fortress HQ types get a visible gun on the model for their `gun` weapon (Mount_* + Muzzle_*, model only): approved.
