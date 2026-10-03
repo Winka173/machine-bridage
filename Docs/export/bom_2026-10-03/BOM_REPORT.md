@@ -1,4 +1,4 @@
-# BOM_REPORT: ném bom dồn một điểm, lượt 0 (2026-10-03)
+# BOM_REPORT: ném bom dồn một điểm, lượt 0 (nguyên nhân) và lượt 2 (trước / sau) (2026-10-03)
 
 ## Nguyên nhân quan sát được trong mã
 
@@ -16,7 +16,7 @@
 | air_raid/(the_ho_tro)/TONG_KET | 10.0 | 10.0 | 70.011 | 70.0 | 5.086 | 7.778 | 1.029 |
 | airship_carpet/command_airship/TONG_KET | 16.0 | 16.0 | 75.055 | 75.0 | 7.745 | 5.0 | 1.4 |
 | airstrike/(the_ho_tro)/TONG_KET | 4.0 | 4.0 | 60.091 | 60.0 | 3.957 | 20.0 | 0.5 |
-| bomber_payload/heavy_bomber/TONG_KET | 7.0 | 7.0 | 19.729 | 19.671 | 3.962 | 3.278 | 3.111 |
+| bomber_payload/heavy_bomber/TONG_KET | 7.0 | 7.0 | 65.757 | 65.68 | 4.616 | 10.947 | 0.914 |
 | bunker_buster_bomb/glide_bomber/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | cluster_at_bomb/glide_bomber/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | cluster_strike/(the_ho_tro)/TONG_KET | 30.0 | 30.0 | 60.39 | 60.0 | 9.655 | 2.069 | 2.658 |
@@ -27,12 +27,12 @@
 | guided_bomb/strike_drone/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | jet_bombs/attack_jet/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | jet_bombs/elite_attack_jet/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| jet_bombs/stealth_naval_strike/TONG_KET | 2.0 | 2.0 | 9.15 | 9.099 | 0.899 | 9.099 | 0.907 |
+| jet_bombs/stealth_naval_strike/TONG_KET | 2.0 | 2.0 | 9.27 | 8.963 | 2.321 | 8.963 | 0.913 |
 | kraken_air_raid/kraken/TONG_KET | 12.0 | 12.0 | 82.651 | 82.5 | 8.823 | 7.5 | 1.2 |
 | napalm_strike/(the_ho_tro)/TONG_KET | 8.0 | 8.0 | 55.091 | 55.0 | 4.061 | 7.857 | 1.145 |
-| p26_roc_main_roc_bombs/argus/TONG_KET | 8.0 | 5.667 | 4.142 | 3.751 | 3.458 | 0.536 | 18.797 |
-| p26_roc_main_roc_bombs/command_airship/TONG_KET | 8.0 | 5.667 | 4.142 | 3.751 | 3.458 | 0.536 | 18.797 |
-| p26_roc_main_roc_bombs/garuda/TONG_KET | 8.0 | 5.333 | 3.974 | 3.597 | 3.239 | 0.514 | 19.677 |
+| p26_roc_main_roc_bombs/argus/TONG_KET | 8.0 | 8.0 | 76.835 | 76.816 | 4.616 | 10.974 | 0.911 |
+| p26_roc_main_roc_bombs/command_airship/TONG_KET | 8.0 | 8.0 | 76.835 | 76.816 | 4.616 | 10.974 | 0.911 |
+| p26_roc_main_roc_bombs/garuda/TONG_KET | 8.0 | 8.0 | 76.835 | 76.816 | 4.616 | 10.974 | 0.911 |
 | stealth_payload/stealth_bomber/TONG_KET | 2.0 | 2.0 | 1.839 | 1.539 | 0.758 | 1.539 | 14.42 |
 | thermobaric_bomb/glide_bomber/TONG_KET | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 
@@ -43,4 +43,76 @@
 - Bộ xuất: Tools/export/bom.py (`python Tools/export/export.py bom [--trace CSV]`)
 - Mã: Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.Bombs.cs, Assets/MachineBrigade/Scripts/Sim/Combat/CombatSystem.cs (CanFire, Operate, Launch), Assets/MachineBrigade/Scripts/Sim/Movement/MovementSystem.cs (BombTarget, chạy vào), Assets/MachineBrigade/Scripts/Sim/Strikes/StrikeSystem.cs (Airstrike), Assets/MachineBrigade/Scripts/Sim/Bosses/BossSystem.BigAttacks.cs (Strip)
 
-Lượt 0 dừng ở đây: chưa sửa gì, chờ chủ dự án nói "tiếp tục".
+
+## Lượt 2: trước / sau (Bom_ket_qua_vung, trung bình 3 seed)
+
+TRƯỚC = vết thả lượt 0 (Docs/export/bom_2026-10-03/vet_tha_truoc_luot2.csv, mục tiêu một xe tăng); SAU = vết thả mới (vet_tha_unity.csv, mục tiêu là xe giữa hàng 5 xe dọc đường bay). 
+
+| id | doi_hinh | so_bom_truoc | so_bom_sau | trung_loi_truoc | trung_loi_sau | trung_truoc | trung_sau |
+|---|---|---|---|---|---|---|---|
+| air_raid/(the_ho_tro) | CUM_8M | 10.0 | 10.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| air_raid/(the_ho_tro) | HANG_DOC_8M | 10.0 | 10.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| air_raid/(the_ho_tro) | HANG_NGANG_8M | 10.0 | 10.0 | 2.0 | 2.0 | 2.0 | 2.0 |
+| airship_carpet/command_airship | CUM_8M | 16.0 | 16.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| airship_carpet/command_airship | HANG_DOC_8M | 16.0 | 16.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| airship_carpet/command_airship | HANG_NGANG_8M | 16.0 | 16.0 | 2.667 | 2.667 | 4.0 | 4.0 |
+| airstrike/(the_ho_tro) | CUM_8M | 4.0 | 4.0 | 4.0 | 4.0 | 4.0 | 4.0 |
+| airstrike/(the_ho_tro) | HANG_DOC_8M | 4.0 | 4.0 | 4.0 | 4.0 | 4.0 | 4.0 |
+| airstrike/(the_ho_tro) | HANG_NGANG_8M | 4.0 | 4.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| bomber_payload/heavy_bomber | CUM_8M | 7.0 | 7.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| bomber_payload/heavy_bomber | HANG_DOC_8M | 7.0 | 7.0 | 4.333 | 5.0 | 4.333 | 5.0 |
+| bomber_payload/heavy_bomber | HANG_NGANG_8M | 7.0 | 7.0 | 3.0 | 2.333 | 3.0 | 2.333 |
+| bunker_buster_bomb/glide_bomber | CUM_8M | 1.0 | 1.0 | 3.0 | 3.0 | 3.0 | 3.0 |
+| bunker_buster_bomb/glide_bomber | HANG_DOC_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| bunker_buster_bomb/glide_bomber | HANG_NGANG_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| cluster_at_bomb/glide_bomber | CUM_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| cluster_at_bomb/glide_bomber | HANG_DOC_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| cluster_at_bomb/glide_bomber | HANG_NGANG_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| cluster_strike/(the_ho_tro) | CUM_8M | 30.0 | 30.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| cluster_strike/(the_ho_tro) | HANG_DOC_8M | 30.0 | 30.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| cluster_strike/(the_ho_tro) | HANG_NGANG_8M | 30.0 | 30.0 | 2.333 | 2.333 | 2.333 | 2.333 |
+| garuda_carpet/garuda | CUM_8M | 20.0 | 20.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| garuda_carpet/garuda | HANG_DOC_8M | 20.0 | 20.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| garuda_carpet/garuda | HANG_NGANG_8M | 20.0 | 20.0 | 2.333 | 2.333 | 4.333 | 4.333 |
+| glide_fab500/glide_bomber | CUM_8M | 1.0 | 1.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| glide_fab500/glide_bomber | HANG_DOC_8M | 1.0 | 1.0 | 3.0 | 3.0 | 3.0 | 3.0 |
+| glide_fab500/glide_bomber | HANG_NGANG_8M | 1.0 | 1.0 | 3.0 | 3.0 | 3.0 | 3.0 |
+| guided_bomb/morrigan | CUM_8M | 1.0 | 1.0 | 1.0 | 1.0 | 5.0 | 5.0 |
+| guided_bomb/morrigan | HANG_DOC_8M | 1.0 | 1.0 | 1.0 | 1.0 | 2.0 | 2.0 |
+| guided_bomb/morrigan | HANG_NGANG_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.667 | 1.667 |
+| guided_bomb/stealth_fighter | CUM_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| guided_bomb/stealth_fighter | HANG_DOC_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| guided_bomb/stealth_fighter | HANG_NGANG_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| guided_bomb/strike_drone | CUM_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| guided_bomb/strike_drone | HANG_DOC_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| guided_bomb/strike_drone | HANG_NGANG_8M | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| jet_bombs/attack_jet | CUM_8M | 1.0 | 1.0 | 4.667 | 4.667 | 4.667 | 4.667 |
+| jet_bombs/attack_jet | HANG_DOC_8M | 1.0 | 1.0 | 2.0 | 2.0 | 2.0 | 2.0 |
+| jet_bombs/attack_jet | HANG_NGANG_8M | 1.0 | 1.0 | 1.333 | 2.0 | 1.333 | 2.0 |
+| jet_bombs/elite_attack_jet | CUM_8M | 1.0 | 1.0 | 4.667 | 4.667 | 4.667 | 4.667 |
+| jet_bombs/elite_attack_jet | HANG_DOC_8M | 1.0 | 1.0 | 2.0 | 2.0 | 2.0 | 2.0 |
+| jet_bombs/elite_attack_jet | HANG_NGANG_8M | 1.0 | 1.0 | 1.333 | 2.0 | 1.333 | 2.0 |
+| jet_bombs/stealth_naval_strike | CUM_8M | 2.0 | 2.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| jet_bombs/stealth_naval_strike | HANG_DOC_8M | 2.0 | 2.0 | 3.0 | 3.0 | 3.0 | 3.0 |
+| jet_bombs/stealth_naval_strike | HANG_NGANG_8M | 2.0 | 2.0 | 1.0 | 2.0 | 1.0 | 2.0 |
+| kraken_air_raid/kraken | CUM_8M | 12.0 | 12.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| kraken_air_raid/kraken | HANG_DOC_8M | 12.0 | 12.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| kraken_air_raid/kraken | HANG_NGANG_8M | 12.0 | 12.0 | 2.333 | 2.333 | 4.667 | 4.667 |
+| napalm_strike/(the_ho_tro) | CUM_8M | 8.0 | 8.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| napalm_strike/(the_ho_tro) | HANG_DOC_8M | 8.0 | 8.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| napalm_strike/(the_ho_tro) | HANG_NGANG_8M | 8.0 | 8.0 | 2.333 | 2.333 | 2.333 | 2.333 |
+| p26_roc_main_roc_bombs/argus | CUM_8M | 8.0 | 8.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| p26_roc_main_roc_bombs/argus | HANG_DOC_8M | 8.0 | 8.0 | 3.0 | 5.0 | 5.0 | 5.0 |
+| p26_roc_main_roc_bombs/argus | HANG_NGANG_8M | 8.0 | 8.0 | 3.0 | 3.0 | 5.0 | 5.0 |
+| p26_roc_main_roc_bombs/command_airship | CUM_8M | 8.0 | 8.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| p26_roc_main_roc_bombs/command_airship | HANG_DOC_8M | 8.0 | 8.0 | 3.0 | 5.0 | 5.0 | 5.0 |
+| p26_roc_main_roc_bombs/command_airship | HANG_NGANG_8M | 8.0 | 8.0 | 3.0 | 3.0 | 5.0 | 5.0 |
+| p26_roc_main_roc_bombs/garuda | CUM_8M | 8.0 | 8.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| p26_roc_main_roc_bombs/garuda | HANG_DOC_8M | 8.0 | 8.0 | 3.0 | 5.0 | 5.0 | 5.0 |
+| p26_roc_main_roc_bombs/garuda | HANG_NGANG_8M | 8.0 | 8.0 | 3.0 | 3.0 | 5.0 | 5.0 |
+| stealth_payload/stealth_bomber | CUM_8M | 2.0 | 2.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| stealth_payload/stealth_bomber | HANG_DOC_8M | 2.0 | 2.0 | 3.0 | 3.0 | 3.0 | 3.0 |
+| stealth_payload/stealth_bomber | HANG_NGANG_8M | 2.0 | 2.0 | 3.0 | 3.0 | 3.0 | 3.0 |
+| thermobaric_bomb/glide_bomber | CUM_8M | 1.0 | 1.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| thermobaric_bomb/glide_bomber | HANG_DOC_8M | 1.0 | 1.0 | 3.0 | 3.0 | 3.0 | 3.0 |
+| thermobaric_bomb/glide_bomber | HANG_NGANG_8M | 1.0 | 1.0 | 3.0 | 3.0 | 3.0 | 3.0 |
