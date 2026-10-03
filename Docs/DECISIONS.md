@@ -19545,3 +19545,50 @@ the Harpy note, Daedalus 500 %); spec Docs/cloud/PT14_CLOUD_TASKS.md session 4 r
 - Not done here / needs Unity: card renders and ModelScan, the launch points of Harpy's pods and wingtip racks, the wing
   gun arcs in a duel, the stand-in train in Siege, rail maps' play range with the longer trains. The source workbooks
   (xlsx) do not carry the new Ixion weapons / train lengths yet.
+## Play-test 14 model wave M3 (lane models)
+
+Owner: Docs/prompts/playtest14_vi.txt (the Leviathan line, "Bổ sung 03/10": Leviathan / Kraken 500 %, Scylla / Nyx /
+Hydra 400 %, Leviathan's sleeping turrets hidden and rising); spec Docs/cloud/PT14_CLOUD_TASKS.md session 4 row M3.
+Builder `Tools/blender/mb_pt14_m3.py` (registered last in build_assets' dict; a small naval kit at its top: Hull lofts
+the underwater body / boot-top / topsides through one outline, turrets, 127 mm, AA, SAM, directors, radars). Ships
+float with the waterline at the pivot. Sheets: Docs/models/rebuild/<id>/before_after.png. Budgets were not needed:
+detail went where it reads (each model 3-8 x its old count, far under N x the cap).
+- **leviathan**: every runtime node at its old place except Part_sec_f (1.2 m aft) and Part_mg.001 (beside the after
+  well). The 406 mm triples keep Part_gun* > Mount_gun* with `Gun_barrels*` / `Gun_muzzles*` directly on the mount
+  pivot (the MountKick parts) and per-barrel muzzles. The 155 mm triples (mounts 3, 4, `wake` phase 1) sit in hull
+  wells: a hollow barbette under Part_sec_f / _a with a dark floor 2.05 m below the seat (deeper than the gunhouse with
+  its roof rail, which is what WakeMounts measures for its drop), a hazard lip, the two hatch leaves hanging open down
+  its sides. Mounts 5, 6 fire 127 mm shells (mountWeapons), so Part_mg / .001 carry enclosed 127 mm mounts
+  (`Dp_barrels*` kick) with a Phalanx beside the forward one; mount 15 (sam_post) now has a twin-arm launcher
+  (Mount_missile / Muzzle_missile). Armour belt, strakes, screws and rudders, wood deck with seams, breakwater,
+  pagoda tower with the bridge band, directors, funnel, AA sponsons with lockers, flight deck with a folded Ka-27.
+- **kraken**: its mounts fire the parent's 406 mm / 155 mm shells (the old model fired them from missile cells), so it is
+  redrawn as a heavy aviation cruiser (Kiev read): two triple 406 mm on the forecastle (A, B superfiring), turret C on
+  the quarterdeck under the round-down (it rests aft by its arc), the forward 155 mm in a starboard sponson, the after
+  one on the flight deck's port quarter, 127 mm on the forecastle and the quarterdeck, the AA galleries on the deck
+  edges, the angled deck with arresting wires (Part_deck), lifts, blast deflectors, catwalks and nets, eight parked
+  Su-33-style jets and a helicopter, the island (bridge band, pri-fly, array faces, lattice mast + Radar, funnel),
+  the SAM launcher aft of the island, VLS between turret B and the flight deck. All tune `at` recomputed.
+- **scylla**: its own model (balance `"model": "scylla"`, `"modelSize"` = its old drawn size, 49.3 m): a Slava-read
+  cruiser: twin 130 mm (Part_gun > Mount_gun, twin per-barrel muzzles), the 127 mm on the bridge roof (Part_mg >
+  Mount_mg; ciws_fore fires 127 mm), sixteen angled missile tubes in pairs along the superstructure (Part_vls), the
+  pyramid mast with the Radar, twin funnels, fire-control dome, SAM lids, boats, helicopter deck, Mount_APS.
+- **nyx**: Zumwalt read redrawn: tumblehome hull with the reverse-raked bow, faceted deckhouse with panel seams, array
+  faces (Mount_APS), the railgun (Rail_barrels / Rail_muzzles kick, coils), two stealth 127 mm mounts on the deckhouse
+  roof (mounts 1, 2 fire 127 mm), peripheral VLS forward (Part_vls) and aft, boat bays, aft comms mast, lifelines.
+- **hydra_sub** (hydra's `"model"`; the runtime loads hydra_sub.glb): the def has three gun mounts (two twin 57 mm, the
+  100 mm deck_gun part), which all fired from the one old Mount_gun. Now Mount_gun / .001 are twin 57 mm on casing
+  mounts fore and aft, Mount_gun.002 the 100 mm on its pedestal forward of the sail; the deck_gun part's node is
+  tuned to Mount_gun.002. Launch hatches (Part_doors_l / _r), drone deck, tiled hull, pump-jet (Part_rudder). The
+  old sail SAM box went (no missile mount any more). mb_fix_barrels no longer twins hydra_sub; mb_p34_barrels no
+  longer touches kraken (the builder writes the per-barrel muzzles).
+- Data (CHANGES "Play-test 14 model wave M3"): part `at` only, scylla model/modelSize, hydra deck_gun node. No weapon,
+  health or damage change.
+- Triangles before -> after, gate (quality_gate after glb_quantize; all hard ok): leviathan 24,358 -> 62,916 (98.1 ->
+  97.1), kraken 12,638 -> 61,644 (95.7 -> 100), scylla (drew leviathan) -> 27,262 (95.4), nyx 7,602 -> 17,624 (87.2 ->
+  90.3), hydra_sub 7,912 -> 14,952 (91.1 -> 99.5). Leviathan / Kraken GLBs are at 282 / 278 renderers (cap 299).
+- Open: the Sim starts every free mount at the hull heading (Vehicle.cs WeaponState Heading), so until it first aims
+  Leviathan's turret C / after 155 mm and Kraken's turret C point forward (C's barrels into the after superstructure /
+  hangar) instead of their arc centre aft; starting arc mounts at their arc centre would fix it (Sim change, replay
+  hashes). A sleeping 155 mm's barrels pass through the hull for the ~1 s of the rise (the well takes the house).
+  Needs Unity: card renders / ModelScan, the well rise in a phase-1 battle, the barrel kick on all mounts.

@@ -1093,7 +1093,7 @@
   },
   "hydra_sub": {
     "file": "hydra_sub.glb",
-    "triangles": 7912
+    "triangles": 14952
   },
   "hyperion": {
     "file": "hyperion.glb",
@@ -1149,7 +1149,7 @@
   },
   "kraken": {
     "file": "kraken.glb",
-    "triangles": 12638
+    "triangles": 61644
   },
   "kronos": {
     "file": "kronos.glb",
@@ -1185,7 +1185,7 @@
   },
   "leviathan": {
     "file": "leviathan.glb",
-    "triangles": 24358
+    "triangles": 62916
   },
   "light_attack_heli": {
     "file": "light_attack_heli.glb",
@@ -1357,7 +1357,7 @@
   },
   "nyx": {
     "file": "nyx.glb",
-    "triangles": 7602
+    "triangles": 17624
   },
   "obsidian_spire": {
     "file": "obsidian_spire.glb",
@@ -1590,6 +1590,10 @@
   "scout_jeep_hd": {
     "file": "scout_jeep_hd.glb",
     "triangles": 6064
+  },
+  "scylla": {
+    "file": "scylla.glb",
+    "triangles": 27262
   },
   "sea_corvette": {
     "file": "sea_corvette.glb",

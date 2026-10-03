@@ -18,7 +18,7 @@ from mathutils import Vector
 # model -> the muzzle pivots (Blender names, before finish turns "__001" into ".001") of the guns that fire together
 TARGETS = {
     # Prompt 35 wave 8 (lane A): leviathan's rebuilt turrets write their own per-barrel muzzles.
-    'kraken': ['Muzzle_gun', 'Muzzle_gun__001', 'Muzzle_gun__002', 'Muzzle_gun__003', 'Muzzle_gun__004'],
+    # kraken: play-test 14 wave M3's builder (mb_pt14_m3) models its turrets' per-barrel muzzles itself.
     'sea_cruiser': ['Muzzle_gun', 'Muzzle_gun__001'],
     'heavy_turret': ['Muzzle_main'],
     'headquarters': ['Muzzle_main'],
