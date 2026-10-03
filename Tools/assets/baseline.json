@@ -2872,6 +2872,34 @@
     "super_gun: bytes only",
     "troop_shelter: bytes only"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "aa_gun_tower",
+    "at_gun_emplacement",
+    "barrage_balloon",
+    "blast_wall",
+    "bunker_shelter_tower",
+    "engineer_vehicle",
+    "fire_control_centre",
+    "heavy_flak_tower",
+    "ifv",
+    "inflatable_decoy",
+    "laser_ad_station",
+    "light_tank",
+    "light_tank_hd",
+    "mortar_carrier",
+    "one_shot_atgm_tower",
+    "searchlight",
+    "super_gun",
+    "troop_shelter",
+    "wall_gun",
+    "wall_hesco",
+    "wall_t"
+   ],
+   "reason": "merge of feature/p35-w3",
+   "changes": []
   }
  ],
  "models": {
