@@ -8,8 +8,8 @@
  "target_size": {
   "L": 4.9,
   "W": 6.1,
-  "H": 2.9,
-  "source": "unit_sheet and the old GLB (4.92 x 6.09 x 2.88)",
+  "H": 3.5,
+  "source": "unit_sheet and the old GLB (4.92 x 6.09 x 2.88); H is the committed wave 1 GLB (owner-approved): the whip antenna reaches 3.5 m and the flag pole 3.14 m over the 2.34 m body (thin props above the body, lead call wave 5 no. 2)",
   "tolerance": 0.1
  },
  "features": [

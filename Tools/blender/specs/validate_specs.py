@@ -67,7 +67,11 @@ def check(spec, defs, glb=False):
             fails.append('the def has APS: Mount_APS needed')
         if defs.field(own, 'boss'):
             nodes = {b['node'] for b in spec.get('breakable', [])}
+            # A variant boss's keep / drop list removes parts (and their nodes), as the gate's boss_part_nodes reads it.
+            rules = own.get('variant') if isinstance(own.get('variant'), dict) and 'parts' not in own else {}
             for p in defs.field(own, 'parts') or []:
+                if (rules.get('keep') and p.get('id') not in rules['keep']) or p.get('id') in (rules.get('drop') or []):
+                    continue
                 if p.get('node') and not any(n.rstrip('*') in nodes for n in p['node'].split('|')):
                     fails.append(f"boss part {p.get('id')} ({p['node']}) not in breakable")
     if glb:
