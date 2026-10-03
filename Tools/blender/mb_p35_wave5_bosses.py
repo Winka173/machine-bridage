@@ -776,8 +776,220 @@ def _typhon_gun(a):
     a.pivot('Muzzle_gun', (0, -5.3, .52), m)
 
 
+# ============================================================================= caspian
+def caspian(a):
+    """Lun-class ekranoplan (MD-160, 'the Caspian Sea Monster'): the long boat hull with its planing step and chines,
+    the cockpit (Bridge) and the dorsal spine, the eight turbofans on the canard pylon behind the cockpit
+    (Part_engines), the short low wings with end-plate floats and flaps (Part_wing_l / _r), the huge T-tail, the
+    six Moskit canisters in pairs on the spine (Part_launcher), the six-barrel CIWS aft (Mount_gun), two ZU-23-2
+    turrets on the spine (Mount_mg / .001; the def's two zu23, two barrels each). Runtime: Part_engines,
+    Part_launcher, Part_wing_l, Part_wing_r, Mount_gun / Muzzle_gun, Mount_mg[.001] / Muzzle_mg[.001] with the
+    per-barrel Muzzle_b1 / b2_mg[_001]."""
+    K.suffixed(a)
+    hull = a.part('Hull', 'Team')
+    st = []
+    for y, w, top, bot in ((-26.8, .3, 3.4, 3.0), (-25.8, 1.4, 4.6, 1.6), (-23.0, 2.4, 6.0, .9), (-16.0, 2.8, 6.9, .6),
+                           (0.0, 2.9, 7.0, .5), (12.0, 2.7, 6.8, .9), (20.0, 2.0, 6.4, 2.0), (26.0, .5, 6.1, 4.8)):
+        zc, h = (top + bot) / 2, (top - bot) / 2
+        st.append((y, K.ellipse_half(w, h, zc, n=12, flat=.25)))
+    K.section_loft(hull, st)
+    _caspian_fittings(a)
+    # Chines along the bottom, the planing step under the wing, the keel; dark bottom paint below the chine.
+    ch = a.part('Hull_chines', 'Armor')
+    for s in (-1, 1):
+        ch.tube([(s * 1.9, -24.0, 1.5), (s * 2.7, -16.0, 1.0), (s * 2.8, 0.0, .95), (s * 2.6, 12.0, 1.3),
+                 (s * 1.9, 20.0, 2.3)], .16, seg=5)
+    a.part('Planing_step', 'Armor').box((5.0, .5, .5), loc=(0, 3.5, .7), bevel=0)
+    a.part('Hull_bottom', 'Undercarriage').box((3.0, 30.0, .1), loc=(0, -5.0, .52), bevel=0)
+    for s in (-1, 1):
+        a.part('Side_stripe', 'Team').box((.04, 34.0, .5), loc=(s * 2.86, -3.0, 4.2), bevel=0)
+        win = a.part('Portholes', 'Glass')
+        for j in range(18):
+            win.cyl(.18, .05, loc=(s * 2.86, -14.0 + j * 1.4, 5.3), rot=ACROSS, seg=8, bevel=0)
+        hp = a.part('Hull_panels', 'Armor')
+        for j in range(8):
+            if j % 2:
+                continue
+            hp.box((.04, 3.6, 1.6), loc=(s * 2.84, -14.0 + j * 4.0, 2.7), rot=(0, s * .2, 0), bevel=0)
+        for j in range(6):
+            a.part('Hull_strakes', 'Steel').box((.12, 2.0, .1), loc=(s * 2.3, -20.0 + j * 4.0, 1.0), bevel=0)
+    # The cockpit glazing on the nose (Bridge), the radome, the dorsal spine, the canards on the nose.
+    br = a.part('Bridge', 'Team')
+    W.poly_turret(br, [(5.6, [(-2.2, -23.6), (2.2, -23.6), (2.4, -19.0), (-2.4, -19.0)]),
+                       (7.3, [(-1.6, -22.6), (1.6, -22.6), (1.8, -19.4), (-1.8, -19.4)])], chamfer=.08)
+    cg = a.part('Cockpit', 'Glass')
+    cg.box((3.0, .04, .8), loc=(0, -23.1, 6.45), rot=(-.55, 0, 0), bevel=0)
+    for s in (-1, 1):
+        cg.box((.04, 2.4, .6), loc=(s * 2.25, -21.2, 6.5), rot=(0, s * .3, 0), bevel=0)
+    k.lathe(a.part('Radome', 'PlasterWhite'), [(0, -.8), (.9, -.5), (1.0, .3), (.7, .8)], loc=(0, -26.4, 3.3),
+            rot=K.FORWARD, seg=12)
+    spine = a.part('Launcher_fairing', 'Armor')
+    W.poly_turret(spine, [(6.8, [(-1.6, -15.0), (1.6, -15.0), (1.6, 16.0), (-1.6, 16.0)]),
+                          (7.6, [(-1.2, -14.0), (1.2, -14.0), (1.2, 15.0), (-1.2, 15.0)])], chamfer=.06)
+    K.wing(a.part('Canards', 'Team'), (-24.6, 2.2), (-24.0, 1.3), 2.4, x0=2.0, z=4.0, t=.1)
+    _caspian_engines(a)
+    _caspian_wings(a)
+    _caspian_tail(a)
+    _caspian_weapons(a)
+    k.clean(a)
+
+
+def _caspian_fittings(a):
+    """Hull fittings: crew hatches on the top, the boarding doors' outlines on both sides, blade antennas on the
+    spine, mooring bollards and the searchlight on the nose deck, life-raft canisters behind the cockpit."""
+    for y in (-14.5, -6.0, 18.0):
+        K.hatch_rect(a, (0, y, 7.0), size=(.9, 1.1), normal=(0, 0, 1))
+    for s in (-1, 1):
+        dl = a.part('Door_lines', 'Undercarriage')
+        for y in (-17.0, 9.0):
+            dl.box((.04, 1.2, .05), loc=(s * 2.88, y, 5.9), bevel=0)
+            dl.box((.04, 1.2, .05), loc=(s * 2.88, y, 3.9), bevel=0)
+            dl.box((.04, .05, 2.0), loc=(s * 2.88, y - .6, 4.9), bevel=0)
+            dl.box((.04, .05, 2.0), loc=(s * 2.88, y + .6, 4.9), bevel=0)
+        for y in (-25.0, -23.6):
+            a.part('Bollards', 'Steel').cyl(.14, .4, loc=(s * .9, y, 4.85), seg=8, bevel=0)
+    for j in range(5):
+        K.blade_antenna(a.part('Antennas', 'Steel'), (0, -12.0 + j * 6.0, 7.6), h=.5, chord=.4)
+    K.floodlight(a, (0, -24.4, 4.85), facing=(0, -1, -.1), pole=.5)
+    # Access panels of their own sizes along the upper hull (avionics, fuel, hydraulics bays), vents beside the spine.
+    ap = a.part('Access_panels', 'Armor')
+    for j, (y, w, l) in enumerate(((-15.5, .9, 1.2), (-11.0, 1.1, .8), (-8.5, .7, 1.5), (-3.5, 1.3, 1.0),
+                                    (1.5, .8, .9), (5.0, 1.0, 1.6), (8.0, .6, .7), (11.5, 1.2, 1.3))):
+        for s in (-1, 1):
+            ap.box((w, l, .03), loc=(s * 2.05, y + s * .3, 6.62), rot=(0, s * .5, 0), bevel=0)
+    for j, (y, w) in enumerate(((-9.5, .6), (-1.0, .9), (6.5, .5))):
+        for s in (-1, 1):
+            K.grille(a, (s * 1.75, y, 6.95), w, w * .8, facing=(s * .3, 0, 1), slats=3, frame_mat='Armor')
+    for j in range(4):
+        k.lathe(a.part('Life_rafts', 'PlasterWhite'), [(.3, -.5), (.32, -.45), (.32, .45), (.3, .5)],
+                loc=((j - 1.5) * .75, -17.6, 7.15), rot=K.FORWARD, seg=8)
+
+
+def _caspian_engines(a):
+    """Part_engines: the canard pylon behind the cockpit carrying four NK-87-class turbofans a side side by side,
+    their intakes forward, nozzles angled down to blow under the wing."""
+    p = a.pivot('Part_engines', (0, -18.0, 5.4))
+    K.wing(a.part('Engine_pylon', 'Team', p), (-1.6, 4.6), (-.6, 3.0), 6.8, x0=2.4, z=.2, t=.14, dihedral=.05)
+    jets = a.part('Jets', 'Armor', p)
+    intk = a.part('Jet_intakes', 'Undercarriage', p)
+    glow = a.part('Jet_glow', 'LavaGlow', p)
+    for s in (-1, 1):
+        for j in range(4):
+            x = s * (3.4 + j * 1.45)
+            k.lathe(jets, [(.55, -2.6), (.68, -2.3), (.7, 1.0), (.55, 2.2), (.45, 2.4)], loc=(x, 0, 1.1),
+                    rot=(R90 + .08, 0, 0), seg=16)
+            intk.cyl(.52, .05, loc=(x, -2.62, 1.1 + .2), rot=K.FORWARD, seg=16, bevel=0)
+            k.lathe(a.part('Jet_spinners', 'Steel', p), [(.2, 0), (.15, .3), (0, .45)], loc=(x, -2.55, 1.3),
+                    rot=K.FORWARD, seg=10)
+            a.part('Jet_cowl_lines', 'Undercarriage', p).cyl(.71, .06, loc=(x, -.6, 1.15), rot=(R90 + .08, 0, 0),
+                                                             seg=16, bevel=0)
+            glow.cyl(.4, .05, loc=(x, 2.42, 1.1 - .2), rot=K.FORWARD, seg=10, bevel=0)
+    K.tone(a, 'Part_engines', k=.86)
+
+
+def _caspian_wings(a):
+    """Part_wing_l / _r: the short thick low wing, the flaps, the end-plate float, a hazard stripe and the faction
+    mark on it."""
+    for s, nm in ((1, 'Part_wing_l'), (-1, 'Part_wing_r')):
+        p = a.pivot(nm, (s * 11.0, 0.0, 2.6))
+        w = a.part(f'Wing_{nm[5:]}', 'Team', p)
+        K.wing(w, (-6.0, 13.0), (-2.5, 8.0), 14.2, x0=-8.2, z=0, t=.13, sides=(s,))
+        fl = a.part(f'Wing_flaps_{nm[5:]}', 'Armor', p)
+        for j in range(3):
+            fl.box((1.9, 1.4, .18), loc=(s * (-7.2 + j * 2.0), 6.6 - j * .4, -.2), rot=(.25, 0, 0), bevel=0)
+        fw = a.part(f'Float_{nm[5:]}', 'Armor', p)
+        fw.box((.5, 9.0, 3.4), loc=(s * 8.2, .8, -.5), bevel=.1, taper=(1, .7))
+        k.lathe(fw, [(0, -2.0), (.6, -1.4), (.8, 2.0), (.5, 4.0), (0, 4.4)], loc=(s * 8.2, .3, -1.9),
+                rot=(-R90, 0, 0), seg=10)
+        a.part(f'Wing_mark_{nm[5:]}', 'Hazard', p).box((.4, 8.0, .02), loc=(s * 6.6, 1.5, .55), bevel=0)
+        wp = a.part(f'Wing_panels_{nm[5:]}', 'Armor', p)
+        for j in range(4):
+            for r in range(2):
+                if (j + r) % 2:
+                    continue
+                xx = s * (-6.8 + j * 3.2)
+                wp.box((2.8, 2.6, .03), loc=(xx, -2.0 + r * 3.0 + j * .5, .62 - abs(j) * .02), bevel=0)
+        sd = a.part(f'Static_dischargers_{nm[5:]}', 'Steel', p)
+        for j in range(6):
+            sd.box((.04, .5, .04), loc=(s * (-6.0 + j * 2.3), 7.2 - j * .45, .0), bevel=0)
+        for xx in (-4.0, 1.0):
+            a.part(f'Wing_fences_{nm[5:]}', 'Armor', p).box((.06, 7.0, .45), loc=(s * xx, .8, .45), bevel=0)
+        for j in range(3):
+            a.part(f'Flap_tracks_{nm[5:]}', 'Armor', p).box((.35, 1.6, .4), loc=(s * (-6.2 + j * 2.0), 6.6, -.45),
+                                                            bevel=0, taper=(.6, .6))
+        a.part(f'Nav_light_{nm[5:]}', 'LavaGlow' if s > 0 else 'SignalGreen', p).box((.2, .4, .2),
+                                                                                      loc=(s * 8.5, -3.2, 1.2),
+                                                                                      bevel=0)
+        K.tone(a, nm, k=.9)
+
+
+def _caspian_tail(a):
+    """The huge swept fin with its rudder line, the T-tail stabiliser with elevators, the fin mark."""
+    tf = a.part('Tail_fin', 'Team')
+    K.fin(tf, (14.0, 11.0), (21.5, 4.6), 9.4, z0=6.6, t=.11)
+    a.part('Fin_mark', 'Team').box((.03, 2.0, 1.4), loc=(.35, 20.5, 12.5), bevel=0)
+    st = a.part('Stabiliser', 'Team')
+    K.wing(st, (20.6, 5.2), (23.2, 2.8), 8.6, x0=.3, z=15.8, t=.1)
+    a.part('Elevators', 'Armor').box((15.0, .9, .18), loc=(0, 25.3, 15.8), bevel=0)
+    a.part('Rudder_line', 'Armor').box((.25, .6, 7.0), loc=(0, 25.0, 11.8), rot=(-.55, 0, 0), bevel=0)
+    K.beacon(a, (0, 25.8, 16.3), r=.2)
+
+
+def _caspian_weapons(a):
+    """Part_launcher: three pairs of Moskit canisters on the spine, their caps; the CIWS aft on Mount_gun; two
+    ZU-23-2 turrets on the spine."""
+    p = a.pivot('Part_launcher', (0, 2.0, 6.4))
+    can = a.part('Launch_canisters', 'Armor', p)
+    caps = a.part('Canister_caps', 'Hazard', p)
+    e = .12
+    for j in range(3):
+        y0 = -9.0 + j * 7.0
+        for s in (-1, 1):
+            x = s * .95
+            k.lathe(can, [(.62, 0), (.66, .1), (.66, 6.2), (.62, 6.3)], loc=(x, y0 + 6.0, 1.6), rot=_lift(e), seg=12)
+            caps.cyl(.6, .06, loc=(x, y0 + 6.0 - 6.32 * math.cos(e), 1.6 + 6.32 * math.sin(e)), rot=_lift(e), seg=12,
+                     bevel=0)
+        cr = a.part('Canister_cradles', 'Steel', p)
+        for yy in (y0 + 1.0, y0 + 4.5):
+            cr.box((2.6, .3, 1.6), loc=(0, yy, 1.0), bevel=0)
+        bands = a.part('Canister_bands', 'Steel', p)
+        for s in (-1, 1):
+            for f in (1.2, 3.1, 5.0):
+                q = Vector((s * .95, y0 + 6.0, 1.6)) + Vector((0, -math.cos(e), math.sin(e))) * f
+                bands.cyl(.7, .12, loc=tuple(q), rot=_lift(e), seg=12, bevel=0)
+    K.tone(a, 'Part_launcher', k=.9)
+    # CIWS aft on the spine.
+    k.lathe(a.part('CIWS_ring_gun', 'Steel'), [(.8, 0), (.8, .15), (.6, .2), (0, .2)], loc=(0, 17.0, 6.2), seg=14)
+    m = a.pivot('Mount_gun', (0, 17.0, 6.4))
+    W.poly_turret(a.part('CIWS_body_gun', 'Team', m), [(0, [(-.6, -.55), (.6, -.55), (.7, .2), (.5, .75), (-.5, .75),
+                                                          (-.7, .2)]),
+                                                     (1.0, [(-.4, -.4), (.4, -.4), (.5, .15), (.35, .6), (-.35, .6),
+                                                            (-.5, .15)])], chamfer=.05)
+    k.lathe(a.part('CIWS_barrels_gun', 'Steel', m), [(.16, 0), (.16, 1.9), (0, 1.92)], loc=(0, -.5, .62),
+            rot=K.FORWARD, seg=10)
+    k.lathe(a.part('CIWS_dark_gun', 'PlasterWhite', m), [(.3, 0), (.32, .18), (.2, .34), (0, .38)],
+            loc=(.35, .25, 1.0), seg=10)
+    a.pivot('Muzzle_gun', (0, -2.67, .62), m)
+    # Two ZU-23-2 turrets on the spine, two barrels each, a muzzle per barrel.
+    for i, y in enumerate((-12.0, 13.0)):
+        k.ring(a.part('Zu_rings', 'Steel'), [(.55, 0), (.7, 0), (.7, .15), (.55, .15)], loc=(0, y, 7.55), seg=12)
+        m = a.pivot(K.name('Mount_mg', i), (0, y, 7.7))
+        W.poly_turret(a.part(K.name('Zu_turret', i), 'Team', m),
+                      [(0, [(-.7, -.6), (.7, -.6), (.75, .5), (-.75, .5)]),
+                       (.7, [(-.5, -.4), (.5, -.4), (.55, .4), (-.55, .4)])], chamfer=.04)
+        g = a.part(K.name('Zu_guns', i), 'Steel', m)
+        for x in (-.2, .2):
+            k.lathe(g, [(.05, 0), (.05, 2.2), (.07, 2.22), (.07, 2.45), (0, 2.46)], loc=(x, -.5, .4),
+                    rot=K.FORWARD, seg=8)
+        mz = a.pivot(K.name('Muzzle_mg', i), (0, -2.96, .4), m)
+        suf = '' if i == 0 else '_001'
+        a.pivot(f'Muzzle_b1_mg{suf}', (-.2, 0, 0), mz)
+        a.pivot(f'Muzzle_b2_mg{suf}', (.2, 0, 0), mz)
+
+
 BUILDERS = {
     'monster': (monster, dict(ao_distance=1.6, grime_height=1.6)),
     'landing_hovercraft': (landing_hovercraft, dict(ao_distance=1.0, grime_height=2.2)),
     'typhon': (typhon, dict(ao_distance=1.0, grime_height=2.5)),
+    'caspian': (caspian, dict(ao_distance=1.0, grime_height=2.0)),
 }
