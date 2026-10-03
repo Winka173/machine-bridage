@@ -6,6 +6,7 @@
     python Tools/export/export.py diff <dirA|refA> <dirB|refB> [--out DIR]   # pass 7: Docs/export/diff_<A>_<B>/
     python Tools/export/export.py check [--out DIR]       # pass 8: export, the 9 self-checks of spec 9, SELF_CHECK.md
     python Tools/export/export.py import <export dir | xlsx> --dry-run [--out DIR]   # pass 9: edits -> change manifest
+    python Tools/export/export.py bom [--trace CSV] [--out DIR]   # bomb-run fix pass 0: Docs/export/bom_<date>/ (bom.py)
 
 Pass 6 writes md/ (one file per domain + Machine_Brigade_Design_FULL_<date>.md), images/ and pdf/ from the csv it just
 wrote (core/docmd.py, core/docpdf.py; sections in core/doc_parts.py).
@@ -186,7 +187,7 @@ def write_docs(out: Path, meta: dict, effect_shots: Path | None) -> str:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", nargs="?", default="export", choices=["export", "coverage", "fk", "diff", "check", "import"])
+    ap.add_argument("command", nargs="?", default="export", choices=["export", "coverage", "fk", "diff", "check", "import", "bom"])
     ap.add_argument("targets", nargs="*", help="diff: two export folders or git refs (A then B); import: one export folder or xlsx")
     ap.add_argument("--out", help="output folder (default Docs/export/<date>_<commit>)")
     ap.add_argument("--base", default="origin/main",
@@ -198,7 +199,12 @@ def main(argv=None) -> int:
     ap.add_argument("--lenient", action="store_true",
                     help="leave out a domain that fails to build (an old tree for diff) instead of stopping")
     ap.add_argument("--dry-run", action="store_true", help="import: write the change manifest only (the only import mode)")
+    ap.add_argument("--trace", help="bom: the csv the EditMode test BombStickTrace wrote (default env MB_BOMB_TRACE, then "
+                    "<out>/vet_tha_unity.csv)")
     args = ap.parse_args(argv)
+    if args.command == "bom":
+        import bom
+        return bom.main(args, sys.modules[__name__])
     if args.command == "diff":
         if len(args.targets) != 2:
             ap.error("diff takes two export folders or git refs")
