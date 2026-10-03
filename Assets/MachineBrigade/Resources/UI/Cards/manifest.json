@@ -589,7 +589,7 @@
             "kind": "vehicle",
             "model": "amphib_light_vehicle",
             "source": "Models/amphib_light_vehicle",
-            "hash": "v2:a21df648bbebbbd5c67b386508b2b3e55818d5f0"
+            "hash": "v2:91ebe74a1736509a407757ca3dcb07d4bfd5bc25"
         },
         {
             "id": "airborne_light_tank",
