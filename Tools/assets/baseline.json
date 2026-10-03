@@ -3228,6 +3228,22 @@
    "changes": [
     "FLAG flare_searchlight_tower: triangles 2,296 -> 4,162 (+81.3%); vertices 2,672 -> 5,959 (+123.0%); meshes 19 -> 42 (+121.1%); renderers 19 -> 42 (+121.1%); materials 9 -> 14 (+55.6%); materialSlots 19 -> 42 (+121.1%); fileBytes 151,716 -> 329,660 (+117.3%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "drone_net_tower"
+   ],
+   "reason": "P35 wave 11",
+   "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "bulwark_post"
+   ],
+   "reason": "P35 wave 11",
+   "changes": []
   }
  ],
  "models": {

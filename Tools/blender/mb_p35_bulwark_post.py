@@ -44,7 +44,7 @@ def _ground(a):
         u = R90 + s * gap
         for c in range(3):
             k.block(a.part('Sandbags', 'Sandbag'), (.3, .52, .14),
-                    loc=(math.cos(u) * RING, math.sin(u) * RING + .1, BERM + c * .135), rot=(0, 0, u),
+                    loc=(math.cos(u) * RING, math.sin(u) * RING + .1, BERM + .07 + c * .135), rot=(0, 0, u),
                     chamfer=.05)
 
 

@@ -144,7 +144,7 @@ def _ground(a):
     """Generator box on skids, guy ropes and stakes, warning plates."""
     gx, gy = PX - .5, BAYS[-1] - 1.25
     gen = a.part('Generator', 'Team')
-    k.block(gen, (.5, .8, .45), loc=(gx, gy, .1), chamfer=.04)
+    k.block(gen, (.5, .8, .45), loc=(gx, gy, .325), chamfer=.04)
     k.extrude(gen, [(-.4, 0), (.4, 0), (.3, .12), (-.3, .12)], .5, loc=(gx, gy, .55), axis='X', chamfer=.01)
     sk = a.part('Skids', 'Steel')
     for s in (-1, 1):
