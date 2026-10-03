@@ -162,7 +162,7 @@ def _turret(a):
         u = -R90 + (i - 1) * .6
         K.periscope(a, (.42 + math.cos(u) * .34, .05 + math.sin(u) * .34, .5), facing=(math.cos(u), math.sin(u), 0),
                     parent=t, size=(.1, .08, .07))
-    K.hatch_round(a, (-.42, .12, .46), r=.25, parent=t, periscopes=1, seg=12)
+    C.hatch(a, (-.42, .12, .46), r=.25, parent=t, periscope=True)
     ring = a.part('MG_dshk', 'Steel', t)
     k.ring(ring, [(.34, .5), (.38, .5), (.38, .54), (.34, .54)], loc=(-.42, .12, 0), seg=14)
     for u in (0, R90 * 2):
