@@ -2970,6 +2970,16 @@
    "changes": [
     "FLAG drone_hijack_vehicle: triangles 3,446 -> 6,754 (+96.0%); vertices 3,816 -> 9,033 (+136.7%); meshes 24 -> 52 (+116.7%); renderers 24 -> 52 (+116.7%); materials 9 -> 10 (+11.1%); materialSlots 24 -> 52 (+116.7%); fileBytes 213,836 -> 489,384 (+128.9%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "fibre_fpv_carrier"
+   ],
+   "reason": "P35 wave 6: fibre_fpv_carrier rebuilt from scratch",
+   "changes": [
+    "FLAG fibre_fpv_carrier: triangles 1,324 -> 6,364 (+380.7%); vertices 1,494 -> 8,964 (+500.0%); meshes 17 -> 54 (+217.6%); renderers 17 -> 54 (+217.6%); materials 7 -> 12 (+71.4%); materialSlots 17 -> 54 (+217.6%); fileBytes 91,576 -> 487,104 (+431.9%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -24967,24 +24977,24 @@
   },
   "fibre_fpv_carrier": {
    "file": "fibre_fpv_carrier.glb",
-   "fileBytes": 91576,
-   "sha1": "aa9e0dbeab1fee52",
+   "fileBytes": 487104,
+   "sha1": "c30a53f824783a8d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 23,
-   "meshes": 17,
-   "materials": 7,
+   "nodes": 62,
+   "meshes": 54,
+   "materials": 12,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 17,
-   "submeshes": 17,
-   "materialSlots": 17,
-   "materialsUsed": 7,
-   "triangles": 1324,
-   "vertices": 1494,
+   "renderers": 54,
+   "submeshes": 54,
+   "materialSlots": 54,
+   "materialsUsed": 12,
+   "triangles": 6364,
+   "vertices": 8964,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -24992,36 +25002,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 29,
-   "openEdges": 0,
+   "loosePieces": 226,
+   "openEdges": 8,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.0,
+    -0.995,
     0.0,
-    -2.34
+    -2.41
    ],
    "boundsMax": [
-    1.0,
-    1.62,
-    2.35
+    0.995,
+    2.08,
+    2.4689
    ],
    "size": [
-    4.69,
-    2.0,
-    1.62
+    4.879,
+    1.99,
+    2.08
    ],
    "center": [
     0.0,
-    0.81,
-    0.005
+    1.04,
+    0.029
    ],
-   "structureHash": "7ec965b4d123d57e",
+   "structureHash": "4d62e374168d43e9",
    "color0": {
-    "mean": 0.664,
-    "min": 0.0907,
+    "mean": 0.5547,
+    "min": 0.0498,
     "max": 1.0,
-    "p05": 0.1557,
-    "p95": 0.9987,
+    "p05": 0.0847,
+    "p95": 0.8143,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -25029,7 +25039,11 @@
      "Turret"
     ],
     "muzzle": [
-     "Muzzle_main"
+     "Muzzle_main",
+     "Muzzle_rocket"
+    ],
+    "mount": [
+     "Mount_rocket"
     ],
     "part": [
      "Part_wheel",
@@ -25042,29 +25056,68 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antennas",
+    "Axles",
     "Bed",
+    "Bull_bar",
+    "Cab",
     "Chassis",
+    "Door_seams",
+    "Drone_arms",
+    "Drone_cams",
+    "Drone_charges",
+    "Drone_rotors",
     "Drones",
+    "Exhaust",
+    "Fenders",
     "Glass",
+    "Grille",
+    "Hatch_fittings",
+    "Hatches",
+    "Hubs",
+    "Hubs.001",
+    "Hubs.002",
     "Hull",
+    "Jerrycans",
+    "Kit_cables",
+    "Kit_hooks",
+    "Kit_straps",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
+    "Launcher_box",
+    "Mount_rocket",
     "Muzzle_main",
+    "Muzzle_rocket",
     "Part_wheel",
     "Part_wheelb",
     "Point_exhaust",
     "Point_fire",
     "Rack",
+    "Spare_rim",
+    "Spare_wheel",
+    "Spool_fibre",
     "Spool_frame",
     "Spools",
     "Steel",
+    "Steps",
+    "Stowage",
+    "Suspension",
+    "Tail_lamps",
+    "Team_band",
+    "Tubes",
+    "Turntable",
     "Turret",
     "Tyres",
     "Tyres.001",
     "Tyres.002",
+    "Wheel_nuts",
+    "Wheel_nuts.001",
+    "Wheel_nuts.002",
     "Wheels",
     "Wheels.001",
-    "Wheels.002"
+    "Wheels.002",
+    "Window_frames",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,
@@ -25073,7 +25126,7 @@
    "units": [
     "fibre_fpv_carrier"
    ],
-   "movingParts": 3,
+   "movingParts": 4,
    "budgetClass": "ground"
   },
   "fighter_jet": {
