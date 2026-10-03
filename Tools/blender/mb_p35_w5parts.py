@@ -20,7 +20,8 @@ TAU = math.tau
 
 
 def running_gear(a, tx, tw, wr, wheels, idler, sprocket, rollers=(), roller_z=None, disc_mat='Armor', seg=10,
-                 link_pitch=.24, top_hidden=None, wheel_w=.2, teeth=10, sides=(-1, 1), tag='', dust=.28):
+                 link_pitch=.24, top_hidden=None, wheel_w=.2, teeth=10, sides=(-1, 1), tag='', dust=.28,
+                 ends=True):
     """Both tracks at |x| = tx (belt tw wide): road wheels of radius wr at the y's in `wheels`, idler and sprocket
     as (y, z, r), return rollers at `rollers` (y's) at roller_z. The belt is the convex outline of the wheels; links
     run round it except along the top run when `top_hidden` (z above which a skirt hides it) is given."""
@@ -45,10 +46,13 @@ def running_gear(a, tx, tw, wr, wheels, idler, sprocket, rollers=(), roller_z=No
                     rot=(math.atan2(tz, ty), 0, 0), chamfer=0)
         for y in wheels:
             p27.road_wheel(a, (s * (tx + face), y, wr), wr, wheel_w, s, seg=seg, disc_mat=disc_mat)
+        if not ends:
+            continue
         p27.sprocket(a, (s * (tx + face), sy, sz), sr, teeth, wheel_w * .7, s)
         k.lathe(a.part('Idlers' + tag, disc_mat), [(0, .1), (ir * .4, .1), (ir * .45, .08), (ir * .9, .08),
                                                    (ir, .05), (ir, -.07), (ir * .85, -.08), (0, -.08)],
                 loc=(s * (tx + face), iy, iz), rot=p27.side_rot(s), seg=seg, worn=(4,))
+    for s in sides:
         for y in rollers:
             K.return_roller(a, (s * (tx + face - .02), y, roller_z if roller_z is not None else wr * 2.3), .09,
                             .11, s)

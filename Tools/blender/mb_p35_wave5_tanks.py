@@ -142,6 +142,154 @@ def _twin_turret(a):
     K.whip_antenna(a.part('Antennas', 'Steel', t), (1.25, 1.75, .62), h=.45, lean=.25)
 
 
+# ============================================================================= titan_tank
+def titan_tank(a):
+    """The super tank: see the module docstring. Runtime: Turret, Main_cannon, Main_cannon_2, Muzzle_brake,
+    Muzzle_brake_2, Muzzle_main (left barrel; mb_p34_barrels adds Muzzle_b1 / b2_main), Muzzle_coax,
+    Muzzle_missile[.001] (the TOW boxes), Mount_mg / Muzzle_mg (the rear sub-turret), Mount_APS, Point_fire,
+    Point_exhaust."""
+    K.suffixed(a)
+    wheels_o = [-3.15 + i * 1.22 for i in range(6)]
+    W.running_gear(a, 2.27, .52, .38, wheels_o, (-3.85, .66, .3), (3.75, .7, .32), top_hidden=.85,
+                   disc_mat='Armor', seg=8, link_pitch=.6)
+    wheels_i = [-2.4 + i * 1.6 for i in range(4)]
+    W.running_gear(a, 1.42, .48, .34, wheels_i, (-3.55, .6, .27), (3.55, .64, .29), disc_mat='Armor', seg=6,
+                   link_pitch=1.1, top_hidden=.6, teeth=8, dust=0, ends=False)
+    hull = a.part('Hull', 'Team')
+    # The upper hull spans all four tracks: a long shallow glacis, a stepped deck, the sloped rear plate.
+    W.side_hull(hull, [(4.05, .62), (4.1, 1.18), (3.9, 1.45), (-1.9, 1.46), (-3.9, 1.06), (-4.02, .82),
+                       (-3.7, .58)], 5.1, chamfer=.07)
+    low = a.part('Hull_lower', 'Armor')
+    W.side_hull(low, [(3.9, .4), (-3.4, .4), (-3.8, .68), (3.9, .68)], 2.2, chamfer=.04)
+    # Glacis composite modules, the driver's hatch and vision blocks, lamps, tow hooks.
+    gl = a.part('Glacis_armor', 'Armor')
+    for s in (-1, 1):
+        for i in range(2):
+            x = s * (.75 + i * 1.25)
+            gl.box((1.15, 1.2, .14), loc=(x, -2.9, 1.27), rot=(math.atan2(.4, 2.0), 0, 0), bevel=0)
+    hc = (0, -1.65, 1.47)
+    k.ring(a.part('Hatches', 'Armor'), [(.26, 0), (.32, 0), (.32, .06), (.26, .06)], loc=hc, seg=10)
+    k.lathe(a.part('Hatches', 'Armor'), [(0, .09), (.22, .085), (.27, .06), (.27, .02)], loc=hc, seg=10)
+    for dx in (-.25, 0, .25):
+        a.part('Sight', 'Armor').box((.16, .1, .08), loc=(dx, -2.02, 1.44), rot=(-.35, 0, 0), bevel=0)
+        a.part('Glass', 'Glass').box((.13, .01, .05), loc=(dx, -2.075, 1.43), rot=(-.35, 0, 0), bevel=0)
+    for s in (-1, 1):
+        K.lamp(a, (s * 2.1, -3.95, 1.0), (0, -1, .1), r=.08, guard=False)
+        K.tow_hook(a.part('Kit_tow', 'Steel'), (s * .9, -4.04, .78), facing=(0, -1, 0), size=.12)
+        # Armoured skirts on the outer tracks, a team band above them, sponson stowage, exhausts.
+        sk = a.part('Skirts', 'Team')
+        for i in range(5):
+            yc = -3.7 + (i + .5) * 1.46
+            sk.box((.06, 1.42, .55), loc=(s * 2.6, yc, .9), bevel=0)
+            a.part('Skirt_flaps', 'Rubber').box((.03, 1.38, .1), loc=(s * 2.6, yc, .58), bevel=0)
+        a.part('Kit_hinges', 'Steel').tube([(s * 2.64, -3.7, 1.15), (s * 2.64, 3.6, 1.15)], .022, seg=5)
+        a.part('Team_band', 'Team').box((.012, 3.0, .1), loc=(s * 2.64, -.8, .95), bevel=0)
+        K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.6, 1.1, .32), (s * 2.15, 1.6, 1.46))
+        K.exhaust(a, (s * 1.9, 3.85, 1.35), r=.09, length=.45, direction=(0, .5, 1), muffler=False)
+    # Engine deck grilles and the rear plate louvres, tail lamps.
+    for x in (-.9, .9):
+        K.grille(a, (x, 2.95, 1.455), 1.2, 1.3, facing=(0, 0, 1), slats=6, frame_mat='Team')
+    K.grille(a, (0, 4.1, 1.0), 2.4, .3, facing=(0, 1, 0), slats=3, frame_mat='Armor')
+    for s in (-1, 1):
+        a.part('Tail_lamps', 'LavaGlow').box((.14, .02, .08), loc=(s * 2.0, 4.07, 1.2), bevel=0)
+    a.pivot('Point_fire', (0, 3.4, 1.7))
+    a.pivot('Point_exhaust', (1.2, 4.1, 1.25))
+    _titan_rear_turret(a)
+    _titan_turret(a)
+    k.clean(a)
+
+
+def _titan_rear_turret(a):
+    """The rear machine-gun sub-turret on the engine deck: a squat hexagonal turret on its ring, the 12.7 mm."""
+    k.ring(a.part('Sub_turret_ring', 'Steel'), [(.46, 0), (.54, 0), (.54, .1), (.46, .1)], loc=(0, 3.05, 1.45), seg=12)
+    m = a.pivot('Mount_mg', (0, 3.05, 1.62))
+    tb = a.part('Sub_turrets', 'Team', m)
+    W.poly_turret(tb, [(-.15, [(-.42, -.4), (.42, -.4), (.5, 0), (.42, .4), (-.42, .4), (-.5, 0)]),
+                       (.22, [(-.3, -.32), (.3, -.32), (.38, 0), (.3, .32), (-.3, .32), (-.38, 0)])], chamfer=.03)
+    g = a.part('MG', 'Steel', m)
+    k.lathe(g, [(.05, 0), (.05, .25), (.032, .3), (.032, 1.25), (.05, 1.27), (.05, 1.4), (0, 1.42)],
+            loc=(0, -.25, .08), rot=K.FORWARD, seg=8)
+    K.chamfer_box(a.part('MG_mantlet', 'Armor', m), (.22, .16, .18), loc=(0, -.36, .08), c=.02)
+    K.periscope(a, (.18, .05, .22), parent=m, size=(.14, .12, .1))
+    a.pivot('Muzzle_mg', (0, -1.68, .08), m)
+
+
+def _titan_turret(a):
+    t = a.pivot('Turret', (0, -.3, 1.62))
+    body = a.part('Turret_body', 'Team', t)
+    W.poly_turret(body, [
+        (0, [(-1.2, -1.85), (1.2, -1.85), (1.95, -.9), (1.95, 1.55), (1.6, 1.95), (-1.6, 1.95), (-1.95, 1.55),
+             (-1.95, -.9)]),
+        (.42, [(-1.05, -2.25), (1.05, -2.25), (2.0, -1.0), (2.0, 1.6), (1.65, 2.0), (-1.65, 2.0), (-2.0, 1.6),
+               (-2.0, -1.0)]),
+        (.75, [(-.9, -1.8), (.9, -1.8), (1.7, -.85), (1.7, 1.45), (1.45, 1.8), (-1.45, 1.8), (-1.7, 1.45),
+               (-1.7, -.85)])], chamfer=.05)
+    k.ring(a.part('Turret_steel', 'Steel', t), [(1.34, -.1), (1.48, -.1), (1.48, .02), (1.34, .02)], seg=16)
+    # Cheek composite modules with their bolt rows.
+    arm = a.part('Turret_armor', 'Armor', t)
+    for s in (-1, 1):
+        K.chamfer_box(arm, (.9, .9, .5), loc=(s * 1.4, -1.55, .38), rot=(0, 0, s * .62), c=.04)
+        K.rivet_line(a.part('Kit_bolts', 'Steel', t), (s * 1.1, -1.95, .66), (s * 1.75, -1.2, .66), (0, 0, 1),
+                     pitch=.32)
+    # One broad mantlet carrying the twin 140 mm, the coax above between them.
+    K.chamfer_box(a.part('Mantlet', 'Armor', t), (1.75, .42, .62), loc=(0, -2.25, .5), c=.06)
+    for i, x in enumerate((-.62, .62)):
+        nm = 'Main_cannon' if i == 0 else 'Main_cannon_2'
+        br = 'Muzzle_brake' if i == 0 else 'Muzzle_brake_2'
+        K.gun_barrel(a, nm, t, x, -2.4, .52, 4.38, .095, seg=12, extractor=(.4, 1.7, .55), brake_name=br,
+                     brake='baffle', sleeve=1.25)
+    a.pivot('Muzzle_main', (-.62, -6.91, .52), t)
+    k.lathe(a.part('Coax', 'Steel', t), [(.025, 0), (.025, .5), (0, .51)], loc=(0, -2.38, .7), rot=K.FORWARD, seg=6)
+    a.pivot('Muzzle_coax', (0, -2.87, .7), t)
+    # TOW-class launcher boxes on both cheeks (the ATGM), on short pedestals.
+    for i, s in enumerate((-1, 1)):
+        x = s * 1.95
+        K.chamfer_box(a.part('ATGM_mount', 'Steel', t), (.2, .3, .2), loc=(x, -.9, .78), c=.02)
+        K.chamfer_box(a.part('ATGM_pod', 'Armor', t), (.42, 1.25, .36), loc=(x, -.95, .98), c=.03)
+        for dx in (-.1, .1):
+            a.part('Tubes_bore', 'Undercarriage', t).cyl(.075, .02, loc=(x + dx, -1.58, .98), rot=K.FORWARD, seg=8,
+                                                          bevel=0)
+        a.pivot(K.name('Muzzle_missile', i), (x, -1.6, .98), t)
+    # Commander's and gunner's sights, the cupola, the loader's hatch.
+    K.chamfer_box(a.part('Sight', 'Armor', t), (.42, .46, .32), loc=(1.05, -1.0, .9), c=.04)
+    a.part('Glass', 'Glass', t).box((.32, .01, .14), loc=(1.05, -1.235, .92), bevel=0)
+    K.periscope(a, (-1.05, -.85, .75), facing=(0, -1, 0), parent=t, size=(.26, .24, .24))
+    k.lathe(a.part('Cupola', 'Armor', t), [(.38, 0), (.38, .14), (.32, .2), (0, .22)], loc=(-.7, .45, .75), seg=12)
+    for i in range(5):
+        u = i * TAU / 5
+        a.part('Glass', 'Glass', t).box((.12, .02, .06), loc=(-.7 + math.cos(u) * .36, .45 + math.sin(u) * .36, .82),
+                                         rot=(0, 0, u + R90), bevel=0)
+    k.ring(a.part('Hatches', 'Armor', t), [(.3, 0), (.36, 0), (.36, .08), (.3, .08)], loc=(.75, .55, .75), seg=12)
+    k.lathe(a.part('Hatches', 'Armor', t), [(0, .1), (.26, .095), (.31, .07), (.31, .02)], loc=(.75, .55, .75),
+            seg=12)
+    # APS: radar panels on the four corners, two launcher clusters on the roof rear.
+    aps = a.part('APS', 'Armor', t)
+    glow = a.part('Aps_cluster_panels', 'Glass', t)
+    for sx, sy, yaw in ((1, -1, .5), (-1, -1, -.5), (1, 1, 2.4), (-1, 1, -2.4)):
+        c = (sx * 1.55, sy * 1.25 + .2, .88)
+        aps.box((.42, .14, .3), loc=c, rot=(0, 0, yaw), bevel=0)
+        glow.box((.34, .01, .22), loc=(c[0] - math.sin(yaw) * .075, c[1] - math.cos(yaw) * .075, c[2]),
+                 rot=(0, 0, yaw), bevel=0)
+    cl = a.part('Aps_cluster', 'Steel', t)
+    for s in (-1, 1):
+        k.lathe(cl, [(.16, 0), (.16, .1), (.12, .16), (0, .17)], loc=(s * 1.2, 1.2, .75), seg=10)
+        for j in range(4):
+            u = j * TAU / 4 + .4
+            cl.cyl(.045, .2, loc=(s * 1.2 + math.cos(u) * .1, 1.2 + math.sin(u) * .1, .95), rot=(.5, 0, u + R90),
+                   seg=6, bevel=0)
+    a.pivot('Mount_APS', (0, 1.2, 1.0), t)
+    # Smoke dischargers, bustle stowage, the roof team panel, antennas.
+    for s in (-1, 1):
+        K.smoke_dischargers(a, 1.8, .3, .5, s, count=2, parent=t)
+        K.crate(a.part('Stowage', 'Armor', t), a.part('Kit_latches', 'Steel', t), (.22, 1.1, .32),
+                (s * 2.12, .9, .15), bands=1)
+    K.net_roll(a.part('Stowage', 'Canvas', t), a.part('Kit_straps', 'Crate', t), (0, 2.08, .3), length=2.2, r=.16)
+    a.part('Team_band', 'Team', t).box((1.4, .7, .012), loc=(0, -.1, .755), bevel=0)
+    K.whip_antenna(a.part('Antennas', 'Steel', t), (-1.4, 1.5, .75), h=.5, lean=.3)
+    K.whip_antenna(a.part('Antennas', 'Steel', t), (1.4, 1.5, .75), h=.5, lean=.3)
+
+
 BUILDERS = {
     'twin_tank': (twin_tank, dict(ao_distance=.5, grime_height=.6)),
+    'titan_tank': (titan_tank, dict(ao_distance=.6, grime_height=.6)),
 }

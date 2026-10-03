@@ -1785,7 +1785,7 @@
   },
   "titan_tank": {
     "file": "titan_tank.glb",
-    "triangles": 8384
+    "triangles": 10282
   },
   "tos_rocket": {
     "file": "tos_rocket.glb",
