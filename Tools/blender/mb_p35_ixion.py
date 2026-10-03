@@ -186,7 +186,9 @@ def _cab(a):
     K.whip_antenna(a.part('Antennas', 'Steel', pc), (1.4, 1.6, h), h=.6, r=.06)
     for i, x in enumerate((-.9, 1.1)):
         k.lathe(arm, [(.5, 0), (.5, .14), (.36, .2)], loc=(x, -.6, ROOF - DECK + .02), seg=12, worn=(1,))
-        K.pintle_mg(a, 'Part_cab', (x, -.6, ROOF - DECK + .2), index=i, scale=2.0, slot='mg')
+        # Wave 1 (the owner's roof-gun rule): each gun on a 0.9 m pintle post with its cradle and big ammunition can,
+        # so the pair stands clear of the canopy at the battle camera's distance.
+        K.pintle_mg(a, 'Part_cab', (x, -.6, ROOF - DECK + .2), index=i, scale=2.0, slot='mg', post=.9)
     K.tone(a, 'Part_cab', k=.93, warm=.03)
 
 
