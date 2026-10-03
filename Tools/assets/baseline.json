@@ -3324,6 +3324,26 @@
    "changes": [
     "prop_attack_plane: meshes 45 -> 42 (-6.7%); renderers 45 -> 42 (-6.7%); materialSlots 45 -> 42 (-6.7%); fileBytes 320,984 -> 318,148 (-0.9%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "airborne_vehicle_chute"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG airborne_vehicle_chute: triangles 3,262 -> 13,056 (+300.2%); vertices 4,213 -> 17,106 (+306.0%); meshes 15 -> 35 (+133.3%); renderers 15 -> 35 (+133.3%); materials 6 -> 12 (+100.0%); materialSlots 15 -> 35 (+133.3%); fileBytes 220,852 -> 867,416 (+292.8%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "airborne_vehicle_chute"
+   ],
+   "reason": "P35 wave 11",
+   "changes": [
+    "FLAG airborne_vehicle_chute: meshes 35 -> 43 (+22.9%); renderers 35 -> 43 (+22.9%); materialSlots 35 -> 43 (+22.9%); fileBytes 867,416 -> 874,448 (+0.8%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -5438,22 +5458,24 @@
   },
   "airborne_vehicle_chute": {
    "file": "airborne_vehicle_chute.glb",
-   "fileBytes": 220852,
-   "sha1": "6fa25be23d78541c",
+   "fileBytes": 874448,
+   "sha1": "ffd0a3220f37991c",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 20,
-   "meshes": 15,
-   "materials": 6,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 48,
+   "meshes": 43,
+   "materials": 12,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 15,
-   "submeshes": 15,
-   "materialSlots": 15,
-   "materialsUsed": 6,
-   "triangles": 3262,
-   "vertices": 4213,
+   "renderers": 43,
+   "submeshes": 43,
+   "materialSlots": 43,
+   "materialsUsed": 12,
+   "triangles": 13056,
+   "vertices": 17106,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -5461,36 +5483,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 100,
-   "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "loosePieces": 397,
+   "openEdges": 288,
+   "nonManifoldEdges": 2,
    "boundsMin": [
-    -3.7,
-    -0.22,
-    -4.5785
+    -3.5903,
+    -0.885,
+    -4.4633
    ],
    "boundsMax": [
-    4.9,
-    10.3,
-    4.5785
+    4.7777,
+    10.3721,
+    4.4633
    ],
    "size": [
-    9.157,
-    8.6,
-    10.52
+    8.927,
+    8.368,
+    11.257
    ],
    "center": [
-    0.6,
-    5.04,
+    0.594,
+    4.744,
     0.0
    ],
-   "structureHash": "6e09c8200ca7e085",
+   "structureHash": "74227db99407d667",
    "color0": {
-    "mean": 0.6568,
-    "min": 0.0821,
-    "max": 0.9987,
-    "p05": 0.2702,
-    "p95": 0.8143,
+    "mean": 0.5965,
+    "min": 0.0572,
+    "max": 1.0,
+    "p05": 0.1587,
+    "p95": 0.8216,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -5515,30 +5537,62 @@
    "runtimeSuffixed": [],
    "nodeNames": [
     "Canopies",
+    "Canopy_gores",
+    "Canopy_hem",
     "Coax",
-    "Fenders",
+    "Coax_jacket",
+    "Coax_pkt",
+    "Crush_pads",
+    "Glass",
+    "Glass.001",
+    "Grilles",
     "Hubs",
     "Hull",
+    "Hull_lower",
+    "Jerrycans",
+    "Kit_straps",
+    "Kit_straps.001",
+    "Lamps",
     "Main_cannon",
+    "Mantlet",
+    "Mudflaps",
     "Muzzle_brake",
     "Muzzle_coax",
     "Muzzle_main",
     "Pallet",
+    "Pallet_rails",
     "Point_exhaust",
     "Point_fire",
+    "Probes",
     "Risers",
+    "Sight",
+    "Skid_beams",
+    "Slings",
     "Sprockets",
+    "Stowage_bags",
+    "Tail_lamps",
+    "Tarp_roll",
+    "Team_band",
+    "Team_band.001",
     "Team_bands",
+    "Track_links",
     "Tracks",
     "Turret",
+    "Turret_armor",
     "Turret_body",
+    "Turret_steel",
     "Tyres",
+    "Vane_ribs",
     "Wheels"
    ],
    "category": "air",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 13,056 over the jet normal hard cap 6,400 (info: kept, owner rule)",
+    "vertices 17,106 over the jet normal hard cap 8,900 (info: kept, owner rule)",
+    "renderers 43 over the jet normal budget 36"
+   ],
    "units": [
     "airborne_vehicle_chute"
    ],
