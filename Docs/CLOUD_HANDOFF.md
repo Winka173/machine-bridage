@@ -281,3 +281,55 @@ Finish: `## Play-test 14 (lane B, cloud)` in Docs/DECISIONS.md (append at the en
 Unreleased, commits "Play-test 14 (lane B): ..." in logical steps, then append a short `## Cloud state <date>
 (play-test 14 lane B)` note at the end of this file (what is done, what needs a Unity check locally, open questions)
 and push cloud/pt14-b.
+
+## Play-test 14: all code work moves to the cloud (owner, 2026-10-03)
+
+Owner: "gửi càng nhiều càng tốt" (the cloud has tokens, local does not). Local lanes were stopped; the local lead only
+merges, compiles in Unity and renders. Common rules for every play-test 14 cloud session: read `Docs/AGENT_RULES.md`,
+`Docs/prompts/playtest14_vi.txt`, `Docs/fixes/playtest14_plan.md` (binding); branch from
+`origin/feature/visual-overhaul`; push only to your `cloud/pt14-*` branch; no Unity (Sim compile via the dotnet
+project above; Game/UI C# reviewed by hand, C# 9); write tests if useful, never run them; every gameplay value change
+logged in `Docs/export/CHANGES.md`; bosses on hold (no boss models, no boss removal, no boss size change: the size
+increase was cancelled); finish with a DECISIONS section, one CHANGELOG line under Unreleased, a `## Cloud state`
+note at the end of this file, and a push.
+
+### Session 1: lane C (deletions) then lane B, branch `cloud/pt14-c`
+
+Part 1, deletions. Delete every id in the plan's "Deletion list" cleanly: balance.json (keep its comments), default
+decks, generals' openingSquads, AI lists, campaign.json / operations.json / maps / script, strings EN/VI, guide text,
+icon maps (MenuScreen), MatchSettings, Progression, GearText, NameSheet and other test data, export sources
+(Tools/export, Docs/export/current). Replacements: gunship_heli -> attack_helicopter, bmpt -> ifv, interceptor_jet
+-> fighter_jet; other deleted units -> nearest-role surviving unit (list each in DECISIONS). Remove skill apc_smoke
+(the ifv stays). Weapons/skills used only by deleted entries go too. Old saves owning a deleted entry are refunded
+(migration in the save/progression code). KEEP THE MODELS: `git mv` each deleted entry's GLB(s) from
+`Assets/MachineBrigade/Resources/Models` to `Archive/models/` (drop their .meta); keep their builders in
+`Tools/blender/build_assets.py` with a `# archived (play-test 14)` comment; `python -m py_compile` it. GLBs are Git
+LFS: make sure the moved files stay LFS objects (git lfs must be installed; do not commit pointer text as GLB
+content changes). Grep every deleted id at the end: zero hits outside Archive/, CHANGES.md, DECISIONS, CHANGELOG,
+prompts. Write the removed-id list to `Docs/fixes/playtest14_deleted.md`. Commit "Play-test 14 (lane C): ...", push.
+
+Part 2: lane B, exactly the section "Play-test 14 lane B" above, on top of part 1 in the same branch
+(commits "Play-test 14 (lane B): ..."). Push after each part.
+
+### Session 2: lane A (gameplay + VFX fixes), branch `cloud/pt14-a`
+
+Items 1-2 (impact smoke x0.4, no ground zones for bombs/shells) are already merged (caff29c). Do items 3-14:
+3. armored_car fires its two guns at the same time (in-game and in the in-action preview).
+4. Missile smoke trail cut off near the target (rocket_technical, mlrs, aa_vehicle, sam_launcher, strike_drone,
+   probably every missile): trail must last to detonation, and the visual missile reaches the impact point on the Sim
+   hit frame.
+5. light_tank (Amphibious light tank): in-action preview on land; its missile must visibly fire.
+6. sky_gunship firing sounds weak: make them punchy (105 / 40 / 25 mm); procedural or existing clips.
+7. All launcher vehicles: raising the launcher is super fast, lowering normal; raise at the normal speed.
+8. Bosses with howitzers: shots look like tank rounds; restore the artillery look (muzzle blast, arcing shell,
+   artillery impact).
+9. Leviathan: fires before the gun finishes traversing (wait until aligned); barrel recoil on firing; secondary
+   turrets rotate to their targets (runtime pivots only, no model edits).
+10. armored_train (Juggernaut) and nuke_train (Nemesis): body yaws off the rail when firing; lock it to the track.
+11. armored_bulldozer in-action preview: it breaks a wall and a watchtower.
+12. Sea: some tiles have no water and waves run bottom-to-top; water covers every sea tile, waves follow the wind.
+13. napalm_strike and airstrike: an aircraft flies over and drops bombs (napalm = fire canisters) on the existing
+    bomb-run system; damage unchanged.
+14. Boss escorts by domain: ground boss -> ground vehicles, sea boss -> boats, air boss -> aircraft (Nyx gets tanks at
+    sea now); data/rules in balance.json escortRules / escortTemplates.
+Do not delete anything (session 1 does). Commits "Play-test 14 (lane A): ...", push.
