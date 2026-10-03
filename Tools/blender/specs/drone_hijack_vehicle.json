@@ -1,0 +1,161 @@
+{
+ "id": "drone_hijack_vehicle",
+ "class": "wheeled",
+ "real": [
+  "Krasukha-4 / Repellent-1 class electronic-attack truck on a BAZ-6910-type 8x8"
+ ],
+ "shape": "refs: none; the old builder (mb_p27_wave1c): an EW truck for hijacking drones, 9.01 x 2.76 x 3.83 m, an 8x8 chassis, forward cab, a long equipment shelter with roof vents, the directional hijack array on a turning mast (a flat phased panel, four yagi elements and a feed horn) with a small spinning sensor dish on the cab roof; team bands on both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 9.01,
+  "W": 2.76,
+  "H": 3.83,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the low armoured cab (Team) with the raked three-pane windscreen, the nose step, two doors, steps, mirrors",
+   "nodes": [
+    "Cab",
+    "Glass",
+    "Windows",
+    "Window_frames",
+    "Door_panels",
+    "Cab_fit",
+    "Steps"
+   ]
+  },
+  {
+   "feature": "the bumper, grille, guarded headlamps, the beacon",
+   "nodes": [
+    "Bumper",
+    "Grille",
+    "Lamps",
+    "Beacons"
+   ]
+  },
+  {
+   "feature": "eight wheels in a 1-1-2 axle spread with wishbones and axle beams, mud flaps",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Hubs",
+    "Axles",
+    "Suspension",
+    "Mudflaps"
+   ]
+  },
+  {
+   "feature": "the small spinning sensor dish on its mast on the cab roof (Radar)",
+   "nodes": [
+    "Radar",
+    "Radar_dish",
+    "Radar_feed",
+    "Radar_mast"
+   ]
+  },
+  {
+   "feature": "the sloped-ended equipment body: side doors, louvres, roof air-conditioning units, roof box, cable tray, ladder",
+   "nodes": [
+    "Shelter",
+    "Door_panels",
+    "Grilles",
+    "Vents",
+    "Roof_boxes",
+    "Kit_cables",
+    "Racks",
+    "Ladders"
+   ]
+  },
+  {
+   "feature": "the hijack array on its turning mast: tilted phased panel and cells, four yagis, the feed horn, the elevation arms (Turret)",
+   "nodes": [
+    "Turret",
+    "Turret_mast",
+    "Turret_armor",
+    "Array_panel",
+    "Array_cells",
+    "Feed_horn",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "stowage boxes under the body, the generator pod, the spare wheel, a jerrycan, exhaust, tail lamps, whip, Team bands",
+   "nodes": [
+    "Stowage",
+    "Generator",
+    "Spare_wheel",
+    "Jerrycans",
+    "Point_exhaust",
+    "Tail_lamps",
+    "Antennas",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "light class seen in numbers: at most 1.5 x 5,000 = 7,500 (hard gate)"
+ },
+ "team_zones": [
+  "cab, body and array panel (Team)",
+  "bands on both body sides"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime breaks the truck",
+ "faction_style": "military vehicle (both factions)",
+ "details": {
+  "tier1": [
+   "cab",
+   "body",
+   "chassis and wheels",
+   "array"
+  ],
+  "tier2": [
+   "windscreen",
+   "doors",
+   "roof units",
+   "mast",
+   "panel",
+   "generator",
+   "spare wheel",
+   "stowage boxes",
+   "sensor dish"
+  ],
+  "tier3": [
+   "cells",
+   "yagi elements",
+   "feed horn",
+   "handles",
+   "mirrors",
+   "lamps",
+   "beacon",
+   "steps",
+   "ladder",
+   "cables",
+   "whip",
+   "mud flaps"
+  ]
+ },
+ "questions": []
+}
