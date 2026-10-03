@@ -55,11 +55,11 @@ def _fuselage(a):
     fr.tube([(.17, -2.85, ZC + .17), (.18, -2.35, ZC + .22), (.15, -1.8, ZC + .2)], .015, seg=4)
     # The caret intakes under the chines with their bumps.
     for s in (-1, 1):
-        K.intake(a.part('Intakes', BODY), a.part('Intake_ducts', 'Undercarriage'), (s * .62, -1.45, ZC - .1), .26, .3,
+        K.intake(a.part('Intakes', BODY), a.part('Panel_lines', 'Undercarriage'), (s * .62, -1.45, ZC - .1), .26, .3,
                  .55, facing=(s * .25, -1, 0), lip=.025)
-        a.part('Intake_lips', 'Steel').box((.02, .02, .32), loc=(s * .74, -1.72, ZC - .1), rot=(0, 0, s * .25),
+        a.part('Kit_steel', 'Steel').box((.02, .02, .32), loc=(s * .74, -1.72, ZC - .1), rot=(0, 0, s * .25),
                                            bevel=0)
-        k.lathe(a.part('Intake_bumps', BODY), [(.12, 0), (.1, .1), (0, .14)], loc=(s * .45, -1.6, ZC - .05),
+        k.lathe(a.part('Fuselage', BODY), [(.12, 0), (.1, .1), (0, .14)], loc=(s * .45, -1.6, ZC - .05),
                 rot=(0, s * R90, 0), seg=8)
     # The 2D nozzles and their dark throats, the tail boom between them.
     for s in (-1, 1):
@@ -67,18 +67,18 @@ def _fuselage(a):
         k.extrude(nz, [(-.17, -.1), (.17, -.1), (.15, .1), (-.15, .1)], .45, loc=(s * .3, 3.55, ZC - .04),
                   axis='Y', chamfer=.015, corner=.02)
         a.part('Exhaust_glow', 'Undercarriage').box((.26, .02, .14), loc=(s * .3, 3.785, ZC - .04), bevel=0)
-        a.part('Nozzle_petals', 'Steel').box((.32, .3, .02), loc=(s * .3, 3.7, ZC + .07), rot=(-.12, 0, 0), bevel=0)
-    a.part('Tail_boom', BODY).box((.18, .7, .1), loc=(0, 3.45, ZC + .02), bevel=0)
+        a.part('Kit_steel', 'Steel').box((.32, .3, .02), loc=(s * .3, 3.7, ZC + .07), rot=(-.12, 0, 0), bevel=0)
+    a.part('Fuselage', BODY).box((.18, .7, .1), loc=(0, 3.45, ZC + .02), bevel=0)
     a.pivot('Point_exhaust', (.3, 3.82, ZC - .04))
     a.pivot('Point_fire', (0, .8, ZC + .1))
     # The gun port over the right wing root, panel lines, the air data probes.
-    a.part('Gun_port', 'Undercarriage').box((.12, .2, .03), loc=(-.72, -.6, ZC + .12), bevel=0)
+    a.part('Panel_lines', 'Undercarriage').box((.12, .2, .03), loc=(-.72, -.6, ZC + .12), bevel=0)
     a.pivot('Muzzle_gun', (-.72, -.72, ZC + .12))
     pl = a.part('Panel_lines', 'Undercarriage')
     for y in (-1.2, .1, 1.5):
         pl.box((1.2, .015, .005), loc=(0, y, ZC + .17), bevel=0)
     for s in (-1, 1):
-        a.part('Probes', 'Steel').box((.02, .12, .02), loc=(s * .2, NOSE + 1.0, ZC + .05), bevel=0)
+        a.part('Kit_steel', 'Steel').box((.02, .12, .02), loc=(s * .2, NOSE + 1.0, ZC + .05), bevel=0)
     K.flare_dispenser(a, (0, 2.9, ZC - .2), normal=(0, 0, -1), cols=3, rows=2, cell=.05)
     # Sensors (the distributed aperture windows, the nose EO window), blade antennas, formation light strips,
     # the refuelling door, the retracted gear doors' sawtooth seams.
@@ -91,8 +91,8 @@ def _fuselage(a):
     ant = a.part('Antennas', 'Steel')
     for y, z, nrm in ((-1.3, ZC + .26, (0, 0, 1)), (1.8, ZC - .2, (0, 0, -1)), (-.4, ZC - .22, (0, 0, -1))):
         K.blade_antenna(ant, (0, y, z), h=.1, chord=.12, normal=nrm)
-    a.part('Refuel_door', 'Undercarriage').box((.16, .3, .01), loc=(0, -.2, ZC + .21), bevel=0)
-    gd = a.part('Gear_doors', 'Undercarriage')
+    a.part('Panel_lines', 'Undercarriage').box((.16, .3, .01), loc=(0, -.2, ZC + .21), bevel=0)
+    gd = a.part('Panel_lines', 'Undercarriage')
     for x, y, l in ((0, -2.3, .55), (.5, .2, .7), (-.5, .2, .7)):
         gd.tube([(x - .1, y - l / 2, ZC - .225), (x + .1, y - l / 2 + .08, ZC - .225), (x + .1, y + l / 2 - .08, ZC - .225),
                  (x - .1, y + l / 2, ZC - .225), (x - .1, y - l / 2, ZC - .225)], .006, seg=3)
@@ -104,7 +104,7 @@ def _wings(a):
     tip = a.part('Wingtips', 'Team')
     for s in (-1, 1):
         tip.box((.05, .7, .03), loc=(s * 2.72, 1.42, ZC), rot=(0, 0, s * .03), bevel=0)
-        a.part('Flaps', BODY).box((.9, .3, .02), loc=(s * 1.4, 1.9, ZC - .01), rot=(.1, 0, s * -.05), bevel=0)
+        a.part('Fuselage', BODY).box((.9, .3, .02), loc=(s * 1.4, 1.9, ZC - .01), rot=(.1, 0, s * -.05), bevel=0)
         a.part('Panel_lines', 'Undercarriage').box((1.5, .015, .005), loc=(s * 1.4, .4, ZC + .04), rot=(0, 0, s * -.5),
                                                    bevel=0)
     # The two-tone grey camouflage (lighter patches over the wings) and the sawtooth panel seams.
@@ -132,7 +132,7 @@ def _wings(a):
         K.fin(fins, (1.85, 1.45), (2.75, .65), .7, x=s * .55, z0=ZC + .08, t=.06, cant=s * .48)
         top = (s * (.55 + math.sin(.48) * .7), 2.95, ZC + .08 + .7 * math.cos(.48) * .98)
         a.part('Fin_tips', 'Team').box((.05, .62, .05), loc=top, rot=(0, s * .48, 0), bevel=0)
-        a.part('Rudders', 'Steel').box((.03, .25, .5), loc=(s * (.55 + math.sin(.48) * .4), 3.0, ZC + .45),
+        a.part('Kit_steel', 'Steel').box((.03, .25, .5), loc=(s * (.55 + math.sin(.48) * .4), 3.0, ZC + .45),
                                        rot=(0, s * .48, 0), bevel=0)
 
 
@@ -149,7 +149,7 @@ def _bays(a):
     # The main bay: the doors hanging open, the stores on their racks.
     for s in (-1, 1):
         a.part('Bay_doors', BODY).box((.02, 1.8, .34), loc=(s * .4, .5, ZC - .38), rot=(0, s * .15, 0), bevel=0)
-    a.part('Bay_well', 'Undercarriage').box((.62, 1.8, .02), loc=(0, .5, ZC - .2), bevel=0)
+    a.part('Panel_lines', 'Undercarriage').box((.62, 1.8, .02), loc=(0, .5, ZC - .2), bevel=0)
     rk = a.part('Racks', 'Steel')
     for x in (-.16, .16):
         rk.box((.04, 1.2, .05), loc=(x, .5, ZC - .25), bevel=0)

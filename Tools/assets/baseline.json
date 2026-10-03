@@ -3216,6 +3216,16 @@
    "changes": [
     "FLAG stealth_fighter: triangles 3,336 -> 2,976 (-10.8%); vertices 5,122 -> 4,123 (-19.5%); meshes 32 -> 53 (+65.6%); renderers 32 -> 53 (+65.6%); materials 9 -> 7 (-22.2%); materialSlots 32 -> 53 (+65.6%); fileBytes 278,616 -> 251,108 (-9.9%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "stealth_fighter"
+   ],
+   "reason": "P35 wave 9",
+   "changes": [
+    "FLAG stealth_fighter: meshes 53 -> 38 (-28.3%); renderers 53 -> 38 (-28.3%); materialSlots 53 -> 38 (-28.3%); fileBytes 251,108 -> 238,316 (-5.1%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -53890,21 +53900,21 @@
   },
   "stealth_fighter": {
    "file": "stealth_fighter.glb",
-   "fileBytes": 251108,
-   "sha1": "c0a006318d3aad8b",
+   "fileBytes": 238316,
+   "sha1": "a61fd3fb1396a81f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 63,
-   "meshes": 53,
+   "nodes": 48,
+   "meshes": 38,
    "materials": 7,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 53,
-   "submeshes": 53,
-   "materialSlots": 53,
+   "renderers": 38,
+   "submeshes": 38,
+   "materialSlots": 38,
    "materialsUsed": 7,
    "triangles": 2976,
    "vertices": 4123,
@@ -53938,7 +53948,7 @@
     0.535,
     -0.025
    ],
-   "structureHash": "cbadae0c92791320",
+   "structureHash": "c1084dab8b92ecef",
    "color0": {
     "mean": 0.5896,
     "min": 0.0801,
@@ -53968,7 +53978,6 @@
     "Antennas",
     "Bay_doors",
     "Bay_doors.001",
-    "Bay_well",
     "Bomb_fins",
     "Bombs",
     "Camo_panels",
@@ -53978,23 +53987,14 @@
     "Exhaust_glow",
     "Fin_tips",
     "Fins",
-    "Flaps",
-    "Flaps.001",
     "Flare_mouths",
     "Flares",
     "Fuselage",
     "Fuselage.001",
-    "Gear_doors",
-    "Gear_doors.001",
-    "Gun_port",
-    "Intake_bumps",
-    "Intake_bumps.001",
-    "Intake_ducts",
-    "Intake_ducts.001",
-    "Intake_lips",
-    "Intake_lips.001",
     "Intakes",
     "Intakes.001",
+    "Kit_steel",
+    "Kit_steel.001",
     "Lamps",
     "Lamps.001",
     "Missile_fins",
@@ -54008,21 +54008,16 @@
     "Muzzle_bomb",
     "Muzzle_gun",
     "Muzzle_missile",
-    "Nozzle_petals",
     "Nozzles",
     "Panel_lines",
     "Panel_lines.001",
     "Part_wing",
     "Point_exhaust",
     "Point_fire",
-    "Probes",
     "Racks",
     "Racks.001",
-    "Refuel_door",
-    "Rudders",
     "Sensor",
     "Sensor.001",
-    "Tail_boom",
     "Tailplanes",
     "Wings",
     "Wings.001",
@@ -54031,10 +54026,10 @@
    ],
    "category": "air",
    "hd": false,
-   "errors": [
-    "renderers 53 over the jet normal hard cap 44"
+   "errors": [],
+   "warnings": [
+    "renderers 38 over the jet normal budget 36"
    ],
-   "warnings": [],
    "units": [
     "stealth_fighter"
    ],

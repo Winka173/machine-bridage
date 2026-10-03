@@ -36,16 +36,13 @@
   {
    "feature": "caret intakes with bumps",
    "nodes": [
-    "Intakes",
-    "Intake_ducts",
-    "Intake_bumps"
+    "Intakes"
    ]
   },
   {
    "feature": "trapezoid wing, flaps, team wingtips, camouflage panels",
    "nodes": [
     "Wings",
-    "Flaps",
     "Wingtips",
     "Camo_panels"
    ]
@@ -55,16 +52,14 @@
    "nodes": [
     "Tailplanes",
     "Fins",
-    "Fin_tips",
-    "Rudders"
+    "Fin_tips"
    ]
   },
   {
    "feature": "2D nozzles",
    "nodes": [
     "Nozzles",
-    "Exhaust_glow",
-    "Nozzle_petals"
+    "Exhaust_glow"
    ]
   },
   {
@@ -74,7 +69,6 @@
     "Racks",
     "Missiles",
     "Bombs",
-    "Gun_port",
     "Flares",
     "Muzzle_missile",
     "Muzzle_bomb",
