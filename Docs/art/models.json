@@ -377,7 +377,7 @@
   },
   "command_vehicle": {
     "file": "command_vehicle.glb",
-    "triangles": 6096
+    "triangles": 6494
   },
   "container": {
     "file": "container.glb",
@@ -821,7 +821,7 @@
   },
   "ew_jammer": {
     "file": "ew_jammer.glb",
-    "triangles": 7428
+    "triangles": 7472
   },
   "ew_tower": {
     "file": "ew_tower.glb",
@@ -1125,7 +1125,7 @@
   },
   "iron_beam": {
     "file": "iron_beam.glb",
-    "triangles": 6718
+    "triangles": 7244
   },
   "ixion": {
     "file": "ixion.glb",
@@ -1705,7 +1705,7 @@
   },
   "stealth_naval_strike": {
     "file": "stealth_naval_strike.glb",
-    "triangles": 3662
+    "triangles": 6704
   },
   "stilt_hut": {
     "file": "stilt_hut.glb",
@@ -1921,7 +1921,7 @@
   },
   "wheeled_gun": {
     "file": "wheeled_gun.glb",
-    "triangles": 7178
+    "triangles": 7190
   },
   "wheeled_howitzer": {
     "file": "wheeled_howitzer.glb",

@@ -189,7 +189,7 @@ namespace MachineBrigade.Game.Rendering
         internal static readonly Regex DeployPattern = new(@"^Deploy_[a-z]+(_[lr])?(\.\d+)?$", RegexOptions.IgnoreCase);
 
         /// <summary>Models whose radar turns slower than the usual 120 degrees a second (an EW tower's jammer head).</summary>
-        private static readonly Dictionary<string, float> SlowRadars = new() { ["ew_tower"] = 30f };
+        private static readonly Dictionary<string, float> SlowRadars = new() { ["ew_tower"] = 30f, ["ew_jammer"] = 30f };
 
         /// <summary>Models whose propeller is something slower (the earth borer's drill head: 300 degrees a second).</summary>
         private static readonly Dictionary<string, float> SlowPropellers = new() { ["earth_borer"] = 300f };

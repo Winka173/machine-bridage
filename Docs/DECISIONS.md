@@ -19878,3 +19878,52 @@ No Unity, no tests.
   aircraft_hangar 4,522 -> 10,154 (58.0 -> 87.0). Full gate 148 / 167 pass (was 145 / 166).
 - Needs Unity: card renders / ModelScan, the four Pantsir barrels firing in turn and the packs rising with the guns,
   the Gepard's two barrels' flashes, hangar fits in the base slots.
+
+## Play-test 14 model wave M5 (lane models)
+
+Owner: Docs/prompts/playtest14_vi.txt ("xe ew hammer + laser aa + command vehicle có vẻ xấu, nên vẽ lại", "wheeled tank thì
+tháp súng to quá nhìn kì", "stealth carrier strike jet: nhìn hơi xấu, nên vẽ lại"); spec Docs/cloud/PT14_CLOUD_TASKS.md
+session 4 row M5 (stealth_naval_strike moved here from M6 by the lead's brief). Builder `Tools/blender/mb_pt14_m5.py`
+(registered last in build_assets' dict). Sheets: Docs/models/rebuild/<id>/before_after.png.
+- Budget: quality_gate classes the four wheeled units `light` (NUMBERS_CAP 1.5 x 5,000 = 7,500 triangles, a hard gate),
+  stricter than BUDGETS.md's ground row, so the module has lean fittings (box lamps, periscopes, tow eyes, louvres and
+  doors; round six-row tyres, no wheel nuts or bolt rows) and the triangles go to the shapes that read at battle range.
+  Static parts are folded per material (mb_p35_w5parts.merge_static, keeping roles, runtime names and Hubs) for
+  glb_check's renderer cap (76 ground, 44 jet): 33-50 renderers now.
+- **wheeled_gun**: Centauro / AMX-10RC-class 8x8. The turret is 2.1 m long x 1.76 m wide on a 6.2 x 2.36 m hull (was
+  most of the deck): angled cheek modules, mantlet, bustle rack, cupola with vision blocks and sight, loader's hatch
+  with the 12.7 mm (Mount_mg), gunner's sight, smoke dischargers. The 105 mm (bore evacuator, clamps, multi-baffle
+  brake) rides a baked `Elevation` pivot at the trunnion (ModelLibrary MeasureBaked) with Mantlet, Coax, Muzzle_main,
+  Muzzle_coax; Main_cannon / Muzzle_brake still recoil. V hull with sponsons over the wheels, appliqué panels,
+  front-right engine deck louvres and side exhaust, driver's hatch, rear door.
+- **command_vehicle**: was an 8x8 compressed to 5.9 m; now a 4x4 protected command vehicle (IVECO LMV / Dingo read, no
+  insignia): bonnet with bull bar and winch, V-hull crew cell with armoured windscreen and side windows, flared
+  arches, rear door with the spare wheel, the remote 12.7 mm station (Mount_mg / Muzzle_mg, main slot mg), SATCOM dome,
+  folded telescopic mast, whips tied down in arcs, roof basket, smoke dischargers, beacon.
+- **ew_jammer**: Krasukha-4 read on a BAZ-6910-class 8x8: forward four-door cab with the roof 12.7 mm (Turret /
+  Main_cannon / Muzzle_main), engine bay with twin stacks, the long van (ribs, doors, side and rear ladders, A/C,
+  stowed jacks, walkway and rail, folded Leer-3-style mast with its head) and the curved reflector on its turntable
+  (`Radar`: light face with a darker grid and frame, back ribs, yoke and ram, feed boom with the horn cluster).
+- **iron_beam**: Iron Beam-M read on an 8x8 tactical truck: the laser module (power bay, two chiller fans on the roof,
+  louvres, cable trays, jacks), the flat-panel search radar (`Radar`) and EO tracker at its front, the beam director
+  (Turret, Mount_APS) with the telescope, sunshade, bezel and glowing aperture on a baked `Elevation` pivot at the
+  yoke trunnions (Main_cannon, Main_cannon_bezel, Main_cannon_lens, Main_cannon_bands, Muzzle_main).
+- **stealth_naval_strike**: the A-12 Avenger II kept (the unit's note), redrawn without the old panel grid: one airfoil
+  loft tip to tip (a 10 % cambered section at the root thinning to the tips), a blended centre body with the tandem
+  canopy, dark RAM leading and trailing edges and band, elevons (`Tail_elevons`, the flying wing's tail role) with
+  hinge gaps and static dischargers, wing-fold seams, sawtooth access panels and small vents laid on the skin, the
+  exhaust troughs over the trailing edge with amber slots, buried intakes, the open bays with both bombs half sunk
+  (`Bombs`, `Muzzle_missile`), standoff missiles on pylons (`Muzzle_rocket` / .001), gear doors, the arrestor hook.
+  Length 8.52 x span 19.71 (closer to the real 0.53 ratio than before within modelSize's 10 %).
+- Sizes: modelSize unchanged for all five; the GLBs measure command_vehicle 5.84 (was 5.92), ew_jammer 9.33 (9.17),
+  iron_beam 8.63 (8.35), wheeled_gun 9.30 (9.24), stealth 8.52 (8.39) long, so the view's length fit draws them 1-3 %
+  smaller than before. No data change (no CHANGES entry): no mount, weapon, health or size value moved.
+- Triangles before -> after, gate (quality_gate after glb_quantize; all hard ok): ew_jammer 7,428 -> 7,472 (92.9 ->
+  95.1), iron_beam 6,718 -> 7,244 (91.2 -> 89.0), command_vehicle 6,096 -> 6,494 (92.7 -> 95.0), wheeled_gun 7,178 ->
+  7,190 (90.3 -> 91.1), stealth_naval_strike 3,662 -> 6,704 (77.0 -> 73.9). Iron Beam's silhouette share is bounded
+  by its 2.05 m width (side stowage pushed it past the size gate, removed). The jet stays under 80 as the old one did:
+  a flying wing's planform is convex (silhouette share 0.18 against a gold set of tailed bombers) and symmetric
+  (asymmetry 0.0015 < 0.0068); the old model's extra point came from an asymmetric probe, not kept.
+- Needs Unity: card renders / ModelScan; the two baked Elevation pivots (wheeled_gun gun, iron_beam telescope) in the
+  preview; ew_jammer's reflector still spins at the default 120 deg/s (ModelLibrary.SlowRadars lists only ew_tower; a
+  30 deg/s entry for ew_jammer would read better - runtime change, not made).
