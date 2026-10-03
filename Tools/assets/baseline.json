@@ -3290,6 +3290,14 @@
    "changes": [
     "FLAG headquarters: triangles 18,228 -> 21,052 (+15.5%); vertices 24,197 -> 28,108 (+16.2%); meshes 122 -> 136 (+11.5%); renderers 122 -> 136 (+11.5%); materialSlots 122 -> 136 (+11.5%); fileBytes 1,288,164 -> 1,490,540 (+15.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "headquarters"
+   ],
+   "reason": "merge of feature/p35-hqgun",
+   "changes": []
   }
  ],
  "models": {
