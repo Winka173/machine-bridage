@@ -19732,3 +19732,41 @@ and a .NET SDK compile of the Sim (netstandard2.1, C# 9: 0 errors, the 2 old war
   (band >= 8 m). Sheet `Boss_tam_toi_thieu` in 02_boss (d03_boss, 223 rows, every column of 5.1); the published pack is not
   re-exported here (the lead exports after the merge). For the owner to run when wanted: CatalogCheck (new key) and a new
   ReplayHashTests baseline (every boss match changes).
+
+## Balance pack 2 addendum item 1 (lane C)
+
+Branch `feature/pack2-minrange` (lead with the boss redraws M1-M3). Addendum "Bổ sung 03/10" item 1 a-d of
+`Docs/prompts/export_pack2_vi.txt` (an owner-requested gameplay change), built on the merged `feature/pack2-c`, whose values
+were NOT applied (balance.json kept as on the lead, then recomputed). Theory only: no Unity, no tests; Sim compiled with the
+.NET SDK (0 errors, old warnings), pack re-exported, `export.py check` 15/15. Full record: `Docs/export/CHANGES.md` "Gói cân
+bằng 2, bổ sung 03/10, mục 1".
+
+- **Muzzle height from the redrawn GLB, part data as fallback and check.** `parts[].at` is [right, forward, height]
+  (BossDefs.At / Height): the pack's `at_z_m`, not `at_y_m`, is the height (the addendum assumed `at_y_m`), from the ground
+  (+ altitude for a flyer). It marks where rounds strike a part, and variants carry their parent's `at` under their own bigger
+  models (monster), so the muzzle node of the redrawn model is used; the part's height only where the model has no node (1 mount).
+- **BossTemplates.Resize was missing from the calculator.** `Tools/balance/p26_ab.expand` leaves `size` out (scale, radius,
+  part positions); `boss_min_range.resized` now applies it as the C# does (variant: parent size x variant.size, tune positions
+  in the parent's units, own fields unscaled). The export's other boss sheets still use the unresized port (not touched here).
+- **Barrel limits to data (rule B).** Sim/** has no pitch / elevation / depression constant (only VehicleView.Elevate, a drawing,
+  left as is). New block `balance.json` `barrelLimits`: class defaults (section 5.2 values, `estimated: true` = uoc_dinh), a
+  `mortar` family override, `classRules` (100 / 130 / 40 mm), reference target heights 1.0 / 1.3 / 1.6 m (addendum 1c; the
+  proposal uses 1.3), arming 1 m and the cap / cover / band shares. Lookup: mount `barrel` > weapon `barrel` > family > class;
+  the Sim does not read the block (it reads the resulting groundMinReach / minRange). Exported as kv sheet `Boss_goc_nong`.
+- **Sheet `Boss_tam_toi_thieu` (02_boss, 184 rows):** the addendum's columns (`vu_khi_id`, `bo_phan_id`,
+  `tam_toi_thieu_m_hien_tai`, `vu_khi_che_vung_chet`, `uoc_dinh`, the muzzle-only formula `tam_toi_thieu_hinh_hoc_tu_nong_m`)
+  plus `he_so_size`, `do_cao_be_du_lieu_m`, `lech_glb_du_lieu_m`, `ap_dung`.
+- **Applied to 43 boss weapons** (42 groundMinReach, `p26_bastion_sec_b240` minRange 12 -> 14) + 3 inheritance pins at 0.
+  `groundMinReach` (from pack2-c) instead of `minRange` for direct fire: `minRange > 0` makes a weapon Indirect and an artillery
+  piece for Commander / ConquestAi / TacticalAi / WorldModel, an AI change the addendum forbids. Close defence (mg, flame,
+  autocannon <= 40 mm, melee; 51 mounts), air-only weapons and bombs are shown, never written. One value per weapon id (the
+  smallest of its mounts; 40 mounts under-stated); proposals at the range cut to 80 % (21 mounts).
+- **Code read: no boss exemption.** Targeting (`IsValidAutoTarget` -> `InReach`) and firing (`CanFire`, charged weapons) apply
+  MinRange / MinReach / GroundMinReach to every shooter; no `ap_dung_tam_toi_thieu` flag needed. Scripted big attacks (naval
+  salvo) are outside the rule.
+- **Uncovered dead zones (owner decides; HP, weapons, AI unchanged):** bastion_mk0, behemoth_mk0, behemoth_tempest, daedalus,
+  hyperion, icarus_mk0, kraken, leviathan, nyx, scylla; 20 bosses get "xem lại thời gian hạ" (band >= 8 m).
+- **Owner-approved polish:** `Vehicle` constructor: a mount with its own firing arc starts at `heading + ArcCentre`, so rear
+  turrets do not face forward before their first aim (replay hashes change anyway).
+- For the owner when wanted: CatalogCheck, TunablesTests, a new ReplayHashTests baseline; Unity ExportGameDoc to refresh
+  `Docs/export/game_snapshot.json` (taken before this change).
