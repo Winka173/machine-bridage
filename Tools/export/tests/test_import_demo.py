@@ -1,12 +1,12 @@
-"""Pass 9 check (spec 10): the reverse import.
+"""Pass 5 check: the reverse import of the pack.
 
-    python Tools/export/tests/test_import_demo.py [export folder]
+    python Tools/export/tests/test_import_demo.py [pack folder]
 
-Without a folder it first exports into a temp folder (about a minute). Then:
-  1. importing the unedited export gives 0 entries and 0 rejections;
-  2. the demo: 01_vu_khi_dan.xlsx and 02_phuong_tien.xlsx copied to a temp folder, three cells edited with openpyxl
-     (a weapon's damage, a vehicle's cost, a derived column), imported: exactly 2 DECIDE entries and 1 rejection;
-  3. import without --dry-run refuses; no data file changed.
+Without a folder it first exports into a temp folder (about two minutes). Then:
+  1. importing the unedited pack gives 0 entries and 0 rejections;
+  2. 01_chien_dau.xlsx copied to a temp folder with ONE raw cell edited (a weapon's damage): exactly 1 DECIDE entry, 0 rejected;
+  3. the same with a second edit in a derived column: still 1 entry, and 1 rejection naming the derived column;
+  4. import without --dry-run refuses; no data file changed.
 Writes only in temp folders. Exit code 0 = pass.
 """
 from __future__ import annotations
@@ -32,9 +32,8 @@ DATA = ROOT / "Assets" / "MachineBrigade" / "Resources" / "Data"
 # (file, sheet, row id, column, kind): raw, raw, derived. The raw columns are the data keys (damage, cp); the named
 # columns beside them (sat_thuong_moi_phat, base_cp) are resolved values (inheritance, defaults) and are rejected too.
 EDITS = [
-    ("01_vu_khi_dan", "Vu_khi", "gun_120mm", "damage", "weapon damage"),
-    ("02_phuong_tien", "Xe", "light_tank", "cp", "vehicle cost"),
-    ("02_phuong_tien", "Xe_suy_ra", "light_tank", "dps_tren_cp", "derived"),
+    ("01_chien_dau", "Vu_khi", "gun_120mm", "damage", "weapon damage (raw)"),
+    ("01_chien_dau", "Xe_suy_ra", "light_tank", "dps_tren_cp", "derived"),
 ]
 
 
@@ -84,36 +83,40 @@ def main() -> int:
         if man["rows"] or man["rejected"]:
             fails.append(f"unedited export gave {len(man['rows'])} entries / {len(man['rejected'])} rejections")
 
-        # 2. the demo
+        # 2. one raw edit -> exactly one manifest row
+        one = work / "one"
+        one.mkdir()
+        shutil.copy(exp / "01_chien_dau.xlsx", one / "01_chien_dau.xlsx")
+        fid, sheet, rid, col, kind = EDITS[0]
+        old, new = edit_cell(one / f"{fid}.xlsx", sheet, rid, col)
+        print(f"   edit {fid}/{sheet} {rid}.{col} ({kind}): {old} -> {new}")
+        man = reimport.scan(ref, one)
+        rows, rej = man["rows"], man["rejected"]
+        print(f"2. one raw cell edited: {len(rows)} entries, {len(rej)} rejected")
+        for r in rows:
+            print(f"   {r['bundle_id']}: {r['field_path']} ({r['id_path']}) {r['expected_before']} -> {r['new_value']} "
+                  f"status {r['status']}, precondition {r['precondition_now']}")
+        if len(rows) != 1 or rej or rows[0]["status"] != "DECIDE" or rows[0]["precondition_now"] != "OK"                 or rows[0]["id_path"] != "weapons[id=gun_120mm].damage" or set(rows[0]) != set(reimport.COLUMNS):
+            fails.append(f"one edit: expected exactly 1 DECIDE entry at weapons[id=gun_120mm].damage, got {len(rows)} / {len(rej)} rejected")
+
+        # 3. a derived cell too: still one entry, one rejection
         demo = work / "demo"
         demo.mkdir()
-        for fid in sorted({e[0] for e in EDITS}):
-            shutil.copy(exp / "xlsx" / f"{fid}.xlsx", demo / f"{fid}.xlsx")
+        shutil.copy(exp / "01_chien_dau.xlsx", demo / "01_chien_dau.xlsx")
         for fid, sheet, rid, col, kind in EDITS:
-            old, new = edit_cell(demo / f"{fid}.xlsx", sheet, rid, col)
-            print(f"   edit {fid}/{sheet} {rid}.{col} ({kind}): {old} -> {new}")
+            edit_cell(demo / f"{fid}.xlsx", sheet, rid, col)
         man = reimport.scan(ref, demo)
         reimport.write(man, work / "demo_out")
         rows, rej = man["rows"], man["rejected"]
-        print(f"2. demo: {len(rows)} entries, {len(rej)} rejected")
-        for r in rows:
-            print(f"   {r['bundle_id']}: {r['field_path']} ({r['id_path']}) {r['expected_before']} -> {r['new_value']} "
-                  f"status {r['status']}, precondition {r['precondition_now']}, c01 {r['c01_path'] or '-'}")
+        print(f"3. raw + derived edited: {len(rows)} entries, {len(rej)} rejected")
         for r in rej:
             print(f"   rejected {r['sheet']}!{r['cell']} {r['column']}: {r['reason']}")
-        if len(rows) != 2 or any(r["status"] != "DECIDE" or r["precondition_now"] != "OK" for r in rows):
-            fails.append("demo: expected 2 DECIDE entries with precondition OK")
-        paths = {r["id_path"] for r in rows}
-        if paths != {"weapons[id=gun_120mm].damage", "vehicles[id=light_tank].cp"}:
-            fails.append(f"demo: entries at {sorted(paths)}")
-        if any(set(r) != set(reimport.COLUMNS) for r in rows):
-            fails.append("demo: an entry without the manifest columns")
-        if len(man["bundles"]) != 2 or any(b["Trạng thái"] != "DECIDE" for b in man["bundles"]):
-            fails.append("demo: expected 2 bundles in DECIDE")
+        if len(rows) != 1 or len(man["bundles"]) != 1 or man["bundles"][0]["Trạng thái"] != "DECIDE":
+            fails.append("raw + derived: expected 1 entry in 1 bundle in DECIDE")
         if len(rej) != 1 or rej[0]["column"] != "dps_tren_cp" or not rej[0]["reason"].startswith("derived"):
-            fails.append("demo: expected 1 rejection of the derived column dps_tren_cp")
+            fails.append("raw + derived: expected 1 rejection of the derived column dps_tren_cp")
 
-        # 3. no direct write
+        # 4. no direct write
         code = reimport.main(argparse.Namespace(dry_run=False, targets=[str(demo)], out=None, base=None), ex)
         if code == 0:
             fails.append("import without --dry-run did not refuse")

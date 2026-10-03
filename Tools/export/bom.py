@@ -1,57 +1,28 @@
-"""The bomb-run fix, pass 0 (Docs/prompts/bomb_run_vi.txt): a bomb-focused export.
+"""The bomb sheets of 01_chien_dau (Bom_vu_khi, Bom_don_vi, Bom_hanh_vi, Bom_canh_bao): per bomb weapon its stick
+parameters (weapons[*].stick), the carriers, the warning rings the rules draw, the code path of the drop.
 
-    python Tools/export/export.py bom [--trace CSV] [--date YYYY-MM-DD] [--out DIR]
-
-Builds the full export in memory (no files), keeps the bomb weapons and their carriers from 01_vu_khi_dan, 02_phuong_tien
-and 03_boss, and writes Docs/export/bom_<date>/: Machine_Brigade_Bom_<date>.xlsx (6 sheets), csv/<sheet>.csv,
-Machine_Brigade_Bom_<date>.md and BOM_REPORT.md. Bom_vet_tha reads the csv the EditMode test
-MachineBrigade.Tests.BombStickTrace.WriteTheBombDropTrace writes (env MB_BOMB_TRACE; default <out>/vet_tha_unity.csv);
-without it the unit weapons' rows say CHUA_CHAY. The fire supports' airstrikes and the bosses' strip attacks are laid out
-by formulas with no unit flying them, so their rows are mirrored here from the code (StrikeSystem / BossSystem.BigAttacks).
-Read only: no game value is changed.
-
-Pass 2 (the fix): Bom_vet_tha reads the new trace (sticks); Bom_ket_qua_vung reports BEFORE (the pass 0 trace kept as
-Docs/export/bom_2026-10-03/vet_tha_truoc_luot2.csv, or --before) and AFTER (the new trace) side by side (column giai_doan).
+Built from the export's own sheets once the formulas are evaluated (core/pack.py add_bom_sheets); read only. The drop
+traces a Unity test writes are measurements, not data, and are not part of the pack.
 """
 from __future__ import annotations
 
-import csv
 import json
 import math
-import os
-import random
 from pathlib import Path
 
 from core import repo
 from core.model import NEED_CODE_CHECK
-from core.write import write_csv, write_xlsx
 
-CHUA_CHAY = "CHUA_CHAY"
-DT = 0.05
-SEEDS = (1, 2, 3)
-TEST = "MachineBrigade.Tests.BombStickTrace.WriteTheBombDropTrace"
-BEFORE = "Docs/export/bom_2026-10-03/vet_tha_truoc_luot2.csv"  # the pass 0 trace (one aim / short sticks): "before"
-ENV = "MB_BOMB_TRACE"
 BALANCE = "Assets/MachineBrigade/Resources/Data/balance.json"
 BOMB_GRAVITY = 40.0  # CombatSystem.Bombs.cs:25
 FREE_FALL_SCATTER = 0.5  # CombatSystem.Bombs.cs:28
-SAME_POINT_M = 1.0  # two impacts closer than this count as one point
-FORMATIONS = {
-    # 5 vehicles 8 m apart in a row along the flight line, across it, and a cluster 8 m wide (centre and 4 corners)
-    "HANG_DOC_8M": [(0.0, z) for z in (-16.0, -8.0, 0.0, 8.0, 16.0)],
-    "HANG_NGANG_8M": [(x, 0.0) for x in (-16.0, -8.0, 0.0, 8.0, 16.0)],
-    "CUM_8M": [(0.0, 0.0), (-4.0, -4.0), (4.0, -4.0), (-4.0, 4.0), (4.0, 4.0)],
-}
-TRACE_COLS = ["vu_khi_id", "don_vi_id", "seed", "chi_so_bom", "tick_tha", "vi_tri_tha_x_m", "vi_tri_tha_z_m", "tick_cham",
-              "vi_tri_roi_x_m", "vi_tri_roi_z_m", "thoi_gian_roi_s", "toc_do_luc_tha_m_s", "do_cao_m", "huong_bay_deg",
-              "duong_tha", "dieu_kien_tha", "loi_m", "ria_m", "khoang_tha_s", "ghi_chu", "che_do_tha", "huong_dai_deg", "so_bom_dai"]
 C = "Assets/MachineBrigade/Scripts/Sim/"
 # The bomb-run fix, pass 1: the stick parameters of the spec, one column each (balance.json weapons[*].stick key; the
 # supports' and the bosses' strips have no "stick" block: their columns are worked out from their own data).
 STICK_COLS = [
     ("che_do_tha", "mode", "POINT / STICK / PATTERN"),
     ("cach_tha", "drop", "OVERFLY (máy bay bay qua, bom rơi tự do) / BAY (khoang bom boss: dải đặt quanh điểm nhắm)"),
-    ("so_bom_dai_n", "bombs", "số bom một lượt (n; = burst)"),
+    ("so_bom_dai_n", "bombs", "số bom một lần thả (n; = burst)"),
     ("khoang_cach_giua_bom_m", "spacing", "spacing = 1,1 × lõi (0,8–1,5 × lõi)"),
     ("do_dai_dai_m", "length", "(n − 1) × spacing; trần 120 m (boss 140 m)"),
     ("chu_ky_tha_giua_bom_s", "interval", "spacing / tốc độ lúc thả"),
@@ -69,7 +40,7 @@ STICK_COLS = [
     ("khoang_cach_an_toan_m", "safety", "max(lõi, 8): mỗi quả tự kiểm tra, quả rơi gần quân ta bị bỏ"),
     ("thoi_gian_bay_thang_s", "straightTime", "độ dài / tốc độ + thời gian rơi + 1 s (và ≥ 40 m sau quả cuối); 0: không giữ"),
     ("khoang_thoat_m", "exit", "bay thẳng ≥ 40 m sau quả cuối rồi mới vòng"),
-    ("thoi_gian_mo_khoang_bom_s", "bayOpen", "hình ảnh (lượt 3)"),
+    ("thoi_gian_mo_khoang_bom_s", "bayOpen", "hình ảnh"),
     ("canh_bao_dang", "warnShape", "STICK_RECT (≥ 400 kg và boss) / RING / NONE"),
 ]
 
@@ -152,6 +123,7 @@ def r3(x: float) -> float:
 
 
 def table(ctx, fid: str, sheet: str) -> tuple[list[str], dict[str, dict]]:
+    fid, sheet = getattr(ctx, "sheet_map", {}).get((fid, sheet), (fid, sheet))
     header, rows = ctx.books[fid].sheets[sheet].table(values=True)
     return header, {str(r[0]): dict(zip(header, r)) for r in rows}
 
@@ -195,8 +167,8 @@ def code_path(w: dict, stick: dict | None = None) -> str:
 def current_mode(path: str) -> str:
     return {
         "FREE_FALL": "POINT (một quả rơi tự do: BombImpact + tản 0,5 × spread)",
-        "FREE_FALL_STICK": "STICK (lượt 2: quả i = đầu dải + hướng × i × spacing + lệch seed; đầu dải = máy bay lúc thả + khoảng dẫn đầu)",
-        "BAY_STICK": "STICK (lượt 2: khoang bom boss, dải đặt quanh điểm nhắm theo trục cụm mục tiêu; mỗi quả một điểm riêng)",
+        "FREE_FALL_STICK": "STICK (quả i = đầu dải + hướng × i × spacing + lệch seed; đầu dải = máy bay lúc thả + khoảng dẫn đầu)",
+        "BAY_STICK": "STICK (khoang bom boss, dải đặt quanh điểm nhắm theo trục cụm mục tiêu; mỗi quả một điểm riêng)",
         "GUIDED": "POINT (mọi quả nhắm vào mục tiêu)",
         "GLIDE": "POINT (bom lượn bay tới mục tiêu)",
         "SHELL_PATH": "POINT (bắn như đạn pháo: mọi quả nhắm vào mục tiêu, chỉ lệch theo độ tản)",
@@ -341,7 +313,7 @@ def sheet_don_vi(units, carriers, vk, sup, big, big_strikes):
         rows.append([sid, "the_ho_tro", s.get("kind", ""), r3(length / max(0.2, dur)) if length else "", "", "", NEED_CODE_CHECK,
                      "TRUE", sid, num(s.get("count")), "", num(s.get("cooldown_s")), "thẻ: hồi chiêu (cooldown) sau mỗi lần gọi",
                      "", "", "điểm người chơi chọn (Point) và hướng kéo (Point2) (StrikeSystem.cs:150-167)",
-                     "một lượt bay qua, không vòng lại", s.get("nguon", ""), s.get("raw_json", "")])
+                     "một lần bay qua, không vòng lại", s.get("nguon", ""), s.get("raw_json", "")])
     for bid, b in big.items():
         st = big_strikes[bid]
         for uid in str(b.get("dung_boi", "")).split(";"):
@@ -369,7 +341,7 @@ def sheet_hanh_vi():
          f"{M}:960-968, {M}:994, {M}:1194 AttackReach", "mọi máy bay cánh cố định"),
         ("dieu_kien_tha", "CanFire: hết hồi, đúng loại đạn; dải STICK chỉ bị giữ lại khi MỌI quả đều rơi gần quân ta (StickAllUnsafe); trong tầm (InReach, tầm bom = tốc độ × thời gian rơi + nửa dải + lõi, dải = (n−1) × spacing), rồi StickStraddles: mục tiêu lệch ngang ≤ lõi + bán kính mục tiêu và dọc đường bay từ (rơi − blast/2) tới (rơi + nửa dải + 2 m) khi tâm dải CENTER (START: tới rơi + blast/2). Khoang bom boss (BAY): như vũ khí thường, không cần bay qua.",
          f"{S} CanFire; {B} StickStraddles, StickAllUnsafe, BombReach; {S} InReach", "bom rơi tự do, khoang bom boss"),
-        ("so_bom_moi_luot", "Loạt = Burst; lượt 2: dải STICK có minTargets mà quanh dải (nửa dải + rìa quanh mục tiêu) có ít hơn minTargets xe / công trình địch (và < 2 công trình) thì chỉ thả max(2, ceil(n/3)) quả (StickCount); máy bay có kho bom (load) thì loạt = min(loạt, số bom còn), chỉ trừ số đã thả.",
+        ("so_bom_moi_luot", "Loạt = Burst; dải STICK có minTargets mà quanh dải (nửa dải + rìa quanh mục tiêu) có ít hơn minTargets xe / công trình địch (và < 2 công trình) thì chỉ thả max(2, ceil(n/3)) quả (StickCount); máy bay có kho bom (load) thì loạt = min(loạt, số bom còn), chỉ trừ số đã thả.",
          f"{S} Operate; {B} StickCount, StickBombs", "mọi vũ khí bom"),
         ("nhip_tha", "Quả đầu thả ngay khi CanFire đúng; các quả sau mỗi SalvoGap: dải STICK = stick.interval (spacing / tốc độ lúc thả), khác = BurstInterval (bộ đếm theo bước 20 Hz). Sau dải, thời gian nạp = cooldown − (n−1) × (interval − burstInterval), nên chu kỳ từ dải này tới dải sau giữ nguyên.",
          f"{S} Operate; {B} StickCooldown; {C}Content/WeaponDef.Stick.cs SalvoGap", "mọi vũ khí bom có burst > 1"),
@@ -395,254 +367,13 @@ def sheet_hanh_vi():
          f"{C}Strikes/StrikeSystem.cs:250-275", "airstrike, napalm_strike, air_raid, cluster_strike"),
         ("sieu_vu_khi_boss_strip", "Strip: n quả cách đều dọc trục (−L/2 + L(k+0,5)/n), lệch ngang ±0,35 × W (khi không có interval), rơi trải trong Duration. Đã là dải.",
          f"{C}Bosses/BossSystem.BigAttacks.cs:708-720 (rơi), :492-505 (vùng cảnh báo)", "airship_carpet, garuda_carpet, kraken_air_raid"),
-        ("the_12_qua", "Hướng dẫn của Oanh tạc cơ chiến lược nói 'thả một hàng 12 quả', dữ liệu bomber_payload có burst 7, load 7 (một lượt 7 quả).",
+        ("the_12_qua", "Hướng dẫn của Oanh tạc cơ chiến lược nói 'thả một hàng 12 quả', dữ liệu bomber_payload có burst 7, load 7 (một lần thả 7 quả).",
          "Assets/MachineBrigade/Scripts/Game/Hud/GuideText.cs:410, :414; " + BALANCE + ": weapons bomber_payload", "heavy_bomber"),
     ]
-    rows = [[f"HV{i + 1:02d}", b, m, f, a, "đọc mã nhánh feature/bomb-p12 (lượt 2)"] for i, (b, m, f, a) in enumerate(items)]
+    rows = [[f"HV{i + 1:02d}", b, m, f, a, "đọc mã"] for i, (b, m, f, a) in enumerate(items)]
     return header, rows
 
 
-# ---------------------------------------------------------------------------------------------------------- trace
-def read_trace(path: Path) -> list[dict]:
-    if not path.is_file():
-        return []
-    with path.open(encoding="utf-8-sig", newline="") as fh:
-        return [dict(r) for r in csv.DictReader(fh)]
-
-
-def mirror_rows(sup, big, big_strikes) -> list[dict]:
-    """The supports' airstrikes and the bosses' strips, laid out by the code's formulas (no unit flies them): aim (0, 0),
-    heading 0 (+z); a python Random per seed stands in for the world's (the lateral offsets differ from a battle's)."""
-    out = []
-    # heading 0: Direction = SimMath.Forward(0) = (0, 1); the lateral vector (-dir.y, dir.x) = (-1, 0)
-    for sid, s in sup.items():
-        if s.get("kind") != "Airstrike":
-            continue
-        n = int(fnum(s.get("count"), 1))
-        length, dur, radius = fnum(s.get("length_m")), fnum(s.get("duration_s")), fnum(s.get("radius_m"))
-        delay, blast = fnum(s.get("delay_s")), fnum(s.get("blast_m"))
-        speed = length / max(0.2, dur)
-        interval = dur / (n - 1) if n > 1 else 0.0
-        for seed in SEEDS:
-            rng = random.Random(seed)
-            for k in range(n):
-                along = k / (n - 1) if n > 1 else 0.5
-                lat = (rng.random() - 0.5) * radius
-                x, z = -lat, length * along
-                lands = int(math.ceil((delay + k * interval) / DT - 1e-6))
-                fall = 0.8  # the view's fall (Game/Effects/StrikeEffects.cs:23); the sim blasts at the landing time
-                out.append({"vu_khi_id": sid, "don_vi_id": "(the_ho_tro)", "seed": seed, "chi_so_bom": k,
-                            "tick_tha": lands - int(round(fall / DT)), "vi_tri_tha_x_m": x, "vi_tri_tha_z_m": z - speed * fall,
-                            "tick_cham": lands, "vi_tri_roi_x_m": x, "vi_tri_roi_z_m": z, "thoi_gian_roi_s": fall,
-                            "toc_do_luc_tha_m_s": speed, "do_cao_m": "", "huong_bay_deg": 0, "duong_tha": "SUPPORT_AIRSTRIKE",
-                            "dieu_kien_tha": "theo thời gian (Start + k × interval)", "loi_m": blast, "ria_m": blast,
-                            "khoang_tha_s": interval, "ghi_chu": "python mirror of StrikeSystem.cs:250-275 (no Scattered jam spread)",
-                            "_nguon": "python_mirror"})
-    for bid, b in big.items():
-        st = big_strikes[bid]
-        if st.get("shape") != "strip":
-            continue
-        n = int(fnum(st.get("count"), 1))
-        length, width, dur = fnum(st.get("length_m")), fnum(st.get("width_m")), fnum(st.get("duration_s"))
-        core = fnum(st.get("radius_m"))
-        warn = fnum(b.get("warn_s"))
-        for seed in SEEDS:
-            rng = random.Random(seed)
-            for k in range(n):
-                along = -length * 0.5 + length * (k + 0.5) / n
-                lat = (rng.random() - 0.5) * width * 0.7 if width > 0 else 0.0
-                due = warn + (dur * k / (n - 1) if n > 1 else 0.0)
-                lands = int(math.ceil(due / DT - 1e-6))
-                out.append({"vu_khi_id": bid, "don_vi_id": b.get("dung_boi", ""), "seed": seed, "chi_so_bom": k,
-                            "tick_tha": lands - int(round(0.9 / DT)), "vi_tri_tha_x_m": "", "vi_tri_tha_z_m": "",
-                            "tick_cham": lands, "vi_tri_roi_x_m": lat, "vi_tri_roi_z_m": along, "thoi_gian_roi_s": 0.9,
-                            "toc_do_luc_tha_m_s": "", "do_cao_m": "", "huong_bay_deg": 0, "duong_tha": "BOSS_STRIP",
-                            "dieu_kien_tha": "sau cảnh báo warn_s", "loi_m": core, "ria_m": min(20.0, core * 2.0),
-                            "khoang_tha_s": dur / (n - 1) if n > 1 else 0.0,
-                            "ghi_chu": "python mirror of BossSystem.BigAttacks.cs:708-720; ria = Catalog.WithEdge 2 × lõi (NEED_CODE_CHECK cho siêu vũ khí)",
-                            "_nguon": "python_mirror"})
-    return out
-
-
-def drops(rows: list[dict]) -> dict[tuple, list[dict]]:
-    """One drop = one (weapon, carrier, seed) with its bombs (rows with a bomb index >= 0)."""
-    out: dict[tuple, list[dict]] = {}
-    for r in rows:
-        i = num(r.get("chi_so_bom"))
-        if not isinstance(i, (int, float)) or i < 0:
-            continue
-        out.setdefault((r["vu_khi_id"], r["don_vi_id"], int(fnum(r["seed"]))), []).append(r)
-    return out
-
-
-def drop_stats(bombs: list[dict]) -> dict:
-    pts = [(fnum(b["vi_tri_roi_x_m"]), fnum(b["vi_tri_roi_z_m"])) for b in bombs]
-    h = math.radians(fnum(bombs[0].get("huong_bay_deg")))
-    fwd = (math.sin(h), math.cos(h))
-    clusters: list[tuple[float, float]] = []
-    for p in pts:
-        if not any(math.dist(p, c) < SAME_POINT_M for c in clusters):
-            clusters.append(p)
-    far = max((math.dist(a, b) for i, a in enumerate(pts) for b in pts[i + 1:]), default=0.0)
-    along = [p[0] * fwd[0] + p[1] * fwd[1] for p in pts]
-    across = [p[0] * fwd[1] - p[1] * fwd[0] for p in pts]
-    order = sorted(along)
-    gaps = [b - a for a, b in zip(order, order[1:])]
-    mean_gap = sum(gaps) / len(gaps) if gaps else 0.0
-    core = fnum(bombs[0].get("loi_m"))
-    return {"so_bom": len(pts), "so_diem_roi_khac_nhau": len(clusters), "khoang_cach_xa_nhat_m": far,
-            "do_dai_dai_m": max(along) - min(along), "do_lech_ngang_m": max(across) - min(across),
-            "khoang_cach_tb_giua_bom_m": mean_gap, "ty_le_chong_lan": core / mean_gap if mean_gap > 0 else ""}
-
-
-def sheet_vet_tha(trace: list[dict], mirror: list[dict], unit_pairs: list[tuple[str, str]], trace_path: Path):
-    stats_cols = ["loai_dong", "so_bom", "so_diem_roi_khac_nhau", "khoang_cach_xa_nhat_m", "do_dai_dai_m", "do_lech_ngang_m",
-                  "khoang_cach_tb_giua_bom_m", "ty_le_chong_lan"]
-    header = ["id"] + TRACE_COLS + stats_cols + ["nguon", "raw_json"]
-    rows = []
-    src_trace = f"Unity EditMode {TEST} ({ENV}={rel(trace_path)})"
-    all_rows = [dict(r, _nguon=src_trace) for r in trace] + mirror
-    groups: dict[tuple[str, str], list[dict]] = {}
-    for r in all_rows:
-        groups.setdefault((r["vu_khi_id"], r["don_vi_id"]), []).append(r)
-    for wid, uid in unit_pairs:  # a pair the trace lacks (not run yet, or not in this csv)
-        groups.setdefault((wid, uid), [])
-    for key in sorted(groups):
-        wid, uid = key
-        group = groups[key]
-        if not group:
-            rows.append([f"{wid}|{uid}|{CHUA_CHAY}"] + [wid, uid] + [CHUA_CHAY] * (len(TRACE_COLS) - 2)
-                        + [CHUA_CHAY] + [""] * (len(stats_cols) - 1)
-                        + [f"chờ chạy Unity: {TEST} với {ENV}=<csv>", ""])
-            continue
-        for r in sorted(group, key=lambda x: (int(fnum(x["seed"])), fnum(x.get("chi_so_bom"), -1))):
-            i = num(r.get("chi_so_bom"))
-            rid = f"{wid}|{uid}|s{num(r['seed'])}|" + (f"b{int(i):02d}" if isinstance(i, (int, float)) and i >= 0 else str(r.get("dieu_kien_tha") or "x"))
-            raw = {k: r.get(k, "") for k in TRACE_COLS}
-            rows.append([rid] + [num(r.get(c)) if not isinstance(r.get(c), float) else r3(r[c]) for c in TRACE_COLS]
-                        + ["BOM" if isinstance(i, (int, float)) and i >= 0 else "KHONG_THA"] + [""] * (len(stats_cols) - 1)
-                        + [r["_nguon"], json.dumps(raw, ensure_ascii=False)])
-        per = [drop_stats(b) for k, b in sorted(drops(group).items())]
-        if per:
-            avg = {k: (sum(p[k] for p in per if isinstance(p[k], (int, float))) / max(1, sum(isinstance(p[k], (int, float)) for p in per)))
-                   for k in per[0]}
-            rows.append([f"{wid}|{uid}|TONG_KET", wid, uid] + [""] * (len(TRACE_COLS) - 2)
-                        + ["TONG_KET_TB_3_SEED"] + [r3(avg[k]) for k in stats_cols[1:]]
-                        + [group[0]["_nguon"], json.dumps({"seeds": [p for p in per]}, ensure_ascii=False, default=float)])
-    return header, rows
-
-
-def sheet_ket_qua_vung(trace: list[dict], mirror: list[dict], unit_pairs, before: list[dict] | None = None):
-    """Hits of each drop on the standard formations; pass 2: one block BEFORE (the pass 0 trace) and one AFTER (the new
-    trace). The supports' and strips' mirror rows are the same code in both (KHONG_DOI)."""
-    header = ["id", "giai_doan", "vu_khi_id", "don_vi_id", "seed", "doi_hinh", "so_xe", "so_bom", "so_xe_trung_loi",
-              "so_xe_trung_ria", "so_xe_trung", "so_lan_trung_loi", "loi_m", "ria_m", "nguon", "raw_json"]
-    rows = []
-    stages = [("SAU", trace)] + ([("TRUOC", before)] if before else [])
-    for stage, stage_trace in stages:
-        for r in vung_rows(stage, stage_trace, mirror, unit_pairs):
-            rows.append(r)
-    return header, rows
-
-
-def vung_rows(stage: str, trace: list[dict], mirror: list[dict], unit_pairs) -> list[list]:
-    rows = []
-    groups = drops(trace)
-    groups.update(drops(mirror))
-    for (wid, uid, seed), bombs in sorted(groups.items()):
-        core, edge = fnum(bombs[0].get("loi_m")), fnum(bombs[0].get("ria_m"))
-        edge = max(edge, core)
-        h = math.radians(fnum(bombs[0].get("huong_bay_deg")))
-        pts = [(fnum(b["vi_tri_roi_x_m"]), fnum(b["vi_tri_roi_z_m"])) for b in bombs]
-        src = bombs[0].get("_nguon") or "Unity trace"
-        support = str(bombs[0].get("duong_tha", "")).startswith("SUPPORT")
-        for fname, cars in FORMATIONS.items():
-            # the formation turned to the drop's heading (heading 0 leaves it as written), centred on the aim (0, 0); an
-            # airstrike's Point is the START of its line (StrikeSystem.cs:252), so its formations sit on the line's middle
-            cx, cz = (sum(p[0] for p in pts) / len(pts), sum(p[1] for p in pts) / len(pts)) if support else (0.0, 0.0)
-            placed = [(cx + x * math.cos(h) + z * math.sin(h), cz - x * math.sin(h) + z * math.cos(h)) for x, z in cars]
-            in_core = in_edge = core_hits = 0
-            for car in placed:
-                d = [math.dist(car, p) for p in pts]
-                hits_core = sum(1 for v in d if v <= core)
-                core_hits += hits_core
-                if hits_core:
-                    in_core += 1
-                elif any(v <= edge for v in d):
-                    in_edge += 1
-            mirrored = str(bombs[0].get("_nguon")) == "python_mirror"
-            rows.append([f"{stage}|{wid}|{uid}|s{seed}|{fname}", stage + ("_KHONG_DOI" if mirrored else ""), wid, uid, seed,
-                         fname, len(cars), len(pts), in_core, in_edge,
-                         in_core + in_edge, core_hits, core, edge, f"{src}; python (xe là điểm, không tính bán kính xe; tâm đội hình = "
-                         + ("giữa dải" if support else "điểm nhắm (0, 0)") + ")",
-                         json.dumps({"xe": placed}, ensure_ascii=False)])
-    traced = {(k[0], k[1]) for k in groups}
-    for wid, uid in unit_pairs:
-        if (wid, uid) in traced:
-            continue
-        for fname, cars in FORMATIONS.items():
-            rows.append([f"{stage}|{wid}|{uid}|{CHUA_CHAY}|{fname}", stage, wid, uid, CHUA_CHAY, fname, len(cars)] + [CHUA_CHAY] * 5
-                        + ["", "", f"chờ Bom_vet_tha ({TEST})", ""])
-    return rows
-
-
-AFTER = "Docs/export/bom_2026-10-03/vet_tha_unity.csv"  # the Unity trace after pass 2 (the fix): "after"
-COMPARE_FORMATIONS = ("HANG_DOC_8M", "CUM_8M")  # the spec's two standard formations: a row along the track, a cluster
-
-
-def compare_rows(before: list[dict], after: list[dict]) -> tuple[list[str], list[list]]:
-    """The bomb-run fix, pass 4: per weapon and carrier, the three-seed means BEFORE (the pass 0 trace) and AFTER (the fix's
-    Unity trace): distinct impact points (impacts closer than SAME_POINT_M count as one), the stick's length along the track,
-    and the vehicles hit (core or edge) in the two standard formations (5 in a row along the track 8 m apart; 5 in an 8 m
-    cluster), centred on the aim. Read by the design document (Tools/docs/bomb_run.py) and Docs/fixes/report_bomb_run.md."""
-    def stage(trace):
-        out: dict[tuple, dict[str, list]] = {}
-        for (wid, uid, _seed), bombs in drops(trace).items():
-            st = drop_stats(bombs)
-            acc = out.setdefault((wid, uid), {})
-            acc.setdefault("so_bom", []).append(st["so_bom"])
-            acc.setdefault("diem", []).append(st["so_diem_roi_khac_nhau"])
-            acc.setdefault("dai", []).append(st["do_dai_dai_m"])
-        for r in vung_rows("X", trace, [], []):
-            if r[5] in COMPARE_FORMATIONS and isinstance(r[10], (int, float)):
-                out.setdefault((r[2], r[3]), {}).setdefault(r[5], []).append(r[10])
-        return {k: {n: sum(v) / len(v) for n, v in d.items() if v} for k, d in out.items()}
-
-    b, a = stage(before), stage(after)
-    header = ["vu_khi_id", "don_vi_id", "so_bom", "diem_roi_truoc", "diem_roi_sau", "do_dai_dai_truoc_m", "do_dai_dai_sau_m"]
-    for f in COMPARE_FORMATIONS:
-        header += [f"xe_trung_{f.lower()}_truoc", f"xe_trung_{f.lower()}_sau"]
-    rows = []
-    for key in sorted(set(b) | set(a)):
-        x, y = b.get(key, {}), a.get(key, {})
-        row = [key[0], key[1], r3(y.get("so_bom", x.get("so_bom", 0))), r3(x.get("diem", 0)) if x else "", r3(y.get("diem", 0)) if y else "",
-               r3(x.get("dai", 0)) if x else "", r3(y.get("dai", 0)) if y else ""]
-        for f in COMPARE_FORMATIONS:
-            row += [r3(x[f]) if f in x else "", r3(y[f]) if f in y else ""]
-        rows.append(row)
-    return header, rows
-
-
-def before_after(sheets) -> tuple[list[str], list[list]]:
-    """Per weapon and carrier, the three-seed mean of each formation's hits, BEFORE against AFTER (Bom_ket_qua_vung)."""
-    h, rows = sheets["Bom_ket_qua_vung"]
-    acc: dict[tuple, dict[str, list]] = {}
-    for r in rows:
-        d = dict(zip(h, r))
-        if not isinstance(d["so_xe_trung"], (int, float)):
-            continue
-        stage = str(d["giai_doan"]).split("_")[0]
-        key = (d["vu_khi_id"], d["don_vi_id"], d["doi_hinh"])
-        acc.setdefault(key, {}).setdefault(stage, []).append((d["so_xe_trung_loi"], d["so_xe_trung"], d["so_bom"]))
-    header = ["id", "doi_hinh", "so_bom_truoc", "so_bom_sau", "trung_loi_truoc", "trung_loi_sau", "trung_truoc", "trung_sau"]
-    out = []
-    for (wid, uid, fname), st in sorted(acc.items()):
-        def mean(stage, i):
-            v = st.get(stage)
-            return r3(sum(x[i] for x in v) / len(v)) if v else ""
-        out.append([f"{wid}/{uid}", fname, mean("TRUOC", 2), mean("SAU", 2), mean("TRUOC", 0), mean("SAU", 0),
-                    mean("TRUOC", 1), mean("SAU", 1)])
-    return header, out
 
 
 def sheet_canh_bao(vk, wids, sup, big, big_strikes, bomb_rows_vk):
@@ -684,29 +415,10 @@ def sheet_canh_bao(vk, wids, sup, big, big_strikes, bomb_rows_vk):
     return header, rows
 
 
-# ---------------------------------------------------------------------------------------------------------- docs
-def md_table(header, rows, cols=None, limit=400) -> str:
-    cols = cols or header
-    idx = [header.index(c) for c in cols if c in header]
-    out = ["| " + " | ".join(header[i] for i in idx) + " |", "|" + "---|" * len(idx)]
-    for r in rows[:limit]:
-        out.append("| " + " | ".join(str(r[i]).replace("|", "/").replace("\n", " ") for i in idx) + " |")
-    if len(rows) > limit:
-        out.append(f"\n({len(rows) - limit} dòng nữa trong xlsx / csv)")
-    return "\n".join(out)
 
 
-def main(args, ex) -> int:
-    date = args.date or repo.head_date()
-    out = Path(args.out) if args.out else repo.ROOT / "Docs" / "export" / f"bom_{date}"
-    if not out.is_absolute():
-        out = repo.ROOT / out
-    trace_path = Path(getattr(args, "trace", None) or os.environ.get(ENV) or (out / "vet_tha_unity.csv"))
-    if not trace_path.is_absolute():
-        trace_path = repo.ROOT / trace_path
-    base = repo.resolve_ref(args.base) if args.base else None
-    ctx, *_ = ex.build(args.base if base else None)
-
+def static_sheets(ctx) -> dict[str, tuple[list[str], list[list]]]:
+    """{sheet name: (header, rows)} of the four bomb sheets."""
     vk_header, vk = table(ctx, "01_vu_khi_dan", "Vu_khi")
     _, xe = table(ctx, "02_phuong_tien", "Xe")
     _, boss = table(ctx, "03_boss", "Boss")
@@ -714,121 +426,16 @@ def main(args, ex) -> int:
     _, big_all = table(ctx, "03_boss", "Boss_sieu_vu_khi")
     _, big_strike_all = table(ctx, "03_boss", "Boss_sieu_vu_khi_don")
     units = {**{k: dict(v, _loai="xe") for k, v in xe.items()}, **{k: dict(v, _loai="boss") for k, v in boss.items()}}
-
     wids = bomb_weapons(vk)
     carriers = {w: [u for u in str(vk[w].get("mang_boi") or "").split(";") if u] for w in wids}
-    # a weapon that inherits a bomb weapon and has no carrier of its own: its parent's carriers do not carry it
     sup = {k: v for k, v in the.items() if v.get("kind") == "Airstrike" or k in ("glide_bomb_strike", "cluster_at_strike")}
     big = {k: v for k, v in big_all.items() if v.get("icon") == "bomb"}
     big_strikes = {k: next(s for s in big_strike_all.values() if s.get("boss_sieu_vu_khi_id") == k) for k in big}
-
     sheets = {}
     sheets["Bom_vu_khi"] = sheet_vu_khi(vk_header, vk, wids, carriers, sup, big, big_strikes, units)
     h, rws = sheets["Bom_vu_khi"]
     bomb_rows_vk = {r[0]: dict(zip(h, r)) for r in rws if r[1] == "vu_khi_don_vi"}
     sheets["Bom_don_vi"] = sheet_don_vi(units, carriers, vk, sup, big, big_strikes)
     sheets["Bom_hanh_vi"] = sheet_hanh_vi()
-    trace = read_trace(trace_path)
-    before_path = Path(getattr(args, "before", None) or (repo.ROOT / BEFORE))
-    if not before_path.is_absolute():
-        before_path = repo.ROOT / before_path
-    before = read_trace(before_path) if before_path.resolve() != trace_path.resolve() else []
-    before = [dict(r, _nguon=f"lượt 0 ({rel(before_path)})") for r in before]
-    mirror = mirror_rows(sup, big, big_strikes)
-    unit_pairs = sorted((w, u) for w in wids for u in carriers[w])
-    sheets["Bom_vet_tha"] = sheet_vet_tha(trace, mirror, unit_pairs, trace_path)
     sheets["Bom_canh_bao"] = sheet_canh_bao(vk, wids, sup, big, big_strikes, bomb_rows_vk)
-    trace_rows = [dict(r, _nguon=f"Unity EditMode {TEST} ({rel(trace_path)})") for r in trace]
-    sheets["Bom_ket_qua_vung"] = sheet_ket_qua_vung(trace_rows, mirror, unit_pairs, before)
-
-    stem = f"Machine_Brigade_Bom_{date}"
-    write_xlsx(out / f"{stem}.xlsx", [(n, hh, rr, set()) for n, (hh, rr) in sheets.items()])
-    for n, (hh, rr) in sheets.items():
-        write_csv(out / "csv" / f"{n}.csv", hh, rr)
-    write_md(out / f"{stem}.md", sheets, date, trace, trace_path)
-    write_report(out / "BOM_REPORT.md", sheets, date, trace, trace_path, out, stem, before)
-    print(f"bom: {len(wids)} unit bomb weapons, {len(unit_pairs)} weapon-carrier pairs, {len(sup)} supports, {len(big)} boss attacks; "
-          f"trace {'read ' + str(len(trace)) + ' rows' if trace else 'absent (CHUA_CHAY)'}")
-    print(f"wrote {rel(out)}")
-    return 0
-
-
-MD_COLS = {
-    "Bom_vu_khi": ["id", "nhom", "ten_that", "dau_no_kg", "loai_sat_thuong", "sat_thuong_moi_phat", "loi_m", "so_bom_moi_luot",
-                   "khoang_tha_giua_bom_s", "thoi_gian_nap_s", "duong_tha_theo_ma", "don_vi_mang", "khoang_cach_giua_bom_m_toan_toc",
-                   "do_dai_dai_m_toan_toc", "ty_le_chong_lan_loi_tren_khoang", "canh_bao_theo_luat"],
-    "Bom_don_vi": ["id", "loai", "toc_do_m_s", "xoay_than_deg_s", "ban_kinh_quay_m", "do_cao_tha_m", "vu_khi_bom", "so_bom_moi_luot",
-                   "bang_dan_qua", "nap_lai_s", "thoi_gian_roi_s_theo_ma", "khoang_dan_dau_m_theo_ma"],
-    "Bom_hanh_vi": ["id", "buoc", "mo_ta_theo_ma", "file_ham"],
-    "Bom_vet_tha": ["id", "chi_so_bom", "tick_tha", "vi_tri_tha_z_m", "tick_cham", "vi_tri_roi_x_m", "vi_tri_roi_z_m", "thoi_gian_roi_s",
-                    "loai_dong", "so_diem_roi_khac_nhau", "khoang_cach_xa_nhat_m", "do_dai_dai_m", "do_lech_ngang_m", "ty_le_chong_lan"],
-    "Bom_canh_bao": ["id", "nhom", "co_vong", "hinh_dang", "dai_m", "rong_m", "ban_kinh_loi_m", "ban_kinh_ria_m", "thoi_gian_canh_bao_s"],
-    "Bom_ket_qua_vung": ["id", "giai_doan", "doi_hinh", "so_bom", "so_xe_trung_loi", "so_xe_trung_ria", "so_xe_trung", "so_lan_trung_loi"],
-}
-
-
-def write_md(path: Path, sheets, date, trace, trace_path):
-    parts = [f"# Machine Brigade: dữ liệu ném bom ({date})", "",
-             "Lượt 0 của bản sửa ném bom rải thảm (Docs/prompts/bomb_run_vi.txt). Sinh bởi `python Tools/export/export.py bom`; "
-             "chỉ đọc, không đổi giá trị game. Bảng đủ cột trong xlsx / csv; ở đây là các cột chính.", "",
-             f"Bom_vet_tha: {'đọc ' + str(len(trace)) + ' dòng từ ' + trace_path.name if trace else 'các vũ khí của đơn vị còn CHUA_CHAY (chờ test Unity ' + TEST + ')'}; "
-             "thẻ hỗ trợ và siêu vũ khí boss tính lại bằng python theo công thức trong mã.", ""]
-    for n, (h, r) in sheets.items():
-        body = r if n != "Bom_vet_tha" else [x for x in r if x[h.index("loai_dong")] != "BOM"]
-        parts += [f"## {n}", "", md_table(h, body, MD_COLS.get(n)), ""]
-        if n == "Bom_vet_tha":
-            parts += ["(Chỉ các dòng tổng kết và CHUA_CHAY; từng quả trong xlsx / csv.)", ""]
-    path.write_bytes("\n".join(parts).encode("utf-8"))
-
-
-def write_report(path: Path, sheets, date, trace, trace_path, out, stem, before=None):
-    h, rows = sheets["Bom_vet_tha"]
-    summ = [dict(zip(h, r)) for r in rows if r[h.index("loai_dong")] == "TONG_KET_TB_3_SEED"]
-    lines = [f"# BOM_REPORT: ném bom dồn một điểm, lượt 0 (nguyên nhân) và lượt 2 (trước / sau) ({date})", "",
-             "## Nguyên nhân quan sát được trong mã", "",
-             "1. **Máy bay ném bom thường (bom rơi tự do) KHÔNG dùng chung một điểm nhắm.** Mỗi quả được nhắm lại lúc thả: "
-             "`aimAt = BombImpact(shooter)` = vị trí máy bay + hướng mũi × tốc độ × thời gian rơi "
-             f"({C}Combat/CombatSystem.cs:820-821; {C}Combat/CombatSystem.Bombs.cs:38-39). Nhưng khoảng cách giữa hai quả chỉ là "
-             "tốc độ × BurstInterval (CombatSystem.Bombs.cs:42-43): Oanh tạc cơ chiến lược 22 m/s × 0,2 s = 4,4 m (3,5 m khi ga 0,8 trong tầm, "
-             "MovementSystem.cs:968), trong khi lõi nổ 10 m và tản 3,5 m: 7 quả nằm trong dải ~21–26 m, lõi chồng lõi (lõi / khoảng ≈ 2,3–2,9), "
-             "nhìn như một đống. Cường kích: 2 quả × 0,25 s × 32 m/s = 8 m (lõi 8 m).",
-             "2. **Bom khoang của boss rơi đúng một điểm.** p26_roc_roc_bombs / p26_roc_main_roc_bombs (Argus, Garuda, khí cầu chỉ huy; 8 quả 400 kg) "
-             "kế thừa boss_howitzer nên bay như đạn pháo (Projectile = Shell), FreeFall = false: cả loạt nhắm vào chính mục tiêu "
-             f"({C}Combat/CombatSystem.cs:529 nhắm t.Position khi mục tiêu còn sống, :611 BurstAim), chỉ lệch theo độ tản (:829). Đây là chỗ 'mọi quả cùng một điểm' thật sự.",
-             "3. **Bom dẫn đường là POINT theo thiết kế:** stealth_payload (B-2, 2 × 907 kg, guided), guided_bomb (SDB), glide_fab500 (UMPK) nhắm vào mục tiêu.",
-             "4. **Thẻ hỗ trợ không kích và siêu vũ khí boss dạng strip đã rải dải** (StrikeSystem.cs:250-275 Lerp dọc đường; BossSystem.BigAttacks.cs:708-720): "
-             "garuda_carpet 20 quả / 100 m (5 m, lõi 7 m), airship_carpet 16 / 80 m, kraken_air_raid 12 / 90 m, airstrike 4 / 60 m, napalm_strike 8 / 55 m.",
-             "5. **Thẻ nói 12 quả, dữ liệu là 7:** GuideText.cs:410/414 'một hàng 12 quả' vs balance.json bomber_payload burst 7, load 7.",
-             "6. An toàn quân ta xét cả loạt một lần (CombatSystem.Bombs.cs:76-82): có xe ta gần giữa dải thì bỏ cả lượt, không bỏ từng quả. "
-             "Không có điều kiện 'đủ 2/3 số bom' trong mã.", "",
-             "## Số đo (Bom_vet_tha)", ""]
-    if trace and summ:
-        lines += [md_table(list(summ[0].keys()), [list(s.values()) for s in summ],
-                           ["id", "so_bom", "so_diem_roi_khac_nhau", "khoang_cach_xa_nhat_m", "do_dai_dai_m", "do_lech_ngang_m",
-                            "khoang_cach_tb_giua_bom_m", "ty_le_chong_lan"]), ""]
-    else:
-        lines += ["Vũ khí của đơn vị: **CHUA_CHAY** (chờ test Unity). Lệnh cho người chạy Unity:", "",
-                  "```",
-                  f"set {ENV}=<repo>\\Docs\\export\\bom_{date}\\vet_tha_unity.csv",
-                  f"Unity.exe -batchmode -projectPath <repo> -runTests -testPlatform EditMode -testFilter {TEST} -testResults <tmp>\\bom_results.xml",
-                  "python Tools/export/export.py bom",
-                  "```", "",
-                  "Thẻ hỗ trợ và strip boss (python theo công thức trong mã):", ""]
-        if summ:
-            lines += [md_table(list(summ[0].keys()), [list(s.values()) for s in summ],
-                               ["id", "so_bom", "so_diem_roi_khac_nhau", "khoang_cach_xa_nhat_m", "do_dai_dai_m", "do_lech_ngang_m",
-                                "khoang_cach_tb_giua_bom_m", "ty_le_chong_lan"]), ""]
-    where = rel(out)
-    lines += ["## File", "",
-              f"- {where}/{stem}.xlsx (6 sheet), {where}/csv/<sheet>.csv, {where}/{stem}.md, {where}/BOM_REPORT.md",
-              f"- Vết thả từ Unity: {trace_path.name} ({'có' if trace else 'chưa có'}); test: Assets/MachineBrigade/Tests/EditMode/BombStickTrace.cs",
-              "- Bộ xuất: Tools/export/bom.py (`python Tools/export/export.py bom [--trace CSV]`)",
-              f"- Mã: {C}Combat/CombatSystem.Bombs.cs, {C}Combat/CombatSystem.cs (CanFire, Operate, Launch), {C}Movement/MovementSystem.cs (BombTarget, chạy vào), "
-              f"{C}Strikes/StrikeSystem.cs (Airstrike), {C}Bosses/BossSystem.BigAttacks.cs (Strip)", "",
-              ""]
-    bh, brows = before_after(sheets)
-    lines += ["## Lượt 2: trước / sau (Bom_ket_qua_vung, trung bình 3 seed)", "",
-              "TRƯỚC = vết thả lượt 0 (" + BEFORE + ", mục tiêu một xe tăng); SAU = vết thả mới (" + trace_path.name
-              + ", mục tiêu là xe giữa hàng 5 xe dọc đường bay). " + ("" if trace else "SAU còn CHUA_CHAY: chờ chạy lại test Unity."), "",
-              md_table(bh, brows) if brows else "(chưa có số)", ""]
-    path.write_bytes("\n".join(lines).encode("utf-8"))
+    return sheets

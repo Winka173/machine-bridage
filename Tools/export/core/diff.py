@@ -27,6 +27,7 @@ from . import repo
 from .write import csv_value, write_xlsx
 
 SKIP_COLS = {"raw_json", "nguon", "so_voi_ban_goc"}
+DEFAULT_PACK_QA = "current/_qa"
 XLSX_MAX_ROWS = 1_000_000
 MD_ALL_ROWS = 40     # spec 6: a table over 40 rows prints its first 15 + "xem sheet"
 MD_HEAD_ROWS = 15
@@ -39,30 +40,35 @@ csv.field_size_limit(2**31 - 1)
 
 # ---------------------------------------------------------------------------------------------------------------- load
 def load_export(folder: Path) -> tuple[dict, dict, str]:
-    """({file_id: {sheet: (header, rows)}}, manifest, 'csv' or 'xlsx')."""
-    manifest = {}
-    mf = folder / "00_chi_muc" / "MANIFEST.json"
-    if mf.exists():
-        manifest = json.loads(mf.read_text("utf-8"))
-    books: dict = {}
-    if (folder / "csv").is_dir():
-        for fdir in sorted(p for p in (folder / "csv").iterdir() if p.is_dir()):
-            for f in sorted(fdir.glob("*.csv")):
-                with f.open(encoding="utf-8", newline="") as fh:
-                    lines = list(csv.reader(fh))
-                books.setdefault(fdir.name, {})[f.stem] = (lines[0] if lines else [], lines[1:])
-        return books, manifest, "csv"
+    """({file id: {sheet: (header, rows)}}, {"commit", "ngay"} of 00_index.xlsx, 'xlsx'): the pack's xlsx files and the CSVs
+    of bulk.zip (as sheets of their file). 00_index.xlsx itself is not compared (its hashes always move)."""
+    import io
     import openpyxl
-    files = sorted((folder / "xlsx").glob("*.xlsx")) + sorted((folder / "00_chi_muc").glob("Machine_Brigade_00_Index_*.xlsx"))
-    for f in files:
-        fid = "00_chi_muc" if f.parent.name == "00_chi_muc" else f.stem
+    import zipfile
+    books: dict = {}
+    manifest: dict = {}
+    for f in sorted(folder.glob("*.xlsx")):
         wb = openpyxl.load_workbook(f, read_only=True, data_only=False)
+        if f.stem == "00_index":
+            if "Phien_ban" in wb.sheetnames:
+                for r in wb["Phien_ban"].iter_rows(min_row=2, values_only=True):
+                    if r and r[0] in ("commit", "ngay"):
+                        manifest[r[0]] = str(r[1])
+            wb.close()
+            continue
         for ws in wb.worksheets:
             it = ws.iter_rows(values_only=True)
             header = [csv_value(v) for v in next(it, ())]
             rows = [[csv_value(v) for v in r] for r in it]
-            books.setdefault(fid, {})[ws.title] = (header, rows)
+            books.setdefault(f.stem, {})[ws.title] = (header, rows)
         wb.close()
+    z = folder / "bulk.zip"
+    if z.is_file():
+        with zipfile.ZipFile(z) as zf:
+            for name in zf.namelist():
+                fid, _, sheet = name[:-4].partition("__")
+                lines = list(csv.reader(io.StringIO(zf.read(name).decode("utf-8"))))
+                books.setdefault(fid, {})[sheet] = (lines[0] if lines else [], lines[1:])
     return books, manifest, "xlsx"
 
 
@@ -359,7 +365,7 @@ def export_ref(ref: str, commit: str, work: Path) -> Path:
         for line in text.splitlines():
             if line.startswith(("lenient:", "sources ", "foreign keys")):
                 print(f"  [{commit}] {line}")
-        if not (out / "csv").is_dir():
+        if not (out / "00_index.xlsx").is_file():
             raise RuntimeError(f"export of {ref} ({commit}) wrote nothing: {r.stderr.decode('utf-8', 'replace')[-400:]}")
         return out
     finally:
@@ -369,7 +375,7 @@ def export_ref(ref: str, commit: str, work: Path) -> Path:
 def main(a: str, b: str, out: str | None) -> int:
     def as_dir(x: str):
         for p in (Path(x), repo.ROOT / x, repo.ROOT / "Docs" / "export" / x):
-            if p.is_dir() and ((p / "csv").is_dir() or (p / "xlsx").is_dir() or (p / "00_chi_muc").is_dir()):
+            if p.is_dir() and (p / "00_index.xlsx").is_file():
                 return p
         return None
 
@@ -395,7 +401,7 @@ def main(a: str, b: str, out: str | None) -> int:
                 db = export_ref(b, cb, work)
         la = ca or _label(da.name)
         lb = cb or _label(db.name)
-        target = Path(out) if out else repo.ROOT / "Docs" / "export" / f"diff_{la}_{lb}"
+        target = Path(out) if out else repo.ROOT / "Docs" / "export" / DEFAULT_PACK_QA / "diff"
         if not target.is_absolute():
             target = repo.ROOT / target
         st = diff_dirs(da, db, target, la, lb, ca, cb)

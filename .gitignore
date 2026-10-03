@@ -57,12 +57,5 @@ __pycache__/
 /Assets/ScanOld/
 /Assets/ScanOld.meta
 
-# Data export (Tools/export): over ~20 MB, so the dated folders keep only 00_chi_muc/ and md/ in git
-/Docs/export/*/xlsx/
-/Docs/export/*/csv/
-/Docs/export/*/images/
-/Docs/export/*/pdf/
-# Export diffs (Tools/export/export.py diff): only the summary is kept in git
-/Docs/export/diff_*/*
-!/Docs/export/diff_*/00_tom_tat.xlsx
-!/Docs/export/diff_*/00_tom_tat.md
+# Data export (Tools/export): the pack in Docs/export/current/ is committed; the run's own tests (_qa/) are not
+/Docs/export/current/_qa/

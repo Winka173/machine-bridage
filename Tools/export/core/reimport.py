@@ -1,24 +1,24 @@
-"""Pass 9 (spec 10): the reverse import. The owner's edits in an exported xlsx become a change manifest; nothing else.
+"""The reverse import: the owner's edits in the pack's xlsx become a change manifest; nothing else.
 
-    python Tools/export/export.py import <export folder | edited xlsx> --dry-run [--out DIR] [--base REF]
+    python Tools/export/export.py import <pack folder | edited xlsx> --dry-run [--out DIR]
 
-How an edit is found: the export is rebuilt from the current tree (the same base ref as the export, read from its
-00_chi_muc/MANIFEST.json) and every cell of the xlsx is compared with the cell the exporter writes now. A cell that differs
-and also differs from the export's own csv copy (csv/<file>/<sheet>.csv, when the folder has it) is an edit. A cell that
-matches the export's csv but not the current tree is drift (the data moved since the export), not an edit.
+How an edit is found: the pack is rebuilt from the current tree (the same base ref as the pack, read from 00_index.xlsx
+Phien_ban) and every cell of the xlsx is compared with the cell the exporter writes now. A cell that differs is an edit.
+Phien_ban's balance.json / campaign.json hashes say whether the data moved since the pack was written: if so a warning
+names it (a cell that still shows the old value then reads as an edit back; the manifest's precondition tells).
 
-Which edits become entries: only a cell that maps to exactly one leaf of a JSON data file under Assets/ (the coverage
-mapping, inverted per cell: Row.mark is recorded while the export builds), and whose shown value is that leaf's value as is.
-Everything else is rejected with its reason: id / nguon / raw_json / link / order columns, layer B formulas, derived or
-copied columns (no source leaf), list cells (several leaves), converted values, code constants and other source kinds,
-new rows, unknown columns or sheets.
+Which edits become entries: only a raw column (Schema.sua_duoc = co: its Schema.nguon_khoa is data leaves of a JSON data
+file, not a formula and not "python:"), a cell that maps to exactly one leaf of a JSON data file under Assets/, whose shown
+value is that leaf's value as is. Everything else is rejected with its reason: id / nguon / raw_json / link / order
+columns, formulas, derived or copied columns (no source leaf), list cells (several leaves), converted values, code
+constants and other source kinds, new rows, unknown columns or sheets.
 
-The manifest (import/manifest_import.json + .md) uses prompt 29's columns (Docs/balance/manifest_v2.json, read by
-Tools/balance/p29_apply.py): bundle_id, entity_id, field_path, ..., expected_before, new_value, ..., status = DECIDE;
-bundles {bundle_id, Đối tượng, Số dòng, Trạng thái = DECIDE, Cần viết code, depends_on}. field_path is the data file's real
-key path (vehicles[12].cp) with data_file, id_path (vehicles[id=light_tank].cp) and c01_path (the prompt 29 path, when one
-maps 1:1) beside it. precondition_now is prompt 29's R2 outcome against the current data: OK / ALREADY_APPLIED / CONFLICT.
-This module never writes a data file: changes reach the data only through the manifest apply path (DECISIONS, pass 9).
+The manifest (<pack>/_qa/import/manifest_import.json + .md) uses prompt 29's columns (Docs/balance/manifest_v2.json, read by
+Tools/balance/p29_apply.py): bundle_id, entity_id, field_path, ..., expected_before, new_value, ..., status = DECIDE; bundles
+{bundle_id, Đối tượng, Số dòng, Trạng thái = DECIDE, Cần viết code, depends_on}. field_path is the data file's real key path
+(vehicles[12].cp) with data_file, id_path (vehicles[id=light_tank].cp) and c01_path (prompt 29's path, when one maps 1:1)
+beside it. precondition_now is prompt 29's outcome against the current data: OK / ALREADY_APPLIED / CONFLICT. This module
+never writes a data file: changes reach the data only through the manifest apply path.
 """
 from __future__ import annotations
 
@@ -59,7 +59,7 @@ BALANCE = "Assets/MachineBrigade/Resources/Data/balance.json"
 class Reference:
     """The export rebuilt from the current tree, with the per-cell source leaves recorded."""
 
-    def __init__(self, ex, base_ref: str | None):
+    def __init__(self, ex, base_ref: str | None, game: dict | None = None):
         self.cells: dict[tuple, list] = {}
         orig = model.Row.mark
         cells = self.cells
@@ -70,9 +70,16 @@ class Reference:
 
         model.Row.mark = mark
         try:
-            self.ctx, *_ = ex.build(base_ref)
+            self.ctx, *_ = ex.build(base_ref, False, game)
         finally:
             model.Row.mark = orig
+        smap = self.ctx.sheet_map  # the marks were recorded under the domain files' names: follow the sheets to the pack
+        moved = {}
+        for (fid, sname, rid, col), leaves in cells.items():
+            q = smap.get((fid, sname))
+            if q:
+                moved[(q[0], q[1], "can_doc_ma" if rid == "chua_ap" else rid, col)] = leaves
+        self.cells = moved
         self.base_ref = base_ref
         self.tables: dict[tuple, tuple] = {}
 
@@ -87,44 +94,41 @@ class Reference:
 
 # ---------------------------------------------------------------------- inputs
 def resolve_inputs(target: Path):
-    """(export root or None, [xlsx files]). A folder: its xlsx/ (or the folder itself); a file: that xlsx."""
+    """(pack root or None, [xlsx files]). A folder: its xlsx files; a file: that xlsx."""
     if target.is_dir():
-        sub = target / "xlsx"
-        files = sorted((sub if sub.is_dir() else target).glob("*.xlsx"))
-        root = target if (target / "00_chi_muc").is_dir() or sub.is_dir() else None
+        files = sorted(target.glob("*.xlsx"))
+        root = target if (target / "00_index.xlsx").is_file() else None
     else:
         files = [target]
-        root = target.parent.parent if target.parent.name == "xlsx" else None
-    files = [f for f in files if not f.name.startswith(("~$", "Machine_Brigade_00_Index"))]
-    return root, files
+        root = target.parent if (target.parent / "00_index.xlsx").is_file() else None
+    return root, [f for f in files if not f.name.startswith(("~$", "00_index"))]
 
 
 def export_meta(root: Path | None) -> dict:
-    p = root / "00_chi_muc" / "MANIFEST.json" if root else None
+    """ngay, commit, ban_goc and the data hashes of the pack, from 00_index.xlsx Phien_ban."""
+    p = root / "00_index.xlsx" if root else None
     if p is None or not p.is_file():
         return {}
-    m = json.loads(p.read_text("utf-8"))
-    return {k: m.get(k, "") for k in ("ngay", "commit", "ban_goc", "balance_sha256", "campaign_sha256")}
+    wb = load_workbook(p, read_only=True)
+    try:
+        ws = wb["Phien_ban"]
+        rows = {str(r[0]): r[1] for r in ws.iter_rows(min_row=2, values_only=True) if r and r[0] is not None}
+    finally:
+        wb.close()
+    return {k: str(rows.get(k, "") or "") for k in ("ngay", "commit", "ban_goc", "balance_sha256", "campaign_sha256")}
 
 
 def base_from_meta(meta: dict) -> str | None:
-    """The export's base ref: 'origin/main (9198a675)' -> 9198a675 (the commit it resolved to then)."""
+    """The pack's base ref: '5f5b3247 (5f5b32470…)' -> the commit it resolved to then."""
     m = re.search(r"\(([0-9a-f]{6,40})\)", meta.get("ban_goc") or "")
     if m and repo.resolve_ref(m.group(1)):
         return m.group(1)
     return None
 
 
-def load_csv(root: Path | None, fid: str, sname: str):
-    p = root / "csv" / fid / f"{sname}.csv" if root else None
-    if p is None or not p.is_file():
-        return None
-    with p.open(encoding="utf-8", newline="") as f:
-        rows = list(csv.reader(f))
-    if not rows:
-        return None
-    header = rows[0]
-    return {line[0]: dict(zip(header, line)) for line in rows[1:] if line}
+def load_csv(root, fid: str, sname: str):
+    """The pack carries no per-sheet CSV: nothing to tell a moved datum from an edit."""
+    return None
 
 
 # ---------------------------------------------------------------------- values
@@ -244,7 +248,8 @@ def precondition(cur, expected, new) -> str:
 def scan(ref: Reference, target: Path) -> dict:
     root, files = resolve_inputs(target)
     meta = export_meta(root)
-    rows_out, rejected, notes = [], [], {"cells_compared": 0, "drift_cells": 0, "rows_missing": 0, "columns_missing": 0}
+    rows_out, rejected, notes = [], [], {"cells_compared": 0, "drift_cells": 0, "rows_missing": 0, "columns_missing": 0,
+                                         "game_cells_skipped": 0, "game_rows_skipped": 0}
     warnings = []
     srcs = ref.ctx.sources
     now = {"commit": repo.head_commit(),
@@ -252,7 +257,7 @@ def scan(ref: Reference, target: Path) -> dict:
            "campaign_sha256": srcs["Assets/MachineBrigade/Resources/Data/campaign.json"].sha256()
            if "Assets/MachineBrigade/Resources/Data/campaign.json" in srcs else ""}
     if not meta:
-        warnings.append("no 00_chi_muc/MANIFEST.json beside the xlsx: the baseline is the current tree (base ref "
+        warnings.append("no 00_index.xlsx beside the xlsx: the baseline is the current tree (base ref "
                         f"{ref.base_ref or 'none'}); expected_before is the current value")
     else:
         for k in ("balance_sha256", "campaign_sha256"):
@@ -293,6 +298,9 @@ def scan(ref: Reference, target: Path) -> dict:
                         continue
                     rid = str(line[0]) if line[0] is not None else ""
                     ref_line = ref_rows.get(rid)
+                    if ref_line is None and set(ref_rows) <= {"can_doc_ma"}:
+                        notes["game_rows_skipped"] += 1  # a sheet the game.json fills (one marker row without it)
+                        continue
                     if ref_line is None or rid in seen:
                         why = "duplicate id in the sheet" if rid in seen else \
                             "row id not in the export (adding rows or editing an id is not imported)"
@@ -313,6 +321,9 @@ def scan(ref: Reference, target: Path) -> dict:
                         notes["cells_compared"] += 1
                         if same(x, before):
                             continue
+                        if before == model.NEED_CODE_CHECK:  # a value game.json gave the pack, which this rebuild does not have
+                            notes["game_cells_skipped"] += 1
+                            continue
                         if old_line is not None and h in old_line and csv_value(x) == old_line[h] \
                                 and not (isinstance(x, str) and x.startswith("=")):
                             notes["drift_cells"] += 1
@@ -327,9 +338,9 @@ def scan(ref: Reference, target: Path) -> dict:
                         if h in (sheet.parent_col, "thu_tu") and sheet.parent is not None:
                             reject(fid, sname, cell, rid, h, before, x, "link / order column of a child sheet: not editable")
                             continue
-                        if (c is not None and c.formula) or hasattr(before, "template"):
+                        if (c is not None and c.formula) or hasattr(before, "template") or                                 (c is not None and (c.source_note or "").startswith("python:")):
                             reject(fid, sname, cell, rid, h, before, x,
-                                   "derived column (layer B formula): edit the raw columns it reads")
+                                   "derived column (Schema.nguon_khoa is a formula or python:): edit the raw columns it reads")
                             continue
                         leaves = ref.cells.get((fid, sname, rid, h), [])
                         if not leaves:
@@ -372,7 +383,7 @@ def scan(ref: Reference, target: Path) -> dict:
                             "data_file": sid, "id_path": id_path(src.data, path), "c01_path": c01_path(sid, src.data, path),
                             "precondition_now": precondition(cur, exp, new),
                         })
-                notes["rows_missing"] += sum(1 for k in ref_rows if k not in seen)
+                notes["rows_missing"] += sum(1 for k in ref_rows if k not in seen and k != "can_doc_ma")
         finally:
             wb.close()
 
@@ -381,6 +392,10 @@ def scan(ref: Reference, target: Path) -> dict:
         b = bundles.setdefault(r["bundle_id"], {"bundle_id": r["bundle_id"], "Đối tượng": r["entity_id"], "Số dòng": 0,
                                                 "Trạng thái": "DECIDE", "Cần viết code": "Không", "depends_on": ""})
         b["Số dòng"] += 1
+    if notes["game_cells_skipped"] or notes["game_rows_skipped"]:
+        warnings.append(f"{notes['game_cells_skipped']} cells and {notes['game_rows_skipped']} rows hold values from game.json "
+                        "(the pack's Phien_ban.game_json_sha256) that this rebuild does not have; they are not compared "
+                        "(pass --game-json <game.json> to compare them)")
     if notes["rows_missing"]:
         warnings.append(f"{notes['rows_missing']} export rows are missing from the xlsx: deleting rows is not imported (ignored)")
     return {"source": target.name, "sha256": digest.hexdigest(), "kind": "export_import (Tools/export import, pass 9)",
@@ -443,9 +458,9 @@ def main(args, ex) -> int:
         return 2
     meta = export_meta(root)
     base = base_from_meta(meta) if meta else (repo.resolve_ref(args.base) if args.base else None)
-    ref = Reference(ex, base)
+    ref = Reference(ex, base, ex.load_game(getattr(args, "game_json", None)))
     man = scan(ref, target)
-    out = Path(args.out) if args.out else (root or target.parent) / "import"
+    out = Path(args.out) if args.out else (root or target.parent) / "_qa" / "import"
     if not out.is_absolute():
         out = repo.ROOT / out
     write(man, out)
