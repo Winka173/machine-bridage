@@ -18937,3 +18937,34 @@ gameplay value changed (table and keys in Docs/export/CHANGES.md). Nothing run; 
   Normal by SiegeMode.WaveSize. The Defend curve's numbers (ModeSessions literals) and the wave-scale clamp moved to tunables.
 - **Per row.** Hanh_vi_dan_nhom is now counted per projectile kind (projectileGroups), and Thoai.so_dong_hien_thi_toi_da per line
   (perLine): both were possible, so no aggregate is left.
+
+## Play-test 13 (lane B, models)
+
+- **Iskander erector (real life: the 9P78-1's missiles lie on the launch boom and rise with it about its rear hinge;
+  nothing stays behind).** The old file left the missile bodies (`Missiles`) and nozzles off the runtime `Elevation`
+  pivot (ModelLibrary.ErectorParts matches `erector|missile_`), so the boom rose through them. Rebuilt: the boom,
+  spine, saddles, clamps, ram body, hinge shaft and both missiles (`Missile_bodies`, `_nozzles`, `_fins`, `_seekers`,
+  `_bands`) are all Erector_* / Missile_* under `Turret`, drawn lying flat (the travel pose); `Muzzle_main` rides
+  at the left missile's nose. The game raises the pair on the one boom (one pivot per model).
+- **The hinge where the runtime turns it.** The runtime pivot is not a GLB node: AddElevation puts it 6 % in from
+  the group's rear and 30 % up its bounds. New `mb_p35c_parts.elevation_pivot` computes that point from the built
+  parts, and the hinge shaft, lugs and floor brackets are built exactly there (checked on the GLB: pivot = shaft
+  centre, ballistic (0, .344, -3.71), cruise (0, .818, -1.63) in Turret space). The bay's rear wall is now a low sill
+  so the boom's rear end passes over it; raised posing checked in Blender at 86 deg (no clipping).
+- **Cruise missile box (real life: Typhon / GLCM-class TELs lie the canister pack flat to drive and raise it, near
+  vertical for a Mk 41-type box, to fire).** The front hatches, fittings, band, hazard strip and handles were not on
+  the pivot (and the lower hatches hung 17 cm below the box: centred on their cells now); all renamed Launcher_*,
+  plus a trunnion, lugs and side rams riding with the box; a fixed frame and brackets on the turntable stay down.
+- **Erectors (VehicleView.Launchers.cs):** ballistic_launcher Raised 86 deg in 2.2 s (drawn flat now; before 66 from
+  a 20-degree drawn missile); ground_cruise_missile_vehicle Raised 80 deg in 2.2 s, Stow 0 (drawn flat). The line
+  rest pitch is about 3 deg, so the reported launch angle is about 89 / 83 deg.
+- **FPV carrier (real life: FPV strike teams fly from protected trucks / MRAPs carrying a launch station, a relay
+  mast and EW; the old tall capsule with a row of windows read as a bus).** Redrawn as a bonneted 6x6 protected
+  truck: armoured bonnet, short crew cab with a raked windscreen and small door windows, roof EW jammer with rods,
+  the M2 on its ring; open flatbed with drop sides, generator, drone cases, telescopic relay mast with two panel
+  antennas; at the rear the launch station on a turntable (pedestal above the drop sides, lids open fore and aft,
+  four armed quadcopters on pads). No Turret part is named like a barrel, so the station never tilts (the old
+  `Launcher` plate rode an elevation pivot alone). Runtime nodes unchanged; 7,452 triangles (cap 7,500); soft 76.4
+  -> 99.7. elite_fpv_carrier inherits this model; fibre_fpv_carrier has its own builder (unchanged).
+- Open: the ballistic launcher's `Turret` still yaws (turretTurnRate 35) and would swing the long boom through the
+  bay walls; a real TEL does not traverse. Pinning its yaw is a code change outside this lane.
