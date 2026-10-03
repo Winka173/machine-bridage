@@ -309,3 +309,24 @@ For local (needs Unity):
 Questions for the owner: none.
 - Follow-up (owner): c8m10's last stage is Moloch (x1.4) with Tartarus tunnelling up at Moloch's 60 %; chapter 8 main
   Moloch, minis Ixion and Tartarus (CHANGES PT14-D12). Play it: the surfacing spot and the two bosses together.
+
+## Session 6: balance pack 2 addendum, items 2-6 → `cloud/pack2-add`
+Owner's words: the last block "Bổ sung 03/10" of `Docs/prompts/export_pack2_vi.txt` (read the whole prompt file
+first: rules A-D, luật B = constants move to data with identical behaviour). Theory only: no Unity, no tests.
+Do items **2 (Ten_lua_tham_so, one row per missile weapon), 3 (fire/napalm parameters), 4 (tower targeting, aura,
+thresholds, radii), 5 (slim Bom_vu_khi to bomb-only columns + FK to Vu_khi)** and the item-6 report for them.
+Item 1 (boss minimum range) waits for session 7: the bosses are being redrawn and their part positions move.
+- The pack is built by `python Tools/export/export.py --game-json Docs/export/game_snapshot.json` (snapshot of the
+  game export at lead 9781a69; the local lead re-exports from Unity after merging, so keys you add to the game export
+  side show "_game" values only then: say which in Cloud state). `export.py check` must stay 15/15.
+- Constants you move to data: through `Resources/Data/tunables.json` / balance.json with the same values (the
+  mbconst tools in `Tools/export/mbconst` and the move lists in `Tools/export/pack2/` help); Sim must build
+  (`dotnet build Tools/simbuild/Sim.csproj`). Every moved/added parameter goes in `Docs/export/CHANGES.md`.
+- CHANGES.md must also say, from reading the code, whether a guided ground-attack missile can miss a moving target
+  today and how (item 2, last sentence).
+
+## Session 7 (queued until the lead says the boss models are merged): addendum item 1 → `cloud/pack2-minrange`
+Boss minimum range from the addendum's item 1 a-d, built on the unmerged branch `origin/feature/pack2-c`
+(Tools/export/boss_min_range.py + sheet Boss_tam_toi_thieu already exist there; merge it into your branch first and
+extend it to the addendum's columns, the barrel-depression parameters moved to data per weapon family / mount, and
+min_range_m applied to boss weapons except close-defence weapons). Use the boss part positions after the redraw.
