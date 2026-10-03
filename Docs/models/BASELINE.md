@@ -12,13 +12,13 @@ the hard cap an error). Warnings are listed in the JSON.
 | boss | 33 | 615,250 | 18,643 | monster (39,598) | 2,619 | 0 | 28 |
 | structure | 86 | 417,681 | 4,856 | headquarters (14,164) | 3,638 | 0 | 14 |
 | prop | 115 | 256,808 | 2,233 | command_hq (8,872) | 1,565 | 0 | 3 |
-| air | 31 | 127,442 | 4,111 | fighter_jet_hd (14,216) | 904 | 0 | 18 |
+| air | 31 | 127,082 | 4,099 | fighter_jet_hd (14,216) | 925 | 1 | 18 |
 | unlisted | 33 | 107,254 | 3,250 | apc_hd (14,968) | 628 | 0 | 0 |
 | scenery | 96 | 40,708 | 424 | rubble_large (3,516) | 294 | 0 | 2 |
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 7,146 | 255 | fpv_drone (1,564) | 210 | 0 | 1 |
 
-All files: 2,251,715 triangles, 0 with errors, 102 more with warnings only.
+All files: 2,251,355 triangles, 1 with errors, 102 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -46,7 +46,7 @@ All files: 2,251,715 triangles, 0 with errors, 102 more with warnings only.
 | ground | renderers | 7 | 0 | - |
 | ground | triangles | 28 | 0 | - |
 | ground | vertices | 32 | 0 | - |
-| jet | renderers | 6 | 0 | - |
+| jet | renderers | 6 | 1 | stealth_fighter |
 | jet | triangles | 2 | 0 | - |
 | jet | vertices | 1 | 0 | - |
 | munition | renderers | 1 | 0 | - |
@@ -60,11 +60,12 @@ All files: 2,251,715 triangles, 0 with errors, 102 more with warnings only.
 | structure | renderers | 6 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-54 models over a budget, 0 of them over a hard cap.
+55 models over a budget, 1 of them over a hard cap.
 
 ## Error reasons (count of models)
 
-- none
+- over a budget hard cap: 1
 
-## Flagged models (0)
+## Flagged models (1)
 
+- **stealth_fighter** (air): renderers 53 over the jet normal hard cap 44

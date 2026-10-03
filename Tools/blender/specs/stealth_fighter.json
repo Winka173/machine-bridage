@@ -1,0 +1,170 @@
+{
+ "id": "stealth_fighter",
+ "class": "jet",
+ "real": [
+  "F-22 Raptor (trapezoid wing, caret intakes, 2D nozzles, canted tails)",
+  "J-20 (long chined nose)",
+  "F-35 (one-piece canopy)",
+  "GAU-22/A 25 mm"
+ ],
+ "shape": "unit_refs: a flat faceted fuselage with the chine flaring into the wing roots, the one-piece canopy, caret intakes with bumps, the broad trapezoid wing, all-moving stabilators, two canted fins, flat 2D nozzles; two-tone grey with the team colour only on fin tips, wingtips and the canopy edge (DECISIONS 23M); the weapon bays open: AIM-9X on the side-bay trapezes, two GBU-39 and an AIM-120 in the main bay, the gun port, flare dispensers.",
+ "confidence": "xấp xỉ (F-22 / J-20 / F-35 photographs; the def's modelSize)",
+ "target_size": {
+  "L": 7.6,
+  "W": 5.5,
+  "H": 1.28,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "faceted chined fuselage, panel lines, sensors, antennas",
+   "nodes": [
+    "Fuselage",
+    "Panel_lines",
+    "Sensor",
+    "Antennas"
+   ]
+  },
+  {
+   "feature": "one-piece canopy and its team-coloured frame",
+   "nodes": [
+    "Canopy",
+    "Canopy_frame"
+   ]
+  },
+  {
+   "feature": "caret intakes with bumps",
+   "nodes": [
+    "Intakes",
+    "Intake_ducts",
+    "Intake_bumps"
+   ]
+  },
+  {
+   "feature": "trapezoid wing, flaps, team wingtips, camouflage panels",
+   "nodes": [
+    "Wings",
+    "Flaps",
+    "Wingtips",
+    "Camo_panels"
+   ]
+  },
+  {
+   "feature": "stabilators and two canted fins with team tips",
+   "nodes": [
+    "Tailplanes",
+    "Fins",
+    "Fin_tips",
+    "Rudders"
+   ]
+  },
+  {
+   "feature": "2D nozzles",
+   "nodes": [
+    "Nozzles",
+    "Exhaust_glow",
+    "Nozzle_petals"
+   ]
+  },
+  {
+   "feature": "open bays: doors, racks, missiles, bombs; gun port; flares",
+   "nodes": [
+    "Bay_doors",
+    "Racks",
+    "Missiles",
+    "Bombs",
+    "Gun_port",
+    "Flares",
+    "Muzzle_missile",
+    "Muzzle_bomb",
+    "Muzzle_gun"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "canopy",
+  "wings",
+  "tail",
+  "intakes",
+  "exhaust",
+  "pylons",
+  "stores",
+  "flares"
+ ],
+ "weapons": [
+  {
+   "weapon": "air_to_air",
+   "slot": "missile",
+   "mount": "Racks",
+   "muzzles": [
+    "Muzzle_missile"
+   ],
+   "note": "the side bay's AIM-9X"
+  },
+  {
+   "weapon": "guided_bomb",
+   "slot": "bomb",
+   "mount": "Bay_doors",
+   "muzzles": [
+    "Muzzle_bomb"
+   ],
+   "note": "aim Free; the main bay"
+  },
+  {
+   "weapon": "fighter_cannon",
+   "slot": "gun",
+   "mount": "Fuselage",
+   "muzzles": [
+    "Muzzle_gun"
+   ],
+   "note": "aim Hull; the right wing root's port"
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "cap": null,
+  "note": "jet: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "fin tips (Team)",
+  "wingtips (Team)",
+  "canopy frame (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "steel grey two-tone, team colour on the tips only (DECISIONS 23M)",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "wings",
+   "fins"
+  ],
+  "tier2": [
+   "intakes",
+   "nozzles",
+   "stabilators",
+   "bays",
+   "stores"
+  ],
+  "tier3": [
+   "sensors",
+   "antennas",
+   "lights",
+   "seams",
+   "probes",
+   "flare cells"
+  ]
+ },
+ "questions": []
+}
