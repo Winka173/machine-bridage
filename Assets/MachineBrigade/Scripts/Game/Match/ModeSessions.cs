@@ -1508,9 +1508,11 @@ namespace MachineBrigade.Game.Match
                 if (boss.MiniBoss) return id;
                 if (boss.MiniVariant != null && catalog.Vehicles.ContainsKey(boss.MiniVariant)) return boss.MiniVariant;
             }
+            // Balance pack (lane B, rule D): a boss of the main rank in a mini slot (Gungnir, chapter 11) is a main boss, never
+            // the mutator's extra mini.
             if (Campaign.Chapter(def.Chapter) is { } chapter)
                 foreach (var mini in chapter.Minis)
-                    if (catalog.Vehicles.ContainsKey(mini)) return mini;
+                    if (catalog.Vehicles.TryGetValue(mini, out var miniDef) && miniDef.Rank != BossRank.Main) return mini;
             return id != null && catalog.Vehicles.ContainsKey(id) ? id : null;
         }
 

@@ -89,7 +89,8 @@ namespace MachineBrigade.Sim.Economy
         public float Bank => _bank + (Commander?.BankBonus ?? 0f);
 
         /// <summary>Supply: the army value the side keeps up at full income; above it, upkeep sets in.</summary>
-        public int ArmyCap => (int)MathF.Round((_armyCap + SupplyBonus) * SupplyScale * (Commander?.Supply ?? 1f));
+        public int ArmyCap => (int)MathF.Round((_armyCap * global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomyRules.SupplyPriceScale + SupplyBonus) *
+                                               SupplyScale * (Commander?.Supply ?? 1f));
 
         /// <summary>Vehicles one side may have on the field (and on the way) at once: a safety limit for performance.</summary>
         public static int MaxVehicles => global::MachineBrigade.Sim.Content.SimTunables.Modes.TeamEconomy.MaxVehicles;

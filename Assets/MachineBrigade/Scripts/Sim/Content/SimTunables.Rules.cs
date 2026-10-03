@@ -31,6 +31,13 @@ namespace MachineBrigade.Sim.Content
 
                 /// <summary>Seconds after its last hit that a destroyed vehicle still pays the side that hit it.</summary>
                 public static double KillCreditSeconds = 10.0;
+
+                /// <summary>
+                /// Balance pack rule C (the HOLD supply threshold, E2): the mode's army cap (the supply threshold's base) x this, for
+                /// the prices the price groups raised; 1.16 is the repo's average price factor (economy.startCp.scale, prompt 32 L6).
+                /// Bonuses (modules, hunt supports) are added after it, unscaled.
+                /// </summary>
+                public static float SupplyPriceScale = 1.16f;
             }
 
             /// <summary>Flags for rules kept off (HOLD): true has no code path yet; off is today's behaviour.</summary>
@@ -83,6 +90,7 @@ namespace MachineBrigade.Sim.Content
             new Entry("modes.economyRules.catchUpOddsFloor", "share", () => Modes.EconomyRules.CatchUpOddsFloor, v => Modes.EconomyRules.CatchUpOddsFloor = (float)v),
             new Entry("modes.economyRules.bountyMin", "x", () => Modes.EconomyRules.BountyMin, v => Modes.EconomyRules.BountyMin = (float)v),
             new Entry("modes.economyRules.bountyMax", "x", () => Modes.EconomyRules.BountyMax, v => Modes.EconomyRules.BountyMax = (float)v),
+            new Entry("modes.economyRules.supplyPriceScale", "x", () => Modes.EconomyRules.SupplyPriceScale, v => Modes.EconomyRules.SupplyPriceScale = (float)v),
             new Entry("modes.economyRules.killCreditSeconds", "s", () => Modes.EconomyRules.KillCreditSeconds, v => Modes.EconomyRules.KillCreditSeconds = v),
             new Entry("modes.holdFlags.outpostForwardDropsQuickModes", "flag", () => Modes.HoldFlags.OutpostForwardDropsQuickModes ? 1 : 0,
                 v => Modes.HoldFlags.OutpostForwardDropsQuickModes = v != 0, flag: true),

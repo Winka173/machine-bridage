@@ -79,7 +79,7 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void AJetLowOnHealthBreaksOffTheDogfight()
+        public void AJetLowOnHealthKeepsFighting()
         {
             var world = Field();
             world.RevealAll = true;
@@ -91,7 +91,6 @@ namespace MachineBrigade.Tests
             world.Submit(new Command(CommandType.Attack, 0, new[] { x.Id }, y.Position, y.Id));
             Rounds(world, x, 3f, () => y.Hp = y.MaxHp);
             x.Hp = x.MaxHp * 0.2f;
-            var start = Vector2.Distance(x.Position, y.Position);
             var tail = 0f;
             Rounds(world, x, 6f, () =>
             {
@@ -99,9 +98,9 @@ namespace MachineBrigade.Tests
                 x.Hp = x.MaxHp * 0.2f;
                 if (x.OnTail) tail += TestWorlds.Step;
             });
-            Assert.IsTrue(x.BreakingOff, "under 30 % of its health it breaks off");
-            Assert.Less(tail, 0.5f, "and no longer sits on the jet's tail");
-            Assert.Greater(Vector2.Distance(x.Position, y.Position), start, "it flies away from it");
+            // Balance pack (lane B, rule D): the locked "no retreat on health, aircraft too": no break-off.
+            Assert.IsFalse(x.BreakingOff, "under 30 % of its health it does not break off");
+            Assert.Greater(tail, 0f, "it keeps after the jet");
         }
 
         [Test]

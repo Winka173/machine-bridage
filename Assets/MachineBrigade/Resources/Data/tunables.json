@@ -258,6 +258,7 @@
       "catchUpOddsFloor": { "value": 0.2, "unit": "share", "kind": "nguong", "linh_vuc": "05", "code": "EconomySystem.CatchUpFor" },
       "bountyMin": { "value": 0.5, "unit": "x", "kind": "thuong", "linh_vuc": "05", "code": "EconomySystem.Bounty" },
       "bountyMax": { "value": 1.5, "unit": "x", "kind": "thuong", "linh_vuc": "05", "code": "EconomySystem.Bounty" },
+      "supplyPriceScale": { "value": 1.16, "unit": "x", "kind": "nguong", "linh_vuc": "05", "code": "TeamEconomy.ArmyCap (rule C, CHANGES.md)" },
       "killCreditSeconds": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "EconomySystem.OnVehicleDestroyed" }
     },
     "holdFlags": {

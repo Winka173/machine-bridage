@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Sim.Content;
@@ -285,8 +286,10 @@ namespace MachineBrigade.Game.Hud
             facts.Add(Tag("flag", Strings.Format("home.chapterProgress", ("count", won), ("total", main.Count))));
             facts.Add(Tag("star", Strings.Format("campaign.starCount", ("count", stars), ("total", playable * 3))));
             if (ChapterBoss(number) is { } boss) facts.Add(Tag("skull", Strings.Get("boss." + boss)));
-            // Prompt 20 O.1: its mini bosses (campaign.json "minis").
-            if (chapter.Minis.Count > 0) facts.Add(Tag("elite", Strings.Format("campaign.minis", chapter.Minis.Count)));
+            // Prompt 20 O.1: its mini bosses (campaign.json "minis"). Balance pack (lane B, rule D): a boss of the main rank in a
+            // mini slot (Gungnir, chapter 11) is a main boss, not counted here.
+            var minis = chapter.Minis.Count(id => !(_catalog.Vehicles.TryGetValue(id, out var mini) && mini.Rank == BossRank.Main));
+            if (minis > 0) facts.Add(Tag("elite", Strings.Format("campaign.minis", minis)));
             text.Add(facts);
             if (!open) text.Add(Kit.Text(Strings.Format("campaign.chapterLocked", ("chapter", Campaign.ChapterName(Campaign.PreviousChapter(number)))), "fc-small"));
             card.Add(text);

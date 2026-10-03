@@ -41,10 +41,27 @@ namespace MachineBrigade.Tests
         };
 
         /// <summary>
-        /// Scenarios a rule C / D value change of this pack is allowed to move (scenario, the CHANGES.md item). Empty
-        /// for the constant moves: those must keep every fingerprint.
+        /// The pack's rule C / D value changes so far (Docs/export/CHANGES.md). A baseline recorded under an older number
+        /// lets the scenarios of <see cref="ChangedByRules"/> differ; a baseline of this number must match exactly.
         /// </summary>
-        internal static readonly Dictionary<string, string> ChangedByRules = new();
+        internal const int RulesVersion = 1;
+
+        /// <summary>
+        /// Scenarios a rule C / D value change of this pack may move (scenario, the CHANGES.md items). The constant moves
+        /// (rule B) must keep every fingerprint. D1: no pull-back of damaged vehicles by the wave AIs (BossRush, Survival,
+        /// mission waves); D2: no jet break-off on health; C1: the supply threshold x 1.16 (every mode with an economy).
+        /// </summary>
+        internal static readonly Dictionary<string, string> ChangedByRules = new()
+        {
+            ["conquest_ashfield_s3"] = "C1 supply x1.16, D2 jets",
+            ["deathmatch_greenvale_s5"] = "C1 supply x1.16, D2 jets",
+            ["hill_dunebreak_s4"] = "C1 supply x1.16, D2 jets",
+            ["siege_ashfield_s7"] = "C1 supply x1.16, D2 jets",
+            ["endless_ironport_s11"] = "C1 supply x1.16, D2 jets",
+            ["survival_frostpeak_s6"] = "D1 wave AI pull-back, C1 supply x1.16, D2 jets",
+            ["bossrush_ashfield_s2"] = "D1 wave AI pull-back, C1 supply x1.16, D2 jets",
+            ["campaign_framework_s9"] = "D1 mission wave AI, C1 supply x1.16 (campaign cap 24), D2 jets",
+        };
 
         private static string BaselinePath =>
             Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Docs", "export", "replay_hashes.txt"));
@@ -95,12 +112,14 @@ namespace MachineBrigade.Tests
             return hashes;
         }
 
-        private static Dictionary<string, string> ReadBaseline(string path)
+        private static Dictionary<string, string> ReadBaseline(string path, out int rules)
         {
             var result = new Dictionary<string, string>();
+            rules = 0;
             foreach (var raw in File.ReadAllLines(path))
             {
                 var line = raw.Trim();
+                if (line.StartsWith("# rules:") && int.TryParse(line.Substring(8).Trim(), out var version)) rules = version;
                 if (line.Length == 0 || line.StartsWith("#")) continue;
                 var space = line.IndexOf(' ');
                 if (space <= 0) continue;
@@ -124,6 +143,7 @@ namespace MachineBrigade.Tests
                 text.Append("# Replay-hash baseline (Tests/EditMode/ReplayHashTests.cs): scenario, then SimWorld.StateHash every ");
                 text.Append(Every).Append(" ticks over ").Append(Ticks).Append(" ticks (20 Hz).\n");
                 text.Append("# Recorded ").Append(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm")).Append(" UTC. Record again only with MB_REPLAY_RECORD=1.\n");
+                text.Append("# rules: ").Append(RulesVersion).Append('\n');
                 foreach (var (name, _, _, _) in Scenarios) text.Append(name).Append(' ').Append(now[name]).Append('\n');
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.WriteAllText(path, text.ToString());
@@ -131,7 +151,7 @@ namespace MachineBrigade.Tests
                 return;
             }
 
-            var kept = ReadBaseline(path);
+            var kept = ReadBaseline(path, out var baselineRules);
             var failures = new StringBuilder();
             foreach (var (name, _, _, _) in Scenarios)
             {
@@ -150,7 +170,7 @@ namespace MachineBrigade.Tests
                 var first = 0;
                 while (first < a.Length && first < b.Length && a[first] == b[first]) first++;
                 var where = $"first difference at tick {(first + 1) * Every}";
-                if (ChangedByRules.TryGetValue(name, out var why))
+                if (baselineRules < RulesVersion && ChangedByRules.TryGetValue(name, out var why))
                     Debug.Log($"[ReplayHash] {name}: changed by a listed rule value change ({why}), {where}");
                 else
                     failures.Append(name).Append(": ").Append(where).Append('\n');

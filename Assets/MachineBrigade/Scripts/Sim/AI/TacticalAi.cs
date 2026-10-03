@@ -27,7 +27,6 @@ namespace MachineBrigade.Sim.AI
     public sealed class TacticalAi
     {
         private static float DecisionInterval => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DecisionInterval;
-        private const float DamagedFraction = 0.3f;
         private static float BoundLength => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.BoundLength;
         private static float FlankOffset => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.FlankOffset;
         private static float FastSpeed => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.FastSpeed;
@@ -299,8 +298,8 @@ namespace MachineBrigade.Sim.AI
             if (!Layered && JudgeOdds(world, front, contact))
             {
                 // Outmatched: break contact, gather behind the front and let them come to us. Idle
-                // vehicles still fight anything that walks into range; artillery keeps shelling.
-                PullBackDamaged(world, front, Direction(front, objective));
+                // vehicles still fight anything that walks into range; artillery keeps shelling. Balance pack (lane B,
+                // rule D, locked "no retreat on health"): damaged vehicles are no longer pulled back on their own.
                 FocusBoss(world);
                 DirectArtillery(world, front, objective, Direction(front, objective), contact);
                 FallBack(world);
@@ -318,7 +317,6 @@ namespace MachineBrigade.Sim.AI
                 objective = Clamp(world, goal!.Value + forward * 5f);
             }
 
-            if (!Layered) PullBackDamaged(world, front, forward);
             GrabCrates(world);
             SendToRearm(world);
             DirectSupport(world, front, forward);
@@ -965,23 +963,6 @@ namespace MachineBrigade.Sim.AI
                 if (v.Order.Kind == OrderKind.Attack && v.Order.Target == best.Id) continue;
                 Issue(world, CommandType.Attack, v.Id, best.Position, best.Id);
             }
-        }
-
-        /// <summary>Heavy vehicles close to death drop behind the line while others cover them.</summary>
-        private void PullBackDamaged(SimWorld world, Vector2 front, Vector2 forward)
-        {
-            if (_line.Count + _fast.Count < 3) return;
-            _ids.Clear();
-            for (var i = _line.Count - 1; i >= 0; i--)
-            {
-                var v = _line[i];
-                if (v.Armor != ArmorClass.Heavy || v.Hp / v.MaxHp > DamagedFraction || Nearest(v.Position, out _) > v.Def.VisionRange)
-                    continue;
-                _ids.Add(v.Id);
-                _fallingBack[v.Id] = world.Time;
-                _line.RemoveAt(i);
-            }
-            if (_ids.Count > 0) Issue(world, CommandType.Move, _ids, Clamp(world, front - forward * 16f));
         }
 
         private void DirectArtillery(SimWorld world, Vector2 front, Vector2 objective, Vector2 forward, bool contact)

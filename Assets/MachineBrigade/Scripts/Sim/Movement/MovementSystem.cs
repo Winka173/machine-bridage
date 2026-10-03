@@ -1045,8 +1045,8 @@ namespace MachineBrigade.Sim.Movement
         }
 
         /// <summary>
-        /// Play-test 6 (DECISIONS 21F): a jet chasing an enemy jet. Below <see cref="BreakOffHealth"/> of its health it
-        /// breaks off: it flies away from the enemy jet at full power and chases it no more. When the enemy jet is hunting
+        /// Play-test 6 (DECISIONS 21F): a jet chasing an enemy jet (no break-off on health since the balance pack: the
+        /// locked rule, aircraft too). When the enemy jet is hunting
         /// it too (its cannon reaches aircraft) and it came out of the merge the worse placed (the enemy further astern of
         /// it than it is of the enemy; level, the later-spawned one), it defends: it runs out at part power, jinking, so the
         /// other gets on its tail and streams its cannon at it, until it is out past <see cref="DefendOut"/> of the guns'
@@ -1058,13 +1058,8 @@ namespace MachineBrigade.Sim.Movement
             away = SimMath.Forward(v.Heading);
             throttle = 1f;
             var from = distance > 0.1f ? (v.Position - enemy.Position) / distance : -away;
-            if (v.Hp < v.MaxHp * BreakOffHealth)
-            {
-                v.BreakingOff = true;
-                v.Defending = false;
-                away = Vector2.Normalize(from * 2f + away);
-                return true;
-            }
+            // Balance pack (lane B, rule D, locked "no retreat on health, aircraft too"): a damaged jet no longer breaks
+            // off on its health; it fights on (it still defends when out-placed, below).
             v.BreakingOff = false;
             var hunted = (enemy.RunTarget == v.Id || enemy.Target == v.Id) && !enemy.BreakingOff && TailGun(enemy, flying: true) >= 0;
             if (!hunted)
@@ -1090,9 +1085,6 @@ namespace MachineBrigade.Sim.Movement
             throttle = DefendPower;
             return true;
         }
-
-        /// <summary>Play-test 6: below this share of its health a jet breaks off a dogfight.</summary>
-        internal const float BreakOffHealth = 0.3f;
 
         /// <summary>
         /// Play-test 6: within this share of its guns' reach a dogfight's roles are decided, and a defending jet turns in
