@@ -1605,7 +1605,7 @@
   },
   "shield_carrier": {
     "file": "shield_carrier.glb",
-    "triangles": 2476
+    "triangles": 7436
   },
   "shield_generator": {
     "file": "shield_generator.glb",

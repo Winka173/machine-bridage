@@ -1,0 +1,176 @@
+{
+ "id": "shield_carrier",
+ "class": "wheeled",
+ "real": [
+  "Boxer 8x8 drive module (unit_refs: Boxer / Stryker) with a field-emitter mission module; M2 Browning 12.7 mm RWS"
+ ],
+ "shape": "unit_sheet.json: an 8-wheeled vehicle carrying a domed / metal shield emitter with a glowing ring in the team colour; from above a glowing round disc in the middle of the hull; about 6.3 x 2.4 x 1.9 m (0.8 x the Boxer chassis) plus the emitter (modelSize 2.84 m tall); visible weapon M2 Browning 12.7 mm; team stripes on the roof and both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 6.29,
+  "W": 2.46,
+  "H": 2.84,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the tall faceted Boxer hull (Team) with the V belly and the two-step glacis",
+   "nodes": [
+    "Hull",
+    "Chassis"
+   ]
+  },
+  {
+   "feature": "eight wheels on four axles in two pairs, wishbones, axle beams, fenders and mud flaps",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Hubs",
+    "Axles",
+    "Suspension",
+    "Fenders",
+    "Mudflaps"
+   ]
+  },
+  {
+   "feature": "bolted add-on side armour",
+   "nodes": [
+    "Armor",
+    "Kit_bolts"
+   ]
+  },
+  {
+   "feature": "the driver's hatch and periscopes front left; the engine louvres and exhaust front right",
+   "nodes": [
+    "Hatches",
+    "Hatch_fittings",
+    "Grilles",
+    "Exhaust",
+    "Point_exhaust"
+   ]
+  },
+  {
+   "feature": "vision blocks, mirrors, lamps, the rear ramp door with hinges, handle, steps and tail lamps",
+   "nodes": [
+    "Glass",
+    "Cab_fit",
+    "Lamps",
+    "Kit_hinges",
+    "Kit_handles",
+    "Steps",
+    "Tail_lamps"
+   ]
+  },
+  {
+   "feature": "the field emitter: finned drum, three prongs, reflector dish, glowing Team ring and core",
+   "nodes": [
+    "Emitter",
+    "Emitter_base",
+    "Emitter_fins",
+    "Emitter_prongs",
+    "Emitter_dish",
+    "Emitter_ring",
+    "Emitter_core"
+   ]
+  },
+  {
+   "feature": "the power cabinet with its grille and cable runs",
+   "nodes": [
+    "Power_cabinet",
+    "Kit_cables"
+   ]
+  },
+  {
+   "feature": "the remote 12.7 mm station on a raised ring, its sensor head (Turret)",
+   "nodes": [
+    "Turret",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Rws_sensor"
+   ]
+  },
+  {
+   "feature": "smoke dischargers, the side stowage bin, a crate, a net roll, whip, Team bands",
+   "nodes": [
+    "Smoke_launchers",
+    "Toolbox",
+    "Crates",
+    "Stowage",
+    "Antennas",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "wheels",
+  "axles",
+  "cab",
+  "glass",
+  "lights",
+  "stowage",
+  "weapon"
+ ],
+ "weapons": [
+  {
+   "weapon": "hmg_selfdef_15",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   3000,
+   5000
+  ],
+  "floor": 2100,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "light class seen in numbers: at most 1.5 x 5,000 = 7,500 (hard gate)"
+ },
+ "team_zones": [
+  "hull and emitter ring (Team / TeamGlow)",
+  "bands on both sides and the cabinet"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the wrappers add the wheeled wreck parts (Part_wheel, Part_wheelb)",
+ "faction_style": "military vehicle (both factions)",
+ "details": {
+  "tier1": [
+   "hull",
+   "wheels",
+   "emitter"
+  ],
+  "tier2": [
+   "add-on armour",
+   "fenders",
+   "glacis",
+   "RWS",
+   "power cabinet",
+   "side bin",
+   "ramp door"
+  ],
+  "tier3": [
+   "periscopes",
+   "vision blocks",
+   "bolts",
+   "hinges",
+   "handles",
+   "lamps",
+   "mirrors",
+   "smoke tubes",
+   "fins",
+   "cables",
+   "whip",
+   "steps",
+   "mud flaps"
+  ]
+ },
+ "questions": []
+}
