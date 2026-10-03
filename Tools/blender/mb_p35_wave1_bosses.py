@@ -801,10 +801,10 @@ def _drone(a, i, loc):
                     (.4, .56, .42), (1.0, .54, .41), (1.6, .48, .36), (2.2, .38, .28), (2.45, .3, .2)):
         rings.append(_drone_ring(y, w, h))
     body.loft(rings)
-    spine = a.part('Spine', 'Team', p)
+    spine = a.part('Fins', 'Team', p)
     k.block(spine, (.32, 2.6, .05), loc=(0, .4, .42), chamfer=0)
     # Dorsal intake: the box mouth behind the nose, its dark duct.
-    K.intake(a.part('Intakes', 'Armor', p), a.part('Intake_ducts', 'Undercarriage', p), (0, -.75, .5), .5, .22, .55,
+    K.intake(a.part('Fuselage', 'Armor', p), a.part('Nozzles', 'Undercarriage', p), (0, -.75, .5), .5, .22, .55,
              facing=(0, -1, 0), lip=.03)
     # Wings: swept, tapered, a little dihedral; wingtip lights; the flat exhaust and its glow.
     K.wing(a.part('Wings', 'Armor', p), (-.35, 1.9), (1.05, .62), 1.75, x0=.45, z=.05, t=.06, dihedral=.04)
@@ -818,11 +818,11 @@ def _drone(a, i, loc):
     a.part('Glass', 'Glass', p).box((.22, .3, .02), loc=(0, -1.75, -.08), rot=(.15, 0, 0), bevel=0)
     K.blade_antenna(a.part('Antennas', 'Steel', p), (0, .9, .44), h=.16, chord=.14)
     K.blade_antenna(a.part('Antennas', 'Steel', p), (0, -.2, -.17), h=.12, chord=.1, normal=(0, 0, -1))
-    lines = a.part('Panel_lines', 'Undercarriage', p)
+    lines = a.part('Nozzles', 'Undercarriage', p)
     for y in (-1.2, -.1, 1.1):
         lines.box((.9, .02, .01), loc=(0, y, .415 if abs(y) < 1.5 else .35), bevel=0)
     # Control surfaces on the wings' trailing edges (ailerons, flaps) and the tails' rudders.
-    surf = a.part('Control_surfaces', 'Team', p)
+    surf = a.part('Fins', 'Team', p)
     for s in (-1, 1):
         for x0, x1, yl in ((.6, 1.3, 1.45), (1.35, 2.05, 1.62)):
             surf.box((x1 - x0, .22, .025), loc=(s * (x0 + x1) / 2, yl, .06), bevel=0)
@@ -830,10 +830,10 @@ def _drone(a, i, loc):
     # Wing pylons with the small missiles (the card's "small missiles"), a nose probe, the sensor fairing on the
     # chin, the gear doors' outlines.
     for s in (-1, 1):
-        a.part('Pylons', 'Steel', p).box((.05, .5, .12), loc=(s * 1.25, .9, -.05), bevel=0)
+        a.part('Antennas', 'Steel', p).box((.05, .5, .12), loc=(s * 1.25, .9, -.05), bevel=0)
         K.missile(a, (s * 1.25, .55, -.16), .055, 1.0, direction=(0, -1, 0), fins=4, parent=key, band=True)
-    k.lathe(a.part('Probe', 'Steel', p), [(.02, 0), (.012, .25), (0, .3)], loc=(0, -2.5, 0), rot=K.FORWARD, seg=5)
-    k.lathe(a.part('Sensor_fairing', 'Glass', p), [(.14, 0), (.12, .06), (.06, .1), (0, .11)],
+    k.lathe(a.part('Antennas', 'Steel', p), [(.02, 0), (.012, .25), (0, .3)], loc=(0, -2.5, 0), rot=K.FORWARD, seg=5)
+    k.lathe(a.part('Glass', 'Glass', p), [(.14, 0), (.12, .06), (.06, .1), (0, .11)],
             loc=(0, -1.2, -.12), rot=(math.pi, 0, 0), seg=8)
     for y, ln in ((-1.5, .5), (.3, .9)):
         for s in (-1, 1):

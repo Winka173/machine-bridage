@@ -39,24 +39,24 @@ def _bay_slab(a):
     base = a.part('Base', 'Concrete')
     k.block(base, (10.0, 13.4, SLAB), loc=(0, .3, SLAB / 2), chamfer=.05, taper=(.96, .97))
     # Round 2: expansion joints and the painted bay lines on the slab.
-    joints = a.part('Slab_joints', 'Undercarriage')
+    joints = a.part('Slab_marks', 'Undercarriage')
     for y in (-3.0, 1.0, 5.0):
         joints.box((9.4, .05, .01), loc=(0, y, SLAB + .003), bevel=0)
     joints.box((.05, 12.8, .01), loc=(0, .3, SLAB + .003), bevel=0)
-    lines = a.part('Bay_lines', 'Hazard')
+    lines = a.part('Hazard_marks', 'Hazard')
     for s in (-1, 1):
         lines.box((.1, 5.2, .012), loc=(s * 2.1, -4.3, SLAB + .004), bevel=0)
     # The ramps at the front (vehicles drive in) and the back door.
     k.extrude(base, [(-BAY_Y, 0), (-6.4, 0), (-6.4, SLAB)], 7.0, loc=(0, 0, 0), axis='X', chamfer=.03)
     k.extrude(base, [(6.95, 0), (7.25, 0), (6.95, SLAB)], 3.4, loc=(-2.2, 0, 0), axis='X', chamfer=.02)
     # The inspection pit in the work area: a dark well with its hazard kerb.
-    a.part('Pit', 'Undercarriage').box((1.2, 4.2, .04), loc=(0, -4.2, SLAB + .005), bevel=0)
-    kerb = a.part('Pit_kerb', 'Hazard')
+    a.part('Slab_marks', 'Undercarriage').box((1.2, 4.2, .04), loc=(0, -4.2, SLAB + .005), bevel=0)
+    kerb = a.part('Hazard_marks', 'Hazard')
     for s in (-1, 1):
         kerb.box((.12, 4.4, .08), loc=(s * .66, -4.2, SLAB + .04), bevel=0)
         kerb.box((1.44, .12, .08), loc=(0, -4.2 + s * 2.16, SLAB + .04), bevel=0)
     # Crane rails along both sides of the front work area.
-    rails = a.part('Crane_rails', 'Steel')
+    rails = a.part('Frame', 'Steel')
     for s in (-1, 1):
         rails.box((.12, 5.6, .08), loc=(s * 4.55, -4.2, SLAB + .04), bevel=0)
     K.dust(a, (0, -6.5, SLAB), radius=3.5, k=.25)
@@ -91,7 +91,7 @@ def _bay_shed(a):
                                                        SLAB + (EAVE - .26 + RIDGE) / 2 + .14), rot=(0, s * pitch, 0),
                 chamfer=0)
     # Round 2: the sheets' overlap seams down each slope, two skylight panels a side, ridge ventilators.
-    seams = a.part('Roof_seams', 'Steel')
+    seams = a.part('Frame', 'Steel')
     sky = a.part('Skylights', 'Glass')
     for s in (-1, 1):
         cx = s * (half + .35) / 2
@@ -109,9 +109,9 @@ def _bay_shed(a):
             k.extrude(ribs, [(-.05, 0), (.05, 0), (0, .045)], slope - .15, loc=(cx, y, cz - .005),
                       rot=(0, s * pitch, 0), axis='X', chamfer=0)
     for y in (y0 + 2.8, y1 - 2.8):
-        k.lathe(a.part('Ridge_vents', 'Steel'), [(.25, 0), (.25, .3), (.35, .34), (.3, .45), (0, .48)],
+        k.lathe(a.part('Frame', 'Steel'), [(.25, 0), (.25, .3), (.35, .34), (.3, .45), (0, .48)],
                 loc=(0, y, SLAB + RIDGE + .18), seg=8, worn=(2,))
-    k.extrude(a.part('Ridge', 'Steel'), [(-.25, 0), (.25, 0), (0, .16)], y1 - y0 + .7,
+    k.extrude(a.part('Frame', 'Steel'), [(-.25, 0), (.25, 0), (0, .16)], y1 - y0 + .7,
               loc=(0, (y0 + y1) / 2, SLAB + RIDGE + .15), axis='Y', chamfer=.01)
     team = a.part('Team_band', 'Team')
     for s in (-1, 1):
@@ -123,7 +123,7 @@ def _bay_shed(a):
     for s in (-1, 1):
         k.block(wall, (.08, y1 - y0 - .3, 2.1), loc=(s * 4.7, (y0 + y1) / 2 + .1, SLAB + 1.05), chamfer=0)
     K.door(a, (-2.2, y1 + .17, SLAB), (1.4, 2.3), normal=(0, 1, 0), mat='Armor')
-    sheet = a.part('Wall_seams', 'Steel')
+    sheet = a.part('Frame', 'Steel')
     for z in (1.5, 3.0):
         sheet.box((9.2, .05, .05), loc=(0, y1 + .17, SLAB + z), bevel=0)
     a.part('Windows', 'Glass').box((1.6, .04, .7), loc=(1.4, y1 + .17, SLAB + 2.0), bevel=0)
@@ -138,7 +138,7 @@ def _bay_crane(a):
     y = -4.4
     top = SLAB + 7.9
     cr = a.part('Gantry', 'CraneYellow')
-    st = a.part('Gantry_steel', 'Steel')
+    st = a.part('Frame', 'Steel')
     for s in (-1, 1):
         x = s * 4.55
         if s > 0:
@@ -156,16 +156,16 @@ def _bay_crane(a):
               r=.02)
     # Trolley, hoist drum, hook block and chain; the engine pack in its lifting frame.
     tx = 1.1
-    k.block(a.part('Hoist', 'Armor'), (.9, .9, .55), loc=(tx, y, top - .62), chamfer=.04)
+    k.block(a.part('Machinery', 'Armor'), (.9, .9, .55), loc=(tx, y, top - .62), chamfer=.04)
     k.lathe(st, [(.22, -.35), (.22, .35)], loc=(tx, y, top - .62), rot=(0, R90, 0), seg=10)
-    chain = a.part('Hook_chain', 'Steel')
+    chain = a.part('Frame', 'Steel')
     chain.tube([(tx - .08, y, top - .9), (tx - .08, y, SLAB + 3.0)], .025, seg=4)
     chain.tube([(tx + .08, y, top - .9), (tx + .08, y, SLAB + 3.0)], .025, seg=4)
-    k.block(a.part('Hook_block', 'Hazard'), (.3, .2, .4), loc=(tx, y, SLAB + 2.8), chamfer=.03)
+    k.block(a.part('Hazard_marks', 'Hazard'), (.3, .2, .4), loc=(tx, y, SLAB + 2.8), chamfer=.03)
     for dx in (-.55, .55):
         st.tube([(tx, y, SLAB + 2.6), (tx + dx, y - .4, SLAB + 1.95)], .015, seg=4)
         st.tube([(tx, y, SLAB + 2.6), (tx + dx, y + .4, SLAB + 1.95)], .015, seg=4)
-    eng = a.part('Engine_pack', 'Armor')
+    eng = a.part('Machinery', 'Armor')
     k.block(eng, (1.3, 1.0, .75), loc=(tx, y, SLAB + 1.55), chamfer=.06)
     k.block(eng, (.9, .7, .3), loc=(tx, y, SLAB + 2.05), chamfer=.04)
     K.grille(a, (tx, y - .52, SLAB + 1.55), .9, .45, facing=(0, -1, 0), slats=4)
@@ -177,29 +177,29 @@ def _bay_crane(a):
 def _bay_floor(a):
     """The working kit: bench with its vice, tool chests, compressor, gas bottles on a cart, a tyre stack, drums,
     jerrycans, an extinguisher, the lift trolley, sandbag corners at the front (Accord), a floodlight."""
-    st = a.part('Fit_steel', 'Steel')
+    st = a.part('Frame', 'Steel')
     bench = a.part('Workbench', 'Wood')
     k.block(bench, (2.6, .8, .08), loc=(3.6, 2.0, SLAB + .9), chamfer=.01)
     for dx in (-1.2, 1.2):
         for dy in (-.32, .32):
             st.box((.06, .06, .9), loc=(3.6 + dx, 2.0 + dy, SLAB + .45), bevel=0)
     st.box((2.4, .7, .03), loc=(3.6, 2.0, SLAB + .25), bevel=0)
-    k.block(a.part('Vice', 'Armor'), (.2, .3, .18), loc=(2.6, 1.75, SLAB + 1.03), chamfer=.02)
+    k.block(a.part('Machinery', 'Armor'), (.2, .3, .18), loc=(2.6, 1.75, SLAB + 1.03), chamfer=.02)
     chests = a.part('Tool_chests', 'BarrelRed')
     for i, (x, y, h) in enumerate(((3.9, 4.0, 1.1), (3.9, 4.75, .8))):
         k.block(chests, (.6, .7, h), loc=(x, y, SLAB + h / 2), chamfer=.03)
         for j in range(int(h / .22)):
             st.box((.02, .5, .02), loc=(x - .31, y, SLAB + .15 + j * .22), bevel=0)               # drawer pulls
     # Compressor: tank and motor on a skid, its hose.
-    k.lathe(a.part('Compressor', 'Armor'), [(0, -.7), (.32, -.65), (.35, -.5), (.35, .5), (.32, .65), (0, .7)],
+    k.lathe(a.part('Machinery', 'Armor'), [(0, -.7), (.32, -.65), (.35, -.5), (.35, .5), (.32, .65), (0, .7)],
             loc=(-3.6, 4.6, SLAB + .5), rot=(R90, 0, 0), seg=12)
-    k.block(a.part('Compressor', 'Armor'), (.5, .5, .4), loc=(-3.6, 4.5, SLAB + 1.05), chamfer=.03)
+    k.block(a.part('Machinery', 'Armor'), (.5, .5, .4), loc=(-3.6, 4.5, SLAB + 1.05), chamfer=.03)
     st.box((.9, 1.6, .1), loc=(-3.6, 4.6, SLAB + .05), bevel=0)
     a.part('Hoses', 'Rubber').tube([(-3.3, 3.9, SLAB + .5), (-2.4, 3.0, SLAB + .03), (-1.0, 2.6, SLAB + .03)],
                                    .025, seg=4)
     # Gas bottles on their cart (oxygen and acetylene for the welder).
     for i, (mat, x) in enumerate((('Steel', -2.3), ('BarrelRed', -2.0))):
-        k.lathe(a.part('Gas_bottles', mat), [(.11, 0), (.11, 1.1), (.08, 1.2), (.03, 1.25), (0, 1.27)],
+        k.lathe(a.part('Frame' if mat == 'Steel' else 'Tool_chests', mat), [(.11, 0), (.11, 1.1), (.08, 1.2), (.03, 1.25), (0, 1.27)],
                 loc=(x, 5.6, SLAB + .1), seg=8, worn=(1,))
     st.box((.7, .4, .08), loc=(-2.15, 5.6, SLAB + .1), bevel=0)
     st.tube([(-2.5, 5.85, SLAB + .1), (-2.5, 5.85, SLAB + 1.0), (-1.8, 5.85, SLAB + 1.0), (-1.8, 5.85, SLAB + .1)],
@@ -213,10 +213,10 @@ def _bay_floor(a):
                 lying=True)
     for i in range(2):
         K.jerrycan(a.part('Jerrycans', 'Fuel'), (-4.1 + i * .3, 2.6, SLAB), rot=(0, 0, R90))
-    k.lathe(a.part('Extinguishers', 'BarrelRed'), [(.08, 0), (.08, .45), (.05, .52), (0, .55)],
+    k.lathe(a.part('Tool_chests', 'BarrelRed'), [(.08, 0), (.08, .45), (.05, .52), (0, .55)],
             loc=(4.3, -1.8, SLAB), seg=8, worn=(1,))
     # The lift trolley (a trolley jack) by the pit, two axle stands.
-    k.block(a.part('Trolley_jack', 'Hazard'), (.35, 1.1, .18), loc=(1.3, -2.3, SLAB + .15), chamfer=.02)
+    k.block(a.part('Hazard_marks', 'Hazard'), (.35, 1.1, .18), loc=(1.3, -2.3, SLAB + .15), chamfer=.02)
     st.tube([(1.3, -1.75, SLAB + .2), (1.3, -1.1, SLAB + .9)], .02, seg=4)
     for x in (-1.3, -1.7):
         k.lathe(st, [(.15, 0), (.04, .5), (.04, .7), (.08, .72)], loc=(x, -2.2, SLAB), seg=6)
@@ -229,7 +229,7 @@ def _bay_floor(a):
     k.block(sign, (1.4, .05, .7), loc=(3.6, -7.0, SLAB + 1.5), chamfer=0)
     a.part('Sign_marks', 'SafetyStripe').box((1.3, .06, .12), loc=(3.6, -7.0, SLAB + 1.3), bevel=0)
     for dx in (-.6, .6):
-        a.part('Sign_posts', 'Wood').box((.07, .07, 1.5), loc=(3.6 + dx, -6.98, SLAB + .75), bevel=0)
+        a.part('Workbench', 'Wood').box((.07, .07, 1.5), loc=(3.6 + dx, -6.98, SLAB + .75), bevel=0)
     a.pivot('Point_fire', (2.6, 3.3, 2.1))
 
 
@@ -252,8 +252,8 @@ def _radar_pad(a):
     k.inset(base, lambda c, n, f: n.z > .9 and c.z > PAD - .02, width=.25, depth=-.02)
     # Round 2: the generator's annex slab (cast later, a step lower) breaks the square; a drain channel.
     k.block(base, (1.9, 3.0, PAD * .7), loc=(3.0, -2.2, PAD * .35), chamfer=.04, taper=(.92, .95))
-    a.part('Drain', 'Undercarriage').box((.18, 7.4, .02), loc=(-3.5, 0, PAD + .005), bevel=0)
-    ties = a.part('Base_ties', 'Steel')
+    a.part('Kit_cables', 'Undercarriage').box((.18, 7.4, .02), loc=(-3.5, 0, PAD + .005), bevel=0)
+    ties = a.part('Fit_steel', 'Steel')
     for s in (-1, 1):
         for f in (-.3, 0, .3):
             ties.cyl(.03, .03, loc=(f * 7.7, s * 3.96, PAD * .5), rot=K.FORWARD, seg=6, bevel=0)
@@ -264,7 +264,7 @@ def _radar_pad(a):
         x = -2.2 + i * 2.0
         k.extrude(bar, [(-.3, 0), (.3, 0), (.15, .3), (.1, .8), (-.1, .8), (-.15, .3)], 1.9,
                   loc=(x, -3.6, PAD), axis='X', chamfer=.03)
-        a.part('Barrier_eyes', 'Steel').torus(.05, .012, loc=(x, -3.6, PAD + .82), rot=(0, R90, 0), seg=6, ring=3)
+        a.part('Fit_steel', 'Steel').torus(.05, .012, loc=(x, -3.6, PAD + .82), rot=(0, R90, 0), seg=6, ring=3)
     K.wire_fence(a, [(3.7, -3.0, PAD), (3.7, 3.75, PAD), (-3.7, 3.75, PAD)], h=1.8, post=2.2, strands=3,
                  concertina=False)
     K.dust(a, (0, 0, PAD), radius=5.5, k=.12)
@@ -279,7 +279,7 @@ def _radar_tower(a):
     legs = [(sx, sy) for sx in (-1, 1) for sy in (-1, 1)]
     for sx, sy in legs:
         tw.tube([(cx + sx * b0, cy + sy * b0, PAD), (cx + sx * b1, cy + sy * b1, PAD + H)], .07, seg=6)
-        k.block(a.part('Tower_footing', 'Concrete'), (.5, .5, .3), loc=(cx + sx * b0, cy + sy * b0, PAD + .15),
+        k.block(a.part('Base', 'Concrete'), (.5, .5, .3), loc=(cx + sx * b0, cy + sy * b0, PAD + .15),
                 chamfer=.05, taper=(.8, .8))
     bolts = a.part('Kit_bolts', 'Steel')
     for sx, sy in legs:
@@ -351,12 +351,12 @@ def _radar_kit(a):
     k.block(sh, (2.4, 3.6, 2.4), loc=(-2.2, .9, PAD + 1.2), chamfer=.05)
     k.inset(sh, lambda c, n, f: abs(n.x) > .9, width=.1, depth=-.03)
     K.door(a, (-.98, .2, PAD + .05), (.9, 2.0), normal=(1, 0, 0), mat='Armor')
-    k.block(a.part('Ac_unit', 'Armor'), (.4, .8, .6), loc=(-2.2, 2.85, PAD + 1.4), chamfer=.03)
+    k.block(a.part('Junction_boxes', 'Armor'), (.4, .8, .6), loc=(-2.2, 2.85, PAD + 1.4), chamfer=.03)
     K.grille(a, (-2.2, 3.26, PAD + 1.4), .7, .5, facing=(0, 1, 0), slats=4)
     a.part('Roof', 'Armor').box((2.5, 3.7, .06), loc=(-2.2, .9, PAD + 2.43), bevel=0)
     K.whip_antenna(a.part('Antenna', 'Steel'), (-3.0, -.6, PAD + 2.45), h=2.4, r=.03)
     K.whip_antenna(a.part('Antenna', 'Steel'), (-1.4, 2.4, PAD + 2.45), h=1.6, r=.025)
-    sk = a.part('Generator_skid', 'Steel')
+    sk = a.part('Fit_steel', 'Steel')
     sk.box((1.6, 2.4, .12), loc=(2.2, -2.0, PAD + .06), bevel=0)
     gen = a.part('Generator', 'Team')
     k.block(gen, (1.3, 2.1, 1.2), loc=(2.2, -2.0, PAD + .72), chamfer=.06)
@@ -380,7 +380,7 @@ def _radar_kit(a):
     k.lathe(a.part('Cable_reel', 'Wood'), [(.4, -.25), (.4, -.21), (.22, -.21), (.22, .21), (.4, .21), (.4, .25)],
             loc=(-.2, -2.6, PAD + .4), rot=(0, R90, 0), seg=10)
     for i in range(2):
-        k.block(a.part('Battery_boxes', 'Team'), (.4, .6, .35), loc=(3.4, -3.3 + i * .65, PAD * .7 + .17),
+        k.block(a.part('Generator', 'Team'), (.4, .6, .35), loc=(3.4, -3.3 + i * .65, PAD * .7 + .17),
                 chamfer=.03)
     a.part('Sunshade', 'Canvas').box((1.1, .8, .03), loc=(1.4, -2.0, PAD + 1.9), rot=(.15, 0, 0), bevel=0)
     for dx in (-.5, .5):
