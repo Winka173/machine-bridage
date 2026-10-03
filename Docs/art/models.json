@@ -1161,7 +1161,7 @@
   },
   "landing_craft": {
     "file": "landing_craft.glb",
-    "triangles": 498
+    "triangles": 8592
   },
   "landing_hovercraft": {
     "file": "landing_hovercraft.glb",
