@@ -44,7 +44,7 @@
    "nodes": [
     "Launcher_frame",
     "Tube_bodies",
-    "Tube_caps",
+    "Round_1", "Round_4",
     "Battery_boxes"
    ]
   },

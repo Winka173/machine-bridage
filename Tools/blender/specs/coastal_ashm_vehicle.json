@@ -68,7 +68,7 @@
     "Rams",
     "Cradle",
     "Launcher",
-    "Canister_caps",
+    "Launcher_rounds", "Round_1", "Round_2", "Round_3", "Round_4",
     "Canister_frames",
     "Muzzle_main"
    ]

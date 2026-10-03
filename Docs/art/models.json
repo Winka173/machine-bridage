@@ -21,7 +21,7 @@
   },
   "aa_turret_b": {
     "file": "aa_turret_b.glb",
-    "triangles": 2844
+    "triangles": 2852
   },
   "aa_vehicle": {
     "file": "aa_vehicle.glb",
@@ -345,7 +345,7 @@
   },
   "coastal_ashm_vehicle": {
     "file": "coastal_ashm_vehicle.glb",
-    "triangles": 6758
+    "triangles": 6766
   },
   "coastal_battery": {
     "file": "coastal_battery.glb",
@@ -801,7 +801,7 @@
   },
   "elite_mlrs": {
     "file": "elite_mlrs.glb",
-    "triangles": 7446
+    "triangles": 7494
   },
   "elite_tank_destroyer": {
     "file": "elite_tank_destroyer.glb",
@@ -945,11 +945,11 @@
   },
   "grad_truck": {
     "file": "grad_truck.glb",
-    "triangles": 7408
+    "triangles": 7488
   },
   "ground_cruise_missile_vehicle": {
     "file": "ground_cruise_missile_vehicle.glb",
-    "triangles": 5726
+    "triangles": 5734
   },
   "ground_drone_carrier": {
     "file": "ground_drone_carrier.glb",
@@ -1021,7 +1021,7 @@
   },
   "heavy_rocket_artillery": {
     "file": "heavy_rocket_artillery.glb",
-    "triangles": 7152
+    "triangles": 7488
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",
@@ -1217,7 +1217,7 @@
   },
   "manpads_tower": {
     "file": "manpads_tower.glb",
-    "triangles": 3072
+    "triangles": 3076
   },
   "market_stall": {
     "file": "market_stall.glb",
@@ -1277,15 +1277,15 @@
   },
   "missile_battery": {
     "file": "missile_battery.glb",
-    "triangles": 5842
+    "triangles": 5850
   },
   "missile_battery_a": {
     "file": "missile_battery_a.glb",
-    "triangles": 5952
+    "triangles": 5960
   },
   "missile_battery_b": {
     "file": "missile_battery_b.glb",
-    "triangles": 5832
+    "triangles": 5840
   },
   "missile_boat": {
     "file": "missile_boat.glb",
@@ -1293,7 +1293,7 @@
   },
   "mlrs": {
     "file": "mlrs.glb",
-    "triangles": 7472
+    "triangles": 7364
   },
   "mobile_fortress": {
     "file": "mobile_fortress.glb",
@@ -1513,7 +1513,7 @@
   },
   "rocket_technical": {
     "file": "rocket_technical.glb",
-    "triangles": 6554
+    "triangles": 6890
   },
   "rocket_turret": {
     "file": "rocket_turret.glb",
@@ -1777,7 +1777,7 @@
   },
   "thermobaric_launcher": {
     "file": "thermobaric_launcher.glb",
-    "triangles": 10028
+    "triangles": 10700
   },
   "titan_tank": {
     "file": "titan_tank.glb",

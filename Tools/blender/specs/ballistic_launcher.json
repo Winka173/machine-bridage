@@ -53,7 +53,7 @@
     "Launcher_beam",
     "Erector_arm",
     "Missiles",
-    "Missile_fins",
+    "Missile_1_fins", "Missile_2_fins",
     "Nozzles",
     "Muzzle_main"
    ]

@@ -55,7 +55,7 @@
     "Pod_frame",
     "Tubes",
     "Tubes_bore",
-    "Tube_caps",
+    "Tubes_rounds", "Round_1", "Round_6",
     "Muzzle_main"
    ]
   },
