@@ -1053,15 +1053,15 @@
   },
   "helipad": {
     "file": "helipad.glb",
-    "triangles": 1032
+    "triangles": 2224
   },
   "helipad_a": {
     "file": "helipad_a.glb",
-    "triangles": 1252
+    "triangles": 3614
   },
   "helipad_b": {
     "file": "helipad_b.glb",
-    "triangles": 1988
+    "triangles": 4140
   },
   "highrise_a": {
     "file": "highrise_a.glb",
@@ -1205,7 +1205,7 @@
   },
   "logistics_station": {
     "file": "logistics_station.glb",
-    "triangles": 984
+    "triangles": 5742
   },
   "long_sam": {
     "file": "long_sam.glb",
