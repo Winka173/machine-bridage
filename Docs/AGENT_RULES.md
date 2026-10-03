@@ -7,6 +7,9 @@ explosions, smoke, warning rings, wrecks) gets the best quality possible: run as
 the renders, use the strongest model. Token saving applies only to routine work: merges, docs, exports, status, small
 fixes. Nothing below asks you to cut a corner on a model or an effect.
 
+**Models (owner, 03/10): the strongest model is `opus`. Never use `fable`, at any cost** (any Agent call you make
+names `opus`, `sonnet` or `haiku` explicitly; never the `best` alias).
+
 ## Never, unless the owner's word is in your brief
 - No Unity runs, EditMode/PlayMode tests, sims, sweeps or measurements. Write tests if asked; do not run them.
   Allowed: compile checks the brief names, Blender builds, static Python tools over files (glb_analyze, quality_gate).

@@ -94,7 +94,7 @@ Facts from the official docs (sources [1], [2], [3]):
   5 minutes. Settings `promptCacheTtl` / `subagentPromptCacheTtl` (env `CLAUDE_CODE_PROMPT_CACHE_TTL`,
   `CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL`) choose `5m` or `1h` (needs v2.1.242+).
 - What breaks the cache [2]: switching models (`/model`, or a skill whose frontmatter names another model), changing
-  effort on most models (Opus 5.5, Sonnet 5.5 and Fable 5.1 keep it on a subscription/API key), turning on fast mode,
+  effort on most models (Opus 5.5 and Sonnet 5.5 keep it on a subscription/API key), turning on fast mode,
   connecting/removing an MCP server when tools are not deferred, enabling a plugin with MCP servers, denying a whole
   tool without tool search, `/compact`, Claude Code dropping a batch of old images when a request has too many, and a
   Claude Code upgrade (first turn after restart).
@@ -250,39 +250,41 @@ Fewer turns
 
 ## 5. Which model for which job
 
-The Agent tool's `model` option takes `opus`, `sonnet`, `haiku` or `fable`. What the official docs say ([7], [4]):
-- `fable`: "for your hardest and longest-running tasks"; holds long sessions without losing the thread; give it the
-  outcome, not the steps; verifies its own work. The `best` alias resolves to Fable where available, otherwise Opus,
-  so **Fable is the most capable model in this setup, Opus the fallback**.
-- `opus`: "complex reasoning tasks", architecture decisions.
+The Agent tool's `model` option takes `opus`, `sonnet`, `haiku` or `fable`.
+
+**Owner rule (03/10): the strongest model used here is `opus`. NEVER use `fable`, at any cost** (not for agents, not
+for the lead, not through the `best` alias, which can resolve to Fable: always name `opus` explicitly).
+
+What the official docs say ([7], [4]):
+- `opus`: "complex reasoning tasks", architecture decisions; the most capable model allowed in this project.
 - `sonnet`: "daily coding tasks"; the cost guide [1] says it handles most coding well and costs less than Opus.
 - `haiku`: "fast and efficient ... for simple tasks"; the cost guide suggests `model: haiku` for simple subagents.
-- Opus 5.5, Sonnet 5.5 and the Fable models always use extended thinking (billed as output) [1]; lower effort is
+- Opus 5.5 and Sonnet 5.5 always use extended thinking (billed as output) [1]; lower effort is
   the lever there, not turning thinking off.
 - Precedence: the per-call `model` beats the agent definition, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the session
   model [4]. Built-in Explore and Plan agents inherit the session model unless told otherwise.
 
 **The owner's rule comes first:** models (Blender building, rebuilds, specs), visual effects and everything that
-decides how they look use the most capable model (`fable`, else `opus`) with no token saving.
+decides how they look use the most capable allowed model, `opus`, with no token saving.
 
 | Job in this project | Model | Why |
 |---|---|---|
-| Model rebuild waves, new builders, kit parts, spec writing/research for models | `fable` (else `opus`) | Owner rule; long multi-model runs with many gate rounds are exactly Fable's "long-running" case |
-| VFX / effects (explosions, smoke, rings, wrecks), card/render look | `fable` (else `opus`) | Owner rule; visual judgement on renders |
-| Gameplay / Sim bug fixes, AI and tactics, balance design | `fable` or `opus` | Root-cause work across systems; a wrong fix costs more than the tokens |
+| Model rebuild waves, new builders, kit parts, spec writing/research for models | `opus` | Owner rule; long multi-model runs with many gate rounds need the strongest allowed model |
+| VFX / effects (explosions, smoke, rings, wrecks), card/render look | `opus` | Owner rule; visual judgement on renders |
+| Gameplay / Sim bug fixes, AI and tactics, balance design | `opus` | Root-cause work across systems; a wrong fix costs more than the tokens |
 | Code-reading audits, export passes (`Docs/export`), doc generators, PDF build fixes | `sonnet` | Mechanical but needs reading code correctly |
 | Writing tests (not running them) | `sonnet` | Follows existing test patterns; the lead or a reviewer checks |
 | Routine docs, CHANGELOG/DECISIONS bookkeeping, log summaries, report formatting | `haiku` | Simple text work; spot-check its first runs (not yet tried on this repo) |
 | File moves, archive passes, simple greps and counts | `haiku` | Deterministic steps; mistakes show in `git status` |
 | Broad read-only searches ("where is X used") | Explore agent, `model: haiku` or `sonnet` | Read-only, skips CLAUDE.md and git status so it starts cheaper [4]; cannot be resumed |
 | Merges, renders, owner-facing image checks | the lead itself | `merge_lane.sh` / `render_wave.sh` are one call each; the lead needs the outcome in its own context |
-| The lead session | `opus` (owner picks at session start) | Judgement, owner dialogue, reviewing reports; `fable` for a long detail-heavy push if the owner wants it; never switch mid-session (cache) |
+| The lead session | `opus` (never `fable`) | Judgement, owner dialogue, reviewing reports; never switch mid-session (cache) |
 
 Notes:
 - Do not set `CLAUDE_CODE_SUBAGENT_MODEL` to a cheap model globally: one forgotten override would put a model wave on
   a weaker model. Pass `model` on every Agent call instead.
 - When a cheap model fails twice on a task, move it up one step rather than re-trying (a failed run costs more).
-- Fable and Opus prices differ from Sonnet and Haiku; check the `/model` picker or the pricing page before assuming
+- Opus prices differ from Sonnet and Haiku; check the `/model` picker or the pricing page before assuming
   a ratio (not recorded here).
 
 ## 6. Repo changes that save tokens (proposals; not done here)
@@ -297,7 +299,7 @@ Notes:
 | F. `Docs/models/WAVE_BRIEF_TEMPLATE.md` | ~2k lead tokens per brief, fewer missed rules | none |
 | G. Trim CLAUDE.md (device notes to `Docs/DEVICE_NOTES.md`) | ~1.5k per turn of every session; the guide [5] says prune what Claude would not get wrong without it | lose a rare note |
 | H. A PreToolUse hook that appends `2>&1 \| grep -v "will be replaced by"` to git commands (pattern from [1]) | removes CRLF floods for everyone | a hook bug blocks git; test on one lane first |
-| I. Custom agents in `.claude/agents/` (`model-builder` with `model: fable`, `routine-docs` with `model: haiku`) | the model choice is written once | needs the lead to use them |
+| I. Custom agents in `.claude/agents/` (`model-builder` with `model: opus`, `routine-docs` with `model: haiku`) | the model choice is written once | needs the lead to use them |
 
 Details for A-G are unchanged from v1: split DECISIONS between waves with no lane branch open and update
 `resolve_decisions.py` / `merge_lane.sh`; STATE.md lists branch heads, open prompts, owner waits, stand-ins, last
@@ -345,19 +347,19 @@ Not sure / not claimed: a per-agent hard token cap. Enforce size by scope (model
 4. Subagents (built-ins, model precedence, resume, nesting): https://code.claude.com/docs/en/sub-agents
 5. Best practices for Claude Code: https://code.claude.com/docs/en/best-practices
 6. Vision (image token estimate; cited from memory, not fetched 03/10): https://platform.claude.com/docs/en/build-with-claude/vision
-7. Model configuration (aliases opus, sonnet, haiku, fable, best): https://code.claude.com/docs/en/model-config
+7. Model configuration (aliases opus, sonnet, haiku, best; this project never uses fable): https://code.claude.com/docs/en/model-config
 
 All fetched 2026-10-03 except [6]. Version numbers (v2.1.xxx) are as the pages state.
 
 ## 10. One-page checklist
 
 Before any task
-- [ ] Model or VFX work? Quality first: `fable` (else `opus`), full gate rounds, renders. Skip the saving tips.
+- [ ] Model or VFX work? Quality first: `opus` (never `fable`), full gate rounds, renders. Skip the saving tips.
 - [ ] Routine? Inline only if known file and < 5 calls; otherwise one agent with an explicit `model`.
 
 Lead
 - [ ] Brief = "Read Docs/AGENT_RULES.md first" + task, paths, ids, checks, report format; inputs by path.
-- [ ] Model per section 5: fable/opus for models, VFX, Sim fixes, balance; sonnet for audits, exports, tests;
+- [ ] Model per section 5: opus for models, VFX, Sim fixes, balance (never fable); sonnet for audits, exports, tests;
       haiku for routine docs, moves, greps; Explore (haiku/sonnet) for broad searches.
 - [ ] Read the handback, not the files; no re-reading what it summarised.
 - [ ] Merge in batches: `merge_lane.sh ... 2>&1 | tail -15`; `--stat` only.

@@ -18690,3 +18690,8 @@ Prompt 35 section 9: the GLB total may grow by at most 25 %; after the rebuild i
 - Most capable = `fable` (the `best` alias resolves to Fable where available, else Opus); models, VFX, Sim fixes and balance use it (else `opus`); `sonnet` for audits, exports, tests, doc generators; `haiku` for routine docs, moves, greps (untried here: spot-check first runs). Merges and renders stay with the lead; never set CLAUDE_CODE_SUBAGENT_MODEL globally.
 - balance.json has // comments: use grep on `"id": "<id>"` or Tools/balance/jsonc_edit.strip_comments, not json.load.
 - AGENT_RULES gains a 10-line token hygiene block; report length 5-10 lines (model/VFX up to 15).
+
+## Owner: the strongest model is opus, never fable (2026-10-03)
+Owner: "update lại mạnh nhất là opus, không được dùng fable mọi giá". Supersedes the token guide v2 line above that
+named `fable` as most capable: models, VFX, Sim fixes and balance use `opus`; `fable` is never used (agents, lead, or the
+`best` alias). Docs/TOKEN_OPTIMISATION.md section 5 and Docs/AGENT_RULES.md updated.
