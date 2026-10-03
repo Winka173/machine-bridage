@@ -1,0 +1,121 @@
+{
+ "id": "drone_net_tower",
+ "class": "obstacle",
+ "real": [
+  "anti-drone net corridor over a front-line road (balance.json net_zap: 'Anti-drone net corridor')"
+ ],
+ "shape": "a section of net tunnel: three pairs of steel poles on concrete footings with sandbags, an arch over each pair with knee braces and gussets, purlins along the ridge and shoulders, the net (cords along the corridor, hoops round each bay) over the arches and down the sides, loose weighted strands at the open ends; the zap emitters on the front and rear apexes (coil ring, electrode, insulators, spikes), the ridge cable to a generator box on skids, guy ropes and stakes, warning plates, a lamp.",
+ "confidence": "xấp xỉ (2023-2025 photographs of Ukrainian and Russian road net tunnels; the emitter is the game's)",
+ "target_size": {
+  "L": 6.0,
+  "W": 4.0,
+  "H": 4.6,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "concrete footings, sandbags",
+   "nodes": [
+    "Base",
+    "Sandbags"
+   ]
+  },
+  {
+   "feature": "poles, arches, purlins",
+   "nodes": [
+    "Poles",
+    "Roof_arches",
+    "Purlins"
+   ]
+  },
+  {
+   "feature": "net over the arches and down the sides, weighted loose strands",
+   "nodes": [
+    "Net",
+    "Net_strands",
+    "Net_weights"
+   ]
+  },
+  {
+   "feature": "zap emitters on the apexes",
+   "nodes": [
+    "Turret",
+    "Emitter_ring",
+    "Emitter_ball",
+    "Insulators",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "cable, generator on skids, guy ropes, stakes, warning plates, lamp",
+   "nodes": [
+    "Kit_cables",
+    "Generator",
+    "Skids",
+    "Guy_ropes",
+    "Stakes",
+    "Warning_plates",
+    "Lamps"
+   ]
+  }
+ ],
+ "class_parts": [],
+ "weapons": [
+  {
+   "weapon": "net_zap",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "the front apex emitter"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   6000
+  ],
+  "floor": 0,
+  "cap": null,
+  "note": "obstacle: at most 6,000 (information only)",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "arches (Team)",
+  "emitter rings (Team)",
+  "generator (Team)"
+ ],
+ "colour_zones_min": 2,
+ "breakable": [],
+ "wreck": "the runtime collapses it",
+ "faction_style": "field engineering: bare steel, netting, concrete blocks, the team colour on the arches",
+ "details": {
+  "tier1": [
+   "arches",
+   "net",
+   "footings"
+  ],
+  "tier2": [
+   "emitters",
+   "generator",
+   "purlins",
+   "sandbags",
+   "braces"
+  ],
+  "tier3": [
+   "insulators",
+   "bolts",
+   "guy ropes",
+   "stakes",
+   "weights",
+   "plates",
+   "lamp"
+  ]
+ },
+ "questions": []
+}

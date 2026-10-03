@@ -57,7 +57,7 @@
   },
   "airborne_vehicle_chute": {
     "file": "airborne_vehicle_chute.glb",
-    "triangles": 3262
+    "triangles": 13056
   },
   "ammo_carrier": {
     "file": "ammo_carrier.glb",
@@ -169,7 +169,7 @@
   },
   "auto_loader_howitzer": {
     "file": "auto_loader_howitzer.glb",
-    "triangles": 6520
+    "triangles": 9464
   },
   "ballistic_launcher": {
     "file": "ballistic_launcher.glb",
@@ -277,7 +277,7 @@
   },
   "bulwark_post": {
     "file": "bulwark_post.glb",
-    "triangles": 1710
+    "triangles": 5140
   },
   "bunker_shelter_tower": {
     "file": "bunker_shelter_tower.glb",
@@ -325,7 +325,7 @@
   },
   "cerberus": {
     "file": "cerberus.glb",
-    "triangles": 12434
+    "triangles": 16026
   },
   "charred_tree": {
     "file": "charred_tree.glb",
@@ -773,11 +773,11 @@
   },
   "drone_net_tower": {
     "file": "drone_net_tower.glb",
-    "triangles": 1378
+    "triangles": 5802
   },
   "drop_pod": {
     "file": "drop_pod.glb",
-    "triangles": 2612
+    "triangles": 6090
   },
   "earth_borer": {
     "file": "earth_borer.glb",
@@ -873,7 +873,7 @@
   },
   "flare_searchlight_tower": {
     "file": "flare_searchlight_tower.glb",
-    "triangles": 2296
+    "triangles": 4162
   },
   "flare_tower": {
     "file": "flare_tower.glb",
@@ -1093,7 +1093,7 @@
   },
   "hyperion": {
     "file": "hyperion.glb",
-    "triangles": 7914
+    "triangles": 19014
   },
   "icbm": {
     "file": "icbm.glb",
@@ -1185,7 +1185,7 @@
   },
   "light_attack_heli": {
     "file": "light_attack_heli.glb",
-    "triangles": 3418
+    "triangles": 4390
   },
   "light_tank": {
     "file": "light_tank.glb",
@@ -1261,7 +1261,7 @@
   },
   "mine_rocket_truck": {
     "file": "mine_rocket_truck.glb",
-    "triangles": 5012
+    "triangles": 7340
   },
   "minefield": {
     "file": "minefield.glb",
@@ -1401,7 +1401,7 @@
   },
   "prop_attack_plane": {
     "file": "prop_attack_plane.glb",
-    "triangles": 2994
+    "triangles": 4068
   },
   "radar_atgm_vehicle": {
     "file": "radar_atgm_vehicle.glb",
@@ -1769,7 +1769,7 @@
   },
   "targeting_station": {
     "file": "targeting_station.glb",
-    "triangles": 4286
+    "triangles": 6486
   },
   "telegraph_pole": {
     "file": "telegraph_pole.glb",
@@ -1909,7 +1909,7 @@
   },
   "wheeled_howitzer": {
     "file": "wheeled_howitzer.glb",
-    "triangles": 5026
+    "triangles": 7342
   },
   "wingman_drone": {
     "file": "wingman_drone.glb",

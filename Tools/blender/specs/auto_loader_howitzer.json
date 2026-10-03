@@ -1,0 +1,159 @@
+{
+ "id": "auto_loader_howitzer",
+ "class": "tracked",
+ "real": [
+  "XM2001 Crusader 155 mm self-propelled howitzer, XM297 56-calibre gun (balance.json gun_155_crusader)"
+ ],
+ "shape": "a low hull with the three-man crew compartment in front (three hatches, periscopes, sloped glacis with lamps, tow hooks, travel lock, cable reel, jerrycans), the turbine bay behind (louvres, rear exhaust, resupply port, tail lamps), six road wheels a side with front sprocket, rear idler and return rollers under full-length armoured skirts with rubber flaps; the large unmanned faceted turret set aft with raked cheeks, a long auto-loader bustle (ammunition door, vents, stowage bins), the deep mantlet, cradle and recuperators, the 56-calibre barrel with sleeve bands, bore evacuator and a single-baffle brake; sensor mast, GPS dome, commander's sight, smoke dischargers, whips, team bands.",
+ "confidence": "xấp xỉ (Crusader prototype photographs and drawings)",
+ "target_size": {
+  "L": 7.86,
+  "W": 3.14,
+  "H": 2.88,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "hull, lower hull, glacis, crew hatches, periscopes",
+   "nodes": [
+    "Hull",
+    "Hull_lower",
+    "Hatches",
+    "Sight"
+   ]
+  },
+  {
+   "feature": "six road wheels, sprocket, idler, rollers, tracks, skirts with flaps",
+   "nodes": [
+    "Wheels",
+    "Sprockets",
+    "Idlers",
+    "Rollers",
+    "Tracks",
+    "Track_links",
+    "Skirts",
+    "Skirt_flaps"
+   ]
+  },
+  {
+   "feature": "turbine bay louvres, exhaust, resupply port, travel lock, reel, jerrycans",
+   "nodes": [
+    "Grilles",
+    "Exhaust",
+    "Travel_lock",
+    "Tow_cable",
+    "Jerrycans"
+   ]
+  },
+  {
+   "feature": "faceted unmanned turret with bustle, ammunition door, stowage",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor",
+    "Stowage"
+   ]
+  },
+  {
+   "feature": "mantlet, cradle, 56-calibre barrel, evacuator, brake",
+   "nodes": [
+    "Mantlet",
+    "Main_cannon_cradle",
+    "Main_cannon",
+    "Main_cannon_sleeve",
+    "Main_cannon_evacuator",
+    "Muzzle_brake",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "sensor mast, GPS dome, commander's sight (old MG pivots), smoke dischargers, whips",
+   "nodes": [
+    "Sensor_mast",
+    "Sensor",
+    "Gps_dome",
+    "Mount_mg",
+    "Muzzle_mg",
+    "Smoke_launchers",
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "gun_155_crusader",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": ""
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "cap": null,
+  "note": "tracked: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "hull (Team)",
+  "skirts (Team)",
+  "turret (Team)",
+  "fenders (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime builds the wreck",
+ "faction_style": "US artillery: team colour hull and turret, armour-grey roof and mantlet",
+ "details": {
+  "tier1": [
+   "hull",
+   "turret",
+   "barrel",
+   "tracks"
+  ],
+  "tier2": [
+   "skirts",
+   "mantlet",
+   "bustle bins",
+   "sensor mast",
+   "smoke dischargers",
+   "louvres"
+  ],
+  "tier3": [
+   "hatches",
+   "periscopes",
+   "lamps",
+   "hooks",
+   "whips",
+   "jerrycans",
+   "bolts"
+  ]
+ },
+ "questions": [
+  "The def has no machine gun: Mount_mg / Muzzle_mg stay as plain pivots on the commander's sight (no gun drawn)."
+ ]
+}

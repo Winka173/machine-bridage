@@ -1,0 +1,129 @@
+{
+ "id": "drop_pod",
+ "class": "air_other",
+ "real": [
+  "Soyuz descent module (retro-rocket landing on its heat shield; unit_refs)",
+  "media: the ODST drop pod (Halo), the Warhammer 40,000 drop pod"
+ ],
+ "shape": "unit_refs: an orbital vehicle drop pod (guess). An upright eight-sided capsule on a charred dished heat shield: the lower body in ablative tile courses with seams and rivet rows, the cone above with a team stripe, six canted retro-rockets round the skirt with glowing throats, four crush legs with pads, four stabiliser fins on struts, the side hatch with hinges, handle and explosive bolts, access panels, a porthole, RCS quads, lifting eyes, the drogue canister at the nose with a beacon and two whips.",
+ "confidence": "ước đoán (a game vehicle; Soyuz proportions for the capsule)",
+ "target_size": {
+  "L": 3.44,
+  "W": 3.44,
+  "H": 6.3,
+  "source": "the old GLB (3.2 x 3.2 x 6.3 m; no modelSize)",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "charred dished heat shield and its rim",
+   "nodes": [
+    "Heat_shield",
+    "Heat_shield_rim"
+   ]
+  },
+  {
+   "feature": "eight-sided capsule body, tile seams, rivets, team stripe",
+   "nodes": [
+    "Hull",
+    "Seams",
+    "Rivets",
+    "Stripe"
+   ]
+  },
+  {
+   "feature": "six retro-rockets with glowing throats",
+   "nodes": [
+    "Retro_ring",
+    "Retro_glow"
+   ]
+  },
+  {
+   "feature": "four crush legs with pads",
+   "nodes": [
+    "Legs",
+    "Pads"
+   ]
+  },
+  {
+   "feature": "four stabiliser fins on struts",
+   "nodes": [
+    "Fins",
+    "Fin_struts"
+   ]
+  },
+  {
+   "feature": "side hatch with seam, hinges, handle, bolts; access panels; porthole",
+   "nodes": [
+    "Hatch",
+    "Hatch_seam",
+    "Kit_hinges",
+    "Access_hatch",
+    "Port_rim",
+    "Glass"
+   ]
+  },
+  {
+   "feature": "drogue canister, beacon, whips, lifting eyes, RCS quads",
+   "nodes": [
+    "Drogue_canister",
+    "Beacon",
+    "Antennas",
+    "Lift_eyes",
+    "Rcs_quads"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   0,
+   7000
+  ],
+  "floor": 0,
+  "cap": null,
+  "note": "drop pods and parachute loads: at most 7,000 (information only)",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "shoulder stripe (Team)",
+  "fins (Team)",
+  "canister band (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "the runtime's drone wreck class (WreckClasses)",
+ "faction_style": "orbital hardware: dark ablative armour, charred base, bare steel fittings, team stripe",
+ "details": {
+  "tier1": [
+   "heat shield",
+   "capsule body",
+   "cone",
+   "fins"
+  ],
+  "tier2": [
+   "retro-rockets",
+   "legs",
+   "hatch",
+   "canister",
+   "RCS quads",
+   "access panels"
+  ],
+  "tier3": [
+   "rivets",
+   "seams",
+   "hinges",
+   "bolts",
+   "lifting eyes",
+   "whips",
+   "porthole"
+  ]
+ },
+ "questions": []
+}

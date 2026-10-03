@@ -1,0 +1,162 @@
+{
+ "id": "prop_attack_plane",
+ "class": "jet",
+ "real": [
+  "EMB-314 Super Tucano (A-29)",
+  "seven-shot Hydra 70 pods (balance.json scout_rockets, model hydra)",
+  "a 12.7 mm wing gun (balance.json hmg_roof)"
+ ],
+ "shape": "a long turboprop nose with cowl seams and louvres, a chin intake, exhaust stubs either side, a spinner and five-bladed propeller; the stepped tandem canopy with bows, two crew, seats and HUD; a low tapered wing with dihedral, control-surface seams, flap-track and wingtip fairings, wingtip lights; a tall swept fin with dorsal fillet and rudder, tailplanes, ventral strake; closed gear doors; two pylons with Hydra pods, a centreline drop tank, the 12.7 mm gun fairing on the left wing; flare dispensers, aerials, pitot, rivet lines, team bands.",
+ "confidence": "xấp xỉ (A-29 drawings and photographs)",
+ "target_size": {
+  "L": 6.15,
+  "W": 6.04,
+  "H": 1.84,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "fuselage, cowl seams, louvres, chin intake, exhausts",
+   "nodes": [
+    "Fuselage",
+    "Cowl_seams",
+    "Grilles",
+    "Intakes",
+    "Exhausts"
+   ]
+  },
+  {
+   "feature": "tandem canopy, frames, crew, seats",
+   "nodes": [
+    "Canopy",
+    "Canopy_frames",
+    "Crew",
+    "Seats"
+   ]
+  },
+  {
+   "feature": "wing, seams, fairings, lights",
+   "nodes": [
+    "Wings",
+    "Wing_seams",
+    "Flap_fairings",
+    "Wing_lights"
+   ]
+  },
+  {
+   "feature": "fin, rudder, tailplanes",
+   "nodes": [
+    "Tail",
+    "Tailplanes"
+   ]
+  },
+  {
+   "feature": "spinner and five-bladed propeller",
+   "nodes": [
+    "Propeller",
+    "Spinner",
+    "Propeller_blades",
+    "Propeller_tips"
+   ]
+  },
+  {
+   "feature": "pylons, Hydra pods, drop tank, wing gun",
+   "nodes": [
+    "Pylons",
+    "Pods",
+    "Drop_tanks",
+    "Gun_fairing",
+    "Guns",
+    "Muzzle_gun",
+    "Muzzle_rocket"
+   ]
+  },
+  {
+   "feature": "flare dispensers, gear doors, aerials, pitot",
+   "nodes": [
+    "Gear_doors",
+    "Antennas"
+   ]
+  }
+ ],
+ "class_parts": [
+  "fuselage",
+  "canopy",
+  "wings",
+  "tail",
+  "intakes",
+  "exhaust",
+  "pylons",
+  "stores",
+  "flares"
+ ],
+ "weapons": [
+  {
+   "weapon": "hmg_roof",
+   "slot": "gun",
+   "mount": "Gun_fairing",
+   "muzzles": [
+    "Muzzle_gun"
+   ],
+   "note": "a single 12.7 mm in the left wing fairing (Muzzle_main kept at the same place)"
+  },
+  {
+   "weapon": "scout_rockets",
+   "slot": "rocket",
+   "mount": "Pylons",
+   "muzzles": [
+    "Muzzle_rocket"
+   ],
+   "note": "aim Hull: two pods"
+  }
+ ],
+ "flare": true,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "cap": null,
+  "note": "jet: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "fuselage (Team)",
+  "wings and tail (Team)",
+  "canopy frames, spinner (Team)"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime breaks the left wing off (Part_wing, wrapper)",
+ "faction_style": "light attack aircraft: team colour airframe, armour-grey pylons, hazard prop tips",
+ "details": {
+  "tier1": [
+   "fuselage",
+   "wing",
+   "fin",
+   "propeller"
+  ],
+  "tier2": [
+   "canopy",
+   "pods",
+   "drop tank",
+   "tailplanes",
+   "exhausts",
+   "intake"
+  ],
+  "tier3": [
+   "rivets",
+   "seams",
+   "louvres",
+   "lights",
+   "aerials",
+   "pitot",
+   "crew"
+  ]
+ },
+ "questions": []
+}

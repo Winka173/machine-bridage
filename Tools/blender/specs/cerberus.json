@@ -1,0 +1,226 @@
+{
+ "id": "cerberus",
+ "class": "boss",
+ "real": [
+  "LeTourneau TC-497 Overland Train (giant electric-hub wheels, a control car leading power and cargo cars)",
+  "twin 152 mm (balance.json gun_behemoth, Behemoth's)",
+  "twin 30 mm flak turrets, a 12-tube rocket pod, two 120 mm guns"
+ ],
+ "shape": "a three-car armoured road train on giant electric-hub wheels set far out under armoured arches and skirts: the tractor (low control cab with vision blocks, wedge glacis, the big faceted turret with mantlet, twin 152 mm barrels with evacuators and brakes, cupola, sight post, smoke dischargers, stowage basket, whips), the power car (turbine generator house with intakes and exhaust stacks, the pedestal with two twin-30 mm flak turrets, the search radar on its braced mast, cable reels, beacon), the trailer (12-tube rocket pod on its ring, two compact 120 mm turrets at the rear corners firing forward, tail lamps); drawbars, power cables and bellows between the cars; ladders, railings, jerrycans, lamps, tow hooks, team bands.",
+ "confidence": "ước đoán (a game boss; the Overland Train's wheels and car layout)",
+ "target_size": {
+  "L": 16.3,
+  "W": 8.4,
+  "H": 5.5,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "three cars with hulls and chassis",
+   "nodes": [
+    "Part_tractor",
+    "Part_middle",
+    "Part_trailer",
+    "Body_tractor",
+    "Body_middle",
+    "Body_trailer"
+   ]
+  },
+  {
+   "feature": "giant wheels, hub motors, axles, arches, skirts",
+   "nodes": [
+    "Tyres",
+    "Wheels",
+    "Hub_motors",
+    "Axles",
+    "Wheel_arches",
+    "Skirts"
+   ]
+  },
+  {
+   "feature": "control cab with vision blocks, hatch, lamps",
+   "nodes": [
+    "Cab",
+    "Tractor_glass",
+    "Hatches",
+    "Lamps"
+   ]
+  },
+  {
+   "feature": "main turret, mantlet, twin 152 mm",
+   "nodes": [
+    "Turret",
+    "Turret_body",
+    "Turret_armor",
+    "Mantlet",
+    "Main_cannon",
+    "Main_cannon_2",
+    "Muzzle_brake",
+    "Muzzle_brake_2",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "power car: generator house, exhausts, pedestal, flak turrets, radar mast",
+   "nodes": [
+    "Generator_house",
+    "Exhaust",
+    "Aa_pedestal",
+    "Mount_mg",
+    "Mount_mg.001",
+    "Aa_mast",
+    "Aa_radar"
+   ]
+  },
+  {
+   "feature": "trailer: rocket pod, 120 mm turrets",
+   "nodes": [
+    "Mount_rocket",
+    "Rocket_pod",
+    "Rocket_tubes",
+    "Mount_gun.001",
+    "Mount_gun.002"
+   ]
+  },
+  {
+   "feature": "couplings, cables, bellows",
+   "nodes": [
+    "Couplings",
+    "Power_cables",
+    "Bellows"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running_gear"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_behemoth_main_be152",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ],
+   "note": "mount 0: twin barrels, per-barrel muzzles from mb_fix_barrels EXTRA"
+  },
+  {
+   "weapon": "p26_behemoth_close_boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ],
+   "note": "mount 2"
+  },
+  {
+   "weapon": "p26_behemoth_close_boss_flak",
+   "slot": "mg",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ],
+   "note": "mount 3"
+  },
+  {
+   "weapon": "p26_behemoth_direct_be120",
+   "slot": "gun",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ],
+   "note": "mount 7"
+  },
+  {
+   "weapon": "p26_behemoth_direct_be120",
+   "slot": "gun",
+   "mount": "Mount_gun.002",
+   "muzzles": [
+    "Muzzle_gun.002"
+   ],
+   "note": "mount 8"
+  },
+  {
+   "weapon": "p26_behemoth_sec_be_rockets",
+   "slot": "rocket",
+   "mount": "Mount_rocket",
+   "muzzles": [
+    "Muzzle_rocket"
+   ],
+   "note": "mount 9"
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "cap": null,
+  "note": "boss: over the class maximum is information only",
+  "lod1_share": 0.5,
+  "lod2_share": 0.2
+ },
+ "team_zones": [
+  "hulls (Team)",
+  "wheel arches (Team)",
+  "turret (Team)",
+  "flak houses, rocket pod (Team)"
+ ],
+ "colour_zones_min": 6,
+ "breakable": [
+  {
+   "node": "Main_cannon",
+   "part": "main_gun"
+  },
+  {
+   "node": "Mount_mg",
+   "part": "flak_r"
+  },
+  {
+   "node": "Mount_mg.001",
+   "part": "flak_l"
+  },
+  {
+   "node": "Mount_rocket",
+   "part": "rocket_pod"
+  }
+ ],
+ "wreck": "the runtime breaks it at Part_tractor / Part_middle / Part_trailer",
+ "faction_style": "Varga's heavy armour: team colour hulls and turrets, armour-grey cab and mantlet, hazard rocket bands",
+ "details": {
+  "tier1": [
+   "cars",
+   "turret",
+   "wheels",
+   "rocket pod"
+  ],
+  "tier2": [
+   "flak turrets",
+   "120 mm turrets",
+   "radar",
+   "generator house",
+   "arches",
+   "cab"
+  ],
+  "tier3": [
+   "bolts",
+   "periscopes",
+   "smoke dischargers",
+   "ladders",
+   "railings",
+   "jerrycans",
+   "lamps",
+   "cables",
+   "bellows"
+  ]
+ },
+ "questions": [
+  "Mount_gun / Muzzle_gun (turret roof) and Muzzle_missile / .001 stay as plain pivots: the variant drops the gun_120 and missile parts."
+ ]
+}
