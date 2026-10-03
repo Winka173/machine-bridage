@@ -18403,3 +18403,61 @@ Owner: "sửa theo đề xuất hết".
 10. radar_station is split into two ids (the base module and the map prop).
 11. Defend mode reads its timeLimit (720 s) from data instead of the code's 630 s; the Normal x0.7 enemy income and the
     Weekly fortress tactic override wait for play-tests.
+
+## Prompt 35: fortress HQ gun and kit items (lane A)
+
+Branch `feature/p35-hqgun` from `lead/integration` (2026-10-03), after the owner's answers above. Blender and Python
+only: no Unity run, no test, sim or measure.
+- **One model, one gun.** The HQ types swap the def, not the model: headquarters.fortress_ground (turret_gun_120_long,
+  Rh-120 L/55, 1 barrel) and headquarters.fortress_air (bofors_l70, 40 mm, 1 barrel) both inherit `"model":
+  "headquarters"`, and each has exactly one `gun` slot weapon, so both resolve the same `Mount_gun` / `Muzzle_gun`
+  (the k-th weapon of a slot takes the k-th mount). A second mount for the Bofors would never be used without a data
+  change, so the model carries one gun: the 120 mm L/55 of the ground fortress (the default branch; the AI takes
+  air 30 % of the time). The air fortress's Bofors fires from the same muzzle. If the owner wants the 40 mm drawn,
+  that needs a data change (a model of its own for fortress_air, or `hiddenNodes`): owner / lead question.
+- **Where.** A second bastion tower at the rear right of the main block (2 x 2 m battered cast prism to 6.2 m, Team
+  band, pour lines, loopholes, a ladder up its back, the race with its hazard band) carrying a low faceted casemate
+  turret on `Mount_gun` (2.30, 4.75, 6.30): the gun house in Team colour, mantlet, side cheeks, the barrel (2.7 m,
+  r 0.10: the main 152 mm's scale; sleeve, fume extractor, baffle brake `Gun_brake`), sight hood, hatch, rear bin,
+  whip; `Muzzle_gun` at the brake's face (2.30, 0.82, 7.10). The barrel parts are named `Gun_*` so they never read
+  as the main gun's recoil barrels (`Main_cannon*` / `Muzzle_brake*`). The place is the only one outside the main
+  turret's barrel sweep (5.4 m) where a long barrel turns clear of the model: check_muzzles' sweeps pass for
+  Mount_gun, Turret, Mount_mg and Radar.
+- **Kept / moved.** Every old pivot (Turret, Main_cannon / _2, Muzzle_brake / _2, Muzzle_main / .001, Muzzle_b1 /
+  b2_main, Muzzle_coax, Radar, Mount_mg / .001, Muzzle_mg / .001), the plinth and the footprint are unchanged; the
+  generator set moved forward between the wing and the new tower, the fuel drums behind the radar footing, the right
+  roof mast to the rear parapet (it stood in the new gun's arc; the left one moved with it, which also clears the
+  tower flak's old clash), the radar platform rail lowered 0.55 -> 0.40 m (the dish ran into it when turning).
+  Still open from wave 8: Mount_mg.001's barrels cross the gun drum over 75-165 degrees (a dead arc; its pivots
+  stay).
+- **Gate.** headquarters 21,052 triangles (over the tower budget: information only), 7 moving parts, soft 98.0 Tốt,
+  every hard gate passes; validate_specs passes (the spec names the new nodes); glb_check 0 errors, baseline
+  accepted.
+- **Kit items** (backward compatible: every default keeps the old geometry):
+  `mb_kit35.ladder(..., facing=None)` (the wall's outward normal: the rungs run along that wall);
+  `mb_kit27.sweep(..., v_up=False)` (the docstring now says the old frame's v runs along -up, so down on a flat
+  path; v_up=True mirrors the profile so v follows `up`); lane B's `clutter`, `plane`, `portholes` and
+  `merge_parts` moved into mb_kit35 unchanged (mb_p35b_parts keeps them as aliases).
+  quality_gate: wheel nodes (Tyres, Wheels, Wheel_*, Hubs, Rims, Road_wheels ...) never count as shared geometry
+  (their triangles stay in the total as the model's own); a structure's asymmetry is also read without its base
+  slab (flat, on the floor, covering half the top-view box) and the score takes the better reading, as sloped_dirs
+  does (reading it only without the slab dropped 13 towers by 5 points, four of them under 80); the helicopter roles
+  skip `tail_rotor` on a tandem (`Rotor_rear`) and `weapons` / `stub_wings` on an unarmed def.
+  Full gate (`--no-write`, old gold) 186 of 230 before and after the gate changes; only command_hq changed (89.3 ->
+  94.3, the slab case wave 7 reported).
+- **GLBs.** Rebuilt singly with the new kit: guard_tower_b, cp_relay / _a / _b, sea_cruiser, landing_craft,
+  hydra_sub, command_hq, aa_turret / _a / _b, twin_rotor_gunship match their committed files; glide_bomber and
+  interceptor_jet differ from the committed files by bake noise with the old kit as with the new (the two builds
+  are identical), so the committed files are kept. headquarters' COLOR_0 differs by AO bake noise (up to 0.047)
+  between builds from different starting states; the gated file is kept.
+- **Gold recompute** (`quality_gate.py --gold --no-write`, after the merge of wave 10): 163 of 230 pass (186 with the
+  old gold); 24 lose the pass (13 towers, 11 bosses: aa_gun_tower, aa_turret / _a / _b, artillery_emplacement_a,
+  behemoth / _inferno / _tempest, caspian, cp_relay_b, fortress_hive, gun_turret / _a, heavy_turret_a, hydra_sub,
+  kraken, landing_hovercraft, mg_bunker / _b, missile_battery, mobile_fortress, moloch, nyx, shield_tower_a),
+  morrigan gains it; headquarters 91.6 Tốt. Cause: a gold member needs a pass 8 visual grade of Tốt, and
+  `visual_grades()` drops every rebuilt model, so the gold sets shrank to the old models left: boss_ground and
+  boss_sea lost theirs (behemoth, mobile_fortress, leviathan rebuilt) and fall back to the whole boss gold; hq and
+  wheeled have none (they borrow structure / tracked); tower's is ew_tower, ew_tower_b and flare_searchlight_tower
+  (the last fails two hard gates). rail_supergun (36.7k -> 11.9k) left the boss gold. Committed as its own commit
+  so the lead can keep or drop it; a rule that lets a rebuilt model with every hard gate and soft >= 80 stand for
+  gold would refill the sets (lead question).

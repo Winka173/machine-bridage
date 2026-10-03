@@ -260,6 +260,7 @@ def dragons_teeth_a(a):
 HQ_X0, HQ_X1, HQ_Y0, HQ_Y1, HQ_ROOF = -6.0, 1.2, -3.0, 5.0, 5.4      # the main block (the old file's)
 HQ_GUN = (-2.3, -.9)                                                    # the turret drum (old Turret pivot)
 HQ_Z0 = .22                                                             # the plinth top
+HQ_GT = (2.3, 4.75, 6.2)                       # prompt 35: the fortress gun tower (centre, deck height), rear right
 
 
 def headquarters(a):
@@ -267,7 +268,8 @@ def headquarters(a):
     the HQ types (prompt 32: fortress ground / air, garrison, shield) use this model as it is. Runtime: Turret,
     Main_cannon / Main_cannon_2, Muzzle_brake / _2, Muzzle_main / .001 (mb_p34_barrels adds Muzzle_b1 / b2_main),
     Muzzle_coax, Radar (the yard tower's dish), Mount_mg / Muzzle_mg (the bastion tower's twin 30 mm) and
-    Mount_mg.001 / Muzzle_mg.001 (the second twin 30 mm, on the main roof's front left corner)."""
+    Mount_mg.001 / Muzzle_mg.001 (the second twin 30 mm, on the main roof's front left corner), Mount_gun /
+    Muzzle_gun (prompt 35: the fortress types' `gun` slot, the 120 mm L/55 on the gun tower at the rear right)."""
     K.suffixed(a)
     rng = random.Random(3510)
     k.extrude(a.part('Plinth', 'Concrete'), [(-7.0, -6.0), (7.0, -6.0), (7.0, 6.0), (-7.0, 6.0)], .26,
@@ -284,6 +286,7 @@ def headquarters(a):
     _hq_wing(a)
     _hq_yard(a)
     _hq_turret(a)
+    _hq_gun_tower(a)
     k.clean(a)
 
 
@@ -481,9 +484,11 @@ def _hq_roof(a):
         a.part('Vents', 'Steel').cyl(.16, .5, loc=(x, y, roof + .25), seg=8, bevel=0)
         a.part('Vent_caps', 'Armor').cyl(.26, .07, loc=(x, y, roof + .5), r2=.16, seg=8, bevel=0)
     for x in (-2.4, -1.2):
-        k.block(a.part('Aircon', 'Fuel'), (.8, .9, .5), loc=(x, 4.2, roof + .25), chamfer=.03)
-        a.part('Aircon_fans', 'Rubber').cyl(.28, .03, loc=(x, 4.2, roof + .51), seg=12, bevel=0)
-    for x, y, h in ((.7, 4.6, 3.2), (-3.3, 4.7, 2.4)):
+        k.block(a.part('Aircon', 'Fuel'), (.8, .9, .5), loc=(x, 4.1, roof + .25), chamfer=.03)
+        a.part('Aircon_fans', 'Rubber').cyl(.28, .03, loc=(x, 4.1, roof + .51), seg=12, bevel=0)
+    # The masts stand on the rear parapet, clear of the three gun sweeps (prompt 35: the right one moved off the
+    # gun tower's arc).
+    for x, y, h in ((-2.0, 4.75, 3.2), (-2.9, 4.75, 2.4)):
         a.part('Antenna', 'Steel').cyl(.05, h, loc=(x, y, roof + .7 + h / 2), seg=6, bevel=0)
         a.part('Antenna', 'Steel').cyl(.12, .1, loc=(x, y, roof + .7), seg=8, bevel=0)
         for f in (.45, .8):
@@ -555,7 +560,7 @@ def _hq_yard(a):
     k.block(a.part('Tower_platform', 'Armor'), (1.5, 1.5, .1), loc=(rx, ry, 6.25), chamfer=.02)
     K.railing(a.part('Tower_rail', 'Steel'), [(rx - .72, ry - .72, 6.3), (rx + .72, ry - .72, 6.3),
                                              (rx + .72, ry + .72, 6.3), (rx - .72, ry + .72, 6.3),
-                                             (rx - .72, ry - .72, 6.3)], h=.55, post=1.45, r=.02)
+                                             (rx - .72, ry - .72, 6.3)], h=.4, post=1.45, r=.02)
     a.part('Dish_pedestal', 'Steel').cyl(.25, .35, loc=(rx, ry, 6.47), seg=10, bevel=0)
     r = a.pivot('Radar', (rx, ry, 6.64))
     a.part('Radar_turntable', 'Armor', r).cyl(.34, .1, loc=(0, 0, .05), seg=12, bevel=0)
@@ -566,21 +571,23 @@ def _hq_yard(a):
         a.part('Radar_frame', 'Steel', r).tube([(sx * .7, -.05, .55), (0, -.75, 1.15)], .03, seg=4)
     K.beacon(a, (rx + .6, ry + .6, 6.3), r=.07)
     # The generator set on its skid: the housing with louvres and doors, the exhaust, the panel, the stripe.
-    gx, gy = 2.5, 4.3
-    a.part('Generator_skid', 'Steel').box((1.2, 2.2, .12), loc=(gx, gy, HQ_Z0 + .06), bevel=0)
-    K.chamfer_box(a.part('Generator', 'Fuel'), (1.0, 2.0, 1.1), loc=(gx, gy, HQ_Z0 + .67), c=.05)
-    a.part('Generator_roof', 'Armor').box((1.06, 2.06, .06), loc=(gx, gy, HQ_Z0 + 1.25), bevel=0)
+    # Prompt 35: the set moved forward between the wing and the gun tower, the drums behind the radar footing.
+    gx, gy = 2.55, 2.62
+    a.part('Generator_skid', 'Steel').box((1.2, 2.1, .12), loc=(gx, gy, HQ_Z0 + .06), bevel=0)
+    K.chamfer_box(a.part('Generator', 'Fuel'), (1.0, 1.9, 1.1), loc=(gx, gy, HQ_Z0 + .67), c=.05)
+    a.part('Generator_roof', 'Armor').box((1.06, 1.96, .06), loc=(gx, gy, HQ_Z0 + 1.25), bevel=0)
     for s in (-1, 1):
         K.grille(a, (gx + s * .51, gy - .4, HQ_Z0 + .8), .7, .45, facing=(s, 0, 0), slats=5, frame_mat='Armor')
         a.part('Generator_doors', 'Armor').box((.02, .6, .8), loc=(gx + s * .51, gy + .5, HQ_Z0 + .65), bevel=0)
-    a.part('Generator_stripe', 'Hazard').box((1.02, 2.02, .08), loc=(gx, gy, HQ_Z0 + .25), bevel=0)
-    a.part('Generator_panel', 'Armor').box((.4, .04, .5), loc=(gx, gy - 1.02, HQ_Z0 + .8), bevel=0)
+    a.part('Generator_stripe', 'Hazard').box((1.02, 1.92, .08), loc=(gx, gy, HQ_Z0 + .25), bevel=0)
+    a.part('Generator_panel', 'Armor').box((.4, .04, .5), loc=(gx, gy + .97, HQ_Z0 + .8), bevel=0)
     k.lathe(a.part('Generator_exhaust', 'Steel'), [(.07, 0), (.07, .5), (.09, .52), (.09, .6)],
-            loc=(gx + .3, gy + .7, HQ_Z0 + 1.25), seg=8)
-    K.soot(a, (gx + .3, gy + .7, HQ_Z0 + 1.85), radius=.35, k=.4)
-    for x, y in ((1.75, 5.6), (2.35, 5.62), (3.2, 5.58)):
+            loc=(gx + .3, gy - .55, HQ_Z0 + 1.25), seg=8)
+    K.soot(a, (gx + .3, gy - .55, HQ_Z0 + 1.85), radius=.35, k=.4)
+    for x, y in ((3.95, 5.5), (4.55, 5.62), (5.15, 5.5)):
         K.fuel_drum(a.part('Drums', 'BarrelRed'), a.part('Drum_band', 'Steel'), (x, y, HQ_Z0), r=.28, h=.86)
-    a.part('Cables', 'Rubber').tube([(2.5, 3.25, .5), (2.1, 3.0, .3), (1.5, 3.0, .3), (1.3, 3.0, .9)], .05, seg=5)
+    a.part('Cables', 'Rubber').tube([(2.05, 3.2, .5), (1.75, 3.25, .3), (1.45, 3.25, .3), (1.27, 3.25, .9)], .05,
+                                    seg=5)
     for y in (2.55, 3.61, 4.67):
         K.hesco(a, (6.3, y, HQ_Z0), yaw=R90)
 
@@ -630,6 +637,70 @@ def _hq_turret(a):
                 bands=1)
         K.whip_antenna(a.part('Antenna', 'Steel', t), (s * 1.1, 1.5, 1.22), h=.9, lean=.15)
     a.part('Team_band', 'Team', t).box((1.6, .8, .012), loc=(0, .2, 1.225), bevel=0)
+
+
+def _hq_gun_tower(a):
+    """Prompt 35 (owner answer 2026-10-03): the fortress HQ types' `gun` slot gets its gun on the model. The HQ types
+    swap the def, not the model, so one gun serves both: turret_gun_120_long (Rh-120 L/55, one barrel), the fortress
+    ground type's (the default fortress branch). A second bastion tower at the rear right of the main block, in the
+    first's style (battered cast prism, Team band, loopholes, a ladder up its back), carries the low casemate turret
+    on its race: the faceted gun house on its yaw pivot Mount_gun, the mantlet, the long barrel with its sleeve, fume
+    extractor and baffle brake, Muzzle_gun at the brake's face; sight hood, hatch, rear bin, whip.
+    Placement: outside the main turret's barrel sweep (5.4 m), the gun's barrel above the radar platform's rail and
+    the main roof's parapet, so the three guns and the radar turn all the way round clear of each other."""
+    fx, fy, tz = HQ_GT
+    tw = 2.0
+    k.extrude(a.part('Block', 'Concrete'), [(-tw / 2, -tw / 2), (tw / 2, -tw / 2), (tw / 2, tw / 2),
+                                            (-tw / 2, tw / 2)], tz - HQ_Z0, loc=(fx, fy, (tz + HQ_Z0) / 2),
+              axis='Z', chamfer=.08, corner=.4, taper=(.93, .93))
+    a.part('Fascia', 'Team').shell([(fx - tw / 2 + .03, fy - tw / 2 + .03), (fx + tw / 2 - .03, fy - tw / 2 + .03),
+                                    (fx + tw / 2 - .03, fy + tw / 2 - .03), (fx - tw / 2 + .03, fy + tw / 2 - .03)],
+                                   .35, .08, loc=(0, 0, tz - .62))
+    lines = a.part('Pour_lines', 'Undercarriage')
+    for z in (1.6, 3.2, 4.6):
+        lines.box((tw - .5, .02, .025), loc=(fx, fy + tw / 2 - .02 - .035 * z / tz, z), bevel=0)
+        lines.box((.02, tw - .5, .025), loc=(fx + tw / 2 - .02 - .035 * z / tz, fy, z), bevel=0)
+    _hq_slit(a, fx, fy + tw / 2 - .06, 2.2, .5, '+y', lit=True)
+    _hq_slit(a, fx, fy + tw / 2 - .1, 4.4, .5, '+y', lit=False, shutter=True)
+    _hq_slit(a, fx + tw / 2 - .06, fy + .2, 2.2, .5, '+x', lit=False)
+    _hq_slit(a, fx - .2, fy - tw / 2 + .1, 4.4, .5, '-y', lit=True)
+    _hq_slit(a, fx + tw / 2 - .1, fy - .3, 5.1, .4, '+x', lit=True)
+    top = tw * .93
+    a.part('Tower_deck', 'Asphalt').box((top - .1, top - .1, .04), loc=(fx, fy, tz + .005), bevel=0)
+    a.part('Coping', 'Team').shell([(fx - top / 2, fy - top / 2), (fx + top / 2, fy - top / 2),
+                                    (fx + top / 2, fy + top / 2), (fx - top / 2, fy + top / 2)], .07, .06,
+                                   loc=(0, 0, tz - .02))
+    a.part('Race', 'Steel').cyl(.82, .1, loc=(fx, fy, tz + .05), seg=24, bevel=.015, bseg=1)
+    for i in range(16):
+        u = (i + .5) * TAU / 16
+        a.part('Drum_band', 'SafetyStripe' if i % 2 else 'Charred').box(
+            (.3, .03, .06), loc=(fx + .83 * math.cos(u), fy + .83 * math.sin(u), tz + .05), rot=(0, 0, u + R90),
+            bevel=0)
+    K.ladder(a.part('Ladder', 'Steel'), (fx - .35, fy + tw / 2 + .12, HQ_Z0), (fx - .35, fy + tw / 2 + .05, tz + .1),
+             width=.44, step=.32)
+    K.lamp(a, (fx + .45, fy + tw / 2 - .02, 2.9), (0, 1, 0), r=.07, guard=True)
+    # The gun house on its yaw pivot: low and faceted, the front plate raked back, the sides and the rear bustle.
+    m = a.pivot('Mount_gun', (fx, fy, tz + .1))
+    a.part('Gun_ring', 'Armor', m).cyl(.8, .08, loc=(0, 0, .04), seg=20, bevel=0)
+    W.poly_turret(a.part('Gun_house', 'Team', m), [
+        (.08, [(-.6, -.86), (.6, -.86), (.8, -.45), (.8, .74), (.58, .92), (-.58, .92), (-.8, .74), (-.8, -.45)]),
+        (.62, [(-.56, -.8), (.56, -.8), (.77, -.42), (.77, .74), (.56, .9), (-.56, .9), (-.77, .74), (-.77, -.42)]),
+        (1.08, [(-.42, -.42), (.42, -.42), (.6, -.24), (.62, .7), (.46, .84), (-.46, .84), (-.62, .7),
+                (-.6, -.24)])], chamfer=.04)
+    zg = .8
+    k.block(a.part('Gun_mantlet', 'Armor', m), (.62, .22, .5), loc=(0, -.86, zg), chamfer=.04, taper=(.85, .85))
+    K.gun_barrel(a, 'Gun_barrel', m, 0, -.97, zg, 2.7, .1, seg=12, extractor=(.42, 1.5, .42), brake_name='Gun_brake',
+                 brake='baffle')
+    a.pivot('Muzzle_gun', (0, -.97 - 2.7 - .26, zg), m)
+    for s in (-1, 1):
+        k.block(a.part('Gun_armor', 'Armor', m), (.22, .08, .4), loc=(s * .45, -.78, .5), rot=(-.5, 0, 0),
+                chamfer=.015)
+    K.chamfer_box(a.part('Periscope_hoods', 'Armor', m), (.3, .26, .2), loc=(-.38, -.25, 1.17), c=.03)
+    a.part('Sight_glass', 'Glass', m).box((.22, .01, .1), loc=(-.38, -.385, 1.19), bevel=0)
+    K.hatch_round(a, (.25, .3, 1.08), r=.26, parent=m, periscopes=0, seg=10)
+    K.crate(a.part('Stowage', 'Armor', m), a.part('Latches', 'Steel', m), (1.0, .18, .4), (0, .99, .45), bands=1)
+    K.whip_antenna(a.part('Antenna', 'Steel', m), (-.45, .6, 1.08), h=.8, lean=.15)
+    a.part('Team_band', 'Team', m).box((.9, .5, .012), loc=(0, .3, 1.085), bevel=0)
 
 
 BUILDERS = {
