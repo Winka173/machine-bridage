@@ -1,0 +1,310 @@
+{
+ "id": "fortress_bastion",
+ "class": "boss",
+ "frame": "ground",
+ "real": [
+  "2B8 / 2S4 Tyulpan 240 mm mortar",
+  "Bofors 40 mm L/70 turret",
+  "9M133 Kornet twin launcher",
+  "ZU-23-2",
+  "Sandcrawler (Star Wars) for the tracked casemate"
+ ],
+ "shape": "unit_sheet.json Boss: Dựa trên: 2B8 240 mm, Bofors 40 mm, 9M133 Kornet · Sandcrawler (Star Wars) — ước đoán: pháo đài bánh xích bọc giáp tấm dày. Kích thước hiện 40.0 × 16.5 × 16.1 m; boss chủ lực ×1,3–1,5 so với mẫu, mini boss nhỏ hơn boss chủ lực cùng dòng; bộ phận phá được (tháp, xích, động cơ) phải tách thành khối riêng dễ nhìn; có bản vỡ cho từng bộ phận; vạch màu tướng sở hữu.",
+ "confidence": "ban_dau_doan (a fictional fortress after the sheet's references)",
+ "target_size": {
+  "L": 22.1,
+  "W": 9.1,
+  "H": 8.9,
+  "source": "the old GLB (22.08 x 9.1 x 8.89; length with the bow gun); no modelSize in data",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "Sandcrawler-like casemate: sloped walls narrowing to the deck, sloped glacis and stern",
+   "nodes": [
+    "Body",
+    "Hull",
+    "Citadel"
+   ]
+  },
+  {
+   "feature": "two long track units under thick hinged armour skirts",
+   "nodes": [
+    "Tracks",
+    "Skirts",
+    "Sprockets",
+    "Wheels"
+   ]
+  },
+  {
+   "feature": "thick riveted appliqué plates on the walls and glacis",
+   "nodes": [
+    "Plates",
+    "Kit_rivets"
+   ]
+  },
+  {
+   "feature": "2B8-class 240 mm mortar raised steeply on the citadel (the main weapon, part mortar)",
+   "nodes": [
+    "Turret",
+    "Main_cannon",
+    "Main_cannon_breech",
+    "Main_cannon_buffer",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "four deck turrets: twin 100 mm forward, Bofors 40 mm aft (parts turret_fl/fr/rl/rr)",
+   "nodes": [
+    "Mount_gun",
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Mount_gun.003",
+    "Gun_house",
+    "Gun_barrels"
+   ]
+  },
+  {
+   "feature": "155 mm bow casemate gun in a ball mantlet (part casemate)",
+   "nodes": [
+    "Mount_gun.004",
+    "Casemate",
+    "Bow_barrel",
+    "Muzzle_gun.004"
+   ]
+  },
+  {
+   "feature": "twin Kornet launcher on the citadel (part kornet)",
+   "nodes": [
+    "Part_missile",
+    "Mount_missile",
+    "Kornet_tubes",
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "feature": "two ZU-23-2 on raised pedestals over the flanks (the roof-gun rule; parts zu23_l/r)",
+   "nodes": [
+    "Mount_mg",
+    "Mount_mg.001",
+    "Zu_pedestals",
+    "Zu_barrels"
+   ]
+  },
+  {
+   "feature": "repair crane and welding gear on the rear deck (it patches itself up once)",
+   "nodes": [
+    "Crane",
+    "Gas_bottles",
+    "Cable_reel"
+   ]
+  },
+  {
+   "feature": "engine deck: grilles and smokestacks",
+   "nodes": [
+    "Grilles",
+    "Stacks"
+   ]
+  },
+  {
+   "feature": "the general's stripe along the deck edge",
+   "nodes": [
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "body",
+  "weapons",
+  "running gear or lift by frame",
+  "every parts[].node of the def"
+ ],
+ "weapons": [
+  {
+   "weapon": "p26_bastion_sec_b240",
+   "slot": "mountWeapons 0",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_direct_b100",
+   "slot": "mountWeapons 1",
+   "mount": "Mount_gun",
+   "muzzles": [
+    "Muzzle_gun"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_direct_b100",
+   "slot": "mountWeapons 2",
+   "mount": "Mount_gun.001",
+   "muzzles": [
+    "Muzzle_gun.001"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_tiny_autocannon_40",
+   "slot": "mountWeapons 3",
+   "mount": "Mount_gun.002",
+   "muzzles": [
+    "Muzzle_gun.002"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_tiny_autocannon_40",
+   "slot": "mountWeapons 4",
+   "mount": "Mount_gun.003",
+   "muzzles": [
+    "Muzzle_gun.003"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_tiny_kornet_twin",
+   "slot": "mountWeapons 5",
+   "mount": "Mount_missile",
+   "muzzles": [
+    "Muzzle_missile"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_close_boss_hmg",
+   "slot": "mountWeapons 6",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_mg"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_close_boss_hmg",
+   "slot": "mountWeapons 7",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_mg.001"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_main_b155",
+   "slot": "mountWeapons 8",
+   "mount": "Mount_gun.004",
+   "muzzles": [
+    "Muzzle_gun.004"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_tiny_zu23",
+   "slot": "mountWeapons 9",
+   "mount": "Mount_mg",
+   "muzzles": [
+    "Muzzle_b1_mg"
+   ]
+  },
+  {
+   "weapon": "p26_bastion_tiny_zu23",
+   "slot": "mountWeapons 10",
+   "mount": "Mount_mg.001",
+   "muzzles": [
+    "Muzzle_b1_mg_001"
+   ]
+  }
+ ],
+ "aps": false,
+ "flare": false,
+ "colour_zones_min": 6,
+ "budget": {
+  "lod0": [
+   10000,
+   20000
+  ],
+  "floor": 7000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "over the maximum is information only for bosses (owner rule 02/10)"
+ },
+ "team_zones": [
+  "casemate walls and citadel (Team)",
+  "the general's stripe (Team band)"
+ ],
+ "faction_style": "Hegemon general's fortress (Orlov): heavy riveted plate, industrial",
+ "details": {
+  "tier1": [
+   "casemate",
+   "lower hull",
+   "tracks and skirts",
+   "citadel",
+   "mortar turret"
+  ],
+  "tier2": [
+   "deck turrets",
+   "bow casemate",
+   "Kornet",
+   "ZU-23 pedestals",
+   "crane",
+   "plates",
+   "stacks",
+   "grilles"
+  ],
+  "tier3": [
+   "rivets",
+   "hinges",
+   "hatches and periscopes",
+   "lamps",
+   "ladders",
+   "tow hooks",
+   "spare links",
+   "gas bottles",
+   "antennas",
+   "beacon",
+   "chevrons"
+  ]
+ },
+ "boss": {
+  "weak_points_visible": [
+   "the four deck turrets stand proud of the deck on their rings, one shade off the hull",
+   "the mortar sits high on the citadel: the card says it cannot hit inside 12 m (close in)"
+  ],
+  "how_to_fight": "bring tank hunters and heavy guns; its autocannons shred light vehicles that come close; keep burst damage for after its one repair"
+ },
+ "breakable": [
+  {
+   "part": "mortar",
+   "node": "Main_cannon",
+   "data_node": "Main_cannon*"
+  },
+  {
+   "part": "turret_fl",
+   "node": "Mount_gun"
+  },
+  {
+   "part": "turret_fr",
+   "node": "Mount_gun.001"
+  },
+  {
+   "part": "turret_rl",
+   "node": "Mount_gun.002"
+  },
+  {
+   "part": "turret_rr",
+   "node": "Mount_gun.003"
+  },
+  {
+   "part": "kornet",
+   "node": "Part_missile"
+  },
+  {
+   "part": "casemate",
+   "node": "Mount_gun.004"
+  },
+  {
+   "part": "zu23_l",
+   "node": "Mount_mg"
+  },
+  {
+   "part": "zu23_r",
+   "node": "Mount_mg.001"
+  }
+ ],
+ "wreck": "runtime wreck models per part (wreck_turret, wreck_barrel, wreck_launcher, wreck_stump), unchanged",
+ "questions": []
+}
