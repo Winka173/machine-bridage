@@ -2738,6 +2738,44 @@
     "FLAG shield_tower: triangles 5,404 -> 4,786 (-11.4%); vertices 5,324 -> 7,514 (+41.1%); meshes 22 -> 41 (+86.4%); renderers 22 -> 41 (+86.4%); materials 9 -> 12 (+33.3%); materialSlots 22 -> 41 (+86.4%); fileBytes 289,480 -> 400,652 (+38.4%); structure changed",
     "FLAG shield_tower_a: triangles 7,260 -> 5,518 (-24.0%); vertices 7,452 -> 8,749 (+17.4%); meshes 25 -> 45 (+80.0%); renderers 25 -> 45 (+80.0%); materials 9 -> 12 (+33.3%); materialSlots 25 -> 45 (+80.0%); fileBytes 397,156 -> 463,748 (+16.8%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "aa_turret_b",
+    "ammo_dump",
+    "artillery_emplacement_b",
+    "atgm_tower",
+    "atgm_tower_a",
+    "atgm_tower_b",
+    "cp_relay_b",
+    "drone_hangar",
+    "drone_hangar_a",
+    "drone_hangar_b",
+    "ew_tower_a",
+    "fortress_hive",
+    "guard_tower",
+    "guard_tower_a",
+    "gun_turret",
+    "gun_turret_b",
+    "heavy_turret",
+    "heavy_turret_b",
+    "helipad",
+    "helipad_a",
+    "helipad_b",
+    "ixion",
+    "logistics_station",
+    "mg_bunker_b",
+    "missile_battery",
+    "missile_battery_a",
+    "missile_battery_b",
+    "radar_site",
+    "repair_bay",
+    "shield_tower",
+    "shield_tower_a"
+   ],
+   "reason": "merge of feature/p35-w2",
+   "changes": []
   }
  ],
  "models": {
