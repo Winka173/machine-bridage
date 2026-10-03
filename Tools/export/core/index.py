@@ -72,6 +72,10 @@ def build_index(ctx, meta: dict, hashes: dict, images: list[str]) -> Book:
     if bal in ctx.sources and isinstance(ctx.sources[bal].data, dict) and "version" in ctx.sources[bal].data:
         r = pb.row("balance_version", f"{bal}: version")
         r.set("gia_tri", ctx.sources[bal].data["version"], bal, ("version",))
+    tun = "Assets/MachineBrigade/Resources/Data/tunables.json"
+    if tun in ctx.sources and isinstance(ctx.sources[tun].data, dict) and "version" in ctx.sources[tun].data:
+        r = pb.row("tunables_version", f"{tun}: version")
+        r.set("gia_tri", ctx.sources[tun].data["version"], tun, ("version",))
     for path in sorted(hashes):
         r = pb.row(f"sha256:{path}", SRC)
         r.set("gia_tri", hashes[path])

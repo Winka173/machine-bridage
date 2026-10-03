@@ -1,7 +1,8 @@
-# Data export self-check (Docs/prompts/export_full_vi.txt, spec 4 and 9): runs the exporter in check mode on every
-# push. Python only, no Unity. Nothing is committed: the output stays in the runner's temp folder (SELF_CHECK.md is
-# uploaded as an artifact). Fails on an unmapped or twice-mapped leaf, a failed foreign key, two exports that differ, or
-# a secret in any output file. Local equivalent: python Tools/export/export.py check
+# Balance pack self-check (Docs/prompts/export_pack_vi.txt, section 7 and the structure addendum): exports the pack to the
+# runner's temp folder and runs every test on it (coverage, foreign keys, formulas vs the game values, structure of the 19
+# files and images/, no process words in a cell, 200 md numbers vs xlsx, two exports byte for byte, secrets), then the
+# structure tests on the committed Docs/export/current. Python only, no Unity. SELF_CHECK.md is uploaded as an artifact.
+# Local equivalent: python Tools/export/export.py check
 name: Data export check
 
 on:
@@ -15,21 +16,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0          # origin/main for the _truoc / _sau columns
+          fetch-depth: 0          # the base commit of the _truoc / _sau columns (5f5b3247)
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Install the exporter's packages
         run: python -m pip install openpyxl==3.1.5 numpy pymupdf beautifulsoup4 pillow soundfile scipy   # pymupdf, bs4, pillow: pass 6 md + pdf; soundfile, scipy: 09/Am_thanh_mau_moc
-      - name: Export check (coverage, foreign keys, determinism, secrets)
+      - name: Export check (coverage, foreign keys, formulas, structure, md numbers, determinism, secrets)
         env:
           PYTHONIOENCODING: utf-8
           USER: ""                # the scan flags the machine user name; the runner's ("runner") is a common word
-        run: python Tools/export/export.py check --out "$RUNNER_TEMP/export"
+        run: python Tools/export/export.py check --out "$RUNNER_TEMP/export/current"
+      - name: Structure of the committed pack
+        env:
+          PYTHONIOENCODING: utf-8
+        run: python Tools/export/export.py check --structure-only --out Docs/export/current
       - name: Keep SELF_CHECK.md
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: export-self-check
-          path: ${{ runner.temp }}/export/00_chi_muc/SELF_CHECK.md
+          path: ${{ runner.temp }}/export/current/_qa/SELF_CHECK.md
           if-no-files-found: ignore

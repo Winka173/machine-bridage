@@ -200,6 +200,9 @@ def scan(root: Path) -> list[dict]:
     base = root / SCRIPTS
     rows = []
     files = sorted(p for d in SCAN_DIRS for p in (base / d).rglob("*.cs"))
+    # the constants moved into tunables.json live in SimTunables*.cs as properties that read the data; BalancePackFacts is the
+    # export's own read of the game: neither is a constant of the game
+    files = [p for p in files if not (p.name.startswith("SimTunables") or p.name == "BalancePackFacts.cs")]
     for path in files:
         rel = path.relative_to(root).as_posix()
         raw = path.read_text("utf-8-sig")

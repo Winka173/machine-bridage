@@ -18888,3 +18888,31 @@ managed DLLs. Every value change is in Docs/export/CHANGES.md (item, sheet, old,
   (aircraft shot band, boss compensation, deck goal, model LOD1).
 - **For lane C.** New data source Resources/Data/tunables.json; `scan_constants.py` should skip `SimTunables*.cs` and
   `BalancePackFacts.cs`.
+
+## Gói cân bằng (lane C)
+
+Export side of `Docs/prompts/export_pack_vi.txt` (Tools/export/, Docs/export/); lane B did the game side. Numbers and the
+sheet list are in `Docs/export/CHANGES.md` ("Lane C"). No game value changed.
+
+- **Pack = the domain books regrouped, not a rewrite.** `domains/` still builds the 13 old books (so the formulas, foreign keys
+  and coverage keep their proofs); `core/pack.py restructure` then moves the sheets into the 8 new files, before the formulas
+  are resolved (a formula still reads sheets of its own file; a sheet renamed by a name collision gets its placeholders renamed).
+  Leaf marks follow the sheets; a leaf of a sheet that leaves the pack counts as Khong_xuat, one in bulk.zip as mapped.
+- **Layout.** Eight xlsx + md pairs, `00_index.xlsx` (Muc_luc_file, Muc_luc_sheet, Schema with `don_vi`, `sua_duoc`,
+  `ly_do_khong_ap_dung`; Phien_ban with the sha256 of every file), `bulk.zip` (21 CSV, `<file>__<sheet>.csv`), flat `images/`.
+  `_qa/` (qa.xlsx, COVERAGE.md, SELF_CHECK.md, Hang_so_trong_ma.csv, diff/, import/, the PDF) is generated and git-ignored.
+- **Markers.** Only NEED_SOURCE (real-world columns), KHONG_AP_DUNG (reason in Schema) and NEED_CODE_CHECK (listed until
+  game.json fills it). `CHUA_AP:prompt_N` became NEED_CODE_CHECK, except the tutorial (game has none) -> KHONG_AP_DUNG.
+- **Dropped as history or measurement, beyond the 2.1 list:** `Model_lich_su`, `Anh_chup`, `Bom_vet_tha`, `Bom_ket_qua_vung`.
+- **md.** Prose from the design review, sentence by sentence: a sentence about how or when (prompt, manifest, DECISIONS,
+  "Cân bằng đợt 2") is dropped; tables of 20 rows or fewer print, bigger ones say "xem sheet"; the per-unit guide strings
+  and the model before / after pictures (304 MB) stay out. Pictures: only what an md shows.
+- **Units.** `Don_vi_chua_ro` (350 columns) filled into `Schema.don_vi` from C# comments and column names; 14 stay `khong_ro`.
+- **game.json.** `core/gamefill.py`: one handler a `balancePack` key; derivations that are ours are marked in `Schema.y_nghia`
+  (the worst-line dialogue count for every line; the projectile-kind rows as weapon-weighted means of the game's interception
+  groups). A cell the game has no value for stays NEED_CODE_CHECK (103 left, listed in CHANGES.md).
+- **tunables.json** is mapped one row a constant into `Hang_so_*` sheets of the domain files; a catch-all puts any other
+  loose JSON leaf of `Assets/` into `Hang_so_<block>` so coverage stays whole when constants move.
+- **Import.** `export.py import <pack|xlsx> --dry-run`: the pack is rebuilt from the tree and compared cell by cell; only raw
+  columns (Schema.sua_duoc) become manifest rows; the manifest goes through `p29_apply.py --manifest`. Unedited pack: 0 rows;
+  one edited cell: exactly one row (`tests/test_import_demo.py`).

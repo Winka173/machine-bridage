@@ -97,8 +97,39 @@ def cs_num(ctx, path: str, pattern: str, after: str | None = None, until: str | 
     from core.model import NEED_CODE_CHECK
     g, line = cs_find(ctx, path, pattern, after, until, what)
     if g is None:
+        moved = tunable_for(ctx, path, pattern)
+        if moved is not None:
+            return moved
         return NEED_CODE_CHECK, f"{path} (không tìm thấy: {what})"
     return float(g[group]), f"{short(path)}:{line}"
+
+
+def tunable_for(ctx, path: str, pattern: str):
+    """A constant lane B moved from the C# into tunables.json: the C# now reads it from the data, so the literal is gone. The
+    pattern names it ('public const int MaxVehicles = (\d+)'), the file names the class (TeamEconomy.cs): the data key whose
+    `code` is Class.Name holds the value. Returns (value, citation) or None."""
+    import re
+    from core.sources import get as _get  # noqa: F401
+    sid = "Assets/MachineBrigade/Resources/Data/tunables.json"
+    src = ctx.sources.get(sid)
+    if src is None or not src.readable:
+        return None
+    m = re.search(r"(?:const|readonly)\s+\w+\s+(\w+)\s*=|(\w+)\s*=\s*\(", pattern)
+    name = (m.group(1) or m.group(2)) if m else None
+    if not name:
+        return None
+    cls = path.rsplit("/", 1)[-1].split(".")[0]
+    found = []
+    for group, classes in src.data.items():
+        if not isinstance(classes, dict):
+            continue
+        for ocls, items in classes.items():
+            for key, entry in (items.items() if isinstance(items, dict) else ()):
+                if isinstance(entry, dict) and isinstance(entry.get("value"), (int, float))                         and str(entry.get("code", "")).split(".")[-1] == name:
+                    found.append((entry.get("code"), float(entry["value"]), f"tunables.json: {group}.{ocls}.{key}.value"))
+    exact = [f for f in found if f[0] == f"{cls}.{name}"]
+    pick = exact if exact else found  # the class may live in another file (TeamEconomy in EconomySystem.cs)
+    return (pick[0][1], pick[0][2]) if len(pick) == 1 else None
 
 
 def short(path: str) -> str:

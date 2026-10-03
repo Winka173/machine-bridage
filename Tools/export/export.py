@@ -243,6 +243,8 @@ def meta_of(args, ctx, base) -> dict:
         "nguon_chua_commit": ";".join(p for p in dirty if p in scanned),
         "balance_sha256": ctx.sources[BALANCE].sha256() if BALANCE in ctx.sources else "",
         "campaign_sha256": ctx.sources[CAMPAIGN].sha256() if CAMPAIGN in ctx.sources else "",
+        "game_json_sha256": hashlib.sha256(Path(args.game_json).read_bytes()).hexdigest() if args.game_json else "",
+        "o_dien_tu_game_json": getattr(ctx, "game_filled", 0),
         "cong_cu": f"Tools/export v{TOOL_VERSION}",
     }
 

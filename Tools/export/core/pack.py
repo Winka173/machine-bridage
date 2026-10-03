@@ -182,11 +182,17 @@ def restructure(ctx, game: dict | None = None):
     bal = "Assets/MachineBrigade/Resources/Data/balance.json"  # its version lands in 00_index.xlsx Phien_ban
     if bal in ctx.sources and ctx.sources[bal].readable and "version" in ctx.sources[bal].data:
         ctx.cov.mark(bal, ("version",), "00_index", "Phien_ban", "gia_tri")
+    from . import tunables
+    ctx.tunables = tunables.build(ctx)  # lane B's constants moved from the code into the data, in their domain sheets
+    if tunables.SID in ctx.sources and ctx.sources[tunables.SID].readable and "version" in ctx.sources[tunables.SID].data:
+        ctx.cov.mark(tunables.SID, ("version",), "00_index", "Phien_ban", "gia_tri")
     catch_all(ctx)
     _classify_markers(ctx)
     _scrub_cells(ctx)
+    ctx.game_filled = 0
     if game:
-        fill_from_game(ctx, game)
+        from . import gamefill
+        ctx.game_filled = gamefill.fill(ctx, game)
 
 
 def _move(book: Book, s: Sheet, name: str, bulk: bool):
@@ -249,8 +255,8 @@ def _classify_markers(ctx):
                         ctx.kad[(nid, name, col)] = "game không có thứ này cho dòng đó (xem ghi_chu của dòng)"
 
 
-OLD_FILE = re.compile(r"(0[1-9]|1[0-3])_[a-z_]+(?:/([A-Za-z][A-Za-z0-9_]*))?")
-OLD_SHORT = re.compile(r"(0[1-9]|1[0-3])/([A-Z][A-Za-z0-9_]*)")
+OLD_FILE = re.compile(r"\b(0[1-9]|1[0-3])_[a-z_]+(?:/([A-Za-z][A-Za-z0-9_]*))?\b")
+OLD_SHORT = re.compile(r"\b(0[1-9]|1[0-3])/([A-Z][A-Za-z0-9_]*)\b")
 
 
 def make_ref_rewriter(ctx):
@@ -308,38 +314,7 @@ def _scrub_cells(ctx):
 
 
 # ------------------------------------------------------------------------------------------- the game's own numbers
-def game_value(game: dict, sheet: str, rid: str, col: str):
-    """A value ExportGameDoc wrote for a NEED_CODE_CHECK cell: game["cells"] = [{sheet, id, column, value}] or
-    game["export"][sheet][id][column]. Returns (found, value)."""
-    ex = game.get("export")
-    if isinstance(ex, dict):
-        try:
-            return True, ex[sheet][str(rid)][col]
-        except (KeyError, TypeError):
-            pass
-    idx = game.get("_cells_index")
-    if idx is None:
-        idx = {}
-        for c in game.get("cells") or []:
-            idx[(c.get("sheet"), str(c.get("id")), c.get("column"))] = c.get("value")
-        game["_cells_index"] = idx
-    k = (sheet, str(rid), col)
-    return (True, idx[k]) if k in idx else (False, None)
-
-
-def fill_from_game(ctx, game: dict) -> int:
-    n = 0
-    for nid, book in ctx.books.items():
-        for name, s in book.sheets.items():
-            for r in s.rows.values():
-                for col, v in list(r.values.items()):
-                    if v == NEED_CODE_CHECK:
-                        ok, val = game_value(game, s.base_name, r.id, col)
-                        if ok and val is not None:
-                            r.values[col] = val
-                            n += 1
-    ctx.game_filled = n
-    return n
+# the cells game.json answers are filled by core/gamefill.py; what is left is listed here
 
 
 def need_code_check(ctx) -> list[tuple]:
@@ -471,6 +446,8 @@ def schema_unit(sheet: Sheet, col) -> str:
         return ""
     if col.unit:
         return col.unit
+    if sheet.kind == "kv" and col.name == "gia_tri_so":
+        return "theo_cot_don_vi"  # a key / value sheet: the unit of each value is in its row's don_vi cell
     if col.kind in ("int", "number") or (col.kind or "").startswith("mixed:") and "int" in (col.kind or ""):
         if col.unit_unknown:
             return units_fill.unit_for(sheet.base_name, col.name)
@@ -510,7 +487,7 @@ def freeze_bulk_references(ctx):
 CONST_ROUTE = [
     (re.compile(r"(?i)boss|hunt"), "02_boss"),
     (re.compile(r"(?i)tower|base|wall|fortress|siege|defen"), "03_can_cu"),
-    (re.compile(r"(?i)econom|supply|income|mode|match|difficult|meta|menu|shop|rank|unlock|operation|ai|ai[A-Z_]|^ai"),
+    (re.compile(r"(?i)econom|supply|income|mode|match|difficult|meta|menu|shop|rank|unlock|operation|\bai\b|ai[A-Z_]|^ai"),
      "04_che_do_kinh_te_ai"),
     (re.compile(r"(?i)campaign|mission|dialog|script|event|chapter"), "05_chien_dich"),
     (re.compile(r"(?i)map|terrain|biome|weather|prop|dressing"), "06_ban_do"),

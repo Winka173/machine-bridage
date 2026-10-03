@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Balance pack export (lane C): the data export is one compact pack in Docs/export/current/ (README, 00_index.xlsx with units and file hashes, eight xlsx + md pairs, bulk.zip, flat images/), process sheets and words out, tunables.json and game.json (`--game-json`) filled in (NEED_CODE_CHECK 5,723 -> 103), reverse import and `check` on the pack, CI runs on it (DECISIONS "Gói cân bằng (lane C)", Docs/export/CHANGES.md).
 - Prompt 35 gold (lane A): quality_gate.py --gold takes rebuilt models with every hard gate and soft >= 80 as gold candidates (owner answer 1); classes split into sets of like models, V2 anchor (>= 80 leave-one-out, sets widened), outliers out, median set values, similar-set borrowing, fixed point; gate 199 -> 202 of 230 (first recompute 105).
 - Balance pack (lane B): 260 gameplay constants and formula numbers moved to Resources/Data/tunables.json (same values; replay-hash test), locked-rule fixes (no retreat on health for wave AIs and jets, Gungnir never an extra mini), supply threshold x1.16 for the new prices, and game.json `balancePack` export keys (Docs/export/CHANGES.md).
 - Docs (lane A): TOKEN_OPTIMISATION.md v2 adds 24 measured small rules (Grep modes, quiet git/Blender/robocopy, no CRLF floods, JSON/log summaries, fewer turns), prompt caching (TTL, what breaks it), a "Which model for which job" table (fable/opus for models, VFX, Sim, balance; sonnet for audits/exports/tests; haiku for routine docs) and cited sources; AGENT_RULES.md gains a token hygiene block.

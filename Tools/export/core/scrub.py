@@ -9,12 +9,12 @@ from __future__ import annotations
 import re
 
 # a parenthesis that opens with the process word, one level of nesting allowed
-PAREN = re.compile(r"\s*\((?:[Pp]rompt|PROMPT|lượt|luot)\b(?:[^()]|\([^()]*\))*\)")
+PAREN = re.compile(r"\s*\((?:[Pp]rompt|PROMPT|lượt|luot|spec \d)\b(?:[^()]|\([^()]*\))*\)")
 BARE_PROMPT = re.compile(r"\b[Pp]rompt \d+[a-z]?(?: [A-Z]\d?(?:\.\d+)?)?(?: and [A-Z]\d?)?(?:'s)?(?:, pass \d)?(?=\W|$)")
 PROMPT_TOKEN = re.compile(r"CHUA_AP:prompt_[\w.]+|prompt_[\w.]+|xuat_luot\d+")
 LUOT_N = re.compile(r"\(lượt \d+[^()]*\)|\blượt \d+(?=\s*[:;,.)]|$)")
 SPACES = re.compile(r"[ \t]{2,}")
-FAST = ("rompt", "ượt", "luot", "CHUA_AP")
+FAST = ("rompt", "ượt", "luot", "CHUA_AP", "HOLD:", "(spec ")
 
 # sheets whose cells are the game's own text
 GAME_TEXT = {"Dia_phuong_hoa", "Dia_phuong_hoa_van_de", "Thoai", "Thoai_thong_ke_nhom", "Kich_ban_goc", "Nhiem_vu_radio",
@@ -27,6 +27,7 @@ def scrub_str(s: str) -> str:
     t = PAREN.sub("", s)
     t = LUOT_N.sub("", t)
     t = PROMPT_TOKEN.sub("", t)
+    t = re.sub(r"HOLD:\s*", "", t)  # a note that says "HOLD: off (...)": the state is the flag's value, the word is process
     t = BARE_PROMPT.sub("", t)
     t = re.sub(r"\(\s*[,;:]?\s*\)", "", t)          # an emptied parenthesis
     t = re.sub(r"\s+([,.;:)])", r"\1", t)

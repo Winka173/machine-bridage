@@ -156,8 +156,7 @@ class PackDoc:
             elif kind == "table":
                 body = [x for x in b[1] if x.startswith("|")][2:]
                 if len(body) > MAX_TABLE_ROWS:
-                    lines += [f"Bảng {len(body)} dòng: xem " + (("sheet " + ", ".join(sheets[:3])) if sheets else "các sheet của file")
-                              + ".", ""]
+                    lines += [f"Bảng {len(body)} dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.", ""]
                 elif not BAD.search("\n".join(b[1])):
                     lines += [""] + [self.fix(x) for x in b[1]]
             elif kind == "img":
@@ -289,7 +288,7 @@ class PackDoc:
                  "Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_sheet, Schema). Sheet `input_<tên>` là bản "
                  "chép của một sheet nguồn để công thức Excel đọc cùng file; sửa ở sheet nguồn, không sửa bản chép.", ""]
         for name, s in self.books[fid].sheets.items():
-            if name.startswith("input_"):
+            if "input_" in name:
                 continue
             where = " [bulk.zip]" if s.bulk else ""
             desc = docmd._cell(s.desc or "", 150)
