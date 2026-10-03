@@ -1,0 +1,136 @@
+{
+ "id": "flare_tower",
+ "class": "tower",
+ "real": [
+  "a field illumination post: a braced steel tower with a flare-mortar rack (multi-tube illumination launcher)"
+ ],
+ "shape": "fix L8's flare post (four braced legs, plank deck, sandbag parapet, ladder, canvas roof, eight-tube rack on a yoke); modelSize 3.6 x 3.6 x 5.0 m; weapon illum_flare (no damage).",
+ "confidence": "xấp xỉ (generic field post; L8's layout kept)",
+ "target_size": {
+  "L": 3.6,
+  "W": 3.6,
+  "H": 5.0,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "four angle-iron legs on bolted concrete footings, X-bracing in two bays, gussets",
+   "nodes": [
+    "Legs",
+    "Footing",
+    "Base_plates",
+    "Kit_bolts",
+    "Braces",
+    "Gussets"
+   ]
+  },
+  {
+   "feature": "the deck frame with its Team band and plank boards, rivets and nails",
+   "nodes": [
+    "Deck_frame",
+    "Team_band",
+    "Planks",
+    "Kit_rivets",
+    "Kit_nails"
+   ]
+  },
+  {
+   "feature": "a two-course sandbag parapet open at the front, the ladder with its safety cage",
+   "nodes": [
+    "Sandbags",
+    "Ladders",
+    "Ladder_cage"
+   ]
+  },
+  {
+   "feature": "the canvas gable sun roof on four posts with its ridge and guy ropes",
+   "nodes": [
+    "Roof",
+    "Roof_posts",
+    "Roof_ridge",
+    "Kit_straps"
+   ]
+  },
+  {
+   "feature": "the eight-tube flare-mortar rack (Turret) on its ring and yoke with trunnions, cradle, elevating arc, hand wheel, tube rings",
+   "nodes": [
+    "Turret",
+    "Ring",
+    "Yoke",
+    "Trunnions",
+    "Turret_launcher",
+    "Cradle",
+    "Tubes",
+    "Tube_rings",
+    "Elevating_arc",
+    "Hand_wheel",
+    "Muzzle_main"
+   ]
+  },
+  {
+   "feature": "ready-use crates and flare rounds, the signal lamp, field phone, fire buckets, the aerial",
+   "nodes": [
+    "Crates",
+    "Flare_rounds",
+    "Signal_lamp",
+    "Field_phone",
+    "Fire_buckets",
+    "Antenna"
+   ]
+  }
+ ],
+ "class_parts": [
+  "base",
+  "walls",
+  "roof",
+  "antenna"
+ ],
+ "weapons": [],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   2000,
+   4000
+  ],
+  "floor": 1400,
+  "cap": 6000,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "owner decision 6: towers seen in numbers stay under 1.5 x 4,000"
+ },
+ "team_zones": [
+  "the deck band, the launcher (Team)"
+ ],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "field-built steel and timber",
+ "details": {
+  "tier1": [
+   "tower legs",
+   "deck",
+   "roof"
+  ],
+  "tier2": [
+   "bracing",
+   "parapet",
+   "ladder",
+   "rack",
+   "crates"
+  ],
+  "tier3": [
+   "bolts",
+   "rivets",
+   "nails",
+   "gussets",
+   "tube rings",
+   "hand wheel",
+   "lamp",
+   "buckets",
+   "stones"
+  ]
+ },
+ "questions": []
+}
