@@ -117,6 +117,26 @@ import mb_p35_ifv  # noqa: E402
 import mb_p35_light_tank  # noqa: E402
 import mb_p35_engineer_vehicle  # noqa: E402
 import mb_p35_mortar_carrier  # noqa: E402
+import mb_p35_next_gen_tank  # noqa: E402
+import mb_p35_airborne_light_tank  # noqa: E402
+import mb_p35_airborne_vehicle  # noqa: E402
+import mb_p35_bridging_vehicle  # noqa: E402
+import mb_p35_shield_carrier  # noqa: E402
+import mb_p35_dazzler_vehicle  # noqa: E402
+import mb_p35_drone_hijack_vehicle  # noqa: E402
+import mb_p35_fibre_fpv_carrier  # noqa: E402
+import mb_p35_hover_gunboat  # noqa: E402
+import mb_p35_landing_craft  # noqa: E402
+import mb_p35_missile_boat  # noqa: E402
+import mb_p35_sea_corvette  # noqa: E402
+import mb_p35_sea_cruiser  # noqa: E402
+import mb_p35_interceptor_jet  # noqa: E402
+import mb_p35_glide_bomber  # noqa: E402
+import mb_p35_stealth_naval_strike  # noqa: E402
+import mb_p35_hydra_sub  # noqa: E402
+import mb_p35_nyx  # noqa: E402
+import mb_p35_kraken  # noqa: E402
+import mb_p35_garuda  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -248,7 +268,17 @@ def all_builders():
                 **mb_p35_fire_control_centre.BUILDERS, **mb_p35_troop_shelter.BUILDERS,
                 **mb_p35_bunker_shelter_tower.BUILDERS, **mb_p35_inflatable_decoy.BUILDERS,
                 **mb_p35_barrage_balloon.BUILDERS, **mb_p35_super_gun.BUILDERS, **mb_p35_ifv.BUILDERS,
-                **mb_p35_light_tank.BUILDERS, **mb_p35_engineer_vehicle.BUILDERS, **mb_p35_mortar_carrier.BUILDERS}
+                **mb_p35_light_tank.BUILDERS, **mb_p35_engineer_vehicle.BUILDERS, **mb_p35_mortar_carrier.BUILDERS,
+                # Prompt 35 wave 6 (lane B): tanks, ships, jets and four bosses, each from its own builder.
+                **mb_p35_next_gen_tank.BUILDERS, **mb_p35_airborne_light_tank.BUILDERS,
+                **mb_p35_airborne_vehicle.BUILDERS, **mb_p35_bridging_vehicle.BUILDERS,
+                **mb_p35_shield_carrier.BUILDERS, **mb_p35_dazzler_vehicle.BUILDERS,
+                **mb_p35_drone_hijack_vehicle.BUILDERS, **mb_p35_fibre_fpv_carrier.BUILDERS,
+                **mb_p35_hover_gunboat.BUILDERS, **mb_p35_landing_craft.BUILDERS, **mb_p35_missile_boat.BUILDERS,
+                **mb_p35_sea_corvette.BUILDERS, **mb_p35_sea_cruiser.BUILDERS, **mb_p35_interceptor_jet.BUILDERS,
+                **mb_p35_glide_bomber.BUILDERS, **mb_p35_stealth_naval_strike.BUILDERS,
+                **mb_p35_hydra_sub.BUILDERS, **mb_p35_nyx.BUILDERS, **mb_p35_kraken.BUILDERS,
+                **mb_p35_garuda.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
