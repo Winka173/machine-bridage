@@ -20,7 +20,6 @@ import mb_p34_barrels as P
 # model -> the muzzle pivots (Blender names, before finish) whose single barrel becomes a twin
 TWIN = {
     'behemoth': ['Muzzle_gun', 'Muzzle_gun__001', 'Muzzle_gun__002'],
-    'cerberus': ['Muzzle_main'],
     'typhon': ['Muzzle_gun'],
     'hydra_sub': ['Muzzle_gun'],
     'daedalus': ['Muzzle_gun', 'Muzzle_gun__001'],
@@ -32,6 +31,8 @@ EXTRA = {
     'fortress_bastion': ['Muzzle_gun', 'Muzzle_gun__001'],
     # Prompt 35 wave 4 (lane C): moloch's rebuilt turrets model both barrels themselves.
     'moloch': ['Muzzle_main', 'Muzzle_gun', 'Muzzle_gun__001', 'Muzzle_gun__002'],
+    # Prompt 35 wave 11 (lane C): cerberus's rebuilt turret models both 152 mm barrels itself.
+    'cerberus': ['Muzzle_main'],
 }
 # model -> {muzzle: (barrels, gap m)} with no barrel geometry
 EMPTY = {
