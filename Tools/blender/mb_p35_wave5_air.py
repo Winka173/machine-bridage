@@ -408,9 +408,130 @@ def sky_gunship(a, detail=False):
     W.merge_static(a)
 
 
+# ============================================================================= sky_fortress
+def _fortress_prop(a, name, loc, R):
+    """A six-blade scimitar propeller (the C-130J's) on its spinning pivot: a long spinner and swept blades."""
+    p = a.pivot(name, loc)
+    bl = a.part('Prop_blades', 'Obsidian', p)
+    for j in range(6):
+        u = j * TAU / 6
+        for f, w in ((.3, .16), (.62, .14), (.9, .08)):
+            bl.box((R * w, .05, R * .34), loc=(math.cos(u) * R * f + math.cos(u + R90) * f * .12, 0,
+                                             math.sin(u) * R * f + math.sin(u + R90) * f * .12),
+                   rot=(.35, -u + R90 - f * .15, 0), bevel=0)
+    k.lathe(a.part('Spinners', 'Steel', p), [(0, -.55), (.12, -.45), (.22, -.2), (.26, .1)], rot=K.FORWARD, seg=12)
+
+
+def _fortress_gun(a, mount, loc, L, r, kind, tag):
+    """A side-firing gun on its own mount (a boss part): the mount frame inside the door, the gun and its muzzle out
+    of the left side (+X), an armoured surround plate."""
+    m = a.pivot(mount, loc)
+    fr = a.part(f'Gun_frame_{tag}', 'Steel', m)
+    fr.box((.5, .6, .5), loc=(-.1, 0, 0), bevel=0)
+    fr.cyl(.08, .7, loc=(-.1, 0, -.4), seg=8, bevel=0)
+    g = a.part(f'Gun_{tag}', 'Steel', m)
+    k.lathe(g, [(r * 2.0, 0), (r * 2.0, .35), (r * 1.2, .42), (r, .5), (r, L - .2), (r * 1.5, L - .18), (r * 1.5, L)],
+            loc=(0, 0, 0), rot=(0, R90 + .14, 0), seg=10)
+    if kind == 'howitzer':
+        k.lathe(g, [(r * 1.9, L - .35), (r * 1.9, L - .05), (0, L - .05)], rot=(0, R90 + .14, 0), seg=10)
+    K.panel(a, a.part(f'Gun_armor_{tag}', 'Armor', m), (.9, .8), (1.0, 0, -.05), (1, 0, 0), t=.04,
+            rivet=.25, parent=m)
+    return m
+
+
+def sky_fortress(a):
+    """The flying fortress boss: an AC-130J Ghostrider type at the old file's 1.3 x scale, painted dark: its own
+    fuselage loft (chined body loft, not the U's round rings), the flat-ended sensor nose with the big ball,
+    the high wing (kit wing) with four slim nacelles and six-blade scimitar propellers (Propeller .. Propeller_4,
+    the engines as boss parts), wing pylons with GBU-39s, the left-side guns on their own mounts (105 mm aft,
+    two 40 mm, 25 mm forward: the boss parts), the Griffin launcher in the ramp door (Muzzle_ramp), the IR jammer
+    turrets, antenna farm, flare dispensers, the general's bands. Runtime: Mount_main, Mount_gun, Mount_gun.001,
+    Mount_mg (each with its Muzzle_), Muzzle_ramp, Propeller .. Propeller_4, Point_fire, Point_exhaust;
+    mb_flare_mounts adds Mount_Flare_*."""
+    K.suffixed(a)
+    fus = a.part('Fuselage', 'Armor')
+    body_loft(fus, [(-8.82, .12, .25, .55, .5), (-8.6, .6, -.15, .9, .5), (-8.0, 1.0, -.45, 1.25, .48),
+                    (-7.0, 1.2, -.6, 1.45, .46), (-5.5, 1.25, -.65, 1.55, .45), (-2.0, 1.27, -.66, 1.6, .45),
+                    (2.0, 1.27, -.66, 1.6, .45), (3.6, 1.18, -.5, 1.6, .47), (5.0, .95, -.05, 1.6, .55),
+                    (6.6, .62, .55, 1.62, .62), (8.0, .32, 1.05, 1.66, .7), (8.8, .14, 1.3, 1.66, .75)], smooth=.07)
+    # Flat sensor nose with the big ball, the cockpit glazing, the refuelling probe.
+    k.lathe(a.part('Sensor', 'Obsidian'), [(0, 0), (.32, .05), (.42, .3), (.34, .55), (0, .62)],
+            loc=(.0, -8.3, -.55), rot=(math.pi, 0, 0), seg=14)
+    a.part('Sensor_glass', 'Glass').sphere(.22, loc=(.15, -8.45, -1.05), seg=12, rings=8)
+    gl = a.part('Canopy', 'Glass')
+    for s in (-1, 1):
+        gl.mesh([(s * .25, -8.5, .95), (s * .9, -8.05, .9), (s * .95, -7.7, 1.2), (s * .3, -8.0, 1.32)],
+                [(0, 1, 2, 3) if s > 0 else (3, 2, 1, 0)])
+        gl.mesh([(s * 1.08, -7.6, .75), (s * 1.18, -6.9, .75), (s * 1.16, -6.9, 1.05), (s * 1.06, -7.6, 1.05)],
+                [(0, 1, 2, 3) if s > 0 else (3, 2, 1, 0)])
+    a.part('Probe', 'Steel').tube([(-.6, -7.2, 1.4), (-.6, -8.5, 1.5), (-.6, -9.3, 1.5)], .05, seg=6)
+    # Gear sponsons, the crew door, paratroop doors, the ramp door with the Griffin launcher.
+    sp = a.part('Sponsons', 'Armor')
+    for s in (-1, 1):
+        k.sharp_loft(sp, [[(s * 1.0, -1.9, -.62), (s * 1.55, -1.75, -.62), (s * 1.55, 1.75, -.62), (s * 1.0, 1.9, -.62)],
+                          [(s * 1.0, -1.6, .15), (s * 1.42, -1.45, .1), (s * 1.42, 1.45, .1), (s * 1.0, 1.6, .15)]],
+                     chamfer=.04)
+        a.part('Gear_doors', 'Undercarriage').box((.02, 2.8, .4), loc=(s * 1.56, 0, -.35), bevel=0)
+        a.part('Door_lines', 'Undercarriage').box((.02, .7, 1.4), loc=(s * 1.03, 4.0, .4), bevel=0)
+    a.part('Door_lines', 'Undercarriage').box((.02, .7, 1.3), loc=(-1.27, -5.2, .3), bevel=0)
+    a.part('Ramp_door', 'Armor').box((1.6, 2.2, .04), loc=(0, 5.9, .2), rot=(.55, 0, 0), bevel=0)
+    gr = a.part('Griffin_launcher', 'Steel')
+    for j in range(3):
+        gr.cyl(.1, 1.2, loc=(-.3 + j * .3, 6.0, -.2), rot=(R90 - .5, 0, 0), seg=8, bevel=0)
+    a.pivot('Muzzle_ramp', (0, 6.32, -.55))
+    # The high wing (kit wing), the four slim nacelles, the six-blade propellers.
+    K.wing(a.part('Wings', 'Team'), (-1.6, 2.7), (-1.1, 1.4), 10.7, x0=1.3, z=1.65, t=.12, dihedral=.02)
+    a.part('Wing_centre', 'Team').box((2.7, 2.7, .3), loc=(0, -.25, 1.66), bevel=.05)
+    for i, x in enumerate((-6.2, -3.15, 3.15, 6.2)):
+        k.lathe(a.part('Nacelles', 'Armor'), [(.12, -2.3), (.3, -2.1), (.4, -1.6), (.42, .3), (.32, 1.2), (.14, 1.5)],
+                loc=(x, 0, 1.38), rot=(-R90, 0, 0), seg=14)
+        a.part('Intakes', 'Undercarriage').box((.3, .05, .16), loc=(x, -2.0, 1.12), bevel=0)
+        a.part('Exhaust', 'Steel').cyl(.09, .4, loc=(x + .3, .6, 1.6), rot=K.FORWARD, seg=8, bevel=0)
+        _fortress_prop(a, 'Propeller' if i == 0 else f'Propeller_{i + 1}', (x, -2.45, 1.38), 1.1)
+        K.tone(a, 'Propeller' if i == 0 else f'Propeller_{i + 1}', k=.9)
+    for s in (-1, 1):
+        a.part('Pylons', 'Armor').box((.1, 1.0, .35), loc=(s * 4.7, -.6, 1.3), bevel=0)
+        for j in range(4):
+            K.store(a, (s * 4.7 + (j % 2 - .5) * .26, .1, 1.0 - (j // 2) * .24), .08, 1.4, body='Bombs_sdb',
+                    body_mat='Armor', fins='Missile_fins', kind='bomb')
+        a.part('Wing_lights', 'LavaGlow' if s > 0 else 'SignalGreen').box((.12, .2, .06), loc=(s * 11.95, -.9, 1.9),
+                                                                          bevel=0)
+        a.part('Team_band', 'Team').box((.5, 1.6, .02), loc=(s * 9.6, -.6, 1.95), bevel=0)
+    # Tall fin with the general's band, tailplane, the dorsal fillet.
+    K.fin(a.part('Fins', 'Team'), (5.0, 3.0), (7.4, 1.4), 3.6, z0=1.6, t=.1)
+    a.part('Fin_band', 'Hazard').box((.25, 1.8, .35), loc=(0, 7.0, 4.2), rot=(-.4, 0, 0), bevel=0)
+    K.wing(a.part('Tailplanes', 'Team'), (6.1, 2.0), (7.3, .95), 3.5, x0=.2, z=2.0, t=.1)
+    # The guns on their mounts (boss parts) out of the left side, the gun-deck windows.
+    _fortress_gun(a, 'Mount_main', (1.33, 3.7, .03), 2.45, .11, 'howitzer', 'main')
+    a.pivot('Muzzle_main', (2.42, 0, -.34), 'Mount_main')
+    _fortress_gun(a, K.name('Mount_gun', 0), (1.33, -1.23, .06), 1.75, .06, 'auto', 'gun_a')
+    a.pivot(K.name('Muzzle_gun', 0), (1.71, 0, -.35), K.name('Mount_gun', 0))
+    _fortress_gun(a, K.name('Mount_gun', 1), (1.33, .97, .06), 1.75, .06, 'auto', 'gun_b')
+    a.pivot(K.name('Muzzle_gun', 1), (1.71, 0, -.35), K.name('Mount_gun', 1))
+    _fortress_gun(a, 'Mount_mg', (1.33, -4.29, 0), 1.3, .045, 'auto', 'mg')
+    a.pivot('Muzzle_mg', (1.28, 0, -.18), 'Mount_mg')
+    for y in (-3.0, 2.4):
+        a.part('Gun_ports', 'Glass').box((.02, .4, .3), loc=(1.27, y, .6), bevel=0)
+    # IR jammer turrets, the antenna farm, flare dispensers, the beacon, the general's side band.
+    for (x, y, z) in ((0, 4.3, 1.62), (0, -4.0, -.68)):
+        k.lathe(a.part('Jammers', 'Obsidian'), [(0, 0), (.2, .02), (.24, .14), (.18, .26), (0, .3)], loc=(x, y, z),
+                rot=(0 if z > 0 else math.pi, 0, 0), seg=10)
+    for j, (y, h) in enumerate(((-6.0, .3), (-3.5, .25), (-1.0, .35), (1.5, .2), (4.8, .3))):
+        K.blade_antenna(a.part('Antennas', 'Steel'), (0, y, 1.6), h=h, chord=.25)
+    for s in (-1, 1):
+        for y in (3.0, 4.6):
+            K.flare_dispenser(a, (s * .95, y, -.25), normal=(s, 0, -.5), cols=4, rows=2, cell=.07)
+        a.part('Team_band', 'Team').box((.02, 6.0, .25), loc=(s * 1.29, -1.0, .95), bevel=0)
+    K.beacon(a, (0, 1.0, 1.75), r=.1)
+    a.pivot('Point_fire', (0, -.3, 1.4))
+    a.pivot('Point_exhaust', (-5.85, -.76, 1.24))
+    k.clean(a)
+
+
 BUILDERS = {
     'stealth_bomber': (stealth_bomber, dict(ao_distance=.6, grime_height=0, ground=False)),
     'wingman_drone': (wingman_drone, dict(ao_distance=.25, grime_height=0, ground=False)),
     'recon_jet': (recon_jet, dict(ao_distance=.5, grime_height=0, ground=False)),
     'sky_gunship': (sky_gunship, dict(ao_distance=.5, grime_height=0, ground=False)),
+    'sky_fortress': (sky_fortress, dict(ao_distance=.7, grime_height=0, ground=False)),
 }
