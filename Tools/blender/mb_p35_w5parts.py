@@ -98,3 +98,39 @@ def tow_set(a, y, z, half, facing):
     K.tow_cable(a.part('Kit_cables', 'Steel'), [(-half, y + d * .05, z + .18), (-half * .4, y + d * .08, z + .3),
                                                 (half * .4, y + d * .08, z + .3), (half, y + d * .05, z + .18)],
                 r=.022)
+
+
+def merge_static(a, keep=r'^(Hull|Turret_body|Mantlet|Cradle|Sprockets?|Idlers?|Tracks?|Track_links|Wheels|Tyres|'
+                           r'Skirts?|Skirt_edge|Hatch(es)?|Sight|Periscopes?|Smoke\w*|Stowage|Toolbox|Crates?|Racks?|'
+                           r'MG\w*|Roof_mg|Rws\w*|Glass|Canopy|Fuselage|Wings?|Fins?|Tail\w*|Intakes?|Exhaust\w*|'
+                           r'Nozzles?|Pylons?|Missiles?|Bombs?|Pods?|Flares?|Rotor\w*|Gear\w*|Undercarriage|'
+                           r'Superstructure|Sail\w*|Deck\w*|Radar\w*|Antennas?|Masts?|CIWS\w*)$'):
+    """Merge parts that share material, parent and shading into one mesh (one renderer), as
+    mb_p27_wave2.merge_static does, but never a part whose name a quality-gate role or the runtime reads (`keep`,
+    plus the runtime's own names): the first part of each group keeps its name."""
+    import re
+    import mb_p27_wave2
+    rx = re.compile(keep, re.I)
+    groups = {}
+    for key in a.order:
+        name, mat, parent = key
+        sh = a.shapes[key]
+        if not sh.bm.faces or rx.match(name) or mb_p27_wave2._KEEP.match(name) or k.kit.RIG.match(name) or \
+                k.kit.RUNTIME.match(name):
+            continue
+        groups.setdefault((mat, parent, bool(getattr(sh, 'flat', False))), []).append(key)
+    for keys in groups.values():
+        first = a.shapes[keys[0]]
+        for key in keys[1:]:
+            src = a.shapes[key].bm
+            dst = first.bm
+            vmap = {}
+            for v in src.verts:
+                nv = dst.verts.new(v.co)
+                nv[first.wear] = v[a.shapes[key].wear]
+                vmap[v] = nv
+            for f in src.faces:
+                dst.faces.new([vmap[v] for v in f.verts])
+            src.free()
+            del a.shapes[key]
+            a.order.remove(key)

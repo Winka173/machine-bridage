@@ -178,6 +178,168 @@ def _bunker_berm(a):
     K.jerrycan(a.part('Berm_can', 'Crate', p), (2.6, 4.0, 0))
 
 
+# ============================================================================= siege_tank
+LEG_HINGE_Z, LEG_LENGTH, PAD_UNDER = 1.2, 1.45, .07     # the rig's sizes (VehicleView.Deploy: LegHinge, LegLength)
+SIEGE_X = 1.3                                            # tracks' and pods' centre line
+
+
+def siege_tank(a):
+    """See the module docstring. Runtime: Deploy_brace_l / _r and Deploy_leg_l / _r (each with its _knee and _ram
+    pivots), Deploy_spade_l / _r, Deploy_riser, Turret, Main_cannon_cradle / _sleeve / _tube, Muzzle_brake,
+    Muzzle_main (the 240 mm, -Y end of the turret), Deploy_gun / Muzzle_gun (the twin 105 mm at the +Y end),
+    Mount_mg / Muzzle_mg, Point_fire, Point_exhaust. Static parts of one material are merged afterwards
+    (mb_p35_w5parts.merge_static) to stay under the renderer cap."""
+    wheels = [-2.2 + i * .88 for i in range(6)]
+    W.running_gear(a, SIEGE_X, .56, .3, wheels, (-3.25, .52, .26), (3.25, .55, .27), disc_mat='Armor', seg=8,
+                   link_pitch=.5, top_hidden=.62, teeth=9)
+    hull = a.part('Hull', 'Team')
+    # A low wide hull with sloped sides between the pods: lofted through sections nose to tail.
+    K.section_loft(hull, [
+        (-4.02, [(0, .55), (.75, .55), (.98, .8), (.6, .98), (0, .98)]),
+        (-3.3, [(0, .38), (.95, .38), (1.02, .95), (.78, 1.36), (0, 1.38)]),
+        (3.4, [(0, .38), (.95, .38), (1.02, .95), (.82, 1.38), (0, 1.4)]),
+        (3.9, [(0, .5), (.9, .5), (.98, .95), (.82, 1.3), (0, 1.32)])])
+    gl = a.part('Glacis_plate', 'Armor')
+    K.chamfer_box(gl, (1.5, .9, .08), loc=(0, -3.62, 1.2), rot=(math.atan2(.4, .7), 0, 0), c=.02)
+    # Armoured pods over both ends of each track; the legs are hinged on their outer ends.
+    for s in (-1, 1):
+        for k_ in (-1, 1):
+            prof = [(k_ * 3.95, .62), (k_ * 3.75, 1.12), (k_ * 1.55, 1.12), (k_ * 1.4, .95), (k_ * 1.4, .5),
+                    (k_ * 3.7, .42)]
+            pod = a.part('Track_pods', 'Team')
+            k.extrude(pod, prof if k_ < 0 else prof[::-1], .72, loc=(s * SIEGE_X, 0, 0), axis='X', chamfer=.04)
+            a.part('Pod_trim', 'Armor').box((.74, 1.9, .06), loc=(s * SIEGE_X, k_ * 2.6, 1.14), bevel=0)
+            K.rivet_line(a.part('Kit_bolts', 'Steel'), (s * (SIEGE_X + .37), k_ * 1.6, 1.0),
+                         (s * (SIEGE_X + .37), k_ * 3.5, 1.0), (s, 0, 0), pitch=.5)
+        a.part('Team_band', 'Team').box((.012, 2.2, .1), loc=(s * 1.03, 0, 1.1), bevel=0)
+        a.part('Skirt_edge', 'Rubber').box((.03, 2.6, .16), loc=(s * (SIEGE_X + .3), 0, .62), bevel=0)
+    for s in (-1, 1):
+        K.lamp(a, (s * .7, -3.95, .98), (0, -1, .1), r=.07, guard=False)
+        K.tow_hook(a.part('Kit_tow', 'Steel'), (s * .55, -4.06, .7), facing=(0, -1, 0), size=.1)
+        a.part('Tail_lamps', 'LavaGlow').box((.12, .02, .07), loc=(s * .8, 3.92, 1.15), bevel=0)
+        k.lathe(a.part('Exhaust', 'Steel'), [(.1, 0), (.1, .4), (.12, .42), (.12, .46), (.08, .46), (.08, .38), (0, .38)],
+                loc=(s * .75, 3.5, 1.4), seg=8)
+        K.soot(a, (s * .75, 3.5, 1.86), radius=.4, k=.4)
+        K.crate(a.part('Stowage', 'Armor'), a.part('Kit_latches', 'Steel'), (.5, .7, .3), (s * .62, 1.95, 1.39))
+    hc = (-.5, -2.75, 1.38)
+    k.ring(a.part('Hatches', 'Armor'), [(.21, 0), (.26, 0), (.26, .05), (.21, .05)], loc=hc, seg=10)
+    k.lathe(a.part('Hatches', 'Armor'), [(0, .08), (.18, .075), (.22, .05), (.22, .02)], loc=hc, seg=10)
+    for dx in (-.25, 0, .25):
+        a.part('Sight', 'Armor').box((.14, .09, .07), loc=(dx, -3.15, 1.36), rot=(-.4, 0, 0), bevel=0)
+    K.grille(a, (0, 2.85, 1.4), 1.3, .9, facing=(0, 0, 1), slats=5, frame_mat='Team')
+    k.ring(a.part('Turret_ring', 'Steel'), [(.88, -.05), (.98, -.05), (.98, .05), (.88, .05)], loc=(0, .1, 1.39),
+           seg=16)
+    a.pivot('Point_exhaust', (.75, 3.55, 1.85))
+    a.pivot('Point_fire', (0, 2.9, 1.45))
+    for s in (1, -1):
+        _siege_leg(a, 'brace', s, -1)
+        _siege_leg(a, 'leg', s, 1)
+    for s, name in ((1, 'Deploy_spade_l'), (-1, 'Deploy_spade_r')):
+        x = s * .72
+        for dx in (-.36, .36):
+            a.part('Spade_lugs', 'Armor').box((.14, .22, .22), loc=(x + dx, 3.86, .66), bevel=0)
+        p = a.pivot(name, (x, 3.93, .66))
+        K.chamfer_box(a.part(f'{name}_blade', 'Armor', p), (.86, .08, 1.0), loc=(0, .09, .55), c=.02)
+        a.part(f'{name}_hinge', 'Steel', p).cyl(.07, .56, rot=ACROSS, seg=8, bevel=0)
+        teeth = a.part(f'{name}_hinge', 'Steel', p)
+        for dx in (-.3, -.1, .1, .3):
+            teeth.box((.14, .06, .14), loc=(dx, .09, 1.1), bevel=0, taper=(.4, 1))
+    _siege_turret(a)
+    k.clean(a)
+    W.merge_static(a)
+
+
+def _siege_leg(a, root, sx, sy):
+    """One hydraulic leg hinged on a pod's outer end (sy -1 front, 1 rear), folded towards the hull's middle: a
+    boxed I-section arm with its actuator, the knee at LEG_LENGTH with the ram housing, the ram and its claw pad."""
+    lr = 'l' if sx > 0 else 'r'
+    hinge = (sx * SIEGE_X, sy * 2.6, LEG_HINGE_Z)
+    a.part('Leg_lugs', 'Steel').box((.42, .34, .1), loc=(hinge[0], hinge[1], 1.12), bevel=0)
+    p = a.pivot(f'Deploy_{root}_{lr}', hinge)
+    arm = a.part(f'Deploy_{root}_{lr}_arm', 'Armor', p)
+    for dx in (-.11, .11):
+        arm.box((.06, LEG_LENGTH - .1, .26), loc=(dx, -sy * LEG_LENGTH / 2, 0), bevel=0, taper=(1, .9))
+    arm.box((.28, LEG_LENGTH - .2, .05), loc=(0, -sy * LEG_LENGTH / 2, .12), bevel=0)
+    K.chamfer_box(arm, (.34, .3, .3), loc=(0, -sy * (LEG_LENGTH - .12), 0), c=.03)
+    steel = a.part(f'Deploy_{root}_{lr}_steel', 'Steel', p)
+    steel.cyl(.15, .42, rot=ACROSS, seg=10, bevel=0)
+    steel.cyl(.05, 1.0, loc=(0, -sy * .66, .2), rot=K.FORWARD, seg=6, bevel=0)
+    kn = a.pivot(f'Deploy_{root}knee_{lr}', (0, -sy * LEG_LENGTH, 0), p)
+    a.part(f'Deploy_{root}knee_{lr}_housing', 'Steel', kn).cyl(.15, .62, loc=(0, 0, .3), seg=10, bevel=0)
+    a.part(f'Deploy_{root}knee_{lr}_housing', 'Steel', kn).cyl(.19, .1, loc=(0, 0, .6), seg=10, bevel=0)
+    r = a.pivot(f'Deploy_{root}ram_{lr}', (0, 0, 0), kn)
+    a.part(f'Deploy_{root}ram_{lr}_rod', 'Steel', r).cyl(.08, .68, loc=(0, 0, .35), seg=8, bevel=0)
+    a.part(f'Deploy_{root}ram_{lr}_pad', 'Undercarriage', r).cyl(.3, .1, loc=(0, 0, -PAD_UNDER + .05), seg=12,
+                                                                 bevel=.02, bseg=1)
+    claws = a.part(f'Deploy_{root}ram_{lr}_rod', 'Steel', r)
+    for i in range(4):
+        u = i * R90 + math.pi / 4
+        claws.box((.1, .1, .1), loc=(math.cos(u) * .27, math.sin(u) * .27, -.04), bevel=0, taper=(.5, .5))
+
+
+def _siege_turret(a):
+    """The broad turret on its tall ring, drawn sieged: the 240 mm mortar (cradle on trunnions, the fat sleeve, the
+    inner tube with its lock collar, the big brake: tube and brake run out 1.9 m sieged) at -Y; the twin 105 mm on
+    its sliding mantlet (Deploy_gun) at +Y; the roof M2 on its post."""
+    r = a.pivot('Deploy_riser', (0, .1, 1.87))
+    a.part('Deploy_riser_column', 'Steel', r).cyl(.85, .72, loc=(0, 0, -.33), seg=16, bevel=0)
+    a.part('Deploy_riser_bands', 'Armor', r).cyl(.88, .08, loc=(0, 0, -.06), seg=16, bevel=0)
+    t = a.pivot('Turret', (0, 0, .04), r)
+    W.poly_turret(a.part('Turret_body', 'Team', t), [
+        (0, [(-.9, -1.55), (.9, -1.55), (1.25, -.85), (1.25, 1.15), (.95, 1.72), (-.95, 1.72), (-1.25, 1.15),
+             (-1.25, -.85)]),
+        (.38, [(-.95, -1.62), (.95, -1.62), (1.3, -.9), (1.3, 1.2), (1.0, 1.78), (-1.0, 1.78), (-1.3, 1.2),
+               (-1.3, -.9)]),
+        (.7, [(-.75, -1.35), (.75, -1.35), (1.05, -.75), (1.05, 1.0), (.8, 1.5), (-.8, 1.5), (-1.05, 1.0),
+              (-1.05, -.75)])], chamfer=.04)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    for s in (-1, 1):
+        for i in range(3):
+            K.panel(a, tarm, (.5, .3), (s * 1.31, -.55 + i * .55, .3), (s, 0, 0), t=.04, rivet=.3, parent=t)
+    K.periscope(a, (-.8, .95, .7), facing=(0, 1, 0), parent=t, size=(.24, .26, .22))
+    k.ring(a.part('Hatches', 'Armor', t), [(.24, 0), (.3, 0), (.3, .07), (.24, .07)], loc=(.55, .35, .7), seg=10)
+    k.lathe(a.part('Hatches', 'Armor', t), [(0, .09), (.21, .085), (.25, .06), (.25, .02)], loc=(.55, .35, .7),
+            seg=10)
+    for s in (-1, 1):
+        K.smoke_dischargers(a, 1.15, 1.35, .45, s, count=3, parent=t)
+    a.part('Team_band', 'Team', t).box((1.1, .55, .012), loc=(0, .1, .705), bevel=0)
+    # The 240 mm siege mortar at the -Y end.
+    z = .92
+    cradle = a.part('Main_cannon_cradle', 'Armor', t)
+    K.chamfer_box(cradle, (1.2, 1.7, .66), loc=(0, -1.05, z - .06), c=.05)
+    for s in (-1, 1):
+        cradle.cyl(.22, .16, loc=(s * .64, -.45, z), rot=ACROSS, seg=10, bevel=0)
+    sleeve = a.part('Main_cannon_sleeve', 'Steel', t)
+    k.lathe(sleeve, [(.36, 0), (.36, 1.7), (.41, 1.72), (.41, 1.82), (.3, 1.82), (.3, 1.6), (0, 1.6)],
+            loc=(0, -1.8, z), rot=K.FORWARD, seg=14)
+    for y in (-2.2, -3.0):
+        sleeve.cyl(.38, .07, loc=(0, y, z), rot=K.FORWARD, seg=14, bevel=0)
+    tube = a.part('Main_cannon_tube', 'Steel', t)
+    tube.cyl(.27, 3.6, loc=(0, -1.8, z), rot=K.FORWARD, seg=14, bevel=0)
+    tube.cyl(.32, .14, loc=(0, -1.8, z), rot=K.FORWARD, seg=14, bevel=0)
+    brake = a.part('Muzzle_brake', 'Armor', t)
+    K.chamfer_box(brake, (.82, .66, .66), loc=(0, -3.94, z), c=.05)
+    brake.cyl(.33, .1, loc=(0, -4.28, z), rot=K.FORWARD, seg=14, bevel=0)
+    ports = a.part('Muzzle_brake_ports', 'Undercarriage', t)
+    for s in (-1, 1):
+        for y in (-3.8, -4.06):
+            ports.box((.04, .14, .4), loc=(s * .41, y, z), bevel=0)
+    a.pivot('Muzzle_main', (0, -4.36, z), t)
+    # The twin 105 mm on its mantlet, which slides 3 m back into the turret when sieging.
+    p = a.pivot('Deploy_gun', (0, 1.6, .42), t)
+    K.chamfer_box(a.part('Mantlet_105', 'Armor', p), (1.0, .5, .46), loc=(0, .05, 0), c=.04)
+    tubes = a.part('Gun105_tubes', 'Steel', p)
+    brakes = a.part('Gun105_brakes', 'Undercarriage', p)
+    for x in (-.22, .22):
+        k.lathe(tubes, [(.11, 0), (.11, 1.0), (.085, 1.05), (.085, 2.95), (0, 2.96)], loc=(x, .3, 0),
+                rot=(-R90, 0, 0), seg=10)
+        brakes.cyl(.11, .28, loc=(x, 3.06, 0), rot=K.FORWARD, seg=8, bevel=0)
+    a.part('Mantlet_105', 'Armor', p).box((.62, .14, .12), loc=(0, 2.2, 0), bevel=0)
+    a.pivot('Muzzle_gun', (-.22, 3.22, 0), p)
+    K.pintle_mg(a, t, (.8, .95, .7), post=.25, length=.9, shield=True)
+
+
 BUILDERS = {
     'bunker_vehicle': (bunker_vehicle, dict(ao_distance=.6, grime_height=.6)),
+    'siege_tank': (siege_tank, dict(ao_distance=.6, grime_height=.6)),
 }
