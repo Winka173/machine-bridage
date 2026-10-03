@@ -8,21 +8,21 @@
             "kind": "vehicle",
             "model": "scout_jeep",
             "source": "Models/scout_jeep_hd",
-            "hash": "v2:08c4b4a8b8a05f45891746d69562a24e3cb33b6c"
+            "hash": "v2:0b42f354ad87b0ccd207882c0254270dfe667388"
         },
         {
             "id": "armored_car",
             "kind": "vehicle",
             "model": "armored_car",
             "source": "Models/armored_car",
-            "hash": "v2:407fb5e7d799c028bf82c060b8ed91060f5193b7"
+            "hash": "v2:0322be161e484cc44371041a65e5946170ff57d6"
         },
         {
             "id": "rocket_technical",
             "kind": "vehicle",
             "model": "rocket_technical",
             "source": "Models/rocket_technical",
-            "hash": "v2:0c0d79dc1a75fc8df751404da91ee86cbd15a4a6"
+            "hash": "v2:6ab372670b26ef861d562fef91e034d4ac7b0af5"
         },
         {
             "id": "light_tank",
@@ -421,14 +421,14 @@
             "kind": "vehicle",
             "model": "nlos_atgm_vehicle",
             "source": "Models/nlos_atgm_vehicle",
-            "hash": "v2:66f02ec02340d7fed32b91ea0db03e201ba81ab4"
+            "hash": "v2:76805189e50223c43c1c871acde0ab7293a69273"
         },
         {
             "id": "radar_atgm_vehicle",
             "kind": "vehicle",
             "model": "radar_atgm_vehicle",
             "source": "Models/radar_atgm_vehicle",
-            "hash": "v2:7f2fdff579ae395854b4256464a4ec62d31600ee"
+            "hash": "v2:3ae2569189887d1e4b612b6c589ea53953044d25"
         },
         {
             "id": "recoilless_jeep",
@@ -617,7 +617,7 @@
             "kind": "vehicle",
             "model": "ground_drone_carrier",
             "source": "Models/ground_drone_carrier",
-            "hash": "v2:293f66f5bc6bd3acda0a9d6f6d75c1c7fd8fb20f"
+            "hash": "v2:34aef112d655a036e98b8791d83149a9c97a0f6f"
         },
         {
             "id": "mobile_repair_vehicle",
@@ -659,7 +659,7 @@
             "kind": "vehicle",
             "model": "aerial_tanker",
             "source": "Models/aerial_tanker",
-            "hash": "v2:ec43c999483b9d865ae4076d882d2a2b72d2f367"
+            "hash": "v2:ccc92be454458796db2e110cd8ea8e5a9a257995"
         },
         {
             "id": "heavy_lift_helicopter",
@@ -1023,14 +1023,14 @@
             "kind": "elite",
             "model": "elite_aa",
             "source": "Models/elite_aa",
-            "hash": "v2:51a62c0eeb1eb718ea10275dd24161de7394b529"
+            "hash": "v2:4cefe758a67d5cd052e1396fd5c635249fc961f0"
         },
         {
             "id": "elite_apc",
             "kind": "elite",
             "model": "elite_apc",
             "source": "Models/elite_apc",
-            "hash": "v2:a616d0ba73c91ca7522da40dfd55da8702d8d0ce"
+            "hash": "v2:1a10be8dfe788cdaee67a2f780632eb4c559672b"
         },
         {
             "id": "elite_artillery",
@@ -1072,7 +1072,7 @@
             "kind": "elite",
             "model": "elite_heavy_tank",
             "source": "Models/elite_heavy_tank",
-            "hash": "v2:cfbc0b9c3a0c2c0b8461ac51eb462a8ae93a7997"
+            "hash": "v2:1b832d44671a00b1d0fd7fd97f33cb7b62b7a999"
         },
         {
             "id": "elite_long_sam",
@@ -1100,7 +1100,7 @@
             "kind": "elite",
             "model": "elite_tank_destroyer",
             "source": "Models/elite_tank_destroyer",
-            "hash": "v2:0045548fded26d6c60062cd328ffd2a46cbb4125"
+            "hash": "v2:59c90f142a88a44dc61b72b941e9b1f3cc2b674b"
         },
         {
             "id": "ew_tower",
@@ -1184,7 +1184,7 @@
             "kind": "tower",
             "model": "guard_tower_b",
             "source": "Models/guard_tower_b",
-            "hash": "v2:204345dd3c9a594bd9a7517d134ecd36d8af2eed"
+            "hash": "v2:3b3064f1f8b99d8ff8b67265db5953731e303d96"
         },
         {
             "id": "guard_tower.watch",
@@ -1212,7 +1212,7 @@
             "kind": "tower",
             "model": "gun_turret_a",
             "source": "Models/gun_turret_a",
-            "hash": "v2:dd5f9e046b9d2f804473c8b35ba46e35430579a7"
+            "hash": "v2:8448cf80f9fb21ca835137840688587d027adaf0"
         },
         {
             "id": "headquarters",
@@ -1415,7 +1415,7 @@
             "kind": "tower",
             "model": "mg_bunker",
             "source": "Models/mg_bunker",
-            "hash": "v2:370aaacbd0fc8e43e332da8ba18839c11d19a74f"
+            "hash": "v2:145ecff9e6b5477c38808574bddbfb31f10376dd"
         },
         {
             "id": "mg_bunker.flame",
@@ -1429,14 +1429,14 @@
             "kind": "tower",
             "model": "mg_bunker_a",
             "source": "Models/mg_bunker_a",
-            "hash": "v2:904c195a40ffcb73013b9d402cbdd49af1641c3c"
+            "hash": "v2:a2a8e63eff153c53ee600560fe9ea963279de4f8"
         },
         {
             "id": "minefield",
             "kind": "tower",
             "model": "minefield",
             "source": "Models/minefield",
-            "hash": "v2:e4df1b826752f245e85bb93d4c5cccb4e517f747"
+            "hash": "v2:435753870128b712f43d17073722674b34bf1e45"
         },
         {
             "id": "missile_battery",
@@ -1681,7 +1681,7 @@
             "kind": "support",
             "model": "uav_loiter_strike",
             "source": "Models/uav_loiter_strike",
-            "hash": "v2:4e903c0fc21cb288b4ee6a2fdf1f6820d2ad1ed6"
+            "hash": "v2:d39feae0054686cfecb578c6bb468c3210fde970"
         },
         {
             "id": "gunship_support",
