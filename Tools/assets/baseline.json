@@ -2758,6 +2758,16 @@
    "changes": [
     "FLAG searchlight: triangles 1,292 -> 4,946 (+282.8%); vertices 1,312 -> 6,468 (+393.0%); meshes 6 -> 45 (+650.0%); renderers 6 -> 45 (+650.0%); materials 5 -> 12 (+140.0%); materialSlots 6 -> 45 (+650.0%); fileBytes 72,596 -> 359,472 (+395.2%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "one_shot_atgm_tower"
+   ],
+   "reason": "P35 wave 3: one_shot_atgm_tower rebuilt (lane B)",
+   "changes": [
+    "FLAG one_shot_atgm_tower: triangles 2,186 -> 5,966 (+172.9%); vertices 3,035 -> 7,950 (+161.9%); meshes 17 -> 40 (+135.3%); renderers 17 -> 40 (+135.3%); materials 9 -> 16 (+77.8%); materialSlots 17 -> 40 (+135.3%); fileBytes 163,444 -> 427,496 (+161.6%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -42025,24 +42035,24 @@
   },
   "one_shot_atgm_tower": {
    "file": "one_shot_atgm_tower.glb",
-   "fileBytes": 163444,
-   "sha1": "a717f3fdc688585c",
+   "fileBytes": 427496,
+   "sha1": "efabf77717b0f73c",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 21,
-   "meshes": 17,
-   "materials": 9,
+   "nodes": 43,
+   "meshes": 40,
+   "materials": 16,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 17,
-   "submeshes": 17,
-   "materialSlots": 17,
-   "materialsUsed": 9,
-   "triangles": 2186,
-   "vertices": 3035,
+   "renderers": 40,
+   "submeshes": 40,
+   "materialSlots": 40,
+   "materialsUsed": 16,
+   "triangles": 5966,
+   "vertices": 7950,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -42050,36 +42060,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 87,
-   "openEdges": 0,
+   "loosePieces": 210,
+   "openEdges": 20,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -2.4031,
+    -2.2463,
     0.0,
-    -2.4036
+    -2.5796
    ],
    "boundsMax": [
-    2.4015,
-    3.57,
-    2.4033
+    2.2889,
+    3.5673,
+    1.8211
    ],
    "size": [
-    4.807,
-    4.805,
-    3.57
+    4.401,
+    4.535,
+    3.567
    ],
    "center": [
-    -0.001,
-    1.785,
-    -0.0
+    0.021,
+    1.784,
+    -0.379
    ],
-   "structureHash": "f9b5b00ccbe8f6b7",
+   "structureHash": "95cf108868299b18",
    "color0": {
-    "mean": 0.7923,
-    "min": 0.6039,
+    "mean": 0.563,
+    "min": 0.0493,
     "max": 1.0,
-    "p05": 0.7001,
-    "p95": 0.9898,
+    "p05": 0.1443,
+    "p95": 0.862,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -42088,32 +42098,51 @@
     ],
     "muzzle": [
      "Muzzle_main",
-     "Muzzle_missile",
-     "Muzzle_missile.001"
+     "Muzzle_missile"
     ]
    },
-   "runtimeSuffixed": [
-    "Muzzle_missile.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
+    "Ammo_boxes",
     "Antennas",
     "Armor",
-    "Beacon",
+    "Base",
+    "Beacon_base",
+    "Beacons",
+    "Camo_net",
+    "Camo_net_garnish",
+    "Console",
+    "Console_legs",
+    "Console_screen",
     "Crates",
+    "Crib",
+    "Crib_fill",
     "Deck",
-    "Embrasures",
+    "Extinguishers",
+    "Glass",
+    "Guidance",
+    "Jerrycans",
+    "Kit_bolts",
+    "Kit_cables",
+    "Kit_cables.001",
+    "Kit_handles",
+    "Kit_latches",
+    "Kit_spikes",
+    "Kit_straps",
     "Launcher",
     "Launcher_bands",
     "Launcher_bores",
     "Launcher_hood",
     "Muzzle_main",
     "Muzzle_missile",
-    "Muzzle_missile.001",
+    "Net_poles",
     "Pedestal",
     "Sandbags",
     "Slab",
+    "Spent_tubes",
     "Steps",
-    "Team_bands",
+    "Stones",
+    "Tube_caps",
     "Tubes",
     "Turntable",
     "Turret"
@@ -42121,9 +42150,7 @@
    "category": "structure",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Muzzle_missile.001"
-   ],
+   "warnings": [],
    "units": [
     "one_shot_atgm_tower"
    ],
