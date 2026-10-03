@@ -3446,6 +3446,14 @@
    "changes": [
     "FLAG helipad: triangles 2,224 -> 4,370 (+96.5%); vertices 3,852 -> 6,698 (+73.9%); meshes 11 -> 30 (+172.7%); renderers 11 -> 30 (+172.7%); materials 8 -> 13 (+62.5%); materialSlots 11 -> 30 (+172.7%); fileBytes 195,076 -> 352,096 (+80.5%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "helipad_a"
+   ],
+   "reason": "P35 wave 12",
+   "changes": []
   }
  ],
  "models": {
