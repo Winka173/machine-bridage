@@ -252,3 +252,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 "nhớ file tối ưu token ngoài các cách lớn thì dùng luôn các cách nhỏ, bạn đã hiểu biết project của tôi, kết hợp với các cách ngoài mạng hãy cho ra các rule khác để tối ưu hơn, và cả các agent khác dùng model gì với công việc cho vào luôn".
 - 03/10 "update lại mạnh nhất là opus, không được dùng fable mọi giá".
 - 03/10 "RÚT GỌN BỘ XUẤT THÀNH GÓI CÂN BẰNG VÀ ĐƯA MỌI GIÁ TRỊ TRONG MÃ RA DỮ LIỆU" + "BỔ SUNG: CẤU TRÚC GÓI GỌN" (nguyên văn: export_pack_vi.txt). Thay mọi tin nhắn rút gọn / vá bộ xuất trước đó.
+- 03/10 "mốc test tạm bỏ, còn 1 đợt cân bằng" (dừng chạy mốc test và kiểm hash phát lại; chỉ kiểm compile).
