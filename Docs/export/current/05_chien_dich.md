@@ -2,7 +2,7 @@
 
 Chương, nhiệm vụ, biến cố, bộ bài game, nhân vật, thống kê thoại.
 
-Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu đầy đủ ở 05_chien_dich.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit ab1de758, ngày 2026-10-03. Số liệu đầy đủ ở 05_chien_dich.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Chiến dịch
 
@@ -23,7 +23,7 @@ Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu
 | **Đại tá Ilya Orlov** | Pháo binh Hegemon · biệt danh Winter | Orlov chưa từng nhìn mặt người nào ông ta giết, và ông ta muốn thế. Lạnh lùng, kiên nhẫn, chính xác, ông ta thích thắng từ khoảng cách đối thủ không nhìn thấy mình. Căn cứ của ông ta là những trận đị… |
 | **Đô đốc Magnus Kessler** | Hậu cần và hải quân Hegemon · biệt danh Maelstrom | Kessler điều hành bến cảng, đường sắt và tàu chiến của Hegemon, và ông ta điều hành chiến tranh như một bảng cân đối: mỗi viên đạn là một khoản chi, mỗi thành phố là một tài sản. Ông ta chưa từng để… |
 | **Tiến sĩ Elara Venn** | Drone của Hegemon; người tạo ra Hive · biệt danh Queen | Venn tạo ra bầy drone như người khác đan len. Bà thiết kế Hive làm hệ thống cứu hộ cho vùng thảm họa, để tìm người còn sống dưới đống đổ nát; Aurel vũ trang cho nó trước khi bà kịp uống xong ly cà ph… |
-| **Kasimir Wolff** | Át chủ bài không quân Hegemon · biệt danh Raven | Kasimir Wolff, biệt danh Raven, chỉ huy không quân Hegemon từ Skyhold và có số lần hạ địch nhiều hơn cả phần còn lại cộng lại. Kiêu ngạo, tài giỏi, chán ngán bất kỳ ai chậm hơn mình. Hắn lái Morrigan… |
+| **Kasimir Wolff** | Át chủ bài không quân Hegemon · biệt danh Raven | Kasimir Wolff, biệt danh Raven, chỉ huy không quân Hegemon từ Skyhold và có số lần hạ địch nhiều hơn cả phần còn lại cộng lại. Kiêu ngạo, tài giỏi, chán ngán bất kỳ ai chậm hơn mình. Hắn lái thứ to n… |
 | **Giám đốc Lucien Aurel** | Người đứng đầu Hegemon; Dự án Icarus · biệt danh Sol | Aurel điều hành Dự án Icarus, một vũ khí quỹ đạo có thể tấn công bất kỳ điểm nào trên mặt đất. Ông ta tin rằng ai kiểm soát bầu trời sẽ kiểm soát thế giới, và nói về chiến tranh như kế toán nói về bá… |
 
 ### Tướng địch là cấu hình AI
@@ -32,13 +32,13 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 
 | Tướng | Kiểu căn cứ | Thế trận | Bộ bài đặc trưng | Hỏa lực | Ưu tiên tinh nhuệ |
 |---|---|---|---|---|---|
-| **Tướng Viktor Varga** | varga | Tấn công | Tăng nhẹ lội nước, Tăng chủ lực, Tăng hạng nặng, Pháo chống tăng tự hành, Xe chiến đấu bộ binh, Tăng phun lửa, Tăng hai nòng, Xe phóng drone FPV | Pháo kích, Không kích, Màn khói | Tank, Heavy |
-| **Đại tá Ilya Orlov** | orlov | Phòng thủ | Pháo phản lực dẫn đường, Lựu pháo tự hành, Xe cối tự hành, Pháo phản lực hạng nặng, Xe tên lửa phòng không tầm trung, Tăng chủ lực, Pháo cao xạ tự hành, Xe radar phản pháo | Pháo kích, Tên lửa hành trình, UAV quét | Artillery |
-| **Đô đốc Magnus Kessler** | kessler | Phòng thủ | Pháo xung kích bánh lốp, Xe chiến đấu bộ binh, Tăng chủ lực, Tăng hạng nặng, Xe tên lửa phòng không tầm trung, Xe phóng drone FPV, Xe rải mìn, Pháo phản lực dẫn đường | Mìn rải từ xa, Pháo kích, Màn khói |  |
-| **Tiến sĩ Elara Venn** | sen | Tấn công | UAV tấn công, Xe phóng drone FPV, Xe phóng đạn lảng vảng, UAV trinh sát, Xe gây nhiễu điện tử, Xe chiến đấu bộ binh, Tăng chủ lực, Pháo cao xạ tự hành | UAV quét, Đòn SEAD, Sửa chữa | Drone |
-| **Kasimir Wolff** | quaden | Tấn công | Trực thăng tấn công, Trực thăng vũ trang bọc giáp, Máy bay cường kích, Tiêm kích, UAV tấn công, Pháo cao xạ tự hành, Tăng chủ lực, Xe tên lửa phòng không tầm trung | Không kích, Đòn SEAD, Bom napalm | Air |
-| **Tướng Roland Thorne** | aurel | Tấn công | Tăng chủ lực, Tăng hạng nặng, Siêu tăng, Xe hỗ trợ tăng, Xe chiến đấu bộ binh, Pháo cao xạ tự hành, Pháo phản lực dẫn đường, Pháo chống tăng tự hành | Pháo kích, Không kích, Tên lửa hành trình |  |
-| **Giám đốc Lucien Aurel** | aurel | Tấn công | Tăng hạng nặng, Xe hỗ trợ tăng, Xe pháo điện từ, Trực thăng tấn công, Xe tên lửa phòng không tầm xa, Pháo phản lực hạng nặng, Siêu tăng, Tiêm kích | Tên lửa hành trình, Không kích, Bom napalm, Đòn SEAD |  |
+| **Tướng Viktor Varga** | varga | Tấn công | Tăng nhẹ lội nước, Tăng chủ lực, Tăng hạng nặng, Pháo chống tăng tự hành, Xe chiến đấu bộ binh, Tăng phun lửa, Tăng hai nòng, Xe phóng drone FPV | Pháo kích, Không kích, Sửa chữa | Tank, Heavy |
+| **Đại tá Ilya Orlov** | orlov | Phòng thủ | Pháo phản lực dẫn đường, Lựu pháo tự hành, Xe cối tự hành, Pháo phản lực hạng nặng, Xe tên lửa phòng không tầm trung, Tăng chủ lực, Pháo cao xạ tự hành, Xe chỉ huy | Pháo kích, Tên lửa hành trình, Không kích | Artillery |
+| **Đô đốc Magnus Kessler** | kessler | Phòng thủ | Pháo xung kích bánh lốp, Xe chiến đấu bộ binh, Tăng chủ lực, Tăng hạng nặng, Xe tên lửa phòng không tầm trung, Xe phóng drone FPV, Xe rải mìn, Pháo phản lực dẫn đường | Mìn rải từ xa, Pháo kích, Sửa chữa |  |
+| **Tiến sĩ Elara Venn** | sen | Tấn công | UAV tấn công, Xe phóng drone FPV, UAV trinh sát, Xe gây nhiễu điện tử, Xe chiến đấu bộ binh, Tăng chủ lực, Pháo cao xạ tự hành | Không kích, Tên lửa hành trình, Sửa chữa | Drone |
+| **Kasimir Wolff** | quaden | Tấn công | Trực thăng tấn công, Máy bay cường kích, Tiêm kích, UAV tấn công, Pháo cao xạ tự hành, Tăng chủ lực, Xe tên lửa phòng không tầm trung | Không kích, Tên lửa hành trình, Bom napalm | Air |
+| **Tướng Roland Thorne** | aurel | Tấn công | Tăng chủ lực, Tăng hạng nặng, Siêu tăng, Xe chiến đấu bộ binh, Pháo cao xạ tự hành, Pháo phản lực dẫn đường, Pháo chống tăng tự hành | Pháo kích, Không kích, Tên lửa hành trình |  |
+| **Giám đốc Lucien Aurel** | aurel | Tấn công | Tăng hạng nặng, Xe chiến đấu bộ binh, Xe pháo điện từ, Trực thăng tấn công, Xe tên lửa phòng không tầm xa, Pháo phản lực hạng nặng, Siêu tăng, Tiêm kích | Tên lửa hành trình, Không kích, Bom napalm |  |
 
 ### Dòng thời gian
 
@@ -47,17 +47,17 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 - Varga lộ diện ở Dunebreak. Nhà máy lọc dầu bốc cháy cùng Inferno bên trong, và ở Red Rock, với đạo quân của Thorne bên cạnh, Behemoth gục ngã. Đêm đó Mara kể với Kade nơi cô đã học cách chế tạo nó.
 - Lữ đoàn làm mù tuyến radar của Orlov, bắn rơi Harpy và hạ Jötunn trước cổng Frostpeak. Orlov rút pháo về phía bắc. Câu cuối của ông ta trên bộ đàm: "Mùa đông luôn quay lại."
 - Juggernaut bị lật, Tempest gục ngay trên cầu tàu của nó và bến cảng về tay ta. Kessler chạy ra biển, và ngoài khơi Beacon Bay, lữ đoàn chiếm các trận địa pháo bờ biển cũ rồi đánh chìm Leviathan. Kessler sống sót; hạm đội của ông ta thì không. Một cánh quân của Thorne đã không có mặt ở nơi đã hứa.
-- Locust, Hive rồi Matriarch lần lượt rơi trên tán rừng đang cháy. Tiến sĩ Venn một mình bước ra khỏi xưởng drone, ra hàng cùng một ổ đĩa đề "Icarus", và bắt đầu làm việc cho Accord.
+- Locust gục ngã, Matriarch bị đẩy lui một lần rồi cuối cùng cũng rơi trên tán rừng đang cháy. Tiến sĩ Venn một mình bước ra khỏi xưởng drone, ra hàng cùng một ổ đĩa đề "Icarus", và bắt đầu làm việc cho Accord.
 - Cuộc tổng phản công của Varga vỡ tan trước Hollow Dam. Trước đó, trong đúng một buổi sáng, Varga và Kade ngừng bắn để dân trong thung lũng kịp chạy; đó là lần duy nhất hai người nói chuyện với nhau. Moloch lao xuống hẻm sông. Quân của Thorne lại tới muộn.
-- Veyra được giải phóng. Giữa trận cuối, căn cứ của Thorne quay pháo vào lữ đoàn; Nadia là người thấy đầu tiên và cứu được một nửa quân ta. Ta đánh ngược lại qua Atlas và chặn Nemesis ngay rìa trung tâm. Thorne trốn thoát cùng một phần ba đạo quân của Accord.
-- Lữ đoàn đuổi theo Thorne vào Deepcut Mine. Tartarus và Ixion gục ngã, còn Kronos bị chặn lại trước khi tới căn cứ của ta. Thorne lại trốn thoát, ra biển.
+- Veyra được giải phóng. Giữa trận cuối, căn cứ của Thorne quay pháo vào lữ đoàn; Nadia là người thấy đầu tiên và cứu được một nửa quân ta. Ta đánh ngược lại qua Behemoth Mk.II và chặn Nemesis ngay rìa trung tâm. Thorne trốn thoát cùng một phần ba đạo quân của Accord.
+- Lữ đoàn đuổi theo Thorne vào Deepcut Mine. Ixion gục ngã; Moloch được kéo lên từ hẻm sông, cùng Tartarus dưới lòng đất, bị chặn lại trước khi tới căn cứ của ta. Thorne lại trốn thoát, ra biển.
 - Typhon nổi lên giữa vịnh với Thorne trên đài chỉ huy, rồi chìm. Tin nhắn cuối của ông ta tới sau khi tàu đã chìm: tọa độ bãi phóng của Dự án Icarus, và một câu: "Đừng để tôi đã đúng." Không ai tìm thấy thi thể ông ta.
 - Icarus Mk.0 lộ diện trên Skyhold rồi bỏ chạy: một bản thử nghiệm, Venn nói, cho một thứ lớn hơn nhiều. Hawk hạ Raven trên không, và trong trận đánh chiếm Skyhold, anh bắn phát cuối cùng.
-- Orlov đánh trận cuối cùng với Gungnir rồi ra hàng qua bộ đàm. Venn phát hiện chương trình drone của mình đã nằm trong tay Aurel. Daedalus rơi xuống Skygate Array, và con đường tới Helion mở ra.
+- Orlov đánh trận cuối cùng với Monster rồi ra hàng qua bộ đàm. Venn phát hiện chương trình drone của mình đã nằm trong tay Aurel. Daedalus rơi xuống Skygate Array, và con đường tới Helion mở ra.
 - Varga ngã xuống như một người lính; Kessler mặc cả tới phút cuối. Aurel phóng Icarus và một thanh vonfram rơi từ quỹ đạo, nhưng rồi Icarus rơi theo, đúng như cái tên của nó. Aurel chiến đấu tới cùng trong xác phi thuyền. Meridian Coast được giải phóng.
 - Ở Foundry, Mara đối mặt với chiếc Behemoth Mk.0 cô từng vẽ khi còn là một kỹ sư trẻ, và mang bản thiết kế của nó về. Thiếu tá Brenn ký nhận từng trang.
 - Lữ đoàn đưa tiến sĩ Venn qua Mirewood và Border Crossing với hai chiếc Locust bám theo. Tới bờ bên kia, bà đưa ra lựa chọn của mình: bà ở lại với lữ đoàn.
-- Đội quân của đại tá Reyn tìm thấy Hawk và đưa anh ra qua Frostpeak và Jungle Pass, với Morrigan trên đầu. Raven để anh đi, lần này.
+- Đội quân của đại tá Reyn tìm thấy Hawk và đưa anh ra qua Frostpeak và Jungle Pass, với Harpy trên đầu. Raven để anh đi, lần này.
 
 ### Chương 1: Coast of Fire
 
@@ -65,12 +65,12 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 |---|---|---|---|---|---|---|
 | c1m01 | **Đổ bộ** Xuồng đổ bộ đã chạm cát. Chiếm bãi biển và con dốc phía trên trước khi đồn Hegemon kịp tỉnh ngủ. Quân ta tự chiến đấu: bạn chọn nơi đánh, mang theo gì và lúc nào pháo khai hỏa. | Stormbeach | Chiếm cứ điểm |  | 100 xu | Bán tải rốc-két |
 | c1m02 | **Bịt mắt bờ biển** Trạm radar trên vách đá đang gọi pháo Hegemon bắn vào từng chiếc xuồng còn trong vịnh. Hạ nó xuống, các đợt đổ bộ sau sẽ vào bờ mà không bị phát hiện. | Stormbeach | Phá hủy |  | 105 xu | Xe cối tự hành |
-| c1m03 | **Làng chài** Làng chài ở cửa sông, ngã tư phía trên và trang trại phía xa khống chế mọi con đường vào đất liền. Chỉ một nhúm lính trinh sát của Brandt giữ chúng. Chiếm cả ba là lữ đoàn có chỗ thở. | Greenvale | Chiếm cứ điểm |  | 105 xu | Sửa chữa |
+| c1m03 | **Làng chài** Làng chài ở cửa sông, ngã tư phía trên và trang trại phía xa khống chế mọi con đường vào đất liền. Chỉ một nhúm lính trinh sát của Brandt giữ chúng. Chiếm cả ba là lữ đoàn có chỗ thở. | Greenvale | Chiếm cứ điểm |  | 105 xu | Tăng nhẹ lội nước |
 | c1m04 | **Tiền đồn đầu tiên** Mara muốn lấy ngã tư làm căn cứ. Chiếm nó, lập tiền đồn ở đó và giữ vững trong lúc đội của cô thả tháp xuống. Trụ được rồi, lữ đoàn sẽ có sở chỉ huy đầu tiên trên Meridian Coast. | Greenvale | Lập tiền đồn |  | 110 xu · HQ 1 | Dàn rốc-két, Xưởng sửa chữa |
-| c1m05 | **Bastion Mk.0** Brandt tung pháo đài nguyên mẫu băng qua cánh đồng Greenvale trong đêm để nghiền nát trại mới của ta. Nó chậm và giáp mỏng. Chặn nó lại. | Greenvale | Tiêu diệt boss Bastion Mk.0 · Pháo đài nguyên mẫu |  | 170 xu | Tăng nhẹ lội nước |
+| c1m05 | **Bastion Mk.0** Brandt tung pháo đài nguyên mẫu băng qua cánh đồng Greenvale trong đêm để nghiền nát trại mới của ta. Nó chậm và giáp mỏng. Chặn nó lại. | Greenvale | Tiêu diệt boss Bastion Mk.0 · Pháo đài nguyên mẫu |  | 170 xu | Xe công binh |
 | c1m06 | **Đường tiếp tế** Nhiên liệu và đạn cho các đơn vị tiền phương, năm xe tải dưới mưa. Đưa ít nhất ba xe tới trang trại phía tây. Xe tải sẽ chờ hộ tống; chúng không tự lao vào ổ phục kích đâu. | Greenvale | Hộ tống |  | 115 xu | Bán tải cao xạ |
-| c1m08 | **Đường vào Ashfield** Thị trấn Ashfield cùng hai kho nhiên liệu nằm ngay trước pháo đài. Chiếm cả ba, pháo đài sẽ bị cắt khỏi đường cái. | Ashfield | Chiếm cứ điểm |  | 120 xu | Bãi mìn |
-| c1m09 | **Đạn cho trận vây thành** Pháo đánh pháo đài cần đạn. Đưa đoàn xe chở đạn vòng đường phía đông vào thị trấn Ashfield; năm xe phải tới được ba. | Ashfield | Hộ tống |  | 125 xu | Xe công binh |
+| c1m08 | **Đường vào Ashfield** Thị trấn Ashfield cùng hai kho nhiên liệu nằm ngay trước pháo đài. Chiếm cả ba, pháo đài sẽ bị cắt khỏi đường cái. | Ashfield | Chiếm cứ điểm |  | 120 xu |  |
+| c1m09 | **Đạn cho trận vây thành** Pháo đánh pháo đài cần đạn. Đưa đoàn xe chở đạn vòng đường phía đông vào thị trấn Ashfield; năm xe phải tới được ba. | Ashfield | Hộ tống |  | 125 xu |  |
 | c1m10 | **Pháo đài Ashfield** chiến dịch lớn Lò gạch cũ trên đồi là điểm mạnh nhất của Hegemon trên Meridian Coast, và Bastion đi tuần trong sân của nó. Đốt kho nhiên liệu bên ngoài, chọn cách làm yếu tường… | Ashfield | Phá hủy |  | 305 xu |  |
 | c1s1 | **Dấu xích trong sương** phụ Nadia nghe thấy tiếng động cơ trong sương quanh các trang trại Greenvale. Đưa một xe tới từng cứ điểm trong ba cứ điểm để xem trước khi thứ gì ngoài đó kịp cố thủ. | Greenvale | Trinh sát |  | 350 xu |  |
 
@@ -83,10 +83,10 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | c2m03 | **Đoàn xe đêm** Xe bồn nhiên liệu cho lữ đoàn, băng qua hẻm núi trong đêm, qua ốc đảo tới đầu giếng. Năm xe phải qua được ba. | Red Rock | Hộ tống |  | 135 xu | Tăng phun lửa |
 | c2m04 | **Cắt đường ống** Năm trạm đường ống dẫn dầu từ Red Rock vào nhà máy lọc dầu. Cho nổ tung tất cả. Một trận đột kích, không căn cứ: vào nhanh, ra nhanh hơn. | Dunebreak | Phá hủy | varga | 140 xu | Không kích |
 | c2m05 | **Inferno** Varga tung Inferno ra giữa bão cát để canh con đường tới nhà máy lọc dầu: một chiếc Behemoth dựng lại quanh các súng phun lửa. Tránh xa tầm với của nó và đẩy nó lùi lại. | Dunebreak | Tiêu diệt boss Inferno · Behemoth phun lửa | varga | 215 xu | Xe tiếp đạn |
-| c2m06 | **Săn bọ cạp** Ba dàn pháo phản lực và tên lửa của Varga ẩn giữa các khối đá, đánh dấu màu đỏ. Tìm ra chúng trong bão cát và tiêu diệt. | Red Rock | Săn mục tiêu | varga | 145 xu | Tháp tên lửa chống tăng, Kho đạn |
+| c2m06 | **Săn bọ cạp** Ba dàn pháo phản lực và tên lửa của Varga ẩn giữa các khối đá, đánh dấu màu đỏ. Tìm ra chúng trong bão cát và tiêu diệt. | Red Rock | Săn mục tiêu | varga | 145 xu | Tháp tên lửa chống tăng |
 | c2m07 | **Đồn ốc đảo** Một đại đội dân quân Red Rock đã tuyên bố đứng về phía Accord và đang giữ ốc đảo. Xe tăng của Varga vây kín họ. Phá vòng vây trước khi sở chỉ huy của họ thất thủ. Các xe vây được đánh… | Red Rock | Giải vây |  | 150 xu | Xe bom bọc thép |
-| c2m08 | **Giữ nhà máy lọc dầu** Ta đã đặt được một chân vào nhà máy lọc dầu. Varga đang tung lực lượng dự bị vào đó. Giữ sân nhà máy trong bốn phút. | Dunebreak | Giữ cứ điểm | varga | 155 xu | Xe thả khói |
-| c2m09 | **Trại của Varga** Varga đã đào sở chỉ huy vào cuối hẻm núi: pháo chống tăng, những chiếc xe tăng hắn ưng ý nhất, và cái tính nóng của hắn. San phẳng sở chỉ huy. Hắn sẽ chạy; để hắn biết ta đang tới. | Red Rock | Đấu tướng | varga | 155 xu | Xe radar phản pháo |
+| c2m08 | **Giữ nhà máy lọc dầu** Ta đã đặt được một chân vào nhà máy lọc dầu. Varga đang tung lực lượng dự bị vào đó. Giữ sân nhà máy trong bốn phút. | Dunebreak | Giữ cứ điểm | varga | 155 xu |  |
+| c2m09 | **Trại của Varga** Varga đã đào sở chỉ huy vào cuối hẻm núi: pháo chống tăng, những chiếc xe tăng hắn ưng ý nhất, và cái tính nóng của hắn. San phẳng sở chỉ huy. Hắn sẽ chạy; để hắn biết ta đang tới. | Red Rock | Đấu tướng | varga | 155 xu |  |
 | c2m10 | **Đột kích nhà máy lọc dầu** Trận đột kích mà Varga sợ nhất: chiếm mỏ dầu và ốc đảo, chọn mục tiêu kế tiếp, rồi cho nổ tháp và bồn chứa của nhà máy, cùng Inferno bên trong. Giai đoạn: Mỏ dầu và ốc đả… | Dunebreak | Chiếm cứ điểm | varga | 290 xu |  |
 | c2m11 | **Behemoth ở Red Rock** chiến dịch lớn Chiến dịch giành Red Rock, lần đầu tiên có đạo quân của tướng Thorne ở bên sườn. Chiếm giếng dầu, chọn đòn đánh, chiếm và giữ ốc đảo, rồi hạ chính Behemoth. Gia… | Red Rock | Chiếm cứ điểm | varga | 390 xu |  |
 | c2s1 | **Bản đồ bãi mìn** phụ Nadia cần người tới xem ốc đảo, nhà máy và mỏ dầu trong đêm: Varga đang cho rải mìn, và cô muốn biết ở đâu. Nhìn rồi đi, đừng nấn ná. | Dunebreak | Trinh sát |  | 450 xu |  |
@@ -99,11 +99,11 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | c3m01 | **Vào đèo** Whiteout Pass là con đường duy nhất lên phía bắc. Tiền đồn của Orlov giữ trạm tín hiệu, hồ băng và xưởng cưa. Chiếm cả ba trong tuyết. | Whiteout Pass | Chiếm cứ điểm | orlov | 165 xu | Xe tên lửa phòng không tầm trung |
 | c3m02 | **Làm mù radar** Trạm đầu tiên trên tuyến radar của Orlov đứng trên cao điểm phía tây. Chừng nào nó còn nhìn thấy, pháo của hắn còn bắn trúng mọi thứ ta di chuyển. Phá hủy nó. | Frostpeak | Phá hủy | orlov | 170 xu | Trực thăng tấn công |
 | c3m11 | **Đường radar** Con đường tới tuyến radar của Orlov chạy qua ba xóm nhỏ đóng băng trên sườn Frostpeak. Chiếm cả ba trong tuyết; người chỉ điểm của ông ta nấp ở từng xóm. | Frostpeak | Chiếm cứ điểm | orlov | 175 xu | Tiêm kích |
-| c3m03 | **Ngôi làng trong sương** Ngôi làng dưới thung lũng là chỗ trú duy nhất trong vòng nhiều cây số. Orlov muốn lấy lại, và sương mù che pháo của hắn. Giữ làng trong ba phút rưỡi. | Frostpeak | Giữ cứ điểm | orlov | 175 xu | UAV quét |
-| c3m04 | **Căn cứ trên băng** Mara muốn dựng căn cứ tiền phương trên hồ băng, giữa đèo. Chiếm hồ, lập tiền đồn và giữ nó ba phút. Ban đêm. Trên băng. | Whiteout Pass | Lập tiền đồn | orlov | 180 xu | Răng rồng, Trạm radar |
+| c3m03 | **Ngôi làng trong sương** Ngôi làng dưới thung lũng là chỗ trú duy nhất trong vòng nhiều cây số. Orlov muốn lấy lại, và sương mù che pháo của hắn. Giữ làng trong ba phút rưỡi. | Frostpeak | Giữ cứ điểm | orlov | 175 xu | Trực thăng trinh sát vũ trang |
+| c3m04 | **Căn cứ trên băng** Mara muốn dựng căn cứ tiền phương trên hồ băng, giữa đèo. Chiếm hồ, lập tiền đồn và giữ nó ba phút. Ban đêm. Trên băng. | Whiteout Pass | Lập tiền đồn | orlov | 180 xu | Nhà chứa xe |
 | c3m05 | **Harpy** Harpy vẫn săn các đoàn tiếp tế của ta trên đèo, và một phi công át chủ bài lái chiếc phản lực mang phù hiệu đen bay cùng nó. Bắn rơi pháo hạm bay. Phòng không có là để cho lúc này. | Whiteout Pass | Tiêu diệt boss Harpy · Trực thăng khổng lồ | orlov | 275 xu · HQ 2 | UAV trinh sát |
-| c3m06 | **Pháo của Orlov** Nadia đã định vị được ba khẩu đội của Orlov qua ánh chớp đầu nòng, đánh dấu màu đỏ. Chúng di chuyển sau mỗi loạt bắn. Săn chúng trong bóng tối. | Frostpeak | Săn mục tiêu | orlov | 185 xu | Trực thăng trinh sát vũ trang |
-| c3m12 | **Dưới làn pháo** Orlov biết ta đang ở đâu. Trong năm phút, mọi khẩu pháo trên tuyến của ông ta sẽ nã vào một thung lũng, thung lũng của ta, và quân yểm hộ sẽ tràn vào sau làn đạn. Trụ vững. | Frostpeak | Trụ vững | orlov | 190 xu | Xe rải mìn |
+| c3m06 | **Pháo của Orlov** Nadia đã định vị được ba khẩu đội của Orlov qua ánh chớp đầu nòng, đánh dấu màu đỏ. Chúng di chuyển sau mỗi loạt bắn. Săn chúng trong bóng tối. | Frostpeak | Săn mục tiêu | orlov | 185 xu | Xe rải mìn |
+| c3m12 | **Dưới làn pháo** Orlov biết ta đang ở đâu. Trong năm phút, mọi khẩu pháo trên tuyến của ông ta sẽ nã vào một thung lũng, thung lũng của ta, và quân yểm hộ sẽ tràn vào sau làn đạn. Trụ vững. | Frostpeak | Trụ vững | orlov | 190 xu |  |
 | c3m07 | **Những căn nhà gỗ trong tuyết** Các gia đình trên đèo đã trú trong những căn nhà gỗ và nhà kho phía nam. Orlov đang nã pháo vào mọi thứ còn mái che. Giữ ít nhất một căn đứng vững trong bảy phút. | Whiteout Pass | Bảo vệ | orlov | 195 xu |  |
 | c3m08 | **Đoàn xe cứu thương** Thuốc men và bác sĩ cho trạm tín hiệu, nơi thương binh trên đèo đang chờ. Năm xe trong đêm; phải tới được ba xe. | Whiteout Pass | Hộ tống |  | 195 xu |  |
 | c3m09 | **Trận địa pháo của Orlov** Sở chỉ huy của Orlov nằm sau một bức tường ụ pháo, nơi hắn nhìn thấy cả thung lũng. Chọc thủng và san phẳng nó. Hắn sẽ không chờ ta đâu. | Frostpeak | Đấu tướng | orlov | 200 xu |  |
@@ -115,7 +115,7 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 
 | # | Nhiệm vụ | Bản đồ | Mục tiêu | Tướng | Thưởng | Mở khóa |
 |---|---|---|---|---|---|---|
-| i1m01 | **Cổng Foundry** Foundry có ba lối vào: cổng bốc dỡ, nhà ga đường ray và xưởng luyện. Chiếm cả ba trong đêm, thật lặng lẽ, trước khi lính gác biết ta đã tới. | Foundry | Chiếm cứ điểm | varga | 205 xu | Tăng mái che |
+| i1m01 | **Cổng Foundry** Foundry có ba lối vào: cổng bốc dỡ, nhà ga đường ray và xưởng luyện. Chiếm cả ba trong đêm, thật lặng lẽ, trước khi lính gác biết ta đã tới. | Foundry | Chiếm cứ điểm | varga | 205 xu |  |
 | i1m02 | **Sổ cái** Thiếu tá Brenn biết Hegemon lưu hồ sơ thế nào: ba bản một. Bản vẽ Behemoth bị chia ra ba phòng lưu trữ. Đưa xe tới từng phòng, phần còn lại để ông lo. | Foundry | Trinh sát | varga | 210 xu |  |
 | i1m03 | **Behemoth Mk.0** Tiếng báo động đã đánh thức lính gác lâu năm nhất của Foundry: Behemoth Mk.0, bản nguyên mẫu Mara thiết kế khi cô chưa hiểu chuyện. Nó chậm và cũ, nhưng thuộc từng góc của các xưởng… | Foundry | Tiêu diệt boss Behemoth Mk.0 · Behemoth nguyên mẫu | varga | 320 xu |  |
 | i1m04 | **Rời Foundry** Ta đã có bản vẽ; Hegemon muốn lấy lại trước khi chúng lên xe. Giữ bãi bốc dỡ cho tới khi đoàn xe chất hàng xong. | Foundry | Giữ cứ điểm | varga | 215 xu |  |
@@ -132,7 +132,7 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | c4m12 | **Các cứ điểm của Flag** Đại úy Adler muốn ba cứ điểm dọc tường cảng, và muốn cờ của anh cắm trên từng cái trước trưa. Chiếm chúng từ phía đất liền, trong mưa. | Ironport | Chiếm cứ điểm | kessler | 235 xu | Pháo phản lực dẫn đường |
 | c4m07 | **Kessler phản đòn** Giờ ta giữ khu nhà máy, và công nhân đã quay lại bàn máy. Kessler đang kéo tới từ phía nam để đốt trụi nó chứ không chịu mất. Giữ ít nhất một tòa nhà đứng vững trong bảy phút. | Ironport | Bảo vệ | kessler | 240 xu | Xe phòng không pháo – tên lửa |
 | c4m16 | **Bản kê hàng** Hai xe chỉ huy của Kessler đang chở bản kê hàng của bến cảng ra khỏi Ironport, và Nadia muốn biết ông ta đã chở những gì. Chặn cả hai trước khi chúng ra tới cổng. | Ironport | Săn mục tiêu | kessler | 245 xu | Xe ủi bọc thép |
-| c4m08 | **Tàu rải mìn trên cạn** Đêm nào các xe rải mìn của Kessler cũng gieo mìn khắp những con đường vào cảng. Nadia đã đánh dấu ba chiếc. Săn chúng trước khi chúng xong một vòng. | Rust Yard | Săn mục tiêu | kessler | 245 xu | Xe hỗ trợ tăng |
+| c4m08 | **Tàu rải mìn trên cạn** Đêm nào các xe rải mìn của Kessler cũng gieo mìn khắp những con đường vào cảng. Nadia đã đánh dấu ba chiếc. Săn chúng trước khi chúng xong một vòng. | Rust Yard | Săn mục tiêu | kessler | 245 xu | Tiếp viện thả dù |
 | c4m13 | **Sườn bỏ trống** Cánh quân của Thorne lẽ ra phải che sườn trái trong lúc ta giữ ngả qua xưởng đúc. Nó chưa tới. Một mình giữ ngả qua trong ba phút rưỡi. | Rust Yard | Giữ cứ điểm | kessler | 250 xu |  |
 | c4m09 | **Tổng hành dinh của Đô đốc** Sở chỉ huy của Kessler nằm sau những dãy công-te-nơ ở đầu bắc bến cảng, phòng thủ thứ gì cũng có một ít và mìn ở khắp nơi. Phá nó giữa cơn bão và san phẳng sở chỉ huy. | Ironport | Đấu tướng | kessler | 255 xu |  |
 | c4m10 | **Chiếm bến cảng** Cả bến cảng, trong một ngày: bãi đường sắt, rồi khu nhà máy và bến tàu. Trên cầu tàu, theo các bản chặn thu của Nadia, Tempest đang chờ với khẩu súng điện từ. Chiếm tất cả, tiêu di… | Ironport | Chiếm cứ điểm | kessler | 460 xu | Xe pháo điện từ |
@@ -153,15 +153,15 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | c5m02 | **Xe bầy đàn** Ba xe phóng của Venn đêm nào cũng tung bầy drone qua đồng dung nham. Nadia đã đánh dấu chúng. Săn chúng dưới ánh sáng của dung nham. | Emberridge | Săn mục tiêu | sen | 275 xu | Xe phóng drone FPV |
 | c5m03 | **Đường ven sông** Thiết bị bắc cầu cho công binh, ngược đường ven sông qua sương rừng tới làng phía tây. Năm xe phải tới được ba; drone của Venn sẽ săn lùng chúng. | Jungle Pass | Hộ tống |  | 280 xu | Xe phóng drone cảm tử tầm xa |
 | c5m04 | **Nhà máy địa nhiệt** Mara muốn lấy nhà máy địa nhiệt giữa Emberridge: điện miễn phí cho một căn cứ tiền phương. Chiếm nó, lập tiền đồn, giữ ba phút. | Emberridge | Lập tiền đồn | sen | 285 xu | Sân bay dã chiến |
-| c5m08 | **Giữ đèn sáng** Các bồn hơi của nhà máy địa nhiệt giờ cấp điện cho cả lữ đoàn. Drone của Venn đang lao tới từ phía nam. Giữ ít nhất một bồn đứng vững trong bảy phút. | Emberridge | Bảo vệ Locust · Tàu con drone | sen | 285 xu | Xe phóng đạn lảng vảng |
-| c5m12 | **Vòng ra phía sau** Quân canh vòng ngoài của Venn nhìn về đèo từ phía nam. Vòng qua các làng phía bắc và chiếm cả đèo từ phía sau, trong mưa. | Jungle Pass | Chiếm cứ điểm | sen | 290 xu | Xe gây nhiễu điện tử |
-| c5m05 | **Hive** Pháo đài drone của Venn đang bò xuống con đèo trong cơn bão, bầy drone bốc lên từ các giàn phóng. Nó không có pháo chính và chẳng sợ máy bay nào. Đập vỡ nó bằng xe tăng và pháo binh. | Jungle Pass | Tiêu diệt boss Hive · Pháo đài drone | sen | 440 xu |  |
+| c5m08 | **Giữ đèn sáng** Các bồn hơi của nhà máy địa nhiệt giờ cấp điện cho cả lữ đoàn. Drone của Venn đang lao tới từ phía nam. Giữ ít nhất một bồn đứng vững trong bảy phút. | Emberridge | Bảo vệ Locust · Tàu con drone | sen | 285 xu | Xe gây nhiễu điện tử |
+| c5m12 | **Vòng ra phía sau** Quân canh vòng ngoài của Venn nhìn về đèo từ phía nam. Vòng qua các làng phía bắc và chiếm cả đèo từ phía sau, trong mưa. | Jungle Pass | Chiếm cứ điểm | sen | 290 xu |  |
+| c5m05 | **Matriarch** Tàu sân bay drone của Venn, Matriarch, đang hạ xuống con đèo trong cơn bão, bầy drone tuôn ra từ bụng nó. Máy bay của ta không bay nổi trong thời tiết này. Phòng không và mọi khẩu pháo… | Jungle Pass | Tiêu diệt boss Matriarch · Tàu mẹ drone | sen | 440 xu |  |
 | c5m06 | **Cổng Dung Nham** Xưởng drone nằm trong một pháo đài ở đầu bắc sườn núi. Phá tường trong đêm và san phẳng sở chỉ huy. | Emberridge | Phá hủy | sen | 295 xu |  |
 | c5m11 | **Tín hiệu phòng thí nghiệm** Nadia lần theo một tín hiệu tới một phòng thí nghiệm trên sườn núi mà chính bản đồ của Hegemon bỏ sót. Đưa xe tới từng tòa nhà đã đánh dấu. Có thể Venn đang ở trong. | Emberridge | Trinh sát | sen | 300 xu |  |
 | c5m07 | **Quét sạch tán rừng** Drone tấn công của Venn làm chủ bầu trời trên đèo. Bắn rơi mười bốn chiếc, và rừng lại thuộc về lữ đoàn. | Jungle Pass | Bắn hạ máy bay | sen | 305 xu |  |
 | c5m13 | **Ngôi đền trong đêm** Bến lội qua ngôi đền là ngả qua duy nhất bầy drone không nhìn thấu được qua tán rừng. Giữ nó suốt đêm. | Jungle Pass | Giữ cứ điểm | sen | 305 xu |  |
 | c5m09 | **Những nhà chứa trên đèo** Sở chỉ huy dã chiến của Venn được bao quanh bởi những nhà chứa drone và xe gây nhiễu. Phá nó trong đêm và san phẳng sở chỉ huy. Nadia nghĩ bà ấy có thể sẽ không đánh tới c… | Jungle Pass | Đấu tướng | sen | 310 xu |  |
-| c5m10 | **Matriarch** chiến dịch lớn Tàu mẹ của Hive đang lơ lửng trên Emberridge, tiếp bầy drone cho mọi đơn vị Hegemon trong rừng. Chiếm các đường đắp, chọn đòn kế tiếp, trụ vững trước bầy drone nó tung ra… | Emberridge | Chiếm cứ điểm | sen | 750 xu | Máy bay mẹ thả drone |
+| c5m10 | **Matriarch** chiến dịch lớn Matriarch đã quay lại lơ lửng trên Emberridge, tiếp bầy drone cho mọi đơn vị Hegemon trong rừng. Chiếm các đường đắp, chọn đòn kế tiếp, trụ vững trước bầy drone nó tung r… | Emberridge | Chiếm cứ điểm | sen | 750 xu | Máy bay mẹ thả drone |
 | c5s1 | **Sổ ghi chép của Venn** phụ Venn có các trạm thực địa trong đèo, không ghi trong sổ sách của Hegemon. Nadia muốn tận mắt thấy cả ba trước khi có người dọn sạch chúng. | Jungle Pass | Trinh sát |  | 865 xu |  |
 | c5s2 | **Làng đốt than** phụ Dân đốt than trên sườn núi đã cầm cự với Hegemon suốt hai năm trong một trại có rào lũy. Giờ họ bị vây kín. Phá vòng vây; quân vây được đánh dấu. | Emberridge | Giải vây |  | 865 xu |  |
 
@@ -173,7 +173,7 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | c6m13 | **Phòng tuyến của Brandt** Thiếu tá Brandt đã về phe ta, và ông biết chính xác Varga sẽ đánh vào Ashfield ở đâu. Chiếm quảng trường thị trấn, lập tiền đồn và giữ nó trong lúc công binh của ông dựng t… | Ashfield | Lập tiền đồn | varga | 320 xu | Tăng hai nòng |
 | c6m02 | **Sơ tán Whiteout Pass** Đợt phản công của Varga đang tràn qua đèo. Dân làng ở hồ băng phải rời đi: sáu xe tải, cứ vài giây một chiếc, theo đường về trại của ta. Giữ hồ cho tới khi xe cuối cùng rời đ… | Whiteout Pass | Di tản | varga | 325 xu | Trạm đánh chặn C-RAM |
 | c6m16 | **Lại Greenvale** Thiết giáp của Varga đã chiếm lại ngã tư Greenvale, ngôi làng và trang trại ta giành được những ngày đầu. Chiếm lại chúng từ phía bên kia, trong sương. | Greenvale | Chiếm cứ điểm | varga | 325 xu | Xe la-de phòng không |
-| c6m11 | **Canh mùa gặt** Cuộc tổng phản công của Varga đã tới Greenvale, và Aurel muốn đốt các si-lô thóc cùng tháp nước để cả thung lũng chết đói mùa đông này. Giữ ít nhất một công trình đứng vững qua cơn b… | Greenvale | Bảo vệ | varga | 330 xu | Trực thăng vũ trang bọc giáp |
+| c6m11 | **Canh mùa gặt** Cuộc tổng phản công của Varga đã tới Greenvale, và Aurel muốn đốt các si-lô thóc cùng tháp nước để cả thung lũng chết đói mùa đông này. Giữ ít nhất một công trình đứng vững qua cơn b… | Greenvale | Bảo vệ | varga | 330 xu |  |
 | c6m03 | **Behemoth của ta** Mara đã làm được: chiếc Behemoth trong sân pháo đài Ashfield đã chạy, và nó là của ta. Hộ tống nó từ Jötunn qua Ashfield ra tiền tuyến. Varga sẽ làm mọi cách để chặn chính cỗ máy… | Ashfield | Hộ tống | varga | 335 xu | Tháp gây nhiễu EW |
 | c6m05 | **Behemoth Mk.II** Varga đã dựng lại chiếc Behemoth ta đốt ở Dunebreak: nặng hơn, lắp hệ sưởi cho tuyết, và đang xuống Whiteout Pass. Chặn Behemoth Mk.II trước khi nó tới phòng tuyến của ta. | Whiteout Pass | Tiêu diệt boss Behemoth Mk.II · Behemoth nâng cấp | varga | 505 xu |  |
 | c6m12 | **Trinh sát trên vách đá** Trinh sát của Varga đang nấp trên vách đá Stormbeach, chỉ điểm cho cuộc đổ bộ Charybdis sắp tiến hành. Nadia đã đánh dấu ba tổ. Săn chúng trong mưa. | Stormbeach | Săn mục tiêu | varga | 340 xu |  |
@@ -184,7 +184,7 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | c6m09 | **Trại mùa đông của Varga** Varga dựng trại mùa đông ở phía nam đèo, ngay trên các vị trí cũ của ta, và đào sẵn mọi khẩu pháo chống tăng hắn có. San phẳng sở chỉ huy, đợt phản công của hắn sẽ mất đầu. | Whiteout Pass | Đấu tướng | varga | 355 xu |  |
 | c6m15 | **Đường tràn** Thiết giáp của Varga giữ con đường tràn dưới chân đập: trạm phát điện, cây cầu và bến lội. Thorne hứa sẽ đánh bến lội từ phía bắc. Chiếm cả ba; đừng chờ ông ta. | Hollow Dam | Chiếm cứ điểm | varga | 360 xu |  |
 | c6m14 | **Ngừng bắn** Hollow Dam đang nứt. Trong đúng một buổi sáng, Varga và Kade đồng ý ngừng bắn để các làng bên dưới kịp chạy. Bầy drone của Aurel thì chẳng đồng ý gì cả. Đưa các gia đình qua cầu và xuốn… | Hollow Dam | Di tản | varga | 365 xu |  |
-| c6m10 | **Bảo vệ con đập** chiến dịch lớn Quân bài cuối của Varga là Moloch, một nhà máy bánh xích vừa lăn vừa đóng xe tăng, và nó đang tiến về con đập. Giữ đỉnh đập cho tới khi quân của Thorne tới. Giai đoạ… | Hollow Dam | Giữ cứ điểm | varga | 880 xu | Xe công sự triển khai |
+| c6m10 | **Bảo vệ con đập** chiến dịch lớn Quân bài cuối của Varga là Moloch, một nhà máy bánh xích vừa lăn vừa đóng xe tăng, và nó đang tiến về con đập. Giữ đỉnh đập cho tới khi quân của Thorne tới. Giai đoạ… | Hollow Dam | Giữ cứ điểm | varga | 880 xu |  |
 | c6s1 | **Không kích đêm** phụ Máy bay đột kích đêm của Varga đang ném bom pháo đài Ashfield. Hawk muốn bắn rơi mười bốn chiếc trước bình minh. | Ashfield | Bắn hạ máy bay |  | 1010 xu |  |
 | c6s2 | **Khảo sát con đập** phụ Mara cần biết con đập có chịu nổi một trận vây hãm hay không. Đưa xe tới trạm phát điện, cây cầu và bến lội để công binh của cô quan sát. | Hollow Dam | Trinh sát |  | 1010 xu |  |
 
@@ -211,7 +211,7 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | c7m15 | **Phố hẹp** Nadia muốn tận mắt thấy ba quảng trường của Old Quarter trước trận đánh lớn: ai đang giữ chúng, và cờ của ai bay trên đó. Đưa xe vào từng quảng trường, trong mưa. | Veyra Old Quarter | Trinh sát | aurel | 405 xu |  |
 | c7m13 | **Inferno giữa Old Quarter** Cận vệ của Aurel có một chiếc Inferno riêng, chiếc thứ hai từ xưởng của Varga, và nó đang đốt Old Quarter từng con phố một. Chặn nó lại. | Veyra Old Quarter | Tiêu diệt boss Inferno · Behemoth phun lửa | aurel | 615 xu |  |
 | c7m14 | **Pháo của Longshot** Thiếu tá Dahl đã đưa pháo của lữ đoàn vào quảng trường chính của Old Quarter, và cận vệ của Aurel muốn đuổi chúng ra. Giữ quảng trường bốn phút trong lúc Longshot căn pháo vào m… | Veyra Old Quarter | Giữ cứ điểm | aurel | 415 xu |  |
-| c7m02 | **Những cây cầu Veyra** Thủ đô nằm trên một hòn đảo giữa sông. Trước khi tướng Thorne tới, Nadia muốn quan sát khu vườn, quảng trường cung điện và nhà ga. | Veyra | Trinh sát | aurel | 415 xu |  |
+| c7m02 | **Những cây cầu Veyra** Thủ đô nằm trên một hòn đảo giữa sông. Trước khi tướng Thorne tới, Nadia muốn quan sát khu vườn, quảng trường cung điện và nhà ga. | Veyra | Trinh sát | aurel | 415 xu | Nhà chứa máy bay |
 | c7m17 | **Những cây cầu trong đêm** Trung tâm Veyra nằm trên hòn đảo sau ba đầu cầu. Chiếm khu vườn, quảng trường cung điện và nhà ga từ bờ bên kia, trong đêm, theo sau làn đạn của Dahl. | Veyra | Chiếm cứ điểm | aurel | 420 xu |  |
 | c7m06 | **Quảng trường cung điện** Một chỗ đứng chân trong thủ đô: quảng trường cung điện. Vệ binh của Aurel muốn giành lại. Giữ nó trong sương mù bốn phút. | Veyra | Giữ cứ điểm | aurel | 425 xu |  |
 | c7m11 | **Bão trên Veyra** Trực thăng của đội cận vệ Aurel đang săn quân kháng chiến trên các mái nhà Veyra giữa cơn bão. Bắn hạ mười bốn chiếc. | Veyra | Bắn hạ máy bay | aurel | 425 xu |  |
@@ -236,9 +236,9 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | c8m07 | **Ixion** Một xe tải mỏ bọc thép có bánh cao hơn xe tăng đang lao xuống đường vận chuyển hết tốc lực: Ixion. Chặn nó trước khi nó húc vào đội hình của ta. | Deepcut Mine | Tiêu diệt boss Ixion · Xe tải mỏ bọc thép | hung | 705 xu |  |
 | c8m08 | **Mắt nhìn hố mỏ** Trước khi vào hố mỏ sâu nhất, Nadia muốn tận mắt thấy nó. Đưa xe tới từng điểm đánh dấu trong cơn bão. | Hollow Dam | Trinh sát | hung | 475 xu |  |
 | c8m09 | **Trại của Thorne** Thorne đã đào sở chỉ huy vào cuối hẻm núi. San phẳng nó. Hắn sẽ lại chạy; bắt hắn chạy nhanh hơn. | Red Rock | Đấu tướng | hung | 475 xu |  |
-| c8m13 | **Thợ mỏ Deepcut** Thorne đang giữ ba trăm thợ mỏ trong các lán trại dưới hố để đào đường cho Kronos. Dân quân của Varro thuộc từng đường hầm. Chiếm cả ba lán trại và mọi người thợ mỏ sẽ được ra ngoà… | Deepcut Mine | Chiếm cứ điểm | hung | 475 xu |  |
-| c8m14 | **Đánh thẳng vào Kronos** Kronos lấy điện từ một đường dây duy nhất dẫn xuống hố, và viên quản lương của Thorne ngồi ngay cạnh tủ điện với lương của cả một năm. Giữ con dốc trong lúc công binh cắt đư… | Deepcut Mine | Trụ vững | hung | 955 xu |  |
-| c8m10 | **Hố sâu nhất** chiến dịch lớn Chiến dịch vào khu mỏ của Thorne: chiếm miệng hố, chọn mục tiêu kế tiếp, phá các xưởng, rồi đối mặt với thứ đang chờ dưới đáy: Kronos. Giai đoạn: Nhà máy nghiền và bãi… | Deepcut Mine | Chiếm cứ điểm | hung | 1150 xu |  |
+| c8m13 | **Thợ mỏ Deepcut** Thorne đang giữ ba trăm thợ mỏ trong các lán trại dưới hố để đào đường cho Moloch. Dân quân của Varro thuộc từng đường hầm. Chiếm cả ba lán trại và mọi người thợ mỏ sẽ được ra ngoà… | Deepcut Mine | Chiếm cứ điểm | hung | 475 xu |  |
+| c8m14 | **Đánh thẳng vào Moloch** Moloch lấy điện từ một đường dây duy nhất dẫn xuống hố, và viên quản lương của Thorne ngồi ngay cạnh tủ điện với lương của cả một năm. Giữ con dốc trong lúc công binh cắt đư… | Deepcut Mine | Trụ vững | hung | 955 xu |  |
+| c8m10 | **Hố sâu nhất** chiến dịch lớn Chiến dịch vào khu mỏ của Thorne: chiếm miệng hố, chọn mục tiêu kế tiếp, phá các xưởng, rồi đối mặt với thứ đang chờ dưới đáy: Moloch, được kéo lên từ hẻm sông và chạy… | Deepcut Mine | Chiếm cứ điểm | hung | 1150 xu |  |
 | c8s1 | **Bản đồ khảo sát** phụ Nadia muốn lấy bản đồ khảo sát của khu mỏ từ ba tòa nhà trên đồi cát. Nhìn thôi, đừng nán lại. | Dunebreak | Trinh sát | hung | 1325 xu |  |
 | c8s2 | **Chuyến bay đêm** phụ Thorne đang chở vàng ra khỏi khu mỏ trong đêm. Bắn hạ các máy bay vận tải của hắn. | Red Rock | Bắn hạ máy bay | hung | 1325 xu |  |
 
@@ -249,8 +249,8 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | c9m01 | **Lại bến cảng** Thorne đã chiếm Ironport cùng tàn quân của Kessler. Chiếm lại cầu tàu trong cơn bão. | Ironport | Chiếm cứ điểm | hung | 485 xu | Xe la-de diệt tăng |
 | c9m02 | **Trở lại bãi biển** Thorne đang đổ quân lên chính bãi biển nơi cuộc chiến của ta bắt đầu. Chiếm bãi biển từ phía bên kia, trong mưa. | Stormbeach | Chiếm cứ điểm | hung | 485 xu | Mìn rải từ xa |
 | c9m03 | **Đoàn xe đêm** Đưa đoàn xe tải tiếp tế qua các con đường bến cảng trong đêm. Lính tuần của Thorne đang chờ. | Ironport | Hộ tống | hung | 490 xu | Oanh tạc cơ chiến lược |
-| c9m04 | **Pháo bờ biển** Thorne đã đặt lại pháo trên bãi biển. Phá chúng trước khi tàu của hắn cập bờ. | Stormbeach | Phá hủy | hung | 495 xu | Trận địa pháo |
-| c9m05 | **Caspian** Từ trong sương lao ra Caspian, một con tàu bay sát mặt sóng và đổ quân. Hạ nó trước khi nó tới bãi biển. | Stormbeach | Tiêu diệt boss Caspian · Tàu bay sát mặt nước | hung | 745 xu · HQ 4 |  |
+| c9m04 | **Pháo bờ biển** Thorne đã đặt lại pháo trên bãi biển. Phá chúng trước khi tàu của hắn cập bờ. | Stormbeach | Phá hủy | hung | 495 xu |  |
+| c9m05 | **Charybdis** Từ trong sương lao ra Charybdis, một tàu đệm khí đổ bộ lao lên bãi biển với tốc độ sáu mươi hải lý và đổ thiết giáp. Hạ nó trước khi nó kịp đổ quân. | Stormbeach | Tiêu diệt boss Charybdis · Tàu đệm khí đổ bộ | hung | 745 xu · HQ 4 |  |
 | c9m11 | **Tín hiệu dưới Beacon Bay** Tiến sĩ Venn nghe thấy một thứ dưới Beacon Bay: một tàu ngầm liên lạc với bầu trời trên một băng tần không ai dùng. Đưa xe tới pháo đài, làng chài và ngọn hải đăng để bà… | Beacon Bay | Trinh sát | hung | 500 xu |  |
 | c9m06 | **Sở chỉ huy bến cảng** Thorne đặt sở chỉ huy ở cầu tàu phía xa. San phẳng nó và cắt đường ra biển của hắn. | Ironport | Đấu tướng | hung | 505 xu |  |
 | c9m12 | **Coral Keys** Thủy thủ của Thorne đã chiếm Coral Keys: hai hòn đảo và ngọn hải đăng ở giữa. Chiếm cả ba là Venn có thể thả phao nghe xuống eo biển. | Coral Keys | Chiếm cứ điểm | hung | 505 xu |  |
@@ -268,7 +268,7 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | # | Nhiệm vụ | Bản đồ | Mục tiêu | Tướng | Thưởng | Mở khóa |
 |---|---|---|---|---|---|---|
 | i3m01 | **Hawk bị bắn rơi** Hawk bị bắn rơi sau chiến tuyến, đâu đó trên các điểm cao Frostpeak, và đèn hiệu của anh lúc có lúc không. Đoàn quân của đại tá Reyn sẽ lục soát đồi radar, ngôi làng và trại gỗ, t… | Frostpeak | Trinh sát | quaden | 530 xu |  |
-| i3m02 | **Morrigan** Raven đang tự mình săn đoàn cứu hộ, bằng Morrigan: nhanh, khó thấy, và mang vũ khí nhắm vào phòng không của ta. Cho bệ phóng di chuyển liên tục, để ý đòn tấn công của nó, và đuổi nó đi. | Jungle Pass | Tiêu diệt boss Morrigan · Tiêm kích của Raven | quaden | 800 xu |  |
+| i3m02 | **Harpy** Raven đang tự mình săn đoàn cứu hộ, từ Harpy: pháo hạm bay to như con tàu, ổ rocket và một tốp trực thăng hộ tống. Cho bệ phóng di chuyển liên tục, để ý đòn tấn công của nó, và đuổi nó đi. | Jungle Pass | Tiêu diệt boss Harpy · Trực thăng khổng lồ | quaden | 800 xu |  |
 | i3m03 | **Đoàn quân của Crown** Hawk đã tới được một ngôi làng ở Jungle Pass, và quân mặt đất của Raven vây kín nó. Đoàn thiết giáp hạng nặng của đại tá Reyn sẽ phá vòng vây. Các xe trong vòng vây đã được đá… | Jungle Pass | Giải vây | quaden | 535 xu |  |
 | i3m04 | **Đường về nhà** Đoàn quân đã có Hawk và đang chạy về phòng tuyến của ta qua các điểm cao Frostpeak, với mọi thứ Raven còn lại bám đuôi. Trụ vững năm phút cho tới khi được đón. | Frostpeak | Trụ vững | quaden | 540 xu |  |
 
@@ -276,20 +276,20 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 
 | # | Nhiệm vụ | Bản đồ | Mục tiêu | Tướng | Thưởng | Mở khóa |
 |---|---|---|---|---|---|---|
-| c10m01 | **Bầy quạ trên đèo** Cầm trong tay hồ sơ của Venn, lữ đoàn quay mũi về Skyhold. Phi đội của Wolff đón đánh ta trên Frostpeak, lần này từ phía nam. Bắn rơi mười hai chiếc. | Frostpeak | Bắn hạ máy bay | quaden | 545 xu | Đòn SEAD |
-| c10m02 | **Mắt nhìn Skyhold** Trước khi đánh căn cứ không quân, Nadia muốn tận mắt thấy nó: hai sân đỗ và đường băng. Đưa xe tới từng nơi, ngay dưới mũi Wolff. | Skyhold | Trinh sát | quaden | 545 xu | Oanh tạc cơ tàng hình |
-| c10m11 | **Sân bay dã chiến của Vault** Đại úy Okoye có một sân bay dã chiến cho chiến dịch trên không, một đoạn đường trên các điểm cao Frostpeak, và một trăm chuyến bay vận tải cần hạ cánh ở đó. Giữ nó tron… | Frostpeak | Giữ cứ điểm | quaden | 550 xu | Pháo hạm bay |
+| c10m01 | **Bầy quạ trên đèo** Cầm trong tay hồ sơ của Venn, lữ đoàn quay mũi về Skyhold. Phi đội của Wolff đón đánh ta trên Frostpeak, lần này từ phía nam. Bắn rơi mười hai chiếc. | Frostpeak | Bắn hạ máy bay | quaden | 545 xu | Oanh tạc cơ tàng hình |
+| c10m02 | **Mắt nhìn Skyhold** Trước khi đánh căn cứ không quân, Nadia muốn tận mắt thấy nó: hai sân đỗ và đường băng. Đưa xe tới từng nơi, ngay dưới mũi Wolff. | Skyhold | Trinh sát | quaden | 545 xu | Pháo hạm bay |
+| c10m11 | **Sân bay dã chiến của Vault** Đại úy Okoye có một sân bay dã chiến cho chiến dịch trên không, một đoạn đường trên các điểm cao Frostpeak, và một trăm chuyến bay vận tải cần hạ cánh ở đó. Giữ nó tron… | Frostpeak | Giữ cứ điểm | quaden | 550 xu |  |
 | c10m03 | **Radar giờ là của ta** Trạm radar cũ của Orlov trên cao điểm giờ canh bầu trời cho ta, còn nhà thờ trong làng là trạm cứu thương. Wolff muốn xóa sổ cả hai. Giữ ít nhất một công trình đứng vững bảy p… | Frostpeak | Bảo vệ | quaden | 555 xu |  |
 | c10m04 | **Đốt máy bay** Một trận đột kích đêm vào sân đỗ phía tây Skyhold: máy bay cường kích của Wolff đang đỗ thành hàng. Đốt chúng ngay tại chỗ. | Skyhold | Phá hủy | quaden | 555 xu |  |
 | c10m05 | **Icarus Mk.0** Nhà chứa bị hàn cửa đã mở lúc bình minh. Icarus đang ở trên không phận Skyhold: phi thuyền quỹ đạo của Aurel, vỏ bạc, cánh ngắn, với động cơ chính đủ sức bỏ xa bất cứ thứ gì ta có. Ve… | Skyhold | Tiêu diệt boss Icarus Mk.0 · Phi thuyền nguyên mẫu | aurel | 840 xu |  |
 | c10m06 | **Màn tên lửa** Wolff giấu các dàn tên lửa phòng không tầm xa trong sương để che chắn căn cứ. Nadia đã đánh dấu ba bệ phóng. Săn chúng để Hawk được bay. | Frostpeak | Săn mục tiêu | quaden | 565 xu |  |
-| c10m13 | **Các con đèo lúc bình minh** Spectre săn trên các con đèo trong đêm. Ban ngày thì ta chiếm được chúng: trạm tín hiệu, hồ băng và xưởng cưa, từ phía bắc, trước khi phi đội của Raven cất cánh. | Whiteout Pass | Chiếm cứ điểm | quaden | 565 xu |  |
-| c10m08 | **Spectre** Máy bay pháo của Wolff bay vòng trên cao quanh Whiteout Pass, nã vào các đoàn xe của ta tới Skyhold. Bắn rơi Spectre bằng mọi thứ với tới được bầu trời. | Whiteout Pass | Tiêu diệt boss Spectre · Máy bay pháo | quaden | 855 xu |  |
+| c10m13 | **Các con đèo lúc bình minh** Roc săn trên các con đèo trong đêm. Ban ngày thì ta chiếm được chúng: trạm tín hiệu, hồ băng và xưởng cưa, từ phía bắc, trước khi phi đội của Raven cất cánh. | Whiteout Pass | Chiếm cứ điểm | quaden | 565 xu |  |
+| c10m08 | **Roc trên Whiteout** Sở chỉ huy bay của Wolff, Roc, lượn vòng trên cao quanh Whiteout Pass, gọi hỏa lực vào các đoàn xe của ta tới Skyhold. Đánh nó bằng mọi thứ với tới được bầu trời cho tới khi nó… | Whiteout Pass | Tiêu diệt boss Roc · Khí cầu chỉ huy | quaden | 855 xu |  |
 | c10m14 | **Giờ tiếp nhiên liệu** Nadia có lịch trình của Raven: mỗi chiều có một giờ phi đội của hắn nằm dưới đất tiếp nhiên liệu. Trong giờ đó, chiếm cả hai sân đỗ và đường băng từ phía bên kia. | Skyhold | Chiếm cứ điểm | quaden | 575 xu |  |
 | c10m07 | **Không kích** Wolff đáp trả bằng tất cả những gì hắn có: từng đợt, từng đợt máy bay lao vào trận địa của ta quanh Skyhold. Bắn rơi mười sáu chiếc. | Skyhold | Bắn hạ máy bay | quaden | 575 xu |  |
-| c10m12 | **Hawk và Raven** Raven gửi lời qua tháp điều khiển Skyhold: hắn và Hawk, trên đường băng, giữa trưa. Hawk đã nhận lời. Giữ phần còn lại của phi đội Raven tránh xa anh và hạ Morrigan. | Skyhold | Tiêu diệt boss Morrigan · Tiêm kích của Raven | quaden | 870 xu |  |
+| c10m12 | **Hawk và Raven** Raven gửi lời qua tháp điều khiển Skyhold: hắn và Hawk, trên đường băng, giữa trưa. Hawk đã nhận lời. Giữ phần còn lại của phi đội Raven tránh xa anh và hạ Harpy. | Skyhold | Tiêu diệt boss Harpy · Trực thăng khổng lồ | quaden | 870 xu |  |
 | c10m09 | **Tổ Wolff** Sở chỉ huy riêng của Wolff, ở đầu đông căn cứ, vây kín tên lửa. San phẳng nó; căn cứ không quân sẽ còn kháng cự, nhưng đã mất đầu. | Skyhold | Đấu tướng | quaden | 585 xu |  |
-| c10m10 | **Tấn công Skyhold** chiến dịch lớn Chính căn cứ không quân. Làm mù radar, chọn đòn thứ hai, bắn rơi Roc của Wolff, quét sạch đợt máy bay cuối cùng của hắn, rồi giữ căn cứ trước đợt phản kích cuối củ… | Skyhold | Phá hủy | quaden | 1410 xu | Drone hộ vệ |
+| c10m10 | **Tấn công Skyhold** chiến dịch lớn Chính căn cứ không quân. Làm mù radar, chọn đòn thứ hai, bắn rơi Roc của Wolff, quét sạch đợt máy bay cuối cùng của hắn, rồi giữ căn cứ trước đợt phản kích cuối củ… | Skyhold | Phá hủy | quaden | 1410 xu |  |
 | c10s1 | **Phụ tùng** phụ Hai xe tải đang chở phụ tùng của Icarus rời căn cứ trong sương. Venn muốn chặn chúng trước khi chúng tới sa mạc. Chúng đã được đánh dấu. | Skyhold | Săn mục tiêu |  | 1620 xu |  |
 | c10s2 | **Argus** phụ Argus, khí cầu trinh sát bọc giáp của Raven, đang chỉ điểm cho pháo Hegemon trên các điểm cao Frostpeak. Nadia muốn kiểm tra ba điểm nó đang theo dõi, và bắn hạ khí cầu nếu nó tới gần. | Frostpeak | Trinh sát Argus · Khí cầu trinh sát |  | 1620 xu |  |
 
@@ -301,7 +301,7 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | c11m02 | **Mắt nhìn cửa ngõ** Nadia muốn tận mắt thấy các trạm radar của cửa ngõ trước khi ta đánh. Đưa xe tới từng trạm, trong mưa. | Skyhold | Trinh sát | aurel | 595 xu |  |
 | c11m03 | **Làm mù cửa ngõ** Phá các chảo radar dẫn đường cho tàu của Aurel từ quỹ đạo xuống. | Frostpeak | Phá hủy | aurel | 595 xu | Trạm tiếp tế CP |
 | c11m04 | **Bệ phóng phụ** Aurel giấu các bệ phóng phụ quanh cửa ngõ. Tìm ra chúng trước khi hắn nạp nhiên liệu. | Skygate Array | Trinh sát | aurel | 600 xu · HQ 5 | Tháp pháo hạng nặng |
-| c11m05 | **Gungnir** Orlov đang chờ ở đầu mối đường sắt của Skygate Array trong Rust Yard cùng Gungnir, khẩu pháo lớn nhất ông ta từng có. Đây là trận cuối của ông ta. Bắt khẩu pháo câm họng. | Rust Yard | Tiêu diệt boss Gungnir · Pháo điện từ đường ray | orlov | 905 xu |  |
+| c11m05 | **Monster** Orlov đang chờ ở đầu mối đường sắt của Skygate Array trong Rust Yard cùng Monster, một pháo đài biết đi dựng quanh khẩu pháo lớn nhất ông ta từng có. Đây là trận cuối của ông ta. Bắt khẩu… | Rust Yard | Tiêu diệt boss Monster · Pháo tự hành 800 mm | orlov | 905 xu |  |
 | c11m06 | **Giữ sườn núi** Aurel muốn lấy lại sườn núi phía trên cửa ngõ. Giữ nó cho tới khi pháo vào vị trí. | Frostpeak | Giữ cứ điểm | aurel | 605 xu |  |
 | c11m07 | **Locust trên cửa ngõ** Một tàu mang drone Locust che chắn bệ phóng phía tây. Đốt các bồn nhiên liệu của tên lửa và bắn hạ tàu mang drone. | Skygate Array | Phá hủy Locust · Tàu con drone | aurel | 610 xu |  |
 | c11m11 | **Đoàn xe công binh** Công binh của Mara cần tới xác bệ phóng phía tây của Skygate trước khi người của Aurel dọn sạch. Đưa họ qua Rust Yard trong sương. | Rust Yard | Hộ tống | aurel | 615 xu |  |
@@ -325,7 +325,7 @@ Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ư
 | c12m06 | **Sân bay cuối cùng** Sân bay cuối cùng của Hegemon che chắn bệ phóng. Wolff đã không còn; Aurel tự điều khiển máy bay từ xa. San phẳng sở chỉ huy. | Helion Launch Complex | Đấu tướng | aurel | 645 xu |  |
 | c12m08 | **Làm mù bãi phóng** Bốn trạm radar dẫn đường cho Icarus rời bệ phóng. Giữa cơn bão cát, phá hủy cả bốn. | Helion Launch Complex | Phá hủy | aurel | 650 xu |  |
 | c12m09 | **Hậu vệ nhà máy lọc dầu** Trong khi lữ đoàn tập kết cho trận cuối, Aurel tung vệ binh vào nhà máy lọc dầu, giờ là kho tiếp tế của ta. Giữ nó bốn phút. | Dunebreak | Giữ cứ điểm | aurel | 655 xu |  |
-| c12m10 | **Icarus rơi** chiến dịch lớn Trận cuối cùng. Chiếm khu nhiên liệu, chọn đòn đánh, chiếm nhà lắp ráp, tiêu diệt xe chỉ huy của Aurel, giữ bệ phóng, và khi Icarus rời bệ phóng lên quỹ đạo trong hình d… | Helion Launch Complex | Chiếm cứ điểm | aurel | 1575 xu |  |
+| c12m10 | **Icarus rơi** chiến dịch lớn Trận cuối cùng. Chiếm khu nhiên liệu, chọn đòn đánh, chiếm nhà lắp ráp, đập tan chiếc Behemoth cuối cùng của Varga, giữ bệ phóng, và khi Icarus rời bệ phóng lên quỹ đạo… | Helion Launch Complex | Chiếm cứ điểm | aurel | 1575 xu |  |
 
 ### Kể chuyện
 
@@ -435,7 +435,7 @@ Mọi biến cố đổi đường đi dùng trạng thái đường đi **dựn
 
 ### Sự kiện trong nhiệm vụ và thoại trong trận
 
-Mỗi nhiệm vụ ghép từ thư viện sự kiện dạng dữ liệu (67 sự kiện, 27 loại); cả chiến dịch có 549 sự kiện. Sự kiện kích hoạt theo thời gian, tiến độ nhiệm vụ, máu boss, số quân trên sân hoặc sau một sự kiện khác; chạy theo seed và vào chuỗi lệnh của trận nên replay và checkpoint khôi phục đúng. Mọi sự kiện lớn được báo trước bằng thông báo ở mép trên, một câu thoại và mũi tên hướng trên bản đồ nhỏ; quân địch không bao giờ xuất hiện trong vòng 45 m quanh quân người chơi. Viện quân có trần riêng ngoài trần quân thường: 16 xe địch, 10 xe Accord. Tướng địch rút lui khi còn 30% máu, trừ ở trận cuối của mình; từ chương 4 tướng ra trận bằng mini boss thay vì xe tinh nhuệ. Các con số là điểm khởi đầu, chờ đợt mô phỏng 5 seed.
+Mỗi nhiệm vụ ghép từ thư viện sự kiện dạng dữ liệu (67 sự kiện, 27 loại); cả chiến dịch có 550 sự kiện. Sự kiện kích hoạt theo thời gian, tiến độ nhiệm vụ, máu boss, số quân trên sân hoặc sau một sự kiện khác; chạy theo seed và vào chuỗi lệnh của trận nên replay và checkpoint khôi phục đúng. Mọi sự kiện lớn được báo trước bằng thông báo ở mép trên, một câu thoại và mũi tên hướng trên bản đồ nhỏ; quân địch không bao giờ xuất hiện trong vòng 45 m quanh quân người chơi. Viện quân có trần riêng ngoài trần quân thường: 16 xe địch, 10 xe Accord. Tướng địch rút lui khi còn 30% máu, trừ ở trận cuối của mình; từ chương 4 tướng ra trận bằng mini boss thay vì xe tinh nhuệ. Các con số là điểm khởi đầu, chờ đợt mô phỏng 5 seed.
 
 ### Viện quân theo tướng
 
@@ -445,10 +445,10 @@ Mỗi nhiệm vụ ghép từ thư viện sự kiện dạng dữ liệu (67 s�
 | Tướng Viktor Varga | Tăng nhẹ, Tăng chủ lực, Tăng nặng, Chống tăng, Hai nòng | edge | Tăng nặng | 12 |
 | Đại tá Ilya Orlov | Phản lực, Lựu pháo, Xe cối, Phản lực nặng, Cao xạ | edge | Phản lực | 11 |
 | Đô đốc Magnus Kessler | Xe bộ binh, Pháo xung kích, Tăng chủ lực, Rải mìn, PK tầm trung | sea, rail, landing, edge | Tăng chủ lực | 12 |
-| Tiến sĩ Elara Venn | UAV tấn công, Drone FPV, Đạn lảng vảng, UAV trinh sát, Gây nhiễu | edge, air | Drone FPV | 5 |
-| Kasimir Wolff | TT tấn công, TT vũ trang, Cường kích, UAV tấn công | edge | Cường kích | 10 |
-| Tướng Roland Thorne | Tăng chủ lực, Tăng nặng, Xe bộ binh, Hỗ trợ tăng, Cao xạ | edge, landing | Tăng nặng | 9 |
-| Giám đốc Lucien Aurel | UAV tấn công, Drone FPV, Tăng nặng, Hỗ trợ tăng, Pháo điện từ | pods, air, edge | Tăng nặng | 12 |
+| Tiến sĩ Elara Venn | UAV tấn công, Drone FPV, UAV trinh sát, Gây nhiễu | edge, air | Drone FPV | 5 |
+| Kasimir Wolff | TT tấn công, Cường kích, UAV tấn công | edge | Cường kích | 10 |
+| Tướng Roland Thorne | Tăng chủ lực, Tăng nặng, Xe bộ binh, Cao xạ | edge, landing | Tăng nặng | 9 |
+| Giám đốc Lucien Aurel | UAV tấn công, Drone FPV, Tăng nặng, Xe bộ binh, Pháo điện từ | pods, air, edge | Tăng nặng | 12 |
 
 ### Thoại trong trận
 
@@ -479,7 +479,7 @@ Chiến dịch lớn chạy nhiều giai đoạn trong cùng một trận. Mỗi
 | c5m10 | **Matriarch** | Các đường đắp → Đốt nhiên liệu drone → Giữ trạm tiếp sóng → Giữ nhà máy địa nhiệt → Bầy drone → Matriarch | chi viện địch, không kích, radio, thu nhập | Đốt nhiên liệu drone / Giữ trạm tiếp sóng (120 giây) |  |
 | c6m10 | **Bảo vệ con đập** | Giữ mặt đập → Đốt kho của Varga → Giữ trạm phát điện → Moloch → Chờ cứu viện | chi viện ta, chi viện địch, không kích, radio, thu nhập | Đốt kho của Varga ở bến lội / Giữ trạm phát điện (150 giây) | có |
 | c7m10 | **Giải phóng Veyra** | Các đầu cầu → Đốt Bộ Hậu cần → Giữ khu vườn → Đánh chiếm cung điện → Giữ quảng trường → Phản bội → Phản đòn → Nemesis | chi viện địch, không kích, radio, thu nhập, đồng minh phản bội | Đốt Bộ Hậu cần / Giữ khu vườn (150 giây) | có |
-| c8m10 | **Hố sâu nhất** | Nhà máy nghiền và bãi xuất quặng → Đốt kho nhiên liệu → Giữ nhà máy nghiền → Phá các si-lô quặng → Cho nổ xưởng chế biến → Giữ đáy hố → Kronos → Thorne phản kích | chi viện địch, không kích, radio, thu nhập | Đốt kho nhiên liệu / Giữ đài phát ở nhà máy nghiền |  |
+| c8m10 | **Hố sâu nhất** | Nhà máy nghiền và bãi xuất quặng → Đốt kho nhiên liệu → Giữ nhà máy nghiền → Phá các si-lô quặng → Cho nổ xưởng chế biến → Giữ đáy hố → Moloch và Tartarus → Thorne phản kích | chi viện địch, không kích, radio, thu nhập | Đốt kho nhiên liệu / Giữ đài phát ở nhà máy nghiền |  |
 | c9m10 | **Typhon trồi lên** | Bãi đường sắt → Đốt các toa nhiên liệu → Giữ trạm tín hiệu → Khu nhà máy và bến tàu → Giữ khu nhà máy → Typhon → Giữ cầu tàu | chi viện địch, không kích, radio, thu nhập | Đốt các toa nhiên liệu / Giữ trạm tín hiệu (150 giây) |  |
 | c10m10 | **Tấn công Skyhold** | Làm mù radar → Đốt bãi nhiên liệu → Tháp điều khiển → Roc → Đợt cuối của Wolff → Giữ Skyhold | chi viện địch, không kích, radio, thu nhập | Đốt bãi nhiên liệu / Phá tháp điều khiển và vòm radar |  |
 | c11m10 | **Skygate Array** | Làm mù radar trên đồi → Cho nổ kho nhiên liệu → Radar của pháo đài → Daedalus → Giữ cổng | chi viện địch, không kích, radio, thu nhập | Cho nổ kho nhiên liệu / Phá radar của pháo đài |  |

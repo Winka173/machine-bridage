@@ -2,7 +2,7 @@
 
 Bản đồ, bản đồ gốc, biome, thời tiết, địa danh, ray, vật thể, ngân sách thực thể.
 
-Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu đầy đủ ở 06_ban_do.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit ab1de758, ngày 2026-10-03. Số liệu đầy đủ ở 06_ban_do.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Biển, hộ tống, bản đồ dài, roster mới và đòn lớn
 
@@ -23,20 +23,16 @@ Mỗi boss mang một nhóm đi cùng và thêm một nhóm ở mỗi lần đ�
 | Juggernaut · Đoàn tàu bọc thép | Xe bọc thép bánh lốp, Xe bọc thép bánh lốp, Pháo cao xạ tự hành (phòng không che boss), Xe bọc thép bánh lốp (đánh dấu quân ta) | Tăng nhẹ lội nước, Tăng nhẹ lội nước, Xe công binh (sửa boss) |
 | Tempest · Behemoth pháo điện từ | Tăng chủ lực, Xe gây nhiễu điện tử (gây nhiễu tên lửa ta), Xe gây nhiễu điện tử (gây nhiễu tên lửa ta), Xe tên lửa phòng không tầm trung (phòng không che boss) | Xe gây nhiễu điện tử (gây nhiễu tên lửa ta), Xe gây nhiễu điện tử (gây nhiễu tên lửa ta) |
 | Behemoth · Quái vật thép | Tăng chủ lực, Tăng chủ lực, Tăng hạng nặng, Pháo cao xạ tự hành (phòng không che boss) | Tăng hạng nặng ★, Xe công binh (sửa boss) |
-| Inferno · Behemoth phun lửa | Tăng phun lửa, Tăng phun lửa, Pháo cao xạ tự hành (phòng không che boss), Xe thả khói (thả khói) | Tăng phun lửa, Tăng phun lửa, Xe công binh (sửa boss) |
+| Inferno · Behemoth phun lửa | Tăng phun lửa, Tăng phun lửa, Pháo cao xạ tự hành (phòng không che boss), Xe gây nhiễu điện tử (thả khói) | Tăng phun lửa, Tăng phun lửa, Xe công binh (sửa boss) |
 | Harpy · Trực thăng khổng lồ | Trực thăng tấn công, Trực thăng tấn công, Tiêm kích (phòng không che boss), Trực thăng trinh sát vũ trang (đánh dấu quân ta) | Trực thăng trinh sát vũ trang (đánh dấu quân ta) |
-| Spectre · Máy bay pháo | Tiêm kích (phòng không che boss), Tiêm kích (phòng không che boss), Tiêm kích (phòng không che boss), UAV trinh sát (đánh dấu quân ta) | Tiêm kích (phòng không che boss), Tiêm kích (phòng không che boss) |
 | Jötunn · Pháo đài di động | Tăng hạng nặng, Tăng hạng nặng, Xe tên lửa phòng không tầm trung (phòng không che boss), Xe công binh (sửa boss) | Xe công binh (sửa boss) |
-| Hive · Pháo đài drone | Tăng chủ lực, Xe phòng không pháo – tên lửa (phòng không che boss), Xe tên lửa phòng không tầm trung (phòng không che boss) | Xe phóng drone FPV, Xe phóng drone FPV, UAV trinh sát (đánh dấu quân ta) |
 | Bastion · Pháo đài | Pháo chống tăng tự hành, Pháo chống tăng tự hành, Tăng chủ lực, Xe phòng không pháo – tên lửa (phòng không che boss) | Tăng hạng nặng, Xe tên lửa phòng không tầm trung (phòng không che boss), Xe công binh (sửa boss) |
 | Matriarch · Tàu mẹ drone | UAV tấn công, UAV tấn công, Tiêm kích (phòng không che boss), UAV trinh sát (đánh dấu quân ta) | Trực thăng trinh sát vũ trang (đánh dấu quân ta) |
 | Icarus · Phi thuyền quỹ đạo | Tăng hạng nặng tinh nhuệ, Grad tinh nhuệ, UAV trinh sát (đánh dấu quân ta), Tiêm kích (phòng không che boss), Tiêm kích (phòng không che boss) | Xe phóng drone FPV tinh nhuệ, Xe gây nhiễu điện tử (gây nhiễu tên lửa ta) / Trực thăng tinh nhuệ, Xe công binh (sửa boss) |
-| Nemesis · Đoàn tàu tên lửa | Xe chiến đấu bộ binh, Xe chiến đấu bộ binh, Xe tên lửa phòng không tầm trung (phòng không che boss), Trực thăng trinh sát vũ trang (đánh dấu quân ta) | Xe chiến đấu bộ binh, Xe chiến đấu bộ binh, Xe thả khói (thả khói) |
-| Gungnir · Pháo điện từ đường ray | Tăng chủ lực, Tăng chủ lực, Pháo cao xạ tự hành (phòng không che boss), Xe radar phản pháo (đánh dấu quân ta) | Tăng chủ lực, Tăng chủ lực, Xe công binh (sửa boss) |
+| Nemesis · Đoàn tàu tên lửa | Xe chiến đấu bộ binh, Xe chiến đấu bộ binh, Xe tên lửa phòng không tầm trung (phòng không che boss), Trực thăng trinh sát vũ trang (đánh dấu quân ta) | Xe chiến đấu bộ binh, Xe chiến đấu bộ binh, Xe gây nhiễu điện tử (thả khói) |
 | Tartarus · Máy khoan |  | Xe chiến đấu bộ binh, Pháo cao xạ tự hành (phòng không che boss), Xe công binh (sửa boss) |
 | Roc · Khí cầu chỉ huy | Tiêm kích (phòng không che boss), Tiêm kích (phòng không che boss), Tiêm kích (phòng không che boss) | Trực thăng tấn công, Trực thăng trinh sát vũ trang (đánh dấu quân ta) |
 | Charybdis · Tàu đệm khí đổ bộ | Xuồng đệm khí hộ tống, Xuồng đệm khí hộ tống, Pháo cao xạ tự hành (phòng không che boss), Xuồng đệm khí hộ tống (đánh dấu quân ta) | Xuồng đệm khí hộ tống (đánh dấu quân ta) |
-| Atlas · Xe chỉ huy siêu nặng | Tăng chủ lực ★, Tăng hạng nặng, Pháo cao xạ tự hành (phòng không che boss) | Tăng chủ lực ★, Tăng chủ lực ★, Pháo cao xạ tự hành (phòng không che boss) |
 
 ### Bản đồ dài và căn cứ nhiều lớp
 

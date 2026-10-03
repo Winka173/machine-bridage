@@ -176,13 +176,28 @@ def current_mode(path: str) -> str:
 
 
 # ---------------------------------------------------------------------------------------------------------- sheets
+# Balance pack 2 addendum item 5 ("Gọn: Bom_vu_khi"): only the columns a bomb weapon itself needs (the Vietnamese
+# "effective" ones already used to pick the stick / warning values below) and the cluster-bomb block; every other
+# Vu_khi column (family bookkeeping, before/after change tracking, real-world rate, raw English duplicates of these
+# same values, the raw "stick_*" flatten of the stick block bom.py recomputes into STICK_COLS below) is dropped: look
+# it up on Vu_khi instead, via the explicit "vu_khi_id" foreign key this sheet adds.
+BOMB_ONLY_COLS = [
+    "ten_that", "dang_dan", "loai_sat_thuong", "xuyen", "sat_thuong_moi_phat", "loi_m", "ria_m", "toc_do_dan_m_s",
+    "tam_m", "tam_toi_thieu_m", "muc_tieu", "tran_ban_m", "do_tan", "bac_no", "danh_noc", "bay_cong", "nhiet_ap",
+    "dat_boi_boss", "dan_huong", "kich_co", "so_vien_mang_may_bay", "dau_no_kg", "co_mm", "cong_suat_kw",
+    "nang_luong_mj", "thoi_gian_nap_s", "so_phat_moi_loat", "khoang_phat_trong_loat_s", "so_loat_mang", "nap_lai_kho_s",
+    "cluster_count", "cluster_damage", "cluster_radius_m", "cluster_splash_m", "cluster_tier",
+]
+
+
 def sheet_vu_khi(vk_header, vk, wids, carriers, sup, big, big_strikes, units):
     extra = ["duong_tha_theo_ma", "che_do_tha_hien_tai", "so_bom_moi_luot", "khoang_tha_giua_bom_s", "don_vi_mang",
              "toc_do_don_vi_mang_m_s", "khoang_cach_giua_bom_m_toan_toc", "khoang_cach_giua_bom_m_ga_0_8",
              "do_dai_dai_m_toan_toc", "ty_le_chong_lan_loi_tren_khoang", "canh_bao_theo_luat", "thoi_gian_canh_bao_s_theo_luat"]
     extra += [c for c, _k, _m in STICK_COLS]
-    base = [c for c in vk_header if c not in ("id", "nguon", "raw_json")]
-    header = ["id", "nhom"] + base + extra + ["nguon", "raw_json"]
+    base = [c for c in BOMB_ONLY_COLS if c in vk_header]
+    # "nhom" stays index 1 (static_sheets filters rows on it); vu_khi_id (the new FK, item 5) goes right after it.
+    header = ["id", "nhom", "vu_khi_id"] + base + extra + ["nguon", "raw_json"]
     rows = []
     for wid in wids:
         w = vk[wid]
@@ -201,7 +216,7 @@ def sheet_vu_khi(vk_header, vk, wids, carriers, sup, big, big_strikes, units):
                  (size >= 400 if w.get("dang_dan") == "Bomb" else size >= 203)))
         vals = {c: num(w.get(c)) for c in base}
         vals.update({
-            "id": wid, "nhom": "vu_khi_don_vi", "duong_tha_theo_ma": path, "che_do_tha_hien_tai": current_mode(path),
+            "id": wid, "vu_khi_id": wid, "nhom": "vu_khi_don_vi", "duong_tha_theo_ma": path, "che_do_tha_hien_tai": current_mode(path),
             "so_bom_moi_luot": burst, "khoang_tha_giua_bom_s": gap if burst > 1 else "",
             "don_vi_mang": ";".join(mounts), "toc_do_don_vi_mang_m_s": ";".join(f"{s:g}" for s in speeds),
             "khoang_cach_giua_bom_m_toan_toc": r3(spacing) if burst > 1 and spacing else "",

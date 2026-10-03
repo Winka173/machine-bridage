@@ -222,6 +222,90 @@ def _drone_sheet(book, d, res, users):
         r.set("kich_thuoc_m", " x ".join(f"{x:g}" for x in size) if isinstance(size, list) else "")
 
 
+TEN_LUA_COLS = [
+    # (column, unit, meaning). "EXISTS": already a per-weapon data field (named). "KHONG_CO": no mechanism in the
+    # Sim reads this (reason in the meaning). Balance pack 2 addendum item 2.
+    ("ten_that", "", "tên hệ thống thật"),
+    ("kieu_dan", "", "suy từ dữ liệu: khong_dan (không guided) / bam_radar (weaponFamilyId trong munitionRules."
+     "radarGuided) / tam_nhin_SACLOS (trong sightGuided: dây, chùm, laser dẫn bởi tầm nhìn bên bắn) / bam_nhiet "
+     "(guided, không radarGuided, flareEligible != false: hồng ngoại, bị pháo sáng kéo đi). Mã không phân biệt "
+     "laser / ảnh nhiệt / GPS-quán tính riêng: chỉ ba nhóm trên (NEED_CODE_CHECK nếu cần phân biệt thêm để chủ dự "
+     "án quyết)."),
+    ("co_can_tam_nhin", "", "EXISTS (suy ra): true khi kieu_dan = tam_nhin_SACLOS (CombatSystem.Munitions.cs LostSight: "
+     "bên bắn chết, bên bắn hoặc mục tiêu trong khói, hoặc có vật cản chắn tầm nhìn hai xe mặt đất)"),
+    ("toc_do_quay_deg_s", "deg/s", "KHONG_CO: không có mô phỏng động học quay đạn (đạn dẫn 'homing' luôn trúng vị trí "
+     "mục tiêu lúc hết thời gian bay trừ khi bị chệch bởi APS / gây nhiễu / mất dấu / pháo sáng / ra ngoài tầm)"),
+    ("gia_toc_ngang_m_s2", "m/s2", "KHONG_CO: không mô phỏng gia tốc ngang (không có vật lý bay chi tiết)"),
+    ("ban_kinh_quay_m", "m", "KHONG_CO: không có mô phỏng bán kính lượn"),
+    ("he_so_bam", "", "KHONG_CO: không có hệ số dẫn đường tỉ lệ (proportional navigation); dẫn là nhị phân (trúng / "
+     "chệch theo luật, xem ty_le_trung_co_ban)"),
+    ("thoi_gian_khoa_s", "s", "KHONG_CO: không có thời gian khóa mục tiêu trước khi bắn"),
+    ("quy_dao", "", "EXISTS: flight_profile (Direct / Loft / Ballistic; cột Vu_khi.bay_cong + flight_profile); "
+     "danh_noc (topAttack) cũng đẩy về Loft khi không khai báo flight_profile riêng (WeaponDef.P34.cs)"),
+    ("ngoi_can_dich_m", "m", "MOVED (addendum 2): tham số nhóm cũ munitionRules.proximityFuze = 7 m; nay có cờ dữ liệu "
+     "riêng từng vũ khí WeaponDef.ProximityFuze (null = theo nhóm). Giá trị dưới đây bằng giá trị nhóm cho mọi vũ khí "
+     "(chưa vũ khí nào ghi đè). CHÚ Ý: chưa cơ chế nào trong mã đọc proximityFuze để quyết nổ cận đích (xem mục báo "
+     "cáo CHANGES.md) — cờ đã sẵn, hành vi game không đổi."),
+    ("ty_le_trung", "", "EXISTS (nhóm, không theo từng vũ khí): 1 − (weapons.guidance.baseFailChance + "
+     "weapons.guidance.rangeFailCoeff × tầm_phần_trăm² + mountFail của bệ); tầm_phần_trăm = khoảng_cách / tầm, trần 1,2 "
+     "(CombatSystem.cs Fire)"),
+    ("jam_miss_min_m", "m", "MOVED (addendum 2): tham số nhóm cũ weapons.jamRules.guidedMissMin; nay WeaponDef."
+     "JamMissMin riêng từng vũ khí (null = theo nhóm); giá trị dưới đây = giá trị nhóm (chưa vũ khí nào ghi đè)"),
+    ("jam_miss_spread_m", "m", "MOVED (addendum 2): như trên, weapons.jamRules.guidedMissSpread / WeaponDef."
+     "JamMissSpread"),
+    ("thoi_gian_giua_hai_qua_s", "s", "EXISTS: khoang_phat_trong_loat_s (burstInterval)"),
+    ("so_qua_moi_bang", "", "EXISTS: bang_dan (clip)"),
+    ("vertical_launch", "", "KHONG_CO: không có cờ phóng thẳng đứng riêng; mọi bệ bắn từ điểm Mount_ của nó bất kể "
+     "kiểu bệ"),
+]
+
+
+def _ten_lua_sheet(book, d, res, users, tiers):
+    """Balance pack 2 addendum item 2: Ten_lua_tham_so, one row per missile weapon (projectile == Missile). The
+    guidance-kind, jam-miss and proximity-fuze columns are derived from the per-weapon override fields added this
+    addendum (WeaponDef.ProximityFuze / JamMissMin / JamMissSpread; FixRules.cs MunitionRules.RadarGuided /
+    SightGuided); everything else not listed in TEN_LUA_COLS already has its own Vu_khi column (sat_thuong_moi_phat,
+    loi_m, ria_m, tam_m, tam_toi_thieu_m, toc_do_dan_m_s, dan_huong, flare_resist, flare_eligible, aps_eligible,
+    ciws_eligible, interceptable, jam_proof, bang_dan, nap_bang_s, thoi_gian_nap_s): look those up by vu_khi_id."""
+    mr = d.get("munitionRules") or {}
+    radar_guided = set(mr.get("radarGuided") or [])
+    sight_guided = set(mr.get("sightGuided") or [])
+    sh = book.sheet("Ten_lua_tham_so", "Tên lửa: tham số",
+                    "Mỗi vũ khí tên lửa (projectile = Missile) một dòng: kiểu dẫn, cận đích, trúng / chệch, jam; mọi cột "
+                    "khác (sát thương, tầm, tốc độ đạn, pháo sáng, APS...) đã có ở Vu_khi — tra theo vu_khi_id")
+    sh.col("vu_khi_id", meaning="vũ khí (Vu_khi)", fk=["01_vu_khi_dan/Vu_khi"])
+    for col, unit, meaning in TEN_LUA_COLS:
+        sh.col(col, unit=unit, meaning=meaning)
+    sh.col("mang_boi", meaning="id đơn vị mang (ngăn ';')", fk=OWNERS + ["03_boss/Boss_bo_phan_thu_vien"])
+    for wid in sorted(w for w, e in res.items() if e.get("projectile") == "Missile"):
+        e = res[wid]
+        fam = e.get("weaponFamilyId")
+        guided = bool(e.get("guided"))
+        sight = guided and fam in sight_guided
+        radar = guided and fam in radar_guided
+        flare_eligible = e.get("flareEligible")
+        heat = guided and not sight and not radar and flare_eligible is not False
+        kieu_dan = "tam_nhin_SACLOS" if sight else "bam_radar" if radar else "bam_nhiet" if heat else \
+            "khong_dan" if not guided else "khac (NEED_CODE_CHECK)"
+        r = sh.row(wid, f"{B.BALANCE}: weapons[{wid}] (guided/weaponFamilyId) + munitionRules.radarGuided/sightGuided")
+        r.set("vu_khi_id", wid)
+        r.set("ten_that", e.get("real", ""))
+        r.set("kieu_dan", kieu_dan)
+        r.set("co_can_tam_nhin", sight)
+        for c in ("toc_do_quay_deg_s", "gia_toc_ngang_m_s2", "ban_kinh_quay_m", "he_so_bam", "thoi_gian_khoa_s",
+                  "vertical_launch"):
+            r.set(c, "KHONG_CO")
+        r.set("quy_dao", e.get("flightProfile") or ("Loft" if e.get("topAttack") else "Direct"))
+        r.set("ngoi_can_dich_m", e.get("proximityFuze", mr.get("proximityFuze", 7)))
+        r.set("ty_le_trung", "xem mô tả cột (phụ thuộc tầm bắn, không phụ thuộc tốc độ mục tiêu)")
+        r.set("jam_miss_min_m", e.get("jamMissMin", 5))
+        r.set("jam_miss_spread_m", e.get("jamMissSpread", 6))
+        r.set("thoi_gian_giua_hai_qua_s", e.get("burstInterval", 0.1))
+        r.set("so_qua_moi_bang", e.get("clip", 0))
+        us = users.get(wid, [])
+        r.set("mang_boi", ";".join(sorted({u[1] for u in us})))
+
+
 def build(ctx):
     book = ctx.book(FILE_ID, TITLE, DESC)
     d = B.bal(ctx)
@@ -500,6 +584,7 @@ def build(ctx):
             r.set(c, NEED_CODE_CHECK)
 
     _drone_sheet(book, d, res, users)
+    _ten_lua_sheet(book, d, res, users, tiers)
 
     # ------------------------------------------------------------------ Canh_bao_vong
     cb = book.kv_sheet("Canh_bao_vong", "Vòng cảnh báo", "warningRules: loại đòn có vòng, sàn thời gian theo bậc, số vùng tối đa")

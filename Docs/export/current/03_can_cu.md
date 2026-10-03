@@ -2,7 +2,7 @@
 
 Tháp và nhánh, tường, nhà chính, mô-đun tiện ích, xây lại, AI căn cứ.
 
-Gói cân bằng Machine Brigade, commit 0cafe94b, ngày 2026-10-03. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit ab1de758, ngày 2026-10-03. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Căn cứ và tháp
 
@@ -10,23 +10,35 @@ Căn cứ là một loadout chọn trước trận như bộ bài: sở chỉ hu
 
 **Vai trò tháp nhỏ:** tháp canh thấy tàng hình và tăng 10% tầm cho tháp trong 25 m (nhánh Tháp quan sát: 15% trong 30 m, thay mức 10%, không cộng dồn); tháp phòng không nhỏ +25% sát thương lên drone và trực thăng. **Điểm yếu tháp pháo:** xoay chậm, nạp lâu, súng đồng trục không bắn máy bay. **AI** đọc căn cứ địch và mua quân khắc chế. **Thẻ tháp** lên hạng như xe; từ hạng 7 chọn 1 trong 2 nhánh (đổi nhánh 800 xu). **Trang bị tháp:** 3 ô (Vũ khí, Kết cấu, Hệ thống) dùng chung cho mọi tháp cùng loại trong căn cứ.
 
-### Thẻ tháp (22)
+### Thẻ tháp (16)
 
-Bảng 22 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
+| Tháp | Cỡ | Máu | Dựng lại | Nhánh (hạng 7) | Hướng dẫn |
+|---|---|---|---|---|---|
+| **Tháp canh** | Nhỏ | 1.540 | 5 CP · 25 s | **Tháp quan sát**: Nhìn xa hơn 30%, và cho các tháp trong 30 m thêm 15% tầm bắn (thay cho mức 10% thường của tháp, không cộng dồn). **Ổ súng**: Pháo 25 mm thay súng máy: đánh mạnh xe nhẹ, nhìn gần hơ… | **Tháp canh · công sự cố định · nhẹ nhưng nhìn xa** Cách đánh: súng máy nặng (30 m, bắn cả máy bay); tầm nhìn 60 m giúp soi quân ta cho pháo địch. Mạnh / yếu: chặn trinh sát và xe nhẹ; là tháp yếu nh… |
+| **Lô cốt súng máy** | Nhỏ | 3.300 | 6 CP · 25 s | **Súng máy đôi**: Súng máy nặng đôi: hỏa lực mạnh hơn, tầm hơi ngắn hơn. **Lô cốt phun lửa**: Súng phun lửa (16 m) đốt thứ gì lại gần; không bắn được máy bay. | **Lô cốt súng máy · công sự cố định · súng máy nặng** Cách đánh: súng máy nặng bắn nhanh (32 m, bắn cả máy bay). Mạnh / yếu: quét sạch trinh sát và xe nhẹ; gần như không làm xước xe tăng. Mẹo: đưa xe… |
+| **Tháp phòng không** | Nhỏ | 2.420 | 6 CP · 25 s | **Tháp cao xạ**: Pháo cao xạ 23 mm bốn nòng tầm gần: hỏa lực mạnh hơn nhiều vào drone, bầy nhỏ và trực thăng, không có tên lửa. **Tổ Stinger**: Tên lửa Stinger thay cho pháo 23 mm: máy bay và trực th… | **Tháp phòng không · công sự cố định · chống máy bay (42 m)** Cách đánh: pháo đôi 30 mm cao xạ tới 42 m và tên lửa phòng không (44 m); cũng bắn mặt đất nhưng chẳng mấy tác dụng. Mạnh / yếu: xé nát tr… |
+| **Tháp gây nhiễu EW** | Nhỏ | 1.760 | 3 CP · 25 s | **Máy gây nhiễu drone**: Gây nhiễu đạn điều khiển và drone xa tới 45 m. **Máy đánh lừa radar**: Còn tìm ra pháo khai hỏa trong 80 m và làm lộ chúng 6 giây. | **Tháp gây nhiễu EW · tháp nhỏ · gây nhiễu, không bắn** Cách đánh: tên lửa điều khiển, drone và hỏa lực yểm trợ nhắm vào trong vòng 30 m quanh nó bị lệch; không có súng. Mạnh / yếu: làm cùn tên lửa c… |
+| **Trạm tiếp tế CP** | Nhỏ | 1.320 | 6 CP · 25 s |  | **Trạm tiếp tế CP · tháp nhỏ · kinh tế** Cách đánh: không có súng; +0,1 CP mỗi giây cho phe mình, trạm thứ hai +0,06, trạm thứ ba không thêm gì; bị bắn thì ngừng trả 5 giây. Mạnh / yếu: thêm CP cho c… |
+| **Tháp tên lửa chống tăng** | Vừa | 1.980 | 7 CP · 40 s | **Tấn công từ trên**: Mạnh hơn 40% lên giáp dày. **Đa năng**: Bắn được cả trực thăng và máy bay; nhẹ hơn lên giáp. | **Tháp tên lửa chống tăng · công sự cố định · chống tăng (50 m)** Cách đánh: bệ phóng Kornet đôi bắn tên lửa chống tăng theo cặp xa tới 50 m. Mạnh / yếu: chặn xe tăng và giáp dày từ xa; APS và xe la-… |
+| **Tháp pháo** | Vừa | 3.960 | 11 CP · 40 s | **Pháo bắn tỉa**: Pháo 120 mm nòng dài có ống ngắm: bắn xa hơn mọi pháo xe tăng, chậm, mỗi phát hạ được xe tăng; không bắn máy bay. **Pháo tự động 57 mm**: Loạt đạn 57 mm nhanh chỉ vào xe nhẹ (giáp t… | **Tháp pháo · công sự cố định · pháo xe tăng (32 m)** Cách đánh: pháo 120 mm xuyên giáp của tăng chủ lực đặt trên bệ cố định. Mạnh / yếu: thắng xe tăng và xe nhẹ lọt vào tầm 32 m; bị xe diệt tăng và… |
+| **Trạm đánh chặn C-RAM** | Vừa | 2.860 | 5 CP · 40 s | **Centurion**: Súng đánh chặn tầm gần bắn nhanh: nhiều quả đánh chặn hơn, hồi nhanh. Chặn tên lửa, drone, rốc-két bắn thẳng, rốc-két pháo binh và một phần đạn pháo binh, đạn cối; không chặn đạn pháo… | **Trạm đánh chặn C-RAM · tháp vừa · bắn hạ đạn bay tới** Cách đánh: bắn hạ rốc-két, tên lửa, drone và khoảng một phần ba đạn pháo nhắm vào trong 35 m, hai quả đánh chặn cùng lúc; pháo nhiều nòng 20 m… |
+| **Dàn rốc-két** | Vừa | 2.420 | 11 CP · 40 s | **Rốc-két chùm**: Mỗi rốc-két rải bom con: tốt hơn với cụm quân, trúng trực tiếp nhẹ hơn. **Rốc-két dẫn đường**: Hai rốc-két GMLRS chính xác ở tầm xa: mạnh với pháo binh và công trình, yếu trước bầy… | **Dàn rốc-két · công sự cố định · phóng loạt (55 m)** Cách đánh: phóng loạt sáu rốc-két theo đường cầu vồng vào mục tiêu mặt đất cách 8–55 m, vượt qua tường và vật che (từ sân trong vào quân địch đã… |
+| **Tháp la-de phòng thủ** | Vừa | 2.499 | 5 CP · 40 s | **Trạm la-de**: La-de 50 kW đốt drone ở 40 m và bắn hạ rốc-két, tên lửa nhắm gần nó; không bao giờ hết đạn; không chặn đạn pháo. | **Tháp la-de phòng thủ · tháp ô vừa · không bao giờ hết đạn** Cách đánh: laser chỉ bắn drone, tầm 40 m, cùng bộ đánh chặn rốc-két và đạn cối; khói làm tia yếu 80%. Mạnh / yếu: dập bầy drone và mưa rố… |
+| **Nhà chứa xe** | Vừa | 3.960 | 8 CP · 40 s |  | **Nhà chứa xe · công trình ô vừa · xe nhẹ miễn phí** Cách đánh: cứ 60 giây gửi ra một xe hạng nhẹ (xe jeep trinh sát, xe bọc thép hoặc xe tăng hạng nhẹ: chọn ở tab Sở chỉ huy), miễn phí, khi còn ít h… |
+| **Nhà chứa máy bay** | Vừa | 3.960 | 8 CP · 40 s |  | **Nhà chứa máy bay · công trình ô vừa · máy bay nhẹ miễn phí** Cách đánh: cứ 60 giây phóng một máy bay nhẹ (trực thăng trinh sát hoặc UAV trinh sát: chọn ở tab Sở chỉ huy), miễn phí, khi còn ít hơn h… |
+| **Tháp pháo hạng nặng** | Lớn | 6.160 | 18 CP · 60 s | **Pháo bờ biển tầm xa**: Pháo 155 mm bắn tới 72 m. Mở khi đánh chìm Leviathan (4-11). **Pháo đài thép**: Chắc hơn nhiều, thêm hai tháp súng máy nhỏ xoay quanh đánh xe nhẹ và drone áp sát. | **Tháp pháo hạng nặng · công sự cố định · pháo đôi 155 mm (50 m)** Cách đánh: tháp pháo đôi 155 mm xoay chậm, bắn loạt đôi đạn nổ mạnh tới 50 m. Mạnh / yếu: phá nát xe nhẹ, cụm quân và xe tăng trong… |
+| **Trạm tên lửa phòng không tầm xa** | Lớn | 4.180 | 13 CP · 60 s | **PAC-3 đánh chặn**: Bắn hạ tên lửa hành trình, tên lửa đạn đạo, đòn tên lửa hành trình và tên lửa từ đòn lớn của boss; bắn máy bay yếu hơn. **Radar tầm xa**: Bắn máy bay từ rất xa và làm lộ mọi máy… | **Trạm tên lửa phòng không tầm xa · công sự cố định · phòng không tầm xa (62 m)** Cách đánh: radar nhìn xa 85 m, phóng tên lửa từng cặp vào máy bay cách tới 62 m; không có gì để đánh mặt đất. Mạnh /… |
+| **Nhà chứa drone** | Lớn | 4.840 | 12 CP · 60 s | **Nhà chứa Lancet**: Đạn bay lượn Lancet thay drone FPV: tầm xa, gấp đôi lên pháo binh và xe đỗ. **Bầy đàn**: Những đợt drone FPV đông hơn, thưa hơn. | **Nhà chứa drone · tháp lớn · drone FPV** Cách đánh: cứ 20 giây phóng hai drone FPV cảm tử vào địch xa tới 70 m, mạnh lên giáp và công trình. Mạnh / yếu: bào mòn thứ gì đứng ngoài tầm các tháp khác;… |
+| **Máy phát khiên** | Lớn | 4.400 | 10 CP · 60 s | **Vòm khiên**: Một vòm lớn, chắc hơn, che cả khu vực. **Lá chắn tháp**: Không có vòm chung: mỗi tháp phe ta quanh nó có một khiên nhỏ riêng chặn đạn bắn trúng nó (không chặn vụ nổ xung quanh), tự hồi… | **Máy phát khiên · tháp lớn · che một phần căn cứ** Cách đánh: không có súng; vòm khiên 25 m hấp thụ 3.000 sát thương từ đạn pháo, bom, đạn súng và tên lửa cho mọi thứ phe ta bên dưới, rồi vỡ; hồi lạ… |
 
-### Mô-đun tiện ích (9)
+### Mô-đun tiện ích (4)
 
 | Mô-đun | Tác dụng |
 |---|---|
-| **Sân bay dã chiến** | **Sân bay dã chiến · mô-đun tiện ích** Cách đánh: máy bay bay trên nó hồi 3% máu mỗi giây và nạp đạn; chúng về đây khi hết đạn (không còn bay về vì bị thương). Mạnh / yếu: giúp trực thăng và máy bay… |
-| **Sân bay dã chiến · Nhà chứa máy bay** |  |
-| **Sân bay dã chiến · Phục vụ nhanh** |  |
-| **Kho đạn** | **Kho đạn · mô-đun tiện ích** Cách đánh: xe nạp đạn tại căn cứ nhanh gấp đôi. Mạnh / yếu: rất hợp với giàn phóng và pháo binh hay hết đạn; nổ rất mạnh khi bị phá. Mẹo: mang theo khi bộ bài nhiều pháo… |
-| **Trung tâm điều khiển hỏa lực** | **Trung tâm điều khiển hỏa lực · mô-đun tiện ích · liên kết tháp** Cách đánh: tháp trong 30 m gây thêm 12% sát thương và dồn hỏa lực vào một mục tiêu. Mạnh / yếu: biến cụm tháp thành một khối; vô dụn… |
+| **Sân bay dã chiến** | **Sân bay dã chiến · mô-đun tiện ích · hào quang trên không** Cách đánh: khi nó còn đứng, mọi máy bay của ta (máy bay và trực thăng, không tính drone) gây thêm 10% sát thương và bay nhanh hơn 10%. Mạ… |
+| **Trung tâm chỉ huy phòng thủ** | **Trung tâm chỉ huy phòng thủ · mô-đun tiện ích · hào quang công trình** Cách đánh: khi nó còn đứng, mọi công trình của ta bắn xa hơn 15% và có thêm 10% máu. Mạnh / yếu: nâng cả căn cứ cùng lúc; trun… |
 | **Trạm hậu cần** | **Trạm hậu cần · mô-đun tiện ích** Cách đánh: mức tiếp tế của quân ta tăng thêm 8 CP: thu nhập chỉ giảm khi quân vượt mức tiếp tế. Mạnh / yếu: cho đội quân lớn giữ nguyên thu nhập; vô ích với đội quâ… |
-| **Trạm radar** | **Trạm radar · mô-đun tiện ích** Cách đánh: mọi thứ trong căn cứ đều lộ, kể cả tàng hình và ẩn nấp, và pháo địch khai hỏa trong 120 m bị lộ 8 giây. Mạnh / yếu: làm lộ oanh tạc cơ tàng hình và pháo ẩn… |
-| **Xưởng sửa chữa** | **Xưởng sửa chữa · mô-đun tiện ích** Cách đánh: xe trong vòng 35 m quanh sở chỉ huy hồi 1,5% máu mỗi giây, kể cả giữa trận. Mạnh / yếu: giữ quân phòng thủ đứng vững; không giúp gì xe ở ngoài chiến tr… |
-| **Máy tạo nhiễu tầm nhìn** | **Máy tạo nhiễu tầm nhìn · mô-đun tiện ích · che căn cứ** Cách đánh: địch không thấy gì của ta trong 35 m quanh nó nếu xa hơn 15 m, trừ trinh sát. Mạnh / yếu: pháo binh không tìm được thứ nó che; tri… |
+| **Xưởng sửa chữa** | **Xưởng sửa chữa · mô-đun tiện ích · hào quang mặt đất** Cách đánh: khi nó còn đứng, mọi xe mặt đất của ta, ở bất cứ đâu trên bản đồ, gây thêm 10% sát thương và có thêm 10% máu. Mạnh / yếu: nâng cả đ… |
 
 ### Đo cân bằng căn cứ
 
@@ -38,7 +50,24 @@ Sinh từ dữ liệu (balance.json, các file bản đồ). / Generated from th
 
 ### Roster 22 tháp và nhánh / The 22-tower roster and its branches
 
-Bảng 22 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
+| Tháp / Tower | Cỡ / Size | Xây lại / Rebuild CP | Nhánh A / Branch A | Nhánh B / Branch B |
+|---|---|---|---|---|
+| guard_tower (guard_tower) | Small | 5 | guard_tower.watch observation_reach, 5 CP | guard_tower.nest autocannon_25, 5 CP |
+| mg_bunker (mg_bunker) | Small | 6 | mg_bunker.twin mg_twin, 6 CP | mg_bunker.flame flame_close, 6 CP |
+| aa_turret (aa_turret) | Small | 6 | aa_turret.flak aa_gun_23_drones_helis, 6 CP | aa_turret.sam aa_manpads_aircraft, 5 CP |
+| ew_tower (ew_tower) | Small | 3 | ew_tower.drone jam_drones_guided, 3 CP | ew_tower.spoof radar_spoof_counterbattery, 3 CP |
+| cp_relay (cp_relay) | Small | 6 | không nhánh / no branch cp_income | không nhánh / no branch cp_income |
+| atgm_tower (atgm_tower) | Medium | 7 | atgm_tower.top atgm_top_attack, 7 CP | atgm_tower.multi atgm_multi, 6 CP |
+| gun_turret (gun_turret) | Medium | 11 | gun_turret.long gun_sniper_120, 11 CP | gun_turret.auto gun_57_light, 11 CP |
+| c_ram (c_ram) | Medium | 5 | c_ram.centurion intercept_close_fast, 5 CP | c_ram.dome intercept_far_slow, 5 CP |
+| rocket_turret (rocket_turret) | Medium | 11 | rocket_turret.cluster rockets_cluster, 10 CP | rocket_turret.guided rockets_guided, 9 CP |
+| laser_ad_station (laser_ad_station) | Medium | 5 | laser_ad_station.laser antidrone_laser, 5 CP | - |
+| heavy_turret (heavy_turret) | Large | 18 | heavy_turret.coastal gun_coastal_long, 18 CP | heavy_turret.bastion fortress_close_defence, 18 CP |
+| missile_battery (missile_battery) | Large | 13 | missile_battery.pac3 intercept_heavy_missiles, 9 CP | missile_battery.lrr sam_long_radar, 12 CP |
+| drone_hangar (drone_hangar) | Large | 12 | drone_hangar.lancet drone_loitering, 14 CP | drone_hangar.swarm drone_fpv_swarm, 14 CP |
+| shield_tower (shield_tower) | Large | 10 | shield_tower.bulwark shield_dome, 10 CP | shield_tower.ward tower_shields, 10 CP |
+| vehicle_hangar (vehicle_hangar) | Medium | 8 | - | - |
+| aircraft_hangar (aircraft_hangar) | Medium | 8 | - | - |
 
 Hai nhánh của một tháp khác nhau về việc làm (towerRole riêng), không chỉ về số. / The two branches of a card differ in what they do (their own towerRole), not only in numbers.
 
@@ -61,10 +90,10 @@ Sức đợt = ReferenceBasePower(cấp nhà chính) x độ khó x đường co
 | HQ | Nhỏ / Small | Vừa / Medium | Lớn / Large | Mô-đun / Modules |
 |---|---|---|---|---|
 | 1 | guard_tower, mg_bunker, aa_turret | gun_turret |  | repair_bay |
-| 2 | guard_tower, mg_bunker, aa_turret, at_gun_emplacement | gun_turret, atgm_tower |  | repair_bay |
-| 3 | guard_tower, mg_bunker, aa_turret, at_gun_emplacement | gun_turret, heavy_flak_tower | heavy_turret | repair_bay, radar_station |
-| 4 | guard_tower, mg_bunker, aa_turret, at_gun_emplacement, minefield | gun_turret, atgm_tower, heavy_flak_tower | heavy_turret | repair_bay, radar_station |
-| 5 | guard_tower, mg_bunker, aa_turret, at_gun_emplacement, minefield, ew_tower | gun_turret, atgm_tower, c_ram | heavy_turret, missile_battery | repair_bay, radar_station, ammo_depot |
+| 2 | guard_tower, mg_bunker, aa_turret, mg_bunker | gun_turret, atgm_tower |  | repair_bay |
+| 3 | guard_tower, mg_bunker, aa_turret, mg_bunker | gun_turret, rocket_turret | heavy_turret | repair_bay, logistics_station |
+| 4 | guard_tower, mg_bunker, aa_turret, mg_bunker, guard_tower | gun_turret, atgm_tower, rocket_turret | heavy_turret | repair_bay, logistics_station |
+| 5 | guard_tower, mg_bunker, aa_turret, mg_bunker, guard_tower, ew_tower | gun_turret, atgm_tower, c_ram | heavy_turret, missile_battery | repair_bay, logistics_station, airfield |
 
 ### Chế độ Đối công / Showdown
 
@@ -95,7 +124,7 @@ CP khởi đầu x1.16 ở Conquest, Deathmatch, KingOfTheHill, Assault, Siege, 
 | kade | mbt, scout |
 | lind | engineer, repair, light |
 | reyes | scout_heli, scout |
-| kerr | scout, radar_scout, light |
+| kerr | scout, scout, light |
 | venn | fpv, scout |
 | mendez | wheeled, light_tank, scout |
 | brandt | bunker, engineer |
@@ -110,7 +139,7 @@ CP khởi đầu x1.16 ở Conquest, Deathmatch, KingOfTheHill, Assault, Siege, 
 | Tướng địch / Enemy general | Vai / Roles |
 |---|---|
 | varga | tank |
-| orlov | artillery, radar_scout |
+| orlov | artillery, scout |
 | kessler | mine_layer, light |
 | wolff | heli |
 | sen | drone |
@@ -320,4 +349,4 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Anh_can_cu` (20 dòng): Ảnh bản đồ căn cứ — Resources/UI/Bases/*.json: ảnh nhìn từ trên của căn cứ trên màn Căn cứ (bản đồ, tâm, hướng, bãi thả, HQ, mét mỗi ảnh, viền, mũi tên)
 - `Anh_can_cu_vien` (142 dòng): Ảnh căn cứ: viền — outline[]: điểm viền căn cứ trên ảnh
 - `Anh_can_cu_mui_ten` (52 dòng): Ảnh căn cứ: mũi tên — arrows[]: mũi tên hướng tấn công trên ảnh
-- `Hang_so_can_cu` (2 dòng): Hằng số căn cứ và tháp — Assets/MachineBrigade/Resources/Data/tunables.json: 'bases' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị kh…
+- `Hang_so_can_cu` (33 dòng): Hằng số căn cứ và tháp — Assets/MachineBrigade/Resources/Data/tunables.json: 'bases' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị kh…

@@ -160,6 +160,20 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public float FlareResist { get; internal set; }
 
+        /// <summary>
+        /// Balance pack 2 addendum item 2: per-weapon override of <see cref="FixRules.MunitionRules.ProximityFuze"/> (m);
+        /// null keeps the group default (data "proximityFuze"; no weapon sets it today, so behaviour is unchanged).
+        /// </summary>
+        public float? ProximityFuze { get; internal set; }
+
+        /// <summary>
+        /// Balance pack 2 addendum item 2: per-weapon override of <see cref="SimTunables"/>
+        /// Weapons.JamRules.GuidedMissMin/GuidedMissSpread (m); null keeps the shared group value (data "jamMissMin" /
+        /// "jamMissSpread"; no weapon sets them today, so behaviour is unchanged).
+        /// </summary>
+        public float? JamMissMin { get; internal set; }
+        public float? JamMissSpread { get; internal set; }
+
         // Prompt 29 S05 (C13): capability flags. canHitGround / canHitAir are the targets; the others are computed from the
         // round (DamageSystem.TryIntercept / GunTakes, flares on guided missiles) and these optional data overrides only say
         // "never" or "always" where the round rules would say otherwise (balance.json "interceptable", "flareEligible",
@@ -310,6 +324,8 @@ namespace MachineBrigade.Sim.Content
                 // the bonuses and the round's model were once lost on a tuned weapon).
                 Charge = Charge,
                 FlareResist = FlareResist,
+                // Balance pack 2 addendum item 2: per-weapon fuze / jam-miss overrides travel with the copy.
+                ProximityFuze = ProximityFuze, JamMissMin = JamMissMin, JamMissSpread = JamMissSpread,
                 Interceptable = Interceptable, FlareEligible = FlareEligible, ApsEligible = ApsEligible, CiwsEligible = CiwsEligible,
                 _penetration = _penetration,
                 TopAttack = TopAttack,

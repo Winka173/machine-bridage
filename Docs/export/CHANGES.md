@@ -1037,3 +1037,117 @@ vị trí trúng (`at`) và model; sát thương, máu, vũ khí không đổi.
 | PT14-M1-2 | `mobile_fortress` parts `at` | howitzer [0, 3.0, 7.1], rockets [∓1.9, -6.0, 4.6], missiles [0, -6.05, 4.6], howitzer_2 [0, -2.0, 7.4], sam [2.6, -4.4, 5.6] | howitzer [0, 4.0, 7.0], rockets [∓2.15, -6.0, 5.0], missiles [0, 9.0, 3.3] (pháo 125 mm mũi), howitzer_2 [0, -2.1, 7.7], sam [1.25, 5.5, 6.3] (nóc cầu chỉ huy) | đúng 2 bệ phóng đối xứng phía sau; mount 5 bắn đạn 125 mm nên ra từ nòng pháo mũi chứ không từ nắp silo |
 | PT14-M1-3 | `bastion_mk0` | vẽ bằng model fortress_bastion | `"model": "bastion_mk0"`; tune mortar `at` [0, -0.83, 9.66] (đơn vị đã nhân size 1.51 của cha) | model riêng (nguyên mẫu) |
 | PT14-M1-4 | `fenrir` | vẽ bằng model mobile_fortress | `"model": "fenrir"`; tune `at` rockets_l/r [∓2.02, -6.3, 5.63], flak_l [0, 4.23, 5.47] (đã nhân size 1.657 của cha) | model riêng (xe xích hai khoang mùa đông) |
+
+## Gói cân bằng 2, bổ sung 03/10, mục 2-6 (lane A)
+
+Nhánh `feature/pack2-add` (worktree MachineBrigade-art), `Docs/cloud/PT14_CLOUD_TASKS.md` session 6. Chỉ lý thuyết:
+không chạy Unity, không chạy test, không chạy ExportGameDoc. Mục 1 (tầm tối thiểu boss) không nằm trong lượt này —
+chờ session 7 sau khi lane model gộp xong (không đụng dữ liệu boss ở đây). `python Tools/export/export.py
+--game-json Docs/export/game_snapshot.json` + `export.py check --game-json ...`: 15/15; `dotnet build
+Tools/simbuild/Sim.csproj`: 0 lỗi; `mbconst check --base HEAD --dotnet`: (b)-(e) PASS, (a) 16/21 hunk chỉ đổi literal
+(5 hunk còn lại là tính năng ghi đè theo từng vũ khí ở mục 2, sửa tay có lý do, không phải lượt công cụ).
+
+### Mục 2 — Tên lửa (sheet `Ten_lua_tham_so`, 01_chien_dau, 45 dòng, 21 cột riêng + FK `vu_khi_id`)
+
+| # | tham số | trước | sau | lý do |
+|---|---|---|---|---|
+| PK2A-1 | `weapons.guidance.baseFailChance` | hằng số 0,02 trong `CombatSystem.cs` | khóa dữ liệu, giá trị giữ 0,02 | luật B: tỉ lệ trượt gốc của một phát bắn đạn có dẫn (không phụ thuộc chuyển động mục tiêu) |
+| PK2A-2 | `weapons.guidance.rangeFailCoeff` | hằng số 0,08 | khóa dữ liệu, giá trị giữ 0,08 | luật B: hệ số theo (tầm bắn / tầm tối đa)² trong cùng công thức trượt |
+| PK2A-3 | `WeaponDef.ProximityFuze` (mới, `float?`) | không có; mọi vũ khí dùng `munitionRules.proximityFuze` = 7 m chung | cờ dữ liệu riêng từng vũ khí (balance.json `proximityFuze`), null = theo nhóm; chưa vũ khí nào ghi đè | đưa tham số nhóm xuống từng vũ khí theo yêu cầu bổ sung; **hành vi không đổi** (chưa cơ chế nào đọc giá trị này để nổ cận đích — xem ghi chú) |
+| PK2A-4 | `WeaponDef.JamMissMin` / `JamMissSpread` (mới, `float?`) | không có; mọi vũ khí dùng `weapons.jamRules.guidedMissMin` (5 m) / `guidedMissSpread` (6 m) chung | cờ dữ liệu riêng từng vũ khí (`jamMissMin` / `jamMissSpread`), null = theo nhóm; `CombatSystem.cs` đọc `weapon.JamMissMin ?? SimTunables...GuidedMissMin` | đưa tham số nhóm xuống từng vũ khí theo yêu cầu bổ sung; **hành vi không đổi** (chưa vũ khí nào ghi đè, giá trị bằng giá trị nhóm cũ) |
+
+Ghi chú PK2A-3: `MunitionRules.ProximityFuze` (và nay `WeaponDef.ProximityFuze`) không được bất kỳ luật bắn / nổ nào
+trong mã đọc để quyết định nổ cận đích — nó chỉ góp vào công thức `FlareOffset` (khoảng pháo sáng phải xa cận đích
+tối thiểu 2 m). Cờ riêng từng vũ khí đã có sẵn (balance.json `proximityFuze`) cho một lượt sau nối nó vào luật nổ
+nếu chủ dự án muốn; **lượt này không nối**, vì nối nó sẽ đổi hành vi (luật D cấm trừ khi chủ dự án yêu cầu).
+
+**Câu hỏi mục 2 (đọc mã, không chạy game): tên lửa dẫn đường đánh mặt đất có trượt khi mục tiêu chạy không?**
+KHÔNG. `CombatSystem.Munitions.cs` luật A: "a guided round lands on its target wherever it drove: it cannot be
+outrun" — `Homes(WeaponDef)` đúng với Guided/GuidedRocket/GuidedBomb/GuidedShell; điểm nổ là vị trí THỰC của mục
+tiêu lúc đạn tới, không phải điểm đón đầu tính trước (điểm đón đầu `LeadPoint`/`Leads` chỉ áp cho đạn KHÔNG dẫn:
+rocket, bom, pháo bắn cầu — luật D). Đạn dẫn có thể trượt, nhưng không lý do nào là "vì mục tiêu di chuyển":
+(1) một lần tung xác suất lúc bắn (`weapons.guidance.baseFailChance + rangeFailCoeff × tầm²`, chỉ phụ thuộc tầm bắn,
+không phụ thuộc tốc độ / hướng mục tiêu); (2) bị gây nhiễu lúc bắn (độc lập chuyển động); (3) tên lửa dẫn bằng tầm
+nhìn (dây / chùm / laser) mất mục tiêu nếu bên bắn chết, một trong hai bên ở trong khói, hoặc (cả hai trên mặt đất)
+có vật cản chắn tầm nhìn — cũng không phụ thuộc tốc độ; (4) tên lửa hồng ngoại bị pháo sáng kéo đi (một lần tung xác
+suất theo đám pháo sáng); (5) mục tiêu ra khỏi tầm bay của đạn (`tầm × RangeFactor × ReachScale`) trước khi đạn tới —
+trường hợp DUY NHẤT chuyển động có liên quan, và ngay cả vậy đạn chỉ tự hủy ở biên tầm bay, không phải "trượt" theo
+nghĩa bắn hụt. Khớp với mặc định chính addendum đã nêu (mục 4.2): "không né được bằng cách chạy với tên lửa dẫn
+đường" — nay xác nhận đúng bằng đọc mã, không phải giả định.
+
+Cột `kieu_dan` của sheet suy từ `guided` + `weaponFamilyId` có trong `munitionRules.radarGuided` / `sightGuided`
+không (dữ liệu không có cột phân loại kiểu dẫn riêng): chỉ ba nhóm mã phân biệt được — bám radar, dẫn theo tầm nhìn
+bên bắn (dây / chùm / laser), hồng ngoại / mặc định; laser riêng, ảnh nhiệt, GPS-quán tính KHÔNG được mã phân biệt
+(NEED_CODE_CHECK nếu chủ dự án cần tách thêm). Các cột động học (`toc_do_quay_deg_s`, `gia_toc_ngang_m_s2`,
+`ban_kinh_quay_m`, `he_so_bam`, `thoi_gian_khoa_s`, `vertical_launch`): **KHONG_CO** — Sim không mô phỏng động học
+bay chi tiết của tên lửa (đạn dẫn luôn tới đúng vị trí mục tiêu trừ khi bị chệch theo 5 lý do ở trên); mọi cột khác
+(sát thương, lõi/rìa nổ, tầm, tầm tối thiểu, tốc độ đạn, cờ APS/CIWS/pháo sáng/jam-proof, băng đạn, thời gian nạp) đã
+có sẵn ở `Vu_khi` (tra theo `vu_khi_id`), không chép lại.
+
+### Mục 3 — Napalm và lửa (đã có trong dữ liệu; 5 khóa mới ở phần trang bị)
+
+Cơ chế cháy theo thời gian (`DamageSystem.cs Hit`, `StatusSystem.cs Burn`) ĐÃ ra dữ liệu từ trước: `weapons.
+damageSystem.fireBurnSeconds` = 3 s, `fireAfterburn` = 0,3 (đã có trong tunables.json). dps = sát thương lọt qua ×
+fireAfterburn / fireBurnSeconds; bán kính = bán kính nổ của vũ khí (đã ở `Vu_khi.loi_m`/`ria_m`); chồng lên nhau =
+`Burn(..., stack: true)` cộng phần sát thương còn lại của đám cháy cũ vào đám mới, cùng một cửa sổ `fireBurnSeconds`
+(không phải hai đồng hồ riêng). 5 hằng số còn lại, đều trong nhánh trang bị Incendiary Rounds / Firestorm
+(`GearSystem.cs`, chỗ duy nhất khác đốt lửa), chuyển ra `weapons.fire.*`:
+
+| # | khóa | giá trị | ý nghĩa |
+|---|---|---|---|
+| PK2A-5 | `weapons.fire.incendiaryFlameSeconds` | 6 s | thời gian cháy khi vũ khí là súng phun lửa |
+| PK2A-6 | `weapons.fire.incendiaryOtherSeconds` | 4 s | thời gian cháy khi vũ khí khác súng phun lửa |
+| PK2A-7 | `weapons.fire.firestormShare` | 0,1 (10%) | tỉ lệ sát thương chuyển thành dps cháy khi chỉ có trang bị Firestorm (không có Incendiary Rounds) |
+| PK2A-8 | `weapons.fire.firestormSpreadRadiusSqM` | 36 m² | bán kính² tìm đồng minh gần nhất để lửa nhảy sang khi xe mang Firestorm chết đang cháy (giữ dạng bình phương, không đổi thành bán kính 6 m, để không đổi bit nào của phép so sánh) |
+| PK2A-9 | `weapons.fire.firestormSpreadSeconds` | 4 s | thời gian cháy mang theo khi lửa nhảy sang xe khác |
+
+2 hằng số cháy của boss (`BossSystem.BigAttacks.cs:1205`, `BossSystem.Trail.cs:67`, cùng 1,2 s) **không đụng** (dữ
+liệu boss thuộc lane model) — để lại cho session mục 1. Không tạo sheet `Chay_tham_so` riêng: 5 khóa trên đã hiện ở
+sheet `Hang_so_vu_khi` (01_chien_dau, sheet hằng số chung sinh tự động từ tunables.json), nơi `fireBurnSeconds` /
+`fireAfterburn` đã có sẵn — thêm một sheet riêng cho đúng 5 dòng đã thấy ở đó là chép hai lần.
+
+### Mục 4 — Tháp / căn cứ (31 khóa mới, `Hang_so_can_cu` 2 → 33 dòng)
+
+31 hằng số mặc định trong các cơ chế tháp/công trình của `Catalog.P25A.cs` (giá trị dự phòng của `o.Float("<khóa>",
+<mặc_định>)` khi JSON công trình không ghi khóa đó — bản khởi tạo thuộc tính cùng số là mã chết, vì khi khối JSON
+tồn tại mọi trường luôn được gán tay, nên chỉ di dời phần dự phòng) chuyển ra `bases.*`: `blastWall` (radiusM 8,
+cutShare 0,3, coneDeg 50), `fireControl` (radiusM 30, damageShare 0,12, focus 2), `hangar` (everySeconds 60, alive
+2, postM 20, budget 0), `searchlight` (radiusM 35, dazzleShare 0,2), `balloon` (radiusM 40, scatterShare 0,5),
+`sightJammer` (radiusM 35, closeM 15), `shelter` (radiusM 15, cutShare 0,5), `flareTower` (everySeconds 15, rangeM
+40, radiusM 30, seconds 15), `microwave` (rangeM 30, arcDeg 60, cooldownSeconds 8), `droneHunt` (reachM 60),
+`paradrop` (fallSeconds 6, heightM 30, baseKeepOutM 45), `reconPass` (widthM 60, seconds 20) — đúng "chọn mục tiêu
+tháp, hào quang, ngưỡng kích hoạt, bán kính" addendum yêu cầu (fireControl = chọn mục tiêu / dồn hỏa lực; blastWall /
+shelter / searchlight / balloon / sightJammer / microwave / droneHunt = hào quang và ngưỡng; mọi cái còn lại là bán
+kính). Không tạo sheet riêng: các khóa này tự hiện ở `Hang_so_can_cu` (03_can_cu) — chính addendum lấy số dòng của
+sheet này làm mốc ("Hang_so_can_cu hiện 2 dòng"), nay 33 dòng. `TowerModes.cs` (36 dòng) không có hằng số nào để dời.
+
+### Mục 5 — Gọn `Bom_vu_khi` (220 → 74 cột, 14 dòng giữ nguyên)
+
+`Tools/export/bom.py sheet_vu_khi` trước đây lấy TOÀN BỘ cột của `Vu_khi` trừ id/nguon/raw_json làm cột — hầu hết là
+chép lại từ Vu_khi (gia đình vũ khí, before/after theo dõi thay đổi, nhịp bắn ngoài đời, bản tiếng Anh trùng với cột
+tiếng Việt đã có, và bản `stick_*` thô trùng với `STICK_COLS` tiếng Việt bom.py tự tính). Thay bằng danh sách cho
+phép `BOMB_ONLY_COLS` (29 cột: các trường hiệu lực riêng của bom — sát thương, nổ, tầm, cờ ngòi/quỹ đạo, băng/nạp —
+cộng 5 cột `cluster_*`) và thêm khóa ngoại `vu_khi_id` rõ ràng (= id vũ khí ở dòng vũ khí; để trống ở dòng thẻ hỗ trợ
+/ siêu vũ khí boss vì không phải dòng Vu_khi). Kết quả 220 → 74 cột, 14 dòng không đổi.
+
+**Lỗi tìm thấy và đã sửa khi làm mục này:** `static_sheets()` lọc dòng của `Bom_vu_khi` bằng `r[1] ==
+"vu_khi_don_vi"` (chỉ số vị trí trong tuple dòng, không theo tên cột) để dựng tra cứu cho `Bom_canh_bao` và
+`Bom_don_vi`; chèn `vu_khi_id` ngay sau "id" (chỉ số 1) làm rỗng bộ lọc đó một cách im lặng, vỡ `Bom_canh_bao` với
+`KeyError`, bị `add_bom_sheets`'s `except KeyError: return` (dành cho bản xuất cũ/lenient) bắt mất — bỏ cả 4 sheet
+bom mà không báo lỗi (`export.py check` mục "19 file đúng danh sách" vẫn PASS vì việc một sheet biến mất trong xlsx
+không thuộc phép kiểm đó). Đã sửa bằng cách đặt `vu_khi_id` sau "nhom" (chỉ số 2); xuất lại toàn bộ và đọc lại danh
+sách sheet để xác nhận đủ 4 sheet bom, số dòng không đổi.
+
+### Mục 6 — Báo cáo (mục 2-5)
+
+- Sheet mới: `Ten_lua_tham_so` (01_chien_dau, 45 dòng, 21 cột riêng + FK `vu_khi_id`).
+- Cột mới: `Bom_vu_khi.vu_khi_id` (FK tới Vu_khi).
+- Tham số chuyển ra dữ liệu: 38 khóa tunables.json mới (5 `weapons.fire.*`, 2 `weapons.guidance.*`, 31 `bases.*`;
+  `mbconst check`: 38/38 lượt đổi literal-only sạch) + 3 cờ dữ liệu riêng từng vũ khí mới (`WeaponDef.ProximityFuze`,
+  `JamMissMin`, `JamMissSpread`; sửa tay có lý do, không phải lượt công cụ — xem mục 2). Tổng cộng tunables.json từ
+  291 lên 329 khóa.
+- Tầm tối thiểu boss cũ/mới theo vũ khí, danh sách boss có vùng chết chưa được phủ: **không thuộc lượt này** (mục 1,
+  session 7, chờ lane model).
+- Cần chạy lại từ Unity: không cột nào trong 2-5 cần game.json mới (mọi NEED_CODE_CHECK đã về 0 với snapshot hiện
+  có); việc nối `WeaponDef.ProximityFuze` vào luật nổ cận đích (nếu chủ dự án muốn dùng) sẽ cần kiểm bằng Unity sau
+  khi sửa luật đó — chưa sửa ở đây.

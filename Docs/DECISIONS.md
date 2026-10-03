@@ -19504,3 +19504,96 @@ change: each GLB keeps its old length (fenrir and bastion_mk0 keep their parents
   new `at`; its own model was already off them.
 - Gate (quality_gate, after glb_quantize): Jötunn 100, Bastion 100, Mk0 100, Fenrir 94.6, Inferno 96.4; all hard ok.
   Needs Unity: card renders / ModelScan, the launch points of the new pods, sponson traverse in the preview.
+
+## Balance pack 2 addendum items 2-6 (lane A)
+
+Owner's addendum ("Bổ sung 03/10" of `Docs/prompts/export_pack2_vi.txt`), done via `Docs/cloud/PT14_CLOUD_TASKS.md`
+session 6, locally on `feature/pack2-add` (worktree MachineBrigade-art). Items 2 (missiles), 3 (napalm/fire), 4
+(towers/bases), 5 (slim Bom_vu_khi) and the item-6 report for them. Item 1 (boss minimum range) is session 7,
+waiting on the model lane's boss redraws; boss data untouched here. Theory only: no Unity, no tests, no
+ExportGameDoc; `dotnet build Tools/simbuild/Sim.csproj` after every code edit, `mbconst check --base HEAD --dotnet`
+for the literal moves, `python Tools/export/export.py check --game-json Docs/export/game_snapshot.json` for the
+pack (15/15; `--game-json` passed to both the build and the check so the determinism re-export matches).
+
+- Item 2 (missiles): new sheet `Ten_lua_tham_so` (01_chien_dau), one row per missile weapon (projectile == Missile,
+  45 rows, 21 own columns + the vu_khi_id FK): guidance kind derived from `guided` + weaponFamilyId membership in
+  munitionRules.radarGuided/sightGuided (the data has no separate guidance-type field; only three code-driven
+  buckets exist — radar-guided, sight-guided wire/beam/laser, infrared/default; laser/GPS/imaging-infrared are not
+  distinguished in code), trajectory (existing flightProfile/topAttack), proximity fuze and jam-miss (below), the
+  hit-chance formula, clip/burst timing. Everything else (damage, splash, range, speed, flare/APS/CIWS/interceptable,
+  clip) already has its own Vu_khi column; the sheet points at it via vu_khi_id.
+  - Pushed per-weapon (manual code, not a literal move; equivalence check's 5 "other change(s)" are exactly this):
+    `WeaponDef.ProximityFuze`, `JamMissMin`, `JamMissSpread` (nullable float?), parsed in Catalog.cs from weapon
+    JSON keys proximityFuze/jamMissMin/jamMissSpread (null when absent, as today), carried by WeaponDef.Tuned().
+    CombatSystem.cs's jammed/failed guided-round miss offset now reads `weapon.JamMissMin ?? SimTunables.Weapons.
+    JamRules.GuidedMissMin` / JamMissSpread the same way; FixRules.cs `MunitionRules.Effective(WeaponDef)` does the
+    same for the fuze (nothing consumes the per-weapon fuze value yet — nothing consumed the group value either;
+    the hook is ready for a later pass). No weapon overrides today, so every value stays identical to the shared
+    group constant (confirmed: `mbconst check` 38/38 literal swaps clean, only these 5 reasoned hunks flagged,
+    `dotnet build` 0 errors / 0 new warnings before and after).
+  - Literal moves (mbconst move, domain weapons): `weapons.guidance.baseFailChance` = 0.02, `weapons.guidance.
+    rangeFailCoeff` = 0.08 (CombatSystem.cs Fire: a guided round's one launch-time fail roll is baseFailChance +
+    rangeFailCoeff × reach² + mountFail; reach = distance/range clamped to 1.2).
+  - Answer (read-code only): a guided ground-attack missile does NOT miss just because its target moves.
+    CombatSystem.Munitions.cs rule A: "a guided round lands on its target wherever it drove: it cannot be outrun" —
+    Homes(WeaponDef) covers Guided/GuidedRocket/GuidedBomb/GuidedShell, and the impact point is the target's actual
+    position when it lands, not a lead-point aimed in advance (lead-point aiming is only for unguided rockets,
+    bombs and indirect shells — rule D). A guided round can still fail to connect, but none of the reasons are "the
+    target moved": (1) the one launch-time roll above, a function of range only; (2) a jammer over the shooter or
+    target at launch (independent of motion); (3) a sight-guided missile loses its target if its shooter dies, or
+    either side is in smoke, or (both ground) cover blocks line of sight; (4) an IR missile pulled onto a flare
+    (one seeded roll per flare cloud); (5) the target leaving the round's reach (range × RangeFactor × ReachScale)
+    before it arrives — the one case motion matters, and even then the round just self-destructs at the edge of
+    its reach rather than "missing" as such. Matches the addendum's own default (4.2): "không né được bằng cách
+    chạy với tên lửa dẫn đường" — confirmed by the code, not assumed.
+- Item 3 (napalm/fire): the fire-DOT mechanism (DamageSystem.cs Hit, StatusSystem.cs Burn) was already fully
+  data-driven: weapons.damageSystem.fireBurnSeconds (3 s) and fireAfterburn (0.3 share) are existing tunables.json
+  keys; dps = dealt × fireAfterburn / fireBurnSeconds, radius = the weapon's own splash (already in Vu_khi), overlap
+  = the stack:true merge in Burn() (a second fire adds its remaining damage into the one already burning, same
+  window). Five further literals, all in the Incendiary Rounds / Firestorm equipment-perk path (GearSystem.cs, the
+  only other place the Sim lights something on fire), moved to weapons.fire.*: incendiaryFlameSeconds = 6 s
+  (flamethrower hit), incendiaryOtherSeconds = 4 s (every other weapon), firestormShare = 0.1 (share converted to
+  burn dps when only the Firestorm perk triggers it), firestormSpreadRadiusSqM = 36 m² (a dying burning vehicle's
+  fire jumps to the nearest ally within this radius squared; kept squared, not rewritten to a 6 m radius, so no bit
+  of the comparison changes), firestormSpreadSeconds = 4 s (the jumped fire's duration). Two boss literals in the
+  same family (BossSystem.BigAttacks.cs:1205, BossSystem.Trail.cs:67, both a 1.2 s burn on contact) are out of scope
+  (boss data is the model lane's) and left for item 1's session. No new sheet: the values already surface as rows
+  of the existing Hang_so_vu_khi sheet (01_chien_dau; the generic tunables-constants sheet, Tools/export/core/
+  tunables.py) — where fireBurnSeconds/fireAfterburn already lived.
+- Item 4 (towers/bases): 31 literal defaults in Catalog.P25A.cs's tower/base-building mechanisms (the fallback of
+  each `o.Float("<key>", <default>)` read when a building's JSON block omits that field; the property-initializer
+  copies of the same number are dead code once the object is built, since every field is always set explicitly when
+  the block exists, so only the fallback moved) went to bases.*: blastWall (radiusM 8, cutShare 0.3, coneDeg 50),
+  fireControl (radiusM 30, damageShare 0.12, focus 2), hangar (everySeconds 60, alive 2, postM 20, budget 0),
+  searchlight (radiusM 35, dazzleShare 0.2), balloon (radiusM 40, scatterShare 0.5), sightJammer (radiusM 35,
+  closeM 15), shelter (radiusM 15, cutShare 0.5), flareTower (everySeconds 15, rangeM 40, radiusM 30, seconds 15),
+  microwave (rangeM 30, arcDeg 60, cooldownSeconds 8), droneHunt (reachM 60), paradrop (fallSeconds 6, heightM 30,
+  baseKeepOutM 45), reconPass (widthM 60, seconds 20) — exactly the "tower targeting, aura, activation thresholds,
+  radii" the addendum asks for. No new sheet: these already surface as rows of the existing Hang_so_can_cu sheet
+  (03_can_cu) — the addendum's own yardstick ("Hang_so_can_cu hiện 2 dòng") confirms this landing spot; now 33 rows.
+  TowerModes.cs (36 lines) has no numeric literals to move.
+- Item 5 (slim Bom_vu_khi): Tools/export/bom.py sheet_vu_khi's column list was every Vu_khi column minus
+  id/nguon/raw_json — 220 columns for 14 rows, almost all a straight copy of Vu_khi (family bookkeeping, before/
+  after change tracking, real-world rate, raw English duplicates of values the sheet already names in Vietnamese,
+  and the raw stick_* flatten of the same stick block bom.py recomputes into its own Vietnamese STICK_COLS).
+  Replaced with an explicit BOMB_ONLY_COLS allow-list (29 columns: the bomb's own effective fields plus the five
+  cluster_* columns) and an explicit vu_khi_id foreign key (set to the weapon's own id on weapon rows; blank on the
+  support-card and boss-superweapon rows this sheet also carries, since those are not Vu_khi rows). 220 → 74
+  columns, 14 rows unchanged. Found and fixed a bug while doing this: static_sheets() filters Bom_vu_khi's rows by
+  `r[1] == "vu_khi_don_vi"` (a positional index, not a column name) to build Bom_canh_bao's and Bom_don_vi's
+  lookups; inserting vu_khi_id at index 1 silently emptied that filter and broke Bom_canh_bao with a KeyError,
+  caught by add_bom_sheets's lenient-build `except KeyError: return` — which dropped all four bomb sheets with no
+  visible error (export.py check's "19 file đúng danh sách" still passed, since a sheet's absence inside an xlsx
+  isn't part of that check). Fixed by putting vu_khi_id after nhom instead (index 2); re-ran a full export + check
+  and read the sheet list back to confirm all four bomb sheets are present with row counts unchanged.
+- Full pack rebuild: `export.py --game-json Docs/export/game_snapshot.json` then `export.py check --game-json ...`:
+  15/15 PASS, foreign keys OK 294, NEED_CODE_CHECK 0. The rebuild also picked up pre-existing drift unrelated to
+  this addendum (confirmed by rebuilding from a clean stash of this session's own changes first): the committed
+  Docs/export/current pack predated the PT14-D6 boss deletions (41 → 31 bosses), so 02_boss.md/.xlsx and a few
+  other files show that catch-up alongside this addendum's actual changes. No boss weapon value was touched here.
+- mbconst: `dotnet run --project Tools/export/mbconst -- move --csv <list>` for every literal move above (38
+  literals, 38 new tunables.json keys: 5 weapons.fire.*, 2 weapons.guidance.*, 31 bases.*); `mbconst check --base
+  HEAD --dotnet` after: PASS on (b) default == json == original literal, (c) no key with two literals, (d) compile
+  clean, (e) expression types unchanged; (a) is a deliberate FAIL (16/21 hunks literal-only; the other 5 are item
+  2's per-weapon override fields, reasoned above, not a tool move). `Tools/export/mbconst/bin`/`obj` and
+  `Temp/simbuild` deleted after every build; not committed.

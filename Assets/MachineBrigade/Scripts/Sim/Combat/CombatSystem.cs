@@ -1018,15 +1018,17 @@ namespace MachineBrigade.Sim.Combat
             }
             // Guided rounds are reliable up close; at the edge of their range one in ten loses lock.
             var fail = index < shooter.MountFail.Length ? shooter.MountFail[index] : 0f;
-            if (weapon.Guided && _world.Random.NextDouble() < 0.02 + 0.08 * reach * reach + fail) projectile.Failed = true;
+            if (weapon.Guided && _world.Random.NextDouble() < global::MachineBrigade.Sim.Content.SimTunables.Weapons.Guidance.BaseFailChance + global::MachineBrigade.Sim.Content.SimTunables.Weapons.Guidance.RangeFailCoeff * reach * reach + fail) projectile.Failed = true;
             // Prompt 22 F: Dr. Venn's drones shrug off part of the jamming.
             if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)) && !_world.ShrugsJam(shooter, weapon) && !weapon.JamProof)
                 projectile.Jammed = true;
             if (weapon.Guided)
             {
                 var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
-                projectile.Miss = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (global::MachineBrigade.Sim.Content.SimTunables.Weapons.JamRules.GuidedMissMin +
-                    (float)_world.Random.NextDouble() * global::MachineBrigade.Sim.Content.SimTunables.Weapons.JamRules.GuidedMissSpread);
+                // Balance pack 2 addendum item 2: a weapon's own jamMissMin / jamMissSpread (data), else the shared group value.
+                var missMin = weapon.JamMissMin ?? global::MachineBrigade.Sim.Content.SimTunables.Weapons.JamRules.GuidedMissMin;
+                var missSpread = weapon.JamMissSpread ?? global::MachineBrigade.Sim.Content.SimTunables.Weapons.JamRules.GuidedMissSpread;
+                projectile.Miss = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (missMin + (float)_world.Random.NextDouble() * missSpread);
             }
             _projectiles.Add(projectile);
             var wide = projectile.Jammed || projectile.Failed ? projectile.Miss : default;
