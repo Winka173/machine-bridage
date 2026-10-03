@@ -1,0 +1,33 @@
+{
+ "id": "wall_gun",
+ "class": "obstacle",
+ "real": ["HESCO MIL 1-class cells (1 m) stacked as a breastwork with a fire step behind it", "a timber crib firing platform (sleeper crib, plank deck, sandbag parapet)"],
+ "shape": "Strings note.wall_gun: a wall segment with a firing platform for a small tower; prompt 32 L3: 12 x 2 m, HESCO bays either side of a 4 m platform at 1.2 m (deck top 1.28 m); tiled end to end by WallRules (the size stays exact); Accord field-built.",
+ "confidence": "xấp xỉ (HESCO cell sizes; the platform keeps the old deck height and footprint)",
+ "target_size": {"L": 2.16, "W": 12.02, "H": 2.75, "source": "the old GLB (2.155 x 12.02 x 2.75): kept exactly, the wall system tiles it and a tower stands on the deck", "tolerance": 0.02},
+ "features": [
+  {"feature": "side bays: 1 m cells two tiers high at the front, one tier at the back (the fire step), wire mesh, heaped tops", "nodes": ["Walls", "Mesh", "Fill_top"]},
+  {"feature": "duckboards on the fire step", "nodes": ["Duckboards"]},
+  {"feature": "the 4 m timber crib firing platform: sleeper crib on an earth core, plank deck with battens (deck top 1.28 m)", "nodes": ["Platform", "Platform_fill", "Deck"]},
+  {"feature": "a two-course sandbag parapet at the platform's front, turned at the corners", "nodes": ["Parapet"]},
+  {"feature": "corrugated revetment sheets on the platform's sides, a timber ladder at the back", "nodes": ["Revetment", "Ladder"]},
+  {"feature": "concertina wire on the upper tier, a two-slope earth berm", "nodes": ["Razor_wire", "Base"]},
+  {"feature": "ammunition boxes and a water can on the deck, the Team band on the platform's front", "nodes": ["Ammo_boxes", "Jerrycans", "Wall_band"]}
+ ],
+ "class_parts": [],
+ "weapons": [],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [0, 6000], "floor": 0, "lod1_share": 0.5, "lod2_share": 0.2, "note": "obstacle class: no floor, over the maximum is information only"},
+ "team_zones": ["a band across the platform's front (Team)"],
+ "colour_zones_min": 2,
+ "breakable": [],
+ "wreck": "a fallen segment is drawn by the view as a slumped, burnt ruin; its tower falls with it (no part nodes)",
+ "faction_style": "Accord (field-built: gabions, sleepers, planks, sandbags, corrugated sheet)",
+ "details": {
+  "tier1": ["side bays", "platform", "berm"],
+  "tier2": ["upper tier", "fire step", "parapet", "revetment", "ladder", "razor wire"],
+  "tier3": ["mesh wires", "duckboards", "battens", "ammunition boxes", "water can", "heaped tops"]
+ },
+ "pivot": "centred on the origin, the ground at z = 0, along X, the front to -Y (as the old file); the platform in the middle where BaseSystem stands the tower",
+ "questions": []
+}

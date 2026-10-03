@@ -1,0 +1,31 @@
+{
+ "id": "troop_shelter",
+ "class": "tower",
+ "real": ["a half-buried cast concrete troop bunker with an earth berm and a sandbag blast baffle at its entrance"],
+ "shape": "Strings note.troop_shelter: a half-buried concrete bunker with an earth berm: vehicles sheltering round it ride out a barrage; modelSize 6.0 x 5.0 x 2.2 m with the long side front to back (the old GLB lay across: 5.8 x 6.0, size gate failed).",
+ "confidence": "ban_dau_doan (a common field bunker layout; no single real model)",
+ "target_size": {"L": 6.0, "W": 5.0, "H": 2.2, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "the cast concrete box with form-tie marks, the thick chamfered roof slab, its edge beams and coping", "nodes": ["Bunker", "Form_ties", "Roof", "Roof_ribs", "Coping"]},
+  {"feature": "the earth cover on the slab, a sandbag ring and a two-course run across it, weeds", "nodes": ["Roof_deck", "Sandbags", "Weeds"]},
+  {"feature": "two mushroom ventilation stacks and a periscope hood", "nodes": ["Vents", "Periscope", "Glass"]},
+  {"feature": "the earth berm heaped against the front and sides in two slopes", "nodes": ["Berm", "Berm_toe"]},
+  {"feature": "the entrance at the back: ramp with side walls, concrete apron (base), steel door, door lamp, L-shaped sandbag blast baffle", "nodes": ["Ramp", "Ramp_walls", "Base", "Doorway", "Doors", "Lamps"]},
+  {"feature": "a whip antenna, water cans, ammunition boxes, duckboards, stones; the Team band on the slab's front edge", "nodes": ["Antenna", "Jerrycans", "Ammo_boxes", "Duckboards", "Stones", "Team_band"]}
+ ],
+ "class_parts": ["base", "walls", "roof", "antenna"],
+ "weapons": [],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [2000, 4000], "floor": 1400, "cap": 6000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "owner decision 6"},
+ "team_zones": ["a band on the roof slab's front edge (Team)"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "engineers' cast concrete under the Accord's earth and sandbags",
+ "details": {
+  "tier1": ["concrete box", "roof slab", "berm"],
+  "tier2": ["earth cover", "sandbag ring and run", "ramp and walls", "blast baffle", "vents", "door"],
+  "tier3": ["form ties", "coping", "periscope", "lamp", "whip", "water cans", "ammunition boxes", "duckboards", "weeds", "stones"]
+ },
+ "questions": []
+}

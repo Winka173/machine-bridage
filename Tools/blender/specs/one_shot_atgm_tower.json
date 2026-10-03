@@ -1,0 +1,32 @@
+{
+ "id": "one_shot_atgm_tower",
+ "class": "tower",
+ "real": ["an automatic Kornet-class (9M133) launcher: eight transport-launch containers on a remote turning mount with a thermal / laser guidance unit"],
+ "shape": "Strings note.one_shot_atgm_tower: an automatic Kornet launcher that fires its whole clip of eight, then needs buying again; modelSize 4.8 x 4.8 x 3.6 m; a retired tower card (CardMerges.RetiredTowers) whose model still ships.",
+ "confidence": "ban_dau_doan (no single real model: Kornet containers and guidance unit are real, the remote eight-round mount on a sleeper crib is the design)",
+ "target_size": {"L": 4.8, "W": 4.8, "H": 3.6, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "a sloped earth pad, a square crib of railway sleepers in alternate courses on a sleeper footing, spiked, the earth fill between them", "nodes": ["Base", "Slab", "Crib", "Crib_fill", "Kit_spikes"]},
+  {"feature": "a sandbag cap round the deck, a two-course sandbag run at the crib's front foot, a sleeper stair up the back", "nodes": ["Sandbags", "Deck", "Steps"]},
+  {"feature": "the pedestal with gussets and the bolted turntable", "nodes": ["Pedestal", "Turntable", "Kit_bolts"]},
+  {"feature": "the turning launcher: yoke, armoured cradle, eight containers in two rows of four with dark bores and end caps, Team bands", "nodes": ["Turret", "Armor", "Launcher", "Tubes", "Launcher_bores", "Tube_caps", "Launcher_bands", "Muzzle_main", "Muzzle_missile"]},
+  {"feature": "the guidance unit with thermal sight and laser windows under a sun hood, a warning beacon, a handle, its cable", "nodes": ["Guidance", "Launcher_hood", "Glass", "Beacons", "Kit_handles", "Kit_cables"]},
+  {"feature": "the remote operator's sandbagged foxhole under a small net: console with screen, whip antenna", "nodes": ["Console", "Console_screen", "Antennas", "Camo_net"]},
+  {"feature": "spare-round crates, three spent containers thrown down, ready kit on the deck, stones", "nodes": ["Crates", "Spent_tubes", "Ammo_boxes", "Jerrycans", "Extinguishers", "Stones"]}
+ ],
+ "class_parts": ["base", "walls", "roof (the turning launcher)", "antenna"],
+ "weapons": [{"weapon": "one_shot_kornet", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "Muzzle_missile kept from the old file (a second launch point; the data has one barrel)"}],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [2000, 4000], "floor": 1400, "cap": 6000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "owner decision 6"},
+ "team_zones": ["the eight containers and the pack's bands (Team)"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (field-built: sleeper crib, sandbags, net, foxhole)",
+ "details": {
+  "tier1": ["earth pad", "sleeper crib", "launcher pack"],
+  "tier2": ["sandbag cap and foot run", "stair", "pedestal", "cradle", "guidance unit", "foxhole", "crates", "spent containers"],
+  "tier3": ["spikes", "bolts", "bores and caps", "sight windows", "beacon", "handle", "cable", "console screen", "whip", "stones", "ammunition boxes", "jerrycan", "extinguisher"]
+ },
+ "questions": []
+}

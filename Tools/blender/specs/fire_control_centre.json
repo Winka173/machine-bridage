@@ -1,0 +1,32 @@
+{
+ "id": "fire_control_centre",
+ "class": "tower",
+ "real": ["a field fire-direction centre (FDC): a log-and-earth command dug-out, an operations tent, a guyed mast with a surveillance radar, radios and a generator"],
+ "shape": "Strings note.fire_control_centre: a fire-direction centre (FDC): shelters, a mast and radios that tie the base's towers into one battery; modelSize 6.0 x 6.0 x 5.5 m (the old GLB was 6.8 m tall).",
+ "confidence": "ban_dau_doan (a field command post; no single real model)",
+ "target_size": {"L": 6.0, "W": 6.0, "H": 5.5, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "a half-buried command dug-out: log walls (each cut differently) above an earth berm, vision slits", "nodes": ["Bunker", "Berm", "Embrasures", "Slit_frames"]},
+  {"feature": "the log roof under earth and sandbags, the stove pipe", "nodes": ["Roof", "Roof_deck", "Sandbags", "Vents"]},
+  {"feature": "the entrance trench at the back: plank revetment, steps, door", "nodes": ["Trench_planks", "Steps", "Doors"]},
+  {"feature": "the canvas operations tent on its frame, its door flap, guy ropes and stakes, a Team band", "nodes": ["Shelter", "Shelter_ribs", "Shelter_doors", "Guy_ropes", "Stakes", "Team_band"]},
+  {"feature": "a guyed lattice mast with the turning surveillance radar on top and a VHF dipole", "nodes": ["Mast", "Guy_wires", "Radar", "Radar_array", "Radar_face", "Radar_drive", "Antenna"]},
+  {"feature": "whips on the dug-out roof, the generator skid with vents and stack, cable reels and cables", "nodes": ["Generator_skid", "Generator", "Generator_vents", "Generator_stack", "Cable_reels", "Kit_cables"]},
+  {"feature": "duckboard walks (the site's floor), a sandbagged sentry slit trench, crates, a small net, stones", "nodes": ["Floor", "Trench_floor", "Crates", "Camo_net", "Stones"]}
+ ],
+ "class_parts": ["base (the duckboard floor)", "walls", "roof", "antenna"],
+ "weapons": [],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [2000, 4000], "floor": 1400, "cap": 6000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "owner decision 6"},
+ "team_zones": ["the radar array and a band on the tent (Team)"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (field-built: logs, earth, sandbags, canvas, duckboards)",
+ "details": {
+  "tier1": ["dug-out", "tent", "mast"],
+  "tier2": ["roof sandbags", "berm", "trench", "radar", "generator", "slit trench", "crates", "net"],
+  "tier3": ["vision slits", "stove pipe", "guy ropes and stakes", "guy wires", "dipole", "whips", "reels", "cables", "duckboards", "stones"]
+ },
+ "questions": []
+}

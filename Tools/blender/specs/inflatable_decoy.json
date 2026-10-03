@@ -1,0 +1,31 @@
+{
+ "id": "inflatable_decoy",
+ "class": "tower",
+ "real": ["inflatable military decoys (gun and turret dummies as used in the war in Ukraine): fabric skins on a blower, pegged with tethers"],
+ "shape": "Strings note.inflatable_decoy: an inflatable gun turret: cheap, flimsy, and taken for the real thing; def decoy.mimic gun_turret; modelSize 5.0 x 4.6 x 2.6 m.",
+ "confidence": "xấp xỉ (published inflatable decoys; the outline copies a gun turret, not its geometry)",
+ "target_size": {"L": 5.0, "W": 4.6, "H": 2.6, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "a ground sheet laid a little askew, pegged", "nodes": ["Pad"]},
+  {"feature": "a ring of inflated lobes printed to pass for sandbags, open at the back", "nodes": ["Walls", "Lobe_print"]},
+  {"feature": "the inflated drum (Team) with welded seams and a painted Team band", "nodes": ["Skin", "Seams", "Team_band"]},
+  {"feature": "the dome, a puffed mantlet, the long inflated barrel sagging, a fabric muzzle brake", "nodes": ["Dome", "Fabric"]},
+  {"feature": "painted-on hatches and vision blocks, a repair patch, a fibreglass whip", "nodes": ["Painted_hatches", "Patches", "Antenna"]},
+  {"feature": "the giveaways: tethers to stakes, the petrol blower with its guard and hose, a fuel can, the folded transport bag", "nodes": ["Tethers", "Stakes", "Blower", "Blower_guard", "Hose", "Jerrycans", "Transport_bag"]}
+ ],
+ "class_parts": ["base (the ground sheet)", "walls (the lobe ring)", "roof (the dome)", "antenna"],
+ "weapons": [],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [2000, 4000], "floor": 1400, "cap": 6000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "owner decision 6"},
+ "team_zones": ["the drum and the dome (Team), a painted band"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (a field decoy: fabric, ropes, stakes)",
+ "details": {
+  "tier1": ["drum and dome", "lobe ring", "ground sheet"],
+  "tier2": ["barrel", "mantlet", "muzzle brake", "blower", "transport bag"],
+  "tier3": ["seams", "painted hatches", "patch", "whip", "tethers", "stakes", "hose", "fuel can"]
+ },
+ "questions": []
+}

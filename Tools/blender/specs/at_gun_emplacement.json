@@ -1,0 +1,33 @@
+{
+ "id": "at_gun_emplacement",
+ "class": "tower",
+ "real": ["MT-12 (2A29) Rapira 100 mm smoothbore anti-tank gun on its split-trail carriage"],
+ "shape": "Strings note.at_gun_emplacement: a towed MT-12 Rapira 100 mm anti-tank gun behind its shield and sandbags; modelSize 5.8 x 4.2 x 2.0 m (about 0.6 x the real gun with its barrel); turretArc 45 (the gun traverses on its carriage, the trails stay).",
+ "confidence": "xấp xỉ (MT-12 layout and proportions; the emplacement is a field gun pit)",
+ "target_size": {"L": 5.8, "W": 4.2, "H": 2.0, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "a shallow earth pad, a three-course sandbag horseshoe in front of the shield, an earth parapet behind it, low side runs", "nodes": ["Base", "Sandbags", "Berm"]},
+  {"feature": "the lower carriage: axle, two road wheels with nuts, torsion arms, split trails spread with spades dug in", "nodes": ["Axles", "Carriage", "Tyres", "Wheels", "Hubs", "Suspension", "Trails", "Spades"]},
+  {"feature": "the upper carriage turning 45 degrees: flat shield with folded top and sight window", "nodes": ["Turret", "Upper_carriage", "Shield", "Sight_window"]},
+  {"feature": "cradle, recoil and recuperator cylinders, breech and loading tray", "nodes": ["Cradle", "Recuperators", "Breech", "Loading_tray"]},
+  {"feature": "the long smoothbore with its pepperpot muzzle brake", "nodes": ["Main_cannon", "Muzzle_brake", "Brake_ports"]},
+  {"feature": "the gunner's telescope and handwheels", "nodes": ["Sights", "Handwheels"]},
+  {"feature": "ammunition crates and rounds, the timber ammunition niche, a field radio with whip, striped aiming stakes", "nodes": ["Crates", "Rounds", "Niche", "Radio", "Antennas", "Aiming_posts"]},
+  {"feature": "a camouflage net with scrim over the crew's corner, spent cases, a jerrycan, helmets, stones", "nodes": ["Camo_net", "Camo_net_garnish", "Spent_cases", "Jerrycans", "Helmets", "Stones"]}
+ ],
+ "class_parts": ["base", "walls", "roof (the turning upper carriage)", "antenna"],
+ "weapons": [{"weapon": "at_gun_100", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]}],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [2000, 4000], "floor": 1400, "cap": 6000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "owner decision 6"},
+ "team_zones": ["the upper carriage, the shield and the trails (Team)"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (field-built: dug pad, sandbags, timber niche, net)",
+ "details": {
+  "tier1": ["earth pad", "sandbag horseshoe", "gun with shield", "trails"],
+  "tier2": ["wheels", "cradle and cylinders", "breech", "crates", "net", "niche", "parapet"],
+  "tier3": ["wheel nuts", "rivets", "handles", "bolts", "telescope", "brake ports", "rounds", "spent cases", "radio and whip", "aiming stakes", "helmets", "stones"]
+ },
+ "questions": []
+}

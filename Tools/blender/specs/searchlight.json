@@ -1,0 +1,33 @@
+{
+ "id": "searchlight",
+ "class": "tower",
+ "real": ["Sperry 60-inch (150 cm) anti-aircraft / defence searchlight on its four-wheeled trailer", "a generator skid"],
+ "shape": "Strings note.searchlight: a 150 cm defence searchlight on a turntable: it lights the ground round the base at night and dazzles attackers; modelSize 3.6 x 3.0 x 2.8 m; turretTurnRate 30.",
+ "confidence": "xấp xỉ (the 60-inch light's drum, louvred door, ventilation hood and trailer; the emplacement is a field set-up)",
+ "target_size": {"L": 3.6, "W": 3.0, "H": 2.8, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "a small earth pad, a low sandbag arc round the front and right, stones", "nodes": ["Base", "Sandbags", "Stones"]},
+  {"feature": "the four-wheeled trailer levelled on corner jacks with timber pads, the drawbar on a block", "nodes": ["Trailer", "Trailer_frame", "Tyres", "Axles", "Jacks", "Jack_pads", "Blocks"]},
+  {"feature": "the turntable and the yoke turning (Turret) with trunnions", "nodes": ["Turntable", "Turret", "Yoke", "Trunnions"]},
+  {"feature": "the ribbed drum (Team) raised 12 degrees, the front door with the lens behind vertical louvre bars, the beam's origin", "nodes": ["Drum", "Drum_ribs", "Door_rim", "Lens", "Louvres", "Muzzle_main"]},
+  {"feature": "the rear door with the arc-lamp feed, the ventilation hood on top, training handles, elevation quadrant", "nodes": ["Rear_door", "Lamp_feed", "Vent_hood", "Kit_handles", "Quadrant"]},
+  {"feature": "the operator's control box and stool", "nodes": ["Control_box", "Control_stand", "Dials", "Stool"]},
+  {"feature": "the generator skid (radiator grille, exhaust, fuel can) with its cable to the light", "nodes": ["Generator_skid", "Generator", "Grilles", "Jerrycans", "Kit_cables"]},
+  {"feature": "a field telephone on a post with its whip", "nodes": ["Field_phone", "Antennas"]}
+ ],
+ "class_parts": ["base", "walls", "roof (the turning yoke and drum)", "antenna"],
+ "weapons": [],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [2000, 4000], "floor": 1400, "cap": 6000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "owner decision 6"},
+ "team_zones": ["the drum and the trailer deck (Team)"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (field set-up: earth pad, sandbags, timber pads, cable runs)",
+ "details": {
+  "tier1": ["trailer", "yoke", "drum"],
+  "tier2": ["wheels", "jacks", "door and lens", "louvres", "vent hood", "generator", "sandbag arc"],
+  "tier3": ["wheel nuts", "bolts", "handles", "quadrant", "dials", "stool", "fuel can", "phone and whip", "stones"]
+ },
+ "questions": []
+}
