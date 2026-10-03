@@ -2487,7 +2487,17 @@
     "cap": { "Easy": 5, "Normal": 7, "Hard": 8, "VeryHard": 9, "Heroic": 9, "Iron": 9 },
     "bossRushCut": 2, "bossRushMin": 4, "bossRushGuards": 0.7,
     "leash": 28, "bounty": 3, "helperBounty": 4, "repair": 0.003, "repairReach": 12,
-    "spotBonus": 0.15, "spotSpread": 0.6, "marks": [0.5], "dropWarn": 3
+    "spotBonus": 0.15, "spotSpread": 0.6, "marks": [0.5], "dropWarn": 3,
+    // Play-test 14 (owner Q19): escorts keep to the boss's domain. A unit of another domain in a boss's table (its own or its
+    // general's) is swapped for its domain's unit of the same role ("default" for any other role).
+    "domains": {
+      "ground": { "guard": "main_battle_tank", "raid": "light_tank", "cover": "aa_vehicle", "spot": "armored_car", "repair": "engineer_vehicle",
+                  "jam": "ew_jammer", "smoke": "ew_jammer", "default": "main_battle_tank" },
+      "air":    { "guard": "attack_helicopter", "raid": "attack_helicopter", "cover": "fighter_jet", "spot": "scout_heli", "repair": "attack_helicopter",
+                  "jam": "scout_heli", "smoke": "scout_heli", "default": "attack_helicopter" },
+      "sea":    { "guard": "missile_boat", "raid": "hover_gunboat", "cover": "sea_corvette", "spot": "river_patrol_boat", "repair": "river_gunboat",
+                  "jam": "river_patrol_boat", "smoke": "river_patrol_boat", "default": "missile_boat" }
+    }
   },
   // Prompt 20 E.4: escort templates by general. A table in "escorts" with "template" is built on its general's; a
   // boss with no table of its own gets its general's (a ship sails with its "fleet" instead). A mini boss's waves are
