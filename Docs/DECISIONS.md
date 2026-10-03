@@ -18461,3 +18461,8 @@ only: no Unity run, no test, sim or measure.
   (the last fails two hard gates). rail_supergun (36.7k -> 11.9k) left the boss gold. Committed as its own commit
   so the lead can keep or drop it; a rule that lets a rebuilt model with every hard gate and soft >= 80 stand for
   gold would refill the sets (lead question).
+
+## Prompt 35: gold recompute dropped (lead, 2026-10-03)
+Lane A's `quality_gate.py --gold` after the waves shrank the gold sets (rebuilt models carry no visual grade, so they
+cannot be gold; boss_ground, boss_sea, hq and wheeled lost their own gold) and the full gate fell from 186 to 163 passes.
+Reverted: the pre-rebuild gold stays the reference until rebuilt models get visual grades.
