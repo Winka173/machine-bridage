@@ -2778,6 +2778,16 @@
    "changes": [
     "FLAG laser_ad_station: triangles 3,434 -> 5,592 (+62.8%); vertices 3,434 -> 8,520 (+148.1%); meshes 26 -> 58 (+123.1%); renderers 26 -> 58 (+123.1%); materials 9 -> 14 (+55.6%); materialSlots 26 -> 58 (+123.1%); fileBytes 198,404 -> 465,324 (+134.5%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "fire_control_centre"
+   ],
+   "reason": "P35 wave 3: fire_control_centre rebuilt (lane B)",
+   "changes": [
+    "FLAG fire_control_centre: triangles 2,874 -> 4,990 (+73.6%); vertices 2,916 -> 7,670 (+163.0%); meshes 25 -> 42 (+68.0%); renderers 25 -> 42 (+68.0%); materials 12 -> 13 (+8.3%); materialSlots 25 -> 42 (+68.0%); fileBytes 171,612 -> 408,872 (+138.3%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -24847,22 +24857,22 @@
   },
   "fire_control_centre": {
    "file": "fire_control_centre.glb",
-   "fileBytes": 171612,
-   "sha1": "7de8ac5fec553700",
+   "fileBytes": 408872,
+   "sha1": "4a053154d8796462",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 26,
-   "meshes": 25,
-   "materials": 12,
+   "nodes": 43,
+   "meshes": 42,
+   "materials": 13,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 25,
-   "submeshes": 25,
-   "materialSlots": 25,
-   "materialsUsed": 12,
-   "triangles": 2874,
-   "vertices": 2916,
+   "renderers": 42,
+   "submeshes": 42,
+   "materialSlots": 42,
+   "materialsUsed": 13,
+   "triangles": 4990,
+   "vertices": 7670,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -24870,36 +24880,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 62,
-   "openEdges": 92,
+   "loosePieces": 232,
+   "openEdges": 16,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -3.0,
-    -0.77,
-    -3.0168
+    -3.0142,
+    -0.0237,
+    -2.92
    ],
    "boundsMax": [
-    3.0,
-    6.0015,
-    3.0
+    3.225,
+    5.23,
+    2.975
    ],
    "size": [
-    6.017,
-    6.0,
-    6.771
+    5.895,
+    6.239,
+    5.254
    ],
    "center": [
-    0.0,
-    2.616,
-    -0.008
+    0.105,
+    2.603,
+    0.027
    ],
-   "structureHash": "babf96b13a0ac6b8",
+   "structureHash": "e62d5c52eb93abea",
    "color0": {
-    "mean": 0.6491,
-    "min": 0.2445,
+    "mean": 0.5762,
+    "min": 0.0551,
     "max": 0.9987,
-    "p05": 0.3548,
-    "p95": 0.9728,
+    "p05": 0.1356,
+    "p95": 0.8899,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -24910,36 +24920,55 @@
    "runtimeSuffixed": [],
    "nodeNames": [
     "Antenna",
-    "Base",
     "Berm",
     "Bunker",
+    "Cable_coils",
+    "Cable_reels",
     "Camo_net",
     "Camo_net_garnish",
-    "Camo_net_garnish.001",
-    "Camo_net_garnish.002",
+    "Crates",
+    "Door_frames",
+    "Door_slots",
+    "Doors",
     "Embrasures",
+    "Floor",
     "Generator",
     "Generator_skid",
     "Generator_stack",
     "Generator_vents",
+    "Guy_ropes",
+    "Guy_wires",
+    "Kit_cables",
+    "Kit_hinges",
+    "Kit_straps",
     "Mast",
+    "Net_poles",
     "Radar",
     "Radar_array",
     "Radar_drive",
     "Radar_face",
+    "Radar_hub",
     "Roof",
     "Roof_deck",
     "Sandbags",
     "Shelter",
     "Shelter_doors",
     "Shelter_ribs",
-    "Steel",
+    "Slit_frames",
+    "Stakes",
+    "Steps",
+    "Stones",
+    "Team_band",
+    "Trench_floor",
+    "Trench_planks",
     "Vents"
    ],
    "category": "structure",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "renderers 42 over the structure normal budget 39"
+   ],
    "units": [
     "fire_control_centre"
    ],
