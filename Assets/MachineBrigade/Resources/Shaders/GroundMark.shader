@@ -144,11 +144,13 @@ Shader "MachineBrigade/GroundMark"
                     half cover = (half)saturate(inside + 0.5);
                     half rim = (half)saturate(2.6 - inside) * cover;
                     half fill = (half)(0.07 + 0.11 * saturate(1.0 - q.x)) * cover;
-                    half line = (half)saturate(1.4 - q.x / px.x) * step(q.y, 0.97);
+                    // Play-test 13: not "line" (an HLSL geometry-primitive keyword); that name failed the whole shader, so
+                    // every mark (aircraft rings, warning rings, telegraphs, selection) drew as a magenta square.
+                    half midLine = (half)saturate(1.4 - q.x / px.x) * step(q.y, 0.97);
                     half dash = (half)step(frac(p.y / (px.y * 28.0) - time * 1.2), 0.55);
                     half beat = 1.0 + pulse * 0.25 * sin(time * 14.0);
                     colour = lerp(_Color.rgb, _Accent.rgb, saturate(fill * 2.0)) * beat;
-                    alpha = saturate(rim + line * dash * 0.55 + fill * _Accent.a);
+                    alpha = saturate(rim + midLine * dash * 0.55 + fill * _Accent.a);
                 }
                 else if (style > 4.5)
                 {

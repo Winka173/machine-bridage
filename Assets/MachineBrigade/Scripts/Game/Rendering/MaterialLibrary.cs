@@ -112,7 +112,8 @@ namespace MachineBrigade.Game.Rendering
             Pebble = Surface("Pebble", Hex("#626957"), 0f, 0.9f, 0f);
             GrassTuft = Surface("GrassTuft", Hex("#515f40"), 0f, 0.85f, 0f);
             GrassTuft.SetFloat("_Wind", 0.6f);
-            Water = Surface("Water", Hex("#2f6f78"), 0.1f, 0.08f, 0f);
+            // Play-test 13: the water has its own shader (depth colour, waves, foam, glitter; MaterialLibrary.Water.cs).
+            Water = NewWater(Hex("#2f6f78"));
             OuterGround = Surface("OuterGround", Color.white, 0f, 0.95f, 0f);
             Terrain = Surface("Terrain", Color.white, 0f, 0.92f, 0f);
             Fallback = Surface("Fallback", new Color(0.6f, 0.6f, 0.6f), 0f, 0.8f, 0f);

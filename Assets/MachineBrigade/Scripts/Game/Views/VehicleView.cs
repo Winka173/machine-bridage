@@ -604,7 +604,7 @@ namespace MachineBrigade.Game.Views
             _trailHoldUntil = now + 0.4f;
             // Concrete and steel emplacements do not flash; they smoke and burn instead.
             if (lost >= FlashHit && now - _hitTime >= FlashGap && !Def.Static) _hitTime = now;
-            if (lost >= 0.03f && !Flying)
+            if (lost >= 0.03f && !Flying && !Massive)
             {
                 var degrees = Mathf.Clamp(lost * 60f, 1.5f, 4f);
                 _jolt = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * degrees;
@@ -624,6 +624,14 @@ namespace MachineBrigade.Game.Views
                 ApplyTint();
             }
         }
+
+        /// <summary>
+        /// Play-test 13 ("tất cả boss không được nhích 1 px nào khi bắn"): a boss or a train on its rail. Real life: a machine of
+        /// hundreds or thousands of tonnes does not squat, rock or bounce visibly when its guns fire (the recoil goes into the gun's
+        /// own recoil system: only the barrel runs back), and a train on rails cannot move sideways at all. Its body is drawn
+        /// still; only barrels (recoil) and turrets (aim) move.
+        /// </summary>
+        public bool Massive => Def.Boss || Sim.OnRail;
 
         /// <summary>The hull's rock after a heavy hit (pitch, roll in degrees), dying away in 0.3 s.</summary>
         private Vector2 Jolt()
@@ -762,6 +770,8 @@ namespace MachineBrigade.Game.Views
                 _previousMount[i] = _currentMount[i];
                 _currentMount[i] = Sim.MountHeading(i) * Mathf.Rad2Deg;
             }
+            // Play-test 13: which guns the sim just laid (VehicleView.Aim).
+            NoteLays();
         }
 
         private Vector3 _shownPosition, _shownVelocity;
@@ -777,6 +787,9 @@ namespace MachineBrigade.Game.Views
         /// </summary>
         private void Steady(ref Vector3 position, ref float hull)
         {
+            // Play-test 13: a train on its rail is drawn exactly where the rail system puts it (nothing shoves it, so there is
+            // no jitter to iron out, and a predicting filter would carry it past a stop and back, or off a curve sideways).
+            if (Sim.OnRail) return;
             var dt = Time.deltaTime;
             if (!_shown || (position - _shownPosition).sqrMagnitude > 4f || dt <= 0f)
             {
@@ -787,6 +800,9 @@ namespace MachineBrigade.Game.Views
                 return;
             }
             var velocity = (_currentPosition - _previousPosition) * 20f;
+            // Play-test 13: a boss is not predicted ahead: when it halts to fire, the prediction ran on and pulled it back, a
+            // nudge on every halt. It eases onto the sim's position instead (a little lag on the move, never an overshoot).
+            if (Massive) velocity = Vector3.zero;
             _shownVelocity = Vector3.Lerp(_shownVelocity, velocity, 1f - Mathf.Exp(-dt * 7f));
             var predicted = _shownPosition + _shownVelocity * dt;
             _shownPosition = Vector3.Lerp(predicted, position, 1f - Mathf.Exp(-dt * 11f));
@@ -1031,11 +1047,13 @@ namespace MachineBrigade.Game.Views
             else
             {
                 // Hull pitch follows acceleration (nose dips when braking) and eases back.
-                _pitch = Mathf.Lerp(_pitch, Mathf.Clamp(-acceleration * 0.9f, -4f, 4f), ease);
+                // Play-test 13: not a boss or a train (see Massive): its body never pitches, bounces or rocks.
+                var massive = Massive;
+                _pitch = massive ? 0f : Mathf.Lerp(_pitch, Mathf.Clamp(-acceleration * 0.9f, -4f, 4f), ease);
                 _bouncePhase += Time.deltaTime * (4f + _currentSpeed * 1.4f);
-                var bounce = Mathf.Sin(_bouncePhase) * 0.012f * Mathf.Clamp01(_currentSpeed / 4f);
+                var bounce = massive ? 0f : Mathf.Sin(_bouncePhase) * 0.012f * Mathf.Clamp01(_currentSpeed / 4f);
                 _body.localPosition = new Vector3(0f, bounce, 0f);
-                var jolt = Jolt();
+                var jolt = massive ? Vector2.zero : Jolt();
                 _body.localRotation = Quaternion.Euler(_pitch + jolt.x, 0f, jolt.y);
             }
             Root.position = position;
@@ -1044,7 +1062,8 @@ namespace MachineBrigade.Game.Views
 
             if (_model.Turret != null && !Match.DebugFlags.Has("-mb-no-turret"))
             {
-                var turret = Mathf.LerpAngle(_previousTurret, _currentTurret, alpha);
+                // Play-test 13: a gun the boss system lays traverses onto its heading instead of jumping (VehicleView.Aim).
+                var turret = DrawnTurretHeading(Mathf.LerpAngle(_previousTurret, _currentTurret, alpha));
                 _model.Turret.localRotation = Quaternion.Euler(0f, Mathf.DeltaAngle(hull, turret) + _turretSwing, 0f);
                 var t = (Time.time - _recoilTime) / RecoilSeconds;
                 var kick = t is >= 0f and < 1f ? (1f - t) * (1f - t) * _recoilDistance : 0f;
@@ -1059,7 +1078,8 @@ namespace MachineBrigade.Game.Views
             {
                 var mount = _mounts[i];
                 if (mount == null || Def.Mounts[i].Aim != MountAim.Free) continue;
-                var heading = Mathf.LerpAngle(_previousMount[i], _currentMount[i], alpha);
+                // Play-test 13: laid guns and an untrained free main mount are trained by the view (VehicleView.Aim).
+                var heading = DrawnMountHeading(i, Mathf.LerpAngle(_previousMount[i], _currentMount[i], alpha), hull);
                 var parentYaw = mount.parent != null ? mount.parent.eulerAngles.y : 0f;
                 mount.localRotation = Quaternion.Euler(0f, Mathf.DeltaAngle(parentYaw, heading), 0f);
             }
@@ -1067,6 +1087,8 @@ namespace MachineBrigade.Game.Views
             Elevate();
             RaiseSideLauncher();
             Spin(1f);
+            // Play-test 13: a launcher's modelled rounds leave as they are fired, back with the reload (VehicleView.Loaded).
+            ShowLoadedRounds();
             AnimateParts(cameraRotation);
             AnimateDeploy();
 

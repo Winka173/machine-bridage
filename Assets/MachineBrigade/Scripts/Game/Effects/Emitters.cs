@@ -57,6 +57,9 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Prompt 29 5.5 (FLARE_EFFECT): decoy flares, white-hot points with a short smoke trail each.</summary>
         private readonly ParticleSystem _flares;
 
+        /// <summary>Play-test 13: the halo of light round each flare (flies with <see cref="_flares"/>).</summary>
+        private readonly ParticleSystem _flareGlow;
+
         public Emitters(MaterialLibrary m, Transform parent)
         {
             _trail = Continuous(parent, "Shell Trails", m.Smoke, 3000, PB.SmokeGradient(0.8f, 0.3f), 0.7f, 2.6f);
@@ -145,36 +148,40 @@ namespace MachineBrigade.Game.Effects
             _damageFire = Continuous(parent, "Damage Fire", FxMaterials.Shared.Flames, 600,
                 PB.Hold(new Color(0.3f, 0.27f, 0.24f), new Color(0.26f, 0.24f, 0.22f), 0.1f, 0.6f), 0.7f, 1.2f);
             PB.Flipbook(_damageFire, loop: true, tilt: 10f, pivotY: -0.1f);
-            // Prompt 29 5.5: decoy flares, white-hot burning down to orange, falling slowly, each with a thin pale trail.
-            // Fix prompt L4: a very bright point (twice the old glow) burning 3-4 s, slowed by the air onto a falling curve, on a
-            // thick white smoke trail that hangs and spreads behind it.
-            _flares = Continuous(parent, "Decoy Flares", m.Sparks, 600,
-                PB.Fade(new Color(6.5f, 6f, 5.2f), new Color(5f, 3.6f, 1.6f), new Color(2.4f, 0.9f, 0.25f)), 1f, 0.6f);
-            var flareMain = _flares.main;
-            // Play-test 12 ("flare bay quá xa"): full gravity under strong air drag. A flare leaves with its aircraft's speed plus
-            // its kick and the air stops it within a second or two: 20-40 m from a jet, 10-20 m from a helicopter, falling at
-            // about 6 m/s (g / drag) as it burns out. L4's 0.3 g under 0.9 drag carried a fast jet's flares 60 m and more.
-            flareMain.gravityModifier = 1f;
-            var flareDrag = _flares.limitVelocityOverLifetime;
-            flareDrag.enabled = true;
-            flareDrag.limit = new ParticleSystem.MinMaxCurve(45f);
-            flareDrag.dampen = 0.2f;
-            flareDrag.drag = new ParticleSystem.MinMaxCurve(FlareDrag);
-            flareDrag.multiplyDragByParticleSize = false;
-            flareDrag.multiplyDragByParticleVelocity = false;
+            // Play-test 13 ("flare ngoài đời xem đúng màu chưa"): a magnesium/Teflon/Viton decoy burns at over 2000 C, a blinding
+            // white point that stays white for its whole burn and goes yellow-white only as the pellet burns out (never orange);
+            // the pellet is small, so the light is a small hot core inside a faint halo, and it leaves a short, thin white smoke
+            // trail. Three parts on the same flight: the core (FlareCore, with the trail), the halo (FlareGlow) and the trail.
+            // Vertex colours are 0..1, so the brightness comes from the materials' intensity, not from the gradient.
+            _flares = Continuous(parent, "Decoy Flares", m.FlareCore, 600, FlareBurn(false), 1f, 0.75f);
+            _flareGlow = Continuous(parent, "Decoy Flare Glow", m.FlareGlow, 600, FlareBurn(true), 1f, 0.8f);
+            Fly(_flares);
+            Fly(_flareGlow);
+            // The ignition pop: the halo starts larger and settles within the first tenth of the burn.
+            var glowSize = _flareGlow.sizeOverLifetime;
+            glowSize.size = new ParticleSystem.MinMaxCurve(1f, new AnimationCurve(new Keyframe(0f, 1.5f), new Keyframe(0.08f, 1f),
+                new Keyframe(0.85f, 0.9f), new Keyframe(1f, 0.55f)));
+            // A burning pellet sputters: the size flickers (noise on size only, never on position, so core and halo stay together).
+            Flicker(_flares, 0.12f);
+            Flicker(_flareGlow, 0.3f);
+            // Never smaller than a few pixels zoomed out, so a flare still reads as a point of light.
+            _flares.GetComponent<ParticleSystemRenderer>().minParticleSize = 0.004f;
+            _flareGlow.GetComponent<ParticleSystemRenderer>().maxParticleSize = 0.12f;
             var flareTrails = _flares.trails;
             flareTrails.enabled = true;
             flareTrails.mode = ParticleSystemTrailMode.PerParticle;
             flareTrails.ratio = 1f;
-            flareTrails.lifetime = new ParticleSystem.MinMaxCurve(1.8f);
-            flareTrails.minVertexDistance = 0.2f;
+            // Short: the smoke thins out within about a second (L4's 1.8 s trail hung 30 m behind a jet's flare).
+            flareTrails.lifetime = new ParticleSystem.MinMaxCurve(0.75f);
+            flareTrails.minVertexDistance = 0.15f;
             flareTrails.dieWithParticles = false;
             flareTrails.sizeAffectsWidth = true;
             flareTrails.inheritParticleColor = false;
             flareTrails.textureMode = ParticleSystemTrailTextureMode.Stretch;
-            flareTrails.widthOverTrail = new ParticleSystem.MinMaxCurve(1.6f, AnimationCurve.Linear(0f, 0.45f, 1f, 2.2f));
-            flareTrails.colorOverTrail = new ParticleSystem.MinMaxGradient(PB.Fade(new Color(1f, 0.98f, 0.95f), new Color(0.97f, 0.96f, 0.94f),
-                new Color(0.92f, 0.92f, 0.92f), 0.85f));
+            // Thin: about the pellet's glow wide at the flare, spreading to a little over twice that as it thins.
+            flareTrails.widthOverTrail = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.Linear(0f, 0.4f, 1f, 1.1f));
+            flareTrails.colorOverTrail = new ParticleSystem.MinMaxGradient(PB.Fade(new Color(1f, 1f, 0.98f), new Color(0.95f, 0.95f, 0.94f),
+                new Color(0.9f, 0.9f, 0.9f), 0.6f));
             _flares.GetComponent<ParticleSystemRenderer>().trailMaterial = m.Smoke;
             _dust = Continuous(parent, "Tread Dust", m.Smoke, 1500,
                 PB.Fade(new Color(0.62f, 0.56f, 0.44f), new Color(0.58f, 0.53f, 0.42f), new Color(0.55f, 0.5f, 0.4f), 0.45f), 0.8f, 2.4f);
@@ -410,17 +417,82 @@ namespace MachineBrigade.Game.Effects
                 // From well out to nearly down: the fan of a salvo (the "angel wings" when both sides and rows fire).
                 var t = count > 1 ? i / (count - 1f) : 0.5f;
                 var dir = Quaternion.AngleAxis(Mathf.Lerp(-20f, 35f, t) + Random.Range(-5f, 5f), axis) * look;
-                Emit(_flares, position + Random.insideUnitSphere * 0.1f * scale, dir * Random.Range(8f, 12f) + carrier,
-                    Random.Range(0.6f, 0.85f) * scale, Mathf.Min(ground, Random.Range(burnMin, Mathf.Max(burnMin, burnMax))));
+                // Play-test 13: a smaller point (L4's 0.6-0.85 m read as a ball of fire); the halo gives it its reach.
+                EmitFlare(position + Random.insideUnitSphere * 0.1f * scale, dir * Random.Range(8f, 12f) + carrier,
+                    Random.Range(0.32f, 0.42f) * scale, Mathf.Min(ground, Random.Range(burnMin, Mathf.Max(burnMin, burnMax))));
             }
         }
 
         /// <summary>Play-test 12: the air's drag on a burning flare (per second; with full gravity it falls at about 6 m/s).</summary>
         internal const float FlareDrag = 1.6f;
 
+        /// <summary>Play-test 13: the halo is this many times the core's size.</summary>
+        internal const float FlareGlowScale = 3.4f;
+
         /// <summary>Fix prompt L4: the one flare a decoyed missile chases, burning at <paramref name="position"/> for <paramref name="seconds"/>.</summary>
         public void LoneFlare(Vector3 position, float seconds, Vector3 drift) =>
-            Emit(_flares, position, drift, Random.Range(0.75f, 0.95f), Mathf.Clamp(seconds, 0.5f, 6f));
+            EmitFlare(position, drift, Random.Range(0.36f, 0.46f), Mathf.Clamp(seconds, 0.5f, 6f));
+
+        /// <summary>Play-test 13: one flare, its core and its halo on the same flight (same start, same physics, same burn).</summary>
+        private void EmitFlare(Vector3 position, Vector3 velocity, float size, float burn)
+        {
+            Emit(_flares, position, velocity, size, burn);
+            Emit(_flareGlow, position, velocity, size * FlareGlowScale, burn);
+        }
+
+        /// <summary>
+        /// Play-test 13: a flare's colour over its burn. The core stays white and turns yellow-white only in its last moments; the
+        /// halo is a warm white that fades in at ignition. Alpha holds for most of the burn, then the pellet dies out.
+        /// </summary>
+        internal static Gradient FlareBurn(bool glow)
+        {
+            var g = new Gradient();
+            if (glow)
+                g.SetKeys(
+                    new[] { new GradientColorKey(new Color(1f, 0.96f, 0.88f), 0f), new GradientColorKey(new Color(1f, 0.94f, 0.82f), 0.6f),
+                        new GradientColorKey(new Color(1f, 0.86f, 0.6f), 0.95f) },
+                    new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(0.55f, 0.02f), new GradientAlphaKey(0.45f, 0.85f),
+                        new GradientAlphaKey(0f, 1f) });
+            else
+                g.SetKeys(
+                    new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(new Color(1f, 0.99f, 0.95f), 0.6f),
+                        new GradientColorKey(new Color(1f, 0.92f, 0.72f), 0.95f) },
+                    new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 0.85f), new GradientAlphaKey(0f, 1f) });
+            return g;
+        }
+
+        /// <summary>
+        /// Play-test 12 ("flare bay quá xa"): full gravity under strong air drag. A flare leaves with its aircraft's speed plus its
+        /// kick and the air stops it within a second or two: 20-40 m from a jet, 10-20 m from a helicopter, falling at about 6 m/s
+        /// (g / drag) as it burns out. Core and halo share these settings, so they fly the same path.
+        /// </summary>
+        private static void Fly(ParticleSystem ps)
+        {
+            var main = ps.main;
+            main.gravityModifier = 1f;
+            var drag = ps.limitVelocityOverLifetime;
+            drag.enabled = true;
+            drag.limit = new ParticleSystem.MinMaxCurve(45f);
+            drag.dampen = 0.2f;
+            drag.drag = new ParticleSystem.MinMaxCurve(FlareDrag);
+            drag.multiplyDragByParticleSize = false;
+            drag.multiplyDragByParticleVelocity = false;
+        }
+
+        /// <summary>Play-test 13: a sputtering burn, the size flickering by about <paramref name="amount"/> (position untouched).</summary>
+        private static void Flicker(ParticleSystem ps, float amount)
+        {
+            var noise = ps.noise;
+            noise.enabled = true;
+            noise.strength = 1f;
+            noise.positionAmount = 0f;
+            noise.rotationAmount = 0f;
+            noise.sizeAmount = amount;
+            noise.frequency = 3f;
+            noise.scrollSpeed = 5f;
+            noise.damping = false;
+            noise.quality = ParticleSystemNoiseQuality.Low;
+        }
 
         /// <summary>The black puff of an anti-aircraft shell bursting.</summary>
         public void Flak(Vector3 position)

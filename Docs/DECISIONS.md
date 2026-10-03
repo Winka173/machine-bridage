@@ -18996,3 +18996,84 @@ game.json (check: all PASS). Each fix starts from how the thing works in real li
   -> 99.7. elite_fpv_carrier inherits this model; fibre_fpv_carrier has its own builder (unchanged).
 - Open: the ballistic launcher's `Turret` still yaws (turretTurnRate 35) and would swing the long boom through the
   bay walls; a real TEL does not traverse. Pinning its yaw is a code change outside this lane.
+
+## Play-test 13 (lane A)
+Rendering, VFX and view motion from play-test 13 (Docs/prompts/requests_vi.md). Each item starts with the real-world reasoning
+(owner: "trước khi làm phải suy nghĩ làm sao cho logic ngoài đời").
+- **Magenta squares (aircraft "shadow", every target zone and warning).** Real life: a mark on the ground is paint or light,
+  never a hole in the picture; magenta is Unity's "this shader failed". Root cause: the bomb-run fix pass 3 (1ad2dd0a) added
+  the STICK_RECT branch to `GroundMark.shader` with a variable named `line`, an HLSL keyword (geometry-shader primitive type).
+  The compile error failed the whole shader, so every GroundMark style drew magenta: the aircraft ring (style 4, the "square
+  purple shadow" under every aircraft), warning rings (5), stick rectangles (6), strike telegraphs (1), selection, objectives.
+  Fix: renamed to `midLine`. Build safety checked: all project shaders sit in `Resources/Shaders` (always in a build), every
+  `Shader.Find` name matches a shader there, fog stripping keeps Linear (the mode Atmosphere sets), instancing variants are
+  kept (`m_InstancingStripping: 2`), strict variant matching is off. Guard: `ShaderHealthTests` (no shader with compile
+  errors, every runtime name found, no variable named after an HLSL keyword; written, not run).
+- **Flares redrawn.** Real life: an MTV (magnesium/Teflon/Viton) decoy burns at 2000-2200 C; to the eye it is a blinding
+  white point with a halo, white for the whole burn and yellow-white only as the pellet dies; the pellet is a few cm, so the
+  light is small; it leaves a white MgO/carbon smoke trail that thins out fast. What was wrong: particle vertex colours are
+  0..1, so the L4 HDR gradient (6.5 / 5 / 2.4) clamped to white then (1, 0.9, 0.25), orange; the core was 0.6-0.85 m on a
+  flat dot; the trail lived 1.8 s and spread to 3 m. Now three parts on one flight (same start, gravity and drag, so they
+  stay together): a small steep core (`MaterialLibrary.FlareCore`, intensity 7, 0.32-0.42 m x the aircraft scale, never
+  under 0.4 % of the view), a faint warm-white halo 3.4x its size (`FlareGlow`, an ignition pop in the first 8 % of the burn),
+  both flickering in size only (noise on size, none on position); a thin trail (0.75 s, width 0.4 -> 1.1 x the core,
+  alpha 0.6). Burn time unchanged (data `flareBurn`, play-test 12); the flight physics unchanged (`Fly`, the PT12 values).
+  Check: `-executeMethod MachineBrigade.Editor.FlareShots.Run` (Builds/flare_shots/flares.png, day and night rows).
+- **Bosses still when they fire; the Juggernaut steady on its rails.** Real life: a battleship's broadside or a railway
+  gun's shot does not move the hull; the gun's recoil system takes it and only the barrel runs back; a train on rails
+  cannot move sideways. Play-test 12 took the camera kick off boss fire (`WeaponEffects.FiringShake`, `TierShot`), but
+  three things still moved the body: (1) `TierShot` squatted every T3+ shooter 1.6-3.2 degrees per barrel of a volley
+  (`VehicleView.Rock`) - the Leviathan's and Juggernaut's "shake when firing"; (2) the hull pitched with acceleration (up to 4
+  degrees) when a boss halted to fire and set off again, plus the move bounce and the heavy-hit jolt; (3) the `Steady` filter
+  predicted along the smoothed velocity, so a sudden halt carried the hull past the stop and back (on a curve, sideways off
+  the rail). Now `VehicleView.Massive` (a boss, or anything on a rail) is drawn still: no squat or blast rock, no pitch,
+  bounce or hit jolt; `Steady` does not predict for a boss and is skipped on a rail (the rail system's position is drawn
+  as is). Barrels still recoil and turrets still turn. Impact shakes stay (a boss's shells landing near the camera).
+- **Gun turrets train onto what they shoot.** Real life: a turret is trained onto its target, then fires; a big gun's turret
+  traverses at a few to a few tens of degrees a second and never jumps. Audit (balance.json x the GLB node trees): every
+  armed tower model carries its main weapon under a `Turret` node (no root-level Mount_ on a Turret-aimed slot), and the
+  sim trains `TurretHeading` at `turretTurnRate` for every ground unit's Turret-aimed main mount, so towers already turn
+  (the ew_tower's dish is a spinner). No tower model has an `Elevation` node, so no tower gun can pitch until lane B adds
+  one (the view's `Elevate` drives it as soon as it exists). What did not turn: guns the boss systems lay (`laid`: the
+  Leviathan's three main turrets, the rail supergun) - the sim sets their heading in the step it fires, so they jumped onto
+  the aim and stood still between salvos - and a free main mount (mount 0, Free: command airship, hovercraft, supreme
+  command), whose heading the sim never trains. `VehicleView.Aim` now trains those in the view: at the unit's turret rate
+  (at least 20 deg/s; a free main mount 120 deg/s), holding a laid heading 3 s after a lay, otherwise following the unit's
+  current target inside the mount's own arc (an aft turret never swings across the bridge). The rail supergun's turret
+  traverses onto its laid heading and stays there (its design). View only; the sim's aim and hits are unchanged. Lane C
+  could lay the guns a few seconds before the shot so the turret is on target when it fires (the view then shows it).
+- **The sea redrawn (`MachineBrigade/Water`).** Real life: from above, coastal water is turquoise over the sand in the
+  shallows and turns deep blue-green within a few tens of metres; waves bend the surface, so the sun breaks into a moving
+  glitter path and the sky's reflection shifts; surf foams in a band on the beach; far off the sea fades into haze. Before:
+  one flat plane on the Lit shader (one colour, roughness 0.08, no waves). Now one opaque, texture-light shader for every
+  water surface (no depth or opaque texture, nothing screen-space, so it holds on phones): three analytic swells (23, 13,
+  7.5 m) and two ripple layers from the shared `_MbNoise` bend the normal; colour from shallow (`_ShallowColor`, the deep
+  colour lightened toward the theme's sand and a touch turquoise) to deep (`_BaseColor`, the theme's water) by distance from
+  the shore; the sun's diffuse and shadows (hull shadows on the water), a sharp specular plus a glitter inside a wider lobe,
+  Fresnel sky reflection (lifted: at the camera's 52 degrees the real 2 % read as paint), night lights glinting; a swash line
+  and washing foam bands at the shore and sparse whitecaps offshore; the battle's linear fog. The shore distance comes from
+  data: MapView's water gets r = depth, g = open water from a 1 m chamfer distance to the bank (`ShoreField`; beyond the
+  map's edge the water runs on, so no false shore there; a ford stays shallow); the edge sea reads a 4 m shore-distance
+  texture over the decorated square (`Surroundings.Water`; the map's own water counts as sea). Rivers, canals and the
+  in-map water of non-sea maps are calm (no swell); a frozen river has neither ripples nor foam. Low graphics keeps its
+  unlit in-map water. Old property names kept (`_BaseColor`, `_Roughness`), so themes and maps set it as before.
+  Check: `-executeMethod MachineBrigade.Editor.SeaShots.Run` (Builds/sea_shots/sea.png).
+- **Target zones (optional item, checked).** The view draws a zone only from data the Sim also uses or from the Sim's own
+  events: escape rings for rounds `warningRules` warns of with `warnSeconds` > 0 (the Sim holds those rounds in the air that
+  long), stick rectangles for STICK_RECT sticks, and the Sim's StrikeWarning / big-attack events. No view-made ring is left
+  for an ordinary shell (prompt 26 B.4's 0.8 s boss-shell ring is gone). So when lane C narrows which attacks warn, the
+  rings follow with no view change.
+- **Render to check (lead).** Magenta: any battle or `EffectShots.FxBatch -mbFxIds sticks` (stick rectangles), an aircraft
+  in any preview (its ground ring), a boss big attack (warning ring); and run `ShaderHealthTests` when tests are allowed.
+  Flares: `FlareShots.Run` -> Builds/flare_shots/flares.png. Boss stillness and turret aim: the Leviathan and the armoured
+  train / rail supergun in their In action preview (or Boss Rush at lighthousebay) - the hull must not move when it fires,
+  the main turrets swing onto their aim. Sea: `SeaShots.Run` -> Builds/sea_shots/sea.png (lighthousebay, coralisles,
+  borderbridge), plus a naval unit's In action preview (the preview sea uses the shader too).
+- **Fired rounds leave the launcher (lead's item).** Real life: a TEL's erector is empty after the launch until a
+  transloader loads the next missile; a launcher's cells show what is still loaded. `VehicleView.Loaded`: every node group
+  named with an index (`missile_1`, `missile_2_fins`, `round_3`, `rocket_04`, `cruise_missile_1`, any case) is one modelled
+  round; the rounds shown follow the sim's magazine (`Vehicle.Ammo`) of the first missile/rocket mount with a magazine (scaled
+  when the magazine is larger than the model's load), the lowest index leaving first, all back with the reload. Merged parts
+  without an index (`Missiles`, `Missile_bands`) are never touched, so an old model is unchanged. Not seen against c2b75dd9
+  (the merge was refused to this lane): the lead checks that the rebuilt ballistic_launcher / ground_cruise_missile_vehicle
+  name their rounds with an index, and that LOD1 (merged per moving part) is acceptable keeping the full load far away.
