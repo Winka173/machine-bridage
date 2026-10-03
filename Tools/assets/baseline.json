@@ -2976,6 +2976,16 @@
    "changes": [
     "FLAG elite_heavy_tank: triangles 5,754 -> 13,350 (+132.0%); vertices 6,809 -> 16,786 (+146.5%); meshes 30 -> 68 (+126.7%); renderers 30 -> 68 (+126.7%); materials 9 -> 13 (+44.4%); materialSlots 30 -> 68 (+126.7%); fileBytes 365,144 -> 885,908 (+142.6%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "elite_tank_destroyer"
+   ],
+   "reason": "P35 wave 7",
+   "changes": [
+    "FLAG elite_tank_destroyer: triangles 4,794 -> 11,184 (+133.3%); vertices 5,507 -> 15,057 (+173.4%); meshes 27 -> 64 (+137.0%); renderers 27 -> 64 (+137.0%); materials 9 -> 13 (+44.4%); materialSlots 27 -> 64 (+137.0%); fileBytes 298,876 -> 792,888 (+165.3%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -24046,24 +24056,24 @@
   },
   "elite_tank_destroyer": {
    "file": "elite_tank_destroyer.glb",
-   "fileBytes": 298876,
-   "sha1": "0045548fded26d6c",
+   "fileBytes": 792888,
+   "sha1": "59c90f142a88a44d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 33,
-   "meshes": 27,
-   "materials": 9,
+   "nodes": 70,
+   "meshes": 64,
+   "materials": 13,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 27,
-   "submeshes": 27,
-   "materialSlots": 27,
-   "materialsUsed": 9,
-   "triangles": 4794,
-   "vertices": 5507,
+   "renderers": 64,
+   "submeshes": 64,
+   "materialSlots": 64,
+   "materialsUsed": 13,
+   "triangles": 11184,
+   "vertices": 15057,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -24071,36 +24081,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 102,
+   "loosePieces": 370,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.5295,
-    -0.0122,
-    -3.3292
+    -1.465,
+    -0.0695,
+    -3.37
    ],
    "boundsMax": [
-    1.5295,
-    2.2885,
-    5.773
+    1.465,
+    2.2249,
+    5.516
    ],
    "size": [
-    9.102,
-    3.059,
-    2.301
+    8.886,
+    2.93,
+    2.294
    ],
    "center": [
     0.0,
-    1.138,
-    1.222
+    1.078,
+    1.073
    ],
-   "structureHash": "eb348a08aa03e154",
+   "structureHash": "f50e44acd792d0a8",
    "color0": {
-    "mean": 0.6112,
-    "min": 0.0782,
+    "mean": 0.5805,
+    "min": 0.078,
     "max": 1.0,
-    "p05": 0.1831,
-    "p95": 0.9722,
+    "p05": 0.1878,
+    "p95": 0.8143,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -24109,7 +24119,9 @@
     ],
     "main_cannon": [
      "Main_cannon",
-     "Main_cannon_gilt"
+     "Main_cannon_evacuator",
+     "Main_cannon_gilt",
+     "Main_cannon_sleeve"
     ],
     "muzzle_brake": [
      "Muzzle_brake"
@@ -24128,48 +24140,89 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Chevrons",
-    "Deck",
-    "Hatch_fittings",
-    "Hatch_fittings.001",
+    "Ammo_boxes_rws",
+    "Antennas",
+    "Cradle_rws",
+    "Glass",
+    "Glass.001",
+    "Glass.002",
+    "Grille_frames",
+    "Grilles",
+    "Gun_belt_rws",
+    "Gun_bracket_rws",
+    "Gun_post_rws",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
+    "Idlers",
+    "Jerrycans",
+    "Kit_latches",
+    "Kit_racks",
+    "Kit_reel",
+    "Kit_steel",
+    "Kit_steel.001",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
     "MG",
-    "MG_ammo",
+    "MG_flash",
+    "MG_receiver_rws",
     "Main_cannon",
+    "Main_cannon_evacuator",
     "Main_cannon_gilt",
+    "Main_cannon_sleeve",
+    "Mantlet",
     "Mount_mg",
     "Muzzle_brake",
     "Muzzle_main",
     "Muzzle_mg",
-    "Periscope",
-    "Periscope_hoods",
     "Point_exhaust",
     "Point_fire",
+    "Racks",
+    "Rollers",
     "Sight",
+    "Sight.001",
+    "Sight.002",
+    "Sight_glow",
+    "Skirt_edge",
+    "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
-    "Steel",
+    "Stowage",
+    "Stowage.001",
+    "Suspension",
     "Tail_lamps",
+    "Team_band",
+    "Team_band.001",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
+    "Trim_vane",
+    "Trim_vane_ribs",
     "Turret",
-    "Turret_armor",
+    "Turret_armour",
     "Turret_body",
+    "Turret_ring",
+    "Turret_roof",
     "Tyres",
+    "Waterjets",
+    "Waterjets_dark",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 11,184 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 15,057 over the ground normal hard cap 12,600 (info: kept, owner rule)",
+    "renderers 64 over the ground normal budget 61"
+   ],
    "units": [
     "elite_tank_destroyer"
    ],
-   "movingParts": 4,
+   "movingParts": 6,
    "budgetClass": "ground"
   },
   "engineer_vehicle": {
