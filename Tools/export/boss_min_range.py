@@ -92,7 +92,7 @@ def glb_info(model: str):
                 pos = accessor(doc, binary, prim["attributes"]["POSITION"]).astype(np.float64)
                 w = pos @ m[:3, :3].T + m[:3, 3]
                 lo, hi = np.minimum(lo, w.min(0)), np.maximum(hi, w.max(0))
-    info = {"nodes": nodes, "parents": parents, "lo": tuple(lo), "hi": tuple(hi)}
+    info = {"nodes": nodes, "parents": parents, "lo": tuple(float(v) for v in lo), "hi": tuple(float(v) for v in hi)}
     _glb_cache[model] = info
     return info
 
