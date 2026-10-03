@@ -26,7 +26,7 @@ namespace MachineBrigade.Game.Rendering
     /// </summary>
     public sealed partial class FiringRange
     {
-        private enum Scene
+        internal enum Scene
         {
             None,
             Jammer,
@@ -75,7 +75,7 @@ namespace MachineBrigade.Game.Rendering
         private float _pulseAt;
         private double _homeAt = -1;
 
-        private static Scene SceneFor(VehicleDef def)
+        internal static Scene SceneFor(VehicleDef def)
         {
             if (def.Relay != null) return Scene.Relay;
             if (def.Obstacle) return Scene.Teeth;
