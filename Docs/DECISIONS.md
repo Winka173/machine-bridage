@@ -18949,3 +18949,16 @@ Rendering, VFX and view motion from play-test 13 (Docs/prompts/requests_vi.md). 
   the rail). Now `VehicleView.Massive` (a boss, or anything on a rail) is drawn still: no squat or blast rock, no pitch,
   bounce or hit jolt; `Steady` does not predict for a boss and is skipped on a rail (the rail system's position is drawn
   as is). Barrels still recoil and turrets still turn. Impact shakes stay (a boss's shells landing near the camera).
+- **Gun turrets train onto what they shoot.** Real life: a turret is trained onto its target, then fires; a big gun's turret
+  traverses at a few to a few tens of degrees a second and never jumps. Audit (balance.json x the GLB node trees): every
+  armed tower model carries its main weapon under a `Turret` node (no root-level Mount_ on a Turret-aimed slot), and the
+  sim trains `TurretHeading` at `turretTurnRate` for every ground unit's Turret-aimed main mount, so towers already turn
+  (the ew_tower's dish is a spinner). No tower model has an `Elevation` node, so no tower gun can pitch until lane B adds
+  one (the view's `Elevate` drives it as soon as it exists). What did not turn: guns the boss systems lay (`laid`: the
+  Leviathan's three main turrets, the rail supergun) - the sim sets their heading in the step it fires, so they jumped onto
+  the aim and stood still between salvos - and a free main mount (mount 0, Free: command airship, hovercraft, supreme
+  command), whose heading the sim never trains. `VehicleView.Aim` now trains those in the view: at the unit's turret rate
+  (at least 20 deg/s; a free main mount 120 deg/s), holding a laid heading 3 s after a lay, otherwise following the unit's
+  current target inside the mount's own arc (an aft turret never swings across the bridge). The rail supergun's turret
+  traverses onto its laid heading and stays there (its design). View only; the sim's aim and hits are unchanged. Lane C
+  could lay the guns a few seconds before the shot so the turret is on target when it fires (the view then shows it).

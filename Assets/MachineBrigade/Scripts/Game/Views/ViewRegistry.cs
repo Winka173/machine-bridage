@@ -46,7 +46,7 @@ namespace MachineBrigade.Game.Views
         public VehicleView Add(Vehicle vehicle)
         {
             if (_views.TryGetValue(vehicle.Id, out var existing)) return existing;
-            var view = new VehicleView(vehicle, _models, _meshes, _materials, _parent, _playerTeam);
+            var view = new VehicleView(vehicle, _models, _meshes, _materials, _parent, _playerTeam) { Registry = this };
             if (_impostors != null) view.Impostor = _impostors.Request(view.Lod, vehicle.Team);
             _views.Add(vehicle.Id, view);
             _list.Add(view);

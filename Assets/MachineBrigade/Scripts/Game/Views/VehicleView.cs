@@ -770,6 +770,8 @@ namespace MachineBrigade.Game.Views
                 _previousMount[i] = _currentMount[i];
                 _currentMount[i] = Sim.MountHeading(i) * Mathf.Rad2Deg;
             }
+            // Play-test 13: which guns the sim just laid (VehicleView.Aim).
+            NoteLays();
         }
 
         private Vector3 _shownPosition, _shownVelocity;
@@ -1060,7 +1062,8 @@ namespace MachineBrigade.Game.Views
 
             if (_model.Turret != null && !Match.DebugFlags.Has("-mb-no-turret"))
             {
-                var turret = Mathf.LerpAngle(_previousTurret, _currentTurret, alpha);
+                // Play-test 13: a gun the boss system lays traverses onto its heading instead of jumping (VehicleView.Aim).
+                var turret = DrawnTurretHeading(Mathf.LerpAngle(_previousTurret, _currentTurret, alpha));
                 _model.Turret.localRotation = Quaternion.Euler(0f, Mathf.DeltaAngle(hull, turret) + _turretSwing, 0f);
                 var t = (Time.time - _recoilTime) / RecoilSeconds;
                 var kick = t is >= 0f and < 1f ? (1f - t) * (1f - t) * _recoilDistance : 0f;
@@ -1075,7 +1078,8 @@ namespace MachineBrigade.Game.Views
             {
                 var mount = _mounts[i];
                 if (mount == null || Def.Mounts[i].Aim != MountAim.Free) continue;
-                var heading = Mathf.LerpAngle(_previousMount[i], _currentMount[i], alpha);
+                // Play-test 13: laid guns and an untrained free main mount are trained by the view (VehicleView.Aim).
+                var heading = DrawnMountHeading(i, Mathf.LerpAngle(_previousMount[i], _currentMount[i], alpha), hull);
                 var parentYaw = mount.parent != null ? mount.parent.eulerAngles.y : 0f;
                 mount.localRotation = Quaternion.Euler(0f, Mathf.DeltaAngle(parentYaw, heading), 0f);
             }
