@@ -247,5 +247,85 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(1.15f, Drawn("mlrs_rockets", "gmlrs"), 0.01f, "MLRS rockets as they were (they fit their pod)");
             Assert.AreEqual(1.2f, Drawn("air_cruise_missile", "cruise_missile", true), 0.01f, "cruise missiles as they were");
         }
+
+        /// <summary>Play-test 13 follow-up (lane A): a ballistic round with no barrel to go by flies the Sim's own parabola.</summary>
+        [Test]
+        public void ABallisticCurveWithoutABarrelIsTheSimsParabola()
+        {
+            const float ground = 60f, peak = ground * 0.28f;
+            var (rise, sideways, back, along) = ProjectilePool.CurveShape(Vector3.zero, Vector3.forward, ground, peak, true);
+            Assert.AreEqual(ground / 3f, sideways, 1e-4f);
+            Assert.AreEqual(ground / 3f, back, 1e-4f);
+            var a = Vector3.zero;
+            var d = new Vector3(0f, 0f, ground);
+            var b = a + Vector3.up * rise + along * sideways;
+            var c = d + Vector3.up * rise - Vector3.forward * back;
+            for (var i = 0; i <= 10; i++)
+            {
+                var u = i / 10f;
+                var p = ProjectilePool.Cubic(a, b, c, d, u);
+                Assert.AreEqual(u * ground, p.z, 1e-3f, "even over the ground");
+                Assert.AreEqual(4f * peak * u * (1f - u), p.y, 1e-3f, "the Sim's round height (CombatSystem.RoundHeight)");
+            }
+        }
+
+        /// <summary>Play-test 13 follow-up (lane A): a raised barrel's round leaves along it and never runs backwards over the ground.</summary>
+        [Test]
+        public void ABallisticCurveLeavesAlongItsBarrel()
+        {
+            const float ground = 50f, peak = ground * 0.28f;
+            foreach (var degrees in new[] { 24f, 40f, 55f, 72f, 85f })
+            {
+                var r = degrees * Mathf.Deg2Rad;
+                var barrel = new Vector3(0f, Mathf.Sin(r), Mathf.Cos(r));
+                var (rise, sideways, back, _) = ProjectilePool.CurveShape(barrel, Vector3.forward, ground, peak, true);
+                Assert.That(sideways, Is.InRange(ground * 0.15f - 1e-3f, ground * 0.6f + 1e-3f));
+                Assert.LessOrEqual(sideways + back, ground, $"{degrees} deg: the inner points never cross");
+                Assert.AreEqual(Mathf.Min(sideways, ground / 3f), back, 1e-4f, "comes down at least as steeply as it went up");
+                var leaves = Mathf.Atan2(rise, sideways) * Mathf.Rad2Deg;
+                if (degrees is >= 37f and <= 68f) Assert.AreEqual(degrees, leaves, 0.5f, "leaves along the barrel");
+            }
+        }
+
+        /// <summary>Play-test 13 follow-up (lane A): a lofted missile climbs hard out of its tube and dives onto its target.</summary>
+        [Test]
+        public void ALoftedMissileClimbsThenDives()
+        {
+            var from = Vector3.zero;
+            var to = new Vector3(0f, 0f, 80f);
+            // A flat tube still climbs at 45 degrees; a VLS cell goes up; off an aircraft it climbs gently.
+            Assert.AreEqual(WeaponEffects.LoftClimb, Mathf.Asin(WeaponEffects.LoftLaunch(from, to, Vector3.forward, false).y) * Mathf.Rad2Deg, 0.1f);
+            Assert.AreEqual(90f, Mathf.Asin(Mathf.Min(1f, WeaponEffects.LoftLaunch(from, to, Vector3.up, false).y)) * Mathf.Rad2Deg, 0.5f);
+            Assert.AreEqual(WeaponEffects.AirLoftClimb, Mathf.Asin(WeaponEffects.LoftLaunch(from, to, new Vector3(0f, -0.3f, 1f), true).y) * Mathf.Rad2Deg, 0.1f);
+
+            const float ground = 80f, peak = ground * 0.2f;
+            var (rise, sideways, back, along) = ProjectilePool.CurveShape(WeaponEffects.LoftLaunch(from, to, Vector3.up, false), Vector3.forward, ground, peak, false);
+            Assert.AreEqual(ground * 0.04f, sideways, 1e-3f, "near straight up out of the cell, leaning to its target");
+            Assert.AreEqual(ground * ProjectilePool.LoftDive, back, 1e-3f);
+            var b = from + Vector3.up * rise + along * sideways;
+            var c = to + Vector3.up * rise - Vector3.forward * back;
+            Assert.AreEqual(peak, ProjectilePool.Cubic(from, b, c, to, 0.5f).y, 1e-3f, "peaks at the Sim's height");
+            var end = to - ProjectilePool.Cubic(from, b, c, to, 0.97f);
+            Assert.Greater(Mathf.Atan2(-end.y, end.z) * Mathf.Rad2Deg, 50f, "dives steeply onto its target");
+            Assert.AreEqual(to, ProjectilePool.Cubic(from, b, c, to, 1f), "lands on its aim point");
+        }
+
+        /// <summary>Play-test 13 follow-up (lane A): the pace table maps a share of the way to the curve's parameter.</summary>
+        [Test]
+        public void ACurvesPaceTableIsMonotonic()
+        {
+            var even = new[] { 0f, 1f, 2f, 3f, 4f };
+            Assert.AreEqual(0.5f, ProjectilePool.CurveParameter(even, 0.5f), 1e-5f);
+            Assert.AreEqual(1f, ProjectilePool.CurveParameter(even, 1f), 1e-5f);
+            var uneven = new[] { 0f, 3f, 4f, 5f, 8f };
+            var last = -1f;
+            for (var i = 0; i <= 20; i++)
+            {
+                var u = ProjectilePool.CurveParameter(uneven, i / 20f);
+                Assert.Greater(u, last - 1e-6f);
+                last = u;
+            }
+            Assert.AreEqual(0.5f, ProjectilePool.CurveParameter(uneven, 0.5f), 1e-5f);
+        }
     }
 }
