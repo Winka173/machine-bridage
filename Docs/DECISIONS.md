@@ -18236,3 +18236,58 @@ Python only (no Unity, no test, sim or measure).
   look with the structures.
 - quality_report.xlsx / .csv not rewritten on this branch; full gate `--no-write`: 230 models, 77 pass, no model
   outside waves 3 and 6 changed; glb_check 0 errors.
+
+## Prompt 35 wave 10 (lane B)
+Branch `feature/p35-w10` (from lead/integration with wave 6 merged), the models of wave 10 (Docs/models/WAVES_P35.md):
+nineteen rebuilt from scratch, one builder each (`Tools/blender/mb_p35_<id>.py`; cp_relay and cp_relay_a share
+`mb_p35_cp_relay.py`), a spec each first (`Tools/blender/specs/<id>.json`), registered inside the builders dict of
+build_assets.py after wave 6; silver_bug untouched. Report: Docs/models/WAVE_10_REPORT.md. Blender and Python only (no
+Unity, no test, sim or measure).
+- **Lead calls on the wave 6 questions** (2026-10-03): (a) stealth_naval_strike and garuda, the flying wings, are
+  accepted on the owner's look; (b) inflatable_decoy's modelSize goes to the owner's question list (data unchanged);
+  (c) the small craft's pintle Gatling and the Zodiac / raft canisters are fine.
+- **silver_bug** (owner-approved gold, prompt 27 V2): not rebuilt and not rebuilt from build_assets; it already passes
+  the whole gate (86.3 Tốt, every hard gate, Mount_APS present), so nothing changed (no node or name edit needed).
+- **Bomb bays (the pending bomb-run fix).** heavy_bomber and command_airship carry their bay doors on their own hinge
+  pivots, `Part_bay_door_L` / `Part_bay_door_R` (the pivot on the hinge line, the door hanging inboard from it, so a
+  rotation about Y opens it); the bomb launch points keep their names: heavy_bomber `Muzzle_missile` (the bay's drop
+  point), command_airship `Mount_gun` / `Mount_gun.001` (mountWeapons 0 / 1, roc_bombs) and its bay at the def's
+  bomb_bay hit area (blender (0, -8.5, -3.0)). The bombs are racked between the doors on both.
+- **Tower branches match their wave 2 bases.** heavy_turret_a stands on `mb_p35_wave2_heavy.barbette` (owner decision
+  4: one shared emplacement; the barbette is lane A's shared sub-assembly, not a model builder) and turns its own
+  stretched gun house (L/52-class barrels, charge bustle, coastal search radar `Radar`, new); its per-barrel muzzles
+  `Muzzle_b1_main` / `_b2_main` are written by the builder as heavy_turret_b does (gun_155_twin_ap has two barrels:
+  the old file failed 1/2). shield_tower_b repeats the base's plinth, barriers, cabins (three banks), emitter rings and
+  insulators in its own script but keeps the old file's low wide outline (8.3 x 8.3 x 4.5 m, the size rule) with three
+  lattice arms carrying outward ward projectors instead of the base's 9.5 m pylon. artillery_emplacement_a repeats the
+  _b emplacement (U berm, sandbag courses, revetment, plank floor, net) with a towed 155 mm and a phased-array
+  counter-battery radar (`Radar` at its old place). cp_relay and cp_relay_a share one compound in the cp_relay_b style
+  (4 x 4 pad, HESCO, fence, Team-banded shelter) under the old 7.3 m guyed mast; _a adds the comms container with the
+  big dish.
+- **L8 models** (flare_tower, sp_mortar, visual_jammer): L8's layouts kept (the braced flare post with the eight-tube
+  rack; the Patria AMV with AMOS; the shelter, mast head, smoke drums and generator), brought to the prompt 35
+  standard (tiers, regions, sloped bodies, the roof MG on a raised ring with its shield). visual_jammer is laid out
+  along Y for the def's 6 x 5 m (a whole-model turn at the end of its builder).
+- **Merged roles (spec "merged")**: twin_rotor_gunship `tail_rotor` in `Rotor_rear` (a tandem has no tail rotor);
+  heavy_lift_helicopter `stub_wings` in `Sponsons` and `weapons` in `Launchers_flares` (the Mi-26 is unarmed and has
+  no stub wings). Gate request (lead): skip these roles for unarmed and tandem helicopters.
+- **New runtime nodes**: twin_rotor_gunship `Turret` (the def turns its chin gun) and `Mount_mg` / `.001` (agl_40 is
+  aimed freely); heavy_bomber `Mount_gun` (the free tail guns); command_airship `Muzzle_b1_gun` / `_b2_gun` and
+  `_gun_001` (the twin 30 mm: eight mounts want eight muzzles, as garuda); daedalus `Mount_APS` (its def has APS) and
+  its own `Muzzle_b1/b2_gun[_001]` (the L3 wrapper finds no single barrel on the new ball guns, so the twins are built
+  here); heavy_turret_a `Radar`. Every old `Part_*`, `Mount_*`, `Muzzle_*`, `Radar`, `Propeller*`, `Rotor*`,
+  `Tail_rotor`, `Turret`, `Point_*` is kept under its old name and parent; daedalus' `Legs` are its running gear.
+- **Caps and renderers**: the towers stay under 6,000 (heavy_turret_a 5,980, artillery_emplacement_a 5,919), the light
+  vehicles under 7,500 (sp_mortar 7,226); static parts folded with `mb_p35b_parts.merge_parts` where glb_check's
+  renderer caps bit (cp_relay pair, visual_jammer, twin_rotor_gunship, heavy_bomber, shield_tower_b).
+- **Sizes**: all within 10 % of modelSize, or of the old file where the def has none (branches, cp_relay, the three
+  bosses, coastal_battery); rail_supergun 59.0 x 8.0 x 16.5 (-8 % / -9 % / 0 %), its barrel ending at the old muzzle.
+- **rail_supergun** was a member of the boss gold set: rebuilt (85.0 against the rail frame gold, the old file 76.4
+  failing its single-block gate) with 11.9k triangles instead of 36.7k; gold_metrics.json not recomputed here.
+- **Kit requests (for lane A)**: lift lane B's `clutter`, `plane`, `portholes` and `merge_parts` (mb_p35b_parts.py)
+  into mb_kit35 (report); lane B did not edit the kit.
+- build_assets.py: rebuilt from build_assets the 19 files match (the filter also rebuilt cp_relay_b: identical;
+  daedalus, radar_support_vehicle and shield_tower_b differed by bake noise at the same size: the gated files kept);
+  `python -m py_compile Tools/blender/build_assets.py` passes. glb_check: 0 errors, baseline accepts for the 19.
+- quality_report.xlsx / .csv not rewritten on this branch; full gate `--no-write`: 230 models, 151 pass; compared with
+  the csv no model outside waves 6, 7 and 10 changed.
