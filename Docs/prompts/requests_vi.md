@@ -284,3 +284,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 "giữ nguyên các model đã xóa không phải chỉ ifv" (GLB chuyển sang Archive/models, builder giữ).
 - 03/10 "hủy tăng size boss 20 30%".
 - 03/10 "cái gì cloud không làm được thì đem về local làm, không cần phải ráng".
+- 03/10 boss: tàu lửa +2-4 toa, Inferno từ model behemoth, Ixion 4-5 vũ khí, Locust 1 drone/2 s, danh sách vẽ lại 11 boss (nguyên văn cuối playtest14_vi.txt).

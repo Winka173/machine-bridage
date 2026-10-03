@@ -173,3 +173,46 @@ Lead decisions on session 1's questions are in DECISIONS "Play-test 14: cloud se
 2. Update the stale EditMode tests session 1 listed (repair bay, airfield, fire-control link, Army tab order, base
    cover strip) to the new behaviour; do not run them.
 3. Remove the deleted ids from the source xlsx files the importers read (list them; keep sheet layout).
+4. Delete the 10 bosses the owner dropped: stymphalos, fortress_hive (Hive), cerberus, supreme_command (Atlas),
+   kronos, caspian, morrigan, sky_fortress (Spectre), garuda, rail_supergun (Gungnir), with their big attacks /
+   supports / weapons used only by them (garuda_carpet, kronos_bucket_sweep, leviathan_cruise_mark_7 "Caspian's
+   cruise missile", supergun_shell, ...), same clean-delete rules as part 1 (GLBs git mv to Archive/models, builders
+   kept). Story replacements (rewrite the lines so they fit): Hive (c5m05) -> Matriarch (drone_mothership); Atlas
+   (general's elite form) -> Behemoth Mk.II; Kronos (c8m10, also 3 map files) -> Tartarus (earth_borer); Caspian
+   (c9m05) -> Charybdis (landing_hovercraft); Morrigan (morrigan_hunt mini-boss, c10m12, i3m02) -> Harpy
+   (mega_gunship); Spectre (c10m08, c10m10, c10m12, i3m02) -> Roc (command_airship); Gungnir (c11m05) -> Monster.
+   Campaign generator rerun if it owns those fields. List all in Docs/fixes/playtest14_deleted.md.
+5. Locust (variant of drone_mothership): launches one drone every 2 s, no faster (give Locust its own drone weapon if
+   it shares Matriarch's; burst/cooldown so the rate is 1 per 2 s); CHANGES.md.
+
+## Session 4: model waves in the cloud (trial) → `cloud/pt14-models`
+
+The owner wants the cloud to do as much as possible. Models need Blender: try it, and **if Blender cannot run, stop
+and write that in Cloud state** (the local lead then builds them; do not force it).
+- Setup: `GIT_LFS_SKIP_SMUDGE=1` clone is not enough here: run `git lfs install && git lfs pull --include
+  "Assets/MachineBrigade/Resources/Models/*.glb"` (the builders and gates read existing GLBs). Download Blender 4.5
+  LTS for Linux (`https://download.blender.org/release/Blender4.5/`, the latest 4.5.x linux-x64 tar.xz), run it
+  `--background --factory-startup --python-exit-code 1`. The kit (`Tools/blender/frontier_kit.py`, bmesh only) works
+  headless. For gate/look renders use what works headless (Cycles CPU or Workbench if Eevee has no GPU).
+- Read `Docs/models/MODEL_STANDARD.md`, `Docs/models/BUDGETS.md`, `Docs/TOKEN_OPTIMISATION.md` (model waves).
+  Quality before tokens: as many gate rounds as needed, look at every render. Build with
+  `Tools/blender/build_assets.py` (register builders inside its dict; the build filter is a substring match:
+  `git status` the GLBs after a build and restore any you did not mean to change); `python
+  Tools/assets/glb_quantize.py` on the GLBs you built; `Tools/assets/quality_gate.py`.
+- Triangle budget = N x the class maximum in BUDGETS.md (boss small 45k, medium 55k, large 70k): owner's N per boss
+  below; bosses without a number get 3.5x. No size change (cancelled). Keep every Mount_* / Muzzle_* / Elevation /
+  flare-point convention the runtime reads (grep `ModelLibrary` for the names) and keep data mounts in sync.
+- Run **one wave per sub-agent** (Agent tool, model `opus`, never fable; 4-6 models each), commit + push after each
+  wave. Owner's notes per model are in Docs/prompts/playtest14_vi.txt (list + "Bổ sung 03/10").
+
+| Wave | Models |
+|---|---|
+| M1 ground bosses | mobile_fortress (Jötunn: exactly 2 symmetric rear launchers), fortress_bastion + bastion_mk0 (own model, detailed; guns placed sensibly, also on the sides, not only the roof), fenrir (own model), behemoth_inferno (from the behemoth model, smaller, secondary guns removed, thinner main barrel, flame projectors; not an oval) |
+| M2 trains, Ixion, air | armored_train + nuke_train (2-4 more cars each; data length/HP only if the Sim needs it, log CHANGES), ixion (4-5 guns/missile launchers, models + data weapons, CHANGES), mega_gunship (Harpy: stub wings like an attack helicopter carrying its launchers and guns), daedalus (5x) |
+| M3 sea bosses | leviathan (5x; keep turret/recoil pivots for the runtime), scylla (4x, own model), kraken (5x), nyx (4x), hydra (4x) |
+| M4 base | drone_hangar, vehicle_hangar, aircraft_hangar (three distinct hangars), mg_bunker (several MG ports with guns + data mounts), guard_tower |
+| M5 vehicles | ew_jammer, iron_beam (Laser AA), command_vehicle, wheeled_gun (smaller turret) |
+| M6 vehicles | stealth_naval_strike, aa_vehicle + heavy_aa (twin autocannons spaced like the real designs), laser_ad_station (Laser Defence Tower) |
+
+Units seen in numbers (M4-M6) stay at or under 1.5x their class maximum. Push GLBs as LFS objects. The local lead
+then checks LFS, quantises, renders cards and Unity scans, and merges.

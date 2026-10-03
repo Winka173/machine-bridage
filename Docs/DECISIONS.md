@@ -19329,3 +19329,10 @@ Part 2 (lane B):
 - Leftovers for local: Unity look at one-tap / base tab / new tabs / rally button; stale EditMode tests (repair bay,
   airfield, fire-control link, Army tab order, base cover strip) to update; export rebuild needs ExportGameDoc
   (later, with the owner's word); hangar models (lead's model wave); source xlsx still has deleted ids.
+
+## Play-test 14: bosses (owner, 03/10)
+Redraw: Jötunn, both Bastions, Fenrir, Harpy, Daedalus 5x, Leviathan 5x, Scylla 4x, Kraken 5x, Nyx 4x, Hydra 4x
+(x = class max in Docs/models/BUDGETS.md; unnamed -> 3.5x, lead's pick inside the owner's 250-500 %). Trains +2-4
+cars, Inferno from the Behemoth model, Ixion 4-5 weapons, Locust 1 drone per 2 s. The 10 dropped bosses are deleted
+with the story swaps proposed earlier (no objection from the owner). Work: cloud sessions 3 (deletes, Locust) and
+4 (model waves M1-M6, Blender trial; falls back to local). Boss min range (pack2-c) recomputed after M1-M3.

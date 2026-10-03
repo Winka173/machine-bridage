@@ -81,3 +81,11 @@ base tab:
 - chỗ để setting cho hq ở đâu, như triệu hồi quân gì, hay gắn súng gì, thêm tab mới cũng được
 
 có gì không hiểu hỏi tôi trước
+
+=== Bổ sung 03/10 (boss, nguyên văn) ===
+2 boss tàu lửa: đều thêm 2-4 toa
+Inferno => cứ dùng model behemoth và sửa lại
+ixion: thêm súng / tên lửa, khoảng 4-5 vũ khí
+Locust: tốc độ gọi quăng drone quá nhanh, mỗi 2s quăng 1 drone thôi
+list vẽ lại:
+- jotunn, cả 2 bastion, Fenrir, Harpy, Daedalus (sẽ có 500% budget tam giác) Leviathan (sẽ có 500% budget tam giác) Scylla,  (sẽ có 400% budget tam giác) Kraken (sẽ có 500% budget tam giác) Nyx  (sẽ có 400% budget tam giác) , Hydra (sẽ có 400% budget tam giác)
