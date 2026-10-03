@@ -1,6 +1,6 @@
 # 01_vu_khi_dan — Vũ khí và đạn
 
-Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit 90337539, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Vũ khí, họ, dòng vũ khí thật, đạn thay thế, bảng sát thương, khắc chế (APS), hành vi đạn, pháo sáng, vòng cảnh báo
 
@@ -38,6 +38,10 @@ Luật này được test `ArmourTests.CountersFollowTheTable` kiểm tra (bản
 #### 10b. Nhịp bắn, nạp đạn, đường đạn và di chuyển
 
 Đọc thẳng từ dữ liệu game. **Viên/s** là nhịp khi đang bắn (trong một loạt, hoặc giữa hai phát). **Xả** là thời gian hết một băng hay một loạt. **Nghỉ/nạp** là thời gian thay băng hay nghỉ giữa hai loạt. **Bệ phóng** là số lượt bắn trước khi phải nạp lại cả bệ. **TB viên/s** tính cả thời gian nghỉ và nạp. **DPS khi xả** là sát thương mỗi giây trong lúc bắn, trước giáp; **DPS duy trì** tính cả thời gian nạp (prompt 13). **Xoay thân / tháp** tính bằng độ mỗi giây, như balance.json (mã giữ radian mỗi giây; bản trước in số radian dưới nhãn °/s, prompt 25 C.4).
+
+#### Đường đạn
+
+★: vũ khí đổi số trong lần sửa tổng hợp (so với commit 07444b14). Cỡ (mm) chỉ cho súng, pháo, cối, rốc-két; đầu nổ (kg) cho tên lửa, bom, drone. Nhịp ngoài đời: tối đa / duy trì (phát mỗi phút một nòng, nguồn ở bảng A8). DPS duy trì: một mục tiêu, cả nạp, hệ số của xe mang.
 
 #### Kích thước đạn (55 model)
 
@@ -248,7 +252,7 @@ Sheet: 01_vu_khi_dan/He_so_toan_cuc — Hệ số toàn cục (4 dòng, 8 cột)
 | firepower.strikes | firepower | strikes | 2.0 |
 | firepower.vehicleBlasts | firepower | vehicleBlasts | 2.0 |
 
-Sheet: 01_vu_khi_dan/Vu_khi — Vũ khí (372 dòng, 174 cột)
+Sheet: 01_vu_khi_dan/Vu_khi — Vũ khí (372 dòng, 175 cột)
 
 | id | ten_that | ho_id | bien_the_id | dong_vu_khi_id | nhom | co_mm | dau_no_kg | loai_sat_thuong | xuyen |
 |---|---|---|---|---|---|---|---|---|---|
@@ -268,7 +272,7 @@ Sheet: 01_vu_khi_dan/Vu_khi — Vũ khí (372 dòng, 174 cột)
 | ataka | 9M120 Ataka | atgm_9m120_ataka |  | 9m120_ataka | atgm |  | 7.4 | ShapedCharge | 4 |
 | atgm | BGM-71 TOW-2 | atgm_bgm_71_tow_2 |  |  | atgm |  | 5.9 | ShapedCharge | 4 |
 
-*15 / 372 dòng đầu: xem sheet 01_vu_khi_dan/Vu_khi; in 10 / 174 cột; 82 cột khác (và raw_json, nguon): xem sheet.*
+*15 / 372 dòng đầu: xem sheet 01_vu_khi_dan/Vu_khi; in 10 / 175 cột; 83 cột khác (và raw_json, nguon): xem sheet.*
 
 Sheet: 01_vu_khi_dan/Vu_khi_suy_ra — Vũ khí: suy ra (372 dòng, 55 cột)
 
@@ -474,7 +478,7 @@ Như mục "Bậc cỡ nòng T0–T5" của Sổ tay đạn trong game. Bậc l�
 | T0 | 12.7 mm heavy machine gun, 14.5 mm heavy machine gun, 7.62 mm machine gun, melee_bucket_wheel, melee_dozer_blade, melee_drill_head (+3) | Súng nhỏ: chớp mảnh, tiếng nổ giòn ngắn. | Small arms: a thin flash and a short crack. |
 | T1 | 20 mm, 23 mm, 25 mm, 30 mm, 35 mm Oerlikon, 40 mm Bofors (+8) | Pháo tự động: chớp nhỏ, khói mỏng; nhiều súng cùng bắn nghe thành một trận đấu súng. | Autocannon: a small flash and thin smoke; many guns at once are heard as one firefight. |
 | T2 | atgm_9k121_vikhr, atgm_9m113_konkurs, atgm_9m120_ataka, atgm_9m123_khrizantema, atgm_agm_114_hellfire, atgm_agm_114l_hellfire_longbow (+36) | Pháo vừa và rocket nhẹ: chớp vừa, quả cầu lửa nhỏ, bụi và đất tung lên. | Medium guns and light rockets: a medium flash, a small hot fireball, dust and earth thrown up. |
-| T3 | atgm_agm_65_maverick, bomb_fab_250, 120 mm AP, 120 mm HE, 125 mm AP, 125 mm HE (+9) | Pháo nặng: chớp lớn, cầu lửa đầu nòng, khói dài và chậm, cột bụi; thân xe giật lùi. | Heavy guns: a big flash and muzzle fireball, long slow smoke, a dust column; the hull rocks back. |
+| T3 | atgm_agm_65_maverick, bomb_fab_250, 120 mm AP, 120 mm HE, 125 mm AP, 125 mm HE (+10) | Pháo nặng: chớp lớn, cầu lửa đầu nòng, khói dài và chậm, cột bụi; thân xe giật lùi. | Heavy guns: a big flash and muzzle fireball, long slow smoke, a dust column; the hull rocks back. |
 | T4 | atgm_kh_29l, bal_9m723_iskander, 400 kg bomb, bomb_car_bomb, bomb_cbu_97_sensor_fuzed_weapon, bomb_fab_500 (+15) | Pháo rất nặng, Smerch, bom 400 kg: chớp rất lớn, cầu lửa cuộn, sóng xung kích trên mép vụ nổ, máy quay rung ngắn. | Very heavy guns, Smerch, 400 kg bombs: a very big flash, a rolling fireball, a shockwave on the blast's edge, a short camera shake. |
 | T5 | 406 mm, 800 mm super-gun, EMRG electromagnetic railgun (Gungnir) | Siêu vũ khí: chớp sáng cả cảnh, đám mây hình nấm nhỏ, vòng trên lõi rồi trên mép, rung mạnh nhất. | Super weapons: a flash that lights the scene, a small mushroom cloud, rings on the core then the edge, the strongest shake. |
 
@@ -641,3 +645,130 @@ Sheet: 01_vu_khi_dan/Canh_bao_vong — Vòng cảnh báo (12 dòng, 8 cột)
 | maxShown | warningRules | maxShown | 6 |  |
 | rocketMinMm | warningRules | rocketMinMm | 300 | mm |
 | salvoMergeSeconds | warningRules | salvoMergeSeconds | 0.6 | s |
+
+## Tham khảo ngoài đời và game
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 01_vu_khi_dan/Vu_khi_tham_chieu; 01_vu_khi_dan/Vu_khi_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+### Vu_khi_tham_chieu
+
+372 dòng. Độ tin cậy: da_kiem_chung 263, uoc_dinh 60, ban_dau_doan 48, NEED_SOURCE 1. Loại: NEED_SOURCE 1, doi_that 371.
+
+- `aa_25_triple` (Type 96 25 mm (triple)): mẫu thật: Type 96 25 mm (triple); độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_type_96_25_mm_at_aa_gun, R_machine_brigade_can_bang.
+- `aa_25_triple_ap` (Type 96 25 mm AP (triple)): mẫu thật: Type 96 25 mm AP (triple); độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_type_96_25_mm_at_aa_gun.
+- `agl_40` (Mk 19 40 mm): mẫu thật: Mk 19 40 mm; độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, D_us_army_fm_3_22_27, R_machine_brigade_can_bang.
+- `aim9` (AIM-9 Sidewinder): mẫu thật: AIM-9 Sidewinder; độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, R_machine_brigade_can_bang.
+- `air_cruise_missile` (Kh-101 (400 kg)): mẫu thật: Kh-101 (400 kg); độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, R_machine_brigade_can_bang.
+- `air_to_air` (AIM-120 AMRAAM): mẫu thật: AIM-120 AMRAAM; độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, R_machine_brigade_can_bang.
+- `airship_drones` (FPV drone (1.5 kg)): mẫu thật: FPV drone (1.5 kg); độ tin: ban_dau_doan; nguồn: R_balance, R_machine_brigade_can_bang.
+- `airship_flak` (S-60 57 mm): mẫu thật: S-60 57 mm; độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_azp_s_60, R_machine_brigade_can_bang.
+- `amos_120` (120 mm AMOS (twin)): mẫu thật: 120 mm AMOS (twin); khác có chủ đích: nhịp chậm hơn 30 % và mạnh hơn tương ứng (luật súng của game); độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_amos.
+- `anti_radar_missile` (AGM-88 HARM): mẫu thật: AGM-88 HARM; độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_bai_cua_tung_ten_lua_bang_warhead.
+- `anti_ship_missile` (NSM / P-800 Oniks): mẫu thật: NSM / P-800 Oniks; độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_bai_cua_tung_ten_lua_bang_warhead.
+- `apkws_rocket` (APKWS (laser-guided Hydra 70)): mẫu thật: APKWS (laser-guided Hydra 70); độ tin: ban_dau_doan; nguồn: R_balance, R_full_weapon_audit, R_decisions.
+- `at_gun_100` (MT-12 Rapira 100 mm): mẫu thật: MT-12 Rapira 100 mm; khác có chủ đích: nhịp chậm hơn 30 % và mạnh hơn tương ứng (luật súng của game); độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_mt_12_rapira.
+- `ataka` (9M120 Ataka): mẫu thật: 9M120 Ataka; độ tin: uoc_dinh; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_bai_cua_tung_ten_lua_bang_warhead, R_machine_brigade_can_bang.
+- `atgm` (BGM-71 TOW-2): mẫu thật: BGM-71 TOW-2; độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_bgm_71_tow, W_wikipedia_bai_cua_tung_ten_lua_bang_warhead, R_machine_brigade_can_bang.
+- … 356 dòng có tham chiếu nữa: xem sheet 01_vu_khi_dan/Vu_khi_tham_chieu.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `D_rheinmetall_skyranger_30_35`: Rheinmetall Skyranger 30/35 (độ tin 1)
+- `D_us_army_fm_3_22_27`: US Army FM 3-22.27 (độ tin 1)
+- `D_us_army_fm_3_22_65`: US Army FM 3-22.65 (độ tin 1)
+- `D_us_army_m109a7_fact_file`: US Army M109A7 fact file (độ tin 1)
+- `R_balance`: balance.json: tên thật của vũ khí (weapons[].real) (độ tin 3)
+- `R_decisions`: Docs/DECISIONS.md (nhật ký quyết định) (độ tin 3)
+- `R_full_weapon_audit`: full_weapon_audit.py: bảng REAL (nhịp bắn thật, mỗi dòng kèm nguồn) và WARHEAD (độ tin 3)
+- `R_machine_brigade_can_bang`: Rà soát cân bằng (Machine_Brigade_Can_bang.xlsx) (độ tin 3)
+- `W_wikipedia_15_2_cm_57_b_38`: Wikipedia '15.2 cm/57 B-38' (độ tin 2)
+- `W_wikipedia_15_5_cm_60_3rd_year_type`: Wikipedia '15.5 cm/60 3rd Year Type' (độ tin 2)
+- `W_wikipedia_16_50_caliber_mark_7`: Wikipedia '16"/50 caliber Mark 7' (độ tin 2)
+- `W_wikipedia_2a38`: Wikipedia '2A38' (độ tin 2)
+- `W_wikipedia_2a42`: Wikipedia '2A42' (độ tin 2)
+- `W_wikipedia_2a46`: Wikipedia '2A46' (độ tin 2)
+- `W_wikipedia_2a65_msta_b`: Wikipedia '2A65 Msta-B' (độ tin 2)
+- `W_wikipedia_2a70`: Wikipedia '2A70' (độ tin 2)
+- `W_wikipedia_2b11`: Wikipedia '2B11' (độ tin 2)
+- `W_wikipedia_2s25_sprut_sd`: Wikipedia '2S25 Sprut-SD' (độ tin 2)
+- `W_wikipedia_2s4_tyulpan`: Wikipedia '2S4 Tyulpan' (độ tin 2)
+- `W_wikipedia_2s7_pion`: Wikipedia '2S7 Pion' (độ tin 2)
+- `W_wikipedia_5_54_caliber_mark_45`: Wikipedia '5"/54 caliber Mark 45' (độ tin 2)
+- `W_wikipedia_8_55_caliber_mark_71`: Wikipedia '8"/55 caliber Mark 71' (độ tin 2)
+- `W_wikipedia_9k720_iskander`: Wikipedia '9K720 Iskander' (độ tin 2)
+- `W_wikipedia_9m113_konkurs`: Wikipedia '9M113 Konkurs' (độ tin 2)
+- `W_wikipedia_9m133_kornet`: Wikipedia '9M133 Kornet' (độ tin 2)
+- `W_wikipedia_a_190`: Wikipedia 'A-190' (độ tin 2)
+- `W_wikipedia_a_192`: Wikipedia 'A-192' (độ tin 2)
+- `W_wikipedia_ak_100_naval_gun`: Wikipedia 'AK-100 (naval gun)' (độ tin 2)
+- `W_wikipedia_ak_130`: Wikipedia 'AK-130' (độ tin 2)
+- `W_wikipedia_ak_630`: Wikipedia 'AK-630' (độ tin 2)
+- `W_wikipedia_amos`: Wikipedia 'AMOS' (độ tin 2)
+- `W_wikipedia_au_220m`: Wikipedia 'AU-220M' (độ tin 2)
+- `W_wikipedia_azp_s_60`: Wikipedia 'AZP S-60' (độ tin 2)
+- `W_wikipedia_bai_cua_tung_ten_lua_bang_warhead`: Wikipedia (bài của từng tên lửa; bảng WARHEAD: Wikipedia (each missile's article)) (độ tin 2)
+- `W_wikipedia_bgm_71_tow`: Wikipedia 'BGM-71 TOW' (độ tin 2)
+- `W_wikipedia_bm_21_grad`: Wikipedia 'BM-21 Grad' (độ tin 2)
+- `W_wikipedia_bm_30_smerch`: Wikipedia 'BM-30 Smerch' (độ tin 2)
+- `W_wikipedia_bofors_40_mm_l_60`: Wikipedia 'Bofors 40 mm L/60' (độ tin 2)
+- `W_wikipedia_bofors_40_mm_l_70`: Wikipedia 'Bofors 40 mm L/70' (độ tin 2)
+- `W_wikipedia_buk_missile_system`: Wikipedia 'Buk missile system' (độ tin 2)
+- `W_wikipedia_d_10_tank_gun`: Wikipedia 'D-10 tank gun' (độ tin 2)
+- `W_wikipedia_gau_12_equalizer`: Wikipedia 'GAU-12 Equalizer' (độ tin 2)
+- `W_wikipedia_gau_22_a`: Wikipedia 'GAU-22/A' (độ tin 2)
+- `W_wikipedia_gau_8_avenger`: Wikipedia 'GAU-8 Avenger' (độ tin 2)
+- `W_wikipedia_gryazev_shipunov_gsh_23`: Wikipedia 'Gryazev-Shipunov GSh-23' (độ tin 2)
+- `W_wikipedia_gsh_30_2`: Wikipedia 'GSh-30-2' (độ tin 2)
+- `W_wikipedia_gshg_7_62`: Wikipedia 'GShG-7.62' (độ tin 2)
+- `W_wikipedia_ks_19`: Wikipedia 'KS-19' (độ tin 2)
+- `W_wikipedia_m102_howitzer`: Wikipedia 'M102 howitzer' (độ tin 2)
+- `W_wikipedia_m110_howitzer`: Wikipedia 'M110 howitzer' (độ tin 2)
+- `W_wikipedia_m134_minigun`: Wikipedia 'M134 Minigun' (độ tin 2)
+- `W_wikipedia_m230_chain_gun`: Wikipedia 'M230 chain gun' (độ tin 2)
+- `W_wikipedia_m242_bushmaster`: Wikipedia 'M242 Bushmaster' (độ tin 2)
+- `W_wikipedia_m270_mlrs`: Wikipedia 'M270 MLRS' (độ tin 2)
+- `W_wikipedia_m3_browning`: Wikipedia 'M3 Browning' (độ tin 2)
+- `W_wikipedia_m40_recoilless_rifle`: Wikipedia 'M40 recoilless rifle' (độ tin 2)
+- `W_wikipedia_mim_104_patriot`: Wikipedia 'MIM-104 Patriot' (độ tin 2)
+- `W_wikipedia_mt_12_rapira`: Wikipedia 'MT-12 Rapira' (độ tin 2)
+- `W_wikipedia_nsv_machine_gun`: Wikipedia 'NSV machine gun' (độ tin 2)
+- `W_wikipedia_oerlikon_gdf`: Wikipedia 'Oerlikon GDF' (độ tin 2)
+- `W_wikipedia_oto_melara_76_mm`: Wikipedia 'OTO Melara 76 mm' (độ tin 2)
+- `W_wikipedia_pantsir`: Wikipedia 'Pantsir' (độ tin 2)
+- `W_wikipedia_phalanx_ciws`: Wikipedia 'Phalanx CIWS' (độ tin 2)
+- `W_wikipedia_pk_machine_gun`: Wikipedia 'PK machine gun' (độ tin 2)
+- `W_wikipedia_pzh_2000`: Wikipedia 'PzH 2000' (độ tin 2)
+- `W_wikipedia_rheinmetall_120_mm_gun`: Wikipedia 'Rheinmetall 120 mm gun' (độ tin 2)
+- `W_wikipedia_royal_ordnance_l7`: Wikipedia 'Royal Ordnance L7' (độ tin 2)
+- `W_wikipedia_s_400`: Wikipedia 'S-400' (độ tin 2)
+- `W_wikipedia_spg_9`: Wikipedia 'SPG-9' (độ tin 2)
+- `W_wikipedia_tos_1`: Wikipedia 'TOS-1' (độ tin 2)
+- `W_wikipedia_type_63_mrl`: Wikipedia 'Type 63 MRL' (độ tin 2)
+- `W_wikipedia_type_96_25_mm_at_aa_gun`: Wikipedia 'Type 96 25 mm AT/AA gun' (độ tin 2)
+- `W_wikipedia_xm2001_crusader`: Wikipedia 'XM2001 Crusader' (độ tin 2)
+- `W_wikipedia_zsu_23_4_shilka`: Wikipedia 'ZSU-23-4 Shilka' (độ tin 2)
+- `W_wikipedia_zu_23_2`: Wikipedia 'ZU-23-2' (độ tin 2)
+
+Sheet: 01_vu_khi_dan/Vu_khi_so_sanh_that — Vũ khí: so sánh với thật (279 dòng, 17 cột)
+
+| id | entity_id | thong_so | don_vi | gia_tri_game | gia_tri_that | ty_le | khoang_min | khoang_max | co_chu_dich |
+|---|---|---|---|---|---|---|---|---|---|
+| aa_25_triple/nhip | aa_25_triple | khe_mot_nong_mot_vien | s | 0.620000077 | 0.23076923076923078 | 2.6866670003333333 | 0.6 | 2.0 | TRUE |
+| agl_40/nhip | agl_40 | khe_mot_nong_mot_vien | s | 0.7 | 0.16 | 4.375 | 0.6 | 2.0 | TRUE |
+| airship_flak/nhip | airship_flak | khe_mot_nong_mot_vien | s | 0.61 | 0.5 | 1.22 | 0.6 | 2.0 | FALSE |
+| amos_120/nhip | amos_120 | khe_mot_nong_mot_vien | s | 5.374997802 | 6.593406593406593 | 0.81520799997 | 0.6 | 2.0 | FALSE |
+| anti_radar_missile/loi_no | anti_radar_missile | loi_m_tren_can_bac_ba_kg_dau_dan | m/kg^(1/3) | 4 | 4.081655101917348 | 0.9799946100592892 |  |  | FALSE |
+| anti_radar_missile/nhip | anti_radar_missile | khe_mot_nong_mot_vien | s | 8.0 | 1.0 | 8.0 | 0.6 | 2.0 | TRUE |
+| anti_radar_missile/sat_thuong | anti_radar_missile | sat_thuong_tren_kg_dau_dan | hp/kg | 300 | 68 | 4.411764705882353 |  |  | FALSE |
+| anti_ship_missile/loi_no | anti_ship_missile | loi_m_tren_can_bac_ba_kg_dau_dan | m/kg^(1/3) | 7 | 6.299605249474365 | 1.1111807363777397 |  |  | FALSE |
+| anti_ship_missile/nhip | anti_ship_missile | khe_mot_nong_mot_vien | s | 30.0 | 3.0 | 10.0 | 0.6 | 2.0 | FALSE |
+| anti_ship_missile/sat_thuong | anti_ship_missile | sat_thuong_tren_kg_dau_dan | hp/kg | 450 | 250 | 1.8 |  |  | FALSE |
+| apkws_rocket/nhip | apkws_rocket | khe_mot_nong_mot_vien | s | 1.0 | 0.06666666666666667 | 15.0 | 0.6 | 2.0 | TRUE |
+| at_gun_100/nhip | at_gun_100 | khe_mot_nong_mot_vien | s | 5.000002041 | 6.122448979591837 | 0.8166670000299999 | 0.6 | 2.0 | FALSE |
+| ataka/nhip | ataka | khe_mot_nong_mot_vien | s | 11.419995 | 15.0 | 0.761333 | 0.6 | 2.0 | FALSE |
+| ataka/sat_thuong | ataka | sat_thuong_tren_kg_dau_dan | hp/kg | 247 | 7.4 | 33.37837837837838 |  |  | FALSE |
+| atgm/nhip | atgm | khe_mot_nong_mot_vien | s | 12.33 | 20.0 | 0.6165 | 0.6 | 2.0 | FALSE |
+
+*15 / 279 dòng đầu: xem sheet 01_vu_khi_dan/Vu_khi_so_sanh_that; in 10 / 17 cột; 5 cột khác (và raw_json, nguon): xem sheet.*

@@ -1,6 +1,6 @@
 # 09_hieu_ung_am_thanh — Hiệu ứng và âm thanh
 
-Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit 90337539, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Clip âm thanh, bank thư viện, envelope, bảng loạt bắn nhanh, VFX theo bậc, lửa thân xe, hậu kỳ hình ảnh; xác vỡ / mixer (mã)
 
@@ -217,6 +217,24 @@ Sheet: 09_hieu_ung_am_thanh/Hau_ky_hinh_anh — Hậu kỳ hình ảnh (52 dòng
 | Bloom.skipIterations | Bloom | skipIterations | 1 | 0 |  |
 
 *15 / 52 dòng đầu: xem sheet 09_hieu_ung_am_thanh/Hau_ky_hinh_anh.*
+
+## Tham khảo ngoài đời và game
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 09_hieu_ung_am_thanh/Hieu_ung_tham_chieu; 09_hieu_ung_am_thanh/Hieu_ung_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+### Hieu_ung_tham_chieu
+
+55 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 0, NEED_SOURCE 55. Loại: NEED_SOURCE 55.
+
+- Chưa dòng nào có tham chiếu trong repo (xem 13_tham_chieu_nguon/Thieu_nguon).
+
+Sheet: 09_hieu_ung_am_thanh/Hieu_ung_so_sanh_that — Hiệu ứng: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | chưa có số đo tiếng / hình thật để đối chiếu (đặc điểm tiến… |
 
 ## Các sheet khác của file
 

@@ -1,6 +1,6 @@
 # 03_boss — Boss
 
-Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit 90337539, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Boss chủ lực / mini và biến thể, bệ vũ khí (đã dựng), bộ phận, pha, khung, hạng, siêu vũ khí, hộ tống, Săn trùm
 
@@ -754,6 +754,79 @@ Sheet: 03_boss/Boss_hang — Hạng boss (42 dòng, 8 cột)
 - **Typhon** (`typhon`): Cách đánh: lặn (không bắn tới được) và nổi (mục tiêu trên mặt nước) theo lịch từng pha, mỗi lần nổi ở một chỗ khác; bong bóng báo trước chỗ nổi. Khi nổi nó phóng tên lửa hành trình tầm ngắn mỗi 12 giây và tự vệ bằng tên lửa phòng không. Pha 3 nổi hẳn, thêm pháo boong 100 mm. · Mạnh / yếu: thân giáp cấp 4, tháp chỉ huy và boong 2: pháo binh, bom và đòn đánh nóc đánh vào boong. · Mẹo: chờ sẵn pháo binh và máy bay chỗ bong bóng; phá cửa ống phóng lúc cảnh báo (cửa mở trên mặt nước) hoặc bắn hạ tên lửa.
 
 *41 / 41 đơn vị có lời hướng dẫn.*
+
+## Tham khảo ngoài đời và game
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 03_boss/Boss_tham_chieu; 03_boss/Boss_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+### Boss_tham_chieu
+
+41 dòng. Độ tin cậy: da_kiem_chung 9, uoc_dinh 18, ban_dau_doan 8, NEED_SOURCE 6. Loại: NEED_SOURCE 6, doi_that 32, game 1, gia_tuong 2.
+
+- `argus` (Argus · Khí cầu trinh sát): mẫu thật: JLENS (khí cầu radar neo); game: Red Alert 2; giống: biến thể của khí cầu chỉ huy, khí cầu radar neo; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
+- `armored_train` (Juggernaut · Đoàn tàu bọc thép): mẫu thật: tàu bọc thép Liên Xô BP-35;B-38 152 mm;2B11 120 mm; giống: đầu máy diesel bọc thép kéo toa pháo; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_unit_sheet.
+- `bastion_mk0` (Bastion Mk.0 · Pháo đài nguyên mẫu): mẫu thật: 2B8 240 mm;Bofors 40 mm; phim / truyện: Star Wars; giống: bản đầu, nhỏ của Bastion; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
+- `behemoth` (Behemoth · Quái vật thép): mẫu thật: Object 279 (1959: bốn dải xích, thân dẹt);giáp composite, APS và cảm biến hiện đại;2A65 1…; game: Warhammer 40,000; giống: 'thiết giáp hạm trên cạn' bốn cụm xích; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_object_279, R_machine_brigade_can_bang, R_unit_sheet.
+- `behemoth_inferno` (Inferno · Behemoth phun lửa): mẫu thật: TOS-1A;Object 279 (1959); game: Warhammer 40,000; giống: Behemoth phun lửa, thùng nhiên liệu đỏ; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_unit_sheet.
+- `behemoth_mk0` (Behemoth Mk.0 · Behemoth nguyên mẫu): mẫu thật: Object 279 (1959);giáp composite, APS và cảm biến hiện đại; game: Warhammer 40,000; giống: Behemoth đời đầu, nhỏ hơn; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
+- `behemoth_mk2` (Behemoth Mk.II · Behemoth nâng cấp): mẫu thật: Object 279 (1959);giáp composite, APS và cảm biến hiện đại; game: Warhammer 40,000; giống: Behemoth đời hai; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
+- `behemoth_tempest` (Tempest · Behemoth pháo điện từ): mẫu thật: US Navy EMRG (pháo điện từ);Object 279 (1959); game: Warhammer 40,000; giống: Behemoth hai tháp pháo điện từ; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_unit_sheet.
+- `caspian` (Caspian · Tàu bay sát mặt nước): mẫu thật: ekranoplan lớp Lun MD-160 ('Quái vật biển Caspi'); giống: Thủy phi cơ hiệu ứng mặt đất; độ tin: da_kiem_chung; nguồn: R_unit_refs, R_reference_real, W_wikipedia_lun_class_ekranoplan, R_machine_brigade_can_bang, R_mb_p20_bosses, R_unit_sheet.
+- `command_airship` (Roc · Khí cầu chỉ huy): mẫu thật: Airlander 10;Lockheed P-791 (khí cầu lai hiện đại); game: Red Alert 2; giống: 'Sky Admiral', thiết giáp hạm bay hai túi khí; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_hybrid_air_vehicles_airlander_10, R_machine_brigade_can_bang, R_unit_sheet.
+- `daedalus` (Daedalus · Tàu đổ bộ quỹ đạo): phim / truyện: Star Wars: Attack of the Clones; giống: Tàu đổ bộ tấn công của Aurel; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_mb_p20_bosses, R_unit_sheet.
+- `drone_mothership` (Matriarch · Tàu mẹ drone): mẫu thật: Airlander 10 (khí cầu mẹ hiện đại);drone FPV; game: Red Alert 2; giống: khí cầu bọc thép phóng drone; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_hybrid_air_vehicles_airlander_10, R_machine_brigade_can_bang, R_unit_sheet.
+- `earth_borer` (Tartarus · Máy khoan): mẫu thật: 'Battle Mole' của Liên Xô;máy khoan hầm TBM;2A70 100 mm; giống: 'Earth Worm': máy khoan đất bọc thép ba đốt; độ tin: ban_dau_doan; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_unit_sheet.
+- `fenrir` (Fenrir · Xe tiên phong): mẫu thật: NASA Crawler-Transporter;Kharkovchanka (1959); phim / truyện: Star Wars; giống: biến thể của pháo đài di động; độ tin: uoc_dinh; nguồn: R_unit_refs, R_machine_brigade_can_bang, R_unit_sheet.
+- `fortress_bastion` (Bastion · Pháo đài): mẫu thật: 2B8 240 mm;Bofors 40 mm;9M133 Kornet; phim / truyện: Star Wars; giống: pháo đài bánh xích bọc giáp tấm dày; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, R_machine_brigade_can_bang, R_unit_sheet.
+- … 20 dòng có tham chiếu nữa: xem sheet 03_boss/Boss_tham_chieu.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `R_ixion`: spec dựng lại ixion (prompt 35) (độ tin 3)
+- `R_machine_brigade_can_bang`: Rà soát cân bằng (Machine_Brigade_Can_bang.xlsx) (độ tin 3)
+- `R_mb_p20_bosses`: script Blender mb_p20_bosses.py (docstring) (độ tin 3)
+- `R_mb_p22_content`: script Blender mb_p22_content.py (docstring) (độ tin 3)
+- `R_mb_redesign_20y`: script Blender mb_redesign_20y.py (docstring) (độ tin 3)
+- `R_reference_real`: reference_real.json (kích thước thật, độ tin conf) (độ tin 3)
+- `R_unit_refs`: unit_refs.json (tham chiếu ngoài đời / phim / game theo đơn vị) (độ tin 3)
+- `R_unit_sheet`: unit_sheet.json (hình dạng, mô tả từ bảng cân bằng) (độ tin 3)
+- `W_wikipedia_bagger_288`: Wikipedia 'Bagger 288' (độ tin 2)
+- `W_wikipedia_belaz_75710`: Wikipedia 'BelAZ 75710' (độ tin 2)
+- `W_wikipedia_boeing_ch_47_chinook`: Wikipedia 'Boeing CH-47 Chinook' (độ tin 2)
+- `W_wikipedia_crawler_transporter`: Wikipedia 'Crawler-transporter' (độ tin 2)
+- `W_wikipedia_hybrid_air_vehicles_airlander_10`: Wikipedia 'Hybrid Air Vehicles Airlander 10' (độ tin 2)
+- `W_wikipedia_iowa_class_battleship`: Wikipedia 'Iowa-class battleship' (độ tin 2)
+- `W_wikipedia_landing_craft_air_cushion`: Wikipedia 'Landing Craft Air Cushion' (độ tin 2)
+- `W_wikipedia_lockheed_ac_130`: Wikipedia 'Lockheed AC-130' (độ tin 2)
+- `W_wikipedia_lun_class_ekranoplan`: Wikipedia 'Lun-class ekranoplan' (độ tin 2)
+- `W_wikipedia_northrop_b_2_spirit`: Wikipedia 'Northrop B-2 Spirit' (độ tin 2)
+- `W_wikipedia_object_279`: Wikipedia 'Object 279' (độ tin 2)
+- `W_wikipedia_sukhoi_su_57`: Wikipedia 'Sukhoi Su-57' (độ tin 2)
+- `W_wikipedia_typhoon_class_submarine`: Wikipedia 'Typhoon-class submarine' (độ tin 2)
+
+Sheet: 03_boss/Boss_so_sanh_that — Boss: so sánh với thật (122 dòng, 18 cột)
+
+| id | entity_id | thong_so | don_vi | gia_tri_game | gia_tri_that | ty_le | khoang_min | khoang_max | co_chu_dich |
+|---|---|---|---|---|---|---|---|---|---|
+| argus/p26_roc_main_roc_bombs/nhip | argus | khe_mot_nong_mot_vien | s | 0.3 | 0.1 | 2.9999999999999996 | 0.6 | 2.0 | TRUE |
+| armored_train/boss_flak/nhip | armored_train | khe_mot_nong_mot_vien | s | 0.262439018 | 0.10909090909090909 | 2.4056909983333337 | 0.6 | 2.0 | TRUE |
+| armored_train/boss_hmg/nhip | armored_train | khe_mot_nong_mot_vien | s | 0.132467025 | 0.075 | 1.766227 | 0.6 | 2.0 | FALSE |
+| armored_train/boss_rockets/nhip | armored_train | khe_mot_nong_mot_vien | s | 0.5 | 0.5 | 1.0 | 0.6 | 2.0 | FALSE |
+| armored_train/train_gun/nhip | armored_train | khe_mot_nong_mot_vien | s | 8.0 | 11.428571428571429 | 0.7 | 0.6 | 2.0 | FALSE |
+| bastion_mk0/p26_bastion_direct_b100/nhip | bastion_mk0 | khe_mot_nong_mot_vien | s | 8.599995918 | 12.244897959183675 | 0.7023329999699999 | 0.6 | 2.0 | FALSE |
+| bastion_mk0/p26_bastion_sec_b240/nhip | bastion_mk0 | khe_mot_nong_mot_vien | s | 60.0 | 85.71428571428572 | 0.7 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_close_boss_flak/nhip | behemoth | khe_mot_nong_mot_vien | s | 0.262439018 | 0.10909090909090909 | 2.4056909983333337 | 0.6 | 2.0 | TRUE |
+| behemoth/p26_behemoth_direct_be120/nhip | behemoth | khe_mot_nong_mot_vien | s | 7.5 | 10.714285714285715 | 0.7 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_main_be152/nhip | behemoth | khe_mot_nong_mot_vien | s | 8.979996429 | 10.714285714285715 | 0.8381330000399999 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_sec_be_rockets/nhip | behemoth | khe_mot_nong_mot_vien | s | 0.5 | 0.5 | 1.0 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_tiny_be120/nhip | behemoth | khe_mot_nong_mot_vien | s | 7.5 | 10.714285714285715 | 0.7 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_tiny_boss_missiles/nhip | behemoth | khe_mot_nong_mot_vien | s | 20.0 | 20.0 | 1.0 | 0.6 | 2.0 | FALSE |
+| behemoth/p26_behemoth_tiny_kornet_twin/nhip | behemoth | khe_mot_nong_mot_vien | s | 20.0 | 20.0 | 1.0 | 0.6 | 2.0 | FALSE |
+| behemoth_inferno/boss_thermo/nhip | behemoth_inferno | khe_mot_nong_mot_vien | s | 0.3 | 0.25 | 1.2 | 0.6 | 2.0 | FALSE |
+
+*15 / 122 dòng đầu: xem sheet 03_boss/Boss_so_sanh_that; in 10 / 18 cột; 5 cột khác (và raw_json, nguon): xem sheet.*
 
 ## Các sheet khác của file
 

@@ -1,6 +1,6 @@
 # 07_chien_dich_cot_truyen — Chiến dịch và cốt truyện
 
-Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit 90337539, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Chương, nhiệm vụ (giai đoạn, quân, radio, biến cố, trạng thái nav), thoại (mỗi câu một dòng), nhân vật, trigger, bộ bài game, thư viện biến cố, phát hành, kịch bản gốc
 
@@ -614,7 +614,7 @@ Mỗi nhiệm vụ ghép từ thư viện sự kiện dạng dữ liệu (67 s�
 
 #### Thoại trong trận
 
-Mọi lời nhân vật trong trận là một dòng chữ kiểu phụ đề ngay trên khay thẻ: tên người nói in đậm, màu theo phe (ta xanh nhạt, địch đỏ đậm), rồi câu thoại; nền chỉ là một dải tối mờ, rộng tối đa nửa màn hình, tối đa 2 dòng, có chân dung nhỏ của người nói, không lồng tiếng. Một câu một lúc, theo mức ưu tiên: cốt truyện, cảnh báo, sự kiện, phản ứng. Câu cốt truyện và cảnh báo xếp hàng (cảnh báo quá 12 s thì bỏ); câu sự kiện và phản ứng hiện ngay hoặc bỏ, cách nhau tối thiểu 9 s (20 s cho câu phản ứng khi có boss trên sân). Mỗi câu hiện 3–6 s theo độ dài, mờ dần 0,25 s, không bao giờ dừng trận. Nhật ký 20 câu gần nhất mở từ menu tạm dừng. Cài đặt: Đầy đủ / Chỉ quan trọng / Tắt (câu cốt truyện luôn hiện). Sáu khoảnh khắc cốt truyện làm trận chậm 0,5 lần trong khi 2–3 câu liên tiếp chạy: Hollow Dam, Venn mất bầy drone, Thorne phản bội, Thorne trên Typhon, Varga ngã xuống, Icarus rơi.
+Mọi lời nhân vật trong trận là một dòng chữ kiểu phụ đề ngay trên khay thẻ: tên người nói in đậm, màu theo phe (ta xanh nhạt, địch đỏ đậm), rồi câu thoại; nền chỉ là một dải tối mờ, rộng tối đa nửa màn hình, tối đa 2 dòng, mở đầu bằng chân dung nhỏ của người nói (thiếu chân dung thì ô tạm theo phe với chữ cái đầu; DialogueViews), không lồng tiếng. Một câu một lúc, theo mức ưu tiên: cốt truyện, cảnh báo, sự kiện, phản ứng. Câu cốt truyện và cảnh báo xếp hàng (cảnh báo quá 12 s thì bỏ); câu sự kiện và phản ứng hiện ngay hoặc bỏ, cách nhau tối thiểu 9 s (20 s cho câu phản ứng khi có boss trên sân). Mỗi câu hiện 3–6 s theo độ dài, mờ dần 0,25 s, không bao giờ dừng trận. Nhật ký 20 câu gần nhất mở từ menu tạm dừng. Cài đặt: Đầy đủ / Chỉ quan trọng / Tắt (câu cốt truyện luôn hiện). Sáu khoảnh khắc cốt truyện làm trận chậm 0,5 lần trong khi 2–3 câu liên tiếp chạy: Hollow Dam, Venn mất bầy drone, Thorne phản bội, Thorne trên Typhon, Varga ngã xuống, Icarus rơi.
 
 Sheet: 07_chien_dich_cot_truyen/Bien_co — Biến cố (67 dòng, 89 cột)
 
@@ -836,6 +836,30 @@ Sheet: 07_chien_dich_cot_truyen/Nhiem_vu_dong_minh — Nhiệm vụ: quân đồ
 | c7m10/1 | c7m10 | 1 | heavy_tank | 45 | 0 | -96.5 | 36.06 |
 
 *15 / 42 dòng đầu: xem sheet 07_chien_dich_cot_truyen/Nhiem_vu_dong_minh.*
+
+## Tham khảo ngoài đời và game
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 07_chien_dich_cot_truyen/Chien_dich_tham_chieu; 07_chien_dich_cot_truyen/Thoai_tham_chieu; 07_chien_dich_cot_truyen/Chien_dich_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+### Chien_dich_tham_chieu
+
+231 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 0, NEED_SOURCE 231. Loại: NEED_SOURCE 231.
+
+- Chưa dòng nào có tham chiếu trong repo (xem 13_tham_chieu_nguon/Thieu_nguon).
+
+### Thoai_tham_chieu
+
+21 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 0, NEED_SOURCE 21. Loại: NEED_SOURCE 21.
+
+- Chưa dòng nào có tham chiếu trong repo (xem 13_tham_chieu_nguon/Thieu_nguon).
+
+Sheet: 07_chien_dich_cot_truyen/Chien_dich_so_sanh_that — Chiến dịch: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | chiến dịch và thoại không có thông số ngoài đời để đối chiếu |
 
 ## Các sheet khác của file
 

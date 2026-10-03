@@ -1,6 +1,6 @@
 # 10_model_tai_san — Model và tài sản
 
-Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit 90337539, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Model GLB (nút, vật liệu, mesh, tam giác, Part / Mount / Muzzle), chuẩn kiểm model, kích thước thật tham chiếu, ảnh thẻ, địa phương hóa Việt / Anh, giấy phép tài sản
 
@@ -251,6 +251,11 @@ Own def = the def whose id is the model, else the first def drawing it. HQ ids -
 `obstacle`, `passable` or a wall / teeth / minefield id), tower (`fort` or `branchOf`; the `_a` / `_b` files) or
 structure; otherwise tracked (Tracks / Sprockets nodes), wheeled (Tyres / Wheels nodes) or ground.
 
+###### Roof guns (owner, prompt 35 pilot review, 2026-10-03)
+Roof-mounted guns (pintle MGs, remote weapon stations, small roof turrets) must not look flat: build the raised mount
+or pintle post, the cradle, the ammo box and the gun shield where the real one has them, so the gun stands clear of the
+roof line at the battle camera's distance.
+
 ![ixion: trước / sau dựng lại (front, rear, side, top, 3/4, zoom trận x2)](../images/10_model_tai_san/ixion_before_after.png)
 
 *Hình: ixion: trước / sau dựng lại (front, rear, side, top, 3/4, zoom trận x2). Đơn vị: m; ảnh không có lưới mét; model ixion 27.02 × 13.03 × 10.372 m (glb x × y × z); thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
@@ -403,6 +408,104 @@ Sheet: 10_model_tai_san/Xem_truoc — Màn xem trước (1 dòng, 5 cột)
 | id | trang_thai | ghi_chu |
 |---|---|---|
 | chua_ap | NEED_CODE_CHECK | Assets/MachineBrigade/Scripts/Editor/ModelPreview.cs và pre… |
+
+## Tham khảo ngoài đời và game
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 10_model_tai_san/Model_tham_chieu; 10_model_tai_san/Model_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+### Model_tham_chieu
+
+107 dòng. Độ tin cậy: da_kiem_chung 41, uoc_dinh 34, ban_dau_doan 31, NEED_SOURCE 1. Loại: NEED_SOURCE 1, doi_that 85, gia_tuong 21.
+
+- `aa_vehicle` (aa_vehicle): mẫu thật: Flakpanzer Gepard 1A2; độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_flakpanzer_gepard.
+- `aerial_tanker` (aerial_tanker): mẫu thật: B-52H (same frame as the heavy bomber); độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_boeing_b_52_stratofortress.
+- `ammo_carrier` (ammo_carrier): mẫu thật: M977 / M985 HEMTT; độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_heavy_expanded_mobility_tactical_t.
+- `amphib_light_vehicle` (amphib_light_vehicle): mẫu thật: M2A3 Bradley (same frame as the IFV); độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_m2_bradley.
+- `armored_bulldozer` (armored_bulldozer): mẫu thật: Caterpillar D9R (IDF kit); độ tin: uoc_dinh; nguồn: R_reference_real, D_caterpillar_d9r_specifications.
+- `armored_car` (armored_car): mẫu thật: Pandur I 6x6; độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_steyr_pandur.
+- `armored_train` (armored_train): mẫu thật: BP-35 armoured train; độ tin: ban_dau_doan; nguồn: R_reference_real.
+- `artillery` (artillery): mẫu thật: M109A6 Paladin; độ tin: da_kiem_chung; nguồn: R_reference_real, W_wikipedia_m109_howitzer.
+- `attack_helicopter` (attack_helicopter): mẫu thật: AH-64D Apache Longbow; độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_boeing_ah_64_apache.
+- `attack_jet` (attack_jet): mẫu thật: Su-25 Frogfoot; độ tin: da_kiem_chung; nguồn: R_reference_real, W_wikipedia_sukhoi_su_25.
+- `ballistic_launcher` (ballistic_launcher): mẫu thật: 9P78-1 Iskander-M TEL (MZKT-7930); độ tin: uoc_dinh; nguồn: R_reference_real, W_wikipedia_9k720_iskander.
+- `behemoth` (behemoth): mẫu thật: Object 279 (four tracks, flat hull), a giant; độ tin: ban_dau_doan; nguồn: R_reference_real, W_wikipedia_object_279.
+- `behemoth_inferno` (behemoth_inferno): mẫu thật: Object 279 with a TOS-1A pack; độ tin: ban_dau_doan; nguồn: R_reference_real.
+- `behemoth_tempest` (behemoth_tempest): mẫu thật: Object 279 with a railgun; độ tin: ban_dau_doan; nguồn: R_reference_real.
+- `bmpt` (bmpt): mẫu thật: BMPT Terminator; độ tin: ban_dau_doan; nguồn: R_reference_real.
+- … 91 dòng có tham chiếu nữa: xem sheet 10_model_tai_san/Model_tham_chieu.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `D_army_recognition_buk_m1_2`: Army Recognition 'Buk-M1-2' (độ tin 2)
+- `D_caterpillar_d9r_specifications`: Caterpillar D9R specifications (độ tin 1)
+- `D_toyota_hilux_an10_an20_specifications`: Toyota Hilux AN10/AN20 specifications (độ tin 1)
+- `R_ixion`: spec dựng lại ixion (prompt 35) (độ tin 3)
+- `R_mb_p20_bosses`: script Blender mb_p20_bosses.py (docstring) (độ tin 3)
+- `R_mb_p22_content`: script Blender mb_p22_content.py (docstring) (độ tin 3)
+- `R_mb_redesign_20y`: script Blender mb_redesign_20y.py (docstring) (độ tin 3)
+- `R_reference_real`: reference_real.json (kích thước thật, độ tin conf) (độ tin 3)
+- `R_rocket_turret`: spec dựng lại rocket_turret (prompt 35) (độ tin 3)
+- `R_zu23_technical`: spec dựng lại zu23_technical (prompt 35) (độ tin 3)
+- `W_wikipedia_2s25_sprut_sd`: Wikipedia '2S25 Sprut-SD' (độ tin 2)
+- `W_wikipedia_2s4_tyulpan`: Wikipedia '2S4 Tyulpan' (độ tin 2)
+- `W_wikipedia_9k720_iskander`: Wikipedia '9K720 Iskander' (độ tin 2)
+- `W_wikipedia_b1_centauro`: Wikipedia 'B1 Centauro' (độ tin 2)
+- `W_wikipedia_bagger_288`: Wikipedia 'Bagger 288' (độ tin 2)
+- `W_wikipedia_baykar_bayraktar_tb2`: Wikipedia 'Baykar Bayraktar TB2' (độ tin 2)
+- `W_wikipedia_belaz_75710`: Wikipedia 'BelAZ 75710' (độ tin 2)
+- `W_wikipedia_bm_21_grad`: Wikipedia 'BM-21 Grad' (độ tin 2)
+- `W_wikipedia_bm_30_smerch`: Wikipedia 'BM-30 Smerch' (độ tin 2)
+- `W_wikipedia_boeing_ah_64_apache`: Wikipedia 'Boeing AH-64 Apache' (độ tin 2)
+- `W_wikipedia_boeing_b_52_stratofortress`: Wikipedia 'Boeing B-52 Stratofortress' (độ tin 2)
+- `W_wikipedia_boeing_ch_47_chinook`: Wikipedia 'Boeing CH-47 Chinook' (độ tin 2)
+- `W_wikipedia_boxer_armoured_fighting_vehicle`: Wikipedia 'Boxer (armoured fighting vehicle)' (độ tin 2)
+- `W_wikipedia_caesar_self_propelled_howitzer`: Wikipedia 'CAESAR self-propelled howitzer' (độ tin 2)
+- `W_wikipedia_crawler_transporter`: Wikipedia 'Crawler-transporter' (độ tin 2)
+- `W_wikipedia_flakpanzer_gepard`: Wikipedia 'Flakpanzer Gepard' (độ tin 2)
+- `W_wikipedia_general_atomics_mq_9_reaper`: Wikipedia 'General Atomics MQ-9 Reaper' (độ tin 2)
+- `W_wikipedia_heavy_expanded_mobility_tactical_t`: Wikipedia 'Heavy Expanded Mobility Tactical Truck' (độ tin 2)
+- `W_wikipedia_hybrid_air_vehicles_airlander_10`: Wikipedia 'Hybrid Air Vehicles Airlander 10' (độ tin 2)
+- `W_wikipedia_iowa_class_battleship`: Wikipedia 'Iowa-class battleship' (độ tin 2)
+- `W_wikipedia_kamaz_typhoon`: Wikipedia 'KamAZ Typhoon' (độ tin 2)
+- `W_wikipedia_kirov_class_battlecruiser`: Wikipedia 'Kirov-class battlecruiser' (độ tin 2)
+- `W_wikipedia_kratos_xq_58_valkyrie`: Wikipedia 'Kratos XQ-58 Valkyrie' (độ tin 2)
+- `W_wikipedia_landing_craft_air_cushion`: Wikipedia 'Landing Craft Air Cushion' (độ tin 2)
+- `W_wikipedia_lcm_8`: Wikipedia 'LCM-8' (độ tin 2)
+- `W_wikipedia_leopard_2`: Wikipedia 'Leopard 2' (độ tin 2)
+- `W_wikipedia_lockheed_ac_130`: Wikipedia 'Lockheed AC-130' (độ tin 2)
+- `W_wikipedia_lockheed_c_130_hercules`: Wikipedia 'Lockheed C-130 Hercules' (độ tin 2)
+- `W_wikipedia_lockheed_martin_f_22_raptor`: Wikipedia 'Lockheed Martin F-22 Raptor' (độ tin 2)
+- `W_wikipedia_lun_class_ekranoplan`: Wikipedia 'Lun-class ekranoplan' (độ tin 2)
+- `W_wikipedia_m109_howitzer`: Wikipedia 'M109 howitzer' (độ tin 2)
+- `W_wikipedia_m113_armored_personnel_carrier`: Wikipedia 'M113 armored personnel carrier' (độ tin 2)
+- `W_wikipedia_m142_himars`: Wikipedia 'M142 HIMARS' (độ tin 2)
+- `W_wikipedia_m151_mutt`: Wikipedia 'M151 MUTT' (độ tin 2)
+- `W_wikipedia_m2_bradley`: Wikipedia 'M2 Bradley' (độ tin 2)
+- `W_wikipedia_m88_recovery_vehicle`: Wikipedia 'M88 Recovery Vehicle' (độ tin 2)
+- `W_wikipedia_md_helicopters_mh_6_little_bird`: Wikipedia 'MD Helicopters MH-6 Little Bird' (độ tin 2)
+- `W_wikipedia_mil_mi_24`: Wikipedia 'Mil Mi-24' (độ tin 2)
+- `W_wikipedia_northrop_b_2_spirit`: Wikipedia 'Northrop B-2 Spirit' (độ tin 2)
+- `W_wikipedia_object_279`: Wikipedia 'Object 279' (độ tin 2)
+- `W_wikipedia_pt_76`: Wikipedia 'PT-76' (độ tin 2)
+- `W_wikipedia_soyuz_spacecraft`: Wikipedia 'Soyuz (spacecraft)' (độ tin 2)
+- `W_wikipedia_steyr_pandur`: Wikipedia 'Steyr Pandur' (độ tin 2)
+- `W_wikipedia_stryker`: Wikipedia 'Stryker' (độ tin 2)
+- `W_wikipedia_sukhoi_su_25`: Wikipedia 'Sukhoi Su-25' (độ tin 2)
+- `W_wikipedia_sukhoi_su_27`: Wikipedia 'Sukhoi Su-27' (độ tin 2)
+- `W_wikipedia_sukhoi_su_57`: Wikipedia 'Sukhoi Su-57' (độ tin 2)
+- `W_wikipedia_t_54_t_55`: Wikipedia 'T-54/T-55' (độ tin 2)
+- `W_wikipedia_t_72`: Wikipedia 'T-72' (độ tin 2)
+- `W_wikipedia_t_90`: Wikipedia 'T-90' (độ tin 2)
+- `W_wikipedia_tos_1`: Wikipedia 'TOS-1' (độ tin 2)
+- `W_wikipedia_typhoon_class_submarine`: Wikipedia 'Typhoon-class submarine' (độ tin 2)
+
+Sheet: 10_model_tai_san/Model_so_sanh_that — Model: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | kích thước model so với mẫu thật nằm ở 02/Phuong_tien_so_sa… |
 
 ## Các sheet khác của file
 

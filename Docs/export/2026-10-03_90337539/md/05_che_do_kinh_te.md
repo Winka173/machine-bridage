@@ -1,6 +1,6 @@
 # 05_che_do_kinh_te — Chế độ và kinh tế
 
-Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit 90337539, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Chế độ và luật trận, sao chiến dịch, bảng xếp hạng (vô hạn), Tác chiến (điểm, bậc, tuần, mutator), kinh tế, độ khó
 
@@ -255,7 +255,7 @@ Menu gồm 5 mục: Trang chủ, Chiến dịch, **Tác chiến**, Quân đội,
 
 #### Cấp độ
 
-Huyền thoại mở sau khi thắng c12m10 (màn kết của chương 12). **Điểm** một trận thắng: 5000 + tối đa 3000 theo thời gian dưới 25 phút + tối đa 2000 theo tổn thất (150 xe mất thì bằng 0) + tối đa 2000 theo máu sở chỉ huy; nhân hệ số cấp cộng phần của mỗi mutator. Thua: 0 điểm. Kỷ lục (điểm cao nhất, thắng nhanh nhất) lưu riêng cho từng trận và từng cấp.
+Huyền thoại mở sau khi thắng **c12m10** (Icarus rơi, trận cuối chiến dịch; Operations.LegendMission). **Điểm** một trận thắng: 5000 + tối đa 3000 theo thời gian dưới 25 phút + tối đa 2000 theo tổn thất (150 xe mất thì bằng 0) + tối đa 2000 theo máu sở chỉ huy; nhân hệ số cấp cộng phần của mỗi mutator. Thua: 0 điểm. Kỷ lục (điểm cao nhất, thắng nhanh nhất) lưu riêng cho từng trận và từng cấp.
 
 **Thưởng tuần gộp chung một sổ:** thắng lần đầu trong tuần Pháo đài tuần 600 xu, chiến dịch của tuần 800 xu.
 
@@ -644,6 +644,28 @@ where the base falls above, arriving with the defender's army beaten. The walls 
 the most) and keep the covering towers firing longer. Verdict (static): 12 minutes is a reasonable limit: a side
 that wins the field battle by minute 6-8 has time to break in; an even match goes to the HQ lead or sudden death.
 NEED SIM: the real times (no simulation was run).
+
+## Tham khảo ngoài đời và game
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 05_che_do_kinh_te/Che_do_tham_chieu; 05_che_do_kinh_te/Che_do_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+### Che_do_tham_chieu
+
+12 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 1, NEED_SOURCE 11. Loại: NEED_SOURCE 11, game 1.
+
+- `conquest` (Conquest): game: Company of Heroes; giống: DECISIONS mục '28 5 (cloud, 2026-10-02)': Conquest đã trừ dần bên giữ ít điểm hơn; độ tin: ban_dau_doan; nguồn: R_decisions.
+
+Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
+
+- `R_decisions`: Docs/DECISIONS.md (nhật ký quyết định) (độ tin 3)
+
+Sheet: 05_che_do_kinh_te/Che_do_so_sanh_that — Chế độ: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | chế độ chơi không có thông số ngoài đời để đối chiếu |
 
 ## Các sheet khác của file
 

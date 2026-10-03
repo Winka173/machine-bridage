@@ -1,6 +1,6 @@
 # 12_he_thong_trang_thai — Hệ thống và trạng thái
 
-Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit 90337539, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Trạng thái prompt, DECISIONS, chờ quyết, kiểm tra mã, bản đồ trường dữ liệu, kết quả áp manifest, test, validator, lịch sử đo, chuyển đổi save, bảng đơn vị tài liệu, chưa phân loại; Hang_so_trong_ma ở lượt 5
 
@@ -236,7 +236,7 @@ Trạng thái: Đã áp
 
 Nguồn dữ liệu: 12_he_thong_trang_thai/DECISIONS; 12_he_thong_trang_thai/Cho_quyet.
 
-Sheet: 12_he_thong_trang_thai/DECISIONS — DECISIONS (708 dòng, 7 cột)
+Sheet: 12_he_thong_trang_thai/DECISIONS — DECISIONS (711 dòng, 7 cột)
 
 | id | cap | tieu_de | dong | muc_cha |
 |---|---|---|---|---|
@@ -256,9 +256,9 @@ Sheet: 12_he_thong_trang_thai/DECISIONS — DECISIONS (708 dòng, 7 cột)
 | D0014 | 3 | A. Vehicles | 1141 | D0013 |
 | D0015 | 3 | B. New base types (values at Legendary, top level; the lowe… | 1173 | D0013 |
 
-*15 / 708 dòng đầu: xem sheet 12_he_thong_trang_thai/DECISIONS.*
+*15 / 711 dòng đầu: xem sheet 12_he_thong_trang_thai/DECISIONS.*
 
-Sheet: 12_he_thong_trang_thai/Cho_quyet — Chờ quyết (146 dòng, 6 cột)
+Sheet: 12_he_thong_trang_thai/Cho_quyet — Chờ quyết (291 dòng, 6 cột)
 
 | id | dong | muc | noi_dung |
 |---|---|---|---|
@@ -278,7 +278,7 @@ Sheet: 12_he_thong_trang_thai/Cho_quyet — Chờ quyết (146 dòng, 6 cột)
 | Q0014 | 2875 | D0054 | - **Inside a flak gun's reach (+6 m) it never hangs** (the… |
 | Q0015 | 2876 | D0054 | becomes a half-speed run, over the target in about a second… |
 
-*15 / 146 dòng đầu: xem sheet 12_he_thong_trang_thai/Cho_quyet.*
+*15 / 291 dòng đầu: xem sheet 12_he_thong_trang_thai/Cho_quyet.*
 
 ## P4. Trạng thái prompt, validator, manifest và save
 
@@ -420,16 +420,18 @@ Nguồn dữ liệu: (không có sheet; chỉ văn bản).
 
 | văn bản cũ (mẫu) | thay bằng | căn cứ trong mã / dữ liệu | số chỗ |
 |---|---|---|---|
-| Huyền thoại mở sau khi thắng chiến dịch lớn cuối cùng | Huyền thoại mở sau khi thắng c12m10 (màn kết của chương 12) | Operations.LegendMission = "c12m10" (Operations.cs) | 1 chỗ |
-| tối đa 2 dòng, không chân dung, không lồng tiếng | tối đa 2 dòng, có chân dung nhỏ của người nói, không lồng tiếng | DialogueViews vẽ chân dung nhỏ trên dải thoại trong trận (fix L10 mục 14) | 1 chỗ |
-| chỉ huy tự đưa chúng về khi dưới 35% máu hoặc hết đạn | chỉ huy tự đưa chúng về khi hết đạn | TacticalAi.Refit: không còn ngưỡng 35 % máu từ prompt 29 B3-AI (fix L10 mục 17) | 1 chỗ |
+| Huyền thoại mở sau khi thắng chiến dịch lớn cuối cùng | Huyền thoại mở sau khi thắng c12m10 (màn kết của chương 12) | Operations.LegendMission = "c12m10" (Operations.cs) | 0 chỗ |
+| tối đa 2 dòng, không chân dung, không lồng tiếng | tối đa 2 dòng, có chân dung nhỏ của người nói, không lồng tiếng | DialogueViews vẽ chân dung nhỏ trên dải thoại trong trận (fix L10 mục 14) | 0 chỗ |
+| chỉ huy tự đưa chúng về khi dưới 35% máu hoặc hết đạn | chỉ huy tự đưa chúng về khi hết đạn | TacticalAi.Refit: không còn ngưỡng 35 % máu từ prompt 29 B3-AI (fix L10 mục 17) | 0 chỗ |
 | phí duy trì | tiếp tế | thuật ngữ trong mã và chuỗi: tiếp tế (supply), fix L10 mục 16 | 1 chỗ |
 | tháp canh thấy tàng hình và tăng 10% tầm cho tháp gần | tháp canh thấy tàng hình và tăng 10% tầm cho tháp trong 25 m (nhánh Tháp quan sát: 15% trong 30 m, thay mức 10%, không… | balance.json guard_tower.towerRangeAura {radius 25, range 0.1}, guard_tower.watch {radius 30, range 0.15}; chuỗi branch.guard_tower.watch.info | 1 chỗ |
 | 15 chương trong 4 hồi | (giữ: đúng với mã) | campaign.json chapters[].act: 1-4 (4, 4, 4, 3 chương): đúng | 2 chỗ |
 | C-RAM 30%, la-de 0% | (giữ: đúng với mã) | c_ram aps.shells 0.3, iron_beam / laser_ad_station aps.shells 0: đúng | 1 chỗ |
 | không chặn đạn pháo | (giữ: đúng với mã) | laser_ad_station aps.shells 0 (Trạm la-de): đúng | 4 chỗ |
 
-Bản PDF cũ: 102 bảng số bỏ (các sheet thay), 234 thẻ đơn vị bỏ (chỉ số ở sheet, lời hướng dẫn từ chuỗi), 308 ảnh ngoài repo bỏ.
+Bản PDF cũ: 201 bảng số bỏ (các sheet thay), 234 thẻ đơn vị bỏ (chỉ số ở sheet, lời hướng dẫn từ chuỗi), 1203 ảnh ngoài repo bỏ.
+
+Mục của bản PDF cũ không dùng: 10j. Sửa lỗi tổng hợp: nhịp bắn boss, họ vũ khí, hành vi đạn, vòng cảnh báo, hiệu ứng; 21. Sửa lỗi tổng hợp: phụ lục A–E.
 
 ## Các sheet khác của file
 

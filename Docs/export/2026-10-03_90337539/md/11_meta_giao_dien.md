@@ -1,6 +1,6 @@
 # 11_meta_giao_dien — Meta và giao diện
 
-Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit 90337539, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Nâng hạng, hòm đồ và tỷ lệ rơi, cửa hàng, nhiệm vụ ngày, skin, mở khóa, thẻ khởi đầu, danh sách bản đồ menu, ảnh bản đồ căn cứ, sổ tay đạn, mọi bảng hằng C# của meta; thành tựu / telemetry / hướng dẫn (không có hoặc chờ)
 
@@ -147,6 +147,24 @@ Sheet: 11_meta_giao_dien/Telemetry — Telemetry (1 dòng, 5 cột)
 | id | trang_thai | ghi_chu |
 |---|---|---|
 | chua_ap | KHONG_CO | Không có hệ telemetry (chỉ SandboxSession.cs nhắc chữ 'Tele… |
+
+## Tham khảo ngoài đời và game
+
+Trạng thái: Đã áp (lượt 10; chỉ dữ liệu trong repo, thiếu nguồn ghi NEED_SOURCE).
+
+Nguồn dữ liệu: 11_meta_giao_dien/Meta_tham_chieu; 11_meta_giao_dien/Meta_so_sanh_that; 13_tham_chieu_nguon/Nguon_tham_chieu.
+
+### Meta_tham_chieu
+
+13 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 0, NEED_SOURCE 13. Loại: NEED_SOURCE 13.
+
+- Chưa dòng nào có tham chiếu trong repo (xem 13_tham_chieu_nguon/Thieu_nguon).
+
+Sheet: 11_meta_giao_dien/Meta_so_sanh_that — Meta: so sánh với thật (1 dòng, 5 cột)
+
+| id | trang_thai | ghi_chu |
+|---|---|---|
+| khong_co | KHONG_CO | meta không có thông số ngoài đời để đối chiếu |
 
 ## Các sheet khác của file
 
