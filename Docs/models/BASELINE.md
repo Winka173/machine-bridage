@@ -1,6 +1,6 @@
 # GLB baseline (prompt 27 step 2)
 
-Generated 2026-10-03 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (448 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
+Generated 2026-10-03 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (450 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
 Rules: DECISIONS "27 step 0 + baseline"; budgets: Docs/models/BUDGETS.md (over the soft budget a warning, over
 the hard cap an error). Warnings are listed in the JSON.
 
@@ -8,8 +8,8 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
+| boss | 25 | 608,611 | 24,344 | fortress_bastion (56,092) | 2,551 | 1 | 23 |
 | ground | 66 | 563,394 | 8,536 | main_battle_tank_hd (16,462) | 3,755 | 1 | 38 |
-| boss | 23 | 483,078 | 21,003 | monster (39,598) | 2,247 | 0 | 20 |
 | structure | 69 | 371,227 | 5,380 | headquarters (21,052) | 3,434 | 0 | 14 |
 | prop | 115 | 258,170 | 2,244 | command_hq (8,872) | 1,568 | 0 | 3 |
 | unlisted | 34 | 108,062 | 3,178 | apc_hd (14,968) | 668 | 0 | 0 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 25 | 5,154 | 206 | bomb (404) | 175 | 0 | 0 |
 
-All files: 1,948,329 triangles, 1 with errors, 91 more with warnings only.
+All files: 2,073,862 triangles, 2 with errors, 93 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -40,8 +40,9 @@ All files: 1,948,329 triangles, 1 with errors, 91 more with warnings only.
 
 | class | metric | over soft (warning) | over hard (error) | over the hard cap |
 |---|---|---:|---:|---|
-| boss_s | triangles | 1 | 0 | - |
-| boss_s | vertices | 2 | 0 | - |
+| boss_s | renderers | 0 | 1 | fortress_bastion |
+| boss_s | triangles | 3 | 0 | - |
+| boss_s | vertices | 5 | 0 | - |
 | ground | movingParts | 1 | 0 | - |
 | ground | renderers | 14 | 1 | fpv_carrier |
 | ground | triangles | 26 | 0 | - |
@@ -61,12 +62,13 @@ All files: 1,948,329 triangles, 1 with errors, 91 more with warnings only.
 | tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-61 models over a budget, 1 of them over a hard cap.
+64 models over a budget, 2 of them over a hard cap.
 
 ## Error reasons (count of models)
 
-- over a budget hard cap: 1
+- over a budget hard cap: 2
 
-## Flagged models (1)
+## Flagged models (2)
 
+- **fortress_bastion** (boss): renderers 168 over the boss_s normal hard cap 162
 - **fpv_carrier** (ground): renderers 78 over the ground normal hard cap 76
