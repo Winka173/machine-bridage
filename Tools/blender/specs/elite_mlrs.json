@@ -21,11 +21,11 @@
  ],
  "flare": false, "aps": false,
  "budget": {"lod0": [3000, 5000], "floor": 2100, "cap_numbers": 7500, "lod1_share": 0.5, "lod2_share": 0.2},
- "team_zones": ["roof panel on the cab (Team)", "a band along both doors (Team)"],
+ "team_zones": ["the cab (Team), under the black add-on armour"],
  "colour_zones_min": 4,
  "breakable": [],
  "wreck": "breaks up without parts (rocket blast); the Turret flies off",
- "faction_style": "elite (black, gold marks)",
+ "faction_style": "elite (team paint, black armour, gold marks)",
  "details": {
   "tier1": ["armoured cab", "chassis", "launcher module", "two pods", "six wheels"],
   "tier2": ["turntable", "booms", "elevation rams", "trunnions", "fenders", "fuel tank", "tool box", "jacks", "exhaust", "air intake", "roof gun ring"],

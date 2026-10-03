@@ -2786,6 +2786,26 @@
    "changes": [
     "FLAG swarm_carrier: meshes 62 -> 38 (-38.7%); renderers 62 -> 38 (-38.7%); materialSlots 62 -> 38 (-38.7%); fileBytes 387,684 -> 367,496 (-5.2%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "elite_mlrs"
+   ],
+   "reason": "P35 wave 1",
+   "changes": [
+    "elite_mlrs: triangles 7,278 -> 7,502 (+3.1%); vertices 9,232 -> 9,348 (+1.3%); fileBytes 509,756 -> 516,552 (+1.3%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "elite_mlrs"
+   ],
+   "reason": "P35 wave 1",
+   "changes": [
+    "elite_mlrs: triangles 7,502 -> 7,446 (-0.7%); vertices 9,348 -> 9,264 (-0.9%); fileBytes 516,552 -> 512,520 (-0.8%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -23183,8 +23203,8 @@
   },
   "elite_mlrs": {
    "file": "elite_mlrs.glb",
-   "fileBytes": 509756,
-   "sha1": "579355b982d5ebcc",
+   "fileBytes": 512520,
+   "sha1": "e09878c668ebdb89",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -23199,8 +23219,8 @@
    "submeshes": 60,
    "materialSlots": 60,
    "materialsUsed": 13,
-   "triangles": 7278,
-   "vertices": 9232,
+   "triangles": 7446,
+   "vertices": 9264,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -23208,13 +23228,13 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 224,
+   "loosePieces": 219,
    "openEdges": 8,
    "nonManifoldEdges": 0,
    "boundsMin": [
     -1.22,
     0.0,
-    -3.5791
+    -3.53
    ],
    "boundsMax": [
     1.22,
@@ -23222,18 +23242,18 @@
     3.56
    ],
    "size": [
-    7.139,
+    7.09,
     2.44,
     3.217
    ],
    "center": [
     0.0,
     1.609,
-    -0.01
+    0.015
    ],
-   "structureHash": "f24a20ae9366804e",
+   "structureHash": "f05ce642d048f791",
    "color0": {
-    "mean": 0.6003,
+    "mean": 0.6032,
     "min": 0.0491,
     "max": 1.0,
     "p05": 0.1168,
@@ -23266,6 +23286,7 @@
     "Booms",
     "Bumper",
     "Cab",
+    "Cab_armor",
     "Cab_dark",
     "Cab_fit",
     "Chassis",
@@ -23313,7 +23334,6 @@
     "Tail_lamps",
     "Tail_lenses",
     "Tarp_roll",
-    "Team_band",
     "Toolbox",
     "Tubes_bore",
     "Turntable",

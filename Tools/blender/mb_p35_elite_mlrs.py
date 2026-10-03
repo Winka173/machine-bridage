@@ -61,7 +61,7 @@ def _chassis(a):
 
 
 def _cab(a):
-    blk = a.part('Cab', 'EliteBlack')
+    blk = a.part('Cab', 'Team')                  # team paint; the add-on armour is the elite's black
     dark = a.part('Cab_dark', 'Undercarriage')
     # Horizontal sections: the armour wraps the front corners, the windscreens rake back a little, the roof edge
     # is cut at 45 degrees all round (the LSAC's add-on armour).
@@ -102,11 +102,11 @@ def _cab(a):
         K.handle(fit, (x, CAB_Y1 - .35, CAB_Z0 + .55), (x, CAB_Y1 - .45, CAB_Z0 + .55), (s, 0, 0), h=.025, r=.01)
         P.step(a, (s * (HALF - .12), -2.55, .7), w=.4)
         K.mirror(fit, (s * (HALF - .03), CAB_Y0 + .4, ROOF - .45), s, arm=.04, size=(.035, .1, .26))
-        a.part('Team_band', 'Team').box((.012, 1.3, .1), loc=(s * (HALF + .008), (CAB_Y0 + CAB_Y1) / 2,
-                                                              CAB_Z0 + .2), bevel=0)
+        K.plate(a.part('Cab_armor', 'EliteBlack'), (.03, 1.25, .55), loc=(s * (HALF + .02), (CAB_Y0 + CAB_Y1) / 2,
+                                                                          CAB_Z0 + .38), chamfer=.01)
     # Roof: the team panel, the commander's sight (red glow), the hatch ring with the gun, antennas.
-    a.part('Team_band', 'Team').box((1.0, .8, .02), loc=(0, CAB_Y1 - .7, ROOF + .005), bevel=0)
-    K.periscope(a, (-.55, CAB_Y0 + .62, ROOF - .02), facing=(0, -1, 0), size=(.2, .18, .16), mat='EliteBlack')
+    K.plate(a.part('Cab_armor', 'EliteBlack'), (1.2, .9, .03), loc=(0, CAB_Y1 - .75, ROOF + .01), chamfer=.01)
+    K.periscope(a, (-.55, CAB_Y0 + .62, ROOF - .02), facing=(0, -1, 0), size=(.2, .18, .16), mat='Steel')
     a.part('Sight_glow', 'EliteGlow').box((.14, .01, .07), loc=(-.55, CAB_Y0 + .52, ROOF + .11), bevel=0)
     ant = a.part('Antennas', 'Steel')
     for x in (-.95,):
@@ -204,10 +204,10 @@ def _rear(a):
                     reach=.42, drop=.55, w=.16)
         a.part('Tail_lamps', 'Undercarriage').box((.2, .05, .1), loc=(s * .75, REAR - .05, .95), bevel=0)
         a.part('Tail_lenses', 'EliteGlow').box((.16, .01, .07), loc=(s * .75, REAR - .02, .95), bevel=0)
-    K.tow_hook(a.part('Kit_hooks', 'Steel'), (0, REAR - .02, .8), facing=(0, 1, 0), size=.08)
-    # Stowage on the bed's front corners: a tarp roll and a crate.
+    a.part('Kit_hooks', 'Steel').box((.16, .1, .12), loc=(0, REAR - .02, .8), bevel=0)               # tow pintle
+    # Stowage on the bed's front corners: a tarp roll and a box.
     P.canvas_roll(a, (0, -1.3, 1.36), 1.6, r=.12)
-    K.crate(a.part('Stowage', 'Crate'), a.part('Kit_straps', 'Steel'), (.4, .3, .28), (.8, -1.25, 1.24), bands=1)
+    K.chamfer_box(a.part('Stowage', 'Crate'), (.4, .3, .28), loc=(.8, -1.25, 1.38), c=.02)
 
 
 def elite_mlrs(a):
