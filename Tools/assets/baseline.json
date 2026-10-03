@@ -2930,6 +2930,16 @@
    "changes": [
     "FLAG airborne_vehicle: triangles 3,260 -> 9,464 (+190.3%); vertices 3,804 -> 12,850 (+237.8%); meshes 18 -> 52 (+188.9%); renderers 18 -> 52 (+188.9%); materials 6 -> 10 (+66.7%); materialSlots 18 -> 52 (+188.9%); fileBytes 205,704 -> 673,512 (+227.4%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "bridging_vehicle"
+   ],
+   "reason": "P35 wave 6: bridging_vehicle rebuilt from scratch",
+   "changes": [
+    "FLAG bridging_vehicle: triangles 5,148 -> 9,652 (+87.5%); vertices 6,194 -> 13,676 (+120.8%); meshes 27 -> 53 (+96.3%); renderers 27 -> 53 (+96.3%); materials 7 -> 10 (+42.9%); materialSlots 27 -> 53 (+96.3%); fileBytes 330,664 -> 712,560 (+115.5%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -11387,24 +11397,24 @@
   },
   "bridging_vehicle": {
    "file": "bridging_vehicle.glb",
-   "fileBytes": 330664,
-   "sha1": "f34965246884d65e",
+   "fileBytes": 712560,
+   "sha1": "38db882129a9000a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 31,
-   "meshes": 27,
-   "materials": 7,
+   "nodes": 57,
+   "meshes": 53,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 27,
-   "submeshes": 27,
-   "materialSlots": 27,
-   "materialsUsed": 7,
-   "triangles": 5148,
-   "vertices": 6194,
+   "renderers": 53,
+   "submeshes": 53,
+   "materialSlots": 53,
+   "materialsUsed": 10,
+   "triangles": 9652,
+   "vertices": 13676,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -11412,36 +11422,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 127,
+   "loosePieces": 363,
    "openEdges": 0,
-   "nonManifoldEdges": 8,
+   "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.53,
-    -0.0355,
-    -3.2
+    -1.498,
+    -0.0645,
+    -3.34
    ],
    "boundsMax": [
-    1.53,
-    1.97,
+    1.498,
+    1.95,
     3.24
    ],
    "size": [
-    6.44,
-    3.06,
-    2.006
+    6.58,
+    2.996,
+    2.014
    ],
    "center": [
     0.0,
-    0.967,
-    0.02
+    0.943,
+    -0.05
    ],
-   "structureHash": "2e73c90935539d45",
+   "structureHash": "b35a799f7c3c4ded",
    "color0": {
-    "mean": 0.7896,
-    "min": 0.5489,
+    "mean": 0.5853,
+    "min": 0.0759,
     "max": 1.0,
-    "p05": 0.686,
-    "p95": 0.9898,
+    "p05": 0.1683,
+    "p95": 0.862,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -11464,32 +11474,58 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
+    "Ammo_can",
+    "Antennas",
+    "Boom",
     "Bridge",
-    "Exhaust",
-    "Exhaust_louvres",
+    "Bridge_hinges",
+    "Bridge_ribs",
+    "Bridge_truss",
+    "Cradle",
+    "Cupola",
+    "Drum_bands",
+    "Fenders",
+    "Fuel_drums",
+    "Glass",
+    "Grille_frames",
+    "Grilles",
+    "Gun_carriage",
+    "Gun_fit",
+    "Gun_ring",
     "Hatch_fittings",
     "Hatches",
+    "Hmg_ammo",
     "Hubs",
     "Hull",
     "Hull_tub",
+    "Idlers",
+    "Kit_cables",
+    "Kit_hooks",
+    "Kit_latches",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_housing",
     "Main_cannon",
     "Muzzle_brake",
     "Muzzle_main",
-    "Periscope",
-    "Periscope_hoods",
     "Point_exhaust",
     "Point_fire",
-    "Rws_body",
-    "Rws_ring",
-    "Rws_sensor",
+    "Racks",
+    "Rams",
+    "Receiver",
+    "Sight",
     "Skirt_edge",
     "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
+    "Splash_board",
     "Sprockets",
-    "Steel",
-    "Tail_lights",
+    "Stowage",
+    "Tail_lamps",
+    "Team_band",
+    "Toolbox",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
     "Tread_plates",
     "Turret",
@@ -11499,7 +11535,10 @@
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 9,652 over the ground normal budget 7,800",
+    "vertices 13,676 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
    "units": [
     "bridging_vehicle"
    ],

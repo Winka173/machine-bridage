@@ -1,0 +1,190 @@
+{
+ "id": "bridging_vehicle",
+ "class": "tracked",
+ "real": [
+  "MTU-72 / M60 AVLB armoured vehicle-launched scissor bridge (commander NSVT / M2 12.7 mm)"
+ ],
+ "shape": "refs: none; the old builder (mb_p27_wave1c): an AVLB / MTU-72 class bridgelayer, a tracked hull with skirts, a folded scissor bridge (two stacked span halves with rails, ribs and tread plates) on hydraulic rams, a driver hatch, a low remote weapon station on the front right; 6.45 x 3.02 x 2.02 m; team bands on both sides; no real insignia.",
+ "confidence": "xấp xỉ (published layout and dimensions)",
+ "target_size": {
+  "L": 6.45,
+  "W": 3.02,
+  "H": 2.02,
+  "source": "balance.json modelSize",
+  "tolerance": 0.1
+ },
+ "features": [
+  {
+   "feature": "the turretless T-72 class hull (Team), sloped glacis with the V splash board",
+   "nodes": [
+    "Hull",
+    "Hull_tub",
+    "Splash_board"
+   ]
+  },
+  {
+   "feature": "the driver's hatch and periscope, lamps, hooks, front fenders",
+   "nodes": [
+    "Hatches",
+    "Hatch_fittings",
+    "Lamps",
+    "Kit_hooks",
+    "Fenders"
+   ]
+  },
+  {
+   "feature": "six road wheels, the rear sprocket, the front idler on its arm, a linked track",
+   "nodes": [
+    "Wheels",
+    "Tyres",
+    "Sprockets",
+    "Idlers",
+    "Tracks",
+    "Track_links"
+   ]
+  },
+  {
+   "feature": "rubber side skirts with a steel top edge",
+   "nodes": [
+    "Skirts",
+    "Skirt_edge"
+   ]
+  },
+  {
+   "feature": "engine deck grilles, the left exhaust louvre, the two fuel drums on the rear rack",
+   "nodes": [
+    "Grilles",
+    "Fuel_drums",
+    "Drum_bands",
+    "Racks",
+    "Point_exhaust"
+   ]
+  },
+  {
+   "feature": "the folded scissor bridge: two box treadways per half, truss sides, cross ribs, tread plates, rear hinge knuckles",
+   "nodes": [
+    "Bridge",
+    "Bridge_truss",
+    "Bridge_ribs",
+    "Tread_plates",
+    "Bridge_hinges"
+   ]
+  },
+  {
+   "feature": "the launching boom on its front pivot, two hydraulic rams and hoses",
+   "nodes": [
+    "Boom",
+    "Rams",
+    "Kit_cables"
+   ]
+  },
+  {
+   "feature": "the commander's cupola with periscopes and the 12.7 mm on a raised mount (Turret), spare ammunition cans",
+   "nodes": [
+    "Cupola",
+    "Turret",
+    "Cradle",
+    "Main_cannon",
+    "Muzzle_brake",
+    "Hmg_ammo"
+   ]
+  },
+  {
+   "feature": "three-tube smoke dischargers on the glacis corners",
+   "nodes": [
+    "Smoke_launchers"
+   ]
+  },
+  {
+   "feature": "stowage boxes, a canvas bundle, tow cable, whips, tail lamps, Team bands",
+   "nodes": [
+    "Toolbox",
+    "Stowage",
+    "Tow_cable",
+    "Antennas",
+    "Tail_lamps",
+    "Team_band"
+   ]
+  }
+ ],
+ "class_parts": [
+  "hull",
+  "turret",
+  "mantlet",
+  "barrel",
+  "roadwheels",
+  "sprocket",
+  "idler",
+  "tracks",
+  "skirts",
+  "hatches",
+  "sight",
+  "roof_mg",
+  "smoke",
+  "stowage"
+ ],
+ "weapons": [
+  {
+   "weapon": "hmg_selfdef_15",
+   "slot": "main",
+   "mount": "Turret",
+   "muzzles": [
+    "Muzzle_main"
+   ]
+  }
+ ],
+ "flare": false,
+ "aps": false,
+ "budget": {
+  "lod0": [
+   4000,
+   7000
+  ],
+  "floor": 2800,
+  "lod1_share": 0.5,
+  "lod2_share": 0.2,
+  "note": "heavy class: over the maximum is information only"
+ },
+ "team_zones": [
+  "hull and bridge treadways (Team)",
+  "bands on the hull and bridge sides"
+ ],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the runtime breaks the tracked hull; the bridge stays on it",
+ "faction_style": "military vehicle (both factions)",
+ "details": {
+  "tier1": [
+   "hull",
+   "bridge",
+   "tracks and wheels",
+   "skirts"
+  ],
+  "tier2": [
+   "treadways",
+   "truss sides",
+   "boom",
+   "rams",
+   "cupola",
+   "fuel drums",
+   "toolboxes",
+   "fenders",
+   "splash board"
+  ],
+  "tier3": [
+   "periscopes",
+   "hatches",
+   "grilles",
+   "lamps",
+   "hooks",
+   "tread plates",
+   "ribs",
+   "hinge knuckles",
+   "hoses",
+   "smoke tubes",
+   "whips",
+   "ammo cans"
+  ]
+ },
+ "questions": []
+}
