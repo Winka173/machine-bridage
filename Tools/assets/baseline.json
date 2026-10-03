@@ -3156,6 +3156,16 @@
    "changes": [
     "FLAG iron_beam: triangles 2,888 -> 6,718 (+132.6%); vertices 3,604 -> 8,466 (+134.9%); meshes 26 -> 60 (+130.8%); renderers 26 -> 60 (+130.8%); materials 8 -> 10 (+25.0%); materialSlots 26 -> 60 (+130.8%); fileBytes 202,352 -> 471,220 (+132.9%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "shahed_truck"
+   ],
+   "reason": "P35 wave 9",
+   "changes": [
+    "FLAG shahed_truck: triangles 2,616 -> 6,228 (+138.1%); vertices 3,672 -> 8,096 (+120.5%); meshes 24 -> 51 (+112.5%); renderers 24 -> 51 (+112.5%); materials 8 -> 11 (+37.5%); materialSlots 24 -> 51 (+112.5%); fileBytes 200,672 -> 443,416 (+121.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -50607,24 +50617,24 @@
   },
   "shahed_truck": {
    "file": "shahed_truck.glb",
-   "fileBytes": 200672,
-   "sha1": "7e8fc7a1397fd710",
+   "fileBytes": 443416,
+   "sha1": "80c25efa582dac48",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 30,
-   "meshes": 24,
-   "materials": 8,
+   "nodes": 57,
+   "meshes": 51,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 24,
-   "submeshes": 24,
-   "materialSlots": 24,
-   "materialsUsed": 8,
-   "triangles": 2616,
-   "vertices": 3672,
+   "renderers": 51,
+   "submeshes": 51,
+   "materialSlots": 51,
+   "materialsUsed": 11,
+   "triangles": 6228,
+   "vertices": 8096,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -50632,36 +50642,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 107,
-   "openEdges": 0,
+   "loosePieces": 193,
+   "openEdges": 12,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.15,
+    -1.22,
     0.0,
-    -3.265
+    -3.3
    ],
    "boundsMax": [
-    1.15,
-    2.8966,
-    3.39
+    1.175,
+    3.0078,
+    3.4467
    ],
    "size": [
-    6.655,
-    2.3,
-    2.897
+    6.747,
+    2.395,
+    3.008
    ],
    "center": [
-    0.0,
-    1.448,
-    0.063
+    -0.023,
+    1.504,
+    0.073
    ],
-   "structureHash": "b51ec3a30d919334",
+   "structureHash": "d04e496dc17a454c",
    "color0": {
-    "mean": 0.6296,
-    "min": 0.0802,
+    "mean": 0.6257,
+    "min": 0.0596,
     "max": 1.0,
-    "p05": 0.2084,
-    "p95": 0.9637,
+    "p05": 0.1697,
+    "p95": 0.9566,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -50682,36 +50692,63 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
+    "Axles",
     "Bed",
     "Body",
+    "Bumper",
+    "Cab",
     "Chassis",
-    "Drone_airframe",
-    "Drone_engine",
-    "Drone_nose",
-    "Drone_prop",
+    "Doors",
+    "Drone_boosters",
+    "Drone_fins",
+    "Drone_noses",
+    "Drone_props",
+    "Drone_wings",
+    "Drones",
+    "Exhaust",
+    "Exhaust_caps",
+    "Exhaust_mufflers",
+    "Exhaust_shields",
+    "Fenders",
     "Glass",
+    "Grille_frames",
+    "Grilles",
+    "Hubs",
+    "Jerrycans",
+    "Kit_racks",
+    "Kit_steel",
+    "Kit_straps",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
+    "Launcher_frame",
+    "Launcher_rams",
+    "Leaf_springs",
     "MG",
     "MG_ammo",
+    "MG_cradle",
+    "MG_post",
+    "MG_ring",
     "MG_shield",
     "Mount_mg",
+    "Mud_wings",
     "Muzzle_main",
     "Muzzle_mg",
     "Point_exhaust",
     "Point_fire",
-    "Rack",
-    "Rack_rails",
-    "Ram_rods",
-    "Rams",
-    "Steel",
+    "Rails",
+    "Spare_wheel",
+    "Spare_wheel_rim",
+    "Steps",
     "Tail_lamps",
-    "Tanks",
+    "Tarp",
+    "Team_band",
     "Turntable",
     "Turret",
     "Tyres",
-    "Wheels"
+    "Wheels",
+    "Window_frames",
+    "Wipers"
    ],
    "category": "ground",
    "hd": false,
