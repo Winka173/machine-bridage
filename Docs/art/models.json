@@ -25,11 +25,11 @@
   },
   "aa_vehicle": {
     "file": "aa_vehicle.glb",
-    "triangles": 4964
+    "triangles": 9586
   },
   "aa_vehicle_hd": {
     "file": "aa_vehicle_hd.glb",
-    "triangles": 12556
+    "triangles": 9586
   },
   "adobe_house": {
     "file": "adobe_house.glb",
@@ -109,7 +109,7 @@
   },
   "artillery": {
     "file": "artillery.glb",
-    "triangles": 5326
+    "triangles": 9958
   },
   "artillery_emplacement": {
     "file": "artillery_emplacement.glb",
@@ -125,7 +125,7 @@
   },
   "artillery_hd": {
     "file": "artillery_hd.glb",
-    "triangles": 12260
+    "triangles": 9958
   },
   "artillery_wreck": {
     "file": "artillery_wreck.glb",
@@ -869,7 +869,7 @@
   },
   "flame_tank": {
     "file": "flame_tank.glb",
-    "triangles": 10894
+    "triangles": 10726
   },
   "flare_searchlight_tower": {
     "file": "flare_searchlight_tower.glb",
@@ -1753,11 +1753,11 @@
   },
   "tank_destroyer": {
     "file": "tank_destroyer.glb",
-    "triangles": 4702
+    "triangles": 9998
   },
   "tank_destroyer_hd": {
     "file": "tank_destroyer_hd.glb",
-    "triangles": 11494
+    "triangles": 9998
   },
   "tank_ditch": {
     "file": "tank_ditch.glb",

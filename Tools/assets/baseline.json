@@ -2678,6 +2678,39 @@
    "changes": [
     "FLAG flame_tank: triangles 5,258 -> 10,894 (+107.2%); vertices 5,951 -> 13,969 (+134.7%); meshes 25 -> 59 (+136.0%); renderers 25 -> 59 (+136.0%); materials 7 -> 13 (+85.7%); materialSlots 25 -> 59 (+136.0%); fileBytes 319,184 -> 739,644 (+131.7%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "tank_destroyer",
+    "tank_destroyer",
+    "tank_destroyer_hd"
+   ],
+   "reason": "P35 wave 4",
+   "changes": [
+    "FLAG tank_destroyer: triangles 4,702 -> 9,998 (+112.6%); vertices 5,367 -> 13,611 (+153.6%); meshes 25 -> 54 (+116.0%); renderers 25 -> 54 (+116.0%); materials 7 -> 10 (+42.9%); materialSlots 25 -> 54 (+116.0%); fileBytes 289,656 -> 712,720 (+146.1%); structure changed",
+    "FLAG tank_destroyer_hd: triangles 11,494 -> 9,998 (-13.0%); vertices 14,365 -> 13,611 (-5.2%); meshes 35 -> 54 (+54.3%); renderers 35 -> 54 (+54.3%); materials 8 -> 10 (+25.0%); materialSlots 35 -> 54 (+54.3%); fileBytes 735,028 -> 712,724 (-3.0%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "artillery",
+    "artillery",
+    "artillery_hd"
+   ],
+   "reason": "P35 wave 4",
+   "changes": []
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "aa_vehicle",
+    "aa_vehicle",
+    "aa_vehicle_hd"
+   ],
+   "reason": "P35 wave 4",
+   "changes": []
   }
  ],
  "models": {
@@ -3405,24 +3438,24 @@
   },
   "aa_vehicle": {
    "file": "aa_vehicle.glb",
-   "fileBytes": 310244,
-   "sha1": "ffec7f09e655f4da",
+   "fileBytes": 685004,
+   "sha1": "834f956ea14389ca",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 36,
-   "meshes": 30,
-   "materials": 6,
+   "nodes": 63,
+   "meshes": 56,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 30,
-   "submeshes": 30,
-   "materialSlots": 30,
-   "materialsUsed": 6,
-   "triangles": 4964,
-   "vertices": 5688,
+   "renderers": 56,
+   "submeshes": 56,
+   "materialSlots": 56,
+   "materialsUsed": 8,
+   "triangles": 9586,
+   "vertices": 13037,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -3430,36 +3463,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 100,
+   "loosePieces": 316,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.54,
-    -0.01,
-    -2.945
+    -1.66,
+    -0.072,
+    -2.91
    ],
    "boundsMax": [
-    1.54,
-    2.8703,
-    3.54
+    1.66,
+    2.61,
+    3.48
    ],
    "size": [
-    6.485,
-    3.08,
-    2.88
+    6.39,
+    3.32,
+    2.682
    ],
    "center": [
     0.0,
-    1.43,
-    0.298
+    1.269,
+    0.285
    ],
-   "structureHash": "a0021082e1fdaac6",
+   "structureHash": "6435a29e59e6e3c6",
    "color0": {
-    "mean": 0.6404,
-    "min": 0.0751,
+    "mean": 0.5768,
+    "min": 0.0705,
     "max": 1.0,
-    "p05": 0.1382,
-    "p95": 0.9814,
+    "p05": 0.1703,
+    "p95": 0.8308,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -3478,33 +3511,48 @@
      "Muzzle_main",
      "Muzzle_missile"
     ],
+    "mount": [
+     "Mount_missile"
+    ],
     "radar": [
      "Radar"
     ],
     "point": [
      "Point_exhaust",
      "Point_fire"
-    ],
-    "launch": [
-     "Launch_tubes"
     ]
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Deck",
-    "Hatch_fittings",
-    "Hatch_fittings.001",
+    "Antennas",
+    "Cradle",
+    "Deck_plates",
+    "Fenders",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_feeds",
+    "Gun_radars",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
+    "Hull_lower",
+    "Idlers",
+    "Kit_latches",
+    "Kit_latches.001",
+    "Kit_steel",
+    "Kit_steel.001",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Launch_tubes",
     "Launcher_box",
-    "Light_rims",
+    "Launcher_covers",
+    "Launcher_post",
     "Main_cannon",
     "Main_cannon_2",
+    "Mount_missile",
     "Muzzle_brake",
     "Muzzle_brake_2",
     "Muzzle_main",
@@ -3513,51 +3561,66 @@
     "Point_fire",
     "Radar",
     "Radar_dish",
+    "Radar_feed",
     "Radar_mast",
-    "Skirt_edge",
+    "Radar_tracker",
+    "Radar_tracker_face",
+    "Rollers",
+    "Sight",
+    "Sight.001",
+    "Skirt_flaps",
     "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
-    "Steel",
+    "Stowage",
+    "Stowage.001",
     "Tail_lamps",
-    "Tracking_radar",
+    "Team_band",
+    "Team_band.001",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
     "Turret",
-    "Turret_armor",
     "Turret_body",
-    "Turret_steel",
+    "Turret_ring",
+    "Turret_roof",
     "Tyres",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 9,586 over the ground normal budget 7,800",
+    "vertices 13,037 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
    "units": [
     "aa_vehicle"
    ],
-   "movingParts": 4,
+   "movingParts": 5,
    "budgetClass": "ground"
   },
   "aa_vehicle_hd": {
    "file": "aa_vehicle_hd.glb",
-   "fileBytes": 800012,
-   "sha1": "1289d1f47da30d89",
+   "fileBytes": 685004,
+   "sha1": "9716743d82cb0c40",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 42,
-   "meshes": 36,
-   "materials": 6,
+   "nodes": 63,
+   "meshes": 56,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 36,
-   "submeshes": 36,
-   "materialSlots": 36,
-   "materialsUsed": 6,
-   "triangles": 12556,
-   "vertices": 15684,
+   "renderers": 56,
+   "submeshes": 56,
+   "materialSlots": 56,
+   "materialsUsed": 8,
+   "triangles": 9586,
+   "vertices": 13037,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -3565,36 +3628,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 314,
+   "loosePieces": 316,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.545,
-    -0.01,
-    -2.945
+    -1.66,
+    -0.072,
+    -2.91
    ],
    "boundsMax": [
-    1.545,
-    2.8703,
-    3.54
+    1.66,
+    2.61,
+    3.48
    ],
    "size": [
-    6.485,
-    3.09,
-    2.88
+    6.39,
+    3.32,
+    2.682
    ],
    "center": [
     0.0,
-    1.43,
-    0.298
+    1.269,
+    0.285
    ],
-   "structureHash": "657258612fb0fe2c",
+   "structureHash": "6435a29e59e6e3c6",
    "color0": {
-    "mean": 0.5735,
-    "min": 0.0656,
+    "mean": 0.5768,
+    "min": 0.0705,
     "max": 1.0,
-    "p05": 0.1246,
-    "p95": 0.8867,
+    "p05": 0.1703,
+    "p95": 0.8308,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -3613,35 +3676,48 @@
      "Muzzle_main",
      "Muzzle_missile"
     ],
+    "mount": [
+     "Mount_missile"
+    ],
     "radar": [
      "Radar"
     ],
     "point": [
      "Point_exhaust",
      "Point_fire"
-    ],
-    "launch": [
-     "Launch_tubes"
     ]
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Deck",
-    "Hatch_fittings",
-    "Hatch_fittings.001",
+    "Antennas",
+    "Cradle",
+    "Deck_plates",
+    "Fenders",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
+    "Gun_feeds",
+    "Gun_radars",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
-    "Hull_bolts",
+    "Hull_lower",
+    "Idlers",
+    "Kit_latches",
+    "Kit_latches.001",
+    "Kit_steel",
+    "Kit_steel.001",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Launch_tubes",
     "Launcher_box",
-    "Lifting_eyes",
-    "Light_rims",
+    "Launcher_covers",
+    "Launcher_post",
     "Main_cannon",
     "Main_cannon_2",
+    "Mount_missile",
     "Muzzle_brake",
     "Muzzle_brake_2",
     "Muzzle_main",
@@ -3650,23 +3726,31 @@
     "Point_fire",
     "Radar",
     "Radar_dish",
+    "Radar_feed",
     "Radar_mast",
-    "Skirt_edge",
-    "Skirt_ribs",
-    "Skirt_rivets",
+    "Radar_tracker",
+    "Radar_tracker_face",
+    "Rollers",
+    "Sight",
+    "Sight.001",
+    "Skirt_flaps",
     "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
-    "Steel",
+    "Stowage",
+    "Stowage.001",
     "Tail_lamps",
-    "Tracking_radar",
+    "Team_band",
+    "Team_band.001",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
     "Turret",
-    "Turret_armor",
     "Turret_body",
-    "Turret_bolts",
-    "Turret_steel",
+    "Turret_ring",
+    "Turret_roof",
     "Tyres",
-    "Wheel_bolts",
     "Wheels"
    ],
    "category": "ground",
@@ -3676,7 +3760,7 @@
    "units": [
     "aa_vehicle"
    ],
-   "movingParts": 4,
+   "movingParts": 5,
    "budgetClass": "ground"
   },
   "adobe_house": {
@@ -6179,24 +6263,24 @@
   },
   "artillery": {
    "file": "artillery.glb",
-   "fileBytes": 331012,
-   "sha1": "5c07b34f8196531d",
+   "fileBytes": 703076,
+   "sha1": "907c21878ab31ec1",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 35,
-   "meshes": 29,
+   "nodes": 63,
+   "meshes": 57,
    "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 29,
-   "submeshes": 29,
-   "materialSlots": 29,
+   "renderers": 57,
+   "submeshes": 57,
+   "materialSlots": 57,
    "materialsUsed": 8,
-   "triangles": 5326,
-   "vertices": 6135,
+   "triangles": 9958,
+   "vertices": 13353,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -6204,36 +6288,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 116,
+   "loosePieces": 315,
    "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "nonManifoldEdges": 10,
    "boundsMin": [
-    -1.59,
-    -0.0527,
-    -2.65
+    -1.5038,
+    -0.0671,
+    -3.155
    ],
    "boundsMax": [
-    1.59,
-    2.84,
-    5.15
+    1.4625,
+    2.9598,
+    4.858
    ],
    "size": [
-    7.8,
-    3.18,
-    2.893
+    8.013,
+    2.966,
+    3.027
    ],
    "center": [
-    0.0,
-    1.394,
-    1.25
+    -0.021,
+    1.446,
+    0.851
    ],
-   "structureHash": "cd8d305a6bdd8bcc",
+   "structureHash": "b8d28c95de1c6888",
    "color0": {
-    "mean": 0.6288,
-    "min": 0.0801,
+    "mean": 0.5813,
+    "min": 0.0779,
     "max": 1.0,
-    "p05": 0.1411,
-    "p95": 0.981,
+    "p05": 0.1852,
+    "p95": 0.9035,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -6242,7 +6326,8 @@
     ],
     "main_cannon": [
      "Main_cannon",
-     "Main_cannon_cradle"
+     "Main_cannon_cradle",
+     "Main_cannon_evacuator"
     ],
     "muzzle_brake": [
      "Muzzle_brake"
@@ -6261,50 +6346,81 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
+    "Ammo_boxes",
+    "Antennas",
     "Cupola",
-    "Deck",
-    "Hatch_fittings",
-    "Hatch_fittings.001",
+    "Exhaust",
+    "Fenders",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grille_frames.001",
+    "Grilles",
+    "Grilles.001",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
+    "Hull_lower",
+    "Idlers",
+    "Kit_handles",
+    "Kit_reel",
+    "Kit_steel",
+    "Kit_steel.001",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
     "MG",
     "MG_ammo",
+    "MG_cradle",
+    "MG_post",
+    "MG_shield",
     "Main_cannon",
     "Main_cannon_cradle",
+    "Main_cannon_evacuator",
+    "Mantlet",
     "Mount_mg",
     "Muzzle_brake",
     "Muzzle_main",
     "Muzzle_mg",
-    "Periscope",
-    "Periscope_hoods",
     "Point_exhaust",
     "Point_fire",
+    "Racks",
+    "Rollers",
     "Sight",
+    "Sight.001",
+    "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
+    "Spades",
     "Sprockets",
-    "Steel",
     "Tail_lamps",
-    "Tarp",
+    "Team_band",
+    "Team_band.001",
+    "Team_roof",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
     "Travel_lock",
     "Turret",
-    "Turret_armor",
     "Turret_body",
+    "Turret_doors",
+    "Turret_ring",
+    "Turret_roof",
     "Tyres",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 9,958 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 13,353 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
    "units": [
     "artillery"
    ],
-   "movingParts": 4,
+   "movingParts": 5,
    "budgetClass": "ground"
   },
   "artillery_emplacement": {
@@ -6679,24 +6795,24 @@
   },
   "artillery_hd": {
    "file": "artillery_hd.glb",
-   "fileBytes": 792112,
-   "sha1": "61fd565324c37653",
+   "fileBytes": 703080,
+   "sha1": "1c9b59468407eacc",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 46,
-   "meshes": 40,
-   "materials": 9,
+   "nodes": 63,
+   "meshes": 57,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 40,
-   "submeshes": 40,
-   "materialSlots": 40,
-   "materialsUsed": 9,
-   "triangles": 12260,
-   "vertices": 15452,
+   "renderers": 57,
+   "submeshes": 57,
+   "materialSlots": 57,
+   "materialsUsed": 8,
+   "triangles": 9958,
+   "vertices": 13353,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -6704,36 +6820,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 319,
+   "loosePieces": 315,
    "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "nonManifoldEdges": 10,
    "boundsMin": [
-    -1.595,
-    -0.0527,
-    -2.65
+    -1.5038,
+    -0.0671,
+    -3.155
    ],
    "boundsMax": [
-    1.595,
-    2.8809,
-    5.15
+    1.4625,
+    2.9598,
+    4.858
    ],
    "size": [
-    7.8,
-    3.19,
-    2.934
+    8.013,
+    2.966,
+    3.027
    ],
    "center": [
-    0.0,
-    1.414,
-    1.25
+    -0.021,
+    1.446,
+    0.851
    ],
-   "structureHash": "aef5a874f487a8e4",
+   "structureHash": "b8d28c95de1c6888",
    "color0": {
-    "mean": 0.5696,
-    "min": 0.0749,
+    "mean": 0.5813,
+    "min": 0.0779,
     "max": 1.0,
-    "p05": 0.1195,
-    "p95": 0.9058,
+    "p05": 0.1852,
+    "p95": 0.9035,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -6742,7 +6858,8 @@
     ],
     "main_cannon": [
      "Main_cannon",
-     "Main_cannon_cradle"
+     "Main_cannon_cradle",
+     "Main_cannon_evacuator"
     ],
     "muzzle_brake": [
      "Muzzle_brake"
@@ -6761,51 +6878,68 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
+    "Ammo_boxes",
+    "Antennas",
     "Cupola",
-    "Deck",
-    "Hatch_fittings",
-    "Hatch_fittings.001",
+    "Exhaust",
+    "Fenders",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grille_frames.001",
+    "Grilles",
+    "Grilles.001",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
-    "Hull_bolts",
+    "Hull_lower",
+    "Idlers",
+    "Kit_handles",
+    "Kit_reel",
+    "Kit_steel",
+    "Kit_steel.001",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Lifting_eyes",
-    "Light_rims",
     "MG",
     "MG_ammo",
-    "MG_belt",
-    "MG_detail",
+    "MG_cradle",
+    "MG_post",
+    "MG_shield",
     "Main_cannon",
     "Main_cannon_cradle",
+    "Main_cannon_evacuator",
+    "Mantlet",
     "Mount_mg",
     "Muzzle_brake",
     "Muzzle_main",
     "Muzzle_mg",
-    "Periscope",
-    "Periscope.001",
-    "Periscope_guards",
-    "Periscope_guards.001",
-    "Periscope_hoods",
-    "Periscope_hoods.001",
     "Point_exhaust",
     "Point_fire",
+    "Racks",
+    "Rollers",
     "Sight",
+    "Sight.001",
+    "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
+    "Spades",
     "Sprockets",
-    "Steel",
     "Tail_lamps",
-    "Tarp",
+    "Team_band",
+    "Team_band.001",
+    "Team_roof",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
     "Travel_lock",
     "Turret",
-    "Turret_armor",
     "Turret_body",
-    "Turret_bolts",
+    "Turret_doors",
+    "Turret_ring",
+    "Turret_roof",
     "Tyres",
-    "Vents",
-    "Wheel_bolts",
     "Wheels"
    ],
    "category": "ground",
@@ -6815,7 +6949,7 @@
    "units": [
     "artillery"
    ],
-   "movingParts": 4,
+   "movingParts": 5,
    "budgetClass": "ground"
   },
   "artillery_wreck": {
@@ -25122,24 +25256,24 @@
   },
   "flame_tank": {
    "file": "flame_tank.glb",
-   "fileBytes": 739644,
-   "sha1": "04300fa7a1517f24",
+   "fileBytes": 724804,
+   "sha1": "0f0929559c9d858b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 65,
-   "meshes": 59,
+   "nodes": 64,
+   "meshes": 58,
    "materials": 13,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 59,
-   "submeshes": 59,
-   "materialSlots": 59,
+   "renderers": 58,
+   "submeshes": 58,
+   "materialSlots": 58,
    "materialsUsed": 13,
-   "triangles": 10894,
-   "vertices": 13969,
+   "triangles": 10726,
+   "vertices": 13677,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -25147,7 +25281,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 307,
+   "loosePieces": 301,
    "openEdges": 0,
    "nonManifoldEdges": 17,
    "boundsMin": [
@@ -25170,13 +25304,13 @@
     0.845,
     -0.062
    ],
-   "structureHash": "9b0d496f82d70a33",
+   "structureHash": "563abff7a4638831",
    "color0": {
-    "mean": 0.5392,
+    "mean": 0.5403,
     "min": 0.0669,
     "max": 1.0,
-    "p05": 0.1465,
-    "p95": 0.8394,
+    "p05": 0.1447,
+    "p95": 0.8399,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -25218,7 +25352,6 @@
     "Grille_frames",
     "Grille_frames.001",
     "Grilles",
-    "Hatch_fittings",
     "Hatches",
     "Hatches.001",
     "Hubs",
@@ -25274,8 +25407,8 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "triangles 10,894 over the ground normal hard cap 9,700 (info: kept, owner rule)",
-    "vertices 13,969 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+    "triangles 10,726 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 13,677 over the ground normal hard cap 12,600 (info: kept, owner rule)"
    ],
    "units": [
     "flame_tank"
@@ -53155,24 +53288,24 @@
   },
   "tank_destroyer": {
    "file": "tank_destroyer.glb",
-   "fileBytes": 289656,
-   "sha1": "93a1d44f96759a89",
+   "fileBytes": 712720,
+   "sha1": "0f9bfee07c63e2ff",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 31,
-   "meshes": 25,
-   "materials": 7,
+   "nodes": 60,
+   "meshes": 54,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 25,
-   "submeshes": 25,
-   "materialSlots": 25,
-   "materialsUsed": 7,
-   "triangles": 4702,
-   "vertices": 5367,
+   "renderers": 54,
+   "submeshes": 54,
+   "materialSlots": 54,
+   "materialsUsed": 10,
+   "triangles": 9998,
+   "vertices": 13611,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -53180,36 +53313,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 99,
+   "loosePieces": 341,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.33,
-    -0.0106,
-    -2.895
+    -1.31,
+    -0.0706,
+    -2.92
    ],
    "boundsMax": [
-    1.33,
-    1.99,
-    5.02
+    1.31,
+    2.1698,
+    5.14
    ],
    "size": [
-    7.915,
-    2.66,
-    2.001
+    8.06,
+    2.62,
+    2.24
    ],
    "center": [
     0.0,
-    0.99,
-    1.063
+    1.05,
+    1.11
    ],
-   "structureHash": "d224b60cc9dff7e5",
+   "structureHash": "ed3874850e3a6acb",
    "color0": {
-    "mean": 0.6201,
-    "min": 0.078,
+    "mean": 0.5792,
+    "min": 0.0766,
     "max": 1.0,
-    "p05": 0.1842,
-    "p95": 0.9728,
+    "p05": 0.1976,
+    "p95": 0.8064,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -53217,7 +53350,9 @@
      "Turret"
     ],
     "main_cannon": [
-     "Main_cannon"
+     "Main_cannon",
+     "Main_cannon_evacuator",
+     "Main_cannon_sleeve"
     ],
     "muzzle_brake": [
      "Muzzle_brake"
@@ -53236,68 +53371,100 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Deck",
-    "Hatch_fittings",
-    "Hatch_fittings.001",
+    "Antennas",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
+    "Idlers",
+    "Jerrycans",
+    "Kit_latches",
+    "Kit_reel",
+    "Kit_steel",
+    "Kit_steel.001",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Light_rims",
     "MG",
     "MG_ammo",
+    "MG_cradle",
+    "MG_post",
+    "MG_shield",
     "Main_cannon",
+    "Main_cannon_evacuator",
+    "Main_cannon_sleeve",
+    "Mantlet",
     "Mount_mg",
     "Muzzle_brake",
     "Muzzle_main",
     "Muzzle_mg",
-    "Periscope",
-    "Periscope_hoods",
     "Point_exhaust",
     "Point_fire",
+    "Racks",
+    "Rollers",
     "Sight",
+    "Sight.001",
+    "Skirt_edge",
+    "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
-    "Steel",
+    "Stowage",
+    "Stowage.001",
+    "Suspension",
     "Tail_lamps",
+    "Team_band",
+    "Team_band.001",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
+    "Trim_vane",
     "Turret",
-    "Turret_armor",
     "Turret_body",
+    "Turret_ring",
+    "Turret_roof",
     "Tyres",
+    "Waterjets",
+    "Waterjets_dark",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 9,998 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 13,611 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
    "units": [
     "tank_destroyer"
    ],
-   "movingParts": 3,
+   "movingParts": 5,
    "budgetClass": "ground"
   },
   "tank_destroyer_hd": {
    "file": "tank_destroyer_hd.glb",
-   "fileBytes": 735028,
-   "sha1": "d69a3743b964e284",
+   "fileBytes": 712724,
+   "sha1": "6933bbd06ea6a000",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 41,
-   "meshes": 35,
-   "materials": 8,
+   "nodes": 60,
+   "meshes": 54,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 35,
-   "submeshes": 35,
-   "materialSlots": 35,
-   "materialsUsed": 8,
-   "triangles": 11494,
-   "vertices": 14365,
+   "renderers": 54,
+   "submeshes": 54,
+   "materialSlots": 54,
+   "materialsUsed": 10,
+   "triangles": 9998,
+   "vertices": 13611,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -53305,36 +53472,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 292,
+   "loosePieces": 341,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.335,
-    -0.0106,
-    -2.895
+    -1.31,
+    -0.0706,
+    -2.92
    ],
    "boundsMax": [
-    1.335,
-    2.045,
-    5.02
+    1.31,
+    2.1698,
+    5.14
    ],
    "size": [
-    7.915,
-    2.67,
-    2.056
+    8.06,
+    2.62,
+    2.24
    ],
    "center": [
     0.0,
-    1.017,
-    1.063
+    1.05,
+    1.11
    ],
-   "structureHash": "815f78123d36d9f0",
+   "structureHash": "ed3874850e3a6acb",
    "color0": {
-    "mean": 0.5571,
-    "min": 0.0619,
+    "mean": 0.5792,
+    "min": 0.0766,
     "max": 1.0,
-    "p05": 0.1199,
-    "p95": 0.8873,
+    "p05": 0.1976,
+    "p95": 0.8064,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -53342,7 +53509,9 @@
      "Turret"
     ],
     "main_cannon": [
-     "Main_cannon"
+     "Main_cannon",
+     "Main_cannon_evacuator",
+     "Main_cannon_sleeve"
     ],
     "muzzle_brake": [
      "Muzzle_brake"
@@ -53361,46 +53530,65 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Deck",
-    "Hatch_fittings",
-    "Hatch_fittings.001",
+    "Antennas",
+    "Glass",
+    "Glass.001",
+    "Grille_frames",
+    "Grilles",
     "Hatches",
     "Hatches.001",
     "Hubs",
     "Hull",
-    "Hull_bolts",
+    "Idlers",
+    "Jerrycans",
+    "Kit_latches",
+    "Kit_reel",
+    "Kit_steel",
+    "Kit_steel.001",
+    "Lamp_guards",
+    "Lamp_rims",
     "Lamps",
-    "Lifting_eyes",
-    "Light_rims",
     "MG",
     "MG_ammo",
-    "MG_belt",
-    "MG_detail",
+    "MG_cradle",
+    "MG_post",
+    "MG_shield",
     "Main_cannon",
+    "Main_cannon_evacuator",
+    "Main_cannon_sleeve",
+    "Mantlet",
     "Mount_mg",
     "Muzzle_brake",
     "Muzzle_main",
     "Muzzle_mg",
-    "Periscope",
-    "Periscope.001",
-    "Periscope_guards",
-    "Periscope_guards.001",
-    "Periscope_hoods",
-    "Periscope_hoods.001",
     "Point_exhaust",
     "Point_fire",
+    "Racks",
+    "Rollers",
     "Sight",
+    "Sight.001",
+    "Skirt_edge",
+    "Skirts",
+    "Smoke_brackets",
+    "Smoke_launchers",
     "Sprockets",
-    "Steel",
+    "Stowage",
+    "Stowage.001",
+    "Suspension",
     "Tail_lamps",
+    "Team_band",
+    "Team_band.001",
+    "Tow_cable",
+    "Track_links",
     "Tracks",
+    "Trim_vane",
     "Turret",
-    "Turret_armor",
     "Turret_body",
-    "Turret_bolts",
+    "Turret_ring",
+    "Turret_roof",
     "Tyres",
-    "Wheel_bolts",
+    "Waterjets",
+    "Waterjets_dark",
     "Wheels"
    ],
    "category": "ground",
@@ -53410,7 +53598,7 @@
    "units": [
     "tank_destroyer"
    ],
-   "movingParts": 3,
+   "movingParts": 5,
    "budgetClass": "ground"
   },
   "tank_ditch": {

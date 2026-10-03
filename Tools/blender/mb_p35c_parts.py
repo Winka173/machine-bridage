@@ -322,3 +322,17 @@ def ammo_tins(a, loc, n=3, size=(.12, .3, .2), parent=None, axis='X'):
         k.block(a.part('Ammo_boxes', 'Crate', parent), size, loc=p, chamfer=.01)
         a.part('Kit_handles', 'Steel', parent).box((.02, size[1] * .4, .02), loc=(p[0], p[1], p[2] + size[2] + .01),
                                                    bevel=0)
+
+
+def hatch(a, loc, r=.25, parent=None, mat='Armor', periscope=False, facing=(0, -1, 0), seg=10):
+    """A lean round hatch: the coaming ring, the domed lid, a hinge block and a grab handle (about 90 triangles)."""
+    x, y, z = loc
+    hp = a.part('Hatches', mat, parent)
+    k.ring(hp, [(r * .92, 0), (r * 1.06, 0), (r * 1.06, .04), (r * .92, .04)], loc=loc, seg=seg)
+    k.lathe(hp, [(0, .085), (r * .7, .075), (r * .9, .05), (r * .9, .03)], loc=loc, seg=seg, worn=(2,))
+    st = a.part('Kit_steel', 'Steel', parent)
+    st.box((r * .5, .06, .05), loc=(x, y + r * .95, z + .05), bevel=0)
+    st.box((r * .6, .025, .025), loc=(x, y - r * .45, z + .1), bevel=0)
+    if periscope:
+        K.periscope(a, (x + facing[0] * r * 1.2, y + facing[1] * r * 1.2, z), facing=facing, parent=parent,
+                    size=(.12, .07, .06))
