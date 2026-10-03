@@ -25,15 +25,11 @@
    ]
   },
   {
-   "feature": "20 ft and 10 ft containers: walls, roofs with ribs, side ribs, locking bars, door seams, corner castings, Team stripes",
+   "feature": "20 ft and 10 ft containers (merged per material for the renderer cap): walls and roofs, ribs and door seams, locking bars and corner castings, Team stripes",
    "nodes": [
     "Shelter",
-    "Roof",
-    "Roof_ribs",
     "Container_ribs",
-    "Locking_bars",
-    "Door_seams",
-    "Corner_castings",
+    "Container_fittings",
     "Team_band"
    ]
   },
@@ -42,11 +38,8 @@
    "nodes": [
     "Berm",
     "Fuel_tanks",
-    "Saddles",
-    "Tank_straps",
-    "Tank_bands",
-    "Tank_hatches",
-    "Tank_vents"
+    "Tank_fittings",
+    "Hazard_marks"
    ]
   },
   {
@@ -88,9 +81,6 @@
     "Light_poles",
     "Mast",
     "Antennas",
-    "Guy_wires",
-    "Radio_box",
-    "Flag_pole",
     "Flag"
    ]
   }

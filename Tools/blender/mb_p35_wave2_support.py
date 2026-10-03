@@ -52,7 +52,7 @@ def _container(a, loc, length, yaw=0.0, mat='ContainerBlue'):
     def at(dx, dy, dz):
         return (x + dx * c - dy * s, y + dx * s + dy * c, z + dz)
     W.slab(a.part('Shelter', mat), (w, length, h - .06), (x, y, z), caps=(False, False), rot=(0, 0, yaw))
-    k.block(a.part('Roof', mat), (w + .02, length + .02, .08), loc=at(0, 0, h - .04), rot=(0, 0, yaw), chamfer=0)
+    k.block(a.part('Shelter', mat), (w + .02, length + .02, .08), loc=at(0, 0, h - .04), rot=(0, 0, yaw), chamfer=0)
     ribs = a.part('Container_ribs', 'Undercarriage')
     n = int(length / .55)
     for i in range(1, n):
@@ -60,20 +60,20 @@ def _container(a, loc, length, yaw=0.0, mat='ContainerBlue'):
         for sx in (-1, 1):
             ribs.box((.03, .06, h - .3), loc=at(sx * (w / 2 + .012), dy, h / 2), rot=(0, 0, yaw), bevel=0)
     for sx in (-1, 1):
-        a.part('Locking_bars', 'Steel').box((.04, .03, h - .2), loc=at(sx * .35, length / 2 + .02, h / 2),
+        a.part('Container_fittings', 'Steel').box((.04, .03, h - .2), loc=at(sx * .35, length / 2 + .02, h / 2),
                                             rot=(0, 0, yaw), bevel=0)
-        a.part('Locking_bars', 'Steel').box((.04, .03, h - .2), loc=at(sx * .85, length / 2 + .02, h / 2),
+        a.part('Container_fittings', 'Steel').box((.04, .03, h - .2), loc=at(sx * .85, length / 2 + .02, h / 2),
                                             rot=(0, 0, yaw), bevel=0)
-    a.part('Door_seams', 'Undercarriage').box((.02, .02, h - .1), loc=at(0, length / 2 + .015, h / 2),
+    a.part('Container_ribs', 'Undercarriage').box((.02, .02, h - .1), loc=at(0, length / 2 + .015, h / 2),
                                               rot=(0, 0, yaw), bevel=0)
     for sx in (-1, 1):
         for sy in (-1, 1):
             for zz in (.08, h - .08):
-                a.part('Corner_castings', 'Steel').box((.18, .18, .16), loc=at(sx * (w / 2 - .08),
+                a.part('Container_fittings', 'Steel').box((.18, .18, .16), loc=at(sx * (w / 2 - .08),
                                                                               sy * (length / 2 - .08), zz),
                                                        rot=(0, 0, yaw), bevel=0)
     a.part('Team_band', 'Team').box((.02, length * .9, .2), loc=at(w / 2 + .03, 0, h - .5), rot=(0, 0, yaw), bevel=0)
-    rr = a.part('Roof_ribs', 'Undercarriage')
+    rr = a.part('Container_ribs', 'Undercarriage')
     for i in range(1, int(length / .6)):
         rr.box((w - .1, .05, .012), loc=at(0, -length / 2 + i * .6, h + .005), rot=(0, 0, yaw), bevel=0)
     a.part('Team_band', 'Team').box((.02, length * .9, .2), loc=at(-w / 2 - .03, 0, h - .5), rot=(0, 0, yaw),
@@ -92,7 +92,7 @@ def _forklift(a, loc, yaw=0.0):
     g.box((1.1, 1.05, .05), loc=(x, y + .07, z + 2.15), bevel=0)
     for dx in (-.4, -.15, .1, .35):
         g.box((.04, 1.0, .04), loc=(x + dx, y + .07, z + 2.19), bevel=0)
-    k.block(a.part('Seats', 'Rubber'), (.45, .4, .15), loc=(x, y + .25, z + 1.0), chamfer=.02)
+    k.block(a.part('Hoses', 'Rubber'), (.45, .4, .15), loc=(x, y + .25, z + 1.0), chamfer=.02)
     for sx in (-1, 1):
         a.part('Forklift_mast', 'Undercarriage').box((.1, .12, 2.3), loc=(x + sx * .4, y - 1.1, z + 1.3), bevel=0)
     a.part('Forklift_mast', 'Undercarriage').box((.9, .1, .1), loc=(x, y - 1.1, z + 2.4), bevel=0)
@@ -141,14 +141,14 @@ def logistics_station(a):
                                                (0, 2.0)], loc=(x, 1.95, G + .75), rot=(R90, 0, 0), seg=12,
                 worn=(2, 3))
         for y in (.6, 1.95, 3.3):
-            a.part('Saddles', 'Concrete').box((.9, .25, .3), loc=(x, y, G + .15), bevel=0)
-            a.part('Tank_straps', 'Steel').cyl(.565, .06, loc=(x, y, G + .75), rot=(R90, 0, 0), seg=8, bevel=0)
-        a.part('Tank_hatches', 'Steel').cyl(.18, .08, loc=(x, 1.2, G + 1.32), seg=8, bevel=0)
-        a.part('Tank_vents', 'Steel').cyl(.04, .4, loc=(x, 2.9, G + 1.5), seg=6, bevel=0)
+            a.part('Base', 'Concrete').box((.9, .25, .3), loc=(x, y, G + .15), bevel=0)
+            a.part('Tank_fittings', 'Steel').cyl(.565, .06, loc=(x, y, G + .75), rot=(R90, 0, 0), seg=8, bevel=0)
+        a.part('Tank_fittings', 'Steel').cyl(.18, .08, loc=(x, 1.2, G + 1.32), seg=8, bevel=0)
+        a.part('Tank_fittings', 'Steel').cyl(.04, .4, loc=(x, 2.9, G + 1.5), seg=6, bevel=0)
     a.part('Hazard_marks', 'Hazard').box((2.2, .03, .2), loc=(-2.45, by0 + .02, G + .45), rot=(.4, 0, 0), bevel=0)
     for x in (-3.0, -1.95):
         for y in (.0, 3.9):
-            a.part('Tank_bands', 'Hazard').cyl(.56, .12, loc=(x, y, G + .75), rot=(R90, 0, 0), seg=8, bevel=0)
+            a.part('Hazard_marks', 'Hazard').cyl(.56, .12, loc=(x, y, G + .75), rot=(R90, 0, 0), seg=8, bevel=0)
     # A wire fence along the front and the right edge, its gate gap at the forklift lane.
     K.wire_fence(a, [(-3.95, -1.0, G), (-3.95, -4.95, G), (-1.6, -4.95, G)], h=1.5, post=.75, strands=3,
                  concertina=False)
@@ -183,9 +183,9 @@ def logistics_station(a):
     for dx in (-.4, .4):
         a.part('Antennas', 'Steel').box((.03, .03, .5), loc=(mx + dx, my, G + 3.1), bevel=0)
     for (x, y) in ((-3.9, 3.8), (-2.6, 4.9)):
-        a.part('Guy_wires', 'Steel').tube([(mx, my, G + 2.9), (x, y, G)], .007, seg=3)
-    k.block(a.part('Radio_box', 'Armor'), (.4, .3, .45), loc=(-3.0, 4.75, G + .22), chamfer=.02)
-    a.part('Flag_pole', 'Steel').cyl(.025, 3.3, loc=(3.75, -4.7, G + 1.65), seg=6, bevel=0)
+        a.part('Mast', 'Steel').tube([(mx, my, G + 2.9), (x, y, G)], .007, seg=3)
+    k.block(a.part('Pump_skid', 'Armor'), (.4, .3, .45), loc=(-3.0, 4.75, G + .22), chamfer=.02)
+    a.part('Mast', 'Steel').cyl(.025, 3.3, loc=(3.75, -4.7, G + 1.65), seg=6, bevel=0)
     a.part('Flag', 'Team').box((.03, .7, .45), loc=(3.75, -4.35, G + 3.1), rot=(0, 0, .1), bevel=0)
     for i in range(8):
         u = i * TAU / 8
