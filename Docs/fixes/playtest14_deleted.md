@@ -133,3 +133,10 @@ Card images (`Resources/UI/Cards/<id>.png`) of these were deleted with their man
   `Tools/assets/gold_metrics.json` notes, one-shot importers of earlier prompts (`Tools/balance/import_xlsx.py`, `import_names.py`,
   `p32_roster.py`, `steps_b.py`, `report_summary.py`, `apply_model_sizes.py`, `p32_base_audit.py`), and reports under `Docs/`
   other than `Docs/export/current` (`Docs/balance`, `Docs/models`, `Docs/stuck-report`, `Docs/checks`, `Docs/art`, `Docs/maps`, ...).
+
+## Source spreadsheets (cloud session 3)
+
+The ids above are out of the spreadsheets the importers read (Can_bang, Can_bang_dot2_v2, AI_Research,
+Cot_truyen_Che_do_v2): `python Tools/balance/pt14_xlsx_prune.py` empties the rows keyed by them and drops them from id
+lists, editing the workbooks' XML so layout, styles, formulas and computed values stay. What it changed, cell by cell:
+`Docs/fixes/playtest14_xlsx.md`.
