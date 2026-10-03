@@ -1,0 +1,30 @@
+{
+ "id": "microwave_vehicle",
+ "class": "wheeled",
+ "real": ["Epirus Leonidas-class solid-state high-power microwave emitter (counter-drone)", "JLTV-class 4x4 utility vehicle (Oshkosh L-ATV, two-seat utility body)"],
+ "shape": "No unit_refs entry and no unit_sheet.json row (the def came in prompt 25 F2): the card says it downs every enemy drone in a 60 degree cone out to 30 m with a microwave pulse every 8 s. The closest fielded system is a flat square HPM array on a pan-tilt mount on a light tactical vehicle.",
+ "confidence": "ban_dau_doan (no reference row: the carrier and emitter pairing is the lane's choice, QUESTIONS.md)",
+ "target_size": {"L": 5.8, "W": 2.1, "H": 2.9, "source": "balance.json modelSize (a JLTV is 6.2 x 2.5 x 2.6 m; the emitter inside the height)", "tolerance": 0.10},
+ "features": [
+  {"feature": "flat square emitter array of horn cells on a pan-tilt yoke, tilted up", "nodes": ["Turret", "Emitter", "Emitter_face", "Horn_cells", "Muzzle_main"]},
+  {"feature": "the emitter pedestal and yoke", "nodes": ["Pedestal", "Turret_armor"]},
+  {"feature": "power module: generator with vents and grilles, cable reels, power cable", "nodes": ["Generators", "Generator_vents", "Cable_reels", "Kit_cables"]},
+  {"feature": "JLTV-class body: long sloping armoured bonnet with grille slots, armoured two-door cab, utility bed", "nodes": ["Cab", "Cab_armor", "Grille", "Bed", "Glass"]},
+  {"feature": "four big tyres on independent suspension, V belly plate", "nodes": ["Tyres", "Wheels", "Suspension", "Axles", "Belly"]}
+ ],
+ "class_parts": ["wheels", "axles", "cab", "glass", "lights", "stowage", "weapon"],
+ "weapons": [],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [3000, 5000], "floor": 2100, "cap_numbers": 7500, "lod1_share": 0.5, "lod2_share": 0.2},
+ "team_zones": ["bonnet and cab (Team)", "the emitter's rim (Team)", "a band along both sides (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [{"part": "wreck wheel", "node": "Part_wheel"}, {"part": "wreck wheel", "node": "Part_wheelb"}],
+ "wreck": "breaks up as a wheeled vehicle (WreckBreakup): Part_wheel, Part_wheelb from mb_p34_parts",
+ "faction_style": "Accord counter-drone vehicle",
+ "details": {
+  "tier1": ["bonnet", "cab", "bed", "emitter", "four wheels"],
+  "tier2": ["pedestal and yoke", "generator", "cable reels", "fenders", "bumper", "fuel tank", "tool box", "roof rails", "belly plate"],
+  "tier3": ["horn cells", "back ribs", "grille slots", "lamps", "mirrors", "wipers", "hinges", "handles", "steps", "wheel nuts", "wishbones and struts", "whip antenna"]
+ },
+ "questions": ["microwave_vehicle has no unit_refs row: built as a Leonidas-class array on a JLTV-class utility vehicle. Confirm or name the reference."]
+}

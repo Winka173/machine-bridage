@@ -61,7 +61,7 @@
   },
   "ammo_carrier": {
     "file": "ammo_carrier.glb",
-    "triangles": 3388
+    "triangles": 7492
   },
   "ammo_crate": {
     "file": "ammo_crate.glb",
@@ -393,7 +393,7 @@
   },
   "counter_battery_radar": {
     "file": "counter_battery_radar.glb",
-    "triangles": 2396
+    "triangles": 6956
   },
   "cp_relay": {
     "file": "cp_relay.glb",
@@ -801,11 +801,11 @@
   },
   "elite_mbt": {
     "file": "elite_mbt.glb",
-    "triangles": 4792
+    "triangles": 10002
   },
   "elite_mlrs": {
     "file": "elite_mlrs.glb",
-    "triangles": 2692
+    "triangles": 7446
   },
   "elite_tank_destroyer": {
     "file": "elite_tank_destroyer.glb",
@@ -1157,7 +1157,7 @@
   },
   "lancet_truck": {
     "file": "lancet_truck.glb",
-    "triangles": 2314
+    "triangles": 7300
   },
   "landing_craft": {
     "file": "landing_craft.glb",
@@ -1249,7 +1249,7 @@
   },
   "microwave_vehicle": {
     "file": "microwave_vehicle.glb",
-    "triangles": 4914
+    "triangles": 6314
   },
   "mine": {
     "file": "mine.glb",
@@ -1669,7 +1669,7 @@
   },
   "smoke_carrier": {
     "file": "smoke_carrier.glb",
-    "triangles": 3698
+    "triangles": 8458
   },
   "snow_pine": {
     "file": "snow_pine.glb",
@@ -1737,7 +1737,7 @@
   },
   "supply_truck": {
     "file": "supply_truck.glb",
-    "triangles": 2862
+    "triangles": 7494
   },
   "supreme_command": {
     "file": "supreme_command.glb",
@@ -1745,7 +1745,7 @@
   },
   "swarm_carrier": {
     "file": "swarm_carrier.glb",
-    "triangles": 3464
+    "triangles": 4918
   },
   "tank_buster": {
     "file": "tank_buster.glb",
@@ -1861,7 +1861,7 @@
   },
   "vbied": {
     "file": "vbied.glb",
-    "triangles": 1574
+    "triangles": 4698
   },
   "vehicle_hangar": {
     "file": "vehicle_hangar.glb",

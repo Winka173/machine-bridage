@@ -1,0 +1,34 @@
+{
+ "id": "smoke_carrier",
+ "class": "tracked",
+ "real": ["M58 Wolf (M113A3 hull with a smoke generator system)", "M2 Browning 12.7 mm (commander's cupola)"],
+ "shape": "unit_sheet.json Phương tiện: a low box M113 hull, a cylindrical smoke generator and exhaust pipe on the rear roof, smoke grenade dischargers on both sides; from above a simple box with the generator drum at the rear; about 3.9 x 2.2 x 2.0 m (0.8 x the real M58 Wolf); visible weapon M2 Browning 12.7 mm; team stripes on the roof and both sides; no real insignia, flags or logos.",
+ "confidence": "xấp xỉ (M113A3 / M58 published dimensions and photographs)",
+ "target_size": {"L": 4.21, "W": 2.24, "H": 2.64, "source": "balance.json modelSize (0.87 x the M113A3's 4.86 x 2.69 m; the generator and cupola gun inside the height)", "tolerance": 0.10},
+ "features": [
+  {"feature": "low M113 box hull: long sloped glacis with the folded trim vane, sponsons over the tracks, radiused plate edges", "nodes": ["Hull", "Hull_lower", "Trim_vane", "Skirt_edge"]},
+  {"feature": "cylindrical smoke generator on its frame on the rear roof, cooling fins, the bent exhaust outlet, the fog-oil tank", "nodes": ["Smoke_generator", "Smoke_fins", "Smoke_outlet", "Smoke_tank", "Smoke_frame"]},
+  {"feature": "four-tube smoke grenade dischargers on both glacis corners", "nodes": ["Smoke_launchers", "Smoke_brackets"]},
+  {"feature": "commander's cupola with periscopes and the M2 on its raised ring behind a shield", "nodes": ["Turret", "Cupola", "Periscopes", "Main_cannon", "Cradle", "Gun_shield", "MG_belt"]},
+  {"feature": "driver's hatch with periscopes (front left), engine grilles and exhaust (front right)", "nodes": ["Hatches", "Grilles", "Exhaust"]},
+  {"feature": "five road wheels a side, front sprocket, rear idler, linked track", "nodes": ["Wheels", "Sprockets", "Idlers", "Tracks", "Track_links"]},
+  {"feature": "M113A3 external armoured fuel tanks flanking the rear ramp", "nodes": ["Fuel_tanks"]}
+ ],
+ "class_parts": ["hull", "turret", "mantlet", "barrel", "roadwheels", "sprocket", "idler", "tracks", "skirts", "hatches", "sight", "roof_mg", "smoke", "stowage"],
+ "weapons": [
+  {"weapon": "hmg_selfdef_15", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "no `barrels` (1)"}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [4000, 7000], "floor": 2800, "lod1_share": 0.5, "lod2_share": 0.2},
+ "team_zones": ["the upper hull (Team)", "a band along both sides (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "the Turret (cupola gun) flies off; the hull burns",
+ "faction_style": "military APC conversion (both factions)",
+ "details": {
+  "tier1": ["upper hull", "lower hull", "tracks", "smoke generator"],
+  "tier2": ["trim vane", "cupola", "driver's hatch", "engine grille", "fuel tanks", "ramp and door", "fog-oil tank", "generator frame", "road wheels", "sprocket", "idler"],
+  "tier3": ["track links", "periscopes", "smoke tubes", "hinges", "lamps and guards", "tow hooks", "weld line", "hoses", "jerrycan", "net roll", "MG belt", "fins"]
+ },
+ "questions": []
+}

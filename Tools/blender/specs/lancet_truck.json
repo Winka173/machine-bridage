@@ -1,0 +1,35 @@
+{
+ "id": "lancet_truck",
+ "class": "wheeled",
+ "real": ["KamAZ Typhoon-K 6x6 MRAP (K-63968 class)", "ZALA Lancet-3 loitering munition on a catapult rail", "M2 Browning 12.7 mm (cab roof ring)"],
+ "shape": "unit_sheet.json Phương tiện: an MRAP carrying a tube / rail launcher for the Lancet (X-wing drone); from above a long diagonal rail; about 7.2 x 2.0 x 2.6 m (0.8 x the real KamAZ Typhoon-K); visible weapons ZALA Lancet-3 (3 kg), M2 Browning 12.7 mm; team stripes on the roof and both sides; no real insignia, flags or logos.",
+ "confidence": "xấp xỉ (Typhoon-K published dimensions; Lancet-3 photographs; the rail on the Typhoon-K is the sheet's design)",
+ "target_size": {"L": 7.41, "W": 2.02, "H": 2.7, "source": "balance.json modelSize (0.82 x the K-63968's 8.99 x 2.55 x 3.37 m)", "tolerance": 0.10},
+ "features": [
+  {"feature": "angular armoured cab-forward cab with big flat armoured windscreens, V-hull front, heavy bumper", "nodes": ["Cab", "Glass", "Bumper"]},
+  {"feature": "armoured equipment body with sloped lower sides, side lockers, rear door and ladder", "nodes": ["Body", "Hatches", "Ladders"]},
+  {"feature": "long catapult rail rising forward on the launcher turntable", "nodes": ["Turret", "Rail", "Rams", "Muzzle_main"]},
+  {"feature": "a Lancet on the rail: slim body, two cruciform X wing sets, pusher propeller", "nodes": ["Lancet", "Munition_wings", "Lancet_prop"]},
+  {"feature": "rack of six launch canisters for the reloads", "nodes": ["Box_shell", "Box_face", "Cells"]},
+  {"feature": "six big wheels on independent suspension (front axle, rear tandem)", "nodes": ["Tyres", "Wheels", "Axles", "Suspension"]},
+  {"feature": "M2 on a raised ring over the cab", "nodes": ["Mount_mg", "MG_barrel", "Gun_shield_mg", "Muzzle_mg"]}
+ ],
+ "class_parts": ["wheels", "axles", "cab", "glass", "lights", "stowage", "weapon"],
+ "weapons": [
+  {"weapon": "lancet", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"], "note": "no `barrels` (1): the rail's top end"},
+  {"weapon": "hmg_selfdef_15", "slot": "mg", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"]}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [3000, 5000], "floor": 2100, "cap_numbers": 7500, "lod1_share": 0.5, "lod2_share": 0.2},
+ "team_zones": ["the cab (Team)", "the Lancet's wings (Team)", "bands along the doors and the body (Team)"],
+ "colour_zones_min": 4,
+ "breakable": [],
+ "wreck": "breaks up without parts; the Turret flies off",
+ "faction_style": "Hegemon armoured truck",
+ "details": {
+  "tier1": ["armoured cab", "equipment body", "launch rail", "six wheels"],
+  "tier2": ["turntable and base", "canister rack", "Lancet", "fenders", "lockers", "rear door", "bumper", "roof gun ring", "deck railing", "stowage"],
+  "tier3": ["X wings", "propeller", "seeker", "guide tracks", "canister mouths", "mirrors", "wipers", "hinges", "handles", "steps", "lamps", "latches", "whip antenna", "ladder"]
+ },
+ "questions": []
+}
