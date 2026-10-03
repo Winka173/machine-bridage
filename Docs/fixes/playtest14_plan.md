@@ -50,3 +50,8 @@ Weapons/skills used only by deleted entries go too.
 - C feature/pt14-c: deletions; then non-boss model waves (4-6 models each): ew_jammer, iron_beam, command_vehicle,
   wheeled_gun (smaller turret), stealth_naval_strike, aa_vehicle + heavy_aa (real twin-cannon spacing), guard_tower,
   laser_ad_station, mg_bunker (several MGs firing), drone hangar + vehicle hangar + aircraft hangar.
+
+## Owner follow-up (03/10)
+- Q18: boss +20-30 % is VISUAL size only (hitbox/collision unchanged). Still waits for the boss confirmation.
+- Q19: boss escorts follow the boss's domain: ground boss -> ground vehicle escorts, sea boss -> boat escorts, air
+  boss -> aircraft escorts (fixes Nyx). Data/rule work, allowed now (lane A).
