@@ -248,10 +248,11 @@ def canvas_roll(a, loc, length, r=.1, parent=None, mat='Canvas'):
 
 
 def sandbag_run(a, path, courses=2, bag=(.6, .32, .15), part='Sandbags', mat='Sandbag', seed=0, parent=None,
-                closed=False):
+                closed=False, lean=False):
     """Sandbags laid along a polyline (wave 3): `courses` high, each course offset by half a bag and set back a
     little (a battered face), every bag a pillow block with jitter in size and yaw; the part name is the caller's
-    (Parapet, Walls, Sandbags) so a structure's gate roles can read it."""
+    (Parapet, Walls, Sandbags) so a structure's gate roles can read it. lean=True: square-cornered bags (about 36
+    triangles instead of 60) for long runs on towers under the triangle cap."""
     import random
     shape = a.part(part, mat, parent)
     rng = random.Random(seed * 7919 + len(path))
@@ -261,6 +262,70 @@ def sandbag_run(a, path, courses=2, bag=(.6, .32, .15), part='Sandbags', mat='Sa
         for p, t in k.along(pts, pitch=L * .96, start=L / 2 * (c % 2)):
             yaw = math.atan2(t.y, t.x)
             j = rng.uniform(-.04, .04)
-            k.block(shape, (L * (.95 + j), W * (1 + j), H), loc=(p.x, p.y, p.z + H / 2 + c * H * .9),
-                    rot=(0, 0, yaw + rng.uniform(-.07, .07)), chamfer=H * .4, ends=(False, True))
+            size = (L * (.95 + j), W * (1 + j), H)
+            loc = (p.x, p.y, p.z + H / 2 + c * H * .9)
+            rot = (0, 0, yaw + rng.uniform(-.07, .07))
+            if lean:
+                sx, sy = size[0] / 2, size[1] / 2
+                k.extrude(shape, [(-sx, -sy), (sx, -sy), (sx, sy), (-sx, sy)], H, loc=loc, rot=rot, axis='Z',
+                          chamfer=H * .4, ends=(False, True))
+            else:
+                k.block(shape, size, loc=loc, rot=rot, chamfer=H * .4, ends=(False, True))
     return shape
+
+
+class Elev:
+    """A barrel laid at elevation e (radians) from a base point, pointing to -Y (wave 3 towers): at(t) is the point t
+    metres up the bore, lathe_rot turns a lathe's +Z onto the bore, box_rot turns a box's -Y onto it."""
+
+    def __init__(self, base, e):
+        self.base, self.e = base, e
+        self.d = (0.0, -math.cos(e), math.sin(e))
+        self.lathe_rot = (R90 - e, 0, 0)
+        self.box_rot = (-e, 0, 0)
+
+    def at(self, t, dx=0.0, up=0.0):
+        """The point t along the bore, dx to the side, `up` metres off the bore (perpendicular, upward)."""
+        bx, by, bz = self.base
+        c, s = math.cos(self.e), math.sin(self.e)
+        return (bx + dx, by - t * c - up * s, bz + t * s + up * c)
+
+
+def earth_pad(a, outline, h, part='Base', mat='Dirt', taper=.94, parent=None):
+    """A dug earth pad of irregular outline (a field earthwork), its sides sloped by `taper` (wave 3 towers)."""
+    k.extrude(a.part(part, mat, parent), outline, h, loc=(0, 0, h / 2), axis='Z', chamfer=min(.08, h * .3),
+              corner=.12, taper=(taper, taper))
+
+
+def camo_net(a, poles, sag, z0, part='Camo_net', mat='Canvas', pole_part='Net_poles', parent=None, garnish=0, seed=0):
+    """A camouflage net on poles [(x, y, height)]: the net sags to a centre point `sag` below the mean pole height,
+    two-sided; garnish adds that many hanging scrim tufts (thin dangling flaps) along its edge."""
+    import random
+    rng = random.Random(seed)
+    pp = a.part(pole_part, 'Wood', parent)
+    pts = []
+    for x, y, h in poles:
+        pp.cyl(.04, h, loc=(x, y, z0 + h / 2), seg=5, bevel=0)
+        pts.append((x, y, z0 + h))
+    n = len(pts)
+    cx = sum(p[0] for p in pts) / n
+    cy = sum(p[1] for p in pts) / n
+    cz = sum(p[2] for p in pts) / n - sag
+    net = a.part(part, mat, parent)
+    verts, faces = [], []
+    for i in range(n):
+        p, q = pts[i], pts[(i + 1) % n]
+        m = ((p[0] + q[0]) / 2, (p[1] + q[1]) / 2, (p[2] + q[2]) / 2 - sag * .45)
+        b = len(verts)
+        verts += [p, m, q, (cx, cy, cz)]
+        faces += [(b, b + 1, b + 3), (b + 1, b + 2, b + 3), (b + 3, b + 1, b), (b + 3, b + 2, b + 1)]
+    net.mesh(verts, faces)
+    if garnish:
+        g = a.part(part + '_garnish', 'FoliageDark', parent)
+        for j in range(garnish):
+            i = j % n
+            p, q = pts[i], pts[(i + 1) % n]
+            f = rng.uniform(.15, .85)
+            x, y = p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f
+            z = p[2] + (q[2] - p[2]) * f - sag * .45 * math.sin(math.pi * f)
+            g.box((.25, .02, .35), loc=(x, y, z - .17), rot=(0, 0, math.atan2(q[1] - p[1], q[0] - p[0])), bevel=0)

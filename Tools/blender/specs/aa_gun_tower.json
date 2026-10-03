@@ -1,0 +1,34 @@
+{
+ "id": "aa_gun_tower",
+ "class": "tower",
+ "real": ["Bofors 40 mm L/70 (towed carriage emplaced on its four outriggers)", "a small fire-control radar dish on a tripod (Flycatcher-class role)"],
+ "shape": "Strings note.aa_gun_tower: a single Bofors 40 mm L/70 on a turntable mount with a fire-control radar; modelSize 5.5 x 5.5 x 3.2 m; clear from the 45-60 degree camera; faction stripe.",
+ "confidence": "xấp xỉ (the L/70's layout and barrel length; the emplacement is a field gun pit)",
+ "target_size": {"L": 5.5, "W": 5.5, "H": 3.2, "source": "balance.json modelSize", "tolerance": 0.1},
+ "features": [
+  {"feature": "earth pad edged with sleepers, a round sandbag gun pit open at the rear, a timber floor", "nodes": ["Base", "Base_timbers", "Sandbags", "Pad"]},
+  {"feature": "the cruciform carriage on four outrigger arms and jack pads, the race ring", "nodes": ["Turntable", "Jacks", "Race"]},
+  {"feature": "the turning mount: cheeks, elevating arc, handwheels", "nodes": ["Turret", "Mount", "Elevation_arc", "Handwheels"]},
+  {"feature": "the L/70 barrel raised 25 degrees: recoil-spring jacket, conical flash hider; cradle and loader housing", "nodes": ["Main_cannon", "Muzzle_brake", "Cradle", "Loader"]},
+  {"feature": "the vertical magazine guide with a four-round clip", "nodes": ["Clips", "Clip_rounds"]},
+  {"feature": "the front shield plates (Team) with rivets and struts", "nodes": ["Shield", "Shield_struts", "Kit_rivets"]},
+  {"feature": "the layer's and trainer's seats and reflex sights", "nodes": ["Seats", "Sights", "Glass"]},
+  {"feature": "the fire-control radar dish on a tripod mast with its cable", "nodes": ["Radar_post", "Radar_box", "Radar_dish", "Kit_cables"]},
+  {"feature": "ready-use clip racks, crates, spent cases, field telephone, whip antenna, rolled net, extinguisher, tool box", "nodes": ["Clip_racks", "Crates", "Spent_cases", "Field_phone", "Antennas", "Tarp", "Extinguishers", "Toolbox"]}
+ ],
+ "class_parts": ["base", "walls", "roof (the turning mount)", "antenna"],
+ "weapons": [{"weapon": "bofors_l70", "slot": "main", "mount": "Turret", "muzzles": ["Muzzle_main"]}],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [2000, 4000], "floor": 1400, "cap": 6000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "owner decision 6: a tower is seen in numbers, at most 1.5 x the class maximum"},
+ "team_zones": ["the mount and the shield (Team)"],
+ "colour_zones_min": 3,
+ "breakable": [],
+ "wreck": "towers collapse whole (no part nodes)",
+ "faction_style": "Accord (field-built: earth pad, sleepers, sandbag pit, timber floor)",
+ "details": {
+  "tier1": ["earth pad", "sandbag pit", "carriage", "mount and barrel", "radar mast"],
+  "tier2": ["outriggers and jacks", "cheeks", "shield", "seats", "loader", "clip racks", "crates"],
+  "tier3": ["bolts", "rivets", "handles", "pedals", "sights", "clip rounds", "spent cases", "phone", "antenna", "extinguisher"]
+ },
+ "questions": []
+}

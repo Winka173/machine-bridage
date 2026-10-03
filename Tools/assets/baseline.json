@@ -2718,6 +2718,16 @@
    "changes": [
     "blast_wall: bytes only"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "aa_gun_tower"
+   ],
+   "reason": "P35 wave 3: aa_gun_tower rebuilt (lane B)",
+   "changes": [
+    "FLAG aa_gun_tower: triangles 1,724 -> 5,924 (+243.6%); vertices 1,812 -> 8,188 (+351.9%); meshes 10 -> 45 (+350.0%); renderers 10 -> 45 (+350.0%); materials 8 -> 12 (+50.0%); materialSlots 10 -> 45 (+350.0%); fileBytes 101,308 -> 439,312 (+333.6%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -2854,22 +2864,22 @@
   },
   "aa_gun_tower": {
    "file": "aa_gun_tower.glb",
-   "fileBytes": 101308,
-   "sha1": "1025a648efa86c1a",
+   "fileBytes": 439312,
+   "sha1": "fc48e0982e7aace8",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 12,
-   "meshes": 10,
-   "materials": 8,
+   "nodes": 47,
+   "meshes": 45,
+   "materials": 12,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 10,
-   "submeshes": 10,
-   "materialSlots": 10,
-   "materialsUsed": 8,
-   "triangles": 1724,
-   "vertices": 1812,
+   "renderers": 45,
+   "submeshes": 45,
+   "materialSlots": 45,
+   "materialsUsed": 12,
+   "triangles": 5924,
+   "vertices": 8188,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -2877,36 +2887,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 28,
+   "loosePieces": 203,
    "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "nonManifoldEdges": 30,
    "boundsMin": [
-    -2.85,
-    -0.01,
-    -2.85
+    -2.663,
+    0.0,
+    -2.5634
    ],
    "boundsMax": [
-    2.85,
-    3.1969,
-    3.0366
+    2.7485,
+    3.1825,
+    2.5635
    ],
    "size": [
-    5.887,
-    5.7,
-    3.207
+    5.127,
+    5.412,
+    3.183
    ],
    "center": [
-    -0.0,
-    1.593,
-    0.093
+    0.043,
+    1.591,
+    0.0
    ],
-   "structureHash": "034ebc65916dc78e",
+   "structureHash": "c1acd1ff442e57f4",
    "color0": {
-    "mean": 0.667,
-    "min": 0.2476,
+    "mean": 0.6192,
+    "min": 0.0621,
     "max": 0.9987,
-    "p05": 0.3603,
-    "p95": 0.9125,
+    "p05": 0.2387,
+    "p95": 0.8796,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -2925,16 +2935,51 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antennas",
+    "Base",
+    "Base_timbers",
+    "Clip_racks",
+    "Clip_rounds",
+    "Clip_rounds.001",
+    "Clip_tips",
     "Clips",
+    "Cradle",
+    "Crates",
+    "Elevation_arc",
+    "Extinguishers",
+    "Field_phone",
+    "Glass",
+    "Handwheels",
+    "Jacks",
+    "Kit_bolts",
+    "Kit_cables",
+    "Kit_handles",
+    "Kit_latches",
+    "Kit_rivets",
+    "Kit_straps",
+    "Kit_straps.001",
+    "Loader",
     "Main_cannon",
     "Mount",
     "Muzzle_brake",
     "Muzzle_main",
     "Pad",
+    "Pedals",
+    "Race",
+    "Radar_box",
     "Radar_dish",
+    "Radar_feed",
     "Radar_post",
     "Sandbags",
+    "Seat_posts",
+    "Seats",
     "Shield",
+    "Shield_struts",
+    "Sights",
+    "Spent_cases",
+    "Stakes",
+    "Tarp",
+    "Toolbox",
     "Turntable",
     "Turret"
    ],
