@@ -12761,21 +12761,6 @@ Nhánh `feature/pt14-space`. Lý do: `Docs/DECISIONS.md` "Play-test 14 space shi
 | PT14-SP-31 | `daedalus` `paint` / `paintFinish` | "#cfd2cc" / [0.35, 0.4] | "#c4c9cc" / [0.35, 0.42] | thân trên Team (trước Plaster) nay theo màu này |
 | PT14-SP-32 | chữ boss (BossText note / guide / mẹo / radio, CampaignText bossfile) | hyperion, coeus: pháo điện từ; daedalus: hai pháo 30 mm | vũ khí mới (EN/VI): 155 mm, VLS, 127 mm; 203 mm, 76 mm, Spike; 35 mm, bệ tên lửa; la-de, 57 mm, 25 mm; pháo thử 40 mm | khớp model và dữ liệu |
 
-## Play-test 14 VFX fixes 04/10 (lane L): nổ của vũ khí boss mới nhỏ lại theo cỡ, bóng máy bay, hiệu ứng bắn của súng lớn boss
-
-Nhánh `feature/pt14-l`. Lý do: `Docs/DECISIONS.md` "Play-test 14 VFX fixes 04/10 (lane L)" (chủ, khối "Bổ sung 04/10 sau khi thử bản màu sơn" của `Docs/prompts/playtest14_vi.txt`). Chỉ là hình (cấp nổ `impactTier` và cấp hình của đạn); sát thương, bán kính, tốc độ, nhịp bắn giữ nguyên. Chủ cho phép làm nhỏ riêng các vũ khí mới này (ngoại lệ của luật "không thu nhỏ vụ nổ").
-
-| # | mục | cũ | mới | lý do |
-|---|---|---|---|---|
-| PT14-L-1 | `nyx_tomahawk` `impactTier` | Huge | Large | Tomahawk 450 kg: nổ như Kh-29L (320 kg, Large/T4), dưới JASSM của máy bay cường kích; giữ cấp hình T4 |
-| PT14-L-2 | `pt14_hp_nsm` `impactTier` | Huge (thừa kế anti_ship_missile) | Large | NSM (đầu nổ thật 125 kg) như Kh-35 |
-| PT14-L-3 | `hydra_club_s` `impactTier` | Ultimate (thừa kế leviathan_cruise) | Large | Club-S 200 kg của boss phụ: không còn cỡ nổ "tối thượng" của Leviathan |
-| PT14-L-4 | `pt14_sb_v105` `impactTier` | Huge (thừa kế gunship_105) | Large | 105 mm như pháo 100 mm của Typhon / naval_100 / gun_100_river (Large) |
-| PT14-L-5 | cấp hình (view, TierFx.Looks) `scylla_kh35`, `pt14_hp_nsm`, `hydra_club_s` | T4 (họ msl_nsm_p_800_oniks / cruise_3m_54_kalibr) | T3 | dải của Maverick (57 kg, T3); không vòng sóng xung kích T4, không rung, hố nhỏ hơn; dữ liệu họ giữ T4 |
-| PT14-L-6 | cấp hình (view) `pt14_co_spike` | lớp phủ T2 phóng theo vùng 3,5 m (x1,4) | lớp phủ T2 cỡ chuẩn (x1, như Kornet / Hellfire) | Spike NLOS nổ như ATGM; vòng vùng sát thương 3,5 m giữ |
-| PT14-L-7 | nổ tên lửa hành trình của tàu (NavalSystem.Cruise) | luôn Ultimate | theo `impactTier` của tên lửa | Leviathan, Kraken, Typhon, Scylla, Nyx (leviathan_cruise) vẫn Ultimate; Hydra (hydra_club_s) Large |
-| PT14-L-8 | JAGM `pt14_th_jagm`, các súng mới (30 / 35 / 40 / 57 / 76 / 127 / 155 / 203 mm), súng phòng không | — | không đổi | đã trùng cỡ nổ của vũ khí cùng cỡ (Hellfire Medium/T2; autocannon Small/T1; 155 Large/T3; 203 Huge/T4) |
-
 ## MB_FINAL F3 (lane C): 10 fixed deck READY, Survival 10 đợt x 60 s, mutator tuần, nổ Kalibr của Scylla/Nyx
 Nhánh `feature/final-f3`. Nguồn: `Docs/balance/final/` (PLAN_APPLY.md, VIEC_CHO_AGENT_FINAL.md mục 2-6, Manifest_FINAL.json 10 dòng
 `campaign.missions[id=...].fixedDeck.status`). Lý do chi tiết: `Docs/DECISIONS.md` "MB_FINAL balance F3 (lane C)". Không chạy Unity, không chạy test.
@@ -12808,3 +12793,24 @@ Nhánh `feature/final-blast`. Chủ 04/10: "các size vụ nổ: theo sheet luô
 | `p26_jotunn_jo_rockets` | T4 (rkt_smerch_300) | Medium (thừa kế boss_rockets) | Large | Smerch 300 mm T4, lõi 5 m: Large như GMLRS 227 (T4) và bản sec của nó (tăng) |
 
 Công cụ: f3_tier_feel.py mục 2 tính mẫu boss (cha chỉ boss bắn, vd p26_typhon_ty100) và đạn 2 (roundOf) theo phía người bắn; một cấp cao hơn đánh nhẹ hơn chỉ là lệch khi nổ cũng to hơn, còn lại (31, cấp theo cỡ nòng, sát thương/phát của sheet) liệt kê riêng; mã thoát 1 khi còn lệch bất kỳ. Test: PlayTest6Tests 48N6 = Large, to hơn sam_long.
+
+## MB_FINAL zones
+
+Nhánh `feature/final-zones`. Chủ 04/10: "các vụ nổ mà quyết định làm nhỏ lại từ các tàu biển, vùng mục tiêu màu đỏ của nó có giảm chưa" — chưa: lane L (PT14-L) và "MB_FINAL blast sizes" chỉ đổi cấp hình, còn vùng sát thương của Sim (splash / edge, cruise.radius) và vòng đỏ giữ to. Nay vùng sát thương, vòng đỏ và vụ nổ khớp nhau theo công thức của gói cuối (`Docs/balance/final/`: lõi theo cỡ nòng / đầu nổ, rìa = 2 x lõi, trần 20 m; không đụng dòng nào của manifest). Luật đầu nổ tên lửa chống hạm / hành trình: lõi = 7 m x (kg / 250)^(1/3) (mốc: `anti_ship_missile` NSM / P-800 250 kg, 7 m, gói giữ), làm tròn 0,5 m. Lý do: `Docs/DECISIONS.md` "MB_FINAL zones (lane A)". Không chạy Unity, không chạy test.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| Z-1 | Scylla, Nyx `cruise.radius` (thừa kế Leviathan) | 10 (rìa 20) | 6,5 (rìa 13) | Kalibr 200 kg: 7 x 0,8^(1/3) = 6,5; nổ Large (F3-10/11) |
+| Z-2 | Hydra `cruise.radius` (thừa kế Typhon) | 10 (rìa 20) | 6,5 (rìa 13) | Club-S 200 kg như Kalibr; nổ Large (PT14-L-3) |
+| Z-3 | Scylla, Nyx, Hydra `cruise.warning` | leviathan_cruise_mark (vòng 20 / lõi 10, Ultimate) | kalibr_cruise_mark (vòng 13 / lõi 6,5, Large) | vòng đỏ = rìa, vòng trong = lõi của vụ nổ (Prompt34ValidatorTests); Leviathan, Kraken, Typhon giữ mark cũ (10 / 20, Ultimate) |
+| Z-4 | `supports` `kalibr_cruise_mark` (mới) | — | Barrage, event, delay 5, radius 13, blast 6,5, tier Large, damage 0 | chữ EN / VI `support.kalibr_cruise_mark(.info)` |
+| Z-5 | `hydra_club_s` `splash` | 10 (thừa kế leviathan_cruise) | 6,5 | dòng vũ khí khớp khối cruise của Hydra |
+| Z-6 | `nyx_tomahawk` `splash` (rìa boss 2x) | 8 (16) | 8,5 (17) | Tomahawk 450 kg: 7 x 1,8^(1/3) = 8,5 (JASSM 450 kg: 9) |
+| Z-7 | `pt14_hp_nsm` `splash` (rìa boss 2x) / `warheadKg` | 5 (10) / 250 (thừa kế Oniks) | 5,5 (11) / 125 | NSM Block 1A đầu nổ thật 125 kg (lane L): 7 x 0,5^(1/3) = 5,5 |
+| Z-8 | `scylla_kh35` `splash` | 6 (12) | 6 (12), không đổi | Kh-35U 145 kg: 7 x 0,58^(1/3) = 5,8 -> 6 |
+| Z-9 | `pt14_co_spike` `splash` (rìa boss 2x) | 3,5 (7) | 0 (không vùng) | Spike NLOS như Kornet / Hellfire (splash 0: trúng trực tiếp) |
+| Z-10 | `p26_roc_roc105` `splash` / `edge` | 5 / 10 | 5,5 / 11 | 105 mm HE như gun_105_bunker_he (manifest 5,5 / 11) và pt14_sb_v105 |
+| Z-11 | `gunship_105` (+ `gunship_105_guided`), `pt14_sb_v105` | 5,5 / — ; 5,5 / 11 | không đổi | đã đúng lớp 105 mm HE |
+| Z-12 | `sam_48n6` `splash` | 7,2 | không đổi | nổ trên không (không có vùng đỏ trên đất); 7,2 m là chủ yêu cầu ở play-test 8 A (gấp đôi 3,6), impactScale 2 vẽ nổ Large x2 ~ vòng; luật đầu nổ SAM (PAC-2 90 kg 2,5 m) cho 3 m: chờ chủ |
+| Z-13 | `borer_drill` | không splash | không đổi | cận chiến: không có vùng, không có vòng |
+| Z-14 | xóa bảng PT14-L bị chép đôi | 2 bảng | 1 bảng | giữ bản ở trên (sau PT14-SP), bỏ bản thứ hai trước "MB_FINAL F3" |
