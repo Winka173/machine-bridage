@@ -9,7 +9,7 @@ from core.model import NEED_CODE_CHECK, child_rows
 from core.repo import ROOT
 from core.units import snake
 
-from . import _b02, _lane_c as C, _unit_settle
+from . import _b02, _c02_gear, _lane_c as C, _unit_settle
 from . import _balance as B
 from . import _game as G
 from . import _units as U
@@ -141,10 +141,12 @@ def build(ctx):
     # ------------------------------------------------------------------ Trang_bi (GearCatalog.cs)
     tables = [
         ("Bases", "Trang_bi", "Trang bị: loại cơ bản", "38 loại trang bị (ô, chỉ số ngầm, giá trị đỉnh 5 hạng, đánh đổi)", "id", "gear.base."),
-        ("Modules", "Trang_bi_mo_dun", "Trang bị: mô-đun đặc biệt", "14 mô-đun (Sử thi / Huyền thoại); FlareDispenser, TrophyAps chỉ nâng cấp hệ có sẵn", "module", "gear.module."),
-        ("Traits", "Trang_bi_dac_tinh", "Trang bị: đặc tính", "45 đặc tính (giá trị Sử thi / Huyền thoại)", "id", "gear.trait."),
-        ("Subs", "Trang_bi_dong_phu", "Trang bị: dòng phụ", "dòng phụ: giá trị theo hạng, ô được ra, trọng số", "stat", "gear.sub."),
-        ("Brands", "Trang_bi_bo", "Trang bị: bộ (brand)", "bộ trang bị: thưởng 2 món / 4 món", "id", "gear.brand."),
+        # Gear book 04/10 (lane A): name_prefix fixed to the HUD key GearText.cs actually reads (was "gear.module." /
+        # "gear.sub." / "gear.brand.", none of which ever matched; ten_vi had been None for every Module/Sub/Brand row).
+        ("Modules", "Trang_bi_mo_dun", "Trang bị: mô-đun đặc biệt", "14 mô-đun (Sử thi / Huyền thoại); FlareDispenser, TrophyAps chỉ nâng cấp hệ có sẵn", "module", "special."),
+        ("Traits", "Trang_bi_dac_tinh", "Trang bị: đặc tính", "45 đặc tính (giá trị Sử thi / Huyền thoại)", "id", "trait."),
+        ("Subs", "Trang_bi_dong_phu", "Trang bị: dòng phụ", "dòng phụ: giá trị theo hạng, ô được ra, trọng số", "stat", "stat.line."),
+        ("Brands", "Trang_bi_bo", "Trang bị: bộ (brand)", "bộ trang bị: thưởng 2 món / 4 món", "id", "set."),
     ]
     for array, sname, title, desc, key, name_prefix in tables:
         sid, rows, lines = ctx.cs_table(GEAR, array)
@@ -154,7 +156,7 @@ def build(ctx):
             rid = str(rowd.get(key, i))
             r = sh.row(rid, f"{GEAR}:{lines[i] if i < len(lines) else ''} ({array}[{i}])", raw=rowd)
             sn = snake(rid)
-            r.set("ten_vi", B.name_of(ctx, name_prefix + rid, name_prefix + sn, f"trait.{sn}", f"stat.{sn}", f"module.{sn}")[1])
+            r.set("ten_vi", B.name_of(ctx, name_prefix + rid, name_prefix + sn, f"trait.{sn}", f"stat.line.{sn}", f"special.{sn}")[1])
             r.flatten({k: x for k, x in rowd.items() if k != key or k == "id"}, sid, (i,))
             if key != "id":
                 r.mark(sid, (i, key), "id")
@@ -175,7 +177,7 @@ def build(ctx):
             rid = str(rowd.get(key, i))
             r = sh.row(rid, f"{path}:{lines[i] if i < len(lines) else ''} ({array}[{i}])", raw=rowd)
             sn = snake(rid)
-            r.set("ten_vi", B.name_of(ctx, name_prefix + rid, name_prefix + sn, f"trait.{sn}", f"stat.{sn}", f"module.{sn}")[1])
+            r.set("ten_vi", B.name_of(ctx, name_prefix + rid, name_prefix + sn, f"trait.{sn}", f"stat.line.{sn}", f"special.{sn}")[1])
             r.flatten({k: x for k, x in rowd.items() if k != key or k == "id"}, sid, (i,))
             if key != "id":
                 r.mark(sid, (i, key), "id")
@@ -340,6 +342,9 @@ def build(ctx):
 
     _b02.build(ctx, book, d, res)
     _unit_settle.apply(book)
+
+    # ------------------------------------------------------------------ layer C (gear book, 04/10): code-sourced sheets
+    _c02_gear.build(ctx, book)
 
 
 def _lower(k: str) -> str:

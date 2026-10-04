@@ -1,10 +1,10 @@
 # Machine Brigade: gói cân bằng
 
-Xuất từ commit 2320b4b0 (ngày 2026-10-04); so sánh `_truoc` / `_sau` với bản 5f5b3247 (5f5b3247). Gói chỉ phục vụ cân
+Xuất từ commit c12d9e0b (ngày 2026-10-04); so sánh `_truoc` / `_sau` với bản 5f5b3247 (5f5b3247). Gói chỉ phục vụ cân
 bằng: giá trị cấu hình sửa được, cột suy ra để cân bằng (DPS, máu trên CP, số phát để hạ, so với ngoài đời), tham chiếu ngoài đời
 và game. Ghi đè mỗi lần chạy; lịch sử nằm trong git.
 
-## Cây thư mục (21 file và images/)
+## Cây thư mục (23 file và images/)
 
 ```
 current/
@@ -19,13 +19,14 @@ current/
 ├── 07_hinh_anh_am_thanh_model.xlsx  +  07_hinh_anh_am_thanh_model.md      Hình ảnh, âm thanh, model
 ├── 08_tham_chieu.xlsx  +  08_tham_chieu.md      Tham chiếu ngoài đời và game
 ├── 09_ai.xlsx  +  09_ai.md      AI
+├── 10_trang_bi.xlsx  +  10_trang_bi.md      Trang bị
 ├── bulk.zip        21 CSV lớn (bố cục bản đồ, thoại, chuỗi địa phương hóa, nút model): <file>__<sheet>.csv
 └── images/         29 ảnh phẳng, tiền tố file; chỉ ảnh mà một md dẫn tới
 ```
 
 ## Cách đọc
 
-- Bắt đầu ở 00_index.xlsx: `Muc_luc_file` (mỗi file có gì), `Muc_luc_sheet` (292 sheet trong xlsx, 21 trong bulk.zip),
+- Bắt đầu ở 00_index.xlsx: `Muc_luc_file` (mỗi file có gì), `Muc_luc_sheet` (297 sheet trong xlsx, 21 trong bulk.zip),
   `Schema` (mỗi cột: kiểu, đơn vị `don_vi`, nguồn khóa, công thức, `sua_duoc`), `Phien_ban` (ngày, commit, băm balance.json và
   campaign.json, băm từng file).
 - 01_chien_dau: vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom. 02_boss, 03_can_cu: boss, tháp.
@@ -34,6 +35,8 @@ current/
   07_hinh_anh_am_thanh_model: hiệu ứng, âm thanh, model. 08_tham_chieu: nguồn ngoài đời, cơ chế game, học thuyết.
   09_ai: chiến thuật, hồ sơ AI, tướng địch, tham số AI, vai trò và trạng thái đội, hành vi tháp / boss, luồng quyết định
   theo lớp, mục tiêu ưu tiên, độ khó, chống kẹt, tiếp tế máy bay, hằng số AI còn trong mã.
+  10_trang_bi: trang bị xe và trang bị tháp, một file riêng — loại cơ bản, mô-đun, đặc tính, dòng phụ, bộ, trần cộng
+  dồn, bảng chỉ số, bảng theo độ hiếm, giá nâng cấp theo cấp, luật ghép, hòm và tỷ lệ rơi, tên Anh/Việt theo id.
 - Mỗi md chỉ có luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng; bảng lớn ghi "xem sheet").
 - Cột `_game` là giá trị mà mã game tính ra; cột công thức Excel sống tính lại từ cột dữ liệu gốc cùng file. Sheet `input_<tên>`
   là bản chép của sheet nguồn để công thức đọc cùng file: sửa ở sheet nguồn.

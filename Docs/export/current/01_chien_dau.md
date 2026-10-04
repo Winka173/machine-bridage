@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 2320b4b0, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit c12d9e0b, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -304,17 +304,17 @@ Sheet 01_chien_dau/Phao_sang — Pháo sáng (11 dòng, 19 cột)
 
 | id | loai_don_vi | mo_hinh | so_mount_flare | so_qua_moi_lan | do_nang_cap | so_voi_ban_goc | flare_charges | flare_recharge_s | flares_every_s |
 |---|---|---|---|---|---|---|---|---|---|
-| attack_helicopter | xe | attack_helicopter | 0 | 4;8 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 2 |  |  |
-| attack_jet | xe | attack_jet | 0 | 4;6 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 2 |  |  |
-| fighter_jet | xe | fighter_jet | 0 | 4;6 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 2 |  |  |
-| flare_searchlight_tower | thap | flare_searchlight_tower | 0 | 1;1 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | giong |  |  | 15 |
-| flare_tower | thap | flare_tower | 0 | 1;1 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | giong |  |  | 15 |
-| heavy_bomber | xe | heavy_bomber | 0 | 8;16 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 3 |  |  |
-| scout_heli | xe | scout_heli | 0 | 4;8 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 2 | 20 |  |
-| sky_gunship | xe | sky_gunship | 0 | 8;16 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 3 |  |  |
-| stealth_fighter | xe | stealth_fighter | 0 | 4;6 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 2 |  |  |
-| swarm_carrier | xe | swarm_carrier | 0 | 8;16 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 3 |  |  |
-| twin_rotor_gunship | xe | twin_rotor_gunship | 0 | 4;8 | FlareDispenser (01_chien_dau/Trang_bi_mo_dun) | doi | 3 | 20 |  |
+| attack_helicopter | xe | attack_helicopter | 0 | 4;8 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| attack_jet | xe | attack_jet | 0 | 4;6 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| fighter_jet | xe | fighter_jet | 0 | 4;6 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| flare_searchlight_tower | thap | flare_searchlight_tower | 0 | 1;1 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | giong |  |  | 15 |
+| flare_tower | thap | flare_tower | 0 | 1;1 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | giong |  |  | 15 |
+| heavy_bomber | xe | heavy_bomber | 0 | 8;16 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
+| scout_heli | xe | scout_heli | 0 | 4;8 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 | 20 |  |
+| sky_gunship | xe | sky_gunship | 0 | 8;16 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
+| stealth_fighter | xe | stealth_fighter | 0 | 4;6 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| swarm_carrier | xe | swarm_carrier | 0 | 8;16 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
+| twin_rotor_gunship | xe | twin_rotor_gunship | 0 | 4;8 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 | 20 |  |
 
 *In 10 / 19 cột; 3 cột khác: xem sheet.*
 
@@ -634,98 +634,6 @@ Sheet 09_ai/AI_tuong — Tướng địch (12 dòng, 11 cột)
 
 Bảng đầy đủ: xem sheet `Commander` (22 dòng), `Commander_noi_tai` (45 dòng).
 
-## Trang bị
-
-Mỗi nhánh (Thiết giáp, Xe nhẹ, Pháo binh, Không quân) có 7 ô: Vũ khí, Nạp đạn, Giáp, Quang học, Động cơ, Sửa chữa và Đặc biệt. Một món gồm: **loại đồ** (có dòng ẩn riêng), **chỉ số chính** tăng theo cấp (40% → 100%), **0/1/2/2/2 chỉ số phụ** theo độ hiếm (lăn 60–100%, có thanh chất lượng, tăng ở cấp 5/10/15/20), **một dòng unique** ở Sử thi và Huyền thoại (chọn 1 trong 3 khi ghép lên Sử thi), và **một thương hiệu** (bộ 2 món và 4 món). Ghép 3 món cùng ô cùng độ hiếm để lên bậc. Mỗi chỉ số có trần cho cả bộ.
-
-Thường · cấp tối đa 5Khá · cấp tối đa 10Hiếm · cấp tối đa 15Sử thi · cấp tối đa 20Huyền thoại · cấp tối đa 25
-
-### Loại đồ (38)
-
-Bảng 38 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
-
-### Dòng unique (45)
-
-Bảng 45 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
-
-### Module đặc biệt (14)
-
-|  | Module | Hiệu ứng (Sử thi/Huyền thoại) |
-|---|---|---|
-|  | **Giáp phản ứng nổ** | Nhận ít hơn 55% sát thương nổ lõm (không giảm động năng; đầu nổ kép xuyên qua). |
-|  | **Tự sửa chữa** | Hồi 1,8% máu mỗi giây khi vài giây không trúng đạn. |
-|  | **Kíp lái kỳ cựu** | +12% sát thương và tốc độ bắn. |
-|  | **Ống phóng khói** | Thả màn khói 10 m lần đầu tụt dưới nửa máu. Thả lần nữa khi dưới một phần tư máu. |
-|  | **Hệ thống Trophy APS** | Bắn hạ tên lửa, drone và rốc-két bay tới: 2 lượt, mỗi lượt hồi sau 20 giây. |
-|  | **Mồi bẫy nhiệt** | Khi bị phóng tên lửa, thả mồi nhiệt trong 4 giây (mỗi 18 giây). |
-|  | **Drone hộ tống** | Mỗi 20 giây phóng 2 drone cảm tử vào kẻ địch gần nhất. |
-|  | **Đầu nổ EMP** | Khi bị hạ, làm choáng xe mặt đất địch trong 14 m trong 3 giây. |
-|  | **Máy rải mìn** | Khi di chuyển, thả một quả mìn mỗi 15 giây, tối đa 3 quả cùng lúc. |
-|  | **Kẻ trục lợi chiến tranh** | Mỗi lần hạ địch hoàn thêm 80% CP. |
-|  | **Kèn tập hợp** | Đồng minh trong 15 m gây thêm 10% sát thương (không cộng dồn). |
-|  | **Vòm Aegis** | Mỗi mạng một lần, khi 3 đồng minh gần đó bị bắn, tất cả bất tử trong 3 giây. |
-|  | **Bệ phóng mồi nhử** | Khi bị nhắm bằng tên lửa hoặc đạn pháo, mồi nhử hút chúng đi trong 6 giây (mỗi 25 giây). |
-|  | **Pháo kích vệ tinh** | Mỗi 35 giây gọi 5 quả cối nhẹ vào mục tiêu của nó. |
-
-### Thương hiệu / bộ (13)
-
-| Thương hiệu | Thưởng bộ 2 và bộ 4 |
-|---|---|
-| **Xưởng Ironclad** | 2: +6% máu · 4: Thành lũy: Đứng yên 2 giây: -15% sát thương nhận, và địch gần đó ưu tiên bắn nó. |
-| **Kestrel Dynamics** | 2: +5% tốc độ · 4: Đánh và chạy: +20% tốc độ trong 2 giây sau mỗi phát bắn; đạn không dẫn đường bắn vào nó khi đang chạy +50% tản mát. |
-| **Vulcan Arms** | 2: +25% sát thương cháy · 4: Bão lửa: Địch đang cháy nhận thêm 10% sát thương, và khi chết lửa lan sang kẻ địch trong 6 m. |
-| **Longbow Ordnance** | 2: +5% tầm bắn · 4: Đòn tầm xa: +15% sát thương lên mục tiêu xa hơn 70% tầm bắn. |
-| **Aegis Systems** | 2: -5% sát thương nhận vào · 4: Khiên chia sẻ: Mỗi 25 giây, khiên 12% cho đồng minh yếu nhất trong 12 m. |
-| **Stormfront Aviation** | 2: -10% sát thương mảnh · 4: Càn quét: Mỗi loạt thứ 4 bắn hai lần; thả mồi nhiệt mỗi 30 giây. |
-| **Hivemind Robotics** | 2: +15% sức mạnh drone, mìn và đơn vị gọi thêm · 4: Bầy đàn: Mỗi lần hạ địch phóng một drone cảm tử vào kẻ địch gần nhất (tối đa một chiếc mỗi 10 giây). |
-| **Hậu cần Quartermaster** | 2: +10% lượng hồi máu nhận được · 4: Quyền thu hồi: Hạ địch hoàn thêm 20% CP, và hoàn lại 10% giá khi nó bị hạ. |
-| **Spectre Electronics** | 2: +8% tầm nhìn · 4: Lưới bóng ma: +15% sát thương khi trong khói hoặc đang ẩn; tên lửa đầu tiên nhắm vào nó mỗi mạng bị mất khóa. |
-| **Hammerfall Munitions** | 2: +8% sát thương lên công trình · 4: Đạn hạng nặng: Mỗi phát thứ 5 gây thêm 100% và nổ lan 4 m (mỗi phát thứ 3 nếu có Buồng quá áp). |
-| **Phoenix Recovery** | 2: +10% lượng hồi máu nhận được · 4: Khiên tái sinh: Lượng hồi máu vượt quá máu tối đa thành khiên, tối đa 10% máu, tồn tại 8 giây. |
-| **Wolfpack Tactics** | 2: Săn theo bầy: +4% sát thương cho mỗi đồng minh trong 15 m, tối đa 3. · 4: Dồn hỏa lực: Khi từ 3 xe ta trở lên cùng bắn một mục tiêu: +15% tốc độ bắn. |
-| **Bulwark Engineering** | 2: +10% máu · 4: Ụ súng dã chiến: Tháp bị phá để lại một ụ súng máy tạm trong 20 giây. (tính số món trên toàn căn cứ) |
-
-Sheet 01_chien_dau/Trang_bi_bo — Trang bị: bộ (brand) (13 dòng, 16 cột)
-
-| id | four_piece_arg0 | four_piece_arg1 | four_piece_arg2 | four_piece_arg3 | index | stat | tower_only | two_piece_arg0 | two_piece_arg1 |
-|---|---|---|---|---|---|---|---|---|---|
-| aegis | SetSharedShield | 0.12 | 25 | 12 | 5 | DamageTaken |  |  |  |
-| bulwark | SetBulwarkPost | 20 |  |  | BulwarkBrand | Health | TRUE |  |  |
-| hammerfall | SetHeavyRound | 5 | 1 |  | 10 | DamageVsStructure |  |  |  |
-| hivemind | SetSwarm | 10 |  |  | 7 | SummonPower |  |  |  |
-| ironclad | SetBulwark | 0.15 |  |  | 1 | Health |  |  |  |
-| kestrel | SetHitAndRun | 0.2 | 0.5 |  | 2 | Speed |  |  |  |
-| longbow | SetDeepStrike | 0.15 |  |  | 4 | Range |  |  |  |
-| phoenix | SetPhoenix | 0.1 | 8 |  | 11 | RepairReceived |  |  |  |
-| quartermaster | SetSalvageRights | 0.2 | 0.1 |  | 8 | RepairReceived |  |  |  |
-| spectre | SetGhostNet | 0.15 |  |  | 9 | Vision |  |  |  |
-| stormfront | SetStrafingRun | 4 | 30 |  | 6 | ResistFragmentation |  |  |  |
-| vulcan | SetFirestorm | 0.1 | 6 |  | 3 | BurnDamage |  |  |  |
-| wolfpack | SetPackFocus | 0.15 |  |  | 12 | Count |  | SetPackHunt | 0.04 |
-
-*In 10 / 16 cột; 3 cột khác: xem sheet.*
-
-Sheet 01_chien_dau/Trang_bi_mo_dun — Trang bị: mô-đun đặc biệt (14 dòng, 10 cột)
-
-| id | epic | epic2 | hidden | legendary | legendary2 | need |
-|---|---|---|---|---|---|---|
-| AegisDome | 2 |  |  | 3 |  | Any |
-| AutoRepair | 0.012 |  |  | 0.018 |  | Any |
-| DecoyLauncher | 4 | 35 |  | 6 | 25 | Ground |
-| DroneEscort | 1 | 25 |  | 2 | 20 | Any |
-| EmpPayload | 2 | 10 |  | 3 | 14 | Any |
-| FlareDispenser | 3 | 25 |  | 4 | 18 | Flying/Flares |
-| MineDispenser | 2 | 20 |  | 3 | 15 | Ground |
-| RallyHorn | 0.06 | 12 |  | 0.1 | 15 | Any |
-| ReactiveArmor | 0.4 |  |  | 0.55 |  | Ground |
-| SmokeDischarger | 8 | 0 | TRUE | 10 | 1 | Ground |
-| TrophyAps | 1 | 25 |  | 2 | 20 | Ground/ApsMount |
-| UplinkBarrage | 3 | 45 |  | 5 | 35 | HitsGround |
-| VeteranCrew | 0.08 |  |  | 0.12 |  | Armed |
-| WarProfiteer | 0.5 |  |  | 0.8 |  | Armed |
-
-Bảng đầy đủ: xem sheet `Trang_bi` (38 dòng), `Trang_bi_dac_tinh` (45 dòng), `Trang_bi_dong_phu` (23 dòng), `Trang_bi_hang` (27 dòng).
-
 ## Tham khảo ngoài đời và game
 
 Thông số ngoài đời lấy từ nguồn trong repo (sheet Nguon_tham_chieu của 08_tham_chieu); chỗ chưa có nguồn ghi NEED_SOURCE, không điền từ trí nhớ.
@@ -843,15 +751,6 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Tinh_nhue_luat` (20 dòng): Luật tinh nhuệ — elites: hệ số giá / máu / sát thương, ngân sách và trần theo độ khó
 - `Nhanh_xe` (4 dòng): Nhánh quân — branches: nhánh -> các lớp xe
 - `Do_ben` (2 dòng): Hệ số độ bền — toughness: máu trong trận = hp x hệ số (xe, boss)
-- `Trang_bi` (38 dòng): Trang bị: loại cơ bản — 38 loại trang bị (ô, chỉ số ngầm, giá trị đỉnh 5 hạng, đánh đổi)
-- `Trang_bi_mo_dun` (14 dòng): Trang bị: mô-đun đặc biệt — 14 mô-đun (Sử thi / Huyền thoại); FlareDispenser, TrophyAps chỉ nâng cấp hệ có sẵn
-- `Trang_bi_dac_tinh` (45 dòng): Trang bị: đặc tính — 45 đặc tính (giá trị Sử thi / Huyền thoại)
-- `Trang_bi_dong_phu` (23 dòng): Trang bị: dòng phụ — dòng phụ: giá trị theo hạng, ô được ra, trọng số
-- `Trang_bi_bo` (13 dòng): Trang bị: bộ (brand) — bộ trang bị: thưởng 2 món / 4 món
-- `Trang_bi_thap` (13 dòng): Trang bị tháp: loại cơ bản — 13 loại trang bị tháp, 3 ô (Weapon/Structure/Systems); numbers ở mức đỉnh 5 hạng như trang bị xe
-- `Trang_bi_dac_tinh_thap` (10 dòng): Trang bị tháp: đặc tính — 10 đặc tính tháp (giá trị Sử thi / Huyền thoại); 5 khóa trùng Trang_bi_dac_tinh (ô tháp riêng, số có thể khác)
-- `Trang_bi_tran` (53 dòng): Trang bị: trần cộng dồn — Trần tối đa cả loadout có thể cộng vào một chỉ số (StatId không liệt kê: GearCatalog không đặt trần riêng, chỉ số đó không rơi làm trang bị hoặc khôn…
-- `Trang_bi_chi_so` (27 dòng): Trang bị: bảng chỉ số — Gear.Model.cs / Gear.Tower.cs: bảng hằng còn lại theo độ hiếm hoặc theo chỉ số (mỗi phần tử một dòng)
 - `Commander` (22 dòng): Commander và nội tại tướng — Commanders.cs: 14 commander của người chơi + nội tại 8 tướng địch
 - `Commander_noi_tai` (45 dòng): Commander: dòng nội tại — Lines: chỉ số, giá trị, phạm vi
 - `Commander_gia` (5 dòng): Commander: hệ số giá — Prices: phạm vi giá, hệ số

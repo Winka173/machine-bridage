@@ -35,6 +35,9 @@ PACK = {
               "Chiến thuật, hồ sơ AI theo chế độ, tướng địch, tham số AI, vai trò đơn vị, trạng thái đội, hành vi tháp / "
               "boss, luồng quyết định theo lớp (tướng / đội / đơn vị), mục tiêu ưu tiên, độ khó, chống kẹt, tiếp tế "
               "máy bay, hằng số AI còn trong mã"),
+    "10_trang_bi": ("Trang bị", (),
+                    "Trang bị xe và trang bị tháp: loại cơ bản, mô-đun, đặc tính, dòng phụ, bộ, trần cộng dồn, bảng chỉ "
+                    "số, bảng theo độ hiếm, giá nâng cấp theo cấp, luật ghép, hòm và tỷ lệ rơi, tên Anh/Việt theo id"),
 }
 OLD_TO_NEW = {old: new for new, (_t, olds, _d) in PACK.items() for old in olds}
 GROUP_PREFIX = {"01_vu_khi_dan": "vk", "02_phuong_tien": "xe", "03_boss": "boss", "04_can_cu_thap": "cc",
@@ -56,11 +59,23 @@ BULK = {"Ban_do_vat_the", "Ban_do_tag_dia_hinh", "Ban_do_trang_tri", "Ban_do_can
         "Giay_phep_noi_dung", "Huong_dan", "Am_thanh_envelope"}
 # Khac_chua_phan_loai, classified: a sheet filed under the file that owns its subject
 RECLASSIFY = {"Anh_can_cu": "03_can_cu", "Anh_can_cu_mui_ten": "03_can_cu", "Anh_can_cu_vien": "03_can_cu",
-              "So_tay_dan": "01_chien_dau"}
+              "So_tay_dan": "01_chien_dau",
+              # Gear book 04/10 (lane A, owner: "đem ra 1 file riêng, đầy đủ"): every Trang_bi* sheet, wherever its old
+              # domain built it (02_phuong_tien: most of them; 11_meta_giao_dien: Trang_bi_hang), moves into 10_trang_bi.
+              "Trang_bi": "10_trang_bi", "Trang_bi_mo_dun": "10_trang_bi", "Trang_bi_dac_tinh": "10_trang_bi",
+              "Trang_bi_dong_phu": "10_trang_bi", "Trang_bi_bo": "10_trang_bi", "Trang_bi_thap": "10_trang_bi",
+              "Trang_bi_dac_tinh_thap": "10_trang_bi", "Trang_bi_tran": "10_trang_bi", "Trang_bi_chi_so": "10_trang_bi",
+              "Trang_bi_hang": "10_trang_bi",
+              # new layer-C sheets (domains/_c02_gear.py), built inside 02_phuong_tien same as the rest: reclassified too.
+              "Trang_bi_nang_cap": "10_trang_bi", "Trang_bi_ghep": "10_trang_bi", "Trang_bi_thung": "10_trang_bi",
+              "Trang_bi_thung_nguon": "10_trang_bi", "Trang_bi_ten": "10_trang_bi"}
 # the file / sheet text of the classification (kept for CHANGES.md and the README)
 CLASSIFIED = [
     ("Anh_can_cu, Anh_can_cu_mui_ten, Anh_can_cu_vien", "03_can_cu", "ảnh căn cứ của giao diện: hình của chính ô căn cứ"),
     ("So_tay_dan", "01_chien_dau", "xe mẫu của sổ tay đạn: thuộc vũ khí và đạn"),
+    ("Trang_bi, Trang_bi_mo_dun, Trang_bi_dac_tinh, Trang_bi_dong_phu, Trang_bi_bo, Trang_bi_thap, "
+     "Trang_bi_dac_tinh_thap, Trang_bi_tran, Trang_bi_chi_so, Trang_bi_hang", "10_trang_bi",
+     "trang bị xe và trang bị tháp: gom thành một file riêng (owner 04/10), từ 02_phuong_tien và 11_meta_giao_dien"),
     ("Anh_the", "bulk.zip (07)", "ảnh thẻ render từ model: thuộc hình ảnh"),
     ("Hau_ky_hinh_anh", "07_hinh_anh_am_thanh_model", "hậu kỳ hình ảnh: thuộc hình ảnh"),
     ("Thoi_tiet", "06_ban_do", "thời tiết: giữ ở bản đồ (chiến dịch chỉ dùng nó)"),

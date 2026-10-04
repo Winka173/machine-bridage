@@ -2,7 +2,7 @@
 
 Chế độ chơi, độ khó, kinh tế, tác chiến, thăng hạng, mở khóa, cửa hàng, giao diện.
 
-Gói cân bằng Machine Brigade, commit 2320b4b0, ngày 2026-10-04. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit c12d9e0b, ngày 2026-10-04. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng quan
 
@@ -463,7 +463,6 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Che_do_tham_chieu` (12 dòng): Chế độ: tham chiếu game — Mỗi chế độ một dòng: game tham khảo, cơ chế giữ / đổi (spec 12.2; chỉ dữ liệu có trong repo)
 - `Nang_hang` (10 dòng): Giá nâng hạng — Arsenal.cs Coins / Prints: xu và bản thiết kế cho mỗi lần lên hạng (hạng 1-10)
 - `Hom_do` (4 dòng): Hòm đồ và tỷ lệ rơi — Arsenal.cs: mỗi bậc hòm một dòng (số lượt, xu thấp / cao, số bản thiết kế, số thẻ, giá xu, bảo hiểm Sử thi / Huyền thoại, phần tháp, tỷ lệ theo độ hi…
-- `Trang_bi_hang` (27 dòng): Trang bị theo độ hiếm — Arsenal.cs LevelCap / Top / Cap / GoldGuaranteed / LegendaryGuaranteed: mỗi chỉ số một dòng theo bảng nguồn (bang / chi_so)
 - `Cua_hang` (6 dòng): Cửa hàng — Arsenal.cs Packs: gói xu (id, số xu, giá hiển thị)
 - `Nhiem_vu_ngay` (8 dòng): Nhiệm vụ ngày — DailyMissions.cs Pool: loại, mục tiêu theo bậc (ngăn ';'), thưởng xu
 - `Skin` (10 dòng): Skin — Skins.cs All: id, giá, màu
