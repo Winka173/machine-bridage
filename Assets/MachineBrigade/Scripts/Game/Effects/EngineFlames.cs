@@ -38,6 +38,16 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The flame's length at full throttle in exit radii; its width at the nozzle in exit radii.</summary>
         private const float FlameLength = 7.5f, FlameWidth = 1.9f;
 
+        /// <summary>
+        /// Play-test 14 lane I (owner, 04/10 after lane H: "lửa động cơ các tàu làm nhỏ lại còn 20-30%"): the whole flame
+        /// (length, width, tongue, glow, halo, shock diamonds) is drawn for a nozzle this share of the empty's radius, and
+        /// its heat light reaches and burns accordingly. The white-hot core stays on the nozzle's own mouth.
+        /// </summary>
+        internal const float FlameScale = 0.25f;
+
+        /// <summary>The heat light's reach floor (m) and its power share after the lane I cut (was 8 m and full power).</summary>
+        private const float LightReachFloor = 3f, LightPowerShare = 0.45f;
+
         /// <summary>Stretched quads' lengths in their widths (as MotorPlumes), and the share of a quad the fire fills.</summary>
         private const float ConeStretch = 4.5f, TongueStretch = 3f, GlowStretch = 4f, DiamondStretch = 1.7f, Fill = 0.5f;
 
@@ -205,23 +215,27 @@ namespace MachineBrigade.Game.Effects
                     if (Random.value < 0.3f) continue;
                     throttle *= Random.Range(0.45f, 0.8f);
                 }
-                var radius = Mathf.Abs(nozzle.lossyScale.y);
-                if (radius < 0.01f) continue;
+                var exit = Mathf.Abs(nozzle.lossyScale.y);
+                if (exit < 0.01f) continue;
+                var radius = exit * FlameScale;
                 var mouth = rig.InverseTransformPoint(nozzle.position);
                 var axis = rig.InverseTransformDirection(-nozzle.forward).normalized;
-                Burn(e.Rig, mouth, axis, radius, throttle, life, segments, rich);
+                Burn(e.Rig, mouth, axis, radius, exit, throttle, life, segments, rich);
                 lightAt += nozzle.position - nozzle.forward * radius * 2.5f;
                 reach = Mathf.Max(reach, radius);
                 lit++;
             }
             if (lit == 0) return;
             e.LightAt = lightAt / lit;
-            e.LightReach = Mathf.Max(8f, reach * 10f + lit * 1.5f);
-            e.LightPower = Mathf.Lerp(1.8f, 3.2f, Mathf.InverseLerp(0.45f, 1.25f, e.Throttle));
+            e.LightReach = Mathf.Max(LightReachFloor, reach * 10f + lit * 1.5f * FlameScale);
+            e.LightPower = LightPowerShare * Mathf.Lerp(1.8f, 3.2f, Mathf.InverseLerp(0.45f, 1.25f, e.Throttle));
         }
 
-        /// <summary>One frame of one nozzle's flame, in the rig's space (metres): mouth, flame axis, exit radius.</summary>
-        private static void Burn(Rig rig, Vector3 mouth, Vector3 axis, float radius, float throttle, float life, int maxSegments, bool rich)
+        /// <summary>
+        /// One frame of one nozzle's flame, in the rig's space (metres): mouth, flame axis, the flame's radius (the exit
+        /// radius times <see cref="FlameScale"/>) and the nozzle's own exit radius (the core's size).
+        /// </summary>
+        private static void Burn(Rig rig, Vector3 mouth, Vector3 axis, float radius, float exit, float throttle, float life, int maxSegments, bool rich)
         {
             // The particles creep towards the nozzle only so the stretched quads lie along the axis, trailing aft.
             var drift = -axis * Drift;
@@ -248,7 +262,7 @@ namespace MachineBrigade.Game.Effects
             // The hot tongue out of the throat and a white-hot core on the exit plane.
             var tongue = baseWidth * 0.72f * Random.Range(0.92f, 1.08f);
             Emit(rig.Tongue, mouth - axis * (tongue * TongueStretch * 0.1f), drift, tongue, life, new Color(1f, 0.88f, 0.58f));
-            Emit(rig.Core, mouth + axis * (radius * 0.12f), drift, radius * 1.7f * Random.Range(0.92f, 1.08f), life, new Color(1f, 0.93f, 0.72f));
+            Emit(rig.Core, mouth + axis * (radius * 0.12f), drift, Mathf.Max(radius * 1.7f, exit * 0.75f) * Random.Range(0.92f, 1.08f), life, new Color(1f, 0.93f, 0.72f));
             if (!rich) return;
             // A soft orange body under the whole flame for the bloom, and the heat halo round the mouth.
             var glow = Mathf.Max(baseWidth * 1.6f, total * 1.05f / GlowStretch);
