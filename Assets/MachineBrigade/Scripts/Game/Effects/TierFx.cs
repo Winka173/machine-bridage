@@ -33,8 +33,8 @@ namespace MachineBrigade.Game.Effects
         /// <list type="bullet">
         /// <item>Kh-35U (145 kg), NSM (125 kg real) and Club-S (200 kg): T3, the Maverick's band (57 kg, T3) rather than the
         /// strike jets' 400-450 kg cruise missiles (T4); a Kh-29L (320 kg) is the lightest T4 in the game.</item>
-        /// <item>Spike NLOS: an ATGM's blast (the Kornet's, the Hellfire's: T2 at its nominal size), not grown by its 3.5 m
-        /// splash.</item>
+        /// <item>Spike NLOS: an ATGM's blast (the Kornet's, the Hellfire's: T2 at its nominal size), with no splash since MB_FINAL
+        /// zones (an ATGM's direct hit, as theirs; it was 3.5 m).</item>
         /// </list>
         /// The Tomahawk (450 kg) keeps T4 (with a Large blast, the Kh-29L's look); the guns already match their calibres.
         /// </summary>

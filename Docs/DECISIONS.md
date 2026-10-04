@@ -20658,3 +20658,33 @@ Values: `Docs/export/CHANGES.md` "MB_FINAL F3". Tests written, not run: `MbFinal
   blast is also bigger; the 31 others (100-105 mm T2 hitting harder than 120-125 mm T3 after the sheet's per-round damage)
   are listed apart, the tier staying the calibre's. The tool now exits 1 on any mismatch; it reports 0.
 - PlayTest6Tests: 48N6 Large and bigger than sam_long (was Huge). Not run (no tests).
+
+## MB_FINAL zones (lane A)
+Branch `feature/final-zones`. Owner 04/10: the blasts made smaller on the ships kept their red target zones. Lane L (PT14-L) and
+"MB_FINAL blast sizes" changed the view tier only; the Sim's damage area (splash / edge, a ship's `cruise.radius`) and the rings
+drawn from it stayed. Values old -> new: `Docs/export/CHANGES.md` "MB_FINAL zones" (Z-1..14). Nothing run (no Unity, no tests);
+no Sim C# touched (data, Strings and one TierFx comment), so no Sim build.
+- Where the red zone came from: the ships' cruise strikes (NavalSystem.Cruise) warn with the support `leviathan_cruise_mark`
+  (ring 20 m, core ring 10 m) and hit `ExplosionDef.TwoLayer(cruise.damage, cruise.radius)` (edge = min(20, 2 x radius)); Scylla
+  and Nyx inherit the Leviathan's block (radius 10, the mark), Hydra the Typhon's: all three drew a 20 m red ring under a Large
+  blast. Ordinary missile fire draws no warning (warningRules.normalFire false); its impact rings are exactly its core and edge
+  (a boss copy's edge is 2 x core, Catalog.WithEdge).
+- Rule (the bundle's: core by calibre / warhead, edge 2 x core, cap 20 m, manifest rows untouched; none of these weapons has a
+  manifest radius row). Anti-ship / cruise warheads: core = 7 m x (kg / 250)^(1/3), the anchor the bundle keeps
+  (`anti_ship_missile`, NSM / P-800, 250 kg, 7 m), rounded to 0.5 m: Kh-35U 145 kg 6 (as it was), NSM 125 kg (its real warhead,
+  lane L's figure; the line now says warheadKg 125 instead of the inherited Oniks 250) 5.5, Kalibr / Club-S 200 kg 6.5, Tomahawk
+  450 kg 8.5 (JASSM 450 kg: 9). Spike NLOS as Kornet / Hellfire: splash 0. 105 mm HE: 5.5 / 11 (gun_105_bunker_he's manifest row).
+- Cruise: Scylla, Nyx, Hydra `cruise.radius` 6.5 and `cruise.warning` `kalibr_cruise_mark` (new event support: ring 13 = the
+  edge, blast 6.5 = the core ring, tier Large; EN / VI name and info), so Prompt34ValidatorTests.ACruiseMissilesWarningShowsItsBlast
+  holds; `hydra_club_s` splash 6.5 to match. Leviathan, Kraken and Typhon keep 10 / 20 and the old mark (Ultimate, untouched).
+- Raised by the rule, small: Tomahawk 8 -> 8.5 (edge 16 -> 17), NSM 5 -> 5.5 (10 -> 11), Roc 105 mm 5 / 10 -> 5.5 / 11. The
+  owner hoped for smaller zones; these follow the class (the big drop is the cruise 20 -> 13 m ring and the Spike's 7 m -> none).
+- Kept: gunship_105 (5.5, already the class), pt14_sb_v105 (5.5 / 11, F1), scylla_kh35 (6), borer_drill (melee, no area).
+  sam_48n6 kept at 7.2 m against the brief: an air burst (no ground red zone), and 7.2 m is play-test 8 A's owner-asked doubling
+  (PlayTest8ATests pins it); the SAM warhead rule from PAC-2 (90 kg, 2.5 m) would give 3 m: for the owner.
+- Ring sources checked: cruise warnings (support radius = TwoLayer edge, blast = core, for every ship with a cruise warning),
+  the minimap mark (MatchRunner: the support radius), impact rings (EffectsDirector: e.Value core and edge), escape rings
+  (normal fire off; laid cruise missiles skipped). No ring for a ship / boss missile is now wider than its damage area.
+- Tests that may need a look when run (not run): none pins these radii except Prompt34ValidatorTests (kept true by the new mark)
+  and PlayTest8ATests (48N6 kept). `support.kalibr_cruise_mark` is a new support (LocalisationScan / SupportText covered).
+- CHANGES.md: the PT14-L table that appeared twice is now once (the copy before "MB_FINAL F3" removed).

@@ -2036,6 +2036,8 @@ namespace MachineBrigade.Game.Hud
             ["support.leviathan_shell.info"] = ("Where a shell from Leviathan's guns lands, marked ahead.", "Nơi một quả đạn từ pháo của Leviathan sẽ rơi, đánh dấu trước."),
             ["support.leviathan_cruise_mark"] = ("Leviathan's cruise missile", "Tên lửa hành trình Leviathan"),
             ["support.leviathan_cruise_mark.info"] = ("Where one of Leviathan's cruise missiles is coming down, marked ahead.", "Nơi một tên lửa hành trình của Leviathan sắp đánh xuống, đánh dấu trước."),
+            ["support.kalibr_cruise_mark"] = ("Ship's cruise missile", "Tên lửa hành trình của tàu"),
+            ["support.kalibr_cruise_mark.info"] = ("Where a warship's Kalibr or Club-S cruise missile is coming down, marked ahead: the outer ring is its blast's edge, the inner its core.", "Nơi tên lửa hành trình Kalibr hoặc Club-S của tàu chiến sắp đánh xuống, đánh dấu trước: vòng ngoài là rìa vụ nổ, vòng trong là lõi."),
             ["short.super_gun_shell"] = ("Super-gun", "Siêu pháo"),
             ["mode.deathmatch"] = ("Deathmatch", "Tử chiến"),
             ["mode.deathmatchSub"] = ("First to 480 CP of kills", "Hạ đủ 480 CP xe địch trước"),
