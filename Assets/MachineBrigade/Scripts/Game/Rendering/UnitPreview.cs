@@ -1,5 +1,6 @@
 using MachineBrigade.Sim.Content;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 namespace MachineBrigade.Game.Rendering
@@ -204,6 +205,7 @@ namespace MachineBrigade.Game.Rendering
             _range = new FiringRange(_catalog, _materials, _meshes, _models, _camera, Layer, vehicleId);
             // The range set its own field of view and clip planes.
             Project();
+            RangeShadows(true);
             _camera.enabled = true;
             if (Audio != null)
             {
@@ -223,6 +225,7 @@ namespace MachineBrigade.Game.Rendering
             if (_range == null) return;
             _range.Dispose();
             _range = null;
+            RangeShadows(false);
             MachineBrigade.Game.Audio.MusicDirector.Current?.Duck(1f);
             if (Audio != null)
             {
@@ -235,6 +238,50 @@ namespace MachineBrigade.Game.Rendering
             _camera.fieldOfView = 28f;
             _camera.nearClipPlane = 0.5f;
             _camera.farClipPlane = 200f;
+        }
+
+        // ------------------------------------------------------------------------------------------- the range's shadows
+
+        /// <summary>
+        /// Play-test 14 (lane L, owner 04/10: "lúc nãy tôi có kêu không có bóng, đó là trong inaction preview, vẫn chưa có"): the
+        /// In action range draws the sun's shadows, as a battle does. The preview camera had shadows switched off since the
+        /// mobile menu (renderShadows false), so nothing on the range cast one, aircraft included (lane K's soft disc was all
+        /// there was, and it is gone with shadows on: one shadow each, ViewRegistry). Real shadows need the pipeline's shadow distance to reach the range from this camera, and that
+        /// distance is one setting for every camera, fitted each frame to the battlefield camera (Atmosphere.FitShadows): it
+        /// is set for this camera alone while it renders (<see cref="RangeShadowReach"/>) and put back after. With shadows
+        /// Off in the options the sun casts none and the range's vehicles get the soft disc (FiringRange).
+        /// </summary>
+        private void RangeShadows(bool on)
+        {
+            _camera.GetUniversalAdditionalCameraData().renderShadows = on;
+            RenderPipelineManager.beginCameraRendering -= BeginRangeCamera;
+            RenderPipelineManager.endCameraRendering -= EndRangeCamera;
+            if (!on) return;
+            RenderPipelineManager.beginCameraRendering += BeginRangeCamera;
+            RenderPipelineManager.endCameraRendering += EndRangeCamera;
+        }
+
+        /// <summary>How far from the preview camera the range's shadows are drawn: past the framed scene and its targets (m).</summary>
+        private float RangeShadowReach =>
+            Mathf.Min(_camera.farClipPlane, Vector3.Distance(_camera.transform.position, _range.Look) * 1.8f + 30f);
+
+        private UniversalRenderPipelineAsset _shadowAsset;
+        private float _shadowDistanceWas;
+
+        private void BeginRangeCamera(ScriptableRenderContext context, Camera camera)
+        {
+            if (camera != _camera || _range == null || _shadowAsset != null) return;
+            if (GraphicsSettings.currentRenderPipeline is not UniversalRenderPipelineAsset pipeline) return;
+            _shadowAsset = pipeline;
+            _shadowDistanceWas = pipeline.shadowDistance;
+            pipeline.shadowDistance = RangeShadowReach;
+        }
+
+        private void EndRangeCamera(ScriptableRenderContext context, Camera camera)
+        {
+            if (camera != _camera || _shadowAsset == null) return;
+            _shadowAsset.shadowDistance = _shadowDistanceWas;
+            _shadowAsset = null;
         }
 
         public void Hide()
