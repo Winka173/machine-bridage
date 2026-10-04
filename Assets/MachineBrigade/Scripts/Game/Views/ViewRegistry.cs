@@ -85,10 +85,8 @@ namespace MachineBrigade.Game.Views
             _impostors?.BakePending(cameraRotation);
             _impostors?.Begin();
             _cards = 0;
-            _fliers = 0;
             foreach (var view in _list)
             {
-                if (AirDisc(view)) _fliers++;
                 view.UpdateLod(ppm);
                 view.Render(alpha, cameraRotation);
                 if (_impostors == null || view.Level != VehicleLod.Impostor || !OnScreen(view)) continue;
@@ -97,23 +95,17 @@ namespace MachineBrigade.Game.Views
             }
             // Only in the battle camera (not a menu turntable's).
             _impostors?.Flush(LodCamera);
-            // Cards cast no shadows: with shadows on, a soft disc stands in under each one. Play-test 14 lane K: every
-            // aircraft (not a boss) always gets its disc too, where the sun throws its shadow (see DrawBlobs).
-            if (BlobShadows || _cards > 0 || _fliers > 0) DrawBlobs(!BlobShadows);
+            // Cards cast no shadows: with shadows on, a soft disc stands in under each one.
+            // Play-test 14 (lane L, owner 04/10: "bóng của máy bay có 1 vòng tròn bóng khác lồng lên nhau, xóa vòng tròn đó"):
+            // lane K's disc under every aircraft whatever the setting is gone; with shadows on an aircraft (a full model) has
+            // its sun shadow alone, one shadow each. The disc stands in only where no real shadow is drawn: shadows Off
+            // (BlobShadows) and the far cards.
+            if (BlobShadows || _cards > 0) DrawBlobs(!BlobShadows);
         }
 
-        private int _cards, _fliers;
+        private int _cards;
 
-        /// <summary>
-        /// Play-test 14 lane K (owner, 04/10: "sao bóng các phương tiện bay mất hết"): an aircraft's shadow is drawn as a soft
-        /// disc whatever the shadow setting. The sun's own shadow of a small aircraft 26-46 m up lands 15-27 m away along the
-        /// sun, small and soft, and next to nothing on the sea (the play-test 13 water shader shades only its sun term; the
-        /// Low tier's water is unlit and takes none); the magenta squares the owner had read as aircraft shadows were the
-        /// broken GroundMark shader (fixed in play-test 13), which left only the faint team ring. Bosses keep their real shadow.
-        /// </summary>
-        private static bool AirDisc(VehicleView view) => view.Flying && !view.Def.Boss && !view.IsWreck;
-
-        /// <summary>The air discs sit above the water mesh (0.04 m) and under the ground marks (0.07-0.08 m).</summary>
+        /// <summary>An aircraft's disc (shadows Off, or a card) sits above the water mesh (0.04 m) and under the ground marks (0.07-0.08 m).</summary>
         private const float AirDiscHeight = 0.06f;
 
         /// <summary>How many vehicles are at each detail level and how many cards were drawn in how many draws (for -mb-perf).</summary>
@@ -170,7 +162,7 @@ namespace MachineBrigade.Game.Views
             var slide = new Vector3(_sunDirection.x, 0f, _sunDirection.z) / Mathf.Max(0.2f, -_sunDirection.y);
             foreach (var view in _list)
             {
-                if (!view.Root.gameObject.activeInHierarchy || (cardsOnly && view.Level != VehicleLod.Impostor && !AirDisc(view))) continue;
+                if (!view.Root.gameObject.activeInHierarchy || (cardsOnly && view.Level != VehicleLod.Impostor)) continue;
                 var p = view.Root.position;
                 var size = view.Sim.Radius * 2.3f;
                 var ground = new Vector3(p.x, 0.04f, p.z);

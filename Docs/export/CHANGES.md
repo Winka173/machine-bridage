@@ -6223,3 +6223,18 @@ Nhánh `feature/pt14-space`. Lý do: `Docs/DECISIONS.md` "Play-test 14 space shi
 | PT14-SP-30 | `coeus` `paint` / `paintFinish` | "#9aa6b2" / [0.75, 0.32] | "#6e7478" / [0.5, 0.42] | xám thép súng tối, đèn đỏ |
 | PT14-SP-31 | `daedalus` `paint` / `paintFinish` | "#cfd2cc" / [0.35, 0.4] | "#c4c9cc" / [0.35, 0.42] | thân trên Team (trước Plaster) nay theo màu này |
 | PT14-SP-32 | chữ boss (BossText note / guide / mẹo / radio, CampaignText bossfile) | hyperion, coeus: pháo điện từ; daedalus: hai pháo 30 mm | vũ khí mới (EN/VI): 155 mm, VLS, 127 mm; 203 mm, 76 mm, Spike; 35 mm, bệ tên lửa; la-de, 57 mm, 25 mm; pháo thử 40 mm | khớp model và dữ liệu |
+
+## Play-test 14 VFX fixes 04/10 (lane L): nổ của vũ khí boss mới nhỏ lại theo cỡ, bóng máy bay, hiệu ứng bắn của súng lớn boss
+
+Nhánh `feature/pt14-l`. Lý do: `Docs/DECISIONS.md` "Play-test 14 VFX fixes 04/10 (lane L)" (chủ, khối "Bổ sung 04/10 sau khi thử bản màu sơn" của `Docs/prompts/playtest14_vi.txt`). Chỉ là hình (cấp nổ `impactTier` và cấp hình của đạn); sát thương, bán kính, tốc độ, nhịp bắn giữ nguyên. Chủ cho phép làm nhỏ riêng các vũ khí mới này (ngoại lệ của luật "không thu nhỏ vụ nổ").
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-L-1 | `nyx_tomahawk` `impactTier` | Huge | Large | Tomahawk 450 kg: nổ như Kh-29L (320 kg, Large/T4), dưới JASSM của máy bay cường kích; giữ cấp hình T4 |
+| PT14-L-2 | `pt14_hp_nsm` `impactTier` | Huge (thừa kế anti_ship_missile) | Large | NSM (đầu nổ thật 125 kg) như Kh-35 |
+| PT14-L-3 | `hydra_club_s` `impactTier` | Ultimate (thừa kế leviathan_cruise) | Large | Club-S 200 kg của boss phụ: không còn cỡ nổ "tối thượng" của Leviathan |
+| PT14-L-4 | `pt14_sb_v105` `impactTier` | Huge (thừa kế gunship_105) | Large | 105 mm như pháo 100 mm của Typhon / naval_100 / gun_100_river (Large) |
+| PT14-L-5 | cấp hình (view, TierFx.Looks) `scylla_kh35`, `pt14_hp_nsm`, `hydra_club_s` | T4 (họ msl_nsm_p_800_oniks / cruise_3m_54_kalibr) | T3 | dải của Maverick (57 kg, T3); không vòng sóng xung kích T4, không rung, hố nhỏ hơn; dữ liệu họ giữ T4 |
+| PT14-L-6 | cấp hình (view) `pt14_co_spike` | lớp phủ T2 phóng theo vùng 3,5 m (x1,4) | lớp phủ T2 cỡ chuẩn (x1, như Kornet / Hellfire) | Spike NLOS nổ như ATGM; vòng vùng sát thương 3,5 m giữ |
+| PT14-L-7 | nổ tên lửa hành trình của tàu (NavalSystem.Cruise) | luôn Ultimate | theo `impactTier` của tên lửa | Leviathan, Kraken, Typhon, Scylla, Nyx (leviathan_cruise) vẫn Ultimate; Hydra (hydra_club_s) Large |
+| PT14-L-8 | JAGM `pt14_th_jagm`, các súng mới (30 / 35 / 40 / 57 / 76 / 127 / 155 / 203 mm), súng phòng không | — | không đổi | đã trùng cỡ nổ của vũ khí cùng cỡ (Hellfire Medium/T2; autocannon Small/T1; 155 Large/T3; 203 Huge/T4) |

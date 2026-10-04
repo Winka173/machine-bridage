@@ -91,6 +91,8 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The muzzle flash of the current shot, riding the part its muzzle is drawn on.</summary>
         private void Flash(MuzzleFx.Kind kind, Vector3 from, Vector3 direction, float now, float scale, float? groundY)
         {
+            // Play-test 14 (lane L): a boss's shot by its calibre and bulk (TierFx.BossMuzzle; 1 for anyone else).
+            scale *= _muzzleGrow;
             var anchor = new MuzzleFx.Anchor(_shotNode, from, direction);
             _muzzle.Fire(kind, from, direction, now, anchor, scale, groundY);
             // Prompt 34 L5: the first flash of the shot is where its tier's firing look goes (TierShot).
@@ -132,6 +134,9 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Play-test 12: the shot being drawn is a boss's (its firing shakes nothing).</summary>
         private bool _bossFiring;
 
+        /// <summary>Play-test 14 (lane L): how much bigger the shot being drawn flashes (a boss's gun: TierFx.BossMuzzle).</summary>
+        private float _muzzleGrow = 1f;
+
         /// <summary>The camera's kick from a shot fired at <paramref name="from"/>; none for a boss's.</summary>
         private void FiringShake(Vector3 from, float amount)
         {
@@ -164,6 +169,7 @@ namespace MachineBrigade.Game.Effects
             var pitch = float.NaN;
             var barrel = Vector3.zero;
             if (shooter != null && shooter.Root == null) shooter = null;
+            _muzzleGrow = TierFx.BossMuzzle(shooter, weapon);
             if (shooter != null && e.FromPart >= 0)
             {
                 // Play-test 14 (lane G): a round launched from one of a boss's parts (its launch cells, a submarine's launch

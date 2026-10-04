@@ -143,7 +143,9 @@ namespace MachineBrigade.Game.Effects
             var distance = Vector3.Distance(from, _camera.Focus);
             var detail = TierFx.DetailAt(distance, _camera.Zoom);
             var share = Mathf.Max(0.3f, TierFx.ShareOf(detail) * ExplosionEffect.RichShare);
-            _muzzle.TierShot(tier, from, direction, now, anchor, groundY, share);
+            // Play-test 14 (lane L): a boss's gun by its calibre and bulk (TierFx.BossMuzzle); 1 for anyone else.
+            var grow = TierFx.BossMuzzle(shooter, round);
+            _muzzle.TierShot(tier, from, direction, now, anchor, groundY, share, grow);
             if (tier < 3) return;
             var look = TierFx.FireOf(tier);
             var dir = direction.sqrMagnitude > 1e-4f ? direction.normalized : Vector3.forward;
@@ -156,7 +158,9 @@ namespace MachineBrigade.Game.Effects
                 _tierGround[shooter.Id] = now;
                 if (_tierGround.Count > 128) _tierGround.Clear();
             }
-            if (look.Pressure > 0f) Pressure(from, look.Pressure, tier);
+            // The rings round a boss's gun by the root of its grow (the 406 mm's water ring 45 m, not 78 m).
+            var ringGrow = Mathf.Sqrt(grow);
+            if (look.Pressure > 0f) Pressure(from, look.Pressure * ringGrow, tier);
             var onWater = shooter != null && shooter.Def.Naval != null;
             if (groundY.HasValue && detail != TierFx.Detail.Far)
             {
@@ -164,15 +168,16 @@ namespace MachineBrigade.Game.Effects
                 if (onWater && look.Water > 0f)
                 {
                     // A ship's guns flatten the water round them: a pale ring spreading out and spray blown off it.
-                    TierRing(ground, look.Water * 0.5f, WaterRingColour, 0.9f);
-                    if (tier >= 5) Later(now + 0.15f, () => TierRing(ground, look.Water * 0.75f, WaterRingColour, 1.1f));
-                    _muzzle.WaterSpray(ground + new Vector3(dir.x, 0f, dir.z) * look.Water * 0.15f, look.Water * 0.35f,
+                    var water = look.Water * ringGrow;
+                    TierRing(ground, water * 0.5f, WaterRingColour, 0.9f);
+                    if (tier >= 5) Later(now + 0.15f, () => TierRing(ground, water * 0.75f, WaterRingColour, 1.1f));
+                    _muzzle.WaterSpray(ground + new Vector3(dir.x, 0f, dir.z) * water * 0.15f, water * 0.35f,
                         Mathf.RoundToInt((tier >= 5 ? 26 : 14) * share));
                 }
-                else if (!onWater) _tierFire[tier].Play(ground + new Vector3(dir.x, 0f, dir.z) * 1.5f, now, 1f, 1f, 1f, 0f, share);
+                else if (!onWater) _tierFire[tier].Play(ground + new Vector3(dir.x, 0f, dir.z) * 1.5f * ringGrow, now, 1f, ringGrow, 1f, 0f, share);
             }
             // The flash lights the ground round the gun at night (and the scene for T5).
-            _night.Flash(from, look.Light * 0.5f);
+            _night.Flash(from, look.Light * 0.5f * grow);
             var onScreen = _cull.Visible(from, 0.1f);
             if (tier >= 5 && onScreen && Flash != null) Flash(0.07f / (1f + distance / 40f));
             // Play-test 12: a boss firing shakes nothing (its impacts still do, by tier).

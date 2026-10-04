@@ -331,7 +331,8 @@ namespace MachineBrigade.Game.Effects
                         // Prompt 26 B.3: a two-layer blast shows its edge too, a second ring on the edge's radius beyond the core's.
                         if (!zoneless) EdgeRing(impact, e.Value, e.Target.X);
                         // Prompt 34 L5: its tier's redrawn blast on top, the exact shockwave rings, the shake.
-                        TierImpact(TierFx.Of(round), impact, e.Value, e.Target.X, now, views, chain, rings: !zoneless);
+                        // Play-test 14 (lane L): a boss weapon added on 04/10 by the look of its calibre (TierFx.Looks).
+                        TierImpact(TierFx.Of(round), impact, TierFx.CoreOf(round, e.Value), e.Target.X, now, views, chain, rings: !zoneless);
                         // Fix prompt L6: the smoke and dust it leaves, as long as its size band says (EffectLife).
                         var band = EffectLife.BandOf(round, e.Tier);
                         Linger(band, impact, e.Value, now, chain);

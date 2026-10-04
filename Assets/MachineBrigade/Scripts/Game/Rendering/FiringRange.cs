@@ -91,6 +91,9 @@ namespace MachineBrigade.Game.Rendering
             _world.EnableEconomy(new TeamEconomy(0));
             _world.EnableEconomy(new TeamEconomy(1));
             _views = new ViewRegistry(models, meshes, materials, _root, 0);
+            // Play-test 14 (lane L): the preview camera draws real shadows now (UnitPreview); with shadows Off every vehicle
+            // gets the soft disc instead, as in a match.
+            _views.BlobShadows = Match.MatchSettings.Options.Shadows == Match.ShadowLevel.Off;
             _mines = new MineViews(models, _root, -1);
             // The effects need a battlefield camera for culling and the view's focus; this one only
             // wraps the preview camera, which is put back the way the preview wants it below.

@@ -59,7 +59,7 @@ namespace MachineBrigade.Game.Effects
 
         /// <summary>A round's band: its tier, else its explosion tier's (Small 1, Medium 2, Large 3, Huge 4, Ultimate 5).</summary>
         public static int BandOf(WeaponDef round, ExplosionTier tier) =>
-            round != null && round.Tier >= 0 ? Mathf.Clamp(round.Tier, 0, Top) : BandOf(tier);
+            round != null && round.Tier >= 0 ? Mathf.Clamp(TierFx.Of(round), 0, Top) : BandOf(tier);
 
         /// <summary>A blast's band by its explosion tier alone (a strike, a cook-off, a bomblet).</summary>
         public static int BandOf(ExplosionTier tier) => tier switch

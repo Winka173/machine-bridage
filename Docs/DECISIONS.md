@@ -20465,3 +20465,44 @@ paint, weapon close-ups).
 - Needs Unity: compile (text tables only), card renders / ModelScan of the six, the ventral guns firing down from a hovering
   boss (muzzle alignment along the depressed barrels), the rocket-slot launchers (VLS / pods / Spike) and Theia's PD lasers
   as mg mounts, MuzzleGeometryAudit; DPS / kill times of the six with the new fits (to measure, owner's word needed).
+
+## Play-test 14 VFX fixes 04/10 (lane L)
+Owner's block "Bổ sung 04/10 sau khi thử bản màu sơn" (Docs/prompts/playtest14_vi.txt), four items. View work; no Unity run, no tests run.
+- **Mini-boss ships' new weapons explode too big** (owner's word overrides "never shrink explosions" for these weapons only).
+  Causes: Kh-35 (145 kg), NSM (125 kg real) and Club-S (200 kg) took their families' T4 look (shockwave ring, dust ring, big
+  crater, shake, T4 overlay: the 400-450 kg cruise missiles' band); the Tomahawk and the NSM a Huge blast (the JASSM's); and
+  every naval cruise launch was queued at Ultimate whatever its missile (NavalSystem.Cruise), so the Hydra, a mini boss, burst
+  like the Leviathan's Kalibr. Fix, by same-calibre references in the data: Kh-35 / NSM / Club-S Large + T3 (the Maverick's
+  band; the Kh-29L, 320 kg, is the lightest T4); Tomahawk Large + T4 (the Kh-29L's look, a step under the JASSM); Spike NLOS as
+  an ATGM (T2 overlay at its nominal size, not grown by its 3.5 m splash; its zone ring stays); the Icarus 105 mm Large like the
+  100 mm guns (it inherited the AC-130's Huge). The T band is a view table (TierFx.Looks: Of, CoreOf; EffectLife bands follow
+  it), the family tier in the data stays (FixRules and the warnings read it); impactTier is data (only the view and audio read
+  it); the cruise blast now takes its missile's impactTier (a look: the tier never changes damage), so only Hydra changes.
+  JAGM and every new gun and AA mount already matched their calibre (checked against the families). Values: CHANGES PT14-L.
+- **No aircraft shadow in the In action preview.** Cause: the preview camera has rendered with shadows off since the mobile
+  menu commit (UnitPreview: renderShadows false), so nothing on the range casts a shadow, aircraft included. Fix: shadows on
+  while the range plays; the pipeline's shadow distance (one value for every camera, fitted each frame to the battlefield
+  camera by Atmosphere.FitShadows) is set for the preview camera alone while it renders (begin/endCameraRendering: 1.8 x its
+  distance to the framed scene + 30 m, within its far plane) and put back after. With shadows Off in the options the range's
+  vehicles get the soft disc, as in a match (FiringRange sets BlobShadows).
+- **Two shadows under aircraft in matches.** Cause: lane K's disc was drawn under every aircraft whatever the shadow setting,
+  on top of the sun's shadow. Fix: removed; the disc stands in only where no real shadow is drawn (shadows Off, far cards), so
+  one shadow each. Over the sea the sun's shadow stays faint (lane K's reason for the disc); a water-shadow pass is the way if
+  the owner wants more there.
+- **Bosses' big guns show no firing effect.** The path itself is whole (every boss shot reaches LaunchShots, muzzles resolve to
+  their Muzzle_b<k> points at the barrel tips, checked in the GLBs of the six sea and six space ships). Causes: (1) the muzzle
+  recipes are sized for a vehicle's gun (a 120 mm: a 5 m core for a tenth of a second) and took no calibre, so a 406, 203 or
+  155 mm flashed like a tank gun: on a 50-90 m hull framed whole, a speck, and a boss's shot shakes nothing (play-test 12);
+  (2) barrel parts carrying Blender's duplicate suffix (Gun_barrels.001, Gun_barrels_004.002: a twin's second barrel, a
+  jacket) did not match the recoil pattern, so half a turret's barrels stood still; (3) the per-barrel points (Muzzle_b<k>)
+  were never turned along their barrels, so the space ships' ventral twins (barrels 20-35 degrees down) flashed level, off the
+  barrel. Fix: TierFx.BossMuzzle grows a boss's shot by its calibre over the 120 mm design (a gun's blast grows with its bore)
+  times its bulk (radius / 7 m, at most 1.5), at least 1 and at most 3: 406 mm 3, 203 mm 2.4, 155 mm 1.8-1.9, 127 mm 1.5,
+  105 mm 1.25, guns under about 85 mm and every AA gun unchanged; missiles and rockets by the bulk alone. It scales the weapon's
+  flash (WeaponEffects.Flash) and its tier's firing look (MuzzleFx.TierShot: flash, tongues, fireballs by it; smoke and dust,
+  pressure and water rings, ground blast by its root). Recoil takes the suffixed barrel parts (MountBarrelPattern), and
+  authored barrel points are turned along their barrel (ModelLibrary.BarrelAxis, the AlignMuzzles search, missile and rocket
+  cells excepted).
+- Needs Unity: compile (C# 9 checked by reading); a look at Scylla / Nyx / Hydra missile hits, Hyperion's NSM, Coeus's Spike;
+  an aircraft preview at each shadow tier (and its shadow distance on a boss's wide frame); aircraft in a match over land and
+  sea; the bosses' big guns firing (406 / 203 / 155 mm, the ventral twins' flash along their barrels, both barrels kicking).
