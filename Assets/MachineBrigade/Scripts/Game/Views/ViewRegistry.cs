@@ -47,7 +47,8 @@ namespace MachineBrigade.Game.Views
         {
             if (_views.TryGetValue(vehicle.Id, out var existing)) return existing;
             var view = new VehicleView(vehicle, _models, _meshes, _materials, _parent, _playerTeam) { Registry = this };
-            if (_impostors != null) view.Impostor = _impostors.Request(view.Lod, vehicle.Team);
+            // Play-test 14 lane K: the impostor pages are baked in army paint; a vehicle in its own livery stays a model.
+            if (_impostors != null && view.Livery == null) view.Impostor = _impostors.Request(view.Lod, vehicle.Team);
             _views.Add(vehicle.Id, view);
             _list.Add(view);
             return view;
@@ -84,8 +85,10 @@ namespace MachineBrigade.Game.Views
             _impostors?.BakePending(cameraRotation);
             _impostors?.Begin();
             _cards = 0;
+            _fliers = 0;
             foreach (var view in _list)
             {
+                if (AirDisc(view)) _fliers++;
                 view.UpdateLod(ppm);
                 view.Render(alpha, cameraRotation);
                 if (_impostors == null || view.Level != VehicleLod.Impostor || !OnScreen(view)) continue;
@@ -94,11 +97,24 @@ namespace MachineBrigade.Game.Views
             }
             // Only in the battle camera (not a menu turntable's).
             _impostors?.Flush(LodCamera);
-            // Cards cast no shadows: with shadows on, a soft disc stands in under each one.
-            if (BlobShadows || _cards > 0) DrawBlobs(!BlobShadows);
+            // Cards cast no shadows: with shadows on, a soft disc stands in under each one. Play-test 14 lane K: every
+            // aircraft (not a boss) always gets its disc too, where the sun throws its shadow (see DrawBlobs).
+            if (BlobShadows || _cards > 0 || _fliers > 0) DrawBlobs(!BlobShadows);
         }
 
-        private int _cards;
+        private int _cards, _fliers;
+
+        /// <summary>
+        /// Play-test 14 lane K (owner, 04/10: "sao bóng các phương tiện bay mất hết"): an aircraft's shadow is drawn as a soft
+        /// disc whatever the shadow setting. The sun's own shadow of a small aircraft 26-46 m up lands 15-27 m away along the
+        /// sun, small and soft, and next to nothing on the sea (the play-test 13 water shader shades only its sun term; the
+        /// Low tier's water is unlit and takes none); the magenta squares the owner had read as aircraft shadows were the
+        /// broken GroundMark shader (fixed in play-test 13), which left only the faint team ring. Bosses keep their real shadow.
+        /// </summary>
+        private static bool AirDisc(VehicleView view) => view.Flying && !view.Def.Boss && !view.IsWreck;
+
+        /// <summary>The air discs sit above the water mesh (0.04 m) and under the ground marks (0.07-0.08 m).</summary>
+        private const float AirDiscHeight = 0.06f;
 
         /// <summary>How many vehicles are at each detail level and how many cards were drawn in how many draws (for -mb-perf).</summary>
         public string LodSummary()
@@ -154,17 +170,20 @@ namespace MachineBrigade.Game.Views
             var slide = new Vector3(_sunDirection.x, 0f, _sunDirection.z) / Mathf.Max(0.2f, -_sunDirection.y);
             foreach (var view in _list)
             {
-                if (!view.Root.gameObject.activeInHierarchy || (cardsOnly && view.Level != VehicleLod.Impostor)) continue;
+                if (!view.Root.gameObject.activeInHierarchy || (cardsOnly && view.Level != VehicleLod.Impostor && !AirDisc(view))) continue;
                 var p = view.Root.position;
                 var size = view.Sim.Radius * 2.3f;
                 var ground = new Vector3(p.x, 0.04f, p.z);
                 if (view.Flying)
                 {
+                    ground.y = AirDiscHeight;
                     ground += slide * p.y;
                     size *= 1f + p.y * 0.015f;
                 }
                 _blobs.Add(Matrix4x4.TRS(ground, Quaternion.Euler(90f, 0f, 0f), new Vector3(size, size, 1f)));
             }
+            // Play-test 14 lane K: on the views' own layer, so a preview range's discs show in its camera, not the lobby's.
+            _blobParams.layer = _parent.gameObject.layer;
             if (_blobs.Count > 0) Graphics.RenderMeshInstanced(_blobParams, _meshes.ScorchQuad, 0, _blobs);
         }
 

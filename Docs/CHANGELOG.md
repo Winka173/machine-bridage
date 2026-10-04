@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Play-test 14 after R4 (lane K): aircraft always throw a soft ground shadow along the sun; ship and space bosses wear their own paint ("livery": "own", army colour kept on TeamGlow) and every boss card is drawn in its own colours; the weapons tab lists cruise missiles, shore salvos, big-attack strikes and mines; Hydra renamed "Attack Submarine".
 - Play-test 14 after lane H (lane I): flying bosses' engine flames drawn at 25 %; the player's smoke gear (laser warning, smoke discharger, tower smoke launchers) hidden behind a `Hidden` catalogue flag, old pieces re-rolled; Typhon's sail Buk (`sam_post` 80), Nemesis' SAM car (`sam_battery` 95) and both trains' Grad cars (65) slowed after a view-to-Sim trace (Docs/export/CHANGES.md PT14-I).
 - Play-test 14 wreck collision (lane J): burning hulks (30-45 s, bosses 90 s) and sinking ships (18 s) stay solid in the Sim until gone: vehicles and ships steer round them and are pushed out, stuck routes go round; the hulk sinks on the same clock; the "In action" replacement comes to a clear spot beside the wreck, a ship waits until its wreck is under
 - Play-test 14 wave R4 (lane models): Hyperion redrawn as a heavy space cruiser (forked prow, sun-beam projector under it, coilgun turrets, ventral laser batteries); two new mini bosses from it, Theia (escort carrier, drone swarm) and Coeus (gunship, heavy coilgun), in Boss Hunt and Boss Rush; Hydra's and Nyx's guns redrawn.

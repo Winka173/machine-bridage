@@ -140,7 +140,8 @@ namespace MachineBrigade.Game.Rendering
             if (_shown != modelId || _model == null)
             {
                 if (_model != null) Object.Destroy(_model);
-                var instance = _models.Spawn(modelId, 0, _turntable, castShadows: false);
+                // Play-test 14 lane K: a ship or space boss shows its own livery.
+                var instance = _models.Spawn(modelId, 0, _turntable, castShadows: false, livery: OwnLivery.Of(def));
                 _model = instance.Root;
                 _model.transform.localScale = Vector3.one * scale;
                 _model.transform.localRotation = Quaternion.identity;

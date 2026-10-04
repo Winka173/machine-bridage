@@ -71,6 +71,30 @@ namespace MachineBrigade.Game.Rendering
             return material;
         }
 
+        private readonly Dictionary<(int, string), Material> _lodLiveries = new();
+
+        /// <summary>
+        /// Play-test 14 lane K: the far-detail material of a vehicle in its own livery (null: the army's,
+        /// <see cref="LodSurface(int)"/>): the livery's paint, no camouflage, the army's glow kept as the team cue.
+        /// </summary>
+        public Material LodSurface(int team, OwnLivery livery)
+        {
+            if (livery == null) return LodSurface(team);
+            var key = (team, livery.Key);
+            if (_lodLiveries.TryGetValue(key, out var cached)) return cached;
+            var material = new Material(_lit) { name = $"LodLivery{team} {livery.Key}", enableInstancing = !Match.DebugFlags.Has("-mb-no-instancing") };
+            material.SetFloat(VertexSurfaceId, 1f);
+            material.SetTexture(PaletteId, Palette);
+            material.SetColor("_BaseColor", livery.Paint);
+            material.SetFloat("_CamoMode", 0f);
+            material.SetFloat("_Metallic", livery.Metallic);
+            material.SetFloat("_Roughness", livery.Roughness);
+            material.SetColor("_EmissionColor", TeamMaterial("TeamGlow", team).GetColor("_EmissionColor"));
+            _owned.Add(material);
+            _lodLiveries[key] = material;
+            return material;
+        }
+
         /// <summary>Copies the army's paint (colour, camouflage, finish) and its glow onto its far-detail material.</summary>
         private void SyncLodSurface(int team)
         {
@@ -130,6 +154,7 @@ namespace MachineBrigade.Game.Rendering
             _palette = null;
             _paletteColumns.Clear();
             _lodSurfaces.Clear();
+            _lodLiveries.Clear();
         }
     }
 }

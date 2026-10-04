@@ -780,6 +780,8 @@ namespace MachineBrigade.Game.Hud
                 row.Add(text);
                 _detailBody.Add(row);
             }
+            // Play-test 14 lane K: what a boss fires besides its mounts (Hydra's cruise missiles were missing from the list).
+            BossWeapons(def);
             // Prompt 25 G: the table has a row for each round of a gun of two rounds.
             var weapons = CombatFacts.Rounds(def);
             if (table && weapons.Count > 0)
@@ -830,6 +832,56 @@ namespace MachineBrigade.Game.Hud
             text.Add(Kit.Small(use));
             row.Add(text);
             return row;
+        }
+
+        /// <summary>
+        /// Play-test 14 lane K (owner, 04/10: "hydra tôi thấy có tên lửa bắn nhưng trong list detail weapon không nhắc tới"):
+        /// the weapons a boss fires outside its mounts, each a row under the mounts' (whose list already carries the parts'
+        /// own weapons): its cruise missiles from the launch cells ("cruise"), its main battery's salvo on the shore
+        /// ("salvo"), every strike of its big attack, and its mines. Numbers from the data.
+        /// </summary>
+        private void BossWeapons(VehicleDef def)
+        {
+            WeaponDef Named(string id) => id != null && _catalog.Weapons.TryGetValue(id, out var w) ? w : null;
+            string Seconds(float s) => s.ToString(s >= 10f ? "0" : "0.#", Strings.Culture);
+            string Number(float n) => Mathf.RoundToInt(n).ToString("N0", Strings.Culture);
+            if (def.Cruise is { } cruise)
+                ExtraWeapon(Named(cruise.Weapon), "wpn.cruise", "missile", def, Strings.Format("detail.weaponCruise", ("damage", Number(cruise.Damage)),
+                    ("metres", Mathf.RoundToInt(cruise.Radius)), ("seconds", Seconds(cruise.Every))));
+            if (def.Salvo is { } salvo)
+                ExtraWeapon(Named(salvo.Weapon), "wpn.shoreSalvo", "barrage", def, Strings.Format("detail.weaponShoreSalvo", ("count", salvo.Shells),
+                    ("damage", Number(salvo.Damage)), ("metres", Mathf.RoundToInt(salvo.Radius)), ("seconds", Seconds(salvo.Every)), ("range", Mathf.RoundToInt(salvo.Range))));
+            if (def.BigAttack is { } big)
+                foreach (var strike in big.Strikes)
+                {
+                    if (strike.Shape is BigShape.Drop or BigShape.Buff || strike.Damage <= 0f) continue;
+                    ExtraWeapon(Named(strike.Weapon), big.NameKey, "bolt", def, Strings.Format("detail.weaponBig", ("count", strike.FullCount),
+                        ("damage", Number(strike.Damage)), ("seconds", Seconds(big.Cooldown)), ("name", Strings.Get(big.NameKey))));
+                }
+            if (def.Mines is { } mines)
+                ExtraWeapon(null, "wpn.mines", "mine", def, Strings.Format("detail.weaponMines", ("damage", Number(mines.Blast.Damage)),
+                    ("seconds", Seconds(mines.Interval)), ("count", mines.Max)));
+        }
+
+        /// <summary>One row of <see cref="BossWeapons"/>: the weapon's chip and name (else <paramref name="nameKey"/>), and its line.</summary>
+        private void ExtraWeapon(WeaponDef weapon, string nameKey, string icon, VehicleDef def, string line)
+        {
+            var row = Kit.Box(KitPanel.SurfaceClass + " fc-weapon");
+            var name = weapon != null ? WeaponInfo.Describe(weapon, false).Name : Strings.Get(nameKey);
+            var facts = weapon != null ? CombatFacts.Of(weapon, def) : null;
+            if (facts != null)
+            {
+                var chip = KitCombat.Chip(facts, large: true, extras: true);
+                chip.AddToClassList("fc-weapon__chip");
+                KitCombat.TapTip(row, () => name, () => CombatIcons.WeaponTip(facts));
+                row.Add(chip);
+            }
+            else row.Add(Kit.Icon(icon, "fc-weapon__icon"));
+            var text = Kit.Box("fc-row-text fc-grow");
+            text.Add(Kit.Text(Kit.Caps(name), "fc-panel-title"));
+            text.Add(Kit.Body2(line));
+            row.Add(text);
+            _detailBody.Add(row);
         }
 
         /// <summary>The weapons tab shows every figure (prompt 13 G.5: "More").</summary>

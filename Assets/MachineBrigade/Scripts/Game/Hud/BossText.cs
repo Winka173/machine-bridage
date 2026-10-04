@@ -477,16 +477,16 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: giữ radar hoặc drone trên mặt nước để thấy nó; phá [[CIWS]] trước khi dùng tên lửa."),
             ["guide.parts.tip.nyx"] = ("Tip: the [[CIWS]] stop your missiles; the missile cells carry its anti-ship missile.", "Mẹo: [[CIWS]] chặn tên lửa của bạn; ống phóng mang tên lửa chống hạm của nó."),
             ["radio.kessler.nyx"] = ("Kessler: \"Nyx, run silent. Speak only when you fire.\"", "Kessler: \"Nyx, chạy im lặng. Chỉ lên tiếng khi khai hỏa.\""),
-            ["unit.hydra"] = ("Hydra · Drone Submarine", "Hydra · Tàu ngầm mang drone"),
+            ["unit.hydra"] = ("Hydra · Attack Submarine", "Hydra · Tàu ngầm tấn công"),
             ["short.hydra"] = ("Hydra", "Hydra"),
-            ["note.hydra"] = ("A small submarine with vertical launch tubes along its back: it surfaces to launch drones, and dives and surfaces faster than Typhon.", "Tàu ngầm nhỏ có ống phóng dọc trên lưng: nổi lên thả drone, lặn và nổi nhanh hơn Typhon."),
+            ["note.hydra"] = ("A small attack submarine with vertical launch tubes along its back: it surfaces to fire cruise missiles, and dives and surfaces faster than Typhon.", "Tàu ngầm tấn công nhỏ có ống phóng dọc trên lưng: nổi lên phóng tên lửa hành trình, lặn và nổi nhanh hơn Typhon."),
             ["guide.hydra"] = (
-                "[[Mini boss]] · drone submarine · surfaces to strike\n" +
-                "How it fights: a stand-in hull for now (Typhon's deck gun and launch doors, smaller and quicker). It dives and surfaces on a short schedule, fires only when up, and sends a cruise missile every 16 s.\n" +
+                "[[Mini boss]] · attack submarine · surfaces to strike\n" +
+                "How it fights: Typhon's smaller, quicker sister (a deck gun and launch doors). It dives and surfaces on a short schedule, fires only when up, and sends a cruise missile every 16 s.\n" +
                 "Strong / weak: out of reach while submerged; a thin hull.\n" +
                 "Tip: wait for the bubbles; break the [[launch doors]] to stop the missiles.",
-                "[[Mini boss]] · tàu ngầm mang drone · nổi lên để đánh\n" +
-                "Cách đánh: tạm dùng thân Typhon (pháo boong và cửa ống phóng, nhỏ và nhanh hơn). Nó lặn rồi nổi theo lịch ngắn, chỉ bắn khi nổi, và phóng tên lửa hành trình mỗi 16 giây.\n" +
+                "[[Mini boss]] · tàu ngầm tấn công · nổi lên để đánh\n" +
+                "Cách đánh: chiếc nhỏ và nhanh hơn cùng lớp Typhon (pháo boong và cửa ống phóng). Nó lặn rồi nổi theo lịch ngắn, chỉ bắn khi nổi, và phóng tên lửa hành trình mỗi 16 giây.\n" +
                 "Mạnh / yếu: lúc lặn không đánh tới được; thân mỏng.\n" +
                 "Mẹo: chờ bong bóng; phá [[cửa ống phóng]] để chặn tên lửa."),
             ["guide.parts.tip.hydra"] = ("Tip: the [[launch doors]] carry its missiles; the deck gun only shoots when it is up.", "Mẹo: [[cửa ống phóng]] mang tên lửa của nó; pháo boong chỉ bắn khi nổi."),

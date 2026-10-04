@@ -91,7 +91,7 @@ namespace MachineBrigade.Game.Views
                     _attached.Add(null);
                     continue;
                 }
-                var extra = models.Spawn(a.Model, Sim.Team, _model.Root.transform);
+                var extra = models.Spawn(a.Model, Sim.Team, _model.Root.transform, livery: Livery);
                 extra.Root.transform.localPosition = new Vector3(-a.At.X, a.At.Z, -a.At.Y);
                 extra.Root.transform.localRotation = Quaternion.Euler(0f, a.Heading, 0f);
                 _attached.Add(extra.Root);
@@ -178,7 +178,7 @@ namespace MachineBrigade.Game.Views
             else local = new Vector3(part.At.X, part.Height, part.At.Y);
             if (part.Wreck != null && _partModels != null && _partModels.Has(part.Wreck))
             {
-                var piece = _partModels.Spawn(part.Wreck, Sim.Team, anchor, castShadows: true);
+                var piece = _partModels.Spawn(part.Wreck, Sim.Team, anchor, castShadows: true, livery: Livery);
                 piece.Root.transform.localPosition = local;
                 piece.Root.transform.localRotation = rotation;
                 _partWrecks[i] = piece.Root;

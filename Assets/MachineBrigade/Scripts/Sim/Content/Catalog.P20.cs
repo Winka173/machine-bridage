@@ -172,6 +172,25 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A variant's colour: its hull multiplied by it (null: the model's own).</summary>
         public Vector3? Tint { get; internal set; }
 
+        /// <summary>
+        /// Play-test 14 lane K (data "livery": "own"): it wears its own paint in battle, not its army's. The model's "Team"
+        /// surfaces take <see cref="Paint"/> (its colour as drawn), every other kit surface stays as drawn, and only
+        /// "TeamGlow" (lights, stripes) keeps the army's colour as its team cue. Default "team": the army's paint.
+        /// </summary>
+        public bool OwnLivery { get; internal set; }
+
+        /// <summary>
+        /// Play-test 14 lane K (data "paint": "#rrggbb", sRGB): its own colour on the "Team" surfaces under
+        /// <see cref="OwnLivery"/>, and a boss's card picture in any case (Boss Hunt lists each boss in its own colours).
+        /// Null: the army's paint.
+        /// </summary>
+        public string? Paint { get; internal set; }
+
+        /// <summary>Play-test 14 lane K (data "paintFinish": [metallic, roughness]): the finish of <see cref="Paint"/>.</summary>
+        public float PaintMetallic { get; internal set; } = 0.25f;
+
+        public float PaintRoughness { get; internal set; } = 0.5f;
+
         /// <summary>A variant's mark painted on it ("mk0", "mk2", "ice" ...), or null.</summary>
         public string? Mark { get; internal set; }
 
@@ -238,6 +257,25 @@ namespace MachineBrigade.Sim.Content
                 def.Tint = new Vector3(t.Count > 0 ? t[0] : 1f, t.Count > 1 ? t[1] : 1f, t.Count > 2 ? t[2] : 1f);
             }
             if (v.Has("mark")) def.Mark = v.String("mark");
+            // Play-test 14 lane K: own livery and paint (a variant inherits them from its parent unless it names its own).
+            if (v.Has("livery"))
+            {
+                var livery = v.String("livery");
+                if (livery != "own" && livery != "team") throw new FormatException($"{v.Path}.livery: \"own\" or \"team\", not '{livery}'.");
+                def.OwnLivery = livery == "own";
+            }
+            if (v.Has("paint"))
+            {
+                var paint = v.String("paint");
+                if (paint.Length != 7 || paint[0] != '#') throw new FormatException($"{v.Path}.paint: an sRGB colour \"#rrggbb\", not '{paint}'.");
+                def.Paint = paint;
+            }
+            if (v.Has("paintFinish"))
+            {
+                var f = v.FloatArray("paintFinish");
+                if (f.Count > 0) def.PaintMetallic = Math.Clamp(f[0], 0f, 1f);
+                if (f.Count > 1) def.PaintRoughness = Math.Clamp(f[1], 0.02f, 1f);
+            }
             if (v.Has("hiddenNodes")) def.HiddenNodes = v.StringArray("hiddenNodes");
             if (v.Has("music")) def.Music = v.String("music");
             if (v.Has("route")) def.RouteName = v.String("route");

@@ -101,7 +101,9 @@ namespace MachineBrigade.Game.Views
             // A boss in a later form wears that form's model.
             // A tower's rank-7 branch wears its own model (TowerArt).
             var modelId = vehicle.Form != null && models.Has(vehicle.Form) ? vehicle.Form : TowerArt.ModelFor(vehicle.Def, models.Has);
-            _model = models.Spawn(modelId, vehicle.Team, _body, lod: VehicleLod.Enabled);
+            // Play-test 14 lane K: a ship or space boss in its own livery ("livery": "own"), its army shown by TeamGlow only.
+            Livery = OwnLivery.Of(vehicle.Def);
+            _model = models.Spawn(modelId, vehicle.Team, _body, lod: VehicleLod.Enabled, livery: Livery);
             // Tower-branch C.2: its card's rank on its body (bars, plates from rank 3, thicker from 5).
             if (TowerArt.WearsRank(vehicle.Def))
                 _rankDetails = TowerRankDetails.Attach(_model.Root.transform, modelId, TowerArt.RankOf(vehicle.Team, vehicle.Def), vehicle.Team, materials);
@@ -480,6 +482,9 @@ namespace MachineBrigade.Game.Views
         }
         public bool Selected { get; set; }
         public bool Flying => Def.Flying;
+
+        /// <summary>Play-test 14 lane K: its own livery, or null (its army's paint).</summary>
+        public OwnLivery Livery { get; }
 
         /// <summary>The model's body as drawn (with its pitch and bank), for effects that follow it.</summary>
         public Transform Body => _body;
