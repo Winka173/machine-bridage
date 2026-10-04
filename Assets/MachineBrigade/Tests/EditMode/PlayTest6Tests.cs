@@ -269,7 +269,10 @@ namespace MachineBrigade.Tests
             // Blasts.
             Assert.AreEqual(1.2f, w["lancet"].ImpactScale, 1e-4f, "the Lancet's blast a fifth bigger");
             Assert.GreaterOrEqual(w["sam_48n6"].SplashRadius, w["sam_long"].SplashRadius, "the long-range SAM's blast at least the SAM launcher's");
-            Assert.AreEqual(ExplosionTier.Huge, w["sam_48n6"].ImpactTier);
+            // MB_FINAL blast sizes (owner 04/10: sizes follow the sheet): the 48N6 is T2 (sam_s_400_48n6), a Large burst, still
+            // a band over the SAM launcher's Medium.
+            Assert.AreEqual(ExplosionTier.Large, w["sam_48n6"].ImpactTier);
+            Assert.Greater((int)w["sam_48n6"].ImpactTier, (int)w["sam_long"].ImpactTier, "the long-range SAM's burst bigger than the SAM launcher's");
             // The drone mothership drops bombs too.
             Assert.IsTrue(v["swarm_carrier"].Mounts.Any(m => m.Weapon.Projectile == ProjectileKind.Bomb), "the mothership has bombs");
             // Towers keep a machine gun only where the real one has it.
