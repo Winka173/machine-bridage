@@ -252,6 +252,8 @@ namespace MachineBrigade.Tests
             ["behemoth_mk0"] = "varga",
             // Prompt 25 F2 batch D.
             ["kraken"] = "kessler", ["monster"] = "orlov", ["hyperion"] = "aurel", ["nyx"] = "kessler", ["hydra"] = "hung",
+            // Play-test 14 wave R4.
+            ["theia"] = "aurel", ["coeus"] = "aurel",
         };
 
         [Test]

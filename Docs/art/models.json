@@ -359,6 +359,10 @@
     "file": "coastal_battery.glb",
     "triangles": 5806
   },
+  "coeus": {
+    "file": "coeus.glb",
+    "triangles": 30614
+  },
   "combat_wreck_car": {
     "file": "combat_wreck_car.glb",
     "triangles": 4010
@@ -1097,11 +1101,11 @@
   },
   "hydra_sub": {
     "file": "hydra_sub.glb",
-    "triangles": 14978
+    "triangles": 20080
   },
   "hyperion": {
     "file": "hyperion.glb",
-    "triangles": 19014
+    "triangles": 67352
   },
   "icarus_mk0": {
     "file": "icarus_mk0.glb",
@@ -1365,7 +1369,7 @@
   },
   "nyx": {
     "file": "nyx.glb",
-    "triangles": 17028
+    "triangles": 23034
   },
   "obsidian_spire": {
     "file": "obsidian_spire.glb",
@@ -1794,6 +1798,10 @@
   "temple_ruin": {
     "file": "temple_ruin.glb",
     "triangles": 5070
+  },
+  "theia": {
+    "file": "theia.glb",
+    "triangles": 30454
   },
   "thermobaric_launcher": {
     "file": "thermobaric_launcher.glb",

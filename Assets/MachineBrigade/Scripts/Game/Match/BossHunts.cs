@@ -79,6 +79,8 @@ namespace MachineBrigade.Game.Match
             ("behemoth_mk0", 3),
             // Prompt 25 F2 batch D (DECISIONS 25F2-D): the eight new bosses, by the chapter their general or season belongs to.
             ("nyx", 4), ("monster", 8), ("kraken", 9), ("hydra", 9), ("hyperion", 12),
+            // Play-test 14 wave R4: Hyperion's two mini-boss variants, with Aurel's chapter.
+            ("theia", 12), ("coeus", 12),
         };
 
         private static bool Listed(string id)

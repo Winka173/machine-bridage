@@ -52,6 +52,8 @@ namespace MachineBrigade.Tests
             ["behemoth_mk0"] = 4,
             // Prompt 25 F2 batch D: the stand-ins (a main boss keeps all its parent's parts; Hyperion drops the two crash turrets and the uplink).
             ["kraken"] = 14, ["monster"] = 9, ["hyperion"] = 9, ["nyx"] = 4, ["hydra"] = 4,
+            // Play-test 14 wave R4: Hyperion's mini-boss variants (four kept parts each).
+            ["theia"] = 4, ["coeus"] = 4,
         };
 
         private static Catalog C => GameContent.LoadCatalog();

@@ -20196,3 +20196,53 @@ width 20-30 %, Typhon's door missiles left alone); values in Docs/export/CHANGES
 - Tests (written, not run): PlayTest14LaneHTests. For a Unity look: the six warships holding heading while their turrets
   traverse (the Icarus main laser now trains: its mount node must turn), Roc / Daedalus stopping to fire, death smoke amount,
   trail length and width, the boss SAM flights.
+
+
+## Play-test 14 wave R4 (lane models)
+
+Owner (04/10, Docs/prompts/playtest14_vi.txt, block "Bổ sung 04/10 sau khi thử lane H"): "hyperion nên vẽ lại từ đầu, theo
+mẫu cruiser của starcraft, thêm 2 miniboss là biến thể của nó, budget tam giác cao như các tàu boss khác leviathan, daedalus,
+icarus"; "tháp pháo trên hydra, làm lại, theo tiêu chuẩn typhon"; "nyx cũng vậy vẽ lại tháp pháp theo chuẩn leviathan". No
+reused parts (Docs/models/pt14_reuse_audit.md). New builders Tools/blender/mb_pt14_r4_cruiser.py (hyperion, theia, coeus,
+registered last in build_assets) and mb_pt14_r4_naval.py (called from mb_pt14_m3 for hydra_sub and nyx).
+- hyperion: redrawn from scratch as a heavy space cruiser in the genre's spirit, original (no logos or copied marks): a forked
+  armoured hammerhead prow (two prongs, a notch between them with glowing focusing strips), a dark raised brow running back as
+  the dorsal spine, flank sponsons with lit galleries, three stepped tiers to a bridge under a visor, swept radiator fins, a
+  sensor mast (Mount_APS on top), a broad engine block (five bells, radiator banks, dorsal intakes) and two outboard nacelles.
+  Runtime: `Turret` = the sun-beam projector slung under the prow (drum, gimbal cheeks, Main_cannon with focusing rings and
+  crown, Main_cannon_lens, Muzzle_main level with the prow; it hangs below the hull so it turns all round), Mount_gun / .001 =
+  twin-rail coilgun turrets on the shoulders, Mount_gun.002 / .003 = ventral laser batteries (now drawn and visible: the data's
+  hiddenNodes are gone, those two mounts fire), Pd_laser_l / _r > Mount_mg / .001 on the sponsons, Thruster_main with
+  Engine_flame .. .004, Thruster_fl / _fr RCS pods, Thruster_rl / _rr the nacelles with Engine_flame .005 / .006, Pod_bay >
+  Muzzle_missile under the engine block. Length 67.1 m (modelSize length 67.2 kept, the view fits it), width 33.4, height 21.3
+  (modelSize updated); every part `at` re-synced (CHANGES PT14-R4-1..8). Kick parts: Coil_/Coils_/Glow_/Yoke_barrels,
+  Coil_muzzles, Las_/Lbands_barrels, Las_/Lens_muzzles (one name per material so each matches the kick pattern).
+- theia (new, mini, variantOf hyperion, own model 40.3 m): the escort carrier: a short forked prow with the launch notch (runway
+  plate, chevrons, lit tunnel mouth), two flank hangar pods (bay mouths with drones on the rail, lit side doors), a dorsal dome
+  laser turret (Turret, two emitters, Muzzle_main + per-emitter muzzles), a recovery deck, a stepped island with fins and
+  Mount_APS, three bells, the ventral drone and pod bay (Pod_bay > Muzzle_missile: the drone swarm leaves from it), PD lasers on
+  the pods, an asymmetric comms boom.
+- coeus (new, mini, variantOf hyperion, own model 40.3 m): the gunship / artillery cruiser: a broad ram-faced hammerhead, belt
+  armour in two rows, an armoured citadel carrying the coil artillery turret (Turret: a wide house, cupola, bustle, a 10.8 m
+  coil barrel in fourteen collars with glowing field slots, Muzzle_main at the crown), the spotting tower off the centreline
+  with the rotating fire-control array (Radar), an ammunition sponson and crane on the left, a radome, twin ventral laser
+  batteries (Mount_gun / .001), two bells and two outboard engines on stub wings (Thruster_rl / _rr).
+- Mini-boss data (CHANGES PT14-R4-9..11), modelled on icarus_mk0 / locust / argus: hp 94850 (rank mini x0.55), size 0.6,
+  four kept parts each, own tiers schedule with a low window, own radio. Theia: the drone swarm (p26_matriarch_ma_drones on the
+  missile slot), drop pods, APS r 20, its laser main. Coeus: main weapon swapped to the heavy coilgun (mountWeapons 0), two
+  direct lasers, no APS, no pods. weaponDamage 1.0 both, to measure. Boss Hunt: Unslotted (theia, 12), (coeus, 12); Boss Rush:
+  a new kind { theia, coeus }. Texts EN/VI (BossText unit/short/note/guide/parts tip/radio, CampaignText boss/bossfile);
+  Hyperion's texts rewritten for the cruiser. Tests (written, not run): boss counts 33 / 19 minis, part counts, generals, the
+  lane H warship list.
+- hydra_sub: the guns redrawn at Typhon's detail, bespoke (mb_pt14_r4_naval.hy_twin57 / hy_a190): a faceted low-signature twin
+  57 mm (visor plate, rubber boots, thermal-sleeved barrels with pepperpot brakes, EO sight, hatch, hoist, vents) fore and aft,
+  an A-190-read 100 mm on a ribbed pedestal (chined stealth house, fume extractor, double-baffle brake, radar-optical sight dome,
+  ammo door). Pivots and muzzle names unchanged; no data change.
+- nyx: the AGS-read 155 mm and the two Mk 110-read cupolas redrawn at Leviathan's detail (skirts and chines, fastener rows,
+  roof seams, sight hood, EO ball, hatches with hinges and handles, vents, lifting eyes, the boot, banded barrels with fume
+  extractor and multi-baffle brake, magazine bustle with door and ladder). Pivots unchanged; no data change.
+- Triangles, gate (glb_quantize + quality_gate, hard ok): hyperion 19,014 -> 67,352 (100 -> 85.8), theia 30,454 (81.5),
+  coeus 30,614 (82.7), hydra_sub 14,978 -> 20,080 (99.3 -> 99.7), nyx 17,028 -> 23,034 (93.5 -> 98.5). All far under the
+  5 x / 3.5 x budgets. Sheets: Docs/models/rebuild/<id>/before_after_r4.png. New GLBs carry hand-made .meta files.
+- Needs Unity: card renders (UI/Cards manifest has no theia / coeus card yet) and ModelScan of the five, the sun beam from the
+  chin projector, the drones leaving Theia's bay, Coeus's coilgun, the ventral batteries' rounds, compile of the text tables.

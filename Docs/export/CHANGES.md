@@ -3022,3 +3022,25 @@ Nhánh `feature/pt14-h`. Lý do: `Docs/DECISIONS.md` "Play-test 14 after R2 (lan
 | PT14-H-15 | Leviathan pha cuối (escapePhase): màn khói khi chạy | 2 đám (20 m / 22 s, 16 m / 18 s) | không | chủ: không boss nào tạo khói; câu radio bỏ "sau màn khói" |
 | PT14-H-16 | `sam_post` (Buk của tàu: leviathan, scylla, nyx, hydra, kraken, typhon) `projectileSpeed` | 250 (họ 9m317_buk) | 170 (ra khỏi họ) | chủ: tên lửa Typhon bay quá nhanh; tầm game = vài km đầu thật (giai đoạn tăng tốc) |
 | PT14-H-17 | `sam_battery` (toa SAM Nemesis) `projectileSpeed` | 300 (họ mim_104_patriot_pac_2) | 200 (ra khỏi họ; Loft, mô hình patriot giữ) | chủ: tên lửa Nemesis bay quá nhanh; patriot, sam_battery_lrr, sam_pac3 của người chơi giữ 300 |
+
+
+## Play-test 14 wave R4 (lane models): Hyperion vẽ lại thành tuần dương hạm, hai mini boss Theia và Coeus
+
+Nhánh `feature/pt14-r4`. Lý do: `Docs/DECISIONS.md` "Play-test 14 wave R4 (lane models)" (chủ, khối "Bổ sung 04/10 sau khi thử lane H").
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-R4-1 | `hyperion` `hiddenNodes` | ["Mount_gun.002", "Mount_gun.003"] | (bỏ) | hai mount này vẫn bắn (la-de trực xạ); model mới vẽ chúng thành dàn la-de dưới bụng, đạn ra từ nòng thấy được |
+| PT14-R4-2 | `hyperion` `modelSize` | [67.2, 43.7, 20] | [67.2, 33.4, 21.3] | dáng tuần dương hạm (dài giữ nguyên 67.2 m; rộng/cao theo model mới) |
+| PT14-R4-3 | `hyperion` part `main_laser` `at` | [0, 0, 1.92] | [0, 21.17, 3.33] | máy chiếu tia mặt trời treo dưới mũi chẻ (Turret) |
+| PT14-R4-4 | `hyperion` part `main_engine` `at` | [0, -3.83, 7.83] | [0, -26.42, 8.25] | khối động cơ sau (Thruster_main, 5 loa phụt) |
+| PT14-R4-5 | `hyperion` parts `thruster_fl` / `_fr` `at` | [∓8.36, 14.47, 9.17] | [∓10.38, 22.0, 8.33] | cụm RCS hai bên mũi |
+| PT14-R4-6 | `hyperion` parts `thruster_rl` / `_rr` `at` | [∓8.36, -14.47, 9.17] | [∓12.17, -18.33, 8.0] | hai động cơ treo ngoài |
+| PT14-R4-7 | `hyperion` parts `pd_laser_l` / `_r` `at` | [∓12.17, 7, 9] | [∓6.83, 4.5, 11.0] | tháp la-de phòng thủ trên hai sườn |
+| PT14-R4-8 | `hyperion` part `pod_bay` `at` | [0, -7.5, 3.67] | [0, -12.67, 2.92] | khoang thả dưới khối động cơ |
+| PT14-R4-9 | boss mới `theia` (mini, variantOf hyperion, model theia) | — | size 0.6; giữ main_laser, pod_bay, pd_laser_l, pd_laser_r (hp mỗi phần 0.1); hp 94850 (×0.55 mini); weaponDamage 1.0; speed 4.2; secondary: p26_matriarch_ma_drones (slot missile, ra từ khoang bụng); aps bán kính 20, 3 lượt, 1.4 s; pods first 8 / every 30 / count 1 / max 3; tiers: marks [0.45], lịch cao 20 s / thấp 12 s rồi cao 14 s / thấp 16 s; modelSize [40.3, 20.7, 13.0]; tint [0.94, 0.97, 1.04] | chủ: 2 mini boss biến thể của Hyperion (tàu sân bay hộ tống có khoang drone) |
+| PT14-R4-10 | boss mới `coeus` (mini, variantOf hyperion, model coeus) | — | size 0.6; giữ main_laser (kind maingun, hp 0.12), main_engine (0.1), thruster_rl / _rr (0.08); hp 94850; weaponDamage 1.0; speed 3.6; mountWeapons 0 = p26_icarus_main_ic_coil (pháo điện từ hạng nặng trên tháp lưng); secondary: 2 × p26_icarus_direct_ic_laser (dàn la-de bụng); aps null; pods null; tiers: marks [0.45], cao 24 / thấp 10 rồi cao 18 / thấp 12; modelSize [40.3, 23.1, 12.8]; tint [1.04, 0.96, 0.88] | chủ: mini boss thứ hai (tàu pháo kích) |
+| PT14-R4-11 | `theia` / `coeus` part `at` (trước khi nhân size 0.6) | — | theia: main_laser [0, 16.33, 17.0], pod_bay [0, -3.33, 5.33], pd_laser_l / _r [∓13.83, 5.0, 15.0]; coeus: main_laser [0, 9.0, 20.5], main_engine [0, -31.0, 11.5], thruster_rl / _rr [∓16.5, -20.0, 11.17] | khớp model riêng |
+| PT14-R4-12 | Boss Hunt (`BossHunts.Unslotted`) | — | ("theia", 12), ("coeus", 12) | như các mini chưa có chỗ trong chương: theo chương của Aurel |
+| PT14-R4-13 | Boss Rush (`BossRushRules.Kinds`) | — | loại mới { "theia", "coeus" } | rút một trong hai mỗi lượt |
+| PT14-R4-14 | chữ `unit/boss.hyperion` | Orbital Mirror Station / Trạm gương quỹ đạo | Heavy Cruiser / Tuần dương hạm hạng nặng | model mới; note, guide, mẹo phần, bossfile, hai câu radio pha 2-3 và câu radio tia mặt trời viết lại cho tàu tuần dương |

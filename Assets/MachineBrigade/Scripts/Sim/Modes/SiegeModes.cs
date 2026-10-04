@@ -1422,6 +1422,8 @@ namespace MachineBrigade.Sim.Modes
             new[] { "monster" },
             new[] { "hyperion" },
             new[] { "nyx", "hydra" },
+            // Play-test 14 wave R4: Hyperion's two mini-boss variants.
+            new[] { "theia", "coeus" },
         };
 
         /// <summary>One boss of each kind, in the usual order, the variant drawn by <paramref name="seed"/>.</summary>
