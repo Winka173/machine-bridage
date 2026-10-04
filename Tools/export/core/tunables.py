@@ -18,7 +18,7 @@ GROUPS = {
     "bosses": ("02_boss", "Hang_so_boss", "Hằng số boss: đòn lớn, pha, hộ tống"),
     "bases": ("03_can_cu", "Hang_so_can_cu", "Hằng số căn cứ và tháp"),
     "modes": ("04_che_do_kinh_te_ai", "Hang_so_che_do", "Hằng số chế độ, tiếp tế và cờ chế độ"),
-    "ai": ("04_che_do_kinh_te_ai", "Hang_so_ai", "Hằng số AI"),
+    "ai": ("09_ai", "Hang_so_ai", "Hằng số AI"),
     "campaign": ("05_chien_dich", "Hang_so_chien_dich", "Hằng số chiến dịch, biến cố, thoại"),
     "maps": ("06_ban_do", "Hang_so_ban_do", "Hằng số bản đồ và đường đi"),
 }
@@ -28,7 +28,8 @@ EXTRA_COLS = (("nhom_quet", "kind", "nhóm của bản quét hằng số (thời
 
 
 def build(ctx):
-    """Adds the eight Hang_so_* sheets to the pack's books; returns the number of constants. Call after restructure."""
+    """Adds the Hang_so_* sheets (one a group of GROUPS) to the pack's books; returns the number of constants. Call after
+    restructure."""
     src = ctx.sources.get(SID)
     if src is None or not src.readable:
         return 0

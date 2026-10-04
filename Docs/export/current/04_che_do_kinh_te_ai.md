@@ -1,8 +1,8 @@
-# 04_che_do_kinh_te_ai — Chế độ, kinh tế, AI, meta, giao diện
+# 04_che_do_kinh_te_ai — Chế độ, kinh tế, meta, giao diện
 
-Chế độ chơi, độ khó, kinh tế, tác chiến, AI, thăng hạng, mở khóa, cửa hàng, giao diện.
+Chế độ chơi, độ khó, kinh tế, tác chiến, thăng hạng, mở khóa, cửa hàng, giao diện.
 
-Gói cân bằng Machine Brigade, commit d48c7e2f, ngày 2026-10-04. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit dbc836e6, ngày 2026-10-04. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng quan
 
@@ -377,86 +377,6 @@ Sheet 01_chien_dau/Doi_mo_man_luat — Đội mở màn: luật (3 dòng, 8 cộ
 
 Bảng đầy đủ: xem sheet `Doi_mo_man` (23 dòng).
 
-## AI và hệ thống
-
-- **Chỉ huy AI** (cho cả hai phe): chọn mục tiêu, tập hợp quân rồi tiến theo nhóm, giữ/chiếm cứ điểm, gọi hỏa lực vào cụm địch (không vào quân mình), mua quân khắc chế (địch nhiều máy bay → mua phòng không, nhiều giáp → mua diệt tăng...).
-- **Giao thông:** bản đồ làn đường (đường, lộ trình chính, lối hẹp, cổng), cấm đỗ ở cổng/lối hẹp, xe đang đỗ nhường đường theo ưu tiên, nhóm cùng đích không bắt nhau nhường, luân phiên qua cổng, tìm đường vòng có tính chi phí khi bị kẹt.
-- Đã sửa tận gốc: đích luôn quy về vùng xe tới được (không tìm đường tới túi kín hay sau cổng đóng), ô đội hình ở cùng phía tường và không chéo nhau, hai xe đối đầu ngoài bãi trống thì một xe tránh sang bên, lách xe không lao vào tường, đường đi qua chỗ vừa bị chặn (tháp mới dựng) được tính lại ngay, tháp hạ xuống đẩy xe ra khỏi chân tháp, xe pháo đài canh giữ xuất hiện ở chỗ rộng. Pháo đài: cửa phụ và cổng mở của thành trong là cổng đôi 18 m, sân sau cổng để trống, và mọi bãi thả, cổng, mục tiêu có đường rộng 3 ô cho xe lớn nhất khi mọi cổng đóng và mọi ô hardpoint đầy tháp lớn nhất (công cụ dựng map tự bỏ vật cản; Tools/maps/check_access.py kiểm tra mọi map). Lưới an toàn: sau 10 giây xe kẹt được đặt ra chỗ trống, hoặc tạm đi xuyên xe phe mình, hoặc nhích lên theo đường; mỗi lần đều ghi vào báo cáo.
-- **Chiến đấu:** giáp có hướng, tầm tối thiểu cho pháo, đạn xuyên (railgun), laser, tên lửa dẫn đường, pháo sáng, APS, tàng hình, EMP, khói, mìn, xe tự sát, drone, rơi máy bay gây sát thương, xác xe cháy.
-- **Trang bị trong trận:** 42 dòng unique móc vào các sự kiện bắn, trúng, hạ, chết, đứng yên, đổi mục tiêu; hệ thống trạng thái (cháy, chậm, xé giáp, đánh dấu, khiên); hiện chữ nhỏ trên xe khi kích hoạt.
-- **Chiến dịch:** địch scale theo kho vũ khí người chơi, chi viện bằng dù, dấu mục tiêu trên chiến trường và bản đồ nhỏ.
-- **Nhịp bắn (vòng 6):** các vũ khí của một xe không bao giờ bắn cùng lúc: súng máy nghỉ quanh mỗi phát pháo/tên lửa và mỗi loạt, hai súng máy thay phiên, vũ khí nặng đã ngắm được ưu tiên. Súng (trừ súng máy, pháo phòng không) bắn chậm hơn 30% và mạnh hơn tương ứng (giữ nguyên DPS). Pháo phòng không bắn loạt 8–16 viên (16–25 viên/giây) rồi nghỉ. Xe tăng hết mục tiêu mặt đất thì dùng súng máy đồng trục bắn máy bay. Railgun nạp năng lượng 0,9 giây rồi bắn xuyên hàng.
-- **Đạn và vụ nổ:** 35 mô hình đạn riêng (TOW, Kornet, Ataka, Hellfire, Stinger, Igla, Pantsir, AIM-9, R-60, AIM-120, Patriot, Buk, Maverick, JASSM, Hydra, S-8, Grad, GMLRS, TOS, Mk 84, FAB, GBU-12, JDAM, Lancet, Shahed, đạn xuyên, đạn nổ lõm, đạn pháo 155, đạn cối, đạn railgun); tên lửa rời bệ chậm rồi tăng tốc (1–1,5 giây cho phát bắn 40–60 m). Vụ nổ theo loại: đạn xuyên tóe lửa, đạn lõm chớp sáng, đạn nổ tung đất và khói đen, nhiệt áp bùng quả cầu lửa thứ hai, bom có vòng sóng xung kích và cột bụi; boss nổ nhiều đợt rồi lóe trắng toàn màn hình.
-- **Âm thanh:** nhạc nền tự sáng tác bằng script (Tools/music: MIDI + FluidSynth + SoundFont FluidR3 giấy phép MIT, không dùng AI): menu, 3 bản trận đấu, công thành, boss, thắng, thua; có mức âm lượng nhạc riêng. Clip Xem bắn có tiếng súng.
-- **Bản đồ nhỏ:** hiện mọi xe địch (ngoài tầm nhìn thì mờ), boss là vòng đỏ nhấp nháy.
-- **LOD:** xe nhỏ trên màn hình dùng mô hình đơn giản hóa (31% tam giác, 3,6 lượt vẽ thay vì 22), rất nhỏ thì thành thẻ impostor chiếu sáng lại; 100 xe trong khung: 741 nghìn → 255 nghìn tam giác.
-- **Kiểm thử:** xem phần 17.
-- **Đồ họa:** URP, mức Thấp/Vừa/Cao/Tùy chỉnh; Cao có shadow map 4096, bóng mềm, MSAA 4x và model chi tiết cho 12 xe phổ biến nhất.
-
-Sheet 04_che_do_kinh_te_ai/Chien_thuat — Chiến thuật (16 dòng, 41 cột)
-
-| id | counters | countered_by | prefer | commanders | chapter | check_with | cp | interlude | modules_artillery_prep |
-|---|---|---|---|---|---|---|---|---|---|
-| air_superiority | hit_and_run | blitz | fighter_jet;stealth_fighter;sam_launcher;long_sam;heavy_aa | reyes | 3 | sead | 0.15;0.12;0.08;0.08;0.2;0.1;0.22;0.05 | 0 |  |
-| all_out | depth | blitz | main_battle_tank;heavy_tank;attack_jet;heavy_bomber | okoye | 10 | breakthrough | 0.3;0.2;0.1;0.1;0.1;0.08;0.07;0.05 | 0 |  |
-| ambush | blitz | bounding | tank_destroyer;railgun_truck;fpv_carrier;scout_jeep;ew_jamm… | kerr | 0 |  | 0.15;0.15;0.3;0.1;0.12;0.08;0.02;0.08 | 1 |  |
-| attrition | breakthrough | blitz;encircle | mlrs;shahed_truck;ballistic_launcher;recon_drone | quist | 8 |  | 0.1;0.1;0.2;0.3;0.1;0.05;0.05;0.1 | 0 |  |
-| balanced |  |  |  | kade | 0 |  | 0.25;0.2;0.12;0.12;0.1;0.08;0.05;0.08 | 0 |  |
-| base_defence | blitz | firepower;attrition | tank_destroyer;aa_vehicle;mine_layer;engineer_vehicle | brandt | 1 |  | 0.25;0.15;0.2;0.15;0.15;0.02;0.0;0.08 | 0 |  |
-| blitz | firepower | depth;ambush | armored_car;ifv;wheeled_gun;main_battle_tank;attack_helicop… | mendez | 2 |  | 0.25;0.3;0.1;0.05;0.08;0.1;0.04;0.08 | 0 |  |
-| bounding | ambush | blitz;firepower | main_battle_tank;ifv | kade | 3 |  | 0.3;0.25;0.12;0.1;0.1;0.05;0.0;0.08 | 0 |  |
-| breakthrough | depth;encircle | encircle;dispersal | heavy_tank;titan_tank;twin_tank;armored_bulldozer;engineer_… | reyn | 6 | all_out | 0.4;0.15;0.08;0.12;0.1;0.05;0.02;0.08 | 0 |  |
-| decapitation | firepower | depth | armored_car;scout_heli;attack_helicopter;stealth_fighter | kerr | 9 |  | 0.12;0.28;0.15;0.1;0.08;0.15;0.07;0.05 | 0 |  |
-| depth | blitz;breakthrough | firepower;encircle | tank_destroyer;main_battle_tank;mine_layer;mortar_carrier;s… | brandt | 1 |  | 0.25;0.15;0.18;0.15;0.12;0.05;0.02;0.08 | 0 |  |
-| dispersal | firepower;breakthrough | blitz | armored_car;light_tank;fpv_carrier;mortar_carrier | venn | 6 | hit_and_run | 0.15;0.25;0.15;0.15;0.1;0.1;0.03;0.07 | 0 |  |
-| encircle | depth;base_defence | breakthrough | armored_car;ifv;wheeled_gun;light_tank;attack_helicopter | adler | 4 |  | 0.22;0.28;0.15;0.08;0.1;0.1;0.02;0.05 | 0 |  |
-| firepower | depth;base_defence | blitz;hit_and_run;dispersal | artillery;mlrs;heavy_rocket_artillery;mortar_carrier;ammo_c… | dahl | 3 |  | 0.2;0.12;0.08;0.3;0.12;0.05;0.05;0.08 | 0 | 1.0 |
-| hit_and_run | firepower | blitz;air_superiority | wheeled_gun;armored_car;tank_destroyer;attack_helicopter;st… | mendez | 5 | dispersal | 0.1;0.25;0.25;0.1;0.1;0.12;0.03;0.05 | 0 |  |
-| sead |  |  | attack_jet;stealth_fighter;ew_jammer;ballistic_launcher | reyes | 7 | air_superiority | 0.15;0.12;0.1;0.15;0.1;0.1;0.2;0.08 | 0 |  |
-
-*In 10 / 41 cột; 28 cột khác: xem sheet.*
-
-Sheet 04_che_do_kinh_te_ai/AI_ho_so_che_do — Hồ sơ AI theo chế độ (20 dòng, 33 cột)
-
-| id | tactics | advance | auto_ai | auto_ai_note | controllers | defender | engagement | escort_anchor | escort_max_advance_distance |
-|---|---|---|---|---|---|---|---|---|---|
-| assault | depth;base_defence;attrition;ambush;balanced | FALSE |  | Khu kế tiếp, quỹ thời gian | Commander;Static | ai | Normal |  |  |
-| bossrush |  | FALSE |  | 1) né cảnh báo chết người 2) bộ phận boss nguy hiểm 3) bộ p… | Boss | none | Normal |  |  |
-| capture | * | TRUE |  | Mục tiêu màn | Commander | none | Normal |  |  |
-| conquest | * | TRUE |  | Giữ cứ điểm đang mất nhanh nhất | Commander | none | Normal |  |  |
-| deathmatch | * | TRUE |  | Dồn hỏa lực, tránh biếu xe đắt | Commander | none | Normal |  |  |
-| defend |  | FALSE |  | Giữ tuyến, lùi tuyến có trật tự | WaveDirector | player | Normal |  |  |
-| escort | * | TRUE | escort | Ở quanh đoàn xe; mối đe dọa với đoàn trước; hỗ trợ không gọ… | Commander | none | Normal | convoyCentre | 30 |
-| fixed_deck | * | FALSE |  | Theo special_rules; placed_allies theo lệnh Tấn công/Phòng… |  | none | Normal |  |  |
-| hill | * | TRUE |  | Giữ đồi | Commander | none | Normal |  |  |
-| hold | * | TRUE |  | Giữ mục tiêu | Commander | player | Normal |  |  |
-| hunt | * | TRUE |  | Như cột trước | Commander | none | Normal |  |  |
-| operation | * | TRUE |  | Mục tiêu giai đoạn | Commander;WaveDirector;Fortress;Boss;Static | none | Normal |  |  |
-| outpost | * | TRUE |  | Theo bước | Commander | none | Normal |  |  |
-| protect | * | TRUE | protectTarget | Mối đe dọa trực tiếp lớn nhất với công trình được bảo vệ (k… | Commander | player | Normal |  |  |
-| recon | ambush;base_defence | FALSE |  | engagementPolicy = AVOID_UNLESS_BLOCKING; không đuổi; ưu ti… | Commander | none | AvoidUnlessBlocking |  |  |
-| relieve | * | TRUE | breakSiege | Phá vòng vây → bảo vệ quân được giải vây → rồi mới đuổi | Commander | none | Normal |  |  |
-| shootdown | * | TRUE |  | Giữ mạng phòng không và vùng phủ; không đuổi mục tiêu mặt đ… | Commander | none | Normal |  |  |
-| showdown | * | TRUE |  | Thủ nhà, phá tuyến ngoài, đánh nhà chính | Commander | none | Normal |  |  |
-| siege | depth;base_defence;attrition;ambush;balanced | FALSE |  | Mục tiêu giai đoạn; né vùng siêu pháo | WaveDirector;Fortress | ai | Normal |  |  |
-| survival |  | FALSE |  | Giữ bãi thả; chặn mối đe dọa gần; không đuổi xa | WaveDirector;Boss | player | Normal |  |  |
-
-*In 10 / 33 cột; 21 cột khác: xem sheet.*
-
-Sheet 04_che_do_kinh_te_ai/AI_trang_thai — Trạng thái đội (7 dòng, 5 cột)
-
-| id | commit | priority |
-|---|---|---|
-| APPROACH | 3.0 | 2 |
-| COMBAT | 4.0 | 3 |
-| FLANK | 6.0 | 2 |
-| HOLD | 5.0 | 2 |
-| OVERWATCH | 4.0 | 2 |
-| REGROUP | 3.0 | 3 |
-| TRAVEL | 4.0 | 1 |
-
-Bảng đầy đủ: xem sheet `AI_tham_so` (49 dòng), `AI_vai_tro` (28 dòng).
-
 ## Giao diện
 
 Phong cách **Field Command 2.0** (phase 10): nền xám thép phẳng, viền 1 px, góc vuông, một màu nhấn cam cho hành động chính (góc vát), chữ Barlow / Barlow Condensed (đủ dấu tiếng Việt). Mọi màn dựng trên một bộ token màu và chữ chung và một thư viện thành phần (nút, thẻ, tab, ô chọn, công tắc, thanh chỉ số, hộp thoại, thông báo). Điều hướng 5 mục bên trái: Trang chủ, Chiến dịch, Tác chiến, Quân đội, Cửa hàng; thanh trên cùng có cấp, kinh nghiệm, xu và cài đặt. Ảnh thẻ render từ mô hình 3D thật. Mỗi màn được kiểm tra tự động ở 4 tỉ lệ màn hình (16:9, 19,5:9 tai thỏ, 20:9 đục lỗ, 4:3) và cỡ chữ Lớn: không chữ bị cắt, không thành phần chồng nhau, vùng chạm đủ lớn. Tên gọi tiếng Việt thống nhất (mỗi bản đồ một tên, xu, ngụy trang, rốc-két, la-de).
@@ -515,27 +435,6 @@ Thông số ngoài đời lấy từ nguồn trong repo (sheet Nguon_tham_chieu 
 
 - `conquest` (Conquest): game: Company of Heroes; độ tin: ban_dau_doan; nguồn: R_decisions.
 
-### AI_tham_chieu
-
-56 dòng. Độ tin cậy: da_kiem_chung 14, uoc_dinh 0, ban_dau_doan 30, NEED_SOURCE 12. Loại: NEED_SOURCE 12, hoc_thuyet_quan_su 44.
-
-- `chien_thuat/air_superiority` (Ưu thế trên không): học thuyết: Ưu thế trên không; game: Hearts of Iron IV;Ace Combat; giống: Tạo cửa sổ trên không rồi mới đưa đội mặt đất; khác có chủ đích: Tướng AI mua tiêm kích và phòng không trước; đội mặt đất chờ tới khi máy bay địch bị hạ h…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
-- `chien_thuat/all_out` (Tổng tấn công): học thuyết: Tập trung lực lượng, đòn quyết định; game: StarCraft; giống: Để dành rồi tung một đợt lớn cùng lúc; khác có chủ đích: Tướng AI để dành CP tới ngưỡng rồi mua cả đợt; mọi đội cùng tấn công; thẻ hỗ trợ dồn cùng…; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
-- `chien_thuat/ambush` (Phục kích): học thuyết: Phục kích, giữ lửa; game: Command: Modern Operations;Company of Heroes; giống: Ẩn và kỷ luật hỏa lực, phát đầu đồng loạt; khác có chủ đích: Đội dừng ở chỗ có vật che; giữ lửa tới khi địch vào ~60% tầm hoặc bị phát hiện; phát đầu…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_command_modern_operations_weapon_release_aut.
-- `chien_thuat/attrition` (Tiêu hao): học thuyết: Chiến tranh tiêu hao; game: Hearts of Iron IV; giống: Đổi lãnh thổ lấy thời gian, quấy rối từ xa; khác có chủ đích: Ngưỡng tấn công 1,5 lần; ưu tiên vũ khí tầm xa và giữ khoảng cách; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
-- `chien_thuat/balanced` (Cân bằng): học thuyết: Vũ khí phối hợp (combined arms); giống: Phối hợp nhiều vai trò, không thiên lệch; khác có chủ đích: Không đổi tham số; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
-- `chien_thuat/base_defence` (Bảo vệ căn cứ): học thuyết: Phòng thủ cố định; game: Tower defense;C&C; giống: Giữ quanh căn cứ và tháp; khác có chủ đích: Đội giữ trong vùng căn cứ; tháp ưu tiên chế độ Đầu đoàn; mua quân phòng thủ; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
-- `chien_thuat/blitz` (Tấn công chớp nhoáng): học thuyết: Chiến tranh cơ động; game: Hearts of Iron IV; giống: Giữ đà tiến, đánh trước khi địch kịp dựng phòng tuyến; khác có chủ đích: Ngưỡng tấn công 1,2 → 0,9 lần sức mạnh địch; đội không chờ xe chậm; xe nhanh được ưu tiên…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
-- `chien_thuat/bounding` (Yểm hộ luân phiên): học thuyết: Bounding overwatch; game: Steel Beasts;ArmA; giống: Tiến chậm, an toàn, một nhóm luôn yểm hộ; khác có chủ đích: Đội chia 2 nhóm; nhóm tiến không vượt quá tầm yểm hộ của nhóm dừng; tốc độ tiến giảm ~30%; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, W_bounding_overwatch.
-- `chien_thuat/breakthrough` (Tập trung đột phá): học thuyết: Schwerpunkt (điểm trọng tâm); game: Hearts of Iron IV;Total War; giống: Dồn gần hết quân vào một điểm để chọc thủng; khác có chủ đích: Tướng AI dồn ≥ 70% quân vào một hướng; xe hạng nặng đi đầu; bỏ giữ các điểm phụ; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
-- `chien_thuat/decapitation` (Săn đầu): học thuyết: Đánh vào chỉ huy và hậu cần (decapitation); game: Company of Heroes;WARNO; giống: Đánh sâu vào hỗ trợ, pháo, chỉ huy; khác có chủ đích: Ưu tiên mục tiêu: xe hỗ trợ, pháo, xe chỉ huy, radar; đội đánh sườn sâu; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
-- `chien_thuat/depth` (Phòng thủ chiều sâu): học thuyết: Phòng thủ đàn hồi (elastic defense); game: Hearts of Iron IV; giống: Hấp thụ đợt tấn công qua nhiều tuyến, rồi phản công; khác có chủ đích: Đội giữ điểm gần tháp; khi tuyến trước thất thủ (sức mạnh ta dưới 0,6 lần địch trong vùng…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
-- `chien_thuat/dispersal` (Phân tán): học thuyết: Phân tán chống hỏa lực; game: Supreme Commander; giống: Dàn rộng để vô hiệu bắn lan và siêu vũ khí (tham khảo khác: chiến sự drone hiện đại); khác có chủ đích: Khoảng cách tối thiểu giữa xe ×2; giảm dồn hỏa lực; né cảnh báo sớm hơn; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
-- `chien_thuat/encircle` (Bao vây): học thuyết: Gọng kìm, bao vây; game: Total War;Hearts of Iron IV; giống: Đánh hai hướng cùng lúc vào hông và sau; khác có chủ đích: Tướng AI chia 2–3 đội theo hai hướng; trọng số đánh sườn tăng; hẹn giờ cho các đội cùng c…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
-- `chien_thuat/firepower` (Hỏa lực áp đảo): học thuyết: Hỏa lực vượt trội; game: Hearts of Iron IV; giống: Pháo dọn đường rồi mới tiến; khác có chủ đích: Tướng AI ưu tiên mua pháo binh; đội chờ 1 đợt pháo trước khi tiến; pháo được giao mục tiê…; độ tin: da_kiem_chung; nguồn: R_machine_brigade_ai_research, D_hearts_of_iron_iv_land_doctrine.
-- `chien_thuat/hit_and_run` (Bắn và chạy): học thuyết: Kiting, giữ cự ly; game: StarCraft II; giống: Giữ cự ly tối đa, không để địch áp sát; khác có chủ đích: Khoảng cách giao chiến 90–100% tầm; lùi khi địch vào 70% tầm; ưu tiên mua xe nhanh bắn xa; độ tin: ban_dau_doan; nguồn: R_machine_brigade_ai_research.
-- … 29 dòng có tham chiếu nữa: xem sheet AI_tham_chieu.
-
 ### Meta_tham_chieu
 
 13 dòng. Độ tin cậy: da_kiem_chung 0, uoc_dinh 0, ban_dau_doan 0, NEED_SOURCE 13. Loại: NEED_SOURCE 13.
@@ -544,11 +443,7 @@ Thông số ngoài đời lấy từ nguồn trong repo (sheet Nguon_tham_chieu 
 
 Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
 
-- `D_command_modern_operations_weapon_release_aut`: Command: Modern Operations · Weapon Release Authorization — <https://command.matrixgames.com/?p=3598> (độ tin 1)
-- `D_hearts_of_iron_iv_land_doctrine`: Hearts of Iron IV · Land doctrine — <https://hoi4.paradoxwikis.com/Land_doctrine> (độ tin 3)
 - `R_decisions`: Docs/DECISIONS.md (nhật ký quyết định) (độ tin 3)
-- `R_machine_brigade_ai_research`: Nghiên cứu AI (Machine_Brigade_AI_Research.xlsx) (độ tin 3)
-- `W_bounding_overwatch`: Bounding overwatch — <https://en.wikipedia.org/wiki/Bounding_overwatch> (độ tin 2)
 
 ## Các sheet của file
 
@@ -566,20 +461,6 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Kinh_te_suy_ra` (44 dòng): Kinh tế suy ra — CP mỗi bên đã kiếm được (CP khởi đầu + thu nhập x thời gian) ở 25 / 50 / 75 / 100 % thời lượng tham chiếu (Che_do_thoi_luong), theo chế độ x độ khó;…
 - `Kiem_tinh_che_do` (36 dòng): Kiểm tĩnh chế độ (4 sổ) — Bốn sổ của kiểm tĩnh chế độ (Tools/audit/mode_static_audit.py,) ở 25 / 50 / 75 / 100 % thời lượng mục tiêu, Bình thường: Kinh tế (CP khởi đầu + thu n…
 - `Che_do_tham_chieu` (12 dòng): Chế độ: tham chiếu game — Mỗi chế độ một dòng: game tham khảo, cơ chế giữ / đổi (spec 12.2; chỉ dữ liệu có trong repo)
-- `Chien_thuat` (16 dòng): Chiến thuật — aiBehaviour.tactics: 16 chiến thuật (tỷ lệ CP theo nhóm, ưu tiên, khắc chế, mở khóa theo chương, commander, mô-đun ghi đè tham số)
-- `AI_ho_so_che_do` (20 dòng): Hồ sơ AI theo chế độ — aiModeProfiles.profiles: controllers, chiến thuật cho phép, chính sách mục tiêu, đứng yên, áp lực tiêu / tiến, hỗ trợ, leash, mặt nạ mục tiêu
-- `AI_ho_so_pha` (5 dòng): Hồ sơ AI: ghi đè theo pha — aiModeProfiles.profiles.<hồ sơ>.phaseOverrides[]
-- `AI_ho_so_anh_xa` (29 dòng): Hồ sơ AI: chế độ / mục tiêu -> hồ sơ — aiModeProfiles.modes (chế độ) và aiModeProfiles.goals (kiểu mục tiêu nhiệm vụ) -> hồ sơ
-- `AI_tuong` (12 dòng): Tướng địch — Mỗi tướng một dòng: campaign.json generals (bộ bài, hỗ trợ, thế, phong cách), balance.json generals (elite ưa thích, bài thêm), aiBehaviour.generals…
-- `AI_tham_so` (49 dòng): Tham số AI — balance.json ai.economy / ai.params / ai.world: giá trị, khoảng cho phép, chỉ số đo, lý do; danh sách bậc (escalation) một dòng mỗi bậc
-- `AI_vai_tro` (28 dòng): Vai trò đơn vị — aiBehaviour.roles: ngưỡng giao chiến, phản ứng khi bị áp đảo
-- `AI_don_vi` (50 dòng): Vai trò của từng đơn vị — aiBehaviour.units: đơn vị -> vai trò AI
-- `AI_trang_thai` (7 dòng): Trạng thái đội — aiBehaviour.states: ưu tiên và thời gian cam kết mỗi trạng thái
-- `AI_thap` (18 dòng): Hành vi tháp — aiBehaviour.towers: cách chọn mục tiêu mặc định và các cách đổi được
-- `AI_boss` (11 dòng): Hành vi boss — aiBehaviour.bosses: kiểu hành vi của boss (ngăn ';')
-- `AI_xung_dot` (348 dòng): AI: xung đột ghi đè — Mỗi chế độ / kiểu mục tiêu nhiệm vụ (AI_ho_so_anh_xa) x tướng (AI_tuong): chiến thuật tướng ưa thích, hồ sơ có dùng nó không, chiến thuật vào trận th…
-- `AI_xung_dot_do_kho` (80 dòng): AI: độ khó x hồ sơ — Mỗi hồ sơ AI x độ khó: cách đổi chiến thuật giữa trận của độ khó (AiSkill.For: Never / WhenLosing / Counter) và việc hồ sơ chặn nó (không chiến thuật…
-- `AI_tham_chieu` (56 dòng): AI: học thuyết và game tham khảo — Chiến thuật, vai trò AI, tướng địch: học thuyết quân sự (nghiên cứu AI), game AI tham khảo, kiểu chỉ huy (spec 12.2; chỉ dữ liệu có trong repo)
 - `Nang_hang` (10 dòng): Giá nâng hạng — Arsenal.cs Coins / Prints: xu và bản thiết kế cho mỗi lần lên hạng (hạng 1-10)
 - `Hom_do` (4 dòng): Hòm đồ và tỷ lệ rơi — Arsenal.cs: mỗi bậc hòm một dòng (số lượt, xu thấp / cao, số bản thiết kế, số thẻ, giá xu, bảo hiểm Sử thi / Huyền thoại, phần tháp, tỷ lệ theo độ hi…
 - `Trang_bi_hang` (27 dòng): Trang bị theo độ hiếm — Arsenal.cs LevelCap / Top / Cap / GoldGuaranteed / LegendaryGuaranteed: mỗi chỉ số một dòng theo bảng nguồn (bang / chi_so)
@@ -600,4 +481,3 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Thuong` (1 dòng): Thưởng — Thưởng trận / chiến dịch
 - `Meta_tham_chieu` (13 dòng): Meta: game tham khảo cơ chế — Mỗi cơ chế ngoài trận một dòng (theo sheet): game tham khảo (nâng hạng, hòm đồ, nhiệm vụ ngày...) (spec 12.2; chỉ dữ liệu có trong repo)
 - `Hang_so_che_do` (72 dòng): Hằng số chế độ, tiếp tế và cờ chế độ — Assets/MachineBrigade/Resources/Data/tunables.json: 'modes' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị kh…
-- `Hang_so_ai` (32 dòng): Hằng số AI — Assets/MachineBrigade/Resources/Data/tunables.json: 'ai' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị khi c…

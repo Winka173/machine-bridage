@@ -1,4 +1,4 @@
-"""`export.py pdf`: one PDF from the pack's eight md files, written to <pack>/_qa/ (never into the pack).
+"""`export.py pdf`: one PDF from the pack's md files, written to <pack>/_qa/ (never into the pack).
 
 The md are joined in file order into <pack>/_qa/Machine_Brigade_Design_<date>.md (picture links one folder up), and
 docpdf renders that. Needs PyMuPDF; without it the command says so and writes nothing.

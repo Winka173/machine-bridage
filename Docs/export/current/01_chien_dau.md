@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit d48c7e2f, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit dbc836e6, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -545,7 +545,7 @@ Thẻ hỗ trợ trong bộ bài (2 ô), gọi vào một điểm trên bản đ
 
 *Hình: Clip Xem bắn của các thẻ hỗ trợ (pháo kích, không kích, tên lửa hành trình, napalm, ném bom rải thảm, MOAB, bom chùm, máy bay pháo, EMP, khói, tiếp tế, chi viện). Đơn vị: ảnh chụp trong game, không lưới mét; thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (07_hinh_anh_am_thanh_model/Model).*
 
-Bảng đầy đủ: xem sheet `The_ho_tro` (24 dòng).
+Bảng đầy đủ: xem sheet `The_ho_tro` (25 dòng).
 
 ## Bảng giá, hệ đạn và hồi đạn
 
@@ -615,7 +615,7 @@ Sheet 01_chien_dau/Commander_gia — Commander: hệ số giá (5 dòng, 7 cột
 | reyn/0 | reyn | 0 | Vehicles | 1.1 |
 | varro/0 | varro | 0 | Cheap | 0.85 |
 
-Sheet 04_che_do_kinh_te_ai/AI_tuong — Tướng địch (12 dòng, 11 cột)
+Sheet 09_ai/AI_tuong — Tướng địch (12 dòng, 11 cột)
 
 | id | chien_thuat_ua_thich | chien_dich_deck | chien_dich_supports | noi_tai | can_bang_deck | can_bang_elites | chien_dich_stance | chien_dich_style |
 |---|---|---|---|---|---|---|---|---|
@@ -753,7 +753,7 @@ Thông số ngoài đời lấy từ nguồn trong repo (sheet Nguon_tham_chieu 
 
 ### Phuong_tien_tham_chieu
 
-103 dòng. Độ tin cậy: da_kiem_chung 24, uoc_dinh 28, ban_dau_doan 15, NEED_SOURCE 36. Loại: NEED_SOURCE 36, doi_that 67.
+104 dòng. Độ tin cậy: da_kiem_chung 24, uoc_dinh 28, ban_dau_doan 15, NEED_SOURCE 37. Loại: NEED_SOURCE 37, doi_that 67.
 
 - `aa_vehicle` (Pháo cao xạ tự hành): mẫu thật: Flakpanzer Gepard (Oerlikon KDA 35 mm);Stinger / Starstreak; giống: Pháo phòng không tự hành hai nòng 35 mm có radar; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_flakpanzer_gepard, R_unit_sheet, R_machine_brigade_can_bang, R_aa_vehicle.
 - `ammo_carrier` (Xe tiếp đạn): mẫu thật: M977 HEMTT;KamAZ-5350;M2 Browning 12,7 mm; giống: xe tải hậu cần chở đạn, súng máy trên vòng nóc; độ tin: uoc_dinh; nguồn: R_unit_refs, R_reference_real, W_wikipedia_heavy_expanded_mobility_tactical_t, R_unit_sheet, R_machine_brigade_can_bang, R_ammo_carrier.
@@ -838,7 +838,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Xe_vu_khi` (76 dòng): Xe: bệ vũ khí phụ — secondary[]: bệ phụ (chỉ số bệ = thu_tu + 1; bệ 0 là vũ khí chính)
 - `Xe_ten_lua` (3 dòng): Xe: tên lửa mang — missiles[]
 - `Xe_bo_phan` (6 dòng): Xe: bộ phận — parts[] của xe không phải boss
-- `The_ho_tro` (24 dòng): Thẻ hỗ trợ — supports[]: pháo kích, không kích, khói, thả hộ tống...
+- `The_ho_tro` (25 dòng): Thẻ hỗ trợ — supports[]: pháo kích, không kích, khói, thả hộ tống...
 - `Ky_nang` (21 dòng): Kỹ năng nội tại — skills[]: khiên, khói, sửa... của xe, elite, boss
 - `Tinh_nhue_luat` (20 dòng): Luật tinh nhuệ — elites: hệ số giá / máu / sát thương, ngân sách và trần theo độ khó
 - `Nhanh_xe` (4 dòng): Nhánh quân — branches: nhánh -> các lớp xe
@@ -860,7 +860,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Hoi_quy` (12 dòng): Hồi quy theo CP — Số mũ và hệ số của máu và DPS theo CP (máu = a x CP^b, bình phương nhỏ nhất trên ln), N, trung vị máu / CP và DPS / CP theo dải CP (<= 8, 9-15, >= 16)
 - `May_bay_so_phat` (14 dòng): Máy bay: số phát để hạ — Mỗi máy bay: máu trong trận, giáp, sát thương một phát và số phát của tên lửa tham chiếu (Stinger, Buk, AMRAAM) để hạ (DamageTable.Effective, Air)
 - `Doi_mo_man_suy_ra` (23 dòng): Đội mở màn: suy ra — baseCP ước tính của đội mở màn (bộ bài trống: thẻ rẻ nhất mỗi vai trò, Doi_mo_man_vai_tro.re_nhat_cp); % CP khởi đầu theo chế độ cần CP khởi đầu của…
-- `Phuong_tien_tham_chieu` (103 dòng): Phương tiện: tham chiếu ngoài đời — Mỗi xe và thẻ hỗ trợ một dòng: mẫu thật, phim / game (unit_refs.json), kích thước thật (reference_real.json), bảng cân bằng (spec 12.2; chỉ dữ liệu c…
+- `Phuong_tien_tham_chieu` (104 dòng): Phương tiện: tham chiếu ngoài đời — Mỗi xe và thẻ hỗ trợ một dòng: mẫu thật, phim / game (unit_refs.json), kích thước thật (reference_real.json), bảng cân bằng (spec 12.2; chỉ dữ liệu c…
 - `Phuong_tien_so_sanh_that` (221 dòng): Phương tiện: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
 - `So_tay_dan` (2 dòng): Sổ tay đạn — balance.json handbook: xe mẫu bắn và xe mẫu bị bắn của sổ tay đạn trên giao diện
 - `Hang_so_vu_khi` (40 dòng): Hằng số vũ khí, đạn, sát thương và nổ — Assets/MachineBrigade/Resources/Data/tunables.json: 'weapons' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…

@@ -1,5 +1,5 @@
 """The compact balance pack (Docs/prompts/export_pack_vi.txt, addendum): the 13 domain books domains/ builds are regrouped
-into the 8 files of Docs/export/current/, the sheets of section 2.3 go to bulk.zip, the process sheets of 2.1 leave, and
+into the files of Docs/export/current/ (PACK below), the sheets of section 2.3 go to bulk.zip, the process sheets of 2.1 leave, and
 every cell is made free of process words and build-time markers.
 
 restructure(ctx, game) runs before the formulas are resolved, so a formula still reads sheets of ITS file only (the sheet
@@ -22,8 +22,8 @@ PACK = {
                      "Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm"),
     "02_boss": ("Boss", ("03_boss",), "Boss, bộ phận, siêu vũ khí, hộ tống, pha, Săn trùm"),
     "03_can_cu": ("Căn cứ và tháp", ("04_can_cu_thap",), "Tháp và nhánh, tường, nhà chính, mô-đun tiện ích, xây lại, AI căn cứ"),
-    "04_che_do_kinh_te_ai": ("Chế độ, kinh tế, AI, meta, giao diện", ("05_che_do_kinh_te", "06_ai", "11_meta_giao_dien"),
-                             "Chế độ chơi, độ khó, kinh tế, tác chiến, AI, thăng hạng, mở khóa, cửa hàng, giao diện"),
+    "04_che_do_kinh_te_ai": ("Chế độ, kinh tế, meta, giao diện", ("05_che_do_kinh_te", "11_meta_giao_dien"),
+                             "Chế độ chơi, độ khó, kinh tế, tác chiến, thăng hạng, mở khóa, cửa hàng, giao diện"),
     "05_chien_dich": ("Chiến dịch và cốt truyện", ("07_chien_dich_cot_truyen",),
                       "Chương, nhiệm vụ, biến cố, bộ bài game, nhân vật, thống kê thoại"),
     "06_ban_do": ("Bản đồ", ("08_ban_do",), "Bản đồ, bản đồ gốc, biome, thời tiết, địa danh, ray, vật thể, ngân sách thực thể"),
@@ -31,6 +31,10 @@ PACK = {
                                    "Hiệu ứng, âm thanh, hậu kỳ hình ảnh, model và số đo model, tài sản, giấy phép"),
     "08_tham_chieu": ("Tham chiếu ngoài đời và game", ("13_tham_chieu_nguon",),
                       "Nguồn ngoài đời, cơ chế lấy ý từ game, học thuyết quân sự, bản quyền tài liệu"),
+    "09_ai": ("AI", ("06_ai",),
+              "Chiến thuật, hồ sơ AI theo chế độ, tướng địch, tham số AI, vai trò đơn vị, trạng thái đội, hành vi tháp / "
+              "boss, luồng quyết định theo lớp (tướng / đội / đơn vị), mục tiêu ưu tiên, độ khó, chống kẹt, tiếp tế "
+              "máy bay, hằng số AI còn trong mã"),
 }
 OLD_TO_NEW = {old: new for new, (_t, olds, _d) in PACK.items() for old in olds}
 GROUP_PREFIX = {"01_vu_khi_dan": "vk", "02_phuong_tien": "xe", "03_boss": "boss", "04_can_cu_thap": "cc",
@@ -492,7 +496,8 @@ def freeze_bulk_references(ctx):
 CONST_ROUTE = [
     (re.compile(r"(?i)boss|hunt"), "02_boss"),
     (re.compile(r"(?i)tower|base|wall|fortress|siege|defen"), "03_can_cu"),
-    (re.compile(r"(?i)econom|supply|income|mode|match|difficult|meta|menu|shop|rank|unlock|operation|\bai\b|ai[A-Z_]|^ai"),
+    (re.compile(r"(?i)\bai\b|ai[A-Z_]|^ai"), "09_ai"),
+    (re.compile(r"(?i)econom|supply|income|mode|match|difficult|meta|menu|shop|rank|unlock|operation"),
      "04_che_do_kinh_te_ai"),
     (re.compile(r"(?i)campaign|mission|dialog|script|event|chapter"), "05_chien_dich"),
     (re.compile(r"(?i)map|terrain|biome|weather|prop|dressing"), "06_ban_do"),
