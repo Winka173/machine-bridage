@@ -304,3 +304,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 04/10 "có vẻ như toàn bộ trang bị chưa được export, check xem còn gì chưa export data luôn không".
 - 04/10 "AI có file riêng luôn chưa, đưa tôi toàn bộ AI nhớ càng chi tiết càng tốt".
 - 04/10 "cứ làm file theo format đã có trong export_current" (AI = cặp 09_ai.xlsx/md trong gói xuất).
+- 04/10 "file toàn bộ trang bị là file nào" -> "đem ra 1 file riêng, đầy đủ" (cặp 10_trang_bi trong gói xuất).
