@@ -836,7 +836,9 @@
     // Prompt 20 L.3: the flak branch is the drone and swarm killer, not a weaker plain AA tower: the 23 mm's 14 a round on the scale
     // (prompt 20 had 22), at more than twice the rhythm (DECISIONS 19T).
     { "id": "flak_quad", "weaponFamilyId": "cal_23", "real": "ZSU-23-4 23 mm (quad)", "family": "autocannon", "size": 23, "caliberMm": 23,         "pen": 1, "damageType": "Fragmentation",          "damage": 14,  "cooldown": 0.0324,  "range": 46, "projectileSpeed": 300, "splash": 3.5, "spread": 1.6, "impactTier": "Medium", "projectile": "Bullet", "targets": "All", "clip": 54, "clipReload": 1.5, "roundWeight": 22 },
-    { "id": "sam_battery", "weaponFamilyId": "sam_mim_104_patriot_pac_2", "weaponFamily": "", "projectileSpeed": 200, "flightProfile": "Loft", "splash": 2.5, "projectileModel": "patriot", "roundLength": 4.24, "projectileScale": 1.2471, "ceiling": "high", "real": "MIM-104 Patriot PAC-2", "family": "aa_missile", "size": 90, "warheadKg": 90,       "pen": 3, "damageType": "Fragmentation",          "damage": 340, "cooldown": 8,  "range": 90, "minRange": 20, "impactTier": "Large", "projectile": "Missile", "targets": "Air", "burst": 2, "burstInterval": 3, "flareResist": 0.85 },
+    // Play-test 14 lane I: Nemesis' SAM car (only nuke_train fires it; patriot and sam_pac3 keep their own 300): 200 -> 95, Loft
+    // (up out of its canister, over and down), about 1 s over its 90 m reach.
+    { "id": "sam_battery", "weaponFamilyId": "sam_mim_104_patriot_pac_2", "weaponFamily": "", "projectileSpeed": 95, "flightProfile": "Loft", "splash": 2.5, "projectileModel": "patriot", "roundLength": 4.24, "projectileScale": 1.2471, "ceiling": "high", "real": "MIM-104 Patriot PAC-2", "family": "aa_missile", "size": 90, "warheadKg": 90,       "pen": 3, "damageType": "Fragmentation",          "damage": 340, "cooldown": 8,  "range": 90, "minRange": 20, "impactTier": "Large", "projectile": "Missile", "targets": "Air", "burst": 2, "burstInterval": 3, "flareResist": 0.85 },
     // Prompt 20 L.3: 22 a round (was 14): the flak branch is the drone and swarm killer, not a weaker plain AA tower.
     // Balance pass after prompt 18 (A.2): the Patriot tower's launcher (the bosses keep sam_battery's rhythm).
     { "id": "patriot", "weaponFamily": "mim_104_patriot_pac_2", "real": "MIM-104 Patriot PAC-2", "family": "aa_missile", "size": 90, "warheadKg": 90, "pen": 3, "inherits": "sam_battery", "burstInterval": 0.45, "cooldown": 2.75 },
@@ -903,7 +905,9 @@
     // (weak on aircraft: the SAM post and the Patriot are for them); six in the launcher, 20 s to reload it.
     { "id": "tamir", "flightProfile": "Loft", "weaponFamilyId": "sam_tamir_interceptor", "real": "Tamir interceptor (Iron Dome)", "family": "aa_missile", "size": 1, "warheadKg": 11, "pen": 2, "projectileModel": "shorad_dart", "projectileScale": 0.9, "damageType": "Fragmentation", "damage": 110, "cooldown": 3.5, "range": 60, "projectileSpeed": 180, "splash": 2.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "flareResist": 0.6, "ammo": 6, "reload": 20 },
     // Prompt 20 L.3: the AA tower's SAM post reaches 60 m, between the close-in flak and the Patriot (72-100 m).
-    { "id": "sam_post", "weaponFamily": "", "projectileSpeed": 170, "cooldown": 3.9, "real": "9M317 Buk", "family": "aa_missile", "size": 70, "warheadKg": 70, "pen": 3, "inherits": "sam_long", "range": 60 },
+    // Play-test 14 lane I: now the bosses' Buk post only (Typhon's and Hydra's sail top, Leviathan, mobile_fortress): the straight missile
+    // off Typhon's sail the owner still found far too fast at 170 (0.35 s over 60 m); 80 = the Kornet's, 0.75 s, flies Direct.
+    { "id": "sam_post", "weaponFamily": "", "projectileSpeed": 80, "cooldown": 3.9, "real": "9M317 Buk", "family": "aa_missile", "size": 70, "warheadKg": 70, "pen": 3, "inherits": "sam_long", "range": 60 },
     { "id": "howitzer_ext", "weaponFamily": "m284_155_mm_2", "real": "M284 155 mm (base bleed)", "family": "howitzer", "size": 155, "caliberMm": 155,      "pen": 3, "inherits": "howitzer_fixed", "range": 112, "cooldown": 5.3, "reload": 21 },
     // Tower branches: the emplacement's heavy mortar: a high arc over walls into yards and behind cover, a short reach and
     // minimum range, a very big blast, hard on structures.
@@ -983,7 +987,10 @@
     { "id": "p26_nemesis_ne152", "inherits": "gun_behemoth", "real": "152 mm railcar gun", "damage": 620, "burst": 4, "burstInterval": 0.5, "cooldown": 3.5, "splash": 8.5, "edge": 17 },
     { "id": "p26_nemesis_ne125", "inherits": "gun_120mm", "weaponFamilyId": "cal_125_ap", "weaponFamily": "", "real": "2A46 125 mm", "size": 125, "caliberMm": 125, "damage": 280, "cooldown": 2, "pen": 5, "splash": 0, "range": 38 },
     { "id": "p26_nemesis_main_ne152", "groundMinReach": 32, "inherits": "p26_nemesis_ne152", "burst": 1, "edge": 14, "splash": 7, "cooldown": 7.5, "damage": 600 },
-    { "id": "p26_nemesis_sec_boss_rockets", "groundMinReach": 20, "inherits": "boss_rockets", "burst": 40, "burstInterval": 0.5, "cooldown": 2.44, "damage": 200 },
+    // Play-test 14 lane I: Nemesis' rocket car (Part_rocket) flies its Grads at 65 (was the family's 130: 0.35 s over 45 m), Ballistic.
+    { "id": "p26_nemesis_sec_boss_rockets", "groundMinReach": 20, "inherits": "boss_rockets", "burst": 40, "burstInterval": 0.5, "cooldown": 2.44, "damage": 200, "projectileSpeed": 65 },
+    // Play-test 14 lane I: Juggernaut's rocket car (Mount_rocket) the same: boss_rockets at 65 m/s, Ballistic (other bosses' Grads keep 130).
+    { "id": "pt14_train_grad", "inherits": "boss_rockets", "projectileSpeed": 65 },
     { "id": "p26_nemesis_direct_ne125", "groundMinReach": 30, "inherits": "p26_nemesis_ne125", "cooldown": 7.5, "damage": 400 },
     { "id": "p26_nemesis_close_boss_flak", "inherits": "boss_flak", "clipReload": 3.38, "weaponFamily": "", "damage": 25 },
     { "id": "p26_typhon_ty100", "inherits": "naval_100", "weaponFamily": "", "real": "AK-100 100 mm (deck)", "damage": 600, "burst": 1, "cooldown": 2.5, "pen": 4, "splash": 5, "edge": 10 },
@@ -1762,7 +1769,7 @@
       "deathExplosion": { "damage": 450, "radius": 20, "delay": 2.6, "tier": "Ultimate" } },
     { "id": "armored_train", "outgoingDamageMult": 0.8319, "weaponDamage": 1.859, "frame": "train", "arena": "ironport", "route": "rail", "rank": "mini", "general": "kessler", "size": 0.85, "dropParts": ["mortar_car"], "radioSpawn": "radio.kessler.juggernaut", "scale": 1.15, "armour": [4, 3, 3, 2], "hp": 37750, "speed": 0.32, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "length": 49.18, "width": 3.4, "cp": 0, "vision": 50,
       "firesWhileMoving": true, "weapon": "train_gun", "captureRate": 0, "boss": true, "skills": ["train_patch"],
-      "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_hmg", "slot": "mg", "aim": "Free" },
+      "secondary": [ { "weapon": "pt14_train_grad", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_hmg", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "train_gun", "slot": "main", "aim": "Free" },
                      { "weapon": "train_mortar", "slot": "mortar", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" } ],
       "parts": [
