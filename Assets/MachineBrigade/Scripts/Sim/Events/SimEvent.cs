@@ -326,7 +326,7 @@ namespace MachineBrigade.Sim.Events
                 airborne: airborne);
 
         internal static SimEvent Exploded(Vector2 at, ExplosionDef explosion, EntityId source) =>
-            new(SimEventKind.Explosion, source, at, new Vector2(explosion.Edge, 0f), explosion.Radius, explosion.Tier, null, Teams.Environment);
+            new(SimEventKind.Explosion, source, at, new Vector2(explosion.Edge, 0f), explosion.Radius, explosion.Tier, explosion.Round, Teams.Environment);
 
         internal static SimEvent Damage(IDamageable target, float amount) =>
             new(SimEventKind.Damaged, target.Id, target.Position, default, amount, default, null, target.Team);

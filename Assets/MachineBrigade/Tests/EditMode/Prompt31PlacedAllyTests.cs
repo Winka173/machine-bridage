@@ -46,7 +46,7 @@ namespace MachineBrigade.Tests
         {
             var m = Mission("c6m03");
             Assert.IsNotNull(m.FixedDeck, "c6m03 has its fixed deck");
-            Assert.AreEqual("MAKE_LATER", m.FixedDeck.Status);
+            Assert.AreEqual("READY", m.FixedDeck.Status, "MB_FINAL F3: its rules made, the deck ready");
             Assert.AreEqual(1, m.FixedDeck.PlacedAllies.Count);
             var ally = m.FixedDeck.PlacedAllies[0];
             Assert.IsTrue(ally.Convoy && ally.LossIfDestroyed, "the escorted Behemoth, lost if it falls");
@@ -70,7 +70,7 @@ namespace MachineBrigade.Tests
                 }
         }
 
-        /// <summary>The MAKE LATER missions prompt 31 L4 made (DECISIONS "Prompt 31 L4"); none is left on the player's deck.</summary>
+        /// <summary>The MAKE LATER missions prompt 31 L4 made (DECISIONS "Prompt 31 L4"), READY since MB_FINAL F3; none is left on the player's deck.</summary>
         private static readonly string[] MadeLater = { "c6m03", "c10m12", "c12m03", "i1m01", "c5m03", "c6m14", "i2m01", "c7m16", "c9m12", "c10m11" };
 
         [Test]
@@ -80,7 +80,7 @@ namespace MachineBrigade.Tests
             {
                 var deck = Mission(id).FixedDeck;
                 Assert.IsNotNull(deck, $"{id}: a fixed deck");
-                Assert.AreEqual("MAKE_LATER", deck.Status, id);
+                Assert.AreEqual("READY", deck.Status, $"{id}: MB_FINAL F3 made its rules, READY");
                 Assert.IsNotEmpty(deck.SpecialRules, $"{id}: its rule");
             }
             Assert.IsTrue(Mission("c10m12").FixedDeck.PlacedAllies.Single().LossIfDestroyed, "Hawk's fighter must live");

@@ -6238,3 +6238,22 @@ Nhánh `feature/pt14-l`. Lý do: `Docs/DECISIONS.md` "Play-test 14 VFX fixes 04/
 | PT14-L-6 | cấp hình (view) `pt14_co_spike` | lớp phủ T2 phóng theo vùng 3,5 m (x1,4) | lớp phủ T2 cỡ chuẩn (x1, như Kornet / Hellfire) | Spike NLOS nổ như ATGM; vòng vùng sát thương 3,5 m giữ |
 | PT14-L-7 | nổ tên lửa hành trình của tàu (NavalSystem.Cruise) | luôn Ultimate | theo `impactTier` của tên lửa | Leviathan, Kraken, Typhon, Scylla, Nyx (leviathan_cruise) vẫn Ultimate; Hydra (hydra_club_s) Large |
 | PT14-L-8 | JAGM `pt14_th_jagm`, các súng mới (30 / 35 / 40 / 57 / 76 / 127 / 155 / 203 mm), súng phòng không | — | không đổi | đã trùng cỡ nổ của vũ khí cùng cỡ (Hellfire Medium/T2; autocannon Small/T1; 155 Large/T3; 203 Huge/T4) |
+
+## MB_FINAL F3 (lane C): 10 fixed deck READY, Survival 10 đợt x 60 s, mutator tuần, nổ Kalibr của Scylla/Nyx
+Nhánh `feature/final-f3`. Nguồn: `Docs/balance/final/` (PLAN_APPLY.md, VIEC_CHO_AGENT_FINAL.md mục 2-6, Manifest_FINAL.json 10 dòng
+`campaign.missions[id=...].fixedDeck.status`). Lý do chi tiết: `Docs/DECISIONS.md` "MB_FINAL balance F3 (lane C)". Không chạy Unity, không chạy test.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| F3-1 | `fixedDeck.status` c5m03, c6m03, c6m14, c7m16, c9m12, c10m11, c10m12, c12m03, i1m01, i2m01 | MAKE_LATER | READY | manifest (expected_before khớp cả 10); specialRules làm đủ trong cùng commit |
+| F3-2 | i1m01 `challenge` (sao 3) | — (sao 3 mặc định của mục tiêu Capture) | `{"kind": "NoAlarm"}` | luật factoryAlarm: 3 sao khi còi báo động không vang (StarFacts.AlarmRaised) |
+| F3-3 | i2m01 `missionEvents` | hunters, rain_sets_in | hunters, nightfall `{"at": 600}` | luật mirewoodFog: sương giữ tới chạng vạng (bỏ đổi trời mưa lúc 150 s); trời tối lúc 600 s = starTime sẵn có |
+| F3-4 | i2m01 `challenge` | — | `{"kind": "BeforeDusk", "value": 600}` | 3 sao khi thắng trước lúc trời tối |
+| F3-5 | c9m12 điểm thả quân (luật islandHop) | bãi tập kết | đảo ta giữ gần địch nhất (nếu có) | "chỉ đổ bộ lên đảo đã chiếm": MissionMode.ForwardIsland qua BaseSystem.ForwardZone |
+| F3-6 | c10m11 đồng hồ giữ điểm (luật airfieldLanding) | giây giữ 0:00 / 3:30 | "ĐÃ HẠ CÁNH n / 7", báo mỗi lần hạ cánh | `campaign.missionMode.landingSeconds` = 30 s (mới, tunables.json); 210 s / 30 s = 7 chuyến; thắng vẫn ở 210 s |
+| F3-7 | `modes.sandboxMode.survivalWaveInterval` (mới) | (dùng waveInterval 30 s / cường độ) | 60 s, mọi độ khó | Survival 10 đợt: đợt 10 ra lúc 20 + 9 x 60 = 560 s, dọn xong ~10 phút; số đợt giữ 10; sau đợt 10 (vô hạn) giữ nhịp cũ |
+| F3-8 | operations.json `mutators[*].class` (mới) | — | pressure: enemy_air, two_bosses, towers_x2, general_boost, veterans, time_attack, lean_logistics, swarm, empty_base, fleet; rule: storm, no_support, no_repair, light_deck, armour_only, no_air, glass_cannon, iron_rain, night_ops, sea_storm | phân loại cho luật mutator tuần |
+| F3-9 | mutator tuần (OperationsData.Weekly) | bảng xoay 26 tuần, chỉ số theo tuần | seed = năm x 100 + tuần ISO; 1 pressure + 1 rule không vi phạm excludes, mỗi nhóm theo thứ tự id; thiếu nhóm: cặp hợp lệ đầu tiên theo id | thay ghi chú NEED_CODE_CHECK (export 11/Mutator_tuan) |
+| F3-10 | Scylla `cruise.impactTier` | (Ultimate, thừa kế leviathan_cruise) | Large + hình T4 của Kalibr | quyết định lead (như Tomahawk, lane L); sát thương/bán kính giữ |
+| F3-11 | Nyx `cruise.impactTier` | (Ultimate, thừa kế) | Large + hình T4 | như trên |
+| F3-12 | `p26_jotunn_sec_jo_rockets` `impactTier` | Medium (thừa kế boss_rockets) | Large | Smerch 300 mm T4, 450 sát thương, lõi 8 m: nổ lớn theo cùng chiều cấp hình (Tools/balance/f3_tier_feel.py mục 3); chỉ tăng |

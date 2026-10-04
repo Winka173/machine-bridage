@@ -432,6 +432,13 @@ namespace MachineBrigade.Game.Audio
                 Play(crash, e.Position, 1f, 40f, SoundPriority.NearBlast);
                 return true;
             }
+            // MB_FINAL F3: a blast that names its round (a ship's cruise drawn at its own size) sounds as that round.
+            if (e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var named) && SoundLibrary.BlastBank(named) is { } own &&
+                _tierBanks.TryGetValue(own, out var ownBank))
+            {
+                Play(ownBank, e.Position, 1f, SoundLibrary.Carry(SoundLibrary.SizeOf(named)), SoundPriority.Boss);
+                return true;
+            }
             if (!_salvoShips.Contains(e.Entity) || !_catalog.Vehicles.TryGetValue(ShipDef(e.Entity), out var ship) || ship.Salvo?.Weapon is not { } gun ||
                 !_catalog.Weapons.TryGetValue(gun, out var shell)) return false;
             var name = SoundLibrary.BlastBank(shell);

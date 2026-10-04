@@ -118,6 +118,7 @@ def build(ctx):
     C.records(tb, ops.get("tiers"), OPS, ("tiers",))
     mu = book.sheet("Mutator", "Mutator", "operations.json mutators: mỗi mutator một dòng (hệ số, cờ, loại trừ)")
     mu.col("excludes", meaning="mutator không đi cùng (ngăn ';')", fk=["05_che_do_kinh_te/Mutator"])
+    mu.col("class", meaning="MB_FINAL F3: pressure (tăng áp lực) / rule (đổi luật); mutator tuần = 1 pressure + 1 rule (OperationsData.Weekly)")
     C.records(mu, ops.get("mutators"), OPS, ("mutators",))
 
     # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)

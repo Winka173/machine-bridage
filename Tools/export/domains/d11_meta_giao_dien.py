@@ -186,7 +186,10 @@ def build(ctx):
                    chua_ap("xuat_luot5"), "hằng mặc định trong GraphicsOptions.cs, Haptics.cs, PlayerProfile.cs (lượt 5: Hang_so_trong_ma); "
                    "các mảng lựa chọn đồ họa ở Meta_bang_hang (GraphicsOptions#...)", MATCH + "GraphicsOptions.cs")
     C.marker_sheet(book, "Mutator_tuan", "Mutator tuần", "Mutator tuần của Tác chiến", "XEM_05",
-                   "dữ liệu ở 05_che_do_kinh_te/Mutator (operations.json); chọn theo tuần: Operations.cs (NEED_CODE_CHECK)",
+                   "dữ liệu ở 05_che_do_kinh_te/Mutator (operations.json, cột class: pressure / rule); luật chọn theo tuần "
+                   "(MB_FINAL F3, OperationsData.Weekly): seed = năm x 100 + tuần ISO; 2 mutator khác nhau không vi phạm "
+                   "excludes, một mutator tăng áp lực + một mutator đổi luật, mỗi nhóm theo thứ tự id ổn định; nhóm không "
+                   "đủ thì lấy cặp hợp lệ đầu tiên theo thứ tự id; cùng tuần + cùng phiên bản dữ liệu -> cùng cặp",
                    C.DATA + "operations.json")
     C.marker_sheet(book, "Thu_hang", "Thứ hạng", "Bảng xếp hạng", "XEM_05", "thứ tự xếp hạng ở 05_che_do_kinh_te/Vo_han "
                    "(matchRules.leaderboards); không có bảng xếp hạng trực tuyến", B.BALANCE + ": matchRules.leaderboards")

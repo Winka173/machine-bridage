@@ -424,6 +424,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 26 B.3: the share of the damage the edge layer takes.</summary>
         public float EdgeShare { get; set; } = 0.4f;
 
+        /// <summary>
+        /// MB_FINAL F3: the weapon whose look the blast takes (its T0-T5 tier, the view and audio only; null: the blast's own
+        /// tier alone). It rides on the Explosion event as its DefId and never changes the damage.
+        /// </summary>
+        public string? Round { get; set; }
+
         /// <summary>Prompt 26 B.3: a boss's blast: the core at <paramref name="radius"/>, full damage, and an edge twice as wide (at most 20 m) at 40 %.</summary>
         public static ExplosionDef TwoLayer(float damage, float radius, ExplosionTier tier) =>
             new(damage, radius, 0f, tier) { Edge = MathF.Min(WeaponDef.MaxEdge, radius * 2f) is var edge && edge > radius ? edge : 0f };

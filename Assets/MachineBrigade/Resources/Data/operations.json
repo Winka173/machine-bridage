@@ -21,29 +21,32 @@
   "weekly": { "fortress": 600, "operation": 800 },
 
   // Mutators: combinable, data-driven. score: added to the score multiplier. excludes: mutators it
-  // is never paired with (the weekly draw skips those pairs).
+  // is never paired with (the weekly draw skips those pairs). class (MB_FINAL F3): "pressure" (the enemy
+  // stronger, the player poorer, less time) or "rule" (a rule of the battle changed). The weekly draw
+  // (OperationsData.Weekly): seed year x 100 + ISO week; one pressure and one rule mutator that do not
+  // exclude each other, each pool in id order; a short pool: the first allowed pair by id.
   "mutators": [
-    { "id": "storm",          "score": 0.05, "weather": "Storm" },
-    { "id": "enemy_air",      "score": 0.25, "enemyAir": true, "excludes": ["no_air", "armour_only", "light_deck"] },
-    { "id": "no_support",     "score": 0.20, "noSupports": true },
-    { "id": "two_bosses",     "score": 0.30, "extraBoss": true, "excludes": ["time_attack"] },
-    { "id": "towers_x2",      "score": 0.20, "towerHp": 2.0, "towerDamage": 1.5 },
-    { "id": "no_repair",      "score": 0.15, "noRepair": true },
-    { "id": "general_boost",  "score": 0.25, "enemyCp": 1.5, "enemyIncome": 1.3, "excludes": ["veterans"] },
-    { "id": "light_deck",     "score": 0.20, "playerMaxCp": 8, "excludes": ["armour_only"] },
-    { "id": "armour_only",    "score": 0.15, "playerHeavy": true, "excludes": ["light_deck", "enemy_air"] },
-    { "id": "no_air",         "score": 0.10, "noAir": true, "excludes": ["enemy_air"] },
-    { "id": "glass_cannon",   "score": 0.10, "bothDamage": 1.5, "bothHp": 0.75 },
-    { "id": "veterans",       "score": 0.20, "enemyHp": 1.25, "excludes": ["general_boost"] },
-    { "id": "time_attack",    "score": 0.20, "timeScale": 0.7, "excludes": ["two_bosses"] },
-    { "id": "lean_logistics", "score": 0.20, "playerIncome": 0.75 },
-    { "id": "iron_rain",      "score": 0.10, "raids": true },
-    { "id": "swarm",          "score": 0.20, "swarm": true },
-    { "id": "empty_base",     "score": 0.25, "emptyBase": true, "excludes": ["towers_x2"] },
-    { "id": "night_ops",      "score": 0.05, "weather": "Night", "excludes": ["storm"] },
+    { "id": "storm",          "class": "rule", "score": 0.05, "weather": "Storm" },
+    { "id": "enemy_air",      "class": "pressure", "score": 0.25, "enemyAir": true, "excludes": ["no_air", "armour_only", "light_deck"] },
+    { "id": "no_support",     "class": "rule", "score": 0.20, "noSupports": true },
+    { "id": "two_bosses",     "class": "pressure", "score": 0.30, "extraBoss": true, "excludes": ["time_attack"] },
+    { "id": "towers_x2",      "class": "pressure", "score": 0.20, "towerHp": 2.0, "towerDamage": 1.5 },
+    { "id": "no_repair",      "class": "rule", "score": 0.15, "noRepair": true },
+    { "id": "general_boost",  "class": "pressure", "score": 0.25, "enemyCp": 1.5, "enemyIncome": 1.3, "excludes": ["veterans"] },
+    { "id": "light_deck",     "class": "rule", "score": 0.20, "playerMaxCp": 8, "excludes": ["armour_only"] },
+    { "id": "armour_only",    "class": "rule", "score": 0.15, "playerHeavy": true, "excludes": ["light_deck", "enemy_air"] },
+    { "id": "no_air",         "class": "rule", "score": 0.10, "noAir": true, "excludes": ["enemy_air"] },
+    { "id": "glass_cannon",   "class": "rule", "score": 0.10, "bothDamage": 1.5, "bothHp": 0.75 },
+    { "id": "veterans",       "class": "pressure", "score": 0.20, "enemyHp": 1.25, "excludes": ["general_boost"] },
+    { "id": "time_attack",    "class": "pressure", "score": 0.20, "timeScale": 0.7, "excludes": ["two_bosses"] },
+    { "id": "lean_logistics", "class": "pressure", "score": 0.20, "playerIncome": 0.75 },
+    { "id": "iron_rain",      "class": "rule", "score": 0.10, "raids": true },
+    { "id": "swarm",          "class": "pressure", "score": 0.20, "swarm": true },
+    { "id": "empty_base",     "class": "pressure", "score": 0.25, "emptyBase": true, "excludes": ["towers_x2"] },
+    { "id": "night_ops",      "class": "rule", "score": 0.05, "weather": "Night", "excludes": ["storm"] },
     // Prompt 16: at sea, fog on the water (ships seen from 55 % as far) in a storm; a flagship's fleet grows by
     // an escort and two attack boats (and the enemy earns 10 % more, on any battlefield).
-    { "id": "sea_storm",      "score": 0.15, "weather": "Storm", "seaSight": 0.55, "excludes": ["storm"] },
-    { "id": "fleet",          "score": 0.20, "extraEscorts": 1, "extraRaiders": 2, "enemyIncome": 1.1 }
+    { "id": "sea_storm",      "class": "rule", "score": 0.15, "weather": "Storm", "seaSight": 0.55, "excludes": ["storm"] },
+    { "id": "fleet",          "class": "pressure", "score": 0.20, "extraEscorts": 1, "extraRaiders": 2, "enemyIncome": 1.1 }
   ]
 }

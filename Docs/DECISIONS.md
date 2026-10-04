@@ -20506,3 +20506,52 @@ Owner's block "Bổ sung 04/10 sau khi thử bản màu sơn" (Docs/prompts/play
 - Needs Unity: compile (C# 9 checked by reading); a look at Scylla / Nyx / Hydra missile hits, Hyperion's NSM, Coeus's Spike;
   an aircraft preview at each shadow tier (and its shadow distance on a boss's wide frame); aircraft in a match over land and
   sea; the bosses' big guns firing (406 / 203 / 155 mm, the ventral twins' flash along their barrels, both barrels kicking).
+
+## MB_FINAL balance F3 (lane C)
+Branch `feature/final-f3`. The owner's final bundle (`Docs/balance/final/`, wins over everything): VIEC_CHO_AGENT_FINAL sections 2-6,
+the ten fixedDeck rows of Manifest_FINAL.json (expected_before MAKE_LATER matched in all ten). Nothing run but the Python tools
+(build_campaign.py --no-texts: fixed_decks.check_mission passed; f3_tier_feel.py) and the Sim build; Game C# read for C# 9.
+Values: `Docs/export/CHANGES.md` "MB_FINAL F3". Tests written, not run: `MbFinalF3Tests`, `OperationsModeTests` (weekly draw),
+`Prompt31PlacedAllyTests` (READY).
+- **Fixed decks READY (section 2).** All ten flipped in `Tools/campaign/fixed_decks.py` (status READY, a new state: "MAKE LATER,
+  its rules made"; check_mission accepts MAKE_FIRST / READY only). No deck names a play-test 14 deleted id (cards, supports,
+  placed allies checked against `Docs/fixes/playtest14_deleted.md` and balance.json): no CONFLICT line. Rules already in
+  force and checked: droneCanopy (drone_swarm in c5m03), behemothOurs / hawkWingman / maraBehemoth (placed allies,
+  MissionMode), ceasefireFaction (Vehicle.Sworn), thorneAnomaly (MissionSession's allied AI), factoryAlarm (the event). Made now,
+  the prompt 31 L4 PENDING lines:
+  - i1m01 factoryAlarm: 3 stars for no alarm, challenge `NoAlarm` (StarFacts.AlarmRaised: an event with a `spotted` trigger
+    happened; MissionMode.AlarmRaised).
+  - i2m01 mirewoodFog: the fog holds until dusk: the library's `rain_sets_in` (150 s, Fog -> Rain) dropped, `nightfall` at 600 s
+    (the mission's starTime, no new number) added; 3 stars before dusk, challenge `BeforeDusk` 600 (StarFacts.Seconds).
+  - c9m12 islandHop: deliveries land on the island the player holds nearest the enemy (MissionMode.ForwardIsland through
+    BaseSystem.ForwardZone; TryGetDropZone takes it only when nearer the enemy than the rally), none held: the rally.
+  - c10m11 airfieldLanding: the Hold clock is the landing count: one transport lands every `campaign.missionMode.landingSeconds`
+    (30 s, new tunable) the field is held, 7 for the 210 s hold, each announced (`alert.landing`), the HUD reads
+    "LANDED n / 7" (`mission.landings`); the win stays at 210 s held.
+  - Not made, as the sheet allows (optional background objects no deck rule names): Venn's convoy behind i2m01, the Albatross
+    behind c10m11 (the rule text says "no Albatross unit").
+  - Strings EN + VI: challenge.noalarm, challenge.beforedusk, alert.landing, mission.landings; fixeddeck.rule.islandHop and
+    .mirewoodFog say what is now done.
+- **Survival (section 3).** Ten waves kept. The finite part's cadence is `modes.sandboxMode.survivalWaveInterval` 60 s (new
+  tunable), the same at every difficulty (the difficulty sizes the waves): wave 10 is sent at 20 + 9 x 60 = 560 s, the run with
+  its clearing about 10 minutes. Before: 30 s / intensity (Normal: wave 10 at 290 s, about 5-6 min). Waves after the tenth
+  (Continue) keep 30 s / intensity. The survival `text.timeLimit` row is lane F1's (not edited here).
+- **Weekly mutator (section 4).** `OperationsData.Weekly(week, operations)`: seed = year x 100 + ISO week (WeeklyFortress.Week);
+  a SplitMix-style draw from the seed picks the operation, a pressure mutator (pool in ordinal id order, start drawn, the
+  first with an allowed partner) and a rule-change partner that does not clash (excludes either way, two weathers). A short
+  pool: the first allowed pair in id order. Same week + same data -> same pair. Each mutator's `class` is data
+  (operations.json: 10 pressure, 10 rule; without the key it is read from the fields; an unknown value throws). The old
+  26-week rotation table stays only for its balance check; the export lists 26 weeks of the new draw from 2026-W41. The
+  export's NEED_CODE_CHECK note (11/Mutator_tuan) now states the rule; 05/Mutator gains the `class` column meaning.
+- **VFX / feel (section 6).** The T0-T5 tiers stay the calibre / warhead map (prompt 34 L1/L5 table). Lead decision: Scylla's
+  and Nyx's Kalibr cruise blast Large with the T4 look: `cruise.impactTier` "Large" on both (CruiseDef.ImpactTier, data); a
+  cruise with its own size names its missile on the blast (ExplosionDef.Round -> the Explosion event's DefId), so the view
+  draws the Kalibr's tier overlay and band (EffectsDirector: the named round over the salvo gun's tier, which had drawn
+  Scylla's cruise hits with her 406 mm look) and the audio its blast bank. The Leviathan's own Kalibr is untouched (no
+  override: Ultimate, its salvo look). `Tools/balance/f3_tier_feel.py` (static, report `Docs/checks/f3_tier_feel.md`): 0 tier
+  / calibre or warhead inversions; blast size two bands off the tier: the Jotunn's 300 mm salvo (`p26_jotunn_sec_jo_rockets`,
+  T4, 450 a round, 8 m core) grown Medium -> Large; the over-drawn ones (AC-130 105 mm and Roc's 105 Huge at T2, the 48N6's
+  Huge burst, the borer drill) left (never shrink without the owner's word). The "in step" list mixes deliberate calibre
+  bands (100-105 mm T2 against 120 mm T3); re-run it after F1's damage pass.
+- Merge note: F3 touches balance.json on Scylla's line (2136, its cruise block) and Nyx's cruise line, and line 958 (Jotunn);
+  F1 / F2 rows on those lines merge by hand.

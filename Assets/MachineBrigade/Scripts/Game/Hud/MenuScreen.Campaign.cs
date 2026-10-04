@@ -445,6 +445,8 @@ namespace MachineBrigade.Game.Hud
                 "NoStrikes" => Strings.Get("challenge.nostrikes"),
                 "NoAircraft" => Strings.Get("challenge.noaircraft"),
                 "Kills" => Strings.Format("challenge.kills", m.ChallengeValue),
+                "NoAlarm" => Strings.Get("challenge.noalarm"),
+                "BeforeDusk" => Strings.Format("challenge.beforedusk", $"{m.ChallengeValue / 60}:{m.ChallengeValue % 60:00}"),
                 _ => Strings.Format("challenge.losses", System.Math.Max(0, m.StarLosses)),
             };
             var goals = new List<string> { Strings.Get("campaign.starWin") };

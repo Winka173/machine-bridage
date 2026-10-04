@@ -223,6 +223,8 @@ namespace MachineBrigade.Sim.Modes
                 Kills = _ledger.Kills(PlayerTeam),
                 UsedStrikes = world.StrikesCalled(PlayerTeam) > 0,
                 BoughtAircraft = world.AircraftBought(PlayerTeam) > 0,
+                AlarmRaised = AlarmRaised,
+                Seconds = (float)Now(world),
             };
             if (world.Bases.Of(PlayerTeam) is { } home && world.TryGetVehicle(home.Hq, out var hq))
                 f.HqShare = hq.IsAlive ? hq.Hp / hq.MaxHp : 0f;
@@ -311,6 +313,66 @@ namespace MachineBrigade.Sim.Modes
             if (_def.Goal is MissionGoal.Escort or MissionGoal.Evacuate) world.ConvoySafeZone = () => ConvoyPositions(world);
             SetupStage(world, true, null);
             SpawnPlacedAllies(world);
+            // MB_FINAL F3 (c9m12, rule islandHop): the deliveries land on the island the player holds nearest the enemy.
+            if (_def.FixedDeck is { } hop && hop.HasRule("islandHop")) world.Bases.ForwardZone = team => team == PlayerTeam ? ForwardIsland(world) : null;
+        }
+
+        /// <summary>
+        /// MB_FINAL F3 (c9m12, rule islandHop, the sheet's "land only on an island already taken"): the point the player holds
+        /// nearest the enemy's rally (BaseSystem.TryGetDropZone takes it only when it is nearer the enemy than the player's own
+        /// drop zone), so the brigade crosses island by island; none held: null (the rally, as before).
+        /// </summary>
+        private Vector2? ForwardIsland(SimWorld world)
+        {
+            if (!world.TryGetRally(EnemyTeam, out var enemy)) return null;
+            Vector2? best = null;
+            var bestD = float.MaxValue;
+            foreach (var p in _points)
+            {
+                if (p.Owner != PlayerTeam) continue;
+                var d = Vector2.Distance(p.Def.Position, enemy);
+                if (d >= bestD) continue;
+                bestD = d;
+                best = p.Def.Position;
+            }
+            return best;
+        }
+
+        /// <summary>
+        /// MB_FINAL F3 (i1m01, the 3-star "no alarm"): whether an infiltration was found out: an event the enemy's spotting
+        /// triggers (the factory alarm) has happened.
+        /// </summary>
+        public bool AlarmRaised
+        {
+            get
+            {
+                if (Events == null) return false;
+                foreach (var e in Events.States)
+                    if (e.Def.Trigger.Spotted && e.HappenedAt >= 0) return true;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// MB_FINAL F3 (c10m11, rule airfieldLanding: "the hold clock is the landing count"): the transports landed so far and
+        /// how many land in all, one every <see cref="LandingSeconds"/> the field is held; null in any other mission.
+        /// </summary>
+        public (int landed, int total)? Landings => _def.Goal == MissionGoal.Hold && _def.FixedDeck is { } deck && deck.HasRule("airfieldLanding")
+            ? (Math.Min((int)(_held / LandingSeconds), LandingTotal), LandingTotal)
+            : null;
+
+        private int LandingTotal => Math.Max(1, (int)MathF.Ceiling(_def.HoldSeconds / LandingSeconds - 1e-3f));
+
+        private static float LandingSeconds => MathF.Max(1f, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.LandingSeconds);
+
+        private int _landedShown;
+
+        /// <summary>Each transport down is announced at the field (c10m11).</summary>
+        private void AnnounceLandings(SimWorld world)
+        {
+            if (Landings is not { } l || l.landed <= _landedShown || _points.Count == 0) return;
+            _landedShown = l.landed;
+            world.Emit(SimEvent.Alert(_points[0].Def.Position, "alert.landing", bad: false));
         }
 
         /// <summary>The objectives' owners now (a stage hands them to the next).</summary>
@@ -482,6 +544,7 @@ namespace MachineBrigade.Sim.Modes
                 MissionGoal.Duel => world.Bases.Of(EnemyTeam) is { HqFallen: true },
                 _ => BossFled || (_boss.IsValid && (!world.TryGetVehicle(_boss, out var b) || !b.IsAlive)),
             };
+            AnnounceLandings(world);
             if (won)
             {
                 Finish(world, PlayerTeam);

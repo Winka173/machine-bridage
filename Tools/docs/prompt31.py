@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
 STRINGS = ROOT / 'Assets' / 'MachineBrigade' / 'Scripts' / 'Game' / 'Hud' / 'Strings.cs'
 
-STATUS_VI = {'MAKE_FIRST': 'Làm trước', 'MAKE_LATER': 'Làm sau'}
+STATUS_VI = {'MAKE_FIRST': 'Làm trước', 'MAKE_LATER': 'Làm sau', 'READY': 'Sẵn sàng'}
 
 # The events of prompt 31 in the sheet's words, with what each changes (the data gives the missions, times and sites).
 EVENTS_VI = [

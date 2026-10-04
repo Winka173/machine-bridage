@@ -9,7 +9,8 @@ DECISIONS). A fixed deck never changes the mission's objective (p31_objectives_b
 prompt 31; check() compares them). The AI keeps the mission type's profile; the special rules ride on it as flags.
 
 campaign.json "fixedDeck": {"vehicleIds": [8], "supportIds": [2], "placedAllies": [], "loanedCards": [],
-"specialRules": [], "status": "MAKE_FIRST", "rankBonus": n, "prepSeconds": s} (the last two only when set).
+"specialRules": [], "status": "MAKE_FIRST", "rankBonus": n, "prepSeconds": s} (the last two only when set). Status READY (MB_FINAL F3,
+owner's final bundle 04/10): a MAKE LATER deck whose rules are all made (the ten of prompt 31 L4).
 """
 
 import json
@@ -50,13 +51,17 @@ RULES = {
     'behemothOurs': "the escorted Behemoth is Mara's, a placed ally (convoy): the escort's loss rule; it holds on the order Defend",
     'hawkWingman': "Hawk's fighter is a placed ally under the allied AI and the general order; MissionMode loses the mission if it falls",
     'maraBehemoth': "Mara's repainted Behemoth (mara_behemoth) is a placed ally under the allied AI and the general order",
-    'factoryAlarm': 'the factory_alarm event (prompt 31 L3): spotted, the mill gate shuts and the garrison comes',
+    'factoryAlarm': 'the factory_alarm event (prompt 31 L3): spotted, the mill gate shuts and the garrison comes; '
+                    '3 stars for no alarm (challenge NoAlarm: StarFacts.AlarmRaised, MB_FINAL F3)',
     'droneCanopy': "the drone_swarm event (warned direction, minimap arrow) in place of the mission's air_wave",
     'ceasefireFaction': "the ceasefire event with faction: Varga's column is Sworn (DamageSystem: no damage from another side), for the whole mission",
-    'mirewoodFog': 'the deck itself (light, fast, amphibious) on swamp in Fog; the objective (two villages and the sunken temple) kept',
+    'mirewoodFog': 'the deck itself (light, fast, amphibious) on swamp in Fog; the objective (two villages and the sunken temple) kept; '
+                   'the fog holds until dusk (MB_FINAL F3: no rain shift; nightfall at the 3-star time, challenge BeforeDusk)',
     'thorneAnomaly': "MissionSession's allied AI: from 180 s to 270 s Thorne's wing turns to the objective the player is not going for",
-    'islandHop': "the deck itself (amphibious, boats, air) over Coral Keys' three island points; the objective kept",
-    'airfieldLanding': "the Hold objective's clock is the transports' landing count; air cap 6; no Albatross unit",
+    'islandHop': "the deck itself (amphibious, boats, air) over Coral Keys' three island points; the objective kept; the deliveries "
+                 "land on the island the player holds nearest the enemy (MB_FINAL F3: MissionMode.ForwardIsland, BaseSystem.ForwardZone)",
+    'airfieldLanding': "the Hold objective's clock is the transports' landing count (MB_FINAL F3: MissionMode.Landings, one landed "
+                       "every campaign.missionMode.landingSeconds held, announced; the HUD counts landings); air cap 6; no Albatross unit",
 }
 
 # The rules that are a mission event (prompt 31 L3): the event must be in the mission.
@@ -69,13 +74,13 @@ PENDING = {
     'c5m07': 'the canopy hides ground vehicles from drones: no canopy cover in the Sim yet',
     'c7m11': 'the storm cutting radar range (no Sim rule yet); the city blackout is in since prompt 31 L3',
     'i3m02': 'the Harpy goes for anti-air first: keep the launchers moving',
-    # Prompt 31 L4 (MAKE LATER).
-    'i1m01': '3 stars for no alarm: the stars are time and losses; no star rule of its own yet',
-    'i2m01': "Venn's convoy as a scripted object in the background (optional); 3 stars before dusk (the stars are time and losses)",
-    'c9m12': 'landings only on an island already taken: deliveries come to the rally; the rule only says how to play it',
-    'c10m11': 'the Albatross as a scripted object in the background (optional; no playable Albatross)',
-    'c6m03': "the Behemoth is the Escort's convoy (the objective kept), not a unit of the allied AI; it holds on Defend",
+    # Prompt 31 L4's ten (MAKE LATER) are READY since MB_FINAL F3: i1m01's no-alarm stars, i2m01's dusk, c9m12's island
+    # landings and c10m11's landing count are made. Left out as the sheet allows (optional background objects, no rule of
+    # a deck names them): Venn's convoy behind i2m01 and the Albatross behind c10m11.
 }
+
+# MB_FINAL F3: the second dusk falls in i2m01 (its nightfall), the mission's 3-star time (starTime 600 s): the fog holds until then.
+DUSK = {'i2m01': 600}
 
 # The fixed decks in effect (prompt 31 L2: the 13 MAKE FIRST missions), each with the sheet's cards it replaced.
 DECKS = {
@@ -167,7 +172,7 @@ DECKS = {
         loaned=[],
         replaced={},
         allies=[{'def': 'behemoth', 'x': -100, 'z': -100, 'heading': 45, 'name': 'behemoth_mara', 'convoy': True, 'lossIfDestroyed': True}],
-        rules=['behemothOurs'], status='MAKE_LATER'),
+        rules=['behemothOurs'], status='READY'),
     # c10m12 (Hawk and Raven): Hawk's own fighter as a placed ally (the allied AI, the general order), lost if it falls; the
     # Boss objective (the Harpy, Morrigan's slot since play-test 14) kept. The sheet's five locked vehicle cards and one support: loaned the wingman drone (Hawk's
     # wingman) and the chaff (the duel's defence); the rest went to owned cards (recon drone, heavy AA, a second fighter, the
@@ -178,7 +183,7 @@ DECKS = {
         loaned=['glide_bomb_strike', 'cruise_missile'],
         replaced={},
         allies=[{'def': 'fighter_jet', 'x': -92, 'z': -92, 'heading': 45, 'name': 'hawk_jet', 'lossIfDestroyed': True}],
-        rules=['hawkWingman'], status='MAKE_LATER'),
+        rules=['hawkWingman'], status='READY'),
     # c12m03 (the last Behemoth works): Mara's Behemoth, repainted, fights beside the brigade (placed ally, allied AI, the
     # general order: Attack at Varga's HQ, Defend by our camp); the Duel objective kept; not lost if it falls (the sheet asks
     # nothing harder than c6m03). Play-test 14: the deleted repair vehicle's slot is the command vehicle's.
@@ -188,7 +193,7 @@ DECKS = {
         loaned=[],
         replaced={},
         allies=[{'def': 'mara_behemoth', 'fallback': 'behemoth', 'x': -96, 'z': -88, 'heading': 45, 'name': 'behemoth_mara_repainted'}],
-        rules=['maraBehemoth'], status='MAKE_LATER'),
+        rules=['maraBehemoth'], status='READY'),
     # i1m01 (interlude I, the Foundry): infiltration with the pass 3 factory alarm. The sheet's three locked cards: loaned the
     # scout car (see first) and the EW jammer (stay unseen); recoilless_jeep -> rocket_technical (the owned light anti-tank).
     # Play-test 14: the deleted scout car's slot is the recoilless jeep's.
@@ -197,7 +202,7 @@ DECKS = {
         supports=['repair_drop', 'airstrike'],
         loaned=['recoilless_jeep', 'ew_jammer'],
         replaced={'recoilless_jeep': 'rocket_technical'},
-        rules=['factoryAlarm'], status='MAKE_LATER'),
+        rules=['factoryAlarm'], status='READY', challenge={'kind': 'NoAlarm'}),
     # c5m03 (chapter 5, the river road): the objective kept (escort the bridging trucks, the mission's own counts); an anti-drone
     # deck against Venn's swarms, which come as the library's warned drone_swarm in place of the mission's air_wave (the count kept).
     # Play-test 14 deleted the microwave and interceptor-drone vehicles and the anti-drone supports: the Iron Beam and the 40 mm
@@ -207,7 +212,7 @@ DECKS = {
         supports=['airstrike', 'repair_drop'],
         loaned=['iron_beam', 'aa_gun_vehicle'],
         replaced={},
-        rules=['droneCanopy'], status='MAKE_LATER'),
+        rules=['droneCanopy'], status='READY'),
     # c6m14 (chapter 6, the Hollow Dam ceasefire): the Evacuate objective kept. Varga's column is a CEASEFIRE faction for the whole
     # battle: the library's ceasefire with params faction (each sworn vehicle takes nothing from another side's fire, strikes or
     # splash: Vehicle.Sworn) and seconds 900 (the time limit); no loss and no broken truce for friendly fire. The waves are Aurel's
@@ -218,7 +223,7 @@ DECKS = {
         supports=['airstrike', 'repair_drop'],
         loaned=['aa_gun_vehicle'],
         replaced={'bridging_vehicle': 'armored_bulldozer'},
-        rules=['ceasefireFaction'], status='MAKE_LATER'),
+        rules=['ceasefireFaction'], status='READY'),
     # i2m01 (interlude II, into Mirewood): the Capture objective kept (west, town, east: the two villages and the sunken temple).
     # The sheet's amphibious and airborne cards were deleted in play-test 14 (the rocket technical and the light tank stand in);
     # the owned AA vehicle and engineer take the sheet's other locked cards. Not made: Venn's convoy as a scripted
@@ -228,7 +233,8 @@ DECKS = {
         supports=['repair_drop', 'airstrike'],
         loaned=[],
         replaced={},
-        rules=['mirewoodFog'], status='MAKE_LATER'),
+        rules=['mirewoodFog'], status='READY', challenge={'kind': 'BeforeDusk', 'value': DUSK['i2m01']},
+        drop_events=['rain_sets_in'], events=[{'id': 'nightfall', 'trigger': {'at': DUSK['i2m01']}}]),
     # c7m16 (chapter 7, Thorne's wing): the Capture objective kept; the deck is Thorne's army (every card owned by then). One of
     # the chapter's three anomalies happens here with its sound reason: from 180 s to 270 s the allied wing turns to the objective
     # the player is not going for 'on new intelligence' (Nadia's line at 180 s, in the script already), then comes back. No
@@ -238,7 +244,7 @@ DECKS = {
         supports=['artillery_barrage', 'airstrike'],
         loaned=[],
         replaced={},
-        rules=['thorneAnomaly'], status='MAKE_LATER'),
+        rules=['thorneAnomaly'], status='READY'),
     # c9m12 (chapter 9, Coral Keys): the Capture objective kept (west, town, east). Loaned the river patrol boat (no naval
     # block: it drives like a ground unit, as in c4m06); river_gunboat -> mlrs (fire in salvos, as c9m08), the sheet's coastal
     # missile and airborne cards -> railgun_truck and armored_car (owned), the guided shell -> artillery_barrage; play-test 14
@@ -249,7 +255,7 @@ DECKS = {
         supports=['artillery_barrage', 'repair_drop'],
         loaned=['river_patrol_boat'],
         replaced={'river_gunboat': 'mlrs'},
-        rules=['islandHop'], status='MAKE_LATER'),
+        rules=['islandHop'], status='READY'),
     # c10m11 (chapter 10, Vault's field airstrip): the Hold objective kept (the town point for 210 s: the landings). An air-defence
     # deck; play-test 14 deleted the sheet's two locked cards (the 57 mm gun, the radar vehicle): the AA vehicle and the command
     # vehicle stand in. The Albatross as a scripted
@@ -259,7 +265,7 @@ DECKS = {
         supports=['field_tower', 'repair_drop'],
         loaned=[],
         replaced={},
-        rules=['airfieldLanding'], status='MAKE_LATER'),
+        rules=['airfieldLanding'], status='READY'),
 }
 
 
@@ -274,8 +280,12 @@ def apply():
         if d.get('prepSeconds'):
             deck['prepSeconds'] = d['prepSeconds']
         m['fixedDeck'] = deck
+        if d.get('drop_events'):
+            m['missionEvents'] = [e for e in m.get('missionEvents', []) if (e if isinstance(e, str) else e.get('id')) not in d['drop_events']]
         if d.get('events'):
             m['missionEvents'] = list(m.get('missionEvents', [])) + list(d['events'])
+        if d.get('challenge'):
+            m['challenge'] = dict(d['challenge'])
 
 
 apply()
@@ -337,6 +347,22 @@ def check_mission(m, owned, defs, fail):
     for rule_id, event_id in RULE_EVENTS.items():
         if rule_id in rules and event_id not in played:
             fail(f'{mid}: the rule {rule_id} wants the {event_id} event')
+    # MB_FINAL F3: the rules READY needs made.
+    if 'islandHop' in rules and (m.get('goal') != 'Capture' or m.get('playerBase', 'None') == 'None'):
+        fail(f'{mid}: island hopping wants Capture points and a camp to land from')
+    if 'airfieldLanding' in rules and (m.get('goal') != 'Hold' or not m.get('holdSeconds')):
+        fail(f'{mid}: the landing count is a Hold clock')
+    if 'factoryAlarm' in rules and m.get('challenge', {}).get('kind') != 'NoAlarm':
+        fail(f'{mid}: the factory alarm mission gives 3 stars for no alarm')
+    if 'mirewoodFog' in rules:
+        dusk = m.get('challenge', {}).get('value')
+        falls = [e for e in m.get('missionEvents', []) if isinstance(e, dict) and e.get('id') == 'nightfall']
+        if m.get('weather') != 'Fog' or m.get('challenge', {}).get('kind') != 'BeforeDusk' or not falls or falls[0]['trigger'].get('at') != dusk:
+            fail(f'{mid}: Mirewood is in Fog until dusk, its 3 stars before the nightfall')
+        if any((e if isinstance(e, str) else e.get('id')) == 'rain_sets_in' for e in m.get('missionEvents', [])):
+            fail(f'{mid}: no rain shift lifts the Mirewood fog')
+    if deck.get('status') not in ('MAKE_FIRST', 'READY'):
+        fail(f"{mid}: fixed deck status {deck.get('status')} (MB_FINAL F3: MAKE_FIRST or READY)")
     if 'eliteRank' in rules and deck.get('rankBonus', 0) < 1:
         fail(f'{mid}: elite armour wants a rank bonus')
     # Prompt 31 L4: placed allies: a unit the catalog has (or its fallback), the convoy one the mission's own convoy.
