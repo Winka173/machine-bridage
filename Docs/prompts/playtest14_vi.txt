@@ -99,3 +99,7 @@ list vẽ lại:
 - vẽ lại model nhớ mọi đạn bay ra phải từ nòng / bệ phóng đầy đủ
 - các hangar unit chọn trong hq nên cân bằng, nếu chọn light tank thì được 1, jeep thì được 2 kiểu vậy
 - giảm toàn bộ thời gian các khói, kể cả khói tên lửa, khói cháy nổ, khói sát thương khi nổ chết (cái này đáng kể nhất) do nó làm chiến trường toàn khói
+
+=== Bổ sung 04/10 (nguyên văn) ===
+khi mở full boss hunt, coi list các boss thì bị mất hình các boss mới sửa
+boss daedalus nhìn khá tốt, nên có lửa sau động cơ, vẽ lại 2 boss icarus luôn

@@ -287,3 +287,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 boss: tàu lửa +2-4 toa, Inferno từ model behemoth, Ixion 4-5 vũ khí, Locust 1 drone/2 s, danh sách vẽ lại 11 boss (nguyên văn cuối playtest14_vi.txt).
 - 03/10 thử Unity: napalm/không kích dùng máy bay ném bom + bom quá to; mép biển-đất hở; Nyx có xe tăng trong preview boss; Leviathan tháp phụ giấu khi ngủ, trồi lên khi hoạt động; bỏ "cutscene" khi boss sang phase; đạn ra từ nòng/bệ phóng khi vẽ lại; hangar cân bằng theo giá; giảm thời gian mọi loại khói (nguyên văn cuối playtest14_vi.txt).
 - 03/10 bổ sung Gói cân bằng 2: tầm tối thiểu boss theo góc hạ nòng, sheet tên lửa từng vũ khí, lửa/napalm, tháp, gọn Bom_vu_khi, báo cáo (nguyên văn cuối export_pack2_vi.txt).
+- 04/10 "khi mở full boss hunt ... mất hình các boss mới sửa"; "boss daedalus nhìn khá tốt, nên có lửa sau động cơ, vẽ lại 2 boss icarus luôn".
