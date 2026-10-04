@@ -650,7 +650,7 @@ namespace MachineBrigade.Tests
                 }).ToList(),
                 ["replayable"] = Operations.Replayable.Select(m => Text("mission." + m.Id + ".name")).Cast<object>().ToList(),
                 // MB_FINAL F3: the weeks' draws by the final rule (OperationsData.Weekly), 26 ISO weeks from 2026-W41.
-                ["rotation"] = Enumerable.Range(0, OperationsData.RotationWeeks)
+                ["rotation"] = Enumerable.Range(0, MachineBrigade.Sim.Content.OperationsData.RotationWeeks)
                     .Select(k => new DateTime(2026, 10, 5, 0, 0, 0, DateTimeKind.Utc).AddDays(7 * k))
                     .Select(d => System.Globalization.ISOWeek.GetYear(d) * 100 + System.Globalization.ISOWeek.GetWeekOfYear(d))
                     .Select(w => (w, e: data.Weekly(w, Math.Max(1, Operations.Big.Count))))
