@@ -67,6 +67,16 @@ def smoothstep(e0, e1, x):
 # Base colours are authored ~1/BASE_TONE brighter because COLOR_0 multiplies them.
 MATERIALS = {
     'Team': ('#c9d6cf', 0.25, 0.42, 0.0),        # recoloured per faction at runtime
+    # Play-test 14 lane K: own-livery paints for ship and space bosses (same names and values as MaterialLibrary.Kit)
+    'NavyGrey': ('#6f777c', 0.3, 0.55, 0.0),
+    'NavyDeck': ('#4a5054', 0.2, 0.78, 0.0),
+    'HullRed': ('#8a2f26', 0.15, 0.72, 0.0),
+    'BootTop': ('#1e2123', 0.15, 0.7, 0.0),
+    'SubBlack': ('#1b1e21', 0.1, 0.82, 0.0),
+    'SpaceWhite': ('#e2e4e1', 0.12, 0.42, 0.0),
+    'Titanium': ('#8e9397', 0.8, 0.36, 0.0),
+    'SpaceSilver': ('#c3c8cc', 0.9, 0.24, 0.0),
+    'GoldFoil': ('#d1a646', 0.95, 0.3, 0.0),
     'TeamGlow': ('#b8ffe4', 0.0, 0.3, 3.0),      # emissive recoloured per faction
     'Armor': ('#59605f', 0.55, 0.46, 0.0),       # painted gunmetal plates
     'Steel': ('#c4c8c4', 0.85, 0.42, 0.0),       # machined bare metal
