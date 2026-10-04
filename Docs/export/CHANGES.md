@@ -3068,3 +3068,10 @@ Nhánh `feature/pt14-j`. Lý do: `Docs/DECISIONS.md` "Play-test 14 wreck collisi
 | PT14-J-3 | `vehicles.wreckRules.bossSeconds` | (view: 90 s) | 90 s | xác boss di động |
 | PT14-J-4 | `vehicles.wreckRules.shipSeconds` | (view: chìm hẳn sau 18 s) | 18 s | tàu khác không đi xuyên xác đang chìm |
 | PT14-J-5 | xác xe ở đồ họa Low | 2/3 đời | đủ đời của Sim | không để vật cản vô hình |
+
+## PT14 lead (04/10): the other bosses' rockets at the trains' pace
+Owner: "Rocket của các boss khác ... có làm chậm cùng mức 65 không? => có".
+| What | Before | After |
+|---|---|---|
+| boss_rockets.projectileSpeed (Grad 122 mm on bosses; inherited by p26_behemoth_be_rockets, p26_jotunn_jo_rockets and the boss rocket pods that mount boss_rockets) | 130 | 65 |
+Player Grad weapons (grad_rockets, family rkt_grad_122) unchanged. BalanceSheetTests.BossOwnSpeed lists the three boss rocket ids.

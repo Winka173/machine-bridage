@@ -294,3 +294,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 04/10 sửa: Typhon chỉ chỉnh tên lửa bay nhanh, giữ tên lửa phóng từ thân; vệt khói hẹp đi 20-30%.
 - 04/10 lửa động cơ còn 20-30%; Hyperion vẽ lại kiểu battlecruiser StarCraft + 2 miniboss biến thể; ẩn thiết bị khói người chơi; tháp pháo Hydra/Nyx vẽ lại; tên lửa Typhon (từ đỉnh tháp) và toa tên lửa Nemesis/Juggernaut vẫn quá nhanh (nguyên văn cuối playtest14_vi.txt).
 - 04/10 xác tàu đang chìm/cháy phải là vật cản; preview: xe khác chạy vào đúng chỗ xác vừa chết (nguyên văn cuối playtest14_vi.txt).
+- 04/10 "Rocket của các boss khác ... làm chậm cùng mức 65 => có".
