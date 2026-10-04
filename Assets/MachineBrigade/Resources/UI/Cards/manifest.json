@@ -610,7 +610,7 @@
             "kind": "boss",
             "model": "daedalus",
             "source": "Models/daedalus",
-            "hash": "v2:5e51b625e28098ccc7af6e39c2fbcaed71e3bafa"
+            "hash": "v2:3d346d4c0d3f21055db1d5e53a2ecde5ebb14e3a"
         },
         {
             "id": "drone_hangar",
@@ -897,14 +897,14 @@
             "kind": "boss",
             "model": "hyperion",
             "source": "Models/hyperion",
-            "hash": "v2:1e0a395168b162c18aa5140cd2b0c3bc34a6b934"
+            "hash": "v2:1c8f807bf12c1380452629a112e0c16aab864aea"
         },
         {
             "id": "icarus_mk0",
             "kind": "boss",
-            "model": "silver_bug",
-            "source": "Models/silver_bug",
-            "hash": "v2:5c9e40c9cfb8276a8c409e198d38f1b523e7e44c"
+            "model": "icarus_mk0",
+            "source": "Models/icarus_mk0",
+            "hash": "v2:d732751d30f6e9e74406336f34c114b49c920b9d"
         },
         {
             "id": "ixion",
@@ -1128,7 +1128,7 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:5c9e40c9cfb8276a8c409e198d38f1b523e7e44c"
+            "hash": "v2:d34dd7986a5e859a7ea08060bfdb5f6feeaafbd4"
         },
         {
             "id": "spawn_bastion",
