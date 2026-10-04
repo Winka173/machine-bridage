@@ -20196,3 +20196,41 @@ width 20-30 %, Typhon's door missiles left alone); values in Docs/export/CHANGES
 - Tests (written, not run): PlayTest14LaneHTests. For a Unity look: the six warships holding heading while their turrets
   traverse (the Icarus main laser now trains: its mount node must turn), Roc / Daedalus stopping to fire, death smoke amount,
   trail length and width, the boss SAM flights.
+
+## Play-test 14 wreck collision (lane J)
+
+Owner (last block of Docs/prompts/playtest14_vi.txt, 04/10): ships sail through a sinking wreck; a sinking / burning wreck must
+still be an object; in the "In action" preview the replacement for a killed vehicle drives onto the exact death spot and clips
+into the wreck. Values in Docs/export/CHANGES.md PT14-J.
+- **Cause (battle).** The Sim had no wreck at all: `DamageSystem.OnVehicleDestroyed` emits the loss and `SimWorld.RemoveDead`
+  drops the vehicle from the list the same step, so separation (`MovementSystem.Separate`, `_ground` = living hulls), the
+  look-ahead (`Blocker`), the parked-hull path costs (`UnitCostField`) and the ships' traffic (`NavalSystem`) never saw it again.
+  The hulk (WreckManager, 30-45 s, bosses 90 s) and the sinking ship (ShipSinking, under by 18 s) were view only.
+- **Fix: `Sim/Movement/WreckField` (`SimWorld.Wrecks`).** On destruction a ground vehicle or a ship leaves a wreck: its hull
+  capsule (spine along its heading, `HullHalf` / `HullRadius`) where it stopped, until a time from data
+  (`vehicles.wreckRules` in tunables.json): ships 18 s (until under the water), mobile bosses 90 s, other hulks 30 s + up to
+  15 s by a fixed per-id fraction (golden-ratio steps), i.e. the view's old 30-45 s. Expired in `RemoveDead` each step; in
+  `StateHash`. No wreck from aircraft (their crash is elsewhere), fixed defences (their ruin opens the ground at once as
+  before: siege gates and walls depend on it), walls, drop pods, burrowed or escaped units, or anything retired (no kill).
+- **Ground.** `Drive`: a wreck across the look-ahead (when no vehicle blocks) is steered round like a parked enemy
+  (AvoidSide / AvoidUntil, half speed). `Separate`: a hull overlapping a wreck is pushed out (the wreck never yields; same
+  stiffness and max push as hulls; Brake). `UnitCostField`: wrecks stamped at the stunned (wall) cost, so routes planned after
+  getting stuck go round. `Crowded` counts a wreck (arrival next to a wreck on the goal ends the route instead of grinding);
+  `TryUnjam` never steps aside into one. No NavGrid blocker: closing cells for 30-45 s per death would seal streets, split
+  regions and replan everyone (mobile cost); the capsule checks cost a bound test per wreck and skip when there are none.
+- **Ships.** `NavalSystem.Sail`: a sinking wreck within the hull plus ~3 s of sailing ahead turns the ship 0.8 rad away from
+  its side at half speed; a hull overlapping one is pushed back out (at most 1.5 x a step's travel, speed x 0.8) before
+  `OnWater`. Ground wrecks block ground vehicles only, ships ships only.
+- **View on the same clock.** `WreckManager.Add`: a ground hulk lives `WreckField.Life - SinkSeconds` (its 3 s sink ends as the
+  Sim frees the ground) on every graphics tier (Low no longer shortens a solid hulk); aircraft keep the random 30-45 s.
+  The full-wreck cap near the camera (12 / 9 / 6) and far wrecks' 14 s can still sink a hulk early: then the Sim keeps an unseen
+  blocker for the rest of its time (rare; accepted).
+- **Cause (preview).** `FiringRange.KeepTargets` sent the replacement (after 2.5 s) to the slot's spot itself, where the dead
+  target's hulk burns for 30-45 s; `ReplaceAttackers` spawned the new attacker on the old one's mark; a ship came back after a
+  fixed 5.5 s while its wreck sinks for 18 s. **Fix:** `ClearSpot`: the slot's spot if clear of wrecks and ground hulls, else
+  the nearest of ± across the line of fire / further back at 2 x HullBound + 1.5 m steps (3 rings), inside the range; the
+  replacement drives there and stands as the target. A ship's replacement waits until the Sim's wreck on its spot is gone.
+- Replay hashes change (wrecks steer and push). Tests deferred by the owner (none written here). Sim compile-checked with
+  `dotnet build Tools/simbuild/Sim.csproj` (C# 9); Game files checked by grep. For a Unity look: tanks steering round a fresh
+  hulk in a column and in a street; ships of a fleet going round a sinking escort; hulk sink timing vs the blocker; the
+  preview's replacement standing beside the burning wreck.

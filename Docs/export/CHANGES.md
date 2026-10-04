@@ -3022,3 +3022,15 @@ Nhánh `feature/pt14-h`. Lý do: `Docs/DECISIONS.md` "Play-test 14 after R2 (lan
 | PT14-H-15 | Leviathan pha cuối (escapePhase): màn khói khi chạy | 2 đám (20 m / 22 s, 16 m / 18 s) | không | chủ: không boss nào tạo khói; câu radio bỏ "sau màn khói" |
 | PT14-H-16 | `sam_post` (Buk của tàu: leviathan, scylla, nyx, hydra, kraken, typhon) `projectileSpeed` | 250 (họ 9m317_buk) | 170 (ra khỏi họ) | chủ: tên lửa Typhon bay quá nhanh; tầm game = vài km đầu thật (giai đoạn tăng tốc) |
 | PT14-H-17 | `sam_battery` (toa SAM Nemesis) `projectileSpeed` | 300 (họ mim_104_patriot_pac_2) | 200 (ra khỏi họ; Loft, mô hình patriot giữ) | chủ: tên lửa Nemesis bay quá nhanh; patriot, sam_battery_lrr, sam_pac3 của người chơi giữ 300 |
+
+## Play-test 14 wreck collision (lane J): wrecks stay solid until gone
+
+Nhánh `feature/pt14-j`. Lý do: `Docs/DECISIONS.md` "Play-test 14 wreck collision (lane J)" (chủ, khối "Bổ sung 04/10" cuối). Giá trị mới trong `Resources/Data/tunables.json` `vehicles.wreckRules` (trước đây xác chỉ là hình, không chặn gì trong Sim).
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-J-1 | `vehicles.wreckRules.groundSeconds` | (không có; xác chỉ ở view 30-45 s ngẫu nhiên) | 30 s | xác xe cháy vẫn là vật cản tới khi chìm hết |
+| PT14-J-2 | `vehicles.wreckRules.groundSpread` | (view: + 0-15 s ngẫu nhiên) | 15 s (theo id, cố định) | Sim và view cùng đồng hồ, tất định |
+| PT14-J-3 | `vehicles.wreckRules.bossSeconds` | (view: 90 s) | 90 s | xác boss di động |
+| PT14-J-4 | `vehicles.wreckRules.shipSeconds` | (view: chìm hẳn sau 18 s) | 18 s | tàu khác không đi xuyên xác đang chìm |
+| PT14-J-5 | xác xe ở đồ họa Low | 2/3 đời | đủ đời của Sim | không để vật cản vô hình |
