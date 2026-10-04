@@ -119,8 +119,12 @@ namespace MachineBrigade.Tests
         {
             var catalog = GameContent.LoadCatalog();
             Assert.AreEqual(5, ArmourLevels.Max);
+            // Armour/Pen 5 (04/10): a non-boss carries 5 only on a vehicle's front (titan_tank, elite_heavy_tank, mara_behemoth).
             foreach (var v in catalog.Vehicles.Values.Where(v => !v.Boss))
-                Assert.LessOrEqual(new[] { v.Armour.Front, v.Armour.Side, v.Armour.Rear, v.Armour.Top }.Max(), ArmourLevels.MaxUnit, v.Id);
+            {
+                Assert.LessOrEqual(new[] { v.Armour.Side, v.Armour.Rear, v.Armour.Top }.Max(), ArmourLevels.MaxUnit, v.Id);
+                Assert.LessOrEqual(v.Armour.Front, ArmourLevels.CapFor(false, v.Armor == ArmorClass.Structure, ArmorFace.Front), v.Id);
+            }
             Assert.AreEqual(5, catalog.Vehicles["behemoth"].Armour.Front, "the Behemoth's glacis");
             // The penetration table covers it: a 120 mm dart (4) on level 5 is one under.
             var gun = catalog.Weapons["gun_120mm"];

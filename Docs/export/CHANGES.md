@@ -12851,3 +12851,53 @@ Nhánh `feature/combat-final`. Nguồn: `Docs/prompts/combat_rebalance_vi.md` (m
 | CF-23 | tên lửa lớn khác (không phải outlier rõ) | jassm 9, air_cruise_missile 9, leviathan_cruise 10, hydra_club_s 6,5, ballistic_missile 10, anti_ship_missile 7, scylla_kh35 6, pt14_hp_nsm 5, nyx_tomahawk 8, ATGM nhỏ 0 | không đổi | |
 | CF-24 | bộ xuất | 6 bước (`PEN_STEPS` tới -3), một bảng | 7 bước (tới -4); sheet mới `01/Bang_danh_noc`; công thức Excel lớp B (`Vu_khi_suy_ra`, `Hoi_quy_du_lieu`, `May_bay_so_phat`, `Boss_hieu_qua`, `Tuong_duong_xe_cong_trinh`) chọn bảng theo `danh_noc`; input mới `input_bang_danh_noc` (02, 03, 04) | `_game.py` port ArmourMultiplier |
 | CF-25 | Sổ tay đạn (game + tài liệu thiết kế) | một cột, bước "thiếu từ 3 cấp" | hai cột Bắn thẳng / Đánh nóc, 7 bước | AmmoHandbook.cs, BaseText.cs, Tools/docs/prompt32.py |
+
+## ARMOUR PEN 5
+
+Nhánh `feature/pen5-splash`. Nguồn: `Docs/prompts/armour_pen5_vi.md` (chỉ bảng ai lên Giáp 5 / Xuyên 5; không đổi bảng xuyên, bảng đánh nóc, bảng loại sát thương, bom, Kh-29, ATGM). Lý do: `Docs/DECISIONS.md` "Armour/Pen 5 and splash/overpen 04/10 (lane A)"; báo cáo: `Docs/fixes/armour_pen5_report.md`.
+
+| # | mục | cũ thực tế | mới | ghi chú |
+|---|---|---|---|---|
+| AP-1 | `titan_tank` armour (trước / hông / sau / nóc) | `4` = 4 / 3 / 2 / 2 | `[5, 3, 2, 2]` | ghi rõ 4 mặt (số đơn 5 sẽ thành 5/4/3/3) |
+| AP-2 | `elite_heavy_tank` armour | `4` = 4 / 3 / 2 / 2 | `[5, 3, 2, 2]` | như trên |
+| AP-3 | `mara_behemoth` armour | 4 / 3 / 3 / 2 | 5 / 3 / 3 / 2 | |
+| AP-4 | `railgun` pen | 4 | 5 | damage 510, nạp 7, tầm 90 giữ |
+| AP-5 | `gun_140_twin` pen | 4 | 5 | `gun_140_twin_he` có pen riêng 2: không đổi |
+| AP-6 | `gun_152` pen | 4 | 5 | |
+| AP-7 | `gun_152_heat` pen | 4 | 5 | `gun_152_heat_he` pen riêng 3: không đổi |
+| AP-8 | `gun_125_elite` pen | 4 | 5 | `gun_125_elite_he` pen riêng 2: không đổi |
+| AP-9 | `gun_105_apfsds` pen | 4 | 5 | `gun_105_apfsds_he` pen riêng 2: không đổi |
+| AP-10 | `gun_125_armata_ke` pen | 4 | 5 | |
+| AP-11 | tháp `gun_155_twin_ap` (heavy_turret / bastion) pen | 4 | 5 | thừa kế `gun_155_twin_fort` nhưng có pen riêng: chỉ sửa id này |
+| AP-12 | tháp `turret_gun_120_long` pen | 5 | 5 (giữ) | đã là 5 |
+| AP-13 | `boss_railgun` pen | 4 | 5 | |
+| AP-14 | `p26_ixion_125` pen | 4 | 5 | thừa kế `gun_120mm` nhưng có pen riêng: chỉ sửa id này (gun_120mm giữ 4); `p26_ixion_125_he` pen riêng 3 |
+| AP-15 | `train_gun` pen | 4 | 5 | `train_gun_he` pen riêng 2 |
+| AP-16 | `borer_drill` pen | 4 | 5 | |
+| AP-17 | boss Xuyên 5 sẵn có (10 vũ khí `p26_*_direct_*`, `p26_behemoth_tiny_be120`, `p26_icarus_main_ic_coil`) | 5 (thừa kế từ vũ khí cha `p26_*`) | 5 (giữ) | cả 10 đúng 5, không id nào khác 5 |
+| AP-18 | danh sách GIỮ 4 (người chơi 13, boss 7) | 4 | 4 | đã kiểm từng id (gồm id thừa kế) |
+| AP-19 | luật nạp dữ liệu (`Catalog.cs`) | không boss: mọi mặt tối đa 4 | không boss: mặt trước xe (không phải công trình) tối đa 5, mặt khác và mọi tháp / công trình tối đa 4 | `ArmourLevels.CapFor`; giữ "không xe nào 5/5/5/5" |
+| AP-20 | trần giáp khi có trang bị (`Vehicle.ArmourOn`) | không boss: 4 | không boss: max(4, giáp dữ liệu của mặt đó) | trang bị không đẩy mặt nào lên 5; mặt trước dữ liệu 5 giữ 5 |
+| AP-21 | giao diện | tên cấp xuyên chặn ở 4; ô "che phủ" của bộ bài 0-4 | tên cấp xuyên 0-5 (`pen.level.5` mới: "Xuyên giáp hạng nặng"); ô che phủ 0-5 | `CombatIcons.cs`, `Strings.cs`, `KitCombat.cs`; câu `hb.pen.faces` (game + `prompt32.py`) nói cấp 5 = boss và mặt trước xe tăng siêu nặng |
+
+Không đổi: giáp và máu boss (không dòng boss nào bị sửa); máu tháp, giáp tháp (tối đa vẫn 4, 40 tháp / công trình đã kiểm); damage / nạp / tầm của mọi vũ khí trên.
+Sinh lại: `Docs/export/current/*` (`01_chien_dau` `Vu_khi` cột xuyên, `Vu_khi_suy_ra` hệ số xuyên và DPS theo giáp, `02_boss`, `03_can_cu`, `04`, `00_index`, `bulk.zip`), đoạn Sổ tay đạn trong `Docs/Machine_Brigade_Design_Review.html` (sinh bằng `prompt32.ammo_handbook`). Ô cần Unity xuất lại: xem báo cáo mục "generated files".
+
+## SPLASH OVERPEN
+
+Nhánh `feature/pen5-splash`. Nguồn: `Docs/prompts/splash_overpen_vi.md` (Splash Falloff + Kinetic Overpenetration; không đổi bảng xuyên, bảng đánh nóc, bảng loại sát thương, Giáp/Xuyên 5, bom / tên lửa / ATGM, giáp và máu boss). Lý do: `Docs/DECISIONS.md` "Armour/Pen 5 and splash/overpen 04/10 (lane A)"; báo cáo: `Docs/fixes/splash_overpen_report.md`.
+
+| # | mục | cũ thực tế | mới | ghi chú |
+|---|---|---|---|---|
+| SO-1 | `damageTable.splashFalloff` (mới) | không có | 1.10 / 1.08 / 1.05 / 1.00 / 0.85 / 0.65 / 0.45 / 0.25 / 0 | tâm, lõi 0-25 / 25-50 / 50-100 %, lõi -> rìa 0-25 / 25-50 / 50-75 / 75-100 %, r >= rìa; biên trên tính vào vùng |
+| SO-2 | nổ hai lớp (lõi + rìa: vũ khí có `edge`, vũ khí boss có rìa mặc định 2x lõi, vụ nổ xếp hàng có Edge: nổ cuối của Gungnir, vòng nổ / mảnh vỡ / khoang của boss, tàu boss) | lõi 100 % phẳng, rìa `edgeShare` 40 % phẳng | theo SO-1 (`DamageSystem.ApplyFalloff`) | `edgeShare` không còn được đọc |
+| SO-3 | nổ một bán kính (mọi vũ khí không `edge`, thẻ hỗ trợ, mìn, kho đạn, sự kiện) | tuyến tính 100 % ở tâm -> `edgeFalloff` 25 % ở mép | không lõi, bán kính = rìa: 110 % ở r = 0, rồi 85 / 65 / 45 / 25 %, 0 từ mép | theo quy ước cũ (một bán kính = vùng giảm dần tới 25 % ở mép); không thêm bán kính mới; tầm nổ dao động ±15 % giữ |
+| SO-4 | nổ nhiệt áp một bán kính | mép 62,5 % (giảm một nửa) | các mức < 100 % giảm một nửa: 92,5 / 82,5 / 72,5 / 62,5 % | luật prompt 15 C.3 giữ (mép vẫn 62,5 %) |
+| SO-5 | siêu vũ khí boss dạng nổ hai lớp (`BossSystem.BlastAt`) | lõi 100 %, rìa 40 % | theo SO-1 | mọi đòn có lõi + rìa (Bastion 420, Behemoth, Jötunn 203, Leviathan, Matriarch, Moloch, Nemesis, Typhon, Kraken, Roc, Daedalus, ...) |
+| SO-6 | siêu vũ khí boss dạng nổ một lớp (lõi = rìa tối đa 20 m: Monster 800 mm) | tuyến tính 100 % -> `falloff` | theo SO-3 (không lõi) | đòn không phải nổ (rod, quét, vung, húc, vòng lửa) giữ tuyến tính theo `falloff` của nó |
+| SO-7 | `damageTable.overpenetration` (mới) | không có | 1.00 / 0.95 / 0.85 / 0.75 cho xuyên - giáp <=+2 / +3 / +4 / >=+5 | mức lẻ (trang bị) nằm giữa hai bước |
+| SO-8 | phát trúng thẳng động năng (`HitKind.Direct`, `Pierce`, vũ khí `damageType` Kinetic, không `topAttack`) | bảng xuyên x loại | bảng xuyên x xuyên quá x loại (`DamageSystem.HitMultiplier`, `Estimate`, `DamageTable.Effective`) | không áp: nổ lõm, HE, mảnh, lửa, năng lượng, nổ lan, bom, top attack, đòn không có vũ khí |
+| SO-9 | ví dụ railgun 510, xuyên 5 (giáp 5 / 4 / 3 / 2 / 1 / 0) | 520,2 / 612 / 734,4 / 734,4 / 734,4 / 734,4 | 520,2 / 612 / 734,4 / 697,68 / 624,24 / 550,8 | khớp ví dụ của prompt |
+| SO-10 | bộ xuất | không có hai bảng | sheet mới `01/Bang_xuyen_qua`, `01/Bang_no_lan`; cột `Vu_khi_suy_ra.xuyen_qua`; `he_so_xuyen_giap_*` và DPS gồm xuyên quá; input mới `input_bang_xuyen_qua` (02 / 03 / 04); `_layer_b.armour_index` nhân bảng xuyên quá | công thức Excel = port Python (`_game.py overpenetration`, `splash_falloff`) |
+| SO-11 | chữ trong game / tài liệu | "lõi đủ sát thương, rìa 40 %", "full damage in its core" | "giảm dần" + hai bảng (Sổ tay đạn, `hb.blast`, `hb.blast.plain`, `hb.pen.over` mới, `ul.splashEdge`, 13 mô tả siêu vũ khí, GAME_PLAN, prompt25 / 26 / 29 / 32 / 34, build_doc mục 10) | |
+| SO-12 | `tunables weapons.damageRules.edgeFalloff` 0,25 | dùng cho nổ một bán kính | giữ trong tunables nhưng không còn được đọc (bậc 75-100 % của SO-1 cùng 0,25) | |

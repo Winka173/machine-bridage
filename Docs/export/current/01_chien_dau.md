@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 3dca5d6c, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 13abf306, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -133,8 +133,8 @@ Sheet 01_chien_dau/Hoi_quy — Hồi quy theo CP (12 dòng, 5 cột)
 
 | id | gia_tri | y_nghia |
 |---|---|---|
-| dps_he_so | 38.624000447417224 | hệ số a của DPS theo CP |
-| dps_so_mu | 0.38504070938227564 | số mũ b của DPS theo CP |
+| dps_he_so | 38.37853729993436 | hệ số a của DPS theo CP |
+| dps_so_mu | 0.3860395024300059 | số mũ b của DPS theo CP |
 | mau_he_so | 280.38792601238663 | hệ số a của máu theo CP |
 | mau_so_mu | 0.7407159692152434 | số mũ b của máu theo CP |
 | n_dps | 49.0 | số xe có DPS > 0 |
@@ -211,18 +211,18 @@ Mỗi siêu vũ khí có âm cảnh báo riêng. Số ở đây là số gốc; 
 
 | Boss | Siêu vũ khí | Gồm | Hồi | Cảnh báo | Cách né | Cách ngắt |
 |---|---|---|---|---|---|---|
-| **Bastion · Pháo đài** | **Pháo cối 420 mm** Một quả cối 420 mm: 2.000 trong lõi 10 m, còn 40% tới rìa 20 m, gấp đôi lên công trình và tháp; vòng đỏ báo trước 4 giây. Cứ 45 giây. | loạt nổ, 1 × 2.000, nổ 10 m | 45 s | 4 s | Ra khỏi vòng đỏ, hoặc giữ quân dưới vòm của máy phát khiên: vòm hấp thụ được vụ nổ. | Phá khẩu cối: mất luôn đòn này (tới lần tự vá duy nhất của nó). |
-| **Behemoth · Quái vật thép** | **Loạt pháo chính dồn** Ba loạt, mỗi loạt hai quả 152 mm nổ mạnh, mỗi quả 600, rải trong vòng tròn bán kính 14 m: mỗi quả rơi vào vòng đỏ riêng (lõi 8,5 m đủ sát thương, rìa 17 m còn 40%), vạch trước… | loạt nổ, 6 × 600, nổ 8,5 m, trong vòng 14 m | 45 s | 3,5 s | Bước ra khỏi sáu vòng tròn: mỗi vụ nổ lan 8 m. | Phá pháo chính trong lúc cảnh báo. |
-| **Jötunn · Pháo đài di động** | **Loạt pháo 203 mm** Bốn quả 203 mm, mỗi quả 900 (lõi 10 m, rìa 20 m còn 40%), rải trong vòng tròn bán kính 14 m, mỗi lựu pháo hai quả; cảnh báo 4 giây. Cứ 50 giây. | loạt nổ, 4 × 900, nổ 10 m, trong vòng 14 m | 50 s | 4 s | Rời khỏi vòng, hoặc núp dưới vòm khiên: khiên hấp thụ được. | Phá một lựu pháo: mỗi khẩu góp hai trong bốn quả. |
-| **Leviathan · Thiết giáp hạm** | **Loạt bắn mạn chín nòng** Chín quả đạn 406 mm, mỗi quả 950 (lõi 12 m, rìa 20 m còn 40%), từ ba tháp pháo chính rải theo dải 60 × 12 m qua căn cứ, mạnh hơn một phần ba lên công trình; cảnh báo 4 giây… | dải bom, 9 × 950, nổ 12 m, dải 60 × 12 m | 50 s | 4 s | Đưa quân ra khỏi dải đánh dấu; đạn pháo không bắn hạ được, nên hãy dàn quân ra. | Phá một tháp pháo chính trong lúc cảnh báo (giáp cấp 4: xe diệt tăng, pháo binh, bom): mỗi tháp bị phá bớt ba quả đạn. |
-| **Matriarch · Tàu mẹ drone** | **Bom trượt hạng nặng** Một quả bom trượt hạng nặng từ khoang bom: 1.600 trong lõi 16 m, còn 40% tới rìa 20 m, gấp đôi lên công trình và tháp; bom lượn chậm tới vòng đánh dấu, ít nhất 3 giây. Cứ 45 g… | tên lửa, 1 × 1.600, nổ 16 m, 250 máu, bắn hạ được | 45 s | 3,5 s | Chạy ra khỏi vòng; khi khoang bom mở, phòng không trúng tàu mẹ mạnh hơn 30%. | Phá khoang bom, hoặc bắn hạ quả bom khi nó lượn (máu 250): phòng không, C-RAM, la-de PK. |
-| **Moloch · Nhà máy di động** | **Xả xưởng** Cửa xưởng mở 4 giây, rồi mọi cửa cùng xả: sáu xe một lúc, kèm tám phát pháo 152 mm nổ mạnh (mỗi phát 350, lõi 6 m, rìa 12 m còn 40%) vào cụm quân gần nhất. Cứ 50 giây. | thả quân, 6 xe; loạt nổ, 8 × 350, nổ 6 m, trong vòng 12 m | 50 s | 4 s | Đưa cụm quân ra khỏi vùng đánh dấu; sẵn sàng đón thêm sáu xe. | Phá một cửa xưởng lúc cảnh báo: chỉ ra một nửa; phá cả hai thì chỉ còn loạt pháo. |
-| **Nemesis · Đoàn tàu tên lửa** | **Tên lửa Tận thế** Bốn giây dựng bệ phóng, rồi một tên lửa nhiệt áp bay vào HQ hoặc cụm quân lớn nhất, có đồng hồ bay (6 giây, xa hơn thì lâu hơn): 3.500 trong lõi 18 m, còn 40% tới rìa 20 m, mạnh h… | tên lửa, 1 × 3.500, nổ 18 m, 600 máu, bắn hạ được | 50 s | 4 s | Dàn quân ra khỏi điểm rơi được đánh dấu trước khi hết giờ. | Phá bệ phóng trong lúc dựng, hoặc bắn hạ tên lửa trên đường bay (máu 600): khẩu đội PAC-3 và Vòm Sắt, cùng mọi phòng không, C-RAM hay la-de PK bên dưới. |
-| **Monster · Pháo tự hành 800 mm** | **Đạn 800 mm** Một quả đạn 800 mm: 4.000 trong lõi 20 m, còn 40% tới rìa 20 m, nặng gấp đôi với công trình; nòng nâng từ từ, vòng đỏ hiện 4 giây. Mỗi 50 giây. | loạt nổ, 1 × 4.000, nổ 20 m | 50 s | 4 s | Ra khỏi vòng đỏ; vòng rất rộng nên đi sớm. | Phá khẩu cối (nòng): mất luôn phát đạn. |
-| **Typhon · Tàu ngầm tên lửa** | **Phóng tên lửa từ dưới nước** Sáu tên lửa vào căn cứ ta: mỗi quả khoảng 700 nổ mạnh (lõi 9 m, rìa 18 m còn 40%), gấp đôi lên công trình; sau 4 giây cảnh báo có đồng hồ bay. Cứ 50 giây. | tên lửa, 6 × 700, nổ 9 m, 250 máu, bắn hạ được | 50 s | 4 s | Đưa quân ra khỏi các điểm đánh dấu; tháp không di chuyển được nên hãy che chắn. | Phá cửa ống phóng lúc cảnh báo (cửa lộ trên mặt nước), hoặc bắn hạ tên lửa (mỗi quả 250 máu). |
-| **Kraken · Tàu sân bay** | **Đợt không kích** Mười hai quả bom, mỗi quả 400 (lõi 9 m, rìa 18 m còn 40%), thành dải 90 × 14 m theo hướng tàu; cảnh báo 4 giây. Mỗi 50 giây. | dải bom, 12 × 400, nổ 9 m, dải 90 × 14 m | 50 s | 4 s | Bước ngang ra khỏi dải đỏ. | Phá boong cất cánh trong lúc cảnh báo: đợt không kích và máy bay đều dừng. |
-| **Roc · Khí cầu chỉ huy** | **Rải thảm** Mười sáu quả bom 250 kg, mỗi quả 400 (lõi 7 m, rìa 14 m còn 40%), thành dải 80 × 12 m theo đường bay; cảnh báo 4 giây. Cứ 50 giây. | dải bom, 16 × 400, nổ 7 m, dải 80 × 12 m | 50 s | 4 s | Bước ngang ra khỏi dải, tránh khỏi đường bay của nó. | Phá khoang bom. |
-| **Daedalus · Tàu đổ bộ quỹ đạo** | **Đổ bộ ồ ạt từ quỹ đạo** Tám khoang cùng rơi vào một cụm quân: mỗi khoang chạm đất gây 600 động năng (xuyên cao, lõi 6 m, rìa 12 m còn 40%) rồi thả một xe; cảnh báo 4 giây. Cứ 50 giây. | loạt nổ, 8 × 600, nổ 6 m, trong vòng 12 m | 50 s | 4 s | Tản cụm quân bị đánh dấu ra; giáp dày cũng không cứu được. | Phá một cửa thả khoang lúc cảnh báo: chỉ còn bốn khoang rơi. |
+| **Bastion · Pháo đài** | **Pháo cối 420 mm** Một quả cối 420 mm: 2.000 trong lõi 10 m, giảm dần tới rìa 20 m, gấp đôi lên công trình và tháp; vòng đỏ báo trước 4 giây. Cứ 45 giây. | loạt nổ, 1 × 2.000, nổ 10 m | 45 s | 4 s | Ra khỏi vòng đỏ, hoặc giữ quân dưới vòm của máy phát khiên: vòm hấp thụ được vụ nổ. | Phá khẩu cối: mất luôn đòn này (tới lần tự vá duy nhất của nó). |
+| **Behemoth · Quái vật thép** | **Loạt pháo chính dồn** Ba loạt, mỗi loạt hai quả 152 mm nổ mạnh, mỗi quả 600, rải trong vòng tròn bán kính 14 m: mỗi quả rơi vào vòng đỏ riêng (lõi 8,5 m, rìa 17 m, giảm dần), vạch trước 3,5 giây. C… | loạt nổ, 6 × 600, nổ 8,5 m, trong vòng 14 m | 45 s | 3,5 s | Bước ra khỏi sáu vòng tròn: mỗi vụ nổ lan 8 m. | Phá pháo chính trong lúc cảnh báo. |
+| **Jötunn · Pháo đài di động** | **Loạt pháo 203 mm** Bốn quả 203 mm, mỗi quả 900 (lõi 10 m, rìa 20 m, giảm dần), rải trong vòng tròn bán kính 14 m, mỗi lựu pháo hai quả; cảnh báo 4 giây. Cứ 50 giây. | loạt nổ, 4 × 900, nổ 10 m, trong vòng 14 m | 50 s | 4 s | Rời khỏi vòng, hoặc núp dưới vòm khiên: khiên hấp thụ được. | Phá một lựu pháo: mỗi khẩu góp hai trong bốn quả. |
+| **Leviathan · Thiết giáp hạm** | **Loạt bắn mạn chín nòng** Chín quả đạn 406 mm, mỗi quả 950 (lõi 12 m, rìa 20 m, giảm dần), từ ba tháp pháo chính rải theo dải 60 × 12 m qua căn cứ, mạnh hơn một phần ba lên công trình; cảnh báo 4 gi… | dải bom, 9 × 950, nổ 12 m, dải 60 × 12 m | 50 s | 4 s | Đưa quân ra khỏi dải đánh dấu; đạn pháo không bắn hạ được, nên hãy dàn quân ra. | Phá một tháp pháo chính trong lúc cảnh báo (giáp cấp 4: xe diệt tăng, pháo binh, bom): mỗi tháp bị phá bớt ba quả đạn. |
+| **Matriarch · Tàu mẹ drone** | **Bom trượt hạng nặng** Một quả bom trượt hạng nặng từ khoang bom: 1.600 trong lõi 16 m, giảm dần tới rìa 20 m, gấp đôi lên công trình và tháp; bom lượn chậm tới vòng đánh dấu, ít nhất 3 giây. Cứ 45… | tên lửa, 1 × 1.600, nổ 16 m, 250 máu, bắn hạ được | 45 s | 3,5 s | Chạy ra khỏi vòng; khi khoang bom mở, phòng không trúng tàu mẹ mạnh hơn 30%. | Phá khoang bom, hoặc bắn hạ quả bom khi nó lượn (máu 250): phòng không, C-RAM, la-de PK. |
+| **Moloch · Nhà máy di động** | **Xả xưởng** Cửa xưởng mở 4 giây, rồi mọi cửa cùng xả: sáu xe một lúc, kèm tám phát pháo 152 mm nổ mạnh (mỗi phát 350, lõi 6 m, rìa 12 m, giảm dần) vào cụm quân gần nhất. Cứ 50 giây. | thả quân, 6 xe; loạt nổ, 8 × 350, nổ 6 m, trong vòng 12 m | 50 s | 4 s | Đưa cụm quân ra khỏi vùng đánh dấu; sẵn sàng đón thêm sáu xe. | Phá một cửa xưởng lúc cảnh báo: chỉ ra một nửa; phá cả hai thì chỉ còn loạt pháo. |
+| **Nemesis · Đoàn tàu tên lửa** | **Tên lửa Tận thế** Bốn giây dựng bệ phóng, rồi một tên lửa nhiệt áp bay vào HQ hoặc cụm quân lớn nhất, có đồng hồ bay (6 giây, xa hơn thì lâu hơn): 3.500 trong lõi 18 m, giảm dần tới rìa 20 m, mạnh… | tên lửa, 1 × 3.500, nổ 18 m, 600 máu, bắn hạ được | 50 s | 4 s | Dàn quân ra khỏi điểm rơi được đánh dấu trước khi hết giờ. | Phá bệ phóng trong lúc dựng, hoặc bắn hạ tên lửa trên đường bay (máu 600): khẩu đội PAC-3 và Vòm Sắt, cùng mọi phòng không, C-RAM hay la-de PK bên dưới. |
+| **Monster · Pháo tự hành 800 mm** | **Đạn 800 mm** Một quả đạn 800 mm: 4.000 ở tâm vụ nổ 20 m, giảm dần ra mép, nặng gấp đôi với công trình; nòng nâng từ từ, vòng đỏ hiện 4 giây. Mỗi 50 giây. | loạt nổ, 1 × 4.000, nổ 20 m | 50 s | 4 s | Ra khỏi vòng đỏ; vòng rất rộng nên đi sớm. | Phá khẩu cối (nòng): mất luôn phát đạn. |
+| **Typhon · Tàu ngầm tên lửa** | **Phóng tên lửa từ dưới nước** Sáu tên lửa vào căn cứ ta: mỗi quả khoảng 700 nổ mạnh (lõi 9 m, rìa 18 m, giảm dần), gấp đôi lên công trình; sau 4 giây cảnh báo có đồng hồ bay. Cứ 50 giây. | tên lửa, 6 × 700, nổ 9 m, 250 máu, bắn hạ được | 50 s | 4 s | Đưa quân ra khỏi các điểm đánh dấu; tháp không di chuyển được nên hãy che chắn. | Phá cửa ống phóng lúc cảnh báo (cửa lộ trên mặt nước), hoặc bắn hạ tên lửa (mỗi quả 250 máu). |
+| **Kraken · Tàu sân bay** | **Đợt không kích** Mười hai quả bom, mỗi quả 400 (lõi 9 m, rìa 18 m, giảm dần), thành dải 90 × 14 m theo hướng tàu; cảnh báo 4 giây. Mỗi 50 giây. | dải bom, 12 × 400, nổ 9 m, dải 90 × 14 m | 50 s | 4 s | Bước ngang ra khỏi dải đỏ. | Phá boong cất cánh trong lúc cảnh báo: đợt không kích và máy bay đều dừng. |
+| **Roc · Khí cầu chỉ huy** | **Rải thảm** Mười sáu quả bom 250 kg, mỗi quả 400 (lõi 7 m, rìa 14 m, giảm dần), thành dải 80 × 12 m theo đường bay; cảnh báo 4 giây. Cứ 50 giây. | dải bom, 16 × 400, nổ 7 m, dải 80 × 12 m | 50 s | 4 s | Bước ngang ra khỏi dải, tránh khỏi đường bay của nó. | Phá khoang bom. |
+| **Daedalus · Tàu đổ bộ quỹ đạo** | **Đổ bộ ồ ạt từ quỹ đạo** Tám khoang cùng rơi vào một cụm quân: mỗi khoang chạm đất gây 600 động năng (xuyên cao, lõi 6 m, rìa 12 m, giảm dần) rồi thả một xe; cảnh báo 4 giây. Cứ 50 giây. | loạt nổ, 8 × 600, nổ 6 m, trong vòng 12 m | 50 s | 4 s | Tản cụm quân bị đánh dấu ra; giáp dày cũng không cứu được. | Phá một cửa thả khoang lúc cảnh báo: chỉ còn bốn khoang rơi. |
 | **Icarus · Phi thuyền quỹ đạo** | **Mưa thanh vonfram** Bảy thanh vonfram rơi xuống các cụm quân, ưu tiên xe tăng giáp dày, từ vệ tinh nó để lại trên quỹ đạo: 1.800 động năng mỗi thanh, xuyên rất cao, bán kính 7 m, có 4 giây cột sáng… | thanh tungsten từ vệ tinh, 7 × 1.800, nổ 7 m; từ pha 3: 9 phát, hồi 45 s | 45 s | 4 s | Ra khỏi các vòng tròn; khói và APS không chặn được. Vòm khiên hấp thụ một phần sát thương trong lúc còn hoạt động. | Phá ăng-ten liên kết vệ tinh trong lúc cảnh báo để hủy thanh đang rơi; phá hẳn thì hết mưa thanh vonfram cho tới khi nó tự vá lại. Ăng-ten bắn được ở tầng cao, tầng thấp, và cả khi đã rơi xuống đất. |
 | **Hyperion · Trạm gương quỹ đạo** | **Tia mặt trời** Một tia đốt dải 70 × 6 m trong 4 giây, 500 mỗi giây; cảnh báo 4 giây. Mỗi 50 giây. | dải bom, 4 × 500, nổ 3 m, dải 70 × 6 m | 50 s | 4 s | Rời ngay dải hẹp. | Phá tia la-de chính trong lúc cảnh báo. |
 
@@ -267,7 +267,7 @@ SELF_APS chỉ chặn tên lửa dẫn đường, drone, rốc-két bắn thẳn
 
 ### Gungnir
 
-Boss chủ lực chương 11: máu 0; siêu vũ khí mỗi ? s, nhắm toàn bản đồ, cảnh báo 3 s có đường ngắm; xuyên tối đa 5 xe × 1.000 rồi nổ 2.000 ở xe cuối (lõi 12 m, rìa 20 m còn 40%); không bắn máy bay, không chặn được, pháo sáng và APS không có tác dụng.
+Boss chủ lực chương 11: máu 0; siêu vũ khí mỗi ? s, nhắm toàn bản đồ, cảnh báo 3 s có đường ngắm; xuyên tối đa 5 xe × 1.000 rồi nổ 2.000 ở xe cuối (lõi 12 m, rìa 20 m, giảm dần theo bảng giảm nổ lan); không bắn máy bay, không chặn được, pháo sáng và APS không có tác dụng.
 
 Sheet 01_chien_dau/Bang_sat_thuong — Bảng sát thương (6 dòng, 6 cột)
 
@@ -303,6 +303,29 @@ Sheet 01_chien_dau/Bang_danh_noc — Bảng đánh nóc (top attack) (7 dòng, 5
 | buoc_4 | -2 | 0.5 |
 | buoc_5 | -3 | 0.25 |
 | buoc_6 | -4 | 0.12 |
+
+Sheet 01_chien_dau/Bang_xuyen_qua — Bảng xuyên quá (động năng) (4 dòng, 5 cột)
+
+| id | chenh_xuyen_giap | he_so |
+|---|---|---|
+| buoc_0 | <=+2 | 1.0 |
+| buoc_1 | +3 | 0.95 |
+| buoc_2 | +4 | 0.85 |
+| buoc_3 | >=+5 | 0.75 |
+
+Sheet 01_chien_dau/Bang_no_lan — Bảng giảm nổ lan (splash falloff) (9 dòng, 5 cột)
+
+| id | vung | he_so |
+|---|---|---|
+| buoc_0 | r = 0 (tâm) | 1.1 |
+| buoc_1 | lõi 0-25% | 1.08 |
+| buoc_2 | lõi 25-50% | 1.05 |
+| buoc_3 | lõi 50-100% | 1.0 |
+| buoc_4 | lõi -> rìa 0-25% | 0.85 |
+| buoc_5 | lõi -> rìa 25-50% | 0.65 |
+| buoc_6 | lõi -> rìa 50-75% | 0.45 |
+| buoc_7 | lõi -> rìa 75-100% | 0.25 |
+| buoc_8 | r >= rìa | 0.0 |
 
 Sheet 01_chien_dau/He_so_toan_cuc — Hệ số toàn cục (4 dòng, 8 cột)
 
@@ -353,7 +376,11 @@ Sinh từ dữ liệu (balance.json) như mục Sổ tay đạn trong Hồ sơ c
 
 **Năng lượng**: mạnh với Máy bay (×1,5), yếu với Công trình (×0,4). Ví dụ: focused laser (300 kW), Iron Beam laser (100 kW).
 
-Giáp có hướng: trước, hông, sau và nóc (xe tới cấp 4, boss tới cấp 5). Đạn bắn thẳng dùng cột bắn thẳng theo mặt trúng; đạn không đánh nóc mà rơi xuống nóc, và mọi phát lên máy bay, không có mức áp đảo (×1 là cao nhất). Vũ khí đánh nóc luôn trúng giáp nóc và chỉ dùng cột đánh nóc (không nhân hai bảng, không chặn ở ×1).
+Giáp có hướng: trước, hông, sau và nóc (tháp và hông, sau, nóc của xe tới cấp 4; boss và mặt trước xe tăng siêu nặng tới cấp 5). Đạn bắn thẳng dùng cột bắn thẳng theo mặt trúng; đạn không đánh nóc mà rơi xuống nóc, và mọi phát lên máy bay, không có mức áp đảo (×1 là cao nhất). Vũ khí đánh nóc luôn trúng giáp nóc và chỉ dùng cột đánh nóc (không nhân hai bảng, không chặn ở ×1).
+
+Xuyên quá: đạn động năng bắn thẳng (đạn xuyên, APFSDS, railgun, pháo bắn thẳng) vượt giáp quá xa thì đi xuyên qua, phí một phần năng lượng; hệ số này nhân SAU bảng bắn thẳng (không thay nó). Không áp cho nổ lõm, HEAT, ATGM, nổ mạnh, mảnh, lửa, năng lượng, nổ lan, bom và vũ khí đánh nóc. Ví dụ xuyên 5 lên giáp 0 (động năng, mặt đất): ×1,2 × ×1,2 × ×0,75 = ×1,08.
+
+Nổ lan giảm theo khoảng cách tới tâm (tới mép thân mục tiêu): trong lõi theo r / lõi, ngoài lõi theo (r - lõi) / (rìa - lõi); biên trên tính vào vùng, từ rìa trở ra không còn. Chỉ phần nổ nhân hệ số này, kể cả 110% ở tâm; phát trúng thẳng tính riêng và mục tiêu trúng thẳng không dính nổ của chính viên đó. Vũ khí chỉ có một bán kính nổ: không có lõi, bán kính đó là rìa (nổ nhiệt áp một bán kính giảm một nửa mức đó). Hệ số loại sát thương vẫn nhân như cũ.
 
 Ví dụ: một phát 2A42 30 mm của ifv (xuyên 2, sát thương 22) lên main_battle_tank (máu 2310): giáp trước cấp 4: ×0,48, 11; giáp hông cấp 2: ×1,02, 22.
 
@@ -393,7 +420,11 @@ Xe phá tường (armored_bulldozer, engineer_vehicle, demolition_line_vehicle) 
 
 **Energy**: strong against Air (×1.5), weak against Structures (×0.4). For example: focused laser (300 kW), Iron Beam laser (100 kW).
 
-Armour has a direction: front, side, rear and roof (vehicles up to level 4, bosses up to 5). Direct fire reads the direct column against the face it strikes; a round that is not a top attack but comes down on the roof, and every hit on an aircraft, never overmatches (×1 is the most). A top-attack weapon always strikes the roof and reads the top-attack column only (never both tables, no cap at ×1).
+Armour has a direction: front, side, rear and roof (towers and a vehicle's side, rear and roof up to level 4; a boss and a super-heavy tank's front up to 5). Direct fire reads the direct column against the face it strikes; a round that is not a top attack but comes down on the roof, and every hit on an aircraft, never overmatches (×1 is the most). A top-attack weapon always strikes the roof and reads the top-attack column only (never both tables, no cap at ×1).
+
+Overpenetration: a direct kinetic round (armour-piercing, APFSDS, railgun, a gun's direct shot) far above the armour goes on through and wastes some of its energy; this factor multiplies AFTER the direct table (it never replaces it). Not for shaped charges, HEAT, ATGMs, high explosive, fragmentation, fire, energy, blasts, bombs or top-attack weapons. Example, penetration 5 on armour 0 (kinetic, ground): ×1.2 × ×1.2 × ×0.75 = ×1.08.
+
+A blast falls off with distance from its centre (to the target's hull): in the core by r / core, past it by (r - core) / (edge - core); each upper bound belongs to its band, nothing at the edge or beyond. Only the blast takes this factor, the 110% centre included; a direct hit is dealt apart and the struck target is not caught in its own round's blast. A weapon with one blast radius has no core: that radius is the edge (a one-radius thermobaric blast falls half as far). The damage type's factor still applies as before.
 
 Worked example: one shot of the ifv's 2A42 30 mm (penetration 2, 22 damage) on a main_battle_tank (health 2310): front armour 4: ×0.48, 11; side armour 2: ×1.02, 22.
 
@@ -449,7 +480,7 @@ Mỗi vũ khí có `weaponFamilyId` (súng: lớp cỡ nòng; còn lại: vũ kh
 
 ### Vũ khí boss theo họ (110)
 
-Sát thương một viên; lõi nhận đủ sát thương, rìa 40%. Hồi: thời gian hồi của vũ khí (loạt và băng giữ nhịp riêng). Cảnh báo: thời gian đạn T4+ không dẫn đường báo chỗ rơi (đạn ở trên không ít nhất bấy lâu).
+Sát thương một viên; nổ giảm theo khoảng cách (bảng giảm nổ lan 04/10: lõi 110 / 108 / 105 / 100%, từ lõi ra rìa 85 / 65 / 45 / 25%, ngoài rìa 0). Hồi: thời gian hồi của vũ khí (loạt và băng giữ nhịp riêng). Cảnh báo: thời gian đạn T4+ không dẫn đường báo chỗ rơi (đạn ở trên không ít nhất bấy lâu).
 
 ### Cảnh báo theo khả năng thoát
 
@@ -744,6 +775,8 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Bang_sat_thuong` (6 dòng): Bảng sát thương — damageTable: hệ số theo loại sát thương x mặt đất / máy bay / công trình
 - `Bang_xuyen_giap` (7 dòng): Bảng xuyên giáp (bắn thẳng) — damageTable.penetration: bảng xuyên giáp bắn thẳng, hệ số theo chênh xuyên - giáp mặt trúng (DamageTable.cs Penetration); vũ khí topAttack không dùng…
 - `Bang_danh_noc` (7 dòng): Bảng đánh nóc (top attack) — damageTable.topAttack: bảng riêng cho vũ khí topAttack, hệ số theo chênh xuyên - giáp nóc (DamageTable.cs TopAttack); thay cho Bang_xuyen_giap, không…
+- `Bang_xuyen_qua` (4 dòng): Bảng xuyên quá (động năng) — damageTable.overpenetration: đạn động năng bắn thẳng (không đánh nóc, không phải nổ lan, không bom; mọi loại khác không dùng) theo xuyên - giáp mặt t…
+- `Bang_no_lan` (9 dòng): Bảng giảm nổ lan (splash falloff) — damageTable.splashFalloff: phần sát thương nổ theo khoảng cách tới tâm (tới mép thân mục tiêu): trong lõi coreProgress = r / lõi, ngoài lõi edgeProgr…
 - `He_so_toan_cuc` (4 dòng): Hệ số toàn cục — firepower.* và damageTable.thermobaric: hệ số nhân chung
 - `Khac_che` (23 dòng): Khắc chế (APS, phòng thủ điểm) — Mỗi đơn vị có hệ chặn: số lần, hồi, bán kính, loại đạn chặn
 - `Phao_sang` (11 dòng): Pháo sáng — Mỗi đơn vị có pháo sáng: số lần, hồi, điểm phát Mount_Flare

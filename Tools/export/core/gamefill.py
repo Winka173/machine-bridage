@@ -464,9 +464,9 @@ def h_bomb_sheets(f: Filler):
                 f.put(fid, sh, rid, col, e)
         if col in sh.cols:
             sh.cols[col].meaning = (
-                "bán kính rìa nổ (lớp ngoài, ăn edgeShare sát thương). Thẻ hỗ trợ: 0, nổ một lớp, sát thương giảm dần tới "
-                "rimShare ở mép (DamageSystem.Splash, tunables weapons.damageRules.edgeFalloff); siêu vũ khí boss: BigStrikeDef.EdgeRadius "
-                "(gấp đôi lõi, tối đa 20 m)")
+                "bán kính rìa nổ (lớp ngoài; sát thương nổ theo 01/Bang_no_lan: lõi 110 / 108 / 105 / 100%, lõi -> rìa 85 / 65 / 45 / 25%). "
+                "Thẻ hỗ trợ: 0, nổ một bán kính: không lõi, bán kính là rìa, rimShare = phần ở đoạn cuối trước mép (DamageSystem.ApplyFalloff, "
+                "DamageTable.SplashFalloff); siêu vũ khí boss: BigStrikeDef.EdgeRadius (gấp đôi lõi, tối đa 20 m)")
     fid, sh = f.sheet("Bom_vu_khi")
     if sh is not None:
         for rid in sh.rows:

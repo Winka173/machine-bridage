@@ -19,7 +19,10 @@ namespace MachineBrigade.Sim.Combat
     /// </summary>
     internal sealed class DamageSystem
     {
-        /// <summary>Damage at the edge of a blast, relative to the centre (tunables weapons.damageRules.edgeFalloff).</summary>
+        /// <summary>
+        /// The old one-layer blast's rim share (tunables weapons.damageRules.edgeFalloff, 0.25). Splash 04/10: no longer read by
+        /// the blast (the splash falloff row of the damage table, whose last band before the edge is the same 0.25).
+        /// </summary>
         internal static float EdgeFalloff => global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageRules.EdgeFalloff;
 
         private readonly SimWorld _world;
@@ -117,11 +120,11 @@ namespace MachineBrigade.Sim.Combat
             // Every blast is a little different: its reach varies by up to 15 %. A ricochet strikes its target only.
             if (weapon.SplashRadius > 0f && !p.Bounce)
             {
-                // Prompt 26 B.3: a boss weapon's blast has two layers, the core at full damage and the edge twice as wide at 40 %,
-                // both fixed (the ordinary blast's reach varies by up to 15 %).
+                // Prompt 26 B.3: a boss weapon's blast has two layers, the core and the edge twice as wide, both fixed (the ordinary
+                // blast's reach varies by up to 15 %). Splash 04/10: both fall off by the damage table's splash row (ApplyFalloff).
                 if (weapon.SplashEdge > 0f)
                     Splash(at, weapon.SplashRadius, weapon.Damage * p.DamageScale, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying,
-                        info.As(HitKind.Splash), weapon.SplashEdge, weapon.EdgeShare);
+                        info.As(HitKind.Splash), weapon.SplashEdge);
                 else
                     Splash(at, weapon.SplashRadius * (0.85f + 0.3f * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,
                         weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying, info.As(HitKind.Splash));
@@ -189,6 +192,8 @@ namespace MachineBrigade.Sim.Combat
             float armour;
             var face = ArmorFace.Front;
             // Combat final 04/10: the weapon's topAttack flag picks the top attack table (never on an aircraft).
+            // Overpenetration 04/10: a direct Kinetic round (its own hit or a slug going on through; not a top attack, not a
+            // blast, not a weapon-less hit) also reads the overpenetration row by penetration - armour, after the table.
             var topAttack = weapon is { TopAttack: true } && kind != TargetKind.Air;
             if (target is Vehicle v)
             {
@@ -202,7 +207,8 @@ namespace MachineBrigade.Sim.Combat
             var typeMult = weapon != null ? table.TypeOf(weapon, kind) : table.TypeOf(type, kind, hit.Thermo);
             // DECISIONS 20X: a direct-table round overmatches a face it meets side on, not the roof and not an aircraft;
             // a top attack reads its own table against the roof (DamageTable.ArmourMultiplier: one table, never both).
-            _lastPen = known ? table.ArmourMultiplier(pen, armour, kind, face == ArmorFace.Top, topAttack) : 1f;
+            var over = known && hit.Kind is HitKind.Direct or HitKind.Pierce && DamageTable.Overpenetrates(weapon) ? table.Overpenetration(pen, armour) : 1f;
+            _lastPen = known ? table.ArmourMultiplier(pen, armour, kind, face == ArmorFace.Top, topAttack) * over : 1f;
             // Prompt 26 A.5: a ground boss struck on its side or its rear (not on a part) takes half as much again.
             var flank = target is Vehicle flanked && flanked.Def.Boss && !flanked.Flying && (face == ArmorFace.Side || face == ArmorFace.Rear) ? BossFlankBonus : 1f;
             return _lastPen * typeMult * flank;
@@ -210,7 +216,8 @@ namespace MachineBrigade.Sim.Combat
 
         /// <summary>
         /// What one of a weapon's rounds is expected to do, as a multiplier, to a target from <paramref name="from"/>
-        /// (targeting and the overkill check): penetration against the face it would strike, times the damage type.
+        /// (targeting and the overkill check): penetration against the face it would strike, a direct Kinetic round's
+        /// overpenetration (04/10), times the damage type.
         /// </summary>
         internal float Estimate(WeaponDef weapon, Vehicle shooter, IDamageable target)
         {
@@ -220,8 +227,9 @@ namespace MachineBrigade.Sim.Combat
                 : ArmorFace.Front;
             var topAttack = weapon.TopAttack && target.Kind != TargetKind.Air && (target is not Vehicle || face == ArmorFace.Top);
             var armour = target is Vehicle tv ? tv.ArmourOn(face) : target.Armour[topAttack ? ArmorFace.Top : ArmorFace.Front];
-            return table.ArmourMultiplier(weapon.Penetration + shooter.PenetrationUp, armour, target.Kind, face == ArmorFace.Top, topAttack) *
-                   table.TypeOf(weapon, target.Kind);
+            var pen = weapon.Penetration + shooter.PenetrationUp;
+            var over = DamageTable.Overpenetrates(weapon) ? table.Overpenetration(pen, armour) : 1f;
+            return table.ArmourMultiplier(pen, armour, target.Kind, face == ArmorFace.Top, topAttack) * over * table.TypeOf(weapon, target.Kind);
         }
 
         /// <summary>Whether a hit is thermobaric (its weapon, or a thermobaric strike).</summary>
@@ -439,13 +447,15 @@ namespace MachineBrigade.Sim.Combat
         }
 
         /// <summary>
-        /// Area damage with linear falloff. Weapon splash spares the shooter's team; blasts
-        /// from <see cref="Teams.Environment"/> (cook-offs, fuel) hurt everyone.
+        /// Area damage, falling off by the damage table's splash row (splash 04/10: 110 / 108 / 105 / 100 % in the core, 85 / 65
+        /// / 45 / 25 % on the way to the edge, 0 beyond). Weapon splash spares the shooter's team; blasts from
+        /// <see cref="Teams.Environment"/> (cook-offs, fuel) hurt everyone. <paramref name="edgeShare"/> is no longer read (the
+        /// row replaced prompt 26's flat edge share); it stays for the callers' signatures.
         /// </summary>
         public void Splash(Vector2 at, float radius, float damage, DamageType type, int sourceTeam, EntityId exclude,
             EntityId attacker = default, bool airborne = false, in HitInfo info = default, float edgeRadius = 0f, float edgeShare = 0.4f)
         {
-            // Prompt 26 B.3: a two-layer blast: full damage within the core (radius), edgeShare of it out to edgeRadius.
+            // Prompt 26 B.3: a two-layer blast: the core (radius) and the edge out to edgeRadius.
             var reach = edgeRadius > radius ? edgeRadius : radius;
             foreach (var v in _world.VehicleList)
             {
@@ -453,13 +463,13 @@ namespace MachineBrigade.Sim.Combat
                 if (!v.IsAlive || v.Id == exclude || v.Flying != airborne) continue;
                 if (sourceTeam != Teams.Environment && v.Team == sourceTeam) continue;
                 if (Reaches(v, at, reach)) Blame(v, attacker, sourceTeam);
-                ApplyFalloff(v, at, radius, damage, type, info.At(at), edgeRadius, edgeShare);
+                ApplyFalloff(v, at, radius, damage, type, info.At(at), edgeRadius);
             }
             if (airborne) return;
             foreach (var prop in _world.PropList)
             {
                 if (!prop.IsAlive || prop.Id == exclude) continue;
-                ApplyFalloff(prop, at, radius, damage, type, info.At(at), edgeRadius, edgeShare);
+                ApplyFalloff(prop, at, radius, damage, type, info.At(at), edgeRadius);
             }
         }
 
@@ -668,7 +678,7 @@ namespace MachineBrigade.Sim.Combat
                 // cook-off, a fuel tank, equipment's) throws fragments at the face turned to it.
                 info = pending.Pen >= 0f ? info.WithPen(pending.Pen, pending.Top) : info.WithPen(Armour.FragmentPenetration, top: false);
                 Splash(pending.Position, pending.Explosion.Radius, pending.Explosion.Damage, DamageType.HighExplosive,
-                    pending.Team, EntityId.None, pending.Attacker?.Id ?? default, false, info, pending.Explosion.Edge, pending.Explosion.EdgeShare);
+                    pending.Team, EntityId.None, pending.Attacker?.Id ?? default, false, info, pending.Explosion.Edge);
             }
         }
 
@@ -679,22 +689,25 @@ namespace MachineBrigade.Sim.Combat
         private static bool Reaches(IDamageable target, Vector2 at, float radius) =>
             Vector2.Distance(target.Position, at) - target.Radius <= radius;
 
+        /// <summary>
+        /// Splash 04/10: one target's share of a blast, by the damage table's splash falloff row (<see cref="DamageTable.SplashFalloff"/>)
+        /// at its distance from the centre to its hull's edge. A two-layer blast (an edge wider than its core: bosses' weapons,
+        /// the missiles with an edge, equipment's and big blasts): the core is <paramref name="radius"/>, the edge
+        /// <paramref name="edgeRadius"/>. A one-layer blast (the engine's convention: one radius over which the damage fell off to
+        /// its rim): no core, that radius is the edge, so 110 % at r = 0, then 85 / 65 / 45 / 25 % to the rim (the old rim's 25 %);
+        /// no radius is made up. A one-layer thermobaric blast's pressure still falls off half as much (prompt 15 C.3): every
+        /// band under 100 % comes half as far down (92.5 / 82.5 / 72.5 / 62.5 %, the old 62.5 % rim). The multiplier is the
+        /// blast's only: the struck target's direct hit is dealt apart and the target is left out of its own round's blast.
+        /// </summary>
         private void ApplyFalloff(IDamageable target, Vector2 at, float radius, float damage, DamageType type, in HitInfo info,
-            float edgeRadius = 0f, float edgeShare = 0.4f)
+            float edgeRadius = 0f)
         {
             var edgeDistance = MathF.Max(0f, Vector2.Distance(target.Position, at) - target.Radius);
-            // Prompt 26 B.3: two flat layers, no falloff inside either: the core at full damage, the edge at its share.
-            if (edgeRadius > radius)
-            {
-                if (edgeDistance > edgeRadius) return;
-                Apply(target, edgeDistance <= radius ? damage : damage * edgeShare, type, info);
-                return;
-            }
-            if (edgeDistance > radius) return;
-            // Prompt 15 C.3: a thermobaric blast's pressure falls off half as much.
-            var edge = Thermobaric(info) ? (1f + EdgeFalloff) * 0.5f : EdgeFalloff;
-            var scale = 1f - (1f - edge) * SimMath.Clamp01(edgeDistance / radius);
-            Apply(target, damage * scale, type, info);
+            var twoLayer = edgeRadius > radius;
+            var share = _world.Catalog.Damage.SplashFalloff(edgeDistance, twoLayer ? radius : 0f, twoLayer ? edgeRadius : radius);
+            if (!(share > 0f)) return;
+            if (!twoLayer && share < 1f && Thermobaric(info)) share = 1f - (1f - share) * 0.5f;
+            Apply(target, damage * share, type, info);
         }
 
         /// <summary>

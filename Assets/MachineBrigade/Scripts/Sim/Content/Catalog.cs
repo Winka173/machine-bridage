@@ -289,10 +289,12 @@ namespace MachineBrigade.Sim.Content
                     var structure = v.Bool("structure", def.Static && !def.Boss ? true : v.Has("armor") && v.Enum<ArmorClass>("armor") == ArmorClass.Structure);
                     if (v.Has("armour")) def.SetArmour(Levels(v, "armour", def.Flying || structure), structure);
                     else def.SetArmour(structure ? ArmourLevels.Uniform(2) : def.Armour, structure);
-                    // Play-test 6 (DECISIONS 21G): level 5 is a boss's plate only.
+                    // Play-test 6 (DECISIONS 21G): level 5 is a boss's plate; Armour/Pen 5 (04/10): also a vehicle's front (the
+                    // super-heavies), never a tower's or a building's, never a vehicle's side, rear or roof.
                     var plate = def.Armour;
-                    if (!def.Boss && Math.Max(Math.Max(plate.Front, plate.Side), Math.Max(plate.Rear, plate.Top)) > ArmourLevels.MaxUnit)
-                        throw new FormatException($"{v.Path}.armour: level 5 is for bosses (a vehicle or tower 0 to {ArmourLevels.MaxUnit}).");
+                    if (!def.Boss && (plate.Front > ArmourLevels.CapFor(false, structure, ArmorFace.Front) ||
+                                      Math.Max(plate.Side, Math.Max(plate.Rear, plate.Top)) > ArmourLevels.MaxUnit))
+                        throw new FormatException($"{v.Path}.armour: level 5 is for bosses and a vehicle's front (a tower 0 to {ArmourLevels.MaxUnit}, a vehicle's other faces too).");
                     def.Card = v.Bool("card", true);
                     def.Elite = v.Bool("elite", false);
                     def.EliteOf = v.Has("eliteOf") ? v.String("eliteOf") : null;
@@ -674,7 +676,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>
         /// Prompt 15, combat final 04/10: the damage-type table (a row per type: Ground, Air, Structure), the direct
         /// penetration row ("penetration": +2, +1, 0, -1, -2, -3, -4), the top attack row ("topAttack", the same steps against
-        /// the roof) and the thermobaric tag's structure multiplier (it replaces high explosive's structure value).
+        /// the roof) and the thermobaric tag's structure multiplier (it replaces high explosive's structure value); splash /
+        /// overpenetration 04/10: the splash falloff row ("splashFalloff", 9 steps) and the kinetic overpenetration row
+        /// ("overpenetration", 4 steps).
         /// </summary>
         private static DamageTable ParseDamageTable(JsonObject table)
         {
@@ -686,7 +690,8 @@ namespace MachineBrigade.Sim.Content
                 var row = table.Object(d.ToString());
                 foreach (var k in kinds) values[(int)d, (int)k] = row.Float(k.ToString());
             }
-            return Wrap(table, () => new DamageTable(values, Row(table, "penetration"), table.Float("thermobaric", 2f), Row(table, "topAttack")));
+            return Wrap(table, () => new DamageTable(values, Row(table, "penetration"), table.Float("thermobaric", 2f), Row(table, "topAttack"),
+                Row(table, "splashFalloff"), Row(table, "overpenetration")));
         }
 
         /// <summary>Combat final 04/10: an armour row of the damage table (null when absent: the code's default row).</summary>

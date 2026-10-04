@@ -133,6 +133,7 @@ class Model:
         self.table = t
         self.pen_steps = t["penetration"]
         self.top_steps = t.get("topAttack") or self.pen_steps   # combat final 04/10: the top attack table
+        self.over_steps = t.get("overpenetration") or [1.0, 0.95, 0.85, 0.75]   # overpenetration 04/10 (DamageTable.Overpenetration)
         self.thermo = t.get("thermobaric", 2.0)
         self.tough = self.d["toughness"]["vehicles"]
         self.cards = [v for v in self.V.values() if self.is_card_vehicle(v)]
@@ -161,13 +162,26 @@ class Model:
 
     def armour_mult(self, w, armour, kind, roof=False):
         """DamageTable.ArmourMultiplier: aircraft direct (no overmatch); topAttack the top attack row; else direct
-        (no overmatch on the roof)."""
+        (no overmatch on the roof); x the overpenetration row of a Kinetic weapon that is no top attack (04/10)."""
         p, top = float(w.get("pen", 0)), bool(w.get("topAttack"))
         if kind == "Air":
-            return self.pen(p, armour, overmatch=False)
-        if top:
+            m = self.pen(p, armour, overmatch=False)
+        elif top:
             return self.pen(p, armour, steps=self.top_steps)
-        return self.pen(p, armour, overmatch=not roof)
+        else:
+            m = self.pen(p, armour, overmatch=not roof)
+        return m * self.over(p, armour) if w.get("damageType") == "Kinetic" else m
+
+    def over(self, pen, armour):
+        """DamageTable.Overpenetration: +2 or less, +3, +4, +5 or more; a part level between its neighbours."""
+        s = self.over_steps
+        x = pen - armour - 2.0
+        if x <= 0:
+            return s[0]
+        if x >= len(s) - 1:
+            return s[-1]
+        lo = int(math.floor(x))
+        return s[lo] + (s[min(len(s) - 1, lo + 1)] - s[lo]) * (x - lo)
 
     def mult(self, w, armour, kind, armor_class=None):
         m = self.armour_mult(w, armour, kind) * self.type_of(w, kind)

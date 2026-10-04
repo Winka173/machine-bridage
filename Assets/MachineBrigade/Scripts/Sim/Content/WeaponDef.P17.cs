@@ -31,9 +31,9 @@ namespace MachineBrigade.Sim.Content
     public sealed partial class WeaponDef
     {
         /// <summary>
-        /// Prompt 26 B.3: a boss weapon's two-layer blast. <see cref="WeaponDef.SplashRadius"/> is the core (full damage);
-        /// this is the edge's outer radius (twice the core, at most <see cref="MaxEdge"/> m), where <see cref="EdgeShare"/>
-        /// of the damage lands. 0: the ordinary blast, falling off linearly across its one radius.
+        /// Prompt 26 B.3: a two-layer blast. <see cref="WeaponDef.SplashRadius"/> is the core; this is the edge's outer radius
+        /// (a boss's default twice the core, at most <see cref="MaxEdge"/> m). 0: a one-radius blast. Splash 04/10: both fall off
+        /// by the damage table's splash row (DamageTable.SplashFalloff; a one-radius blast has no core, its radius is the edge).
         /// </summary>
         public float SplashEdge { get; internal set; }
 
@@ -51,7 +51,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 26 B.7: a piercing slug goes through at most this many vehicles on its line (data "pierceMax"; 0: all of them).</summary>
         public int PierceMax { get; internal set; }
 
-        /// <summary>Prompt 26 B.3: the share of the damage the edge layer takes (data "edgeShare", 0.4).</summary>
+        /// <summary>Prompt 26 B.3: the share of the damage the edge layer took (data "edgeShare", 0.4); splash 04/10: no longer read by the damage, which falls off by the damage table's splash row.</summary>
         public float EdgeShare { get; internal set; } = 0.4f;
 
         /// <summary>Prompt 26 B.3: the edge reaches at most this far, whatever the core.</summary>

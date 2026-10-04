@@ -2,7 +2,7 @@
 
 Boss, bộ phận, siêu vũ khí, hộ tống, pha, Săn trùm.
 
-Gói cân bằng Machine Brigade, commit 3dca5d6c, ngày 2026-10-04. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 13abf306, ngày 2026-10-04. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng hợp boss
 
@@ -12,7 +12,7 @@ Bảng đầy đủ: xem sheet `Boss_dps` (33 dòng), `Boss_hieu_qua` (165 dòng
 
 ## Boss: vụ nổ hai lớp, pha, giáp và cỡ
 
-**Lõi** (bán kính nổ của vũ khí) nhận đủ sát thương; **rìa** (gấp đôi lõi, tối đa 20 m) nhận 40% sát thương. Vũ khí không có rìa nổ một lớp, giảm dần theo khoảng cách. Máu, vũ khí và cỡ của boss được làm lại theo chương (mục tiêu hạ boss chủ lực từ 2,5 phút ở chương 1 tới 4 phút ở chương 12, mini boss 60 đến 90 giây); Ixion và Gungnir được làm lại; mỗi boss có mốc thời đại ở dòng Tham khảo của thẻ. Pha: hệ số nhân vào từ mốc máu đó trở đi.
+Từ 04/10 sát thương nổ giảm theo bảng giảm nổ lan (01/Bang_no_lan): trong lõi 110% ở tâm, 108 / 105 / 100% theo quãng lõi; từ lõi ra rìa 85 / 65 / 45 / 25% theo từng phần tư; ngoài rìa 0. Vũ khí không có rìa nổ một bán kính: không lõi, bán kính đó là rìa. Máu, vũ khí và cỡ của boss được làm lại theo chương (mục tiêu hạ boss chủ lực từ 2,5 phút ở chương 1 tới 4 phút ở chương 12, mini boss 60 đến 90 giây); Ixion và Gungnir được làm lại; mỗi boss có mốc thời đại ở dòng Tham khảo của thẻ. Pha: hệ số nhân vào từ mốc máu đó trở đi.
 
 ### Pha, giáp và cỡ model (31 boss)
 

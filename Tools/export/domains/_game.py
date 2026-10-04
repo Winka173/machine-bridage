@@ -132,6 +132,8 @@ def sustained(w, carrier: dict | None = None, ground: bool = True) -> float:
 # ---------------------------------------------------------------------------------------------------------- damage table
 DIRECT_ROW = [1.2, 1.0, 0.85, 0.65, 0.4, 0.15, 0.08]   # SimTunables DamageTable.DefaultPenetration (combat final 04/10)
 TOP_ROW = [1.15, 1.1, 0.95, 0.75, 0.5, 0.25, 0.12]     # SimTunables DamageTable.DefaultTopAttack (combat final 04/10)
+SPLASH_ROW = [1.10, 1.08, 1.05, 1.00, 0.85, 0.65, 0.45, 0.25, 0.0]   # DamageTable.DefaultSplash (splash 04/10)
+OVER_ROW = [1.00, 0.95, 0.85, 0.75]                                  # DamageTable.DefaultOver (overpenetration 04/10)
 STEPS = 7
 
 
@@ -200,9 +202,70 @@ def type_of(table: dict, w: dict, kind: str) -> float:
     return float((table.get(dt) or {}).get(kind, 0.0))
 
 
+def splash_row(table: dict) -> list[float]:
+    """DamageTable.cs: the splash falloff row (damageTable.splashFalloff), 9 steps: centre, core 0-25 / 25-50 / 50-100 %,
+    edge 0-25 / 25-50 / 50-75 / 75-100 %, outside."""
+    return [float(x) for x in (table.get("splashFalloff") or SPLASH_ROW)]
+
+
+def over_row(table: dict) -> list[float]:
+    """DamageTable.cs: the kinetic overpenetration row (damageTable.overpenetration): +2 or less, +3, +4, +5 or more."""
+    return [float(x) for x in (table.get("overpenetration") or OVER_ROW)]
+
+
+def splash_step_at(distance: float, core: float, edge: float) -> int:
+    """DamageTable.cs SplashStepAt: r = 0 the centre; coreProgress r / core up to 0.25, 0.50, 1.00 (inclusive); then
+    edgeProgress (r - core) / (edge - core) up to 0.25, 0.50, 0.75, under 1.00; else outside. No division by zero."""
+    if distance != distance:
+        return 8
+    distance = max(0.0, distance)
+    core = core if core > 0 else 0.0
+    edge = edge if edge > 0 else 0.0
+    if not max(core, edge) > 0:
+        return 8
+    if distance == 0:
+        return 0
+    if distance <= core:
+        p = distance / core
+        return 1 if p <= 0.25 else 2 if p <= 0.5 else 3
+    if edge > core and distance < edge:
+        p = (distance - core) / (edge - core)
+        return 4 if p <= 0.25 else 5 if p <= 0.5 else 6 if p <= 0.75 else 7
+    return 8
+
+
+def splash_falloff(table: dict, distance: float, core: float, edge: float) -> float:
+    """DamageTable.cs SplashFalloff (a blast's damage only, never a direct hit's)."""
+    return splash_row(table)[splash_step_at(distance, core, edge)]
+
+
+def overpenetrates(w: dict) -> bool:
+    """DamageTable.cs Overpenetrates: a Kinetic weapon that is not a top attack."""
+    return w.get("damageType") == "Kinetic" and not w.get("topAttack")
+
+
+def overpenetration(table: dict, p: float, armour: float) -> float:
+    """DamageTable.cs Overpenetration: by penetration - armour, +2 or less / +3 / +4 / +5 or more; a part level between."""
+    row = over_row(table)
+    diff = p - armour
+    if diff != diff or diff <= 2:
+        return row[0]
+    if diff >= 2 + len(row) - 1:
+        return row[-1]
+    x = diff - 2
+    lo = int(math.floor(x))
+    return row[lo] + (row[min(len(row) - 1, lo + 1)] - row[lo]) * (x - lo)
+
+
+def over_mult(table: dict, w: dict, p: float, armour: float) -> float:
+    """The overpenetration factor of a weapon's direct hit (1 unless overpenetrates)."""
+    return overpenetration(table, p, armour) if overpenetrates(w) else 1.0
+
+
 def effective(table: dict, w: dict, armour: float, kind: str, from_above: bool = False) -> float:
-    """DamageTable.cs Effective(weapon, armour, kind, fromAbove): the armour multiplier (one table) x the damage type."""
-    return weapon_armour_mult(table, w, armour, kind, from_above) * type_of(table, w, kind)
+    """DamageTable.cs Effective(weapon, armour, kind, fromAbove): the armour multiplier (one table) x a direct Kinetic
+    round's overpenetration (04/10) x the damage type."""
+    return weapon_armour_mult(table, w, armour, kind, from_above) * over_mult(table, w, pen(w), armour) * type_of(table, w, kind)
 
 
 # ---------------------------------------------------------------------------------------------------------- warnings

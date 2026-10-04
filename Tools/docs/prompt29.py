@@ -51,5 +51,5 @@ def round2(game, h):
             + table(['Thực thể', 'Khả năng', 'Chế độ', 'Lần / hồi / bán kính'], aps, 'dps')
             + "<h3>Gungnir</h3><p>Boss chủ lực chương 11: máu " + f"{round(g.get('hp', 0) * tough['bosses']):,}".replace(',', '.')
             + f"; siêu vũ khí mỗi {bomb.get('every', '?')} s, nhắm toàn bản đồ, cảnh báo {bomb.get('warn', 3)} s có đường ngắm; "
-              f"xuyên tối đa {bomb.get('pierceMax', 5)} xe × " + f"{bomb.get('pierceDamage', 1000):,}".replace(',', '.') + " rồi nổ 2.000 ở xe cuối (lõi 12 m, rìa 20 m còn 40%); "
+              f"xuyên tối đa {bomb.get('pierceMax', 5)} xe × " + f"{bomb.get('pierceDamage', 1000):,}".replace(',', '.') + " rồi nổ 2.000 ở xe cuối (lõi 12 m, rìa 20 m, giảm dần theo bảng giảm nổ lan); "
               "không bắn máy bay, không chặn được, pháo sáng và APS không có tác dụng.</p></div>")

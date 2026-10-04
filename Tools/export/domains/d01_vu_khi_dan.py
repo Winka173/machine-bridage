@@ -75,6 +75,9 @@ TRACKED = ["sat_thuong_moi_phat", "thoi_gian_nap_s", "tam_m", "loi_m", "ria_m", 
 OWNERS = ["02_phuong_tien/Xe", "03_boss/Boss", "04_can_cu_thap/Thap", "04_can_cu_thap/Tuong", "04_can_cu_thap/Nha_chinh",
           "04_can_cu_thap/Mo_dun_tien_ich"]
 PEN_STEPS = ["+2", "+1", "0", "-1", "-2", "-3", "-4"]
+OVER_STEPS = ["<=+2", "+3", "+4", ">=+5"]   # damageTable.overpenetration (04/10)
+SPLASH_ZONES = ["r = 0 (tâm)", "lõi 0-25%", "lõi 25-50%", "lõi 50-100%", "lõi -> rìa 0-25%", "lõi -> rìa 25-50%",
+                "lõi -> rìa 50-75%", "lõi -> rìa 75-100%", "r >= rìa"]   # damageTable.splashFalloff (04/10)
 MUNITIONS = ["directMissile", "drone", "directRocket", "artilleryRocket", "mortarShell", "artilleryShell", "tankShell",
              "bullet", "energy"]
 VEHICLE_KEYS = ("aps", "apsCapability", "interceptionMode", "flares", "flareCharges", "flareRecharge")
@@ -517,6 +520,27 @@ def build(ctx):
         r = bn.row(f"buoc_{i}", B.nguon(("damageTable", "topAttack", i)), raw=v)
         r.set("chenh_xuyen_giap", PEN_STEPS[i] if i < len(PEN_STEPS) else "")
         r.set("he_so", v, B.BALANCE, ("damageTable", "topAttack", i))
+
+    # Splash / overpenetration 04/10 (DamageTable.cs SplashFalloff, Overpenetration): two more rows, neither replacing a table above.
+    bo = book.sheet("Bang_xuyen_qua", "Bảng xuyên quá (động năng)", "damageTable.overpenetration: đạn động năng bắn thẳng (không "
+                    "đánh nóc, không phải nổ lan, không bom; mọi loại khác không dùng) theo xuyên - giáp mặt trúng; nhân SAU bảng "
+                    "xuyên giáp (DamageTable.cs Overpenetration), không thay nó")
+    bo.col("chenh_xuyen_giap", meaning="mức xuyên trừ mức giáp mặt trúng (<=+2, +3, +4, >=+5); mức lẻ (trang bị) nằm giữa hai bước")
+    bo.col("he_so", meaning="hệ số xuyên quá (nhân sau hệ số bảng xuyên giáp)")
+    for i, v in enumerate(dt.get("overpenetration", [])):
+        r = bo.row(f"buoc_{i}", B.nguon(("damageTable", "overpenetration", i)), raw=v)
+        r.set("chenh_xuyen_giap", OVER_STEPS[i] if i < len(OVER_STEPS) else "")
+        r.set("he_so", v, B.BALANCE, ("damageTable", "overpenetration", i))
+    bl = book.sheet("Bang_no_lan", "Bảng giảm nổ lan (splash falloff)", "damageTable.splashFalloff: phần sát thương nổ theo khoảng "
+                    "cách tới tâm (tới mép thân mục tiêu): trong lõi coreProgress = r / lõi, ngoài lõi edgeProgress = (r - lõi) / "
+                    "(rìa - lõi); chỉ nhân phần nổ, không nhân phát trúng thẳng (mục tiêu trúng thẳng không dính nổ của chính "
+                    "viên đó); vũ khí một bán kính: không lõi, bán kính đó là rìa (DamageTable.cs SplashFalloff, DamageSystem.ApplyFalloff)")
+    bl.col("vung", meaning="vùng theo khoảng cách (biên trên tính vào vùng; r >= rìa: 0)")
+    bl.col("he_so", meaning="hệ số sát thương nổ ở vùng đó")
+    for i, v in enumerate(dt.get("splashFalloff", [])):
+        r = bl.row(f"buoc_{i}", B.nguon(("damageTable", "splashFalloff", i)), raw=v)
+        r.set("vung", SPLASH_ZONES[i] if i < len(SPLASH_ZONES) else "")
+        r.set("he_so", v, B.BALANCE, ("damageTable", "splashFalloff", i))
 
     # ------------------------------------------------------------------ He_so_toan_cuc (firepower, thermobaric)
     hs = book.kv_sheet("He_so_toan_cuc", "Hệ số toàn cục", "firepower.* và damageTable.thermobaric: hệ số nhân chung")

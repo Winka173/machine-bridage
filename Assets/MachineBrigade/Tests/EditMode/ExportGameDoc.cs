@@ -220,6 +220,9 @@ namespace MachineBrigade.Tests
             table["penetration"] = Enumerable.Range(0, MachineBrigade.Sim.Content.DamageTable.PenetrationSteps).Select(i => (object)catalog.Damage.PenetrationStep(i)).ToList();
             // Combat final 04/10: the separate top attack row (the same seven steps against the roof).
             table["topAttack"] = Enumerable.Range(0, MachineBrigade.Sim.Content.DamageTable.PenetrationSteps).Select(i => (object)catalog.Damage.TopAttackStep(i)).ToList();
+            // Splash / overpenetration 04/10: the two rows build_doc.py prints in section 10.
+            table["splashFalloff"] = Enumerable.Range(0, MachineBrigade.Sim.Content.DamageTable.SplashSteps).Select(i => (object)catalog.Damage.SplashStep(i)).ToList();
+            table["overpenetration"] = Enumerable.Range(0, MachineBrigade.Sim.Content.DamageTable.OverpenetrationSteps).Select(i => (object)catalog.Damage.OverpenetrationStep(i)).ToList();
             table["thermobaric"] = catalog.Damage.ThermobaricStructure;
             return table;
         }
@@ -235,7 +238,9 @@ namespace MachineBrigade.Tests
             foreach (var v in catalog.Vehicles.Values)
             {
                 foreach (var level in new[] { v.Armour.Front, v.Armour.Side, v.Armour.Rear, v.Armour.Top })
-                    Assert.That(level, Is.InRange(0, v.Boss ? ArmourLevels.Max : ArmourLevels.MaxUnit), v.Id + ": an armour level 0-4 on every face (a boss's to 5)");
+                    Assert.That(level, Is.InRange(0, ArmourLevels.Max), v.Id + ": an armour level 0-5 on every face");
+                foreach (ArmorFace face in System.Enum.GetValues(typeof(ArmorFace)))
+                    Assert.That(v.Armour[face], Is.InRange(0, ArmourLevels.CapFor(v.Boss, v.Armor == ArmorClass.Structure, face)), v.Id + " " + face + ": 5 only on a boss or a vehicle's front (Armour/Pen 5, 04/10)");
                 foreach (var p in v.Parts)
                     Assert.That(p.ArmourOn(v), Is.InRange(0, ArmourLevels.Max), v.Id + " " + p.Id + ": the part's armour level");
                 foreach (var m in v.Mounts)

@@ -77,9 +77,9 @@ namespace MachineBrigade.Game.Hud
 
         // ---------------------------------------------------------------- words
 
-        private static int Clamp(int level) => level < 0 ? 0 : level > 4 ? 4 : level;
+        private static int Clamp(int level) => level < 0 ? 0 : level > MachineBrigade.Sim.Content.ArmourLevels.Max ? MachineBrigade.Sim.Content.ArmourLevels.Max : level;
 
-        /// <summary>Armour goes to 5 (a boss's plate, DECISIONS 21G); penetration stays 0-4.</summary>
+        /// <summary>Armour goes to 5 (a boss's plate, DECISIONS 21G; a super-heavy's front since 04/10); penetration too (Armour/Pen 5, 04/10).</summary>
         private static int ClampArmour(int level) => level < 0 ? 0 : level > MachineBrigade.Sim.Content.ArmourLevels.Max ? MachineBrigade.Sim.Content.ArmourLevels.Max : level;
 
         private static bool Numbers => MatchSettings.ShowCombatNumbers;

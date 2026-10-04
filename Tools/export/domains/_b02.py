@@ -38,7 +38,7 @@ S_COLS = [("chu_ky_day_du_s", "chu_ky_day_du_s", "s", "chu kỳ đầy đủ"),
           ("nap_lai_kho_hieu_dung_s", "nap_lai_kho_hieu_dung_s", "s", "nạp lại kho dùng thật"),
           ("danh_tu_tren", "danh_tu_tren", "", "đánh từ trên"), ("ban_mat_dat", "ban_mat_dat", "", "nhắm mặt đất"),
           ("ban_may_bay", "ban_may_bay", "", "nhắm máy bay"), ("he_so_mat_dat", "he_so_mat_dat", "", "hệ số lên mặt đất"),
-          ("he_so_may_bay", "he_so_may_bay", "", "hệ số lên máy bay")]
+          ("he_so_may_bay", "he_so_may_bay", "", "hệ số lên máy bay"), ("xuyen_qua", "xuyen_qua", "", "đạn động năng bắn thẳng không đánh nóc: bảng xuyên quá")]
 
 
 def inputs(ctx, book, wids):
@@ -56,13 +56,17 @@ def inputs(ctx, book, wids):
     LB.input_sheet(ctx, book, "input_bang_danh_noc", "Input: bảng đánh nóc (từ 01)", W01, "Bang_danh_noc",
                    [("he_so", "he_so", "", "hệ số đánh nóc của bước")],
                    {rid: {"he_so": r.values.get("he_so")} for rid, r in bn.rows.items()})
+    bo = ctx.books[W01].sheets["Bang_xuyen_qua"]
+    LB.input_sheet(ctx, book, "input_bang_xuyen_qua", "Input: bảng xuyên quá (từ 01)", W01, "Bang_xuyen_qua",
+                   [("he_so", "he_so", "", "hệ số xuyên quá của bước")], {rid: {"he_so": r.values.get("he_so")} for rid, r in bo.rows.items()})
 
 
-def pen_idx(pen_expr: str, top_expr: str | None, armour, ta_expr: str | None = None) -> str:
+def pen_idx(pen_expr: str, top_expr: str | None, armour, ta_expr: str | None = None, xq_expr: str | None = None) -> str:
     """DamageTable.ArmourMultiplier for whole levels (top_expr None: an aircraft, the direct table with no overmatch;
-    ta_expr: a topAttack weapon reads the top attack table)."""
+    ta_expr: a topAttack weapon reads the top attack table), x the overpenetration row when xq_expr (04/10)."""
     return LB.armour_index(R('input_bang_xuyen_giap', 'he_so', '*'), R('input_bang_danh_noc', 'he_so', '*'), pen_expr, armour,
-                           roof_expr=top_expr, top_expr=ta_expr, air=top_expr is None)
+                           roof_expr=top_expr, top_expr=ta_expr, air=top_expr is None,
+                           over=R('input_bang_xuyen_qua', 'he_so', '*') if xq_expr else None, over_expr=xq_expr)
 
 
 def build(ctx, book, d, res):
@@ -163,12 +167,13 @@ def build(ctx, book, d, res):
     kk = R("Xe", "vu_khi_chinh")
     pe, top = lookup("input_vu_khi", "xuyen", kk), lookup("input_vu_khi_suy_ra", "danh_tu_tren", kk)
     tak = lookup("input_vu_khi", "danh_noc", kk)
+    xq = lookup("input_vu_khi_suy_ra", "xuyen_qua", kk)
     tg, ta = lookup("input_vu_khi_suy_ra", "he_so_mat_dat", kk), lookup("input_vu_khi_suy_ra", "he_so_may_bay", kk)
     cg, ca = lookup("input_vu_khi_suy_ra", "ban_mat_dat", kk), lookup("input_vu_khi_suy_ra", "ban_may_bay", kk)
     dps_ref = R("Xe_suy_ra", "dps_vu_khi_chinh")
-    T2["dps_nhe"] = f"=IF({cg},{dps_ref}*{pen_idx(pe, top, LIGHT, tak)}*{tg},0)"
-    T2["dps_nang"] = f"=IF({cg},{dps_ref}*{pen_idx(pe, top, HEAVY, tak)}*{tg},0)"
-    T2["dps_may_bay"] = f"=IF({ca},{R('Xe_suy_ra', 'dps_vu_khi_chinh_may_bay')}*{pen_idx(pe, None, 0)}*{ta},0)"
+    T2["dps_nhe"] = f"=IF({cg},{dps_ref}*{pen_idx(pe, top, LIGHT, tak, xq)}*{tg},0)"
+    T2["dps_nang"] = f"=IF({cg},{dps_ref}*{pen_idx(pe, top, HEAVY, tak, xq)}*{tg},0)"
+    T2["dps_may_bay"] = f"=IF({ca},{R('Xe_suy_ra', 'dps_vu_khi_chinh_may_bay')}*{pen_idx(pe, None, 0, None, xq)}*{ta},0)"
     units = {"cp": "CP", "mau_hp": "hp", "dps_nhe": "hp/s", "dps_nang": "hp/s", "dps_may_bay": "hp/s", "dps_max": "hp/s"}
     for c, t in T2.items():
         LB.declare(hd, c, t, "hồi quy (bộ xuất)", unit=units.get(c, "hp/CP" if c.startswith("mau_tren") else
@@ -181,9 +186,9 @@ def build(ctx, book, d, res):
         if cp <= 0 or v.get("class") in NOT_IN_FIT or r.values.get("loai_thuc_the") != "xe" or hp is None:
             continue
         p, t_, ta = G.pen(w), G.strikes_top(w), bool(w.get("topAttack"))
-        nhe = dps * G.armour_mult(table, p, LIGHT, "Ground", t_, ta) * G.type_of(table, w, "Ground") if G.can_target(w, False) else 0.0
-        nang = dps * G.armour_mult(table, p, HEAVY, "Ground", t_, ta) * G.type_of(table, w, "Ground") if G.can_target(w, False) else 0.0
-        bay = dps_air * G.armour_mult(table, p, 0, "Air", t_, ta) * G.type_of(table, w, "Air") if G.can_target(w, True) else 0.0
+        nhe = dps * G.armour_mult(table, p, LIGHT, "Ground", t_, ta) * G.over_mult(table, w, p, LIGHT) * G.type_of(table, w, "Ground") if G.can_target(w, False) else 0.0
+        nang = dps * G.armour_mult(table, p, HEAVY, "Ground", t_, ta) * G.over_mult(table, w, p, HEAVY) * G.type_of(table, w, "Ground") if G.can_target(w, False) else 0.0
+        bay = dps_air * G.armour_mult(table, p, 0, "Air", t_, ta) * G.over_mult(table, w, p, 0) * G.type_of(table, w, "Air") if G.can_target(w, True) else 0.0
         mx = max(nhe, nang, bay)
         band = "<=8" if cp <= 8 else "9-15" if cp <= 15 else ">=16"
         vals = {"cp": cp, "mau_hp": hp, "dps_nhe": nhe, "dps_nang": nang, "dps_may_bay": bay, "dps_max": mx,
@@ -247,7 +252,7 @@ def build(ctx, book, d, res):
     LB.declare(mb, "giap", f"={R('Xe', 'giap_truoc')}", "Xe.giap_truoc", game=False, meaning="giáp (mặt trước; máy bay đều)")
     for tag, wid, name in AA_REF:
         per_hit = (f"=IF({lookup('input_vu_khi_suy_ra', 'ban_may_bay', q(wid))},{lookup('input_vu_khi', 'sat_thuong_moi_phat', q(wid))}*"
-                   f"{pen_idx(lookup('input_vu_khi', 'xuyen', q(wid)), None, '{giap}')}*"
+                   f"{pen_idx(lookup('input_vu_khi', 'xuyen', q(wid)), None, '{giap}', None, lookup('input_vu_khi_suy_ra', 'xuyen_qua', q(wid)))}*"
                    f"{lookup('input_vu_khi_suy_ra', 'he_so_may_bay', q(wid))},0)")
         LB.declare(mb, f"sat_thuong_phat_{tag}", per_hit, f"{DT} Effective(w, armour, Air) x damage", unit="hp",
                    meaning=f"sát thương một phát {name} ({wid}) lên máy bay")

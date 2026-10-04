@@ -10,6 +10,16 @@ from core.formula import F
 
 
 def armour_index(direct: str, top: str, pen_expr: str, armour_expr: str, roof_expr: str | None = None,
+                 top_expr: str | None = None, air: bool = False, over: str | None = None, over_expr: str | None = None) -> str:
+    """armour_table (below) x, with over / over_expr (overpenetration 04/10), the overpenetration row of a direct Kinetic round
+    that is no top attack (over_expr true): INDEX(over, +2 or less 1, +3 2, +4 3, +5 or more 4); whole levels."""
+    base = armour_table(direct, top, pen_expr, armour_expr, roof_expr, top_expr, air)
+    if over is None or over_expr is None:
+        return base
+    return f"{base}*IF({over_expr},INDEX({over},MIN(4,MAX(1,({pen_expr})-({armour_expr})-1))),1)"
+
+
+def armour_table(direct: str, top: str, pen_expr: str, armour_expr: str, roof_expr: str | None = None,
                  top_expr: str | None = None, air: bool = False) -> str:
     """DamageTable.ArmourMultiplier as a formula (combat final 04/10), for whole levels: an aircraft reads the direct
     table with no overmatch; a top attack (top_expr) the top attack table against the roof; else the direct table, no

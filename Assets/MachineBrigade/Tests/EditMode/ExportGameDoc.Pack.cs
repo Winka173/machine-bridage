@@ -598,7 +598,8 @@ namespace MachineBrigade.Tests
         /// </summary>
         private static object PackStrikes(Catalog catalog)
         {
-            var rim = SimTunables.Weapons.DamageRules.EdgeFalloff;
+            // Splash 04/10: a one-radius blast has no core; its rim share is the splash row's last band before the edge (step 7, 0.25).
+            var rim = catalog.Damage.SplashStep(7);
             var supports = catalog.Supports.Values.OrderBy(s => s.Id, StringComparer.Ordinal).Select(s => (object)new Dictionary<string, object>
             {
                 ["id"] = s.Id, ["kind"] = s.Kind.ToString(), ["type"] = s.DamageType.ToString(), ["thermobaric"] = s.Thermobaric,

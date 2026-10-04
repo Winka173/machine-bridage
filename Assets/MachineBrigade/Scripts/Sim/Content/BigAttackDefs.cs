@@ -118,23 +118,26 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 26 B.3: the edge layer's outer radius (data "edge"); negative: twice <see cref="Radius"/> for a blast shape, at most 20 m. 0: no edge.</summary>
         public float Edge { get; internal set; } = -1f;
 
-        /// <summary>Prompt 26 B.3: the share of the damage the edge layer takes (data "edgeShare").</summary>
+        /// <summary>Prompt 26 B.3: the share of the damage the edge layer took (data "edgeShare"); splash 04/10: no longer read by the damage, which falls off by the damage table's splash row.</summary>
         public float EdgeShare { get; internal set; } = 0.4f;
 
         /// <summary>
-        /// Prompt 26 B.3: every blast of a boss has two layers: the core (<see cref="Radius"/>, full damage) and the edge, twice
-        /// as wide (at most 20 m) at <see cref="EdgeShare"/>. A rod, a sweep, a swing or a charge has no blast, so no edge.
+        /// Prompt 26 B.3: every blast of a boss has two layers: the core (<see cref="Radius"/>) and the edge, twice as wide (at
+        /// most 20 m); splash 04/10: both fall off by the damage table's splash row (110 / 108 / 105 / 100 % in the core, 85 / 65 /
+        /// 45 / 25 % to the edge). A rod, a sweep, a swing or a charge has no blast, so no edge.
         /// </summary>
         public float EdgeRadius
         {
             get
             {
                 if (Edge >= 0f) return MathF.Min(WeaponDef.MaxEdge, Edge) > Radius ? MathF.Min(WeaponDef.MaxEdge, Edge) : 0f;
-                var blast = Shape is BigShape.Circle or BigShape.Strip or BigShape.Line or BigShape.Missile or BigShape.Drop or BigShape.Swarm;
                 var edge = MathF.Min(WeaponDef.MaxEdge, Radius * 2f);
-                return blast && edge > Radius ? edge : 0f;
+                return IsBlast && edge > Radius ? edge : 0f;
             }
         }
+
+        /// <summary>Whether its shape is a blast (a circle, a strip, a line, a missile, a drop, a swarm); a rod, a sweep, a swing, a charge or a ring is not.</summary>
+        public bool IsBlast => Shape is BigShape.Circle or BigShape.Strip or BigShape.Line or BigShape.Missile or BigShape.Drop or BigShape.Swarm;
 
         /// <summary>A circle's rounds fall within this radius of the aim (0: on it).</summary>
         public float Area { get; internal set; }

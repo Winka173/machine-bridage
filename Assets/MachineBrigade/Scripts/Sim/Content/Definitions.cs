@@ -422,7 +422,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 26 B.3: the outer radius of a two-layer blast (<see cref="Radius"/> is its core); 0: one layer.</summary>
         public float Edge { get; set; }
 
-        /// <summary>Prompt 26 B.3: the share of the damage the edge layer takes.</summary>
+        /// <summary>Prompt 26 B.3: the share of the damage the edge layer took; splash 04/10: no longer read by the damage, which falls off by the damage table's splash row.</summary>
         public float EdgeShare { get; set; } = 0.4f;
 
         /// <summary>

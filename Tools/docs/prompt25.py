@@ -88,7 +88,7 @@ def f(x, n=1):
 # ---------------------------------------------------------------------------------------------------------------- E3
 
 GAP = 4.0          # metres between the cluster's five vehicles (prompt 25 F.3)
-EDGE = 0.25        # DamageSystem.EdgeFalloff: a blast's damage at its edge
+SPLASH_ROW = [1.10, 1.08, 1.05, 1.00, 0.85, 0.65, 0.45, 0.25, 0.0]   # damageTable.splashFalloff (DamageTable.SplashFalloff, 04/10)
 SPREAD = (0.85, 1.15)   # DamageSystem.ResolveImpact: a blast's reach varies by up to 15 %
 CLUSTER = [(0.0, 0.0), (GAP, 0.0), (-GAP, 0.0), (0.0, GAP), (0.0, -GAP)]   # a quincunx: the aim point's vehicle and four round it
 SIDE_LEVEL = 0     # the light class's side (ArmourLevels.Vehicle(1)): the face a neighbour turns to a blast beside it
@@ -110,16 +110,36 @@ def penetration(table, pen, armour, overmatch=True):
     return steps[low] + (steps[min(last, low + 1)] - steps[low]) * t
 
 
+def splash_share(distance, core, edge, row=None):
+    """DamageTable.SplashFalloff (splash 04/10): 110 / 108 / 105 / 100 % in the core by coreProgress, 85 / 65 / 45 / 25 % by
+    edgeProgress to the edge, 0 at the edge and beyond; no core: only r = 0 is the centre."""
+    row = row or balance().get('damageTable', {}).get('splashFalloff') or SPLASH_ROW
+    core, edge, distance = max(0.0, core), max(0.0, edge), max(0.0, distance)
+    if max(core, edge) <= 0:
+        return row[8]
+    if distance == 0:
+        return row[0]
+    if distance <= core:
+        p = distance / core
+        return row[1] if p <= 0.25 else row[2] if p <= 0.5 else row[3]
+    if edge > core and distance < edge:
+        p = (distance - core) / (edge - core)
+        return row[4] if p <= 0.25 else row[5] if p <= 0.5 else row[6] if p <= 0.75 else row[7]
+    return row[8]
+
+
 def falloff(distance, radius, thermobaric=False, spread=True):
-    """DamageSystem.ApplyFalloff at a vehicle's edge this far from the blast, over the blast's random reach."""
+    """DamageSystem.ApplyFalloff of a one-radius blast at a vehicle's edge this far from it, over the blast's random reach:
+    splash 04/10, no core and the radius as the edge (the splash row), a thermobaric blast's bands under 100 % half as far."""
     if radius <= 0:
         return 0.0
-    edge = (1 + EDGE) * 0.5 if thermobaric else EDGE
     reaches = [radius * (SPREAD[0] + (SPREAD[1] - SPREAD[0]) * k / 30) for k in range(31)] if spread else [radius]
     total = 0.0
     for r in reaches:
-        if distance <= r:
-            total += 1 - (1 - edge) * min(1.0, distance / r)
+        s = splash_share(distance, 0.0, r)
+        if thermobaric and 0 < s < 1:
+            s = 1 - (1 - s) * 0.5
+        total += s
     return total / len(reaches)
 
 

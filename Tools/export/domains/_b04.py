@@ -27,7 +27,7 @@ THREATS = ("kinetic", "he", "shaped", "artillery")
 V_COLS = [("sat_thuong_moi_phat", "sat_thuong_moi_phat", "hp", "sát thương mỗi phát"), ("xuyen", "xuyen", "", "mức xuyên"),
           ("danh_noc", "danh_noc", "", "đánh nóc (topAttack): bảng đánh nóc, giáp nóc")]
 S_COLS = [("danh_tu_tren", "danh_tu_tren", "", "đánh từ trên"), ("ban_mat_dat", "ban_mat_dat", "", "nhắm mặt đất"),
-          ("he_so_cong_trinh", "he_so_cong_trinh", "", "hệ số lên công trình")]
+          ("he_so_cong_trinh", "he_so_cong_trinh", "", "hệ số lên công trình"), ("xuyen_qua", "xuyen_qua", "", "đạn động năng bắn thẳng không đánh nóc: bảng xuyên quá")]
 
 
 def _p32(ctx):
@@ -64,6 +64,9 @@ def build(ctx, book, d, res):
     bn = ctx.books[W01].sheets["Bang_danh_noc"]
     LB.input_sheet(ctx, book, "input_bang_danh_noc", "Input: bảng đánh nóc (từ 01)", W01, "Bang_danh_noc",
                    [("he_so", "he_so", "", "hệ số đánh nóc của bước")], {rid: {"he_so": r.values.get("he_so")} for rid, r in bn.rows.items()})
+    bo = ctx.books[W01].sheets["Bang_xuyen_qua"]
+    LB.input_sheet(ctx, book, "input_bang_xuyen_qua", "Input: bảng xuyên quá (từ 01)", W01, "Bang_xuyen_qua",
+                   [("he_so", "he_so", "", "hệ số xuyên quá của bước")], {rid: {"he_so": r.values.get("he_so")} for rid, r in bo.rows.items()})
 
     # ------------------------------------------------------------------ Thap_gia_cong_thuc
     tg = book.sheet("Thap_gia_cong_thuc", "Tháp: công thức giá xây lại", "Từng bước giá xây lại (Tools/balance/p32_tower_prices.py): "
@@ -161,7 +164,8 @@ def build(ctx, book, d, res):
         idx = LB.armour_index(R('input_bang_xuyen_giap', 'he_so', '*'), R('input_bang_danh_noc', 'he_so', '*'),
                               lookup('input_vu_khi', 'xuyen', f'{{doa_{k}}}'),
                               f"IF({ta},{R('Thap', 'giap_noc')},{R('Thap', 'giap_truoc')})",
-                              roof_expr=lookup('input_vu_khi_suy_ra', 'danh_tu_tren', f'{{doa_{k}}}'), top_expr=ta)
+                              roof_expr=lookup('input_vu_khi_suy_ra', 'danh_tu_tren', f'{{doa_{k}}}'), top_expr=ta,
+                              over=R('input_bang_xuyen_qua', 'he_so', '*'), over_expr=lookup('input_vu_khi_suy_ra', 'xuyen_qua', f'{{doa_{k}}}'))
         hit = (f"{lookup('input_vu_khi', 'sat_thuong_moi_phat', f'{{doa_{k}}}')}*{idx}*"
                f"{lookup('input_vu_khi_suy_ra', 'he_so_cong_trinh', f'{{doa_{k}}}')}")
         LB.declare(td, f"so_phat_{k}", f"=IF({{doa_{k}}}={q('')},{q('')},IF({hit}>0,CEILING({R('Thap', 'mau_trong_tran_hp')}/({hit}),1),{q('')}))",
