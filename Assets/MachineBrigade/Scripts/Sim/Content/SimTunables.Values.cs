@@ -421,6 +421,8 @@ namespace MachineBrigade.Sim.Content
                 public static float WaveInterval = 30f;
                 /// <summary>modes.sandboxMode.reinforceCooldownSeconds (s; thoi_gian, was Sim/Modes/SandboxMode.cs:74).</summary>
                 public static float ReinforceCooldownSeconds = 12f;
+                /// <summary>modes.sandboxMode.survivalWaveInterval (s; thoi_gian; MB_FINAL F3: Survival's ten waves one a minute, ~10 min).</summary>
+                public static float SurvivalWaveInterval = 60f;
             }
             public static partial class SandboxBattle
             {
@@ -553,6 +555,8 @@ namespace MachineBrigade.Sim.Content
                 public static float ScoutSeconds = 3f;
                 /// <summary>campaign.missionMode.escortReach (m; ban_kinh, was Sim/Modes/MissionMode.cs:127).</summary>
                 public static float EscortReach = 22f;
+                /// <summary>campaign.missionMode.landingSeconds (s; thoi_gian; MB_FINAL F3: c10m11's hold, one transport landed a step).</summary>
+                public static float LandingSeconds = 30f;
                 /// <summary>campaign.missionMode.reinforceFirst (s; thoi_gian, was Sim/Modes/MissionMode.cs:141).</summary>
                 public static double ReinforceFirst = 45.0;
                 /// <summary>campaign.missionMode.reinforceGap (s; thoi_gian, was Sim/Modes/MissionMode.cs:141).</summary>
@@ -766,6 +770,7 @@ namespace MachineBrigade.Sim.Content
             new Entry("campaign.missionMode.waypointReach", "m", () => Campaign.MissionMode.WaypointReach, v => Campaign.MissionMode.WaypointReach = (float)v),
             new Entry("campaign.missionMode.scoutSeconds", "s", () => Campaign.MissionMode.ScoutSeconds, v => Campaign.MissionMode.ScoutSeconds = (float)v),
             new Entry("campaign.missionMode.escortReach", "m", () => Campaign.MissionMode.EscortReach, v => Campaign.MissionMode.EscortReach = (float)v),
+            new Entry("campaign.missionMode.landingSeconds", "s", () => Campaign.MissionMode.LandingSeconds, v => Campaign.MissionMode.LandingSeconds = (float)v),
             new Entry("campaign.missionMode.reinforceFirst", "s", () => Campaign.MissionMode.ReinforceFirst, v => Campaign.MissionMode.ReinforceFirst = v),
             new Entry("campaign.missionMode.reinforceGap", "s", () => Campaign.MissionMode.ReinforceGap, v => Campaign.MissionMode.ReinforceGap = v),
             new Entry("campaign.missionMode.reinforceBelow", "share", () => Campaign.MissionMode.ReinforceBelow, v => Campaign.MissionMode.ReinforceBelow = (float)v),
@@ -779,6 +784,7 @@ namespace MachineBrigade.Sim.Content
             new Entry("modes.sandboxMode.firstWaveDelay", "s", () => Modes.SandboxMode.FirstWaveDelay, v => Modes.SandboxMode.FirstWaveDelay = (float)v),
             new Entry("modes.sandboxMode.waveInterval", "s", () => Modes.SandboxMode.WaveInterval, v => Modes.SandboxMode.WaveInterval = (float)v),
             new Entry("modes.sandboxMode.reinforceCooldownSeconds", "s", () => Modes.SandboxMode.ReinforceCooldownSeconds, v => Modes.SandboxMode.ReinforceCooldownSeconds = (float)v),
+            new Entry("modes.sandboxMode.survivalWaveInterval", "s", () => Modes.SandboxMode.SurvivalWaveInterval, v => Modes.SandboxMode.SurvivalWaveInterval = (float)v),
             new Entry("vehicles.movementSystem.ghostSeconds", "s", () => Vehicles.MovementSystem.GhostSeconds, v => Vehicles.MovementSystem.GhostSeconds = v),
             new Entry("vehicles.movementSystem.maxYieldDepth", "count", () => Vehicles.MovementSystem.MaxYieldDepth, v => Vehicles.MovementSystem.MaxYieldDepth = (int)Math.Round(v)),
             new Entry("vehicles.movementSystem.yieldMaxSeconds", "s", () => Vehicles.MovementSystem.YieldMaxSeconds, v => Vehicles.MovementSystem.YieldMaxSeconds = v),

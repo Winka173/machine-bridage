@@ -552,10 +552,12 @@ namespace MachineBrigade.Game.Effects
                         _smokeLife = SmokeTimes.Death;
                         Explode(e.Tier, blast, now, radius: e.Value);
                         EdgeRing(blast, e.Value, e.Target.X);
-                        // Prompt 34 L5: a salvo's shell (Leviathan's 406 mm) lands as its tier.
-                        TierImpact(SalvoTier(e, views), blast, e.Value, e.Target.X, now, views);
+                        // Prompt 34 L5: a salvo's shell (Leviathan's 406 mm) lands as its tier. MB_FINAL F3: a blast that names its
+                        // round (ExplosionDef.Round: Scylla's and Nyx's Kalibr, drawn Large) takes that round's tier and band instead.
+                        var blastRound = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var named) ? named : null;
+                        TierImpact(blastRound != null ? TierFx.Of(blastRound) : SalvoTier(e, views), blast, TierFx.CoreOf(blastRound, e.Value), e.Target.X, now, views);
                         _smokeLife = SmokeTimes.Blast;
-                        _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f), EffectLife.Crater(EffectLife.BandOf(e.Tier)));
+                        _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f), EffectLife.Crater(blastRound != null ? EffectLife.BandOf(blastRound, e.Tier) : EffectLife.BandOf(e.Tier)));
                         _wrecks.Blow(e.Entity, now);
                         if (e.Tier >= ExplosionTier.Huge)
                         {

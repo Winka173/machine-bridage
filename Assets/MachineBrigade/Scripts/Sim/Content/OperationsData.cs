@@ -28,6 +28,19 @@ namespace MachineBrigade.Sim.Content
 
         public IReadOnlyList<string> Excludes { get; set; } = Array.Empty<string>();
 
+        /// <summary>
+        /// MB_FINAL F3: the weekly draw's kind (data "class"): "pressure" (the enemy stronger or the player poorer: more of
+        /// them, tougher, bosses, raids, less time) or "rule" (the battle's rules changed: weather, no supports, no aircraft,
+        /// a deck limit). Without the key, <see cref="Pressure"/> reads it from the fields.
+        /// </summary>
+        public string? Class { get; set; }
+
+        /// <summary>Whether this is a pressure mutator (else it changes a rule): its data "class", else from what it does.</summary>
+        public bool Pressure => Class != null
+            ? Class == "pressure"
+            : EnemyCp > 1f || EnemyIncome > 1f || EnemyHp > 1f || ExtraBoss || EnemyAir || Swarm || ExtraEscorts > 0 || ExtraRaiders > 0 ||
+              TowerHp > 1f || TowerDamage > 1f || PlayerIncome < 1f || TimeScale < 1f || EmptyBase;
+
         public string? Weather { get; set; }
         public float EnemyCp { get; set; } = 1f;
         public float EnemyIncome { get; set; } = 1f;
@@ -187,13 +200,58 @@ namespace MachineBrigade.Sim.Content
             return table;
         }
 
-        /// <summary>The week's entry of the rotation (a week number: year x 100 + ISO week).</summary>
+        /// <summary>
+        /// MB_FINAL F3 (the owner's final rule, VIEC_CHO_AGENT_FINAL section 4): the week's operation and its two mutators.
+        /// <paramref name="week"/> is the seed, year x 100 + ISO week (<c>WeeklyFortress.Week</c>). Two different mutators that
+        /// do not exclude each other (<see cref="MutatorDef.Clashes"/>), one pressure and one rule change: the pressure one drawn
+        /// from the pressure pool, the rule one from the rule changes that go with it, each pool in stable id order (ordinal),
+        /// so the same week and the same data (the same version) always give the same pair. When no such pair exists (the
+        /// pool is short), the first allowed pair in id order. The rotation table (<see cref="Rotation"/>) no longer picks the week.
+        /// </summary>
         public (int operation, MutatorDef a, MutatorDef b)? Weekly(int week, int operations)
         {
-            var table = Rotation(operations);
-            if (table.Count == 0) return null;
-            var index = (week / 100 * 53 + week % 100) % table.Count;
-            return table[index];
+            if (operations <= 0 || Mutators.Count < 2) return null;
+            var random = new WeekRandom(week);
+            var operation = random.Next(operations);
+            var pool = new List<MutatorDef>(Mutators);
+            pool.Sort((x, y) => string.CompareOrdinal(x.Id, y.Id));
+            var pressure = pool.FindAll(m => m.Pressure);
+            var rules = pool.FindAll(m => !m.Pressure);
+            if (pressure.Count > 0 && rules.Count > 0)
+            {
+                var start = random.Next(pressure.Count);
+                for (var k = 0; k < pressure.Count; k++)
+                {
+                    var a = pressure[(start + k) % pressure.Count];
+                    var partners = rules.FindAll(r => !a.Clashes(r));
+                    if (partners.Count > 0) return (operation, a, partners[random.Next(partners.Count)]);
+                }
+            }
+            for (var i = 0; i < pool.Count; i++)
+                for (var j = i + 1; j < pool.Count; j++)
+                    if (!pool[i].Clashes(pool[j])) return (operation, pool[i], pool[j]);
+            return null;
+        }
+
+        /// <summary>The weekly draw's numbers: SplitMix32-style steps from the week's seed (no shared state, no platform hash).</summary>
+        private struct WeekRandom
+        {
+            private uint _state;
+
+            public WeekRandom(int seed) => _state = unchecked((uint)seed * 0x9E3779B9u + 0x7F4A7C15u);
+
+            public int Next(int count)
+            {
+                unchecked
+                {
+                    _state += 0x9E3779B9u;
+                    var z = _state;
+                    z = (z ^ (z >> 16)) * 0x85EBCA6Bu;
+                    z = (z ^ (z >> 13)) * 0xC2B2AE35u;
+                    z ^= z >> 16;
+                    return count <= 1 ? 0 : (int)(z % (uint)count);
+                }
+            }
         }
 
         public static OperationsData FromJson(string json)
@@ -211,6 +269,9 @@ namespace MachineBrigade.Sim.Content
                 mutators.Add(new MutatorDef
                 {
                     Id = m.String("id"), Score = m.Float("score", 0f), Excludes = m.Has("excludes") ? m.StringArray("excludes") : Array.Empty<string>(),
+                    Class = !m.Has("class") ? null
+                        : m.String("class") is "pressure" or "rule" ? m.String("class")
+                        : throw new FormatException($"operations.mutators.{m.String("id")}.class: 'pressure' or 'rule', not '{m.String("class")}'."),
                     Weather = m.Has("weather") ? m.String("weather") : null,
                     EnemyCp = m.Float("enemyCp", 1f), EnemyIncome = m.Float("enemyIncome", 1f), PlayerIncome = m.Float("playerIncome", 1f),
                     NoSupports = m.Bool("noSupports", false), PlayerMaxCp = m.Int("playerMaxCp", 0), PlayerHeavy = m.Bool("playerHeavy", false),

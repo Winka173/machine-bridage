@@ -74,6 +74,12 @@ namespace MachineBrigade.Sim.Content
         public int Kills;
         public bool UsedStrikes, BoughtAircraft;
 
+        /// <summary>MB_FINAL F3: an infiltration found out (i1m01's factory alarm sounded).</summary>
+        public bool AlarmRaised;
+
+        /// <summary>MB_FINAL F3: the battle's length so far (s), for "BeforeDusk".</summary>
+        public float Seconds;
+
         /// <summary>The share of the army lost (lost CP over lost plus what is left).</summary>
         public float LossShare => LostCp + ArmyCpLeft > 0 ? LostCp / (float)(LostCp + ArmyCpLeft) : 0f;
     }
@@ -107,6 +113,9 @@ namespace MachineBrigade.Sim.Content
             "Kills" => f.Kills >= rule.Value,
             "NoStrikes" => !f.UsedStrikes,
             "NoAircraft" => !f.BoughtAircraft,
+            // MB_FINAL F3: i1m01's 3 stars for no alarm; i2m01's for a win before dusk (the value: the nightfall's second).
+            "NoAlarm" => !f.AlarmRaised,
+            "BeforeDusk" => rule.Value <= 0f || f.Seconds <= rule.Value,
             _ => true,
         };
 

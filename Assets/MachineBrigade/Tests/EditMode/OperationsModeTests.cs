@@ -31,6 +31,43 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>MB_FINAL F3: the weekly draw (seed year x 100 + ISO week): two different, allowed mutators, one pressure and one rule change.</summary>
+        [Test]
+        public void TheWeeklyDrawIsOnePressureAndOneRuleChangeTheSameEachTimeTheWeekComes()
+        {
+            Assert.IsTrue(Data.Mutators.Any(m => m.Pressure) && Data.Mutators.Any(m => !m.Pressure), "both kinds in the pool");
+            foreach (var m in Data.Mutators) Assert.IsNotNull(m.Class, $"{m.Id} names its class");
+            var pairs = new HashSet<string>();
+            for (var year = 2026; year <= 2028; year++)
+                for (var week = 1; week <= 52; week++)
+                {
+                    var seed = year * 100 + week;
+                    var draw = Data.Weekly(seed, 9);
+                    Assert.IsNotNull(draw, $"week {seed}");
+                    var (operation, a, b) = draw.Value;
+                    Assert.That(operation, Is.InRange(0, 8));
+                    Assert.AreNotEqual(a.Id, b.Id, $"week {seed}: two different mutators");
+                    Assert.IsFalse(a.Clashes(b), $"week {seed}: {a.Id} and {b.Id} exclude each other");
+                    Assert.IsTrue(a.Pressure && !b.Pressure, $"week {seed}: {a.Id} pressure, {b.Id} a rule change");
+                    var again = Data.Weekly(seed, 9).Value;
+                    Assert.AreEqual((operation, a.Id, b.Id), (again.operation, again.a.Id, again.b.Id), $"week {seed}: the same draw");
+                    pairs.Add(a.Id + "+" + b.Id);
+                }
+            Assert.Greater(pairs.Count, 20, "the weeks vary");
+            // A short pool (no rule change): the first allowed pair in id order.
+            var shortPool = new OperationsData
+            {
+                Mutators = new[]
+                {
+                    new MutatorDef { Id = "b_more", Class = "pressure", EnemyCp = 1.5f },
+                    new MutatorDef { Id = "a_more", Class = "pressure", EnemyHp = 1.2f },
+                    new MutatorDef { Id = "c_more", Class = "pressure", Swarm = true },
+                },
+            };
+            var fallback = shortPool.Weekly(202641, 1).Value;
+            Assert.AreEqual(("a_more", "b_more"), (fallback.a.Id, fallback.b.Id));
+        }
+
         [Test]
         public void TheRotationIsTheSameEveryTimeCoversEveryMutatorAndNeverPairsExcludedOnes()
         {

@@ -119,6 +119,13 @@ namespace MachineBrigade.Sim.Content
         public int Final { get; internal set; } = 4;
         public string? Weapon { get; internal set; }
         public string? Warning { get; internal set; }
+
+        /// <summary>
+        /// MB_FINAL F3 (lead decision on the final bundle's VFX section): the size the blast is drawn at (data "impactTier"),
+        /// over the missile's own; with it the blast takes the missile's T look. Scylla's and Nyx's Kalibr: Large, the T4 look
+        /// (the Tomahawk's); the Leviathan's stays its missile's Ultimate. A look only: the damage and radius stay the data's.
+        /// </summary>
+        public ExplosionTier? ImpactTier { get; internal set; }
     }
 
     /// <summary>

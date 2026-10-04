@@ -649,11 +649,18 @@ namespace MachineBrigade.Tests
                     ["id"] = m.Id, ["name"] = Text("mutator." + m.Id), ["info"] = Text("mutator." + m.Id + ".info"), ["score"] = m.Score,
                 }).ToList(),
                 ["replayable"] = Operations.Replayable.Select(m => Text("mission." + m.Id + ".name")).Cast<object>().ToList(),
-                ["rotation"] = data.Rotation(Math.Max(1, Operations.Big.Count)).Select(e => (object)new Dictionary<string, object>
-                {
-                    ["operation"] = Operations.Big.Count > 0 ? Text("mission." + Operations.Big[e.operation].Id + ".name") : "",
-                    ["a"] = Text("mutator." + e.a.Id), ["b"] = Text("mutator." + e.b.Id),
-                }).ToList(),
+                // MB_FINAL F3: the weeks' draws by the final rule (OperationsData.Weekly), 26 ISO weeks from 2026-W41.
+                ["rotation"] = Enumerable.Range(0, OperationsData.RotationWeeks)
+                    .Select(k => new DateTime(2026, 10, 5, 0, 0, 0, DateTimeKind.Utc).AddDays(7 * k))
+                    .Select(d => System.Globalization.ISOWeek.GetYear(d) * 100 + System.Globalization.ISOWeek.GetWeekOfYear(d))
+                    .Select(w => (w, e: data.Weekly(w, Math.Max(1, Operations.Big.Count))))
+                    .Where(x => x.e != null)
+                    .Select(x => (object)new Dictionary<string, object>
+                    {
+                        ["week"] = x.w,
+                        ["operation"] = Operations.Big.Count > 0 ? Text("mission." + Operations.Big[x.e.Value.operation].Id + ".name") : "",
+                        ["a"] = Text("mutator." + x.e.Value.a.Id), ["b"] = Text("mutator." + x.e.Value.b.Id),
+                    }).ToList(),
             };
         }
 

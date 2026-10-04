@@ -1589,6 +1589,8 @@ namespace MachineBrigade.Game.Match
             "NoStrikes" => world.StrikesCalled(PlayerTeam) == 0,
             "NoAircraft" => world.AircraftBought(PlayerTeam) == 0,
             "Kills" => Kills >= _def.ChallengeValue,
+            // MB_FINAL F3: i1m01 (no alarm) and i2m01 (before dusk), read from the battle's star facts.
+            "NoAlarm" or "BeforeDusk" => CampaignStars.Met(new StarRule(_def.Challenge, _def.ChallengeValue), StarFacts(world, true)),
             _ => true,
         };
 
@@ -1604,6 +1606,8 @@ namespace MachineBrigade.Game.Match
             var (done, needed) = _mode.Count(world);
             var detail = goal switch
             {
+                // MB_FINAL F3 (c10m11, rule airfieldLanding): the hold's clock is the transports' landing count.
+                MissionGoal.Hold when _mode.Landings is { } landings => Strings.Format("mission.landings", ("done", landings.landed), ("needed", landings.total)),
                 MissionGoal.Hold or MissionGoal.Survive or MissionGoal.Protect => $"{Clock(done)} / {Clock(needed)}",
                 MissionGoal.Intercept when _mode.LaunchIn(world) >= 0f => Strings.Format("mission.launchIn", Clock(_mode.LaunchIn(world))),
                 MissionGoal.Boss or MissionGoal.Intercept => $"{UnityEngine.Mathf.RoundToInt(_mode.Progress(world) * 100f)}%",

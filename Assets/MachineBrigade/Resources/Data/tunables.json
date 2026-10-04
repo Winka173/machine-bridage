@@ -369,7 +369,8 @@
     "sandboxMode": {
       "firstWaveDelay": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "SandboxMode.FirstWaveDelay" },
       "waveInterval": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "SandboxMode.WaveInterval" },
-      "reinforceCooldownSeconds": { "value": 12.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "SandboxMode.ReinforceCooldownSeconds" }
+      "reinforceCooldownSeconds": { "value": 12.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "SandboxMode.ReinforceCooldownSeconds" },
+      "survivalWaveInterval": { "value": 60.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "05", "code": "SandboxMode.SurvivalWaveInterval" }
     },
     "sandboxBattle": {
       "unlimitedCp": { "value": 999.0, "unit": "CP", "kind": "tran", "linh_vuc": "05", "code": "SandboxBattle.UnlimitedCp" }
@@ -457,6 +458,7 @@
       "waypointReach": { "value": 5.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "07", "code": "MissionMode.WaypointReach" },
       "scoutSeconds": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "MissionMode.ScoutSeconds" },
       "escortReach": { "value": 22.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "07", "code": "MissionMode.EscortReach" },
+      "landingSeconds": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "MissionMode.LandingSeconds" },
       "reinforceFirst": { "value": 45.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "MissionMode.ReinforceFirst" },
       "reinforceGap": { "value": 75.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "07", "code": "MissionMode.ReinforceGap" },
       "reinforceBelow": { "value": 0.6, "unit": "share", "kind": "nguong", "linh_vuc": "07", "code": "MissionMode.ReinforceBelow" },

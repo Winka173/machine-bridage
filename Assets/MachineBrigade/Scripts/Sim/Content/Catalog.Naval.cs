@@ -49,6 +49,7 @@ namespace MachineBrigade.Sim.Content
                     Every = c.Float("every", 48f), First = c.Float("first", 18f), Phase = c.Int("phase", 1), Warn = c.Float("warn", 4.5f),
                     Damage = c.Float("damage", 520f), Radius = c.Float("radius", 16f), Final = c.Int("final", 4),
                     Weapon = c.Has("weapon") ? c.String("weapon") : null, Warning = c.Has("warning") ? c.String("warning") : null,
+                    ImpactTier = c.Has("impactTier") ? (ExplosionTier?)c.Enum<ExplosionTier>("impactTier") : null,
                 };
             }
             if (v.Has("craft"))

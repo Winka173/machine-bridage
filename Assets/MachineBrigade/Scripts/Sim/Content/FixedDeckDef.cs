@@ -74,7 +74,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The mission's own rules (ids of fixed_decks.RULES; the text is "fixeddeck.rule.&lt;id&gt;").</summary>
         public IReadOnlyList<string> SpecialRules { get; set; } = Array.Empty<string>();
 
-        /// <summary>The sheet's state: "MAKE_FIRST" or "MAKE_LATER".</summary>
+        /// <summary>The sheet's state: "MAKE_FIRST", "MAKE_LATER", or "READY" (MB_FINAL F3: the ten later decks, their rules made).</summary>
         public string Status { get; set; } = "MAKE_FIRST";
 
         /// <summary>Ranks above the campaign's curve the deck's cards fight at (i3m03, Crown's elite armour: 1).</summary>

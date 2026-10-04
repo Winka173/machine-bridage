@@ -541,8 +541,11 @@ namespace MachineBrigade.Sim.Bosses
                     : SimEvent.FiredWith(v, missile, origin, at, cruise.Warn, EntityId.None));
             // Play-test 14 (lane L): the blast is drawn at its missile's own impact tier (a look only: the tier never changes the
             // damage); the Leviathan's Kalibr stays Ultimate, the Hydra's Club-S (a mini boss's) is drawn Large.
-            var tier = missile?.ImpactTier ?? ExplosionTier.Ultimate;
-            _world.Damage.Queue(at, ExplosionDef.TwoLayer(cruise.Damage, cruise.Radius, tier), cruise.Warn, v.Team, v, HitKind.Strike, v.Id);
+            // MB_FINAL F3: a ship's own cruise size (Scylla's and Nyx's Kalibr: Large) brings its missile's T look with it.
+            var tier = cruise.ImpactTier ?? missile?.ImpactTier ?? ExplosionTier.Ultimate;
+            var blast = ExplosionDef.TwoLayer(cruise.Damage, cruise.Radius, tier);
+            if (cruise.ImpactTier != null && missile != null) blast.Round = missile.Id;
+            _world.Damage.Queue(at, blast, cruise.Warn, v.Team, v, HitKind.Strike, v.Id);
         }
 
         /// <summary>

@@ -69,6 +69,16 @@ namespace MachineBrigade.Sim.Modes
         private static float FirstWaveDelay => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.FirstWaveDelay;
         private static float WaveInterval => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.WaveInterval;
 
+        /// <summary>
+        /// MB_FINAL F3 (owner's final bundle, VIEC_CHO_AGENT_FINAL section 3): Survival's ten waves come one a minute whatever the
+        /// difficulty (the difficulty sizes the waves), so wave 10 is sent at 20 + 9 x 60 = 560 s and the run, its clearing
+        /// included, takes about 10 minutes. The waves past the tenth (Continue, endless) keep the old cadence.
+        /// </summary>
+        private static float SurvivalWaveInterval => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SurvivalWaveInterval;
+
+        /// <summary>Seconds to the next wave: a minute in Survival's ten, else the old interval by the intensity.</summary>
+        private float NextWaveIn => FiniteWaves > 0 && !InEndless ? SurvivalWaveInterval : WaveInterval / MathF.Max(0.5f, Intensity);
+
         /// <summary>Enemies alive at once: 14, one and a half more each wave, up to 48 (prompt 13 H.9).</summary>
         private int MaxEnemies => Math.Min(48, 14 + Wave * 3 / 2);
         public static float ReinforceCooldownSeconds => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.ReinforceCooldownSeconds;
@@ -115,7 +125,7 @@ namespace MachineBrigade.Sim.Modes
             if (FiniteWaves > 0 && !InEndless && Wave >= FiniteWaves) return;
             _waveTimer -= dt;
             if (_waveTimer > 0f) return;
-            _waveTimer = WaveInterval / MathF.Max(0.5f, Intensity);
+            _waveTimer = NextWaveIn;
             // Prompt 13 H.9: the waves keep coming (heavier, more of them elite) while the field is full; only
             // the room left under the ceiling is filled. They stopped altogether before, and a deck that held
             // the line stood for ever.
