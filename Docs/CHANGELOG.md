@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Gear book (lane A, 04/10): the balance pack gains a tenth file, `10_trang_bi` (every Trang_bi* sheet, moved in from 02_phuong_tien and 11_meta_giao_dien by name, core/pack.py RECLASSIFY) plus 5 new sheets built straight from the equipment code (Tools/export/domains/_c02_gear.py): Trang_bi_nang_cap (level cost, 75 rows), Trang_bi_ghep (merge rule, 11 rows), Trang_bi_thung + Trang_bi_thung_nguon (crate odds/pity/sources, 4 + 8 rows), Trang_bi_ten (EN/VI name per id, 156 rows); fixed the HUD string key prefix for module/sub/brand names along the way (ten_vi had been blank for all three, Trang_bi_mo_dun/Trang_bi_dong_phu/Trang_bi_bo, since a wrong key prefix never matched anything). export.py check --game-json passes 23/23.
 - Export audit (lane A): tower gear (GearCatalog.Tower.cs: 13 base types, 10 traits) and the loadout stat caps
   (GearCatalog.cs/GearCatalog.Tower.cs BuildCaps/BuildTowerCaps) had no export source at all; added Trang_bi_thap,
   Trang_bi_dac_tinh_thap, Trang_bi_tran and Trang_bi_chi_so to 01_chien_dau.xlsx (103 rows); check stays 15/15;

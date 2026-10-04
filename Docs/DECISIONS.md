@@ -20779,3 +20779,63 @@ MachineBrigade-art, branch feature/export-audit. Full findings and the "still mi
   cited in `AI_muc_tieu_uu_tien` but not scanned into `AI_hang_so_ma`, which is scoped to the 14 AI-folder files per the
   brief); `AI_xung_dot` / `AI_xung_dot_do_kho` (pack formulas, pre-existing) still show `None` when read with openpyxl
   `data_only=True` outside Excel/LibreOffice (no cached result) — expected, not a defect: Excel recalculates on open.
+
+## Gear book 04/10 (lane A)
+
+- Owner (04/10): "trang bi dem ra 1 file rieng, day du" (gear comes out as its own, complete file). Built
+  `Docs/export/current/10_trang_bi.xlsx` + `.md` in the pack's own book/sheet API (same as the `09_ai` split, AI book
+  04/10 lane B above): `core/pack.py` PACK["10_trang_bi"] with an empty `olds` tuple (gear never had an old domain file
+  of its own; every one of its sheets is reclassified in from another old file by name, the same mechanism `Anh_can_cu`
+  and `So_tay_dan` already used, not a fresh one).
+- Moved by `RECLASSIFY` (core/pack.py), unchanged in content: `Trang_bi`, `Trang_bi_mo_dun`, `Trang_bi_dac_tinh`,
+  `Trang_bi_dong_phu`, `Trang_bi_bo`, `Trang_bi_thap`, `Trang_bi_dac_tinh_thap`, `Trang_bi_tran`, `Trang_bi_chi_so`
+  (all built by `domains/d02_phuong_tien.py`, old file `02_phuong_tien`) and `Trang_bi_hang` (built by
+  `domains/d11_meta_giao_dien.py`, old file `11_meta_giao_dien`, Arsenal.cs LevelCap/Top/Cap/GoldGuaranteed/
+  LegendaryGuaranteed). `Loadout_can_cu` (old file `04_can_cu_thap` / new `03_can_cu`) was checked and left where it is:
+  it is `base.levels` / `base.longLevels`, the base's small/medium/large/utility TOWER SLOT COUNTS by HQ level, not
+  GearCatalog equipment; nothing to do with the player's gear system.
+- New layer-C sheets (`domains/_c02_gear.py`, built inside `d02_phuong_tien.py`'s `build()` straight after `_unit_settle`,
+  reclassified into `10_trang_bi` the same way; read only, no NEED_CODE_CHECK, same pattern as `_c06.py`'s AI layer C):
+  gear carries no balance.json block at all (every number lives in C#), so these are hand-authored or code-scanned,
+  citing file:line, not JSON leaves.
+  - `Trang_bi_nang_cap` (75 rows: 5+10+15+20+25, one row a level of each rarity): Arsenal.cs `Gear.LevelCost` (30 x
+    level, 0 at the rarity's level cap) and `Gear.Spent` (coins spent so far, the amount a merge's fodder piece
+    refunds) as a running total per level.
+  - `Trang_bi_ghep` (11 rows, one a step): `Gear.CanMerge` + `PlayerProfile.Arsenal.cs TryMerge` / `MergeAll` — 3
+    pieces same slot and rarity (below Legendary) merge; `Worth` (equipped ? 1000 : 0, + level) picks which of the
+    trio is kept; the other two are removed from the gear bag and any loadout slot, their `Gear.Spent` coins refunded;
+    the kept piece's rarity +1 (level capped to the new rarity's cap), base type / sub-stats / trait kept, then
+    `Gear.Promote` rolls a new sub-stat slot and (at Epic) a trait; `MergeAll` repeats lowest-rarity-first, up to 50
+    passes; tower gear (TowerWeapon/Structure/Systems) merges by the identical rule, no brand to lose.
+  - `Trang_bi_thung` (4 rows, one a `CrateKind`) + `Trang_bi_thung_nguon` (8 kv rows): `Arsenal.cs Crates` — coin
+    price, rolls a crate, coin range, blueprint count/cards, tower-piece share, rarity odds (5 columns), pity (epic /
+    legendary within N crates), the gold/legendary crate's guaranteed first-roll table; the extra sheet covers the
+    Gold crate's 10%-chance / Legendary's always-on universal blueprints and `DailyCrates` (5 win crates + 3 ad crates
+    a day, 10 min apart, first ad crate Silver then Battle).
+  - `Trang_bi_ten` (156 rows: 38 base + 14 module + 45 trait + 23 sub + 13 brand + 13 tower base + 10 tower trait):
+    one row an id with its HUD EN/VI name, reusing the same multi-key lookup `d02_phuong_tien.py` uses for each
+    sheet's own `ten_vi` column, plus a `loai` category and the string key tried first.
+- Bug found and fixed while building `Trang_bi_ten` (same file already touched, read-only export code, no gameplay
+  value changed): `d02_phuong_tien.py`'s `tables` list had the wrong HUD key prefix for three of the five gear tables
+  — `"gear.module."`, `"gear.sub."`, `"gear.brand."` never matched anything (`Game/Hud/GearText.cs` and `Strings.cs`
+  actually key modules `"special.<id>"`, sub-stat lines `"stat.line.<stat>"` and brands `"set.<id>"`); `ten_vi` had
+  been `None` for every row of `Trang_bi_mo_dun` (14), `Trang_bi_dong_phu` (23) and `Trang_bi_bo` (13) since those
+  sheets existed. Fixed the three prefixes (and the dead fallback guesses that never covered for them either); all
+  three sheets and `Trang_bi_ten` now carry real names. `Trang_bi` and `Trang_bi_dac_tinh` were already correct
+  (`"gear.base."`, and `"trait."` worked by accident through the fallback chain even though the table listed
+  `"gear.trait."`; cleaned that literal too, no behaviour change).
+- `export.py check --game-json Docs/export/game_snapshot.json`: PASS on every check (23/23 file list, coverage, foreign
+  keys, formulas, determinism across two processes, no secret, no process word); `NEED_CODE_CHECK` 0.
+- Touched beyond `core/pack.py` and `domains/_c02_gear.py` (new) / `domains/d02_phuong_tien.py`: `export.py`'s `readme()`
+  prose gained a `10_trang_bi:` line (hand-written text, not derived from PACK); `00_index.xlsx`, `README.md`'s file
+  tree/count, `packcheck.py`'s `EXPECT_FILES` and `core/doc_parts.py`'s old-style `"02/Trang_bi"` / `"11/Trang_bi_hang"`
+  refs all derive from `PACK` / `ctx.sheet_map` already (same as the `09_ai` split), so none of them needed a by-hand
+  change.
+- Not done (flagged rather than guessed, out of this pass' scope): the real, computed "which branches a piece fits"
+  (`VehicleFit.BranchesFor`, resolved against the whole vehicle roster) is not exported anywhere; the existing
+  `branches` column on `Trang_bi_dac_tinh` is actually the raw `VehicleNeed` constructor argument (e.g. "Armed",
+  "Flying"), not the resolved `BranchMask` — a useful proxy, not the real answer, and reproducing `VehicleFit` in
+  Python is a bigger job than this brief's four example sheets. `SimTunables.Bases.Gear.BulwarkShare` (the tower
+  Bulwark-brand roll share, `Gear.Tower.cs`) stays routed to `03_can_cu` via `tunables.py GROUPS["bases"]`, unchanged:
+  it is a pre-existing tunable group, not part of this pass. `CardMerges.cs` (card/tower-TYPE merges and retirements)
+  is a different, pre-existing mechanic from gear-ITEM merging and was left alone.

@@ -176,6 +176,8 @@ current/
   07_hinh_anh_am_thanh_model: hiệu ứng, âm thanh, model. 08_tham_chieu: nguồn ngoài đời, cơ chế game, học thuyết.
   09_ai: chiến thuật, hồ sơ AI, tướng địch, tham số AI, vai trò và trạng thái đội, hành vi tháp / boss, luồng quyết định
   theo lớp, mục tiêu ưu tiên, độ khó, chống kẹt, tiếp tế máy bay, hằng số AI còn trong mã.
+  10_trang_bi: trang bị xe và trang bị tháp, một file riêng — loại cơ bản, mô-đun, đặc tính, dòng phụ, bộ, trần cộng
+  dồn, bảng chỉ số, bảng theo độ hiếm, giá nâng cấp theo cấp, luật ghép, hòm và tỷ lệ rơi, tên Anh/Việt theo id.
 - Mỗi md chỉ có luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng; bảng lớn ghi "xem sheet").
 - Cột `_game` là giá trị mà mã game tính ra; cột công thức Excel sống tính lại từ cột dữ liệu gốc cùng file. Sheet `input_<tên>`
   là bản chép của sheet nguồn để công thức đọc cùng file: sửa ở sheet nguồn.
