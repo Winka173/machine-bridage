@@ -31,6 +31,7 @@ import mb_kit35 as K
 import mb_p35_ixion as IX
 import mb_p35_nuke_train as NT
 import mb_p35_wave8_bosses as W8
+import mb_pt14_r2_land as R2L
 
 R90 = math.pi / 2
 TAU = math.tau
@@ -364,7 +365,7 @@ def armored_train(a):
     """Juggernaut (module docstring): the wave 8 train with three more cars, centred on its length. Runtime names are
     the wave 8 builder's (Turret / Main_cannon / Muzzle_brake / Muzzle_main, Muzzle_main.001, Mount_rocket, Mount_mg /
     .001 / .002, Part_mortar > Mount_mortar > Muzzle_mortar, Point_fire, Point_exhaust); the new cars add none."""
-    W8.armored_train(a)
+    R2L.armored_train_base(a)
     _drop(a, 'Tail_lights', 'LavaGlow')
     _jt_front_platform(a)
     _jt_command_car(a)
@@ -536,7 +537,7 @@ def nuke_train(a):
     on its length. Runtime names are the wave 12 builder's (Turret / Main_cannon / _2 / Muzzle_brake / _2 /
     Muzzle_main, Mount_mg / .001 / .002 with their muzzles, Part_rocket / Part_missile / Part_gun152 / Part_aa with
     their mounts and muzzles, Erector / Icbm_payload, Point_fire, Point_exhaust); the new cars add none."""
-    NT.nuke_train(a)
+    R2L.nuke_train_base(a)
     _drop(a, 'Tail_lights', 'Alloy')
     _nt_command_car(a)
     _nt_pusher(a)
@@ -671,7 +672,7 @@ def ixion(a):
     .003, Turret / Main_cannon / Muzzle_brake / Muzzle_main, Part_cab > Mount_mg / .001, Point_mines, Point_exhaust,
     Point_fire), plus the new weapon mounts: Mount_gun / Muzzle_gun (30 mm), Mount_missile / .001 with their muzzles
     (Kornet-EM, left / right), Mount_rocket / Muzzle_rocket (Grad-V)."""
-    IX.ixion(a)
+    R2L.ixion_base(a)
     _ixion_rws(a)
     _ixion_kornet(a, 0, 1)
     _ixion_kornet(a, 1, -1)
@@ -1107,8 +1108,7 @@ def _hp_door_guns(a):
                                                               (-.4 * s, .3, -.05)], .045, seg=6)
         a.pivot(K.name('Muzzle_mg', i), (0, -1.02, .42), K.name('Mount_mg', i))
     for i, s in ((2, 1), (3, -1)):
-        a.part('Hmg_brackets', 'Steel').limb((s * 1.4, 3.2, 1.95), (s * 1.62, 3.2, 1.95), .06, .06, bevel=0)
-        K.pintle_mg(a, None, (s * 1.62, 3.2, 1.98), index=i, scale=1.35, shield=False, length=1.15, post=.12)
+        R2L.hp_gau21(a, i, s)
 
 
 def _hp_gear_and_kit(a):

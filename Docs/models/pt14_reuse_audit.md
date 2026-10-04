@@ -71,3 +71,10 @@ alike side by side); **old** = the boss's pre-play-test-14 model carried over, n
 ## Left for R2+
 Kraken (the whole weapon fit), hydra_sub's radar, Harpy's door guns, the two trains and Ixion (old turrets carried
 over). The ground bosses' shared barrel kit is gone in R3.
+over), and optionally per-boss barrel profiles on the ground bosses (K.gun_barrel).
+
+## R2 (lane A, 04/10)
+Done: Kraken (every sub-assembly above, plus its carrier deck), Hydra's mast radar, Harpy's aft window guns, both trains'
+weapons (wave 8 / wave 12 weapon functions swapped while the old builder runs), Ixion's turret and cab guns, Typhon
+redrawn whole (Tools/blender/mb_pt14_r2_naval.py, mb_pt14_r2_land.py; DECISIONS "Play-test 14 boss redraw R2 (lane A)").
+Still kit level: K.gun_barrel on Hydra's own guns and on the ground bosses (lane B, R2 ground).

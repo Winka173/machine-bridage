@@ -109,7 +109,7 @@
   },
   "armored_train": {
     "file": "armored_train.glb",
-    "triangles": 51170
+    "triangles": 56714
   },
   "artillery": {
     "file": "artillery.glb",
@@ -1097,7 +1097,7 @@
   },
   "hydra_sub": {
     "file": "hydra_sub.glb",
-    "triangles": 14952
+    "triangles": 14978
   },
   "hyperion": {
     "file": "hyperion.glb",
@@ -1133,7 +1133,7 @@
   },
   "ixion": {
     "file": "ixion.glb",
-    "triangles": 40940
+    "triangles": 38414
   },
   "jersey_barrier": {
     "file": "jersey_barrier.glb",
@@ -1157,7 +1157,7 @@
   },
   "kraken": {
     "file": "kraken.glb",
-    "triangles": 61644
+    "triangles": 75770
   },
   "kronos": {
     "file": "kronos.glb",
@@ -1241,7 +1241,7 @@
   },
   "mega_gunship": {
     "file": "mega_gunship.glb",
-    "triangles": 26228
+    "triangles": 25924
   },
   "mesa": {
     "file": "mesa.glb",
@@ -1361,7 +1361,7 @@
   },
   "nuke_train": {
     "file": "nuke_train.glb",
-    "triangles": 40684
+    "triangles": 43182
   },
   "nyx": {
     "file": "nyx.glb",
@@ -1869,7 +1869,7 @@
   },
   "typhon": {
     "file": "typhon.glb",
-    "triangles": 13260
+    "triangles": 29350
   },
   "uav_loiter_strike": {
     "file": "uav_loiter_strike.glb",
