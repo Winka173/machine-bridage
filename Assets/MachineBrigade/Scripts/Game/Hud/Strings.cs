@@ -1480,7 +1480,7 @@ namespace MachineBrigade.Game.Hud
             ["unit.airfield"] = ("Airfield", "Sân bay dã chiến"),
             ["unit.logistics_station"] = ("Logistics station", "Trạm hậu cần"),
             ["branch.guard_tower.watch"] = ("Watchtower", "Tháp quan sát"),
-            ["branch.guard_tower.watch.info"] = ("Sees 30% further, and lends towers within 30 m 15% more range (instead of the tower's usual 10%, not on top of it).", "Nhìn xa hơn 30%, và cho các tháp trong 30 m thêm 15% tầm bắn (thay cho mức 10% thường của tháp, không cộng dồn)."),
+            ["branch.guard_tower.watch.info"] = ("Sees 30% further, and lends towers within 35 m 15% more range (instead of the tower's usual 10%, not on top of it).", "Nhìn xa hơn 30%, và cho các tháp trong 35 m thêm 15% tầm bắn (thay cho mức 10% thường của tháp, không cộng dồn)."),
             ["branch.guard_tower.nest"] = ("Gun nest", "Ổ súng"),
             ["branch.guard_tower.nest.info"] = ("A 25 mm cannon for the machine gun: hits light vehicles hard, sees less far.", "Pháo 25 mm thay súng máy: đánh mạnh xe nhẹ, nhìn gần hơn."),
             ["branch.mg_bunker.twin"] = ("Twin HMG", "Súng máy đôi"),
