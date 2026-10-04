@@ -303,3 +303,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 04/10 "các vụ nổ mà quyết định làm nhỏ lại từ các tàu biển, vùng mục tiêu màu đỏ của nó có giảm chưa" -> chưa (chỉ đổi hình); sửa vùng sát thương theo công thức bảng.
 - 04/10 "có vẻ như toàn bộ trang bị chưa được export, check xem còn gì chưa export data luôn không".
 - 04/10 "AI có file riêng luôn chưa, đưa tôi toàn bộ AI nhớ càng chi tiết càng tốt".
+- 04/10 "cứ làm file theo format đã có trong export_current" (AI = cặp 09_ai.xlsx/md trong gói xuất).
