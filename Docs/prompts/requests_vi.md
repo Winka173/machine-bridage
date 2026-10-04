@@ -308,3 +308,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 04/10 cân bằng combat cuối (penetration curve, Damage Type table, thermobaric, bom top attack, ATGM, Kh-29 blast, missile lớn, boss giữ nguyên, tests bắt buộc, báo cáo): nguyên văn Docs/prompts/combat_rebalance_vi.md.
 - 04/10 bổ sung combat: bảng Top Attack riêng 115/110/95/75/50/25/12 (nguyên văn cuối combat_rebalance_vi.md).
 - 04/10 bảng Armour 5 / Penetration 5 (nguyên văn Docs/prompts/armour_pen5_vi.md); làm sau khi gộp combat final.
+- 04/10 Splash Falloff + Kinetic Overpenetration (nguyên văn Docs/prompts/splash_overpen_vi.md); chủ dự án: không cần test. Làm sau combat final, cùng lượt với Armour/Pen 5.
