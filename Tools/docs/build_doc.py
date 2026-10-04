@@ -527,7 +527,7 @@ def build(game, imgdir):
     legend = img(imgdir / 'ui' / 'kit-combat-icons.png', 'shot')
     out.append("<div class='section'><h2>10. Vũ khí và bảng sát thương</h2><h3>Hệ số sát thương theo loại đạn và loại giáp</h3>"
                + table(['Loại đạn'] + [{'Ground': 'Mặt đất', 'Air': 'Trên không', 'Structure': 'Công trình'}[a] for a in armors], rows)
-               + "<p>Prompt 15: mỗi mặt giáp (trước, hông, sau, nóc) có cấp 0–4 (boss tới cấp 5, giáp siêu dày: DECISIONS 21G), mỗi vũ khí có cấp xuyên 0–4. "
+               + "<p>Prompt 15: mỗi mặt giáp (trước, hông, sau, nóc) có cấp 0–4 (boss và mặt trước ba xe tăng siêu nặng titan_tank, elite_heavy_tank, mara_behemoth tới cấp 5, giáp siêu dày), mỗi vũ khí có cấp xuyên 0–5 (5: chống giáp hạng nặng chuyên dụng). "
                "Sát thương nhân theo cấp xuyên so với cấp giáp của mặt trúng đạn: "
                + esc(', '.join(f"{name} ×{m:g}" for name, m in zip(PEN_STEP_VI if len(pens) == len(PEN_STEP_VI) else [f"bước {i}" for i in range(len(pens))], pens)))
                + "; vũ khí đánh nóc (topAttack) luôn trúng giáp nóc và dùng bảng riêng, không nhân với bảng trên: "

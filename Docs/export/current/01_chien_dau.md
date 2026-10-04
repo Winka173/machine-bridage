@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 3dca5d6c, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 9622a763, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -353,7 +353,7 @@ Sinh từ dữ liệu (balance.json) như mục Sổ tay đạn trong Hồ sơ c
 
 **Năng lượng**: mạnh với Máy bay (×1,5), yếu với Công trình (×0,4). Ví dụ: focused laser (300 kW), Iron Beam laser (100 kW).
 
-Giáp có hướng: trước, hông, sau và nóc (xe tới cấp 4, boss tới cấp 5). Đạn bắn thẳng dùng cột bắn thẳng theo mặt trúng; đạn không đánh nóc mà rơi xuống nóc, và mọi phát lên máy bay, không có mức áp đảo (×1 là cao nhất). Vũ khí đánh nóc luôn trúng giáp nóc và chỉ dùng cột đánh nóc (không nhân hai bảng, không chặn ở ×1).
+Giáp có hướng: trước, hông, sau và nóc (tháp và hông, sau, nóc của xe tới cấp 4; boss và mặt trước xe tăng siêu nặng tới cấp 5). Đạn bắn thẳng dùng cột bắn thẳng theo mặt trúng; đạn không đánh nóc mà rơi xuống nóc, và mọi phát lên máy bay, không có mức áp đảo (×1 là cao nhất). Vũ khí đánh nóc luôn trúng giáp nóc và chỉ dùng cột đánh nóc (không nhân hai bảng, không chặn ở ×1).
 
 Ví dụ: một phát 2A42 30 mm của ifv (xuyên 2, sát thương 22) lên main_battle_tank (máu 2310): giáp trước cấp 4: ×0,48, 11; giáp hông cấp 2: ×1,02, 22.
 
@@ -393,7 +393,7 @@ Xe phá tường (armored_bulldozer, engineer_vehicle, demolition_line_vehicle) 
 
 **Energy**: strong against Air (×1.5), weak against Structures (×0.4). For example: focused laser (300 kW), Iron Beam laser (100 kW).
 
-Armour has a direction: front, side, rear and roof (vehicles up to level 4, bosses up to 5). Direct fire reads the direct column against the face it strikes; a round that is not a top attack but comes down on the roof, and every hit on an aircraft, never overmatches (×1 is the most). A top-attack weapon always strikes the roof and reads the top-attack column only (never both tables, no cap at ×1).
+Armour has a direction: front, side, rear and roof (towers and a vehicle's side, rear and roof up to level 4; a boss and a super-heavy tank's front up to 5). Direct fire reads the direct column against the face it strikes; a round that is not a top attack but comes down on the roof, and every hit on an aircraft, never overmatches (×1 is the most). A top-attack weapon always strikes the roof and reads the top-attack column only (never both tables, no cap at ×1).
 
 Worked example: one shot of the ifv's 2A42 30 mm (penetration 2, 22 damage) on a main_battle_tank (health 2310): front armour 4: ×0.48, 11; side armour 2: ×1.02, 22.
 

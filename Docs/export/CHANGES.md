@@ -12851,3 +12851,34 @@ Nhánh `feature/combat-final`. Nguồn: `Docs/prompts/combat_rebalance_vi.md` (m
 | CF-23 | tên lửa lớn khác (không phải outlier rõ) | jassm 9, air_cruise_missile 9, leviathan_cruise 10, hydra_club_s 6,5, ballistic_missile 10, anti_ship_missile 7, scylla_kh35 6, pt14_hp_nsm 5, nyx_tomahawk 8, ATGM nhỏ 0 | không đổi | |
 | CF-24 | bộ xuất | 6 bước (`PEN_STEPS` tới -3), một bảng | 7 bước (tới -4); sheet mới `01/Bang_danh_noc`; công thức Excel lớp B (`Vu_khi_suy_ra`, `Hoi_quy_du_lieu`, `May_bay_so_phat`, `Boss_hieu_qua`, `Tuong_duong_xe_cong_trinh`) chọn bảng theo `danh_noc`; input mới `input_bang_danh_noc` (02, 03, 04) | `_game.py` port ArmourMultiplier |
 | CF-25 | Sổ tay đạn (game + tài liệu thiết kế) | một cột, bước "thiếu từ 3 cấp" | hai cột Bắn thẳng / Đánh nóc, 7 bước | AmmoHandbook.cs, BaseText.cs, Tools/docs/prompt32.py |
+
+## ARMOUR PEN 5
+
+Nhánh `feature/pen5-splash`. Nguồn: `Docs/prompts/armour_pen5_vi.md` (chỉ bảng ai lên Giáp 5 / Xuyên 5; không đổi bảng xuyên, bảng đánh nóc, bảng loại sát thương, bom, Kh-29, ATGM). Lý do: `Docs/DECISIONS.md` "Armour/Pen 5 and splash/overpen 04/10 (lane A)"; báo cáo: `Docs/fixes/armour_pen5_report.md`.
+
+| # | mục | cũ thực tế | mới | ghi chú |
+|---|---|---|---|---|
+| AP-1 | `titan_tank` armour (trước / hông / sau / nóc) | `4` = 4 / 3 / 2 / 2 | `[5, 3, 2, 2]` | ghi rõ 4 mặt (số đơn 5 sẽ thành 5/4/3/3) |
+| AP-2 | `elite_heavy_tank` armour | `4` = 4 / 3 / 2 / 2 | `[5, 3, 2, 2]` | như trên |
+| AP-3 | `mara_behemoth` armour | 4 / 3 / 3 / 2 | 5 / 3 / 3 / 2 | |
+| AP-4 | `railgun` pen | 4 | 5 | damage 510, nạp 7, tầm 90 giữ |
+| AP-5 | `gun_140_twin` pen | 4 | 5 | `gun_140_twin_he` có pen riêng 2: không đổi |
+| AP-6 | `gun_152` pen | 4 | 5 | |
+| AP-7 | `gun_152_heat` pen | 4 | 5 | `gun_152_heat_he` pen riêng 3: không đổi |
+| AP-8 | `gun_125_elite` pen | 4 | 5 | `gun_125_elite_he` pen riêng 2: không đổi |
+| AP-9 | `gun_105_apfsds` pen | 4 | 5 | `gun_105_apfsds_he` pen riêng 2: không đổi |
+| AP-10 | `gun_125_armata_ke` pen | 4 | 5 | |
+| AP-11 | tháp `gun_155_twin_ap` (heavy_turret / bastion) pen | 4 | 5 | thừa kế `gun_155_twin_fort` nhưng có pen riêng: chỉ sửa id này |
+| AP-12 | tháp `turret_gun_120_long` pen | 5 | 5 (giữ) | đã là 5 |
+| AP-13 | `boss_railgun` pen | 4 | 5 | |
+| AP-14 | `p26_ixion_125` pen | 4 | 5 | thừa kế `gun_120mm` nhưng có pen riêng: chỉ sửa id này (gun_120mm giữ 4); `p26_ixion_125_he` pen riêng 3 |
+| AP-15 | `train_gun` pen | 4 | 5 | `train_gun_he` pen riêng 2 |
+| AP-16 | `borer_drill` pen | 4 | 5 | |
+| AP-17 | boss Xuyên 5 sẵn có (10 vũ khí `p26_*_direct_*`, `p26_behemoth_tiny_be120`, `p26_icarus_main_ic_coil`) | 5 (thừa kế từ vũ khí cha `p26_*`) | 5 (giữ) | cả 10 đúng 5, không id nào khác 5 |
+| AP-18 | danh sách GIỮ 4 (người chơi 13, boss 7) | 4 | 4 | đã kiểm từng id (gồm id thừa kế) |
+| AP-19 | luật nạp dữ liệu (`Catalog.cs`) | không boss: mọi mặt tối đa 4 | không boss: mặt trước xe (không phải công trình) tối đa 5, mặt khác và mọi tháp / công trình tối đa 4 | `ArmourLevels.CapFor`; giữ "không xe nào 5/5/5/5" |
+| AP-20 | trần giáp khi có trang bị (`Vehicle.ArmourOn`) | không boss: 4 | không boss: max(4, giáp dữ liệu của mặt đó) | trang bị không đẩy mặt nào lên 5; mặt trước dữ liệu 5 giữ 5 |
+| AP-21 | giao diện | tên cấp xuyên chặn ở 4; ô "che phủ" của bộ bài 0-4 | tên cấp xuyên 0-5 (`pen.level.5` mới: "Xuyên giáp hạng nặng"); ô che phủ 0-5 | `CombatIcons.cs`, `Strings.cs`, `KitCombat.cs`; câu `hb.pen.faces` (game + `prompt32.py`) nói cấp 5 = boss và mặt trước xe tăng siêu nặng |
+
+Không đổi: giáp và máu boss (không dòng boss nào bị sửa); máu tháp, giáp tháp (tối đa vẫn 4, 40 tháp / công trình đã kiểm); damage / nạp / tầm của mọi vũ khí trên.
+Sinh lại: `Docs/export/current/*` (`01_chien_dau` `Vu_khi` cột xuyên, `Vu_khi_suy_ra` hệ số xuyên và DPS theo giáp, `02_boss`, `03_can_cu`, `04`, `00_index`, `bulk.zip`), đoạn Sổ tay đạn trong `Docs/Machine_Brigade_Design_Review.html` (sinh bằng `prompt32.ammo_handbook`). Ô cần Unity xuất lại: xem báo cáo mục "generated files".

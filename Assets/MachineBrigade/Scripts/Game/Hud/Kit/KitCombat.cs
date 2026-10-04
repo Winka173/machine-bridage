@@ -238,8 +238,9 @@ namespace MachineBrigade.Game.Hud
         public static VisualElement CoverShields(Func<int, bool> covered, string tipKey)
         {
             var row = Kit.Box("fc-row fc-cover");
-            // A deck's cover is against the levels units have (0-4): only bosses carry level 5, and nothing is meant to pierce it well.
-            for (var level = 0; level <= ArmourLevels.MaxUnit; level++)
+            // A deck's cover is against the levels units have (0-5): Armour/Pen 5 (04/10) gives level 5 to the super-heavy tanks'
+            // fronts as well as bosses, and pen-5 weapons pierce it.
+            for (var level = 0; level <= ArmourLevels.Max; level++)
             {
                 var has = covered(level);
                 var cell = Kit.Box("fc-cover__cell" + (has ? "" : " fc-cover__cell--missing"));

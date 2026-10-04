@@ -2,7 +2,7 @@
 
 Hiệu ứng, âm thanh, hậu kỳ hình ảnh, model và số đo model, tài sản, giấy phép.
 
-Gói cân bằng Machine Brigade, commit 3dca5d6c, ngày 2026-10-04. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 9622a763, ngày 2026-10-04. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Hình ảnh
 
@@ -464,7 +464,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Model_spec_dung` (11798 dòng): Model: spec dựng lại — Tools/blender/specs/<model>.json: spec dựng lại model (mẫu thật, kích thước đích, bộ phận, vũ khí, ngân sách, vùng màu;); id = <model>.<đường dẫn>
 - `Anh_the` [bulk.zip] (167 dòng): Ảnh thẻ — Resources/UI/Cards/manifest.json entries: ảnh thẻ render từ model (loại, model, nguồn, hash)
 - `Anh_the_chung` (3 dòng): Ảnh thẻ: cài đặt render — manifest.json: camera, cỡ ảnh, phiên bản
-- `Dia_phuong_hoa` [bulk.zip] (6207 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
+- `Dia_phuong_hoa` [bulk.zip] (6208 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
 - `Giay_phep_tai_san` (5 dòng): Giấy phép tài sản — Resources/Licenses/*.txt: mỗi file giấy phép một dòng (phông chữ OFL); nội dung từng dòng ở Giay_phep_noi_dung; âm thanh: 07_hinh_anh_am_thanh_model/…
 - `Giay_phep_noi_dung` [bulk.zip] (374 dòng): Giấy phép: nội dung — mỗi dòng không trống của file giấy phép
 - `Xem_truoc` (179 dòng): Màn xem trước — Màn xem trước của từng đơn vị: cảnh nền

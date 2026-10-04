@@ -21,7 +21,7 @@ namespace MachineBrigade.Tests
             {
                 var a = v.Armour;
                 foreach (ArmorFace f in System.Enum.GetValues(typeof(ArmorFace)))
-                    Assert.That(a[f], Is.InRange(0, v.Boss ? ArmourLevels.Max : ArmourLevels.MaxUnit), v.Id + " " + f);
+                    Assert.That(a[f], Is.InRange(0, ArmourLevels.CapFor(v.Boss, v.Armor == ArmorClass.Structure, f)), v.Id + " " + f);
                 Assert.AreEqual(v.Flying ? TargetKind.Air : v.Armor == ArmorClass.Structure ? TargetKind.Structure : TargetKind.Ground, v.Kind, v.Id);
                 // Towers, buildings and aircraft are the same all round, but for an embrasured front.
                 if (v.Flying || v.Kind == TargetKind.Structure)

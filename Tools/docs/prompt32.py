@@ -30,7 +30,7 @@ STEPS = {
 }
 REACTIVE_CAP = 0.8  # HandbookFacts.ReactiveCap (the code reads it from there)
 ROUND_HOLD, MIN_SWITCH = 2.0, 0.5  # WeaponDef.RoundHoldSeconds, MinSwitchSeconds
-MAX_UNIT, MAX_BOSS = 4, 5  # ArmourLevels.MaxUnit, Max
+MAX_UNIT, MAX_BOSS = 4, 5  # ArmourLevels.MaxUnit, Max (Armour/Pen 5 04/10: Max also on a vehicle's front, ArmourLevels.CapFor)
 
 
 def num(x, lang, digits=2):
@@ -114,10 +114,10 @@ class Handbook:
         out.append(table(["Xuyên so với giáp mặt trúng" if vi else "Penetration against the face's armour", "Bắn thẳng" if vi else "Direct fire",
                           "Đánh nóc (giáp nóc)" if vi else "Top attack (roof)"],
                          [[STEPS[lang][i], mult(pens[i], lang), mult(tops[i], lang)] for i in range(7)], "dps"))
-        out.append("<p>" + (f"Giáp có hướng: trước, hông, sau và nóc (xe tới cấp {MAX_UNIT}, boss tới cấp {MAX_BOSS}). Đạn bắn thẳng dùng cột bắn thẳng theo mặt trúng; "
+        out.append("<p>" + (f"Giáp có hướng: trước, hông, sau và nóc (tháp và hông, sau, nóc của xe tới cấp {MAX_UNIT}; boss và mặt trước xe tăng siêu nặng tới cấp {MAX_BOSS}). Đạn bắn thẳng dùng cột bắn thẳng theo mặt trúng; "
                             f"đạn không đánh nóc mà rơi xuống nóc, và mọi phát lên máy bay, không có mức áp đảo ({mult(pens[1], lang)} là cao nhất). "
                             f"Vũ khí đánh nóc luôn trúng giáp nóc và chỉ dùng cột đánh nóc (không nhân hai bảng, không chặn ở {mult(pens[1], lang)})."
-                            if vi else f"Armour has a direction: front, side, rear and roof (vehicles up to level {MAX_UNIT}, bosses up to {MAX_BOSS}). Direct fire reads the direct column "
+                            if vi else f"Armour has a direction: front, side, rear and roof (towers and a vehicle's side, rear and roof up to level {MAX_UNIT}; a boss and a super-heavy tank's front up to {MAX_BOSS}). Direct fire reads the direct column "
                             f"against the face it strikes; a round that is not a top attack but comes down on the roof, and every hit on an aircraft, never overmatches "
                             f"({mult(pens[1], lang)} is the most). A top-attack weapon always strikes the roof and reads the top-attack column only (never both tables, no cap at {mult(pens[1], lang)}).") + "</p>")
         hb = self.d.get("handbook", {})

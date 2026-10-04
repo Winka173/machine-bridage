@@ -7,7 +7,8 @@ namespace MachineBrigade.Sim.Content
 {
     /// <summary>
     /// Prompt 15 A: a unit's armour level on each face, 0 (none) to 4 (very thick), 5 for a boss's super-heavy plate
-    /// (play-test 6, DECISIONS 21G: no vehicle or tower has it). Data "armour": one number
+    /// (play-test 6, DECISIONS 21G) and, since Armour/Pen 5 (04/10), the front of the three super-heavy tanks the data names
+    /// (titan_tank, elite_heavy_tank, mara_behemoth); no tower has it. Data "armour": one number
     /// (the front; the side one less, the rear and the roof two less, never under 0; a tower, a building or an
     /// aircraft the same all round) or four [front, side, rear, top].
     /// </summary>
@@ -15,8 +16,16 @@ namespace MachineBrigade.Sim.Content
     {
         public const int Max = 5;
 
-        /// <summary>The thickest plate a vehicle or tower may have; <see cref="Max"/> is for bosses only.</summary>
+        /// <summary>The thickest plate a tower, a building or a vehicle's side, rear and roof may have; <see cref="Max"/> is for bosses and a vehicle's front.</summary>
         public const int MaxUnit = 4;
+
+        /// <summary>
+        /// Armour/Pen 5 (04/10, DECISIONS "Armour/Pen 5 and splash/overpen 04/10"): the thickest level a face may carry. A boss any
+        /// face to <see cref="Max"/>; a vehicle (not a structure) its front to <see cref="Max"/> (the data gives it to three
+        /// super-heavy tanks only); every other face, and every tower or building, to <see cref="MaxUnit"/>.
+        /// </summary>
+        public static int CapFor(bool boss, bool structure, ArmorFace face) =>
+            boss || (!structure && face == ArmorFace.Front) ? Max : MaxUnit;
 
         public ArmourLevels(int front, int side, int rear, int top)
         {

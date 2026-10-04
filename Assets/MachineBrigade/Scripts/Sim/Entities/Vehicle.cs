@@ -446,7 +446,7 @@ namespace MachineBrigade.Sim.Entities
         /// </summary>
         internal float PenetrationUp, ArmourSideUp, ArmourAllUp;
 
-        /// <summary>Its armour level on a face with its equipment (never over 4; a boss's plate to 5, DECISIONS 21G).</summary>
+        /// <summary>Its armour level on a face with its equipment (never over 4, or over the data's level 5: a boss's plate, DECISIONS 21G, a super-heavy's front).</summary>
         public float ArmourOn(ArmorFace face)
         {
             // Prompt 19 C.2: a boss on altitude tiers has its armour by altitude (the belly faces the ground when low).
@@ -454,7 +454,8 @@ namespace MachineBrigade.Sim.Entities
             var up = ArmourAllUp + (face is ArmorFace.Side or ArmorFace.Rear ? ArmourSideUp : 0f);
             // Prompt 17 C: a bunker vehicle dug in has its front two levels thicker.
             if (face == ArmorFace.Front && Deploy == DeployState.Deployed && Def.Deploy is { } dug) up += dug.FrontUp;
-            return MathF.Min(Def.Boss ? ArmourLevels.Max : ArmourLevels.MaxUnit, Def.Armour[face] + up);
+            // Armour/Pen 5 (04/10): equipment never lifts a face to 5; a front the data gives 5 keeps it.
+            return MathF.Min(Def.Boss ? ArmourLevels.Max : Math.Max(ArmourLevels.MaxUnit, Def.Armour[face]), Def.Armour[face] + up);
         }
 
         public bool IsAlive => Hp > 0f;

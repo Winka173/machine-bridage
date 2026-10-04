@@ -37,6 +37,7 @@ namespace MachineBrigade.Game.Hud
             ["pen.level.2"] = ("Medium penetration", "Xuyên vừa"),
             ["pen.level.3"] = ("High penetration", "Xuyên cao"),
             ["pen.level.4"] = ("Very high penetration", "Xuyên rất cao"),
+            ["pen.level.5"] = ("Heavy anti-armour penetration", "Xuyên giáp hạng nặng"),
             ["dtype.Kinetic"] = ("Kinetic", "Động năng"),
             ["dtype.ShapedCharge"] = ("Shaped charge", "Nổ lõm"),
             ["dtype.HighExplosive"] = ("High explosive", "Nổ mạnh"),
