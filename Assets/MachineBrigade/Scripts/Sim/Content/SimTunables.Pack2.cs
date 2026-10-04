@@ -21,6 +21,8 @@ namespace MachineBrigade.Sim.Content
             foreach (var e in Pack2Ai) yield return e;
             foreach (var e in Pack2Campaign) yield return e;
             foreach (var e in Pack2Maps) yield return e;
+            // AI MASTER P0-A (lane A): targeting and the combat watchdog (SimTunables.AiP0A.cs).
+            foreach (var e in AiP0AEntries) yield return e;
         }
     }
 }

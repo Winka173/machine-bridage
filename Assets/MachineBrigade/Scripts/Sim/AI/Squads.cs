@@ -221,6 +221,8 @@ namespace MachineBrigade.Sim.AI
                 }
             }
             foreach (var s in _squads) Think(world, intel, s);
+            // AI MASTER P0-A (Part C2): the reasons the squads hold their members for.
+            ExplainHolds(world);
         }
 
         // ------------------------------------------------------------------------------------------------ measuring

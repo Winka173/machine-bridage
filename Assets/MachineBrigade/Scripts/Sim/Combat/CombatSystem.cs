@@ -100,6 +100,8 @@ namespace MachineBrigade.Sim.Combat
                 var target = v.Def.Deploy is { Siege: true } siege && v.Deploy != DeployState.Deployed && siege.TankMount < mounts.Count
                     ? SelectTarget(v, v.Arms[siege.TankMount])
                     : SelectTarget(v);
+                // AI MASTER P0-A (spec 45): the acquisition clock of the stickiness bonus.
+                Acquire(v, 0, target?.Id ?? EntityId.None);
                 v.Target = target?.Id ?? EntityId.None;
                 // Nothing on the ground for the main gun: the coaxial machine gun takes on an
                 // aircraft in reach and the turret swings after it.
@@ -138,6 +140,7 @@ namespace MachineBrigade.Sim.Combat
                     }
                     var secondary = SelectSecondaryTarget(v, i, target);
                     var state = v.Weapons[i];
+                    Acquire(v, i, secondary?.Id ?? EntityId.None);
                     state.Target = secondary?.Id ?? EntityId.None;
                     if (mounts[i].Aim == MountAim.Free)
                     {
@@ -284,6 +287,8 @@ namespace MachineBrigade.Sim.Combat
             v.RetargetAt = now + RetargetSeconds;
             var best = BestInRange(v, weapon, ordered.Id, -1, out var bestScore);
             if (best == null || best.Id == ordered.Id) return null;
+            // AI MASTER P0-A (Part B B2, R2): an ordered breach holds against all but an immediate survival threat.
+            if (BreachHeld(v, weapon, ordered, best)) return null;
             float orderScore;
             if (ordered is Vehicle target && IsValidAutoTarget(v, target, weapon)) orderScore = Score(v, weapon, target, ordered.Id);
             else if (IsAntiAir(weapon) && best.Flying && !IsFlying(ordered)) orderScore = 0f;
@@ -376,9 +381,9 @@ namespace MachineBrigade.Sim.Combat
             if (other.Def.Weapon.Damage <= 0f) score *= 0.3f;
             // Play-test 8 A: one that can hit this vehicle back before one that cannot.
             else if (other.Def.Weapon.CanTarget(v.Flying)) score *= ThreatWeight;
-            // Slow, heavy weapons do not waste a shot on a target already as good as dead
-            // from the rounds on their way to it (overkill).
-            if (weapon.Cooldown >= 2f && _incoming.TryGetValue(other.Id, out var incoming) && incoming >= other.Hp * 1.1f) score *= 0.05f;
+            // AI MASTER P0-A: overkill control (spec 44: 1.15, every weapon, with its exceptions; it replaces the old 1.1 rule for
+            // slow weapons), aim time, stickiness, objective threat and the breacher/siege doctrine rows (CombatSystem.P0A).
+            score *= P0AWorth(v, other, weapon);
             // A stick of bombs (prompt 13 D.2): the group or the structure, not the lone light car beside it.
             if (weapon.Projectile == ProjectileKind.Bomb && weapon.Burst > 1) score *= BombWorth(v.Team, other, weapon);
             // Prompt 17 C: shield domes (the generator first), enemy CP relays, a stealth fighter's air-defence hunt.
@@ -484,10 +489,8 @@ namespace MachineBrigade.Sim.Combat
             return v.Def.FixedWing && _world.TryGetVehicle(v.RunTarget, out target) && IsValidAutoTarget(v, target, weapon);
         }
 
-        private bool IsValidAutoTarget(Vehicle v, Vehicle target, WeaponDef weapon) =>
-            target.IsAlive && !target.Invulnerable && !target.Def.Untargetable && !target.Truce && target.Team != v.Team && !_world.Ceasefire(v.Team, target.Team) && target.IsVisibleTo(v.Team) &&
-            // Prompt 16: a coastal battery's guns fire on ships only.
-            (!v.Def.NavalOnly || target.Def.Naval != null) && InReach(v, target, weapon) && HasLineOfFire(v, target, weapon);
+        /// <summary>AI MASTER P0-A (spec 42 / 105): the hard feasibility filter, before any score (see <see cref="Feasibility"/>).</summary>
+        private bool IsValidAutoTarget(Vehicle v, Vehicle target, WeaponDef weapon) => Feasibility(v, weapon, target) == AI.TargetReject.None;
 
         /// <summary>
         /// Direct fire needs a clear line: buildings, rock and fortress walls stop it. Aircraft

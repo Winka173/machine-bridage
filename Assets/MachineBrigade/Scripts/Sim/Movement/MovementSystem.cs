@@ -283,6 +283,15 @@ namespace MachineBrigade.Sim.Movement
                         v.ClearPath();
                         break;
                     }
+                    // AI MASTER P0-A (spec 47): an AI order at a target the unit can never get a firing solution on (a ship
+                    // beyond the shore's reach, a pocket behind a shut gate) is dropped, not chased round the map.
+                    if (!v.ManualOrder && target is Vehicle unreachable && Unreachable(v, unreachable))
+                    {
+                        _world.CombatWatch.NoteDropped(v, unreachable);
+                        v.SetOrder(Order.Idle);
+                        v.ClearPath();
+                        break;
+                    }
                     CloseIn(v, target);
                     break;
 
@@ -347,6 +356,13 @@ namespace MachineBrigade.Sim.Movement
         /// </summary>
         private static bool HuntsAircraft(Vehicle v) => Combat.CombatSystem.IsAntiAir(v.Def.Weapon);
 
+        /// <summary>
+        /// AI MASTER P0-A (spec 47 / 83): a ground target this ground unit can never get a firing solution on from its own
+        /// connected ground (TargetAccessCache; aircraft, flying targets, ships and fixed defences are never "unreachable" here).
+        /// </summary>
+        private bool Unreachable(Vehicle v, Vehicle target) =>
+            !v.Flying && !target.Flying && v.Def.Naval == null && !v.Def.Static && !_world.TargetAccess.CanInfluence(v, target.Position, false);
+
         private Vehicle? GuardThreat(Vehicle v)
         {
             // Only threats that can be fought without leaving the leash, so the vehicle never
@@ -356,7 +372,7 @@ namespace MachineBrigade.Sim.Movement
             var reach = GuardLeash + weapon.Range * (v.Def.Interceptor ? 2.4f : 0.9f);
             if (_world.Time - v.LastHitTime < AnswerFireSeconds && _world.TryGetVehicle(v.LastAttacker, out var attacker) &&
                 attacker.IsAlive && !attacker.Invulnerable && attacker.IsVisibleTo(v.Team) && weapon.CanTarget(attacker.Flying) && (!attacker.Flying || HuntsAircraft(v)) &&
-                Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach && !OffPost(v, attacker))
+                Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach && !OffPost(v, attacker) && !Unreachable(v, attacker))
                 return attacker;
 
             Vehicle? best = null;
@@ -367,6 +383,8 @@ namespace MachineBrigade.Sim.Movement
                 if ((other.Flying && !HuntsAircraft(v)) || other.Invulnerable) continue;
                 if (v.Def.Interceptor && !other.Flying) continue;
                 if (OffPost(v, other)) continue;
+                // AI MASTER P0-A (spec 47): nor go out to one it cannot get a firing solution on.
+                if (Unreachable(v, other)) continue;
                 var distance = Vector2.Distance(v.Position, other.Position);
                 if (distance > MathF.Max(v.Def.VisionRange, v.Def.Interceptor ? reach : 0f) || distance >= bestDistance) continue;
                 if (Vector2.Distance(other.Position, v.GuardPoint) - other.Radius > reach) continue;
@@ -405,6 +423,12 @@ namespace MachineBrigade.Sim.Movement
                     minRange: weapon.MinRange, layers: HuntsAircraft(v) ? weapon.Targets : weapon.Targets & TargetLayers.Ground);
             // Prompt 17 C: the stealth fighter with no aircraft about goes for the air defences.
             enemy ??= SeadTarget(v);
+            // AI MASTER P0-A (spec 47): never break off the route for an enemy it cannot get a firing solution on.
+            if (enemy != null && Unreachable(v, enemy))
+            {
+                _world.CombatWatch.NoteDropped(v, enemy);
+                enemy = null;
+            }
             if (enemy != null)
             {
                 v.Engaged = enemy.Id;

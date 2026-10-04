@@ -24,7 +24,7 @@ namespace MachineBrigade.Sim.AI
     /// It only knows about enemies its team can see and issues ordinary commands, so it plays by
     /// the same rules as the player (architecture rule 8).
     /// </summary>
-    public sealed class TacticalAi
+    public sealed partial class TacticalAi
     {
         private static float DecisionInterval => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DecisionInterval;
         private static float BoundLength => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.BoundLength;
@@ -260,6 +260,8 @@ namespace MachineBrigade.Sim.AI
             if (world.IsOver) return;
 
             Sort(world);
+            // AI MASTER P0-A (Part C): the combat watchdog's requests first.
+            ServeWatchdog(world);
             if (Layered)
             {
                 _groundPool.Clear();
@@ -303,6 +305,8 @@ namespace MachineBrigade.Sim.AI
                 FocusBoss(world);
                 DirectArtillery(world, front, objective, Direction(front, objective), contact);
                 FallBack(world);
+                ExplainLine(world, AI.CombatIdleReason.WaitingFormation);
+                ExplainWaits(world);
                 return;
             }
             // A new objective: every fast vehicle may be sent round a flank again.
@@ -315,6 +319,7 @@ namespace MachineBrigade.Sim.AI
             {
                 forward = Facing!(world)!.Value;
                 objective = Clamp(world, goal!.Value + forward * 5f);
+                ExplainLine(world, AI.CombatIdleReason.ObjectiveHold);
             }
 
             GrabCrates(world);
@@ -332,6 +337,7 @@ namespace MachineBrigade.Sim.AI
             DirectMainBody(world, objective, contact);
             if (!holding) PushStale(world, objective);
             if (Layered) RestoreGround();
+            ExplainWaits(world);
         }
 
         /// <summary>
@@ -1081,6 +1087,9 @@ namespace MachineBrigade.Sim.AI
             Vector2? best = null;
             var bestScore = float.MaxValue;
             var start = SimMath.HeadingOf(shooter.Position - target);
+            // AI MASTER P0-A (spec 91): a firing reservation is never made on a transit route (a main route through the cell);
+            // only when no other spot exists does the old scoring (a route counts against a spot) pick one there, logged.
+            for (var pass = 0; pass < 2 && best == null; pass++)
             // Nearer rings (0.65, 0.55) only matter when the outer ones are all exposed or booked.
             foreach (var fraction in SpotRings)
             {
@@ -1096,6 +1105,7 @@ namespace MachineBrigade.Sim.AI
                     if (!world.Grid.IsWalkable(p) || Exposed(p, StandoffMargin)) continue;
                     var f = lanes.At(p);
                     if ((f & LaneFlags.NoPark) != 0) continue;
+                    if (pass == 0 && (f & LaneFlags.Route) != 0) continue;
                     var score = Vector2.Distance(p, shooter.Position) + MathF.Abs(turn) * 4f + ringPenalty +
                                 ((f & LaneFlags.Road) != 0 ? SpotRoadPenalty : 0f) +
                                 ((f & LaneFlags.Route) != 0 ? SpotRoutePenalty * lanes.RouteCountAt(p) : 0f) -
@@ -1110,7 +1120,11 @@ namespace MachineBrigade.Sim.AI
                     best = p;
                 }
             }
-            if (best is { } spot) lanes.Reserve(spot, shooter);
+            if (best is { } spot)
+            {
+                lanes.Reserve(spot, shooter);
+                if ((lanes.At(spot) & LaneFlags.Route) != 0) CombatReasons.Log(world, shooter, DecisionKind.Action, CombatReasons.PositionTransitFallback);
+            }
             return best;
         }
 

@@ -440,6 +440,35 @@
       "homeReach": { "value": 45.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "TacticalAi.HomeReach" },
       "waveSize": { "value": 2, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "06", "code": "TacticalAi.WaveSize" },
       "waveWait": { "value": 12.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "TacticalAi.WaveWait" }
+    },
+    // AI MASTER P0-A (lane A): spec 42-47, 88-89, 107 "targeting", Part B B2/B3, Part C, Part H (Docs/ai/spec_master).
+    "targeting": {
+      "targetStickSeconds": { "value": 1.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Targeting.TargetStickSeconds" },
+      "targetStickBonus": { "value": 0.15, "unit": "share", "kind": "khac", "linh_vuc": "06", "code": "Targeting.TargetStickBonus" },
+      "overkillShare": { "value": 1.15, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Targeting.OverkillShare" },
+      "overkillFloor": { "value": 0.001, "unit": "x", "kind": "khac", "linh_vuc": "06", "code": "Targeting.OverkillFloor" },
+      "overkillDangerWorth": { "value": 20.0, "unit": "CP", "kind": "nguong", "linh_vuc": "06", "code": "Targeting.OverkillDangerWorth" },
+      "aimTimeConstant": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Targeting.AimTimeConstant" },
+      "maxAimSeconds": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Targeting.MaxAimSeconds" },
+      "threatToSelfWeight": { "value": 0.2, "unit": "share", "kind": "khac", "linh_vuc": "06", "code": "Targeting.ThreatToSelfWeight" },
+      "threatToObjectiveWeight": { "value": 0.22, "unit": "share", "kind": "khac", "linh_vuc": "06", "code": "Targeting.ThreatToObjectiveWeight" },
+      "breachStructureBonus": { "value": 25.0, "unit": "x", "kind": "khac", "linh_vuc": "06", "code": "Targeting.BreachStructureBonus" },
+      "breacherDistraction": { "value": 0.5, "unit": "x", "kind": "khac", "linh_vuc": "06", "code": "Targeting.BreacherDistraction" },
+      "siegeTowerBonus": { "value": 2.0, "unit": "x", "kind": "khac", "linh_vuc": "06", "code": "Targeting.SiegeTowerBonus" },
+      "siegeEngagedTowerBonus": { "value": 1.5, "unit": "x", "kind": "khac", "linh_vuc": "06", "code": "Targeting.SiegeEngagedTowerBonus" },
+      "siegeStructureBonus": { "value": 1.3, "unit": "x", "kind": "khac", "linh_vuc": "06", "code": "Targeting.SiegeStructureBonus" },
+      "siegeLightPenalty": { "value": 0.2, "unit": "x", "kind": "khac", "linh_vuc": "06", "code": "Targeting.SiegeLightPenalty" },
+      "breachCorridorWidth": { "value": 12.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Targeting.BreachCorridorWidth" },
+      "defendBreachReach": { "value": 30.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Targeting.DefendBreachReach" }
+    },
+    "combatWatchdog": {
+      "evaluateEveryTicks": { "value": 5, "unit": "count", "kind": "tan_suat", "linh_vuc": "06", "code": "CombatWatchdog.EvaluateEveryTicks" },
+      "anomalyGraceSeconds": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "CombatWatchdog.AnomalyGraceSeconds" },
+      "idleReasonSeconds": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "CombatWatchdog.IdleReasonSeconds" },
+      "firedRecentlySeconds": { "value": 2.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "CombatWatchdog.FiredRecentlySeconds" },
+      "suppressSeconds": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "CombatWatchdog.SuppressSeconds" },
+      "sidestepMetres": { "value": 6.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "CombatWatchdog.SidestepMetres" },
+      "explainSeconds": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "CombatWatchdog.ExplainSeconds" }
     }
   },
   "campaign": {
