@@ -23,7 +23,55 @@ namespace MachineBrigade.Game.Effects
         public const int Top = 5;
 
         /// <summary>A weapon's tier, -1 without one (no family: support strikes, the game's staged blasts).</summary>
-        public static int Of(WeaponDef weapon) => weapon == null ? -1 : Mathf.Min(Top, weapon.Tier);
+        public static int Of(WeaponDef weapon) => weapon == null ? -1 : Mathf.Min(Top, Looks.TryGetValue(weapon.Id, out var look) ? look.Tier : weapon.Tier);
+
+        /// <summary>
+        /// Play-test 14 (lane L, owner 04/10: "các tàu / thuyền mini boss tôi thấy bắn nổ hơi to (các vũ khí mới thêm vào như tên
+        /// lửa)"): the boss weapons added on 04/10 drawn like the same-calibre weapons elsewhere, not by their family's tier
+        /// alone. The view's only (the Sim's tier and every number stay): <see cref="Of"/> takes <c>Tier</c>, and a blast's
+        /// overlay is drawn for at most <c>Core</c> m (-1: its own radius; its rings stay on the real radius).
+        /// <list type="bullet">
+        /// <item>Kh-35U (145 kg), NSM (125 kg real) and Club-S (200 kg): T3, the Maverick's band (57 kg, T3) rather than the
+        /// strike jets' 400-450 kg cruise missiles (T4); a Kh-29L (320 kg) is the lightest T4 in the game.</item>
+        /// <item>Spike NLOS: an ATGM's blast (the Kornet's, the Hellfire's: T2 at its nominal size), not grown by its 3.5 m
+        /// splash.</item>
+        /// </list>
+        /// The Tomahawk (450 kg) keeps T4 (with a Large blast, the Kh-29L's look); the guns already match their calibres.
+        /// </summary>
+        private static readonly Dictionary<string, (int Tier, float Core)> Looks = new()
+        {
+            ["scylla_kh35"] = (3, -1f),
+            ["pt14_hp_nsm"] = (3, -1f),
+            ["hydra_club_s"] = (3, -1f),
+            ["pt14_co_spike"] = (2, 0f),
+        };
+
+        /// <summary>
+        /// Play-test 14 (lane L, owner 04/10: "các vũ khí lớn các boss sao không có hiệu ứng bắn"): how much bigger a boss's shot
+        /// is drawn at its muzzle (the weapon's flash, its tier's firing look, the pressure and water rings): 1 for anyone else.
+        /// The recipes are sized for a vehicle's guns (a 120 mm tank gun's flash: a 5 m core) and took no calibre, so a 406 mm,
+        /// a 203 mm and a 155 mm all flashed as a tank gun does; on a 50-90 m hull, framed from far enough to see it whole,
+        /// that is a speck for a tenth of a second, and a boss's gun shakes nothing (play-test 12): its big guns read as not
+        /// firing at all. A gun's muzzle blast grows with its bore (the fireball goes with the cube root of the charge, the
+        /// charge with the bore cubed), so a shell or bullet's look by its calibre against the 120 mm design; and a boss by its
+        /// bulk (its radius over 7 m, at most 1.5: ships and the space ships 1.4-1.5). Missiles and rockets by the bulk alone.
+        /// At least 1 (nothing drawn smaller than before), at most 3 (the 406 mm).
+        /// </summary>
+        public static float BossMuzzle(MachineBrigade.Game.Views.VehicleView shooter, WeaponDef weapon)
+        {
+            if (shooter == null || shooter.Def == null || !shooter.Def.Boss || weapon == null) return 1f;
+            var bulk = Mathf.Clamp(shooter.Def.Radius / 7f, 1f, 1.5f);
+            var calibre = weapon.CaliberMm > 0f ? weapon.CaliberMm : weapon.Size;
+            var bore = weapon.Projectile is ProjectileKind.Shell or ProjectileKind.Bullet && calibre > 0f ? calibre / DesignCalibre : 1f;
+            return Mathf.Clamp(bore * bulk, 1f, MaxBossMuzzle);
+        }
+
+        /// <summary>The calibre the firing recipes are drawn for (a main battle tank's gun, mm), and the most a boss's shot grows.</summary>
+        public const float DesignCalibre = 120f, MaxBossMuzzle = 3f;
+
+        /// <summary>The core radius a round's tier overlay is drawn for: its own, capped by its look (<see cref="Looks"/>).</summary>
+        public static float CoreOf(WeaponDef weapon, float core) =>
+            weapon != null && Looks.TryGetValue(weapon.Id, out var look) && look.Core >= 0f ? Mathf.Min(core, look.Core) : core;
 
         /// <summary>The core radius each tier's overlay is designed at (m): its overlay is played at core / this.</summary>
         public static float NominalCore(int tier) => tier switch

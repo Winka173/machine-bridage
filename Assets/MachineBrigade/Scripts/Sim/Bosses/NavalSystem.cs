@@ -535,10 +535,14 @@ namespace MachineBrigade.Sim.Bosses
             var at = _world.ClampToMap(aim + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * scatter * (float)_world.Random.NextDouble());
             if (cruise.Warning != null && _world.Catalog.TryGetSupport(cruise.Warning, out var warning))
                 _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, cruise.Warn));
-            if (cruise.Weapon != null && _world.Catalog.Weapons.TryGetValue(cruise.Weapon, out var missile))
+            WeaponDef? missile = null;
+            if (cruise.Weapon != null && _world.Catalog.Weapons.TryGetValue(cruise.Weapon, out missile))
                 _world.Emit(cell >= 0 ? SimEvent.FiredFrom(v, missile, cell, origin, at, cruise.Warn, EntityId.None)
                     : SimEvent.FiredWith(v, missile, origin, at, cruise.Warn, EntityId.None));
-            _world.Damage.Queue(at, ExplosionDef.TwoLayer(cruise.Damage, cruise.Radius, ExplosionTier.Ultimate), cruise.Warn, v.Team, v, HitKind.Strike, v.Id);
+            // Play-test 14 (lane L): the blast is drawn at its missile's own impact tier (a look only: the tier never changes the
+            // damage); the Leviathan's Kalibr stays Ultimate, the Hydra's Club-S (a mini boss's) is drawn Large.
+            var tier = missile?.ImpactTier ?? ExplosionTier.Ultimate;
+            _world.Damage.Queue(at, ExplosionDef.TwoLayer(cruise.Damage, cruise.Radius, tier), cruise.Warn, v.Team, v, HitKind.Strike, v.Id);
         }
 
         /// <summary>

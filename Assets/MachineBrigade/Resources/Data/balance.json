@@ -1016,7 +1016,7 @@
     // Play-test 14 after R4 (lane space, DECISIONS "Play-test 14 space ships after R4 (lane space)"): the space bosses' guns
     // under the hull that fire down (groundMinReach 0: no dead zone under a hovering ship), Hyperion's and Coeus's
     // conventional heavy guns instead of their coilguns, the cruisers' missiles (0.3 x the real speed, 60-100 m/s).
-    { "id": "pt14_sb_v105", "groundMinReach": 0, "inherits": "gunship_105", "real": "M102 105 mm (Icarus ventral turret)", "damage": 300, "cooldown": 6, "range": 50, "edge": 10 },
+    { "id": "pt14_sb_v105", "groundMinReach": 0, "inherits": "gunship_105", "real": "M102 105 mm (Icarus ventral turret)", "damage": 300, "cooldown": 6, "range": 50, "edge": 10, "impactTier": "Large" },
     { "id": "pt14_sb_v30", "groundMinReach": 0, "inherits": "autocannon_30", "weaponFamily": "", "real": "Mk 44 Bushmaster II 30 mm (Icarus ventral twin)", "damage": 22, "burst": 8, "burstInterval": 0.1, "cooldown": 1.9, "range": 32 },
     { "id": "pt14_mk0_v40", "groundMinReach": 0, "inherits": "autocannon_40", "real": "Bofors L/60 40 mm (ventral test mount)", "damage": 30, "cooldown": 0.3, "clip": 8, "clipReload": 2.2, "range": 28 },
     { "id": "pt14_dd_v57", "groundMinReach": 0, "inherits": "p26_daedalus_sec_dae57", "real": "AU-220 57 mm (twin ventral turret)" },
@@ -1024,7 +1024,7 @@
     { "id": "pt14_hp_155", "groundMinReach": 19, "inherits": "naval_155_triple", "real": "155 mm/60 (Hyperion twin turret)", "damage": 600, "edge": 14, "burst": 2, "burstInterval": 0.4, "cooldown": 13.5, "range": 95 },
     { "id": "pt14_hp_vlaser", "groundMinReach": 0, "inherits": "p26_icarus_direct_ic_laser" },
     { "id": "pt14_hp_v127", "groundMinReach": 0, "inherits": "naval_127", "real": "Mk 45 127 mm (Hyperion ventral turret)", "damage": 380, "edge": 10, "cooldown": 4.5, "range": 80 },
-    { "id": "pt14_hp_nsm", "inherits": "anti_ship_missile", "weaponFamily": "", "real": "NSM Block 1A (Hyperion VLS, land attack)", "projectileSpeed": 90, "flightProfile": "Loft", "damage": 380, "burst": 2, "burstInterval": 0.6, "cooldown": 14, "range": 95, "splash": 5 },
+    { "id": "pt14_hp_nsm", "inherits": "anti_ship_missile", "weaponFamily": "", "real": "NSM Block 1A (Hyperion VLS, land attack)", "projectileSpeed": 90, "flightProfile": "Loft", "damage": 380, "burst": 2, "burstInterval": 0.6, "cooldown": 14, "range": 95, "splash": 5, "impactTier": "Large" },
     { "id": "pt14_th_v35", "groundMinReach": 0, "inherits": "flak_35", "real": "Oerlikon KDA 35 mm (Theia ventral twin)", "damage": 25, "clip": 16, "clipReload": 1.8 },
     { "id": "pt14_th_jagm", "inherits": "drone_missile", "weaponFamilyId": "atgm_agm_114_hellfire", "weaponFamily": "", "real": "AGM-179 JAGM (Theia quad pod)", "projectileSpeed": 95, "damage": 270, "burst": 2, "burstInterval": 0.5, "cooldown": 9, "range": 55 },
     { "id": "pt14_th_pd", "inherits": "laser_50kw", "real": "50 kW laser (Theia point-defence turret)", "range": 34 },
@@ -1112,8 +1112,8 @@
     { "id": "scylla_2m7", "inherits": "hmg_roof", "weaponFamily": "", "weaponFamilyId": "cal_14_5", "real": "2M-7 14.5 mm (twin HMG)", "size": 14.5, "caliberMm": 14.5, "barrels": 2, "damage": 11, "cooldown": 0.05, "range": 36, "clip": 40, "clipReload": 3, "targets": "Air" },
     { "id": "scylla_kh35", "inherits": "anti_ship_missile", "weaponFamily": "", "real": "Kh-35U Uran (quad canister bank)", "size": 500, "warheadKg": 145, "flightProfile": "Loft", "damage": 230, "burst": 2, "burstInterval": 0.7, "cooldown": 22, "range": 110, "projectileSpeed": 70, "splash": 6, "impactTier": "Large" },
     { "id": "nyx_millennium", "inherits": "boss_flak", "weaponFamilyId": "cal_35", "real": "Oerlikon Millennium 35 mm (AHEAD, stealth turret)", "barrels": 1, "damage": 24, "cooldown": 0.06, "range": 46, "clip": 24, "clipReload": 2.8, "targets": "Air" },
-    { "id": "nyx_tomahawk", "inherits": "cruise_missile_ground", "weaponFamily": "", "real": "RGM-109E Tomahawk (Mk 41-type 8-cell VLS)", "flightProfile": "Loft", "damageType": "HighExplosive", "pen": 3, "damage": 340, "cooldown": 24, "range": 120, "projectileSpeed": 70, "splash": 8, "impactTier": "Huge" },
-    { "id": "hydra_club_s", "inherits": "leviathan_cruise", "real": "3M-54 Club-S (submarine-launched, vertical tubes)" },
+    { "id": "nyx_tomahawk", "inherits": "cruise_missile_ground", "weaponFamily": "", "real": "RGM-109E Tomahawk (Mk 41-type 8-cell VLS)", "flightProfile": "Loft", "damageType": "HighExplosive", "pen": 3, "damage": 340, "cooldown": 24, "range": 120, "projectileSpeed": 70, "splash": 8, "impactTier": "Large" },
+    { "id": "hydra_club_s", "inherits": "leviathan_cruise", "real": "3M-54 Club-S (submarine-launched, vertical tubes)", "impactTier": "Large" },
     // Prompt 25 F2 batch A (DECISIONS 25F2-A): the weapons of the balance sheet's new units and structures ("Đề
     // xuất thêm", "Công trình mới"), their numbers the sheet's, on prompt 13's calibre scale and prompt 15's penetration.
     // dx02, ct14: the Bofors 40 mm L/70 (proximity-fused rounds): 4 a second from 20-round clips (the tower row's magazine, one gun for both).
