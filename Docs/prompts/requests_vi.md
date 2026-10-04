@@ -295,3 +295,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 04/10 lửa động cơ còn 20-30%; Hyperion vẽ lại kiểu battlecruiser StarCraft + 2 miniboss biến thể; ẩn thiết bị khói người chơi; tháp pháo Hydra/Nyx vẽ lại; tên lửa Typhon (từ đỉnh tháp) và toa tên lửa Nemesis/Juggernaut vẫn quá nhanh (nguyên văn cuối playtest14_vi.txt).
 - 04/10 xác tàu đang chìm/cháy phải là vật cản; preview: xe khác chạy vào đúng chỗ xác vừa chết (nguyên văn cuối playtest14_vi.txt).
 - 04/10 "Rocket của các boss khác ... làm chậm cùng mức 65 => có".
+- 04/10 bóng máy bay mất; icon boss Boss Hunt màu thật; Nyx/Scylla thêm bệ tên lửa + súng phòng không; Hydra tên lửa không có trong detail, súng nhỏ lại, bỏ chữ drone; Typhon thêm súng đuôi; sửa màu boss tàu/thuyền; Icarus/Mk0/Daedalus + 3 tàu mới thêm pháo bắn xuống, tên lửa, bỏ railgun (nguyên văn cuối playtest14_vi.txt).
