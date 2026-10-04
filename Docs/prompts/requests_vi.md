@@ -313,3 +313,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 04/10 trả lời 3 câu trang bị (nguyên văn cuối gear_balance_vi.md): giữ cap tổng + hiện phần overcap; hair_trigger 8/10/11, overtuned_engine 8/10/12, monolith Legendary 24%; ammo_handling reload 10-30%, magazine 8-24%.
 - 04/10 SPEC AI v2 chính thức (Docs/ai/spec_v2/: spec + PROMPT_owner_vi.md nguyên văn + PLAN.md); làm theo đợt ưu tiên P0 -> P3, có test + benchmark theo yêu cầu.
 - 04/10 "xử lý về phần AI ngưng lại, đợi bản cập nhật mới, đọc lại và tiếp tục làm".
+- 04/10 "file AI hoàn thiện đã có, @Machine_Brigade_AI_Behavior_MASTER_FINAL.md dùng nó, các file trước bỏ" -> Docs/ai/spec_master/ (spec + PLAN.md); spec_v2 xóa.

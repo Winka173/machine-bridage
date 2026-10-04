@@ -1,13 +1,53 @@
-# Machine Brigade — AI Behavior Full Specification
-## Bản kiến trúc AI đầy đủ: Commander, mua quân, quản lý đội hình, pathing, chống kẹt, boss, naval AI, target selection, debug và test
 
-**Trạng thái:** Đề xuất triển khai đầy đủ  
-**Ngày:** 2026-10-04  
-**Phạm vi:** `Sim/AI`, AI mua quân, AI đơn vị, squad, boss, tower coordination, pathing/traffic, map reachability, telemetry  
-**Không thay đổi:** các bảng cân bằng combat, boss HP/armour, weapon stats, economy cap đã chốt ở các prompt trước, trừ khi được ghi rõ là AI-only tunable.
+# MACHINE BRIGADE — AI BEHAVIOR MASTER SPEC
+## Canonical AI architecture, combat doctrine, mode doctrine, boss/naval behavior, pathing, traffic, procurement, squad coordination, targeting, support, watchdogs, debug, tests and performance
+
+**Status:** FINAL MASTER SPEC  
+**Supersedes:** all previous AI behavior prompts/spec files (including V1/V2).  
+**Scope:** all runtime AI behavior for player-side auto-AI, enemy AI, bosses, squads, ground/naval/air units, towers/support, procurement, pathing, targeting and tactical coordination.  
+**Do not combine old AI prompts with this file.** If an older prompt conflicts, this file wins.
 
 ---
 
+# MASTER RULES
+
+1. AI must be **smart because it plans and coordinates**, not because it cheats.
+2. AI must respect fog/intel. Unknown is not safe, but hidden enemy state is not available.
+3. No morale system.
+4. No retreat-by-health.
+5. Boss armour/HP and combat-balance values are outside this AI task.
+6. Hard feasibility filters run **before** scoring.
+7. Commander chooses WHAT/WHERE, Squad chooses HOW AS GROUP, Tactical chooses LOCAL ACTION, Steering chooses SAFE MOTION.
+8. Every armed unit that is idle must have a valid explainable reason.
+9. Every important decision must be debuggable through DecisionLog/reason codes.
+10. Generated AI docs/data must be regenerated from canonical source; never patch generated output as authority.
+
+---
+
+# PART A — EXISTING FOUNDATION TO PRESERVE
+
+The current repository already contains useful foundations and they must be integrated rather than discarded:
+
+- AiCommander strategic intent.
+- Squad state/action layer.
+- TacticalAi unit-level combat behavior.
+- WorldModel / fog / threat representation.
+- DecisionLog.
+- mode profiles.
+- tactic profiles.
+- AI role mapping.
+- tower modes.
+- artillery standoff concepts.
+- firing-spot booking.
+- aircraft resupply.
+- boss phase data.
+- target masks.
+- anti-stuck fallback.
+- current difficulty framework.
+
+The new architecture extends these systems and may refactor them, but must not silently remove working behavior.
+
+---
 # 0. Mục tiêu
 
 Tài liệu này thay thế cách vá từng bug AI bằng một kiến trúc thống nhất.
@@ -5018,3 +5058,1338 @@ AI nên cho cảm giác:
 - và giải thích được mọi quyết định quan trọng trong log.
 
 Đây là behavior target cuối cùng khuyến nghị cho Machine Brigade AI.
+
+---
+
+# PART B — COMBAT ROLE DOCTRINE (MANDATORY)
+
+This layer is required to eliminate the bug where a vehicle has a valid role but still chooses poor targets or idles.
+
+Each combat unit resolves:
+
+```text
+RoleDoctrine
++ MissionDoctrine
++ ModeDoctrine
++ WeaponSuitability
++ LocalThreat
+= TacticalCombatIntent
+```
+
+Target selection is therefore not a single global priority table.
+
+## B1. Generic target score
+
+```text
+TargetScore =
+    BaseTargetValue
+  × RolePreference
+  × MissionPreference
+  × ModePreference
+  × WeaponSuitability
+  × ThreatUrgency
+  × FiringSolutionQuality
+  × TargetPersistence
+  × ObjectiveRelevance
+  - OverkillPenalty
+  - AimTurnPenalty
+  - ExposurePenalty
+```
+
+Any infeasible target is removed before this formula.
+
+## B2. Breacher / wall-breaker doctrine
+
+Applies to:
+- armored bulldozer;
+- engineer breach vehicles;
+- demolition line vehicles;
+- any explicit Breacher role.
+
+Priority:
+
+1. blocking wall section whose destruction reduces route cost;
+2. destructible gate/obstacle blocking the mission corridor;
+3. tower directly defending the breach point;
+4. structure preventing objective access;
+5. enemy combat unit posing immediate lethal/self-defence threat;
+6. other valid targets.
+
+Critical rule:
+
+> A Breacher must not abandon a mission-blocking wall to shoot a random nearby light unit unless that unit is an immediate survival blocker.
+
+Walls are not globally high priority. Only `BlockingStructure` / `BreachObjective` structures get the hard bonus.
+
+Suggested breach utility:
+
+```text
+BreachUtility =
+    PathCostReduction
+  + FriendlyUnitsUnblocked
+  + ObjectiveAccessValue
+  + ChokeRelief
+  - BreachTime
+  - ThreatAtBreach
+```
+
+## B3. Siege / anti-structure doctrine
+
+Priority:
+
+1. tower currently damaging the assault/objective;
+2. shield/radar/SAM/heavy defensive tower;
+3. blocking wall/gate on main effort;
+4. mission/HQ structure if objective requires;
+5. static artillery/support structure;
+6. heavy ground target;
+7. light targets only when no valuable structure remains or in self-defence.
+
+Siege platforms should not waste long reload shots on scouts while useful structures are available.
+
+## B4. Tank destroyer / Rail doctrine
+
+Priority:
+
+1. Armour5;
+2. Armour4;
+3. heavy/super-heavy;
+4. boss combat part / heavy boss target if weapon is suitable;
+5. MBT;
+6. medium target;
+7. light target only if no better heavy target or the light target is immediately critical.
+
+This preserves the purpose of Pen5 and Kinetic Overpenetration.
+
+## B5. MBT / Heavy doctrine
+
+Priority:
+
+1. immediate threat to self/squad;
+2. enemy heavy / MBT;
+3. enemy TD/AT threatening own heavies;
+4. objective defender;
+5. structure if mission requires;
+6. light/recon/support.
+
+Do not chase support far outside formation leash.
+
+## B6. IFV / autocannon / light combat doctrine
+
+Priority:
+
+1. light vehicle;
+2. recon;
+3. drone / low-altitude air when weapon permits;
+4. fragile support;
+5. medium combat vehicle;
+6. heavy only when no suitable target exists or for self-defence.
+
+## B7. AA / SAM doctrine
+
+Priority:
+
+1. aircraft attacking protected asset;
+2. bomber / strike aircraft;
+3. attack helicopter/gunship;
+4. fighter;
+5. drone if compatible;
+6. no ground chase unless platform has a valid separate ground weapon.
+
+SAM must preserve coverage anchor and pursuit leash.
+
+## B8. Artillery / mortar / MLRS doctrine
+
+Priority:
+
+1. counter-battery target;
+2. tower / defensive cluster;
+3. dense enemy cluster;
+4. static heavy target;
+5. objective defenders;
+6. isolated light target only if urgent or no better target.
+
+Heavy salvo weapons use a minimum target-value threshold.
+
+## B9. Recon doctrine
+
+Primary jobs:
+1. scout unknown/high-risk routes;
+2. expose artillery/SAM/boss weakpoints;
+3. validate flank corridors;
+4. provide objective vision;
+5. combat only via opportunity fire/self-defence.
+
+Recon must not abandon scouting to chase kills.
+
+## B10. Engineer / repair / support doctrine
+
+Repair:
+- high-value repair demand;
+- boss/critical escort if assigned;
+- frontline heavy;
+- important support.
+
+Combat engineer/breacher:
+- structure/path task outranks random combat.
+
+Support units should optimize coverage, not chase enemy contact.
+
+## B11. Bomber / strike doctrine
+
+Priority:
+1. high-value structure;
+2. artillery;
+3. SAM/radar when SEAD-capable;
+4. heavy cluster;
+5. objective cluster;
+6. single light target only if strategically urgent.
+
+## B12. Fighter doctrine
+
+Priority:
+1. bomber;
+2. strike aircraft;
+3. fighter threatening own strike package;
+4. gunship/helicopter;
+5. drone.
+
+No ground attack unless the aircraft/weapon explicitly supports it.
+
+## B13. Loitering/drone doctrine
+
+Anti-armour:
+- heavy armour;
+- TD/artillery;
+- expensive support;
+- tower.
+
+Lancet-like anti-artillery:
+- artillery;
+- SAM/radar;
+- parked support;
+- tower;
+- heavy target.
+
+Never "nearest valid target" as the only rule.
+
+---
+
+# PART C — COMBAT ACTIVITY WATCHDOG (MANDATORY)
+
+Movement anti-stuck is not enough. Add a separate combat watchdog.
+
+Each armed unit tracks:
+
+```text
+lastTargetAcquireTime
+lastAimProgressTime
+lastFireTime
+lastDamageAttemptTime
+hasValidTarget
+hasFiringSolution
+weaponReady
+blockedByArc
+blockedByLOS
+blockedByMinRange
+blockedByFriendly
+blockedByMovementState
+explicitHoldReason
+```
+
+## C1. Combat anomaly
+
+If:
+
+```text
+hasValidTarget
+AND hasFiringSolution
+AND weaponReady
+AND not explicit HoldFire
+AND no fire beyond expected aim/reload window
+```
+
+for roughly `1.5–2.5 s` beyond the weapon's expected readiness:
+
+=> `COMBAT_ANOMALY`.
+
+Recovery sequence:
+
+1. validate target entity;
+2. recompute mount arc;
+3. clear stale aim/attack state;
+4. recompute LOS/firing lane;
+5. attempt local firing-position correction;
+6. switch target if current target is invalid/stale;
+7. if still unresolved, escalate to Squad/Tactical recovery;
+8. log exact reason.
+
+## C2. No-idle-armed-unit invariant
+
+An armed unit that is:
+- not moving;
+- not firing;
+- not reloading;
+- not repairing/resupplying;
+- not holding an explicit ambush/defence order;
+- not disabled;
+- not waiting for a valid known reason;
+
+for more than the configured threshold must have a reason code.
+
+Valid examples:
+
+```text
+HOLD_FIRE_AMBUSH
+RELOADING
+NO_REACHABLE_TARGET
+WAITING_MIN_RANGE
+BLOCKED_BY_FRIEND
+WAITING_FORMATION
+OBJECTIVE_HOLD
+NO_VALID_WEAPON_TARGET
+DISABLED_MAIN_WEAPON
+WAITING_FIRE_MISSION
+```
+
+No reason code => state-machine bug.
+
+---
+
+# PART D — TERRAIN / COVER / FIRING POSITION INTELLIGENCE
+
+The AI must understand good and bad positions, not just path distance.
+
+## D1. Position score
+
+```text
+PositionScore =
+    WeaponUptime
+  + CoverValue
+  + HullDownValue
+  + Elevation/Observation
+  + EscapeRoute
+  + FriendlySupportCoverage
+  - EnemyThreat
+  - SplashDensityRisk
+  - Congestion
+  - FriendlyFireLaneBlocking
+  - CounterBatteryRisk
+```
+
+Weights depend on role.
+
+## D2. Hull-down
+
+For TD/MBT/heavy where terrain allows:
+- prefer positions exposing turret/weapon while hull is masked;
+- only when weapon arc and LOS remain valid;
+- do not obsessively path to hull-down if objective timing is critical.
+
+## D3. Ridge / high ground
+
+Recon and long-range direct-fire units gain score for:
+- long LOS;
+- observation;
+- clear firing lane.
+
+Artillery does not need visual high ground unless its weapon/spotting model benefits.
+
+## D4. Dead ground / protected firing pockets
+
+Mortar/MLRS/artillery prefer:
+- lower direct enemy LOS;
+- enough sky/arc clearance;
+- valid range;
+- multiple exit routes;
+- nearby AA support.
+
+## D5. Cover reservation
+
+High-quality firing positions may be reservable:
+- TD/sniper-like vehicle spots;
+- artillery pockets;
+- hull-down points.
+
+Avoid 4 units selecting the same exact point.
+
+---
+
+# PART E — FRIENDLY FIRING-LANE / BLOCKED-SHOT HANDLING
+
+A common idle bug is "valid target but friendly vehicle blocks the shot."
+
+## E1. FiringLane check
+
+Before committing:
+
+```text
+LOS to target
+mount arc
+friendly collider intersection
+splash/friendly-fire risk if applicable
+```
+
+## E2. Resolution
+
+If blocked by friendly:
+1. wait briefly if blocker is moving through;
+2. choose a small lateral sidestep;
+3. switch to an alternate equivalent formation slot;
+4. choose another target;
+5. only move the blocker if Squad layer can do so safely.
+
+Do not let both units oscillate.
+
+## E3. Boss multi-mount lanes
+
+Each boss mount resolves its own lane.
+One blocked turret does not stop the entire boss from attacking.
+
+---
+
+# PART F — DAMAGE / COMPONENT-STATE ROLE ADAPTATION
+
+This is NOT retreat-by-health.
+
+AI changes behavior when capability changes.
+
+Examples:
+
+## F1. Main gun disabled
+MBT:
+- cease "main battle" aggressive doctrine;
+- use secondary/self-defence;
+- become screen/support/objective body if useful.
+
+## F2. Engine crippled
+- adjust route/formation slot;
+- do not assign long flank mission;
+- prefer hold/support if still combat-capable.
+
+## F3. Radar destroyed
+AA/radar platform:
+- lose radar-derived target ability/coverage;
+- hand off coverage responsibility.
+
+## F4. APS/shield lost
+- survivability estimate changes;
+- formation may place unit less aggressively.
+- no health-retreat trigger.
+
+## F5. Boss mount/part destroyed
+Broadside logic recomputes effective-DPS bearing.
+If left battery is destroyed, the boss should no longer keep presenting that useless side.
+
+---
+
+# PART G — THREAT-SPECIFIC FORMATION SWITCHING
+
+Existing formations remain, but triggers are formalized.
+
+```text
+Enemy splash/artillery high -> Spread
+Narrow choke/bridge/gate   -> Travel
+Static objective defence   -> Hold
+Validated flank opening    -> Flank
+Low cohesion               -> Regroup
+```
+
+Use hysteresis:
+- do not switch back immediately;
+- minimum commitment window;
+- emergency can override.
+
+---
+
+# PART H — OBJECTIVE-AWARE TARGET PRIORITY
+
+`ThreatToObjective` gets mode-aware weighting.
+
+Examples:
+
+Conquest:
+- unit actively capturing a critical point gets high priority.
+
+Escort:
+- unit currently damaging convoy outranks a distant heavy that is not relevant.
+
+Defend:
+- breacher threatening the gate/wall rises sharply.
+
+BossRush:
+- dangerous exposed boss part outranks generic hull.
+
+Siege:
+- defensive tower covering the breach outranks unrelated vehicle.
+
+This modifies role priority; it does not replace weapon suitability.
+
+---
+
+# PART I — MODE COMBAT DOCTRINE (MANDATORY)
+
+Mode profile must change **positioning and role behavior**, not only tactic preference.
+
+Every mode defines:
+
+```text
+FrontlinePolicy
+FireSupportPolicy
+SupportPolicy
+PursuitPolicy
+ReservePolicy
+RepositionTriggers
+ObjectiveTargetWeights
+```
+
+## I1. Assault / Breakthrough
+
+Formation:
+- heavy/MBT/breacher front;
+- IFV/TD second line;
+- mortar support;
+- MLRS/heavy launcher deeper;
+- AA between frontline and fire-support layer;
+- repair/ammo/EW behind line 2.
+
+Fire support:
+- Mortar anchor at roughly 55–75% of usable weapon range behind target/front context.
+- Artillery: 65–85%.
+- MLRS: 75–90%.
+- very-long-range/ballistic: 85–95% or fixed pocket if map-wide coverage.
+
+Artillery sequence:
+1. defensive tower;
+2. breach cluster;
+3. counterbattery;
+4. assault support.
+
+Do not follow squad centroid meter-by-meter.
+
+Reposition only when:
+- utilization drops;
+- frontline moved materially;
+- range band lost;
+- counterbattery threat;
+- route/mission changed.
+
+## I2. Defend / Hold
+
+Do not move launchers to meet enemy.
+
+Mortar:
+- behind first defence line;
+- at least one fallback firing position.
+
+MLRS:
+- deeper than mortar;
+- separated from HQ/tower cluster.
+
+TD:
+- hull-down/crossfire.
+
+Mine layer:
+- pre-place mines on approaches;
+- no suicidal mid-combat mine runs.
+
+AA:
+- protect HQ/artillery/support;
+- no long chase.
+
+Defence can fall back by strategic line/objective state, never by health threshold.
+
+## I3. Capture / Conquest / Hill
+
+Capture body:
+- MBT/light/IFV/appropriate durable units.
+
+Fire support:
+- stays outside capture circle unless necessary;
+- chooses support anchor that covers current objective and approach lanes;
+- ideally also covers likely next objective.
+
+Reserve:
+- fast unit response package.
+
+Reposition fire support only when new objective is no longer covered or threat demands it.
+
+## I4. Escort
+
+Use convoy-relative sectors:
+- front screen;
+- left/right screen;
+- AA umbrella;
+- rear guard;
+- repair/support trail;
+- fire-support leapfrog.
+
+Mortar:
+- behind convoy but in range of expected front.
+
+MLRS:
+- firing pocket to firing pocket;
+- not physically glued to convoy.
+
+Escort leash always wins against random pursuit.
+
+## I5. Siege
+
+Most sophisticated artillery doctrine:
+
+1. recon/spot;
+2. counterbattery;
+3. radar/SAM/tower suppression;
+4. breach wall/gate;
+5. defensive cluster suppression;
+6. main assault.
+
+Mortar closest support layer.
+MLRS farther.
+Heavy artillery deepest.
+
+Shoot-and-scoot after configured salvos when counterbattery risk exists.
+
+## I6. Survival
+
+No chase.
+
+Prepare 2–3 firing positions.
+Rotate by wave direction.
+Keep escape/reload lane.
+
+AA covers survival anchor/base.
+Fast units intercept and return.
+
+## I7. BossRush
+
+Target:
+1. lethal telegraph avoidance;
+2. dangerous boss part;
+3. exposed/disabled-value boss part;
+4. escorts/adds;
+5. hull.
+
+Artillery/launcher predicts boss firing region rather than following physically.
+Never stand in telegraph danger simply to maintain DPS.
+
+## I8. Deathmatch
+
+No capture anchor.
+Fire support uses friendly combat centroid/frontline as a moving **logical** anchor, not exact centroid following.
+
+Reposition when:
+- utilization falls;
+- frontline moves beyond useful range band;
+- firing pocket compromised.
+
+Avoid gifting expensive units.
+
+## I9. Hunt
+
+Scout/fast units locate/intercept.
+Artillery predicts likely area and uses intel.
+Do not make launchers directly chase mobile targets.
+
+## I10. Recon
+
+Recon remains main task.
+Heavy support only engages high-value spotted targets.
+Avoid revealing artillery/strike platform unnecessarily if mission rewards stealth/observation.
+
+## I11. Operation / phased campaign
+
+At each phase transition rebuild:
+- objective anchor;
+- fire-support anchor;
+- reserve location;
+- AA coverage;
+- procurement role deficits;
+- pursuit leash;
+- target priorities.
+
+Do not carry stale doctrine from a previous phase.
+
+## I12. Showdown / escalating duel
+
+Early:
+- defensive support pocket;
+- preserve expensive units.
+
+Mid:
+- balanced support / objective pressure.
+
+Final/sudden death:
+- reduce reserve;
+- move fire-support forward only enough to maintain value;
+- increase time-to-value weighting.
+
+## I13. Shootdown / air-objective modes
+
+AA coverage and survival become primary.
+Ground combat units defend AA/support.
+Do not chase unrelated ground targets unless they threaten the AA mission.
+
+## I14. Fixed deck / scripted modes
+
+Respect scenario restrictions first.
+Apply doctrine only inside permitted unit/task set.
+
+## I15. Mode inheritance
+
+Do not hardcode identical copies.
+Use:
+
+```text
+base RoleDoctrine
++ ModeDoctrine override
++ mission phase override
+```
+
+Mode profiles remain data-driven.
+
+## I16. Endless
+
+Inherits Defend doctrine but changes long-horizon behavior:
+
+- rotate firing positions to avoid permanent counterbattery exposure;
+- keep repair/support logistics sustainable;
+- do not spend all reserve on an early wave unless HQ/base emergency;
+- procurement should react to observed wave composition EMA;
+- clear obsolete mines/reservations/anchors between major wave-direction changes if the engine supports it;
+- fire-support anchors may cycle among prepared pockets rather than remain permanently fixed.
+
+No match-end deadline pressure; prioritize sustainable utilization and traffic health.
+
+## I17. Weekly
+
+Inherits Siege doctrine, but progress can persist across attempts.
+
+AI must:
+- value already-breached defensive layers correctly;
+- not waste breacher effort on a layer already permanently cleared;
+- rebuild the current attempt's fire-support plan from current fortress state;
+- prioritize remaining high-value defensive systems;
+- use time-to-value because each attempt has a practical combat window;
+- preserve valid stage/layer state supplied by the mode instead of assuming a fresh fortress.
+
+## I18. Campaign Hold / Protect / Outpost / Relieve
+
+These mission-goal profiles inherit Defend/Hold principles but use the mission object as the protected anchor.
+
+- `Hold`: maintain contest/control area, fire support outside the objective body.
+- `Protect`: ThreatToProtectedAsset is the dominant target modifier.
+- `Outpost`: defend the outpost while preserving useful firing arcs and rebuild/support access.
+- `Relieve`: fast/main force reaches the threatened friendly position; artillery anchors behind the relief corridor rather than staying at original spawn.
+
+## I19. Evacuate
+
+Inherits Escort but the destination and survival of evac entities dominate.
+
+- screen ahead;
+- rear guard against pursuers;
+- AA coverage on convoy/evac group;
+- no random pursuit away from evacuation corridor;
+- fire support leapfrogs to cover the next convoy segment.
+
+## I20. Intercept
+
+Time/deadline dominates.
+
+- use fast suitable units;
+- predictive interception/cutoff;
+- do not assign slow units whose ETA misses the intercept window;
+- artillery targets predicted choke/route only with sufficient intel confidence;
+- pursuit ends when intercept mission becomes impossible or target leaves mission relevance.
+
+## I21. Recon mission goal
+
+ReconQuiet / no-strike star conditions, if active, must be visible to doctrine.
+
+- HoldFire where appropriate;
+- avoid unnecessary artillery/air strikes;
+- prioritize observation and safe extraction;
+- only break quiet posture for explicit survival/mission necessity.
+
+## I22. ShootDown
+
+- preserve AA/SAM;
+- maintain overlapping coverage rather than chase aircraft;
+- air target handoff prevents overcommit;
+- ground enemies only become primary when they directly threaten AA/objective assets.
+
+## I23. Destroy
+
+Destroy mission identifies the mission structure/target as the strategic target.
+
+- siege/bomber/strike receive high MissionPreference;
+- escort/AA/support protect the strike package;
+- avoid wasting heavy strike ordnance on unrelated targets before the mission target is accessible.
+
+## I24. Duel
+
+- preserve high-value units according to current mode rules;
+- focus combat power rather than over-dispersing;
+- fire support follows the combat front;
+- no objective-capture logic unless the scenario explicitly adds one.
+
+## I25. Boss mission goal
+
+Same principles as BossRush but for a single campaign boss:
+- telegraph survival;
+- dangerous boss parts;
+- adds/escorts threatening the force;
+- hull afterward;
+- star/mastery constraints may modify optional behavior but never violate survival/fog fairness.
+
+## I26. Profile completeness rule
+
+At load/validation time:
+
+```text
+for every aiModeProfiles.profiles row:
+    assert a ModeDoctrine exists
+    OR an explicit inherits/fallback doctrine exists
+```
+
+No profile is allowed to silently fall back to generic "move toward nearest enemy" behavior.
+
+For every campaign goal mapping:
+
+```text
+aiModeProfiles.goals -> profile -> doctrine
+```
+
+must resolve successfully.
+
+If a new mode/profile is added later without doctrine:
+- development build warning/error;
+- production falls back to `BalancedObjectiveDoctrine`, not raw nearest-enemy behavior.
+
+---
+
+# PART J — FIRE SUPPORT ANCHORS
+
+Artillery does not follow squad centroid.
+
+Each support group receives a `FireSupportAnchor`.
+
+Anchor score:
+
+```text
+AnchorScore =
+    ObjectiveCoverage
+  + EnemyApproachCoverage
+  + FriendlyFrontCoverage
+  + AAProtection
+  + EscapeRoute
+  + CounterBatterySafety
+  - Threat
+  - Congestion
+  - MinRangeViolation
+  - Spawn/TrafficBlocking
+```
+
+Reposition triggers:
+- objective/frontline moved outside effective range band;
+- utilization below threshold;
+- target access lost;
+- counterbattery;
+- terrain state changes;
+- mode phase changes.
+
+---
+
+# PART K — AI HEALTH MONITOR (MANDATORY SYSTEM WATCHDOG)
+
+Create an aggregate monitor above individual watchdogs.
+
+Track:
+
+```text
+armedIdleWithoutReason
+squadsNoDamageSeconds
+blockedUnits
+severeUnstuckEvents
+ordersPerUnitPerMinute
+targetSwitchesPerMinute
+squadActionSwitchesPerMinute
+noMapInfluencePurchases
+lowUtilizationUnitClasses
+stalledObjectiveAssignments
+combatAnomalies
+deadlockCycles
+navalReverseAttempts
+```
+
+## K1. Recovery actions
+
+If systemic threshold trips:
+
+### Too many idle armed units
+- force target/firing-solution audit;
+- refresh combat state;
+- log top reasons.
+
+### Squad no useful damage for 10–20 s
+- recompute firing anchor;
+- re-evaluate route;
+- re-evaluate mission fit.
+
+### High blocked-unit ratio
+- activate TrafficCoordinator congestion escalation;
+- split/re-route packets.
+
+### Repeated low-utilization purchases
+- same-match purchase modifier.
+
+### Excessive churn
+- increase commitment/hysteresis temporarily.
+
+### Naval reverse attempt
+- hard assertion/error in debug;
+- controller must choose turn/slow/alternate lane.
+
+The Health Monitor must never cheat or issue magical state changes. It only triggers valid re-evaluation/recovery.
+
+---
+
+# PART L — AMMO / RELOAD-AWARE TACTICS
+
+If a weapon uses meaningful magazine/reload cycles:
+
+- do not begin an exposed charge with an empty/near-empty magazine unless objective emergency;
+- use long reload windows for short reposition;
+- artillery may scoot during reload;
+- support weapons avoid exposing themselves while unable to fire;
+- do not cancel reload repeatedly due target churn.
+
+This makes magazine/reload gear meaningful to AI behavior.
+
+---
+
+# PART M — ANTI-CHEESE / SAME-MATCH ADAPTATION
+
+Allowed adaptation uses only observed match data.
+
+Examples:
+- player repeatedly baits chase through same choke;
+- player camps with artillery;
+- air-heavy composition;
+- repeated fixed-route ambush;
+- repeated tower-defense pattern.
+
+Responses:
+- reduce pursuit leash;
+- increase recon;
+- alternate route;
+- increase counterbattery/SEAD;
+- adjust procurement role deficit;
+- use smoke/support.
+
+No hidden-state knowledge and no cross-match learning unless separately designed.
+
+---
+
+# PART N — TOWER AI COORDINATION
+
+Keep existing tower modes, but add coordination:
+
+- avoid overkill where multiple towers target one weak unit;
+- SAM/AA towers prioritize aircraft threatening protected zone;
+- AT tower values heavy targets;
+- drone hangar/artillery-capable towers value enemy artillery/support;
+- shield/PD systems prioritize relevant interceptable threats;
+- tower target mode may be overridden by critical objective threat.
+
+Static towers do not path, but still use PlannedActionBoard for deconfliction.
+
+---
+
+# PART O — FULL DEBUG / REASON CODE SET
+
+Minimum reason namespaces:
+
+```text
+PURCHASE_*
+TARGET_*
+POSITION_*
+ROUTE_*
+TRAFFIC_*
+JAM_*
+COMBAT_IDLE_*
+FORMATION_*
+MODE_*
+BOSS_*
+NAVAL_*
+SUPPORT_*
+AIR_*
+ARTILLERY_*
+OBJECTIVE_*
+WATCHDOG_*
+```
+
+Every rejection should be explainable.
+
+Examples:
+
+```text
+PURCHASE_NO_MAP_INFLUENCE
+PURCHASE_ROLE_SATURATED
+TARGET_NO_FIRING_SOLUTION
+TARGET_WRONG_WEAPON_DOMAIN
+POSITION_FRIENDLY_BLOCK
+JAM_CHOKE_QUEUE
+COMBAT_IDLE_STALE_AIM
+MODE_DEFEND_NO_CHASE
+BOSS_HULL_ROUTE_OWNS_HEADING
+NAVAL_REVERSE_FORBIDDEN
+ARTILLERY_COUNTERBATTERY_SCOOT
+WATCHDOG_SQUAD_ZERO_UTILIZATION
+```
+
+---
+
+# PART P — PERFORMANCE / UPDATE BUDGET
+
+Suggested update classes:
+
+```text
+Steering/avoidance:  10 Hz
+Tactical combat:      4 Hz
+Squad:                2 Hz
+Commander:            1 Hz
+Procurement:          0.5 Hz
+Heavy forecast:       event-driven + cached
+Frontline/influence:  staggered
+```
+
+Use:
+- spatial hash/grid;
+- bounded nearest-neighbour queries;
+- cache map/domain feasibility;
+- sparse reservation maps;
+- shallow forecast only;
+- no per-frame deep search.
+
+---
+
+# PART Q — IMPLEMENTATION ORDER
+
+## P0 Correctness
+1. combat activity watchdog;
+2. no-idle-armed-unit invariant;
+3. target hard feasibility;
+4. breach/structure targeting;
+5. no-map-influence procurement;
+6. naval no-reverse;
+7. hull/turret separation;
+8. staged anti-stuck.
+
+## P1 Movement / traffic
+1. shared corridor;
+2. TrafficCoordinator;
+3. deterministic passing;
+4. choke queue/reservation;
+5. wreck nav invalidation;
+6. spawn clear zones;
+7. predictive congestion/deadlock cycle.
+
+## P2 Role/mode intelligence
+1. CombatRoleDoctrine;
+2. ModeCombatDoctrine;
+3. FireSupportAnchor;
+4. terrain/cover;
+5. friendly firing-lane handling;
+6. component-state adaptation;
+7. formation switching.
+
+## P3 Coordination
+1. frontline;
+2. planned action reservations;
+3. synchronized attacks;
+4. reserve;
+5. route diversity;
+6. counterbattery;
+7. pursuit discipline.
+
+## P4 Advanced planning
+1. short combat forecast;
+2. shallow counterfactual plans;
+3. probe/feint/fix-flank;
+4. same-match adaptation;
+5. SEAD/air packages;
+6. advanced boss cadence/weakpoint logic.
+
+## P5 Monitoring/optimization
+1. AI Health Monitor;
+2. performance profiling;
+3. tuning and regression sweeps.
+
+---
+
+# PART R — REQUIRED REGRESSION MATRIX
+
+## R1. "Standing still but not attacking"
+Cases:
+- valid target + clear LOS;
+- valid target but friendly blocks;
+- target inside min range;
+- target outside mount arc;
+- stale target entity;
+- weapon reloaded but aim state stuck;
+- unit in formation waiting incorrectly.
+
+Expected:
+- explicit reason or automatic recovery;
+- never indefinite silent idle.
+
+## R2. Breacher
+- random jeep beside blocking wall;
+- wall must remain priority unless jeep is immediate self-defence threat.
+
+## R3. Siege
+- tower + scout both visible;
+- structure priority wins if weapon and mission support it.
+
+## R4. Fire support by mode
+Test mortar/MLRS in:
+- Assault
+- Defend
+- Conquest
+- Escort
+- Siege
+- Survival
+- BossRush
+- Deathmatch
+- Hunt
+- Operation phase transition
+- Showdown
+
+Verify:
+- correct anchor;
+- correct pursuit;
+- correct reposition trigger.
+
+## R5. Component damage
+- boss loses left broadside;
+- broadside preference must recompute.
+- MBT loses main gun;
+- role changes without health-retreat.
+
+## R6. Friendly firing lane
+Two tanks line up:
+- rear tank sidesteps/chooses alternate slot instead of silently idling.
+
+## R7. Cover
+TD has open-ground position vs hull-down position with equivalent mission timing:
+- hull-down preferred.
+
+## R8. Health monitor
+Inject artificial stalled squad:
+- monitor detects;
+- triggers valid re-evaluation;
+- logs cause.
+
+---
+
+# PART S — ACCEPTANCE GATES
+
+Task is not complete unless all are true:
+
+```text
+naval boss reverse events = 0
+no-map-influence purchases = 0 except explicit scripted exception
+armed idle without reason = 0
+combat anomaly recovery verified
+breacher blocking-wall priority verified
+mode-aware fire-support anchors verified
+boss hull/turret separation verified
+traffic deadlock recovery verified
+fog fairness tests pass
+48v48 performance acceptable
+```
+
+Target severe unstuck:
+
+```text
+<= 1 per 10 unit-minutes
+```
+
+on normal open maps.
+
+---
+
+# PART T — RESEARCH-DERIVED DESIGN RATIONALE
+
+External research is guidance, not authority over repo behavior.
+
+## OpenRA / modular RTS patterns
+Useful ideas:
+- production composition rather than first-available purchase;
+- squad-level grouping;
+- stances/opportunity fire;
+- persistent target behavior;
+- range margin.
+
+## Total War battle AI
+Useful pattern:
+- synchronize flanking force arrival with main force;
+- role-aware formation placement.
+
+## Killzone 3 hierarchical multiplayer bots
+Useful patterns:
+- squad as an AI agent;
+- plan continuation/invalidity conditions;
+- tactical position/path queries;
+- hierarchical planning.
+
+## Days Gone squad coordination
+Useful patterns:
+- dynamically created squads;
+- friendly/enemy spatial analysis;
+- group-level confidence/posture.
+Machine Brigade explicitly does **not** import morale/panic; only the spatial/group-confidence pattern.
+
+## Gears Tactics
+Useful pattern:
+- layered planning;
+- planned world state;
+- committed actions represented before later agents choose;
+- interrupt/replan only when continuation conditions fail.
+
+## StarCraft/BWAPI bot ecosystem
+Useful patterns:
+- fog-respecting non-cheating AI;
+- short-horizon combat simulation;
+- macro/micro separation;
+- pathfinding/kiting utilities.
+
+---
+
+# PART U — FINAL MASTER ARCHITECTURE
+
+```text
+MAP TOPOLOGY / DOMAIN GRAPH
+        ↓
+FOG-RESPECTING WORLD MODEL
+        ↓
+TEMPORAL THREAT / FRONTLINE / OBJECTIVE MODEL
+        ↓
+MODE DOCTRINE + ROLE DOCTRINE
+        ↓
+PROCUREMENT / FORCE PLANNER
+        ↓
+SHALLOW PLAN / ATTACK PACKAGE
+        ↓
+SQUAD ASSIGNMENT / RESERVE / STAGING
+        ↓
+SHARED ROUTE / TRAFFIC / FORMATION
+        ↓
+PLANNED ACTION BOARD
+        ↓
+TARGET / SUPPORT / FIRE-SUPPORT COORDINATION
+        ↓
+TACTICAL COMBAT + COMBAT WATCHDOG
+        ↓
+FIRING POSITION / COVER / FIRING-LANE
+        ↓
+LOCAL STEERING / COLLISION AVOIDANCE
+        ↓
+AI HEALTH MONITOR / DEBUG / RECOVERY
+```
+
+Boss/naval:
+
+```text
+MISSION / PHASE
+      ↓
+BOSS MISSION CONTROLLER
+   ↙         ↘
+HULL          WEAPON DIRECTOR
+ ↓                 ↓
+ROUTE/LANE     TARGET/MOUNT ASSIGNMENT
+ ↓                 ↓
+TURN RADIUS     ARC / FIRING LANE
+ ↓                 ↓
+CPA/TRAFFIC     FIRE CADENCE
+```
+
+Core principle:
+
+> Hull decides where the platform goes and how the body turns.  
+> Turrets/mounts decide what they shoot.  
+> Only hull-dependent weapons may request body alignment, and that request is arbitrated by the movement/mission controller.
+
+---
+
+# PART V — FINAL IMPLEMENTATION REPORT REQUIRED
+
+Coding AI must report:
+
+1. changed files;
+2. new classes/services;
+3. old behavior -> new behavior;
+4. tunables;
+5. behaviors fully implemented;
+6. scaffolded/not-yet-implemented behavior + reason;
+7. combat-idle tests;
+8. role-doctrine tests;
+9. mode-doctrine tests;
+10. procurement tests;
+11. naval/boss tests;
+12. traffic tests;
+13. squad tests;
+14. targeting tests;
+15. cover/firing-lane tests;
+16. component-state tests;
+17. Health Monitor tests;
+18. performance results;
+19. severe-unstuck count;
+20. DecisionLog examples;
+21. generated outputs regenerated;
+22. stale old-value/spec scan result.
+
+Regenerate relevant canonical/generated artifacts if the repo contains them:
+
+- `09_ai.xlsx`
+- `09_ai.md`
+- `04_che_do_kinh_te_ai.xlsx/.md`
+- `02_boss.xlsx/.md`
+- `06_ban_do.xlsx/.md`
+- `00_index.xlsx`
+- `README.md`
+- `CHANGES.md`
+- AI JSON/CSV/schema/agent-readable docs
+- AI regression/performance reports
+
+Do not manually patch generated outputs when a generator exists.
+
+---
+
+# PART W — FINAL NON-NEGOTIABLE CONFIRMATIONS
+
+Final report must explicitly confirm:
+
+```text
+No morale system.
+No retreat-by-health.
+AI remains fog-respecting.
+Naval boss reverse is disabled.
+Boss hull target and turret target are independent.
+Target does not directly steer boss hull.
+No-map-influence purchase is rejected before scoring.
+Armed unit idle without reason is treated as a bug.
+CombatActivityWatchdog is active.
+Breacher prioritizes mission-blocking walls/gates.
+Siege prioritizes defensive structures when appropriate.
+ModeCombatDoctrine changes mortar/MLRS/artillery positioning by mode.
+Artillery follows FireSupportAnchor, not squad centroid.
+Friendly blocked-shot handling exists.
+Terrain/cover firing-position scoring exists.
+Component-state adaptation exists.
+AI Health Monitor exists.
+Boss armour/HP are unchanged by this AI task.
+```
+
+This document is the single source of truth for AI behavior implementation.
