@@ -6121,3 +6121,47 @@ Nhánh `feature/pt14-r4`. Lý do: `Docs/DECISIONS.md` "Play-test 14 wave R4 (lan
 | PT14-R4-12 | Boss Hunt (`BossHunts.Unslotted`) | — | ("theia", 12), ("coeus", 12) | như các mini chưa có chỗ trong chương: theo chương của Aurel |
 | PT14-R4-13 | Boss Rush (`BossRushRules.Kinds`) | — | loại mới { "theia", "coeus" } | rút một trong hai mỗi lượt |
 | PT14-R4-14 | chữ `unit/boss.hyperion` | Orbital Mirror Station / Trạm gương quỹ đạo | Heavy Cruiser / Tuần dương hạm hạng nặng | model mới; note, guide, mẹo phần, bossfile, hai câu radio pha 2-3 và câu radio tia mặt trời viết lại cho tàu tuần dương |
+
+
+## Play-test 14 after R4 (lane K): bóng máy bay, màu riêng của boss, vũ khí boss trong danh sách, tên Hydra
+
+Nhánh `feature/pt14-k`. Lý do: `Docs/DECISIONS.md` "Play-test 14 after R4 (lane K)" (chủ, khối "Bổ sung 04/10 sau khi thử R4").
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-K-1 | `leviathan` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#6f777c" / [0.3, 0.55] | màu riêng trong trận và trên thẻ: xám sương hải quân; TeamGlow giữ màu phe |
+| PT14-K-2 | `kraken` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#747c81" / [0.3, 0.55] | màu riêng trong trận và trên thẻ: xám hải quân (tàu sân bay); TeamGlow giữ màu phe |
+| PT14-K-3 | `scylla` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#68737a" / [0.3, 0.55] | màu riêng trong trận và trên thẻ: xám ngả xanh; TeamGlow giữ màu phe |
+| PT14-K-4 | `nyx` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#5b6267" / [0.3, 0.55] | màu riêng trong trận và trên thẻ: xám đậm (tàu đêm); TeamGlow giữ màu phe |
+| PT14-K-5 | `typhon` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#22262a" / [0.15, 0.8] | màu riêng trong trận và trên thẻ: đen tàu ngầm (lớp phủ chống sonar); TeamGlow giữ màu phe |
+| PT14-K-6 | `hydra` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#2b2f33" / [0.15, 0.78] | màu riêng trong trận và trên thẻ: đen tàu ngầm; TeamGlow giữ màu phe |
+| PT14-K-7 | `silver_bug` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#c3c8cc" / [0.85, 0.28] | màu riêng trong trận và trên thẻ: bạc bóng (Icarus); TeamGlow giữ màu phe |
+| PT14-K-8 | `icarus_mk0` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#a9aca6" / [0.7, 0.4] | màu riêng trong trận và trên thẻ: titan cũ; TeamGlow giữ màu phe |
+| PT14-K-9 | `hyperion` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#d9dcd8" / [0.25, 0.38] | màu riêng trong trận và trên thẻ: sơn trắng nhiệt; TeamGlow giữ màu phe |
+| PT14-K-10 | `theia` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#e0d3b0" / [0.6, 0.32] | màu riêng trong trận và trên thẻ: vàng sâm-panh; TeamGlow giữ màu phe |
+| PT14-K-11 | `coeus` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#9aa6b2" / [0.75, 0.32] | màu riêng trong trận và trên thẻ: thép xanh; TeamGlow giữ màu phe |
+| PT14-K-12 | `daedalus` `livery` / `paint` / `paintFinish` | (màu phe) | "own" / "#cfd2cc" / [0.35, 0.4] | màu riêng trong trận và trên thẻ: trắng xám; TeamGlow giữ màu phe |
+| PT14-K-13 | `behemoth` `paint` / `paintFinish` | (màu phe) | "#5a6340" / [0.3, 0.55] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-14 | `behemoth_mk0` `paint` / `paintFinish` | (màu phe) | "#6b6a4e" / [0.25, 0.6] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-15 | `behemoth_mk2` `paint` / `paintFinish` | (màu phe) | "#3f4a3a" / [0.35, 0.5] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-16 | `behemoth_inferno` `paint` / `paintFinish` | (màu phe) | "#7a3b26" / [0.3, 0.55] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-17 | `behemoth_tempest` `paint` / `paintFinish` | (màu phe) | "#3d5566" / [0.35, 0.5] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-18 | `mobile_fortress` `paint` / `paintFinish` | (màu phe) | "#8a7d5c" / [0.25, 0.6] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-19 | `fenrir` `paint` / `paintFinish` | (màu phe) | "#5c6670" / [0.35, 0.5] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-20 | `fortress_bastion` `paint` / `paintFinish` | (màu phe) | "#6e6a5e" / [0.25, 0.6] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-21 | `bastion_mk0` `paint` / `paintFinish` | (màu phe) | "#7d7766" / [0.2, 0.65] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-22 | `monster` `paint` / `paintFinish` | (màu phe) | "#4e5a2e" / [0.25, 0.6] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-23 | `moloch` `paint` / `paintFinish` | (màu phe) | "#5a2f2a" / [0.35, 0.5] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-24 | `ixion` `paint` / `paintFinish` | (màu phe) | "#4f5b63" / [0.4, 0.45] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-25 | `earth_borer` `paint` / `paintFinish` | (màu phe) | "#b08a3a" / [0.3, 0.55] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-26 | `armored_train` `paint` / `paintFinish` | (màu phe) | "#3f5a3c" / [0.3, 0.55] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-27 | `nuke_train` `paint` / `paintFinish` | (màu phe) | "#6b5d3a" / [0.3, 0.55] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-28 | `mega_gunship` `paint` / `paintFinish` | (màu phe) | "#59605a" / [0.3, 0.5] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-29 | `drone_mothership` `paint` / `paintFinish` | (màu phe) | "#4a5058" / [0.35, 0.45] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-30 | `locust` `paint` / `paintFinish` | (màu phe) | "#6a7040" / [0.3, 0.5] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-31 | `command_airship` `paint` / `paintFinish` | (màu phe) | "#8e9599" / [0.3, 0.5] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-32 | `argus` `paint` / `paintFinish` | (màu phe) | "#5d6a75" / [0.35, 0.45] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-33 | `landing_hovercraft` `paint` / `paintFinish` | (màu phe) | "#5f6e63" / [0.25, 0.55] | chỉ ảnh thẻ (Boss Hunt mỗi boss một màu); trong trận vẫn màu phe |
+| PT14-K-34 | kit vật liệu (`MaterialLibrary.Kit`) | — | NavyGrey #6f777c, NavyDeck #4a5054, HullRed #8a2f26, BootTop #1e2123, SubBlack #1b1e21, SpaceWhite #e2e4e1, Titanium #8e9397, SpaceSilver #c3c8cc, GoldFoil #d1a646 | tên sơn cho hai lane model vẽ lại tàu và boss vũ trụ |
+| PT14-K-35 | chữ `unit/boss.hydra` | Drone Submarine / Tàu ngầm mang drone | Attack Submarine / Tàu ngầm tấn công | chủ: bỏ chữ drone; note, guide, bossfile theo |
+| PT14-K-36 | bóng máy bay (`ViewRegistry.DrawBlobs`) | đĩa mờ chỉ khi tắt bóng hoặc là thẻ | mọi máy bay (không phải boss) luôn có đĩa bóng theo hướng mặt trời, cao 0.06 m | chủ: bóng máy bay mất hết |

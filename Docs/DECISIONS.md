@@ -20321,3 +20321,52 @@ registered last in build_assets) and mb_pt14_r4_naval.py (called from mb_pt14_m3
   5 x / 3.5 x budgets. Sheets: Docs/models/rebuild/<id>/before_after_r4.png. New GLBs carry hand-made .meta files.
 - Needs Unity: card renders (UI/Cards manifest has no theia / coeus card yet) and ModelScan of the five, the sun beam from the
   chin projector, the drones leaving Theia's bay, Coeus's coilgun, the ventral batteries' rounds, compile of the text tables.
+
+
+## Play-test 14 after R4 (lane K)
+Owner's block "Bổ sung 04/10 sau khi thử R4" (Docs/prompts/playtest14_vi.txt), items 1, 2, 4 (Hydra's list and name) and 7
+(colours). Model work (missile mounts, flak, guns, repaints) is the two model lanes'. No Unity run, no tests run.
+- **Aircraft shadows ("sao bóng các phương tiện bay mất hết").** Real life: an aircraft's shadow lies on the ground away from it
+  along the sun (here ~0.6 x its height: 15-27 m for 26-46 m up), small and soft, and on water it is faint. Cause, by reading
+  the code (nothing since 03/10 turns shadow casting off on aircraft: ModelLibrary.Spawn casts, the Lit ShadowCaster pass, the
+  URP assets, Atmosphere.FitShadows, VehicleLod, the engine flames' HeatLights are all unchanged or not shadow-related):
+  (1) what the owner had read as the aircraft's shadow was the GroundMark quad drawn magenta under every aircraft by the
+  broken shader ("bóng ô vuông màu tím", bomb-run pass 3); play-test 13 fixed the shader, which left only the faint dashed
+  team ring; (2) the sun's own shadow of a shrunk aircraft at altitude lands far off it and soft, and on the sea it all but
+  vanishes: the play-test 13 water shader shades only its sun term on a dark deep colour, and the Low tier's water is
+  unlit (no shadow at all); (3) the soft disc ViewRegistry drew for aircraft (only with shadows Off or as an impostor card)
+  sat at y 0.04, the water mesh's own height. Fix: every aircraft that is not a boss now always gets the soft disc, slid
+  along the sun by its height (the real shadow's place, so on land it deepens the real one, on water it stands in), at
+  y 0.06 above the water and under the ground marks. Flying bosses keep their real (large) shadow.
+- **Own livery ("livery": "own").** VehicleDef.OwnLivery / Paint / PaintMetallic / PaintRoughness from data "livery"
+  ("own" | "team", default team), "paint" ("#rrggbb" sRGB) and "paintFinish" ([metallic, roughness]); a variant inherits
+  them. Semantics for the model lanes: with "own", a model's `Team` surfaces are drawn in "paint" (never the army colour),
+  every kit surface as drawn, and `TeamGlow` keeps the army's colour as the team cue (lights, a stripe: bosses only ever
+  fight for the enemy, so a small cue is enough; health bar and selection stay team coloured too). A surface name the kit
+  does not know (a new paint) takes the GLB material's own base colour and finish instead of the fallback grey (full detail;
+  the far LOD shows unknown names grey, so prefer kit names). New kit paints: NavyGrey, NavyDeck, HullRed, BootTop,
+  SubBlack, SpaceWhite, Titanium, SpaceSilver, GoldFoil (Unity MaterialLibrary.Kit only; a builder adds the same names
+  with the same values to Tools/blender/frontier_kit.py). Tinting stays on shared materials (MaterialLibrary livery
+  materials, Tinted copies); no MaterialPropertyBlock. A vehicle in its own livery is never an impostor card (the pages are
+  baked in army paint). Own livery: leviathan, kraken, scylla, nyx, typhon, hydra (ships, naval greys / submarine black)
+  and silver_bug (Icarus), icarus_mk0, hyperion, theia, coeus, daedalus (space: white, titanium, silver, champagne).
+  Sea escorts (corvettes, missile boats) are ordinary units, not boss parts: they keep the army colour.
+- **Boss cards in their own colours.** Cause: CardRenders drew every elite and boss picture for team 1 ("they wear the
+  enemy's colours") and boss variants shared their frame's picture, so the Boss Hunt list was one colour; Daedalus and
+  Icarus only looked right because little of them is `Team`. Now a boss with "paint" has its own picture key (its id) and is
+  drawn in that paint (OwnLivery.Of(def, picture: true)); ground and air bosses got a card paint too (olive, sand, wolf
+  grey, rail green ...) but keep the army colour in battle (the brief keeps their battle colours). Values: Docs/export/CHANGES.md
+  PT14-K. Re-render (lead, with graphics): `-executeMethod MachineBrigade.Editor.CardRenders.RenderBatch -mbCardsOnly`
+  with the 33 ids: leviathan,kraken,scylla,nyx,typhon,hydra,silver_bug,icarus_mk0,hyperion,theia,coeus,daedalus,behemoth,
+  behemoth_mk0,behemoth_mk2,behemoth_inferno,behemoth_tempest,mobile_fortress,fenrir,fortress_bastion,bastion_mk0,monster,
+  moloch,ixion,earth_borer,armored_train,nuke_train,mega_gunship,drone_mothership,locust,command_airship,argus,
+  landing_hovercraft (after the model lanes' repaints land). CardRenderTests reports them until then.
+- **Every weapon a boss fires in its list.** The weapons tab listed `def.Mounts` only (parts' weapons are mounts already).
+  Hydra's missiles are its "cruise" launches from the launch doors, outside the mounts. MenuScreen.BossWeapons adds a row each
+  for the cruise missiles (damage, blast, interval), the shore salvo (shells x damage, blast, interval, reach), every damaging
+  strike of the big attack (count x damage, cooldown, the attack's name) and mines (Ixion). Same gap closed for Leviathan,
+  Scylla, Nyx, Kraken, Typhon (cruise), Leviathan and Kraken (salvo) and every boss with a big attack.
+- **Hydra renamed** "Hydra · Attack Submarine" / "Hydra · Tàu ngầm tấn công" (unit, boss, note, guide, bossfile); its guide no
+  longer calls the hull a stand-in (it has its own model since wave M3).
+- Needs Unity: compile (C# 9 checked by reading), the card re-render above, a look at aircraft over land and sea at each
+  shadow tier, and the repainted bosses in battle (TeamGlow cue readable).
