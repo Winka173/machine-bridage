@@ -2,7 +2,7 @@
 
 Tháp và nhánh, tường, nhà chính, mô-đun tiện ích, xây lại, AI căn cứ.
 
-Gói cân bằng Machine Brigade, commit c12d9e0b, ngày 2026-10-04. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3dca5d6c, ngày 2026-10-04. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Căn cứ và tháp
 

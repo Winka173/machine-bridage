@@ -2,7 +2,7 @@
 
 Hiệu ứng, âm thanh, hậu kỳ hình ảnh, model và số đo model, tài sản, giấy phép.
 
-Gói cân bằng Machine Brigade, commit c12d9e0b, ngày 2026-10-04. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3dca5d6c, ngày 2026-10-04. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Hình ảnh
 
@@ -464,12 +464,12 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Model_spec_dung` (11798 dòng): Model: spec dựng lại — Tools/blender/specs/<model>.json: spec dựng lại model (mẫu thật, kích thước đích, bộ phận, vũ khí, ngân sách, vùng màu;); id = <model>.<đường dẫn>
 - `Anh_the` [bulk.zip] (167 dòng): Ảnh thẻ — Resources/UI/Cards/manifest.json entries: ảnh thẻ render từ model (loại, model, nguồn, hash)
 - `Anh_the_chung` (3 dòng): Ảnh thẻ: cài đặt render — manifest.json: camera, cỡ ảnh, phiên bản
-- `Dia_phuong_hoa` [bulk.zip] (6205 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
+- `Dia_phuong_hoa` [bulk.zip] (6207 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
 - `Giay_phep_tai_san` (5 dòng): Giấy phép tài sản — Resources/Licenses/*.txt: mỗi file giấy phép một dòng (phông chữ OFL); nội dung từng dòng ở Giay_phep_noi_dung; âm thanh: 07_hinh_anh_am_thanh_model/…
 - `Giay_phep_noi_dung` [bulk.zip] (374 dòng): Giấy phép: nội dung — mỗi dòng không trống của file giấy phép
 - `Xem_truoc` (179 dòng): Màn xem trước — Màn xem trước của từng đơn vị: cảnh nền
 - `Kit_chi_tiet` (70 dòng): Bộ chi tiết kit35 — Docs/models/kit_catalog/kit35_components.json: 70 chi tiết của Tools/blender/mb_kit35.py (tam giác, kích thước, lỗi kiểm); ảnh: kit35_catalog.png (An…
 - `Model_cham_diem` (163 dòng): Model: chấm điểm — Chấm điểm theo Docs/models/MODEL_STANDARD.md: tam giác trong ngân sách, Part_* thiếu, Mount / Muzzle thiếu, sai tỷ lệ, hình bóng (quét hình); điểm; x…
-- `Dia_phuong_hoa_van_de` [bulk.zip] (270 dòng): Địa phương hóa: khóa có vấn đề — Mỗi khóa chữ có vấn đề một dòng: thiếu tiếng Anh / Việt, khai hai lần, tên riêng chỉ có ở một thứ tiếng (danh sách tên của Tools/story/script_build.p…
+- `Dia_phuong_hoa_van_de` [bulk.zip] (271 dòng): Địa phương hóa: khóa có vấn đề — Mỗi khóa chữ có vấn đề một dòng: thiếu tiếng Anh / Việt, khai hai lần, tên riêng chỉ có ở một thứ tiếng (danh sách tên của Tools/story/script_build.p…
 - `Dia_phuong_hoa_thong_ke` (15 dòng): Địa phương hóa: thống kê — Mỗi bảng chữ C#: số khóa, khóa thiếu tiếng Anh / Việt, khai hai lần, có tên riêng ở một thứ tiếng, không thấy trong mã (COUNTIFS trên Dia_phuong_hoa…
 - `Model_tham_chieu` (162 dòng): Model: tài liệu tham chiếu hình dạng và kích thước — Mỗi model có mẫu thật một dòng: tài liệu hình dạng / kích thước (chỉ nguồn và URL, không nhúng ảnh), kích thước thật (tra sống Kich_thuoc_that), ghi…

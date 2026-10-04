@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit c12d9e0b, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3dca5d6c, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -81,20 +81,20 @@ Sheet 01_chien_dau/May_bay_so_phat — Máy bay: số phát để hạ (14 dòng
 
 | id | mau_hp | giap | sat_thuong_phat_stinger | sat_thuong_phat_stinger_game | so_phat_stinger | sat_thuong_phat_buk | sat_thuong_phat_buk_game | so_phat_buk | sat_thuong_phat_ten_lua_tiem_kich |
 |---|---|---|---|---|---|---|---|---|---|
-| attack_helicopter | 1540.0 | 1 | 221.0 | 221.0 | 7.0 | 416.0 | 416.0 | 4.0 | 382.2 |
-| attack_jet | 1430.0 | 2 | 187.85 | 187.85 | 8.0 | 416.0 | 416.0 | 4.0 | 382.2 |
-| drop_pod | 352.0 | 1 | 221.0 | 221.0 | 2.0 | 416.0 | 416.0 | 1.0 | 382.2 |
-| fighter_jet | 1320.0 | 0 | 221.0 | 221.0 | 6.0 | 416.0 | 416.0 | 4.0 | 382.2 |
-| heavy_bomber | 3080.0 | 0 | 221.0 | 221.0 | 14.0 | 416.0 | 416.0 | 8.0 | 382.2 |
-| recon_drone | 840.4 | 0 | 221.0 | 221.0 | 4.0 | 416.0 | 416.0 | 3.0 | 382.2 |
-| scout_heli | 1139.6 | 0 | 221.0 | 221.0 | 6.0 | 416.0 | 416.0 | 3.0 | 382.2 |
-| sky_gunship | 3080.0 | 0 | 221.0 | 221.0 | 14.0 | 416.0 | 416.0 | 8.0 | 382.2 |
-| stealth_bomber | 2640.0 | 0 | 221.0 | 221.0 | 12.0 | 416.0 | 416.0 | 7.0 | 382.2 |
-| stealth_fighter | 1320.0 | 0 | 221.0 | 221.0 | 6.0 | 416.0 | 416.0 | 4.0 | 382.2 |
-| stealth_naval_strike | 1650.0 | 0 | 221.0 | 221.0 | 8.0 | 416.0 | 416.0 | 4.0 | 382.2 |
-| strike_drone | 880.0 | 0 | 221.0 | 221.0 | 4.0 | 416.0 | 416.0 | 3.0 | 382.2 |
-| swarm_carrier | 2400.2 | 1 | 221.0 | 221.0 | 11.0 | 416.0 | 416.0 | 6.0 | 382.2 |
-| twin_rotor_gunship | 3080.0 | 1 | 221.0 | 221.0 | 14.0 | 416.0 | 416.0 | 8.0 | 382.2 |
+| attack_helicopter | 1540.0 | 1 | 229.50000000000003 | 229.50000000000003 | 7.0 | 432.0 | 432.0 | 4.0 | 396.90000000000003 |
+| attack_jet | 1430.0 | 2 | 195.07500000000002 | 195.075 | 8.0 | 432.0 | 432.0 | 4.0 | 396.90000000000003 |
+| drop_pod | 352.0 | 1 | 229.50000000000003 | 229.50000000000003 | 2.0 | 432.0 | 432.0 | 1.0 | 396.90000000000003 |
+| fighter_jet | 1320.0 | 0 | 229.50000000000003 | 229.50000000000003 | 6.0 | 432.0 | 432.0 | 4.0 | 396.90000000000003 |
+| heavy_bomber | 3080.0 | 0 | 229.50000000000003 | 229.50000000000003 | 14.0 | 432.0 | 432.0 | 8.0 | 396.90000000000003 |
+| recon_drone | 840.4 | 0 | 229.50000000000003 | 229.50000000000003 | 4.0 | 432.0 | 432.0 | 2.0 | 396.90000000000003 |
+| scout_heli | 1139.6 | 0 | 229.50000000000003 | 229.50000000000003 | 5.0 | 432.0 | 432.0 | 3.0 | 396.90000000000003 |
+| sky_gunship | 3080.0 | 0 | 229.50000000000003 | 229.50000000000003 | 14.0 | 432.0 | 432.0 | 8.0 | 396.90000000000003 |
+| stealth_bomber | 2640.0 | 0 | 229.50000000000003 | 229.50000000000003 | 12.0 | 432.0 | 432.0 | 7.0 | 396.90000000000003 |
+| stealth_fighter | 1320.0 | 0 | 229.50000000000003 | 229.50000000000003 | 6.0 | 432.0 | 432.0 | 4.0 | 396.90000000000003 |
+| stealth_naval_strike | 1650.0 | 0 | 229.50000000000003 | 229.50000000000003 | 8.0 | 432.0 | 432.0 | 4.0 | 396.90000000000003 |
+| strike_drone | 880.0 | 0 | 229.50000000000003 | 229.50000000000003 | 4.0 | 432.0 | 432.0 | 3.0 | 396.90000000000003 |
+| swarm_carrier | 2400.2 | 1 | 229.50000000000003 | 229.50000000000003 | 11.0 | 432.0 | 432.0 | 6.0 | 396.90000000000003 |
+| twin_rotor_gunship | 3080.0 | 1 | 229.50000000000003 | 229.50000000000003 | 14.0 | 432.0 | 432.0 | 8.0 | 396.90000000000003 |
 
 *In 10 / 15 cột; 3 cột khác: xem sheet.*
 
@@ -133,15 +133,15 @@ Sheet 01_chien_dau/Hoi_quy — Hồi quy theo CP (12 dòng, 5 cột)
 
 | id | gia_tri | y_nghia |
 |---|---|---|
-| dps_he_so | 34.05592394210315 | hệ số a của DPS theo CP |
-| dps_so_mu | 0.38710667135242216 | số mũ b của DPS theo CP |
+| dps_he_so | 38.624000447417224 | hệ số a của DPS theo CP |
+| dps_so_mu | 0.38504070938227564 | số mũ b của DPS theo CP |
 | mau_he_so | 280.38792601238663 | hệ số a của máu theo CP |
 | mau_so_mu | 0.7407159692152434 | số mũ b của máu theo CP |
 | n_dps | 49.0 | số xe có DPS > 0 |
 | n_mau | 50.0 | số xe trong hồi quy máu |
-| trung_vi_dps_tren_cp_9_15 | 5.509669893724608 | trung vị DPS / CP, dải 9-15 |
-| trung_vi_dps_tren_cp_ge16 | 5.224377625201938 | trung vị DPS / CP, dải >=16 |
-| trung_vi_dps_tren_cp_le8 | 13.75 | trung vị DPS / CP, dải <=8 |
+| trung_vi_dps_tren_cp_9_15 | 5.785258152623646 | trung vị DPS / CP, dải 9-15 |
+| trung_vi_dps_tren_cp_ge16 | 5.425315226171244 | trung vị DPS / CP, dải >=16 |
+| trung_vi_dps_tren_cp_le8 | 16.852262406303005 | trung vị DPS / CP, dải <=8 |
 | trung_vi_mau_tren_cp_9_15 | 126.1 | trung vị máu / CP, dải 9-15 |
 | trung_vi_mau_tren_cp_ge16 | 106.20689655172414 | trung vị máu / CP, dải >=16 |
 | trung_vi_mau_tren_cp_le8 | 189.9333333333333 | trung vị máu / CP, dải <=8 |
@@ -273,23 +273,36 @@ Sheet 01_chien_dau/Bang_sat_thuong — Bảng sát thương (6 dòng, 6 cột)
 
 | id | mat_dat | may_bay | cong_trinh |
 |---|---|---|---|
-| Energy | 1.0 | 1.5 | 0.5 |
-| Fire | 1.5 | 0.0 | 1.0 |
-| Fragmentation | 0.5 | 1.3 | 0.1 |
-| HighExplosive | 1.0 | 0.0 | 1.5 |
-| Kinetic | 1.0 | 0.3 | 0.6 |
-| ShapedCharge | 1.0 | 0.3 | 0.6 |
+| Energy | 0.9 | 1.5 | 0.4 |
+| Fire | 1.35 | 0.0 | 1.1 |
+| Fragmentation | 0.45 | 1.35 | 0.1 |
+| HighExplosive | 1.0 | 0.0 | 1.6 |
+| Kinetic | 1.2 | 0.3 | 0.7 |
+| ShapedCharge | 1.3 | 0.2 | 0.45 |
 
-Sheet 01_chien_dau/Bang_xuyen_giap — Bảng xuyên giáp (6 dòng, 5 cột)
+Sheet 01_chien_dau/Bang_xuyen_giap — Bảng xuyên giáp (bắn thẳng) (7 dòng, 5 cột)
 
 | id | chenh_xuyen_giap | he_so |
 |---|---|---|
 | buoc_0 | +2 | 1.2 |
 | buoc_1 | +1 | 1.0 |
 | buoc_2 | 0 | 0.85 |
-| buoc_3 | -1 | 0.5 |
-| buoc_4 | -2 | 0.25 |
-| buoc_5 | -3 | 0.1 |
+| buoc_3 | -1 | 0.65 |
+| buoc_4 | -2 | 0.4 |
+| buoc_5 | -3 | 0.15 |
+| buoc_6 | -4 | 0.08 |
+
+Sheet 01_chien_dau/Bang_danh_noc — Bảng đánh nóc (top attack) (7 dòng, 5 cột)
+
+| id | chenh_xuyen_giap | he_so |
+|---|---|---|
+| buoc_0 | +2 | 1.15 |
+| buoc_1 | +1 | 1.1 |
+| buoc_2 | 0 | 0.95 |
+| buoc_3 | -1 | 0.75 |
+| buoc_4 | -2 | 0.5 |
+| buoc_5 | -3 | 0.25 |
+| buoc_6 | -4 | 0.12 |
 
 Sheet 01_chien_dau/He_so_toan_cuc — Hệ số toàn cục (4 dòng, 8 cột)
 
@@ -328,28 +341,28 @@ Sinh từ dữ liệu (balance.json) như mục Sổ tay đạn trong Hồ sơ c
 
 ### Sổ tay đạn (tiếng Việt)
 
-**Động năng**: mạnh với Mặt đất (×1), yếu với Máy bay (×0,3). Ví dụ: M2 Browning 12.7 mm, PKT / M240 7.62 mm, M230 30 mm.
+**Động năng**: mạnh với Mặt đất (×1,2), yếu với Máy bay (×0,3). Ví dụ: M2 Browning 12.7 mm, PKT / M240 7.62 mm, M230 30 mm.
 
-**Nổ lõm**: mạnh với Mặt đất (×1), yếu với Máy bay (×0,3). Ví dụ: BGM-71 TOW-2, APKWS (laser-guided Hydra 70), Typhon MRC (ground-launched Tomahawk).
+**Nổ lõm**: mạnh với Mặt đất (×1,3), yếu với Máy bay (×0,2). Ví dụ: BGM-71 TOW-2, APKWS (laser-guided Hydra 70), Typhon MRC (ground-launched Tomahawk).
 
-**Nổ mạnh**: mạnh với Công trình (×1,5), yếu với Máy bay (×0). Ví dụ: Mk 19 40 mm, GBU-39 SDB (110 kg), AGM-158 JASSM (450 kg).
+**Nổ mạnh**: mạnh với Công trình (×1,6), yếu với Máy bay (×0). Ví dụ: Mk 19 40 mm, GBU-39 SDB (110 kg), AGM-158 JASSM (450 kg).
 
-**Lửa**: mạnh với Mặt đất (×1,5), yếu với Máy bay (×0). Ví dụ: flamethrower.
+**Lửa**: mạnh với Mặt đất (×1,35), yếu với Máy bay (×0). Ví dụ: flamethrower.
 
-**Mảnh**: mạnh với Máy bay (×1,3), yếu với Công trình (×0,1). Ví dụ: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70.
+**Mảnh**: mạnh với Máy bay (×1,35), yếu với Công trình (×0,1). Ví dụ: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70.
 
-**Năng lượng**: mạnh với Máy bay (×1,5), yếu với Công trình (×0,5). Ví dụ: focused laser (300 kW), Iron Beam laser (100 kW).
+**Năng lượng**: mạnh với Máy bay (×1,5), yếu với Công trình (×0,4). Ví dụ: focused laser (300 kW), Iron Beam laser (100 kW).
 
-Giáp có hướng: trước, hông, sau và nóc (xe tới cấp 4, boss tới cấp 5); trên nóc và lên máy bay không có mức áp đảo (×1 là cao nhất).
+Giáp có hướng: trước, hông, sau và nóc (xe tới cấp 4, boss tới cấp 5). Đạn bắn thẳng dùng cột bắn thẳng theo mặt trúng; đạn không đánh nóc mà rơi xuống nóc, và mọi phát lên máy bay, không có mức áp đảo (×1 là cao nhất). Vũ khí đánh nóc luôn trúng giáp nóc và chỉ dùng cột đánh nóc (không nhân hai bảng, không chặn ở ×1).
 
-Ví dụ: một phát 2A42 30 mm của ifv (xuyên 2, sát thương 22) lên main_battle_tank (máu 2310): giáp trước cấp 4: ×0,25, 6; giáp hông cấp 2: ×0,85, 19.
+Ví dụ: một phát 2A42 30 mm của ifv (xuyên 2, sát thương 22) lên main_battle_tank (máu 2310): giáp trước cấp 4: ×0,48, 11; giáp hông cấp 2: ×1,02, 22.
 
 | Dấu | Nghĩa |
 |---|---|
-| Đánh nóc | Trúng giáp nóc, mặt mỏng nhất. Ví dụ: FPV drone (1.5 kg), Shahed-136 (50 kg) |
-| Nhiệt áp | ×2 lên công trình thay cho ×1,5 của nổ mạnh (thay, không nhân thêm). Ví dụ: TOS-1A 220 mm thermobaric |
+| Đánh nóc | Trúng giáp nóc, mặt mỏng nhất, theo bảng đánh nóc riêng. Ví dụ: GBU-39 SDB (110 kg), FAB-250 (250 kg), FAB-500 (500 kg) |
+| Nhiệt áp | ×2 lên công trình thay cho ×1,6 của nổ mạnh (thay, không nhân thêm). Ví dụ: TOS-1A 220 mm thermobaric |
 | Dẫn đường | Bám mục tiêu; APS / phòng thủ điểm bắn hạ được, pháo sáng đánh lừa loại nhắm máy bay. Ví dụ: AIM-120 AMRAAM, BGM-71 TOW-2, AGM-158 JASSM (450 kg) |
-| Nổ trên không | Đạn mảnh: ×1,3 lên máy bay. Ví dụ: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70 |
+| Nổ trên không | Đạn mảnh: ×1,35 lên máy bay. Ví dụ: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70 |
 | Đạn thay thế | Súng tự đổi khi mục tiêu hợp; giữ đạn ít nhất 2 s, đổi mất ít nhất 0,5 s. |
 | Tầm tối thiểu | 120 mm AMOS (twin) (10 m), 9M723 Iskander (700 kg) (40 m), FPV drone (1.5 kg) (12 m) |
 
@@ -368,28 +381,28 @@ Xe phá tường (armored_bulldozer, engineer_vehicle, demolition_line_vehicle) 
 
 ### Ammunition handbook (English)
 
-**Kinetic**: strong against Ground (×1), weak against Air (×0.3). For example: M2 Browning 12.7 mm, PKT / M240 7.62 mm, M230 30 mm.
+**Kinetic**: strong against Ground (×1.2), weak against Air (×0.3). For example: M2 Browning 12.7 mm, PKT / M240 7.62 mm, M230 30 mm.
 
-**Shaped charge**: strong against Ground (×1), weak against Air (×0.3). For example: BGM-71 TOW-2, APKWS (laser-guided Hydra 70), Typhon MRC (ground-launched Tomahawk).
+**Shaped charge**: strong against Ground (×1.3), weak against Air (×0.2). For example: BGM-71 TOW-2, APKWS (laser-guided Hydra 70), Typhon MRC (ground-launched Tomahawk).
 
-**High explosive**: strong against Structures (×1.5), weak against Air (×0). For example: Mk 19 40 mm, GBU-39 SDB (110 kg), AGM-158 JASSM (450 kg).
+**High explosive**: strong against Structures (×1.6), weak against Air (×0). For example: Mk 19 40 mm, GBU-39 SDB (110 kg), AGM-158 JASSM (450 kg).
 
-**Fire**: strong against Ground (×1.5), weak against Air (×0). For example: flamethrower.
+**Fire**: strong against Ground (×1.35), weak against Air (×0). For example: flamethrower.
 
-**Fragmentation**: strong against Air (×1.3), weak against Structures (×0.1). For example: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70.
+**Fragmentation**: strong against Air (×1.35), weak against Structures (×0.1). For example: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70.
 
-**Energy**: strong against Air (×1.5), weak against Structures (×0.5). For example: focused laser (300 kW), Iron Beam laser (100 kW).
+**Energy**: strong against Air (×1.5), weak against Structures (×0.4). For example: focused laser (300 kW), Iron Beam laser (100 kW).
 
-Armour has a direction: front, side, rear and roof (vehicles up to level 4, bosses up to 5); on the roof and on aircraft a round never overmatches (×1 is the most).
+Armour has a direction: front, side, rear and roof (vehicles up to level 4, bosses up to 5). Direct fire reads the direct column against the face it strikes; a round that is not a top attack but comes down on the roof, and every hit on an aircraft, never overmatches (×1 is the most). A top-attack weapon always strikes the roof and reads the top-attack column only (never both tables, no cap at ×1).
 
-Worked example: one shot of the ifv's 2A42 30 mm (penetration 2, 22 damage) on a main_battle_tank (health 2310): front armour 4: ×0.25, 6; side armour 2: ×0.85, 19.
+Worked example: one shot of the ifv's 2A42 30 mm (penetration 2, 22 damage) on a main_battle_tank (health 2310): front armour 4: ×0.48, 11; side armour 2: ×1.02, 22.
 
 | Mark | Meaning |
 |---|---|
-| Top attack | Strikes the roof armour, the thinnest face. For example: FPV drone (1.5 kg), Shahed-136 (50 kg) |
-| Thermobaric | ×2 on structures instead of high explosive's ×1.5 (replaces, never adds). For example: TOS-1A 220 mm thermobaric |
+| Top attack | Strikes the roof armour, the thinnest face, on its own top-attack table. For example: GBU-39 SDB (110 kg), FAB-250 (250 kg), FAB-500 (500 kg) |
+| Thermobaric | ×2 on structures instead of high explosive's ×1.6 (replaces, never adds). For example: TOS-1A 220 mm thermobaric |
 | Guided | Follows its target; APS and point defence can shoot it down, flares draw off those aimed at aircraft. For example: AIM-120 AMRAAM, BGM-71 TOW-2, AGM-158 JASSM (450 kg) |
-| Airburst | Fragmentation: ×1.3 against aircraft. For example: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70 |
+| Airburst | Fragmentation: ×1.35 against aircraft. For example: AIM-120 AMRAAM, GAU-22/A 25 mm, Bofors 40 mm L/70 |
 | Second rounds | The gun switches on its own when the target suits; a round stays in 2 s at least, a switch takes 0.5 s at least. |
 | Minimum range | 120 mm AMOS (twin) (10 m), 9M723 Iskander (700 kg) (40 m), FPV drone (1.5 kg) (12 m) |
 
@@ -714,7 +727,7 @@ Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
 - `R_full_weapon_audit`: full_weapon_audit.py: bảng REAL (nhịp bắn thật, mỗi dòng kèm nguồn) và WARHEAD (độ tin 3)
 - … 138 nguồn nữa: xem sheet Nguon_tham_chieu của 08_tham_chieu.
 
-Sheet 01_chien_dau/Vu_khi_so_sanh_that — Vũ khí: so sánh với thật: 261 dòng, 17 cột; bảng đầy đủ: xem sheet Vu_khi_so_sanh_that.
+Sheet 01_chien_dau/Vu_khi_so_sanh_that — Vũ khí: so sánh với thật: 263 dòng, 17 cột; bảng đầy đủ: xem sheet Vu_khi_so_sanh_that.
 
 Sheet 01_chien_dau/Phuong_tien_so_sanh_that — Phương tiện: so sánh với thật: 221 dòng, 17 cột; bảng đầy đủ: xem sheet Phuong_tien_so_sanh_that.
 
@@ -729,7 +742,8 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Dong_vu_khi` (58 dòng): Dòng vũ khí thật — weaponFamilies + secondRounds.families: số chung của một hệ thống thật
 - `Dan_thay_the` (68 dòng): Đạn thay thế — Liên kết vũ khí -> đạn thay thế (he, air, đạn thứ hai roundOf)
 - `Bang_sat_thuong` (6 dòng): Bảng sát thương — damageTable: hệ số theo loại sát thương x mặt đất / máy bay / công trình
-- `Bang_xuyen_giap` (6 dòng): Bảng xuyên giáp — damageTable.penetration: hệ số theo chênh xuyên - giáp (DamageTable.cs)
+- `Bang_xuyen_giap` (7 dòng): Bảng xuyên giáp (bắn thẳng) — damageTable.penetration: bảng xuyên giáp bắn thẳng, hệ số theo chênh xuyên - giáp mặt trúng (DamageTable.cs Penetration); vũ khí topAttack không dùng…
+- `Bang_danh_noc` (7 dòng): Bảng đánh nóc (top attack) — damageTable.topAttack: bảng riêng cho vũ khí topAttack, hệ số theo chênh xuyên - giáp nóc (DamageTable.cs TopAttack); thay cho Bang_xuyen_giap, không…
 - `He_so_toan_cuc` (4 dòng): Hệ số toàn cục — firepower.* và damageTable.thermobaric: hệ số nhân chung
 - `Khac_che` (23 dòng): Khắc chế (APS, phòng thủ điểm) — Mỗi đơn vị có hệ chặn: số lần, hồi, bán kính, loại đạn chặn
 - `Phao_sang` (11 dòng): Pháo sáng — Mỗi đơn vị có pháo sáng: số lần, hồi, điểm phát Mount_Flare
@@ -741,7 +755,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Bom_rai_tham` (6 dòng): Ném bom rải thảm (liên kết) — Mỗi vũ khí thả bom một dòng: tham số dải chính (weapons[*].stick) và câu thẻ; bảng đủ (Bom_vu_khi, Bom_don_vi, Bom_hanh_vi, Bom_vet_tha, Bom_canh_bao…
 - `Vu_khi_suy_ra` (359 dòng): Vũ khí: suy ra — Lớp B: chu kỳ, sát thương loạt, DPS duy trì theo giáp / công trình / máy bay, cảnh báo: công thức sống trên Vu_khi và các bảng hệ số, kèm cột _game (…
 - `Vu_khi_tham_chieu` (359 dòng): Vũ khí: tham chiếu ngoài đời — Mỗi vũ khí một dòng: mẫu thật (tên thật balance.json), nhịp thật (bảng REAL), đầu đạn (WARHEAD), ghi chú bảng cân bằng (spec 12.2; chỉ dữ liệu có tro…
-- `Vu_khi_so_sanh_that` (261 dòng): Vũ khí: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
+- `Vu_khi_so_sanh_that` (263 dòng): Vũ khí: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
 - `Xe` (79 dòng): Xe — Mỗi xe / máy bay / tàu của người chơi và địch, cả tinh nhuệ (elite): giá trị game và trường gốc
 - `Xe_vu_khi` (76 dòng): Xe: bệ vũ khí phụ — secondary[]: bệ phụ (chỉ số bệ = thu_tu + 1; bệ 0 là vũ khí chính)
 - `Xe_ten_lua` (3 dòng): Xe: tên lửa mang — missiles[]
@@ -766,7 +780,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Phuong_tien_tham_chieu` (104 dòng): Phương tiện: tham chiếu ngoài đời — Mỗi xe và thẻ hỗ trợ một dòng: mẫu thật, phim / game (unit_refs.json), kích thước thật (reference_real.json), bảng cân bằng (spec 12.2; chỉ dữ liệu c…
 - `Phuong_tien_so_sanh_that` (221 dòng): Phương tiện: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
 - `So_tay_dan` (2 dòng): Sổ tay đạn — balance.json handbook: xe mẫu bắn và xe mẫu bị bắn của sổ tay đạn trên giao diện
-- `Hang_so_vu_khi` (40 dòng): Hằng số vũ khí, đạn, sát thương và nổ — Assets/MachineBrigade/Resources/Data/tunables.json: 'weapons' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
+- `Hang_so_vu_khi` (41 dòng): Hằng số vũ khí, đạn, sát thương và nổ — Assets/MachineBrigade/Resources/Data/tunables.json: 'weapons' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
 - `Hang_so_phuong_tien` (98 dòng): Hằng số phương tiện: giá, thả dù, hồi đạn, tiếp tế, kỹ năng — Assets/MachineBrigade/Resources/Data/tunables.json: 'vehicles' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
 - `Bom_vu_khi` (14 dòng): Ném bom: vũ khí — Mỗi vũ khí thả bom và mỗi đòn không kích / đòn lớn của boss một dòng: tham số dải bom (stick), khoảng cách giữa bom, độ dài dải, cảnh báo, đường thả…
 - `Bom_don_vi` (17 dòng): Ném bom: đơn vị mang — Đơn vị mang bom: tốc độ, bán kính quay, độ cao thả, vũ khí bom, số bom mỗi lượt
