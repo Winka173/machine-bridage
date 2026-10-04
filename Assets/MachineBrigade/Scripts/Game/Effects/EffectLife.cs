@@ -88,11 +88,30 @@ namespace MachineBrigade.Game.Effects
         /// <summary>A missile's or rocket's smoke trail (the motor plume's puffs, the old shell trail).</summary>
         public const float Trail = 0.5f;
 
+        /// <summary>Play-test 14 (lane H), the owner after R2 ("khói của tên lửa ... giảm chiều dài 50%"): a missile's or rocket's
+        /// smoke trail half as long again (each puff lives this share on top of <see cref="Trail"/>).</summary>
+        public const float TrailLength = 0.5f;
+
+        /// <summary>... and a quarter narrower (each puff this share as wide; the owner's correction: 20-30 %, not half).
+        /// The motor's flame, glow and the puffs' spacing are unchanged.</summary>
+        public const float TrailWidth = 0.75f;
+
         /// <summary>A blast's smoke, dust and smoke column, and the smoke it leaves lingering (ImpactSmoke).</summary>
         public const float Blast = 0.5f;
 
         /// <summary>A vehicle's death: its killing blast's and its death explosion's smoke (the worst of it).</summary>
         public const float Death = 0.35f;
+
+        /// <summary>
+        /// Play-test 14 (lane H), the owner after R2 ("khói vẫn quá nhiều khi chết, giảm lượng khói sinh ra 50%"): a death's
+        /// smoke, dust and smoke column also emit half their puffs, on top of the shorter <see cref="Death"/> life. The fire,
+        /// flash, fireball, sparks and debris keep every particle.
+        /// </summary>
+        public const float DeathAmount = 0.5f;
+
+        /// <summary>The share of its smoke puffs a blast drawn at smoke life <paramref name="life"/> emits: a death's
+        /// (<see cref="Death"/> or shorter) <see cref="DeathAmount"/>, any other all of them.</summary>
+        public static float AmountOf(float life) => life <= Death + 0.001f ? DeathAmount : 1f;
 
         /// <summary>A fire's smoke (a burning hull, a wreck, a ground fire): each puff's life.</summary>
         public const float Fire = 0.5f;

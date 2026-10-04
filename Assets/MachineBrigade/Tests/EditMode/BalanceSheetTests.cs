@@ -73,6 +73,9 @@ namespace MachineBrigade.Tests
         /// The same real weapon (steps_a3.real_key): its real name, and the same round (damage type, kind, size, a cluster
         /// or not) fired the same way (lobbed or direct): a coastal gun's flat 155 mm is not a howitzer's lobbed one.
         /// </summary>
+        /// <summary>Play-test 14 (lane H): boss weapons that fly at their own speed, out of their real missile's family.</summary>
+        internal static readonly HashSet<string> BossOwnSpeed = new() { "sam_post", "sam_battery" };
+
         internal static string FamilyKey(WeaponDef w) =>
             w.RealName == null ? null
                 : string.Join("|", RealName(w.RealName), w.DamageType, w.Projectile, w.Size.ToString(CultureInfo.InvariantCulture), w.Indirect, w.Cluster != null);
@@ -97,7 +100,9 @@ namespace MachineBrigade.Tests
                 }
             }
             // Every set of weapons that are the same real weapon is one family (none left out of it).
-            foreach (var same in catalog.Weapons.Values.Where(w => FamilyKey(w) != null).GroupBy(FamilyKey).Where(g => g.Count() > 1))
+            // Play-test 14 (lane H): the bosses' own SAM posts (the Buk post of the ships and Typhon, Nemesis' Patriot car) fly at
+            // the boss's slower speed, out of their families; the player's launchers of the same missiles keep the family's.
+            foreach (var same in catalog.Weapons.Values.Where(w => FamilyKey(w) != null && !BossOwnSpeed.Contains(w.Id)).GroupBy(FamilyKey).Where(g => g.Count() > 1))
             {
                 var named = same.Select(w => w.WeaponFamily).Distinct().ToList();
                 if (named.Count != 1 || named[0] == null)

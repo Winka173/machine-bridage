@@ -20161,3 +20161,38 @@ dp_mount, aa_triple, gatling, twin_arm_launcher, director, radar_array) is delet
 - Needs Unity: card renders / ModelScan of the seven; Typhon's three guns turning and firing from their muzzles with the
   gameplay lane's mount order (mountWeapons 1, 2 = 57 mm, 3 = 100 mm, wake mount 3 = Mount_gun.002 rising out of its well);
   Kraken's sleeping 152s rising out of the sponson tub and deck well; the nuke train's railway gun kick on Gun_barrels.
+
+## Play-test 14 after R2 (lane H)
+
+Owner's block "Bổ sung 04/10 sau khi thử bản R2" (Docs/prompts/playtest14_vi.txt) plus the coordinator's corrections (trail
+width 20-30 %, Typhon's door missiles left alone); values in Docs/export/CHANGES.md PT14-H.
+- **Warships never swing to fire.** Cause: a flying unit's main mount defaults to `Hull` aim, and `MovementSystem.Drive` turns a
+  halted hover craft to its target at its full turn rate (Icarus 30, Daedalus 26 deg/s), so the ship yawed at every target.
+  Real life: a battleship or an airship lays its turrets; the hull keeps its course. Now `holdsToFire` (lane G) also means the
+  hull never turns while halted (Drive returns before the hover turn); silver_bug (hyperion, icarus_mk0) and daedalus lay
+  their main weapon `Free` (lane G's TrainFreeMain at the turret rate), daedalus and command_airship (argus) hold to fire too.
+  On the move they turn slowly (Icarus family and Daedalus 10, Roc and Argus 8 deg/s) and, holding to fire, slow to 15 % of
+  speed to come round (was 40 % for fliers) so a slow turn does not circle a waypoint.
+- **Death smoke halved again.** `SmokeTimes.DeathAmount` 0.5: a blast drawn at the death's smoke life (0.35) emits half the
+  particles of its smoke, dust and column layers (`ExplosionEffect.Emit`); fire, flash, fireball, sparks, debris, rings keep
+  every particle. Boss part blasts at death and a fallen defence's collapse now count as deaths too.
+- **Missile trails.** `SmokeTimes.TrailLength` 0.5 (each puff lives half as long again: MotorPlumes and the plume-less rocket
+  trail `Emitters.MissileTrail`) and `TrailWidth` 0.75 (each puff 25 % narrower; spacing kept, so the line stays solid). Jet
+  exhaust, tracers, flares and lasers keep `Emitters.Trail`. A railgun slug's and a drone's puff trail (ProjectilePool, no
+  plume) take the missile cut as well.
+- **No smoke makers.** `train_smoke` off armored_train (Juggernaut) and nuke_train (Nemesis), `elite_smoke` off
+  elite_tank_destroyer; both skill entries deleted (no strings were per skill; the guide and boss-file lines that said
+  "hides in smoke" are cut, EN and VI). Leviathan's last-phase run no longer lays its two smoke screens (radio line cut to
+  "running for open sea"). `SkillKind.Smoke` stays in code (unused by data). Kept: wreck smoulder, exhaust, mission weather
+  smoke; the player's gear (smoke discharger module, tower smoke launchers, laser warning) waits for the owner's word.
+- **Boss missiles.** No boss missile missed play-test 13's scaling: every boss ATGM, rocket and SAM sits at its family's
+  0.3 x speed (Kornet 80, Grad 130, Smerch 120, Buk 250, Patriot PAC-2 300 = the 300 cap); big-attack missiles fly a set
+  time over a long way (Nemesis' doomsday 6 s, Typhon's door launch 9 s, its cruise 4 s), slower than their rule. The fast
+  ones the owner saw are the boss SAMs at the cap, crossing their 60-90 m reach in 0.2-0.3 s. Real logic: the game's reach
+  stands for a SAM's first 2-3 km, its boost phase (Buk about 570, PAC-2 about 670 m/s average there), so 0.3 x that:
+  `sam_post` (the ships' and Typhon's sail Buk) 250 -> 170, `sam_battery` (Nemesis' SAM car) 300 -> 200, both out of their
+  families (BalanceSheetTests exempts them). Typhon's door missiles (cruise, big attack) and Nemesis' rockets unchanged.
+  The player's Buk launcher and Patriot keep 250 / 300 (player weapons wait for the owner).
+- Tests (written, not run): PlayTest14LaneHTests. For a Unity look: the six warships holding heading while their turrets
+  traverse (the Icarus main laser now trains: its mount node must turn), Roc / Daedalus stopping to fire, death smoke amount,
+  trail length and width, the boss SAM flights.

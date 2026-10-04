@@ -699,6 +699,8 @@ namespace MachineBrigade.Game.Effects
             }
             var count = b.Count + Mathf.RoundToInt(extra);
             if (share < 1f) count = Mathf.Max(1, Mathf.RoundToInt(count * share));
+            // Play-test 14 (lane H): a death's smoke, dust and column emit half the puffs (SmokeTimes.DeathAmount); fire never cut.
+            if (Smokes(b.System) && SmokeTimes.AmountOf(smoke) < 1f) count = Mathf.Max(1, Mathf.RoundToInt(count * SmokeTimes.AmountOf(smoke)));
             ps.Emit(new ParticleSystem.EmitParams
             {
                 position = position + Vector3.up * (b.Lift * (look == Look.Volume ? size : spread)), applyShapeToPosition = true,

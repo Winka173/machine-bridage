@@ -1694,7 +1694,7 @@ namespace MachineBrigade.Game.Hud
             ["radio.kessler.leviathan"] = ("Kessler: \"Leviathan is on station. The whole coast is in reach, and none of it can reach me.\"", "Kessler: \"Leviathan đã vào vị trí. Cả dải bờ biển nằm trong tầm, còn không thứ gì với tới ta.\""),
             ["radio.kessler.leviathan.phase2"] = ("Kessler: \"Close in. Open the well deck, launch the helicopters. Pin them to the beach.\"", "Kessler: \"Áp sát vào. Mở khoang đổ bộ, cho trực thăng cất cánh. Dồn chúng xuống bãi biển.\""),
             ["radio.kessler.leviathan.phase3"] = ("Kessler: \"Empty the cells on their HQ. Smoke, full ahead: we are leaving.\"", "Kessler: \"Phóng hết tên lửa vào sở chỉ huy của chúng. Thả khói, hết tốc lực: ta rút.\""),
-            ["radio.kessler.leviathan.run"] = ("Command: Leviathan is running for open sea behind its smoke. Sink it before it gets away!", "Chỉ huy: Leviathan đang chạy ra khơi sau màn khói. Đánh chìm nó trước khi nó thoát!"),
+            ["radio.kessler.leviathan.run"] = ("Command: Leviathan is running for open sea. Sink it before it gets away!", "Chỉ huy: Leviathan đang chạy ra khơi. Đánh chìm nó trước khi nó thoát!"),
             ["radio.kessler.leviathan.escaped"] = ("Kessler: \"Out of range, Colonel. The sea was always mine.\"", "Kessler: \"Ra khỏi tầm rồi, đại tá. Biển xưa nay vẫn là của ta.\""),
             ["radio.kessler.leviathan.sunk"] = ("Kessler: \"Abandon ship... Log the time. Somebody log the time.\"", "Kessler: \"Bỏ tàu... Ghi lại giờ. Ai đó ghi lại giờ đi.\""),
             ["radio.naval.battery.ours"] = ("Command: the coastal battery is ours. Its guns are turning on the fleet.", "Chỉ huy: trận địa pháo bờ biển đã về tay ta. Pháo đang quay về phía hạm đội."),

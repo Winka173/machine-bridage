@@ -2998,3 +2998,27 @@ khung boss: x phải, y trước, cao; nhân `size`); sát thương, máu, vũ k
 | PT14-R2A-5 | `typhon` part `rudder` `at` | [0, -27.0, 2.6] | [0, -26.6, 2.4] | đuôi mới |
 | PT14-R2A-6 | `typhon` part `sonar` `at` | [0, 26.0, 2.4] | [0, 26.4, 0.8] | sonar mũi (cửa sổ âm và vòm cằm) |
 | PT14-R2A-7 | `typhon` part `sam` (Mount_missile) `at` | [0, 3.0, 9.0] | [0, -5.0, 10.2] | tháp SAM trên đỉnh tháp chỉ huy mới |
+
+## Play-test 14 after R2 (lane H): warships hold their heading, less smoke, no smoke skills, boss SAMs slower
+
+Nhánh `feature/pt14-h`. Lý do: `Docs/DECISIONS.md` "Play-test 14 after R2 (lane H)" (chủ, khối "Bổ sung 04/10 sau khi thử bản R2").
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-H-1 | `silver_bug` `turnRate` (icarus_mk0, hyperion kế thừa) | 30 | 10 | chiến hạm lớn quay chậm khi di chuyển |
+| PT14-H-2 | `silver_bug` `mainAim` (kế thừa) | (Hull mặc định) | Free | vũ khí chính tự xoay theo mục tiêu; thân không quay để ngắm |
+| PT14-H-3 | `daedalus` `turnRate` | 26 | 10 | như trên |
+| PT14-H-4 | `daedalus` `holdsToFire`, `mainAim` | —, (Hull) | true, Free | dừng để bắn, thân giữ hướng, tháp pháo ngắm |
+| PT14-H-5 | `command_airship` (Roc; argus kế thừa) `turnRate` | 16 | 8 | khí cầu lớn quay chậm |
+| PT14-H-6 | `command_airship` `holdsToFire` (argus kế thừa) | — | true | dừng để bắn, thân giữ hướng |
+| PT14-H-7 | Sim: chiến hạm `holdsToFire` đứng lại | quay thân về mục tiêu (TurnRate) | không quay thân | chủ: "không cho quay"; khi di chuyển giảm tốc tới 15 % để quay (thay 40 %) |
+| PT14-H-8 | khói khi chết (blast chết, nổ chết, máy bay nổ trên không, boss, bộ phận boss, công sự đổ) | 100 % hạt khói / bụi / cột khói | 50 % (`SmokeTimes.DeathAmount`) | chủ: "giảm lượng khói sinh ra 50%"; lửa, chớp, mảnh vỡ giữ nguyên; tuổi khói 0,35 giữ |
+| PT14-H-9 | vệt khói tên lửa / rốc-két: tuổi mỗi cụm khói | 3,2 / 2,5 / 1,7 s x 0,5 | x 0,5 nữa (`SmokeTimes.TrailLength`) | chủ: dài giảm 50 % |
+| PT14-H-10 | vệt khói tên lửa / rốc-két: cỡ mỗi cụm khói | 1 | 0,75 (`SmokeTimes.TrailWidth`) | chủ (sửa): rộng giảm 20-30 %; khoảng cách cụm giữ nguyên |
+| PT14-H-11 | `armored_train` `skills` | ["train_smoke", "train_patch"] | ["train_patch"] | chủ: Juggernaut bỏ tạo khói |
+| PT14-H-12 | `nuke_train` `skills` | ["train_smoke"] | [] | chủ: Nemesis bỏ tạo khói |
+| PT14-H-13 | `elite_tank_destroyer` `skills` | ["elite_barrage", "elite_smoke"] | ["elite_barrage"] | chủ: không phương tiện nào tạo khói |
+| PT14-H-14 | skill `train_smoke`, `elite_smoke` | Smoke 12 m / 8 s; Smoke 9 m / 8 s | xóa | không còn ai dùng |
+| PT14-H-15 | Leviathan pha cuối (escapePhase): màn khói khi chạy | 2 đám (20 m / 22 s, 16 m / 18 s) | không | chủ: không boss nào tạo khói; câu radio bỏ "sau màn khói" |
+| PT14-H-16 | `sam_post` (Buk của tàu: leviathan, scylla, nyx, hydra, kraken, typhon) `projectileSpeed` | 250 (họ 9m317_buk) | 170 (ra khỏi họ) | chủ: tên lửa Typhon bay quá nhanh; tầm game = vài km đầu thật (giai đoạn tăng tốc) |
+| PT14-H-17 | `sam_battery` (toa SAM Nemesis) `projectileSpeed` | 300 (họ mim_104_patriot_pac_2) | 200 (ra khỏi họ; Loft, mô hình patriot giữ) | chủ: tên lửa Nemesis bay quá nhanh; patriot, sam_battery_lrr, sam_pac3 của người chơi giữ 300 |

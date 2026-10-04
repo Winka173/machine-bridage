@@ -373,7 +373,7 @@ namespace MachineBrigade.Sim.Bosses
             }
         }
 
-        /// <summary>A new phase: its lane, its point defence, its aircraft; the last phase's run, smoke and volley.</summary>
+        /// <summary>A new phase: its lane, its point defence, its aircraft; the last phase's run and volley.</summary>
         private void PhaseBegins(Vehicle v, NavalDef naval, SeaDef sea, int phase, double now)
         {
             v.NavalPhaseSeen = phase;
@@ -398,14 +398,12 @@ namespace MachineBrigade.Sim.Bosses
                 }
             }
             if (naval.EscapePhase < 0 || phase < naval.EscapePhase || v.Escaping) return;
-            // The last phase: it runs for the farther end of the far lane behind smoke, its escorts
-            // screening it, and empties its launch cells at the enemy's base.
+            // The last phase: it runs for the farther end of the far lane, its escorts screening it, and empties its launch
+            // cells at the enemy's base. Play-test 14 (lane H): no smoke screen any more (the owner: no boss makes smoke).
             v.Escaping = true;
             var f = sea.Frame(v.Position);
             v.NavalDir = f.X >= 0f ? -1 : 1;
             if (MathF.Abs(f.X) < 1f) v.NavalDir = 1;
-            _world.Strikes.AddSmoke(v.Team, v.Position, 20f, 22f);
-            _world.Strikes.AddSmoke(v.Team, v.Position - sea.Out * 18f, 16f, 18f);
             _world.Emit(SimEvent.RadioMessage("radio.kessler.leviathan.run", v.Team));
             if (v.Def.Cruise is { } final && !v.CruiseOff)
                 foreach (var aim in BaseTargets(v, final.Final)) Cruise(v, final, aim);

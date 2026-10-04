@@ -1138,7 +1138,10 @@ namespace MachineBrigade.Game.Effects
         {
             var at = view.Position;
             var radius = view.Sim.Radius;
+            // Play-test 14 (lane H): a death's blast, so a death's smoke (shorter, half the puffs).
+            _smokeLife = SmokeTimes.Death;
             Explode(ExplosionTier.Huge, at + Vector3.up * view.Top * 0.6f, now, Mathf.Clamp(radius / 2.5f, 0.9f, 1.5f));
+            _smokeLife = SmokeTimes.Blast;
             if (_cull.Visible(at, 0.4f)) _collapse.Play(at, now, Mathf.Clamp(radius / 3f, 0.7f, 1.4f));
             // Play-test 5 (DECISIONS 20V): the ground scorched round the ruin.
             _decals.Place(new Vector3(at.x, 0.15f, at.z), Mathf.Max(4f, radius * 2.2f));
