@@ -296,3 +296,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 04/10 xác tàu đang chìm/cháy phải là vật cản; preview: xe khác chạy vào đúng chỗ xác vừa chết (nguyên văn cuối playtest14_vi.txt).
 - 04/10 "Rocket của các boss khác ... làm chậm cùng mức 65 => có".
 - 04/10 bóng máy bay mất; icon boss Boss Hunt màu thật; Nyx/Scylla thêm bệ tên lửa + súng phòng không; Hydra tên lửa không có trong detail, súng nhỏ lại, bỏ chữ drone; Typhon thêm súng đuôi; sửa màu boss tàu/thuyền; Icarus/Mk0/Daedalus + 3 tàu mới thêm pháo bắn xuống, tên lửa, bỏ railgun (nguyên văn cuối playtest14_vi.txt).
+- 04/10 "nhớ là vẽ lại chứ đừng dùng model cũ" (vũ khí mới trên boss tàu: vẽ mới, không dùng lại model/chi tiết cũ).
