@@ -20,7 +20,7 @@ import mb_p34_barrels as P
 # model -> the muzzle pivots (Blender names, before finish) whose single barrel becomes a twin
 TWIN = {
     # Prompt 35 wave 8 (lane A): behemoth's rebuilt turrets model both barrels and their per-barrel muzzles.
-    'typhon': ['Muzzle_gun'],
+    # typhon: play-test 14 R2's builder (mb_pt14_r2_naval) models its twin 57 mm and per-barrel muzzles itself.
     # hydra_sub: play-test 14 wave M3's builder (mb_pt14_m3) models its twins and their per-barrel muzzles.
     'monster': ['Muzzle_gun', 'Muzzle_gun__001'],
 }

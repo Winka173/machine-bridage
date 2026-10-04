@@ -2983,3 +2983,18 @@ Nhánh `feature/pt14-m7`. Lý do: `Docs/DECISIONS.md` "Play-test 14 model wave M
 | PT14-G-6 | `typhon` secondary 57 mm `arc` | (không) | [0, 150] mũi / [180, 150] đuôi | pháo boong không bắn xuyên tháp chỉ huy; hydra kế thừa |
 | PT14-G-7 | `typhon` part `deck_gun` `arc` | (không) | [0, 150] | như trên (pháo 100 mm thức ở pha 2) |
 | PT14-G-8 | skill mới `kraken_jets`; `kraken` `skills` + `tune.flight_deck.skills` | (kế thừa leviathan_helos) | ["kraken_jets", "leviathan_helos"]; Summon stealth_naval_strike, 2 mỗi lần, tối đa 4 còn sống (`max` khóa mới), hồi 40 s, khi địch trong 110 m | chủ: tàu sân bay triệu hồi máy bay; boong vỡ thì ngừng |
+
+## Play-test 14 boss redraw R2 (lane A): Typhon redrawn, its parts at the new model's places
+
+Nhánh `feature/pt14-r2`. Lý do: `Docs/DECISIONS.md` "Play-test 14 boss redraw R2 (lane A)". Chỉ node và vị trí trúng (`at`,
+khung boss: x phải, y trước, cao; nhân `size`); sát thương, máu, vũ khí, bán kính không đổi.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-R2A-1 | `typhon` part `deck_gun` `node` | Mount_gun | Mount_gun.002 | model mới: Mount_gun = 57 mm đôi mũi, Mount_gun.001 = 57 mm đôi sau tháp, Mount_gun.002 = 100 mm boong mũi (trong giếng, thức ở pha 2) |
+| PT14-R2A-2 | `typhon` part `deck_gun` `at` | [0, 16.0, 4.2] | [0, 22.4, 4.2] | vị trí tháp 100 mm mới |
+| PT14-R2A-3 | `typhon` part `sail` `at` | [0, 6.0, 7.0] | [0, -1.4, 6.4] | tháp chỉ huy đặt phía sau như tàu thật (dữ liệu cũ còn theo file trước P35) |
+| PT14-R2A-4 | `typhon` parts `doors_l` / `doors_r` `at` | [∓2.2, -6.0, 3.6] | [∓1.72, 11.85, 4.2] | 20 nắp hầm tên lửa ở PHÍA TRƯỚC tháp chỉ huy (hai hàng 10) |
+| PT14-R2A-5 | `typhon` part `rudder` `at` | [0, -27.0, 2.6] | [0, -26.6, 2.4] | đuôi mới |
+| PT14-R2A-6 | `typhon` part `sonar` `at` | [0, 26.0, 2.4] | [0, 26.4, 0.8] | sonar mũi (cửa sổ âm và vòm cằm) |
+| PT14-R2A-7 | `typhon` part `sam` (Mount_missile) `at` | [0, 3.0, 9.0] | [0, -5.0, 10.2] | tháp SAM trên đỉnh tháp chỉ huy mới |

@@ -20067,3 +20067,57 @@ tower looked exactly like a watchtower; "scan các boss vừa vẽ lại tương
   trains and Ixion (pre-PT14 turrets carried over).
 - Needs Unity: card renders / ModelScan of the five, Leviathan's 155 mm wake rise with the new gunhouse, the barrel kick
   on the new kick parts (Cupola_ / Coil_ / Glow_barrels), Nyx's AGS firing nyx_ags_155 from Muzzle_gun.
+
+## Play-test 14 boss redraw R2 (lane A)
+
+Owner (04/10, last block of Docs/prompts/playtest14_vi.txt): "đừng reuse gì hết, tất cả boss khi vẽ lại đều vẽ lại từ đầu";
+"kraken có thể triệu hồi máy bay do là tàu sân bay"; "typhon: tháp súng không hề quay ... các tên lửa phải bắn từ các bệ
+phóng thân tàu". R2 redraws every sub-assembly the audit (Docs/models/pt14_reuse_audit.md) left reused or carried over on
+Kraken, Hydra, Harpy, both trains and Ixion, and Typhon whole. New builders Tools/blender/mb_pt14_r2_naval.py and
+mb_pt14_r2_land.py; nothing in them is drawn for two bosses. The old shared naval kit in mb_pt14_m3 (triple_turret,
+dp_mount, aa_triple, gatling, twin_arm_launcher, director, radar_array) is deleted (no caller left); `_well` and
+`_helicopter` stay for Leviathan (R1).
+- typhon (Project 941 read, own builder `mb_pt14_r2_naval.typhon`, registered last in build_assets): superellipse double
+  hull, the raised missile deck with 20 hatches in two rows FORWARD of the sail on Part_doors_l / Part_doors_r (the
+  launch doors), the long low sail aft (ice cap, capsule outlines, masts, an Igla-style 4-tube SAM turret = Mount_missile),
+  shrouded seven-blade screws, stern planes behind them, upper rudder with the towed-array pod (Part_rudder), bow sonar
+  windows and chin dome (Part_sonar). Guns for the gameplay lane: Mount_gun = AK-725-style twin 57 mm on a pedestal ahead
+  of the sail, Mount_gun.001 = the same on the after casing behind the sail, Mount_gun.002 = a retractable 100 mm turtle
+  gunhouse in a deck well with its leaves open (it wakes from the deck). Kick parts Gun_barrels[_001] / Gun_muzzles[_001],
+  Dg_barrels / Dg_muzzles; per-barrel muzzles on the 57s, so `typhon` left mb_fix_barrels.TWIN. Data (CHANGES PT14-R2A):
+  deck_gun node Mount_gun -> Mount_gun.002 and the seven part `at` values synced to the new model (they still described
+  the pre-P35 layout). Size kept (58.05 x 13.11 x 14.64 vs 57.9 x 13.3 x 15.1).
+- kraken: MK-1-read triple 406 mm (rounded rear, rangefinder in the rear wall with ear hoods, armoured port sleeves,
+  roof fittings out of turret B's barrel lanes), MK-5-read triple 152 mm in sleeping wells (sec_f in a sponson tub kept
+  inside the old width, sec_a in a deck well; Kraken inherits Leviathan's wake mounts 3, 4), AK-726-read twin 127 mm
+  (now twins with per-barrel muzzles), eight Kashtan-style modules in the galleries (Mount_mg.002 - .009), two Duet
+  gatlings (decor), Shtorm-style twin-arm SAM (Mount_missile), Owl Screech-style director, Top Sail-style radar (Radar,
+  inside the old 20.9 m height), twelve flush Granit hatches on Part_vls, a Ka-31-style helicopter. The flight deck is a
+  carrier deck now: two bow catapults (slot, covers, shuttle, chevrons, water-brake hatch, ICCS bubble), a raised blast
+  deflector behind the first with an A-12 (the stealth_naval_strike type kraken_jets launches) hooked to its shuttle, a
+  lowered deck lift cut through deck plate and hangar down to the hangar deck with a folded jet on it, a raised lift
+  with the helicopter, parked A-12s with wings folded, landing area kept on Part_deck. Static merge (KR_KEEP) brings the
+  renderers 278 -> 193. Every Part_* / Mount_* / Muzzle_* pivot at its old place (no tune change).
+- hydra_sub: Snoop Pair-style mast radar (own `Radar`). Its guns were already its own.
+- mega_gunship: GAU-21 window guns (Mount_mg.002 / .003) with window openings, swing arms, ammo cans and chutes,
+  instead of the kit pintle MG.
+- armored_train: the wave 8 builder runs with its wagon, flatcar and flak swapped (`mb_pt14_r2_land.swapped`): a riveted
+  PL-37-read drum turret (Turret / Main_cannon / Muzzle_brake / Muzzle_main, gun line raised to clear the casemate), the
+  locomotive's casemate redrawn (Muzzle_main.001 kept), an octagonal DShK cupola (Mount_mg), BM-13 rails (Mount_rocket),
+  two 4M quad Maxims (Mount_mg.001 / .002), the twin 120 mm mortar in a riveted tub (Part_mortar > Mount_mortar,
+  Mortar_tube / _2 kept).
+- nuke_train: the wave 12 builder runs with its turret, cupolas and four flatcars swapped: angular twin-gun turret
+  (Main_cannon / _2, Muzzle_brake / _2 at the old pitch), two Kord RWS (Mount_mg / .001), Uragan-1M-style rocket packs,
+  a Tor-style VLS turret (Muzzle_missile on the open cell; kept under the railway gun's line), a TM-1-180-style railway
+  gun laid up 8 degrees (its barrel now Gun_barrels / Gun_muzzles, kick parts; Muzzle_gun moves up with it), a
+  Tunguska-style AA turret (Muzzle_mg.002). The ICBM erector and launcher car are kept.
+- ixion: IX._turret swapped for a welded wedge turret with composite blocks, Relikt tiles, slat-armoured bustle and a
+  2A82-style 125 mm (Muzzle_main at its old place); the cab's two roof guns are Kord pedestal mounts instead of the kit
+  pintle MG (Mount_mg / .001 kept).
+- Triangles before -> after, gate (glb_quantize + quality_gate, hard ok): typhon 13,260 -> 29,350 (81.4 -> 93.7),
+  kraken 61,644 -> 75,770 (100 -> 100), hydra_sub 14,952 -> 14,978 (99.5 -> 99.3), mega_gunship 26,228 -> 25,924 (100),
+  armored_train 51,170 -> 56,714 (92.3 -> 93.3), nuke_train 40,684 -> 43,182 (92.9 -> 93.7), ixion 40,940 -> 38,414
+  (90.7 -> 90.8). All far under their 3.5-5 x budgets; sizes within 1-3 %. Sheets: Docs/models/rebuild/<id>/before_after_r2.png.
+- Needs Unity: card renders / ModelScan of the seven; Typhon's three guns turning and firing from their muzzles with the
+  gameplay lane's mount order (mountWeapons 1, 2 = 57 mm, 3 = 100 mm, wake mount 3 = Mount_gun.002 rising out of its well);
+  Kraken's sleeping 152s rising out of the sponson tub and deck well; the nuke train's railway gun kick on Gun_barrels.
