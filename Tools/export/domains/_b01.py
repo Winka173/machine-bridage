@@ -61,8 +61,10 @@ def templates(book):
 
     def pen_idx(armour, air=False):
         # Combat final 04/10: a topAttack weapon reads Bang_danh_noc only, the rest Bang_xuyen_giap (DamageTable.ArmourMultiplier).
+        # Overpenetration 04/10: a Kinetic weapon that is no top attack also reads Bang_xuyen_qua (DamageTable.Overpenetration).
         return LB.armour_index(R('Bang_xuyen_giap', 'he_so', '*'), R('Bang_danh_noc', 'he_so', '*'), V('xuyen'), armour,
-                               roof_expr="{danh_tu_tren}", top_expr=V('danh_noc'), air=air)
+                               roof_expr="{danh_tu_tren}", top_expr=V('danh_noc'), air=air,
+                               over=R('Bang_xuyen_qua', 'he_so', '*'), over_expr="{xuyen_qua}")
 
     struct = type_idx("cong_trinh")
     if thermo is not None:
@@ -86,6 +88,7 @@ def templates(book):
         "he_so_mat_dat": "=" + type_idx("mat_dat"),
         "he_so_may_bay": "=" + type_idx("may_bay"),
         "he_so_cong_trinh": "=" + struct,
+        "xuyen_qua": f"=AND({V('loai_sat_thuong')}={s('Kinetic')},NOT({V('danh_noc')}))",
         "he_so_xuyen_giap_0": "=" + pen_idx(0),
         "he_so_xuyen_giap_2": "=" + pen_idx(2),
         "he_so_xuyen_giap_4": "=" + pen_idx(4),
@@ -114,9 +117,11 @@ REF = {
     "nap_lai_kho_hieu_dung_s": f"{DEF} MagazineReload", "dps_duy_tri_mot_muc_tieu": f"{FP} Sustained (carrier null)",
     "danh_tu_tren": "Sim/Content/Armour.cs StrikesTop", "ban_mat_dat": f"{DEF} CanTarget(false)",
     "ban_may_bay": f"{DEF} CanTarget(true)", "he_so_mat_dat": f"{DT} TypeOf(Ground)", "he_so_may_bay": f"{DT} TypeOf(Air)",
-    "he_so_cong_trinh": f"{DT} TypeOf(Structure)", "he_so_xuyen_giap_0": f"{DT} ArmourMultiplier(pen, 0, Ground)",
-    "he_so_xuyen_giap_2": f"{DT} ArmourMultiplier(pen, 2, Ground)", "he_so_xuyen_giap_4": f"{DT} ArmourMultiplier(pen, 4, Ground)",
-    "he_so_xuyen_may_bay": f"{DT} ArmourMultiplier(pen, 0, Air)",
+    "he_so_cong_trinh": f"{DT} TypeOf(Structure)", "xuyen_qua": f"{DT} Overpenetrates",
+    "he_so_xuyen_giap_0": f"{DT} ArmourMultiplier(pen, 0, Ground) x Overpenetration",
+    "he_so_xuyen_giap_2": f"{DT} ArmourMultiplier(pen, 2, Ground) x Overpenetration",
+    "he_so_xuyen_giap_4": f"{DT} ArmourMultiplier(pen, 4, Ground) x Overpenetration",
+    "he_so_xuyen_may_bay": f"{DT} ArmourMultiplier(pen, 0, Air) x Overpenetration",
     "dps_giap_0": f"{FP} Sustained x {DT} Effective(armour 0, Ground)",
     "dps_giap_2": f"{FP} Sustained x {DT} Effective(armour 2, Ground)",
     "dps_giap_4": f"{FP} Sustained x {DT} Effective(armour 4, Ground)",
@@ -140,8 +145,9 @@ MEAN = {
     "ban_mat_dat": "nhắm được mục tiêu mặt đất", "ban_may_bay": "nhắm được máy bay",
     "he_so_mat_dat": "hệ số loại sát thương lên mặt đất", "he_so_may_bay": "hệ số loại sát thương lên máy bay",
     "he_so_cong_trinh": "hệ số loại sát thương lên công trình (nhiệt áp: max(thermobaric, hệ số))",
-    "he_so_xuyen_giap_0": "hệ số xuyên lên giáp 0", "he_so_xuyen_giap_2": "hệ số xuyên lên giáp 2 (công trình mặc định 2)",
-    "he_so_xuyen_giap_4": "hệ số xuyên lên giáp 4", "he_so_xuyen_may_bay": "hệ số xuyên lên máy bay giáp 0 (không vượt cấp)",
+    "xuyen_qua": "đạn động năng bắn thẳng, không đánh nóc: nhân thêm bảng xuyên quá (Bang_xuyen_qua) sau bảng xuyên",
+    "he_so_xuyen_giap_0": "hệ số xuyên lên giáp 0 (gồm xuyên quá)", "he_so_xuyen_giap_2": "hệ số xuyên lên giáp 2 (công trình mặc định 2; gồm xuyên quá)",
+    "he_so_xuyen_giap_4": "hệ số xuyên lên giáp 4 (gồm xuyên quá)", "he_so_xuyen_may_bay": "hệ số xuyên lên máy bay giáp 0 (không vượt cấp; gồm xuyên quá)",
     "dps_giap_0": "DPS duy trì lên xe giáp 0 (mặt trước, hoặc nóc khi đánh từ trên)",
     "dps_giap_2": "DPS duy trì lên xe giáp 2", "dps_giap_4": "DPS duy trì lên xe giáp 4",
     "dps_cong_trinh": "DPS duy trì lên công trình giáp 2 (giáp mặc định của công trình)",
@@ -164,8 +170,11 @@ def values(table: dict, w: dict, tier: int, rules: dict) -> dict:
         "nap_lai_kho_hieu_dung_s": G.magazine_reload(w), "dps_duy_tri_mot_muc_tieu": dps, "danh_tu_tren": top,
         "ban_mat_dat": g, "ban_may_bay": a, "he_so_mat_dat": G.type_of(table, w, "Ground"),
         "he_so_may_bay": G.type_of(table, w, "Air"), "he_so_cong_trinh": G.type_of(table, w, "Structure"),
-        "he_so_xuyen_giap_0": G.armour_mult(table, p, 0, "Ground", top, ta), "he_so_xuyen_giap_2": G.armour_mult(table, p, 2, "Ground", top, ta),
-        "he_so_xuyen_giap_4": G.armour_mult(table, p, 4, "Ground", top, ta), "he_so_xuyen_may_bay": G.armour_mult(table, p, 0, "Air", top, ta),
+        "xuyen_qua": G.overpenetrates(w),
+        "he_so_xuyen_giap_0": G.armour_mult(table, p, 0, "Ground", top, ta) * G.over_mult(table, w, p, 0),
+        "he_so_xuyen_giap_2": G.armour_mult(table, p, 2, "Ground", top, ta) * G.over_mult(table, w, p, 2),
+        "he_so_xuyen_giap_4": G.armour_mult(table, p, 4, "Ground", top, ta) * G.over_mult(table, w, p, 4),
+        "he_so_xuyen_may_bay": G.armour_mult(table, p, 0, "Air", top, ta) * G.over_mult(table, w, p, 0),
         "dps_giap_0": dps * G.effective(table, w, 0, "Ground") if g else 0.0,
         "dps_giap_2": dps * G.effective(table, w, 2, "Ground") if g else 0.0,
         "dps_giap_4": dps * G.effective(table, w, 4, "Ground") if g else 0.0,

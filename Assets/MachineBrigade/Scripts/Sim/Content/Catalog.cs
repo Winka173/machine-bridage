@@ -676,7 +676,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>
         /// Prompt 15, combat final 04/10: the damage-type table (a row per type: Ground, Air, Structure), the direct
         /// penetration row ("penetration": +2, +1, 0, -1, -2, -3, -4), the top attack row ("topAttack", the same steps against
-        /// the roof) and the thermobaric tag's structure multiplier (it replaces high explosive's structure value).
+        /// the roof) and the thermobaric tag's structure multiplier (it replaces high explosive's structure value); splash /
+        /// overpenetration 04/10: the splash falloff row ("splashFalloff", 9 steps) and the kinetic overpenetration row
+        /// ("overpenetration", 4 steps).
         /// </summary>
         private static DamageTable ParseDamageTable(JsonObject table)
         {
@@ -688,7 +690,8 @@ namespace MachineBrigade.Sim.Content
                 var row = table.Object(d.ToString());
                 foreach (var k in kinds) values[(int)d, (int)k] = row.Float(k.ToString());
             }
-            return Wrap(table, () => new DamageTable(values, Row(table, "penetration"), table.Float("thermobaric", 2f), Row(table, "topAttack")));
+            return Wrap(table, () => new DamageTable(values, Row(table, "penetration"), table.Float("thermobaric", 2f), Row(table, "topAttack"),
+                Row(table, "splashFalloff"), Row(table, "overpenetration")));
         }
 
         /// <summary>Combat final 04/10: an armour row of the damage table (null when absent: the code's default row).</summary>

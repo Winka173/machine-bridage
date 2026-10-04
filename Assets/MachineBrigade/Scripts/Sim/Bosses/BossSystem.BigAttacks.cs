@@ -847,9 +847,10 @@ namespace MachineBrigade.Sim.Bosses
         }
 
         /// <summary>
-        /// A blast of a big attack: every ground unit and building of the other sides within its radius, the damage
-        /// falling to <see cref="BigStrikeDef.Falloff"/> at the rim; structures by the strike's multiplier; a quake
-        /// stuns. Only one half when <paramref name="side"/> is set (a flamer's half of the ring).
+        /// A blast of a big attack: every ground unit and building of the other sides within its radius; a blast falls off by
+        /// the damage table's splash row (splash 04/10, <see cref="Share"/>), a shape with no blast (a rod, a sweep, a swing, a
+        /// charge, a ring) linearly to <see cref="BigStrikeDef.Falloff"/> at the rim as before; structures by the strike's
+        /// multiplier; a quake stuns. Only one half when <paramref name="side"/> is set (a flamer's half of the ring).
         /// </summary>
         private void BlastAt(Vehicle boss, BigStrikeDef s, Vector2 at, float scale, Vector2 side = default)
         {
@@ -860,15 +861,16 @@ namespace MachineBrigade.Sim.Bosses
                 ? new HitInfo(boss, boss.Team, null, at, HitKind.Direct, true).WithPen(s.Pen, true)
                 : new HitInfo(boss, boss.Team, null, at, HitKind.Strike, true).At(at).WithPen(s.Pen, true, s.Thermo);
             var half = side.LengthSquared() > 0.01f;
-            // Prompt 26 B.3: two flat layers: the core (s.Radius) at full damage, the edge (twice as wide) at its share.
+            // Prompt 26 B.3: two layers, the core (s.Radius) and the edge (twice as wide); splash 04/10: the table's splash row.
             var outer = s.EdgeRadius;
+            var table = _world.Catalog.Damage;
             var reach = outer > s.Radius ? outer : s.Radius;
             foreach (var e in _world.VehicleList)
             {
                 if (!e.IsAlive || e.Team == boss.Team || e.Flying || e.Invulnerable) continue;
                 var edge = MathF.Max(0f, Vector2.Distance(e.Position, at) - e.Radius);
                 if (edge > reach || (half && Vector2.Dot(e.Position - at, side) < 0f)) continue;
-                var share = outer > s.Radius ? edge <= s.Radius ? 1f : s.EdgeShare : 1f - (1f - s.Falloff) * Math.Clamp(edge / s.Radius, 0f, 1f);
+                var share = Share(table, s, edge, outer);
                 var mult = e.Kind == TargetKind.Structure ? s.Structure : 1f;
                 if (damage > 0f) _world.Damage.Apply(e, damage * share * mult, s.Type, info);
                 if (s.Stun > 0f && e.IsAlive && !e.Def.Static && !e.Def.Boss)
@@ -884,11 +886,25 @@ namespace MachineBrigade.Sim.Bosses
                     if (!prop.IsAlive || prop.Invulnerable) continue;
                     var edge = MathF.Max(0f, Vector2.Distance(prop.Position, at) - prop.Radius);
                     if (edge > reach || (half && Vector2.Dot(prop.Position - at, side) < 0f)) continue;
-                    var share = outer > s.Radius ? edge <= s.Radius ? 1f : s.EdgeShare : 1f - (1f - s.Falloff) * Math.Clamp(edge / s.Radius, 0f, 1f);
+                    var share = Share(table, s, edge, outer);
                     _world.Damage.Apply(prop, damage * share * (prop.Kind == TargetKind.Structure ? s.Structure : 1f), s.Type, info);
                 }
             var tier = damage >= 800f ? ExplosionTier.Ultimate : damage >= 200f ? ExplosionTier.Huge : damage >= 50f ? ExplosionTier.Large : ExplosionTier.Medium;
             _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, s.Radius, 0f, tier) { Edge = outer }, boss.Id));
+        }
+
+        /// <summary>
+        /// Splash 04/10: a big attack's share at <paramref name="edge"/> m from the centre (to the hull's edge). A two-layer blast:
+        /// the damage table's splash row on its core and edge (110 / 108 / 105 / 100 % in the core, 85 / 65 / 45 / 25 % to the edge,
+        /// 0 beyond); a one-layer blast (its edge no wider than its core, as the 800 mm shell's 20 m): no core, its radius the edge,
+        /// a thermobaric one falling half as far (DamageSystem's rule); a shape with no blast: linear to its rim share, as before.
+        /// </summary>
+        private static float Share(DamageTable table, BigStrikeDef s, float edge, float outer)
+        {
+            if (outer > s.Radius) return table.SplashFalloff(edge, s.Radius, outer);
+            if (!s.IsBlast) return 1f - (1f - s.Falloff) * Math.Clamp(edge / MathF.Max(0.01f, s.Radius), 0f, 1f);
+            var share = table.SplashFalloff(edge, 0f, s.Radius);
+            return s.Thermo && share > 0f && share < 1f ? 1f - (1f - share) * 0.5f : share;
         }
 
         /// <summary>Round the boss (the Inferno's ring): all round with every part standing, else each standing part's half.</summary>

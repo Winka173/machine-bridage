@@ -220,6 +220,9 @@ namespace MachineBrigade.Tests
             table["penetration"] = Enumerable.Range(0, MachineBrigade.Sim.Content.DamageTable.PenetrationSteps).Select(i => (object)catalog.Damage.PenetrationStep(i)).ToList();
             // Combat final 04/10: the separate top attack row (the same seven steps against the roof).
             table["topAttack"] = Enumerable.Range(0, MachineBrigade.Sim.Content.DamageTable.PenetrationSteps).Select(i => (object)catalog.Damage.TopAttackStep(i)).ToList();
+            // Splash / overpenetration 04/10: the two rows build_doc.py prints in section 10.
+            table["splashFalloff"] = Enumerable.Range(0, MachineBrigade.Sim.Content.DamageTable.SplashSteps).Select(i => (object)catalog.Damage.SplashStep(i)).ToList();
+            table["overpenetration"] = Enumerable.Range(0, MachineBrigade.Sim.Content.DamageTable.OverpenetrationSteps).Select(i => (object)catalog.Damage.OverpenetrationStep(i)).ToList();
             table["thermobaric"] = catalog.Damage.ThermobaricStructure;
             return table;
         }

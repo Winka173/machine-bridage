@@ -42,6 +42,10 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A share as a percentage ("30%").</summary>
         public static string Percent(float share) => Strings.Num(share * 100f, "0") + "%";
 
+        /// <summary>Splash / overpenetration 04/10: <paramref name="count"/> steps of a row from <paramref name="from"/> as "110 / 108 / 105 / 100%".</summary>
+        public static string Row(System.Func<int, float> step, int from, int count) =>
+            string.Join(" / ", Enumerable.Range(from, count).Select(i => Strings.Num(step(i) * 100f, "0.#"))) + "%";
+
         public static string Kind(TargetKind kind) => Strings.Get("hb.kind." + kind);
 
         public static string TypeName(DamageType type) => Strings.Get("dtype." + type);
@@ -104,6 +108,8 @@ namespace MachineBrigade.Game.Hud
             for (var i = 0; i < DamageTable.PenetrationSteps; i++)
                 pen.Rows.Add(new[] { Strings.Get("hb.pen.step" + i), Mult(table.PenetrationStep(i)), Mult(table.TopAttackStep(i)) });
             pen.Lines.Add(Strings.Format("hb.pen.faces", ("unit", ArmourLevels.MaxUnit), ("boss", ArmourLevels.Max), ("roofMult", Mult(table.PenetrationStep(1)))));
+            // Overpenetration 04/10: the kinetic row, after the direct table.
+            pen.Lines.Add(Strings.Format("hb.pen.over", ("row", Row(table.OverpenetrationStep, 0, DamageTable.OverpenetrationSteps)), ("steps", "≤+2 / +3 / +4 / ≥+5")));
             if (c.Vehicles.TryGetValue(c.Handbook.ExampleShooter, out var shooter) && shooter.Mounts.Count > 0 &&
                 c.Vehicles.TryGetValue(c.Handbook.ExampleTarget, out var target))
             {
@@ -126,11 +132,14 @@ namespace MachineBrigade.Game.Hud
                 ("examples", Names(Examples(c, w => w.Thermobaric)))));
             list.Add(thermo);
             var blast = new HandbookEntry(Blast, Strings.Get("hb.blast.title"));
+            // Splash 04/10: the damage table's splash row, two-layer and one-radius blasts.
             var edged = Examples(c, w => w.SplashEdge > w.SplashRadius && w.SplashRadius > 0f, 1);
+            var coreRow = Row(table.SplashStep, 0, 4);
+            var edgeRow = Row(table.SplashStep, 4, 4);
             if (edged.Count > 0)
                 blast.Lines.Add(Strings.Format("hb.blast", ("weapon", WeaponName(edged[0])), ("core", Strings.Num(edged[0].SplashRadius, "0.#")), ("edge", Strings.Num(edged[0].SplashEdge, "0.#")),
-                    ("share", Percent(edged[0].EdgeShare))));
-            else blast.Lines.Add(Strings.Get("hb.blast.plain"));
+                    ("coreRow", coreRow), ("edgeRow", edgeRow)));
+            blast.Lines.Add(Strings.Format("hb.blast.plain", ("centre", Percent(table.SplashStep(0))), ("edgeRow", edgeRow)));
             list.Add(blast);
             var guided = new HandbookEntry(Guided, Strings.Get("hb.guided.title"));
             guided.Lines.Add(Strings.Format("hb.guided", ("examples", Names(Examples(c, w => w.Guided || w.GuidedBomb || w.GuidedShell)))));

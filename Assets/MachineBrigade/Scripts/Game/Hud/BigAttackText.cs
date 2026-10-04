@@ -51,7 +51,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.behemoth_barrage"] = ("Main Gun Barrage", "Loạt pháo chính dồn"),
             ["bigattack.behemoth_barrage.cancelled"] = ("Barrage cancelled", "Đã hủy loạt pháo chính"),
             ["radio.bigattack.behemoth_barrage"] = ("Command: the Behemoth's main gun is ranging on you. Clear the circle!", "Chỉ huy: pháo chính của Behemoth đang ngắm vào ta. Ra khỏi vòng tròn!"),
-            ["guide.bigattack.behemoth_barrage.how"] = ("Three pairs of 152 mm high-explosive shells, 600 each, over a 14 m circle: each lands in its own red ring (8.5 m core at full damage, 17 m edge at 40%), drawn 3.5 s ahead. Every 45 s.", "Ba loạt, mỗi loạt hai quả 152 mm nổ mạnh, mỗi quả 600, rải trong vòng tròn bán kính 14 m: mỗi quả rơi vào vòng đỏ riêng (lõi 8,5 m đủ sát thương, rìa 17 m còn 40%), vạch trước 3,5 giây. Cứ 45 giây."),
+            ["guide.bigattack.behemoth_barrage.how"] = ("Three pairs of 152 mm high-explosive shells, 600 each, over a 14 m circle: each lands in its own red ring (8.5 m core, 17 m edge, falling off), drawn 3.5 s ahead. Every 45 s.", "Ba loạt, mỗi loạt hai quả 152 mm nổ mạnh, mỗi quả 600, rải trong vòng tròn bán kính 14 m: mỗi quả rơi vào vòng đỏ riêng (lõi 8,5 m, rìa 17 m, giảm dần), vạch trước 3,5 giây. Cứ 45 giây."),
             ["guide.bigattack.behemoth_barrage.dodge"] = ("Step out of the six rings: each blast reaches 8 m.", "Bước ra khỏi sáu vòng tròn: mỗi vụ nổ lan 8 m."),
             ["guide.bigattack.behemoth_barrage.stop"] = ("Break the main gun during the warning.", "Phá pháo chính trong lúc cảnh báo."),
 
@@ -59,7 +59,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.doomsday_missile"] = ("Doomsday Missile", "Tên lửa Tận thế"),
             ["bigattack.doomsday_missile.cancelled"] = ("Missile launch cancelled", "Đã hủy phóng tên lửa"),
             ["radio.bigattack.doomsday_missile"] = ("Command: Nemesis is raising a missile! Break the erector or get your air defence ready!", "Chỉ huy: Nemesis đang dựng tên lửa! Phá bệ phóng hoặc sẵn sàng phòng không!"),
-            ["guide.bigattack.doomsday_missile.how"] = ("Four seconds to raise it, then a thermobaric missile at your HQ or your biggest group, a flight clock on it (6 s, longer from far off): 3,500 in the 18 m core, 40% out to 20 m, much more on buildings. Every 50 s.", "Bốn giây dựng bệ phóng, rồi một tên lửa nhiệt áp bay vào HQ hoặc cụm quân lớn nhất, có đồng hồ bay (6 giây, xa hơn thì lâu hơn): 3.500 trong lõi 18 m, còn 40% tới rìa 20 m, mạnh hơn nhiều lên công trình. Cứ 50 giây một lần."),
+            ["guide.bigattack.doomsday_missile.how"] = ("Four seconds to raise it, then a thermobaric missile at your HQ or your biggest group, a flight clock on it (6 s, longer from far off): 3,500 in the 18 m core, falling off out to 20 m, much more on buildings. Every 50 s.", "Bốn giây dựng bệ phóng, rồi một tên lửa nhiệt áp bay vào HQ hoặc cụm quân lớn nhất, có đồng hồ bay (6 giây, xa hơn thì lâu hơn): 3.500 trong lõi 18 m, giảm dần tới rìa 20 m, mạnh hơn nhiều lên công trình. Cứ 50 giây một lần."),
             ["guide.bigattack.doomsday_missile.dodge"] = ("Scatter your units away from the marked landing point before the clock runs out.", "Dàn quân ra khỏi điểm rơi được đánh dấu trước khi hết giờ."),
             ["guide.bigattack.doomsday_missile.stop"] = ("Break the erector while it rises, or shoot the missile down in flight (600 health): PAC-3 and Iron Dome batteries, and any anti-air, C-RAM or point-defence laser under it.", "Phá bệ phóng trong lúc dựng, hoặc bắn hạ tên lửa trên đường bay (máu 600): khẩu đội PAC-3 và Vòm Sắt, cùng mọi phòng không, C-RAM hay la-de PK bên dưới."),
 
@@ -67,7 +67,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.fortress_203_barrage"] = ("203 mm Barrage", "Loạt pháo 203 mm"),
             ["bigattack.fortress_203_barrage.cancelled"] = ("203 mm barrage cancelled", "Đã hủy loạt pháo 203 mm"),
             ["radio.bigattack.fortress_203_barrage"] = ("Command: Jötunn is laying both 203 mm howitzers on you. Clear the circle!", "Chỉ huy: Jötunn đang ngắm cả hai lựu pháo 203 mm vào ta. Ra khỏi vòng tròn!"),
-            ["guide.bigattack.fortress_203_barrage.how"] = ("Four 203 mm shells, 900 each (10 m core, 20 m edge at 40%), over a 14 m circle, two from each howitzer; 4 s of warning. Every 50 s.", "Bốn quả 203 mm, mỗi quả 900 (lõi 10 m, rìa 20 m còn 40%), rải trong vòng tròn bán kính 14 m, mỗi lựu pháo hai quả; cảnh báo 4 giây. Cứ 50 giây."),
+            ["guide.bigattack.fortress_203_barrage.how"] = ("Four 203 mm shells, 900 each (10 m core, 20 m edge, falling off), over a 14 m circle, two from each howitzer; 4 s of warning. Every 50 s.", "Bốn quả 203 mm, mỗi quả 900 (lõi 10 m, rìa 20 m, giảm dần), rải trong vòng tròn bán kính 14 m, mỗi lựu pháo hai quả; cảnh báo 4 giây. Cứ 50 giây."),
             ["guide.bigattack.fortress_203_barrage.dodge"] = ("Leave the circle, or sit it out under a shield dome: shields take the blasts.", "Rời khỏi vòng, hoặc núp dưới vòm khiên: khiên hấp thụ được."),
             ["guide.bigattack.fortress_203_barrage.stop"] = ("Break a howitzer: each brings two of the four shells.", "Phá một lựu pháo: mỗi khẩu góp hai trong bốn quả."),
 
@@ -91,7 +91,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.bastion_420_shell"] = ("420 mm Mortar", "Pháo cối 420 mm"),
             ["bigattack.bastion_420_shell.cancelled"] = ("420 mm shell cancelled", "Đã hủy phát cối 420 mm"),
             ["radio.bigattack.bastion_420_shell"] = ("Command: the Bastion is loading its heavy mortar. Get out of the red ring!", "Chỉ huy: Bastion đang nạp khẩu cối hạng nặng. Ra khỏi vòng đỏ!"),
-            ["guide.bigattack.bastion_420_shell.how"] = ("One 420 mm mortar bomb: 2,000 in the 10 m core, 40% out to 20 m, twice as hard on buildings and towers; a red ring 4 s ahead. Every 45 s.", "Một quả cối 420 mm: 2.000 trong lõi 10 m, còn 40% tới rìa 20 m, gấp đôi lên công trình và tháp; vòng đỏ báo trước 4 giây. Cứ 45 giây."),
+            ["guide.bigattack.bastion_420_shell.how"] = ("One 420 mm mortar bomb: 2,000 in the 10 m core, falling off out to 20 m, twice as hard on buildings and towers; a red ring 4 s ahead. Every 45 s.", "Một quả cối 420 mm: 2.000 trong lõi 10 m, giảm dần tới rìa 20 m, gấp đôi lên công trình và tháp; vòng đỏ báo trước 4 giây. Cứ 45 giây."),
             ["guide.bigattack.bastion_420_shell.dodge"] = ("Leave the red ring, or keep your units under a shield generator's dome: it absorbs the blast.", "Ra khỏi vòng đỏ, hoặc giữ quân dưới vòm của máy phát khiên: vòm hấp thụ được vụ nổ."),
             ["guide.bigattack.bastion_420_shell.stop"] = ("Break the mortar: the attack goes with it (until its one self-repair).", "Phá khẩu cối: mất luôn đòn này (tới lần tự vá duy nhất của nó)."),
 
@@ -99,7 +99,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.carrier_heavy_bomb"] = ("Heavy Glide Bomb", "Bom trượt hạng nặng"),
             ["bigattack.carrier_heavy_bomb.cancelled"] = ("Glide bomb cancelled", "Đã hủy bom trượt"),
             ["radio.bigattack.carrier_heavy_bomb"] = ("Command: the carrier has stopped overhead with its bomb bay open. Hit it now!", "Chỉ huy: tàu mẹ dừng ngay trên đầu, khoang bom đã mở. Đánh nó ngay!"),
-            ["guide.bigattack.carrier_heavy_bomb.how"] = ("One heavy glide bomb from its bay: 1,600 in the 16 m core, 40% out to 20 m, twice as hard on buildings and towers; it glides slowly to the ring, 3 s at least. Every 45 s.", "Một quả bom trượt hạng nặng từ khoang bom: 1.600 trong lõi 16 m, còn 40% tới rìa 20 m, gấp đôi lên công trình và tháp; bom lượn chậm tới vòng đánh dấu, ít nhất 3 giây. Cứ 45 giây."),
+            ["guide.bigattack.carrier_heavy_bomb.how"] = ("One heavy glide bomb from its bay: 1,600 in the 16 m core, falling off out to 20 m, twice as hard on buildings and towers; it glides slowly to the ring, 3 s at least. Every 45 s.", "Một quả bom trượt hạng nặng từ khoang bom: 1.600 trong lõi 16 m, giảm dần tới rìa 20 m, gấp đôi lên công trình và tháp; bom lượn chậm tới vòng đánh dấu, ít nhất 3 giây. Cứ 45 giây."),
             ["guide.bigattack.carrier_heavy_bomb.dodge"] = ("Move out of the ring; while its bay is open your anti-air hits the carrier 30% harder.", "Chạy ra khỏi vòng; khi khoang bom mở, phòng không trúng tàu mẹ mạnh hơn 30%."),
             ["guide.bigattack.carrier_heavy_bomb.stop"] = ("Break the bomb bay, or shoot the bomb down as it glides (250 health): anti-air, C-RAM, point-defence lasers.", "Phá khoang bom, hoặc bắn hạ quả bom khi nó lượn (máu 250): phòng không, C-RAM, la-de PK."),
 
@@ -107,7 +107,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.airship_carpet"] = ("Carpet Bombing", "Rải thảm"),
             ["bigattack.airship_carpet.cancelled"] = ("Carpet bombing cancelled", "Đã hủy rải thảm"),
             ["radio.bigattack.airship_carpet"] = ("Wolff: \"Bomb doors open. Sixteen for the ground below.\"", "Wolff: \"Mở khoang bom. Mười sáu quả cho mặt đất bên dưới.\""),
-            ["guide.bigattack.airship_carpet.how"] = ("Sixteen 250 kg bombs, 400 each (7 m core, 14 m edge at 40%), in an 80 × 12 m strip along its course; 4 s of warning. Every 50 s.", "Mười sáu quả bom 250 kg, mỗi quả 400 (lõi 7 m, rìa 14 m còn 40%), thành dải 80 × 12 m theo đường bay; cảnh báo 4 giây. Cứ 50 giây."),
+            ["guide.bigattack.airship_carpet.how"] = ("Sixteen 250 kg bombs, 400 each (7 m core, 14 m edge, falling off), in an 80 × 12 m strip along its course; 4 s of warning. Every 50 s.", "Mười sáu quả bom 250 kg, mỗi quả 400 (lõi 7 m, rìa 14 m, giảm dần), thành dải 80 × 12 m theo đường bay; cảnh báo 4 giây. Cứ 50 giây."),
             ["guide.bigattack.airship_carpet.dodge"] = ("Step off the strip sideways, out from under its course.", "Bước ngang ra khỏi dải, tránh khỏi đường bay của nó."),
             ["guide.bigattack.airship_carpet.stop"] = ("Break the bomb bay.", "Phá khoang bom."),
 
@@ -115,7 +115,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.leviathan_volley"] = ("Nine-Gun Broadside", "Loạt bắn mạn chín nòng"),
             ["bigattack.leviathan_volley.cancelled"] = ("Broadside cancelled", "Đã hủy loạt bắn mạn"),
             ["radio.bigattack.leviathan_volley"] = ("Kessler: \"All turrets, train on their headquarters. Full broadside.\"", "Kessler: \"Mọi tháp pháo, quay về sở chỉ huy của chúng. Bắn cả mạn.\""),
-            ["guide.bigattack.leviathan_volley.how"] = ("Nine 406 mm shells, 950 each (12 m core, 20 m edge at 40%), from its three main turrets along a 60 × 12 m strip through your base, a third harder on buildings; 4 s of warning. Every 50 s.", "Chín quả đạn 406 mm, mỗi quả 950 (lõi 12 m, rìa 20 m còn 40%), từ ba tháp pháo chính rải theo dải 60 × 12 m qua căn cứ, mạnh hơn một phần ba lên công trình; cảnh báo 4 giây. Cứ 50 giây."),
+            ["guide.bigattack.leviathan_volley.how"] = ("Nine 406 mm shells, 950 each (12 m core, 20 m edge, falling off), from its three main turrets along a 60 × 12 m strip through your base, a third harder on buildings; 4 s of warning. Every 50 s.", "Chín quả đạn 406 mm, mỗi quả 950 (lõi 12 m, rìa 20 m, giảm dần), từ ba tháp pháo chính rải theo dải 60 × 12 m qua căn cứ, mạnh hơn một phần ba lên công trình; cảnh báo 4 giây. Cứ 50 giây."),
             ["guide.bigattack.leviathan_volley.dodge"] = ("Move units out of the marked strip; shells cannot be shot down, so spread out.", "Đưa quân ra khỏi dải đánh dấu; đạn pháo không bắn hạ được, nên hãy dàn quân ra."),
             ["guide.bigattack.leviathan_volley.stop"] = ("Break a main turret during the warning (armour 4: tank hunters, artillery, bombs): each one broken takes its three shells away.", "Phá một tháp pháo chính trong lúc cảnh báo (giáp cấp 4: xe diệt tăng, pháo binh, bom): mỗi tháp bị phá bớt ba quả đạn."),
 
@@ -123,13 +123,13 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.kraken_air_raid"] = ("Air Raid", "Đợt không kích"),
             ["bigattack.kraken_air_raid.cancelled"] = ("Air raid cancelled", "Đã hủy đợt không kích"),
             ["radio.bigattack.kraken_air_raid"] = ("Kessler: \"Deck crews, clear the bombers. Twelve for the shore.\"", "Kessler: \"Đội boong, thả máy bay ném bom. Mười hai quả cho bờ biển.\""),
-            ["guide.bigattack.kraken_air_raid.how"] = ("Twelve bombs, 400 each (9 m core, 18 m edge at 40%), in a 90 × 14 m strip along its heading; 4 s of warning. Every 50 s.", "Mười hai quả bom, mỗi quả 400 (lõi 9 m, rìa 18 m còn 40%), thành dải 90 × 14 m theo hướng tàu; cảnh báo 4 giây. Mỗi 50 giây."),
+            ["guide.bigattack.kraken_air_raid.how"] = ("Twelve bombs, 400 each (9 m core, 18 m edge, falling off), in a 90 × 14 m strip along its heading; 4 s of warning. Every 50 s.", "Mười hai quả bom, mỗi quả 400 (lõi 9 m, rìa 18 m, giảm dần), thành dải 90 × 14 m theo hướng tàu; cảnh báo 4 giây. Mỗi 50 giây."),
             ["guide.bigattack.kraken_air_raid.dodge"] = ("Step out of the red strip sideways.", "Bước ngang ra khỏi dải đỏ."),
             ["guide.bigattack.kraken_air_raid.stop"] = ("Break the flight deck during the warning: the raid and the aircraft stop.", "Phá boong cất cánh trong lúc cảnh báo: đợt không kích và máy bay đều dừng."),
             ["bigattack.monster_800_shell"] = ("800 mm Shell", "Đạn 800 mm"),
             ["bigattack.monster_800_shell.cancelled"] = ("800 mm shell cancelled", "Đã hủy phát đạn 800 mm"),
             ["radio.bigattack.monster_800_shell"] = ("Orlov: \"Elevate the barrel. One round.\"", "Orlov: \"Nâng nòng. Một phát.\""),
-            ["guide.bigattack.monster_800_shell.how"] = ("One 800 mm shell: 4,000 in the 20 m core, 40% out to 20 m, twice as hard on buildings; the barrel rises slowly, a red ring shows for 4 s. Every 50 s.", "Một quả đạn 800 mm: 4.000 trong lõi 20 m, còn 40% tới rìa 20 m, nặng gấp đôi với công trình; nòng nâng từ từ, vòng đỏ hiện 4 giây. Mỗi 50 giây."),
+            ["guide.bigattack.monster_800_shell.how"] = ("One 800 mm shell: 4,000 at the centre of a 20 m blast, falling off to its rim, twice as hard on buildings; the barrel rises slowly, a red ring shows for 4 s. Every 50 s.", "Một quả đạn 800 mm: 4.000 ở tâm vụ nổ 20 m, giảm dần ra mép, nặng gấp đôi với công trình; nòng nâng từ từ, vòng đỏ hiện 4 giây. Mỗi 50 giây."),
             ["guide.bigattack.monster_800_shell.dodge"] = ("Leave the red ring; it is wide, so go early.", "Ra khỏi vòng đỏ; vòng rất rộng nên đi sớm."),
             ["guide.bigattack.monster_800_shell.stop"] = ("Break the mortar (the barrel): the shell goes with it.", "Phá khẩu cối (nòng): mất luôn phát đạn."),
             ["bigattack.hyperion_sun_beam"] = ("Sun Beam", "Tia mặt trời"),

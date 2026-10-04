@@ -85,7 +85,10 @@ Mode parameters (tickets, CP rates, wave tables, starting forces) live in data, 
 ### Damage model
 
 Each weapon has a **damage type** and a **penetration level**; each unit has an **armour level** on each face (front, side,
-rear, roof; 0-4, bosses up to 5). Damage = base x damage-type multiplier (by Ground / Air / Structure) x armour multiplier.
+rear, roof; 0-4; level 5 on bosses and, since 04/10, on the front of titan_tank, elite_heavy_tank and mara_behemoth; towers
+stay at 4 or less). Damage = base x damage-type multiplier (by Ground / Air / Structure) x armour multiplier (x the
+kinetic overpenetration of a direct kinetic round). Penetration 0-5 (5: dedicated heavy anti-armour, elite APFSDS, railguns,
+heavy boss direct guns).
 The plan's first table by armour class was replaced by prompt 15 and the final combat rebalance (04/10); the source of truth
 is `Assets/MachineBrigade/Resources/Data/balance.json` "damageTable" (read by `Sim/Content/DamageTable.cs`). Current values:
 
@@ -104,6 +107,21 @@ Two armour tables, by penetration minus armour (+2 or more, +1, 0, -1, -2, -3, -
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Direct penetration (face struck; a non-top-attack round on the roof and every hit on aircraft stop at +1) | 1.20 | 1.00 | 0.85 | 0.65 | 0.40 | 0.15 | 0.08 |
 | Top attack (`topAttack` weapons, always against the roof, no cap) | 1.15 | 1.10 | 0.95 | 0.75 | 0.50 | 0.25 | 0.12 |
+
+Kinetic overpenetration (04/10, `damageTable.overpenetration`): a direct Kinetic round only (not shaped charge, HEAT, ATGM,
+high explosive, fragmentation, fire, energy, blasts, bombs or top-attack weapons), multiplied after the direct table:
+
+| Penetration - armour | <= +2 | +3 | +4 | >= +5 |
+|---|---:|---:|---:|---:|
+| Multiplier | 1.00 | 0.95 | 0.85 | 0.75 |
+
+Splash falloff (04/10, `damageTable.splashFalloff`): a blast's damage only (a direct hit is dealt apart; the struck target is
+not caught in its own round's blast), by distance from the centre to the target's hull: coreProgress = r / core, then
+edgeProgress = (r - core) / (edge - core); upper bounds inclusive. A one-radius blast has no core: its radius is the edge.
+
+| Zone | r = 0 | core 0-25 % | 25-50 % | 50-100 % | edge 0-25 % | 25-50 % | 50-75 % | 75-100 % | r >= edge |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Multiplier | 1.10 | 1.08 | 1.05 | 1.00 | 0.85 | 0.65 | 0.45 | 0.25 | 0 |
 
 ### Roster
 

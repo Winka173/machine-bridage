@@ -109,7 +109,7 @@ def section10(game=None, h=None):
             f"<h3>Họ vũ khí ({len(fam_rows)})</h3>"
             + table(['Họ', 'Tên', 'Bậc', 'Sát thương (boss)', 'Lõi / rìa (boss)', 'Số vũ khí', 'Biến thể và lý do'], fam_rows, 'dps')
             + f"<h3>Vũ khí boss theo họ ({len(boss_rows)})</h3>"
-            "<p>Sát thương một viên; lõi nhận đủ sát thương, rìa 40%. Hồi: thời gian hồi của vũ khí (loạt và băng giữ nhịp riêng). "
+            "<p>Sát thương một viên; nổ giảm theo khoảng cách (bảng giảm nổ lan 04/10: lõi 110 / 108 / 105 / 100%, từ lõi ra rìa 85 / 65 / 45 / 25%, ngoài rìa 0). Hồi: thời gian hồi của vũ khí (loạt và băng giữ nhịp riêng). "
             "Cảnh báo: thời gian đạn T4+ không dẫn đường báo chỗ rơi (đạn ở trên không ít nhất bấy lâu).</p>"
             + table(['Boss', 'Vũ khí', 'Họ', 'Bậc', 'Sát thương', 'Lõi / rìa', 'Hồi', 'Cảnh báo'], boss_rows, 'dps')
             + "<h3>Cảnh báo theo khả năng thoát</h3>"

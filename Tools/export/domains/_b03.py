@@ -25,7 +25,7 @@ S_COLS = [("dps_duy_tri_mot_muc_tieu", "dps_duy_tri_mot_muc_tieu", "hp/s", "DPS 
           ("chu_ky_day_du_s", "chu_ky_day_du_s", "s", "chu kỳ đầy đủ"), ("danh_tu_tren", "danh_tu_tren", "", "đánh từ trên"),
           ("ban_mat_dat", "ban_mat_dat", "", "nhắm mặt đất"), ("he_so_mat_dat", "he_so_mat_dat", "", "hệ số lên mặt đất"),
           ("he_so_cong_trinh", "he_so_cong_trinh", "", "hệ số lên công trình"),
-          ("thoi_gian_canh_bao_s", "thoi_gian_canh_bao_s", "s", "thời gian cảnh báo")]
+          ("thoi_gian_canh_bao_s", "thoi_gian_canh_bao_s", "s", "thời gian cảnh báo"), ("xuyen_qua", "xuyen_qua", "", "đạn động năng bắn thẳng không đánh nóc: bảng xuyên quá")]
 X_COLS = [("ten_vi_spec", "ten_vi_spec", "", "tên trong spec"), ("mau_trong_tran_hp", "mau_trong_tran_hp", "hp", "máu trong trận"),
           ("giap_truoc", "giap_truoc", "", "giáp trước"), ("giap_noc", "giap_noc", "", "giáp nóc"),
           ("cong_trinh", "cong_trinh", "", "là công trình"), ("toc_do_m_s", "toc_do_m_s", "m/s", "tốc độ")]
@@ -47,6 +47,9 @@ def build(ctx, book, d, built, base_built, base_w):
     bn = ctx.books[W01].sheets["Bang_danh_noc"]
     LB.input_sheet(ctx, book, "input_bang_danh_noc", "Input: bảng đánh nóc (từ 01)", W01, "Bang_danh_noc",
                    [("he_so", "he_so", "", "hệ số đánh nóc của bước")], {rid: {"he_so": r.values.get("he_so")} for rid, r in bn.rows.items()})
+    bo = ctx.books[W01].sheets["Bang_xuyen_qua"]
+    LB.input_sheet(ctx, book, "input_bang_xuyen_qua", "Input: bảng xuyên quá (từ 01)", W01, "Bang_xuyen_qua",
+                   [("he_so", "he_so", "", "hệ số xuyên quá của bước")], {rid: {"he_so": r.values.get("he_so")} for rid, r in bo.rows.items()})
     tc = ctx.books[X02].sheets["Xe_tham_chieu"]
     refs = [rid for rid in tc.rows if tc.rows[rid].values.get("don_vi_id")]
     LB.input_sheet(ctx, book, "input_xe_tham_chieu", "Input: xe tham chiếu (từ 02)", X02, "Xe_tham_chieu", X_COLS,
@@ -133,7 +136,8 @@ def build(ctx, book, d, built, base_built, base_w):
     Xi = lambda c: lookup("input_xe_tham_chieu", c, "{xe_tham_chieu}")  # noqa: E731
     D = lambda c: lookup("Boss_dps", c, "{boss_id}")  # noqa: E731
     armour_idx = LB.armour_index(R('input_bang_xuyen_giap', 'he_so', '*'), R('input_bang_danh_noc', 'he_so', '*'), Vi('xuyen'),
-                                 "{giap_mat_trung}", roof_expr=Si('danh_tu_tren'), top_expr=Vi('danh_noc'))
+                                 "{giap_mat_trung}", roof_expr=Si('danh_tu_tren'), top_expr=Vi('danh_noc'),
+                                 over=R('input_bang_xuyen_qua', 'he_so', '*'), over_expr=Si('xuyen_qua'))
     T = {
         "giap_mat_trung": f"=IF({Si('danh_tu_tren')},{Xi('giap_noc')},{Xi('giap_truoc')})",
         "he_so_trung": (f"=IF({Si('ban_mat_dat')},{armour_idx}*"

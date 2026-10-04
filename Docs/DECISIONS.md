@@ -20884,3 +20884,42 @@ owner's final word; newer than MB_FINAL (no overlap: MB_FINAL zones touched only
 - tungsten_penetrator / sabot_rounds unchanged; breakpoints: `python Tools/balance/tungsten_breakpoints.py` ->
   `Docs/checks/tungsten_breakpoints.md` (a part level reads between steps; only Legendary +1.0 lands on the next step).
 - Boss armour and HP unchanged (CombatFinalTests.BossArmourAndHealthAreUnchanged pins all 33 from the 04/10 export).
+
+## Armour/Pen 5 and splash/overpen 04/10 (lane A)
+
+Sources: `Docs/prompts/armour_pen5_vi.md` then `Docs/prompts/splash_overpen_vi.md` (owner 04/10, "không cần test": no tests
+written or run). Old -> new: `Docs/export/CHANGES.md` "ARMOUR PEN 5" and "SPLASH OVERPEN"; reports `Docs/fixes/armour_pen5_report.md`,
+`Docs/fixes/splash_overpen_report.md`.
+
+- Armour 5 off the boss-only rule: `ArmourLevels.CapFor(boss, structure, face)`: a boss any face to 5, a vehicle (not a
+  structure) its front to 5, every other face and every tower / building to 4. The loader refuses anything else, so no
+  tower reaches 5 and no non-boss is 5/5/5/5; which vehicles carry it is data (titan_tank, elite_heavy_tank, mara_behemoth).
+  The two scalar `"armour": 4` became `[5, 3, 2, 2]` (a scalar 5 would expand to 5/4/3/3).
+- Gear never lifts a face to 5: `Vehicle.ArmourOn` caps a non-boss at max(4, the face's data level), so a data 5 front stays 5
+  (the old cap would have cut it to 4) and an MBT's 4 front stays 4 with armour gear.
+- Pen 5: each listed id has its own `pen`, so it was set there; no parent changed (p26_ixion_125 inherits gun_120mm,
+  gun_155_twin_ap inherits gun_155_twin_fort: both own their pen; every `_he` child owns a lower pen). The ten listed boss
+  pen-5 weapons were already 5 (inherited from their `p26_*` parents): nothing set. UI names penetration 0-5
+  (`pen.level.5`); the deck cover row shows levels 0-5.
+- Splash row in `damageTable.splashFalloff` (9 steps), applied by `DamageTable.SplashFalloff(r, core, edge)` with r to the
+  target's hull edge as before; upper bounds inclusive in the core and the first three edge bands, r >= edge outside. No
+  division by zero (no core: no core progress; edge <= core: no edge zone), NaN reads outside.
+- One-radius blasts (no `edge`): the engine's convention was one radius over which the damage fell off to 25 % at the rim,
+  so the radius maps to the edge zone with no core (110 % at r = 0, then 85/65/45/25 %), not to a full-damage core (that
+  would have doubled every plain splash). No radius invented; the ±15 % reach variance stays. A one-radius thermobaric
+  blast keeps prompt 15 C.3 (falls off half as far: 92.5/82.5/72.5/62.5 %, the old 62.5 % rim).
+- Boss big attacks: every blast with core and edge reads the row (their texts "40 %" / "full damage" now say "falling off");
+  the 800 mm shell (core = edge 20 m) is a one-radius blast; rods, sweeps, swings, charges and rings are no blast and keep
+  their linear `falloff`. `edgeShare` (weapons, explosions, strikes) and tunables `edgeFalloff` are kept but no longer read.
+- The struck target stays out of its own round's blast (as before): the direct hit is its own, so the 110 % centre never
+  touches it. Splash damage keeps the damage-type multiplier and the splash's fragment penetration.
+- Overpenetration row `damageTable.overpenetration` (4 steps, part levels interpolate like the penetration table):
+  `DamageTable.Overpenetrates(weapon)` = Kinetic and not topAttack; read in `HitMultiplier` for `HitKind.Direct` and
+  `Pierce` only (a railgun slug's pass-through counts), after `ArmourMultiplier`; also in `Estimate` and
+  `Effective(weapon)` (AI, matchup, tooltips), applied on every target kind including aircraft (the prompt sets no kind
+  limit). `Effective(type)` (weapon-less threat profiles, strikes) does not.
+- Exporter: new sheets `01/Bang_xuyen_qua`, `01/Bang_no_lan`, column `Vu_khi_suy_ra.xuyen_qua`; the armour multiplier
+  columns and every DPS include overpenetration (`_layer_b.armour_index` over / over_expr); inputs `input_bang_xuyen_qua`
+  in 02/03/04. The design review's game.json-fed text (10g, Gungnir, 10i, big attacks, unit lines) was updated with the
+  same substitutions as the C# strings, not regenerated from the 04/10 snapshot (that would also have moved unrelated
+  numbers); the lead's Unity re-export + build_doc gives the same text.

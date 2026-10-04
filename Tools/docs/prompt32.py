@@ -30,6 +30,13 @@ STEPS = {
 }
 REACTIVE_CAP = 0.8  # HandbookFacts.ReactiveCap (the code reads it from there)
 ROUND_HOLD, MIN_SWITCH = 2.0, 0.5  # WeaponDef.RoundHoldSeconds, MinSwitchSeconds
+OVER_STEPS = ["≤ +2", "+3", "+4", "≥ +5"]   # damageTable.overpenetration (DamageTable.Overpenetration, 04/10)
+SPLASH_ZONES = {   # damageTable.splashFalloff (DamageTable.SplashFalloff, 04/10)
+    "vi": ["Ngay tâm (r = 0)", "Lõi 0–25%", "Lõi 25–50%", "Lõi 50–100%", "Lõi → rìa 0–25%", "Lõi → rìa 25–50%", "Lõi → rìa 50–75%",
+           "Lõi → rìa 75–100%", "Từ rìa trở ra"],
+    "en": ["Centre (r = 0)", "Core 0–25%", "Core 25–50%", "Core 50–100%", "Core → edge 0–25%", "Core → edge 25–50%", "Core → edge 50–75%",
+           "Core → edge 75–100%", "Edge and beyond"],
+}
 MAX_UNIT, MAX_BOSS = 4, 5  # ArmourLevels.MaxUnit, Max (Armour/Pen 5 04/10: Max also on a vehicle's front, ArmourLevels.CapFor)
 
 
@@ -120,6 +127,33 @@ class Handbook:
                             if vi else f"Armour has a direction: front, side, rear and roof (towers and a vehicle's side, rear and roof up to level {MAX_UNIT}; a boss and a super-heavy tank's front up to {MAX_BOSS}). Direct fire reads the direct column "
                             f"against the face it strikes; a round that is not a top attack but comes down on the roof, and every hit on an aircraft, never overmatches "
                             f"({mult(pens[1], lang)} is the most). A top-attack weapon always strikes the roof and reads the top-attack column only (never both tables, no cap at {mult(pens[1], lang)}).") + "</p>")
+        # Overpenetration 04/10: a direct Kinetic round's own row, after the direct table.
+        over = list(t.get("overpenetration") or [1.0, 0.95, 0.85, 0.75])
+        out.append(table(["Xuyên - giáp (xuyên quá, động năng)" if vi else "Penetration - armour (kinetic overpenetration)", "Hệ số" if vi else "Multiplier"],
+                         [[s, mult(m, lang)] for s, m in zip(OVER_STEPS, over)], "dps"))
+        out.append("<p>" + ("Xuyên quá: đạn động năng bắn thẳng (đạn xuyên, APFSDS, railgun, pháo bắn thẳng) vượt giáp quá xa thì đi xuyên qua, "
+                            "phí một phần năng lượng; hệ số này nhân SAU bảng bắn thẳng (không thay nó). Không áp cho nổ lõm, HEAT, ATGM, nổ mạnh, "
+                            "mảnh, lửa, năng lượng, nổ lan, bom và vũ khí đánh nóc. "
+                            f"Ví dụ xuyên 5 lên giáp 0 (động năng, mặt đất): {mult(t['Kinetic']['Ground'], lang)} × {mult(pens[0], lang)} × {mult(over[-1], lang)} = "
+                            f"{mult(t['Kinetic']['Ground'] * pens[0] * over[-1], lang)}."
+                            if vi else "Overpenetration: a direct kinetic round (armour-piercing, APFSDS, railgun, a gun's direct shot) far above the armour "
+                            "goes on through and wastes some of its energy; this factor multiplies AFTER the direct table (it never replaces it). Not for "
+                            "shaped charges, HEAT, ATGMs, high explosive, fragmentation, fire, energy, blasts, bombs or top-attack weapons. "
+                            f"Example, penetration 5 on armour 0 (kinetic, ground): {mult(t['Kinetic']['Ground'], lang)} × {mult(pens[0], lang)} × {mult(over[-1], lang)} = "
+                            f"{mult(t['Kinetic']['Ground'] * pens[0] * over[-1], lang)}.") + "</p>")
+        # Splash 04/10: the splash falloff row.
+        splash = list(t.get("splashFalloff") or [1.10, 1.08, 1.05, 1.00, 0.85, 0.65, 0.45, 0.25, 0.0])
+        out.append(table(["Khoảng cách tới tâm nổ" if vi else "Distance from the blast's centre", "Phần sát thương nổ" if vi else "Blast damage"],
+                         [[z, pct(m, lang)] for z, m in zip(SPLASH_ZONES[lang], splash)], "dps"))
+        out.append("<p>" + ("Nổ lan giảm theo khoảng cách tới tâm (tới mép thân mục tiêu): trong lõi theo r / lõi, ngoài lõi theo (r - lõi) / (rìa - lõi); "
+                            "biên trên tính vào vùng, từ rìa trở ra không còn. Chỉ phần nổ nhân hệ số này, kể cả 110% ở tâm; phát trúng thẳng tính riêng và "
+                            "mục tiêu trúng thẳng không dính nổ của chính viên đó. Vũ khí chỉ có một bán kính nổ: không có lõi, bán kính đó là rìa "
+                            "(nổ nhiệt áp một bán kính giảm một nửa mức đó). Hệ số loại sát thương vẫn nhân như cũ."
+                            if vi else "A blast falls off with distance from its centre (to the target's hull): in the core by r / core, past it by "
+                            "(r - core) / (edge - core); each upper bound belongs to its band, nothing at the edge or beyond. Only the blast takes this "
+                            "factor, the 110% centre included; a direct hit is dealt apart and the struck target is not caught in its own round's blast. "
+                            "A weapon with one blast radius has no core: that radius is the edge (a one-radius thermobaric blast falls half as far). "
+                            "The damage type's factor still applies as before.") + "</p>")
         hb = self.d.get("handbook", {})
         shooter, target = self.m.V.get(hb.get("exampleShooter", "ifv")), self.m.V.get(hb.get("exampleTarget", "main_battle_tank"))
         if shooter and target and shooter.get("weapon") in self.m.W:

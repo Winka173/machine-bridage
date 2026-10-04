@@ -2,7 +2,7 @@
 
 Chế độ chơi, độ khó, kinh tế, tác chiến, thăng hạng, mở khóa, cửa hàng, giao diện.
 
-Gói cân bằng Machine Brigade, commit 9622a763, ngày 2026-10-04. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 13abf306, ngày 2026-10-04. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng quan
 

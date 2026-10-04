@@ -533,6 +533,11 @@ def build(game, imgdir):
                + "; vũ khí đánh nóc (topAttack) luôn trúng giáp nóc và dùng bảng riêng, không nhân với bảng trên: "
                + esc(', '.join(f"{name} ×{m:g}" for name, m in zip(PEN_STEP_VI, dt.get('topAttack') or [])))
                + f"; đầu nổ nhiệt áp ×{dt.get('thermobaric', 1):g} trên công trình, thay cho hệ số nổ mạnh (xem DECISIONS 14A). Bảng hiệu quả và ký hiệu ✓ ~ ✕ của từng xe nằm ở thẻ xe (phần 8).</p>"
+               + "<p>Xuyên quá (04/10): đạn động năng bắn thẳng (không đánh nóc, không phải nổ) nhân thêm sau bảng xuyên, theo xuyên - giáp ≤+2 / +3 / +4 / ≥+5: "
+               + esc(' / '.join(f"×{m:g}" for m in (dt.get('overpenetration') or balance['damageTable'].get('overpenetration') or [])))
+               + ". Giảm nổ lan (04/10), chỉ nhân phần nổ, không nhân phát trúng thẳng: tâm, lõi 0–25 / 25–50 / 50–100%, lõi→rìa 0–25 / 25–50 / 50–75 / 75–100%, ngoài rìa: "
+               + esc(' / '.join(f"×{m:g}" for m in (dt.get('splashFalloff') or balance['damageTable'].get('splashFalloff') or [])))
+               + "; vũ khí một bán kính không có lõi (bán kính là rìa).</p>"
                + "<p>Giáp có hướng (giáp mặt trước dày hơn hông/sau), đạn lệch theo tầm và chuyển động, pháo có tầm tối thiểu. Máy bay có pháo sáng, "
                "xe có hệ thống đánh chặn chủ động (APS) chặn tên lửa/drone, tàng hình chỉ lộ ở 40% tầm nhìn khi không bắn. "
                f"Ký hiệu: ✓ hệ số từ {GOOD_AT:g} trở lên, ~ từ {POOR_AT:g}, ✕ thấp hơn (cùng ngưỡng với giao diện trong game).</p>"

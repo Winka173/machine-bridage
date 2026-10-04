@@ -432,6 +432,12 @@
   // topAttack: the TOP ATTACK table, the same steps against the roof's armour level, for weapons with "topAttack": true
   // against ground targets and structures; one table or the other, never both, no cap at +1.
   // thermobaric: high explosive with the thermobaric tag against structures; it replaces HighExplosive's 1.60.
+  // Splash / overpenetration 04/10 (Docs/prompts/splash_overpen_vi.md, DECISIONS "Armour/Pen 5 and splash/overpen 04/10"):
+  // splashFalloff: the share of a blast's damage by distance from its centre: r = 0, core 0-25 %, 25-50 %, 50-100 %
+  // (coreProgress = r / core), then edgeProgress = (r - core) / (edge - core) 0-25 %, 25-50 %, 50-75 %, 75-100 %, and the
+  // edge and beyond. A one-radius blast has no core: its radius is the edge. Blast damage only, never a direct hit.
+  // overpenetration: a direct Kinetic round (not a top attack, not a blast) by penetration - armour: +2 or less, +3, +4,
+  // +5 or more; it multiplies after the penetration table.
   "damageTable": {
     "Kinetic":       { "Ground": 1.20, "Air": 0.30, "Structure": 0.70 },
     "ShapedCharge":  { "Ground": 1.30, "Air": 0.20, "Structure": 0.45 },
@@ -441,6 +447,8 @@
     "Energy":        { "Ground": 0.90, "Air": 1.50, "Structure": 0.40 },
     "penetration": [1.2, 1.0, 0.85, 0.65, 0.4, 0.15, 0.08],
     "topAttack": [1.15, 1.1, 0.95, 0.75, 0.5, 0.25, 0.12],
+    "splashFalloff": [1.10, 1.08, 1.05, 1.00, 0.85, 0.65, 0.45, 0.25, 0.0],
+    "overpenetration": [1.00, 0.95, 0.85, 0.75],
     "thermobaric": 2.0
   },
 
