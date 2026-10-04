@@ -20556,3 +20556,41 @@ Boss_Range_Final). No Unity, no tests; Sim compiled with the .NET SDK (0 errors,
 - Kraken / Leviathan lev406 reach 300 m (bundle cap, ratio 2.5 / 2.91): beyond vision, they need spotting to use it.
 - For the owner when wanted: CatalogCheck / TunablesTests (the load checks above), replay hashes (boss reach changes them),
   ExportGameDoc + pack rebuild.
+
+## MB_FINAL balance F1 (lane A)
+
+Owner 04/10: the final balance bundle MB_FINAL_2026_10_04 (`Docs/balance/final/`) wins over everything; lane F1 applies its
+data rows (every manifest row but bossWeaponOverrides (F2) and campaign fixedDeck (F3)) and its formulas to what it does not
+know. Every value with its source: `Docs/export/CHANGES.md` "MB_FINAL F1" (MBF1-1..161); conflicts: `Docs/balance/final/CONFLICTS.md`.
+- 108 rows, all matching expected_before (resolved through `inherits` and the weapon family, as Catalog does): 0 conflicts,
+  108 applied. Main boss HP x chapter TTK / 150 (fortress_bastion 25900 kept .. hyperion / silver_bug 282320); Ixion main;
+  ixion_crush_charge 10 -> 45 s; mara_behemoth SELF_APS recharge 4 -> 10 s; nine aircraft HP (fighter 600, attack jet 650,
+  attack helicopter 700, bomber / gunships 1400, strike drone 400, stealth naval strike 750, stealth fighter 600); three
+  modelSize outliers; 25 heavy guns (Heavy_Guns_Final); the Bastion b155 / b240, howitzer_fixed, casemate_155, the 105 mm
+  bunker guns, boat rockets and the Roc's 400 kg bombs (damage / cadence / blast); Laser overwhelmed Smoke -> Shift; Assault
+  and King of the Hill catch-up 0.5 -> 0.25; Defend / Siege / Survival time-limit texts; guard_tower.watch aura 30 -> 35 m.
+- A weapon family's fields win over the weapon's line (Catalog.WeaponFamilies), so the splash rows of casemate_155 (8),
+  gun_105_bunker_he (5.5) and boat_rockets (3.5) would not have taken effect: each line now names a copy of its family with
+  the bundle's splash (m284_155_mm_casemate, l7_105_mm_he_bunker, s_8_80_mm_boat). howitzer_fixed's 7 is its family's already.
+- Formula, heavy guns (owner: data the bundle lacks follows its formulas): the player / tower / escort heavy guns it did not
+  list get its rule (cycle / 0.7 with the burst kept, damage ROUND_HALF_UP(old / 0.7)): bastion_gun (HQ, spawn bastion),
+  siege_mortar_240, turret_gun_120_long / _auto, gun_155_coastal, gun_155_twin_coastlr, gun_155_twin_fort (the heavy turret's
+  HE line), cruiser_203 (sea cruiser escort), spg9_73mm (recoilless tower), howitzer_ext. Left: gun_behemoth (shared with two
+  bosses; boss guns are not under the rule), autocannons / MG / AA / missiles / rockets (the rule says not MG / AA), and the
+  lines no vehicle carries (gun_105_twin, gun_203_siege, gun_pit_105, gun_155_twin, gun_155_twin_long, gun_155_sph, mortar_240).
+- Formula, second rounds: a round inherits its gun's cadence, so its own damage follows the gun's per-shot change (/ 0.7 for the
+  heavy guns, x 520/320 and x 620/320 for howitzer_fixed_guided and casemate_155_guided): 23 rounds; rounds inheriting both
+  follow by themselves.
+- Formula, blasts (the edge is twice the core everywhere in the data but the 406 mm T5 shell and four play-test 14 guns;
+  155 mm core 7-8 m): raised, never shrunk: nyx_ags_155 6/12 -> 7/14, pt14_hp_155 core 4.5 -> 7 (edge 14), pt14_hp_v127
+  edge 10 -> 12, pt14_sb_v105 edge 10 -> 11, pt14_co_203 core 8 -> 8.5 (edge 17, like the Jotunn 203's 8.5/17).
+- Formula, no change: Theia / Coeus HP 94850 (minis; the bundle's chapter TTK schedule is for main bosses, every mini kept,
+  icarus_mk0 / argus of the same family 94850); no aircraft added since the bundle (every non-boss flyer is in Vehicles_Final);
+  SELF_APS already 10 s on titan_tank / next_gen_tank; every big attack within 40-50 s; pt14 boss weapons otherwise only take
+  F2's range rule; bunker_pkm / mg_coax_long are MGs; the new hangars and auras have no bundle formula.
+- Texts: Ixion's charge "about every 10 s" -> 45 s (BossText note / guide, BigAttackText guide, EN + VI); the Watch branch
+  info 30 -> 35 m (Strings). No Sim code touched (no build needed).
+- For the owner: Ixion's health in play goes 39,600 -> 98,400 (x2.5: the mini rank's 0.55 share no longer applies) and the
+  campaign still lists it among chapter 8's minis; naval_100 / naval_127 got the bundle's cooldown though ours fire in pairs
+  (DPS +3-4 %); tests that may need new numbers when run (not run): CalibreTests "same real weapon hits the same"
+  (gun_105_bunker 250 vs siege_gun_105 303, both L7 105 mm), boss HP / rank counts (Ixion main), BalanceSheet snapshots.

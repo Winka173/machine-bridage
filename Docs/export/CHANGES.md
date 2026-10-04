@@ -6361,3 +6361,172 @@ Nhánh `feature/final-f2`. Gói cuối của chủ `Docs/balance/final/` (MB_FIN
 Không ghi (luật gói cho kết quả bằng giá trị hiện có hoặc phòng thủ gần): 
 `coeus/pt14_co_v76` (súng bụng tàu vũ trụ, bắn xuống: giữ min 0, max 70); `daedalus/pt14_dd_v57` (súng bụng tàu vũ trụ, bắn xuống: giữ min 0, max 28); `hyperion/pt14_hp_v127` (súng bụng tàu vũ trụ, bắn xuống: giữ min 0, max 80); `hyperion/pt14_hp_vlaser` (súng bụng tàu vũ trụ, bắn xuống: giữ min 0, max 36); `silver_bug/pt14_sb_v105` (súng bụng tàu vũ trụ, bắn xuống: giữ min 0, max 50); `theia/p26_matriarch_ma_drones` (min 1 = hiện tại, max 70). Phòng không, CIWS / pháo nhỏ <= 40 mm, súng máy, phun lửa, cận chiến, bom: không ghi (min 0). Cặp cũ gói không liệt kê (bastion_mk0 / fortress_bastion / monster b155, b240; landing_hovercraft hover_rockets; ixion pt14_ixion_grad min): luật cho đúng giá trị hiện có, không ghi.
 
+## MB_FINAL F1 (lane A): bộ cân bằng cuối của chủ, phần dữ liệu (không gồm bossWeaponOverrides / fixedDeck)
+
+Nhánh `feature/final-f1`. Nguồn: `Docs/balance/final/` (Manifest_FINAL.json, 108 dòng của lane F1; Heavy_Guns_Final). Lý do: `Docs/DECISIONS.md` "MB_FINAL balance F1 (lane A)". Mọi dòng manifest khớp `expected_before` (0 xung đột, xem `Docs/balance/final/CONFLICTS.md`). Cột "nguồn": Mi = dòng i của manifest (chỉ số 0); F-HG = luật súng lớn (chu kỳ / 0,7, giữ loạt; damage = ROUND_HALF_UP(cũ / 0,7)) cho súng player / tháp / tàu hộ tống không có trong Heavy_Guns_Final; F-RND = đạn thứ hai của súng đã đổi (theo tỷ lệ damage/phát của súng); F-BLAST = bảng bán kính (155 mm lõi 7-8 m, rìa = 2 x lõi, trần 20 m) cho súng mới của play-test 14. Dữ liệu: `Assets/MachineBrigade/Resources/Data/balance.json`; chữ: BossText / BigAttackText / Strings.
+
+| # | nguồn | mục | trường | cũ | mới | ghi chú |
+|---|---|---|---|---|---|---|
+| MBF1-1 | M0 | `behemoth` | hp | 33550 | 35787 | Scale HP theo TTK: 33550 * 160/150; giữ P và hệ số 0,6. |
+| MBF1-2 | M1 | `command_airship` | hp | 137250 | 205875 | Scale HP theo TTK: 137250 * 225/150; giữ P và hệ số 0,6. |
+| MBF1-3 | M2 | `daedalus` | hp | 156900 | 240580 | Scale HP theo TTK: 156900 * 230/150; giữ P và hệ số 0,6. |
+| MBF1-4 | M3 | `drone_mothership` | hp | 63100 | 77823 | Scale HP theo TTK: 63100 * 185/150; giữ P và hệ số 0,6. |
+| MBF1-5 | M4 | `fortress_bastion` | hp | 25900 | 25900 | Scale HP theo TTK: 25900 * 150/150; giữ P và hệ số 0,6. |
+| MBF1-6 | M5 | `hyperion` | hp | 176450 | 282320 | Scale HP theo TTK: 176450 * 240/150; giữ P và hệ số 0,6. |
+| MBF1-7 | M6 | `ixion` | hp | 72000 | 98400 | Scale HP theo TTK: 72000 * 205/150; giữ P và hệ số 0,6. |
+| MBF1-8 | M7 | `kraken` | hp | 117650 | 168632 | Scale HP theo TTK: 117650 * 215/150; giữ P và hệ số 0,6. |
+| MBF1-9 | M8 | `leviathan` | hp | 52200 | 60900 | Scale HP theo TTK: 52200 * 175/150; giữ P và hệ số 0,6. |
+| MBF1-10 | M9 | `mobile_fortress` | hp | 41200 | 45320 | Scale HP theo TTK: 41200 * 165/150; giữ P và hệ số 0,6. |
+| MBF1-11 | M10 | `moloch` | hp | 74100 | 93860 | Scale HP theo TTK: 74100 * 190/150; giữ P và hệ số 0,6. |
+| MBF1-12 | M11 | `monster` | hp | 103100 | 158087 | Scale HP theo TTK: 103100 * 230/150; giữ P và hệ số 0,6. |
+| MBF1-13 | M12 | `nuke_train` | hp | 88650 | 118200 | Scale HP theo TTK: 88650 * 200/150; giữ P và hệ số 0,6. |
+| MBF1-14 | M13 | `silver_bug` | hp | 176450 | 282320 | Scale HP theo TTK: 176450 * 240/150; giữ P và hệ số 0,6. |
+| MBF1-15 | M14 | `typhon` | hp | 117650 | 168632 | Scale HP theo TTK: 117650 * 215/150; giữ P và hệ số 0,6. |
+| MBF1-16 | M15 | `ixion` | rank | mini | main | Quyết định chủ dự án: Ixion chuyển main boss. |
+| MBF1-17 | M16 | `ixion_crush_charge` | cooldown | 10 | 45 | Chuẩn hóa siêu vũ khí main về dải 40–50 s. |
+| MBF1-18 | M17 | `mara_behemoth` | aps.recharge | 4 | 10 | Quyết định khóa SELF_APS hồi 10 s. |
+| MBF1-19 | M18 | `p26_bastion_b155` | damage | 540 | 1600 | Chuẩn hóa damage/phát theo cỡ/họ; ưu tiên phát lớn hơn cho nòng lớn. |
+| MBF1-20 | M19 | `p26_bastion_b155` | cooldown | 2 | 15 | Giảm nhịp bắn pháo lớn; tăng damage/phát để giữ cảm giác và gần DPS mục tiêu. |
+| MBF1-21 | M20 | `p26_bastion_b155` | splash | 8.5 | 8 | Bảng radius theo cỡ; 155 mm ~7–8 m lõi, cỡ lớn tăng dần. |
+| MBF1-22 | M21 | `p26_bastion_b155` | edge | 17 | 16 | Rìa ≈2× lõi, giữ trần 20 m cho vũ khí thường. |
+| MBF1-23 | M22 | `p26_bastion_b240` | damage | 750 | 2400 | Chuẩn hóa damage/phát theo cỡ/họ; ưu tiên phát lớn hơn cho nòng lớn. |
+| MBF1-24 | M23 | `p26_bastion_b240` | cooldown | 5 | 30 | Giảm nhịp bắn pháo lớn; tăng damage/phát để giữ cảm giác và gần DPS mục tiêu. |
+| MBF1-25 | M24 | `howitzer_fixed` | damage | 320 | 520 | Chuẩn hóa damage/phát theo cỡ/họ; ưu tiên phát lớn hơn cho nòng lớn. Chốt override explicit ở entity con. |
+| MBF1-26 | M25 | `howitzer_fixed` | cooldown | 3.9 | 10 | Giảm nhịp bắn pháo lớn; tăng damage/phát để giữ cảm giác và gần DPS mục tiêu. |
+| MBF1-27 | M27 | `howitzer_fixed` | edge | — (thừa kế) | 14 | Rìa ≈2× lõi, giữ trần 20 m cho vũ khí thường. Chốt override explicit ở entity con. |
+| MBF1-28 | M28 | `casemate_155` | damage | 320 | 620 | Chuẩn hóa damage/phát theo cỡ/họ; ưu tiên phát lớn hơn cho nòng lớn. Chốt override explicit ở entity con. |
+| MBF1-29 | M30 | `casemate_155` | edge | — (thừa kế) | 16 | Rìa ≈2× lõi, giữ trần 20 m cho vũ khí thường. Chốt override explicit ở entity con. |
+| MBF1-30 | M31 | `gun_105_bunker_he` | damage | 212 | 300 | Chuẩn hóa damage/phát theo cỡ/họ; ưu tiên phát lớn hơn cho nòng lớn. |
+| MBF1-31 | M33 | `gun_105_bunker_he` | edge | — (thừa kế) | 11 | Rìa ≈2× lõi, giữ trần 20 m cho vũ khí thường. Chốt override explicit ở entity con. |
+| MBF1-32 | M34 | `gun_105_bunker` | damage | 212 | 250 | Chuẩn hóa damage/phát theo cỡ/họ; ưu tiên phát lớn hơn cho nòng lớn. |
+| MBF1-33 | M36 | `boat_rockets` | edge | — (thừa kế) | 7 | Rìa ≈2× lõi, giữ trần 20 m cho vũ khí thường. Chốt override explicit ở entity con. |
+| MBF1-34 | M37 | `p26_roc_roc_bombs` | splash | 5 | 10 | Chuẩn hóa hai bom 400 kg cùng bán kính. |
+| MBF1-35 | M38 | `p26_roc_roc_bombs` | edge | 10 | 20 | Chuẩn hóa hai bom 400 kg cùng bán kính. |
+| MBF1-36 | M39 | `fighter_jet` | hp | 673 | 600 | Chốt theo Stinger/Buk/AAM: fighter ưu tiên 3–5 bằng vũ khí mạnh, strike 4–8, long-stay 8–12; bomber/gunship vẫn dai hơn fighter. |
+| MBF1-37 | M40 | `attack_jet` | hp | 1127 | 650 | Chốt theo Stinger/Buk/AAM: fighter ưu tiên 3–5 bằng vũ khí mạnh, strike 4–8, long-stay 8–12; bomber/gunship vẫn dai hơn fighter. |
+| MBF1-38 | M41 | `attack_helicopter` | hp | 1009 | 700 | Chốt theo Stinger/Buk/AAM: fighter ưu tiên 3–5 bằng vũ khí mạnh, strike 4–8, long-stay 8–12; bomber/gunship vẫn dai hơn fighter. |
+| MBF1-39 | M42 | `heavy_bomber` | hp | 2059 | 1400 | Chốt theo Stinger/Buk/AAM: fighter ưu tiên 3–5 bằng vũ khí mạnh, strike 4–8, long-stay 8–12; bomber/gunship vẫn dai hơn fighter. |
+| MBF1-40 | M43 | `sky_gunship` | hp | 2227 | 1400 | Chốt theo Stinger/Buk/AAM: fighter ưu tiên 3–5 bằng vũ khí mạnh, strike 4–8, long-stay 8–12; bomber/gunship vẫn dai hơn fighter. |
+| MBF1-41 | M44 | `twin_rotor_gunship` | hp | 2123 | 1400 | Chốt theo Stinger/Buk/AAM: fighter ưu tiên 3–5 bằng vũ khí mạnh, strike 4–8, long-stay 8–12; bomber/gunship vẫn dai hơn fighter. |
+| MBF1-42 | M45 | `strike_drone` | hp | 605 | 400 | Chốt theo Stinger/Buk/AAM: fighter ưu tiên 3–5 bằng vũ khí mạnh, strike 4–8, long-stay 8–12; bomber/gunship vẫn dai hơn fighter. |
+| MBF1-43 | M46 | `stealth_naval_strike` | hp | 918 | 750 | Chốt theo Stinger/Buk/AAM: fighter ưu tiên 3–5 bằng vũ khí mạnh, strike 4–8, long-stay 8–12; bomber/gunship vẫn dai hơn fighter. |
+| MBF1-44 | M47 | `stealth_fighter` | hp | 609 | 600 | Chốt theo Stinger/Buk/AAM: fighter ưu tiên 3–5 bằng vũ khí mạnh, strike 4–8, long-stay 8–12; bomber/gunship vẫn dai hơn fighter. |
+| MBF1-45 | M48 | `engineer_vehicle` | modelSize.height | 2.02 | 2.2 | Sửa outlier kích thước; không đổi collider/gameplay footprint. |
+| MBF1-46 | M49 | `tank_destroyer` | modelSize.height | 2.04 | 2.15 | Sửa outlier kích thước; không đổi collider/gameplay footprint. |
+| MBF1-47 | M50 | `thermobaric_launcher` | modelSize.length | 6.02 | 6.7 | Sửa outlier kích thước; không đổi collider/gameplay footprint. |
+| MBF1-48 | M51 | `aiBehaviour.roles.Laser` | overwhelmed | Smoke | Shift | Vai trò laser cần đổi vị trí khi bị áp đảo thay vì phụ thuộc smoke. |
+| MBF1-49 | M52 | `matchRules.modes.assault.numbers` | catchUpMax | 0.5 | 0.25 | 0,50 → 0,25. |
+| MBF1-50 | M53 | `matchRules.modes.hill.numbers` | catchUpMax | 0.5 | 0.25 | 0,50 → 0,25. |
+| MBF1-51 | M54 | `matchRules.modes.defend.text` | timeLimit | ~12 phút (CHECK với thời lượng thiết kế hiện tại) | 12 phút | Text phải khớp numbers.timeLimit=720. |
+| MBF1-52 | M55 | `matchRules.modes.survival.text` | timeLimit | ~8–12 phút; nếu nhịp đợt làm 10 đợt vượt mục tiêu thì chỉnh số đợt hoặc nhịp | 10 đợt; nhịp mục tiêu khoảng 60 giây/đợt, tổng khoảng 10 phút | Chốt mục tiêu UX; pacing wave dùng hằng số hiện có, agent chỉnh cadence để median xấp xỉ 10 phút. |
+| MBF1-53 | M56 | `guard_tower.watch` | towerRangeAura.radius | 30 | 35 | Phân tích 600 slot nhỏ: 25 m trung bình chạm 2,09 tháp; 30 m 2,57. Chốt branch 35 m để vai trò utility khác biệt. |
+| MBF1-54 | M57 | `amos_120` | cooldown | 10 | 14.607 | Chu kỳ cũ=10.750s; chu kỳ mới≈15.357s; burst giữ nguyên. |
+| MBF1-55 | M58 | `amos_120` | damage | 150 | 214 | damage mới = ROUND_HALF_UP(150/0.7) = 214. |
+| MBF1-56 | M59 | `gun_57mm` | cooldown | 4 | 5.929 | Chu kỳ cũ=4.500s; chu kỳ mới≈6.429s; burst giữ nguyên. |
+| MBF1-57 | M60 | `gun_57mm` | damage | 77 | 110 | damage mới = ROUND_HALF_UP(77/0.7) = 110. |
+| MBF1-58 | M61 | `gun_100_river` | cooldown | 3 | 4.286 | Chu kỳ cũ=3.000s; chu kỳ mới≈4.286s; burst giữ nguyên. |
+| MBF1-59 | M62 | `gun_100_river` | damage | 160 | 229 | damage mới = ROUND_HALF_UP(160/0.7) = 229. |
+| MBF1-60 | M63 | `gun_105_apfsds` | cooldown | 3.908 | 5.583 | Chu kỳ cũ=3.908s; chu kỳ mới≈5.583s; burst giữ nguyên. |
+| MBF1-61 | M64 | `gun_105_apfsds` | damage | 260 | 371 | damage mới = ROUND_HALF_UP(260/0.7) = 371. |
+| MBF1-62 | M65 | `gun_105_long` | cooldown | 3.3333 | 4.762 | Chu kỳ cũ=3.333s; chu kỳ mới≈4.762s; burst giữ nguyên. |
+| MBF1-63 | M66 | `gun_105_long` | damage | 260 | 371 | damage mới = ROUND_HALF_UP(260/0.7) = 371. |
+| MBF1-64 | M67 | `gun_105_wheeled` | cooldown | 3.7037 | 5.291 | Chu kỳ cũ=3.704s; chu kỳ mới≈5.291s; burst giữ nguyên. |
+| MBF1-65 | M68 | `gun_105_wheeled` | damage | 258 | 369 | damage mới = ROUND_HALF_UP(258/0.7) = 369. |
+| MBF1-66 | M69 | `gun_120_twin` | cooldown | 5.113 | 7.326 | Chu kỳ cũ=5.163s; chu kỳ mới≈7.376s; burst giữ nguyên. |
+| MBF1-67 | M70 | `gun_120_twin` | damage | 240 | 343 | damage mới = ROUND_HALF_UP(240/0.7) = 343. |
+| MBF1-68 | M71 | `gun_120mm` | cooldown | 5.098 | 7.283 | Chu kỳ cũ=5.098s; chu kỳ mới≈7.283s; burst giữ nguyên. |
+| MBF1-69 | M72 | `gun_120mm` | damage | 240 | 343 | damage mới = ROUND_HALF_UP(240/0.7) = 343. |
+| MBF1-70 | M73 | `gun_125_armata_ke` | cooldown | 5 | 7.143 | Chu kỳ cũ=5.000s; chu kỳ mới≈7.143s; burst giữ nguyên. |
+| MBF1-71 | M74 | `gun_125_armata_ke` | damage | 260 | 371 | damage mới = ROUND_HALF_UP(260/0.7) = 371. |
+| MBF1-72 | M75 | `gun_125_elite` | cooldown | 5.66 | 8.086 | Chu kỳ cũ=5.660s; chu kỳ mới≈8.086s; burst giữ nguyên. |
+| MBF1-73 | M76 | `gun_125_elite` | damage | 260 | 371 | damage mới = ROUND_HALF_UP(260/0.7) = 371. |
+| MBF1-74 | M77 | `gun_140_twin` | cooldown | 4.537 | 6.481 | Chu kỳ cũ=4.537s; chu kỳ mới≈6.481s; burst giữ nguyên. |
+| MBF1-75 | M78 | `gun_140_twin` | damage | 290 | 414 | damage mới = ROUND_HALF_UP(290/0.7) = 414. |
+| MBF1-76 | M79 | `gun_152` | cooldown | 5.714 | 8.163 | Chu kỳ cũ=5.714s; chu kỳ mới≈8.163s; burst giữ nguyên. |
+| MBF1-77 | M80 | `gun_152` | damage | 320 | 457 | damage mới = ROUND_HALF_UP(320/0.7) = 457. |
+| MBF1-78 | M81 | `gun_152_he` | cooldown | 6 | 8.571 | Chu kỳ cũ=6.000s; chu kỳ mới≈8.571s; burst giữ nguyên. |
+| MBF1-79 | M82 | `gun_152_he` | damage | 320 | 457 | damage mới = ROUND_HALF_UP(320/0.7) = 457. |
+| MBF1-80 | M83 | `gun_152_heat` | cooldown | 6.33 | 9.043 | Chu kỳ cũ=6.330s; chu kỳ mới≈9.043s; burst giữ nguyên. |
+| MBF1-81 | M84 | `gun_152_heat` | damage | 336 | 480 | damage mới = ROUND_HALF_UP(336/0.7) = 480. |
+| MBF1-82 | M85 | `gun_155_twin_ap` | cooldown | 5.55 | 7.929 | Chu kỳ cũ=5.550s; chu kỳ mới≈7.929s; burst giữ nguyên. |
+| MBF1-83 | M86 | `gun_155_twin_ap` | damage | 300 | 429 | damage mới = ROUND_HALF_UP(300/0.7) = 429. |
+| MBF1-84 | M87 | `gunship_105` | cooldown | 2.743 | 3.919 | Chu kỳ cũ=2.743s; chu kỳ mới≈3.919s; burst giữ nguyên. |
+| MBF1-85 | M88 | `gunship_105` | damage | 200 | 286 | damage mới = ROUND_HALF_UP(200/0.7) = 286. |
+| MBF1-86 | M89 | `howitzer` | cooldown | 7.1429 | 10.204 | Chu kỳ cũ=7.143s; chu kỳ mới≈10.204s; burst giữ nguyên. |
+| MBF1-87 | M90 | `howitzer` | damage | 320 | 457 | damage mới = ROUND_HALF_UP(320/0.7) = 457. |
+| MBF1-88 | M91 | `mortar_120` | cooldown | 5 | 7.143 | Chu kỳ cũ=5.000s; chu kỳ mới≈7.143s; burst giữ nguyên. |
+| MBF1-89 | M92 | `mortar_120` | damage | 150 | 214 | damage mới = ROUND_HALF_UP(150/0.7) = 214. |
+| MBF1-90 | M93 | `naval_76` | cooldown | 3.1 | 4.643 | Chu kỳ cũ=3.600s; chu kỳ mới≈5.143s; burst giữ nguyên. |
+| MBF1-91 | M94 | `naval_76` | damage | 120 | 171 | damage mới = ROUND_HALF_UP(120/0.7) = 171. |
+| MBF1-92 | M95 | `naval_100` | cooldown | 3.5 | 5 | Chu kỳ cũ=3.500s; chu kỳ mới≈5.000s; burst giữ nguyên. |
+| MBF1-93 | M96 | `naval_100` | damage | 160 | 229 | damage mới = ROUND_HALF_UP(160/0.7) = 229. |
+| MBF1-94 | M97 | `naval_127` | cooldown | 3.6 | 5.143 | Chu kỳ cũ=3.600s; chu kỳ mới≈5.143s; burst giữ nguyên. |
+| MBF1-95 | M98 | `naval_127` | damage | 200 | 286 | damage mới = ROUND_HALF_UP(200/0.7) = 286. |
+| MBF1-96 | M99 | `naval_130_twin` | cooldown | 3 | 4.286 | Chu kỳ cũ=3.000s; chu kỳ mới≈4.286s; burst giữ nguyên. |
+| MBF1-97 | M100 | `naval_130_twin` | damage | 380 | 543 | damage mới = ROUND_HALF_UP(380/0.7) = 543. |
+| MBF1-98 | M101 | `recoilless_106` | cooldown | 6.6667 | 9.524 | Chu kỳ cũ=6.667s; chu kỳ mới≈9.524s; burst giữ nguyên. |
+| MBF1-99 | M102 | `recoilless_106` | damage | 220 | 314 | damage mới = ROUND_HALF_UP(220/0.7) = 314. |
+| MBF1-100 | M103 | `siege_gun_105` | cooldown | 4.6 | 6.571 | Chu kỳ cũ=4.600s; chu kỳ mới≈6.571s; burst giữ nguyên. |
+| MBF1-101 | M104 | `siege_gun_105` | damage | 212 | 303 | damage mới = ROUND_HALF_UP(212/0.7) = 303. |
+| MBF1-102 | M105 | `turret_gun_120` | cooldown | 2.88 | 4.114 | Chu kỳ cũ=2.880s; chu kỳ mới≈4.114s; burst giữ nguyên. |
+| MBF1-103 | M106 | `turret_gun_120` | damage | 240 | 343 | damage mới = ROUND_HALF_UP(240/0.7) = 343. |
+| MBF1-104 | M215 | `matchRules.modes.siege.text` | timeLimit | Mặc định chế độ ~18 phút; màn chiến dịch dùng giờ riêng của màn | 18 phút mặc định; màn chiến dịch dùng giới hạn thời gian riêng | Text khớp trực tiếp 1080 s. |
+| MBF1-105 | M26 | `howitzer_fixed` | splash | 7 | 7 | already the family's splash (m284_155_mm_2): no edit |
+| MBF1-106 | M29 | `casemate_155` | splash | 7 | 8 | family m284_155_mm_2 wins over the line: new family m284_155_mm_casemate (copy, splash 8) on the line |
+| MBF1-107 | M32 | `gun_105_bunker_he` | splash | 3 | 5.5 | family l7_105_mm_he wins over the line: new family l7_105_mm_he_bunker (copy, splash 5.5) on the line |
+| MBF1-108 | M35 | `boat_rockets` | splash | 3 | 3.5 | family s_8_80_mm wins over the line: new family s_8_80_mm_boat (copy, splash 3.5) on the line |
+| MBF1-109 | F-HG | `bastion_gun` | cooldown | 5.21 | 7.443 | heavy-gun rule: cycle / 0.7, burst kept (Heavy_Guns_Final) |
+| MBF1-110 | F-HG | `bastion_gun` | damage | 320 | 457 | heavy-gun rule: ROUND_HALF_UP(320 / 0.7) |
+| MBF1-111 | F-HG | `siege_mortar_240` | cooldown | 7.619 | 10.884 | heavy-gun rule: cycle / 0.7, burst kept (Heavy_Guns_Final) |
+| MBF1-112 | F-HG | `siege_mortar_240` | damage | 450 | 643 | heavy-gun rule: ROUND_HALF_UP(450 / 0.7) |
+| MBF1-113 | F-HG | `turret_gun_120_long` | cooldown | 3.9 | 5.571 | heavy-gun rule: cycle / 0.7, burst kept (Heavy_Guns_Final) |
+| MBF1-114 | F-HG | `turret_gun_120_long` | damage | 240 | 343 | heavy-gun rule: ROUND_HALF_UP(240 / 0.7) (inherited from its parent line) |
+| MBF1-115 | F-HG | `turret_gun_120_auto` | cooldown | 2.53 | 3.614 | heavy-gun rule: cycle / 0.7, burst kept (Heavy_Guns_Final) |
+| MBF1-116 | F-HG | `turret_gun_120_auto` | damage | 240 | 343 | heavy-gun rule: ROUND_HALF_UP(240 / 0.7) (inherited from its parent line) |
+| MBF1-117 | F-HG | `gun_155_coastal` | cooldown | 8.79 | 12.579 | heavy-gun rule: cycle / 0.7, burst kept (Heavy_Guns_Final) |
+| MBF1-118 | F-HG | `gun_155_coastal` | damage | 320 | 457 | heavy-gun rule: ROUND_HALF_UP(320 / 0.7) |
+| MBF1-119 | F-HG | `gun_155_twin_coastlr` | cooldown | 5.55 | 7.929 | heavy-gun rule: cycle / 0.7, burst kept (Heavy_Guns_Final) |
+| MBF1-120 | F-HG | `gun_155_twin_coastlr` | damage | 320 | 457 | heavy-gun rule: ROUND_HALF_UP(320 / 0.7) |
+| MBF1-121 | F-HG | `gun_155_twin_fort` | cooldown | 5.55 | 7.929 | heavy-gun rule: cycle / 0.7, burst kept (Heavy_Guns_Final) |
+| MBF1-122 | F-HG | `gun_155_twin_fort` | damage | 320 | 457 | heavy-gun rule: ROUND_HALF_UP(320 / 0.7) |
+| MBF1-123 | F-HG | `cruiser_203` | cooldown | 11.8 | 16.857 | heavy-gun rule: cycle / 0.7, burst kept (Heavy_Guns_Final) |
+| MBF1-124 | F-HG | `cruiser_203` | damage | 420 | 600 | heavy-gun rule: ROUND_HALF_UP(420 / 0.7) |
+| MBF1-125 | F-HG | `spg9_73mm` | cooldown | 6.67 | 9.529 | heavy-gun rule: cycle / 0.7, burst kept (Heavy_Guns_Final) |
+| MBF1-126 | F-HG | `spg9_73mm` | damage | 180 | 257 | heavy-gun rule: ROUND_HALF_UP(180 / 0.7) |
+| MBF1-127 | F-HG | `howitzer_ext` | cooldown | 5.3 | 7.571 | heavy-gun rule: cycle / 0.7, burst kept (Heavy_Guns_Final) |
+| MBF1-128 | F-HG | `howitzer_ext` | damage | 320 | 457 | heavy-gun rule: ROUND_HALF_UP(320 / 0.7) |
+| MBF1-129 | F-RND | `bastion_gun_he` | damage | 320 | 457 | heavy-gun rule on the gun's round: ROUND_HALF_UP(320 / 0.7) |
+| MBF1-130 | F-RND | `casemate_155_guided` | damage | 320 | 620 | follows its gun casemate_155 (320 -> 620, row): ROUND_HALF_UP(320 x 620/320) |
+| MBF1-131 | F-RND | `cruiser_203_guided` | damage | 420 | 600 | heavy-gun rule on the gun's round: ROUND_HALF_UP(420 / 0.7) |
+| MBF1-132 | F-RND | `gun_105_apfsds_he` | damage | 260 | 371 | heavy-gun rule on the gun's round: ROUND_HALF_UP(260 / 0.7) |
+| MBF1-133 | F-RND | `gun_105_long_he` | damage | 260 | 371 | heavy-gun rule on the gun's round: ROUND_HALF_UP(260 / 0.7) |
+| MBF1-134 | F-RND | `gun_105_wheeled_he` | damage | 258 | 369 | heavy-gun rule on the gun's round: ROUND_HALF_UP(258 / 0.7) |
+| MBF1-135 | F-RND | `gun_120_twin_he` | damage | 240 | 343 | heavy-gun rule on the gun's round: ROUND_HALF_UP(240 / 0.7) |
+| MBF1-136 | F-RND | `gun_120mm_he` | damage | 240 | 343 | heavy-gun rule on the gun's round: ROUND_HALF_UP(240 / 0.7) |
+| MBF1-137 | F-RND | `gun_125_elite_he` | damage | 260 | 371 | heavy-gun rule on the gun's round: ROUND_HALF_UP(260 / 0.7) |
+| MBF1-138 | F-RND | `gun_140_twin_he` | damage | 290 | 414 | heavy-gun rule on the gun's round: ROUND_HALF_UP(290 / 0.7) |
+| MBF1-139 | F-RND | `gun_152_heat_he` | damage | 320 | 457 | heavy-gun rule on the gun's round: ROUND_HALF_UP(320 / 0.7) |
+| MBF1-140 | F-RND | `gun_155_coastal_guided` | damage | 320 | 457 | heavy-gun rule on the gun's round: ROUND_HALF_UP(320 / 0.7) |
+| MBF1-141 | F-RND | `gun_155_twin_coastlr_guided` | damage | 320 | 457 | heavy-gun rule on the gun's round: ROUND_HALF_UP(320 / 0.7) |
+| MBF1-142 | F-RND | `gun_155_twin_fort_guided` | damage | 320 | 457 | heavy-gun rule on the gun's round: ROUND_HALF_UP(320 / 0.7) |
+| MBF1-143 | F-RND | `gun_57mm_he` | damage | 77 | 110 | heavy-gun rule on the gun's round: ROUND_HALF_UP(77 / 0.7) |
+| MBF1-144 | F-RND | `gunship_105_guided` | damage | 200 | 286 | heavy-gun rule on the gun's round: ROUND_HALF_UP(200 / 0.7) |
+| MBF1-145 | F-RND | `howitzer_guided` | damage | 320 | 457 | heavy-gun rule on the gun's round: ROUND_HALF_UP(320 / 0.7) |
+| MBF1-146 | F-RND | `howitzer_fixed_guided` | damage | 320 | 520 | follows its gun howitzer_fixed (320 -> 520, row): ROUND_HALF_UP(320 x 520/320) |
+| MBF1-147 | F-RND | `naval_100_guided` | damage | 160 | 229 | heavy-gun rule on the gun's round: ROUND_HALF_UP(160 / 0.7) |
+| MBF1-148 | F-RND | `naval_76_guided` | damage | 120 | 171 | heavy-gun rule on the gun's round: ROUND_HALF_UP(120 / 0.7) |
+| MBF1-149 | F-RND | `siege_gun_105_he` | damage | 212 | 303 | heavy-gun rule on the gun's round: ROUND_HALF_UP(212 / 0.7) |
+| MBF1-150 | F-RND | `turret_gun_120_he` | damage | 240 | 343 | heavy-gun rule on the gun's round: ROUND_HALF_UP(240 / 0.7) |
+| MBF1-151 | F-RND | `turret_gun_120_long_he` | damage | 240 | 343 | heavy-gun rule on the gun's round: ROUND_HALF_UP(240 / 0.7) |
+| MBF1-152 | F-BLAST | `nyx_ags_155` | splash | 6 | 7 | radius table: 155 mm core 7-8 m (203 mm at least 155's), edge = 2 x core |
+| MBF1-153 | F-BLAST | `nyx_ags_155` | edge | 12 | 14 | edge = 2 x core (cap 20 m) |
+| MBF1-154 | F-BLAST | `pt14_hp_155` | splash | 4.5 | 7 | radius table: 155 mm core 7-8 m (203 mm at least 155's), edge = 2 x core |
+| MBF1-155 | F-BLAST | `pt14_hp_v127` | edge | 10 | 12 | edge = 2 x core (cap 20 m) |
+| MBF1-156 | F-BLAST | `pt14_sb_v105` | edge | 10 | 11 | edge = 2 x core (cap 20 m) |
+| MBF1-157 | F-BLAST | `pt14_co_203` | splash | 8 | 8.5 | radius table: 155 mm core 7-8 m (203 mm at least 155's), edge = 2 x core |
+| MBF1-158 | F-RND | đạn thứ hai của các súng trên (gun_105_apfsds_he, gun_105_long_he, gun_105_wheeled_he, gun_120_twin_he, gun_120mm_he, gun_125_elite_he, gun_140_twin_he, gun_152_heat_he, gun_57mm_he, gunship_105_guided, howitzer_guided, howitzer_fixed_guided, naval_76_guided, naval_100_guided, siege_gun_105_he, turret_gun_120_he, turret_gun_120_long_he, bastion_gun_he, cruiser_203_guided, gun_155_coastal_guided, gun_155_twin_coastlr_guided, gun_155_twin_fort_guided) | cooldown | của súng cũ | của súng mới (thừa kế) | đạn bắn theo nhịp súng; không ghi riêng |
+| MBF1-159 | M27/M30 | howitzer_ext, howitzer_fixed_guided, casemate_155_guided | edge | — | 14 / 14 / 16 (thừa kế) | rìa của súng gốc; lõi 7 m (họ) nên rìa > lõi |
+| MBF1-160 | chữ | BossText note/guide.ixion, BigAttackText guide.bigattack.ixion_crush_charge.how | EN/VI | khoảng mỗi 10 s | khoảng mỗi 45 s | theo M16 |
+| MBF1-161 | chữ | Strings branch.guard_tower.watch.info | EN/VI | trong 30 m | trong 35 m | theo M56 |
+
+Không đổi (đã xét theo công thức của bộ): Theia / Coeus HP 94850 (mini; bộ giữ mọi mini, kể cả icarus_mk0 / argus 94850 cùng họ); không có máy bay mới kể từ bộ (mọi xe bay không phải boss đều có trong Vehicles_Final); SELF_APS: titan_tank / next_gen_tank đã 10 s; mọi siêu vũ khí boss đã trong 40-50 s; bunker_pkm / mg_coax_long / súng tự động / tên lửa của play-test 14: luật súng lớn không áp dụng (MG / AA / autocannon / tên lửa); vũ khí boss mới: chỉ quy tắc bán kính (tầm min/max là lane F2); gun_behemoth (mara_behemoth + boss) giữ: súng dùng chung với boss; các dòng không ai mang (gun_105_twin, gun_203_siege, gun_pit_105, gun_155_twin, gun_155_twin_long, gun_155_sph, mortar_240) giữ; hangar / aura: không có công thức.
