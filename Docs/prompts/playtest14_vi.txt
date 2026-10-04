@@ -103,3 +103,13 @@ list vẽ lại:
 === Bổ sung 04/10 (nguyên văn) ===
 khi mở full boss hunt, coi list các boss thì bị mất hình các boss mới sửa
 boss daedalus nhìn khá tốt, nên có lửa sau động cơ, vẽ lại 2 boss icarus luôn
+
+=== Bổ sung 04/10 sau khi xem Icarus mới (nguyên văn) ===
+- nhìn tốt, nhưng đừng cho nó di chuyển khi bắn, nó đáng lẽ là 1 chiến hạm di chuyển chậm
+- inferno: xóa kỹ năng tạo khói
+- check lại các boss thuyền, tại sao tháp súng lại bắn ra tên lửa, đạn bình thường mới đúng, như scylla, leviathan cũng vậy, và liviathan bị 1 cái tại sao lâu lâu đạn pháo 3 nòng của nó bay cực chậm (mục tiêu kế tàu), nyx cũng vậy railgun nó bắn ra tên lửa cực chậm, nên bỏ railgun thay bằng tháp pháo
+- các boss đường ray: đường ray không đủ dài nên nó đúng ngoài đường ray, đang coi trong inaction preview
+- typhon: tháp súng không hề quay mà bắn được ngược hướng, các tên lửa phải bắn từ các bệ phóng thân tàu lên cao rồi bay xuống
+- kraken có thể triệu hồi máy bay do là tàu sân bay, chọn loại máy bay cho nó
+- các tháp súng trên các boss vẽ lại: đừng reuse mà hãy vẽ lại, reuse nhìn không hề hợp
+- icarus mk 0: cái tháp canh để trên đầu nhìn quá như 1 tháp canh, đừng reuse gì hết, tất cả boss khi vẽ lại đều vẽ lại từ đầu, súng railgun cũng vậy vẽ lại, scan các boss vừa vẽ lại tương tự

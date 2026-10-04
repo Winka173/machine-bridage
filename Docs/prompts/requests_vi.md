@@ -289,3 +289,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 03/10 bổ sung Gói cân bằng 2: tầm tối thiểu boss theo góc hạ nòng, sheet tên lửa từng vũ khí, lửa/napalm, tháp, gọn Bom_vu_khi, báo cáo (nguyên văn cuối export_pack2_vi.txt).
 - 04/10 "khi mở full boss hunt ... mất hình các boss mới sửa"; "boss daedalus nhìn khá tốt, nên có lửa sau động cơ, vẽ lại 2 boss icarus luôn".
 - 04/10 "cập nhật, sau khi xong các task mà chưa có chỉ thị task tiếp theo thì cứ cập nhật unity".
+- 04/10 Icarus không di chuyển khi bắn; Inferno bỏ khói; tàu boss bắn đạn pháo không phải tên lửa, Leviathan đạn chậm, Nyx bỏ railgun; đường ray preview ngắn; Typhon tháp không quay + tên lửa phóng thẳng đứng; Kraken gọi máy bay; vẽ lại tháp súng boss từ đầu, không reuse (nguyên văn cuối playtest14_vi.txt).
