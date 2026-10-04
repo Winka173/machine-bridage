@@ -306,3 +306,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 04/10 "cứ làm file theo format đã có trong export_current" (AI = cặp 09_ai.xlsx/md trong gói xuất).
 - 04/10 "file toàn bộ trang bị là file nào" -> "đem ra 1 file riêng, đầy đủ" (cặp 10_trang_bi trong gói xuất).
 - 04/10 cân bằng combat cuối (penetration curve, Damage Type table, thermobaric, bom top attack, ATGM, Kh-29 blast, missile lớn, boss giữ nguyên, tests bắt buộc, báo cáo): nguyên văn Docs/prompts/combat_rebalance_vi.md.
+- 04/10 bổ sung combat: bảng Top Attack riêng 115/110/95/75/50/25/12 (nguyên văn cuối combat_rebalance_vi.md).

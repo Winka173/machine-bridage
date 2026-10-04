@@ -496,3 +496,315 @@ Sau khi làm xong, trả report chi tiết với:
    - không có generated file nào còn chứa bảng damage/penetration cũ.
 
 Nếu generator tạo thay đổi ngoài phạm vi do canonical source thay đổi, giữ các thay đổi generated hợp lệ và liệt kê chúng trong report.
+
+=====================================================================
+# BỔ SUNG 04/10 (nguyên văn): bảng Top Attack riêng
+=====================================================================
+
+Bổ sung thay đổi sau vào task combat balance trước đó.
+
+Mục tiêu: **Top Attack không còn dùng chung penetration curve rồi cap ×1.0**. Thay vào đó, tạo một bảng multiplier riêng cho top attack, tương tự `PenetrationTable`.
+
+## 1. Top Attack table mới
+
+Dùng chênh lệch:
+
+`penetration - roofArmour`
+
+Mapping cuối:
+
+- `>= +2` → `1.15`
+- `+1` → `1.10`
+- `0` → `0.95`
+- `-1` → `0.75`
+- `-2` → `0.50`
+- `-3` → `0.25`
+- `<= -4` → `0.12`
+
+Viết theo phần trăm:
+
+`115 / 110 / 95 / 75 / 50 / 25 / 12`
+
+Đây là bảng riêng cho `topAttack=true`.
+
+---
+
+## 2. Penetration table direct-fire giữ nguyên
+
+Không thay đổi curve đã chốt trước đó:
+
+- `>= +2` → `1.20`
+- `+1` → `1.00`
+- `0` → `0.85`
+- `-1` → `0.65`
+- `-2` → `0.40`
+- `-3` → `0.15`
+- `<= -4` → `0.08`
+
+Tức direct penetration:
+
+`120 / 100 / 85 / 65 / 40 / 15 / 8`
+
+---
+
+## 3. Logic runtime mới
+
+Nếu weapon:
+
+`topAttack = false`
+
+thì:
+
+- xác định armour theo mặt trúng bình thường: front / side / rear / roof tùy hit logic hiện có
+- dùng `PenetrationTable`
+
+Nếu:
+
+`topAttack = true`
+
+thì:
+
+- luôn dùng `roofArmour`
+- dùng `TopAttackTable`
+- KHÔNG dùng `PenetrationTable`
+- KHÔNG nhân hai bảng với nhau
+
+Pseudo logic mong muốn:
+
+```text
+if weapon.topAttack:
+    armour = target.roofArmour
+    armourMultiplier = TopAttackTable(penetration - armour)
+else:
+    armour = ResolveFacingArmour(hit)
+    armourMultiplier = PenetrationTable(penetration - armour)
+```
+
+Không được làm:
+
+```text
+PenetrationTable * TopAttackTable
+```
+
+Không được làm:
+
+```text
+min(PenetrationTable, 1.0)
+```
+
+cho top attack nữa.
+
+---
+
+## 4. Bỏ rule cũ “roof/top attack không overmatch quá ×1.0”
+
+Rule cũ dạng:
+
+- roof / aircraft không overmatch quá `1.00`
+
+không còn dùng cho **Top Attack chống ground target**.
+
+Thay bằng `TopAttackTable`.
+
+Tuy nhiên:
+
+- logic aircraft nếu có penetration riêng vẫn giữ theo hệ aircraft hiện tại, trừ khi code hiện đang dùng chung exact rule với top attack;
+- không tự đổi hệ số aircraft chỉ vì refactor TopAttack.
+
+Nếu code đang gom `roof hit`, `aircraft hit`, `top attack` vào chung một branch, phải tách rõ:
+
+1. normal ground facing penetration
+2. explicit top attack vs roof armour
+3. aircraft penetration
+
+---
+
+## 5. Damage Type vẫn nhân với Top Attack multiplier
+
+Công thức final cho ground target top attack:
+
+```text
+FinalDamage =
+BaseDamage
+× DamageTypeGroundMultiplier
+× TopAttackMultiplier
+× các modifier hợp lệ khác
+```
+
+Ví dụ với bảng Damage Type đã chốt trước đó:
+
+### ShapedCharge
+Ground = `1.30`
+
+Ví dụ pen bằng roof armour:
+
+`1.30 × 0.95 = 1.235`
+
+=> 123.5% raw damage.
+
+Pen thiếu 1:
+
+`1.30 × 0.75 = 0.975`
+
+Pen thiếu 2:
+
+`1.30 × 0.50 = 0.65`
+
+### HighExplosive bomb
+Ground = `1.00`
+
+Pen +1 so với roof:
+
+`1.00 × 1.10 = 1.10`
+
+Pen bằng roof:
+
+`1.00 × 0.95 = 0.95`
+
+---
+
+## 6. Weapon áp dụng
+
+TopAttackTable áp cho mọi weapon thực sự có:
+
+`topAttack = true`
+
+bao gồm các nhóm đã chốt trước:
+
+- `kornet_top`
+- Lancet-like loitering munition
+- FPV / top-attack drone
+- `hellfire_standoff`
+- `guided_bomb`
+- `jet_bombs`
+- `bomber_payload`
+- `stealth_payload`
+- các air-dropped anti-ground bomb khác đã được convert sang `topAttack=true`
+
+Không tự đổi:
+- basic ATGM
+- gun-launched ATGM
+- Kh-29
+- Maverick
+- direct Kornet
+- generic rocket
+- cruise missile direct attack
+
+trừ khi chúng đã có `topAttack=true` trong canonical data.
+
+---
+
+## 7. Boss armour
+
+Không thay đổi:
+
+- boss front armour
+- boss side armour
+- boss rear armour
+- boss roof armour
+- boss HP
+
+TopAttackTable mới phải làm việc với roof armour boss hiện có.
+
+---
+
+## 8. Tests bắt buộc
+
+### Top Attack unit tests
+
+Test ít nhất:
+
+- diff `+3` → `1.15`
+- diff `+2` → `1.15`
+- diff `+1` → `1.10`
+- diff `0` → `0.95`
+- diff `-1` → `0.75`
+- diff `-2` → `0.50`
+- diff `-3` → `0.25`
+- diff `-4` → `0.12`
+- diff `-5` → `0.12`
+- diff `-6` → `0.12`
+
+### Direct penetration regression
+
+Xác nhận direct fire vẫn là:
+
+`1.20 / 1.00 / 0.85 / 0.65 / 0.40 / 0.15 / 0.08`
+
+### Combined tests
+
+Ví dụ ShapedCharge Ground = `1.30`:
+
+- top attack diff +2 → `1.30 × 1.15 = 1.495`
+- +1 → `1.30 × 1.10 = 1.43`
+- 0 → `1.30 × 0.95 = 1.235`
+- -1 → `1.30 × 0.75 = 0.975`
+- -2 → `1.30 × 0.50 = 0.65`
+- -3 → `1.30 × 0.25 = 0.325`
+- <= -4 → `1.30 × 0.12 = 0.156`
+
+Ví dụ HE Ground = `1.00`:
+
+- +2 → 1.15
+- +1 → 1.10
+- 0 → 0.95
+- -1 → 0.75
+- -2 → 0.50
+- -3 → 0.25
+- <= -4 → 0.12
+
+---
+
+## 9. Regenerate / update tài liệu
+
+Sau khi code xong, cập nhật toàn bộ generated docs liên quan.
+
+Ít nhất rà:
+
+- `01_chien_dau.md`
+- `01_chien_dau.xlsx`
+- `00_index.xlsx`
+- `README.md`
+- `CHANGES.md`
+- ammunition handbook
+- penetration table
+- top attack documentation
+- generated weapon derived tables
+- damage-by-armour tables
+- boss shot / TTK reports nếu có dùng top attack
+- spreadsheet formulas
+- exported JSON/CSV
+- schema descriptions
+- agent-readable combat docs
+
+Tài liệu phải thể hiện rõ có **hai bảng riêng**:
+
+### Direct Penetration
+`120 / 100 / 85 / 65 / 40 / 15 / 8`
+
+### Top Attack
+`115 / 110 / 95 / 75 / 50 / 25 / 12`
+
+Không để tài liệu cũ tiếp tục ghi:
+
+- top attack chỉ đánh roof rồi cap ×1
+- roof overmatch cap ×1 cho topAttack
+- top attack dùng cùng bảng penetration direct
+
+Nếu generator quản lý các file trên, sửa canonical source và regenerate; không patch generated files thủ công.
+
+---
+
+## 10. Report cuối
+
+Trong report sau khi implement, liệt kê:
+
+- file/code/data sửa;
+- bảng TopAttack mới nằm ở đâu;
+- mọi call site dùng TopAttack;
+- mọi call site dùng direct Penetration;
+- xác nhận không có double multiplication;
+- test results;
+- generated docs đã update;
+- xác nhận boss armour / HP unchanged;
+- xác nhận weapon `topAttack=true` đang đi qua TopAttackTable mới.
