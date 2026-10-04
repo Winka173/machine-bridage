@@ -144,3 +144,9 @@ boss daedalus nhìn khá tốt, nên có lửa sau động cơ, vẽ lại 2 bos
 - các model boss tàu mới và model các boss thuyền nên sửa lại màu luôn
 - dòng các tàu icarus, icarus mk 0 và daedalus cũng thêm vũ khí như súng pháo ở dưới bắn xuống đất (2-4 khẩu)
 -  3 tàu mới này nên có tên lửa và súng pháo chỉa xuống bắn, bỏ railgun, và thêm vũ khí vào luôn
+
+=== Bổ sung 04/10 sau khi thử bản màu sơn (nguyên văn) ===
+- các tàu / thuyền mini boss tôi thấy bắn nổ hơi to (các vũ khí mới thêm vào như tên lửa)
+- lúc nãy tôi có kêu không có bóng, đó là trong inaction preview, vẫn chưa có
+- và khi vào các mode chơi, bóng của máy bay có 1 vòng tròn bóng khác lồng lên nhau, xóa vòng tròn đó
+- các vũ khí lớn các boss sao không có hiệu ứng bắn
