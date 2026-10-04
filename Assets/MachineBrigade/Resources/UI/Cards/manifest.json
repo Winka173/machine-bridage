@@ -445,6 +445,13 @@
             "hash": "v2:3c6612b7005d52502316f6de11496b49a62b541b"
         },
         {
+            "id": "aircraft_hangar",
+            "kind": "tower",
+            "model": "aircraft_hangar",
+            "source": "Models/aircraft_hangar",
+            "hash": "v2:16f00ef3bcd43fbeb9699ee5c5e6905db2e92f14"
+        },
+        {
             "id": "airfield",
             "kind": "tower",
             "model": "helipad",
@@ -492,6 +499,13 @@
             "model": "barrage_balloon",
             "source": "Models/barrage_balloon",
             "hash": "v2:c71cff088978b1975e16c396decafff5fecea059"
+        },
+        {
+            "id": "bastion_mk0",
+            "kind": "boss",
+            "model": "bastion_mk0",
+            "source": "Models/bastion_mk0",
+            "hash": "v2:5c8d7247eefc4063668fa843a5c446eb68239915"
         },
         {
             "id": "behemoth",
@@ -744,6 +758,13 @@
             "model": "ew_tower_b",
             "source": "Models/ew_tower_b",
             "hash": "v2:8696e9c46c879b9832c6bec7f772b4c52e244c19"
+        },
+        {
+            "id": "fenrir",
+            "kind": "boss",
+            "model": "fenrir",
+            "source": "Models/fenrir",
+            "hash": "v2:e7930f7ee7ffdb0e42473c73e2e71da86d17cce4"
         },
         {
             "id": "fire_control_centre",
@@ -1075,6 +1096,13 @@
             "hash": "v2:f0a434cb07251a05f064174dd3ddecbf31295db7"
         },
         {
+            "id": "scylla",
+            "kind": "boss",
+            "model": "scylla",
+            "source": "Models/scylla",
+            "hash": "v2:46ad09b4579ed07b918c5921d6fe0c5c3d5d74bb"
+        },
+        {
             "id": "shield_tower",
             "kind": "tower",
             "model": "shield_tower",
@@ -1129,13 +1157,6 @@
             "model": "typhon",
             "source": "Models/typhon",
             "hash": "v2:3cfca548f5afe76bd80b373c5e794b0955d8839f"
-        },
-        {
-            "id": "vehicle_hangar",
-            "kind": "tower",
-            "model": "vehicle_hangar_base",
-            "source": "Models/vehicle_hangar_base",
-            "hash": "v2:356caf2a7badc5d063dffe81a728b012290b70df"
         }
     ]
 }
