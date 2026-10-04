@@ -65,6 +65,25 @@ class Context:
             return sid, [], []
         return sid, s.data["rows"], s.data["lines"]
 
+    def cs_custom(self, sid: str, path: str, extractor):
+        """A C# table built by a domain's own regex over a method body (values set imperatively, not a literal array):
+        (source id, rows, line numbers). `extractor(text) -> (rows, lines)`."""
+        if sid in self.sources:
+            s = self.sources[sid]
+            return sid, s.data["rows"], s.data["lines"]
+        text = (ROOT / path).read_text("utf-8-sig")
+
+        def load(_src):
+            rows, lines = extractor(text)
+            return {"rows": rows, "lines": lines}
+
+        s = Source(sid, "cs_table", ROOT / path, loader=load)
+        self.sources[sid] = s
+        if s.data is None:
+            self.unreadable.append((sid, s.error or "unreadable"))
+            return sid, [], []
+        return sid, s.data["rows"], s.data["lines"]
+
     # ------------------------------------------------------------------ rules
     def exclude(self, source_glob: str, pattern: str, reason: str, origin: str = ""):
         self.excluded.append(Rule(source_glob, pattern, reason, origin=origin))

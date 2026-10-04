@@ -1,11 +1,15 @@
-"""02_phuong_tien, layer A: vehicles (and elites), their weapon mounts, support cards, skills, equipment (GearCatalog.cs),
-commanders and enemy generals' passives (Commanders.cs), opening squads, reference vehicles, global toughness."""
+"""02_phuong_tien, layer A: vehicles (and elites), their weapon mounts, support cards, skills, equipment (GearCatalog.cs,
+GearCatalog.Tower.cs, Gear.Model.cs, Gear.Tower.cs), commanders and enemy generals' passives (Commanders.cs), opening
+squads, reference vehicles, global toughness."""
 from __future__ import annotations
 
+import re
+
 from core.model import NEED_CODE_CHECK, child_rows
+from core.repo import ROOT
 from core.units import snake
 
-from . import _b02, _unit_settle
+from . import _b02, _lane_c as C, _unit_settle
 from . import _balance as B
 from . import _game as G
 from . import _units as U
@@ -17,6 +21,10 @@ DESC = "Xe, bệ vũ khí, thẻ hỗ trợ, kỹ năng, trang bị, commander, 
 COMMANDERS = "Assets/MachineBrigade/Scripts/Sim/Content/Commanders.cs"
 COMMANDER_DEFS = "Assets/MachineBrigade/Scripts/Sim/Content/CommanderDefs.cs"
 GEAR = "Assets/MachineBrigade/Scripts/Game/Match/GearCatalog.cs"
+GEAR_TOWER = "Assets/MachineBrigade/Scripts/Game/Match/GearCatalog.Tower.cs"
+GEAR_MODEL = "Assets/MachineBrigade/Scripts/Game/Match/Gear.Model.cs"
+GEAR_TOWER_GEAR = "Assets/MachineBrigade/Scripts/Game/Match/Gear.Tower.cs"
+STATID_ENUM = "Assets/MachineBrigade/Scripts/Sim/Content/VehicleBoost.cs"
 VEHICLE_FK = ["02_phuong_tien/Xe"]
 FAMILY_OF = {"Combat": "Combat", "Econ": "Economy", "Gen": "General"}
 # spec 03 B (Boss_hieu_qua) and the warning formula's slow vehicle (warningRules.escapeSpeed)
@@ -151,6 +159,84 @@ def build(ctx):
             if key != "id":
                 r.mark(sid, (i, key), "id")
 
+    # ------------------------------------------------------------------ Trang_bi_thap / Trang_bi_dac_tinh_thap
+    # (GearCatalog.Tower.cs: 13 tower base types over 3 tower slots, 10 tower traits; owner 04/10 "chưa export hết
+    # trang bị" — tower gear carried no sheet at all before this). BaseTypeDef / TraitDef are declared in GearCatalog.cs
+    # (extra=[GEAR] gives the constructor signatures cs_table needs to name the positional args).
+    tower_tables = [
+        (GEAR_TOWER, "TowerBases", "Trang_bi_thap", "Trang bị tháp: loại cơ bản",
+         "13 loại trang bị tháp, 3 ô (Weapon/Structure/Systems); numbers ở mức đỉnh 5 hạng như trang bị xe", "id", "gear.base."),
+    ]
+    for path, array, sname, title, desc, key, name_prefix in tower_tables:
+        sid, rows, lines = ctx.cs_table(path, array, extra=[GEAR])
+        sh = book.sheet(sname, title, desc)
+        sh.col("ten_vi", meaning=f"tên tiếng Việt (HUD {name_prefix}<id>)")
+        for i, rowd in enumerate(rows):
+            rid = str(rowd.get(key, i))
+            r = sh.row(rid, f"{path}:{lines[i] if i < len(lines) else ''} ({array}[{i}])", raw=rowd)
+            sn = snake(rid)
+            r.set("ten_vi", B.name_of(ctx, name_prefix + rid, name_prefix + sn, f"trait.{sn}", f"stat.{sn}", f"module.{sn}")[1])
+            r.flatten({k: x for k, x in rowd.items() if k != key or k == "id"}, sid, (i,))
+            if key != "id":
+                r.mark(sid, (i, key), "id")
+
+    # Tower traits: a separate sheet (5 of the 10 ids repeat a vehicle Trang_bi_dac_tinh row, e.g. Executioner on
+    # GearSlot.Weapon vs GearSlot.TowerWeapon, with their own numbers) — "@thap" keeps row ids unique across sheets.
+    sid, rows, lines = ctx.cs_table(GEAR_TOWER, "TowerTraits", extra=[GEAR])
+    tt = book.sheet("Trang_bi_dac_tinh_thap", "Trang bị tháp: đặc tính",
+                     "10 đặc tính tháp (giá trị Sử thi / Huyền thoại); 5 khóa trùng Trang_bi_dac_tinh (ô tháp riêng, số có thể khác)")
+    tt.col("ten_vi", meaning="tên tiếng Việt (HUD trait.<id>)")
+    for i, rowd in enumerate(rows):
+        base_id = str(rowd.get("id", i))
+        r = tt.row(f"{base_id}@thap", f"{GEAR_TOWER}:{lines[i] if i < len(lines) else ''} (TowerTraits[{i}])", raw=rowd)
+        sn = snake(base_id)
+        r.set("ten_vi", B.name_of(ctx, "trait." + sn, "trait." + base_id)[1])
+        r.flatten({k: x for k, x in rowd.items() if k != "id"}, sid, (i,))
+        r.mark(sid, (i, "id"), "id")
+
+    # ------------------------------------------------------------------ Trang_bi_tran (loadout stat caps)
+    # GearCatalog.cs BuildCaps() / GearCatalog.Tower.cs BuildTowerCaps(): what a whole 6-slot (vehicle) or 3-slot
+    # (tower) loadout may add to a stat; built by Set(...) calls (one a range loop), not a literal array, so a small
+    # regex over the method text reads it (ctx.cs_custom; see _cap_extractor / _tower_override_extractor above).
+    order = _statid_order()
+    base_sid, cap_rows, cap_lines = ctx.cs_custom(f"{GEAR}#StatCap", GEAR, _cap_extractor(order))
+    over_sid, over_rows, _over_lines = ctx.cs_custom(f"{GEAR_TOWER}#TowerStatCapOverride", GEAR_TOWER, _tower_override_extractor)
+    over_map = {r["stat"]: r["tran"] for r in over_rows}
+    tr = book.sheet("Trang_bi_tran", "Trang bị: trần cộng dồn",
+                     "Trần tối đa cả loadout có thể cộng vào một chỉ số (StatId không liệt kê: GearCatalog không đặt trần riêng, "
+                     "chỉ số đó không rơi làm trang bị hoặc không giới hạn)")
+    tr.col("tran_xe", meaning="trần cho xe, 6 ô (GearCatalog.StatCap)")
+    tr.col("tran_thap", meaning="trần cho tháp, 3 ô (GearCatalog.TowerStatCap = trần xe, trừ Range 0.1 và Regen 0.01)")
+    for i, row in enumerate(cap_rows):
+        stat = row["stat"]
+        r = tr.row(stat, f"{GEAR}:{cap_lines[i]} (BuildCaps)", raw=row)
+        r.set("tran_xe", row["tran"], base_sid, (i, "tran"))
+        r.mark(base_sid, (i, "stat"), "id")
+        r.set("tran_thap", over_map.get(stat, row["tran"]))
+    for i, row in enumerate(over_rows):
+        rr = tr.rows.get(row["stat"])
+        if rr is not None:
+            rr.mark(over_sid, (i, "stat"), "id")
+            rr.mark(over_sid, (i, "tran"), "tran_thap")
+
+    # ------------------------------------------------------------------ Trang_bi_chi_so (Gear.Model.cs / Gear.Tower.cs)
+    # The rarity- or index-keyed literal tables left over the two files that build a piece's numbers (sub-stat count
+    # and growth-bump levels by rarity, the plating / tower main-stat tops by rarity, the tower slot order): everything
+    # cs_table reads as a plain scalar array (no constructor, so no dict), one row an element (as d11's Trang_bi_hang).
+    cs_sh = book.sheet("Trang_bi_chi_so", "Trang bị: bảng chỉ số",
+                        "Gear.Model.cs / Gear.Tower.cs: bảng hằng còn lại theo độ hiếm hoặc theo chỉ số (mỗi phần tử một dòng)")
+    cs_sh.col("bang", meaning="<file>#<mảng>")
+    cs_sh.col("chi_so", meaning="chỉ số trong bảng (độ hiếm Common=0..Legendary=4, trừ SubBumpLevels và TowerSlots)")
+    for path, array in ((GEAR_MODEL, "SubCount"), (GEAR_MODEL, "SubBumpLevels"), (GEAR_MODEL, "PlatingTop"),
+                        (GEAR_TOWER_GEAR, "TowerSlots"), (GEAR_TOWER_GEAR, "StandardTop"), (GEAR_TOWER_GEAR, "RepairTop")):
+        sid, rows, lines = ctx.cs_table(path, array)
+        fname = path.rsplit("/", 1)[-1][:-3]
+        for i, v in enumerate(rows):
+            r = cs_sh.row(f"{fname}#{array}/{i}", f"{path}:{lines[i] if i < len(lines) else ''} ({array}[{i}])", raw=v)
+            r.set("bang", f"{fname}#{array}")
+            r.set("chi_so", i)
+            C.cs_element_row(r, v, sid, (i,))
+
     # ------------------------------------------------------------------ Commander (+ passives, prices)
     cm = book.sheet("Commander", "Commander và nội tại tướng", "Commanders.cs: 14 commander của người chơi + nội tại 8 tướng địch")
     cm.col("ho", meaning="Combat / Economy / General")
@@ -273,3 +359,46 @@ def _cs_children(sheet, parent, items, sid, path):
             r.set("value", it, sid, path + (j,))
     if not items:
         parent.set(sheet.name.lower(), "", sid, path)
+
+
+# ---------------------------------------------------------------------- Trần cộng dồn (BuildCaps() / BuildTowerCaps())
+# StatCap and TowerStatCap (GearCatalog.cs / GearCatalog.Tower.cs) are built by a method (Set(stat, value) calls, one a
+# range loop), not a literal array, so cs_table cannot read them; a small regex over the method's own text does.
+_ENUM_BODY = re.compile(r"public enum StatId\s*\{(.*?)\n\s*\}", re.S)
+_SET_OR_LOOP = re.compile(
+    r"Set\(StatId\.(?P<one>\w+),\s*(?P<v1>-?[\d.]+)f?\)"
+    r"|for\s*\(var r = StatId\.(?P<lo>\w+); r <= StatId\.(?P<hi>\w+); r\+\+\) Set\(r,\s*(?P<v2>-?[\d.]+)f?\);")
+_TOWER_OVERRIDE = re.compile(r"caps\[\(int\)StatId\.(?P<stat>\w+)\]\s*=\s*(?P<v>-?[\d.]+)f;")
+
+
+def _statid_order() -> list[str]:
+    """StatId's members, in declaration order (doc comments and line comments stripped)."""
+    text = (ROOT / STATID_ENUM).read_text("utf-8-sig")
+    m = _ENUM_BODY.search(text)
+    body = re.sub(r"///[^\n]*|//[^\n]*", "", m.group(1))
+    return [n.strip() for n in body.split(",") if re.fullmatch(r"[A-Za-z_]\w*", n.strip())]
+
+
+def _cap_extractor(order: list[str]):
+    def extractor(text: str):
+        rows, lines = [], []
+        for m in _SET_OR_LOOP.finditer(text):
+            line_no = text.count("\n", 0, m.start()) + 1
+            if m.group("one"):
+                rows.append({"stat": m.group("one"), "tran": float(m.group("v1"))})
+                lines.append(line_no)
+            else:
+                i0, i1, val = order.index(m.group("lo")), order.index(m.group("hi")), float(m.group("v2"))
+                for name in order[i0:i1 + 1]:
+                    rows.append({"stat": name, "tran": val})
+                    lines.append(line_no)
+        return rows, lines
+    return extractor
+
+
+def _tower_override_extractor(text: str):
+    rows, lines = [], []
+    for m in _TOWER_OVERRIDE.finditer(text):
+        rows.append({"stat": m.group("stat"), "tran": float(m.group("v"))})
+        lines.append(text.count("\n", 0, m.start()) + 1)
+    return rows, lines

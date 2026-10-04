@@ -20688,3 +20688,45 @@ no Sim C# touched (data, Strings and one TierFx comment), so no Sim build.
 - Tests that may need a look when run (not run): none pins these radii except Prompt34ValidatorTests (kept true by the new mark)
   and PlayTest8ATests (48N6 kept). `support.kalibr_cruise_mark` is a new support (LocalisationScan / SupportText covered).
 - CHANGES.md: the PT14-L table that appeared twice is now once (the copy before "MB_FINAL F3" removed).
+
+## Export audit 04/10 (lane A)
+
+Owner 04/10: "có vẻ như toàn bộ trang bị chưa được export, check xem còn gì chưa export data luôn không." Worktree
+MachineBrigade-art, branch feature/export-audit. Full findings and the "still missing" list: Docs/export/EXPORT_AUDIT.md.
+
+- **Gear was really missing.** `02_phuong_tien/Trang_bi*` covered only the vehicle side of GearCatalog.cs (Bases,
+  Modules, Traits, Subs, Brands) plus Arsenal.cs's rarity tables (11/Trang_bi_hang). Tower gear (GearCatalog.Tower.cs:
+  TowerBases, TowerTraits) and the loadout stat caps (GearCatalog.cs BuildCaps()/GearCatalog.Tower.cs BuildTowerCaps())
+  had no Source at all — not "unmapped" (COVERAGE.md already showed 0 unmapped before this), genuinely invisible,
+  because .cs files are never auto-discovered (core/sources.py KIND_BY_EXT has no .cs entry); a C# table only becomes a
+  source once a domain calls ctx.cs_table on it, and nobody had called it on the Tower file.
+- **Fixed in d02_phuong_tien.py**: new sheets Trang_bi_thap (13 rows), Trang_bi_dac_tinh_thap (10 rows, id suffixed
+  `@thap` since 5 keys repeat a vehicle trait), Trang_bi_tran (53 rows: vehicle + tower stat caps) and Trang_bi_chi_so
+  (27 rows: Gear.Model.cs / Gear.Tower.cs's remaining rarity tables: SubCount, SubBumpLevels, PlatingTop, TowerSlots,
+  StandardTop, RepairTop). BuildCaps()/BuildTowerCaps() build the cap table by calling Set(stat, value) (one of them in
+  a range loop over StatId), not a literal array, so cs_table can't read it; added `Context.cs_custom` (core/context.py)
+  — the same registration cs_table does, but with a domain-supplied regex extractor instead of core/cs.py's literal
+  parser — and two small extractors in d02 that resolve the loop against VehicleBoost.cs's StatId order.
+- **Play-test 14's three hidden smoke items** (owner: gear "bỏ luôn hoặc ẩn đi") are confirmed exported and flagged:
+  laser_warning (Trang_bi), SmokeDischarger (Trang_bi_mo_dun), TowerSmokeLaunchers (Trang_bi_dac_tinh_thap), all with
+  `hidden = TRUE`.
+- **Already covered, verified, not touched**: main stat per slot x rarity is Arsenal.cs Top/Cap, already in
+  11/Trang_bi_hang; crate/rarity drop odds are Hom_do (Arsenal.Odds); level caps are Trang_bi_hang LevelCap. No reroll
+  system exists in Gear*/Arsenal.cs (merge-three-to-promote only); LevelCost/Spent/CanMerge are one-line formulas
+  (30 coins a level, same-slot-and-rarity-below-Legendary merge) — documented in EXPORT_AUDIT.md, not turned into a
+  sheet (nothing to tabulate, and the formula would need to track a save's state, not a catalogue value).
+- **Pack-wide second pass**: COVERAGE.md was already 0 unmapped / 0 unreadable before this lane, so the one structural
+  blind spot is exactly the gear one (an un-cs_table'd .cs literal). Diffed every Sim/**+Game/** file with a
+  `static readonly ...[]` against every file a domain already reads: found a short list of further candidates
+  (CardMerges.cs retirement/refund tables, FrontMap.cs campaign geometry, Narrative.Data.cs story content,
+  OperationsData.cs/BaseLayout.cs/MissionEvents.*.cs small pools) — left out this lane (need their own sheet design or
+  overlap-checking against 06/07 first; listed with reasons in EXPORT_AUDIT.md), and a larger set of pathfinding /
+  movement / AI-geometry / UI constants that are implementation, not player-tunable balance (scan_constants.py already
+  tags these "khong"). SimTunables.Pack2.*.cs / Rules.cs / Values.cs are generated mirrors of tunables.json (already
+  exported); not a gap.
+- **The ~3,000-literal backlog is real and unchanged**: scan_constants.py's own sweep (12/Hang_so_trong_ma, _qa only)
+  currently lists 7,150 rows, 3,160 flagged `de_xuat_dua_ra_du_lieu = co` — matches the brief's "~3,000"; counted only,
+  nothing moved.
+- **Check**: `python Tools/export/export.py check --game-json Docs/export/game_snapshot.json` (PYTHONIOENCODING=utf-8)
+  stayed 15/15 PASS after the gear sheets; sources 1176→1186, mapped 817759→818085, unmapped 0 throughout. No Unity run;
+  every new number read by static analysis of already-committed C#.
