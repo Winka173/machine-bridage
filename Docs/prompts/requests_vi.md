@@ -314,3 +314,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 04/10 SPEC AI v2 chính thức (Docs/ai/spec_v2/: spec + PROMPT_owner_vi.md nguyên văn + PLAN.md); làm theo đợt ưu tiên P0 -> P3, có test + benchmark theo yêu cầu.
 - 04/10 "xử lý về phần AI ngưng lại, đợi bản cập nhật mới, đọc lại và tiếp tục làm".
 - 04/10 "file AI hoàn thiện đã có, @Machine_Brigade_AI_Behavior_MASTER_FINAL.md dùng nó, các file trước bỏ" -> Docs/ai/spec_master/ (spec + PLAN.md); spec_v2 xóa.
+- 04/10 "các xác phương tiện chết chơi inaction preview bị bug không biến mất" (xếp vào lane rảnh đầu tiên).
