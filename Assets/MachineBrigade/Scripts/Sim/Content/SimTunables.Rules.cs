@@ -190,6 +190,26 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>BUILT_IN: its own recharge times this.</summary>
                 public static float BuiltInRechargeScale = 0.75f;
             }
+
+            /// <summary>
+            /// Play-test 14 (lane J): how long a wreck stays solid (WreckField): a ship until it has gone under (the view's
+            /// ShipSinking takes it down by 18 s), a boss's hulk as long as the view keeps it, any other hulk 30 s plus up to
+            /// the spread (fixed by its id; the view sinks it on the same clock).
+            /// </summary>
+            public static partial class WreckRules
+            {
+                /// <summary>A ground hulk's shortest life (s).</summary>
+                public static double GroundSeconds = 30.0;
+
+                /// <summary>Up to this much longer (s), by the vehicle's id.</summary>
+                public static double GroundSpread = 15.0;
+
+                /// <summary>A mobile boss's hulk (s).</summary>
+                public static double BossSeconds = 90.0;
+
+                /// <summary>A ship going down, until it is under the water (s).</summary>
+                public static double ShipSeconds = 18.0;
+            }
         }
 
         public static partial class Modes
@@ -287,6 +307,10 @@ namespace MachineBrigade.Sim.Content
             new Entry("vehicles.priceRules.dropSmallSeconds", "s", () => Vehicles.PriceRules.DropSmallSeconds, v => Vehicles.PriceRules.DropSmallSeconds = (float)v),
             new Entry("vehicles.priceRules.dropMiddleSeconds", "s", () => Vehicles.PriceRules.DropMiddleSeconds, v => Vehicles.PriceRules.DropMiddleSeconds = (float)v),
             new Entry("vehicles.priceRules.dropLargeSeconds", "s", () => Vehicles.PriceRules.DropLargeSeconds, v => Vehicles.PriceRules.DropLargeSeconds = (float)v),
+            new Entry("vehicles.wreckRules.groundSeconds", "s", () => Vehicles.WreckRules.GroundSeconds, v => Vehicles.WreckRules.GroundSeconds = v),
+            new Entry("vehicles.wreckRules.groundSpread", "s", () => Vehicles.WreckRules.GroundSpread, v => Vehicles.WreckRules.GroundSpread = v),
+            new Entry("vehicles.wreckRules.bossSeconds", "s", () => Vehicles.WreckRules.BossSeconds, v => Vehicles.WreckRules.BossSeconds = v),
+            new Entry("vehicles.wreckRules.shipSeconds", "s", () => Vehicles.WreckRules.ShipSeconds, v => Vehicles.WreckRules.ShipSeconds = v),
         };
     }
 }

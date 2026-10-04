@@ -340,8 +340,11 @@ namespace MachineBrigade.Game.Rendering
                     continue;
                 }
                 if (_world.Time < due) continue;
-                _slots[i] = (id, at, double.NaN);
                 var flies = _world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Flying;
+                // Play-test 14 (lane J): a ship's replacement waits until the wreck on its spot is under the water (the Sim's
+                // wreck, not a guessed time), so the new ship never sits inside the sinking one.
+                if (def != null && def.Naval != null && _world.Wrecks.Blocks(at, def.HullBound, true)) continue;
+                _slots[i] = (id, at, double.NaN);
                 // Play-test 12: a ship of a naval boss's line comes back on its spot too (nothing drives up on the water).
                 var heading = i < _headings.Count ? _headings[i] : MathF.PI;
                 if (flies || (def != null && def.Naval != null))
@@ -352,13 +355,16 @@ namespace MachineBrigade.Game.Rendering
                     _targets[i] = target;
                     continue;
                 }
+                // Play-test 14 (lane J): the burning wreck still stands on the spot (solid in the Sim): the new one comes to a clear
+                // spot beside it, not into the wreck ("tới chính xác vị trí vừa chết, clip vào trong luôn xác").
+                var spot = def != null ? ClearSpot(def, at) : at;
                 // From beyond the spot, a little off the wreck's line (a boss's targets from out beyond theirs, away from it).
-                var from = at + new Vector2(i % 2 == 0 ? -3f : 3f, 16f);
-                if (_bossShow && Vector2.DistanceSquared(at, _start) > 1f) from = at + Vector2.Normalize(at - _start) * 16f;
+                var from = spot + new Vector2(i % 2 == 0 ? -3f : 3f, 16f);
+                if (_bossShow && Vector2.DistanceSquared(at, _start) > 1f) from = spot + Vector2.Normalize(at - _start) * 16f;
                 var coming = _world.SpawnVehicle(id, 1, Inside(from), _bossShow ? heading : MathF.PI);
                 _silenced.Add(coming.Id);
-                _world.Submit(new Command(CommandType.Move, 1, new[] { coming.Id }, at));
-                _arriving.Add((coming, at));
+                _world.Submit(new Command(CommandType.Move, 1, new[] { coming.Id }, spot));
+                _arriving.Add((coming, spot));
                 _targets[i] = coming;
             }
             for (var i = _arriving.Count - 1; i >= 0; i--)
@@ -393,6 +399,45 @@ namespace MachineBrigade.Game.Rendering
                 var hold = _silenced.Contains(v.Id) || (aimed.IsValid && !Framed(aimed));
                 if (v.HoldFire != hold) _world.HoldFire(v, hold);
             }
+        }
+
+        /// <summary>
+        /// Play-test 14 (lane J): where a replacement of <paramref name="def"/> stands: its <paramref name="at"/>, or, while a
+        /// wreck (or another hull) is still there, the nearest clear spot beside it (either side across the line of fire, a
+        /// hull's length and more apart, then further back), inside the range. Its own spot again once the wreck has gone.
+        /// </summary>
+        private Vector2 ClearSpot(VehicleDef def, Vector2 at)
+        {
+            var room = def.HullBound + 0.8f;
+            if (Clear(at, room)) return at;
+            var along = Vector2.DistanceSquared(at, _start) > 1f ? Vector2.Normalize(at - _start) : new Vector2(0f, 1f);
+            var across = new Vector2(along.Y, -along.X);
+            var step = def.HullBound * 2f + 1.5f;
+            for (var k = 1; k <= 3; k++)
+            {
+                var right = Inside(at + across * (step * k));
+                if (Clear(right, room)) return right;
+                var left = Inside(at - across * (step * k));
+                if (Clear(left, room)) return left;
+                var back = Inside(at + along * (step * k));
+                if (Clear(back, room)) return back;
+            }
+            return at;
+        }
+
+        /// <summary>Play-test 14 (lane J): no ground wreck and no other ground hull within <paramref name="room"/> of <paramref name="p"/>.</summary>
+        private bool Clear(Vector2 p, float room)
+        {
+            if (_world.Wrecks.Blocks(p, room, false)) return false;
+            var all = _world.Vehicles;
+            for (var i = 0; i < all.Count; i++)
+            {
+                var v = all[i];
+                if (!v.IsAlive || v.Flying) continue;
+                var reach = room + v.Def.HullBound;
+                if (Vector2.DistanceSquared(v.Position, p) < reach * reach) return false;
+            }
+            return true;
         }
 
         /// <summary>A point kept a few metres inside the range's edges.</summary>

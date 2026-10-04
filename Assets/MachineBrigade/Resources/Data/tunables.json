@@ -186,6 +186,12 @@
       "dropSmallSeconds": { "value": 2.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "export: drop time" },
       "dropMiddleSeconds": { "value": 3.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "export: drop time" },
       "dropLargeSeconds": { "value": 5.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "export: drop time" }
+    },
+    "wreckRules": {
+      "groundSeconds": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "WreckRules.GroundSeconds (play-test 14 lane J)" },
+      "groundSpread": { "value": 15.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "WreckRules.GroundSpread (play-test 14 lane J)" },
+      "bossSeconds": { "value": 90.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "WreckRules.BossSeconds (play-test 14 lane J)" },
+      "shipSeconds": { "value": 18.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "WreckRules.ShipSeconds (play-test 14 lane J)" }
     }
   },
   "bosses": {

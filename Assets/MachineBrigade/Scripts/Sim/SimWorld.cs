@@ -192,6 +192,9 @@ namespace MachineBrigade.Sim
 
         internal MachineBrigade.Sim.Bosses.BossSystem Bosses { get; }
 
+        /// <summary>Play-test 14 (lane J): the burning hulks and sinking ships still solid (see <see cref="WreckField"/>).</summary>
+        public WreckField Wrecks { get; } = new();
+
         /// <summary>Prompt 16: ships at sea, the coastal batteries and the lighthouse (made after the props: see the constructor).</summary>
         internal MachineBrigade.Sim.Bosses.NavalSystem Naval { get; }
 
@@ -722,6 +725,8 @@ namespace MachineBrigade.Sim
                 // Prompt 32 L4: the HQ types' state (skill cooldowns, garrison stock, emergency domes).
                 Bases.Mix(Mix);
                 Naval.Mix(Mix);
+                // Play-test 14 (lane J): the wrecks still solid.
+                Wrecks.Mix(Mix);
                 // Prompt 33 L5: the trains on their rails, the crossings' states, the support runs.
                 Rails.Mix(Mix);
                 // Prompt 23 A.3: the mission's events (their moments, the blackout, the weather's sight).
@@ -1416,6 +1421,8 @@ namespace MachineBrigade.Sim
                 // Its ruin can be driven round or over: the ground opens again.
                 if (v.BlocksRoutes) Grid.RemoveBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
             }
+            // Play-test 14 (lane J): a hulk that has sunk into the ground, a ship gone under: no longer in anyone's way.
+            Wrecks.Expire(Time);
         }
 
         private EntityId NextId() => new EntityId(_nextId++);

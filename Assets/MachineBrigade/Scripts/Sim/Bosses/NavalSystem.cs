@@ -267,17 +267,50 @@ namespace MachineBrigade.Sim.Bosses
                 return;
             }
             var desired = SimMath.HeadingOf(to);
+            // Play-test 14 (lane J): a ship going down stays in the way until it is under: steer round it at half speed.
+            var turn = 0f;
+            var round = _world.Wrecks.NavalCount > 0 && WreckAhead(v, out turn);
+            desired += turn;
             v.Heading = SimMath.RotateTowards(v.Heading, desired, v.Def.TurnRate * v.TurnFactor * dt);
             var alignment = MathF.Max(0.25f, Vector2.Dot(SimMath.Forward(v.Heading), to / distance));
             // Slows to a stop at its goal (a landing craft on the sand, a boat holding off a pier).
             var target = speed * alignment * MathF.Min(1f, distance / 8f + 0.2f);
             // Prompt 33 L4: never closing on a big ship in its way inside the minimum gap.
             target = MathF.Min(target, v.SeaCap);
+            if (round) target = MathF.Min(target, speed * 0.5f);
             v.Speed += Math.Clamp(target - v.Speed, -v.Def.Speed * dt, v.Def.Speed * 0.5f * dt);
             var next = v.Position + SimMath.Forward(v.Heading) * v.Speed * dt;
             // The waterline: a ship keeps its hull's half-width off it (a lander may ground on the sand).
             var margin = naval.Role == NavalRole.Lander ? -1f : v.Def.HullRadius * 0.6f + 1f;
+            // Play-test 14 (lane J): never into a sinking wreck's hull (pushed back out of it, a part a step, as hulls are).
+            if (_world.Wrecks.NavalCount > 0)
+            {
+                var half = SimMath.Forward(v.Heading) * v.Def.HullHalf;
+                var push = _world.Wrecks.Overlap(next, next - half, next + half, v.Def.HullRadius, true);
+                var depth = push.Length();
+                if (depth > 0.05f)
+                {
+                    next += push / depth * MathF.Min(depth, MathF.Max(0.5f, v.Speed * dt * 1.5f));
+                    v.Speed *= 0.8f;
+                }
+            }
             v.Position = OnWater(sea, next, margin, v.Escaping);
+        }
+
+        /// <summary>
+        /// Play-test 14 (lane J): a sinking wreck across the ship's way within its length plus a few seconds' sailing: the turn
+        /// away from it (away from the side it lies on, as a driver steers round a parked hull).
+        /// </summary>
+        private bool WreckAhead(Vehicle v, out float turn)
+        {
+            turn = 0f;
+            var forward = SimMath.Forward(v.Heading);
+            var front = v.Position + forward * v.Def.HullHalf;
+            var probe = front + forward * (4f + MathF.Max(v.Speed, v.Def.Speed * 0.5f) * 3f);
+            if (!_world.Wrecks.Ahead(v.Position, front, probe, v.Def.HullRadius + 1f, true, out var wreck)) return false;
+            var offset = wreck.Position - v.Position;
+            turn = forward.X * offset.Y - forward.Y * offset.X > 0f ? 0.8f : -0.8f;
+            return true;
         }
 
         /// <summary>A point on the water: pushed out past the waterline by <paramref name="margin"/> metres, inside the map unless it is sailing off.</summary>

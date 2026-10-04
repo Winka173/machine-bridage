@@ -177,7 +177,7 @@ namespace MachineBrigade.Sim.Movement
         }
 
         /// <summary>Closest points between segments p1-q1 and p2-q2 (Ericson, Real-Time Collision Detection 5.1.9).</summary>
-        private static void ClosestPoints(Vector2 p1, Vector2 q1, Vector2 p2, Vector2 q2, out Vector2 c1, out Vector2 c2)
+        internal static void ClosestPoints(Vector2 p1, Vector2 q1, Vector2 p2, Vector2 q2, out Vector2 c1, out Vector2 c2)
         {
             var d1 = q1 - p1;
             var d2 = q2 - p2;
@@ -824,6 +824,18 @@ namespace MachineBrigade.Sim.Movement
                         v.AvoidUntil = _world.Time + AvoidSeconds;
                         slowFor = def.Speed * 0.5f;
                     }
+                }
+                // Play-test 14 (lane J): a burning hulk in the way never makes way: steer round it, as round a parked enemy.
+                else if (_world.Wrecks.GroundCount > 0 && _world.Wrecks.Ahead(v.Position, v.Position + forward * def.HullHalf,
+                             v.Position + forward * (def.HullHalf + 1.2f + v.Speed * 0.7f), def.HullRadius * 0.85f, false, out var wreck))
+                {
+                    if (_world.Time >= v.AvoidUntil)
+                    {
+                        var offset = wreck.Position - v.Position;
+                        v.AvoidSide = forward.X * offset.Y - forward.Y * offset.X > 0f ? 1f : -1f;
+                    }
+                    v.AvoidUntil = _world.Time + AvoidSeconds;
+                    slowFor = MathF.Min(slowFor, def.Speed * 0.5f);
                 }
             }
             // The detour fades out over a moment after the way last looked blocked. Dropping it
@@ -1505,7 +1517,8 @@ namespace MachineBrigade.Sim.Movement
             var reach = v.Def.HullBound * 2f + 1.5f;
             foreach (var other in _ground)
                 if (other != v && other.IsAlive && Vector2.DistanceSquared(other.Position, v.Position) < reach * reach) return true;
-            return false;
+            // Play-test 14 (lane J): a burning hulk on the spot counts too (its goal was where a vehicle died).
+            return _world.Wrecks.GroundCount > 0 && _world.Wrecks.Blocks(v.Position, v.Def.HullBound + 1.5f, false);
         }
 
         /// <summary>
@@ -1526,6 +1539,10 @@ namespace MachineBrigade.Sim.Movement
                 var room = float.MaxValue;
                 foreach (var other in _ground)
                     if (other != v && other.IsAlive) room = MathF.Min(room, Vector2.Distance(other.Position, p) - other.Def.HullBound);
+                // Play-test 14 (lane J): never a step aside into a burning hulk.
+                var wrecks = _world.Wrecks.List;
+                for (var n = 0; n < wrecks.Count; n++)
+                    if (!wrecks[n].Naval) room = MathF.Min(room, Vector2.Distance(wrecks[n].Position, p) - wrecks[n].Bound);
                 if (room <= bestRoom) continue;
                 bestRoom = room;
                 spot = p;
@@ -1556,6 +1573,20 @@ namespace MachineBrigade.Sim.Movement
                     Push(a, b, cb - ca, a.Def.HullRadius + b.Def.HullRadius);
                 }
             }
+
+            // Play-test 14 (lane J): a wreck never yields: a hull in it is pushed out (and eases off driving back in).
+            if (_world.Wrecks.GroundCount > 0)
+                foreach (var g in _ground)
+                {
+                    if (Yield(g) <= 0f) continue;
+                    Spine(g, out var g0, out var g1);
+                    var push = _world.Wrecks.Overlap(g.Position, g0, g1, g.Def.HullRadius, false);
+                    var depth = push.Length();
+                    if (depth <= SeparationSlack) continue;
+                    var normal = push / depth;
+                    Nudge(g, normal * MathF.Min((depth - SeparationSlack) * SeparationStiffness, MaxPush));
+                    Brake(g, normal, 1f);
+                }
 
             var list = _world.VehicleList;
             for (var i = 0; i < list.Count; i++)

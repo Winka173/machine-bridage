@@ -20,8 +20,9 @@ namespace MachineBrigade.Game.Effects
     /// flame; a fighter losing a wing (Part_wing) and spiralling down, a helicopter losing its tail rotor and spinning
     /// down as its main rotor flies off, a big aircraft burning at an engine and falling long and slanting with a wing
     /// gone, each on a show path onto the Sim's crash point and time (VehicleView.PlanCrash); a drone a small blast and
-    /// gone. Ships list, break and sink (ShipSinking). All view only: no wreck blocks movement or sight in the Sim.
-    /// Wrecks live 30-45 s (bosses 90 s; Low graphics a third less); at most ~12 full wrecks near the camera (Medium 9,
+    /// gone. Ships list, break and sink (ShipSinking). Play-test 14 (lane J): a ground hulk and a sinking ship block
+    /// movement in the Sim while they last (WreckField), never sight. Ground hulks live 30-45 s by their id, bosses' 90 s,
+    /// on the Sim's clock (aircraft wrecks 30-45 s at random; Low graphics a third less); at most ~12 full wrecks near the camera (Medium 9,
     /// Low 6), any more near it and those far from it go sooner, leaving a burn mark.</para>
     /// </summary>
     internal sealed class WreckManager
@@ -101,7 +102,12 @@ namespace MachineBrigade.Game.Effects
             var cls = WreckClasses.Of(view.Def);
             // A vehicle the defs call tracked but whose model has wheels to lose breaks up as a wheeled one.
             if (cls == WreckClass.Tank && !view.Def.Boss && view.FindPart("Part_wheel") != null) cls = WreckClass.Wheeled;
-            var life = WreckClasses.Life(view.Def, Random.value, MatchSettings.Tier);
+            // Play-test 14 (lane J): a ground hulk is solid in the Sim for WreckField.Life (data, its spread fixed by its id), so it
+            // sinks on that clock on every graphics tier, its sink ending as the Sim lets the ground go.
+            var solid = !view.Flying && !view.Def.Static && view.Def.Naval == null;
+            var life = solid
+                ? Mathf.Max(1f, (float)MachineBrigade.Sim.Movement.WreckField.Life(view.Def, view.Id) - SinkSeconds)
+                : WreckClasses.Life(view.Def, Random.value, MatchSettings.Tier);
             var wreck = new Wreck
             {
                 Id = view.Id, View = view, Class = cls, Created = now, Expires = now + life, Burn = life * BurnShare,
