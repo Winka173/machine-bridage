@@ -20923,3 +20923,32 @@ written or run). Old -> new: `Docs/export/CHANGES.md` "ARMOUR PEN 5" and "SPLASH
   in 02/03/04. The design review's game.json-fed text (10g, Gungnir, 10i, big attacks, unit lines) was updated with the
   same substitutions as the C# strings, not regenerated from the 04/10 snapshot (that would also have moved unrelated
   numbers); the lead's Unity re-export + build_doc gives the same text.
+
+## Gear balance 04/10 (lane A)
+
+Source: `Docs/prompts/gear_balance_vi.md` sections 1-37 (owner 04/10, "không cần test": no tests written or run). Old -> new:
+`Docs/export/CHANGES.md` "GEAR BALANCE"; report `Docs/fixes/gear_balance_report.md`.
+
+- Values exactly as the prompt: armoured_tub, hair_trigger, heavy_barrel, overtuned_engine; sets vulcan 0.15, hivemind 0.10,
+  phoenix / quartermaster 0.06; tower ammo_handling (Magazine 0.08-0.24, MainScale 1.25), ammo_hoist (ProjectileSpeed 0.06-0.18).
+  Caps, sub-stats, KEEP lists, four-piece behaviours untouched. Deleted 0.
+- New: energy_dissipation_liner (Armor, ResistEnergy, not plating: main stat Health like spall_liner), field_service_interface
+  (Repair, RepairReceived), grounding_mesh (TowerStructure, ResistEnergy). Tooltips through a new optional `gear.base.<id>.info`
+  string read by GearText.BaseNote.
+- Heavy / light for DamageVsHeavy / DamageVsLight is the chassis armour class: the data front level, no gear or buff (3-5 heavy,
+  0-2 light), never the face struck (`GearSystem.HeavyChassis`). The TandemWarhead trait's "more to heavy armour" uses the same
+  rule (one notion of heavy).
+- ResistIndirect only for real indirect fire: `Armour.IndirectFire` = WeaponDef.Indirect minus Drone projectiles and guided
+  topAttack missiles. Bombs keep it (canonically indirect: "bombs fall"), weapon-less strikes from above keep it. WeaponDef.Indirect
+  itself is unchanged (line of sight, roof face, entrenchment, blast walls still read it).
+- ReactiveArmor: ShapedCharge damage type only (no projectile-family test), tandem bypass as before, thermobaric excluded explicitly.
+- Section 27: module stat modifiers count towards the loadout cap: VeteranCrew (damage, fire rate) and AutoRepair (regen) add
+  only the headroom under the cap (`SimWorld.Headroom`, caps from SetStatCaps; no cap table or no cap: unclamped), and the
+  Splash -> DamageVsLight conversion likewise. Conditional traits / set behaviours are not stat lines and stay outside.
+- Fractional pen / armour: already float with linear interpolation in the direct, top-attack and overpenetration rows; verified,
+  no code change.
+- monolith_plate audited alive (MainScale in Gear.Value -> Health -> MaxHp; NoSubs in FillSubs; Count = no implicit line): kept.
+  Its Legendary 0.252 Health is over the 0.25 cap; hair_trigger (from Rare) and overtuned_engine (from Epic) still reach their cap
+  alone because the slot's main stat is the same stat; ammo_handling's real reload line is 0.0375-0.175, not the prompt's
+  0.10-0.30: all reported to the lead, not changed beyond the prompt.
+- Test count assertions moved to 40 / 14 base types; other tests whose numbers move are listed in the report, not edited.
