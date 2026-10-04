@@ -20018,3 +20018,52 @@ Owner's block "Bổ sung 04/10 sau khi xem Icarus mới" (Docs/prompts/playtest1
   The flight deck carries both skills (broken deck, no launches). Guide text EN/VI updated (and its 75 s typo -> 50 s).
 - Needs a Unity look: compile; Icarus stop-fire-go rhythm; cruise/doors launches straight up; Typhon pivot; the Scylla/Nyx/escort
   main guns now traversing and firing (more fire than before); preview trains on the track; Kraken jets.
+
+
+## Play-test 14 boss redraw R1 (lane models)
+
+Owner (04/10, last block of Docs/prompts/playtest14_vi.txt): the turrets on the redrawn bosses looked reused and did not
+fit; "đừng reuse gì hết, tất cả boss khi vẽ lại đều vẽ lại từ đầu, súng railgun cũng vậy vẽ lại"; Icarus Mk.0's top
+tower looked exactly like a watchtower; "scan các boss vừa vẽ lại tương tự".
+- Audit: Docs/models/pt14_reuse_audit.md (every play-test 14 boss builder, the sub-assemblies it takes from a shared kit,
+  another boss or its own older model, and the fit). Cause: mb_pt14_m3's "shared naval kit" (triple_turret, dp_mount,
+  aa_triple, gatling, twin_arm_launcher, director, radar_array, K.vls, _helicopter) drew the same meshes on Leviathan,
+  Kraken, Scylla, Nyx (and the radar on Hydra); m7 shared the PD, laser, bay and engine code between the two Icarus.
+- R1 redrew from scratch, one function per ship, read from real designs at each ship's scale (new builders
+  Tools/blender/mb_pt14_r1_naval.py and mb_pt14_r1_space.py, called from mb_pt14_m3 / m7; nothing in them is
+  called for two models):
+  - leviathan (Iowa after its refit): Mk 7 triple 406 mm (sloped face plate, bloomers, rangefinder ears, sight hoods,
+    officer's cupola; roof fittings kept out of the lanes turret B's barrels pass over), Mogami / Yamato-read 155 mm
+    triples kept inside r 1.95 so they still sink into their 2.05 m wells (WakeMounts), twin 5"/38 Mk 38 mounts with
+    per-barrel muzzles (Muzzle_b1 / _b2_mg[_001]), Phalanx 1B, Type 96 triple 25 mm with top magazines, Mk 13
+    single-arm SAM (the missile drawn on top of the rail so it reads from the battle camera), Mk 37 directors (the top
+    one moved onto the foretop, it cut into the tower tier before), SPS-49 radar, Mk 143 armoured box launchers as
+    Part_vls (outer two raised). A static merge (LEV_KEEP keeps the gate roles and every kick part) brings its
+    renderers 375 -> 210 (boss_l cap 299).
+  - scylla (Slava): AK-130 twin, AK-100 on the bridge roof (Part_mg), four AK-630 (decor, the APS guns), Top Pair-style
+    back-to-back radar; the beacon moved off the radar's sweep onto the yard.
+  - nyx: the railgun is gone; Part_gun > Mount_gun carries an AGS-style 155 mm stealth turret (Gun_barrels /
+    Gun_muzzles kick parts under Mount_gun, Muzzle_gun at the brake; the data weapon nyx_ags_155 is the gameplay
+    lane's), Mk 110-style stealth cupolas (Cupola_barrels*), peripheral VLS modules in the deck edges (Part_vls), a
+    Fire Scout-style deck drone instead of the shared Ka-27.
+  - silver_bug: coil-accelerator coilguns (nine drums, power bus, field-shaping muzzle; Coil_ / Glow_ / Coil_muzzles
+    kick), dome beam turrets, sharp-nosed twin 40 mm with jacketed barrels and side drums, PD ball emitters on low
+    plinths. The wreck is rebuilt from it.
+  - icarus_mk0: own hull planform (a cranked double delta, same length), the scaffold tower and cabin replaced by a
+    low raked command citadel under construction (plates part fitted, bare frames, bridge slit with shutters, tarped
+    sensor dome, Mount_APS on a test plinth; ~5.6 m high instead of ~10), an open optical-bench laser (Turret >
+    Muzzle_main), a gimballed PD test emitter on an octagonal pedestal (Pd_laser_l at its old pivot), an external drop
+    cradle (Pod_bay > Muzzle_missile), three tube-wall test engines with turbopumps (Engine_flame .. .002). Its test
+    kit (covers, boxes, open bays) moved onto the new planform.
+- Every runtime node keeps its place and name (Part_* / Mount_* / Muzzle_* / Radar / Turret / Pod_bay / Pd_laser_* /
+  Thruster_main / Mount_APS / Engine_flame); Part_vls kept on Leviathan and Scylla (cruise missiles launch from it).
+  No data change (no CHANGES entry). No size change.
+- Triangles before -> after, gate (glb_quantize + quality_gate, hard ok): leviathan 62,916 -> 86,412 (97.1 -> 97.7),
+  scylla 27,262 -> 28,994 (95.4 -> 97.6), nyx 17,624 -> 17,028 (90.3 -> 93.5), silver_bug 51,816 -> 58,220
+  (92.5 -> 92.9), icarus_mk0 27,954 -> 28,148 (100 -> 94.6), silver_bug_wreck 53,686 -> 60,090 (structure 66.6,
+  base / walls roles missing as before). All far under their 3.5-5 x budgets. Sheets:
+  Docs/models/rebuild/<id>/before_after_r1.png.
+- Left for R2+: Kraken (the whole old shared weapon fit), Hydra's mast radar, Harpy's door guns (K.pintle_mg), the two
+  trains and Ixion (pre-PT14 turrets carried over).
+- Needs Unity: card renders / ModelScan of the five, Leviathan's 155 mm wake rise with the new gunhouse, the barrel kick
+  on the new kick parts (Cupola_ / Coil_ / Glow_barrels), Nyx's AGS firing nyx_ags_155 from Muzzle_gun.
