@@ -2,7 +2,7 @@
 
 Chương, nhiệm vụ, biến cố, bộ bài game, nhân vật, thống kê thoại.
 
-Gói cân bằng Machine Brigade, commit e52fb814, ngày 2026-10-04. Số liệu đầy đủ ở 05_chien_dich.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit d48c7e2f, ngày 2026-10-04. Số liệu đầy đủ ở 05_chien_dich.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Chiến dịch
 
@@ -541,4 +541,4 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Nhiem_vu_thong_ke` (193 dòng): Nhiệm vụ: thống kê thoại — Mỗi nhiệm vụ: số câu có văn bản tiếng Việt / tiếng Anh, số câu theo ưu tiên P0-P4 (COUNTIFS trên Thoai)
 - `Chien_dich_tham_chieu` (231 dòng): Chiến dịch: tham chiếu lịch sử / phim / game — Mỗi chương, nhiệm vụ, màn bộ bài game một dòng: tham chiếu lịch sử hoặc phim / game, mã màn (spec 12.2; chỉ dữ liệu có trong repo)
 - `Thoai_tham_chieu` (21 dòng): Thoại: nhân vật và giọng lấy ý — Mỗi nhân vật một dòng: nhân vật / giọng lấy ý (chỉ mức ý tưởng) (spec 12.2; chỉ dữ liệu có trong repo)
-- `Hang_so_chien_dich` (14 dòng): Hằng số chiến dịch, biến cố, thoại — Assets/MachineBrigade/Resources/Data/tunables.json: 'campaign' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
+- `Hang_so_chien_dich` (15 dòng): Hằng số chiến dịch, biến cố, thoại — Assets/MachineBrigade/Resources/Data/tunables.json: 'campaign' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…

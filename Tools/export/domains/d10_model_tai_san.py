@@ -153,7 +153,8 @@ def build(ctx):
     if CARDS in ctx.sources:
         cards = ctx.data(CARDS)
         at = book.sheet("Anh_the", "Ảnh thẻ", "Resources/UI/Cards/manifest.json entries: ảnh thẻ render từ model (loại, model, nguồn, hash)")
-        at.col("model", fk=MODEL_FK)
+        # Play-test 14 lane K: a boss with its own paint has its own picture key (its id), not always a model file.
+        at.col("model", meaning="khóa ảnh: id model, hoặc id boss khi boss có sơn riêng")
         C.records(at, cards.get("entries"), CARDS, ("entries",))
         kv3 = book.kv_sheet("Anh_the_chung", "Ảnh thẻ: cài đặt render", "manifest.json: camera, cỡ ảnh, phiên bản")
         book.kv_rows(kv3, {k: v for k, v in cards.items() if k != "entries"}, CARDS, (), "cards")

@@ -2,7 +2,7 @@
 
 Chế độ chơi, độ khó, kinh tế, tác chiến, AI, thăng hạng, mở khóa, cửa hàng, giao diện.
 
-Gói cân bằng Machine Brigade, commit e52fb814, ngày 2026-10-04. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit d48c7e2f, ngày 2026-10-04. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng quan
 
@@ -252,38 +252,38 @@ Sheet 04_che_do_kinh_te_ai/Diem_tac_chien — Điểm Tác chiến (8 dòng, 8 c
 | weekly.fortress | fortress | 600 |
 | weekly.operation | operation | 800 |
 
-Sheet 04_che_do_kinh_te_ai/Mutator — Mutator (20 dòng, 28 cột)
+Sheet 04_che_do_kinh_te_ai/Mutator — Mutator (20 dòng, 29 cột)
 
-| id | excludes | both_damage | both_hp | empty_base | enemy_air | enemy_cp | enemy_hp | enemy_income | extra_boss |
+| id | excludes | class | both_damage | both_hp | empty_base | enemy_air | enemy_cp | enemy_hp | enemy_income |
 |---|---|---|---|---|---|---|---|---|---|
-| armour_only | light_deck;enemy_air |  |  |  |  |  |  |  |  |
-| empty_base | towers_x2 |  |  | TRUE |  |  |  |  |  |
-| enemy_air | no_air;armour_only;light_deck |  |  |  | TRUE |  |  |  |  |
-| fleet |  |  |  |  |  |  |  | 1.1 |  |
-| general_boost | veterans |  |  |  |  | 1.5 |  | 1.3 |  |
-| glass_cannon |  | 1.5 | 0.75 |  |  |  |  |  |  |
-| iron_rain |  |  |  |  |  |  |  |  |  |
-| lean_logistics |  |  |  |  |  |  |  |  |  |
-| light_deck | armour_only |  |  |  |  |  |  |  |  |
-| night_ops | storm |  |  |  |  |  |  |  |  |
-| no_air | enemy_air |  |  |  |  |  |  |  |  |
-| no_repair |  |  |  |  |  |  |  |  |  |
-| no_support |  |  |  |  |  |  |  |  |  |
-| sea_storm | storm |  |  |  |  |  |  |  |  |
-| storm |  |  |  |  |  |  |  |  |  |
-| swarm |  |  |  |  |  |  |  |  |  |
-| time_attack | two_bosses |  |  |  |  |  |  |  |  |
-| towers_x2 |  |  |  |  |  |  |  |  |  |
-| two_bosses | time_attack |  |  |  |  |  |  |  | TRUE |
-| veterans | general_boost |  |  |  |  |  | 1.25 |  |  |
+| armour_only | light_deck;enemy_air | rule |  |  |  |  |  |  |  |
+| empty_base | towers_x2 | pressure |  |  | TRUE |  |  |  |  |
+| enemy_air | no_air;armour_only;light_deck | pressure |  |  |  | TRUE |  |  |  |
+| fleet |  | pressure |  |  |  |  |  |  | 1.1 |
+| general_boost | veterans | pressure |  |  |  |  | 1.5 |  | 1.3 |
+| glass_cannon |  | rule | 1.5 | 0.75 |  |  |  |  |  |
+| iron_rain |  | rule |  |  |  |  |  |  |  |
+| lean_logistics |  | pressure |  |  |  |  |  |  |  |
+| light_deck | armour_only | rule |  |  |  |  |  |  |  |
+| night_ops | storm | rule |  |  |  |  |  |  |  |
+| no_air | enemy_air | rule |  |  |  |  |  |  |  |
+| no_repair |  | rule |  |  |  |  |  |  |  |
+| no_support |  | rule |  |  |  |  |  |  |  |
+| sea_storm | storm | rule |  |  |  |  |  |  |  |
+| storm |  | rule |  |  |  |  |  |  |  |
+| swarm |  | pressure |  |  |  |  |  |  |  |
+| time_attack | two_bosses | pressure |  |  |  |  |  |  |  |
+| towers_x2 |  | pressure |  |  |  |  |  |  |  |
+| two_bosses | time_attack | pressure |  |  |  |  |  |  |  |
+| veterans | general_boost | pressure |  |  |  |  |  | 1.25 |  |
 
-*In 10 / 28 cột; 16 cột khác: xem sheet.*
+*In 10 / 29 cột; 17 cột khác: xem sheet.*
 
 Sheet 04_che_do_kinh_te_ai/Mutator_tuan — Mutator tuần (1 dòng, 5 cột)
 
 | id | trang_thai | ghi_chu |
 |---|---|---|
-| can_doc_ma | XEM_05 | dữ liệu ở 04_che_do_kinh_te_ai/Mutator (operations.json); c… |
+| can_doc_ma | XEM_05 | dữ liệu ở 04_che_do_kinh_te_ai/Mutator (operations.json, cộ… |
 
 ## Kinh tế
 
@@ -503,7 +503,7 @@ Sheet 04_che_do_kinh_te_ai/Nhiem_vu_ngay — Nhiệm vụ ngày (8 dòng, 6 cộ
 | strikes | strikes | 6;10;15 | 120 |
 | wins | wins | 1;2;3 | 180 |
 
-Bảng đầy đủ: xem sheet `Cai_dat_mac_dinh` (22 dòng), `Huong_dan` (316 dòng, bulk.zip), `Ban_do_menu` (25 dòng), `Mo_khoa` (88 dòng).
+Bảng đầy đủ: xem sheet `Cai_dat_mac_dinh` (22 dòng), `Huong_dan` (320 dòng, bulk.zip), `Ban_do_menu` (25 dòng), `Mo_khoa` (88 dòng).
 
 ## Tham khảo ngoài đời và game
 
@@ -593,11 +593,11 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Meta_kinh_te_nguon` (23 dòng): Meta: nguồn và chỗ tiêu xu — Mỗi nguồn xu (thưởng trận, nhiệm vụ, hòm, nhiệm vụ ngày, Vô tận, cửa hàng) và chỗ tiêu xu (nâng hạng, hòm, skin): số xu, đơn vị, trần; số trong mã (R…
 - `Meta_kinh_te_tran` (12 dòng): Meta: xu mỗi trận nhanh — Xu một trận nhanh theo độ khó x kết quả (Rewards.Quick: cơ bản + min(hạ, trần) x xu + min(phút, trần) x xu, x hệ số độ khó), ở trận tham chiếu 20 xe…
 - `Meta_kinh_te` (10 dòng): Meta: kinh tế nâng hạng — Một thẻ từ hạng 1 lên hạng h: xu và bản thiết kế cho lần nâng, tổng từ hạng 1 (CardRanks.CoinsSpent / BlueprintsSpent), số trận thắng nhanh Bình thườ…
-- `Huong_dan` [bulk.zip] (316 dòng): Hướng dẫn người chơi — Chuỗi hướng dẫn trong game: thẻ Hướng dẫn của trang chi tiết (guide.<id>: GuideText, BossText, BigAttackText...), mẹo (tip.*) và gợi ý thao tác (hint…
+- `Huong_dan` [bulk.zip] (320 dòng): Hướng dẫn người chơi — Chuỗi hướng dẫn trong game: thẻ Hướng dẫn của trang chi tiết (guide.<id>: GuideText, BossText, BigAttackText...), mẹo (tip.*) và gợi ý thao tác (hint…
 - `Cai_dat_mac_dinh` (22 dòng): Cài đặt mặc định — Cài đặt mặc định của người chơi mới (âm lượng, đồ họa, rung, hỗ trợ, ngôn ngữ), đọc từ mã bởi ExportGameDoc
 - `Mutator_tuan` (1 dòng): Mutator tuần — Mutator tuần của Tác chiến
 - `Thu_hang` (1 dòng): Thứ hạng — Bảng xếp hạng
 - `Thuong` (1 dòng): Thưởng — Thưởng trận / chiến dịch
 - `Meta_tham_chieu` (13 dòng): Meta: game tham khảo cơ chế — Mỗi cơ chế ngoài trận một dòng (theo sheet): game tham khảo (nâng hạng, hòm đồ, nhiệm vụ ngày...) (spec 12.2; chỉ dữ liệu có trong repo)
-- `Hang_so_che_do` (71 dòng): Hằng số chế độ, tiếp tế và cờ chế độ — Assets/MachineBrigade/Resources/Data/tunables.json: 'modes' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị kh…
+- `Hang_so_che_do` (72 dòng): Hằng số chế độ, tiếp tế và cờ chế độ — Assets/MachineBrigade/Resources/Data/tunables.json: 'modes' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị kh…
 - `Hang_so_ai` (32 dòng): Hằng số AI — Assets/MachineBrigade/Resources/Data/tunables.json: 'ai' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị khi c…
