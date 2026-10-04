@@ -19927,3 +19927,56 @@ session 4 row M5 (stealth_naval_strike moved here from M6 by the lead's brief). 
 - Needs Unity: card renders / ModelScan; the two baked Elevation pivots (wheeled_gun gun, iron_beam telescope) in the
   preview; ew_jammer's reflector still spins at the default 120 deg/s (ModelLibrary.SlowRadars lists only ew_tower; a
   30 deg/s entry for ew_jammer would read better - runtime change, not made).
+
+## Play-test 14 model wave M7 (lane A)
+
+Owner (04/10): "boss daedalus nhìn khá tốt, nên có lửa sau động cơ, vẽ lại 2 boss icarus luôn"; spec Docs/cloud/PT14_CLOUD_TASKS.md
+session 4. Builder `Tools/blender/mb_pt14_m7.py` (registered last in build_assets' dict). Sheets:
+Docs/models/rebuild/{silver_bug,icarus_mk0,silver_bug_wreck}/before_after.png. Budget 3.5 x the medium boss cap (192,500);
+used 28-54k: detail where it reads (plates, tiles, engines, weapons), no hidden faces. No size change.
+- **silver_bug (Icarus)**: the bossfile's "dagger of a hull, a stepped superstructure under its command tower and a bank of
+  engines across the stern", read through the real spaceplanes (Shuttle / Buran / X-37B): one lifting-body loft (silver upper
+  hull in three close tones with panel lines and window rows, black belly tiles with their gap grid and replaced tiles, grey
+  carbon nose cap and chine leading edges, body flap under the engines), five regeneratively cooled bells with powerheads and
+  turbopumps on the thrust structure (Thruster_main), OMS-style nacelles with their own bells (Thruster_rl / _rr), RCS pods on
+  forward canards (Thruster_fl / _fr), a half-sunk pressurised module with MMOD bands and the docking port, radiator wings, a
+  three-tier stepped superstructure with the tower, bridge, mast and APS emitter (Mount_APS), the uplink dish (Uplink).
+  Weapons, each from its barrel / emitter with Muzzle_* at the mouth: ventral main laser (Turret > Muzzle_main), heavy
+  coilguns (Mount_gun / .001), beam directors (Mount_gun.002 / .003, mounts 3-4, the direct lasers), twin 40 mm crash turrets
+  on flank sponsons (Mount_gun.004 / .005, Muzzle_b1 / _b2), PD lasers (Pd_laser_l / _r), the pod bay (Pod_bay > Muzzle_missile).
+  The view gives a slot's k-th mount the k-th Mount_<slot> by name: the old four gun nodes made mounts 3-4 fire lasers out of
+  the 40 mm turrets and 5-6 fire 40 mm out of the coilguns; six nodes fix it. The decor flak turrets (Mount_mg, fired nothing)
+  are gone. Data (CHANGES PT14-M7): crash turret nodes .004 / .005 and their `at`, PD `at`; every other node at its old place.
+- **silver_bug_wreck** (the crash "form", rebuilt on the redrawn ship so the crash does not swap to the old design): the same
+  ship (every runtime node, so tiers.crash.guns 3-6 fire on from the lasers and 40 mm), raised 2 m onto its belly, the tower
+  snapped off (stump, cables, the bridge thrown down off the left flank, APS on the stump), ploughed earth along the flanks
+  and the nose, a scorched ground disc, torn plates, soot, debris. The gate scores it as a "structure" (no def of its own):
+  65.4 with base / walls roles missing, as the old one (51.3, plus a zero-area fail).
+- **icarus_mk0**: its own model (balance `"model"`), the same length (draw scale 0.991 unchanged), a slimmer flatter blade
+  (own geometry: 38 % shared at first, under 30 % now), built as a test article: primer and bare panels with open bays and
+  stringers, half the belly tiled, strap-on propellant tanks for the nacelles, three big engines on an open thrust frame, a
+  lattice spine with propellant spheres for the module, the open-roofed tier with tarps and test racks, a scaffold tower with
+  a temporary cabin (Mount_APS), the nose air-data boom, photogrammetry targets, coilgun rings capped. Its three parts sit at
+  silver_bug's places (main laser Turret, Pod_bay, Pd_laser_l, so no tune `at`); the right PD station is an empty capped
+  ring. quality_gate (Tools/models/scan_prep.weapon_checks): a variant with its own "secondary" no longer takes its parent's
+  mountWeapons count (BossTemplates never inherits it; icarus_mk0 fires its main laser only).
+- **Engine flames** (`Assets/MachineBrigade/Scripts/Game/Effects/EngineFlames.cs`, fed from EffectsDirector.LaunchShots on the
+  nozzles as drawn, lit in ShowDamage's HeatLights window). Jets draw one `_motor` puff (Emitters.Afterburner) and skip bosses;
+  the missiles' MotorPlumes is the quality bar, so its flame recipe (white-hot core, hot tongue, tapering stretched cone quads
+  that redden and flicker every frame, glow body) is reused at engine scale, plus a heat halo and shock diamonds. The
+  particles are local-space systems on the boss's Body (draw scale undone), so the flame stays on the nozzle while the boss
+  hovers, strafes, banks or climbs (world-space stretched quads would stretch along the hull's motion). Throttle: ~0.75 in the
+  hover, up with speed and climbs, back in descents, full when a boss flies off (EffectsDirector._departing). A nozzle on a
+  broken part goes out (its node hidden), under 25 % it sputters; crashed / dead / wrecked: none. Low tier: 2 cone quads, no
+  glow / halo / diamonds. Two rigs built up front (pooled). Nozzles: `Engine_flame` (.001 ...) empties on each exit plane,
+  scale = exit radius, flame along the empty's +Y (aft) (mb_kit35.engine_flame). Added to Daedalus (6 main + 2 auxiliary,
+  mb_pt14_m2 rebuilt, geometry unchanged), silver_bug (5 + 2 nacelles), icarus_mk0 (3), Hyperion (its main bell; mb_p35_hyperion
+  rebuilt, geometry unchanged). Other flying bosses have propellers or rotors (Matriarch, Locust, Roc, Harpy): no flame.
+  Hyperion keeps its look: `hiddenNodes` written out (its dropped crash turrets now name .004 / .005).
+- Triangles before -> after, gate (quality_gate after glb_quantize; hard ok): silver_bug 21,760 -> 51,816 (81.5 -> 92.5,
+  146 renderers after a static merge), icarus_mk0 (drew silver_bug) -> 27,954 (100), silver_bug_wreck 20,250 -> 53,686,
+  daedalus 28,160 (86.4) and hyperion 19,014 (100) unchanged but for the empties.
+- Needs Unity: compile (EngineFlames.cs new, EffectsDirector.cs), the flames in a battle and the boss preview (size, colour,
+  local-space stretch direction, the heat light; tune FlameLength / FlameWidth if needed), card renders / ModelScan for the
+  three Icarus GLBs, the crash swap to the new wreck, the coilgun / laser / 40 mm muzzles. The APS laser of a boss is still
+  drawn from a fixed offset (EffectsDirector, guard.Position + 3.4 m up), not from Pd_laser_*: runtime, not changed.

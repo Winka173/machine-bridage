@@ -1596,3 +1596,19 @@ def merge_parts(a, mapping):
                 pass
         del a.shapes[key]
         a.order.remove(key)
+
+
+# ----------------------------------------------------------------------------- play-test 14 wave M7: engine flames
+def engine_flame(a, i, loc, r, parent=None, direction=None):
+    """The i-th `Engine_flame` empty of a model (Engine_flame, Engine_flame.001 ...) on a nozzle's exit plane at loc
+    (relative to `parent`, a pivot): the runtime draws a burning exhaust out of it while a flying boss flies
+    (Assets/MachineBrigade/Scripts/Game/Effects/EngineFlames.cs). Its scale is the nozzle's exit radius `r` (model
+    metres); the flame leaves along its +Y (aft, the empty unrotated), or along `direction` when given."""
+    nm = name('Engine_flame', i)
+    a.pivot(nm, loc, parent)
+    o = a.pivots[nm]
+    o.scale = (r, r, r)
+    if direction is not None:
+        o.rotation_euler = Vector(direction).normalized().to_track_quat('Y', 'Z').to_euler('XYZ')
+    suffixed(a)
+    return nm

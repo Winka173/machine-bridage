@@ -84,6 +84,9 @@ namespace MachineBrigade.Game.Effects
         }
         private readonly FireSpots _fires;
         private readonly HullFire _hullFire;
+
+        /// <summary>Play-test 14 wave M7: the flying bosses' burning engines (EngineFlames).</summary>
+        private readonly EngineFlames _engineFlames;
         private readonly ProjectilePool _projectiles;
 
         /// <summary>Fix prompt L6: the smoke and dust blasts leave behind (EffectLife's table).</summary>
@@ -192,6 +195,7 @@ namespace MachineBrigade.Game.Effects
             _night = new NightLights(materials, _emitters, _root);
             _fires = new FireSpots(materials, _root);
             _hullFire = new HullFire(materials, _root);
+            _engineFlames = new EngineFlames(materials, _root, _cull);
 
             _fires.Visible = p => _cull.Visible(p, 0.3f);
             _decals = new DecalPool(meshes.ScorchQuad, _root, budget.Decals);
@@ -706,6 +710,8 @@ namespace MachineBrigade.Game.Effects
             // Muzzle flashes ride their barrels' tips and flame streams their nozzles as just drawn (DECISIONS 12A).
             _muzzle.Follow(now);
             _emitters.FeedFlames(now, Time.deltaTime);
+            // Play-test 14 wave M7: a flying boss's engine flames, on its nozzles as just drawn.
+            _engineFlames.Feed(views.All, _departing, Time.deltaTime);
             if (_shots.Count == 0) return;
             _volley.Clear();
             foreach (var (e, shooter) in _shots)
@@ -919,6 +925,8 @@ namespace MachineBrigade.Game.Effects
                 var top = view.Position + Vector3.up * (view.Flying ? 0.4f : 1.4f) - root.forward * radius * 0.3f;
                 _emitters.DamageSmoke(top, radius * 0.8f, Mathf.Clamp01((health - 0.3f) / 0.3f) * 0.8f + 0.2f);
             }
+            // Play-test 14 wave M7: the burning engines light the boss's stern.
+            _engineFlames.Light(now);
             HeatLights.Commit();
         }
 

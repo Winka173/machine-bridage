@@ -1641,6 +1641,8 @@ def _dd_engines(a):
         k.lathe(a.part('Engine_throats', 'Charred', t), [(.6, 0), (.4, .4), (0, .5)], loc=(x, 1.85, zz),
                 rot=K.FORWARD, seg=16)
         a.part('Engine_glow', 'Energy', t).cyl(.58, .04, loc=(x, 1.45, zz), rot=(R90, 0, 0), seg=16, bevel=0)
+        # Play-test 14 wave M7: the nozzle's exit plane, where the runtime's engine flame leaves (EngineFlames.cs).
+        K.engine_flame(a, i, (x, 1.97, zz), .86, parent='Thruster_main')
         for e in (-1, 1):
             a.part('Gimbal_rams', 'Steel', t).limb((x + e * .5, .9, zz + .55), (x + e * .7, 1.5, zz + .55), .06, .06,
                                                    bevel=0)
@@ -1652,6 +1654,7 @@ def _dd_engines(a):
         k.lathe(a.part('Aux_nozzles', 'Steel'), [(.42, 0), (.5, .4), (.44, .45)], loc=(x, y + .5, z), rot=K.BACKWARD,
                 seg=16, caps=(False, False))
         a.part('Engine_glow', 'Energy').cyl(.38, .03, loc=(x, y + .7, z), rot=(R90, 0, 0), seg=14, bevel=0)
+        K.engine_flame(a, 6 if s < 0 else 7, (x, y + .97, z), .44)
         for (yy, xf) in ((-17.4, .9), (13.8, .985)):
             xx = s * _dd_w(yy) * xf
             rcs = a.part('Rcs_quads', 'Armor')
