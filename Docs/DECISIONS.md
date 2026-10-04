@@ -20370,3 +20370,52 @@ Owner's block "Bổ sung 04/10 sau khi thử R4" (Docs/prompts/playtest14_vi.txt
   longer calls the hull a stand-in (it has its own model since wave M3).
 - Needs Unity: compile (C# 9 checked by reading), the card re-render above, a look at aircraft over land and sea at each
   shadow tier, and the repainted bosses in battle (TeamGlow cue readable).
+
+## Play-test 14 space ships after R4 (lane space)
+
+Owner (04/10, last block of Docs/prompts/playtest14_vi.txt, "Bổ sung 04/10 sau khi thử R4"): Icarus, Icarus Mk.0 and Daedalus
+"thêm vũ khí như súng pháo ở dưới bắn xuống đất (2-4 khẩu)"; the three new cruisers "nên có tên lửa và súng pháo chỉa xuống
+bắn, bỏ railgun, và thêm vũ khí vào luôn"; the new ship bosses' colours fixed; "nhớ là vẽ lại chứ đừng dùng model cũ". New
+builder Tools/blender/mb_pt14_r5_space.py (one function per ship and weapon, no kit sub-assembly or other boss's part; called
+from mb_pt14_m2 / m7 / r4_cruiser, nothing registered anew). Data: Docs/export/CHANGES.md PT14-SP-1..32. Sheets:
+Docs/models/rebuild/<id>/before_after_r5.png (kit colours) and livery_r5.png (true colours: kit x COLOR_0, Team in the def's
+paint, weapon close-ups).
+- **Ventral guns** hang under their Mount_* pivot with the barrels drawn 20-35 degrees down (the view only yaws a mount; the
+  runtime aligns each muzzle along its barrel), muzzles at the open ends (+3 cm), twins with Muzzle_b1 / _b2, barrels as
+  `*_barrels<tag>` / `*_muzzles<tag>` under the mount (kick). Their weapons have `groundMinReach` 0, so a hovering ship hits
+  what is under it. Real reads at the ship's scale: Icarus twin 30 mm (Mk 44) and 105 mm (M102) in belly blisters near the
+  chine (visible past the hull's edge); Mk.0 two L/60 40 mm test mounts on bolted frames (clip guide with brass rounds,
+  instrumentation box, cabling); Daedalus AU-220 twin 57 mm turrets amidships and GAU-12 gondolas aft, its chin balls redrawn
+  as the targeting-laser balls they fire (lowered under the belly: they sat inside the hull); Hyperion Mk 45 127 mm turrets
+  aft of its laser batteries (which now reach straight down, `pt14_hp_vlaser`); Theia Oerlikon twin 35 mm; Coeus OTO 76/62
+  twins where its laser batteries were.
+- **No railguns on the cruisers**: Hyperion's shoulder coilguns -> twin 155 mm/60 turrets (rounded house, slab mantlet, blast
+  boots, double-baffle brakes, radiators), Coeus's coil artillery -> a twin Mk 71 203 mm turret (Turret / Main_cannon kept,
+  bore evacuators, blast bags, Muzzle_b1 / _b2_main). The sun beam stays Hyperion's big attack (its projector untouched).
+  Silver_bug (Icarus) keeps its coilguns (not asked).
+- **Missiles** (slot `rocket`, launchers that do not turn: only Muzzle_rocket / .001, so Theia's drones keep Pod_bay >
+  Muzzle_missile as the missile slot's first muzzle): Hyperion two 8-cell VLS deckhouses on the sponson ledges (one lid open,
+  NSM Block 1A, 90 m/s, Loft), Theia two quad JAGM pods on the hangar pods (95 m/s), Coeus two Spike NLOS boxes raised on
+  the hammerhead (60 m/s: 0.3 x 180 floored to the 60-100 rule). New real names (out of the anti-ship / Hellfire families:
+  `weaponFamily` ""), so BalanceSheetTests' one-family-one-speed rule holds.
+- **Full fits**: Hyperion (main) sun beam + 2 x 155 mm + 2 ventral lasers + 2 x 127 mm + 2 VLS + PD (APS); Theia (escort
+  carrier) laser turret + drone swarm + 2 JAGM pods + 2 x 35 mm + its two PD lasers now also shooting aircraft
+  (`pt14_th_pd`, slot mg on Mount_mg / .001); Coeus (gunship) twin 203 mm + 2 x 76 mm + 2 Spike. Gun damage on the boss
+  family scale (weaponFamilyTable "boss"); 155 / 203 mm cadence over FixFullTests' real-rate floor (6.95 / 21 s a barrel).
+  Mount order = node order per slot (silver_bug's crash 40 mm move to Mount_gun.008 / .009, mounts 9-10, crash.guns
+  [3, 4, 9, 10]; Daedalus k0 / k5 lasers, k1-2 57 mm, k3-4 25 mm; its gun_r part node Mount_gun.005). Variants: Hyperion,
+  Theia, Coeus and Mk.0 carry their own `secondary` lists (BossTemplates: a variant's own list replaces its parent's).
+- **Paint** (lane K's "livery": "own"): Team surfaces in the def's paint (Hyperion naval steel blue #98a4b2, Theia pale
+  grey-white #dde2e6 with navy pod bands and cyan running strips, Coeus dark gunmetal #6e7478 with red running strips and
+  hazard bars, Daedalus light grey #c4c9cc: its Plaster hull -> Team, Concrete -> Titanium, PlasterWhite -> SpaceWhite, navy
+  marks); Icarus SpaceSilver hull plates with SpaceWhite / Titanium tones, gold foil (GoldFoil) bands and pinstripes instead
+  of its Team bits; Mk.0's pods SpaceWhite. R5.livery() after the bake: dark heat tiles on every downward hull face, plate tone
+  steps (+-6-8 %), per-part tints; TeamGlow bits kept (lane K's army cue). Only kit names that exist in both kits.
+- Triangles, gate (glb_quantize + quality_gate, hard ok): silver_bug 58,220 -> 67,592 (95.3), icarus_mk0 28,148 -> 31,652
+  (99.0), daedalus 28,160 -> 33,636 (89.0), hyperion 67,352 -> 71,400 (88.0), theia 30,454 -> 36,650 (81.2), coeus
+  30,614 -> 34,364 (87.6); silver_bug_wreck 60,090 -> 69,462 (structure 66.5, base / walls roles missing as before; its
+  ventral turrets dig into the ground like its main laser). All far under the 5 x / 3.5 x budgets. No size change.
+- Texts: BossText notes / guides / parts tip / Coeus radio and CampaignText bossfile (EN/VI) name the new weapons.
+- Needs Unity: compile (text tables only), card renders / ModelScan of the six, the ventral guns firing down from a hovering
+  boss (muzzle alignment along the depressed barrels), the rocket-slot launchers (VLS / pods / Spike) and Theia's PD lasers
+  as mg mounts, MuzzleGeometryAudit; DPS / kill times of the six with the new fits (to measure, owner's word needed).

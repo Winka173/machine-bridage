@@ -180,7 +180,7 @@ def sb_pd(a, H, name, x, y, tag):
     p = a.pivot(name, (x, y, zs + .45))
     k.extrude(a.part('Pd_tower' + tag, 'MetalSheet', p), hexagon(.8, 6, math.pi / 6), .75, loc=(0, 0, -.42),
               axis='Z', chamfer=.05, taper=.82)
-    k.ring(a.part('Pd_band' + tag, 'Team', p), [(.6, -.06), (.66, -.06), (.66, .02), (.6, .02)], seg=14)
+    k.ring(a.part('Pd_band' + tag, 'GoldFoil', p), [(.6, -.06), (.66, -.06), (.66, .02), (.6, .02)], seg=14)
     for e in (-1, 1):
         k.block(a.part('Pd_fork' + tag, 'Fuel', p), (.12, .4, .55), loc=(e * .45, 0, .3), chamfer=.02)
     a.part('Pd_dome' + tag, 'Fuel', p).sphere(.36, loc=(0, 0, .38), seg=14, rings=8)
@@ -354,7 +354,7 @@ def mk_pod_rig(a, H):
         for dy in (-.6, .6):
             a.part('Bay_clamps', 'Steel', p).limb((e * .75, dy, .05), (e * .38, dy, -.35), .08, .1, bevel=0)
         a.part('Bay_rams', 'Steel', p).limb((e * .75, 1.3, .0), (e * .5, .9, -.25), .05, .05, bevel=0)
-    k.lathe(a.part('Bay_pods', 'Team', p), [(0, -1.25), (.3, -1.15), (.5, -.75), (.55, -.25), (.5, .02), (.3, .12),
+    k.lathe(a.part('Bay_pods', 'SpaceWhite', p), [(0, -1.25), (.3, -1.15), (.5, -.75), (.55, -.25), (.5, .02), (.3, .12),
                                             (0, .14)], loc=(0, 0, -.25), seg=14)
     a.part('Bay_pod_glow', 'Energy', p).torus(.53, .035, loc=(0, 0, -.5), seg=14, ring=4)
     for u in range(3):

@@ -83,3 +83,8 @@ Still kit level: K.gun_barrel on Hydra's own guns and on the ground bosses (lane
 hyperion redrawn whole (its own cruiser builder, mb_pt14_r4_cruiser); theia and coeus are new models with their own weapon
 functions (nothing shared with hyperion but the hull-section primitives); hydra_sub's twin 57 mm and 100 mm and nyx's AGS and
 cupolas redrawn bespoke (mb_pt14_r4_naval): Hydra's guns no longer use W.poly_turret / K.gun_barrel.
+
+## After R4 (lane space, 04/10)
+The space bosses' new weapons (Icarus / Mk.0 / Daedalus ventral guns, Hyperion's 155 mm, 127 mm and VLS, Theia's 35 mm and
+pods, Coeus's 203 mm, 76 mm and Spike boxes) are each drawn by their own function in Tools/blender/mb_pt14_r5_space.py:
+nothing shared between ships, no kit sub-assembly (only the primitives and K.bolt_ring / K.grille / K.lamp surface kit).

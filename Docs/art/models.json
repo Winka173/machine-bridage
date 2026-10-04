@@ -361,7 +361,7 @@
   },
   "coeus": {
     "file": "coeus.glb",
-    "triangles": 30614
+    "triangles": 34364
   },
   "combat_wreck_car": {
     "file": "combat_wreck_car.glb",
@@ -425,7 +425,7 @@
   },
   "daedalus": {
     "file": "daedalus.glb",
-    "triangles": 28160
+    "triangles": 33636
   },
   "dazzler_vehicle": {
     "file": "dazzler_vehicle.glb",
@@ -1105,11 +1105,11 @@
   },
   "hyperion": {
     "file": "hyperion.glb",
-    "triangles": 67352
+    "triangles": 71400
   },
   "icarus_mk0": {
     "file": "icarus_mk0.glb",
-    "triangles": 28148
+    "triangles": 31652
   },
   "icbm": {
     "file": "icbm.glb",
@@ -1665,11 +1665,11 @@
   },
   "silver_bug": {
     "file": "silver_bug.glb",
-    "triangles": 58220
+    "triangles": 67592
   },
   "silver_bug_wreck": {
     "file": "silver_bug_wreck.glb",
-    "triangles": 60090
+    "triangles": 69462
   },
   "sky_fortress": {
     "file": "sky_fortress.glb",
@@ -1801,7 +1801,7 @@
   },
   "theia": {
     "file": "theia.glb",
-    "triangles": 30454
+    "triangles": 36650
   },
   "thermobaric_launcher": {
     "file": "thermobaric_launcher.glb",
