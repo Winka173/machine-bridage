@@ -83,3 +83,9 @@ Still kit level: K.gun_barrel on Hydra's own guns and on the ground bosses (lane
 hyperion redrawn whole (its own cruiser builder, mb_pt14_r4_cruiser); theia and coeus are new models with their own weapon
 functions (nothing shared with hyperion but the hull-section primitives); hydra_sub's twin 57 mm and 100 mm and nyx's AGS and
 cupolas redrawn bespoke (mb_pt14_r4_naval): Hydra's guns no longer use W.poly_turret / K.gun_barrel.
+
+## R5 (lane sea, 04/10)
+New weapons each drawn for one ship only in Tools/blender/mb_pt14_r5_sea.py (no kit sub-assembly, nothing from another
+unit or boss): Scylla `sc_ak230`, `sc_2m7`, `sc_uran`; Nyx `nx_millennium`, `nx_vls`; Typhon `ty_stern57` (new code for the
+third 57 mm, not `_ty_57` called again); Hydra `hy_twin57`, `hy_100`, `hy_launcher` (R4's `mb_pt14_r4_naval.hy_twin57` /
+`hy_a190` are no longer called). DECISIONS "Play-test 14 sea bosses after R4 (lane sea)".

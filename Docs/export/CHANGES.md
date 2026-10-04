@@ -6165,3 +6165,23 @@ Nhánh `feature/pt14-k`. Lý do: `Docs/DECISIONS.md` "Play-test 14 after R4 (lan
 | PT14-K-34 | kit vật liệu (`MaterialLibrary.Kit`) | — | NavyGrey #6f777c, NavyDeck #4a5054, HullRed #8a2f26, BootTop #1e2123, SubBlack #1b1e21, SpaceWhite #e2e4e1, Titanium #8e9397, SpaceSilver #c3c8cc, GoldFoil #d1a646 | tên sơn cho hai lane model vẽ lại tàu và boss vũ trụ |
 | PT14-K-35 | chữ `unit/boss.hydra` | Drone Submarine / Tàu ngầm mang drone | Attack Submarine / Tàu ngầm tấn công | chủ: bỏ chữ drone; note, guide, bossfile theo |
 | PT14-K-36 | bóng máy bay (`ViewRegistry.DrawBlobs`) | đĩa mờ chỉ khi tắt bóng hoặc là thẻ | mọi máy bay (không phải boss) luôn có đĩa bóng theo hướng mặt trời, cao 0.06 m | chủ: bóng máy bay mất hết |
+
+
+## Play-test 14 sea bosses after R4 (lane sea): vũ khí mới cho Scylla, Nyx, Typhon, Hydra; sơn hải quân cho 6 boss tàu
+
+Nhánh `feature/pt14-sea`. Lý do: `Docs/DECISIONS.md` "Play-test 14 sea bosses after R4 (lane sea)" (chủ, khối "Bổ sung 04/10 sau khi thử R4").
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-SEA-1 | vũ khí mới `scylla_ak230` | — | inherits aa_25_triple; AK-230 30 mm (đôi, tháp kín); cal_30; barrels 2; damage 20; cooldown 0.06; range 45; spread 1.2; clip 24; clipReload 2.6; targets Air | chủ: Scylla thêm 4 súng phòng không (2 khẩu này) |
+| PT14-SEA-2 | vũ khí mới `scylla_2m7` | — | inherits hmg_roof (ra khỏi họ M2); 2M-7 14.5 mm (súng máy đôi); cal_14_5; barrels 2; damage 11; cooldown 0.05; range 36; clip 40; clipReload 3; targets Air | chủ: 2 khẩu súng máy phòng không còn lại |
+| PT14-SEA-3 | vũ khí mới `scylla_kh35` | — | inherits anti_ship_missile (ra khỏi họ nsm_oniks); Kh-35U Uran (dàn 4 ống); warheadKg 145; Loft; damage 230; burst 2 / 0.7 s; cooldown 22; range 110; projectileSpeed 70 (như tên lửa hải quân leviathan_cruise, quy tắc 0.3x); splash 6; impactTier Large | chủ: Scylla thêm 2 bệ tên lửa |
+| PT14-SEA-4 | `scylla` `secondary` (của riêng nó; trước: thừa kế từ leviathan sau khi cắt) | [p26_leviathan_direct_lev127 (mg)] | [lev127 (mg, Mount_mg), scylla_ak230 ×2 (Mount_mg.001 trái / .002 phải), scylla_2m7 ×2 (Mount_mg.003 trái / .004 phải), scylla_kh35 ×2 (slot missile, Mount_missile trái / .001 phải)]; tất cả aim Free | 4 súng PK + 2 bệ tên lửa; mount 1 giữ nguyên (part ciws_fore) |
+| PT14-SEA-5 | vũ khí mới `nyx_millennium` | — | inherits boss_flak (họ oerlikon_35_mm); Oerlikon Millennium 35 mm (AHEAD, tháp tàng hình); cal_35; barrels 1; damage 24; cooldown 0.06; range 46; clip 24; clipReload 2.8; targets Air | chủ: Nyx thêm 2 súng phòng không |
+| PT14-SEA-6 | vũ khí mới `nyx_tomahawk` | — | inherits cruise_missile_ground (ra khỏi họ, giữ weaponFamilyId cruise_typhon_mrc); RGM-109E Tomahawk (VLS 8 ô kiểu Mk 41); Loft; HighExplosive; pen 3; damage 340; cooldown 24; range 120; projectileSpeed 70; splash 8; impactTier Huge | chủ: Nyx thêm 1 bệ tên lửa |
+| PT14-SEA-7 | `nyx` `secondary` (của riêng nó) | [lev127 (mg), lev127 (mg)] | [lev127 ×2 (Mount_mg / .001, hai cupola), nyx_millennium ×2 (Mount_mg.002 trái / .003 phải), nyx_tomahawk (slot missile, Mount_missile)]; aim Free | như trên; mount 1-2 giữ nguyên (part ciws_fore / ciws_aft) |
+| PT14-SEA-8 | `typhon` `secondary` | [ty57 (0, 150), ty57 (180, 150)] + pháo 100 mm thêm từ part deck_gun | [ty57 (0, 150), ty57 (180, 150), naval_100 (0, 150) (pháo boong, ghi rõ), p26_typhon_ty57 (180, 150) (mới)]; part `deck_gun` thêm `"mounts": [3]` | chủ: Typhon thêm 1 súng 57 mm đôi ở đuôi (Mount_gun.003); pháo 100 mm vẫn là mount 3, wake mount 3 không đổi |
+| PT14-SEA-9 | `typhon` `mountWeapons` | 1-3 | thêm "4": p26_typhon_sec_ty57 | khẩu đuôi bắn như hai khẩu 57 mm kia |
+| PT14-SEA-10 | `hydra` `secondary` (của riêng nó) | (thừa kế từ typhon) | [p26_typhon_sec_ty57 (180, 150) (Mount_gun.001), p26_typhon_direct_ty100 (0, 150) (Mount_gun.002)] | giữ đúng 3 súng của Hydra (khẩu đuôi mới của Typhon không sang Hydra); mount chính vẫn là 57 mm trước |
+| PT14-SEA-11 | vũ khí mới `hydra_club_s` | — | inherits leviathan_cruise; 3M-54 Club-S (phóng từ tàu ngầm, ống thẳng đứng); các số giữ nguyên | chủ: Hydra bắn tên lửa: là vũ khí dữ liệu riêng, tên thật |
+| PT14-SEA-12 | `hydra` `cruise.weapon` | leviathan_cruise (thừa kế) | hydra_club_s | tên lửa bay ra từ cụm ống phóng sau tháp (Part_doors_l / _r), damage 240 / every 16 giữ nguyên |

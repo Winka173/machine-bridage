@@ -31,6 +31,7 @@ from mathutils import Vector
 
 import mb_kit27 as k
 import mb_kit35 as K
+import mb_pt14_r5_sea as R5
 
 R90 = math.pi / 2
 TAU = math.tau
@@ -83,6 +84,7 @@ TY_SAIL = (0, 3.1, TY_DECK)     # Part_sail
 TY_100 = (0, -22.4, TY_DECK)    # Mount_gun.002's well
 TY_57F = (0, -3.45, TY_DECK)    # Mount_gun's pedestal (ahead of the sail)
 TY_57A = (0, 15.2, 3.41)        # Mount_gun.001's barbette (after casing)
+TY_57S = 20.5                   # Mount_gun.003's barbette (stern casing; lane sea)
 
 
 def _ty_station(y):
@@ -568,9 +570,13 @@ def typhon(a):
     _ty_100(a)
     _ty_57(a, 0, TY_57F, 1.05)
     _ty_57(a, 1, TY_57A, .32)
+    # Lane sea (after R4, owner: "typhon thêm 1 súng tương tự 2 súng kia ở đuôi"): the third twin 57 mm on the stern
+    # casing (Mount_gun.003), drawn anew on its raised barbette; then the 941's black livery (mb_pt14_r5_sea).
+    R5.ty_stern57(a, (0, TY_57S, _ty_top(TY_57S + 1.4), 3.35))
     _ty_stern(a)
     _ty_sonar(a)
     a.pivot('Point_fire', (0, 2.0, 5.5))
+    R5.livery(a, 'typhon')
     k.clean(a)
 
 
