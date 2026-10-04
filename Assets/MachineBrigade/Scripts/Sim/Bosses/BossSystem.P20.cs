@@ -138,11 +138,31 @@ namespace MachineBrigade.Sim.Bosses
                 var row = doors.Count > 0 ? k / doors.Count : k;
                 var spot = from - forward * (5f + 4f * row) + right * ((k % 2 == 0 ? -1f : 1f) * 1.5f);
                 if (_world.Grid.TryNearestWalkable(_world.ClampToMap(spot), 8, out var open)) spot = open;
-                var unit = _world.Economy.ForWave(v.Team, units[(v.FactoryBuilt + k) % units.Count]);
+                var unit = _world.Economy.ForWave(v.Team, FeasibleUnit(v, units, v.FactoryBuilt + k, _world.ClampToMap(spot)));
                 _built.Add((v, unit, _world.ClampToMap(spot), v.Heading + MathF.PI));
             }
             v.FactoryBuilt += count;
             _world.Emit(SimEvent.Landed(v, v.Position - forward * (v.Def.Length * 0.5f), count));
+        }
+
+        /// <summary>
+        /// AI MASTER section 67 (lane P0-B): the workshop's unit for slot <paramref name="index"/>, through the same feasibility
+        /// as buying: a unit that could not reach the other camp, a point or fire on an enemy from where it comes out gives
+        /// way to the next of the list that can (logged REJECT ... reason=no-map-influence); none can: the list's own (the
+        /// boss's data keeps its say).
+        /// </summary>
+        private string FeasibleUnit(Vehicle boss, IReadOnlyList<string> units, int index, Vector2 at)
+        {
+            var first = units[index % units.Count];
+            for (var k = 0; k < units.Count; k++)
+            {
+                var id = units[(index + k) % units.Count];
+                if (!_world.Catalog.Vehicles.TryGetValue(id, out var def) || _world.Feasibility.SpawnUseful(def, boss.Team, at, out _)) return id;
+                if (k == 0)
+                    _world.AiLog.Add(new MachineBrigade.Sim.AI.DecisionEntry(_world.Time, boss.Team, MachineBrigade.Sim.AI.AiLayer.Commander, boss.Id.Value,
+                        MachineBrigade.Sim.AI.DecisionKind.Purchase, $"REJECT {id} reason=no-map-influence (factory spawn)"));
+            }
+            return first;
         }
 
         /// <summary>The workshop's vehicles alive now (tests, the Guide's numbers).</summary>

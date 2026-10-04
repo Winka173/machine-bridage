@@ -12949,3 +12949,20 @@ Nhánh `feature/gear-targets`. Nguồn: câu trả lời của chủ dự án 04
 | GT-8 | UI: phần thưởng bị trần cắt | không hiện | "+X% ... bị trần cắt (không có tác dụng)" / "over cap (not applied)": trang chi tiết xe / tháp và trang trang bị theo nhánh | `Gear.OverCap`; gồm dòng trang bị, thưởng bộ, mô-đun VeteranCrew / AutoRepair, Splash -> DamageVsLight |
 | GT-9 | UI: thẻ trang bị (số chính) | chỉ dòng chính | dòng chính + dòng ngầm cùng chỉ số | KitCards.MainValue / ShortStat / MainLine |
 | GT-10 | trần BuildCap | trên tổng mọi nguồn | giữ (VeteranCrew không vượt trần) | không đổi giá trị trần |
+
+
+## AI MASTER P0-B
+
+Nhánh `feature/ai-p0b`. Nguồn: `Docs/ai/spec_master/Machine_Brigade_AI_Behavior_MASTER_FINAL.md` mục 4-18, 67, 100-101, 109, 196-198, 208-209; kiểm toán `Docs/ai/spec_master/AUDIT_P0B.md`. Không đổi số cân bằng (balance.json); giá trị mới ở `tunables.json` → `ai.topology`, `ai.feasibility`, `ai.procurement`.
+
+| # | mục | cũ | mới |
+|---|---|---|---|
+| P0B-1 | MapTopology (`Sim/Navigation/MapTopology.cs`, `SimWorld.Topology`) | không có | miền di chuyển Ground/Naval/Amphibious/Air/Static, thành phần liên thông mỗi miền, chokes, regions, objective regions; dựng một lần, dựng lại khi lưới đổi (≥ 5 s) |
+| P0B-2 | EngagementFeasibility (`Sim/AI/EngagementFeasibility.cs`, `SimWorld.Feasibility`) | không có | CanDeploy / CanReachObjective / CanReachEnemy / CanFireFromReachableRegion / Coverage / TravelSeconds / UsefulTargetShare; vùng bắn = ô đi tới được ∩ vành (min range, max range + bán kính); tàu tính theo làn; cache |
+| P0B-3 | Mua quân (`ConquestAi.TryDeploy` + `ProcurementDirector`) | điểm cộng dồn, không xét bản đồ | lọc hợp lệ + khả thi bản đồ **trước** khi chấm; `REJECT <card> reason=no-map-influence` trong DecisionLog; điểm master (mục 12) cộng lên điểm cũ (`blendWeight` 3; Easy ×0.5, Normal ×0.75) |
+| P0B-4 | Kế hoạch mua (mục 16) | từng thẻ một | PurchasePlan 3-5 thẻ (Normal 4, Hard+ 5), hủy khi hết 30 s / tình báo đổi / thẻ thành vô dụng |
+| P0B-5 | Giữ CP (mục 18) | để dành cho thẻ tốt nhất | thêm: chờ thẻ phản chế đã xác nhận nếu đủ tiền trong 8 s (tối đa 12 s) |
+| P0B-6 | Phản hồi trong trận (196), bão hòa (197), sàn mềm (198), time-to-value (208), thay năng lực (209) | không có | như AUDIT; hệ số sử dụng thấp → điểm ×0.55-1 và −4 điểm cũ |
+| P0B-7 | Boss workshop / escort (67) | sinh theo danh sách | qua cùng feasibility: workshop lấy đơn vị khả thi kế tiếp; escort mặt đất vô dụng (trên biển, túi kín) không sinh; ghi REJECT |
+| P0B-8 | DecisionLog | — | `DecisionKind.Purchase`: BUY / REJECT / PLAN / RESERVE |
+| P0B-9 | Test (109 A/B/C, 196, 15, 67) | — | `Tests/EditMode/AiMasterP0BTests.cs` (viết, chưa chạy) |

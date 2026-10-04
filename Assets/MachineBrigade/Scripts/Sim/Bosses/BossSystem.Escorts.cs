@@ -246,6 +246,14 @@ namespace MachineBrigade.Sim.Bosses
             // A signature elite always; Boss Rush's guards as elites; otherwise the side's elite budget decides (prompt 8 H).
             if (u.Elite || (settings.EliteGuards && !u.Helper)) id = _world.Catalog.EliteVariant(u.Unit) ?? u.Unit;
             else id = _world.Economy.ForWave(boss.Team, u.Unit);
+            // AI MASTER section 67 (lane P0-B): a ground escort that could do nothing from where it would come out (a sea
+            // boss's tank on the water, a pocket) is not put down; the boss's data keeps every other escort.
+            if (_world.Catalog.Vehicles.TryGetValue(id, out var escortDef) && !_world.Feasibility.SpawnUseful(escortDef, boss.Team, _world.ClampToMap(spot), out var why))
+            {
+                _world.AiLog.Add(new MachineBrigade.Sim.AI.DecisionEntry(_world.Time, boss.Team, MachineBrigade.Sim.AI.AiLayer.Commander, boss.Id.Value,
+                    MachineBrigade.Sim.AI.DecisionKind.Purchase, $"REJECT {id} reason={why} (escort spawn)"));
+                return;
+            }
             var v = _world.SpawnVehicle(id, boss.Team, _world.ClampToMap(spot), boss.Heading);
             v.EscortOf = boss.Id;
             v.EscortRole = u.Role;

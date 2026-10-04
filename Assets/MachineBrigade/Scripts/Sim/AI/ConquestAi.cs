@@ -892,6 +892,11 @@ namespace MachineBrigade.Sim.AI
                 armyValue += v.Def.CpCost;
             }
             var mix = RoleMix ?? (Stance == CommanderStance.Defend ? DefendMix : AttackMix);
+            // AI MASTER P0-B: the director observes (fog-fair), and a purchase plan in progress buys its next card first.
+            var director = Procurement;
+            ObserveForProcurement(world, economy, mix);
+            if (TryPlanned(world, economy, airFull, ownTotal)) return;
+            _ranked.Clear();
 
             foreach (var id in cards)
             {
@@ -902,6 +907,8 @@ namespace MachineBrigade.Sim.AI
                 if (def.MaxPerSide > 0 && world.Economy.Fielded(_team, id) >= def.MaxPerSide) continue;
                 // Prompt 17 C: a loyal wingman is outside the aircraft cap.
                 if (def.Flying && airFull && !def.AirCapFree) continue;
+                // AI MASTER sections 10-11: the map filter before any score (REJECT <card> reason=no-map-influence).
+                if (!director.Gate(world, def, out var influence)) continue;
                 var profile = Profile;
                 var score = 1f + (float)_random.NextDouble() * profile.Noise;
                 // Prompt 13 I.2: the card's measured combat value per CP (1: the roster's middle).
@@ -954,6 +961,10 @@ namespace MachineBrigade.Sim.AI
                 score += def.CpCost * profile.Save;
                 // Prompt 22 F.5: the cards that suit the side's commander (the player's Auto-buy, an enemy general's army).
                 if (economy.Commander is { } commander) score += CommanderRules.Fit(commander, def) * CommanderFitWeight;
+                // AI MASTER section 12: the master score on top (role deficit, counters, objectives, map, timing, ...), and
+                // section 196's same-match feedback.
+                score += director.LegacyAdjust(director.Score(world, economy, def, influence, copies, Commander, null), def, _difficulty);
+                _ranked.Add((id, score));
                 if (BuyScores != null) BuyScores[id] = score;
                 if (score > bestScore)
                 {
@@ -970,17 +981,13 @@ namespace MachineBrigade.Sim.AI
             var bestCost = economy.PriceOf(best, world.Catalog.Vehicles[best].CpCost);
             if (bestCost <= economy.Cp)
             {
-                // Prompt 25 F2 batch A: an airborne vehicle is dropped where it is wanted.
-                DeployOrDrop(world, best);
-                Bought(world, best, economy);
+                // Prompt 25 F2 batch A: an airborne vehicle is dropped where it is wanted (through the director: plan, reserve, log).
+                BuyThroughDirector(world, economy, best, bestScore, ownTotal);
                 return;
             }
             // Save up for the best card, unless the army is thin or CP is about to overflow.
             if (bestAffordable != null && (ownTotal < 4 || economy.Cp >= economy.Bank - 3f || _difficulty == AiDifficulty.Easy))
-            {
-                DeployOrDrop(world, bestAffordable);
-                Bought(world, bestAffordable, economy);
-            }
+                BuyThroughDirector(world, economy, bestAffordable, bestAffordableScore, ownTotal);
         }
 
         /// <summary>Very Hard spending its saved CP (see <see cref="TryDeploy"/>).</summary>

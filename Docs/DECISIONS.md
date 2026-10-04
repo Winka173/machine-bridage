@@ -20972,3 +20972,42 @@ with the emulation table: `Docs/fixes/gear_targets_report.md`; old -> new: `Docs
   equipment page under the set chips: "{line} over cap (not applied)" / "{line} bị trần cắt (không có tác dụng)".
 - Equipment cards' headline number (KitCards MainValue / ShortStat / MainLine) adds the implicit lines of the main stat, so the
   split pieces are not shown at their small main line (a hair trigger reads +11 %, not +3.5 %).
+
+## AI MASTER P0-B (lane B)
+
+Lane P0-B of the AI MASTER spec (sections 4-18, 67, 100-101, 109, 196-198, 208-209), branch `feature/ai-p0b`. Audit:
+`Docs/ai/spec_master/AUDIT_P0B.md`. No Unity run, no test run; Sim builds.
+
+- **Integrate, not replace (Part A).** The legacy buying score in `ConquestAi.TryDeploy` (counters, role mix, tactic shares,
+  value, copies, commander fit, the P17/P25 card rules) stays. The new `ProcurementDirector` filters first (legality, then map
+  feasibility) and adds its section-12 master score (inputs 0-1, spec weights) times `ai.procurement.blendWeight` = 3 points
+  (Easy x0.5, Normal x0.75). A rejected card is never scored. The blend weight is a first guess for the lead's sweeps.
+- **Reject rule.** `!CanDeploy` -> `deployment-unreachable`; `!Useful && !IsStrategicUtility` -> `no-map-influence`.
+  `Useful` = can deploy and (no target known, or reaches an objective, or reaches an enemy it can hurt, or fires on a target
+  from reachable ground, or a map-aware useful target share > 0). With nothing known (no enemy seen, no objective) nothing is
+  rejected: unknown is not useless. Strategic utility = repair/rearm/command/jammer/counter-battery/dome/recon-pass with an army
+  on the field, and anti-air as a soft floor after aircraft were seen with none fielded. CP < price stays "save up", not a reject.
+- **Targets (fog-fair).** Enemies from `TacticalAi.KnownEnemies` (seen), clustered within 16 m per layer; a ship by 9 samples
+  of its lane's patrol; capture points not held (own ones while contested); the mission `Goal`; `DefendPoint`; the other camp
+  when it has a base (map knowledge).
+- **Topology.** Built on the NavGrid's 2 m cells: Ground = open and not sea; Naval = sea (`SeaDef.IsSea`); Amphibious = open
+  (shallow water included); Air/Static need no graph. Rebuilt only when `Grid.Version` changed and 5 s passed. Chokes =
+  open cells within half `chokeWidth` (8 m) of closed ground on two opposite sides, clustered. Regions = components.
+  `MainLanes` are not duplicated: `SimWorld.Lanes` (LaneMap) serves.
+- **Firing band** as the combat system measures it (`distance - radius <= range`, `distance >= minRange`); targets snap to an
+  8 m cell for the cache and the band widens by the snap's half diagonal (5.7 m), so the snap can only accept, never reject.
+- **Plans** (Normal 4, Hard+ 5 cards; Easy none) start when the top-ranked card is bought; the next plan card is bought before
+  any re-scoring; cancelled after 30 s, when the confirmed counter set changes, or a card becomes infeasible.
+- **Reserve** only for a confirmed counter's card affordable within 8 s of income, at most 12 s, never at bank - 3, with a thin
+  army or under fire. Boss-phase and "composition enough" reserves wait for the P4 forecast.
+- **Feedback (196)** per card (elite counted as its base): combat seconds = an enemy within 1.5 x reach or a shot in the last
+  2 s; utilisation = firing seconds / combat seconds; under 0.15 after 20 s: modifier 0.55-1 on the master score and up to 4
+  points off the legacy score; named `low-realized-utilization` in the BUY line.
+- **Boss spawns (67).** The workshop takes the next feasible unit of its list (none feasible: its own, the data keeps its say);
+  escort waves skip a ground escort that could do nothing where it would come out. Mission-event spawns are scripted and untouched.
+- **Log.** `DecisionKind.Purchase` (appended at the end of the enum): `REJECT <card> reason=... (PURCHASE_...)` once per verdict
+  change, `BUY <card> score=... plan=... (factors)`, `PLAN ...`, `PLAN cancel ...`, `RESERVE ...`.
+- **Tunables** (`tunables.json` ai.topology / ai.feasibility / ai.procurement, 30 keys) registered in
+  `SimTunables.AiMasterP0B.cs`, hooked into `Pack2Entries` (one line).
+- **For the other lanes:** `world.Topology`, `world.Feasibility.HasReachableFiringPosition / CanReach / TravelSeconds /
+  SpawnUseful`, `WeaponEnvelope.Of`, `EngagementFeasibility.LayerOf`.
