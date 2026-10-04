@@ -6530,3 +6530,8 @@ Nhánh `feature/final-f1`. Nguồn: `Docs/balance/final/` (Manifest_FINAL.json, 
 | MBF1-161 | chữ | Strings branch.guard_tower.watch.info | EN/VI | trong 30 m | trong 35 m | theo M56 |
 
 Không đổi (đã xét theo công thức của bộ): Theia / Coeus HP 94850 (mini; bộ giữ mọi mini, kể cả icarus_mk0 / argus 94850 cùng họ); không có máy bay mới kể từ bộ (mọi xe bay không phải boss đều có trong Vehicles_Final); SELF_APS: titan_tank / next_gen_tank đã 10 s; mọi siêu vũ khí boss đã trong 40-50 s; bunker_pkm / mg_coax_long / súng tự động / tên lửa của play-test 14: luật súng lớn không áp dụng (MG / AA / autocannon / tên lửa); vũ khí boss mới: chỉ quy tắc bán kính (tầm min/max là lane F2); gun_behemoth (mara_behemoth + boss) giữ: súng dùng chung với boss; các dòng không ai mang (gun_105_twin, gun_203_siege, gun_pit_105, gun_155_twin, gun_155_twin_long, gun_155_sph, mortar_240) giữ; hangar / aura: không có công thức.
+
+## MB_FINAL lead fix (04/10): Roc bomb stick follows its new splash
+p26_roc_roc_bombs splash 5 -> 10 (bundle row) left its stored stick fields on the old splash (CatalogCheck: overlap
+0.909 vs formula 1.818). Removed the stored jitterAcross 1.25, overlap 0.909, width 22.5, safety 8 so they derive
+from the new splash (jitterAcross 2.5, overlap 1.818, safety 10, width from the warn radius).
