@@ -25,8 +25,12 @@ of fire, artillery role for the AI, lobbed interception rules) and minReach woul
 max(current, geometric) rounded half up to 1 m. Close-defence weapons (machine guns, flamers, small autocannon / CIWS,
 melee) and air-only weapons are shown but not written (their mounts turn and depress; they cover the dead zone).
 
+MB_FINAL F2 (owner's final bundle, 04/10): the values the game uses now come from balance.json "bossWeaponOverrides" (per boss
+and weapon: groundMinReach / minRange / maxRange; a variant without a row of its own uses its parent's), not from the shared
+weapon. tam_toi_thieu_ghi_m / tam_toi_da_ghi_m show them (ghi_de_tu_boss: the boss whose row is used); --apply, which wrote one
+value per shared weapon, is retired.
+
     python Tools/export/boss_min_range.py            # writes the QA lists to Docs/export/current/_qa/
-    python Tools/export/boss_min_range.py --apply    # also writes the proposed values into balance.json
 """
 from __future__ import annotations
 
@@ -324,6 +328,38 @@ def geometric(cls: str, w: dict, boss: dict, h_m: float, r_m: float, h_t: float,
     return own + r_m, own, dep, b.get("elevationMinDeg"), b.get("elevationMaxDeg"), "ban_thang", src, est
 
 
+def boss_override(d: dict, built: dict, bid: str, wid: str):
+    """(row, boss id it comes from) of balance.json bossWeaponOverrides for this boss's weapon: its own row, else its nearest
+    ancestor's (variantOf), whole; (None, "") when none (MB_FINAL F2, as Catalog.BossReach.cs reads it)."""
+    table = d.get("bossWeaponOverrides") or {}
+    b, depth = bid, 0
+    while b and depth < 8:
+        row = (table.get(b) or {}).get(wid)
+        if row is not None:
+            return row, b
+        b, depth = (built.get(b) or {}).get("variantOf"), depth + 1
+    return None, ""
+
+
+def effective_reach(w: dict, row) -> tuple[float, float, float]:
+    """(minRange, ground minimum to the near face, reach) the game uses for a weapon under an override row (WeaponDef.WithReach:
+    minRange only on a weapon that has one, else folded into groundMinReach)."""
+    cur_min = float(w.get("minRange") or 0)
+    ground = max(float(w.get("minReach") or 0), float(w.get("groundMinReach") or 0))
+    rng = float(w.get("range") or 0)
+    if row:
+        if "maxRange" in row:
+            rng = float(row["maxRange"])
+        if "groundMinReach" in row:
+            ground = max(float(w.get("minReach") or 0), float(row["groundMinReach"]))
+        if "minRange" in row:
+            if cur_min > 0:
+                cur_min = float(row["minRange"])
+            else:
+                ground = max(ground, float(row["minRange"]))
+    return cur_min, ground, rng
+
+
 def part_of(b: dict, k: int):
     """The part carrying mount k (parts[].mounts) and its data height (at[2], the boss frame's height), or (None, None)."""
     for p in b.get("parts") or []:
@@ -428,8 +464,13 @@ def compute(d: dict, built: dict, wres: dict) -> dict:
         rows.extend(brows)
     pl = plan(d, built, wres, rows)
     for r in rows:
-        r["tam_toi_thieu_ghi_m"] = pl["effective"].get(r["vu_khi_id"], r["tam_toi_thieu_m_hien_tai"]) if r["ap_dung"] \
-            else r["tam_toi_thieu_m_hien_tai"]
+        # MB_FINAL F2: what the game uses, the boss's override row over the shared weapon.
+        row, src = boss_override(d, built, r["boss_id"], r["vu_khi_id"])
+        mn, ground, rng = effective_reach(wres.get(r["vu_khi_id"]) or {}, row)
+        r["ghi_de_tu_boss"] = src
+        r["tam_toi_thieu_ghi_m"] = half_up(max(mn, ground))
+        r["tam_toi_da_ghi_m"] = half_up(rng) if rng else 0
+        r["ti_le_tam_toi_da_toi_thieu"] = round(rng / max(mn, ground), 2) if max(mn, ground) > 0 else ""
     for bid, summary in bosses.items():
         brows = [r for r in rows if r["boss_id"] == bid]
         summary.update(dead_zone(brows, summary["ban_kinh_trong_m"], lim))
@@ -443,7 +484,7 @@ def dead_zone(brows: list, inner: float, lim: Limits) -> dict:
     """The boss's dead zone from the values the game will use (tam_toi_thieu_ghi_m), measured like GroundMinReach: the
     smallest minimum of its main barrels; the band from its body's edge (inner) out to it; the weapons that reach into
     it and the share of the band they reach; the nearest weapon when nothing does."""
-    ground = [r for r in brows if r["nhom"] != "phong_khong" and r["tam_toi_da_m"]]
+    ground = [r for r in brows if r["nhom"] != "phong_khong" and r["tam_toi_da_ghi_m"]]
     main = [r for r in ground if r["nhom"] == "chinh"] or ground
 
     def val(r):
@@ -452,13 +493,13 @@ def dead_zone(brows: list, inner: float, lim: Limits) -> dict:
     band = dz - inner
     covers, best_lo = [], dz
     for r in ground:
-        lo, hi = max(val(r), inner), min(dz, r["tam_toi_da_m"])
+        lo, hi = max(val(r), inner), min(dz, r["tam_toi_da_ghi_m"])
         if val(r) < dz and hi > lo:
             covers.append(r["vu_khi_id"])
             best_lo = min(best_lo, lo)
     share = 1.0 if band <= lim.negligible else max(0.0, (dz - best_lo) / band)
-    rest = [r for r in ground if r not in main and r["tam_toi_da_m"] > inner] or \
-        [r for r in ground if r["tam_toi_da_m"] > inner and val(r) > dz]
+    rest = [r for r in ground if r not in main and r["tam_toi_da_ghi_m"] > inner] or \
+        [r for r in ground if r["tam_toi_da_ghi_m"] > inner and val(r) > dz]
     nearest = min(rest, key=val, default=None)
     return {"vung_chet_ban_kinh_m": dz, "dai_chet_m": round(max(0.0, band), 2),
             "vu_khi_chinh_dat_vung_chet": ";".join(sorted({r["vu_khi_id"] for r in main if val(r) == dz})),
@@ -582,7 +623,7 @@ def write_qa(result: dict, out: Path = QA) -> None:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--apply", action="store_true", help="write the proposed values into balance.json")
+    ap.add_argument("--apply", action="store_true", help="retired (MB_FINAL F2: bossWeaponOverrides holds the values)")
     ap.add_argument("--qa", default=str(QA), help="folder for the QA lists")
     args = ap.parse_args(argv)
     sys.stdout.reconfigure(encoding="utf-8")
@@ -593,8 +634,8 @@ def main(argv=None) -> int:
     print(f"{len(result['rows'])} mounts on {len(result['bosses'])} bosses; {len(p['edits'])} weapon edits, "
           f"{len(p['pins'])} pins, {len(p['shared'])} shared weapons left")
     if args.apply:
-        for n in apply(result):
-            print("  ", n)
+        print("--apply is retired (MB_FINAL F2): boss minimum / maximum ranges live in balance.json bossWeaponOverrides.")
+        return 2
     return 0
 
 

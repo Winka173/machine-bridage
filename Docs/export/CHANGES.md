@@ -6238,3 +6238,126 @@ Nhánh `feature/pt14-l`. Lý do: `Docs/DECISIONS.md` "Play-test 14 VFX fixes 04/
 | PT14-L-6 | cấp hình (view) `pt14_co_spike` | lớp phủ T2 phóng theo vùng 3,5 m (x1,4) | lớp phủ T2 cỡ chuẩn (x1, như Kornet / Hellfire) | Spike NLOS nổ như ATGM; vòng vùng sát thương 3,5 m giữ |
 | PT14-L-7 | nổ tên lửa hành trình của tàu (NavalSystem.Cruise) | luôn Ultimate | theo `impactTier` của tên lửa | Leviathan, Kraken, Typhon, Scylla, Nyx (leviathan_cruise) vẫn Ultimate; Hydra (hydra_club_s) Large |
 | PT14-L-8 | JAGM `pt14_th_jagm`, các súng mới (30 / 35 / 40 / 57 / 76 / 127 / 155 / 203 mm), súng phòng không | — | không đổi | đã trùng cỡ nổ của vũ khí cùng cỡ (Hellfire Medium/T2; autocannon Small/T1; 155 Large/T3; 203 Huge/T4) |
+
+## MB_FINAL F2 (lane B): tầm tối thiểu / tối đa riêng của từng boss (bossWeaponOverrides)
+
+Nhánh `feature/final-f2`. Gói cuối của chủ `Docs/balance/final/` (MB_FINAL_2026_10_04, thắng mọi thứ), mục 1 của `VIEC_CHO_AGENT_FINAL.md`. Lớp dữ liệu mới `balance.json` `bossWeaponOverrides[boss][vũ khí]` {groundMinReach, minRange, maxRange}, Catalog đọc (`Sim/Content/Catalog.BossReach.cs`), chỉ bệ của boss đó dùng bản sao riêng; vũ khí chung không đổi. Lý do: `Docs/DECISIONS.md` "MB_FINAL balance F2 (lane B)". Xung đột: `Docs/balance/final/CONFLICTS.md` mục F2. "cũ" = giá trị game dùng trước (của vũ khí chung: max(minRange, groundMinReach) / range); expected_before của gói (0.0) là lớp ghi đè chưa có, coi là khớp.
+
+| # | boss / vũ khí | trường | cũ | mới | nguồn |
+|---|---|---|---|---|---|
+| F2-1 | `armored_train/pt14_train_grad` | groundMinReach | 14 | 16 | luật gói: min = max(hiện tại 14, đề xuất hình học 16 của 1 bệ, lớp be_rocket), trần 120 |
+| F2-2 | `armored_train/pt14_train_grad` | maxRange | 45 | 52 | luật gói: max = max(range 45, ceil(16 x 3,2) = 52), trần 300 |
+| F2-3 | `armored_train/train_gun` | groundMinReach | 14 | 25 | manifest `bossWeaponOverrides[armored_train][train_gun].groundMinReach` (expected_before 0) |
+| F2-4 | `armored_train/train_gun` | maxRange | 42 | 80 | manifest `bossWeaponOverrides[armored_train][train_gun].maxRange` (expected_before 42) |
+| F2-5 | `bastion_mk0/p26_bastion_direct_b100` | groundMinReach | 19 | 19 | manifest `bossWeaponOverrides[bastion_mk0][p26_bastion_direct_b100].groundMinReach` (expected_before 0) |
+| F2-6 | `bastion_mk0/p26_bastion_direct_b100` | maxRange | 36 | 61 | manifest `bossWeaponOverrides[bastion_mk0][p26_bastion_direct_b100].maxRange` (expected_before 36) |
+| F2-7 | `behemoth/p26_behemoth_direct_be120` | groundMinReach | 21 | 25 | manifest `bossWeaponOverrides[behemoth][p26_behemoth_direct_be120].groundMinReach` (expected_before 0) |
+| F2-8 | `behemoth/p26_behemoth_direct_be120` | maxRange | 32 | 80 | manifest `bossWeaponOverrides[behemoth][p26_behemoth_direct_be120].maxRange` (expected_before 32) |
+| F2-9 | `behemoth/p26_behemoth_main_be152` | groundMinReach | 32 | 32 | manifest `bossWeaponOverrides[behemoth][p26_behemoth_main_be152].groundMinReach` (expected_before 0) |
+| F2-10 | `behemoth/p26_behemoth_main_be152` | maxRange | 40 | 103 | manifest `bossWeaponOverrides[behemoth][p26_behemoth_main_be152].maxRange` (expected_before 40) |
+| F2-11 | `behemoth/p26_behemoth_sec_be_rockets` | groundMinReach | 23 | 30 | manifest `bossWeaponOverrides[behemoth][p26_behemoth_sec_be_rockets].groundMinReach` (expected_before 0) |
+| F2-12 | `behemoth/p26_behemoth_sec_be_rockets` | maxRange | 45 | 96 | manifest `bossWeaponOverrides[behemoth][p26_behemoth_sec_be_rockets].maxRange` (expected_before 45) |
+| F2-13 | `behemoth/p26_behemoth_tiny_be120` | groundMinReach | 25 | 25 | manifest `bossWeaponOverrides[behemoth][p26_behemoth_tiny_be120].groundMinReach` (expected_before 0) |
+| F2-14 | `behemoth/p26_behemoth_tiny_be120` | maxRange | 32 | 80 | manifest `bossWeaponOverrides[behemoth][p26_behemoth_tiny_be120].maxRange` (expected_before 32) |
+| F2-15 | `behemoth/p26_behemoth_tiny_boss_missiles` | groundMinReach | 1 | 1 | manifest `bossWeaponOverrides[behemoth][p26_behemoth_tiny_boss_missiles].groundMinReach` (expected_before 0) |
+| F2-16 | `behemoth/p26_behemoth_tiny_kornet_twin` | groundMinReach | 25 | 25 | manifest `bossWeaponOverrides[behemoth][p26_behemoth_tiny_kornet_twin].groundMinReach` (expected_before 0) |
+| F2-17 | `behemoth/p26_behemoth_tiny_kornet_twin` | maxRange | 32 | 80 | manifest `bossWeaponOverrides[behemoth][p26_behemoth_tiny_kornet_twin].maxRange` (expected_before 32) |
+| F2-18 | `behemoth_inferno/boss_thermo` | groundMinReach | 21 | 21 | manifest `bossWeaponOverrides[behemoth_inferno][boss_thermo].groundMinReach` (expected_before 0) |
+| F2-19 | `behemoth_inferno/boss_thermo` | maxRange | 46 | 68 | manifest `bossWeaponOverrides[behemoth_inferno][boss_thermo].maxRange` (expected_before 46) |
+| F2-20 | `behemoth_mk0/p26_behemoth_direct_be120` | groundMinReach | 21 | 24 | manifest `bossWeaponOverrides[behemoth_mk0][p26_behemoth_direct_be120].groundMinReach` (expected_before 0) |
+| F2-21 | `behemoth_mk0/p26_behemoth_direct_be120` | maxRange | 32 | 77 | manifest `bossWeaponOverrides[behemoth_mk0][p26_behemoth_direct_be120].maxRange` (expected_before 32) |
+| F2-22 | `behemoth_mk0/p26_behemoth_main_be152` | groundMinReach | 32 | 36 | manifest `bossWeaponOverrides[behemoth_mk0][p26_behemoth_main_be152].groundMinReach` (expected_before 0) |
+| F2-23 | `behemoth_mk0/p26_behemoth_main_be152` | maxRange | 40 | 116 | manifest `bossWeaponOverrides[behemoth_mk0][p26_behemoth_main_be152].maxRange` (expected_before 40) |
+| F2-24 | `behemoth_mk0/p26_behemoth_sec_be_rockets` | groundMinReach | 23 | 23 | manifest `bossWeaponOverrides[behemoth_mk0][p26_behemoth_sec_be_rockets].groundMinReach` (expected_before 0) |
+| F2-25 | `behemoth_mk0/p26_behemoth_sec_be_rockets` | maxRange | 45 | 74 | manifest `bossWeaponOverrides[behemoth_mk0][p26_behemoth_sec_be_rockets].maxRange` (expected_before 45) |
+| F2-26 | `behemoth_mk2/p26_behemoth_main_be152` | groundMinReach | 32 | 32 | manifest `bossWeaponOverrides[behemoth_mk2][p26_behemoth_main_be152].groundMinReach` (expected_before 0) |
+| F2-27 | `behemoth_mk2/p26_behemoth_main_be152` | maxRange | 40 | 103 | manifest `bossWeaponOverrides[behemoth_mk2][p26_behemoth_main_be152].maxRange` (expected_before 40) |
+| F2-28 | `behemoth_tempest/boss_railgun` | groundMinReach | 33 | 33 | manifest `bossWeaponOverrides[behemoth_tempest][boss_railgun].groundMinReach` (expected_before 0) |
+| F2-29 | `behemoth_tempest/boss_railgun` | maxRange | 80 | 106 | manifest `bossWeaponOverrides[behemoth_tempest][boss_railgun].maxRange` (expected_before 80) |
+| F2-30 | `behemoth_tempest/coilgun` | groundMinReach | 17 | 17 | manifest `bossWeaponOverrides[behemoth_tempest][coilgun].groundMinReach` (expected_before 0) |
+| F2-31 | `coeus/pt14_co_203` | groundMinReach | 19 | 28 | luật gói: min = max(hiện tại 19, đề xuất hình học 28 của 1 bệ, lớp phao_boss), trần 120 |
+| F2-32 | `coeus/pt14_co_spike` | groundMinReach | 0 | 1 | luật gói: min = max(hiện tại 0, đề xuất hình học 1 của 2 bệ, lớp ten_lua), trần 120 |
+| F2-33 | `command_airship/p26_roc_direct_roc_atgm` | groundMinReach | 1 | 1 | manifest `bossWeaponOverrides[command_airship][p26_roc_direct_roc_atgm].groundMinReach` (expected_before 0) |
+| F2-34 | `command_airship/p26_roc_roc105` | groundMinReach | 22 | 22 | manifest `bossWeaponOverrides[command_airship][p26_roc_roc105].groundMinReach` (expected_before 0) |
+| F2-35 | `command_airship/p26_roc_roc105` | maxRange | 58 | 71 | manifest `bossWeaponOverrides[command_airship][p26_roc_roc105].maxRange` (expected_before 58) |
+| F2-36 | `daedalus/p26_daedalus_direct_dae_laser` | groundMinReach | 13 | 13 | manifest `bossWeaponOverrides[daedalus][p26_daedalus_direct_dae_laser].groundMinReach` (expected_before 0) |
+| F2-37 | `daedalus/p26_daedalus_direct_dae_laser` | maxRange | 36 | 42 | manifest `bossWeaponOverrides[daedalus][p26_daedalus_direct_dae_laser].maxRange` (expected_before 36) |
+| F2-38 | `drone_mothership/p26_matriarch_direct_ma_atgm` | groundMinReach | 1 | 1 | manifest `bossWeaponOverrides[drone_mothership][p26_matriarch_direct_ma_atgm].groundMinReach` (expected_before 0) |
+| F2-39 | `drone_mothership/p26_matriarch_ma_drones` | groundMinReach | 1 | 1 | manifest `bossWeaponOverrides[drone_mothership][p26_matriarch_ma_drones].groundMinReach` (expected_before 0) |
+| F2-40 | `drone_mothership/p26_matriarch_tiny_mothership_cannon` | groundMinReach | 11 | 13 | manifest `bossWeaponOverrides[drone_mothership][p26_matriarch_tiny_mothership_cannon].groundMinReach` (expected_before 0) |
+| F2-41 | `earth_borer/borer_cannon` | groundMinReach | 16 | 16 | manifest `bossWeaponOverrides[earth_borer][borer_cannon].groundMinReach` (expected_before 0) |
+| F2-42 | `earth_borer/borer_cannon` | maxRange | 34 | 52 | manifest `bossWeaponOverrides[earth_borer][borer_cannon].maxRange` (expected_before 34) |
+| F2-43 | `fenrir/p26_jotunn_sec_jo_rockets` | groundMinReach | 12 | 16 | manifest `bossWeaponOverrides[fenrir][p26_jotunn_sec_jo_rockets].groundMinReach` (expected_before 0) |
+| F2-44 | `fenrir/p26_jotunn_sec_jo_rockets` | maxRange | 45 | 52 | manifest `bossWeaponOverrides[fenrir][p26_jotunn_sec_jo_rockets].maxRange` (expected_before 45) |
+| F2-45 | `fortress_bastion/p26_bastion_direct_b100` | groundMinReach | 19 | 28 | manifest `bossWeaponOverrides[fortress_bastion][p26_bastion_direct_b100].groundMinReach` (expected_before 0) |
+| F2-46 | `fortress_bastion/p26_bastion_direct_b100` | maxRange | 36 | 90 | manifest `bossWeaponOverrides[fortress_bastion][p26_bastion_direct_b100].maxRange` (expected_before 36) |
+| F2-47 | `fortress_bastion/p26_bastion_tiny_kornet_twin` | groundMinReach | 1 | 1 | manifest `bossWeaponOverrides[fortress_bastion][p26_bastion_tiny_kornet_twin].groundMinReach` (expected_before 0) |
+| F2-48 | `hydra/p26_typhon_direct_ty100` | groundMinReach | 8 | 8 | manifest `bossWeaponOverrides[hydra][p26_typhon_direct_ty100].groundMinReach` (expected_before 0) |
+| F2-49 | `hydra/p26_typhon_sec_ty57` | groundMinReach | 8 | 35 | manifest `bossWeaponOverrides[hydra][p26_typhon_sec_ty57].groundMinReach` (expected_before 0) |
+| F2-50 | `hydra/p26_typhon_sec_ty57` | maxRange | 40 | 112 | manifest `bossWeaponOverrides[hydra][p26_typhon_sec_ty57].maxRange` (expected_before 40) |
+| F2-51 | `hyperion/p26_icarus_sec_orbital_laser` | groundMinReach | 11 | 14 | manifest `bossWeaponOverrides[hyperion][p26_icarus_sec_orbital_laser].groundMinReach` (expected_before 0) |
+| F2-52 | `hyperion/p26_icarus_sec_orbital_laser` | maxRange | 36 | 45 | manifest `bossWeaponOverrides[hyperion][p26_icarus_sec_orbital_laser].maxRange` (expected_before 36) |
+| F2-53 | `hyperion/pt14_hp_155` | groundMinReach | 19 | 27 | luật gói: min = max(hiện tại 19, đề xuất hình học 27 của 2 bệ, lớp phao_boss), trần 120 |
+| F2-54 | `hyperion/pt14_hp_nsm` | groundMinReach | 0 | 1 | luật gói: min = max(hiện tại 0, đề xuất hình học 1 của 2 bệ, lớp ten_lua), trần 120 |
+| F2-55 | `icarus_mk0/p26_icarus_sec_orbital_laser` | groundMinReach | 11 | 11 | manifest `bossWeaponOverrides[icarus_mk0][p26_icarus_sec_orbital_laser].groundMinReach` (expected_before 0) |
+| F2-56 | `ixion/p26_ixion_125` | groundMinReach | 30 | 30 | manifest `bossWeaponOverrides[ixion][p26_ixion_125].groundMinReach` (expected_before 0) |
+| F2-57 | `ixion/p26_ixion_125` | maxRange | 38 | 96 | manifest `bossWeaponOverrides[ixion][p26_ixion_125].maxRange` (expected_before 38) |
+| F2-58 | `ixion/pt14_ixion_grad` | maxRange | 55 | 58 | manifest `bossWeaponOverrides[ixion][pt14_ixion_grad].maxRange` (expected_before 55) |
+| F2-59 | `ixion/pt14_ixion_kornet` | groundMinReach | 1 | 1 | manifest `bossWeaponOverrides[ixion][pt14_ixion_kornet].groundMinReach` (expected_before 0) |
+| F2-60 | `kraken/p26_leviathan_direct_lev127` | groundMinReach | 23 | 29 | manifest `bossWeaponOverrides[kraken][p26_leviathan_direct_lev127].groundMinReach` (expected_before 0) |
+| F2-61 | `kraken/p26_leviathan_direct_lev127` | maxRange | 90 | 93 | manifest `bossWeaponOverrides[kraken][p26_leviathan_direct_lev127].maxRange` (expected_before 90) |
+| F2-62 | `kraken/p26_leviathan_lev406` | groundMinReach | 72 | 120 | manifest `bossWeaponOverrides[kraken][p26_leviathan_lev406].groundMinReach` (expected_before 0) |
+| F2-63 | `kraken/p26_leviathan_lev406` | maxRange | 160 | 300 | manifest `bossWeaponOverrides[kraken][p26_leviathan_lev406].maxRange` (expected_before 160) |
+| F2-64 | `kraken/p26_leviathan_sec_lev155` | groundMinReach | 87 | 88 | manifest `bossWeaponOverrides[kraken][p26_leviathan_sec_lev155].groundMinReach` (expected_before 0) |
+| F2-65 | `kraken/p26_leviathan_sec_lev155` | maxRange | 110 | 282 | manifest `bossWeaponOverrides[kraken][p26_leviathan_sec_lev155].maxRange` (expected_before 110) |
+| F2-66 | `leviathan/p26_leviathan_direct_lev127` | groundMinReach | 23 | 42 | manifest `bossWeaponOverrides[leviathan][p26_leviathan_direct_lev127].groundMinReach` (expected_before 0) |
+| F2-67 | `leviathan/p26_leviathan_direct_lev127` | maxRange | 90 | 135 | manifest `bossWeaponOverrides[leviathan][p26_leviathan_direct_lev127].maxRange` (expected_before 90) |
+| F2-68 | `leviathan/p26_leviathan_lev406` | groundMinReach | 72 | 103 | manifest `bossWeaponOverrides[leviathan][p26_leviathan_lev406].groundMinReach` (expected_before 0) |
+| F2-69 | `leviathan/p26_leviathan_lev406` | maxRange | 160 | 300 | manifest `bossWeaponOverrides[leviathan][p26_leviathan_lev406].maxRange` (expected_before 160) |
+| F2-70 | `leviathan/p26_leviathan_sec_lev155` | groundMinReach | 87 | 90 | manifest `bossWeaponOverrides[leviathan][p26_leviathan_sec_lev155].groundMinReach` (expected_before 0) |
+| F2-71 | `leviathan/p26_leviathan_sec_lev155` | maxRange | 110 | 288 | manifest `bossWeaponOverrides[leviathan][p26_leviathan_sec_lev155].maxRange` (expected_before 110) |
+| F2-72 | `locust/locust_drones` | groundMinReach | 1 | 1 | manifest `bossWeaponOverrides[locust][locust_drones].groundMinReach` (expected_before 0) |
+| F2-73 | `mega_gunship/gunship_rockets` | groundMinReach | 9 | 10 | manifest `bossWeaponOverrides[mega_gunship][gunship_rockets].groundMinReach` (expected_before 0) |
+| F2-74 | `mobile_fortress/p26_jotunn_direct_jo125` | groundMinReach | 30 | 30 | manifest `bossWeaponOverrides[mobile_fortress][p26_jotunn_direct_jo125].groundMinReach` (expected_before 0) |
+| F2-75 | `mobile_fortress/p26_jotunn_direct_jo125` | maxRange | 38 | 96 | manifest `bossWeaponOverrides[mobile_fortress][p26_jotunn_direct_jo125].maxRange` (expected_before 38) |
+| F2-76 | `mobile_fortress/p26_jotunn_jo203` | groundMinReach | 48 | 48 | manifest `bossWeaponOverrides[mobile_fortress][p26_jotunn_jo203].groundMinReach` (expected_before 0) |
+| F2-77 | `mobile_fortress/p26_jotunn_jo203` | maxRange | 60 | 154 | manifest `bossWeaponOverrides[mobile_fortress][p26_jotunn_jo203].maxRange` (expected_before 60) |
+| F2-78 | `mobile_fortress/p26_jotunn_sec_jo_rockets` | groundMinReach | 12 | 32 | manifest `bossWeaponOverrides[mobile_fortress][p26_jotunn_sec_jo_rockets].groundMinReach` (expected_before 0) |
+| F2-79 | `mobile_fortress/p26_jotunn_sec_jo_rockets` | maxRange | 45 | 103 | manifest `bossWeaponOverrides[mobile_fortress][p26_jotunn_sec_jo_rockets].maxRange` (expected_before 45) |
+| F2-80 | `moloch/p26_moloch_direct_mo120ap` | groundMinReach | 25 | 25 | manifest `bossWeaponOverrides[moloch][p26_moloch_direct_mo120ap].groundMinReach` (expected_before 0) |
+| F2-81 | `moloch/p26_moloch_direct_mo120ap` | maxRange | 32 | 80 | manifest `bossWeaponOverrides[moloch][p26_moloch_direct_mo120ap].maxRange` (expected_before 32) |
+| F2-82 | `moloch/p26_moloch_main_mo120` | groundMinReach | 25 | 25 | manifest `bossWeaponOverrides[moloch][p26_moloch_main_mo120].groundMinReach` (expected_before 0) |
+| F2-83 | `moloch/p26_moloch_main_mo120` | maxRange | 32 | 80 | manifest `bossWeaponOverrides[moloch][p26_moloch_main_mo120].maxRange` (expected_before 32) |
+| F2-84 | `monster/p26_bastion_direct_b100` | groundMinReach | 19 | 28 | manifest `bossWeaponOverrides[monster][p26_bastion_direct_b100].groundMinReach` (expected_before 0) |
+| F2-85 | `monster/p26_bastion_direct_b100` | maxRange | 36 | 90 | manifest `bossWeaponOverrides[monster][p26_bastion_direct_b100].maxRange` (expected_before 36) |
+| F2-86 | `monster/p26_bastion_tiny_kornet_twin` | groundMinReach | 1 | 1 | manifest `bossWeaponOverrides[monster][p26_bastion_tiny_kornet_twin].groundMinReach` (expected_before 0) |
+| F2-87 | `nuke_train/p26_nemesis_direct_ne125` | groundMinReach | 30 | 30 | manifest `bossWeaponOverrides[nuke_train][p26_nemesis_direct_ne125].groundMinReach` (expected_before 0) |
+| F2-88 | `nuke_train/p26_nemesis_direct_ne125` | maxRange | 38 | 96 | manifest `bossWeaponOverrides[nuke_train][p26_nemesis_direct_ne125].maxRange` (expected_before 38) |
+| F2-89 | `nuke_train/p26_nemesis_main_ne152` | groundMinReach | 32 | 32 | manifest `bossWeaponOverrides[nuke_train][p26_nemesis_main_ne152].groundMinReach` (expected_before 0) |
+| F2-90 | `nuke_train/p26_nemesis_main_ne152` | maxRange | 40 | 103 | manifest `bossWeaponOverrides[nuke_train][p26_nemesis_main_ne152].maxRange` (expected_before 40) |
+| F2-91 | `nuke_train/p26_nemesis_sec_boss_rockets` | groundMinReach | 20 | 20 | manifest `bossWeaponOverrides[nuke_train][p26_nemesis_sec_boss_rockets].groundMinReach` (expected_before 0) |
+| F2-92 | `nuke_train/p26_nemesis_sec_boss_rockets` | maxRange | 45 | 64 | manifest `bossWeaponOverrides[nuke_train][p26_nemesis_sec_boss_rockets].maxRange` (expected_before 45) |
+| F2-93 | `nyx/nyx_ags_155` | groundMinReach | 33 | 42 | luật gói: min = max(hiện tại 33, đề xuất hình học 42 của 1 bệ, lớp phao_ham), trần 120 |
+| F2-94 | `nyx/nyx_ags_155` | maxRange | 80 | 135 | luật gói: max = max(range 80, ceil(42 x 3,2) = 135), trần 300 |
+| F2-95 | `nyx/nyx_tomahawk` | groundMinReach | 0 | 1 | luật gói: min = max(hiện tại 0, đề xuất hình học 1 của 1 bệ, lớp ten_lua), trần 120 |
+| F2-96 | `nyx/p26_leviathan_direct_lev127` | groundMinReach | 23 | 25 | manifest `bossWeaponOverrides[nyx][p26_leviathan_direct_lev127].groundMinReach` (expected_before 0) |
+| F2-97 | `scylla/naval_130_twin` | groundMinReach | 41 | 41 | manifest `bossWeaponOverrides[scylla][naval_130_twin].groundMinReach` (expected_before 0) |
+| F2-98 | `scylla/naval_130_twin` | maxRange | 90 | 132 | manifest `bossWeaponOverrides[scylla][naval_130_twin].maxRange` (expected_before 90) |
+| F2-99 | `scylla/p26_leviathan_direct_lev127` | groundMinReach | 23 | 28 | manifest `bossWeaponOverrides[scylla][p26_leviathan_direct_lev127].groundMinReach` (expected_before 0) |
+| F2-100 | `scylla/scylla_kh35` | groundMinReach | 0 | 1 | luật gói: min = max(hiện tại 0, đề xuất hình học 1 của 2 bệ, lớp ten_lua), trần 120 |
+| F2-101 | `silver_bug/p26_icarus_direct_ic_laser` | groundMinReach | 18 | 21 | manifest `bossWeaponOverrides[silver_bug][p26_icarus_direct_ic_laser].groundMinReach` (expected_before 0) |
+| F2-102 | `silver_bug/p26_icarus_direct_ic_laser` | maxRange | 36 | 68 | manifest `bossWeaponOverrides[silver_bug][p26_icarus_direct_ic_laser].maxRange` (expected_before 36) |
+| F2-103 | `silver_bug/p26_icarus_main_ic_coil` | groundMinReach | 19 | 19 | manifest `bossWeaponOverrides[silver_bug][p26_icarus_main_ic_coil].groundMinReach` (expected_before 0) |
+| F2-104 | `silver_bug/p26_icarus_main_ic_coil` | maxRange | 55 | 61 | manifest `bossWeaponOverrides[silver_bug][p26_icarus_main_ic_coil].maxRange` (expected_before 55) |
+| F2-105 | `silver_bug/p26_icarus_sec_orbital_laser` | groundMinReach | 11 | 12 | manifest `bossWeaponOverrides[silver_bug][p26_icarus_sec_orbital_laser].groundMinReach` (expected_before 0) |
+| F2-106 | `silver_bug/p26_icarus_sec_orbital_laser` | maxRange | 36 | 39 | manifest `bossWeaponOverrides[silver_bug][p26_icarus_sec_orbital_laser].maxRange` (expected_before 36) |
+| F2-107 | `theia/p26_icarus_sec_orbital_laser` | groundMinReach | 11 | 19 | luật gói: min = max(hiện tại 11, đề xuất hình học 19 của 1 bệ, lớp phao_boss), trần 120 |
+| F2-108 | `theia/p26_icarus_sec_orbital_laser` | maxRange | 36 | 61 | luật gói: max = max(range 36, ceil(19 x 3,2) = 61), trần 300 |
+| F2-109 | `theia/pt14_th_jagm` | groundMinReach | 0 | 1 | luật gói: min = max(hiện tại 0, đề xuất hình học 1 của 2 bệ, lớp ten_lua), trần 120 |
+| F2-110 | `typhon/p26_typhon_direct_ty100` | groundMinReach | 8 | 21 | manifest `bossWeaponOverrides[typhon][p26_typhon_direct_ty100].groundMinReach` (expected_before 0) |
+| F2-111 | `typhon/p26_typhon_sec_ty57` | groundMinReach | 8 | 21 | manifest `bossWeaponOverrides[typhon][p26_typhon_sec_ty57].groundMinReach` (expected_before 0) |
+| F2-112 | `typhon/p26_typhon_sec_ty57` | maxRange | 40 | 68 | manifest `bossWeaponOverrides[typhon][p26_typhon_sec_ty57].maxRange` (expected_before 40) |
+
+Không ghi (luật gói cho kết quả bằng giá trị hiện có hoặc phòng thủ gần): 
+`coeus/pt14_co_v76` (súng bụng tàu vũ trụ, bắn xuống: giữ min 0, max 70); `daedalus/pt14_dd_v57` (súng bụng tàu vũ trụ, bắn xuống: giữ min 0, max 28); `hyperion/pt14_hp_v127` (súng bụng tàu vũ trụ, bắn xuống: giữ min 0, max 80); `hyperion/pt14_hp_vlaser` (súng bụng tàu vũ trụ, bắn xuống: giữ min 0, max 36); `silver_bug/pt14_sb_v105` (súng bụng tàu vũ trụ, bắn xuống: giữ min 0, max 50); `theia/p26_matriarch_ma_drones` (min 1 = hiện tại, max 70). Phòng không, CIWS / pháo nhỏ <= 40 mm, súng máy, phun lửa, cận chiến, bom: không ghi (min 0). Cặp cũ gói không liệt kê (bastion_mk0 / fortress_bastion / monster b155, b240; landing_hovercraft hover_rockets; ixion pt14_ixion_grad min): luật cho đúng giá trị hiện có, không ghi.
+

@@ -247,18 +247,22 @@ namespace MachineBrigade.Sim.Content
             var vehicles = new List<VehicleDef>();
             var twoLayer = new Dictionary<string, WeaponDef>();
             var ownBranches = new Dictionary<string, ArmyBranch?>();
+            // MB_FINAL F2: a boss's own reach for its weapons (bossWeaponOverrides; vehicles and towers keep the shared weapon).
+            var bossReach = BossReachTable.Parse(root);
             // Prompt 20 E: bosses built from their frames, the part library, their variants and ranks.
             foreach (var v in BossTemplates.Expand(root, Inherited(root.Array("vehicles"), model: true)))
             {
                 // Prompt 26 B.3: every blast weapon a boss carries has two layers (the core as it was, an edge twice as wide).
                 var bossEdges = v.Bool("boss", false);
+                var bossId = bossEdges ? v.String("id") : "";
+                if (bossEdges) bossReach.Enter(bossId, v.OptionalString("variantOf"));
                 var weapon = Weapon(weapons, v, "weapon");
-                if (bossEdges) weapon = WithEdge(weapon, twoLayer);
+                if (bossEdges) weapon = bossReach.Arm(bossId, WithEdge(weapon, twoLayer));
                 var secondary = new List<WeaponMount>();
                 if (v.Has("secondary"))
                 {
                     foreach (var m in v.Array("secondary"))
-                        secondary.Add(new WeaponMount(bossEdges ? WithEdge(Weapon(weapons, m, "weapon"), twoLayer) : Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free))
+                        secondary.Add(new WeaponMount(bossEdges ? bossReach.Arm(bossId, WithEdge(Weapon(weapons, m, "weapon"), twoLayer)) : Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free))
                         {
                             ProjectileModel = m.Has("model") ? m.String("model") : null,
                             ArcCentre = m.Has("arc") ? m.FloatArray("arc")[0] * MathF.PI / 180f : 0f,
@@ -335,6 +339,8 @@ namespace MachineBrigade.Sim.Content
                                 : throw new FormatException($"{m.Path}: unknown weapon '{m.String("weapon")}'.");
                             def.WeaponOverrides[w.Id] = w.Tuned(w.Range, w.Cooldown, w.ProjectileSpeed, w.SplashRadius, w.Spread, w.BurstInterval,
                                 w.Targets, m.Int("ammo", 1), m.Float("reload"), w.Cluster);
+                            // MB_FINAL F2: a boss's own load of a weapon keeps its own reach too.
+                            if (bossEdges) def.WeaponOverrides[w.Id] = bossReach.Apply(bossId, def.WeaponOverrides[w.Id]);
                         }
                     }
                     if (v.Has("phases"))
@@ -462,6 +468,7 @@ namespace MachineBrigade.Sim.Content
                     return def;
                 }));
             }
+            bossReach.Check(weapons, vehicles);
 
             var props = new List<PropDef>();
             foreach (var p in root.Array("props"))
