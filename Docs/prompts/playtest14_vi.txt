@@ -113,3 +113,10 @@ boss daedalus nhìn khá tốt, nên có lửa sau động cơ, vẽ lại 2 bos
 - kraken có thể triệu hồi máy bay do là tàu sân bay, chọn loại máy bay cho nó
 - các tháp súng trên các boss vẽ lại: đừng reuse mà hãy vẽ lại, reuse nhìn không hề hợp
 - icarus mk 0: cái tháp canh để trên đầu nhìn quá như 1 tháp canh, đừng reuse gì hết, tất cả boss khi vẽ lại đều vẽ lại từ đầu, súng railgun cũng vậy vẽ lại, scan các boss vừa vẽ lại tương tự
+
+=== Bổ sung 04/10 sau khi thử bản R2 (nguyên văn) ===
+- các tàu vẫn còn quay quá nhanh khi bắn, không cho quay, hyperion, icarus, daedalus,  argus, roc, icarus mk.0
+- khói vẫn quá nhiều khi chết, giảm lượng khói sinh ra 50%
+- khói của tên lửa cũng vậy giảm chiều dài đáng kể 50% cả chiều rộng
+- nemesis, juggernaut bỏ tạo khói, và scan bỏ tạo khói toàn bộ các boss / phương tiện khác
+- 1 vài boss tôi thấy tên lửa nó bay quá nhanh so với bình thường như nemesis, typhon
