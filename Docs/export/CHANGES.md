@@ -2970,3 +2970,16 @@ Nhánh `feature/pt14-m7`. Lý do: `Docs/DECISIONS.md` "Play-test 14 model wave M
 | PT14-M7-2 | `silver_bug` parts `pd_laser_l` / `_r` `at` | [∓3.2, 5, 3.2] | [∓2.4, 6.0, 1.84] | tháp laser phòng thủ điểm đặt trên vai thân mới (icarus_mk0 kế thừa) |
 | PT14-M7-3 | `icarus_mk0` | vẽ bằng model silver_bug | `"model": "icarus_mk0"` (cùng chiều dài, cùng tỉ lệ vẽ 0.991; 3 bộ phận ở đúng chỗ của silver_bug, không cần `tune.at`) | model riêng (nguyên mẫu) |
 | PT14-M7-4 | `hyperion` `hiddenNodes` | (tự sinh từ crash_turret bị bỏ: Mount_gun.002 / .003) | ghi rõ `["Mount_gun.002", "Mount_gun.003"]` | giữ Hyperion y như cũ sau PT14-M7-1 (node bị ẩn đi theo tên node mới) |
+
+## Play-test 14 boss fixes 04/10 (lane G)
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-G-1 | `silver_bug` `speed` (icarus_mk0 kế thừa) | 5 | 3 | chiến hạm chậm (chủ: "chiến hạm di chuyển chậm"); hyperion giữ 3.5 riêng |
+| PT14-G-2 | `silver_bug` `holdsToFire` (khóa mới; mk0 và hyperion kế thừa) | — | true | dừng khi có súng trong tầm, bắn, đi tiếp sau 2,5 s im |
+| PT14-G-3 | `behemoth_inferno` `skills` | ["boss_rage", "train_smoke"] | ["boss_rage"] | chủ: xóa kỹ năng tạo khói (train_smoke vẫn dùng ở armored_train, nuke_train) |
+| PT14-G-4 | vũ khí mới `nyx_ags_155` | — | 155 mm/62 AGS: 360 x 2 phát / 8 s, tầm 80, gần 33, đạn 150 m/s, nổ 6 / 12 m, pen 3, Large | thay railgun (720 / 8 s + nạp 1 s): cùng sát thương một chu kỳ, cùng tầm |
+| PT14-G-5 | `nyx` `weapon` | boss_railgun | nyx_ags_155 | chủ: bỏ railgun, thay tháp pháo |
+| PT14-G-6 | `typhon` secondary 57 mm `arc` | (không) | [0, 150] mũi / [180, 150] đuôi | pháo boong không bắn xuyên tháp chỉ huy; hydra kế thừa |
+| PT14-G-7 | `typhon` part `deck_gun` `arc` | (không) | [0, 150] | như trên (pháo 100 mm thức ở pha 2) |
+| PT14-G-8 | skill mới `kraken_jets`; `kraken` `skills` + `tune.flight_deck.skills` | (kế thừa leviathan_helos) | ["kraken_jets", "leviathan_helos"]; Summon stealth_naval_strike, 2 mỗi lần, tối đa 4 còn sống (`max` khóa mới), hồi 40 s, khi địch trong 110 m | chủ: tàu sân bay triệu hồi máy bay; boong vỡ thì ngừng |

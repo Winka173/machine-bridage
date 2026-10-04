@@ -205,7 +205,7 @@ namespace MachineBrigade.Game.Effects
             }
 
             var to = AimPoint(e, views);
-            var mountModel = shooter != null && e.Mount < shooter.Def.Mounts.Count ? shooter.Def.Mounts[e.Mount].ProjectileModel : null;
+            var mountModel = shooter != null && e.FromPart < 0 && e.Mount < shooter.Def.Mounts.Count ? shooter.Def.Mounts[e.Mount].ProjectileModel : null;
             string Model(string fallback)
             {
                 var id = mountModel ?? weapon?.ProjectileModel;

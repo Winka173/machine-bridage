@@ -36,7 +36,10 @@ namespace MachineBrigade.Sim.Abilities
         private readonly SimWorld _world;
         private readonly List<Mine> _mines = new();
         private readonly List<Vehicle> _jammers = new();
-        private readonly List<(string def, int team, Vector2 at, float heading)> _summons = new();
+        private readonly List<(string def, int team, Vector2 at, float heading, int by, string skill)> _summons = new();
+
+        /// <summary>Play-test 14 (lane G): the units each vehicle's capped summon (<see cref="SkillDef.Max"/>) has put up, by skill.</summary>
+        private readonly Dictionary<(int by, string skill), List<EntityId>> _summoned = new();
         private float _auraTimer;
 
         /// <summary>Skill triggers are checked four times a second: each may search for enemies.</summary>
@@ -135,7 +138,13 @@ namespace MachineBrigade.Sim.Abilities
                     _world.Emit(SimEvent.Retired(v));
                 }
             // Summons join after the loop so the vehicle list is not changed while it is read.
-            foreach (var (def, team, at, heading) in _summons) _world.SpawnVehicle(def, team, at, heading);
+            foreach (var (def, team, at, heading, by, skillId) in _summons)
+            {
+                var unit = _world.SpawnVehicle(def, team, at, heading);
+                if (skillId.Length == 0) continue;
+                if (!_summoned.TryGetValue((by, skillId), out var list)) _summoned[(by, skillId)] = list = new List<EntityId>();
+                list.Add(unit.Id);
+            }
 
             TriggerMines(now);
         }
@@ -578,6 +587,8 @@ namespace MachineBrigade.Sim.Abilities
                 // A boss's skill on a broken part (a drone hangar's launches) is used no more.
                 if (i < v.SkillOff.Length && v.SkillOff[i]) continue;
                 if (!Triggered(v, skill, now)) continue;
+                // Play-test 14 (lane G): a capped summon waits (its cooldown unspent) while its flight is full.
+                if (skill.Kind == SkillKind.Summon && skill.Max > 0 && SummonedAlive(v, skill) >= skill.Max) continue;
                 // Prompt 29 S06: flares as charges: one is spent, the next can go once this one has burnt.
                 if (skill.Kind == SkillKind.Flares && v.FlareChargesMax > 0)
                 {
@@ -597,6 +608,14 @@ namespace MachineBrigade.Sim.Abilities
                 v.RefreshEffects(now);
                 _world.Emit(SimEvent.SkillUsed(v, skill));
             }
+        }
+
+        /// <summary>Play-test 14 (lane G): how many of <paramref name="v"/>'s units from <paramref name="skill"/> are alive (the dead are dropped).</summary>
+        private int SummonedAlive(Vehicle v, SkillDef skill)
+        {
+            if (!_summoned.TryGetValue((v.Id.Value, skill.Id), out var list)) return 0;
+            list.RemoveAll(id => !_world.TryGetVehicle(id, out var u) || !u.IsAlive);
+            return list.Count;
         }
 
         /// <summary>Seconds for one flare charge: the vehicle's own, else its flare skill's cooldown; the heat-decoy module x0.75.</summary>
@@ -676,13 +695,17 @@ namespace MachineBrigade.Sim.Abilities
                     v.FlaresUntil = until;
                     break;
                 case SkillKind.Summon:
-                    for (var k = 0; k < skill.Count; k++)
+                {
+                    // Play-test 14 (lane G): a capped summon only tops its flight up to the cap.
+                    var count = skill.Max > 0 ? Math.Min(skill.Count, skill.Max - SummonedAlive(v, skill)) : skill.Count;
+                    for (var k = 0; k < count; k++)
                     {
                         var angle = (k + 0.5f) * SimMath.Tau / skill.Count + v.Heading;
                         var at = _world.ClampToMap(v.Position + SimMath.Forward(angle) * (v.Def.HullBound + 5f));
-                        _summons.Add((skill.Unit!, v.Team, at, v.Heading));
+                        _summons.Add((skill.Unit!, v.Team, at, v.Heading, v.Id.Value, skill.Max > 0 ? skill.Id : ""));
                     }
                     break;
+                }
                 case SkillKind.Emp:
                     foreach (var other in _world.VehicleList)
                     {

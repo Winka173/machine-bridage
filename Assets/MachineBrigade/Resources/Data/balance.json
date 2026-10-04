@@ -2119,11 +2119,11 @@
     // target / the parent's target), and a super weapon for the four main bosses only (25C: a mini has none).
     // A main-rank variant says "rank": "main" and keeps every part of its parent.
     // Kraken: carrier, Kessler's new admiral (Leviathan's hull and parts; the flight deck carries the air raid).
-    { "id": "kraken", "outgoingDamageMult": 0.9678, "armour": [5, 3, 2, 2], "variantOf": "leviathan", "model": "kraken", "rank": "main", "general": "kessler", "radioSpawn": "radio.kessler.kraken", "hp": 117650, "weaponDamage": 2.318, "bigAttack": "kraken_air_raid",
+    { "id": "kraken", "outgoingDamageMult": 0.9678, "armour": [5, 3, 2, 2], "variantOf": "leviathan", "model": "kraken", "rank": "main", "general": "kessler", "radioSpawn": "radio.kessler.kraken", "hp": 117650, "weaponDamage": 2.318, "bigAttack": "kraken_air_raid", "skills": ["kraken_jets", "leviathan_helos"],
       "modelSize": [110, 18.4, 24], "variant": {"size": 1.14, "mark": "kraken",
                   "tune": {"turret_fore": {"at": [0, 33.68, 7.93]}, "turret_super": {"at": [0, 25.09, 8.81]}, "turret_aft": {"at": [0, -42.46, 6.35]}, "sec_fore": {"at": [6.75, 15.61, 7.27]}, "sec_aft": {"at": [-6.32, -33.51, 9.08]},
                            "vls": {"at": [0, 18.6, 6.33]}, "aa_port": {"at": [-7.28, -8.77, 8.48]}, "aa_starboard": {"at": [6.84, -26.32, 8.48]}, "ciws_fore": {"at": [4.74, 21.4, 6.88]}, "ciws_aft": {"at": [-5.09, -45.79, 5.34]},
-                           "radar": {"at": [6.4, 0, 16.63]}, "flight_deck": {"at": [-2.98, -26.32, 9.11]}, "well_deck": {"at": [0, -48.03, 3.92]}, "machinery": {"at": [6.4, -8.42, 14.89]}}}},
+                           "radar": {"at": [6.4, 0, 16.63]}, "flight_deck": {"at": [-2.98, -26.32, 9.11], "skills": ["kraken_jets", "leviathan_helos"]}, "well_deck": {"at": [0, -48.03, 3.92]}, "machinery": {"at": [6.4, -8.42, 14.89]}}}},
     // Monster: the 800 mm self-propelled gun (the Bastion's hull; its mortar stands for the long barrel with a health of its own).
     { "id": "monster", "armour": [5, 3, 2, 3], "variantOf": "fortress_bastion", "model": "monster", "rank": "main", "general": "orlov", "radioSpawn": "radio.orlov.monster", "hp": 103100, "weaponDamage": 1.997, "speed": 0.8, "bigAttack": "monster_800_shell",
       "modelSize": [40.3, 22.1, 13], "variant": {"size": 1.05, "mark": "monster"}},
@@ -2188,7 +2188,11 @@
     { "id": "airship_launch_l", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" },
     { "id": "airship_launch_r", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" },
     // Prompt 16: Leviathan's flight deck launches an attack helicopter from phase 2 (its deck broken, no more).
-    { "id": "leviathan_helos",  "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.7, "cooldown": 55, "count": 1, "unit": "attack_helicopter" }
+    { "id": "leviathan_helos",  "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.7, "cooldown": 55, "count": 1, "unit": "attack_helicopter" },
+    // Play-test 14 (lane G): the Kraken is a carrier: its flight deck launches its stealth strike jets (the carrier jet,
+    // F-35C-like) two at a time once an enemy is within 110 m, at most four up at once, every 40 s (a deck cycle; broken
+    // deck, no more launches).
+    { "id": "kraken_jets",      "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 110, "cooldown": 40, "count": 2, "max": 4, "unit": "stealth_naval_strike" }
   ],
 
   // Prompt 16 F: escorts for every boss (BossSystem.Escorts, DECISIONS 15B). A wave comes in with the boss

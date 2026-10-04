@@ -102,6 +102,12 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Fires at most once per vehicle: a boss phase.</summary>
         public bool Once { get; }
+
+        /// <summary>
+        /// Play-test 14 (lane G): a summon's cap on its units alive at once (data "max"; 0 none): the Kraken keeps at most
+        /// four of its jets up, and a launch only tops the flight up to it.
+        /// </summary>
+        public int Max { get; internal set; }
     }
 
     /// <summary>An effect a support vehicle spreads around itself.</summary>

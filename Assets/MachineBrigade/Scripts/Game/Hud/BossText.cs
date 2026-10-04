@@ -393,11 +393,11 @@ namespace MachineBrigade.Game.Hud
             ["note.kraken"] = ("Kessler's new flagship: the longest ship afloat, a flat flight deck with aircraft parked on it and a CIWS ring.", "Soái hạm mới của Kessler: con tàu dài nhất mặt nước, boong phẳng đỗ đầy máy bay và một vòng CIWS."),
             ["guide.kraken"] = (
                 "[[Boss]] · aircraft carrier · air raids from the sea\n" +
-                "How it fights: a stand-in hull for now (Leviathan's guns, missile cells and CIWS). Its [[flight deck]] launches fighters and drones, and every 50 s it calls an air raid.\n" +
+                "How it fights: a stand-in hull for now (Leviathan's guns, missile cells and CIWS). Its [[flight deck]] launches stealth strike jets two at a time (four up at most, every 40 s) and attack helicopters, and every 50 s it calls an air raid.\n" +
                 "Strong / weak: the longest, toughest hull afloat; the elevator deck is thin (armour 2).\n" +
                 "Tip: break the [[flight deck]] and the aircraft stop coming; during the 4 s warning leave the long red strip.",
                 "[[Boss]] · tàu sân bay · không kích từ biển\n" +
-                "Cách đánh: tạm dùng thân tàu Leviathan (pháo, ống phóng tên lửa và CIWS). [[Boong cất cánh]] phóng tiêm kích và drone, và cứ 75 giây nó gọi một đợt không kích.\n" +
+                "Cách đánh: tạm dùng thân tàu Leviathan (pháo, ống phóng tên lửa và CIWS). [[Boong cất cánh]] phóng tiêm kích tàng hình từng cặp (tối đa bốn chiếc, mỗi 40 giây) và trực thăng tấn công, và cứ 50 giây nó gọi một đợt không kích.\n" +
                 "Mạnh / yếu: thân tàu dài và dày nhất mặt nước; boong thang máy mỏng (giáp 2).\n" +
                 "Mẹo: phá [[boong cất cánh]] là máy bay hết xuất kích; trong 4 giây cảnh báo hãy ra khỏi dải đỏ dài."),
             ["guide.parts.tip.kraken"] = ("Tip: the [[flight deck]] feeds its aircraft and carries the air raid; break it first. The [[CIWS]] shoot missiles down before they land.", "Mẹo: [[boong cất cánh]] nuôi máy bay và mang đòn không kích; phá nó trước. [[CIWS]] bắn hạ tên lửa trước khi chúng trúng."),

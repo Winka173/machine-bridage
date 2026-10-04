@@ -240,6 +240,7 @@ namespace MachineBrigade.Sim.Content
                         k.Enum("trigger", SkillTrigger.Always), k.Float("threshold", 0f), k.Float("cooldown", 0f),
                         k.Float("duration", 0f), k.Float("amount", 0f), k.Float("radius", 0f), k.Int("count", 0),
                         k.Has("unit") ? k.String("unit") : null, k.Bool("once", false)));
+                    skill.Max = Math.Max(0, k.Int("max", 0));
                     if (!skills.TryAdd(skill.Id, skill)) throw new FormatException($"{k.Path}: duplicate skill '{skill.Id}'.");
                 }
 
