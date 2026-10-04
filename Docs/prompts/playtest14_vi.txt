@@ -130,3 +130,6 @@ boss daedalus nhìn khá tốt, nên có lửa sau động cơ, vẽ lại 2 bos
 - nyx cũng vậy vẽ lại tháp pháp theo chuẩn leviathan
 - typhon tên lửa mà tôi nói đến bay từ đỉnh của tàu, nó bay thẳng, và tốc độ vẫn quá cao
 - nemesis, juggernaut cũng vậy, toa bắn tên lửa vẫn quá nhanh, nên đều tra kỹ tên lửa gì và tốc độ
+
+=== Bổ sung 04/10 (nguyên văn) ===
+- có bug là xác tàu đang chìm các tàu khác đi xuyên được, xác đang chìm / cháy thì vẫn coi là 1 object, ngoài ra trong inaction preview khi test die 1 phương tiện thì phương tiện khác bị bug tới chính xác vị trí vừa chết clip vào trong luôn xác
