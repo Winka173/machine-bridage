@@ -872,6 +872,9 @@ namespace MachineBrigade.Sim.Movement
 
         private void StartReverse(Vehicle v, Vehicle? forWhom, float distance)
         {
+            // AI MASTER P0-C (spec 52, 63): a boss backs up only if its frame is made to (tracks, wheels), at most once in a
+            // while, never continuously; a ship, an aircraft or a train never.
+            if (v.Brain != null && !Bosses.BossMovementController.MayReverse(_world, v)) return;
             var t = v.Traffic;
             t.ReverseFor = forWhom?.Id ?? EntityId.None;
             t.ReverseLeft = distance;

@@ -80,6 +80,8 @@ namespace MachineBrigade.Sim.Movement
             // outcome depends on the order vehicles are driven in.
             ServeHeadOns();
             ServeYieldRequests();
+            // AI MASTER P0-C (spec 33): friends standing in a moving boss's corridor are asked to make way.
+            ClearBossCorridors();
             PrepareGates();
             ReplanClosedRoutes();
             foreach (var v in _world.VehicleList)
@@ -409,6 +411,17 @@ namespace MachineBrigade.Sim.Movement
             {
                 v.Engaged = enemy.Id;
                 v.ResumeRoute = true;
+                // AI MASTER P0-C (spec 49): a boss keeps to its way (its anchor) unless the enemy is in reach, a structure or
+                // near its way; its turrets still take the enemy on (CombatSystem picks targets mount by mount).
+                if (v.Brain != null && !Bosses.BossMovementController.MayChase(_world, v, enemy))
+                {
+                    if (!v.HasPath && v.RepathTimer <= 0f)
+                    {
+                        v.RepathTimer = RepathInterval;
+                        if (!KeepCostedPath(v, v.Order.Point)) _world.PathTo(v, v.Order.Point);
+                    }
+                    return;
+                }
                 CloseIn(v, enemy);
                 return;
             }
@@ -752,11 +765,18 @@ namespace MachineBrigade.Sim.Movement
                 // turrets lay onto the target, the hull keeps its heading; it turns only on the move, slowly.
                 if (def.HoldsToFire) return;
                 // Hovering aircraft turn to face their target so hull-mounted rockets and missiles bear.
+                // AI MASTER P0-C (Part U): on a boss that is the hull-fixed weapon's request; its brain arbitrates (never an
+                // airship, never while the mission owns the hull, no flip-flops).
                 if (def.Mounts[0].Aim == MountAim.Hull && _world.TryGetTarget(v.Target, out var target) &&
                     (def.Flying || target is not Vehicle { Flying: true }))
-                    v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(target.Position - v.Position), def.TurnRate * v.TurnFactor * dt);
+                {
+                    var bearing = SimMath.HeadingOf(target.Position - v.Position);
+                    if (v.Brain == null || Bosses.BossMovementController.GrantAlignment(_world, v, bearing, Bosses.HullReason.WeaponAlignment))
+                        v.Heading = SimMath.RotateTowards(v.Heading, bearing, def.TurnRate * v.TurnFactor * dt);
+                }
                 // Prompt 28 D.4: a standing ground vehicle with directional armour turns its front to the biggest threat.
-                else if (!def.Flying && v.FaceHeading is { } face && v.Speed < 0.1f)
+                else if (!def.Flying && v.FaceHeading is { } face && v.Speed < 0.1f &&
+                         (v.Brain == null || Bosses.BossMovementController.GrantAlignment(_world, v, face, Bosses.HullReason.ArmourFacing)))
                     v.Heading = SimMath.RotateTowards(v.Heading, face, def.TurnRate * v.TurnFactor * 0.5f * dt);
                 return;
             }

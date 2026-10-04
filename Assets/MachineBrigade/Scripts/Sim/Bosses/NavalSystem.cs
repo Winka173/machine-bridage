@@ -264,21 +264,30 @@ namespace MachineBrigade.Sim.Bosses
             if (v.Stunned || v.Landing || distance < 0.8f)
             {
                 v.Speed = MathF.Max(0f, v.Speed - v.Def.Speed * dt);
+                if (v.Brain != null) v.Brain.HullReason = HullReason.Hold;
                 return;
             }
-            var desired = SimMath.HeadingOf(to);
             // Play-test 14 (lane J): a ship going down stays in the way until it is under: steer round it at half speed.
             var turn = 0f;
             var round = _world.Wrecks.NavalCount > 0 && WreckAhead(v, out turn);
-            desired += turn;
-            v.Heading = SimMath.RotateTowards(v.Heading, desired, v.Def.TurnRate * v.TurnFactor * dt);
-            var alignment = MathF.Max(0.25f, Vector2.Dot(SimMath.Forward(v.Heading), to / distance));
-            // Slows to a stop at its goal (a landing craft on the sand, a boat holding off a pier).
-            var target = speed * alignment * MathF.Min(1f, distance / 8f + 0.2f);
-            // Prompt 33 L4: never closing on a big ship in its way inside the minimum gap.
-            target = MathF.Min(target, v.SeaCap);
-            if (round) target = MathF.Min(target, speed * 0.5f);
-            v.Speed += Math.Clamp(target - v.Speed, -v.Def.Speed * dt, v.Def.Speed * 0.5f * dt);
+            if (v.Brain is { } brain)
+            {
+                // AI MASTER P0-C (spec 51-60): a boss ship has its own controller: lane look-ahead, broadside, closest point of
+                // approach, turn radius, never astern.
+                NavalBossMovementController.Steer(_world, v, sea, brain, goal, distance, speed, round, turn, dt);
+            }
+            else
+            {
+                var desired = SimMath.HeadingOf(to) + turn;
+                v.Heading = SimMath.RotateTowards(v.Heading, desired, v.Def.TurnRate * v.TurnFactor * dt);
+                var alignment = MathF.Max(0.25f, Vector2.Dot(SimMath.Forward(v.Heading), to / distance));
+                // Slows to a stop at its goal (a landing craft on the sand, a boat holding off a pier).
+                var target = speed * alignment * MathF.Min(1f, distance / 8f + 0.2f);
+                // Prompt 33 L4: never closing on a big ship in its way inside the minimum gap.
+                target = MathF.Min(target, v.SeaCap);
+                if (round) target = MathF.Min(target, speed * 0.5f);
+                v.Speed += Math.Clamp(target - v.Speed, -v.Def.Speed * dt, v.Def.Speed * 0.5f * dt);
+            }
             var next = v.Position + SimMath.Forward(v.Heading) * v.Speed * dt;
             // The waterline: a ship keeps its hull's half-width off it (a lander may ground on the sand).
             var margin = naval.Role == NavalRole.Lander ? -1f : v.Def.HullRadius * 0.6f + 1f;
