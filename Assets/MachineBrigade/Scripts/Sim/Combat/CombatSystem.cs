@@ -119,6 +119,10 @@ namespace MachineBrigade.Sim.Combat
                 {
                     v.TurretHeading = v.Heading;
                     if (IsSide(mounts[0])) AimSide(v, 0, target, dt);
+                    // Play-test 14 (lane G): a free main mount (the Scylla's and Nyx's gun turrets, the hovercraft's) is trained
+                    // onto what it shoots at the unit's turret rate; untrained, it kept its spawn heading and fired only at what
+                    // happened to lie within a few degrees of it.
+                    else if (mounts[0].Aim == MountAim.Free && !v.Arms[0].Laid) TrainFreeMain(v, laid, dt);
                 }
                 if (v.MountWorks(0) && !v.Arms[0].Laid) Operate(v, 0, target, dt);
 
@@ -525,6 +529,10 @@ namespace MachineBrigade.Sim.Combat
         {
             var state = v.Weapons[index];
             var weapon = v.Arms[index];
+            // Play-test 14 (lane G): a warship that holds to fire halts while any gun has something in reach (reloading
+            // or not), so it stands through a whole engagement; a move or retreat order still outranks its guns.
+            if (v.Def.HoldsToFire && target != null && state.Ammo != 0 && v.Order.Kind is not (OrderKind.Move or OrderKind.Retreat) &&
+                InReach(v, target, weapon)) v.FireHoldAt = _world.Time;
             if (state.BurstLeft > 0)
             {
                 // A salvo keeps going at the point first aimed at even if the target dies or the turret turns.
@@ -784,6 +792,8 @@ namespace MachineBrigade.Sim.Combat
                     : freeFall ? StickNearOwn(v, index) : OwnNear(v.Team, target.Position, v.Arms[index].SplashRadius + 3f))) return false;
             // Artillery and rocket launchers must stop to fire their main weapon; their machine guns need not.
             if (index == 0 && !v.Def.FiresWhileMoving && v.IsMoving) return false;
+            // Play-test 14 (lane G): a warship that holds to fire fires nothing until it has halted (see Operate).
+            if (v.Def.HoldsToFire && v.IsMoving) return false;
             if (!InReach(v, target, v.Arms[index]) || !HasLineOfFire(v, target, v.Arms[index])) return false;
             // Prompt 25 F2 batch A: one fibre-optic drone in the air at a time.
             if (v.Arms[index].OneAtATime && InFlightFrom(v, index)) return false;
@@ -847,6 +857,17 @@ namespace MachineBrigade.Sim.Combat
 
         private static bool InArc(Vehicle v, int index, Vector2 at) =>
             MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(at - v.Position) - SideCentre(v, index))) <= ArcOf(v, index);
+
+        /// <summary>Slowest traverse of a free main mount (radians a second): 20 degrees, a heavy naval turret's.</summary>
+        private static readonly float FreeMainLeast = SimMath.DegToRad(20f);
+
+        /// <summary>Play-test 14 (lane G): a free main mount turns onto its target at the turret rate; with none, back to the bow.</summary>
+        private static void TrainFreeMain(Vehicle v, IDamageable? target, float dt)
+        {
+            var state = v.Weapons[0];
+            var aim = target != null ? SimMath.HeadingOf(target.Position - v.Position) : v.Heading;
+            state.Heading = SimMath.RotateTowards(state.Heading, aim, MathF.Max(FreeMainLeast, v.Def.TurretTurnRate * v.TurretFactor) * dt);
+        }
 
         /// <summary>A broadside gun follows its target within its arc; with none it rests square to its side.</summary>
         private static void AimSide(Vehicle v, int index, IDamageable? target, float dt)

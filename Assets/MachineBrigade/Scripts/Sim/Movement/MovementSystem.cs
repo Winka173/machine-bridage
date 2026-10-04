@@ -706,6 +706,9 @@ namespace MachineBrigade.Sim.Movement
             }
         }
 
+        /// <summary>Play-test 14 (lane G): seconds a <see cref="VehicleDef.HoldsToFire"/> warship stays halted after its guns go quiet.</summary>
+        private const double HoldToFireSeconds = 2.5;
+
         private void Drive(Vehicle v, float dt)
         {
             var def = v.Def;
@@ -734,7 +737,10 @@ namespace MachineBrigade.Sim.Movement
                     return;
                 }
             }
-            if (!v.HasPath)
+            // Play-test 14 (lane G): a warship that holds to fire (the Icarus) stands, its route kept, while its guns have
+            // something in reach and for a moment after their last shot (a battleship does not fire on the move).
+            var holdsFire = def.HoldsToFire && _world.Time - Math.Max(v.FireHoldAt, v.LastFiredAt) < HoldToFireSeconds;
+            if (!v.HasPath || holdsFire)
             {
                 v.Traffic.WaitingOnYield = false;
                 v.Traffic.WaitingForGate = false;

@@ -19980,3 +19980,41 @@ used 28-54k: detail where it reads (plates, tiles, engines, weapons), no hidden 
   local-space stretch direction, the heat light; tune FlameLength / FlameWidth if needed), card renders / ModelScan for the
   three Icarus GLBs, the crash swap to the new wreck, the coilgun / laser / 40 mm muzzles. The APS laser of a boss is still
   drawn from a fixed offset (EffectsDirector, guard.Position + 3.4 m up), not from Pd_laser_*: runtime, not changed.
+
+## Play-test 14 boss fixes 04/10 (lane G)
+
+Owner's block "Bổ sung 04/10 sau khi xem Icarus mới" (Docs/prompts/playtest14_vi.txt); values in Docs/export/CHANGES.md PT14-G.
+- **Icarus holds to fire.** Real life: a big warship (or airship) lays its guns from a steady platform. New data `holdsToFire`
+  (silver_bug; icarus_mk0 and hyperion inherit): any mount with a target in reach marks `Vehicle.FireHoldAt` (CombatSystem.Operate,
+  not under a Move/Retreat order); `MovementSystem.Drive` brakes and keeps its route while a mark or a shot is under 2.5 s old;
+  `CanFire` refuses every mount while it moves. Speed 5 -> 3 (Leviathan 2.6, airship 4.5). HUD line says "stops to fire".
+- **Inferno** loses `train_smoke` (data only; the escort "smoke" role is a label, the jammer has no smoke skill).
+- **"Ship turrets fire missiles": the cause.** `SimEvent.FiredWith` always names mount 0, so the view drew every cruise missile
+  (NavalSystem.Cruise: Leviathan, Kraken, Scylla, Nyx, Typhon every 2.5 s) and every big-attack round with a look (Typhon's launch,
+  the nuke train's doomsday missile, the carrier's bombs) out of the main gun's muzzle, recoil and all. Now `SimEvent.FiredFrom`
+  carries the launch part (new `FromPart`): the cruise leaves a standing "vls" / "launchdoors" part (doors in turn), the view
+  launches it from `PartWorld` + 0.6 m straight up (`_shotBarrel = up`: Loft climbs vertically, Ballistic rises), and a cell's missile
+  spends its warned flight climbing (peak = (speed x time - ground) / 2, at most 60 m) instead of crawling. A big-attack look on a
+  part with a turret is drawn from that turret (`FiredWith(..., mount)`).
+- **Slow 406 mm shells beside the ship.** Two fixed flight times: the In-action preview salvo used the 3.7 s warning time whatever the
+  distance (now the gun's speed, as FireSalvo), and a big-attack round was shot 0.9 s before landing (now its own flight at its
+  speed, at most 0.9 s: `BossSystem.Lead`).
+- **Free main mounts were never trained by the sim** (only by the view): the Scylla's and Nyx's guns, the sea escorts' main guns, the
+  hovercraft's and airship's fired only at what lay within 6 degrees of their spawn heading. `CombatSystem.TrainFreeMain` trains
+  mount 0 (Free, not laid, no arc) at the turret rate (at least 20 deg/s); the view now draws the sim's heading for it.
+- **Nyx**: railgun replaced by `nyx_ags_155` (Zumwalt's 155 mm/62 AGS), same damage a cycle and reach. Node unchanged:
+  `Part_gun > Mount_gun > Muzzle_gun` (+ `*_barrels` under Mount_gun for the kick).
+- **Typhon's deck gun "never turned yet fired backwards"**: its model has one `Mount_gun` for three gun mounts (two 57 mm twins, the
+  100 mm that wakes in phase 2); all three wrote the pivot, the sleeping 100 mm last. `VehicleView.DrivesPivot`: a shared pivot is
+  turned by the working mount that fired last. Data arcs: fore 57 mm [0,150], aft 57 mm [180,150], 100 mm [0,150]. The model lane
+  should give Typhon `Mount_gun` (fore twin 57), `Mount_gun.001` (aft twin 57, behind the sail), `Mount_gun.002` (100 mm, fore deck,
+  as hydra_sub has); then the deck_gun part's node becomes `Mount_gun.002` (lead). Launch points: `Part_doors_l` / `Part_doors_r`.
+- **Trains on short track.** `RailSystem.FrontStop`: a train's middle goes no farther than (track length - half its length - 2 m)
+  (max of Length and ModelLength), so its front never runs past the buffer stop. The range: a train stands with its front 3 m short
+  of the track end (track ends 8 m before the targets), the track drawn from its own length, the main gun's target 0.6 rad off the
+  track. Map check: rustyard's `siding` has 24.5 m in play (66 m long), too short for any train; left for the map lane.
+- **Kraken launches jets**: skill `kraken_jets` (Summon stealth_naval_strike, 2 a launch, at most 4 alive, 40 s, enemy within 110 m),
+  helicopters kept; new skill key `max` (AbilitySystem tracks each capped summon's units; full, it waits with its cooldown unspent).
+  The flight deck carries both skills (broken deck, no launches). Guide text EN/VI updated (and its 75 s typo -> 50 s).
+- Needs a Unity look: compile; Icarus stop-fire-go rhythm; cruise/doors launches straight up; Typhon pivot; the Scylla/Nyx/escort
+  main guns now traversing and firing (more fire than before); preview trains on the track; Kraken jets.

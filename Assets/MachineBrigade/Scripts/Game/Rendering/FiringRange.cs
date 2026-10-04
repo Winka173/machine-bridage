@@ -135,6 +135,10 @@ namespace MachineBrigade.Game.Rendering
             var distance = TowerScene ? TowerDistance : TargetDistance(def);
             if (Setting == PreviewSetting.Sea) distance = PreviewSettings.SeaDistance(def, distance);
             _start = new Vector2(0f, -distance * 0.5f);
+            // Play-test 14 (lane G): a train stands wholly on the range's track, its front a few metres short of the buffer stop
+            // (the track ends RailEndBack before the targets' line); wave M2's long trains stood half off its end.
+            var train = Setting == PreviewSetting.Rail ? Mathf.Max(def.Length, def.ModelLength) : 0f;
+            if (train > 0f) _start = new Vector2(0f, Mathf.Min(_start.Y, distance * 0.5f - RailEndBack - RailStopGap - train * 0.5f));
             // Play-test 12: a naval boss mid-range, the shore well past its bow, its line abreast of targets on its beam.
             _bossShow = def.Boss;
             var seaBoss = def.Boss && Setting == PreviewSetting.Sea;
@@ -149,10 +153,16 @@ namespace MachineBrigade.Game.Rendering
             if (seaBoss) _far = new Vector2(0f, _start.Y + BossSeaFar(catalog, def));
             _reach = distance;
             // Lying along the beach, a naval boss reaches towards the shore by half its beam, not half its length.
-            _stage = PreviewStage.ForRange(materials, _root, Setting, PreviewSettings.Biome(), _start.Y, _far.Y, seaBoss ? def.Width : def.Length,
-                seaBoss ? def.Length : def.Width);
+            _stage = PreviewStage.ForRange(materials, _root, Setting, PreviewSettings.Biome(), _start.Y, _far.Y,
+                seaBoss ? def.Width : train > 0f ? train : def.Length, seaBoss ? def.Length : def.Width);
             SetLayer(_root);
         }
+
+        /// <summary>Play-test 14 (lane G): how far before the targets' line the range's track ends (PreviewStage.ForRange's own).</summary>
+        internal const float RailEndBack = 8f;
+
+        /// <summary>Play-test 14 (lane G): metres a train on the range stands short of the track's buffer stop.</summary>
+        internal const float RailStopGap = 3f;
 
         /// <summary>Prompt 34 L8: the setting the range stands its unit in (<see cref="PreviewSettings.Of"/>).</summary>
         public PreviewSetting Setting { get; } = PreviewSetting.Ground;

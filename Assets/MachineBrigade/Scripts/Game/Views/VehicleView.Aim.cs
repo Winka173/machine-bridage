@@ -46,7 +46,7 @@ namespace MachineBrigade.Game.Views
         /// salvo turrets are trained by the sim now (NavalSystem.Lay), so they are drawn as it has them.
         /// </summary>
         private bool ViewTrained(int i) =>
-            i < Def.Mounts.Count && Def.Mounts[i].Aim == MountAim.Free && (Sim.Arm(i).Laid ? Def.Salvo == null : i == 0);
+            i < Def.Mounts.Count && Def.Mounts[i].Aim == MountAim.Free && Sim.Arm(i).Laid && Def.Salvo == null;
 
         /// <summary>From <see cref="Snapshot"/>: notes the steps in which the sim laid a gun (its heading jumped).</summary>
         private void NoteLays()
@@ -103,6 +103,48 @@ namespace MachineBrigade.Game.Views
             if (to.x * to.x + to.z * to.z < 1f) return false;
             bearing = Mathf.Atan2(to.x, to.z) * Mathf.Rad2Deg;
             return true;
+        }
+
+        /// <summary>When each mount last fired (view time; for <see cref="DrivesPivot"/>).</summary>
+        private float[] _mountShotAt;
+
+        /// <summary>Notes a shot of mount <paramref name="mount"/> (from <see cref="MountRecoil"/>).</summary>
+        private void NoteMountShot(int mount)
+        {
+            if (_mounts == null || mount < 0 || mount >= _mounts.Length) return;
+            if (_mountShotAt == null || _mountShotAt.Length != _mounts.Length)
+            {
+                _mountShotAt = new float[_mounts.Length];
+                for (var i = 0; i < _mountShotAt.Length; i++) _mountShotAt[i] = -10f;
+            }
+            _mountShotAt[mount] = Time.time;
+        }
+
+        /// <summary>
+        /// Play-test 14 (lane G, the Typhon's deck gun "never turned yet fired backwards"): when a model has fewer gun pivots
+        /// than the data has free mounts of that slot, several mounts share one pivot and each wrote its own heading to it in
+        /// turn, the last (a gun not yet woken, never trained) winning. Now one of them turns it: the working mount that fired
+        /// last (a shot leaves along its barrel), else the first working one. A pivot of its own is always its mount's.
+        /// </summary>
+        private bool DrivesPivot(int i)
+        {
+            var pivot = _mounts[i];
+            var owner = -1;
+            var best = float.NegativeInfinity;
+            var shared = false;
+            for (var j = 0; j < _mounts.Length; j++)
+            {
+                if (_mounts[j] != pivot || Def.Mounts[j].Aim != MountAim.Free) continue;
+                if (j != i) shared = true;
+                if (!Sim.MountWorks(j)) continue;
+                var at = _mountShotAt != null && j < _mountShotAt.Length ? _mountShotAt[j] : -10f;
+                if (owner < 0 || at > best)
+                {
+                    owner = j;
+                    best = at;
+                }
+            }
+            return !shared || owner < 0 || owner == i;
         }
 
         /// <summary>A bearing kept inside mount <paramref name="i"/>'s own firing arc (an aft turret never swings across the bridge).</summary>

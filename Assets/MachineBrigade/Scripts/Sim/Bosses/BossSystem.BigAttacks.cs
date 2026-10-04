@@ -41,7 +41,7 @@ namespace MachineBrigade.Sim.Bosses
             public BigStrikeDef Strike = null!;
             public Vector2 At, From;
             public float Scale;
-            public int Mount = -1;
+            public int Mount = -1, Part = -1;
             public WeaponDef? Look;
             public bool Shot;
             public Vector2 Side;
@@ -57,7 +57,7 @@ namespace MachineBrigade.Sim.Bosses
             public double Launch, Arrive;
             public float Hp, Scale;
             public EntityId Target;
-            public int Mount = -1;
+            public int Mount = -1, Part = -1;
             public WeaponDef? Look;
             public bool Shot;
         }
@@ -788,7 +788,7 @@ namespace MachineBrigade.Sim.Bosses
             var blast = new BigBlast
             {
                 Due = due, Boss = v, State = s, Strike = st, At = at, Scale = scale, From = part >= 0 ? v.PartPosition(part) : v.Position,
-                Mount = part >= 0 && v.Def.Parts[part].Mounts.Count > 0 ? v.Def.Parts[part].Mounts[0] : -1, Look = LookOf(st),
+                Mount = part >= 0 && v.Def.Parts[part].Mounts.Count > 0 ? v.Def.Parts[part].Mounts[0] : -1, Part = part, Look = LookOf(st),
             };
             _bigBlasts.Add(blast);
             s.Rounds++;
@@ -803,11 +803,12 @@ namespace MachineBrigade.Sim.Bosses
             for (var i = 0; i < _bigBlasts.Count; i++)
             {
                 var b = _bigBlasts[i];
-                // Its gun fires a moment before it lands (the view's round and flash).
-                if (!b.Shot && now >= b.Due - 0.9)
+                // Its gun fires a moment before it lands (the view's round and flash). Play-test 14 (lane G): that moment is its
+                // round's own flight at its speed (at most 0.9 s): a fixed 0.9 s let a shell crawl onto a target beside the ship.
+                if (!b.Shot && now >= b.Due - Lead(b))
                 {
                     b.Shot = true;
-                    if (b.Boss.IsAlive) Shoot(b.Boss, b.Mount, b.Look, b.From, b.At, (float)Math.Max(0.05, b.Due - now), EntityId.None);
+                    if (b.Boss.IsAlive) Shoot(b.Boss, b.Mount, b.Look, b.From, b.At, (float)Math.Max(0.05, b.Due - now), EntityId.None, b.Part);
                 }
                 if (now < b.Due) continue;
                 _bigBlasts.RemoveAt(i--);
@@ -818,10 +819,31 @@ namespace MachineBrigade.Sim.Bosses
             }
         }
 
-        private void Shoot(Vehicle v, int mount, WeaponDef? look, Vector2 from, Vector2 to, float seconds, EntityId target)
+        /// <summary>
+        /// The view's shot of a big attack's round. Play-test 14 (lane G): a round with a look of its own leaves the turret of
+        /// the part that fires it, or the part itself when it has no turret (a ship's launch cells, a submarine's launch doors:
+        /// straight up), no longer always the main gun's muzzle (the sea bosses' turrets "fired missiles").
+        /// </summary>
+        private void Shoot(Vehicle v, int mount, WeaponDef? look, Vector2 from, Vector2 to, float seconds, EntityId target, int part = -1)
         {
-            if (look != null) _world.Emit(SimEvent.FiredWith(v, look, from, to, seconds, target));
-            else if (mount >= 0 && mount < v.Def.Mounts.Count) _world.Emit(SimEvent.Fired(v, mount, from, to, seconds, target));
+            var hasMount = mount >= 0 && mount < v.Def.Mounts.Count;
+            if (look != null && hasMount) _world.Emit(SimEvent.FiredWith(v, look, from, to, seconds, target, mount));
+            else if (look != null && part >= 0 && part < v.Def.Parts.Count) _world.Emit(SimEvent.FiredFrom(v, look, part, from, to, seconds, target));
+            else if (look != null) _world.Emit(SimEvent.FiredWith(v, look, from, to, seconds, target));
+            else if (hasMount) _world.Emit(SimEvent.Fired(v, mount, from, to, seconds, target));
+        }
+
+        /// <summary>
+        /// Play-test 14 (lane G): how long before a big attack's round lands its gun fires: the round's flight from its part at
+        /// its own speed, at most 0.9 s (the old fixed lead) and at least a tenth of a second.
+        /// </summary>
+        private const double MaxLead = 0.9;
+
+        private double Lead(BigBlast b)
+        {
+            var round = b.Look ?? (b.Mount >= 0 && b.Mount < b.Boss.Def.Mounts.Count ? b.Boss.Arms[b.Mount] : null);
+            if (round == null || round.ProjectileSpeed <= 1f) return MaxLead;
+            return Math.Clamp(Vector2.Distance(b.From, b.At) / round.ProjectileSpeed, 0.1, MaxLead);
         }
 
         /// <summary>
@@ -915,7 +937,7 @@ namespace MachineBrigade.Sim.Bosses
             }
             var part = ArmedPart(v, st, 0);
             var mount = part >= 0 && v.Def.Parts[part].Mounts.Count > 0 ? v.Def.Parts[part].Mounts[0] : -1;
-            Shoot(v, mount, LookOf(st), part >= 0 ? v.PartPosition(part) : v.Position, s.Origin + s.Axis * st.Length, 0.12f, EntityId.None);
+            Shoot(v, mount, LookOf(st), part >= 0 ? v.PartPosition(part) : v.Position, s.Origin + s.Axis * st.Length, 0.12f, EntityId.None, part);
         }
 
         /// <summary>While it fires: the sweep runs, the boost holds, a boss hurt enough breaks off; done once all has landed.</summary>
@@ -977,7 +999,7 @@ namespace MachineBrigade.Sim.Bosses
             {
                 var part = ArmedPart(v, st, 0);
                 var mount = part >= 0 && v.Def.Parts[part].Mounts.Count > 0 ? v.Def.Parts[part].Mounts[0] : -1;
-                Shoot(v, mount, LookOf(st), part >= 0 ? v.PartPosition(part) : v.Position, to, 0f, EntityId.None);
+                Shoot(v, mount, LookOf(st), part >= 0 ? v.PartPosition(part) : v.Position, to, 0f, EntityId.None, part);
             }
         }
 
@@ -1058,7 +1080,7 @@ namespace MachineBrigade.Sim.Bosses
             _bigFlyers.Add(new BigFlyer
             {
                 Boss = v, State = s, Strike = st, From = from, To = to, Launch = launch, Arrive = arrive, Hp = MathF.Max(1f, st.Hp), Scale = scale,
-                Target = target, Mount = part >= 0 && v.Def.Parts[part].Mounts.Count > 0 ? v.Def.Parts[part].Mounts[0] : -1, Look = LookOf(st),
+                Target = target, Mount = part >= 0 && v.Def.Parts[part].Mounts.Count > 0 ? v.Def.Parts[part].Mounts[0] : -1, Part = part, Look = LookOf(st),
             });
             s.Rounds++;
             s.EndsAt = Math.Max(s.EndsAt, arrive);
@@ -1077,7 +1099,7 @@ namespace MachineBrigade.Sim.Bosses
                 if (!f.Shot)
                 {
                     f.Shot = true;
-                    if (f.Boss.IsAlive) Shoot(f.Boss, f.Mount, f.Look, f.From, f.To, (float)Math.Max(0.1, f.Arrive - now), f.Target);
+                    if (f.Boss.IsAlive) Shoot(f.Boss, f.Mount, f.Look, f.From, f.To, (float)Math.Max(0.1, f.Arrive - now), f.Target, f.Part);
                 }
                 if (now >= f.Arrive)
                 {

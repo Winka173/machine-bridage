@@ -498,6 +498,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>When it last fired anything (a stealthy aircraft shows for a moment after).</summary>
         public double LastFiredAt { get; internal set; } = double.NegativeInfinity;
 
+        /// <summary>Play-test 14 (lane G): when one of its guns last had something in reach (a <see cref="VehicleDef.HoldsToFire"/> warship halts for it).</summary>
+        public double FireHoldAt { get; internal set; } = double.NegativeInfinity;
+
         /// <summary>An aeroplane holds its guns on its target until then (a VTOL jet hovering; see VehicleDef.AttackHold).</summary>
         public double HoldUntil { get; internal set; } = double.NegativeInfinity;
 

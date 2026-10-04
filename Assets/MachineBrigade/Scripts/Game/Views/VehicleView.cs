@@ -1074,7 +1074,8 @@ namespace MachineBrigade.Game.Views
             for (var i = 0; i < _mounts.Length; i++)
             {
                 var mount = _mounts[i];
-                if (mount == null || Def.Mounts[i].Aim != MountAim.Free) continue;
+                // Play-test 14 (lane G): a pivot several free mounts share is turned by one of them (VehicleView.Aim).
+                if (mount == null || Def.Mounts[i].Aim != MountAim.Free || !DrivesPivot(i)) continue;
                 // Play-test 13: laid guns and an untrained free main mount are trained by the view (VehicleView.Aim).
                 var heading = DrawnMountHeading(i, Mathf.LerpAngle(_previousMount[i], _currentMount[i], alpha), hull);
                 var parentYaw = mount.parent != null ? mount.parent.eulerAngles.y : 0f;
