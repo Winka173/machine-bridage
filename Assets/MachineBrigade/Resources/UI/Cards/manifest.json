@@ -461,9 +461,9 @@
         {
             "id": "argus",
             "kind": "boss",
-            "model": "command_airship",
+            "model": "argus",
             "source": "Models/command_airship",
-            "hash": "v2:f5987898df82ec214d3ee7ea56f797b72d186bd0"
+            "hash": "v2:26f86f15b598e35aeeb9907587209ccc312248b6"
         },
         {
             "id": "armored_train",
@@ -524,14 +524,14 @@
         {
             "id": "behemoth_mk0",
             "kind": "boss",
-            "model": "behemoth",
+            "model": "behemoth_mk0",
             "source": "Models/behemoth",
             "hash": "v2:3c84102fd735d7b06fd961db8a7ddec58504c8d7"
         },
         {
             "id": "behemoth_mk2",
             "kind": "boss",
-            "model": "behemoth",
+            "model": "behemoth_mk2",
             "source": "Models/behemoth",
             "hash": "v2:3c84102fd735d7b06fd961db8a7ddec58504c8d7"
         },
@@ -540,7 +540,7 @@
             "kind": "boss",
             "model": "behemoth_tempest",
             "source": "Models/behemoth_tempest",
-            "hash": "v2:fc4a08a2767e80878d5b809273f0bb2fa3cd2fd2"
+            "hash": "v2:8895e608eb967d07feb10be2efef1e4e0e5b6c0d"
         },
         {
             "id": "blast_wall",
@@ -596,14 +596,14 @@
             "kind": "boss",
             "model": "coeus",
             "source": "Models/coeus",
-            "hash": "v2:e233f62fcdc100b736fe482b42459e2bb0cf2522"
+            "hash": "v2:d7f7b5d3fc97c324435f3f7bba886f424f8e5caf"
         },
         {
             "id": "command_airship",
             "kind": "boss",
             "model": "command_airship",
             "source": "Models/command_airship",
-            "hash": "v2:f5987898df82ec214d3ee7ea56f797b72d186bd0"
+            "hash": "v2:26f86f15b598e35aeeb9907587209ccc312248b6"
         },
         {
             "id": "cp_relay",
@@ -617,7 +617,7 @@
             "kind": "boss",
             "model": "daedalus",
             "source": "Models/daedalus",
-            "hash": "v2:3d346d4c0d3f21055db1d5e53a2ecde5ebb14e3a"
+            "hash": "v2:cf6ae12ff8f43ae469d9a80253cd79033f428ae8"
         },
         {
             "id": "drone_hangar",
@@ -659,7 +659,7 @@
             "kind": "boss",
             "model": "earth_borer",
             "source": "Models/earth_borer",
-            "hash": "v2:299903ef2ae8b4e19ede48280be89bc974571b8a"
+            "hash": "v2:08de3c8c065e5570d2d5860b07d5f0e3f78f7b04"
         },
         {
             "id": "elite_aa",
@@ -895,23 +895,23 @@
         {
             "id": "hydra",
             "kind": "boss",
-            "model": "hydra_sub",
+            "model": "hydra",
             "source": "Models/hydra_sub",
-            "hash": "v2:87387173dd1f6328e3d832701cb549d779ea6a4a"
+            "hash": "v2:93610ab69d0953bdf17dad217f510cf150f13b17"
         },
         {
             "id": "hyperion",
             "kind": "boss",
             "model": "hyperion",
             "source": "Models/hyperion",
-            "hash": "v2:c843f0559dff6002722873b34605dc728ef59d66"
+            "hash": "v2:0878e5ed319d521219090c8e9761f07ce0c01f41"
         },
         {
             "id": "icarus_mk0",
             "kind": "boss",
             "model": "icarus_mk0",
             "source": "Models/icarus_mk0",
-            "hash": "v2:7e41c44ce7dfd3ac8f7d96befc26304ebe766398"
+            "hash": "v2:f3dadd9289c5810dd4d5209408f4504724b0cd81"
         },
         {
             "id": "ixion",
@@ -925,14 +925,14 @@
             "kind": "boss",
             "model": "kraken",
             "source": "Models/kraken",
-            "hash": "v2:b2f86d2785415412e33b70397c0b0d4f8d81a592"
+            "hash": "v2:4ea73193b56ebb85b8bea5ba431352064e40a585"
         },
         {
             "id": "landing_hovercraft",
             "kind": "boss",
             "model": "landing_hovercraft",
             "source": "Models/landing_hovercraft",
-            "hash": "v2:cbef37c10b4c9f39a5604fa68855de349c835391"
+            "hash": "v2:9649b6bce3a0f2de72f53ea6e49e71b033c80f3a"
         },
         {
             "id": "laser_ad_station",
@@ -953,12 +953,12 @@
             "kind": "boss",
             "model": "leviathan",
             "source": "Models/leviathan",
-            "hash": "v2:b4ac810967d5852cdbaf50b9ff5114cb00e829b8"
+            "hash": "v2:090203dd7ad6cb7febdc06e5823e4c8907d5758e"
         },
         {
             "id": "locust",
             "kind": "boss",
-            "model": "drone_mothership",
+            "model": "locust",
             "source": "Models/drone_mothership",
             "hash": "v2:37669f53d6088ac7c2a170240fc4024e457f376d"
         },
@@ -1037,7 +1037,7 @@
             "kind": "boss",
             "model": "moloch",
             "source": "Models/moloch",
-            "hash": "v2:2c0918a18371ac33c6f124075cfe648167f513fd"
+            "hash": "v2:98717e71643e6f123b9815bca4a0510734ac5170"
         },
         {
             "id": "monster",
@@ -1058,7 +1058,7 @@
             "kind": "boss",
             "model": "nyx",
             "source": "Models/nyx",
-            "hash": "v2:12a71428da8ae5620033a04d9ae6dbbb47384e21"
+            "hash": "v2:78d199cb9ea863d8689383ad3a19eb4270e7fab2"
         },
         {
             "id": "one_shot_atgm_tower",
@@ -1107,7 +1107,7 @@
             "kind": "boss",
             "model": "scylla",
             "source": "Models/scylla",
-            "hash": "v2:3a5eaed6de62a5d285ad553466ea03316c031ee3"
+            "hash": "v2:d717bc6a309fd35baafde8c21a31a6d60371a0d0"
         },
         {
             "id": "shield_tower",
@@ -1135,7 +1135,7 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:fb27fa8ad34352ce2725f0ba44f8e4aaa19a8f20"
+            "hash": "v2:f1966f1b0fd0c73e6c08d6109d3e4192d60b95c7"
         },
         {
             "id": "spawn_bastion",
@@ -1163,14 +1163,14 @@
             "kind": "boss",
             "model": "theia",
             "source": "Models/theia",
-            "hash": "v2:d2b9b2e78511a023757e9398ad05127bd1aeaeb5"
+            "hash": "v2:1b17a3281ee840a3074d4c082003d71328011331"
         },
         {
             "id": "typhon",
             "kind": "boss",
             "model": "typhon",
             "source": "Models/typhon",
-            "hash": "v2:ee9a9dae8ccca897aee80c929076c5d5659ed5fc"
+            "hash": "v2:7867cc1dfaf9df91ef0ee76ae3c5cf544cdaf0d7"
         }
     ]
 }
