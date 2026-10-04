@@ -224,14 +224,16 @@ namespace MachineBrigade.Game.Match
         public static SpecialModule PickModule(System.Random rng, BranchMask deck)
         {
             var total = 0f;
-            foreach (var m in GearCatalog.Modules) total += ModuleWeight(m, deck);
+            var last = SpecialModule.ReactiveArmor;
+            foreach (var m in GearCatalog.ShownModules) total += ModuleWeight(m, deck);
             var x = (float)rng.NextDouble() * total;
-            foreach (var m in GearCatalog.Modules)
+            foreach (var m in GearCatalog.ShownModules)
             {
                 x -= ModuleWeight(m, deck);
                 if (x < 0f) return m.Module;
+                last = m.Module;
             }
-            return GearCatalog.Modules[GearCatalog.Modules.Length - 1].Module;
+            return last;
         }
 
         private static float ModuleWeight(ModuleDef m, BranchMask deck) => m.Branches == BranchMask.None ? 0f : (m.Branches & deck) != 0 ? 3f : 1f;

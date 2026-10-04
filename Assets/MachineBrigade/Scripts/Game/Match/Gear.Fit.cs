@@ -40,9 +40,9 @@ namespace MachineBrigade.Game.Match
             if (item.Slot == GearSlot.Special)
             {
                 var module = GearCatalog.Module(item.Module);
-                if (module != null && (module.Branches & mask) != 0) return false;
+                if (module != null && !module.Hidden && (module.Branches & mask) != 0) return false;
                 var fits = new List<ModuleDef>();
-                foreach (var m in GearCatalog.Modules)
+                foreach (var m in GearCatalog.ShownModules)
                     if ((m.Branches & mask) != 0) fits.Add(m);
                 if (fits.Count == 0) return false;
                 var pick = fits[Mathf.Abs(item.id) % fits.Count].Module;
@@ -83,8 +83,76 @@ namespace MachineBrigade.Game.Match
             return changed;
         }
 
-        /// <summary>Whether a piece works for a branch (tower pieces never do).</summary>
-        public static bool FitsBranch(GearItem item, GearBranch branch) => VehicleFit.Fits(item, branch);
+        /// <summary>Whether a piece works for a branch (tower pieces never do, nor hidden gear: see <see cref="IsHidden"/>).</summary>
+        public static bool FitsBranch(GearItem item, GearBranch branch) => !IsHidden(item) && VehicleFit.Fits(item, branch);
+
+        /// <summary>
+        /// Play-test 14 lane I: whether a piece carries a hidden line (its base type, special module or trait has
+        /// <c>Hidden</c> set in <see cref="GearCatalog"/>: the player's smoke gear). Such a piece is never worn into battle.
+        /// </summary>
+        public static bool IsHidden(GearItem item)
+        {
+            if (item == null) return false;
+            if (item.Slot == GearSlot.Special) return GearCatalog.Module(item.Module) is { Hidden: true };
+            if (BaseOf(item) is { Hidden: true }) return true;
+            return !string.IsNullOrEmpty(item.trait) && GearCatalog.TraitFor(item.Slot, item.trait) is { Hidden: true };
+        }
+
+        /// <summary>
+        /// Play-test 14 lane I (owner, 04/10: the player's smoke gear hidden, to come back later): an old save's piece of
+        /// hidden gear becomes a shown one of the same slot, rarity and level, picked from its own id and seed (so the same
+        /// save always comes out the same): a hidden module another module for the same vehicles, a hidden base type a
+        /// plain one of its slot (sub-stats that clash with the new lines rolled again), a hidden trait a new roll. Hidden
+        /// traits leave the trait choices too. Gear is never bought (crates, merges), so nothing is refunded and nothing
+        /// is lost. Returns whether the piece changed.
+        /// </summary>
+        public static bool Unhide(GearItem item)
+        {
+            if (item == null) return false;
+            if (item.Slot == GearSlot.Special)
+            {
+                var module = GearCatalog.Module(item.Module);
+                if (module == null || !module.Hidden) return false;
+                var fits = new List<ModuleDef>();
+                foreach (var m in GearCatalog.ShownModules)
+                    if ((m.Branches & module.Branches) != 0) fits.Add(m);
+                if (fits.Count == 0)
+                    foreach (var m in GearCatalog.ShownModules)
+                        if (m.Branches != BranchMask.None) fits.Add(m);
+                if (fits.Count == 0) return false;
+                var pick = fits[Mathf.Abs(item.id) % fits.Count].Module;
+                item.special = (int)pick;
+                item.baseType = GearKeys.Module(pick);
+                return true;
+            }
+            var changed = false;
+            var b = BaseOf(item);
+            if (b != null && b.Hidden)
+            {
+                var tower = IsTower(item.Slot);
+                var all = new List<BaseTypeDef>(tower ? GearCatalog.TowerBasesFor(item.Slot) : GearCatalog.BasesFor(item.Slot));
+                var fits = all.FindAll(p => !p.TradeOff && p.Plating == b.Plating && item.rarity >= p.MinRarity && (p.Branches & b.Branches) != 0);
+                if (fits.Count == 0) fits = all.FindAll(p => !p.TradeOff && item.rarity >= p.MinRarity);
+                if (fits.Count > 0)
+                {
+                    var into = fits[Mathf.Abs(item.id) % fits.Count];
+                    item.baseType = into.Id;
+                    var main = (int)MainStat(item);
+                    item.subs?.RemoveAll(sub => sub.stat == main || sub.stat == (int)into.Implicit || sub.stat == (int)into.Implicit2 || sub.stat == (int)into.Penalty);
+                    FillSubs(item, RngFor(item, 13));
+                    changed = true;
+                }
+            }
+            if (!string.IsNullOrEmpty(item.trait) && GearCatalog.TraitFor(item.Slot, item.trait) is { Hidden: true })
+            {
+                RollTrait(item, RngFor(item, 17), BranchMask.All);
+                changed = true;
+            }
+            else if (item.traitOptions != null &&
+                     item.traitOptions.RemoveAll(key => GearCatalog.TraitFor(item.Slot, key) is { Hidden: true }) > 0)
+                changed = true;
+            return changed;
+        }
 
         /// <summary>The branches a vehicle piece works for (its base type or module, and its trait).</summary>
         public static BranchMask BranchesOf(GearItem item)

@@ -54,9 +54,12 @@ namespace MachineBrigade.Tests
             Assert.IsFalse(Gear.BaseOf(kit).Plating);
             Assert.AreEqual(StatId.Health, Gear.MainStat(kit));
             Assert.AreEqual(1, kit.subs.Count);
+            // Play-test 14 lane I: the old smoke discharger is hidden gear now; the piece stays on as a shown module.
             var smoke = PlayerProfile.FindGear(4);
-            Assert.AreEqual(SpecialModule.SmokeDischarger, smoke.Module);
-            Assert.AreEqual("smoke_discharger", smoke.baseType);
+            Assert.AreEqual(GearSlot.Special, smoke.Slot);
+            Assert.AreNotEqual(SpecialModule.SmokeDischarger, smoke.Module);
+            Assert.IsFalse(Gear.IsHidden(smoke));
+            Assert.AreEqual(GearKeys.Module(smoke.Module), smoke.baseType);
             Assert.AreEqual(4, PlayerProfile.Equipped(GearBranch.Armor, GearSlot.Special).id);
             var legendary = PlayerProfile.FindGear(5);
             Assert.AreEqual(GearSlot.Weapon, legendary.Slot);

@@ -91,6 +91,13 @@ namespace MachineBrigade.Game.Match
         public StatId Main { get; set; } = StatId.Count;
 
         public bool TradeOff => Penalty != StatId.Count;
+
+        /// <summary>
+        /// Play-test 14 lane I (owner, 04/10: the player's smoke gear "bỏ luôn hoặc ẩn đi, tương lai có thể mang lại"): kept
+        /// in the catalogue with its numbers, strings and Sim code, but never offered, rolled, worn or fired; an old save's
+        /// piece is re-rolled on load (<see cref="Gear.Unhide"/>). Clear the flag to bring the line back.
+        /// </summary>
+        public bool Hidden { get; set; }
     }
 
     /// <summary>A unique trait: the slot whose pool it is in, what a vehicle needs for it to work (so the branches it suits), and its numbers at Epic and Legendary.</summary>
@@ -128,6 +135,13 @@ namespace MachineBrigade.Game.Match
         /// <summary>What a tower must have for it to do anything (tower pools only; see <see cref="TowerFit"/>).</summary>
         public TowerNeed Need { get; set; }
 
+        /// <summary>
+        /// Play-test 14 lane I (owner, 04/10: the player's smoke gear "bỏ luôn hoặc ẩn đi, tương lai có thể mang lại"): kept
+        /// in the catalogue with its numbers, strings and Sim code, but never offered, rolled, worn or fired; an old save's
+        /// piece is re-rolled on load (<see cref="Gear.Unhide"/>). Clear the flag to bring the line back.
+        /// </summary>
+        public bool Hidden { get; set; }
+
         public GearTrait At(Rarity rarity)
         {
             var v = rarity >= Rarity.Legendary ? Legendary : Epic;
@@ -161,6 +175,13 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>Its effect is sized to the vehicle's price (CP / 7, between 0.4 and 1.3; prompt 8 I.5).</summary>
         public bool Scaled => Module is SpecialModule.DroneEscort or SpecialModule.UplinkBarrage or SpecialModule.MineDispenser or SpecialModule.EmpPayload;
+
+        /// <summary>
+        /// Play-test 14 lane I (owner, 04/10: the player's smoke gear "bỏ luôn hoặc ẩn đi, tương lai có thể mang lại"): kept
+        /// in the catalogue with its numbers, strings and Sim code, but never offered, rolled, worn or fired; an old save's
+        /// piece is re-rolled on load (<see cref="Gear.Unhide"/>). Clear the flag to bring the line back.
+        /// </summary>
+        public bool Hidden { get; set; }
     }
 
     /// <summary>A sub-stat of the pool: values at the top level for Uncommon to Legendary, the slots it rolls on, and its loadout cap.</summary>
@@ -301,7 +322,8 @@ namespace MachineBrigade.Game.Match
             new("signal_relay", GearSlot.Optics, StatId.CaptureRate, V(0.1f, 0.15f, 0.2f, 0.25f, 0.3f))
                 { Implicit2 = StatId.Vision, Top2 = V(0.03f, 0.04f, 0.06f, 0.08f, 0.1f) },
             // Prompt 8: a smoke screen when an anti-tank missile locks on (every 20 s); the radius.
-            new("laser_warning", GearSlot.Optics, StatId.LaserWarning, V(6f, 6.5f, 7f, 7.5f, 8f)) { Flat = true },
+            // Play-test 14 lane I: hidden (the player's smoke gear waits; see BaseTypeDef.Hidden).
+            new("laser_warning", GearSlot.Optics, StatId.LaserWarning, V(6f, 6.5f, 7f, 7.5f, 8f)) { Flat = true, Hidden = true },
         };
 
         /// <summary>
@@ -314,7 +336,8 @@ namespace MachineBrigade.Game.Match
             new(SpecialModule.ReactiveArmor, Ground, 0.4f, 0.55f),
             new(SpecialModule.AutoRepair, Any, 0.012f, 0.018f),
             new(SpecialModule.VeteranCrew, Armed, 0.08f, 0.12f),
-            new(SpecialModule.SmokeDischarger, Ground, 8f, 10f, 0f, 1f),
+            // Play-test 14 lane I: hidden (the player's smoke gear waits; see ModuleDef.Hidden).
+            new(SpecialModule.SmokeDischarger, Ground, 8f, 10f, 0f, 1f) { Hidden = true },
             // Prompt 29 L5: Trophy only for a vehicle with an APS mount (ApsCapability not None), the heat decoys only for
             // flares as charges (FlareCharges above 0); see VehicleFit.Hardware.
             new(SpecialModule.TrophyAps, Ground | VehicleNeed.ApsMount, 1f, 2f, 25f, 20f),
@@ -528,16 +551,28 @@ namespace MachineBrigade.Game.Match
             return null;
         }
 
+        /// <summary>The base types a piece of this slot may be given (hidden ones left out).</summary>
         public static IEnumerable<BaseTypeDef> BasesFor(GearSlot slot)
         {
             foreach (var b in Bases)
-                if (b.Slot == slot) yield return b;
+                if (b.Slot == slot && !b.Hidden) yield return b;
         }
 
+        /// <summary>The traits a piece of this slot may roll (hidden ones left out).</summary>
         public static IEnumerable<TraitDef> TraitsFor(GearSlot slot)
         {
             foreach (var t in Traits)
-                if (t.Slot == slot) yield return t;
+                if (t.Slot == slot && !t.Hidden) yield return t;
+        }
+
+        /// <summary>The special modules a piece may be given (hidden ones left out; <see cref="Modules"/> keeps them all).</summary>
+        public static IEnumerable<ModuleDef> ShownModules
+        {
+            get
+            {
+                foreach (var m in Modules)
+                    if (!m.Hidden) yield return m;
+            }
         }
 
         public static BranchMask MaskOf(GearBranch branch) => (BranchMask)(1 << (int)branch);

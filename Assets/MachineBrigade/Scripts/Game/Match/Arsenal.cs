@@ -268,7 +268,8 @@ namespace MachineBrigade.Game.Match
             var worn = new List<GearItem>();
             foreach (var item in loadout)
             {
-                if (item == null) continue;
+                // Play-test 14 lane I: a piece of hidden gear (the player's smoke gear) never rides into battle.
+                if (item == null || Gear.IsHidden(item)) continue;
                 worn.Add(item);
                 if (item.Slot == GearSlot.Special)
                 {
