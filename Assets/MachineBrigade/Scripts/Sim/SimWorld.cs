@@ -588,13 +588,19 @@ namespace MachineBrigade.Sim
                 case SpecialModule.ReactiveArmor:
                     // Prompt 15 C.9: shaped charges only, hit by hit (GearSystem.Incoming).
                     break;
+                // Gear balance 04/10 (section 27): a module's stat modifiers count towards the same loadout cap as the gear's
+                // lines (summed, then capped; never capped on their own and added): what fits under the cap is added.
                 case SpecialModule.AutoRepair:
-                    v.Regen += b.SpecialPower;
+                    v.Regen += Headroom(v.Def, StatId.Regen, b.Stat(StatId.Regen), b.SpecialPower);
                     break;
                 case SpecialModule.VeteranCrew:
-                    v.DamageBoost *= 1f + b.SpecialPower;
-                    v.FireBoost *= 1f + b.SpecialPower;
+                {
+                    var damage = b.Stat(StatId.Damage);
+                    var rate = b.Stat(StatId.FireRate);
+                    v.DamageBoost *= (1f + damage + Headroom(v.Def, StatId.Damage, damage, b.SpecialPower)) / MathF.Max(0.05f, 1f + damage);
+                    v.FireBoost *= (1f + rate + Headroom(v.Def, StatId.FireRate, rate, b.SpecialPower)) / MathF.Max(0.05f, 1f + rate);
                     break;
+                }
             }
             // Stat lines, tuned weapons, traits and the other modules.
             Gear.Equip(v, b);

@@ -12901,3 +12901,34 @@ Nhánh `feature/pen5-splash`. Nguồn: `Docs/prompts/splash_overpen_vi.md` (Spla
 | SO-10 | bộ xuất | không có hai bảng | sheet mới `01/Bang_xuyen_qua`, `01/Bang_no_lan`; cột `Vu_khi_suy_ra.xuyen_qua`; `he_so_xuyen_giap_*` và DPS gồm xuyên quá; input mới `input_bang_xuyen_qua` (02 / 03 / 04); `_layer_b.armour_index` nhân bảng xuyên quá | công thức Excel = port Python (`_game.py overpenetration`, `splash_falloff`) |
 | SO-11 | chữ trong game / tài liệu | "lõi đủ sát thương, rìa 40 %", "full damage in its core" | "giảm dần" + hai bảng (Sổ tay đạn, `hb.blast`, `hb.blast.plain`, `hb.pen.over` mới, `ul.splashEdge`, 13 mô tả siêu vũ khí, GAME_PLAN, prompt25 / 26 / 29 / 32 / 34, build_doc mục 10) | |
 | SO-12 | `tunables weapons.damageRules.edgeFalloff` 0,25 | dùng cho nổ một bán kính | giữ trong tunables nhưng không còn được đọc (bậc 75-100 % của SO-1 cùng 0,25) | |
+
+## GEAR BALANCE
+
+Nhánh `feature/gear-balance`. Nguồn: `Docs/prompts/gear_balance_vi.md` (mục 1-37). Không đổi bảng xuyên, bảng đánh nóc, bảng loại sát thương, nổ lan, xuyên quá, Armour/Pen 5, giáp/máu boss, vũ khí. Báo cáo: `Docs/fixes/gear_balance_report.md`.
+
+| # | mục | cũ thực tế | mới | ghi chú |
+|---|---|---|---|---|
+| GB-1 | `armoured_tub` ArmourAll (GearCatalog.cs) | 0.40 / 0.55 / 0.70 / 0.85 / 1.00 | 0.25 / 0.35 / 0.45 / 0.55 / 0.65 | `applique_steel` giữ 0.40-1.00 ArmourSide |
+| GB-2 | `hair_trigger` FireRate (dòng ngầm) | 0 / 0 / 0.10 / 0.12 / 0.15 | 0 / 0 / 0.08 / 0.10 / 0.12 | MinRarity 2 giữ |
+| GB-3 | `hair_trigger` Spread (đánh đổi) | 0 / 0 / -0.10 / -0.12 / -0.14 | 0 / 0 / -0.08 / -0.10 / -0.12 | |
+| GB-4 | `heavy_barrel` Range | 0 / 0 / 0.08 / 0.10 / 0.12 | 0 / 0 / 0.07 / 0.09 / 0.10 | `long_barrel` giữ |
+| GB-5 | `heavy_barrel` Speed (đánh đổi) | 0 / 0 / -0.05 / -0.06 / -0.07 | 0 / 0 / -0.03 / -0.04 / -0.05 | |
+| GB-6 | `overtuned_engine` Speed | 0 / 0 / 0.10 / 0.12 / 0.15 | 0 / 0 / 0.08 / 0.10 / 0.12 | |
+| GB-7 | `overtuned_engine` Health (đánh đổi) | 0 / 0 / -0.04 / -0.05 / -0.06 | 0 / 0 / -0.03 / -0.04 / -0.05 | |
+| GB-8 | bộ `vulcan` 2 món BurnDamage | 0.25 | 0.15 | 4 món SetFirestorm giữ |
+| GB-9 | bộ `hivemind` 2 món SummonPower | 0.15 | 0.10 | 4 món SetSwarm giữ |
+| GB-10 | bộ `phoenix` 2 món RepairReceived | 0.10 | 0.06 | 4 món SetPhoenix giữ |
+| GB-11 | bộ `quartermaster` 2 món RepairReceived | 0.10 | 0.06 | 4 món SetSalvageRights giữ |
+| GB-12 | tháp `ammo_handling` Magazine (GearCatalog.Tower.cs) | 0.10 / 0.15 / 0.20 / 0.25 / 0.30 | 0.08 / 0.12 / 0.16 / 0.20 / 0.24 | |
+| GB-13 | tháp `ammo_handling` MainScale (MagazineReload) | 1.5 (0.045 / 0.075 / 0.12 / 0.165 / 0.21) | 1.25 (0.0375 / 0.0625 / 0.10 / 0.1375 / 0.175) | chỉ số chính = StandardTop x MainScale; prompt ghi 0.10-0.30 không khớp công thức, xem báo cáo |
+| GB-14 | tháp `ammo_hoist` ProjectileSpeed | 0.08 / 0.12 / 0.16 / 0.20 / 0.25 | 0.06 / 0.09 / 0.12 / 0.15 / 0.18 | chỉ số chính FireRate giữ |
+| GB-15 | mới `energy_dissipation_liner` (Armor, Tấm lót tản năng lượng) | không có | ResistEnergy 0.04 / 0.06 / 0.09 / 0.12 / 0.15, không đánh đổi, không plating (chỉ số chính Health như Spall Liner) | |
+| GB-16 | mới `field_service_interface` (Repair, Bộ tiếp nhận sửa chữa dã chiến) | không có | RepairReceived 0.02 / 0.03 / 0.04 / 0.06 / 0.08, không đánh đổi | trần RepairReceived 0.10 giữ |
+| GB-17 | mới tháp `grounding_mesh` (TowerStructure, Lưới tiếp địa năng lượng) | không có | ResistEnergy 0.04 / 0.06 / 0.09 / 0.12 / 0.15, không đánh đổi | năng lượng vẫn xuyên khiên |
+| GB-18 | DamageVsHeavy / DamageVsLight (GearSystem.Outgoing) | theo giáp mặt bị bắn (kể cả trang bị): 3-4 nặng, 0-2 nhẹ | theo lớp giáp thân xe (giáp trước trong dữ liệu, không trang bị / buff): 3-5 nặng, 0-2 nhẹ | đặc tính TandemWarhead (thêm % lên xe nặng) dùng cùng luật |
+| GB-19 | ResistIndirect (GearSystem.Incoming) | mọi đòn `hit.Indirect` (WeaponDef.Indirect: minRange, lofted, bom, drone) | chỉ `Armour.IndirectFire`: pháo, cối, rốc-két bắn cầu vồng, bom; không drone (Lancet, FPV, Shahed), không tên lửa dẫn đường đánh nóc | đòn không vũ khí từ trên xuống (strike) giữ |
+| GB-20 | ReactiveArmor | ShapedCharge, không tandem | thêm: không nhiệt áp (khóa luật) | số 0.40 / 0.55 giữ |
+| GB-21 | trần cộng dồn: mô-đun VeteranCrew (Damage, FireRate), AutoRepair (Regen), dòng Splash đổi sang DamageVsLight | cộng ngoài trần | cộng vào cùng trần (phần còn chỗ dưới trần) | mục 27; giá trị trần giữ |
+| GB-22 | chữ trong game | "giáp cấp 3–4" / "0–2"; "pháo binh và bom" | "lớp giáp thân xe 3–5 / 0–2"; "pháo binh, cối, rốc-két bắn cầu vồng và bom (không tính drone và tên lửa đánh nóc)"; tên + mô tả 3 món mới; VeteranCrew / AutoRepair ghi trong trần | Strings.cs, GearText.BaseNote đọc `gear.base.<id>.info` |
+| GB-23 | bộ xuất | 38 loại xe / 13 loại tháp | 40 / 14 (`10_trang_bi` Trang_bi, Trang_bi_thap, Trang_bi_bo, Trang_bi_ten) | sinh lại bằng export.py |
+| GB-24 | xóa trang bị | | 0 | monolith_plate giữ (kiểm runtime: sống) |

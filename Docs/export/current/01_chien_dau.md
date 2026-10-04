@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 13abf306, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 13215908, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 

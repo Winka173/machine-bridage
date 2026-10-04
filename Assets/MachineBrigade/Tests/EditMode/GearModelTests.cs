@@ -309,7 +309,7 @@ namespace MachineBrigade.Tests
             foreach (var b in GearCatalog.Bases)
                 if (b.TradeOff) Need("stat.pen." + GearKeys.Snake(b.Penalty.ToString()));
             Assert.That(missing, Is.Empty, "missing: " + string.Join(", ", missing));
-            Assert.AreEqual(38, GearCatalog.Bases.Length, "38 stat base types (prompt 8: one retired, two merged, six new)");
+            Assert.AreEqual(40, GearCatalog.Bases.Length, "40 stat base types (prompt 8: one retired, two merged, six new; gear balance 04/10: two new)");
             Assert.AreEqual(14, GearCatalog.Modules.Length, "14 special modules");
             Assert.AreEqual(45, GearCatalog.Traits.Length, "45 traits (prompt 8: three new lines)");
         }

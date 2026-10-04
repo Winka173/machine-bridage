@@ -74,9 +74,9 @@ namespace MachineBrigade.Sim.Content
         Regen,
         DamageTaken,
 
-        /// <summary>Prompt 15 C.9: more damage against light armour (a face of level 0-2 on the ground).</summary>
+        /// <summary>More damage against light ground vehicles (gear balance 04/10: chassis armour class 0-2, not the face struck).</summary>
         DamageVsLight,
-        /// <summary>Prompt 15 C.9: more damage against heavy armour (a face of level 3-4 on the ground).</summary>
+        /// <summary>More damage against heavy ground vehicles (gear balance 04/10: chassis armour class 3-5, whichever face is struck).</summary>
         DamageVsHeavy,
         DamageVsAir,
         DamageVsStructure,

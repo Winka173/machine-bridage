@@ -67,7 +67,7 @@ namespace MachineBrigade.Tests
         public void TowerPiecesHaveThreeSlotsOfTheirOwn()
         {
             CollectionAssert.AreEqual(new[] { GearSlot.TowerWeapon, GearSlot.TowerStructure, GearSlot.TowerSystems }, Gear.TowerSlots);
-            Assert.AreEqual(13, GearCatalog.TowerBases.Length, "13 tower base types");
+            Assert.AreEqual(14, GearCatalog.TowerBases.Length, "14 tower base types (gear balance 04/10: grounding_mesh)");
             foreach (var slot in Gear.TowerSlots)
             {
                 Assert.GreaterOrEqual(GearCatalog.TowerBasesFor(slot).Count(), 3, slot + " has a choice of base types");
@@ -84,7 +84,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(GearSlot.Weapon, GearCatalog.Trait(TraitId.Executioner).Slot, "a vehicle trait in a tower pool keeps its vehicle entry");
             Assert.AreEqual(GearSlot.TowerWeapon, GearCatalog.TraitFor(GearSlot.TowerWeapon, "executioner").Slot, "and a tower piece reads its tower entry");
             // The vehicle catalogue and its rolls are untouched.
-            Assert.AreEqual(38, GearCatalog.Bases.Length);
+            Assert.AreEqual(40, GearCatalog.Bases.Length);
             Assert.AreEqual(45, GearCatalog.Traits.Length);
             var rng = new Random(9);
             for (var i = 0; i < 300; i++) Assert.IsFalse(Gear.IsTower(Crates.Roll((Rarity)(i % 5), rng, i + 1).Slot), "a vehicle roll is never a tower piece");

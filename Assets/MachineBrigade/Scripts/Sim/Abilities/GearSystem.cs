@@ -60,8 +60,9 @@ namespace MachineBrigade.Sim.Abilities
                 foreach (var t in b.Traits) g.Add(t);
             v.Gear = g;
             // High-explosive filler on a gun that has no blast: it hits light vehicles harder instead.
+            // Gear balance 04/10 (section 27): the converted line counts towards the damage-vs-light cap like the gear's own.
             if (v.Def.Weapon.SplashRadius <= 0f && g.Stat(StatId.Splash) > 0f)
-                g.Stats[(int)StatId.DamageVsLight] += g.Stat(StatId.Splash) * 0.55f;
+                g.Stats[(int)StatId.DamageVsLight] += _world.Headroom(v.Def, StatId.DamageVsLight, g.Stat(StatId.DamageVsLight), g.Stat(StatId.Splash) * 0.55f);
             v.TurnFactor = 1f + g.Stat(StatId.TurnRate);
             v.TurretFactor = 1f + g.Stat(StatId.TurretRate);
             v.VisionFactor = 1f + g.Stat(StatId.Vision);
@@ -949,19 +950,19 @@ namespace MachineBrigade.Sim.Abilities
             var g = attacker.Gear;
             if (g != null)
             {
-                // Prompt 15 C.9: light and heavy by the armour level of the face struck (0-2, 3-4).
+                // Gear balance 04/10: light and heavy by the target's chassis armour class (0-2, 3-5), never by the face struck.
                 m += target.Kind switch
                 {
                     TargetKind.Air => g.Stat(StatId.DamageVsAir),
                     TargetKind.Structure => g.Stat(StatId.DamageVsStructure),
-                    _ => HeavyFace(target, hit) ? g.Stat(StatId.DamageVsHeavy) : g.Stat(StatId.DamageVsLight),
+                    _ => HeavyChassis(target) ? g.Stat(StatId.DamageVsHeavy) : g.Stat(StatId.DamageVsLight),
                 };
                 if (g.Has(TraitId.Executioner) && target is Vehicle && target.Hp < target.MaxHp * 0.3f)
                 {
                     m += g.Trait(TraitId.Executioner).A;
                     if (hit.Kind == HitKind.Direct) Proc(attacker, TraitId.Executioner);
                 }
-                if (g.Has(TraitId.TandemWarhead) && target.Kind == TargetKind.Ground && HeavyFace(target, hit) && hit.Weapon?.Projectile is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone)
+                if (g.Has(TraitId.TandemWarhead) && target.Kind == TargetKind.Ground && HeavyChassis(target) &&hit.Weapon?.Projectile is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone)
                     m += g.Trait(TraitId.TandemWarhead).A;
                 if (g.CrownStacks > 0) m += g.Trait(TraitId.DarkCrown).A * g.CrownStacks;
                 m += OutgoingLines(attacker, g, target, hit);
@@ -1045,9 +1046,18 @@ namespace MachineBrigade.Sim.Abilities
             Proc(v, TraitId.TowerCounterBattery);
         }
 
-        /// <summary>Prompt 15 C.9: the face a hit strikes is heavy armour (level 3-4).</summary>
-        private static bool HeavyFace(IDamageable target, in HitInfo hit) =>
-            (target is Vehicle v ? v.ArmourOn(DamageSystem.FaceOf(v, hit)) : target.Armour.Front) >= 3f;
+        /// <summary>
+        /// Gear balance 04/10 (was prompt 15 C.9's face struck, 3-4): the target is a heavy vehicle by its chassis armour
+        /// class, the data's front level without equipment or buffs (3-5 heavy, 0-2 light), whichever face the hit meets: a
+        /// heavy tank shot in its level-2 rear is still heavy, a light vehicle with armour equipment is still light.
+        /// </summary>
+        internal static bool HeavyChassis(IDamageable target) => ArmourClassOf(target) >= HeavyClassFrom;
+
+        /// <summary>The lowest chassis armour class that counts as heavy (3; light is 0-2).</summary>
+        internal const int HeavyClassFrom = 3;
+
+        /// <summary>A target's chassis armour class: a vehicle's data front level (no equipment, no buff), else its front armour.</summary>
+        internal static int ArmourClassOf(IDamageable target) => target is Vehicle v ? v.Def.Armour.Front : target.Armour.Front;
 
         /// <summary>Damage coming in: a multiplier from the victim's resistances, stances and effects (0: the hit bounced).</summary>
         public float Incoming(Vehicle v, DamageType type, in HitInfo hit)
@@ -1062,8 +1072,10 @@ namespace MachineBrigade.Sim.Abilities
                 if (burn.Flag && burn.Until > now) m *= 1.1f;
             }
             // Prompt 15 C.9: reactive armour (the module) cuts shaped charges hard and nothing else; a tandem warhead defeats it.
+            // Gear balance 04/10: by the damage type (ShapedCharge = HEAT / ATGM / shaped-charge drones), never by the projectile
+            // family; kinetic, HE, fragmentation, fire, energy and thermobaric go through.
             if (v.Special == SpecialModule.ReactiveArmor && type == DamageType.ShapedCharge && hit.Kind is not (HitKind.Mine or HitKind.Burn) &&
-                !(hit.Projectile?.Tandem ?? false))
+                !(hit.Projectile?.Tandem ?? false) && !(hit.Thermo || (hit.Weapon?.Thermobaric ?? false)))
                 m *= 1f - Math.Clamp(v.SpecialPower, 0f, Content.HandbookFacts.ReactiveCap);
             var g = v.Gear;
             if (g == null) return m;
@@ -1073,7 +1085,9 @@ namespace MachineBrigade.Sim.Abilities
             // Prompt 15 C.9: a cage takes shaped charges on rockets, missiles and drones; kinetic rounds and thermobaric blasts go through.
             if (type == DamageType.ShapedCharge && hit.Kind != HitKind.Mine && !(weapon?.Thermobaric ?? false) &&
                 (weapon == null || weapon.Projectile is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone)) cut += g.Stat(StatId.ResistRocket);
-            if (hit.Indirect) cut += g.Stat(StatId.ResistIndirect);
+            // Gear balance 04/10: only real indirect fire (Armour.IndirectFire: artillery, mortars, lobbed rockets, bombs) or a
+            // weapon-less strike that came down from above; never a drone or a guided top-attack missile, never topAttack alone.
+            if (hit.Indirect && (weapon == null || Armour.IndirectFire(weapon))) cut += g.Stat(StatId.ResistIndirect);
             if (hit.Kind == HitKind.Mine)
             {
                 if (g.Has(TraitId.MineSweep) && now >= g.Ready[(int)TraitId.MineSweep])

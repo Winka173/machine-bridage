@@ -174,7 +174,9 @@ namespace MachineBrigade.Game.Hud
         public static string BaseNote(BaseTypeDef b)
         {
             if (b.MainScale != 1f && b.NoSubs) return Strings.Format("gear.base.bigMain", Strings.Num((b.MainScale - 1f) * 100f, "0"));
-            return "";
+            // Gear balance 04/10: a base type's own tooltip line (the three new kits say what they do and do not do).
+            var info = "gear.base." + b.Id + ".info";
+            return Strings.Has(info) ? Strings.Get(info) : "";
         }
 
         /// <summary>What a module does at a rarity, with its numbers (no piece needed).</summary>
