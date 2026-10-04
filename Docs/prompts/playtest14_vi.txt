@@ -120,3 +120,5 @@ boss daedalus nhìn khá tốt, nên có lửa sau động cơ, vẽ lại 2 bos
 - khói của tên lửa cũng vậy giảm chiều dài đáng kể 50% cả chiều rộng
 - nemesis, juggernaut bỏ tạo khói, và scan bỏ tạo khói toàn bộ các boss / phương tiện khác
 - 1 vài boss tôi thấy tên lửa nó bay quá nhanh so với bình thường như nemesis, typhon
+- 5. coi chừng chỉnh lộn tên lửa vì typhon có 2 tên lửa, tên lửa bay từ thân lên cao và đáp xuống rất tốt, còn tên lửa kia bay rất nhanh
+- 3. hẹp đi khoảng 20-30%

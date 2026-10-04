@@ -291,3 +291,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 04/10 "cập nhật, sau khi xong các task mà chưa có chỉ thị task tiếp theo thì cứ cập nhật unity".
 - 04/10 Icarus không di chuyển khi bắn; Inferno bỏ khói; tàu boss bắn đạn pháo không phải tên lửa, Leviathan đạn chậm, Nyx bỏ railgun; đường ray preview ngắn; Typhon tháp không quay + tên lửa phóng thẳng đứng; Kraken gọi máy bay; vẽ lại tháp súng boss từ đầu, không reuse (nguyên văn cuối playtest14_vi.txt).
 - 04/10 boss bay không quay khi bắn; khói chết -50% lượng; vệt khói tên lửa -50% dài và rộng; bỏ kỹ năng tạo khói mọi boss/xe; tên lửa boss quá nhanh (nguyên văn cuối playtest14_vi.txt).
+- 04/10 sửa: Typhon chỉ chỉnh tên lửa bay nhanh, giữ tên lửa phóng từ thân; vệt khói hẹp đi 20-30%.
