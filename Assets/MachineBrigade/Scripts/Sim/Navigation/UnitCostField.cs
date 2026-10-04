@@ -65,14 +65,25 @@ namespace MachineBrigade.Sim.Navigation
                 for (var team = 0; team < Layers; team++)
                     Stamp(_cost[team], v, v.Stunned ? StunnedCost : team == v.Team ? FriendParkedCost : EnemyParkedCost);
             }
+            // Play-test 14 (lane J): a burning hulk cannot make way at all: as good as a wall until it is gone.
+            var wrecks = world.Wrecks.List;
+            for (var n = 0; n < wrecks.Count; n++)
+            {
+                var w = wrecks[n];
+                if (w.Naval) continue;
+                foreach (var layer in _cost) Stamp(layer, w.A, w.B, w.Radius, StunnedCost);
+            }
         }
 
         private void Stamp(byte[] layer, Vehicle v, byte core)
         {
             var half = SimMath.Forward(v.Heading) * v.Def.HullHalf;
-            var a = v.Position - half;
-            var b = v.Position + half;
-            var inner = v.Def.HullRadius + 0.5f;
+            Stamp(layer, v.Position - half, v.Position + half, v.Def.HullRadius, core);
+        }
+
+        private void Stamp(byte[] layer, Vector2 a, Vector2 b, float radius, byte core)
+        {
+            var inner = radius + 0.5f;
             var outer = inner + RingReach;
             var min = Vector2.Min(a, b) - new Vector2(outer);
             var max = Vector2.Max(a, b) + new Vector2(outer);

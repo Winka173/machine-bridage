@@ -561,7 +561,9 @@ namespace MachineBrigade.Game.Rendering
                     continue;
                 }
                 if (_world.Time < due) continue;
-                var enemy = _world.SpawnVehicle(id, 1, post, MathF.PI);
+                // Play-test 14 (lane J): beside the last one's wreck while it still burns on the mark, never inside it.
+                var mark = _world.Catalog.Vehicles.TryGetValue(id, out var def) && !def.Flying ? ClearSpot(def, post) : post;
+                var enemy = _world.SpawnVehicle(id, 1, mark, MathF.PI);
                 _world.MakeSparring(enemy);
                 _world.MakeMortal(enemy);
                 if (_silenced.Remove(who.Id)) _silenced.Add(enemy.Id);

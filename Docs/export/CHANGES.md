@@ -3057,3 +3057,14 @@ hoặc thời gian đặt của đòn lớn / cruise). Nút lấy từ GLB, moun
 Không phải tên lửa (giữ): Nemesis `p26_nemesis_main_ne152` (pháo 152), `p26_nemesis_close_boss_flak` (35 mm), `p26_nemesis_direct_ne125`
 (125 mm), toa `gun_car_152`; Juggernaut `train_gun` x2, `boss_hmg`, `boss_flak` x2, `train_mortar` (cối 60 m/s). `sam_post` cũng là SAM của
 leviathan, mobile_fortress (bộ phận `sam_medium`) và các biến thể tàu (hydra, nyx, scylla, kraken kế thừa): chậm như nhau.
+## Play-test 14 wreck collision (lane J): wrecks stay solid until gone
+
+Nhánh `feature/pt14-j`. Lý do: `Docs/DECISIONS.md` "Play-test 14 wreck collision (lane J)" (chủ, khối "Bổ sung 04/10" cuối). Giá trị mới trong `Resources/Data/tunables.json` `vehicles.wreckRules` (trước đây xác chỉ là hình, không chặn gì trong Sim).
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-J-1 | `vehicles.wreckRules.groundSeconds` | (không có; xác chỉ ở view 30-45 s ngẫu nhiên) | 30 s | xác xe cháy vẫn là vật cản tới khi chìm hết |
+| PT14-J-2 | `vehicles.wreckRules.groundSpread` | (view: + 0-15 s ngẫu nhiên) | 15 s (theo id, cố định) | Sim và view cùng đồng hồ, tất định |
+| PT14-J-3 | `vehicles.wreckRules.bossSeconds` | (view: 90 s) | 90 s | xác boss di động |
+| PT14-J-4 | `vehicles.wreckRules.shipSeconds` | (view: chìm hẳn sau 18 s) | 18 s | tàu khác không đi xuyên xác đang chìm |
+| PT14-J-5 | xác xe ở đồ họa Low | 2/3 đời | đủ đời của Sim | không để vật cản vô hình |

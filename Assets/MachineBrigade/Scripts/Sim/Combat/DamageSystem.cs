@@ -769,6 +769,8 @@ namespace MachineBrigade.Sim.Combat
             var speed = vehicle.Speed;
             vehicle.ClearPath();
             vehicle.Speed = 0f;
+            // Play-test 14 (lane J): its burning hulk (a ship going down) stays solid where it stopped until it is gone.
+            _world.Wrecks.Add(vehicle, _world.Time);
             // Who gets the kill: the vehicle whose round it was, else whoever hit it last (recently).
             var killer = hit.Attacker;
             if (killer == null && vehicle.LastAttacker.IsValid && _world.Time - vehicle.LastHitTime <= 10.0 &&
