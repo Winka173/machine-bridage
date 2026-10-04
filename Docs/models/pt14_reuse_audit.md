@@ -60,15 +60,14 @@ alike side by side); **old** = the boss's pre-play-test-14 model carried over, n
 
 ## Ground bosses (mb_pt14_m1.py)
 
-| Boss | Sub-assembly | Also drawn on | Fit |
-|---|---|---|---|
-| fortress_bastion | sponson twin 100 mm / Bofors, ZU-23-2, 155 mm ball, mortar turret, Kornets (in-file) | - | ok |
-| bastion_mk0 | twin 100 mm sponsons `_mk0_sponson`, open mortar `_mk0_mortar` (in-file) | - | ok (own functions, but the same layout as Bastion: check side by side in R2) |
-| mobile_fortress | turret, launchers, SAM, bow gun (in-file) | - | ok |
-| fenrir | twin 35 mm turret, rocket pods, radar (in-file) | - | ok |
-| behemoth_inferno | turret, flame projectors, flak mount (in-file) | - | ok |
-| all five | `K.gun_barrel` (collar, thermal sleeve, fume extractor, brake), `K.turret_ring`, `K.smoke_dischargers`, `K.periscope`, `W.running_gear` | most ground vehicles | kit level: the barrels share one look; R2 can give each boss its own barrel profile |
+| Boss | Sub-assembly | Also drawn on | Fit before R3 | R3 (mb_pt14_r3.py) |
+|---|---|---|---|---|
+| fortress_bastion | mortar turret, twin 100 mm / Bofors sponsons, 155 mm ball, Kornets, ZU-23-2 | kit barrels / race / periscopes / hatches / smoke | kit barrel look | 2B8 read `bs_mortar_turret`, D-10 twins + Bofors L/60 `bs_sponson_house`, M284 slab brake `bs_bow_gun`, Kornet-EM `bs_kornet`, ZU-23-2 `bs_zu23`, own hatch / vision block / smoke box |
+| bastion_mk0 | twin 100 mm sponsons, open mortar | kit barrels, periscopes, hatches; same layout as Bastion | kit barrel look | riveted 12-sided drums with slotted-brake early 100 mm `m0_sponson`, M1-240 banded tube with arc and handwheels `m0_mortar`, own hatch / vision slot |
+| mobile_fortress | turret, roof gun, launchers, SAM, bow gun, flak cupolas, EMP radar | kit barrels / race / smoke / hatches; flak twin like Fenrir's | kit barrel look | 2A44 house `jt_main_turret`, B-4 roof gun `jt_roof_gun`, AK-230 cupolas `jt_flak`, Strela-10 SAM `jt_sam`, 2A46 bow gun `jt_bow_gun`, Smerch open bundles `jt_rockets`, orange-peel reflector `jt_radar`, own hatch / smoke |
+| fenrir | twin 35 mm turret, 300 mm pods, radar | kit barrels / race; pods like Jotunn's | kit barrel look | Gepard read `fn_flak`, MLRS boxed pods `fn_rockets`, telescopic-mast planar array `fn_radar`, own hatch |
+| behemoth_inferno | flame projectors, thermo gun, flak mount | kit barrels / race / periscopes / hatches / smoke | kit barrel look | M67-read projectors `in_turret_fittings`, Nona-read pepperpot gun `in_thermo`, ZPU-2 `in_zpu`, own oval hatch / vision block / smoke cluster (the Behemoth house stays: the boss is built from that design) |
 
 ## Left for R2+
 Kraken (the whole weapon fit), hydra_sub's radar, Harpy's door guns, the two trains and Ixion (old turrets carried
-over), and optionally per-boss barrel profiles on the ground bosses (K.gun_barrel).
+over). The ground bosses' shared barrel kit is gone in R3.
