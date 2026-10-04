@@ -360,7 +360,8 @@ namespace MachineBrigade.Game.Rendering
         }
 
         /// <param name="lod">Build and bring along the far detail level (vehicles; see <see cref="VehicleLod"/>).</param>
-        public ModelInstance Spawn(string modelId, int team, Transform parent, bool castShadows = true, bool lod = false)
+        /// <param name="livery">Play-test 14 lane K: its own livery (<see cref="OwnLivery.Of"/>), or null: the army's paint.</param>
+        public ModelInstance Spawn(string modelId, int team, Transform parent, bool castShadows = true, bool lod = false, OwnLivery livery = null)
         {
             var id = ResolveId(modelId);
             if (lod) EnsureLod(id);
@@ -373,14 +374,15 @@ namespace MachineBrigade.Game.Rendering
             {
                 if (renderer.name == LodName)
                 {
-                    renderer.sharedMaterial = _materials.LodSurface(team);
+                    renderer.sharedMaterial = _materials.LodSurface(team, livery);
                     far.Add(renderer);
                 }
                 else
                 {
                     var materials = renderer.sharedMaterials;
                     for (var i = 0; i < materials.Length; i++)
-                        materials[i] = _materials.ForModel(materials[i] != null ? materials[i].name : string.Empty, team);
+                        materials[i] = livery != null ? _materials.ForModel(materials[i], team, livery)
+                            : _materials.ForModel(materials[i] != null ? materials[i].name : string.Empty, team);
                     renderer.sharedMaterials = materials;
                     full.Add(renderer);
                 }

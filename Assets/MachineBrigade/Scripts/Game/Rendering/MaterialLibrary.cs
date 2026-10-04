@@ -91,6 +91,18 @@ namespace MachineBrigade.Game.Rendering
             ["SignalGreen"] = ("#3cf08c", 0f, 0.3f, 2.4f),
             ["Obsidian"] = ("#1e1c26", 0.3f, 0.16f, 0f),
             ["EliteGlow"] = ("#ff2a1f", 0f, 0.3f, 2.4f),
+            // Play-test 14 lane K: own liveries of the ship and space bosses ("livery": "own"). Naval: haze grey hull and
+            // superstructure, darker deck, antifouling red below the waterline, the black boot-top band, a submarine's
+            // anechoic black. Space: white thermal paint, bare titanium and polished silver, gold foil (MLI) blankets.
+            ["NavyGrey"] = ("#6f777c", 0.3f, 0.55f, 0f),
+            ["NavyDeck"] = ("#4a5054", 0.2f, 0.78f, 0f),
+            ["HullRed"] = ("#8a2f26", 0.15f, 0.72f, 0f),
+            ["BootTop"] = ("#1e2123", 0.15f, 0.7f, 0f),
+            ["SubBlack"] = ("#1b1e21", 0.1f, 0.82f, 0f),
+            ["SpaceWhite"] = ("#e2e4e1", 0.12f, 0.42f, 0f),
+            ["Titanium"] = ("#8e9397", 0.8f, 0.36f, 0f),
+            ["SpaceSilver"] = ("#c3c8cc", 0.9f, 0.24f, 0f),
+            ["GoldFoil"] = ("#d1a646", 0.95f, 0.3f, 0f),
         };
 
         private readonly List<Material> _owned = new();
@@ -296,6 +308,49 @@ namespace MachineBrigade.Game.Rendering
             return _surfaces.TryGetValue(name, out var material) ? material : Fallback;
         }
 
+        /// <summary>
+        /// Play-test 14 lane K: a model material for a vehicle in its own livery (<paramref name="livery"/> null: the army's,
+        /// as <see cref="ForModel(string, int)"/>). Its "Team" surfaces take the livery's paint, "TeamGlow" keeps the army's
+        /// colour (the team cue), kit surfaces stay as drawn, and a surface the kit does not know yet (a new paint a model
+        /// was drawn in) takes the colour and finish the model file gives it rather than the fallback grey.
+        /// </summary>
+        public Material ForModel(Material source, int team, OwnLivery livery)
+        {
+            var name = BaseName(source != null ? source.name : string.Empty);
+            if (livery == null) return ForModel(name, team);
+            if (name == "Team") return LiveryMaterial(livery);
+            if (name == "TeamGlow") return TeamMaterial(name, team);
+            return _surfaces.TryGetValue(name, out var material) ? material : Imported(name, source);
+        }
+
+        private readonly Dictionary<string, Material> _liveries = new();
+        private readonly Dictionary<string, Material> _imported = new();
+
+        private Material LiveryMaterial(OwnLivery livery)
+        {
+            if (_liveries.TryGetValue(livery.Key, out var cached)) return cached;
+            var material = Surface("Livery " + livery.Key, livery.Paint, livery.Metallic, livery.Roughness, 0f);
+            _liveries[livery.Key] = material;
+            return material;
+        }
+
+        /// <summary>A surface named outside the kit, in the colour and finish of the model file's own material (glTFast's
+        /// sRGB base colour factor), shared by every model that uses the name.</summary>
+        private Material Imported(string name, Material source)
+        {
+            if (source == null || string.IsNullOrEmpty(name)) return Fallback;
+            if (_imported.TryGetValue(name, out var cached)) return cached;
+            Color colour;
+            if (source.HasProperty("baseColorFactor")) colour = source.GetColor("baseColorFactor");
+            else if (source.HasProperty("_BaseColor")) colour = source.GetColor("_BaseColor");
+            else return Fallback;
+            var metallic = source.HasProperty("metallicFactor") ? source.GetFloat("metallicFactor") : 0.3f;
+            var roughness = source.HasProperty("roughnessFactor") ? source.GetFloat("roughnessFactor") : 0.5f;
+            var material = Surface(name, colour, Mathf.Clamp01(metallic), Mathf.Clamp(roughness, 0.02f, 1f), 0f);
+            _imported[name] = material;
+            return material;
+        }
+
         private static readonly int TintProperty = Shader.PropertyToID("_Tint");
         private readonly Dictionary<(Material source, int r, int g, int b, int a), Material> _tinted = new();
         private readonly Dictionary<Material, Material> _tintSource = new();
@@ -489,6 +544,38 @@ namespace MachineBrigade.Game.Rendering
             m.renderQueue = additive ? 3010 : Effects.FxQueue.Haze;
             _owned.Add(m);
             return m;
+        }
+    }
+
+    /// <summary>
+    /// Play-test 14 lane K: a vehicle's own livery (data "livery": "own" with "paint" and "paintFinish"): the colour its
+    /// "Team" surfaces are drawn in instead of its army's. See <see cref="global::MachineBrigade.Sim.Content.VehicleDef.OwnLivery"/>.
+    /// </summary>
+    public sealed class OwnLivery
+    {
+        public OwnLivery(Color paint, float metallic, float roughness)
+        {
+            Paint = paint;
+            Metallic = metallic;
+            Roughness = roughness;
+            Key = $"{ColorUtility.ToHtmlStringRGB(paint)} {metallic:0.00} {roughness:0.00}";
+        }
+
+        public Color Paint { get; }
+        public float Metallic { get; }
+        public float Roughness { get; }
+
+        /// <summary>One shared material per paint and finish.</summary>
+        public string Key { get; }
+
+        /// <summary>
+        /// The livery a vehicle wears in battle (null: its army's paint). With <paramref name="picture"/> (a boss's card
+        /// picture) any boss with a "paint" is drawn in it, so the Boss Hunt list shows each boss in its own colours.
+        /// </summary>
+        public static OwnLivery Of(global::MachineBrigade.Sim.Content.VehicleDef def, bool picture = false)
+        {
+            if (def == null || string.IsNullOrEmpty(def.Paint) || !(def.OwnLivery || (picture && def.Boss))) return null;
+            return ColorUtility.TryParseHtmlString(def.Paint, out var colour) ? new OwnLivery(colour, def.PaintMetallic, def.PaintRoughness) : null;
         }
     }
 }

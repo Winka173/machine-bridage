@@ -80,8 +80,13 @@ namespace MachineBrigade.Editor
             return cards;
         }
 
-        /// <summary>The model a def draws, or its own id for a non-boss tinted stand-in (its picture must not be shared).</summary>
-        private static string PictureKey(VehicleDef def) => !def.Boss && def.Tint != null ? def.Id : TowerArt.ModelFor(def, Ships);
+        /// <summary>
+        /// The model a def draws, or its own id for a non-boss tinted stand-in (its picture must not be shared). Play-test 14
+        /// lane K: a boss with its own paint ("paint") gets its own picture too, drawn in that paint, so the Boss Hunt list
+        /// shows each boss in its own colours rather than every one in the enemy's.
+        /// </summary>
+        private static string PictureKey(VehicleDef def) =>
+            (!def.Boss && def.Tint != null) || (def.Boss && def.Paint != null) ? def.Id : TowerArt.ModelFor(def, Ships);
 
         /// <summary>The model resource a picture is rendered from: the high-detail variant where one ships.</summary>
         public static string SourceOf(string modelId)
@@ -134,10 +139,13 @@ namespace MachineBrigade.Editor
             // A picture key (see Cards/PictureKey) to the real model it draws and its Prompt 25 F2 batch B tint, when
             // it is a stand-in's own id rather than the model id itself.
             var realModel = new Dictionary<string, (string model, System.Numerics.Vector3? tint)>();
+            // Play-test 14 lane K: a painted boss's picture key to its own livery.
+            var liveries = new Dictionary<string, OwnLivery>();
             foreach (var def in catalog.Vehicles.Values)
             {
                 var key = PictureKey(def);
                 if (!realModel.ContainsKey(key)) realModel[key] = (TowerArt.ModelFor(def, Ships), def.Tint);
+                if (key == def.Id && OwnLivery.Of(def, picture: true) is { } livery) liveries[key] = livery;
             }
 
             // Which models need a picture: missing, stale (hash), forced or asked for.
@@ -175,10 +183,11 @@ namespace MachineBrigade.Editor
                             Debug.LogWarning($"[CardRenders] no model file for {model}; skipped");
                             continue;
                         }
-                        // Elites and bosses only ever fight for the enemy: they wear the enemy's colours.
+                        // Elites and bosses only ever fight for the enemy: they wear the enemy's colours. Play-test 14 lane K:
+                        // a boss with its own paint wears that instead (the enemy's glow stays), each boss in its own colours.
                         var enemy = cards.Where(c => c.model == model).All(c => c.kind is "elite" or "boss");
                         var (drawModel, tint) = realModel.TryGetValue(model, out var r2) ? r2 : (model, null);
-                        var png = stage.Render(library, drawModel, enemy ? 1 : 0, tint);
+                        var png = stage.Render(library, drawModel, enemy ? 1 : 0, tint, livery: liveries.TryGetValue(model, out var own) ? own : null);
                         File.WriteAllBytes(Path.Combine(OutFolder, model + ".png"), png);
                         done.Add(model);
                     }
@@ -373,11 +382,11 @@ namespace MachineBrigade.Editor
             /// <param name="yaw">Camera yaw (the card's -142 by default; 180 looks at the front).</param>
             /// <param name="pitch">Camera pitch (the card's 26 by default).</param>
             public byte[] Render(ModelLibrary library, string modelId, int team, System.Numerics.Vector3? tint = null,
-                float yaw = Yaw, float pitch = Pitch)
+                float yaw = Yaw, float pitch = Pitch, OwnLivery livery = null)
             {
                 _yaw = yaw;
                 _pitch = pitch;
-                var instance = library.Spawn(modelId, team, _root, castShadows: false);
+                var instance = library.Spawn(modelId, team, _root, castShadows: false, livery: livery);
                 var model = instance.Root;
                 // Play-test 11: the tint as a hue shift (ModelLibrary.TintOf) on shared tinted materials, as VehicleView draws it.
                 if (tint != null)
