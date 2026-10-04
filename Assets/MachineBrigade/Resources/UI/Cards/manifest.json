@@ -505,7 +505,7 @@
             "kind": "boss",
             "model": "bastion_mk0",
             "source": "Models/bastion_mk0",
-            "hash": "v2:5c8d7247eefc4063668fa843a5c446eb68239915"
+            "hash": "v2:c42f1923b557dbafd1625495b67a3c1be6ed1e1e"
         },
         {
             "id": "behemoth",
@@ -519,7 +519,7 @@
             "kind": "boss",
             "model": "behemoth_inferno",
             "source": "Models/behemoth_inferno",
-            "hash": "v2:12485cf2efc2eaeb141888c2baf3acc998651870"
+            "hash": "v2:b8da02bf2f124321de0a3970e48c8fd87a5f4dac"
         },
         {
             "id": "behemoth_mk0",
@@ -764,7 +764,7 @@
             "kind": "boss",
             "model": "fenrir",
             "source": "Models/fenrir",
-            "hash": "v2:e7930f7ee7ffdb0e42473c73e2e71da86d17cce4"
+            "hash": "v2:53ffe6aa17be0caf0fca58d27f22ef55f46af7e4"
         },
         {
             "id": "fire_control_centre",
@@ -792,7 +792,7 @@
             "kind": "boss",
             "model": "fortress_bastion",
             "source": "Models/fortress_bastion",
-            "hash": "v2:e5af165bac5d4b32922f0b9792036a3d89bf0459"
+            "hash": "v2:5a1851cab9dc29cf11093c294ce071c3b610e07e"
         },
         {
             "id": "guard_tower",
@@ -1023,7 +1023,7 @@
             "kind": "boss",
             "model": "mobile_fortress",
             "source": "Models/mobile_fortress",
-            "hash": "v2:f564bef16ce2b2ffb302dbde01063edcc59bf26e"
+            "hash": "v2:96488b1ae325366094340c0dd8b499f4dda394eb"
         },
         {
             "id": "moloch",
