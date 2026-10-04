@@ -11,7 +11,10 @@ Hyperion (67.2 m, the def's modelSize length; +-Y from -33.6 at the prow to +33.
 - `Turret` (main_laser, the sun beam's part): the chin projector slung under the hammerhead's tip, a drum turret with
   gimbal cheeks and the projector barrel (`Main_cannon`: focusing rings, conduits, the crown) with its lens
   (`Main_cannon_lens`) and `Muzzle_main` level with the prow; it hangs below the hull so it turns all round.
-- `Mount_gun` / `.001`: twin-rail coilgun turrets on the hammerhead's shoulders (Coil_barrels* / Coil_muzzles*).
+- `Mount_gun` / `.001`: twin 155 mm turrets on the hammerhead's shoulders (play-test 14 after R4, mb_pt14_r5_space.hp_twin155;
+  the coilguns are gone).
+- `Mount_gun.004` / `.005`: ventral 127 mm turrets (hp_v127); `Muzzle_rocket` / `.001`: the VLS deckhouses on the sponson
+  ledges (hp_vls).
 - `Mount_gun.002` / `.003`: the ventral laser batteries under the midships (Las_barrels* / Las_muzzles*), visible now
   (the def's hiddenNodes go: the two mounts fire, so their rounds leave from drawn emitters).
 - `Pd_laser_l` / `_r` > `Mount_mg` / `.001` > `Muzzle_mg` / `.001`: point-defence turrets on the flank sponsons.
@@ -26,8 +29,10 @@ island aft, three bells): `Turret` (a dorsal dome laser turret, main_laser), `Po
 drone and pod bay: the drone swarm leaves from it), `Pd_laser_l` / `_r` on the hangar pods, `Thruster_main`,
 `Mount_APS`.
 Coeus (40.3 m): own hull (a slab-sided armoured gunship, a raised dorsal barbette, sponson casemates, a spotting mast,
-twin outboard engines): `Turret` (the coil artillery turret, main_laser's node: its main weapon is the heavy coilgun),
-`Mount_gun` / `.001` (ventral twin laser batteries), `Thruster_main`, `Thruster_rl` / `_rr` (the outboard engines).
+twin outboard engines): `Turret` (a twin 203 mm turret since play-test 14 after R4, main_laser's node), `Mount_gun` /
+`.001` (ventral twin 76 mm turrets), `Muzzle_rocket` / `.001` (Spike NLOS boxes on the hammerhead), `Thruster_main`,
+`Thruster_rl` / `_rr` (the outboard engines). Theia also carries ventral twin 35 mm turrets (`Mount_gun` / `.001`) and
+two quad missile pods (`Muzzle_rocket` / `.001`); its PD lasers' `Mount_mg` / `.001` now fire (mb_pt14_r5_space).
 
 Every function draws for one ship only, except the geometry primitives at the top (sections, loft, panel grid,
 window strips). Metres, +Z up, -Y front, +X left.
@@ -38,6 +43,7 @@ from mathutils import Vector
 
 import mb_kit27 as k
 import mb_kit35 as K
+import mb_pt14_r5_space as R5
 import mb_p35_w5parts as W
 
 R90 = math.pi / 2
@@ -139,7 +145,8 @@ HP_SP = [  # the flank sponsons (gun galleries) either side of the neck and mids
     (9.8, 7.2, 8.4, 11.4, .7, .8, 0, 9.9),
 ]
 HP_TURRET = (0, -25.4, 5.62)          # the chin projector's pivot (under the hammerhead's keel)
-HP_COIL = [(7.3, -22.6), (-7.3, -22.6)]
+HP_COIL = [(7.3, -22.6), (-7.3, -22.6)]     # the twin 155 mm turrets (play-test 14 after R4; the coilguns' places)
+HP_V127 = [(5.0, 6.5), (-5.0, 6.5)]         # the ventral 127 mm turrets
 HP_PD = [(8.2, -5.4), (-8.2, -5.4)]
 HP_VLAS = [(3.75, -3.0), (-3.75, -3.0)]
 HP_POD = (0, 15.2, 5.0)
@@ -446,59 +453,6 @@ def _hp_sunbeam(a):
     K.soot(a, (0, HP_TURRET[1] - 7.8, HP_TURRET[2] + zc), radius=1.4, k=.25)
 
 
-def _hp_coilgun(a, i, x, y):
-    """A twin-rail coilgun turret on the hammerhead (Mount_gun at +X, .001 at -X): the barbette and race on the hull,
-    the low faceted house (sloped glacis, side capacitor lockers, a rangefinder head, roof hatch, rear power
-    trunk), two rail barrels in their coil jackets (Coil_barrels*: box rails, eleven coil rings each, field
-    shapers) and the field-shaping crowns (Coil_muzzles*); Muzzle_gun[.001] between the crowns, per-barrel muzzles."""
-    tag = '' if i == 0 else f'_{i:03d}'
-    z0 = interp(HP, y)[3]
-    bar = a.part('Coil_barbette' + tag, 'Armor')
-    k.lathe(bar, [(2.15, -.1), (2.15, .3), (2.0, .42), (1.9, .45)], loc=(x, y, z0), seg=28)
-    K.bolt_ring(a.part('Kit_bolts', 'Steel'), (x, y, z0 + .43), (0, 0, 1), 2.02, 20, r=.05, h=.05)
-    m = a.pivot(K.name('Mount_gun', i), (x, y, z0 + .46))
-    house = a.part('Coil_house' + tag, 'Team', m)
-    k.sharp_loft(house, [
-        [(-1.55, -2.0, 0), (1.55, -2.0, 0), (2.0, -1.0, 0), (2.0, 2.4, 0), (1.6, 2.8, 0), (-1.6, 2.8, 0),
-         (-2.0, 2.4, 0), (-2.0, -1.0, 0)],
-        [(-1.3, -1.25, 1.05), (1.3, -1.25, 1.05), (1.8, -.6, 1.25), (1.8, 2.25, 1.3), (1.45, 2.6, 1.3),
-         (-1.45, 2.6, 1.3), (-1.8, 2.25, 1.3), (-1.8, -.6, 1.25)],
-        [(-1.0, -.7, 1.45), (1.0, -.7, 1.45), (1.4, -.3, 1.55), (1.4, 2.0, 1.55), (1.15, 2.3, 1.55),
-         (-1.15, 2.3, 1.55), (-1.4, 2.0, 1.55), (-1.4, -.3, 1.55)]], chamfer=.06)
-    k.inset(house, lambda c, n, f: c.z > .2, width=.08, depth=-.02)
-    for s in (-1, 1):
-        lk = a.part('Coil_lockers' + tag, 'Armor', m)
-        k.block(lk, (.5, 2.4, .9), loc=(s * 2.15, .9, .5), chamfer=.05)
-        for j in range(3):
-            a.part('Coil_locker_lines' + tag, 'Undercarriage', m).box((.03, .05, .7), loc=(s * 2.41, .2 + j * .7, .5),
-                                                                      bevel=0)
-    k.block(a.part('Coil_rangefinder' + tag, 'Armor', m), (.6, .7, .45), loc=(-.75, .6, 1.55), chamfer=.06,
-            taper=(.8, .8))
-    a.part('Glass', 'Glass', m).box((.4, .02, .16), loc=(-.75, .24, 1.8), bevel=0)
-    k.block(a.part('Coil_hatch' + tag, 'Steel', m), (.7, .7, .06), loc=(.6, 1.2, 1.56), chamfer=.02)
-    k.block(a.part('Coil_trunk' + tag, 'Undercarriage', m), (1.4, .8, .7), loc=(0, 2.9, .3), chamfer=.06)
-    zg, gap, L = .7, .62, 7.0
-    y0 = -1.6
-    xs = (-gap, gap)
-    for bx in xs:
-        brl = a.part('Coil_barrels' + tag, 'Steel', m)
-        brl.box((.42, L, .5), loc=(bx, y0 - L / 2, zg), bevel=.05)
-        coil = a.part('Coils_barrels' + tag, 'Undercarriage', m)
-        for j in range(11):
-            yy = y0 - .5 - j * .58
-            coil.box((.62, .26, .7), loc=(bx, yy, zg), bevel=.04)
-        a.part('Glow_barrels' + tag, 'TeamGlow', m).box((.64, 5.9, .06), loc=(bx, y0 - 3.4, zg + .2), bevel=0)
-        cr = a.part('Coil_muzzles' + tag, 'Armor', m)
-        k.block(cr, (.75, .9, .82), loc=(bx, y0 - L - .25, zg), chamfer=.08, ends=(True, True))
-        cr.box((.2, .95, .2), loc=(bx, y0 - L - .25, zg), bevel=0)
-    # The yoke between the barrels.
-    a.part('Yoke_barrels' + tag, 'Armor', m).box((gap * 2 - .4, 2.6, .36), loc=(0, y0 - 1.6, zg - .1), bevel=.04)
-    mz = a.pivot(K.name('Muzzle_gun', i), (0, y0 - L - .75, zg), m)
-    for j, bx in enumerate(sorted(xs)):
-        a.pivot(f'Muzzle_b{j + 1}_gun{tag}', (bx, 0, 0), mz)
-    K.soot(a, (x, y + y0 - L, z0 + .46 + zg), radius=.6, k=.25)
-
-
 def _hp_ventral(a, i, x, y):
     """A ventral laser battery under the midships (Mount_gun.002 at +X, .003 at -X), hanging from its race: the
     domed house with its plated skirt, the sloped face, two emitter barrels with cooling jackets and lens crowns
@@ -672,6 +626,21 @@ def _hp_detail(a):
         K.whip_antenna(a.part('Antennas', 'Steel'), (x, y, 5.2), h=1.2, r=.03, lean=math.pi)
 
 
+def _hp_livery(a):
+    """Hyperion's own paint (data "livery": "own": the Team hull in the def's steel blue): amber heat-exchanger
+    strips along the sponson belts, gold foil trims down the spine's edges and round the prongs' faces, dark heat
+    tiles on every downward face, plate-to-plate tone steps on the hull."""
+    for s in (-1, 1):
+        R5.glow_strip(a, 'Alloy', [(s * (r[1] + r[6] + .04), r[0], r[7] - .45) for r in stations(HP_SP, 2.0)][1:-1])
+        rows = [interp(HP_SPINE, y) for y in (-12.6, -6.0, 0.0, 6.0, 10.2)]
+        band(a.part('Gold_trims', 'GoldFoil'), [(s * (r[1] - r[4] + .02), r[0], r[3] + .02) for r in rows], .12, .03)
+        a.part('Gold_trims', 'GoldFoil').box((.06, .3, 3.2), loc=(s * (HP_PRONG_X + 3.9 + .32), -33.0, 10.2),
+                                            bevel=0)
+    R5.livery(a, tints=[(r'^(Hull_spine|Hull_keel)$', (.9, .93, 1.0))],
+              belly=(r'^(Hull|Hull_prongs|Hull_sponsons|Hull_cheeks|Hull_keel|Engines_[lr])$', (.28, .29, .32)),
+              panels=(r'^(Hull|Hull_prongs|Hull_sponsons|Hull_spine|Superstructure\w*|Bridge|Intakes)$', 2.3, .08))
+
+
 def hyperion(a, detail=False):
     """Hyperion, the heavy cruiser: see the module docstring."""
     K.suffixed(a)
@@ -682,8 +651,14 @@ def hyperion(a, detail=False):
     _hp_nacelles(a)
     _hp_rcs(a)
     _hp_sunbeam(a)
+    # Play-test 14 after R4 (lane space, mb_pt14_r5_space): no coilguns; twin 155 mm turrets on the shoulders
+    # (Mount_gun / .001), ventral 127 mm turrets (.004 / .005), VLS deckhouses on the sponson ledges (Muzzle_rocket).
     for i, (x, y) in enumerate(HP_COIL):
-        _hp_coilgun(a, i, x, y)
+        R5.hp_twin155(a, i, x, y, interp(HP, y)[3], 'Team')
+    for j, (x, y) in enumerate(HP_V127):
+        R5.hp_v127(a, 4 + j, x, y, interp(HP, y)[2], 'Team')
+    for j, s in enumerate((1, -1)):
+        R5.hp_vls(a, j, s * 7.3, -12.8, -9.2, interp(HP_SP, -11.0)[3], 1.2, 'Team')
     for j, (x, y) in enumerate(HP_VLAS):
         _hp_ventral(a, 2 + j, x, y)
     for (x, y), name, mount, muzzle, tag in zip(HP_PD, ('Pd_laser_l', 'Pd_laser_r'), ('Mount_mg', 'Mount_mg__001'),
@@ -691,6 +666,7 @@ def hyperion(a, detail=False):
         _hp_pd(a, name, mount, muzzle, x, y, tag)
     _hp_podbay(a)
     _hp_detail(a)
+    _hp_livery(a)
     K.tone(a, 'Pod_bay', k=.9)
     K.tone(a, 'Thruster_rl', k=.92)
     K.tone(a, 'Thruster_rr', k=.92)
@@ -1025,6 +1001,23 @@ def _th_detail(a):
                    avoid=[((s * 8.3, -3.0, 8.5), 1.2), ((-TH_BAY_X, 4.4, 8.5), .8)])
 
 
+def _th_livery(a):
+    """Theia's own paint (data "livery": "own": the Team hull in the def's pale grey-white): navy bands round the
+    hangar pods, cyan running strips along the hull belt, dark heat tiles on the downward faces, plate steps."""
+    for s in (-1, 1):
+        for y in (-10.6, 5.4):
+            r = interp(TH_BAY, y)
+            rows = [(s * TH_BAY_X + x, y, z) for x, _, z in sec(*r)]
+            for p0, p1 in zip(rows, rows[1:] + rows[:1]):
+                a.part('Pod_bands', 'ContainerBlue').limb(tuple(Vector(p0) + (Vector(p0) - Vector((s * TH_BAY_X, y, r[7]))).normalized() * .02),
+                                                          tuple(Vector(p1) + (Vector(p1) - Vector((s * TH_BAY_X, y, r[7]))).normalized() * .02),
+                                                          .5, .03, bevel=0)
+        R5.glow_strip(a, 'Energy', [(s * (r[1] + r[6] + .04), r[0], r[7] + .45) for r in stations(TH, 2.0)][2:-2])
+    R5.livery(a, tints=[(r'^(Hull_spine|Hull_keel)$', (.92, .95, 1.0))],
+              belly=(r'^(Hull|Hull_prongs|Hangar_pods|Hull_keel)$', (.27, .28, .31)),
+              panels=(r'^(Hull|Hull_prongs|Hangar_pods|Superstructure|Bridge)$', 1.8, .06))
+
+
 def theia(a, detail=False):
     """Theia, the escort carrier (Hyperion's mini-boss variant): see the module docstring."""
     K.suffixed(a)
@@ -1035,6 +1028,12 @@ def theia(a, detail=False):
     _th_engines(a)
     _th_podbay(a)
     _th_detail(a)
+    # Play-test 14 after R4 (lane space, mb_pt14_r5_space): ventral twin 35 mm turrets (Mount_gun / .001) and
+    # quad missile pods on the hangar pods (Muzzle_rocket / .001); its own paint.
+    for i, s in enumerate((1, -1)):
+        R5.th_v35(a, i, s * 3.4, -7.5, interp(TH, -7.5)[2], 'Team')
+        R5.th_pods(a, i, s * TH_BAY_X, -9.2, interp(TH_BAY, -9.2)[3], 'Team')
+    _th_livery(a)
     K.tone(a, 'Pod_bay', k=.9)
     k.clean(a)
 
@@ -1164,93 +1163,6 @@ def _co_tower(a):
                    avoid=[((-5.6, -12.4, 10.0), 1.0)])
 
 
-def _co_artillery(a):
-    """Turret (main_laser's node; Coeus's main weapon is the heavy coilgun): the barbette ring, a wide low house
-    (sloped glacis, cheek lockers, the gunner's cupola, the rear capacitor bustle with its grille), the long coil
-    barrel (Main_cannon: a square rail housing in fourteen coil collars, glowing field slots, the field-shaping
-    crown) in its mantlet, and Muzzle_main at the crown."""
-    x, y, z = CO_TURRET
-    q = 1.2
-    k.lathe(a.part('Turret_barbette', 'Armor'), [(2.7 * q, -.1), (2.7 * q, .2), (2.55 * q, .3)], loc=(x, y, z), seg=32)
-    K.bolt_ring(a.part('Kit_bolts', 'Steel'), (x, y, z + .3), (0, 0, 1), 2.6 * q, 28, r=.05, h=.05)
-    t = a.pivot('Turret', (x, y, z + .3))
-    house = a.part('Turret_house', 'Team', t)
-    rings = [
-        (0, [(-1.8, -2.6), (1.8, -2.6), (2.6, -1.2), (2.6, 2.8), (2.1, 3.4), (-2.1, 3.4), (-2.6, 2.8), (-2.6, -1.2)]),
-        (1.3, [(-1.5, -1.7), (1.5, -1.7), (2.3, -.8), (2.3, 2.6), (1.85, 3.1), (-1.85, 3.1), (-2.3, 2.6), (-2.3, -.8)]),
-        (1.75, [(-1.1, -1.0), (1.1, -1.0), (1.8, -.4), (1.8, 2.3), (1.45, 2.7), (-1.45, 2.7), (-1.8, 2.3),
-                (-1.8, -.4)])]
-    k.sharp_loft(house, [[(px * q, py * q, pz * q) for px, py in pts] for pz, pts in rings], chamfer=.07)
-    k.inset(house, lambda c, n, f: c.z > .2, width=.09, depth=-.02)
-    for s in (-1, 1):
-        k.block(a.part('Turret_lockers', 'Armor', t), (.5, 3.2, 1.1), loc=(s * 2.6 * q + s * .2, 1.2, .62),
-                chamfer=.05, ends=(True, True))
-        for j in range(3):
-            a.part('Turret_locker_lines', 'Undercarriage', t).box((.03, .05, .9), loc=(s * (2.6 * q + .46),
-                                                                                       .2 + j * 1.0, .62), bevel=0)
-    k.lathe(a.part('Turret_cupola', 'Armor', t), [(.55, 0), (.55, .3), (.42, .44), (0, .48)], loc=(1.2, 2.0, 1.75 * q),
-            seg=14)
-    for j in range(5):
-        u = -R90 + (j - 2) * .5
-        a.part('Turret_periscopes', 'Steel', t).box((.12, .1, .12), loc=(1.2 + math.cos(u) * .46,
-                                                                        2.0 + math.sin(u) * .46, 1.75 * q + .3),
-                                                    rot=(0, 0, u), bevel=0)
-    k.block(a.part('Turret_bustle', 'Undercarriage', t), (4.0, 1.5, 1.4), loc=(0, 3.4 * q + .6, .8), chamfer=.08,
-            ends=(True, True))
-    K.grille(a, (0, 3.4 * q + 1.37, .85), 3.0, .9, facing=(0, 1, 0), slats=7, parent=t, frame_mat='Armor')
-    zg, L = 1.1, 10.8
-    y0 = -2.6 * q + .2
-    mc = a.part('Main_cannon', 'Steel', t)
-    mc.box((1.0, L, 1.0), loc=(0, y0 - L / 2, zg), bevel=.08)
-    coil = a.part('Main_cannon_coils', 'Undercarriage', t)
-    for j in range(14):
-        coil.box((1.42, .34, 1.42), loc=(0, y0 - .9 - j * .72, zg), bevel=.06)
-    glow = a.part('Main_cannon_glow', 'TeamGlow', t)
-    for s in (-1, 1):
-        glow.box((.04, L - 1.8, .14), loc=(s * .52, y0 - L / 2 - .3, zg), bevel=0)
-        glow.box((.14, L - 1.8, .04), loc=(0, y0 - L / 2 - .3, zg + s * .52), bevel=0)
-    k.block(a.part('Main_cannon_mantlet', 'Armor', t), (2.2, 1.0, 1.9), loc=(0, y0 + .2, zg), chamfer=.08,
-            ends=(True, True))
-    crown = a.part('Main_cannon_crown', 'Armor', t)
-    k.block(crown, (1.6, 1.0, 1.6), loc=(0, y0 - L - .3, zg), chamfer=.1, ends=(True, True))
-    for s in (-1, 1):
-        crown.box((.26, 1.1, .55), loc=(s * .92, y0 - L - .3, zg), bevel=.03)
-        crown.box((.55, 1.1, .26), loc=(0, y0 - L - .3, zg + s * .92), bevel=.03)
-    a.part('Main_cannon_lens', 'Energy', t).box((.55, .04, .55), loc=(0, y0 - L - .82, zg), bevel=0)
-    a.pivot('Muzzle_main', (0, y0 - L - .9, zg), t)
-    K.soot(a, (x, y + y0 - L, z + .3 + zg), radius=.8, k=.25)
-
-
-def _co_ventral(a, i, x, y):
-    """A ventral twin laser battery (Mount_gun at +X, .001 at -X): the race, the faceted house hanging under the
-    keel line, two emitters with cooling fins and lens crowns (Las_barrels* / Las_muzzles*); Muzzle_gun[.001]
-    between the lenses, per-barrel muzzles."""
-    tag = '' if i == 0 else f'_{i:03d}'
-    z0 = interp(CO, y)[2]
-    k.ring(a.part('Las_race' + tag, 'Steel'), [(1.4, .02), (1.55, .02), (1.55, -.1), (1.4, -.12)], loc=(x, y, z0),
-           seg=24)
-    m = a.pivot(K.name('Mount_gun', i), (x, y, z0 - .08))
-    house = a.part('Las_house' + tag, 'Team', m)
-    k.sharp_loft(house, [
-        [(-1.0, -1.3, 0), (1.0, -1.3, 0), (1.4, -.5, 0), (1.4, 1.1, 0), (-1.4, 1.1, 0), (-1.4, -.5, 0)],
-        [(-.75, -1.0, -1.1), (.75, -1.0, -1.1), (1.1, -.4, -1.2), (1.1, .9, -1.2), (-1.1, .9, -1.2),
-         (-1.1, -.4, -1.2)]], chamfer=.05)
-    k.inset(house, lambda c, n, f: n.z > -.9, width=.07, depth=-.015)
-    zg = -.65
-    xs = (-.42, .42)
-    for bx in xs:
-        k.lathe(a.part('Las_barrels' + tag, 'Steel', m), [(0, -1.0), (.19, -1.0), (.19, -3.6), (0, -3.6)],
-                loc=(bx, 0, zg), rot=AFT, seg=12)
-        for j in range(5):
-            a.part('Lbands_barrels' + tag, 'Undercarriage', m).box((.5, .06, .5), loc=(bx, -1.6 - j * .35, zg), bevel=0)
-        k.lathe(a.part('Las_muzzles' + tag, 'Armor', m), [(.14, 0), (.27, .08), (.27, .4), (.17, .45)],
-                loc=(bx, -3.55, zg), rot=(R90, 0, 0), seg=12)
-        a.part('Lens_muzzles' + tag, 'Energy', m).cyl(.14, .03, loc=(bx, -4.0, zg), rot=(R90, 0, 0), seg=10, bevel=0)
-    mz = a.pivot(K.name('Muzzle_gun', i), (0, -4.08, zg), m)
-    for j, bx in enumerate(sorted(xs)):
-        a.pivot(f'Muzzle_b{j + 1}_gun{tag}', (bx, 0, 0), mz)
-
-
 def _co_engines(a):
     """Thruster_main: two bells in the aft face (Engine_flame, .001); Thruster_rl / _rr: the outboard engines on the
     stub wings, each a turned nacelle with its intake ring, armour collar and bell (Engine_flame .002 / .003)."""
@@ -1334,16 +1246,36 @@ def _co_detail(a):
         K.whip_antenna(a.part('Antennas', 'Steel'), (x, y, 3.2 if y > 2 else 3.85), h=1.0, r=.025, lean=math.pi)
 
 
+def _co_livery(a):
+    """Coeus's own paint (data "livery": "own": the Team hull in the def's gunmetal bronze): red running strips along
+    the belt armour, hazard bars on the ram, dark heat tiles on the downward faces, plate steps."""
+    for s in (-1, 1):
+        R5.glow_strip(a, 'LavaGlow', [(s * (r[1] + r[6] + .32), r[0], r[7] + .02) for r in stations(CO, 2.0)][2:-2],
+                      w=.05)
+    for j in range(5):
+        a.part('Ram_hazard', 'Hazard').box((.5, .04, .14), loc=(-2.0 + j * 1.0, -20.22, 5.25), rot=(0, .6, 0),
+                                          bevel=0)
+    R5.livery(a, tints=[(r'^(Hull_citadel|Hull_keel)$', (.95, .93, .9))],
+              belly=(r'^(Hull|Hull_keel|Wings|Engines_[lr])$', (.27, .27, .28)),
+              panels=(r'^(Hull|Hull_citadel|Superstructure|Wings)$', 1.8, .08))
+
+
 def coeus(a, detail=False):
     """Coeus, the gunship / artillery cruiser (Hyperion's mini-boss variant): see the module docstring."""
     K.suffixed(a)
     _co_hull(a)
     _co_tower(a)
-    _co_artillery(a)
+    # Play-test 14 after R4 (lane space, mb_pt14_r5_space): no coil artillery; a twin 203 mm turret (Turret), ventral
+    # twin 76 mm turrets where the laser batteries were (Mount_gun / .001), Spike NLOS boxes on the hammerhead
+    # (Muzzle_rocket / .001).
+    R5.co_twin203(a, *CO_TURRET, 'Team')
     for i, (x, y) in enumerate(CO_VLAS):
-        _co_ventral(a, i, x, y)
+        R5.co_v76(a, i, x, y, interp(CO, y)[2], 'Team')
+    for i, s in enumerate((1, -1)):
+        R5.co_spike(a, i, s * 4.2, -16.2, interp(CO, -16.2)[3], 'Team')
     _co_engines(a)
     _co_detail(a)
+    _co_livery(a)
     K.tone(a, 'Thruster_rl', k=.92)
     K.tone(a, 'Thruster_rr', k=.92)
     k.clean(a)

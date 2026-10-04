@@ -6185,3 +6185,41 @@ Nhánh `feature/pt14-sea`. Lý do: `Docs/DECISIONS.md` "Play-test 14 sea bosses 
 | PT14-SEA-10 | `hydra` `secondary` (của riêng nó) | (thừa kế từ typhon) | [p26_typhon_sec_ty57 (180, 150) (Mount_gun.001), p26_typhon_direct_ty100 (0, 150) (Mount_gun.002)] | giữ đúng 3 súng của Hydra (khẩu đuôi mới của Typhon không sang Hydra); mount chính vẫn là 57 mm trước |
 | PT14-SEA-11 | vũ khí mới `hydra_club_s` | — | inherits leviathan_cruise; 3M-54 Club-S (phóng từ tàu ngầm, ống thẳng đứng); các số giữ nguyên | chủ: Hydra bắn tên lửa: là vũ khí dữ liệu riêng, tên thật |
 | PT14-SEA-12 | `hydra` `cruise.weapon` | leviathan_cruise (thừa kế) | hydra_club_s | tên lửa bay ra từ cụm ống phóng sau tháp (Part_doors_l / _r), damage 240 / every 16 giữ nguyên |
+## Play-test 14 space ships after R4 (lane space): súng dưới bụng bắn xuống, tên lửa, bỏ pháo điện từ, màu riêng
+
+Nhánh `feature/pt14-space`. Lý do: `Docs/DECISIONS.md` "Play-test 14 space ships after R4 (lane space)" (chủ, khối "Bổ sung 04/10 sau khi thử R4" của `Docs/prompts/playtest14_vi.txt`). Mọi vũ khí mới có `groundMinReach` 0 khi treo dưới bụng (bắn được mục tiêu mặt đất ngay dưới tàu); sát thương theo thang boss của họ (`weaponFamilyTable` "boss"); tên lửa 0,3 × tốc thật (60–100 m/s). Chưa đo trong game.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-SP-1 | vũ khí mới `pt14_sb_v105` | — | inherits gunship_105; "M102 105 mm (Icarus ventral turret)"; damage 300, cooldown 6, range 50, edge 10, groundMinReach 0 (splash 5,5 / tốc 120 theo họ) | Icarus: 2 tháp 105 mm dưới bụng |
+| PT14-SP-2 | vũ khí mới `pt14_sb_v30` | — | inherits autocannon_30; weaponFamily ""; "Mk 44 Bushmaster II 30 mm (Icarus ventral twin)"; damage 22, burst 8, burstInterval 0,1, cooldown 1,9, range 32, groundMinReach 0 | Icarus: 2 tháp đôi 30 mm dưới bụng |
+| PT14-SP-3 | vũ khí mới `pt14_mk0_v40` | — | inherits autocannon_40; "Bofors L/60 40 mm (ventral test mount)"; damage 30, cooldown 0,3, clip 8, clipReload 2,2, range 28, groundMinReach 0 | Icarus Mk.0: 2 bệ thử 40 mm dưới bụng |
+| PT14-SP-4 | vũ khí mới `pt14_dd_v57` | — | inherits p26_daedalus_sec_dae57 (mọi số giữ nguyên); "AU-220 57 mm (twin ventral turret)"; groundMinReach 0 | Daedalus: pháo đôi 57 mm treo dưới bụng (trước 13 m vùng chết) |
+| PT14-SP-5 | vũ khí mới `pt14_dd_v25` | — | inherits autocannon_25; weaponFamily ""; "GAU-12/U Equalizer 25 mm (Daedalus ventral gondola)"; damage 15, burst 14, burstInterval 0,05, cooldown 2,2, spread 1,6, range 30, groundMinReach 0 | Daedalus: 2 pháo nòng xoay dưới bụng |
+| PT14-SP-6 | vũ khí mới `pt14_hp_155` | — | inherits naval_155_triple; "155 mm/60 (Hyperion twin turret)"; damage 600, edge 14, burst 2, burstInterval 0,4, cooldown 13,5 (6,95 s/nòng ≥ sàn 6,43), range 95, groundMinReach 19 | thay pháo điện từ trên vai |
+| PT14-SP-7 | vũ khí mới `pt14_hp_vlaser` | — | inherits p26_icarus_direct_ic_laser; groundMinReach 0 (trước 18) | dàn la-de dưới bụng Hyperion bắn thẳng xuống |
+| PT14-SP-8 | vũ khí mới `pt14_hp_v127` | — | inherits naval_127; "Mk 45 127 mm (Hyperion ventral turret)"; damage 380, edge 10, cooldown 4,5, range 80, groundMinReach 0 | Hyperion: 2 tháp 127 mm dưới bụng |
+| PT14-SP-9 | vũ khí mới `pt14_hp_nsm` | — | inherits anti_ship_missile; weaponFamily ""; "NSM Block 1A (Hyperion VLS, land attack)"; projectileSpeed 90, Loft, damage 380, burst 2, burstInterval 0,6, cooldown 14, range 95, splash 5 | Hyperion: 2 ô VLS |
+| PT14-SP-10 | vũ khí mới `pt14_th_v35` | — | inherits flak_35; "Oerlikon KDA 35 mm (Theia ventral twin)"; damage 25, clip 16, clipReload 1,8, groundMinReach 0 | Theia: 2 tháp đôi 35 mm dưới bụng |
+| PT14-SP-11 | vũ khí mới `pt14_th_jagm` | — | inherits drone_missile; weaponFamilyId atgm_agm_114_hellfire, weaponFamily ""; "AGM-179 JAGM (Theia quad pod)"; projectileSpeed 95, damage 270, burst 2, burstInterval 0,5, cooldown 9, range 55 | Theia: 2 bệ tên lửa 4 ống |
+| PT14-SP-12 | vũ khí mới `pt14_th_pd` | — | inherits laser_50kw; "50 kW laser (Theia point-defence turret)"; range 34 (chỉ bắn máy bay) | hai tháp la-de phòng thủ điểm của Theia nay bắn máy bay (ngoài APS) |
+| PT14-SP-13 | vũ khí mới `pt14_co_203` | — | inherits cruiser_203 (đôi, bắn cùng lúc); "Mk 71 203 mm (Coeus twin turret)"; damage 900, edge 17, cooldown 21 (≥ sàn 20,6 s/nòng), range 95, groundMinReach 19 | thay pháo điện từ hạng nặng trên lưng |
+| PT14-SP-14 | vũ khí mới `pt14_co_v76` | — | inherits naval_76; "OTO Melara 76/62 (Coeus ventral twin)"; damage 120, burst 4, burstInterval 0,3, cooldown 3,2, range 70, groundMinReach 0 | thay 2 dàn la-de dưới bụng Coeus |
+| PT14-SP-15 | vũ khí mới `pt14_co_spike` | — | inherits drone_missile; weaponFamilyId atgm_spike_nlos, weaponFamily ""; "Spike NLOS (Coeus box launcher)"; projectileSpeed 60, damage 300, burst 2, burstInterval 0,8, cooldown 12, range 80, splash 3,5 | Coeus: 2 hộp phóng Spike |
+| PT14-SP-16 | `silver_bug` `secondary` | coilgun ×2, autocannon_40 ×2 | + pt14_sb_v30 ×2 (mount 5, 6 → Mount_gun.004 / .005), pt14_sb_v105 ×2 (mount 7, 8 → .006 / .007) | 4 khẩu dưới bụng bắn xuống |
+| PT14-SP-17 | `silver_bug` `mountWeapons` | "5", "6": p26_icarus_close_autocannon_40 | "9", "10": p26_icarus_close_autocannon_40 | tháp 40 mm khi rơi nay là mount 9, 10 |
+| PT14-SP-18 | `silver_bug` `tiers.crash.guns` | [3, 4, 5, 6] | [3, 4, 9, 10] | như trên |
+| PT14-SP-19 | `silver_bug` parts `crash_turret_l` / `_r` `node` | Mount_gun.004 / .005 | Mount_gun.008 / .009 (`at` giữ) | mount thứ k của slot gun = Mount_gun thứ k |
+| PT14-SP-20 | `icarus_mk0` `secondary` | [] | pt14_mk0_v40 ×2 (Mount_gun / .001) | 2 khẩu dưới bụng |
+| PT14-SP-21 | `daedalus` `mountWeapons` | 0: dae_laser, 1–2: p26_daedalus_sec_dae57, 3: dae_laser | 0: dae_laser, 1–2: pt14_dd_v57, 5: dae_laser | trước: la-de bắn từ tháp 57 mm và ngược lại (2 nút cho 4 mount) |
+| PT14-SP-22 | `daedalus` `secondary` | gun_57mm ×2 | gun_57mm ×2 + pt14_dd_v25 ×2 (mount 3, 4) | thêm 2 pháo nòng xoay; part gun_r nay là mount 5 |
+| PT14-SP-23 | `daedalus` parts `gun_l` / `gun_r` | node Mount_gun / Mount_gun.001, at […, -1.6] | node Mount_gun / Mount_gun.005, at [∓2.4, 6.0, -2.7] | quả cầu la-de hạ xuống dưới bụng (trước bị chìm trong thân) |
+| PT14-SP-24 | `hyperion` `secondary` (riêng, không kế thừa silver_bug) | kế thừa: p26_icarus_main_ic_coil ×2, p26_icarus_direct_ic_laser ×2 | pt14_hp_155 ×2 (Mount_gun / .001), pt14_hp_vlaser ×2 (.002 / .003), pt14_hp_v127 ×2 (.004 / .005), pt14_hp_nsm ×2 (slot rocket, Muzzle_rocket / .001) | bỏ railgun; tên lửa + súng dưới bụng |
+| PT14-SP-25 | `theia` `secondary` | p26_matriarch_ma_drones | + pt14_th_jagm ×2 (rocket), pt14_th_v35 ×2 (gun), pt14_th_pd ×2 (mg, Pd_laser_l / _r) | drone + tên lửa + phòng thủ điểm |
+| PT14-SP-26 | `coeus` `mountWeapons` "0" | p26_icarus_main_ic_coil | pt14_co_203 | bỏ pháo điện từ |
+| PT14-SP-27 | `coeus` `secondary` | p26_icarus_direct_ic_laser ×2 | pt14_co_v76 ×2 (Mount_gun / .001), pt14_co_spike ×2 (Muzzle_rocket / .001) | pháo hạng nặng + tên lửa |
+| PT14-SP-28 | `hyperion` `paint` / `paintFinish` | "#d9dcd8" / [0.25, 0.38] | "#98a4b2" / [0.5, 0.4] | thép xanh xám của tuần dương hạm (model vẽ lại màu, livery own) |
+| PT14-SP-29 | `theia` `paint` / `paintFinish` | "#e0d3b0" / [0.6, 0.32] | "#dde2e6" / [0.2, 0.38] | trắng xám nhạt, dải xanh hải quân |
+| PT14-SP-30 | `coeus` `paint` / `paintFinish` | "#9aa6b2" / [0.75, 0.32] | "#6e7478" / [0.5, 0.42] | xám thép súng tối, đèn đỏ |
+| PT14-SP-31 | `daedalus` `paint` / `paintFinish` | "#cfd2cc" / [0.35, 0.4] | "#c4c9cc" / [0.35, 0.42] | thân trên Team (trước Plaster) nay theo màu này |
+| PT14-SP-32 | chữ boss (BossText note / guide / mẹo / radio, CampaignText bossfile) | hyperion, coeus: pháo điện từ; daedalus: hai pháo 30 mm | vũ khí mới (EN/VI): 155 mm, VLS, 127 mm; 203 mm, 76 mm, Spike; 35 mm, bệ tên lửa; la-de, 57 mm, 25 mm; pháo thử 40 mm | khớp model và dữ liệu |

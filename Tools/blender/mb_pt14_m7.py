@@ -40,6 +40,7 @@ import mb_kit27 as k
 import mb_kit35 as K
 import mb_p35_w5parts as W5
 import mb_pt14_r1_space as RS
+import mb_pt14_r5_space as R5
 
 R90 = math.pi / 2
 TAU = math.tau
@@ -434,7 +435,7 @@ def _rcs_pod(a, H, s):
     a.part('Canard_edges', 'Concrete').tube([(s * x0, -12.62, .07), (s * 4.1, -11.82, .68)], .07, seg=5)
     k.lathe(a.part('Rcs_pod' + tag, 'Fuel', p), [(0, -1.5), (.22, -1.35), (.42, -.9), (.48, -.3), (.48, .7),
                                                  (.4, 1.05), (.25, 1.2)], rot=K.BACKWARD, seg=16)
-    a.part('Rcs_pod_band' + tag, 'Team', p).cyl(.5, .22, loc=(0, .3, 0), rot=(R90, 0, 0), seg=16, bevel=0)
+    a.part('Rcs_pod_band' + tag, 'GoldFoil', p).cyl(.5, .22, loc=(0, .3, 0), rot=(R90, 0, 0), seg=16, bevel=0)
     for y in (-.6, .5):
         for d in ((s, 0, 0), (0, 0, 1), (0, 0, -1)):
             q = (d[0] * .47, y, d[2] * .47)
@@ -454,7 +455,7 @@ def _main_laser(a, H):
     t = a.pivot('Turret', (0, -7.0, -2.8))
     a.part('Turret_ball', 'Armor', t).sphere(.95, seg=20, rings=12)
     a.part('Turret_collar', 'Steel', t).cyl(1.0, .16, loc=(0, 0, .55), seg=20, bevel=0)
-    a.part('Turret_band', 'Team', t).cyl(.97, .14, loc=(0, 0, .1), seg=20, bevel=0)
+    a.part('Turret_band', 'GoldFoil', t).cyl(.97, .14, loc=(0, 0, .1), seg=20, bevel=0)
     a.part('Turret_sight', 'Glass', t).sphere(.2, loc=(.62, -.6, .2), seg=10, rings=6)
     # The emitter: barrel along -Y with fins and rings, the lens at the front.
     k.lathe(a.part('Main_cannon', 'Steel', t), [(.42, 0), (.42, .6), (.34, .75), (.3, 2.6), (.38, 2.75), (.38, 3.05),
@@ -496,7 +497,7 @@ def _pod_bay(a, H, pods=2):
         a.part('Bay_rams', 'Steel', p).limb((s * 1.0, 1.2, .1), (s * 1.32, 1.2, -.6), .06, .06, bevel=0)
     for j in range(pods):
         yy = (-1.0 + 2.0 * j) if pods > 1 else 0.0
-        k.lathe(a.part('Bay_pods', 'Team', p), [(0, -.95), (.32, -.85), (.55, -.5), (.6, -.1), (.55, .05), (0, .08)],
+        k.lathe(a.part('Bay_pods', 'SpaceWhite', p), [(0, -.95), (.32, -.85), (.55, -.5), (.6, -.1), (.55, .05), (0, .08)],
                 loc=(0, yy, -.05), seg=14)
         a.part('Bay_pod_glow', 'Energy', p).torus(.58, .04, loc=(0, yy, -.35), seg=14, ring=4)
         for u in range(3):
@@ -585,7 +586,7 @@ def _superstructure(a, H, broken=False):
         a.part('Bridge_mullions', 'Armor').box((.05, .06, .2), loc=(x, 8.53, 8.1), rot=(.55, 0, 0), bevel=0)
     for s in (-1, 1):
         a.part('Bridge_windows', 'Lamp').box((.04, 1.3, .14), loc=(s * 2.47, 9.6, 8.0), bevel=0)
-        a.part('Aurel_stripes', 'Team').box((.06, 2.1, .18), loc=(s * 2.42, 9.7, 7.72), bevel=0)
+        a.part('Aurel_stripes', 'GoldFoil').box((.06, 2.1, .18), loc=(s * 2.42, 9.7, 7.72), bevel=0)
     # The sensor mast, its yards, dishes, the APS emitter on top.
     a.part('Mast', 'Steel').cyl(.13, 1.6, loc=(0, 9.9, 9.2), seg=8, bevel=0)
     a.part('Mast', 'Steel').box((2.6, .07, .07), loc=(0, 9.9, 9.55), bevel=0)
@@ -743,18 +744,18 @@ def _hull_details(a, H):
 
 
 def silver_bug(a, wreck=False):
-    """Icarus, redrawn (module docstring). Runtime nodes: Turret > Muzzle_main, Mount_gun .. .005 with Muzzle_gun ..,
-    the 40 mm turrets' Muzzle_b1 / _b2, Pd_laser_l / _r, Pod_bay > Muzzle_missile, Uplink, Thruster_main / _fl / _fr /
+    """Icarus, redrawn (module docstring). Runtime nodes: Turret > Muzzle_main, Mount_gun .. .009 with Muzzle_gun ..
+    (coilguns 0-1, beam turrets 2-3, ventral 30 mm 4-5 and 105 mm 6-7, crash 40 mm 8-9), the twins' Muzzle_b1 / _b2, Pd_laser_l / _r, Pod_bay > Muzzle_missile, Uplink, Thruster_main / _fl / _fr /
     _rl / _rr, Mount_APS, Engine_flame .. .006."""
     K.suffixed(a)
     H = ICARUS
-    hull_skin(a, H)
+    hull_skin(a, H, upper='SpaceSilver')
     leading_edges(a, H)
-    hull_plating(a, H, SB_KEEP)
+    hull_plating(a, H, SB_KEEP, tones=(('SpaceSilver', .5), ('SpaceWhite', .32), ('Titanium', .18)))
     panel_lines(a, H)
     belly_tiles(a, H)
     shoulder_windows(a, H, -15.5, 11.5)
-    stripes(a, H, -17.8, -3.0, fs=(.95, .6))
+    stripes(a, H, -17.8, -3.0, fs=(.95, .6), mat='GoldFoil')
     _hull_details(a, H)
     _flank_kit(a, H)
     _module(a, H)
@@ -766,8 +767,14 @@ def silver_bug(a, wreck=False):
     RS.sb_coilgun(a, H, 1, -4.35, -1.4)
     RS.sb_beam_turret(a, (2.9, 1.25, 3.4), 2)
     RS.sb_beam_turret(a, (-2.9, 1.25, 3.4), 3)
-    RS.sb_twin40(a, H, 4, 1, 7.0)
-    RS.sb_twin40(a, H, 5, -1, 7.0)
+    # Play-test 14 after R4 (lane space, mb_pt14_r5_space): ventral twin 30 mm (Mount_gun.004 / .005) and 105 mm
+    # (.006 / .007) turrets that fire down; the crash turrets move to .008 / .009 (the k-th gun mount's node).
+    R5.sb_v30(a, H, 4, 1, -9.5)
+    R5.sb_v30(a, H, 5, -1, -9.5)
+    R5.sb_v105(a, H, 6, 1, 1.0)
+    R5.sb_v105(a, H, 7, -1, 1.0)
+    RS.sb_twin40(a, H, 8, 1, 7.0)
+    RS.sb_twin40(a, H, 9, -1, 7.0)
     RS.sb_pd(a, H, 'Pd_laser_l', 2.4, -6.0, '')
     RS.sb_pd(a, H, 'Pd_laser_r', -2.4, -6.0, '_r')
     _pod_bay(a, H)
@@ -787,7 +794,7 @@ WRECK_LIFT = 2.0      # raises the crashed ship so its belly rests on the ground
 
 def silver_bug_wreck(a):
     """Icarus crashed, for its ground phase (the crash's "form"): the redrawn ship itself, every runtime node kept (the
-    crash turrets Mount_gun.004 / .005 and the lasers .002 / .003 fire on from it: tiers.crash.guns 3-6), raised so its
+    crash turrets Mount_gun.008 / .009 and the lasers .002 / .003 fire on from it: tiers.crash.guns 3, 4, 9, 10), raised so its
     belly lies on the ground, its main laser and bay doors dug in; the earth it ploughed up heaped along its flanks and
     ahead of its nose, a scorched ground disc, torn and burnt plates, soot, debris thrown round it. No engine flames."""
     import bpy
@@ -995,6 +1002,7 @@ def _mk_rcs(a, H):
 
 def icarus_mk0(a):
     """Icarus Mk.0, the prototype (module docstring). Runtime nodes at silver_bug's places: Turret > Muzzle_main,
+    Mount_gun / .001 > Muzzle_gun / .001 (the ventral 40 mm test mounts, play-test 14 after R4),
     Pd_laser_l, Pod_bay > Muzzle_missile, Thruster_main, Mount_APS, Engine_flame .. .002."""
     K.suffixed(a)
     H = MK0
@@ -1017,6 +1025,9 @@ def icarus_mk0(a):
     RS.mk_pd(a, H, 'Pd_laser_l', 2.4, -6.0, ICARUS.top(2.4, -6.0) + .45)
     _pd_capped(a, H, -2.4, -6.0)
     RS.mk_pod_rig(a, H)
+    # Play-test 14 after R4 (lane space): two ventral 40 mm test mounts (Mount_gun / .001) that fire down.
+    R5.mk_v40(a, H, 0, 1, -2.6)
+    R5.mk_v40(a, H, 1, -1, -2.6)
     RS.mk_engines(a)
     _mk_tanks(a, H)
     _mk_rcs(a, H)

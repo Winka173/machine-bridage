@@ -57,7 +57,7 @@ namespace MachineBrigade.Game.Hud
 
             // ---------------------------------------------------------------- role notes
             ["note.moloch"] = ("Varga's tracked factory: four 120 mm turrets, flak, and two workshop doors that keep sending out vehicles. Front armour 4, sides 3, rear 2.", "Nhà máy bánh xích của Varga: bốn tháp pháo 120 mm, cao xạ và hai cửa xưởng liên tục thả xe ra. Giáp trước cấp 4, hông 3, sau 2."),
-            ["note.daedalus"] = ("Aurel's troop lander: drops pods without pause, two 30 mm guns, point-defence lasers. Upper hull 3, belly 2.", "Tàu đổ bộ của Aurel: thả khoang đổ bộ liên tục, hai pháo 30 mm, tháp la-de phòng thủ. Thân trên cấp 3, bụng 2."),
+            ["note.daedalus"] = ("Aurel's troop lander: drops pods without pause, two targeting lasers, twin 57 mm and 25 mm rotary guns under the hull, point-defence lasers. Upper hull 3, belly 2.", "Tàu đổ bộ của Aurel: thả khoang đổ bộ liên tục, hai la-de ngắm bắn, pháo đôi 57 mm và pháo nòng xoay 25 mm dưới bụng, tháp la-de phòng thủ. Thân trên cấp 3, bụng 2."),
             ["note.typhon"] = ("A missile submarine: out of reach while submerged, surfaces on a schedule; launches missiles at your base from under water.", "Tàu ngầm tên lửa: lặn thì không bắn tới được, nổi lên theo lịch; phóng tên lửa vào căn cứ ta từ dưới nước."),
             ["note.ixion"] = ("An armoured BelAZ-75710 mine truck: a 125 mm turret, a crushing charge about every ten seconds, mines dropped behind it when it turns; it turns very slowly.", "Xe tải mỏ BelAZ-75710 bọc thép: tháp pháo 125 mm, cứ khoảng mười giây lại lao nghiền, rải mìn phía sau khi rẽ; xoay rất chậm."),
             ["note.bastion_mk0"] = ("The first Bastion: a mortar and two 40 mm guns on tracks, crawling towards your base.", "Bastion đầu tiên: một khẩu cối và hai pháo 40 mm trên xích, bò dần về căn cứ ta."),
@@ -65,7 +65,7 @@ namespace MachineBrigade.Game.Hud
             ["note.scylla"] = ("Kessler's destroyer on the near-shore lane: one main turret, missile cells, a CIWS. Tank guns reach it from the piers.", "Tàu khu trục của Kessler trên tuyến gần bờ: một tháp pháo chính, ống phóng tên lửa, CIWS. Pháo xe tăng bắn tới từ đầu cầu tàu."),
             ["note.locust"] = ("A thin-skinned drone tender: launches drones without pause. Bring anti-air.", "Tàu con drone vỏ mỏng: thả drone liên tục. Mang phòng không theo."),
             ["note.behemoth_mk2"] = ("Varga's upgraded Behemoth under ice-coated armour (front 4): main gun, two flak guns, a protection system.", "Behemoth nâng cấp của Varga, giáp phủ băng (trước cấp 4): pháo chính, hai cao xạ, hệ thống bảo vệ chủ động."),
-            ["note.icarus_mk0"] = ("Aurel's prototype spacecraft: high and low on a fixed schedule, never in orbit; a laser turret, a pod bay and a point-defence laser.", "Phi thuyền nguyên mẫu của Aurel: đổi tầng cao và thấp theo lịch cố định, không lên quỹ đạo; tháp la-de, khoang đổ bộ và la-de phòng thủ điểm."),
+            ["note.icarus_mk0"] = ("Aurel's prototype spacecraft: high and low on a fixed schedule, never in orbit; a laser turret, two 40 mm test guns under the hull, a pod bay and a point-defence laser.", "Phi thuyền nguyên mẫu của Aurel: đổi tầng cao và thấp theo lịch cố định, không lên quỹ đạo; tháp la-de, hai pháo thử 40 mm dưới bụng, khoang đổ bộ và la-de phòng thủ điểm."),
             ["note.argus"] = ("A scout airship: while it lives the enemy's artillery falls far tighter. Flak and a radar.", "Khí cầu trinh sát: khi nó còn, pháo binh địch bắn chính xác hơn nhiều. Cao xạ và radar."),
 
             // ---------------------------------------------------------------- Guide cards
@@ -80,11 +80,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: vòng ra sau, phá cả hai cửa trước: nó ngừng sinh xe, siêu vũ khí chỉ còn loạt pháo."),
             ["guide.daedalus"] = (
                 "[[Boss]] · orbital lander · a rain of drop pods\n" +
-                "How it fights: about 10 s in orbit (out of reach), then high and low on a fixed schedule, never back to orbit. Its three [[pod bays]] drop pods of 1-2 vehicles without pause (at most eight alive), each pod a target as it falls. In phase 3 it stops low with every bay open. Two 30 mm and two 57 mm guns fire from under it.\n" +
+                "How it fights: about 10 s in orbit (out of reach), then high and low on a fixed schedule, never back to orbit. Its three [[pod bays]] drop pods of 1-2 vehicles without pause (at most eight alive), each pod a target as it falls. In phase 3 it stops low with every bay open. Two targeting lasers, two twin 57 mm turrets and two 25 mm rotary guns fire down from under it.\n" +
                 "Strong / weak: its own guns are weaker than Icarus's; upper hull [[3]], belly [[2]]. Point-defence lasers take missiles aimed at it.\n" +
                 "Tip: shoot the pods down and break the bays: each one lost slows the drops, and the mass drop falls short.",
                 "[[Boss]] · tàu đổ bộ quỹ đạo · mưa khoang đổ bộ\n" +
-                "Cách đánh: khoảng 10 giây trên quỹ đạo (không bắn tới được), sau đó đổi tầng cao và thấp theo lịch cố định, không lên lại quỹ đạo. Ba [[cửa thả khoang]] thả liên tục khoang chở 1–2 xe (tối đa tám xe còn sống); khoang đang rơi bắn hạ được. Pha 3 nó dừng hẳn ở tầng thấp, mở toàn bộ khoang. Hai pháo 30 mm và hai pháo 57 mm bắn từ dưới bụng.\n" +
+                "Cách đánh: khoảng 10 giây trên quỹ đạo (không bắn tới được), sau đó đổi tầng cao và thấp theo lịch cố định, không lên lại quỹ đạo. Ba [[cửa thả khoang]] thả liên tục khoang chở 1–2 xe (tối đa tám xe còn sống); khoang đang rơi bắn hạ được. Pha 3 nó dừng hẳn ở tầng thấp, mở toàn bộ khoang. Hai la-de ngắm bắn, hai tháp pháo đôi 57 mm và hai pháo nòng xoay 25 mm bắn xuống từ dưới bụng.\n" +
                 "Mạnh / yếu: tự nó bắn yếu hơn Icarus; thân trên cấp [[3]], bụng [[2]]. Tháp la-de phòng thủ chặn tên lửa bắn vào nó.\n" +
                 "Mẹo: bắn hạ khoang đang rơi và phá cửa thả: mỗi cửa mất là thả chậm hơn, đòn đổ bộ lớn cũng hụt đi."),
             ["guide.typhon"] = (
@@ -152,11 +152,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: đánh vào hông; phá [[hệ thống bảo vệ]] trước khi dùng tên lửa."),
             ["guide.icarus_mk0"] = (
                 "[[Mini boss]] · prototype spacecraft · your first look at Project Icarus\n" +
-                "How it fights: never in orbit: high and low on a fixed schedule. A [[laser turret]], a [[pod bay]] and a [[point-defence laser]] that picks off missiles.\n" +
+                "How it fights: never in orbit: high and low on a fixed schedule. A [[laser turret]], two 40 mm test guns firing down from under the hull, a [[pod bay]] and a [[point-defence laser]] that picks off missiles.\n" +
                 "Strong / weak: at high altitude only long-range anti-air and fighters reach it; low, every anti-air weapon does.\n" +
                 "Tip: wait for its low windows; break the point-defence laser before sending missiles.",
                 "[[Mini boss]] · phi thuyền nguyên mẫu · lần đầu thấy Dự án Icarus\n" +
-                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. Một [[tháp la-de]], một [[khoang đổ bộ]] và một [[la-de phòng thủ điểm]] bắn hạ tên lửa.\n" +
+                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. Một [[tháp la-de]], hai pháo thử 40 mm bắn xuống từ dưới bụng, một [[khoang đổ bộ]] và một [[la-de phòng thủ điểm]] bắn hạ tên lửa.\n" +
                 "Mạnh / yếu: ở tầng cao chỉ phòng không tầm xa và tiêm kích bắn tới; ở tầng thấp mọi vũ khí phòng không đều tới.\n" +
                 "Mẹo: chờ lúc nó xuống thấp; phá la-de phòng thủ điểm trước khi dùng tên lửa."),
             ["guide.argus"] = (
@@ -418,14 +418,14 @@ namespace MachineBrigade.Game.Hud
             ["radio.orlov.monster"] = ("Orlov: \"Monster, advance. Nothing on that field is worth a second shell.\"", "Orlov: \"Monster, tiến lên. Chẳng thứ gì trên chiến trường đáng một phát thứ hai.\""),
             ["unit.hyperion"] = ("Hyperion · Heavy Cruiser", "Hyperion · Tuần dương hạm hạng nặng"),
             ["short.hyperion"] = ("Hyperion", "Hyperion"),
-            ["note.hyperion"] = ("Aurel's heavy space cruiser: a forked armoured prow with the sun-beam projector slung under it, coilgun turrets, ventral laser batteries. It never comes down.", "Tuần dương hạm vũ trụ hạng nặng của Aurel: mũi bọc giáp chẻ đôi, máy chiếu tia mặt trời treo dưới mũi, tháp pháo điện từ, dàn la-de dưới bụng. Không bao giờ hạ xuống."),
+            ["note.hyperion"] = ("Aurel's heavy space cruiser: a forked armoured prow with the sun-beam projector slung under it, twin 155 mm turrets, missile cells, laser batteries and 127 mm guns under the hull. It never comes down.", "Tuần dương hạm vũ trụ hạng nặng của Aurel: mũi bọc giáp chẻ đôi, máy chiếu tia mặt trời treo dưới mũi, tháp pháo đôi 155 mm, ô phóng tên lửa, dàn la-de và pháo 127 mm dưới bụng. Không bao giờ hạ xuống."),
             ["guide.hyperion"] = (
                 "[[Boss]] · heavy space cruiser · never lands\n" +
-                "How it fights: stays on the high tier. Two coilgun turrets on the prow and two laser batteries under the hull; point-defence lasers guard it, it drops two landing pods a minute, and every 65 s the projector under its prow burns a 70 × 6 m strip for 4 s.\n" +
+                "How it fights: stays on the high tier. Two twin 155 mm turrets on the prow, two missile cells on its flanks, laser batteries and 127 mm guns under the hull firing down; point-defence lasers guard it, it drops two landing pods a minute, and every 65 s the projector under its prow burns a 70 × 6 m strip for 4 s.\n" +
                 "Strong / weak: it never comes to the low tier, so only long-range missiles and electromagnetic guns reach it.\n" +
                 "Tip: keep long-range missiles and railguns ready; leave the strip at once when the warning shows.",
                 "[[Boss]] · tuần dương hạm vũ trụ hạng nặng · không bao giờ hạ xuống\n" +
-                "Cách đánh: luôn ở tầng cao. Hai tháp pháo điện từ trên mũi và hai dàn la-de dưới bụng; tháp la-de phòng thủ điểm che chắn, mỗi phút thả hai khoang đổ bộ, cứ 65 giây máy chiếu dưới mũi đốt dải 70 × 6 m trong 4 giây.\n" +
+                "Cách đánh: luôn ở tầng cao. Hai tháp pháo đôi 155 mm trên mũi, hai ô phóng tên lửa hai bên sườn, dàn la-de và pháo 127 mm dưới bụng bắn xuống; tháp la-de phòng thủ điểm che chắn, mỗi phút thả hai khoang đổ bộ, cứ 65 giây máy chiếu dưới mũi đốt dải 70 × 6 m trong 4 giây.\n" +
                 "Mạnh / yếu: không bao giờ xuống tầng thấp, chỉ tên lửa tầm xa và pháo điện từ với tới.\n" +
                 "Mẹo: giữ sẵn tên lửa tầm xa và pháo ray; rời dải ngay khi có cảnh báo."),
             ["guide.parts.tip.hyperion"] = ("Tip: the [[main laser]] (the projector under the prow) carries the sun beam; break it and the beam is gone. The [[point-defence lasers]] shoot your missiles down.", "Mẹo: [[la-de chính]] (máy chiếu dưới mũi) mang đòn tia mặt trời; phá nó là hết tia. [[Tháp la-de phòng thủ]] bắn hạ tên lửa của bạn."),
@@ -435,14 +435,14 @@ namespace MachineBrigade.Game.Hud
             // Play-test 14 wave R4: Hyperion's two mini-boss variants.
             ["unit.theia"] = ("Theia · Escort Carrier", "Theia · Tàu sân bay hộ tống"),
             ["short.theia"] = ("Theia", "Theia"),
-            ["note.theia"] = ("Hyperion's escort carrier: a drone swarm from its ventral bay, drop pods, a dorsal laser turret and two point-defence lasers. High and low on a fixed schedule.", "Tàu sân bay hộ tống của Hyperion: bầy drone từ khoang bụng, khoang đổ bộ, một tháp la-de trên lưng và hai la-de phòng thủ điểm. Đổi tầng cao và thấp theo lịch cố định."),
+            ["note.theia"] = ("Hyperion's escort carrier: a drone swarm from its ventral bay, drop pods, missile pods, 35 mm guns under the hull, a dorsal laser turret and two point-defence lasers. High and low on a fixed schedule.", "Tàu sân bay hộ tống của Hyperion: bầy drone từ khoang bụng, khoang đổ bộ, bệ tên lửa, pháo 35 mm dưới bụng, một tháp la-de trên lưng và hai la-de phòng thủ điểm. Đổi tầng cao và thấp theo lịch cố định."),
             ["guide.theia"] = (
                 "[[Mini boss]] · escort carrier · Hyperion's sister ship\n" +
-                "How it fights: never in orbit: high and low on a fixed schedule. Its [[drone bay]] launches a drone swarm and drops a landing pod every 30 s; a [[laser turret]] and two [[point-defence lasers]] that pick off missiles.\n" +
+                "How it fights: never in orbit: high and low on a fixed schedule. Its [[drone bay]] launches a drone swarm and drops a landing pod every 30 s; two missile pods, twin 35 mm guns under the hull, a [[laser turret]] and two [[point-defence lasers]] that pick off missiles and aircraft.\n" +
                 "Strong / weak: at high altitude only long-range anti-air and fighters reach it; low, every anti-air weapon does. Its drones hit tanks from above.\n" +
                 "Tip: keep anti-air with your armour; break the drone bay in a low window.",
                 "[[Mini boss]] · tàu sân bay hộ tống · tàu chị em của Hyperion\n" +
-                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. [[Khoang drone]] thả bầy drone và cứ 30 giây một khoang đổ bộ; một [[tháp la-de]] và hai [[la-de phòng thủ điểm]] bắn hạ tên lửa.\n" +
+                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. [[Khoang drone]] thả bầy drone và cứ 30 giây một khoang đổ bộ; hai bệ tên lửa, pháo đôi 35 mm dưới bụng, một [[tháp la-de]] và hai [[la-de phòng thủ điểm]] bắn hạ tên lửa và máy bay.\n" +
                 "Mạnh / yếu: ở tầng cao chỉ phòng không tầm xa và tiêm kích bắn tới; ở tầng thấp mọi vũ khí phòng không đều tới. Drone của nó đánh xe tăng từ trên xuống.\n" +
                 "Mẹo: giữ phòng không đi cùng xe bọc thép; phá khoang drone trong lúc nó xuống thấp."),
             ["guide.parts.tip.theia"] = ("Tip: the [[drone bay]] launches the swarm and the pods; the [[point-defence lasers]] shoot your missiles down.", "Mẹo: [[khoang drone]] thả bầy drone và khoang đổ bộ; [[la-de phòng thủ điểm]] bắn hạ tên lửa của bạn."),
@@ -450,19 +450,19 @@ namespace MachineBrigade.Game.Hud
             ["radio.aurel.theia.phase2"] = ("Aurel: \"Recover what is left and launch again.\"", "Aurel: \"Thu hồi những gì còn lại rồi phóng tiếp.\""),
             ["unit.coeus"] = ("Coeus · Gunship Cruiser", "Coeus · Tuần dương hạm pháo kích"),
             ["short.coeus"] = ("Coeus", "Coeus"),
-            ["note.coeus"] = ("Hyperion's gunship: a heavy coilgun on a dorsal turret that hits like artillery, two laser batteries under the hull, no missile defence. High and low on a fixed schedule.", "Tàu pháo kích của Hyperion: pháo điện từ hạng nặng trên tháp lưng bắn như pháo binh, hai dàn la-de dưới bụng, không có phòng thủ tên lửa. Đổi tầng cao và thấp theo lịch cố định."),
+            ["note.coeus"] = ("Hyperion's gunship: a twin 203 mm dorsal turret that hits like artillery, twin 76 mm guns under the hull, Spike missiles, no missile defence. High and low on a fixed schedule.", "Tàu pháo kích của Hyperion: tháp pháo đôi 203 mm trên lưng bắn như pháo binh, pháo đôi 76 mm dưới bụng, tên lửa Spike, không có phòng thủ tên lửa. Đổi tầng cao và thấp theo lịch cố định."),
             ["guide.coeus"] = (
                 "[[Mini boss]] · gunship cruiser · Hyperion's sister ship\n" +
-                "How it fights: never in orbit: high and low on a fixed schedule. Its [[main gun]], a heavy coilgun, pierces a line of vehicles every few seconds; two laser batteries cover its belly.\n" +
+                "How it fights: never in orbit: high and low on a fixed schedule. Its [[main gun]], a twin 203 mm turret, shells your vehicles every few seconds; two twin 76 mm turrets fire down from its belly and two Spike launchers reach far.\n" +
                 "Strong / weak: no protection system and no point defence: missiles reach it at every height. Its [[engines]] carry it: break them and it slows.\n" +
                 "Tip: spread your vehicles out of a line; bring missiles.",
                 "[[Mini boss]] · tuần dương hạm pháo kích · tàu chị em của Hyperion\n" +
-                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. [[Pháo chính]] là pháo điện từ hạng nặng, cứ vài giây xuyên một hàng xe; hai dàn la-de che bụng.\n" +
+                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. [[Pháo chính]] là tháp pháo đôi 203 mm, cứ vài giây nã đạn vào xe của bạn; hai tháp pháo đôi 76 mm bắn xuống từ bụng và hai bệ Spike bắn xa.\n" +
                 "Mạnh / yếu: không có hệ thống bảo vệ, không có la-de phòng thủ điểm: tên lửa với tới ở mọi tầng. [[Động cơ]] đưa nó đi: phá là nó chậm lại.\n" +
                 "Mẹo: dàn xe ra, đừng xếp thành hàng; mang tên lửa theo."),
-            ["guide.parts.tip.coeus"] = ("Tip: the [[main gun]] is everything it hits with; break the [[engines]] to slow it.", "Mẹo: [[pháo chính]] là đòn đánh duy nhất đáng kể; phá [[động cơ]] để nó chậm lại."),
+            ["guide.parts.tip.coeus"] = ("Tip: the [[main gun]] is its heaviest blow; break the [[engines]] to slow it.", "Mẹo: [[pháo chính]] là đòn nặng nhất; phá [[động cơ]] để nó chậm lại."),
             ["radio.aurel.coeus"] = ("Aurel: \"Coeus, find their column and walk your fire along it.\"", "Aurel: \"Coeus, tìm đoàn xe của chúng và rải hỏa lực dọc theo nó.\""),
-            ["radio.aurel.coeus.phase2"] = ("Aurel: \"Capacitors to the gun. Everything else can wait.\"", "Aurel: \"Dồn tụ điện cho pháo. Mọi thứ khác chờ đó.\""),
+            ["radio.aurel.coeus.phase2"] = ("Aurel: \"All shells to the main turret. Everything else can wait.\"", "Aurel: \"Dồn đạn cho tháp pháo chính. Mọi thứ khác chờ đó.\""),
             ["unit.nyx"] = ("Nyx · Stealth Destroyer", "Nyx · Tàu khu trục tàng hình"),
             ["short.nyx"] = ("Nyx", "Nyx"),
             ["note.nyx"] = ("A wave-piercing, pyramid-topped destroyer: a 155 mm gun turret firing every 8 s, hidden until it fires or a radar or drone lights it.", "Tàu khu trục mũi xuyên sóng, thượng tầng hình kim tự tháp: tháp pháo 155 mm bắn mỗi 8 giây, ẩn mình đến khi bắn hoặc bị radar hay drone soi."),

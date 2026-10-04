@@ -89,3 +89,7 @@ New weapons each drawn for one ship only in Tools/blender/mb_pt14_r5_sea.py (no 
 unit or boss): Scylla `sc_ak230`, `sc_2m7`, `sc_uran`; Nyx `nx_millennium`, `nx_vls`; Typhon `ty_stern57` (new code for the
 third 57 mm, not `_ty_57` called again); Hydra `hy_twin57`, `hy_100`, `hy_launcher` (R4's `mb_pt14_r4_naval.hy_twin57` /
 `hy_a190` are no longer called). DECISIONS "Play-test 14 sea bosses after R4 (lane sea)".
+## After R4 (lane space, 04/10)
+The space bosses' new weapons (Icarus / Mk.0 / Daedalus ventral guns, Hyperion's 155 mm, 127 mm and VLS, Theia's 35 mm and
+pods, Coeus's 203 mm, 76 mm and Spike boxes) are each drawn by their own function in Tools/blender/mb_pt14_r5_space.py:
+nothing shared between ships, no kit sub-assembly (only the primitives and K.bolt_ring / K.grille / K.lamp surface kit).

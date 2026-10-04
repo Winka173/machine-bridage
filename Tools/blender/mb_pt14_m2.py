@@ -28,6 +28,7 @@ from mathutils import Matrix, Vector
 
 import mb_kit27 as k
 import mb_kit35 as K
+import mb_pt14_r5_space as R5
 import mb_p35_ixion as IX
 import mb_p35_nuke_train as NT
 import mb_p35_wave8_bosses as W8
@@ -1250,8 +1251,8 @@ def _dd_hull(a):
     """The hull skin (upper: Plaster, keel: Armor, one closed loft split at the chine by material), the chine band
     with its trench windows, the Aurel stripes along the chine, the spine ridge with its lights, the bow cap."""
     ys = [DY0, -17.0, -15.0, -12.5, -10.0, -7.5, -5.0, -2.5, 0.0, 2.5, 5.0, 7.5, 10.0, 12.5, 14.5, DY1]
-    up = a.part('Upper_hull', 'Plaster')
-    low = a.part('Keel', 'Concrete')
+    up = a.part('Upper_hull', 'Team')
+    low = a.part('Keel', 'Titanium')
     urings, lrings = [], []
     for y in ys:
         w, t, b = _dd_w(y), _dd_t(y), _dd_b(y)
@@ -1278,7 +1279,7 @@ def _dd_hull(a):
             else:
                 fit.box((.08, .5, .2), loc=(s * (w + .05), yc - .4, .02), rot=(0, 0, -s * ang), bevel=0)
                 fit.box((.08, .3, .14), loc=(s * (w + .05), yc + .45, .02), rot=(0, 0, -s * ang), bevel=0)
-        st = a.part('Aurel_stripes', 'Team')
+        st = a.part('Aurel_stripes', 'ContainerBlue')
         st.tube([(s * _dd_w(y) * 1.004, y, .27) for y in (DY0 + .4, -10.0, 2.0, DY1 - .1)], .07, seg=4, caps=False)
         st.tube([(s * _dd_w(y) * 1.004, y, -.24) for y in (DY0 + .4, -10.0, 2.0, DY1 - .1)], .07, seg=4, caps=False)
     # The spine ridge with its running lights, the bow cap.
@@ -1296,7 +1297,7 @@ def _dd_hull(a):
 def _dd_plating(a):
     """The upper hull's plating patchwork in three tones over the slopes and the deck, the panel-line grid, window
     rows along the terrace lip, the hangar-door recesses in the flanks, deck fittings and the radiator rows aft."""
-    tones = ('PlasterWhite', 'Concrete', 'Armor', 'Plaster')
+    tones = ('SpaceWhite', 'Titanium', 'Armor', 'Team')
     rng = __import__('random').Random(11)
     for i, y in enumerate([v * .5 for v in range(-32, 28)]):
         w, t = _dd_w(y), _dd_t(y)
@@ -1371,7 +1372,7 @@ def _dd_superstructure(a):
     """The stepped superstructure aft (three tiers with sloped walls and window bands), the bridge tower, the wide
     bridge module with its window band, the two sensor dishes on their posts, the comms masts and the APS emitter
     on the bridge roof (Mount_APS)."""
-    st = a.part('Hull', 'Plaster')
+    st = a.part('Hull', 'Team')
     for (p0, p1, p2, p3, z0, z1, tp) in DD_TIERS:
         bottom = [p0, p3, p2, p1]
         cx, cy = 0.0, sum(p[1] for p in bottom) / 4
@@ -1389,10 +1390,10 @@ def _dd_superstructure(a):
                                                bevel=0)
     # Tier roofs: inset plates, vents, small structures.
     for s in (-1, 1):
-        K.clutter(a, 'Roof_fittings', 'Concrete', s * .6 if s > 0 else -4.3, 4.3 if s > 0 else -.6, 9.4, 14.2, 5.05,
+        K.clutter(a, 'Roof_fittings', 'Titanium', s * .6 if s > 0 else -4.3, 4.3 if s > 0 else -.6, 9.4, 14.2, 5.05,
                   10, seed=31 + s, size=(.3, .9), height=(.15, .5))
     # The bridge tower and the bridge.
-    k.extrude(a.part('Hull_tower', 'Plaster'), [(-1.0, -1.3), (1.0, -1.3), (1.35, .1), (1.0, 1.35), (-1.0, 1.35),
+    k.extrude(a.part('Hull_tower', 'Team'), [(-1.0, -1.3), (1.0, -1.3), (1.35, .1), (1.0, 1.35), (-1.0, 1.35),
                                                 (-1.35, .1)], 1.5, loc=(0, 10.8, 7.1), axis='Z', chamfer=.06,
               taper=(.88, .9))
     br = a.part('Hull_bridge', 'Armor')
@@ -1404,11 +1405,11 @@ def _dd_superstructure(a):
         a.part('Bridge_mullions', 'Armor').box((.05, .06, .2), loc=(x, 9.22, 8.26), rot=(.55, 0, 0), bevel=0)
     for s in (-1, 1):
         a.part('Bridge_windows', 'Lamp').box((.04, 1.2, .14), loc=(s * 2.72, 10.2, 8.15), bevel=0)
-    a.part('Aurel_stripes', 'Team').box((4.72, 1.72, .12), loc=(0, 10.3, 7.72), bevel=0)
+    a.part('Aurel_stripes', 'ContainerBlue').box((4.72, 1.72, .12), loc=(0, 10.3, 7.72), bevel=0)
     # Dishes on posts, masts and the APS emitter.
     for s in (-1, 1):
         a.part('Dish_posts', 'Steel').cyl(.12, 1.0, loc=(s * 1.75, 10.7, 9.05), seg=8, bevel=0)
-        K.dish(a.part('Tower_dishes', 'PlasterWhite'), a.part('Dish_feed', 'Steel'), (s * 1.75, 10.7, 9.6), r=.8,
+        K.dish(a.part('Tower_dishes', 'SpaceWhite'), a.part('Dish_feed', 'Steel'), (s * 1.75, 10.7, 9.6), r=.8,
                normal=(s * .6, -.3, 1), seg=18)
     for x, y, h in ((.9, 11.0, 1.4), (-.6, 11.0, 1.0), (0, 9.8, .8)):
         a.part('Masts', 'Steel').cyl(.05, h, loc=(x, y, 8.6 + h / 2), seg=6, bevel=0)
@@ -1420,8 +1421,8 @@ def _dd_superstructure(a):
     # Comms towers on the first tier with their dishes, the stern vanes.
     for s in (-1, 1):
         x, y, z = s * 4.1, 8.0, 3.85
-        k.block(a.part('Comm_towers', 'Plaster'), (.9, .9, 1.6), loc=(x, y, z + .8), chamfer=.06, taper=(.8, .8))
-        K.dish(a.part('Tower_dishes', 'PlasterWhite'), a.part('Dish_feed', 'Steel'), (x, y, z + 1.9), r=.6,
+        k.block(a.part('Comm_towers', 'Team'), (.9, .9, 1.6), loc=(x, y, z + .8), chamfer=.06, taper=(.8, .8))
+        K.dish(a.part('Tower_dishes', 'SpaceWhite'), a.part('Dish_feed', 'Steel'), (x, y, z + 1.9), r=.6,
                normal=(s * .7, -.6, .6), seg=14)
         k.extrude(a.part('Stern_vanes', 'Armor'), [(0, 0), (1.6, 0), (1.9, 2.4), (1.2, 2.4)], .2,
                   loc=(s * 6.0, 14.4, 2.6), rot=(0, -s * .35, 0), axis='X', chamfer=.02)
@@ -1433,7 +1434,7 @@ def _dd_deck_modules(a):
     "city" read of a capital ship's upper hull from the battle camera."""
     import random
     rng = random.Random(53)
-    tones = (('Deck_modules', 'Plaster'), ('Deck_modules_light', 'PlasterWhite'), ('Deck_modules_grey', 'Concrete'))
+    tones = (('Deck_modules', 'Team'), ('Deck_modules_light', 'SpaceWhite'), ('Deck_modules_grey', 'Titanium'))
     vents = a.part('Deck_vents', 'Undercarriage')
     for s in (-1, 1):
         y = -14.5
@@ -1496,7 +1497,7 @@ def _dd_tier_kit(a):
                     n_out = -n_out
                 m = Matrix((along.normalized(), up.normalized(), n_out)).transposed()
                 rot = m.to_euler('XYZ')
-                mat = ('Concrete', 'PlasterWhite', 'Plaster')[rng.randrange(3)]
+                mat = ('Titanium', 'SpaceWhite', 'Team')[rng.randrange(3)]
                 pc = c + n_out * .03
                 a.part(f'Tier_plates_{mat.lower()}', mat).box((along.length, up.length, .04),
                                                                loc=(s * pc.x, pc.y, pc.z), rot=(rot.x, -rot.y, -rot.z)
@@ -1514,7 +1515,7 @@ def _dd_turbolaser(a, x, y, size=1.0):
     sc = size
     k.lathe(a.part('Turbolaser_bases', 'Armor'), [(.95 * sc, -.4), (.95 * sc, .12), (.85 * sc, .18)], loc=(x, y, z),
             seg=14)
-    k.sharp_loft(a.part('Turbolasers', 'Plaster'), [
+    k.sharp_loft(a.part('Turbolasers', 'Team'), [
         [(x - .75 * sc, y - .6 * sc, z + .18), (x + .75 * sc, y - .6 * sc, z + .18), (x + .8 * sc, y + .8 * sc, z + .18),
          (x - .8 * sc, y + .8 * sc, z + .18)],
         [(x - .55 * sc, y - .45 * sc, z + .72 * sc), (x + .55 * sc, y - .45 * sc, z + .72 * sc),
@@ -1534,16 +1535,16 @@ def _dd_turbolaser(a, x, y, size=1.0):
 
 def _dd_weapons(a):
     """Four twin laser turrets on the terrace lips (decor), the two point-defence lasers forward (Pd_laser_l / _r,
-    breakable: a pylon from the hull, the dome, the emitter, its glow), the two forward ball guns under the chine
-    (Mount_gun / .001: the 57 mm twins, the armoured ball in its socket, two jacketed barrels, Muzzle_gun between
-    their tips and Muzzle_b1 / _b2 at each, Gun_barrels_* kick on the mount)."""
+    breakable: a pylon from the hull, the dome, the emitter, its glow), and the guns under the hull (play-test 14
+    after R4): the chin laser balls (Mount_gun / .005), the ventral twin 57 mm turrets (.001 / .002), the GAU-12
+    gondolas (.003 / .004)."""
     for x, y, sc in ((3.6, 1.2, 1.0), (-3.6, 1.2, 1.0), (1.9, -9.5, .75), (-1.9, -9.5, .75),
                      (2.3, -2.2, .9), (-2.3, -2.2, .9)):
         _dd_turbolaser(a, x, y, sc)
     for name, x, tag in (('Pd_laser_l', 3.2, ''), ('Pd_laser_r', -3.2, '_r')):
         p = a.pivot(name, (x, -5.0, 3.2))
         zs = _dd_surface(abs(x), -5.0) - 3.2
-        k.lathe(a.part('Pd_tower' + tag, 'Plaster', p), [(.98, zs - .15), (.9, zs + .2), (.7, -.32), (.62, -.25)],
+        k.lathe(a.part('Pd_tower' + tag, 'Team', p), [(.98, zs - .15), (.9, zs + .2), (.7, -.32), (.62, -.25)],
                 seg=8)
         k.lathe(a.part('Pd_base' + tag, 'Armor', p), [(.66, -.3), (.62, -.2), (.6, -.02), (0, 0)], seg=14)
         for j in range(4):
@@ -1555,28 +1556,16 @@ def _dd_weapons(a):
         a.part('Pd_emitter' + tag, 'Steel', p).cyl(.14, .12, loc=(0, -.2, .27), rot=(R90 - .3, 0, 0), seg=8, bevel=0)
         a.part('Pd_glow' + tag, 'Energy', p).sphere(.1, loc=(0, -.95, .5), seg=8, rings=4)
         K.tone(a, name, k=.86)
-    for i, x in enumerate((2.4, -2.4)):
-        tag = '' if i == 0 else '_001'
-        key = K.name('Mount_gun', i)
+    # Play-test 14 after R4 (lane space, mb_pt14_r5_space): the chin balls are the targeting lasers (mounts 0 and 5:
+    # Mount_gun, .005), the 57 mm twins hang in ventral turrets amidships (.001, .002), two GAU-12 gondolas aft
+    # (.003, .004), so the k-th gun mount is the k-th Mount_gun and the guns under the hull fire down.
+    for idx, x in ((0, 2.4), (5, -2.4)):
         zs = _dd_surface(abs(x), -6.0, top=False)
-        k.lathe(a.part('Gun_sockets', 'Undercarriage'), [(1.0, 0), (1.0, .06), (.82, .1), (.82, .5)],
-                loc=(x, -6.0, zs - .02), seg=16)
-        m = a.pivot(key, (x, -6.0, -1.4))
-        a.part('Gun_ball' + tag, 'Armor', m).sphere(.78, seg=16, rings=10)
-        a.part('Gun_ball_band' + tag, 'Team', m).cyl(.8, .12, loc=(0, 0, -.05), seg=16, bevel=0)
-        k.block(a.part('Gun_mantlet' + tag, 'Armor', m), (.85, .4, .55), loc=(0, -.62, -.28), chamfer=.06)
-        for j, dx in enumerate((-.19, .19)):
-            k.lathe(a.part(f'Gun_barrels{tag}', 'Steel', m), [(.12, 0), (.12, .45), (.095, .5), (.085, 1.85),
-                                                              (.11, 1.9), (.11, 2.05), (.08, 2.1)],
-                    loc=(dx, -.75, -.43), rot=(R90, 0, 0), seg=10)
-            for f in (.75, 1.25):
-                a.part(f'Gun_jackets{tag}', 'Armor', m).cyl(.11, .14, loc=(dx, -.75 - f, -.43), rot=K.FORWARD,
-                                                            seg=10, bevel=0)
-        mz = K.name('Muzzle_gun', i)
-        a.pivot(mz, (0, -2.88, -.43), key)
-        a.pivot(f'Muzzle_b1_gun{tag}', (-.19 if x > 0 else .19, 0, 0), mz)
-        a.pivot(f'Muzzle_b2_gun{tag}', (.19 if x > 0 else -.19, 0, 0), mz)
-        K.tone(a, key, k=.88)
+        R5.dd_laser_ball(a, idx, x, -6.0, zs - .55, zs)
+    for idx, x in ((1, 4.8), (2, -4.8)):
+        R5.dd_v57(a, idx, x, 5.6, _dd_surface(abs(x), 5.6, top=False))
+    for idx, x in ((3, 2.8), (4, -2.8)):
+        R5.dd_v25(a, idx, x, 13.0, _dd_surface(abs(x), 13.0, top=False))
 
 
 def _dd_belly(a):
@@ -1588,7 +1577,7 @@ def _dd_belly(a):
         zb = _dd_surface(abs(x), y, top=False) + 2.0
         k.lathe(a.part(f'Bay_ring_{i}', 'Armor', p), [(1.3, zb - .12), (1.38, zb - .05), (1.38, zb + .05),
                                                      (1.05, zb + .05), (1.05, zb - .3)], seg=18)
-        k.lathe(a.part(f'Bay_pod_{i}', 'Team', p), [(0, zb - 1.05), (.45, zb - .95), (.78, zb - .6), (.82, zb - .2),
+        k.lathe(a.part(f'Bay_pod_{i}', 'SpaceWhite', p), [(0, zb - 1.05), (.45, zb - .95), (.78, zb - .6), (.82, zb - .2),
                                                    (.8, zb + .1), (0, zb + .12)], seg=16)
         a.part(f'Bay_glow_{i}', 'Energy', p).torus(.9, .05, loc=(0, 0, zb - .3), seg=18, ring=4)
         fr = a.part(f'Bay_frame_{i}', 'Steel', p)
@@ -1628,7 +1617,7 @@ def _dd_engines(a):
     """The main thruster block (Thruster_main: the housing, six big nozzles with their throats and glow, the engine
     collars and gimbal rams), two auxiliary engines at the stern corners, the RCS quads at the bow and the stern."""
     t = a.pivot('Thruster_main', (0, 15.5, .6))
-    k.block(a.part('Engine_housing', 'Concrete', t), (12.4, 2.2, 3.4), loc=(0, .2, 0), chamfer=.18, taper=(.92, .9))
+    k.block(a.part('Engine_housing', 'Titanium', t), (12.4, 2.2, 3.4), loc=(0, .2, 0), chamfer=.18, taper=(.92, .9))
     K.grille(a, (0, -.85, 1.75), 6.0, .9, facing=(0, 0, 1), slats=8, parent='Thruster_main', frame_mat='Armor')
     for i in range(6):
         x = -5.0 + i * 2.0
@@ -1683,7 +1672,7 @@ def _dd_kit(a):
     # The forward sensor array on the bow deck: a low dome and a flat panel.
     y = -13.0
     z = _dd_t(y)
-    a.part('Sensor_dome', 'PlasterWhite').sphere(.5, loc=(0, y, z + .1), seg=14, rings=6)
+    a.part('Sensor_dome', 'SpaceWhite').sphere(.5, loc=(0, y, z + .1), seg=14, rings=6)
     k.block(a.part('Sensor_panel', 'Medical'), (1.2, .1, .7), loc=(0, y + 1.4, z + .35), rot=(-.4, 0, 0), chamfer=.02)
     # Hull lights along the chine, docking clamps aft.
     for s in (-1, 1):
@@ -1701,9 +1690,11 @@ def _dd_kit(a):
 
 
 def daedalus(a):
-    """Daedalus, redrawn (module docstring). Runtime nodes at the old file's places: Mount_gun / .001 with
-    Muzzle_gun / .001 and their per-barrel Muzzle_b1 / _b2 (the twins are modelled here: mb_fix_barrels no longer
-    copies them), Pd_laser_l / _r, Thruster_main, Pod_bay_1 .. _3, Mount_APS, Point_fire, Point_exhaust."""
+    """Daedalus, redrawn (module docstring). Runtime nodes: Mount_gun .. .005 with Muzzle_gun .. (the chin laser
+    balls 0 / 5 at the old ball guns' places, the ventral 57 mm twins 1 / 2 with Muzzle_b1 / _b2, the GAU-12
+    gondolas 3 / 4; play-test 14 after R4), Pd_laser_l / _r, Thruster_main, Pod_bay_1 .. _3, Mount_APS, Point_fire,
+    Point_exhaust. Its own paint (data "livery": "own"): the Team hull in the def's paint, Titanium lower hull and
+    engine block, SpaceWhite panels, navy marks; heat tiles on the downward faces, plate tone steps."""
     K.suffixed(a)
     _dd_hull(a)
     _dd_plating(a)
@@ -1714,6 +1705,8 @@ def daedalus(a):
     _dd_belly(a)
     _dd_engines(a)
     _dd_kit(a)
+    R5.livery(a, tints=[(r'^Keel$', (.93, .95, 1.0))], belly=(r'^(Upper_hull|Keel|Keel_fin|Engine_housing)$', (.3, .31, .33)),
+              panels=(r'^(Upper_hull|Keel|Hull|Deck_modules\w*)$', 2.5, .07))
     k.clean(a)
 
 
