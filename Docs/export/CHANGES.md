@@ -2958,3 +2958,15 @@ Unity / test.
 |---|---|---|---|---|
 | PT14-M6-1 | `bunker_pkm` `damage` | 5.5 (kế thừa mg_coax) | 1.6 (~10.5 DPS duy trì mỗi súng, thô) | 4 súng lỗ châu mai giữ nguyên; sản lượng chính diện mg_bunker chỉ +20 % so với trước wave M4 |
 | PT14-M6-2 | sản lượng thô mg_bunker (NSV ~106.6 DPS duy trì) | +36.2 / súng: +34 % (một cung), +68 % (chính diện) | +10.5 / súng: +9.9 % (một cung), +19.7 % (chính diện), 0 (phía sau) | outgoingDamageMult giữ nguyên (0.6086); .twin (NSV đôi ~123.4 DPS) chính diện +17 %; .flame không có súng cổng |
+
+## Play-test 14 model wave M7 (lane A): Icarus redrawn, icarus_mk0 own model
+
+Nhánh `feature/pt14-m7`. Lý do: `Docs/DECISIONS.md` "Play-test 14 model wave M7 (lane A)". Chỉ dữ liệu vẽ / vị trí trúng
+(`at`), node và model; sát thương, máu, vũ khí không đổi.
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-M7-1 | `silver_bug` parts `crash_turret_l` / `_r` `node`, `at` | Mount_gun.002 / .003, [∓6.5, -6.0, 2.2] | Mount_gun.004 / .005, [∓6.16, -7.0, 0.62] (tháp pháo 40 mm trên ụ sườn) | view gán mount thứ k của slot cho Mount_<slot> thứ k: 6 mount gun cần 6 node (trước đây mount 3, 4 bắn laser ra từ tháp 40 mm, mount 5, 6 bắn 40 mm ra từ coilgun) |
+| PT14-M7-2 | `silver_bug` parts `pd_laser_l` / `_r` `at` | [∓3.2, 5, 3.2] | [∓2.4, 6.0, 1.84] | tháp laser phòng thủ điểm đặt trên vai thân mới (icarus_mk0 kế thừa) |
+| PT14-M7-3 | `icarus_mk0` | vẽ bằng model silver_bug | `"model": "icarus_mk0"` (cùng chiều dài, cùng tỉ lệ vẽ 0.991; 3 bộ phận ở đúng chỗ của silver_bug, không cần `tune.at`) | model riêng (nguyên mẫu) |
+| PT14-M7-4 | `hyperion` `hiddenNodes` | (tự sinh từ crash_turret bị bỏ: Mount_gun.002 / .003) | ghi rõ `["Mount_gun.002", "Mount_gun.003"]` | giữ Hyperion y như cũ sau PT14-M7-1 (node bị ẩn đi theo tên node mới) |

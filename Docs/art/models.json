@@ -1103,6 +1103,10 @@
     "file": "hyperion.glb",
     "triangles": 19014
   },
+  "icarus_mk0": {
+    "file": "icarus_mk0.glb",
+    "triangles": 27954
+  },
   "icbm": {
     "file": "icbm.glb",
     "triangles": 858
@@ -1657,11 +1661,11 @@
   },
   "silver_bug": {
     "file": "silver_bug.glb",
-    "triangles": 21760
+    "triangles": 51816
   },
   "silver_bug_wreck": {
     "file": "silver_bug_wreck.glb",
-    "triangles": 20250
+    "triangles": 53686
   },
   "sky_fortress": {
     "file": "sky_fortress.glb",

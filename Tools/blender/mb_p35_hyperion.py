@@ -176,6 +176,8 @@ def _engine(a):
                                                   (1.1, 1.6), (.5, .4)], loc=(0, 0, 0), rot=K.BACKWARD, seg=16,
             worn=(3,), caps=(False, False))
     a.part('Engine_glow', 'Energy', th).cyl(.65, .05, loc=(0, .45, 0), rot=K.BACKWARD, seg=12, bevel=0)
+    # Play-test 14 wave M7: the bell's exit plane, where the runtime's engine flame leaves (EngineFlames.cs).
+    K.engine_flame(a, 0, (0, 2.47, 0), 1.5, parent='Thruster_main')
     for s in (-1, 1):
         a.part('Engine_tanks', 'Plaster', th).sphere(.9, loc=(s * 1.7, -1.4, .4), seg=12, rings=8)
     K.soot(a, (0, 7.0, 9.4), radius=2.0, k=.3)

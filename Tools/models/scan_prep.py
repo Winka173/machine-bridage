@@ -278,6 +278,10 @@ def weapon_checks(defs: Defs, own, cls: str, names):
             slots.append((s.get('slot') or 'mg', s.get('aim') or 'Free', defs.barrels(s['weapon']), False))
     if cls == 'boss':
         mw = f(own, 'mountWeapons')
+        # Play-test 14 wave M7: a variant with its own "secondary" list has the main mount and those only (BossTemplates
+        # never inherits mountWeapons; icarus_mk0's "secondary": [] leaves it its main laser), not its parent's table.
+        if own.get('variantOf') and 'secondary' in own:
+            mw = None
         need_total = len(mw) if isinstance(mw, dict) and mw else sum(b for _, _, b, _ in slots)
         # A variant boss (keep / drop) loses the mounts only its dropped parts carried (BossTemplates.Strip).
         need_total -= len(dropped_mounts(defs, own))
