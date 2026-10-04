@@ -592,6 +592,13 @@
             "hash": "v2:c9f2808a308b767a7d25e33eb70bd2f8cbb0811c"
         },
         {
+            "id": "coeus",
+            "kind": "boss",
+            "model": "coeus",
+            "source": "Models/coeus",
+            "hash": "v2:e233f62fcdc100b736fe482b42459e2bb0cf2522"
+        },
+        {
             "id": "command_airship",
             "kind": "boss",
             "model": "command_airship",
@@ -890,14 +897,14 @@
             "kind": "boss",
             "model": "hydra_sub",
             "source": "Models/hydra_sub",
-            "hash": "v2:5c96e67b4aaf5f56bf6e5ca227073948fee2e288"
+            "hash": "v2:87387173dd1f6328e3d832701cb549d779ea6a4a"
         },
         {
             "id": "hyperion",
             "kind": "boss",
             "model": "hyperion",
             "source": "Models/hyperion",
-            "hash": "v2:1c8f807bf12c1380452629a112e0c16aab864aea"
+            "hash": "v2:c843f0559dff6002722873b34605dc728ef59d66"
         },
         {
             "id": "icarus_mk0",
@@ -1051,7 +1058,7 @@
             "kind": "boss",
             "model": "nyx",
             "source": "Models/nyx",
-            "hash": "v2:f85ef41245155e6b54e3a229df2d2a18e78f622d"
+            "hash": "v2:12a71428da8ae5620033a04d9ae6dbbb47384e21"
         },
         {
             "id": "one_shot_atgm_tower",
@@ -1150,6 +1157,13 @@
             "model": "targeting_station",
             "source": "Models/targeting_station",
             "hash": "v2:784a0353ba3dc67881ca70dcde6c9d778607158b"
+        },
+        {
+            "id": "theia",
+            "kind": "boss",
+            "model": "theia",
+            "source": "Models/theia",
+            "hash": "v2:d2b9b2e78511a023757e9398ad05127bd1aeaeb5"
         },
         {
             "id": "typhon",
