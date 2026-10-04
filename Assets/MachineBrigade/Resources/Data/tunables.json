@@ -403,6 +403,43 @@
     }
   },
   "ai": {
+    // AI MASTER lane P0-B: map topology, engagement feasibility, the buying AI's ProcurementDirector.
+    "topology": {
+      "rebuildSeconds": { "value": 5.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "SimWorld.Topology (rebuild after ground changes)" },
+      "chokeWidth": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "MapTopology.FindChokes" },
+      "nearestRings": { "value": 8, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "06", "code": "DomainGraph.NearestPassableCell" }
+    },
+    "feasibility": {
+      "travelDetour": { "value": 1.25, "unit": "x", "kind": "tan_suat", "linh_vuc": "06", "code": "EngagementFeasibility.TravelSeconds" },
+      "laneSamples": { "value": 9, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "06", "code": "EngagementFeasibility.Observed (ship lane samples)" }
+    },
+    "procurement": {
+      "blendWeight": { "value": 3.0, "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector (master score on the legacy buy score)" },
+      "weights": { "value": [0.22, 0.18, 0.15, 0.12, 0.10, 0.08, 0.06, 0.05, 0.04], "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector.Score (section 12)" },
+      "intelEma": { "value": 0.2, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector.Observe (section 15)" },
+      "mismatchConfirmSeconds": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "ProcurementDirector.Observe (section 15)" },
+      "mismatchShare": { "value": 0.2, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector.Observe" },
+      "mismatchConfidence": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector.Observe" },
+      "confidenceCp": { "value": 24.0, "unit": "CP", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector.Observe" },
+      "minPlanCards": { "value": 3, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "06", "code": "ProcurementDirector.MakePlan (section 16)" },
+      "maxPlanCards": { "value": 5, "unit": "count", "kind": "tran", "linh_vuc": "06", "code": "ProcurementDirector.MakePlan (section 16)" },
+      "planExpireSeconds": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "ProcurementDirector.PlanValid" },
+      "reserveHorizonSeconds": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "ProcurementDirector.Reserve (section 18)" },
+      "reserveMaxSeconds": { "value": 12.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "ProcurementDirector.Reserve (section 18)" },
+      "feedbackCombatSeconds": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "ProcurementDirector feedback (section 196)" },
+      "feedbackUtilization": { "value": 0.15, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector feedback (section 196)" },
+      "feedbackMinModifier": { "value": 0.55, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector feedback (section 196)" },
+      "feedbackPoints": { "value": 4.0, "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector feedback on the legacy score" },
+      "timingRefSeconds": { "value": 90.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "ProcurementDirector.TimingFit (section 208)" },
+      "lateGameSeconds": { "value": 480.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "ProcurementDirector.TimingFit (section 208)" },
+      "longTravelSeconds": { "value": 45.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "ProcurementDirector long-travel penalty" },
+      "longTravelMax": { "value": 0.15, "unit": "share", "kind": "tran", "linh_vuc": "06", "code": "ProcurementDirector long-travel penalty" },
+      "congestionMax": { "value": 0.2, "unit": "share", "kind": "tran", "linh_vuc": "06", "code": "ProcurementDirector congestion penalty (section 17)" },
+      "redundancyPerCopy": { "value": 0.04, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector redundancy penalty" },
+      "saturation": { "value": 1.3, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector role saturation (section 197)" },
+      "capabilitySeconds": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "ProcurementDirector capability replacement (section 209)" },
+      "floors": { "value": [0.05, 0.08, 0.10], "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "ProcurementDirector soft floors recon/AA/AT (section 198)" }
+    },
     "conquestAi": {
       "clusterRadius": { "value": 9.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "ConquestAi.ClusterRadius" },
       "holdReach": { "value": 26.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "ConquestAi.HoldReach" }

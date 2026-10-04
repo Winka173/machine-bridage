@@ -21,6 +21,7 @@ namespace MachineBrigade.Sim.Content
             foreach (var e in Pack2Ai) yield return e;
             foreach (var e in Pack2Campaign) yield return e;
             foreach (var e in Pack2Maps) yield return e;
+            foreach (var e in AiMasterP0B) yield return e;
         }
     }
 }

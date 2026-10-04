@@ -22,6 +22,9 @@ namespace MachineBrigade.Sim.AI
         Emergency,
         Tactic,
         Hint,
+
+        /// <summary>AI MASTER P0-B: the buying AI's BUY, REJECT, PLAN and RESERVE lines (Part O's PURCHASE_* codes).</summary>
+        Purchase,
     }
 
     /// <summary>One scoring factor: a key the viewer's text table names ("why.ratio") and its points (+ or -).</summary>
