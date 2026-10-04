@@ -12794,3 +12794,17 @@ Nhánh `feature/final-f3`. Nguồn: `Docs/balance/final/` (PLAN_APPLY.md, VIEC_C
 | F3-10 | Scylla `cruise.impactTier` | (Ultimate, thừa kế leviathan_cruise) | Large + hình T4 của Kalibr | quyết định lead (như Tomahawk, lane L); sát thương/bán kính giữ |
 | F3-11 | Nyx `cruise.impactTier` | (Ultimate, thừa kế) | Large + hình T4 | như trên |
 | F3-12 | `p26_jotunn_sec_jo_rockets` `impactTier` | Medium (thừa kế boss_rockets) | Large | Smerch 300 mm T4, 450 sát thương, lõi 8 m: nổ lớn theo cùng chiều cấp hình (Tools/balance/f3_tier_feel.py mục 3); chỉ tăng |
+
+## MB_FINAL blast sizes
+Nhánh `feature/final-blast`. Chủ 04/10: "các size vụ nổ: theo sheet luôn ... không thu nhỏ vụ nổ nữa" (AGENT_RULES: kích thước nổ theo sheet, được thu nhỏ). Nguồn: `Docs/balance/final/` (VIEC_CHO_AGENT_FINAL.md mục 6: giữ thang T0-T5, cấp theo cỡ nòng / đầu đạn; Field_Decisions giữ `weaponFamilyTable.tier`). Chỉ đổi `impactTier` (hình nổ, phần view); sát thương / bán kính của Sim giữ nguyên. Kiểm: `python Tools/balance/f3_tier_feel.py` -> 0 lệch (Docs/checks/f3_tier_feel.md). Lý do: `Docs/DECISIONS.md` "MB_FINAL blast sizes (lane A)". Không chạy Unity, không chạy test.
+
+| vũ khí | cấp (họ) | impactTier cũ | mới | lý do |
+|---|---|---|---|---|
+| `gunship_105` (AC-130 105 mm) | T2 (cal_100_105_he) | Huge | Large | 105 mm HE lõi 5,5 m: như mọi 105 mm khác (gun_105_bunker_he, pt14_sb_v105, siege_gun_105_he: Large) |
+| `gunship_105_guided` (đạn 2) | T2 | Huge (thừa kế) | Large (thừa kế) | theo súng mẹ |
+| `p26_roc_roc105` (Roc) | T2 | Huge (thừa kế gunship_105) | Large (thừa kế) | như trên |
+| `sam_48n6` (S-400) | T2 (sam_s_400_48n6) | Huge | Large | SAM T2: nổ như Patriot PAC-2 (Large), vẫn hơn bệ SAM thường (Buk, Medium) một bậc |
+| `borer_drill` (Earth Borer) | T0 (melee_drill_head) | Large | Medium | cận chiến T0: như lưỡi ủi (dozer_blade, Medium) |
+| `p26_jotunn_jo_rockets` | T4 (rkt_smerch_300) | Medium (thừa kế boss_rockets) | Large | Smerch 300 mm T4, lõi 5 m: Large như GMLRS 227 (T4) và bản sec của nó (tăng) |
+
+Công cụ: f3_tier_feel.py mục 2 tính mẫu boss (cha chỉ boss bắn, vd p26_typhon_ty100) và đạn 2 (roundOf) theo phía người bắn; một cấp cao hơn đánh nhẹ hơn chỉ là lệch khi nổ cũng to hơn, còn lại (31, cấp theo cỡ nòng, sát thương/phát của sheet) liệt kê riêng; mã thoát 1 khi còn lệch bất kỳ. Test: PlayTest6Tests 48N6 = Large, to hơn sam_long.

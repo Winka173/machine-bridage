@@ -20643,3 +20643,18 @@ Values: `Docs/export/CHANGES.md` "MB_FINAL F3". Tests written, not run: `MbFinal
   bands (100-105 mm T2 against 120 mm T3); re-run it after F1's damage pass.
 - Merge note: F3 touches balance.json on Scylla's line (2136, its cruise block) and Nyx's cruise line, and line 958 (Jotunn);
   F1 / F2 rows on those lines merge by hand.
+
+## MB_FINAL blast sizes (lane A)
+- Owner 04/10: explosion sizes follow the sheet (shrinking allowed). The sheet keeps `weaponFamilyTable.tier` (T0-T5 by
+  calibre / warhead, VIEC_CHO_AGENT_FINAL section 6) and gives no per-weapon blast, so a weapon's blast (`impactTier`) is
+  its tier's band: T0-T1 Small, T2 Medium, T3 Large, T4 Huge, T5 Ultimate, one band either way allowed (the F3 check), and
+  among those the band its same-calibre / same-kind siblings already use. Only `impactTier` changed; no damage, splash,
+  tier or TierFx code.
+- 105 mm HE (AC-130 `gunship_105`, its guided round, Roc's `p26_roc_roc105` by inheritance): Huge -> Large, as every other
+  105 mm HE with a 5-5.5 m core. 48N6: Huge -> Large (PAC-2's look; a band over the Buk's Medium). Borer drill (melee T0):
+  Large -> Medium (the dozer blade's). Jotunn 300 mm rockets (T4): Medium -> Large (GMLRS 227 and its own sec variant).
+- f3_tier_feel.py section 2 fixed: boss templates fired only through boss children and second rounds take their shooter's
+  side (they were compared with vehicle rounds: 22 false rows). A higher tier that hits softer is a mismatch only if its
+  blast is also bigger; the 31 others (100-105 mm T2 hitting harder than 120-125 mm T3 after the sheet's per-round damage)
+  are listed apart, the tier staying the calibre's. The tool now exits 1 on any mismatch; it reports 0.
+- PlayTest6Tests: 48N6 Large and bigger than sam_long (was Huge). Not run (no tests).
