@@ -17,7 +17,7 @@ namespace MachineBrigade.Tests
     /// </summary>
     public class PlayTest14LaneHTests
     {
-        private static readonly string[] Warships = { "hyperion", "silver_bug", "icarus_mk0", "daedalus", "argus", "command_airship" };
+        private static readonly string[] Warships = { "hyperion", "silver_bug", "icarus_mk0", "daedalus", "argus", "command_airship", "theia", "coeus" };
 
         [Test]
         public void TheFlyingWarshipsHoldToFireTurnSlowlyAndAimWithTheirTurrets()

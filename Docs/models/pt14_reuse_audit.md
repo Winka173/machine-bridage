@@ -78,3 +78,8 @@ Done: Kraken (every sub-assembly above, plus its carrier deck), Hydra's mast rad
 weapons (wave 8 / wave 12 weapon functions swapped while the old builder runs), Ixion's turret and cab guns, Typhon
 redrawn whole (Tools/blender/mb_pt14_r2_naval.py, mb_pt14_r2_land.py; DECISIONS "Play-test 14 boss redraw R2 (lane A)").
 Still kit level: K.gun_barrel on Hydra's own guns and on the ground bosses (lane B, R2 ground).
+
+## R4 (lane models, 04/10)
+hyperion redrawn whole (its own cruiser builder, mb_pt14_r4_cruiser); theia and coeus are new models with their own weapon
+functions (nothing shared with hyperion but the hull-section primitives); hydra_sub's twin 57 mm and 100 mm and nyx's AGS and
+cupolas redrawn bespoke (mb_pt14_r4_naval): Hydra's guns no longer use W.poly_turret / K.gun_barrel.

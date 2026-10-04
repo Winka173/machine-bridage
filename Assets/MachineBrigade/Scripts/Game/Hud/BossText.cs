@@ -416,22 +416,53 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: ra khỏi vòng đỏ trong 6 giây nó hiện; phá [[khẩu cối]] (nòng dài) là mất đòn này."),
             ["guide.parts.tip.monster"] = ("Tip: the [[mortar]] is the long barrel with its own health; break it and the 800 mm shell is gone. The four turrets only defend.", "Mẹo: [[khẩu cối]] là nòng dài có máu riêng; phá nó là hết quả đạn 800 mm. Bốn tháp pháo chỉ để tự vệ."),
             ["radio.orlov.monster"] = ("Orlov: \"Monster, advance. Nothing on that field is worth a second shell.\"", "Orlov: \"Monster, tiến lên. Chẳng thứ gì trên chiến trường đáng một phát thứ hai.\""),
-            ["unit.hyperion"] = ("Hyperion · Orbital Mirror Station", "Hyperion · Trạm gương quỹ đạo"),
+            ["unit.hyperion"] = ("Hyperion · Heavy Cruiser", "Hyperion · Tuần dương hạm hạng nặng"),
             ["short.hyperion"] = ("Hyperion", "Hyperion"),
-            ["note.hyperion"] = ("A ring of hexagonal mirrors round a station core: it never comes down, and burns a strip of ground with sunlight.", "Vòng gương lục giác quanh lõi trạm: không bao giờ xuống thấp, và đốt một dải mặt đất bằng ánh nắng."),
+            ["note.hyperion"] = ("Aurel's heavy space cruiser: a forked armoured prow with the sun-beam projector slung under it, coilgun turrets, ventral laser batteries. It never comes down.", "Tuần dương hạm vũ trụ hạng nặng của Aurel: mũi bọc giáp chẻ đôi, máy chiếu tia mặt trời treo dưới mũi, tháp pháo điện từ, dàn la-de dưới bụng. Không bao giờ hạ xuống."),
             ["guide.hyperion"] = (
-                "[[Boss]] · orbital mirror station · never lands\n" +
-                "How it fights: a stand-in body for now (the Silver Bug's, high tier only). Point-defence lasers guard it, it drops two landing pods a minute, and every 65 s a sun beam burns a 70 × 6 m strip for 4 s.\n" +
+                "[[Boss]] · heavy space cruiser · never lands\n" +
+                "How it fights: stays on the high tier. Two coilgun turrets on the prow and two laser batteries under the hull; point-defence lasers guard it, it drops two landing pods a minute, and every 65 s the projector under its prow burns a 70 × 6 m strip for 4 s.\n" +
                 "Strong / weak: it never comes to the low tier, so only long-range missiles and electromagnetic guns reach it.\n" +
                 "Tip: keep long-range missiles and railguns ready; leave the strip at once when the warning shows.",
-                "[[Boss]] · trạm gương quỹ đạo · không bao giờ hạ xuống\n" +
-                "Cách đánh: tạm dùng thân Silver Bug (chỉ ở tầng cao). Tháp la-de phòng thủ điểm che chắn, mỗi phút thả hai khoang đổ bộ, cứ 65 giây một tia mặt trời đốt dải 70 × 6 m trong 4 giây.\n" +
+                "[[Boss]] · tuần dương hạm vũ trụ hạng nặng · không bao giờ hạ xuống\n" +
+                "Cách đánh: luôn ở tầng cao. Hai tháp pháo điện từ trên mũi và hai dàn la-de dưới bụng; tháp la-de phòng thủ điểm che chắn, mỗi phút thả hai khoang đổ bộ, cứ 65 giây máy chiếu dưới mũi đốt dải 70 × 6 m trong 4 giây.\n" +
                 "Mạnh / yếu: không bao giờ xuống tầng thấp, chỉ tên lửa tầm xa và pháo điện từ với tới.\n" +
                 "Mẹo: giữ sẵn tên lửa tầm xa và pháo ray; rời dải ngay khi có cảnh báo."),
-            ["guide.parts.tip.hyperion"] = ("Tip: the [[main laser]] carries the sun beam; break it and the beam is gone. The [[point-defence lasers]] shoot your missiles down.", "Mẹo: tia [[la-de chính]] mang đòn tia mặt trời; phá nó là hết tia. [[Tháp la-de phòng thủ]] bắn hạ tên lửa của bạn."),
+            ["guide.parts.tip.hyperion"] = ("Tip: the [[main laser]] (the projector under the prow) carries the sun beam; break it and the beam is gone. The [[point-defence lasers]] shoot your missiles down.", "Mẹo: [[la-de chính]] (máy chiếu dưới mũi) mang đòn tia mặt trời; phá nó là hết tia. [[Tháp la-de phòng thủ]] bắn hạ tên lửa của bạn."),
             ["radio.aurel.hyperion"] = ("Aurel: \"Hyperion is awake. The sun has a new tenant, Colonel.\"", "Aurel: \"Hyperion đã thức. Mặt trời có người thuê mới, đại tá.\""),
-            ["radio.aurel.hyperion.phase2"] = ("Aurel: \"The mirrors turn. You will not like the next hour.\"", "Aurel: \"Gương xoay rồi. Các người sẽ không thích giờ tới.\""),
-            ["radio.aurel.hyperion.phase3"] = ("Aurel: \"Three mirrors lost. It still burns, Colonel.\"", "Aurel: \"Mất ba gương. Nó vẫn đốt được, đại tá.\""),
+            ["radio.aurel.hyperion.phase2"] = ("Aurel: \"All batteries, open fire. You will not like the next hour.\"", "Aurel: \"Mọi dàn pháo, khai hỏa. Các người sẽ không thích giờ tới.\""),
+            ["radio.aurel.hyperion.phase3"] = ("Aurel: \"Hull breached on three decks. It still burns, Colonel.\"", "Aurel: \"Thủng vỏ ba tầng boong. Nó vẫn đốt được, đại tá.\""),
+            // Play-test 14 wave R4: Hyperion's two mini-boss variants.
+            ["unit.theia"] = ("Theia · Escort Carrier", "Theia · Tàu sân bay hộ tống"),
+            ["short.theia"] = ("Theia", "Theia"),
+            ["note.theia"] = ("Hyperion's escort carrier: a drone swarm from its ventral bay, drop pods, a dorsal laser turret and two point-defence lasers. High and low on a fixed schedule.", "Tàu sân bay hộ tống của Hyperion: bầy drone từ khoang bụng, khoang đổ bộ, một tháp la-de trên lưng và hai la-de phòng thủ điểm. Đổi tầng cao và thấp theo lịch cố định."),
+            ["guide.theia"] = (
+                "[[Mini boss]] · escort carrier · Hyperion's sister ship\n" +
+                "How it fights: never in orbit: high and low on a fixed schedule. Its [[drone bay]] launches a drone swarm and drops a landing pod every 30 s; a [[laser turret]] and two [[point-defence lasers]] that pick off missiles.\n" +
+                "Strong / weak: at high altitude only long-range anti-air and fighters reach it; low, every anti-air weapon does. Its drones hit tanks from above.\n" +
+                "Tip: keep anti-air with your armour; break the drone bay in a low window.",
+                "[[Mini boss]] · tàu sân bay hộ tống · tàu chị em của Hyperion\n" +
+                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. [[Khoang drone]] thả bầy drone và cứ 30 giây một khoang đổ bộ; một [[tháp la-de]] và hai [[la-de phòng thủ điểm]] bắn hạ tên lửa.\n" +
+                "Mạnh / yếu: ở tầng cao chỉ phòng không tầm xa và tiêm kích bắn tới; ở tầng thấp mọi vũ khí phòng không đều tới. Drone của nó đánh xe tăng từ trên xuống.\n" +
+                "Mẹo: giữ phòng không đi cùng xe bọc thép; phá khoang drone trong lúc nó xuống thấp."),
+            ["guide.parts.tip.theia"] = ("Tip: the [[drone bay]] launches the swarm and the pods; the [[point-defence lasers]] shoot your missiles down.", "Mẹo: [[khoang drone]] thả bầy drone và khoang đổ bộ; [[la-de phòng thủ điểm]] bắn hạ tên lửa của bạn."),
+            ["radio.aurel.theia"] = ("Aurel: \"Theia, launch everything. Hyperion wants the sky clear.\"", "Aurel: \"Theia, phóng hết. Hyperion muốn bầu trời sạch bóng.\""),
+            ["radio.aurel.theia.phase2"] = ("Aurel: \"Recover what is left and launch again.\"", "Aurel: \"Thu hồi những gì còn lại rồi phóng tiếp.\""),
+            ["unit.coeus"] = ("Coeus · Gunship Cruiser", "Coeus · Tuần dương hạm pháo kích"),
+            ["short.coeus"] = ("Coeus", "Coeus"),
+            ["note.coeus"] = ("Hyperion's gunship: a heavy coilgun on a dorsal turret that hits like artillery, two laser batteries under the hull, no missile defence. High and low on a fixed schedule.", "Tàu pháo kích của Hyperion: pháo điện từ hạng nặng trên tháp lưng bắn như pháo binh, hai dàn la-de dưới bụng, không có phòng thủ tên lửa. Đổi tầng cao và thấp theo lịch cố định."),
+            ["guide.coeus"] = (
+                "[[Mini boss]] · gunship cruiser · Hyperion's sister ship\n" +
+                "How it fights: never in orbit: high and low on a fixed schedule. Its [[main gun]], a heavy coilgun, pierces a line of vehicles every few seconds; two laser batteries cover its belly.\n" +
+                "Strong / weak: no protection system and no point defence: missiles reach it at every height. Its [[engines]] carry it: break them and it slows.\n" +
+                "Tip: spread your vehicles out of a line; bring missiles.",
+                "[[Mini boss]] · tuần dương hạm pháo kích · tàu chị em của Hyperion\n" +
+                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. [[Pháo chính]] là pháo điện từ hạng nặng, cứ vài giây xuyên một hàng xe; hai dàn la-de che bụng.\n" +
+                "Mạnh / yếu: không có hệ thống bảo vệ, không có la-de phòng thủ điểm: tên lửa với tới ở mọi tầng. [[Động cơ]] đưa nó đi: phá là nó chậm lại.\n" +
+                "Mẹo: dàn xe ra, đừng xếp thành hàng; mang tên lửa theo."),
+            ["guide.parts.tip.coeus"] = ("Tip: the [[main gun]] is everything it hits with; break the [[engines]] to slow it.", "Mẹo: [[pháo chính]] là đòn đánh duy nhất đáng kể; phá [[động cơ]] để nó chậm lại."),
+            ["radio.aurel.coeus"] = ("Aurel: \"Coeus, find their column and walk your fire along it.\"", "Aurel: \"Coeus, tìm đoàn xe của chúng và rải hỏa lực dọc theo nó.\""),
+            ["radio.aurel.coeus.phase2"] = ("Aurel: \"Capacitors to the gun. Everything else can wait.\"", "Aurel: \"Dồn tụ điện cho pháo. Mọi thứ khác chờ đó.\""),
             ["unit.nyx"] = ("Nyx · Stealth Destroyer", "Nyx · Tàu khu trục tàng hình"),
             ["short.nyx"] = ("Nyx", "Nyx"),
             ["note.nyx"] = ("A wave-piercing, pyramid-topped destroyer: a 155 mm gun turret firing every 8 s, hidden until it fires or a radar or drone lights it.", "Tàu khu trục mũi xuyên sóng, thượng tầng hình kim tự tháp: tháp pháo 155 mm bắn mỗi 8 giây, ẩn mình đến khi bắn hoặc bị radar hay drone soi."),

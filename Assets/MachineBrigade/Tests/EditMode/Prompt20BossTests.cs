@@ -29,7 +29,7 @@ namespace MachineBrigade.Tests
 
         private static readonly string[] NewBosses =
             { "moloch", "daedalus", "typhon", "ixion", "bastion_mk0", "fenrir", "scylla", "locust", "behemoth_mk2", "icarus_mk0", "argus",
-              "kraken", "monster", "hyperion", "nyx", "hydra" };
+              "kraken", "monster", "hyperion", "nyx", "hydra", "theia", "coeus" };
 
         private static SimWorld Field(int seed = 3)
         {
@@ -82,12 +82,14 @@ namespace MachineBrigade.Tests
                 ["icarus_mk0"] = "aurel", ["behemoth_mk0"] = "varga",
                 // Prompt 25 F2 batch D.
                 ["kraken"] = "kessler", ["monster"] = "orlov", ["hyperion"] = "aurel", ["nyx"] = "kessler", ["hydra"] = "hung",
+                // Play-test 14 wave R4: Hyperion's two mini-boss variants.
+                ["theia"] = "aurel", ["coeus"] = "aurel",
             };
             var bosses = C.Vehicles.Values.Where(v => v.Boss).ToList();
             // Play-test 14 deleted ten bosses (two main: Gungnir, Kronos).
-            Assert.AreEqual(31, bosses.Count, "14 main bosses and 17 mini bosses");
+            Assert.AreEqual(33, bosses.Count, "14 main bosses and 19 mini bosses (play-test 14 wave R4: Theia, Coeus)");
             Assert.AreEqual(14, bosses.Count(b => b.Rank == BossRank.Main));
-            Assert.AreEqual(17, bosses.Count(b => b.Rank == BossRank.Mini));
+            Assert.AreEqual(19, bosses.Count(b => b.Rank == BossRank.Mini));
             foreach (var b in bosses)
             {
                 Assert.IsNotNull(b.Frame, b.Id + " has a body frame");

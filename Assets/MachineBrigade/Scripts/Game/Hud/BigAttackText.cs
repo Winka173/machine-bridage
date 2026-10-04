@@ -134,7 +134,7 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.monster_800_shell.stop"] = ("Break the mortar (the barrel): the shell goes with it.", "Phá khẩu cối (nòng): mất luôn phát đạn."),
             ["bigattack.hyperion_sun_beam"] = ("Sun Beam", "Tia mặt trời"),
             ["bigattack.hyperion_sun_beam.cancelled"] = ("Sun beam cancelled", "Đã hủy tia mặt trời"),
-            ["radio.bigattack.hyperion_sun_beam"] = ("Aurel: \"Mirrors aligned. Hold still, it will be over quickly.\"", "Aurel: \"Gương đã thẳng hàng. Đứng yên, sẽ nhanh thôi.\""),
+            ["radio.bigattack.hyperion_sun_beam"] = ("Aurel: \"Projector aligned. Hold still, it will be over quickly.\"", "Aurel: \"Máy chiếu đã ngắm xong. Đứng yên, sẽ nhanh thôi.\""),
             ["guide.bigattack.hyperion_sun_beam.how"] = ("A beam burns a 70 × 6 m strip for 4 s, 500 a second; 4 s of warning. Every 50 s.", "Một tia đốt dải 70 × 6 m trong 4 giây, 500 mỗi giây; cảnh báo 4 giây. Mỗi 50 giây."),
             ["guide.bigattack.hyperion_sun_beam.dodge"] = ("Leave the narrow strip at once.", "Rời ngay dải hẹp."),
             ["guide.bigattack.hyperion_sun_beam.stop"] = ("Break the main laser during the warning.", "Phá tia la-de chính trong lúc cảnh báo."),

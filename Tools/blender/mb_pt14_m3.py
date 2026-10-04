@@ -36,6 +36,7 @@ import mb_kit35 as K
 import mb_p35_w5parts as W
 import mb_pt14_r1_naval as RN
 import mb_pt14_r2_naval as R2
+import mb_pt14_r4_naval as R4
 
 R90 = math.pi / 2
 TAU = math.tau
@@ -1521,7 +1522,7 @@ def _nx_weapons(a):
     of the deckhouse, and two more aft; Part_mg / .001 > Mount_mg / .001, the Mk 110-style stealth cupolas on the
     deckhouse roof fore and aft (mounts 1, 2 fire 127 mm)."""
     H = NX_H
-    RN.nx_ags(a)
+    R4.nx_gun(a)
     a.pivot('Part_vls', (0, -8.6, 3.0))
     for s in (-1, 1):
         x = s * (H.deck_half(-8.6) - .75)
@@ -1533,7 +1534,7 @@ def _nx_weapons(a):
     for pname, mount, muzzle, loc, tag in (('Part_mg', 'Mount_mg', 'Muzzle_mg', (0, -5.35, 6.42), ''),
                                            ('Part_mg__001', 'Mount_mg__001', 'Muzzle_mg__001', (0, 9.8, 6.42),
                                             '_001')):
-        RN.nx_cupola(a, pname, mount, muzzle, loc, tag)
+        R4.nx_cupola(a, pname, mount, muzzle, loc, tag)
 
 
 def nyx(a):
@@ -1713,35 +1714,11 @@ def _hy_weapons(a):
     muzzles), Mount_gun.002 (the 100 mm in its faceted mount forward of the sail on a raised pedestal), the launch
     tube hatches behind the sail (Part_doors_l / _r), the drone deck aft, the stern planes and the pump-jet
     (Part_rudder)."""
-    for mount, muzzle, loc, tag, tg in (('Mount_gun', 'Muzzle_gun', (0, -12.6, HY_DECK), '', 'gun'),
-                                        ('Mount_gun__001', 'Muzzle_gun__001', (0, 9.7, HY_DECK - .08), '_001',
-                                         'gun_001')):
-        k.lathe(a.part('Gun_well' + tag, 'Undercarriage'), [(.98, -.02), (.98, .03), (.9, .05)],
-                loc=loc, seg=16)
-        m = a.pivot(mount, (loc[0], loc[1], loc[2] + .04))
-        W.poly_turret(a.part('Gun_house' + tag, 'Team', m), [
-            (0, [(-.45, -1.0), (.45, -1.0), (.85, -.4), (.85, .9), (-.85, .9), (-.85, -.4)]),
-            (.62, [(-.3, -.8), (.3, -.8), (.65, -.3), (.65, .75), (-.65, .75), (-.65, -.3)])], chamfer=.03)
-        zg = .36
-        for x in (-.2, .2):
-            K.gun_barrel(a, 'Gun_barrels' + tag, m, x, -.85, zg, 2.3, .045, seg=8, extractor=(.3, 1.2, .2),
-                         brake_name='Gun_muzzles' + tag, brake='collar')
-        mz = a.pivot(muzzle, (0, -.85 - 2.3 - .06, zg), m)
-        per_barrel(a, mz, tg, (-.2, .2))
-        a.part('Gun_sight' + tag, 'Glass', m).box((.16, .02, .08), loc=(.42, -.62, .5), bevel=0)
-    # The 100 mm forward of the sail on its pedestal (Mount_gun.002, the def's deck_gun part).
-    k.lathe(a.part('Deck_gun_pedestal', 'Armor'), [(1.15, -.1), (1.15, .38), (1.05, .45)], loc=(0, -8.4, HY_DECK),
-            seg=18)
-    m = a.pivot('Mount_gun__002', (0, -8.4, HY_DECK + .45))
-    W.poly_turret(a.part('Dg_house', 'Team', m), [
-        (0, [(-.45, -1.35), (.45, -1.35), (1.05, -.4), (1.05, 1.15), (-1.05, 1.15), (-1.05, -.4)]),
-        (.95, [(-.22, -.95), (.22, -.95), (.7, -.25), (.7, .95), (-.7, .95), (-.7, -.25)])], chamfer=.03)
-    k.inset(a.part('Dg_house', 'Team', m), lambda c, n, f: abs(n.z) < .6, width=.05, depth=-.01)
-    K.gun_barrel(a, 'Dg_barrels', m, 0, -1.15, .48, 3.4, .07, seg=10, extractor=(.35, 1.25, .25),
-                 brake_name='Dg_muzzles', brake='collar')
-    a.pivot('Muzzle_gun__002', (0, -1.15 - 3.4 - .06, .48), m)
-    k.block(a.part('Dg_hatch', 'Armor', m), (.4, .35, .06), loc=(0, .5, .96), chamfer=.015)
-    K.soot(a, (0, -13.0, 3.1), radius=.4, k=.3)
+    # Wave R4 (owner 04/10: "tháp pháo trên hydra, làm lại, theo tiêu chuẩn typhon"): the guns are Hydra's own
+    # bespoke mounts at Typhon's detail (mb_pt14_r4_naval), at the old pivots.
+    R4.hy_twin57(a, 0, (0, -12.6, HY_DECK), '', 'gun')
+    R4.hy_twin57(a, 1, (0, 9.7, HY_DECK - .08), '_001', 'gun_001')
+    R4.hy_a190(a, (0, -8.4, HY_DECK))
     # The launch tube hatches, five a side behind the sail (Part_doors_l / _r), riveted, one shade off.
     for name, s in (('Part_doors_l', 1), ('Part_doors_r', -1)):
         p = a.pivot(name, (s * .48, 3.8, HY_DECK))

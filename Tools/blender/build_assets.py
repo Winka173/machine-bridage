@@ -247,6 +247,7 @@ import mb_pt14_m6  # noqa: E402
 import mb_pt14_m5  # noqa: E402
 import mb_pt14_m7  # noqa: E402
 import mb_pt14_r2_naval  # noqa: E402
+import mb_pt14_r4_cruiser  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -452,7 +453,10 @@ def all_builders():
                 **mb_pt14_m7.BUILDERS,
                 # Play-test 14 boss redraw R2 (DECISIONS "Play-test 14 boss redraw R2 (lane A)"): typhon redrawn
                 # whole (its own builder; last, so it wins).
-                **mb_pt14_r2_naval.BUILDERS}
+                **mb_pt14_r2_naval.BUILDERS,
+                # Play-test 14 wave R4 (DECISIONS "Play-test 14 wave R4 (lane models)"): hyperion redrawn as a heavy
+                # cruiser, its mini-boss variants theia and coeus with their own models (last, so they win).
+                **mb_pt14_r4_cruiser.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
