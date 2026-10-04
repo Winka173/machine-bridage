@@ -191,7 +191,7 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         public float SmokeSpacing { get; private set; } = 1f;
 
-        private float _smokeLife = 3.2f * SmokeTimes.Trail;
+        private float _smokeLife = 3.2f * SmokeTimes.Trail * SmokeTimes.TrailLength;
         private int _segments = 4;
         private bool _glowOn = true;
 
@@ -201,7 +201,8 @@ namespace MachineBrigade.Game.Effects
             var tier = MatchSettings.Tier;
             SmokeSpacing = tier switch { GraphicsQuality.Low => 1.6f, GraphicsQuality.Medium => 1.25f, _ => 1f };
             // Play-test 14 session 5: the trail clears in half the time (SmokeTimes.Trail).
-            _smokeLife = tier switch { GraphicsQuality.Low => 1.7f, GraphicsQuality.Medium => 2.5f, _ => 3.2f } * SmokeTimes.Trail;
+            // Play-test 14 (lane H): half as long again (SmokeTimes.TrailLength).
+            _smokeLife = tier switch { GraphicsQuality.Low => 1.7f, GraphicsQuality.Medium => 2.5f, _ => 3.2f } * SmokeTimes.Trail * SmokeTimes.TrailLength;
             _segments = tier switch { GraphicsQuality.Low => 2, GraphicsQuality.Medium => 4, _ => 5 };
             _glowOn = tier != GraphicsQuality.Low;
         }
@@ -266,6 +267,8 @@ namespace MachineBrigade.Game.Effects
         public void Smoke(Vector3 position, Vector3 back, float size)
         {
             var life = _smokeLife * Random.Range(0.8f, 1.2f);
+            // Play-test 14 (lane H): a quarter narrower (SmokeTimes.TrailWidth); the puffs keep their spacing.
+            size *= SmokeTimes.TrailWidth;
             Emit(_smoke, position + Random.insideUnitSphere * (size * 0.12f), back * Random.Range(1f, 2.5f) + Random.insideUnitSphere * 0.35f,
                 size * Random.Range(0.85f, 1.15f), life, Color.white, Random.Range(0f, 360f));
         }

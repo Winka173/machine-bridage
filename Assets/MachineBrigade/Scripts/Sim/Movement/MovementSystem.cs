@@ -748,6 +748,9 @@ namespace MachineBrigade.Sim.Movement
                 TryAdvance(v, v.Speed * dt);
                 // Play-test 14: a rail boss never turns off its track to fire.
                 if (def.Frame?.Move == BossMove.Rail) return;
+                // Play-test 14 (lane H): a warship that holds to fire never swings its hull while halted ("không cho quay"): its
+                // turrets lay onto the target, the hull keeps its heading; it turns only on the move, slowly.
+                if (def.HoldsToFire) return;
                 // Hovering aircraft turn to face their target so hull-mounted rockets and missiles bear.
                 if (def.Mounts[0].Aim == MountAim.Hull && _world.TryGetTarget(v.Target, out var target) &&
                     (def.Flying || target is not Vehicle { Flying: true }))
@@ -850,7 +853,9 @@ namespace MachineBrigade.Sim.Movement
 
             // Slow right down for sharp turns so tanks pivot instead of drawing wide arcs.
             var alignment = MathF.Cos(MathF.Min(misalignment, MathF.PI * 0.5f));
-            var targetSpeed = def.Speed * v.SpeedFactor * MathF.Max(alignment, def.Flying ? 0.4f : 0.15f);
+            // Play-test 14 (lane H): a slow-turning warship (holds to fire) all but stops to come round, as a big ship does,
+            // rather than drawing a wide circle round its waypoint.
+            var targetSpeed = def.Speed * v.SpeedFactor * MathF.Max(alignment, def.Flying && !def.HoldsToFire ? 0.4f : 0.15f);
             // Roll in slowly, and pivot (tracks can turn on the spot) rather than orbit the point.
             if (isFinal) targetSpeed = MathF.Min(targetSpeed, MathF.Max(misalignment > 0.6f ? 0.3f : 1.5f, distance * 1.5f));
             targetSpeed = MathF.Min(targetSpeed, slowFor);

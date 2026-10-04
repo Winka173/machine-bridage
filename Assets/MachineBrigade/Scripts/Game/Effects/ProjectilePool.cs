@@ -566,7 +566,7 @@ namespace MachineBrigade.Game.Effects
                 while (shot.PuffT + shot.PuffStep <= t)
                 {
                     shot.PuffT += shot.PuffStep;
-                    emitters.Trail(PositionAt(shot, shot.PuffT), shot.Trail);
+                    emitters.MissileTrail(PositionAt(shot, shot.PuffT), shot.Trail);
                 }
                 emitters.Motor(shot.Transform.position - forward * 0.6f, forward, shot.Trail);
             }
@@ -592,7 +592,7 @@ namespace MachineBrigade.Game.Effects
             while (shot.PuffT + shot.PuffStep <= 1f)
             {
                 shot.PuffT += shot.PuffStep;
-                emitters.Trail(PositionAt(shot, shot.PuffT), shot.Trail);
+                emitters.MissileTrail(PositionAt(shot, shot.PuffT), shot.Trail);
             }
         }
 

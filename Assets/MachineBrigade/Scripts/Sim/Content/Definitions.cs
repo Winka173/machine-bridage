@@ -706,7 +706,8 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>
         /// Play-test 14 (lane G): a slow warship (the Icarus) that never fires on the move: it halts while any of its guns
-        /// has something in reach, fires, and goes on once they have been quiet a moment (data "holdsToFire").
+        /// has something in reach, fires, and goes on once they have been quiet a moment (data "holdsToFire"). Play-test 14
+        /// (lane H): halted, its hull never turns (its turrets lay), and on the move it slows right down to come round.
         /// </summary>
         public bool HoldsToFire { get; internal set; }
 

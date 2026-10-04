@@ -409,11 +409,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: đón đợt tăng tốc của nó từ ngoài tầm (xe diệt tăng bắn 40 m, pháo binh), rồi áp sát khi nó đã dùng xong."),
             ["guide.elite_tank_destroyer"] = (
                 "[[Elite tank destroyer]] · enemy only · outranges every tank (46 m)\n" +
-                "How it fights: a 125 mm gun that hits from 46 m; with a target in range it fires a rapid [[barrage]] (2.2× rate), and pops [[smoke]] when hurt.\n" +
+                "How it fights: a 125 mm gun that hits from 46 m; with a target in range it fires a rapid [[barrage]] (2.2× rate).\n" +
                 "Strong / weak: deadly to tanks and heavy tanks; artillery, aircraft and fast light vehicles that close in beat it.\n" +
                 "Tip: don't drive tanks straight at it; hit it with artillery or a helicopter, or rush it with armoured cars.",
                 "[[Pháo chống tăng tinh nhuệ]] · chỉ phe địch · bắn xa hơn mọi xe tăng (46 m)\n" +
-                "Cách đánh: pháo 125 mm bắn từ 46 m; có mục tiêu trong tầm là [[bắn dồn dập]] (nhanh gấp 2,2 lần), bị thương thì thả [[khói]].\n" +
+                "Cách đánh: pháo 125 mm bắn từ 46 m; có mục tiêu trong tầm là [[bắn dồn dập]] (nhanh gấp 2,2 lần).\n" +
                 "Mạnh / yếu: cực nguy hiểm với xe tăng và tăng nặng; thua pháo binh, máy bay và xe nhẹ nhanh áp sát.\n" +
                 "Mẹo: đừng cho xe tăng lao thẳng vào nó; dùng pháo binh, trực thăng hoặc xe bọc thép đánh áp sát."),
             ["guide.elite_attack_helicopter"] = (
@@ -810,20 +810,20 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: mang xe diệt tăng và pháo hạng nặng, để dành hỏa lực dồn cho sau lần tự vá duy nhất của nó."),
             ["guide.armored_train"] = (
                 "[[Boss]] · armoured train · follows the rails\n" +
-                "How it fights: two heavy guns (42 m), a rocket box, two flak guns and an MG; it hides in [[smoke]] when shot and [[patches]] up 20% once, at half health.\n" +
+                "How it fights: two heavy guns (42 m), a rocket box, two flak guns and an MG; it [[patches]] up 20% once, at half health.\n" +
                 "Strong / weak: its guns kill tanks and light vehicles near the track; it cannot leave the rails.\n" +
                 "Tip: set up tank hunters and artillery along the line ahead of it, more than 45 m from the track.",
                 "[[Boss]] · đoàn tàu bọc thép · chạy theo đường ray\n" +
-                "Cách đánh: hai pháo nặng (42 m), hộp rốc-két, hai pháo cao xạ và súng máy; bị bắn thì núp trong [[khói]], còn nửa máu thì [[tự vá]] 20% một lần.\n" +
+                "Cách đánh: hai pháo nặng (42 m), hộp rốc-két, hai pháo cao xạ và súng máy; còn nửa máu thì [[tự vá]] 20% một lần.\n" +
                 "Mạnh / yếu: pháo của nó diệt xe tăng và xe nhẹ gần đường ray; nó không thể rời đường ray.\n" +
                 "Mẹo: bố trí xe diệt tăng và pháo binh dọc tuyến đường phía trước nó, cách đường ray hơn 45 m."),
             ["guide.nuke_train"] = (
                 "[[Boss]] · missile train · a race against the countdown\n" +
-                "How it fights: twin heavy guns (40 m), a 152 mm gun car and three flak guns; it hides in [[smoke]] when shot; a rocket car and a long-range SAM car ride behind it, and armoured escorts run beside the rails.\n" +
+                "How it fights: twin heavy guns (40 m), a 152 mm gun car and three flak guns; a rocket car and a long-range SAM car ride behind it, and armoured escorts run beside the rails.\n" +
                 "Strong / weak: its guns wreck anything near the track; it cannot leave the rails and carries no missiles to fight with.\n" +
                 "Tip: hit it hard and early with artillery and tank hunters; it must be stopped before it reaches the launch site.",
                 "[[Boss]] · đoàn tàu tên lửa · chạy đua với đồng hồ\n" +
-                "Cách đánh: pháo nặng hai nòng (40 m), toa pháo 152 mm và ba pháo cao xạ; bị bắn thì núp trong [[khói]]; phía sau có toa rốc-két và toa SAM tầm xa, xe bọc thép hộ tống chạy dọc đường ray.\n" +
+                "Cách đánh: pháo nặng hai nòng (40 m), toa pháo 152 mm và ba pháo cao xạ; phía sau có toa rốc-két và toa SAM tầm xa, xe bọc thép hộ tống chạy dọc đường ray.\n" +
                 "Mạnh / yếu: pháo của nó phá nát mọi thứ gần đường ray; nó không rời được đường ray và không có tên lửa để đánh.\n" +
                 "Mẹo: dùng pháo binh và xe diệt tăng đánh mạnh và sớm; phải chặn nó trước khi tới bãi phóng."),
             ["guide.mega_gunship"] = (

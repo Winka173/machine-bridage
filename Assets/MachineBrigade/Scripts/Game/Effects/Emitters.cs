@@ -190,6 +190,16 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The burning motors of missiles and rockets in flight.</summary>
         public MotorPlumes Plumes { get; }
 
+        /// <summary>
+        /// Play-test 14 (lane H): a puff of a missile's or rocket's smoke trail (one with no motor plume): a <see cref="Trail"/> puff
+        /// half as long-lived and a quarter narrower (SmokeTimes.TrailLength, TrailWidth). Jet exhaust, tracers, flares keep Trail.
+        /// </summary>
+        public void MissileTrail(Vector3 position, float size)
+        {
+            Emit(_trail, position, Random.insideUnitSphere * 0.2f + Vector3.up * 0.25f, size * SmokeTimes.TrailWidth * Random.Range(0.7f, 1.2f),
+                Random.Range(0.6f, 1.1f) * SmokeTimes.Trail * SmokeTimes.TrailLength);
+        }
+
         public void Trail(Vector3 position, float size)
         {
             Emit(_trail, position, Random.insideUnitSphere * 0.2f + Vector3.up * 0.25f, size * Random.Range(0.7f, 1.2f),

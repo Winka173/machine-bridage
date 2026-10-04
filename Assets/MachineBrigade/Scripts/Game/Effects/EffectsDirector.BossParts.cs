@@ -256,7 +256,10 @@ namespace MachineBrigade.Game.Effects
                 if (point == null) continue;
                 _hullFire.FeedPoint(point.position, size * PartFireSize * 1.8f, 1f, Vector3.zero, 0);
                 var at = point.position;
+                // Play-test 14 (lane H): a death's blast, so a death's smoke (shorter, half the puffs).
+                _smokeLife = SmokeTimes.Death;
                 Explode(ExplosionTier.Medium, at, now, 0.8f + size * 0.3f, flash: false);
+                _smokeLife = SmokeTimes.Blast;
                 // DECISIONS 20Y: as big a blaze, burning shorter under thinner, lighter smoke.
                 _fires.Ignite(at, size * 1.5f, Random.Range(14f, 20f), now, view.Root, smoke: FireSpots.BossSmoke);
             }
