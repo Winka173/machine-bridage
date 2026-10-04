@@ -893,6 +893,8 @@ namespace MachineBrigade.Sim
             Domes.Step();
             Works.Step(dt);
             _combat.Step(dt);
+            // AI MASTER P0-A (Part C): the combat activity watchdog, right after the weapons' step.
+            CombatWatch.Step();
             Strikes.Step();
             Damage.Step();
             if (Map.Neutrals.Count > 0) Neutrals.Step(dt);
@@ -943,6 +945,7 @@ namespace MachineBrigade.Sim
             Works.Step(dt);
             Lap(7);
             _combat.Step(dt);
+            CombatWatch.Step();
             Lap(8);
             Strikes.Step();
             Lap(9);

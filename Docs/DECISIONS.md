@@ -21011,3 +21011,44 @@ Lane P0-B of the AI MASTER spec (sections 4-18, 67, 100-101, 109, 196-198, 208-2
   `SimTunables.AiMasterP0B.cs`, hooked into `Pack2Entries` (one line).
 - **For the other lanes:** `world.Topology`, `world.Feasibility.HasReachableFiringPosition / CanReach / TravelSeconds /
   SpawnUseful`, `WeaponEnvelope.Of`, `EngagementFeasibility.LayerOf`.
+
+## AI MASTER P0-A (lane A)
+
+Branch `feature/ai-p0a`, 04/10. Master spec sections 42-47, 83, 88-91, 105-106, Part B B2/B3, Part C, Part H, Part O (combat
+codes). Audit: `Docs/ai/spec_master/AUDIT_P0A.md`; changes table: `Docs/export/CHANGES.md` "AI MASTER P0-A".
+- The existing target score stays (Part A): it already is Part B B1's product. The master factors multiply it (`P0AWorth`):
+  aim exp(-t/4), stick x1.15 for 1.5 s, ThreatToObjective at 0.22/0.20 of ThreatToSelf, B2/B3 doctrine, overkill. Spec 46's
+  weighted sum is not substituted: it would flatten every tuned worth of prompts 8A-28 without a run to check them.
+- Overkill (spec 44) applies to every weapon at 1.15 and replaces the old 1.1 rule for slow weapons. The spec's -1000 is a factor
+  0.001 (`overkillFloor`): the overkilled target is taken only when there is nothing else (the spec's "nếu có"), never an idle gun.
+  "Extremely dangerous" = a boss or a target worth >= 20 CP (`overkillDangerWorth`); a forced target = the player's attack order.
+- Hard feasibility (`Feasibility`) is now the one filter (`IsValidAutoTarget`); it adds the mount's bearing (fixed hull that cannot
+  turn, traverse-limited turret) and a 10 s aim cut for mobile shooters (aim time counts turret + hull rate: the bound if the hull
+  turns too). Fixed defences and aircraft are not aim-cut (slow data turrets of structures, aircraft runs).
+- Spec 47/83: `TargetAccessCache` (unit region x 8 m target cell x reach band, cleared on NavGrid.Version). It drops the AI's
+  attack orders, attack-move break-offs and guard sorties on targets no open ground of the unit's region can reach; the player's
+  orders are kept. Ships, aircraft and fixed defences are never "unreachable" here (their routing is the boss/naval lane's).
+  `Resolver` lets P0-B's reachable firing region answer.
+- Part B B2: an ordered blocking structure (wall, gate, obstacle) holds for a breacher, and a wall holds for any unit the AI sent at
+  it, against everything but an immediate survival threat (aiming at it, able to hit it, in its reach); an AA weapon still turns on
+  aircraft. Corridor structure x25 (cancels the old x0.05 obstacle factor: only BlockingStructure gets the hard bonus), other
+  non-threat units x0.5. B3: siege platform = role Siege or a siege-deploying vehicle; x2 armed structure (x1.5 if it shoots at
+  our side), x1.3 unarmed structure, x0.2 light target while a valuable structure is in reach. Values are the lane's (no numbers
+  in the spec), in tunables.
+- Part H: ThreatToObjective 0-1: capture of our point 1 / another 0.7, shooting at the convoy 1 / convoy in reach 0.5, enemy
+  breacher within 30 m of our walls 1, defence shooting at our assault on a structure 1 / covering our breach 0.8, shooting at our
+  structures 0.6. BossRush keeps the prompt-9 part focus (x4); per-part scoring is P0-C's.
+- Part C: `CombatActivityWatchdog` runs after the combat step, each armed unit every 5 steps (staggered by id). C1 window = the
+  aim time expected when the stall began + 2 s grace, and no aim progress for 2 s (a slow turret still slewing is not stalled).
+  Recovery: reset aim (1/3), hull-laid weapons turn the hull (2), the second time the target is suppressed 3 s (6) and an AI unit
+  sidesteps 6 m square to the line (5/7, side by id parity), logged (8). C2: 25 reason codes; `Unexplained` = the forbidden state,
+  counted and recovered (aim reset; an AI side pushes at the reachable enemy). The player's units are diagnosed and their aim
+  state reset, never ordered. Explicit reasons come from SquadLayer (Hold/Overwatch, Regroup) and TacticalAi (held point,
+  fall-back, reinforcements, idle guns); roles without an engagement band (recon, support) report SPOTTING. StaleIdle 12 s stays as
+  the severe fail-safe (spec 108).
+- Spec 91: firing spots skip main-route cells; only when no other spot exists does the old route-cost scoring pick one (logged
+  POSITION_TRANSIT_FALLBACK). Transit / Hold reservations are P0-D's (TrafficCoordinator).
+- Reason codes go to the DecisionLog as Unit-layer lines through `CombatReasons` (DecisionLog class unchanged, so the other lanes'
+  namespaces do not collide). Routine reasons are read per unit (`CombatWatch.ReasonOf`), only notable ones are logged.
+- Tests: 23 EditMode tests in `AiMasterP0ATests.cs` (R1 x8, R2 x2, R3, 113 x10, 224 opportunity fire, Part H escort), written not
+  run; compiled against the Sim + NUnit in a scratch project.

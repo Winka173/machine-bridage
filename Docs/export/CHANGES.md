@@ -12966,3 +12966,23 @@ Nhánh `feature/ai-p0b`. Nguồn: `Docs/ai/spec_master/Machine_Brigade_AI_Behavi
 | P0B-7 | Boss workshop / escort (67) | sinh theo danh sách | qua cùng feasibility: workshop lấy đơn vị khả thi kế tiếp; escort mặt đất vô dụng (trên biển, túi kín) không sinh; ghi REJECT |
 | P0B-8 | DecisionLog | — | `DecisionKind.Purchase`: BUY / REJECT / PLAN / RESERVE |
 | P0B-9 | Test (109 A/B/C, 196, 15, 67) | — | `Tests/EditMode/AiMasterP0BTests.cs` (viết, chưa chạy) |
+
+## AI MASTER P0-A
+
+Branch `feature/ai-p0a` (lane A, 04/10). Source: `Docs/ai/spec_master/Machine_Brigade_AI_Behavior_MASTER_FINAL.md`, audit
+`Docs/ai/spec_master/AUDIT_P0A.md`. No balance.json value changed; new tunables only (`tunables.json` ai.targeting, ai.combatWatchdog).
+
+| # | item | before | after | where |
+|---|---|---|---|---|
+| A-1 | hard feasibility before scoring (42/105) | alive, truce, fog, layer/tier, reach, min reach, line of fire | + mount bearing (traverse arc, fixed hull that cannot turn), aim time <= 10 s (mobile) | CombatSystem.P0A `Feasibility`, `IsValidAutoTarget` |
+| A-2 | overkill (44/106) | weapons with cooldown >= 2 s: in-flight >= 1.1 x hp -> x0.05 | every weapon: in-flight > 1.15 x hp -> x0.001 unless boss part focus, Executioner < 30 %, player's order, boss or >= 20 CP | `Overkilled`, `OverkillExempt` |
+| A-3 | stickiness (45) | hysteresis 1.3 + look every 0.5-0.75 s | kept + current target x1.15 for 1.5 s after acquiring | `WeaponState.AcquiredAt`, `P0AWorth` |
+| A-4 | aim time (89) | none | x exp(-AimSeconds / 4) | `AimSeconds`, `P0AWorth` |
+| A-5 | ThreatToObjective (46, Part H) | none | x (1 + T x 0.22 / 0.20), T 0-1 by capture / convoy / defended walls / siege breach / our structures | `ThreatToObjective` |
+| A-6 | breacher doctrine (B2, R2) | an AI order on a wall gave way to a target 5 x better (a wall scores x0.05) | an ordered breach holds except for an immediate survival threat (AA on aircraft as before); corridor structure x25, distraction x0.5 | `BreachHeld`, `DoctrineWorth` |
+| A-7 | siege doctrine (B3, R3) | none | armed structure x2 (x1.5 more when shooting at us), unarmed structure x1.3, light target x0.2 while a structure is in reach | `DoctrineWorth` |
+| A-8 | unreachable targets (47, 83) | AI orders / attack-move / guard chased any enemy | dropped when no open ground of the unit's region is within its reach of the target (cached by grid version) | `TargetAccessCache`, `MovementSystem.Unreachable` |
+| A-9 | firing spot on a transit route (91) | allowed at a cost of 20 per route | not reserved on a route; only as a last resort (logged POSITION_TRANSIT_FALLBACK) | `TacticalAi.FiringSpot` |
+| A-10 | combat watchdog (Part C) | movement anti-stuck only, StaleIdle 12 s push | every armed unit has a reason code (25), C1 anomaly detection + 8-step recovery, C2 unexplained idle recovery; StaleIdle kept as the fail-safe | `CombatActivityWatchdog`, `TacticalAi.Watchdog`, `SquadLayer.Watchdog` |
+| A-11 | reason codes (Part O) | none for combat | TARGET_*, COMBAT_IDLE_*, WATCHDOG_*, POSITION_TRANSIT_FALLBACK in the DecisionLog | `CombatReasons` |
+| A-12 | tests | none | 23 EditMode tests (R1-R3, 113, 224, Part H), written not run | `Tests/EditMode/AiMasterP0ATests.cs` |

@@ -63,6 +63,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Play-test 8 A (DECISIONS 22Q): when this mount next weighs its target against everything else in reach.</summary>
         public double RetargetAt;
 
+        /// <summary>AI MASTER P0-A (spec 45): when this mount took its current target (the stickiness bonus runs from here).</summary>
+        public double AcquiredAt = double.NegativeInfinity;
+
         /// <summary>Sustained fire: rounds left in the magazine (-1: a full one not yet started), and when the last round went.</summary>
         public int ClipLeft = -1;
         public double LastRoundAt = double.NegativeInfinity;
