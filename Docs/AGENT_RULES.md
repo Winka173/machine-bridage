@@ -15,7 +15,7 @@ names `opus`, `sonnet` (= 5.0) or `haiku` explicitly; never the `best` alias). *
 - No Unity runs, EditMode/PlayMode tests, sims, sweeps or measurements. Write tests if asked; do not run them.
   Allowed: compile checks the brief names, Blender builds, static Python tools over files (glb_analyze, quality_gate).
 - No gameplay value changes (balance.json, campaign.json, weapons, health, costs) unless the brief asks for them.
-- Never shrink fire or explosions.
+- Explosion and fire sizes follow the balance sheet (Docs/balance/final, tier map by calibre/warhead); shrinking to match it is allowed (owner 04/10).
 - No real-world national insignia or unit markings; use the factions' own marks.
 
 ## Code and assets
