@@ -1,6 +1,6 @@
 # GLB baseline (prompt 27 step 2)
 
-Generated 2026-10-04 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (453 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
+Generated 2026-10-04 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (454 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
 Rules: DECISIONS "27 step 0 + baseline"; budgets: Docs/models/BUDGETS.md (over the soft budget a warning, over
 the hard cap an error). Warnings are listed in the JSON.
 
@@ -8,17 +8,17 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| boss | 26 | 813,805 | 31,300 | leviathan (62,916) | 3,227 | 2 | 24 |
+| boss | 27 | 871,815 | 32,289 | leviathan (62,916) | 3,314 | 2 | 24 |
 | ground | 66 | 569,046 | 8,621 | main_battle_tank_hd (16,462) | 3,735 | 2 | 40 |
 | structure | 71 | 412,111 | 5,804 | headquarters (21,052) | 3,809 | 2 | 18 |
 | prop | 115 | 258,170 | 2,244 | command_hq (8,872) | 1,568 | 0 | 3 |
 | unlisted | 34 | 108,062 | 3,178 | apc_hd (14,968) | 668 | 0 | 0 |
 | air | 19 | 101,328 | 5,333 | fighter_jet_hd (14,216) | 711 | 0 | 14 |
+| wreck | 1 | 53,686 | 53,686 | silver_bug_wreck (53,686) | 144 | 0 | 1 |
 | scenery | 96 | 40,708 | 424 | rubble_large (3,516) | 294 | 0 | 2 |
-| wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 25 | 5,154 | 206 | bomb (404) | 175 | 0 | 0 |
 
-All files: 2,328,634 triangles, 6 with errors, 96 more with warnings only.
+All files: 2,420,080 triangles, 6 with errors, 96 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -28,13 +28,13 @@ All files: 2,328,634 triangles, 6 with errors, 96 more with warnings only.
 | main_battle_tank_hd (MBT) | ground | 16,462 | 21,877 | 56 | 9 | 56 | 837 | 7.79 x 3.07 x 2.35 | 0.5504 |
 | fighter_jet (Su-27) | air | 4,308 | 5,571 | 40 | 9 | 40 | 243 | 8.64 x 5.85 x 2.15 | 0.7461 |
 | fighter_jet_hd (Su-27) | air | 14,216 | 21,233 | 51 | 9 | 51 | 802 | 8.64 x 5.85 x 2.14 | 0.7036 |
-| silver_bug (Icarus) | boss | 21,760 | 29,716 | 120 | 12 | 120 | 1158 | 36.32 x 18.23 x 13.15 | 0.7421 |
+| silver_bug (Icarus) | boss | 51,816 | 62,139 | 146 | 17 | 146 | 2351 | 36.67 x 18.56 x 14.18 | 0.6275 |
 | attack_helicopter (complex unit) | air | 4,722 | 5,896 | 30 | 9 | 30 | 245 | 6.35 x 4.44 x 2.02 | 0.7192 |
 | attack_helicopter_hd (complex unit) | air | 6,902 | 9,300 | 38 | 9 | 38 | 372 | 6.35 x 4.44 x 2.02 | 0.6856 |
 
 - fighter_jet: renderers 40 over the jet normal budget 36
 - fighter_jet_hd: triangles 14,216 over the jet hd budget 12,300; vertices 21,233 over the jet hd budget 19,200; renderers 51 over the jet hd budget 49
-- silver_bug: runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_mg.001
+- silver_bug: runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004; triangles 51,816 over the boss_m normal budget 44,000; vertices 62,139 over the boss_m normal budget 56,000
 
 ## Over budget (models per class and metric)
 
@@ -43,8 +43,8 @@ All files: 2,328,634 triangles, 6 with errors, 96 more with warnings only.
 | boss_l | renderers | 2 | 0 | - |
 | boss_l | triangles | 2 | 0 | - |
 | boss_l | vertices | 2 | 0 | - |
-| boss_m | triangles | 1 | 0 | - |
-| boss_m | vertices | 1 | 0 | - |
+| boss_m | triangles | 3 | 0 | - |
+| boss_m | vertices | 3 | 0 | - |
 | boss_s | renderers | 1 | 2 | fortress_bastion, ixion |
 | boss_s | triangles | 3 | 0 | - |
 | boss_s | vertices | 5 | 0 | - |
@@ -70,7 +70,7 @@ All files: 2,328,634 triangles, 6 with errors, 96 more with warnings only.
 | tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-73 models over a budget, 6 of them over a hard cap.
+75 models over a budget, 6 of them over a hard cap.
 
 ## Error reasons (count of models)
 
