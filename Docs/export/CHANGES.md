@@ -3022,3 +3022,38 @@ Nhánh `feature/pt14-h`. Lý do: `Docs/DECISIONS.md` "Play-test 14 after R2 (lan
 | PT14-H-15 | Leviathan pha cuối (escapePhase): màn khói khi chạy | 2 đám (20 m / 22 s, 16 m / 18 s) | không | chủ: không boss nào tạo khói; câu radio bỏ "sau màn khói" |
 | PT14-H-16 | `sam_post` (Buk của tàu: leviathan, scylla, nyx, hydra, kraken, typhon) `projectileSpeed` | 250 (họ 9m317_buk) | 170 (ra khỏi họ) | chủ: tên lửa Typhon bay quá nhanh; tầm game = vài km đầu thật (giai đoạn tăng tốc) |
 | PT14-H-17 | `sam_battery` (toa SAM Nemesis) `projectileSpeed` | 300 (họ mim_104_patriot_pac_2) | 200 (ra khỏi họ; Loft, mô hình patriot giữ) | chủ: tên lửa Nemesis bay quá nhanh; patriot, sam_battery_lrr, sam_pac3 của người chơi giữ 300 |
+
+## Play-test 14 after lane H (lane I): engine flames 25 %, player smoke gear hidden, missile trace and slow-down
+
+Nhánh `feature/pt14-i`. Lý do: `Docs/DECISIONS.md` "Play-test 14 after lane H (lane I)" (chủ, khối "Bổ sung 04/10 sau khi thử lane H").
+
+| # | mục | cũ | mới | lý do |
+|---|---|---|---|---|
+| PT14-I-1 | lửa động cơ boss bay (`EngineFlames.FlameScale`): dài, rộng, lưỡi lửa, quầng, kim cương sốc | 1 x bán kính miệng | 0,25 x | chủ: "làm nhỏ lại còn 20-30%"; lõi trắng giữ 0,75 x miệng cho thấy ống phụt |
+| PT14-I-2 | ánh sáng nhiệt động cơ | tầm >= 8 m, cường độ 1,8-3,2 | tầm >= 3 m (theo lửa 25 %), cường độ x 0,45 | theo cỡ lửa mới |
+| PT14-I-3 | đồ khói người chơi: `laser_warning` (Optics), `SmokeDischarger` (module), `TowerSmokeLaunchers` (tháp) | được rơi, lắp, bắn | `Hidden = true` trong GearCatalog: không rơi, không lắp, không vào trận | chủ: "bỏ luôn hoặc ẩn đi, tương lai có thể mang lại"; bỏ cờ là có lại; chuỗi và mã Sim giữ |
+| PT14-I-4 | save cũ có đồ khói | — | mỗi lần tải: đổi thành món hiện hành cùng ô, độ hiếm, cấp (chọn theo id/seed), món đang mặc vẫn mặc | không mất gì; đồ không mua bằng tiền nên không hoàn tiền |
+| PT14-I-5 | `sam_post` `projectileSpeed` | 170 | 80, Direct | chủ: tên lửa bay thẳng từ đỉnh tháp Typhon vẫn quá nhanh (đúng là `sam_post`, xem bảng dưới) |
+| PT14-I-6 | `sam_battery` `projectileSpeed` | 200 | 95, Loft | toa SAM Nemesis |
+| PT14-I-7 | `p26_nemesis_sec_boss_rockets` `projectileSpeed` | 130 (kế thừa boss_rockets) | 65, Ballistic | toa rốc-két Nemesis |
+| PT14-I-8 | `armored_train` mount 1 (toa rốc-két) | `boss_rockets` 130 | `pt14_train_grad` (kế thừa boss_rockets) 65, Ballistic | toa rốc-két Juggernaut; Grad của boss khác giữ 130 |
+
+### Truy vết tên lửa nhìn thấy -> vũ khí Sim
+
+Cách truy: view `WeaponEffects.DrawShot` vẽ đạn từ `VehicleView.MuzzleOf(mount)` (nút `Mount_<slot>` của mount), hoặc từ bộ phận
+(`e.FromPart`, cửa phóng / ô VLS) khi Sim bắn từ bộ phận; thời gian bay vẽ = thời gian bay Sim (`CombatSystem`: tầm / `projectileSpeed`,
+hoặc thời gian đặt của đòn lớn / cruise). Nút lấy từ GLB, mount từ balance.json (0 = vũ khí chính, rồi `secondary`, `mountWeapons` thay).
+
+| boss | nút vẽ (GLB) | mount / nguồn | vũ khí | thật | đích | cũ -> mới m/s | bay | thời gian bay ở tầm max |
+|---|---|---|---|---|---|---|---|---|
+| Typhon | `Mount_missile` (con của `Part_sail`, đỉnh tháp, cao ~10 m) | mount 0 (`weapon`, mainSlot missile) | `sam_post` | 9M317 Buk | chỉ máy bay | 170 -> 80 | Direct (thẳng) | 60 m: 0,35 -> 0,75 s |
+| Typhon | `Part_doors_l` / `_r` | Sim `NavalSystem.Cruise` (FromPart) | `leviathan_cruise` | 3M-54 Kalibr | đất | 70 (bay đặt 4 s) | Loft | giữ (chủ: tốt) |
+| Typhon | `Part_doors_l` / `_r` | đòn lớn `typhon_underwater_launch` | `leviathan_cruise` | 3M-54 Kalibr | căn cứ | bay đặt 9 s | Loft | giữ (chủ: tốt) |
+| Nemesis | `Mount_rocket` (con của `Part_rocket`, toa rốc-két) | mount 3 (`mountWeapons` "3") | `p26_nemesis_sec_boss_rockets` | BM-21 Grad 122 mm | đất | 130 -> 65 | Ballistic | 45 m: 0,35 -> 0,69 s |
+| Nemesis | `Mount_missile` (con của `Part_missile`, toa SAM) | mount 4 | `sam_battery` | MIM-104 Patriot PAC-2 | chỉ máy bay | 200 -> 95 | Loft | 90 m: 0,45 -> 0,95 s |
+| Nemesis | `Erector` (bộ phận `erector`) | đòn lớn `doomsday_missile` | `ballistic_missile` (vẽ) | 9M723 Iskander | HQ | bay đặt 6 s | — | giữ |
+| Juggernaut | `Mount_rocket` (toa rốc-két) | mount 1 | `boss_rockets` -> `pt14_train_grad` | BM-21 Grad 122 mm | đất | 130 -> 65 | Ballistic | 45 m: 0,35 -> 0,69 s |
+
+Không phải tên lửa (giữ): Nemesis `p26_nemesis_main_ne152` (pháo 152), `p26_nemesis_close_boss_flak` (35 mm), `p26_nemesis_direct_ne125`
+(125 mm), toa `gun_car_152`; Juggernaut `train_gun` x2, `boss_hmg`, `boss_flak` x2, `train_mortar` (cối 60 m/s). `sam_post` cũng là SAM của
+leviathan, mobile_fortress (bộ phận `sam_medium`) và các biến thể tàu (hydra, nyx, scylla, kraken kế thừa): chậm như nhau.

@@ -20196,3 +20196,40 @@ width 20-30 %, Typhon's door missiles left alone); values in Docs/export/CHANGES
 - Tests (written, not run): PlayTest14LaneHTests. For a Unity look: the six warships holding heading while their turrets
   traverse (the Icarus main laser now trains: its mount node must turn), Roc / Daedalus stopping to fire, death smoke amount,
   trail length and width, the boss SAM flights.
+
+## Play-test 14 after lane H (lane I)
+
+Owner's block "Bổ sung 04/10 sau khi thử lane H" (Docs/prompts/playtest14_vi.txt): engine flames, player smoke gear, Typhon and
+train missile speeds (Hyperion, Hydra and Nyx redraws are another lane's). Values and the missile trace in Docs/export/CHANGES.md PT14-I.
+- **Engine flames 25 %.** `EngineFlames.FlameScale` 0.25: each nozzle's flame (length, width, tongue, glow body, heat halo, shock
+  diamonds) is drawn for a quarter of the `Engine_flame` empty's exit radius, so all of it shrinks together; the white-hot core
+  stays at 0.75 x the real exit radius (else a dot inside a dark nozzle). The heat light follows: reach floor 8 -> 3 m, reach from
+  the scaled radius, power x 0.45. Particle counts unchanged (segment count is a ratio, not a size).
+- **Player smoke gear hidden, not deleted.** `Hidden` on `BaseTypeDef`, `TraitDef` and `ModuleDef` (GearCatalog), set on
+  `laser_warning` (Optics), `SmokeDischarger` (special module) and `TowerSmokeLaunchers` (tower Structure trait). `BasesFor`,
+  `TraitsFor`, `TowerBasesFor`, `TowerTraitsFor` and the new `ShownModules` leave them out, so crates, merges, sandbox kits, trait
+  re-rolls and `MakeFit` never give them; `TowerFit.Matrix` leaves them out; `Gear.FitsBranch` is false for a hidden piece, and
+  `Gear.Boost` skips one (it never reaches the Sim, so it never fires). The arrays, numbers, strings, icons and every Sim branch
+  (AbilitySystem, GearSystem, LaserWarning stat) stay: clearing the flag brings each back.
+- **Old saves.** `PlayerProfile.UnhideGear` runs on every load (after the gear migrations; a no-op once nothing is hidden):
+  `Gear.Unhide` turns each hidden piece into a shown one of the same id, slot, rarity and level, picked from its id: a module
+  another module for the same vehicles, a base type a plain one of its slot (sub-stats that would clash with the new lines
+  rolled again from the piece's seed), a hidden trait a new roll; hidden keys leave `traitOptions`. A worn piece stays worn and
+  `MakeFit` fits it to its branch. The brief said "unequip, refund if bought": gear is never bought (crates and merges), so the
+  piece is converted instead of taken off; nothing is lost. GearModelTests' old smoke-discharger save now expects the shown module.
+- **Missile trace.** View: `WeaponEffects.DrawShot` draws a round from `VehicleView.MuzzleOf(mount)` (the mount's `Mount_<slot>`
+  node) or from a boss part (`FromPart`: launch doors, VLS); its drawn flight is the Sim's (range / speed, or a big attack's set
+  time). Typhon's straight missile off the top of the sail is mount 0 = `sam_post` (9M317 Buk, air targets only, Direct) on
+  `Mount_missile` under `Part_sail` (~10 m up); the door missiles are `leviathan_cruise` (cruise 4 s, big attack 9 s, Loft) and stay.
+  Nemesis: rocket car `Mount_rocket` = mount 3 `p26_nemesis_sec_boss_rockets` (Grad, Ballistic, 130), SAM car `Mount_missile` = mount
+  4 `sam_battery` (Patriot, Loft, 200), erector = `doomsday_missile` (6 s, kept). Juggernaut: rocket car `Mount_rocket` = mount 1
+  `boss_rockets` (Grad, Ballistic, 130). Everything else on the trains is a gun, flak, MG or mortar.
+- **Slowed to the ATGM / cruise band (60-100).** `sam_post` 170 -> 80 (the Kornet's; 0.75 s over 60 m; Direct kept: it flies
+  straight off a trainable launcher), `sam_battery` 200 -> 95 (Loft kept, ~1 s over 90 m), Nemesis' Grad 130 -> 65 and Juggernaut's
+  new `pt14_train_grad` (boss_rockets at 65) on its rocket car (Ballistic kept, 0.69 s over 45 m). SAMs stay a little faster than
+  the Grads, as in life (Patriot > Buk > Grad). Other bosses' `boss_rockets` (mobile_fortress, rocket_pod parts, behemoth) keep 130
+  (not seen by the owner; same fix if wanted). `sam_post` is also Leviathan's, mobile_fortress' and the ship variants' SAM: all
+  slower alike. Slower SAMs may lose a fast jet more often (out-of-reach diversion): to watch. BalanceSheetTests' `BossOwnSpeed`
+  exempts the two Grads too; PlayTest14LaneHTests asserts "no faster than lane H's" now.
+- Tests (written, not run): PlayTest14LaneITests. For a Unity look: a flying boss's flames (size, core on the nozzle), the gear
+  screens (no smoke gear offered, an old save's pieces converted), Typhon's sail SAM and the train cars' rockets in flight.

@@ -147,10 +147,10 @@ namespace MachineBrigade.Game.Match
                 if (!IsTowerCard(def)) continue;
                 var row = new Row { Tower = def.Id, Has = Of(def) };
                 foreach (var b in GearCatalog.TowerBases)
-                    if (Within(Need(b), row.Has))
+                    if (!b.Hidden && Within(Need(b), row.Has))
                         row.Bases.Add(b.Id);
                 foreach (var t in GearCatalog.TowerTraits)
-                    if (Within(t.Need, row.Has) && !row.Traits.Contains(t.Key))
+                    if (!t.Hidden && Within(t.Need, row.Has) && !row.Traits.Contains(t.Key))
                         row.Traits.Add(t.Key);
                 rows.Add(row);
             }

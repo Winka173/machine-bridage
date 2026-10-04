@@ -76,8 +76,9 @@ namespace MachineBrigade.Tests
         public void TheBossSamPostsFlyNoFasterThanTheOrdinarySams()
         {
             var c = Lab.Catalog;
-            Assert.AreEqual(170f, c.Weapons["sam_post"].ProjectileSpeed, 1e-3f, "the ships' and Typhon's Buk post");
-            Assert.AreEqual(200f, c.Weapons["sam_battery"].ProjectileSpeed, 1e-3f, "Nemesis' Patriot car");
+            // Play-test 14 lane I slowed both again (80 and 95; PlayTest14LaneITests).
+            Assert.LessOrEqual(c.Weapons["sam_post"].ProjectileSpeed, 170f + 1e-3f, "the ships' and Typhon's Buk post");
+            Assert.LessOrEqual(c.Weapons["sam_battery"].ProjectileSpeed, 200f + 1e-3f, "Nemesis' Patriot car");
             Assert.AreEqual(FlightProfile.Loft, c.Weapons["sam_battery"].Flight, "still leaves its canister upward");
             Assert.LessOrEqual(c.Weapons["sam_battery"].ProjectileSpeed, c.Weapons["sam"].ProjectileSpeed + 1e-3f, "no faster than the SHORAD");
             Assert.AreEqual(300f, c.Weapons["patriot"].ProjectileSpeed, 1e-3f, "the player's Patriot keeps its family's speed");

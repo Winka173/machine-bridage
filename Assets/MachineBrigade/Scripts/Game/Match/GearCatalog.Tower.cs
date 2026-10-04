@@ -53,7 +53,8 @@ namespace MachineBrigade.Game.Match
             new(TraitId.OpeningSalvo, GearSlot.TowerWeapon, NoBranch, V(0.5f), V(0.8f)) { Need = TowerNeed.Armed },
             // Structure
             new(TraitId.TowerModular, GearSlot.TowerStructure, NoBranch, V(0.5f), V(1f)),
-            new(TraitId.TowerSmokeLaunchers, GearSlot.TowerStructure, NoBranch, V(10f, 12f), V(14f, 16f)),
+            // Play-test 14 lane I: hidden (the player's smoke gear waits; see TraitDef.Hidden).
+            new(TraitId.TowerSmokeLaunchers, GearSlot.TowerStructure, NoBranch, V(10f, 12f), V(14f, 16f)) { Hidden = true },
             new(TraitId.AegisBarrier, GearSlot.TowerStructure, NoBranch, V(0.1f, 20f), V(0.15f, 16f)),
             new(TraitId.AblativeLayer, GearSlot.TowerStructure, NoBranch, V(0.2f), V(0.3f)),
             // Systems
@@ -109,13 +110,13 @@ namespace MachineBrigade.Game.Match
         public static IEnumerable<BaseTypeDef> TowerBasesFor(GearSlot slot)
         {
             foreach (var b in TowerBases)
-                if (b.Slot == slot) yield return b;
+                if (b.Slot == slot && !b.Hidden) yield return b;
         }
 
         public static IEnumerable<TraitDef> TowerTraitsFor(GearSlot slot)
         {
             foreach (var t in TowerTraits)
-                if (t.Slot == slot) yield return t;
+                if (t.Slot == slot && !t.Hidden) yield return t;
         }
 
         /// <summary>A trait as a piece of this slot carries it: a tower slot's own entry (its numbers and needs), else the vehicle one.</summary>

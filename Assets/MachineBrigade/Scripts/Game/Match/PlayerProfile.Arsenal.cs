@@ -28,6 +28,7 @@ namespace MachineBrigade.Game.Match
             foreach (var g in d.gear) d.nextGearId = Math.Max(d.nextGearId, g.id + 1);
             if (d.gearVersion < 2) MigrateGear(d);
             if (d.gearVersion < GearVersion) MigrateFit(d);
+            UnhideGear(d);
             if (d.rosterVersion < RosterVersion) MigrateRoster(d);
             // Gems are gone (one currency now): a save that still holds some gets coins for them.
             if (d.gems > 0)
@@ -448,6 +449,28 @@ namespace MachineBrigade.Game.Match
                     if (item != null) Gear.MakeFit(item, (GearBranch)b);
                 }
             d.gearVersion = GearVersion;
+        }
+
+        /// <summary>
+        /// Play-test 14 lane I: every piece of hidden gear (the player's smoke gear, <see cref="Gear.Unhide"/>) becomes a
+        /// shown piece of the same slot, rarity and level, on every load (a no-op once none is left); a branch that wears
+        /// one keeps it on, made to fit the branch. Nothing is lost, taken off or refunded (gear is never bought).
+        /// </summary>
+        private static void UnhideGear(Data d)
+        {
+            List<int> changed = null;
+            foreach (var g in d.gear)
+                if (g != null && Gear.Unhide(g))
+                    (changed ??= new List<int>()).Add(g.id);
+            if (changed == null) return;
+            for (var b = 0; b < Branches; b++)
+                for (var s = 0; s < Gear.Slots; s++)
+                {
+                    var i = b * Gear.Slots + s;
+                    if (i >= d.loadout.Count || !changed.Contains(d.loadout[i])) continue;
+                    var item = d.gear.Find(g => g != null && g.id == d.loadout[i]);
+                    if (item != null) Gear.MakeFit(item, (GearBranch)b);
+                }
         }
 
         /// <summary>

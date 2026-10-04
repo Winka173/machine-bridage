@@ -74,7 +74,7 @@ namespace MachineBrigade.Tests
         /// or not) fired the same way (lobbed or direct): a coastal gun's flat 155 mm is not a howitzer's lobbed one.
         /// </summary>
         /// <summary>Play-test 14 (lane H): boss weapons that fly at their own speed, out of their real missile's family.</summary>
-        internal static readonly HashSet<string> BossOwnSpeed = new() { "sam_post", "sam_battery" };
+        internal static readonly HashSet<string> BossOwnSpeed = new() { "sam_post", "sam_battery", "p26_nemesis_sec_boss_rockets", "pt14_train_grad" };
 
         internal static string FamilyKey(WeaponDef w) =>
             w.RealName == null ? null
