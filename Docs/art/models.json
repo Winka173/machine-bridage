@@ -1101,7 +1101,7 @@
   },
   "hydra_sub": {
     "file": "hydra_sub.glb",
-    "triangles": 20080
+    "triangles": 18804
   },
   "hyperion": {
     "file": "hyperion.glb",
@@ -1369,7 +1369,7 @@
   },
   "nyx": {
     "file": "nyx.glb",
-    "triangles": 23034
+    "triangles": 26854
   },
   "obsidian_spire": {
     "file": "obsidian_spire.glb",
@@ -1605,7 +1605,7 @@
   },
   "scylla": {
     "file": "scylla.glb",
-    "triangles": 28994
+    "triangles": 45394
   },
   "sea_corvette": {
     "file": "sea_corvette.glb",
@@ -1877,7 +1877,7 @@
   },
   "typhon": {
     "file": "typhon.glb",
-    "triangles": 29350
+    "triangles": 32624
   },
   "uav_loiter_strike": {
     "file": "uav_loiter_strike.glb",

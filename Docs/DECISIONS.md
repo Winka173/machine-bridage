@@ -20370,3 +20370,49 @@ Owner's block "Bổ sung 04/10 sau khi thử R4" (Docs/prompts/playtest14_vi.txt
   longer calls the hull a stand-in (it has its own model since wave M3).
 - Needs Unity: compile (C# 9 checked by reading), the card re-render above, a look at aircraft over land and sea at each
   shadow tier, and the repainted bosses in battle (TeamGlow cue readable).
+
+## Play-test 14 sea bosses after R4 (lane sea)
+Owner (04/10, block "Bổ sung 04/10 sau khi thử R4" of Docs/prompts/playtest14_vi.txt): "nyx thêm 1 bệ tên lửa, scylla thêm 2
+bệ tên lửa"; "scylla thêm súng máy hoặc súng flak phòng không vào 4 khẩu, nyx cũng thêm nhưng 2 khẩu"; "typhon thêm 1 súng
+tương tự 2 súng kia ở đuôi"; Hydra "súng làm nhỏ lại cỡ typhon thôi" and its missiles; "các model boss tàu ... sửa lại màu";
+reminder "nhớ là vẽ lại chứ đừng dùng model cũ". New builder Tools/blender/mb_pt14_r5_sea.py (called from mb_pt14_m3 and
+mb_pt14_r2_naval); every weapon in it is drawn for one ship only from primitives (Docs/models/pt14_reuse_audit.md, "R5").
+- Scylla (Slava read): two AK-230-read twin 30 mm turrets on the after superstructure (Mount_mg.001 / .002), two 2M-7-read
+  twin 14.5 mm pedestal mounts on the bridge wings (Mount_mg.003 / .004; both drawn a size up, 1.15 / 1.35, so they read at
+  the battle zoom: helper `grown`), two Uran-read quad canister banks beside the after superstructure (Mount_missile / .001,
+  canisters at 20 degrees, 12 degrees outboard, frame, legs, deflector, frangible covers; one launch point per canister).
+- Nyx (Zumwalt read): two Millennium-read 35 mm stealth turrets on the hangar roof (Mount_mg.002 / .003), a Mk 41-read
+  eight-cell VLS block in the B position between the AGS and the deckhouse (Mount_missile, two cells open).
+- Typhon: a third AK-725-read twin 57 mm on the stern casing (Mount_gun.003, y 20.5 on a raised barbette with stanchions):
+  new code of the same type as the other two (owner: "tương tự"); its barrels clear the after gun's house (0.7 m) and the
+  rudder when trained aft.
+- Hydra: the twin 57 mm and the 100 mm drawn anew at Typhon's gun-to-hull proportion (house 1.14 / 1.5 m wide, 0.6 /
+  0.75 of R4's); the launch tubes behind the sail (Part_doors_l / _r) drawn as a vertical launcher, two lids open a side
+  with the rounds' noses showing. Its missiles are the "cruise" launches from those doors (NavalSystem.LaunchCell); they
+  now have their own weapon `hydra_club_s` (Club-S, inheriting leviathan_cruise's numbers) so lane K's weapons tab names
+  them. No missile mount was added (the cruise is the missile weapon; a mount would add a second missile stream).
+- Fixed launchers and a Free mount: the view turns a Free mount's pivot to its target, so the canister banks and the VLS block
+  are fixed geometry and their Mount_missile pivots carry only Muzzle_missile (at the mouths) and the per-cell
+  Muzzle_b<k>_msl points; turrets carry their house on the pivot as before.
+- Data (CHANGES PT14-SEA-1..12): six weapons (scylla_ak230, scylla_2m7, scylla_kh35, nyx_millennium, nyx_tomahawk,
+  hydra_club_s). AA guns target Air only, like Leviathan's aa_25_triple ("phòng không"); the new missiles hit ground and
+  sea targets so they are seen firing. Missile speed 70 like the naval cruise missiles (0.3x rule). Scylla, Nyx and Hydra
+  restate their "secondary" (a variant's own list replaces its parent's) with the kept mounts first, so the parts' mount
+  indices hold; Typhon's deck gun is written into its list ("mounts": [3] on the deck_gun part) so the stern 57 mm is mount
+  4 and the wake mount stays 3. Mount order checked by emulating BossTemplates (scylla 0 gun, 1-5 mg, 6-7 missile; nyx 0
+  gun, 1-4 mg, 5 missile; typhon 0 missile, 1-4 gun; hydra 0-2 gun). Damage numbers are to measure (not run).
+- Liveries (`livery(a, ship)`): every ship's parts are mapped to kit surfaces by name before the finish (and before the
+  static merge on Leviathan and Kraken) and each surface gets that ship's COLOR_0 tint after the bake, with waterline
+  grime; no Team surface is left (lane K's "livery": "own" draws them as painted; "paint" left as lane K set it, it only
+  colours Team). Uses lane K's NavyGrey / NavyDeck / HullRed / SubBlack plus existing kit names (ContainerGrey and CarGrey
+  added to the Blender kit with MaterialLibrary.Kit's values). Leviathan: US haze grey, deck grey, teak main deck; Kraken:
+  Soviet blue-grey, light island, dark brown-grey flight deck; Scylla: Soviet blue-grey, dark grey decks; Nyx: stealth
+  greys; all four a red-oxide boot band (HullRed, own shade). Typhon: black anechoic hull, charcoal missile deck and
+  walkway, renewed-tile patches, primer where tiles fell, dark grey guns; Hydra: blue-black hull, charcoal casing.
+- Gate (glb_quantize + quality_gate, hard ok): scylla 28,994 -> 45,394 tris (97.6), nyx 23,034 -> 26,854 (98.5 -> 91.3),
+  typhon 29,350 -> 32,624 (93.7 -> 70.1), hydra_sub 20,080 -> 18,804 (99.7 -> 73.7), leviathan 86,412 (97.7), kraken 75,770
+  (100). The two submarines' soft score falls on edges / regions only: the gate shades base colour x COLOR_0 with an
+  absolute gradient threshold (0.06), which a black hull cannot reach (with Team they were light grey); kept black as the
+  owner asked, readability carried by the charcoal decks, grey guns, tile patches and red waterline. Lead's call.
+- Needs Unity: the six in battle (own livery, far LOD palette), the new mounts turning and firing from their muzzles,
+  Scylla's and Nyx's missiles leaving the banks / VLS, Typhon's fourth gun, card re-render (lane K's list).

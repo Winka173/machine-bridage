@@ -37,6 +37,7 @@ import mb_p35_w5parts as W
 import mb_pt14_r1_naval as RN
 import mb_pt14_r2_naval as R2
 import mb_pt14_r4_naval as R4
+import mb_pt14_r5_sea as R5
 
 R90 = math.pi / 2
 TAU = math.tau
@@ -635,6 +636,8 @@ def leviathan(a):
     _lev_aft(a)
     a.pivot('Point_fire', (0, 4.0, 8.0))
     a.pivot('Point_exhaust', (0, 7.0, 14.0))
+    # Lane sea (after R4): its own naval livery (haze grey, deck grey, teak, red oxide), mapped before the merge.
+    R5.livery(a, 'leviathan')
     # R1: the bespoke guns added parts; fold same-material static parts per pivot into one renderer each (boss_l
     # cap 299), keeping the gate's roles and every mount's kick parts.
     W.merge_static(a, keep=LEV_KEEP)
@@ -1029,6 +1032,7 @@ def kraken(a):
     _kr_stern(a)
     a.pivot('Point_fire', (0, 10.0, 10.0))
     a.pivot('Point_exhaust', (KR_ISL, 9.6, 19.0))
+    R5.livery(a, 'kraken')      # lane sea: Soviet blue-grey, dark flight deck, red oxide
     W.merge_static(a, keep=KR_KEEP)
     k.clean(a)
 
@@ -1313,8 +1317,11 @@ def scylla(a):
     _sc_deck(a)
     _sc_superstructure(a)
     _sc_weapons(a)
+    # Lane sea (after R4): two AK-230s, two 2M-7s, two Uran banks (mb_pt14_r5_sea), then its livery.
+    R5.scylla_weapons(a, SC_H.deck_z)
     a.pivot('Point_fire', (0, 2.0, 5.0))
     a.pivot('Point_exhaust', (0, 3.0, 7.6))
+    R5.livery(a, 'scylla')
     k.clean(a)
 
 
@@ -1546,8 +1553,11 @@ def nyx(a):
     _nx_deckhouse(a)
     _nx_weapons(a)
     _nx_detail(a)
+    # Lane sea (after R4): two Millennium turrets and the VLS block (mb_pt14_r5_sea), then its stealth livery.
+    R5.nyx_weapons(a, NX_H.deck_z)
     a.pivot('Point_fire', (0, 4.0, 6.0))
     a.pivot('Point_exhaust', (0, 6.5, 7.0))
+    R5.livery(a, 'nyx')
     k.clean(a)
 
 
@@ -1716,20 +1726,12 @@ def _hy_weapons(a):
     (Part_rudder)."""
     # Wave R4 (owner 04/10: "tháp pháo trên hydra, làm lại, theo tiêu chuẩn typhon"): the guns are Hydra's own
     # bespoke mounts at Typhon's detail (mb_pt14_r4_naval), at the old pivots.
-    R4.hy_twin57(a, 0, (0, -12.6, HY_DECK), '', 'gun')
-    R4.hy_twin57(a, 1, (0, 9.7, HY_DECK - .08), '_001', 'gun_001')
-    R4.hy_a190(a, (0, -8.4, HY_DECK))
-    # The launch tube hatches, five a side behind the sail (Part_doors_l / _r), riveted, one shade off.
-    for name, s in (('Part_doors_l', 1), ('Part_doors_r', -1)):
-        p = a.pivot(name, (s * .48, 3.8, HY_DECK))
-        for j in range(5):
-            y = -2.4 + j * 1.2
-            k.block(a.part('Hatch_plates' + ('_l' if s > 0 else '_r'), 'Armor', p), (.82, 1.05, .08),
-                    loc=(0, y, .04), chamfer=.02)
-            a.part('Hatch_hinges' + ('_l' if s > 0 else '_r'), 'Steel', p).cyl(.04, .9, loc=(s * .43, y, .06),
-                                                                              rot=(R90, 0, 0), seg=6, bevel=0)
-            K.bolt_ring(a.part('Kit_bolts', 'Steel', p), (0, y, .085), (0, 0, 1), .32, 8, r=.018, h=.02)
-        K.tone(a, name, k=.88)
+    # Lane sea (after R4, owner: "súng làm nhỏ lại cỡ typhon thôi"): drawn anew at Typhon's gun-to-hull proportion.
+    R5.hy_twin57(a, 0, (0, -12.6, HY_DECK), '', 'gun')
+    R5.hy_twin57(a, 1, (0, 9.7, HY_DECK - .08), '_001', 'gun_001')
+    R5.hy_100(a, (0, -8.4, HY_DECK))
+    # The launch tubes behind the sail (Part_doors_l / _r): a real vertical launcher, two lids open a side.
+    R5.hy_launcher(a, HY_DECK)
     # The drone deck aft: six FPV quadcopters on their pads, the deck's hazard edge.
     dd = a.part('Drone_deck', 'Armor')
     dd.box((1.9, 3.6, .05), loc=(0, 12.4, HY_DECK - .4 - .15), bevel=0)
@@ -1768,6 +1770,7 @@ def hydra_sub(a):
     _hy_sail(a)
     _hy_weapons(a)
     a.pivot('Point_fire', (0, 0.0, 2.6))
+    R5.livery(a, 'hydra_sub')
     k.clean(a)
 
 
