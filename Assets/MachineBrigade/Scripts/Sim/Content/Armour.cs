@@ -118,6 +118,16 @@ namespace MachineBrigade.Sim.Content
         public static bool StrikesTop(WeaponDef weapon) => weapon.TopAttack || weapon.Indirect;
 
         /// <summary>
+        /// Gear balance 04/10: whether a weapon is real indirect fire, the fire ResistIndirect (Overhead Screen, Blast Walls)
+        /// cuts: artillery, mortars, lobbed shells and rockets, bombs (canonically indirect: they fall, WeaponDef.Indirect),
+        /// anything with a minimum range or the lofted tag. Not a drone (Lancet, FPV, loitering munitions: WeaponDef.Indirect
+        /// counts them because they fly over cover) and not a guided top-attack missile (Hellfire, top-attack ATGMs), whatever
+        /// their flight. The topAttack flag alone never makes a weapon indirect.
+        /// </summary>
+        public static bool IndirectFire(WeaponDef weapon) =>
+            weapon.Indirect && weapon.Projectile != ProjectileKind.Drone && !(weapon.TopAttack && weapon.Guided);
+
+        /// <summary>
         /// The penetration a blast's fragments carry against a vehicle's armour (prompt 15 B.1: level 1, a heavy
         /// machine gun's), whatever made the blast; against structures and aircraft the blast keeps the round's own.
         /// </summary>

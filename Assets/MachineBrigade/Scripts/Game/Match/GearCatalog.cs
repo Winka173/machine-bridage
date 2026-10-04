@@ -242,7 +242,7 @@ namespace MachineBrigade.Game.Match
     /// <summary>
     /// The equipment catalogue (Docs research: base types after Path of Exile and Borderlands,
     /// sub-stats after The Division 2, unique traits after Archero, Warframe and Clash of Clans,
-    /// brands after The Division 2's gear sets): 38 stat base types, 14 special modules, 45
+    /// brands after The Division 2's gear sets): 40 stat base types, 14 special modules, 45
     /// traits and 13 brands (one of them for towers). Numbers are at the top level; level 1 has 40 %
     /// of a main stat or implicit line.
     /// </summary>
@@ -261,8 +261,10 @@ namespace MachineBrigade.Game.Match
             new("he_frag_filler", GearSlot.Weapon, StatId.Splash, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
             new("proximity_fuze", GearSlot.Weapon, StatId.DamageVsAir, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
             new("bunker_buster", GearSlot.Weapon, StatId.DamageVsStructure, V(0.06f, 0.09f, 0.13f, 0.18f, 0.24f)),
-            new("heavy_barrel", GearSlot.Weapon, StatId.Range, V(0f, 0f, 0.08f, 0.1f, 0.12f))
-                { Penalty = StatId.Speed, PenaltyTop = V(0f, 0f, -0.05f, -0.06f, -0.07f), MinRarity = 2 },
+            // Gear balance 04/10: Range 0.08/0.10/0.12 -> 0.07/0.09/0.10, Speed drawback -0.05/-0.06/-0.07 -> -0.03/-0.04/-0.05
+            // (long_barrel = clean range, heavy_barrel = more range for some mobility).
+            new("heavy_barrel", GearSlot.Weapon, StatId.Range, V(0f, 0f, 0.07f, 0.09f, 0.1f))
+                { Penalty = StatId.Speed, PenaltyTop = V(0f, 0f, -0.03f, -0.04f, -0.05f), MinRarity = 2 },
             // Prompt 8: rounds for flank shots, and airburst rounds against drones and what flies at it
             // (the Hyper-Velocity Charge's place: its extra shell speed was hard to feel).
             new("flanking_rounds", GearSlot.Weapon, StatId.DamageFlank, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
@@ -273,8 +275,9 @@ namespace MachineBrigade.Game.Match
             new("extended_ammo_rack", GearSlot.Loader, StatId.Magazine, V(0.1f, 0.15f, 0.2f, 0.25f, 0.3f)),
             new("belt_feed", GearSlot.Loader, StatId.SecondaryFireRate, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)),
             new("salvo_rack", GearSlot.Loader, StatId.SalvoInterval, V(0.1f, 0.15f, 0.2f, 0.25f, 0.3f)),
-            new("hair_trigger", GearSlot.Loader, StatId.FireRate, V(0f, 0f, 0.1f, 0.12f, 0.15f))
-                { Penalty = StatId.Spread, PenaltyTop = V(0f, 0f, -0.1f, -0.12f, -0.14f), MinRarity = 2 },
+            // Gear balance 04/10: FireRate 0.10/0.12/0.15 -> 0.08/0.10/0.12, Spread drawback -0.10/-0.12/-0.14 -> -0.08/-0.10/-0.12.
+            new("hair_trigger", GearSlot.Loader, StatId.FireRate, V(0f, 0f, 0.08f, 0.1f, 0.12f))
+                { Penalty = StatId.Spread, PenaltyTop = V(0f, 0f, -0.08f, -0.1f, -0.12f), MinRarity = 2 },
             // Prompt 8: an empty launcher gets part of its magazine back at once, once a life.
             new("spare_magazine", GearSlot.Loader, StatId.SpareMagazine, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)) { Flat = true },
 
@@ -284,10 +287,14 @@ namespace MachineBrigade.Game.Match
             // Prompt 15 C.9: a level of side and rear armour at the top.
             new("applique_steel", GearSlot.Armor, StatId.ArmourSide, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)),
             new("fire_retardant_hull", GearSlot.Armor, StatId.ResistFire, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)),
-            // Prompt 15 C.9: an aircraft's armoured cockpit tub: a level of armour all round at the top.
-            new("armoured_tub", GearSlot.Armor, StatId.ArmourAll, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)),
+            // Prompt 15 C.9: an aircraft's armoured cockpit tub: armour all round. Gear balance 04/10: 0.40-1.00 -> 0.25-0.65
+            // (all faces, so lighter than the Applique Steel's side and rear level).
+            new("armoured_tub", GearSlot.Armor, StatId.ArmourAll, V(0.25f, 0.35f, 0.45f, 0.55f, 0.65f)),
             new("monolith_plate", GearSlot.Armor, StatId.Count, V(0f, 0f, 0f, 0f, 0f))
                 { Penalty = StatId.Speed, PenaltyTop = V(0f, 0f, -0.04f, -0.05f, -0.06f), MinRarity = 2, MainScale = 1.8f, NoSubs = true },
+            // Gear balance 04/10 (new): a light counter to energy weapons, a resistance liner like the Spall Liner (main stat
+            // health, not plating). It only cuts energy damage after the energy has gone past any shield, as before.
+            new("energy_dissipation_liner", GearSlot.Armor, StatId.ResistEnergy, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
             // Prompt 8: enemy missiles must come closer to lock on.
             new("radar_absorbent_coating", GearSlot.Armor, StatId.LockRange, V(0.06f, 0.09f, 0.13f, 0.16f, 0.2f)),
 
@@ -303,8 +310,9 @@ namespace MachineBrigade.Game.Match
             new("drivetrain", GearSlot.Engine, StatId.TurnRate, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f))
                 { Implicit2 = StatId.TurretRate, Top2 = V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f) },
             new("transit_gearbox", GearSlot.Engine, StatId.TransitSpeed, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
-            new("overtuned_engine", GearSlot.Engine, StatId.Speed, V(0f, 0f, 0.1f, 0.12f, 0.15f))
-                { Penalty = StatId.Health, PenaltyTop = V(0f, 0f, -0.04f, -0.05f, -0.06f), MinRarity = 2 },
+            // Gear balance 04/10: Speed 0.10/0.12/0.15 -> 0.08/0.10/0.12, Health drawback -0.04/-0.05/-0.06 -> -0.03/-0.04/-0.05.
+            new("overtuned_engine", GearSlot.Engine, StatId.Speed, V(0f, 0f, 0.08f, 0.1f, 0.12f))
+                { Penalty = StatId.Health, PenaltyTop = V(0f, 0f, -0.03f, -0.04f, -0.05f), MinRarity = 2 },
             // Prompt 8: faster in reverse, and it backs off nose-on from enemies that close in.
             new("reverse_gearbox", GearSlot.Engine, StatId.ReverseSpeed, V(0.15f, 0.2f, 0.28f, 0.34f, 0.4f)),
 
@@ -312,6 +320,8 @@ namespace MachineBrigade.Game.Match
             new("toolbox", GearSlot.Repair, StatId.RegenDelay, V(1f, 1.5f, 2f, 2.5f, 3f)),
             new("crew_drills", GearSlot.Repair, StatId.Cooldowns, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
             new("fire_extinguisher", GearSlot.Repair, StatId.StatusDuration, V(0.1f, 0.18f, 0.26f, 0.34f, 0.42f)),
+            // Gear balance 04/10 (new): more from support and repairers instead of self-repair (RepairReceived cap stays 0.10).
+            new("field_service_interface", GearSlot.Repair, StatId.RepairReceived, V(0.02f, 0.03f, 0.04f, 0.06f, 0.08f)),
 
             // Optics: main stat +vision.
             new("laser_rangefinder", GearSlot.Optics, StatId.SpreadLong, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)),
@@ -438,20 +448,21 @@ namespace MachineBrigade.Game.Match
         /// <summary>The brand index of Bulwark Engineering (tower pieces only).</summary>
         public const int BulwarkBrand = 13;
 
+        /// <summary>Gear balance 04/10: two-piece lines vulcan 0.25 -> 0.15, hivemind 0.15 -> 0.10, quartermaster and phoenix 0.10 -> 0.06 (four-piece behaviours unchanged).</summary>
         public static readonly BrandDef[] Brands =
         {
             new(1, "ironclad", StatId.Health, 0.06f, new GearTrait(TraitId.SetBulwark, 0.15f)),
             new(2, "kestrel", StatId.Speed, 0.05f, new GearTrait(TraitId.SetHitAndRun, 0.2f, 0.5f)),
-            new(3, "vulcan", StatId.BurnDamage, 0.25f, new GearTrait(TraitId.SetFirestorm, 0.1f, 6f)),
+            new(3, "vulcan", StatId.BurnDamage, 0.15f, new GearTrait(TraitId.SetFirestorm, 0.1f, 6f)),
             new(4, "longbow", StatId.Range, 0.05f, new GearTrait(TraitId.SetDeepStrike, 0.15f)),
             new(5, "aegis", StatId.DamageTaken, 0.05f, new GearTrait(TraitId.SetSharedShield, 0.12f, 25f, 12f)),
             new(6, "stormfront", StatId.ResistFragmentation, 0.1f, new GearTrait(TraitId.SetStrafingRun, 4f, 30f)),
-            new(7, "hivemind", StatId.SummonPower, 0.15f, new GearTrait(TraitId.SetSwarm, 10f)),
-            new(8, "quartermaster", StatId.RepairReceived, 0.1f, new GearTrait(TraitId.SetSalvageRights, 0.2f, 0.1f)),
+            new(7, "hivemind", StatId.SummonPower, 0.1f, new GearTrait(TraitId.SetSwarm, 10f)),
+            new(8, "quartermaster", StatId.RepairReceived, 0.06f, new GearTrait(TraitId.SetSalvageRights, 0.2f, 0.1f)),
             new(9, "spectre", StatId.Vision, 0.08f, new GearTrait(TraitId.SetGhostNet, 0.15f)),
             new(10, "hammerfall", StatId.DamageVsStructure, 0.08f, new GearTrait(TraitId.SetHeavyRound, 5f, 1f)),
             // Prompt 8.
-            new(11, "phoenix", StatId.RepairReceived, 0.1f, new GearTrait(TraitId.SetPhoenix, 0.1f, 8f)),
+            new(11, "phoenix", StatId.RepairReceived, 0.06f, new GearTrait(TraitId.SetPhoenix, 0.1f, 8f)),
             new(12, "wolfpack", StatId.Count, 0f, new GearTrait(TraitId.SetPackFocus, 0.15f))
                 { TwoPiece = new GearTrait(TraitId.SetPackHunt, 0.04f, 15f, 3f) },
             new(BulwarkBrand, "bulwark", StatId.Health, 0.1f, new GearTrait(TraitId.SetBulwarkPost, 20f)) { TowerOnly = true },

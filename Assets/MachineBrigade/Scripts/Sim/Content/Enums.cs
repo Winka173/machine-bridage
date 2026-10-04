@@ -2,7 +2,7 @@ namespace MachineBrigade.Sim.Content
 {
     /// <summary>
     /// A broad class kept for the roles, the commander and the cards (prompt 15): Air (flying), Structure
-    /// (towers and buildings), and on the ground Heavy (front armour level 3-4) or Light (0-2). Damage comes
+    /// (towers and buildings), and on the ground Heavy (front armour level 3-5, the chassis armour class) or Light (0-2). Damage comes
     /// from <see cref="ArmourLevels"/> and <see cref="TargetKind"/>, not from this.
     /// </summary>
     public enum ArmorClass

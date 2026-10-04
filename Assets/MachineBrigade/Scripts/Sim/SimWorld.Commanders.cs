@@ -32,6 +32,25 @@ namespace MachineBrigade.Sim
             _towerCaps = towers ?? _statCaps;
         }
 
+        /// <summary>
+        /// Gear balance 04/10: the loadout cap on a stat for this unit (a tower's table for a fixed structure), or no cap
+        /// (infinity) where the table sets none, so the stat modifiers added after the boost (a module's, a converted line)
+        /// count towards the same cap as the gear: the final stat never passes it.
+        /// </summary>
+        internal float StatCapOf(VehicleDef def, StatId stat)
+        {
+            var caps = def.Static ? _towerCaps : _statCaps;
+            var i = (int)stat;
+            return i < caps.Length && caps[i] > 0f ? caps[i] : float.PositiveInfinity;
+        }
+
+        /// <summary>
+        /// Gear balance 04/10: how much of <paramref name="add"/> still fits under the cap on top of <paramref name="have"/>
+        /// (never below none; a stat already over its cap, a commander's own line, keeps what it has and takes no more).
+        /// </summary>
+        internal float Headroom(VehicleDef def, StatId stat, float have, float add) =>
+            add <= 0f ? add : MathF.Max(0f, MathF.Min(add, StatCapOf(def, stat) - have));
+
         /// <summary>Gives a side its commander for the battle (null: none). Call it before the side's forces are placed.</summary>
         public void SetCommander(int team, CommanderDef? commander)
         {

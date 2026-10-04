@@ -4,7 +4,7 @@ using MachineBrigade.Sim.Content;
 namespace MachineBrigade.Game.Match
 {
     /// <summary>
-    /// Tower equipment's catalogue: 13 base types over the three tower slots (Weapon, Structure,
+    /// Tower equipment's catalogue: 14 base types over the three tower slots (Weapon, Structure,
     /// Systems), the traits each tower slot rolls (the five tower lines and five vehicle traits that
     /// work on a fixed defence), which sub-stats roll on a tower slot, and the tower caps. Every
     /// base type and trait says what a tower must have for it to do anything (<see cref="TowerNeed"/>;
@@ -23,7 +23,8 @@ namespace MachineBrigade.Game.Match
             new("sabot_rounds", GearSlot.TowerWeapon, NoBranch, StatId.Penetration, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)),
             new("flak_proximity_fuze", GearSlot.TowerWeapon, NoBranch, StatId.DamageVsAir, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
             new("airburst_shells", GearSlot.TowerWeapon, NoBranch, StatId.Splash, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
-            new("ammo_hoist", GearSlot.TowerWeapon, NoBranch, StatId.ProjectileSpeed, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)) { Main = StatId.FireRate },
+            // Gear balance 04/10: ProjectileSpeed 0.08/0.12/0.16/0.20/0.25 -> 0.06/0.09/0.12/0.15/0.18 (main FireRate unchanged).
+            new("ammo_hoist", GearSlot.TowerWeapon, NoBranch, StatId.ProjectileSpeed, V(0.06f, 0.09f, 0.12f, 0.15f, 0.18f)) { Main = StatId.FireRate },
 
             // Structure: main stat +health (screens: less damage taken; the engineer bay: repairs out of combat).
             new("reinforced_concrete", GearSlot.TowerStructure, NoBranch, StatId.ResistHighExplosive, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
@@ -31,13 +32,16 @@ namespace MachineBrigade.Game.Match
             new("blast_walls", GearSlot.TowerStructure, NoBranch, StatId.ResistIndirect, V(0.06f, 0.09f, 0.13f, 0.17f, 0.22f)) { Plating = true },
             new("slat_screens", GearSlot.TowerStructure, NoBranch, StatId.ResistRocket, V(0.06f, 0.09f, 0.13f, 0.17f, 0.22f)) { Plating = true },
             new("engineer_bay", GearSlot.TowerStructure, NoBranch, StatId.RegenDelay, V(1f, 1.5f, 2f, 2.5f, 3f)) { Main = StatId.Regen },
+            // Gear balance 04/10 (new): energy damage cut after it has gone past any shield (energy still bypasses shields).
+            new("grounding_mesh", GearSlot.TowerStructure, NoBranch, StatId.ResistEnergy, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
 
             // Systems: main stat +vision (traverse motors: turret turn rate; ammunition handling: magazine reload).
             new("search_radar", GearSlot.TowerSystems, NoBranch, StatId.SpreadLong, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)),
             new("traverse_motors", GearSlot.TowerSystems, NoBranch, StatId.Spread, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f))
                 { Main = StatId.TurretRate, MainScale = 1.5f },
-            new("ammo_handling", GearSlot.TowerSystems, NoBranch, StatId.Magazine, V(0.1f, 0.15f, 0.2f, 0.25f, 0.3f))
-                { Main = StatId.MagazineReload, MainScale = 1.5f },
+            // Gear balance 04/10: Magazine 0.10-0.30 -> 0.08-0.24, MainScale (MagazineReload) 1.5 -> 1.25.
+            new("ammo_handling", GearSlot.TowerSystems, NoBranch, StatId.Magazine, V(0.08f, 0.12f, 0.16f, 0.2f, 0.24f))
+                { Main = StatId.MagazineReload, MainScale = 1.25f },
         };
 
         /// <summary>

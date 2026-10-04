@@ -140,7 +140,7 @@ def build(ctx):
 
     # ------------------------------------------------------------------ Trang_bi (GearCatalog.cs)
     tables = [
-        ("Bases", "Trang_bi", "Trang bị: loại cơ bản", "38 loại trang bị (ô, chỉ số ngầm, giá trị đỉnh 5 hạng, đánh đổi)", "id", "gear.base."),
+        ("Bases", "Trang_bi", "Trang bị: loại cơ bản", "40 loại trang bị (ô, chỉ số ngầm, giá trị đỉnh 5 hạng, đánh đổi)", "id", "gear.base."),
         # Gear book 04/10 (lane A): name_prefix fixed to the HUD key GearText.cs actually reads (was "gear.module." /
         # "gear.sub." / "gear.brand.", none of which ever matched; ten_vi had been None for every Module/Sub/Brand row).
         ("Modules", "Trang_bi_mo_dun", "Trang bị: mô-đun đặc biệt", "14 mô-đun (Sử thi / Huyền thoại); FlareDispenser, TrophyAps chỉ nâng cấp hệ có sẵn", "module", "special."),
@@ -167,7 +167,7 @@ def build(ctx):
     # (extra=[GEAR] gives the constructor signatures cs_table needs to name the positional args).
     tower_tables = [
         (GEAR_TOWER, "TowerBases", "Trang_bi_thap", "Trang bị tháp: loại cơ bản",
-         "13 loại trang bị tháp, 3 ô (Weapon/Structure/Systems); numbers ở mức đỉnh 5 hạng như trang bị xe", "id", "gear.base."),
+         "14 loại trang bị tháp, 3 ô (Weapon/Structure/Systems); numbers ở mức đỉnh 5 hạng như trang bị xe", "id", "gear.base."),
     ]
     for path, array, sname, title, desc, key, name_prefix in tower_tables:
         sid, rows, lines = ctx.cs_table(path, array, extra=[GEAR])
