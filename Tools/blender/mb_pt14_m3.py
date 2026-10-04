@@ -16,8 +16,10 @@ the boss notes and "Bo sung 03/10": Leviathan and Kraken 5 x the boss budget, Sc
   (Part_gun / .001: the def's main guns fire shells, so they are guns, not the old missile cells), the angled flight
   deck to port, the island to starboard, turret C (Part_gun.002) on the stern quarterdeck firing aft under the deck's
   round-down, the 155 mm triples in side sponsons, the 127 mm mounts, the gun galleries, the SAM launcher.
-- nyx: the stealth destroyer (Zumwalt read): the railgun turret, two stealth-shielded 127 mm mounts (mounts 1, 2 fire
-  127 mm shells), the peripheral VLS, the faceted deckhouse.
+- nyx: the stealth destroyer (Zumwalt read): the AGS-style 155 mm turret (R1: it replaced the railgun), two stealth
+  cupolas (mounts 1, 2 fire 127 mm shells), the peripheral VLS modules, the faceted deckhouse, a deck drone.
+- R1 (owner 04/10, "đừng reuse gì hết"): Leviathan's, Scylla's and Nyx's weapons, directors, radars, launchers and VLS
+  are drawn for each ship in mb_pt14_r1_naval (no shared mesh); the shared kit below is Kraken's only (redrawn in R2).
 - hydra_sub: the drone submarine (model id hydra_sub; balance hydra "model"): the def's three gun mounts get three
   guns (twin 57 mm Mount_gun / .001 on retractable casing mounts, the 100 mm Mount_gun.002 forward of the sail).
 
@@ -32,6 +34,7 @@ from mathutils import Vector
 import mb_kit27 as k
 import mb_kit35 as K
 import mb_p35_w5parts as W
+import mb_pt14_r1_naval as RN
 
 R90 = math.pi / 2
 TAU = math.tau
@@ -464,6 +467,9 @@ LEV = [(-43.0, .04, .12, 5.75, .6, 1.0), (-42.2, .1, .75, 5.65, 1.4, 1.1), (-40.
        (35.0, 6.15, 7.05, 3.6, 1.85, 1.9), (39.0, 5.35, 6.5, 3.55, 1.4, 1.7), (42.0, 4.75, 6.0, 3.52, 1.05, 1.6),
        (43.9, 4.45, 5.7, 3.5, .85, 1.6)]
 LEV_H = Hull(LEV)
+LEV_KEEP = (r'^(Hull|Hull_bottom|Boot_top|Deck|Deckhouse|Superstructure|Tower|Funnel|Flight_deck|Bridge_wings|'
+            r'[A-Za-z]+_(barrels|muzzles)(_\d+)?|Gun_house(_\d+)?|Sec_house(_\d+)?|Dp_house(_\d+)?|Aa_guns(_\d+)?|'
+            r'Sam_missiles|Abl_box|Radar\w*|Antennas?|Mainmast|Glass|Windows|Railings|Helo\w*|Heli\w*)$')
 LEV_SEC_F = (0, -6.0, 5.79)       # moved 1.2 m aft (was -7.2): the well's barbette clears turret B
 LEV_MG1 = (2.6, 14.8, 6.26)       # the after 127 mm, beside the after well (was 2.1, 16.5)
 DH_Z = 6.25                       # the deckhouse roof
@@ -617,10 +623,11 @@ def _lev_superstructure(a):
     for s in (-1, 1):
         K.portholes(a, [(s * 4.22, y, 7.8) for y in (-2.5, -1.0, .5, 2.0)], (s, 0, 0), r=.14)
     rails = a.part('Railings', 'Steel')
-    K.railing(rails, [(-4.3, -4.8, 9.3), (4.3, -4.8, 9.3)], h=.9, post=1.1, r=.022)
+    # (R1: the rails stop short of the 5-inch mount's sweep on the right wing.)
+    K.railing(rails, [(-1.2, -4.8, 9.3), (4.3, -4.8, 9.3)], h=.9, post=1.1, r=.022)
     for s in (-1, 1):
-        K.railing(rails, [(s * 4.35, -4.6, 9.3), (s * 4.35, 4.2, 9.3)], h=.9, post=1.1, r=.022)
-    director(a, (3.3, -1.0, 9.3), w=2.0, d=1.7, h=1.0, tag='')
+        K.railing(rails, [(s * 4.35, -4.6 if s > 0 else -1.1, 9.3), (s * 4.35, 4.2, 9.3)], h=.9, post=1.1, r=.022)
+    RN.lev_director(a, (3.3, -1.0, 9.3), tag='')
     # The tower: three tiers to the bridge, the navigation bridge with its wings and windows, the upper tiers and the
     # foretop (directors, the rangefinder), the radar mast on top (Part_radar > Radar).
     tw = a.part('Tower', 'Team')
@@ -645,7 +652,7 @@ def _lev_superstructure(a):
             a.part('Windows', 'Glass').box((.04, 1.2, .3), loc=(s * (1.62 if z < 15 else 1.26), -.4, z), bevel=0)
     for i in range(5):
         a.part('Windows', 'Glass').box((.36, .04, .32), loc=(-1.0 + i * .5, -2.63, 14.2), bevel=0)
-    director(a, (0, -2.2, 15.3), w=2.4, d=2.0, h=1.0, tag='_top')
+    RN.lev_director(a, (0, -2.05, 17.36), tag='_top')
     K.ladder(a.part('Ladders', 'Steel'), (1.9, 2.3, 9.3), (1.9, 2.3, 13.1), width=.45, step=.3, facing=(0, 1))
     # Part_radar: the radar mast on the foretop with the yard, the whips, the search array (Radar spins).
     pr = a.pivot('Part_radar', (0, -1.0, 18.39))
@@ -657,7 +664,7 @@ def _lev_superstructure(a):
         K.whip_antenna(a.part('Antennas', 'Steel', pr), (x, .5, 1.68), h=2.2, lean=0)
     for x in (-1.5, 1.5):
         a.part('Signal_lamps', 'Lamp', pr).cyl(.08, .14, loc=(x, .5, 1.55), seg=6, bevel=0)
-    radar_array(a, 'Radar', (0, .5, 3.0), pr, w=3.6, h=1.0)
+    RN.lev_radar(a, 'Radar', (0, .5, 3.0), pr)
     for s in (-1, 1):
         K.dish(a.part('Dishes', 'Medical', pr), a.part('Dishes', 'Steel', pr), (s * 1.0, .5, .9), r=.42,
                normal=(s * .2, -1, .2), seg=12)
@@ -671,11 +678,9 @@ def _lev_superstructure(a):
             for j in range(3):
                 a.part('Aps_tubes', 'Undercarriage', aps).cyl(.07, .04, loc=(s * 3.45 - .17 + j * .17, y - .26, .3),
                                                               rot=K.FORWARD, seg=6, bevel=0)
-    # Part_vls: two banks of launch cells on the deckhouse roof either side of the funnel.
+    # Part_vls (R1): four Mk 143 armoured box launchers either side of the funnel, the outer two raised.
     pv = a.pivot('Part_vls', (0, 5.6, 7.49))
-    for s in (-1, 1):
-        k.block(a.part('Vls_coaming', 'Armor', pv), (2.0, 3.6, .2), loc=(s * 2.75, 0, DH_Z - 7.49), chamfer=.03)
-        K.vls(a, (s * 2.75, 0, DH_Z - 7.49 + .25), 3, 6, cell=.55, parent=pv)
+    RN.lev_abl(a, 'Part_vls', [(2.35, 0, False), (3.45, 0, True), (-2.35, 0, False), (-3.45, 0, True)], DH_Z - 7.49)
     K.tone(a, 'Part_vls', k=.88)
     # Part_engine: the raked funnel with its cap, the grille, the steam pipes and the searchlight platform.
     pe = a.pivot('Part_engine', (0, 7.0, 7.49))
@@ -711,28 +716,31 @@ def _lev_superstructure(a):
         for y in (8.6, 11.8):
             a.part('Davits', 'Steel').tube([(s * 2.3, y, DH_Z), (s * 2.3, y, 7.9), (s * 3.45, y, 8.1)], .08, seg=6)
     # The after 127 mm on the deckhouse roof (Part_mg.001), the SAM launcher opposite (Mount_missile).
-    twin_arm_launcher(a, (-2.4, 14.8, DH_Z), s=.82)
+    RN.lev_sam(a, (-2.4, 14.8, DH_Z))
     # Life rafts along the deckhouse roof edge.
     for s in (-1, 1):
         liferaft_rack(a, (s * 4.3, 2.6, DH_Z), n=3, axis='Y', r=.28, length=1.0)
 
 
 def _lev_guns(a):
-    main = dict(w=3.25, f=-3.2, b=4.2, h=2.55, L=9.45, r=.27, gap=1.7, br=3.4, rangefinder=6.6, zg=1.24)
-    triple_turret(a, 0, (0, -21.4, 4.49), 5.09, main)
-    triple_turret(a, 1, (0, -13.0, 4.19), 6.79, dict(main, barbette_base=.0))
-    triple_turret(a, 2, (0, 25.6, 3.73), 4.43, main)
-    sec = dict(w=1.35, f=-1.3, b=1.6, h=1.3, L=5.9, r=.1, gap=.55, br=2.0, zg=.72, prefix='Sec', well=2.05)
-    triple_turret(a, 3, LEV_SEC_F, 9.59, dict(sec, well_base=DH_Z - LEV_SEC_F[2] - .02), part_name='Part_sec_f')
-    triple_turret(a, 4, (0, 19.8, 3.8), 6.8, dict(sec, well_base=-.05), part_name='Part_sec_a')
+    # R1: Leviathan's own guns (mb_pt14_r1_naval): the Mk 7 triples, the 155 mm triples in their wells, the twin
+    # 5"/38 mounts with a Phalanx, the Type 96 triple 25 mm on the sponsons.
+    RN.lev_main_turret(a, 0, (0, -21.4, 4.49), 5.09)
+    RN.lev_main_turret(a, 1, (0, -13.0, 4.19), 6.79, barbette_base=.0)
+    RN.lev_main_turret(a, 2, (0, 25.6, 3.73), 4.43)
+    for i, pname, loc, mz, base in ((3, 'Part_sec_f', LEV_SEC_F, 9.59, DH_Z - LEV_SEC_F[2] - .02),
+                                    (4, 'Part_sec_a', (0, 19.8, 3.8), 6.8, -.05)):
+        a.pivot(pname, loc)
+        _well(a, pname, f'_{i:03d}', 2.0, 2.05, mz - loc[2], base, 'Sec')
+        RN.lev_sec_turret(a, i, pname, loc, mz)
     # The 127 mm mounts (mounts 5, 6): Part_mg on the forward tier's right wing, Part_mg.001 aft on the deckhouse,
-    # each with a Phalanx beside it (the APS's guns).
+    # a Phalanx beside the forward one (the APS's guns).
     p = a.pivot('Part_mg', (-3.4, -3.4, 9.27))
-    dp_mount(a, 'Mount_mg', 'Muzzle_mg', (0, 0, .05), p, '', s=.9)
-    gatling(a, (-.9, 2.6, .05), parent=p, s=.85)
+    RN.lev_dp_twin(a, 'Mount_mg', 'Muzzle_mg', (0, 0, .05), p, '')
+    RN.lev_ciws(a, (-.9, 2.6, .05), parent=p, s=.85)
     K.tone(a, 'Part_mg', k=.9)
     p = a.pivot('Part_mg__001', LEV_MG1)
-    dp_mount(a, 'Mount_mg__001', 'Muzzle_mg__001', (0, 0, .02), p, '_001', s=.9)
+    RN.lev_dp_twin(a, 'Mount_mg__001', 'Muzzle_mg__001', (0, 0, .02), p, '_001')
     K.tone(a, 'Part_mg__001', k=.9)
     # The AA sponsons along both sides (Part_aa_l with Mount_mg.002 - .005, Part_aa_r with .006 - .009).
     for pname, s, first in (('Part_aa_l', 1, 2), ('Part_aa_r', -1, 6)):
@@ -747,7 +755,7 @@ def _lev_guns(a):
                                                        .1, .1, bevel=0)
         for j, y in enumerate((-5.0, 0.0, 8.0, 13.0)):
             i = first + j
-            aa_triple(a, K.name('Mount_mg', i), K.name('Muzzle_mg', i), (s * .2, y - 4.5, .55), p, f'_{i:03d}')
+            RN.lev_aa25(a, K.name('Mount_mg', i), K.name('Muzzle_mg', i), (s * .2, y - 4.5, .55), p, f'_{i:03d}')
         K.tone(a, pname, k=.92)
 
 
@@ -844,6 +852,9 @@ def leviathan(a):
     _lev_aft(a)
     a.pivot('Point_fire', (0, 4.0, 8.0))
     a.pivot('Point_exhaust', (0, 7.0, 14.0))
+    # R1: the bespoke guns added parts; fold same-material static parts per pivot into one renderer each (boss_l
+    # cap 299), keeping the gate's roles and every mount's kick parts.
+    W.merge_static(a, keep=LEV_KEEP)
     k.clean(a)
 
 
@@ -1457,11 +1468,11 @@ def _sc_superstructure(a):
     pm.box((3.6, .08, .08), loc=(0, MY, 9.4), bevel=0)
     for x in (-1.6, 1.6):
         K.whip_antenna(a.part('Antennas', 'Steel'), (x, MY, 9.45), h=1.3, r=.016, lean=0)
-    radar_array(a, 'Radar', (0, MY, 10.45), None, w=2.4, h=.62, tag='_s')
+    RN.sc_radar(a, (0, MY, 10.45))
     for s in (-1, 1):
         K.dish(a.part('Dishes', 'Medical'), a.part('Dish_feeds', 'Steel'), (s * .8, MY + .3, 8.4), r=.28,
                normal=(s * .3, -1, .2), seg=10)
-    K.beacon(a, (0, MY, 11.65), r=.07)
+    K.beacon(a, (1.15, MY, 9.48), r=.07)     # R1: off the spinning radar's path, on the yard
     # The APS launchers on the 01 level ahead of the bridge (Mount_APS at their centre).
     aps = a.pivot('Mount_APS', (0, -10.1, 5.4))
     for s in (-1, 1):
@@ -1514,7 +1525,7 @@ def _sc_superstructure(a):
             loc=(0, 10.6, 5.06), seg=16)
     k.lathe(a.part('Fc_dome_base', 'Armor'), [(1.0, -.3), (1.0, 0), (.9, .05)], loc=(0, 10.6, 5.06), seg=16)
     for s in (-1, 1):
-        gatling(a, (s * 1.6, 8.2, 5.06), s=.5)
+        RN.sc_ak630(a, (s * 1.6, 8.2, 5.06), s=.7)
         K.portholes(a, [(s * 2.41, y, 4.2) for y in (6.6, 8.2, 9.8, 11.4)], (s, 0, 0), r=.09)
         K.door(a, (s * 2.42, 12.6, 2.98), size=(.6, 1.3), normal=(s, 0, 0), mat='Armor', frame_mat='Steel')
     K.railing(rails, [(-2.45, 5.0, 5.06), (2.45, 5.0, 5.06)], h=.7, post=.8, r=.014)
@@ -1544,18 +1555,15 @@ def _sc_superstructure(a):
         liferaft_rack(a, (s * 3.2, 6.6, H.deck_z(6.6) + .06), n=2, axis='X', r=.2, length=.75)
         vent(a.part('Vents', 'Steel'), (s * 3.0, -13.0, H.deck_z(-13.0) + .05), r=.18, h=.7)
     for s in (-1, 1):
-        gatling(a, (s * 1.7, -11.6, 3.05), s=.5)
+        RN.sc_ak630(a, (s * 1.7, -11.6, 3.05), s=.7)
 
 
 def _sc_weapons(a):
     """Part_gun > Mount_gun (the twin 130 mm on the foredeck), Part_mg > Mount_mg (the 127 mm on the bridge roof)."""
-    twin_turret(a, 'Part_gun', 'Mount_gun', 'Muzzle_gun', (0, -15.2, SC_H.deck_z(-15.2) + .02),
-                SC_H.deck_z(-15.2) + .3, '', dict(w=1.6, f=-2.2, b=2.5, h=1.75, L=4.6, r=.085, gap=.72, br=1.55,
-                                                  zg=.82))
+    RN.sc_ak130(a, (0, -15.2, SC_H.deck_z(-15.2) + .02), SC_H.deck_z(-15.2) + .3)
     K.soot(a, (0, -22.4, 4.2), radius=.6, k=.35)
     K.tone(a, 'Part_gun', k=.92)
-    p = a.pivot('Part_mg', (0, -7.3, 7.36))
-    dp_mount(a, 'Mount_mg', 'Muzzle_mg', (0, 0, .02), p, '', s=.66)
+    RN.sc_ak100(a, (0, -7.3, 7.36))
     K.tone(a, 'Part_mg', k=.9)
 
 
@@ -1683,7 +1691,7 @@ def _nx_deckhouse(a):
                                                                 H.deck_z(19.6) - .05), rot=(0, s * .3, 0), bevel=0)
         for y in (15.5, 19.5, 23.5):
             a.part('Deck_lights', 'Lamp').cyl(.05, .04, loc=(s * 3.3, y, H.deck_z(y) + .1), seg=6, bevel=0)
-    _helicopter(a, (.6, 19.8, H.deck_z(19.8) + .1), None, yaw=.35, s=.62, tag='_n')
+    RN.nx_drone(a, (.6, 19.8, H.deck_z(19.8) + .1), yaw=.35, s=.85)
     a.part('Stern_lights', 'Lamp').cyl(.07, .05, loc=(0, 26.42, 2.4), rot=(R90, 0, 0), seg=8, bevel=0)
 
 
@@ -1773,66 +1781,30 @@ def _nx_detail(a):
 
 
 def _nx_weapons(a):
-    """Part_gun > Mount_gun (the railgun: the faceted stealth turret, the long rail shroud with its rails, the
-    capacitor bank behind), Part_vls (the peripheral cells either side of the foredeck), Part_mg / .001 > Mount_mg /
-    .001 (stealth-shielded 127 mm mounts on the deckhouse roof fore and aft), the after cell banks."""
+    """R1 (owner 04/10: the railgun goes, a gun turret takes its mount): Part_gun > Mount_gun, the AGS-style 155 mm
+    stealth turret (mb_pt14_r1_naval.nx_ags); Part_vls, the peripheral VLS modules set into both deck edges forward
+    of the deckhouse, and two more aft; Part_mg / .001 > Mount_mg / .001, the Mk 110-style stealth cupolas on the
+    deckhouse roof fore and aft (mounts 1, 2 fire 127 mm)."""
     H = NX_H
-    p = a.pivot('Part_gun', (0, -13.2, 3.0))
-    m = a.pivot('Mount_gun', (0, 0, .2), 'Part_gun')
-    k.lathe(a.part('Rail_ring', 'Steel', 'Part_gun'), [(1.9, -.02), (1.9, .12), (1.8, .2)], seg=20)
-    W.poly_turret(a.part('Rail_house', 'Team', m), [
-        (0, [(-.7, -2.6), (.7, -2.6), (1.75, -1.2), (1.75, 2.4), (-1.75, 2.4), (-1.75, -1.2)]),
-        (1.15, [(-.45, -2.0), (.45, -2.0), (1.25, -.9), (1.25, 2.1), (-1.25, 2.1), (-1.25, -.9)]),
-        (1.45, [(-.3, -1.4), (.3, -1.4), (.85, -.6), (.85, 1.7), (-.85, 1.7), (-.85, -.6)])], chamfer=.04)
-    k.inset(a.part('Rail_house', 'Team', m), lambda c, n, f: abs(n.z) < .6, width=.07, depth=-.012)
-    zg = .62
-    # The barrel: the square shroud (Rail_barrels: the kick part), the two rails proud of it, the bands, the
-    # muzzle collar (Rail_muzzles).
-    rb = a.part('Rail_barrels', 'Steel', m)
-    L = 7.7
-    k.extrude(rb, [(-.27, -.24), (.27, -.24), (.32, 0), (.27, .24), (-.27, .24), (-.32, 0)], L, loc=(0, -2.1 - L / 2, zg),
-              rot=(R90, 0, 0), axis='Z', chamfer=.02, taper=(.82, .82))
-    for x in (-.26, .26):
-        rb.box((.06, L, .12), loc=(x, -2.1 - L / 2, zg), bevel=0)
-    for j in range(6):
-        y = -2.6 - j * 1.25
-        f_ = 1 - (j * 1.25 + .5) / L * .18
-        rb.box((.7 * f_, .16, .58 * f_), loc=(0, y, zg), bevel=.01)
-        a.part('Rail_coils', 'Energy', m).box((.72 * f_, .04, .08), loc=(0, y - .1, zg + .26 * f_), bevel=0)
-    k.ring(a.part('Rail_muzzles', 'Undercarriage', m), [(.14, 0), (.28, 0), (.28, .26), (.14, .26)],
-           loc=(0, -2.1 - L - .1, zg), rot=K.FORWARD, seg=10)
-    a.part('Rail_energy', 'Energy', m).box((.1, .05, .06), loc=(0, -2.1 - L - .25, zg), bevel=0)
-    a.pivot('Muzzle_gun', (0, -2.1 - L - .4, zg), m)
-    cb = a.part('Capacitors', 'Armor', m)
-    for x in (-.8, -.4, 0, .4, .8):
-        cb.box((.3, .9, .35), loc=(x, 1.9, 1.3), bevel=.02)
-    a.part('Capacitor_glow', 'Energy', m).box((1.9, .05, .06), loc=(0, 1.42, 1.38), bevel=0)
-    K.soot(a, (0, -13.2 - 9.8, 3.8), radius=.6, k=.3)
-    K.tone(a, 'Part_gun', k=.92)
-    # Part_vls: the peripheral cell banks along both deck edges forward of the deckhouse.
-    pv = a.pivot('Part_vls', (0, -8.6, 3.0))
+    RN.nx_ags(a)
+    a.pivot('Part_vls', (0, -8.6, 3.0))
     for s in (-1, 1):
         x = s * (H.deck_half(-8.6) - .75)
-        k.block(a.part('Vls_coaming', 'Armor', pv), (1.1, 3.0, .16), loc=(x, 0, .1), chamfer=.03)
-        K.vls(a, (x, 0, .2), 2, 5, cell=.5, parent=pv)
+        for dy in (-.68, .68):
+            RN.nx_pvls_module(a, 'Part_vls', x, dy, s, z=.02)
     K.tone(a, 'Part_vls', k=.88)
-    pa = a.part('Pvls_aft', 'Armor')
     for s in (-1, 1):
-        x = s * (H.deck_half(14.2) - .75)
-        k.block(pa, (1.1, 2.6, .16), loc=(x, 14.2, 3.1), chamfer=.03)
-        K.vls(a, (x, 14.2, 3.2), 2, 4, cell=.5)
+        RN.nx_pvls_module(a, None, s * (H.deck_half(14.2) - .75), 14.2, s, z=3.02)
     for pname, mount, muzzle, loc, tag in (('Part_mg', 'Mount_mg', 'Muzzle_mg', (0, -5.35, 6.42), ''),
                                            ('Part_mg__001', 'Mount_mg__001', 'Muzzle_mg__001', (0, 9.8, 6.42),
                                             '_001')):
-        p = a.pivot(pname, loc)
-        dp_mount(a, mount, muzzle, (0, 0, .03), p, tag, s=.66, shield='stealth')
-        K.tone(a, pname, k=.9)
+        RN.nx_cupola(a, pname, mount, muzzle, loc, tag)
 
 
 def nyx(a):
     """Nyx (see the module docstring). Runtime (the variant keeps turret_fore, vls, ciws_fore, ciws_aft of
-    leviathan): Part_gun > Mount_gun > Rail_barrels / Rail_muzzles, Muzzle_gun (the railgun), Part_vls, Part_mg /
-    .001 > Mount_mg / .001 > Dp_barrels*, Muzzle_mg / .001 (127 mm), Mount_APS."""
+    leviathan): Part_gun > Mount_gun > Gun_barrels / Gun_muzzles, Muzzle_gun (the AGS-style 155 mm), Part_vls, Part_mg /
+    .001 > Mount_mg / .001 > Cupola_barrels*, Muzzle_mg / .001 (127 mm), Mount_APS."""
     K.suffixed(a)
     _nx_hull(a)
     _nx_deckhouse(a)

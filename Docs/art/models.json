@@ -1105,7 +1105,7 @@
   },
   "icarus_mk0": {
     "file": "icarus_mk0.glb",
-    "triangles": 27954
+    "triangles": 28148
   },
   "icbm": {
     "file": "icbm.glb",
@@ -1193,7 +1193,7 @@
   },
   "leviathan": {
     "file": "leviathan.glb",
-    "triangles": 62916
+    "triangles": 86412
   },
   "light_attack_heli": {
     "file": "light_attack_heli.glb",
@@ -1365,7 +1365,7 @@
   },
   "nyx": {
     "file": "nyx.glb",
-    "triangles": 17624
+    "triangles": 17028
   },
   "obsidian_spire": {
     "file": "obsidian_spire.glb",
@@ -1601,7 +1601,7 @@
   },
   "scylla": {
     "file": "scylla.glb",
-    "triangles": 27262
+    "triangles": 28994
   },
   "sea_corvette": {
     "file": "sea_corvette.glb",
@@ -1661,11 +1661,11 @@
   },
   "silver_bug": {
     "file": "silver_bug.glb",
-    "triangles": 51816
+    "triangles": 58220
   },
   "silver_bug_wreck": {
     "file": "silver_bug_wreck.glb",
-    "triangles": 53686
+    "triangles": 60090
   },
   "sky_fortress": {
     "file": "sky_fortress.glb",

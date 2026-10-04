@@ -18,6 +18,9 @@ budget, no size change. Spec: Docs/cloud/PT14_CLOUD_TASKS.md session 4; DECISION
   gives a slot's k-th mount the k-th Mount_<slot> by name, so six gun mounts need six Mount_gun pivots (the old model
   had four: mounts 3, 4 fired lasers out of the 40 mm turrets and 5, 6 their 40 mm out of the coilguns); data part
   nodes moved with it (CHANGES "Play-test 14 model wave M7").
+- R1 (owner 04/10, "đừng reuse gì hết"; DECISIONS "Play-test 14 boss redraw R1"): Icarus's coilguns, beam turrets, twin
+  40 mm and PD emitters and all of the prototype's weapons, engines, drop cradle and its command citadel (no lattice
+  tower: it read as a watchtower) come from mb_pt14_r1_space, each drawn for one ship; Mk.0 has its own hull planform.
 - icarus_mk0 (Icarus Mk.0, the unfinished prototype; its own model now, it drew silver_bug's): the same dagger at the same
   length, built as a test article: primer and bare panels with open bays showing the stringers, half the belly tiled,
   strap-on propellant tanks instead of the nacelles, three big engines on an open thrust frame, the scaffolded command
@@ -36,6 +39,7 @@ from mathutils import Matrix, Vector
 import mb_kit27 as k
 import mb_kit35 as K
 import mb_p35_w5parts as W5
+import mb_pt14_r1_space as RS
 
 R90 = math.pi / 2
 TAU = math.tau
@@ -145,10 +149,14 @@ ICARUS = Hull(W=[(-19.3, .22), (-18.4, .7), (-17, 1.25), (-15, 1.9), (-12.5, 2.6
                  (-2, -1.7), (2, -1.8), (12.6, -1.84)])
 
 
-# The prototype's hull: the same length, a slimmer and flatter blade (the finished ship's hull grew with its systems).
-MK0 = Hull(W=[(y, w * (.9 if y > -12 else .95)) for y, w in ICARUS.W],
-           T=[(y, t * .86) for y, t in ICARUS.T],
-           B=[(y, b * .92) for y, b in ICARUS.B])
+# The prototype's hull (R1: its own planform, not the finished ship's scaled): the same length, a cranked double
+# delta: a long narrow nose strake to the crank at y -6, then the wide glove aft; flatter on top.
+MK0 = Hull(W=[(-19.3, .18), (-18.2, .5), (-16.5, .85), (-14, 1.25), (-11, 1.7), (-8, 2.2), (-6, 2.75), (-4, 3.6),
+              (-1.5, 4.35), (2, 4.85), (6, 5.15), (9.5, 5.25), (12.6, 4.9)],
+           T=[(-19.3, .08), (-18.2, .22), (-16.5, .38), (-14, .6), (-11, .86), (-8, 1.12), (-6, 1.38), (-4, 1.62),
+              (-1.5, 1.85), (2, 1.98), (12.6, 2.0)],
+           B=[(-19.3, -.08), (-18.2, -.22), (-16.5, -.38), (-14, -.62), (-11, -.9), (-8, -1.12), (-6, -1.3),
+              (-4, -1.45), (-1.5, -1.58), (2, -1.66), (12.6, -1.7)])
 
 
 def hull_skin(a, H, upper='Fuel', lower='Undercarriage'):
@@ -344,29 +352,20 @@ SB_KEEP = [(-4.3, 4.3, .2, 12.7),       # the superstructure
            (-.9, .9, -13.5, -10.6)]     # docking port
 
 
-def _sb_engines(a, H, proto=False):
+def _sb_engines(a, H):
     """The bank of main engines across the stern (Thruster_main: the thrust structure, five regeneratively cooled bells
-    with their powerheads; the prototype: three bigger ones on an open frame), the body flap under them, the heat
+    with their powerheads; the prototype's are RS.mk_engines), the body flap under them, the heat
     shield round them. Engine_flame empties on every exit plane."""
     t = a.pivot('Thruster_main', (0, 15.5, .6))
     zc = 0.0
-    if not proto:
-        k.block(a.part('Engine_block', 'MetalSheet', t), (11.0, 1.7, 2.7), loc=(0, -2.2, -.05), chamfer=.15)
-        k.block(a.part('Engine_block_plates', 'Armor', t), (11.2, .1, 2.5), loc=(0, -1.33, -.05), chamfer=0)
-        for x in (-5.0, -3.1, -1.0, 1.0, 3.1, 5.0):
-            a.part('Thrust_struts', 'Steel', t).limb((x, -1.3, 1.1), (x * .8, -.55, .0), .1, .1, bevel=0)
-            a.part('Thrust_struts', 'Steel', t).limb((x, -1.3, -1.2), (x * .8, -.55, .0), .1, .1, bevel=0)
-        # The heat shield face with the engines' boots.
-        xs = [(-4.1, -.25), (-2.05, .45), (0, -.25), (2.05, .45), (4.1, -.25)]
-        r_exit, length, r_t = .86, 2.0, .36
-    else:
-        for s in (-1, 1):
-            a.part('Thrust_frame', 'Steel', t).limb((s * 3.6, -2.9, 1.2), (s * 3.6, -.6, -.4), .14, .14, bevel=0)
-            a.part('Thrust_frame', 'Steel', t).limb((s * 3.6, -2.9, -1.6), (s * 3.6, -.6, -.4), .14, .14, bevel=0)
-            a.part('Thrust_frame', 'Steel', t).limb((s * 3.6, -.6, -.4), (0, -.6, -.4), .12, .12, bevel=0)
-        k.block(a.part('Engine_block', 'Crate', t), (8.4, .5, 2.8), loc=(0, -2.85, -.1), chamfer=.08)
-        xs = [(-2.5, -.2), (0, .2), (2.5, -.2)]
-        r_exit, length, r_t = 1.05, 2.35, .42
+    k.block(a.part('Engine_block', 'MetalSheet', t), (11.0, 1.7, 2.7), loc=(0, -2.2, -.05), chamfer=.15)
+    k.block(a.part('Engine_block_plates', 'Armor', t), (11.2, .1, 2.5), loc=(0, -1.33, -.05), chamfer=0)
+    for x in (-5.0, -3.1, -1.0, 1.0, 3.1, 5.0):
+        a.part('Thrust_struts', 'Steel', t).limb((x, -1.3, 1.1), (x * .8, -.55, .0), .1, .1, bevel=0)
+        a.part('Thrust_struts', 'Steel', t).limb((x, -1.3, -1.2), (x * .8, -.55, .0), .1, .1, bevel=0)
+    # The heat shield face with the engines' boots.
+    xs = [(-4.1, -.25), (-2.05, .45), (0, -.25), (2.05, .45), (4.1, -.25)]
+    r_exit, length, r_t = .86, 2.0, .36
     for i, (x, dz) in enumerate(xs):
         z = dz + zc
         powerhead(a, t, (x, -.75, z), r_exit * .9, seed=i)
@@ -380,15 +379,14 @@ def _sb_engines(a, H, proto=False):
     feed = a.part('Feed_lines', 'Pipe', t)
     for z in (.95, -1.1):
         feed.tube([(xs[0][0] - .6, -1.15, z + zc), (xs[-1][0] + .6, -1.15, z + zc)], .09, seg=8)
-    if not proto:
-        # The body flap: the heat-shielded plate under the engines that trims the glide; hinge line and actuators.
-        flap = a.part('Body_flap', 'Undercarriage')
-        k.block(flap, (10.8, 2.9, .28), loc=(0, 14.0, -1.72), chamfer=.06)
-        for x in range(-5, 6):
-            a.part('Tile_gaps', 'Armor').box((.03, 2.8, .02), loc=(x * .95, 14.0, -1.875), bevel=0)
-        a.part('Flap_hinge', 'Steel').cyl(.1, 10.6, loc=(0, 12.55, -1.72), rot=(0, R90, 0), seg=8, bevel=0)
-        for s in (-1, 1):
-            a.part('Leading_edges', 'Concrete').box((.3, 2.9, .3), loc=(s * 5.45, 14.0, -1.72), bevel=0)
+    # The body flap: the heat-shielded plate under the engines that trims the glide; hinge line and actuators.
+    flap = a.part('Body_flap', 'Undercarriage')
+    k.block(flap, (10.8, 2.9, .28), loc=(0, 14.0, -1.72), chamfer=.06)
+    for x in range(-5, 6):
+        a.part('Tile_gaps', 'Armor').box((.03, 2.8, .02), loc=(x * .95, 14.0, -1.875), bevel=0)
+    a.part('Flap_hinge', 'Steel').cyl(.1, 10.6, loc=(0, 12.55, -1.72), rot=(0, R90, 0), seg=8, bevel=0)
+    for s in (-1, 1):
+        a.part('Leading_edges', 'Concrete').box((.3, 2.9, .3), loc=(s * 5.45, 14.0, -1.72), bevel=0)
     K.tone(a, 'Thruster_main', k=.88)
 
 
@@ -447,13 +445,9 @@ def _rcs_pod(a, H, s):
     K.tone(a, name, k=.9)
 
 
-def _main_laser(a, H, proto=False):
+def _main_laser(a, H):
     """The ventral main laser (Turret): the blister pylon from the belly, the turning ball, the emitter barrel with its
-    cooling fins, focusing rings and the glowing lens, Muzzle_main at the lens. The prototype's: a boxy test mount, a
-    bare barrel with its coolant lines and a clamped-on lens housing."""
-    if proto:
-        _main_laser_proto(a, H)
-        return
+    cooling fins, focusing rings and the glowing lens, Muzzle_main at the lens (the prototype's: RS.mk_laser)."""
     zb = H.bot(0, -7.0)
     k.lathe(a.part('Laser_blister', 'Undercarriage'), [(1.5, zb + .25), (1.45, zb - .15), (1.15, zb - .6),
                                                        (.95, zb - .8)], loc=(0, -7.0, 0), seg=20)
@@ -474,142 +468,14 @@ def _main_laser(a, H, proto=False):
     K.tone(a, 'Turret', k=.88)
 
 
-def _main_laser_proto(a, H):
-    zb = H.bot(0, -7.0)
-    for e in (-1, 1):
-        a.part('Laser_pylons', 'Steel').limb((e * .9, -6.2, zb + .1), (e * .5, -7.0, -2.2), .2, .2, bevel=0)
-        a.part('Laser_pylons', 'Steel').limb((e * .9, -7.8, zb + .1), (e * .5, -7.0, -2.2), .2, .2, bevel=0)
-    k.block(a.part('Laser_blister', 'Crate'), (2.0, 2.6, .35), loc=(0, -7.0, zb - .05), chamfer=.05)
-    t = a.pivot('Turret', (0, -7.0, -2.8))
-    k.block(a.part('Turret_ball', 'Crate', t), (1.5, 1.6, 1.3), loc=(0, .1, -.1), chamfer=.1)
-    a.part('Turret_collar', 'Steel', t).cyl(.8, .2, loc=(0, 0, .62), seg=16, bevel=0)
-    a.part('Turret_band', 'Hazard', t).box((1.55, .12, 1.32), loc=(0, -.68, -.1), bevel=0)
-    k.lathe(a.part('Main_cannon', 'MetalSheet', t), [(.36, 0), (.36, .5), (.28, .6), (.26, 2.9), (.33, 3.0)],
-            loc=(0, -.6, -.12), rot=K.FORWARD, seg=12)
-    for e in (-1, 1):
-        a.part('Main_cannon_pipes', 'Pipe', t).tube([(e * .55, .3, .3), (e * .4, -.8, -.05), (e * .33, -2.9, -.05)],
-                                                    .06, seg=6)
-    k.block(a.part('Main_cannon_rings', 'Armor', t), (.9, .7, .9), loc=(0, -3.55, -.12), chamfer=.06)
-    a.part('Main_cannon_lens', 'Energy', t).cyl(.3, .04, loc=(0, -3.92, -.12), rot=(R90, 0, 0), seg=14, bevel=0)
-    a.pivot('Muzzle_main', (0, -3.96, -.12), 'Turret')
-    K.tone(a, 'Turret', k=.88)
-
-
-def _coilgun(a, H, i, x, y):
-    """A heavy coilgun on its shoulder barbette (Mount_gun / .001): the barbette from the hull, the turning house with
-    its capacitor banks, the two rails with the coil rings between them, the muzzle collar; Muzzle_gun at the mouth."""
-    s = 1 if x > 0 else -1
+def _pd_capped(a, H, x, y):
+    """The prototype's empty right PD station: a ring and a blanking cover with hazard bands (no pivot)."""
     zs = H.top(x, y)
-    tag = '' if i == 0 else '_001'
-    k.lathe(a.part('Coilgun_barbettes', 'MetalSheet'), [(1.45, zs - .4), (1.45, zs + .25), (1.3, zs + .45)],
-            loc=(x, y, 0), seg=20)
-    key = K.name('Mount_gun', i)
-    m = a.pivot(key, (x, y, zs + .45))
-    k.lathe(a.part('Coilgun_ring' + tag, 'Armor', m), [(1.2, 0), (1.25, .08), (1.1, .2)], seg=20)
-    k.sharp_loft(a.part('Coilgun_housing' + tag, 'Fuel', m), [
-        [(-1.0, -1.1, .15), (1.0, -1.1, .15), (1.05, 1.3, .15), (-1.05, 1.3, .15)],
-        [(-.8, -.95, .95), (.8, -.95, .95), (.85, 1.2, .95), (-.85, 1.2, .95)]], chamfer=.05)
+    k.lathe(a.part('Pd_station_empty', 'Crate'), [(.85, zs - .3), (.85, zs + .25), (.7, zs + .32)], loc=(x, y, 0),
+            seg=16)
+    a.part('Pd_station_cover', 'Hazard').cyl(.68, .06, loc=(x, y, zs + .35), seg=16, bevel=0)
     for e in (-1, 1):
-        k.block(a.part('Coilgun_caps' + tag, 'Undercarriage', m), (.3, 1.7, .6), loc=(e * 1.1, .2, .5), chamfer=.04)
-        for j in range(4):
-            a.part('Coilgun_cells' + tag, 'Steel', m).box((.08, .3, .45), loc=(e * 1.27, -.45 + j * .42, .5), bevel=0)
-    # Rails and coils.
-    for e in (-1, 1):
-        a.part('Coil_barrels' + tag, 'Steel', m).box((.12, 6.4, .2), loc=(e * .26, -4.0, .6), bevel=0)
-    for j in range(12):
-        yy = -1.3 - j * .48
-        k.ring(a.part('Coil_rings' + tag, 'Armor', m), [(.4, -.07), (.44, -.07), (.44, .07), (.4, .07)],
-               loc=(0, yy, .6), rot=(R90, 0, 0), seg=14)
-        if j % 2:
-            a.part('Coil_glow' + tag, 'Energy', m).cyl(.36, .03, loc=(0, yy + .24, .6), rot=(R90, 0, 0), seg=12,
-                                                       bevel=0)
-    a.part('Coil_barrels' + tag, 'Undercarriage', m).box((.36, 6.2, .1), loc=(0, -4.0, .28), bevel=0)
-    k.lathe(a.part('Coil_muzzles' + tag, 'Armor', m), [(.38, 0), (.5, .1), (.5, .45), (.4, .55)],
-            loc=(0, -7.15, .6), rot=K.FORWARD, seg=14)
-    a.pivot(K.name('Muzzle_gun', i), (0, -7.75, .6), key)
-    K.tone(a, key, k=.9)
-
-
-def _beam_director(a, i, loc, gun_index):
-    """A laser beam director (Mount_gun.002 / .003): the drum base, the yoke, the telescope with its sunshade and the
-    glowing aperture; Muzzle_gun.00N at the aperture."""
-    tag = f'_{gun_index:03d}'
-    key = K.name('Mount_gun', gun_index)
-    m = a.pivot(key, loc)
-    k.lathe(a.part('Director_base' + tag, 'Armor', m), [(.75, -.25), (.75, .1), (.62, .2), (.55, .45)], seg=18)
-    for e in (-1, 1):
-        k.block(a.part('Director_yoke' + tag, 'Fuel', m), (.16, .5, .85), loc=(e * .55, 0, .75), chamfer=.03)
-    k.lathe(a.part('Director_tube' + tag, 'Fuel', m), [(.32, -.5), (.38, -.4), (.38, .9), (.44, 1.0), (.44, 1.35),
-                                                       (.4, 1.4)], loc=(0, 0, .95), rot=K.FORWARD, seg=16)
-    a.part('Director_rings' + tag, 'Team', m).cyl(.4, .1, loc=(0, -.35, .95), rot=(R90, 0, 0), seg=16, bevel=0)
-    a.part('Director_aperture' + tag, 'Energy', m).cyl(.3, .03, loc=(0, -1.38, .95), rot=(R90, 0, 0), seg=16, bevel=0)
-    a.part('Director_sensor' + tag, 'Glass', m).box((.2, .3, .16), loc=(.38, -.6, 1.3), bevel=0)
-    a.pivot(K.name('Muzzle_gun', gun_index), (0, -1.42, .95), key)
-    K.tone(a, key, k=.9)
-
-
-def _crash_turret(a, H, gun_index, s, y):
-    """A twin 40 mm turret on its flank sponson (Mount_gun.004 / .005, the crash turrets that keep firing on the
-    ground): the sponson from the chine, the ring, the faceted house, two barrels with their brakes, the sight;
-    Muzzle_gun.00N between the tips and Muzzle_b1 / _b2 at each."""
-    w = H.w(y)
-    tag = f'_{gun_index:03d}'
-    # The sponson: a faceted barbette pod hung on the chine.
-    a.part('Sponsons', 'MetalSheet').loft([
-        [(s * (w - .4), y - 2.4, -.5), (s * (w + .9), y - 1.6, -.4), (s * (w + .9), y + 1.9, -.4),
-         (s * (w - .4), y + 2.6, -.5)],
-        [(s * (w - .4), y - 2.1, .55), (s * (w + 1.05), y - 1.3, .6), (s * (w + 1.05), y + 1.6, .6),
-         (s * (w - .4), y + 2.3, .55)]], bevel=0)
-    a.part('Sponson_tiles', 'Undercarriage').box((1.4, 3.4, .08), loc=(s * (w + .25), y + .15, -.48), bevel=0)
-    key = K.name('Mount_gun', gun_index)
-    m = a.pivot(key, (s * (w + .3), y, .62))
-    k.lathe(a.part('Gun_ring' + tag, 'Steel', m), [(.75, 0), (.78, .06), (.7, .12)], seg=18)
-    k.sharp_loft(a.part('Gun_house' + tag, 'Fuel', m), [
-        [(-.7, -.75, .1), (.7, -.75, .1), (.75, .85, .1), (-.75, .85, .1)],
-        [(-.55, -.55, .72), (.55, -.55, .72), (.6, .7, .72), (-.6, .7, .72)]], chamfer=.04)
-    a.part('Gun_mantlet' + tag, 'Armor', m).box((.85, .3, .42), loc=(0, -.86, .4), bevel=0)
-    for j, dx in enumerate((-.2, .2)):
-        k.lathe(a.part('Gun_barrels' + tag, 'Steel', m), [(.08, 0), (.08, 1.7), (.1, 1.75), (.1, 2.05), (.07, 2.1)],
-                loc=(dx, -.95, .42), rot=K.FORWARD, seg=10)
-        a.part('Gun_jackets' + tag, 'Armor', m).cyl(.1, .5, loc=(dx, -1.35, .42), rot=(R90, 0, 0), seg=10, bevel=0)
-    a.part('Gun_sight' + tag, 'Glass', m).box((.18, .22, .16), loc=(-.42, -.4, .82), bevel=0)
-    mz = K.name('Muzzle_gun', gun_index)
-    a.pivot(mz, (0, -3.07, .42), key)
-    a.pivot(f'Muzzle_b1_gun{tag}', (-.2 if s > 0 else .2, 0, 0), mz)
-    a.pivot(f'Muzzle_b2_gun{tag}', (.2 if s > 0 else -.2, 0, 0), mz)
-    K.tone(a, key, k=.88)
-
-
-def _pd_laser(a, H, name, x, y, tag, capped=False, z=None, proto=False):
-    """A point-defence laser on its tower (Pd_laser_l / _r): the tower from the hull, the dome, the emitter and glow.
-    capped: the prototype's empty station (a ring and a blanking cover with hazard bands, no pivot)."""
-    zs = H.top(x, y)
-    if capped:
-        k.lathe(a.part('Pd_station_empty', 'Crate'), [(.85, zs - .3), (.85, zs + .25), (.7, zs + .32)], loc=(x, y, 0),
-                seg=16)
-        a.part('Pd_station_cover', 'Hazard').cyl(.68, .06, loc=(x, y, zs + .35), seg=16, bevel=0)
-        for e in (-1, 1):
-            a.part('Pd_station_cover', 'Charred').box((1.2, .12, .02), loc=(x, y + e * .25, zs + .39), bevel=0)
-        return
-    p = a.pivot(name, (x, y, z if z is not None else zs + .45))
-    if proto:
-        zl = zs - (z if z is not None else zs + .45)
-        for j in range(4):
-            v = j * R90 + .4
-            a.part('Pd_tower' + tag, 'Steel', p).limb((math.cos(v) * .8, math.sin(v) * .8, zl - .1), (0, 0, -.1), .12,
-                                                      .12, bevel=0)
-        k.block(a.part('Pd_dome' + tag, 'Crate', p), (.9, 1.0, .6), loc=(0, 0, .15), chamfer=.06)
-        a.part('Pd_emitter' + tag, 'Steel', p).cyl(.1, .8, loc=(0, -.75, .3), rot=(R90, 0, 0), seg=8, bevel=0)
-        a.part('Pd_glow' + tag, 'Energy', p).sphere(.1, loc=(0, -1.18, .3), seg=8, rings=4)
-        a.part('Pd_cables' + tag, 'Charred', p).tube([(.4, .4, .2), (.7, .6, zl + .05)], .04, seg=4)
-        return
-    k.lathe(a.part('Pd_tower' + tag, 'MetalSheet', p), [(.9, -.75), (.85, -.3), (.62, -.05), (.55, 0)], seg=14)
-    a.part('Pd_dome' + tag, 'Fuel', p).sphere(.5, loc=(0, 0, .12), seg=14, rings=7)
-    a.part('Pd_band' + tag, 'Team', p).cyl(.52, .1, loc=(0, 0, .05), seg=14, bevel=0)
-    a.part('Pd_emitter' + tag, 'Steel', p).cyl(.1, .85, loc=(0, -.55, .42), rot=(R90 - .3, 0, 0), seg=10, bevel=0)
-    a.part('Pd_emitter' + tag, 'Steel', p).cyl(.16, .14, loc=(0, -.22, .3), rot=(R90 - .3, 0, 0), seg=10, bevel=0)
-    a.part('Pd_glow' + tag, 'Energy', p).sphere(.1, loc=(0, -.97, .55), seg=8, rings=4)
-    K.tone(a, name, k=.88)
+        a.part('Pd_station_cover', 'Charred').box((1.2, .12, .02), loc=(x, y + e * .25, zs + .39), bevel=0)
 
 
 def _pod_bay(a, H, pods=2):
@@ -895,14 +761,15 @@ def silver_bug(a, wreck=False):
     _superstructure(a, H, broken=wreck)
     _radiators(a, H, ys=(.5, 4.4))
     _main_laser(a, H)
-    _coilgun(a, H, 0, 4.35, -1.4)
-    _coilgun(a, H, 1, -4.35, -1.4)
-    _beam_director(a, 0, (2.9, 1.25, 3.4), 2)
-    _beam_director(a, 1, (-2.9, 1.25, 3.4), 3)
-    _crash_turret(a, H, 4, 1, 7.0)
-    _crash_turret(a, H, 5, -1, 7.0)
-    _pd_laser(a, H, 'Pd_laser_l', 2.4, -6.0, '')
-    _pd_laser(a, H, 'Pd_laser_r', -2.4, -6.0, '_r')
+    # R1: Icarus's own weapons (mb_pt14_r1_space; the prototype has its own set).
+    RS.sb_coilgun(a, H, 0, 4.35, -1.4)
+    RS.sb_coilgun(a, H, 1, -4.35, -1.4)
+    RS.sb_beam_turret(a, (2.9, 1.25, 3.4), 2)
+    RS.sb_beam_turret(a, (-2.9, 1.25, 3.4), 3)
+    RS.sb_twin40(a, H, 4, 1, 7.0)
+    RS.sb_twin40(a, H, 5, -1, 7.0)
+    RS.sb_pd(a, H, 'Pd_laser_l', 2.4, -6.0, '')
+    RS.sb_pd(a, H, 'Pd_laser_r', -2.4, -6.0, '_r')
     _pod_bay(a, H)
     _sb_engines(a, H)
     _nacelle(a, 1)
@@ -992,8 +859,8 @@ MK_KEEP = [(-4.3, 4.3, .2, 12.7), (-1.6, 1.6, -9.0, -.6), (1.6, 3.2, -7.0, -4.8)
 
 
 def _mk_tower(a, H):
-    """The unfinished superstructure: the first tier only (primer and bare panels), an open lattice tower over it with
-    the temporary cabin on top (window band, railings, a work lamp), the APS emitter on the cabin (Mount_APS)."""
+    """The unfinished superstructure: the first tier (primer and bare panels, open roof bays, tarps, test racks) and
+    on its after half the low command citadel under construction (RS.mk_citadel, with Mount_APS)."""
     st = a.part('Superstructure', 'Crate')
     bottom = [(-4.0, .4), (4.0, .4), (4.2, 12.6), (-4.2, 12.6)]
     cy = sum(p[1] for p in bottom) / 4
@@ -1024,39 +891,8 @@ def _mk_tower(a, H):
             mat = ('MetalSheet', 'Crate', 'Concrete')[j % 3]
             a.part(f'Tier_plates_{mat.lower()}', mat).box((.03, .95, 1.6), loc=(s * 3.9, yy, 2.35),
                                                            rot=(0, -s * .26, 0), bevel=0)
-    # The lattice tower: four legs, battens, diagonals.
-    legs = a.part('Scaffold', 'Steel')
-    pts = [(-1.3, 8.5), (1.3, 8.5), (1.3, 11.2), (-1.3, 11.2)]
-    z0, z1 = 3.0, 7.5
-    for x, y in pts:
-        legs.limb((x, y, z0), (x * .85, y + (9.85 - y) * .15, z1), .14, .14, bevel=0)
-    for z in (4.4, 5.4, 6.4, 7.4):
-        f = (z - z0) / (z1 - z0) * .15
-        ring = [(x * (1 - f), y + (9.85 - y) * f, z) for x, y in pts]
-        for p, q in zip(ring, ring[1:] + ring[:1]):
-            legs.limb(p, q, .08, .08, bevel=0)
-    for z in (3.9, 4.9, 5.9, 6.9):
-        f0 = (z - .5 - z0) / (z1 - z0) * .15
-        f1 = (z + .5 - z0) / (z1 - z0) * .15
-        for (x0, y0), (x1, y1) in zip(pts, pts[1:] + pts[:1]):
-            legs.limb((x0 * (1 - f0), y0 + (9.85 - y0) * f0, z - .5), (x1 * (1 - f1), y1 + (9.85 - y1) * f1, z + .5),
-                      .05, .05, bevel=0)
-    # A ladder and the cable run up the tower.
-    K.ladder(a.part('Ladders', 'Hazard'), (1.35, 9.9, 3.0), (1.2, 9.9, 7.5), width=.45)
-    a.part('Cable_runs', 'Charred').tube([(-1.2, 11.0, 3.0), (-1.05, 10.7, 5.5), (-1.0, 10.6, 7.6)], .07, seg=5)
-    # The temporary cabin.
-    k.block(a.part('Bridge', 'Concrete'), (3.4, 2.6, 1.1), loc=(0, 9.85, 8.05), chamfer=.06)
-    a.part('Bridge_windows', 'Lamp').box((3.0, .04, .3), loc=(0, 8.53, 8.15), bevel=0)
-    for s in (-1, 1):
-        a.part('Bridge_windows', 'Lamp').box((.04, 1.8, .26), loc=(s * 1.71, 9.85, 8.15), bevel=0)
-    K.railing(a.part('Railings', 'Hazard'), [(-1.7, 8.55, 8.6), (1.7, 8.55, 8.6), (1.7, 11.15, 8.6),
-                                             (-1.7, 11.15, 8.6), (-1.7, 8.55, 8.6)], h=.55, post=.85)
-    K.lamp(a, (1.4, 8.5, 8.85), facing=(0, -1, -.4), r=.12)
-    a.part('Mast', 'Steel').cyl(.08, 1.2, loc=(-.9, 10.6, 9.2), seg=6, bevel=0)
-    a.part('Mast_tips', 'LavaGlow').sphere(.07, loc=(-.9, 10.6, 9.85), seg=6, rings=3)
-    m = a.pivot('Mount_APS', (.3, 10.4, 8.6))
-    k.lathe(a.part('Aps_emitter', 'Armor', m), [(.32, 0), (.32, .12), (.18, .25), (0, .28)], seg=12)
-    a.part('Aps_glow', 'Energy', m).sphere(.11, loc=(0, -.07, .27), seg=8, rings=4)
+    # R1: the command citadel under construction (no lattice tower: the owner read it as a watchtower).
+    RS.mk_citadel(a)
 
 
 def _mk_spine(a, H):
@@ -1130,7 +966,7 @@ def _mk_test_kit(a, H):
         a.part('Targets_black', 'Charred').box((.17, .17, .012), loc=q, rot=surf_rot(n), bevel=0)
     # Covered coilgun rings (not fitted yet), with hazard bands.
     for s in (-1, 1):
-        x, y = s * 4.35, -1.4
+        x, y = s * 3.2, -.4
         zs = H.top(x, y)
         k.lathe(a.part('Coil_covers', 'Crate'), [(1.45, zs - .4), (1.45, zs + .2), (1.3, zs + .3)], loc=(x, y, 0),
                 seg=20)
@@ -1138,10 +974,10 @@ def _mk_test_kit(a, H):
         for e in (-1, 1):
             a.part('Cover_straps', 'Hazard').box((2.7, .12, .03), loc=(x, y + e * .5, zs + .41), bevel=0)
     # Instrumentation boxes and the cable runs between them.
-    for j, (x, y) in enumerate(((1.8, -13.5), (-2.0, -11.8), (3.0, -8.8), (-2.9, -3.5), (2.4, -.2))):
+    for j, (x, y) in enumerate(((.5, -13.5), (-.7, -11.8), (1.2, -8.8), (-2.4, -3.5), (2.4, -.2))):
         p, n = H.on_top(x, y, .1)
         a.part('Test_boxes', 'Hazard' if j % 2 else 'Armor').box((.45, .6, .3), loc=p, rot=surf_rot(n), bevel=0)
-    pts = [H.on_top(x, y, .06)[0] for x, y in ((1.8, -13.5), (.5, -12.5), (-2.0, -11.8), (-1.6, -10), (-2.9, -3.5))]
+    pts = [H.on_top(x, y, .06)[0] for x, y in ((.5, -13.5), (0, -12.5), (-.7, -11.8), (-.6, -10), (-2.4, -3.5))]
     a.part('Cable_runs', 'Charred').tube(pts, .04, seg=4)
 
 
@@ -1165,7 +1001,7 @@ def icarus_mk0(a):
 
     def missing(x, y):
         # Open bays: two rows of panels not fitted yet on each shoulder.
-        return (2.0 < abs(x) < 3.6 and -9.5 < y < -6.5) or (3.2 < abs(x) < 4.9 and 2.0 < y < 6.5) or \
+        return (1.0 < abs(x) < 2.0 and -9.5 < y < -6.5) or (3.2 < abs(x) < 4.9 and 2.0 < y < 6.5) or \
             (.6 < abs(x) < 2.0 and -15.5 < y < -13.6)
     hull_skin(a, H, upper='MetalSheet', lower='MetalSheet')
     leading_edges(a, H, y_end=4.0)
@@ -1176,11 +1012,12 @@ def icarus_mk0(a):
     stripes(a, H, -17.5, -9.0, fs=(.95,), mat='Hazard')
     _mk_spine(a, H)
     _mk_tower(a, H)
-    _main_laser(a, H, proto=True)
-    _pd_laser(a, H, 'Pd_laser_l', 2.4, -6.0, '', z=ICARUS.top(2.4, -6.0) + .45, proto=True)
-    _pd_laser(a, H, None, -2.4, -6.0, '_r', capped=True)
-    _pod_bay(a, H, pods=1)
-    _sb_engines(a, H, proto=True)
+    # R1: the prototype's own laser, PD emitter, drop cradle and engines (mb_pt14_r1_space).
+    RS.mk_laser(a, H)
+    RS.mk_pd(a, H, 'Pd_laser_l', 2.4, -6.0, ICARUS.top(2.4, -6.0) + .45)
+    _pd_capped(a, H, -2.4, -6.0)
+    RS.mk_pod_rig(a, H)
+    RS.mk_engines(a)
     _mk_tanks(a, H)
     _mk_rcs(a, H)
     _mk_test_kit(a, H)
