@@ -12814,3 +12814,8 @@ Nhánh `feature/final-zones`. Chủ 04/10: "các vụ nổ mà quyết định l
 | Z-12 | `sam_48n6` `splash` | 7,2 | không đổi | nổ trên không (không có vùng đỏ trên đất); 7,2 m là chủ yêu cầu ở play-test 8 A (gấp đôi 3,6), impactScale 2 vẽ nổ Large x2 ~ vòng; luật đầu nổ SAM (PAC-2 90 kg 2,5 m) cho 3 m: chờ chủ |
 | Z-13 | `borer_drill` | không splash | không đổi | cận chiến: không có vùng, không có vòng |
 | Z-14 | xóa bảng PT14-L bị chép đôi | 2 bảng | 1 bảng | giữ bản ở trên (sau PT14-SP), bỏ bản thứ hai trước "MB_FINAL F3" |
+
+## MB_FINAL zones, lead (04/10): no missile zone grows
+The owner wants the ship missiles' red zones smaller; the warhead-cube rule grew two of them by 0.5 m, so they keep
+their earlier cores (edge 2x on bosses): nyx_tomahawk 8.5 -> 8 (edge 16), pt14_hp_nsm 5.5 -> 5 (edge 10).
+p26_roc_roc105 stays 5.5 (the manifest's 105 mm HE value). sam_48n6 stays 7.2 (air burst, no ground ring).
