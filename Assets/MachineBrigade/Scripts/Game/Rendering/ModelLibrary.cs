@@ -136,8 +136,10 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>
         /// Play-test 14: the barrels (and their muzzle ends) on a free mount's pivot, e.g. the Leviathan's `Gun_barrels` and
         /// `Sec_barrels_003` under `Mount_gun`: kept as their own parts so they kick back as the mount fires (VehicleView.MountKick).
+        /// Play-test 14 (lane L): with Blender's duplicate suffix too (`Gun_barrels.001`, `Gun_barrels_004.002`: a twin's second
+        /// barrel, a barrel's jacket built as its own object): they stood still while the first piece ran back.
         /// </summary>
-        private static readonly Regex MountBarrelPattern = new(@"^[a-z]+_(barrels|muzzles)(_\d+)?$", RegexOptions.IgnoreCase);
+        private static readonly Regex MountBarrelPattern = new(@"^[a-z]+_(barrels|muzzles)(_\d+)?(\.\d+)?$", RegexOptions.IgnoreCase);
 
         /// <summary>Whether <paramref name="t"/> is a barrel part on a weapon mount's pivot (see <see cref="MountBarrelPattern"/>).</summary>
         internal static bool IsMountBarrel(Transform t) =>
@@ -924,44 +926,52 @@ namespace MachineBrigade.Game.Rendering
                 if (!MuzzlePattern.IsMatch(muzzle.name) || muzzle.parent == null) continue;
                 // Missile and rocket racks are found whole by AddLaunchPoints (their faces and pods).
                 if (muzzle.name.StartsWith("Muzzle_missile") || muzzle.name.StartsWith("Muzzle_rocket")) continue;
-                var at = muzzle.position;
-                var best = float.MaxValue;
-                var axis = Vector3.zero;
-                foreach (Transform sibling in muzzle.parent)
-                {
-                    var filter = sibling.GetComponent<MeshFilter>();
-                    if (filter == null || filter.sharedMesh == null || !filter.sharedMesh.isReadable) continue;
-                    var all = new List<Vector3>();
-                    foreach (var v in filter.sharedMesh.vertices) all.Add(filter.transform.TransformPoint(v));
-                    // The piece of the part round the muzzle, or one of its connected pieces (a gun
-                    // among several built as one part, an AC-130's side guns).
-                    var candidates = Pieces(filter);
-                    candidates.Add(Piece(all, at));
-                    foreach (var points in candidates)
-                    {
-                        if (!Principal(points, out var mean, out var major, out _, out var l1, out var l2, out _) || l1 < 6f * l2) continue;
-                        if (Vector3.Dot(major, at - mean) < 0f) major = -major;
-                        // Its front end, and how far the muzzle is off its axis and from that end.
-                        var far = float.MinValue;
-                        foreach (var p in points) far = Mathf.Max(far, Vector3.Dot(p - mean, major));
-                        var d = at - mean;
-                        var along = Vector3.Dot(d, major);
-                        var off = (d - major * along).magnitude;
-                        var radius = Mathf.Sqrt(2f * l2);
-                        var length = far;
-                        if (off > Mathf.Max(0.06f, radius * 1.2f) || along < length * 0.75f || along > length + Mathf.Max(0.15f, length * 0.25f)) continue;
-                        var score = off + Mathf.Abs(along - length) * 0.5f;
-                        if (score >= best) continue;
-                        best = score;
-                        axis = major;
-                    }
-                }
                 // Barrels built along the model's front keep it exactly: a whole gun's principal axis
                 // (its body, feed and barrel) wanders a few degrees off its bore.
-                if (axis == Vector3.zero || Vector3.Angle(axis, muzzle.forward) < 10f) continue;
+                if (!BarrelAxis(muzzle.parent, muzzle.position, out var axis) || Vector3.Angle(axis, muzzle.forward) < 10f) continue;
                 muzzle.rotation = Quaternion.LookRotation(axis, Mathf.Abs(axis.y) > 0.95f ? muzzle.forward : Vector3.up);
                 muzzle.gameObject.AddComponent<AlignedMuzzle>();
             }
+        }
+
+        /// <summary>
+        /// The axis of the barrel whose open end is at <paramref name="at"/> among <paramref name="under"/>'s parts (pointing out
+        /// of the muzzle): a long, thin piece whose axis runs through the point and whose front end is at it (AlignMuzzles).
+        /// </summary>
+        private static bool BarrelAxis(Transform under, Vector3 at, out Vector3 axis)
+        {
+            axis = Vector3.zero;
+            var best = float.MaxValue;
+            foreach (Transform sibling in under)
+            {
+                var filter = sibling.GetComponent<MeshFilter>();
+                if (filter == null || filter.sharedMesh == null || !filter.sharedMesh.isReadable) continue;
+                var all = new List<Vector3>();
+                foreach (var v in filter.sharedMesh.vertices) all.Add(filter.transform.TransformPoint(v));
+                // The piece of the part round the muzzle, or one of its connected pieces (a gun
+                // among several built as one part, an AC-130's side guns).
+                var candidates = Pieces(filter);
+                candidates.Add(Piece(all, at));
+                foreach (var points in candidates)
+                {
+                    if (!Principal(points, out var mean, out var major, out _, out var l1, out var l2, out _) || l1 < 6f * l2) continue;
+                    if (Vector3.Dot(major, at - mean) < 0f) major = -major;
+                    // Its front end, and how far the muzzle is off its axis and from that end.
+                    var far = float.MinValue;
+                    foreach (var p in points) far = Mathf.Max(far, Vector3.Dot(p - mean, major));
+                    var d = at - mean;
+                    var along = Vector3.Dot(d, major);
+                    var off = (d - major * along).magnitude;
+                    var radius = Mathf.Sqrt(2f * l2);
+                    var length = far;
+                    if (off > Mathf.Max(0.06f, radius * 1.2f) || along < length * 0.75f || along > length + Mathf.Max(0.15f, length * 0.25f)) continue;
+                    var score = off + Mathf.Abs(along - length) * 0.5f;
+                    if (score >= best) continue;
+                    best = score;
+                    axis = major;
+                }
+            }
+            return axis != Vector3.zero;
         }
 
         /// <summary>
@@ -1012,8 +1022,16 @@ namespace MachineBrigade.Game.Rendering
                 if (t.parent == null || !AuthoredBarrel.IsMatch(t.name) || t.GetComponent<LaunchPoint>() != null) continue;
                 var owner = MuzzlePattern.Match(t.parent.name);
                 if (!owner.Success) continue;
+                var barrelSlot = owner.Groups[1].Value.ToLowerInvariant();
+                // Play-test 14 (lane L): turned along its own barrel, as AlignMuzzles turns a mount's muzzle: the builders write
+                // these points facing the model's front, so the flash and the round of a ventral twin (its barrels drawn 20-35
+                // degrees down under a space boss) left level, off the barrel. The barrels are the mount's parts, beside the
+                // slot's Muzzle_ empty; launch cells (missiles, rockets) have none and keep the builder's facing.
+                if (barrelSlot is not ("missile" or "rocket") && t.parent.parent != null && BarrelAxis(t.parent.parent, t.position, out var bore) &&
+                    Vector3.Angle(bore, t.forward) >= 10f)
+                    t.rotation = Quaternion.LookRotation(bore, Mathf.Abs(bore.y) > 0.95f ? t.forward : Vector3.up);
                 var launch = t.gameObject.AddComponent<LaunchPoint>();
-                launch.Slot = owner.Groups[1].Value.ToLowerInvariant();
+                launch.Slot = barrelSlot;
                 launch.Measured = true;
                 launch.Barrel = true;
                 taken.Add((t.parent.parent, launch.Slot));
