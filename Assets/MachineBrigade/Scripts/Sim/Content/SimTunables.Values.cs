@@ -54,7 +54,9 @@ namespace MachineBrigade.Sim.Content
             public static partial class DamageTable
             {
                 /// <summary>weapons.damageTable.defaultPenetration (x; sat_thuong, was Sim/Content/DamageTable.cs:52).</summary>
-                public static float[] DefaultPenetration = { 1.2f, 1f, 0.85f, 0.55f, 0.25f, 0.1f };
+                public static float[] DefaultPenetration = { 1.2f, 1f, 0.85f, 0.65f, 0.4f, 0.15f, 0.08f };
+                /// <summary>weapons.damageTable.defaultTopAttack (x; sat_thuong; combat final 04/10: the top attack row).</summary>
+                public static float[] DefaultTopAttack = { 1.15f, 1.1f, 0.95f, 0.75f, 0.5f, 0.25f, 0.12f };
             }
             public static partial class WeaponDef
             {
@@ -721,6 +723,7 @@ namespace MachineBrigade.Sim.Content
             new Entry("weapons.damageSystem.fireBurnSeconds", "s", () => Weapons.DamageSystem.FireBurnSeconds, v => Weapons.DamageSystem.FireBurnSeconds = (float)v),
             new Entry("weapons.damageSystem.smokeEnergyCut", "share", () => Weapons.DamageSystem.SmokeEnergyCut, v => Weapons.DamageSystem.SmokeEnergyCut = (float)v),
             Entry.FloatArray("weapons.damageTable.defaultPenetration", "x", () => Weapons.DamageTable.DefaultPenetration, v => Weapons.DamageTable.DefaultPenetration = v),
+            Entry.FloatArray("weapons.damageTable.defaultTopAttack", "x", () => Weapons.DamageTable.DefaultTopAttack, v => Weapons.DamageTable.DefaultTopAttack = v),
             new Entry("vehicles.vehicleDef.stealthSight", "x", () => Vehicles.VehicleDef.StealthSight, v => Vehicles.VehicleDef.StealthSight = (float)v),
             new Entry("weapons.weaponDef.minSwitchSeconds", "s", () => Weapons.WeaponDef.MinSwitchSeconds, v => Weapons.WeaponDef.MinSwitchSeconds = (float)v),
             new Entry("weapons.weaponDef.roundHoldSeconds", "s", () => Weapons.WeaponDef.RoundHoldSeconds, v => Weapons.WeaponDef.RoundHoldSeconds = (float)v),

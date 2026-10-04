@@ -107,10 +107,10 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(1, mg.Penetration, "12.7 mm");
             Assert.AreEqual(4, tank.Penetration, "120 mm darts");
             var onArmour = catalog.Damage.Effective(cannon, 3, TargetKind.Ground);
-            Assert.AreEqual(0.5f, onArmour, 1e-4f, "autocannon rounds on a battle tank's front (one level under, DECISIONS 20X)");
+            Assert.AreEqual(0.65f * 1.2f, onArmour, 1e-4f, "autocannon rounds on a battle tank's front (one level under x kinetic's 1.20 on the ground; combat final 04/10)");
             Assert.Greater(onArmour, catalog.Damage.Effective(mg, 3, TargetKind.Ground));
             Assert.Less(onArmour, catalog.Damage.Effective(tank, 3, TargetKind.Ground));
-            Assert.AreEqual(1f, catalog.Damage.Effective(cannon, 1, TargetKind.Ground), 1e-4f, "on light armour all of it");
+            Assert.AreEqual(1.2f, catalog.Damage.Effective(cannon, 1, TargetKind.Ground), 1e-4f, "on light armour all of it (x kinetic's 1.20 on the ground)");
         }
     }
 }

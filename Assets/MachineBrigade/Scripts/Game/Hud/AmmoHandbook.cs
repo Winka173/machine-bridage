@@ -99,8 +99,10 @@ namespace MachineBrigade.Game.Hud
             list.Add(types);
 
             // 2. Penetration against armour, faces, bosses, a worked example.
-            var pen = new HandbookEntry(Penetration, Strings.Get("hb.pen.title")) { Header = new[] { Strings.Get("hb.pen.diff"), Strings.Get("hb.pen.mult") } };
-            for (var i = 0; i < DamageTable.PenetrationSteps; i++) pen.Rows.Add(new[] { Strings.Get("hb.pen.step" + i), Mult(table.PenetrationStep(i)) });
+            // Combat final 04/10: two tables side by side, direct fire and top attack (a weapon reads one or the other).
+            var pen = new HandbookEntry(Penetration, Strings.Get("hb.pen.title")) { Header = new[] { Strings.Get("hb.pen.diff"), Strings.Get("hb.pen.mult"), Strings.Get("hb.pen.top") } };
+            for (var i = 0; i < DamageTable.PenetrationSteps; i++)
+                pen.Rows.Add(new[] { Strings.Get("hb.pen.step" + i), Mult(table.PenetrationStep(i)), Mult(table.TopAttackStep(i)) });
             pen.Lines.Add(Strings.Format("hb.pen.faces", ("unit", ArmourLevels.MaxUnit), ("boss", ArmourLevels.Max), ("roofMult", Mult(table.PenetrationStep(1)))));
             if (c.Vehicles.TryGetValue(c.Handbook.ExampleShooter, out var shooter) && shooter.Mounts.Count > 0 &&
                 c.Vehicles.TryGetValue(c.Handbook.ExampleTarget, out var target))
@@ -116,7 +118,8 @@ namespace MachineBrigade.Game.Hud
 
             // 3. The special marks.
             var top = new HandbookEntry(Top, Strings.Get("hb.top.title"));
-            top.Lines.Add(Strings.Format("hb.top", ("examples", Names(Examples(c, w => w.TopAttack)))));
+            top.Lines.Add(Strings.Format("hb.top", ("top0", Mult(table.TopAttackStep(0))), ("top2", Mult(table.TopAttackStep(2))),
+                ("top6", Mult(table.TopAttackStep(DamageTable.PenetrationSteps - 1))), ("examples", Names(Examples(c, w => w.TopAttack)))));
             list.Add(top);
             var thermo = new HandbookEntry(Thermobaric, Strings.Get("hb.thermo.title"));
             thermo.Lines.Add(Strings.Format("hb.thermo", ("he", Mult(table.Type(DamageType.HighExplosive, TargetKind.Structure))), ("thermo", Mult(table.ThermobaricStructure)),

@@ -31,7 +31,8 @@ V_COLS = [("sat_thuong_moi_phat", "sat_thuong_moi_phat", "hp", "sát thương m�
           ("so_phat_moi_loat", "so_phat_moi_loat", "", "số phát mỗi loạt"),
           ("so_loat_mang", "so_loat_mang", "", "số loạt mang (0: không giới hạn)"),
           ("dat_boi_boss", "dat_boi_boss", "", "do hệ boss đặt bắn (laid)"),
-          ("xuyen", "xuyen", "", "mức xuyên"), ("loai_sat_thuong", "loai_sat_thuong", "", "loại sát thương")]
+          ("xuyen", "xuyen", "", "mức xuyên"), ("loai_sat_thuong", "loai_sat_thuong", "", "loại sát thương"),
+          ("danh_noc", "danh_noc", "", "đánh nóc (topAttack): bảng đánh nóc")]
 S_COLS = [("chu_ky_day_du_s", "chu_ky_day_du_s", "s", "chu kỳ đầy đủ"),
           ("sat_thuong_moi_loat", "sat_thuong_moi_loat", "hp", "sát thương một loạt"),
           ("nap_lai_kho_hieu_dung_s", "nap_lai_kho_hieu_dung_s", "s", "nạp lại kho dùng thật"),
@@ -51,13 +52,17 @@ def inputs(ctx, book, wids):
     LB.input_sheet(ctx, book, "input_bang_xuyen_giap", "Input: bảng xuyên giáp (từ 01)", W01, "Bang_xuyen_giap",
                    [("he_so", "he_so", "", "hệ số xuyên của bước")],
                    {rid: {"he_so": r.values.get("he_so")} for rid, r in bx.rows.items()})
+    bn = ctx.books[W01].sheets["Bang_danh_noc"]
+    LB.input_sheet(ctx, book, "input_bang_danh_noc", "Input: bảng đánh nóc (từ 01)", W01, "Bang_danh_noc",
+                   [("he_so", "he_so", "", "hệ số đánh nóc của bước")],
+                   {rid: {"he_so": r.values.get("he_so")} for rid, r in bn.rows.items()})
 
 
-def pen_idx(pen_expr: str, top_expr: str | None, armour) -> str:
-    """DamageTable.Penetration for whole levels (top_expr None: an aircraft, no overmatch)."""
-    step = f"2-({pen_expr}-{armour})"
-    step = f"MAX(1,{step})" if top_expr is None else f"IF({top_expr},MAX(1,{step}),{step})"
-    return f"INDEX({R('input_bang_xuyen_giap', 'he_so', '*')},MIN(6,MAX(1,{step}+1)))"
+def pen_idx(pen_expr: str, top_expr: str | None, armour, ta_expr: str | None = None) -> str:
+    """DamageTable.ArmourMultiplier for whole levels (top_expr None: an aircraft, the direct table with no overmatch;
+    ta_expr: a topAttack weapon reads the top attack table)."""
+    return LB.armour_index(R('input_bang_xuyen_giap', 'he_so', '*'), R('input_bang_danh_noc', 'he_so', '*'), pen_expr, armour,
+                           roof_expr=top_expr, top_expr=ta_expr, air=top_expr is None)
 
 
 def build(ctx, book, d, res):
@@ -157,11 +162,12 @@ def build(ctx, book, d, res):
         T2[f"dps_tren_cp_{tag}"] = f"=IF({{dai_cp}}={q(label)},{{dps_max}}/{{cp}},{q('')})"
     kk = R("Xe", "vu_khi_chinh")
     pe, top = lookup("input_vu_khi", "xuyen", kk), lookup("input_vu_khi_suy_ra", "danh_tu_tren", kk)
+    tak = lookup("input_vu_khi", "danh_noc", kk)
     tg, ta = lookup("input_vu_khi_suy_ra", "he_so_mat_dat", kk), lookup("input_vu_khi_suy_ra", "he_so_may_bay", kk)
     cg, ca = lookup("input_vu_khi_suy_ra", "ban_mat_dat", kk), lookup("input_vu_khi_suy_ra", "ban_may_bay", kk)
     dps_ref = R("Xe_suy_ra", "dps_vu_khi_chinh")
-    T2["dps_nhe"] = f"=IF({cg},{dps_ref}*{pen_idx(pe, top, LIGHT)}*{tg},0)"
-    T2["dps_nang"] = f"=IF({cg},{dps_ref}*{pen_idx(pe, top, HEAVY)}*{tg},0)"
+    T2["dps_nhe"] = f"=IF({cg},{dps_ref}*{pen_idx(pe, top, LIGHT, tak)}*{tg},0)"
+    T2["dps_nang"] = f"=IF({cg},{dps_ref}*{pen_idx(pe, top, HEAVY, tak)}*{tg},0)"
     T2["dps_may_bay"] = f"=IF({ca},{R('Xe_suy_ra', 'dps_vu_khi_chinh_may_bay')}*{pen_idx(pe, None, 0)}*{ta},0)"
     units = {"cp": "CP", "mau_hp": "hp", "dps_nhe": "hp/s", "dps_nang": "hp/s", "dps_may_bay": "hp/s", "dps_max": "hp/s"}
     for c, t in T2.items():
@@ -174,10 +180,10 @@ def build(ctx, book, d, res):
         v, w, cp, hp, dps, dps_air = per[r.id]
         if cp <= 0 or v.get("class") in NOT_IN_FIT or r.values.get("loai_thuc_the") != "xe" or hp is None:
             continue
-        p, t_ = G.pen(w), G.strikes_top(w)
-        nhe = dps * G.penetration(table, p, LIGHT, not t_) * G.type_of(table, w, "Ground") if G.can_target(w, False) else 0.0
-        nang = dps * G.penetration(table, p, HEAVY, not t_) * G.type_of(table, w, "Ground") if G.can_target(w, False) else 0.0
-        bay = dps_air * G.penetration(table, p, 0, False) * G.type_of(table, w, "Air") if G.can_target(w, True) else 0.0
+        p, t_, ta = G.pen(w), G.strikes_top(w), bool(w.get("topAttack"))
+        nhe = dps * G.armour_mult(table, p, LIGHT, "Ground", t_, ta) * G.type_of(table, w, "Ground") if G.can_target(w, False) else 0.0
+        nang = dps * G.armour_mult(table, p, HEAVY, "Ground", t_, ta) * G.type_of(table, w, "Ground") if G.can_target(w, False) else 0.0
+        bay = dps_air * G.armour_mult(table, p, 0, "Air", t_, ta) * G.type_of(table, w, "Air") if G.can_target(w, True) else 0.0
         mx = max(nhe, nang, bay)
         band = "<=8" if cp <= 8 else "9-15" if cp <= 15 else ">=16"
         vals = {"cp": cp, "mau_hp": hp, "dps_nhe": nhe, "dps_nang": nang, "dps_may_bay": bay, "dps_max": mx,

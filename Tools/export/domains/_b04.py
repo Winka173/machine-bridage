@@ -24,7 +24,8 @@ W01 = "01_vu_khi_dan"
 P32 = "Tools/balance/p32_tower_prices.py"
 HQ = "Tools/balance/p32_hq_types.py"
 THREATS = ("kinetic", "he", "shaped", "artillery")
-V_COLS = [("sat_thuong_moi_phat", "sat_thuong_moi_phat", "hp", "sát thương mỗi phát"), ("xuyen", "xuyen", "", "mức xuyên")]
+V_COLS = [("sat_thuong_moi_phat", "sat_thuong_moi_phat", "hp", "sát thương mỗi phát"), ("xuyen", "xuyen", "", "mức xuyên"),
+          ("danh_noc", "danh_noc", "", "đánh nóc (topAttack): bảng đánh nóc, giáp nóc")]
 S_COLS = [("danh_tu_tren", "danh_tu_tren", "", "đánh từ trên"), ("ban_mat_dat", "ban_mat_dat", "", "nhắm mặt đất"),
           ("he_so_cong_trinh", "he_so_cong_trinh", "", "hệ số lên công trình")]
 
@@ -60,6 +61,9 @@ def build(ctx, book, d, res):
     bx = ctx.books[W01].sheets["Bang_xuyen_giap"]
     LB.input_sheet(ctx, book, "input_bang_xuyen_giap", "Input: bảng xuyên giáp (từ 01)", W01, "Bang_xuyen_giap",
                    [("he_so", "he_so", "", "hệ số xuyên của bước")], {rid: {"he_so": r.values.get("he_so")} for rid, r in bx.rows.items()})
+    bn = ctx.books[W01].sheets["Bang_danh_noc"]
+    LB.input_sheet(ctx, book, "input_bang_danh_noc", "Input: bảng đánh nóc (từ 01)", W01, "Bang_danh_noc",
+                   [("he_so", "he_so", "", "hệ số đánh nóc của bước")], {rid: {"he_so": r.values.get("he_so")} for rid, r in bn.rows.items()})
 
     # ------------------------------------------------------------------ Thap_gia_cong_thuc
     tg = book.sheet("Thap_gia_cong_thuc", "Tháp: công thức giá xây lại", "Từng bước giá xây lại (Tools/balance/p32_tower_prices.py): "
@@ -152,9 +156,13 @@ def build(ctx, book, d, res):
     for k in THREATS:
         td.col(f"doa_{k}", meaning=f"vũ khí đe dọa {k} của cỡ ô (p32 threats: vũ khí trung vị của xe thẻ trong dải giá)",
                fk=["04_can_cu_thap/input_vu_khi"], source_note=f"python: {P32} Model.threats")
-        hit = (f"{lookup('input_vu_khi', 'sat_thuong_moi_phat', f'{{doa_{k}}}')}*INDEX({R('input_bang_xuyen_giap', 'he_so', '*')},"
-               f"MIN(6,MAX(1,IF({lookup('input_vu_khi_suy_ra', 'danh_tu_tren', f'{{doa_{k}}}')},MAX(1,2-({lookup('input_vu_khi', 'xuyen', f'{{doa_{k}}}')}"
-               f"-{R('Thap', 'giap_truoc')})),2-({lookup('input_vu_khi', 'xuyen', f'{{doa_{k}}}')}-{R('Thap', 'giap_truoc')}))+1)))*"
+        ta = lookup('input_vu_khi', 'danh_noc', f'{{doa_{k}}}')
+        # Combat final 04/10: a topAttack threat strikes the tower's roof through the top attack table (DamageTable.ArmourMultiplier).
+        idx = LB.armour_index(R('input_bang_xuyen_giap', 'he_so', '*'), R('input_bang_danh_noc', 'he_so', '*'),
+                              lookup('input_vu_khi', 'xuyen', f'{{doa_{k}}}'),
+                              f"IF({ta},{R('Thap', 'giap_noc')},{R('Thap', 'giap_truoc')})",
+                              roof_expr=lookup('input_vu_khi_suy_ra', 'danh_tu_tren', f'{{doa_{k}}}'), top_expr=ta)
+        hit = (f"{lookup('input_vu_khi', 'sat_thuong_moi_phat', f'{{doa_{k}}}')}*{idx}*"
                f"{lookup('input_vu_khi_suy_ra', 'he_so_cong_trinh', f'{{doa_{k}}}')}")
         LB.declare(td, f"so_phat_{k}", f"=IF({{doa_{k}}}={q('')},{q('')},IF({hit}>0,CEILING({R('Thap', 'mau_trong_tran_hp')}/({hit}),1),{q('')}))",
                    f"ceil(máu / (damage x {'Sim/Content/DamageTable.cs'} Effective(w, giáp trước, Structure)))", game=False,
@@ -176,7 +184,8 @@ def build(ctx, book, d, res):
                 continue
             ww = W[w["id"]]
             x.set(f"doa_{k}", w["id"])
-            per = G.f(ww, "damage") * G.effective(table, ww, arm, "Structure")
+            roof = th.rows[tid].values.get("giap_noc", arm) if ww.get("topAttack") else arm
+            per = G.f(ww, "damage") * G.effective(table, ww, roof, "Structure")
             LB.put(x, f"so_phat_{k}", td.cols[f"so_phat_{k}"].formula,
                    float(math.ceil(hp / per - 1e-12)) if per > 0 else "", game=False)
 

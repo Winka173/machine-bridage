@@ -672,8 +672,9 @@ namespace MachineBrigade.Sim.Content
         }
 
         /// <summary>
-        /// Prompt 15: the damage-type table (a row per type: Ground, Air, Structure), the penetration row
-        /// ("penetration": above, level, -1, -2, -3) and the thermobaric tag's structure multiplier.
+        /// Prompt 15, combat final 04/10: the damage-type table (a row per type: Ground, Air, Structure), the direct
+        /// penetration row ("penetration": +2, +1, 0, -1, -2, -3, -4), the top attack row ("topAttack", the same steps against
+        /// the roof) and the thermobaric tag's structure multiplier (it replaces high explosive's structure value).
         /// </summary>
         private static DamageTable ParseDamageTable(JsonObject table)
         {
@@ -685,14 +686,17 @@ namespace MachineBrigade.Sim.Content
                 var row = table.Object(d.ToString());
                 foreach (var k in kinds) values[(int)d, (int)k] = row.Float(k.ToString());
             }
-            float[]? pen = null;
-            if (table.Has("penetration"))
-            {
-                var list = table.FloatArray("penetration");
-                pen = new float[list.Count];
-                for (var i = 0; i < list.Count; i++) pen[i] = list[i];
-            }
-            return Wrap(table, () => new DamageTable(values, pen, table.Float("thermobaric", 2f)));
+            return Wrap(table, () => new DamageTable(values, Row(table, "penetration"), table.Float("thermobaric", 2f), Row(table, "topAttack")));
+        }
+
+        /// <summary>Combat final 04/10: an armour row of the damage table (null when absent: the code's default row).</summary>
+        private static float[]? Row(JsonObject table, string key)
+        {
+            if (!table.Has(key)) return null;
+            var list = table.FloatArray(key);
+            var row = new float[list.Count];
+            for (var i = 0; i < list.Count; i++) row[i] = list[i];
+            return row;
         }
 
         /// <summary>

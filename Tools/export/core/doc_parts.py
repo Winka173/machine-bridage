@@ -44,7 +44,7 @@ PARTS = [
          sheets=["02/Xe_suy_ra", "02/Hoi_quy", "02/Hoi_quy_du_lieu"]),
     dict(num="10", title="Vũ khí và bảng sát thương", domain="01",
          html=["10. Vũ khí", "10b.", "10c.", "10e.", "10f.", "Cân bằng đợt 2"],
-         sheets=["01/Bang_sat_thuong", "01/Bang_xuyen_giap", "01/Khac_che", "01/He_so_toan_cuc", "01/Vu_khi",
+         sheets=["01/Bang_sat_thuong", "01/Bang_xuyen_giap", "01/Bang_danh_noc", "01/Khac_che", "01/He_so_toan_cuc", "01/Vu_khi",
                  "01/Vu_khi_suy_ra", "01/Vu_khi_he_so_thuong", "01/Dan_thay_the", "01/Phao_sang"]),
     dict(num="10d", title="Tổng hợp boss", domain="03", html=["10d."], sheets=["03/Boss_dps", "03/Boss_hieu_qua"]),
     dict(num="10g", title="Boss: vụ nổ hai lớp, pha, giáp và cỡ", domain="03", html=["10g."],

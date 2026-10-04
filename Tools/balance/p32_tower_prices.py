@@ -132,6 +132,7 @@ class Model:
         t = self.d["damageTable"]
         self.table = t
         self.pen_steps = t["penetration"]
+        self.top_steps = t.get("topAttack") or self.pen_steps   # combat final 04/10: the top attack table
         self.thermo = t.get("thermobaric", 2.0)
         self.tough = self.d["toughness"]["vehicles"]
         self.cards = [v for v in self.V.values() if self.is_card_vehicle(v)]
@@ -139,27 +140,37 @@ class Model:
     # -- damage --------------------------------------------------------------------------------------------------
     def type_of(self, w, kind):
         dt = w.get("damageType", "Kinetic")
-        v = self.table[dt][kind]
         if kind == "Structure" and w.get("thermobaric") and dt == "HighExplosive":
-            v = max(self.thermo, v)
-        return v
+            return self.thermo   # replaces high explosive's structure value (combat final 04/10)
+        return self.table[dt][kind]
 
-    def pen(self, pen, armour, overmatch=True):
-        last = len(self.pen_steps) - 1
+    def pen(self, pen, armour, overmatch=True, steps=None):
+        """DamageTable.Penetration (steps None: the direct row) or DamageTable.TopAttack (steps: the top attack row)."""
+        steps = steps or self.pen_steps
+        last = len(steps) - 1
         step = 2.0 - (pen - armour)
         if not overmatch:
             step = max(1.0, step)
         if step <= 0:
-            return self.pen_steps[0]
+            return steps[0]
         if step >= last:
-            return self.pen_steps[last]
+            return steps[last]
         lo = int(math.floor(step))
         f = step - lo
-        return self.pen_steps[lo] + (self.pen_steps[min(last, lo + 1)] - self.pen_steps[lo]) * f
+        return steps[lo] + (steps[min(last, lo + 1)] - steps[lo]) * f
+
+    def armour_mult(self, w, armour, kind, roof=False):
+        """DamageTable.ArmourMultiplier: aircraft direct (no overmatch); topAttack the top attack row; else direct
+        (no overmatch on the roof)."""
+        p, top = float(w.get("pen", 0)), bool(w.get("topAttack"))
+        if kind == "Air":
+            return self.pen(p, armour, overmatch=False)
+        if top:
+            return self.pen(p, armour, steps=self.top_steps)
+        return self.pen(p, armour, overmatch=not roof)
 
     def mult(self, w, armour, kind, armor_class=None):
-        top = bool(w.get("topAttack"))
-        m = self.pen(float(w.get("pen", 0)), armour, overmatch=(kind != "Air" and not top)) * self.type_of(w, kind)
+        m = self.armour_mult(w, armour, kind) * self.type_of(w, kind)
         for b in w.get("bonuses", []) or []:
             if armor_class and b.get("armor") == armor_class:
                 m *= float(b.get("mult", 1))

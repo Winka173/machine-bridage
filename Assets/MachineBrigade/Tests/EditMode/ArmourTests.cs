@@ -58,17 +58,17 @@ namespace MachineBrigade.Tests
         [Test]
         public void PenetrationAgainstArmourFollowsTheTable()
         {
-            // DECISIONS 20X: the six steps, overmatch first.
+            // DECISIONS 20X, combat final 04/10: the seven direct steps, overmatch first.
             var table = GameContent.LoadCatalog().Damage;
             Assert.AreEqual(1.2f, table.Penetration(4, 2), 1e-5f, "two levels above: the round overmatches the face");
             Assert.AreEqual(1.2f, table.Penetration(4, 0), 1e-5f);
             Assert.AreEqual(1f, table.Penetration(4, 3), 1e-5f, "a level above: all of it");
             Assert.AreEqual(0.85f, table.Penetration(3, 3), 1e-5f, "level");
-            Assert.AreEqual(0.5f, table.Penetration(2, 3), 1e-5f, "one under");
-            Assert.AreEqual(0.25f, table.Penetration(1, 3), 1e-5f, "two under");
-            Assert.AreEqual(0.1f, table.Penetration(0, 3), 1e-5f, "three under");
-            Assert.AreEqual(0.1f, table.Penetration(0, 4), 1e-5f, "four under");
-            Assert.AreEqual((0.85f + 0.5f) / 2f, table.Penetration(2.5f, 3), 1e-5f, "a part level lies between");
+            Assert.AreEqual(0.65f, table.Penetration(2, 3), 1e-5f, "one under");
+            Assert.AreEqual(0.4f, table.Penetration(1, 3), 1e-5f, "two under");
+            Assert.AreEqual(0.15f, table.Penetration(0, 3), 1e-5f, "three under");
+            Assert.AreEqual(0.08f, table.Penetration(0, 4), 1e-5f, "four under: its own step");
+            Assert.AreEqual((0.85f + 0.65f) / 2f, table.Penetration(2.5f, 3), 1e-5f, "a part level lies between");
             Assert.AreEqual((1.2f + 1f) / 2f, table.Penetration(4.5f, 3), 1e-5f, "and between one and two above");
             // A flank shot beats a front shot for a gun that pierces both (a battle tank's 3 front, 2 side).
             Assert.Greater(table.Penetration(4, 2), table.Penetration(4, 3));
@@ -80,8 +80,8 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(1f, old.Penetration(4, 0), 1e-5f);
             Assert.AreEqual(0.75f, old.Penetration(3, 3), 1e-5f);
             Assert.AreEqual(0.05f, old.Penetration(0, 4), 1e-5f);
-            Assert.AreEqual(1.5f, table.Type(DamageType.HighExplosive, TargetKind.Structure), 1e-5f, "high explosive's extra on structures");
-            Assert.Greater(table.ThermobaricStructure, 1.5f, "more with the thermobaric tag");
+            Assert.AreEqual(1.6f, table.Type(DamageType.HighExplosive, TargetKind.Structure), 1e-5f, "high explosive's extra on structures");
+            Assert.Greater(table.ThermobaricStructure, 1.6f, "more with the thermobaric tag");
             Assert.AreEqual(0f, table.Type(DamageType.HighExplosive, TargetKind.Air));
         }
 
@@ -117,7 +117,7 @@ namespace MachineBrigade.Tests
                 { Penetration = 1, TopAttack = true };
             var direct = new WeaponDef("direct_test", DamageType.ShapedCharge, 100f, 1f, 30f, 0f, 20f, 0f, 0f, ExplosionTier.Small, ProjectileKind.Missile)
                 { Penetration = 1 };
-            Assert.AreEqual(100f * table.Penetration(1, 1), Hit(javelin, new Vector2(0f, 20f)), 1e-3f, "top attack: the roof's level 1");
+            Assert.AreEqual(100f * table.TopAttack(1, 1), Hit(javelin, new Vector2(0f, 20f)), 1e-3f, "top attack: the roof's level 1, the top attack table");
             Assert.AreEqual(100f * table.Penetration(1, 3), Hit(direct, new Vector2(0f, 20f)), 1e-3f, "direct: the front's level 3");
             // Everything lobbed or dropped comes down on the roof too.
             Assert.AreEqual(ArmorFace.Top, DamageSystem.FaceOf(tank, new HitInfo(null, 0, TestWorlds.Howitzer, new Vector2(0f, 60f), HitKind.Direct, true)));

@@ -59,9 +59,9 @@ EFFECTIVE = [
     ("do_tan", "spread", 0.0, "", "độ tản (đơn vị trong mã: xem Don_vi_chua_ro)"),
     ("bac_no", "impactTier", "", "", "bậc hình ảnh vụ nổ (ExplosionTier)"),
     # pass 5: the flags the layer B formulas read (game values: Catalog.cs FromJson defaults)
-    ("danh_noc", "topAttack", False, "", "đánh nóc (topAttack)"),
+    ("danh_noc", "topAttack", False, "", "đánh nóc (topAttack): luôn trúng giáp nóc, dùng Bang_danh_noc thay cho Bang_xuyen_giap"),
     ("bay_cong", "lofted", False, "", "bắn cầu vồng qua vật cản (lofted)"),
-    ("nhiet_ap", "thermobaric", False, "", "nhiệt áp: HE lên công trình dùng damageTable.thermobaric (thermobaric)"),
+    ("nhiet_ap", "thermobaric", False, "", "nhiệt áp: HE lên công trình dùng damageTable.thermobaric thay cho hệ số HE (thermobaric)"),
     ("chi_danh_chan", "interceptOnly", False, "", "chỉ bắn chặn đạn, không nhắm xe / máy bay (interceptOnly)"),
     ("dat_boi_boss", "laid", False, "", "do hệ boss đặt bắn, không qua CombatSystem (laid)"),
     ("tia", "beam", False, "", "tia (beam)"),
@@ -74,7 +74,7 @@ TRACKED = ["sat_thuong_moi_phat", "thoi_gian_nap_s", "tam_m", "loi_m", "ria_m", 
            "dang_dan", "muc_tieu"]
 OWNERS = ["02_phuong_tien/Xe", "03_boss/Boss", "04_can_cu_thap/Thap", "04_can_cu_thap/Tuong", "04_can_cu_thap/Nha_chinh",
           "04_can_cu_thap/Mo_dun_tien_ich"]
-PEN_STEPS = ["+2", "+1", "0", "-1", "-2", "-3"]
+PEN_STEPS = ["+2", "+1", "0", "-1", "-2", "-3", "-4"]
 MUNITIONS = ["directMissile", "drone", "directRocket", "artilleryRocket", "mortarShell", "artilleryShell", "tankShell",
              "bullet", "energy"]
 VEHICLE_KEYS = ("aps", "apsCapability", "interceptionMode", "flares", "flareCharges", "flareRecharge")
@@ -499,13 +499,24 @@ def build(ctx):
         if isinstance(v, dict):
             r = bst.row(k, B.nguon(("damageTable", k)), raw=v)
             r.flatten(v, B.BALANCE, ("damageTable", k), aliases={"Ground": "mat_dat", "Air": "may_bay", "Structure": "cong_trinh"})
-    bx = book.sheet("Bang_xuyen_giap", "Bảng xuyên giáp", "damageTable.penetration: hệ số theo chênh xuyên - giáp (DamageTable.cs)")
-    bx.col("chenh_xuyen_giap", meaning="mức xuyên trừ mức giáp mặt bị bắn (+2 = vượt hai mức trở lên, -3 = kém ba mức trở lên)")
-    bx.col("he_so", meaning="hệ số sát thương")
+    # Two separate armour tables (DamageTable.cs): direct fire against the face struck, top attack against the roof.
+    bx = book.sheet("Bang_xuyen_giap", "Bảng xuyên giáp (bắn thẳng)", "damageTable.penetration: bảng xuyên giáp bắn thẳng, hệ số theo "
+                    "chênh xuyên - giáp mặt trúng (DamageTable.cs Penetration); vũ khí topAttack không dùng bảng này mà dùng Bang_danh_noc")
+    bx.col("chenh_xuyen_giap", meaning="mức xuyên trừ mức giáp mặt bị bắn (+2 = vượt hai mức trở lên, -4 = kém bốn mức trở lên); "
+           "đạn không đánh nóc mà rơi xuống nóc, và mọi phát lên máy bay, tối đa bước +1")
+    bx.col("he_so", meaning="hệ số sát thương bắn thẳng")
     for i, v in enumerate(dt.get("penetration", [])):
         r = bx.row(f"buoc_{i}", B.nguon(("damageTable", "penetration", i)), raw=v)
         r.set("chenh_xuyen_giap", PEN_STEPS[i] if i < len(PEN_STEPS) else "")
         r.set("he_so", v, B.BALANCE, ("damageTable", "penetration", i))
+    bn = book.sheet("Bang_danh_noc", "Bảng đánh nóc (top attack)", "damageTable.topAttack: bảng riêng cho vũ khí topAttack, hệ số theo "
+                    "chênh xuyên - giáp nóc (DamageTable.cs TopAttack); thay cho Bang_xuyen_giap, không nhân với nó, không chặn ở x1")
+    bn.col("chenh_xuyen_giap", meaning="mức xuyên trừ mức giáp nóc (+2 = vượt hai mức trở lên, -4 = kém bốn mức trở lên)")
+    bn.col("he_so", meaning="hệ số sát thương đánh nóc")
+    for i, v in enumerate(dt.get("topAttack", [])):
+        r = bn.row(f"buoc_{i}", B.nguon(("damageTable", "topAttack", i)), raw=v)
+        r.set("chenh_xuyen_giap", PEN_STEPS[i] if i < len(PEN_STEPS) else "")
+        r.set("he_so", v, B.BALANCE, ("damageTable", "topAttack", i))
 
     # ------------------------------------------------------------------ He_so_toan_cuc (firepower, thermobaric)
     hs = book.kv_sheet("He_so_toan_cuc", "Hệ số toàn cục", "firepower.* và damageTable.thermobaric: hệ số nhân chung")

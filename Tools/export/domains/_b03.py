@@ -19,7 +19,8 @@ DT = "Sim/Content/DamageTable.cs"
 SPACING = 8.0  # spec 03 B: five vehicles 8 m apart (a row; a cluster = the centre and four at 8 m)
 
 V_COLS = [("sat_thuong_moi_phat", "sat_thuong_moi_phat", "hp", "sát thương mỗi phát"), ("xuyen", "xuyen", "", "mức xuyên"),
-          ("dat_boi_boss", "dat_boi_boss", "", "do hệ boss đặt bắn (laid)"), ("loi_m", "loi_m", "m", "lõi nổ")]
+          ("dat_boi_boss", "dat_boi_boss", "", "do hệ boss đặt bắn (laid)"), ("loi_m", "loi_m", "m", "lõi nổ"),
+          ("danh_noc", "danh_noc", "", "đánh nóc (topAttack): bảng đánh nóc")]
 S_COLS = [("dps_duy_tri_mot_muc_tieu", "dps_duy_tri_mot_muc_tieu", "hp/s", "DPS duy trì (FirePower.Sustained, không carrier)"),
           ("chu_ky_day_du_s", "chu_ky_day_du_s", "s", "chu kỳ đầy đủ"), ("danh_tu_tren", "danh_tu_tren", "", "đánh từ trên"),
           ("ban_mat_dat", "ban_mat_dat", "", "nhắm mặt đất"), ("he_so_mat_dat", "he_so_mat_dat", "", "hệ số lên mặt đất"),
@@ -43,6 +44,9 @@ def build(ctx, book, d, built, base_built, base_w):
     bx = ctx.books[W01].sheets["Bang_xuyen_giap"]
     LB.input_sheet(ctx, book, "input_bang_xuyen_giap", "Input: bảng xuyên giáp (từ 01)", W01, "Bang_xuyen_giap",
                    [("he_so", "he_so", "", "hệ số xuyên của bước")], {rid: {"he_so": r.values.get("he_so")} for rid, r in bx.rows.items()})
+    bn = ctx.books[W01].sheets["Bang_danh_noc"]
+    LB.input_sheet(ctx, book, "input_bang_danh_noc", "Input: bảng đánh nóc (từ 01)", W01, "Bang_danh_noc",
+                   [("he_so", "he_so", "", "hệ số đánh nóc của bước")], {rid: {"he_so": r.values.get("he_so")} for rid, r in bn.rows.items()})
     tc = ctx.books[X02].sheets["Xe_tham_chieu"]
     refs = [rid for rid in tc.rows if tc.rows[rid].values.get("don_vi_id")]
     LB.input_sheet(ctx, book, "input_xe_tham_chieu", "Input: xe tham chiếu (từ 02)", X02, "Xe_tham_chieu", X_COLS,
@@ -128,11 +132,11 @@ def build(ctx, book, d, built, base_built, base_w):
     Si = lambda c: lookup("input_vu_khi_suy_ra", c, "{vu_khi}")  # noqa: E731
     Xi = lambda c: lookup("input_xe_tham_chieu", c, "{xe_tham_chieu}")  # noqa: E731
     D = lambda c: lookup("Boss_dps", c, "{boss_id}")  # noqa: E731
-    pen_step = f"2-({Vi('xuyen')}-{{giap_mat_trung}})"
-    pen_step = f"IF({Si('danh_tu_tren')},MAX(1,{pen_step}),{pen_step})"
+    armour_idx = LB.armour_index(R('input_bang_xuyen_giap', 'he_so', '*'), R('input_bang_danh_noc', 'he_so', '*'), Vi('xuyen'),
+                                 "{giap_mat_trung}", roof_expr=Si('danh_tu_tren'), top_expr=Vi('danh_noc'))
     T = {
         "giap_mat_trung": f"=IF({Si('danh_tu_tren')},{Xi('giap_noc')},{Xi('giap_truoc')})",
-        "he_so_trung": (f"=IF({Si('ban_mat_dat')},INDEX({R('input_bang_xuyen_giap', 'he_so', '*')},MIN(6,MAX(1,{pen_step}+1)))*"
+        "he_so_trung": (f"=IF({Si('ban_mat_dat')},{armour_idx}*"
                         f"IF({Xi('cong_trinh')},{Si('he_so_cong_trinh')},{Si('he_so_mat_dat')}),0)"),
         "sat_thuong_moi_don": (f"={Vi('sat_thuong_moi_phat')}*{D('he_so_hang')}*IF({Vi('dat_boi_boss')},1,{D('he_so_vu_khi')})*"
                                f"{D('he_so_sat_thuong_ra')}*{{he_so_trung}}"),

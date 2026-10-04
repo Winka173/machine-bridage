@@ -130,17 +130,30 @@ def sustained(w, carrier: dict | None = None, ground: bool = True) -> float:
 
 
 # ---------------------------------------------------------------------------------------------------------- damage table
+DIRECT_ROW = [1.2, 1.0, 0.85, 0.65, 0.4, 0.15, 0.08]   # SimTunables DamageTable.DefaultPenetration (combat final 04/10)
+TOP_ROW = [1.15, 1.1, 0.95, 0.75, 0.5, 0.25, 0.12]     # SimTunables DamageTable.DefaultTopAttack (combat final 04/10)
+STEPS = 7
+
+
+def _expand(row: list) -> list[float]:
+    """DamageTable.cs Expand: 7 values; an old 6-value row repeats its last step, a 5-value row has no overmatch step."""
+    skip = 1 if len(row) == 5 else 0
+    return [float(row[min(max(k - skip, 0), len(row) - 1)]) for k in range(STEPS)]
+
+
 def pen_row(table: dict) -> list[float]:
-    """DamageTable.cs constructor: 6 values, a 5-value row padded at the front (no overmatch step)."""
-    row = list(table.get("penetration") or [1.2, 1.0, 0.85, 0.55, 0.25, 0.1])
-    skip = 6 - len(row)
-    return [float(row[max(0, k - skip)]) for k in range(6)]
+    """DamageTable.cs constructor: the direct penetration row (damageTable.penetration), 7 steps +2 .. -4."""
+    return _expand(list(table.get("penetration") or DIRECT_ROW))
 
 
-def penetration(table: dict, p: float, armour: float, overmatch: bool = True) -> float:
-    """DamageTable.cs Penetration."""
-    row = pen_row(table)
-    last = 5
+def top_row(table: dict) -> list[float]:
+    """DamageTable.cs constructor: the top attack row (damageTable.topAttack), 7 steps +2 .. -4 against the roof."""
+    return _expand(list(table.get("topAttack") or TOP_ROW))
+
+
+def _read(row: list[float], p: float, armour: float, overmatch: bool) -> float:
+    """DamageTable.cs Read: whole levels read the row, a part level lies between its neighbours."""
+    last = STEPS - 1
     step = 2.0 - (p - armour)
     if not overmatch:
         step = max(1.0, step)
@@ -153,19 +166,43 @@ def penetration(table: dict, p: float, armour: float, overmatch: bool = True) ->
     return row[lo] + (row[min(last, lo + 1)] - row[lo]) * t
 
 
+def penetration(table: dict, p: float, armour: float, overmatch: bool = True) -> float:
+    """DamageTable.cs Penetration: the direct table (no overmatch on a roof struck without top attack, on aircraft)."""
+    return _read(pen_row(table), p, armour, overmatch)
+
+
+def top_attack(table: dict, p: float, roof: float) -> float:
+    """DamageTable.cs TopAttack: the top attack table against the roof's level, no cap."""
+    return _read(top_row(table), p, roof, True)
+
+
+def armour_mult(table: dict, p: float, armour: float, kind: str, roof: bool, top: bool) -> float:
+    """DamageTable.cs ArmourMultiplier: aircraft -> direct, no overmatch; top attack (ground, structure) -> top attack
+    table only; else direct (no overmatch on the roof). One table, never both."""
+    if kind == "Air":
+        return penetration(table, p, armour, False)
+    if top:
+        return top_attack(table, p, armour)
+    return penetration(table, p, armour, not roof)
+
+
+def weapon_armour_mult(table: dict, w: dict, armour: float, kind: str, from_above: bool = False) -> float:
+    """armour_mult for a weapon (its topAttack flag, its roof by Armour.cs StrikesTop)."""
+    return armour_mult(table, pen(w), armour, kind, from_above or strikes_top(w), bool(w.get("topAttack")))
+
+
 def type_of(table: dict, w: dict, kind: str) -> float:
-    """DamageTable.cs TypeOf: the damage type's multiplier on Ground / Air / Structure (thermobaric HE on structures)."""
+    """DamageTable.cs TypeOf: the damage type's multiplier on Ground / Air / Structure; the thermobaric tag replaces
+    high explosive's structure value (damageTable.thermobaric, not multiplied with it)."""
     dt = w.get("damageType")
-    v = float((table.get(dt) or {}).get(kind, 0.0))
     if w.get("thermobaric") and kind == "Structure" and dt == "HighExplosive":
-        v = max(float(table.get("thermobaric", 2.0)), v)
-    return v
+        return float(table.get("thermobaric", 2.0))
+    return float((table.get(dt) or {}).get(kind, 0.0))
 
 
 def effective(table: dict, w: dict, armour: float, kind: str, from_above: bool = False) -> float:
-    """DamageTable.cs Effective(weapon, armour, kind, fromAbove): penetration (overmatch unless roof or aircraft) x type."""
-    roof = from_above or strikes_top(w)
-    return penetration(table, pen(w), armour, not roof and kind != "Air") * type_of(table, w, kind)
+    """DamageTable.cs Effective(weapon, armour, kind, fromAbove): the armour multiplier (one table) x the damage type."""
+    return weapon_armour_mult(table, w, armour, kind, from_above) * type_of(table, w, kind)
 
 
 # ---------------------------------------------------------------------------------------------------------- warnings

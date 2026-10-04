@@ -62,7 +62,11 @@ namespace MachineBrigade.Tests
                 var e = Entry(AmmoHandbook.Penetration);
                 Assert.AreEqual(DamageTable.PenetrationSteps, e.Rows.Count);
                 for (var i = 0; i < DamageTable.PenetrationSteps; i++)
-                    Assert.AreEqual(AmmoHandbook.Mult(C.Damage.PenetrationStep(i)), e.Rows[i][1], $"step {i}");
+                {
+                    Assert.AreEqual(AmmoHandbook.Mult(C.Damage.PenetrationStep(i)), e.Rows[i][1], $"direct step {i}");
+                    // Combat final 04/10: the second table, top attack against the roof, beside the direct one.
+                    Assert.AreEqual(AmmoHandbook.Mult(C.Damage.TopAttackStep(i)), e.Rows[i][2], $"top attack step {i}");
+                }
                 StringAssert.Contains(ArmourLevels.Max.ToString(), e.Lines[0], "bosses up to level 5");
             });
         }
@@ -81,7 +85,7 @@ namespace MachineBrigade.Tests
                 StringAssert.Contains(Strings.Num(AmmoHandbook.ShotOn(C, w, target.Armour.Side), "0"), line, "the side hit");
                 StringAssert.Contains(Strings.Num(target.MaxHp, "0"), line, "the target's health");
                 StringAssert.Contains(AmmoHandbook.Mult(C.Damage.Effective(w, target.Armour.Front, TargetKind.Ground)), line);
-                Assert.AreEqual(w.Damage * C.Damage.Penetration(w.Penetration, target.Armour.Front, DamageTable.Overmatches(TargetKind.Ground, Armour.StrikesTop(w))) *
+                Assert.AreEqual(w.Damage * C.Damage.ArmourMultiplier(w.Penetration, target.Armour.Front, TargetKind.Ground, Armour.StrikesTop(w), w.TopAttack) *
                     C.Damage.TypeOf(w, TargetKind.Ground), AmmoHandbook.ShotOn(C, w, target.Armour.Front), 1e-3f);
             });
         }

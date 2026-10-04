@@ -194,7 +194,8 @@ namespace MachineBrigade.Sim.Content
             // Aircraft are hit by what can shoot upwards: guns, flak, anti-air missiles, beams; roof hits do not apply.
             if (target.Flying && (top || type is DamageType.HighExplosive or DamageType.Fire or DamageType.ShapedCharge)) return 0f;
             var armour = target.Armour[top ? ArmorFace.Top : ArmorFace.Front];
-            return table.Effective(type, pen, armour, target.Kind, top);
+            // Combat final 04/10: the top-attack threat (Javelin-like missiles, diving drones) reads the top attack table.
+            return table.Effective(type, pen, armour, target.Kind, top, threat == Threat.TopAttack);
         }
 
         /// <summary>Prompt 15 E.2: a unit's strong / weak summary, from its armour and its weapons (main first).</summary>
