@@ -20506,3 +20506,53 @@ Owner's block "Bổ sung 04/10 sau khi thử bản màu sơn" (Docs/prompts/play
 - Needs Unity: compile (C# 9 checked by reading); a look at Scylla / Nyx / Hydra missile hits, Hyperion's NSM, Coeus's Spike;
   an aircraft preview at each shadow tier (and its shadow distance on a boss's wide frame); aircraft in a match over land and
   sea; the bosses' big guns firing (406 / 203 / 155 mm, the ventral twins' flash along their barrels, both barrels kicking).
+
+## MB_FINAL balance F2 (lane B)
+
+Branch `feature/final-f2` (worktree MachineBrigade-art2). The owner's final bundle `Docs/balance/final/` (MB_FINAL_2026_10_04,
+wins over everything), VIEC_CHO_AGENT_FINAL.md section 1 and the 108 manifest rows `bossWeaponOverrides[...]` (sheet
+Boss_Range_Final). No Unity, no tests; Sim compiled with the .NET SDK (0 errors, the 3 old warnings). Every value:
+`Docs/export/CHANGES.md` "MB_FINAL F2"; replaced weapons: `Docs/balance/final/CONFLICTS.md` "F2".
+- **Data layer.** New top-level block `balance.json` `bossWeaponOverrides`: { boss id: { weapon id: { groundMinReach,
+  minRange, maxRange } } }, any field optional (left out: the weapon's own). Read by `Sim/Content/Catalog.BossReach.cs`
+  (BossReachTable) while the catalog builds the bosses: each boss mount (main, secondary, and a boss's own "missiles" load)
+  gets a per-boss copy of its weapon (`WeaponDef.WithReach`, MemberwiseClone after the two-layer blast copy, same id so it
+  looks and sounds the same); vehicles and towers keep the shared weapon, so a weapon shared with them never changes.
+  Because the copy sits in `VehicleDef.Mounts` (and so `Vehicle.Arms`), targeting (`CombatSystem.InReach`), firing, the AI's
+  reach reads (`def.Weapon.Range`, `Mounts[k].Weapon`) and the view's range rings all see the boss's own values.
+  `WeaponDef.Range` / `MinRange` became `{ get; private set; }` for the copy (nothing else sets them). A weapon's own
+  `groundRange` (ground reach shorter than its air reach) is scaled with a new maxRange. Load errors: unknown boss or
+  weapon, a boss that carries no such weapon (stale row), groundMinReach or minRange at or past the reach.
+- **minRange vs groundMinReach (AI role).** The bundle writes groundMinReach only (field_min of all 63 pairs). `minRange > 0`
+  makes a weapon `Indirect` (no line of fire, the artillery role for Commander / ConquestAi / TacticalAi), so an override's
+  `minRange` is taken as MinRange only by a weapon that already has one; on a direct-fire weapon it is folded into
+  groundMinReach (the larger). No weapon changes role; the addendum's choice (lane C) holds.
+- **Variants.** A variant with no row of its own for a weapon uses its nearest ancestor's row (`variantOf` chain), whole: an
+  own row replaces the parent's and does not merge field by field (icarus_mk0's orbital laser has only groundMinReach 11 in
+  the bundle: it must keep its 36 m reach, not take silver_bug's 39). Today every variant pair with a row has its own, so
+  inheritance changes nothing yet; it covers future variants.
+- **Applied 99 manifest rows** on the 58 pairs that still exist; expected_before 0.0 = no override yet (matching). Each value
+  is >= the shared weapon's current minimum (checked), every maxRange expected_before equals the weapon's current range.
+- **Replaced pairs (9 rows, CONFLICTS):** armored_train boss_rockets -> pt14_train_grad 16 / 52; hyperion coilgun -> pt14_hp_155
+  27 (range 95 kept); nyx boss_railgun -> nyx_ags_155 42 / 135; Daedalus 57 mm and Hyperion lasers are now ventral turrets
+  (play-test 14 space lane: groundMinReach 0 "so a hovering ship hits what is under it"): treated as close-in dead-zone
+  cover, min 0, reach kept. Open for the owner (one data row each if wanted).
+- **Bundle rule for pairs it does not list (13 values, 10 pairs):** min = max(current, largest proposal of the boss's mounts
+  for that weapon) capped at 120 m, the proposal being `boss_min_range.py`'s `tam_toi_thieu_de_xuat_m` (geometry from the
+  redrawn GLB and barrelLimits, cut to 80 % of the range near it: this reproduces the bundle's own numbers, e.g. behemoth
+  direct_be120 geometry 41 -> 25); max = max(range, ceil(3.2 x min)) capped at 300 m (the bundle's derivation uses ceil).
+  Pairs: pt14_train_grad, coeus pt14_co_203 / pt14_co_spike, hyperion pt14_hp_155 / pt14_hp_nsm, nyx nyx_ags_155 /
+  nyx_tomahawk, scylla scylla_kh35, theia orbital laser 19 / 61 and pt14_th_jagm (missiles: arming 1 m). Ventral guns
+  (pt14_sb_v105, pt14_dd_v57, pt14_hp_v127, pt14_hp_vlaser, pt14_co_v76), air defence, CIWS / autocannon <= 40 mm, MGs,
+  flamers, melee, bombs: nothing written (min ~0). Old pairs the bundle left out (b155 / b240, hover_rockets, ixion grad
+  min) come out equal to their current values. hydra_club_s is a cruise launch (NavalSystem), no mount: not in scope.
+- **Export.** `boss_min_range.py` reads the overrides (as the C# does, variants included): Boss_tam_toi_thieu gains
+  `ghi_de_tu_boss`, `tam_toi_da_ghi_m`, `ti_le_tam_toi_da_toi_thieu`; `tam_toi_thieu_ghi_m` is now the value the game uses;
+  the dead-zone columns use the overridden reach. `--apply` (one value per shared weapon) is retired. New sheet
+  `Boss_ghi_de_tam` (03_boss) exports the block itself, one row per pair (the coverage test needs its leaves mapped).
+- **Dead zones (export metric, owner's call; bundle numbers not changed):** still uncovered: bastion_mk0 (14 m), behemoth_mk0
+  (23), behemoth_tempest (17), kraken (29), leviathan (42), typhon (21, new: the bundle raised its 100 mm and 57 mm to 21).
+  Daedalus, Hyperion, Icarus Mk.0, Nyx and Scylla are now covered (ventral guns, missiles at 1 m).
+- Kraken / Leviathan lev406 reach 300 m (bundle cap, ratio 2.5 / 2.91): beyond vision, they need spotting to use it.
+- For the owner when wanted: CatalogCheck / TunablesTests (the load checks above), replay hashes (boss reach changes them),
+  ExportGameDoc + pack rebuild.

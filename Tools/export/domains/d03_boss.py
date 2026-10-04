@@ -92,7 +92,12 @@ MIN_RANGE_COLS = (
     ("truong_ghi", "", "trường ghi vào vũ khí: groundMinReach (bắn thẳng: đo tới mép, chỉ mục tiêu mặt đất, không đổi vai pháo "
      "binh) / minRange (vũ khí đã bắn cầu) / khong_ap"),
     ("cat_theo_tam", "", "true: hình học vượt tầm, đã cắt còn 80 % tầm"),
-    ("tam_toi_thieu_ghi_m", "m", "giá trị game dùng (một vũ khí dùng ở nhiều bệ lấy đề xuất nhỏ nhất)"),
+    ("ghi_de_tu_boss", "", "MB_FINAL F2: boss có dòng bossWeaponOverrides được dùng (chính nó, hoặc boss gốc của biến thể); "
+     "trống: dùng giá trị chung của vũ khí"),
+    ("tam_toi_thieu_ghi_m", "m", "giá trị game dùng: dòng bossWeaponOverrides của boss nếu có, không thì của vũ khí (max của "
+     "minRange và groundMinReach / minReach)"),
+    ("tam_toi_da_ghi_m", "m", "tầm tối đa game dùng: maxRange của bossWeaponOverrides nếu có, không thì range của vũ khí"),
+    ("ti_le_tam_toi_da_toi_thieu", "", "tam_toi_da_ghi_m / tam_toi_thieu_ghi_m (gói cuối nhắm khoảng 3,2; trần 300 m)"),
     ("vung_chet_ban_kinh_m", "m", "bán kính vùng chết của boss: nhỏ nhất của tầm tối thiểu các nòng chính (từ tâm boss)"),
     ("vu_khi_che_vung_chet", "", "vũ khí bắn được vào vùng chết"),
     ("phan_tram_vung_chet_duoc_phu", "%", "phần dải chết (từ mép thân tới bán kính vùng chết) có vũ khí phủ"),
@@ -123,6 +128,25 @@ def _min_range_sheet(book, d, built, wres):
     gn = book.kv_sheet("Boss_goc_nong", "Boss: góc nòng", "barrelLimits: góc hạ / nâng nòng theo lớp và họ vũ khí (estimated = "
                        "uoc_dinh), luật xếp lớp, độ cao mục tiêu tham chiếu; đọc bởi Tools/export/boss_min_range.py")
     book.kv_rows(gn, d.get("barrelLimits") or {}, B.BALANCE, ("barrelLimits",), "barrelLimits", units=BARREL_UNITS)
+    # MB_FINAL F2: the boss's own reach per weapon (balance.json bossWeaponOverrides, read by Sim Catalog.BossReach.cs).
+    ov = book.sheet("Boss_ghi_de_tam", "Boss: tầm riêng theo vũ khí", "MB_FINAL F2: mỗi cặp boss + vũ khí có tầm riêng một dòng "
+                    "(balance.json bossWeaponOverrides; chỉ bệ của boss đó, vũ khí chung không đổi; biến thể không có dòng "
+                    "riêng dùng dòng của boss gốc)")
+    ov.col("boss_id", meaning="boss", fk=BOSS_FK)
+    ov.col("vu_khi_id", meaning="vũ khí", fk=["01_vu_khi_dan/Vu_khi"])
+    cols = (("groundMinReach", "tam_toi_thieu_mep_m", "không bắn mục tiêu mặt đất gần hơn (đo tới mép); trống: của vũ khí"),
+            ("minRange", "tam_toi_thieu_m", "minRange (chỉ vũ khí đã bắn cầu; bắn thẳng: gộp vào groundMinReach); trống: của vũ khí"),
+            ("maxRange", "tam_toi_da_m", "tầm tối đa của boss với vũ khí này; trống: range của vũ khí"))
+    for _key, col, meaning in cols:
+        ov.col(col, unit="m", meaning=meaning)
+    for bid, weapons in (d.get("bossWeaponOverrides") or {}).items():
+        for wid, o in weapons.items():
+            row = ov.row(f"{bid}/{wid}", f"{B.BALANCE}: bossWeaponOverrides.{bid}.{wid}")
+            row.set("boss_id", bid)
+            row.set("vu_khi_id", wid)
+            for key, col, _m in cols:
+                if key in o:
+                    row.set(col, o[key], src=B.BALANCE, path=("bossWeaponOverrides", bid, wid, key))
 
 
 def build(ctx):

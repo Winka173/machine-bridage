@@ -287,8 +287,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Seconds between shots. Keeps counting down while moving or retargeting.</summary>
         public float Cooldown { get; }
 
-        public float Range { get; }
-        public float MinRange { get; }
+        // MB_FINAL F2: private set for WithReach (a boss's own copy, bossWeaponOverrides); the shared weapon never changes.
+        public float Range { get; private set; }
+        public float MinRange { get; private set; }
 
         /// <summary>Metres per second; a shot lands after distance / speed.</summary>
         public float ProjectileSpeed { get; }

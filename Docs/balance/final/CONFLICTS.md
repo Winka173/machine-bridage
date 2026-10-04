@@ -1,0 +1,21 @@
+# MB_FINAL_2026_10_04: conflicts found while applying
+
+Per PLAN_APPLY.md: a manifest row whose expected_before (or entity) no longer matches ours is listed here with our current
+value, and the bundle's derivation is applied to the current entity. Each lane adds its own section.
+
+## F2 (lane B): boss weapon range overrides
+
+The bundle's expected_before 0.0 on every `bossWeaponOverrides[...]` row is the override layer (new in F2), so "no override
+yet" counts as matching; all 99 rows on pairs that still exist matched and were applied as given (Docs/export/CHANGES.md
+"MB_FINAL F2"). Nine rows name a boss weapon that play-test 14 (04/10, after the bundle's snapshot) replaced:
+
+| manifest rows | bundle value | ours now | applied (bundle rule on the replacement) |
+|---|---|---|---|
+| `bossWeaponOverrides[armored_train][boss_rockets].groundMinReach` | 14 (max 45 kept) | the rack fires `pt14_train_grad` (inherits boss_rockets, groundMinReach 14, range 45) | `pt14_train_grad`: groundMinReach 16 (geometry), maxRange 52 (ceil 16 x 3.2) |
+| `bossWeaponOverrides[daedalus][p26_daedalus_sec_dae57]` groundMinReach / maxRange | 13 / 42 | the 57 mm twins are ventral turrets `pt14_dd_v57` (groundMinReach 0, range 28), drawn under the belly to fire down (owner, play-test 14 space lane) | none: ventral guns are the ship's close-in cover of its dead zone; the rule keeps close defence at min ~0, max = max(28, ceil(0 x 3.2)) = 28 |
+| `bossWeaponOverrides[hyperion][p26_icarus_main_ic_coil]` groundMinReach / maxRange | 21 / 68 | coilguns replaced by twin 155 mm `pt14_hp_155` (groundMinReach 19, range 95) | `pt14_hp_155`: groundMinReach 27 (geometry, 2 mounts); maxRange 95 kept (>= ceil 27 x 3.2 = 87) |
+| `bossWeaponOverrides[hyperion][p26_icarus_direct_ic_laser]` groundMinReach / maxRange | 18 / 58 | laser batteries refitted to reach straight down as `pt14_hp_vlaser` (groundMinReach 0, range 36) | none: ventral (as Daedalus's twins); min 0, max 36 |
+| `bossWeaponOverrides[nyx][boss_railgun]` groundMinReach / maxRange | 39 / 125 | railgun replaced by `nyx_ags_155` (groundMinReach 33, range 80) | `nyx_ags_155`: groundMinReach 42 (geometry), maxRange 135 (ceil 42 x 3.2) |
+
+Open for the owner: if the ventral guns should carry the bundle's numbers of the weapons they replaced (Daedalus 13 / 42,
+Hyperion lasers 18 / 58) instead of min 0, add the two rows to `bossWeaponOverrides` (no code change).

@@ -1248,6 +1248,46 @@
     // a band of largeBandM or more gets "xem lai thoi gian ha"; one under negligibleBandM is no dead zone.
     "capShare": 0.8, "coverShare": 0.9, "largeBandM": 8, "negligibleBandM": 2
   },
+  // MB_FINAL F2 (owner's final bundle MB_FINAL_2026_10_04; DECISIONS "MB_FINAL balance F2 (lane B)"): a boss's own reach for
+  // one of its weapons; the shared weapon (also on vehicles and towers) is not changed. groundMinReach: no shot at a ground target
+  // nearer than this (to its near face; aircraft are still shot); maxRange: its reach; minRange: taken only by a weapon that has a
+  // minRange already (else folded into groundMinReach, so a gun never turns into artillery for the AI). A variant with no row for
+  // a weapon uses its parent's row, whole. Values: the manifest rows bossWeaponOverrides[...] (Docs/balance/final) and, for pairs
+  // the bundle does not list (play-test 14 weapons), its rule: min from barrel geometry (boss_min_range.py), max = max(range,
+  // ceil(3.2 x min)) capped at 300 m; close defence and the space ships' ventral guns keep min 0. Log: CHANGES.md "MB_FINAL F2".
+  "bossWeaponOverrides": {
+    "armored_train": { "pt14_train_grad": { "groundMinReach": 16, "maxRange": 52 }, "train_gun": { "groundMinReach": 25, "maxRange": 80 } },
+    "bastion_mk0": { "p26_bastion_direct_b100": { "groundMinReach": 19, "maxRange": 61 } },
+    "behemoth": { "p26_behemoth_direct_be120": { "groundMinReach": 25, "maxRange": 80 }, "p26_behemoth_main_be152": { "groundMinReach": 32, "maxRange": 103 }, "p26_behemoth_sec_be_rockets": { "groundMinReach": 30, "maxRange": 96 }, "p26_behemoth_tiny_be120": { "groundMinReach": 25, "maxRange": 80 }, "p26_behemoth_tiny_boss_missiles": { "groundMinReach": 1 }, "p26_behemoth_tiny_kornet_twin": { "groundMinReach": 25, "maxRange": 80 } },
+    "behemoth_inferno": { "boss_thermo": { "groundMinReach": 21, "maxRange": 68 } },
+    "behemoth_mk0": { "p26_behemoth_direct_be120": { "groundMinReach": 24, "maxRange": 77 }, "p26_behemoth_main_be152": { "groundMinReach": 36, "maxRange": 116 }, "p26_behemoth_sec_be_rockets": { "groundMinReach": 23, "maxRange": 74 } },
+    "behemoth_mk2": { "p26_behemoth_main_be152": { "groundMinReach": 32, "maxRange": 103 } },
+    "behemoth_tempest": { "boss_railgun": { "groundMinReach": 33, "maxRange": 106 }, "coilgun": { "groundMinReach": 17 } },
+    "coeus": { "pt14_co_203": { "groundMinReach": 28 }, "pt14_co_spike": { "groundMinReach": 1 } },
+    "command_airship": { "p26_roc_direct_roc_atgm": { "groundMinReach": 1 }, "p26_roc_roc105": { "groundMinReach": 22, "maxRange": 71 } },
+    "daedalus": { "p26_daedalus_direct_dae_laser": { "groundMinReach": 13, "maxRange": 42 } },
+    "drone_mothership": { "p26_matriarch_direct_ma_atgm": { "groundMinReach": 1 }, "p26_matriarch_ma_drones": { "groundMinReach": 1 }, "p26_matriarch_tiny_mothership_cannon": { "groundMinReach": 13 } },
+    "earth_borer": { "borer_cannon": { "groundMinReach": 16, "maxRange": 52 } },
+    "fenrir": { "p26_jotunn_sec_jo_rockets": { "groundMinReach": 16, "maxRange": 52 } },
+    "fortress_bastion": { "p26_bastion_direct_b100": { "groundMinReach": 28, "maxRange": 90 }, "p26_bastion_tiny_kornet_twin": { "groundMinReach": 1 } },
+    "hydra": { "p26_typhon_direct_ty100": { "groundMinReach": 8 }, "p26_typhon_sec_ty57": { "groundMinReach": 35, "maxRange": 112 } },
+    "hyperion": { "p26_icarus_sec_orbital_laser": { "groundMinReach": 14, "maxRange": 45 }, "pt14_hp_155": { "groundMinReach": 27 }, "pt14_hp_nsm": { "groundMinReach": 1 } },
+    "icarus_mk0": { "p26_icarus_sec_orbital_laser": { "groundMinReach": 11 } },
+    "ixion": { "p26_ixion_125": { "groundMinReach": 30, "maxRange": 96 }, "pt14_ixion_grad": { "maxRange": 58 }, "pt14_ixion_kornet": { "groundMinReach": 1 } },
+    "kraken": { "p26_leviathan_direct_lev127": { "groundMinReach": 29, "maxRange": 93 }, "p26_leviathan_lev406": { "groundMinReach": 120, "maxRange": 300 }, "p26_leviathan_sec_lev155": { "groundMinReach": 88, "maxRange": 282 } },
+    "leviathan": { "p26_leviathan_direct_lev127": { "groundMinReach": 42, "maxRange": 135 }, "p26_leviathan_lev406": { "groundMinReach": 103, "maxRange": 300 }, "p26_leviathan_sec_lev155": { "groundMinReach": 90, "maxRange": 288 } },
+    "locust": { "locust_drones": { "groundMinReach": 1 } },
+    "mega_gunship": { "gunship_rockets": { "groundMinReach": 10 } },
+    "mobile_fortress": { "p26_jotunn_direct_jo125": { "groundMinReach": 30, "maxRange": 96 }, "p26_jotunn_jo203": { "groundMinReach": 48, "maxRange": 154 }, "p26_jotunn_sec_jo_rockets": { "groundMinReach": 32, "maxRange": 103 } },
+    "moloch": { "p26_moloch_direct_mo120ap": { "groundMinReach": 25, "maxRange": 80 }, "p26_moloch_main_mo120": { "groundMinReach": 25, "maxRange": 80 } },
+    "monster": { "p26_bastion_direct_b100": { "groundMinReach": 28, "maxRange": 90 }, "p26_bastion_tiny_kornet_twin": { "groundMinReach": 1 } },
+    "nuke_train": { "p26_nemesis_direct_ne125": { "groundMinReach": 30, "maxRange": 96 }, "p26_nemesis_main_ne152": { "groundMinReach": 32, "maxRange": 103 }, "p26_nemesis_sec_boss_rockets": { "groundMinReach": 20, "maxRange": 64 } },
+    "nyx": { "nyx_ags_155": { "groundMinReach": 42, "maxRange": 135 }, "nyx_tomahawk": { "groundMinReach": 1 }, "p26_leviathan_direct_lev127": { "groundMinReach": 25 } },
+    "scylla": { "naval_130_twin": { "groundMinReach": 41, "maxRange": 132 }, "p26_leviathan_direct_lev127": { "groundMinReach": 28 }, "scylla_kh35": { "groundMinReach": 1 } },
+    "silver_bug": { "p26_icarus_direct_ic_laser": { "groundMinReach": 21, "maxRange": 68 }, "p26_icarus_main_ic_coil": { "groundMinReach": 19, "maxRange": 61 }, "p26_icarus_sec_orbital_laser": { "groundMinReach": 12, "maxRange": 39 } },
+    "theia": { "p26_icarus_sec_orbital_laser": { "groundMinReach": 19, "maxRange": 61 }, "pt14_th_jagm": { "groundMinReach": 1 } },
+    "typhon": { "p26_typhon_direct_ty100": { "groundMinReach": 21 }, "p26_typhon_sec_ty57": { "groundMinReach": 21, "maxRange": 68 } }
+  },
 
   // weapon is the main weapon (on the turret; fixed forward on aircraft). secondary lists extra mounts:
   // slot names the model muzzle (Muzzle_<slot>); aim is Turret (coaxial), Free (own mount) or Hull (fixed forward).
