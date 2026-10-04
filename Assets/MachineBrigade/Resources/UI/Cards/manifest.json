@@ -904,7 +904,7 @@
             "kind": "boss",
             "model": "icarus_mk0",
             "source": "Models/icarus_mk0",
-            "hash": "v2:d732751d30f6e9e74406336f34c114b49c920b9d"
+            "hash": "v2:7e41c44ce7dfd3ac8f7d96befc26304ebe766398"
         },
         {
             "id": "ixion",
@@ -946,7 +946,7 @@
             "kind": "boss",
             "model": "leviathan",
             "source": "Models/leviathan",
-            "hash": "v2:c11f817cfba1412e27bb57e8bbed681661cd7a00"
+            "hash": "v2:b4ac810967d5852cdbaf50b9ff5114cb00e829b8"
         },
         {
             "id": "locust",
@@ -1051,7 +1051,7 @@
             "kind": "boss",
             "model": "nyx",
             "source": "Models/nyx",
-            "hash": "v2:30207c94ce35a101a12d1bddca2659b5328990cb"
+            "hash": "v2:f85ef41245155e6b54e3a229df2d2a18e78f622d"
         },
         {
             "id": "one_shot_atgm_tower",
@@ -1100,7 +1100,7 @@
             "kind": "boss",
             "model": "scylla",
             "source": "Models/scylla",
-            "hash": "v2:46ad09b4579ed07b918c5921d6fe0c5c3d5d74bb"
+            "hash": "v2:3a5eaed6de62a5d285ad553466ea03316c031ee3"
         },
         {
             "id": "shield_tower",
@@ -1128,7 +1128,7 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:d34dd7986a5e859a7ea08060bfdb5f6feeaafbd4"
+            "hash": "v2:fb27fa8ad34352ce2725f0ba44f8e4aaa19a8f20"
         },
         {
             "id": "spawn_bastion",
