@@ -2,7 +2,7 @@
 
 Boss, bộ phận, siêu vũ khí, hộ tống, pha, Săn trùm.
 
-Gói cân bằng Machine Brigade, commit 274f25b7, ngày 2026-10-04. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 5394cac7, ngày 2026-10-04. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng hợp boss
 
@@ -14,9 +14,9 @@ Bảng đầy đủ: xem sheet `Boss_dps` (33 dòng), `Boss_hieu_qua` (165 dòng
 
 Từ 04/10 sát thương nổ giảm theo bảng giảm nổ lan (01/Bang_no_lan): trong lõi 110% ở tâm, 108 / 105 / 100% theo quãng lõi; từ lõi ra rìa 85 / 65 / 45 / 25% theo từng phần tư; ngoài rìa 0. Vũ khí không có rìa nổ một bán kính: không lõi, bán kính đó là rìa. Máu, vũ khí và cỡ của boss được làm lại theo chương (mục tiêu hạ boss chủ lực từ 2,5 phút ở chương 1 tới 4 phút ở chương 12, mini boss 60 đến 90 giây); Ixion và Gungnir được làm lại; mỗi boss có mốc thời đại ở dòng Tham khảo của thẻ. Pha: hệ số nhân vào từ mốc máu đó trở đi.
 
-### Pha, giáp và cỡ model (31 boss)
+### Pha, giáp và cỡ model (33 boss)
 
-Bảng 31 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
+Bảng 33 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
 
 Sheet 02_boss/Boss_phase — Boss: pha (6 dòng, 11 cột)
 
@@ -35,7 +35,7 @@ Bảng đầy đủ: xem sheet `Boss_be_goc` (133 dòng).
 
 - **Sức mạnh P:** đo một lần lúc bắt đầu từ bộ bài mang theo (sát thương giấy mỗi giây của các thẻ chiến đấu, tính cả hạng thẻ, trang bị và chỉ huy) × 10 xe ra trận × 0,3 trúng boss, tối thiểu 60. Máu boss = P × thời gian mục tiêu × 0,6 × hệ số m × hệ số bậc; sát thương boss là của dữ liệu × m × hệ số bậc.
 - **Tuần:** 10 boss (3 chủ lực, 7 mini; nhóm 3, 2, 2 mini dẫn tới mỗi boss chủ lực), mục tiêu mini 66 s, chủ lực 2.8 phút; m = 1 + 0.06 × số thứ tự (×1 tới ×1,54); nghỉ 15 s giữa các boss, quân sống sót được sửa 30% và chỉ giữ 50% CP; điểm hồi sinh sau mỗi boss chủ lực; đồng hồ 30 phút.
-- **Toàn bộ:** 31 boss (14 chủ lực) theo thứ tự cốt truyện, chủ lực 2,5 phút, mini 1 phút; m từ ×0.8 tới ×1.3; điểm hồi sinh và lưu sau mỗi boss; mỗi boss là một trận mới (không giữ quân, CP khởi đầu như nhau), chỉ hỗ trợ tác chiến được giữ.
+- **Toàn bộ:** 33 boss (15 chủ lực) theo thứ tự cốt truyện, chủ lực 2,5 phút, mini 1 phút; m từ ×0.8 tới ×1.3; điểm hồi sinh và lưu sau mỗi boss; mỗi boss là một trận mới (không giữ quân, CP khởi đầu như nhau), chỉ hỗ trợ tác chiến được giữ.
 - **Hỗ trợ tác chiến:** sau mỗi boss chủ lực chọn 1 trong 3; tổng sức mạnh quân từ hỗ trợ tối đa +40%; khi đã chạm trần chỉ còn các hỗ trợ đổi cách chơi (thẻ bắn nhanh hơn, thả xe).
 - **Bậc:** bốn độ khó của bảng chọn là bốn bậc (bảng dưới). Chưa làm: bậc Huyền thoại và các biến thể (mutator) cho Săn trùm.
 
@@ -43,7 +43,7 @@ Bảng đầy đủ: xem sheet `Boss_be_goc` (133 dòng).
 
 Tuần: 10 boss tuần này: 7 mini boss dẫn tới 3 boss chủ lực, boss sau mạnh hơn boss trước. Máu boss theo sức mạnh bộ bài bạn mang. Nghỉ 15 giây giữa các boss, xe còn sống được sửa 30% và giữ 50% CP; sau mỗi boss chủ lực (tối đa +40% sức mạnh đội quân từ hỗ trợ), chọn một trong ba hỗ trợ tác chiến và lưu điểm hồi sinh. Đồng hồ 30 phút.
 
-Toàn bộ: Toàn bộ 31 boss chủ lực và mini boss của các chương đang mở, theo đúng thứ tự cốt truyện. Có điểm hồi sinh sau mỗi boss: chơi dần qua bao nhiêu lần cũng được. Mỗi boss là một trận mới: quân không được giữ và bạn bắt đầu với cùng lượng CP; chỉ hỗ trợ tác chiến được giữ (chọn sau mỗi boss chủ lực, tối đa +40% sức mạnh đội quân, sau đó chỉ còn các hỗ trợ đổi cách chơi). Xếp hạng theo tổng thời gian.
+Toàn bộ: Toàn bộ 33 boss chủ lực và mini boss của các chương đang mở, theo đúng thứ tự cốt truyện. Có điểm hồi sinh sau mỗi boss: chơi dần qua bao nhiêu lần cũng được. Mỗi boss là một trận mới: quân không được giữ và bạn bắt đầu với cùng lượng CP; chỉ hỗ trợ tác chiến được giữ (chọn sau mỗi boss chủ lực, tối đa +40% sức mạnh đội quân, sau đó chỉ còn các hỗ trợ đổi cách chơi). Xếp hạng theo tổng thời gian.
 
 ### Hỗ trợ tác chiến (12)
 
@@ -106,18 +106,18 @@ Phiên bản tân trang: +60% máu, +25% sát thương, 1–2 kỹ năng tinh nh
 
 | Tên | Giá | Giáp | Máu | Tốc độ | Vũ khí | DPS nhẹ/nặng/bay | Kỹ năng | Tham khảo |
 |---|---|---|---|---|---|---|---|---|
-| **Phòng không tinh nhuệ** | 6 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 1.041 | 8.5 | twin_35_ahead, sam | 102 / 51 / 182 | elite_overdrive | Rheinmetall Skyranger 35 (đạn AHEAD), Gepard (khung gốc) — Phòng không tinh nhuệ, đạn nổ trên không AHEAD |
-| **Xe bọc thép tinh nhuệ** | 11 CP (địch) | Trước 3 (Dày) · Hông 1 (Mỏng) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 1.544 | 9 | autocannon_30, mg_coax, atgm | 125 / 62 / 11 | elite_emp | M2 Bradley / BMP-3 (khung gốc), 2A42 30 mm — Xe chiến đấu bộ binh tinh nhuệ |
-| **Pháo tự hành tinh nhuệ** | 11 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 891 | 6 | howitzer, hmg_selfdef_15 | 101 / 60 / 21 | elite_barrage | CAESAR 155 mm — Lựu pháo tự hành tinh nhuệ |
-| **Trực thăng tinh nhuệ** | 18 CP (địch) | cấp 2 (Vừa) | 1.485 | 15 | hellfire_volley, heli_gun, heli_rockets, stinger_atas | 164 / 98 / 136 | elite_flares, elite_barrage | AH-64 Apache, AGM-114L Hellfire Longbow — Apache tinh nhuệ, bắn loạt Hellfire |
-| **Cường kích tinh nhuệ** | 37 CP (địch) | cấp 2 (Vừa) | 1.366 | 32 | jet_cannon, s8_pods, jet_bombs, kh29, r60 | 553 / 301 / 25 | elite_flares | Su-25 Frogfoot, A-10 Thunderbolt II — Cường kích tinh nhuệ |
-| **Xe phóng drone FPV tinh nhuệ** | 11 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 1.247 | 9 | fpv_swarm, hmg_selfdef_18 | 107 / 66 / 21 | elite_barrage | KamAZ Typhoon-K, RG-33 MRAP, drone FPV — Xe phóng drone FPV tinh nhuệ |
-| **Grad tinh nhuệ** | 13 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 950 | 8.5 | grad_cluster, hmg_selfdef_15 | 86 / 50 / 18 | elite_barrage | BM-21 Grad (khung Ural-375D) — Xe tải Grad 122 mm tinh nhuệ, đầu đạn chùm |
-| **Tăng hạng nặng tinh nhuệ** | 26 CP (địch) | Trước 4 (Rất dày) · Hông 3 (Dày) · Sau 2 (Vừa) · Nóc 2 (Vừa) | 5.632 | 4.6 | gun_152_heat, autocannon_30, hmg_roof | 198 / 110 / 18 | elite_overdrive | Object 195 / T-95 (2A83 152 mm, đạn HEAT) — Siêu tăng tinh nhuệ, đạn nổ lõm 152 mm |
-| **Tên lửa phòng không tầm xa tinh nhuệ** | 29 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 1.307 | 6 | sam_48n6 | 0 / 0 / 165 | elite_overdrive | S-400 (48N6), S-300PMU (5P85) — Tên lửa phòng không tầm xa tinh nhuệ |
-| **Tăng chủ lực tinh nhuệ** | 13 CP (địch) | Trước 4 (Rất dày) · Hông 2 (Vừa) · Sau 1 (Mỏng) · Nóc 1 (Mỏng) | 2.673 | 6.2 | gun_125_elite, mg_coax, hmg_roof | 118 / 65 / 29 | elite_shield | T-90M (2A46M-5 125 mm), Leopard 2A4 / M1 Abrams (khung gốc) — Xe tăng chủ lực tinh nhuệ, giáp tăng cường sơn đen |
-| **Pháo phản lực tinh nhuệ** | 13 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 950 | 6.5 | mlrs_elite, hmg_selfdef_15 | 89 / 53 / 18 | elite_barrage | M142 HIMARS / M270, M30 GMLRS 227 mm (đầu đạn chùm) — Xe phóng rốc-két tinh nhuệ, đầu đạn chùm |
-| **Pháo chống tăng tinh nhuệ** | 11 CP (địch) | Trước 4 (Rất dày) · Hông 2 (Vừa) · Sau 1 (Mỏng) · Nóc 1 (Mỏng) | 1.841 | 7.5 | gun_105_apfsds, hmg_roof | 117 / 81 / 18 | elite_barrage, elite_smoke | 2S25 Sprut-SD (2A75 125 mm APFSDS) — Pháo chống tăng tinh nhuệ, đạn xuyên dưới cỡ |
+| **Phòng không tinh nhuệ** | 6 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 1.041 | 8.5 | twin_35_ahead, sam | 122 / 79 / 189 | elite_overdrive | Rheinmetall Skyranger 35 (đạn AHEAD), Gepard (khung gốc) — Phòng không tinh nhuệ, đạn nổ trên không AHEAD |
+| **Xe bọc thép tinh nhuệ** | 11 CP (địch) | Trước 3 (Dày) · Hông 1 (Mỏng) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 1.544 | 9 | autocannon_30, mg_coax, atgm | 162 / 96 / 11 | elite_emp | M2 Bradley / BMP-3 (khung gốc), 2A42 30 mm — Xe chiến đấu bộ binh tinh nhuệ |
+| **Pháo tự hành tinh nhuệ** | 11 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 891 | 6 | howitzer, hmg_selfdef_15 | 115 / 78 / 21 | elite_barrage | CAESAR 155 mm — Lựu pháo tự hành tinh nhuệ |
+| **Trực thăng tinh nhuệ** | 18 CP (địch) | cấp 2 (Vừa) | 1.485 | 15 | hellfire_volley, heli_gun, heli_rockets, stinger_atas | 196 / 139 / 141 | elite_flares, elite_barrage | AH-64 Apache, AGM-114L Hellfire Longbow — Apache tinh nhuệ, bắn loạt Hellfire |
+| **Cường kích tinh nhuệ** | 37 CP (địch) | cấp 2 (Vừa) | 1.366 | 32 | jet_cannon, s8_pods, jet_bombs, kh29, r60 | 661 / 447 / 26 | elite_flares | Su-25 Frogfoot, A-10 Thunderbolt II — Cường kích tinh nhuệ |
+| **Xe phóng drone FPV tinh nhuệ** | 11 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 1.247 | 9 | fpv_swarm, hmg_selfdef_18 | 143 / 106 / 21 | elite_barrage | KamAZ Typhoon-K, RG-33 MRAP, drone FPV — Xe phóng drone FPV tinh nhuệ |
+| **Grad tinh nhuệ** | 13 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 950 | 8.5 | grad_cluster, hmg_selfdef_15 | 96 / 64 / 18 | elite_barrage | BM-21 Grad (khung Ural-375D) — Xe tải Grad 122 mm tinh nhuệ, đầu đạn chùm |
+| **Tăng hạng nặng tinh nhuệ** | 26 CP (địch) | Trước 5 (Siêu dày) · Hông 3 (Dày) · Sau 2 (Vừa) · Nóc 2 (Vừa) | 5.632 | 4.6 | gun_152_heat, autocannon_30, hmg_roof | 225 / 177 / 18 | elite_overdrive | Object 195 / T-95 (2A83 152 mm, đạn HEAT) — Siêu tăng tinh nhuệ, đạn nổ lõm 152 mm |
+| **Tên lửa phòng không tầm xa tinh nhuệ** | 29 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 1.307 | 6 | sam_48n6 | 0 / 0 / 171 | elite_overdrive | S-400 (48N6), S-300PMU (5P85) — Tên lửa phòng không tầm xa tinh nhuệ |
+| **Tăng chủ lực tinh nhuệ** | 13 CP (địch) | Trước 4 (Rất dày) · Hông 2 (Vừa) · Sau 1 (Mỏng) · Nóc 1 (Mỏng) | 2.673 | 6.2 | gun_125_elite, mg_coax, hmg_roof | 141 / 102 / 29 | elite_shield | T-90M (2A46M-5 125 mm), Leopard 2A4 / M1 Abrams (khung gốc) — Xe tăng chủ lực tinh nhuệ, giáp tăng cường sơn đen |
+| **Pháo phản lực tinh nhuệ** | 13 CP (địch) | Trước 2 (Vừa) · Hông 0 (Không giáp) · Sau 0 (Không giáp) · Nóc 0 (Không giáp) | 950 | 6.5 | mlrs_elite, hmg_selfdef_15 | 99 / 67 / 18 | elite_barrage | M142 HIMARS / M270, M30 GMLRS 227 mm (đầu đạn chùm) — Xe phóng rốc-két tinh nhuệ, đầu đạn chùm |
+| **Pháo chống tăng tinh nhuệ** | 11 CP (địch) | Trước 4 (Rất dày) · Hông 2 (Vừa) · Sau 1 (Mỏng) · Nóc 1 (Mỏng) | 1.841 | 7.5 | gun_105_apfsds, hmg_roof | 127 / 124 / 18 | elite_barrage | 2S25 Sprut-SD (2A75 125 mm APFSDS) — Pháo chống tăng tinh nhuệ, đạn xuyên dưới cỡ |
 
 ### Boss
 
@@ -174,7 +174,7 @@ giáp thân trước 4 / hông 3 / sau 3 / nóc 2; Tổng 35% máu thân trong 5
 
 **Mẹo:** phá **đầu máy** trước để nó chậm một nửa, rồi tới các toa pháo. Nó tự vá một bộ phận một lần, ưu tiên pháo nặng, nên hãy phá toa đó lần nữa.
 
-Đoàn tàu bọc thép của Kessler: toa pháo và toa giáp chạy đúng giờ. Bị bắn là nó tự thả khói, vừa chạy vừa tự vá. Phải chặn nó trước khi tới bến cảng.
+Đoàn tàu bọc thép của Kessler: toa pháo và toa giáp chạy đúng giờ. Vừa chạy vừa tự vá. Phải chặn nó trước khi tới bến cảng.
 
 giáp thân trước 4 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 5 bộ phận; pha ở 45%.
 
@@ -230,23 +230,17 @@ giáp thân trước 4 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 4
 
 Cỗ máy khoan cũ của Varga, Tartarus: nó nghiến xuyên dưới tường thành và thân đập rồi trồi lên đúng chỗ không ai canh. Phải tiêu diệt nó trước khi nó tới trạm phát điện.
 
-giáp thân trước 4 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 8 bộ phận; pha ở 45%.
+giáp thân trước 4 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 4 bộ phận; pha ở 45%.
 
-**Mẹo:** phá **tháp pháo trên thùng** là mất pháo 125 mm; phá một **lốp trước** thì cú lao lệch và dừng; **lốp sau** giáp cấp 1; phá **ca-bin** là súng máy ngừng bắn.
+**Mẹo: cửa ống phóng** mang tên lửa của nó; pháo boong chỉ bắn khi nổi.
 
-Xe tải mỏ bọc thép của Thorne ở Deepcut Mine: một chiếc BelAZ-75710 hàn tháp pháo xe tăng lên thùng, lưỡi húc ở mũi và súng máy trên nóc ca-bin.
+Tàu ngầm tấn công theo khái niệm: nhỏ hơn Typhon, nhanh hơn, và im lặng cho tới khi nắp ống mở.
 
 giáp thân trước 5 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 9 bộ phận; pha ở 60%, 25%.
 
 **Mẹo:** phá **lựu pháo** để chấm dứt các loạt pháo dồn, và phá bộ phát EMP trước khi thiết giáp ta áp sát.
 
 Mỏ neo của tuyến Frostpeak: một pháo đài di động với lựu pháo, đội hộ tống và xung EMP làm tê liệt mọi thứ xung quanh.
-
-giáp thân trước 4 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 4 bộ phận; pha ở 45%.
-
-**Mẹo: cửa ống phóng** mang tên lửa của nó; pháo boong chỉ bắn khi nổi.
-
-Tàu ngầm mang drone theo khái niệm: nhỏ hơn Typhon, nhanh hơn, và im lặng cho tới khi nắp ống mở.
 
 giáp thân trước 4 / hông 4 / sau 4 / nóc 4; Tổng 35% máu thân trong 3 bộ phận.
 
@@ -259,6 +253,18 @@ giáp thân trước 2 / hông 2 / sau 2 / nóc 2; Tổng 35% máu thân trong 3
 **Mẹo: radar** chỉ điểm cho pháo địch.
 
 Khí cầu trinh sát bọc giáp của Wolff: thấy hết mọi thứ và chỉ đường cho máy bay của hắn.
+
+giáp thân trước 4 / hông 4 / sau 4 / nóc 4; Tổng 35% máu thân trong 4 bộ phận.
+
+**Mẹo: khoang drone** thả bầy drone và khoang đổ bộ; **la-de phòng thủ điểm** bắn hạ tên lửa của bạn.
+
+Tàu sân bay hộ tống của Hyperion: giữ bầu trời quanh tuần dương hạm bằng các bầy drone.
+
+giáp thân trước 4 / hông 4 / sau 4 / nóc 4; Tổng 35% máu thân trong 4 bộ phận.
+
+**Mẹo: pháo chính** là đòn nặng nhất; phá **động cơ** để nó chậm lại.
+
+Tàu pháo kích của Hyperion: một tháp pháo đôi 203 mm bắn như cả một khẩu đội pháo binh.
 
 giáp thân trước 5 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 14 bộ phận; pha ở 60%, 25%.
 
@@ -277,6 +283,12 @@ giáp thân trước 5 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 9
 **Mẹo:** vòng ra sau đánh **cửa xưởng** (giáp cấp 2): phá một cửa là sinh xe giảm một nửa, phá cả hai là ngừng hẳn; phá **cụm xích** để làm chậm.
 
 Nhà máy di động của Varga: vừa lăn bánh vừa đóng xe tăng, rồi tung chúng ra trận qua các cửa thả.
+
+giáp thân trước 4 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 8 bộ phận; pha ở 60%, 25%.
+
+**Mẹo:** phá **tháp pháo trên thùng** là mất pháo 125 mm; phá một **lốp trước** thì cú lao lệch và dừng; **lốp sau** giáp cấp 1; phá **ca-bin** là súng máy ngừng bắn.
+
+Xe tải mỏ bọc thép của Thorne ở Deepcut Mine: một chiếc BelAZ-75710 hàn tháp pháo xe tăng lên thùng, lưỡi húc ở mũi và súng máy trên nóc ca-bin.
 
 giáp thân trước 5 / hông 3 / sau 2 / nóc 2; Tổng 35% máu thân trong 9 bộ phận; pha ở 60%, 25%.
 
@@ -322,9 +334,9 @@ Chiến hạm quỹ đạo của Aurel: thân tàu hình mũi dao, thượng t�
 
 giáp thân trước 4 / hông 4 / sau 4 / nóc 4; Tổng 35% máu thân trong 9 bộ phận.
 
-**Mẹo:** tia **la-de chính** mang đòn tia mặt trời; phá nó là hết tia. **Tháp la-de phòng thủ** bắn hạ tên lửa của bạn.
+**Mẹo: la-de chính** (máy chiếu dưới mũi) mang đòn tia mặt trời; phá nó là hết tia. **Tháp la-de phòng thủ** bắn hạ tên lửa của bạn.
 
-Một trong những chấm sáng cuối cùng còn trên quỹ đạo sau phần kết: trạm gương kiểu Znamya.
+Một trong những chấm sáng cuối cùng còn trên quỹ đạo sau phần kết: tuần dương hạm hạng nặng của Aurel, máy chiếu tia mặt trời dưới mũi.
 
 Sheet 02_boss/Boss_sieu_vu_khi — Siêu vũ khí (15 dòng, 18 cột)
 

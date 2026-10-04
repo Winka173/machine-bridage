@@ -259,12 +259,46 @@ namespace MachineBrigade.Game.Match
         public static VehicleBoost Boost(int rank, IEnumerable<GearItem> loadout, float[] caps, int[] brandCounts)
         {
             var count = (int)StatId.Count;
-            var sum = new float[count];
             var penalty = new float[count];
             var traits = new List<GearTrait>();
-            var module = SpecialModule.None;
-            var power = 0f;
-            var power2 = 0f;
+            var sum = Sums(loadout, brandCounts, penalty, traits, out var module, out var power, out var power2);
+            var stats = new float[count];
+            var any = false;
+            for (var i = 0; i < count; i++)
+            {
+                stats[i] = Mathf.Min(sum[i], caps[i]) + penalty[i];
+                any |= stats[i] != 0f;
+            }
+            var rankBonus = CardRanks.Bonus(rank);
+            return new VehicleBoost(
+                hp: (1f + rankBonus) * (1f + stats[(int)StatId.Health]),
+                damage: (1f + rankBonus) * (1f + stats[(int)StatId.Damage]),
+                fireRate: 1f + stats[(int)StatId.FireRate],
+                speed: 1f + stats[(int)StatId.Speed],
+                damageTaken: 1f - stats[(int)StatId.DamageTaken],
+                regen: Mathf.Max(0f, stats[(int)StatId.Regen]),
+                special: module,
+                specialPower: power,
+                stats: any ? stats : null,
+                traits: traits.Count > 0 ? traits.ToArray() : null,
+                specialPower2: power2);
+        }
+
+        /// <summary>
+        /// A loadout's stat lines before the caps, by <see cref="StatId"/>: every worn piece's main stat, implicit lines and
+        /// sub-stats, and the two-piece set lines (what <see cref="Boost(int, IEnumerable{GearItem}, float[], int[])"/> caps);
+        /// the trade-off drawbacks go to <paramref name="penalty"/> and the traits to <paramref name="traits"/> (either may be null).
+        /// </summary>
+        private static float[] Sums(IEnumerable<GearItem> loadout, int[] brandCounts, float[] penalty, List<GearTrait> traits,
+            out SpecialModule module, out float power, out float power2)
+        {
+            var count = (int)StatId.Count;
+            var sum = new float[count];
+            penalty ??= new float[count];
+            traits ??= new List<GearTrait>();
+            module = SpecialModule.None;
+            power = 0f;
+            power2 = 0f;
             var worn = new List<GearItem>();
             foreach (var item in loadout)
             {
@@ -310,26 +344,49 @@ namespace MachineBrigade.Game.Match
                 }
                 if (brands[i] >= 4) traits.Add(brand.FourPiece);
             }
-            var stats = new float[count];
-            var any = false;
+            return sum;
+        }
+
+        /// <summary>
+        /// Gear targets 04/10 (owner: "giữ global BuildCap trên tổng tất cả nguồn ... thêm hiển thị phần bonus bị overcap"):
+        /// what a loadout adds to each stat beyond its cap, so never applies. The lines summed per stat (<see cref="Sums"/>),
+        /// plus what the battle adds under the same cap (SimWorld.Upgrade / GearSystem.Equip, "only the headroom"): the
+        /// Veteran Crew's damage and fire rate, the Auto Repair's regeneration, and on a gun with no blast
+        /// (<paramref name="noBlast"/>) the Splash line turned into damage against light vehicles (x0.55). Only the stats
+        /// with something cut, in <see cref="StatId"/> order.
+        /// </summary>
+        public static List<(StatId Stat, float Lost)> OverCap(IEnumerable<GearItem> loadout, float[] caps, int[] brandCounts = null, bool noBlast = false)
+        {
+            var count = (int)StatId.Count;
+            var penalty = new float[count];
+            var sum = Sums(loadout, brandCounts, penalty, null, out var module, out var power, out _);
+            var lost = new float[count];
+            var have = new float[count];
             for (var i = 0; i < count; i++)
             {
-                stats[i] = Mathf.Min(sum[i], caps[i]) + penalty[i];
-                any |= stats[i] != 0f;
+                have[i] = Mathf.Min(sum[i], caps[i]) + penalty[i];
+                lost[i] = sum[i] - Mathf.Min(sum[i], caps[i]);
             }
-            var rankBonus = CardRanks.Bonus(rank);
-            return new VehicleBoost(
-                hp: (1f + rankBonus) * (1f + stats[(int)StatId.Health]),
-                damage: (1f + rankBonus) * (1f + stats[(int)StatId.Damage]),
-                fireRate: 1f + stats[(int)StatId.FireRate],
-                speed: 1f + stats[(int)StatId.Speed],
-                damageTaken: 1f - stats[(int)StatId.DamageTaken],
-                regen: Mathf.Max(0f, stats[(int)StatId.Regen]),
-                special: module,
-                specialPower: power,
-                stats: any ? stats : null,
-                traits: traits.Count > 0 ? traits.ToArray() : null,
-                specialPower2: power2);
+            // The same rule as SimWorld.Headroom: a stat with no cap in the table takes it all.
+            void Add(StatId stat, float add)
+            {
+                if (add <= 0f) return;
+                var i = (int)stat;
+                var cap = caps[i] > 0f ? caps[i] : float.PositiveInfinity;
+                var fits = Mathf.Max(0f, Mathf.Min(add, cap - have[i]));
+                lost[i] += add - fits;
+            }
+            if (module == SpecialModule.VeteranCrew)
+            {
+                Add(StatId.Damage, power);
+                Add(StatId.FireRate, power);
+            }
+            else if (module == SpecialModule.AutoRepair) Add(StatId.Regen, power);
+            if (noBlast) Add(StatId.DamageVsLight, have[(int)StatId.Splash] * 0.55f);
+            var result = new List<(StatId Stat, float Lost)>();
+            for (var i = 0; i < count; i++)
+                if (lost[i] > 1e-4f) result.Add(((StatId)i, lost[i]));
+            return result;
         }
     }
 

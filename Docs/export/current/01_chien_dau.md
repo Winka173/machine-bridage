@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 274f25b7, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 5394cac7, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -18,9 +18,9 @@ Chỉ số gốc (hạng 1, chưa trang bị). DPS = sát thương mỗi loạt 
 
 Miêu tả: dòng Cách đánh và Mạnh / yếu của thẻ Hướng dẫn trong game. Hình dạng: cột "Hình dạng (cho AI vẽ)" của file cân bằng (sheet Phương tiện, Công trình, Boss), bản mô tả để dựng model (Tools/docs/unit_sheet.json).
 
-### Boss (31)
+### Boss (33)
 
-Bảng 31 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
+Bảng 33 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
 
 Sheet 01_chien_dau/Xe_bo_phan — Xe: bộ phận (6 dòng, 17 cột)
 
@@ -154,6 +154,8 @@ Bảng đầy đủ: xem sheet `Xe_suy_ra` (79 dòng), `Hoi_quy_du_lieu` (50 dò
 
 Bảng hiệu quả và ký hiệu ✓ ~ ✕ của từng xe nằm ở thẻ xe (phần 8).
 
+Xuyên quá (04/10): đạn động năng bắn thẳng (không đánh nóc, không phải nổ) nhân thêm sau bảng xuyên, theo xuyên - giáp ≤+2 / +3 / +4 / ≥+5: ×1 / ×0.95 / ×0.85 / ×0.75. Giảm nổ lan (04/10), chỉ nhân phần nổ, không nhân phát trúng thẳng: tâm, lõi 0–25 / 25–50 / 50–100%, lõi→rìa 0–25 / 25–50 / 50–75 / 75–100%, ngoài rìa: ×1.1 / ×1.08 / ×1.05 / ×1 / ×0.85 / ×0.65 / ×0.45 / ×0.25 / ×0; vũ khí một bán kính không có lõi (bán kính là rìa).
+
 Giáp có hướng (giáp mặt trước dày hơn hông/sau), đạn lệch theo tầm và chuyển động, pháo có tầm tối thiểu. Máy bay có pháo sáng, xe có hệ thống đánh chặn chủ động (APS) chặn tên lửa/drone, tàng hình chỉ lộ ở 40% tầm nhìn khi không bắn. Ký hiệu: ✓ hệ số từ 0.6 trở lên, ~ từ 0.12, ✕ thấp hơn (cùng ngưỡng với giao diện trong game).
 
 ### Khắc chế: phòng vệ chặn loại đạn nào
@@ -177,7 +179,7 @@ Giáp có hướng (giáp mặt trước dày hơn hông/sau), đạn lệch the
 
 ★: vũ khí đổi số trong lần sửa tổng hợp (so với commit 07444b14). Cỡ (mm) chỉ cho súng, pháo, cối, rốc-két; đầu nổ (kg) cho tên lửa, bom, drone. Nhịp ngoài đời: tối đa / duy trì (phát mỗi phút một nòng, nguồn ở bảng A8). DPS duy trì: một mục tiêu, cả nạp, hệ số của xe mang.
 
-### Kích thước đạn (40 model)
+### Kích thước đạn (41 model)
 
 Kích thước model đạn nhân tỷ lệ của vũ khí (projectileScale).
 
@@ -187,25 +189,25 @@ Bán kính nổ lan (m) của mọi bom, tên lửa, rốc-két, đạn pháo v�
 
 ### DPS theo cấp giáp, tên lửa, kích thước và siêu vũ khí
 
-### DPS theo cấp giáp (198 vũ khí)
+### DPS theo cấp giáp (218 vũ khí)
 
 Mặt trúng là mặt trước ở cấp đó. Thưởng theo lớp giáp (ví dụ phá công sự) tính luôn; thưởng theo loại xe, đứng yên hay đánh sườn ghi ở thẻ xe.
 
-### Tên lửa: tốc độ bay và thời gian bay (44)
+### Tên lửa: tốc độ bay và thời gian bay (49)
 
 Tốc độ bay (m/s) và thời gian bay tới tầm xa nhất (tầm / tốc độ; tên lửa dẫn đường bay một thời gian định lúc phóng và trúng nơi mục tiêu đang đứng khi tới). Cột nhanh hơn: tốc độ tên lửa phòng không so với máy bay nhanh nhất trong game (44 m/s; file cân bằng nhắm 1,2–1,5 lần mục tiêu nhanh nhất cần bắt).
 
-### Kích thước model theo dữ liệu (94 đơn vị)
+### Kích thước model theo dữ liệu (96 đơn vị)
 
 Thân va chạm: dài và rộng.
 
-### Kích thước đạn theo dữ liệu (42 vũ khí)
+### Kích thước đạn theo dữ liệu (47 vũ khí)
 
 Game vẽ model đạn khớp chiều dài này.
 
-Bảng 42 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
+Bảng 47 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
 
-### Siêu vũ khí của boss chủ lực (14)
+### Siêu vũ khí của boss chủ lực (15)
 
 Mỗi siêu vũ khí có âm cảnh báo riêng. Số ở đây là số gốc; trong trận cộng hệ số của cấp boss chủ lực (sát thương ×1,2, hồi ×0,85) và của độ khó.
 
@@ -217,6 +219,7 @@ Mỗi siêu vũ khí có âm cảnh báo riêng. Số ở đây là số gốc; 
 | **Leviathan · Thiết giáp hạm** | **Loạt bắn mạn chín nòng** Chín quả đạn 406 mm, mỗi quả 950 (lõi 12 m, rìa 20 m, giảm dần), từ ba tháp pháo chính rải theo dải 60 × 12 m qua căn cứ, mạnh hơn một phần ba lên công trình; cảnh báo 4 gi… | dải bom, 9 × 950, nổ 12 m, dải 60 × 12 m | 50 s | 4 s | Đưa quân ra khỏi dải đánh dấu; đạn pháo không bắn hạ được, nên hãy dàn quân ra. | Phá một tháp pháo chính trong lúc cảnh báo (giáp cấp 4: xe diệt tăng, pháo binh, bom): mỗi tháp bị phá bớt ba quả đạn. |
 | **Matriarch · Tàu mẹ drone** | **Bom trượt hạng nặng** Một quả bom trượt hạng nặng từ khoang bom: 1.600 trong lõi 16 m, giảm dần tới rìa 20 m, gấp đôi lên công trình và tháp; bom lượn chậm tới vòng đánh dấu, ít nhất 3 giây. Cứ 45… | tên lửa, 1 × 1.600, nổ 16 m, 250 máu, bắn hạ được | 45 s | 3,5 s | Chạy ra khỏi vòng; khi khoang bom mở, phòng không trúng tàu mẹ mạnh hơn 30%. | Phá khoang bom, hoặc bắn hạ quả bom khi nó lượn (máu 250): phòng không, C-RAM, la-de PK. |
 | **Moloch · Nhà máy di động** | **Xả xưởng** Cửa xưởng mở 4 giây, rồi mọi cửa cùng xả: sáu xe một lúc, kèm tám phát pháo 152 mm nổ mạnh (mỗi phát 350, lõi 6 m, rìa 12 m, giảm dần) vào cụm quân gần nhất. Cứ 50 giây. | thả quân, 6 xe; loạt nổ, 8 × 350, nổ 6 m, trong vòng 12 m | 50 s | 4 s | Đưa cụm quân ra khỏi vùng đánh dấu; sẵn sàng đón thêm sáu xe. | Phá một cửa xưởng lúc cảnh báo: chỉ ra một nửa; phá cả hai thì chỉ còn loạt pháo. |
+| **Ixion · Xe tải mỏ bọc thép** | **Lao nghiền** Xe tải mỏ lao theo một đường thẳng báo trước 2 giây: khoảng 900 lên mọi xe trên đường (giảm theo giáp) và choáng 1 giây; tháp pháo vẫn bắn. Cứ khoảng 45 giây. | charge, 2 × 900, dải 60 × 10 m | 45 s | 2 s | Bước ngang ra khỏi đường thẳng trước khi hết cảnh báo. | Phá một lốp trước: cú lao lệch và dừng. |
 | **Nemesis · Đoàn tàu tên lửa** | **Tên lửa Tận thế** Bốn giây dựng bệ phóng, rồi một tên lửa nhiệt áp bay vào HQ hoặc cụm quân lớn nhất, có đồng hồ bay (6 giây, xa hơn thì lâu hơn): 3.500 trong lõi 18 m, giảm dần tới rìa 20 m, mạnh… | tên lửa, 1 × 3.500, nổ 18 m, 600 máu, bắn hạ được | 50 s | 4 s | Dàn quân ra khỏi điểm rơi được đánh dấu trước khi hết giờ. | Phá bệ phóng trong lúc dựng, hoặc bắn hạ tên lửa trên đường bay (máu 600): khẩu đội PAC-3 và Vòm Sắt, cùng mọi phòng không, C-RAM hay la-de PK bên dưới. |
 | **Monster · Pháo tự hành 800 mm** | **Đạn 800 mm** Một quả đạn 800 mm: 4.000 ở tâm vụ nổ 20 m, giảm dần ra mép, nặng gấp đôi với công trình; nòng nâng từ từ, vòng đỏ hiện 4 giây. Mỗi 50 giây. | loạt nổ, 1 × 4.000, nổ 20 m | 50 s | 4 s | Ra khỏi vòng đỏ; vòng rất rộng nên đi sớm. | Phá khẩu cối (nòng): mất luôn phát đạn. |
 | **Typhon · Tàu ngầm tên lửa** | **Phóng tên lửa từ dưới nước** Sáu tên lửa vào căn cứ ta: mỗi quả khoảng 700 nổ mạnh (lõi 9 m, rìa 18 m, giảm dần), gấp đôi lên công trình; sau 4 giây cảnh báo có đồng hồ bay. Cứ 50 giây. | tên lửa, 6 × 700, nổ 9 m, 250 máu, bắn hạ được | 50 s | 4 s | Đưa quân ra khỏi các điểm đánh dấu; tháp không di chuyển được nên hãy che chắn. | Phá cửa ống phóng lúc cảnh báo (cửa lộ trên mặt nước), hoặc bắn hạ tên lửa (mỗi quả 250 máu). |
@@ -224,7 +227,7 @@ Mỗi siêu vũ khí có âm cảnh báo riêng. Số ở đây là số gốc; 
 | **Roc · Khí cầu chỉ huy** | **Rải thảm** Mười sáu quả bom 250 kg, mỗi quả 400 (lõi 7 m, rìa 14 m, giảm dần), thành dải 80 × 12 m theo đường bay; cảnh báo 4 giây. Cứ 50 giây. | dải bom, 16 × 400, nổ 7 m, dải 80 × 12 m | 50 s | 4 s | Bước ngang ra khỏi dải, tránh khỏi đường bay của nó. | Phá khoang bom. |
 | **Daedalus · Tàu đổ bộ quỹ đạo** | **Đổ bộ ồ ạt từ quỹ đạo** Tám khoang cùng rơi vào một cụm quân: mỗi khoang chạm đất gây 600 động năng (xuyên cao, lõi 6 m, rìa 12 m, giảm dần) rồi thả một xe; cảnh báo 4 giây. Cứ 50 giây. | loạt nổ, 8 × 600, nổ 6 m, trong vòng 12 m | 50 s | 4 s | Tản cụm quân bị đánh dấu ra; giáp dày cũng không cứu được. | Phá một cửa thả khoang lúc cảnh báo: chỉ còn bốn khoang rơi. |
 | **Icarus · Phi thuyền quỹ đạo** | **Mưa thanh vonfram** Bảy thanh vonfram rơi xuống các cụm quân, ưu tiên xe tăng giáp dày, từ vệ tinh nó để lại trên quỹ đạo: 1.800 động năng mỗi thanh, xuyên rất cao, bán kính 7 m, có 4 giây cột sáng… | thanh tungsten từ vệ tinh, 7 × 1.800, nổ 7 m; từ pha 3: 9 phát, hồi 45 s | 45 s | 4 s | Ra khỏi các vòng tròn; khói và APS không chặn được. Vòm khiên hấp thụ một phần sát thương trong lúc còn hoạt động. | Phá ăng-ten liên kết vệ tinh trong lúc cảnh báo để hủy thanh đang rơi; phá hẳn thì hết mưa thanh vonfram cho tới khi nó tự vá lại. Ăng-ten bắn được ở tầng cao, tầng thấp, và cả khi đã rơi xuống đất. |
-| **Hyperion · Trạm gương quỹ đạo** | **Tia mặt trời** Một tia đốt dải 70 × 6 m trong 4 giây, 500 mỗi giây; cảnh báo 4 giây. Mỗi 50 giây. | dải bom, 4 × 500, nổ 3 m, dải 70 × 6 m | 50 s | 4 s | Rời ngay dải hẹp. | Phá tia la-de chính trong lúc cảnh báo. |
+| **Hyperion · Tuần dương hạm hạng nặng** | **Tia mặt trời** Một tia đốt dải 70 × 6 m trong 4 giây, 500 mỗi giây; cảnh báo 4 giây. Mỗi 50 giây. | dải bom, 4 × 500, nổ 3 m, dải 70 × 6 m | 50 s | 4 s | Rời ngay dải hẹp. | Phá tia la-de chính trong lúc cảnh báo. |
 
 ### Đạn thay thế (hai loại đạn)
 
@@ -242,28 +245,7 @@ Hồi một lần khi ở vòng chờ, nạp đầy khi về Bãi đáp hoặc s
 
 SELF_APS chỉ chặn tên lửa dẫn đường, drone, rốc-két bắn thẳng. Trophy: NONE không gắn; RETROFIT_ELIGIBLE 2 lần, hồi 20 s; BUILT_IN +1 lần, hồi ×0,75. Boss và tháp giữ số riêng.
 
-| Thực thể | Khả năng | Chế độ | Lần / hồi / bán kính |
-|---|---|---|---|
-| Tăng chủ lực | RetrofitEligible | tự suy ra | — |
-| Siêu tăng | BuiltIn | tự suy ra | 3 / 10 s / 20 m |
-| Xe la-de phòng không | — | PointDefense | 1 / 0.8 s / 30 m |
-| headquarters.shield | — | tự suy ra | 6 / 0.6 s / 45 m |
-| c_ram | — | tự suy ra | 4 / 0.6 s / 35 m |
-| c_ram.centurion | — | tự suy ra | 5 / 0.35 s / 35 m |
-| c_ram.dome | — | tự suy ra | 6 / 12 s / 60 m |
-| missile_battery.pac3 | — | tự suy ra | 4 / 16 s / 72 m |
-| laser_ad_station | — | tự suy ra | 1 / 0.8 s / 40 m |
-| Tăng thế hệ mới | BuiltIn | SelfAps | 2 / 10 s / 20 m |
-| Behemoth · Quái vật thép | — | tự suy ra | 2 / 4 s / 11 m |
-| Icarus · Phi thuyền quỹ đạo | — | tự suy ra | 3 / 1.4 s / 49.6 m |
-| Tempest · Behemoth pháo điện từ | — | tự suy ra | 2 / 1.6 s / 26 m |
-| Charybdis · Tàu đệm khí đổ bộ | — | tự suy ra | 2 / 3 s / 22 m |
-| Leviathan · Thiết giáp hạm | — | tự suy ra | 3 / 2.2 s / 30 m |
-| sea_corvette | — | PointDefense | 2 / 2.5 s / 32 m |
-| sea_cruiser | — | PointDefense | 2 / 2.4 s / 30 m |
-| Daedalus · Tàu đổ bộ quỹ đạo | — | tự suy ra | 2 / 1.6 s / 31.6 m |
-| Icarus Mk.0 · Phi thuyền nguyên mẫu | — | PointDefense | 3 / 1.4 s / 19.5 m |
-| mara_behemoth | — | tự suy ra | 2 / 4 s / 11 m |
+Bảng 21 dòng: số liệu đầy đủ ở các sheet của mục này trong file xlsx cùng tên.
 
 ### Gungnir
 
@@ -340,17 +322,17 @@ Sheet 01_chien_dau/Phao_sang — Pháo sáng (11 dòng, 19 cột)
 
 | id | loai_don_vi | mo_hinh | so_mount_flare | so_qua_moi_lan | do_nang_cap | so_voi_ban_goc | flare_charges | flare_recharge_s | flares_every_s |
 |---|---|---|---|---|---|---|---|---|---|
-| attack_helicopter | xe | attack_helicopter | 0 | 4;8 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
-| attack_jet | xe | attack_jet | 0 | 4;6 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
-| fighter_jet | xe | fighter_jet | 0 | 4;6 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
-| flare_searchlight_tower | thap | flare_searchlight_tower | 0 | 1;1 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | giong |  |  | 15 |
-| flare_tower | thap | flare_tower | 0 | 1;1 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | giong |  |  | 15 |
-| heavy_bomber | xe | heavy_bomber | 0 | 8;16 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
-| scout_heli | xe | scout_heli | 0 | 4;8 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 | 20 |  |
-| sky_gunship | xe | sky_gunship | 0 | 8;16 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
-| stealth_fighter | xe | stealth_fighter | 0 | 4;6 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
-| swarm_carrier | xe | swarm_carrier | 0 | 8;16 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
-| twin_rotor_gunship | xe | twin_rotor_gunship | 0 | 4;8 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 | 20 |  |
+| attack_helicopter | xe | attack_helicopter | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| attack_jet | xe | attack_jet | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| fighter_jet | xe | fighter_jet | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| flare_searchlight_tower | thap | flare_searchlight_tower | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | giong |  |  | 15 |
+| flare_tower | thap | flare_tower | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | giong |  |  | 15 |
+| heavy_bomber | xe | heavy_bomber | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
+| scout_heli | xe | scout_heli | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 | 20 |  |
+| sky_gunship | xe | sky_gunship | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
+| stealth_fighter | xe | stealth_fighter | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| swarm_carrier | xe | swarm_carrier | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
+| twin_rotor_gunship | xe | twin_rotor_gunship | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 | 20 |  |
 
 *In 10 / 19 cột; 3 cột khác: xem sheet.*
 
@@ -478,7 +460,7 @@ Bảng đầy đủ: xem sheet `Dong_vu_khi` (58 dòng).
 
 Mỗi vũ khí có `weaponFamilyId` (súng: lớp cỡ nòng; còn lại: vũ khí thật) và `weaponVariantId` khi đạn hay cách bắn khác (có lý do trong bảng). Bậc T0–T5 theo họ. Ở boss, cùng họ là cùng viên đạn (sát thương, lõi, rìa, tốc độ, loại); DPS của từng vũ khí giữ nguyên bằng chu kỳ dài hơn, và lõi rộng hơn 1,25 lần thì chu kỳ dài thêm đúng tỉ lệ đó. Vũ khí người chơi chỉ gắn nhãn (danh sách lệch: Docs/checks/player_weapon_family.md). Kiểm: `Tools/balance/p34_validate.py`.
 
-### Vũ khí boss theo họ (110)
+### Vũ khí boss theo họ (129)
 
 Sát thương một viên; nổ giảm theo khoảng cách (bảng giảm nổ lan 04/10: lõi 110 / 108 / 105 / 100%, từ lõi ra rìa 85 / 65 / 45 / 25%, ngoài rìa 0). Hồi: thời gian hồi của vũ khí (loạt và băng giữ nhịp riêng). Cảnh báo: thời gian đạn T4+ không dẫn đường báo chỗ rơi (đạn ở trên không ít nhất bấy lâu).
 
@@ -533,13 +515,13 @@ Sheet 01_chien_dau/Hanh_vi_dan_nhom — Hành vi đạn theo nhóm (7 dòng, 12 
 
 | id | so_vu_khi | cach_nham | khi_no | khi_truot | co_canh_bao | thoi_gian_bay_toi_da_s | tuong_tac_phao_sang | tuong_tac_aps | tuong_tac_gay_nhieu |
 |---|---|---|---|---|---|---|---|---|---|
-| Bomb | 6 | dẫn đường 33% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 0.8 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
-| Bullet | 122 | đón đầu (led, trần 3 s) | nổ lan 35% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.4286 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
-| Drone | 11 | dẫn đường (homing) | nổ lan 100% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 7.5 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | bị nhiễu 100% vũ khí (đạn dẫn đường trong vòng nhiễu địch:… |
-| Flame | 3 | đón đầu (led, trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.5263 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
-| Missile | 52 | dẫn đường (homing) | nổ lan 54% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 5.7143 | pháo sáng mồi 79% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | bị nhiễu 100% vũ khí (đạn dẫn đường trong vòng nhiễu địch:… |
-| Rocket | 29 | dẫn đường 3% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 1.1667 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
-| Shell | 136 | dẫn đường 10% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 81% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 2 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Bomb | 6 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| Bullet | 122 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| Drone | 11 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| Flame | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| Missile | 52 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| Rocket | 29 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| Shell | 136 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
 
 Sheet 01_chien_dau/Canh_bao_vong — Vòng cảnh báo (13 dòng, 8 cột)
 
@@ -563,19 +545,19 @@ Sheet 01_chien_dau/Drone — Drone: tốc độ, đầu nổ, cỡ, vụ nổ (1
 
 | id | loai | ten_that | mang_boi | toc_do_m_s | do_cao_m | dau_no_kg | sat_thuong | loi_m | ria_m |
 |---|---|---|---|---|---|---|---|---|---|
-| airship_drones | dan_drone | FPV drone (1.5 kg) |  | 26 |  | 1.5 | 140 | 2.5 | 0 |
-| fpv_hangar | dan_drone | FPV drone (1.5 kg) | drone_hangar | 26 |  | 1.5 | 140 | 2.5 | 0 |
-| fpv_hangar_swarm | dan_drone | FPV drone (1.5 kg) | drone_hangar.swarm | 26 |  | 1.5 | 140 | 2.5 | 0 |
-| fpv_swarm | dan_drone | FPV drone (1.5 kg) | elite_fpv_carrier;fpv_carrier | 26 |  | 1.5 | 140 | 2.5 | 0 |
-| lancet | dan_drone | ZALA Lancet-3 (3 kg) |  | 28 |  | 3 | 240 | 3 | 0 |
-| lancet_hangar | dan_drone | ZALA Lancet-3 (3 kg) | drone_hangar.lancet | 28 |  | 3 | 240 | 3 | 0 |
-| locust_drones | dan_drone | ZALA Lancet-3 swarm | locust | 28 |  | 3 | 320 | 3 | 6 |
-| mothership_drones | dan_drone | ZALA Lancet-3 (3 kg) | drone_bay | 28 |  | 3 | 240 | 3 | 0 |
-| p26_matriarch_ma_drones | dan_drone | ZALA Lancet-3 swarm | drone_mothership;theia | 28 |  | 3 | 320 | 3 | 6 |
+| airship_drones | dan_drone | FPV drone (1.5 kg) |  | NEED_CODE_CHECK |  | 1.5 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| fpv_hangar | dan_drone | FPV drone (1.5 kg) | drone_hangar | NEED_CODE_CHECK |  | 1.5 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| fpv_hangar_swarm | dan_drone | FPV drone (1.5 kg) | drone_hangar.swarm | NEED_CODE_CHECK |  | 1.5 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| fpv_swarm | dan_drone | FPV drone (1.5 kg) | elite_fpv_carrier;fpv_carrier | NEED_CODE_CHECK |  | 1.5 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| lancet | dan_drone | ZALA Lancet-3 (3 kg) |  | NEED_CODE_CHECK |  | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| lancet_hangar | dan_drone | ZALA Lancet-3 (3 kg) | drone_hangar.lancet | NEED_CODE_CHECK |  | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| locust_drones | dan_drone | ZALA Lancet-3 swarm | locust | NEED_CODE_CHECK |  | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| mothership_drones | dan_drone | ZALA Lancet-3 (3 kg) | drone_bay | NEED_CODE_CHECK |  | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| p26_matriarch_ma_drones | dan_drone | ZALA Lancet-3 swarm | drone_mothership;theia | NEED_CODE_CHECK |  | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
 | recon_drone | may_bay_drone |  |  | 13 | 34 | recon_missile:22 |  |  |  |
-| shahed | dan_drone | Shahed-136 (50 kg) | shahed_truck | 20 |  | 50 | 344 | 4.5 | 0 |
+| shahed | dan_drone | Shahed-136 (50 kg) | shahed_truck | NEED_CODE_CHECK |  | 50 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
 | strike_drone | may_bay_drone |  |  | 13.9 | 30 | drone_missile:9;guided_bomb:110 |  |  |  |
-| swarm_drones | dan_drone | FPV drone (1.5 kg) | swarm_carrier | 26 |  | 1.5 | 140 | 2.5 | 0 |
+| swarm_drones | dan_drone | FPV drone (1.5 kg) | swarm_carrier | NEED_CODE_CHECK |  | 1.5 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
 
 *In 10 / 19 cột; 7 cột khác: xem sheet.*
 

@@ -436,6 +436,13 @@ namespace MachineBrigade.Game.Hud
             _gearSlots.Add(grid);
             _gearSlots.Add(Kit.Text(Kit.Caps(Strings.Get("gear.setsTitle")), "fc-caption fc-mt-3 fc-mb-2"));
             _gearSlots.Add(SetChips(_branch));
+            // Gear targets 04/10 (owner): the bonus the loadout cap cuts off ("+3% fire rate over cap").
+            var overCap = Gear.OverCap(PlayerProfile.Loadout(_branch), GearCatalog.StatCap);
+            if (overCap.Count > 0)
+            {
+                _gearSlots.Add(Kit.Text(Kit.Caps(Strings.Get("gear.overCapTitle")), "fc-caption fc-mt-3 fc-mb-2"));
+                foreach (var (stat, lost) in overCap) _gearSlots.Add(Kit.Text(GearText.OverCapLine(stat, lost), "fc-small fc-danger-text"));
+            }
             _gearSlots.Add(KitButton.Danger(Strings.Get("gear.mergeAll"),
                 new KitConfirm(Strings.Get("gear.mergeAllTitle"), Strings.Get("gear.mergeAllBody"), Strings.Get("gear.merge")), () =>
                 {

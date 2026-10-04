@@ -367,6 +367,9 @@ namespace MachineBrigade.Game.Hud
             ["army.cardHint"] = ("See its numbers and guide, or put it in the deck.", "Xem chỉ số và hướng dẫn, hoặc đưa vào bộ bài."),
             ["gear.empty"] = ("Empty", "Trống"),
             ["gear.setsTitle"] = ("Set bonuses", "Thưởng bộ"),
+            // Gear targets 04/10 (owner): the bonus the loadout cap cuts off, "+X% over cap" / "+X% bị trần cắt".
+            ["gear.overCapTitle"] = ("Over the loadout cap", "Vượt trần trang bị"),
+            ["gear.overCap"] = ("{line} over cap (not applied)", "{line} bị trần cắt (không có tác dụng)"),
             ["gear.mergeAllTitle"] = ("Merge all?", "Ghép tất cả?"),
             ["gear.mergeAllBody"] = ("Every three pieces of the same slot and rarity become one piece of the next rarity. Pieces you wear are kept. This cannot be undone.", "Cứ ba món cùng ô và cùng độ hiếm sẽ ghép thành một món hiếm hơn một bậc. Món đang lắp được giữ lại. Không thể hoàn tác."),
             ["gear.unfitShort"] = ("Does nothing for this branch", "Không có tác dụng với nhánh này"),

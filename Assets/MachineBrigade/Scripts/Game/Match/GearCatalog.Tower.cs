@@ -39,9 +39,10 @@ namespace MachineBrigade.Game.Match
             new("search_radar", GearSlot.TowerSystems, NoBranch, StatId.SpreadLong, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)),
             new("traverse_motors", GearSlot.TowerSystems, NoBranch, StatId.Spread, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f))
                 { Main = StatId.TurretRate, MainScale = 1.5f },
-            // Gear balance 04/10: Magazine 0.10-0.30 -> 0.08-0.24, MainScale (MagazineReload) 1.5 -> 1.25.
+            // Gear balance 04/10: Magazine 0.10-0.30 -> 0.08-0.24. Gear targets 04/10 (owner): effective magazine reload
+            // 10 / 15 / 20 / 25 / 30 %: no MainScale (was 1.25: 3.75-17.5 %), the main line 0.03-0.14 plus a second implicit.
             new("ammo_handling", GearSlot.TowerSystems, NoBranch, StatId.Magazine, V(0.08f, 0.12f, 0.16f, 0.2f, 0.24f))
-                { Main = StatId.MagazineReload, MainScale = 1.25f },
+                { Main = StatId.MagazineReload, Implicit2 = StatId.MagazineReload, Top2 = V(0.07f, 0.1f, 0.12f, 0.14f, 0.16f) },
         };
 
         /// <summary>

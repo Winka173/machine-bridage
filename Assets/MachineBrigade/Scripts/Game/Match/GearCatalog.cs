@@ -72,7 +72,7 @@ namespace MachineBrigade.Game.Match
         /// <summary>A plating base type of the Armor slot: its main stat is less damage taken instead of health.</summary>
         public bool Plating { get; set; }
 
-        /// <summary>Main stat multiplier (Monolith Plate: 1.8).</summary>
+        /// <summary>Main stat multiplier (Monolith Plate 12/7, so 24 % health at Legendary; Hair Trigger 0.25 and Overtuned Engine 0.5, whose implicit is their slot's own main stat).</summary>
         public float MainScale { get; set; } = 1f;
 
         /// <summary>Rolls no sub-stats (Monolith Plate).</summary>
@@ -276,8 +276,10 @@ namespace MachineBrigade.Game.Match
             new("belt_feed", GearSlot.Loader, StatId.SecondaryFireRate, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)),
             new("salvo_rack", GearSlot.Loader, StatId.SalvoInterval, V(0.1f, 0.15f, 0.2f, 0.25f, 0.3f)),
             // Gear balance 04/10: FireRate 0.10/0.12/0.15 -> 0.08/0.10/0.12, Spread drawback -0.10/-0.12/-0.14 -> -0.08/-0.10/-0.12.
-            new("hair_trigger", GearSlot.Loader, StatId.FireRate, V(0f, 0f, 0.08f, 0.1f, 0.12f))
-                { Penalty = StatId.Spread, PenaltyTop = V(0f, 0f, -0.08f, -0.1f, -0.12f), MinRarity = 2 },
+            // Gear targets 04/10 (owner): effective fire rate (the Loader's own main stat x MainScale + the implicit, top level)
+            // Rare / Epic / Legendary 8 / 10 / 11 %: main 0.08 / 0.11 / 0.14 x 0.25 + implicit 0.06 / 0.0725 / 0.075 (was 0.16 / 0.21 / 0.26).
+            new("hair_trigger", GearSlot.Loader, StatId.FireRate, V(0f, 0f, 0.06f, 0.0725f, 0.075f))
+                { Penalty = StatId.Spread, PenaltyTop = V(0f, 0f, -0.08f, -0.1f, -0.12f), MinRarity = 2, MainScale = 0.25f },
             // Prompt 8: an empty launcher gets part of its magazine back at once, once a life.
             new("spare_magazine", GearSlot.Loader, StatId.SpareMagazine, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)) { Flat = true },
 
@@ -290,8 +292,9 @@ namespace MachineBrigade.Game.Match
             // Prompt 15 C.9: an aircraft's armoured cockpit tub: armour all round. Gear balance 04/10: 0.40-1.00 -> 0.25-0.65
             // (all faces, so lighter than the Applique Steel's side and rear level).
             new("armoured_tub", GearSlot.Armor, StatId.ArmourAll, V(0.25f, 0.35f, 0.45f, 0.55f, 0.65f)),
+            // Gear targets 04/10 (owner): Legendary health 24 % (was 0.14 x 1.8 = 25.2 %, over the 25 % cap): MainScale 1.8 -> 12/7.
             new("monolith_plate", GearSlot.Armor, StatId.Count, V(0f, 0f, 0f, 0f, 0f))
-                { Penalty = StatId.Speed, PenaltyTop = V(0f, 0f, -0.04f, -0.05f, -0.06f), MinRarity = 2, MainScale = 1.8f, NoSubs = true },
+                { Penalty = StatId.Speed, PenaltyTop = V(0f, 0f, -0.04f, -0.05f, -0.06f), MinRarity = 2, MainScale = 1.7142857f, NoSubs = true },
             // Gear balance 04/10 (new): a light counter to energy weapons, a resistance liner like the Spall Liner (main stat
             // health, not plating). It only cuts energy damage after the energy has gone past any shield, as before.
             new("energy_dissipation_liner", GearSlot.Armor, StatId.ResistEnergy, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
@@ -311,8 +314,10 @@ namespace MachineBrigade.Game.Match
                 { Implicit2 = StatId.TurretRate, Top2 = V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f) },
             new("transit_gearbox", GearSlot.Engine, StatId.TransitSpeed, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
             // Gear balance 04/10: Speed 0.10/0.12/0.15 -> 0.08/0.10/0.12, Health drawback -0.04/-0.05/-0.06 -> -0.03/-0.04/-0.05.
-            new("overtuned_engine", GearSlot.Engine, StatId.Speed, V(0f, 0f, 0.08f, 0.1f, 0.12f))
-                { Penalty = StatId.Health, PenaltyTop = V(0f, 0f, -0.03f, -0.04f, -0.05f), MinRarity = 2 },
+            // Gear targets 04/10 (owner): effective speed (the Engine's own main stat x MainScale + the implicit, top level)
+            // Rare / Epic / Legendary 8 / 10 / 12 %: main 0.05 / 0.065 / 0.08 x 0.5 + implicit 0.055 / 0.0675 / 0.08 (was 0.13 / 0.165 / 0.20).
+            new("overtuned_engine", GearSlot.Engine, StatId.Speed, V(0f, 0f, 0.055f, 0.0675f, 0.08f))
+                { Penalty = StatId.Health, PenaltyTop = V(0f, 0f, -0.03f, -0.04f, -0.05f), MinRarity = 2, MainScale = 0.5f },
             // Prompt 8: faster in reverse, and it backs off nose-on from enemies that close in.
             new("reverse_gearbox", GearSlot.Engine, StatId.ReverseSpeed, V(0.15f, 0.2f, 0.28f, 0.34f, 0.4f)),
 

@@ -202,18 +202,23 @@ namespace MachineBrigade.Game.Hud
             return data;
         }
 
+        /// <summary>
+        /// The piece's main stat with its implicit lines of the same stat (Gear targets 04/10: the Hair Trigger, the Overtuned
+        /// Engine and the Ammunition Handling split it between a small main line and an implicit), no sub-stats.
+        /// </summary>
         private static float MainValue(GearItem item)
         {
             var main = Gear.MainStat(item);
+            var total = 0f;
             foreach (var line in Gear.Lines(item))
-                if (line.Stat == main && line.Kind != Gear.LineKind.Penalty) return line.Value;
-            return 0f;
+                if (line.Stat == main && line.Kind is Gear.LineKind.Main or Gear.LineKind.Implicit) total += line.Value;
+            return total;
         }
 
         /// <summary>A piece's main effect in a few characters: "+8% damage", "-5% taken", "Smoke 8 m", or a module's name.</summary>
         public static string ShortStat(GearItem item)
         {
-            var v = Gear.Value(item);
+            var v = item.Slot == GearSlot.Special ? Gear.Value(item) : MainValue(item);
             string Pct() => Mathf.RoundToInt(v * 100f).ToString();
             return item.Slot switch
             {
@@ -236,7 +241,7 @@ namespace MachineBrigade.Game.Hud
         {
             var main = Gear.MainStat(item);
             foreach (var line in Gear.Lines(item))
-                if (line.Stat == main) return GearText.Line(line);
+                if (line.Stat == main) return GearText.Line(main, MainValue(item));
             var lines = Gear.Lines(item);
             return lines.Count > 0 ? GearText.Line(lines[0]) : "";
         }
