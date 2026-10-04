@@ -980,3 +980,8 @@ Trả report cuối gồm:
 `ResistIndirect is not automatically triggered by topAttack`
 
 `boss armour/HP unchanged`
+
+=== Trả lời của chủ dự án 04/10 (nguyên văn) ===
+1. Có, giữ global BuildCap trên tổng tất cả nguồn; Veteran Crew không bypass cap. Thêm hiển thị phần bonus bị overcap nếu UI hỗ trợ.
+2. Có, giảm thêm để effective final: hair_trigger Rare/Epic/Legendary = 8/10/11% FireRate; overtuned_engine = 8/10/12% Speed; monolith_plate Legendary Health = 24% thay vì 25.2%. Hãy chỉnh raw values dựa trên formula thực tế để đạt các effective target này.
+3. Có, sửa ammo_handling để effective MagazineReload thực tế = 10/15/20/25/30%, đồng thời Magazine = 8/12/16/20/24%. Không giữ MainScale=1.25 nếu formula hiện tại khiến output sai; ưu tiên effective result này.

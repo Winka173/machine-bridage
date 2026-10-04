@@ -310,3 +310,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 04/10 bảng Armour 5 / Penetration 5 (nguyên văn Docs/prompts/armour_pen5_vi.md); làm sau khi gộp combat final.
 - 04/10 Splash Falloff + Kinetic Overpenetration (nguyên văn Docs/prompts/splash_overpen_vi.md); chủ dự án: không cần test. Làm sau combat final, cùng lượt với Armour/Pen 5.
 - 04/10 cân bằng trang bị (4 gear, 4 set, 2 tower gear, 3 gear mới, Pen/Armour lẻ nội suy, Heavy/Light theo khung, ResistIndirect tách TopAttack, ERA theo ShapedCharge, audit monolith_plate): nguyên văn Docs/prompts/gear_balance_vi.md. Làm sau Pen5/splash.
+- 04/10 trả lời 3 câu trang bị (nguyên văn cuối gear_balance_vi.md): giữ cap tổng + hiện phần overcap; hair_trigger 8/10/11, overtuned_engine 8/10/12, monolith Legendary 24%; ammo_handling reload 10-30%, magazine 8-24%.
