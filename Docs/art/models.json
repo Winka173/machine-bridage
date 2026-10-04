@@ -225,7 +225,7 @@
   },
   "bastion_mk0": {
     "file": "bastion_mk0.glb",
-    "triangles": 35481
+    "triangles": 39357
   },
   "behemoth": {
     "file": "behemoth.glb",
@@ -233,7 +233,7 @@
   },
   "behemoth_inferno": {
     "file": "behemoth_inferno.glb",
-    "triangles": 33342
+    "triangles": 38564
   },
   "behemoth_tempest": {
     "file": "behemoth_tempest.glb",
@@ -845,7 +845,7 @@
   },
   "fenrir": {
     "file": "fenrir.glb",
-    "triangles": 30712
+    "triangles": 33588
   },
   "fern_bush": {
     "file": "fern_bush.glb",
@@ -893,7 +893,7 @@
   },
   "fortress_bastion": {
     "file": "fortress_bastion.glb",
-    "triangles": 56092
+    "triangles": 60706
   },
   "fortress_hive": {
     "file": "fortress_hive.glb",
@@ -1313,7 +1313,7 @@
   },
   "mobile_fortress": {
     "file": "mobile_fortress.glb",
-    "triangles": 55236
+    "triangles": 67060
   },
   "mobile_repair_vehicle": {
     "file": "mobile_repair_vehicle.glb",

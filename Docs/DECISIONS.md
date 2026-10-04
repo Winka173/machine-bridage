@@ -20067,3 +20067,43 @@ tower looked exactly like a watchtower; "scan các boss vừa vẽ lại tương
   trains and Ixion (pre-PT14 turrets carried over).
 - Needs Unity: card renders / ModelScan of the five, Leviathan's 155 mm wake rise with the new gunhouse, the barrel kick
   on the new kick parts (Cupola_ / Coil_ / Glow_barrels), Nyx's AGS firing nyx_ags_155 from Muzzle_gun.
+
+## Play-test 14 boss redraw R3 (lane models)
+
+Owner (04/10, last block of Docs/prompts/playtest14_vi.txt): "đừng reuse gì hết, tất cả boss khi vẽ lại đều vẽ lại từ
+đầu". The five ground bosses drew every gun from one shared barrel kit (K.gun_barrel: the same collar, sleeve,
+extractor and baffle brake), the same race ring, smoke launchers, periscopes and hatches, so their guns looked alike.
+- New Tools/blender/mb_pt14_r3.py (called from mb_pt14_m1, like R1's naval file; no builder registration change): one
+  function per boss sub-assembly, nothing called for two bosses, each read from a real weapon at its own calibre:
+  - mobile_fortress (Jotunn): 2A44-read 203 mm L/55 (no brake, muzzle swell, two recoil cylinders over an open cradle)
+    in a raked gun house with charge lockers, rangefinder, cupola and a rear loading platform; B-4-read short hooped
+    203 mm roof gun; AK-230-read domed twin 30 mm cupolas (finned jackets, brace, flash cones); Strela-10-read
+    four-container SAM; 2A46-read 125 mm bow gun (clamped sleeve, extractor, MRS); Smerch-read open 12-tube bundles;
+    an orange-peel EMP reflector on a lattice mast; 902B-read smoke banks; square hatches with handwheels.
+  - fortress_bastion: 2B8 / Tyulpan-read 240 mm breech-loading mortar in a low cast turret; D-10-read twin 100 mm
+    (evacuator near the muzzle) in rounded cast sponsons; Bofors L/60-read 40 mm (recoil spring, cone hider, top clip
+    guide) in faceted houses; M284-read 155 mm with a slab double-baffle brake; Kornet-EM-read twin launcher;
+    ZU-23-2 read (three-leg base, magazines, slotted hiders); split-leaf hatches, cast vision blocks, box smoke
+    launchers. The mortar turret's loader crane was dropped (the hull crane stands next to it).
+  - bastion_mk0: riveted 12-sided sponson drums with early long 100 mm, slotted cylindrical brakes and exposed recoil
+    cylinders; M1-240 mm-read banded tube on the open pedestal (lightening holes, toothed arc, handwheels); riveted
+    strap-hinge hatches, slot boxes.
+  - fenrir: Gepard-read flak house (nose tracking dish, folding search array, KDA-read guns outside the cheeks with
+    slotted brakes and V0 coils); MLRS-read boxed pods (ribs, six frangible caps, rear grid) instead of a second open
+    300 mm pack like Jotunn's; telescopic-mast planar radar with an IFF strip; insulated hatch.
+  - behemoth_inferno: the Behemoth house kept (the boss is built from that design); M67-read flame projectors (finned
+    tube, bolted shroud, braided hose with ferrules feeding the pilot, nozzle cone with igniter box, pilot jet);
+    Nona-read stubby 125 mm with a pepperpot brake in a welded wedge turret; ZPU-2-read twin 14.5 mm (perforated
+    jackets, curved shield); oval hatches, wedge vision blocks, three-tube smoke clusters.
+- Every pivot (Turret, Mount_*, Muzzle_*, Part_*, Radar) keeps its name, parent and position (checked against the
+  pre-R3 GLBs: none moved, none lost); Main_cannon* / Muzzle_brake* (incl. Inferno's _jacket / _hose / _glow /
+  _pilot) kept. Free-mount barrels are now `<word>_barrels` / `<word>_muzzles` so they kick (new on Jotunn's bow gun,
+  Bastion's bow gun and Bofors, Inferno's thermo gun and ZPU). New per-barrel muzzles on Jotunn's SAM
+  (Muzzle_b1..b4_missile_001). Mk.0's Main_cannon_bands folded into Main_cannon (no reader). No data change (no
+  CHANGES entry), no size change.
+- fortress_bastion gets W.merge_static (BS_KEEP: roles, sub-assemblies, kick parts): renderers 168 -> 133 (cap 162).
+- Triangles before -> after, gate (glb_quantize + quality_gate, hard ok): mobile_fortress 55,236 -> 67,060 (100 ->
+  100), fortress_bastion 56,092 -> 60,706 (100 -> 100), bastion_mk0 35,481 -> 39,357 (100 -> 100), fenrir 30,712 ->
+  33,588 (94.6 -> 95.7), behemoth_inferno 33,342 -> 38,564 (96.4 -> 96.6); all far under 3.5 x 45,000. Sheets:
+  Docs/models/rebuild/<id>/before_after_r3.png; audit table updated (Docs/models/pt14_reuse_audit.md).
+- Needs Unity: card renders / ModelScan of the five, the new kick parts firing, Jotunn's SAM per-container muzzles.
