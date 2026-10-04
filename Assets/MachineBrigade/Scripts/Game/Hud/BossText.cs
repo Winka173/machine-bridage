@@ -434,14 +434,14 @@ namespace MachineBrigade.Game.Hud
             ["radio.aurel.hyperion.phase3"] = ("Aurel: \"Three mirrors lost. It still burns, Colonel.\"", "Aurel: \"Mất ba gương. Nó vẫn đốt được, đại tá.\""),
             ["unit.nyx"] = ("Nyx · Stealth Destroyer", "Nyx · Tàu khu trục tàng hình"),
             ["short.nyx"] = ("Nyx", "Nyx"),
-            ["note.nyx"] = ("A wave-piercing, pyramid-topped destroyer: a railgun every 8 s, hidden until it fires or a radar or drone lights it.", "Tàu khu trục mũi xuyên sóng, thượng tầng hình kim tự tháp: pháo điện từ mỗi 8 giây, ẩn mình đến khi bắn hoặc bị radar hay drone soi."),
+            ["note.nyx"] = ("A wave-piercing, pyramid-topped destroyer: a 155 mm gun turret firing every 8 s, hidden until it fires or a radar or drone lights it.", "Tàu khu trục mũi xuyên sóng, thượng tầng hình kim tự tháp: tháp pháo 155 mm bắn mỗi 8 giây, ẩn mình đến khi bắn hoặc bị radar hay drone soi."),
             ["guide.nyx"] = (
                 "[[Mini boss]] · stealth destroyer · unseen until it fires\n" +
-                "How it fights: a stand-in hull for now (a small Leviathan). A railgun fires every 8 s, two [[CIWS]] take missiles and drones, an anti-ship missile follows. It is [[stealthy]]: seen only close up or just after it fires.\n" +
+                "How it fights: a stand-in hull for now (a small Leviathan). A 155 mm gun turret (AGS) fires two shells every 8 s, two [[CIWS]] take missiles and drones, an anti-ship missile follows. It is [[stealthy]]: seen only close up or just after it fires.\n" +
                 "Strong / weak: hard to see; thin for its size.\n" +
                 "Tip: keep radar or a drone over the water so it is seen; break the [[CIWS]] before sending missiles.",
                 "[[Mini boss]] · tàu khu trục tàng hình · chỉ lộ khi bắn\n" +
-                "Cách đánh: tạm dùng thân Leviathan thu nhỏ. Pháo điện từ bắn mỗi 8 giây, hai [[CIWS]] chặn tên lửa và drone, rồi tới tên lửa chống hạm. Nó [[tàng hình]]: chỉ thấy ở gần hoặc ngay sau khi bắn.\n" +
+                "Cách đánh: tạm dùng thân Leviathan thu nhỏ. Tháp pháo 155 mm (AGS) bắn hai phát mỗi 8 giây, hai [[CIWS]] chặn tên lửa và drone, rồi tới tên lửa chống hạm. Nó [[tàng hình]]: chỉ thấy ở gần hoặc ngay sau khi bắn.\n" +
                 "Mạnh / yếu: khó thấy; mỏng so với kích cỡ.\n" +
                 "Mẹo: giữ radar hoặc drone trên mặt nước để thấy nó; phá [[CIWS]] trước khi dùng tên lửa."),
             ["guide.parts.tip.nyx"] = ("Tip: the [[CIWS]] stop your missiles; the missile cells carry its anti-ship missile.", "Mẹo: [[CIWS]] chặn tên lửa của bạn; ống phóng mang tên lửa chống hạm của nó."),

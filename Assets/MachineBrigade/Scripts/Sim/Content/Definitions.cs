@@ -704,6 +704,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A helicopter that fights from the edge of its missiles' reach and keeps out of short-range anti-air.</summary>
         public bool Standoff { get; internal set; }
 
+        /// <summary>
+        /// Play-test 14 (lane G): a slow warship (the Icarus) that never fires on the move: it halts while any of its guns
+        /// has something in reach, fires, and goes on once they have been quiet a moment (data "holdsToFire").
+        /// </summary>
+        public bool HoldsToFire { get; internal set; }
+
         /// <summary>An obstacle (dragon's teeth): it blocks the way and fights nothing; engineers breach it three times as fast.</summary>
         public bool Obstacle { get; internal set; }
 

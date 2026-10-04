@@ -417,6 +417,7 @@ namespace MachineBrigade.Sim.Content
                     def.BranchOf = v.Has("branchOf") ? v.String("branchOf") : null;
                     def.MaxPerSide = v.Int("maxPerSide", 0);
                     def.Standoff = v.Bool("standoff", false);
+                    def.HoldsToFire = v.Bool("holdsToFire", false);
                     def.Obstacle = v.Bool("obstacle", false);
                     def.Untargetable = v.Bool("untargetable", false);
                     def.Passable = v.Bool("passable", false);

@@ -123,6 +123,12 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         internal float TravelCut { get; set; }
 
+        /// <summary>Play-test 14 (lane G): metres above a launch part's node a round launched from it appears.</summary>
+        private const float CellLift = 0.6f;
+
+        /// <summary>Play-test 14 (lane G): the highest a missile from a ship's cells climbs to use up its flight time (m).</summary>
+        private const float CellPeakMax = 60f;
+
         /// <summary>Play-test 12: the shot being drawn is a boss's (its firing shakes nothing).</summary>
         private bool _bossFiring;
 
@@ -158,7 +164,16 @@ namespace MachineBrigade.Game.Effects
             var pitch = float.NaN;
             var barrel = Vector3.zero;
             if (shooter != null && shooter.Root == null) shooter = null;
-            if (shooter != null)
+            if (shooter != null && e.FromPart >= 0)
+            {
+                // Play-test 14 (lane G): a round launched from one of a boss's parts (its launch cells, a submarine's launch
+                // doors, a bomb bay) leaves that part, straight up out of its cell, not the main gun's muzzle (no recoil there).
+                from = shooter.PartWorld(e.FromPart) + Vector3.up * CellLift;
+                _shotNode = null;
+                _shotBarrel = Vector3.up;
+                groundY = shooter.Flying ? null : shooter.Position.y;
+            }
+            else if (shooter != null)
             {
                 // A blow (the bulldozer's blade): the blade strokes, no flash or tracer; the impact shows the hit.
                 if (weapon != null && weapon.Melee)
@@ -256,6 +271,10 @@ namespace MachineBrigade.Game.Effects
                     // missile): a steep climb, over, and a dive onto the target. Ballistic: a high arc.
                     var flight = weapon?.Flight ?? FlightProfile.Direct;
                     var peak = Ground(from, to) * (weapon?.ArcShare ?? 0.04f);
+                    // Play-test 14 (lane G): a missile from a ship's cells flies its warned time at its own speed: up high and
+                    // down onto a near target, rather than crawling a low hump onto it (the Nyx's "very slow missile").
+                    if (e.FromPart >= 0 && weapon != null && weapon.ProjectileSpeed > 1f)
+                        peak = Mathf.Clamp((weapon.ProjectileSpeed * e.Value - Ground(from, to)) * 0.5f, peak, Mathf.Max(peak, CellPeakMax));
                     if (_hasMissile)
                     {
                         _projectiles.Launch(_models.Merged(missile), from, to, e.Value, peak, 0.7f, now, Homing(views, targetId, weapon != null && weapon.TopAttack ? null : from),

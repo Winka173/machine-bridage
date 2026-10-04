@@ -214,7 +214,7 @@ namespace MachineBrigade.Game.Hud
             else
             {
                 if (def.Standoff) lines.Add(Strings.Get("ul.move.standoff"));
-                lines.Add(Strings.Get(def.FiresWhileMoving ? "ul.move.onTheMove" : "ul.move.stops"));
+                lines.Add(Strings.Get(def.FiresWhileMoving && !def.HoldsToFire ? "ul.move.onTheMove" : "ul.move.stops"));
             }
             // After firing.
             if (def.Scoot is { } scoot) lines.Add(F("ul.after.scoot", ("count", scoot.Shots), ("minimum", N(scoot.Min)), ("maximum", N(scoot.Max))));

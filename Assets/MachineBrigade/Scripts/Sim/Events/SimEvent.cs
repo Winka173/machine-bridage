@@ -208,8 +208,9 @@ namespace MachineBrigade.Sim.Events
     {
         private SimEvent(SimEventKind kind, EntityId entity, Vector2 position, Vector2 target, float value,
             ExplosionTier tier, string? defId, int team, int mount = 0, EntityId other = default, bool airborne = false, Vector2 offset = default,
-            string? round = null)
+            string? round = null, int fromPart = -1)
         {
+            FromPartPlusOne = fromPart + 1;
             Round = round;
             Offset = offset;
             Airborne = airborne;
@@ -258,6 +259,14 @@ namespace MachineBrigade.Sim.Events
         public int Mount { get; }
 
         /// <summary>
+        /// Play-test 14 (lane G): a WeaponFired round launched from one of a boss's parts (VehicleDef.Parts index: a ship's
+        /// launch cells, a submarine's launch doors) rather than a mount's muzzle; -1 for every other shot.
+        /// </summary>
+        public int FromPart => FromPartPlusOne - 1;
+
+        private int FromPartPlusOne { get; }
+
+        /// <summary>
         /// A guided round that will not reach its target (WeaponFired): it lands this far off it (the sim's miss),
         /// zero for one that flies true. With <see cref="Airborne"/> set, an enemy jammer scrambled it (see
         /// <see cref="Jammed"/>); else it lost its lock.
@@ -282,13 +291,23 @@ namespace MachineBrigade.Sim.Events
                 shooter.Team, mount, target, jammed, wide, own ? null : round!.Id);
         }
 
+        /// <summary>
+        /// Play-test 14 (lane G): a boss's round launched from part <paramref name="part"/> (its launch cells or doors), drawn
+        /// leaving that part (a cell's missile straight up), not the main gun's muzzle as <see cref="FiredWith"/> draws it.
+        /// </summary>
+        internal static SimEvent FiredFrom(Vehicle shooter, WeaponDef weapon, int part, Vector2 origin, Vector2 aim, float travelTime, EntityId target) =>
+            new(SimEventKind.WeaponFired, shooter.Id, origin, aim, travelTime, weapon.ImpactTier, weapon.Id, shooter.Team, 0, target, fromPart: part);
+
         /// <summary>Prompt 25 G: a gun starts changing rounds (see <see cref="SimEventKind.RoundSwitched"/>).</summary>
         internal static SimEvent RoundSwitch(Vehicle shooter, int mount, WeaponDef round, float seconds) =>
             new(SimEventKind.RoundSwitched, shooter.Id, shooter.Position, default, seconds, round.ImpactTier, round.Id, shooter.Team, mount);
 
         /// <summary>A shot from equipment rather than a mount (a Drone Escort drone): drawn from the main muzzle with its own weapon's look.</summary>
-        internal static SimEvent FiredWith(Vehicle shooter, WeaponDef weapon, Vector2 origin, Vector2 aim, float travelTime, EntityId target) =>
-            new(SimEventKind.WeaponFired, shooter.Id, origin, aim, travelTime, weapon.ImpactTier, weapon.Id, shooter.Team, 0, target);
+        /// Play-test 14 (lane G): <paramref name="mount"/> the mount it is drawn from (a boss's big attack fired by the turret of
+        /// one of its parts), else the main one.
+        internal static SimEvent FiredWith(Vehicle shooter, WeaponDef weapon, Vector2 origin, Vector2 aim, float travelTime, EntityId target,
+            int mount = 0) =>
+            new(SimEventKind.WeaponFired, shooter.Id, origin, aim, travelTime, weapon.ImpactTier, weapon.Id, shooter.Team, mount, target);
 
         internal static SimEvent Charging(Vehicle shooter, int mount, float seconds, Vector2 aim) =>
             new(SimEventKind.WeaponCharging, shooter.Id, shooter.Position, aim, seconds, default, shooter.Def.Mounts[mount].Weapon.Id,

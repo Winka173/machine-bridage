@@ -495,18 +495,39 @@ namespace MachineBrigade.Sim.Bosses
         /// <summary>A cruise missile from the launch cells at a spot, marked ahead.</summary>
         private void Cruise(Vehicle v, CruiseDef cruise, Vector2 aim)
         {
-            var origin = v.Position;
-            for (var i = 0; i < v.Def.Parts.Count; i++)
-                if (v.Def.Parts[i].Kind == "vls") origin = v.PartPosition(i);
+            // Play-test 14 (lane G): it leaves its launch cells (a ship's VLS, a submarine's launch doors, in turn when it has
+            // several), not the main gun: the view drew every cruise missile out of the fore turret's muzzle.
+            var cell = LaunchCell(v);
+            var origin = cell >= 0 ? v.PartPosition(cell) : v.Position;
             var scatter = v.RadarOff ? 6f : 2f;
             var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
             var at = _world.ClampToMap(aim + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * scatter * (float)_world.Random.NextDouble());
             if (cruise.Warning != null && _world.Catalog.TryGetSupport(cruise.Warning, out var warning))
                 _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, cruise.Warn));
             if (cruise.Weapon != null && _world.Catalog.Weapons.TryGetValue(cruise.Weapon, out var missile))
-                _world.Emit(SimEvent.FiredWith(v, missile, origin, at, cruise.Warn, EntityId.None));
+                _world.Emit(cell >= 0 ? SimEvent.FiredFrom(v, missile, cell, origin, at, cruise.Warn, EntityId.None)
+                    : SimEvent.FiredWith(v, missile, origin, at, cruise.Warn, EntityId.None));
             _world.Damage.Queue(at, ExplosionDef.TwoLayer(cruise.Damage, cruise.Radius, ExplosionTier.Ultimate), cruise.Warn, v.Team, v, HitKind.Strike, v.Id);
         }
+
+        /// <summary>
+        /// Play-test 14 (lane G): the part a cruise missile leaves from: a standing launch part ("vls", "launchdoors"), the next
+        /// in turn when there are several (by the step, so the run is deterministic); -1 when it has none.
+        /// </summary>
+        private int LaunchCell(Vehicle v)
+        {
+            var parts = v.Def.Parts;
+            var count = 0;
+            for (var i = 0; i < parts.Count; i++)
+                if (IsLaunchCell(parts[i].Kind) && !v.IsPartBroken(i)) count++;
+            if (count == 0) return -1;
+            var pick = (int)(_world.Tick % count);
+            for (var i = 0; i < parts.Count; i++)
+                if (IsLaunchCell(parts[i].Kind) && !v.IsPartBroken(i) && pick-- == 0) return i;
+            return -1;
+        }
+
+        internal static bool IsLaunchCell(string kind) => kind is "vls" or "launchdoors";
 
         /// <summary>The enemy's base for the last volley: its HQ and its biggest towers (else its biggest groups).</summary>
         private List<Vector2> BaseTargets(Vehicle v, int count)

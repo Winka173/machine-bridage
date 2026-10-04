@@ -23,6 +23,7 @@ namespace MachineBrigade.Game.Views
         /// <summary>Starts the barrel kick of mount <paramref name="mount"/>; called when the simulation reports its shot.</summary>
         public void MountRecoil(int mount)
         {
+            NoteMountShot(mount);
             if (_mounts == null || mount < 0 || mount >= _mounts.Length || _mounts[mount] == null) return;
             FindMountBarrels();
             if (_mountBarrels[mount] != null) _mountKickAt[mount] = Time.time;

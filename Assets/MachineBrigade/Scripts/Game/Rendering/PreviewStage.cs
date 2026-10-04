@@ -84,7 +84,7 @@ namespace MachineBrigade.Game.Rendering
                     break;
             }
             if (setting == PreviewSetting.Rail)
-                s.Track(materials, ground, -half, Mathf.Min(startZ + length * 0.5f + 10f, farZ - 8f), RailGauge(width));
+                s.Track(materials, ground, -half, Mathf.Min(startZ + length * 0.5f + 10f, farZ - FiringRange.RailEndBack), RailGauge(width));
             if (setting == PreviewSetting.BasePad)
                 s.Pad(ground, new Vector3(0f, 0f, startZ), Mathf.Max(length, width) * 1.3f + 2f);
             return s;

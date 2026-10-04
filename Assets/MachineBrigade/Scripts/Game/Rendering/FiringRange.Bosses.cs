@@ -225,7 +225,9 @@ namespace MachineBrigade.Game.Rendering
                 float bearing, d;
                 if (i == 0)
                 {
-                    bearing = 0f;
+                    // Play-test 14 (lane G): a train's main gun fires off to the side of its track (dead ahead would stand the
+                    // target on the rails, inside a long train).
+                    bearing = rail ? RailMainBearing : 0f;
                     d = Mathf.Clamp(w.Range * 0.45f, least, Mathf.Max(least, 36f));
                 }
                 else
@@ -245,6 +247,9 @@ namespace MachineBrigade.Game.Rendering
                 spots.Add((Ground(k), at, SimMath.HeadingOf(_start - at)));
             }
         }
+
+        /// <summary>Play-test 14 (lane G): the bearing (radians off the track) of a train's main gun's target on the range.</summary>
+        private const float RailMainBearing = 0.6f;
 
         private static bool Crowded(Vector2 at, List<(string id, Vector2 at, float heading)> spots)
         {

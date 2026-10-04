@@ -257,7 +257,7 @@ namespace MachineBrigade.Sim.Movement
             if (best < 0) return;
             var line = Lines[best];
             v.Rail = best;
-            v.RailS = Math.Clamp(bestS, line.PlayFrom, line.PlayTo);
+            v.RailS = Math.Clamp(bestS, line.PlayFrom, FrontStop(v, line));
             v.Position = line.At(v.RailS);
             var t = line.Tangent(v.RailS);
             v.RailDir = Vector2.Dot(SimMath.Forward(v.Heading), t) >= 0f ? 1 : -1;
@@ -320,12 +320,23 @@ namespace MachineBrigade.Sim.Movement
                 if (t.Speed > 0.02f || t.Run != null) Push(t, dt, now);
         }
 
+        /// <summary>
+        /// Play-test 14 (lane G): the farthest a train's middle goes along <paramref name="line"/>: its play range's end, but
+        /// never so far that its front runs past the buffer stop (wave M2's long trains stood half off the end of a track).
+        /// A line too short for the whole train keeps it at the start of its play range.
+        /// </summary>
+        private static float FrontStop(Vehicle v, RailSpline line) =>
+            MathF.Max(line.PlayFrom, MathF.Min(line.PlayTo, line.Length - MathF.Max(1f, MathF.Max(v.Def.Length, v.Def.ModelLength) * 0.5f) - BufferGap));
+
+        /// <summary>Metres a train stops short of the buffer stop at the end of its track.</summary>
+        private const float BufferGap = 2f;
+
         /// <summary>A train runs along its rail to its order's point taken onto the line (speeding up and braking at its own rate).</summary>
         private void Drive(Vehicle v, float dt)
         {
             var line = Lines[v.Rail];
             var target = v.RailS;
-            if (v.Order.Kind is OrderKind.Move or OrderKind.AttackMove) target = Math.Clamp(line.Project(v.Order.Point, out _), line.PlayFrom, line.PlayTo);
+            if (v.Order.Kind is OrderKind.Move or OrderKind.AttackMove) target = Math.Clamp(line.Project(v.Order.Point, out _), line.PlayFrom, FrontStop(v, line));
             var top = v.Stunned || v.Charging || v.Transforming ? 0f : v.Def.Speed * v.SpeedFactor;
             var accel = MathF.Max(0.05f, v.Def.Speed) * dt;
             var left = target - v.RailS;
@@ -336,7 +347,7 @@ namespace MachineBrigade.Sim.Movement
             along += Math.Clamp(want - along, -accel, accel);
             var step = along * dt;
             if (dir != 0 && MathF.Abs(step) > MathF.Abs(left)) step = left;
-            v.RailS = Math.Clamp(v.RailS + step, line.PlayFrom, line.PlayTo);
+            v.RailS = Math.Clamp(v.RailS + step, line.PlayFrom, FrontStop(v, line));
             if (MathF.Abs(along) > 0.01f) v.RailDir = along > 0f ? 1 : -1;
             v.Speed = MathF.Abs(along);
             v.Position = line.At(v.RailS);
