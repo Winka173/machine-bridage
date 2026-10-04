@@ -8,7 +8,7 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| boss | 29 | 1,087,425 | 37,497 | leviathan (86,412) | 3,634 | 1 | 27 |
+| boss | 29 | 1,109,643 | 38,263 | leviathan (86,412) | 3,790 | 1 | 28 |
 | ground | 66 | 569,046 | 8,621 | main_battle_tank_hd (16,462) | 3,735 | 2 | 40 |
 | structure | 71 | 412,111 | 5,804 | headquarters (21,052) | 3,809 | 2 | 18 |
 | prop | 115 | 258,170 | 2,244 | command_hq (8,872) | 1,568 | 0 | 3 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | scenery | 96 | 40,708 | 424 | rubble_large (3,516) | 294 | 0 | 2 |
 | munition | 25 | 5,154 | 206 | bomb (404) | 175 | 0 | 0 |
 
-All files: 2,642,094 triangles, 5 with errors, 100 more with warnings only.
+All files: 2,664,312 triangles, 5 with errors, 101 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -42,7 +42,8 @@ All files: 2,642,094 triangles, 5 with errors, 100 more with warnings only.
 |---|---|---:|---:|---|
 | boss_l | triangles | 3 | 0 | - |
 | boss_l | vertices | 2 | 0 | - |
-| boss_m | triangles | 3 | 0 | - |
+| boss_m | renderers | 2 | 0 | - |
+| boss_m | triangles | 4 | 0 | - |
 | boss_m | vertices | 3 | 0 | - |
 | boss_s | renderers | 3 | 1 | ixion |
 | boss_s | triangles | 5 | 0 | - |
@@ -69,7 +70,7 @@ All files: 2,642,094 triangles, 5 with errors, 100 more with warnings only.
 | tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-77 models over a budget, 5 of them over a hard cap.
+79 models over a budget, 5 of them over a hard cap.
 
 ## Error reasons (count of models)
 
