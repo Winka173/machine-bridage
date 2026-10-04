@@ -20730,3 +20730,52 @@ MachineBrigade-art, branch feature/export-audit. Full findings and the "still mi
 - **Check**: `python Tools/export/export.py check --game-json Docs/export/game_snapshot.json` (PYTHONIOENCODING=utf-8)
   stayed 15/15 PASS after the gear sheets; sources 1176→1186, mapped 817759→818085, unmapped 0 throughout. No Unity run;
   every new number read by static analysis of already-committed C#.
+
+## AI book 04/10 (lane B)
+
+- Owner (04/10): "AI có file riêng luôn chưa, đưa tôi toàn bộ AI nhớ càng chi tiết càng tốt" (an own file for AI,
+  everything about it, as detailed as possible); then, mid-task, switched the delivery format from a free-standing
+  workbook to the balance pack's own book/sheet API: "cứ làm file theo format đã có trong export_current" (do it in the
+  format already in export_current).
+- New pack file `core/pack.py` PACK["09_ai"] = ("AI", ("06_ai",), ...): the existing `06_ai` domain (built by
+  `domains/d06_ai.py` + `domains/_b06.py`) moves out of `04_che_do_kinh_te_ai` (which keeps `05_che_do_kinh_te` +
+  `11_meta_giao_dien`: modes, economy, meta/UI) into its own file. Everything else (OLD_TO_NEW, the sheet_map used by
+  packdoc's `part_belongs`/`sheet()`, 00_index, README's file list, packcheck's EXPECT_FILES) derives from PACK, so no
+  other file needed a hand-written file-count change; only the README's dynamic file-count text and packcheck's row label
+  (was a literal "19 file", now `f"{len(EXPECT_FILES)} file"`) needed touching, since those were hardcoded strings, not
+  derived counts. `core/tunables.py` GROUPS["ai"] now targets `09_ai` too (Hang_so_ai). `core/pack.py` CONST_ROUTE: the
+  `\bai\b` pattern moved ahead of the economy one and now routes to `09_ai` instead of `04_che_do_kinh_te_ai` (catch-all
+  constants only; no change for existing keys' matching, only their destination file).
+- Cai_dat_mac_dinh (player default settings: volume, graphics, vibration, language) stayed in `04_che_do_kinh_te_ai`: it
+  comes from the `11_meta_giao_dien` domain (UI), not `06_ai`; it only ever sat next to the AI sheets because of the old
+  file grouping, not because it is AI content.
+- New sheets (`Tools/export/domains/_c06.py`, called from `d06_ai.py` after `_b06.build`), all layer "C", read only (no
+  game value changed), built from a static read of the 14 `Sim/AI` C# files (and, for target scoring, `Sim/Bosses/
+  BossSystem.P28.cs` + `Sim/Combat/CombatSystem.P28Structures.cs`, cited by file:line):
+  - `AI_luong_quyet_dinh` (17 rows): the decision flow across the world model, the general (AiCommander), the squad
+    layer and the unit layer (TacticalAi), plus the decision log (DecisionLog's Why / Churn), each row a step with its
+    trigger and outcome, hand-authored from reading `ConquestAi.P28.cs TickLayered`, `Commander.cs`, `Squads.cs`,
+    `WorldModel.cs`, `DecisionLog.cs`.
+  - `AI_muc_tieu_uu_tien` (17 rows): the tower-mode (`TowerMode`, 11 modes) and boss-behaviour (`BossBehaviour`, 6 types)
+    target-score multipliers, ported from `CombatSystem.P28Structures.cs` / `BossSystem.P28.cs` (e.g. Nearest = 1/(1+2*
+    dist/range), Weakest = 1.6 - hp_share + 200/max(50,hp), AntiBlob = 1+0.4*crowd(10m)).
+  - `AI_do_kho_ky_nang` (4 rows): `Commander.cs AiSkill.For` per difficulty (ReactionDelay, DecayScale, Spread, Flank,
+    Focus, TacticSwitching).
+  - `AI_chong_ket` (7 rows): the anti-stuck / anti-idle constants of `TacticalAi.cs` (StaleIdle 12 s, Patience 30 s,
+    FallBackHold 12 s, RecoveredFraction 0.6, EdgePatience 70 s, ClusterSize 3, EdgeMargin 6 m) with their play-test-6 /
+    DECISIONS 21G meaning.
+  - `AI_may_bay_tiep_te` (5 rows): the aircraft rearm / refit cycle (SendToRearm, RearmInLulls, Refit at 90% HP,
+    HuntRearming, a grounded launcher waiting out of ammo), `TacticalAi.cs`.
+  - `AI_hang_so_ma` (28 rows): every named `const` / `static readonly` numeric array still inline in the 14 `Sim/AI`
+    files (not yet in tunables.json), found by a regex scan of each file at build time (file, line, name, type, value,
+    its `///` summary if any) — so a constant that later moves into the data disappears from this sheet on its own.
+- `export.py check --game-json Docs/export/game_snapshot.json`: 21/21 PASS (coverage, foreign keys, formulas,
+  determinism across two processes, no secret, no process word); `NEED_CODE_CHECK` 0 (filled 5105 from the snapshot).
+  Scope kept to `Tools/export/core` (pack.py, packcheck.py, pdfpack.py, tunables.py, export.py) and
+  `Tools/export/domains` (d06_ai.py wiring in the new `_c06.py`); the balance pack's 19-file layout (now 21) and its
+  checks are machine-derived from PACK, not hand-kept, so they did not need a parallel manual update.
+- Not done (out of this pass' scope, flagged rather than guessed): a few more inline constants exist outside `Sim/AI`
+  proper that feed AI behaviour (e.g. boss target weights in `BossSystem.P28.cs` / `CombatSystem.P28Structures.cs`,
+  cited in `AI_muc_tieu_uu_tien` but not scanned into `AI_hang_so_ma`, which is scoped to the 14 AI-folder files per the
+  brief); `AI_xung_dot` / `AI_xung_dot_do_kho` (pack formulas, pre-existing) still show `None` when read with openpyxl
+  `data_only=True` outside Excel/LibreOffice (no cached result) — expected, not a defect: Excel recalculates on open.

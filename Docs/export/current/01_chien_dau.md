@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit aefc4f23, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 2320b4b0, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -615,7 +615,7 @@ Sheet 01_chien_dau/Commander_gia — Commander: hệ số giá (5 dòng, 7 cột
 | reyn/0 | reyn | 0 | Vehicles | 1.1 |
 | varro/0 | varro | 0 | Cheap | 0.85 |
 
-Sheet 04_che_do_kinh_te_ai/AI_tuong — Tướng địch (12 dòng, 11 cột)
+Sheet 09_ai/AI_tuong — Tướng địch (12 dòng, 11 cột)
 
 | id | chien_thuat_ua_thich | chien_dich_deck | chien_dich_supports | noi_tai | can_bang_deck | can_bang_elites | chien_dich_stance | chien_dich_style |
 |---|---|---|---|---|---|---|---|---|

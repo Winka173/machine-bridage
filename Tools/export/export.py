@@ -7,7 +7,8 @@
     python Tools/export/export.py diff <dirA|refA> <dirB|refB> [--out DIR]           # writes <pack>/_qa/diff/
     python Tools/export/export.py pdf [--out DIR]                                    # writes <pack>/_qa/<name>.pdf
 
-The pack is README.md, 00_index.xlsx, eight xlsx + md pairs, bulk.zip and images/ (and nothing else); the run's own tests
+The pack is README.md, 00_index.xlsx, a xlsx + md pair a pack file (core/pack.py: PACK), bulk.zip and images/ (and nothing
+else); the run's own tests
 write to <pack>/_qa/ (not committed). A rerun on the same commit and data rewrites every file byte for byte.
 Read only: no game value is changed. Exit code: 0 pass; 1 an unmapped leaf, a leaf mapped twice, a failed foreign key, a
 formula off its game value, a secret in an output; 2 (--strict) a NEED_CODE_CHECK cell left.
@@ -47,7 +48,7 @@ DEFAULT_OUT = Path("Docs") / "export" / "current"
 
 
 def build(base_ref: str | None, lenient: bool = False, game: dict | None = None):
-    """The nine domain books, regrouped into the pack's eight (core/pack.py), with coverage, foreign keys and formulas
+    """The domain books, regrouped into the pack's files (core/pack.py), with coverage, foreign keys and formulas
     checked on the result. lenient (the diff of an old tree): a domain that fails to build is left out and listed."""
     ctx = Context(base_ref=base_ref)
     for glob, pattern, target, note in _pending.CLAIMS:
@@ -146,13 +147,14 @@ def readme(meta: dict, ctx, images: list[str]) -> str:
     n_x = sum(1 for b in ctx.books.values() for s in b.sheets.values() if not s.bulk)
     n_b = sum(1 for b in ctx.books.values() for s in b.sheets.values() if s.bulk)
     files = "\n".join(f"├── {fid}.xlsx  +  {fid}.md      {title}" for fid, (title, _o, _d) in pack.PACK.items())
+    n_files = 3 + 2 * len(pack.PACK)  # README.md, 00_index.xlsx, bulk.zip + a xlsx/md pair a pack file
     return f"""# Machine Brigade: gói cân bằng
 
 Xuất từ commit {meta['commit']} (ngày {meta['ngay']}); so sánh `_truoc` / `_sau` với bản {meta['ban_goc']}. Gói chỉ phục vụ cân
 bằng: giá trị cấu hình sửa được, cột suy ra để cân bằng (DPS, máu trên CP, số phát để hạ, so với ngoài đời), tham chiếu ngoài đời
 và game. Ghi đè mỗi lần chạy; lịch sử nằm trong git.
 
-## Cây thư mục (19 file và images/)
+## Cây thư mục ({n_files} file và images/)
 
 ```
 current/
@@ -169,9 +171,11 @@ current/
   `Schema` (mỗi cột: kiểu, đơn vị `don_vi`, nguồn khóa, công thức, `sua_duoc`), `Phien_ban` (ngày, commit, băm balance.json và
   campaign.json, băm từng file).
 - 01_chien_dau: vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom. 02_boss, 03_can_cu: boss, tháp.
-  04_che_do_kinh_te_ai: chế độ, độ khó, kinh tế, AI, meta, giao diện. 05_chien_dich: chương, nhiệm vụ, biến cố.
+  04_che_do_kinh_te_ai: chế độ, độ khó, kinh tế, meta, giao diện. 05_chien_dich: chương, nhiệm vụ, biến cố.
   06_ban_do: bản đồ (mỗi bản đồ một dòng tóm tắt trong `Ban_do_tom_tat`; bố cục đầy đủ trong bulk.zip).
   07_hinh_anh_am_thanh_model: hiệu ứng, âm thanh, model. 08_tham_chieu: nguồn ngoài đời, cơ chế game, học thuyết.
+  09_ai: chiến thuật, hồ sơ AI, tướng địch, tham số AI, vai trò và trạng thái đội, hành vi tháp / boss, luồng quyết định
+  theo lớp, mục tiêu ưu tiên, độ khó, chống kẹt, tiếp tế máy bay, hằng số AI còn trong mã.
 - Mỗi md chỉ có luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng; bảng lớn ghi "xem sheet").
 - Cột `_game` là giá trị mà mã game tính ra; cột công thức Excel sống tính lại từ cột dữ liệu gốc cùng file. Sheet `input_<tên>`
   là bản chép của sheet nguồn để công thức đọc cùng file: sửa ở sheet nguồn.

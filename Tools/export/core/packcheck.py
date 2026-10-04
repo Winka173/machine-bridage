@@ -1,7 +1,8 @@
 """The tests of the pack (Docs/prompts/export_pack_vi.txt section 7 and addendum 8): `python Tools/export/export.py check`.
 
 Exports in this process (the tests need the build: coverage, foreign keys, formulas), then reads the written pack back and
-checks it as a reader sees it: the 19 files and images/ and nothing else, every image linked and every link real, no sheet of
+checks it as a reader sees it: the pack's files (README.md, 00_index.xlsx, bulk.zip, a xlsx/md pair a pack file) and images/
+and nothing else, every image linked and every link real, no sheet of
 sections 2.1-2.3 in an xlsx, no process word or build-time marker in any cell, the cells still NEED_CODE_CHECK listed, 200
 numbers of the md tables equal to the xlsx cells (fixed seed), no secret. A second export in a temp folder (another process) must
 give the same bytes. Writes <pack>/_qa/SELF_CHECK.md (no clock in it).
@@ -53,7 +54,7 @@ def structure(out: Path) -> list[dict]:
     res = []
     top = {p.name for p in out.iterdir() if p.name not in ("_qa", "images")}
     missing, extra = sorted(EXPECT_FILES - top), sorted(top - EXPECT_FILES)
-    res.append(_row("19 file đúng danh sách (không thừa, không thiếu)", not missing and not extra,
+    res.append(_row(f"{len(EXPECT_FILES)} file đúng danh sách (không thừa, không thiếu)", not missing and not extra,
                     f"thiếu {missing}; thừa {extra}" if missing or extra else f"{len(EXPECT_FILES)} file"))
     images = {p.name for p in (out / "images").glob("*")} if (out / "images").is_dir() else set()
     sub = [p.name for p in (out / "images").iterdir() if p.is_dir()] if (out / "images").is_dir() else []

@@ -11,6 +11,14 @@ its commits.
   (GearCatalog.cs/GearCatalog.Tower.cs BuildCaps/BuildTowerCaps) had no export source at all; added Trang_bi_thap,
   Trang_bi_dac_tinh_thap, Trang_bi_tran and Trang_bi_chi_so to 01_chien_dau.xlsx (103 rows); check stays 15/15;
   Docs/export/EXPORT_AUDIT.md lists what else is still missing from the pack and why.
+- AI book (lane B): the balance pack gains a ninth file, `09_ai` (the former `06_ai` domain, split out of
+  `04_che_do_kinh_te_ai`, which keeps modes/economy/meta); it carries the existing 16 AI sheets plus 6 new ones built
+  straight from the AI code (`Tools/export/domains/_c06.py`): `AI_luong_quyet_dinh` (decision flow, general -> squad ->
+  unit -> the world model and decision log), `AI_muc_tieu_uu_tien` (tower-mode and boss-behaviour target scoring),
+  `AI_do_kho_ky_nang` (AiSkill per difficulty), `AI_chong_ket` (anti-stuck / anti-idle constants), `AI_may_bay_tiep_te`
+  (aircraft rearm / refit cycle) and `AI_hang_so_ma` (every named constant still inline in the 14 Sim/AI files, scanned by
+  regex so it tracks the code). `export.py check --game-json` passes 21/21 (file count, coverage, foreign keys, formulas,
+  determinism, secrets).
 - MB_FINAL zones (lane A): the ships' smaller blasts now have smaller red zones: Scylla / Nyx / Hydra cruise missiles hit 6.5 m core / 13 m edge (was 10 / 20) under a new 13 m warning ring (kalibr_cruise_mark); Tomahawk 8.5, NSM 5.5, Roc 105 mm 5.5 / 11, Spike no splash (as an ATGM); the duplicated PT14-L table removed from CHANGES.
 - MB_FINAL blast sizes (lane A): explosion sizes follow the final sheet's tier by calibre / warhead: AC-130 105 mm, Roc's 105 mm and the 48N6 burst Huge -> Large, the borer drill Large -> Medium, Jotunn's 300 mm rockets Medium -> Large (view only; damage and radius unchanged); f3_tier_feel.py reports 0 mismatches.
 - MB_FINAL F2 (lane B): bosses get their own minimum and maximum reach per weapon (balance.json bossWeaponOverrides, variants inherit their parent's row): the final bundle's 99 rows plus its rule for play-test 14 weapons (min from barrel geometry, max about 3.2 x min, cap 300 m); shared weapons, vehicles and towers unchanged; space ships' ventral guns keep min 0; Boss_tam_toi_thieu shows the values the game uses.

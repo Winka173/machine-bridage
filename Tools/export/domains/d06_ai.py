@@ -3,6 +3,7 @@ squad states, tower and boss behaviour."""
 from __future__ import annotations
 
 from . import _b06
+from . import _c06
 from . import _balance as B
 from . import _lane_c as C
 
@@ -129,3 +130,6 @@ def build(ctx):
 
     # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)
     _b06.build(ctx, book, d)
+
+    # ------------------------------------------------------------------ layer C (AI book, 04/10): code-sourced sheets
+    _c06.build(ctx, book)
