@@ -20952,3 +20952,23 @@ Source: `Docs/prompts/gear_balance_vi.md` sections 1-37 (owner 04/10, "không c�
   alone because the slot's main stat is the same stat; ammo_handling's real reload line is 0.0375-0.175, not the prompt's
   0.10-0.30: all reported to the lead, not changed beyond the prompt.
 - Test count assertions moved to 40 / 14 base types; other tests whose numbers move are listed in the report, not edited.
+
+## Gear targets 04/10 (lane A)
+
+Source: the owner's answers 04/10 at the end of `Docs/prompts/gear_balance_vi.md` ("không cần test": none written or run). Report
+with the emulation table: `Docs/fixes/gear_targets_report.md`; old -> new: `Docs/export/CHANGES.md` "GEAR TARGETS".
+
+- "Effective" = what Gear.Boost applies for one piece at its rarity's top level: slot top table x MainScale x LevelShare plus the
+  implicit line(s) of the same stat, summed then capped. Level 1 is 40 % of it (every line scales the same way).
+- hair_trigger and overtuned_engine: the slot's own main stat is the implicit's stat, so the target is split: MainScale 0.25 /
+  0.5 shrinks the main line and the implicit carries the rest (0.06 / 0.0725 / 0.075 FireRate; 0.055 / 0.0675 / 0.08 Speed), both
+  ascending. The other choice (MainScale 0, implicit = target) would print a "+0 %" main line; rejected.
+- monolith_plate: MainScale 1.8 -> 12/7 (1.7142857f, a literal so the exporter's cs_table reads it): R / E / L 13.7 / 18.9 / 24 %.
+- ammo_handling: no single MainScale turns StandardTop (0.03-0.14) into 10-30 %, so MainScale is dropped (1) and a second implicit
+  MagazineReload (Top2 0.07 / 0.10 / 0.12 / 0.14 / 0.16) makes up the rest; Magazine 0.08-0.24 unchanged.
+- BuildCap stays on the sum of all sources (VeteranCrew / AutoRepair / Splash conversion use the headroom, gear balance section 27).
+  `Gear.OverCap` (Arsenal.cs, sharing `Sums` with Boost) reports per stat what the cap cuts off, gear lines and the module /
+  conversion share by SimWorld.Headroom's rule; shown on the vehicle / tower detail page (facts under the stat bars) and on the Army
+  equipment page under the set chips: "{line} over cap (not applied)" / "{line} bị trần cắt (không có tác dụng)".
+- Equipment cards' headline number (KitCards MainValue / ShortStat / MainLine) adds the implicit lines of the main stat, so the
+  split pieces are not shown at their small main line (a hair trigger reads +11 %, not +3.5 %).

@@ -2,7 +2,7 @@
 
 Chương, nhiệm vụ, biến cố, bộ bài game, nhân vật, thống kê thoại.
 
-Gói cân bằng Machine Brigade, commit 274f25b7, ngày 2026-10-04. Số liệu đầy đủ ở 05_chien_dich.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 5394cac7, ngày 2026-10-04. Số liệu đầy đủ ở 05_chien_dich.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Chiến dịch
 
@@ -533,8 +533,8 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Bien_co_luat` (40 dòng): Biến cố: luật chung — eventLibrary.rules (trừ difficulty: 04_che_do_kinh_te_ai/Do_kho; weatherSight: 06_ban_do/Thoi_tiet)
 - `Phat_hanh` (3 dòng): Phát hành — release.json: hồi phát hành, chương tắt, cách hiện chương tắt
 - `Kich_ban_goc` [bulk.zip] (1854 dòng): Kịch bản gốc — Tools/story/script/chNN.txt: mọi dòng không trống (công cụ dựng ra script/chNN.json); dòng '#' là ghi chú, '@' mở nhiệm vụ, còn lại 'trigger / người…
-- `Ket_tran` (5 dòng): Kết trận — Màn kết trận: thời lượng và chuyển động chậm theo loại (thắng lớn đầu tiên, thắng đầu, chơi lại, thua), thời gian cho phép bỏ qua
-- `Cutscene_khoanh_khac` (5 dòng): Khoảnh khắc chậm — Khoảnh khắc điện ảnh: bật mặc định, thời lượng tối đa, vào ra mờ, tỷ lệ
+- `Ket_tran` (1 dòng): Kết trận — Chuỗi kết trận: bước, thời lượng, áp dụng
+- `Cutscene_khoanh_khac` (1 dòng): Khoảnh khắc chậm — 6 khoảnh khắc chậm x0,5 (mã Cinematics.cs)
 - `Thoai_moc_thoi_gian` (359 dòng): Thoại: mốc thời gian — Câu có thời điểm biết trước của mỗi nhiệm vụ (mission_start = 0 s, trigger time = at), theo thời gian; khoảng = mốc này - mốc trước (mốc đầu: từ 0 s)
 - `Thoai_thong_ke` (193 dòng): Thoại: thống kê theo nhiệm vụ — Mỗi nhiệm vụ: số câu so với ngân sách theo kiểu nhiệm vụ (Tools/story/script_build.py L1: ngắn / phụ 4-8, thường 6-10, boss / chiến dịch lớn 10-16),…
 - `Thoai_thong_ke_nhom` [bulk.zip] (2542 dòng): Thoại: số câu theo nhóm — Mỗi nhiệm vụ x (người nói / trigger / ưu tiên) x giá trị có mặt: số câu (COUNTIFS trên Thoai)

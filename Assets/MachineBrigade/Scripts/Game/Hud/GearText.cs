@@ -143,6 +143,9 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A trait's name ("Ricochet Shells").</summary>
         public static string TraitName(string key) => Strings.Get("trait." + key);
 
+        /// <summary>Gear targets 04/10: a bonus the loadout cap cuts off, "+3% fire rate over cap (not applied)".</summary>
+        public static string OverCapLine(StatId stat, float lost) => Strings.Format("gear.overCap", ("line", Line(stat, lost)));
+
         /// <summary>What a trait does, with its numbers (a tower line at its full strength has its own words: "no wait", "immune").</summary>
         public static string TraitEffect(GearTrait t)
         {

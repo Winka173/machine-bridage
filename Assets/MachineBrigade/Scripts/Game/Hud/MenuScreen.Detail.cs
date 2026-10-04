@@ -562,6 +562,9 @@ namespace MachineBrigade.Game.Hud
         {
             var now = PlayerProfile.BoostFor(def);
             VehicleBoost next, rankOnly;
+            // Gear targets 04/10 (owner): what the loadout cap cuts off (gear lines, sets and the module share one cap).
+            List<(StatId Stat, float Lost)> overCap;
+            var noBlast = def.Weapon.SplashRadius <= 0f;
             if (def.Fort != null)
             {
                 // A tower: its card's rank and its type's three pieces, under the tower caps.
@@ -569,12 +572,14 @@ namespace MachineBrigade.Game.Hud
                 var brands = PlayerProfile.BaseBrandCounts();
                 next = rank < CardRanks.Max ? Gear.TowerBoost(rank + 1, pieces, brands) : now;
                 rankOnly = Gear.TowerBoost(rank, new List<GearItem>(), brands);
+                overCap = Gear.OverCap(pieces, GearCatalog.TowerStatCap, brands, noBlast);
             }
             else
             {
                 var loadout = PlayerProfile.Loadout(Gear.BranchOf(def)).ToList();
                 next = rank < CardRanks.Max ? Gear.Boost(rank + 1, loadout) : now;
                 rankOnly = Gear.Boost(rank, new List<GearItem>());
+                overCap = Gear.OverCap(loadout, GearCatalog.StatCap, null, noBlast);
             }
             var stats = UnitStats.For(_catalog, def, now);
             var after = UnitStats.For(_catalog, def, next);
@@ -608,6 +613,7 @@ namespace MachineBrigade.Game.Hud
             if (def.Weapon.Ammo > 0) facts.Add(Rule("ammo", Strings.Format("detail.magazine", ("count", def.Weapon.Ammo), ("seconds", Mathf.RoundToInt(def.Weapon.MagazineReload)))));
             if (def.Weapon.MinRange > 0f) facts.Add(Rule("crosshair", Strings.Format("detail.minRange", Mathf.RoundToInt(def.Weapon.MinRange))));
             if (now.Special != SpecialModule.None) facts.Add(Rule("star", Strings.Get("special." + GearKeys.Module(now.Special))));
+            foreach (var (stat, lost) in overCap) facts.Add(Rule("info", GearText.OverCapLine(stat, lost)));
             _detailBody.Add(facts);
         }
 

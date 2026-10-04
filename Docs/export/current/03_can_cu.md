@@ -2,7 +2,7 @@
 
 Tháp và nhánh, tường, nhà chính, mô-đun tiện ích, xây lại, AI căn cứ.
 
-Gói cân bằng Machine Brigade, commit 274f25b7, ngày 2026-10-04. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 5394cac7, ngày 2026-10-04. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Căn cứ và tháp
 
@@ -14,7 +14,7 @@ Căn cứ là một loadout chọn trước trận như bộ bài: sở chỉ hu
 
 | Tháp | Cỡ | Máu | Dựng lại | Nhánh (hạng 7) | Hướng dẫn |
 |---|---|---|---|---|---|
-| **Tháp canh** | Nhỏ | 1.540 | 5 CP · 25 s | **Tháp quan sát**: Nhìn xa hơn 30%, và cho các tháp trong 30 m thêm 15% tầm bắn (thay cho mức 10% thường của tháp, không cộng dồn). **Ổ súng**: Pháo 25 mm thay súng máy: đánh mạnh xe nhẹ, nhìn gần hơ… | **Tháp canh · công sự cố định · nhẹ nhưng nhìn xa** Cách đánh: súng máy nặng (30 m, bắn cả máy bay); tầm nhìn 60 m giúp soi quân ta cho pháo địch. Mạnh / yếu: chặn trinh sát và xe nhẹ; là tháp yếu nh… |
+| **Tháp canh** | Nhỏ | 1.540 | 5 CP · 25 s | **Tháp quan sát**: Nhìn xa hơn 30%, và cho các tháp trong 35 m thêm 15% tầm bắn (thay cho mức 10% thường của tháp, không cộng dồn). **Ổ súng**: Pháo 25 mm thay súng máy: đánh mạnh xe nhẹ, nhìn gần hơ… | **Tháp canh · công sự cố định · nhẹ nhưng nhìn xa** Cách đánh: súng máy nặng (30 m, bắn cả máy bay); tầm nhìn 60 m giúp soi quân ta cho pháo địch. Mạnh / yếu: chặn trinh sát và xe nhẹ; là tháp yếu nh… |
 | **Lô cốt súng máy** | Nhỏ | 3.300 | 6 CP · 25 s | **Súng máy đôi**: Súng máy nặng đôi: hỏa lực mạnh hơn, tầm hơi ngắn hơn. **Lô cốt phun lửa**: Súng phun lửa (16 m) đốt thứ gì lại gần; không bắn được máy bay. | **Lô cốt súng máy · công sự cố định · súng máy nặng** Cách đánh: súng máy nặng bắn nhanh (32 m, bắn cả máy bay). Mạnh / yếu: quét sạch trinh sát và xe nhẹ; gần như không làm xước xe tăng. Mẹo: đưa xe… |
 | **Tháp phòng không** | Nhỏ | 2.420 | 6 CP · 25 s | **Tháp cao xạ**: Pháo cao xạ 23 mm bốn nòng tầm gần: hỏa lực mạnh hơn nhiều vào drone, bầy nhỏ và trực thăng, không có tên lửa. **Tổ Stinger**: Tên lửa Stinger thay cho pháo 23 mm: máy bay và trực th… | **Tháp phòng không · công sự cố định · chống máy bay (42 m)** Cách đánh: pháo đôi 30 mm cao xạ tới 42 m và tên lửa phòng không (44 m); cũng bắn mặt đất nhưng chẳng mấy tác dụng. Mạnh / yếu: xé nát tr… |
 | **Tháp gây nhiễu EW** | Nhỏ | 1.760 | 3 CP · 25 s | **Máy gây nhiễu drone**: Gây nhiễu đạn điều khiển và drone xa tới 45 m. **Máy đánh lừa radar**: Còn tìm ra pháo khai hỏa trong 80 m và làm lộ chúng 6 giây. | **Tháp gây nhiễu EW · tháp nhỏ · gây nhiễu, không bắn** Cách đánh: tên lửa điều khiển, drone và hỏa lực yểm trợ nhắm vào trong vòng 30 m quanh nó bị lệch; không có súng. Mạnh / yếu: làm cùn tên lửa c… |
@@ -255,11 +255,11 @@ Sheet 03_can_cu/Dot_phong_thu — Loadout phòng thủ tham chiếu (5 dòng, 10
 
 | id | small | medium | large | utilities | he_so_do_kho | duong_cong_dot | cap_hq |
 |---|---|---|---|---|---|---|---|
-| hq1 | guard_tower;mg_bunker;aa_turret | gun_turret |  | repair_bay | 0.75 | 2;4;5;6;8;9;10;12;13;14 | 1 |
-| hq2 | guard_tower;mg_bunker;aa_turret;mg_bunker | gun_turret;atgm_tower |  | repair_bay | 0.8722 | 3;4;6;7;9;10;12;14;15;17 | 2 |
-| hq3 | guard_tower;mg_bunker;aa_turret;mg_bunker | gun_turret;rocket_turret | heavy_turret | repair_bay;logistics_station | 1.0414 | 3;5;7;9;11;12;14;16;18;20 | 3 |
-| hq4 | guard_tower;mg_bunker;aa_turret;mg_bunker;guard_tower | gun_turret;atgm_tower;rocket_turret | heavy_turret | repair_bay;logistics_station | 1.1887 | 4;6;8;10;12;14;16;19;21;23 | 4 |
-| hq5 | guard_tower;mg_bunker;aa_turret;mg_bunker;guard_tower;ew_to… | gun_turret;atgm_tower;c_ram | heavy_turret;missile_battery | repair_bay;logistics_station;airfield | 1.3554 | 4;7;9;11;14;16;19;21;24;26 | 5 |
+| hq1 | guard_tower;mg_bunker;aa_turret | gun_turret |  | repair_bay | NEED_CODE_CHECK | NEED_CODE_CHECK | 1 |
+| hq2 | guard_tower;mg_bunker;aa_turret;mg_bunker | gun_turret;atgm_tower |  | repair_bay | NEED_CODE_CHECK | NEED_CODE_CHECK | 2 |
+| hq3 | guard_tower;mg_bunker;aa_turret;mg_bunker | gun_turret;rocket_turret | heavy_turret | repair_bay;logistics_station | NEED_CODE_CHECK | NEED_CODE_CHECK | 3 |
+| hq4 | guard_tower;mg_bunker;aa_turret;mg_bunker;guard_tower | gun_turret;atgm_tower;rocket_turret | heavy_turret | repair_bay;logistics_station | NEED_CODE_CHECK | NEED_CODE_CHECK | 4 |
+| hq5 | guard_tower;mg_bunker;aa_turret;mg_bunker;guard_tower;ew_to… | gun_turret;atgm_tower;c_ram | heavy_turret;missile_battery | repair_bay;logistics_station;airfield | NEED_CODE_CHECK | NEED_CODE_CHECK | 5 |
 
 Sheet 03_can_cu/Can_cu_AI_cap — AI xây căn cứ: cấp HQ theo độ khó (4 dòng, 8 cột)
 

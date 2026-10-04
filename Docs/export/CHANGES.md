@@ -12932,3 +12932,20 @@ Nhánh `feature/gear-balance`. Nguồn: `Docs/prompts/gear_balance_vi.md` (mục
 | GB-22 | chữ trong game | "giáp cấp 3–4" / "0–2"; "pháo binh và bom" | "lớp giáp thân xe 3–5 / 0–2"; "pháo binh, cối, rốc-két bắn cầu vồng và bom (không tính drone và tên lửa đánh nóc)"; tên + mô tả 3 món mới; VeteranCrew / AutoRepair ghi trong trần | Strings.cs, GearText.BaseNote đọc `gear.base.<id>.info` |
 | GB-23 | bộ xuất | 38 loại xe / 13 loại tháp | 40 / 14 (`10_trang_bi` Trang_bi, Trang_bi_thap, Trang_bi_bo, Trang_bi_ten) | sinh lại bằng export.py |
 | GB-24 | xóa trang bị | | 0 | monolith_plate giữ (kiểm runtime: sống) |
+
+## GEAR TARGETS
+
+Nhánh `feature/gear-targets`. Nguồn: câu trả lời của chủ dự án 04/10 cuối `Docs/prompts/gear_balance_vi.md`. Giá trị "hiệu dụng" = dòng chính (bảng đỉnh của ô x MainScale) + dòng ngầm cùng chỉ số, ở cấp tối đa của độ hiếm, sau trần (cấp 1 = 40 %). Kiểm bằng mô phỏng Python: `Docs/fixes/gear_targets_report.md`. Đánh đổi (drawback) giữ như GEAR BALANCE.
+
+| # | mục | cũ thực tế | mới | hiệu dụng cũ -> mới (Hiếm / Sử thi / Huyền thoại) |
+|---|---|---|---|---|
+| GT-1 | `hair_trigger` MainScale (GearCatalog.cs) | 1 | 0.25 | FireRate 16 (trần 15) / 21 (15) / 26 (15) % -> 8 / 10 / 11 % |
+| GT-2 | `hair_trigger` FireRate dòng ngầm | 0 / 0 / 0.08 / 0.10 / 0.12 | 0 / 0 / 0.06 / 0.0725 / 0.075 | (cùng GT-1) |
+| GT-3 | `overtuned_engine` MainScale | 1 | 0.5 | Speed 13 / 16.5 (trần 15) / 20 (15) % -> 8 / 10 / 12 % |
+| GT-4 | `overtuned_engine` Speed dòng ngầm | 0 / 0 / 0.08 / 0.10 / 0.12 | 0 / 0 / 0.055 / 0.0675 / 0.08 | (cùng GT-3) |
+| GT-5 | `monolith_plate` MainScale | 1.8 | 1.7142857 (12/7) | Health 14.4 / 19.8 / 25.2 (trần 25) % -> 13.71 / 18.86 / 24 % |
+| GT-6 | tháp `ammo_handling` MainScale (GearCatalog.Tower.cs) | 1.25 | 1 (bỏ) | MagazineReload (5 hạng) 3.75 / 6.25 / 10 / 13.75 / 17.5 % -> 10 / 15 / 20 / 25 / 30 % |
+| GT-7 | tháp `ammo_handling` dòng ngầm thứ hai | không có | Implicit2 MagazineReload 0.07 / 0.10 / 0.12 / 0.14 / 0.16 | (cùng GT-6); Magazine 8 / 12 / 16 / 20 / 24 % giữ |
+| GT-8 | UI: phần thưởng bị trần cắt | không hiện | "+X% ... bị trần cắt (không có tác dụng)" / "over cap (not applied)": trang chi tiết xe / tháp và trang trang bị theo nhánh | `Gear.OverCap`; gồm dòng trang bị, thưởng bộ, mô-đun VeteranCrew / AutoRepair, Splash -> DamageVsLight |
+| GT-9 | UI: thẻ trang bị (số chính) | chỉ dòng chính | dòng chính + dòng ngầm cùng chỉ số | KitCards.MainValue / ShortStat / MainLine |
+| GT-10 | trần BuildCap | trên tổng mọi nguồn | giữ (VeteranCrew không vượt trần) | không đổi giá trị trần |
