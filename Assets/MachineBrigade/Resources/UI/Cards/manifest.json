@@ -470,7 +470,7 @@
             "kind": "boss",
             "model": "armored_train",
             "source": "Models/armored_train",
-            "hash": "v2:b170b23a5249d4cfdaf69e50a89fdce20c20ef92"
+            "hash": "v2:9902706072605a53629b478f247b765ba2bb31b2"
         },
         {
             "id": "atgm_tower",
@@ -890,7 +890,7 @@
             "kind": "boss",
             "model": "hydra_sub",
             "source": "Models/hydra_sub",
-            "hash": "v2:fce7c99123e427e121d2aa9f67267d824d92a9bd"
+            "hash": "v2:5c96e67b4aaf5f56bf6e5ca227073948fee2e288"
         },
         {
             "id": "hyperion",
@@ -911,14 +911,14 @@
             "kind": "boss",
             "model": "ixion",
             "source": "Models/ixion",
-            "hash": "v2:acea9a5421696fc6c683cc36b8a9d880700d4166"
+            "hash": "v2:d60b3023d508fdac4c852d7126372d45eae2e799"
         },
         {
             "id": "kraken",
             "kind": "boss",
             "model": "kraken",
             "source": "Models/kraken",
-            "hash": "v2:23001c949dd26ab616cdae006bbeb1c042c32da9"
+            "hash": "v2:b2f86d2785415412e33b70397c0b0d4f8d81a592"
         },
         {
             "id": "landing_hovercraft",
@@ -974,7 +974,7 @@
             "kind": "boss",
             "model": "mega_gunship",
             "source": "Models/mega_gunship",
-            "hash": "v2:61dce6b16a3938feb5bd9e4e0217bcb69371c8d4"
+            "hash": "v2:7ff490cb1e7b2c7ff67889344066cc52fd034074"
         },
         {
             "id": "mg_bunker",
@@ -1044,7 +1044,7 @@
             "kind": "boss",
             "model": "nuke_train",
             "source": "Models/nuke_train",
-            "hash": "v2:c2634108ece2ba722df25f2c36f4b220f969fdb0"
+            "hash": "v2:eede01734b77d2c59d6d763e8a590054e7da0054"
         },
         {
             "id": "nyx",
@@ -1156,7 +1156,7 @@
             "kind": "boss",
             "model": "typhon",
             "source": "Models/typhon",
-            "hash": "v2:3cfca548f5afe76bd80b373c5e794b0955d8839f"
+            "hash": "v2:ee9a9dae8ccca897aee80c929076c5d5659ed5fc"
         }
     ]
 }
