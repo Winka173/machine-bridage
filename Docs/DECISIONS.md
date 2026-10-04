@@ -21052,3 +21052,41 @@ codes). Audit: `Docs/ai/spec_master/AUDIT_P0A.md`; changes table: `Docs/export/C
   namespaces do not collide). Routine reasons are read per unit (`CombatWatch.ReasonOf`), only notable ones are logged.
 - Tests: 23 EditMode tests in `AiMasterP0ATests.cs` (R1 x8, R2 x2, R3, 113 x10, 224 opportunity fire, Part H escort), written not
   run; compiled against the Sim + NUnit in a scratch project.
+
+## AI MASTER P0-C (lane C)
+
+Branch `feature/ai-p0c` (worktree MachineBrigade-art3). Spec MASTER_FINAL sections 33, 48-66, 96, 103-104, 110, 202-203, Part U;
+row by row in `Docs/ai/spec_master/AUDIT_P0C.md`, values in `Docs/export/CHANGES.md` "AI MASTER P0-C". No Unity, no tests run;
+Sim compiled with the .NET SDK (C# 9, 0 errors); the new test file compiled against the Sim with stubs.
+- **BossBrain on the existing code, not a rewrite.** `Sim/Bosses/Brain/`: per moving boss a `BossBrain` (state + section-96
+  debug, `Vehicle.BossBrain`), stepped by `BossBrains` at the end of BossSystem.Step (so the naval system sails on this step's
+  anchors and broadside). The old systems stay the executors: NavalSystem.Flagship / PhaseBegins are the mission controller's
+  lane / escape / phase logic (naval_lanes, naval_escape_phase, escape speed, role), BossSystem.Escorts the escort coordinator's,
+  CombatSystem the per-mount targeting (Part E3). Phase data, escort roles, target masks, big attacks, lane G/H holdsToFire and
+  free main guns, rails, lane J wrecks and F2 per-boss reach (v.Arms copies) are untouched and read as they are.
+- **Naval steering** (`NavalBossMovementController`, boss ships only; escorts / boats / landers keep Sail): lane look-ahead,
+  broadside offset, wreck + CPA avoidance, forward-only, turn law. A goal behind is a forward turn to a sticky side (seaward,
+  unless only its own escorts are out there). Reverse is impossible and counted (`BossBrains.NavalReverseEvents`, assert 0).
+- **Rmin vs the patrol turn.** Under way the turn is capped at radius max(hull radius, 1.1 Rmin) (collision radius = the hull
+  capsule's radius; the bound radius, 43 m, would halve Leviathan's turn). Coming about at a patrol end, or held up, it slows to
+  25 % and turns at full rate (spec 52's "slow, turn harder, stop short"), as before: lighthousebay's corner leaves 13 m past the
+  far lane where a 2 x 20.5 m circle needs 41 m, and prompt 33 L4's escort "Turning" rule is built on coming about in place.
+- **Broadside never closes on its own fleet.** The prompt 33 L4 slots sit beside the lane (not the hull), 2.5 m clear: the route
+  penalty forbids drift towards a side with own escort slots past (room - 3 m), so offsets go out to sea or stay at 0. DPS is a
+  share (0..1) so spec 104's 0.08 turn cost and the route penalty share one scale. Spacing (59) is the CPA's in-line rule; own
+  escorts keep their slots (the CPA ignores its own fleet; parallel lanes 14 m apart are not a collision course: capsule clearance).
+- **Land / air bosses.** A boss leaves its way for a target only in reach (it stops to fight there, as before), a structure, or
+  within 30 m of its way (anchor before target). Hull turns for a hull-fixed weapon (rotor craft, ground) and P28 F.4's armour
+  facing are requests the brain grants: never for airships (lane H), ships, trains, aeroplanes, nor in the 3 s after a phase or
+  on a run, nor a > 120 deg flip within 3 s. Reverse: tracked / wheeled only, once per 8 s. Corridor: half width + 2.5 m,
+  25-35 m ahead; parked friends inside step aside by the normal yield; `BossBrains.Corridors` / `InCorridor` for the P1 lane.
+- **Escort rings (66):** never inside bound + 4; guards / raiders + 10-18 m, cover / jam / spot / smoke + 18-30 m by rank;
+  repair + 10 m (the spec's support ring is past escortRules.repairReach 12 m and would end repairs); a phase's close-in takes
+  the ring's inner edge (was half the distance, which could fall inside the forbidden ring). The leash is kept past the ring.
+- **Cadence (203):** different heavy weapons (cooldown >= 1 s, not streams / MG / AA-only) open fire >= min(0.35 s, cooldown /
+  (2 x heavy mounts)) apart, so the long-run rate is kept; twins, simultaneous barrels, laid salvos and big attacks unchanged.
+- **Target director (65)** multiplies prompt 28's BossWorth (threat to boss / escort / mission, bearing x0.6, aim time,
+  persistence, clamp 0.4-2); overkill stays with P0-A. Section 96 goes to `DecisionLog` (Why per boss, a State line on change).
+- Replay hashes change. Tests (written, not run): `AiMasterP0CTests` (section 110, R5, rings, determinism). For a Unity look:
+  Leviathan / Typhon / Scylla lanes and turnabouts, broadside offsets with shore targets, two sea bosses meeting, escorts' new
+  rings, ground bosses not chasing off their way.

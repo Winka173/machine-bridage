@@ -214,7 +214,7 @@ namespace MachineBrigade.Sim.Bosses
             var boss = g.Boss;
             var index = g.Slots++;
             var slot = SlotOf(u.Slot, u.Role);
-            var spot = u.At is { } at ? Offset(boss, at) : SlotPoint(g, boss, slot, index);
+            var spot = u.At is { } at ? Offset(boss, at) : SlotPoint(g, boss, slot, index, u.Role);
             switch (wave.Drop)
             {
                 case EscortDrop.Para:
@@ -302,29 +302,32 @@ namespace MachineBrigade.Sim.Bosses
         /// <summary>
         /// Its station round the boss: flank guards beside it along its heading (a train's run parallel to
         /// its rails), helpers behind it away from the enemy, a screen between it and the enemy.
+        /// AI MASTER P0-C (spec 66): at its role's ring (<see cref="BossEscortCoordinator.Ring"/>): never inside the boss's
+        /// radius + 4 m, the screen + 10-18 m, the support + 18-30 m; closing in after a new phase takes the ring's inner edge.
         /// </summary>
-        private Vector2 SlotPoint(EscortGroup g, Vehicle boss, EscortSlot slot, int index)
+        private Vector2 SlotPoint(EscortGroup g, Vehicle boss, EscortSlot slot, int index, EscortRole role)
         {
             // Prompt 28 F.5: the escorts screen the side the enemy is massed on, and close in for a while after a new phase.
-            var hull = boss.Def.HullBound * EscortSpread(g);
+            var close = EscortSpread(g) < 1f;
             var forward = SimMath.Forward(EscortBearing(boss));
             var right = new Vector2(forward.Y, -forward.X);
             var side = index % 2 == 0 ? 1f : -1f;
             var rank = index / 2 % 3;
+            var ring = BossEscortCoordinator.Ring(role, rank, boss.Def.HullBound, close, _world.Catalog.EscortRules.RepairReach);
             switch (slot)
             {
                 case EscortSlot.Front:
-                    return boss.Position + forward * (hull + 8f + rank * 6f) + right * side * 4f;
+                    return boss.Position + forward * ring + right * side * 4f;
                 case EscortSlot.Rear:
                 case EscortSlot.Screen:
                 {
                     var threat = ThreatDirection(boss);
                     var across = new Vector2(threat.Y, -threat.X);
                     var toward = slot == EscortSlot.Screen ? 1f : -1f;
-                    return boss.Position + threat * toward * (hull + 8f + rank * 5f) + across * side * (3f + rank * 3f);
+                    return boss.Position + threat * toward * ring + across * side * (3f + rank * 3f);
                 }
                 default:
-                    return boss.Position + right * side * (hull + 6f + rank * 5f) + forward * (3f - rank * 5f);
+                    return boss.Position + right * side * ring + forward * (3f - rank * 5f);
             }
         }
 
@@ -338,8 +341,11 @@ namespace MachineBrigade.Sim.Bosses
             {
                 var v = m.Unit;
                 if (!v.IsAlive || v.Def.Static || v.Stunned) continue;
-                var home = SlotPoint(g, boss, m.Slot, m.Index);
+                var home = SlotPoint(g, boss, m.Slot, m.Index, m.Role);
                 var reach = m.Role == EscortRole.Raid ? leash * 1.6f : leash;
+                // AI MASTER P0-C (spec 66): a station on an outer ring keeps its leash beyond the ring (else it is ordered home
+                // again every look, and a guard there never takes anything on).
+                reach = MathF.Max(reach, Vector2.Distance(home, boss.Position) + 6f);
                 var out_ = Vector2.Distance(v.Position, boss.Position);
                 if (m.Role is EscortRole.Guard or EscortRole.Raid)
                 {

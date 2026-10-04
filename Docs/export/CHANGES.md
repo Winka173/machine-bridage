@@ -12986,3 +12986,41 @@ Branch `feature/ai-p0a` (lane A, 04/10). Source: `Docs/ai/spec_master/Machine_Br
 | A-10 | combat watchdog (Part C) | movement anti-stuck only, StaleIdle 12 s push | every armed unit has a reason code (25), C1 anomaly detection + 8-step recovery, C2 unexplained idle recovery; StaleIdle kept as the fail-safe | `CombatActivityWatchdog`, `TacticalAi.Watchdog`, `SquadLayer.Watchdog` |
 | A-11 | reason codes (Part O) | none for combat | TARGET_*, COMBAT_IDLE_*, WATCHDOG_*, POSITION_TRANSIT_FALLBACK in the DecisionLog | `CombatReasons` |
 | A-12 | tests | none | 23 EditMode tests (R1-R3, 113, 224, Part H), written not run | `Tests/EditMode/AiMasterP0ATests.cs` |
+
+## GEAR TARGETS
+
+Nhánh `feature/gear-targets`. Nguồn: câu trả lời của chủ dự án 04/10 cuối `Docs/prompts/gear_balance_vi.md`. Giá trị "hiệu dụng" = dòng chính (bảng đỉnh của ô x MainScale) + dòng ngầm cùng chỉ số, ở cấp tối đa của độ hiếm, sau trần (cấp 1 = 40 %). Kiểm bằng mô phỏng Python: `Docs/fixes/gear_targets_report.md`. Đánh đổi (drawback) giữ như GEAR BALANCE.
+
+| # | mục | cũ thực tế | mới | hiệu dụng cũ -> mới (Hiếm / Sử thi / Huyền thoại) |
+|---|---|---|---|---|
+| GT-1 | `hair_trigger` MainScale (GearCatalog.cs) | 1 | 0.25 | FireRate 16 (trần 15) / 21 (15) / 26 (15) % -> 8 / 10 / 11 % |
+| GT-2 | `hair_trigger` FireRate dòng ngầm | 0 / 0 / 0.08 / 0.10 / 0.12 | 0 / 0 / 0.06 / 0.0725 / 0.075 | (cùng GT-1) |
+| GT-3 | `overtuned_engine` MainScale | 1 | 0.5 | Speed 13 / 16.5 (trần 15) / 20 (15) % -> 8 / 10 / 12 % |
+| GT-4 | `overtuned_engine` Speed dòng ngầm | 0 / 0 / 0.08 / 0.10 / 0.12 | 0 / 0 / 0.055 / 0.0675 / 0.08 | (cùng GT-3) |
+| GT-5 | `monolith_plate` MainScale | 1.8 | 1.7142857 (12/7) | Health 14.4 / 19.8 / 25.2 (trần 25) % -> 13.71 / 18.86 / 24 % |
+| GT-6 | tháp `ammo_handling` MainScale (GearCatalog.Tower.cs) | 1.25 | 1 (bỏ) | MagazineReload (5 hạng) 3.75 / 6.25 / 10 / 13.75 / 17.5 % -> 10 / 15 / 20 / 25 / 30 % |
+| GT-7 | tháp `ammo_handling` dòng ngầm thứ hai | không có | Implicit2 MagazineReload 0.07 / 0.10 / 0.12 / 0.14 / 0.16 | (cùng GT-6); Magazine 8 / 12 / 16 / 20 / 24 % giữ |
+| GT-8 | UI: phần thưởng bị trần cắt | không hiện | "+X% ... bị trần cắt (không có tác dụng)" / "over cap (not applied)": trang chi tiết xe / tháp và trang trang bị theo nhánh | `Gear.OverCap`; gồm dòng trang bị, thưởng bộ, mô-đun VeteranCrew / AutoRepair, Splash -> DamageVsLight |
+| GT-9 | UI: thẻ trang bị (số chính) | chỉ dòng chính | dòng chính + dòng ngầm cùng chỉ số | KitCards.MainValue / ShortStat / MainLine |
+| GT-10 | trần BuildCap | trên tổng mọi nguồn | giữ (VeteranCrew không vượt trần) | không đổi giá trị trần |
+
+## AI MASTER P0-C
+
+Nhánh `feature/ai-p0c` (lane C, 04/10). Nguồn: `Docs/ai/spec_master/Machine_Brigade_AI_Behavior_MASTER_FINAL.md` mục 33, 48-66, 96, 103-104, 110, 202-203, Part U; đối chiếu từng mục: `Docs/ai/spec_master/AUDIT_P0C.md`. Không đổi giáp / máu / sát thương / tầm của boss. Giá trị mới: `tunables.json` bosses.bossBrain.
+
+| # | mục | cũ | mới | ghi chú |
+|---|---|---|---|---|
+| P0C-1 | Bộ não boss (BossBrain) | logic boss rải trong BossSystem / NavalSystem / MovementSystem | `Sim/Bosses/Brain/`: Mission, Movement, NavalMovement, WeaponDirector, Phase, EscortCoordinator, TargetDirector | hệ cũ vẫn là nơi thi hành (pha, hộ tống, mặt nạ mục tiêu, đòn lớn giữ nguyên) |
+| P0C-2 | Tàu boss lùi | không lùi (ngầm định) | cấm rõ: hướng muốn ở phía sau thì quay tiến sang một bên; tốc độ >= 0; đếm `NavalReverseEvents` (test yêu cầu 0) | mục 52 |
+| P0C-3 | Bán kính quay tàu boss | quay theo tốc độ quay data ở mọi tốc độ | khi chạy: bán kính >= max(bán kính thân, 1.1 Rmin), Rmin = tốc độ / tốc độ góc (Leviathan 18.6 m, quy hoạch 20.5 m); quay đầu cuối tuần tra / bị chặn: giảm còn 25 % tốc độ, quay hết cỡ (như cũ) | mục 53; góc biển chỉ còn 13 m sau làn far |
+| P0C-4 | Nhìn trước theo làn | lái thẳng tới đích | điểm trên làn cách clamp(tốc độ x 6, 1.5 L, 4 L) (`lookAheadSeconds` 6, `lookAheadMinLengths` 1.5, `lookAheadMaxLengths` 4) | mục 54 |
+| P0C-5 | Mạn tàu (broadside) | không có | lệch -80..+80 (bước 20) theo cung pháo x DPS x mục tiêu hợp; vùng chết 5°, vào 8°, ra 15°, làm mượt 0.15; phạt rời làn / gần bờ / phía có ô hộ tống | mục 55-57, 104 |
+| P0C-6 | Dự báo va chạm (CPA) | chỉ giãn cách + vịnh tránh | 6-10 s theo chiều dài; khe < 2.5 m hoặc thẳng hàng trong khoảng cách mục 59 (max(rA + rB + 4, L/2), + 10 m nếu là boss): quay sớm <= 25°, giảm tới 35 % tốc độ | mục 59-60; hộ tống của chính nó giữ ô cũ |
+| P0C-7 | Thân / tháp pháo tách | boss đứng yên quay thân về mục tiêu (vũ khí cố định thân); F.4 quay mặt giáp | quay thân chỉ khi vũ khí phụ thuộc thân xin và được duyệt: không cho tàu, tàu bay (holdsToFire), tàu hỏa, máy bay cánh cố định, lúc nhiệm vụ giữ thân (3 s sau pha, lúc chạy trốn), không lật > 120° trong 3 s | mục 50, 64, Part U |
+| P0C-8 | Neo nhiệm vụ | boss trên bộ đuổi mọi địch thấy được | chỉ rời đường khi địch đã trong tầm, là công trình, hoặc cách đường đi <= 30 m (`chaseLeash`) | mục 49 |
+| P0C-9 | Boss mặt đất lùi | theo luật giao thông (kẹt / cửa hẹp) | chỉ xích / bánh, tối đa 1 lần / 8 s (`groundReverseCooldown`); tàu, máy bay, tàu hỏa không bao giờ | mục 52, 63 |
+| P0C-10 | Hành lang boss | boss được ưu tiên đường | hành lang nửa rộng + 2.5 m, dài 25-35 m phía trước; quân mình đỗ trong đó được nhờ tránh (mỗi 5 bước); API `BossBrains.Corridors` | mục 33, 63 |
+| P0C-11 | Vòng hộ tống | thân + 6..18 m (nửa thân sau pha) | cấm trong bán kính + 4 m; vòng chắn (guard, raid) + 10-18; vòng hỗ trợ (cover, jam, spot, smoke) + 18-30; sửa chữa + 10 (tầm sửa 12 m); dây xích tính từ ngoài vòng | mục 66 |
+| P0C-12 | Nhịp bắn boss | mỗi ụ pháo tự do (twin lệch) | hai vũ khí nặng khác loại (hồi >= 1 s) không mở lửa cùng lúc: cách min(0.35 s, hồi / (2 x số ụ nặng)); loạt đồng thời / twin / salvo / đòn lớn giữ nguyên | mục 203 |
+| P0C-13 | Chọn mục tiêu boss | BossWorth theo kiểu hành vi | thêm: đe dọa boss / hộ tống / nhiệm vụ, bắn tới được (x0.6 nếu không ụ nào xoay tới), thời gian ngắm, giữ mục tiêu (kẹp 0.4-2) | mục 65; overkill thuộc P0-A |
+| P0C-14 | Debug tàu (mục 96) | không có | LaneId, RouteProgress, DesiredHullHeading, ActualHeading, BroadsideCandidate, TurnRadius, TargetId, HullTargetReason, TurretTargets[], CPA vào `Vehicle.BossBrain` và DecisionLog | mục 96 |

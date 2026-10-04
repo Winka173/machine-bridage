@@ -45,6 +45,8 @@ namespace MachineBrigade.Sim.Bosses
             JoinTiers(v);
             // Prompt 20: its workshop's clock and its own route.
             JoinP20(v);
+            // AI MASTER P0-C (spec 48): a moving boss's brain (anchor, hull vs turrets, naval steering, escorts, cadence).
+            Brains.Join(v);
             var now = _world.Time;
             var def = v.Def;
             if (def.Burrow is { } burrow) v.BurrowNext = now + burrow.First;
@@ -82,6 +84,8 @@ namespace MachineBrigade.Sim.Bosses
             StepP20(now, dt);
             StepDuels(now);
             StepP28(now);
+            // AI MASTER P0-C: the brains last, before the naval system sails (their broadside and anchors are its input).
+            Brains.Step(now);
             foreach (var (id, team, at, heading) in _spawns) _world.SpawnVehicle(id, team, at, heading);
             _spawns.Clear();
         }

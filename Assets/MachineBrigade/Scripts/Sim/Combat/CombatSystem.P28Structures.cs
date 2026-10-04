@@ -108,9 +108,12 @@ namespace MachineBrigade.Sim.Combat
         private float BossWorth(Vehicle v, Vehicle other, WeaponDef weapon)
         {
             if (!v.Def.Boss) return 1f;
+            // AI MASTER P0-C (spec 65): the boss target director's worth (threat to parts / escorts / mission, can bear, time
+            // to aim, persistence) on top of its behaviour types.
+            var director = Bosses.BossTargetDirector.Worth(_world, v, other, weapon);
             var kinds = _world.Bosses.Behaviours(v);
-            if (kinds.Count == 0) return 1f;
-            var worth = other.Target == v.Id ? 1.2f : 1f;
+            if (kinds.Count == 0) return director;
+            var worth = (other.Target == v.Id ? 1.2f : 1f) * director;
             foreach (var k in kinds)
                 worth *= k switch
                 {

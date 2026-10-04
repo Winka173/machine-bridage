@@ -578,7 +578,10 @@ namespace MachineBrigade.Sim.Combat
             // Play-test 14: a gun-launched missile goes up the main gun's barrel, so the two never leave it together.
             else if (BarrelBusy(v, index)) return;
             // Limited ammunition: one round per trigger pull (a whole salvo counts as one).
-            else if (target == null || state.Ammo == 0 || !CanFire(v, index, target) || !InRhythm(v, index)) return;
+            // AI MASTER P0-C (spec 203): a boss's different heavy weapons never open fire in the same instant (checked before the
+            // rhythm, which notes the opening).
+            else if (target == null || state.Ammo == 0 || !CanFire(v, index, target) ||
+                     (v.Brain != null && !Bosses.BossWeaponDirector.CadenceAllows(v, index, _world.Time)) || !InRhythm(v, index)) return;
             else if (weapon.Charge > 0f)
             {
                 state.ChargeLeft = weapon.Charge;
