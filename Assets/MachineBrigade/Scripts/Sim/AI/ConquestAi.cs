@@ -1125,7 +1125,7 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>
-        /// Prompt 15 C.10: how well a card pierces the ground enemies seen, 0-1.2 (1.2: it overmatches them all, DECISIONS 20X): its main weapon's penetration against
+        /// Prompt 15 C.10: how well a card pierces the ground enemies seen, 0 up (1.2 x its damage type's ground value when it overmatches them all; a top attack its own table, combat final 04/10): its main weapon's penetration against
         /// the armour each shows (its roof to a weapon that strikes the roof) times the damage type, weighted by their
         /// value; a secondary counts at half.
         /// </summary>

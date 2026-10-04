@@ -96,7 +96,7 @@ SIDE_LEVEL = 0     # the light class's side (ArmourLevels.Vehicle(1)): the face 
 
 def penetration(table, pen, armour, overmatch=True):
     """DamageTable.Penetration: the multiplier of a round of a penetration against a face of an armour level."""
-    steps = table.get('penetration') or [1.2, 1, 0.85, 0.5, 0.25, 0.1]
+    steps = table.get('penetration') or [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0.08]
     last = len(steps) - 1
     step = 2 - (pen - armour)
     if not overmatch:

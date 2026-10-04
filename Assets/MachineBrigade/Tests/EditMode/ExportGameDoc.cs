@@ -205,7 +205,7 @@ namespace MachineBrigade.Tests
 
         /// <summary>
         /// Prompt 15: the damage-type table (a row per type: ground, air, structure), the penetration row (a level
-        /// or more above the armour, level, one, two and three under) and the thermobaric tag's structure multiplier.
+        /// or more above the armour, level, one, two, three and four or more under), the top attack row and the thermobaric tag's structure multiplier.
         /// </summary>
         private static object DamageTable(Catalog catalog)
         {
@@ -218,6 +218,8 @@ namespace MachineBrigade.Tests
                 table[d.ToString()] = row;
             }
             table["penetration"] = Enumerable.Range(0, MachineBrigade.Sim.Content.DamageTable.PenetrationSteps).Select(i => (object)catalog.Damage.PenetrationStep(i)).ToList();
+            // Combat final 04/10: the separate top attack row (the same seven steps against the roof).
+            table["topAttack"] = Enumerable.Range(0, MachineBrigade.Sim.Content.DamageTable.PenetrationSteps).Select(i => (object)catalog.Damage.TopAttackStep(i)).ToList();
             table["thermobaric"] = catalog.Damage.ThermobaricStructure;
             return table;
         }

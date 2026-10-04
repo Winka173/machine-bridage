@@ -25,8 +25,8 @@ NAMES = {
            "Fragmentation": "Fragmentation", "Energy": "Energy", "Ground": "Ground", "Air": "Air", "Structure": "Structures"},
 }
 STEPS = {
-    "vi": ["Hơn từ 2 cấp", "Hơn 1 cấp", "Bằng cấp", "Thiếu 1 cấp", "Thiếu 2 cấp", "Thiếu từ 3 cấp"],
-    "en": ["2 levels or more above", "1 level above", "Level", "1 level under", "2 levels under", "3 levels or more under"],
+    "vi": ["Hơn từ 2 cấp", "Hơn 1 cấp", "Bằng cấp", "Thiếu 1 cấp", "Thiếu 2 cấp", "Thiếu 3 cấp", "Thiếu từ 4 cấp"],
+    "en": ["2 levels or more above", "1 level above", "Level", "1 level under", "2 levels under", "3 levels under", "4 levels or more under"],
 }
 REACTIVE_CAP = 0.8  # HandbookFacts.ReactiveCap (the code reads it from there)
 ROUND_HOLD, MIN_SWITCH = 2.0, 0.5  # WeaponDef.RoundHoldSeconds, MinSwitchSeconds
@@ -87,8 +87,8 @@ class Handbook:
         return self.m.type_of(w, kind)
 
     def effective(self, w, armour, kind="Ground"):
-        top = bool(w.get("topAttack")) or float(w.get("minRange", 0)) > 0 or w.get("projectile") in ("Bomb", "Drone")
-        return self.m.pen(float(w.get("pen", 0)), armour, overmatch=(kind != "Air" and not top)) * self.type_of(w, kind)
+        roof = float(w.get("minRange", 0)) > 0 or w.get("projectile") in ("Bomb", "Drone")
+        return self.m.armour_mult(w, armour, kind, roof) * self.type_of(w, kind)
 
     def section(self, lang, esc, table):
         N, t = NAMES[lang], self.t
@@ -104,13 +104,22 @@ class Handbook:
             out.append(f"<p><b>{esc(N[k])}</b>: " + (f"mạnh với {N[best]} ({mult(t[k][best], lang)}), yếu với {N[worst]} ({mult(t[k][worst], lang)}). Ví dụ: {ex}."
                                                      if vi else f"strong against {N[best]} ({mult(t[k][best], lang)}), weak against {N[worst]} ({mult(t[k][worst], lang)}). For example: {ex}.") + "</p>")
         # 2. Penetration and the worked example.
-        pens = t["penetration"]
-        if len(pens) == 5:
-            pens = [pens[0]] + pens
-        out.append(table(["Xuyên so với giáp mặt trúng" if vi else "Penetration against the face's armour", "Sát thương" if vi else "Damage"],
-                         [[STEPS[lang][i], mult(pens[i], lang)] for i in range(6)], "dps"))
-        out.append("<p>" + (f"Giáp có hướng: trước, hông, sau và nóc (xe tới cấp {MAX_UNIT}, boss tới cấp {MAX_BOSS}); trên nóc và lên máy bay không có mức áp đảo ({mult(pens[1], lang)} là cao nhất)."
-                            if vi else f"Armour has a direction: front, side, rear and roof (vehicles up to level {MAX_UNIT}, bosses up to {MAX_BOSS}); on the roof and on aircraft a round never overmatches ({mult(pens[1], lang)} is the most).") + "</p>")
+        # Combat final 04/10: two tables, direct fire and top attack (a weapon reads one or the other, never both).
+        def seven(row):
+            row = list(row)
+            if len(row) == 5:
+                row = [row[0]] + row
+            return row + [row[-1]] * (7 - len(row))
+        pens, tops = seven(t["penetration"]), seven(t.get("topAttack") or t["penetration"])
+        out.append(table(["Xuyên so với giáp mặt trúng" if vi else "Penetration against the face's armour", "Bắn thẳng" if vi else "Direct fire",
+                          "Đánh nóc (giáp nóc)" if vi else "Top attack (roof)"],
+                         [[STEPS[lang][i], mult(pens[i], lang), mult(tops[i], lang)] for i in range(7)], "dps"))
+        out.append("<p>" + (f"Giáp có hướng: trước, hông, sau và nóc (xe tới cấp {MAX_UNIT}, boss tới cấp {MAX_BOSS}). Đạn bắn thẳng dùng cột bắn thẳng theo mặt trúng; "
+                            f"đạn không đánh nóc mà rơi xuống nóc, và mọi phát lên máy bay, không có mức áp đảo ({mult(pens[1], lang)} là cao nhất). "
+                            f"Vũ khí đánh nóc luôn trúng giáp nóc và chỉ dùng cột đánh nóc (không nhân hai bảng, không chặn ở {mult(pens[1], lang)})."
+                            if vi else f"Armour has a direction: front, side, rear and roof (vehicles up to level {MAX_UNIT}, bosses up to {MAX_BOSS}). Direct fire reads the direct column "
+                            f"against the face it strikes; a round that is not a top attack but comes down on the roof, and every hit on an aircraft, never overmatches "
+                            f"({mult(pens[1], lang)} is the most). A top-attack weapon always strikes the roof and reads the top-attack column only (never both tables, no cap at {mult(pens[1], lang)}).") + "</p>")
         hb = self.d.get("handbook", {})
         shooter, target = self.m.V.get(hb.get("exampleShooter", "ifv")), self.m.V.get(hb.get("exampleTarget", "main_battle_tank"))
         if shooter and target and shooter.get("weapon") in self.m.W:
@@ -128,7 +137,7 @@ class Handbook:
             return ", ".join(esc(self.name(w)) for w in self.examples(fits, n)) or ("chưa có" if vi else "none yet")
         he_s, th = t["HighExplosive"]["Structure"], t.get("thermobaric", 2.0)
         marks = [
-            ("Đánh nóc" if vi else "Top attack", ("Trúng giáp nóc, mặt mỏng nhất. Ví dụ: " if vi else "Strikes the roof armour, the thinnest face. For example: ") + ex(lambda w: w.get("topAttack"))),
+            ("Đánh nóc" if vi else "Top attack", ("Trúng giáp nóc, mặt mỏng nhất, theo bảng đánh nóc riêng. Ví dụ: " if vi else "Strikes the roof armour, the thinnest face, on its own top-attack table. For example: ") + ex(lambda w: w.get("topAttack"))),
             ("Nhiệt áp" if vi else "Thermobaric", (f"{mult(th, lang)} lên công trình thay cho {mult(he_s, lang)} của nổ mạnh (thay, không nhân thêm). Ví dụ: " if vi
                                                    else f"{mult(th, lang)} on structures instead of high explosive's {mult(he_s, lang)} (replaces, never adds). For example: ") + ex(lambda w: w.get("thermobaric"))),
             ("Dẫn đường" if vi else "Guided", ("Bám mục tiêu; APS / phòng thủ điểm bắn hạ được, pháo sáng đánh lừa loại nhắm máy bay. Ví dụ: " if vi

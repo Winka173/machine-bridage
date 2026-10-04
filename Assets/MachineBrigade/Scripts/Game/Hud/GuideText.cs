@@ -665,11 +665,11 @@ namespace MachineBrigade.Game.Hud
             ["guide.heavy_turret"] = (
                 "[[Heavy gun turret]] · fixed defence · twin 155 mm (50 m)\n" +
                 "How it fights: a slow-turning twin 155 mm turret that fires two-shot [[high-explosive]] volleys out to 50 m.\n" +
-                "Strong / weak: wrecks light vehicles, groups and tanks in its arc; as a [[structure]] it takes 1.5× from high explosive, little from bullets.\n" +
+                "Strong / weak: wrecks light vehicles, groups and tanks in its arc; as a [[structure]] it takes 1.6× from high explosive, little from bullets.\n" +
                 "Tip: siege guns, howitzers and rocket artillery outrange it; its turret turns slowly, so come at it from two sides.",
                 "[[Tháp pháo hạng nặng]] · công sự cố định · pháo đôi 155 mm (50 m)\n" +
                 "Cách đánh: tháp pháo đôi 155 mm xoay chậm, bắn [[loạt đôi]] đạn nổ mạnh tới 50 m.\n" +
-                "Mạnh / yếu: phá nát xe nhẹ, cụm quân và xe tăng trong góc bắn; là [[công trình]] nên ăn 1,5× sát thương nổ mạnh, sợ ít đạn súng máy.\n" +
+                "Mạnh / yếu: phá nát xe nhẹ, cụm quân và xe tăng trong góc bắn; là [[công trình]] nên ăn 1,6× sát thương nổ mạnh, sợ ít đạn súng máy.\n" +
                 "Mẹo: pháo cối công thành, lựu pháo và pháo phản lực bắn xa hơn nó; tháp xoay chậm nên hãy đánh từ hai hướng."),
             ["guide.flak_tower"] = (
                 "[[Flak tower]] · fixed defence · closes the sky (46 m)\n" +
@@ -971,11 +971,11 @@ namespace MachineBrigade.Game.Hud
             ["guide.napalm_strike"] = (
                 "[[Napalm strike]] · a line of fire · {{cp}} CP\n" +
                 "How it fights: a jet lays {{count}} [[fire]] bombs along a {{length}} m line in the direction you drag; the ground is left burning.\n" +
-                "Strong / weak: fire burns [[light vehicles]] (125%) and buildings; heavy armour takes only half, and aircraft none.\n" +
+                "Strong / weak: fire burns [[light vehicles]] (115%) and buildings; heavy armour takes only half, and aircraft none.\n" +
                 "Tip: drag it through a column of light vehicles or a row of towers.",
                 "[[Bom napalm]] · một hàng lửa · {{cp}} CP\n" +
                 "Cách đánh: máy bay thả {{count}} quả [[bom lửa]] dọc đường {{length}} m theo hướng bạn kéo; mặt đất bị đốt cháy.\n" +
-                "Mạnh / yếu: lửa thiêu [[xe nhẹ]] (125%) và nhà cửa; giáp dày chỉ nhận một nửa, máy bay thì không hề hấn gì.\n" +
+                "Mạnh / yếu: lửa thiêu [[xe nhẹ]] (115%) và nhà cửa; giáp dày chỉ nhận một nửa, máy bay thì không hề hấn gì.\n" +
                 "Mẹo: kéo xuyên qua một đoàn xe nhẹ hoặc một dãy tháp canh."),
             ["guide.air_raid"] = (
                 "[[Air raid]] · battle event · hits both sides\n" +

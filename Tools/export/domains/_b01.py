@@ -60,9 +60,9 @@ def templates(book):
         return f"INDEX({R('Bang_sat_thuong', col, '*')},MATCH({V('loai_sat_thuong')},{R('Bang_sat_thuong', 'id', '*')},0))"
 
     def pen_idx(armour, air=False):
-        step = f"2-({V('xuyen')}-{armour})"
-        step = f"MAX(1,{step})" if air else f"IF({{danh_tu_tren}},MAX(1,{step}),{step})"
-        return f"INDEX({R('Bang_xuyen_giap', 'he_so', '*')},MIN(6,MAX(1,{step}+1)))"
+        # Combat final 04/10: a topAttack weapon reads Bang_danh_noc only, the rest Bang_xuyen_giap (DamageTable.ArmourMultiplier).
+        return LB.armour_index(R('Bang_xuyen_giap', 'he_so', '*'), R('Bang_danh_noc', 'he_so', '*'), V('xuyen'), armour,
+                               roof_expr="{danh_tu_tren}", top_expr=V('danh_noc'), air=air)
 
     struct = type_idx("cong_trinh")
     if thermo is not None:
@@ -114,9 +114,9 @@ REF = {
     "nap_lai_kho_hieu_dung_s": f"{DEF} MagazineReload", "dps_duy_tri_mot_muc_tieu": f"{FP} Sustained (carrier null)",
     "danh_tu_tren": "Sim/Content/Armour.cs StrikesTop", "ban_mat_dat": f"{DEF} CanTarget(false)",
     "ban_may_bay": f"{DEF} CanTarget(true)", "he_so_mat_dat": f"{DT} TypeOf(Ground)", "he_so_may_bay": f"{DT} TypeOf(Air)",
-    "he_so_cong_trinh": f"{DT} TypeOf(Structure)", "he_so_xuyen_giap_0": f"{DT} Penetration(pen, 0, overmatch)",
-    "he_so_xuyen_giap_2": f"{DT} Penetration(pen, 2, overmatch)", "he_so_xuyen_giap_4": f"{DT} Penetration(pen, 4, overmatch)",
-    "he_so_xuyen_may_bay": f"{DT} Penetration(pen, 0, no overmatch)",
+    "he_so_cong_trinh": f"{DT} TypeOf(Structure)", "he_so_xuyen_giap_0": f"{DT} ArmourMultiplier(pen, 0, Ground)",
+    "he_so_xuyen_giap_2": f"{DT} ArmourMultiplier(pen, 2, Ground)", "he_so_xuyen_giap_4": f"{DT} ArmourMultiplier(pen, 4, Ground)",
+    "he_so_xuyen_may_bay": f"{DT} ArmourMultiplier(pen, 0, Air)",
     "dps_giap_0": f"{FP} Sustained x {DT} Effective(armour 0, Ground)",
     "dps_giap_2": f"{FP} Sustained x {DT} Effective(armour 2, Ground)",
     "dps_giap_4": f"{FP} Sustained x {DT} Effective(armour 4, Ground)",
@@ -154,6 +154,7 @@ MEAN = {
 def values(table: dict, w: dict, tier: int, rules: dict) -> dict:
     dps = G.sustained(w)
     top = G.strikes_top(w)
+    ta = bool(w.get("topAttack"))   # combat final 04/10: the top attack table instead of the direct one
     g, a = G.can_target(w, False), G.can_target(w, True)
     p = G.pen(w)
     warns = G.warns(w, tier, rules)
@@ -163,8 +164,8 @@ def values(table: dict, w: dict, tier: int, rules: dict) -> dict:
         "nap_lai_kho_hieu_dung_s": G.magazine_reload(w), "dps_duy_tri_mot_muc_tieu": dps, "danh_tu_tren": top,
         "ban_mat_dat": g, "ban_may_bay": a, "he_so_mat_dat": G.type_of(table, w, "Ground"),
         "he_so_may_bay": G.type_of(table, w, "Air"), "he_so_cong_trinh": G.type_of(table, w, "Structure"),
-        "he_so_xuyen_giap_0": G.penetration(table, p, 0, not top), "he_so_xuyen_giap_2": G.penetration(table, p, 2, not top),
-        "he_so_xuyen_giap_4": G.penetration(table, p, 4, not top), "he_so_xuyen_may_bay": G.penetration(table, p, 0, False),
+        "he_so_xuyen_giap_0": G.armour_mult(table, p, 0, "Ground", top, ta), "he_so_xuyen_giap_2": G.armour_mult(table, p, 2, "Ground", top, ta),
+        "he_so_xuyen_giap_4": G.armour_mult(table, p, 4, "Ground", top, ta), "he_so_xuyen_may_bay": G.armour_mult(table, p, 0, "Air", top, ta),
         "dps_giap_0": dps * G.effective(table, w, 0, "Ground") if g else 0.0,
         "dps_giap_2": dps * G.effective(table, w, 2, "Ground") if g else 0.0,
         "dps_giap_4": dps * G.effective(table, w, 4, "Ground") if g else 0.0,

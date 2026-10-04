@@ -84,15 +84,26 @@ Mode parameters (tickets, CP rates, wave tables, starting forces) live in data, 
 
 ### Damage model
 
-Each weapon has a **damage type**. Each vehicle has an **armor class**. A multiplier table decides effectiveness. Counters are shown to the player as icons on cards and in the unit panel.
+Each weapon has a **damage type** and a **penetration level**; each unit has an **armour level** on each face (front, side,
+rear, roof; 0-4, bosses up to 5). Damage = base x damage-type multiplier (by Ground / Air / Structure) x armour multiplier.
+The plan's first table by armour class was replaced by prompt 15 and the final combat rebalance (04/10); the source of truth
+is `Assets/MachineBrigade/Resources/Data/balance.json` "damageTable" (read by `Sim/Content/DamageTable.cs`). Current values:
 
-| Damage type \ Armor | Light | Heavy | Air | Structure |
-|---|---:|---:|---:|---:|
-| Kinetic (machine guns, autocannons) | 1.0 | 0.25 | 0.5 | 0.3 |
-| Armor-piercing (tank guns, AT missiles) | 0.75 | 1.0 | 0.5 | 0.6 |
-| High-explosive (artillery, rockets, bombs; splash) | 1.0 | 0.6 | 0.0 | 1.5 |
-| Fire (damage over time, ignites terrain) | 1.25 | 0.5 | 0.0 | 1.0 |
-| Flak (anti-air) | 0.4 | 0.1 | 1.5 | 0.1 |
+| Damage type | Ground | Air | Structure |
+|---|---:|---:|---:|
+| Kinetic | 1.20 | 0.30 | 0.70 |
+| ShapedCharge | 1.30 | 0.20 | 0.45 |
+| HighExplosive | 1.00 | 0.00 | 1.60 (thermobaric: 2.0 instead, not on top) |
+| Fragmentation | 0.45 | 1.35 | 0.10 |
+| Fire | 1.35 | 0.00 | 1.10 |
+| Energy | 0.90 | 1.50 | 0.40 |
+
+Two armour tables, by penetration minus armour (+2 or more, +1, 0, -1, -2, -3, -4 or less); a weapon reads one, never both:
+
+| Table | +2 | +1 | 0 | -1 | -2 | -3 | <= -4 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Direct penetration (face struck; a non-top-attack round on the roof and every hit on aircraft stop at +1) | 1.20 | 1.00 | 0.85 | 0.65 | 0.40 | 0.15 | 0.08 |
+| Top attack (`topAttack` weapons, always against the roof, no cap) | 1.15 | 1.10 | 0.95 | 0.75 | 0.50 | 0.25 | 0.12 |
 
 ### Roster
 

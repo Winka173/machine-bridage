@@ -168,10 +168,11 @@ namespace MachineBrigade.Sim.Combat
         }
 
         /// <summary>
-        /// Prompt 15 B.5: what a hit's damage is multiplied by before equipment and bonuses: the penetration
-        /// multiplier (the round's penetration, with the shooter's equipment, against the armour of the face it
-        /// strikes; a blast's fragments pierce as a heavy machine gun against vehicles; a boss part has its own
-        /// armour) times the damage type against the target's kind.
+        /// Prompt 15 B.5: what a hit's damage is multiplied by before equipment and bonuses: the armour multiplier
+        /// (the round's penetration, with the shooter's equipment, against the armour of the face it strikes; a blast's
+        /// fragments pierce as a heavy machine gun against vehicles; a boss part has its own armour) times the damage type
+        /// against the target's kind. Combat final 04/10: a top-attack weapon's hit on a ground target or a structure meets
+        /// the roof's armour (a boss part's own) through the top attack table only; every other hit the direct table.
         /// </summary>
         internal float HitMultiplier(IDamageable target, DamageType type, in HitInfo hit)
         {
@@ -187,18 +188,21 @@ namespace MachineBrigade.Sim.Combat
             if (hit.Kind is HitKind.Splash or HitKind.Strike || (hit.HasBlast && weapon == null)) pen = Armour.SplashPenetration(pen, kind);
             float armour;
             var face = ArmorFace.Front;
+            // Combat final 04/10: the weapon's topAttack flag picks the top attack table (never on an aircraft).
+            var topAttack = weapon is { TopAttack: true } && kind != TargetKind.Air;
             if (target is Vehicle v)
             {
                 var part = v.HasParts && hit.Kind == HitKind.Direct && hit.Projectile is { Part: >= 0 } shot && !v.IsPartBroken(shot.Part) ? shot.Part : -1;
                 _lastFace = face = part >= 0 ? ArmorFace.Front : FaceOf(v, hit);
                 armour = part >= 0 ? v.Def.Parts[part].ArmourOn(v.Def) : v.ArmourOn(_lastFace);
+                if (part < 0 && face != ArmorFace.Top) topAttack = false;
             }
-            else armour = target.Armour[ArmorFace.Front];
-            var typeMult = weapon != null ? table.TypeOf(weapon, kind)
-                : hit.Thermo && kind == TargetKind.Structure && type == DamageType.HighExplosive ? MathF.Max(table.ThermobaricStructure, table.Type(type, kind))
-                : table.Type(type, kind);
-            // DECISIONS 20X: a round overmatches a face it meets side on, not the roof and not an aircraft.
-            _lastPen = known ? table.Penetration(pen, armour, DamageTable.Overmatches(kind, face == ArmorFace.Top)) : 1f;
+            else armour = target.Armour[topAttack ? ArmorFace.Top : ArmorFace.Front];
+            // The thermobaric tag replaces high explosive's structure value (not on top of it).
+            var typeMult = weapon != null ? table.TypeOf(weapon, kind) : table.TypeOf(type, kind, hit.Thermo);
+            // DECISIONS 20X: a direct-table round overmatches a face it meets side on, not the roof and not an aircraft;
+            // a top attack reads its own table against the roof (DamageTable.ArmourMultiplier: one table, never both).
+            _lastPen = known ? table.ArmourMultiplier(pen, armour, kind, face == ArmorFace.Top, topAttack) : 1f;
             // Prompt 26 A.5: a ground boss struck on its side or its rear (not on a part) takes half as much again.
             var flank = target is Vehicle flanked && flanked.Def.Boss && !flanked.Flying && (face == ArmorFace.Side || face == ArmorFace.Rear) ? BossFlankBonus : 1f;
             return _lastPen * typeMult * flank;
@@ -214,8 +218,9 @@ namespace MachineBrigade.Sim.Combat
             var face = target is Vehicle v
                 ? v.Flying ? ArmorFace.Front : Armour.StrikesTop(weapon) || FromAbove(shooter) ? ArmorFace.Top : FaceFrom(v, shooter.Position)
                 : ArmorFace.Front;
-            var armour = target is Vehicle tv ? tv.ArmourOn(face) : target.Armour[ArmorFace.Front];
-            return table.Penetration(weapon.Penetration + shooter.PenetrationUp, armour, DamageTable.Overmatches(target.Kind, face == ArmorFace.Top)) *
+            var topAttack = weapon.TopAttack && target.Kind != TargetKind.Air && (target is not Vehicle || face == ArmorFace.Top);
+            var armour = target is Vehicle tv ? tv.ArmourOn(face) : target.Armour[topAttack ? ArmorFace.Top : ArmorFace.Front];
+            return table.ArmourMultiplier(weapon.Penetration + shooter.PenetrationUp, armour, target.Kind, face == ArmorFace.Top, topAttack) *
                    table.TypeOf(weapon, target.Kind);
         }
 

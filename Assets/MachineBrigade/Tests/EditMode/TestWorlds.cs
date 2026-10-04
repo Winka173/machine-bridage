@@ -47,6 +47,22 @@ namespace MachineBrigade.Tests
             cooldown: 1f, range: 0.5f, minRange: 0f, projectileSpeed: 100f, splashRadius: 0f, spread: 0f,
             ExplosionTier.Small);
 
+        /// <summary>
+        /// Combat final 04/10: the hand-built test world keeps a fixed fixture table (prompt 15's starting type values and
+        /// the code's earlier direct row) so the mechanism tests that use it keep their round numbers; the shipped table
+        /// (balance.json, DamageTable.Default) is checked by CombatFinalTests. The top attack row is the shipped one.
+        /// </summary>
+        public static readonly DamageTable Damage = new DamageTable(new[,]
+        {
+            //  Ground  Air   Structure
+            { 1.00f, 0.30f, 0.60f }, // Kinetic
+            { 1.00f, 0.30f, 0.60f }, // ShapedCharge
+            { 1.00f, 0.00f, 1.50f }, // HighExplosive
+            { 1.50f, 0.00f, 1.00f }, // Fire
+            { 0.50f, 1.50f, 0.10f }, // Fragmentation
+            { 1.00f, 1.50f, 0.50f }, // Energy
+        }, new[] { 1.2f, 1f, 0.85f, 0.55f, 0.25f, 0.1f });
+
         public static Catalog Catalog()
         {
             var dummy = new VehicleDef("dummy", ArmorClass.Heavy, maxHp: 1000f, speed: 6f, turnRateDegrees: 180f,
@@ -106,7 +122,7 @@ namespace MachineBrigade.Tests
                     duration: 2f, damage: 0.5f, DamageType.HighExplosive, ExplosionTier.Small),
             };
 
-            return new Catalog(1, DamageTable.Default, new[] { Gun, Shell, Stub, Howitzer, RoofGun, Flak, Salvo, Missile, Strafe },
+            return new Catalog(1, Damage, new[] { Gun, Shell, Stub, Howitzer, RoofGun, Flak, Salvo, Missile, Strafe },
                 new[] { tank, boomer, mortar, dummy, arty, decoy, gunner, heli, jet, aa, launcher, hunter },
                 new[] { barrel, house }, supports);
         }

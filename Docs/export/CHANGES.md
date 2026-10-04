@@ -12819,3 +12819,35 @@ Nhánh `feature/final-zones`. Chủ 04/10: "các vụ nổ mà quyết định l
 The owner wants the ship missiles' red zones smaller; the warhead-cube rule grew two of them by 0.5 m, so they keep
 their earlier cores (edge 2x on bosses): nyx_tomahawk 8.5 -> 8 (edge 16), pt14_hp_nsm 5.5 -> 5 (edge 10).
 p26_roc_roc105 stays 5.5 (the manifest's 105 mm HE value). sam_48n6 stays 7.2 (air burst, no ground ring).
+
+## COMBAT FINAL
+
+Nhánh `feature/combat-final`. Nguồn: `Docs/prompts/combat_rebalance_vi.md` (mục 1-15 và phần BỔ SUNG 04/10: bảng Top Attack riêng), mới hơn gói MB_FINAL và thắng chỗ chồng lấn (không có chỗ chồng: MB_FINAL zones chỉ đổi tên lửa của tàu boss). Lý do: `Docs/DECISIONS.md` "Combat final 04/10 (lane A)"; báo cáo đầy đủ `Docs/fixes/combat_final_report.md`. "cũ thực tế" = giá trị game dùng trước khi sửa (balance.json); "dự kiến" = giá trị cũ prompt ghi, khi khác. Boss: giáp và máu không đổi. Phòng thủ (ERA, lồng, SELF_APS, phòng thủ điểm), cooldown, trang bị: không đổi.
+
+| # | mục | cũ thực tế | mới | ghi chú |
+|---|---|---|---|---|
+| CF-1 | `damageTable.penetration` (bảng bắn thẳng) | 1.2 / 1.0 / 0.85 / 0.5 / 0.25 / 0.1 (6 bước, <= -3 chung 0.1) | 1.2 / 1.0 / 0.85 / 0.65 / 0.4 / 0.15 / 0.08 (7 bước, <= -4 riêng 0.08) | khớp giá trị cũ dự kiến |
+| CF-2 | `tunables.json` `weapons.damageTable.defaultPenetration` (dự phòng khi thiếu dữ liệu; SimTunables.DefaultPenetration) | 1.2 / 1.0 / 0.85 / **0.55** / 0.25 / 0.1 | 1.2 / 1.0 / 0.85 / 0.65 / 0.4 / 0.15 / 0.08 | cũ thực tế -1 = 0.55 (dự kiến 0.50) |
+| CF-3 | `damageTable.topAttack` (bảng đánh nóc, mới) | không có: đánh nóc dùng bảng thẳng, chặn x1.00 | 1.15 / 1.10 / 0.95 / 0.75 / 0.50 / 0.25 / 0.12 | phần bổ sung; tunables `weapons.damageTable.defaultTopAttack` cùng giá trị |
+| CF-4 | luật nóc / máy bay | mọi phát trúng nóc và máy bay: tối đa x1.00 | đạn KHÔNG topAttack rơi xuống nóc và máy bay: vẫn tối đa x1.00 (bảng thẳng); vũ khí topAttack: luôn giáp nóc + bảng đánh nóc, không chặn x1, không nhân hai bảng | DamageTable.ArmourMultiplier |
+| CF-5 | Kinetic G / A / S | 1.00 / 0.30 / 0.60 | 1.20 / 0.30 / 0.70 | |
+| CF-6 | ShapedCharge G / A / S | 1.00 / 0.30 / 0.60 | 1.30 / 0.20 / 0.45 | |
+| CF-7 | HighExplosive G / A / S | 1.00 / 0.00 / 1.50 | 1.00 / 0.00 / 1.60 | |
+| CF-8 | Fragmentation G / A / S | 0.50 / 1.30 / 0.10 | 0.45 / 1.35 / 0.10 | bảng dự phòng trong mã (DamageTable.Default) cũ ghi Air 1.50: cũng thành 1.35 |
+| CF-9 | Fire G / A / S | 1.50 / 0.00 / 1.00 | 1.35 / 0.00 / 1.10 | |
+| CF-10 | Energy G / A / S | 1.00 / 1.50 / 0.50 | 0.90 / 1.50 / 0.40 | Energy vẫn xuyên khiên (luật cũ giữ) |
+| CF-11 | nhiệt áp lên công trình | max(2.0, HE công trình) | 2.0 thay cho HE 1.60 (không nhân 1.60 x 2.0) | `thermobaric` 2.0 giữ |
+| CF-12 | `guided_bomb` damage / topAttack | 210 / false | 250 / true | xuyên 3, HighExplosive giữ |
+| CF-13 | `jet_bombs` topAttack | false | true | damage 310, xuyên 2 giữ |
+| CF-14 | `bomber_payload` topAttack | false | true | damage 420, xuyên 3 giữ |
+| CF-15 | `stealth_payload` topAttack | false | true | damage 892, xuyên 4 giữ |
+| CF-16 | `hellfire_standoff` topAttack | false | true | đường bay thành Loft (WeaponDef.Flight: tên lửa topAttack) |
+| CF-17 | `atgm` damage | 190 | 210 | xuyên 4, nạp, đánh thẳng giữ |
+| CF-18 | `gun_launched_atgm` damage / pen | 200 / 3 | 230 / 4 | nạp, đánh thẳng giữ |
+| CF-19 | `kh29` splash (lõi) / edge (rìa) | 0 / không | 7 / 14 | damage 378, xuyên 4, ShapedCharge giữ; cũ dự kiến "quá nhỏ / 0": thực tế 0 |
+| CF-20 | `maverick` splash | 0 | 3,5 | Maverick-class 57 kg: lõi 3-4 m; không rìa riêng (boss: 2x mặc định) |
+| CF-21 | `cruise_missile_ground` (Typhon, 450 kg) splash / edge | 0 / không | 8 / 16 | cruise 400-450 kg: lõi 8-10 / rìa 16-20, lấy mức thấp (chủ muốn vùng tên lửa không to ra); `nyx_tomahawk` thừa kế edge 16 = đúng mức boss mặc định cũ 2 x 8, không đổi |
+| CF-22 | bom thả khác | `p26_roc_roc_bombs`, `p26_roc_main_roc_bombs` đã true | không đổi | `detonator` (bom xe) không thả: false |
+| CF-23 | tên lửa lớn khác (không phải outlier rõ) | jassm 9, air_cruise_missile 9, leviathan_cruise 10, hydra_club_s 6,5, ballistic_missile 10, anti_ship_missile 7, scylla_kh35 6, pt14_hp_nsm 5, nyx_tomahawk 8, ATGM nhỏ 0 | không đổi | |
+| CF-24 | bộ xuất | 6 bước (`PEN_STEPS` tới -3), một bảng | 7 bước (tới -4); sheet mới `01/Bang_danh_noc`; công thức Excel lớp B (`Vu_khi_suy_ra`, `Hoi_quy_du_lieu`, `May_bay_so_phat`, `Boss_hieu_qua`, `Tuong_duong_xe_cong_trinh`) chọn bảng theo `danh_noc`; input mới `input_bang_danh_noc` (02, 03, 04) | `_game.py` port ArmourMultiplier |
+| CF-25 | Sổ tay đạn (game + tài liệu thiết kế) | một cột, bước "thiếu từ 3 cấp" | hai cột Bắn thẳng / Đánh nóc, 7 bước | AmmoHandbook.cs, BaseText.cs, Tools/docs/prompt32.py |

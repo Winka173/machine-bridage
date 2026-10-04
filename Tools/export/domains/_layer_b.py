@@ -9,6 +9,21 @@ from __future__ import annotations
 from core.formula import F
 
 
+def armour_index(direct: str, top: str, pen_expr: str, armour_expr: str, roof_expr: str | None = None,
+                 top_expr: str | None = None, air: bool = False) -> str:
+    """DamageTable.ArmourMultiplier as a formula (combat final 04/10), for whole levels: an aircraft reads the direct
+    table with no overmatch; a top attack (top_expr) the top attack table against the roof; else the direct table, no
+    overmatch on the roof (roof_expr). direct / top: the he_so column ranges of the two seven-step tables. One table only."""
+    step = f"2-({pen_expr}-{armour_expr})"
+    if air:
+        return f"INDEX({direct},MIN(7,MAX(1,MAX(1,{step})+1)))"
+    d_step = step if roof_expr is None else f"IF({roof_expr},MAX(1,{step}),{step})"
+    d = f"INDEX({direct},MIN(7,MAX(1,{d_step}+1)))"
+    if top_expr is None:
+        return d
+    return f"IF({top_expr},INDEX({top},MIN(7,MAX(1,{step}+1))),{d})"
+
+
 def shown(template: str) -> str:
     """The template as Schema.cong_thuc shows it: a row id with a dot is bracketed ({Kinh_te!gia_tri_so@[economy.income]}),
     so the text never reads as an e-mail address to the secret scan."""

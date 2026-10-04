@@ -35,7 +35,8 @@
       "smokeEnergyCut": { "value": 0.8, "unit": "share", "kind": "nguong", "linh_vuc": "01", "code": "DamageSystem.SmokeEnergyCut" }
     },
     "damageTable": {
-      "defaultPenetration": { "value": [1.2, 1.0, 0.85, 0.55, 0.25, 0.1], "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageTable.DefaultPenetration" }
+      "defaultPenetration": { "value": [1.2, 1.0, 0.85, 0.65, 0.4, 0.15, 0.08], "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageTable.DefaultPenetration" },
+      "defaultTopAttack": { "value": [1.15, 1.1, 0.95, 0.75, 0.5, 0.25, 0.12], "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageTable.DefaultTopAttack" }
     },
     "weaponDef": {
       "minSwitchSeconds": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "WeaponDef.MinSwitchSeconds" },
