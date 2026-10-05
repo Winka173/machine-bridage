@@ -84,25 +84,25 @@ namespace MachineBrigade.Tests
             var typhon = c.Vehicle("typhon");
             Assert.AreEqual("sam_post", typhon.Mounts[0].Weapon.Id);
             Assert.AreEqual("missile", typhon.Mounts[0].Slot);
-            Assert.AreEqual(80f, c.Weapons["sam_post"].ProjectileSpeed, 1e-3f);
+            Assert.AreEqual(145f, c.Weapons["sam_post"].ProjectileSpeed, 1e-3f);
             Assert.AreEqual(FlightProfile.Direct, c.Weapons["sam_post"].Flight);
             // Nemesis: the rocket car (mount 3) and the SAM car (mount 4).
             var nemesis = c.Vehicle("nuke_train");
             Assert.AreEqual("p26_nemesis_sec_boss_rockets", nemesis.Mounts[3].Weapon.Id);
             Assert.AreEqual("sam_battery", nemesis.Mounts[4].Weapon.Id);
-            Assert.AreEqual(65f, c.Weapons["p26_nemesis_sec_boss_rockets"].ProjectileSpeed, 1e-3f);
+            Assert.AreEqual(80f, c.Weapons["p26_nemesis_sec_boss_rockets"].ProjectileSpeed, 1e-3f);
             Assert.AreEqual(FlightProfile.Ballistic, c.Weapons["p26_nemesis_sec_boss_rockets"].Flight);
-            Assert.AreEqual(95f, c.Weapons["sam_battery"].ProjectileSpeed, 1e-3f);
+            Assert.AreEqual(165f, c.Weapons["sam_battery"].ProjectileSpeed, 1e-3f);
             Assert.AreEqual(FlightProfile.Loft, c.Weapons["sam_battery"].Flight);
             // Juggernaut: the rocket car (mount 1).
             var juggernaut = c.Vehicle("armored_train");
             Assert.AreEqual("pt14_train_grad", juggernaut.Mounts[1].Weapon.Id);
-            Assert.AreEqual(65f, c.Weapons["pt14_train_grad"].ProjectileSpeed, 1e-3f);
+            Assert.AreEqual(80f, c.Weapons["pt14_train_grad"].ProjectileSpeed, 1e-3f);
             Assert.AreEqual(FlightProfile.Ballistic, c.Weapons["pt14_train_grad"].Flight);
-            // Untouched: the other bosses' Grads and the player's Patriots.
-            Assert.AreEqual(130f, c.Weapons["boss_rockets"].ProjectileSpeed, 1e-3f);
-            Assert.AreEqual(300f, c.Weapons["patriot"].ProjectileSpeed, 1e-3f);
-            Assert.AreEqual(300f, c.Weapons["sam_pac3"].ProjectileSpeed, 1e-3f);
+            // Flight feel 05/10 (lane B): every speed above now follows the owner's flight-feel spec (boss barrage 80, Buk 145, Patriot 165).
+            Assert.AreEqual(80f, c.Weapons["boss_rockets"].ProjectileSpeed, 1e-3f);
+            Assert.AreEqual(165f, c.Weapons["patriot"].ProjectileSpeed, 1e-3f);
+            Assert.AreEqual(165f, c.Weapons["sam_pac3"].ProjectileSpeed, 1e-3f);
             foreach (var id in new[] { "sam_post", "sam_battery", "p26_nemesis_sec_boss_rockets", "pt14_train_grad" })
             {
                 var w = c.Weapons[id];

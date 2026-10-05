@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 3525b04a, ngày 2026-10-05. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 48822566, ngày 2026-10-05. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -452,7 +452,7 @@ Sheet 01_chien_dau/So_tay_dan — Sổ tay đạn (2 dòng, 8 cột)
 | exampleShooter | handbook | exampleShooter | ifv |
 | exampleTarget | handbook | exampleTarget | main_battle_tank |
 
-Bảng đầy đủ: xem sheet `Dong_vu_khi` (58 dòng).
+Bảng đầy đủ: xem sheet `Dong_vu_khi` (65 dòng).
 
 ## Họ vũ khí, hành vi đạn và vòng cảnh báo
 
@@ -752,7 +752,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Vu_khi_he_so_thuong` (27 dòng): Vũ khí: hệ số thưởng — bonuses[]: hệ số sát thương theo lớp / giáp / điều kiện
 - `Ho_vu_khi` (105 dòng): Họ vũ khí — weaponFamilyTable: họ, bậc cỡ, số boss chung, biến thể và lý do
 - `Ho_vu_khi_bien_the` (20 dòng): Họ vũ khí: biến thể — variants{}: biến thể của họ và lý do
-- `Dong_vu_khi` (58 dòng): Dòng vũ khí thật — weaponFamilies + secondRounds.families: số chung của một hệ thống thật
+- `Dong_vu_khi` (65 dòng): Dòng vũ khí thật — weaponFamilies + secondRounds.families: số chung của một hệ thống thật
 - `Dan_thay_the` (68 dòng): Đạn thay thế — Liên kết vũ khí -> đạn thay thế (he, air, đạn thứ hai roundOf)
 - `Bang_sat_thuong` (6 dòng): Bảng sát thương — damageTable: hệ số theo loại sát thương x mặt đất / máy bay / công trình
 - `Bang_xuyen_giap` (7 dòng): Bảng xuyên giáp (bắn thẳng) — damageTable.penetration: bảng xuyên giáp bắn thẳng, hệ số theo chênh xuyên - giáp mặt trúng (DamageTable.cs Penetration); vũ khí topAttack không dùng…

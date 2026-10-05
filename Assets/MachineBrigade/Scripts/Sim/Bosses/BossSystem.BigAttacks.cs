@@ -840,7 +840,9 @@ namespace MachineBrigade.Sim.Bosses
         /// Play-test 14 (lane G): how long before a big attack's round lands its gun fires: the round's flight from its part at
         /// its own speed, at most 0.9 s (the old fixed lead) and at least a tenth of a second.
         /// </summary>
-        private const double MaxLead = 0.9;
+        // Flight feel 05/10 (lane B): 0.9 s was tuned for 180-300 m/s rounds; the flight-feel speeds (mortar 40, howitzer 55-65,
+        // the 460 mm 85) fly up to ~2 s at full reach, so the cap is 2.5 s: the shell's view flies at its data speed, not faster.
+        private const double MaxLead = 2.5;
 
         private double Lead(BigBlast b)
         {
