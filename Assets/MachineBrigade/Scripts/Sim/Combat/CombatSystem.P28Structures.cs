@@ -92,13 +92,7 @@ namespace MachineBrigade.Sim.Combat
             return false;
         }
 
-        private int Crowd(Vehicle e, float radius)
-        {
-            var n = 0;
-            foreach (var o in _world.VehicleList)
-                if (o != e && o.IsAlive && o.Team == e.Team && o.Flying == e.Flying && Vector2.DistanceSquared(o.Position, e.Position) <= radius * radius) n++;
-            return n;
-        }
+        private int Crowd(Vehicle e, float radius) => _world.Spatial.CountSameSide(e, radius); // AI MASTER P5 section 98: the grid
 
         /// <summary>
         /// F.2: a boss's weights by its behaviour types on top of the score's value, threat, distance and reach: Anti-Blob

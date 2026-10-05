@@ -1036,9 +1036,18 @@ namespace MachineBrigade.Sim.AI
                     if (c.Unit.Contains("counter_battery") && Vector2.Distance(c.Position, v.Position) <= c.Reach + 20f) threat = true;
                 var marked = Near(v.Position, 15f);
                 var known = enemyGuns || tc.Battery.Best(now, 0.3f) != null;
-                if ((ShootAndScoot.Due(g.shots, v.Id.Value, threat, known) || (marked && g.shots > 0)) && !v.IsMoving && !v.HasPath &&
+                // AI MASTER P5 Part L: also inside a reload window that runs on the move (the scoot then costs no firing time).
+                var reloadScoot = known && !threat && AmmoTactics.ScootDuringReload(AmmoTactics.Read(world, v), g.shots);
+                if ((ShootAndScoot.Due(g.shots, v.Id.Value, threat, known) || (marked && g.shots > 0) || reloadScoot) && !v.IsMoving && !v.HasPath &&
                     ScootP3(world, tc, v, threat))
+                {
                     g.shots = 0;
+                    if (reloadScoot)
+                    {
+                        world.Health.Counters.ScootsDuringReload++;
+                        P3Reasons.Unit(world, v, DecisionKind.Action, P5Reasons.ScootDuringReload);
+                    }
+                }
                 _guns[v.Id] = g;
             }
             FireMissionP3(world, intel, tc, v);

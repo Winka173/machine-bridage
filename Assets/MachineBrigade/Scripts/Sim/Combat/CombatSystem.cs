@@ -267,6 +267,8 @@ namespace MachineBrigade.Sim.Combat
             var now = _world.Time;
             if (holds && now < nextAt) return held;
             nextAt = now + RetargetSeconds;
+            // AI MASTER P5 Part L: a reloading mount keeps its valid target (no re-scoring churn while it cannot fire).
+            if (holds && KeepWhileReloadingP5(v, weapon)) return held;
             var best = BestInRange(v, weapon, favoured, arcMount, out var bestScore);
             if (!holds) return best;
             if (best == null || best == held) return held;
@@ -396,6 +398,8 @@ namespace MachineBrigade.Sim.Combat
             score *= P28Worth(v, other, weapon);
             // AI MASTER P3: planned damage, stances, handoff, AA coverage, multi-weapon director (AI sides only).
             score *= P3Worth(v, other, weapon);
+            // AI MASTER P5 Part N: tower coordination on an AI side's towers (protected zone, AT, anti-artillery, critical, overkill).
+            score *= P5Worth(v, other, weapon);
             score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
             return score;
         }

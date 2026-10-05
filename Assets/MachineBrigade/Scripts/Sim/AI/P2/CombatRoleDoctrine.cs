@@ -312,15 +312,8 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Whether two or more other enemies of <paramref name="t"/>'s side stand within the cluster radius of it.</summary>
         internal static bool Clustered(SimWorld world, Vehicle t)
         {
-            var r = Tun.RoleDoctrine.ClusterRadius;
-            var n = 0;
-            foreach (var o in world.VehicleList)
-            {
-                if (o == t || !o.IsAlive || o.Team != t.Team || o.Flying != t.Flying) continue;
-                if (Vector2.DistanceSquared(o.Position, t.Position) > r * r) continue;
-                if (++n >= 2) return true;
-            }
-            return false;
+            // AI MASTER P5 section 98: a bounded query on the AI grid instead of a scan of every vehicle (same count).
+            return world.Spatial.CountSameSide(t, Tun.RoleDoctrine.ClusterRadius, 2) >= 2;
         }
     }
 }

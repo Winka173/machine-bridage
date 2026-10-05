@@ -2203,6 +2203,13 @@ namespace MachineBrigade.Game.Hud
             ["toast.crateTheirs"] = ("The enemy took the supply crate", "Địch đã chiếm thùng tiếp tế"),
             ["toast.raid"] = ("Bombers inbound over the front! They hit everyone", "Máy bay ném bom đang tới tiền tuyến! Trúng cả hai phe"),
             ["toast.weather"] = ("The weather is turning: {weather}", "Thời tiết đang thay đổi: {weather}"),
+            // AI MASTER P5 (spec 215): the AI's tactical radio cues (presentation only).
+            ["cue.enemy.attack_go"] = ("Enemy radio: \"All units, go!\" A coordinated attack is coming", "Bộ đàm địch: \"Tất cả, tiến!\" Một đợt tấn công phối hợp đang tới"),
+            ["cue.ally.attack_go"] = ("Allied radio: coordinated attack, go!", "Bộ đàm đồng minh: tấn công phối hợp, tiến!"),
+            ["cue.ally.flank"] = ("Allied radio: moving to flank", "Bộ đàm đồng minh: đang vòng sườn"),
+            ["cue.ally.probe"] = ("Allied radio: probing their line", "Bộ đàm đồng minh: thăm dò phòng tuyến địch"),
+            ["cue.ally.feint"] = ("Allied radio: feint under way", "Bộ đàm đồng minh: đang nghi binh"),
+            ["cue.ally.escape"] = ("Allied radio: scatter, clear the blast!", "Bộ đàm đồng minh: tản ra, tránh vụ nổ!"),
             ["mission.launchIn"] = ("LAUNCH IN {time}", "PHÓNG SAU {time}"),
             ["mission.landings"] = ("LANDED {done} / {needed}", "ĐÃ HẠ CÁNH {done} / {needed}"),
             ["daily.title"] = ("TODAY'S CHALLENGES", "THỬ THÁCH HÔM NAY"),

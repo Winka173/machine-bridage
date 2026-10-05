@@ -106,6 +106,9 @@ namespace MachineBrigade.Sim.AI
 
         internal double ActionSince = double.NegativeInfinity, StateSince = double.NegativeInfinity, EmergencyReadyAt;
         internal double IdleSince = double.NaN, LastScored = double.NegativeInfinity;
+
+        /// <summary>AI MASTER P5 Part K: the health monitor asked for a re-evaluation (taken as an idle reassessment on the next think).</summary>
+        internal bool HealthReassess;
         internal Vector2 IssuedGoal = new(float.NaN, float.NaN);
         internal SquadAction IssuedAction = SquadAction.Regroup;
         internal bool Dodging, HoldReleased, BlockedLeft, BlockedRight, FlankReached, BoundPhase;
@@ -150,6 +153,9 @@ namespace MachineBrigade.Sim.AI
         private readonly Dictionary<(int, int), double> _warningsSeen = new();
         private int _nextId = 1;
         private float _timer;
+
+        /// <summary>AI MASTER P5 Part P: layer ticks so far (the squads' think buckets).</summary>
+        private long _layerTick;
 
         internal SquadLayer(AiCommander commander)
         {
@@ -223,12 +229,17 @@ namespace MachineBrigade.Sim.AI
                     _squads.RemoveAt(i);
                 }
             }
+            _layerTick++;
             foreach (var s in _squads)
             {
                 if (s.MemberList.Count == 0) continue;
                 // AI MASTER P1: passage turns and packets first (spec 31, 85-86).
                 TrafficTick(world, s);
-                Think(world, intel, s);
+                // AI MASTER P5 Part P: each squad thinks in its bucket (2 Hz at the 4 Hz layer tick); a warning ring over a squad
+                // is still dodged on every tick, and a dodging squad or a health re-evaluation thinks at once.
+                if (AiCadence.Due(s.Id, _layerTick, global::MachineBrigade.Sim.Content.SimTunables.Ai.Budget.SquadBuckets) || s.Dodging || s.HealthReassess)
+                    Think(world, intel, s);
+                else Dodge(world, intel, s, world.Time);
             }
             // AI MASTER P0-A (Part C2): the reasons the squads hold their members for.
             ExplainHolds(world);
@@ -316,8 +327,15 @@ namespace MachineBrigade.Sim.AI
 
             // Anti-churn (C.3): change only when the current action is no longer valid, or the new one beats it by the
             // switch margin after the state's minimum commitment, or an urgent event says so.
-            var commit = MathF.Max(ai.MinCommit, world.Catalog.AiData.States[(int)s.State].Commit);
+            // AI MASTER P5 Part K: a churning squad's commitment is longer for a while (the health monitor's damping).
+            var commit = MathF.Max(ai.MinCommit, world.Catalog.AiData.States[(int)s.State].Commit) * world.Health.CommitScale(_commander.Team, s.Id, now);
             var idle = IdleTooLong(world, s, now, ai.IdleReassess);
+            // AI MASTER P5 Part K: the monitor's re-evaluation request is an idle reassessment (re-score; it may keep the action).
+            if (s.HealthReassess)
+            {
+                s.HealthReassess = false;
+                idle = true;
+            }
             var urgent = Urgent(world, s);
             var change = current < 0 || urgent || idle;
             if (!change && best != current && now - s.ActionSince >= commit)

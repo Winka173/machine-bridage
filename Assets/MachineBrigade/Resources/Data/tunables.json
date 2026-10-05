@@ -978,6 +978,47 @@
       "enabled": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "06", "code": "Cues.Enabled (AI MASTER P4)" },
       "cooldownS": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Cues.CooldownS (AI MASTER P4)" },
       "kept": { "value": 32, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Cues.Kept (AI MASTER P4)" }
+    },
+    "health": {
+      "enabled": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "06", "code": "Health.Enabled (AI MASTER P5)" },
+      "periodS": { "value": 1.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Health.PeriodS (AI MASTER P5)" },
+      "squadNoDamageS": { "value": 15.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Health.SquadNoDamageS (AI MASTER P5)" },
+      "contactMargin": { "value": 15.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Health.ContactMargin (AI MASTER P5)" },
+      "stallS": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Health.StallS (AI MASTER P5)" },
+      "progressM": { "value": 5.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Health.ProgressM (AI MASTER P5)" },
+      "arriveRadius": { "value": 15.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Health.ArriveRadius (AI MASTER P5)" },
+      "recoveryCooldownS": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Health.RecoveryCooldownS (AI MASTER P5)" },
+      "idleTripShare": { "value": 0.1, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Health.IdleTripShare (AI MASTER P5)" },
+      "blockedTripShare": { "value": 0.25, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Health.BlockedTripShare (AI MASTER P5)" },
+      "blockedMinUnits": { "value": 4, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Health.BlockedMinUnits (AI MASTER P5)" },
+      "churnCommitScale": { "value": 1.5, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Health.ChurnCommitScale (AI MASTER P5)" },
+      "churnDampS": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Health.ChurnDampS (AI MASTER P5)" },
+      "strictAssertions": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "06", "code": "Health.StrictAssertions (AI MASTER P5)" }
+    },
+    "ammo": {
+      "enabled": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "06", "code": "Ammo.Enabled (AI MASTER P5)" },
+      "nearEmptyShare": { "value": 0.25, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Ammo.NearEmptyShare (AI MASTER P5)" },
+      "meaningfulReloadS": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Ammo.MeaningfulReloadS (AI MASTER P5)" },
+      "emergencyUrgency": { "value": 0.75, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Ammo.EmergencyUrgency (AI MASTER P5)" },
+      "repositionMinReloadS": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Ammo.RepositionMinReloadS (AI MASTER P5)" },
+      "scootMinReloadS": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Ammo.ScootMinReloadS (AI MASTER P5)" },
+      "keepTargetWhileReloading": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "06", "code": "Ammo.KeepTargetWhileReloading (AI MASTER P5)" }
+    },
+    "towers": {
+      "enabled": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "06", "code": "Towers.Enabled (AI MASTER P5)" },
+      "protectRadius": { "value": 45.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Towers.ProtectRadius (AI MASTER P5)" },
+      "airThreatWorth": { "value": 1.6, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Towers.AirThreatWorth (AI MASTER P5)" },
+      "heavyWorth": { "value": 1.3, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Towers.HeavyWorth (AI MASTER P5)" },
+      "artilleryWorth": { "value": 1.4, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Towers.ArtilleryWorth (AI MASTER P5)" },
+      "criticalRadius": { "value": 20.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Towers.CriticalRadius (AI MASTER P5)" },
+      "criticalWorth": { "value": 4.0, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Towers.CriticalWorth (AI MASTER P5)" },
+      "overkillShare": { "value": 1.15, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Towers.OverkillShare (AI MASTER P5)" },
+      "overkillFloor": { "value": 0.35, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Towers.OverkillFloor (AI MASTER P5)" }
+    },
+    "budget": {
+      "squadBuckets": { "value": 2, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Budget.SquadBuckets (AI MASTER P5)" },
+      "spatialCell": { "value": 10.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Budget.SpatialCell (AI MASTER P5)" },
+      "perfCounters": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "06", "code": "Budget.PerfCounters (AI MASTER P5)" }
     }
   },
   "campaign": {

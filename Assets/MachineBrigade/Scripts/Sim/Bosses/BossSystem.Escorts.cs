@@ -251,7 +251,7 @@ namespace MachineBrigade.Sim.Bosses
             if (_world.Catalog.Vehicles.TryGetValue(id, out var escortDef) && !_world.Feasibility.SpawnUseful(escortDef, boss.Team, _world.ClampToMap(spot), out var why))
             {
                 _world.AiLog.Add(new MachineBrigade.Sim.AI.DecisionEntry(_world.Time, boss.Team, MachineBrigade.Sim.AI.AiLayer.Commander, boss.Id.Value,
-                    MachineBrigade.Sim.AI.DecisionKind.Purchase, $"REJECT {id} reason={why} (escort spawn)"));
+                    MachineBrigade.Sim.AI.DecisionKind.Purchase, $"REJECT {id} reason={why} ({MachineBrigade.Sim.AI.P5Reasons.EscortSpawnReject}; escort spawn)"));
                 return;
             }
             var v = _world.SpawnVehicle(id, boss.Team, _world.ClampToMap(spot), boss.Heading);

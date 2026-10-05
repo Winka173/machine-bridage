@@ -791,6 +791,8 @@ namespace MachineBrigade.Sim
             if (command.Type == CommandType.FocusPart) return Bosses.Focus(command);
 
             _unitBuffer.Clear();
+            // AI MASTER P5 Part K ordersPerUnitPerMinute: unit orders asked of the world, by side.
+            CountOrdersP5(command);
             foreach (var id in command.Units)
                 if (_vehicles.TryGetValue(id, out var v) && v.IsAlive && v.Team == command.Team && !_unitBuffer.Contains(v))
                     _unitBuffer.Add(v);
@@ -871,20 +873,30 @@ namespace MachineBrigade.Sim
             Time += dt;
             // Prompt 31 L3: prebuilt ground states switch only here, first thing in a step.
             _navStates?.Step(this);
+            // AI MASTER P5 Part P: per-system timing counters (off unless AiPerf.Enabled; readings never feed a decision).
+            var perf = AiPerf;
+            var t0 = perf.Begin();
             ServeQueuedPaths();
+            perf.End(AI.AiPerfSection.PathRebuild, t0);
             if (Profile != null)
             {
                 ProfiledStep(dt);
                 return;
             }
+            if (perf.Enabled) perf.Steps++;
             RefreshVisibility();
             Economy.Step(dt);
             Bases.Step();
+            t0 = perf.Begin();
             _movement.Step(dt);
+            perf.End(AI.AiPerfSection.Steering, t0);
+            _spatial?.Invalidate();
             CrushVegetation();
             _abilities.Step(dt);
             Supply.Step(dt);
+            t0 = perf.Begin();
             Bosses.Step(dt);
+            perf.End(AI.AiPerfSection.Bosses, t0);
             Naval.Step(dt);
             Rails.Step(dt);
             Status.Step(dt);
@@ -892,9 +904,15 @@ namespace MachineBrigade.Sim
             Deploying.Step();
             Domes.Step();
             Works.Step(dt);
+            t0 = perf.Begin();
             _combat.Step(dt);
+            perf.End(AI.AiPerfSection.Targeting, t0);
             // AI MASTER P0-A (Part C): the combat activity watchdog, right after the weapons' step.
+            t0 = perf.Begin();
             CombatWatch.Step();
+            perf.End(AI.AiPerfSection.Watchdog, t0);
+            // AI MASTER P5 Part K: the AI Health Monitor above the watchdogs (1 Hz).
+            StepP5();
             Strikes.Step();
             Damage.Step();
             if (Map.Neutrals.Count > 0) Neutrals.Step(dt);
@@ -928,6 +946,7 @@ namespace MachineBrigade.Sim
             Bases.Step();
             Lap(2);
             _movement.Step(dt);
+            _spatial?.Invalidate();
             Lap(3);
             CrushVegetation();
             Lap(4);
@@ -946,6 +965,7 @@ namespace MachineBrigade.Sim
             Lap(7);
             _combat.Step(dt);
             CombatWatch.Step();
+            StepP5();
             Lap(8);
             Strikes.Step();
             Lap(9);

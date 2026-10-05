@@ -344,11 +344,22 @@ namespace MachineBrigade.Sim.AI
             world.Entrench(_team, defend);
             _tactics.HoldLeash = defend && _holding != null ? HoldReach : null;
             _tactics.Layered = Layered;
+            // AI MASTER P5 Part P: the unit layer's and the buying's timing counters (the commander and squads count their own).
+            var start = world.AiPerf.Begin();
             _tactics.Tick(world, dt);
+            world.AiPerf.End(AiPerfSection.Tactical, start);
             if (Layered) TickLayered(world, dt);
             _timer -= dt;
             if (_timer > 0f || world.IsOver) return;
             _timer = Interval;
+            start = world.AiPerf.Begin();
+            Buy(world);
+            world.AiPerf.End(AiPerfSection.Procurement, start);
+        }
+
+        /// <summary>One buying decision (rebuilds, support cards, strikes, the deck) at the difficulty's interval.</summary>
+        private void Buy(SimWorld world)
+        {
             if (!world.TryGetEconomy(_team, out var economy)) return;
             if (AutoDeploy && TryRebuild(world, economy)) return;
             // Prompt 28 appendix: the profile's support policy (none before a recon alarm; defensive cards only).

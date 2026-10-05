@@ -80,6 +80,15 @@ namespace MachineBrigade.Sim.AI
 
         public float Utilization(string unit) => _use.TryGetValue(unit, out var u) ? u.ema : 1f;
 
+        /// <summary>AI MASTER P5 Part K lowUtilizationUnitClasses: classes under the threshold for <c>lowUtilizationS</c> or longer.</summary>
+        public int LowClasses(double now)
+        {
+            var n = 0;
+            foreach (var u in _use.Values)
+                if (!double.IsNaN(u.lowSince) && now - u.lowSince >= Tun.Adaptation.LowUtilizationS) n++;
+            return n;
+        }
+
         /// <summary>Spec 224 "utilization": a class under the threshold for <c>lowUtilizationS</c> buys less (down to the floor).</summary>
         public float PurchaseModifier(string unit, double now)
         {
