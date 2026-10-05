@@ -84,7 +84,8 @@ namespace MachineBrigade.Sim.AI
             foreach (var e in _estimates)
             {
                 var d = Vector2.Distance(e.Centre, seen);
-                if (d <= Tun.FireMissions.MergeRadius + e.ErrorRadius && d < bestD)
+                // Two estimates of one battery can each be off by a single shot's error: their circles overlap (plus the merge radius).
+                if (d <= Tun.FireMissions.MergeRadius + 2f * MathF.Max(e.ErrorRadius, error) && d < bestD)
                 {
                     best = e;
                     bestD = d;

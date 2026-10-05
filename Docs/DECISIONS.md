@@ -21205,3 +21205,32 @@ no tests run; Sim compiled (0 errors); the test file compiled against the Sim + 
 - **Not done here (scaffold):** mine-layer pre-placement (I2), AA coverage optimiser (I13 / I22, P3 169), intercept ETA filter
   (I20, P3 207), two-objective splits (22), traffic-aware flank costs (76, P1). Replay hashes change. For the lead's runs:
   AiScenarioTests / PlayTest8A squad and targeting pins may move; watch Conquest reserves and anchors on cramped maps.
+
+## AI MASTER P3 (lane A)
+
+Branch `feature/ai-p3` (worktree MachineBrigade-art), 05/10. Spec MASTER_FINAL sections 124-151, 169-173, 199-201, 205-213, 218-227
+(+ P2's leftovers); row by row in `Docs/ai/spec_master/AUDIT_P3.md`, values in `Docs/export/CHANGES.md` "AI MASTER P3". No Unity,
+no tests run; Sim compiled (0 errors); `AiMasterP3Tests.cs` compiled against the Sim + NUnit (GameContent stubbed).
+- **One switch, one state object.** `ai.coordination.enabled` (false = P2 exactly). `world.Coordination` is made by the first AI
+  commander; one `TeamCoordination` per AI side. Player sides never get one, so the targeting factors never touch their units.
+- **Observation, not reveal.** `SimWorld.Emit` feeds two event kinds: deaths (own -> danger mark; enemy seen dying -> counterattack
+  ledger) and indirect rounds fired (queued until they land; only a side with sight of the impact area observes them). The
+  origin estimate uses the true origin only through a bounded deterministic error (hash of shooter and shot count, 20 % of the
+  flight, >= 8 m), merged per battery: confidence 1 - e^(-n/2), error / sqrt(n). Spec 227 rejects "perfect artillery origin".
+- **Integration points (Part A).** Commander: `CoordinateP3` right after `AssignP2`, adjusting the tasks it gave (depth, sunk
+  cost, economy, deadlines, frontage, packages); P2's `ReserveTrigger` delegates to the ranked release. Squads: factors appended
+  to `Score`'s options (route cost difference x 10 points, confidence +-12, etc.), overrides in `Execute` (staging, pursuit,
+  fix envelope), `Focus`, `Stance`, `Units`, `ChooseFormation`. Targeting: `P3Worth` after P28Worth; `Acquire` reserves damage.
+- **Packages only on a fixed objective.** On the moving enemy centre a package would be rebuilt (and its squads staged) every
+  look. A package ends 25 s after its execute time and is not rebuilt for the same objective; abort = before execute only.
+- **Guns cannot fire at ground.** Counter-battery on an unseen battery is a support Barrage (the only area fire the AI has),
+  at >= 0.7 confidence and <= 25 m error, once per 15 s per estimate; a seen battery gets up to two guns (Attack orders).
+- **Sunk cost value 60 CP** (lane choice; the spec gives no number): three ~15 CP tanks lost against twice our strength resets,
+  one loss does not. Never under urgency >= 0.75 (an emergency objective is never dropped).
+- **Confidence is mechanical.** Inputs: local strength ratio, AT / AA coverage of the enemy mix at the goal, guns / AA / repair
+  near, frontline approach angle, urgency, unknown ground x contact confidence. No health term anywhere; no morale, panic or
+  retreat-by-health state was added.
+- **ReturnFire = score 0** on a target that neither shoots at the side nor follows a hit within 3 s (the watchdog gets
+  HoldFireOrder as the reason). Recon in squads holds / overwatches with it; support roles Defend (x1.3 on threats, x0.7 others).
+- **Not done:** probe / feint (P4), ownership prediction with rotation (210, sampling only), coverage optimiser for EW / radar /
+  repair aura (AA only), range margin in the squads' standoff bands (role data shares kept).

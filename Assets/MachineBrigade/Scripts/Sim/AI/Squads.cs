@@ -252,6 +252,8 @@ namespace MachineBrigade.Sim.AI
                         v.AiKiting = false;
                         v.SquadFocus = EntityId.None;
                         v.SquadTargets = null;
+                        v.P3Stance = UnitStance.AttackAnything;
+                        v.P3HandoffUntil = double.NegativeInfinity;
                     }
                     s.MemberList.RemoveAt(i);
                     s.Progress.Remove(id);
