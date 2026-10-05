@@ -2,7 +2,7 @@
 
 Tháp và nhánh, tường, nhà chính, mô-đun tiện ích, xây lại, AI căn cứ.
 
-Gói cân bằng Machine Brigade, commit 5394cac7, ngày 2026-10-04. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3525b04a, ngày 2026-10-05. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Căn cứ và tháp
 
@@ -255,11 +255,11 @@ Sheet 03_can_cu/Dot_phong_thu — Loadout phòng thủ tham chiếu (5 dòng, 10
 
 | id | small | medium | large | utilities | he_so_do_kho | duong_cong_dot | cap_hq |
 |---|---|---|---|---|---|---|---|
-| hq1 | guard_tower;mg_bunker;aa_turret | gun_turret |  | repair_bay | NEED_CODE_CHECK | NEED_CODE_CHECK | 1 |
-| hq2 | guard_tower;mg_bunker;aa_turret;mg_bunker | gun_turret;atgm_tower |  | repair_bay | NEED_CODE_CHECK | NEED_CODE_CHECK | 2 |
-| hq3 | guard_tower;mg_bunker;aa_turret;mg_bunker | gun_turret;rocket_turret | heavy_turret | repair_bay;logistics_station | NEED_CODE_CHECK | NEED_CODE_CHECK | 3 |
-| hq4 | guard_tower;mg_bunker;aa_turret;mg_bunker;guard_tower | gun_turret;atgm_tower;rocket_turret | heavy_turret | repair_bay;logistics_station | NEED_CODE_CHECK | NEED_CODE_CHECK | 4 |
-| hq5 | guard_tower;mg_bunker;aa_turret;mg_bunker;guard_tower;ew_to… | gun_turret;atgm_tower;c_ram | heavy_turret;missile_battery | repair_bay;logistics_station;airfield | NEED_CODE_CHECK | NEED_CODE_CHECK | 5 |
+| hq1 | guard_tower;mg_bunker;aa_turret | gun_turret |  | repair_bay | 0.75 | 2;4;5;6;8;9;10;12;13;14 | 1 |
+| hq2 | guard_tower;mg_bunker;aa_turret;mg_bunker | gun_turret;atgm_tower |  | repair_bay | 0.8722 | 3;4;6;7;9;10;12;14;15;17 | 2 |
+| hq3 | guard_tower;mg_bunker;aa_turret;mg_bunker | gun_turret;rocket_turret | heavy_turret | repair_bay;logistics_station | 1.0414 | 3;5;7;9;11;12;14;16;18;20 | 3 |
+| hq4 | guard_tower;mg_bunker;aa_turret;mg_bunker;guard_tower | gun_turret;atgm_tower;rocket_turret | heavy_turret | repair_bay;logistics_station | 1.1887 | 4;6;8;10;12;14;16;19;21;23 | 4 |
+| hq5 | guard_tower;mg_bunker;aa_turret;mg_bunker;guard_tower;ew_to… | gun_turret;atgm_tower;c_ram | heavy_turret;missile_battery | repair_bay;logistics_station;airfield | 1.3554 | 4;7;9;11;14;16;19;21;24;26 | 5 |
 
 Sheet 03_can_cu/Can_cu_AI_cap — AI xây căn cứ: cấp HQ theo độ khó (4 dòng, 8 cột)
 

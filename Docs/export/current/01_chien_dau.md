@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 5394cac7, ngày 2026-10-04. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3525b04a, ngày 2026-10-05. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -322,17 +322,17 @@ Sheet 01_chien_dau/Phao_sang — Pháo sáng (11 dòng, 19 cột)
 
 | id | loai_don_vi | mo_hinh | so_mount_flare | so_qua_moi_lan | do_nang_cap | so_voi_ban_goc | flare_charges | flare_recharge_s | flares_every_s |
 |---|---|---|---|---|---|---|---|---|---|
-| attack_helicopter | xe | attack_helicopter | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
-| attack_jet | xe | attack_jet | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
-| fighter_jet | xe | fighter_jet | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
-| flare_searchlight_tower | thap | flare_searchlight_tower | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | giong |  |  | 15 |
-| flare_tower | thap | flare_tower | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | giong |  |  | 15 |
-| heavy_bomber | xe | heavy_bomber | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
-| scout_heli | xe | scout_heli | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 | 20 |  |
-| sky_gunship | xe | sky_gunship | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
-| stealth_fighter | xe | stealth_fighter | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
-| swarm_carrier | xe | swarm_carrier | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
-| twin_rotor_gunship | xe | twin_rotor_gunship | 0 | NEED_CODE_CHECK | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 | 20 |  |
+| attack_helicopter | xe | attack_helicopter | 0 | 4;8 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| attack_jet | xe | attack_jet | 0 | 4;6 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| fighter_jet | xe | fighter_jet | 0 | 4;6 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| flare_searchlight_tower | thap | flare_searchlight_tower | 0 | 1;1 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | giong |  |  | 15 |
+| flare_tower | thap | flare_tower | 0 | 1;1 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | giong |  |  | 15 |
+| heavy_bomber | xe | heavy_bomber | 0 | 8;16 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
+| scout_heli | xe | scout_heli | 0 | 4;8 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 | 20 |  |
+| sky_gunship | xe | sky_gunship | 0 | 8;16 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
+| stealth_fighter | xe | stealth_fighter | 0 | 4;6 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 2 |  |  |
+| swarm_carrier | xe | swarm_carrier | 0 | 8;16 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 |  |  |
+| twin_rotor_gunship | xe | twin_rotor_gunship | 0 | 4;8 | FlareDispenser (10_trang_bi/Trang_bi_mo_dun) | doi | 3 | 20 |  |
 
 *In 10 / 19 cột; 3 cột khác: xem sheet.*
 
@@ -515,13 +515,13 @@ Sheet 01_chien_dau/Hanh_vi_dan_nhom — Hành vi đạn theo nhóm (7 dòng, 12 
 
 | id | so_vu_khi | cach_nham | khi_no | khi_truot | co_canh_bao | thoi_gian_bay_toi_da_s | tuong_tac_phao_sang | tuong_tac_aps | tuong_tac_gay_nhieu |
 |---|---|---|---|---|---|---|---|---|---|
-| Bomb | 6 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| Bullet | 122 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| Drone | 11 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| Flame | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| Missile | 52 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| Rocket | 29 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| Shell | 136 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| Bomb | 6 | dẫn đường 33% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 0.8 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Bullet | 122 | đón đầu (led, trần 3 s) | nổ lan 35% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.4286 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Drone | 11 | dẫn đường (homing) | nổ lan 100% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 7.5 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | bị nhiễu 100% vũ khí (đạn dẫn đường trong vòng nhiễu địch:… |
+| Flame | 3 | đón đầu (led, trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.5263 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Missile | 52 | dẫn đường (homing) | nổ lan 54% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 5.7143 | pháo sáng mồi 79% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | bị nhiễu 100% vũ khí (đạn dẫn đường trong vòng nhiễu địch:… |
+| Rocket | 29 | dẫn đường 3% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 1.1667 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Shell | 136 | dẫn đường 10% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 81% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 2 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
 
 Sheet 01_chien_dau/Canh_bao_vong — Vòng cảnh báo (13 dòng, 8 cột)
 
@@ -545,19 +545,19 @@ Sheet 01_chien_dau/Drone — Drone: tốc độ, đầu nổ, cỡ, vụ nổ (1
 
 | id | loai | ten_that | mang_boi | toc_do_m_s | do_cao_m | dau_no_kg | sat_thuong | loi_m | ria_m |
 |---|---|---|---|---|---|---|---|---|---|
-| airship_drones | dan_drone | FPV drone (1.5 kg) |  | NEED_CODE_CHECK |  | 1.5 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| fpv_hangar | dan_drone | FPV drone (1.5 kg) | drone_hangar | NEED_CODE_CHECK |  | 1.5 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| fpv_hangar_swarm | dan_drone | FPV drone (1.5 kg) | drone_hangar.swarm | NEED_CODE_CHECK |  | 1.5 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| fpv_swarm | dan_drone | FPV drone (1.5 kg) | elite_fpv_carrier;fpv_carrier | NEED_CODE_CHECK |  | 1.5 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| lancet | dan_drone | ZALA Lancet-3 (3 kg) |  | NEED_CODE_CHECK |  | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| lancet_hangar | dan_drone | ZALA Lancet-3 (3 kg) | drone_hangar.lancet | NEED_CODE_CHECK |  | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| locust_drones | dan_drone | ZALA Lancet-3 swarm | locust | NEED_CODE_CHECK |  | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| mothership_drones | dan_drone | ZALA Lancet-3 (3 kg) | drone_bay | NEED_CODE_CHECK |  | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
-| p26_matriarch_ma_drones | dan_drone | ZALA Lancet-3 swarm | drone_mothership;theia | NEED_CODE_CHECK |  | 3 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| airship_drones | dan_drone | FPV drone (1.5 kg) |  | 26 |  | 1.5 | 140 | 2.5 | 0 |
+| fpv_hangar | dan_drone | FPV drone (1.5 kg) | drone_hangar | 26 |  | 1.5 | 140 | 2.5 | 0 |
+| fpv_hangar_swarm | dan_drone | FPV drone (1.5 kg) | drone_hangar.swarm | 26 |  | 1.5 | 140 | 2.5 | 0 |
+| fpv_swarm | dan_drone | FPV drone (1.5 kg) | elite_fpv_carrier;fpv_carrier | 26 |  | 1.5 | 140 | 2.5 | 0 |
+| lancet | dan_drone | ZALA Lancet-3 (3 kg) |  | 28 |  | 3 | 240 | 3 | 0 |
+| lancet_hangar | dan_drone | ZALA Lancet-3 (3 kg) | drone_hangar.lancet | 28 |  | 3 | 240 | 3 | 0 |
+| locust_drones | dan_drone | ZALA Lancet-3 swarm | locust | 28 |  | 3 | 320 | 3 | 6 |
+| mothership_drones | dan_drone | ZALA Lancet-3 (3 kg) | drone_bay | 28 |  | 3 | 240 | 3 | 0 |
+| p26_matriarch_ma_drones | dan_drone | ZALA Lancet-3 swarm | drone_mothership;theia | 28 |  | 3 | 320 | 3 | 6 |
 | recon_drone | may_bay_drone |  |  | 13 | 34 | recon_missile:22 |  |  |  |
-| shahed | dan_drone | Shahed-136 (50 kg) | shahed_truck | NEED_CODE_CHECK |  | 50 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| shahed | dan_drone | Shahed-136 (50 kg) | shahed_truck | 20 |  | 50 | 344 | 4.5 | 0 |
 | strike_drone | may_bay_drone |  |  | 13.9 | 30 | drone_missile:9;guided_bomb:110 |  |  |  |
-| swarm_drones | dan_drone | FPV drone (1.5 kg) | swarm_carrier | NEED_CODE_CHECK |  | 1.5 | NEED_CODE_CHECK | NEED_CODE_CHECK | NEED_CODE_CHECK |
+| swarm_drones | dan_drone | FPV drone (1.5 kg) | swarm_carrier | 26 |  | 1.5 | 140 | 2.5 | 0 |
 
 *In 10 / 19 cột; 7 cột khác: xem sheet.*
 
