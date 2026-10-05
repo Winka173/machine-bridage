@@ -24,6 +24,8 @@ namespace MachineBrigade.Sim.Content
             foreach (var e in AiMasterP0B) yield return e;
             // AI MASTER P0-A (lane A): targeting and the combat watchdog (SimTunables.AiP0A.cs).
             foreach (var e in AiP0AEntries) yield return e;
+            // AI MASTER P2 (lane C): role / mode doctrine, fire support, positions, firing lanes, formations, squads.
+            foreach (var e in AiMasterP2) yield return e;
         }
     }
 }

@@ -260,6 +260,8 @@ namespace MachineBrigade.Sim.AI
             if (world.IsOver) return;
 
             Sort(world);
+            // AI MASTER P2 (I23): the mission structure this side is sent to destroy, for the mode target weights.
+            world.Doctrine.SetMissionTarget(_team, Demolish?.Invoke(world) ?? EntityId.None);
             // AI MASTER P0-A (Part C): the combat watchdog's requests first.
             ServeWatchdog(world);
             if (Layered)
@@ -1022,13 +1024,18 @@ namespace MachineBrigade.Sim.AI
                 // (an army of launchers and drone carriers) there is nothing to stand behind: close
                 // to firing distance of the objective instead of backing away from their own centre.
                 var alone = !_outmatched && _line.Count == 0 && _fast.Count == 0;
-                var standoff = contact || alone ? objective - forward * (weapon.Range * 0.7f) : front - forward * 18f;
-                if (!alone && Vector2.Distance(standoff, objective) < Vector2.Distance(front, objective)) standoff = front - forward * 10f;
-                // Never into a known gun's reach: back along the line of advance until clear of it.
-                for (var step = 0; step < 8 && Exposed(standoff, StandoffMargin); step++) standoff -= forward * 6f;
-                // Guns deploy beside the roads and main routes, never in a gate: parked there they
-                // are what the rest of the army jams behind.
-                var stand = world.Lanes.OffLane(Clamp(world, standoff), 10f);
+                // AI MASTER P2 Part J: the fire class's anchor from the mode doctrine (never the squad centroid); the old
+                // standoff only when no anchor spot exists.
+                if (AnchorStand(world, a, front, objective, forward, contact) is not { } stand)
+                {
+                    var standoff = contact || alone ? objective - forward * (weapon.Range * 0.7f) : front - forward * 18f;
+                    if (!alone && Vector2.Distance(standoff, objective) < Vector2.Distance(front, objective)) standoff = front - forward * 10f;
+                    // Never into a known gun's reach: back along the line of advance until clear of it.
+                    for (var step = 0; step < 8 && Exposed(standoff, StandoffMargin); step++) standoff -= forward * 6f;
+                    // Guns deploy beside the roads and main routes, never in a gate: parked there they
+                    // are what the rest of the army jams behind.
+                    stand = world.Lanes.OffLane(Clamp(world, standoff), 10f);
+                }
                 // Alone they attack-move, so they stop and fire at the first enemy that comes into sight.
                 if (Vector2.Distance(a.Position, stand) > 10f)
                     Issue(world, alone && !contact ? CommandType.AttackMove : CommandType.Move, a.Id, stand);
@@ -1066,6 +1073,9 @@ namespace MachineBrigade.Sim.AI
 
         /// <summary>Firing-spot scoring: on a road, per main route through the cell, per friend parked within 7 m, open ground (another gun's booked spot is out).</summary>
         private const float SpotRoadPenalty = 12f, SpotRoutePenalty = 20f, SpotCrowdPenalty = 8f, SpotOpenBonus = 6f;
+
+        /// <summary>AI MASTER P2 Part D4: per known direct-fire enemy that sees the spot (dead ground preferred).</summary>
+        private const float SpotExposedPenalty = 6f;
 
         /// <summary>
         /// A spot to fire at <paramref name="target"/> from: inside our range (just short of it,
@@ -1115,6 +1125,9 @@ namespace MachineBrigade.Sim.AI
                     // short-ranged siege gun round a fortress has few): the gun waits instead.
                     if (lanes.ReservedByOther(p, shooter.Id, world)) continue;
                     score += SpotCrowdPenalty * FriendsParkedNear(world, p, 7f, shooter);
+                    if (score >= bestScore) continue;
+                    // AI MASTER P2 Part D4: dead ground: fewer known direct-fire enemies with a clear line to the spot.
+                    score += SpotExposedPenalty * FiringPositionScorer.DirectExposure(world, _team, p);
                     if (score >= bestScore) continue;
                     bestScore = score;
                     best = p;

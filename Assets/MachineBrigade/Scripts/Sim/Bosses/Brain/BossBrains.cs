@@ -69,6 +69,14 @@ namespace MachineBrigade.Sim.Bosses
                 BossMovementController.UpdateCorridor(v, b);
                 if (b.HasCorridor) _corridors.Add(b.Corridor);
                 if (!slow) continue;
+                // AI MASTER P2 Part F5 / R5: a broken part took mounts away: the held broadside is dropped so the next
+                // sample (working mounts only) is chosen at once, not after the hysteresis (no keeping a useless side).
+                if (_world.Components.MountsChanged(v))
+                {
+                    b.BroadsideHeld = 0f;
+                    b.BroadsideEngaged = false;
+                    AI.P2Reasons.Unit(_world, v, AI.DecisionKind.State, AI.P2Reasons.BossBroadsideRecompute);
+                }
                 BossWeaponDirector.NoteTargets(v, b);
                 BossWeaponDirector.Samples(v, _mounts);
                 BossWeaponDirector.Targets(_world, v, _mounts, _targets, _scratch);

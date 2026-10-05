@@ -140,6 +140,10 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A fixed-deck mission: takes the mission type's profile, changed only by its special rules.</summary>
         public bool Inherits { get; internal set; }
 
+        /// <summary>AI MASTER P2 (I15 / I26): an explicit ModeCombatDoctrine id for this row (data key "doctrine"); null: the
+        /// mode tag, goal or profile id resolves it.</summary>
+        public string? Doctrine { get; internal set; }
+
         public bool Has(AiController c) => (Controllers & c) != 0;
         public bool HasFlag(string flag) => Contains(Flags, flag);
 
@@ -188,6 +192,7 @@ namespace MachineBrigade.Sim.Content
                 ObjectivePolicy = o.OptionalString("objectivePolicy") ?? "",
                 AutoAiNote = o.OptionalString("autoAiNote") ?? "",
                 Inherits = o.Bool("inherits", false),
+                Doctrine = o.OptionalString("doctrine"),
                 HqSkillThreat = System.Math.Max(0f, o.Float("hqSkillThreat", 8f)),
             };
             if (o.Has("wallRoute"))
