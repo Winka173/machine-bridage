@@ -84,6 +84,11 @@ namespace MachineBrigade.Sim.Movement
             ClearBossCorridors();
             PrepareGates();
             ReplanClosedRoutes();
+            // AI MASTER P1: the traffic coordinator's tick (passages, exits, arrivals), new or gone wrecks (routes through
+            // them planned again now, spec 39) and the deadlock wait-for graph (spec 190), all before anyone drives.
+            _world.Traffic.Step();
+            OnWreckChanges();
+            ResolveDeadlocks();
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
@@ -120,6 +125,8 @@ namespace MachineBrigade.Sim.Movement
                 Drive(v, dt);
                 // Prompt 25 F2 batch A: helicopters keep out of an enemy barrage balloon's ground.
                 if (v.Flying && !v.Def.FixedWing) _world.Works.KeepOffBalloons(v, dt);
+                // AI MASTER P0-D: the staged jam detector (spec 37-38) at the tactical rate.
+                if (!v.Flying) TrackJam(v, dt);
                 // The safety net for what the traffic rules leave stuck (MovementSystem.Rescue).
                 WatchRescue(v);
             }
@@ -882,6 +889,8 @@ namespace MachineBrigade.Sim.Movement
                     slowFor = MathF.Min(slowFor, def.Speed * 0.5f);
                 }
             }
+            // AI MASTER P1 (spec 34-36): ORCA-lite round the moving hulls near it, the pair's passing side fixed.
+            if (!def.Flying && distance > 1.5f) desired += OrcaTurn(v, desired);
             // The detour fades out over a moment after the way last looked blocked. Dropping it
             // the instant the blocker leaves the look-ahead turned the hull straight back at it,
             // then away again: a wag every few steps.
@@ -1493,6 +1502,7 @@ namespace MachineBrigade.Sim.Movement
             v.StuckTimer = 0f;
             if (progressed)
             {
+                v.Traffic.NoProgressWindows = 0;
                 v.StuckStrikes = 0;
                 v.Traffic.YieldEscalations = 0;
                 v.Traffic.TrafficBoost = 0;
@@ -1520,6 +1530,7 @@ namespace MachineBrigade.Sim.Movement
             }
             // Ask the friend in the way again, then route round the parked hulls, then back off,
             // then give up (MovementSystem.Traffic).
+            traffic.NoProgressWindows++;
             OnNoProgress(v);
         }
 
@@ -1542,6 +1553,7 @@ namespace MachineBrigade.Sim.Movement
         private void GiveUp(Vehicle v)
         {
             v.Traffic.GaveUpAt = _world.Time;
+            _world.Traffic.Stats.GiveUps++;
             v.Traffic.GaveUpGoal = v.PathGoal;
             v.ClearPath();
             var clear = v.Position;

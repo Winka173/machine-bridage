@@ -21090,3 +21090,25 @@ Sim compiled with the .NET SDK (C# 9, 0 errors); the new test file compiled agai
 - Replay hashes change. Tests (written, not run): `AiMasterP0CTests` (section 110, R5, rings, determinism). For a Unity look:
   Leviathan / Typhon / Scylla lanes and turnabouts, broadside offsets with shore targets, two sea bosses meeting, escorts' new
   rings, ground bosses not chasing off their way.
+
+## AI MASTER P0-D + P1 (lane B)
+
+05/10, branch `feature/ai-p1` (merged `lead/integration` with P0-A / P0-C first). Audit: `Docs/ai/spec_master/AUDIT_P1.md`.
+
+- The old stuck ladder is folded under the jam stages, not replaced: its asks and costed routes are stages 1-2, its back-off
+  waits for stage 5 and only for a vehicle that may reverse (`JamPolicy`: no ships, bosses, trains, statics, aircraft), its
+  give-up comes 3 s into stage 5 (or after 10 windows). `ai.navigation.jamStages` false restores the old ladder exactly.
+- The safety net moves from 10 s to `failSafeS` 14 s (after stage 5 at 12 s). Relocations (place, hop) are SEVERE_UNSTUCK:
+  logged and counted (`world.SevereUnstuckCount`, `Traffic.Stats.SeverePlace/SevereHop`); the ghost rung is not a relocation.
+- Two priority scales on purpose: `TrafficPriority` (mover vs parked, the ask-to-make-way protocol, Part A) stays; spec 32's
+  `RightOfWay` (100..30, held 2 s) decides between movers (stage 3, head-on ties, ORCA responsibility, passages, deadlocks).
+- Passages = lane-map doorways + topology chokes (bridge when water is beside it); reservations per side; same way batched,
+  other way queued, turn after 8 s of waiting, preempt only after the 2 s hold and with 20 points more.
+- Shared corridor phase 1 only (spec 29): one costed A* per squad order, members join / leave by line of sight; stragglers fall
+  back to their own route. Flow-field tiles left for later.
+- Boss corridor: the traffic side reads `IBossCorridors` (default = P0-C `BossBrains.Corridors`); P0-C's yield of parked
+  friends kept; P1 adds costs (200), no parking, ORCA right of way.
+- Wreck stamps widened by 1.5 m and dear (120) for their first 1.5 s; routes through a new wreck are replanned the next step.
+- Command dedup only for AI (non-manual) group moves; player orders always go through.
+- Naval: policy only (never reverse; widen turn / alternate waypoint); ships stay with P0-C's controller.
+- Tests written (`AiMasterP1Tests`, category AIMasterP1), compiled against the Sim with stubs, not run.

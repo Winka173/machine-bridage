@@ -115,6 +115,14 @@ namespace MachineBrigade.Sim.AI
         internal float Strength, Reach, LastHp;
         internal readonly Dictionary<EntityId, (Vector2 at, double since, int rung)> Progress = new();
 
+        /// <summary>AI MASTER P1 (spec 31, 85-86): the passage it holds or queues for (0: none), which way, since when.</summary>
+        internal int PassageId, PassageDir;
+        internal bool PassageQueued;
+        internal double PassageSince;
+
+        /// <summary>Members waiting at a queue position for their packet: when they go, to which slot, with which order.</summary>
+        internal readonly Dictionary<EntityId, (double at, Vector2 slot, CommandType type)> Packets = new();
+
         public override string ToString() => $"Squad {Id} {State} {Action} {Score:0} ({MemberList.Count})";
     }
 
@@ -220,7 +228,12 @@ namespace MachineBrigade.Sim.AI
                     _squads.RemoveAt(i);
                 }
             }
-            foreach (var s in _squads) Think(world, intel, s);
+            foreach (var s in _squads)
+            {
+                // AI MASTER P1: passage turns and packets first (spec 31, 85-86).
+                TrafficTick(world, s);
+                Think(world, intel, s);
+            }
             // AI MASTER P0-A (Part C2): the reasons the squads hold their members for.
             ExplainHolds(world);
         }
@@ -726,6 +739,8 @@ namespace MachineBrigade.Sim.AI
                     break;
             }
             goal = world.Map.Clamp(goal, 6f);
+            // AI MASTER P1 (spec 40): never a rally or holding point in a spawn's exit box.
+            if (type == CommandType.Move) goal = world.Traffic.OutOfExit(goal, _commander.Team);
             // Release an ambush's hold the moment the squad does anything else; kiting only while it backs off.
             if (s.Action != SquadAction.Hold) SetHoldFire(world, s, false);
             if (type != CommandType.Move || s.State != SquadState.Combat) SetKiting(world, s, false);
@@ -784,8 +799,18 @@ namespace MachineBrigade.Sim.AI
             var heavyLead = _commander.TacticFor(s).Modules.HeavyLead || mode == FormationMode.Travel;
             if (mode == FormationMode.Flank) order.Sort((a, b) => b.Def.Speed != a.Def.Speed ? b.Def.Speed.CompareTo(a.Def.Speed) : a.Id.Value.CompareTo(b.Id.Value));
             else if (heavyLead) order.Sort((a, b) => b.MaxHp != a.MaxHp ? b.MaxHp.CompareTo(a.MaxHp) : a.Id.Value.CompareTo(b.Id.Value));
-            // G.2: a crowded narrow passage ahead: the back half waits a moment and goes through after the front half.
-            var wait = mode == FormationMode.Travel && order.Count > 2 && Crowded(world.Intel.For(_commander.Team), s.Centre, goal);
+            // AI MASTER P1 (spec 28-31, 85-86): the shared corridor and the passage on it (column, packets, queue).
+            var plan = PlanTraffic(world, s, goal, type, order);
+            // Stage 1 of a member's jam loosens the formation a little (spec 38).
+            foreach (var v in order)
+                if (world.Time < v.Traffic.LoosenUntil)
+                {
+                    spacing += 2f;
+                    break;
+                }
+            // G.2: a crowded narrow passage ahead: the back half waits a moment and goes through after the front half
+            // (a reserved passage's packets do this instead).
+            var wait = plan.Passage == null && mode == FormationMode.Travel && order.Count > 2 && Crowded(world.Intel.For(_commander.Team), s.Centre, goal);
             if (wait) s.StaggerUntil = world.Time + 3.0;
             for (var i = 0; i < order.Count; i++)
             {
@@ -812,7 +837,7 @@ namespace MachineBrigade.Sim.AI
                 }
                 slot = world.Map.Clamp(slot, 4f);
                 if (!world.Grid.IsWalkable(slot)) slot = goal;
-                world.Submit(new Command(type, _commander.Team, new[] { order[i].Id }, slot));
+                IssueSlot(world, s, order[i], i, slot, type, plan);
                 s.Progress[order[i].Id] = (order[i].Position, world.Time, 0);
             }
         }
@@ -840,6 +865,12 @@ namespace MachineBrigade.Sim.AI
             {
                 if (!world.TryGetVehicle(id, out var v)) continue;
                 if (!s.Progress.TryGetValue(id, out var p)) s.Progress[id] = p = (v.Position, now, 0);
+                // AI MASTER P1: queued for a passage, waiting for its packet, or in jam stages 1-4: the traffic layer has it.
+                if (TrafficOwns(s, v))
+                {
+                    s.Progress[id] = (v.Position, now, p.rung);
+                    continue;
+                }
                 var moving = v.HasPath && Vector2.Distance(v.Position, v.Order.Point) > 6f;
                 if (!moving || Vector2.Distance(v.Position, p.at) > 2f)
                 {

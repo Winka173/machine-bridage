@@ -464,7 +464,10 @@ namespace MachineBrigade.Sim.Navigation
         {
             if (!o.IsAlive || !o.Traffic.HasReservation) return false;
             var at = o.Traffic.ReservedAt;
-            return Vector2.DistanceSquared(o.Position, at) < 36f || Vector2.DistanceSquared(o.Order.Point, at) < 36f;
+            // AI MASTER P1 (spec 41): the booking is an occupancy lease: it lapses once the gun is more than
+            // ai.traffic.parkingLeaveM (5 m) from it and no longer ordered there.
+            var leave = Content.SimTunables.Ai.Traffic.ParkingLeaveM;
+            return Vector2.DistanceSquared(o.Position, at) < leave * leave || Vector2.DistanceSquared(o.Order.Point, at) < leave * leave;
         }
 
         /// <summary>The owner of the booking on the cell under <paramref name="p"/> (0 for none; tests).</summary>

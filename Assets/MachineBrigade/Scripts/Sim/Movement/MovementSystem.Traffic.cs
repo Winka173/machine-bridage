@@ -115,7 +115,7 @@ namespace MachineBrigade.Sim.Movement
 
         private static double OffLaneSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OffLaneSeconds;
 
-        private readonly List<(Vehicle blocker, EntityId mover, Vector2 dir, int depth)> _serving = new();
+        private readonly List<(Vehicle blocker, EntityId mover, Vector2 dir, int depth, bool forced)> _serving = new();
         private readonly List<Vector2> _single = new();
 
         private readonly UnitCostField _unitCosts;
@@ -138,8 +138,9 @@ namespace MachineBrigade.Sim.Movement
 
         private readonly struct PathRequest
         {
-            public PathRequest(EntityId vehicle, Vector2 goal, EntityId blocker, bool aside, int strikes, double at)
+            public PathRequest(EntityId vehicle, Vector2 goal, EntityId blocker, bool aside, int strikes, double at, CostedKind kind = CostedKind.Stuck)
             {
+                Kind = kind;
                 Vehicle = vehicle;
                 Goal = goal;
                 Blocker = blocker;
@@ -154,6 +155,22 @@ namespace MachineBrigade.Sim.Movement
             public bool Aside { get; }
             public int Strikes { get; }
             public double At { get; }
+
+            /// <summary>AI MASTER P1: why it was asked (a stuck window, a stage 4 corridor replan, a wreck across the route).</summary>
+            public CostedKind Kind { get; }
+        }
+
+        /// <summary>AI MASTER P1: what a route planned round the hulls is for.</summary>
+        internal enum CostedKind : byte
+        {
+            /// <summary>The stuck ladder (prompt 12): may queue behind a hull with no way round.</summary>
+            Stuck,
+
+            /// <summary>Stage 4 / 5 (spec 38): taken only when under ai.navigation.corridorAltMax times the current route.</summary>
+            Corridor,
+
+            /// <summary>A new wreck on the route (spec 39): planned at once, whatever the gap since the last one.</summary>
+            Wreck,
         }
 
         // ------------------------------------------------------------------ priorities
@@ -210,6 +227,11 @@ namespace MachineBrigade.Sim.Movement
             }
             if (SameOrder(v.Order, t.OrderSeen)) return;
             t.OrderSeen = v.Order;
+            // AI MASTER P1: a new order starts a new jam episode and a new anomaly watch (spec 185).
+            t.OrderAt = _world.Time;
+            t.AnomalyLogged = false;
+            t.Jam.Reset();
+            t.NoProgressWindows = 0;
             if (t.YieldingTo.IsValid) EndYield(v, resume: false);
             t.GateWaitId = 0;
             t.WaitingForGate = false;
@@ -262,8 +284,8 @@ namespace MachineBrigade.Sim.Movement
             var pm = TrafficPriority(mover) + mover.Traffic.TrafficBoost;
             if ((_world.Time < bt.YieldCooldownUntil || bt.YieldingTo.IsValid) && pm < OverridePriority) return;
             if (pm <= TrafficPriority(blocker)) return;
-            if (bt.PendingYield.IsValid &&
-                (pm < bt.PendingPriority || (pm == bt.PendingPriority && mover.Id.Value > bt.PendingYield.Value))) return;
+            if (bt.PendingYield.IsValid && (bt.PendingForced ||
+                pm < bt.PendingPriority || (pm == bt.PendingPriority && mover.Id.Value > bt.PendingYield.Value))) return;
             bt.PendingYield = mover.Id;
             bt.PendingPriority = pm;
             bt.PendingDepth = depth;
@@ -304,12 +326,15 @@ namespace MachineBrigade.Sim.Movement
             {
                 var t = b.Traffic;
                 if (!t.PendingYield.IsValid) continue;
-                _serving.Add((b, t.PendingYield, t.PendingDir, t.PendingDepth));
+                _serving.Add((b, t.PendingYield, t.PendingDir, t.PendingDepth, t.PendingForced));
                 t.PendingYield = EntityId.None;
+                t.PendingForced = false;
             }
-            foreach (var (b, moverId, dir, depth) in _serving)
+            foreach (var (b, moverId, dir, depth, forced) in _serving)
             {
-                if (!b.IsAlive || !Askable(b) || !_world.TryGetVehicle(moverId, out var mover) || !mover.IsAlive) continue;
+                // AI MASTER P1: the coordinator's requests (stage 3, deadlocks) are served even to one not askable.
+                if (!b.IsAlive || (!forced && !Askable(b)) || !_world.TryGetVehicle(moverId, out var mover) || !mover.IsAlive) continue;
+                if (forced && b.Traffic.YieldingTo.IsValid) continue;
                 if (!TryYieldSpot(b, mover, dir, depth, out var spot) &&
                     (!_world.Lanes.NoParkAt(b.Position) || !TryClearForward(b, mover, dir, out spot))) continue;
                 StartYield(b, mover, dir, spot);
@@ -824,6 +849,17 @@ namespace MachineBrigade.Sim.Movement
                     t.YieldingTo.IsValid || o.Traffic.YieldingTo.IsValid) continue;
                 var pv = TrafficPriority(v);
                 var po = TrafficPriority(o);
+                // AI MASTER P1 (spec 32, 111 heavy + scout): equal movers: the right of way decides (the scout backs out).
+                if (pv == po && JamStagesOn)
+                {
+                    pv = _world.Traffic.RightOfWay(v);
+                    po = _world.Traffic.RightOfWay(o);
+                    if (pv == po)
+                    {
+                        pv = _world.Traffic.BaseRightOfWay(v);
+                        po = _world.Traffic.BaseRightOfWay(o);
+                    }
+                }
                 var dv = ReverseRoom(v);
                 var d2 = ReverseRoom(o);
                 Vehicle loser;
@@ -976,6 +1012,22 @@ namespace MachineBrigade.Sim.Movement
                 return;
             }
             v.StuckStrikes++;
+            if (JamStagesOn)
+            {
+                // AI MASTER P0-D (spec 38, 108): under the jam stages the ladder keeps planning routes round the hulls;
+                // the back-off waits for stage 5 (a vehicle that may reverse) and the give-up comes after it (or after
+                // 10 windows without progress whatever the stage), so neither is the first reaction any more.
+                var jam = t.Jam;
+                var emergencyHeld = jam.Stage == JamStage.Emergency && _world.Time - jam.StageSince >= SimTunables.Ai.Navigation.GiveUpAfterEmergencyS;
+                if (emergencyHeld || t.NoProgressWindows >= 10)
+                {
+                    GiveUp(v);
+                    return;
+                }
+                if (v.StuckStrikes > 2) v.StuckStrikes = 2;
+                RequestCostedPath(v, blocker ?? RecentBlocker(v, 3.0), aside: v.StuckStrikes >= 2);
+                return;
+            }
             if (v.StuckStrikes >= StuckStrikesToGiveUp)
             {
                 GiveUp(v);
@@ -1010,14 +1062,14 @@ namespace MachineBrigade.Sim.Movement
         /// the one in the way). It is planned at the end of this step, or a later one if the step's
         /// search budget is spent.
         /// </summary>
-        private void RequestCostedPath(Vehicle v, Vehicle? blocker, bool aside)
+        private void RequestCostedPath(Vehicle v, Vehicle? blocker, bool aside, CostedKind kind = CostedKind.Stuck)
         {
             var t = v.Traffic;
-            if (_world.Time - t.LastCostRepath < MinCostRepathGap) return;
+            if (kind == CostedKind.Stuck && _world.Time - t.LastCostRepath < MinCostRepathGap) return;
             for (var i = _queueHead; i < _pathQueue.Count; i++)
                 if (_pathQueue[i].Vehicle == v.Id) return;
             t.LastCostRepath = _world.Time;
-            _pathQueue.Add(new PathRequest(v.Id, v.PathGoal, blocker?.Id ?? EntityId.None, aside, v.StuckStrikes, _world.Time));
+            _pathQueue.Add(new PathRequest(v.Id, v.PathGoal, blocker?.Id ?? EntityId.None, aside, v.StuckStrikes, _world.Time, kind));
         }
 
         /// <summary>
@@ -1067,6 +1119,34 @@ namespace MachineBrigade.Sim.Movement
             var t = v.Traffic;
             var strikes = request.Strikes;
             Vehicle.PathTrace?.Invoke(v, $"Costed route round #{blocker?.Id.Value ?? 0}: {(found ? $"{_costBuffer.Count} points, {PathLength(v.Position, _costBuffer):0} m" : "none")}");
+            if (request.Kind == CostedKind.Corridor)
+            {
+                // AI MASTER P1 (spec 38 stage 4): a way round the jam only under corridorAltMax times the route it has
+                // (plus a few metres); otherwise it keeps its route and the yield / queue rules carry on.
+                if (found && PathLength(v.Position, _costBuffer) <= RemainingLength(v) * SimTunables.Ai.Navigation.CorridorAltMax + DetourSlack)
+                {
+                    v.SetPath(_costBuffer, request.Goal);
+                    v.StuckStrikes = strikes;
+                    t.CostPathUntil = _world.Time + CostPathKeep;
+                    t.CostGoal = request.Goal;
+                    t.Jam.Reason = "JAM_CORRIDOR_ALTERNATIVE";
+                    if (request.Aside) StepAside(v);
+                }
+                else t.Jam.Reason = "JAM_CORRIDOR_NO_ALTERNATIVE";
+                return;
+            }
+            if (request.Kind == CostedKind.Wreck)
+            {
+                // AI MASTER P1 (spec 39): round the new wreck at once; with no way round in budget, the route it has.
+                if (found)
+                {
+                    v.SetPath(_costBuffer, request.Goal);
+                    v.StuckStrikes = strikes;
+                    t.CostPathUntil = _world.Time + CostPathKeep;
+                    t.CostGoal = request.Goal;
+                }
+                return;
+            }
             if (!found)
             {
                 // No cheaper way found in budget: the plain replan, as before.

@@ -821,7 +821,7 @@ namespace MachineBrigade.Sim
                 case CommandType.AttackMove:
                     if (!SimMath.IsFinite(command.Point)) return CommandResult.Rejected(CommandError.InvalidPoint);
                     if (!Map.Contains(command.Point)) return CommandResult.Rejected(CommandError.OutOfBounds);
-                    IssueGroupMove(command.Point, command.Type == CommandType.Move ? OrderKind.Move : OrderKind.AttackMove);
+                    IssueGroupMove(command.Point, command.Type == CommandType.Move ? OrderKind.Move : OrderKind.AttackMove, command.Manual);
                     return CommandResult.Ok;
 
                 case CommandType.Rearm:
@@ -1209,7 +1209,7 @@ namespace MachineBrigade.Sim
             return best;
         }
 
-        private void IssueGroupMove(Vector2 point, OrderKind kind)
+        private void IssueGroupMove(Vector2 point, OrderKind kind, bool manual = true)
         {
             var spacing = 1.5f;
             foreach (var v in _unitBuffer) spacing = MathF.Max(spacing, v.Radius * 2f + 1.5f);
@@ -1219,6 +1219,15 @@ namespace MachineBrigade.Sim
             foreach (var v in _unitBuffer)
             {
                 var goal = _slotBuffer.TryGetValue(v.Id, out var slot) ? slot : point;
+                // AI MASTER P1 (spec 186): an AI order equivalent to the one the unit is already carrying out (same kind,
+                // same point, still on its way) is not issued again: no path reset, no jitter, no churn.
+                if (!manual && v.Order.Kind == kind && Vector2.DistanceSquared(v.Order.Point, goal) < 0.25f && (v.HasPath || v.PathQueued) &&
+                    !v.Traffic.YieldingTo.IsValid)
+                {
+                    Traffic.Stats.CommandsDeduplicated++;
+                    continue;
+                }
+                v.Traffic.CorridorId = 0;
                 v.SetOrder(new Order(kind, goal, EntityId.None));
                 PathTo(v, goal);
             }
