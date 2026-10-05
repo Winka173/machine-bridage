@@ -79,6 +79,9 @@ namespace MachineBrigade.Sim.AI
 
         public FireSupportAnchorState? AnchorOf(FireClass c) => _anchors.TryGetValue(c, out var a) ? a : null;
 
+        /// <summary>AI MASTER P5 Part K: forget the anchors so each class picks its anchor afresh (the health monitor's recovery).</summary>
+        internal void Refresh() => _anchors.Clear();
+
         /// <summary>Part I1's fire class of a launcher (mortar, artillery, MLRS, very-long-range).</summary>
         public static FireClass ClassOf(SimWorld world, Vehicle v)
         {

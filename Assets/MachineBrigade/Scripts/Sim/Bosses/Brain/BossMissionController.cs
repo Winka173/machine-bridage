@@ -94,7 +94,7 @@ namespace MachineBrigade.Sim.Bosses
             if (first) return;
             b.PhaseMoveUntil = now + Tun.PhaseMoveSeconds;
             world.AiLog.Add(new AI.DecisionEntry(now, v.Team, AI.AiLayer.Unit, v.Id.Value, AI.DecisionKind.Plan,
-                $"boss phase {v.Phase}: new route goal ({(v.Def.Naval != null ? v.NavalLane ?? "-" : "route")})"));
+                $"{AI.P5Reasons.BossPhaseRoute} phase={v.Phase}: new route goal ({(v.Def.Naval != null ? v.NavalLane ?? "-" : "route")})"));
         }
     }
 }

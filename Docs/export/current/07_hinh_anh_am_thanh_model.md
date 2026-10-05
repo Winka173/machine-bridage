@@ -2,7 +2,7 @@
 
 Hiệu ứng, âm thanh, hậu kỳ hình ảnh, model và số đo model, tài sản, giấy phép.
 
-Gói cân bằng Machine Brigade, commit 5394cac7, ngày 2026-10-04. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3525b04a, ngày 2026-10-05. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Hình ảnh
 
@@ -147,11 +147,18 @@ Sheet 07_hinh_anh_am_thanh_model/Am_thanh_loat — Âm thanh: loạt bắn nhanh
 | burst_s1_35 | burst_s1_35 | S1 | 35 | 12 |
 | burst_s1_55 | burst_s1_55 | S1 | 55 | 18 |
 
-Sheet 07_hinh_anh_am_thanh_model/Am_thanh_mixer — Âm thanh: mixer (1 dòng, 5 cột)
+Sheet 07_hinh_anh_am_thanh_model/Am_thanh_mixer — Âm thanh: mixer (8 dòng, 5 cột)
 
-| id | trang_thai | ghi_chu |
+| id | loai | gia_tri |
 |---|---|---|
-| can_doc_ma | NEED_CODE_CHECK | AudioDirector.cs / EffectsLimiter.cs (hằng trong mã; Docs/a… |
+| am_luong.dialogue | am_luong_mac_dinh | 1 |
+| am_luong.effects | am_luong_mac_dinh | 1 |
+| am_luong.master | am_luong_mac_dinh | 0.8 |
+| am_luong.music | am_luong_mac_dinh | 0.7 |
+| nhom.Dialogue | nhom_kenh |  |
+| nhom.Effects | nhom_kenh |  |
+| nhom.Music | nhom_kenh |  |
+| nhom.UI | nhom_kenh |  |
 
 Sheet 07_hinh_anh_am_thanh_model/Am_thanh_thu_vien — Âm thanh: thư viện (1 dòng, 8 cột)
 
@@ -196,11 +203,13 @@ Sheet 07_hinh_anh_am_thanh_model/VFX_chay_than_xe — VFX: lửa thân xe (3 dò
 
 *In 10 / 14 cột; 2 cột khác: xem sheet.*
 
-Sheet 07_hinh_anh_am_thanh_model/Xac_vo — Xác vỡ (1 dòng, 5 cột)
+Sheet 07_hinh_anh_am_thanh_model/Xac_vo — Xác vỡ (3 dòng, 7 cột)
 
-| id | trang_thai | ghi_chu |
-|---|---|---|
-| can_doc_ma | NEED_CODE_CHECK | Assets/MachineBrigade/Scripts/Game/Effects/WreckClasses.cs… |
+| id | tran_day_du | song_toi_thieu_s | song_toi_da_s | song_boss_s |
+|---|---|---|---|---|
+| High | 12 | 30 | 45 | 90 |
+| Low | 6 | 20.1 | 30.15 | 60.3 |
+| Medium | 9 | 30 | 45 | 90 |
 
 Bảng đầy đủ: xem sheet `VFX_vu_khi` (70 dòng), `Hau_ky_hinh_anh` (52 dòng).
 
@@ -247,13 +256,7 @@ Sheet 07_hinh_anh_am_thanh_model/Giay_phep_tai_san — Giấy phép tài sản (
 | OFL-Inter | OFL-Inter.txt | Inter | SIL Open Font License | 75 |
 | OFL-JetBrainsMono | OFL-JetBrainsMono.txt | JetBrainsMono | SIL Open Font License | 74 |
 
-Sheet 07_hinh_anh_am_thanh_model/Xem_truoc — Màn xem trước (1 dòng, 5 cột)
-
-| id | trang_thai | ghi_chu |
-|---|---|---|
-| can_doc_ma | NEED_CODE_CHECK | Assets/MachineBrigade/Scripts/Editor/ModelPreview.cs và pre… |
-
-Bảng đầy đủ: xem sheet `Model` (456 dòng), `Model_kiem_chuan` (456 dòng), `Kich_thuoc_that` (84 dòng), `Kit_chi_tiet` (70 dòng).
+Bảng đầy đủ: xem sheet `Model` (456 dòng), `Model_kiem_chuan` (456 dòng), `Kich_thuoc_that` (84 dòng), `Kit_chi_tiet` (70 dòng), `Xem_truoc` (179 dòng).
 
 ### Model standard (fix pass 8)
 
@@ -439,8 +442,8 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `VFX_bac` (6 dòng): VFX theo bậc — Bậc T0-T5: chớp đầu nòng, khói, vòng bụi, sóng nước, ánh sáng, giật (TierFx.Fire) và thời gian cầu lửa, khói, hố (EffectLife.Bands); rung camera, hạt…
 - `VFX_chay_than_xe` (3 dòng): VFX: lửa thân xe — HullFire.Looks: 3 mức lửa (thân, lưỡi lửa, khói, tàn, tia)
 - `Hau_ky_hinh_anh` (52 dòng): Hậu kỳ hình ảnh — Settings/BattlefieldProfile.asset: mỗi thiết lập của mỗi hiệu ứng (Bloom, Tonemapping, Color Adjustments...) một dòng: ghi đè, giá trị; trường Unity…
-- `Xac_vo` (1 dòng): Xác vỡ — Mỗi lớp xe: kiểu vỡ, biến thể, thời gian tồn tại, ảnh hưởng lối chơi (không: chỉ hình)
-- `Am_thanh_mixer` (1 dòng): Âm thanh: mixer — Nhóm, ưu tiên, số kênh tối đa, compressor / limiter, giảm theo khoảng cách
+- `Xac_vo` (3 dòng): Xác vỡ — Xác vỡ theo bậc đồ họa: trần đầy đủ và thời gian sống
+- `Am_thanh_mixer` (8 dòng): Âm thanh: mixer — Mixer âm thanh: nhóm kênh và âm lượng mặc định
 - `Am_thanh_mau` (3 dòng): Âm thanh: bản ghi mẫu — Docs/audio/samples: 3 bản trộn trận mẫu (Tools/sfx/render_mix.py): file, độ dài, số sự kiện / phát / cắt, limiter, compressor, độ to (mixes.json); mố…
 - `Am_thanh_mau_moc` (24 dòng): Âm thanh mẫu: mốc tiếng lớn — Mỗi bản trộn: các cửa sổ 400 ms to nhất (bước 100 ms, K-weighting BS.1770 của Tools/sfx/analyze_sfx.py trên kênh trộn mono) không dưới 6 LU so với cử…
 - `VFX_vu_khi` (70 dòng): VFX theo vũ khí — EffectShots.FxBatch: mỗi bậc T0-T5 (vũ khí đại diện chọn lúc chụp) và mỗi vũ khí >= 120 mm có đơn vị mang: bậc, cỡ, số nòng, thư mục ảnh, số ảnh có /…
@@ -461,10 +464,10 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Model_spec_dung` (11798 dòng): Model: spec dựng lại — Tools/blender/specs/<model>.json: spec dựng lại model (mẫu thật, kích thước đích, bộ phận, vũ khí, ngân sách, vùng màu;); id = <model>.<đường dẫn>
 - `Anh_the` [bulk.zip] (167 dòng): Ảnh thẻ — Resources/UI/Cards/manifest.json entries: ảnh thẻ render từ model (loại, model, nguồn, hash)
 - `Anh_the_chung` (3 dòng): Ảnh thẻ: cài đặt render — manifest.json: camera, cỡ ảnh, phiên bản
-- `Dia_phuong_hoa` [bulk.zip] (6217 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
+- `Dia_phuong_hoa` [bulk.zip] (6223 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
 - `Giay_phep_tai_san` (5 dòng): Giấy phép tài sản — Resources/Licenses/*.txt: mỗi file giấy phép một dòng (phông chữ OFL); nội dung từng dòng ở Giay_phep_noi_dung; âm thanh: 07_hinh_anh_am_thanh_model/…
 - `Giay_phep_noi_dung` [bulk.zip] (374 dòng): Giấy phép: nội dung — mỗi dòng không trống của file giấy phép
-- `Xem_truoc` (1 dòng): Màn xem trước — Mỗi đơn vị: miền đất / biển / ray / không, cảnh nền, hợp lệ
+- `Xem_truoc` (179 dòng): Màn xem trước — Màn xem trước của từng đơn vị: cảnh nền
 - `Kit_chi_tiet` (70 dòng): Bộ chi tiết kit35 — Docs/models/kit_catalog/kit35_components.json: 70 chi tiết của Tools/blender/mb_kit35.py (tam giác, kích thước, lỗi kiểm); ảnh: kit35_catalog.png (An…
 - `Model_cham_diem` (163 dòng): Model: chấm điểm — Chấm điểm theo Docs/models/MODEL_STANDARD.md: tam giác trong ngân sách, Part_* thiếu, Mount / Muzzle thiếu, sai tỷ lệ, hình bóng (quét hình); điểm; x…
 - `Dia_phuong_hoa_van_de` [bulk.zip] (271 dòng): Địa phương hóa: khóa có vấn đề — Mỗi khóa chữ có vấn đề một dòng: thiếu tiếng Anh / Việt, khai hai lần, tên riêng chỉ có ở một thứ tiếng (danh sách tên của Tools/story/script_build.p…

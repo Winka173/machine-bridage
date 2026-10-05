@@ -1153,6 +1153,8 @@ namespace MachineBrigade.Game.Match
 
         private void DispatchEvents()
         {
+            // AI MASTER P5 (spec 215): the AI's radio cues as short notices.
+            ShowCuesP5();
             foreach (var e in _world.Events)
             {
                 switch (e.Kind)

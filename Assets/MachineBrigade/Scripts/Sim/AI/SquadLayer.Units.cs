@@ -50,6 +50,8 @@ namespace MachineBrigade.Sim.AI
             }
             // AI MASTER P3 spec 149 / 200: stances and target handoff by suitability.
             UnitsP3(world, s);
+            // AI MASTER P5 Part L: reload-aware holds (no exposed advance on an empty magazine).
+            UnitsP5(world, s, overwhelmed);
         }
 
         private readonly Dictionary<EntityId, EntityId> _explained = new();

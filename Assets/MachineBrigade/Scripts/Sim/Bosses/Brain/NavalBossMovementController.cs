@@ -405,6 +405,9 @@ namespace MachineBrigade.Sim.Bosses
                 // Never: counted so the tests can assert it (spec 52, section 110 "Target behind").
                 world.Bosses.Brains.NavalReverseEvents++;
                 v.Speed = 0f;
+                // AI MASTER P5 Part O / K: the forbidden reverse, logged at once (the health monitor also raises it as an error).
+                world.AiLog.Add(new AI.DecisionEntry(world.Time, v.Team, AI.AiLayer.Unit, v.Id.Value, AI.DecisionKind.Emergency,
+                    $"{AI.P5Reasons.NavalReverseForbidden} speed clamped to 0"));
             }
             b.TurnRadius = turned > 1e-6f ? v.Speed * dt / turned : float.PositiveInfinity;
         }

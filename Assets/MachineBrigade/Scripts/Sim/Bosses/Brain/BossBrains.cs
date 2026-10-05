@@ -141,8 +141,9 @@ namespace MachineBrigade.Sim.Bosses
             if (b.LoggedReason == b.HullReason && b.LoggedBroadside == b.BroadsideEngaged) return;
             b.LoggedReason = b.HullReason;
             b.LoggedBroadside = b.BroadsideEngaged;
+            // AI MASTER P5 Part O: the line starts with its registered code (BOSS_HULL_* / NAVAL_*).
             log.Add(new DecisionEntry(now, v.Team, AiLayer.Unit, v.Id.Value, DecisionKind.State,
-                $"boss hull {b.HullReason}{(b.BroadsideEngaged ? " (broadside)" : "")}: {b.DebugLine()}"));
+                $"{ReasonCodes.HullCode(b.HullReason, b.Craft == BossCraft.Naval)} hull={b.HullReason}{(b.BroadsideEngaged ? " (broadside)" : "")}: {b.DebugLine()}"));
         }
     }
 

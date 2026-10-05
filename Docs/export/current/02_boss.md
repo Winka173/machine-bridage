@@ -2,7 +2,7 @@
 
 Boss, bộ phận, siêu vũ khí, hộ tống, pha, Săn trùm.
 
-Gói cân bằng Machine Brigade, commit 5394cac7, ngày 2026-10-04. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3525b04a, ngày 2026-10-05. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng hợp boss
 
@@ -481,6 +481,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Boss_hieu_qua` (165 dòng): Boss: hiệu quả vũ khí chính — Mỗi boss x vũ khí chính (bệ 0) x xe tham chiếu (spec 03 B): số đòn để hạ, thời gian hạ khi dồn hỏa lực, số xe trúng lõi / rìa (5 xe cách 8 m: hàng và…
 - `Sanhunt_chua_xep` (8 dòng): Săn trùm: boss chưa có ô chương — BossHunts.Unslotted: boss mới và chương nó đứng sau
 - `Sanhunt_ho_tro` (12 dòng): Săn trùm: hỗ trợ tác chiến — HuntSupports.All (BossHunt.cs): 12 hỗ trợ chọn sau boss chủ lực
+- `Boss_ma_ly_do` (18 dòng): Mã lý do AI của boss / tàu — BOSS_* / NAVAL_* của bảng đăng ký mã (09_ai/AI_ma_ly_do): dòng nhật ký của bộ não boss (mục 96), pha, lệnh cấm lùi tàu
 - `Boss_tham_chieu` (33 dòng): Boss: tham chiếu ngoài đời — Mỗi boss một dòng: nguồn cảm hứng, phần lấy từ mẫu nào, hệ số phóng to, phần giả tưởng (spec 12.2; chỉ dữ liệu có trong repo)
 - `Boss_so_sanh_that` (108 dòng): Boss: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
-- `Hang_so_boss` (28 dòng): Hằng số boss: đòn lớn, pha, hộ tống — Assets/MachineBrigade/Resources/Data/tunables.json: 'bosses' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị k…
+- `Hang_so_boss` (67 dòng): Hằng số boss: đòn lớn, pha, hộ tống — Assets/MachineBrigade/Resources/Data/tunables.json: 'bosses' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị k…

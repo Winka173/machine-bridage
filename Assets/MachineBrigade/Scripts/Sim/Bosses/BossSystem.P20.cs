@@ -160,7 +160,7 @@ namespace MachineBrigade.Sim.Bosses
                 if (!_world.Catalog.Vehicles.TryGetValue(id, out var def) || _world.Feasibility.SpawnUseful(def, boss.Team, at, out _)) return id;
                 if (k == 0)
                     _world.AiLog.Add(new MachineBrigade.Sim.AI.DecisionEntry(_world.Time, boss.Team, MachineBrigade.Sim.AI.AiLayer.Commander, boss.Id.Value,
-                        MachineBrigade.Sim.AI.DecisionKind.Purchase, $"REJECT {id} reason=no-map-influence (factory spawn)"));
+                        MachineBrigade.Sim.AI.DecisionKind.Purchase, $"REJECT {id} reason=no-map-influence ({MachineBrigade.Sim.AI.P5Reasons.EscortSpawnReject}; factory spawn)"));
             }
             return first;
         }

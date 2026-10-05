@@ -2,7 +2,7 @@
 
 Chế độ chơi, độ khó, kinh tế, tác chiến, thăng hạng, mở khóa, cửa hàng, giao diện.
 
-Gói cân bằng Machine Brigade, commit 5394cac7, ngày 2026-10-04. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3525b04a, ngày 2026-10-05. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng quan
 
@@ -174,12 +174,12 @@ Sheet 04_che_do_kinh_te_ai/Vo_han — Vô hạn và bảng xếp hạng (6 dòng
 
 | id | thu_tu_xep_hang | he_so_tang_thuong |
 |---|---|---|
-| bossrush | -bosses;+seconds;-parts | NEED_CODE_CHECK |
-| bossrushEndless | -bosses;+seconds;-parts | NEED_CODE_CHECK |
-| defendEndless | -waves;-killedBaseCp;-seconds | NEED_CODE_CHECK |
-| endless | -waves;-killedBaseCp;-seconds | NEED_CODE_CHECK |
-| survivalEndless | -waves;-killedBaseCp;-seconds | NEED_CODE_CHECK |
-| weekly | -cleared;+attempts;+seconds | NEED_CODE_CHECK |
+| bossrush | -bosses;+seconds;-parts | 0.9 |
+| bossrushEndless | -bosses;+seconds;-parts | 0.9 |
+| defendEndless | -waves;-killedBaseCp;-seconds | 0.9 |
+| endless | -waves;-killedBaseCp;-seconds | 0.9 |
+| survivalEndless | -waves;-killedBaseCp;-seconds | 0.9 |
+| weekly | -cleared;+attempts;+seconds | 0.9 |
 
 Sheet 06_ban_do/Trung_lap_luat — Trung lập: luật (18 dòng, 8 cột)
 
@@ -204,11 +204,15 @@ Sheet 06_ban_do/Trung_lap_luat — Trung lập: luật (18 dòng, 8 cột)
 | numbers["workshop.radius"] | neutrals | workshop.radius | 14 |  |
 | numbers["workshop.repair"] | neutrals | workshop.repair | 0.015 |  |
 
-Sheet 05_chien_dich/Ket_tran — Kết trận (1 dòng, 5 cột)
+Sheet 05_chien_dich/Ket_tran — Kết trận (5 dòng, 5 cột)
 
-| id | trang_thai | ghi_chu |
+| id | giay | chuyen_dong_cham |
 |---|---|---|
-| can_doc_ma | NEED_CODE_CHECK | đọc hằng trong Assets/MachineBrigade/Scripts/Game/Match/Mat… |
+| FirstBigWin | 7 | TRUE |
+| FirstWin | 4.5 | TRUE |
+| Loss | 3.5 | FALSE |
+| Replay | 3 | FALSE |
+| bo_qua_sau_giay | 0.75 |  |
 
 ## Tác chiến
 
@@ -323,8 +327,8 @@ Sheet 04_che_do_kinh_te_ai/Kinh_te — Kinh tế (18 dòng, 8 cột)
 | economy.vehicleCap.Operation | economy | Operation | 48 |  |
 | economy.vehicleCap.Siege | economy | Siege | 48 |  |
 | economy.vehicleCap.default | economy | default | 32 |  |
-| ma.hoan_cp_khi_ha | ma | hoàn CP khi hạ, bắt kịp, thưởng rút lui, thưởng bộ phận bos… |  | NEED_CODE_CHECK |
-| ma.tiep_te_cong_thuc | ma | tiếp tế: công thức, ngưỡng, đường phạt, tối đa -75 % |  | NEED_CODE_CHECK |
+| ma.hoan_cp_khi_ha | ma | hoàn CP khi hạ, bắt kịp, thưởng rút lui, thưởng bộ phận bos… |  | kill_share 0.25; tran_hoan_khi_ha 0.45; tran_hoan_khi_mat 0… |
+| ma.tiep_te_cong_thuc | ma | tiếp tế: công thức, ngưỡng, đường phạt, tối đa -75 % |  | armyCap = round((economy.armyCap[mode] x supplyPriceScale +… |
 
 Sheet 04_che_do_kinh_te_ai/Nang_hang — Giá nâng hạng (10 dòng, 6 cột)
 
@@ -391,12 +395,6 @@ Bộ biểu tượng vẽ mới hoàn toàn theo nét của Field Command 2.0, k
 
 *Hình: Đường ranh giới và cảnh ngoài viền. Đơn vị: ảnh chụp trong game, không lưới mét; thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (07_hinh_anh_am_thanh_model/Model).*
 
-Sheet 04_che_do_kinh_te_ai/Cai_dat_mac_dinh — Cài đặt mặc định (1 dòng, 5 cột)
-
-| id | trang_thai | ghi_chu |
-|---|---|---|
-| can_doc_ma | NEED_CODE_CHECK | hằng mặc định trong GraphicsOptions.cs, Haptics.cs, PlayerP… |
-
 Sheet 04_che_do_kinh_te_ai/Skin — Skin (10 dòng, 11 cột)
 
 | id | base_hex | metallic | pattern | price | roughness | scale | second_hex | third_hex |
@@ -425,7 +423,7 @@ Sheet 04_che_do_kinh_te_ai/Nhiem_vu_ngay — Nhiệm vụ ngày (8 dòng, 6 cộ
 | strikes | strikes | 6;10;15 | 120 |
 | wins | wins | 1;2;3 | 180 |
 
-Bảng đầy đủ: xem sheet `Huong_dan` (320 dòng, bulk.zip), `Ban_do_menu` (25 dòng), `Mo_khoa` (88 dòng).
+Bảng đầy đủ: xem sheet `Cai_dat_mac_dinh` (22 dòng), `Huong_dan` (320 dòng, bulk.zip), `Ban_do_menu` (25 dòng), `Mo_khoa` (88 dòng).
 
 ## Tham khảo ngoài đời và game
 
@@ -462,6 +460,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Che_do_thoi_luong` (12 dòng): Chế độ: thời lượng lý thuyết — Thời lượng lý thuyết mỗi chế độ ở độ khó Bình thường: giờ của dữ liệu (matchRules.numbers) và của mã (đồng hồ quỹ giờ, thưởng giai đoạn, trần quỹ), h…
 - `Kinh_te_suy_ra` (44 dòng): Kinh tế suy ra — CP mỗi bên đã kiếm được (CP khởi đầu + thu nhập x thời gian) ở 25 / 50 / 75 / 100 % thời lượng tham chiếu (Che_do_thoi_luong), theo chế độ x độ khó;…
 - `Kiem_tinh_che_do` (36 dòng): Kiểm tĩnh chế độ (4 sổ) — Bốn sổ của kiểm tĩnh chế độ (Tools/audit/mode_static_audit.py,) ở 25 / 50 / 75 / 100 % thời lượng mục tiêu, Bình thường: Kinh tế (CP khởi đầu + thu n…
+- `Che_do_hoc_thuyet_AI` (28 dòng): Chế độ: học thuyết chiến đấu AI — Part I ModeCombatDoctrine: một dòng một học thuyết (BalancedObjectiveDoctrine gốc + kế thừa I15), đã giải kế thừa; đọc thẳng từ ModeCombatDoctrine.Bu…
 - `Che_do_tham_chieu` (12 dòng): Chế độ: tham chiếu game — Mỗi chế độ một dòng: game tham khảo, cơ chế giữ / đổi (spec 12.2; chỉ dữ liệu có trong repo)
 - `Nang_hang` (10 dòng): Giá nâng hạng — Arsenal.cs Coins / Prints: xu và bản thiết kế cho mỗi lần lên hạng (hạng 1-10)
 - `Hom_do` (4 dòng): Hòm đồ và tỷ lệ rơi — Arsenal.cs: mỗi bậc hòm một dòng (số lượt, xu thấp / cao, số bản thiết kế, số thẻ, giá xu, bảo hiểm Sử thi / Huyền thoại, phần tháp, tỷ lệ theo độ hi…
@@ -476,7 +475,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Meta_kinh_te_tran` (12 dòng): Meta: xu mỗi trận nhanh — Xu một trận nhanh theo độ khó x kết quả (Rewards.Quick: cơ bản + min(hạ, trần) x xu + min(phút, trần) x xu, x hệ số độ khó), ở trận tham chiếu 20 xe…
 - `Meta_kinh_te` (10 dòng): Meta: kinh tế nâng hạng — Một thẻ từ hạng 1 lên hạng h: xu và bản thiết kế cho lần nâng, tổng từ hạng 1 (CardRanks.CoinsSpent / BlueprintsSpent), số trận thắng nhanh Bình thườ…
 - `Huong_dan` [bulk.zip] (320 dòng): Hướng dẫn người chơi — Chuỗi hướng dẫn trong game: thẻ Hướng dẫn của trang chi tiết (guide.<id>: GuideText, BossText, BigAttackText...), mẹo (tip.*) và gợi ý thao tác (hint…
-- `Cai_dat_mac_dinh` (1 dòng): Cài đặt mặc định — Vòng cảnh báo, thoại, rung camera, cỡ chữ, đồ họa...
+- `Cai_dat_mac_dinh` (22 dòng): Cài đặt mặc định — Cài đặt mặc định của người chơi mới (âm lượng, đồ họa, rung, hỗ trợ, ngôn ngữ), đọc từ mã bởi ExportGameDoc
 - `Mutator_tuan` (1 dòng): Mutator tuần — Mutator tuần của Tác chiến
 - `Thu_hang` (1 dòng): Thứ hạng — Bảng xếp hạng
 - `Thuong` (1 dòng): Thưởng — Thưởng trận / chiến dịch

@@ -250,10 +250,22 @@ namespace MachineBrigade.Sim.AI
         {
             _world = world;
             if (InTransition && world.Time >= TransitionUntil) InTransition = false;
+            // AI MASTER P5 Part P: the squad layer's and the commander pass's own timing counters.
+            var perf = world.AiPerf;
+            var start = perf.Begin();
             Squads.Tick(world, dt);
+            perf.End(AiPerfSection.Squad, start);
             _timer -= dt;
             if (_timer > 0f) return;
             _timer = 1f;
+            start = perf.Begin();
+            Pass(world, pool, enemy);
+            perf.End(AiPerfSection.Commander, start);
+        }
+
+        /// <summary>The 1 Hz commander pass (teams half a second apart): planning, P2 assignment, P3 coordination, P4 plans.</summary>
+        private void Pass(SimWorld world, IReadOnlyList<Vehicle> pool, AiCommander? enemy)
+        {
             var intel = world.Intel.For(Team);
             intel.Decay = world.Catalog.Ai.ConfidenceDecay * Skill.DecayScale;
             world.AiLog.WarnPerMinute = world.Catalog.Ai.Get("world.churnWarn", 6f);

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from . import _b06
 from . import _c06
+from . import _p5_ai
 from . import _balance as B
 from . import _lane_c as C
 
@@ -133,3 +134,6 @@ def build(ctx):
 
     # ------------------------------------------------------------------ layer C (AI book, 04/10): code-sourced sheets
     _c06.build(ctx, book)
+
+    # ------------------------------------------------------------------ AI MASTER P5 (05/10): registry, doctrines, ladders, budget, health
+    _p5_ai.build(ctx, book)

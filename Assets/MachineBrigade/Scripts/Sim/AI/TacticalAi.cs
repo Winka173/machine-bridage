@@ -264,6 +264,8 @@ namespace MachineBrigade.Sim.AI
             world.Doctrine.SetMissionTarget(_team, Demolish?.Invoke(world) ?? EntityId.None);
             // AI MASTER P0-A (Part C): the combat watchdog's requests first.
             ServeWatchdog(world);
+            // AI MASTER P5 Part K: the health monitor asked for fresh fire-support anchors (a squad did no damage in contact).
+            if (world.Health.TakeAnchorRefresh(_team)) FireSupport.Refresh();
             if (Layered)
             {
                 _groundPool.Clear();

@@ -21261,3 +21261,28 @@ No Unity, no tests run; Sim compiled (0 errors); `AiMasterP4Tests.cs` compiled a
 - **P0-B 18:** "force enough" holds CP 30 s on / 10 s off (never with < 4 units or at the bank cap); boss-phase reserve keeps 30 %
   of the bank for at most 25 s while a seen boss is within 8 % above its next phase mark.
 - **Not done:** cue presentation (recorded only), support-effectiveness EMA (API only), pacing of boss skills / bombard.
+
+## AI MASTER P5 (lane A)
+
+Branch `feature/ai-p5` (worktree MachineBrigade-art), 05/10. Spec MASTER_FINAL Parts K, L, N, O, P, sections 3, 94, 98-99, 114,
+185, 215, R8; row by row in `Docs/ai/spec_master/AUDIT_P5.md`, values in `Docs/export/CHANGES.md` "AI MASTER P5". No Unity, no
+tests run; Sim compiled (0 errors); `AiMasterP5Tests.cs` + `AiMasterP5PerfHarness.cs` compiled against Sim + NUnit (stubs).
+- **Monitor recovers only through existing paths:** the squad's idle reassessment flag, a NaN issued goal (re-issue / new path),
+  `FireSupportDirector.Refresh` (served by TacticalAi), retarget clocks, a longer commitment. One recovery per squad per 20 s.
+  R8's world test injects a sample (`AiHealthMonitor.Inject`, internal) rather than staging a real stall.
+- **Contact = an intel contact seen < 5 s within the squad's reach + 15 m;** "no damage" = no member fired (LastFiredAt), the
+  cheapest observed proxy; holding / dodging / defending squads are exempt.
+- **Part L follows the game's reload rule** (in-place magazines reload standing still): a reloading member stops instead of
+  driving on; a near-empty magazine that is not yet reloading is not held (it would idle). L2's free reposition window exists
+  only for clips / on-the-move reloads (rule, no caller yet). Target keeping and the reload scoot are AI sides only.
+- **Towers: AI sides only** (as P3), on top of the mode; critical threat x4 so it beats AirFirst / ArtilleryFirst x3;
+  cross-tower overkill complements P3's board (which already covers AI towers).
+- **One registry, writers unchanged:** lane constant classes stay; `ReasonCodes.All` is checked against them by reflection.
+  Section 94 verbs kept (P0-B test reads `REJECT`), registered as aliases; boss lines now start with codes.
+- **Cadence:** squads 2 Hz in staggered buckets (spec 3.3), dodges every 4 Hz tick; procurement keeps the difficulty interval
+  (deviation, documented). Spatial grid invalidated after movement; used where the count is identical to the old scan.
+- **Determinism review:** no System.Random in any AI MASTER lane; legacy seeded RNGs kept (balance); dictionary walks in the
+  lanes are order-independent.
+- **Cues:** allied AI all, enemy AI only "attack_go" (probe / feint / flank would leak its plan).
+- **REPORT_DRAFT.md:** the harness refused writing it from the lane (report-file guard); the Part V draft went to the lead in the
+  lane's reply instead.
