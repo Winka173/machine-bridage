@@ -442,13 +442,12 @@ namespace MachineBrigade.Sim.Navigation
                     Clearance[i] = 0;
                     queue[tail++] = i;
                 }
-                else if (edge)
-                {
-                    Clearance[i] = 1;
-                    queue[tail++] = i;
-                }
-                else Clearance[i] = byte.MaxValue;
+                else Clearance[i] = edge ? (byte)1 : byte.MaxValue;
             }
+            // Edge seeds go in after every closed cell so the queue stays in distance order and no cell is queued twice
+            // (mixing 0 and 1 seeds let cells be lowered and re-queued, overflowing the n-sized queue).
+            for (var i = 0; i < n; i++)
+                if (open[i] && Clearance[i] == 1) queue[tail++] = i;
             while (head < tail)
             {
                 var i = queue[head++];
