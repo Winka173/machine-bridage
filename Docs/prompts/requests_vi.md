@@ -318,3 +318,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 05/10 spec MAP/VISUAL/AUDIO MASTER chính thức (Docs/mapvisaudio/: spec + PROMPT_owner_vi.md nguyên văn + PLAN.md); xếp sau các lane AI đang chạy. 05/10 "áp dụng các biện pháp tiết kiệm token".
 - 05/10 "tiếp tục, task về map và audio khoan làm đợi tôi confirm".
 - 05/10 "Dùng file đính kèm Machine_Brigade_PROJECTILE_FLIGHT_FEEL_MASTER_SPEC.md, dùng 1 agent sonnet, không chạy test phần này" -> Docs/prompts/projectile_flight_feel_spec.md (source of truth tốc độ đạn).
+- 05/10 "làm Spec bản đồ, hình ảnh, âm thanh" (xác nhận; Docs/mapvisaudio/).
