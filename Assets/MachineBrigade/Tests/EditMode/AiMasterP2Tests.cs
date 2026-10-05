@@ -271,7 +271,7 @@ namespace MachineBrigade.Tests
             // A new objective far off: the old anchor no longer covers it.
             a = Place(world, director, guns[0], guns, Ctx(objective: new Vector2(120f, 120f)));
             Assert.Greater(a.Sets, sets, "repositioned");
-            Assert.That(a.Reason, Is.AnyOf("rangeBandLost", "objectiveUncovered"));
+            Assert.That(new[] { "rangeBandLost", "objectiveUncovered" }, Does.Contain(a.Reason));
         }
 
         [Test]
