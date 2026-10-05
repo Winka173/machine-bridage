@@ -115,6 +115,14 @@ namespace MachineBrigade.Sim.AI
         internal float Strength, Reach, LastHp;
         internal readonly Dictionary<EntityId, (Vector2 at, double since, int rung)> Progress = new();
 
+        /// <summary>AI MASTER P1 (spec 31, 85-86): the passage it holds or queues for (0: none), which way, since when.</summary>
+        internal int PassageId, PassageDir;
+        internal bool PassageQueued;
+        internal double PassageSince;
+
+        /// <summary>Members waiting at a queue position for their packet: when they go, to which slot, with which order.</summary>
+        internal readonly Dictionary<EntityId, (double at, Vector2 slot, CommandType type)> Packets = new();
+
         public override string ToString() => $"Squad {Id} {State} {Action} {Score:0} ({MemberList.Count})";
     }
 
@@ -216,7 +224,12 @@ namespace MachineBrigade.Sim.AI
                 }
             }
             foreach (var s in _squads)
-                if (s.MemberList.Count > 0) Think(world, intel, s);
+            {
+                if (s.MemberList.Count == 0) continue;
+                // AI MASTER P1: passage turns and packets first (spec 31, 85-86).
+                TrafficTick(world, s);
+                Think(world, intel, s);
+            }
             // AI MASTER P0-A (Part C2): the reasons the squads hold their members for.
             ExplainHolds(world);
         }
@@ -737,6 +750,8 @@ namespace MachineBrigade.Sim.AI
             goal = Leash(world, s, goal);
             if (s.MorphPending && world.Time >= s.MorphUntil) s.IssuedGoal = new Vector2(float.NaN, float.NaN);
             goal = world.Map.Clamp(goal, 6f);
+            // AI MASTER P1 (spec 40): never a rally or holding point in a spawn's exit box.
+            if (type == CommandType.Move) goal = world.Traffic.OutOfExit(goal, _commander.Team);
             // Release an ambush's hold the moment the squad does anything else; kiting only while it backs off.
             if (s.Action != SquadAction.Hold) SetHoldFire(world, s, false);
             if (type != CommandType.Move || s.State != SquadState.Combat) SetKiting(world, s, false);
@@ -806,6 +821,12 @@ namespace MachineBrigade.Sim.AI
             {
                 if (!world.TryGetVehicle(id, out var v)) continue;
                 if (!s.Progress.TryGetValue(id, out var p)) s.Progress[id] = p = (v.Position, now, 0);
+                // AI MASTER P1: queued for a passage, waiting for its packet, or in jam stages 1-4: the traffic layer has it.
+                if (TrafficOwns(s, v))
+                {
+                    s.Progress[id] = (v.Position, now, p.rung);
+                    continue;
+                }
                 var moving = v.HasPath && Vector2.Distance(v.Position, v.Order.Point) > 6f;
                 if (!moving || Vector2.Distance(v.Position, p.at) > 2f)
                 {

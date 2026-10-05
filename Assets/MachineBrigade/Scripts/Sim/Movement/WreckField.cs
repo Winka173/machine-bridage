@@ -17,8 +17,12 @@ namespace MachineBrigade.Sim.Movement
         public readonly bool Naval;
         public readonly double Until;
 
-        public WreckSpot(EntityId id, Vector2 position, Vector2 a, Vector2 b, float radius, bool naval, double until)
+        /// <summary>AI MASTER P1 (spec 39): when it fell (NaN: unknown); a fresh wreck is dear before it is a wall.</summary>
+        public readonly double Since;
+
+        public WreckSpot(EntityId id, Vector2 position, Vector2 a, Vector2 b, float radius, bool naval, double until, double since = double.NaN)
         {
+            Since = since;
             Id = id;
             Position = position;
             A = a;
@@ -51,11 +55,33 @@ namespace MachineBrigade.Sim.Movement
 
         public int Count => _list.Count;
 
+        /// <summary>
+        /// AI MASTER P1 (spec 39): bumped on every wreck added or gone, with the change kept until the movement system takes it
+        /// (next step at the latest): the nav costs and the routes through it are invalidated at once, not at a periodic rebuild.
+        /// </summary>
+        public int Version { get; private set; }
+
+        private readonly List<(WreckSpot spot, bool added)> _changes = new();
+
+        /// <summary>Moves the changes since the last call into <paramref name="into"/> (in the order they happened).</summary>
+        internal void TakeChanges(List<(WreckSpot spot, bool added)> into)
+        {
+            into.AddRange(_changes);
+            _changes.Clear();
+        }
+
         /// <summary>Ground wrecks on the field now (none: the drivers' checks are skipped).</summary>
         public int GroundCount => _list.Count - _naval;
 
         /// <summary>Sinking ships on the field now.</summary>
         public int NavalCount => _naval;
+
+        /// <summary>
+        /// P0 wiring (owner 04/10): the longest a ground hulk stays solid in this world, s (+inf: the data's 30-45 s). The
+        /// unit preview's firing range caps it (a target dies every few seconds there), with its view on the same cap
+        /// (WreckManager.MaxLife), so its hulks sink and go and the replacements' clear-spot test follows them.
+        /// </summary>
+        public double MaxGroundSeconds { get; set; } = double.PositiveInfinity;
 
         /// <summary>
         /// How long a vehicle's wreck stays solid, s: a ship until it has gone under, a boss's hulk its 90 s, any other hulk
@@ -85,8 +111,12 @@ namespace MachineBrigade.Sim.Movement
             if (!Leaves(v)) return;
             var half = SimMath.Forward(v.Heading) * v.Def.HullHalf;
             var naval = v.Def.Naval != null;
-            _list.Add(new WreckSpot(v.Id, v.Position, v.Position - half, v.Position + half, v.Def.HullRadius, naval, now + Life(v.Def, v.Id)));
+            var spot = new WreckSpot(v.Id, v.Position, v.Position - half, v.Position + half, v.Def.HullRadius, naval,
+                now + (naval ? Life(v.Def, v.Id) : Math.Min(Life(v.Def, v.Id), MaxGroundSeconds)), now);
+            _list.Add(spot);
             if (naval) _naval++;
+            Version++;
+            _changes.Add((spot, true));
         }
 
         /// <summary>Wrecks whose time is up are gone (once a step, after the dead are removed).</summary>
@@ -96,6 +126,8 @@ namespace MachineBrigade.Sim.Movement
             {
                 if (_list[i].Until > now) continue;
                 if (_list[i].Naval) _naval--;
+                Version++;
+                _changes.Add((_list[i], false));
                 _list.RemoveAt(i);
             }
         }

@@ -52,6 +52,9 @@ namespace MachineBrigade.Sim.Navigation
             Refresh(world);
         }
 
+        /// <summary>AI MASTER P1 (spec 39): a wreck fell or went: the next route planned round hulls refreshes the layers first.</summary>
+        internal void Invalidate() => _refreshedAt = long.MinValue / 2;
+
         /// <summary>Stamps every parked ground hull (stamping is order independent: each cell keeps its dearest stamp).</summary>
         internal void Refresh(SimWorld world)
         {
@@ -71,8 +74,13 @@ namespace MachineBrigade.Sim.Navigation
             {
                 var w = wrecks[n];
                 if (w.Naval) continue;
-                foreach (var layer in _cost) Stamp(layer, w.A, w.B, w.Radius, StunnedCost);
+                // AI MASTER P1 (spec 39): a hulk still falling is dear, then a wall.
+                var core = world.Time - w.Since < Content.SimTunables.Ai.Navigation.WreckSettleS ? FriendParkedCost * 3 : StunnedCost;
+                // (Widened by a typical half hull: the route finder plans for a point, and a hull must not fit a gap it cannot.)
+                foreach (var layer in _cost) Stamp(layer, w.A, w.B, w.Radius + 1.5f, (byte)core);
             }
+            // AI MASTER P1 (spec 84): the traffic's dynamic costs (jams, friendly boss corridors, booked firing spots).
+            world.Traffic.StampCosts(_cost, _grid);
         }
 
         private void Stamp(byte[] layer, Vehicle v, byte core)

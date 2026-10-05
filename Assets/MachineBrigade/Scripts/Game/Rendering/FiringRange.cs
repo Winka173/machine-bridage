@@ -30,6 +30,9 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>How long a knocked-out target burns before its replacement comes in.</summary>
         private const double ReplaceAfter = 2.5;
 
+        /// <summary>A wreck's whole life on the range, s, its 3 s sink included (a match keeps the data's 30-45 s).</summary>
+        internal const float PreviewWreckSeconds = 12f;
+
         private readonly SimWorld _world;
         private readonly ViewRegistry _views;
         private readonly MineViews _mines;
@@ -106,6 +109,13 @@ namespace MachineBrigade.Game.Rendering
 
             // Prompt 34 L8: every blast and warning of the shown unit gets its ring at its real size.
             _effects.PreviewRings = true;
+
+            // P0 wiring (owner 04/10: the preview's wrecks never went): a target dies every few seconds here and its replacement
+            // parks beside the hulk (play-test 14 lane J), so the match's 30-45 s hulks piled up on the range for as long as it
+            // was watched. The range's hulks burn, then sink and go after PreviewWreckSeconds, the Sim's solid wreck on the same
+            // clock (the clear-spot test then lets the next target back onto its own spot).
+            _world.Wrecks.MaxGroundSeconds = PreviewWreckSeconds;
+            _effects.WreckLife = PreviewWreckSeconds;
 
             _id = vehicleId;
             if (!catalog.Vehicles.TryGetValue(vehicleId, out var def))

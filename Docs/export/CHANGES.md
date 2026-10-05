@@ -13025,6 +13025,42 @@ Nhánh `feature/ai-p0c` (lane C, 04/10). Nguồn: `Docs/ai/spec_master/Machine_B
 | P0C-13 | Chọn mục tiêu boss | BossWorth theo kiểu hành vi | thêm: đe dọa boss / hộ tống / nhiệm vụ, bắn tới được (x0.6 nếu không ụ nào xoay tới), thời gian ngắm, giữ mục tiêu (kẹp 0.4-2) | mục 65; overkill thuộc P0-A |
 | P0C-14 | Debug tàu (mục 96) | không có | LaneId, RouteProgress, DesiredHullHeading, ActualHeading, BroadsideCandidate, TurnRadius, TargetId, HullTargetReason, TurretTargets[], CPA vào `Vehicle.BossBrain` và DecisionLog | mục 96 |
 
+## AI MASTER P0 wiring
+
+Nhánh `feature/ai-p0-wire` (lane A, 05/10), trên P0-A + P0-B + P0-C đã gộp. Quyết định: DECISIONS "AI MASTER P0 wiring + preview wrecks (lane A)". Không chạy Unity / test; Sim build bằng dotnet (0 lỗi), test mới compile với stub.
+
+| # | mục | cũ | mới | ghi chú |
+|---|---|---|---|---|
+| W-1 | Kiểm tra tiếp cận mục tiêu (spec 47/83) | `TargetAccessCache` lấy mẫu vùng NavGrid (ô mở, kể cả biển), không tính bán kính mục tiêu | `Resolver` = P0-B `EngagementFeasibility.CanFireFromComponent`: thành phần liên thông của miền di chuyển (xe mặt đất không tính biển), dải bắn như combat đo (khoảng cách - bán kính <= tầm, >= tầm tối thiểu); topology lệch grid (chờ rebuild 5 s) thì lấy mẫu grid như cũ | xe trên bờ bắn tàu: chỉ khi bờ nằm trong tầm |
+| W-2 | Cache tiếp cận | khoá XOR (có thể trùng) | khoá tuple (nguồn, ô 8 m, dải tầm / tầm tối thiểu / bán kính); xoá khi grid đổi version hoặc topology rebuild | |
+| W-3 | Mục tiêu sau tường phá được | lệnh tấn công của AI bị bỏ mỗi lần (`COMBAT_IDLE_NO_REACHABLE_TARGET`) | "phá trước": `BreachAccess` coi ô chỉ bị chặn bởi tường / cổng / vật cản phá được (đoạn tường căn cứ, xe Wall/Obstacle của địch, prop phá được như cổng pháo đài) là đi qua được sau khi phá; Dijkstra (ô mở 1, ô phá được 1 + 12) tới dải bắn; lệnh chuyển sang đánh cấu trúc chặn đầu tiên trên đường; log `TARGET_BREACH_FIRST`, đếm `CombatWatch.Breaches` | Part B (breacher / siege), Part H |
+| W-4 | Attack-move vào căn cứ có tường | địch sau tường bị bỏ qua | khi đích của attack-move cũng bị bịt: giao chiến với tường / cổng (xe) chặn đường | prop không (combat chỉ giữ Engaged là xe) |
+| W-5 | Mục tiêu thật sự không tới được | bỏ | vẫn bỏ (vách đá, vùng kín không phá được, biển với xe mặt đất); lệnh của người chơi giữ nguyên | |
+| W-6 | Boss: P0-A + P0-C chồng nhau | thời gian ngắm và "dính mục tiêu" tính hai lần (P0-A exp(-t/4), +15 % và director /(1+0.15 t), x1.15) | boss có Brain: chỉ director (theo từng ụ, thân không quay theo mục tiêu); overkill, doctrine, ThreatToObjective vẫn của P0-A; lọc cứng chỉ P0-A (director chỉ là hệ số) | không lọc kép |
+| W-7 | Xác xe trong preview "In action" | xác sống 30-45 s như trận (thay mục tiêu mỗi ~2.5 s, đỗ cạnh xác) nên trường bắn luôn đầy xác, không thấy biến mất | preview: xác cháy rồi chìm và mất sau 12 s (`FiringRange.PreviewWreckSeconds`), Sim cùng đồng hồ (`WreckField.MaxGroundSeconds`), view `WreckManager.MaxLife`; trận không đổi | tàu chìm giữ 18 s |
+| W-8 | Test | | `AiMasterP0WiringTests` (8 test: resolver, topology lệch, bờ / tàu, phá trước, lệnh chuyển sang tường, vẫn bỏ khi không phá được, lệnh người chơi, tất định) | viết, chưa chạy |
+## AI MASTER P1
+
+Nhánh `feature/ai-p1` (lane B, 05/10, gồm P0-D). Nguồn: `Docs/ai/spec_master/Machine_Brigade_AI_Behavior_MASTER_FINAL.md` mục 28-41, 84-87, 95, 102, 111, 185-190; đối chiếu từng mục: `Docs/ai/spec_master/AUDIT_P1.md`. Không đổi giá trị cân bằng. Công tắc cho lead: `ai.navigation.jamStages`, `ai.navigation.orcaLite`, `ai.traffic.enabled` (tunables.json).
+
+| # | mục | cũ | mới | ghi chú |
+|---|---|---|---|---|
+| P1-1 | Phát hiện kẹt theo tầng | thang kẹt mỗi 1.5 s (hỏi nhường, đường vòng, lùi, bỏ cuộc ~6-9 s), lưới an toàn 10 s | `JamTracker` 4 Hz: chậm < 25 % tốc độ muốn và tiến < 0.25 m/s; tầng 1.5 s (giãn, lách), 3 s (điểm phụ 3-6 m), 5 s (nhường theo quyền ưu tiên), 8 s (phí tắc + đường mới < 1.5x), 12 s (phá đội hình; lùi 3 m chỉ xe được lùi, không thì xoay sang đích phụ); chờ có chủ đích không tính | mục 37-38, 102 |
+| P1-2 | Cứu kẹt cuối | đặt lại / đi xuyên / nhảy tới sau 10 s | sau 14 s (`failSafeS`); dời chỗ (place, hop) ghi `SEVERE_UNSTUCK` và đếm `world.SevereUnstuckCount`; không dịch chuyển trong chơi bình thường | mục 38, 108 |
+| P1-3 | Quyền ưu tiên | ưu tiên xin nhường (đứng / chạy) | thêm `RightOfWay` 100 boss, 90 trong cửa, 80 hạng nặng, 75 vừa ra (3 s), 70 mũi chính, 60 pháo, 50, 40 tiếp viện, 30 trinh sát; giữ ít nhất 2 s | mục 32 |
+| P1-4 | TrafficCoordinator | luật một chiều từng cửa | `world.Traffic`: cửa / chỗ hẹp / cầu / đường hẹp, giữ chỗ (cùng chiều gộp, ngược chiều luân phiên sau 8 s, chiếm quyền sau 2 s nếu hơn 20 điểm), hàng chờ Q1.., dự báo tới trong 5 s, thông lượng | mục 30-31, 85, 188-189 |
+| P1-5 | Đường chung của đội | mỗi xe tự tìm đường | đội từ 3 xe, đích > 30 m: một hành lang chung, xe nhập / rời theo tầm nhìn; qua cửa theo hàng dọc, từng nhóm cách 2.5 s; cửa quá tải thì đi vòng nếu < 1.5x | mục 28-29, 86 |
+| P1-6 | Tránh va chạm | dò vật cản + né một bên | ORCA-lite 1.5 s, 8-12 xe gần nhất, bên vượt cố định theo cặp, xe ưu tiên thấp né 85 %; khoảng cách tối thiểu r+r+0.5 (x1.5 khi địch nổ lan, x0.85 hàng dọc) | mục 34-36, 87 |
+| P1-7 | Xác xe | phí ở lần làm mới sau | bước sau: làm mới phí, mọi đường qua xác mới trong 40 m tính lại ngay; xác mới đổ 1.5 s đầu phí 120 rồi 250; hành lang chung qua đó tính lại | mục 39 |
+| P1-8 | Cửa ra quân | — | ô ra 10 m (không đỗ, không chọn chỗ bắn), vùng trống 16 m, vòng tập kết 24 m; kẹt 2 s thì xe đứng ngoài dời ra vòng | mục 40 |
+| P1-9 | Chỗ đỗ pháo | giữ 3x3 ô, trong 6 m | thuê chỗ hết khi rời > 5 m; pháo không đỗ trên tuyến chính, cách chỗ pháo khác >= 1.5 x khoảng nổ lan | mục 41 |
+| P1-10 | Phí đường động | xe đỗ, xác | thêm tắc nghẽn 60, hành lang boss 200 (lấy từ P0-C), chỗ bắn đã giữ 120 | mục 84, 33 |
+| P1-11 | Vòng chờ nhau | chỉ cặp đối đầu | đồ thị chờ 1 Hz: vòng A->B->C->A thì xe ưu tiên thấp nhất nhường / đổi điểm (boss không lùi) | mục 190 |
+| P1-12 | Bất thường / trùng lệnh | — | lệnh di chuyển không tăng tốc sau 0.5 s hoặc không có đường: ghi một lần; lệnh AI giống lệnh đang chạy không phát lại | mục 185-186 |
+| P1-13 | Debug di chuyển | — | `world.Traffic.DebugOf(v)` (mục 95), dòng `DecisionKind.Traffic` (TRAFFIC_*, JAM_*, ROUTE_*, SEVERE_UNSTUCK), `world.Traffic.Stats` | mục 95, Part O |
+| P1-14 | Test | — | `Tests/EditMode/AiMasterP1Tests.cs` (mục 111 + SEVERE_UNSTUCK, chưa chạy) | lead chạy |
+
+
 ## AI MASTER P2
 
 Nhánh `feature/ai-p2` (lane C, 05/10). Nguồn: `Docs/ai/spec_master/Machine_Brigade_AI_Behavior_MASTER_FINAL.md` Part B, D, E, F, G, I, J, mục 19-27, 68-76, 86, 97, 159-162; đối chiếu từng mục: `Docs/ai/spec_master/AUDIT_P2.md`. Không chạy Unity / test; Sim build 0 lỗi. Tham số mới: `tunables.json` ai.roleDoctrine / modeDoctrine / fireSupport / position / firingLane / componentState / formation / squads (70 khóa).

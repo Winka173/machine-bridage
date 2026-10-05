@@ -341,6 +341,15 @@ namespace MachineBrigade.Sim.AI
             if (order.Count == 0) return;
             // Flank: the fastest leads (prompt 28) within the placement bands.
             var spacing = SpacingOf(world, s, mode);
+            // AI MASTER P1 (spec 28-31, 85-86): the shared corridor and the passage on it (column, packets, queue).
+            var plan = PlanTraffic(world, s, goal, type, order);
+            // Stage 1 of a member's jam loosens the formation a little (spec 38).
+            foreach (var v in order)
+                if (now < v.Traffic.LoosenUntil)
+                {
+                    spacing += 2f;
+                    break;
+                }
             var places = new List<Placement>();
             foreach (var v in order) places.Add(PlacementOf(world, v, s.Fast));
             var slots = FormationSlots(world, s, order, goal, facing, mode, spacing);
@@ -348,8 +357,9 @@ namespace MachineBrigade.Sim.AI
             var morph = s.MorphPending && now < s.MorphUntil;
             var intel = world.Intel.For(_commander.Team);
             // Packets: a choke narrower than the formation needs (spec 22), a crowded passage (G.2), smaller under splash (162).
+            // A passage reserved through P1's TrafficCoordinator makes its own packets / queue: these only without one.
             var packetSize = 0;
-            if (mode == FormationMode.Travel && order.Count > 2)
+            if (plan.Passage == null && mode == FormationMode.Travel && order.Count > 2)
             {
                 var choke = ChokeAhead(world, s, goal);
                 var narrow = !float.IsInfinity(choke) && RequiredWidth(world, s, FormationMode.Travel) > Tun.Formation.ChokeShare * choke;
@@ -397,7 +407,7 @@ namespace MachineBrigade.Sim.AI
                 // Spec 159: morph through the halfway point, never a snap across the formation.
                 if (morph && s.LastSlot.TryGetValue(v.Id, out var before)) slot = Vector2.Lerp(before, final, 0.5f);
                 s.LastSlot[v.Id] = final;
-                world.Submit(new Command(type, _commander.Team, new[] { v.Id }, slot));
+                IssueSlot(world, s, v, i, slot, type, plan);
                 s.Progress[v.Id] = (v.Position, now, 0);
             }
             s.SlotFormation = mode;

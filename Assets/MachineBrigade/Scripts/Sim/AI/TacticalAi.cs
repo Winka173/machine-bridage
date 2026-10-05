@@ -1124,6 +1124,9 @@ namespace MachineBrigade.Sim.AI
                     // Another gun's booked spot is never taken, even as the only safe one left (a
                     // short-ranged siege gun round a fortress has few): the gun waits instead.
                     if (lanes.ReservedByOther(p, shooter.Id, world)) continue;
+                    // AI MASTER P1 (spec 40-41): not in a spawn exit, a friendly boss corridor, or (a gun) a main route or
+                    // within 1.5 x the splash spacing of another gun's spot.
+                    if (!world.Traffic.CanPark(p, shooter)) continue;
                     score += SpotCrowdPenalty * FriendsParkedNear(world, p, 7f, shooter);
                     if (score >= bestScore) continue;
                     // AI MASTER P2 Part D4: dead ground: fewer known direct-fire enemies with a clear line to the spot.

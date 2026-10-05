@@ -84,6 +84,11 @@ namespace MachineBrigade.Sim.Movement
             ClearBossCorridors();
             PrepareGates();
             ReplanClosedRoutes();
+            // AI MASTER P1: the traffic coordinator's tick (passages, exits, arrivals), new or gone wrecks (routes through
+            // them planned again now, spec 39) and the deadlock wait-for graph (spec 190), all before anyone drives.
+            _world.Traffic.Step();
+            OnWreckChanges();
+            ResolveDeadlocks();
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
@@ -120,6 +125,8 @@ namespace MachineBrigade.Sim.Movement
                 Drive(v, dt);
                 // Prompt 25 F2 batch A: helicopters keep out of an enemy barrage balloon's ground.
                 if (v.Flying && !v.Def.FixedWing) _world.Works.KeepOffBalloons(v, dt);
+                // AI MASTER P0-D: the staged jam detector (spec 37-38) at the tactical rate.
+                if (!v.Flying) TrackJam(v, dt);
                 // The safety net for what the traffic rules leave stuck (MovementSystem.Rescue).
                 WatchRescue(v);
             }
@@ -289,6 +296,16 @@ namespace MachineBrigade.Sim.Movement
                     // beyond the shore's reach, a pocket behind a shut gate) is dropped, not chased round the map.
                     if (!v.ManualOrder && target is Vehicle unreachable && Unreachable(v, unreachable))
                     {
+                        // P0 wiring (Part B breacher / siege doctrine, Part H): behind a breakable wall, gate or obstacle the
+                        // target is "breach first": the AI's order goes onto the blocking structure (the commander sends it at
+                        // the target again once the way is open). Only a target no breach opens is dropped.
+                        if (_world.TargetAccess.BreachFirst(v, unreachable) is { } blocker)
+                        {
+                            _world.CombatWatch.NoteBreach(v, unreachable, blocker);
+                            v.SetOrder(new Order(OrderKind.Attack, blocker.Position, blocker.Id));
+                            CloseIn(v, blocker);
+                            break;
+                        }
                         _world.CombatWatch.NoteDropped(v, unreachable);
                         v.SetOrder(Order.Idle);
                         v.ClearPath();
@@ -363,7 +380,19 @@ namespace MachineBrigade.Sim.Movement
         /// connected ground (TargetAccessCache; aircraft, flying targets, ships and fixed defences are never "unreachable" here).
         /// </summary>
         private bool Unreachable(Vehicle v, Vehicle target) =>
-            !v.Flying && !target.Flying && v.Def.Naval == null && !v.Def.Static && !_world.TargetAccess.CanInfluence(v, target.Position, false);
+            !v.Flying && !target.Flying && v.Def.Naval == null && !v.Def.Static && !_world.TargetAccess.CanInfluence(v, target.Position, false, target.Radius);
+
+        /// <summary>
+        /// P0 wiring: the attack-move's goal lies off the unit's open ground (behind a wall line, in a sealed yard): the way
+        /// in is through a breach, so an enemy seen behind a breakable structure makes it break that structure.
+        /// </summary>
+        private bool GoalSealed(Vehicle v)
+        {
+            var grid = _world.Grid;
+            var here = grid.RegionOf(v.Position);
+            if (here == 0 && grid.TryNearestWalkable(v.Position, 3, out var open)) here = grid.RegionOf(open);
+            return here != 0 && grid.RegionOf(v.Order.Point) != here;
+        }
 
         private Vehicle? GuardThreat(Vehicle v)
         {
@@ -428,6 +457,16 @@ namespace MachineBrigade.Sim.Movement
             // AI MASTER P0-A (spec 47): never break off the route for an enemy it cannot get a firing solution on.
             if (enemy != null && Unreachable(v, enemy))
             {
+                // P0 wiring: on the way into a walled base (its goal behind the wall too) the wall, gate or obstacle between
+                // it and the enemy it sees is broken first; otherwise the enemy is dropped as before.
+                if (GoalSealed(v) && _world.TargetAccess.BreachFirst(v, enemy) is Vehicle wall)
+                {
+                    _world.CombatWatch.NoteBreach(v, enemy, wall);
+                    v.Engaged = wall.Id;
+                    v.ResumeRoute = true;
+                    CloseIn(v, wall);
+                    return;
+                }
                 _world.CombatWatch.NoteDropped(v, enemy);
                 enemy = null;
             }
@@ -882,6 +921,8 @@ namespace MachineBrigade.Sim.Movement
                     slowFor = MathF.Min(slowFor, def.Speed * 0.5f);
                 }
             }
+            // AI MASTER P1 (spec 34-36): ORCA-lite round the moving hulls near it, the pair's passing side fixed.
+            if (!def.Flying && distance > 1.5f) desired += OrcaTurn(v, desired);
             // The detour fades out over a moment after the way last looked blocked. Dropping it
             // the instant the blocker leaves the look-ahead turned the hull straight back at it,
             // then away again: a wag every few steps.
@@ -1493,6 +1534,7 @@ namespace MachineBrigade.Sim.Movement
             v.StuckTimer = 0f;
             if (progressed)
             {
+                v.Traffic.NoProgressWindows = 0;
                 v.StuckStrikes = 0;
                 v.Traffic.YieldEscalations = 0;
                 v.Traffic.TrafficBoost = 0;
@@ -1520,6 +1562,7 @@ namespace MachineBrigade.Sim.Movement
             }
             // Ask the friend in the way again, then route round the parked hulls, then back off,
             // then give up (MovementSystem.Traffic).
+            traffic.NoProgressWindows++;
             OnNoProgress(v);
         }
 
@@ -1542,6 +1585,7 @@ namespace MachineBrigade.Sim.Movement
         private void GiveUp(Vehicle v)
         {
             v.Traffic.GaveUpAt = _world.Time;
+            _world.Traffic.Stats.GiveUps++;
             v.Traffic.GaveUpGoal = v.PathGoal;
             v.ClearPath();
             var clear = v.Position;
