@@ -959,6 +959,8 @@ namespace MachineBrigade.Sim
         internal void Emit(in SimEvent e)
         {
             _events.Add(e);
+            // AI MASTER P3 (spec 129 / 144): own losses and observed enemy shells for the AI's memory.
+            ObserveP3(e);
             // Prompt 33 L5: a fortress line's train announced: its run on the siege rail.
             if (e.Kind == SimEventKind.Arrival) Rails.Announced(e);
         }

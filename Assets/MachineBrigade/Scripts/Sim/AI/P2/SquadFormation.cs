@@ -138,7 +138,10 @@ namespace MachineBrigade.Sim.AI
             var choke = moving ? ChokeAhead(world, s, goal) : float.PositiveInfinity;
             var current = s.Formation == FormationMode.Travel ? byState : s.Formation;
             var splash = intel.EnemySplash > 0f && (intel.ThreatAt(ThreatKind.Splash, s.Centre) > 0f || intel.ThreatAt(ThreatKind.Artillery, s.Centre) > 0f);
-            if (s.State == SquadState.Regroup || s.Action == SquadAction.Regroup)
+            // AI MASTER P3 spec 213: after enemy shells landed near the squad (or under a warning) it stays spread: no early regroup.
+            var disperse = DisperseHoldP3(world, intel, s);
+            splash |= disperse;
+            if ((s.State == SquadState.Regroup || s.Action == SquadAction.Regroup) && !disperse)
             {
                 want = FormationMode.Regroup;
                 reason = P2Reasons.FormationLowCohesion;

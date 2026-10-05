@@ -258,6 +258,8 @@ namespace MachineBrigade.Sim.AI
             // AI MASTER P2 spec 70: the objective urgency that lowers the attack threshold.
             UpdateUrgency(world, intel);
             AssignP2(world, intel);
+            // AI MASTER P3: the coordination pass on the tasks just given (frontline, packages, reserve, deadlines...).
+            CoordinateP3(world, intel);
             UnitsOutsideSquads(world, intel);
             SwitchTactic(world, intel, enemy);
         }
@@ -478,7 +480,15 @@ namespace MachineBrigade.Sim.AI
         {
             var intel = world.Intel.For(Team);
             foreach (var s in Squads.Squads)
-                if (s.State == SquadState.Combat && intel.ThreatAt(ThreatKind.Artillery, s.Centre) > s.Strength) return (SupportKind.Smoke, s.Centre);
+                if (s.State == SquadState.Combat && intel.ThreatAt(ThreatKind.Artillery, s.Centre) > s.Strength)
+                {
+                    // AI MASTER P3 spec 142: never a second smoke where one runs or is planned.
+                    if (SmokeTakenP3(world, s.Centre, SmokePurpose.ScreenSquad)) continue;
+                    return (SupportKind.Smoke, s.Centre);
+                }
+            // AI MASTER P3 spec 144: area fire on a confident, tight estimate of an unseen battery; spec 142: smoke for the assault.
+            if (CounterBatteryStrikeP3(world) is { } battery) return (SupportKind.Barrage, battery);
+            if (AssaultSmokeP3(world) is { } approach && !SmokeTakenP3(world, approach, SmokePurpose.AssaultObjective)) return (SupportKind.Smoke, approach);
             var m = CurrentTactic.Modules;
             if (m.SeadCards || m.WaitAir)
             {

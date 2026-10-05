@@ -684,6 +684,13 @@ namespace MachineBrigade.Sim.AI
                     Issue(world, CommandType.Move, v.Id, cover);
                     continue;
                 }
+                // AI MASTER P3 spec 140: an engineer takes the friend with the largest unreserved repair need.
+                if (v.Def.RepairAura != null && RepairTargetP3(world, v, spot) is { } fix)
+                {
+                    if (Vector2.Distance(v.Position, fix) > 6f && !(v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, fix) < 4f))
+                        Issue(world, CommandType.Move, v.Id, fix);
+                    continue;
+                }
                 if (Vector2.Distance(v.Position, spot) < 10f) continue;
                 if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, spot) < 8f) continue;
                 _ids.Add(v.Id);

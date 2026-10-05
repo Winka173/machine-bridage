@@ -474,7 +474,10 @@ namespace MachineBrigade.Sim.Combat
         private void Acquire(Vehicle v, int index, EntityId next)
         {
             var state = v.Weapons[index];
-            if (state.Target != next) state.AcquiredAt = _world.Time;
+            if (state.Target == next) return;
+            state.AcquiredAt = _world.Time;
+            // AI MASTER P3 spec 139: the planned action board's damage reservation follows the mount's target.
+            ReserveP3(v, index, next);
         }
     }
 }

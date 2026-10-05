@@ -697,6 +697,149 @@
       "supportReach": { "value": 25.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Squads.SupportReach (AI MASTER P2)" },
       "joinPredictSeconds": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Squads.JoinPredictSeconds (AI MASTER P2)" },
       "reassignmentCost": { "value": 10.0, "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "Squads.ReassignmentCost (AI MASTER P2)" }
+    },
+    // AI MASTER lane P3 (coordination): frontline, memory, confidence, routes, packages, board, fire missions, pursuit.
+    "coordination": {
+      "enabled": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "06", "code": "Coordination.Enabled (AI MASTER P3)" },
+      "frontlineUpdateS": { "value": 1.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Coordination.FrontlineUpdateS (AI MASTER P3)" },
+      "localRadius": { "value": 50.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Coordination.LocalRadius (AI MASTER P3)" }
+    },
+    "memory": {
+      "mobileHalfLifeS": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Memory.MobileHalfLifeS (AI MASTER P3)" },
+      "artilleryHalfLifeS": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Memory.ArtilleryHalfLifeS (AI MASTER P3)" },
+      "staticHalfLifeS": { "value": 45.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Memory.StaticHalfLifeS (AI MASTER P3)" },
+      "absentDecay": { "value": 0.25, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Memory.AbsentDecay (AI MASTER P3)" },
+      "deathHalfLifeS": { "value": 18.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Memory.DeathHalfLifeS (AI MASTER P3)" },
+      "deathRadius": { "value": 20.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Memory.DeathRadius (AI MASTER P3)" },
+      "unknownSeconds": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Memory.UnknownSeconds (AI MASTER P3)" },
+      "unknownRisk": { "value": [0.3, 0.6, 1.0, 1.0], "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Memory.UnknownRisk (AI MASTER P3)" },
+      "repeatPlanPenalty": { "value": 0.35, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Memory.RepeatPlanPenalty (AI MASTER P3)" },
+      "repeatPlanHalfLifeS": { "value": 45.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Memory.RepeatPlanHalfLifeS (AI MASTER P3)" },
+      "routeFailShare": { "value": 0.4, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Memory.RouteFailShare (AI MASTER P3)" }
+    },
+    "confidence": {
+      "weights": { "value": [0.35, 0.2, 0.15, 0.1, 0.1, 0.1], "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Confidence.Weights (AI MASTER P3)" },
+      "aggressive": { "value": 0.7, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Confidence.Aggressive (AI MASTER P3)" },
+      "cautious": { "value": 0.45, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Confidence.Cautious (AI MASTER P3)" },
+      "noCommit": { "value": 0.3, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Confidence.NoCommit (AI MASTER P3)" },
+      "points": { "value": 12.0, "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "Confidence.Points (AI MASTER P3)" }
+    },
+    "routes": {
+      "distanceScale": { "value": 100.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Routes.DistanceScale (AI MASTER P3)" },
+      "congestionWeight": { "value": 0.8, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Routes.CongestionWeight (AI MASTER P3)" },
+      "occupancyWeight": { "value": 0.5, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Routes.OccupancyWeight (AI MASTER P3)" },
+      "lossWeight": { "value": 0.7, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Routes.LossWeight (AI MASTER P3)" },
+      "points": { "value": 10.0, "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "Routes.Points (AI MASTER P3)" },
+      "occupancyRadius": { "value": 25.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Routes.OccupancyRadius (AI MASTER P3)" },
+      "bookSeconds": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Routes.BookSeconds (AI MASTER P3)" }
+    },
+    "attackSync": {
+      "groundToleranceS": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AttackSync.GroundToleranceS (AI MASTER P3)" },
+      "airToleranceS": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AttackSync.AirToleranceS (AI MASTER P3)" },
+      "artilleryPrepLeadS": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AttackSync.ArtilleryPrepLeadS (AI MASTER P3)" },
+      "detour": { "value": 1.25, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "AttackSync.Detour (AI MASTER P3)" },
+      "packageSeconds": { "value": 25.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AttackSync.PackageSeconds (AI MASTER P3)" },
+      "stagingBand": { "value": 12.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "AttackSync.StagingBand (AI MASTER P3)" },
+      "subZoneSpacing": { "value": 14.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "AttackSync.SubZoneSpacing (AI MASTER P3)" },
+      "maxStageS": { "value": 15.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AttackSync.MaxStageS (AI MASTER P3)" },
+      "scoutMaxWaitS": { "value": 5.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AttackSync.ScoutMaxWaitS (AI MASTER P3)" },
+      "scoutUnknownShare": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "AttackSync.ScoutUnknownShare (AI MASTER P3)" },
+      "scoutDeathDanger": { "value": 1.0, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "AttackSync.ScoutDeathDanger (AI MASTER P3)" },
+      "fixEnvelope": { "value": 0.85, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "AttackSync.FixEnvelope (AI MASTER P3)" },
+      "frontageSeparation": { "value": 6.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "AttackSync.FrontageSeparation (AI MASTER P3)" },
+      "waveGapS": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AttackSync.WaveGapS (AI MASTER P3)" },
+      "defaultFrontage": { "value": 60.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "AttackSync.DefaultFrontage (AI MASTER P3)" }
+    },
+    "board": {
+      "plannedOverkillShare": { "value": 1.15, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Board.PlannedOverkillShare (AI MASTER P3)" },
+      "damageLeadS": { "value": 1.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Board.DamageLeadS (AI MASTER P3)" },
+      "repairWindowS": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Board.RepairWindowS (AI MASTER P3)" },
+      "smokeSpacing": { "value": 10.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Board.SmokeSpacing (AI MASTER P3)" },
+      "smokeSeconds": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Board.SmokeSeconds (AI MASTER P3)" },
+      "handoffRatio": { "value": 1.6, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Board.HandoffRatio (AI MASTER P3)" },
+      "handoffLockS": { "value": 2.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Board.HandoffLockS (AI MASTER P3)" },
+      "preferWorth": { "value": 1.5, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Board.PreferWorth (AI MASTER P3)" },
+      "avoidWorth": { "value": 0.4, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Board.AvoidWorth (AI MASTER P3)" },
+      "spreadFocusShare": { "value": 0.3, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Board.SpreadFocusShare (AI MASTER P3)" },
+      "nearKillShare": { "value": 0.3, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Board.NearKillShare (AI MASTER P3)" },
+      "secondaryHeavy": { "value": 0.4, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Board.SecondaryHeavy (AI MASTER P3)" },
+      "secondaryFit": { "value": 1.3, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Board.SecondaryFit (AI MASTER P3)" }
+    },
+    "fireMissions": {
+      "minError": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "FireMissions.MinError (AI MASTER P3)" },
+      "errorShare": { "value": 0.2, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "FireMissions.ErrorShare (AI MASTER P3)" },
+      "mergeRadius": { "value": 30.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "FireMissions.MergeRadius (AI MASTER P3)" },
+      "halfLifeS": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "FireMissions.HalfLifeS (AI MASTER P3)" },
+      "missionConfidence": { "value": 0.6, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "FireMissions.MissionConfidence (AI MASTER P3)" },
+      "strikeConfidence": { "value": 0.7, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "FireMissions.StrikeConfidence (AI MASTER P3)" },
+      "strikeMaxError": { "value": 25.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "FireMissions.StrikeMaxError (AI MASTER P3)" },
+      "staleSeconds": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "FireMissions.StaleSeconds (AI MASTER P3)" },
+      "maxGunsPerTarget": { "value": 2, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "06", "code": "FireMissions.MaxGunsPerTarget (AI MASTER P3)" },
+      "scootSalvos": { "value": [2, 4], "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "06", "code": "FireMissions.ScootSalvos (AI MASTER P3)" },
+      "scootDistance": { "value": [12.0, 30.0], "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "FireMissions.ScootDistance (AI MASTER P3)" },
+      "threatRadius": { "value": 25.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "FireMissions.ThreatRadius (AI MASTER P3)" },
+      "impactMemoryS": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "FireMissions.ImpactMemoryS (AI MASTER P3)" },
+      "frontMargin": { "value": 15.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "FireMissions.FrontMargin (AI MASTER P3)" },
+      "chokeMargin": { "value": 4.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "FireMissions.ChokeMargin (AI MASTER P3)" }
+    },
+    "pursuit": {
+      "maxSeconds": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Pursuit.MaxSeconds (AI MASTER P3)" },
+      "maxDistance": { "value": 60.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Pursuit.MaxDistance (AI MASTER P3)" },
+      "aaMaxSeconds": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Pursuit.AaMaxSeconds (AI MASTER P3)" },
+      "aaMaxDistance": { "value": 40.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Pursuit.AaMaxDistance (AI MASTER P3)" },
+      "urgencyDrop": { "value": 0.75, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Pursuit.UrgencyDrop (AI MASTER P3)" },
+      "horizonS": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Pursuit.HorizonS (AI MASTER P3)" },
+      "ageFadeS": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Pursuit.AgeFadeS (AI MASTER P3)" },
+      "cutoffConfidence": { "value": 0.6, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Pursuit.CutoffConfidence (AI MASTER P3)" },
+      "cutoffLookS": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Pursuit.CutoffLookS (AI MASTER P3)" },
+      "retrySeconds": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Pursuit.RetrySeconds (AI MASTER P3)" },
+      "baitLeashMin": { "value": 0.4, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Pursuit.BaitLeashMin (AI MASTER P3)" },
+      "baitDangerScale": { "value": 0.5, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Pursuit.BaitDangerScale (AI MASTER P3)" }
+    },
+    "rangeMargin": {
+      "direct": { "value": 0.045, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "RangeMargin.Direct (AI MASTER P3)" },
+      "artillery": { "value": 0.075, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "RangeMargin.Artillery (AI MASTER P3)" },
+      "atgm": { "value": 0.05, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "RangeMargin.Atgm (AI MASTER P3)" },
+      "aaMissile": { "value": 0.065, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "RangeMargin.AaMissile (AI MASTER P3)" }
+    },
+    "reserveRelease": {
+      "wonRatio": { "value": 2.0, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "ReserveRelease.WonRatio (AI MASTER P3)" },
+      "collapseRatio": { "value": 0.6, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "ReserveRelease.CollapseRatio (AI MASTER P3)" },
+      "breakthroughRatio": { "value": 1.5, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "ReserveRelease.BreakthroughRatio (AI MASTER P3)" },
+      "exploitConfidence": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "ReserveRelease.ExploitConfidence (AI MASTER P3)" }
+    },
+    "objectives": {
+      "deadlineSlack": { "value": 1.1, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Objectives.DeadlineSlack (AI MASTER P3)" },
+      "sunkHalfLifeS": { "value": 90.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Objectives.SunkHalfLifeS (AI MASTER P3)" },
+      "sunkValue": { "value": 60.0, "unit": "CP", "kind": "nguong", "linh_vuc": "06", "code": "Objectives.SunkValue (AI MASTER P3)" },
+      "sunkResetS": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Objectives.SunkResetS (AI MASTER P3)" },
+      "depthLines": { "value": 3, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "06", "code": "Objectives.DepthLines (AI MASTER P3)" },
+      "depthStep": { "value": 0.3, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Objectives.DepthStep (AI MASTER P3)" },
+      "depthLostS": { "value": 5.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Objectives.DepthLostS (AI MASTER P3)" },
+      "counterLossShare": { "value": 0.35, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Objectives.CounterLossShare (AI MASTER P3)" },
+      "counterWindowS": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Objectives.CounterWindowS (AI MASTER P3)" },
+      "counterLookS": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Objectives.CounterLookS (AI MASTER P3)" },
+      "counterRadius": { "value": 40.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Objectives.CounterRadius (AI MASTER P3)" },
+      "economyDelayShare": { "value": 0.8, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Objectives.EconomyDelayShare (AI MASTER P3)" },
+      "economyMaxShare": { "value": 0.3, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Objectives.EconomyMaxShare (AI MASTER P3)" },
+      "splitMinMembers": { "value": 6, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "06", "code": "Objectives.SplitMinMembers (AI MASTER P3)" }
+    },
+    "coverage": {
+      "updateS": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Coverage.UpdateS (AI MASTER P3)" },
+      "reachShare": { "value": 0.4, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Coverage.ReachShare (AI MASTER P3)" },
+      "exposureWeight": { "value": 1.0, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Coverage.ExposureWeight (AI MASTER P3)" },
+      "congestionWeight": { "value": 0.5, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Coverage.CongestionWeight (AI MASTER P3)" },
+      "redundantWeight": { "value": 0.5, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Coverage.RedundantWeight (AI MASTER P3)" },
+      "assetWorth": { "value": [4.0, 2.0, 3.0, 1.5], "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Coverage.AssetWorth (AI MASTER P3)" },
+      "coverWorth": { "value": 1.4, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Coverage.CoverWorth (AI MASTER P3)" },
+      "offWorth": { "value": 0.8, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Coverage.OffWorth (AI MASTER P3)" }
+    },
+    "stance": {
+      "returnFireSeconds": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Stance.ReturnFireSeconds (AI MASTER P3)" },
+      "ambushRange": { "value": [0.55, 0.7], "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Stance.AmbushRange (AI MASTER P3)" },
+      "ambushSyncRadius": { "value": 60.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Stance.AmbushSyncRadius (AI MASTER P3)" },
+      "highValueReach": { "value": 0.85, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Stance.HighValueReach (AI MASTER P3)" },
+      "dispersalHoldS": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Stance.DispersalHoldS (AI MASTER P3)" }
     }
   },
   "campaign": {

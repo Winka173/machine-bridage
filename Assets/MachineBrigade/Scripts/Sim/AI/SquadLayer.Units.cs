@@ -48,6 +48,8 @@ namespace MachineBrigade.Sim.AI
                 }
                 if (overwhelmed && threat is { } danger) ShortMove(world, intel, v, role.Overwhelmed, danger, now);
             }
+            // AI MASTER P3 spec 149 / 200: stances and target handoff by suitability.
+            UnitsP3(world, s);
         }
 
         private readonly Dictionary<EntityId, EntityId> _explained = new();

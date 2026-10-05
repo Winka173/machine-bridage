@@ -472,6 +472,8 @@ namespace MachineBrigade.Sim.AI
                 Add(SquadAction.Regroup, 25f, f);
             }
 
+            // AI MASTER P3: confidence, route diversity, posture, package and dispersion factors (SquadLayer.P3).
+            AdjustP3(world, intel, s, goal);
             var list = new List<(SquadAction, float)>();
             foreach (var o in _options) list.Add((o.action, o.score));
             _lastOptions[s.Id] = list;
@@ -667,6 +669,8 @@ namespace MachineBrigade.Sim.AI
                     goal = target;
                     // Prompt 32 L3: the way into a walled base: through the gate, or through a wall the squad breaks.
                     if (s.Action == SquadAction.Attack && Breach(world, intel, s, target)) return;
+                    // AI MASTER P3 spec 135-137: early for the package's execute time: stage at the sub-zone (overwatch).
+                    if (s.Action == SquadAction.Attack && StageP3(world, s, ref goal, ref type)) break;
                     if (s.State == SquadState.Combat && NearestEnemy(intel, s.Centre) is { } enemy)
                     {
                         // Engagement distance (D.5): stand at the role's (or the tactic's) share of the reach.
@@ -687,6 +691,10 @@ namespace MachineBrigade.Sim.AI
                             : s.Centre + forward * step;
                         if (m.Bounding && Bound(world, s, goal, forward)) return;
                     }
+                    // AI MASTER P3 spec 146-148 / 206: pursuit discipline, interception, cutoff; spec 134: the Fix envelope.
+                    if (s.Action == SquadAction.Attack && (s.Task.Objective == null || s.State == SquadState.Combat) &&
+                        NearestContact(intel, s.Centre) is { } chased) goal = PursuitP3(world, intel, s, goal, chased);
+                    if (s.Action == SquadAction.Attack) goal = FixP3(world, s, target, goal);
                     break;
                 }
                 case SquadAction.Hold:
@@ -874,6 +882,12 @@ namespace MachineBrigade.Sim.AI
         /// <summary>H.9: an ambush holds fire until the enemy is inside its share of the reach, or the squad is hit.</summary>
         private void Stance(SimWorld world, TeamIntel intel, Squad s, TacticModules m)
         {
+            // AI MASTER P3 spec 205: ambush discipline (range band, high-value target, detection, synchronized volley).
+            if (SimTunables.Ai.Coordination.Enabled && _commander.CoordinationP3 != null)
+            {
+                StanceP3(world, intel, s, m);
+                return;
+            }
             var stance = _commander.StanceFor(s);
             if (stance != FireStance.HoldFire || s.HoldReleased)
             {
@@ -930,14 +944,17 @@ namespace MachineBrigade.Sim.AI
                     }
                 }
             }
-            if (s.Focus.Value != old.Value)
+            // AI MASTER P3 spec 199: mass fire only where it pays; otherwise the focus weight is cut (spread fire).
+            var share = FocusShareP3(world, intel, s);
+            if (s.Focus.Value != old.Value || MathF.Abs(share - s.P3FocusShare) > 1e-4f)
             {
+                s.P3FocusShare = share;
                 if (s.Focus.IsValid) world.AiLog.CountSwitch(_commander.Team, s.Id, DecisionKind.Target, world.Time);
                 foreach (var id in s.MemberList)
                     if (world.TryGetVehicle(id, out var v))
                     {
                         v.SquadFocus = s.Focus;
-                        v.SquadFocusWeight = weight;
+                        v.SquadFocusWeight = weight * share;
                     }
             }
         }

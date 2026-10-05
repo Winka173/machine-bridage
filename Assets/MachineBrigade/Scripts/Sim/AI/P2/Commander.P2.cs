@@ -197,6 +197,8 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         private Vector2? ReserveTrigger(SimWorld world, TeamIntel intel, Vector2? home)
         {
+            // AI MASTER P3 spec 170: the ranked release (HQ / boss, breakthrough, collapse, exploit, secondary), never into a won fight.
+            if (CoordinationP3 != null) return ReserveReleaseP3(world, intel, home);
             var d = world.Doctrine.For(Team);
             foreach (var e in intel.Events)
             {
