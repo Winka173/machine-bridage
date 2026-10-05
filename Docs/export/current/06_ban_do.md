@@ -2,7 +2,7 @@
 
 Bản đồ, bản đồ gốc, biome, thời tiết, địa danh, ray, vật thể, ngân sách thực thể.
 
-Gói cân bằng Machine Brigade, commit 48822566, ngày 2026-10-05. Số liệu đầy đủ ở 06_ban_do.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 2189ecd8, ngày 2026-10-05. Số liệu đầy đủ ở 06_ban_do.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Biển, hộ tống, bản đồ dài, roster mới và đòn lớn
 

@@ -2,7 +2,7 @@
 
 Boss, bộ phận, siêu vũ khí, hộ tống, pha, Săn trùm.
 
-Gói cân bằng Machine Brigade, commit 48822566, ngày 2026-10-05. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 2189ecd8, ngày 2026-10-05. Số liệu đầy đủ ở 02_boss.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng hợp boss
 

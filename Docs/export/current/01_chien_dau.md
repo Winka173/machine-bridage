@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 48822566, ngày 2026-10-05. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 2189ecd8, ngày 2026-10-05. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -520,8 +520,8 @@ Sheet 01_chien_dau/Hanh_vi_dan_nhom — Hành vi đạn theo nhóm (7 dòng, 12 
 | Drone | 11 | dẫn đường (homing) | nổ lan 100% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 7.5 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | bị nhiễu 100% vũ khí (đạn dẫn đường trong vòng nhiễu địch:… |
 | Flame | 3 | đón đầu (led, trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.5263 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
 | Missile | 52 | dẫn đường (homing) | nổ lan 54% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 5.7143 | pháo sáng mồi 79% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | bị nhiễu 100% vũ khí (đạn dẫn đường trong vòng nhiễu địch:… |
-| Rocket | 29 | dẫn đường 3% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 1.1667 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
-| Shell | 136 | dẫn đường 10% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 81% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 2 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Rocket | 29 | dẫn đường 3% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 1.75 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Shell | 136 | dẫn đường 10% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 81% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 2.125 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
 
 Sheet 01_chien_dau/Canh_bao_vong — Vòng cảnh báo (13 dòng, 8 cột)
 

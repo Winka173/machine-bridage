@@ -2183,7 +2183,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 90,
+          "speed": 75,
           "pen": 4,
           "form": "Atgm",
           "topAttack": false,
@@ -2203,7 +2203,7 @@
           "effect": [1.56, 1.56, 1.56, 1.3, 1.105, 0.845, 0, 0.54],
           "dpsAir": 11.5,
           "dpsVsLevel": [17.94, 17.94, 17.94, 14.95, 12.7075, 9.7175, 0, 6.21],
-          "flightTime": 0.3778,
+          "flightTime": 0.4533,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -2267,7 +2267,7 @@
             "Cooldown": 20,
             "Range": 34,
             "MinRange": 0,
-            "ProjectileSpeed": 90,
+            "ProjectileSpeed": 75,
             "SplashRadius": 0,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -2806,7 +2806,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 80,
+          "speed": 75,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": true,
@@ -2826,7 +2826,7 @@
           "effect": [1, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 23.3491,
           "dpsVsLevel": [23.3491, 23.3491, 19.8467, 15.1769, 9.3396, 3.5024, 0, 19.0528],
-          "flightTime": 0.6,
+          "flightTime": 0.64,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -2890,7 +2890,7 @@
             "Cooldown": 5.6,
             "Range": 48,
             "MinRange": 12,
-            "ProjectileSpeed": 80,
+            "ProjectileSpeed": 75,
             "SplashRadius": 3.5,
             "Spread": 6,
             "ImpactTier": "Medium",
@@ -4094,7 +4094,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 200,
+          "speed": 120,
           "pen": 2,
           "form": "Sam",
           "topAttack": false,
@@ -4114,7 +4114,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 38.1851,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 51.5499, 0],
-          "flightTime": 0.22,
+          "flightTime": 0.3667,
           "roundLength": 1.216,
           "raw": {
             "Ceiling": "None",
@@ -4178,7 +4178,7 @@
             "Cooldown": 4.452,
             "Range": 44,
             "MinRange": 0,
-            "ProjectileSpeed": 200,
+            "ProjectileSpeed": 120,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -5054,7 +5054,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 60,
+          "speed": 45,
           "pen": 2,
           "form": "MortarBomb",
           "topAttack": true,
@@ -5074,7 +5074,7 @@
           "effect": [1, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 23.4443,
           "dpsVsLevel": [23.4443, 23.4443, 19.9277, 15.2388, 9.3777, 3.5167, 0, 31.8843],
-          "flightTime": 0.9167,
+          "flightTime": 1.2222,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -5139,7 +5139,7 @@
             "Cooldown": 7.143,
             "Range": 55,
             "MinRange": 10,
-            "ProjectileSpeed": 60,
+            "ProjectileSpeed": 45,
             "SplashRadius": 5,
             "Spread": 4.5,
             "ImpactTier": "Large",
@@ -7899,7 +7899,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 95,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -7919,7 +7919,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 13.0042,
           "dpsVsLevel": [15.6051, 13.0042, 11.0536, 8.4527, 5.2017, 1.9506, 0, 17.6857],
-          "flightTime": 0.1556,
+          "flightTime": 0.2947,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -7984,7 +7984,7 @@
             "Cooldown": 7.4,
             "Range": 28,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 95,
             "SplashRadius": 3,
             "Spread": 3,
             "ImpactTier": "Medium",
@@ -8213,7 +8213,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 60,
+          "speed": 45,
           "pen": 2,
           "form": "MortarBomb",
           "topAttack": true,
@@ -8233,7 +8233,7 @@
           "effect": [1, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 66.8881,
           "dpsVsLevel": [66.8881, 66.8881, 56.8549, 43.4772, 26.7552, 10.0332, 0, 90.9678],
-          "flightTime": 1,
+          "flightTime": 1.3333,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -8297,7 +8297,7 @@
             "Cooldown": 14.607,
             "Range": 60,
             "MinRange": 10,
-            "ProjectileSpeed": 60,
+            "ProjectileSpeed": 45,
             "SplashRadius": 5,
             "Spread": 4.5,
             "ImpactTier": "Large",
@@ -8688,7 +8688,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 100,
+          "speed": 55,
           "pen": 3,
           "form": "HeShell",
           "topAttack": true,
@@ -8708,7 +8708,7 @@
           "effect": [1, 1, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 44.8863,
           "dpsVsLevel": [44.8863, 44.8863, 44.8863, 38.1534, 29.1761, 17.9545, 0, 71.8181],
-          "flightTime": 0.9,
+          "flightTime": 1.6364,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -8773,7 +8773,7 @@
             "Cooldown": 10.204,
             "Range": 90,
             "MinRange": 25,
-            "ProjectileSpeed": 100,
+            "ProjectileSpeed": 55,
             "SplashRadius": 7,
             "Spread": 5,
             "ImpactTier": "Large",
@@ -8815,7 +8815,7 @@
               "use": "xe có giáp (chỉ bản tinh nhuệ và nhánh hạng 7)",
               "elite": true,
               "switch": 10.204,
-              "speed": 45
+              "speed": 60
             }],
           "splashEdge": 0,
           "edgeShare": 0.4,
@@ -13013,7 +13013,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 300,
+          "speed": 130,
           "pen": 3,
           "form": "Sam",
           "topAttack": false,
@@ -13033,7 +13033,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 56.4775,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 76.2447, 0],
-          "flightTime": 0.1833,
+          "flightTime": 0.4231,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -13097,7 +13097,7 @@
             "Cooldown": 4.452,
             "Range": 55,
             "MinRange": 0,
-            "ProjectileSpeed": 300,
+            "ProjectileSpeed": 130,
             "SplashRadius": 2.5,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -13961,7 +13961,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 140,
+          "speed": 85,
           "pen": 3,
           "form": "RocketBig",
           "topAttack": true,
@@ -13981,7 +13981,7 @@
           "effect": [1, 1, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 38.0295,
           "dpsVsLevel": [38.0295, 38.0295, 38.0295, 32.3251, 24.7192, 15.2118, 0, 60.8472],
-          "flightTime": 0.7857,
+          "flightTime": 1.2941,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -14046,7 +14046,7 @@
             "Cooldown": 9.944,
             "Range": 110,
             "MinRange": 20,
-            "ProjectileSpeed": 140,
+            "ProjectileSpeed": 85,
             "SplashRadius": 4.5,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -14274,7 +14274,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 250,
+          "speed": 145,
           "pen": 3,
           "form": "Sam",
           "topAttack": false,
@@ -14294,7 +14294,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 221.6533,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 299.232, 0],
-          "flightTime": 0.22,
+          "flightTime": 0.3793,
           "roundLength": 4.44,
           "raw": {
             "Ceiling": "None",
@@ -14359,7 +14359,7 @@
             "Cooldown": 2.8,
             "Range": 55,
             "MinRange": 0,
-            "ProjectileSpeed": 250,
+            "ProjectileSpeed": 145,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -15385,7 +15385,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 80,
           "pen": 4,
           "form": "Atgm",
           "topAttack": true,
@@ -15405,7 +15405,7 @@
           "effect": [1.495, 1.495, 1.495, 1.43, 1.235, 0.975, 0, 0.5175],
           "dpsAir": 64.3329,
           "dpsVsLevel": [96.1776, 96.1776, 96.1776, 91.996, 79.4511, 62.7246, 0, 33.2923],
-          "flightTime": 0.5,
+          "flightTime": 0.6875,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -15470,7 +15470,7 @@
             "Cooldown": 7.55,
             "Range": 55,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 80,
             "SplashRadius": 0,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -15698,7 +15698,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 95,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -15718,7 +15718,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 32.1655,
           "dpsVsLevel": [38.5986, 32.1655, 27.3407, 20.9076, 12.8662, 4.8248, 0, 43.7451],
-          "flightTime": 0.1667,
+          "flightTime": 0.3158,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -15783,7 +15783,7 @@
             "Cooldown": 7.31,
             "Range": 30,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 95,
             "SplashRadius": 3,
             "Spread": 3,
             "ImpactTier": "Medium",
@@ -15849,7 +15849,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 105,
           "pen": 2,
           "form": "Sam",
           "topAttack": false,
@@ -15869,7 +15869,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 16.6339,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 22.4557, 0],
-          "flightTime": 0.1667,
+          "flightTime": 0.2857,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -15933,7 +15933,7 @@
             "Cooldown": 9.07,
             "Range": 30,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 105,
             "SplashRadius": 1.5,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -15999,7 +15999,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 85,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -16019,7 +16019,7 @@
           "effect": [1.56, 1.3, 1.105, 0.845, 0.52, 0.195, 0.2, 0.3825],
           "dpsAir": 114.129,
           "dpsVsLevel": [178.0413, 148.3677, 126.1126, 96.439, 59.3471, 22.2552, 22.8258, 43.6543],
-          "flightTime": 0.2222,
+          "flightTime": 0.4706,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -16084,7 +16084,7 @@
             "Cooldown": 1,
             "Range": 40,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 85,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -16935,7 +16935,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 170,
+          "speed": 100,
           "pen": 2,
           "form": "None",
           "topAttack": false,
@@ -16955,7 +16955,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 67.7543,
           "dpsVsLevel": [81.3052, 67.7543, 57.5912, 44.0403, 27.1017, 10.1631, 0, 92.1459],
-          "flightTime": 0.4118,
+          "flightTime": 0.7,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -17018,7 +17018,7 @@
             "Cooldown": 4.286,
             "Range": 70,
             "MinRange": 0,
-            "ProjectileSpeed": 170,
+            "ProjectileSpeed": 100,
             "SplashRadius": 4,
             "Spread": 0,
             "ImpactTier": "Large",
@@ -17246,7 +17246,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 80,
           "pen": 4,
           "form": "Atgm",
           "topAttack": false,
@@ -17266,7 +17266,7 @@
           "effect": [1.56, 1.56, 1.56, 1.3, 1.105, 0.845, 0, 0.54],
           "dpsAir": 51.4095,
           "dpsVsLevel": [80.1988, 80.1988, 80.1988, 66.8323, 56.8075, 43.441, 0, 41.6417],
-          "flightTime": 0.4364,
+          "flightTime": 0.6,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -17331,7 +17331,7 @@
             "Cooldown": 3.58,
             "Range": 48,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 80,
             "SplashRadius": 0,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -17715,7 +17715,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 70,
+          "speed": 65,
           "pen": 3,
           "form": "RocketBig",
           "topAttack": true,
@@ -17735,7 +17735,7 @@
           "effect": [1, 1, 1, 0.85, 0.65, 0.4, 0, 2],
           "dpsAir": 58.0907,
           "dpsVsLevel": [58.0907, 58.0907, 58.0907, 49.3771, 37.7589, 23.2363, 0, 116.1814],
-          "flightTime": 0.6857,
+          "flightTime": 0.7385,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -17800,7 +17800,7 @@
             "Cooldown": 10.55,
             "Range": 48,
             "MinRange": 12,
-            "ProjectileSpeed": 70,
+            "ProjectileSpeed": 65,
             "SplashRadius": 7,
             "Spread": 6,
             "ImpactTier": "Huge",
@@ -19449,7 +19449,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 300,
+          "speed": 140,
           "pen": 3,
           "form": "Sam",
           "topAttack": false,
@@ -19469,7 +19469,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 59.2973,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 80.0513, 0],
-          "flightTime": 0.2,
+          "flightTime": 0.4286,
           "roundLength": 0,
           "raw": {
             "Ceiling": "High",
@@ -19533,7 +19533,7 @@
             "Cooldown": 3.99,
             "Range": 60,
             "MinRange": 0,
-            "ProjectileSpeed": 300,
+            "ProjectileSpeed": 140,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -19599,7 +19599,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 210,
+          "speed": 115,
           "pen": 2,
           "form": "Sam",
           "topAttack": false,
@@ -19619,7 +19619,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 41.2102,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 55.6337, 0],
-          "flightTime": 0.1429,
+          "flightTime": 0.2609,
           "roundLength": 0,
           "raw": {
             "Ceiling": "High",
@@ -19684,7 +19684,7 @@
             "Cooldown": 2.12,
             "Range": 30,
             "MinRange": 0,
-            "ProjectileSpeed": 210,
+            "ProjectileSpeed": 115,
             "SplashRadius": 1.5,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -20386,7 +20386,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 120,
+          "speed": 80,
           "pen": 3,
           "form": "RocketBig",
           "topAttack": true,
@@ -20406,7 +20406,7 @@
           "effect": [1, 1, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 81.1655,
           "dpsVsLevel": [81.1655, 81.1655, 81.1655, 68.9907, 52.7576, 32.4662, 0, 129.8649],
-          "flightTime": 1.1667,
+          "flightTime": 1.75,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -20469,7 +20469,7 @@
             "Cooldown": 15.76,
             "Range": 140,
             "MinRange": 30,
-            "ProjectileSpeed": 120,
+            "ProjectileSpeed": 80,
             "SplashRadius": 8,
             "Spread": 9,
             "ImpactTier": "Huge",
@@ -20697,7 +20697,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 60,
+          "speed": 40,
           "pen": 4,
           "form": "MortarBomb",
           "topAttack": true,
@@ -20717,7 +20717,7 @@
           "effect": [1, 1, 1, 1, 0.85, 0.65, 0, 1.6],
           "dpsAir": 58.4928,
           "dpsVsLevel": [58.4928, 58.4928, 58.4928, 58.4928, 49.7189, 38.0203, 0, 187.1771],
-          "flightTime": 1.1667,
+          "flightTime": 1.75,
           "roundLength": 1.2,
           "raw": {
             "Ceiling": "None",
@@ -20782,7 +20782,7 @@
             "Cooldown": 10.884,
             "Range": 70,
             "MinRange": 16,
-            "ProjectileSpeed": 60,
+            "ProjectileSpeed": 40,
             "SplashRadius": 9,
             "Spread": 5,
             "ImpactTier": "Ultimate",
@@ -21989,7 +21989,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 300,
+          "speed": 140,
           "pen": 3,
           "form": "Sam",
           "topAttack": false,
@@ -22009,7 +22009,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 64.3,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 86.805, 0],
-          "flightTime": 0.2,
+          "flightTime": 0.4286,
           "roundLength": 0,
           "raw": {
             "Ceiling": "High",
@@ -22073,7 +22073,7 @@
             "Cooldown": 3.99,
             "Range": 60,
             "MinRange": 0,
-            "ProjectileSpeed": 300,
+            "ProjectileSpeed": 140,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -23082,7 +23082,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 300,
+          "speed": 170,
           "pen": 3,
           "form": "Sam",
           "topAttack": true,
@@ -23102,7 +23102,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 126.56,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 170.856, 0],
-          "flightTime": 0.3167,
+          "flightTime": 0.5588,
           "roundLength": 6,
           "raw": {
             "Ceiling": "High",
@@ -23166,7 +23166,7 @@
             "Cooldown": 7.2,
             "Range": 95,
             "MinRange": 20,
-            "ProjectileSpeed": 300,
+            "ProjectileSpeed": 170,
             "SplashRadius": 7.2,
             "Spread": 0,
             "ImpactTier": "Large",
@@ -24343,7 +24343,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 95,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -24363,7 +24363,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 32.9971,
           "dpsVsLevel": [39.5965, 32.9971, 28.0475, 21.4481, 13.1988, 4.9496, 0, 44.876],
-          "flightTime": 0.1889,
+          "flightTime": 0.3579,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -24428,7 +24428,7 @@
             "Cooldown": 4.05,
             "Range": 34,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 95,
             "SplashRadius": 3,
             "Spread": 4.5,
             "ImpactTier": "Medium",
@@ -24644,7 +24644,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 120,
+          "speed": 80,
           "pen": 4,
           "form": "Atgm",
           "topAttack": false,
@@ -24664,7 +24664,7 @@
           "effect": [1.56, 1.56, 1.56, 1.3, 1.105, 0.845, 0, 0.54],
           "dpsAir": 37.3777,
           "dpsVsLevel": [58.3093, 58.3093, 58.3093, 48.5911, 41.3024, 31.5842, 0, 20.184],
-          "flightTime": 0.3333,
+          "flightTime": 0.5,
           "roundLength": 1.95,
           "raw": {
             "Ceiling": "None",
@@ -24728,7 +24728,7 @@
             "Cooldown": 7.86,
             "Range": 40,
             "MinRange": 0,
-            "ProjectileSpeed": 120,
+            "ProjectileSpeed": 80,
             "SplashRadius": 7,
             "Spread": 0,
             "ImpactTier": "Large",
@@ -24794,7 +24794,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 210,
+          "speed": 110,
           "pen": 2,
           "form": "Sam",
           "topAttack": false,
@@ -24814,7 +24814,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 19.3121,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 26.0714, 0],
-          "flightTime": 0.1333,
+          "flightTime": 0.2545,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -24878,7 +24878,7 @@
             "Cooldown": 7,
             "Range": 28,
             "MinRange": 0,
-            "ProjectileSpeed": 210,
+            "ProjectileSpeed": 110,
             "SplashRadius": 1.5,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -29233,7 +29233,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 90,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -29253,7 +29253,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 39.604,
           "dpsVsLevel": [47.5248, 39.604, 33.6634, 25.7426, 15.8416, 5.9406, 0, 53.8614],
-          "flightTime": 0.3056,
+          "flightTime": 0.6111,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -29318,7 +29318,7 @@
             "Cooldown": 7,
             "Range": 55,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 90,
             "SplashRadius": 3.5,
             "Spread": 4,
             "ImpactTier": "Medium",
@@ -29708,7 +29708,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 95,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -29728,7 +29728,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 66.4982,
           "dpsVsLevel": [79.7978, 79.7978, 66.4982, 56.5234, 43.2238, 26.5993, 0, 106.397],
-          "flightTime": 0.8636,
+          "flightTime": 1,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -29791,7 +29791,7 @@
             "Cooldown": 4.643,
             "Range": 95,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 95,
             "SplashRadius": 3,
             "Spread": 2.2,
             "ImpactTier": "Medium",
@@ -29833,7 +29833,7 @@
               "use": "xe có giáp (chỉ bản tinh nhuệ và nhánh hạng 7)",
               "elite": true,
               "switch": 4.643,
-              "speed": 110
+              "speed": 95
             }],
           "splashEdge": 0,
           "edgeShare": 0.4,
@@ -30212,7 +30212,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 85,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -30232,7 +30232,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 71.187,
           "dpsVsLevel": [85.4245, 85.4245, 85.4245, 71.187, 60.509, 46.2716, 0, 136.6791],
-          "flightTime": 0.9545,
+          "flightTime": 1.2353,
           "roundLength": 1.04,
           "raw": {
             "Ceiling": "None",
@@ -30296,7 +30296,7 @@
             "Cooldown": 16.857,
             "Range": 105,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 85,
             "SplashRadius": 8,
             "Spread": 2.6,
             "ImpactTier": "Huge",
@@ -30338,7 +30338,7 @@
               "use": "xe có giáp (chỉ bản tinh nhuệ và nhánh hạng 7)",
               "elite": true,
               "switch": 16.857,
-              "speed": 110
+              "speed": 85
             }],
           "splashEdge": 0,
           "edgeShare": 0.4,
@@ -30374,7 +30374,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 85,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -30394,7 +30394,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 71.187,
           "dpsVsLevel": [85.4245, 85.4245, 85.4245, 71.187, 60.509, 46.2716, 0, 136.6791],
-          "flightTime": 0.9545,
+          "flightTime": 1.2353,
           "roundLength": 1.04,
           "raw": {
             "Ceiling": "None",
@@ -30458,7 +30458,7 @@
             "Cooldown": 16.857,
             "Range": 105,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 85,
             "SplashRadius": 8,
             "Spread": 2.6,
             "ImpactTier": "Huge",
@@ -30500,7 +30500,7 @@
               "use": "xe có giáp (chỉ bản tinh nhuệ và nhánh hạng 7)",
               "elite": true,
               "switch": 16.857,
-              "speed": 110
+              "speed": 85
             }],
           "splashEdge": 0,
           "edgeShare": 0.4,
@@ -31228,7 +31228,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 200,
+          "speed": 120,
           "pen": 2,
           "form": "Sam",
           "topAttack": false,
@@ -31248,7 +31248,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 38.1851,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 51.5499, 0],
-          "flightTime": 0.22,
+          "flightTime": 0.3667,
           "roundLength": 1.216,
           "raw": {
             "Ceiling": "None",
@@ -31312,7 +31312,7 @@
             "Cooldown": 4.452,
             "Range": 44,
             "MinRange": 0,
-            "ProjectileSpeed": 200,
+            "ProjectileSpeed": 120,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -32150,7 +32150,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 100,
+          "speed": 55,
           "pen": 3,
           "form": "HeShell",
           "topAttack": true,
@@ -32170,7 +32170,7 @@
           "effect": [1, 1, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 44.8863,
           "dpsVsLevel": [44.8863, 44.8863, 44.8863, 38.1534, 29.1761, 17.9545, 0, 71.8181],
-          "flightTime": 0.9,
+          "flightTime": 1.6364,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -32235,7 +32235,7 @@
             "Cooldown": 10.204,
             "Range": 90,
             "MinRange": 25,
-            "ProjectileSpeed": 100,
+            "ProjectileSpeed": 55,
             "SplashRadius": 7,
             "Spread": 5,
             "ImpactTier": "Large",
@@ -32277,7 +32277,7 @@
               "use": "xe có giáp (chỉ bản tinh nhuệ và nhánh hạng 7)",
               "elite": true,
               "switch": 10.204,
-              "speed": 45
+              "speed": 60
             }],
           "splashEdge": 0,
           "edgeShare": 0.4,
@@ -32630,7 +32630,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 80,
           "pen": 4,
           "form": "Atgm",
           "topAttack": false,
@@ -32650,7 +32650,7 @@
           "effect": [1.56, 1.56, 1.56, 1.3, 1.105, 0.845, 0, 0.54],
           "dpsAir": 39.3492,
           "dpsVsLevel": [61.3848, 61.3848, 61.3848, 51.154, 43.4809, 33.2501, 0, 21.2486],
-          "flightTime": 0.4091,
+          "flightTime": 0.5625,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -32715,7 +32715,7 @@
             "Cooldown": 10.64,
             "Range": 45,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 80,
             "SplashRadius": 0,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -32943,7 +32943,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 95,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -32963,7 +32963,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 25.8621,
           "dpsVsLevel": [31.0345, 25.8621, 21.9828, 16.8103, 10.3448, 3.8793, 0, 35.1724],
-          "flightTime": 0.1667,
+          "flightTime": 0.3158,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -33028,7 +33028,7 @@
             "Cooldown": 7.31,
             "Range": 30,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 95,
             "SplashRadius": 3,
             "Spread": 3,
             "ImpactTier": "Medium",
@@ -33094,7 +33094,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 105,
           "pen": 2,
           "form": "Sam",
           "topAttack": false,
@@ -33114,7 +33114,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 13.3634,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 18.0405, 0],
-          "flightTime": 0.1667,
+          "flightTime": 0.2857,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -33178,7 +33178,7 @@
             "Cooldown": 9.07,
             "Range": 30,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 105,
             "SplashRadius": 1.5,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -33560,7 +33560,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 95,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -33580,7 +33580,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 32.9971,
           "dpsVsLevel": [39.5965, 32.9971, 28.0475, 21.4481, 13.1988, 4.9496, 0, 44.876],
-          "flightTime": 0.1889,
+          "flightTime": 0.3579,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -33645,7 +33645,7 @@
             "Cooldown": 4.05,
             "Range": 34,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 95,
             "SplashRadius": 3,
             "Spread": 4.5,
             "ImpactTier": "Medium",
@@ -33861,7 +33861,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 120,
+          "speed": 80,
           "pen": 4,
           "form": "Atgm",
           "topAttack": false,
@@ -33881,7 +33881,7 @@
           "effect": [1.56, 1.56, 1.56, 1.3, 1.105, 0.845, 0, 0.54],
           "dpsAir": 37.3777,
           "dpsVsLevel": [58.3093, 58.3093, 58.3093, 48.5911, 41.3024, 31.5842, 0, 20.184],
-          "flightTime": 0.3333,
+          "flightTime": 0.5,
           "roundLength": 1.95,
           "raw": {
             "Ceiling": "None",
@@ -33945,7 +33945,7 @@
             "Cooldown": 7.86,
             "Range": 40,
             "MinRange": 0,
-            "ProjectileSpeed": 120,
+            "ProjectileSpeed": 80,
             "SplashRadius": 7,
             "Spread": 0,
             "ImpactTier": "Large",
@@ -34011,7 +34011,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 210,
+          "speed": 110,
           "pen": 2,
           "form": "Sam",
           "topAttack": false,
@@ -34031,7 +34031,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 19.3121,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 26.0714, 0],
-          "flightTime": 0.1333,
+          "flightTime": 0.2545,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -34095,7 +34095,7 @@
             "Cooldown": 7,
             "Range": 28,
             "MinRange": 0,
-            "ProjectileSpeed": 210,
+            "ProjectileSpeed": 110,
             "SplashRadius": 1.5,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -34790,7 +34790,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 130,
+          "speed": 80,
           "pen": 2,
           "form": "Cluster",
           "topAttack": true,
@@ -34810,7 +34810,7 @@
           "effect": [1, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 35.7129,
           "dpsVsLevel": [35.7129, 35.7129, 30.356, 23.2134, 14.2852, 5.3569, 0, 48.5696],
-          "flightTime": 0.6,
+          "flightTime": 0.975,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -34875,7 +34875,7 @@
             "Cooldown": 8,
             "Range": 78,
             "MinRange": 18,
-            "ProjectileSpeed": 130,
+            "ProjectileSpeed": 80,
             "SplashRadius": 4,
             "Spread": 8,
             "ImpactTier": "Medium",
@@ -35900,7 +35900,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 300,
+          "speed": 170,
           "pen": 3,
           "form": "Sam",
           "topAttack": true,
@@ -35920,7 +35920,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 126.56,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 170.856, 0],
-          "flightTime": 0.3167,
+          "flightTime": 0.5588,
           "roundLength": 6,
           "raw": {
             "Ceiling": "High",
@@ -35984,7 +35984,7 @@
             "Cooldown": 7.2,
             "Range": 95,
             "MinRange": 20,
-            "ProjectileSpeed": 300,
+            "ProjectileSpeed": 170,
             "SplashRadius": 7.2,
             "Spread": 0,
             "ImpactTier": "Large",
@@ -36834,7 +36834,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 140,
+          "speed": 85,
           "pen": 3,
           "form": "Cluster",
           "topAttack": true,
@@ -36854,7 +36854,7 @@
           "effect": [1, 1, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 38.6949,
           "dpsVsLevel": [38.6949, 38.6949, 38.6949, 32.8907, 25.1517, 15.478, 0, 61.9119],
-          "flightTime": 0.5357,
+          "flightTime": 0.8824,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -36918,7 +36918,7 @@
             "Cooldown": 9.686,
             "Range": 75,
             "MinRange": 20,
-            "ProjectileSpeed": 140,
+            "ProjectileSpeed": 85,
             "SplashRadius": 5,
             "Spread": 5,
             "ImpactTier": "Large",
@@ -37781,7 +37781,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 60,
+          "speed": 40,
           "pen": 4,
           "form": "MortarBomb",
           "topAttack": true,
@@ -37801,7 +37801,7 @@
           "effect": [1, 1, 1, 1, 0.85, 0.65, 0, 1.6],
           "dpsAir": 26.9647,
           "dpsVsLevel": [40.7166, 40.7166, 40.7166, 40.7166, 34.6092, 26.4658, 0, 65.1466],
-          "flightTime": 1.3333,
+          "flightTime": 2,
           "roundLength": 1.2,
           "raw": {
             "Ceiling": "None",
@@ -37865,7 +37865,7 @@
             "Cooldown": 60,
             "Range": 80,
             "MinRange": 14,
-            "ProjectileSpeed": 60,
+            "ProjectileSpeed": 40,
             "SplashRadius": 10,
             "Spread": 3.5,
             "ImpactTier": "Huge",
@@ -39070,7 +39070,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 95,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -39090,7 +39090,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 52.4,
           "dpsVsLevel": [156.9484, 130.7903, 111.1718, 85.0137, 52.3161, 19.6185, 0, 177.8748],
-          "flightTime": 0.1889,
+          "flightTime": 0.3579,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -39155,7 +39155,7 @@
             "Cooldown": 8.271,
             "Range": 34,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 95,
             "SplashRadius": 3,
             "Spread": 3.5,
             "ImpactTier": "Medium",
@@ -39692,7 +39692,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 95,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -39712,7 +39712,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 52.4,
           "dpsVsLevel": [156.9484, 130.7903, 111.1718, 85.0137, 52.3161, 19.6185, 0, 177.8748],
-          "flightTime": 0.1889,
+          "flightTime": 0.3579,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -39777,7 +39777,7 @@
             "Cooldown": 8.271,
             "Range": 34,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 95,
             "SplashRadius": 3,
             "Spread": 3.5,
             "ImpactTier": "Medium",
@@ -40385,7 +40385,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 120,
+          "speed": 80,
           "pen": 2,
           "form": "RocketBig",
           "topAttack": false,
@@ -40405,7 +40405,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 90.1945,
           "dpsVsLevel": [240.4945, 200.4121, 170.3503, 130.2679, 80.1648, 30.0618, 0, 272.5604],
-          "flightTime": 0.4333,
+          "flightTime": 0.65,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -40469,7 +40469,7 @@
             "Cooldown": 15.76,
             "Range": 52,
             "MinRange": 0,
-            "ProjectileSpeed": 120,
+            "ProjectileSpeed": 80,
             "SplashRadius": 8,
             "Spread": 5,
             "ImpactTier": "Large",
@@ -40536,7 +40536,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 120,
+          "speed": 80,
           "pen": 2,
           "form": "RocketBig",
           "topAttack": false,
@@ -40556,7 +40556,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 90.1945,
           "dpsVsLevel": [240.4945, 200.4121, 170.3503, 130.2679, 80.1648, 30.0618, 0, 272.5604],
-          "flightTime": 0.4333,
+          "flightTime": 0.65,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -40620,7 +40620,7 @@
             "Cooldown": 15.76,
             "Range": 52,
             "MinRange": 0,
-            "ProjectileSpeed": 120,
+            "ProjectileSpeed": 80,
             "SplashRadius": 8,
             "Spread": 5,
             "ImpactTier": "Large",
@@ -41476,7 +41476,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 130,
+          "speed": 80,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -41496,7 +41496,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 364.6308,
           "dpsVsLevel": [386.8004, 322.3336, 273.9836, 209.5168, 128.9335, 48.35, 0, 438.3737],
-          "flightTime": 0.5692,
+          "flightTime": 0.925,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -41560,7 +41560,7 @@
             "Cooldown": 2.44,
             "Range": 74,
             "MinRange": 0,
-            "ProjectileSpeed": 130,
+            "ProjectileSpeed": 80,
             "SplashRadius": 4.5,
             "Spread": 5,
             "ImpactTier": "Medium",
@@ -41992,7 +41992,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 65,
+          "speed": 80,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -42012,7 +42012,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 256.2725,
           "dpsVsLevel": [571.6927, 476.4106, 404.949, 309.6668, 190.5642, 71.4616, 0, 647.9183],
-          "flightTime": 0.8,
+          "flightTime": 0.65,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -42076,7 +42076,7 @@
             "Cooldown": 2.44,
             "Range": 52,
             "MinRange": 0,
-            "ProjectileSpeed": 65,
+            "ProjectileSpeed": 80,
             "SplashRadius": 4.5,
             "Spread": 5,
             "ImpactTier": "Medium",
@@ -43659,7 +43659,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 90,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -43679,7 +43679,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 187.2248,
           "dpsVsLevel": [493.1501, 493.1501, 410.9584, 349.3147, 267.123, 164.3834, 0, 657.5334],
-          "flightTime": 1.2,
+          "flightTime": 1.4667,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -43742,7 +43742,7 @@
             "Cooldown": 4.286,
             "Range": 132,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 90,
             "SplashRadius": 5,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -43808,7 +43808,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 105,
           "pen": 5,
           "form": "HeShell",
           "topAttack": false,
@@ -43828,7 +43828,7 @@
           "effect": [1.08, 1.224, 1.368, 1.44, 1.2, 1.02, 0, 0.798],
           "dpsAir": 93.594,
           "dpsVsLevel": [221.8739, 251.4571, 281.0403, 295.8319, 246.5266, 209.5476, 0, 163.9402],
-          "flightTime": 0.8182,
+          "flightTime": 0.8571,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -43891,7 +43891,7 @@
             "Cooldown": 3,
             "Range": 90,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 105,
             "SplashRadius": 0,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -44554,7 +44554,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 70,
+          "speed": 90,
           "pen": 4,
           "form": "None",
           "topAttack": false,
@@ -44574,7 +44574,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 14.9733,
           "dpsVsLevel": [39.4397, 39.4397, 39.4397, 32.8664, 27.9364, 21.3632, 0, 63.1035],
-          "flightTime": 1.5714,
+          "flightTime": 1.2222,
           "roundLength": 3.17,
           "raw": {
             "Ceiling": "None",
@@ -44638,7 +44638,7 @@
             "Cooldown": 22,
             "Range": 110,
             "MinRange": 0,
-            "ProjectileSpeed": 70,
+            "ProjectileSpeed": 90,
             "SplashRadius": 6,
             "Spread": 0,
             "ImpactTier": "Large",
@@ -44705,7 +44705,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 70,
+          "speed": 90,
           "pen": 4,
           "form": "None",
           "topAttack": false,
@@ -44725,7 +44725,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 14.9733,
           "dpsVsLevel": [39.4397, 39.4397, 39.4397, 32.8664, 27.9364, 21.3632, 0, 63.1035],
-          "flightTime": 1.5714,
+          "flightTime": 1.2222,
           "roundLength": 3.17,
           "raw": {
             "Ceiling": "None",
@@ -44789,7 +44789,7 @@
             "Cooldown": 22,
             "Range": 110,
             "MinRange": 0,
-            "ProjectileSpeed": 70,
+            "ProjectileSpeed": 90,
             "SplashRadius": 6,
             "Spread": 0,
             "ImpactTier": "Large",
@@ -45049,7 +45049,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 150,
+          "speed": 88,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -45069,7 +45069,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 70.0074,
           "dpsVsLevel": [156.6767, 156.6767, 130.5639, 110.9793, 84.8665, 52.2256, 0, 208.9022],
-          "flightTime": 0.9,
+          "flightTime": 1.5341,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -45133,7 +45133,7 @@
             "Cooldown": 8,
             "Range": 135,
             "MinRange": 0,
-            "ProjectileSpeed": 150,
+            "ProjectileSpeed": 88,
             "SplashRadius": 7,
             "Spread": 2,
             "ImpactTier": "Large",
@@ -45199,7 +45199,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 105,
           "pen": 5,
           "form": "HeShell",
           "topAttack": false,
@@ -45219,7 +45219,7 @@
           "effect": [1.08, 1.224, 1.368, 1.44, 1.2, 1.02, 0, 0.798],
           "dpsAir": 105.9187,
           "dpsVsLevel": [213.3414, 241.7869, 270.2325, 284.4552, 237.046, 201.4891, 0, 157.6356],
-          "flightTime": 0.8182,
+          "flightTime": 0.8571,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -45282,7 +45282,7 @@
             "Cooldown": 3,
             "Range": 90,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 105,
             "SplashRadius": 0,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -45349,7 +45349,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 105,
           "pen": 5,
           "form": "HeShell",
           "topAttack": false,
@@ -45369,7 +45369,7 @@
           "effect": [1.08, 1.224, 1.368, 1.44, 1.2, 1.02, 0, 0.798],
           "dpsAir": 105.9187,
           "dpsVsLevel": [213.3414, 241.7869, 270.2325, 284.4552, 237.046, 201.4891, 0, 157.6356],
-          "flightTime": 0.8182,
+          "flightTime": 0.8571,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -45432,7 +45432,7 @@
             "Cooldown": 3,
             "Range": 90,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 105,
             "SplashRadius": 0,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -46634,7 +46634,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 60,
+          "speed": 40,
           "pen": 4,
           "form": "MortarBomb",
           "topAttack": true,
@@ -46654,7 +46654,7 @@
           "effect": [1, 1, 1, 1, 0.85, 0.65, 0, 1.6],
           "dpsAir": 18.3333,
           "dpsVsLevel": [18.3333, 18.3333, 18.3333, 18.3333, 15.5833, 11.9167, 0, 29.3333],
-          "flightTime": 1.3333,
+          "flightTime": 2,
           "roundLength": 1.2,
           "raw": {
             "Ceiling": "None",
@@ -46718,7 +46718,7 @@
             "Cooldown": 60,
             "Range": 80,
             "MinRange": 14,
-            "ProjectileSpeed": 60,
+            "ProjectileSpeed": 40,
             "SplashRadius": 10,
             "Spread": 3.5,
             "ImpactTier": "Huge",
@@ -47828,7 +47828,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 150,
+          "speed": 60,
           "pen": 4,
           "form": "HeShell",
           "topAttack": true,
@@ -47848,7 +47848,7 @@
           "effect": [1, 1, 1, 1, 0.85, 0.65, 0, 1.6],
           "dpsAir": 40,
           "dpsVsLevel": [40, 40, 40, 40, 34, 26, 0, 64],
-          "flightTime": 0.5,
+          "flightTime": 1.25,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -47912,7 +47912,7 @@
             "Cooldown": 15,
             "Range": 75,
             "MinRange": 20,
-            "ProjectileSpeed": 150,
+            "ProjectileSpeed": 60,
             "SplashRadius": 7,
             "Spread": 4.5,
             "ImpactTier": "Huge",
@@ -51564,7 +51564,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 130,
+          "speed": 80,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -51584,7 +51584,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 364.6308,
           "dpsVsLevel": [437.557, 364.6308, 309.9362, 237.01, 145.8523, 54.6946, 0, 495.8979],
-          "flightTime": 0.7385,
+          "flightTime": 1.2,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -51648,7 +51648,7 @@
             "Cooldown": 2.44,
             "Range": 96,
             "MinRange": 0,
-            "ProjectileSpeed": 130,
+            "ProjectileSpeed": 80,
             "SplashRadius": 4.5,
             "Spread": 5,
             "ImpactTier": "Medium",
@@ -52969,7 +52969,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 120,
+          "speed": 115,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -52989,7 +52989,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 171.4286,
           "dpsVsLevel": [265.7829, 265.7829, 265.7829, 221.4857, 188.2629, 143.9657, 0, 425.2526],
-          "flightTime": 0.75,
+          "flightTime": 0.7826,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -53052,7 +53052,7 @@
             "Cooldown": 2.5,
             "Range": 90,
             "MinRange": 0,
-            "ProjectileSpeed": 120,
+            "ProjectileSpeed": 115,
             "SplashRadius": 5,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -53320,7 +53320,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 100,
+          "speed": 60,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -53340,7 +53340,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 35.655,
           "dpsVsLevel": [42.786, 42.786, 42.786, 35.655, 30.3067, 23.1757, 0, 68.4576],
-          "flightTime": 1.54,
+          "flightTime": 2.5667,
           "roundLength": 1.04,
           "raw": {
             "Ceiling": "None",
@@ -53404,7 +53404,7 @@
             "Cooldown": 24,
             "Range": 154,
             "MinRange": 0,
-            "ProjectileSpeed": 100,
+            "ProjectileSpeed": 60,
             "SplashRadius": 8.5,
             "Spread": 3,
             "ImpactTier": "Huge",
@@ -53470,7 +53470,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 120,
+          "speed": 80,
           "pen": 2,
           "form": "RocketBig",
           "topAttack": false,
@@ -53490,7 +53490,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 90.1945,
           "dpsVsLevel": [108.2334, 90.1945, 76.6653, 58.6264, 36.0778, 13.5292, 0, 122.6645],
-          "flightTime": 0.8583,
+          "flightTime": 1.2875,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -53554,7 +53554,7 @@
             "Cooldown": 15.76,
             "Range": 103,
             "MinRange": 0,
-            "ProjectileSpeed": 120,
+            "ProjectileSpeed": 80,
             "SplashRadius": 8,
             "Spread": 5,
             "ImpactTier": "Large",
@@ -53621,7 +53621,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 120,
+          "speed": 80,
           "pen": 2,
           "form": "RocketBig",
           "topAttack": false,
@@ -53641,7 +53641,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 90.1945,
           "dpsVsLevel": [108.2334, 90.1945, 76.6653, 58.6264, 36.0778, 13.5292, 0, 122.6645],
-          "flightTime": 0.8583,
+          "flightTime": 1.2875,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -53705,7 +53705,7 @@
             "Cooldown": 15.76,
             "Range": 103,
             "MinRange": 0,
-            "ProjectileSpeed": 120,
+            "ProjectileSpeed": 80,
             "SplashRadius": 8,
             "Spread": 5,
             "ImpactTier": "Large",
@@ -54375,7 +54375,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 100,
+          "speed": 60,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -54395,7 +54395,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 35.655,
           "dpsVsLevel": [42.786, 42.786, 42.786, 35.655, 30.3067, 23.1757, 0, 68.4576],
-          "flightTime": 1.54,
+          "flightTime": 2.5667,
           "roundLength": 1.04,
           "raw": {
             "Ceiling": "None",
@@ -54459,7 +54459,7 @@
             "Cooldown": 24,
             "Range": 154,
             "MinRange": 0,
-            "ProjectileSpeed": 100,
+            "ProjectileSpeed": 60,
             "SplashRadius": 8.5,
             "Spread": 3,
             "ImpactTier": "Huge",
@@ -54525,7 +54525,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 80,
+          "speed": 145,
           "pen": 3,
           "form": "Sam",
           "topAttack": false,
@@ -54545,7 +54545,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 138.2982,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 186.7026, 0],
-          "flightTime": 0.75,
+          "flightTime": 0.4138,
           "roundLength": 4.44,
           "raw": {
             "Ceiling": "None",
@@ -54609,7 +54609,7 @@
             "Cooldown": 3.9,
             "Range": 60,
             "MinRange": 0,
-            "ProjectileSpeed": 80,
+            "ProjectileSpeed": 145,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -55579,7 +55579,7 @@
           "projectile": "Bomb",
           "clip": 0,
           "clipReload": 0,
-          "speed": 100,
+          "speed": 60,
           "pen": 4,
           "form": "Bomb",
           "topAttack": true,
@@ -55599,7 +55599,7 @@
           "effect": [1.15, 1.15, 1.15, 1.1, 0.95, 0.75, 0, 1.84],
           "dpsAir": 282.7178,
           "dpsVsLevel": [468.1808, 468.1808, 468.1808, 447.8251, 386.758, 305.3353, 0, 749.0892],
-          "flightTime": 0.45,
+          "flightTime": 0.75,
           "roundLength": 1.04,
           "raw": {
             "Ceiling": "None",
@@ -55663,7 +55663,7 @@
             "Cooldown": 33.34,
             "Range": 45,
             "MinRange": 0,
-            "ProjectileSpeed": 100,
+            "ProjectileSpeed": 60,
             "SplashRadius": 10,
             "Spread": 3,
             "ImpactTier": "Huge",
@@ -55729,7 +55729,7 @@
           "projectile": "Bomb",
           "clip": 0,
           "clipReload": 0,
-          "speed": 100,
+          "speed": 60,
           "pen": 4,
           "form": "Bomb",
           "topAttack": true,
@@ -55749,7 +55749,7 @@
           "effect": [1.15, 1.15, 1.15, 1.1, 0.95, 0.75, 0, 1.84],
           "dpsAir": 282.7178,
           "dpsVsLevel": [468.1808, 468.1808, 468.1808, 447.8251, 386.758, 305.3353, 0, 749.0892],
-          "flightTime": 0.45,
+          "flightTime": 0.75,
           "roundLength": 1.04,
           "raw": {
             "Ceiling": "None",
@@ -55813,7 +55813,7 @@
             "Cooldown": 33.34,
             "Range": 45,
             "MinRange": 0,
-            "ProjectileSpeed": 100,
+            "ProjectileSpeed": 60,
             "SplashRadius": 10,
             "Spread": 3,
             "ImpactTier": "Huge",
@@ -56371,7 +56371,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 95,
+          "speed": 85,
           "pen": 4,
           "form": "Atgm",
           "topAttack": false,
@@ -56391,7 +56391,7 @@
           "effect": [1.56, 1.56, 1.56, 1.3, 1.105, 0.845, 0, 0.54],
           "dpsAir": 56.8421,
           "dpsVsLevel": [88.6737, 88.6737, 88.6737, 73.8947, 62.8105, 48.0316, 0, 46.0421],
-          "flightTime": 0.5789,
+          "flightTime": 0.6471,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -56455,7 +56455,7 @@
             "Cooldown": 9,
             "Range": 55,
             "MinRange": 0,
-            "ProjectileSpeed": 95,
+            "ProjectileSpeed": 85,
             "SplashRadius": 0,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -56527,7 +56527,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 95,
+          "speed": 85,
           "pen": 4,
           "form": "Atgm",
           "topAttack": false,
@@ -56547,7 +56547,7 @@
           "effect": [1.56, 1.56, 1.56, 1.3, 1.105, 0.845, 0, 0.54],
           "dpsAir": 56.8421,
           "dpsVsLevel": [88.6737, 88.6737, 88.6737, 73.8947, 62.8105, 48.0316, 0, 46.0421],
-          "flightTime": 0.5789,
+          "flightTime": 0.6471,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -56611,7 +56611,7 @@
             "Cooldown": 9,
             "Range": 55,
             "MinRange": 0,
-            "ProjectileSpeed": 95,
+            "ProjectileSpeed": 85,
             "SplashRadius": 0,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -57488,7 +57488,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 85,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -57508,7 +57508,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 85.7143,
           "dpsVsLevel": [102.8571, 102.8571, 102.8571, 85.7143, 72.8571, 55.7143, 0, 164.5714],
-          "flightTime": 0.8636,
+          "flightTime": 1.1176,
           "roundLength": 1.04,
           "raw": {
             "Ceiling": "None",
@@ -57572,7 +57572,7 @@
             "Cooldown": 21,
             "Range": 95,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 85,
             "SplashRadius": 8.5,
             "Spread": 2.6,
             "ImpactTier": "Huge",
@@ -57638,7 +57638,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 95,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -57658,7 +57658,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 117.0732,
           "dpsVsLevel": [140.4878, 140.4878, 117.0732, 99.5122, 76.0976, 46.8293, 0, 187.3171],
-          "flightTime": 0.6364,
+          "flightTime": 0.7368,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -57721,7 +57721,7 @@
             "Cooldown": 3.2,
             "Range": 70,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 95,
             "SplashRadius": 3,
             "Spread": 2.2,
             "ImpactTier": "Medium",
@@ -57787,7 +57787,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 95,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -57807,7 +57807,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 117.0732,
           "dpsVsLevel": [140.4878, 140.4878, 117.0732, 99.5122, 76.0976, 46.8293, 0, 187.3171],
-          "flightTime": 0.6364,
+          "flightTime": 0.7368,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -57870,7 +57870,7 @@
             "Cooldown": 3.2,
             "Range": 70,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 95,
             "SplashRadius": 3,
             "Spread": 2.2,
             "ImpactTier": "Medium",
@@ -57936,7 +57936,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 60,
+          "speed": 75,
           "pen": 4,
           "form": "Atgm",
           "topAttack": false,
@@ -57956,7 +57956,7 @@
           "effect": [1.56, 1.56, 1.56, 1.3, 1.105, 0.845, 0, 0.54],
           "dpsAir": 46.875,
           "dpsVsLevel": [73.125, 73.125, 73.125, 60.9375, 51.7969, 39.6094, 0, 37.9688],
-          "flightTime": 1.3333,
+          "flightTime": 1.0667,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -58020,7 +58020,7 @@
             "Cooldown": 12,
             "Range": 80,
             "MinRange": 0,
-            "ProjectileSpeed": 60,
+            "ProjectileSpeed": 75,
             "SplashRadius": 0,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -58092,7 +58092,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 60,
+          "speed": 75,
           "pen": 4,
           "form": "Atgm",
           "topAttack": false,
@@ -58112,7 +58112,7 @@
           "effect": [1.56, 1.56, 1.56, 1.3, 1.105, 0.845, 0, 0.54],
           "dpsAir": 46.875,
           "dpsVsLevel": [73.125, 73.125, 73.125, 60.9375, 51.7969, 39.6094, 0, 37.9688],
-          "flightTime": 1.3333,
+          "flightTime": 1.0667,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -58176,7 +58176,7 @@
             "Cooldown": 12,
             "Range": 80,
             "MinRange": 0,
-            "ProjectileSpeed": 60,
+            "ProjectileSpeed": 75,
             "SplashRadius": 0,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -58443,7 +58443,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 200,
+          "speed": 85,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -58463,7 +58463,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 116.136,
           "dpsVsLevel": [139.3632, 139.3632, 139.3632, 116.136, 98.7156, 75.4884, 0, 222.9811],
-          "flightTime": 1.5,
+          "flightTime": 3.5294,
           "roundLength": 1.56,
           "raw": {
             "Ceiling": "None",
@@ -58527,7 +58527,7 @@
             "Cooldown": 60,
             "Range": 300,
             "MinRange": 0,
-            "ProjectileSpeed": 200,
+            "ProjectileSpeed": 85,
             "SplashRadius": 14,
             "Spread": 3,
             "ImpactTier": "Ultimate",
@@ -58593,7 +58593,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 200,
+          "speed": 85,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -58613,7 +58613,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 116.136,
           "dpsVsLevel": [139.3632, 139.3632, 139.3632, 116.136, 98.7156, 75.4884, 0, 222.9811],
-          "flightTime": 1.5,
+          "flightTime": 3.5294,
           "roundLength": 1.56,
           "raw": {
             "Ceiling": "None",
@@ -58677,7 +58677,7 @@
             "Cooldown": 60,
             "Range": 300,
             "MinRange": 0,
-            "ProjectileSpeed": 200,
+            "ProjectileSpeed": 85,
             "SplashRadius": 14,
             "Spread": 3,
             "ImpactTier": "Ultimate",
@@ -58743,7 +58743,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 200,
+          "speed": 85,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -58763,7 +58763,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 116.136,
           "dpsVsLevel": [139.3632, 139.3632, 139.3632, 116.136, 98.7156, 75.4884, 0, 222.9811],
-          "flightTime": 1.5,
+          "flightTime": 3.5294,
           "roundLength": 1.56,
           "raw": {
             "Ceiling": "None",
@@ -58827,7 +58827,7 @@
             "Cooldown": 60,
             "Range": 300,
             "MinRange": 0,
-            "ProjectileSpeed": 200,
+            "ProjectileSpeed": 85,
             "SplashRadius": 14,
             "Spread": 3,
             "ImpactTier": "Ultimate",
@@ -58893,7 +58893,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 150,
+          "speed": 88,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -58913,7 +58913,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 165.9086,
           "dpsVsLevel": [199.0903, 199.0903, 165.9086, 141.0223, 107.8406, 66.3634, 0, 265.4537],
-          "flightTime": 1.92,
+          "flightTime": 3.2727,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -58977,7 +58977,7 @@
             "Cooldown": 10.5,
             "Range": 288,
             "MinRange": 0,
-            "ProjectileSpeed": 150,
+            "ProjectileSpeed": 88,
             "SplashRadius": 7,
             "Spread": 2.4,
             "ImpactTier": "Large",
@@ -59043,7 +59043,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 150,
+          "speed": 88,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -59063,7 +59063,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 165.9086,
           "dpsVsLevel": [199.0903, 199.0903, 165.9086, 141.0223, 107.8406, 66.3634, 0, 265.4537],
-          "flightTime": 1.92,
+          "flightTime": 3.2727,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -59127,7 +59127,7 @@
             "Cooldown": 10.5,
             "Range": 288,
             "MinRange": 0,
-            "ProjectileSpeed": 150,
+            "ProjectileSpeed": 88,
             "SplashRadius": 7,
             "Spread": 2.4,
             "ImpactTier": "Large",
@@ -59193,7 +59193,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 105,
           "pen": 5,
           "form": "HeShell",
           "topAttack": false,
@@ -59213,7 +59213,7 @@
           "effect": [1.08, 1.224, 1.368, 1.44, 1.2, 1.02, 0, 0.798],
           "dpsAir": 122.588,
           "dpsVsLevel": [132.3951, 150.0477, 167.7004, 176.5267, 147.1056, 125.0398, 0, 97.8252],
-          "flightTime": 1.2273,
+          "flightTime": 1.2857,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -59276,7 +59276,7 @@
             "Cooldown": 3,
             "Range": 135,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 105,
             "SplashRadius": 0,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -59343,7 +59343,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 105,
           "pen": 5,
           "form": "HeShell",
           "topAttack": false,
@@ -59363,7 +59363,7 @@
           "effect": [1.08, 1.224, 1.368, 1.44, 1.2, 1.02, 0, 0.798],
           "dpsAir": 122.588,
           "dpsVsLevel": [132.3951, 150.0477, 167.7004, 176.5267, 147.1056, 125.0398, 0, 97.8252],
-          "flightTime": 1.2273,
+          "flightTime": 1.2857,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -59426,7 +59426,7 @@
             "Cooldown": 3,
             "Range": 135,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 105,
             "SplashRadius": 0,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -60789,7 +60789,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 80,
+          "speed": 145,
           "pen": 3,
           "form": "Sam",
           "topAttack": false,
@@ -60809,7 +60809,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 140.7709,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 190.0407, 0],
-          "flightTime": 0.75,
+          "flightTime": 0.4138,
           "roundLength": 4.44,
           "raw": {
             "Ceiling": "None",
@@ -60873,7 +60873,7 @@
             "Cooldown": 3.9,
             "Range": 60,
             "MinRange": 0,
-            "ProjectileSpeed": 80,
+            "ProjectileSpeed": 145,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -65115,7 +65115,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 130,
+          "speed": 80,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": true,
@@ -65135,7 +65135,7 @@
           "effect": [1, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 30.5212,
           "dpsVsLevel": [30.5212, 30.5212, 25.943, 19.8388, 12.2085, 4.5782, 0, 41.5088],
-          "flightTime": 0.4462,
+          "flightTime": 0.725,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -65199,7 +65199,7 @@
             "Cooldown": 20,
             "Range": 58,
             "MinRange": 18,
-            "ProjectileSpeed": 130,
+            "ProjectileSpeed": 80,
             "SplashRadius": 4.5,
             "Spread": 7,
             "ImpactTier": "Medium",
@@ -65972,7 +65972,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 65,
+          "speed": 80,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": false,
@@ -65992,7 +65992,7 @@
           "effect": [1.2, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 477.3747,
           "dpsVsLevel": [572.8496, 477.3747, 405.7685, 310.2935, 190.9499, 71.6062, 0, 649.2296],
-          "flightTime": 0.9846,
+          "flightTime": 0.8,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -66056,7 +66056,7 @@
             "Cooldown": 2.44,
             "Range": 64,
             "MinRange": 0,
-            "ProjectileSpeed": 65,
+            "ProjectileSpeed": 80,
             "SplashRadius": 4.5,
             "Spread": 5,
             "ImpactTier": "Medium",
@@ -66123,7 +66123,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 95,
+          "speed": 165,
           "pen": 3,
           "form": "Sam",
           "topAttack": true,
@@ -66143,7 +66143,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 80.9324,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 109.2587, 0],
-          "flightTime": 0.9474,
+          "flightTime": 0.5455,
           "roundLength": 4.24,
           "raw": {
             "Ceiling": "High",
@@ -66207,7 +66207,7 @@
             "Cooldown": 8,
             "Range": 90,
             "MinRange": 20,
-            "ProjectileSpeed": 95,
+            "ProjectileSpeed": 165,
             "SplashRadius": 2.5,
             "Spread": 0,
             "ImpactTier": "Large",
@@ -66843,7 +66843,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 60,
+          "speed": 40,
           "pen": 4,
           "form": "MortarBomb",
           "topAttack": true,
@@ -66863,7 +66863,7 @@
           "effect": [1, 1, 1, 1, 0.85, 0.65, 0, 1.6],
           "dpsAir": 18.3333,
           "dpsVsLevel": [36.6117, 36.6117, 36.6117, 36.6117, 31.1199, 23.7976, 0, 58.5787],
-          "flightTime": 1.3333,
+          "flightTime": 2,
           "roundLength": 1.2,
           "raw": {
             "Ceiling": "None",
@@ -66927,7 +66927,7 @@
             "Cooldown": 60,
             "Range": 80,
             "MinRange": 14,
-            "ProjectileSpeed": 60,
+            "ProjectileSpeed": 40,
             "SplashRadius": 10,
             "Spread": 3.5,
             "ImpactTier": "Huge",
@@ -68037,7 +68037,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 150,
+          "speed": 60,
           "pen": 4,
           "form": "HeShell",
           "topAttack": true,
@@ -68057,7 +68057,7 @@
           "effect": [1, 1, 1, 1, 0.85, 0.65, 0, 1.6],
           "dpsAir": 40,
           "dpsVsLevel": [79.88, 79.88, 79.88, 79.88, 67.898, 51.922, 0, 127.808],
-          "flightTime": 0.5,
+          "flightTime": 1.25,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -68121,7 +68121,7 @@
             "Cooldown": 15,
             "Range": 75,
             "MinRange": 20,
-            "ProjectileSpeed": 150,
+            "ProjectileSpeed": 60,
             "SplashRadius": 7,
             "Spread": 4.5,
             "ImpactTier": "Huge",
@@ -68756,7 +68756,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 80,
+          "speed": 145,
           "pen": 3,
           "form": "Sam",
           "topAttack": false,
@@ -68776,7 +68776,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 145.4545,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 196.3636, 0],
-          "flightTime": 0.75,
+          "flightTime": 0.4138,
           "roundLength": 4.44,
           "raw": {
             "Ceiling": "None",
@@ -68840,7 +68840,7 @@
             "Cooldown": 3.9,
             "Range": 60,
             "MinRange": 0,
-            "ProjectileSpeed": 80,
+            "ProjectileSpeed": 145,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -69204,7 +69204,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 120,
+          "speed": 115,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -69224,7 +69224,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 171.4286,
           "dpsVsLevel": [205.7143, 205.7143, 205.7143, 171.4286, 145.7143, 111.4286, 0, 329.1429],
-          "flightTime": 0.75,
+          "flightTime": 0.7826,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -69287,7 +69287,7 @@
             "Cooldown": 2.5,
             "Range": 90,
             "MinRange": 0,
-            "ProjectileSpeed": 120,
+            "ProjectileSpeed": 115,
             "SplashRadius": 5,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -69754,7 +69754,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 200,
+          "speed": 85,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -69774,7 +69774,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 116.136,
           "dpsVsLevel": [139.3632, 139.3632, 139.3632, 116.136, 98.7156, 75.4884, 0, 222.9811],
-          "flightTime": 1.5,
+          "flightTime": 3.5294,
           "roundLength": 1.56,
           "raw": {
             "Ceiling": "None",
@@ -69838,7 +69838,7 @@
             "Cooldown": 60,
             "Range": 300,
             "MinRange": 0,
-            "ProjectileSpeed": 200,
+            "ProjectileSpeed": 85,
             "SplashRadius": 14,
             "Spread": 3,
             "ImpactTier": "Ultimate",
@@ -69904,7 +69904,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 200,
+          "speed": 85,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -69924,7 +69924,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 116.136,
           "dpsVsLevel": [139.3632, 139.3632, 139.3632, 116.136, 98.7156, 75.4884, 0, 222.9811],
-          "flightTime": 1.5,
+          "flightTime": 3.5294,
           "roundLength": 1.56,
           "raw": {
             "Ceiling": "None",
@@ -69988,7 +69988,7 @@
             "Cooldown": 60,
             "Range": 300,
             "MinRange": 0,
-            "ProjectileSpeed": 200,
+            "ProjectileSpeed": 85,
             "SplashRadius": 14,
             "Spread": 3,
             "ImpactTier": "Ultimate",
@@ -70054,7 +70054,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 200,
+          "speed": 85,
           "pen": 4,
           "form": "HeShell",
           "topAttack": false,
@@ -70074,7 +70074,7 @@
           "effect": [1.2, 1.2, 1.2, 1, 0.85, 0.65, 0, 1.92],
           "dpsAir": 116.136,
           "dpsVsLevel": [139.3632, 139.3632, 139.3632, 116.136, 98.7156, 75.4884, 0, 222.9811],
-          "flightTime": 1.5,
+          "flightTime": 3.5294,
           "roundLength": 1.56,
           "raw": {
             "Ceiling": "None",
@@ -70138,7 +70138,7 @@
             "Cooldown": 60,
             "Range": 300,
             "MinRange": 0,
-            "ProjectileSpeed": 200,
+            "ProjectileSpeed": 85,
             "SplashRadius": 14,
             "Spread": 3,
             "ImpactTier": "Ultimate",
@@ -70204,7 +70204,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 150,
+          "speed": 88,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -70224,7 +70224,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 165.9086,
           "dpsVsLevel": [461.4913, 461.4913, 384.5761, 326.8897, 249.9744, 153.8304, 0, 615.3217],
-          "flightTime": 1.88,
+          "flightTime": 3.2045,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -70288,7 +70288,7 @@
             "Cooldown": 10.5,
             "Range": 282,
             "MinRange": 0,
-            "ProjectileSpeed": 150,
+            "ProjectileSpeed": 88,
             "SplashRadius": 7,
             "Spread": 2.4,
             "ImpactTier": "Large",
@@ -70354,7 +70354,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 150,
+          "speed": 88,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -70374,7 +70374,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 165.9086,
           "dpsVsLevel": [461.4913, 461.4913, 384.5761, 326.8897, 249.9744, 153.8304, 0, 615.3217],
-          "flightTime": 1.88,
+          "flightTime": 3.2045,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -70438,7 +70438,7 @@
             "Cooldown": 10.5,
             "Range": 282,
             "MinRange": 0,
-            "ProjectileSpeed": 150,
+            "ProjectileSpeed": 88,
             "SplashRadius": 7,
             "Spread": 2.4,
             "ImpactTier": "Large",
@@ -70504,7 +70504,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 105,
           "pen": 5,
           "form": "HeShell",
           "topAttack": false,
@@ -70524,7 +70524,7 @@
           "effect": [1.08, 1.224, 1.368, 1.44, 1.2, 1.02, 0, 0.798],
           "dpsAir": 122.588,
           "dpsVsLevel": [306.8917, 347.8106, 388.7296, 409.189, 340.9908, 289.8422, 0, 226.7589],
-          "flightTime": 0.8455,
+          "flightTime": 0.8857,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -70587,7 +70587,7 @@
             "Cooldown": 3,
             "Range": 93,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 105,
             "SplashRadius": 0,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -70654,7 +70654,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 105,
           "pen": 5,
           "form": "HeShell",
           "topAttack": false,
@@ -70674,7 +70674,7 @@
           "effect": [1.08, 1.224, 1.368, 1.44, 1.2, 1.02, 0, 0.798],
           "dpsAir": 122.588,
           "dpsVsLevel": [306.8917, 347.8106, 388.7296, 409.189, 340.9908, 289.8422, 0, 226.7589],
-          "flightTime": 0.8455,
+          "flightTime": 0.8857,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -70737,7 +70737,7 @@
             "Cooldown": 3,
             "Range": 93,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 105,
             "SplashRadius": 0,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -72100,7 +72100,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 80,
+          "speed": 145,
           "pen": 3,
           "form": "Sam",
           "topAttack": false,
@@ -72120,7 +72120,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 140.7709,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 190.0407, 0],
-          "flightTime": 0.75,
+          "flightTime": 0.4138,
           "roundLength": 4.44,
           "raw": {
             "Ceiling": "None",
@@ -72184,7 +72184,7 @@
             "Cooldown": 3.9,
             "Range": 60,
             "MinRange": 0,
-            "ProjectileSpeed": 80,
+            "ProjectileSpeed": 145,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -72566,7 +72566,7 @@
           "projectile": "Bomb",
           "clip": 0,
           "clipReload": 0,
-          "speed": 100,
+          "speed": 60,
           "pen": 4,
           "form": "Bomb",
           "topAttack": true,
@@ -72586,7 +72586,7 @@
           "effect": [1.15, 1.15, 1.15, 1.1, 0.95, 0.75, 0, 1.84],
           "dpsAir": 282.7178,
           "dpsVsLevel": [325.1255, 325.1255, 325.1255, 310.9896, 268.5819, 212.0384, 0, 520.2008],
-          "flightTime": 0.45,
+          "flightTime": 0.75,
           "roundLength": 1.04,
           "raw": {
             "Ceiling": "None",
@@ -72650,7 +72650,7 @@
             "Cooldown": 33.34,
             "Range": 45,
             "MinRange": 0,
-            "ProjectileSpeed": 100,
+            "ProjectileSpeed": 60,
             "SplashRadius": 10,
             "Spread": 3,
             "ImpactTier": "Huge",
@@ -72716,7 +72716,7 @@
           "projectile": "Bomb",
           "clip": 0,
           "clipReload": 0,
-          "speed": 100,
+          "speed": 60,
           "pen": 4,
           "form": "Bomb",
           "topAttack": true,
@@ -72736,7 +72736,7 @@
           "effect": [1.15, 1.15, 1.15, 1.1, 0.95, 0.75, 0, 1.84],
           "dpsAir": 282.7178,
           "dpsVsLevel": [325.1255, 325.1255, 325.1255, 310.9896, 268.5819, 212.0384, 0, 520.2008],
-          "flightTime": 0.45,
+          "flightTime": 0.75,
           "roundLength": 1.04,
           "raw": {
             "Ceiling": "None",
@@ -72800,7 +72800,7 @@
             "Cooldown": 33.34,
             "Range": 45,
             "MinRange": 0,
-            "ProjectileSpeed": 100,
+            "ProjectileSpeed": 60,
             "SplashRadius": 10,
             "Spread": 3,
             "ImpactTier": "Huge",
@@ -77252,7 +77252,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 88,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -77272,7 +77272,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 86.3309,
           "dpsVsLevel": [115.0964, 115.0964, 95.9137, 81.5266, 62.3439, 38.3655, 0, 153.4619],
-          "flightTime": 0.8636,
+          "flightTime": 1.0795,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -77336,7 +77336,7 @@
             "Cooldown": 13.5,
             "Range": 95,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 88,
             "SplashRadius": 7,
             "Spread": 2.4,
             "ImpactTier": "Large",
@@ -77402,7 +77402,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 88,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -77422,7 +77422,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 86.3309,
           "dpsVsLevel": [115.0964, 115.0964, 95.9137, 81.5266, 62.3439, 38.3655, 0, 153.4619],
-          "flightTime": 0.8636,
+          "flightTime": 1.0795,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -77486,7 +77486,7 @@
             "Cooldown": 13.5,
             "Range": 95,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 88,
             "SplashRadius": 7,
             "Spread": 2.4,
             "ImpactTier": "Large",
@@ -77850,7 +77850,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 90,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -77870,7 +77870,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 152,
           "dpsVsLevel": [202.6464, 202.6464, 168.872, 143.5412, 109.7668, 67.5488, 0, 270.1952],
-          "flightTime": 0.7273,
+          "flightTime": 0.8889,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -77933,7 +77933,7 @@
             "Cooldown": 4.5,
             "Range": 80,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 90,
             "SplashRadius": 6,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -77999,7 +77999,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 110,
+          "speed": 90,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -78019,7 +78019,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 152,
           "dpsVsLevel": [202.6464, 202.6464, 168.872, 143.5412, 109.7668, 67.5488, 0, 270.1952],
-          "flightTime": 0.7273,
+          "flightTime": 0.8889,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -78082,7 +78082,7 @@
             "Cooldown": 4.5,
             "Range": 80,
             "MinRange": 0,
-            "ProjectileSpeed": 110,
+            "ProjectileSpeed": 90,
             "SplashRadius": 6,
             "Spread": 2.2,
             "ImpactTier": "Large",
@@ -79197,7 +79197,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 200,
+          "speed": 120,
           "pen": 2,
           "form": "Sam",
           "topAttack": false,
@@ -79217,7 +79217,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 38.1851,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 51.5499, 0],
-          "flightTime": 0.22,
+          "flightTime": 0.3667,
           "roundLength": 1.216,
           "raw": {
             "Ceiling": "None",
@@ -79281,7 +79281,7 @@
             "Cooldown": 4.452,
             "Range": 44,
             "MinRange": 0,
-            "ProjectileSpeed": 200,
+            "ProjectileSpeed": 120,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -79835,7 +79835,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 105,
           "pen": 2,
           "form": "Sam",
           "topAttack": false,
@@ -79855,7 +79855,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 38.1851,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 51.5499, 0],
-          "flightTime": 0.3111,
+          "flightTime": 0.5333,
           "roundLength": 1.216,
           "raw": {
             "Ceiling": "None",
@@ -79919,7 +79919,7 @@
             "Cooldown": 4.452,
             "Range": 56,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 105,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -82878,7 +82878,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 180,
+          "speed": 125,
           "pen": 2,
           "form": "Sam",
           "topAttack": false,
@@ -82898,7 +82898,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 16.0976,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 21.7317, 0],
-          "flightTime": 0.3333,
+          "flightTime": 0.48,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -82962,7 +82962,7 @@
             "Cooldown": 3.5,
             "Range": 60,
             "MinRange": 0,
-            "ProjectileSpeed": 180,
+            "ProjectileSpeed": 125,
             "SplashRadius": 2.5,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -83194,7 +83194,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 150,
+          "speed": 70,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -83214,7 +83214,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 72.3731,
           "dpsVsLevel": [86.8477, 86.8477, 72.3731, 61.5171, 47.0425, 28.9492, 0, 115.797],
-          "flightTime": 0.9,
+          "flightTime": 1.9286,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -83262,7 +83262,7 @@
             "Family": "howitzer",
             "Size": 155,
             "RealName": "M284 155 mm (coastal battery)",
-            "WeaponFamily": "m284_155_mm",
+            "WeaponFamily": "m284_155_mm_coastal",
             "Penetration": 3,
             "TopAttack": false,
             "Laid": false,
@@ -83279,7 +83279,7 @@
             "Cooldown": 12.579,
             "Range": 135,
             "MinRange": 0,
-            "ProjectileSpeed": 150,
+            "ProjectileSpeed": 70,
             "SplashRadius": 7,
             "Spread": 0.9,
             "ImpactTier": "Huge",
@@ -83321,7 +83321,7 @@
               "use": "xe có giáp (chỉ bản tinh nhuệ và nhánh hạng 7)",
               "elite": true,
               "switch": 12.579,
-              "speed": 150
+              "speed": 75
             }],
           "splashEdge": 0,
           "edgeShare": 0.4,
@@ -92400,7 +92400,7 @@
           "projectile": "Shell",
           "clip": 0,
           "clipReload": 0,
-          "speed": 150,
+          "speed": 70,
           "pen": 3,
           "form": "HeShell",
           "topAttack": false,
@@ -92420,7 +92420,7 @@
           "effect": [1.2, 1.2, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 115.273,
           "dpsVsLevel": [138.3277, 138.3277, 115.273, 97.9821, 74.9275, 46.1092, 0, 184.4369],
-          "flightTime": 0.48,
+          "flightTime": 1.0286,
           "roundLength": 0.8,
           "raw": {
             "Ceiling": "None",
@@ -92468,7 +92468,7 @@
             "Family": "howitzer",
             "Size": 155,
             "RealName": "M284 155 mm (twin, long-range coastal)",
-            "WeaponFamily": "m284_155_mm",
+            "WeaponFamily": "m284_155_mm_coastal",
             "Penetration": 3,
             "TopAttack": false,
             "Laid": false,
@@ -92485,7 +92485,7 @@
             "Cooldown": 7.929,
             "Range": 72,
             "MinRange": 0,
-            "ProjectileSpeed": 150,
+            "ProjectileSpeed": 70,
             "SplashRadius": 7,
             "Spread": 0.9,
             "ImpactTier": "Huge",
@@ -92527,7 +92527,7 @@
               "use": "xe có giáp (chỉ bản tinh nhuệ và nhánh hạng 7)",
               "elite": true,
               "switch": 7.929,
-              "speed": 150
+              "speed": 75
             }],
           "splashEdge": 0,
           "edgeShare": 0.4,
@@ -93514,7 +93514,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 200,
+          "speed": 120,
           "pen": 2,
           "form": "Sam",
           "topAttack": false,
@@ -93534,7 +93534,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 38.1851,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 51.5499, 0],
-          "flightTime": 0.22,
+          "flightTime": 0.3667,
           "roundLength": 1.216,
           "raw": {
             "Ceiling": "None",
@@ -93598,7 +93598,7 @@
             "Cooldown": 4.452,
             "Range": 44,
             "MinRange": 0,
-            "ProjectileSpeed": 200,
+            "ProjectileSpeed": 120,
             "SplashRadius": 2,
             "Spread": 0,
             "ImpactTier": "Medium",
@@ -95991,7 +95991,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 300,
+          "speed": 165,
           "pen": 3,
           "form": "Sam",
           "topAttack": true,
@@ -96011,7 +96011,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 212.5,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 286.875, 0],
-          "flightTime": 0.3,
+          "flightTime": 0.5455,
           "roundLength": 4.24,
           "raw": {
             "Ceiling": "High",
@@ -96076,7 +96076,7 @@
             "Cooldown": 2.75,
             "Range": 90,
             "MinRange": 20,
-            "ProjectileSpeed": 300,
+            "ProjectileSpeed": 165,
             "SplashRadius": 2.5,
             "Spread": 0,
             "ImpactTier": "Large",
@@ -96305,7 +96305,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 300,
+          "speed": 165,
           "pen": 3,
           "form": "Sam",
           "topAttack": true,
@@ -96325,7 +96325,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 174.359,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 235.3846, 0],
-          "flightTime": 0.3333,
+          "flightTime": 0.6061,
           "roundLength": 4.24,
           "raw": {
             "Ceiling": "High",
@@ -96390,7 +96390,7 @@
             "Cooldown": 3.45,
             "Range": 100,
             "MinRange": 20,
-            "ProjectileSpeed": 300,
+            "ProjectileSpeed": 165,
             "SplashRadius": 2.5,
             "Spread": 0,
             "ImpactTier": "Large",
@@ -96622,7 +96622,7 @@
           "projectile": "Missile",
           "clip": 0,
           "clipReload": 0,
-          "speed": 300,
+          "speed": 165,
           "pen": 3,
           "form": "Sam",
           "topAttack": true,
@@ -96642,7 +96642,7 @@
           "effect": [0, 0, 0, 0, 0, 0, 1.35, 0],
           "dpsAir": 107.4627,
           "dpsVsLevel": [0, 0, 0, 0, 0, 0, 145.0746, 0],
-          "flightTime": 0.24,
+          "flightTime": 0.4364,
           "roundLength": 4.24,
           "raw": {
             "Ceiling": "High",
@@ -96706,7 +96706,7 @@
             "Cooldown": 6.25,
             "Range": 72,
             "MinRange": 20,
-            "ProjectileSpeed": 300,
+            "ProjectileSpeed": 165,
             "SplashRadius": 2.5,
             "Spread": 0,
             "ImpactTier": "Large",
@@ -97730,7 +97730,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 130,
+          "speed": 80,
           "pen": 2,
           "form": "RocketSmall",
           "topAttack": true,
@@ -97750,7 +97750,7 @@
           "effect": [1, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 97.2973,
           "dpsVsLevel": [97.2973, 97.2973, 82.7027, 29.0919, 17.9027, 6.7135, 0, 132.3243],
-          "flightTime": 0.4231,
+          "flightTime": 0.6875,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -97815,7 +97815,7 @@
             "Cooldown": 1.57,
             "Range": 55,
             "MinRange": 8,
-            "ProjectileSpeed": 130,
+            "ProjectileSpeed": 80,
             "SplashRadius": 4.5,
             "Spread": 4,
             "ImpactTier": "Medium",
@@ -98049,7 +98049,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 130,
+          "speed": 80,
           "pen": 2,
           "form": "Cluster",
           "topAttack": true,
@@ -98069,7 +98069,7 @@
           "effect": [1, 1, 0.85, 0.65, 0.4, 0.15, 0, 1.36],
           "dpsAir": 87.2449,
           "dpsVsLevel": [87.2449, 87.2449, 74.1582, 26.0862, 16.0531, 6.0199, 0, 118.6531],
-          "flightTime": 0.4231,
+          "flightTime": 0.6875,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -98134,7 +98134,7 @@
             "Cooldown": 1.42,
             "Range": 55,
             "MinRange": 8,
-            "ProjectileSpeed": 130,
+            "ProjectileSpeed": 80,
             "SplashRadius": 4,
             "Spread": 4,
             "ImpactTier": "Medium",
@@ -98372,7 +98372,7 @@
           "projectile": "Rocket",
           "clip": 0,
           "clipReload": 0,
-          "speed": 140,
+          "speed": 85,
           "pen": 3,
           "form": "RocketBig",
           "topAttack": true,
@@ -98392,7 +98392,7 @@
           "effect": [1, 1, 1, 0.85, 0.65, 0.4, 0, 1.6],
           "dpsAir": 40,
           "dpsVsLevel": [40, 40, 40, 34, 26, 16, 0, 96],
-          "flightTime": 0.6429,
+          "flightTime": 1.0588,
           "roundLength": 0,
           "raw": {
             "Ceiling": "None",
@@ -98457,7 +98457,7 @@
             "Cooldown": 7.5,
             "Range": 90,
             "MinRange": 20,
-            "ProjectileSpeed": 140,
+            "ProjectileSpeed": 85,
             "SplashRadius": 4.5,
             "Spread": 0.8,
             "ImpactTier": "Large",
@@ -101062,9 +101062,9 @@
         "name": "Cò nhạy",
         "slot": "Loader",
         "implicit": "FireRate",
-        "implicitName": "+12% tốc độ bắn",
-        "top": [0, 0, 0.08, 0.1, 0.12],
-        "lines": ["+0% tốc độ bắn", "+0% tốc độ bắn", "+8% tốc độ bắn", "+10% tốc độ bắn", "+12% tốc độ bắn"],
+        "implicitName": "+7,5% tốc độ bắn",
+        "top": [0, 0, 0.06, 0.0725, 0.075],
+        "lines": ["+0% tốc độ bắn", "+0% tốc độ bắn", "+6% tốc độ bắn", "+7,3% tốc độ bắn", "+7,5% tốc độ bắn"],
         "penaltyLine": "+12% độ tản mát",
         "tradeOff": true,
         "penalty": "Spread",
@@ -101146,7 +101146,7 @@
         "name": "Tấm giáp nguyên khối",
         "slot": "Armor",
         "implicit": "Count",
-        "implicitName": "Chỉ số chính: máu, lớn hơn 80% so với các bộ giáp khác; không có dòng phụ",
+        "implicitName": "Chỉ số chính: máu, lớn hơn 71% so với các bộ giáp khác; không có dòng phụ",
         "top": [0, 0, 0, 0, 0],
         "lines": [],
         "penaltyLine": "-6% tốc độ",
@@ -101254,9 +101254,9 @@
         "name": "Động cơ độ quá mức",
         "slot": "Engine",
         "implicit": "Speed",
-        "implicitName": "+12% tốc độ",
-        "top": [0, 0, 0.08, 0.1, 0.12],
-        "lines": ["+0% tốc độ", "+0% tốc độ", "+8% tốc độ", "+10% tốc độ", "+12% tốc độ"],
+        "implicitName": "+8% tốc độ",
+        "top": [0, 0, 0.055, 0.0675, 0.08],
+        "lines": ["+0% tốc độ", "+0% tốc độ", "+5,5% tốc độ", "+6,8% tốc độ", "+8% tốc độ"],
         "penaltyLine": "-5% máu",
         "tradeOff": true,
         "penalty": "Health",
@@ -111629,7 +111629,7 @@
       }, {
         "key": "ai.squadLayer.maxSquad",
         "unit": "count",
-        "value": "6"
+        "value": "9"
       }, {
         "key": "ai.squadLayer.gatherRadius",
         "unit": "m",
@@ -112799,6 +112799,162 @@
         "unit": "s",
         "value": "1"
       }, {
+        "key": "bosses.bossBrain.brainTicks",
+        "unit": "ticks",
+        "value": "2"
+      }, {
+        "key": "bosses.bossBrain.lookAheadSeconds",
+        "unit": "s",
+        "value": "6"
+      }, {
+        "key": "bosses.bossBrain.lookAheadMinLengths",
+        "unit": "x",
+        "value": "1.5"
+      }, {
+        "key": "bosses.bossBrain.lookAheadMaxLengths",
+        "unit": "x",
+        "value": "4"
+      }, {
+        "key": "bosses.bossBrain.planningFactor",
+        "unit": "x",
+        "value": "1.1"
+      }, {
+        "key": "bosses.bossBrain.headingDeadbandDeg",
+        "unit": "deg",
+        "value": "5"
+      }, {
+        "key": "bosses.bossBrain.broadsideEnterDeg",
+        "unit": "deg",
+        "value": "8"
+      }, {
+        "key": "bosses.bossBrain.broadsideLeaveDeg",
+        "unit": "deg",
+        "value": "15"
+      }, {
+        "key": "bosses.bossBrain.broadsideSmoothing",
+        "unit": "share",
+        "value": "0.15"
+      }, {
+        "key": "bosses.bossBrain.broadsideMaxDeg",
+        "unit": "deg",
+        "value": "80"
+      }, {
+        "key": "bosses.bossBrain.broadsideStepDeg",
+        "unit": "deg",
+        "value": "20"
+      }, {
+        "key": "bosses.bossBrain.broadsideTurnCost",
+        "unit": "share",
+        "value": "0.08"
+      }, {
+        "key": "bosses.bossBrain.broadsideRoutePenalty",
+        "unit": "share",
+        "value": "0.25"
+      }, {
+        "key": "bosses.bossBrain.activeDpsTarget",
+        "unit": "share",
+        "value": "0.65"
+      }, {
+        "key": "bosses.bossBrain.holdBonus",
+        "unit": "share",
+        "value": "0.05"
+      }, {
+        "key": "bosses.bossBrain.cruiseThrottleMin",
+        "unit": "share",
+        "value": "0.6"
+      }, {
+        "key": "bosses.bossBrain.turnaboutThrottle",
+        "unit": "share",
+        "value": "0.25"
+      }, {
+        "key": "bosses.bossBrain.cpaHorizonMin",
+        "unit": "s",
+        "value": "6"
+      }, {
+        "key": "bosses.bossBrain.cpaHorizonMax",
+        "unit": "s",
+        "value": "10"
+      }, {
+        "key": "bosses.bossBrain.cpaLateralClear",
+        "unit": "m",
+        "value": "2.5"
+      }, {
+        "key": "bosses.bossBrain.shipSeparationExtra",
+        "unit": "m",
+        "value": "4"
+      }, {
+        "key": "bosses.bossBrain.bossSeparationExtra",
+        "unit": "m",
+        "value": "10"
+      }, {
+        "key": "bosses.bossBrain.cpaMaxTurnDeg",
+        "unit": "deg",
+        "value": "25"
+      }, {
+        "key": "bosses.bossBrain.cpaMinThrottle",
+        "unit": "share",
+        "value": "0.35"
+      }, {
+        "key": "bosses.bossBrain.corridorMargin",
+        "unit": "m",
+        "value": "2.5"
+      }, {
+        "key": "bosses.bossBrain.corridorClearMin",
+        "unit": "m",
+        "value": "25"
+      }, {
+        "key": "bosses.bossBrain.corridorClearMax",
+        "unit": "m",
+        "value": "35"
+      }, {
+        "key": "bosses.bossBrain.corridorTicks",
+        "unit": "ticks",
+        "value": "5"
+      }, {
+        "key": "bosses.bossBrain.escortInnerGap",
+        "unit": "m",
+        "value": "4"
+      }, {
+        "key": "bosses.bossBrain.escortScreenMin",
+        "unit": "m",
+        "value": "10"
+      }, {
+        "key": "bosses.bossBrain.escortScreenMax",
+        "unit": "m",
+        "value": "18"
+      }, {
+        "key": "bosses.bossBrain.escortSupportMin",
+        "unit": "m",
+        "value": "18"
+      }, {
+        "key": "bosses.bossBrain.escortSupportMax",
+        "unit": "m",
+        "value": "30"
+      }, {
+        "key": "bosses.bossBrain.cadenceGap",
+        "unit": "s",
+        "value": "0.35"
+      }, {
+        "key": "bosses.bossBrain.cadenceHeavyCooldown",
+        "unit": "s",
+        "value": "1"
+      }, {
+        "key": "bosses.bossBrain.chaseLeash",
+        "unit": "m",
+        "value": "30"
+      }, {
+        "key": "bosses.bossBrain.groundReverseCooldown",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "bosses.bossBrain.phaseMoveSeconds",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "bosses.bossBrain.alignFlipSeconds",
+        "unit": "s",
+        "value": "3"
+      }, {
         "key": "bases.balloon.radiusM",
         "unit": "m",
         "value": "40"
@@ -112922,6 +113078,1766 @@
         "key": "bases.sightJammer.closeM",
         "unit": "m",
         "value": "15"
+      }, {
+        "key": "ai.topology.rebuildSeconds",
+        "unit": "s",
+        "value": "5"
+      }, {
+        "key": "ai.topology.chokeWidth",
+        "unit": "m",
+        "value": "8"
+      }, {
+        "key": "ai.topology.nearestRings",
+        "unit": "count",
+        "value": "8"
+      }, {
+        "key": "ai.feasibility.travelDetour",
+        "unit": "x",
+        "value": "1.25"
+      }, {
+        "key": "ai.feasibility.laneSamples",
+        "unit": "count",
+        "value": "9"
+      }, {
+        "key": "ai.procurement.blendWeight",
+        "unit": "points",
+        "value": "3"
+      }, {
+        "key": "ai.procurement.weights",
+        "unit": "x",
+        "value": "0.2199999988079071;0.18000000715255737;0.15000000596046448;0.11999999731779099;0.10000000149011612;0.079999998211860657;0.059999998658895493;0.05000000074505806;0.039999999105930328"
+      }, {
+        "key": "ai.procurement.intelEma",
+        "unit": "share",
+        "value": "0.2"
+      }, {
+        "key": "ai.procurement.mismatchConfirmSeconds",
+        "unit": "s",
+        "value": "4"
+      }, {
+        "key": "ai.procurement.mismatchShare",
+        "unit": "share",
+        "value": "0.2"
+      }, {
+        "key": "ai.procurement.mismatchConfidence",
+        "unit": "share",
+        "value": "0.5"
+      }, {
+        "key": "ai.procurement.confidenceCp",
+        "unit": "CP",
+        "value": "24"
+      }, {
+        "key": "ai.procurement.minPlanCards",
+        "unit": "count",
+        "value": "3"
+      }, {
+        "key": "ai.procurement.maxPlanCards",
+        "unit": "count",
+        "value": "5"
+      }, {
+        "key": "ai.procurement.planExpireSeconds",
+        "unit": "s",
+        "value": "30"
+      }, {
+        "key": "ai.procurement.reserveHorizonSeconds",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.procurement.reserveMaxSeconds",
+        "unit": "s",
+        "value": "12"
+      }, {
+        "key": "ai.procurement.feedbackCombatSeconds",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.procurement.feedbackUtilization",
+        "unit": "share",
+        "value": "0.15"
+      }, {
+        "key": "ai.procurement.feedbackMinModifier",
+        "unit": "x",
+        "value": "0.55"
+      }, {
+        "key": "ai.procurement.feedbackPoints",
+        "unit": "points",
+        "value": "4"
+      }, {
+        "key": "ai.procurement.timingRefSeconds",
+        "unit": "s",
+        "value": "90"
+      }, {
+        "key": "ai.procurement.lateGameSeconds",
+        "unit": "s",
+        "value": "480"
+      }, {
+        "key": "ai.procurement.longTravelSeconds",
+        "unit": "s",
+        "value": "45"
+      }, {
+        "key": "ai.procurement.longTravelMax",
+        "unit": "share",
+        "value": "0.15"
+      }, {
+        "key": "ai.procurement.congestionMax",
+        "unit": "share",
+        "value": "0.2"
+      }, {
+        "key": "ai.procurement.redundancyPerCopy",
+        "unit": "share",
+        "value": "0.04"
+      }, {
+        "key": "ai.procurement.saturation",
+        "unit": "x",
+        "value": "1.3"
+      }, {
+        "key": "ai.procurement.capabilitySeconds",
+        "unit": "s",
+        "value": "30"
+      }, {
+        "key": "ai.procurement.floors",
+        "unit": "share",
+        "value": "0.05000000074505806;0.079999998211860657;0.10000000149011612"
+      }, {
+        "key": "ai.targeting.targetStickSeconds",
+        "unit": "s",
+        "value": "1.5"
+      }, {
+        "key": "ai.targeting.targetStickBonus",
+        "unit": "share",
+        "value": "0.15"
+      }, {
+        "key": "ai.targeting.overkillShare",
+        "unit": "x",
+        "value": "1.15"
+      }, {
+        "key": "ai.targeting.overkillFloor",
+        "unit": "x",
+        "value": "0.001"
+      }, {
+        "key": "ai.targeting.overkillDangerWorth",
+        "unit": "CP",
+        "value": "20"
+      }, {
+        "key": "ai.targeting.aimTimeConstant",
+        "unit": "s",
+        "value": "4"
+      }, {
+        "key": "ai.targeting.maxAimSeconds",
+        "unit": "s",
+        "value": "10"
+      }, {
+        "key": "ai.targeting.threatToSelfWeight",
+        "unit": "share",
+        "value": "0.2"
+      }, {
+        "key": "ai.targeting.threatToObjectiveWeight",
+        "unit": "share",
+        "value": "0.22"
+      }, {
+        "key": "ai.targeting.breachStructureBonus",
+        "unit": "x",
+        "value": "25"
+      }, {
+        "key": "ai.targeting.breacherDistraction",
+        "unit": "x",
+        "value": "0.5"
+      }, {
+        "key": "ai.targeting.siegeTowerBonus",
+        "unit": "x",
+        "value": "2"
+      }, {
+        "key": "ai.targeting.siegeEngagedTowerBonus",
+        "unit": "x",
+        "value": "1.5"
+      }, {
+        "key": "ai.targeting.siegeStructureBonus",
+        "unit": "x",
+        "value": "1.3"
+      }, {
+        "key": "ai.targeting.siegeLightPenalty",
+        "unit": "x",
+        "value": "0.2"
+      }, {
+        "key": "ai.targeting.breachCorridorWidth",
+        "unit": "m",
+        "value": "12"
+      }, {
+        "key": "ai.targeting.defendBreachReach",
+        "unit": "m",
+        "value": "30"
+      }, {
+        "key": "ai.combatWatchdog.evaluateEveryTicks",
+        "unit": "count",
+        "value": "5"
+      }, {
+        "key": "ai.combatWatchdog.anomalyGraceSeconds",
+        "unit": "s",
+        "value": "2"
+      }, {
+        "key": "ai.combatWatchdog.idleReasonSeconds",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.combatWatchdog.firedRecentlySeconds",
+        "unit": "s",
+        "value": "2.5"
+      }, {
+        "key": "ai.combatWatchdog.suppressSeconds",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.combatWatchdog.sidestepMetres",
+        "unit": "m",
+        "value": "6"
+      }, {
+        "key": "ai.combatWatchdog.explainSeconds",
+        "unit": "s",
+        "value": "2"
+      }, {
+        "key": "ai.roleDoctrine.rankTop",
+        "unit": "x",
+        "value": "1.6"
+      }, {
+        "key": "ai.roleDoctrine.rankStep",
+        "unit": "x",
+        "value": "0.85"
+      }, {
+        "key": "ai.roleDoctrine.lastResort",
+        "unit": "x",
+        "value": "0.35"
+      }, {
+        "key": "ai.roleDoctrine.heavySalvoMinWorth",
+        "unit": "CP",
+        "value": "4"
+      }, {
+        "key": "ai.roleDoctrine.clusterRadius",
+        "unit": "m",
+        "value": "8"
+      }, {
+        "key": "ai.modeDoctrine.mortarBand",
+        "unit": "share",
+        "value": "0.550000011920929;0.75"
+      }, {
+        "key": "ai.modeDoctrine.artilleryBand",
+        "unit": "share",
+        "value": "0.64999997615814209;0.85000002384185791"
+      }, {
+        "key": "ai.modeDoctrine.mlrsBand",
+        "unit": "share",
+        "value": "0.75;0.89999997615814209"
+      }, {
+        "key": "ai.modeDoctrine.longBand",
+        "unit": "share",
+        "value": "0.85000002384185791;0.949999988079071"
+      }, {
+        "key": "ai.modeDoctrine.mortarMaxRange",
+        "unit": "m",
+        "value": "60"
+      }, {
+        "key": "ai.modeDoctrine.longRangeMin",
+        "unit": "m",
+        "value": "140"
+      }, {
+        "key": "ai.modeDoctrine.reserveShare",
+        "unit": "share",
+        "value": "0.15000000596046448;0.25"
+      }, {
+        "key": "ai.modeDoctrine.finalReserveShare",
+        "unit": "share",
+        "value": "0.05"
+      }, {
+        "key": "ai.modeDoctrine.reserveCommitSeconds",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.modeDoctrine.defendLeash",
+        "unit": "m",
+        "value": "35"
+      }, {
+        "key": "ai.modeDoctrine.rotateSeconds",
+        "unit": "s",
+        "value": "60"
+      }, {
+        "key": "ai.modeDoctrine.pockets",
+        "unit": "count",
+        "value": "3"
+      }, {
+        "key": "ai.modeDoctrine.urgencyFloor",
+        "unit": "x",
+        "value": "0.75"
+      }, {
+        "key": "ai.modeDoctrine.urgencyEndSeconds",
+        "unit": "s",
+        "value": "120"
+      }, {
+        "key": "ai.modeDoctrine.missionTargetWeight",
+        "unit": "x",
+        "value": "2.5"
+      }, {
+        "key": "ai.modeDoctrine.offMissionGround",
+        "unit": "x",
+        "value": "0.5"
+      }, {
+        "key": "ai.modeDoctrine.quietStrikeWorth",
+        "unit": "CP",
+        "value": "12"
+      }, {
+        "key": "ai.fireSupport.weights",
+        "unit": "x",
+        "value": "1;0.800000011920929;0.800000011920929;0.40000000596046448;0.5;0.800000011920929;1;0.40000000596046448;2;1"
+      }, {
+        "key": "ai.fireSupport.minHoldSeconds",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.fireSupport.utilizationSeconds",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.fireSupport.bandSlack",
+        "unit": "share",
+        "value": "0.08"
+      }, {
+        "key": "ai.fireSupport.slotSpacing",
+        "unit": "m",
+        "value": "10"
+      }, {
+        "key": "ai.fireSupport.lateralStep",
+        "unit": "m",
+        "value": "12"
+      }, {
+        "key": "ai.fireSupport.lateralSamples",
+        "unit": "count",
+        "value": "2"
+      }, {
+        "key": "ai.fireSupport.hqSeparation",
+        "unit": "m",
+        "value": "15"
+      }, {
+        "key": "ai.fireSupport.predictSeconds",
+        "unit": "s",
+        "value": "6"
+      }, {
+        "key": "ai.fireSupport.interceptConfidence",
+        "unit": "share",
+        "value": "0.5"
+      }, {
+        "key": "ai.position.weights",
+        "unit": "x",
+        "value": "1;0.60000002384185791;1.2000000476837158;0.40000000596046448;0.30000001192092896;0.30000001192092896;0.800000011920929;0.60000002384185791;0.40000000596046448;0.800000011920929;0.60000002384185791"
+      }, {
+        "key": "ai.position.searchRadius",
+        "unit": "m",
+        "value": "8"
+      }, {
+        "key": "ai.position.hullDownMin",
+        "unit": "m",
+        "value": "1.5"
+      }, {
+        "key": "ai.position.hullDownMax",
+        "unit": "m",
+        "value": "7"
+      }, {
+        "key": "ai.position.hullDownConeDeg",
+        "unit": "deg",
+        "value": "35"
+      }, {
+        "key": "ai.position.reserveSeconds",
+        "unit": "s",
+        "value": "10"
+      }, {
+        "key": "ai.position.reserveRadius",
+        "unit": "m",
+        "value": "4"
+      }, {
+        "key": "ai.firingLane.waitSeconds",
+        "unit": "s",
+        "value": "1"
+      }, {
+        "key": "ai.firingLane.sidestepMetres",
+        "unit": "m",
+        "value": "4"
+      }, {
+        "key": "ai.firingLane.slotShiftMetres",
+        "unit": "m",
+        "value": "9"
+      }, {
+        "key": "ai.firingLane.cooldownSeconds",
+        "unit": "s",
+        "value": "4"
+      }, {
+        "key": "ai.firingLane.blockerNudgeMetres",
+        "unit": "m",
+        "value": "3"
+      }, {
+        "key": "ai.componentState.engineCrippledShare",
+        "unit": "share",
+        "value": "0.6"
+      }, {
+        "key": "ai.componentState.flankPenalty",
+        "unit": "points",
+        "value": "15"
+      }, {
+        "key": "ai.componentState.holdBonus",
+        "unit": "points",
+        "value": "8"
+      }, {
+        "key": "ai.formation.commitSeconds",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.formation.chokeLookahead",
+        "unit": "m",
+        "value": "40"
+      }, {
+        "key": "ai.formation.chokeShare",
+        "unit": "share",
+        "value": "0.75"
+      }, {
+        "key": "ai.formation.packetDelay",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.formation.splashPacket",
+        "unit": "count",
+        "value": "3"
+      }, {
+        "key": "ai.formation.morphSeconds",
+        "unit": "s",
+        "value": "1.5"
+      }, {
+        "key": "ai.formation.directAtMaxSpread",
+        "unit": "m",
+        "value": "8"
+      }, {
+        "key": "ai.formation.rearRow",
+        "unit": "m",
+        "value": "10"
+      }, {
+        "key": "ai.squads.desiredMin",
+        "unit": "count",
+        "value": "5"
+      }, {
+        "key": "ai.squads.desiredMax",
+        "unit": "count",
+        "value": "7"
+      }, {
+        "key": "ai.squads.mergeShare",
+        "unit": "share",
+        "value": "0.45"
+      }, {
+        "key": "ai.squads.mergeDistance",
+        "unit": "m",
+        "value": "35"
+      }, {
+        "key": "ai.squads.receiveRadius",
+        "unit": "m",
+        "value": "16"
+      }, {
+        "key": "ai.squads.rendezvousBack",
+        "unit": "m",
+        "value": "15"
+      }, {
+        "key": "ai.squads.reinforceReach",
+        "unit": "m",
+        "value": "150"
+      }, {
+        "key": "ai.squads.pendingTimeout",
+        "unit": "s",
+        "value": "45"
+      }, {
+        "key": "ai.squads.cohesionWeights",
+        "unit": "share",
+        "value": "0.44999998807907104;0.30000001192092896;0.25"
+      }, {
+        "key": "ai.squads.cohesionRegroup",
+        "unit": "share",
+        "value": "0.55"
+      }, {
+        "key": "ai.squads.cohesionSeconds",
+        "unit": "s",
+        "value": "2"
+      }, {
+        "key": "ai.squads.cohesionRecover",
+        "unit": "share",
+        "value": "0.7"
+      }, {
+        "key": "ai.squads.supportReach",
+        "unit": "m",
+        "value": "25"
+      }, {
+        "key": "ai.squads.joinPredictSeconds",
+        "unit": "s",
+        "value": "6"
+      }, {
+        "key": "ai.squads.reassignmentCost",
+        "unit": "points",
+        "value": "10"
+      }, {
+        "key": "ai.navigation.jamStages",
+        "unit": "flag",
+        "value": "true"
+      }, {
+        "key": "ai.navigation.jamSoftS",
+        "unit": "s",
+        "value": "1.5"
+      }, {
+        "key": "ai.navigation.jamReplanS",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.navigation.jamYieldS",
+        "unit": "s",
+        "value": "5"
+      }, {
+        "key": "ai.navigation.jamCorridorS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.navigation.jamEmergencyS",
+        "unit": "s",
+        "value": "12"
+      }, {
+        "key": "ai.navigation.jamLowSpeedShare",
+        "unit": "share",
+        "value": "0.25"
+      }, {
+        "key": "ai.navigation.jamProgressPerSecond",
+        "unit": "m/s",
+        "value": "0.25"
+      }, {
+        "key": "ai.navigation.jamDecay",
+        "unit": "x",
+        "value": "2"
+      }, {
+        "key": "ai.navigation.jamEvalTicks",
+        "unit": "steps",
+        "value": "5"
+      }, {
+        "key": "ai.navigation.localReplanMin",
+        "unit": "m",
+        "value": "3"
+      }, {
+        "key": "ai.navigation.localReplanMax",
+        "unit": "m",
+        "value": "6"
+      }, {
+        "key": "ai.navigation.corridorAltMax",
+        "unit": "x",
+        "value": "1.5"
+      }, {
+        "key": "ai.navigation.congestionCost",
+        "unit": "cost",
+        "value": "60"
+      }, {
+        "key": "ai.navigation.congestionRadius",
+        "unit": "m",
+        "value": "6"
+      }, {
+        "key": "ai.navigation.congestionSeconds",
+        "unit": "s",
+        "value": "12"
+      }, {
+        "key": "ai.navigation.emergencyReverseM",
+        "unit": "m",
+        "value": "3"
+      }, {
+        "key": "ai.navigation.giveUpAfterEmergencyS",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.navigation.failSafeS",
+        "unit": "s",
+        "value": "14"
+      }, {
+        "key": "ai.navigation.anomalyAccelS",
+        "unit": "s",
+        "value": "0.5"
+      }, {
+        "key": "ai.navigation.orcaLite",
+        "unit": "flag",
+        "value": "true"
+      }, {
+        "key": "ai.navigation.avoidanceHorizonGroundS",
+        "unit": "s",
+        "value": "1.5"
+      }, {
+        "key": "ai.navigation.avoidanceHorizonNavalS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.navigation.orcaNeighbours",
+        "unit": "count",
+        "value": "10"
+      }, {
+        "key": "ai.navigation.orcaHighShare",
+        "unit": "share",
+        "value": "0.15"
+      }, {
+        "key": "ai.navigation.orcaLowShare",
+        "unit": "share",
+        "value": "0.85"
+      }, {
+        "key": "ai.navigation.passingRelease",
+        "unit": "x",
+        "value": "2"
+      }, {
+        "key": "ai.navigation.separationPad",
+        "unit": "m",
+        "value": "0.5"
+      }, {
+        "key": "ai.navigation.separationSplash",
+        "unit": "x",
+        "value": "1.5"
+      }, {
+        "key": "ai.navigation.separationColumn",
+        "unit": "x",
+        "value": "0.85"
+      }, {
+        "key": "ai.navigation.splashThreat",
+        "unit": "m",
+        "value": "3"
+      }, {
+        "key": "ai.navigation.wreckSettleS",
+        "unit": "s",
+        "value": "1.5"
+      }, {
+        "key": "ai.navigation.wreckLookAhead",
+        "unit": "m",
+        "value": "40"
+      }, {
+        "key": "ai.traffic.enabled",
+        "unit": "flag",
+        "value": "true"
+      }, {
+        "key": "ai.traffic.priorityHoldS",
+        "unit": "s",
+        "value": "2"
+      }, {
+        "key": "ai.traffic.reservationSeconds",
+        "unit": "s",
+        "value": "6"
+      }, {
+        "key": "ai.traffic.alternateSeconds",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.traffic.preemptMargin",
+        "unit": "points",
+        "value": "20"
+      }, {
+        "key": "ai.traffic.chokeBatchGapS",
+        "unit": "s",
+        "value": "2.5"
+      }, {
+        "key": "ai.traffic.queueSpacing",
+        "unit": "m",
+        "value": "8"
+      }, {
+        "key": "ai.traffic.queueStart",
+        "unit": "m",
+        "value": "8"
+      }, {
+        "key": "ai.traffic.approachM",
+        "unit": "m",
+        "value": "60"
+      }, {
+        "key": "ai.traffic.predictWindowS",
+        "unit": "s",
+        "value": "5"
+      }, {
+        "key": "ai.traffic.overload",
+        "unit": "x",
+        "value": "1"
+      }, {
+        "key": "ai.traffic.corridorMinMembers",
+        "unit": "count",
+        "value": "3"
+      }, {
+        "key": "ai.traffic.corridorMinDistance",
+        "unit": "m",
+        "value": "30"
+      }, {
+        "key": "ai.traffic.corridorRefreshS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.traffic.corridorNodes",
+        "unit": "cells",
+        "value": "6000"
+      }, {
+        "key": "ai.traffic.spawnExitRadius",
+        "unit": "m",
+        "value": "10"
+      }, {
+        "key": "ai.traffic.spawnClearRadius",
+        "unit": "m",
+        "value": "16"
+      }, {
+        "key": "ai.traffic.spawnRallyRadius",
+        "unit": "m",
+        "value": "24"
+      }, {
+        "key": "ai.traffic.spawnBlockedS",
+        "unit": "s",
+        "value": "2"
+      }, {
+        "key": "ai.traffic.spawnPriorityS",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.traffic.bossCorridorCost",
+        "unit": "cost",
+        "value": "200"
+      }, {
+        "key": "ai.traffic.reservedSpotCost",
+        "unit": "cost",
+        "value": "120"
+      }, {
+        "key": "ai.traffic.parkingLeaveM",
+        "unit": "m",
+        "value": "5"
+      }, {
+        "key": "ai.traffic.parkingSplashSpacing",
+        "unit": "x",
+        "value": "1.5"
+      }, {
+        "key": "ai.traffic.deadlockTicks",
+        "unit": "steps",
+        "value": "20"
+      }, {
+        "key": "ai.coordination.enabled",
+        "unit": "flag",
+        "value": "true"
+      }, {
+        "key": "ai.coordination.frontlineUpdateS",
+        "unit": "s",
+        "value": "1"
+      }, {
+        "key": "ai.coordination.localRadius",
+        "unit": "m",
+        "value": "50"
+      }, {
+        "key": "ai.memory.mobileHalfLifeS",
+        "unit": "s",
+        "value": "10"
+      }, {
+        "key": "ai.memory.artilleryHalfLifeS",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.memory.staticHalfLifeS",
+        "unit": "s",
+        "value": "45"
+      }, {
+        "key": "ai.memory.absentDecay",
+        "unit": "x",
+        "value": "0.25"
+      }, {
+        "key": "ai.memory.deathHalfLifeS",
+        "unit": "s",
+        "value": "18"
+      }, {
+        "key": "ai.memory.deathRadius",
+        "unit": "m",
+        "value": "20"
+      }, {
+        "key": "ai.memory.unknownSeconds",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.memory.unknownRisk",
+        "unit": "x",
+        "value": "0.30000001192092896;0.60000002384185791;1;1"
+      }, {
+        "key": "ai.memory.repeatPlanPenalty",
+        "unit": "x",
+        "value": "0.35"
+      }, {
+        "key": "ai.memory.repeatPlanHalfLifeS",
+        "unit": "s",
+        "value": "45"
+      }, {
+        "key": "ai.memory.routeFailShare",
+        "unit": "share",
+        "value": "0.4"
+      }, {
+        "key": "ai.confidence.weights",
+        "unit": "share",
+        "value": "0.34999999403953552;0.20000000298023224;0.15000000596046448;0.10000000149011612;0.10000000149011612;0.10000000149011612"
+      }, {
+        "key": "ai.confidence.aggressive",
+        "unit": "share",
+        "value": "0.7"
+      }, {
+        "key": "ai.confidence.cautious",
+        "unit": "share",
+        "value": "0.45"
+      }, {
+        "key": "ai.confidence.noCommit",
+        "unit": "share",
+        "value": "0.3"
+      }, {
+        "key": "ai.confidence.points",
+        "unit": "points",
+        "value": "12"
+      }, {
+        "key": "ai.routes.distanceScale",
+        "unit": "m",
+        "value": "100"
+      }, {
+        "key": "ai.routes.congestionWeight",
+        "unit": "x",
+        "value": "0.8"
+      }, {
+        "key": "ai.routes.occupancyWeight",
+        "unit": "x",
+        "value": "0.5"
+      }, {
+        "key": "ai.routes.lossWeight",
+        "unit": "x",
+        "value": "0.7"
+      }, {
+        "key": "ai.routes.points",
+        "unit": "points",
+        "value": "10"
+      }, {
+        "key": "ai.routes.occupancyRadius",
+        "unit": "m",
+        "value": "25"
+      }, {
+        "key": "ai.routes.bookSeconds",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.attackSync.groundToleranceS",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.attackSync.airToleranceS",
+        "unit": "s",
+        "value": "4"
+      }, {
+        "key": "ai.attackSync.artilleryPrepLeadS",
+        "unit": "s",
+        "value": "2"
+      }, {
+        "key": "ai.attackSync.detour",
+        "unit": "x",
+        "value": "1.25"
+      }, {
+        "key": "ai.attackSync.packageSeconds",
+        "unit": "s",
+        "value": "25"
+      }, {
+        "key": "ai.attackSync.stagingBand",
+        "unit": "m",
+        "value": "12"
+      }, {
+        "key": "ai.attackSync.subZoneSpacing",
+        "unit": "m",
+        "value": "14"
+      }, {
+        "key": "ai.attackSync.maxStageS",
+        "unit": "s",
+        "value": "15"
+      }, {
+        "key": "ai.attackSync.scoutMaxWaitS",
+        "unit": "s",
+        "value": "5"
+      }, {
+        "key": "ai.attackSync.scoutUnknownShare",
+        "unit": "share",
+        "value": "0.5"
+      }, {
+        "key": "ai.attackSync.scoutDeathDanger",
+        "unit": "x",
+        "value": "1"
+      }, {
+        "key": "ai.attackSync.fixEnvelope",
+        "unit": "share",
+        "value": "0.85"
+      }, {
+        "key": "ai.attackSync.frontageSeparation",
+        "unit": "m",
+        "value": "6"
+      }, {
+        "key": "ai.attackSync.waveGapS",
+        "unit": "s",
+        "value": "6"
+      }, {
+        "key": "ai.attackSync.defaultFrontage",
+        "unit": "m",
+        "value": "60"
+      }, {
+        "key": "ai.board.plannedOverkillShare",
+        "unit": "x",
+        "value": "1.15"
+      }, {
+        "key": "ai.board.damageLeadS",
+        "unit": "s",
+        "value": "1.5"
+      }, {
+        "key": "ai.board.repairWindowS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.board.smokeSpacing",
+        "unit": "m",
+        "value": "10"
+      }, {
+        "key": "ai.board.smokeSeconds",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.board.handoffRatio",
+        "unit": "x",
+        "value": "1.6"
+      }, {
+        "key": "ai.board.handoffLockS",
+        "unit": "s",
+        "value": "2.5"
+      }, {
+        "key": "ai.board.preferWorth",
+        "unit": "x",
+        "value": "1.5"
+      }, {
+        "key": "ai.board.avoidWorth",
+        "unit": "x",
+        "value": "0.4"
+      }, {
+        "key": "ai.board.spreadFocusShare",
+        "unit": "x",
+        "value": "0.3"
+      }, {
+        "key": "ai.board.nearKillShare",
+        "unit": "share",
+        "value": "0.3"
+      }, {
+        "key": "ai.board.secondaryHeavy",
+        "unit": "x",
+        "value": "0.4"
+      }, {
+        "key": "ai.board.secondaryFit",
+        "unit": "x",
+        "value": "1.3"
+      }, {
+        "key": "ai.fireMissions.minError",
+        "unit": "m",
+        "value": "8"
+      }, {
+        "key": "ai.fireMissions.errorShare",
+        "unit": "share",
+        "value": "0.2"
+      }, {
+        "key": "ai.fireMissions.mergeRadius",
+        "unit": "m",
+        "value": "30"
+      }, {
+        "key": "ai.fireMissions.halfLifeS",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.fireMissions.missionConfidence",
+        "unit": "share",
+        "value": "0.6"
+      }, {
+        "key": "ai.fireMissions.strikeConfidence",
+        "unit": "share",
+        "value": "0.7"
+      }, {
+        "key": "ai.fireMissions.strikeMaxError",
+        "unit": "m",
+        "value": "25"
+      }, {
+        "key": "ai.fireMissions.staleSeconds",
+        "unit": "s",
+        "value": "4"
+      }, {
+        "key": "ai.fireMissions.maxGunsPerTarget",
+        "unit": "count",
+        "value": "2"
+      }, {
+        "key": "ai.fireMissions.scootSalvos",
+        "unit": "count",
+        "value": "2;4"
+      }, {
+        "key": "ai.fireMissions.scootDistance",
+        "unit": "m",
+        "value": "12;30"
+      }, {
+        "key": "ai.fireMissions.threatRadius",
+        "unit": "m",
+        "value": "25"
+      }, {
+        "key": "ai.fireMissions.impactMemoryS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.fireMissions.frontMargin",
+        "unit": "m",
+        "value": "15"
+      }, {
+        "key": "ai.fireMissions.chokeMargin",
+        "unit": "m",
+        "value": "4"
+      }, {
+        "key": "ai.pursuit.maxSeconds",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.pursuit.maxDistance",
+        "unit": "m",
+        "value": "60"
+      }, {
+        "key": "ai.pursuit.aaMaxSeconds",
+        "unit": "s",
+        "value": "10"
+      }, {
+        "key": "ai.pursuit.aaMaxDistance",
+        "unit": "m",
+        "value": "40"
+      }, {
+        "key": "ai.pursuit.urgencyDrop",
+        "unit": "share",
+        "value": "0.75"
+      }, {
+        "key": "ai.pursuit.horizonS",
+        "unit": "s",
+        "value": "6"
+      }, {
+        "key": "ai.pursuit.ageFadeS",
+        "unit": "s",
+        "value": "4"
+      }, {
+        "key": "ai.pursuit.cutoffConfidence",
+        "unit": "share",
+        "value": "0.6"
+      }, {
+        "key": "ai.pursuit.cutoffLookS",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.pursuit.retrySeconds",
+        "unit": "s",
+        "value": "10"
+      }, {
+        "key": "ai.pursuit.baitLeashMin",
+        "unit": "x",
+        "value": "0.4"
+      }, {
+        "key": "ai.pursuit.baitDangerScale",
+        "unit": "x",
+        "value": "0.5"
+      }, {
+        "key": "ai.rangeMargin.direct",
+        "unit": "share",
+        "value": "0.045"
+      }, {
+        "key": "ai.rangeMargin.artillery",
+        "unit": "share",
+        "value": "0.075"
+      }, {
+        "key": "ai.rangeMargin.atgm",
+        "unit": "share",
+        "value": "0.05"
+      }, {
+        "key": "ai.rangeMargin.aaMissile",
+        "unit": "share",
+        "value": "0.065"
+      }, {
+        "key": "ai.reserveRelease.wonRatio",
+        "unit": "x",
+        "value": "2"
+      }, {
+        "key": "ai.reserveRelease.collapseRatio",
+        "unit": "x",
+        "value": "0.6"
+      }, {
+        "key": "ai.reserveRelease.breakthroughRatio",
+        "unit": "x",
+        "value": "1.5"
+      }, {
+        "key": "ai.reserveRelease.exploitConfidence",
+        "unit": "share",
+        "value": "0.5"
+      }, {
+        "key": "ai.objectives.deadlineSlack",
+        "unit": "x",
+        "value": "1.1"
+      }, {
+        "key": "ai.objectives.sunkHalfLifeS",
+        "unit": "s",
+        "value": "90"
+      }, {
+        "key": "ai.objectives.sunkValue",
+        "unit": "CP",
+        "value": "60"
+      }, {
+        "key": "ai.objectives.sunkResetS",
+        "unit": "s",
+        "value": "30"
+      }, {
+        "key": "ai.objectives.depthLines",
+        "unit": "count",
+        "value": "3"
+      }, {
+        "key": "ai.objectives.depthStep",
+        "unit": "share",
+        "value": "0.3"
+      }, {
+        "key": "ai.objectives.depthLostS",
+        "unit": "s",
+        "value": "5"
+      }, {
+        "key": "ai.objectives.counterLossShare",
+        "unit": "share",
+        "value": "0.35"
+      }, {
+        "key": "ai.objectives.counterWindowS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.objectives.counterLookS",
+        "unit": "s",
+        "value": "6"
+      }, {
+        "key": "ai.objectives.counterRadius",
+        "unit": "m",
+        "value": "40"
+      }, {
+        "key": "ai.objectives.economyDelayShare",
+        "unit": "x",
+        "value": "0.8"
+      }, {
+        "key": "ai.objectives.economyMaxShare",
+        "unit": "share",
+        "value": "0.3"
+      }, {
+        "key": "ai.objectives.splitMinMembers",
+        "unit": "count",
+        "value": "6"
+      }, {
+        "key": "ai.coverage.updateS",
+        "unit": "s",
+        "value": "2"
+      }, {
+        "key": "ai.coverage.reachShare",
+        "unit": "share",
+        "value": "0.4"
+      }, {
+        "key": "ai.coverage.exposureWeight",
+        "unit": "x",
+        "value": "1"
+      }, {
+        "key": "ai.coverage.congestionWeight",
+        "unit": "x",
+        "value": "0.5"
+      }, {
+        "key": "ai.coverage.redundantWeight",
+        "unit": "x",
+        "value": "0.5"
+      }, {
+        "key": "ai.coverage.assetWorth",
+        "unit": "x",
+        "value": "4;2;3;1.5"
+      }, {
+        "key": "ai.coverage.coverWorth",
+        "unit": "x",
+        "value": "1.4"
+      }, {
+        "key": "ai.coverage.offWorth",
+        "unit": "x",
+        "value": "0.8"
+      }, {
+        "key": "ai.stance.returnFireSeconds",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.stance.ambushRange",
+        "unit": "share",
+        "value": "0.550000011920929;0.699999988079071"
+      }, {
+        "key": "ai.stance.ambushSyncRadius",
+        "unit": "m",
+        "value": "60"
+      }, {
+        "key": "ai.stance.highValueReach",
+        "unit": "share",
+        "value": "0.85"
+      }, {
+        "key": "ai.stance.dispersalHoldS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.planning.enabled",
+        "unit": "flag",
+        "value": "true"
+      }, {
+        "key": "ai.planning.plansByLevel",
+        "unit": "count",
+        "value": "1;2;3;4"
+      }, {
+        "key": "ai.planning.depthByLevel",
+        "unit": "count",
+        "value": "1;1;2;2"
+      }, {
+        "key": "ai.planning.objectiveGain",
+        "unit": "points",
+        "value": "30"
+      }, {
+        "key": "ai.planning.enemyLossWeight",
+        "unit": "x",
+        "value": "1"
+      }, {
+        "key": "ai.planning.friendlyLossWeight",
+        "unit": "x",
+        "value": "1.2"
+      }, {
+        "key": "ai.planning.delayCostPerS",
+        "unit": "points",
+        "value": "0.6"
+      }, {
+        "key": "ai.planning.congestionWeight",
+        "unit": "points",
+        "value": "4"
+      }, {
+        "key": "ai.planning.uncertaintyWeight",
+        "unit": "points",
+        "value": "10"
+      }, {
+        "key": "ai.planning.waitArtilleryS",
+        "unit": "s",
+        "value": "4"
+      }, {
+        "key": "ai.planning.flankDpsBonus",
+        "unit": "x",
+        "value": "1.25"
+      }, {
+        "key": "ai.planning.flankEnemyUptime",
+        "unit": "share",
+        "value": "0.6"
+      }, {
+        "key": "ai.planning.holdPowerFloor",
+        "unit": "share",
+        "value": "0.35"
+      }, {
+        "key": "ai.planning.switchMargin",
+        "unit": "share",
+        "value": "0.1"
+      }, {
+        "key": "ai.planning.repeatPenalty",
+        "unit": "share",
+        "value": "0.25;0.5"
+      }, {
+        "key": "ai.planning.repeatHalfLifeS",
+        "unit": "s",
+        "value": "45"
+      }, {
+        "key": "ai.forecast.seconds",
+        "unit": "s",
+        "value": "6"
+      }, {
+        "key": "ai.forecast.cacheS",
+        "unit": "s",
+        "value": "0.75"
+      }, {
+        "key": "ai.forecast.aoeClusterBonus",
+        "unit": "x",
+        "value": "0.15"
+      }, {
+        "key": "ai.forecast.aoeMax",
+        "unit": "x",
+        "value": "1"
+      }, {
+        "key": "ai.forecast.uptimeFloor",
+        "unit": "share",
+        "value": "0.15"
+      }, {
+        "key": "ai.forecast.unknownMargin",
+        "unit": "x",
+        "value": "1.25"
+      }, {
+        "key": "ai.forecast.reinforceRadius",
+        "unit": "m",
+        "value": "80"
+      }, {
+        "key": "ai.forecast.depthTwoShare",
+        "unit": "share",
+        "value": "0.5"
+      }, {
+        "key": "ai.forecast.enoughRatio",
+        "unit": "x",
+        "value": "2"
+      }, {
+        "key": "ai.forecast.enoughEnemyAfter",
+        "unit": "share",
+        "value": "0.3"
+      }, {
+        "key": "ai.forecast.enoughMaxHoldS",
+        "unit": "s",
+        "value": "30"
+      }, {
+        "key": "ai.forecast.enoughMinKnown",
+        "unit": "count",
+        "value": "3"
+      }, {
+        "key": "ai.packageAbort.enemyRise",
+        "unit": "x",
+        "value": "1.5"
+      }, {
+        "key": "ai.packageAbort.clusterShift",
+        "unit": "m",
+        "value": "25"
+      }, {
+        "key": "ai.packageAbort.lethalWarningPad",
+        "unit": "m",
+        "value": "8"
+      }, {
+        "key": "ai.commitment.routeS",
+        "unit": "s",
+        "value": "4;6"
+      }, {
+        "key": "ai.commitment.packageS",
+        "unit": "s",
+        "value": "6;12"
+      }, {
+        "key": "ai.opportunity.aaDownS",
+        "unit": "s",
+        "value": "15"
+      }, {
+        "key": "ai.opportunity.partDownS",
+        "unit": "s",
+        "value": "12"
+      }, {
+        "key": "ai.opportunity.artilleryExposedS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.opportunity.exposedRadius",
+        "unit": "m",
+        "value": "35"
+      }, {
+        "key": "ai.opportunity.redeployS",
+        "unit": "s",
+        "value": "10"
+      }, {
+        "key": "ai.opportunity.redeployDrop",
+        "unit": "share",
+        "value": "0.4"
+      }, {
+        "key": "ai.opportunity.mainFarS",
+        "unit": "s",
+        "value": "10"
+      }, {
+        "key": "ai.opportunity.mainFarDistance",
+        "unit": "m",
+        "value": "120"
+      }, {
+        "key": "ai.opportunity.gateS",
+        "unit": "s",
+        "value": "10"
+      }, {
+        "key": "ai.opportunity.attackPoints",
+        "unit": "points",
+        "value": "10"
+      }, {
+        "key": "ai.opportunity.planGain",
+        "unit": "points",
+        "value": "10"
+      }, {
+        "key": "ai.probe.powerShare",
+        "unit": "share",
+        "value": "0.079999998211860657;0.15000000596046448"
+      }, {
+        "key": "ai.probe.maxSeconds",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.probe.envelope",
+        "unit": "share",
+        "value": "0.9"
+      }, {
+        "key": "ai.probe.lowResistance",
+        "unit": "x",
+        "value": "0.6"
+      }, {
+        "key": "ai.probe.atThreat",
+        "unit": "x",
+        "value": "1"
+      }, {
+        "key": "ai.probe.exploitS",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.probe.cooldownS",
+        "unit": "s",
+        "value": "45"
+      }, {
+        "key": "ai.probe.blockedS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.probe.laneMemoryS",
+        "unit": "s",
+        "value": "60"
+      }, {
+        "key": "ai.probe.minUnknown",
+        "unit": "share",
+        "value": "0.35"
+      }, {
+        "key": "ai.feint.minUtility",
+        "unit": "share",
+        "value": "0.5"
+      }, {
+        "key": "ai.feint.weights",
+        "unit": "share",
+        "value": "0.40000000596046448;0.30000001192092896;0.30000001192092896;0.20000000298023224"
+      }, {
+        "key": "ai.feint.maxSeconds",
+        "unit": "s",
+        "value": "25"
+      }, {
+        "key": "ai.feint.redeployShare",
+        "unit": "share",
+        "value": "0.25"
+      }, {
+        "key": "ai.feint.cooldownS",
+        "unit": "s",
+        "value": "60"
+      }, {
+        "key": "ai.feint.powerShareMax",
+        "unit": "share",
+        "value": "0.2"
+      }, {
+        "key": "ai.adaptation.emaAlpha",
+        "unit": "share",
+        "value": "0.2"
+      }, {
+        "key": "ai.adaptation.lowUtilization",
+        "unit": "share",
+        "value": "0.15"
+      }, {
+        "key": "ai.adaptation.lowUtilizationS",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.adaptation.purchaseFloor",
+        "unit": "x",
+        "value": "0.5"
+      }, {
+        "key": "ai.adaptation.baitRepeat",
+        "unit": "count",
+        "value": "2"
+      }, {
+        "key": "ai.adaptation.leashScale",
+        "unit": "x",
+        "value": "0.6"
+      }, {
+        "key": "ai.adaptation.reconBoost",
+        "unit": "share",
+        "value": "0.15"
+      }, {
+        "key": "ai.adaptation.airHeavyShare",
+        "unit": "share",
+        "value": "0.35"
+      }, {
+        "key": "ai.adaptation.campImpacts",
+        "unit": "count",
+        "value": "6"
+      }, {
+        "key": "ai.adaptation.towerCount",
+        "unit": "count",
+        "value": "3"
+      }, {
+        "key": "ai.airOps.seadHoldS",
+        "unit": "s",
+        "value": "12"
+      }, {
+        "key": "ai.airOps.seadStandoff",
+        "unit": "m",
+        "value": "50"
+      }, {
+        "key": "ai.airOps.seadThreat",
+        "unit": "x",
+        "value": "1"
+      }, {
+        "key": "ai.airOps.riskSamples",
+        "unit": "count",
+        "value": "6"
+      }, {
+        "key": "ai.airOps.riskPassLimit",
+        "unit": "count",
+        "value": "1"
+      }, {
+        "key": "ai.airOps.capRadius",
+        "unit": "m",
+        "value": "60"
+      }, {
+        "key": "ai.airOps.capLeash",
+        "unit": "x",
+        "value": "1.5"
+      }, {
+        "key": "ai.airOps.capPatrolS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.airOps.handoffMax",
+        "unit": "count",
+        "value": "2"
+      }, {
+        "key": "ai.airOps.handoffTtkS",
+        "unit": "s",
+        "value": "4"
+      }, {
+        "key": "ai.airOps.bomberMinValue",
+        "unit": "x",
+        "value": "8"
+      }, {
+        "key": "ai.airOps.bomberRiskMax",
+        "unit": "x",
+        "value": "1.5"
+      }, {
+        "key": "ai.airOps.bomberBlastGap",
+        "unit": "m",
+        "value": "8"
+      }, {
+        "key": "ai.airOps.bomberWaitMaxS",
+        "unit": "s",
+        "value": "30"
+      }, {
+        "key": "ai.airOps.interceptHorizonS",
+        "unit": "s",
+        "value": "6"
+      }, {
+        "key": "ai.bossTactics.weakpointWeights",
+        "unit": "points",
+        "value": "50;25;40;30"
+      }, {
+        "key": "ai.bossTactics.sectorsByLevel",
+        "unit": "count",
+        "value": "3;3;4;5"
+      }, {
+        "key": "ai.bossTactics.sectorMargin",
+        "unit": "m",
+        "value": "6"
+      }, {
+        "key": "ai.bossTactics.patternWindowS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.bossTactics.patternCost",
+        "unit": "m",
+        "value": "25"
+      }, {
+        "key": "ai.bossTactics.pressureBudget",
+        "unit": "count",
+        "value": "2"
+      }, {
+        "key": "ai.bossTactics.pressureDelayS",
+        "unit": "s",
+        "value": "1.5"
+      }, {
+        "key": "ai.bossTactics.pressureMaxDelayS",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.bossTactics.phaseMargin",
+        "unit": "share",
+        "value": "0.08"
+      }, {
+        "key": "ai.bossTactics.phaseReserveShare",
+        "unit": "share",
+        "value": "0.3"
+      }, {
+        "key": "ai.bossTactics.phaseReserveMaxS",
+        "unit": "s",
+        "value": "25"
+      }, {
+        "key": "ai.stagger.window",
+        "unit": "s",
+        "value": "0.15000000596046448;0.40000000596046448"
+      }, {
+        "key": "ai.gating.probeLevel",
+        "unit": "count",
+        "value": "2"
+      }, {
+        "key": "ai.gating.feintLevel",
+        "unit": "count",
+        "value": "2"
+      }, {
+        "key": "ai.gating.adaptationLevel",
+        "unit": "count",
+        "value": "2"
+      }, {
+        "key": "ai.gating.seadLevel",
+        "unit": "count",
+        "value": "2"
+      }, {
+        "key": "ai.gating.patternLevel",
+        "unit": "count",
+        "value": "2"
+      }, {
+        "key": "ai.gating.bomberLevel",
+        "unit": "count",
+        "value": "1"
+      }, {
+        "key": "ai.ownership.missionClaimS",
+        "unit": "s",
+        "value": "10"
+      }, {
+        "key": "ai.ownership.scootClaimS",
+        "unit": "s",
+        "value": "8"
+      }, {
+        "key": "ai.ownership.airClaimS",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.cues.enabled",
+        "unit": "flag",
+        "value": "true"
+      }, {
+        "key": "ai.cues.cooldownS",
+        "unit": "s",
+        "value": "10"
+      }, {
+        "key": "ai.cues.kept",
+        "unit": "count",
+        "value": "32"
+      }, {
+        "key": "ai.health.enabled",
+        "unit": "flag",
+        "value": "true"
+      }, {
+        "key": "ai.health.periodS",
+        "unit": "s",
+        "value": "1"
+      }, {
+        "key": "ai.health.squadNoDamageS",
+        "unit": "s",
+        "value": "15"
+      }, {
+        "key": "ai.health.contactMargin",
+        "unit": "m",
+        "value": "15"
+      }, {
+        "key": "ai.health.stallS",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.health.progressM",
+        "unit": "m",
+        "value": "5"
+      }, {
+        "key": "ai.health.arriveRadius",
+        "unit": "m",
+        "value": "15"
+      }, {
+        "key": "ai.health.recoveryCooldownS",
+        "unit": "s",
+        "value": "20"
+      }, {
+        "key": "ai.health.idleTripShare",
+        "unit": "share",
+        "value": "0.1"
+      }, {
+        "key": "ai.health.blockedTripShare",
+        "unit": "share",
+        "value": "0.25"
+      }, {
+        "key": "ai.health.blockedMinUnits",
+        "unit": "count",
+        "value": "4"
+      }, {
+        "key": "ai.health.churnCommitScale",
+        "unit": "x",
+        "value": "1.5"
+      }, {
+        "key": "ai.health.churnDampS",
+        "unit": "s",
+        "value": "30"
+      }, {
+        "key": "ai.health.strictAssertions",
+        "unit": "flag",
+        "value": "false"
+      }, {
+        "key": "ai.ammo.enabled",
+        "unit": "flag",
+        "value": "true"
+      }, {
+        "key": "ai.ammo.nearEmptyShare",
+        "unit": "share",
+        "value": "0.25"
+      }, {
+        "key": "ai.ammo.meaningfulReloadS",
+        "unit": "s",
+        "value": "2"
+      }, {
+        "key": "ai.ammo.emergencyUrgency",
+        "unit": "share",
+        "value": "0.75"
+      }, {
+        "key": "ai.ammo.repositionMinReloadS",
+        "unit": "s",
+        "value": "3"
+      }, {
+        "key": "ai.ammo.scootMinReloadS",
+        "unit": "s",
+        "value": "4"
+      }, {
+        "key": "ai.ammo.keepTargetWhileReloading",
+        "unit": "flag",
+        "value": "true"
+      }, {
+        "key": "ai.towers.enabled",
+        "unit": "flag",
+        "value": "true"
+      }, {
+        "key": "ai.towers.protectRadius",
+        "unit": "m",
+        "value": "45"
+      }, {
+        "key": "ai.towers.airThreatWorth",
+        "unit": "x",
+        "value": "1.6"
+      }, {
+        "key": "ai.towers.heavyWorth",
+        "unit": "x",
+        "value": "1.3"
+      }, {
+        "key": "ai.towers.artilleryWorth",
+        "unit": "x",
+        "value": "1.4"
+      }, {
+        "key": "ai.towers.criticalRadius",
+        "unit": "m",
+        "value": "20"
+      }, {
+        "key": "ai.towers.criticalWorth",
+        "unit": "x",
+        "value": "4"
+      }, {
+        "key": "ai.towers.overkillShare",
+        "unit": "x",
+        "value": "1.15"
+      }, {
+        "key": "ai.towers.overkillFloor",
+        "unit": "x",
+        "value": "0.35"
+      }, {
+        "key": "ai.budget.squadBuckets",
+        "unit": "count",
+        "value": "2"
+      }, {
+        "key": "ai.budget.spatialCell",
+        "unit": "m",
+        "value": "10"
+      }, {
+        "key": "ai.budget.perfCounters",
+        "unit": "flag",
+        "value": "false"
       }],
     "interception": {
       "kinds": ["directMissile", "heavyMissile", "drone", "directRocket", "artilleryRocket", "mortarShell", "artilleryShell", "tankShell", "bomb"],
@@ -114014,7 +115930,7 @@
           "ciwsEligible": 1,
           "interceptable": 1,
           "warns": 0,
-          "maxFlightSeconds": 0.6923,
+          "maxFlightSeconds": 0.6111,
           "splashing": 1,
           "jamTakes": 0
         }, {
@@ -114026,7 +115942,7 @@
           "ciwsEligible": 1,
           "interceptable": 1,
           "warns": 0,
-          "maxFlightSeconds": 1.1667,
+          "maxFlightSeconds": 1.75,
           "splashing": 1,
           "jamTakes": 0
         }, {
@@ -114038,7 +115954,7 @@
           "ciwsEligible": 1,
           "interceptable": 1,
           "warns": 0,
-          "maxFlightSeconds": 1.4167,
+          "maxFlightSeconds": 2.125,
           "splashing": 1,
           "jamTakes": 0
         }, {
@@ -114050,7 +115966,7 @@
           "ciwsEligible": 1,
           "interceptable": 1,
           "warns": 0,
-          "maxFlightSeconds": 2,
+          "maxFlightSeconds": 1.8667,
           "splashing": 1,
           "jamTakes": 0
         }, {
@@ -114062,7 +115978,7 @@
           "ciwsEligible": 1,
           "interceptable": 1,
           "warns": 0,
-          "maxFlightSeconds": 1.1429,
+          "maxFlightSeconds": 1.9286,
           "splashing": 0.7778,
           "jamTakes": 0
         }, {
@@ -114099,7 +116015,7 @@
           "ciwsEligible": 1,
           "interceptable": 1,
           "warns": 0,
-          "maxFlightSeconds": 2,
+          "maxFlightSeconds": 2.125,
           "splashing": 0.8088,
           "jamTakes": 0
         }, {
@@ -114135,7 +116051,7 @@
           "ciwsEligible": 1,
           "interceptable": 1,
           "warns": 0,
-          "maxFlightSeconds": 1.1667,
+          "maxFlightSeconds": 1.75,
           "splashing": 1,
           "jamTakes": 0
         }, {
@@ -114740,10 +116656,10 @@
       }, {
         "id": "air_to_air",
         "range": 60,
-        "speed": 300,
+        "speed": 140,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.2
+        "flightAtRangeSeconds": 0.4286
       }, {
         "id": "airship_drones",
         "range": 70,
@@ -114761,24 +116677,24 @@
       }, {
         "id": "amos_120",
         "range": 60,
-        "speed": 60,
+        "speed": 45,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 1
+        "flightAtRangeSeconds": 1.3333
       }, {
         "id": "anti_ship_missile",
         "range": 140,
-        "speed": 225,
+        "speed": 95,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.6222
+        "flightAtRangeSeconds": 1.4737
       }, {
         "id": "apkws_rocket",
         "range": 40,
-        "speed": 180,
+        "speed": 85,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.2222
+        "flightAtRangeSeconds": 0.4706
       }, {
         "id": "atgm",
         "range": 40,
@@ -114866,10 +116782,10 @@
       }, {
         "id": "boat_rockets",
         "range": 55,
-        "speed": 180,
+        "speed": 90,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.3056
+        "flightAtRangeSeconds": 0.6111
       }, {
         "id": "bofors_l70",
         "range": 48,
@@ -114971,17 +116887,17 @@
       }, {
         "id": "boss_howitzer",
         "range": 60,
-        "speed": 100,
+        "speed": 60,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.6
+        "flightAtRangeSeconds": 1
       }, {
         "id": "boss_howitzer_guided",
         "range": 60,
-        "speed": 100,
+        "speed": 60,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.6
+        "flightAtRangeSeconds": 1
       }, {
         "id": "boss_minigun",
         "range": 24,
@@ -114999,10 +116915,10 @@
       }, {
         "id": "boss_mortar",
         "range": 80,
-        "speed": 60,
+        "speed": 40,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 1.3333
+        "flightAtRangeSeconds": 2
       }, {
         "id": "boss_railgun",
         "range": 80,
@@ -115013,10 +116929,10 @@
       }, {
         "id": "boss_rockets",
         "range": 45,
-        "speed": 65,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.6923
+        "flightAtRangeSeconds": 0.5625
       }, {
         "id": "boss_thermo",
         "range": 46,
@@ -115027,10 +116943,10 @@
       }, {
         "id": "buk_launcher",
         "range": 55,
-        "speed": 250,
+        "speed": 145,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.22
+        "flightAtRangeSeconds": 0.3793
       }, {
         "id": "bunker_flame",
         "range": 16,
@@ -115083,17 +116999,17 @@
       }, {
         "id": "casemate_155",
         "range": 75,
-        "speed": 100,
+        "speed": 60,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.75
+        "flightAtRangeSeconds": 1.25
       }, {
         "id": "casemate_155_guided",
         "range": 75,
-        "speed": 45,
+        "speed": 65,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 1.6667
+        "flightAtRangeSeconds": 1.1538
       }, {
         "id": "ciws_aa",
         "range": 34,
@@ -115125,17 +117041,17 @@
       }, {
         "id": "cruiser_203",
         "range": 105,
-        "speed": 110,
+        "speed": 85,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.9545
+        "flightAtRangeSeconds": 1.2353
       }, {
         "id": "cruiser_203_guided",
         "range": 105,
-        "speed": 110,
+        "speed": 85,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.9545
+        "flightAtRangeSeconds": 1.2353
       }, {
         "id": "detonator",
         "range": 3,
@@ -115160,10 +117076,10 @@
       }, {
         "id": "drone_missile",
         "range": 48,
-        "speed": 110,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.4364
+        "flightAtRangeSeconds": 0.6
       }, {
         "id": "fighter_cannon",
         "range": 30,
@@ -115251,17 +117167,17 @@
       }, {
         "id": "grad_cluster",
         "range": 78,
-        "speed": 130,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.6
+        "flightAtRangeSeconds": 0.975
       }, {
         "id": "grad_rockets",
         "range": 55,
-        "speed": 130,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.4231
+        "flightAtRangeSeconds": 0.6875
       }, {
         "id": "gsh_23v",
         "range": 26,
@@ -115279,10 +117195,10 @@
       }, {
         "id": "gun_100_river",
         "range": 70,
-        "speed": 170,
+        "speed": 100,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.4118
+        "flightAtRangeSeconds": 0.7
       }, {
         "id": "gun_105_apfsds",
         "range": 46,
@@ -115440,24 +117356,24 @@
       }, {
         "id": "gun_155_coastal",
         "range": 135,
-        "speed": 150,
+        "speed": 70,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.9
+        "flightAtRangeSeconds": 1.9286
       }, {
         "id": "gun_155_coastal_guided",
         "range": 135,
-        "speed": 150,
+        "speed": 75,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.9
+        "flightAtRangeSeconds": 1.8
       }, {
         "id": "gun_155_sph",
         "range": 100,
-        "speed": 100,
+        "speed": 55,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 1
+        "flightAtRangeSeconds": 1.8182
       }, {
         "id": "gun_155_twin",
         "range": 50,
@@ -115475,17 +117391,17 @@
       }, {
         "id": "gun_155_twin_coastlr",
         "range": 72,
-        "speed": 150,
+        "speed": 70,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.48
+        "flightAtRangeSeconds": 1.0286
       }, {
         "id": "gun_155_twin_coastlr_guided",
         "range": 72,
-        "speed": 150,
+        "speed": 75,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.48
+        "flightAtRangeSeconds": 0.96
       }, {
         "id": "gun_155_twin_fort",
         "range": 50,
@@ -115510,10 +117426,10 @@
       }, {
         "id": "gun_203_siege",
         "range": 62,
-        "speed": 110,
+        "speed": 65,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.5636
+        "flightAtRangeSeconds": 0.9538
       }, {
         "id": "gun_57_air",
         "range": 40,
@@ -115559,10 +117475,10 @@
       }, {
         "id": "gun_launched_atgm",
         "range": 34,
-        "speed": 90,
+        "speed": 75,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.3778
+        "flightAtRangeSeconds": 0.4533
       }, {
         "id": "gun_pit_105",
         "range": 36,
@@ -115622,10 +117538,10 @@
       }, {
         "id": "gunship_rockets",
         "range": 34,
-        "speed": 180,
+        "speed": 95,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.1889
+        "flightAtRangeSeconds": 0.3579
       }, {
         "id": "hel_beam",
         "range": 45,
@@ -115650,31 +117566,31 @@
       }, {
         "id": "heli_rockets",
         "range": 30,
-        "speed": 180,
+        "speed": 95,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.1667
+        "flightAtRangeSeconds": 0.3158
       }, {
         "id": "hellfire_standoff",
         "range": 55,
-        "speed": 110,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.5
+        "flightAtRangeSeconds": 0.6875
       }, {
         "id": "hellfire_volley",
         "range": 45,
-        "speed": 110,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.4091
+        "flightAtRangeSeconds": 0.5625
       }, {
         "id": "hind_rockets",
         "range": 36,
-        "speed": 180,
+        "speed": 95,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.2
+        "flightAtRangeSeconds": 0.3789
       }, {
         "id": "hmg_roof",
         "range": 30,
@@ -115755,38 +117671,38 @@
       }, {
         "id": "howitzer",
         "range": 90,
-        "speed": 100,
+        "speed": 55,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.9
+        "flightAtRangeSeconds": 1.6364
       }, {
         "id": "howitzer_ext",
         "range": 112,
-        "speed": 100,
+        "speed": 60,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 1.12
+        "flightAtRangeSeconds": 1.8667
       }, {
         "id": "howitzer_fixed",
         "range": 90,
-        "speed": 100,
+        "speed": 65,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.9
+        "flightAtRangeSeconds": 1.3846
       }, {
         "id": "howitzer_fixed_guided",
         "range": 90,
-        "speed": 45,
+        "speed": 70,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 2
+        "flightAtRangeSeconds": 1.2857
       }, {
         "id": "howitzer_guided",
         "range": 90,
-        "speed": 45,
+        "speed": 60,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 2
+        "flightAtRangeSeconds": 1.5
       }, {
         "id": "hq_flak",
         "range": 42,
@@ -115825,10 +117741,10 @@
       }, {
         "id": "igla_v",
         "range": 32,
-        "speed": 170,
+        "speed": 105,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.1882
+        "flightAtRangeSeconds": 0.3048
       }, {
         "id": "illum_flare",
         "range": 40,
@@ -115867,17 +117783,17 @@
       }, {
         "id": "jet_rockets",
         "range": 36,
-        "speed": 180,
+        "speed": 100,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.2
+        "flightAtRangeSeconds": 0.36
       }, {
         "id": "kh29",
         "range": 40,
-        "speed": 120,
+        "speed": 80,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.3333
+        "flightAtRangeSeconds": 0.5
       }, {
         "id": "kornet_multi",
         "range": 50,
@@ -115923,17 +117839,17 @@
       }, {
         "id": "leviathan_460",
         "range": 160,
-        "speed": 200,
+        "speed": 85,
         "warnSeconds": 3.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.8
+        "flightAtRangeSeconds": 1.8824
       }, {
         "id": "leviathan_460_guided",
         "range": 160,
-        "speed": 200,
+        "speed": 85,
         "warnSeconds": 3.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.8
+        "flightAtRangeSeconds": 1.8824
       }, {
         "id": "leviathan_cruise",
         "range": 400,
@@ -115951,10 +117867,10 @@
       }, {
         "id": "maverick",
         "range": 40,
-        "speed": 90,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.4444
+        "flightAtRangeSeconds": 0.5
       }, {
         "id": "mg_coax",
         "range": 20,
@@ -116007,38 +117923,38 @@
       }, {
         "id": "missile_57e6",
         "range": 55,
-        "speed": 300,
+        "speed": 130,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.1833
+        "flightAtRangeSeconds": 0.4231
       }, {
         "id": "mlrs_elite",
         "range": 75,
-        "speed": 140,
+        "speed": 85,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.5357
+        "flightAtRangeSeconds": 0.8824
       }, {
         "id": "mlrs_rockets",
         "range": 110,
-        "speed": 140,
+        "speed": 85,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.7857
+        "flightAtRangeSeconds": 1.2941
       }, {
         "id": "mortar_120",
         "range": 55,
-        "speed": 60,
+        "speed": 45,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.9167
+        "flightAtRangeSeconds": 1.2222
       }, {
         "id": "mortar_240",
         "range": 85,
-        "speed": 60,
+        "speed": 40,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 1.4167
+        "flightAtRangeSeconds": 2.125
       }, {
         "id": "mothership_cannon",
         "range": 45,
@@ -116056,59 +117972,59 @@
       }, {
         "id": "naval_100",
         "range": 90,
-        "speed": 110,
+        "speed": 100,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.8182
+        "flightAtRangeSeconds": 0.9
       }, {
         "id": "naval_100_guided",
         "range": 90,
-        "speed": 110,
+        "speed": 100,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.8182
+        "flightAtRangeSeconds": 0.9
       }, {
         "id": "naval_127",
         "range": 110,
-        "speed": 110,
+        "speed": 90,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 1
+        "flightAtRangeSeconds": 1.2222
       }, {
         "id": "naval_130_twin",
         "range": 90,
-        "speed": 110,
+        "speed": 90,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.8182
+        "flightAtRangeSeconds": 1
       }, {
         "id": "naval_155_triple",
         "range": 110,
-        "speed": 110,
+        "speed": 88,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 1
+        "flightAtRangeSeconds": 1.25
       }, {
         "id": "naval_155_triple_guided",
         "range": 110,
-        "speed": 110,
+        "speed": 88,
+        "warnSeconds": 0,
+        "warns": false,
+        "flightAtRangeSeconds": 1.25
+      }, {
+        "id": "naval_76",
+        "range": 95,
+        "speed": 95,
         "warnSeconds": 0,
         "warns": false,
         "flightAtRangeSeconds": 1
       }, {
-        "id": "naval_76",
-        "range": 95,
-        "speed": 110,
-        "warnSeconds": 0,
-        "warns": false,
-        "flightAtRangeSeconds": 0.8636
-      }, {
         "id": "naval_76_guided",
         "range": 95,
-        "speed": 110,
+        "speed": 95,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.8636
+        "flightAtRangeSeconds": 1
       }, {
         "id": "net_zap",
         "range": 15,
@@ -116126,10 +118042,10 @@
       }, {
         "id": "nyx_ags_155",
         "range": 80,
-        "speed": 150,
+        "speed": 88,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.5333
+        "flightAtRangeSeconds": 0.9091
       }, {
         "id": "nyx_millennium",
         "range": 46,
@@ -116168,17 +118084,17 @@
       }, {
         "id": "p26_bastion_b155",
         "range": 75,
-        "speed": 100,
+        "speed": 60,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.75
+        "flightAtRangeSeconds": 1.25
       }, {
         "id": "p26_bastion_b240",
         "range": 80,
-        "speed": 60,
+        "speed": 40,
         "warnSeconds": 2.7222,
         "warns": false,
-        "flightAtRangeSeconds": 1.3333
+        "flightAtRangeSeconds": 2
       }, {
         "id": "p26_bastion_close_boss_hmg",
         "range": 30,
@@ -116196,17 +118112,17 @@
       }, {
         "id": "p26_bastion_main_b155",
         "range": 75,
-        "speed": 150,
+        "speed": 60,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.5
+        "flightAtRangeSeconds": 1.25
       }, {
         "id": "p26_bastion_sec_b240",
         "range": 80,
-        "speed": 60,
+        "speed": 40,
         "warnSeconds": 2.7222,
         "warns": false,
-        "flightAtRangeSeconds": 1.3333
+        "flightAtRangeSeconds": 2
       }, {
         "id": "p26_bastion_tiny_autocannon_40",
         "range": 28,
@@ -116231,10 +118147,10 @@
       }, {
         "id": "p26_behemoth_be_rockets",
         "range": 45,
-        "speed": 130,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.3462
+        "flightAtRangeSeconds": 0.5625
       }, {
         "id": "p26_behemoth_be120",
         "range": 32,
@@ -116273,10 +118189,10 @@
       }, {
         "id": "p26_behemoth_sec_be_rockets",
         "range": 45,
-        "speed": 130,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.3462
+        "flightAtRangeSeconds": 0.5625
       }, {
         "id": "p26_behemoth_tiny_be120",
         "range": 32,
@@ -116406,10 +118322,10 @@
       }, {
         "id": "p26_jotunn_jo_rockets",
         "range": 45,
-        "speed": 120,
+        "speed": 80,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.375
+        "flightAtRangeSeconds": 0.5625
       }, {
         "id": "p26_jotunn_jo125",
         "range": 38,
@@ -116420,17 +118336,17 @@
       }, {
         "id": "p26_jotunn_jo203",
         "range": 60,
-        "speed": 100,
+        "speed": 60,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.6
+        "flightAtRangeSeconds": 1
       }, {
         "id": "p26_jotunn_sec_jo_rockets",
         "range": 45,
-        "speed": 120,
+        "speed": 80,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.375
+        "flightAtRangeSeconds": 0.5625
       }, {
         "id": "p26_jotunn_tiny_twin_30_flak",
         "range": 42,
@@ -116441,38 +118357,38 @@
       }, {
         "id": "p26_leviathan_direct_lev127",
         "range": 90,
-        "speed": 110,
+        "speed": 105,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.8182
+        "flightAtRangeSeconds": 0.8571
       }, {
         "id": "p26_leviathan_lev127",
         "range": 90,
-        "speed": 110,
-        "warnSeconds": 0,
-        "warns": false,
-        "flightAtRangeSeconds": 0.8182
-      }, {
-        "id": "p26_leviathan_lev155",
-        "range": 110,
-        "speed": 110,
+        "speed": 90,
         "warnSeconds": 0,
         "warns": false,
         "flightAtRangeSeconds": 1
       }, {
+        "id": "p26_leviathan_lev155",
+        "range": 110,
+        "speed": 88,
+        "warnSeconds": 0,
+        "warns": false,
+        "flightAtRangeSeconds": 1.25
+      }, {
         "id": "p26_leviathan_lev406",
         "range": 160,
-        "speed": 200,
+        "speed": 85,
         "warnSeconds": 3.6111,
         "warns": false,
-        "flightAtRangeSeconds": 0.8
+        "flightAtRangeSeconds": 1.8824
       }, {
         "id": "p26_leviathan_sec_lev155",
         "range": 110,
-        "speed": 150,
+        "speed": 88,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.7333
+        "flightAtRangeSeconds": 1.25
       }, {
         "id": "p26_matriarch_close_boss_flak",
         "range": 40,
@@ -116595,10 +118511,10 @@
       }, {
         "id": "p26_nemesis_sec_boss_rockets",
         "range": 45,
-        "speed": 65,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.6923
+        "flightAtRangeSeconds": 0.5625
       }, {
         "id": "p26_roc_close_twin_30_bmpt",
         "range": 30,
@@ -116616,10 +118532,10 @@
       }, {
         "id": "p26_roc_main_roc_bombs",
         "range": 45,
-        "speed": 100,
+        "speed": 60,
         "warnSeconds": 2.7222,
         "warns": false,
-        "flightAtRangeSeconds": 0.45
+        "flightAtRangeSeconds": 0.75
       }, {
         "id": "p26_roc_roc_atgm",
         "range": 55,
@@ -116630,10 +118546,10 @@
       }, {
         "id": "p26_roc_roc_bombs",
         "range": 45,
-        "speed": 100,
+        "speed": 60,
         "warnSeconds": 2.7222,
         "warns": false,
-        "flightAtRangeSeconds": 0.45
+        "flightAtRangeSeconds": 0.75
       }, {
         "id": "p26_roc_roc105",
         "range": 58,
@@ -116644,10 +118560,10 @@
       }, {
         "id": "p26_typhon_direct_ty100",
         "range": 90,
-        "speed": 120,
+        "speed": 115,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.75
+        "flightAtRangeSeconds": 0.7826
       }, {
         "id": "p26_typhon_sec_ty57",
         "range": 40,
@@ -116658,10 +118574,10 @@
       }, {
         "id": "p26_typhon_ty100",
         "range": 90,
-        "speed": 110,
+        "speed": 100,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.8182
+        "flightAtRangeSeconds": 0.9
       }, {
         "id": "p26_typhon_ty57",
         "range": 40,
@@ -116672,31 +118588,31 @@
       }, {
         "id": "patriot",
         "range": 90,
-        "speed": 300,
+        "speed": 165,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.3
+        "flightAtRangeSeconds": 0.5455
       }, {
         "id": "pt14_co_203",
         "range": 95,
-        "speed": 110,
+        "speed": 85,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.8636
+        "flightAtRangeSeconds": 1.1176
       }, {
         "id": "pt14_co_spike",
         "range": 80,
-        "speed": 60,
+        "speed": 75,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 1.3333
+        "flightAtRangeSeconds": 1.0667
       }, {
         "id": "pt14_co_v76",
         "range": 70,
-        "speed": 110,
+        "speed": 95,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.6364
+        "flightAtRangeSeconds": 0.7368
       }, {
         "id": "pt14_dd_v25",
         "range": 30,
@@ -116714,10 +118630,10 @@
       }, {
         "id": "pt14_hp_155",
         "range": 95,
-        "speed": 110,
+        "speed": 88,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.8636
+        "flightAtRangeSeconds": 1.0795
       }, {
         "id": "pt14_hp_nsm",
         "range": 95,
@@ -116728,10 +118644,10 @@
       }, {
         "id": "pt14_hp_v127",
         "range": 80,
-        "speed": 110,
+        "speed": 90,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.7273
+        "flightAtRangeSeconds": 0.8889
       }, {
         "id": "pt14_hp_vlaser",
         "range": 36,
@@ -116749,10 +118665,10 @@
       }, {
         "id": "pt14_ixion_grad",
         "range": 55,
-        "speed": 130,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.4231
+        "flightAtRangeSeconds": 0.6875
       }, {
         "id": "pt14_ixion_kornet",
         "range": 45,
@@ -116784,10 +118700,10 @@
       }, {
         "id": "pt14_th_jagm",
         "range": 55,
-        "speed": 95,
+        "speed": 85,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.5789
+        "flightAtRangeSeconds": 0.6471
       }, {
         "id": "pt14_th_pd",
         "range": 34,
@@ -116805,17 +118721,17 @@
       }, {
         "id": "pt14_train_grad",
         "range": 45,
-        "speed": 65,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.6923
+        "flightAtRangeSeconds": 0.5625
       }, {
         "id": "r60",
         "range": 28,
-        "speed": 210,
+        "speed": 110,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.1333
+        "flightAtRangeSeconds": 0.2545
       }, {
         "id": "railgun",
         "range": 90,
@@ -116840,73 +118756,73 @@
       }, {
         "id": "rockets_300mm",
         "range": 140,
-        "speed": 120,
+        "speed": 80,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 1.1667
+        "flightAtRangeSeconds": 1.75
       }, {
         "id": "s8_pods",
         "range": 34,
-        "speed": 180,
-        "warnSeconds": 0,
-        "warns": false,
-        "flightAtRangeSeconds": 0.1889
-      }, {
-        "id": "sam",
-        "range": 44,
-        "speed": 200,
-        "warnSeconds": 0,
-        "warns": false,
-        "flightAtRangeSeconds": 0.22
-      }, {
-        "id": "sam_48n6",
-        "range": 95,
-        "speed": 300,
-        "warnSeconds": 0,
-        "warns": false,
-        "flightAtRangeSeconds": 0.3167
-      }, {
-        "id": "sam_battery",
-        "range": 90,
         "speed": 95,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.9474
+        "flightAtRangeSeconds": 0.3579
+      }, {
+        "id": "sam",
+        "range": 44,
+        "speed": 120,
+        "warnSeconds": 0,
+        "warns": false,
+        "flightAtRangeSeconds": 0.3667
+      }, {
+        "id": "sam_48n6",
+        "range": 95,
+        "speed": 170,
+        "warnSeconds": 0,
+        "warns": false,
+        "flightAtRangeSeconds": 0.5588
+      }, {
+        "id": "sam_battery",
+        "range": 90,
+        "speed": 165,
+        "warnSeconds": 0,
+        "warns": false,
+        "flightAtRangeSeconds": 0.5455
       }, {
         "id": "sam_battery_lrr",
         "range": 100,
-        "speed": 300,
+        "speed": 165,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.3333
+        "flightAtRangeSeconds": 0.6061
       }, {
         "id": "sam_long",
         "range": 55,
-        "speed": 250,
+        "speed": 145,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.22
+        "flightAtRangeSeconds": 0.3793
       }, {
         "id": "sam_pac3",
         "range": 72,
-        "speed": 300,
+        "speed": 165,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.24
+        "flightAtRangeSeconds": 0.4364
       }, {
         "id": "sam_post",
         "range": 60,
-        "speed": 80,
+        "speed": 145,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.75
+        "flightAtRangeSeconds": 0.4138
       }, {
         "id": "scout_rockets",
         "range": 28,
-        "speed": 180,
+        "speed": 95,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.1556
+        "flightAtRangeSeconds": 0.2947
       }, {
         "id": "scylla_2m7",
         "range": 36,
@@ -116924,10 +118840,10 @@
       }, {
         "id": "scylla_kh35",
         "range": 110,
-        "speed": 70,
+        "speed": 90,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 1.5714
+        "flightAtRangeSeconds": 1.2222
       }, {
         "id": "shahed",
         "range": 150,
@@ -116952,10 +118868,10 @@
       }, {
         "id": "siege_mortar_240",
         "range": 70,
-        "speed": 60,
+        "speed": 40,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 1.1667
+        "flightAtRangeSeconds": 1.75
       }, {
         "id": "spg9_73mm",
         "range": 28,
@@ -116973,17 +118889,17 @@
       }, {
         "id": "stinger_atas",
         "range": 30,
-        "speed": 180,
+        "speed": 105,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.1667
+        "flightAtRangeSeconds": 0.2857
       }, {
         "id": "stinger_post",
         "range": 56,
-        "speed": 180,
+        "speed": 105,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.3111
+        "flightAtRangeSeconds": 0.5333
       }, {
         "id": "swarm_drones",
         "range": 60,
@@ -116994,24 +118910,24 @@
       }, {
         "id": "tamir",
         "range": 60,
-        "speed": 180,
+        "speed": 125,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.3333
+        "flightAtRangeSeconds": 0.48
       }, {
         "id": "technical_rockets",
         "range": 48,
-        "speed": 80,
+        "speed": 75,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.6
+        "flightAtRangeSeconds": 0.64
       }, {
         "id": "thermobaric_rockets",
         "range": 48,
-        "speed": 70,
+        "speed": 65,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.6857
+        "flightAtRangeSeconds": 0.7385
       }, {
         "id": "tower_ac25",
         "range": 30,
@@ -117085,17 +119001,17 @@
       }, {
         "id": "train_mortar",
         "range": 60,
-        "speed": 60,
+        "speed": 45,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 1
+        "flightAtRangeSeconds": 1.3333
       }, {
         "id": "turret_gmlrs",
         "range": 90,
-        "speed": 140,
+        "speed": 85,
         "warnSeconds": 2.5,
         "warns": false,
-        "flightAtRangeSeconds": 0.6429
+        "flightAtRangeSeconds": 1.0588
       }, {
         "id": "turret_gun_120",
         "range": 32,
@@ -117134,24 +119050,24 @@
       }, {
         "id": "turret_rockets",
         "range": 55,
-        "speed": 130,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.4231
+        "flightAtRangeSeconds": 0.6875
       }, {
         "id": "turret_rockets_cluster",
         "range": 55,
-        "speed": 130,
+        "speed": 80,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.4231
+        "flightAtRangeSeconds": 0.6875
       }, {
         "id": "turret_thermobaric",
         "range": 44,
-        "speed": 130,
+        "speed": 65,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.3385
+        "flightAtRangeSeconds": 0.6769
       }, {
         "id": "twin_30_bmpt",
         "range": 30,
@@ -117197,17 +119113,17 @@
       }, {
         "id": "vikhr",
         "range": 55,
-        "speed": 120,
+        "speed": 85,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.4583
+        "flightAtRangeSeconds": 0.6471
       }, {
         "id": "wvr_aam",
         "range": 30,
-        "speed": 210,
+        "speed": 115,
         "warnSeconds": 0,
         "warns": false,
-        "flightAtRangeSeconds": 0.1429
+        "flightAtRangeSeconds": 0.2609
       }, {
         "id": "zu23",
         "range": 38,
