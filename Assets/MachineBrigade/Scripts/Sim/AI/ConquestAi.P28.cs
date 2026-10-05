@@ -60,6 +60,8 @@ namespace MachineBrigade.Sim.AI
                 if (!world.Catalog.Supports.TryGetValue(id, out var s) || s.Kind != want.kind || !Ready(world, economy, s)) continue;
                 if (world.Submit(Command.Strike(_team, id, want.at)).Accepted)
                 {
+                    // AI MASTER P3 spec 142 / 144: the smoke mission on the board, the battery marked struck.
+                    Commander!.NoteSupportP3(world, want.kind, want.at);
                     world.AiLog.Add(new DecisionEntry(world.Time, _team, AiLayer.Commander, 0, DecisionKind.Plan, $"support {id} for {want.kind}"));
                     return true;
                 }

@@ -394,6 +394,8 @@ namespace MachineBrigade.Sim.Combat
             score *= P26Worth(v, other, weapon);
             // Prompt 28: the squad's focus and tactic, a tower's mode, a boss's behaviour type, friends in the line of fire.
             score *= P28Worth(v, other, weapon);
+            // AI MASTER P3: planned damage, stances, handoff, AA coverage, multi-weapon director (AI sides only).
+            score *= P3Worth(v, other, weapon);
             score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
             return score;
         }

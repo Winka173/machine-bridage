@@ -28,6 +28,8 @@ namespace MachineBrigade.Sim.Content
             foreach (var e in AiMasterP2) yield return e;
             // AI MASTER P0-D + P1 (lane B): jam stages, traffic, corridors (SimTunables.AiMasterP1.cs).
             foreach (var e in AiMasterP1) yield return e;
+            // AI MASTER P3 (lane A): coordination: frontline, memory, board, packages, fire missions, pursuit (SimTunables.AiMasterP3.cs).
+            foreach (var e in AiMasterP3) yield return e;
         }
     }
 }

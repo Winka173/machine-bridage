@@ -35,6 +35,8 @@ namespace MachineBrigade.Sim.AI
             {
                 if (!v.IsAlive || v.Team != Team || v.Def.Static || v.Scripted || v.IsEscort || v.Garrison || v.UnderPlayerControl(world.Time)) continue;
                 if (v.Flying) Aircraft(world, intel, v);
+                // AI MASTER P3 spec 143-145: fire missions for every gun, shoot-and-scoot for those without a scoot of their own.
+                else if (v.Def.Weapon.MinRange > 0f && CoordinationP3 != null) ArtilleryP3(world, intel, v, enemyGuns);
                 else if (v.Def.Weapon.MinRange > 0f && v.Def.Scoot == null) Artillery(world, v, enemyGuns);
             }
         }
