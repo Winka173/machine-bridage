@@ -113,6 +113,9 @@ namespace MachineBrigade.Sim.Entities
     /// </summary>
     public sealed class BigAttackState
     {
+        /// <summary>AI MASTER P4 spec 204: seconds this cast waited on the pressure budget (taken off the cooldown after it).</summary>
+        internal float P4Deferred;
+
         public BigAttackState(BigAttackDef def, IReadOnlyList<int> parts)
         {
             Def = def;

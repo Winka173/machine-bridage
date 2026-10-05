@@ -22,7 +22,7 @@ namespace MachineBrigade.Sim
         private void ObserveP3(in SimEvent e)
         {
             if (_coordinationP3 == null) return;
-            if (e.Kind == SimEventKind.WeaponFired || e.Kind == SimEventKind.VehicleDestroyed) _coordinationP3.Observe(e);
+            if (e.Kind == SimEventKind.WeaponFired || e.Kind == SimEventKind.VehicleDestroyed || e.Kind == SimEventKind.PartBroken) _coordinationP3.Observe(e);
         }
     }
 }

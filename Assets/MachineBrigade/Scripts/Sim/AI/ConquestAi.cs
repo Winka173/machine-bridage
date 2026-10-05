@@ -964,6 +964,8 @@ namespace MachineBrigade.Sim.AI
                 // AI MASTER section 12: the master score on top (role deficit, counters, objectives, map, timing, ...), and
                 // section 196's same-match feedback.
                 score += director.LegacyAdjust(director.Score(world, economy, def, influence, copies, Commander, null), def, _difficulty);
+                // AI MASTER P4 spec 157 / Part M: same-match utilization, an air-heavy enemy, a tower defence (observed only).
+                if (Commander != null) score += Commander.PurchaseAdjustP4(world, def);
                 _ranked.Add((id, score));
                 if (BuyScores != null) BuyScores[id] = score;
                 if (score > bestScore)

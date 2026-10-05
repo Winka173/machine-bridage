@@ -137,13 +137,27 @@ namespace MachineBrigade.Sim.AI
     public readonly struct WarningZone
     {
         public WarningZone(int team, Vector2 centre, float radius, double due, bool big)
+            : this(team, centre, radius, due, big, 0, centre)
+        {
+        }
+
+        /// <summary>AI MASTER P4 (spec 214): a boss's zone with the boss (id) and where it stood when it telegraphed (public).</summary>
+        public WarningZone(int team, Vector2 centre, float radius, double due, bool big, int source, Vector2 origin)
         {
             Team = team;
             Centre = centre;
             Radius = radius;
             Due = due;
             Big = big;
+            Source = source;
+            Origin = origin;
         }
+
+        /// <summary>AI MASTER P4: the caster's id (0: unknown / a support strike).</summary>
+        public int Source { get; }
+
+        /// <summary>AI MASTER P4: where the caster stood (the centre when unknown): the frame a boss pattern is learnt in.</summary>
+        public Vector2 Origin { get; }
 
         /// <summary>The side that called it.</summary>
         public int Team { get; }
@@ -500,7 +514,7 @@ namespace MachineBrigade.Sim.AI
                 if (!v.IsAlive || v.BigAttack is not { Stage: BigStage.Charging } big) continue;
                 foreach (var z in big.Zones)
                     if (z.Harmful)
-                        _warnings.Add(new WarningZone(v.Team, z.Centre, z.Rect ? MathF.Max(z.HalfLength, z.HalfWidth) : z.Radius, z.Due, true));
+                        _warnings.Add(new WarningZone(v.Team, z.Centre, z.Rect ? MathF.Max(z.HalfLength, z.HalfWidth) : z.Radius, z.Due, true, v.Id.Value, v.Position));
             }
             _strikeBuffer.Clear();
             _world.Strikes.Incoming(_strikeBuffer);

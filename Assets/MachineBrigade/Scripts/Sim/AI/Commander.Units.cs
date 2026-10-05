@@ -34,7 +34,11 @@ namespace MachineBrigade.Sim.AI
             foreach (var v in world.VehicleList)
             {
                 if (!v.IsAlive || v.Team != Team || v.Def.Static || v.Scripted || v.IsEscort || v.Garrison || v.UnderPlayerControl(world.Time)) continue;
-                if (v.Flying) Aircraft(world, intel, v);
+                // AI MASTER P4 spec 174-178: SEAD, risk routing, CAP, handoff, bomber packages first; the old approach logic otherwise.
+                if (v.Flying)
+                {
+                    if (!AirP4(world, intel, v)) Aircraft(world, intel, v);
+                }
                 // AI MASTER P3 spec 143-145: fire missions for every gun, shoot-and-scoot for those without a scoot of their own.
                 else if (v.Def.Weapon.MinRange > 0f && CoordinationP3 != null) ArtilleryP3(world, intel, v, enemyGuns);
                 else if (v.Def.Weapon.MinRange > 0f && v.Def.Scoot == null) Artillery(world, v, enemyGuns);
