@@ -76,13 +76,12 @@ namespace MachineBrigade.Tests
         public void TheBossSamPostsFlyNoFasterThanTheOrdinarySams()
         {
             var c = Lab.Catalog;
-            // Play-test 14 lane I slowed both again (80 and 95; PlayTest14LaneITests).
-            Assert.LessOrEqual(c.Weapons["sam_post"].ProjectileSpeed, 170f + 1e-3f, "the ships' and Typhon's Buk post");
-            Assert.LessOrEqual(c.Weapons["sam_battery"].ProjectileSpeed, 200f + 1e-3f, "Nemesis' Patriot car");
+            // Flight feel 05/10 (lane B) supersedes lane I's slow-downs: the Buk post 145 (Buk family), the Patriot car 165 (Patriot family).
+            Assert.AreEqual(145f, c.Weapons["sam_post"].ProjectileSpeed, 1e-3f, "the ships' and Typhon's Buk post: the Buk family's speed");
+            Assert.AreEqual(165f, c.Weapons["sam_battery"].ProjectileSpeed, 1e-3f, "Nemesis' Patriot car: the Patriot family's speed");
             Assert.AreEqual(FlightProfile.Loft, c.Weapons["sam_battery"].Flight, "still leaves its canister upward");
-            Assert.LessOrEqual(c.Weapons["sam_battery"].ProjectileSpeed, c.Weapons["sam"].ProjectileSpeed + 1e-3f, "no faster than the SHORAD");
-            Assert.AreEqual(300f, c.Weapons["patriot"].ProjectileSpeed, 1e-3f, "the player's Patriot keeps its family's speed");
-            Assert.AreEqual(250f, c.Weapons["buk_launcher"].ProjectileSpeed, 1e-3f, "the player's Buk keeps its family's speed");
+            Assert.AreEqual(165f, c.Weapons["patriot"].ProjectileSpeed, 1e-3f, "the player's Patriot keeps its family's speed");
+            Assert.AreEqual(145f, c.Weapons["buk_launcher"].ProjectileSpeed, 1e-3f, "the player's Buk keeps its family's speed");
         }
     }
 }

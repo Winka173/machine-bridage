@@ -37,6 +37,21 @@ def audit_rows(ctx, d):
     return {r["id"]: r for r in rows}
 
 
+FF_SRC = "python: Tools/balance/flight_feel_audit.py analyse (flight feel 05/10: class-based effective flight-time validator)"
+FF_COLS = [
+    ("toc_do_dan_hieu_dung_m_s", "effectiveProjectileSpeedMps", "m/s", "tốc độ đạn hiệu dụng trong game (họ vũ khí đè dòng riêng; không có hệ số boss)"),
+    ("toc_do_dan_tran_trang_bi_m_s", "effectiveSpeedAtGearCapMps", "m/s", "tốc độ hiệu dụng khi trang bị ProjectileSpeed đạt trần +30 % (súng chính, vũ khí 0)"),
+    ("thoi_gian_bay_tam_toi_thieu_s", "flightTimeMinRangeS", "s", "thời gian bay tại tầm tối thiểu (minRange; không có: 25 % tầm)"),
+    ("thoi_gian_bay_nua_tam_s", "flightTimeHalfRangeS", "s", "thời gian bay tại 50 % tầm"),
+    ("thoi_gian_bay_tam_toi_da_s", "flightTimeMaxRangeS", "s", "thời gian bay tại tầm tối đa (tầm / tốc độ: Sim không có quỹ đạo cong, đường cong chỉ là hình ảnh)"),
+    ("thoi_gian_bay_tam_toi_da_tran_s", "flightTimeMaxRangeAtGearCapS", "s", "thời gian bay tại tầm tối đa khi trang bị ở trần +30 %"),
+    ("lop_cam_giac_dan", "projectileFeelClass", "", "lớp cảm giác đạn (DIRECT_FAST / TACTICAL_MISSILE / AIR_DEFENCE_MISSILE / ROCKET_ARTILLERY / MORTAR / HOWITZER / CRUISE / DRONE / BOMB + AIRCRAFT_ROCKET / NAVAL_DIRECT / ANTI_SHIP_MISSILE / BALLISTIC_MISSILE)"),
+    ("canh_bao_toc_do_dan", "projectileSpeedWarning", "", "TOO_FAST_FOR_CLASS / TOO_SLOW_FOR_CLASS / TOO_FAST_AT_GEAR_CAP / OWNER_EXCEPTION / ok (ngưỡng theo lớp; thay vai trò đọc tốc độ của NHANH_QUA / CHAM_QUA, vốn là cờ chu kỳ bắn)"),
+    ("nguon_ke_thua_toc_do", "speedInheritanceSource", "", "tốc độ lấy từ đâu: họ vũ khí (weaponFamilies) / dòng riêng / kế thừa từ vũ khí cha"),
+    ("khoang_cach_loat_m", "salvoSpacingM", "m", "khoảng cách giữa hai quả trong loạt = tốc độ x burstInterval (tên lửa / rocket nhiều quả)"),
+]
+
+
 def kv_id(sheet, khoa: str):
     return next((rid for rid, r in sheet.rows.items() if r.values.get("khoa") == khoa), None)
 
@@ -209,6 +224,18 @@ def build(ctx, book, d, res, tiers, warn_rules):
            source_note="python: Tools/balance/full_weapon_audit.py audit")
     sh.col("cung_ho_nhat_quan", meaning="cùng một vũ khí thật trên các boss có cùng sát thương / lõi / rìa / tốc độ / loại "
            "(không cờ FAMILY); trống: không phải vũ khí boss", source_note="python: Tools/balance/full_weapon_audit.py audit")
+    for c, _k, u, m in FF_COLS:
+        sh.col(c, unit=u, meaning=m, source_note=FF_SRC)
+    try:
+        sys.path.insert(0, str(ROOT / "Tools" / "balance"))
+        import flight_feel_audit as FFA  # noqa: WPS433
+        _fr, _fi = FFA.resolve_all(copy.deepcopy(d))
+        feel = FFA.analyse(_fr, _fi)
+    except Exception as e:  # noqa: BLE001
+        ctx.issue(f"01/Vu_khi_suy_ra: flight_feel_audit unreadable ({type(e).__name__}: {e})")
+        feel = {}
+    finally:
+        sys.path.pop(0)
     audit = audit_rows(ctx, d)
     for wid in sorted(res):
         w = res[wid]
@@ -218,6 +245,9 @@ def build(ctx, book, d, res, tiers, warn_rules):
         vals = values(table, w, tier, warn_rules)
         for c in T:
             LB.put(r, c, T[c], vals[c])
+        for c, k, _u, _m in FF_COLS:
+            v = feel.get(wid, {}).get(k)
+            r.set(c, "" if v is None else v)
         a_row = audit.get(wid) if audit is not None else None
         if audit is None:
             r.set("ghi_chu_lech", NEED_CODE_CHECK)

@@ -76,6 +76,9 @@ namespace MachineBrigade.Tests
         /// <summary>Play-test 14 (lane H): boss weapons that fly at their own speed, out of their real missile's family.</summary>
         internal static readonly HashSet<string> BossOwnSpeed = new() { "sam_post", "sam_battery", "boss_rockets", "p26_behemoth_be_rockets", "p26_jotunn_jo_rockets", "p26_nemesis_sec_boss_rockets", "pt14_train_grad" };
 
+        /// <summary>Flight feel 05/10 (lane B, Docs/prompts/projectile_flight_feel_spec.md): weapons that fly at their role's own speed, apart from the other weapons of their real name: jet rockets 100 (spec 3), the coastal 155s 70 and the fort twin 155 direct 150 (spec 11/16), the 127 mm AP 15 % over its HE (spec 16), the guided 155s base + 5 (spec 12).</summary>
+        internal static readonly HashSet<string> FlightFeelOwnSpeed = new() { "jet_rockets", "gun_155_twin", "gun_155_twin_fort", "gun_155_twin_long", "gun_155_coastal", "gun_155_twin_coastlr", "p26_leviathan_lev127", "p26_leviathan_direct_lev127", "casemate_155_guided", "howitzer_guided", "howitzer_fixed_guided", "gun_155_coastal_guided", "gun_155_twin_coastlr_guided", "gun_155_twin_fort_guided" };
+
         internal static string FamilyKey(WeaponDef w) =>
             w.RealName == null ? null
                 : string.Join("|", RealName(w.RealName), w.DamageType, w.Projectile, w.Size.ToString(CultureInfo.InvariantCulture), w.Indirect, w.Cluster != null);
@@ -102,7 +105,7 @@ namespace MachineBrigade.Tests
             // Every set of weapons that are the same real weapon is one family (none left out of it).
             // Play-test 14 (lane H): the bosses' own SAM posts (the Buk post of the ships and Typhon, Nemesis' Patriot car) fly at
             // the boss's slower speed, out of their families; the player's launchers of the same missiles keep the family's.
-            foreach (var same in catalog.Weapons.Values.Where(w => FamilyKey(w) != null && !BossOwnSpeed.Contains(w.Id)).GroupBy(FamilyKey).Where(g => g.Count() > 1))
+            foreach (var same in catalog.Weapons.Values.Where(w => FamilyKey(w) != null && !BossOwnSpeed.Contains(w.Id) && !FlightFeelOwnSpeed.Contains(w.Id)).GroupBy(FamilyKey).Where(g => g.Count() > 1))
             {
                 var named = same.Select(w => w.WeaponFamily).Distinct().ToList();
                 if (named.Count != 1 || named[0] == null)
