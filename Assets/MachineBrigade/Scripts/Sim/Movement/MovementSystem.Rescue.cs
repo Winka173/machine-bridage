@@ -27,7 +27,14 @@ namespace MachineBrigade.Sim.Movement
     internal sealed partial class MovementSystem
     {
         /// <summary>Seconds without headway before the safety net steps in (and between its rungs).</summary>
-        internal const double RescueAfter = 10.0;
+        internal const double RescueAfterOld = 10.0;
+
+        /// <summary>
+        /// AI MASTER P0-D (spec 38, 108): under the jam stages the safety net waits for them (ai.navigation.failSafeS, 14 s:
+        /// after stage 5 at 12 s); without them, the old 10 s.
+        /// </summary>
+        internal static double RescueAfter =>
+            global::MachineBrigade.Sim.Content.SimTunables.Ai.Navigation.JamStages ? global::MachineBrigade.Sim.Content.SimTunables.Ai.Navigation.FailSafeS : RescueAfterOld;
 
         /// <summary>Moving this far from where it last got going counts as headway.</summary>
         private const float RescueMove = 2.5f;
@@ -131,6 +138,21 @@ namespace MachineBrigade.Sim.Movement
             }
             t.Rescues++;
             RescueLog.Add(new RescueEntry(_world.Tick, _world.Time, v.Id.Value, v.Def.Id, v.Team, kind, from, v.Position));
+            // AI MASTER P0-D (spec 38): a relocation is never normal play: counted and logged SEVERE_UNSTUCK for the lead.
+            var stats = _world.Traffic.Stats;
+            if (kind == "ghost")
+            {
+                stats.GhostFailSafe++;
+                _world.Traffic.Log(v.Team, (int)v.Id.Value, $"JAM_FAILSAFE_GHOST stage={t.Jam.Stage}", AI.AiLayer.Unit);
+            }
+            else
+            {
+                stats.SevereUnstuck++;
+                if (kind == "place") stats.SeverePlace++;
+                else stats.SevereHop++;
+                _world.Traffic.Log(v.Team, (int)v.Id.Value,
+                    $"SEVERE_UNSTUCK kind={kind} from=({from.X:0.0},{from.Y:0.0}) to=({v.Position.X:0.0},{v.Position.Y:0.0}) stage={t.Jam.Stage}", AI.AiLayer.Unit);
+            }
             Vehicle.PathTrace?.Invoke(v, $"Rescue {kind}");
             // Whatever held it (a doorway's turn, a queue, a stale route) is dropped: it plans its way again.
             t.WaitingForGate = false;

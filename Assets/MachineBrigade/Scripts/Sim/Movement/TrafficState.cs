@@ -122,5 +122,43 @@ namespace MachineBrigade.Sim.Movement
 
         /// <summary>How many times the safety net has had to step in for it (the stuck report counts them).</summary>
         public int Rescues;
+
+        // ------------------------------------------------------------ AI MASTER P0-D + P1 (lane B): jam stages, traffic
+        /// <summary>Spec 37-38: the staged jam detector.</summary>
+        public readonly JamTracker Jam = new();
+
+        /// <summary>Stuck windows in a row without progress (DetectStuck), for the give-up rule under the jam stages.</summary>
+        public int NoProgressWindows;
+
+        /// <summary>Spec 32: the right of way, held until then (2 s).</summary>
+        public int RightOfWay = TrafficSteering.PriorityCombat;
+        public double RightOfWayUntil = double.NegativeInfinity;
+
+        /// <summary>The squad's right of way for its members (70 main effort, 40 reinforcement, 30 scouts; 0: none), and its task (debug).</summary>
+        public int SquadPriority;
+        public string TaskLabel = "";
+
+        /// <summary>Spec 28: the shared corridor it follows (0: its own route); spec 86: driving through a passage in a column.</summary>
+        public int CorridorId;
+        public bool InColumn;
+
+        /// <summary>Spec 188: the first passage on its route within the prediction window (0: none).</summary>
+        public int NextPassage;
+
+        /// <summary>Spec 95: the velocity it wanted and the one avoidance left it, and ORCA-lite's turn (kept between looks).</summary>
+        public Vector2 DesiredVelocity;
+        public Vector2 SafeVelocity;
+        public float OrcaTurn;
+
+        /// <summary>Stage 1: formation loosened until then; stage 5: out of its formation until then.</summary>
+        public double LoosenUntil = double.NegativeInfinity;
+        public double FormationBreakUntil = double.NegativeInfinity;
+
+        /// <summary>Spec 185: when its current order came, and whether its anomaly was already logged.</summary>
+        public double OrderAt = double.NegativeInfinity;
+        public bool AnomalyLogged;
+
+        /// <summary>A yield request posted by the coordinator (stage 3, deadlock, boss corridor): served even if not askable.</summary>
+        public bool PendingForced;
     }
 }

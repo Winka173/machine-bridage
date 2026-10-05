@@ -25,6 +25,9 @@ namespace MachineBrigade.Sim.AI
 
         /// <summary>AI MASTER P0-B: the buying AI's BUY, REJECT, PLAN and RESERVE lines (Part O's PURCHASE_* codes).</summary>
         Purchase,
+
+        /// <summary>AI MASTER P0-D + P1: movement and traffic lines (Part O's TRAFFIC_*, JAM_*, ROUTE_*, SEVERE_UNSTUCK).</summary>
+        Traffic,
     }
 
     /// <summary>One scoring factor: a key the viewer's text table names ("why.ratio") and its points (+ or -).</summary>
