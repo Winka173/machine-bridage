@@ -323,7 +323,7 @@ namespace MachineBrigade.Sim.AI
             var aa = AntiAirSquad(world, s);
             var maxSeconds = aa ? Tun.Pursuit.AaMaxSeconds : Tun.Pursuit.MaxSeconds;
             var maxDistance = PursuitDiscipline.BaitLeash(aa ? Tun.Pursuit.AaMaxDistance : Tun.Pursuit.MaxDistance,
-                tc.Memory.DeathDanger(enemy.Position, now));
+                tc.Memory.DeathDanger(enemy.Position, now)) * _commander.LeashScaleP4(enemy.Position);
             var alive = enemy.InSight || enemy.Age(now) < Tun.Pursuit.AgeFadeS;
             var threatens = s.Task.Objective is { } o && Vector2.Distance(enemy.Position, o) <= 30f;
             var verdict = PursuitDiscipline.Check(alive, now, s.PursuitStart, maxSeconds, enemy.Position, s.PursuitAnchor, maxDistance,

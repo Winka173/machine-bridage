@@ -32,6 +32,9 @@ namespace MachineBrigade.Sim.AI
         public float Focus { get; set; } = 1f;
         public TacticSwitching Switching { get; set; } = TacticSwitching.Never;
 
+        /// <summary>AI MASTER P4 spec 216: the difficulty level the advanced gating reads (0 Easy, 1 Normal, 2 Hard, 3 Very Hard).</summary>
+        public int Level { get; set; } = 1;
+
         /// <summary>The difficulty's skill, its reaction delay scaled from the catalog's Normal value (params.reactionDelay).</summary>
         public static AiSkill For(AiDifficulty difficulty, AiParams ai)
         {
@@ -39,14 +42,16 @@ namespace MachineBrigade.Sim.AI
             float normal = p.Value, min = p.Min, max = p.Max;
             return difficulty switch
             {
-                AiDifficulty.Easy => new AiSkill { ReactionDelay = max, DecayScale = 1.5f, Spread = 0.5f, Flank = 0.5f, Focus = 0f },
+                AiDifficulty.Easy => new AiSkill { Level = 0, ReactionDelay = max, DecayScale = 1.5f, Spread = 0.5f, Flank = 0.5f, Focus = 0f },
                 AiDifficulty.Hard => new AiSkill
                 {
+                    Level = 2,
                     ReactionDelay = normal - (normal - min) * 0.6f, DecayScale = 0.85f, Flank = 1.3f, Focus = 1.3f,
                     Switching = TacticSwitching.WhenLosing,
                 },
                 AiDifficulty.VeryHard => new AiSkill
                 {
+                    Level = 3,
                     ReactionDelay = min, DecayScale = 0.6f, Flank = 1.3f, Focus = 1.3f, Switching = TacticSwitching.Counter,
                 },
                 _ => new AiSkill { ReactionDelay = normal },
@@ -260,6 +265,8 @@ namespace MachineBrigade.Sim.AI
             AssignP2(world, intel);
             // AI MASTER P3: the coordination pass on the tasks just given (frontline, packages, reserve, deadlines...).
             CoordinateP3(world, intel);
+            // AI MASTER P4: forecast, shallow plans, abort / replan, probe, feint, adaptation (after P3, before the units).
+            PlanP4(world, intel);
             UnitsOutsideSquads(world, intel);
             SwitchTactic(world, intel, enemy);
         }
@@ -486,6 +493,8 @@ namespace MachineBrigade.Sim.AI
                     if (SmokeTakenP3(world, s.Centre, SmokePurpose.ScreenSquad)) continue;
                     return (SupportKind.Smoke, s.Centre);
                 }
+            // AI MASTER P4: SEAD for a waiting air package, a barrage on a camping battery / for a wait-artillery plan.
+            if (SupportWantedP4(world) is { } p4) return p4;
             // AI MASTER P3 spec 144: area fire on a confident, tight estimate of an unseen battery; spec 142: smoke for the assault.
             if (CounterBatteryStrikeP3(world) is { } battery) return (SupportKind.Barrage, battery);
             if (AssaultSmokeP3(world) is { } approach && !SmokeTakenP3(world, approach, SmokePurpose.AssaultObjective)) return (SupportKind.Smoke, approach);

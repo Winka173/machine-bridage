@@ -984,6 +984,16 @@ namespace MachineBrigade.Sim.AI
         {
             foreach (var a in _artillery)
             {
+                // AI MASTER P4 (P3 leftover a): one owner per gun: snapshot its order to claim it if this pass changes it.
+                var before = (a.Order.Kind, a.Order.Target, a.Order.Point);
+                DirectGun(world, a, front, objective, forward, contact);
+                if (before != (a.Order.Kind, a.Order.Target, a.Order.Point)) ClaimGunP4(world, a);
+            }
+        }
+
+        private void DirectGun(SimWorld world, Vehicle a, Vector2 front, Vector2 objective, Vector2 forward, bool contact)
+        {
+            {
                 var weapon = a.Def.Weapon;
                 // Only ground threats: a gun cannot outrun a helicopter, and running from one
                 // hovering overhead only herded it into the map's edge (its machine gun and the
@@ -995,7 +1005,7 @@ namespace MachineBrigade.Sim.AI
                     closest <= a.Arms[siege.TankMount].Range + 4f)
                 {
                     if (a.Order.Kind != OrderKind.Attack || a.Order.Target != threat.Id) Issue(world, CommandType.Attack, a.Id, threat.Position, threat.Id);
-                    continue;
+                    return;
                 }
                 if (threat != null && closest < weapon.MinRange + 6f)
                 {
@@ -1003,7 +1013,7 @@ namespace MachineBrigade.Sim.AI
                     // map's edge); cornered, it stays and its machine gun fights.
                     if (world.EscapeRoute(a, threat.Position, weapon.MinRange + 14f - closest) is { } escape)
                         Issue(world, CommandType.Move, a.Id, escape);
-                    continue;
+                    return;
                 }
                 // Kiting: outranging the nearest threat by 6 m or more, never let it into its own
                 // reach; back off to just beyond it, then fire again.
@@ -1012,20 +1022,22 @@ namespace MachineBrigade.Sim.AI
                     world.EscapeRoute(a, threat!.Position, reach + 10f - closest) is { } kite)
                 {
                     Issue(world, CommandType.Move, a.Id, kite);
-                    continue;
+                    return;
                 }
-                if (a.Order.Kind == OrderKind.Move && !Standing(a)) continue;
+                // AI MASTER P4: a P3 fire mission / scoot owns this gun: only the safety branches above run for it.
+                if (MissionOwnsGunP4(world, a)) return;
+                if (a.Order.Kind == OrderKind.Move && !Standing(a)) return;
 
                 if (contact && TryFindCluster(a, out var cluster) && !Exposed(a.Position, 0f))
                 {
                     if (a.Order.Kind != OrderKind.Attack) Issue(world, CommandType.Attack, a.Id, cluster.Position, cluster.Id);
-                    continue;
+                    return;
                 }
                 // Fixed defences first (the military targets), then the structure the mission wants
                 // down: each from a spot inside our range and outside every known gun's reach.
-                if (ShellDefences(world, a)) continue;
-                if (ShellStructure(world, a)) continue;
-                if (a.Order.Kind != OrderKind.Idle || a.Target.IsValid) continue;
+                if (ShellDefences(world, a)) return;
+                if (ShellStructure(world, a)) return;
+                if (a.Order.Kind != OrderKind.Idle || a.Target.IsValid) return;
 
                 // Stand off behind the main body, close enough to reach the enemy. With no main body
                 // (an army of launchers and drone carriers) there is nothing to stand behind: close
@@ -1234,7 +1246,7 @@ namespace MachineBrigade.Sim.AI
             _otherIds.Clear();
             foreach (var f in _fast)
             {
-                if (f.Order.Kind != OrderKind.Idle || Busy(world, f)) continue;
+                if (f.Order.Kind != OrderKind.Idle || Busy(world, f) || f.P4Held) continue;
                 if (!_flanked.Contains(f.Id) && Vector2.Distance(f.Position, flankPoint) < 9f) _flanked.Add(f.Id);
                 if (_flanked.Contains(f.Id)) _otherIds.Add(f.Id);
                 else _ids.Add(f.Id);
@@ -1527,7 +1539,9 @@ namespace MachineBrigade.Sim.AI
         /// are near, so waiting for their orders to complete would stall the whole army.
         /// </summary>
         private static bool Ready(Vehicle v) =>
-            v.Order.Kind == OrderKind.Idle ||
+            // AI MASTER P4: an aircraft an AI air package holds is the package's (intent ownership).
+            !v.P4Held && v.Order.Kind == OrderKind.Idle ||
+            !v.P4Held &&
             (v.Order.Kind == OrderKind.AttackMove && Vector2.Distance(v.Position, v.Order.Point) < SameRendezvous);
 
         /// <summary>

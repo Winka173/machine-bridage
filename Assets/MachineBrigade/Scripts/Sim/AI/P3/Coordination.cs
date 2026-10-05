@@ -72,7 +72,17 @@ namespace MachineBrigade.Sim.AI
                     if (tc == null) continue;
                     if (t == v.Team) tc.Memory.AddDeath(v.Position, value, _world.Time);
                     else if (v.IsVisibleTo(t)) tc.Memory.AddEnemyLoss(v.Position, value, _world.Time);
+                    // AI MASTER P4: same-match adaptation, the AA-down window (observed only).
+                    tc.PlanningIfAny?.ObserveDeath(v, t == v.Team, t != v.Team && v.IsVisibleTo(t));
                 }
+                return;
+            }
+            // AI MASTER P4 spec 156: a boss part seen breaking (an APS / shield / radar part opens a window).
+            if (e.Kind == SimEventKind.PartBroken)
+            {
+                if (!_world.TryGetVehicle(e.Entity, out var boss)) return;
+                for (var t = 0; t < _teams.Length; t++)
+                    if (_teams[t]?.PlanningIfAny is { } tp && t != boss.Team && boss.IsVisibleTo(t)) tp.ObservePartBroken(boss, e.Mount);
                 return;
             }
             // WeaponFired: only ground artillery (a gun with a minimum range or a lofted round); bombs and drones are not batteries.
@@ -141,6 +151,14 @@ namespace MachineBrigade.Sim.AI
         public PlannedActionBoard Board { get; }
         public CounterBatteryTracker Battery { get; }
         public RouteBook Routes { get; }
+
+        private TeamPlanning? _planning;
+
+        /// <summary>AI MASTER P4: the side's advanced-planning state (made on first use by its commander).</summary>
+        public TeamPlanning Planning => _planning ??= new TeamPlanning(_world, Team);
+
+        /// <summary>The P4 state if the commander made it (observers read it without creating it).</summary>
+        public TeamPlanning? PlanningIfAny => _planning;
 
         /// <summary>Spec 212: the counterattack opportunities open now.</summary>
         public IReadOnlyList<CounterattackWindow> Windows => _windows;

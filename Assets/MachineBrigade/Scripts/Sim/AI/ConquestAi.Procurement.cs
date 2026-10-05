@@ -57,6 +57,8 @@ namespace MachineBrigade.Sim.AI
             }
             if (economy.PriceOf(id, def.CpCost) <= economy.Cp)
             {
+                // AI MASTER P4 (P0-B 18): the forecast says the force is enough, or a seen boss nears its next phase: keep the CP.
+                if (Commander != null && Commander.HoldPurchaseP4(world, economy, economy.PriceOf(id, def.CpCost), ownTotal)) return true;
                 DeployOrDrop(world, id);
                 Bought(world, id, economy);
                 director.Bought(world, id, float.NaN, null);
@@ -86,6 +88,8 @@ namespace MachineBrigade.Sim.AI
             var def = world.Catalog.Vehicles[id];
             RankScored();
             if (director.Reserve(world, economy, def, CounterCard(world), ownTotal < 4, UnderFire(world))) return false;
+            // AI MASTER P4 (P0-B 18): force enough by the forecast / CP kept for a seen boss's next phase.
+            if (Commander != null && !UnderFire(world) && Commander.HoldPurchaseP4(world, economy, economy.PriceOf(id, def.CpCost), ownTotal)) return false;
             if (director.Plan == null && _difficulty != AiDifficulty.Easy && _ranked.Count >= SimTunables.Ai.Procurement.MinPlanCards &&
                 _ranked[0].id == id)
                 director.MakePlan(world, economy, _ranked, _difficulty);

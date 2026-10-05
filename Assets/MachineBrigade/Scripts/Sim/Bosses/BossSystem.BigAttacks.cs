@@ -218,6 +218,8 @@ namespace MachineBrigade.Sim.Bosses
                 s.Next = now + 1.0;
                 return;
             }
+            // AI MASTER P4 spec 204: pacing: a short wait while other dangerous actions of the side are active (no damage lost).
+            if (PressureDeferP4(v, s, now)) return;
             if (!AimAt(v, def, out var aim))
             {
                 s.Next = now + 3.0;
@@ -229,6 +231,7 @@ namespace MachineBrigade.Sim.Bosses
             s.LastStart = s.WarnStart = now;
             s.FireAt = now + warn;
             s.Next = now + MathF.Max(warn + 1f, def.CooldownIn(AttackPhase(v)) * scale.Cooldown);
+            s.Next = PressureNextP4(s, now, warn);
             s.Aim = aim;
             s.Origin = v.Position;
             s.Forward = SimMath.Forward(v.Heading);

@@ -554,7 +554,7 @@ namespace MachineBrigade.Sim.AI
             var unknown = tc.Memory.UnknownShare(intel, target, 40f, now);
             var danger = MathF.Max(tc.Memory.DeathDanger(target, now), tc.Memory.DeathAlong(main.Centre, target, now));
             var shortTimer = world.Intel.Objectives is Modes.ShowdownMode sd && sd.SecondsLeft(world) is var left && left > 0f && left < 60f;
-            if (ScoutPlanner.Needed(unknown, danger, _urgency, shortTimer) && SendScout(world, intel, p, target) is { } scoutEta)
+            if (ScoutPlanner.Needed(unknown + ReconBoostP4(), danger, _urgency, shortTimer) && SendScout(world, intel, p, target) is { } scoutEta)
             {
                 var wait = ScoutPlanner.Wait(scoutEta);
                 p.ScoutUntil = now + wait;
@@ -780,6 +780,11 @@ namespace MachineBrigade.Sim.AI
                 foreach (var e in intel.Events)
                     if (e.Kind == IntelEventKind.ObjectivePressure && e.Priority >= 75f) Add(3, e.Centre, "losing point");
                 foreach (var w in tc.Windows) Add(4, w.Centre, "counterattack");
+                // AI MASTER P4 spec 153 / 156: the forecast says the package in contact loses; opportunity windows to exploit.
+                if (ForecastCollapseP4(world, intel) is { } collapse) Add(3, collapse, "forecast collapse");
+                if (PlanningP4 is { } tp4)
+                    foreach (var w in tp4.Opportunities)
+                        if ((w.Roles & (OpportunityRoles.Ground | OpportunityRoles.Fast)) != 0 && w.Confidence >= Tun.ReserveRelease.ExploitConfidence) Add(4, w.Centre, "exploit " + w.Kind);
                 if (Intent.PrimaryObjective is { } goal)
                     foreach (var e in intel.Events)
                         if (e.Kind == IntelEventKind.Window && e.Confidence >= Tun.ReserveRelease.ExploitConfidence && Vector2.Distance(e.Centre, goal) < 80f)
@@ -976,6 +981,7 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Spec 142 / 144: a support card the side's AI just used: the smoke mission is planned, the battery marked struck.</summary>
         public void NoteSupportP3(SimWorld world, SupportKind kind, Vector2 at)
         {
+            NoteSupportP4(world, kind, at);
             if (CoordinationP3 is not { } tc) return;
             var now = world.Time;
             if (kind == SupportKind.Smoke)
@@ -1060,6 +1066,7 @@ namespace MachineBrigade.Sim.AI
                 if (InChoke(world, spot) || world.Traffic.InPassage(spot)) continue;
                 if (!tc.Frontline.Behind(spot, Tun.FireMissions.FrontMargin)) continue;
                 if (world.Positions.ReservedByOther(spot, v.Id) || !world.Traffic.CanPark(spot, v)) continue;
+                if (!ClaimGunP4(world, v, IntentOwner.Scoot, Tun.Ownership.ScootClaimS)) return false;
                 world.Submit(new Command(CommandType.Move, Team, new[] { v.Id }, spot));
                 tc.Metrics.ArtilleryScoots++;
                 P3Reasons.Unit(world, v, DecisionKind.Action, counterBattery ? P3Reasons.CounterBatteryScoot : P3Reasons.Scoot, $"{distance:0} m");
@@ -1074,7 +1081,7 @@ namespace MachineBrigade.Sim.AI
             var now = world.Time;
             if (v.Order.Kind == OrderKind.Attack && v.Order.Target.IsValid)
             {
-                if (intel.Find(v.Order.Target) is { InSight: false } stale && stale.Age(now) > Tun.FireMissions.StaleSeconds)
+                if (intel.Find(v.Order.Target) is { InSight: false } stale && stale.Age(now) > Tun.FireMissions.StaleSeconds && !GunHeldByOtherP4(world, v, IntentOwner.FireMission))
                 {
                     world.Submit(new Command(CommandType.Stop, Team, new[] { v.Id }));
                     tc.Metrics.StaleTargetsDropped++;
@@ -1105,6 +1112,8 @@ namespace MachineBrigade.Sim.AI
                     bestD = d;
                 }
             if (pick == null) return;
+            // AI MASTER P4 (P3 leftover a): one owner orders a gun at a time; the mission owns it while it runs.
+            if (!ClaimGunP4(world, v, IntentOwner.FireMission, Tun.Ownership.MissionClaimS)) return;
             world.Submit(new Command(CommandType.Attack, Team, new[] { v.Id }, pick.Position, pick.Id));
             tc.Board.AssignMission(pick.Id.Value, v.Id, now + 10.0);
             P3Reasons.Unit(world, v, DecisionKind.Target, finish ? P3Reasons.FinishMission : P3Reasons.CounterBatteryMission, $"#{pick.Id.Value}");

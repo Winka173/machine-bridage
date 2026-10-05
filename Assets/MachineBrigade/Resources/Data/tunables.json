@@ -840,6 +840,144 @@
       "ambushSyncRadius": { "value": 60.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Stance.AmbushSyncRadius (AI MASTER P3)" },
       "highValueReach": { "value": 0.85, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Stance.HighValueReach (AI MASTER P3)" },
       "dispersalHoldS": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Stance.DispersalHoldS (AI MASTER P3)" }
+    },
+    // AI MASTER lane P4 (advanced planning): forecast, plans, probe / feint, adaptation, air packages, boss tactics, stagger.
+    "planning": {
+      "enabled": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "06", "code": "Planning.Enabled (AI MASTER P4)" },
+      "plansByLevel": { "value": [1, 2, 3, 4], "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Planning.PlansByLevel (AI MASTER P4)" },
+      "depthByLevel": { "value": [1, 1, 2, 2], "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Planning.DepthByLevel (AI MASTER P4)" },
+      "objectiveGain": { "value": 30.0, "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "Planning.ObjectiveGain (AI MASTER P4)" },
+      "enemyLossWeight": { "value": 1.0, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Planning.EnemyLossWeight (AI MASTER P4)" },
+      "friendlyLossWeight": { "value": 1.2, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Planning.FriendlyLossWeight (AI MASTER P4)" },
+      "delayCostPerS": { "value": 0.6, "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "Planning.DelayCostPerS (AI MASTER P4)" },
+      "congestionWeight": { "value": 4.0, "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "Planning.CongestionWeight (AI MASTER P4)" },
+      "uncertaintyWeight": { "value": 10.0, "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "Planning.UncertaintyWeight (AI MASTER P4)" },
+      "waitArtilleryS": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Planning.WaitArtilleryS (AI MASTER P4)" },
+      "flankDpsBonus": { "value": 1.25, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Planning.FlankDpsBonus (AI MASTER P4)" },
+      "flankEnemyUptime": { "value": 0.6, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Planning.FlankEnemyUptime (AI MASTER P4)" },
+      "holdPowerFloor": { "value": 0.35, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Planning.HoldPowerFloor (AI MASTER P4)" },
+      "switchMargin": { "value": 0.1, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Planning.SwitchMargin (AI MASTER P4)" },
+      "repeatPenalty": { "value": [0.25, 0.5], "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Planning.RepeatPenalty (AI MASTER P4)" },
+      "repeatHalfLifeS": { "value": 45.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Planning.RepeatHalfLifeS (AI MASTER P4)" }
+    },
+    "forecast": {
+      "seconds": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Forecast.Seconds (AI MASTER P4)" },
+      "cacheS": { "value": 0.75, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Forecast.CacheS (AI MASTER P4)" },
+      "aoeClusterBonus": { "value": 0.15, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Forecast.AoeClusterBonus (AI MASTER P4)" },
+      "aoeMax": { "value": 1.0, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Forecast.AoeMax (AI MASTER P4)" },
+      "uptimeFloor": { "value": 0.15, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Forecast.UptimeFloor (AI MASTER P4)" },
+      "unknownMargin": { "value": 1.25, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Forecast.UnknownMargin (AI MASTER P4)" },
+      "reinforceRadius": { "value": 80.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Forecast.ReinforceRadius (AI MASTER P4)" },
+      "depthTwoShare": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Forecast.DepthTwoShare (AI MASTER P4)" },
+      "enoughRatio": { "value": 2.0, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Forecast.EnoughRatio (AI MASTER P4)" },
+      "enoughEnemyAfter": { "value": 0.3, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Forecast.EnoughEnemyAfter (AI MASTER P4)" },
+      "enoughMaxHoldS": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Forecast.EnoughMaxHoldS (AI MASTER P4)" },
+      "enoughMinKnown": { "value": 3, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Forecast.EnoughMinKnown (AI MASTER P4)" }
+    },
+    "packageAbort": {
+      "enemyRise": { "value": 1.5, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "PackageAbort.EnemyRise (AI MASTER P4)" },
+      "clusterShift": { "value": 25.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "PackageAbort.ClusterShift (AI MASTER P4)" },
+      "lethalWarningPad": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "PackageAbort.LethalWarningPad (AI MASTER P4)" }
+    },
+    "commitment": {
+      "routeS": { "value": [4.0, 6.0], "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Commitment.RouteS (AI MASTER P4)" },
+      "packageS": { "value": [6.0, 12.0], "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Commitment.PackageS (AI MASTER P4)" }
+    },
+    "opportunity": {
+      "aaDownS": { "value": 15.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Opportunity.AaDownS (AI MASTER P4)" },
+      "partDownS": { "value": 12.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Opportunity.PartDownS (AI MASTER P4)" },
+      "artilleryExposedS": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Opportunity.ArtilleryExposedS (AI MASTER P4)" },
+      "exposedRadius": { "value": 35.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Opportunity.ExposedRadius (AI MASTER P4)" },
+      "redeployS": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Opportunity.RedeployS (AI MASTER P4)" },
+      "redeployDrop": { "value": 0.4, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Opportunity.RedeployDrop (AI MASTER P4)" },
+      "mainFarS": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Opportunity.MainFarS (AI MASTER P4)" },
+      "mainFarDistance": { "value": 120.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "Opportunity.MainFarDistance (AI MASTER P4)" },
+      "gateS": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Opportunity.GateS (AI MASTER P4)" },
+      "attackPoints": { "value": 10.0, "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "Opportunity.AttackPoints (AI MASTER P4)" },
+      "planGain": { "value": 10.0, "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "Opportunity.PlanGain (AI MASTER P4)" }
+    },
+    "probe": {
+      "powerShare": { "value": [0.08, 0.15], "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Probe.PowerShare (AI MASTER P4)" },
+      "maxSeconds": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Probe.MaxSeconds (AI MASTER P4)" },
+      "envelope": { "value": 0.9, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Probe.Envelope (AI MASTER P4)" },
+      "lowResistance": { "value": 0.6, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Probe.LowResistance (AI MASTER P4)" },
+      "atThreat": { "value": 1.0, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Probe.AtThreat (AI MASTER P4)" },
+      "exploitS": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Probe.ExploitS (AI MASTER P4)" },
+      "cooldownS": { "value": 45.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Probe.CooldownS (AI MASTER P4)" },
+      "blockedS": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Probe.BlockedS (AI MASTER P4)" },
+      "laneMemoryS": { "value": 60.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Probe.LaneMemoryS (AI MASTER P4)" },
+      "minUnknown": { "value": 0.35, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Probe.MinUnknown (AI MASTER P4)" }
+    },
+    "feint": {
+      "minUtility": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Feint.MinUtility (AI MASTER P4)" },
+      "weights": { "value": [0.4, 0.3, 0.3, 0.2], "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Feint.Weights (AI MASTER P4)" },
+      "maxSeconds": { "value": 25.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Feint.MaxSeconds (AI MASTER P4)" },
+      "redeployShare": { "value": 0.25, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Feint.RedeployShare (AI MASTER P4)" },
+      "cooldownS": { "value": 60.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Feint.CooldownS (AI MASTER P4)" },
+      "powerShareMax": { "value": 0.2, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Feint.PowerShareMax (AI MASTER P4)" }
+    },
+    "adaptation": {
+      "emaAlpha": { "value": 0.2, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Adaptation.EmaAlpha (AI MASTER P4)" },
+      "lowUtilization": { "value": 0.15, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Adaptation.LowUtilization (AI MASTER P4)" },
+      "lowUtilizationS": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Adaptation.LowUtilizationS (AI MASTER P4)" },
+      "purchaseFloor": { "value": 0.5, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Adaptation.PurchaseFloor (AI MASTER P4)" },
+      "baitRepeat": { "value": 2, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Adaptation.BaitRepeat (AI MASTER P4)" },
+      "leashScale": { "value": 0.6, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "Adaptation.LeashScale (AI MASTER P4)" },
+      "reconBoost": { "value": 0.15, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Adaptation.ReconBoost (AI MASTER P4)" },
+      "airHeavyShare": { "value": 0.35, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "Adaptation.AirHeavyShare (AI MASTER P4)" },
+      "campImpacts": { "value": 6, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Adaptation.CampImpacts (AI MASTER P4)" },
+      "towerCount": { "value": 3, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Adaptation.TowerCount (AI MASTER P4)" }
+    },
+    "airOps": {
+      "seadHoldS": { "value": 12.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AirOps.SeadHoldS (AI MASTER P4)" },
+      "seadStandoff": { "value": 50.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "AirOps.SeadStandoff (AI MASTER P4)" },
+      "seadThreat": { "value": 1.0, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "AirOps.SeadThreat (AI MASTER P4)" },
+      "riskSamples": { "value": 6, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "AirOps.RiskSamples (AI MASTER P4)" },
+      "riskPassLimit": { "value": 1, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "AirOps.RiskPassLimit (AI MASTER P4)" },
+      "capRadius": { "value": 60.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "AirOps.CapRadius (AI MASTER P4)" },
+      "capLeash": { "value": 1.5, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "AirOps.CapLeash (AI MASTER P4)" },
+      "capPatrolS": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AirOps.CapPatrolS (AI MASTER P4)" },
+      "handoffMax": { "value": 2, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "AirOps.HandoffMax (AI MASTER P4)" },
+      "handoffTtkS": { "value": 4.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AirOps.HandoffTtkS (AI MASTER P4)" },
+      "bomberMinValue": { "value": 8.0, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "AirOps.BomberMinValue (AI MASTER P4)" },
+      "bomberRiskMax": { "value": 1.5, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "AirOps.BomberRiskMax (AI MASTER P4)" },
+      "bomberBlastGap": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "AirOps.BomberBlastGap (AI MASTER P4)" },
+      "bomberWaitMaxS": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AirOps.BomberWaitMaxS (AI MASTER P4)" },
+      "interceptHorizonS": { "value": 6.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "AirOps.InterceptHorizonS (AI MASTER P4)" }
+    },
+    "bossTactics": {
+      "weakpointWeights": { "value": [50.0, 25.0, 40.0, 30.0], "unit": "points", "kind": "nguong", "linh_vuc": "06", "code": "BossTactics.WeakpointWeights (AI MASTER P4)" },
+      "sectorsByLevel": { "value": [3, 3, 4, 5], "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "BossTactics.SectorsByLevel (AI MASTER P4)" },
+      "sectorMargin": { "value": 6.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "BossTactics.SectorMargin (AI MASTER P4)" },
+      "patternWindowS": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "BossTactics.PatternWindowS (AI MASTER P4)" },
+      "patternCost": { "value": 25.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "BossTactics.PatternCost (AI MASTER P4)" },
+      "pressureBudget": { "value": 2, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "BossTactics.PressureBudget (AI MASTER P4)" },
+      "pressureDelayS": { "value": 1.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "BossTactics.PressureDelayS (AI MASTER P4)" },
+      "pressureMaxDelayS": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "BossTactics.PressureMaxDelayS (AI MASTER P4)" },
+      "phaseMargin": { "value": 0.08, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "BossTactics.PhaseMargin (AI MASTER P4)" },
+      "phaseReserveShare": { "value": 0.3, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "BossTactics.PhaseReserveShare (AI MASTER P4)" },
+      "phaseReserveMaxS": { "value": 25.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "BossTactics.PhaseReserveMaxS (AI MASTER P4)" }
+    },
+    "stagger": {
+      "window": { "value": [0.15, 0.4], "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Stagger.Window (AI MASTER P4)" }
+    },
+    "gating": {
+      "probeLevel": { "value": 2, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Gating.ProbeLevel (AI MASTER P4)" },
+      "feintLevel": { "value": 2, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Gating.FeintLevel (AI MASTER P4)" },
+      "adaptationLevel": { "value": 2, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Gating.AdaptationLevel (AI MASTER P4)" },
+      "seadLevel": { "value": 2, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Gating.SeadLevel (AI MASTER P4)" },
+      "patternLevel": { "value": 2, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Gating.PatternLevel (AI MASTER P4)" },
+      "bomberLevel": { "value": 1, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Gating.BomberLevel (AI MASTER P4)" }
+    },
+    "ownership": {
+      "missionClaimS": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Ownership.MissionClaimS (AI MASTER P4)" },
+      "scootClaimS": { "value": 8.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Ownership.ScootClaimS (AI MASTER P4)" },
+      "airClaimS": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Ownership.AirClaimS (AI MASTER P4)" }
+    },
+    "cues": {
+      "enabled": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "06", "code": "Cues.Enabled (AI MASTER P4)" },
+      "cooldownS": { "value": 10.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Cues.CooldownS (AI MASTER P4)" },
+      "kept": { "value": 32, "unit": "count", "kind": "nguong", "linh_vuc": "06", "code": "Cues.Kept (AI MASTER P4)" }
     }
   },
   "campaign": {

@@ -55,13 +55,15 @@ namespace MachineBrigade.Sim.Bosses
             var locked = boss.BodyLocked;
             var best = -1;
             var bestScore = float.MinValue;
+            // AI MASTER P4 spec 179: an AI side's shooters weigh the weakpoint utility (silenced DPS, APS / shield / radar, phase, kill progress).
+            var utility = WeakpointsForP4(shooter);
             for (var i = 0; i < parts.Count; i++)
             {
                 if (boss.PartBroken[i] || !Reaches(shooter, boss, i, weapon)) continue;
                 var distance = Vector2.Distance(boss.PartPosition(i), shooter.Position);
                 float score;
                 if (locked) score = (boss.BodyShut ? boss.BigAttack?.Def.UsesPart(parts[i].Id) ?? false : parts[i].Kind == boss.Def.PartLock?.Kind) ? 1000f - distance : -500f - distance;
-                else score = Danger(shooter, boss, i) - distance * 0.01f;
+                else score = utility ? WeakpointP4(shooter, boss, i, distance) : Danger(shooter, boss, i) - distance * 0.01f;
                 if (score <= bestScore) continue;
                 bestScore = score;
                 best = i;

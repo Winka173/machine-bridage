@@ -476,6 +476,7 @@ namespace MachineBrigade.Sim.AI
 
             // AI MASTER P3: confidence, route diversity, posture, package and dispersion factors (SquadLayer.P3).
             AdjustP3(world, intel, s, goal);
+            AdjustP4(world, intel, s, goal);
             var list = new List<(SquadAction, float)>();
             foreach (var o in _options) list.Add((o.action, o.score));
             _lastOptions[s.Id] = list;
@@ -581,10 +582,18 @@ namespace MachineBrigade.Sim.AI
                 foreach (var id in s.MemberList)
                 {
                     if (!world.TryGetVehicle(id, out var v) || Vector2.Distance(v.Position, w.Centre) > w.Radius + v.Radius + 2f) continue;
+                    // AI MASTER P4 spec 217: each member reacts after its own deterministic stagger (the squad stays dodging meanwhile).
+                    if (StaggerWaitP4(id, key, seen, now, delay))
+                    {
+                        any = true;
+                        continue;
+                    }
                     // The shortest way out of the ring.
                     var away = v.Position - w.Centre;
                     away = away.LengthSquared() > 0.01f ? Vector2.Normalize(away) : SimMath.Forward(v.Heading + MathF.PI * 0.5f);
                     var exit = world.Map.Clamp(w.Centre + away * (w.Radius + v.Radius + 6f), 4f);
+                    // AI MASTER P4 spec 181: the squad's escape sectors (spread over 3-5 safe sectors) instead of one radial point each.
+                    if (EscapeExitP4(world, intel, s, w, key, id) is { } sector) exit = sector;
                     if (!v.HasPath || Vector2.Distance(v.Order.Point, exit) > 4f)
                         world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, exit));
                     any = true;
@@ -697,6 +706,8 @@ namespace MachineBrigade.Sim.AI
                     if (s.Action == SquadAction.Attack && (s.Task.Objective == null || s.State == SquadState.Combat) &&
                         NearestContact(intel, s.Centre) is { } chased) goal = PursuitP3(world, intel, s, goal, chased);
                     if (s.Action == SquadAction.Attack) goal = FixP3(world, s, target, goal);
+                    // AI MASTER P4 spec 132-133: a probe / feint keeps its envelope.
+                    goal = EnvelopeP4(world, intel, s, goal);
                     break;
                 }
                 case SquadAction.Hold:
