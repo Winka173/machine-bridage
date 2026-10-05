@@ -324,6 +324,33 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>
+        /// Sections 7-8 for the targeting lane (P0 wiring, <see cref="TargetAccessCache.Resolver"/>): whether some cell of
+        /// <paramref name="component"/> of <paramref name="domain"/>'s graph lies in the firing band round a target at
+        /// <paramref name="target"/> (of <paramref name="radius"/>): distance - radius &lt;= <paramref name="maxRange"/> and
+        /// distance &gt;= <paramref name="minRange"/>, as the combat system measures. A component test (no travel distances):
+        /// every cell of a component is reachable from every other, so it answers for any unit standing in it. Air and fixed
+        /// domains have no graph: true (their reach is judged where they are).
+        /// </summary>
+        public bool CanFireFromComponent(MobilityDomain domain, int component, Vector2 target, float radius, float minRange, float maxRange)
+        {
+            if (Map.For(domain) is not { } graph || component <= 0) return true;
+            var outer = maxRange + radius;
+            var outerSq = outer * outer;
+            var minSq = minRange * minRange;
+            var (x0, y0) = Map.CellXY(target - new Vector2(outer));
+            var (x1, y1) = Map.CellXY(target + new Vector2(outer));
+            for (var y = Math.Max(0, y0); y <= Math.Min(Map.Rows - 1, y1); y++)
+            for (var x = Math.Max(0, x0); x <= Math.Min(Map.Columns - 1, x1); x++)
+            {
+                var i = y * Map.Columns + x;
+                if (graph.ComponentOfCell(i) != component) continue;
+                var d2 = Vector2.DistanceSquared(Map.CellCentre(i), target);
+                if (d2 <= outerSq && d2 >= minSq) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Section 67: whether a boss's workshop or escort wave should put a <paramref name="def"/> down at
         /// <paramref name="at"/> for <paramref name="team"/>: it must be able to stand there and reach the other side's camp,
         /// a capture point, or fire on a known enemy. Aircraft and ships pass (their own systems place them).

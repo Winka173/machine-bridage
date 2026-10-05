@@ -235,6 +235,13 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         internal ShotClock Clock { get; } = new ShotClock();
 
+        /// <summary>P0 wiring: the longest a wreck lives (WreckManager.MaxLife); the unit preview caps it.</summary>
+        public float WreckLife
+        {
+            get => _wrecks.MaxLife;
+            set => _wrecks.MaxLife = value;
+        }
+
         public void Consume(IReadOnlyList<SimEvent> events, ViewRegistry views, MapView map)
         {
             var now = Time.time;

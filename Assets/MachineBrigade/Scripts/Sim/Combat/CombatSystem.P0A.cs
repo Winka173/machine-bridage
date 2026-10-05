@@ -182,12 +182,18 @@ namespace MachineBrigade.Sim.Combat
             var index = MountOf(v, weapon);
             var now = _world.Time;
             var worth = 1f;
-            // Spec 89: AimPenalty = exp(-AimSeconds / 4).
-            var aim = AimSeconds(v, index, other.Position);
-            if (aim > 0f) worth *= MathF.Exp(-aim / MathF.Max(0.1f, AimTau));
-            // Spec 45: the current target +15 % for 1.5 s after it was acquired.
-            var state = v.Weapons[index];
-            if (state.Target == other.Id && now - state.AcquiredAt < StickSeconds) worth *= 1f + StickBonus;
+            // P0 wiring (P0-A / P0-C overlap): a boss with a brain has its aim time, bearing and persistence weighed once, by
+            // its target director (BossTargetDirector, through BossWorth: per mount, the hull never turned for a target);
+            // the aim penalty and stickiness here would count them twice. Overkill, doctrine and objective threat stay here.
+            if (v.Brain == null)
+            {
+                // Spec 89: AimPenalty = exp(-AimSeconds / 4).
+                var aim = AimSeconds(v, index, other.Position);
+                if (aim > 0f) worth *= MathF.Exp(-aim / MathF.Max(0.1f, AimTau));
+                // Spec 45: the current target +15 % for 1.5 s after it was acquired.
+                var state = v.Weapons[index];
+                if (state.Target == other.Id && now - state.AcquiredAt < StickSeconds) worth *= 1f + StickBonus;
+            }
             // Spec 46 + Part H: ThreatToObjective, weighted against ThreatToSelf (the old score's threat factors).
             var objective = ThreatToObjective(v, other);
             if (objective > 0f)

@@ -107,6 +107,10 @@ namespace MachineBrigade.Sim.Navigation
 
         public bool IsWalkable(int x, int y) => InBounds(x, y) && _blockers[Index(x, y)] == 0;
 
+        /// <summary>AI MASTER P0 wiring: how many blockers close a cell (0: open), so a breach test can tell a cell closed only
+        /// by breakable walls and gates from one closed by the ground itself.</summary>
+        internal int BlockersAt(int index) => _blockers[index];
+
         public bool IsWalkable(Vector2 p)
         {
             var (x, y) = CellOf(p);
