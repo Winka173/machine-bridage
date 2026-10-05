@@ -14,9 +14,12 @@ tunables.json -> 09_ai/Hang_so_ai (+02_boss for bosses.bossBrain). Switches: ai.
 Part C; 42-47/105-106; Part B; Part H; P0-B; P0-C; P1; Part I; Part J; Parts D-G; squad lifecycle; P3; P4; P5 K, L1/L3/L4/L5, N, O, P.
 ## 6. Scaffolded (why)
 Flow-field tiles (phase 1 first); full intent arbiter 187 (guns/aircraft only); support-effectiveness EMA (API); boss skill pacing (big attacks only); L2 reposition window; procurement 0.5 Hz (kept by difficulty); 215 cues as notices; naval lane depth (maps have straight lanes).
-## 7-17. Tests [LEAD]
-## 18. Performance [LEAD]
-## 19. Severe unstuck / naval reverse [LEAD]
+## 7-17. Tests
+All 154 AiMaster EditMode tests pass (first run 136/154; 11 code fixes + 7 test-setup fixes, none weakened; see DECISIONS 'AI MASTER test fixes').
+## 18. Performance
+48v48 Conquest, seed 7, 120 s (PERF_P5_48v48.txt): AI total 0.893 ms/step (Steering 0.361, Targeting 0.261, Squad 0.141, Tactical 0.053, Commander 0.037, Watchdog 0.020, HealthMonitor 0.012, Bosses 0.005, Procurement 0.003); whole step mean 1.087 ms, p99 4.084 ms, max 6.68 ms. Caveat: target switches and squads-without-damage were 0 — the two sides may barely have fought.
+## 19. Severe unstuck / naval reverse
+SevereUnstuck 0 (0.00 per 10 unit-min, target <= 1); NavalReverseEvents 0; unregistered reason codes none.
 ## 20. DecisionLog examples [LEAD]
 ## 21. Generated outputs
 Pack regenerated, checks 15/15 PASS; 09_ai six new sheets, 02_boss Boss_ma_ly_do, 04 Che_do_hoc_thuyet_AI.
