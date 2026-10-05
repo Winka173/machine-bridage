@@ -1,0 +1,33 @@
+{
+ "about": "MVA W1-B (spec parts Z, CG, BX 'owner exceptions must be recorded'): formal waivers and review notes for model budget findings, read by Tools/assets/budget_audit.py. A waiver turns a HARD finding into WAIVED; a note on a SOFT / INFO finding records the review. Each names who decided, when, why and the follow-up. The renderer clean-ups are queued for map/visual/audio W3 (Docs/mapvisaudio/PLAN.md: LOD/render cleanup + full outlier scan).",
+ "waivers": {
+  "vehicle_hangar_base": {
+   "renderers": {"by": "lane W1-B under the owner's budget rule (02/10)", "date": "2026-10-05", "reason": "base building drawn once per base, never in numbers; the structure class cap (48) is sized for map props", "followUp": "W3: merge same-material static detail (keep doors and moving parts)"}
+  },
+  "aircraft_hangar": {
+   "renderers": {"by": "lane W1-B under the owner's budget rule (02/10)", "date": "2026-10-05", "reason": "base building drawn once per base, never in numbers; the structure class cap (48) is sized for map props", "followUp": "W3: merge same-material static detail (keep doors and moving parts)"}
+  },
+  "ixion": {
+   "renderers": {"by": "lane W1-B under the owner's budget rule (02/10)", "date": "2026-10-05", "reason": "boss (one per fight), 8 % over boss_s; its wheels and tyres are separate breakable parts (Part_wheel / Part_tyre) and must stay their own renderers", "followUp": "W3: merge static hull detail only"}
+  },
+  "fpv_carrier": {
+   "renderers": {"by": "lane W1-B under the owner's budget rule (02/10)", "date": "2026-10-05", "reason": "2 over the ground hard cap (78 / 76); the drone rack's cells are launch points", "followUp": "W3: merge two static same-material pieces"}
+  },
+  "heavy_aa": {
+   "renderers": {"by": "lane W1-B under the owner's budget rule (02/10)", "date": "2026-10-05", "reason": "1 over the ground hard cap (77 / 76); turret, radar and barrels are moving parts", "followUp": "W3: merge one static same-material piece"}
+  },
+  "attack_jet": {
+   "renderers": {"by": "lane W1-B", "date": "2026-10-05", "reason": "SOFT (40: budget 36, cap 44), reviewed: its stable muzzle names are fixed (MVA W1-B); a renderer merge needs a Blender rebuild with renders, kept for W3 (spec part AB step 2)", "followUp": "W3: merge pylons / small static same-material parts, keep Part_wing, mounts and bombs"}
+  },
+  "attack_jet_hd": {
+   "renderers": {"by": "lane W1-B", "date": "2026-10-05", "reason": "follows attack_jet (normal and _hd keep the same runtime nodes)", "followUp": "W3 with attack_jet"}
+  },
+  "cp_relay": {
+   "renderers": {"by": "lane W1-B", "date": "2026-10-05", "reason": "SOFT (43: budget 39, cap 48), reviewed: a capture-point structure, several on a map but static; under the cap", "followUp": "W3 (spec part AB): merge repeated small static details and same-material props"}
+  },
+  "armored_bulldozer": {
+   "vertices": {"by": "owner rule 02/10 (budgets are a guide; over-budget models are kept)", "date": "2026-10-05", "reason": "INFO: 12,787 vertices, 1.5 % over the ground hard cap 12,600 (not enforced on vertices); one breacher per side, not a unit seen in numbers", "followUp": "W3 (spec part AB): trim internal faces and dense small details; keep the blade silhouette, tracks, breacher identity and runtime nodes"},
+   "triangles": {"by": "lane W1-B", "date": "2026-10-05", "reason": "SOFT: 9,246 (budget 7,800, cap 9,700), reviewed with the vertices", "followUp": "W3 with the vertices"}
+  }
+ }
+}
