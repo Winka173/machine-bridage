@@ -1417,7 +1417,7 @@ namespace MachineBrigade.Sim
         }
 
         /// <summary>The square a fixed defence blocks, whichever way it faces.</summary>
-        private static float StaticFootprint(VehicleDef def) => MathF.Max(def.Length, def.Width) * 0.8f;
+        internal static float StaticFootprint(VehicleDef def) => MathF.Max(def.Length, def.Width) * 0.8f;
 
         private void RemoveDead()
         {

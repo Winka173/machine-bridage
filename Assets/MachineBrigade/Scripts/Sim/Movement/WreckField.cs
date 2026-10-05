@@ -58,6 +58,13 @@ namespace MachineBrigade.Sim.Movement
         public int NavalCount => _naval;
 
         /// <summary>
+        /// P0 wiring (owner 04/10): the longest a ground hulk stays solid in this world, s (+inf: the data's 30-45 s). The
+        /// unit preview's firing range caps it (a target dies every few seconds there), with its view on the same cap
+        /// (WreckManager.MaxLife), so its hulks sink and go and the replacements' clear-spot test follows them.
+        /// </summary>
+        public double MaxGroundSeconds { get; set; } = double.PositiveInfinity;
+
+        /// <summary>
         /// How long a vehicle's wreck stays solid, s: a ship until it has gone under, a boss's hulk its 90 s, any other hulk
         /// 30-45 s, the spread fixed by its id (so the view sinks it on the same clock without asking the Sim).
         /// </summary>
@@ -85,7 +92,7 @@ namespace MachineBrigade.Sim.Movement
             if (!Leaves(v)) return;
             var half = SimMath.Forward(v.Heading) * v.Def.HullHalf;
             var naval = v.Def.Naval != null;
-            _list.Add(new WreckSpot(v.Id, v.Position, v.Position - half, v.Position + half, v.Def.HullRadius, naval, now + Life(v.Def, v.Id)));
+            _list.Add(new WreckSpot(v.Id, v.Position, v.Position - half, v.Position + half, v.Def.HullRadius, naval, now + (naval ? Life(v.Def, v.Id) : Math.Min(Life(v.Def, v.Id), MaxGroundSeconds))));
             if (naval) _naval++;
         }
 

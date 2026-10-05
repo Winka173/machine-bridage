@@ -13024,3 +13024,18 @@ Nhánh `feature/ai-p0c` (lane C, 04/10). Nguồn: `Docs/ai/spec_master/Machine_B
 | P0C-12 | Nhịp bắn boss | mỗi ụ pháo tự do (twin lệch) | hai vũ khí nặng khác loại (hồi >= 1 s) không mở lửa cùng lúc: cách min(0.35 s, hồi / (2 x số ụ nặng)); loạt đồng thời / twin / salvo / đòn lớn giữ nguyên | mục 203 |
 | P0C-13 | Chọn mục tiêu boss | BossWorth theo kiểu hành vi | thêm: đe dọa boss / hộ tống / nhiệm vụ, bắn tới được (x0.6 nếu không ụ nào xoay tới), thời gian ngắm, giữ mục tiêu (kẹp 0.4-2) | mục 65; overkill thuộc P0-A |
 | P0C-14 | Debug tàu (mục 96) | không có | LaneId, RouteProgress, DesiredHullHeading, ActualHeading, BroadsideCandidate, TurnRadius, TargetId, HullTargetReason, TurretTargets[], CPA vào `Vehicle.BossBrain` và DecisionLog | mục 96 |
+
+## AI MASTER P0 wiring
+
+Nhánh `feature/ai-p0-wire` (lane A, 05/10), trên P0-A + P0-B + P0-C đã gộp. Quyết định: DECISIONS "AI MASTER P0 wiring + preview wrecks (lane A)". Không chạy Unity / test; Sim build bằng dotnet (0 lỗi), test mới compile với stub.
+
+| # | mục | cũ | mới | ghi chú |
+|---|---|---|---|---|
+| W-1 | Kiểm tra tiếp cận mục tiêu (spec 47/83) | `TargetAccessCache` lấy mẫu vùng NavGrid (ô mở, kể cả biển), không tính bán kính mục tiêu | `Resolver` = P0-B `EngagementFeasibility.CanFireFromComponent`: thành phần liên thông của miền di chuyển (xe mặt đất không tính biển), dải bắn như combat đo (khoảng cách - bán kính <= tầm, >= tầm tối thiểu); topology lệch grid (chờ rebuild 5 s) thì lấy mẫu grid như cũ | xe trên bờ bắn tàu: chỉ khi bờ nằm trong tầm |
+| W-2 | Cache tiếp cận | khoá XOR (có thể trùng) | khoá tuple (nguồn, ô 8 m, dải tầm / tầm tối thiểu / bán kính); xoá khi grid đổi version hoặc topology rebuild | |
+| W-3 | Mục tiêu sau tường phá được | lệnh tấn công của AI bị bỏ mỗi lần (`COMBAT_IDLE_NO_REACHABLE_TARGET`) | "phá trước": `BreachAccess` coi ô chỉ bị chặn bởi tường / cổng / vật cản phá được (đoạn tường căn cứ, xe Wall/Obstacle của địch, prop phá được như cổng pháo đài) là đi qua được sau khi phá; Dijkstra (ô mở 1, ô phá được 1 + 12) tới dải bắn; lệnh chuyển sang đánh cấu trúc chặn đầu tiên trên đường; log `TARGET_BREACH_FIRST`, đếm `CombatWatch.Breaches` | Part B (breacher / siege), Part H |
+| W-4 | Attack-move vào căn cứ có tường | địch sau tường bị bỏ qua | khi đích của attack-move cũng bị bịt: giao chiến với tường / cổng (xe) chặn đường | prop không (combat chỉ giữ Engaged là xe) |
+| W-5 | Mục tiêu thật sự không tới được | bỏ | vẫn bỏ (vách đá, vùng kín không phá được, biển với xe mặt đất); lệnh của người chơi giữ nguyên | |
+| W-6 | Boss: P0-A + P0-C chồng nhau | thời gian ngắm và "dính mục tiêu" tính hai lần (P0-A exp(-t/4), +15 % và director /(1+0.15 t), x1.15) | boss có Brain: chỉ director (theo từng ụ, thân không quay theo mục tiêu); overkill, doctrine, ThreatToObjective vẫn của P0-A; lọc cứng chỉ P0-A (director chỉ là hệ số) | không lọc kép |
+| W-7 | Xác xe trong preview "In action" | xác sống 30-45 s như trận (thay mục tiêu mỗi ~2.5 s, đỗ cạnh xác) nên trường bắn luôn đầy xác, không thấy biến mất | preview: xác cháy rồi chìm và mất sau 12 s (`FiringRange.PreviewWreckSeconds`), Sim cùng đồng hồ (`WreckField.MaxGroundSeconds`), view `WreckManager.MaxLife`; trận không đổi | tàu chìm giữ 18 s |
+| W-8 | Test | | `AiMasterP0WiringTests` (8 test: resolver, topology lệch, bờ / tàu, phá trước, lệnh chuyển sang tường, vẫn bỏ khi không phá được, lệnh người chơi, tất định) | viết, chưa chạy |

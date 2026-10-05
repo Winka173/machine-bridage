@@ -72,6 +72,9 @@ namespace MachineBrigade.Sim.AI
         public const string TargetUnreachableDropped = "TARGET_UNREACHABLE_DROPPED";
         public const string TargetOverkillSpread = "TARGET_OVERKILL_SPREAD";
         public const string TargetBreachHeld = "TARGET_BREACH_HELD";
+
+        /// <summary>P0 wiring: a target behind a breakable wall or gate: the blocking structure is attacked first.</summary>
+        public const string TargetBreachFirst = "TARGET_BREACH_FIRST";
         public const string WatchdogCombatAnomaly = "WATCHDOG_COMBAT_ANOMALY";
         public const string WatchdogRecoveryEscalated = "WATCHDOG_RECOVERY_ESCALATED";
         public const string WatchdogIdleUnexplained = "WATCHDOG_IDLE_UNEXPLAINED";

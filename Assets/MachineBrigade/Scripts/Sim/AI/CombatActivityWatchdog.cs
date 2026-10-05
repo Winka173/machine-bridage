@@ -84,6 +84,7 @@ namespace MachineBrigade.Sim.AI
             internal float LastAimOff = float.NaN;
             internal CombatIdleReason Logged;
             internal EntityId LastDropped;
+            internal EntityId LastBreach;
         }
 
         private readonly SimWorld _world;
@@ -99,6 +100,9 @@ namespace MachineBrigade.Sim.AI
         public int Unexplained { get; private set; }
         public int Escalations { get; private set; }
         public int Dropped { get; private set; }
+
+        /// <summary>P0 wiring: targets behind a breakable wall or gate turned into "breach first" (not dropped).</summary>
+        public int Breaches { get; private set; }
 
         /// <summary>The unit's Part C record (null: not an armed unit, or not looked at yet).</summary>
         public Record? RecordOf(EntityId unit) => _records.TryGetValue(unit, out var r) ? r : null;
@@ -147,6 +151,20 @@ namespace MachineBrigade.Sim.AI
             r.LastDropped = target.Id;
             Dropped++;
             CombatReasons.Log(_world, v, DecisionKind.Target, CombatReasons.TargetUnreachableDropped, CombatReasons.Name(target.Id));
+        }
+
+        /// <summary>
+        /// P0 wiring (Part B / H): a unit sent at a target behind a breakable wall or gate attacks the blocking structure first
+        /// (logged once per structure).
+        /// </summary>
+        public void NoteBreach(Vehicle v, IDamageable target, IDamageable blocker)
+        {
+            if (!_records.TryGetValue(v.Id, out var r)) _records[v.Id] = r = new Record();
+            if (r.LastBreach == blocker.Id) return;
+            r.LastBreach = blocker.Id;
+            Breaches++;
+            CombatReasons.Log(_world, v, DecisionKind.Target, CombatReasons.TargetBreachFirst,
+                CombatReasons.Name(blocker.Id) + " for " + CombatReasons.Name(target.Id));
         }
 
         // ------------------------------------------------------------------------------------------------ the step
@@ -300,7 +318,7 @@ namespace MachineBrigade.Sim.AI
                         return CombatIdleReason.BlockedByArc;
                     case TargetReject.OutOfReach:
                         if (hold != CombatIdleReason.Active) return hold;
-                        return target is Vehicle tv && !_world.TargetAccess.CanInfluence(v, tv.Position, tv.Flying)
+                        return target is Vehicle tv && !_world.TargetAccess.CanInfluence(v, tv.Position, tv.Flying, tv.Radius)
                             ? CombatIdleReason.NoReachableTarget
                             : OutOfReach(v, target is Vehicle ov ? ov : null, weapon);
                     default:
@@ -328,7 +346,7 @@ namespace MachineBrigade.Sim.AI
                     return hold != CombatIdleReason.Active ? hold : CombatIdleReason.BlockedByArc;
                 default:
                     if (hold != CombatIdleReason.Active) return hold;
-                    if (!_world.TargetAccess.CanInfluence(v, enemy.Position, enemy.Flying)) return CombatIdleReason.NoReachableTarget;
+                    if (!_world.TargetAccess.CanInfluence(v, enemy.Position, enemy.Flying, enemy.Radius)) return CombatIdleReason.NoReachableTarget;
                     return OutOfReach(v, enemy, weapon);
             }
         }

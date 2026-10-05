@@ -21090,3 +21090,48 @@ Sim compiled with the .NET SDK (C# 9, 0 errors); the new test file compiled agai
 - Replay hashes change. Tests (written, not run): `AiMasterP0CTests` (section 110, R5, rings, determinism). For a Unity look:
   Leviathan / Typhon / Scylla lanes and turnabouts, broadside offsets with shore targets, two sea bosses meeting, escorts' new
   rings, ground bosses not chasing off their way.
+
+## AI MASTER P0 wiring + preview wrecks (lane A)
+
+Branch `feature/ai-p0-wire` (worktree MachineBrigade-art), 05/10, on the merged P0-A / P0-B / P0-C. Changes table:
+`Docs/export/CHANGES.md` "AI MASTER P0 wiring". No Unity, no test run; Sim built with dotnet (C# 9, 0 errors); the new test file
+compiled against the Sim with stubs.
+- **P0-B into P0-A.** `TargetAccessCache.Resolver` is now (domain, component, target, radius, min reach, reach) and
+  `SimWorld.TargetAccess` sets it to `EngagementFeasibility.CanFireFromComponent`: some cell of the unit's mobility-domain
+  component (P0-B graph; a ground unit's leaves out the sea) in the firing band, measured as combat measures it (distance - target
+  radius <= reach, >= min reach). A component test, not `HasReachableFiringPosition`: that one walks travel distances from the
+  unit's cell (a BFS per new cell, 16 cached), and every cell of a component reaches every other, so the component answers for
+  any unit in it with no BFS. Callers now pass the target's radius (a long wall segment, a big hull).
+- **Stale topology.** The topology is rebuilt at most every `ai.topology.rebuildSeconds` (5 s) after the grid changes; while it
+  lags (`GridVersion != Grid.Version`) the grid's own regions are sampled as before, so a gate shut this step is seen this step
+  (P0-A's cache test keeps passing). The cache is cleared on a grid version change or a topology rebuild. Targeting now touches
+  `world.Topology`, so it may be rebuilt a little sooner after ground changes than with the buying AI alone (same rule, deterministic).
+- **Breach first (Part B B2/B3, Part H).** `BreachAccess`: a cell is breach-passable for a side when every blocker closing it
+  (`NavGrid.BlockersAt`) is a breakable structure of its enemies or neutral: a base wall segment's site block (intact), an enemy
+  `Wall` / `Obstacle` vehicle's anchored footprint, a destructible prop that blocks movement (fortress gate and walls, buildings),
+  counted on exactly the cells the grid closes for them. Towers are not walls: they never make a target breach-reachable.
+  Components are labelled per side and mobility (ground units keep off the sea) per grid version; the way in is a Dijkstra (open
+  cell 1, breakable cell 1 + 12) to the first cell of the target's firing band; the owner of the first breakable cell on it is
+  the structure to break. Cached per (side, unit 8 m cell, target 8 m cell, bands). Map knowledge only: fog-fair.
+- **Where it acts.** An AI Attack order on an `Unreachable` target -> `BreachFirst`: the order is re-pointed at the blocking
+  structure (`TARGET_BREACH_FIRST`, `CombatWatch.Breaches`; P0-A's `BreachHeld` then keeps a wall order against non-threats).
+  The commander re-issues its order on the target; it is re-pointed again (cache hit) until the structure is down, then the
+  target is reachable. Attack-move breaks a wall / gate vehicle between it and a seen enemy only when its own goal is sealed off
+  too (driving past a walled base it still ignores what is inside); props are left to Attack orders (combat's held engagement is
+  vehicles only). Guard sorties never breach. Only targets no breach opens are dropped (`TARGET_UNREACHABLE_DROPPED`). The
+  player's orders are untouched.
+- **P0-A / P0-C overlap.** No double filtering: the hard filter is P0-A's `Feasibility` alone (for a boss its aim time counts
+  the hull's turn, so its 10 s cut is lenient); the boss director only multiplies. Double counting was found and removed: for a
+  boss with a Brain, P0-A's aim penalty and +15 % stickiness are skipped and the director's per-mount bearing / aim time /
+  persistence stand (the hull is never turned for a target). Overkill (P0-A only; bosses are exempt as targets), doctrine and
+  objective threat stay with P0-A for bosses too.
+- **Preview wrecks (owner 04/10).** Cause: the range kills a target every few seconds and since play-test 14 lane J the
+  replacement parks beside the hulk, which lives the match's 30-45 s (view and Sim WreckField on the same clock), so the range
+  was always full of hulks and none seemed to go (no Unity run to confirm; the timers were checked by reading: the menu keeps
+  Time.timeScale 1, the range ticks its effects every frame). Fix: per-world caps, defaults unchanged for matches:
+  `WreckField.MaxGroundSeconds` (ships keep 18 s) and `WreckManager.MaxLife` (`EffectsDirector.WreckLife`), both set by
+  `FiringRange` to `PreviewWreckSeconds` 12 s: the hulk burns until it sinks (3 s) and goes; a ruined preview tower goes too.
+  The clear-spot test then lets the next target back onto its own spot.
+- Replay hashes change on walled maps (orders re-pointed) and for bosses (aim / stickiness once). Tests (written, not run):
+  `AiMasterP0WiringTests` (8). For a Unity look: a walled base (prompt 32 L3) attacked by the AI, the siege fortress, a shore
+  line against ships, the In action preview over a minute.

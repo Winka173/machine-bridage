@@ -81,6 +81,14 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Prompt 34 L9: the wrecks on the field now (the stress scene's count).</summary>
         public int Count => _wrecks.Count;
 
+        /// <summary>
+        /// P0 wiring (owner 04/10: "in the In action preview the wrecks never disappear"): the longest any wreck lives here, s
+        /// (a hulk, an aircraft's, a defence's ruin); its sink still takes <see cref="SinkSeconds"/> of it. Unlimited in a
+        /// match; the unit preview's range sets it to its Sim's cap (WreckField.MaxGroundSeconds), so the hulk sinks as the
+        /// Sim lets the ground go.
+        /// </summary>
+        public float MaxLife { get; set; } = float.MaxValue;
+
         public WreckManager(FireSpots fires, ChunkThrower chunks, int capacity, Transform parent = null)
         {
             _fires = fires;
@@ -105,12 +113,15 @@ namespace MachineBrigade.Game.Effects
             // Play-test 14 (lane J): a ground hulk is solid in the Sim for WreckField.Life (data, its spread fixed by its id), so it
             // sinks on that clock on every graphics tier, its sink ending as the Sim lets the ground go.
             var solid = !view.Flying && !view.Def.Static && view.Def.Naval == null;
-            var life = solid
-                ? Mathf.Max(1f, (float)MachineBrigade.Sim.Movement.WreckField.Life(view.Def, view.Id) - SinkSeconds)
+            var full = solid
+                ? (float)MachineBrigade.Sim.Movement.WreckField.Life(view.Def, view.Id)
                 : WreckClasses.Life(view.Def, Random.value, MatchSettings.Tier);
+            // A capped life (the preview) keeps the uncapped burn: the hulk burns until it sinks.
+            var capped = Mathf.Min(full, MaxLife);
+            var life = solid ? Mathf.Max(1f, capped - SinkSeconds) : capped;
             var wreck = new Wreck
             {
-                Id = view.Id, View = view, Class = cls, Created = now, Expires = now + life, Burn = life * BurnShare,
+                Id = view.Id, View = view, Class = cls, Created = now, Expires = now + life, Burn = Mathf.Min((solid ? full - SinkSeconds : full) * BurnShare, life),
                 NextPop = now + Random.Range(3f, 5f), PopsLeft = Random.Range(1, 3), WasFalling = view.Falling,
             };
             _wrecks.Add(wreck);
@@ -126,7 +137,7 @@ namespace MachineBrigade.Game.Effects
                 // A tower, bunker or gun: its ruin stays for the rest of the battle. It burns hard
                 // from the top and at its foot, its ammunition goes up in a chain, then pops now and
                 // then while it burns, and it smoulders on after.
-                wreck.Expires = float.MaxValue;
+                wreck.Expires = MaxLife < float.MaxValue ? now + Mathf.Max(1f, MaxLife - SinkSeconds) : float.MaxValue;
                 wreck.ChainLeft = Random.Range(4, 7);
                 wreck.NextChain = now + Random.Range(0.3f, 0.5f);
                 wreck.PopsLeft = Random.Range(4, 7);

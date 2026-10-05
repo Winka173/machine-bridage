@@ -289,6 +289,16 @@ namespace MachineBrigade.Sim.Movement
                     // beyond the shore's reach, a pocket behind a shut gate) is dropped, not chased round the map.
                     if (!v.ManualOrder && target is Vehicle unreachable && Unreachable(v, unreachable))
                     {
+                        // P0 wiring (Part B breacher / siege doctrine, Part H): behind a breakable wall, gate or obstacle the
+                        // target is "breach first": the AI's order goes onto the blocking structure (the commander sends it at
+                        // the target again once the way is open). Only a target no breach opens is dropped.
+                        if (_world.TargetAccess.BreachFirst(v, unreachable) is { } blocker)
+                        {
+                            _world.CombatWatch.NoteBreach(v, unreachable, blocker);
+                            v.SetOrder(new Order(OrderKind.Attack, blocker.Position, blocker.Id));
+                            CloseIn(v, blocker);
+                            break;
+                        }
                         _world.CombatWatch.NoteDropped(v, unreachable);
                         v.SetOrder(Order.Idle);
                         v.ClearPath();
@@ -363,7 +373,19 @@ namespace MachineBrigade.Sim.Movement
         /// connected ground (TargetAccessCache; aircraft, flying targets, ships and fixed defences are never "unreachable" here).
         /// </summary>
         private bool Unreachable(Vehicle v, Vehicle target) =>
-            !v.Flying && !target.Flying && v.Def.Naval == null && !v.Def.Static && !_world.TargetAccess.CanInfluence(v, target.Position, false);
+            !v.Flying && !target.Flying && v.Def.Naval == null && !v.Def.Static && !_world.TargetAccess.CanInfluence(v, target.Position, false, target.Radius);
+
+        /// <summary>
+        /// P0 wiring: the attack-move's goal lies off the unit's open ground (behind a wall line, in a sealed yard): the way
+        /// in is through a breach, so an enemy seen behind a breakable structure makes it break that structure.
+        /// </summary>
+        private bool GoalSealed(Vehicle v)
+        {
+            var grid = _world.Grid;
+            var here = grid.RegionOf(v.Position);
+            if (here == 0 && grid.TryNearestWalkable(v.Position, 3, out var open)) here = grid.RegionOf(open);
+            return here != 0 && grid.RegionOf(v.Order.Point) != here;
+        }
 
         private Vehicle? GuardThreat(Vehicle v)
         {
@@ -428,6 +450,16 @@ namespace MachineBrigade.Sim.Movement
             // AI MASTER P0-A (spec 47): never break off the route for an enemy it cannot get a firing solution on.
             if (enemy != null && Unreachable(v, enemy))
             {
+                // P0 wiring: on the way into a walled base (its goal behind the wall too) the wall, gate or obstacle between
+                // it and the enemy it sees is broken first; otherwise the enemy is dropped as before.
+                if (GoalSealed(v) && _world.TargetAccess.BreachFirst(v, enemy) is Vehicle wall)
+                {
+                    _world.CombatWatch.NoteBreach(v, enemy, wall);
+                    v.Engaged = wall.Id;
+                    v.ResumeRoute = true;
+                    CloseIn(v, wall);
+                    return;
+                }
                 _world.CombatWatch.NoteDropped(v, enemy);
                 enemy = null;
             }
