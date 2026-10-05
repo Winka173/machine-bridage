@@ -21234,3 +21234,30 @@ no tests run; Sim compiled (0 errors); `AiMasterP3Tests.cs` compiled against the
   HoldFireOrder as the reason). Recon in squads holds / overwatches with it; support roles Defend (x1.3 on threats, x0.7 others).
 - **Not done:** probe / feint (P4), ownership prediction with rotation (210, sampling only), coverage optimiser for EW / radar /
   repair aura (AA only), range margin in the squads' standoff bands (role data shares kept).
+
+## AI MASTER P4 (lane A)
+
+Branch `feature/ai-p4` (worktree MachineBrigade-art), 05/10. Spec MASTER_FINAL sections 132-133, 152-158, 174-184, 204, 214-217,
+Part M (+ P3's two leftovers); row by row in `Docs/ai/spec_master/AUDIT_P4.md`, values in `Docs/export/CHANGES.md` "AI MASTER P4".
+No Unity, no tests run; Sim compiled (0 errors); `AiMasterP4Tests.cs` compiled against the Sim + NUnit (GameContent stubbed).
+- **One switch, state on P3's.** `ai.planning.enabled` (false = P3 exactly). The side's `TeamPlanning` hangs off P3's
+  `TeamCoordination` (no second world object); observations only: deaths, seen boss parts breaking, public telegraphs
+  (`WarningZone` gained `Source` / `Origin`).
+- **Plans reshape P3's package, they do not replace it.** A = frontal, C = fix-and-flank on the forecast's side, B = later execute
+  + restage, D = abort + hold. Re-scored only at the end of the 6-12 s commitment or on a spec 182 trigger. D is pre-contact only
+  and never under urgency >= 0.75 (forecast, not health: no retreat rule).
+- **Forecast = two half-steps of attrition**, DPS through the damage table against the other side's hp-weighted front armour mix;
+  enemy hp from the seen strength (defs are public data). Cheap enough that the cache matters little; kept for spec 218.
+- **Difficulty level** is a new `AiSkill.Level` set by `AiSkill.For` (default Normal for skills built elsewhere). Easy's single plan
+  is "attack now", which undoes P3's fix-and-flank on Easy (spec 216 "simple").
+- **Ownership** is one small registry (`IntentOwnership`): priorities Emergency > fire mission / scoot / air package > tactical.
+  `DirectArtillery` became a per-gun method so each gun's order change can be claimed; while a mission owns a gun only its safety
+  branches run. Aircraft held by a package carry `Vehicle.P4Held` (TacticalAi's `Ready` / flankers skip them).
+- **Air packages only for aircraft outside squads** (all of them today) and SEAD only with a SEAD card in the deck; bombers wait
+  at most 30 s then go as before (no stuck aircraft).
+- **Boss pacing** compensates the wait on the next cooldown (damage over a fight unchanged); scripted bosses never wait; only big
+  attacks are paced. Weakpoint utility is for AI sides only (players' part choice unchanged) and keeps a quarter of the old
+  shooter danger so anti-air still hunts the anti-air parts.
+- **P0-B 18:** "force enough" holds CP 30 s on / 10 s off (never with < 4 units or at the bank cap); boss-phase reserve keeps 30 %
+  of the bank for at most 25 s while a seen boss is within 8 % above its next phase mark.
+- **Not done:** cue presentation (recorded only), support-effectiveness EMA (API only), pacing of boss skills / bombard.
