@@ -21286,3 +21286,11 @@ tests run; Sim compiled (0 errors); `AiMasterP5Tests.cs` + `AiMasterP5PerfHarnes
 - **Cues:** allied AI all, enemy AI only "attack_go" (probe / feint / flank would leak its plan).
 - **REPORT_DRAFT.md:** the harness refused writing it from the lane (report-file guard); the Part V draft went to the lead in the
   lane's reply instead.
+
+
+## Flight feel 05/10 (lane B)
+
+- **Source of truth:** the `weaponFamily` row beats a weapon's own `projectileSpeed` (Catalog `WeaponFamilies` / `Taking`); that hid apkws_rocket (45 -> 180) and anti_ship_missile (30 -> 225). Family rows now hold the speed, member lines are synced, no hidden multiplier exists (boss none; gear on arm 0 only, cap 30 %).
+- **Speeds:** spec sections 2-14 and 16 applied by family and role (108 ids; table in Docs/fixes/flight_feel_report.md and Docs/export/CHANGES.md "FLIGHT FEEL"); cruise, bombs, drones, ballistic, direct tank / APFSDS / MG kept. Seven new family ids carry the splits (jet rockets 100, howitzer fixed 65 / ext 60, coastal 70, guided +5). Earlier slow-downs (boss_rockets 65, sam_post 80, sam_battery 95, pt14_train_grad 65, sam_pac3 300 ...) superseded; PlayTest14LaneH/I tests updated.
+- **Validator:** NHANH_QUA / CHAM_QUA are fire-cycle flags and stay; added Tools/balance/flight_feel_audit.py (class bands, min / half / max flight, gear-cap flight, TOO_FAST / TOO_SLOW_FOR_CLASS) and 10 columns in Vu_khi_suy_ra. Rocket artillery at the spec's 80 m/s is under its 0.7 s band in the game's 45-55 m reach: owner decision left open.
+- **Code:** `BossSystem.MaxLead` 0.9 -> 2.5 (the cap fitted 180-300 m/s rounds; slow boss shells would fly 2.5x too fast in the view). AI lead, proximity fuze, APS and flare windows, salvo spacing read statically: all time- or metre-based, nothing else needed changing; APS, flare and homing need a Unity measurement (not run, owner rule); APS not nerfed.

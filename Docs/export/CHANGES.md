@@ -13131,3 +13131,121 @@ Nhánh `feature/ai-p5` (lane A, 05/10). Nguồn: `Docs/ai/spec_master/Machine_Br
 | P5-5 | Ngân sách cập nhật (Part P, mục 98) | lớp đội 4 Hz cho mọi đội cùng lúc; đếm cụm quét mọi xe | mỗi đội nghĩ 2 Hz theo nhóm so le (né vẫn 4 Hz); lưới 10 m cho đếm cụm / đám đông; bộ đếm thời gian theo hệ (tắt mặc định) | mua quân giữ nhịp theo độ khó |
 | P5-6 | Tín hiệu (215) | ghi lại, chưa hiện | thông báo radio: AI đồng minh mọi tín hiệu; AI địch chỉ "attack_go" | không hiện thăm dò / nghi binh của địch |
 | P5-7 | Xuất dữ liệu | 09_ai không có mã lý do / học thuyết | 09_ai: AI_ma_ly_do, AI_hoc_thuyet_che_do, AI_hoc_thuyet_vai_tro, AI_nhom_hang_so, AI_nhip_cap_nhat, AI_giam_sat_suc_khoe; 02_boss: Boss_ma_ly_do; 04: Che_do_hoc_thuyet_AI (đọc thẳng từ mã, `Tools/export/domains/_p5_ai.py`) | |
+
+
+## FLIGHT FEEL (lane B, 05/10, feature/flight-feel)
+
+Source: Docs/prompts/projectile_flight_feel_spec.md; details Docs/fixes/flight_feel_report.md. Only `projectileSpeed` (family rows `weaponFamilies`, own lines of weapons) and seven new family ids for split speeds changed in `Assets/MachineBrigade/Resources/Data/balance.json`; `BossSystem.MaxLead` 0.9 -> 2.5 s (view lead of a boss big attack). Old -> new effective m/s, with flight min / half / max seconds old and new:
+
+| id | class | old -> new m/s | location | flight min/half/max old (s) | new (s) |
+|---|---|---|---|---|---|
+| apkws_rocket | AIRCRAFT_ROCKET | 180 -> 85 | weaponFamilies[apkws] | 0.056/0.111/0.222 | 0.118/0.235/0.471 |
+| boat_rockets | AIRCRAFT_ROCKET | 180 -> 90 | weaponFamilies[s_8_80_mm_boat] | 0.076/0.153/0.306 | 0.153/0.306/0.611 |
+| gunship_rockets | AIRCRAFT_ROCKET | 180 -> 95 | weaponFamilies[s_8_80_mm] | 0.047/0.094/0.189 | 0.089/0.179/0.358 |
+| heli_rockets | AIRCRAFT_ROCKET | 180 -> 95 | weaponFamilies[hydra_70_mm] | 0.042/0.083/0.167 | 0.079/0.158/0.316 |
+| hind_rockets | AIRCRAFT_ROCKET | 180 -> 95 | weaponFamilies[s_8_80_mm] | 0.05/0.1/0.2 | 0.095/0.189/0.379 |
+| jet_rockets | AIRCRAFT_ROCKET | 180 -> 100 | weaponFamilies[hydra_70_mm_jet] | 0.05/0.1/0.2 | 0.09/0.18/0.36 |
+| s8_pods | AIRCRAFT_ROCKET | 180 -> 95 | weaponFamilies[s_8_80_mm] | 0.047/0.094/0.189 | 0.089/0.179/0.358 |
+| scout_rockets | AIRCRAFT_ROCKET | 180 -> 95 | weaponFamilies[hydra_70_mm] | 0.039/0.078/0.156 | 0.074/0.147/0.295 |
+| air_to_air | AIR_DEFENCE_MISSILE | 300 -> 140 | weapons[air_to_air] own line | 0.05/0.1/0.2 | 0.107/0.214/0.429 |
+| buk_launcher | AIR_DEFENCE_MISSILE | 250 -> 145 | weaponFamilies[9m317_buk] | 0.055/0.11/0.22 | 0.095/0.19/0.379 |
+| igla_v | AIR_DEFENCE_MISSILE | 170 -> 105 | weapons[igla_v] own line | 0.047/0.094/0.188 | 0.076/0.152/0.305 |
+| missile_57e6 | AIR_DEFENCE_MISSILE | 300 -> 130 | weapons[missile_57e6] own line | 0.046/0.092/0.183 | 0.106/0.212/0.423 |
+| patriot | AIR_DEFENCE_MISSILE | 300 -> 165 | weaponFamilies[mim_104_patriot_pac_2] | 0.067/0.15/0.3 | 0.121/0.273/0.545 |
+| r60 | AIR_DEFENCE_MISSILE | 210 -> 110 | weapons[r60] own line | 0.033/0.067/0.133 | 0.064/0.127/0.255 |
+| sam | AIR_DEFENCE_MISSILE | 200 -> 120 | weapons[sam] own line | 0.055/0.11/0.22 | 0.092/0.183/0.367 |
+| sam_48n6 | AIR_DEFENCE_MISSILE | 300 -> 170 | weapons[sam_48n6] own line | 0.067/0.158/0.317 | 0.118/0.279/0.559 |
+| sam_battery | AIR_DEFENCE_MISSILE | 95 -> 165 | weapons[sam_battery] own line | 0.211/0.474/0.947 | 0.121/0.273/0.545 |
+| sam_battery_lrr | AIR_DEFENCE_MISSILE | 300 -> 165 | weaponFamilies[mim_104_patriot_pac_2] | 0.067/0.167/0.333 | 0.121/0.303/0.606 |
+| sam_long | AIR_DEFENCE_MISSILE | 250 -> 145 | weaponFamilies[9m317_buk] | 0.055/0.11/0.22 | 0.095/0.19/0.379 |
+| sam_pac3 | AIR_DEFENCE_MISSILE | 300 -> 165 | weapons[sam_pac3] own line | 0.067/0.12/0.24 | 0.121/0.218/0.436 |
+| sam_post | AIR_DEFENCE_MISSILE | 80 -> 145 | weapons[sam_post] own line | 0.188/0.375/0.75 | 0.103/0.207/0.414 |
+| stinger_atas | AIR_DEFENCE_MISSILE | 180 -> 105 | weapons[stinger_atas] own line | 0.042/0.083/0.167 | 0.071/0.143/0.286 |
+| stinger_post | AIR_DEFENCE_MISSILE | 180 -> 105 | weapons[stinger_post] own line | 0.078/0.156/0.311 | 0.133/0.267/0.533 |
+| tamir | AIR_DEFENCE_MISSILE | 180 -> 125 | weapons[tamir] own line | 0.083/0.167/0.333 | 0.12/0.24/0.48 |
+| wvr_aam | AIR_DEFENCE_MISSILE | 210 -> 115 | weaponFamilies[aim_9_sidewinder] | 0.036/0.071/0.143 | 0.065/0.13/0.261 |
+| anti_ship_missile | ANTI_SHIP_MISSILE | 225 -> 95 | weaponFamilies[nsm_oniks] | 0.156/0.311/0.622 | 0.368/0.737/1.474 |
+| scylla_kh35 | ANTI_SHIP_MISSILE | 70 -> 90 | weapons[scylla_kh35] own line | 0.393/0.786/1.571 | 0.306/0.611/1.222 |
+| p26_roc_main_roc_bombs | BOMB | 100 -> 60 | inherited from p26_roc_roc_bombs | 0.113/0.225/0.45 | 0.188/0.375/0.75 |
+| p26_roc_roc_bombs | BOMB | 100 -> 60 | inherited from boss_howitzer | 0.113/0.225/0.45 | 0.188/0.375/0.75 |
+| boss_howitzer | HOWITZER | 100 -> 60 | weapons[boss_howitzer] own line | 0.15/0.3/0.6 | 0.25/0.5/1.0 |
+| boss_howitzer_guided | HOWITZER | 100 -> 60 | inherited from boss_howitzer | 0.15/0.3/0.6 | 0.25/0.5/1.0 |
+| casemate_155 | HOWITZER | 100 -> 60 | weaponFamilies[m284_155_mm_casemate] | 0.2/0.375/0.75 | 0.333/0.625/1.25 |
+| casemate_155_guided | HOWITZER | 45 -> 65 | weaponFamilies[m284_155_mm_guided_casemate] | 0.444/0.833/1.667 | 0.308/0.577/1.154 |
+| gun_155_coastal | HOWITZER | 150 -> 70 | weaponFamilies[m284_155_mm_coastal] | 0.225/0.45/0.9 | 0.482/0.964/1.929 |
+| gun_155_coastal_guided | HOWITZER | 150 -> 75 | weaponFamilies[m284_155_mm_guided_coastal] | 0.225/0.45/0.9 | 0.45/0.9/1.8 |
+| gun_155_sph | HOWITZER | 100 -> 55 | weaponFamilies[m284_155_mm_2] | 0.25/0.5/1.0 | 0.455/0.909/1.818 |
+| gun_155_twin_coastlr | HOWITZER | 150 -> 70 | weaponFamilies[m284_155_mm_coastal] | 0.12/0.24/0.48 | 0.257/0.514/1.029 |
+| gun_155_twin_coastlr_guided | HOWITZER | 150 -> 75 | weaponFamilies[m284_155_mm_guided_coastal] | 0.12/0.24/0.48 | 0.24/0.48/0.96 |
+| gun_203_siege | HOWITZER | 110 -> 65 | weapons[gun_203_siege] own line | 0.091/0.282/0.564 | 0.154/0.477/0.954 |
+| howitzer | HOWITZER | 100 -> 55 | weaponFamilies[m284_155_mm_2] | 0.25/0.45/0.9 | 0.455/0.818/1.636 |
+| howitzer_ext | HOWITZER | 100 -> 60 | weaponFamilies[m284_155_mm_ext] | 0.25/0.56/1.12 | 0.417/0.933/1.867 |
+| howitzer_fixed | HOWITZER | 100 -> 65 | weaponFamilies[m284_155_mm_fixed] | 0.25/0.45/0.9 | 0.385/0.692/1.385 |
+| howitzer_fixed_guided | HOWITZER | 45 -> 70 | weaponFamilies[m284_155_mm_guided_fixed] | 0.556/1.0/2.0 | 0.357/0.643/1.286 |
+| howitzer_guided | HOWITZER | 45 -> 60 | weaponFamilies[m284_155_mm_guided] | 0.556/1.0/2.0 | 0.417/0.75/1.5 |
+| p26_bastion_b155 | HOWITZER | 100 -> 60 | inherited from casemate_155 | 0.2/0.375/0.75 | 0.333/0.625/1.25 |
+| p26_bastion_main_b155 | HOWITZER | 150 -> 60 | weapons[p26_bastion_main_b155] own line | 0.133/0.25/0.5 | 0.333/0.625/1.25 |
+| p26_jotunn_jo203 | HOWITZER | 100 -> 60 | inherited from boss_howitzer | 0.15/0.3/0.6 | 0.25/0.5/1.0 |
+| amos_120 | MORTAR | 60 -> 45 | weapons[amos_120] own line | 0.167/0.5/1.0 | 0.222/0.667/1.333 |
+| boss_mortar | MORTAR | 60 -> 40 | weaponFamilies[2b8_240_mm] | 0.2/0.667/1.333 | 0.3/1.0/2.0 |
+| mortar_120 | MORTAR | 60 -> 45 | weaponFamilies[2b11_120_mm] | 0.167/0.458/0.917 | 0.222/0.611/1.222 |
+| mortar_240 | MORTAR | 60 -> 40 | weaponFamilies[2b8_240_mm] | 0.333/0.708/1.417 | 0.5/1.062/2.125 |
+| p26_bastion_b240 | MORTAR | 60 -> 40 | inherited from boss_mortar | 0.2/0.667/1.333 | 0.3/1.0/2.0 |
+| p26_bastion_sec_b240 | MORTAR | 60 -> 40 | inherited from p26_bastion_b240 | 0.233/0.667/1.333 | 0.35/1.0/2.0 |
+| siege_mortar_240 | MORTAR | 60 -> 40 | weaponFamilies[2b8_240_mm] | 0.267/0.583/1.167 | 0.4/0.875/1.75 |
+| train_mortar | MORTAR | 60 -> 45 | weaponFamilies[2b11_120_mm] | 0.167/0.5/1.0 | 0.222/0.667/1.333 |
+| cruiser_203 | NAVAL_DIRECT | 110 -> 85 | weapons[cruiser_203] own line | 0.239/0.477/0.955 | 0.309/0.618/1.235 |
+| cruiser_203_guided | NAVAL_DIRECT | 110 -> 85 | inherited from cruiser_203 | 0.239/0.477/0.955 | 0.309/0.618/1.235 |
+| gun_100_river | NAVAL_DIRECT | 170 -> 100 | weapons[gun_100_river] own line | 0.103/0.206/0.412 | 0.175/0.35/0.7 |
+| leviathan_460 | NAVAL_DIRECT | 200 -> 85 | weapons[leviathan_460] own line | 0.2/0.4/0.8 | 0.471/0.941/1.882 |
+| leviathan_460_guided | NAVAL_DIRECT | 200 -> 85 | inherited from leviathan_460 | 0.2/0.4/0.8 | 0.471/0.941/1.882 |
+| naval_100 | NAVAL_DIRECT | 110 -> 100 | weapons[naval_100] own line | 0.205/0.409/0.818 | 0.225/0.45/0.9 |
+| naval_100_guided | NAVAL_DIRECT | 110 -> 100 | inherited from naval_100 | 0.205/0.409/0.818 | 0.225/0.45/0.9 |
+| naval_127 | NAVAL_DIRECT | 110 -> 90 | weapons[naval_127] own line | 0.25/0.5/1.0 | 0.306/0.611/1.222 |
+| naval_130_twin | NAVAL_DIRECT | 110 -> 90 | weapons[naval_130_twin] own line | 0.205/0.409/0.818 | 0.25/0.5/1.0 |
+| naval_155_triple | NAVAL_DIRECT | 110 -> 88 | weapons[naval_155_triple] own line | 0.25/0.5/1.0 | 0.312/0.625/1.25 |
+| naval_155_triple_guided | NAVAL_DIRECT | 110 -> 88 | inherited from naval_155_triple | 0.25/0.5/1.0 | 0.312/0.625/1.25 |
+| naval_76 | NAVAL_DIRECT | 110 -> 95 | weapons[naval_76] own line | 0.216/0.432/0.864 | 0.25/0.5/1.0 |
+| naval_76_guided | NAVAL_DIRECT | 110 -> 95 | inherited from naval_76 | 0.216/0.432/0.864 | 0.25/0.5/1.0 |
+| nyx_ags_155 | NAVAL_DIRECT | 150 -> 88 | weapons[nyx_ags_155] own line | 0.133/0.267/0.533 | 0.227/0.455/0.909 |
+| p26_leviathan_direct_lev127 | NAVAL_DIRECT | 110 -> 105 | weapons[p26_leviathan_direct_lev127] own line | 0.205/0.409/0.818 | 0.214/0.429/0.857 |
+| p26_leviathan_lev127 | NAVAL_DIRECT | 110 -> 90 | weapons[p26_leviathan_lev127] own line | 0.205/0.409/0.818 | 0.25/0.5/1.0 |
+| p26_leviathan_lev155 | NAVAL_DIRECT | 110 -> 88 | inherited from naval_155_triple | 0.25/0.5/1.0 | 0.312/0.625/1.25 |
+| p26_leviathan_lev406 | NAVAL_DIRECT | 200 -> 85 | inherited from leviathan_460 | 0.2/0.4/0.8 | 0.471/0.941/1.882 |
+| p26_leviathan_sec_lev155 | NAVAL_DIRECT | 150 -> 88 | weapons[p26_leviathan_sec_lev155] own line | 0.183/0.367/0.733 | 0.312/0.625/1.25 |
+| p26_typhon_direct_ty100 | NAVAL_DIRECT | 120 -> 115 | weapons[p26_typhon_direct_ty100] own line | 0.188/0.375/0.75 | 0.196/0.391/0.783 |
+| p26_typhon_ty100 | NAVAL_DIRECT | 110 -> 100 | inherited from naval_100 | 0.205/0.409/0.818 | 0.225/0.45/0.9 |
+| pt14_co_203 | NAVAL_DIRECT | 110 -> 85 | inherited from cruiser_203 | 0.216/0.432/0.864 | 0.279/0.559/1.118 |
+| pt14_co_v76 | NAVAL_DIRECT | 110 -> 95 | inherited from naval_76 | 0.159/0.318/0.636 | 0.184/0.368/0.737 |
+| pt14_hp_155 | NAVAL_DIRECT | 110 -> 88 | inherited from naval_155_triple | 0.216/0.432/0.864 | 0.27/0.54/1.08 |
+| pt14_hp_v127 | NAVAL_DIRECT | 110 -> 90 | inherited from naval_127 | 0.182/0.364/0.727 | 0.222/0.444/0.889 |
+| boss_rockets | ROCKET_ARTILLERY | 65 -> 80 | weapons[boss_rockets] own line | 0.173/0.346/0.692 | 0.141/0.281/0.562 |
+| grad_cluster | ROCKET_ARTILLERY | 130 -> 80 | weaponFamilies[bm_21_grad_122_mm_2] | 0.138/0.3/0.6 | 0.225/0.487/0.975 |
+| grad_rockets | ROCKET_ARTILLERY | 130 -> 80 | weaponFamilies[bm_21_grad_122_mm] | 0.138/0.212/0.423 | 0.225/0.344/0.688 |
+| mlrs_elite | ROCKET_ARTILLERY | 140 -> 85 | weapons[mlrs_elite] own line | 0.143/0.268/0.536 | 0.235/0.441/0.882 |
+| mlrs_rockets | ROCKET_ARTILLERY | 140 -> 85 | weaponFamilies[m31_gmlrs_227_mm] | 0.143/0.393/0.786 | 0.235/0.647/1.294 |
+| p26_behemoth_be_rockets | ROCKET_ARTILLERY | 130 -> 80 | weapons[p26_behemoth_be_rockets] own line | 0.087/0.173/0.346 | 0.141/0.281/0.562 |
+| p26_behemoth_sec_be_rockets | ROCKET_ARTILLERY | 130 -> 80 | inherited from p26_behemoth_be_rockets | 0.087/0.173/0.346 | 0.141/0.281/0.562 |
+| p26_jotunn_jo_rockets | ROCKET_ARTILLERY | 120 -> 80 | weapons[p26_jotunn_jo_rockets] own line | 0.094/0.188/0.375 | 0.141/0.281/0.562 |
+| p26_jotunn_sec_jo_rockets | ROCKET_ARTILLERY | 120 -> 80 | inherited from p26_jotunn_jo_rockets | 0.094/0.188/0.375 | 0.141/0.281/0.562 |
+| p26_nemesis_sec_boss_rockets | ROCKET_ARTILLERY | 65 -> 80 | weapons[p26_nemesis_sec_boss_rockets] own line | 0.173/0.346/0.692 | 0.141/0.281/0.562 |
+| pt14_ixion_grad | ROCKET_ARTILLERY | 130 -> 80 | inherited from grad_rockets | 0.138/0.212/0.423 | 0.225/0.344/0.688 |
+| pt14_train_grad | ROCKET_ARTILLERY | 65 -> 80 | weapons[pt14_train_grad] own line | 0.173/0.346/0.692 | 0.141/0.281/0.562 |
+| rockets_300mm | ROCKET_ARTILLERY | 120 -> 80 | weapons[rockets_300mm] own line | 0.25/0.583/1.167 | 0.375/0.875/1.75 |
+| technical_rockets | ROCKET_ARTILLERY | 80 -> 75 | weapons[technical_rockets] own line | 0.15/0.3/0.6 | 0.16/0.32/0.64 |
+| thermobaric_rockets | ROCKET_ARTILLERY | 70 -> 65 | weaponFamilies[tos_1a_220_mm_thermobaric] | 0.171/0.343/0.686 | 0.185/0.369/0.738 |
+| turret_gmlrs | ROCKET_ARTILLERY | 140 -> 85 | weaponFamilies[m31_gmlrs_227_mm] | 0.143/0.321/0.643 | 0.235/0.529/1.059 |
+| turret_rockets | ROCKET_ARTILLERY | 130 -> 80 | weaponFamilies[bm_21_grad_122_mm] | 0.062/0.212/0.423 | 0.1/0.344/0.688 |
+| turret_rockets_cluster | ROCKET_ARTILLERY | 130 -> 80 | weaponFamilies[bm_21_grad_122_mm_2] | 0.062/0.212/0.423 | 0.1/0.344/0.688 |
+| turret_thermobaric | ROCKET_ARTILLERY | 130 -> 65 | weapons[turret_thermobaric] own line | 0.062/0.169/0.338 | 0.123/0.338/0.677 |
+| drone_missile | TACTICAL_MISSILE | 110 -> 80 | weaponFamilies[agm_114_hellfire] | 0.109/0.218/0.436 | 0.15/0.3/0.6 |
+| gun_launched_atgm | TACTICAL_MISSILE | 90 -> 75 | weapons[gun_launched_atgm] own line | 0.094/0.189/0.378 | 0.113/0.227/0.453 |
+| hellfire_standoff | TACTICAL_MISSILE | 110 -> 80 | weaponFamilies[agm_114_hellfire] | 0.125/0.25/0.5 | 0.172/0.344/0.688 |
+| hellfire_volley | TACTICAL_MISSILE | 110 -> 80 | weaponFamilies[agm_114_hellfire] | 0.102/0.205/0.409 | 0.141/0.281/0.562 |
+| kh29 | TACTICAL_MISSILE | 120 -> 80 | weapons[kh29] own line | 0.083/0.167/0.333 | 0.125/0.25/0.5 |
+| maverick | TACTICAL_MISSILE | 90 -> 80 | weapons[maverick] own line | 0.111/0.222/0.444 | 0.125/0.25/0.5 |
+| pt14_co_spike | TACTICAL_MISSILE | 60 -> 75 | weapons[pt14_co_spike] own line | 0.333/0.667/1.333 | 0.267/0.533/1.067 |
+| pt14_th_jagm | TACTICAL_MISSILE | 95 -> 85 | weapons[pt14_th_jagm] own line | 0.145/0.289/0.579 | 0.162/0.324/0.647 |
+| vikhr | TACTICAL_MISSILE | 120 -> 85 | weapons[vikhr] own line | 0.115/0.229/0.458 | 0.162/0.324/0.647 |
+
+The pack (`Vu_khi_suy_ra`) gains 10 flight-feel columns (effective speed, speed at the +30 % gear cap, flight time at min / half / max range, projectileFeelClass, projectileSpeedWarning, speedInheritanceSource, salvoSpacingM). Cells needing the lead's Unity re-export: game_snapshot.json weaponFlight, vehicles[].weapons and secondRounds speed and flightTime of these ids.
