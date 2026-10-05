@@ -104,8 +104,12 @@ namespace MachineBrigade.Tests
             var dozer = world.SpawnVehicle("armored_bulldozer", 0, Vector2.Zero, 0f);
             Assume.That(dozer.Def.Mounts[0].Aim, Is.EqualTo(MountAim.Hull));
             dozer.Deploy = DeployState.Deployed;
-            var behind = Dummy(world, "scout_jeep", 1, new Vector2(0f, -3f));
-            var ahead = Dummy(world, "scout_jeep", 1, new Vector2(0f, 3f));
+            var behind = Dummy(world, "scout_jeep", 1, new Vector2(0f, -4.5f));
+            var ahead = Dummy(world, "scout_jeep", 1, new Vector2(0f, 4.5f));
+            // The spawn's free-spot search moves a hull off one it would overlap (off the bow line here): put them back, dead
+            // astern and dead ahead within the blade's reach (the check is geometric; nothing steps).
+            behind.Position = new Vector2(0f, -4.5f);
+            ahead.Position = new Vector2(0f, 4.5f);
             Assert.AreEqual(TargetReject.OutsideArc, world.Combat.Feasibility(dozer, dozer.Def.Weapon, behind), "a hull that cannot turn cannot bear behind it");
             Assert.AreEqual(TargetReject.None, world.Combat.Feasibility(dozer, dozer.Def.Weapon, ahead), "straight ahead it bears");
         }
@@ -190,7 +194,10 @@ namespace MachineBrigade.Tests
             var wall = world.SpawnVehicle("wall_hesco", 1, new Vector2(0f, 5f), 0f);
             Assume.That(wall.Def.Wall || wall.Def.Obstacle);
             var jeep = Dummy(world, "scout_jeep", 1, new Vector2(3f, 2f));
+            // One step for the vision pass: an attack order on a structure not yet seen is refused (TargetNotVisible).
+            world.Step(TestWorlds.Step);
             AiOrder(world, CommandType.Attack, dozer, wall.Position, wall.Id);
+            Assume.That(dozer.Order.Kind, Is.EqualTo(OrderKind.Attack));
             var tookJeep = false;
             Run(world, 4f, () => tookJeep |= dozer.Target == jeep.Id);
             Assert.False(tookJeep, "the wall stays the priority: the jeep is no immediate survival threat");

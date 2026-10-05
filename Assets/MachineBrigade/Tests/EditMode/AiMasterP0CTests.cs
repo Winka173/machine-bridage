@@ -194,9 +194,13 @@ namespace MachineBrigade.Tests
             var world = Bay(9);
             var sea = world.Map.Sea;
             var far = sea.Lane("far");
-            // Two boss ships on one lane, sailing at each other (each patrols towards its far end).
-            var a = world.SpawnVehicle("leviathan", 1, sea.At(-55f, far.W), 0f);
-            var b = world.SpawnVehicle("leviathan", 1, sea.At(55f, far.W), 0f);
+            // Two boss ships on one lane, under way and sailing at each other (each patrols towards its far end). They start
+            // 140 m apart, bows ~45 m clear (at +-55 m two 96 m hulls began 14 m apart: the route traffic froze them at once and
+            // there was no converging left to see).
+            var a = world.SpawnVehicle("leviathan", 1, sea.At(-70f, far.W), SimMath.HeadingOf(sea.Along));
+            var b = world.SpawnVehicle("leviathan", 1, sea.At(70f, far.W), SimMath.HeadingOf(-sea.Along));
+            a.Speed = a.Def.Speed;
+            b.Speed = b.Def.Speed;
             Assert.AreEqual(1, a.NavalDir);
             Assert.AreEqual(-1, b.NavalDir);
             var firstWarning = -1f;

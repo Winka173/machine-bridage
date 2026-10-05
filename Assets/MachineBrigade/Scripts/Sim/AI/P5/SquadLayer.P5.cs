@@ -38,8 +38,10 @@ namespace MachineBrigade.Sim.AI
                     // Reloaded, an emergency, or the squad no longer advancing: back to the squad's move.
                     _reloadHeld.Remove(id);
                     health.ReloadResumes++;
+                    // Back to its own formation slot (spec 111: never two hulls sent to one point; the squad's goal is everyone's).
                     if (advancing && !float.IsNaN(s.Goal.X))
-                        world.Submit(new Command(CommandType.AttackMove, _commander.Team, new[] { id }, s.Goal));
+                        world.Submit(new Command(CommandType.AttackMove, _commander.Team, new[] { id },
+                            UnsharedSlot(world, v, s.LastSlot.TryGetValue(id, out var own) ? own : s.Goal)));
                     P2Reasons.Unit(world, v, DecisionKind.Action, P5Reasons.ReloadResume, $"squad {s.Id} {(emergency ? "emergency" : "reloaded")}");
                     continue;
                 }

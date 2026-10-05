@@ -145,6 +145,8 @@ namespace MachineBrigade.Sim.AI
             new ReasonCode("JAM_EMERGENCY_REPLAN", "JAM", "P1", "stage 5: full replan"),
             new ReasonCode("JAM_CHOKE_QUEUE", "JAM", "P1", "waiting in a choke queue"),
             new ReasonCode("JAM_FAILSAFE_GHOST", "JAM", "P1", "fail-safe: collision ghosting"),
+            new ReasonCode("ANOMALY_NO_ACCEL", "JAM", "P1", "spec 185: a move order with a route did not get the hull going in time (once per order)"),
+            new ReasonCode("ANOMALY_NO_PATH", "JAM", "P1", "spec 185: a move order found no route (once per order)"),
             new ReasonCode("SEVERE_UNSTUCK", "JAM", "P1", "fail-safe relocation (place / hop); counted, target <= 1 per 10 unit-minutes"),
 
             // ---------------------------------------------------------------- COMBAT_IDLE / COMBAT (P0-A)

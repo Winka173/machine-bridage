@@ -120,7 +120,7 @@ namespace MachineBrigade.Sim.AI
             to = world.Map.Clamp(to, 4f);
             if (!world.Grid.IsWalkable(to)) return;
             _shortMoveAt[v.Id] = now;
-            world.Submit(new Command(CommandType.AttackMove, _commander.Team, new[] { v.Id }, to));
+            world.Submit(new Command(CommandType.AttackMove, _commander.Team, new[] { v.Id }, UnsharedSlot(world, v, to)));
         }
 
         /// <summary>G.2: a crowded narrow passage (a chokepoint cell) within 12 m of the squad's next 40 m.</summary>

@@ -577,11 +577,12 @@ namespace MachineBrigade.Tests
 
         private static List<PropPlacement> Gap() => new()
         {
-            // Two cliffs leaving a ~6 m gap at x = 0, y = 30.
-            new PropPlacement("cliff_a", new Vector2(-9.5f, 30f), 0),
-            new PropPlacement("cliff_a", new Vector2(9.5f, 30f), 0),
-            new PropPlacement("cliff_a", new Vector2(-22.5f, 30f), 0),
-            new PropPlacement("cliff_a", new Vector2(22.5f, 30f), 0),
+            // Two cliffs leaving a ~6 m open gap at x = 0, y = 30: 12 m between the rocks (at 6 m apart, +-9.5, the hulls'
+            // clearance round the rocks closed the gap altogether and no choke was found).
+            new PropPlacement("cliff_a", new Vector2(-12.5f, 30f), 0),
+            new PropPlacement("cliff_a", new Vector2(12.5f, 30f), 0),
+            new PropPlacement("cliff_a", new Vector2(-25.5f, 30f), 0),
+            new PropPlacement("cliff_a", new Vector2(25.5f, 30f), 0),
         };
 
         [Test]
@@ -602,9 +603,20 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(P2Reasons.FormationChokeTravel, squad.FormationReason);
             layer.SlotsP2(world, squad, new Vector2(0f, 60f), new Vector2(0f, 1f), FormationMode.Travel, CommandType.Move);
             Assert.IsTrue(squad.ColumnOrder.Count == 6, "a stable column");
-            Assert.IsTrue(Logged(world, P2Reasons.FormationPackets), "the back packet waits (spec 22: 2-4 s apart)");
-            var waiting = squad.MemberList.Count(id => squad.ReleaseAt.TryGetValue(id, out var at) && at > world.Time);
-            Assert.Greater(waiting, 0);
+            // Merged design (AI MASTER P1): the gap on the route is a reserved passage, and the TrafficCoordinator's plan makes
+            // the packets (the P2 packets are only for a choke with no passage). Either way the back packet waits 2-4 s.
+            if (squad.PassageId != 0)
+            {
+                var releases = squad.Packets.Values.Select(p => p.at).Where(at => at > world.Time).Distinct().OrderBy(at => at).ToList();
+                Assert.Greater(releases.Count, 0, "the back packet waits (spec 22)");
+                Assert.That(releases[0] - world.Time, Is.InRange(2.0 - 1e-6, 4.0 + 1e-6), "the next packet goes 2-4 s later (spec 22)");
+            }
+            else
+            {
+                Assert.IsTrue(Logged(world, P2Reasons.FormationPackets), "the back packet waits (spec 22: 2-4 s apart)");
+                var waiting = squad.MemberList.Count(id => squad.ReleaseAt.TryGetValue(id, out var at) && at > world.Time);
+                Assert.Greater(waiting, 0);
+            }
         }
 
         [Test]

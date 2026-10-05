@@ -104,6 +104,9 @@ namespace MachineBrigade.Sim.Movement
 
         /// <summary>Owners batched through behind it the same way (spec 31).</summary>
         internal readonly List<int> Riders = new();
+
+        /// <summary>Each rider's first queue position (the members batched ahead of it), so two batched squads never share one.</summary>
+        internal readonly Dictionary<int, int> RiderBase = new();
     }
 
     /// <summary>A passage request's outcome.</summary>
@@ -508,6 +511,7 @@ namespace MachineBrigade.Sim.Movement
                     holder.Direction = direction;
                 }
                 holder.ExpireTime = Math.Max(holder.ExpireTime, now + life);
+                if (holder.Owner != owner && holder.RiderBase.TryGetValue(owner, out var riderBase)) queueSlot = riderBase;
                 return PassageGrant.Granted;
             }
             var opposite = passage.Waiting[slot].Exists(w => w.Direction != holder.Direction);
@@ -518,6 +522,7 @@ namespace MachineBrigade.Sim.Movement
                 {
                     RemoveWaiter(passage, slot, owner);
                     holder.Riders.Add(owner);
+                    holder.RiderBase[owner] = queueSlot = holder.Members;
                     holder.Members += members;
                     holder.ExpireTime = Math.Max(holder.ExpireTime, now + life);
                     Stats.PassageGrants++;
@@ -562,6 +567,7 @@ namespace MachineBrigade.Sim.Movement
             RemoveWaiter(passage, slot, owner);
             var h = passage.Holder[slot];
             if (h == null) return;
+            h.RiderBase.Remove(owner);
             if (h.Riders.Remove(owner)) return;
             if (h.Owner != owner) return;
             if (h.Riders.Count > 0)

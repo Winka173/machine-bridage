@@ -21286,3 +21286,40 @@ tests run; Sim compiled (0 errors); `AiMasterP5Tests.cs` + `AiMasterP5PerfHarnes
 - **Cues:** allied AI all, enemy AI only "attack_go" (probe / feint / flank would leak its plan).
 - **REPORT_DRAFT.md:** the harness refused writing it from the lane (report-file guard); the Part V draft went to the lead in the
   lane's reply instead.
+
+## AI MASTER test fixes (lane A)
+
+Branch `feature/ai-testfix` from lead cb7d4f8. The lead's run: 136/154 pass, 17 fail, 1 inconclusive. Unity EditMode runs in
+the worktree (owner-allowed by the MASTER spec). Result: 154/154 pass. Per failure, code vs test:
+
+- **Dummies not visible (R1 min range, R1 / T113 arc, T113 behind wall, T113 unreachable, T113 overkill exceptions)**: CODE
+  (small): `MakeDummy` sets the masks the vision pass gives a dummy anyway (visible to all), so a dummy is a target the step it
+  is made. The tests had asked Feasibility / submitted orders before any vision pass.
+- **R1 / T113 fixed mount arc**: TEST. The spawn's free-spot search moved the 3 m jeeps off the bow line; positions are put back
+  (4.5 m, in blade reach) after spawning.
+- **R1 stuck aim**: CODE. The MBT's roof HMG kept `LastFiredAt` fresh, so the unit was "Firing" and every MG burst cleared the
+  anomaly. C1 now reads the main mount (`WeaponState.FiredAt`); a secondary firing still keeps C2 from calling the unit idle.
+- **R2 breacher**: TEST + CODE. Test: one step before the order (a not-yet-seen wall refuses the attack order). Code: (a) the
+  dozer was pushed back off the hesco to 6.8 m and `TargetAccess.CanInfluence` (the domain graph keeps hull clearance) dropped
+  the order as unreachable: a unit in its firing band where it stands is in reach, and the region band is widened by the unit's
+  radius; (b) `BetterThanOrder` kept the pre-order held target (the jeep) until the next look: the breach lock now covers it.
+- **P0-B Test C**: CODE. Objective cells (point, goal, camp) set `CanFireFromReachableRegion`; section 7 means firing on an
+  enemy. Objective cover still counts in coverage.
+- **P0-C converging ships**: TEST. At +-55 m two 96 m leviathans began 14 m bow to bow: the sea-route traffic (P33 L4) froze both
+  and sent one to a holding bay; nothing converged. Spawned at +-70 m, under way, headed at each other: CPA seen early, slowed,
+  no overlap, no reverse.
+- **P1 gate tests**: TEST. `WallX(-72, 72)` put segment ends on multiples of 8, so the "8 m" gate was 16 m (12 m open, no
+  doorway) and the passages found were the map-edge gaps (77 m away). From -76 the gate is 8 m. The real gate then exposed
+  heavy + scout: CODE (TF-8) the heavy outside the mouth lost to the scout mid-gate (spec 32: 90) and backed out; an outside
+  loser now holds (no reverse, no step aside), so spec 111 holds (the heavy keeps its road).
+- **Twenty vehicles**: TEST (no fog: under fog the P3 side knows no enemy and holds at home) + CODE: batched riders all started at
+  Q1 (`RiderBase`), and idle re-sends / reload resumes / unstick rungs / short moves sent several hulls to one point (the squad
+  goal): each goes to its own slot through `UnsharedSlot` (nearest free point on 2.5 m rings, off no-park cells; deterministic).
+- **Artillery lease**: CODE. An Idle order's default point (0,0) kept a lease at the origin.
+- **Spawn exit**: TEST. Free-spot spacing and hull separation opened the 8-tank 6 m ring into gaps the newcomer shoved through at
+  40 % speed (never "crawling", nothing to clear). Two rings (12 at 8 m, 18 at 14 m) placed explicitly: blocked, then cleared.
+- **P2 R6 sidestep**: CODE. A 4 m sidestep can never clear a hull 9 m ahead (2.8 m off the line < 3.2 m): rung 2 tries 4, 6, 8 m.
+- **P2 S112 (inconclusive)**: TEST. The "6 m" cliff gap was closed by hull clearance (no choke); rocks 12 m apart leave ~6 m
+  open. Merged design: with a reserved passage P1's plan makes the packets, so the test checks `Packets` (2-4 s) on that path.
+- **P5 registry**: CODE. `ANOMALY_NO_ACCEL` / `ANOMALY_NO_PATH` (spec 185, P1) registered under JAM.
+- No morale / retreat-by-health; all changes deterministic; no tunable values changed.

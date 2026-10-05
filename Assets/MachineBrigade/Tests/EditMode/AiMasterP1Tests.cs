@@ -54,7 +54,9 @@ namespace MachineBrigade.Tests
         private static SimWorld OneGate(Vector2 rally0, Vector2 rally1)
         {
             var props = new List<PropPlacement>();
-            WallX(props, 0f, -72f, 72f, (0f, 8f));
+            // (Segments from -76 put segment ends at +-4: from -72 they fell at 0 and +-8, the gate was 16 m with 12 m open and
+            // no doorway, and the passages found were the map-edge gaps.)
+            WallX(props, 0f, -76f, 76f, (0f, 8f));
             return World(props, rally0, rally1);
         }
 
@@ -62,7 +64,7 @@ namespace MachineBrigade.Tests
         private static SimWorld TwoGates()
         {
             var props = new List<PropPlacement>();
-            WallX(props, 0f, -72f, 72f, (24f, 8f), (-24f, 8f));
+            WallX(props, 0f, -76f, 76f, (24f, 8f), (-24f, 8f));
             return World(props, new Vector2(-60f, -60f), new Vector2(60f, 60f));
         }
 
@@ -306,7 +308,9 @@ namespace MachineBrigade.Tests
         [Test]
         public void TwentyVehiclesOneObjectiveShareCorridorsBatchAtTheGateAndNeverShareASlot()
         {
-            var s = new SandboxScenario { Seed = 11 };
+            // No fog: the objective (the enemy tank past the gate) is known. Under fog nothing is known of it and the side
+            // holds at home (AI MASTER P3 memory: no target, no march), so no one ever went through the gate.
+            var s = new SandboxScenario { Seed = 11, Fog = false };
             s.Sides[0].Ai = SandboxAi.Full;
             s.Sides[1].Ai = SandboxAi.Idle;
             for (var i = 0; i < 20; i++)
@@ -355,10 +359,22 @@ namespace MachineBrigade.Tests
                 "a rally point there moves out to the rally ring");
             // Parked friends all round the drop zone, then a newcomer that has to get out through them.
             var parked = new List<Vehicle>();
-            for (var k = 0; k < 8; k++)
-                parked.Add(world.SpawnVehicle("main_battle_tank", 0, zone + new Vector2(MathF.Cos(k * MathF.PI / 4f), MathF.Sin(k * MathF.PI / 4f)) * 6f, 0f));
+            // Two rings (12 at 8 m, 18 at 14 m), hull to hull: one 8-hull 6 m ring is spread by the hulls' separation into
+            // gaps a tank shoves through at 40 % speed (never "crawling", so nothing is blocked and nothing needs clearing).
+            for (var k = 0; k < 30; k++)
+            {
+                var inner = k < 12;
+                var angle = inner ? k * MathF.PI / 6f : (k - 12) * MathF.PI / 9f + MathF.PI / 18f;
+                var ring = zone + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (inner ? 8f : 14f);
+                var tank = world.SpawnVehicle("main_battle_tank", 0, ring, 0f);
+                // The spawn's free-spot search spreads hulls (to 1.6 x their bound): put each back on the ring.
+                tank.Position = ring;
+                parked.Add(tank);
+            }
             Run(world, 4f);
             var newcomer = world.SpawnVehicle("main_battle_tank", 0, zone, MathF.PI / 2);
+            // (Likewise the newcomer: the free-spot search would have put it outside the ring, with nothing to get through.)
+            newcomer.Position = zone;
             Order(world, CommandType.Move, newcomer, zone + new Vector2(45f, 0f));
             Run(world, 25f);
             Assert.Greater(newcomer.Position.X, zone.X + 30f, "the newcomer got out");

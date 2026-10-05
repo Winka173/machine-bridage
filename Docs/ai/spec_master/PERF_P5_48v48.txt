@@ -1,0 +1,19 @@
+whole step (AI ticks + world step): mean 1.087 ms, p99 4.084 ms, max 6.681 ms
+AI per-system cost over 2399 steps (ms/step, max ms, calls); total 0.893 ms/step
+  Steering          0.361    1.971     2399
+  PathRebuild       0.001    0.220     2399
+  Tactical          0.053    1.247     4798
+  Squad             0.141    4.402     4798
+  Commander         0.037    4.003      240
+  Procurement       0.003    0.253      218
+  Targeting         0.261    0.866     2399
+  Watchdog          0.020    2.004     2399
+  Bosses            0.005    0.018     2399
+  HealthMonitor     0.012    0.506      120
+SevereUnstuckCount 0 (0.00 per 10 unit-minutes; Part S target <= 1)
+NavalReverseEvents 0 (Part S: 0)
+Part K: idleWithoutReason 0, squadsNoDamage 0, blocked 0 (0.00), severe 0, orders/unit/min 23.1, targetSwitches/min 0.0, actionSwitches/min 0.0, noMapInfluence 0, lowUtilClasses 0, stalledObjectives 0, anomalies 0, deadlocks 1, navalReverse 0
+Part K recoveries: squads 20, idle audits 0, traffic 0, churn 0; Part L holds 0 / resumes 0 / kept targets 0 / reload scoots 0; Part N overkill avoided 0, critical overrides 0
+DecisionLog lines by namespace (last 4000): ARTILLERY 6, COMBAT_IDLE 3, FORMATION 28, JAM 10, MODE 6, OBJECTIVE 25, ROUTE 10, SQUAD 126, TRAFFIC 32, WATCHDOG 20
+Unregistered codes: none
+

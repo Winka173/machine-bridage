@@ -75,8 +75,16 @@ namespace MachineBrigade.Sim.AI
             if (unit.Def.Naval != null) return true;
             var reach = Reach(unit);
             if (unit.Def.Static || unit.Def.Speed <= 0f) return Vector2.Distance(unit.Position, target) - targetRadius <= reach;
+            // In its firing band where it stands: a solution now, whatever the coarse region test says (a wide hull's domain
+            // graph keeps its cells clear of a wall's edge, so a blade or flamer reach at a wall it touches found no cell).
+            var here = Vector2.Distance(unit.Position, target);
+            if (here - targetRadius <= reach && here >= weapon.MinRange) return true;
             var grid = _world.Grid;
             Refresh(grid);
+            // The region tests ask for a cell its centre may stand on, and those keep a hull's clearance off every blocker: a
+            // blade or flamer measured from the centre found no cell in reach of the very wall the hull was pressed against.
+            // The firing band is widened by the hull's own radius (what the clearance took off).
+            reach += unit.Radius;
             // P0-B: the unit's mobility-domain component, while the topology matches the grid.
             if (Resolver != null && _topology != null && _topology.GridVersion == grid.Version)
             {
