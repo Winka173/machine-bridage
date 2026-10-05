@@ -472,7 +472,7 @@ namespace MachineBrigade.Sim.Content
                 /// <summary>ai.squadLayer.minSquad (count; gioi_han_thuc_the, was Sim/AI/Squads.cs:130).</summary>
                 public static int MinSquad = 3;
                 /// <summary>ai.squadLayer.maxSquad (count; tran, was Sim/AI/Squads.cs:131).</summary>
-                public static int MaxSquad = 6;
+                public static int MaxSquad = 9; // AI MASTER P2: spec 20 max 9 (was 6; the desired 5-7 is ai.squads.desired*)
                 /// <summary>ai.squadLayer.gatherRadius (m; ban_kinh, was Sim/AI/Squads.cs:132).</summary>
                 public static float GatherRadius = 25f;
                 /// <summary>ai.squadLayer.gatheredRadius (m; ban_kinh, was Sim/AI/Squads.cs:133).</summary>

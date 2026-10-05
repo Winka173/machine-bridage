@@ -21157,3 +21157,51 @@ compiled against the Sim with stubs.
 - Command dedup only for AI (non-manual) group moves; player orders always go through.
 - Naval: policy only (never reverse; widen turn / alternate waypoint); ships stay with P0-C's controller.
 - Tests written (`AiMasterP1Tests`, category AIMasterP1), compiled against the Sim with stubs, not run.
+
+## AI MASTER P2 (lane C)
+
+Branch `feature/ai-p2` (worktree MachineBrigade-art3), 05/10. Spec MASTER_FINAL Part B, D, E, F, G, I, J, sections 19-27, 68-76,
+86, 97, 159-162; row by row in `Docs/ai/spec_master/AUDIT_P2.md`, values in `Docs/export/CHANGES.md` "AI MASTER P2". No Unity,
+no tests run; Sim compiled (0 errors); the test file compiled against the Sim + NUnit with stubs.
+- **Role ladders as factors (Part B).** The existing score stays B1's product (Part A); each role's priority list is a factor
+  on the main weapon only: rung 1 x1.6, each rung x0.85, unnamed classes one rung below the list, "only when nothing better"
+  x0.35 (lifted by an immediate survival threat or ThreatToObjective >= 0.7). A factor, never a filter: a last-resort target is
+  still shot when it is the only one (no idle gun). B2 / B3 stay P0-A's. Secondary mounts keep the generic score. Role from
+  aiBehaviour.units, then flags, then UnitClass; "lancet" in the id = anti-artillery loitering.
+- **Mode doctrine per side (Part I).** 25 doctrines in code with inheritance (I15), resolved goal -> mode tag -> profile
+  "doctrine" key (new, optional) -> profile id -> BalancedObjectiveDoctrine (logged). The battle's doctrine is the defender's
+  or the attacker's: the side the profile does not name as defender plays Assault in a defend-family mode, the defender plays
+  Defend in an attack-family mode. Phase key (AI phase, alarm, operation stage, Showdown stage, boss phase, profile) bumps a
+  generation every layer rebuilds on (I11). The table is code because it is structure (policies), the numbers are tunables.
+- **Fire support anchors (Part J).** One anchor per fire class (mortar <= 60 m reach, MLRS, artillery, long >= 140 m / Strike)
+  per tactical-AI side, at the class's I1 band from the policy's reference (front / objective / defence line / convoy ahead /
+  boss predicted / nearest seen defence / quarry predicted), 15 candidates (3 band fractions x 5 laterals) scored by the Part J
+  terms (weights ai.fireSupport.weights). Kept until a doctrine trigger fires; emergencies (phase, terrain, out of reach /
+  inside min range, counter-battery hit) skip the 8 s minimum hold. Replaces the old standoff in DirectArtillery; shelling
+  defences / the mission structure (FiringSpot) and close-threat escape / kiting stay as they were.
+- **Flat-ground Part D.** The sim has no heights: hull-down = low cover (blocks movement, not fire) 1.5-7 m in a 35° cone
+  towards the threat with the target line clear; observation = clear lines round the spot; dead ground = fewer known direct-fire
+  enemies seeing the spot. Used for TD / MBT slots in Hold (not in an urgent primary attack) and artillery firing spots.
+- **Part E ladder in the watchdog.** P0-A's BlockedByFriend sidestep now runs the E2 rungs (wait 1 s for a crossing blocker,
+  4 m sidestep, 9 m equivalent ring slot, another target, then the idle blocker yields 3 m); 4 s per rung; only the rear of a
+  pair acts, a yielding blocker is not moved again.
+- **Part F is capability, not health.** Main gun lost = the main mount's part off for good; engine crippled = speed left < 60 %
+  (parts or slowing); radar / APS from the existing flags. F5: P2 drops a boss's held broadside the brain tick its working
+  mounts change (P0-C's samples already ignore broken mounts).
+- **Squads (19-27).** maxSquad 6 -> 9 (spec), enlisting fills to 7, merges to 9, split over 9 (alternate column members).
+  Reinforcements within 150 m of a squad of their kind drive to its rendezvous (16 m receive radius, inside the spec's 12-20)
+  unless already within 16 m of a member (a group that starts together joins at once). Merge: < 45 % of the desired strength
+  (health-weighted power), compatible task, < 35 m, no combat, not reserve / opposite flanks / another domain. Regroup from
+  cohesion (< 0.55 for 2 s, back over 0.7), the regroup point behind the line. Exceptions of spec 20 (artillery batteries,
+  aircraft, naval escorts, drones) are not squad members here: the tactical AI / boss escorts own them (kept).
+- **Formations (G, 86, 159-162).** Choke ahead (MapTopology chokes within 40 m, the formation wider than 0.75 x the choke) ->
+  Travel at once; splash / artillery threat -> Spread at once; otherwise a 3 s commitment. Slots tagged front / middle / outer
+  / rear (spec 27), kept per member while valid, column order rebuilt only on member or component change; a formation change
+  first goes to the halfway point for 1.5 s. Choke packets: half the column (3 under splash) waits 3 s (spec 2-4).
+- **Commander (24, 68-73).** Reserve held where the doctrine allows (not Siege, Survival, BossRush, Duel, Intercept), 15-25 %
+  of strength, never the only squad; committed for 20 s to a threat near home / a squad or a losing squad (Endless: HQ only).
+  Urgency x lerp(1, 0.75) on the attack threshold, floored at the tactic's x0.75. Assignment utility orders the primary effort;
+  a task change inside the commit window costs 10 points unless an emergency (threat priority 90+) or a phase change.
+- **Not done here (scaffold):** mine-layer pre-placement (I2), AA coverage optimiser (I13 / I22, P3 169), intercept ETA filter
+  (I20, P3 207), two-objective splits (22), traffic-aware flank costs (76, P1). Replay hashes change. For the lead's runs:
+  AiScenarioTests / PlayTest8A squad and targeting pins may move; watch Conquest reserves and anchors on cramped maps.

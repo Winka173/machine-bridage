@@ -258,9 +258,25 @@ namespace MachineBrigade.Sim.AI
                 return;
             }
             // A friend in the line for a while: an AI unit steps aside (Part R1 / R6) rather than idling behind it.
+            // AI MASTER P2 Part E: the E2 ladder (wait, sidestep, equivalent slot, another target, the idle blocker steps aside).
             if (reason == CombatIdleReason.BlockedByFriend && CanOrder(v) && _world.TryGetTarget(v.Target, out var aimed))
             {
-                Request(v, WatchdogRequestKind.Sidestep, SidestepPoint(v, aimed.Position, r.Recoveries));
+                switch (_world.FiringLanes.Resolve(v, aimed.Position, out var point, out var blocker))
+                {
+                    case LaneResolution.Sidestep:
+                    case LaneResolution.AlternateSlot:
+                        Request(v, WatchdogRequestKind.Sidestep, point);
+                        break;
+                    case LaneResolution.Retarget:
+                        _world.Combat.ResetAim(v, true, now + SimTunables.Ai.CombatWatchdog.SuppressSeconds);
+                        break;
+                    case LaneResolution.MoveBlocker:
+                        if (blocker != null && CanOrder(blocker)) Request(blocker, WatchdogRequestKind.Sidestep, point);
+                        break;
+                    case LaneResolution.None:
+                        Request(v, WatchdogRequestKind.Sidestep, SidestepPoint(v, aimed.Position, r.Recoveries));
+                        break;
+                }
                 r.IdleSince = now;
             }
             if (reason != r.Logged && Notable(reason))

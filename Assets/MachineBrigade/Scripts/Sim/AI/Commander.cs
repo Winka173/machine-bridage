@@ -153,7 +153,7 @@ namespace MachineBrigade.Sim.AI
         /// Own/enemy strength for an attack: the tactic's (else the parameter), lowered by "use it or lose it" (I.4) only
         /// where the mode's profile has advancePressure and this side does not defend (prompt 28 appendix A, B).
         /// </summary>
-        public float AttackThreshold(Squad? s)
+        private float AttackThresholdBase(Squad? s)
         {
             var ai = _world?.Catalog.Ai;
             if (ai == null) return 1.2f;
@@ -255,7 +255,9 @@ namespace MachineBrigade.Sim.AI
             Squads.Enlist(world, pool);
             UseOrLose(world);
             Plan(world, intel);
-            Assign(world, intel);
+            // AI MASTER P2 spec 70: the objective urgency that lowers the attack threshold.
+            UpdateUrgency(world, intel);
+            AssignP2(world, intel);
             UnitsOutsideSquads(world, intel);
             SwitchTactic(world, intel, enemy);
         }
@@ -360,43 +362,6 @@ namespace MachineBrigade.Sim.AI
         }
 
         private float MainEffort(SimWorld world) => CurrentTactic.Modules.MainEffort ?? world.Catalog.Ai.MainEffort;
-
-        /// <summary>B.2: squads to tasks. The main effort's share of the strength goes to the primary objective (nearest first).</summary>
-        private void Assign(SimWorld world, TeamIntel intel)
-        {
-            var squads = Squads.Squads;
-            if (squads.Count == 0) return;
-            var m = CurrentTactic.Modules;
-            var total = 0f;
-            foreach (var s in squads) total += s.Strength;
-            var share = MainEffort(world);
-            var target = Intent.PrimaryObjective;
-            var order = new List<Squad>(squads);
-            var to = target ?? (EnemyCentre(intel) ?? Vector2.Zero);
-            order.Sort((a, b) =>
-            {
-                var da = Vector2.DistanceSquared(a.Centre, to);
-                var db = Vector2.DistanceSquared(b.Centre, to);
-                return da != db ? da.CompareTo(db) : a.Id.CompareTo(b.Id);
-            });
-            var assigned = 0f;
-            var pincer = 0;
-            var home = world.TryGetRally(Team, out var rally) ? rally : (Vector2?)null;
-            foreach (var s in order)
-            {
-                var primary = assigned < total * share || Intent.SecondaryObjective == null || m.Together;
-                SquadTask task;
-                if (m.HoldBase && home.HasValue) task = new SquadTask { Kind = TaskKind.Secondary, Objective = home, Hold = true };
-                else if (primary)
-                {
-                    task = new SquadTask { Kind = TaskKind.Primary, Objective = target, Window = Intent.AttackWindow, Hold = Defending || m.Hold };
-                    if (m.Pincer && pincer < 3) task.FlankSide = pincer++ % 2 == 0 ? -1 : 1;
-                    assigned += s.Strength;
-                }
-                else task = new SquadTask { Kind = TaskKind.Secondary, Objective = Intent.SecondaryObjective, Hold = true, Window = false };
-                s.Task = task;
-            }
-        }
 
         // ------------------------------------------------------------------------------------------------ tactics
 

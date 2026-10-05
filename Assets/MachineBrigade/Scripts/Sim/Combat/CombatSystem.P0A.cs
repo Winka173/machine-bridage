@@ -199,7 +199,8 @@ namespace MachineBrigade.Sim.Combat
             if (objective > 0f)
                 worth *= 1f + objective * SimTunables.Ai.Targeting.ThreatToObjectiveWeight / MathF.Max(0.01f, SimTunables.Ai.Targeting.ThreatToSelfWeight);
             // Part B B2 / B3.
-            worth *= DoctrineWorth(v, other, weapon);
+            // AI MASTER P2: Part B B4-B13 role ladders (via DoctrineWorth) and Part I mode target weights.
+            worth *= DoctrineWorth(v, other, weapon) * P2ModeWorth(v, other, weapon);
             // Part C1 step 6: the target the watchdog gave up on is the last resort for a moment.
             if (other.Id == v.SuppressedTarget && now < v.SuppressedUntil) worth *= OverkillFloor;
             // Spec 44: overkill: with more than 1.15 x its health already on the way, another target if there is one.
@@ -338,7 +339,7 @@ namespace MachineBrigade.Sim.Combat
             return across <= SimTunables.Ai.Targeting.BreachCorridorWidth + structure.Radius;
         }
 
-        /// <summary>Part B B2 / B3 role factors on a candidate (1 for every other role: the full role doctrine is lane P2's).</summary>
+        /// <summary>Part B B2 / B3 role factors on a candidate; every other role's ladder is lane P2's <see cref="P2RoleWorth"/>.</summary>
         private float DoctrineWorth(Vehicle v, Vehicle other, WeaponDef weapon)
         {
             if (IsBreacher(v))
@@ -363,7 +364,8 @@ namespace MachineBrigade.Sim.Combat
                 if (!other.Def.Static && other.Armor == ArmorClass.Light && !ImmediateSurvivalThreat(v, other) && StructureInReach(v, weapon))
                     return SimTunables.Ai.Targeting.SiegeLightPenalty;
             }
-            return 1f;
+            // AI MASTER P2: every other role's Part B ladder.
+            return P2RoleWorth(v, other, weapon);
         }
 
         /// <summary>A valuable enemy structure (not a wall or obstacle) the weapon could shoot now; once per vehicle per step.</summary>

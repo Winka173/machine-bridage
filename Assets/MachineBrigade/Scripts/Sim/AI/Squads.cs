@@ -71,7 +71,7 @@ namespace MachineBrigade.Sim.AI
     }
 
     /// <summary>One squad of the squad layer: a handful of ground vehicles that fight as one (prompt 28 C).</summary>
-    public sealed class Squad
+    public sealed partial class Squad
     {
         internal readonly List<EntityId> MemberList = new();
 
@@ -177,29 +177,12 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Puts new vehicles in squads: the nearest squad of their kind with room, else a new one (B.2).</summary>
         internal void Enlist(SimWorld world, IReadOnlyList<Vehicle> pool)
         {
+            // AI MASTER P2 (spec 20, 23): sizes 3-9 (desired 5-7) and reinforcements through a rendezvous (SquadManagement).
+            var intel = world.Intel.For(_commander.Team);
             foreach (var v in pool)
             {
                 if (_squadOf.ContainsKey(v.Id) || v.Flying) continue;
-                var fast = v.Def.Speed >= 11f;
-                Squad? best = null;
-                var bestDistance = 40f;
-                foreach (var s in _squads)
-                {
-                    if (s.Fast != fast || s.MemberList.Count >= MaxSquad || s.Dodging) continue;
-                    var d = Vector2.Distance(s.Centre, v.Position);
-                    if (d < bestDistance)
-                    {
-                        best = s;
-                        bestDistance = d;
-                    }
-                }
-                if (best == null)
-                {
-                    best = new Squad(_nextId++, fast) { Centre = v.Position, Goal = v.Position };
-                    _squads.Add(best);
-                }
-                Insert(best.MemberList, v.Id);
-                _squadOf[v.Id] = best.Id;
+                EnlistOne(world, intel, v);
             }
         }
 
@@ -208,7 +191,12 @@ namespace MachineBrigade.Sim.AI
         {
             if (!_squadOf.TryGetValue(id, out var sid)) return;
             _squadOf.Remove(id);
-            Find(sid)?.MemberList.Remove(id);
+            if (Find(sid) is { } squad)
+            {
+                squad.MemberList.Remove(id);
+                squad.PendingList.RemoveAll(p => p.Id.Value == id.Value);
+                squad.ColumnDirty = true;
+            }
         }
 
         public void Tick(SimWorld world, float dt)
@@ -221,7 +209,14 @@ namespace MachineBrigade.Sim.AI
             {
                 var s = _squads[i];
                 Measure(world, s);
-                if (s.MemberList.Count == 0)
+                MeasureP2(world, intel, s);
+            }
+            // AI MASTER P2 (spec 19-23): reinforcements, splits, merges, the lifecycle.
+            Manage(world, intel);
+            for (var i = _squads.Count - 1; i >= 0; i--)
+            {
+                var s = _squads[i];
+                if (s.MemberList.Count == 0 && s.PendingList.Count == 0)
                 {
                     world.AiLog.Forget(AiLayer.Squad, _commander.Team, s.Id);
                     _lastOptions.Remove(s.Id);
@@ -230,6 +225,7 @@ namespace MachineBrigade.Sim.AI
             }
             foreach (var s in _squads)
             {
+                if (s.MemberList.Count == 0) continue;
                 // AI MASTER P1: passage turns and packets first (spec 31, 85-86).
                 TrafficTick(world, s);
                 Think(world, intel, s);
@@ -259,6 +255,11 @@ namespace MachineBrigade.Sim.AI
                     }
                     s.MemberList.RemoveAt(i);
                     s.Progress.Remove(id);
+                    s.SlotOf.Remove(id);
+                    s.LastSlot.Remove(id);
+                    s.ReleaseAt.Remove(id);
+                    s.GoalDistance.Remove(id);
+                    s.ColumnDirty = true;
                     _squadOf.Remove(id);
                 }
             }
@@ -336,6 +337,8 @@ namespace MachineBrigade.Sim.AI
             s.Score = score;
             Explain(world, s, options, pick);
             SetState(world, intel, s, now);
+            // AI MASTER P2 Part G / 86: the formation by threat, choke and cohesion, with hysteresis.
+            ChooseFormation(world, intel, s, s.Task.Objective ?? NearestEnemy(intel, s.Centre) ?? s.Goal);
             Execute(world, intel, s, tactic);
             Focus(world, intel, s, tactic);
             Units(world, intel, s, tactic);
@@ -356,6 +359,7 @@ namespace MachineBrigade.Sim.AI
             var ratio = own / MathF.Max(0.01f, enemyGoal);
             var confidence = Confidence(intel, goal, radius, world.Time);
             var transitioning = _commander.InTransition;
+            var crippled = CrippledShare(world, s);
 
             // ATTACK: an objective or a known enemy within the squad's reach of action.
             if (s.Task.Objective.HasValue || NearestEnemy(intel, s.Centre).HasValue)
@@ -371,7 +375,7 @@ namespace MachineBrigade.Sim.AI
                 if (enemyGoal > 0f) f.Add(new Factor("lowConfidence", -(1f - confidence) * 15f));
                 var routeThreat = RouteThreat(intel, s.Centre, goal);
                 if (routeThreat > 0f) f.Add(new Factor("routeThreat", -MathF.Min(15f, routeThreat / MathF.Max(1f, s.Strength) * 6f)));
-                if (s.Spread > GatherRadius && m.Cohesion > 0f) f.Add(new Factor("notGathered", -10f * m.Cohesion));
+                if (s.Cohesion < SimTunables.Ai.Squads.CohesionRegroup && m.Cohesion > 0f) f.Add(new Factor("notGathered", -10f * m.Cohesion));
                 if (transitioning) f.Add(new Factor("transition", -30f));
                 if (_commander.WaitingForAir) f.Add(new Factor("waitAir", -20f));
                 if (_commander.WaitingForArtillery) f.Add(new Factor("artilleryPrep", -15f));
@@ -388,6 +392,8 @@ namespace MachineBrigade.Sim.AI
                 if (intel.ThreatAt(ThreatKind.Splash, s.Centre) > 0f || intel.ThreatAt(ThreatKind.Artillery, s.Centre) > 0f)
                     f.Add(new Factor("inSplash", -15f));
                 if (!s.Task.Hold && !m.Hold && s.Task.Window) f.Add(new Factor("window", -10f));
+                // Part F2: most of the squad crippled: hold / support rather than a long move (capability, not health).
+                if (crippled > 0.5f) f.Add(new Factor("crippled", SimTunables.Ai.ComponentState.HoldBonus));
                 Add(SquadAction.Hold, 30f, f);
             }
 
@@ -397,6 +403,8 @@ namespace MachineBrigade.Sim.AI
                 {
                     if ((side < 0 && s.BlockedLeft) || (side > 0 && s.BlockedRight)) continue;
                     if (!FlankPoint(world, intel, s, goal, side, out var point, out var threat)) continue;
+                    // Spec 76: no flank whose way is too narrow for the squad's column.
+                    if (!FlankRouteFits(world, s, point)) continue;
                     var f = new List<Factor>();
                     var (_, sideEnemy) = intel.StrengthAround(point, radius);
                     if (enemyGoal > 0f) f.Add(new Factor("weakFlank", Math.Clamp((enemyGoal - sideEnemy) / enemyGoal * 15f, -10f, 15f)));
@@ -408,6 +416,8 @@ namespace MachineBrigade.Sim.AI
                     if (sideEnemy > 0f) f.Add(new Factor("reserveThatWay", -MathF.Min(10f, sideEnemy / MathF.Max(1f, s.Strength) * 5f)));
                     if (threat > 0f) f.Add(new Factor("routeThreat", -MathF.Min(10f, threat / MathF.Max(1f, s.Strength) * 4f)));
                     if (transitioning) f.Add(new Factor("transition", -30f));
+                    // Part F2: no long flank with a crippled engine in the squad.
+                    if (crippled > 0f) f.Add(new Factor("crippled", -SimTunables.Ai.ComponentState.FlankPenalty));
                     Add(side < 0 ? SquadAction.FlankLeft : SquadAction.FlankRight, 30f, f);
                 }
 
@@ -444,16 +454,19 @@ namespace MachineBrigade.Sim.AI
             }
 
             // JOIN: too small, with another squad of its kind close by.
-            if (s.MemberList.Count < MinSquad && JoinableSquad(s) is { } join)
+            if (s.MemberList.Count < MinSquad && JoinableSquad(world, intel, s) is { } join)
             {
                 s.JoinTarget = join.Id;
                 Add(SquadAction.Join, 35f, new List<Factor> { new("belowMinimum", 25f) });
             }
 
             // REGROUP: scattered (and, once regrouping, until gathered again).
-            if (s.Spread > GatherRadius || (s.Action == SquadAction.Regroup && s.Spread > GatheredRadius) || transitioning)
+            // AI MASTER P2 spec 25: cohesion under 0.55 for over 2 s (not in an immediate survival fight), until it is back over 0.7.
+            var lowCohesion = !double.IsNaN(s.LowCohesionSince) && world.Time - s.LowCohesionSince > SimTunables.Ai.Squads.CohesionSeconds &&
+                              !(s.State == SquadState.Combat && world.Time - s.UnderFireAt < 2.0);
+            if (lowCohesion || (s.Action == SquadAction.Regroup && s.Cohesion < SimTunables.Ai.Squads.CohesionRecover) || transitioning)
             {
-                var f = new List<Factor> { new("scattered", MathF.Min(25f, (s.Spread - GatheredRadius) * 1.2f)) };
+                var f = new List<Factor> { new("scattered", MathF.Min(25f, (1f - s.Cohesion) * 40f)) };
                 if (transitioning) f.Add(new Factor("tacticChanged", 20f));
                 if (s.Task.Window) f.Add(new Factor("window", -15f));
                 Add(SquadAction.Regroup, 25f, f);
@@ -483,7 +496,8 @@ namespace MachineBrigade.Sim.AI
                 Layer = AiLayer.Squad, Team = _commander.Team, Subject = s.Id, Time = world.Time, Choice = options[pick].action.ToString(),
                 Score = options[pick].score, Plus = plus, Minus = minus,
                 RunnerUp = runner >= 0 ? options[runner].action.ToString() : null, RunnerUpScore = runner >= 0 ? options[runner].score : 0f,
-                Context = $"{s.Task.Kind} {s.State} {s.Formation}",
+                // AI MASTER P2 section 97: task, state, formation (and why), lifecycle, cohesion, power, members.
+                Context = $"{s.Task.Kind} {s.State} {s.Formation} ({s.FormationReason}) {s.Lifecycle} C{s.Cohesion:0.00} P{s.Power:0.0} n{s.MemberList.Count}+{s.PendingList.Count}",
             });
         }
 
@@ -545,14 +559,7 @@ namespace MachineBrigade.Sim.AI
             world.AiLog.CountSwitch(_commander.Team, s.Id, DecisionKind.State, now);
             s.State = next;
             s.StateSince = now;
-            s.Formation = next switch
-            {
-                SquadState.Travel or SquadState.Approach => FormationMode.Travel,
-                SquadState.Combat => FormationMode.Spread,
-                SquadState.Hold or SquadState.Overwatch => FormationMode.Hold,
-                SquadState.Flank => FormationMode.Flank,
-                _ => FormationMode.Regroup,
-            };
+            // AI MASTER P2: the formation follows in ChooseFormation (Part G triggers, hysteresis, morphing).
         }
 
         // ------------------------------------------------------------------------------------------------ emergencies
@@ -722,22 +729,26 @@ namespace MachineBrigade.Sim.AI
                         s.ActionSince = double.NegativeInfinity;
                         return;
                     }
-                    if (Vector2.Distance(into.Centre, s.Centre) < 15f)
+                    // Spec 21 / 74: merge inside 35 m; otherwise drive to the intercept point, never the moving centroid.
+                    if (Vector2.Distance(into.Centre, s.Centre) < SimTunables.Ai.Squads.MergeDistance)
                     {
-                        Merge(world, s, into);
+                        MergeP2(world, into, s, "join");
                         return;
                     }
-                    goal = into.Centre;
+                    goal = Intercept(s, into, SlowestSpeed(world, s));
                     type = CommandType.Move;
                     mode = FormationMode.Travel;
                     break;
                 default: // Regroup: on the point first ordered, unless the squad has drifted far from it
                     goal = !float.IsNaN(s.IssuedGoal.X) && s.IssuedAction == SquadAction.Regroup && Vector2.Distance(s.IssuedGoal, s.Centre) < GatherRadius * 2f
                         ? s.IssuedGoal
-                        : s.Centre;
+                        : RegroupPoint(world, intel, s);
                     type = CommandType.Move;
                     break;
             }
+            // AI MASTER P2 Part I: a no-chase / leash doctrine keeps the squad near its anchor.
+            goal = Leash(world, s, goal);
+            if (s.MorphPending && world.Time >= s.MorphUntil) s.IssuedGoal = new Vector2(float.NaN, float.NaN);
             goal = world.Map.Clamp(goal, 6f);
             // AI MASTER P1 (spec 40): never a rally or holding point in a spawn's exit box.
             if (type == CommandType.Move) goal = world.Traffic.OutOfExit(goal, _commander.Team);
@@ -779,68 +790,9 @@ namespace MachineBrigade.Sim.AI
             return true;
         }
 
-        /// <summary>Gives each member its slot of the formation around <paramref name="goal"/>, facing <paramref name="facing"/>.</summary>
-        private void Slots(SimWorld world, Squad s, Vector2 goal, Vector2 facing, FormationMode mode, CommandType type)
-        {
-            var n = s.MemberList.Count;
-            if (n == 0) return;
-            var side = new Vector2(facing.Y, -facing.X);
-            var spacing = mode switch
-            {
-                FormationMode.Spread => SpreadDistance(world, s),
-                FormationMode.Hold => 9f,
-                FormationMode.Regroup => 5f,
-                _ => 6f,
-            };
-            var order = new List<Vehicle>();
-            foreach (var id in s.MemberList)
-                if (world.TryGetVehicle(id, out var v)) order.Add(v);
-            // Travel: heavy armour leads (breakthrough's "heavy first" too); flank: the fastest leads.
-            var heavyLead = _commander.TacticFor(s).Modules.HeavyLead || mode == FormationMode.Travel;
-            if (mode == FormationMode.Flank) order.Sort((a, b) => b.Def.Speed != a.Def.Speed ? b.Def.Speed.CompareTo(a.Def.Speed) : a.Id.Value.CompareTo(b.Id.Value));
-            else if (heavyLead) order.Sort((a, b) => b.MaxHp != a.MaxHp ? b.MaxHp.CompareTo(a.MaxHp) : a.Id.Value.CompareTo(b.Id.Value));
-            // AI MASTER P1 (spec 28-31, 85-86): the shared corridor and the passage on it (column, packets, queue).
-            var plan = PlanTraffic(world, s, goal, type, order);
-            // Stage 1 of a member's jam loosens the formation a little (spec 38).
-            foreach (var v in order)
-                if (world.Time < v.Traffic.LoosenUntil)
-                {
-                    spacing += 2f;
-                    break;
-                }
-            // G.2: a crowded narrow passage ahead: the back half waits a moment and goes through after the front half
-            // (a reserved passage's packets do this instead).
-            var wait = plan.Passage == null && mode == FormationMode.Travel && order.Count > 2 && Crowded(world.Intel.For(_commander.Team), s.Centre, goal);
-            if (wait) s.StaggerUntil = world.Time + 3.0;
-            for (var i = 0; i < order.Count; i++)
-            {
-                if (wait && i >= (order.Count + 1) / 2)
-                {
-                    world.Submit(new Command(CommandType.Stop, _commander.Team, new[] { order[i].Id }));
-                    s.Progress[order[i].Id] = (order[i].Position, world.Time, 0);
-                    continue;
-                }
-                Vector2 slot;
-                switch (mode)
-                {
-                    case FormationMode.Travel:
-                    case FormationMode.Flank:
-                        slot = goal - facing * (i * spacing);
-                        break;
-                    case FormationMode.Regroup:
-                        var angle = i * MathF.PI * 2f / n;
-                        slot = goal + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (n > 1 ? spacing : 0f);
-                        break;
-                    default:
-                        slot = goal + side * ((i - (n - 1) * 0.5f) * spacing);
-                        break;
-                }
-                slot = world.Map.Clamp(slot, 4f);
-                if (!world.Grid.IsWalkable(slot)) slot = goal;
-                IssueSlot(world, s, order[i], i, slot, type, plan);
-                s.Progress[order[i].Id] = (order[i].Position, world.Time, 0);
-            }
-        }
+        /// <summary>Gives each member its slot of the formation around <paramref name="goal"/>, facing <paramref name="facing"/> (AI MASTER P2: SlotsP2).</summary>
+        private void Slots(SimWorld world, Squad s, Vector2 goal, Vector2 facing, FormationMode mode, CommandType type) =>
+            SlotsP2(world, s, goal, facing, mode, type);
 
         /// <summary>The spread-out distance before splash (L: a multiple of the strongest known blast), from 6 m.</summary>
         private float SpreadDistance(SimWorld world, Squad s)
@@ -848,7 +800,11 @@ namespace MachineBrigade.Sim.AI
             var intel = world.Intel.For(_commander.Team);
             var m = _commander.TacticFor(s).Modules;
             var blast = intel.EnemySplash * world.Catalog.Ai.SplashSpread * m.Spread * _commander.Skill.Spread;
-            return MathF.Max(6f, blast * 2f);
+            var spacing = MathF.Max(6f, blast * 2f);
+            // AI MASTER P2 spec 162: against direct anti-tank fire with little splash, no useless spread (cover and flank instead).
+            var splashHere = intel.ThreatAt(ThreatKind.Splash, s.Centre) + intel.ThreatAt(ThreatKind.Artillery, s.Centre);
+            if (splashHere <= 0f && intel.ThreatAt(ThreatKind.AntiTank, s.Centre) > 0f) spacing = MathF.Min(spacing, MathF.Max(6f, SimTunables.Ai.Formation.DirectAtMaxSpread));
+            return spacing;
         }
 
         /// <summary>
@@ -877,6 +833,7 @@ namespace MachineBrigade.Sim.AI
                     s.Progress[id] = (v.Position, now, moving ? p.rung : 0);
                     // A member left with nothing to do while its squad still has a goal: send it again.
                     if (!moving && v.Order.Kind == OrderKind.Idle && !v.Target.IsValid && Vector2.Distance(v.Position, goal) > 15f && now >= s.StaggerUntil &&
+                        now >= ReleaseOf(s, id) &&
                         s.Action != SquadAction.Hold && s.Action != SquadAction.Overwatch)
                         world.Submit(new Command(type, _commander.Team, new[] { id }, goal));
                     continue;
@@ -983,19 +940,6 @@ namespace MachineBrigade.Sim.AI
                         v.SquadFocusWeight = weight;
                     }
             }
-        }
-
-        private void Merge(SimWorld world, Squad from, Squad into)
-        {
-            foreach (var id in from.MemberList)
-            {
-                if (into.MemberList.Count >= MaxSquad) break;
-                Insert(into.MemberList, id);
-                _squadOf[id] = into.Id;
-            }
-            world.AiLog.Add(new DecisionEntry(world.Time, _commander.Team, AiLayer.Squad, from.Id, DecisionKind.Action, $"joined squad {into.Id}"));
-            from.MemberList.RemoveAll(id => _squadOf.TryGetValue(id, out var sid) && sid == into.Id);
-            into.IssuedGoal = new Vector2(float.NaN, float.NaN);
         }
 
         // ------------------------------------------------------------------------------------------------ helpers
@@ -1119,13 +1063,14 @@ namespace MachineBrigade.Sim.AI
             return worst;
         }
 
-        private Squad? JoinableSquad(Squad s)
+        /// <summary>Spec 21 / 74: the nearest compatible squad within the join reach that a small squad may join.</summary>
+        private Squad? JoinableSquad(SimWorld world, TeamIntel intel, Squad s)
         {
             Squad? best = null;
             var bestDistance = JoinReach;
             foreach (var o in _squads)
             {
-                if (o == s || o.Fast != s.Fast || o.MemberList.Count + s.MemberList.Count > MaxSquad) continue;
+                if (o == s || o.MemberList.Count == 0 || !CanMerge(world, intel, s, o, JoinReach, false)) continue;
                 var d = Vector2.Distance(o.Centre, s.Centre);
                 if (d < bestDistance)
                 {
