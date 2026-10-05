@@ -285,7 +285,8 @@ namespace MachineBrigade.Sim.Combat
         {
             var now = _world.Time;
             if (now < v.RetargetAt)
-                return Held(v, ordered.Id) is { } kept && IsValidAutoTarget(v, kept, weapon) ? kept : null;
+                // (The breach lock holds against the target it had before the order too, not only a newly scored one.)
+                return Held(v, ordered.Id) is { } kept && IsValidAutoTarget(v, kept, weapon) && !BreachHeld(v, weapon, ordered, kept) ? kept : null;
             v.RetargetAt = now + RetargetSeconds;
             var best = BestInRange(v, weapon, ordered.Id, -1, out var bestScore);
             if (best == null || best.Id == ordered.Id) return null;

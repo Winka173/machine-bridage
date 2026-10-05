@@ -874,7 +874,8 @@ namespace MachineBrigade.Sim.AI
                     if (!moving && v.Order.Kind == OrderKind.Idle && !v.Target.IsValid && Vector2.Distance(v.Position, goal) > 15f && now >= s.StaggerUntil &&
                         now >= ReleaseOf(s, id) &&
                         s.Action != SquadAction.Hold && s.Action != SquadAction.Overwatch)
-                        world.Submit(new Command(type, _commander.Team, new[] { id }, goal));
+                        // To its own formation slot (spec 111: the squad's goal is every idle member's, never one point for all).
+                        world.Submit(new Command(type, _commander.Team, new[] { id }, UnsharedSlot(world, v, s.LastSlot.TryGetValue(id, out var own) ? own : goal)));
                     continue;
                 }
                 if (now - p.since < stuckTime) continue;
@@ -882,16 +883,16 @@ namespace MachineBrigade.Sim.AI
                 switch (p.rung)
                 {
                     case 0: // back off a little and try again
-                        world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, world.Map.Clamp(v.Position - away * 4f, 4f)));
+                        world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(v.Position - away * 4f, 4f))));
                         break;
                     case 1: // another route: a side step towards the goal
                         var sideStep = new Vector2(away.Y, -away.X) * ((id.Value & 1) == 0 ? 8f : -8f);
-                        world.Submit(new Command(type, _commander.Team, new[] { id }, world.Map.Clamp(goal + sideStep, 4f)));
+                        world.Submit(new Command(type, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(goal + sideStep, 4f))));
                         break;
                     case 2: // out of the cluster
                         var out_ = v.Position - s.Centre;
                         out_ = out_.LengthSquared() > 0.01f ? Vector2.Normalize(out_) : new Vector2(away.Y, -away.X);
-                        world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, world.Map.Clamp(v.Position + out_ * 8f, 4f)));
+                        world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(v.Position + out_ * 8f, 4f))));
                         break;
                     default:
                         blocked++;

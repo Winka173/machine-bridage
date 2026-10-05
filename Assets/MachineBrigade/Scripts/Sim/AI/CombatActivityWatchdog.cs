@@ -61,6 +61,7 @@ namespace MachineBrigade.Sim.AI
             public double LastTargetAcquireTime = double.NegativeInfinity;
             public double LastAimProgressTime = double.NegativeInfinity;
             public double LastFireTime = double.NegativeInfinity;
+            public double LastMainFireTime = double.NegativeInfinity;
             public double LastDamageAttemptTime = double.NegativeInfinity;
             public bool HasValidTarget, HasFiringSolution, WeaponReady;
             public bool BlockedByArc, BlockedByLos, BlockedByMinRange, BlockedByFriendly, BlockedByMovementState;
@@ -201,6 +202,12 @@ namespace MachineBrigade.Sim.AI
             {
                 r.LastFireTime = v.LastFiredAt;
                 r.LastDamageAttemptTime = v.LastFiredAt;
+            }
+            // C1 is the main weapon's: only its own shot clears an anomaly (a coax burst does not).
+            var mainFired = v.Weapons[CombatSystem.MainMount(v)].FiredAt;
+            if (mainFired > r.LastMainFireTime)
+            {
+                r.LastMainFireTime = mainFired;
                 r.AnomalySince = double.NaN;
                 r.Recoveries = 0;
             }
@@ -292,8 +299,21 @@ namespace MachineBrigade.Sim.AI
 
         // ------------------------------------------------------------------------------------------------ classifying
 
-        /// <summary>Part C2: the reason this unit is not shooting (or that it is active).</summary>
+        /// <summary>
+        /// Part C2: the reason this unit is not shooting (or that it is active). Part C1 is the main weapon's: a coax or roof
+        /// gun still firing keeps the unit active, but not when the main gun is ready, has its solution and stays silent.
+        /// </summary>
         private CombatIdleReason Classify(Vehicle v, int main, Record r, out FiringCheck check, out Vehicle? enemy)
+        {
+            var reason = ClassifyMain(v, main, r, out check, out enemy);
+            if (reason is CombatIdleReason.StaleAim or CombatIdleReason.Disabled or CombatIdleReason.DisabledMainWeapon or CombatIdleReason.Deploying or
+                CombatIdleReason.Firing) return reason;
+            return _world.Time - v.LastFiredAt < FiringWindow(v.Arms[main]) ? CombatIdleReason.Firing : reason;
+        }
+
+        private static double FiringWindow(WeaponDef weapon) => MathF.Max(SimTunables.Ai.CombatWatchdog.FiredRecentlySeconds, weapon.Cooldown + 0.5f);
+
+        private CombatIdleReason ClassifyMain(Vehicle v, int main, Record r, out FiringCheck check, out Vehicle? enemy)
         {
             check = default;
             enemy = null;
@@ -303,7 +323,7 @@ namespace MachineBrigade.Sim.AI
             if (v.DeployBusy) return CombatIdleReason.Deploying;
             var state = v.Weapons[main];
             var weapon = v.Arms[main];
-            if (now - v.LastFiredAt < MathF.Max(SimTunables.Ai.CombatWatchdog.FiredRecentlySeconds, weapon.Cooldown + 0.5f)) return CombatIdleReason.Firing;
+            if (now - state.FiredAt < FiringWindow(weapon)) return CombatIdleReason.Firing;
             if (v.HoldFire) return CombatIdleReason.HoldFireOrder;
             if (v.AiHoldFire) return CombatIdleReason.HoldFireAmbush;
             // A mount the boss system lays and fires (lane P0-C's).

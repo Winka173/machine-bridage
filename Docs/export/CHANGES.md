@@ -13131,3 +13131,21 @@ Nhánh `feature/ai-p5` (lane A, 05/10). Nguồn: `Docs/ai/spec_master/Machine_Br
 | P5-5 | Ngân sách cập nhật (Part P, mục 98) | lớp đội 4 Hz cho mọi đội cùng lúc; đếm cụm quét mọi xe | mỗi đội nghĩ 2 Hz theo nhóm so le (né vẫn 4 Hz); lưới 10 m cho đếm cụm / đám đông; bộ đếm thời gian theo hệ (tắt mặc định) | mua quân giữ nhịp theo độ khó |
 | P5-6 | Tín hiệu (215) | ghi lại, chưa hiện | thông báo radio: AI đồng minh mọi tín hiệu; AI địch chỉ "attack_go" | không hiện thăm dò / nghi binh của địch |
 | P5-7 | Xuất dữ liệu | 09_ai không có mã lý do / học thuyết | 09_ai: AI_ma_ly_do, AI_hoc_thuyet_che_do, AI_hoc_thuyet_vai_tro, AI_nhom_hang_so, AI_nhip_cap_nhat, AI_giam_sat_suc_khoe; 02_boss: Boss_ma_ly_do; 04: Che_do_hoc_thuyet_AI (đọc thẳng từ mã, `Tools/export/domains/_p5_ai.py`) | |
+
+## AI MASTER test fixes
+
+Nhánh `feature/ai-testfix` (lane A, 05/10). Lead chạy 154 test AiMaster: 136 qua, 17 hỏng, 1 không kết luận; sau sửa: 154/154 qua (chạy Unity trong worktree, chủ cho phép theo spec MASTER). Chỉ ghi các sửa đổi hành vi; sửa test thuần (bố trí cảnh) xem DECISIONS "AI MASTER test fixes (lane A)".
+
+| # | mục | cũ | mới | ghi chú |
+|---|---|---|---|---|
+| TF-1 | Bia tập bắn (dummy) | thấy được sau lượt tầm nhìn kế tiếp | thấy được ngay khi tạo (như lượt tầm nhìn vẫn làm) | không đổi trận thật |
+| TF-2 | Watchdog C1 (spec C1) | súng phụ (coax / súng nóc) bắn thì xe tính là "đang bắn", bất thường bị xoá mỗi loạt | C1 xét súng chính: súng chính sẵn sàng, có lời giải, không bắn -> COMBAT_ANOMALY dù súng phụ đang bắn; chỉ phát bắn của súng chính mới xoá bất thường | C2 vẫn coi xe bắn bằng súng phụ là hoạt động |
+| TF-3 | Lối bắn bị bạn chắn (E2 bước 2) | né ngang đúng 4 m (không thoát được xe 9 m phía trước) | thử 4, 6, 8 m, chọn bước nhỏ nhất thoát đường bắn | |
+| TF-4 | Ảnh hưởng bản đồ (mục 7, Test C) | bắn được vào ô điểm chiếm / đích tính là "bắn được từ vùng tới được" | chỉ bắn vào địch mới tính; điểm chiếm vẫn tính vào độ phủ mục tiêu | xe tăng phục vụ điểm đất nhưng không "bắn được" tàu |
+| TF-5 | Đặt chỗ pháo (spec 41) | lệnh Idle có điểm (0,0) giữ chỗ ở gốc bản đồ | lệnh Idle không giữ chỗ | |
+| TF-6 | Truy cập mục tiêu (spec 47/83) | lưỡi ủi / súng tầm ngắn chạm tường vẫn bị coi là không tới được, lệnh bị huỷ | xe đang trong tầm bắn tại chỗ đứng: tới được; vùng bắn nới thêm bán kính thân xe (khoảng hở thân xe đã trừ) | máy ủi giữ lệnh phá tường |
+| TF-7 | Khoá phá tường (Part B B2, R2) | mục tiêu giữ từ trước lệnh vẫn được giữ tới lần chọn lại | khoá phá áp dụng cả mục tiêu đang giữ: chỉ mối đe doạ sống còn mới kéo khỏi tường | |
+| TF-8 | Đối đầu ở cửa (spec 32 / 111) | xe ngoài cửa thua quyền (xe trong cửa = 90) thì lùi | xe ngoài vùng cấm đỗ của cửa chỉ dừng chờ, không lùi, không né | xe hạng nặng không bị trinh sát đẩy lùi |
+| TF-9 | Hàng chờ cửa (spec 31) | các đội đi ghép cùng chiều đều bắt đầu ở Q1 | mỗi đội ghép có chỗ hàng chờ riêng (sau các xe đã ghép) | |
+| TF-10 | Không chung ô (mục 111) | xe rảnh gửi lại về đích đội, xe nạp đạn xong về đích đội; bước gỡ kẹt / ô đội / chỗ chờ có thể trùng lệnh xe khác | về ô đội của chính nó; các điểm đó qua `UnsharedSlot`: điểm đã có xe bạn được lệnh tới (< 1 m) dời sang điểm trống gần nhất (vòng 2.5 m, ngoài ô cấm đỗ) | tất định |
+| TF-11 | Mã lý do (Part O) | `ANOMALY_NO_ACCEL` / `ANOMALY_NO_PATH` (spec 185) chưa đăng ký | đăng ký trong namespace JAM | |

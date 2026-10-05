@@ -153,16 +153,50 @@ namespace MachineBrigade.Sim.AI
                 var release = plan.Queued ? double.PositiveInfinity : plan.Start + (index / Math.Max(1, plan.PacketSize)) * gap;
                 if (release > now)
                 {
-                    var q = QueueSpot(world, plan.Passage, plan.Direction, plan.QueueBase + index, v);
+                    var q = UnsharedSlot(world, v, QueueSpot(world, plan.Passage, plan.Direction, plan.QueueBase + index, v));
                     s.Packets[v.Id] = (release, slot, type);
                     world.Submit(new Command(CommandType.Move, _commander.Team, new[] { v.Id }, q));
                     return;
                 }
             }
             s.Packets.Remove(v.Id);
+            slot = UnsharedSlot(world, v, slot);
             var kind = type == CommandType.Move ? OrderKind.Move : OrderKind.AttackMove;
             if (plan.Corridor != null && world.IssueAlongCorridor(v, kind, slot, plan.Corridor)) return;
             world.Submit(new Command(type, _commander.Team, new[] { v.Id }, slot));
+        }
+
+        /// <summary>
+        /// Spec 111 ("never share a slot"): squads of one side sent at one objective lay their formations over the same
+        /// ground, and a squad's fallbacks (its goal, a queue spot) can match another's. A point another friendly ground hull
+        /// is already ordered to (within 1 m) moves to the nearest free walkable point on rings 2.5 m apart (off no-parking
+        /// cells), deterministically. Unchanged when it is free (or nothing free is near).
+        /// </summary>
+        private static Vector2 UnsharedSlot(SimWorld world, Vehicle v, Vector2 slot)
+        {
+            for (var ring = 0; ring <= 4; ring++)
+            {
+                var steps = ring == 0 ? 1 : ring * 8;
+                for (var k = 0; k < steps; k++)
+                {
+                    var angle = k * MathF.PI * 2f / steps;
+                    var p = slot + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * 2.5f);
+                    if (ring > 0 && (!world.Map.Contains(p) || !world.Grid.IsWalkable(p) || world.Lanes.NoParkAt(p))) continue;
+                    if (!SlotTaken(world, v, p)) return p;
+                }
+            }
+            return slot;
+        }
+
+        private static bool SlotTaken(SimWorld world, Vehicle v, Vector2 p)
+        {
+            foreach (var o in world.VehicleList)
+            {
+                if (o == v || !o.IsAlive || o.Team != v.Team || o.Flying || o.Def.Static) continue;
+                if (o.Order.Kind is not (OrderKind.Move or OrderKind.AttackMove)) continue;
+                if (Vector2.DistanceSquared(o.Order.Point, p) < 1f) return true;
+            }
+            return false;
         }
 
         /// <summary>Queue position Q(slot+1) before the passage, on open ground off doorways (else the nearest parkable spot).</summary>
@@ -247,8 +281,9 @@ namespace MachineBrigade.Sim.AI
                 s.Packets.Remove(id);
                 if (!world.TryGetVehicle(id, out var v)) continue;
                 var kind = packet.type == CommandType.Move ? OrderKind.Move : OrderKind.AttackMove;
-                if (corridor != null && world.IssueAlongCorridor(v, kind, packet.slot, corridor)) continue;
-                world.Submit(new Command(packet.type, team, new[] { id }, packet.slot));
+                var to = UnsharedSlot(world, v, packet.slot);
+                if (corridor != null && world.IssueAlongCorridor(v, kind, to, corridor)) continue;
+                world.Submit(new Command(packet.type, team, new[] { id }, to));
             }
         }
 

@@ -467,7 +467,9 @@ namespace MachineBrigade.Sim.Navigation
             // AI MASTER P1 (spec 41): the booking is an occupancy lease: it lapses once the gun is more than
             // ai.traffic.parkingLeaveM (5 m) from it and no longer ordered there.
             var leave = Content.SimTunables.Ai.Traffic.ParkingLeaveM;
-            return Vector2.DistanceSquared(o.Position, at) < leave * leave || Vector2.DistanceSquared(o.Order.Point, at) < leave * leave;
+            // (An idle order has no point: its default (0, 0) is not "ordered there".)
+            return Vector2.DistanceSquared(o.Position, at) < leave * leave ||
+                   (o.Order.Kind != OrderKind.Idle && Vector2.DistanceSquared(o.Order.Point, at) < leave * leave);
         }
 
         /// <summary>The owner of the booking on the cell under <paramref name="p"/> (0 for none; tests).</summary>

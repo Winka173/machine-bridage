@@ -254,7 +254,9 @@ namespace MachineBrigade.Sim.AI
                         bestSteps = MathF.Min(bestSteps, s);
                     }
                     cover = hits / (float)count;
-                    if (hits > 0) fire = true;
+                    // Section 7: "fire from a reachable region" is firing on an enemy (a ship from the shore); shelling a point's
+                    // ground is objective coverage, not that (Test C: a tank serves a land point yet cannot touch the ship).
+                    if (hits > 0 && !t.Objective) fire = true;
                 }
                 var engaged = MathF.Max(reach, cover);
                 coverSum += engaged * value;

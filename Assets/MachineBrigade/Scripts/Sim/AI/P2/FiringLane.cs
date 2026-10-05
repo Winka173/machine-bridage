@@ -116,12 +116,16 @@ namespace MachineBrigade.Sim.AI
                         }
                         continue;
                     case 1:
-                        // 2. A small lateral sidestep that clears the line.
-                        if (Step(v, target, side * sign * Tun.FiringLane.SidestepMetres, blocker, out point) ||
-                            Step(v, target, -side * sign * Tun.FiringLane.SidestepMetres, blocker, out point))
+                        // 2. A small lateral sidestep that clears the line: the tuned step first, then up to twice it (a hull a few
+                        // metres ahead covers more of the line than one step clears; a sidestep that leaves it blocked is no rung).
+                        for (var k = 2; k <= 4; k++)
                         {
-                            P2Reasons.Unit(_world, v, DecisionKind.Action, P2Reasons.PositionLaneSidestep, $"({point.X:0},{point.Y:0})");
-                            return LaneResolution.Sidestep;
+                            var metres = Tun.FiringLane.SidestepMetres * k * 0.5f;
+                            if (Step(v, target, side * sign * metres, blocker, out point) || Step(v, target, -side * sign * metres, blocker, out point))
+                            {
+                                P2Reasons.Unit(_world, v, DecisionKind.Action, P2Reasons.PositionLaneSidestep, $"({point.X:0},{point.Y:0})");
+                                return LaneResolution.Sidestep;
+                            }
                         }
                         continue;
                     case 2:

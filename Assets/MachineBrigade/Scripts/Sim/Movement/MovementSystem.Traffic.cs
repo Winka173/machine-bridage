@@ -870,6 +870,14 @@ namespace MachineBrigade.Sim.Movement
                 if (float.IsPositiveInfinity(loser == v ? dv : d2)) loser = loser == v ? o : v;
                 var room = loser == v ? dv : d2;
                 var winner = loser == v ? o : v;
+                // AI MASTER (spec 32 / 111): the winner is in the doorway (the middle of the choke ranks 90) and the loser
+                // is still out on open ground beyond the mouth's no-park cells: the loser keeps its road and waits there; it
+                // neither backs out nor steps aside (a heavy outside the gate is not pushed back by a scout already in it).
+                if (!InDoorway(loser) && InDoorway(winner))
+                {
+                    loser.Traffic.HoldUntil = now + HeadOnWait;
+                    continue;
+                }
                 // In the open (prompt 12): the loser steps aside, off the winner's way, rather than
                 // backing up in front of it; with no room to the side it backs off as in a doorway.
                 if (!InDoorway(loser) && !InDoorway(winner))

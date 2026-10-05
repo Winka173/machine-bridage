@@ -989,6 +989,8 @@ namespace MachineBrigade.Sim
         public void MakeDummy(Vehicle v)
         {
             v.Dummy = true;
+            // The vision pass shows a dummy to every side; do it now so it is a target from the step it is made, not one later.
+            v.SeenByMask = v.VisibleToMask = ~0;
             v.RefreshEffects(Time);
         }
 
