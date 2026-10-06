@@ -136,7 +136,7 @@ namespace MachineBrigade.Tests
                 Assert.Less(Vector3.Distance(at, new Vector3(part.At.X, part.Height, part.At.Y)), 0.05f, part.Node + " in its place");
             }
             var wreck = Resources.Load<GameObject>("Models/silver_bug_wreck").GetComponentsInChildren<Transform>(true);
-            foreach (var name in new[] { "Muzzle_main", "Muzzle_gun", "Muzzle_gun.001", "Muzzle_mg", "Muzzle_mg.001", "Muzzle_missile" })
+            foreach (var name in new[] { "Muzzle_main", "Muzzle_gun", "Muzzle_gun_02", "Muzzle_missile" })
             {
                 Assert.IsTrue(nodes.Any(t => t.name == name), "silver_bug " + name);
                 Assert.IsTrue(wreck.Any(t => t.name == name), "silver_bug_wreck " + name);

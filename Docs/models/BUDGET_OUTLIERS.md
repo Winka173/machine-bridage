@@ -7,10 +7,10 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | status | findings |
 | --- | --- |
 | HARD | 0 |
-| WAIVED | 5 |
+| WAIVED | 0 |
 | EXCEPTION | 0 |
 | INFO | 61 |
-| SOFT | 84 |
+| SOFT | 82 |
 
 ## Spec part CG models
 
@@ -18,18 +18,11 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | --- | --- | --- | --- | --- | --- | --- |
 | armored_bulldozer | vertices | 12,787 | 10,100 / 12,600 | ground normal | INFO | INFO: 12,787 vertices, 1.5 % over the ground hard cap 12,600 (not enforced on vertices); one breacher per side, not a unit seen in numbers |
 | armored_bulldozer | triangles | 9,246 | 7,800 / 9,700 | ground normal | SOFT | SOFT: 9,246 (budget 7,800, cap 9,700), reviewed with the vertices |
-| attack_jet | renderers | 40 | 36 / 44 | jet normal | SOFT | SOFT (40: budget 36, cap 44), reviewed: its stable muzzle names are fixed (MVA W1-B); a renderer merge needs a Blender rebuild with renders, kept for W3 (spec part AB step 2) |
-| cp_relay | renderers | 43 | 39 / 48 | structure normal | SOFT | SOFT (43: budget 39, cap 48), reviewed: a capture-point structure, several on a map but static; under the cap |
 
 ## Every finding (worst first)
 
 | model | metric | value | soft / hard | x hard | class | status |
 | --- | --- | --- | --- | --- | --- | --- |
-| vehicle_hangar_base | renderers | 129 | 39 / 48 | 2.69 | structure normal | WAIVED |
-| aircraft_hangar | renderers | 93 | 39 / 48 | 1.94 | structure normal | WAIVED |
-| ixion | renderers | 175 | 130 / 162 | 1.08 | boss_s normal | WAIVED |
-| fpv_carrier | renderers | 78 | 61 / 76 | 1.03 | ground normal | WAIVED |
-| heavy_aa | renderers | 77 | 61 / 76 | 1.01 | ground normal | WAIVED |
 | sea_cruiser | vertices | 21,844 | 10,100 / 12,600 | 1.73 | ground normal | INFO |
 | mobile_fortress | vertices | 84,978 | 43,000 / 54,000 | 1.57 | boss_s normal | INFO |
 | vehicle_hangar_base | vertices | 18,781 | 9,800 / 12,200 | 1.54 | structure normal | INFO |
@@ -118,14 +111,12 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | sam_launcher | vertices | 11,586 | 10,100 / 12,600 | 0.92 | ground normal | SOFT |
 | ixion | vertices | 49,505 | 43,000 / 54,000 | 0.92 | boss_s normal | SOFT |
 | twin_rotor_gunship | renderers | 51 | 45 / 56 | 0.91 | helicopter normal | SOFT |
-| attack_jet | renderers | 40 | 36 / 44 | 0.91 | jet normal | SOFT |
 | fighter_jet | renderers | 40 | 36 / 44 | 0.91 | jet normal | SOFT |
 | behemoth_inferno | vertices | 48,995 | 43,000 / 54,000 | 0.91 | boss_s normal | SOFT |
 | heavy_aa | movingParts | 9 | 8 / 10 | 0.90 | ground normal | SOFT |
 | iron_beam | movingParts | 9 | 8 / 10 | 0.90 | ground normal | SOFT |
 | sea_corvette | vertices | 11,332 | 10,100 / 12,600 | 0.90 | ground normal | SOFT |
 | command_hq | renderers | 52 | 46 / 58 | 0.90 | prop normal | SOFT |
-| cp_relay | renderers | 43 | 39 / 48 | 0.90 | structure normal | SOFT |
 | aa_vehicle | renderers | 68 | 61 / 76 | 0.89 | ground normal | SOFT |
 | elite_heavy_tank | renderers | 68 | 61 / 76 | 0.89 | ground normal | SOFT |
 | ground_cruise_missile_vehicle | renderers | 68 | 61 / 76 | 0.89 | ground normal | SOFT |

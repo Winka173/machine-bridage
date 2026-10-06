@@ -173,7 +173,7 @@ namespace MachineBrigade.Game.Rendering
         private static readonly Regex LoosePattern = new(@"^(Bombs|Pump_beam|Erector|Searchlight|Lift|Blade)(\.\d+)?$");
 
         /// <summary>
-        /// A boss's destructible parts (prompt 8: Part_engine, Part_hangar.001 ...): each is its own
+        /// A boss's destructible parts (prompt 8: Part_engine, Part_hangar_R ...): each is its own
         /// rigid group, so the view can hide it or put a wreck piece in its place when it breaks.
         /// </summary>
         internal static Regex PartPattern => RuntimeNodes.Part;

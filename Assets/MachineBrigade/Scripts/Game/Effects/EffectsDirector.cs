@@ -213,6 +213,7 @@ namespace MachineBrigade.Game.Effects
             // Prompt 34 L3: the T4+ rounds' escape warnings.
             _escape = new EscapeWarnings(materials, meshes, _root);
             _topAttack = new TopAttackMarks(materials, meshes, _root);
+            _hazards = new HazardCues(materials, meshes, _root);
             // Play-test 12: the rounds, streaks and warning rings on this director's own shot clock (ShotClock.cs).
             _tracers.Clock = _projectiles.Clock = _escape.Clock = _topAttack.Clock = Clock;
             // Fix prompt L6: the smoke and dust a blast leaves, by its size band.
@@ -589,6 +590,8 @@ namespace MachineBrigade.Game.Effects
 
                     case SimEventKind.SkillUsed when e.Skill == SkillKind.Emp:
                         Ring(Ground(e.Position, 0.3f), 30f, new Color(0.45f, 0.8f, 2.4f, 1f));
+                        // MVA W2-B (THREAT_CUES "EMP"): the ring exactly on the skill's radius (the danger shape).
+                        _hazards.Emp(Ground(e.Position, 0f), EmpRadius(e, views), now);
                         break;
 
                     case SimEventKind.SkillUsed when e.Skill == SkillKind.Shield:
@@ -817,6 +820,7 @@ namespace MachineBrigade.Game.Effects
             _bigZones.Tick(views, now);
             _escape.Tick(now);
             _topAttack.Tick(views, now);
+            _hazards.Tick(now);
             // The bomb-run fix, pass 3: the sticks' rectangles (offered to the gate before it resolves) and the bay doors.
             TickSticks(views, now);
             // Fix prompt L6: the lingering smoke columns and the craters' lives.
@@ -1186,6 +1190,8 @@ namespace MachineBrigade.Game.Effects
                     // An electric-blue shockwave the size of the blast, twice over.
                     Ring(at, support.Radius * 2.2f, new Color(0.45f, 0.8f, 2.6f, 1f));
                     Ring(at, support.Radius * 1.4f, new Color(0.9f, 1.4f, 3f, 1f));
+                    // MVA W2-B: and the ring exactly on its radius (the units inside are the ones knocked out).
+                    _hazards.Emp(at, support.Radius, Time.time);
                     break;
                 case SupportKind.ShieldDome:
                     // Its dome comes up instead, with a ring in its side's colour (RaiseItemDome).

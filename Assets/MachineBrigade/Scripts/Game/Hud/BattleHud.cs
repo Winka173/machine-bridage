@@ -140,6 +140,8 @@ namespace MachineBrigade.Game.Hud
             _root.Add(_flash);
             // Equipment proc words over vehicles, under every control.
             if (mode != HudMode.Menu) _words = new TraitWords(_root);
+            // MVA W2-B (spec part BH): captions for the critical warnings (Settings: Warning captions), under every control.
+            if (mode != HudMode.Menu) _captions = new CueCaptions(_root);
 
             Compact = mode != HudMode.Menu && (spec.Compact ?? Match.MatchSettings.CompactHud);
             var hud = UiKit.Box("hud");
@@ -1125,16 +1127,34 @@ namespace MachineBrigade.Game.Hud
         private float _flashLevel;
         private readonly TraitWords _words;
 
+        /// <summary>MVA W2-B: the critical warnings' captions (null in the menu).</summary>
+        private readonly CueCaptions _captions;
+
         /// <summary>A short word over a vehicle whose equipment just went off (see <see cref="TraitWords"/>).</summary>
         public void TraitWord(Vector3 world, string word, bool ours, Camera camera) => _words?.Show(world, word, ours, camera);
 
         /// <summary>Flashes the screen (a huge blast in view); the stronger of overlapping flashes wins, and it fades in a fifth of a second.</summary>
-        public void Flash(float strength) => _flashLevel = Mathf.Max(_flashLevel, Mathf.Clamp01(strength));
+        public void Flash(float strength)
+        {
+            // MVA W2-B (spec part AL, photosensitivity): a full-screen wash is clamped in frequency (a new one within
+            // FlashGap s of the last only tops the one fading) and in strength (Reduced flashes: a quarter at most).
+            var now = Time.unscaledTime;
+            var level = Mathf.Clamp01(strength) * (Match.MatchSettings.ReducedFlash ? 0.25f : 1f);
+            if (now - _flashAt < FlashGap) level = Mathf.Min(level, _flashLevel + 0.1f);
+            else _flashAt = now;
+            _flashLevel = Mathf.Max(_flashLevel, level);
+        }
+
+        /// <summary>MVA W2-B (spec part AL): the shortest gap between two screen flashes at full strength (at most 2 a second).</summary>
+        internal const float FlashGap = 0.5f;
+
+        private float _flashAt = -10f;
 
         public void Tick()
         {
             _commanderBadge?.Tick();
             _words?.Tick();
+            _captions?.Tick();
             _boss?.Tick();
             if (_flashLevel > 0f)
             {
@@ -1218,6 +1238,7 @@ namespace MachineBrigade.Game.Hud
 
         public void Dispose()
         {
+            _captions?.Dispose();
             if (_host != null) Object.Destroy(_host);
             if (_eventSystem != null) Object.Destroy(_eventSystem);
             if (_settings != null) Object.Destroy(_settings);

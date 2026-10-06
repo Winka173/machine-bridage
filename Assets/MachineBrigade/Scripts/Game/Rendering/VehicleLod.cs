@@ -26,6 +26,13 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Below this many pixels across, a vehicle is drawn as an impostor.</summary>
         public const float ImpostorPixels = 24f;
 
+        /// <summary>
+        /// MVA W2-B (spec part AA, large boss): a boss's on-screen size counts this much more in the level choice, so it
+        /// keeps its full model (silhouette, weapon mounts, part damage states) to 1 / 1.6 of the vehicles' threshold;
+        /// it never drops to an impostor.
+        /// </summary>
+        public const float BossDetailBoost = 1.6f;
+
         /// <summary>How far past a threshold (as a share of it) a vehicle must shrink or grow to change level.</summary>
         public const float Band = 0.12f;
 

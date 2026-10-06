@@ -28,6 +28,7 @@ namespace MachineBrigade.Game.Effects
             {
                 _gate.Level = Mathf.Clamp(value, 0, 2);
                 _topAttack.Level = _gate.Level;
+                _hazards.Level = _gate.Level;
             }
         }
 
@@ -72,6 +73,24 @@ namespace MachineBrigade.Game.Effects
             if (!views.TryGet(e.Other, out var target) || target.Sim.Team != views.PlayerTeam) return;
             _topAttack.Add(e.Other, now, Mathf.Max(0.05f, e.Value));
         }
+
+        /// <summary>MVA W2-B: the mine-detected and EMP rings (THREAT_CUES.md).</summary>
+        private readonly HazardCues _hazards;
+
+        /// <summary>MVA W2-B (THREAT_CUES "mine detected"): a hostile mine the player's side just spotted: its trigger-radius ring.</summary>
+        public void MineFound(Vector3 at, float triggerRadius) => _hazards.MineFound(at, triggerRadius, Time.time);
+
+        /// <summary>The radius of the EMP skill a SkillUsed event is (the user's own skill), else the old 15 m.</summary>
+        private static float EmpRadius(in SimEvent e, ViewRegistry views)
+        {
+            if (views.TryGet(e.Entity, out var user))
+                foreach (var skill in user.Def.Skills)
+                    if (skill.Id == e.DefId) return skill.Radius;
+            return 15f;
+        }
+
+        /// <summary>Tests: hazard rings live now.</summary>
+        internal int HazardMarksLive => _hazards.Live(Time.time);
 
         /// <summary>Tests: top-attack marks live now.</summary>
         internal int TopAttackMarksLive => _topAttack.ActiveCount;

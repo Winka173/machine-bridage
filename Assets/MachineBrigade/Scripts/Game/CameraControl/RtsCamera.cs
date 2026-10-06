@@ -155,7 +155,7 @@ namespace MachineBrigade.Game.CameraControl
         public void AddTrauma(float amount)
         {
             if (!ShakeEnabled || Match.DebugFlags.Has("-mb-no-shake")) return;
-            _trauma = Mathf.Min(1f, _trauma + amount * ShakeScale);
+            _trauma = Mathf.Min(1f, _trauma + amount * ShakeScale * Fatigue);
         }
 
         /// <summary>
@@ -166,13 +166,23 @@ namespace MachineBrigade.Game.CameraControl
         public void AddTierTrauma(float amount, float cap)
         {
             if (amount <= 0f || Match.DebugFlags.Has("-mb-no-shake")) return;
-            var add = amount * ShakeScale;
+            var add = amount * ShakeScale * Fatigue;
             if (add <= 0f || _trauma >= cap) return;
             _trauma = Mathf.Min(Mathf.Min(1f, cap), _trauma + add);
         }
 
         /// <summary>Scales camera shake; the Reduced motion setting lowers it.</summary>
         public float ShakeScale { get; set; } = 1f;
+
+        /// <summary>
+        /// MVA W2-B (spec part AK): a boss barrage cannot shake the view on and on. After <see cref="FatigueAfter"/> s of
+        /// unbroken shake, new shake counts less (down to 35 % over the next 3 s); it recovers twice as fast once the view is still.
+        /// </summary>
+        internal float Fatigue => 1f - 0.65f * Mathf.Clamp01((_shaking - FatigueAfter) / 3f);
+
+        internal const float FatigueAfter = 2f;
+
+        private float _shaking;
 
         /// <summary>Jumps the view to look at <paramref name="point"/> (minimap taps).</summary>
         public void FocusOn(Vector3 point)
@@ -253,6 +263,7 @@ namespace MachineBrigade.Game.CameraControl
         public void Apply(float unscaledDeltaTime)
         {
             _trauma = Mathf.Max(0f, _trauma - TraumaDecay * unscaledDeltaTime);
+            _shaking = _trauma > 0.15f ? Mathf.Min(_shaking + unscaledDeltaTime, FatigueAfter + 4f) : Mathf.Max(0f, _shaking - 2f * unscaledDeltaTime);
             _noiseTime += unscaledDeltaTime * 25f;
             Place();
             if (_trauma <= 0f) return;

@@ -19,6 +19,13 @@ namespace MachineBrigade.Game.Views
         private readonly HashSet<EntityId> _seen = new();
         private readonly List<EntityId> _gone = new();
         private readonly bool _hasModel;
+        private readonly HashSet<EntityId> _announced = new();
+
+        /// <summary>
+        /// MVA W2-B (spec part BL, "mine detected"): a hostile mine the viewer's side has just spotted (once a mine): its
+        /// cues (the trigger-radius ring, the ping, the caption) hang on this.
+        /// </summary>
+        public event System.Action<MachineBrigade.Sim.Entities.Mine> Found;
 
         /// <param name="viewer">The team whose eyes we see through (-1 in the menu battle: every mine).</param>
         public MineViews(ModelLibrary models, Transform root, int viewer)
@@ -31,7 +38,7 @@ namespace MachineBrigade.Game.Views
 
         public void Update(SimWorld world)
         {
-            if (!_hasModel) return;
+            if (!_hasModel && Found == null) return;
             _seen.Clear();
             foreach (var mine in world.Mines)
             {
@@ -39,7 +46,8 @@ namespace MachineBrigade.Game.Views
                 var visible = _viewer < 0 || mine.Team == _viewer || mine.IsVisibleTo(_viewer);
                 if (!visible) continue;
                 _seen.Add(mine.Id);
-                if (_views.ContainsKey(mine.Id)) continue;
+                if (_viewer >= 0 && mine.Team != _viewer && _announced.Add(mine.Id)) Found?.Invoke(mine);
+                if (_views.ContainsKey(mine.Id) || !_hasModel) continue;
                 var view = _models.Spawn("mine", mine.Team, _root, castShadows: false).Root;
                 view.transform.SetPositionAndRotation(new Vector3(mine.Position.X, 0f, mine.Position.Y),
                     Quaternion.Euler(0f, mine.Id.Value * 71f, 0f));

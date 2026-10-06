@@ -721,7 +721,25 @@ def export_collection(collection, path):
         if linked:
             scene.collection.children.unlink(collection)
     _quantize(path)
+    _merge_static(path)
     _stable_names(path)
+
+
+def _merge_static(path):
+    """MVA W2-B: a model listed in Tools/assets/static_merge.json gets its static same-material detail meshes merged
+    again after the export (glb_merge_static.py: byte-identical triangles; the runtime merges the same meshes at load)."""
+    import importlib.util
+    import pathlib
+    import sys as _sys
+    here = pathlib.Path(__file__).resolve().parents[1] / 'assets'
+    if str(here) not in _sys.path:
+        _sys.path.insert(0, str(here))
+    spec = importlib.util.spec_from_file_location('glb_merge_static', here / 'glb_merge_static.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    done = module.merge_file(path)
+    if done:
+        print(f'STATIC MERGE {pathlib.Path(path).stem}: {sum(len(g) - 1 for g in done)} mesh nodes merged')
 
 
 def _quantize(path):

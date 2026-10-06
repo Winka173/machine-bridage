@@ -136,7 +136,7 @@ namespace MachineBrigade.Game.Effects
             var sim = view.Sim;
             var s = 17;
             for (var p = 0; p < sim.PartCount; p++)
-                s = s * 3 + (sim.IsPartBroken(p) ? 2 : sim.PartShare(p) < 0.25f ? 1 : 0);
+                s = s * 3 + (sim.IsPartBroken(p) ? 2 : sim.PartShare(p) < BossPartStates.CriticalBelow ? 1 : 0);
             var health = sim.MaxHp > 0f ? sim.Hp / sim.MaxHp : 1f;
             s = s * 3 + (health < 0.33f ? 2 : health < 0.66f ? 1 : 0);
             return s * 2 + (Low ? 1 : 0);
@@ -160,7 +160,7 @@ namespace MachineBrigade.Game.Effects
             {
                 var part = view.Def.Parts[p];
                 if (sim.IsPartBroken(p)) points.Add(new FireBudget.Point(view.PartWorld(p), part.Fx == "engine" ? 0.9f : 0.8f, AnchorOf(view.PartAnchor(p))));
-                else if (sim.PartShare(p) < 0.25f) points.Add(new FireBudget.Point(view.PartWorld(p), 0.35f, AnchorOf(view.PartAnchor(p))));
+                else if (sim.PartShare(p) < BossPartStates.CriticalBelow) points.Add(new FireBudget.Point(view.PartWorld(p), 0.35f, AnchorOf(view.PartAnchor(p))));
             }
             var health = sim.MaxHp > 0f ? sim.Hp / sim.MaxHp : 1f;
             var model = view.ModelRoot;
@@ -197,7 +197,7 @@ namespace MachineBrigade.Game.Effects
             {
                 if (sim.IsPartBroken(p)) continue;
                 var share = sim.PartShare(p);
-                if (share >= 0.5f) continue;
+                if (share >= BossPartStates.DamagedBelow) continue;
                 var at = view.PartWorld(p) + Vector3.up * 0.3f;
                 var size = Mathf.Clamp(view.Def.Parts[p].Radius * 0.6f, 0.6f, 2f);
                 _emitters.DamageSmoke(at, share < 0.25f ? size * 1.4f : size * 0.8f, share < 0.25f ? 0.15f : 0.7f);

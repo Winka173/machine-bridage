@@ -99,6 +99,9 @@ def resolve(vehicles):
             parts = [p for p in parts if p.get('id') in rules['keep']]
         if rules.get('drop'):
             parts = [p for p in parts if p.get('id') not in rules['drop']]
+        tune = rules.get('tune') or {}
+        if tune:  # part by part changes, merged as BossTemplates.Variant does (a variant's own "node" on its own model)
+            parts = [{**p, **tune[p.get('id')]} if isinstance(tune.get(p.get('id')), dict) else p for p in parts]
         return parts
 
     out = []

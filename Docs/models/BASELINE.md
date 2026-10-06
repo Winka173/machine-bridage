@@ -8,17 +8,17 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| boss | 29 | 1,141,989 | 39,378 | leviathan (86,412) | 3,979 | 1 | 26 |
-| ground | 66 | 569,046 | 8,621 | main_battle_tank_hd (16,462) | 3,735 | 2 | 40 |
-| structure | 71 | 412,111 | 5,804 | headquarters (21,052) | 3,809 | 2 | 11 |
+| boss | 29 | 1,141,989 | 39,378 | leviathan (86,412) | 3,905 | 0 | 14 |
+| ground | 66 | 569,046 | 8,621 | main_battle_tank_hd (16,462) | 3,662 | 0 | 40 |
+| structure | 71 | 412,111 | 5,804 | headquarters (21,052) | 3,618 | 0 | 10 |
 | prop | 115 | 258,170 | 2,244 | command_hq (8,872) | 1,568 | 0 | 3 |
 | unlisted | 34 | 108,062 | 3,178 | apc_hd (14,968) | 668 | 0 | 0 |
-| air | 19 | 101,328 | 5,333 | fighter_jet_hd (14,216) | 711 | 0 | 10 |
+| air | 19 | 101,328 | 5,333 | fighter_jet_hd (14,216) | 685 | 0 | 9 |
 | wreck | 1 | 69,462 | 69,462 | silver_bug_wreck (69,462) | 205 | 0 | 1 |
 | scenery | 96 | 40,708 | 424 | rubble_large (3,516) | 294 | 0 | 2 |
 | munition | 25 | 5,154 | 206 | bomb (404) | 175 | 0 | 0 |
 
-All files: 2,706,030 triangles, 5 with errors, 88 more with warnings only.
+All files: 2,706,030 triangles, 0 with errors, 79 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -34,7 +34,7 @@ All files: 2,706,030 triangles, 5 with errors, 88 more with warnings only.
 
 - fighter_jet: renderers 40 over the jet normal budget 36
 - fighter_jet_hd: triangles 14,216 over the jet hd budget 12,300; vertices 21,233 over the jet hd budget 19,200; renderers 51 over the jet hd budget 49
-- silver_bug: runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004; triangles 67,592 over the boss_m normal hard cap 55,000 (info: kept, owner rule); vertices 76,991 over the boss_m normal hard cap 70,000 (info: kept, owner rule); renderers 207 over the boss_m normal budget 178
+- silver_bug: triangles 67,592 over the boss_m normal hard cap 55,000 (info: kept, owner rule); vertices 76,991 over the boss_m normal hard cap 70,000 (info: kept, owner rule); renderers 207 over the boss_m normal budget 178
 
 ## Over budget (models per class and metric)
 
@@ -45,17 +45,17 @@ All files: 2,706,030 triangles, 5 with errors, 88 more with warnings only.
 | boss_m | renderers | 4 | 0 | - |
 | boss_m | triangles | 4 | 0 | - |
 | boss_m | vertices | 3 | 0 | - |
-| boss_s | renderers | 3 | 1 | ixion |
+| boss_s | renderers | 3 | 0 | - |
 | boss_s | triangles | 5 | 0 | - |
 | boss_s | vertices | 6 | 0 | - |
 | ground | movingParts | 3 | 0 | - |
-| ground | renderers | 14 | 2 | fpv_carrier, heavy_aa |
+| ground | renderers | 14 | 0 | - |
 | ground | triangles | 26 | 0 | - |
 | ground | vertices | 33 | 0 | - |
 | helicopter | renderers | 1 | 0 | - |
 | helicopter | triangles | 1 | 0 | - |
 | helicopter | vertices | 1 | 0 | - |
-| jet | renderers | 8 | 0 | - |
+| jet | renderers | 7 | 0 | - |
 | jet | triangles | 4 | 0 | - |
 | jet | vertices | 4 | 0 | - |
 | prop | renderers | 1 | 0 | - |
@@ -63,23 +63,18 @@ All files: 2,706,030 triangles, 5 with errors, 88 more with warnings only.
 | prop | vertices | 1 | 0 | - |
 | scenery | renderers | 2 | 0 | - |
 | structure | movingParts | 1 | 0 | - |
-| structure | renderers | 7 | 2 | aircraft_hangar, vehicle_hangar_base |
+| structure | renderers | 6 | 0 | - |
 | structure | triangles | 2 | 0 | - |
 | structure | vertices | 2 | 0 | - |
 | tower | movingParts | 1 | 0 | - |
 | tower | triangles | 1 | 0 | - |
 | tower | vertices | 1 | 0 | - |
 
-79 models over a budget, 5 of them over a hard cap.
+77 models over a budget, 0 of them over a hard cap.
 
 ## Error reasons (count of models)
 
-- over a budget hard cap: 5
+- none
 
-## Flagged models (5)
+## Flagged models (0)
 
-- **aircraft_hangar** (structure): renderers 93 over the structure normal hard cap 48
-- **fpv_carrier** (ground): renderers 78 over the ground normal hard cap 76
-- **heavy_aa** (ground): renderers 77 over the ground normal hard cap 76
-- **ixion** (boss): renderers 175 over the boss_s normal hard cap 162
-- **vehicle_hangar_base** (structure): renderers 129 over the structure normal hard cap 48

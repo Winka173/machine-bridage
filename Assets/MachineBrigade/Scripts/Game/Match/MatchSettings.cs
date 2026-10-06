@@ -388,10 +388,39 @@ namespace MachineBrigade.Game.Match
 
         public static bool HighQuality => Options.MaxEffects;
 
-        /// <summary>Screen shake: 0 off, 1 low, 2 full.</summary>
-        public static int ScreenShake { get; set; } = 2;
+        /// <summary>
+        /// Screen shake: 0 off, 1 low, 2 full (the older three-way setting; it sets <see cref="ShakeIntensity"/> to 0, 35 or 100 %
+        /// and reads back the nearest step).
+        /// </summary>
+        public static int ScreenShake
+        {
+            get => ShakeIntensity <= 0.001f ? 0 : ShakeIntensity < 0.7f ? 1 : 2;
+            set => ShakeIntensity = value <= 0 ? 0f : value == 1 ? 0.35f : 1f;
+        }
 
-        public static float ShakeScale => ScreenShake switch { 0 => 0f, 1 => 0.35f, _ => 1f };
+        /// <summary>
+        /// MVA W2-B (spec parts AK, BS): the master camera-shake intensity, 0 to 100 % in steps of 10 (0: the reduced-motion
+        /// preset). Shake is presentation only: every cue it supports has a visual and an audio counterpart.
+        /// </summary>
+        public static float ShakeIntensity { get; set; } = 1f;
+
+        public static float ShakeScale => Mathf.Clamp01(ShakeIntensity);
+
+        /// <summary>
+        /// MVA W2-B (spec part BS): fewer cosmetic particles (the extra sparks, debris, embers and dust of the blasts at half,
+        /// thrown chunks at half). The danger shapes, their timing, the projectiles and the impact flash and ring are untouched.
+        /// The game has no screen-distortion effect, so "reduced screen distortion" has nothing to turn off.
+        /// </summary>
+        public static bool ReducedEffects { get; set; }
+
+        /// <summary>The share of the cosmetic particles <see cref="ReducedEffects"/> leaves.</summary>
+        public static float CosmeticShare => ReducedEffects ? 0.5f : 1f;
+
+        /// <summary>
+        /// MVA W2-B (spec parts BG, BH): captions for the critical non-speech cues ([Incoming artillery], [Missile incoming],
+        /// [Top attack], [Boss super weapon], [Mine detected], [EMP]) with the side they come from; never for small arms.
+        /// </summary>
+        public static bool Captions { get; set; }
 
         /// <summary>
         /// Fix prompt L5: the warning rings (Effects/WarningGate): 0 Full (at most six, the most threatening first), 1 Important
@@ -521,6 +550,10 @@ namespace MachineBrigade.Game.Match
                 if (Graphics == GraphicsQuality.Custom) _custom = GraphicsOptions.Load("mb.gfx.", GraphicsOptions.For(DetectTier()));
                 // Reduced motion (older saves) became the low screen-shake setting.
                 ScreenShake = Mathf.Clamp(PlayerPrefs.GetInt("mb.shake", PlayerPrefs.GetInt("mb.reducedMotion", 0) == 1 ? 1 : 2), 0, 2);
+                // MVA W2-B: the 0-100 % intensity (an older save's three-way choice when it has none yet).
+                ShakeIntensity = Mathf.Clamp01(PlayerPrefs.GetFloat("mb.shakeLevel", ShakeIntensity));
+                ReducedEffects = PlayerPrefs.GetInt("mb.reducedEffects", 0) == 1;
+                Captions = PlayerPrefs.GetInt("mb.captions", 0) == 1;
                 CameraSpeed = Mathf.Clamp(PlayerPrefs.GetInt("mb.cameraSpeed", 1), 0, 2);
                 WarningRings = Mathf.Clamp(PlayerPrefs.GetInt("mb.warnings", 0), 0, 2);
                 CinematicMoments = PlayerPrefs.GetInt("mb.cinematic", 1) == 1;
@@ -580,6 +613,9 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.graphics", (int)Graphics);
                 if (Graphics == GraphicsQuality.Custom) _custom?.Save("mb.gfx.");
                 PlayerPrefs.SetInt("mb.shake", ScreenShake);
+                PlayerPrefs.SetFloat("mb.shakeLevel", ShakeIntensity);
+                PlayerPrefs.SetInt("mb.reducedEffects", ReducedEffects ? 1 : 0);
+                PlayerPrefs.SetInt("mb.captions", Captions ? 1 : 0);
                 PlayerPrefs.SetInt("mb.cameraSpeed", CameraSpeed);
                 PlayerPrefs.SetInt("mb.warnings", WarningRings);
                 PlayerPrefs.SetInt("mb.cinematic", CinematicMoments ? 1 : 0);

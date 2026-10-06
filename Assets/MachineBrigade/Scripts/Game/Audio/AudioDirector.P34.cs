@@ -521,22 +521,40 @@ namespace MachineBrigade.Game.Audio
             if (SoundLibrary.LaunchBank(weapon) == null || e.Value < HissLead + 0.4f) return;
             if (!_tierBanks.TryGetValue("missile_hiss", out var hiss)) return;
             var now = Time.unscaledTime;
-            if (now < _nextHiss) return;
-            _nextHiss = now + HissGap;
             // MVA W1-B (spec parts BA, BL): a guided or top-attack missile aimed at one of the player's units is an incoming
             // missile warning (P1: never cut while it plays); any other hiss stays a far shot.
             var incoming = (weapon.Guided || weapon.TopAttack) && e.Team != _playerTeam && _playerTeam >= 0 && _views != null &&
                            _views.TryGet(e.Other, out var aimed) && aimed.Sim.Team == _playerTeam;
-            Schedule(hiss, e.Target, 0.9f, e.Value - HissLead, incoming ? SoundPriority.Warning : SoundPriority.FarShot);
+            // MVA W2-B (spec part BV): the one-hiss-in-HissGap thinning is for the far hisses only; an incoming warning is never
+            // thinned out (the bank's cooldown still makes two at one spot one cue).
+            if (!incoming)
+            {
+                if (now < _nextHiss) return;
+                _nextHiss = now + HissGap;
+            }
+            // MVA W2-B (spec parts AE, BB): a top-attack round on the player's unit has its own dive warning (lock tones and a
+            // rushing dive) timed to come down with it; a direct missile keeps its motor hiss.
+            if (incoming && weapon.TopAttack && e.Value > TopAttackLead + 0.1f)
+            {
+                Schedule(Sound.TopAttack, e.Target, 1f, e.Value - TopAttackLead, (int)ThreatType.TopAttack);
+                return;
+            }
+            Schedule(hiss, e.Target, 0.9f, e.Value - HissLead, incoming ? SoundPriority.Warning : SoundPriority.FarShot,
+                incoming ? (int)ThreatType.MissileIncoming : -1);
         }
 
         /// <summary>An incoming shell's whistle: the big one for a boss's attack or a 406 mm / super weapon.</summary>
-        private void Whistle(Vector2 at, float volume, float delay, bool big)
+        /// <param name="threat">MVA W2-B: what the whistle warns of (captions); null: none (a boss attack's alarm carries it).</param>
+        private void Whistle(Vector2 at, float volume, float delay, bool big, ThreatType? threat = null)
         {
+            var cue = threat.HasValue ? (int)threat.Value : -1;
             // MVA W1-B: a boss's or super weapon's whistle is a P0 cue (never cut while it plays), the rest P1.
-            if (big && _tierBanks.TryGetValue("warn_whistle_big", out var bank)) Schedule(bank, at, volume, delay, SoundPriority.Critical);
-            else Schedule(Sound.Whistle, at, volume, delay);
+            if (big && _tierBanks.TryGetValue("warn_whistle_big", out var bank)) Schedule(bank, at, volume, delay, SoundPriority.Critical, cue);
+            else Schedule(Sound.Whistle, at, volume, delay, cue);
         }
+
+        /// <summary>MVA W2-B: the top-attack dive warning starts this long before the round comes down (the clip, less its cut).</summary>
+        private const float TopAttackLead = 0.95f;
 
         /// <summary>Per frame: the engines of the moving units near the view by class, the rails under a train, a ship's engines, a train's horn.</summary>
         private void TickTiers(ViewRegistry views, float now)

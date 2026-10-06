@@ -569,6 +569,9 @@ namespace MachineBrigade.Game.Effects
             var density = grow > 1f ? Density : 1f;
             life = Linger(life, Density);
             share = Mathf.Clamp01(share);
+            // MVA W2-B (spec part BS): Reduced effects halves the cosmetic additions (Emitted applies the share to the rich
+            // bursts only: the flash, the core fire and the ring that show the blast's size are whole) and drops the chunks.
+            share = Mathf.Min(share, MachineBrigade.Game.Match.MatchSettings.CosmeticShare);
             for (var i = 0; i < _bursts.Count; i++)
             {
                 if (_bursts[i].Time <= 0f) EmitBurst(i, position, scale, grow, density, life, ring, share, smoke);

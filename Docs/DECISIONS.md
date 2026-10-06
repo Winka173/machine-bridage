@@ -21749,3 +21749,86 @@ measurement for this pass).
 - **Not done / open:** the EditMode wrapper is written, not run (owner token rule; a lead who wants the Unity-side reading
   or a profiler capture runs category `MapVaW2AStress`); the siege scene's actual map/AI metrics still need a
   `ModeSessions` run in Unity play; render and audio metrics (spec BT) are the other lane's / the final part's own pass.
+
+## Map/visual/audio W2 (lane B)
+
+Spec: Docs/mapvisaudio (P1 / P2 visual, VFX, audio, model, UI, accessibility items W1 left: parts Y, Z, AA, AB, AE, AH, AK, AL,
+AM, AV, AX, AY, BB, BC, BE, BF, BH, BL, BP, BR, BS, BT, CB, CE, CF, CG). Branch feature/mva-w2b (06/10). No balance, no Sim/AI,
+Sim/Navigation or map edits (one view-only accessor on Sim/Entities/Mine.cs), no Unity runs, export pack not rebuilt.
+
+- **Node-rename follow-up (W, BX):** the last 24 legacy GLBs (W1 counted 35 kept names; 24 models carry them) renamed in place
+  (`runtime_node_audit.py --rename`, order-preserving "plain name + tag", owner-approved), with their data together: 47
+  balance.json part / mount nodes rewritten per unit by that unit's model map (the same `.001` maps to `_L`, `_R`, `_02` or
+  `_aft` on different models, so never a global replace); two variants whose own model names a node differently from the
+  parent's got a `variant.tune.<part>.node` (bastion_mk0 turret_fr `Mount_gun_R`, nyx ciws_aft `Part_mg_aft`), which
+  BossTemplates already merges; `glb_check.resolve` now merges `tune` the same way. p34_barrels.py, PlayTest8VisualTests (its
+  stale `Muzzle_mg` on silver_bug, which the model never had, dropped), comments. Audit: 0 new hard, 4 known (3 slot gaps +
+  1), baseline pruned; no `.NNN` runtime lookup left in any GLB.
+- **Renderer cleanup (Z3, AB, CG):** `Tools/assets/glb_merge_static.py` merges sibling mesh nodes (same parent, no children,
+  identity transform, one primitive, same material and layout, a mesh no other node uses) by concatenating their vertex
+  rows byte for byte; names the runtime or the data read are never merged (RUNTIME regex from ModelLibrary / VehicleView /
+  EngineFlames / FxPoints / TowerArt patterns, every Resources/Data string, C# `==` literals and `StartsWith` prefixes). It is
+  a strict subset of what ModelLibrary.MergeRigidParts already does at load, so the screen is identical; checked by a
+  per-material triangle soup compare (all attributes byte-identical) on all 8 files. Members are kept in node extras
+  (`mergedFrom`: names, triangle ranges) so glb_mesh / glb_analyze / the quality gate still see the parts (gate results
+  identical before / after). Opt-in list `Tools/assets/static_merge.json`; `frontier_kit.export_collection` re-runs it after
+  quantisation (checked in Blender 4.5: same bytes). Result: vehicle_hangar_base 129 -> 30, aircraft_hangar 93 -> 27, ixion
+  175 -> 101, fpv_carrier 78 -> 35, heavy_aa 77 -> 47, attack_jet (+ _hd) 40 -> 27, cp_relay 43 -> 17; the 5 waivers and
+  the notes are retired (budget audit HARD 0, WAIVED 0). armored_bulldozer stays INFO (1.5 % over on vertices, owner rule:
+  over-budget models are kept).
+- **LOD (AA):** a boss keeps its full model to 1 / 1.6 of the vehicles' level-1 threshold and never becomes an impostor
+  (silhouette, mounts and part states stay). The pixel-error LOD1 and the impostor level were already the policy.
+- **Top attack (AE, BB):** its own sound: `SoundSynth.TopAttackDive` (two lock tones, then a rushing falling dive, cut on
+  landing), P1, scheduled to come down with a top-attack round aimed at the player's unit; a direct missile keeps the motor
+  hiss (different response, different pattern). Visual: TopAttackMarks gains a vertical dive line above the target whose top
+  falls with the round (overhead approach), and a deeper violet that keeps its hue on snow.
+- **Missing cues (BL):** `HazardCues` draws a mine found (amber ring pulsing 3 times on the mine's true trigger radius, 3 s;
+  `MineViews.Found` once a mine; `Mine.TriggerRadius`) and an EMP (azure ring snapping out to the skill's / support's true
+  radius, 1.4 s). Audio: `warn_mine` ping (P1) and `emp_burst` (P1 when an enemy EMP reaches the player's units, else a near
+  effect; an EMP support now lands as an EMP, not as a blast). THREAT_CUES.md and ThreatCues: no gap row left.
+- **Boss part damage states (Y, AH, AN, BC):** `BossPartStates`: Healthy / Damaged (< 0.5) / Critical (< 0.25) / Destroyed,
+  the thresholds the part effects already used, now one place. The state is on the model: the part's own renderers (its
+  Part_ anchor's merged mesh) wear a soot / scorched-hot multiply over the hull tint through MaterialLibrary.Tinted (never a
+  property block), so Low (half smoke) and culled effects keep it readable. Entering Critical: one heavy metal strain at Boss
+  priority (state-owned, never a loop); Destroyed keeps its blast, hide and broken piece.
+- **P0 / P1 guarantee (BV):** the AudioDirector paths the arbiter did not cover: a full schedule queue (24) now drops a lesser
+  pending sound for a warning, never the warning; the one-hiss-per-gap thinning applies to far hisses only (an incoming
+  missile hiss was being skipped); P0 / P1 cues carry 25 % past the effects' reach; every P0 / P1 sound reports requested /
+  started to the telemetry (`p01miss` must stay 0). Test: a 40-warning storm over a 32-voice combat storm misses none.
+- **Distance layers (AV):** large-weapon banks (`Bank.Layered`: s3+ shots and blasts, bombs, 406 / super, thermobaric, big
+  launches, tank / artillery wrecks, crash impact) by share of reach: near transient (< 0.25, full band), body (to 0.6,
+  closing to 5 kHz), far report (to 1.1 kHz, a 16 % level floor so it never fades like a rifle, pitch 0.96 to soften the
+  crack) plus the zone's environment tail on a per-voice AudioEchoFilter (disabled unless used). No new clips: the far-report
+  clip variants would be a sound-library job (Tools/sfx/build_sfx.py), left as a follow-up.
+- **Occlusion (AX):** near (< 70 m), high-value (P2 / P3) voices only, the line from the listener to the source against the
+  Sim's CoverGrid (tall props, walls), re-checked every 0.25 s per voice, at most 6 queries a frame, smoothed; gain and
+  low-pass by the zone's occlusion material. Warnings are never occluded (they must stay intelligible).
+- **Acoustic zones (AY, BP):** `AcousticZones.Build` cuts the map into 16 m cells from its own semantics (theme, CoverGrid tall
+  share, forest / water terrain tags, the sea, wall lines): Open, UrbanStreet, Fortress, Forest, Harbor, Snowfield (+ Interior
+  for later). Each profile: reverb preset (echo delay / decay / wet), occlusion material (cutoff, gain), ambient profile (wind
+  bed gain and top end), far-report tail. Read at the listener in O(1). No acoustic geometry, no micro volumes.
+- **Weather presentation (Q, BE, BF, AL), view only:** `Rendering.Weather.Presentation` = W1-A's WeatherPresentation;
+  danger telegraphs (GroundMark Warning / WarningRect / Strike) get its TelegraphBoost; muzzle flash x (1 + (vis - 1) x 0.35),
+  0.85-1.2, never above 1 with Reduced flashes; lightning by its intensity, a third with Reduced flashes; audio: its low-pass
+  amount and reverb family damp the tails and far top end; the wind and rain beds take the zone's ambience and duck under a
+  warning like the lower classes. Visibility values untouched (campaign.json weatherSight).
+- **Accessibility (AK, AL, BH, BS):** camera shake 0-100 % in 10 % steps (old Off / Low / Full saves map to 0 / 35 / 100 %)
+  plus a fatigue limiter (after 2 s of unbroken shake new shake counts down to 35 %); Reduced effects (the blasts' cosmetic
+  additions and thrown chunks at half; flash, core fire, ring and danger shapes whole; the game has no screen distortion);
+  the full-screen blast wash is clamped to 2 a second and to a quarter with Reduced flashes; Warning captions (Settings, off
+  by default): `CueCaptions` reads `CueFeed` (raised when a warning's sound gets its voice), 3 lines, merge with a count, an
+  arrow for an off-screen spot, P0 lines with a thick amber bar; small arms never captioned; radio speech is already text.
+- **Colour / contrast QA (AM, BR, CE #10):** `Tools/vfx/contrast_audit.py` -> Docs/mapvisaudio/CONTRAST_AUDIT.md: every
+  telegraph edge over every theme ground swatch, day / night / fog / snow glare, normal / protan / deutan / tritan, CIELAB
+  Delta E (+ WCAG ratio). It caught the top-attack violet and the first EMP / mine colours clipping to white on snow (fixed).
+  Review list (not changed, owner-tuned): the red-orange escape / stick edges and the big-attack edge on desert for protans
+  (Delta E 16-18), the mine amber on desert for tritans (10); shape, motion, sound and captions carry them too.
+- **View telemetry (BT, CA-CC):** `ViewTelemetry` (Game/Effects/CueFeed.cs): per class started / dropped / voices taken,
+  P0-P1 misses, peak voices, occlusion queries / hits, cues by threat, captions, part state changes, listener zone; on the
+  -mb-perf line (PerfProbe.Detail) and reset per battle. Counting only.
+- **Tests written, not run:** `MvaW2bTests` (cue table closed, top attack distinct, CueFeed, part states, warning storm,
+  distance layers, zones, shake / effects settings, no suffix node on the 24 models, renderer outliers under caps).
+- **Left for the final part:** stress scenes with the Unity-side numbers (renderers / batches / overdraw / particles and the
+  telemetry line, spec BT); far-report clip variants in the sound library; haptics (BI, P2 optional); biome ambience clips
+  (BF, P2: zones already carry the profile ids); card / golden capture consistency (CE #13); export pack 07 / 00 / README /
+  CHANGES (lead rebuild; new sources: static_merge.json, CONTRAST_AUDIT.md, ACOUSTIC zones in DECISIONS).

@@ -89,7 +89,9 @@ namespace MachineBrigade.Game.Effects
     /// MVA W1-B (spec parts AE, AF, AG, AN, BL; DECISIONS "Map/visual/audio W1-B (lane B)"): the canonical threat cue table,
     /// one row per threat with its telegraph, the danger it stands for, its lead, audio, cancel and impact cues, as the game
     /// draws and plays them now. Owner rule of play-test 14 (DECISIONS "Play-test 14 (lane A)"): ordinary bombs and artillery
-    /// show no ground zone (<see cref="EffectsDirector.Zoneless"/>), their cue is the incoming whistle. Exported to
+    /// show no ground zone (<see cref="EffectsDirector.Zoneless"/>), their cue is the incoming whistle. MVA W2-B: the mine
+    /// and EMP gaps are closed (HazardCues) and top attack has its own sound; every row's cue reports to CueFeed (captions,
+    /// telemetry) when its sound starts. Exported to
     /// Docs/mapvisaudio/THREAT_CUES.md by hand from this table; the tests read it.
     /// </summary>
     internal static class ThreatCues
@@ -105,10 +107,12 @@ namespace MachineBrigade.Game.Effects
             new(ThreatType.MissileIncoming, AudioClass.P1, "the missile and its motor plume (never culled on Low)", "projectile path",
                 "warhead splash at the target", 0.4f, "missile_hiss at the target (P1 when aimed at the player's unit)", "-",
                 CancelBehavior.EndsWithRound, "shaped-charge / HE impact", false, "WeaponEffects (missile), AudioDirector.Incoming"),
-            new(ThreatType.TopAttack, AudioClass.P1, "climb-then-dive flight + a contracting dive ring on the target (top attack only)",
-                "ring closing on the target over the dive", "the target itself (overhead hit)", 0.9f,
-                "missile_hiss (P1) at the target", "-", CancelBehavior.EndsWithRound, "overhead shaped-charge impact", false,
-                "TopAttackMarks, WeaponDef.Flight = Loft"),
+            new(ThreatType.TopAttack, AudioClass.P1,
+                "climb-then-dive flight + a contracting dive ring on the target + a vertical dive line coming down onto it (top attack only)",
+                "ring closing on the target over the dive; the line's top falls with the round", "the target itself (overhead hit)", 0.9f,
+                "warn_topattack (P1): two lock tones and a rushing dive, its own pattern (a direct missile keeps its hiss)", "-",
+                CancelBehavior.EndsWithRound, "overhead shaped-charge impact", false,
+                "TopAttackMarks, AudioDirector.Incoming (Sound.TopAttack), WeaponDef.Flight = Loft"),
             new(ThreatType.Bomb, AudioClass.P1, "none (owner rule: zoneless bombs); 400 kg+: escape ring", "circle = blast edge (400 kg+)",
                 "blast core + edge", 1.15f, "warn_whistle (P1); a boss's / 406 mm-class: warn_whistle_big (P0)", "-",
                 CancelBehavior.Fixed, "HE blast by tier", false, "EscapeWarnings, AudioDirector.Whistle"),
@@ -128,10 +132,13 @@ namespace MachineBrigade.Game.Effects
             new(ThreatType.Thermobaric, AudioClass.P1, "as its carrier round (escape ring from T4)", "circle = blast edge",
                 "pressure blast (larger edge)", 2.5f, "whistle / hiss as its carrier; blast_thermo bank on impact (P2)", "-",
                 CancelBehavior.EndsWithRound, "thermobaric blast (own bank)", false, "EscapeWarnings, AudioDirector.P34 blast_thermo"),
-            new(ThreatType.MineDetected, AudioClass.P1, "none yet", "-", "the mine's trigger radius", 0f, "none yet", "-",
-                CancelBehavior.NotImplemented, "mine blast", false, "gap: queued for W2"),
-            new(ThreatType.Emp, AudioClass.P1, "none yet", "-", "the EMP's radius", 0f, "none yet", "-",
-                CancelBehavior.NotImplemented, "-", false, "gap: queued for W2"),
+            new(ThreatType.MineDetected, AudioClass.P1, "amber ring pulsing three times on the mine's trigger radius (3 s), then the mine model",
+                "circle = trigger radius", "the mine's trigger radius", 0f, "warn_mine ping (P1), one a spot (cooldown at 12 m)", "-",
+                CancelBehavior.FadeOut, "mine blast", false, "HazardCues.MineFound, MineViews.Found, AudioDirector.MineFound"),
+            new(ThreatType.Emp, AudioClass.P1, "electric ring snapping out to the EMP's radius (1.4 s); the support's strike zone is its lead",
+                "circle = EMP radius", "the EMP's radius (units inside knocked out)", 0f,
+                "emp_burst (P1 when it reaches the player's units, else a near effect)", "-", CancelBehavior.FadeOut,
+                "knocked-out crackle on the units hit", false, "HazardCues.Emp, AudioDirector.EmpBurst"),
         };
 
         public static IReadOnlyList<ThreatCue> All => Table;

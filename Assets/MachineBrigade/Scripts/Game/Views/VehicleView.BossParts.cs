@@ -35,6 +35,22 @@ namespace MachineBrigade.Game.Views
         private Material _outlineMaterial;
         private Material _outlineRingMaterial;
 
+        /// <summary>MVA W2-B (spec part Y): each part's damage state as shown, and which part each of its renderers is.</summary>
+        private Effects.PartDamageState[] _partStates;
+        private readonly Dictionary<Renderer, int> _partOfRenderer = new();
+
+        /// <summary>Part <paramref name="i"/>'s damage state as shown (Healthy when the boss has no such part).</summary>
+        public Effects.PartDamageState PartState(int i) =>
+            _partStates != null && i >= 0 && i < _partStates.Length ? _partStates[i] : Effects.PartDamageState.Healthy;
+
+        /// <summary>The tint for a renderer: the hull's, times its part's damage state when it is a part's.</summary>
+        private Vector4 PartTint(Renderer r, Vector4 tint)
+        {
+            if (_partStates == null || !_partOfRenderer.TryGetValue(r, out var i) || i >= _partStates.Length) return tint;
+            var k = Effects.BossPartStates.Tint(_partStates[i]);
+            return new Vector4(tint.x * k.x, tint.y * k.y, tint.z * k.z, tint.w);
+        }
+
         /// <summary>How far under the ground a boring boss goes (below any hull).</summary>
         private const float BurrowDepth = 9f;
 
@@ -82,6 +98,12 @@ namespace MachineBrigade.Game.Views
                 }
                 _partShownBroken = new bool[parts.Count];
                 _partWrecks = new GameObject[parts.Count];
+                // MVA W2-B (spec part Y): each part's own renderers carry its damage state (BossPartStates.Tint).
+                _partStates = new Effects.PartDamageState[parts.Count];
+                for (var i = 0; i < parts.Count; i++)
+                    foreach (var t in _partNodeSets[i])
+                        foreach (var r in t.GetComponentsInChildren<Renderer>(true))
+                            _partOfRenderer[r] = i;
             }
             // Models drawn fixed to it, placed in its model's frame (the Blender builder's: X left, Y back, Z up).
             foreach (var a in Def.Attachments)
@@ -107,6 +129,20 @@ namespace MachineBrigade.Game.Views
 
         private void AnimateBossParts()
         {
+            if (_partStates != null)
+            {
+                // MVA W2-B (spec parts Y, AH): Healthy / Damaged / Critical / Destroyed by the part's health; a change re-tints.
+                var changed = false;
+                for (var i = 0; i < _partStates.Length && i < Sim.PartCount; i++)
+                {
+                    var state = Effects.BossPartStates.Of(Sim.PartShare(i), Sim.IsPartBroken(i));
+                    if (state == _partStates[i]) continue;
+                    _partStates[i] = state;
+                    changed = true;
+                    Effects.ViewTelemetry.PartState();
+                }
+                if (changed && _partOfRenderer.Count > 0) ApplyTint();
+            }
             if (_partShownBroken != null)
                 for (var i = 0; i < _partShownBroken.Length; i++)
                 {
