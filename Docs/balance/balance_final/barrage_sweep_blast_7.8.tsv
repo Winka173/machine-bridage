@@ -1,0 +1,10 @@
+support	targets	damage_mean_over_seeds	seeds
+artillery_barrage	1 MBT at the centre	800	40
+artillery_barrage	4 IFV formation (6 m)	3195	40
+artillery_barrage	4 armoured cars spread (12 m)	1981	40
+scripted_barrage	1 MBT at the centre	684	40
+scripted_barrage	4 IFV formation (6 m)	2872	40
+scripted_barrage	4 armoured cars spread (12 m)	1757	40
+hq_barrage	1 MBT at the centre	2132	40
+hq_barrage	4 IFV formation (6 m)	7718	40
+hq_barrage	4 armoured cars spread (12 m)	3009	40

@@ -1,0 +1,16 @@
+aps_target	attackers	hp_lost_45s	aps_interceptions	shots
+titan_tank x2	ATGM / missile	17724	15.3	648.7
+titan_tank x2	rockets / lobbed	4607	0.0	57.0
+
+shooter	moving_target	shots	hits	hit_share	damage_60s
+main_battle_tank	armored_car	294.3	286.7	0.97	6165
+ifv	main_battle_tank	333.3	333.3	1.00	7597
+tank_destroyer	armored_car	12.0	12.0	1.00	6204
+light_tank	main_battle_tank	114.0	113.7	1.00	2966
+aa_vehicle	attack_helicopter	182.0	180.0	0.99	8651
+sam_launcher	attack_helicopter	36.0	32.0	0.89	15676
+heavy_aa	attack_helicopter	1377.3	1372.7	1.00	20365
+atgm_tower	main_battle_tank	22.0	21.0	0.95	8288
+artillery	armored_car	6.3	5.7	0.89	2399
+mortar_carrier	armored_car	9.0	7.3	0.81	1449
+mlrs	ifv	25.0	25.0	1.00	2712
