@@ -207,6 +207,7 @@ def analyze(path: Path) -> dict:
         node = doc['nodes'][i]
         name = node.get('name', f'node{i}')
         names.append(name)
+        names.extend(n for n, _, _ in (node.get('extras') or {}).get('mergedFrom', [])[1:])  # MVA W2-B static merge
         mesh_index = node.get('mesh')
         tri_count = 0
         if mesh_index is not None:

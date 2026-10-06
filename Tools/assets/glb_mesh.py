@@ -97,8 +97,12 @@ def load(path: Path) -> Model:
                 else np.ones(len(pos))
             mat = mats[prim['material']] if 'material' in prim and prim['material'] < len(mats) else {}
             bc = mat.get('pbrMetallicRoughness', {}).get('baseColorFactor', [0.8, 0.8, 0.8, 1])
-            m.pieces.append(Piece(name, tuple(reversed(chain)), mat.get('name', ''), float(np.dot(bc[:3], LUMA)),
-                                  pos, tris, np.clip(np.nan_to_num(lum, nan=1.0), 0, 1), has))
+            lum = np.clip(np.nan_to_num(lum, nan=1.0), 0, 1)
+            # MVA W2-B: a node glb_merge_static.py merged reads as its members again (names, triangle ranges).
+            merged = (node.get('extras') or {}).get('mergedFrom')
+            for piece_name, part in (((n, tris[a:a + c]) for n, a, c in merged) if merged else ((name, tris),)):
+                m.pieces.append(Piece(piece_name, tuple(reversed(chain)), mat.get('name', ''), float(np.dot(bc[:3], LUMA)),
+                                      pos, part, lum, has))
     return m
 
 

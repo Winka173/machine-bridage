@@ -5186,6 +5186,72 @@
    ],
    "reason": "merge of feature/mva-w1b",
    "changes": []
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "aircraft_hangar"
+   ],
+   "reason": "MVA W2-B static merge (glb_merge_static.py): same-material sibling meshes joined, triangles byte-identical",
+   "changes": [
+    "FLAG aircraft_hangar: meshes 93 -> 27 (-71.0%); renderers 93 -> 27 (-71.0%); materialSlots 93 -> 27 (-71.0%); fileBytes 639,092 -> 575,840 (-9.9%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "attack_jet"
+   ],
+   "reason": "MVA W2-B static merge (glb_merge_static.py): same-material sibling meshes joined, triangles byte-identical",
+   "changes": []
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "attack_jet_hd"
+   ],
+   "reason": "MVA W2-B static merge (glb_merge_static.py): same-material sibling meshes joined, triangles byte-identical",
+   "changes": []
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "cp_relay"
+   ],
+   "reason": "MVA W2-B static merge (glb_merge_static.py): same-material sibling meshes joined, triangles byte-identical",
+   "changes": []
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "fpv_carrier"
+   ],
+   "reason": "MVA W2-B static merge (glb_merge_static.py): same-material sibling meshes joined, triangles byte-identical",
+   "changes": []
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "heavy_aa"
+   ],
+   "reason": "MVA W2-B static merge (glb_merge_static.py): same-material sibling meshes joined, triangles byte-identical",
+   "changes": []
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "ixion"
+   ],
+   "reason": "MVA W2-B static merge (glb_merge_static.py): same-material sibling meshes joined, triangles byte-identical",
+   "changes": []
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "vehicle_hangar_base"
+   ],
+   "reason": "MVA W2-B static merge (glb_merge_static.py): same-material sibling meshes joined, triangles byte-identical",
+   "changes": []
   }
  ],
  "models": {
@@ -6627,22 +6693,22 @@
   },
   "aircraft_hangar": {
    "file": "aircraft_hangar.glb",
-   "fileBytes": 639092,
-   "sha1": "16f00ef3bcd43fbe",
+   "fileBytes": 577844,
+   "sha1": "ac78077194ab7f10",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 93,
-   "meshes": 93,
+   "nodes": 27,
+   "meshes": 27,
    "materials": 18,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 93,
-   "submeshes": 93,
-   "materialSlots": 93,
+   "renderers": 27,
+   "submeshes": 27,
+   "materialSlots": 27,
    "materialsUsed": 18,
    "triangles": 10154,
    "vertices": 15107,
@@ -6676,7 +6742,7 @@
     2.792,
     0.044
    ],
-   "structureHash": "c7c23a8a80e92519",
+   "structureHash": "88b730e88bd04a6a",
    "color0": {
     "mean": 0.6129,
     "min": 0.1838,
@@ -6784,9 +6850,7 @@
    ],
    "category": "structure",
    "hd": false,
-   "errors": [
-    "renderers 93 over the structure normal hard cap 48"
-   ],
+   "errors": [],
    "warnings": [
     "triangles 10,154 over the structure normal hard cap 9,900 (info: kept, owner rule)",
     "vertices 15,107 over the structure normal hard cap 12,200 (info: kept, owner rule)"
@@ -9989,22 +10053,22 @@
   },
   "attack_jet": {
    "file": "attack_jet.glb",
-   "fileBytes": 271972,
-   "sha1": "fcd5b51671c52c40",
+   "fileBytes": 259192,
+   "sha1": "dca25aa9c9c8863b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 57,
-   "meshes": 40,
+   "nodes": 44,
+   "meshes": 27,
    "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 40,
-   "submeshes": 40,
-   "materialSlots": 40,
+   "renderers": 27,
+   "submeshes": 27,
+   "materialSlots": 27,
    "materialsUsed": 8,
    "triangles": 4914,
    "vertices": 6182,
@@ -10038,7 +10102,7 @@
     0.56,
     -0.13
    ],
-   "structureHash": "0cb316988a825c97",
+   "structureHash": "b002995e280decd9",
    "color0": {
     "mean": 0.5452,
     "min": 0.0751,
@@ -10131,9 +10195,7 @@
    "category": "air",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "renderers 40 over the jet normal budget 36"
-   ],
+   "warnings": [],
    "units": [
     "attack_jet"
    ],
@@ -10142,22 +10204,22 @@
   },
   "attack_jet_hd": {
    "file": "attack_jet_hd.glb",
-   "fileBytes": 271976,
-   "sha1": "84e470c345e642c4",
+   "fileBytes": 259196,
+   "sha1": "1de518670ddf08e0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 57,
-   "meshes": 40,
+   "nodes": 44,
+   "meshes": 27,
    "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 40,
-   "submeshes": 40,
-   "materialSlots": 40,
+   "renderers": 27,
+   "submeshes": 27,
+   "materialSlots": 27,
    "materialsUsed": 8,
    "triangles": 4914,
    "vertices": 6182,
@@ -10191,7 +10253,7 @@
     0.56,
     -0.13
    ],
-   "structureHash": "0cb316988a825c97",
+   "structureHash": "b002995e280decd9",
    "color0": {
     "mean": 0.5452,
     "min": 0.0751,
@@ -15915,22 +15977,22 @@
   },
   "cp_relay": {
    "file": "cp_relay.glb",
-   "fileBytes": 316452,
-   "sha1": "3e7995c35f112ac4",
+   "fileBytes": 290620,
+   "sha1": "7ae65e6295b65ef9",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 43,
-   "meshes": 43,
+   "nodes": 17,
+   "meshes": 17,
    "materials": 14,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 43,
-   "submeshes": 43,
-   "materialSlots": 43,
+   "renderers": 17,
+   "submeshes": 17,
+   "materialSlots": 17,
    "materialsUsed": 14,
    "triangles": 4912,
    "vertices": 7505,
@@ -15964,7 +16026,7 @@
     3.9,
     0.0
    ],
-   "structureHash": "0c92439f67d2677f",
+   "structureHash": "fe979667a0c9f252",
    "color0": {
     "mean": 0.6352,
     "min": 0.1888,
@@ -16023,9 +16085,7 @@
    "category": "structure",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "renderers 43 over the structure normal budget 39"
-   ],
+   "warnings": [],
    "units": [
     "cp_relay"
    ],
@@ -27818,22 +27878,22 @@
   },
   "fpv_carrier": {
    "file": "fpv_carrier.glb",
-   "fileBytes": 462084,
-   "sha1": "c6b77af8fa913ec5",
+   "fileBytes": 422480,
+   "sha1": "c4154f4fb3d7388c",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 86,
-   "meshes": 78,
+   "nodes": 43,
+   "meshes": 35,
    "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 78,
-   "submeshes": 78,
-   "materialSlots": 78,
+   "renderers": 35,
+   "submeshes": 35,
+   "materialSlots": 35,
    "materialsUsed": 11,
    "triangles": 7452,
    "vertices": 10550,
@@ -27867,7 +27927,7 @@
     1.515,
     0.051
    ],
-   "structureHash": "72d28f9d86df758a",
+   "structureHash": "568d6ce01d3930e8",
    "color0": {
     "mean": 0.5866,
     "min": 0.0474,
@@ -27987,9 +28047,7 @@
    ],
    "category": "ground",
    "hd": false,
-   "errors": [
-    "renderers 78 over the ground normal hard cap 76"
-   ],
+   "errors": [],
    "warnings": [
     "vertices 10,550 over the ground normal budget 10,100"
    ],
@@ -31010,22 +31068,22 @@
   },
   "heavy_aa": {
    "file": "heavy_aa.glb",
-   "fileBytes": 417936,
-   "sha1": "6d07d593b190347a",
+   "fileBytes": 391548,
+   "sha1": "9590e521712b4dad",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 93,
-   "meshes": 77,
+   "nodes": 63,
+   "meshes": 47,
    "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 77,
-   "submeshes": 77,
-   "materialSlots": 77,
+   "renderers": 47,
+   "submeshes": 47,
+   "materialSlots": 47,
    "materialsUsed": 10,
    "triangles": 7422,
    "vertices": 9223,
@@ -31059,7 +31117,7 @@
     1.527,
     0.136
    ],
-   "structureHash": "95ff80899b922b53",
+   "structureHash": "f76ef4d45d3f5855",
    "color0": {
     "mean": 0.5982,
     "min": 0.0522,
@@ -31197,9 +31255,7 @@
    ],
    "category": "ground",
    "hd": false,
-   "errors": [
-    "renderers 77 over the ground normal hard cap 76"
-   ],
+   "errors": [],
    "warnings": [
     "movingParts 9 over the ground normal budget 8"
    ],
@@ -35111,22 +35167,22 @@
   },
   "ixion": {
    "file": "ixion.glb",
-   "fileBytes": 1953744,
-   "sha1": "e2df287f3bad448f",
+   "fileBytes": 1896376,
+   "sha1": "dc1ac54b430424f2",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 199,
-   "meshes": 175,
+   "nodes": 125,
+   "meshes": 101,
    "materials": 17,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 175,
-   "submeshes": 175,
-   "materialSlots": 175,
+   "renderers": 101,
+   "submeshes": 101,
+   "materialSlots": 101,
    "materialsUsed": 17,
    "triangles": 38414,
    "vertices": 49505,
@@ -35160,7 +35216,7 @@
     5.219,
     -0.14
    ],
-   "structureHash": "f3cded2b592e771e",
+   "structureHash": "6371eb1e94e42ea5",
    "color0": {
     "mean": 0.597,
     "min": 0.0533,
@@ -35415,9 +35471,7 @@
    ],
    "category": "boss",
    "hd": false,
-   "errors": [
-    "renderers 175 over the boss_s normal hard cap 162"
-   ],
+   "errors": [],
    "warnings": [
     "triangles 38,414 over the boss_s normal budget 36,000",
     "vertices 49,505 over the boss_s normal budget 43,000"
@@ -57014,22 +57068,22 @@
   },
   "vehicle_hangar_base": {
    "file": "vehicle_hangar_base.glb",
-   "fileBytes": 802228,
-   "sha1": "356caf2a7badc5d0",
+   "fileBytes": 711512,
+   "sha1": "9dc5772fec21f0c9",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 129,
-   "meshes": 129,
+   "nodes": 30,
+   "meshes": 30,
    "materials": 21,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 129,
-   "submeshes": 129,
-   "materialSlots": 129,
+   "renderers": 30,
+   "submeshes": 30,
+   "materialSlots": 30,
    "materialsUsed": 21,
    "triangles": 12214,
    "vertices": 18781,
@@ -57063,7 +57117,7 @@
     2.715,
     -0.025
    ],
-   "structureHash": "a120ec2a3bc1542f",
+   "structureHash": "c81678465980d56e",
    "color0": {
     "mean": 0.5753,
     "min": 0.1553,
@@ -57207,9 +57261,7 @@
    ],
    "category": "structure",
    "hd": false,
-   "errors": [
-    "renderers 129 over the structure normal hard cap 48"
-   ],
+   "errors": [],
    "warnings": [
     "triangles 12,214 over the structure normal hard cap 9,900 (info: kept, owner rule)",
     "vertices 18,781 over the structure normal hard cap 12,200 (info: kept, owner rule)"

@@ -1,0 +1,4 @@
+{
+ "about": "MVA W2-B: models whose static same-material detail meshes are merged in the GLB (Tools/assets/glb_merge_static.py; frontier_kit.export_collection runs it after each export). Identical on screen: ModelLibrary.MergeRigidParts merges the same meshes at load.",
+ "models": ["aircraft_hangar", "attack_jet", "attack_jet_hd", "cp_relay", "fpv_carrier", "heavy_aa", "ixion", "vehicle_hangar_base"]
+}
