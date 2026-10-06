@@ -1005,7 +1005,7 @@ namespace MachineBrigade.Sim.Modes
             if (_hqPhase == 0 && health < 0.75f)
             {
                 _hqPhase = 1;
-                if (world.Catalog.TryGetSupport("artillery_barrage", out var barrage) && TryAttackerCentre(world, out var at))
+                if (world.Catalog.TryGetSupport("scripted_barrage", out var barrage) /* balance final: scripted, not the card */ && TryAttackerCentre(world, out var at))
                     world.Strikes.Launch(barrage, Defender, at, at);
                 world.Emit(SimEvent.Alert(hq.Position, Key("barrage")));
             }

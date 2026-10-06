@@ -56,11 +56,16 @@ def resolve_all(root):
 # Bands = normal max-range flight time in seconds (lo, hi); None: not validated. Extension classes (marked *) are not in the
 # spec's enum: they carry the spec's own final speeds at the game's ranges (aircraft rockets, naval direct, anti-ship, ballistic).
 BANDS = {
-    "DIRECT_FAST": (0.15, 0.50), "DIRECT_BULLET": None, "TACTICAL_MISSILE": (0.45, 0.90), "AIR_DEFENCE_MISSILE": (0.25, 1.00),
-    "ROCKET_ARTILLERY": (0.70, 1.60), "MORTAR": (0.90, 2.20), "HOWITZER": (0.90, 2.00), "CRUISE": (1.20, None),
-    "DRONE": None, "BOMB": None, "AIRCRAFT_ROCKET": (0.25, 0.65), "NAVAL_DIRECT": (0.60, 2.00), "ANTI_SHIP_MISSILE": (0.90, 1.80),
-    "BALLISTIC_MISSILE": (0.60, None), "BEAM_OR_MELEE": None,
+    # Balance master final (06/10, spec 6): the final bands (max-range flight, seconds). AIR_DEFENCE_SHORT is the spec's
+    # "short AAM / MANPADS"; AIR_DEFENCE_MISSILE its "medium / long SAM / AAM" (SHORAD 100 m/s and up).
+    "DIRECT_FAST": (0.15, 0.45), "DIRECT_BULLET": None, "TACTICAL_MISSILE": (0.55, 1.00), "AIR_DEFENCE_SHORT": (0.30, 0.65),
+    "AIR_DEFENCE_MISSILE": (0.40, 0.80), "ROCKET_ARTILLERY": (0.70, 1.60), "MORTAR": (0.90, 2.00), "HOWITZER": (0.90, 2.00),
+    "CRUISE": (1.20, None), "DRONE": None, "BOMB": None, "AIRCRAFT_ROCKET": (0.25, 0.65), "NAVAL_DIRECT": (0.60, 2.00),
+    "ANTI_SHIP_MISSILE": (0.80, 1.80), "BALLISTIC_MISSILE": (0.60, None), "BEAM_OR_MELEE": None,
 }
+# spec 6: a tactical / guided missile is flagged when its half-range flight is under ~0.30 s (unless exempted)
+HALF_MIN = {"TACTICAL_MISSILE": 0.30, "AIR_DEFENCE_SHORT": 0.15, "AIR_DEFENCE_MISSILE": 0.20, "ANTI_SHIP_MISSILE": 0.40}
+SHORT_AAM = ("stinger_atas", "stinger_post", "igla_v", "r60", "wvr_aam")
 GEAR_CAP = 0.30     # GearCatalog.cs: ProjectileSpeed stat cap; GearSystem.cs applies it to the main weapon (arm 0) only
 MIN_RANGE_SHARE = 0.25  # flight at the "minimum" distance of a weapon with no minRange: a quarter of its reach
 
@@ -72,7 +77,7 @@ def feel_class(i, r):
     if pj == "Flame" or fam in ("laser", "melee", "special"): return "BEAM_OR_MELEE"
     if fam in ("cruise", "cruise_missile"): return "CRUISE"
     if fam == "ballistic": return "BALLISTIC_MISSILE"
-    if fam == "aa_missile": return "AIR_DEFENCE_MISSILE"
+    if fam == "aa_missile": return "AIR_DEFENCE_SHORT" if i in SHORT_AAM or r.get("inherits") in SHORT_AAM else "AIR_DEFENCE_MISSILE"
     if i == "anti_ship_missile" or r.get("weaponFamily") == "nsm_oniks" or "anti_ship_missile" in str(r.get("inherits", "")) or i in ("pt14_hp_nsm", "scylla_kh35"): return "ANTI_SHIP_MISSILE"
     if pj == "Missile" or fam == "atgm": return "TACTICAL_MISSILE"
     if pj == "Rocket":
@@ -107,7 +112,7 @@ def analyse(res, info, snap=None):
         if band and sp and rng:
             lo, hi = band
             tmax, thalf = rng / sp, rng * 0.5 / sp
-            if tmax < lo or thalf < lo * 0.5: warn.append("TOO_FAST_FOR_CLASS")
+            if tmax < lo or thalf < HALF_MIN.get(cls, lo * 0.5): warn.append("TOO_FAST_FOR_CLASS")
             if hi and tmax > hi: warn.append("TOO_SLOW_FOR_CLASS")
             if rng / cap < lo * 0.75: warn.append("TOO_FAST_AT_GEAR_CAP")
         if warn and i in EXCEPTIONS: warn = ["OWNER_EXCEPTION"]

@@ -1,0 +1,1447 @@
+[
+ {
+  "section": "weaponFamilies",
+  "id": "agm_114_hellfire",
+  "field": "projectileSpeed",
+  "old": 80,
+  "new": 70,
+  "why": "spec 3 final missile speed: Hellfire family (hellfire_standoff, hellfire_volley, drone_missile)"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "9m133_kornet",
+  "field": "projectileSpeed",
+  "old": 80,
+  "new": 70,
+  "why": "spec 3 final missile speed: Kornet family (tower/twin/top/multi/one-shot, atgm_heavy, boss_missiles + copies)"
+ },
+ {
+  "section": "weapons",
+  "id": "atgm",
+  "field": "projectileSpeed",
+  "old": 80,
+  "new": 70,
+  "why": "spec 3 final missile speed: TOW family (BGM-71 TOW-2)"
+ },
+ {
+  "section": "weapons",
+  "id": "gun_launched_atgm",
+  "field": "projectileSpeed",
+  "old": 75,
+  "new": 70,
+  "why": "spec 3 final missile speed: gun-launched ATGM"
+ },
+ {
+  "section": "weapons",
+  "id": "pt14_th_jagm",
+  "field": "projectileSpeed",
+  "old": 85,
+  "new": 70,
+  "why": "spec 3 final missile speed: JAGM = Hellfire family (own line over drone_missile)"
+ },
+ {
+  "section": "weapons",
+  "id": "vikhr",
+  "field": "projectileSpeed",
+  "old": 85,
+  "new": 75,
+  "why": "spec 3 final missile speed: Vikhr"
+ },
+ {
+  "section": "weapons",
+  "id": "maverick",
+  "field": "projectileSpeed",
+  "old": 80,
+  "new": 75,
+  "why": "spec 3 final missile speed: Maverick"
+ },
+ {
+  "section": "weapons",
+  "id": "kh29",
+  "field": "projectileSpeed",
+  "old": 80,
+  "new": 75,
+  "why": "spec 3 final missile speed: Kh-29"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "apkws",
+  "field": "projectileSpeed",
+  "old": 85,
+  "new": 80,
+  "why": "spec 3 final missile speed/4: APKWS family row (the runtime source)"
+ },
+ {
+  "section": "weapons",
+  "id": "apkws_rocket",
+  "field": "projectileSpeed",
+  "old": 85,
+  "new": 80,
+  "why": "spec 3 final missile speed/4: APKWS own line kept equal to its family row"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "nsm_oniks",
+  "field": "projectileSpeed",
+  "old": 95,
+  "new": 80,
+  "why": "spec 3 final missile speed: anti-ship family row (the runtime source)"
+ },
+ {
+  "section": "weapons",
+  "id": "anti_ship_missile",
+  "field": "projectileSpeed",
+  "old": 95,
+  "new": 80,
+  "why": "spec 3 final missile speed: anti-ship own line kept equal to its family row"
+ },
+ {
+  "section": "weapons",
+  "id": "pt14_hp_nsm",
+  "field": "projectileSpeed",
+  "old": 90,
+  "new": 80,
+  "why": "spec 3 final missile speed: anti-ship (Hyperion's NSM, own line over anti_ship_missile)"
+ },
+ {
+  "section": "weapons",
+  "id": "scylla_kh35",
+  "field": "projectileSpeed",
+  "old": 90,
+  "new": 80,
+  "why": "spec 3 final missile speed: anti-ship (Scylla's Kh-35, own line over anti_ship_missile)"
+ },
+ {
+  "section": "weapons",
+  "id": "stinger_atas",
+  "field": "projectileSpeed",
+  "old": 105,
+  "new": 90,
+  "why": "spec 3 final missile speed: Stinger ATAS"
+ },
+ {
+  "section": "weapons",
+  "id": "stinger_post",
+  "field": "projectileSpeed",
+  "old": 105,
+  "new": 90,
+  "why": "spec 3 final missile speed: Stinger (MANPADS post)"
+ },
+ {
+  "section": "weapons",
+  "id": "igla_v",
+  "field": "projectileSpeed",
+  "old": 105,
+  "new": 90,
+  "why": "spec 3 final missile speed: Igla-V"
+ },
+ {
+  "section": "weapons",
+  "id": "r60",
+  "field": "projectileSpeed",
+  "old": 110,
+  "new": 95,
+  "why": "spec 3 final missile speed: R-60"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "aim_9_sidewinder",
+  "field": "projectileSpeed",
+  "old": 115,
+  "new": 100,
+  "why": "spec 3 final missile speed: AIM-9 / WVR family row (wvr_aam)"
+ },
+ {
+  "section": "weapons",
+  "id": "sam",
+  "field": "projectileSpeed",
+  "old": 120,
+  "new": 100,
+  "why": "spec 3 final missile speed: generic SHORAD"
+ },
+ {
+  "section": "weapons",
+  "id": "tamir",
+  "field": "projectileSpeed",
+  "old": 125,
+  "new": 105,
+  "why": "spec 3 final missile speed: Tamir"
+ },
+ {
+  "section": "weapons",
+  "id": "missile_57e6",
+  "field": "projectileSpeed",
+  "old": 130,
+  "new": 110,
+  "why": "spec 3 final missile speed: Pantsir 57E6"
+ },
+ {
+  "section": "weapons",
+  "id": "air_to_air",
+  "field": "projectileSpeed",
+  "old": 140,
+  "new": 120,
+  "why": "spec 3 final missile speed: AMRAAM"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "9m317_buk",
+  "field": "projectileSpeed",
+  "old": 145,
+  "new": 120,
+  "why": "spec 3 final missile speed: Buk player family row (buk_launcher, sam_long)"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "mim_104_patriot_pac_2",
+  "field": "projectileSpeed",
+  "old": 165,
+  "new": 130,
+  "why": "spec 3 final missile speed: Patriot player family row (patriot, sam_battery_lrr)"
+ },
+ {
+  "section": "weapons",
+  "id": "sam_pac3",
+  "field": "projectileSpeed",
+  "old": 165,
+  "new": 130,
+  "why": "spec 3 final missile speed: Patriot player (PAC-3 branch, own line over sam_battery)"
+ },
+ {
+  "section": "weapons",
+  "id": "sam_48n6",
+  "field": "projectileSpeed",
+  "old": 170,
+  "new": 140,
+  "why": "spec 3 final missile speed: S-400 / 48N6"
+ },
+ {
+  "section": "weapons",
+  "id": "sam_post",
+  "field": "projectileSpeed",
+  "old": 145,
+  "new": 80,
+  "why": "spec 3 boss-specific intentional exception (KEEP, restored): boss/ship sam_post Buk"
+ },
+ {
+  "section": "weapons",
+  "id": "sam_battery",
+  "field": "projectileSpeed",
+  "old": 165,
+  "new": 95,
+  "why": "spec 3 boss-specific intentional exception (KEEP, restored): Nemesis sam_battery Patriot (nuke_train only)"
+ },
+ {
+  "section": "weapons",
+  "id": "boss_rockets",
+  "field": "projectileSpeed",
+  "old": 80,
+  "new": 65,
+  "why": "spec 3/5 boss Grad / boss_rockets 65 (intentional boss override, restored)"
+ },
+ {
+  "section": "weapons",
+  "id": "p26_behemoth_be_rockets",
+  "field": "projectileSpeed",
+  "old": 80,
+  "new": 65,
+  "why": "spec 3/5 boss Grad / boss_rockets 65 (intentional boss override, restored)"
+ },
+ {
+  "section": "weapons",
+  "id": "p26_jotunn_jo_rockets",
+  "field": "projectileSpeed",
+  "old": 80,
+  "new": 65,
+  "why": "spec 3/5 boss Grad / boss_rockets 65 (intentional boss override, restored)"
+ },
+ {
+  "section": "weapons",
+  "id": "p26_nemesis_sec_boss_rockets",
+  "field": "projectileSpeed",
+  "old": 80,
+  "new": 65,
+  "why": "spec 3/5 boss Grad / boss_rockets 65 (intentional boss override, restored)"
+ },
+ {
+  "section": "weapons",
+  "id": "pt14_train_grad",
+  "field": "projectileSpeed",
+  "old": 80,
+  "new": 65,
+  "why": "spec 3/5 boss Grad / boss_rockets 65 (intentional boss override, restored)"
+ },
+ {
+  "section": "weapons",
+  "id": "pt14_ixion_grad",
+  "field": "projectileSpeed",
+  "old": null,
+  "new": 65,
+  "why": "spec 3/5 boss Grad / boss_rockets 65 (intentional boss override, restored): Ixion's Grad (own line; it opted out of the Grad family)"
+ },
+ {
+  "section": "weapons",
+  "id": "hover_rockets",
+  "field": "projectileSpeed",
+  "old": 85,
+  "new": 65,
+  "why": "spec 3/5 boss Grad / boss_rockets 65 (intentional boss override, restored): landing hovercraft's 140 mm boss barrage (85 was outside the 65-80 boss band)"
+ },
+ {
+  "section": "weapons",
+  "id": "jet_bombs",
+  "field": "damage",
+  "old": 310,
+  "new": 388,
+  "why": "spec 8 conventional aircraft bomb (FAB-250) (x1.25)"
+ },
+ {
+  "section": "weapons",
+  "id": "bomber_payload",
+  "field": "damage",
+  "old": 420,
+  "new": 546,
+  "why": "spec 8 heavy-bomber conventional payload (FAB-500) (x1.3)"
+ },
+ {
+  "section": "weapons",
+  "id": "stealth_payload",
+  "field": "damage",
+  "old": 892,
+  "new": 1070,
+  "why": "spec 8 guided bomb / JDAM (GBU-31) (x1.2)"
+ },
+ {
+  "section": "weapons",
+  "id": "guided_bomb",
+  "field": "damage",
+  "old": 250,
+  "new": 300,
+  "why": "spec 8 guided bomb (GBU-39 SDB) (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "fighter_jet",
+  "field": "hp",
+  "old": 600,
+  "new": 690,
+  "why": "spec 9 aircraft HP: fighter / attack jet / stealth fighter (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "stealth_fighter",
+  "field": "hp",
+  "old": 600,
+  "new": 690,
+  "why": "spec 9 aircraft HP: fighter / attack jet / stealth fighter (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "attack_jet",
+  "field": "hp",
+  "old": 650,
+  "new": 748,
+  "why": "spec 9 aircraft HP: fighter / attack jet / stealth fighter (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "elite_attack_jet",
+  "field": "hp",
+  "old": 621,
+  "new": 714,
+  "why": "spec 9 aircraft HP: fighter / attack jet / stealth fighter (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "stealth_naval_strike",
+  "field": "hp",
+  "old": 750,
+  "new": 863,
+  "why": "spec 9 aircraft HP: fighter / attack jet / stealth fighter (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "attack_helicopter",
+  "field": "hp",
+  "old": 700,
+  "new": 805,
+  "why": "spec 9 aircraft HP: attack / scout helicopter (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "elite_attack_helicopter",
+  "field": "hp",
+  "old": 675,
+  "new": 776,
+  "why": "spec 9 aircraft HP: attack / scout helicopter (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "scout_heli",
+  "field": "hp",
+  "old": 518,
+  "new": 596,
+  "why": "spec 9 aircraft HP: attack / scout helicopter (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "twin_rotor_gunship",
+  "field": "hp",
+  "old": 1400,
+  "new": 1610,
+  "why": "spec 9 aircraft HP: heavy / twin-rotor gunship (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "sky_gunship",
+  "field": "hp",
+  "old": 1400,
+  "new": 1610,
+  "why": "spec 9 aircraft HP: heavy / twin-rotor gunship (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "heavy_bomber",
+  "field": "hp",
+  "old": 1400,
+  "new": 1680,
+  "why": "spec 9 aircraft HP: heavy bomber (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "stealth_bomber",
+  "field": "hp",
+  "old": 1200,
+  "new": 1440,
+  "why": "spec 9 aircraft HP: heavy bomber (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "swarm_carrier",
+  "field": "hp",
+  "old": 1091,
+  "new": 1255,
+  "why": "spec 9 aircraft HP: large airborne carrier (x1.15)"
+ },
+ {
+  "section": "weapons",
+  "id": "hellfire_standoff",
+  "field": "damage",
+  "old": 260,
+  "new": 281,
+  "why": "spec 9 non-bomb aircraft ground-attack output (aircraft-only weapon) (x1.08)"
+ },
+ {
+  "section": "weapons",
+  "id": "hellfire_volley",
+  "field": "damage",
+  "old": 260,
+  "new": 281,
+  "why": "spec 9 non-bomb aircraft ground-attack output (aircraft-only weapon) (x1.08)"
+ },
+ {
+  "section": "weapons",
+  "id": "apkws_rocket",
+  "field": "damage",
+  "old": 90,
+  "new": 97,
+  "why": "spec 9 non-bomb aircraft ground-attack output (aircraft-only weapon) (x1.08)"
+ },
+ {
+  "section": "weapons",
+  "id": "kh29",
+  "field": "damage",
+  "old": 378,
+  "new": 408,
+  "why": "spec 9 non-bomb aircraft ground-attack output (aircraft-only weapon) (x1.08)"
+ },
+ {
+  "section": "weapons",
+  "id": "heli_gun",
+  "field": "damage",
+  "old": 22,
+  "new": 23.8,
+  "why": "spec 9 non-bomb aircraft ground-attack output (aircraft-only weapon) (x1.08)"
+ },
+ {
+  "section": "weapons",
+  "id": "heli_rockets",
+  "field": "damage",
+  "old": 30,
+  "new": 32.4,
+  "why": "spec 9 non-bomb aircraft ground-attack output (aircraft-only weapon) (x1.08)"
+ },
+ {
+  "section": "weapons",
+  "id": "minigun",
+  "field": "damage",
+  "old": 5.5,
+  "new": 5.9,
+  "why": "spec 9 non-bomb aircraft ground-attack output (aircraft-only weapon) (x1.08)"
+ },
+ {
+  "section": "weapons",
+  "id": "scout_rockets",
+  "field": "damage",
+  "old": 30,
+  "new": 32.4,
+  "why": "spec 9 non-bomb aircraft ground-attack output (aircraft-only weapon) (x1.08)"
+ },
+ {
+  "section": "weapons",
+  "id": "jet_cannon",
+  "field": "damage",
+  "old": 23,
+  "new": 24.8,
+  "why": "spec 9 non-bomb aircraft ground-attack output (aircraft-only weapon) (x1.08)"
+ },
+ {
+  "section": "weapons",
+  "id": "s8_pods",
+  "field": "damage",
+  "old": 32,
+  "new": 34.6,
+  "why": "spec 9 non-bomb aircraft ground-attack output (aircraft-only weapon) (x1.08)"
+ },
+ {
+  "section": "weapons",
+  "id": "boss_heli_gun",
+  "field": "damage",
+  "old": null,
+  "new": 22,
+  "why": "spec 13 boss damage KEEP: pinned (it inherits heli_gun, which the aircraft pass raises)"
+ },
+ {
+  "section": "weapons",
+  "id": "boss_minigun",
+  "field": "damage",
+  "old": null,
+  "new": 5.5,
+  "why": "spec 13 boss damage KEEP: pinned (it inherits minigun, which the aircraft pass raises)"
+ },
+ {
+  "section": "vehicles",
+  "id": "sky_gunship",
+  "field": "outgoingDamageMult",
+  "old": 1.5159,
+  "new": 1.6372,
+  "why": "spec 9 ground-attack output: sky gunship (all three guns ground attack; gunship_105 is shared with a boss part) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "main_battle_tank",
+  "field": "hp",
+  "old": 1050,
+  "new": 1103,
+  "why": "spec 10 ground: Main Battle Tank HP (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "elite_mbt",
+  "field": "hp",
+  "old": 1215,
+  "new": 1276,
+  "why": "spec 10 ground: Main Battle Tank HP (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "next_gen_tank",
+  "field": "hp",
+  "old": 1318,
+  "new": 1384,
+  "why": "spec 10 ground: Main Battle Tank HP (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "heavy_tank",
+  "field": "hp",
+  "old": 2032,
+  "new": 2195,
+  "why": "spec 10 ground: Heavy Tank HP (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "elite_heavy_tank",
+  "field": "hp",
+  "old": 2560,
+  "new": 2765,
+  "why": "spec 10 ground: Heavy Tank HP (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "heavy_tank",
+  "field": "outgoingDamageMult",
+  "old": 1.3538,
+  "new": 1.4215,
+  "why": "spec 10 ground: Heavy Tank damage (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "elite_heavy_tank",
+  "field": "outgoingDamageMult",
+  "old": null,
+  "new": 1.05,
+  "why": "spec 10 ground: Heavy Tank damage (x1.05; the elite had no own multiplier)"
+ },
+ {
+  "section": "vehicles",
+  "id": "tank_destroyer",
+  "field": "hp",
+  "old": 741,
+  "new": 778,
+  "why": "spec 10 ground: Tank Destroyer HP (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "elite_tank_destroyer",
+  "field": "hp",
+  "old": 837,
+  "new": 879,
+  "why": "spec 10 ground: Tank Destroyer HP (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "flame_tank",
+  "field": "hp",
+  "old": 741,
+  "new": 800,
+  "why": "spec 10 ground: Flame Tank HP (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "armored_bulldozer",
+  "field": "hp",
+  "old": 1514,
+  "new": 1665,
+  "why": "spec 10 ground: breacher / bulldozer / engineer assault HP (x1.1)"
+ },
+ {
+  "section": "vehicles",
+  "id": "engineer_vehicle",
+  "field": "hp",
+  "old": 800,
+  "new": 880,
+  "why": "spec 10 ground: breacher / bulldozer / engineer assault HP (x1.1)"
+ },
+ {
+  "section": "vehicles",
+  "id": "demolition_line_vehicle",
+  "field": "hp",
+  "old": 545,
+  "new": 600,
+  "why": "spec 10 ground: breacher / bulldozer / engineer assault HP (x1.1)"
+ },
+ {
+  "section": "vehicles",
+  "id": "guard_tower",
+  "field": "hp",
+  "old": 700,
+  "new": 840,
+  "why": "spec 11 tower: small combat HP (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "mg_bunker",
+  "field": "hp",
+  "old": 1500,
+  "new": 1800,
+  "why": "spec 11 tower: small combat HP (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "recoilless_gun_tower",
+  "field": "hp",
+  "old": 545,
+  "new": 654,
+  "why": "spec 11 tower: small combat HP (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "guard_tower",
+  "field": "outgoingDamageMult",
+  "old": null,
+  "new": 1.08,
+  "why": "spec 11 tower: small combat damage (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "mg_bunker",
+  "field": "outgoingDamageMult",
+  "old": 0.6086,
+  "new": 0.6573,
+  "why": "spec 11 tower: small combat damage (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "mg_bunker.twin",
+  "field": "outgoingDamageMult",
+  "old": 0.5036,
+  "new": 0.5439,
+  "why": "spec 11 tower: small combat damage (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "mg_bunker.flame",
+  "field": "outgoingDamageMult",
+  "old": 0.3248,
+  "new": 0.3508,
+  "why": "spec 11 tower: small combat damage (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "recoilless_gun_tower",
+  "field": "outgoingDamageMult",
+  "old": null,
+  "new": 1.08,
+  "why": "spec 11 tower: small combat damage (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "atgm_tower",
+  "field": "hp",
+  "old": 900,
+  "new": 1125,
+  "why": "spec 11 tower: medium combat HP (x1.25)"
+ },
+ {
+  "section": "vehicles",
+  "id": "atgm_tower",
+  "field": "outgoingDamageMult",
+  "old": null,
+  "new": 1.1,
+  "why": "spec 11 tower: medium combat damage (x1.10)"
+ },
+ {
+  "section": "vehicles",
+  "id": "gun_turret",
+  "field": "hp",
+  "old": 1800,
+  "new": 2250,
+  "why": "spec 11 tower: medium combat HP (x1.25)"
+ },
+ {
+  "section": "vehicles",
+  "id": "gun_turret",
+  "field": "outgoingDamageMult",
+  "old": null,
+  "new": 1.1,
+  "why": "spec 11 tower: medium combat damage (x1.10)"
+ },
+ {
+  "section": "vehicles",
+  "id": "rocket_turret",
+  "field": "hp",
+  "old": 1100,
+  "new": 1375,
+  "why": "spec 11 tower: medium combat HP (x1.25)"
+ },
+ {
+  "section": "vehicles",
+  "id": "rocket_turret",
+  "field": "outgoingDamageMult",
+  "old": null,
+  "new": 1.1,
+  "why": "spec 11 tower: medium combat damage (x1.10)"
+ },
+ {
+  "section": "vehicles",
+  "id": "one_shot_atgm_tower",
+  "field": "hp",
+  "old": 909,
+  "new": 1136,
+  "why": "spec 11 tower: medium combat HP (x1.25)"
+ },
+ {
+  "section": "vehicles",
+  "id": "one_shot_atgm_tower",
+  "field": "outgoingDamageMult",
+  "old": null,
+  "new": 1.1,
+  "why": "spec 11 tower: medium combat damage (x1.10)"
+ },
+ {
+  "section": "vehicles",
+  "id": "heavy_turret",
+  "field": "hp",
+  "old": 2800,
+  "new": 3640,
+  "why": "spec 11 tower: large combat HP (x1.3)"
+ },
+ {
+  "section": "vehicles",
+  "id": "heavy_turret.bastion",
+  "field": "hp",
+  "old": 4340,
+  "new": 5642,
+  "why": "spec 11 tower: large combat HP (x1.3)"
+ },
+ {
+  "section": "vehicles",
+  "id": "drone_hangar",
+  "field": "hp",
+  "old": 2200,
+  "new": 2860,
+  "why": "spec 11 tower: large combat HP (x1.3)"
+ },
+ {
+  "section": "vehicles",
+  "id": "heavy_turret",
+  "field": "outgoingDamageMult",
+  "old": null,
+  "new": 1.1,
+  "why": "spec 11 tower: large combat damage (x1.10)"
+ },
+ {
+  "section": "vehicles",
+  "id": "drone_hangar",
+  "field": "outgoingDamageMult",
+  "old": null,
+  "new": 1.1,
+  "why": "spec 11 tower: large combat damage (x1.10)"
+ },
+ {
+  "section": "vehicles",
+  "id": "aa_turret",
+  "field": "hp",
+  "old": 1100,
+  "new": 1320,
+  "why": "spec 11 tower: AA gun / SAM tower, small (HP by size, damage KEEP) (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "manpads_tower",
+  "field": "hp",
+  "old": 545,
+  "new": 654,
+  "why": "spec 11 tower: SAM tower, small (HP by size, damage KEEP) (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "aa_gun_tower",
+  "field": "hp",
+  "old": 1273,
+  "new": 1591,
+  "why": "spec 11 tower: AA gun tower, medium (HP by size, damage KEEP) (x1.25)"
+ },
+ {
+  "section": "vehicles",
+  "id": "missile_battery",
+  "field": "hp",
+  "old": 1900,
+  "new": 2470,
+  "why": "spec 11 tower: SAM tower, large (HP by size, damage KEEP) (x1.3)"
+ },
+ {
+  "section": "vehicles",
+  "id": "c_ram",
+  "field": "hp",
+  "old": 1300,
+  "new": 1495,
+  "why": "spec 11 tower: C-RAM / laser / point defence HP (raw damage KEEP) (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "laser_ad_station",
+  "field": "hp",
+  "old": 1136,
+  "new": 1306,
+  "why": "spec 11 tower: C-RAM / laser / point defence HP (raw damage KEEP) (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "drone_net_tower",
+  "field": "hp",
+  "old": 364,
+  "new": 419,
+  "why": "spec 11 tower: C-RAM / laser / point defence HP (raw damage KEEP) (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "ew_tower",
+  "field": "hp",
+  "old": 800,
+  "new": 920,
+  "why": "spec 11 tower: EW / radar / flare utility HP (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "flare_tower",
+  "field": "hp",
+  "old": 455,
+  "new": 523,
+  "why": "spec 11 tower: EW / radar / flare utility HP (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "flare_searchlight_tower",
+  "field": "hp",
+  "old": 455,
+  "new": 523,
+  "why": "spec 11 tower: EW / radar / flare utility HP (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "barrage_balloon",
+  "field": "hp",
+  "old": 364,
+  "new": 419,
+  "why": "spec 11 tower: EW / radar / flare utility HP (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "airfield",
+  "field": "hp",
+  "old": 1600,
+  "new": 1920,
+  "why": "spec 12 structure HP (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "repair_bay",
+  "field": "hp",
+  "old": 1600,
+  "new": 1920,
+  "why": "spec 12 structure HP (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "logistics_station",
+  "field": "hp",
+  "old": 1400,
+  "new": 1680,
+  "why": "spec 12 structure HP (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "vehicle_hangar",
+  "field": "hp",
+  "old": 1800,
+  "new": 2160,
+  "why": "spec 12 structure HP (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "aircraft_hangar",
+  "field": "hp",
+  "old": 1800,
+  "new": 2160,
+  "why": "spec 12 structure HP (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "cp_relay",
+  "field": "hp",
+  "old": 600,
+  "new": 720,
+  "why": "spec 12 structure HP (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "targeting_station",
+  "field": "hp",
+  "old": 700,
+  "new": 840,
+  "why": "spec 12 structure HP (x1.2)"
+ },
+ {
+  "section": "vehicles",
+  "id": "fire_control_centre",
+  "field": "hp",
+  "old": 1136,
+  "new": 1420,
+  "why": "spec 12 structure HP: fire control centre (x1.25)"
+ },
+ {
+  "section": "vehicles",
+  "id": "super_gun",
+  "field": "hp",
+  "old": 5200,
+  "new": 5980,
+  "why": "spec 12 structure HP: super gun (destructible objective) (x1.15)"
+ },
+ {
+  "section": "vehicles",
+  "id": "headquarters",
+  "field": "hp",
+  "old": 9000,
+  "new": 9450,
+  "why": "spec 12 structure HP: HQ (its three HQ types inherit it) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "shield_tower",
+  "field": "hp",
+  "old": 2000,
+  "new": 2200,
+  "why": "spec 12 structure HP: Shield Tower body (dome / ward pool KEEP) (x1.1)"
+ },
+ {
+  "section": "vehicles",
+  "id": "shield_tower.ward",
+  "field": "hp",
+  "old": 2000,
+  "new": 2200,
+  "why": "spec 12 structure HP: Shield Tower body (dome / ward pool KEEP) (x1.1)"
+ },
+ {
+  "section": "vehicles",
+  "id": "behemoth",
+  "field": "hp",
+  "old": 35787,
+  "new": 38650,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "mobile_fortress",
+  "field": "hp",
+  "old": 45320,
+  "new": 48946,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "armored_train",
+  "field": "hp",
+  "old": 37750,
+  "new": 39638,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "mega_gunship",
+  "field": "hp",
+  "old": 29950,
+  "new": 31448,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "drone_mothership",
+  "field": "hp",
+  "old": 77823,
+  "new": 84049,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "nuke_train",
+  "field": "hp",
+  "old": 118200,
+  "new": 127656,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "silver_bug",
+  "field": "hp",
+  "old": 282320,
+  "new": 304906,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "behemoth_inferno",
+  "field": "hp",
+  "old": 24600,
+  "new": 25830,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "behemoth_tempest",
+  "field": "hp",
+  "old": 37750,
+  "new": 39638,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "fortress_bastion",
+  "field": "hp",
+  "old": 25900,
+  "new": 27972,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "earth_borer",
+  "field": "hp",
+  "old": 72000,
+  "new": 75600,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "command_airship",
+  "field": "hp",
+  "old": 205875,
+  "new": 222345,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "landing_hovercraft",
+  "field": "hp",
+  "old": 53500,
+  "new": 56175,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "leviathan",
+  "field": "hp",
+  "old": 60900,
+  "new": 65772,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "moloch",
+  "field": "hp",
+  "old": 93860,
+  "new": 101369,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "daedalus",
+  "field": "hp",
+  "old": 240580,
+  "new": 259826,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "typhon",
+  "field": "hp",
+  "old": 168632,
+  "new": 182123,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "ixion",
+  "field": "hp",
+  "old": 98400,
+  "new": 106272,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "bastion_mk0",
+  "field": "hp",
+  "old": 19250,
+  "new": 20213,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "fenrir",
+  "field": "hp",
+  "old": 29950,
+  "new": 31448,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "scylla",
+  "field": "hp",
+  "old": 37750,
+  "new": 39638,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "locust",
+  "field": "hp",
+  "old": 45650,
+  "new": 47933,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "behemoth_mk2",
+  "field": "hp",
+  "old": 53500,
+  "new": 56175,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "icarus_mk0",
+  "field": "hp",
+  "old": 94850,
+  "new": 99593,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "argus",
+  "field": "hp",
+  "old": 94850,
+  "new": 99593,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "behemoth_mk0",
+  "field": "hp",
+  "old": 33900,
+  "new": 35595,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "kraken",
+  "field": "hp",
+  "old": 168632,
+  "new": 182123,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "monster",
+  "field": "hp",
+  "old": 158087,
+  "new": 170734,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "hyperion",
+  "field": "hp",
+  "old": 282320,
+  "new": 304906,
+  "why": "spec 13 main boss hull HP (armour KEEP) (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "theia",
+  "field": "hp",
+  "old": 94850,
+  "new": 99593,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "coeus",
+  "field": "hp",
+  "old": 94850,
+  "new": 99593,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "nyx",
+  "field": "hp",
+  "old": 37750,
+  "new": 39638,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "hydra",
+  "field": "hp",
+  "old": 81300,
+  "new": 85365,
+  "why": "spec 13 mini boss hull HP (armour KEEP) (x1.05)"
+ },
+ {
+  "section": "vehicles",
+  "id": "nyx",
+  "field": "outgoingDamageMult",
+  "old": 0.8362,
+  "new": 0.9198,
+  "why": "spec 13 Nyx outgoing damage (x1.1)"
+ },
+ {
+  "section": "vehicles",
+  "id": "nyx",
+  "field": "cruise.damage",
+  "old": 400,
+  "new": 440,
+  "why": "spec 13 Nyx outgoing damage: its Tomahawk cruise strike (laid by NavalSystem, outside outgoingDamageMult) (x1.1)"
+ },
+ {
+  "section": "vehicles",
+  "id": "scylla",
+  "field": "outgoingDamageMult",
+  "old": 0.7389,
+  "new": 0.798,
+  "why": "spec 13 Scylla outgoing damage (x1.08)"
+ },
+ {
+  "section": "vehicles",
+  "id": "scylla",
+  "field": "cruise.damage",
+  "old": 450,
+  "new": 486,
+  "why": "spec 13 Scylla outgoing damage: its Kalibr cruise strike (laid by NavalSystem, outside outgoingDamageMult) (x1.08)"
+ },
+ {
+  "section": "weapons",
+  "id": "mortar_120",
+  "field": "damage",
+  "old": 214,
+  "new": 235,
+  "why": "spec 14 fire support: 120 mm mortar damage (x1.1)"
+ },
+ {
+  "section": "weapons",
+  "id": "amos_120",
+  "field": "damage",
+  "old": 214,
+  "new": 235,
+  "why": "spec 14 fire support: AMOS damage (salvo, cooldown KEEP) (x1.1)"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "2b8_240_mm_boss",
+  "field": "(new row)",
+  "old": null,
+  "new": {
+   "id": "2b8_240_mm_boss",
+   "real": "2B8 240 mm",
+   "projectileSpeed": 40,
+   "splash": 9,
+   "projectileModel": "mortar_bomb",
+   "roundWeight": 543,
+   "roundLength": 1.2,
+   "projectileScale": 1.3333
+  },
+  "why": "spec 13/14: boss_mortar keeps its 9 m splash (boss damage KEEP) when the 240 mm row goes to 10 m"
+ },
+ {
+  "section": "weapons",
+  "id": "boss_mortar",
+  "field": "weaponFamily",
+  "old": "2b8_240_mm",
+  "new": "2b8_240_mm_boss",
+  "why": "spec 13 boss damage KEEP: boss_mortar off the player 240 mm row (same speed, model, 9 m)"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "2b8_240_mm",
+  "field": "splash",
+  "old": 9,
+  "new": 10,
+  "why": "spec 14 fire support: 240 mm splash 9 -> 10 (mortar_240, siege_mortar_240; damage KEEP)"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "m284_155_mm_2",
+  "field": "splash",
+  "old": 7,
+  "new": 7.7,
+  "why": "spec 14 fire support: howitzer effective splash (family row; raw damage, Pen KEEP) (x1.1)"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "m284_155_mm_ext",
+  "field": "splash",
+  "old": 7,
+  "new": 7.7,
+  "why": "spec 14 fire support: howitzer effective splash (family row; raw damage, Pen KEEP) (x1.1)"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "m284_155_mm_fixed",
+  "field": "splash",
+  "old": 7,
+  "new": 7.7,
+  "why": "spec 14 fire support: howitzer effective splash (family row; raw damage, Pen KEEP) (x1.1)"
+ },
+ {
+  "section": "weapons",
+  "id": "howitzer_fixed",
+  "field": "edge",
+  "old": 14,
+  "new": 15.4,
+  "why": "spec 14 fire support: howitzer two-layer edge (howitzer_ext inherits it) (x1.1)"
+ },
+ {
+  "section": "secondRounds.rounds",
+  "id": "howitzer_fixed_guided",
+  "field": "edge",
+  "old": null,
+  "new": 14,
+  "why": "spec 14 guided artillery splash KEEP: edge pinned (it inherits howitzer_fixed's edge, raised)"
+ },
+ {
+  "section": "weapons",
+  "id": "gun_203_siege",
+  "field": "splash",
+  "old": 8,
+  "new": 8.8,
+  "why": "spec 14 fire support: heavy 203 mm howitzer splash (own line, no family) (x1.1)"
+ },
+ {
+  "section": "weaponFamilies",
+  "id": "m31_gmlrs_227_mm_mlrs",
+  "field": "(new row)",
+  "old": null,
+  "new": {
+   "id": "m31_gmlrs_227_mm_mlrs",
+   "real": "M31 GMLRS 227 mm",
+   "projectileSpeed": 85,
+   "splash": 4.9,
+   "projectileModel": "gmlrs",
+   "roundWeight": 160
+  },
+  "why": "spec 14 standard MLRS coverage +9 % (splash 4.5 -> 4.9); turret_gmlrs (tower) stays on m31_gmlrs_227_mm"
+ },
+ {
+  "section": "weapons",
+  "id": "mlrs_rockets",
+  "field": "weaponFamily",
+  "old": "m31_gmlrs_227_mm",
+  "new": "m31_gmlrs_227_mm_mlrs",
+  "why": "spec 14 fire support: MLRS card salvo on its own row (coverage)"
+ },
+ {
+  "section": "weapons",
+  "id": "grad_cluster",
+  "field": "cluster.radius",
+  "old": 5,
+  "new": 5.5,
+  "why": "spec 14 fire support: cluster MLRS coverage +10 % (bomblet damage KEEP) (x1.1)"
+ },
+ {
+  "section": "weapons",
+  "id": "mlrs_elite",
+  "field": "cluster.radius",
+  "old": 6,
+  "new": 6.6,
+  "why": "spec 14 fire support: cluster MLRS coverage +10 % (bomblet damage KEEP) (x1.1)"
+ },
+ {
+  "section": "supports",
+  "id": "scripted_barrage",
+  "field": "(new event support)",
+  "old": null,
+  "new": {
+   "id": "scripted_barrage",
+   "kind": "Barrage",
+   "pen": 3,
+   "event": true,
+   "cooldown": 60,
+   "delay": 1.5,
+   "radius": 10,
+   "count": 6,
+   "duration": 4,
+   "damage": 160,
+   "blast": 7,
+   "tier": "Large"
+  },
+  "why": "spec 15: scripted campaign / battle-event / siege barrages keep the old artillery_barrage values"
+ },
+ {
+  "section": "supports",
+  "id": "artillery_barrage",
+  "field": "blast",
+  "old": 7,
+  "new": 7.7,
+  "why": "spec 15 artillery_barrage ~+10 % total strike value: blast radius 7 -> 7.7 (coverage lever only; measured +9.9 % on a 4-IFV group, +10.7 % on a spread group, +13.7 % on one tank); count, damage, cooldown KEEP"
+ }
+]
