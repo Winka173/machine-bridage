@@ -21388,3 +21388,43 @@ Spec: Docs/mapvisaudio (parts W-AB, AC-AO, AP-BL, BT-BX, CE-CG). Branch feature/
 - **Accessibility:** screen shake already had Off / Low / Full; added "Reduced flashes" (big-gun muzzle flash 0.7x, fire glow without
   fast flicker); gameplay cues unchanged.
 - **Tests written, not run:** `MvaW1bNodeContractTests`, `MvaW1bCriticalAudioTests` (P0 in a 32-voice storm of 500 events).
+
+## Balance v2 (06/10)
+
+- **Validator v2 finished:** the WIP commit `dfe4bb5e` (3 buckets: HARD_FAIL/YELLOW_FEEL/PASS_INTENTIONAL_SHORT_RANGE,
+  5 reason codes) was already complete but never run; compiled clean and run this pass: 0 HARD_FAIL, 6 YELLOW_FEEL,
+  25 PASS_INTENTIONAL_SHORT_RANGE, 329 ok across 360 weapons. No code changes needed.
+- **Speeds:** `sam_48n6` 140 -> 115 m/s, splash capped 7.2 -> 6.0 m (owner's "x1.25 cap 5-6 m" formula doesn't fit a
+  starting value already over the cap; capped directly instead of multiplying further over it). `ballistic_missile`
+  200 -> 90 m/s, splash 10 -> 14 m, added `impactScale: 1.3`. Damage KEEP on both.
+- **Drone mothership/swarm carrier:** created `jassm_swarm_carrier` (inherits `jassm`, speed 60, splash 14.4 = new
+  jassm splash 12 x 1.20); `swarm_carrier`'s secondary weapon and `loads` key switched to it. Generic `jassm` untouched
+  speed-wise (70 m/s cruise band).
+- **Cruise footprint (sec 5):** `jassm`/`air_cruise_missile`/`cruise_missile_ground` splash -> 12; `hydra_club_s` -> 10;
+  `nyx_tomahawk` -> 11 (its own direct VLS fire); `leviathan_cruise` -> 14 (shared by Leviathan's and Typhon's scripted
+  "cruise" bigAttack). Fixed the stale 6.5/10 m naval-boss warning markers: `NavalSystem.cs`'s `CruiseDef.Radius` is the
+  actual damage radius (confirmed by reading the C#), independent of the weapon catalog's splash field, so the five
+  `"cruise"` bigAttack blocks (leviathan/typhon/nyx/hydra/scylla) and the two `leviathan_cruise_mark`/`kalibr_cruise_mark`
+  support markers all needed their own sync. Nyx and Scylla declare no `weapon` field for this scripted attack (a code
+  comment confirms it's by design: a shared Kalibr-type bombardment independent of their actually-mounted missile) --
+  raised all three Large-tier ships (nyx/hydra/scylla) from 6.5 to 10 m together rather than inventing an unsupported
+  per-ship mapping.
+- **Pen hierarchy (sec 11-19):** `focus_laser` 4 -> 5 (+damage 12.5 -> 14); `recoilless_106` 3 -> 4 (damage KEEP at the
+  canonical 314 -- the prompt's "220 KEEP" never matched any prior-pass document checked, flagged not applied);
+  `siege_gun_105` 3 -> 2 (prompt's explicit "KEEP 2" read as the corrective target). `gun_105_apfsds`/`railgun` already
+  Pen 5 from the previous pass (verified, not reapplied); IFV `atgm` already Pen 4 (audited, no stale inheritance found).
+- **Boss missile/rocket flight-feel audit (addendum):** swept every `p26_`/`pt14_`/`nyx_`/`scylla_`/`boss_`/`train_`
+  missile/rocket weapon plus the naval `"cruise"` bigAttacks -- every one already inside its target band from the
+  previous pass; no speed changes needed. Hyperion's `pt14_hp_nsm` (80 m/s, anti-ship band) and `pt14_hp_155` (direct
+  naval gun, non-goal) explicitly reviewed. Boss anti-ship splash (`pt14_hp_nsm` 5 m, `scylla_kh35` 6 m) flagged as
+  slightly below the "~8-14 m" identity guidance but kept, per "do not automatically increase every boss missile splash."
+- **Boss armour confirmed unchanged:** programmatic diff of every vehicle's `armour` field, zero differences.
+- **Regression (headless only, per brief):** `dotnet build` of `Sim.csproj` and `regress/Regress.csproj`, 0 errors both.
+  `Regress` harness `ttk`/`pd`/`barrage`/`aps`/`pressure` modes run before/after: `long_sam` vs `attack_jet` TTC eased
+  slightly (expected from the slower SAM); `nyx` pressure +3.2% and heavy-bomber-vs-IFV sortie value +4% (both from the
+  cruise/ACM splash increases hitting more targets in AoE, expected, no damage number changed); `barrage` and the AI-lead
+  half of `aps` byte-identical. No Unity EditMode run used.
+- **Regenerated:** `Tools/balance/full_weapon_audit.py` (writes `Docs/checks/full_weapon_audit.md` and
+  `Docs/balance/player_weapon_waitlist.md`); `flight_feel_audit.py` console run. **Not regenerated:** `Docs/export/*`
+  (explicit brief rule -- the lead rebuilds the pack once at the end).
+- Full report: `Docs/balance/BALANCE_V2_REPORT.md` (copied to `bao_cao_combat/balance_v2_report.md`).

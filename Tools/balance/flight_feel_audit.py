@@ -4,7 +4,7 @@ Replicates Catalog.cs: weapon "inherits" chain (child over parent, the parent al
 "weaponFamily" row on top (a family row wins over the weapon's own line; "" opts out). Variants (weaponVariantId) carry no
 speed in the table. Cross-checked against Docs/export/game_snapshot.json balancePack.weaponFlight (the Unity runtime value).
 Usage: python Tools/balance/flight_feel_audit.py [--csv out.csv]"""
-import json, sys, os
+import collections, json, sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "export"))
 from core import jsonc
 
@@ -48,7 +48,11 @@ def resolve_all(root):
         r = res(w)
         fid = w.get("weaponFamily", "(inherited)" if "inherits" in w else "")
         out[w["id"]] = r
-        info[w["id"]] = (w.get("projectileSpeed"), fid, fams.get(r.get("weaponFamily") or "", {}).get("projectileSpeed"), w.get("inherits", ""))
+        # 5th element (06/10, validator v2): explicit "weaponFamily": "" opt-out *with* the weapon's own projectileSpeed
+        # line -- the data shape a boss/ship weapon uses to intentionally diverge from what it would otherwise inherit.
+        explicit_optout = w.get("weaponFamily") == ""
+        info[w["id"]] = (w.get("projectileSpeed"), fid, fams.get(r.get("weaponFamily") or "", {}).get("projectileSpeed"),
+                         w.get("inherits", ""), explicit_optout)
     return out, info
 
 
@@ -68,6 +72,106 @@ HALF_MIN = {"TACTICAL_MISSILE": 0.30, "AIR_DEFENCE_SHORT": 0.15, "AIR_DEFENCE_MI
 SHORT_AAM = ("stinger_atas", "stinger_post", "igla_v", "r60", "wvr_aam")
 GEAR_CAP = 0.30     # GearCatalog.cs: ProjectileSpeed stat cap; GearSystem.cs applies it to the main weapon (arm 0) only
 MIN_RANGE_SHARE = 0.25  # flight at the "minimum" distance of a weapon with no minRange: a quarter of its reach
+
+# ============================================================================================================
+# Validator v2 (06/10, owner answer 3 to Docs/prompts/balance_final_answers_vi.md). Replaces the old flat
+# TOO_FAST_FOR_CLASS / TOO_SLOW_FOR_CLASS / TOO_FAST_AT_GEAR_CAP / OWNER_EXCEPTION / ok vocabulary and the per-id
+# EXCEPTIONS dict with three buckets and five reason codes. No projectile speed changes; no per-id exceptions: every
+# "pass" below comes from the weapon's class and data shape (boss-prefix + explicit family opt-out), never its id.
+# ============================================================================================================
+BUCKETS = ("HARD_FAIL", "YELLOW_FEEL", "PASS_INTENTIONAL_SHORT_RANGE")  # "ok": no issue at all (kept for continuity)
+REASON_CODES = ("CANONICAL_SHORT_RANGE", "INHERITANCE_MISMATCH", "TOO_FAST_FOR_CLASS", "TOO_SLOW_FOR_CLASS",
+                "INTENTIONAL_BOSS_OVERRIDE")
+
+# Owner's approximate hard-fail-fast floors (typical/max-range flight time, seconds; TACTICAL_MISSILE also needs its
+# half-range floor, both conditions AND'd). Classes absent here have no new hard floor: they only get the old BANDS
+# as a non-blocking YELLOW_FEEL / PASS_INTENTIONAL_SHORT_RANGE, same as before this refactor.
+HARD_FLOOR_HALF = {"TACTICAL_MISSILE": 0.25}
+HARD_FLOOR_MAX = {"TACTICAL_MISSILE": 0.45, "AIR_DEFENCE_SHORT": 0.18, "AIR_DEFENCE_MISSILE": 0.22,
+                   "ROCKET_ARTILLERY": 0.45, "MORTAR": 0.60, "HOWITZER": 0.60}
+HEAVY_240_FLOOR = 0.75      # 240 mm mortar/howitzer: its own higher floor (actual-arc time), not the plain MORTAR 0.60
+HEAVY_240_BAND_HI = 2.2     # owner: "target band can extend to ~2.2 s" -- informational upper edge, not a fail ceiling
+# Mortar/howitzer "actual-arc time": at the one elevation that is always correct for a weapon's own *listed* range at its
+# own speed with no drag (45 deg, the classic max-range angle), only the horizontal speed component (v*cos(theta)) covers
+# ground, so arc time = straight time / cos(45 deg) = straight time * sqrt(2). No gravity constant is needed at that angle
+# (unlike CombatSystem.Bombs.cs BombGravity, which is tuned for a vertical bomb drop, not a mortar's lobbed arc).
+ARC_FACTOR = 2 ** 0.5
+# Existing file convention (see "boss_rockets"/"p26_"/"train_grad" membership checks in feel_class above): a naming
+# pattern across the whole class of boss/special units, not a per-id list.
+BOSS_PREFIXES = ("p26_", "pt14_", "nyx_", "scylla_", "boss_", "train_")
+
+# Canonical master speeds (Docs/prompts/balance_master_final_spec.md secs 3-5), by weaponFamily id, for the ids the
+# spec names unambiguously. balance.json already carries these numbers (an earlier prompt applied the spec); this
+# dict is a regression guard only -- it flags INHERITANCE_MISMATCH if a future edit silently pushes one back (the
+# spec's own example: "fix any inheritance that silently pushes [aircraft rockets] back to ~180 m/s").
+CANONICAL_FAMILY_SPEED = {
+    "agm_114_hellfire": 70, "9m133_kornet": 70, "9m317_buk": 120, "mim_104_patriot_pac_2": 130, "aim_9_sidewinder": 100,
+    "bm_21_grad_122_mm": 80, "bm_21_grad_122_mm_2": 80, "m31_gmlrs_227_mm": 85, "m31_gmlrs_227_mm_mlrs": 85,
+    "tos_1a_220_mm_thermobaric": 65, "apkws": 80, "nsm_oniks": 80, "2b11_120_mm": 45, "2b8_240_mm": 40,
+    "2b8_240_mm_boss": 40, "hydra_70_mm": 95, "hydra_70_mm_jet": 100, "s_8_80_mm": 95, "s_8_80_mm_boat": 90,
+}
+
+
+def is_boss_override(i, explicit_optout, raw):
+    """Structural boss-override signal (no per-id list): a boss/special-prefixed weapon that explicitly opts out of
+    its family ("weaponFamily": "") *and* carries its own projectileSpeed line -- the data shape every boss/ship
+    intentional exception in the spec (sec 3) and the boss mortar/howitzer/rocket rows are already built from."""
+    return i.startswith(BOSS_PREFIXES) and explicit_optout and raw is not None
+
+
+def classify(i, r, info5, sp, rng, cls, tmin, thalf, tmax):
+    """One of HARD_FAIL / YELLOW_FEEL / "ok" / PASS_INTENTIONAL_SHORT_RANGE, with at most one reason code.
+    Primary signal = typical/max-range flight time; half-range is secondary (only the ATGM AND rule uses it)."""
+    raw, fid, fsp, inh, explicit_optout = info5
+    is_240 = cls == "MORTAR" and ("240" in (r.get("weaponFamily") or "") or "240" in i)
+    arc_tmax = tmax * ARC_FACTOR if tmax is not None and cls in ("MORTAR", "HOWITZER") else tmax
+
+    fam_id = r.get("weaponFamily") or ""
+    canon = CANONICAL_FAMILY_SPEED.get(fam_id)
+    if canon is not None and sp and abs(sp - canon) > 0.5:
+        return "HARD_FAIL", "INHERITANCE_MISMATCH"
+
+    if is_boss_override(i, explicit_optout, raw):
+        return "PASS_INTENTIONAL_SHORT_RANGE", "INTENTIONAL_BOSS_OVERRIDE"
+
+    if tmax is None:
+        return "ok", ""
+
+    explicit_cls = cls in HARD_FLOOR_MAX
+    # The arc-inflated time only ever helps a slow-lobbed shell clear the *fast* hard-fail floor; it is never used
+    # against the upper (too-slow) side, where the straight range/speed time (the Sim's own flight model) stays the
+    # one source of truth (owner: "a projectile fast only because of short range should not force a speed increase" --
+    # the same reasoning means a long one should not be judged against an even longer, arc-inflated number).
+    floor_check_t = arc_tmax if cls in ("MORTAR", "HOWITZER") else tmax
+
+    hard = False
+    if is_240:
+        hard = floor_check_t is not None and floor_check_t < HEAVY_240_FLOOR
+    elif cls == "TACTICAL_MISSILE":
+        hard = (thalf is not None and tmax is not None and thalf < HARD_FLOOR_HALF["TACTICAL_MISSILE"]
+                and tmax < HARD_FLOOR_MAX["TACTICAL_MISSILE"])
+    elif cls in HARD_FLOOR_MAX:
+        hard = floor_check_t is not None and floor_check_t < HARD_FLOOR_MAX[cls]
+    if hard:
+        return "HARD_FAIL", "TOO_FAST_FOR_CLASS"
+
+    band = BANDS.get(cls)
+    if not band:
+        return "ok", ""
+    lo, hi = band
+    half_min = HALF_MIN.get(cls)
+
+    if lo and tmax < lo:
+        if explicit_cls:
+            return "PASS_INTENTIONAL_SHORT_RANGE", "CANONICAL_SHORT_RANGE"
+        return "YELLOW_FEEL", "TOO_FAST_FOR_CLASS"
+    if not explicit_cls and half_min and thalf is not None and thalf < half_min:
+        return "YELLOW_FEEL", "TOO_FAST_FOR_CLASS"
+    if hi and tmax > hi:
+        if is_240 and tmax <= HEAVY_240_BAND_HI:
+            return "ok", ""
+        return "YELLOW_FEEL", "TOO_SLOW_FOR_CLASS"
+    return "ok", ""
 
 
 def feel_class(i, r):
@@ -91,12 +195,6 @@ def feel_class(i, r):
     return "DIRECT_FAST"
 
 
-# owner-spec speeds that put a weapon outside the generic band at the game's range (spec 23: "audit targets, not hard caps")
-EXCEPTIONS = {
-    "pt14_co_spike": "NLOS Spike: range 80 at the spec's ATGM floor 75 m/s (1.07 s)",
-}
-
-
 def analyse(res, info, snap=None):
     out = {}
     for i, r in res.items():
@@ -104,25 +202,23 @@ def analyse(res, info, snap=None):
         rng = r.get("range") or 0
         mn = r.get("minRange", 0) or 0
         cls = feel_class(i, r)
-        band = BANDS[cls]
         dmin = mn if mn > 0 else rng * MIN_RANGE_SHARE
         t = lambda d, v: round(d / v, 3) if v else None
         cap = sp * (1 + GEAR_CAP)
-        warn = []
-        if band and sp and rng:
-            lo, hi = band
-            tmax, thalf = rng / sp, rng * 0.5 / sp
-            if tmax < lo or thalf < HALF_MIN.get(cls, lo * 0.5): warn.append("TOO_FAST_FOR_CLASS")
-            if hi and tmax > hi: warn.append("TOO_SLOW_FOR_CLASS")
-            if rng / cap < lo * 0.75: warn.append("TOO_FAST_AT_GEAR_CAP")
-        if warn and i in EXCEPTIONS: warn = ["OWNER_EXCEPTION"]
-        raw, fid, fsp, inh = info[i]
+        tmin, thalf, tmax = t(dmin, sp), t(rng / 2, sp), t(rng, sp)
+        bucket, reason = classify(i, r, info[i], sp, rng, cls, tmin, thalf, tmax)
+        is_240 = cls == "MORTAR" and ("240" in (r.get("weaponFamily") or "") or "240" in i)
+        arc_tmax = round(tmax * ARC_FACTOR, 3) if tmax is not None and cls in ("MORTAR", "HOWITZER") else None
+        raw, fid, fsp, inh, _optout = info[i]
         src = ("family %s" % r.get("weaponFamily") if r.get("weaponFamily") and fsp is not None else
                ("own line" if raw is not None and not inh else ("inherited from %s" % inh if inh else "own line")))
         if inh and raw is not None and not (r.get("weaponFamily") and fsp is not None): src = "own line (over %s)" % inh
-        out[i] = dict(effectiveProjectileSpeedMps=sp, effectiveSpeedAtGearCapMps=round(cap, 1), flightTimeMinRangeS=t(dmin, sp),
-                      flightTimeHalfRangeS=t(rng / 2, sp), flightTimeMaxRangeS=t(rng, sp), flightTimeMaxRangeAtGearCapS=t(rng, cap),
-                      projectileFeelClass=cls, projectileSpeedWarning=";".join(warn) or "ok", speedInheritanceSource=src,
+        out[i] = dict(effectiveProjectileSpeedMps=sp, effectiveSpeedAtGearCapMps=round(cap, 1), flightTimeMinRangeS=tmin,
+                      flightTimeHalfRangeS=thalf, flightTimeMaxRangeS=tmax, flightTimeMaxRangeAtGearCapS=t(rng, cap),
+                      flightTimeMaxRangeArcS=arc_tmax if is_240 or cls in ("MORTAR", "HOWITZER") else None,
+                      projectileFeelClass=cls, validationBucket=bucket, reasonCode=reason,
+                      projectileSpeedWarning=bucket if bucket != "ok" else "ok",  # back-compat alias (exporter column)
+                      speedInheritanceSource=src,
                       salvoSpacingM=round(sp * (r.get("burstInterval", 0.1) or 0), 1) if (r.get("burst", 1) or 1) > 1 and r.get("projectile") in ("Rocket", "Missile") else None)
     return out
 
@@ -133,7 +229,7 @@ def main():
     snap = {r["id"]: r for r in json.load(open(SNAP, encoding="utf-8"))["balancePack"]["weaponFlight"]}
     rows = []
     for i, r in res.items():
-        raw, fid, fsp, inh = info[i]
+        raw, fid, fsp, inh, _optout = info[i]
         run = r.get("projectileSpeed")
         sn = snap.get(i, {}).get("speed")
         reason = ""
@@ -149,9 +245,17 @@ def main():
     print("weapons", len(rows), "weapons whose runtime speed now differs from the (stale) Unity snapshot:", len(bad))
     for r in bad[:20]: print("  ", r[:8])
     an = analyse(res, info)
-    wn = {i: a for i, a in an.items() if a["projectileSpeedWarning"] != "ok"}
-    print("validator warnings:", len(wn))
-    for i, a in wn.items(): print("  ", i, a["projectileFeelClass"], a["effectiveProjectileSpeedMps"], a["flightTimeMinRangeS"], a["flightTimeHalfRangeS"], a["flightTimeMaxRangeS"], a["projectileSpeedWarning"])
+    buckets = collections.Counter(a["validationBucket"] for a in an.values())
+    print("validator v2 buckets:", dict(buckets))
+    hard = {i: a for i, a in an.items() if a["validationBucket"] == "HARD_FAIL"}
+    print("HARD_FAIL:", len(hard), sorted(hard))
+    for i, a in sorted(hard.items()):
+        print("  ", i, a["projectileFeelClass"], a["effectiveProjectileSpeedMps"], a["flightTimeHalfRangeS"],
+              a["flightTimeMaxRangeS"], a["flightTimeMaxRangeArcS"], a["reasonCode"])
+    yellow = {i: a for i, a in an.items() if a["validationBucket"] == "YELLOW_FEEL"}
+    print("YELLOW_FEEL:", len(yellow), sorted(yellow))
+    passi = {i: a for i, a in an.items() if a["validationBucket"] == "PASS_INTENTIONAL_SHORT_RANGE"}
+    print("PASS_INTENTIONAL_SHORT_RANGE:", len(passi), sorted(passi))
     dead = [r for r in rows if r[1] is not None and r[3] is not None and r[1] != r[3]]
     print("own projectileSpeed line differs from its family row (dead value; the family wins):", len(dead), [r[0] for r in dead])
     mism = [r for r in rows if r[1] is not None and r[5] is not None and abs(r[1] - r[5]) / max(1, r[1]) > 0.25]

@@ -15,6 +15,12 @@ from . import _refsrc as S
 AUDIT_RULE = ("bản kiểm L1 (Tools/balance/full_weapon_audit.py) không cờ nhịp này: súng máy, pháo tự động, cao xạ so khe chậm "
               "với nhịp thực tế; rốc-két, bom và đồ treo máy bay chỉ so khoảng trong loạt")
 GUIDE = "Docs/balance/Machine_Brigade_Can_bang.xlsx, sheet Hướng dẫn vẽ"
+# 06/10 owner answer 3: NHANH_QUA / CHAM_QUA (full_weapon_audit.py TOO FAST / TOO SLOW, fire-cycle rate -- a different
+# audit from the projectile flight validator) must carry a class-aware reason, never a stale flag with none. "Class"
+# here is the real-world weapon kind (ngoai_doi_loai: mg/ac/aa/gun/rocket/missile/atgm/bomb) the rate was checked
+# against; same reason-code names as Tools/balance/flight_feel_audit.py (TOO_FAST_FOR_CLASS / TOO_SLOW_FOR_CLASS).
+KIND_LABEL = {"mg": "súng máy", "ac": "pháo tự động", "aa": "cao xạ", "gun": "pháo nòng dài (khe thật x1/0,7)",
+              "rocket": "rốc-két (khoảng trong loạt)", "missile": "tên lửa", "atgm": "ATGM", "bomb": "bom/đồ treo máy bay"}
 
 
 def name_of(row) -> str:
@@ -206,7 +212,7 @@ def build_01(R: Ctx, book):
         if rpm and ratio is not None:
             ref = 60.0 / rpm / (R.slower if kind == "gun" else 1.0)
             flags = str(sr.rows[wid].values.get("ghi_chu_lech") or "")
-            chu, why = _rate_reason(R, wid, ratio, flags)
+            chu, why = _rate_reason(R, wid, ratio, flags, kind)
             tpl = ("=60/" + lookup("Vu_khi", "ngoai_doi_phat_phut_toi_da", "{entity_id}") + "/IF("
                    + lookup("Vu_khi", "ngoai_doi_loai", "{entity_id}") + f'="gun",{R.slower},1)')
             _r, lech = C.compare_row(cs, f"{wid}/nhip", wid, "khe_mot_nong_mot_vien", "s", round(ref * ratio, 9), (tpl, ref),
@@ -234,7 +240,7 @@ def build_01(R: Ctx, book):
     return sh, cs
 
 
-def _rate_reason(R: Ctx, wid, ratio, flags: str):
+def _rate_reason(R: Ctx, wid, ratio, flags: str, kind: str = ""):
     lo, hi = C.RATE
     if lo <= ratio <= hi:
         return False, ""
@@ -242,7 +248,12 @@ def _rate_reason(R: Ctx, wid, ratio, flags: str):
         return True, f"fix_weapon_reasons.json: {str(R.reasons[wid])[:300]}"
     if "NHANH_QUA" not in flags and "CHAM_QUA" not in flags:
         return True, AUDIT_RULE
-    return False, ""
+    # 06/10 owner answer 3: this flag (NHANH_QUA/CHAM_QUA) has no fix_weapon_reasons.json entry -- give it a
+    # class-aware reason instead of leaving it stale (the old `return False, ""` here dropped it silently).
+    code = "TOO_FAST_FOR_CLASS" if ratio < lo else "TOO_SLOW_FOR_CLASS"
+    label = KIND_LABEL.get(kind, kind or "không rõ loại")
+    return True, (f"{code} ({label}): tỷ lệ khe {ratio:.3g} ngoài ngưỡng [{lo:g};{hi:g}] của bản kiểm nhịp bắn; "
+                  "chưa có lý do riêng trong fix_weapon_reasons.json")
 
 
 # ---------------------------------------------------------------------------------------------------------- units
@@ -519,7 +530,7 @@ def rate_rows(R: Ctx, book, cs, pairs, a, b, keep, who: str):
         ratio = num(b.rows[wid].values["ty_le_chu_ky_so_voi_ngoai_doi"])
         flags = str(b.rows[wid].values.get("ghi_chu_lech") or "")
         ref = 60.0 / rpm / (R.slower if kind == "gun" else 1.0)
-        chu, why = _rate_reason(R, wid, ratio, flags)
+        chu, why = _rate_reason(R, wid, ratio, flags, kind)
         tpl = ("=60/" + lookup("input_nhip_that", "ngoai_doi_phat_phut_toi_da", "{vu_khi_id}") + "/IF("
                + lookup("input_nhip_that", "ngoai_doi_loai", "{vu_khi_id}") + f'="gun",{R.slower},1)')
         nguon = t01.rows[wid].values.get("nguon_id", "").split(";") if t01 is not None and wid in t01.rows else [R.N_AUDIT]

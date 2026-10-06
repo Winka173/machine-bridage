@@ -7,6 +7,14 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Balance v2 (06/10, branch feature/balance-v2): finished the validator v2 refactor (3 buckets, 5 reason codes; 0 HARD_FAIL
+  across 360 weapons); long-SAM `sam_48n6` 140->115 m/s (splash capped 6 m); `ballistic_missile` 200->90 m/s, splash
+  10->14 m, +impactScale; dedicated `jassm_swarm_carrier` variant (60 m/s, splash x1.20) for the drone-mothership/swarm
+  carrier's cruise secondary; cruise footprint pass (jassm/air_cruise_missile/cruise_missile_ground -> 12 m,
+  hydra_club_s -> 10 m, nyx_tomahawk -> 11 m, leviathan_cruise -> 14 m) with the stale 6.5/10 m naval-boss warning
+  markers fixed to match; Pen hierarchy (focus_laser 4->5 +dmg 14, recoilless_106 3->4, siege_gun_105 3->2); full boss
+  missile/rocket flight-feel audit (addendum) found every boss missile already inside its target band, no changes
+  needed. Boss armour diff-checked unchanged. Report Docs/balance/BALANCE_V2_REPORT.md.
 - Balance master final (06/10): final projectile speeds (Hellfire / Kornet 70, anti-ship 80, Buk 120, Patriot 130, S-400 140; boss sam_post 80, Nemesis SAM 95, boss rockets 65), bombs x1.20-1.30, aircraft HP x1.15-1.20 and ground attack x1.08, MBT / heavy / TD / flame / breacher HP, towers HP x1.15-1.30 and damage x1.08-1.10, structures HP, main / mini boss HP x1.08 / x1.05, Nyx +10 % and Scylla +8 % output, 120 mm mortar +10 %, 240 mm splash 10 m, howitzer / MLRS / cluster coverage, Artillery Barrage blast 7.7 m with scripted barrages split off (`scripted_barrage`). Boss armour unchanged. Report Docs/balance/BALANCE_MASTER_FINAL_REPORT.md.
 - Map/visual/audio W1-B (lane B, 06/10): stable runtime node names (25 GLBs renamed, resolver keeps old ones), node / aim-contract and budget audits with waivers, audio P0-P5 policy (critical warnings never cut, own Warnings slider, brief duck), threat cue table + top-attack dive ring, wreck state sync (no invisible blocking hulks), licence vs realism status in audio records, reduced-flash option.
 - AI MASTER test fixes (lane A, 05/10): 154/154 AiMaster tests pass. Code: C1 watchdog judges the main gun, wider firing-lane sidestep, objective fire not counted as fire from a reachable region, idle orders hold no parking lease, short-reach units in reach keep their target (region band + hull radius), breach lock covers the held target, an outside loser waits at a gate instead of backing out, batched squads get their own queue slots, no two hulls sent to one point (UnsharedSlot), spec-185 anomaly codes registered. Tests: stale fixtures (gate geometry, spawn spacing, vision step, ship spacing, no fog, merged P1 packets) fixed with their intent kept.
