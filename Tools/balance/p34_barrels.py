@@ -76,6 +76,8 @@ def plan(data):
 # Prompt 34 L9 rule 4 (here for L4): every barrel of a simultaneous gun has its Muzzle_b<k> on the model. Model -> muzzles
 # (as exported) of the guns that fire together, and the barrels each must have; Kraken's mounts are bare launch cells.
 MUZZLES = {
+    # Barrels pass (owner 06/10): the battleship's three Iowa triple turrets.
+    "battleship": {"Muzzle_gun": 3, "Muzzle_gun_02": 3, "Muzzle_gun_03": 3},
     "leviathan": {"Muzzle_gun": 3, "Muzzle_gun_02": 3, "Muzzle_gun_03": 3, "Muzzle_gun_04": 3, "Muzzle_gun_05": 3},
     "sea_cruiser": {"Muzzle_gun": 2, "Muzzle_gun_aft": 2},
     "heavy_turret": {"Muzzle_main": 2},
@@ -101,6 +103,9 @@ def check_muzzles():
     models = os.path.join(F.ROOT, "Assets", "MachineBrigade", "Resources", "Models")
     problems = []
     for model, want in MUZZLES.items():
+        if not os.path.exists(os.path.join(models, model + ".glb")):
+            print(f"note: {model}.glb is not in this tree: its barrel muzzles are not checked")
+            continue
         with open(os.path.join(models, model + ".glb"), "rb") as fh:
             b = fh.read()
         n = struct.unpack_from("<I", b, 12)[0]

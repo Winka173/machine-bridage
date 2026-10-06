@@ -14,7 +14,8 @@ eight big new hulls, each its own builder on the lane's kit (mb_naval_b_kit), dr
 - battlecruiser (Alaska, modernised): the long sheered hull, a twin 254 mm turret forward (two muzzles), the
   four-cell inclined anti-ship deck, the tower bridge with the conning tower, one trunk funnel, two Phalanx on
   sponsons, the Mk 26 aft.
-- battleship (Iowa 1980s): three heavy turrets (two forward superfiring, one aft), the conning tower and tower
+- battleship (Iowa 1980s): three triple 406 mm turrets (two forward superfiring, one aft; barrels pass 06/10: three
+  barrels a turret, Muzzle_b1..3_gun[_NN], all fire in one volley), the conning tower and tower
   bridge, two stacks, the tripod foremast, the Mk 29 box, two Phalanx, the helicopter fantail.
 - missile_cruiser (Kirov read): the S-300F revolver hatches in the bow, the eight-cell inclined Granit deck, the
   pyramid superstructure with the Top Pair radar, the twin-uptake funnel, two AK-630 aft, a 130 mm aft.
@@ -381,9 +382,12 @@ def battleship(a):
     _common(a, S, [(-39.0, -18.0), (-10.0, 18.0), (18.5, 40.6)], [-36.0, -30.0, 30.0, 37.0], range(-32, 36, 4),
             (-11.0, 19.0), -34.0)
     S.breakwater(-31.0, h=.65)
-    N.heavy_turret(a, 0, (0, -24.5, dz(-24.5)), s=1.35, barrels=1, barrel=8.5, cal=.42, base_h=.9, base_r=2.9)
-    N.heavy_turret(a, 1, (0, -15.0, dz(-15.0)), s=1.35, barrels=1, barrel=8.5, cal=.42, base_h=3.8, base_r=2.9)
-    N.heavy_turret(a, 2, (0, 25.5, dz(25.5)), s=1.35, barrels=1, barrel=8.5, cal=.42, base_h=.9, base_r=2.9)
+    N.heavy_turret(a, 0, (0, -24.5, dz(-24.5)), s=1.35, barrels=3, barrel=8.5, cal=.32, base_h=.9, base_r=2.9,
+                   width=1.12, pitch=1.25, rise=True)
+    N.heavy_turret(a, 1, (0, -15.0, dz(-15.0)), s=1.35, barrels=3, barrel=8.5, cal=.32, base_h=3.8, base_r=2.9,
+                   width=1.12, pitch=1.25, rise=True)
+    N.heavy_turret(a, 2, (0, 25.5, dz(25.5)), s=1.35, barrels=3, barrel=8.5, cal=.32, base_h=.9, base_r=2.9,
+                   width=1.12, pitch=1.25, rise=True)
     sup = a.part('Superstructure', 'Team')
     sup.asset = a
     N.tier(sup, -9.4, 10.0, dz(0) - .05, 8.0, 5.6, 5.4, rf=.3, rb=.3)

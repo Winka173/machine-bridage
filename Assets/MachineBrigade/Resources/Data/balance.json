@@ -1230,7 +1230,7 @@
     { "id": "missile_cruiser_salvo", "inherits": "anti_ship_missile", "weaponFamily": "", "real": "NSM / P-800 Oniks (eight-cell VLS, missile_cruiser)", "burst": 8, "burstInterval": 0.45, "cooldown": 28 },
     { "id": "naval_203_monitor", "inherits": "gun_203_siege", "real": "M110 203 mm (heavy_monitor)", "damage": 360, "cooldown": 7, "splash": 5.5 },
     { "id": "naval_203_bc", "inherits": "cruiser_203", "real": "Mk 71 203 mm (twin, battlecruiser)", "damage": 420, "cooldown": 7.5 },
-    { "id": "naval_406_bs", "inherits": "cruiser_203", "real": "406 mm/50 (battleship, single turret x3)", "barrels": 1, "pen": 5, "damage": 600, "cooldown": 11, "splash": 8 }
+    { "id": "naval_406_bs", "inherits": "cruiser_203", "real": "Mk 7 406 mm/50 (battleship, triple turret x3)", "barrels": 3, "salvoMode": "SIMULTANEOUS", "pen": 5, "damage": 200, "roundWeight": 600, "cooldown": 11, "splash": 8 }
   ],
 
   // ----------------------------------------------------------------------------------------------------

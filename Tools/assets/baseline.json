@@ -5368,6 +5368,16 @@
     "missile_cruiser: new (17462 triangles)",
     "missile_destroyer: new (15290 triangles)"
    ]
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "battleship"
+   ],
+   "reason": "barrels pass 06/10: Iowa triple turrets (3 barrels, Muzzle_b1..3_gun[_NN] a turret, bores at the tips)",
+   "changes": [
+    "FLAG battleship: triangles 21,164 -> 24,152 (+14.1%); vertices 30,217 -> 33,043 (+9.4%); fileBytes 1,149,016 -> 1,248,352 (+8.6%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -12511,14 +12521,14 @@
   },
   "battleship": {
    "file": "battleship.glb",
-   "fileBytes": 1149016,
-   "sha1": "86b5caca0f889504",
+   "fileBytes": 1248352,
+   "sha1": "5f168aa98b4fcd18",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
     "KHR_mesh_quantization"
    ],
-   "nodes": 79,
+   "nodes": 88,
    "meshes": 61,
    "materials": 17,
    "animations": 0,
@@ -12528,8 +12538,8 @@
    "submeshes": 61,
    "materialSlots": 61,
    "materialsUsed": 17,
-   "triangles": 21164,
-   "vertices": 30217,
+   "triangles": 24152,
+   "vertices": 33043,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -12537,7 +12547,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 943,
+   "loosePieces": 973,
    "openEdges": 1212,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -12560,13 +12570,13 @@
     10.237,
     -0.028
    ],
-   "structureHash": "8f4ad8360a07d689",
+   "structureHash": "3955346a42e596b5",
    "color0": {
-    "mean": 0.6344,
+    "mean": 0.637,
     "min": 0.0782,
     "max": 1.0,
-    "p05": 0.2048,
-    "p95": 0.8544,
+    "p05": 0.2051,
+    "p95": 0.9119,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -12647,8 +12657,17 @@
     "Mount_mg",
     "Mount_mg_02",
     "Mount_missile",
+    "Muzzle_b1_gun",
+    "Muzzle_b1_gun_02",
+    "Muzzle_b1_gun_03",
     "Muzzle_b1_missile",
+    "Muzzle_b2_gun",
+    "Muzzle_b2_gun_02",
+    "Muzzle_b2_gun_03",
     "Muzzle_b2_missile",
+    "Muzzle_b3_gun",
+    "Muzzle_b3_gun_02",
+    "Muzzle_b3_gun_03",
     "Muzzle_b3_missile",
     "Muzzle_b4_missile",
     "Muzzle_gun",
@@ -12663,10 +12682,10 @@
     "Radar_face",
     "Radar_pedestal",
     "Railings",
-    "Rangefinder",
     "Rangefinder_2",
     "Rangefinder_3",
     "Searchlight_lens",
+    "Sight_hoods",
     "Sight_hoods_2",
     "Sight_hoods_3",
     "Superstructure",
@@ -12677,8 +12696,8 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "triangles 21,164 over the ground normal hard cap 9,700 (info: kept, owner rule)",
-    "vertices 30,217 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+    "triangles 24,152 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 33,043 over the ground normal hard cap 12,600 (info: kept, owner rule)"
    ],
    "units": [
     "battleship"

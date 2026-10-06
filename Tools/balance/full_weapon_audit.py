@@ -676,6 +676,8 @@ WAIT_NOTES = [
      "the real reference is an estimate (no published launch interval): not a clear error"),
     ({"siege_gun_105", "siege_mortar_240", "recoilless_106", "gun_105_ags", "gun_140_twin", "gun_100_river"},
      "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error"),
+    ({"naval_406_bs"},
+     "owner 06/10 (DECISIONS 'Barrels: battleship triple turrets'): the Iowa triple fires 3 x 200 every 11 s, the old single round's 600 a volley"),
 ]
 
 
