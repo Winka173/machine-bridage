@@ -7,6 +7,12 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Boss missile rescan (06/10, branch feature/boss-missile-rescan): fixed 13 boss-exclusive guided missile/drone
+  weapons (Hyperion's NSM, Coeus's Spike, Theia's JAGM, Nyx's Tomahawk, Scylla's Kh-35, Ixion's Kornet, the
+  airship/mothership/Bastion/Behemoth/Locust ATGM and drone-swarm variants) whose `groundMinReach` was
+  effectively `1` m, letting them fire point-blank for a hitscan-looking 10-30 ms flight; raised to 30 m / 15 m.
+  Also fixed `NavalSystem.Cruise()` (Leviathan/Typhon/Hydra/Nyx/Scylla/Kraken) computing its missile's view
+  travel time from the fixed warning time instead of distance/speed. See `Docs/balance/BOSS_MISSILE_RESCAN.md`.
 - Balance v2 clarifications: Hyperion NSM and Scylla Kh-35 splash to 8 m (owner 06/10).
 - Balance v2 (06/10, branch feature/balance-v2): finished the validator v2 refactor (3 buckets, 5 reason codes; 0 HARD_FAIL
   across 360 weapons); long-SAM `sam_48n6` 140->115 m/s (splash capped 6 m); `ballistic_missile` 200->90 m/s, splash

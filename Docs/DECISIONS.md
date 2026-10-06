@@ -21436,3 +21436,48 @@ Owner final clarifications (Docs/prompts/balance_v2_clarify_vi.md) override olde
 - sam_48n6: splash 6 m final (cap wins over ×1.25), speed 115, damage/Pen KEEP (already in data).
 - pt14_hp_nsm splash 5 -> 8 m, scylla_kh35 splash 6 -> 8 m; nothing else changed. Their TierFx look keeps Core -1 (the overlay and rings follow the real radius), so the impact and the damage-radius rings grow with the splash; no separate warning def references them. Only these two, not every boss anti-ship missile.
 - railgun: Pen 5, damage and cooldown KEEP (already in data); revisit reload only if Armour 4/5 TTK regression shows overtuning.
+
+## Boss missile rescan (06/10)
+
+Owner play-test report: "many boss missiles fly extremely fast, usually the direct-aimed kinds." The balance v2
+addendum pass above only swept weapon ids by prefix and only read the `projectileSpeed` data field (no Sim run);
+this brief re-audited from the runtime per the owner's rescan request. Full report:
+`Docs/balance/BOSS_MISSILE_RESCAN.md` (copied to `bao_cao_combat/boss_missile_rescan.md`).
+
+- **Root cause:** not a speed problem. 13 boss-exclusive guided missile/anti-ship/drone-swarm weapons
+  (`pt14_hp_nsm`, `pt14_co_spike`, `pt14_th_jagm`, `nyx_tomahawk`, `scylla_kh35`, `pt14_ixion_kornet`,
+  `p26_roc_direct_roc_atgm`, `p26_matriarch_direct_ma_atgm`, `p26_bastion_tiny_kornet_twin`,
+  `p26_behemoth_tiny_boss_missiles`, `p26_matriarch_ma_drones`, `locust_drones`) had `groundMinReach` effectively
+  `1` m (a no-op minimum range) in `bossWeaponOverrides` and/or baked into the weapon's own row. At 1 m and 70-80
+  m/s, flight time measures 10-30 ms in the headless Sim (`Tools/simbuild/regress`'s new `missiles-pointblank`
+  mode) -- visually hitscan, 25x past the addendum's `flightTimeAtTypicalRange < ~0.35 s` outlier line. Every
+  affected boss already has a separate gun/flak/HMG mount covering true point-blank range, so the 1 m floor was
+  redundant, not a documented "intentional hitscan" design.
+- **Fix (data-only):** raised `groundMinReach` to 30 m (70-80 m/s guided missiles) / 15 m (26-28 m/s drone
+  swarms) -- the lowest value clearing ~0.4 s of flight -- in both the `bossWeaponOverrides` row and the weapon's
+  own baked field where present. Confirmed via a direct `Catalog.FromJson` dump that every one of the 13 now
+  carries the new value, not `1`, at every boss that fires it (inheritance through `variantOf` included: Coeus/
+  Theia from Hyperion's row, Argus from the airship's, Locust from the mothership's, Bastion Mk0 from Fortress
+  Bastion's). Measured before/after at a 5/15/30 m point-blank test: 10 of 13 improved from a 10-30 ms snap to
+  either clear of the 0.35 s line (Fortress Bastion/Monster's Kornet twin, Ixion's Kornet) or 10-40x slower; 3
+  (`pt14_hp_nsm`, `p26_roc_direct_roc_atgm`, and `p26_matriarch_direct_ma_atgm` not re-exercised) still fired
+  closer than the new floor in that adversarial test despite the catalog data being provably correct -- flagged
+  as a narrower AI per-mount target-selection question for a follow-up, not re-guessed at here. Speed, damage,
+  Pen, cooldown, splash and boss armour untouched; the generic shared `atgm`/`drone_missile` (also used by player
+  IFVs/helicopters, genuinely has no minimum range) was left alone per the brief.
+- **Also fixed (code, naval):** `NavalSystem.cs` `Cruise()` (Leviathan/Typhon/Hydra/Nyx/Scylla/Kraken's `"cruise"`
+  field) used the fixed `cruise.Warn` (4-4.5 s) as the view's travel time *and* the damage delay, never reading
+  the missile's own `ProjectileSpeed` -- a direct violation of addendum sec 7 (warning and travel must be tracked
+  separately; here they were literally the same number). Now `max(cruise.Warn, distance/ProjectileSpeed)`.
+  Code-reviewed and build-verified only; the regression harness's bare map has no sea/lanes, so this path never
+  fires there (confirmed: 220 s run, zero cruise-field-sourced events).
+- **Ruled out:** `BossSystem.BigAttacks.cs` `Lead()`'s `MaxLead = 2.5 s` cap looked like a fit for
+  `doomsday_missile`/`typhon_underwater_launch` (long, reach-less "aim": "hq"/"base" strikes) but tracing the
+  call graph shows `BigShape.Missile` strikes never reach `Lead()` at all (they use `Launch()`/`_bigFlyers`
+  instead); they're governed by the already-conservative `BossSystem.MissileTopSpeed` = 24 m/s (play-test 4,
+  DECISIONS 19R), measured 19.8-21.6 m/s at runtime -- already slower than the addendum's slowest band, not the
+  "too fast" cause. A speculative fix to `Lead()` was written, proven a no-op by the harness, and reverted.
+  Every ordinary mount/secondary boss missile measured exactly at its data `ProjectileSpeed` (100+ combinations);
+  the view (`WeaponEffects.cs`/`ProjectilePool.cs`) always plays the Sim's own given duration with no early-exit.
+- **Regression:** `dotnet build Tools/simbuild/Sim.csproj` and `Tools/simbuild/regress/Regress.csproj` (new
+  project file; none existed before), 0 errors both. No Unity run; no `export.py` run.

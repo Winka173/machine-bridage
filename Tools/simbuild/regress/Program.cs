@@ -42,6 +42,8 @@ static class P
             case "barrage": Barrage(sb); break;
             case "pressure": Pressure(sb); break;
             case "aps": Aps(sb); Lead(sb); break;
+            case "missiles": Missiles(sb); break;
+            case "missiles-pointblank": MissilesPointBlank(sb); break;
             default: Console.Error.WriteLine("mode?"); return 2;
         }
         File.WriteAllText(outFile, sb.ToString(), new UTF8Encoding(false));
@@ -523,6 +525,136 @@ static class P
                 catch (Exception e) { note = e.GetType().Name + ": " + e.Message.Split('\n')[0]; break; }
             }
             sb.AppendLine($"{boss}\t{(ok > 0 ? (total / ok).ToString("0", Inv) : "n/a")}\t{ok}\t{note}");
+            Console.Error.WriteLine(boss);
+        }
+    }
+
+    // ------------------------------------------------------------------ boss missile rescan 06/10: every boss's WeaponFired
+    // events (mounts, secondaries, bigAttacks, naval cruise/salvo) over a long run, with the view's own travel time (Value)
+    // so the runtime-effective speed (distance / travel time) can be read off directly, not just the data's projectileSpeed.
+    static readonly string[] AllBosses =
+    {
+        "argus", "armored_train", "bastion_mk0", "behemoth", "behemoth_inferno", "behemoth_mk0", "behemoth_mk2",
+        "behemoth_tempest", "coeus", "command_airship", "daedalus", "drone_mothership", "earth_borer", "fenrir",
+        "fortress_bastion", "hydra", "hyperion", "icarus_mk0", "ixion", "kraken", "landing_hovercraft", "leviathan",
+        "locust", "mega_gunship", "mobile_fortress", "moloch", "monster", "nuke_train", "nyx", "scylla", "silver_bug",
+        "theia", "typhon",
+    };
+
+    // ------------------------------------------------------------------ boss missile rescan 06/10: a target standing right
+    // next to the boss (5 m), the way a player's assault force closing to melee range actually plays out, to see whether a
+    // boss's "groundMinReach": 1 missile override (several bossWeaponOverrides/weapon rows) really fires that close in.
+    static void MissilesPointBlank(StringBuilder sb)
+    {
+        sb.AppendLine("boss\tweapon\tprojectile\tdistance_m\ttravel_s\truntime_speed_mps\tdata_speed_mps\tsamples");
+        foreach (var boss in new[]
+                 {
+                     "coeus", "hyperion", "theia", "nyx", "scylla", "ixion", "command_airship", "drone_mothership",
+                     "fortress_bastion", "monster", "behemoth", "locust",
+                 })
+        {
+            if (!Cat.Vehicles.TryGetValue(boss, out _)) continue;
+            var seen = new Dictionary<string, List<(float dist, float travel)>>();
+            foreach (var seed in Seeds)
+            {
+                var world = Field(seed + 50);
+                world.RevealAll = true;
+                world.BigAttackSettings = BigAttackSettings.For(Cat.BigAttackRules, "Normal");
+                // One tank right against the boss's hull (5 m) plus a couple a little further out (15, 30 m), so the AI has a
+                // choice of ranges and a close-in target it would only reach with a weapon whose groundMinReach is near zero.
+                var tanks = new List<Vehicle>();
+                foreach (var d in new[] { 5f, 15f, 30f })
+                {
+                    var tt = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 35f - d), 0f);
+                    world.MakeSparring(tt);
+                    tt.HoldFire = true;
+                    tanks.Add(tt);
+                }
+                var b = world.SpawnVehicle(boss, 1, new Vector2(0f, 35f), MathF.PI);
+                world.MakeSparring(b);
+                for (var t = 0f; t < 90f; t += 0.05f)
+                {
+                    world.Step(0.05f);
+                    foreach (var e in world.Events)
+                    {
+                        if (e.Kind != SimEventKind.WeaponFired || e.Team != 1 || e.DefId == null) continue;
+                        var dist = Vector2.Distance(e.Position, e.Target);
+                        if (!seen.TryGetValue(e.DefId, out var list)) seen[e.DefId] = list = new List<(float, float)>();
+                        list.Add((dist, e.Value));
+                    }
+                    world.ClearEvents();
+                }
+            }
+            foreach (var (wid, list) in seen.OrderBy(kv => kv.Key))
+            {
+                Cat.Weapons.TryGetValue(wid, out var w);
+                if (w == null || w.Projectile is not (ProjectileKind.Missile or ProjectileKind.Rocket)) continue;
+                var closest = list.OrderBy(x => x.dist).First();
+                var speed = closest.travel > 0.001f ? closest.dist / closest.travel : 0f;
+                sb.AppendLine($"{boss}\t{wid}\t{w.Projectile}\t{closest.dist:0.0}\t{closest.travel:0.00}\t{speed:0.0}\t{w.ProjectileSpeed:0.0}\t{list.Count}");
+            }
+            Console.Error.WriteLine(boss);
+        }
+    }
+
+    static void Missiles(StringBuilder sb)
+    {
+        sb.AppendLine("boss\tweapon\tprojectile\tdistance_m\ttravel_s\truntime_speed_mps\tdata_speed_mps\tsamples");
+        foreach (var boss in AllBosses)
+        {
+            if (!Cat.Vehicles.TryGetValue(boss, out _)) { sb.AppendLine($"{boss}\t(missing)\t\t\t\t\t\t"); continue; }
+            var seen = new Dictionary<string, List<(float dist, float travel)>>();
+            var note = "";
+            foreach (var seed in Seeds)
+            {
+                try
+                {
+                    var world = Field(seed + 50);
+                    world.RevealAll = true;
+                    // BigAttackSettings is normally set by the mission/sandbox mode; Field() (a bare regression map)
+                    // never does, so a boss's bigAttack (StepBig) silently never fires without this.
+                    world.BigAttackSettings = BigAttackSettings.For(Cat.BigAttackRules, "Normal");
+                    var tanks = new List<Vehicle>();
+                    for (var i = 0; i < 6; i++)
+                    {
+                        var t = world.SpawnVehicle("main_battle_tank", 0, new Vector2(-25f + i * 10f, -110f), 0f);
+                        world.MakeSparring(t);
+                        t.HoldFire = true;
+                        tanks.Add(t);
+                    }
+                    // Far from the enemy base/HQ (near this boss's own team start, ~230 m off): a BigAim.Hq/Base attack
+                    // (no "reach" limit in the data) picks the HQ/base position regardless of distance, so this spot is
+                    // what actually exercises the long-range compression bug (the addendum's "direct-aimed" complaint).
+                    var b = world.SpawnVehicle(boss, 1, new Vector2(0f, 100f), MathF.PI);
+                    world.MakeSparring(b);
+                    for (var t = 0f; t < 220f; t += 0.05f)
+                    {
+                        world.Step(0.05f);
+                        foreach (var e in world.Events)
+                        {
+                            if (e.Kind != SimEventKind.WeaponFired || e.Team != 1 || e.DefId == null) continue;
+                            var dist = Vector2.Distance(e.Position, e.Target);
+                            if (!seen.TryGetValue(e.DefId, out var list)) seen[e.DefId] = list = new List<(float, float)>();
+                            list.Add((dist, e.Value));
+                            if (Environment.GetEnvironmentVariable("MB_DEBUG") == e.DefId)
+                                Console.Error.WriteLine($"DEBUG {boss} {e.DefId} t={t:0.00} mount={e.Mount} fromPart={e.FromPart} dist={dist:0.0} value={e.Value:0.00} speed={(e.Value > 0 ? dist / e.Value : 0):0.0}");
+                        }
+                        world.ClearEvents();
+                    }
+                }
+                catch (Exception ex) { note = ex.GetType().Name + ": " + ex.Message.Split('\n')[0]; break; }
+            }
+            if (seen.Count == 0) { sb.AppendLine($"{boss}\t(no shots fired)\t\t\t\t\t\t{note}"); continue; }
+            foreach (var (wid, list) in seen.OrderBy(kv => kv.Key))
+            {
+                Cat.Weapons.TryGetValue(wid, out var w);
+                var proj = w?.Projectile.ToString() ?? "?";
+                var dataSpeed = w?.ProjectileSpeed ?? 0f;
+                // Report the longest-range sample (the one most likely to show a travel-time cap/compression bug) plus the mean.
+                var longest = list.OrderByDescending(x => x.dist).First();
+                var speed = longest.travel > 0.001f ? longest.dist / longest.travel : 0f;
+                sb.AppendLine($"{boss}\t{wid}\t{proj}\t{longest.dist:0.0}\t{longest.travel:0.00}\t{speed:0.0}\t{dataSpeed:0.0}\t{list.Count}");
+            }
             Console.Error.WriteLine(boss);
         }
     }
