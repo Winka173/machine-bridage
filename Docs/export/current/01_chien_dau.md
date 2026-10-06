@@ -2,7 +2,7 @@
 
 Vũ khí, đạn, phương tiện, thẻ hỗ trợ, trang bị, commander, đội mở màn, ném bom rải thảm.
 
-Gói cân bằng Machine Brigade, commit 3e5a45e7, ngày 2026-10-06. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3817f14a, ngày 2026-10-06. Số liệu đầy đủ ở 01_chien_dau.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Phương tiện
 
@@ -84,15 +84,15 @@ Sheet 01_chien_dau/May_bay_so_phat — Máy bay: số phát để hạ (14 dòng
 | attack_helicopter | 1771.0 | 1 | 229.50000000000003 | 229.50000000000003 | 8.0 | 432.0 | 432.0 | 5.0 | 396.90000000000003 |
 | attack_jet | 1645.6 | 2 | 195.07500000000002 | 195.075 | 9.0 | 432.0 | 432.0 | 4.0 | 396.90000000000003 |
 | drop_pod | 352.0 | 1 | 229.50000000000003 | 229.50000000000003 | 2.0 | 432.0 | 432.0 | 1.0 | 396.90000000000003 |
-| fighter_jet | 1518.0 | 0 | 229.50000000000003 | 229.50000000000003 | 7.0 | 432.0 | 432.0 | 4.0 | 396.90000000000003 |
+| fighter_jet | 1478.4 | 0 | 229.50000000000003 | 229.50000000000003 | 7.0 | 432.0 | 432.0 | 4.0 | 396.90000000000003 |
 | heavy_bomber | 3696.0 | 0 | 229.50000000000003 | 229.50000000000003 | 17.0 | 432.0 | 432.0 | 9.0 | 396.90000000000003 |
-| recon_drone | 840.4 | 0 | 229.50000000000003 | 229.50000000000003 | 4.0 | 432.0 | 432.0 | 2.0 | 396.90000000000003 |
-| scout_heli | 1311.2 | 0 | 229.50000000000003 | 229.50000000000003 | 6.0 | 432.0 | 432.0 | 4.0 | 396.90000000000003 |
+| recon_drone | 1008.48 | 0 | 229.50000000000003 | 229.50000000000003 | 5.0 | 432.0 | 432.0 | 3.0 | 396.90000000000003 |
+| scout_heli | 1344.2 | 0 | 229.50000000000003 | 229.50000000000003 | 6.0 | 432.0 | 432.0 | 4.0 | 396.90000000000003 |
 | sky_gunship | 3542.0 | 0 | 229.50000000000003 | 229.50000000000003 | 16.0 | 432.0 | 432.0 | 9.0 | 396.90000000000003 |
 | stealth_bomber | 3168.0 | 0 | 229.50000000000003 | 229.50000000000003 | 14.0 | 432.0 | 432.0 | 8.0 | 396.90000000000003 |
 | stealth_fighter | 1518.0 | 0 | 229.50000000000003 | 229.50000000000003 | 7.0 | 432.0 | 432.0 | 4.0 | 396.90000000000003 |
 | stealth_naval_strike | 1898.6 | 0 | 229.50000000000003 | 229.50000000000003 | 9.0 | 432.0 | 432.0 | 5.0 | 396.90000000000003 |
-| strike_drone | 880.0 | 0 | 229.50000000000003 | 229.50000000000003 | 4.0 | 432.0 | 432.0 | 3.0 | 396.90000000000003 |
+| strike_drone | 1038.4 | 0 | 229.50000000000003 | 229.50000000000003 | 5.0 | 432.0 | 432.0 | 3.0 | 396.90000000000003 |
 | swarm_carrier | 2761.0 | 1 | 229.50000000000003 | 229.50000000000003 | 13.0 | 432.0 | 432.0 | 7.0 | 396.90000000000003 |
 | twin_rotor_gunship | 3542.0 | 1 | 229.50000000000003 | 229.50000000000003 | 16.0 | 432.0 | 432.0 | 9.0 | 396.90000000000003 |
 
@@ -133,18 +133,18 @@ Sheet 01_chien_dau/Hoi_quy — Hồi quy theo CP (12 dòng, 5 cột)
 
 | id | gia_tri | y_nghia |
 |---|---|---|
-| dps_he_so | 36.63362809102474 | hệ số a của DPS theo CP |
-| dps_so_mu | 0.41714414358524143 | số mũ b của DPS theo CP |
-| mau_he_so | 259.9882094322473 | hệ số a của máu theo CP |
-| mau_so_mu | 0.7932041050782634 | số mũ b của máu theo CP |
+| dps_he_so | 37.017844647265356 | hệ số a của DPS theo CP |
+| dps_so_mu | 0.4155256215880497 | số mũ b của DPS theo CP |
+| mau_he_so | 294.2063864877289 | hệ số a của máu theo CP |
+| mau_so_mu | 0.747710291626649 | số mũ b của máu theo CP |
 | n_dps | 49.0 | số xe có DPS > 0 |
 | n_mau | 50.0 | số xe trong hồi quy máu |
 | trung_vi_dps_tren_cp_9_15 | 5.785258152623646 | trung vị DPS / CP, dải 9-15 |
 | trung_vi_dps_tren_cp_ge16 | 7.034828144730453 | trung vị DPS / CP, dải >=16 |
-| trung_vi_dps_tren_cp_le8 | 16.852262406303005 | trung vị DPS / CP, dải <=8 |
+| trung_vi_dps_tren_cp_le8 | 16.696489124929123 | trung vị DPS / CP, dải <=8 |
 | trung_vi_mau_tren_cp_9_15 | 136.6 | trung vị máu / CP, dải 9-15 |
 | trung_vi_mau_tren_cp_ge16 | 122.13793103448276 | trung vị máu / CP, dải >=16 |
-| trung_vi_mau_tren_cp_le8 | 190.025 | trung vị máu / CP, dải <=8 |
+| trung_vi_mau_tren_cp_le8 | 197.12 | trung vị máu / CP, dải <=8 |
 
 Bảng đầy đủ: xem sheet `Xe_suy_ra` (79 dòng), `Hoi_quy_du_lieu` (50 dòng).
 
@@ -336,7 +336,7 @@ Sheet 01_chien_dau/Phao_sang — Pháo sáng (11 dòng, 19 cột)
 
 *In 10 / 19 cột; 3 cột khác: xem sheet.*
 
-Bảng đầy đủ: xem sheet `Khac_che` (23 dòng), `Vu_khi` (359 dòng), `Vu_khi_suy_ra` (359 dòng), `Vu_khi_he_so_thuong` (27 dòng), `Dan_thay_the` (68 dòng).
+Bảng đầy đủ: xem sheet `Khac_che` (23 dòng), `Vu_khi` (364 dòng), `Vu_khi_suy_ra` (364 dòng), `Vu_khi_he_so_thuong` (27 dòng), `Dan_thay_the` (68 dòng).
 
 ## Sổ tay đạn
 
@@ -516,12 +516,12 @@ Sheet 01_chien_dau/Hanh_vi_dan_nhom — Hành vi đạn theo nhóm (7 dòng, 12 
 | id | so_vu_khi | cach_nham | khi_no | khi_truot | co_canh_bao | thoi_gian_bay_toi_da_s | tuong_tac_phao_sang | tuong_tac_aps | tuong_tac_gay_nhieu |
 |---|---|---|---|---|---|---|---|---|---|
 | Bomb | 6 | dẫn đường 33% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 0.8 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
-| Bullet | 122 | đón đầu (led, trần 3 s) | nổ lan 35% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.4286 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Bullet | 125 | đón đầu (led, trần 3 s) | nổ lan 34% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.4286 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
 | Drone | 11 | dẫn đường (homing) | nổ lan 100% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 7.5 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | bị nhiễu 100% vũ khí (đạn dẫn đường trong vòng nhiễu địch:… |
 | Flame | 3 | đón đầu (led, trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy | 0% vũ khí có vòng cảnh báo | 0.5263 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
-| Missile | 52 | dẫn đường (homing) | nổ lan 54% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 5.7143 | pháo sáng mồi 79% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | bị nhiễu 100% vũ khí (đạn dẫn đường trong vòng nhiễu địch:… |
-| Rocket | 29 | dẫn đường 3% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 1.75 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
-| Shell | 136 | dẫn đường 10% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 81% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 2.125 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Missile | 53 | dẫn đường (homing) | nổ lan 55% vũ khí; ngòi cận đích 7 m | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 5.7143 | pháo sáng mồi 79% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | bị nhiễu 100% vũ khí (đạn dẫn đường trong vòng nhiễu địch:… |
+| Rocket | 29 | dẫn đường 3% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 100% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 2 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
+| Shell | 137 | dẫn đường 10% vũ khí, còn lại đón đầu (trần 3 s) | nổ lan 80% vũ khí | quá tầm × 1.3 tự hủy; đạn dẫn bằng mắt mất kẻ bắn hoặc tầm… | 0% vũ khí có vòng cảnh báo | 2.125 | pháo sáng mồi 0% vũ khí (xác suất 0.35) | APS chặn được 100%, CIWS 100% vũ khí | không bị nhiễu (không phải đạn dẫn đường) |
 
 Sheet 01_chien_dau/Canh_bao_vong — Vòng cảnh báo (13 dòng, 8 cột)
 
@@ -666,7 +666,7 @@ Thông số ngoài đời lấy từ nguồn trong repo (sheet Nguon_tham_chieu 
 
 ### Vu_khi_tham_chieu
 
-359 dòng. Độ tin cậy: da_kiem_chung 258, uoc_dinh 46, ban_dau_doan 54, NEED_SOURCE 1. Loại: NEED_SOURCE 1, doi_that 358.
+364 dòng. Độ tin cậy: da_kiem_chung 262, uoc_dinh 47, ban_dau_doan 54, NEED_SOURCE 1. Loại: NEED_SOURCE 1, doi_that 363.
 
 - `aa_25_triple` (Type 96 25 mm (triple)): mẫu thật: Type 96 25 mm (triple); độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_type_96_25_mm_at_aa_gun, R_machine_brigade_can_bang.
 - `aa_25_triple_ap` (Type 96 25 mm AP (triple)): mẫu thật: Type 96 25 mm AP (triple); độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_type_96_25_mm_at_aa_gun.
@@ -682,8 +682,8 @@ Thông số ngoài đời lấy từ nguồn trong repo (sheet Nguon_tham_chieu 
 - `atgm_heavy` (9M133 Kornet): mẫu thật: 9M133 Kornet; độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_9m133_kornet, W_wikipedia_bai_cua_tung_ten_lua_bang_warhead.
 - `atgm_post` (9M113 Konkurs): mẫu thật: 9M113 Konkurs; độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_9m113_konkurs, W_wikipedia_bai_cua_tung_ten_lua_bang_warhead.
 - `autocannon_25` (M242 Bushmaster 25 mm): mẫu thật: M242 Bushmaster 25 mm; độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_m242_bushmaster, R_machine_brigade_can_bang.
-- `autocannon_25_flak` (M242 Bushmaster 25 mm air-burst): mẫu thật: M242 Bushmaster 25 mm air-burst; độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_m242_bushmaster.
-- … 343 dòng có tham chiếu nữa: xem sheet Vu_khi_tham_chieu.
+- `autocannon_25_car` (M242 Bushmaster 25 mm): mẫu thật: M242 Bushmaster 25 mm; độ tin: da_kiem_chung; nguồn: R_balance, R_full_weapon_audit, W_wikipedia_m242_bushmaster.
+- … 348 dòng có tham chiếu nữa: xem sheet Vu_khi_tham_chieu.
 
 ### Phuong_tien_tham_chieu
 
@@ -740,7 +740,7 @@ Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
 - `R_full_weapon_audit`: full_weapon_audit.py: bảng REAL (nhịp bắn thật, mỗi dòng kèm nguồn) và WARHEAD (độ tin 3)
 - … 138 nguồn nữa: xem sheet Nguon_tham_chieu của 08_tham_chieu.
 
-Sheet 01_chien_dau/Vu_khi_so_sanh_that — Vũ khí: so sánh với thật: 263 dòng, 17 cột; bảng đầy đủ: xem sheet Vu_khi_so_sanh_that.
+Sheet 01_chien_dau/Vu_khi_so_sanh_that — Vũ khí: so sánh với thật: 268 dòng, 17 cột; bảng đầy đủ: xem sheet Vu_khi_so_sanh_that.
 
 Sheet 01_chien_dau/Phuong_tien_so_sanh_that — Phương tiện: so sánh với thật: 221 dòng, 17 cột; bảng đầy đủ: xem sheet Phuong_tien_so_sanh_that.
 
@@ -748,7 +748,7 @@ Sheet 01_chien_dau/Phuong_tien_so_sanh_that — Phương tiện: so sánh với 
 
 Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_sheet, Schema). Sheet `input_<tên>` là bản chép của một sheet nguồn để công thức Excel đọc cùng file; sửa ở sheet nguồn, không sửa bản chép.
 
-- `Vu_khi` (359 dòng): Vũ khí — Mỗi vũ khí (cả đạn thứ hai) một dòng: giá trị game (cột tiếng Việt) và trường gốc
+- `Vu_khi` (364 dòng): Vũ khí — Mỗi vũ khí (cả đạn thứ hai) một dòng: giá trị game (cột tiếng Việt) và trường gốc
 - `Vu_khi_he_so_thuong` (27 dòng): Vũ khí: hệ số thưởng — bonuses[]: hệ số sát thương theo lớp / giáp / điều kiện
 - `Ho_vu_khi` (105 dòng): Họ vũ khí — weaponFamilyTable: họ, bậc cỡ, số boss chung, biến thể và lý do
 - `Ho_vu_khi_bien_the` (20 dòng): Họ vũ khí: biến thể — variants{}: biến thể của họ và lý do
@@ -765,12 +765,12 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Hanh_vi_dan` (11 dòng): Hành vi đạn: luật chung — munitionRules: pháo sáng mồi, ngòi cận đích, dẫn đường
 - `Hanh_vi_dan_nhom` (7 dòng): Hành vi đạn theo nhóm — Mỗi dạng đạn (projectile): cách nhắm, khi nổ, cảnh báo (luật trong mã)
 - `Drone` (13 dòng): Drone: tốc độ, đầu nổ, cỡ, vụ nổ — Mọi drone của game một dòng: drone đạn (FPV, Lancet, Shahed do xe phóng) và máy bay drone; tốc độ bay, đầu nổ (kg), sát thương, bán kính nổ lõi / rìa…
-- `Ten_lua_tham_so` (52 dòng): Tên lửa: tham số — Mỗi vũ khí tên lửa (projectile = Missile) một dòng: kiểu dẫn, cận đích, trúng / chệch, jam; mọi cột khác (sát thương, tầm, tốc độ đạn, pháo sáng, APS…
+- `Ten_lua_tham_so` (53 dòng): Tên lửa: tham số — Mỗi vũ khí tên lửa (projectile = Missile) một dòng: kiểu dẫn, cận đích, trúng / chệch, jam; mọi cột khác (sát thương, tầm, tốc độ đạn, pháo sáng, APS…
 - `Canh_bao_vong` (13 dòng): Vòng cảnh báo — warningRules: loại đòn có vòng, sàn thời gian theo bậc, số vùng tối đa
 - `Bom_rai_tham` (6 dòng): Ném bom rải thảm (liên kết) — Mỗi vũ khí thả bom một dòng: tham số dải chính (weapons[*].stick) và câu thẻ; bảng đủ (Bom_vu_khi, Bom_don_vi, Bom_hanh_vi, Bom_vet_tha, Bom_canh_bao…
-- `Vu_khi_suy_ra` (359 dòng): Vũ khí: suy ra — Lớp B: chu kỳ, sát thương loạt, DPS duy trì theo giáp / công trình / máy bay, cảnh báo: công thức sống trên Vu_khi và các bảng hệ số, kèm cột _game (…
-- `Vu_khi_tham_chieu` (359 dòng): Vũ khí: tham chiếu ngoài đời — Mỗi vũ khí một dòng: mẫu thật (tên thật balance.json), nhịp thật (bảng REAL), đầu đạn (WARHEAD), ghi chú bảng cân bằng (spec 12.2; chỉ dữ liệu có tro…
-- `Vu_khi_so_sanh_that` (263 dòng): Vũ khí: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
+- `Vu_khi_suy_ra` (364 dòng): Vũ khí: suy ra — Lớp B: chu kỳ, sát thương loạt, DPS duy trì theo giáp / công trình / máy bay, cảnh báo: công thức sống trên Vu_khi và các bảng hệ số, kèm cột _game (…
+- `Vu_khi_tham_chieu` (364 dòng): Vũ khí: tham chiếu ngoài đời — Mỗi vũ khí một dòng: mẫu thật (tên thật balance.json), nhịp thật (bảng REAL), đầu đạn (WARHEAD), ghi chú bảng cân bằng (spec 12.2; chỉ dữ liệu có tro…
+- `Vu_khi_so_sanh_that` (268 dòng): Vũ khí: so sánh với thật — So sánh game với thật (spec 12.4): mỗi thông số có đối chiếu một dòng; ty_le = game / thật, khoảng cho phép, co_lech_lon = ngoài khoảng mà không có c…
 - `Xe` (79 dòng): Xe — Mỗi xe / máy bay / tàu của người chơi và địch, cả tinh nhuệ (elite): giá trị game và trường gốc
 - `Xe_vu_khi` (76 dòng): Xe: bệ vũ khí phụ — secondary[]: bệ phụ (chỉ số bệ = thu_tu + 1; bệ 0 là vũ khí chính)
 - `Xe_ten_lua` (3 dòng): Xe: tên lửa mang — missiles[]

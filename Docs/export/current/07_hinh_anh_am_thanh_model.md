@@ -2,7 +2,7 @@
 
 Hiệu ứng, âm thanh, hậu kỳ hình ảnh, model và số đo model, tài sản, giấy phép.
 
-Gói cân bằng Machine Brigade, commit 3e5a45e7, ngày 2026-10-06. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3817f14a, ngày 2026-10-06. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Hình ảnh
 
@@ -147,7 +147,7 @@ Sheet 07_hinh_anh_am_thanh_model/Am_thanh_loat — Âm thanh: loạt bắn nhanh
 | burst_s1_35 | burst_s1_35 | S1 | 35 | 12 |
 | burst_s1_55 | burst_s1_55 | S1 | 55 | 18 |
 
-Sheet 07_hinh_anh_am_thanh_model/Am_thanh_mixer — Âm thanh: mixer (8 dòng, 5 cột)
+Sheet 07_hinh_anh_am_thanh_model/Am_thanh_mixer — Âm thanh: mixer (9 dòng, 5 cột)
 
 | id | loai | gia_tri |
 |---|---|---|
@@ -159,6 +159,7 @@ Sheet 07_hinh_anh_am_thanh_model/Am_thanh_mixer — Âm thanh: mixer (8 dòng, 5
 | nhom.Effects | nhom_kenh |  |
 | nhom.Music | nhom_kenh |  |
 | nhom.UI | nhom_kenh |  |
+| nhom.Warnings | nhom_kenh |  |
 
 Sheet 07_hinh_anh_am_thanh_model/Am_thanh_thu_vien — Âm thanh: thư viện (1 dòng, 8 cột)
 
@@ -443,7 +444,7 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `VFX_chay_than_xe` (3 dòng): VFX: lửa thân xe — HullFire.Looks: 3 mức lửa (thân, lưỡi lửa, khói, tàn, tia)
 - `Hau_ky_hinh_anh` (52 dòng): Hậu kỳ hình ảnh — Settings/BattlefieldProfile.asset: mỗi thiết lập của mỗi hiệu ứng (Bloom, Tonemapping, Color Adjustments...) một dòng: ghi đè, giá trị; trường Unity…
 - `Xac_vo` (3 dòng): Xác vỡ — Xác vỡ theo bậc đồ họa: trần đầy đủ và thời gian sống
-- `Am_thanh_mixer` (8 dòng): Âm thanh: mixer — Mixer âm thanh: nhóm kênh và âm lượng mặc định
+- `Am_thanh_mixer` (9 dòng): Âm thanh: mixer — Mixer âm thanh: nhóm kênh và âm lượng mặc định
 - `Am_thanh_mau` (3 dòng): Âm thanh: bản ghi mẫu — Docs/audio/samples: 3 bản trộn trận mẫu (Tools/sfx/render_mix.py): file, độ dài, số sự kiện / phát / cắt, limiter, compressor, độ to (mixes.json); mố…
 - `Am_thanh_mau_moc` (24 dòng): Âm thanh mẫu: mốc tiếng lớn — Mỗi bản trộn: các cửa sổ 400 ms to nhất (bước 100 ms, K-weighting BS.1770 của Tools/sfx/analyze_sfx.py trên kênh trộn mono) không dưới 6 LU so với cử…
 - `VFX_vu_khi` (70 dòng): VFX theo vũ khí — EffectShots.FxBatch: mỗi bậc T0-T5 (vũ khí đại diện chọn lúc chụp) và mỗi vũ khí >= 120 mm có đơn vị mang: bậc, cỡ, số nòng, thư mục ảnh, số ảnh có /…
@@ -454,17 +455,21 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `VFX_ngan_sach_hat` (9 dòng): VFX: trần hạt mỗi bộ phát — Mọi chỗ Game/Effects đặt maxParticles bằng một số cố định (file:dòng); bộ phát đặt theo biến (max) không có số cố định
 - `Hieu_ung_tham_chieu` (58 dòng): Hiệu ứng và âm thanh: nguồn và tham chiếu — Mỗi bậc VFX và mỗi nhóm âm thanh (nhóm × bậc cỡ) một dòng: nguồn ghi âm / tổng hợp, giấy phép, đặc điểm tiếng thật, game tham chiếu cảm giác (spec 12…
 - `Model` (456 dòng): Model — Mỗi GLB một dòng (đọc bằng Tools/assets/glb_analyze.read_glb): tam giác, nút, vật liệu, mesh, số Part_* / Mount_* / Muzzle_*, Mount_Flare / Mount_APS…
-- `Model_nut` [bulk.zip] (16938 dòng): Model: nút — nodes[].name: mọi nút của mọi GLB một dòng
+- `Model_nut` [bulk.zip] (16574 dòng): Model: nút — nodes[].name: mọi nút của mọi GLB một dòng
 - `Model_kiem_chuan` (456 dòng): Model: kiểm chuẩn (baseline) — Tools/assets/baseline.json models: số liệu kiểm máy của mỗi model (tam giác, đỉnh, renderer, bộ phận chạy, lỗi, cảnh báo, nút runtime, kích thước, ha…
 - `Model_tieu_chuan` (14 dòng): Model: tiêu chuẩn — baseline.json budgets: ngân sách theo lớp x bậc (normal / hd): tam giác, đỉnh, renderer, bộ phận chạy [mức, trần]; ngân sách là hướng dẫn, không phải…
 - `Model_kiem_chuan_chung` (3 dòng): Model: kiểm chuẩn (chung) — baseline.json: số model, ngày sinh
+- `Model_ten_nut_on_dinh` (308 dòng): Model: tên nút runtime ổn định — Tools/assets/runtime_node_map.json: mỗi model đã đổi tên nút có hậu tố Blender (.001) sang tên ngữ nghĩa ổn định (cũ -> mới, giữ thứ tự); frontier_ki…
+- `Model_nut_ton_dong` (5 dòng): Model: lỗi nút runtime đã biết — Tools/assets/runtime_node_baseline.json: lỗi cứng đã biết (model/luật/vị trí) và lý do; lỗi mới làm runtime_node_audit.py thất bại
+- `Model_ngan_sach_mien` (17 dòng): Model: miễn trừ ngân sách — Tools/assets/budget_waivers.json: miễn trừ chính thức (ai, ngày, lý do, việc tiếp) cho lỗi ngân sách cứng và ghi chú duyệt cho mức mềm. Báo cáo: Docs…
+- `Model_gop_luoi_tinh` (2 dòng): Model: gộp lưới tĩnh — Tools/assets/static_merge.json: model có các lưới chi tiết tĩnh cùng vật liệu được gộp trong GLB (Tools/assets/glb_merge_static.py; hình trên màn hìn…
 - `Kich_thuoc_that` (84 dòng): Kích thước thật tham chiếu — Tools/models/reference_real.json: mẫu thật, kích thước dài / rộng / cao (m), nguồn, độ tin (conf); dùng ở 13
 - `Kich_thuoc_that_chung` (1 dòng): Kích thước thật: ghi chú — reference_real.json: khóa ngoài units
 - `Model_chuan_vang` (925 dòng): Model: số đo bộ mẫu vàng — Tools/assets/gold_metrics.json: trung bình theo lớp của bộ model mẫu (quality_gate.compute_gold,)
 - `Model_spec_dung` (11798 dòng): Model: spec dựng lại — Tools/blender/specs/<model>.json: spec dựng lại model (mẫu thật, kích thước đích, bộ phận, vũ khí, ngân sách, vùng màu;); id = <model>.<đường dẫn>
 - `Anh_the` [bulk.zip] (167 dòng): Ảnh thẻ — Resources/UI/Cards/manifest.json entries: ảnh thẻ render từ model (loại, model, nguồn, hash)
 - `Anh_the_chung` (3 dòng): Ảnh thẻ: cài đặt render — manifest.json: camera, cỡ ảnh, phiên bản
-- `Dia_phuong_hoa` [bulk.zip] (6224 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
+- `Dia_phuong_hoa` [bulk.zip] (6240 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
 - `Giay_phep_tai_san` (5 dòng): Giấy phép tài sản — Resources/Licenses/*.txt: mỗi file giấy phép một dòng (phông chữ OFL); nội dung từng dòng ở Giay_phep_noi_dung; âm thanh: 07_hinh_anh_am_thanh_model/…
 - `Giay_phep_noi_dung` [bulk.zip] (374 dòng): Giấy phép: nội dung — mỗi dòng không trống của file giấy phép
 - `Xem_truoc` (179 dòng): Màn xem trước — Màn xem trước của từng đơn vị: cảnh nền

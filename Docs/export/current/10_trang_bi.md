@@ -2,7 +2,7 @@
 
 Trang bị xe và trang bị tháp: loại cơ bản, mô-đun, đặc tính, dòng phụ, bộ, trần cộng dồn, bảng chỉ số, bảng theo độ hiếm, giá nâng cấp theo cấp, luật ghép, hòm và tỷ lệ rơi, tên Anh/Việt theo id.
 
-Gói cân bằng Machine Brigade, commit 3e5a45e7, ngày 2026-10-06. Số liệu đầy đủ ở 10_trang_bi.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3817f14a, ngày 2026-10-06. Số liệu đầy đủ ở 10_trang_bi.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Các sheet của file
 

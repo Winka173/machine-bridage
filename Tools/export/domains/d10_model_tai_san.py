@@ -26,6 +26,7 @@ GOLD = "Tools/assets/gold_metrics.json"
 NODE_MAP = "Tools/assets/runtime_node_map.json"
 NODE_BASELINE = "Tools/assets/runtime_node_baseline.json"
 WAIVERS = "Tools/assets/budget_waivers.json"
+STATIC_MERGE = "Tools/assets/static_merge.json"
 SPECS = "Tools/blender/specs/"
 CARDS = "Assets/MachineBrigade/Resources/UI/Cards/manifest.json"
 LICENSES = "Assets/MachineBrigade/Resources/Licenses/"
@@ -136,7 +137,11 @@ def build(ctx):
              "runtime_node_audit.py thất bại", "runtime_node_baseline"),
             (WAIVERS, "Model_ngan_sach_mien", "Model: miễn trừ ngân sách",
              "Tools/assets/budget_waivers.json: miễn trừ chính thức (ai, ngày, lý do, việc tiếp) cho lỗi ngân sách cứng và "
-             "ghi chú duyệt cho mức mềm. Báo cáo: Docs/models/BUDGET_OUTLIERS.md", "budget_waivers")):
+             "ghi chú duyệt cho mức mềm. Báo cáo: Docs/models/BUDGET_OUTLIERS.md", "budget_waivers"),
+            (STATIC_MERGE, "Model_gop_luoi_tinh", "Model: gộp lưới tĩnh",
+             "Tools/assets/static_merge.json: model có các lưới chi tiết tĩnh cùng vật liệu được gộp trong GLB "
+             "(Tools/assets/glb_merge_static.py; hình trên màn hình giữ nguyên). Báo cáo: Docs/models/BUDGET_OUTLIERS.md",
+             "static_merge")):
         if src in ctx.sources:
             kvw = book.kv_sheet(name, title, desc)
             book.kv_rows(kvw, ctx.data(src), src, (), group)
