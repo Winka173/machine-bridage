@@ -21709,3 +21709,43 @@ AI topology hooks map spec O/I/P mention; branch `feature/mva-w2a` (06/10), cont
   scene and the render/audio metrics of all six scenes are recorded by the final part in Unity play, not this lane; the
   conquest scenes' Sim harness (`Tests/EditMode MapVaW2AStressHarness`, category Explicit, named in `STRESS_SCENES.json`'s
   `harness` field) is not written yet — the next part's job, reusing `MapStressScenes.All` and `FocusOf`.
+
+## Map/visual/audio final (lane A)
+
+Map / visual / audio master spec Part BT (performance test scenes), finishing what W2-A left open; branch
+`feature/mva-final-a` (06/10), continuing the W1-A/W2-A merge. Code: `Tools/simbuild/mapstress/Program.cs` (new, headless,
+no Unity) plus a `MapStress.csproj` next to it (new, built locally, not committed: the repo's root `*.csproj` rule
+gitignores every Tools `.csproj`, same convention `Tools/simbuild/regress/Regress.csproj` already used, documented in
+`Docs/balance/BOSS_MISSILE_RESCAN.md`; recreate it from `TopoGen.csproj`'s shape, `ProjectReference` to `../Sim.csproj`,
+`OutputType Exe`, `net8.0`); `Assets/.../Tests/EditMode/MapVaW2AStressHarness.cs` (new, the Unity-side twin, Explicit, not
+run by this lane); output `Docs/mapvisaudio/STRESS_MAP_RESULTS.md` (generated, one real run taken: owner allows headless
+measurement for this pass).
+
+- **The harness.** `Tools/simbuild/mapstress` reuses `MapStressScenes.All` / `FocusOf` (lane W2-A) exactly: for each
+  "conquest" scene it builds the shipped map's `SimWorld` the same way `Tools/maps/topogen`'s `Prepare` does (props, fixed
+  defences, walls standing), a bare `ConquestMode` + two `AutoDeploy = false, Layered = true` `ConquestAi`s (the AI MASTER
+  P5 48v48 harness's own pattern: no economy, the roster topped up by hand every 5 s), the scene's extras (`"sea"`: the
+  naval route node nearest the resolved focus, spread by index; `"rally"`: the team's rally point) and seeded wrecks
+  (spawn a cheap unit, `world.DebugDamage(v, 50f)`: the same death path real combat takes, so the wreck field picks it up
+  normally). `maps.topology.telemetryApproaches` is forced on in memory for the run only (not written to `tunables.json`)
+  so approach-route usage is sampled too. 10 s warm-up, the scene's own `Seconds` measured, `AiPerfCounters` reset at the
+  warm-up mark (as the P5 harness does). No internal Sim access needed: every member used (`world.Health.Counters`,
+  `world.Traffic.Stats`, `world.MapTelemetry`, `world.AiPerf`, `world.SevereUnstuckCount`, `world.Map.Clamp`, `world.Grid`)
+  is public; `world.Bosses` stays internal and unused (`Health.Counters.NavalReverseAttempts` already folds in the boss
+  brain's reverse-event count, so a convenience field covers it without `[InternalsVisibleTo]`).
+- **The sixth scene.** `fortress_siege` (mode `"siege"`) needs `ModeSessions`' siege session (attacker/defender wave
+  economy, gates, rings), not a bare `ConquestMode` battle; `STRESS_SCENES.json`'s own `harness` field already says the
+  siege scene is Unity-play only. Both the headless tool and the EditMode wrapper report it skipped rather than
+  approximating it with the wrong mode.
+- **The run (06/10, one pass, owner's word for headless measurement).** All five conquest scenes, 100-120 s each after a
+  10 s warm-up, ~12 s wall-clock total: 0 `SevereUnstuck`, 0 `heavyRouteFailure`, 0 `bossRouteReplanCount` and 0 naval
+  reverse attempts on every scene; `navalCloseApproach` 1 (of 2400 steps) on `naval_boss_escorts`, 0 elsewhere;
+  `staleChokesDropped` 0 everywhere (no wall fell during any run, so nothing should be stale); `chokeQueueSeconds` 0-19,
+  `spawnBlockEvents` (TrafficStats.SpawnExitClears) 2-50, Part K `deadlocks`/`anomalies`/`stalledObjectives` single digits
+  on every scene — all within the AI MASTER P5 48v48 harness's own normal range, not a new pattern. Per-system AI cost
+  (Steering/Squad/Targeting dominate, 0.2-0.9 ms/step total) matches that harness's shape. **No map or AI regression
+  found**: nothing fixed in this pass (the brief's "fix real regressions" had nothing to act on). Full numbers, lane
+  usage and approach-route usage shares per scene: `Docs/mapvisaudio/STRESS_MAP_RESULTS.md`.
+- **Not done / open:** the EditMode wrapper is written, not run (owner token rule; a lead who wants the Unity-side reading
+  or a profiler capture runs category `MapVaW2AStress`); the siege scene's actual map/AI metrics still need a
+  `ModeSessions` run in Unity play; render and audio metrics (spec BT) are the other lane's / the final part's own pass.
