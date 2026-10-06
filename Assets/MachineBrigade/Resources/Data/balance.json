@@ -663,6 +663,7 @@
     { "id": "atgm_agm_176_griffin", "name": "atgm_agm_176_griffin", "tier": 2 },
     { "id": "atgm_agm_65_maverick", "name": "atgm_agm_65_maverick", "tier": 3 },
     { "id": "atgm_bgm_71_tow_2", "name": "atgm_bgm_71_tow_2", "tier": 2 },
+    { "id": "torp_533_heavy", "name": "533 mm heavyweight torpedo", "tier": 3 },
     { "id": "atgm_gun_launched_atgm", "name": "atgm_gun_launched_atgm", "tier": 2 },
     { "id": "atgm_kh_29l", "name": "atgm_kh_29l", "tier": 4 },
     { "id": "atgm_mam_l", "name": "atgm_mam_l", "tier": 2 },
