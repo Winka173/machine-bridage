@@ -227,6 +227,10 @@ namespace MachineBrigade.Sim.AI
                 else if (domain == MobilityDomain.Static) steps = Vector2.Distance(deployAt, t.Centre) <= t.Radius ? 0f : float.PositiveInfinity;
                 else steps = StepsInto(dist!, t.Centre, t.Radius + def.Radius);
                 var reached = !float.IsPositiveInfinity(steps);
+                // Map spec D1 (lane W1-A, maps.topology.sizeClassFeasibility, off by default): the unit's size class must fit the route.
+                if (reached && domain == MobilityDomain.Ground && SimTunables.Maps.Topology.SizeClassFeasibility &&
+                    !_world.GameplayTopology.SizeClassReaches(def, deployAt, t.Centre, t.Radius + def.Radius))
+                    reached = false;
                 if (reached && (t.Objective || env.Armed))
                 {
                     reach = 1f;
@@ -476,25 +480,8 @@ namespace MachineBrigade.Sim.AI
                 var centre = members > 1 ? sum / value : e.Position;
                 var radius = members > 1 ? lead.Radius + ClusterReach * 0.5f : e.Radius;
                 IReadOnlyList<Vector2>? lane = null;
-                if (layer == TargetLayer.Naval && world.Map.Sea is { } sea && sea.Lanes.Count > 0)
-                {
-                    // A ship patrols: the stretch of the lane nearest where it was seen.
-                    var f = sea.Frame(centre);
-                    SeaLaneDef? nearest = null;
-                    foreach (var l in sea.Lanes)
-                        if (nearest == null || MathF.Abs(l.W - f.Y) < MathF.Abs(nearest.W - f.Y)) nearest = l;
-                    if (nearest != null && MathF.Abs(nearest.W - f.Y) <= lead.Radius + 12f && nearest.Patrol > 0f)
-                    {
-                        var points = new Vector2[samples + 1];
-                        for (var k = 0; k < samples; k++)
-                        {
-                            var u = samples == 1 ? f.X : -nearest.Patrol + 2f * nearest.Patrol * k / (samples - 1);
-                            points[k] = sea.At(u, nearest.W);
-                        }
-                        points[samples] = centre;
-                        lane = points;
-                    }
-                }
+                // A ship patrols: the stretch of the lane nearest where it was seen (map spec K / L, the gameplay topology's rule).
+                if (layer == TargetLayer.Naval && world.Map.Sea is { } sea) lane = GameplayTopology.LaneStretch(sea, centre, lead.Radius, samples);
                 ctx.Targets.Add(new FeasibilityTarget("enemy_" + e.Id.Value, centre, radius, layer, value, false, lane));
             }
             if (mode != null)

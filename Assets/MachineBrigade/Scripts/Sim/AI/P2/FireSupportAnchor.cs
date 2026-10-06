@@ -377,6 +377,9 @@ namespace MachineBrigade.Sim.AI
             s.GridVersion = world.Grid.Version;
             s.Sets++;
             s.Hp = -1f;
+            // Map spec BW 7 (lane W1-A): count every anchor, and any in a forbidden transit zone (the telemetry only reads).
+            if (SimTunables.Maps.Topology.Telemetry)
+                world.MapTelemetry.AnchorSet(point, !world.GameplayTopology.ParkingAllowed(point) || world.GameplayTopology.TransitConflict(point) >= 1f);
             var first = _class.Count > 0 ? _class[0] : null;
             if (first != null)
                 P2Reasons.Unit(world, first, DecisionKind.Action, reason == "counterbattery" ? P2Reasons.ArtilleryCounterbatteryScoot : P2Reasons.ArtilleryAnchorSet,
@@ -385,7 +388,8 @@ namespace MachineBrigade.Sim.AI
 
         private static bool Valid(SimWorld world, Vector2 p, in FireSupportContext ctx)
         {
-            if (!world.Grid.IsWalkable(p) || world.Lanes.NoParkAt(p)) return false;
+            // Map spec F (lane W1-A): the gameplay topology's parking rule (open ground, no doorway or its mouths).
+            if (!world.GameplayTopology.ParkingAllowed(p)) return false;
             if (ctx.Exposed != null && ctx.Exposed(p)) return false;
             return true;
         }
@@ -416,14 +420,12 @@ namespace MachineBrigade.Sim.AI
                 if (!v.Flying && !v.Def.Static && !v.HasPath && dd < 7f * 7f && !_class.Contains(v)) congestion++;
                 if (v.Def.Static && dd < Tun.FireSupport.HqSeparation * Tun.FireSupport.HqSeparation) hq = true;
             }
-            var escape = 0;
-            for (var k = 0; k < 8; k++)
-                if (world.Grid.IsWalkable(p + SimMath.Forward(k * MathF.PI / 4f) * 12f)) escape++;
+            var topology = world.GameplayTopology;
+            var escape = topology.EscapeRoutes(p, 12f);
             var cb = intel == null ? 1f : 1f - MathF.Min(1f, intel.ThreatAt(ThreatKind.Artillery, p) / 5f);
             var threat = intel == null ? 0f : MathF.Min(1f, (intel.ThreatAt(ThreatKind.AntiTank, p) + intel.ThreatAt(ThreatKind.Splash, p)) / 5f);
             var minRange = Vector2.Distance(p, reference) < s.MinRange + 3f ? 1f : 0f;
-            var flags = world.Lanes.At(p);
-            var traffic = (flags & LaneFlags.Route) != 0 ? 1f : (flags & LaneFlags.Road) != 0 ? 0.5f : 0f;
+            var traffic = topology.TransitConflict(p);
             if (world.TryGetRally(_team, out var spawn) && Vector2.Distance(spawn, p) < 12f) traffic = 1f;
             if (hq && s.Class is FireClass.Mlrs or FireClass.LongRange) traffic += 0.5f;
             return W(0) * objective + W(1) * enemyApproach + W(2) * front + W(3) * aa + W(4) * escape / 8f + W(5) * cb
