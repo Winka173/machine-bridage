@@ -32,10 +32,84 @@
    "Muzzle_rocket.001": "Muzzle_rocket_L",
    "Muzzle_missile.001": "Muzzle_missile_L"
   },
+  "bastion_mk0": {
+   "Muzzle_gun.001": "Muzzle_gun_R",
+   "Mount_gun.001": "Mount_gun_R"
+  },
+  "behemoth": {
+   "Muzzle_mg.001": "Muzzle_mg_L",
+   "Mount_mg.001": "Mount_mg_L",
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Muzzle_missile.001": "Muzzle_missile_02",
+   "Muzzle_missile.002": "Muzzle_missile_03",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03"
+  },
+  "behemoth_tempest": {
+   "Muzzle_gun.001": "Muzzle_gun_R",
+   "Mount_gun.001": "Mount_gun_R"
+  },
   "coeus": {
    "Muzzle_gun.001": "Muzzle_gun_R",
    "Mount_gun.001": "Mount_gun_R",
    "Muzzle_rocket.001": "Muzzle_rocket_R"
+  },
+  "command_airship": {
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Muzzle_gun.003": "Muzzle_gun_04",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03",
+   "Mount_gun.003": "Mount_gun_04",
+   "Part_gun.001": "Part_gun_aft",
+   "Part_hangar.001": "Part_hangar_R",
+   "Part_engine.001": "Part_engine_02",
+   "Part_engine.002": "Part_engine_03",
+   "Part_engine.003": "Part_engine_04"
+  },
+  "daedalus": {
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Muzzle_gun.003": "Muzzle_gun_04",
+   "Muzzle_gun.004": "Muzzle_gun_05",
+   "Muzzle_gun.005": "Muzzle_gun_06",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03",
+   "Mount_gun.003": "Mount_gun_04",
+   "Mount_gun.004": "Mount_gun_05",
+   "Mount_gun.005": "Mount_gun_06"
+  },
+  "drone_mothership": {
+   "Muzzle_main.001": "Muzzle_main_aft",
+   "Mount_main.001": "Mount_main_01",
+   "Muzzle_gun.001": "Muzzle_gun_R",
+   "Mount_gun.001": "Mount_gun_R",
+   "Muzzle_missile.001": "Muzzle_missile_aft",
+   "Mount_missile.001": "Mount_missile_01",
+   "Muzzle_mg.001": "Muzzle_mg_aft",
+   "Mount_mg.001": "Mount_mg_aft"
+  },
+  "earth_borer": {
+   "Muzzle_gun.001": "Muzzle_gun_R",
+   "Mount_gun.001": "Mount_gun_R",
+   "Part_gun.001": "Part_gun_R"
+  },
+  "fenrir": {
+   "Muzzle_rocket.001": "Muzzle_rocket_R",
+   "Mount_rocket.001": "Mount_rocket_R"
+  },
+  "fortress_bastion": {
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Muzzle_gun.003": "Muzzle_gun_04",
+   "Muzzle_gun.004": "Muzzle_gun_05",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03",
+   "Mount_gun.003": "Mount_gun_04",
+   "Mount_gun.004": "Mount_gun_05",
+   "Muzzle_mg.001": "Muzzle_mg_R",
+   "Mount_mg.001": "Mount_mg_R"
   },
   "headquarters": {
    "Muzzle_mg.001": "Muzzle_mg_L",
@@ -48,6 +122,12 @@
   "heavy_turret_b": {
    "Muzzle_gun.001": "Muzzle_gun_L",
    "Mount_gun.001": "Mount_gun_L"
+  },
+  "hydra_sub": {
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03"
   },
   "hyperion": {
    "Muzzle_gun.001": "Muzzle_gun_02",
@@ -68,8 +148,104 @@
    "Muzzle_gun.001": "Muzzle_gun_R",
    "Mount_gun.001": "Mount_gun_R"
   },
+  "ixion": {
+   "Part_wheel.001": "Part_wheel_R",
+   "Part_tyre.001": "Part_tyre_02",
+   "Part_tyre.002": "Part_tyre_03",
+   "Part_tyre.003": "Part_tyre_04",
+   "Muzzle_mg.001": "Muzzle_mg_L",
+   "Mount_mg.001": "Mount_mg_L",
+   "Muzzle_missile.001": "Muzzle_missile_R",
+   "Mount_missile.001": "Mount_missile_R"
+  },
+  "kraken": {
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Muzzle_gun.003": "Muzzle_gun_04",
+   "Muzzle_gun.004": "Muzzle_gun_05",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03",
+   "Mount_gun.003": "Mount_gun_04",
+   "Mount_gun.004": "Mount_gun_05",
+   "Part_gun.001": "Part_gun_02",
+   "Part_gun.002": "Part_gun_03",
+   "Muzzle_mg.001": "Muzzle_mg_02",
+   "Muzzle_mg.002": "Muzzle_mg_03",
+   "Muzzle_mg.003": "Muzzle_mg_04",
+   "Muzzle_mg.004": "Muzzle_mg_05",
+   "Muzzle_mg.005": "Muzzle_mg_06",
+   "Muzzle_mg.006": "Muzzle_mg_07",
+   "Muzzle_mg.007": "Muzzle_mg_08",
+   "Muzzle_mg.008": "Muzzle_mg_09",
+   "Muzzle_mg.009": "Muzzle_mg_10",
+   "Mount_mg.001": "Mount_mg_02",
+   "Mount_mg.002": "Mount_mg_03",
+   "Mount_mg.003": "Mount_mg_04",
+   "Mount_mg.004": "Mount_mg_05",
+   "Mount_mg.005": "Mount_mg_06",
+   "Mount_mg.006": "Mount_mg_07",
+   "Mount_mg.007": "Mount_mg_08",
+   "Mount_mg.008": "Mount_mg_09",
+   "Mount_mg.009": "Mount_mg_10",
+   "Part_mg.001": "Part_mg_L"
+  },
+  "landing_hovercraft": {
+   "Muzzle_gun.001": "Muzzle_gun_R",
+   "Mount_gun.001": "Mount_gun_R",
+   "Part_gun.001": "Part_gun_R",
+   "Muzzle_mg.001": "Muzzle_mg_R",
+   "Mount_mg.001": "Mount_mg_R",
+   "Part_mg.001": "Part_mg_R",
+   "Muzzle_rocket.001": "Muzzle_rocket_R",
+   "Mount_rocket.001": "Mount_rocket_R",
+   "Part_rocket.001": "Part_rocket_R",
+   "Part_fan.001": "Part_fan_R"
+  },
+  "leviathan": {
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Muzzle_gun.003": "Muzzle_gun_04",
+   "Muzzle_gun.004": "Muzzle_gun_05",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03",
+   "Mount_gun.003": "Mount_gun_04",
+   "Mount_gun.004": "Mount_gun_05",
+   "Part_gun.001": "Part_gun_02",
+   "Part_gun.002": "Part_gun_03",
+   "Muzzle_mg.001": "Muzzle_mg_02",
+   "Muzzle_mg.002": "Muzzle_mg_03",
+   "Muzzle_mg.003": "Muzzle_mg_04",
+   "Muzzle_mg.004": "Muzzle_mg_05",
+   "Muzzle_mg.005": "Muzzle_mg_06",
+   "Muzzle_mg.006": "Muzzle_mg_07",
+   "Muzzle_mg.007": "Muzzle_mg_08",
+   "Muzzle_mg.008": "Muzzle_mg_09",
+   "Muzzle_mg.009": "Muzzle_mg_10",
+   "Mount_mg.001": "Mount_mg_02",
+   "Mount_mg.002": "Mount_mg_03",
+   "Mount_mg.003": "Mount_mg_04",
+   "Mount_mg.004": "Mount_mg_05",
+   "Mount_mg.005": "Mount_mg_06",
+   "Mount_mg.006": "Mount_mg_07",
+   "Mount_mg.007": "Mount_mg_08",
+   "Mount_mg.008": "Mount_mg_09",
+   "Mount_mg.009": "Mount_mg_10",
+   "Part_mg.001": "Part_mg_L"
+  },
   "manpads_tower": {
    "Muzzle_missile.001": "Muzzle_missile_L"
+  },
+  "mega_gunship": {
+   "Muzzle_gun.001": "Muzzle_gun_R",
+   "Mount_gun.001": "Mount_gun_R",
+   "Muzzle_rocket.001": "Muzzle_rocket_R",
+   "Part_pod.001": "Part_pod_R",
+   "Muzzle_mg.001": "Muzzle_mg_02",
+   "Muzzle_mg.002": "Muzzle_mg_03",
+   "Muzzle_mg.003": "Muzzle_mg_04",
+   "Mount_mg.001": "Mount_mg_02",
+   "Mount_mg.002": "Mount_mg_03",
+   "Mount_mg.003": "Mount_mg_04"
   },
   "mg_bunker": {
    "Muzzle_mg.001": "Muzzle_mg_02",
@@ -86,6 +262,50 @@
    "Mount_mg.001": "Mount_mg_02",
    "Mount_mg.002": "Mount_mg_03",
    "Mount_mg.003": "Mount_mg_04"
+  },
+  "mobile_fortress": {
+   "Muzzle_missile.001": "Muzzle_missile_R",
+   "Mount_missile.001": "Mount_missile_R",
+   "Muzzle_mg.001": "Muzzle_mg_R",
+   "Mount_mg.001": "Mount_mg_R",
+   "Muzzle_rocket.001": "Muzzle_rocket_R",
+   "Mount_rocket.001": "Mount_rocket_R"
+  },
+  "moloch": {
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03"
+  },
+  "monster": {
+   "Part_track.001": "Part_track_02",
+   "Part_track.002": "Part_track_03",
+   "Part_track.003": "Part_track_04",
+   "Muzzle_mg.001": "Muzzle_mg_R",
+   "Mount_mg.001": "Mount_mg_R",
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Muzzle_gun.003": "Muzzle_gun_04",
+   "Muzzle_gun.004": "Muzzle_gun_05",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03",
+   "Mount_gun.003": "Mount_gun_04",
+   "Mount_gun.004": "Mount_gun_05"
+  },
+  "nuke_train": {
+   "Muzzle_mg.001": "Muzzle_mg_02",
+   "Muzzle_mg.002": "Muzzle_mg_03",
+   "Mount_mg.001": "Mount_mg_02",
+   "Mount_mg.002": "Mount_mg_03"
+  },
+  "nyx": {
+   "Muzzle_mg.001": "Muzzle_mg_02",
+   "Muzzle_mg.002": "Muzzle_mg_03",
+   "Muzzle_mg.003": "Muzzle_mg_04",
+   "Mount_mg.001": "Mount_mg_02",
+   "Mount_mg.002": "Mount_mg_03",
+   "Mount_mg.003": "Mount_mg_04",
+   "Part_mg.001": "Part_mg_aft"
   },
   "recon_drone": {
    "Muzzle_missile.001": "Muzzle_missile_L"
@@ -105,6 +325,54 @@
    "Mount_mg.004": "Mount_mg_05",
    "Muzzle_missile.001": "Muzzle_missile_R",
    "Mount_missile.001": "Mount_missile_R"
+  },
+  "sea_cruiser": {
+   "Muzzle_gun.001": "Muzzle_gun_aft",
+   "Mount_gun.001": "Mount_gun_aft",
+   "Part_gun.001": "Part_gun_aft",
+   "Muzzle_mg.001": "Muzzle_mg_L",
+   "Mount_mg.001": "Mount_mg_L",
+   "Part_mg.001": "Part_mg_L"
+  },
+  "silver_bug": {
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Muzzle_gun.003": "Muzzle_gun_04",
+   "Muzzle_gun.004": "Muzzle_gun_05",
+   "Muzzle_gun.005": "Muzzle_gun_06",
+   "Muzzle_gun.006": "Muzzle_gun_07",
+   "Muzzle_gun.007": "Muzzle_gun_08",
+   "Muzzle_gun.008": "Muzzle_gun_09",
+   "Muzzle_gun.009": "Muzzle_gun_10",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03",
+   "Mount_gun.003": "Mount_gun_04",
+   "Mount_gun.004": "Mount_gun_05",
+   "Mount_gun.005": "Mount_gun_06",
+   "Mount_gun.006": "Mount_gun_07",
+   "Mount_gun.007": "Mount_gun_08",
+   "Mount_gun.008": "Mount_gun_09",
+   "Mount_gun.009": "Mount_gun_10"
+  },
+  "silver_bug_wreck": {
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Muzzle_gun.003": "Muzzle_gun_04",
+   "Muzzle_gun.004": "Muzzle_gun_05",
+   "Muzzle_gun.005": "Muzzle_gun_06",
+   "Muzzle_gun.006": "Muzzle_gun_07",
+   "Muzzle_gun.007": "Muzzle_gun_08",
+   "Muzzle_gun.008": "Muzzle_gun_09",
+   "Muzzle_gun.009": "Muzzle_gun_10",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03",
+   "Mount_gun.003": "Mount_gun_04",
+   "Mount_gun.004": "Mount_gun_05",
+   "Mount_gun.005": "Mount_gun_06",
+   "Mount_gun.006": "Mount_gun_07",
+   "Mount_gun.007": "Mount_gun_08",
+   "Mount_gun.008": "Mount_gun_09",
+   "Mount_gun.009": "Mount_gun_10"
   },
   "stealth_bomber": {
    "Muzzle_rocket.001": "Muzzle_rocket_L"
@@ -129,6 +397,14 @@
   "twin_rotor_gunship": {
    "Muzzle_mg.001": "Muzzle_mg_R",
    "Mount_mg.001": "Mount_mg_R"
+  },
+  "typhon": {
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Muzzle_gun.003": "Muzzle_gun_04",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03",
+   "Mount_gun.003": "Mount_gun_04"
   }
  }
 }

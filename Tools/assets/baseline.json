@@ -11370,8 +11370,8 @@
   },
   "bastion_mk0": {
    "file": "bastion_mk0.glb",
-   "fileBytes": 2158032,
-   "sha1": "c42f1923b557dbaf",
+   "fileBytes": 2158028,
+   "sha1": "7e726882e7dc8bfd",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -11419,7 +11419,7 @@
     4.504,
     0.311
    ],
-   "structureHash": "1b7742de68e88180",
+   "structureHash": "b0ab5e2f39a7633e",
    "color0": {
     "mean": 0.587,
     "min": 0.1323,
@@ -11439,18 +11439,15 @@
     ],
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
+     "Muzzle_gun_R",
      "Muzzle_main"
     ],
     "mount": [
      "Mount_gun",
-     "Mount_gun.001"
+     "Mount_gun_R"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Muzzle_gun.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Adjusters",
     "Antennas",
@@ -11508,13 +11505,13 @@
     "Mortar_frames",
     "Mortar_shield",
     "Mount_gun",
-    "Mount_gun.001",
+    "Mount_gun_R",
     "Muzzle_b1_gun",
     "Muzzle_b1_gun_001",
     "Muzzle_b2_gun",
     "Muzzle_b2_gun_001",
     "Muzzle_gun",
-    "Muzzle_gun.001",
+    "Muzzle_gun_R",
     "Muzzle_main",
     "Parapet",
     "Pennant",
@@ -11563,7 +11560,6 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Muzzle_gun.001",
     "triangles 39,357 over the boss_s normal budget 36,000",
     "vertices 57,354 over the boss_s normal hard cap 54,000 (info: kept, owner rule)"
    ],
@@ -11575,8 +11571,8 @@
   },
   "behemoth": {
    "file": "behemoth.glb",
-   "fileBytes": 1289284,
-   "sha1": "3c84102fd735d7b0",
+   "fileBytes": 1289272,
+   "sha1": "213a3ede29d09fc3",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -11624,7 +11620,7 @@
     2.891,
     0.792
    ],
-   "structureHash": "5690063846c73e03",
+   "structureHash": "acd825250fffccc0",
    "color0": {
     "mean": 0.6242,
     "min": 0.156,
@@ -11647,23 +11643,23 @@
     ],
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002",
+     "Muzzle_gun_02",
+     "Muzzle_gun_03",
      "Muzzle_main",
      "Muzzle_mg",
-     "Muzzle_mg.001",
+     "Muzzle_mg_L",
      "Muzzle_missile",
-     "Muzzle_missile.001",
-     "Muzzle_missile.002",
+     "Muzzle_missile_02",
+     "Muzzle_missile_03",
      "Muzzle_rocket"
     ],
     "mount": [
      "Mount_APS",
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002",
+     "Mount_gun_02",
+     "Mount_gun_03",
      "Mount_mg",
-     "Mount_mg.001",
+     "Mount_mg_L",
      "Mount_rocket"
     ],
     "loose": [
@@ -11674,16 +11670,7 @@
      "Point_fire"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_mg.001",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_mg.001",
-    "Muzzle_missile.001",
-    "Muzzle_missile.002"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "AA_ammo",
     "AA_ammo_001",
@@ -11739,10 +11726,10 @@
     "Missile_racks",
     "Mount_APS",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
+    "Mount_gun_02",
+    "Mount_gun_03",
     "Mount_mg",
-    "Mount_mg.001",
+    "Mount_mg_L",
     "Mount_rocket",
     "Muzzle_b1_gun",
     "Muzzle_b1_gun_001",
@@ -11755,14 +11742,14 @@
     "Muzzle_brake",
     "Muzzle_brake_2",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
     "Muzzle_main",
     "Muzzle_mg",
-    "Muzzle_mg.001",
+    "Muzzle_mg_L",
     "Muzzle_missile",
-    "Muzzle_missile.001",
-    "Muzzle_missile.002",
+    "Muzzle_missile_02",
+    "Muzzle_missile_03",
     "Muzzle_rocket",
     "Periscope",
     "Point_exhaust",
@@ -11821,9 +11808,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_mg.001, Muzzle_gun.001"
-   ],
+   "warnings": [],
    "units": [
     "behemoth",
     "behemoth_mk2",
@@ -12057,8 +12042,8 @@
   },
   "behemoth_tempest": {
    "file": "behemoth_tempest.glb",
-   "fileBytes": 817964,
-   "sha1": "8895e608eb967d07",
+   "fileBytes": 817960,
+   "sha1": "2be2b273c1e92b00",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -12106,7 +12091,7 @@
     2.909,
     1.593
    ],
-   "structureHash": "beeb4a850dd8f44d",
+   "structureHash": "cdf4c7ee7c5dfbcc",
    "color0": {
     "mean": 0.5674,
     "min": 0.06,
@@ -12132,22 +12117,19 @@
     ],
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
+     "Muzzle_gun_R",
      "Muzzle_main"
     ],
     "mount": [
      "Mount_APS",
      "Mount_gun",
-     "Mount_gun.001"
+     "Mount_gun_R"
     ],
     "radar": [
      "Radar"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Muzzle_gun.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
     "Aps_base",
@@ -12195,11 +12177,11 @@
     "Main_cannon_sleeve",
     "Mount_APS",
     "Mount_gun",
-    "Mount_gun.001",
+    "Mount_gun_R",
     "Muzzle_brake",
     "Muzzle_brake_bore",
     "Muzzle_gun",
-    "Muzzle_gun.001",
+    "Muzzle_gun_R",
     "Muzzle_main",
     "Radar",
     "Ring",
@@ -12221,9 +12203,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Muzzle_gun.001"
-   ],
+   "warnings": [],
    "units": [
     "behemoth_tempest"
    ],
@@ -14942,8 +14922,8 @@
   },
   "command_airship": {
    "file": "command_airship.glb",
-   "fileBytes": 1083112,
-   "sha1": "26f86f15b598e35a",
+   "fileBytes": 1083100,
+   "sha1": "c839e5acf396acf8",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -14991,7 +14971,7 @@
     2.195,
     0.1
    ],
-   "structureHash": "8c2f8a6c02d4ed30",
+   "structureHash": "f759db6b9ff307ac",
    "color0": {
     "mean": 0.6146,
     "min": 0.0669,
@@ -15005,15 +14985,15 @@
      "Muzzle_door_l",
      "Muzzle_door_r",
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002",
-     "Muzzle_gun.003"
+     "Muzzle_gun_02",
+     "Muzzle_gun_03",
+     "Muzzle_gun_04"
     ],
     "mount": [
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002",
-     "Mount_gun.003"
+     "Mount_gun_02",
+     "Mount_gun_03",
+     "Mount_gun_04"
     ],
     "radar": [
      "Radar"
@@ -15026,13 +15006,13 @@
     ],
     "part": [
      "Part_engine",
-     "Part_engine.001",
-     "Part_engine.002",
-     "Part_engine.003",
+     "Part_engine_02",
+     "Part_engine_03",
+     "Part_engine_04",
      "Part_gun",
-     "Part_gun.001",
+     "Part_gun_aft",
      "Part_hangar",
-     "Part_hangar.001",
+     "Part_hangar_R",
      "Part_radar"
     ],
     "launch": [
@@ -15040,14 +15020,7 @@
      "Launch_cradle_001"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antenna",
     "Barbette",
@@ -15142,9 +15115,9 @@
     "Light_poles",
     "Mooring_points",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
+    "Mount_gun_02",
+    "Mount_gun_03",
+    "Mount_gun_04",
     "Muzzle_b1_gun",
     "Muzzle_b1_gun_001",
     "Muzzle_b2_gun",
@@ -15152,9 +15125,9 @@
     "Muzzle_door_l",
     "Muzzle_door_r",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
+    "Muzzle_gun_04",
     "Nacelle_bands_engine",
     "Nacelle_bands_engine_001",
     "Nacelle_bands_engine_002",
@@ -15170,13 +15143,13 @@
     "Part_bay_door_L",
     "Part_bay_door_R",
     "Part_engine",
-    "Part_engine.001",
-    "Part_engine.002",
-    "Part_engine.003",
+    "Part_engine_02",
+    "Part_engine_03",
+    "Part_engine_04",
     "Part_gun",
-    "Part_gun.001",
+    "Part_gun_aft",
     "Part_hangar",
-    "Part_hangar.001",
+    "Part_hangar_R",
     "Part_radar",
     "Pod_ball_002",
     "Pod_ball_003",
@@ -15229,9 +15202,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Muzzle_gun.001"
-   ],
+   "warnings": [],
    "units": [
     "command_airship",
     "argus"
@@ -16429,8 +16400,8 @@
   },
   "daedalus": {
    "file": "daedalus.glb",
-   "fileBytes": 1802204,
-   "sha1": "cf6ae12ff8f43ae4",
+   "fileBytes": 1802196,
+   "sha1": "e6e78b85037a2f2d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -16478,7 +16449,7 @@
     3.131,
     0.675
    ],
-   "structureHash": "fa77d80c34aafeb5",
+   "structureHash": "4480464a7e345716",
    "color0": {
     "mean": 0.64,
     "min": 0.0239,
@@ -16490,38 +16461,27 @@
    "runtimeNodes": {
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002",
-     "Muzzle_gun.003",
-     "Muzzle_gun.004",
-     "Muzzle_gun.005"
+     "Muzzle_gun_02",
+     "Muzzle_gun_03",
+     "Muzzle_gun_04",
+     "Muzzle_gun_05",
+     "Muzzle_gun_06"
     ],
     "mount": [
      "Mount_APS",
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002",
-     "Mount_gun.003",
-     "Mount_gun.004",
-     "Mount_gun.005"
+     "Mount_gun_02",
+     "Mount_gun_03",
+     "Mount_gun_04",
+     "Mount_gun_05",
+     "Mount_gun_06"
     ],
     "point": [
      "Point_exhaust",
      "Point_fire"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
-    "Mount_gun.005",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
-    "Muzzle_gun.005"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antenna_tips",
     "Antennas",
@@ -16634,21 +16594,21 @@
     "Masts",
     "Mount_APS",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
-    "Mount_gun.005",
+    "Mount_gun_02",
+    "Mount_gun_03",
+    "Mount_gun_04",
+    "Mount_gun_05",
+    "Mount_gun_06",
     "Muzzle_b1_gun_001",
     "Muzzle_b1_gun_002",
     "Muzzle_b2_gun_001",
     "Muzzle_b2_gun_002",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
-    "Muzzle_gun.005",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
+    "Muzzle_gun_04",
+    "Muzzle_gun_05",
+    "Muzzle_gun_06",
     "Panel_lines",
     "Pd_base",
     "Pd_base_r",
@@ -16724,9 +16684,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004"
-   ],
+   "warnings": [],
    "units": [
     "daedalus"
    ],
@@ -23199,8 +23157,8 @@
   },
   "drone_mothership": {
    "file": "drone_mothership.glb",
-   "fileBytes": 967916,
-   "sha1": "37669f53d6088ac7",
+   "fileBytes": 967908,
+   "sha1": "076835ae0e1359e1",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -23248,7 +23206,7 @@
     -0.47,
     0.053
    ],
-   "structureHash": "ed8adb97c69955ba",
+   "structureHash": "5819ba0da302664e",
    "color0": {
     "mean": 0.6709,
     "min": 0.078,
@@ -23271,21 +23229,21 @@
     ],
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
+     "Muzzle_gun_R",
      "Muzzle_main",
-     "Muzzle_main.001",
+     "Muzzle_main_aft",
      "Muzzle_mg",
-     "Muzzle_mg.001",
+     "Muzzle_mg_aft",
      "Muzzle_missile",
-     "Muzzle_missile.001"
+     "Muzzle_missile_aft"
     ],
     "mount": [
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_main.001",
+     "Mount_gun_R",
+     "Mount_main_01",
      "Mount_mg",
-     "Mount_mg.001",
-     "Mount_missile.001"
+     "Mount_mg_aft",
+     "Mount_missile_01"
     ],
     "propeller": [
      "Propeller",
@@ -23294,16 +23252,7 @@
      "Propeller_4"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_main.001",
-    "Mount_mg.001",
-    "Mount_missile.001",
-    "Muzzle_gun.001",
-    "Muzzle_main.001",
-    "Muzzle_mg.001",
-    "Muzzle_missile.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
     "Armor",
@@ -23372,21 +23321,21 @@
     "Mount_Flare_TL",
     "Mount_Flare_TR",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_main.001",
+    "Mount_gun_R",
+    "Mount_main_01",
     "Mount_mg",
-    "Mount_mg.001",
-    "Mount_missile.001",
+    "Mount_mg_aft",
+    "Mount_missile_01",
     "Muzzle_brake",
     "Muzzle_brake_2",
     "Muzzle_gun",
-    "Muzzle_gun.001",
+    "Muzzle_gun_R",
     "Muzzle_main",
-    "Muzzle_main.001",
+    "Muzzle_main_aft",
     "Muzzle_mg",
-    "Muzzle_mg.001",
+    "Muzzle_mg_aft",
     "Muzzle_missile",
-    "Muzzle_missile.001",
+    "Muzzle_missile_aft",
     "Nacelles",
     "Nav_lights",
     "Nav_lights.001",
@@ -23447,9 +23396,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_main.001, Mount_mg.001, Mount_missile.001"
-   ],
+   "warnings": [],
    "units": [
     "drone_mothership",
     "locust"
@@ -23682,8 +23629,8 @@
   },
   "earth_borer": {
    "file": "earth_borer.glb",
-   "fileBytes": 692796,
-   "sha1": "08de3c8c065e5570",
+   "fileBytes": 692788,
+   "sha1": "07d9f40ec025aeb3",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -23731,7 +23678,7 @@
     3.642,
     -0.89
    ],
-   "structureHash": "793ec28d56a46b0c",
+   "structureHash": "6a2d7fb457a074f7",
    "color0": {
     "mean": 0.5691,
     "min": 0.078,
@@ -23743,12 +23690,12 @@
    "runtimeNodes": {
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
+     "Muzzle_gun_R",
      "Muzzle_main"
     ],
     "mount": [
      "Mount_gun",
-     "Mount_gun.001"
+     "Mount_gun_R"
     ],
     "propeller": [
      "Propeller"
@@ -23757,13 +23704,10 @@
      "Part_drill",
      "Part_engine",
      "Part_gun",
-     "Part_gun.001"
+     "Part_gun_R"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Muzzle_gun.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
     "Antennas.001",
@@ -23826,14 +23770,14 @@
     "Lamps",
     "Masts",
     "Mount_gun",
-    "Mount_gun.001",
+    "Mount_gun_R",
     "Muzzle_gun",
-    "Muzzle_gun.001",
+    "Muzzle_gun_R",
     "Muzzle_main",
     "Part_drill",
     "Part_engine",
     "Part_gun",
-    "Part_gun.001",
+    "Part_gun_R",
     "Propeller",
     "Pump_unit",
     "Railings",
@@ -23854,9 +23798,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Muzzle_gun.001"
-   ],
+   "warnings": [],
    "units": [
     "earth_borer"
    ],
@@ -25966,8 +25908,8 @@
   },
   "fenrir": {
    "file": "fenrir.glb",
-   "fileBytes": 1747228,
-   "sha1": "53ffe6aa17be0caf",
+   "fileBytes": 1747224,
+   "sha1": "7d7dd05cda0a642b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -26015,7 +25957,7 @@
     3.252,
     0.353
    ],
-   "structureHash": "630319751af2e735",
+   "structureHash": "6dd3b6a4baae0bf0",
    "color0": {
     "mean": 0.6096,
     "min": 0.0984,
@@ -26028,21 +25970,18 @@
     "muzzle": [
      "Muzzle_mg",
      "Muzzle_rocket",
-     "Muzzle_rocket.001"
+     "Muzzle_rocket_R"
     ],
     "mount": [
      "Mount_mg",
      "Mount_rocket",
-     "Mount_rocket.001"
+     "Mount_rocket_R"
     ],
     "radar": [
      "Radar"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_rocket.001",
-    "Muzzle_rocket.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
     "Barbette",
@@ -26117,13 +26056,13 @@
     "Mirrors",
     "Mount_mg",
     "Mount_rocket",
-    "Mount_rocket.001",
+    "Mount_rocket_R",
     "Mudguards",
     "Muzzle_b1_mg",
     "Muzzle_b2_mg",
     "Muzzle_mg",
     "Muzzle_rocket",
-    "Muzzle_rocket.001",
+    "Muzzle_rocket_R",
     "Plough",
     "Plough_arms",
     "Plough_stripes",
@@ -26170,7 +26109,6 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_rocket.001, Muzzle_rocket.001",
     "vertices 44,923 over the boss_s normal budget 43,000"
    ],
    "units": [
@@ -27520,8 +27458,8 @@
   },
   "fortress_bastion": {
    "file": "fortress_bastion.glb",
-   "fileBytes": 3059024,
-   "sha1": "5a1851cab9dc29cf",
+   "fileBytes": 3059012,
+   "sha1": "bec41e71ba4b57d3",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -27569,7 +27507,7 @@
     5.129,
     2.972
    ],
-   "structureHash": "3b62123b1a40aceb",
+   "structureHash": "0cb21515553ba769",
    "color0": {
     "mean": 0.6158,
     "min": 0.0982,
@@ -27591,41 +27529,30 @@
     ],
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002",
-     "Muzzle_gun.003",
-     "Muzzle_gun.004",
+     "Muzzle_gun_02",
+     "Muzzle_gun_03",
+     "Muzzle_gun_04",
+     "Muzzle_gun_05",
      "Muzzle_main",
      "Muzzle_mg",
-     "Muzzle_mg.001",
+     "Muzzle_mg_R",
      "Muzzle_missile"
     ],
     "mount": [
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002",
-     "Mount_gun.003",
-     "Mount_gun.004",
+     "Mount_gun_02",
+     "Mount_gun_03",
+     "Mount_gun_04",
+     "Mount_gun_05",
      "Mount_mg",
-     "Mount_mg.001",
+     "Mount_mg_R",
      "Mount_missile"
     ],
     "part": [
      "Part_missile"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
-    "Mount_mg.001",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
-    "Muzzle_mg.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Ammo_boxes",
     "Antennas",
@@ -27709,12 +27636,12 @@
     "Main_cannon_lever",
     "Mortar_cradle",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
+    "Mount_gun_02",
+    "Mount_gun_03",
+    "Mount_gun_04",
+    "Mount_gun_05",
     "Mount_mg",
-    "Mount_mg.001",
+    "Mount_mg_R",
     "Mount_missile",
     "Muzzle_b1_gun",
     "Muzzle_b1_gun_001",
@@ -27727,13 +27654,13 @@
     "Muzzle_b2_mg_001",
     "Muzzle_b2_missile",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
+    "Muzzle_gun_04",
+    "Muzzle_gun_05",
     "Muzzle_main",
     "Muzzle_mg",
-    "Muzzle_mg.001",
+    "Muzzle_mg_R",
     "Muzzle_missile",
     "Part_missile",
     "Periscopes",
@@ -27794,7 +27721,6 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004",
     "triangles 60,706 over the boss_s normal hard cap 45,000 (info: kept, owner rule)",
     "vertices 80,512 over the boss_s normal hard cap 54,000 (info: kept, owner rule)",
     "renderers 133 over the boss_s normal budget 130"
@@ -33936,8 +33862,8 @@
   },
   "hydra_sub": {
    "file": "hydra_sub.glb",
-   "fileBytes": 895488,
-   "sha1": "93610ab69d0953bd",
+   "fileBytes": 895484,
+   "sha1": "b4a983393be52e8f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -33985,7 +33911,7 @@
     1.526,
     -0.15
    ],
-   "structureHash": "978171c2d1c3946f",
+   "structureHash": "49e66ef3d9126b46",
    "color0": {
     "mean": 0.557,
     "min": 0.1701,
@@ -33997,13 +33923,13 @@
    "runtimeNodes": {
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002"
+     "Muzzle_gun_02",
+     "Muzzle_gun_03"
     ],
     "mount": [
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002"
+     "Mount_gun_02",
+     "Mount_gun_03"
     ],
     "radar": [
      "Radar"
@@ -34015,12 +33941,7 @@
      "Point_fire"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
     "Beacon_base",
@@ -34109,15 +34030,15 @@
     "Limber_holes",
     "Masts",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
+    "Mount_gun_02",
+    "Mount_gun_03",
     "Muzzle_b1_gun",
     "Muzzle_b1_gun_001",
     "Muzzle_b2_gun",
     "Muzzle_b2_gun_001",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
     "Part_doors_l",
     "Part_doors_r",
     "Part_rudder",
@@ -34146,9 +34067,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Muzzle_gun.001, Muzzle_gun.002"
-   ],
+   "warnings": [],
    "units": [
     "hydra"
    ],
@@ -35192,8 +35111,8 @@
   },
   "ixion": {
    "file": "ixion.glb",
-   "fileBytes": 1953760,
-   "sha1": "d60b3023d508fdac",
+   "fileBytes": 1953744,
+   "sha1": "e2df287f3bad448f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -35241,7 +35160,7 @@
     5.219,
     -0.14
    ],
-   "structureHash": "6be39b382ea9fc52",
+   "structureHash": "f3cded2b592e771e",
    "color0": {
     "mean": 0.597,
     "min": 0.0533,
@@ -35264,27 +35183,27 @@
      "Muzzle_gun",
      "Muzzle_main",
      "Muzzle_mg",
-     "Muzzle_mg.001",
+     "Muzzle_mg_L",
      "Muzzle_missile",
-     "Muzzle_missile.001",
+     "Muzzle_missile_R",
      "Muzzle_rocket"
     ],
     "mount": [
      "Mount_gun",
      "Mount_mg",
-     "Mount_mg.001",
+     "Mount_mg_L",
      "Mount_missile",
-     "Mount_missile.001",
+     "Mount_missile_R",
      "Mount_rocket"
     ],
     "part": [
      "Part_cab",
      "Part_tyre",
-     "Part_tyre.001",
-     "Part_tyre.002",
-     "Part_tyre.003",
+     "Part_tyre_02",
+     "Part_tyre_03",
+     "Part_tyre_04",
      "Part_wheel",
-     "Part_wheel.001"
+     "Part_wheel_R"
     ],
     "point": [
      "Point_exhaust",
@@ -35292,12 +35211,7 @@
      "Point_mines"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_mg.001",
-    "Mount_missile.001",
-    "Muzzle_mg.001",
-    "Muzzle_missile.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
     "Antennas.001",
@@ -35421,26 +35335,26 @@
     "Mine_hopper",
     "Mount_gun",
     "Mount_mg",
-    "Mount_mg.001",
+    "Mount_mg_L",
     "Mount_missile",
-    "Mount_missile.001",
+    "Mount_missile_R",
     "Mount_rocket",
     "Mud_flaps",
     "Muzzle_brake",
     "Muzzle_gun",
     "Muzzle_main",
     "Muzzle_mg",
-    "Muzzle_mg.001",
+    "Muzzle_mg_L",
     "Muzzle_missile",
-    "Muzzle_missile.001",
+    "Muzzle_missile_R",
     "Muzzle_rocket",
     "Part_cab",
     "Part_tyre",
-    "Part_tyre.001",
-    "Part_tyre.002",
-    "Part_tyre.003",
+    "Part_tyre_02",
+    "Part_tyre_03",
+    "Part_tyre_04",
     "Part_wheel",
-    "Part_wheel.001",
+    "Part_wheel_R",
     "Point_exhaust",
     "Point_fire",
     "Point_mines",
@@ -35505,7 +35419,6 @@
     "renderers 175 over the boss_s normal hard cap 162"
    ],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_mg.001, Mount_missile.001, Muzzle_mg.001, Muzzle_missile.001",
     "triangles 38,414 over the boss_s normal budget 36,000",
     "vertices 49,505 over the boss_s normal budget 43,000"
    ],
@@ -36065,8 +35978,8 @@
   },
   "kraken": {
    "file": "kraken.glb",
-   "fileBytes": 3583760,
-   "sha1": "4ea73193b56ebb85",
+   "fileBytes": 3583728,
+   "sha1": "8af3bbe3b4074613",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -36114,7 +36027,7 @@
     8.614,
     -0.225
    ],
-   "structureHash": "0f1e488b6f0afece",
+   "structureHash": "e8749fe151f418a8",
    "color0": {
     "mean": 0.6134,
     "min": 0.164,
@@ -36126,39 +36039,39 @@
    "runtimeNodes": {
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002",
-     "Muzzle_gun.003",
-     "Muzzle_gun.004",
+     "Muzzle_gun_02",
+     "Muzzle_gun_03",
+     "Muzzle_gun_04",
+     "Muzzle_gun_05",
      "Muzzle_mg",
-     "Muzzle_mg.001",
-     "Muzzle_mg.002",
-     "Muzzle_mg.003",
-     "Muzzle_mg.004",
-     "Muzzle_mg.005",
-     "Muzzle_mg.006",
-     "Muzzle_mg.007",
-     "Muzzle_mg.008",
-     "Muzzle_mg.009",
+     "Muzzle_mg_02",
+     "Muzzle_mg_03",
+     "Muzzle_mg_04",
+     "Muzzle_mg_05",
+     "Muzzle_mg_06",
+     "Muzzle_mg_07",
+     "Muzzle_mg_08",
+     "Muzzle_mg_09",
+     "Muzzle_mg_10",
      "Muzzle_missile"
     ],
     "mount": [
      "Mount_APS",
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002",
-     "Mount_gun.003",
-     "Mount_gun.004",
+     "Mount_gun_02",
+     "Mount_gun_03",
+     "Mount_gun_04",
+     "Mount_gun_05",
      "Mount_mg",
-     "Mount_mg.001",
-     "Mount_mg.002",
-     "Mount_mg.003",
-     "Mount_mg.004",
-     "Mount_mg.005",
-     "Mount_mg.006",
-     "Mount_mg.007",
-     "Mount_mg.008",
-     "Mount_mg.009",
+     "Mount_mg_02",
+     "Mount_mg_03",
+     "Mount_mg_04",
+     "Mount_mg_05",
+     "Mount_mg_06",
+     "Mount_mg_07",
+     "Mount_mg_08",
+     "Mount_mg_09",
+     "Mount_mg_10",
      "Mount_missile"
     ],
     "radar": [
@@ -36168,10 +36081,10 @@
      "Part_deck",
      "Part_engine",
      "Part_gun",
-     "Part_gun.001",
-     "Part_gun.002",
+     "Part_gun_02",
+     "Part_gun_03",
      "Part_mg",
-     "Part_mg.001",
+     "Part_mg_L",
      "Part_radar",
      "Part_vls",
      "Part_welldeck"
@@ -36181,34 +36094,7 @@
      "Point_fire"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
-    "Mount_mg.001",
-    "Mount_mg.002",
-    "Mount_mg.003",
-    "Mount_mg.004",
-    "Mount_mg.005",
-    "Mount_mg.006",
-    "Mount_mg.007",
-    "Mount_mg.008",
-    "Mount_mg.009",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
-    "Muzzle_mg.001",
-    "Muzzle_mg.002",
-    "Muzzle_mg.003",
-    "Muzzle_mg.004",
-    "Muzzle_mg.005",
-    "Muzzle_mg.006",
-    "Muzzle_mg.007",
-    "Muzzle_mg.008",
-    "Muzzle_mg.009"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "A12_canopy_d",
     "A12_exhaust_d",
@@ -36358,20 +36244,20 @@
     "Mast_platform",
     "Mount_APS",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
+    "Mount_gun_02",
+    "Mount_gun_03",
+    "Mount_gun_04",
+    "Mount_gun_05",
     "Mount_mg",
-    "Mount_mg.001",
-    "Mount_mg.002",
-    "Mount_mg.003",
-    "Mount_mg.004",
-    "Mount_mg.005",
-    "Mount_mg.006",
-    "Mount_mg.007",
-    "Mount_mg.008",
-    "Mount_mg.009",
+    "Mount_mg_02",
+    "Mount_mg_03",
+    "Mount_mg_04",
+    "Mount_mg_05",
+    "Mount_mg_06",
+    "Mount_mg_07",
+    "Mount_mg_08",
+    "Mount_mg_09",
+    "Mount_mg_10",
     "Mount_missile",
     "Muzzle_b1_gun",
     "Muzzle_b1_gun_001",
@@ -36393,30 +36279,30 @@
     "Muzzle_b3_gun_003",
     "Muzzle_b3_gun_004",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
+    "Muzzle_gun_04",
+    "Muzzle_gun_05",
     "Muzzle_mg",
-    "Muzzle_mg.001",
-    "Muzzle_mg.002",
-    "Muzzle_mg.003",
-    "Muzzle_mg.004",
-    "Muzzle_mg.005",
-    "Muzzle_mg.006",
-    "Muzzle_mg.007",
-    "Muzzle_mg.008",
-    "Muzzle_mg.009",
+    "Muzzle_mg_02",
+    "Muzzle_mg_03",
+    "Muzzle_mg_04",
+    "Muzzle_mg_05",
+    "Muzzle_mg_06",
+    "Muzzle_mg_07",
+    "Muzzle_mg_08",
+    "Muzzle_mg_09",
+    "Muzzle_mg_10",
     "Muzzle_missile",
     "Part_aa_l",
     "Part_aa_r",
     "Part_deck",
     "Part_engine",
     "Part_gun",
-    "Part_gun.001",
-    "Part_gun.002",
+    "Part_gun_02",
+    "Part_gun_03",
     "Part_mg",
-    "Part_mg.001",
+    "Part_mg_L",
     "Part_radar",
     "Part_sec_a",
     "Part_sec_f",
@@ -36482,7 +36368,6 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004",
     "triangles 75,770 over the boss_l normal hard cap 70,000 (info: kept, owner rule)",
     "vertices 95,725 over the boss_l normal hard cap 90,000 (info: kept, owner rule)"
    ],
@@ -36790,8 +36675,8 @@
   },
   "landing_hovercraft": {
    "file": "landing_hovercraft.glb",
-   "fileBytes": 1073032,
-   "sha1": "9649b6bce3a0f2de",
+   "fileBytes": 1073012,
+   "sha1": "b5fbd29721248490",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -36839,7 +36724,7 @@
     4.685,
     -0.207
    ],
-   "structureHash": "e525762a3433cf5e",
+   "structureHash": "e8cd343d2ec73923",
    "color0": {
     "mean": 0.6105,
     "min": 0.0721,
@@ -36851,21 +36736,21 @@
    "runtimeNodes": {
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
+     "Muzzle_gun_R",
      "Muzzle_mg",
-     "Muzzle_mg.001",
+     "Muzzle_mg_R",
      "Muzzle_ramp",
      "Muzzle_rocket",
-     "Muzzle_rocket.001"
+     "Muzzle_rocket_R"
     ],
     "mount": [
      "Mount_APS",
      "Mount_gun",
-     "Mount_gun.001",
+     "Mount_gun_R",
      "Mount_mg",
-     "Mount_mg.001",
+     "Mount_mg_R",
      "Mount_rocket",
-     "Mount_rocket.001"
+     "Mount_rocket_R"
     ],
     "radar": [
      "Radar"
@@ -36876,24 +36761,17 @@
     ],
     "part": [
      "Part_fan",
-     "Part_fan.001",
+     "Part_fan_R",
      "Part_gun",
-     "Part_gun.001",
+     "Part_gun_R",
      "Part_mg",
-     "Part_mg.001",
+     "Part_mg_R",
      "Part_ramp",
      "Part_rocket",
-     "Part_rocket.001"
+     "Part_rocket_R"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_mg.001",
-    "Mount_rocket.001",
-    "Muzzle_gun.001",
-    "Muzzle_mg.001",
-    "Muzzle_rocket.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antenna",
     "Beacon_base",
@@ -36965,29 +36843,29 @@
     "Mast_lights",
     "Mount_APS",
     "Mount_gun",
-    "Mount_gun.001",
+    "Mount_gun_R",
     "Mount_mg",
-    "Mount_mg.001",
+    "Mount_mg_R",
     "Mount_rocket",
-    "Mount_rocket.001",
+    "Mount_rocket_R",
     "Muzzle_gun",
-    "Muzzle_gun.001",
+    "Muzzle_gun_R",
     "Muzzle_mg",
-    "Muzzle_mg.001",
+    "Muzzle_mg_R",
     "Muzzle_ramp",
     "Muzzle_rocket",
-    "Muzzle_rocket.001",
+    "Muzzle_rocket_R",
     "Nav_green",
     "Nav_red",
     "Part_fan",
-    "Part_fan.001",
+    "Part_fan_R",
     "Part_gun",
-    "Part_gun.001",
+    "Part_gun_R",
     "Part_mg",
-    "Part_mg.001",
+    "Part_mg_R",
     "Part_ramp",
     "Part_rocket",
-    "Part_rocket.001",
+    "Part_rocket_R",
     "Propeller",
     "Propeller_2",
     "Propeller_2_blades",
@@ -37021,9 +36899,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_mg.001, Mount_rocket.001, Muzzle_gun.001"
-   ],
+   "warnings": [],
    "units": [
     "landing_hovercraft"
    ],
@@ -37400,8 +37276,8 @@
   },
   "leviathan": {
    "file": "leviathan.glb",
-   "fileBytes": 3750972,
-   "sha1": "090203dd7ad6cb7f",
+   "fileBytes": 3750940,
+   "sha1": "98db1220220f0b69",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -37449,7 +37325,7 @@
     10.15,
     -0.975
    ],
-   "structureHash": "0a81d15a17dde375",
+   "structureHash": "9624eafc1da6bf42",
    "color0": {
     "mean": 0.5854,
     "min": 0.157,
@@ -37461,39 +37337,39 @@
    "runtimeNodes": {
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002",
-     "Muzzle_gun.003",
-     "Muzzle_gun.004",
+     "Muzzle_gun_02",
+     "Muzzle_gun_03",
+     "Muzzle_gun_04",
+     "Muzzle_gun_05",
      "Muzzle_mg",
-     "Muzzle_mg.001",
-     "Muzzle_mg.002",
-     "Muzzle_mg.003",
-     "Muzzle_mg.004",
-     "Muzzle_mg.005",
-     "Muzzle_mg.006",
-     "Muzzle_mg.007",
-     "Muzzle_mg.008",
-     "Muzzle_mg.009",
+     "Muzzle_mg_02",
+     "Muzzle_mg_03",
+     "Muzzle_mg_04",
+     "Muzzle_mg_05",
+     "Muzzle_mg_06",
+     "Muzzle_mg_07",
+     "Muzzle_mg_08",
+     "Muzzle_mg_09",
+     "Muzzle_mg_10",
      "Muzzle_missile"
     ],
     "mount": [
      "Mount_APS",
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002",
-     "Mount_gun.003",
-     "Mount_gun.004",
+     "Mount_gun_02",
+     "Mount_gun_03",
+     "Mount_gun_04",
+     "Mount_gun_05",
      "Mount_mg",
-     "Mount_mg.001",
-     "Mount_mg.002",
-     "Mount_mg.003",
-     "Mount_mg.004",
-     "Mount_mg.005",
-     "Mount_mg.006",
-     "Mount_mg.007",
-     "Mount_mg.008",
-     "Mount_mg.009",
+     "Mount_mg_02",
+     "Mount_mg_03",
+     "Mount_mg_04",
+     "Mount_mg_05",
+     "Mount_mg_06",
+     "Mount_mg_07",
+     "Mount_mg_08",
+     "Mount_mg_09",
+     "Mount_mg_10",
      "Mount_missile"
     ],
     "radar": [
@@ -37503,10 +37379,10 @@
      "Part_deck",
      "Part_engine",
      "Part_gun",
-     "Part_gun.001",
-     "Part_gun.002",
+     "Part_gun_02",
+     "Part_gun_03",
      "Part_mg",
-     "Part_mg.001",
+     "Part_mg_L",
      "Part_radar",
      "Part_vls",
      "Part_welldeck"
@@ -37516,34 +37392,7 @@
      "Point_fire"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
-    "Mount_mg.001",
-    "Mount_mg.002",
-    "Mount_mg.003",
-    "Mount_mg.004",
-    "Mount_mg.005",
-    "Mount_mg.006",
-    "Mount_mg.007",
-    "Mount_mg.008",
-    "Mount_mg.009",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
-    "Muzzle_mg.001",
-    "Muzzle_mg.002",
-    "Muzzle_mg.003",
-    "Muzzle_mg.004",
-    "Muzzle_mg.005",
-    "Muzzle_mg.006",
-    "Muzzle_mg.007",
-    "Muzzle_mg.008",
-    "Muzzle_mg.009"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Aa_braces_l",
     "Aa_braces_r",
@@ -37702,20 +37551,20 @@
     "Mast_platform",
     "Mount_APS",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
+    "Mount_gun_02",
+    "Mount_gun_03",
+    "Mount_gun_04",
+    "Mount_gun_05",
     "Mount_mg",
-    "Mount_mg.001",
-    "Mount_mg.002",
-    "Mount_mg.003",
-    "Mount_mg.004",
-    "Mount_mg.005",
-    "Mount_mg.006",
-    "Mount_mg.007",
-    "Mount_mg.008",
-    "Mount_mg.009",
+    "Mount_mg_02",
+    "Mount_mg_03",
+    "Mount_mg_04",
+    "Mount_mg_05",
+    "Mount_mg_06",
+    "Mount_mg_07",
+    "Mount_mg_08",
+    "Mount_mg_09",
+    "Mount_mg_10",
     "Mount_missile",
     "Muzzle_b1_gun",
     "Muzzle_b1_gun_001",
@@ -37737,30 +37586,30 @@
     "Muzzle_b3_gun_003",
     "Muzzle_b3_gun_004",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
+    "Muzzle_gun_04",
+    "Muzzle_gun_05",
     "Muzzle_mg",
-    "Muzzle_mg.001",
-    "Muzzle_mg.002",
-    "Muzzle_mg.003",
-    "Muzzle_mg.004",
-    "Muzzle_mg.005",
-    "Muzzle_mg.006",
-    "Muzzle_mg.007",
-    "Muzzle_mg.008",
-    "Muzzle_mg.009",
+    "Muzzle_mg_02",
+    "Muzzle_mg_03",
+    "Muzzle_mg_04",
+    "Muzzle_mg_05",
+    "Muzzle_mg_06",
+    "Muzzle_mg_07",
+    "Muzzle_mg_08",
+    "Muzzle_mg_09",
+    "Muzzle_mg_10",
     "Muzzle_missile",
     "Part_aa_l",
     "Part_aa_r",
     "Part_deck",
     "Part_engine",
     "Part_gun",
-    "Part_gun.001",
-    "Part_gun.002",
+    "Part_gun_02",
+    "Part_gun_03",
     "Part_mg",
-    "Part_mg.001",
+    "Part_mg_L",
     "Part_radar",
     "Part_sec_a",
     "Part_sec_f",
@@ -37828,7 +37677,6 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004",
     "triangles 86,412 over the boss_l normal hard cap 70,000 (info: kept, owner rule)",
     "vertices 100,605 over the boss_l normal hard cap 90,000 (info: kept, owner rule)"
    ],
@@ -39273,8 +39121,8 @@
   },
   "mega_gunship": {
    "file": "mega_gunship.glb",
-   "fileBytes": 1432504,
-   "sha1": "7ff490cb1e7b2c7f",
+   "fileBytes": 1432488,
+   "sha1": "2de5b905dddb9c3a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -39322,7 +39170,7 @@
     3.0,
     -0.349
    ],
-   "structureHash": "326fcfaa42c31e7f",
+   "structureHash": "e57521a5f748e518",
    "color0": {
     "mean": 0.6499,
     "min": 0.1823,
@@ -39334,22 +39182,22 @@
    "runtimeNodes": {
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
+     "Muzzle_gun_R",
      "Muzzle_mg",
-     "Muzzle_mg.001",
-     "Muzzle_mg.002",
-     "Muzzle_mg.003",
+     "Muzzle_mg_02",
+     "Muzzle_mg_03",
+     "Muzzle_mg_04",
      "Muzzle_missile",
      "Muzzle_rocket",
-     "Muzzle_rocket.001"
+     "Muzzle_rocket_R"
     ],
     "mount": [
      "Mount_gun",
-     "Mount_gun.001",
+     "Mount_gun_R",
      "Mount_mg",
-     "Mount_mg.001",
-     "Mount_mg.002",
-     "Mount_mg.003"
+     "Mount_mg_02",
+     "Mount_mg_03",
+     "Mount_mg_04"
     ],
     "rotor": [
      "Rotor",
@@ -39358,7 +39206,7 @@
     "part": [
      "Part_missiles",
      "Part_pod",
-     "Part_pod.001"
+     "Part_pod_R"
     ],
     "launch": [
      "Launch_bores",
@@ -39368,17 +39216,7 @@
      "Launch_tubes"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_mg.001",
-    "Mount_mg.002",
-    "Mount_mg.003",
-    "Muzzle_gun.001",
-    "Muzzle_mg.001",
-    "Muzzle_mg.002",
-    "Muzzle_mg.003",
-    "Muzzle_rocket.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
     "Apu_exhaust",
@@ -39478,25 +39316,25 @@
     "Mount_Flare_TL",
     "Mount_Flare_TR",
     "Mount_gun",
-    "Mount_gun.001",
+    "Mount_gun_R",
     "Mount_mg",
-    "Mount_mg.001",
-    "Mount_mg.002",
-    "Mount_mg.003",
+    "Mount_mg_02",
+    "Mount_mg_03",
+    "Mount_mg_04",
     "Muzzle_gun",
-    "Muzzle_gun.001",
+    "Muzzle_gun_R",
     "Muzzle_mg",
-    "Muzzle_mg.001",
-    "Muzzle_mg.002",
-    "Muzzle_mg.003",
+    "Muzzle_mg_02",
+    "Muzzle_mg_03",
+    "Muzzle_mg_04",
     "Muzzle_missile",
     "Muzzle_rocket",
-    "Muzzle_rocket.001",
+    "Muzzle_rocket_R",
     "Nav_lights",
     "Nav_lights.001",
     "Part_missiles",
     "Part_pod",
-    "Part_pod.001",
+    "Part_pod_R",
     "Pitot",
     "Pod_bands",
     "Pod_bands.001",
@@ -39553,7 +39391,6 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_mg.001, Mount_mg.002, Mount_mg.003",
     "renderers 142 over the boss_s normal budget 130"
    ],
    "units": [
@@ -41278,8 +41115,8 @@
   },
   "mobile_fortress": {
    "file": "mobile_fortress.glb",
-   "fileBytes": 3236048,
-   "sha1": "96488b1ae3253660",
+   "fileBytes": 3236036,
+   "sha1": "b65740163cda1b7b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -41327,7 +41164,7 @@
     4.413,
     1.757
    ],
-   "structureHash": "e6661a4684dda752",
+   "structureHash": "2795c8803d8ec210",
    "color0": {
     "mean": 0.6015,
     "min": 0.1172,
@@ -41351,33 +41188,26 @@
      "Muzzle_gun",
      "Muzzle_main",
      "Muzzle_mg",
-     "Muzzle_mg.001",
+     "Muzzle_mg_R",
      "Muzzle_missile",
-     "Muzzle_missile.001",
+     "Muzzle_missile_R",
      "Muzzle_rocket",
-     "Muzzle_rocket.001"
+     "Muzzle_rocket_R"
     ],
     "mount": [
      "Mount_gun",
      "Mount_mg",
-     "Mount_mg.001",
+     "Mount_mg_R",
      "Mount_missile",
-     "Mount_missile.001",
+     "Mount_missile_R",
      "Mount_rocket",
-     "Mount_rocket.001"
+     "Mount_rocket_R"
     ],
     "radar": [
      "Radar"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_mg.001",
-    "Mount_missile.001",
-    "Mount_rocket.001",
-    "Muzzle_mg.001",
-    "Muzzle_missile.001",
-    "Muzzle_rocket.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Ammo_crates",
     "Antenna",
@@ -41464,11 +41294,11 @@
     "Main_cannon_bore",
     "Mount_gun",
     "Mount_mg",
-    "Mount_mg.001",
+    "Mount_mg_R",
     "Mount_missile",
-    "Mount_missile.001",
+    "Mount_missile_R",
     "Mount_rocket",
-    "Mount_rocket.001",
+    "Mount_rocket_R",
     "Mudguards",
     "Muzzle_b1_mg",
     "Muzzle_b1_mg_001",
@@ -41482,11 +41312,11 @@
     "Muzzle_gun",
     "Muzzle_main",
     "Muzzle_mg",
-    "Muzzle_mg.001",
+    "Muzzle_mg_R",
     "Muzzle_missile",
-    "Muzzle_missile.001",
+    "Muzzle_missile_R",
     "Muzzle_rocket",
-    "Muzzle_rocket.001",
+    "Muzzle_rocket_R",
     "Periscope",
     "Plates",
     "Platform_grating",
@@ -41548,7 +41378,6 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_mg.001, Mount_missile.001, Mount_rocket.001, Muzzle_mg.001",
     "triangles 67,060 over the boss_s normal hard cap 45,000 (info: kept, owner rule)",
     "vertices 84,978 over the boss_s normal hard cap 54,000 (info: kept, owner rule)",
     "renderers 139 over the boss_s normal budget 130"
@@ -41561,8 +41390,8 @@
   },
   "moloch": {
    "file": "moloch.glb",
-   "fileBytes": 1424732,
-   "sha1": "98717e71643e6f12",
+   "fileBytes": 1424728,
+   "sha1": "d09cfe6821624534",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -41610,7 +41439,7 @@
     5.35,
     1.075
    ],
-   "structureHash": "6a22b40016e1e8a7",
+   "structureHash": "56700edee25f9217",
    "color0": {
     "mean": 0.5912,
     "min": 0.0651,
@@ -41625,15 +41454,15 @@
     ],
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002",
+     "Muzzle_gun_02",
+     "Muzzle_gun_03",
      "Muzzle_main",
      "Muzzle_mg"
     ],
     "mount": [
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002",
+     "Mount_gun_02",
+     "Mount_gun_03",
      "Mount_mg"
     ],
     "point": [
@@ -41641,12 +41470,7 @@
      "Point_fire"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
     "Barbettes",
@@ -41724,8 +41548,8 @@
     "Mantletg001",
     "Mantletg002",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
+    "Mount_gun_02",
+    "Mount_gun_03",
     "Mount_mg",
     "Muzzle_b1_gun",
     "Muzzle_b1_gun_001",
@@ -41736,8 +41560,8 @@
     "Muzzle_b2_gun_002",
     "Muzzle_b2_main",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
     "Muzzle_main",
     "Muzzle_mg",
     "Part_door_l",
@@ -41791,9 +41615,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Muzzle_gun.001, Muzzle_gun.002"
-   ],
+   "warnings": [],
    "units": [
     "moloch"
    ],
@@ -41802,8 +41624,8 @@
   },
   "monster": {
    "file": "monster.glb",
-   "fileBytes": 2075276,
-   "sha1": "8ea389fbdf5ef92b",
+   "fileBytes": 2075260,
+   "sha1": "2709411d0ddf0c42",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -41851,7 +41673,7 @@
     6.358,
     0.167
    ],
-   "structureHash": "8c85a99584feea5e",
+   "structureHash": "ac6597765ed47138",
    "color0": {
     "mean": 0.6104,
     "min": 0.078,
@@ -41873,32 +41695,32 @@
     ],
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002",
-     "Muzzle_gun.003",
-     "Muzzle_gun.004",
+     "Muzzle_gun_02",
+     "Muzzle_gun_03",
+     "Muzzle_gun_04",
+     "Muzzle_gun_05",
      "Muzzle_main",
      "Muzzle_mg",
-     "Muzzle_mg.001",
+     "Muzzle_mg_R",
      "Muzzle_missile"
     ],
     "mount": [
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002",
-     "Mount_gun.003",
-     "Mount_gun.004",
+     "Mount_gun_02",
+     "Mount_gun_03",
+     "Mount_gun_04",
+     "Mount_gun_05",
      "Mount_mg",
-     "Mount_mg.001",
+     "Mount_mg_R",
      "Mount_missile"
     ],
     "part": [
      "Part_barrel",
      "Part_missile",
      "Part_track",
-     "Part_track.001",
-     "Part_track.002",
-     "Part_track.003"
+     "Part_track_02",
+     "Part_track_03",
+     "Part_track_04"
     ],
     "point": [
      "Point_exhaust",
@@ -41909,18 +41731,7 @@
      "Launch_tubes_bore"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
-    "Mount_mg.001",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
-    "Muzzle_mg.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Ammo_crates",
     "Armor_plates",
@@ -42012,12 +41823,12 @@
     "Main_cannon",
     "Main_cannon_bands",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
+    "Mount_gun_02",
+    "Mount_gun_03",
+    "Mount_gun_04",
+    "Mount_gun_05",
     "Mount_mg",
-    "Mount_mg.001",
+    "Mount_mg_R",
     "Mount_missile",
     "Muzzle_b1_gun",
     "Muzzle_b1_gun_001",
@@ -42025,20 +41836,20 @@
     "Muzzle_b2_gun_001",
     "Muzzle_brake",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
+    "Muzzle_gun_04",
+    "Muzzle_gun_05",
     "Muzzle_main",
     "Muzzle_mg",
-    "Muzzle_mg.001",
+    "Muzzle_mg_R",
     "Muzzle_missile",
     "Part_barrel",
     "Part_missile",
     "Part_track",
-    "Part_track.001",
-    "Part_track.002",
-    "Part_track.003",
+    "Part_track_02",
+    "Part_track_03",
+    "Part_track_04",
     "Point_exhaust",
     "Point_fire",
     "Railings",
@@ -42094,9 +41905,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004"
-   ],
+   "warnings": [],
    "units": [
     "monster"
    ],
@@ -42744,8 +42553,8 @@
   },
   "nuke_train": {
    "file": "nuke_train.glb",
-   "fileBytes": 2292496,
-   "sha1": "eede01734b77d2c5",
+   "fileBytes": 2292492,
+   "sha1": "773a82758cbeb20a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -42793,7 +42602,7 @@
     2.705,
     -0.0
    ],
-   "structureHash": "c650bfe97f86150e",
+   "structureHash": "73a91187221e68b0",
    "color0": {
     "mean": 0.5867,
     "min": 0.0452,
@@ -42818,16 +42627,16 @@
      "Muzzle_gun",
      "Muzzle_main",
      "Muzzle_mg",
-     "Muzzle_mg.001",
-     "Muzzle_mg.002",
+     "Muzzle_mg_02",
+     "Muzzle_mg_03",
      "Muzzle_missile",
      "Muzzle_rocket"
     ],
     "mount": [
      "Mount_gun",
      "Mount_mg",
-     "Mount_mg.001",
-     "Mount_mg.002",
+     "Mount_mg_02",
+     "Mount_mg_03",
      "Mount_missile",
      "Mount_rocket"
     ],
@@ -42844,12 +42653,7 @@
      "Point_fire"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_mg.001",
-    "Mount_mg.002",
-    "Muzzle_mg.001",
-    "Muzzle_mg.002"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Aa_cradles",
     "Aa_dish",
@@ -42974,8 +42778,8 @@
     "Mast_hinge",
     "Mount_gun",
     "Mount_mg",
-    "Mount_mg.001",
-    "Mount_mg.002",
+    "Mount_mg_02",
+    "Mount_mg_03",
     "Mount_missile",
     "Mount_rocket",
     "Muzzle_brake",
@@ -42983,8 +42787,8 @@
     "Muzzle_gun",
     "Muzzle_main",
     "Muzzle_mg",
-    "Muzzle_mg.001",
-    "Muzzle_mg.002",
+    "Muzzle_mg_02",
+    "Muzzle_mg_03",
     "Muzzle_missile",
     "Muzzle_rocket",
     "Part_aa",
@@ -43059,9 +42863,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_mg.001, Mount_mg.002, Muzzle_mg.001, Muzzle_mg.002"
-   ],
+   "warnings": [],
    "units": [
     "nuke_train"
    ],
@@ -43070,8 +42872,8 @@
   },
   "nyx": {
    "file": "nyx.glb",
-   "fileBytes": 1489984,
-   "sha1": "78d199cb9ea863d8",
+   "fileBytes": 1489976,
+   "sha1": "d0a685d23327a521",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -43119,7 +42921,7 @@
     4.126,
     0.028
    ],
-   "structureHash": "45a277ecd4151344",
+   "structureHash": "ecc07e122ca3e303",
    "color0": {
     "mean": 0.5861,
     "min": 0.145,
@@ -43132,24 +42934,24 @@
     "muzzle": [
      "Muzzle_gun",
      "Muzzle_mg",
-     "Muzzle_mg.001",
-     "Muzzle_mg.002",
-     "Muzzle_mg.003",
+     "Muzzle_mg_02",
+     "Muzzle_mg_03",
+     "Muzzle_mg_04",
      "Muzzle_missile"
     ],
     "mount": [
      "Mount_APS",
      "Mount_gun",
      "Mount_mg",
-     "Mount_mg.001",
-     "Mount_mg.002",
-     "Mount_mg.003",
+     "Mount_mg_02",
+     "Mount_mg_03",
+     "Mount_mg_04",
      "Mount_missile"
     ],
     "part": [
      "Part_gun",
      "Part_mg",
-     "Part_mg.001",
+     "Part_mg_aft",
      "Part_vls"
     ],
     "point": [
@@ -43157,14 +42959,7 @@
      "Point_fire"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_mg.001",
-    "Mount_mg.002",
-    "Mount_mg.003",
-    "Muzzle_mg.001",
-    "Muzzle_mg.002",
-    "Muzzle_mg.003"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Aft_mast",
     "Anchor_recess",
@@ -43314,9 +43109,9 @@
     "Mount_APS",
     "Mount_gun",
     "Mount_mg",
-    "Mount_mg.001",
-    "Mount_mg.002",
-    "Mount_mg.003",
+    "Mount_mg_02",
+    "Mount_mg_03",
+    "Mount_mg_04",
     "Mount_missile",
     "Muzzle_b1_mg_002",
     "Muzzle_b1_mg_003",
@@ -43324,13 +43119,13 @@
     "Muzzle_b2_msl",
     "Muzzle_gun",
     "Muzzle_mg",
-    "Muzzle_mg.001",
-    "Muzzle_mg.002",
-    "Muzzle_mg.003",
+    "Muzzle_mg_02",
+    "Muzzle_mg_03",
+    "Muzzle_mg_04",
     "Muzzle_missile",
     "Part_gun",
     "Part_mg",
-    "Part_mg.001",
+    "Part_mg_aft",
     "Part_vls",
     "Point_exhaust",
     "Point_fire",
@@ -43374,7 +43169,6 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_mg.001, Mount_mg.002, Mount_mg.003, Muzzle_mg.001",
     "renderers 180 over the boss_m normal budget 178"
    ],
    "units": [
@@ -49308,8 +49102,8 @@
   },
   "sea_cruiser": {
    "file": "sea_cruiser.glb",
-   "fileBytes": 842668,
-   "sha1": "b1e1ce06cc133a5c",
+   "fileBytes": 842664,
+   "sha1": "fe066c78eeed3212",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -49357,7 +49151,7 @@
     7.9,
     0.0
    ],
-   "structureHash": "2a245ae442fc5d07",
+   "structureHash": "33c14f4616a9bafc",
    "color0": {
     "mean": 0.6079,
     "min": 0.0615,
@@ -49369,33 +49163,28 @@
    "runtimeNodes": {
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
+     "Muzzle_gun_aft",
      "Muzzle_mg",
-     "Muzzle_mg.001"
+     "Muzzle_mg_L"
     ],
     "mount": [
      "Mount_gun",
-     "Mount_gun.001",
+     "Mount_gun_aft",
      "Mount_mg",
-     "Mount_mg.001"
+     "Mount_mg_L"
     ],
     "radar": [
      "Radar"
     ],
     "part": [
      "Part_gun",
-     "Part_gun.001",
+     "Part_gun_aft",
      "Part_mg",
-     "Part_mg.001",
+     "Part_mg_L",
      "Part_radar"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_mg.001",
-    "Muzzle_gun.001",
-    "Muzzle_mg.001"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Aps_faces",
     "Barbette_gun",
@@ -49446,23 +49235,23 @@
     "Mast_steel",
     "Missile_canisters",
     "Mount_gun",
-    "Mount_gun.001",
+    "Mount_gun_aft",
     "Mount_mg",
-    "Mount_mg.001",
+    "Mount_mg_L",
     "Muzzle_b1_gun",
     "Muzzle_b1_gun_001",
     "Muzzle_b2_gun",
     "Muzzle_b2_gun_001",
     "Muzzle_gun",
-    "Muzzle_gun.001",
+    "Muzzle_gun_aft",
     "Muzzle_mg",
-    "Muzzle_mg.001",
+    "Muzzle_mg_L",
     "Nav_lights",
     "Nav_lights.001",
     "Part_gun",
-    "Part_gun.001",
+    "Part_gun_aft",
     "Part_mg",
-    "Part_mg.001",
+    "Part_mg_L",
     "Part_radar",
     "Porthole_rims",
     "Radar",
@@ -49483,7 +49272,6 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_mg.001, Muzzle_gun.001, Muzzle_mg.001",
     "triangles 14,150 over the ground normal hard cap 9,700 (info: kept, owner rule)",
     "vertices 21,844 over the ground normal hard cap 12,600 (info: kept, owner rule)",
     "renderers 63 over the ground normal budget 61",
@@ -50977,8 +50765,8 @@
   },
   "silver_bug": {
    "file": "silver_bug.glb",
-   "fileBytes": 3001688,
-   "sha1": "f1966f1b0fd0c73e",
+   "fileBytes": 3001672,
+   "sha1": "25e43db077854105",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -51026,7 +50814,7 @@
     2.929,
     0.965
    ],
-   "structureHash": "c8b68f736f75af35",
+   "structureHash": "bc1ab2eea99d5e16",
    "color0": {
     "mean": 0.6246,
     "min": 0.0705,
@@ -51047,52 +50835,33 @@
     ],
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002",
-     "Muzzle_gun.003",
-     "Muzzle_gun.004",
-     "Muzzle_gun.005",
-     "Muzzle_gun.006",
-     "Muzzle_gun.007",
-     "Muzzle_gun.008",
-     "Muzzle_gun.009",
+     "Muzzle_gun_02",
+     "Muzzle_gun_03",
+     "Muzzle_gun_04",
+     "Muzzle_gun_05",
+     "Muzzle_gun_06",
+     "Muzzle_gun_07",
+     "Muzzle_gun_08",
+     "Muzzle_gun_09",
+     "Muzzle_gun_10",
      "Muzzle_main",
      "Muzzle_missile"
     ],
     "mount": [
      "Mount_APS",
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002",
-     "Mount_gun.003",
-     "Mount_gun.004",
-     "Mount_gun.005",
-     "Mount_gun.006",
-     "Mount_gun.007",
-     "Mount_gun.008",
-     "Mount_gun.009"
+     "Mount_gun_02",
+     "Mount_gun_03",
+     "Mount_gun_04",
+     "Mount_gun_05",
+     "Mount_gun_06",
+     "Mount_gun_07",
+     "Mount_gun_08",
+     "Mount_gun_09",
+     "Mount_gun_10"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
-    "Mount_gun.005",
-    "Mount_gun.006",
-    "Mount_gun.007",
-    "Mount_gun.008",
-    "Mount_gun.009",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
-    "Muzzle_gun.005",
-    "Muzzle_gun.006",
-    "Muzzle_gun.007",
-    "Muzzle_gun.008",
-    "Muzzle_gun.009"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
     "Aps_emitter",
@@ -51228,15 +50997,15 @@
     "Module_bands",
     "Mount_APS",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
-    "Mount_gun.005",
-    "Mount_gun.006",
-    "Mount_gun.007",
-    "Mount_gun.008",
-    "Mount_gun.009",
+    "Mount_gun_02",
+    "Mount_gun_03",
+    "Mount_gun_04",
+    "Mount_gun_05",
+    "Mount_gun_06",
+    "Mount_gun_07",
+    "Mount_gun_08",
+    "Mount_gun_09",
+    "Mount_gun_10",
     "Muzzle_b1_gun_004",
     "Muzzle_b1_gun_005",
     "Muzzle_b1_gun_008",
@@ -51246,15 +51015,15 @@
     "Muzzle_b2_gun_008",
     "Muzzle_b2_gun_009",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
-    "Muzzle_gun.005",
-    "Muzzle_gun.006",
-    "Muzzle_gun.007",
-    "Muzzle_gun.008",
-    "Muzzle_gun.009",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
+    "Muzzle_gun_04",
+    "Muzzle_gun_05",
+    "Muzzle_gun_06",
+    "Muzzle_gun_07",
+    "Muzzle_gun_08",
+    "Muzzle_gun_09",
+    "Muzzle_gun_10",
     "Muzzle_main",
     "Muzzle_missile",
     "Nacelle",
@@ -51354,7 +51123,6 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004",
     "triangles 67,592 over the boss_m normal hard cap 55,000 (info: kept, owner rule)",
     "vertices 76,991 over the boss_m normal hard cap 70,000 (info: kept, owner rule)",
     "renderers 207 over the boss_m normal budget 178"
@@ -51367,8 +51135,8 @@
   },
   "silver_bug_wreck": {
    "file": "silver_bug_wreck.glb",
-   "fileBytes": 3145952,
-   "sha1": "13cc5a611ee277b7",
+   "fileBytes": 3145932,
+   "sha1": "9b25007c9e3130ab",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -51416,7 +51184,7 @@
     3.573,
     1.293
    ],
-   "structureHash": "8e07491ee4488aad",
+   "structureHash": "1903dfed506a5aca",
    "color0": {
     "mean": 0.5582,
     "min": 0.0409,
@@ -51437,52 +51205,33 @@
     ],
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002",
-     "Muzzle_gun.003",
-     "Muzzle_gun.004",
-     "Muzzle_gun.005",
-     "Muzzle_gun.006",
-     "Muzzle_gun.007",
-     "Muzzle_gun.008",
-     "Muzzle_gun.009",
+     "Muzzle_gun_02",
+     "Muzzle_gun_03",
+     "Muzzle_gun_04",
+     "Muzzle_gun_05",
+     "Muzzle_gun_06",
+     "Muzzle_gun_07",
+     "Muzzle_gun_08",
+     "Muzzle_gun_09",
+     "Muzzle_gun_10",
      "Muzzle_main",
      "Muzzle_missile"
     ],
     "mount": [
      "Mount_APS",
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002",
-     "Mount_gun.003",
-     "Mount_gun.004",
-     "Mount_gun.005",
-     "Mount_gun.006",
-     "Mount_gun.007",
-     "Mount_gun.008",
-     "Mount_gun.009"
+     "Mount_gun_02",
+     "Mount_gun_03",
+     "Mount_gun_04",
+     "Mount_gun_05",
+     "Mount_gun_06",
+     "Mount_gun_07",
+     "Mount_gun_08",
+     "Mount_gun_09",
+     "Mount_gun_10"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
-    "Mount_gun.005",
-    "Mount_gun.006",
-    "Mount_gun.007",
-    "Mount_gun.008",
-    "Mount_gun.009",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
-    "Muzzle_gun.005",
-    "Muzzle_gun.006",
-    "Muzzle_gun.007",
-    "Muzzle_gun.008",
-    "Muzzle_gun.009"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Antenna_tips",
     "Antennas",
@@ -51612,15 +51361,15 @@
     "Module_bands",
     "Mount_APS",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Mount_gun.004",
-    "Mount_gun.005",
-    "Mount_gun.006",
-    "Mount_gun.007",
-    "Mount_gun.008",
-    "Mount_gun.009",
+    "Mount_gun_02",
+    "Mount_gun_03",
+    "Mount_gun_04",
+    "Mount_gun_05",
+    "Mount_gun_06",
+    "Mount_gun_07",
+    "Mount_gun_08",
+    "Mount_gun_09",
+    "Mount_gun_10",
     "Muzzle_b1_gun_004",
     "Muzzle_b1_gun_005",
     "Muzzle_b1_gun_008",
@@ -51630,15 +51379,15 @@
     "Muzzle_b2_gun_008",
     "Muzzle_b2_gun_009",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
-    "Muzzle_gun.004",
-    "Muzzle_gun.005",
-    "Muzzle_gun.006",
-    "Muzzle_gun.007",
-    "Muzzle_gun.008",
-    "Muzzle_gun.009",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
+    "Muzzle_gun_04",
+    "Muzzle_gun_05",
+    "Muzzle_gun_06",
+    "Muzzle_gun_07",
+    "Muzzle_gun_08",
+    "Muzzle_gun_09",
+    "Muzzle_gun_10",
     "Muzzle_main",
     "Muzzle_missile",
     "Nacelle",
@@ -51734,7 +51483,6 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004",
     "triangles 69,462 over the boss_m normal hard cap 55,000 (info: kept, owner rule)",
     "vertices 81,242 over the boss_m normal hard cap 70,000 (info: kept, owner rule)",
     "renderers 205 over the boss_m normal budget 178"
@@ -56768,8 +56516,8 @@
   },
   "typhon": {
    "file": "typhon.glb",
-   "fileBytes": 1560740,
-   "sha1": "7867cc1dfaf9df91",
+   "fileBytes": 1560736,
+   "sha1": "b807a3409af198d3",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -56817,7 +56565,7 @@
     4.12,
     0.575
    ],
-   "structureHash": "8f61eb1cb2a8d29c",
+   "structureHash": "85d204d298ac66c4",
    "color0": {
     "mean": 0.5987,
     "min": 0.1233,
@@ -56829,16 +56577,16 @@
    "runtimeNodes": {
     "muzzle": [
      "Muzzle_gun",
-     "Muzzle_gun.001",
-     "Muzzle_gun.002",
-     "Muzzle_gun.003",
+     "Muzzle_gun_02",
+     "Muzzle_gun_03",
+     "Muzzle_gun_04",
      "Muzzle_missile"
     ],
     "mount": [
      "Mount_gun",
-     "Mount_gun.001",
-     "Mount_gun.002",
-     "Mount_gun.003",
+     "Mount_gun_02",
+     "Mount_gun_03",
+     "Mount_gun_04",
      "Mount_missile"
     ],
     "part": [
@@ -56850,14 +56598,7 @@
      "Point_fire"
     ]
    },
-   "runtimeSuffixed": [
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003"
-   ],
+   "runtimeSuffixed": [],
    "nodeNames": [
     "Anchor_recess",
     "Antennas",
@@ -56945,9 +56686,9 @@
     "Masts",
     "Missile_deck",
     "Mount_gun",
-    "Mount_gun.001",
-    "Mount_gun.002",
-    "Mount_gun.003",
+    "Mount_gun_02",
+    "Mount_gun_03",
+    "Mount_gun_04",
     "Mount_missile",
     "Muzzle_b1_gun",
     "Muzzle_b1_gun_001",
@@ -56956,9 +56697,9 @@
     "Muzzle_b2_gun_001",
     "Muzzle_b2_gun_003",
     "Muzzle_gun",
-    "Muzzle_gun.001",
-    "Muzzle_gun.002",
-    "Muzzle_gun.003",
+    "Muzzle_gun_02",
+    "Muzzle_gun_03",
+    "Muzzle_gun_04",
     "Muzzle_missile",
     "Nav_lights",
     "Nav_lights.001",
@@ -57022,9 +56763,7 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Muzzle_gun.001"
-   ],
+   "warnings": [],
    "units": [
     "typhon"
    ],

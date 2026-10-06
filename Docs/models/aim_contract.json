@@ -234,9 +234,9 @@
      "weapon": "p26_roc_main_roc_bombs",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -813,9 +813,9 @@
      "weapon": "p26_bastion_direct_b100",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_R",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_R"
      ],
      "yawMin": -35.0,
      "yawMax": 125.0,
@@ -890,9 +890,9 @@
      "weapon": "p26_behemoth_close_boss_flak",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_L",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_L"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -928,7 +928,7 @@
      "dataAim": "Hull",
      "pivotNode": null,
      "muzzleNodes": [
-      "Muzzle_missile.001"
+      "Muzzle_missile_02"
      ],
      "yawMin": 0.0,
      "yawMax": 0.0,
@@ -946,7 +946,7 @@
      "dataAim": "Free",
      "pivotNode": null,
      "muzzleNodes": [
-      "Muzzle_missile.002"
+      "Muzzle_missile_03"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -962,9 +962,9 @@
      "weapon": "p26_behemoth_direct_be120",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -980,9 +980,9 @@
      "weapon": "p26_behemoth_direct_be120",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.002",
+     "pivotNode": "Mount_gun_03",
      "muzzleNodes": [
-      "Muzzle_gun.002"
+      "Muzzle_gun_03"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1116,9 +1116,9 @@
      "weapon": "p26_behemoth_direct_be120",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1193,9 +1193,9 @@
      "weapon": "p26_behemoth_close_boss_flak",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_L",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_L"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1252,9 +1252,9 @@
      "weapon": "coilgun",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_R",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1511,9 +1511,9 @@
      "weapon": "p26_roc_main_roc_bombs",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1565,9 +1565,9 @@
      "weapon": "p26_roc_close_twin_30_bmpt",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.002",
+     "pivotNode": "Mount_gun_03",
      "muzzleNodes": [
-      "Muzzle_gun.002"
+      "Muzzle_gun_03"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1583,9 +1583,9 @@
      "weapon": "p26_roc_close_twin_30_bmpt",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.003",
+     "pivotNode": "Mount_gun_04",
      "muzzleNodes": [
-      "Muzzle_gun.003"
+      "Muzzle_gun_04"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1619,9 +1619,9 @@
      "weapon": "p26_roc_roc105",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1687,9 +1687,9 @@
      "weapon": "pt14_dd_v57",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1705,9 +1705,9 @@
      "weapon": "pt14_dd_v57",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.002",
+     "pivotNode": "Mount_gun_03",
      "muzzleNodes": [
-      "Muzzle_gun.002"
+      "Muzzle_gun_03"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1723,9 +1723,9 @@
      "weapon": "pt14_dd_v25",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.003",
+     "pivotNode": "Mount_gun_04",
      "muzzleNodes": [
-      "Muzzle_gun.003"
+      "Muzzle_gun_04"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1741,9 +1741,9 @@
      "weapon": "pt14_dd_v25",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.004",
+     "pivotNode": "Mount_gun_05",
      "muzzleNodes": [
-      "Muzzle_gun.004"
+      "Muzzle_gun_05"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1759,9 +1759,9 @@
      "weapon": "p26_daedalus_direct_dae_laser",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.005",
+     "pivotNode": "Mount_gun_06",
      "muzzleNodes": [
-      "Muzzle_gun.005"
+      "Muzzle_gun_06"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1892,7 +1892,7 @@
      "weapon": "p26_matriarch_ma_drones",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_missile.001",
+     "pivotNode": "Mount_missile_01",
      "muzzleNodes": [
       "Muzzle_missile"
      ],
@@ -1928,9 +1928,9 @@
      "weapon": "p26_matriarch_close_boss_flak",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_aft",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_aft"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1946,9 +1946,9 @@
      "weapon": "p26_matriarch_tiny_mothership_cannon",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_main.001",
+     "pivotNode": "Mount_main_01",
      "muzzleNodes": [
-      "Muzzle_main.001"
+      "Muzzle_main_aft"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -1964,9 +1964,9 @@
      "weapon": "p26_matriarch_direct_ma_atgm",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_missile.001",
+     "pivotNode": "Mount_missile_01",
      "muzzleNodes": [
-      "Muzzle_missile.001"
+      "Muzzle_missile_aft"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -2000,9 +2000,9 @@
      "weapon": "p26_matriarch_sec_autocannon_30",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_R",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -2018,7 +2018,7 @@
      "weapon": "p26_matriarch_direct_ma_atgm",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_missile.001",
+     "pivotNode": "Mount_missile_01",
      "muzzleNodes": [
       "Muzzle_missile"
      ],
@@ -2104,9 +2104,9 @@
      "weapon": "borer_cannon",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_R",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -2821,9 +2821,9 @@
      "weapon": "p26_jotunn_sec_jo_rockets",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_rocket.001",
+     "pivotNode": "Mount_rocket_R",
      "muzzleNodes": [
-      "Muzzle_rocket.001"
+      "Muzzle_rocket_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -3010,9 +3010,9 @@
      "weapon": "p26_bastion_direct_b100",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -35.0,
      "yawMax": 125.0,
@@ -3028,9 +3028,9 @@
      "weapon": "p26_bastion_tiny_autocannon_40",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.002",
+     "pivotNode": "Mount_gun_03",
      "muzzleNodes": [
-      "Muzzle_gun.002"
+      "Muzzle_gun_03"
      ],
      "yawMin": -215.0,
      "yawMax": -55.0,
@@ -3046,9 +3046,9 @@
      "weapon": "p26_bastion_tiny_autocannon_40",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.003",
+     "pivotNode": "Mount_gun_04",
      "muzzleNodes": [
-      "Muzzle_gun.003"
+      "Muzzle_gun_04"
      ],
      "yawMin": 55.0,
      "yawMax": 215.0,
@@ -3100,9 +3100,9 @@
      "weapon": "p26_bastion_close_boss_hmg",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_R",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -3118,9 +3118,9 @@
      "weapon": "p26_bastion_main_b155",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.004",
+     "pivotNode": "Mount_gun_05",
      "muzzleNodes": [
-      "Muzzle_gun.004"
+      "Muzzle_gun_05"
      ],
      "yawMin": -60.0,
      "yawMax": 60.0,
@@ -3154,9 +3154,9 @@
      "weapon": "p26_bastion_tiny_zu23",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_R",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4070,9 +4070,9 @@
      "weapon": "p26_typhon_sec_ty57",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": 30.0,
      "yawMax": 330.0,
@@ -4088,9 +4088,9 @@
      "weapon": "p26_typhon_direct_ty100",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.002",
+     "pivotNode": "Mount_gun_03",
      "muzzleNodes": [
-      "Muzzle_gun.002"
+      "Muzzle_gun_03"
      ],
      "yawMin": -150.0,
      "yawMax": 150.0,
@@ -4455,9 +4455,9 @@
      "weapon": "p26_ixion_mg",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_L",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_L"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4509,9 +4509,9 @@
      "weapon": "pt14_ixion_kornet",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_missile.001",
+     "pivotNode": "Mount_missile_R",
      "muzzleNodes": [
-      "Muzzle_missile.001"
+      "Muzzle_missile_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4568,9 +4568,9 @@
      "weapon": "p26_leviathan_lev406",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4586,9 +4586,9 @@
      "weapon": "p26_leviathan_lev406",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.002",
+     "pivotNode": "Mount_gun_03",
      "muzzleNodes": [
-      "Muzzle_gun.002"
+      "Muzzle_gun_03"
      ],
      "yawMin": 30.0,
      "yawMax": 330.0,
@@ -4604,9 +4604,9 @@
      "weapon": "p26_leviathan_sec_lev155",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.003",
+     "pivotNode": "Mount_gun_04",
      "muzzleNodes": [
-      "Muzzle_gun.003"
+      "Muzzle_gun_04"
      ],
      "yawMin": -135.0,
      "yawMax": 135.0,
@@ -4622,9 +4622,9 @@
      "weapon": "p26_leviathan_sec_lev155",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.004",
+     "pivotNode": "Mount_gun_05",
      "muzzleNodes": [
-      "Muzzle_gun.004"
+      "Muzzle_gun_05"
      ],
      "yawMin": 45.0,
      "yawMax": 315.0,
@@ -4658,9 +4658,9 @@
      "weapon": "p26_leviathan_direct_lev127",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_02",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4676,9 +4676,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.002",
+     "pivotNode": "Mount_mg_03",
      "muzzleNodes": [
-      "Muzzle_mg.002"
+      "Muzzle_mg_03"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4694,9 +4694,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.003",
+     "pivotNode": "Mount_mg_04",
      "muzzleNodes": [
-      "Muzzle_mg.003"
+      "Muzzle_mg_04"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4712,9 +4712,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.004",
+     "pivotNode": "Mount_mg_05",
      "muzzleNodes": [
-      "Muzzle_mg.004"
+      "Muzzle_mg_05"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4730,9 +4730,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.005",
+     "pivotNode": "Mount_mg_06",
      "muzzleNodes": [
-      "Muzzle_mg.005"
+      "Muzzle_mg_06"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4748,9 +4748,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.006",
+     "pivotNode": "Mount_mg_07",
      "muzzleNodes": [
-      "Muzzle_mg.006"
+      "Muzzle_mg_07"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4766,9 +4766,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.007",
+     "pivotNode": "Mount_mg_08",
      "muzzleNodes": [
-      "Muzzle_mg.007"
+      "Muzzle_mg_08"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4784,9 +4784,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.008",
+     "pivotNode": "Mount_mg_09",
      "muzzleNodes": [
-      "Muzzle_mg.008"
+      "Muzzle_mg_09"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4802,9 +4802,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.009",
+     "pivotNode": "Mount_mg_10",
      "muzzleNodes": [
-      "Muzzle_mg.009"
+      "Muzzle_mg_10"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4884,9 +4884,9 @@
      "weapon": "hover_ciws",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_R",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -4938,9 +4938,9 @@
      "weapon": "hover_rockets",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_rocket.001",
+     "pivotNode": "Mount_rocket_R",
      "muzzleNodes": [
-      "Muzzle_rocket.001"
+      "Muzzle_rocket_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5048,9 +5048,9 @@
      "weapon": "p26_leviathan_lev406",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5066,9 +5066,9 @@
      "weapon": "p26_leviathan_lev406",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.002",
+     "pivotNode": "Mount_gun_03",
      "muzzleNodes": [
-      "Muzzle_gun.002"
+      "Muzzle_gun_03"
      ],
      "yawMin": 30.0,
      "yawMax": 330.0,
@@ -5084,9 +5084,9 @@
      "weapon": "p26_leviathan_sec_lev155",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.003",
+     "pivotNode": "Mount_gun_04",
      "muzzleNodes": [
-      "Muzzle_gun.003"
+      "Muzzle_gun_04"
      ],
      "yawMin": -135.0,
      "yawMax": 135.0,
@@ -5102,9 +5102,9 @@
      "weapon": "p26_leviathan_sec_lev155",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.004",
+     "pivotNode": "Mount_gun_05",
      "muzzleNodes": [
-      "Muzzle_gun.004"
+      "Muzzle_gun_05"
      ],
      "yawMin": 45.0,
      "yawMax": 315.0,
@@ -5138,9 +5138,9 @@
      "weapon": "p26_leviathan_direct_lev127",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_02",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5156,9 +5156,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.002",
+     "pivotNode": "Mount_mg_03",
      "muzzleNodes": [
-      "Muzzle_mg.002"
+      "Muzzle_mg_03"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5174,9 +5174,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.003",
+     "pivotNode": "Mount_mg_04",
      "muzzleNodes": [
-      "Muzzle_mg.003"
+      "Muzzle_mg_04"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5192,9 +5192,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.004",
+     "pivotNode": "Mount_mg_05",
      "muzzleNodes": [
-      "Muzzle_mg.004"
+      "Muzzle_mg_05"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5210,9 +5210,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.005",
+     "pivotNode": "Mount_mg_06",
      "muzzleNodes": [
-      "Muzzle_mg.005"
+      "Muzzle_mg_06"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5228,9 +5228,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.006",
+     "pivotNode": "Mount_mg_07",
      "muzzleNodes": [
-      "Muzzle_mg.006"
+      "Muzzle_mg_07"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5246,9 +5246,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.007",
+     "pivotNode": "Mount_mg_08",
      "muzzleNodes": [
-      "Muzzle_mg.007"
+      "Muzzle_mg_08"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5264,9 +5264,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.008",
+     "pivotNode": "Mount_mg_09",
      "muzzleNodes": [
-      "Muzzle_mg.008"
+      "Muzzle_mg_09"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5282,9 +5282,9 @@
      "weapon": "aa_25_triple",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.009",
+     "pivotNode": "Mount_mg_10",
      "muzzleNodes": [
-      "Muzzle_mg.009"
+      "Muzzle_mg_10"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5382,7 +5382,7 @@
      "weapon": "locust_drones",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_missile.001",
+     "pivotNode": "Mount_missile_01",
      "muzzleNodes": [
       "Muzzle_missile"
      ],
@@ -5586,9 +5586,9 @@
      "weapon": "boss_flak",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_L",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_L"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5624,7 +5624,7 @@
      "dataAim": "Hull",
      "pivotNode": null,
      "muzzleNodes": [
-      "Muzzle_missile.001"
+      "Muzzle_missile_02"
      ],
      "yawMin": 0.0,
      "yawMax": 0.0,
@@ -5681,9 +5681,9 @@
      "weapon": "boss_heli_gun",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_R",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_R"
      ],
      "yawMin": -25.0,
      "yawMax": 115.0,
@@ -5719,7 +5719,7 @@
      "dataAim": "Hull",
      "pivotNode": null,
      "muzzleNodes": [
-      "Muzzle_rocket.001"
+      "Muzzle_rocket_R"
      ],
      "yawMin": 0.0,
      "yawMax": 0.0,
@@ -5735,9 +5735,9 @@
      "weapon": "boss_hmg",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_02",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -5753,9 +5753,9 @@
      "weapon": "boss_hmg",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.002",
+     "pivotNode": "Mount_mg_03",
      "muzzleNodes": [
-      "Muzzle_mg.002"
+      "Muzzle_mg_03"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6181,9 +6181,9 @@
      "weapon": "p26_jotunn_sec_jo_rockets",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_rocket.001",
+     "pivotNode": "Mount_rocket_R",
      "muzzleNodes": [
-      "Muzzle_rocket.001"
+      "Muzzle_rocket_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6217,9 +6217,9 @@
      "weapon": "p26_jotunn_close_boss_flak",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_R",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6289,9 +6289,9 @@
      "weapon": "sam_post",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_missile.001",
+     "pivotNode": "Mount_missile_R",
      "muzzleNodes": [
-      "Muzzle_missile.001"
+      "Muzzle_missile_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6384,9 +6384,9 @@
      "weapon": "p26_moloch_direct_mo120ap",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6402,9 +6402,9 @@
      "weapon": "p26_moloch_direct_mo120ap",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.002",
+     "pivotNode": "Mount_gun_03",
      "muzzleNodes": [
-      "Muzzle_gun.002"
+      "Muzzle_gun_03"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6479,9 +6479,9 @@
      "weapon": "p26_bastion_direct_b100",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -35.0,
      "yawMax": 125.0,
@@ -6497,9 +6497,9 @@
      "weapon": "p26_bastion_tiny_autocannon_40",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.002",
+     "pivotNode": "Mount_gun_03",
      "muzzleNodes": [
-      "Muzzle_gun.002"
+      "Muzzle_gun_03"
      ],
      "yawMin": -215.0,
      "yawMax": -55.0,
@@ -6515,9 +6515,9 @@
      "weapon": "p26_bastion_tiny_autocannon_40",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.003",
+     "pivotNode": "Mount_gun_04",
      "muzzleNodes": [
-      "Muzzle_gun.003"
+      "Muzzle_gun_04"
      ],
      "yawMin": 55.0,
      "yawMax": 215.0,
@@ -6569,9 +6569,9 @@
      "weapon": "p26_bastion_close_boss_hmg",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_R",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6587,9 +6587,9 @@
      "weapon": "p26_bastion_main_b155",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.004",
+     "pivotNode": "Mount_gun_05",
      "muzzleNodes": [
-      "Muzzle_gun.004"
+      "Muzzle_gun_05"
      ],
      "yawMin": -60.0,
      "yawMax": 60.0,
@@ -6623,9 +6623,9 @@
      "weapon": "p26_bastion_tiny_zu23",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_R",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_R"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6746,9 +6746,9 @@
      "weapon": "p26_nemesis_close_boss_flak",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_02",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6818,9 +6818,9 @@
      "weapon": "p26_nemesis_close_boss_flak",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.002",
+     "pivotNode": "Mount_mg_03",
      "muzzleNodes": [
-      "Muzzle_mg.002"
+      "Muzzle_mg_03"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6877,9 +6877,9 @@
      "weapon": "p26_leviathan_direct_lev127",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_02",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6895,9 +6895,9 @@
      "weapon": "nyx_millennium",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.002",
+     "pivotNode": "Mount_mg_03",
      "muzzleNodes": [
-      "Muzzle_mg.002"
+      "Muzzle_mg_03"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -6913,9 +6913,9 @@
      "weapon": "nyx_millennium",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.003",
+     "pivotNode": "Mount_mg_04",
      "muzzleNodes": [
-      "Muzzle_mg.003"
+      "Muzzle_mg_04"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -7542,9 +7542,9 @@
      "weapon": "cruiser_203",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_aft",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_aft"
      ],
      "yawMin": 30.0,
      "yawMax": 330.0,
@@ -7578,9 +7578,9 @@
      "weapon": "hover_ciws",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_mg.001",
+     "pivotNode": "Mount_mg_L",
      "muzzleNodes": [
-      "Muzzle_mg.001"
+      "Muzzle_mg_L"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -7772,9 +7772,9 @@
      "weapon": "p26_icarus_main_ic_coil",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -7790,9 +7790,9 @@
      "weapon": "p26_icarus_direct_ic_laser",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.002",
+     "pivotNode": "Mount_gun_03",
      "muzzleNodes": [
-      "Muzzle_gun.002"
+      "Muzzle_gun_03"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -7808,9 +7808,9 @@
      "weapon": "p26_icarus_direct_ic_laser",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.003",
+     "pivotNode": "Mount_gun_04",
      "muzzleNodes": [
-      "Muzzle_gun.003"
+      "Muzzle_gun_04"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -7826,9 +7826,9 @@
      "weapon": "pt14_sb_v30",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.004",
+     "pivotNode": "Mount_gun_05",
      "muzzleNodes": [
-      "Muzzle_gun.004"
+      "Muzzle_gun_05"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -7844,9 +7844,9 @@
      "weapon": "pt14_sb_v30",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.005",
+     "pivotNode": "Mount_gun_06",
      "muzzleNodes": [
-      "Muzzle_gun.005"
+      "Muzzle_gun_06"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -7862,9 +7862,9 @@
      "weapon": "pt14_sb_v105",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.006",
+     "pivotNode": "Mount_gun_07",
      "muzzleNodes": [
-      "Muzzle_gun.006"
+      "Muzzle_gun_07"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -7880,9 +7880,9 @@
      "weapon": "pt14_sb_v105",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.007",
+     "pivotNode": "Mount_gun_08",
      "muzzleNodes": [
-      "Muzzle_gun.007"
+      "Muzzle_gun_08"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -7898,9 +7898,9 @@
      "weapon": "p26_icarus_close_autocannon_40",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.008",
+     "pivotNode": "Mount_gun_09",
      "muzzleNodes": [
-      "Muzzle_gun.008"
+      "Muzzle_gun_09"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -7916,9 +7916,9 @@
      "weapon": "p26_icarus_close_autocannon_40",
      "aimMode": "Free",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.009",
+     "pivotNode": "Mount_gun_10",
      "muzzleNodes": [
-      "Muzzle_gun.009"
+      "Muzzle_gun_10"
      ],
      "yawMin": -180.0,
      "yawMax": 180.0,
@@ -8742,9 +8742,9 @@
      "weapon": "p26_typhon_sec_ty57",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.001",
+     "pivotNode": "Mount_gun_02",
      "muzzleNodes": [
-      "Muzzle_gun.001"
+      "Muzzle_gun_02"
      ],
      "yawMin": 30.0,
      "yawMax": 330.0,
@@ -8760,9 +8760,9 @@
      "weapon": "p26_typhon_direct_ty100",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.002",
+     "pivotNode": "Mount_gun_03",
      "muzzleNodes": [
-      "Muzzle_gun.002"
+      "Muzzle_gun_03"
      ],
      "yawMin": -150.0,
      "yawMax": 150.0,
@@ -8778,9 +8778,9 @@
      "weapon": "p26_typhon_sec_ty57",
      "aimMode": "FixedArc",
      "dataAim": "Free",
-     "pivotNode": "Mount_gun.003",
+     "pivotNode": "Mount_gun_04",
      "muzzleNodes": [
-      "Muzzle_gun.003"
+      "Muzzle_gun_04"
      ],
      "yawMin": 30.0,
      "yawMax": 330.0,

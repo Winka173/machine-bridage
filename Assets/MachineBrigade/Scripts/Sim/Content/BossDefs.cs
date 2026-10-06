@@ -37,7 +37,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Its armour level on <paramref name="boss"/>: its own, else the boss's front.</summary>
         public int ArmourOn(VehicleDef boss) => Armour >= 0 ? Armour : boss.Armour.Front;
 
-        /// <summary>The model node it is (Part_engine.001): the view hides it and puts a wreck piece in at its origin.</summary>
+        /// <summary>The model node it is (Part_engine_02): the view hides it and puts a wreck piece in at its origin.</summary>
         public string? Node { get; internal set; }
 
         /// <summary>The broken piece the view puts in its place (wreck_engine); null hides it and leaves a charred stump.</summary>

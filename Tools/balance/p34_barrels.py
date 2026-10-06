@@ -76,20 +76,20 @@ def plan(data):
 # Prompt 34 L9 rule 4 (here for L4): every barrel of a simultaneous gun has its Muzzle_b<k> on the model. Model -> muzzles
 # (as exported) of the guns that fire together, and the barrels each must have; Kraken's mounts are bare launch cells.
 MUZZLES = {
-    "leviathan": {"Muzzle_gun": 3, "Muzzle_gun.001": 3, "Muzzle_gun.002": 3, "Muzzle_gun.003": 3, "Muzzle_gun.004": 3},
-    "sea_cruiser": {"Muzzle_gun": 2, "Muzzle_gun.001": 2},
+    "leviathan": {"Muzzle_gun": 3, "Muzzle_gun_02": 3, "Muzzle_gun_03": 3, "Muzzle_gun_04": 3, "Muzzle_gun_05": 3},
+    "sea_cruiser": {"Muzzle_gun": 2, "Muzzle_gun_aft": 2},
     "heavy_turret": {"Muzzle_main": 2},
     "headquarters": {"Muzzle_main": 2},
     "titan_tank": {"Muzzle_main": 2},
     # Full fix L3 (DECISIONS "Sửa lỗi tổng hợp L3", Tools/blender/mb_fix_barrels.py): the bosses' twin guns.
-    "behemoth": {"Muzzle_main": 2, "Muzzle_gun": 2, "Muzzle_gun.001": 2, "Muzzle_gun.002": 2},
+    "behemoth": {"Muzzle_main": 2, "Muzzle_gun": 2, "Muzzle_gun_02": 2, "Muzzle_gun_03": 2},
     "cerberus": {"Muzzle_main": 2},
-    "moloch": {"Muzzle_main": 2, "Muzzle_gun": 2, "Muzzle_gun.001": 2, "Muzzle_gun.002": 2},
+    "moloch": {"Muzzle_main": 2, "Muzzle_gun": 2, "Muzzle_gun_02": 2, "Muzzle_gun_03": 2},
     "typhon": {"Muzzle_gun": 2},
     "hydra_sub": {"Muzzle_gun": 2, "Muzzle_missile": 2},
-    "daedalus": {"Muzzle_gun": 2, "Muzzle_gun.001": 2},
-    "monster": {"Muzzle_gun": 2, "Muzzle_gun.001": 2},
-    "fortress_bastion": {"Muzzle_gun": 2, "Muzzle_gun.001": 2},
+    "daedalus": {"Muzzle_gun": 2, "Muzzle_gun_02": 2},
+    "monster": {"Muzzle_gun": 2, "Muzzle_gun_02": 2},
+    "fortress_bastion": {"Muzzle_gun": 2, "Muzzle_gun_02": 2},
 }
 KNOWN_MISSING = {"kraken": "its 406 mm and 155 mm mounts are launch cells and rocket boxes with no barrels: one muzzle each"}
 
