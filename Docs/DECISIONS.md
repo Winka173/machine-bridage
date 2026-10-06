@@ -21428,3 +21428,11 @@ Spec: Docs/mapvisaudio (parts W-AB, AC-AO, AP-BL, BT-BX, CE-CG). Branch feature/
   `Docs/balance/player_weapon_waitlist.md`); `flight_feel_audit.py` console run. **Not regenerated:** `Docs/export/*`
   (explicit brief rule -- the lead rebuilds the pack once at the end).
 - Full report: `Docs/balance/BALANCE_V2_REPORT.md` (copied to `bao_cao_combat/balance_v2_report.md`).
+
+## Balance v2 clarifications (06/10)
+
+Owner final clarifications (Docs/prompts/balance_v2_clarify_vi.md) override older prompt values:
+- recoilless_106: damage 314 / cooldown 9.524 s KEEP (the "220" was stale), Pen 4 (already in data).
+- sam_48n6: splash 6 m final (cap wins over ×1.25), speed 115, damage/Pen KEEP (already in data).
+- pt14_hp_nsm splash 5 -> 8 m, scylla_kh35 splash 6 -> 8 m; nothing else changed. Their TierFx look keeps Core -1 (the overlay and rings follow the real radius), so the impact and the damage-radius rings grow with the splash; no separate warning def references them. Only these two, not every boss anti-ship missile.
+- railgun: Pen 5, damage and cooldown KEEP (already in data); revisit reload only if Armour 4/5 TTK regression shows overtuning.
