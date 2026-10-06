@@ -37,8 +37,11 @@ namespace MachineBrigade.Game.Audio
         /// <summary>A boss's, a 406 mm's or a super weapon's sound.</summary>
         public const int Boss = 60;
 
-        /// <summary>Gameplay warnings (the whistles of incoming fire; the alarms play on their own source).</summary>
+        /// <summary>Gameplay warnings (the whistles of incoming fire; the alarms play on their own source): class P1.</summary>
         public const int Warning = 70;
+
+        /// <summary>MVA W1-B: a lethal warning (a boss's big attack, a 406 mm / super weapon's whistle): class P0 (<see cref="AudioPolicy"/>).</summary>
+        public const int Critical = 80;
 
         /// <summary>The old banks' priorities (0-5) on this scale; 7 and up is a warning.</summary>
         public static int Steps(int old) => old >= 7 ? Warning : old switch
@@ -62,7 +65,7 @@ namespace MachineBrigade.Game.Audio
     public sealed partial class AudioDirector
     {
         /// <summary>Effect voices at once before the least important is cut (of the pool's 32; the rest wait for warnings and boss sounds).</summary>
-        internal const int EffectVoices = 24;
+        internal const int EffectVoices = VoiceArbiter.EffectVoices;
 
         /// <summary>A source off the screen plays this much quieter (0.6 in prompt 34 L6: part of the lost punch, Docs/audio/diagnosis.md).</summary>
         internal const float OffScreenGain = 0.85f;
@@ -83,6 +86,9 @@ namespace MachineBrigade.Game.Audio
         private static float Fx => SoundLibrary.Gain(AudioGroup.Effects);
         private static float Talk => SoundLibrary.Gain(AudioGroup.Dialogue);
         private static float Ui => SoundLibrary.Gain(AudioGroup.UI);
+
+        /// <summary>MVA W1-B (spec part AS): the CriticalWarnings bus's slider (the alarms and the whistles), apart from the effects'.</summary>
+        private static float Warn => SoundLibrary.Gain(AudioGroup.Warnings);
 
         /// <summary>The library's banks by name (Resources/Audio/sfx/name), from Tools/sfx/build_sfx.py.</summary>
         private readonly Dictionary<string, Bank> _tierBanks = new();
@@ -517,13 +523,18 @@ namespace MachineBrigade.Game.Audio
             var now = Time.unscaledTime;
             if (now < _nextHiss) return;
             _nextHiss = now + HissGap;
-            Schedule(hiss, e.Target, 0.9f, e.Value - HissLead, SoundPriority.FarShot);
+            // MVA W1-B (spec parts BA, BL): a guided or top-attack missile aimed at one of the player's units is an incoming
+            // missile warning (P1: never cut while it plays); any other hiss stays a far shot.
+            var incoming = (weapon.Guided || weapon.TopAttack) && e.Team != _playerTeam && _playerTeam >= 0 && _views != null &&
+                           _views.TryGet(e.Other, out var aimed) && aimed.Sim.Team == _playerTeam;
+            Schedule(hiss, e.Target, 0.9f, e.Value - HissLead, incoming ? SoundPriority.Warning : SoundPriority.FarShot);
         }
 
         /// <summary>An incoming shell's whistle: the big one for a boss's attack or a 406 mm / super weapon.</summary>
         private void Whistle(Vector2 at, float volume, float delay, bool big)
         {
-            if (big && _tierBanks.TryGetValue("warn_whistle_big", out var bank)) Schedule(bank, at, volume, delay, SoundPriority.Warning);
+            // MVA W1-B: a boss's or super weapon's whistle is a P0 cue (never cut while it plays), the rest P1.
+            if (big && _tierBanks.TryGetValue("warn_whistle_big", out var bank)) Schedule(bank, at, volume, delay, SoundPriority.Critical);
             else Schedule(Sound.Whistle, at, volume, delay);
         }
 

@@ -58,8 +58,8 @@ namespace MachineBrigade.Game.Rendering
         public IReadOnlyDictionary<string, Transform> Muzzles { get; }
 
         /// <summary>
-        /// Every `Muzzle_&lt;slot&gt;` and `Mount_&lt;slot&gt;` of a slot in name order (Muzzle_mg,
-        /// Muzzle_mg.001, ...): the k-th mount of a slot in the vehicle's data is the k-th here.
+        /// Every `Muzzle_&lt;slot&gt;` and `Mount_&lt;slot&gt;` of a slot in canonical order (<see cref="RuntimeNodes.Compare"/>:
+        /// Muzzle_mg, Muzzle_mg_02 ... or a legacy Muzzle_mg, Muzzle_mg.001 ...): the k-th mount of a slot in the vehicle's data is the k-th here.
         /// </summary>
         public IReadOnlyDictionary<string, List<Transform>> MuzzleLists { get; internal set; } = new Dictionary<string, List<Transform>>();
         public IReadOnlyDictionary<string, List<Transform>> MountLists { get; internal set; } = new Dictionary<string, List<Transform>>();
@@ -151,8 +151,9 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Prompt 34 L4: one barrel's own muzzle (Muzzle_b1_gun_001), a child of its mount's Muzzle_ empty.</summary>
         private static readonly Regex AuthoredBarrel = new(@"^Muzzle_b\d+_[A-Za-z0-9_]+$");
 
-        private static readonly Regex MuzzlePattern = new(@"^Muzzle_(main|coax|mg|missile|rocket|gun|aam|door_l|door_r|ramp|agl_l|agl_r|mortar)(\.\d+)?$", RegexOptions.IgnoreCase);
-        private static readonly Regex MountPattern = new(@"^Mount_([a-z]+)(\.\d+)?$", RegexOptions.IgnoreCase);
+        /// <summary>MVA W1-B: the runtime node contract's patterns (<see cref="RuntimeNodes"/>: semantic tags, legacy .NNN).</summary>
+        private static Regex MuzzlePattern => RuntimeNodes.Muzzle;
+        private static Regex MountPattern => RuntimeNodes.Mount;
 
         /// <summary>Spinning parts: (name, local axis, degrees per second). Blender Z (up) is Unity Y.</summary>
         private static readonly (Regex name, Vector3 axis, float speed)[] SpinnerPatterns =
@@ -175,7 +176,7 @@ namespace MachineBrigade.Game.Rendering
         /// A boss's destructible parts (prompt 8: Part_engine, Part_hangar.001 ...): each is its own
         /// rigid group, so the view can hide it or put a wreck piece in its place when it breaks.
         /// </summary>
-        internal static readonly Regex PartPattern = new(@"^Part_[a-z]+(\.\d+)?$", RegexOptions.IgnoreCase);
+        internal static Regex PartPattern => RuntimeNodes.Part;
 
         /// <summary>
         /// The bomb-run fix, pass 3 (DECISIONS "Ném bom rải thảm"): a bomber's bay doors on their hinge pivots
@@ -423,8 +424,8 @@ namespace MachineBrigade.Game.Rendering
                 if (m.Success)
                 {
                     var slot = m.Groups[1].Value.ToLowerInvariant();
-                    // The plain name wins for the single lookup (Muzzle_mg before Muzzle_mg.001).
-                    if (!muzzles.ContainsKey(slot) || !m.Groups[2].Success) muzzles[slot] = t;
+                    // The first met stands in for the single lookup until the lists are sorted (see below).
+                    if (!muzzles.ContainsKey(slot)) muzzles[slot] = t;
                     if (!muzzleLists.TryGetValue(slot, out var list)) muzzleLists[slot] = list = new List<Transform>();
                     list.Add(t);
                 }
@@ -432,7 +433,7 @@ namespace MachineBrigade.Game.Rendering
                 if (mount.Success)
                 {
                     var slot = mount.Groups[1].Value.ToLowerInvariant();
-                    if (!mounts.ContainsKey(slot) || !mount.Groups[2].Success) mounts[slot] = t;
+                    if (!mounts.ContainsKey(slot)) mounts[slot] = t;
                     if (!mountLists.TryGetValue(slot, out var list)) mountLists[slot] = list = new List<Transform>();
                     list.Add(t);
                 }
@@ -449,8 +450,19 @@ namespace MachineBrigade.Game.Rendering
                 if (!launchers.TryGetValue(point.Slot, out var list)) launchers[point.Slot] = list = new List<LaunchPoint>();
                 list.Add(point);
             }
-            foreach (var list in muzzleLists.Values) list.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
-            foreach (var list in mountLists.Values) list.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
+            // MVA W1-B: canonical order (the plain name, semantic tags, then a legacy .NNN: the old ordinal order for old GLBs).
+            // The single lookup is the slot's first in that order (the plain name wins, as before); a legacy group with no
+            // plain name keeps the first met, as before.
+            foreach (var (slot, list) in muzzleLists)
+            {
+                RuntimeNodes.Sort(list);
+                if (!RuntimeNodes.IsLegacySuffixed(list[0].name)) muzzles[slot] = list[0];
+            }
+            foreach (var (slot, list) in mountLists)
+            {
+                RuntimeNodes.Sort(list);
+                if (!RuntimeNodes.IsLegacySuffixed(list[0].name)) mounts[slot] = list[0];
+            }
             return new ModelInstance(root, turret, recoil, muzzle, full.ToArray(), muzzles, mounts, spinners, elevation,
                 raise.pitch, elevation != null ? raise.kind : BarrelKind.None)
             {

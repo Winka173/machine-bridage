@@ -181,7 +181,11 @@ def build_05_11(R, out: dict):
                      [("clip_ids", "", "các clip của nhóm (09/Am_thanh)"),
                       ("nguon_am_thanh", "", "nguồn: gói ghi âm / tổng hợp bằng script (09/Am_thanh.nguon_goc)"),
                       ("giay_phep", "", "giấy phép (09/Am_thanh.giay_phep)"),
-                      ("dac_diem_tieng_that", "", "đặc điểm tiếng thật theo bậc cỡ")])
+                      ("dac_diem_tieng_that", "", "đặc điểm tiếng thật theo bậc cỡ"),
+                      # MVA W1-B (spec part BJ): the group's own licence / source status apart from its realism reference.
+                      ("trang_thai_giay_phep", "", "assetLicenseStatus: ASSET_LICENSE_OK khi mọi clip có giấy phép"),
+                      ("trang_thai_nguon", "", "assetSourceStatus: ASSET_SOURCE_OK khi mọi clip có nguồn"),
+                      ("trang_thai_tham_chieu_that", "", "realismReferenceStatus: REALISM_REFERENCE_NEEDS_SOURCE không chặn tài sản")])
     sh.cols["clip_ids"].fk = ["09_hieu_ung_am_thanh/Am_thanh"]
     for e in sorted(b.sheets["VFX_bac"].rows, key=str):
         _row(sh, f"vfx/{e}", e, "spec 12.2 (09): VFX theo bậc", NS, "ten_mau_that",
@@ -207,7 +211,13 @@ def build_05_11(R, out: dict):
         _row(sh, f"am_thanh/{grp}/{tier}", items[0][0], "09_hieu_ung_am_thanh/Am_thanh (nguon_goc, giay_phep)", NS,
              "dac_diem_tieng_that", {"ten_hien_thi": f"âm thanh {grp} {tier}", "clip_ids": ";".join(e for e, _r in items),
                                      "nguon_am_thanh": C.join(sorted(set(packs)))[:1000], "giay_phep": C.join(sorted(set(lic))),
-                                     "nguon_id": C.join(ids)},
+                                     "nguon_id": C.join(ids),
+                                     "trang_thai_giay_phep": "ASSET_LICENSE_OK" if all(r.values.get("giay_phep") for _e, r in items)
+                                     else "ASSET_LICENSE_MISSING",
+                                     "trang_thai_nguon": "ASSET_SOURCE_OK" if all(r.values.get("nguon_goc") for _e, r in items)
+                                     else "ASSET_SOURCE_MISSING",
+                                     "trang_thai_tham_chieu_that": "NOT_APPLICABLE" if grp.lower() in ("music", "ui")
+                                     else "REALISM_REFERENCE_NEEDS_SOURCE"},
              "nguồn ghi âm / tổng hợp đã có; đặc điểm tiếng thật của hệ thống tương ứng chưa có nguồn")
     out["09"] = (sh, C.marker_compare(b, "Hieu_ung_so_sanh_that", "Hiệu ứng: so sánh với thật",
                                       "chưa có số đo tiếng / hình thật để đối chiếu (đặc điểm tiếng thật: NEED_SOURCE)"))

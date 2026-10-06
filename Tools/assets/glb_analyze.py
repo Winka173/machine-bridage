@@ -12,23 +12,27 @@ import hashlib
 import json
 import re
 import struct
+import sys
 from pathlib import Path
 
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import runtime_nodes  # noqa: E402
 
 # The node names the runtime looks up (ModelLibrary.cs patterns, VehicleView, MuzzleFx, BossParts).
 RUNTIME_PATTERNS = {
     'turret': re.compile(r'^Turret(\.\d+)?$'),
     'main_cannon': re.compile(r'^Main_cannon', re.I),
     'muzzle_brake': re.compile(r'^Muzzle_brake', re.I),
-    'muzzle': re.compile(r'^Muzzle_(main|coax|mg|missile|rocket|gun|aam|door_l|door_r|ramp|agl_l|agl_r|mortar)(\.\d+)?$', re.I),
-    'mount': re.compile(r'^Mount_([a-z]+)(\.\d+)?$', re.I),
+    'muzzle': runtime_nodes.PATTERNS['muzzle'],  # MVA W1-B: semantic tags (Tools/assets/runtime_nodes.py)
+    'mount': runtime_nodes.PATTERNS['mount'],  # MVA W1-B: semantic tags (Tools/assets/runtime_nodes.py)
     'rotor': re.compile(r'^Rotor(_rear|_front|_\d+)?(\.\d+)?$'),
     'tail_rotor': re.compile(r'^Tail_rotor(\.\d+)?$'),
     'radar': re.compile(r'^Radar(_search|_\d+)?(\.\d+)?$'),
     'propeller': re.compile(r'^Propeller(_\d+)?(\.\d+)?$'),
     'loose': re.compile(r'^(Bombs|Pump_beam|Erector|Searchlight|Lift|Blade)(\.\d+)?$'),
-    'part': re.compile(r'^Part_[a-z]+(\.\d+)?$', re.I),
+    'part': runtime_nodes.PATTERNS['part'],  # MVA W1-B: semantic tags (Tools/assets/runtime_nodes.py)
     'deploy': re.compile(r'^Deploy_[a-z]+(_[lr])?(\.\d+)?$', re.I),
     'point': re.compile(r'^Point_', re.I),
     'launch': re.compile(r'^Launch_', re.I),

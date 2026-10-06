@@ -69,6 +69,9 @@ namespace MachineBrigade.Game.Audio
         Music,
         Dialogue,
         UI,
+
+        /// <summary>MVA W1-B: the CriticalWarnings bus (alarms, incoming whistles), its own slider (MatchSettings.WarningVolume).</summary>
+        Warnings,
     }
 
     /// <summary>
@@ -316,6 +319,7 @@ namespace MachineBrigade.Game.Audio
             AudioGroup.Effects => MatchSettings.EffectsVolume,
             AudioGroup.Music => MatchSettings.MusicVolume,
             AudioGroup.Dialogue => MatchSettings.DialogueVolume,
+            AudioGroup.Warnings => MatchSettings.WarningVolume,
             _ => 1f,
         };
 
