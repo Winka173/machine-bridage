@@ -21331,3 +21331,50 @@ the worktree (owner-allowed by the MASTER spec). Result: 154/154 pass. Per failu
 - **Speeds:** spec sections 2-14 and 16 applied by family and role (108 ids; table in Docs/fixes/flight_feel_report.md and Docs/export/CHANGES.md "FLIGHT FEEL"); cruise, bombs, drones, ballistic, direct tank / APFSDS / MG kept. Seven new family ids carry the splits (jet rockets 100, howitzer fixed 65 / ext 60, coastal 70, guided +5). Earlier slow-downs (boss_rockets 65, sam_post 80, sam_battery 95, pt14_train_grad 65, sam_pac3 300 ...) superseded; PlayTest14LaneH/I tests updated.
 - **Validator:** NHANH_QUA / CHAM_QUA are fire-cycle flags and stay; added Tools/balance/flight_feel_audit.py (class bands, min / half / max flight, gear-cap flight, TOO_FAST / TOO_SLOW_FOR_CLASS) and 10 columns in Vu_khi_suy_ra. Rocket artillery at the spec's 80 m/s is under its 0.7 s band in the game's 45-55 m reach: owner decision left open.
 - **Code:** `BossSystem.MaxLead` 0.9 -> 2.5 (the cap fitted 180-300 m/s rounds; slow boss shells would fly 2.5x too fast in the view). AI lead, proximity fuze, APS and flare windows, salvo spacing read statically: all time- or metre-based, nothing else needed changing; APS, flare and homing need a Unity measurement (not run, owner rule); APS not nerfed.
+
+## Map/visual/audio W1-B (lane B)
+
+Spec: Docs/mapvisaudio (parts W-AB, AC-AO, AP-BL, BT-BX, CE-CG). Branch feature/mva-w1b. No balance, no weather, no Unity runs.
+
+- **Runtime node contract (W, BX):** `Game/Rendering/RuntimeNodes.cs` + `Tools/assets/runtime_nodes.py` (twins). Indexed nodes
+  `Muzzle_<slot>` / `Mount_<slot>` / `Part_<name>` take a case-sensitive semantic tag (`L|C|R|fore|mid|aft|01-99`, up to two);
+  canonical order = plain, tags, then a legacy `.NNN` by number (exactly the old ordinal order, so un-renamed GLBs resolve as
+  before). `Mount_Flare_*` never matches a weapon mount; lower-case `_l` names (Part_aa_l, Muzzle_door_l) are not tags. The plain
+  name is kept on rename (the slot's first node; every exact lookup of it still works), extra nodes get a tag: a pair's second by
+  side / along the hull (glTF +X is the model's left: glTFast negates X), three or more `_02.._NN`, muzzles take their mount's tag.
+  ModelLibrary sorts with `RuntimeNodes.Compare`; `VehicleView.FindPart` and the editor audit use the resolver.
+- **Renamed (order-preserving, JSON chunk only):** attack_jet first (+ _hd), then every model whose data and tests name no suffixed
+  node: 25 GLBs, map in `Tools/assets/runtime_node_map.json`, re-applied by `frontier_kit.export_collection` after each export.
+  Kept legacy (35): bosses / towers whose balance.json parts / mount nodes, p34_barrels or silver_bug tests name `.NNN`; rename model
+  + data together later (`runtime_node_audit.py --rename`).
+- **Audit:** `Tools/assets/runtime_node_audit.py` hard-fails suffix lookups, duplicate / mixed ids, missing data part nodes, slots
+  with no node, a muzzle off its k-th pivot; soft: count wrap, tilted pivot, fixed-arc side, hull aim on a pivot. Ratchet baseline
+  `runtime_node_baseline.json` (103 known: 100 legacy suffix groups, 3 slot gaps rocket2 / bomb / drone); 0 new. Writes
+  `Docs/models/RUNTIME_NODES.md` and `Docs/models/aim_contract.json` (aimMode Free / Hull / FixedArc, pivot, muzzles, yaw, pitch from
+  barrelLimits, per unit and mount). Arc check confirmed the side convention (mg_bunker's side guns).
+- **Budgets (Z, AB, CG):** `Tools/assets/budget_audit.py` -> `Docs/models/BUDGET_OUTLIERS.md`: HARD (renderers / moving parts over
+  the cap; tris / verts only for units seen in numbers past 1.5x) / WAIVED / EXCEPTION / INFO (owner rule 02/10) / SOFT. Waivers in
+  `budget_waivers.json` (who, date, why, follow-up): hangars x2, ixion, fpv_carrier, heavy_aa (renderers); notes for attack_jet
+  (renderers 40, soft), cp_relay (43, soft), armored_bulldozer (12,787 verts INFO, tris soft). Renderer merges go to W3 (PLAN).
+- **Audio (AP-AT, BL, BV):** `Game/Audio/AudioPolicy.cs`: classes P0-P5 over SoundPriority (new `Critical` = 80 = P0: big whistles,
+  super cues; `Warning` = P1), per-class max instances, cooldown, distance weight, virtualisation, bus. `VoiceArbiter` (pure) keeps the
+  L7 rules for combat and adds: a playing P0 / P1 voice is never taken, a P0 / P1 sound always gets a voice (past its bank limit when
+  the bank is all active warnings). Warnings skip the compressor and big-blast duck and duck the classes under P2 briefly (attack
+  0.15, hold 0.4, release 0.8 s to 0.55; music only on P0 via Alert). Bank cooldown no longer drops a P1 cue at another spot (> 12 m).
+  CriticalWarnings bus = new Settings slider "Warnings" (20-100 %, `mb.warningVolume`); alarms moved off the effects slider. A guided /
+  top-attack missile hiss aimed at the player's unit is P1. Existing small-arms clustering stays the AR aggregation.
+- **Threat cues (AE, AF, AG, AN, BL):** `Game/Effects/ThreatCues.cs` + `Docs/mapvisaudio/THREAT_CUES.md` (lead, telegraph vs danger
+  shape, audio, cancel, impact, occlusion, low preset). Owner zoneless rule for ordinary bombs / artillery kept (whistle is the cue).
+  Top attack: `TopAttackMarks` closing violet ring on the targeted player unit over the dive, only for top-attack weapons, follows
+  the warning-rings setting, all tiers. Low preset: warnings are not tier-gated (checked); plume glow is the only Low cut. Gaps: mine
+  detected, EMP (W2).
+- **Wrecks (AO):** `Sim/Movement/WreckStates.cs` (Alive / DestroyedAnimating / BlockingWreck / PassableRubble / Removed + contract).
+  Fix: WreckManager's cap and Trim sank Sim-solid hulks early (invisible but blocking); now they are simplified (fire out) and sink on
+  the Sim's clock. `ViewState` / `Desyncs` for the stress scene and tests.
+- **Audio records (BJ):** 09/Am_thanh and Hieu_ung_tham_chieu get trang_thai_giay_phep / trang_thai_nguon / trang_thai_tham_chieu_that
+  (ASSET_LICENSE_OK, ASSET_SOURCE_OK, REALISM_REFERENCE_NEEDS_SOURCE / NOT_APPLICABLE); 10 maps the three new Tools/assets JSONs.
+  Pack not regenerated (lead rebuilds); a scratch build exited 0 with 0 unmapped.
+- **Accessibility:** screen shake already had Off / Low / Full; added "Reduced flashes" (big-gun muzzle flash 0.7x, fire glow without
+  fast flicker); gameplay cues unchanged.
+- **Tests written, not run:** `MvaW1bNodeContractTests`, `MvaW1bCriticalAudioTests` (P0 in a 32-voice storm of 500 events).
+
