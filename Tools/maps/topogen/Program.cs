@@ -1,11 +1,14 @@
 // Map / visual / audio master spec Part V (lane W1-A): writes the generated (never hand-authored) map topology outputs from
 // the shipped data through the game's own GameplayTopology (one implementation: the runtime's), into Docs/maps:
 //   GameplayTopology.json, MapConnectivity.json, TacticalPositions.json, NavalRouteAudit.json, SpawnFairnessAudit.json,
-//   MapWarningRegistry.json (+ GAMEPLAY_TOPOLOGY.md, a summary).
+//   MapWarningRegistry.json (+ GAMEPLAY_TOPOLOGY.md, a summary); lane W2-A adds ObjectiveApproaches.json (spec H),
+//   MapAcceptance.json (spec CI map rows per map, the CJ map_topology / naval_route / spawn_fairness / tactical_position
+//   validators in one pass) and STRESS_SCENES.json (spec BT scene definitions with their focus resolved on the topology).
+//   --check: exit 1 when an acceptance row fails (prints the failures; writes nothing with a map prefix).
 // Each map's world is built as a battle starts it (props, the map's fixed defences, wall lines standing with their gates open)
 // and never stepped: nothing is simulated. Canonical map JSON stays the authority; statuses / owners / reasons of warnings
 // come from Docs/maps/map_warning_reviews.json (hand-authored), the static audit's flags from Docs/checks/map_audit.csv.
-//   dotnet build -c Release Tools/maps/topogen/TopoGen.csproj && dotnet Temp/topogen/TopoGen.dll [map-prefix ...]
+//   dotnet build -c Release Tools/maps/topogen/TopoGen.csproj && dotnet Temp/topogen/TopoGen.dll [--check] [map-prefix ...]
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -31,6 +34,8 @@ internal static class Program
         SimTunables.Apply(File.ReadAllText(Path.Combine(data, "tunables.json")));
         var catalog = Catalog.FromJson(File.ReadAllText(Path.Combine(data, "balance.json")));
         var files = Directory.GetFiles(Path.Combine(data, "maps"), "*.json").OrderBy(f => f, StringComparer.Ordinal).ToList();
+        var check = args.Contains("--check");
+        args = args.Where(a => !a.StartsWith("--", StringComparison.Ordinal)).ToArray();
         if (args.Length > 0) files = files.Where(f => args.Any(a => Path.GetFileName(f).StartsWith(a, StringComparison.Ordinal))).ToList();
         var outDir = Path.Combine(Root, "Docs", "maps");
         Directory.CreateDirectory(outDir);
@@ -41,6 +46,10 @@ internal static class Program
         var naval = new List<(string id, string json)>();
         var fair = new List<(string id, string json)>();
         var warnings = new List<Dictionary<string, object?>>();
+        var appr = new List<(string id, string json)>();
+        var accept = new List<(string id, string json)>();
+        var failures = new List<string>();
+        var stress = new Dictionary<string, string>(StringComparer.Ordinal);
         var summary = new List<string[]>();
         var auditFlags = AuditFlags();
         var reviews = Reviews.Load(Path.Combine(outDir, "map_warning_reviews.json"));
@@ -55,37 +64,50 @@ internal static class Program
             pos.Add((map.Id, Positions(g)));
             if (map.Sea != null) naval.Add((map.Id, Naval(g)));
             fair.Add((map.Id, Fairness(g)));
+            appr.Add((map.Id, Approaches(g)));
             var asym = Asymmetry(file);
+            var firstWarning = warnings.Count;
             foreach (var w in g.Warnings) warnings.Add(reviews.Apply(w.WarningId, w.Severity.ToString().ToUpperInvariant(), w.Code, w.Metric, w.Value, w.Threshold, "GameplayTopology", asym));
             if (auditFlags.TryGetValue(map.Id, out var flags))
                 foreach (var (code, metric, value, threshold, sev) in flags)
                     warnings.Add(reviews.Apply($"{map.Id}:{code}:map", sev, code, metric, value, threshold, "Docs/checks/map_audit.csv", asym));
             var gates = g.RunLoadGates(true);
+            var rows = Acceptance(world, g, warnings.Skip(firstWarning).ToList(), gates);
+            accept.Add((map.Id, AcceptanceJson(rows)));
+            foreach (var (row, pass, detail) in rows)
+                if (!pass) failures.Add($"{map.Id}: {row}: {detail}");
+            foreach (var scene in MapStressScenes.All)
+                if (scene.MapId == map.Id) stress[scene.Id] = SceneJson(scene, g, map);
             summary.Add(new[]
             {
                 map.Id, g.Ground.Components.ToString(), g.Naval.Components.ToString(), g.Chokes.Count.ToString(), g.Lanes.Count.ToString(),
                 g.Positions.Count.ToString(), g.StagingAreas.Count.ToString(), g.ShoreFireRegions.Count.ToString(),
                 gates.Count(x => x.Pass) + "/" + gates.Count, g.Warnings.Count.ToString(),
+                g.ObjectiveApproaches.Sum(a => a.Approaches.Count).ToString(), rows.Count(r => r.pass) + "/" + rows.Count,
             });
             Console.WriteLine($"{map.Id}: chokes {g.Chokes.Count}, lanes {g.Lanes.Count}, positions {g.Positions.Count}, gates {gates.Count(x => x.Pass)}/{gates.Count}, warnings {g.Warnings.Count} ({(DateTime.UtcNow - t0).TotalSeconds:0.0} s)");
         }
+        foreach (var f in failures) Console.WriteLine("ACCEPTANCE FAIL " + f);
         if (args.Length > 0)
         {
             foreach (var w in warnings) Console.WriteLine($"  {w["warningId"]} [{w["severity"]}/{w["status"]}] {w["metric"]}={w["value"]} ({w["threshold"]})");
             Console.WriteLine("prefix run: nothing written (run without arguments to regenerate Docs/maps).");
-            return 0;
+            return check && failures.Count > 0 ? 1 : 0;
         }
-        var head = $"\"generator\": \"Tools/maps/topogen (GameplayTopology, lane W1-A)\", \"source\": \"Assets/MachineBrigade/Resources/Data/maps (canonical)\", " +
+        var head = $"\"generator\": \"Tools/maps/topogen (GameplayTopology, lanes W1-A / W2-A)\", \"source\": \"Assets/MachineBrigade/Resources/Data/maps (canonical)\", " +
                    $"\"note\": \"generated: never edit by hand\", \"global\": {Global(catalog)}";
         WriteMaps(Path.Combine(outDir, "GameplayTopology.json"), head, topo);
         WriteMaps(Path.Combine(outDir, "MapConnectivity.json"), head, conn);
         WriteMaps(Path.Combine(outDir, "TacticalPositions.json"), head, pos);
         WriteMaps(Path.Combine(outDir, "NavalRouteAudit.json"), head, naval);
         WriteMaps(Path.Combine(outDir, "SpawnFairnessAudit.json"), head, fair);
+        WriteMaps(Path.Combine(outDir, "ObjectiveApproaches.json"), head, appr);
+        WriteMaps(Path.Combine(outDir, "MapAcceptance.json"), head, accept);
+        WriteStress(Path.Combine(outDir, "STRESS_SCENES.json"), head, stress);
         WriteRegistry(Path.Combine(outDir, "MapWarningRegistry.json"), warnings, reviews.Version);
-        WriteSummary(Path.Combine(outDir, "GAMEPLAY_TOPOLOGY.md"), summary, warnings);
-        Console.WriteLine($"{files.Count} maps, {warnings.Count} warnings -> {outDir}");
-        return 0;
+        WriteSummary(Path.Combine(outDir, "GAMEPLAY_TOPOLOGY.md"), summary, warnings, failures);
+        Console.WriteLine($"{files.Count} maps, {warnings.Count} warnings, {failures.Count} acceptance failures -> {outDir}");
+        return check && failures.Count > 0 ? 1 : 0;
     }
 
     private static string FindRoot()
@@ -302,7 +324,8 @@ internal static class Program
         j.A("routes");
         foreach (var r in g.RouteAudits)
             j.O().V("from", r.From).V("to", r.To).V("class", r.Class).V("reachable", r.Reachable).V("lengthM", r.LengthM).V("minClearWidthM", r.MinClearWidthM)
-                .V("minTurnSpaceM", r.MinTurnSpaceM).V("gateMinWidthM", r.GateMinWidthM).V("bridgeMinWidthM", r.BridgeMinWidthM).V("turnsFit", r.TurnsFit).EndO();
+                .V("minTurnSpaceM", r.MinTurnSpaceM).V("gateMinWidthM", r.GateMinWidthM).V("bridgeMinWidthM", r.BridgeMinWidthM).V("turnsFit", r.TurnsFit)
+                .V("swingTurnSpaceM", r.SwingTurnSpaceM).V("turnsFitSwing", r.TurnsFitSwing).EndO();
         j.EndA();
         return j.EndO().ToString();
     }
@@ -369,6 +392,134 @@ internal static class Program
                 .V("alternateExitCount", f.AlternateExitCount).V("spawnQueueCapacity", f.SpawnQueueCapacity).V("enemyRushETA", f.EnemyRushEta)
                 .V("friendlyObjectiveETA", f.FriendlyObjectiveEta).Raw("flags", "[" + string.Join(",", f.Flags.Select(J.Value)) + "]").EndO();
         return j.EndA().EndO().ToString();
+    }
+
+    // ------------------------------------------------------------------------------------------------ W2-A: approaches, acceptance, stress
+
+    private static string Region(TacticalRegion? r)
+    {
+        if (r == null) return "null";
+        var j = new J().O().V("centre", r.Centre).V("radius", r.Radius).V("cells", r.Cells).V("score", r.Score);
+        j.O("terms");
+        foreach (var (k, v) in r.Terms) j.V(k, v);
+        return j.EndO().EndO().ToString();
+    }
+
+    private static string Approaches(GameplayTopology g)
+    {
+        var j = new J().O().A("sets");
+        foreach (var a in g.ObjectiveApproaches)
+        {
+            j.O().V("id", a.Id).V("objective", a.Objective).V("team", a.Team).V("position", a.ObjectivePosition).V("distinct", a.Distinct)
+                .Raw("artillerySupport", Region(a.ArtillerySupport)).Raw("defenderFallback", Region(a.DefenderFallback));
+            j.A("routes");
+            foreach (var r in a.Approaches)
+                j.O().V("id", r.Id).Raw("roles", "[" + string.Join(",", r.Roles.Select(x => J.Value(x))) + "]").V("lengthM", r.LengthM)
+                    .V("etaSeconds", r.EtaSeconds).V("exposure", r.Exposure).V("minWidthM", r.MinWidthM).V("vehicleClassSupport", r.VehicleClassSupport)
+                    .Raw("chokeIds", "[" + string.Join(",", r.ChokeIds) + "]").V("laneId", r.LaneId).V("arrivalBearingDeg", r.ArrivalBearingDeg)
+                    .Raw("points", Points(r.Points)).EndO();
+            j.EndA().EndO();
+        }
+        return j.EndA().EndO().ToString();
+    }
+
+    /// <summary>
+    /// Spec CI map rows (and the CJ validators' checks) for one map: what the acceptance tests assert, measured here so the
+    /// export pack and the lead see them without a Unity run. The registry rows given are this map's, statuses applied.
+    /// </summary>
+    private static List<(string row, bool pass, string detail)> Acceptance(SimWorld world, GameplayTopology g, List<Dictionary<string, object?>> mapWarnings,
+        List<LoadGateResult> gates)
+    {
+        var rows = new List<(string, bool, string)>();
+        string Join(IEnumerable<string> items) => string.Join(", ", items.Take(8));
+        string S(Dictionary<string, object?> w, string k) => w.TryGetValue(k, out var v) ? v as string ?? "" : "";
+        // CI 1: objectives / spawns resolve (map_topology_audit).
+        var unresolved = g.Anchors.Where(a => !a.Resolved && a.Kind is AnchorKind.Spawn or AnchorKind.MissionSpawn or AnchorKind.EntryGate or AnchorKind.Objective
+            or AnchorKind.Base or AnchorKind.Fortress or AnchorKind.Battery or AnchorKind.NavalLane or AnchorKind.NavalNode or AnchorKind.BossRoute).Select(a => a.Id).ToList();
+        rows.Add(("CI1 objectives/spawns resolve to components", unresolved.Count == 0, Join(unresolved)));
+        // CI 2: every spawn -> objective pair audited for Heavy, SuperHeavy and Boss; an unreachable one carries a governed warning.
+        var pairs = g.RouteAudits.Select(r => (r.From, r.To)).Distinct().ToList();
+        var missing = new List<string>();
+        var big = new[] { VehicleSizeClass.Heavy, VehicleSizeClass.SuperHeavy, VehicleSizeClass.Boss };
+        foreach (var (from, to) in pairs)
+            foreach (var cls in big)
+                if (!g.RouteAudits.Any(r => r.From == from && r.To == to && r.Class == cls)) missing.Add($"{from}->{to}/{cls}");
+        foreach (var cls in big)
+            if (g.RouteAudits.Any(r => r.Class == cls && !r.Reachable) && !mapWarnings.Any(w => S(w, "code") == "ROUTE_SIZE" && S(w, "warningId").EndsWith(":" + cls, StringComparison.Ordinal)))
+                missing.Add($"unreachable {cls} route without a ROUTE_SIZE warning");
+        rows.Add(("CI2 heavy/boss routes validated by size", missing.Count == 0, Join(missing)));
+        // CI 3: boss naval curvature (naval_route_audit).
+        var bad = g.NavalTurnAudits.Where(t => t.Boss && !t.Pass && !t.Mitigated).Select(t => $"{t.Ship} {t.Manoeuvre} {t.Where}").ToList();
+        rows.Add(("CI3 boss naval routes pass the curvature audit", bad.Count == 0, Join(bad)));
+        // CI 4: critical chokes carry width and capacity.
+        var chokes = g.Chokes.Where(c => c.Critical && !(c.UsableWidthM > 0f && c.EstimatedThroughput > 0f && c.MaxLightSideBySide >= 0)).Select(c => "choke" + c.Id).ToList();
+        rows.Add(("CI4 critical chokes have width/capacity", chokes.Count == 0, Join(chokes)));
+        // CI 5: no unexplained full-exit direct fire (spawn_fairness_audit).
+        var exposed = mapWarnings.Where(w => S(w, "code") == "SPAWN_FULL_EXIT_DIRECT_FIRE" && S(w, "status") == "OPEN").Select(w => S(w, "warningId")).ToList();
+        rows.Add(("CI5 no unexplained full-exit direct fire", exposed.Count == 0, Join(exposed)));
+        // CI 6: shore-fire feasibility: a map with naval lanes and ground has shore fire regions.
+        var lanes = world.Map.Sea?.Lanes.Count ?? 0;
+        var shoreOk = lanes == 0 || g.ShoreFireRegions.Count > 0 || g.Ground.Components == 0;
+        rows.Add(("CI6 shore-fire feasibility", shoreOk, lanes == 0 ? "no naval lanes" : $"{g.ShoreFireRegions.Count} regions"));
+        // CI 7: every warning governed (state, owner, reason; none left "not reviewed").
+        var ungoverned = mapWarnings.Where(w => S(w, "status").Length == 0 || S(w, "owner").Length == 0 || S(w, "acceptedReason").Length == 0 ||
+            S(w, "acceptedReason").StartsWith("not reviewed", StringComparison.Ordinal)).Select(w => S(w, "warningId")).ToList();
+        rows.Add(("CI7 warnings have state/owner/reason", ungoverned.Count == 0, Join(ungoverned)));
+        // BW: the load gates (full).
+        var failed = gates.Where(x => !x.Pass).Select(x => x.Gate + " " + x.Detail).ToList();
+        rows.Add(("BW load gates pass", failed.Count == 0, Join(failed)));
+        // H (tactical_position_audit): every objective a side reaches by ground has an approach set with its roles.
+        var noRoles = new List<string>();
+        foreach (var a in g.ObjectiveApproaches)
+        {
+            if (a.Approaches.Count == 0)
+            {
+                // Unreachable by ground for the side: the route audit (CI 2) and ROUTE_SIZE cover it; a light route that exists is a fault.
+                if (g.RouteAudits.Any(r => r.To == a.Objective && r.From == "rally_" + a.Team && r.Class == VehicleSizeClass.Light && r.Reachable)) noRoles.Add(a.Id + " no route");
+                continue;
+            }
+            foreach (var role in new[] { ApproachRole.Primary, ApproachRole.Shortest, ApproachRole.Safest })
+                if (a.For(role) == null) noRoles.Add($"{a.Id} {role}");
+        }
+        rows.Add(("H objective approaches (primary / shortest / safest)", noRoles.Count == 0, Join(noRoles)));
+        // I: staging areas off the major transit lanes (owner prompt 15).
+        var staging = g.StagingAreas.Where(st => g.Lanes.Any(l => l.ParkingForbidden && l.DistanceTo(st.Centre) < 6f)).Select(st => st.Id).ToList();
+        rows.Add(("I staging areas off major transit lanes", staging.Count == 0, Join(staging)));
+        return rows;
+    }
+
+    private static string AcceptanceJson(List<(string row, bool pass, string detail)> rows)
+    {
+        var j = new J().O().V("pass", rows.All(r => r.pass)).A("rows");
+        foreach (var (row, pass, detail) in rows) j.O().V("row", row).V("pass", pass).V("detail", detail).EndO();
+        return j.EndA().EndO().ToString();
+    }
+
+    private static string SceneJson(MapStressScene scene, GameplayTopology g, MapDefinition map)
+    {
+        var (what, at) = MapStressScenes.FocusOf(scene, g, map.Centre);
+        var j = new J().O().V("id", scene.Id).V("title", scene.Title).V("map", scene.MapId).V("mode", scene.Mode).V("perSide", scene.PerSide)
+            .Raw("roster", "[" + string.Join(",", scene.Roster.Select(J.Value)) + "]");
+        j.A("extra");
+        foreach (var u in scene.Extra) j.O().V("unit", u.Unit).V("team", u.Team).V("at", u.At).V("count", u.Count).EndO();
+        j.EndA();
+        j.V("weather", scene.Weather).V("wreckSeed", scene.WreckSeed).V("focus", scene.Focus).V("focusResolved", what).V("focusAt", at)
+            .V("warmupSeconds", scene.WarmupSeconds).V("seconds", scene.Seconds).V("seed", scene.Seed)
+            .V("harness", scene.Mode == "conquest" ? "Tests/EditMode MapVaW2AStressHarness (Explicit, map metrics)" : "Unity play (ModeSessions siege session): final part")
+            .Raw("mapMetrics", "[" + string.Join(",", MapStressScene.MapMetrics.Select(J.Value)) + "]")
+            .Raw("renderMetrics", "[" + string.Join(",", MapStressScene.RenderMetrics.Select(J.Value)) + "]")
+            .Raw("audioMetrics", "[" + string.Join(",", MapStressScene.AudioMetrics.Select(J.Value)) + "]");
+        return j.EndO().ToString();
+    }
+
+    private static void WriteStress(string path, string head, Dictionary<string, string> scenes)
+    {
+        var sb = new StringBuilder();
+        sb.Append("{").Append(head).Append(",\n\"scenes\": [\n");
+        var ordered = MapStressScenes.All.Where(s => scenes.ContainsKey(s.Id)).ToList();
+        for (var i = 0; i < ordered.Count; i++) sb.Append(scenes[ordered[i].Id]).Append(i + 1 < ordered.Count ? ",\n" : "\n");
+        sb.Append("]}\n");
+        File.WriteAllText(path, sb.ToString(), new UTF8Encoding(false));
     }
 
     // ------------------------------------------------------------------------------------------------ warnings
@@ -488,7 +639,7 @@ internal static class Program
     private static void WriteRegistry(string path, List<Dictionary<string, object?>> rows, string version)
     {
         var sb = new StringBuilder();
-        sb.Append("{\"generator\": \"Tools/maps/topogen (lane W1-A)\", \"reviews\": \"Docs/maps/map_warning_reviews.json\", \"version\": ")
+        sb.Append("{\"generator\": \"Tools/maps/topogen (lanes W1-A / W2-A)\", \"reviews\": \"Docs/maps/map_warning_reviews.json\", \"version\": ")
           .Append(JsonSerializer.Serialize(version)).Append(", \"statuses\": [\"OPEN\", \"FIXED\", \"ACCEPTED_INTENTIONAL\", \"PLAYTEST_REQUIRED\"],\n\"warnings\": [\n");
         for (var i = 0; i < rows.Count; i++)
         {
@@ -499,15 +650,16 @@ internal static class Program
         File.WriteAllText(path, sb.ToString(), new UTF8Encoding(false));
     }
 
-    private static void WriteSummary(string path, List<string[]> rows, List<Dictionary<string, object?>> warnings)
+    private static void WriteSummary(string path, List<string[]> rows, List<Dictionary<string, object?>> warnings, List<string> failures)
     {
         var sb = new StringBuilder();
         sb.AppendLine("# Gameplay topology (generated)");
         sb.AppendLine();
-        sb.AppendLine("Generated by `Tools/maps/topogen` from the canonical map files through the game's `GameplayTopology` (lane W1-A, map spec");
-        sb.AppendLine("Parts C-P, U, V, BW). Never edit by hand: regenerate. Data: `GameplayTopology.json`, `MapConnectivity.json`,");
+        sb.AppendLine("Generated by `Tools/maps/topogen` from the canonical map files through the game's `GameplayTopology` (lanes W1-A / W2-A,");
+        sb.AppendLine("map spec Parts C-P, U, V, BT, BW, CI, CJ). Never edit by hand: regenerate. Data: `GameplayTopology.json`, `MapConnectivity.json`,");
         sb.AppendLine("`TacticalPositions.json`, `NavalRouteAudit.json`, `SpawnFairnessAudit.json`, `MapWarningRegistry.json` (statuses from");
-        sb.AppendLine("`map_warning_reviews.json`). Worlds are built as a battle starts them (props, the map's fixed defences, wall lines");
+        sb.AppendLine("`map_warning_reviews.json`), `ObjectiveApproaches.json` (spec H), `MapAcceptance.json` (spec CI map rows),");
+        sb.AppendLine("`STRESS_SCENES.json` (spec BT). Worlds are built as a battle starts them (props, the map's fixed defences, wall lines");
         sb.AppendLine("standing with their gates open; base towers depend on the loadout and are not placed) and never stepped.");
         sb.AppendLine();
         var byStatus = warnings.GroupBy(w => (string)w["status"]!).OrderBy(x => x.Key, StringComparer.Ordinal).Select(x => $"{x.Key} {x.Count()}");
@@ -519,8 +671,12 @@ internal static class Program
         sb.AppendLine("|---|---|");
         foreach (var c in codes) sb.AppendLine($"| {c.Key} | {c.Count()} |");
         sb.AppendLine();
-        sb.AppendLine("| Map | Ground comp. | Naval comp. | Chokes | Lanes | Positions | Staging | Shore regions | Load gates | Warnings |");
-        sb.AppendLine("|---|---|---|---|---|---|---|---|---|---|");
+        var passing = rows.Count(r => r[r.Length - 1].Split('/')[0] == r[r.Length - 1].Split('/')[1]);
+        sb.AppendLine($"Acceptance (spec CI map rows + BW + H + I, `MapAcceptance.json`): {passing} of {rows.Count} maps pass every row; {failures.Count} failing rows.");
+        foreach (var f in failures.Take(20)) sb.AppendLine($"- {f}");
+        sb.AppendLine();
+        sb.AppendLine("| Map | Ground comp. | Naval comp. | Chokes | Lanes | Positions | Staging | Shore regions | Load gates | Warnings | Approach routes | Acceptance |");
+        sb.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|");
         foreach (var r in rows) sb.AppendLine("| " + string.Join(" | ", r) + " |");
         File.WriteAllText(path, sb.ToString(), new UTF8Encoding(false));
     }

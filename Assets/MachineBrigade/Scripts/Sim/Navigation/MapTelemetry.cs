@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
+using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Entities;
 using Tun = MachineBrigade.Sim.Content.SimTunables.Maps.Topology;
 
@@ -12,7 +13,7 @@ namespace MachineBrigade.Sim.Navigation
     /// Map spec CA / owner prompt 64 (lane W1-A): counters that check the topology's assumptions in play: lane usage share, choke
     /// queue seconds, spawn-exit block events, first contact, objective arrival, heavy-unit routes their size class cannot
     /// drive, where fire support anchors (and any anchor in a forbidden transit zone), naval close-approach events, boss route
-    /// replans, load-gate failures. Sampled every maps.topology.telemetrySeconds (off with maps.topology.telemetry). Pure reads:
+    /// replans, load-gate failures, the average engagement distance and (W2-A, behind a flag) approach-route usage. Sampled every maps.topology.telemetrySeconds (off with maps.topology.telemetry). Pure reads:
     /// no reading here ever feeds a decision, no random draw, so a battle plays the same with it on or off.
     /// </summary>
     public sealed class MapTelemetry
@@ -23,7 +24,9 @@ namespace MachineBrigade.Sim.Navigation
         private readonly Dictionary<int, Vector2> _orderSeen = new();
         private readonly Dictionary<int, Vector2> _bossGoal = new();
         private readonly Dictionary<int, int> _cpaSeen = new();
+        private readonly Dictionary<string, int> _approachSamples = new(StringComparer.Ordinal);
         private double _next;
+        private double _engageSum;
 
         public int Samples { get; private set; }
         public int GroundSamples { get; private set; }
@@ -41,6 +44,15 @@ namespace MachineBrigade.Sim.Navigation
         public int FireSupportAnchorInTransit { get; private set; }
         public List<string> LoadGateFailures { get; } = new();
 
+        /// <summary>Lane W2-A (spec CA "average LOS engagement distance"): shots sampled (a vehicle that fired since the last sample, at its target).</summary>
+        public int EngagementSamples { get; private set; }
+
+        /// <summary>The mean shooter-to-target distance of the sampled shots (m; 0: none yet).</summary>
+        public double AverageEngagementDistance => EngagementSamples > 0 ? _engageSum / EngagementSamples : 0;
+
+        /// <summary>Lane W2-A (spec H): per approach route id, ground vehicle samples within 6 m of it (maps.topology.telemetryApproaches).</summary>
+        public IReadOnlyDictionary<string, int> ApproachSamples => _approachSamples;
+
         /// <summary>Per tactical lane id: share of ground vehicle samples within 6 m of it.</summary>
         public IReadOnlyDictionary<string, int> LaneSamples => _laneSamples;
 
@@ -57,10 +69,17 @@ namespace MachineBrigade.Sim.Navigation
             Samples++;
             var topology = world.GameplayTopology;
             var lanes = topology.Lanes;
+            var approaches = Tun.TelemetryApproaches ? topology.ObjectiveApproaches : null;
+            var since = world.Time - Math.Max(0.1f, Tun.TelemetrySeconds);
             foreach (var v in world.VehicleList)
             {
                 if (!v.IsAlive) continue;
                 if (v.LastFiredAt > double.NegativeInfinity && (FirstContactTime < 0 || v.LastFiredAt < FirstContactTime)) FirstContactTime = v.LastFiredAt;
+                if (v.LastFiredAt > since && v.Target.IsValid && Locate(world, v.Target) is { } at)
+                {
+                    EngagementSamples++;
+                    _engageSum += Vector2.Distance(v.Position, at);
+                }
                 if (v.Flying || v.Def.Static) continue;
                 if (v.Def.Naval == null)
                 {
@@ -75,6 +94,13 @@ namespace MachineBrigade.Sim.Navigation
                         best = l.Id;
                     }
                     if (best != null) _laneSamples[best] = _laneSamples.TryGetValue(best, out var n) ? n + 1 : 1;
+                    if (approaches != null)
+                        foreach (var set in approaches)
+                        {
+                            if (set.Team != v.Team) continue;
+                            foreach (var a in set.Approaches)
+                                if (a.DistanceTo(v.Position) < 6f) _approachSamples[a.Id] = _approachSamples.TryGetValue(a.Id, out var m) ? m + 1 : 1;
+                        }
                     if (v.Traffic.WaitingForGate) ChokeQueueSeconds += Tun.TelemetrySeconds;
                     foreach (var p in world.Map.Points)
                     {
@@ -107,6 +133,14 @@ namespace MachineBrigade.Sim.Navigation
             }
         }
 
+        /// <summary>Where an entity (vehicle or prop) stands (null: gone).</summary>
+        private static Vector2? Locate(SimWorld world, EntityId id)
+        {
+            if (world.TryGetVehicle(id, out var v)) return v.Position;
+            if (world.TryGetProp(id, out var p)) return p.Position;
+            return null;
+        }
+
         /// <summary>A fire-support anchor was set at <paramref name="point"/> (the director's call; counted only).</summary>
         internal void AnchorSet(Vector2 point, bool inTransit)
         {
@@ -133,7 +167,12 @@ namespace MachineBrigade.Sim.Navigation
                 ("fireSupportAnchorSets", N(FireSupportAnchorSets)),
                 ("fireSupportAnchorInTransit", N(FireSupportAnchorInTransit)),
                 ("loadGateFailures", string.Join(";", LoadGateFailures)),
+                ("averageLosEngagementDistance", N(AverageEngagementDistance)),
+                ("engagementSamples", N(EngagementSamples)),
             };
+            var routes = new List<string>(_approachSamples.Keys);
+            routes.Sort(StringComparer.Ordinal);
+            foreach (var r in routes) list.Add(("approachUsage." + r, N(_approachSamples[r])));
             var lanes = new List<string>(_laneSamples.Keys);
             lanes.Sort(StringComparer.Ordinal);
             foreach (var l in lanes) list.Add(("laneUsageShare." + l, N(GroundSamples > 0 ? _laneSamples[l] / (double)GroundSamples : 0)));

@@ -700,6 +700,21 @@ namespace MachineBrigade.Sim.AI
                     best = p;
                 }
             }
+            // Map VA W2-A (spec I / H, maps.topology.aiStagingCandidate, off by default): the topology's staging area for the
+            // objective competes under the same rules (outside the band, reachable, off chokes, passages and spawn exits).
+            if (StagingTopology.Enabled && StagingTopology.For(world, Team, target) is { } staged)
+            {
+                var p = world.Lanes.OffLane(world.Map.Clamp(staged, 8f), 10f);
+                var exit = false;
+                foreach (var e in world.Traffic.Exits)
+                    if (e.InExitBox(p)) exit = true;
+                if (!exit && world.Grid.IsWalkable(p) && Vector2.Distance(p, target) >= distance * 0.9f &&
+                    (component <= 0 || world.Topology.Ground.ComponentAt(p) == component) && !InChoke(world, p) && !world.Traffic.InPassage(p))
+                {
+                    var score = intel.ThreatAt(ThreatKind.AntiTank, p) + intel.ThreatAt(ThreatKind.Artillery, p) + 0.25f;
+                    if (score < bestScore) best = p;
+                }
+            }
             return best ?? world.Map.Clamp(Vector2.Lerp(from, target, 0.5f), 8f);
         }
 

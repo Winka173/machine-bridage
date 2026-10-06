@@ -36,6 +36,8 @@ namespace MachineBrigade.Sim.Content
             foreach (var e in AiMasterP5) yield return e;
             // Map / visual / audio W1-A (lane A): GameplayTopology audits, terrain semantics, weather presentation (SimTunables.MapTopology.cs).
             foreach (var e in MapTopologyW1A) yield return e;
+            // Map / visual / audio W2-A (lane A): objective approaches, choke re-measure, AI topology hooks (SimTunables.MapTopologyW2A.cs).
+            foreach (var e in MapTopologyW2A) yield return e;
         }
     }
 }

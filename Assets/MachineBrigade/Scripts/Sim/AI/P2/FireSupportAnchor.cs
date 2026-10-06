@@ -429,7 +429,8 @@ namespace MachineBrigade.Sim.AI
             if (world.TryGetRally(_team, out var spawn) && Vector2.Distance(spawn, p) < 12f) traffic = 1f;
             if (hq && s.Class is FireClass.Mlrs or FireClass.LongRange) traffic += 0.5f;
             return W(0) * objective + W(1) * enemyApproach + W(2) * front + W(3) * aa + W(4) * escape / 8f + W(5) * cb
-                   - W(6) * threat - W(7) * MathF.Min(1f, congestion / 3f) - W(8) * minRange - W(9) * traffic;
+                   - W(6) * threat - W(7) * MathF.Min(1f, congestion / 3f) - W(8) * minRange - W(9) * traffic
+                   + TerrainTopology.ConcealmentTerm(world, p);
         }
 
         private Vector2 Slot(SimWorld world, FireSupportAnchorState s, Vehicle piece)

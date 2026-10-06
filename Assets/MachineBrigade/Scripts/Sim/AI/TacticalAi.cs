@@ -642,6 +642,8 @@ namespace MachineBrigade.Sim.AI
                     var along = Vector2.Dot(off, dir);
                     if (along < -10f || along > BreacherReach) continue;
                     var score = Vector2.Distance(e.Position, v.Position) + (off - dir * along).Length() * 1.5f - (e.Def.Obstacle ? 25f : 0f);
+                    // Map VA W2-A (spec O, maps.topology.aiBreachPriority, off by default): a wall segment ranks by what its fall opens.
+                    if (BreachTopology.Enabled) score += BreachTopology.Ranking(world, e);
                     if (score >= best) continue;
                     best = score;
                     pick = e;

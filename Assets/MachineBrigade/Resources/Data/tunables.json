@@ -1102,7 +1102,20 @@
       "lanePenalty": { "value": 25.0, "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "TacticalLane cost added round a found lane" },
       "sizeClassFeasibility": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "08", "code": "EngagementFeasibility size-class route check (false: P0-B as before)" },
       "telemetry": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "08", "code": "MapTelemetry counters (spec CA / 64)" },
-      "telemetrySeconds": { "value": 1.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "08", "code": "MapTelemetry sampling period" }
+      "telemetrySeconds": { "value": 1.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "08", "code": "MapTelemetry sampling period" },
+      "approachAlternatives": { "value": 2, "unit": "count", "kind": "tran", "linh_vuc": "08", "code": "GameplayTopology objective approaches: alternatives after the cheapest (spec H)" },
+      "approachDistinctShare": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "08", "code": "spec H: a route sharing more of its cells is not a new approach" },
+      "approachExposurePenalty": { "value": 3.0, "unit": "m", "kind": "khac", "linh_vuc": "08", "code": "spec H: extra cost of an open cell for the safest route" },
+      "approachFlankOffset": { "value": 0.2, "unit": "share", "kind": "nguong", "linh_vuc": "08", "code": "spec H: flank route offset from the primary (share of the map's short side)" },
+      "approachFlankBearing": { "value": 45.0, "unit": "deg", "kind": "nguong", "linh_vuc": "08", "code": "spec H: flank arrival bearing turn from the primary" },
+      "remeasureStaleChokes": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "08", "code": "GameplayTopology.MeasurePassages: drop a topology choke the rubble opened before the topology rebuild" },
+      "aiBreachPriority": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "08", "code": "TacticalAi.DirectBreachers ranks wall segments by BreachInfo (spec O; false: as before)" },
+      "breachObjectiveBonus": { "value": 20.0, "unit": "m", "kind": "khac", "linh_vuc": "08", "code": "breacher ranking: a segment opening the way to a target" },
+      "breachSavingWeight": { "value": 0.25, "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "breacher ranking per metre of path saved (cap 80 m)" },
+      "breachTowerPenalty": { "value": 3.0, "unit": "m", "kind": "khac", "linh_vuc": "08", "code": "breacher ranking per covering defence" },
+      "aiStagingCandidate": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "08", "code": "Commander.P3 StagingP3 also weighs the topology staging area (false: as before)" },
+      "aiConcealmentWeight": { "value": 0.0, "unit": "score", "kind": "khac", "linh_vuc": "08", "code": "FireSupportAnchor score + weight x terrain concealment (0: as before)" },
+      "telemetryApproaches": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "08", "code": "MapTelemetry approach-route usage (builds the approaches in battle)" }
     },
     // [traction, visualCover, artilleryExposure, mineSuitability, largeVehiclePenalty] per terrain tag (metadata, never a combat buff).
     "terrainSemantics": {

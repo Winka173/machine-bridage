@@ -3,7 +3,7 @@
 // says the asymmetry is intended; "overrides" by exact id win). Never auto-fix a YELLOW (spec CH): review it here.
 // Statuses: OPEN, FIXED, ACCEPTED_INTENTIONAL, PLAYTEST_REQUIRED.
 {
-  "version": "v0.34.0+unreleased (MVA W1-A)",
+  "version": "v0.34.0+unreleased (MVA W1-A / W2-A)",
   "rules": [
     { "match": "*:LOADGATE_*", "status": "OPEN", "owner": "maps", "reason": "a load gate (spec BW) fails: fix the map data or the gate" },
     { "match": "*:SPAWN_*", "asymmetric": true, "status": "ACCEPTED_INTENTIONAL", "owner": "maps", "reason": "intended asymmetry (map data): {asymmetry}" },
@@ -20,6 +20,9 @@
     { "match": "*:ROUTE_SIZE:SuperHeavy", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "super-heavy clearance (route needs the widest non-boss hull plus side room); heavyRouteFailure telemetry shows whether the AI sends one there" },
     { "match": "*:ROUTE_SIZE:Boss", "status": "ACCEPTED_INTENTIONAL", "owner": "maps", "reason": "boss hulls drive their scripted routes, arenas and boss corridors, not every spawn-to-objective route; information" },
     { "match": "*:ROUTE_TURN:*", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "information: a corner tighter than the class's pivot room (a hull turns on the move); heavyRouteFailure / stuck reports decide" },
+    { "match": "*:ROUTE_TURN_TIGHT:Boss", "status": "ACCEPTED_INTENTIONAL", "owner": "maps", "reason": "boss hulls drive their scripted routes, arenas and boss corridors, not every spawn-to-objective route; information (as ROUTE_SIZE:Boss)" },
+    { "match": "*:ROUTE_TURN_TIGHT:*", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "a corner tighter than the pivot room even swinging wide (lane W2-A, the stricter check beyond ROUTE_TURN); bossRouteReplanCount / heavyRouteFailure telemetry decides before changing the map" },
+    { "match": "*:APPROACH_SINGLE:*", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "an objective reachable by only one distinct ground approach (spec H); approach usage (laneUsageShare) and routeFailures telemetry decide whether a second approach is worth adding" },
     { "match": "*:NAVAL_TURN_MITIGATED:*", "status": "ACCEPTED_INTENTIONAL", "owner": "AI P0-C", "reason": "the boss ship controller comes about at bosses.bossBrain.turnaboutThrottle and full turn rate (AI MASTER spec 52, DECISIONS AI MASTER P0-C); the low-speed radius fits" },
     { "match": "*:NAVAL_TURN:*", "status": "OPEN", "owner": "maps", "reason": "a boss ship's turn does not fit the route even at the turnabout throttle (spec M)" },
     { "match": "*:NAVAL_TURN_SHIP:*", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "a non-boss ship's turn is tighter than Rmin x safety; the naval system slows it at bays and lane ends; navalCollisionEvents telemetry decides" },
