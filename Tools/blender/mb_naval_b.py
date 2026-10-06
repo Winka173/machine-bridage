@@ -47,7 +47,7 @@ def _antennas(a, pts, h=2.6):
         K.whip_antenna(a.part('Antennas', 'Steel'), (x, y, z), h=h, r=.04, lean=.05)
 
 
-def _finish(a, target=70):
+def _finish(a, target=60):
     N.fold(a, target)
     k.clean(a)
 
@@ -57,6 +57,7 @@ def destroyer(a):
     """Arleigh Burke at game scale (52 x 8.6 m): see the module docstring."""
     S = N.Ship(a, 52, 8.6, 2.0, 2.8, 3.0, 4.2, entry=.4, transom=.82, rake=2.2, flare=.25)
     dz = S.deck_z
+    S.deck_dress([(-23.5, -9.8), (15.2, 20.8)], seed=503)
     _common(a, S, [(-24.6, -10.0), (-9.5, 15.0), (15.2, 25.8)], [-22.5, -14.5, 16.5, 23.5], range(-20, 22, 4),
             (-8.0, 14.0), -21.0)
     S.breakwater(-20.6, h=.55)
@@ -114,6 +115,7 @@ def gun_destroyer(a):
     """Spruance / Kidd at game scale (53 x 8.6 m): see the module docstring."""
     S = N.Ship(a, 53, 8.6, 2.0, 2.7, 2.9, 4.0, entry=.42, transom=.85, rake=2.4, flare=.22)
     dz = S.deck_z
+    S.deck_dress([(-24.0, -12.8), (21.5, 25.5)], seed=504)
     _common(a, S, [(-25.0, -12.8), (-12.0, 15.6), (16.0, 26.2)], [-23.0, -14.0, 17.0, 21.5], range(-20, 22, 3),
             (-11.0, 14.0), -21.6)
     S.breakwater(-21.2, h=.5)
@@ -164,11 +166,12 @@ def missile_destroyer(a):
     """Type 055 read at game scale (54 x 8.8 m): see the module docstring."""
     S = N.Ship(a, 54, 8.8, 2.1, 2.9, 3.1, 4.4, entry=.42, transom=.84, rake=2.6, flare=.26)
     dz = S.deck_z
+    S.deck_dress([(-25.0, -10.4), (18.6, 25.8)], hatches=5, planks=True, seed=505)
     _common(a, S, [(-25.6, -15.0), (-10.4, 6.5), (17.8, 26.8)], [-23.5, -16.5, 18.5, 24.0], range(-21, 20, 4),
             (-9.0, 16.0), -22.2)
     S.breakwater(-22.6, h=.5)
     N.gun_stealth(a, 0, (0, -19.8, dz(-19.8)), s=1.2, barrel=4.2)
-    N.vls(a, 0, (0, -12.2, dz(-12.2)), 4, 2, 1.55, raised=.55, points=4, opened={(1, 0), (2, 1)}, name='Vls',
+    N.vls(a, 0, (0, -12.2, dz(-12.2)), 4, 2, 1.7, raised=.8, points=4, opened={(1, 0), (2, 1)}, name='Vls',
           big=True)
     sup = a.part('Superstructure', 'Team')
     sup.asset = a
@@ -181,21 +184,37 @@ def missile_destroyer(a):
     for s in (-1, 1):
         N.flat_array(a, (s * 1.59, -2.7, 11.3), (s * .973, 0, .23), 2.6, 2.3)
         N.flat_array(a, (s * 2.64, -4.6, 7.8), (s * .96, -.1, .27), 1.0, 1.4, name='Array_small')
+        k.block(a.part('Bridge_wings', 'Team'), (1.4, 1.2, .16), loc=(s * 3.45, -6.0, 8.0), chamfer=.03)
+        a.part('Bridge_wings', 'Team').limb((s * 3.3, -6.0, 6.25), (s * 3.9, -6.0, 7.92), .16, .16, bevel=0)
         N.doors(a, s * 3.95, (-6.0, 1.0, 4.5), dz(0), s)
     k.block(a.part('Mast', 'Team'), (1.6, 2.4, .3), loc=(0, -2.6, 13.35), chamfer=.06)
-    N.radar(a, (0, -2.4, 13.5), w=2.0, h=.6, style='back')
+    N.radar(a, (0, -2.4, 13.5), w=2.8, h=.85, style='back')
     N.aps(a, (0, -3.95, 13.5))
     _antennas(a, [(-.9, -1.0, 13.5), (.9, -1.0, 13.5)], h=2.2)
     N.ak630(a, 0, (0, -8.6, 6.2), s=1.0, style='1130')
     # The aft deckhouse with the hangar, the wide stealth funnel, the RAM box, the second Type 1130, boats.
     N.tier(sup, 6.3, 17.6, dz(12) - .05, 5.6, 3.75, 3.45, rf=.3, rb=.2)
-    N.funnel(a, (0, 8.8, 5.6), 1.6, 1.7, 2.6, rake=.1, taper=.78, caps=2, cap_r=.42)
+    N.funnel(a, (0, 8.8, 5.6), 1.6, 1.7, 3.3, rake=.12, taper=.74, caps=2, cap_r=.42)
     door = a.part('Hangar_door', 'Undercarriage')
     door.box((4.4, .06, 2.2), loc=(0, 17.62, dz(17.6) + 1.2), bevel=0)
     N.ak630(a, 1, (-2.15, 12.4, 5.6), s=.95, style='1130')
     N.box_launcher(a, 1, (1.6, 15.6, 5.6), slot='missile', s=1.0, cols=4, rows=3, el=.2, length=2.4, style='ram')
     N.boat(a, (2.4, 12.0, 5.6), length=3.6, beam=1.3, s=1)
     N.vents(a, [(-1.2, 15.6, 5.6), (0, 14.0, 5.6)])
+    N.life_rafts(a, 2.95, (7.0, 8.1, 9.2), 5.65, 1)
+    N.life_rafts(a, -2.95, (7.0, 8.1, 9.2), 5.65, -1)
+    N.lattice_mast(a, (0, 14.2, 5.6), 11.2, .65, .22, braces=3)
+    a.part('Radomes', 'Medical').sphere(.55, loc=(0, 14.2, 11.75), seg=12, rings=8)
+    N.yards(a, (0, 14.2, 9.4), 3.0, n=1)
+    st = a.part('Mast_steel', 'Steel')
+    st.tube([(0, -2.4, 13.65), (0, -2.4, 17.2)], .08, seg=6)
+    st.box((2.8, .1, .1), loc=(0, -2.4, 15.4), bevel=0)
+    st.box((1.8, .08, .08), loc=(0, -2.4, 16.5), bevel=0)
+    for s in (-1, 1):
+        st.box((.05, .05, .7), loc=(s * .85, -2.4, 16.15), bevel=0)
+    for s in (-1, 1):
+        a.part('Radomes', 'Medical').sphere(.22, loc=(s * 1.3, -2.4, 15.6), seg=10, rings=6)
+        K.whip_antenna(a.part('Antennas', 'Steel'), (s * 1.0, -6.6, 9.4), h=2.4, r=.04, lean=.15)
     N.heli_deck(a, S, 18.4, 26.0)
     K.clutter(a, 'Deck_lockers', 'Armor', -2.6, 2.6, 2.2, 6.0, 6.2, 6, seed=421, size=(.3, .8), height=(.2, .5),
               gap=.3)
@@ -207,10 +226,11 @@ def aa_destroyer(a):
     """Ticonderoga baseline 1 read at game scale (53 x 8.7 m): see the module docstring."""
     S = N.Ship(a, 53, 8.7, 2.0, 2.8, 3.0, 4.2, entry=.4, transom=.84, rake=2.2, flare=.24)
     dz = S.deck_z
+    S.deck_dress([(-24.0, -11.8), (12.8, 25.5)], seed=506)
     _common(a, S, [(-25.0, -12.0), (-11.5, 12.6), (13.2, 26.2)], [-23.0, -12.6, 13.6, 20.0], range(-20, 22, 4),
             (-10.0, 12.0), -21.8)
     S.breakwater(-20.8, h=.5)
-    N.mk26(a, 0, (0, -15.8, dz(-15.8)), slot='missile', s=1.15, msl=4.4)
+    N.mk26(a, 0, (0, -15.8, dz(-15.8)), slot='missile', s=1.4, msl=4.0)
     sup = a.part('Superstructure', 'Team')
     sup.asset = a
     N.tier(sup, -11.6, 1.6, dz(-5) - .05, 6.0, 3.85, 3.65, rf=.2, rb=.15)
@@ -256,6 +276,7 @@ def heavy_monitor(a):
     S = N.Ship(a, 46, 8.2, 1.4, 1.5, 1.5, 2.3, entry=.3, transom=.9, sheer_from=.4, rake=1.2, flare=.05, bulge=.22,
                fb_knuckle=.45)
     dz = S.deck_z
+    S.deck_dress([(-20.0, -6.0), (13.8, 21.0)], seed=507)
     _common(a, S, [(-21.5, -15.5), (-6.0, 22.6)], [-19.5, -15.0, 15.0, 20.5], range(-16, 20, 4), (-4.0, 12.0), -19.4)
     # The armoured deck: plate seams across and along.
     seams = a.part('Deck_plates', 'Undercarriage')
@@ -301,6 +322,7 @@ def battlecruiser(a):
     """Alaska, modernised, at game scale (68 x 11 m): see the module docstring."""
     S = N.Ship(a, 68, 11.0, 2.6, 3.9, 4.2, 6.0, entry=.4, transom=.8, rake=3.2, flare=.25)
     dz = S.deck_z
+    S.deck_dress([(-31.0, -8.0), (16.2, 23.8)], seed=508)
     _common(a, S, [(-32.0, -15.5), (-8.5, 16.5), (16.8, 33.6)], [-29.5, -24.0, 22.5, 29.0], range(-26, 30, 4),
             (-10.0, 18.0), -27.6)
     S.breakwater(-26.5, h=.6)
@@ -347,7 +369,7 @@ def battlecruiser(a):
     cr.limb((0, 33.0, dz(33) + 2.0), (0, 30.0, dz(33) + 4.0), .3, .3, bevel=0)
     K.clutter(a, 'Deck_lockers', 'Armor', -3.4, 3.4, 0.5, 8.6, 6.8, 10, seed=451, size=(.3, 1.0), height=(.2, .6),
               gap=.4)
-    _finish(a, 72)
+    _finish(a)
 
 
 # ============================================================================= battleship
@@ -355,6 +377,7 @@ def battleship(a):
     """Iowa (1980s) at game scale (82 x 13 m): see the module docstring."""
     S = N.Ship(a, 82, 13.0, 3.0, 4.4, 4.8, 7.4, entry=.42, transom=.78, sheer_from=.1, rake=3.6, flare=.3)
     dz = S.deck_z
+    S.deck_dress([(-38.0, -9.6), (10.2, 30.8)], hatches=7, planks=True, seed=509)
     _common(a, S, [(-39.0, -18.0), (-10.0, 18.0), (18.5, 40.6)], [-36.0, -30.0, 30.0, 37.0], range(-32, 36, 4),
             (-11.0, 19.0), -34.0)
     S.breakwater(-31.0, h=.65)
@@ -406,13 +429,30 @@ def battleship(a):
     N.life_rafts(a, 5.0, (-6.0, -4.8, -3.6), 8.05, 1)
     N.life_rafts(a, -5.0, (-6.0, -4.8, -3.6), 8.05, -1)
     _antennas(a, [(-2.4, -2.0, 13.8), (2.4, -2.0, 13.8), (1.2, 9.2, 9.4)], h=3.0)
+    for s in (-1, 1):
+        k.lathe(a.part('Directors', 'Armor'), [(.5, 0), (.5, .5), (.35, .8), (0, .85)], loc=(s * 3.7, -1.7, 11.0),
+                seg=14)
+        K.dish(a.part('Mast_steel', 'Steel'), a.part('Mast_steel', 'Steel'), (s * 3.7, -2.1, 12.05), r=.42,
+               normal=(s * .3, -1, .25))
+        sl = a.part('Searchlights', 'Armor')
+        sl.cyl(.12, 1.2, loc=(s * 2.4, 4.3, 8.6), seg=8, bevel=0)
+        k.lathe(a.part('Searchlights', 'Armor'), [(.3, 0), (.34, .4), (.3, .5)], loc=(s * 2.4, 4.3, 9.2),
+                rot=N.FWD, seg=10)
+        a.part('Searchlight_lens', 'Lamp').cyl(.26, .02, loc=(s * 2.4, 3.8, 9.45), rot=N.FWD, seg=10, bevel=0)
+    K.whip_antenna(a.part('Antennas', 'Steel'), (1.4, 1.6, 13.6), h=3.4, r=.04, lean=.1)
+    K.whip_antenna(a.part('Antennas', 'Steel'), (-1.4, 6.8, 13.0), h=3.0, r=.04, lean=.1)
+    a.part('Mast_steel', 'Steel').box((7.0, .14, .14), loc=(0, 9.2, 14.2), bevel=0)
+    a.part('Directors', 'Armor').box((3.6, .35, .35), loc=(0, 9.9, 15.4), bevel=.04)
+    K.dish(a.part('Mast_steel', 'Steel'), a.part('Mast_steel', 'Steel'), (0, 9.2, 16.4), r=.6, normal=(0, 1, .3))
+    for s in (-1, 1):
+        a.part('Mast_steel', 'Steel').tube([(s * 3.4, 9.2, 14.2), (s * 3.4, 9.2, 15.4)], .05, seg=4)
     N.heli_deck(a, S, 31.0, 40.0)
     cr = a.part('Crane', 'Armor')
     cr.cyl(.4, 3.0, loc=(0, 40.0, dz(40) + 1.5), seg=10, bevel=0)
     cr.limb((0, 40.0, dz(40) + 2.6), (0, 36.0, dz(40) + 5.2), .34, .34, bevel=0)
     K.clutter(a, 'Deck_lockers', 'Armor', -4.6, 4.6, -.4, 9.4, 8.0, 12, seed=461, size=(.3, 1.0), height=(.2, .7),
               gap=.45)
-    _finish(a, 74)
+    _finish(a)
 
 
 # ============================================================================= missile_cruiser
@@ -420,6 +460,7 @@ def missile_cruiser(a):
     """Kirov read at game scale (58 x 9.4 m): see the module docstring."""
     S = N.Ship(a, 58, 9.4, 2.2, 3.3, 3.5, 5.0, entry=.4, transom=.82, rake=2.8, flare=.26)
     dz = S.deck_z
+    S.deck_dress([(-26.0, -6.8), (14.8, 28.0)], seed=510)
     _common(a, S, [(-27.0, -14.6), (-7.0, 14.6), (15.0, 28.6)], [-25.0, -16.0, 16.0, 26.0], range(-22, 24, 4),
             (-6.0, 14.0), -23.6)
     N.revolvers(a, 1, (0, -19.6, dz(-19.6) + .01), 2, 3, r=.72, pitch=1.9, slot='missile', points=4)
@@ -444,8 +485,15 @@ def missile_cruiser(a):
         k.lathe(a.part('Directors', 'Armor'), [(.7, 0), (.7, .45), (.5, .8), (0, .85)], loc=(0, y, z), seg=12)
     N.funnel(a, (0, 6.8, 6.4), 1.8, 1.8, 3.4, rake=.06, taper=.85, caps=2, cap_r=.45)
     N.tier(sup, 9.5, 14.0, 6.35, 9.0, 2.6, 2.3, rf=.2, rb=.2)
-    a.part('Mast_steel', 'Steel').tube([(0, 11.6, 9.0), (0, 11.6, 12.0)], .14, seg=8)
-    a.part('Radomes', 'Medical').sphere(.75, loc=(0, 11.6, 12.6), seg=14, rings=8)
+    N.lattice_mast(a, (0, 11.6, 9.0), 13.4, .7, .25, braces=2)
+    a.part('Radomes', 'Medical').sphere(.75, loc=(0, 11.6, 14.15), seg=14, rings=8)
+    N.yards(a, (0, 11.6, 12.4), 3.6, n=1)
+    for s in (-1, 1):
+        a.part('Mast_steel', 'Steel').tube([(s * 1.2, -4.3, 11.4), (s * 1.2, -4.4, 11.95)], .08, seg=6)
+        K.dish(a.part('Mast_steel', 'Steel'), a.part('Mast_steel', 'Steel'), (s * 1.2, -4.6, 12.0), r=.55,
+               normal=(s * .4, -1, .2))
+        a.part('Radomes', 'Medical').sphere(.32, loc=(s * 1.6, -1.4, 14.9), seg=10, rings=6)
+        K.whip_antenna(a.part('Antennas', 'Steel'), (s * 2.6, -1.0, 13.6), h=2.6, r=.04, lean=.12)
     N.ak630(a, 0, (-3.3, 12.8, 6.4))
     N.ak630(a, 1, (3.3, 12.8, 6.4))
     for s in (-1, 1):
@@ -458,7 +506,7 @@ def missile_cruiser(a):
     N.gun_stealth(a, 0, (0, 23.5, dz(23.5)), s=1.3, barrel=5.0)
     K.clutter(a, 'Deck_lockers', 'Armor', -3.4, 3.4, 4.4, 9.2, 6.4, 8, seed=471, size=(.3, .9), height=(.2, .6),
               gap=.4)
-    _finish(a, 72)
+    _finish(a)
 
 
 SHIP = dict(ao_distance=2.0, grime_height=.6)

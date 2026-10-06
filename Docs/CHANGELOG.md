@@ -7,6 +7,9 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Naval models lane B (06/10): real models for destroyer, gun_destroyer, missile_destroyer, aa_destroyer,
+  heavy_monitor, battlecruiser, battleship and missile_cruiser (Burke, Spruance, Type 055, Ticonderoga, Erebus,
+  Alaska, Iowa, Kirov reads) replace the sea_cruiser stand-in; contract mounts/muzzles, CIWS, launch cells.
 - Naval vehicle expansion, data/AI/economy lane (06/10, branch feature/naval-data): 17 new naval units
   (torpedo_boat through battleship, plus ew_corvette) added to balance.json as canonical, additive data; 10
   ship-specific weapon variants (AShM salvos locked to 80 m/s/Pen4, battleship main gun Pen5 only); AI doctrine

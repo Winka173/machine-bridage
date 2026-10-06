@@ -104,6 +104,10 @@ class Ship:
         k.sharp_loft(a.part('Hull', self.hull_mat), rings, chamfer=.05)
         self._waterline_paint()
         self._deck()
+        edge = a.part('Deck_edge', 'MetalSheet')
+        ys = [self.stern - .1] + [y for y in self.stations()[1:]] + [self.bow + .5]
+        for s in (-1, 1):
+            edge.tube([(s * (self.half_beam(y) + .01), y, self.deck_z(y) + .03) for y in ys], .07, seg=5)
         seams = a.part('Hull_seams', 'Undercarriage')
         y = self.bow + self.rake + 2.5
         while y < self.stern - 1.0:
@@ -153,6 +157,50 @@ class Ship:
                        (hb, yb, self.deck_z(yb) + .012), (-hb, yb, self.deck_z(yb) + .012)], [(3, 2, 1, 0)])
 
     # -- fittings on the hull
+    def deck_dress(self, ranges, seed=0, hatches=3, planks=False):
+        """The open decks in `ranges` (y0, y1): the dark non-skid walkways inside both rails with their yellow edge
+        lines, the plank seams across the deck, a few hatches and ready-use lockers."""
+        import random
+        rng = random.Random(seed)
+        a = self.a
+        walk = a.part('Walkways', 'Charred')
+        lines = a.part('Deck_lines', 'Hazard')
+        seams = a.part('Deck_seams', 'Undercarriage')
+        hat = a.part('Deck_hatches', 'Armor')
+        for y0, y1 in ranges:
+            n = max(1, int((y1 - y0) / 1.6))
+            for i in range(n):
+                ya, yb = y0 + (y1 - y0) * i / n, y0 + (y1 - y0) * (i + 1) / n
+                ym = (ya + yb) / 2
+                z = self.deck_z(ym) + .02
+                h = self.half_beam(ym)
+                for s in (-1, 1):
+                    xo = s * (h - .55)
+                    K.plane(walk, min(xo, xo - s * .7), max(xo, xo - s * .7), ya + .05, yb - .05, z)
+                    xl = xo - s * .75
+                    K.plane(lines, xl - .04, xl + .04, ya + .05, yb - .05, z + .004)
+            y = y0 + 1.0
+            while y < y1 - .5:
+                h = self.half_beam(y) - 1.4
+                if h > .4:
+                    K.plane(seams, -h, h, y - .025, y + .025, self.deck_z(y) + .018)
+                y += 1.2
+            if planks:
+                ym = (y0 + y1) / 2
+                n = int((self.half_beam(ym) - 1.4) / .9)
+                for i in range(-n, n + 1):
+                    xs = i * .9
+                    pts = [y for y in (y0 + (y1 - y0) * t / 6 for t in range(7)) if self.half_beam(y) - 1.4 > abs(xs)]
+                    for ya, yb in zip(pts, pts[1:]):
+                        seams.mesh([(xs - .02, ya, self.deck_z(ya) + .018), (xs + .02, ya, self.deck_z(ya) + .018),
+                                    (xs + .02, yb, self.deck_z(yb) + .018), (xs - .02, yb, self.deck_z(yb) + .018)],
+                                   [(3, 2, 1, 0)] if yb < ya else [(0, 1, 2, 3)])
+            for j in range(hatches if y1 - y0 > 5 else 1):
+                yy = rng.uniform(y0 + 1.0, y1 - 1.0)
+                xx = rng.choice((-1, 1)) * rng.uniform(.9, max(1.0, self.half_beam(yy) - 1.9))
+                k.block(hat, (.8, .9, .12), loc=(xx, yy, self.deck_z(yy) + .07), chamfer=.03)
+                hat.box((.5, .05, .05), loc=(xx, yy - .3, self.deck_z(yy) + .15), bevel=0)
+
     def team_bands(self, y0, y1, depth=.5):
         part = self.a.part('Team_band', 'Team')
         zt = min(self.deck_z(y0), self.deck_z(y1)) - .25
@@ -262,6 +310,16 @@ def dress(a, y0, y1, z0, z1, w0, w1, rf, rb, x=0.0):
         if yb - ya > 1.5:
             K.railing(a.part('Roof_rails', 'Steel'), [(x + s * (w1 - .1), ya, z1), (x + s * (w1 - .1), yb, z1)], h=.75,
                       post=1.5, r=.022)
+        # Fire boxes and a hose reel at the wall's foot, a lip round the roof edge.
+        fb = a.part('Fire_boxes', 'BarrelRed')
+        for t in (.3, .72):
+            fb.box((.14, .32, .42), loc=(x + s * (w0 + .07), y0 + (y1 - y0) * t, z0 + .55), bevel=0)
+        k.lathe(a.part('Hose_reels', 'Medical'), [(.22, -.07), (.22, .07)], loc=(x + s * (w0 + .09), y0 + (y1 - y0) * .5,
+                                                                              z0 + .6), rot=(0, R90, 0), seg=10)
+        a.part('Roof_lips', 'Armor').box((.08, y1 - y0 - rf - rb, .1), loc=(x + s * (w1 + .02), (y0 + rf + y1 - rb) / 2,
+                                                                            z1 - .03), bevel=0)
+    for yy, sgn in ((y0 + rf, -1), (y1 - rb, 1)):
+        a.part('Roof_lips', 'Armor').box((2 * w1 + .1, .08, .1), loc=(x, yy + sgn * .02, z1 - .03), bevel=0)
     if y1 - y0 > 4 and w1 > 1.2:
         K.plane(a.part('Roof_walks', 'NavyDeck'), x - .45, x + .45, y0 + rf + .3, y1 - rb - .3, z1 + .012)
         K.clutter(a, 'Roof_boxes', 'Armor', x - w1 + .5, x - .6, y0 + rf + .6, y1 - rb - .6, z1, 2, seed=seed,
@@ -331,6 +389,13 @@ def lattice_mast(a, base, top_z, w0, w1, name='Mast_steel', braces=3):
         wn = w0 + (w1 - w0) * (i + 1) / (braces + 1)
         p.tube([(x - ww, y - ww, zz), (x + wn, y - wn, zn)], .03, seg=4)
         p.tube([(x + ww, y + ww, zz), (x - wn, y + wn, zn)], .03, seg=4)
+    k.block(a.part('Mast_platforms', 'Armor'), (2 * w1 + .9, 2 * w1 + .9, .1), loc=(x, y, top_z - .05), chamfer=.03)
+    K.railing(a.part('Roof_rails', 'Steel'), [(x - w1 - .4, y - w1 - .4, top_z), (x + w1 + .4, y - w1 - .4, top_z),
+                                              (x + w1 + .4, y + w1 + .4, top_z), (x - w1 - .4, y + w1 + .4, top_z),
+                                              (x - w1 - .4, y - w1 - .4, top_z)], h=.6, post=.9, r=.02)
+    for s in (-1, 1):
+        a.part('Nav_lights', 'LavaGlow' if s > 0 else 'SignalGreen').box((.18, .18, .18), loc=(x + s * (w1 + .45), y,
+                                                                                         top_z + .15), bevel=0)
 
 
 def yards(a, at, span, n=2, gap=1.0, name='Mast_steel'):
@@ -750,7 +815,7 @@ def mk26(a, i, at, slot='missile', s=1.0, msl=4.6, mag=True):
             loc=(x, y - .6 * s, zt), seg=16)
     m = a.pivot(f'Mount_{slot}{t}', (x, y - .6 * s, zt + .35 * s))
     k.block(a.part('Launcher_ped' + n, 'Team', m), (1.2 * s, 1.3 * s, 1.1 * s), loc=(0, 0, .55 * s), chamfer=.1 * s)
-    arm = a.part('Launcher_arms' + n, 'Armor', m)
+    arm = a.part('Launcher_arms' + n, 'Team', m)
     el = .4
     tips = []
     for sx in (-1, 1):
@@ -758,10 +823,10 @@ def mk26(a, i, at, slot='missile', s=1.0, msl=4.6, mag=True):
         arm.box((.3 * s, .5 * s, .5 * s), loc=(sx * .7 * s, 0, 1.0 * s), bevel=.04)
         a0 = Vector((ax, .6 * s, 1.05 * s))
         d = Vector((0, -math.cos(el), math.sin(el)))
-        arm.limb(tuple(a0), tuple(a0 + d * (msl * s * .85)), .18 * s, .2 * s, bevel=.03)
+        arm.limb(tuple(a0), tuple(a0 + d * (msl * s * .85)), .13 * s, .14 * s, bevel=.02)
         tail = a0 + d * (-.3 * s) + Vector((0, 0, -.3 * s))
         _missile(a, a.part('Launcher_missiles' + n, 'Medical', m), a.part('Missile_tips' + n, 'Undercarriage', m),
-                 tuple(tail), .17 * s, msl * s, tuple(d), a.part('Missile_fins' + n, 'Armor', m))
+                 tuple(tail), .2 * s, msl * s, tuple(d), a.part('Missile_fins' + n, 'Armor', m))
         tips.append(tuple(tail + d * (msl * s)))
     a.part('Launcher_deflector' + n, 'Steel', m).box((2.2 * s, .1, .8 * s), loc=(0, 1.0 * s, .8 * s),
                                                     rot=(.5, 0, 0), bevel=0)
@@ -844,8 +909,8 @@ def quad_canisters(a, i, at, slot='missile', s=1.0, el=.3, length=4.2, n=4, acro
 
 
 # ============================================================================= finishing
-PROTECT = ('Hull', 'Hull_low', 'Boot_top', 'Deck', 'Superstructure', 'Bridge', 'Mast', 'Funnel', 'Team_band',
-           'Railings', 'Bollards', 'Boats', 'Davits', 'Barbettes', 'Life_rafts', 'Vents', 'Capstans', 'Anchors')
+PROTECT = ('Hull', 'Hull_low', 'Boot_top', 'Deck', 'Deck_edge', 'Superstructure', 'Mast', 'Funnel', 'Team_band',
+           'Railings', 'Boats', 'Barbettes')
 
 
 def _move(a, src_key, dst_key):

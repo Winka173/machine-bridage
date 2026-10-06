@@ -35,6 +35,10 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT / 'Tools' / 'assets'))
 sys.path.insert(0, str(ROOT / 'Tools' / 'balance'))
+# MVA W1-B stable runtime names: a semantic tag (Mount_gun_02, Muzzle_mg_L, Mount_gun_aft) counts like a
+# legacy '.NNN' suffix (naval models lane B, 06/10: the tagged mounts read as missing before).
+from runtime_nodes import TAG as _TAG  # noqa: E402
+TAG = '(?:' + _TAG + ')'
 import glb_analyze  # noqa: E402
 from jsonc_edit import loads as load_jsonc  # noqa: E402
 
@@ -301,17 +305,17 @@ def weapon_checks(defs: Defs, own, cls: str, names):
         for slot, (need, free, is_main) in per_slot.items():
             if slot in NO_MUZZLE:
                 continue
-            have = count(names, rf'^(Muzzle_{slot}(\.\d+)?$|Muzzle_b\d+_{slot}(\.\d+)?$|Launch_{slot})')
+            have = count(names, rf'^(Muzzle_{slot}{TAG}?(\.\d+)?$|Muzzle_b\d+_{slot}{TAG}?(\.\d+)?$|Launch_{slot})')
             need_total += need
             found_total += min(have, need)
             if have < need:
                 missing.append(f'Muzzle_{slot} {have}/{need}' + (' (main)' if is_main else ''))
             if free:
-                mhave = count(names, rf'^Mount_{slot}(\.\d+)?$')
+                mhave = count(names, rf'^Mount_{slot}{TAG}?(\.\d+)?$')
                 if mhave < free:
                     mounts.append(f'Mount_{slot} {mhave}/{free}')
         if main and cls not in ('jet', 'air_other') and f(own, 'turretTurnRate') and \
-                (f(own, 'mainAim') or 'Turret') == 'Turret' and                 not count(names, rf'^(Turret(\.\d+)?$|Gun_turret|Mount_main|Mount_{main_slot}(\.\d+)?$)'):
+                (f(own, 'mainAim') or 'Turret') == 'Turret' and                 not count(names, rf'^(Turret(\.\d+)?$|Gun_turret|Mount_main|Mount_{main_slot}{TAG}?(\.\d+)?$)'):
             mounts.append('Turret (main mount)')
     flares = f(own, 'flareCharges') or 0
     flare = (count(names, r'^Mount_flare(\.\d+)?$'), 2 if flares else 0)
