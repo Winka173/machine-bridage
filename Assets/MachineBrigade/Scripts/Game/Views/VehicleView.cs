@@ -336,10 +336,13 @@ namespace MachineBrigade.Game.Views
             var deepest = _model.Lod == null || _model.Lod1Renderers.Length == 0 ? VehicleLod.Full
                 : Impostor != null && Impostor.Baked && !_wreck ? VehicleLod.Impostor
                 : VehicleLod.Simple;
+            // MVA W2-B (spec part AA): a boss keeps its silhouette and weapon mounts longer (never a card).
+            var boss = Def.Boss;
+            if (boss) deepest = Mathf.Min(deepest, VehicleLod.Simple);
             int level;
             if (VehicleLod.Forced >= 0) level = Mathf.Min(VehicleLod.Forced, deepest);
             else if (pixelsPerMetre <= 0f) level = VehicleLod.Full;
-            else level = VehicleLod.Choose(_level, LodSize * pixelsPerMetre, deepest);
+            else level = VehicleLod.Choose(_level, LodSize * pixelsPerMetre * (boss ? VehicleLod.BossDetailBoost : 1f), deepest);
             SetLevel(level);
         }
 
