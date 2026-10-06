@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-05",
+ "generated": "2026-10-06",
  "tool": "Tools/assets/glb_check.py",
  "count": 456,
  "budgets": {
@@ -5154,6 +5154,38 @@
     "FLAG silver_bug_wreck: triangles 60,090 -> 69,462 (+15.6%); vertices 71,764 -> 81,242 (+13.2%); meshes 166 -> 205 (+23.5%); renderers 166 -> 205 (+23.5%); materials 18 -> 21 (+16.7%); materialSlots 166 -> 205 (+23.5%); fileBytes 2,765,056 -> 3,145,952 (+13.8%); structure changed",
     "FLAG theia: triangles 30,454 -> 36,650 (+20.3%); vertices 30,005 -> 37,147 (+23.8%); meshes 81 -> 115 (+42.0%); renderers 81 -> 115 (+42.0%); materials 14 -> 15 (+7.1%); materialSlots 81 -> 115 (+42.0%); fileBytes 1,226,328 -> 1,517,660 (+23.8%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "aa_turret_b",
+    "armored_train",
+    "atgm_tower",
+    "atgm_tower_a",
+    "atgm_tower_b",
+    "attack_jet",
+    "attack_jet_hd",
+    "coeus",
+    "headquarters",
+    "heavy_bomber",
+    "heavy_turret_b",
+    "hyperion",
+    "icarus_mk0",
+    "manpads_tower",
+    "mg_bunker",
+    "mg_bunker_a",
+    "recon_drone",
+    "scout_heli",
+    "scylla",
+    "stealth_bomber",
+    "stealth_naval_strike",
+    "strike_drone",
+    "theia",
+    "titan_tank",
+    "twin_rotor_gunship"
+   ],
+   "reason": "merge of feature/mva-w1b",
+   "changes": []
   }
  ],
  "models": {

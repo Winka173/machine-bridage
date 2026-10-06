@@ -1,6 +1,6 @@
 # GLB baseline (prompt 27 step 2)
 
-Generated 2026-10-05 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (456 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
+Generated 2026-10-06 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (456 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
 Rules: DECISIONS "27 step 0 + baseline"; budgets: Docs/models/BUDGETS.md (over the soft budget a warning, over
 the hard cap an error). Warnings are listed in the JSON.
 
