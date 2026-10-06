@@ -21944,3 +21944,56 @@ missile_frigate, aa_frigate, rocket_artillery_ship. The 8 big ships are lane B's
 - **Effects.** Nothing new needed: wake (WakeView), sinking/break-up (ShipSinking, the ships >= 24 m break in two),
   wreck class and launch/impact FX all key off `Def.Naval` and the weapon data. No cards (`"card": false`), so the
   card/scan pipeline was not run; Blender render_angles sheets checked by eye. No Unity runs, no export.py.
+
+## Naval models (lane B)
+
+06/10, branch feature/naval-models-art2. Owner prompt 06/10 (Docs/naval/PROMPT_owner_vi.md, Model/VFX section) and
+the data lane's brief Docs/naval/MODEL_CONTRACT.md: real GLBs for the eight big new hulls in place of the
+`sea_cruiser` stand-in. Builders `Tools/blender/mb_naval_b.py` on the lane kit `Tools/blender/mb_naval_b_kit.py`
+(registered inside the builders dict of build_assets.py). No Unity run, no tests (owner: "khong test").
+
+- **References (one per ship, no two alike):** destroyer = Arleigh Burke (Mk 45 Mod 4, VLS fore/aft, faceted
+  deckhouse with four octagonal arrays, two stacks, Phalanx fore/aft, flight deck); gun_destroyer = Spruance/Kidd
+  (two rounded Mk 45 Mod 2 fore and aft, offset stacks, two lattice masts, hangar, Mk 29 box, one Phalanx);
+  missile_destroyer = Type 055 read (100 mm stealth gun, raised eight big-cell VLS block, integrated tower with four
+  flat arrays, wide funnel, two Type 1130, RAM-type box); aa_destroyer = Ticonderoga baseline 1 (Mk 26 twin-arm with
+  two big SAMs forward as the dominant system, Aegis faces fore/aft, aft VLS, Mk 45 aft only, two Phalanx abeam);
+  heavy_monitor = Erebus/Roberts (wide low hull with anti-torpedo bulges, armoured deck seams, one heavy turret on a
+  tall barbette, tripod with director top, one funnel, Phalanx aft); battlecruiser = Alaska modernised (sheered hull,
+  twin 254 mm turret forward, four-cell inclined AShM deck, conning tower + tower bridge, trunk funnel, Phalanx on
+  sponsons, Mk 26 aft); battleship = Iowa 1980s (two superfiring turrets forward + one aft, conning tower, tower
+  bridge, tripod foremast, two stacks, Mk 29 box, two Phalanx, helicopter fantail); missile_cruiser = Kirov read
+  (S-300F revolver hatches in the bow, eight-cell inclined Granit deck, pyramid superstructure with Top Pair radar,
+  twin-uptake funnel, two AK-630, 130 mm aft). The contract says "VLS deck" for missile_cruiser: kept as the
+  inclined-cell deck (VLS family) rather than Slava's side tubes, because a fixed launcher's cells ride the mount
+  pivot the view turns (cells more than ~1.2 m from the pivot would swing off the hull).
+- **Barrels follow the data:** battleship turrets are single-barrel (naval_406_bs "barrels": 1, contract), modelled
+  as big Iowa-shaped houses with one heavy barrel; battlecruiser twin (naval_203_bc inherits barrels 2) with
+  `Muzzle_b1_gun` / `Muzzle_b2_gun`; monitor single (gun_203_siege). Open question for the owner: triple barrels for
+  the battleship would need "barrels": 3 in the data first.
+- **Runtime nodes (stable, no .NNN):** every contract node, each muzzle the child of its mount: Mount_gun[_02/_03],
+  Mount_missile[_02], Mount_mg[_02] + Muzzle_*; launch cells `Muzzle_b<k>_missile[_02]` (up to four nearest the
+  pivot: salvos leave from different cells; a fixed launcher's pivot carries only its muzzle and cells); `Radar`
+  (spinning search radar) and `Mount_APS` (every def has "aps"). Moving parts 4-8 (<= the ground soft budget 8).
+  Guns' `Gun_barrels[_N]` / `Gun_muzzles[_N]` are direct mount children, so they kick back (IsMountBarrel).
+  Mounts face the bow at rest (the view writes absolute headings); aft turrets are placed so their barrels clear
+  the superstructure when trained forward. No transport bays or doors.
+- **Wake / smoke / wreck:** no node: WakeView draws the wake from the "naval" data (clean waterline at z = 0 on every
+  hull), the funnels get soot in COLOR_0 only (no runtime reads a smoke node), sinking and death use the existing
+  ship systems (ShipSinking, deathExplosion). No new VFX.
+- **Size:** length = data length (the view fits it), width within 9 % of the data width (bridge wings, boats, deck nets);
+  height is the model's real keel-to-mast height (H/L 0.29-0.36, sea_cruiser 0.32, proportions per MODEL_STANDARD
+  3.1), so balance.json `modelSize` height was set to the GLB (contract heights 7-10 m were stand-in boxes and would
+  fail glb_check's proportion check). Only "model" and "modelSize" changed in balance.json, for these eight ids.
+- **Budgets (owner 06/10: 3 x the class budget):** class ground, 3 x soft = 23,400 triangles; built 10.6k (monitor)
+  to 21.2k (battleship), INFO only in budget_audit (HARD 0). Renderers 60-61 (static parts folded per material by
+  `mb_naval_b_kit.fold`, cap 76), moving parts <= 8.
+- **Validators:** glb_check: no errors (warnings = INFO triangles/vertices); quality_gate: 8/8 pass, soft 80.0-91.1
+  ("Tot"); budget_audit: HARD 0; runtime_node_audit: 0 new hard (it reads Docs/export/game_snapshot.json, which
+  does not list the 17 naval units until a Unity ExportGameDoc; the gate's mount check reads balance.json and
+  passes). Tool fix: `Tools/models/scan_prep.py` counted only `Mount_<slot>` / `.NNN` names, so stable tags
+  (`Mount_gun_02`, `Mount_gun_aft`) read as missing mounts (sea_cruiser failed too); it now accepts the
+  runtime_nodes TAG. Generated reports (RUNTIME_NODES.md, BUDGET_OUTLIERS.md, aim_contract.json, quality_report,
+  baseline.json, models.json) and the new GLBs' .meta files are left for the lead's merge pass.
+- **Pictures:** Blender Workbench sheets in `Docs/models/rebuild/<id>/blender_sheet.png`; the ships have
+  "card": false, so the card pipeline renders none; Unity ModelScan sheets need Unity (not run).

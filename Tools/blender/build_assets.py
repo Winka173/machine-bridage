@@ -249,6 +249,7 @@ import mb_pt14_m5  # noqa: E402
 import mb_pt14_m7  # noqa: E402
 import mb_pt14_r2_naval  # noqa: E402
 import mb_pt14_r4_cruiser  # noqa: E402
+import mb_naval_b  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -459,7 +460,9 @@ def all_builders():
                 # cruiser, its mini-boss variants theia and coeus with their own models (last, so they win).
                 **mb_pt14_r4_cruiser.BUILDERS,
                 # Naval models lane A (DECISIONS "Naval models (lane A)"): the nine light and medium naval-expansion hulls.
-                **mb_naval_a_ships.BUILDERS}
+                **mb_naval_a_ships.BUILDERS,
+                # Naval models lane B (DECISIONS "Naval models (lane B)"): the eight big new hulls (last).
+                **mb_naval_b.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
