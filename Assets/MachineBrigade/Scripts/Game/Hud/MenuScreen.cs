@@ -475,11 +475,15 @@ namespace MachineBrigade.Game.Hud
             var game = Section(body, "settings.section.game");
             // Camera shake: the general shake is switched off for now (RtsCamera.ShakeEnabled), but prompt 34 L5's T4+ blasts and
             // shots near the view shake it (RtsCamera.AddTierTrauma), so the setting is always shown: off, low or full.
-            game.Add(OptionRow("move", "settings.shake",
-                    new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Strings.Get("settings.full") },
-                    () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
+            // MVA W2-B (spec part AK): the shake's intensity, 0 (reduced motion) to 100 % in steps of 10.
+            game.Add(Stepper("move", Strings.Get("settings.shake"),
+                () => MatchSettings.ShakeIntensity <= 0f ? Strings.Get("settings.off") : $"{Mathf.RoundToInt(MatchSettings.ShakeIntensity * 100f)}%",
+                step => MatchSettings.ShakeIntensity = Mathf.Clamp01(Mathf.Round((MatchSettings.ShakeIntensity + step * 0.1f) * 10f) / 10f)));
             // MVA W1-B (spec part AL): fewer, softer flashes; the warnings stay as they are.
             game.Add(ToggleRow("flame", "settings.reducedFlash", () => MatchSettings.ReducedFlash, on => MatchSettings.ReducedFlash = on));
+            // MVA W2-B (spec part BS): fewer cosmetic particles; (spec part BH) captions for the critical warnings.
+            game.Add(ToggleRow("flame", "settings.reducedEffects", () => MatchSettings.ReducedEffects, on => MatchSettings.ReducedEffects = on));
+            game.Add(ToggleRow("info", "settings.captions", () => MatchSettings.Captions, on => MatchSettings.Captions = on));
             // Fix prompt L5: the warning rings: full, important only, off (off keeps the super weapons').
             game.Add(OptionRow("flame", "settings.warnings",
                     new[] { Strings.Get("settings.warnings.full"), Strings.Get("settings.warnings.important"), Strings.Get("settings.off") },

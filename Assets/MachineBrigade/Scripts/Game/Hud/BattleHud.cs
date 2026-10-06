@@ -1129,7 +1129,21 @@ namespace MachineBrigade.Game.Hud
         public void TraitWord(Vector3 world, string word, bool ours, Camera camera) => _words?.Show(world, word, ours, camera);
 
         /// <summary>Flashes the screen (a huge blast in view); the stronger of overlapping flashes wins, and it fades in a fifth of a second.</summary>
-        public void Flash(float strength) => _flashLevel = Mathf.Max(_flashLevel, Mathf.Clamp01(strength));
+        public void Flash(float strength)
+        {
+            // MVA W2-B (spec part AL, photosensitivity): a full-screen wash is clamped in frequency (a new one within
+            // FlashGap s of the last only tops the one fading) and in strength (Reduced flashes: a quarter at most).
+            var now = Time.unscaledTime;
+            var level = Mathf.Clamp01(strength) * (Match.MatchSettings.ReducedFlash ? 0.25f : 1f);
+            if (now - _flashAt < FlashGap) level = Mathf.Min(level, _flashLevel + 0.1f);
+            else _flashAt = now;
+            _flashLevel = Mathf.Max(_flashLevel, level);
+        }
+
+        /// <summary>MVA W2-B (spec part AL): the shortest gap between two screen flashes at full strength (at most 2 a second).</summary>
+        internal const float FlashGap = 0.5f;
+
+        private float _flashAt = -10f;
 
         public void Tick()
         {

@@ -56,9 +56,13 @@ namespace MachineBrigade.Game.Effects
             }
         }
 
+        private int _thrown;
+
         /// <summary>A chunk thrown away from <paramref name="blastOrigin"/> (props falling apart, crashes).</summary>
         public void Throw(ChunkModel chunk, Vector3 position, Quaternion rotation, Vector3 blastOrigin, float force, float now)
         {
+            // MVA W2-B (spec part BS): Reduced effects throws every other chunk.
+            if (MachineBrigade.Game.Match.MatchSettings.ReducedEffects && (++_thrown & 1) == 0) return;
             var away = position - blastOrigin;
             away.y = 0f;
             var direction = (away.normalized + Vector3.up * Random.Range(0.8f, 1.6f)).normalized;
