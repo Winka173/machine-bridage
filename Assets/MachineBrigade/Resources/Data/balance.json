@@ -740,6 +740,9 @@
     // their real cadence (up to the 60 rounds a second the simulation carries), in their real bursts, and the change
     // after a burst keeps each weapon's damage a second; rocket ripples at their real interval, the cycle kept.
     { "id": "mg_jeep", "weaponFamilyId": "cal_12_7", "weaponFamily": "m2_browning_12_7_mm", "real": "M2 Browning 12.7 mm", "family": "mg", "size": 12.7, "caliberMm": 12.7,       "pen": 1, "damageType": "Kinetic",       "damage": 9.5,   "cooldown": 0.1111, "range": 22, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 100, "clipReload": 5.1111 },
+    // Balance v3 (06/10): scout_jeep-only variant, main weapon +10% vs original baseline (9.5 -> 10.45); base mg_jeep
+    // stays untouched for river_patrol_boat / supply_truck and rocket_technical's mg_jeep_selfdef (inherits it).
+    { "id": "mg_jeep_scout", "weaponFamilyId": "cal_12_7", "weaponFamily": "m2_browning_12_7_mm", "real": "M2 Browning 12.7 mm", "family": "mg", "size": 12.7, "caliberMm": 12.7,       "pen": 1, "damageType": "Kinetic",       "damage": 10.45,   "cooldown": 0.1111, "range": 22, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 100, "clipReload": 5.1111 },
     { "id": "mg_coax", "weaponFamilyId": "cal_7_62", "weaponFamily": "pkt_m240_7_62_mm", "real": "PKT / M240 7.62 mm", "family": "mg", "size": 7.62, "caliberMm": 7.62,       "pen": 0, "damageType": "Kinetic",       "damage": 5.5,   "cooldown": 0.0833, "range": 20, "spread": 1.0, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 6, "clip": 100, "clipReload": 4.0833 },
     { "id": "hmg_roof", "weaponFamilyId": "cal_12_7", "weaponFamily": "m2_browning_12_7_mm", "real": "M2 Browning 12.7 mm", "family": "mg", "size": 12.7, "caliberMm": 12.7,      "pen": 1, "damageType": "Kinetic",       "damage": 9.5,  "cooldown": 0.1111,  "range": 30, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 100, "clipReload": 5.1111 },
     // Play-test 7 (DECISIONS 22P): the long-range and non-combat vehicles' machine guns are for self-defence only, their
@@ -753,44 +756,52 @@
     { "id": "tower_hmg", "weaponFamily": "m2_browning_12_7_mm", "real": "M2 Browning 12.7 mm", "family": "mg", "size": 12.7, "caliberMm": 12.7, "pen": 1, "inherits": "hmg_roof", "cooldown": 0.085, "clip": 100, "clipReload": 4.085 },
     { "id": "autocannon_30", "weaponFamilyId": "cal_30", "weaponFamily": "2a42_30_mm", "burstInterval": 0.1111, "burst": 10, "real": "2A42 30 mm", "family": "autocannon", "size": 30, "caliberMm": 30, "pen": 2, "damageType": "Kinetic",       "damage": 22,  "cooldown": 1.6111,  "range": 30, "spread": 0.8, "impactTier": "Small", "projectile": "Bullet", "targets": "Ground" },
     // Balance pass after prompt 18 (B.1): the IFV's 2A42 at a quarter more rhythm (the others keep autocannon_30's).
-    { "id": "ifv_30", "weaponFamily": "2a42_30_mm", "burstInterval": 0.1111, "burst": 10, "real": "2A42 30 mm", "family": "autocannon", "size": 30, "caliberMm": 30, "pen": 2, "inherits": "autocannon_30", "cooldown": 1.6111, "clipReload": 0, "clip": 0 },
+    // Balance v3 (06/10): own "damage" override, +8% vs original baseline (22 -> 23.76) so the ifv primary-weapon
+    // buff cannot leak onto autocannon_30's other users (heavy_tank/elite_heavy_tank coax, elite_apc, daedalus boss).
+    { "id": "ifv_30", "weaponFamily": "2a42_30_mm", "burstInterval": 0.1111, "burst": 10, "real": "2A42 30 mm", "family": "autocannon", "size": 30, "caliberMm": 30, "pen": 2, "damage": 23.76, "inherits": "autocannon_30", "cooldown": 1.6111, "clipReload": 0, "clip": 0 },
     { "id": "gun_57mm", "weaponFamilyId": "cal_57", "weaponVariantId": "ap", "burstInterval": 0.5, "burst": 2, "real": "S-60 57 mm (2A91)", "family": "tank_gun", "size": 57, "caliberMm": 57,      "pen": 2, "piercing": true, "damageType": "Kinetic", "damage": 110,  "cooldown": 5.929,  "range": 28, "projectileSpeed": 150, "spread": 0.8, "impactTier": "Medium", "roundWeight": 79 },
+    // Balance v3 (06/10): light_tank-only variant, main cannon +10% vs original baseline (110 -> 121); base gun_57mm
+    // stays untouched for daedalus (boss secondary gun).
+    { "id": "gun_57mm_lt", "weaponFamilyId": "cal_57", "weaponVariantId": "ap", "burstInterval": 0.5, "burst": 2, "real": "S-60 57 mm (2A91)", "family": "tank_gun", "size": 57, "caliberMm": 57,      "pen": 2, "piercing": true, "damageType": "Kinetic", "damage": 121,  "cooldown": 5.929,  "range": 28, "projectileSpeed": 150, "spread": 0.8, "impactTier": "Medium", "roundWeight": 79 },
     { "id": "gun_120mm", "weaponFamilyId": "cal_120_ap", "weaponFamily": "rh_120_l_44_120_mm", "real": "Rh-120 L/44 120 mm", "family": "tank_gun", "size": 120, "caliberMm": 120,     "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 343, "cooldown": 7.283,  "range": 32, "spread": 0.6, "impactTier": "Medium" },
 
     { "id": "turret_gun_120", "weaponFamilyId": "cal_120_ap", "weaponFamily": "rh_120_l_44_120_mm", "bonuses": [{"armor": "Light", "mult": 0.65}], "real": "Rh-120 L/44 120 mm", "family": "tank_gun", "size": 120, "caliberMm": 120, "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 343, "cooldown": 4.114,  "range": 32, "spread": 0.6, "impactTier": "Large", "impactScale": 1.35 },
     { "id": "atgm", "weaponFamilyId": "atgm_bgm_71_tow_2", "real": "BGM-71 TOW-2", "family": "atgm", "size": 22.6, "warheadKg": 5.9,          "pen": 4, "piercing": true, "projectileModel": "atgm_tow", "projectileScale": 0.8, "damageType": "ShapedCharge", "damage": 210, "cooldown": 12.33,  "range": 40, "projectileSpeed": 70, "impactTier": "Medium", "projectile": "Missile" },
     { "id": "gun_launched_atgm", "weaponFamilyId": "atgm_gun_launched_atgm", "real": "gun-launched ATGM (9M117 class)", "family": "atgm", "size": 24, "warheadKg": 4.5, "pen": 4, "piercing": true, "projectileModel": "atgm_kornet", "projectileScale": 0.7, "damageType": "ShapedCharge", "damage": 230, "cooldown": 20, "range": 34, "projectileSpeed": 70, "impactTier": "Medium", "projectile": "Missile" },
-    { "id": "flamethrower", "weaponFamilyId": "flame_flamethrower", "real": "flamethrower", "family": "flame", "size": 1,  "pen": 1, "damageType": "Fire",          "damage": 21,  "cooldown": 0.25, "range": 13, "projectileSpeed": 36, "splash": 2.5, "spread": 1.2, "impactTier": "Small", "projectile": "Flame" },
+    { "id": "flamethrower", "weaponFamilyId": "flame_flamethrower", "real": "flamethrower", "family": "flame", "size": 1,  "pen": 1, "damageType": "Fire",          "damage": 22.05,  "cooldown": 0.25, "range": 13, "projectileSpeed": 36, "splash": 2.5, "spread": 1.2, "impactTier": "Small", "projectile": "Flame" },
     { "id": "howitzer", "weaponFamilyId": "cal_152_155", "weaponFamily": "m284_155_mm_2", "real": "M284 155 mm", "family": "howitzer", "size": 155, "caliberMm": 155,      "pen": 3, "damageType": "HighExplosive", "damage": 457, "cooldown": 10.204,  "range": 90, "minRange": 25, "spread": 5, "impactTier": "Large", "ammo": 20, "reload": 33.49 },
     // Balance pass after prompt 18 (A.2): the emplacement's dug-in gun with its crew and ready rounds: the 155 mm at
     // 2.8 times the field piece's rhythm (90 / 60 wanted), its reach and minimum range kept.
     { "id": "howitzer_fixed", "weaponFamily": "m284_155_mm_fixed", "real": "M284 155 mm", "family": "howitzer", "size": 155, "caliberMm": 155, "pen": 3, "inherits": "howitzer", "cooldown": 10, "edge": 15.4, "damage": 520, "reload": 13 },
     { "id": "mlrs_rockets", "weaponFamilyId": "rkt_gmlrs_227", "weaponFamily": "m31_gmlrs_227_mm_mlrs", "real": "M31 GMLRS 227 mm", "family": "rocket", "size": 227, "caliberMm": 227,  "pen": 3, "damageType": "HighExplosive", "damage": 100,  "cooldown": 9.944,   "range": 110, "minRange": 20, "spread": 2.2, "impactTier": "Large", "projectile": "Rocket", "burst": 5, "burstInterval": 0.3, "ammo": 4, "reload": 15.53 },
-    { "id": "flak_35", "weaponFamilyId": "cal_35", "weaponFamily": "oerlikon_35_mm", "real": "Oerlikon KDA 35 mm (Gepard)", "family": "autocannon", "size": 35, "caliberMm": 35,       "pen": 2, "damageType": "Fragmentation",          "damage": 26,  "cooldown": 0.25, "range": 36, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 22, "clipReload": 1.25, "bonuses": [ { "class": "Plane", "mult": 1.5 } ] },
+    { "id": "flak_35", "weaponFamilyId": "cal_35", "weaponFamily": "oerlikon_35_mm", "real": "Oerlikon KDA 35 mm (Gepard)", "family": "autocannon", "size": 35, "caliberMm": 35,       "pen": 2, "damageType": "Fragmentation",          "damage": 28.08,  "cooldown": 0.25, "range": 36, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 22, "clipReload": 1.25, "bonuses": [ { "class": "Plane", "mult": 1.5 } ] },
     { "id": "sam", "weaponFamilyId": "sam_starstreak_stinger_shorad", "real": "Starstreak / Stinger SHORAD", "family": "aa_missile", "size": 3, "warheadKg": 1,           "pen": 2, "projectileModel": "shorad_dart", "roundLength": 1.216, "projectileScale": 0.5527, "damageType": "Fragmentation",          "damage": 170, "cooldown": 4.452,  "range": 44, "projectileSpeed": 100, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "flareResist": 0.5, "roundWeight": 210 },
     { "id": "stinger_post", "projectileSpeed": 90, "inherits": "sam", "weaponFamilyId": "sam_fim_92_stinger", "real": "FIM-92 Stinger (tower post)", "range": 56 },
     { "id": "missile_57e6", "weaponFamilyId": "sam_57e6", "real": "57E6 (Pantsir)", "family": "aa_missile", "size": 7, "warheadKg": 20, "pen": 3, "projectileModel": "shorad_dart", "projectileScale": 0.85, "damageType": "Fragmentation", "damage": 220, "cooldown": 4.452, "range": 55, "projectileSpeed": 110, "splash": 2.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "flareResist": 0.8 },
     { "id": "heli_gun", "weaponFamilyId": "cal_30", "weaponFamily": "m230_30_mm", "real": "M230 30 mm", "family": "autocannon", "size": 30, "caliberMm": 30,      "pen": 2, "damageType": "Kinetic",       "damage": 23.8,  "cooldown": 0.1667, "range": 26, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 40, "clipReload": 3.1667 },
     { "id": "heli_rockets", "weaponFamilyId": "rkt_70_80", "weaponFamily": "hydra_70_mm", "load": 22, "real": "Hydra 70 mm", "family": "rocket", "size": 70, "caliberMm": 70,  "pen": 2, "damageType": "HighExplosive", "damage": 32.4,  "cooldown": 7.31,  "range": 30, "spread": 3, "impactTier": "Medium", "projectile": "Rocket", "burst": 11, "burstInterval": 0.12 },
     { "id": "autocannon_25", "weaponFamilyId": "cal_25", "weaponFamily": "m242_bushmaster_25_mm", "burstInterval": 0.1667, "burst": 8, "real": "M242 Bushmaster 25 mm", "family": "autocannon", "size": 25, "caliberMm": 25,     "pen": 2, "damageType": "Kinetic",       "damage": 17,  "cooldown": 1.4667,  "range": 30, "spread": 0.9, "impactTier": "Small", "projectile": "Bullet", "targets": "Ground", "roundWeight": 22 },
+    // Balance v3 (06/10): armored_car-only variant, +15% vs original baseline (17 -> 19.55); base autocannon_25
+    // stays untouched for tower_ac25 (inherits its damage) and pt14_dd_v25 (own damage already).
+    { "id": "autocannon_25_car", "weaponFamilyId": "cal_25", "weaponFamily": "m242_bushmaster_25_mm", "burstInterval": 0.1667, "burst": 8, "real": "M242 Bushmaster 25 mm", "family": "autocannon", "size": 25, "caliberMm": 25,     "pen": 2, "damageType": "Kinetic",       "damage": 19.55,  "cooldown": 1.4667,  "range": 30, "spread": 0.9, "impactTier": "Small", "projectile": "Bullet", "targets": "Ground", "roundWeight": 22 },
     { "id": "tower_ac25", "weaponFamily": "m242_bushmaster_25_mm", "burstInterval": 0.1, "burst": 1, "real": "M242 Bushmaster 25 mm", "family": "autocannon", "size": 25, "caliberMm": 25, "pen": 2, "inherits": "autocannon_25", "cooldown": 0.125, "clip": 10, "clipReload": 1.425 },
-    { "id": "gun_105_long", "weaponFamilyId": "cal_125_ap", "real": "2A75 125 mm (2S25 Sprut)", "family": "tank_gun", "size": 125, "caliberMm": 125,      "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 371, "cooldown": 4.762,  "range": 46, "projectileSpeed": 220, "spread": 0.4, "impactTier": "Medium", "roundWeight": 357 },
+    { "id": "gun_105_long", "weaponFamilyId": "cal_125_ap", "real": "2A75 125 mm (2S25 Sprut)", "family": "tank_gun", "size": 125, "caliberMm": 125,      "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 389.55, "cooldown": 4.762,  "range": 46, "projectileSpeed": 220, "spread": 0.4, "impactTier": "Medium", "roundWeight": 357 },
     { "id": "gun_152", "weaponFamilyId": "cal_152_155", "weaponVariantId": "ap", "weaponFamily": "2a83_152_mm", "real": "2A83 152 mm", "family": "tank_gun", "size": 152, "caliberMm": 152,           "pen": 5, "piercing": true, "he": "gun_152_he", "damageType": "Kinetic", "damage": 457, "cooldown": 8.163,  "range": 34, "spread": 0.7, "impactTier": "Large" },
     { "id": "sam_long", "weaponFamilyId": "sam_9m317_buk", "weaponFamily": "9m317_buk", "real": "9M317 Buk", "family": "aa_missile", "size": 70, "warheadKg": 70,          "pen": 3, "damageType": "Fragmentation",          "damage": 320, "cooldown": 5.73,  "range": 55, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "burst": 2, "burstInterval": 0.5, "flareResist": 0.8 },
     // Balance pass after prompt 18 (B.1): the SAM launcher's Buk at about 210 a second on aircraft (the AA tower's post keeps sam_long's).
     { "id": "buk_launcher", "weaponFamily": "9m317_buk", "real": "9M317 Buk", "family": "aa_missile", "size": 70, "warheadKg": 70, "pen": 3, "inherits": "sam_long", "cooldown": 2.8 },
     { "id": "mortar_120", "weaponFamilyId": "cal_120_he", "weaponVariantId": "mortar", "weaponFamily": "2b11_120_mm", "real": "2B11 120 mm", "family": "mortar", "size": 120, "caliberMm": 120,        "pen": 2, "damageType": "HighExplosive", "damage": 235,  "cooldown": 7.143,  "range": 55, "minRange": 10, "spread": 4.5, "impactTier": "Large", "ammo": 18, "reload": 35.73 },
-    { "id": "technical_rockets", "weaponFamilyId": "rkt_107", "bonuses": [{"armor": "Structure", "mult": 0.6}], "real": "Type 63 107 mm", "family": "rocket", "size": 107, "caliberMm": 107, "pen": 2, "projectileModel": "rocket_107", "damageType": "HighExplosive", "damage": 49.5,  "cooldown": 5.6,   "range": 48, "minRange": 12, "projectileSpeed": 75, "splash": 3.5, "spread": 6, "impactTier": "Medium", "projectile": "Rocket", "burst": 5, "burstInterval": 0.5, "ammo": 6, "reload": 18 },
+    { "id": "technical_rockets", "weaponFamilyId": "rkt_107", "bonuses": [{"armor": "Structure", "mult": 0.6}], "real": "Type 63 107 mm", "family": "rocket", "size": 107, "caliberMm": 107, "pen": 2, "projectileModel": "rocket_107", "damageType": "HighExplosive", "damage": 56.9,  "cooldown": 5.6,   "range": 48, "minRange": 12, "projectileSpeed": 75, "splash": 3.5, "spread": 6, "impactTier": "Medium", "projectile": "Rocket", "burst": 5, "burstInterval": 0.5, "ammo": 6, "reload": 18 },
     // BM-21 Grad: a ripple of 20 rockets, a carpet of blasts. Heavy ATGM: two missiles a launch, long reach.
     { "id": "grad_rockets", "weaponFamilyId": "rkt_grad_122", "weaponFamily": "bm_21_grad_122_mm", "real": "BM-21 Grad 122 mm", "family": "rocket", "size": 122, "caliberMm": 122,  "pen": 2, "damageType": "HighExplosive", "damage": 57,  "cooldown": 11.31,   "range": 55, "minRange": 18, "spread": 7, "impactTier": "Medium", "projectile": "Rocket", "burst": 9, "burstInterval": 0.5, "ammo": 3, "reload": 16.6 },
     { "id": "atgm_heavy", "weaponFamilyId": "atgm_kornet", "weaponFamily": "9m133_kornet", "real": "9M133 Kornet", "family": "atgm", "size": 29, "warheadKg": 7,    "pen": 4, "piercing": true, "damageType": "ShapedCharge", "damage": 230, "cooldown": 6.8,  "range": 42, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.7 },
     { "id": "gunship_rockets", "groundMinReach": 9, "weaponFamilyId": "rkt_70_80", "weaponFamily": "s_8_80_mm", "load": 32, "real": "S-8 80 mm", "family": "rocket", "size": 80, "caliberMm": 80,   "pen": 2, "projectileScale": 0.9, "damageType": "HighExplosive", "damage": 32,  "cooldown": 8.271,    "range": 34, "spread": 3.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 16, "burstInterval": 0.1 },
-    { "id": "minigun", "weaponFamilyId": "cal_7_62", "real": "M134 Minigun 7.62 mm", "family": "mg", "size": 7.62, "caliberMm": 7.62,           "pen": 0, "damageType": "Kinetic",       "damage": 5.9,   "cooldown": 0.02, "range": 24, "projectileSpeed": 240, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 7, "clip": 200, "clipReload": 4.02 },
+    { "id": "minigun", "weaponFamilyId": "cal_7_62", "real": "M134 Minigun 7.62 mm", "family": "mg", "size": 7.62, "caliberMm": 7.62,           "pen": 0, "damageType": "Kinetic",       "damage": 5.94,   "cooldown": 0.02, "range": 24, "projectileSpeed": 240, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 7, "clip": 200, "clipReload": 4.02 },
     { "id": "scout_rockets", "weaponFamilyId": "rkt_70_80", "weaponFamily": "hydra_70_mm", "load": 6, "real": "Hydra 70 mm", "family": "rocket", "size": 70, "caliberMm": 70,     "pen": 2, "projectileScale": 0.72, "damageType": "HighExplosive", "damage": 32.4,  "cooldown": 7.4,    "range": 28, "spread": 3, "impactTier": "Medium", "projectile": "Rocket", "burst": 12, "burstInterval": 0.11 },
     { "id": "jet_cannon", "weaponFamilyId": "cal_30", "real": "GSh-30-2 30 mm", "family": "autocannon", "size": 30, "caliberMm": 30,        "pen": 2, "piercing": true, "damageType": "Kinetic", "damage": 24.8,  "cooldown": 0.0526,  "range": 30, "projectileSpeed": 300, "spread": 2.5, "impactTier": "Small", "projectile": "Bullet", "clip": 70, "clipReload": 1.5526 },
     { "id": "jet_rockets", "weaponFamilyId": "rkt_70_80", "weaponFamily": "hydra_70_mm_jet", "load": 14, "real": "Hydra 70 mm", "family": "rocket", "size": 70, "caliberMm": 70,       "pen": 2, "damageType": "HighExplosive", "damage": 30,  "cooldown": 2.55,    "range": 36, "spread": 4, "impactTier": "Medium", "projectile": "Rocket", "burst": 7, "burstInterval": 0.08 },
     { "id": "jet_bombs", "weaponFamilyId": "bomb_fab_250", "load": 3, "real": "FAB-250 (250 kg)", "family": "bomb", "size": 250, "warheadKg": 250,         "pen": 2, "projectileModel": "bomb_fab", "projectileScale": 0.5444, "roundLength": 0.98, "damageType": "HighExplosive", "damage": 388, "cooldown": 10.05,   "range": 26, "projectileSpeed": 35, "splash": 8, "spread": 3, "impactTier": "Huge", "projectile": "Bomb", "topAttack": true, "burst": 2, "burstInterval": 0.25, "roundWeight": 351, "stick": { "mode": "STICK", "bombs": 2, "spacing": 8.8, "length": 8.8, "interval": 0.3438, "releaseSpeed": 25.6, "fallTime": 1.225, "lead": 31.4, "heading": "APPROACH", "anchor": "CENTER", "drop": "OVERFLY", "jitterAcross": 2, "jitterAlong": 1.32, "overlap": 0.909, "width": 20, "minTargets": 3, "safety": 8, "straightTime": 2.57, "exit": 40, "bayOpen": 1.0, "warnShape": "NONE" } },
-    { "id": "drone_missile", "weaponFamilyId": "atgm_agm_114_hellfire", "weaponFamily": "agm_114_hellfire", "load": 3, "real": "AGM-114 Hellfire", "family": "atgm", "size": 49, "warheadKg": 9,     "pen": 4, "piercing": true, "projectileScale": 0.65, "damageType": "ShapedCharge", "damage": 260, "cooldown": 3.58,    "range": 48, "impactTier": "Medium", "projectile": "Missile", "bonuses": [ { "armor": "Structure", "mult": 1.5 } ] },
+    { "id": "drone_missile", "weaponFamilyId": "atgm_agm_114_hellfire", "weaponFamily": "agm_114_hellfire", "load": 3, "real": "AGM-114 Hellfire", "family": "atgm", "size": 49, "warheadKg": 9,     "pen": 4, "piercing": true, "projectileScale": 0.65, "damageType": "ShapedCharge", "damage": 286, "cooldown": 3.58,    "range": 48, "impactTier": "Medium", "projectile": "Missile", "bonuses": [ { "armor": "Structure", "mult": 1.5 } ] },
     // Second wave of vehicles.
     { "id": "gun_155_sph", "weaponFamilyId": "cal_152_155", "weaponFamily": "m284_155_mm_2", "real": "M284 155 mm", "family": "howitzer", "size": 155, "caliberMm": 155,       "pen": 3, "damageType": "HighExplosive", "damage": 320, "cooldown": 12.81,  "range": 100, "minRange": 25, "spread": 4.5, "impactTier": "Huge", "ammo": 16, "reload": 41.9 },
     { "id": "thermobaric_rockets", "weaponFamilyId": "rkt_tos_220", "weaponFamily": "tos_1a_220_mm_thermobaric", "real": "TOS-1A 220 mm thermobaric", "family": "rocket", "size": 220, "caliberMm": 220, "pen": 3, "thermobaric": true, "damageType": "HighExplosive", "damage": 97, "cooldown": 10.55,  "range": 48, "minRange": 12, "spread": 6, "impactTier": "Huge", "projectile": "Rocket", "burst": 9, "burstInterval": 0.3, "ammo": 4, "reload": 21.67 },
@@ -849,6 +860,9 @@
     { "id": "detonator", "weaponFamilyId": "bomb_car_bomb", "real": "car bomb (900 kg)", "family": "bomb", "size": 900, "warheadKg": 900,         "pen": 4, "form": "CarBomb", "damageType": "HighExplosive", "damage": 770, "cooldown": 1,    "range": 3, "projectileSpeed": 100, "splash": 10, "impactTier": "Ultimate",
       "bonuses": [ { "armor": "Structure", "mult": 0.5 } ] },
     { "id": "zu23", "weaponFamilyId": "cal_23", "real": "ZU-23-2 23 mm", "family": "autocannon", "size": 23, "caliberMm": 23, "barrels": 2, "pen": 1, "damageType": "Fragmentation",          "damage": 3.5,  "cooldown": 0.02,  "range": 38, "projectileSpeed": 240, "spread": 1.6, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 100, "clipReload": 3.02 },
+    // Balance v3 (06/10): zu23_technical-only variant, +20% vs original baseline (3.5 -> 4.2); base zu23 stays
+    // untouched for moloch (boss secondary MG x2).
+    { "id": "zu23_cheap", "weaponFamilyId": "cal_23", "real": "ZU-23-2 23 mm", "family": "autocannon", "size": 23, "caliberMm": 23, "barrels": 2, "pen": 1, "damageType": "Fragmentation",          "damage": 4.2,  "cooldown": 0.02,  "range": 38, "projectileSpeed": 240, "spread": 1.6, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 100, "clipReload": 3.02 },
     { "id": "lancet", "weaponFamilyId": "drone_zala_lancet_3", "weaponFamily": "zala_lancet_3", "real": "ZALA Lancet-3 (3 kg)", "family": "drone", "size": 3, "warheadKg": 3,            "pen": 4, "topAttack": true, "piercing": true, "damageType": "ShapedCharge", "damage": 240, "cooldown": 8.372,   "range": 100, "impactTier": "Medium", "impactScale": 1.2, "projectile": "Drone", "ammo": 8,
       "bonuses": [ { "class": "Artillery", "mult": 2 }, { "still": 3, "mult": 2 }, { "armor": "Structure", "mult": 1.5 } ] },
     { "id": "shahed", "weaponFamilyId": "drone_shahed_136", "real": "Shahed-136 (50 kg)", "family": "drone", "size": 50, "warheadKg": 50,            "pen": 3, "topAttack": true, "projectileModel": "shahed", "damageType": "HighExplosive", "damage": 344, "cooldown": 8.5,   "range": 150, "minRange": 20, "projectileSpeed": 20, "splash": 4.5, "impactTier": "Huge", "projectile": "Drone", "ammo": 5, "reload": 8.5 },
@@ -892,7 +906,7 @@
     { "id": "autocannon_40", "weaponFamilyId": "cal_40", "real": "Bofors 40 mm", "family": "autocannon", "size": 40, "caliberMm": 40,     "pen": 2, "damageType": "Kinetic",       "damage": 30,  "cooldown": 0.2,  "range": 28, "projectileSpeed": 210, "splash": 1, "spread": 0.8, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 10, "clipReload": 1.72, "roundWeight": 51 },
     // Roster cleanup (prompt 2): the wheeled tank hunter's 105 mm (harder on a flank or rear), the
     // long-range SAM's big missile, the ATGM tower's twin launcher.
-    { "id": "gun_105_wheeled", "weaponFamilyId": "cal_120_ap", "real": "Centauro II 120 mm", "family": "tank_gun", "size": 120, "caliberMm": 120, "pen": 4, "piercing": true, "roundWeight": 300,   "damageType": "Kinetic", "damage": 369, "cooldown": 5.291,  "range": 38, "projectileSpeed": 230, "spread": 0.4, "impactTier": "Medium",
+    { "id": "gun_105_wheeled", "weaponFamilyId": "cal_120_ap", "real": "Centauro II 120 mm", "family": "tank_gun", "size": 120, "caliberMm": 120, "pen": 4, "piercing": true, "roundWeight": 300,   "damageType": "Kinetic", "damage": 387.45, "cooldown": 5.291,  "range": 38, "projectileSpeed": 230, "spread": 0.4, "impactTier": "Medium",
       "bonuses": [ { "flank": true, "mult": 1.25 } ] },
     // 06/10 balance v2 sec 2: speed 140 -> 115 (still visually too fast at 140). Splash: owner's "x1.25 cap 5-6 m" --
     // canonical 7.2 already exceeds the cap, so capped down to 6.0 (top of band) rather than multiplied further over it;
@@ -976,7 +990,7 @@
     { "id": "p26_bastion_direct_b100", "groundMinReach": 19, "inherits": "p26_bastion_b100", "real": "D-10 100 mm (twin casemate)", "salvoMode": "SIMULTANEOUS", "barrels": 2, "cooldown": 8.6, "damage": 240 },
     { "id": "p26_bastion_close_boss_hmg", "inherits": "boss_hmg", "clipReload": 5, "weaponFamily": "", "damage": 15 },
     { "id": "p26_bastion_tiny_autocannon_40", "inherits": "autocannon_40", "clipReload": 1.52, "splash": 0, "damage": 30 },
-    { "id": "p26_bastion_tiny_kornet_twin", "groundMinReach": 1, "inherits": "kornet_twin", "cooldown": 19.4, "weaponFamily": "", "damage": 230 },
+    { "id": "p26_bastion_tiny_kornet_twin", "groundMinReach": 30, "inherits": "kornet_twin", "cooldown": 19.4, "weaponFamily": "", "damage": 230 },
     { "id": "p26_bastion_tiny_zu23", "inherits": "zu23", "clipReload": 2.98, "damage": 3.5 },
     { "id": "p26_behemoth_be152", "inherits": "gun_behemoth", "real": "2A65 152 mm", "damage": 590, "cooldown": 2, "burst": 1, "splash": 8.5, "edge": 17 },
     { "id": "p26_behemoth_be_rockets", "groundMinReach": 0, "flightProfile": "Ballistic", "inherits": "boss_rockets", "damageType": "HighExplosive", "projectileSpeed": 65, "real": "BM-21 Grad 122 mm (dorsal)", "damage": 160, "burst": 8, "burstInterval": 0.3, "cooldown": 5.9, "splash": 5, "edge": 10 },
@@ -986,7 +1000,7 @@
     { "id": "p26_behemoth_direct_be120", "groundMinReach": 21, "inherits": "p26_behemoth_be120", "real": "Rh-120 L/44 120 mm (twin)", "salvoMode": "SIMULTANEOUS", "barrels": 2, "cooldown": 7.5, "damage": 260 },
     { "id": "p26_behemoth_close_boss_flak", "inherits": "boss_flak", "clipReload": 3.38, "weaponFamily": "", "damage": 25 },
     { "id": "p26_behemoth_tiny_be120", "groundMinReach": 25, "inherits": "p26_behemoth_be120", "cooldown": 7.5, "damage": 260 },
-    { "id": "p26_behemoth_tiny_boss_missiles", "groundMinReach": 1, "inherits": "boss_missiles", "cooldown": 20, "weaponFamily": "", "damage": 230 },
+    { "id": "p26_behemoth_tiny_boss_missiles", "groundMinReach": 30, "inherits": "boss_missiles", "cooldown": 20, "weaponFamily": "", "damage": 230 },
     // Play-test 13 (lane C): mount 6 sits on the 120 mm side gun (Mount_gun): it fires that gun's shells, not Kornets out of a barrel; the twin pair's 460 every 19.4 s kept (230 every 9.7 s).
     { "id": "p26_behemoth_tiny_kornet_twin", "groundMinReach": 25, "inherits": "p26_behemoth_be120", "real": "Rh-120 L/44 120 mm (side gun)", "damage": 230, "cooldown": 9.7 },
     { "id": "p26_jotunn_jo203", "groundMinReach": 48, "inherits": "boss_howitzer", "real": "2A44 203 mm", "damage": 900, "cooldown": 24, "splash": 8.5, "edge": 17 },
@@ -1000,19 +1014,19 @@
     { "id": "p26_ixion_mg", "inherits": "boss_hmg", "clipReload": 5, "weaponFamily": "", "damage": 15 },
     // Play-test 14 wave M2: Ixion's added guns and launchers (CHANGES "Play-test 14 model wave M2").
     { "id": "pt14_ixion_30", "inherits": "autocannon_30", "weaponFamily": "", "real": "2A42 30 mm (remote turret)", "burst": 8, "cooldown": 3.5, "damage": 22 },
-    { "id": "pt14_ixion_kornet", "groundMinReach": 1, "inherits": "boss_missiles", "weaponFamily": "", "real": "9M133 Kornet-EM (twin launcher)", "cooldown": 12, "damage": 230 },
+    { "id": "pt14_ixion_kornet", "groundMinReach": 30, "inherits": "boss_missiles", "weaponFamily": "", "real": "9M133 Kornet-EM (twin launcher)", "cooldown": 12, "damage": 230 },
     { "id": "pt14_ixion_grad", "projectileSpeed": 65, "inherits": "grad_rockets", "weaponFamily": "", "real": "BM-21V Grad-V 122 mm (12-tube pack)", "burst": 9, "cooldown": 20, "damage": 57 },
     { "id": "p26_ixion_125", "groundMinReach": 30, "inherits": "gun_120mm", "weaponFamilyId": "cal_125_ap", "weaponFamily": "", "real": "2A46 125 mm (turret, AP)", "size": 125, "caliberMm": 125, "damage": 400, "cooldown": 7.5, "pen": 5, "splash": 0, "range": 38 },
     { "id": "p26_leviathan_lev155", "inherits": "naval_155_triple", "weaponFamily": "", "real": "155 mm/60 (triple)", "damage": 170, "burst": 3, "burstInterval": 0.25, "cooldown": 4.5, "splash": 8.5, "edge": 17 },
     { "id": "p26_leviathan_lev127", "projectileSpeed": 90, "inherits": "naval_100", "weaponFamilyId": "cal_127_130", "weaponVariantId": "ap", "weaponFamily": "", "real": "AK-127 127 mm", "size": 127, "caliberMm": 127, "damageType": "Kinetic", "damage": 320, "burst": 1, "cooldown": 2, "pen": 5, "splash": 0 },
     { "id": "p26_leviathan_sec_lev155", "groundMinReach": 87, "inherits": "p26_leviathan_lev155", "burst": 1, "salvoMode": "SIMULTANEOUS", "barrels": 3, "projectileSpeed": 88, "edge": 14, "splash": 7, "cooldown": 10.5, "damage": 600 },
     { "id": "p26_leviathan_direct_lev127", "projectileSpeed": 105, "groundMinReach": 23, "inherits": "p26_leviathan_lev127", "cooldown": 3, "damage": 380 },
-    { "id": "p26_matriarch_ma_drones", "groundMinReach": 1, "inherits": "mothership_drones", "weaponFamilyId": "drone_zala_lancet_3_swarm", "weaponFamily": "", "real": "ZALA Lancet-3 swarm", "damage": 320, "burst": 6, "burstInterval": 0.2, "cooldown": 4, "splash": 3, "edge": 6 },
+    { "id": "p26_matriarch_ma_drones", "groundMinReach": 15, "inherits": "mothership_drones", "weaponFamilyId": "drone_zala_lancet_3_swarm", "weaponFamily": "", "real": "ZALA Lancet-3 swarm", "damage": 320, "burst": 6, "burstInterval": 0.2, "cooldown": 4, "splash": 3, "edge": 6 },
     // Play-test 14 (cloud session 3): Locust launches one drone every 2 s, no faster (Matriarch keeps its six-drone salvo).
-    { "id": "locust_drones", "groundMinReach": 1, "inherits": "p26_matriarch_ma_drones", "burst": 1, "cooldown": 2 },
+    { "id": "locust_drones", "groundMinReach": 15, "inherits": "p26_matriarch_ma_drones", "burst": 1, "cooldown": 2 },
     { "id": "p26_matriarch_ma_atgm", "inherits": "boss_missiles", "weaponFamily": "", "real": "9M133 Kornet", "damage": 340, "cooldown": 2, "pen": 5, "range": 55 },
     { "id": "p26_matriarch_sec_autocannon_30", "inherits": "autocannon_30", "burstInterval": 0.1111, "weaponFamily": "", "cooldown": 1.5, "damage": 22 },
-    { "id": "p26_matriarch_direct_ma_atgm", "groundMinReach": 1, "inherits": "p26_matriarch_ma_atgm", "cooldown": 20, "damage": 230 },
+    { "id": "p26_matriarch_direct_ma_atgm", "groundMinReach": 30, "inherits": "p26_matriarch_ma_atgm", "cooldown": 20, "damage": 230 },
     { "id": "p26_matriarch_close_boss_flak", "inherits": "boss_flak", "clipReload": 3.38, "weaponFamily": "", "damage": 25 },
     { "id": "p26_matriarch_tiny_mothership_cannon", "groundMinReach": 11, "inherits": "mothership_cannon", "cooldown": 2.79, "edge": 6, "splash": 3, "damage": 120 },
     { "id": "p26_moloch_mo120", "inherits": "gun_120mm", "weaponFamilyId": "cal_120_he", "weaponFamily": "", "real": "Rh-120 L/44 120 mm HE", "damageType": "HighExplosive", "damage": 225, "cooldown": 2, "pen": 4, "splash": 5, "edge": 10 },
@@ -1038,7 +1052,7 @@
     { "id": "p26_roc_roc105", "groundMinReach": 22, "inherits": "gunship_105", "real": "M102 105 mm (gondola)", "damage": 300, "cooldown": 6, "splash": 5.5, "edge": 11 },
     { "id": "p26_roc_roc_atgm", "inherits": "boss_missiles", "weaponFamily": "", "real": "Kornet (dropped from the bay)", "damage": 300, "cooldown": 2, "pen": 5, "range": 55 },
     { "id": "p26_roc_main_roc_bombs", "inherits": "p26_roc_roc_bombs", "caliberMm": 0, "edge": 20, "splash": 10, "cooldown": 33.34, "damage": 700, "stick": { "mode": "STICK", "bombs": 8, "spacing": 11, "length": 77, "interval": 0.3, "releaseSpeed": 36.667, "fallTime": 1.225, "lead": 0, "heading": "AXIS", "anchor": "CENTER", "drop": "BAY", "jitterAcross": 2.5, "jitterAlong": 1.65, "overlap": 0.909, "width": 45, "minTargets": 3, "safety": 10, "straightTime": 0, "exit": 0, "bayOpen": 1.5, "warnShape": "STICK_RECT" } },
-    { "id": "p26_roc_direct_roc_atgm", "groundMinReach": 1, "inherits": "p26_roc_roc_atgm", "burstInterval": 0.6, "burst": 2, "cooldown": 19.4, "damage": 230 },
+    { "id": "p26_roc_direct_roc_atgm", "groundMinReach": 30, "inherits": "p26_roc_roc_atgm", "burstInterval": 0.6, "burst": 2, "cooldown": 19.4, "damage": 230 },
     { "id": "p26_roc_close_twin_30_bmpt", "inherits": "twin_30_bmpt", "weaponFamily": "", "cooldown": 1.45, "damage": 22 },
     { "id": "p26_daedalus_dae57", "inherits": "gun_57mm", "weaponVariantId": "", "weaponFamily": "", "real": "AU-220 57 mm (belly)", "damageType": "HighExplosive", "damage": 120, "burst": 2, "burstInterval": 0.2, "cooldown": 2.3, "pen": 4, "splash": 3.5, "edge": 7 },
     { "id": "p26_daedalus_dae_laser", "inherits": "orbital_laser", "weaponFamilyId": "laser_targeting_laser", "real": "targeting laser (300 kW)", "size": 300, "powerKw": 300, "damage": 40 },
@@ -1061,7 +1075,7 @@
     { "id": "pt14_hp_155", "groundMinReach": 19, "inherits": "naval_155_triple", "real": "155 mm/60 (Hyperion twin turret)", "damage": 600, "edge": 14, "burst": 2, "burstInterval": 0.4, "cooldown": 13.5, "splash": 7, "range": 95 },
     { "id": "pt14_hp_vlaser", "groundMinReach": 0, "inherits": "p26_icarus_direct_ic_laser" },
     { "id": "pt14_hp_v127", "groundMinReach": 0, "inherits": "naval_127", "real": "Mk 45 127 mm (Hyperion ventral turret)", "damage": 380, "edge": 12, "cooldown": 4.5, "range": 80 },
-    { "id": "pt14_hp_nsm", "inherits": "anti_ship_missile", "weaponFamily": "", "real": "NSM Block 1A (Hyperion VLS, land attack)", "projectileSpeed": 80, "flightProfile": "Loft", "damage": 380, "burst": 2, "burstInterval": 0.6, "cooldown": 14, "range": 95, "warheadKg": 125, "splash": 5, "impactTier": "Large" },
+    { "id": "pt14_hp_nsm", "inherits": "anti_ship_missile", "weaponFamily": "", "real": "NSM Block 1A (Hyperion VLS, land attack)", "projectileSpeed": 80, "flightProfile": "Loft", "damage": 380, "burst": 2, "burstInterval": 0.6, "cooldown": 14, "range": 95, "warheadKg": 125, "splash": 8, "impactTier": "Large" },
     { "id": "pt14_th_v35", "groundMinReach": 0, "inherits": "flak_35", "real": "Oerlikon KDA 35 mm (Theia ventral twin)", "damage": 25, "clip": 16, "clipReload": 1.8 },
     { "id": "pt14_th_jagm", "inherits": "drone_missile", "weaponFamilyId": "atgm_agm_114_hellfire", "weaponFamily": "", "real": "AGM-179 JAGM (Theia quad pod)", "projectileSpeed": 70, "damage": 270, "burst": 2, "burstInterval": 0.5, "cooldown": 9, "range": 55 },
     { "id": "pt14_th_pd", "inherits": "laser_50kw", "real": "50 kW laser (Theia point-defence turret)", "range": 34 },
@@ -1150,7 +1164,7 @@
     // Play-test 14 sea bosses after R4 (lane sea; DECISIONS, CHANGES PT14-SEA): the added AA guns and missile launchers.
     { "id": "scylla_ak230", "inherits": "aa_25_triple", "weaponFamilyId": "cal_30", "weaponVariantId": "", "real": "AK-230 30 mm (twin, enclosed)", "size": 30, "caliberMm": 30, "barrels": 2, "damage": 20, "cooldown": 0.06, "range": 45, "spread": 1.2, "clip": 24, "clipReload": 2.6, "targets": "Air" },
     { "id": "scylla_2m7", "inherits": "hmg_roof", "weaponFamily": "", "weaponFamilyId": "cal_14_5", "real": "2M-7 14.5 mm (twin HMG)", "size": 14.5, "caliberMm": 14.5, "barrels": 2, "damage": 11, "cooldown": 0.05, "range": 36, "clip": 40, "clipReload": 3, "targets": "Air" },
-    { "id": "scylla_kh35", "inherits": "anti_ship_missile", "weaponFamily": "", "real": "Kh-35U Uran (quad canister bank)", "size": 500, "warheadKg": 145, "flightProfile": "Loft", "damage": 230, "burst": 2, "burstInterval": 0.7, "cooldown": 22, "range": 110, "projectileSpeed": 80, "splash": 6, "impactTier": "Large" },
+    { "id": "scylla_kh35", "inherits": "anti_ship_missile", "weaponFamily": "", "real": "Kh-35U Uran (quad canister bank)", "size": 500, "warheadKg": 145, "flightProfile": "Loft", "damage": 230, "burst": 2, "burstInterval": 0.7, "cooldown": 22, "range": 110, "projectileSpeed": 80, "splash": 8, "impactTier": "Large" },
     { "id": "nyx_millennium", "inherits": "boss_flak", "weaponFamilyId": "cal_35", "real": "Oerlikon Millennium 35 mm (AHEAD, stealth turret)", "barrels": 1, "damage": 24, "cooldown": 0.06, "range": 46, "clip": 24, "clipReload": 2.8, "targets": "Air" },
     // 06/10 balance v2 sec 5: splash 8 -> 11 (owner's prompt assumed a stale 8.5; Nyx's own direct VLS fire, separate
     // from its scripted Kalibr "cruise" bombardment -- see Nyx's "cruise" bigAttack block, unchanged by this weapon).
@@ -1305,34 +1319,34 @@
   "bossWeaponOverrides": {
     "armored_train": { "pt14_train_grad": { "groundMinReach": 16, "maxRange": 52 }, "train_gun": { "groundMinReach": 25, "maxRange": 80 } },
     "bastion_mk0": { "p26_bastion_direct_b100": { "groundMinReach": 19, "maxRange": 61 } },
-    "behemoth": { "p26_behemoth_direct_be120": { "groundMinReach": 25, "maxRange": 80 }, "p26_behemoth_main_be152": { "groundMinReach": 32, "maxRange": 103 }, "p26_behemoth_sec_be_rockets": { "groundMinReach": 30, "maxRange": 96 }, "p26_behemoth_tiny_be120": { "groundMinReach": 25, "maxRange": 80 }, "p26_behemoth_tiny_boss_missiles": { "groundMinReach": 1 }, "p26_behemoth_tiny_kornet_twin": { "groundMinReach": 25, "maxRange": 80 } },
+    "behemoth": { "p26_behemoth_direct_be120": { "groundMinReach": 25, "maxRange": 80 }, "p26_behemoth_main_be152": { "groundMinReach": 32, "maxRange": 103 }, "p26_behemoth_sec_be_rockets": { "groundMinReach": 30, "maxRange": 96 }, "p26_behemoth_tiny_be120": { "groundMinReach": 25, "maxRange": 80 }, "p26_behemoth_tiny_boss_missiles": { "groundMinReach": 30 }, "p26_behemoth_tiny_kornet_twin": { "groundMinReach": 25, "maxRange": 80 } },
     "behemoth_inferno": { "boss_thermo": { "groundMinReach": 21, "maxRange": 68 } },
     "behemoth_mk0": { "p26_behemoth_direct_be120": { "groundMinReach": 24, "maxRange": 77 }, "p26_behemoth_main_be152": { "groundMinReach": 36, "maxRange": 116 }, "p26_behemoth_sec_be_rockets": { "groundMinReach": 23, "maxRange": 74 } },
     "behemoth_mk2": { "p26_behemoth_main_be152": { "groundMinReach": 32, "maxRange": 103 } },
     "behemoth_tempest": { "boss_railgun": { "groundMinReach": 33, "maxRange": 106 }, "coilgun": { "groundMinReach": 17 } },
-    "coeus": { "pt14_co_203": { "groundMinReach": 28 }, "pt14_co_spike": { "groundMinReach": 1 } },
-    "command_airship": { "p26_roc_direct_roc_atgm": { "groundMinReach": 1 }, "p26_roc_roc105": { "groundMinReach": 22, "maxRange": 71 } },
+    "coeus": { "pt14_co_203": { "groundMinReach": 28 }, "pt14_co_spike": { "groundMinReach": 30 } },
+    "command_airship": { "p26_roc_direct_roc_atgm": { "groundMinReach": 30 }, "p26_roc_roc105": { "groundMinReach": 22, "maxRange": 71 } },
     "daedalus": { "p26_daedalus_direct_dae_laser": { "groundMinReach": 13, "maxRange": 42 } },
-    "drone_mothership": { "p26_matriarch_direct_ma_atgm": { "groundMinReach": 1 }, "p26_matriarch_ma_drones": { "groundMinReach": 1 }, "p26_matriarch_tiny_mothership_cannon": { "groundMinReach": 13 } },
+    "drone_mothership": { "p26_matriarch_direct_ma_atgm": { "groundMinReach": 30 }, "p26_matriarch_ma_drones": { "groundMinReach": 15 }, "p26_matriarch_tiny_mothership_cannon": { "groundMinReach": 13 } },
     "earth_borer": { "borer_cannon": { "groundMinReach": 16, "maxRange": 52 } },
     "fenrir": { "p26_jotunn_sec_jo_rockets": { "groundMinReach": 16, "maxRange": 52 } },
-    "fortress_bastion": { "p26_bastion_direct_b100": { "groundMinReach": 28, "maxRange": 90 }, "p26_bastion_tiny_kornet_twin": { "groundMinReach": 1 } },
+    "fortress_bastion": { "p26_bastion_direct_b100": { "groundMinReach": 28, "maxRange": 90 }, "p26_bastion_tiny_kornet_twin": { "groundMinReach": 30 } },
     "hydra": { "p26_typhon_direct_ty100": { "groundMinReach": 8 }, "p26_typhon_sec_ty57": { "groundMinReach": 35, "maxRange": 112 } },
-    "hyperion": { "p26_icarus_sec_orbital_laser": { "groundMinReach": 14, "maxRange": 45 }, "pt14_hp_155": { "groundMinReach": 27 }, "pt14_hp_nsm": { "groundMinReach": 1 } },
+    "hyperion": { "p26_icarus_sec_orbital_laser": { "groundMinReach": 14, "maxRange": 45 }, "pt14_hp_155": { "groundMinReach": 27 }, "pt14_hp_nsm": { "groundMinReach": 30 } },
     "icarus_mk0": { "p26_icarus_sec_orbital_laser": { "groundMinReach": 11 } },
-    "ixion": { "p26_ixion_125": { "groundMinReach": 30, "maxRange": 96 }, "pt14_ixion_grad": { "maxRange": 58 }, "pt14_ixion_kornet": { "groundMinReach": 1 } },
+    "ixion": { "p26_ixion_125": { "groundMinReach": 30, "maxRange": 96 }, "pt14_ixion_grad": { "maxRange": 58 }, "pt14_ixion_kornet": { "groundMinReach": 30 } },
     "kraken": { "p26_leviathan_direct_lev127": { "groundMinReach": 29, "maxRange": 93 }, "p26_leviathan_lev406": { "groundMinReach": 120, "maxRange": 300 }, "p26_leviathan_sec_lev155": { "groundMinReach": 88, "maxRange": 282 } },
     "leviathan": { "p26_leviathan_direct_lev127": { "groundMinReach": 42, "maxRange": 135 }, "p26_leviathan_lev406": { "groundMinReach": 103, "maxRange": 300 }, "p26_leviathan_sec_lev155": { "groundMinReach": 90, "maxRange": 288 } },
-    "locust": { "locust_drones": { "groundMinReach": 1 } },
+    "locust": { "locust_drones": { "groundMinReach": 15 } },
     "mega_gunship": { "gunship_rockets": { "groundMinReach": 10 } },
     "mobile_fortress": { "p26_jotunn_direct_jo125": { "groundMinReach": 30, "maxRange": 96 }, "p26_jotunn_jo203": { "groundMinReach": 48, "maxRange": 154 }, "p26_jotunn_sec_jo_rockets": { "groundMinReach": 32, "maxRange": 103 } },
     "moloch": { "p26_moloch_direct_mo120ap": { "groundMinReach": 25, "maxRange": 80 }, "p26_moloch_main_mo120": { "groundMinReach": 25, "maxRange": 80 } },
-    "monster": { "p26_bastion_direct_b100": { "groundMinReach": 28, "maxRange": 90 }, "p26_bastion_tiny_kornet_twin": { "groundMinReach": 1 } },
+    "monster": { "p26_bastion_direct_b100": { "groundMinReach": 28, "maxRange": 90 }, "p26_bastion_tiny_kornet_twin": { "groundMinReach": 30 } },
     "nuke_train": { "p26_nemesis_direct_ne125": { "groundMinReach": 30, "maxRange": 96 }, "p26_nemesis_main_ne152": { "groundMinReach": 32, "maxRange": 103 }, "p26_nemesis_sec_boss_rockets": { "groundMinReach": 20, "maxRange": 64 } },
-    "nyx": { "nyx_ags_155": { "groundMinReach": 42, "maxRange": 135 }, "nyx_tomahawk": { "groundMinReach": 1 }, "p26_leviathan_direct_lev127": { "groundMinReach": 25 } },
-    "scylla": { "naval_130_twin": { "groundMinReach": 41, "maxRange": 132 }, "p26_leviathan_direct_lev127": { "groundMinReach": 28 }, "scylla_kh35": { "groundMinReach": 1 } },
+    "nyx": { "nyx_ags_155": { "groundMinReach": 42, "maxRange": 135 }, "nyx_tomahawk": { "groundMinReach": 30 }, "p26_leviathan_direct_lev127": { "groundMinReach": 25 } },
+    "scylla": { "naval_130_twin": { "groundMinReach": 41, "maxRange": 132 }, "p26_leviathan_direct_lev127": { "groundMinReach": 28 }, "scylla_kh35": { "groundMinReach": 30 } },
     "silver_bug": { "p26_icarus_direct_ic_laser": { "groundMinReach": 21, "maxRange": 68 }, "p26_icarus_main_ic_coil": { "groundMinReach": 19, "maxRange": 61 }, "p26_icarus_sec_orbital_laser": { "groundMinReach": 12, "maxRange": 39 } },
-    "theia": { "p26_icarus_sec_orbital_laser": { "groundMinReach": 19, "maxRange": 61 }, "pt14_th_jagm": { "groundMinReach": 1 } },
+    "theia": { "p26_icarus_sec_orbital_laser": { "groundMinReach": 19, "maxRange": 61 }, "pt14_th_jagm": { "groundMinReach": 30 } },
     "typhon": { "p26_typhon_direct_ty100": { "groundMinReach": 21 }, "p26_typhon_sec_ty57": { "groundMinReach": 21, "maxRange": 68 } }
   },
 
@@ -1341,18 +1355,18 @@
   "vehicles": [
     // MB_FINAL F1: main boss health x the chapter's time to kill / 150 s (150 .. 240 s), Ixion a main boss; aircraft health by
     // shots to bring down (fighter 3-5, strike 4-8, long-stay 8-12); a vehicle's own APS (SELF_APS) recharges in 10 s.
-    { "id": "scout_jeep", "dropDelay": 2.5, "stillCamo": 0.4, "value": 0.5, "scale": 1, "modelSize": [2.64, 1.4, 1.41],       "armour": 0, "hp": 120, "speed": 12, "turnRate": 200, "turretTurnRate": 360, "radius": 1.3, "length": 2.64, "width": 1.4, "cp": 2, "vision": 60,
-      "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 2,
+    { "id": "scout_jeep", "dropDelay": 2.5, "stillCamo": 0.4, "value": 0.5, "scale": 1, "modelSize": [2.64, 1.4, 1.41],       "armour": 0, "hp": 156, "speed": 12, "turnRate": 200, "turretTurnRate": 360, "radius": 1.3, "length": 2.64, "width": 1.4, "cp": 3, "vision": 60,
+      "firesWhileMoving": true, "weapon": "mg_jeep_scout", "captureRate": 2,
       "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.1, "tier": "Large" } },
-    { "id": "light_tank", "missiles": [{ "weapon": "gun_launched_atgm", "ammo": 2, "reload": 25 }], "dropDelay": 2.5, "value": 0.5, "scale": 1, "modelSize": [6.39, 2.61, 1.89],       "class": "Tank", "armour": 2, "hp": 460, "speed": 9, "turnRate": 90, "turretTurnRate": 120, "radius": 1.7, "length": 5.72, "width": 2.61, "cp": 3, "vision": 40,
-      "firesWhileMoving": true, "weapon": "gun_57mm",
+    { "id": "light_tank", "missiles": [{ "weapon": "gun_launched_atgm", "ammo": 2, "reload": 25 }], "dropDelay": 2.5, "value": 0.5, "scale": 1, "modelSize": [6.39, 2.61, 1.89],       "class": "Tank", "armour": 2, "hp": 542.8, "speed": 9, "turnRate": 90, "turretTurnRate": 120, "radius": 1.7, "length": 5.72, "width": 2.61, "cp": 4, "vision": 40,
+      "firesWhileMoving": true, "weapon": "gun_57mm_lt",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "gun_launched_atgm", "slot": "main", "aim": "Turret" } ],
       "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
     { "id": "main_battle_tank", "apsCapability": "RetrofitEligible", "outgoingDamageMult": 1.1429, "value": 0.92, "scale": 1, "modelSize": [7.79, 3.07, 2.3], "armour": [4, 2, 1, 1], "hp": 1103, "speed": 6.5, "turnRate": 60, "turretTurnRate": 115, "radius": 2.2, "length": 6.1, "width": 3.07, "cp": 8, "vision": 30,
       "firesWhileMoving": true, "weapon": "gun_120mm",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 150, "radius": 7, "delay": 0.45, "tier": "Huge" } },
-    { "id": "flame_tank", "outgoingDamageMult": 1.2, "value": 0.73, "scale": 1, "modelSize": [7.12, 2.66, 1.87],       "armour": 3, "hp": 800, "speed": 6.5, "turnRate": 80, "turretTurnRate": 110, "radius": 1.9, "length": 5.75, "width": 2.66, "cp": 6, "vision": 26,
+    { "id": "flame_tank", "outgoingDamageMult": 1.2, "value": 0.73, "scale": 1, "modelSize": [7.12, 2.66, 1.87],       "armour": 3, "hp": 830, "speed": 6.5, "turnRate": 80, "turretTurnRate": 110, "radius": 1.9, "length": 5.75, "width": 2.66, "cp": 6, "vision": 26,
       "firesWhileMoving": true, "weapon": "flamethrower",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 140, "radius": 5, "delay": 0.3, "tier": "Huge" } },
@@ -1366,7 +1380,7 @@
     { "id": "mlrs", "erectSeconds": 1.1, "outgoingDamageMult": 1.1429, "scoot": { "shots": 1, "min": 15, "max": 20 }, "value": 1.31, "scale": 1, "modelSize": [6.09, 2, 2.6],             "armour": 1, "hp": 373, "speed": 9.4, "turnRate": 70, "turretTurnRate": 60, "radius": 2.4, "length": 5.8, "width": 2, "cp": 8, "vision": 30,
       "firesWhileMoving": false, "weapon": "mlrs_rockets", "secondary": [],
       "deathExplosion": { "damage": 110, "radius": 8, "delay": 0.3, "tier": "Huge" } },
-    { "id": "aa_vehicle", "dropDelay": 2.5, "value": 1.16, "scale": 1, "modelSize": [6.44, 3.06, 2.92],       "armour": [2, 1, 1, 0], "hp": 350, "speed": 8, "turnRate": 100, "turretTurnRate": 200, "radius": 1.8, "length": 5.85, "width": 3.06, "cp": 4, "vision": 42,
+    { "id": "aa_vehicle", "dropDelay": 2.5, "value": 1.16, "scale": 1, "modelSize": [6.44, 3.06, 2.92],       "armour": [2, 1, 1, 0], "hp": 392, "speed": 8, "turnRate": 100, "turretTurnRate": 200, "radius": 1.8, "length": 5.85, "width": 3.06, "cp": 4, "vision": 42,
       "firesWhileMoving": true, "weapon": "flak_35",
       "secondary": [ { "weapon": "sam", "slot": "missile", "model": "stinger", "aim": "Free" } ],
       "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
@@ -1377,12 +1391,12 @@
       "firesWhileMoving": true, "weapon": "hellfire_standoff", "mainSlot": "missile", "flying": true, "standoff": true, "altitude": 15, "captureRate": 0,
       "secondary": [{ "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_rockets", "slot": "rocket", "aim": "Hull" }, { "weapon": "stinger_atas", "slot": "aam", "aim": "Free" }, { "weapon": "apkws_rocket", "slot": "rocket2", "aim": "Free" }], "skills": ["heli_flares"],
       "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.6, "tier": "Large" } },
-    { "id": "armored_car", "dropDelay": 2.5, "value": 0.94, "scale": 1, "modelSize": [4.78, 2.08, 1.49],      "class": "Light", "armour": 1, "hp": 300, "speed": 11.5, "turnRate": 150, "turretTurnRate": 220, "radius": 2.1, "length": 4.44, "width": 2.08, "cp": 3, "vision": 46,
-      "firesWhileMoving": true, "weapon": "autocannon_25", "captureRate": 2,
+    { "id": "armored_car", "dropDelay": 2.5, "value": 0.94, "scale": 1, "modelSize": [4.78, 2.08, 1.49],      "class": "Light", "armour": 1, "hp": 400, "speed": 11.5, "turnRate": 150, "turretTurnRate": 220, "radius": 2.1, "length": 4.44, "width": 2.08, "cp": 4, "vision": 46,
+      "firesWhileMoving": true, "weapon": "autocannon_25_car", "captureRate": 2,
       // Play-test 14: its coax reaches as far as the cannon (mg_coax_long), so the two fire together at what the turret is laid on.
       "secondary": [ { "weapon": "mg_coax_long", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.2, "tier": "Large" } },
-    { "id": "tank_destroyer", "outgoingDamageMult": 1.1667, "value": 1.17, "scale": 1, "modelSize": [7.89, 2.62, 2.15],   "class": "TankHunter", "armour": [2, 1, 1, 0], "hp": 778, "speed": 7, "turnRate": 70, "turretTurnRate": 55, "radius": 2.4, "length": 5.72, "width": 2.62, "cp": 7, "vision": 34,
+    { "id": "tank_destroyer", "outgoingDamageMult": 1.1667, "value": 1.17, "scale": 1, "modelSize": [7.89, 2.62, 2.15],   "class": "TankHunter", "armour": [2, 1, 1, 0], "hp": 815, "speed": 7, "turnRate": 70, "turretTurnRate": 55, "radius": 2.4, "length": 5.72, "width": 2.62, "cp": 7, "vision": 34,
       "firesWhileMoving": true, "weapon": "gun_105_long",
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
@@ -1392,17 +1406,17 @@
       "firesWhileMoving": true, "weapon": "gun_152",
       "secondary": [ { "weapon": "autocannon_30", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 200, "radius": 9, "delay": 0.5, "tier": "Huge" } },
-    { "id": "sam_launcher", "erectSeconds": 0.9, "outgoingDamageMult": 1.1429, "value": 0.72, "scale": 1, "modelSize": [7.18, 2.7, 2.97],     "armour": [1, 1, 0, 0], "hp": 691, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.0, "length": 7.18, "width": 2.7, "cp": 8, "vision": 60,
+    { "id": "sam_launcher", "erectSeconds": 0.9, "outgoingDamageMult": 1.1429, "value": 0.72, "scale": 1, "modelSize": [7.18, 2.7, 2.97],     "armour": [1, 1, 0, 0], "hp": 760.1, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.0, "length": 7.18, "width": 2.7, "cp": 8, "vision": 60,
       "firesWhileMoving": false, "weapon": "buk_launcher", "secondary": [],
       "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.3, "tier": "Huge" } },
-    { "id": "mortar_carrier", "dropDelay": 2.5, "value": 0.88, "scale": 1, "modelSize": [4.21, 2.3, 3.2],   "armour": [1, 1, 0, 0], "hp": 320, "speed": 5.9, "turnRate": 100, "turretTurnRate": 90, "radius": 1.7, "length": 4.21, "width": 2.3, "cp": 4, "vision": 26,
+    { "id": "mortar_carrier", "dropDelay": 2.5, "value": 0.88, "scale": 1, "modelSize": [4.21, 2.3, 3.2],   "armour": [1, 1, 0, 0], "hp": 358.4, "speed": 5.9, "turnRate": 100, "turretTurnRate": 90, "radius": 1.7, "length": 4.21, "width": 2.3, "cp": 4, "vision": 26,
       "firesWhileMoving": false, "weapon": "mortar_120",
       "secondary": [ { "weapon": "hmg_selfdef_18", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 60, "radius": 8, "delay": 0.25, "tier": "Large" } },
-    { "id": "rocket_technical", "erectSeconds": 0.7, "dropDelay": 2.5, "value": 0.61, "scale": 1, "modelSize": [4.39, 1.5, 1.86], "armour": 0, "hp": 230, "speed": 13, "turnRate": 180, "turretTurnRate": 200, "radius": 1.7, "length": 4.39, "width": 1.5, "cp": 3, "vision": 30,
+    { "id": "rocket_technical", "erectSeconds": 0.7, "dropDelay": 2.5, "value": 0.61, "scale": 1, "modelSize": [4.39, 1.5, 1.86], "armour": 0, "hp": 310.5, "speed": 13, "turnRate": 180, "turretTurnRate": 200, "radius": 1.7, "length": 4.39, "width": 1.5, "cp": 4, "vision": 30,
       "firesWhileMoving": false, "weapon": "technical_rockets", "secondary": [{"weapon": "mg_jeep_selfdef", "slot": "mg", "aim": "Free"}], "captureRate": 2,
       "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.15, "tier": "Large" } },
-    { "id": "scout_heli", "flareRecharge": 20, "flareCharges": 2, "outgoingDamageMult": 1.2, "value": 0.85, "rearmTime": 8, "strongVs": ["Scout", "Light", "Support"], "scale": 1, "modelSize": [3.88, 3.16, 1.56],       "armour": 0,  "hp": 596, "speed": 17, "turnRate": 170, "turretTurnRate": 360, "radius": 2.8, "cp": 6, "vision": 46,
+    { "id": "scout_heli", "flareRecharge": 20, "flareCharges": 2, "outgoingDamageMult": 1.2, "value": 0.85, "rearmTime": 8, "strongVs": ["Scout", "Light", "Support"], "scale": 1, "modelSize": [3.88, 3.16, 1.56],       "armour": 0,  "hp": 611, "speed": 17, "turnRate": 170, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 46,
       "firesWhileMoving": true, "weapon": "minigun", "mainSlot": "gun", "flying": true, "altitude": 13, "captureRate": 0,
       "secondary": [ { "weapon": "scout_rockets", "slot": "rocket", "aim": "Hull" } ],
       "deathExplosion": { "damage": 40, "radius": 5, "delay": 0.5, "tier": "Large" } },
@@ -1414,13 +1428,13 @@
       "secondary": [ { "weapon": "s8_pods", "slot": "rocket", "aim": "Hull" }, { "weapon": "jet_bombs", "slot": "missile", "aim": "Hull" },
                      { "weapon": "kh29", "slot": "missile", "aim": "Hull" }, { "weapon": "r60", "slot": "aam", "aim": "Free" } ], "skills": ["jet_flares"],
       "deathExplosion": { "damage": 95, "radius": 7, "delay": 0.6, "tier": "Huge" } },
-    { "id": "strike_drone", "outgoingDamageMult": 1.2681, "value": 0.81, "rearmTime": 8.5, "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 1, "modelSize": [4.25, 8.04, 1.24], "drone": true, "armour": 0,  "hp": 400, "speed": 13.9, "turnRate": 81, "turretTurnRate": 360, "radius": 2.8, "cp": 11, "vision": 62,
+    { "id": "strike_drone", "outgoingDamageMult": 1.2681, "value": 0.81, "rearmTime": 8.5, "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 1, "modelSize": [4.25, 8.04, 1.24], "drone": true, "armour": 0,  "hp": 472, "speed": 13.9, "turnRate": 81, "turretTurnRate": 360, "radius": 2.8, "cp": 11, "vision": 62,
       "firesWhileMoving": true, "weapon": "drone_missile", "secondary": [{"weapon": "guided_bomb", "slot": "rocket", "aim": "Hull"}], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 30, "captureRate": 0, "attackHold": 3.5,
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.5, "tier": "Large" } },
         { "id": "thermobaric_launcher", "erectSeconds": 1.2, "outgoingDamageMult": 1.2222, "value": 0.78, "scale": 1, "modelSize": [6.7, 2.85, 2.79], "armour": 3, "hp": 1132, "speed": 5.5, "turnRate": 55, "turretTurnRate": 50, "radius": 2.5, "length": 6.02, "width": 2.85, "cp": 11, "vision": 30,
       "firesWhileMoving": false, "weapon": "thermobaric_rockets", "secondary": [{"weapon": "hmg_selfdef_18", "slot": "mg", "aim": "Free"}], "mainSlot": "rocket",
       "deathExplosion": { "damage": 180, "radius": 9, "delay": 0.4, "tier": "Ultimate" } },
-    { "id": "ifv", "sideErectSeconds": 0.6, "missiles": [{ "weapon": "atgm", "ammo": 2, "reload": 20 }], "outgoingDamageMult": 1.1667, "value": 1.06, "scale": 1, "modelSize": [5.48, 3.02, 2.5],              "armour": 2, "hp": 623, "speed": 8, "turnRate": 110, "turretTurnRate": 160, "radius": 2.3, "length": 5.31, "width": 3.02, "cp": 7, "vision": 34,
+    { "id": "ifv", "sideErectSeconds": 0.6, "missiles": [{ "weapon": "atgm", "ammo": 2, "reload": 20 }], "outgoingDamageMult": 1.1667, "value": 1.06, "scale": 1, "modelSize": [5.48, 3.02, 2.5],              "armour": 2, "hp": 697.76, "speed": 8, "turnRate": 110, "turretTurnRate": 160, "radius": 2.3, "length": 5.31, "width": 3.02, "cp": 7, "vision": 34,
       "firesWhileMoving": true, "weapon": "ifv_30", "captureRate": 3,
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "atgm", "slot": "missile", "aim": "Turret" } ], "skills": [],
       "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.35, "tier": "Large" } },
@@ -1478,29 +1492,29 @@
     // Prompt 17 D.5: the engineer and the fortification sapper are one card, the engineer: it repairs vehicles and
     // (at half the rate) towers, clears mines and breaks obstacles, slowly with its MG (the bulldozer is the quick way).
     // It does not rearm (the ammunition carrier does). The sapper's model stays for a later camouflage.
-    { "id": "engineer_vehicle", "dropDelay": 2.5, "value": 1, "altModels": ["sapper"], "scale": 1, "modelSize": [6.45, 3.02, 2.2], "class": "Support", "armour": [2, 1, 1, 0], "hp": 880, "speed": 7, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 3, "vision": 30,
+    { "id": "engineer_vehicle", "dropDelay": 2.5, "value": 1, "altModels": ["sapper"], "scale": 1, "modelSize": [6.45, 3.02, 2.2], "class": "Support", "armour": [2, 1, 1, 0], "hp": 944, "speed": 7, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 3, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "repair": { "radius": 14, "rate": 0.025 },
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.35, "tier": "Large" } },
     // Prompt 13 F.2: the ammunition carrier, a forward rearm point (the supply truck's model: asset debt).
-    { "id": "ammo_carrier", "dropDelay": 2.5, "value": 1, "scale": 1, "modelSize": [8.36, 2.02, 2.46], "class": "Support", "armour": 0, "hp": 520, "speed": 8.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.0, "length": 8.36, "width": 2.02, "cp": 4, "vision": 30,
+    { "id": "ammo_carrier", "dropDelay": 2.5, "value": 1, "scale": 1, "modelSize": [8.36, 2.02, 2.46], "class": "Support", "armour": 0, "hp": 613.6, "speed": 8.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.0, "length": 8.36, "width": 2.02, "cp": 4, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "captureRate": 1, "rearm": { "radius": 14, "rate": 4 }, "airRearm": { "radius": 12, "rate": 2 },
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "ew_jammer", "outgoingDamageMult": 1.2, "value": 1, "scale": 1, "modelSize": [9.01, 2.76, 3.83],        "class": "Support", "armour": 1, "hp": 468, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 6, "vision": 40,
+    { "id": "ew_jammer", "outgoingDamageMult": 1.2, "value": 1, "scale": 1, "modelSize": [9.01, 2.76, 3.83],        "class": "Support", "armour": 1, "hp": 524, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 6, "vision": 40,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "jammer": 32,
       "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.35, "tier": "Large" } },
-    { "id": "fpv_carrier", "outgoingDamageMult": 1.1667, "value": 1.17, "scale": 1, "modelSize": [7.41, 2.04, 2.88],      "class": "TankHunter", "armour": 1, "hp": 500, "speed": 9, "turnRate": 90, "turretTurnRate": 90, "radius": 2.3, "length": 7.41, "width": 2.04, "cp": 7, "vision": 48,
+    { "id": "fpv_carrier", "outgoingDamageMult": 1.1667, "value": 1.17, "scale": 1, "modelSize": [7.41, 2.04, 2.88],      "class": "TankHunter", "armour": 1, "hp": 560, "speed": 9, "turnRate": 90, "turretTurnRate": 90, "radius": 2.3, "length": 7.41, "width": 2.04, "cp": 7, "vision": 48,
       "firesWhileMoving": false, "weapon": "fpv_swarm",
       "secondary": [ { "weapon": "hmg_selfdef_18", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "mine_layer", "outgoingDamageMult": 1.2, "value": 1, "scale": 1, "modelSize": [7.62, 2.7, 1.97],       "class": "Support", "armour": [1, 1, 0, 0], "hp": 518, "speed": 5.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 7.62, "width": 2.7, "cp": 6, "vision": 30,
+    { "id": "mine_layer", "outgoingDamageMult": 1.2, "value": 1, "scale": 1, "modelSize": [7.62, 2.7, 1.97],       "class": "Support", "armour": [1, 1, 0, 0], "hp": 580, "speed": 5.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 7.62, "width": 2.7, "cp": 6, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "mines": { "interval": 6, "max": 8, "damage": 484, "radius": 5, "tier": "Large", "trigger": 2.2 },
       "deathExplosion": { "damage": 140, "radius": 8, "delay": 0.35, "tier": "Huge" } },
-    { "id": "fighter_jet", "flareCharges": 2, "dropDelay": 5, "outgoingDamageMult": 1.3594, "ceiling": "high", "value": 1.5, "rearmTime": 11, "strongVs": ["Plane", "Helicopter"], "scale": 1.1765, "modelSize": [8.64, 5.85, 2.15],      "armour": 0,  "hp": 690, "speed": 40, "turnRate": 129, "turretTurnRate": 360, "radius": 3.4, "cp": 15, "vision": 72,
+    { "id": "fighter_jet", "flareCharges": 2, "dropDelay": 5, "outgoingDamageMult": 1.3594, "ceiling": "high", "value": 1.5, "rearmTime": 11, "strongVs": ["Plane", "Helicopter"], "scale": 1.1765, "modelSize": [8.64, 5.85, 2.15],      "armour": 0,  "hp": 672, "speed": 40, "turnRate": 129, "turretTurnRate": 360, "radius": 3.4, "cp": 15, "vision": 72,
       "firesWhileMoving": true, "weapon": "air_to_air", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 34, "captureRate": 0, "attackHold": 4.0,
       "secondary": [ { "weapon": "wvr_aam", "slot": "aam", "aim": "Free" }, { "weapon": "fighter_cannon", "slot": "gun", "aim": "Hull" } ],
       "interceptor": true, "vtol": true, "skills": ["jet_flares"],
       "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.6, "tier": "Huge" } },
-    { "id": "recon_drone", "outgoingDamageMult": 1.1667, "value": 0.5, "rearmTime": 8.5, "strongVs": ["Scout", "Artillery"], "scale": 1, "modelSize": [2.67, 4.83, 0.48], "drone": true, "armour": 0,  "hp": 382, "speed": 13, "turnRate": 83, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 90,
+    { "id": "recon_drone", "outgoingDamageMult": 1.1667, "value": 0.5, "rearmTime": 8.5, "strongVs": ["Scout", "Artillery"], "scale": 1, "modelSize": [2.67, 4.83, 0.48], "drone": true, "armour": 0,  "hp": 458.4, "speed": 13, "turnRate": 83, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 90,
       "firesWhileMoving": true, "weapon": "recon_missile", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 34, "captureRate": 0,
       "deathExplosion": { "damage": 40, "radius": 5, "delay": 0.5, "tier": "Large" } },
 
@@ -1509,8 +1523,8 @@
     { "id": "vbied", "dropDelay": 2.5, "value": 1.5, "scale": 1, "modelSize": [4.58, 1.68, 1.6],            "class": "Scout", "armour": [2, 1, 0, 0], "hp": 364, "speed": 13, "turnRate": 150, "turretTurnRate": 360, "radius": 1.8, "length": 4.58, "width": 1.68, "cp": 3, "vision": 30,
       "firesWhileMoving": true, "weapon": "detonator", "mainAim": "Hull", "kamikaze": true, "captureRate": 1,
       "deathExplosion": { "damage": 300, "radius": 6, "delay": 0.1, "tier": "Huge" } },
-    { "id": "zu23_technical", "dropDelay": 2.5, "value": 0.5, "scale": 1, "modelSize": [4.39, 1.5, 1.56],   "class": "AntiAir", "armour": 0, "hp": 210, "speed": 12, "turnRate": 180, "turretTurnRate": 240, "radius": 1.5, "length": 4.39, "width": 1.5, "cp": 3, "vision": 40,
-      "firesWhileMoving": true, "weapon": "zu23", "captureRate": 2,
+    { "id": "zu23_technical", "dropDelay": 2.5, "value": 0.5, "scale": 1, "modelSize": [4.39, 1.5, 1.56],   "class": "AntiAir", "armour": 0, "hp": 283.5, "speed": 12, "turnRate": 180, "turretTurnRate": 240, "radius": 1.5, "length": 4.39, "width": 1.5, "cp": 4, "vision": 40,
+      "firesWhileMoving": true, "weapon": "zu23_cheap", "captureRate": 2,
       "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.1, "tier": "Large" } },
     { "id": "shahed_truck", "erectSeconds": 1.0, "outgoingDamageMult": 1.125, "value": 1.12, "scale": 1, "modelSize": [6.65, 2.3, 2.87],     "class": "Artillery", "armour": 1, "hp": 459, "speed": 8, "turnRate": 80, "turretTurnRate": 60, "radius": 2.4, "length": 6.6, "width": 2.04, "cp": 9, "vision": 30,
       "firesWhileMoving": false, "weapon": "shahed", "captureRate": 1,
@@ -1533,11 +1547,11 @@
     // Roster cleanup (prompt 2). A command vehicle: a fire-rate aura, a forward drop zone once it has
     // stood still, one per side. A wheeled tank hunter (Centauro), a counter-battery radar
     // (Cobra / Zoopark), a long-range SAM (S-300 / S-400).
-    { "id": "command_vehicle", "outgoingDamageMult": 1.1667, "value": 1, "scale": 1, "modelSize": [5.64, 2.08, 2.14], "class": "Support", "armour": [1, 1, 0, 0], "hp": 668, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.3, "length": 5.64, "width": 2.08, "cp": 7, "vision": 44,
+    { "id": "command_vehicle", "outgoingDamageMult": 1.1667, "value": 1, "scale": 1, "modelSize": [5.64, 2.08, 2.14], "class": "Support", "armour": [1, 1, 0, 0], "hp": 748, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.3, "length": 5.64, "width": 2.08, "cp": 7, "vision": 44,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "mainSlot": "mg", "mainAim": "Free", "captureRate": 1,
       "commandAura": { "radius": 25, "fireRate": 0.1 }, "forwardDrop": 5, "maxPerSide": 1,
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
-    { "id": "wheeled_gun", "outgoingDamageMult": 1.1667, "value": 0.81, "scale": 1, "modelSize": [8.97, 2.39, 2.31], "class": "TankHunter", "armour": 2, "hp": 814, "speed": 12, "turnRate": 100, "turretTurnRate": 90, "radius": 2.3, "length": 5.97, "width": 2.36, "cp": 7, "vision": 38,
+    { "id": "wheeled_gun", "outgoingDamageMult": 1.1667, "value": 0.81, "scale": 1, "modelSize": [8.97, 2.39, 2.31], "class": "TankHunter", "armour": 2, "hp": 895.4, "speed": 12, "turnRate": 100, "turretTurnRate": 90, "radius": 2.3, "length": 5.97, "width": 2.36, "cp": 7, "vision": 38,
       "firesWhileMoving": true, "weapon": "gun_105_wheeled", "captureRate": 1,
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.35, "tier": "Large" } },
@@ -1634,10 +1648,10 @@
       "secondary": [] },
     // The siege keep's heavy pieces: a twin 155 mm coastal turret, a Flakturm with quad flak and a
     // SAM box, a Patriot-style battery with its search radar.
-    { "id": "heavy_turret", "outgoingDamageMult": 1.1, "rebuildCp": 18, "branches": ["heavy_turret.coastal", "heavy_turret.bastion"],     "fort": { "size": "Large" }, "static": true, "armour": [4, 3, 3, 3], "hp": 3640, "speed": 0, "turnRate": 1, "turretTurnRate": 20, "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 60,
+    { "id": "heavy_turret", "outgoingDamageMult": 1.1, "rebuildCp": 18, "branches": ["heavy_turret.coastal", "heavy_turret.bastion"],     "fort": { "size": "Large" }, "static": true, "armour": [4, 3, 3, 3], "hp": 3500, "speed": 0, "turnRate": 1, "turretTurnRate": 20, "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 60,
       "weapon": "gun_155_twin_ap", "secondary": [],
       "deathExplosion": { "damage": 220, "radius": 12, "delay": 0.5, "tier": "Ultimate" } },
-    { "id": "missile_battery", "erectSeconds": 1.2, "rebuildCp": 13, "branches": ["missile_battery.pac3", "missile_battery.lrr"],  "fort": { "size": "Large" }, "static": true, "armour": 1, "hp": 2470, "speed": 0, "turnRate": 1, "turretTurnRate": 70, "radius": 3.8, "length": 7, "width": 9, "cp": 0, "vision": 95,
+    { "id": "missile_battery", "erectSeconds": 1.2, "rebuildCp": 13, "branches": ["missile_battery.pac3", "missile_battery.lrr"],  "fort": { "size": "Large" }, "static": true, "armour": 1, "hp": 2375, "speed": 0, "turnRate": 1, "turretTurnRate": 70, "radius": 3.8, "length": 7, "width": 9, "cp": 0, "vision": 95,
       "weapon": "patriot", "secondary": [],
       "deathExplosion": { "damage": 200, "radius": 12, "delay": 0.4, "tier": "Ultimate" } },
     // A capture point's watchtower (Outposts): neutral in Conquest and King of the Hill, the holder's in Assault.
@@ -1654,7 +1668,7 @@
     { "id": "c_ram", "rebuildCp": 5, "branches": ["c_ram.centurion", "c_ram.dome"],            "fort": { "size": "Medium" }, "static": true, "armour": 1, "hp": 1495, "speed": 0, "turnRate": 1, "turretTurnRate": 240, "radius": 2.5, "length": 5.5, "width": 5.5, "cp": 0, "vision": 60,
       "weapon": "c_ram_gatling", "aps": {"radius": 35, "charges": 4, "recharge": 0.6, "rockets": true, "shells": 0.3, "burst": 0.5},
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
-    { "id": "drone_hangar", "outgoingDamageMult": 1.1, "rebuildCp": 12, "branches": ["drone_hangar.lancet", "drone_hangar.swarm"],     "fort": { "size": "Large" }, "static": true, "armour": 2, "hp": 2860, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3.6, "length": 8, "width": 8, "cp": 0, "vision": 60,
+    { "id": "drone_hangar", "outgoingDamageMult": 1.1, "rebuildCp": 12, "branches": ["drone_hangar.lancet", "drone_hangar.swarm"],     "fort": { "size": "Large" }, "static": true, "armour": 2, "hp": 2750, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3.6, "length": 8, "width": 8, "cp": 0, "vision": 60,
       "weapon": "fpv_hangar", "mainSlot": "door_l", "mainAim": "Hull", "deathExplosion": { "damage": 160, "radius": 10, "delay": 0.4, "tier": "Ultimate" } },
     // Play-test 14: the vehicle hangar and the aircraft hangar (medium structures, each with its own model since wave M4:
     // the motor-pool shed vehicle_hangar_base, the map prop vehicle_hangar keeps its file; the helicopter shelter): free, one unit every 60 s while fewer than two of its own are alive, the player's pick of the light units
@@ -1670,8 +1684,8 @@
     // Rank-7 branches: each a trade, for a different fight, not a straight upgrade.
     { "id": "guard_tower.watch", "rebuildCp": 5, "towerRole": "observation_reach", "art": "guard_tower_a", "inherits": "guard_tower", "branchOf": "guard_tower", "vision": 78, "towerRangeAura": { "radius": 35, "range": 0.15 } },
     { "id": "guard_tower.nest", "rebuildCp": 5, "towerRole": "autocannon_25", "art": "guard_tower_b",  "inherits": "guard_tower", "branchOf": "guard_tower", "weapon": "tower_ac25", "vision": 48 },
-    { "id": "mg_bunker.twin", "outgoingDamageMult": 0.5439, "rebuildCp": 6, "towerRole": "mg_twin", "art": "mg_bunker_a",    "inherits": "mg_bunker", "branchOf": "mg_bunker", "weapon": "bunker_hmg_twin" },
-    { "id": "mg_bunker.flame", "outgoingDamageMult": 0.3508, "rebuildCp": 6, "towerRole": "flame_close", "art": "mg_bunker_b",   "inherits": "mg_bunker", "branchOf": "mg_bunker", "weapon": "bunker_flame", "secondary": [] },
+    { "id": "mg_bunker.twin", "outgoingDamageMult": 0.554, "rebuildCp": 6, "towerRole": "mg_twin", "art": "mg_bunker_a",    "inherits": "mg_bunker", "branchOf": "mg_bunker", "weapon": "bunker_hmg_twin" },
+    { "id": "mg_bunker.flame", "outgoingDamageMult": 0.3573, "rebuildCp": 6, "towerRole": "flame_close", "art": "mg_bunker_b",   "inherits": "mg_bunker", "branchOf": "mg_bunker", "weapon": "bunker_flame", "secondary": [] },
     { "id": "ew_tower.drone", "rebuildCp": 3, "towerRole": "jam_drones_guided", "art": "ew_tower_a",    "inherits": "ew_tower", "branchOf": "ew_tower", "jammer": 45 },
     { "id": "ew_tower.spoof", "rebuildCp": 3, "towerRole": "radar_spoof_counterbattery", "art": "ew_tower_b",    "inherits": "ew_tower", "branchOf": "ew_tower", "counterBattery": { "range": 80, "seconds": 6, "bonus": 0 } },
     // Prompt 32 L3: wall segments (12 x 2 m logic entities on prebuilt NavGrid sites; no tower card, no CP, no score).
@@ -1695,7 +1709,7 @@
     { "id": "drone_hangar.lancet", "rebuildCp": 14, "towerRole": "drone_loitering", "art": "drone_hangar_a", "inherits": "drone_hangar", "branchOf": "drone_hangar", "weapon": "lancet_hangar" },
     { "id": "drone_hangar.swarm", "rebuildCp": 14, "towerRole": "drone_fpv_swarm", "art": "drone_hangar_b", "inherits": "drone_hangar", "branchOf": "drone_hangar", "weapon": "fpv_hangar_swarm" },
     { "id": "heavy_turret.coastal", "rebuildCp": 18, "towerRole": "gun_coastal_long", "art": "heavy_turret_a", "inherits": "heavy_turret", "branchOf": "heavy_turret", "weapon": "gun_155_twin_coastlr" },
-    { "id": "heavy_turret.bastion", "rebuildCp": 18, "towerRole": "fortress_close_defence", "art": "heavy_turret_b", "secondary": [{"weapon": "hmg_roof", "slot": "gun", "aim": "Free"}, {"weapon": "hmg_roof", "slot": "gun", "aim": "Free"}], "inherits": "heavy_turret", "branchOf": "heavy_turret", "hp": 5642 },
+    { "id": "heavy_turret.bastion", "rebuildCp": 18, "towerRole": "fortress_close_defence", "art": "heavy_turret_b", "secondary": [{"weapon": "hmg_roof", "slot": "gun", "aim": "Free"}, {"weapon": "hmg_roof", "slot": "gun", "aim": "Free"}], "inherits": "heavy_turret", "branchOf": "heavy_turret", "hp": 5425},
     // Utility modules (a base's utility slots): a logistics station (8 more army supply), and the play-test 14 aura
     // buildings: while one stands, its side's units of a kind get its lifts anywhere on the map (one of a kind counts,
     // never stacked): the repair bay ground vehicles +10 % damage and health, the airfield aircraft +10 % damage and speed
@@ -1714,7 +1728,7 @@
       "secondary": [] },
     { "id": "rocket_turret", "outgoingDamageMult": 1.1, "rebuildCp": 11, "branches": ["rocket_turret.cluster", "rocket_turret.guided"],    "fort": { "size": "Medium" }, "static": true, "armour": 1, "hp": 1375, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 2.3, "length": 4.5, "width": 4.5, "cp": 0, "vision": 55,
       "weapon": "turret_rockets", "secondary": [], "deathExplosion": { "damage": 140, "radius": 9, "delay": 0.4, "tier": "Huge" } },
-    { "id": "mg_bunker", "outgoingDamageMult": 0.6573, "rebuildCp": 6, "branches": ["mg_bunker.twin", "mg_bunker.flame"],        "fort": { "size": "Small" }, "static": true, "armour": [3, 2, 2, 2], "hp": 1800, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 2.0, "length": 4, "width": 4, "cp": 0, "vision": 36,
+    { "id": "mg_bunker", "outgoingDamageMult": 0.6695, "rebuildCp": 6, "branches": ["mg_bunker.twin", "mg_bunker.flame"],        "fort": { "size": "Small" }, "static": true, "armour": [3, 2, 2, 2], "hp": 1800, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 2.0, "length": 4, "width": 4, "cp": 0, "vision": 36,
       "weapon": "bunker_hmg", "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" },
       // Play-test 14 wave M4: a PKM in each of the four embrasures (bow faces at -30 / 30, flanks at -90 / 90), each
       // within 40 degrees of its face; the twin branch inherits them, the flame branch keeps none (its ports are shut).
@@ -1746,7 +1760,7 @@
       "firesWhileMoving": true, "weapon": "bofors_l70", "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
     // dx03: a light, fast SAM vehicle (M1097 Avenger): fires on the move.
     // dx09: the recoilless rifle jeep (M40 on an M151): cheap, fast, paper-thin; hides when parked (an ambush), until it fires.
-    { "id": "recoilless_jeep", "dropDelay": 2.5, "modelSize": [3.5, 1.4, 1.6], "class": "TankHunter", "stillCamo": 0.3, "armour": 0, "hp": 159, "speed": 12, "turnRate": 200, "turretTurnRate": 120, "radius": 1.3, "length": 3.3, "width": 1.4, "cp": 3, "vision": 36,
+    { "id": "recoilless_jeep", "dropDelay": 2.5, "modelSize": [3.5, 1.4, 1.6], "class": "TankHunter", "stillCamo": 0.3, "armour": 0, "hp": 206.7, "speed": 12, "turnRate": 200, "turretTurnRate": 120, "radius": 1.3, "length": 3.3, "width": 1.4, "cp": 4, "vision": 36,
       "firesWhileMoving": false, "weapon": "recoilless_106", "captureRate": 2,
       "deathExplosion": { "damage": 40, "radius": 4, "delay": 0.1, "tier": "Large" } },
     // dx10: the airborne fighting vehicle: dropped by parachute wherever its side sees (never into an enemy base); its stand-in under the canopies is a low-altitude target for anti-air as it falls.
@@ -2048,7 +2062,7 @@
     // Kessler's rail supergun: it stands on its rails at the edge of the field; every 20 s one 80 cm shell at
     // the biggest group of enemy ground vehicles anywhere on the map, its landing marked 3 s ahead. Guns,
     // walls and its fire-control post round the bed (break the post and the shells fall wide).
-    { "id": "targeting_station", "class": "Defense", "static": true, "armour": 1, "hp": 840, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3.4,
+    { "id": "targeting_station", "class": "Defense", "static": true, "armour": 1, "hp": 805, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3.4,
       "length": 8, "width": 6.5, "cp": 0, "vision": 110, "weapon": "none",
       "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.3, "tier": "Huge" } },
     // Varga's Earth Worm: dives, bores untouchable to under the biggest group of enemy ground vehicles, cracks

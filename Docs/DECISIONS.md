@@ -21429,6 +21429,175 @@ Spec: Docs/mapvisaudio (parts W-AB, AC-AO, AP-BL, BT-BX, CE-CG). Branch feature/
   (explicit brief rule -- the lead rebuilds the pack once at the end).
 - Full report: `Docs/balance/BALANCE_V2_REPORT.md` (copied to `bao_cao_combat/balance_v2_report.md`).
 
+## Balance v2 clarifications (06/10)
+
+Owner final clarifications (Docs/prompts/balance_v2_clarify_vi.md) override older prompt values:
+- recoilless_106: damage 314 / cooldown 9.524 s KEEP (the "220" was stale), Pen 4 (already in data).
+- sam_48n6: splash 6 m final (cap wins over ×1.25), speed 115, damage/Pen KEEP (already in data).
+- pt14_hp_nsm splash 5 -> 8 m, scylla_kh35 splash 6 -> 8 m; nothing else changed. Their TierFx look keeps Core -1 (the overlay and rings follow the real radius), so the impact and the damage-radius rings grow with the splash; no separate warning def references them. Only these two, not every boss anti-ship missile.
+- railgun: Pen 5, damage and cooldown KEEP (already in data); revisit reload only if Armour 4/5 TTK regression shows overtuning.
+
+## Balance v3 cheap/mid (06/10, branch feature/balance-v3)
+
+Spec: `Docs/prompts/balance_v3_cheap_mid_vi.md` (owner addendum, LOW/MID TIER §1-39). Applied on top of pass 1 + pass
+2, final totals computed vs. the ORIGINAL baseline (`balance.json` at `2a71b0cb`, before `2625c100`), per §33 — see
+`Docs/balance/BALANCE_V3_REPORT.md` for the full ledger/audit tables.
+
+- **Cheap ground combat (sec 2):** armored_car HP 300->400, CP 3->4, `autocannon_25_car` (new, +15%: 17->19.55) so
+  `autocannon_25` (tower_ac25 inherits its damage) stays clean. scout_jeep HP 120->156, CP 2->3,
+  `mg_jeep_scout` (new, +10%: 9.5->10.45) so `mg_jeep` (river_patrol_boat/supply_truck/rocket_technical's
+  self-defense MG) stays clean. rocket_technical HP 230->310.5, CP 3->4, `technical_rockets` direct +15% (49.5->56.9,
+  weapon id unique). zu23_technical HP 210->283.5, CP 3->4, `zu23_cheap` (new, +20%: 3.5->4.2) so `zu23` (moloch boss
+  secondary) stays clean. recoilless_jeep HP 159->206.7, CP 3->4, weapon KEEP (314/9.524/Pen4 already canonical).
+- **Light tank / IFV / wheeled gun / TD (sec 3-6):** light_tank HP 460->542.8, CP 3->4, `gun_57mm_lt` (new, +10%:
+  110->121) so `gun_57mm` (daedalus boss secondary) stays clean. ifv HP 623->697.76 (+12%), CP KEEP(7); `ifv_30` got
+  its own `"damage": 23.76` (+8% vs the inherited 22) so `autocannon_30` (heavy_tank/elite_heavy_tank coax, elite_apc,
+  daedalus boss) stays clean; ATGM already Pen4/damage-KEEP. wheeled_gun HP 814->895.4 (+10%), `gun_105_wheeled`
+  direct +5% (369->387.45, id unique). tank_destroyer: HP final +10% vs original (741->815, not re-stacked on pass
+  2's existing +5%/778); `gun_105_long` direct +5% (371->389.55).
+- **Elite specialists (sec 7):** no new multiplier; confirmed elite_tank_destroyer (Pen5/371 KEEP), laser_tank
+  (damage14/Pen5 already from pass 2), railgun_truck (Pen5/510 KEEP) unchanged.
+- **Flame tank / FPV / AA vehicle / SAM launcher (sec 8-11):** flame_tank HP final +12% vs original (741->830, not
+  re-stacked on pass 1's +8%/800); `flamethrower` direct +5% (21->22.05, id unique). fpv_carrier HP 500->560 (+12%),
+  fpv_swarm KEEP. aa_vehicle HP 350->392 (+12%); `flak_35` direct +8% (26->28.08, id unique); SAM secondary KEEP.
+  sam_launcher HP 691->760.1 (+10%); buk_launcher KEEP.
+- **Support/fire-support (sec 12-13):** command_vehicle/ew_jammer/mine_layer +12% HP (748/524/580); ammo_carrier/
+  engineer_vehicle +18% HP (613.6/944, engineer's final vs original, not re-stacked on pass 1's +10%/880);
+  supply_truck +15% (805, judgment call — `cp:0`/`captureRate:0`, looks event-spawned, flagged in the report).
+  mortar_carrier (only clearly fragile cheap fire-support chassis) +12% HP (358.4); artillery/mlrs/
+  heavy_rocket_artillery/ballistic_launcher/ground_cruise_missile_vehicle left unchanged (not fragile/cheap enough,
+  no damage buff per sec 13).
+- **Drones/aircraft (sec 14-21):** recon_drone HP 382->458.4 (+20%), CP KEEP (base>5), weapon KEEP. strike_drone HP
+  400->472 (+18%), CP KEEP (base>7), `drone_missile` direct +10% (260->286, id unique; children pt14_th_jagm/
+  pt14_co_spike already override their own damage). scout_heli HP 518->611 (+18% vs original, not re-stacked on pass
+  1's +15%/596), CP 6->7; `minigun` direct to the exact +8% vs original (5.5->5.94, was 5.9/+7.3% from pass 1;
+  id unique, boss_minigun already overrides its own damage); scout_rockets already exactly +8% (32.4), left as-is.
+  attack_helicopter/attack_jet: HP and the cannon/rocket/missile weapons already at the pass-1 ~+8-10%, addendum says
+  do not double-buff — **no change** (HP 805/748 stay). fighter_jet HP reduced 690->672 (addendum's "Refined final"
+  +12% supersedes pass 1's +15%); weapons KEEP. stealth_fighter HP 690 (within the +12-15% band, no change); no
+  distinct ground-attack primary identified, not blanket-buffed. heavy_bomber/sky_gunship/twin_rotor_gunship: already
+  at the target HP (+20%/+15%/+15%) and bomb-rule multipliers from pass 1/2 — no change.
+- **Towers (sec 22-31):** pass 1's tower spec already matches this addendum's small/medium combat and AA/C-RAM/
+  utility/shield numbers 1:1 except the large-combat-tower HP, corrected from the old +30% down to +25% per sec 22:
+  heavy_turret 2800->3500 (was 3640), heavy_turret.bastion 4340->5425 (was 5642), drone_hangar 2200->2750 (was 2860);
+  weapon multipliers (+10% via outgoingDamageMult) unchanged. missile_battery (sec 27, SAM tower large) got the same
+  +30%->+25% correction: 1900->2375 (was 2470); damage KEEP. targeting_station (sec 30, "targeting" utility example)
+  corrected from pass 1's structure-HP +20% down to the utility-tower +15%: 700->805 (was 840). mg_bunker/.twin/
+  .flame (sec 23) raised from the generic small-tower +8% to the bunker-specific +10% via each branch's own
+  `outgoingDamageMult` (no secondary weapon on any of the three, so no leak): 0.6573->0.6695, 0.5439->0.554,
+  0.3508->0.3573; HP already correct (+20%, no change). rocket_turret/gun_turret/atgm_tower/one_shot_atgm_tower/
+  aa_turret/aa_gun_tower/c_ram/laser_ad_station/drone_net_tower/ew_tower/flare_tower/flare_searchlight_tower/
+  barrage_balloon/shield_tower family: already matched, confirmed, no change. sec 32 explicit-unchanged
+  (coastal_battery, bunker_shelter_tower, blast_wall, bulwark_post): confirmed zero diff.
+- **Boss armour confirmed unchanged** (programmatic diff, zero differences, same check as pass 2). No boss weapon,
+  Pen, or projectile speed touched (that rescan is a separate parallel branch per the brief).
+- **Regression (headless only, per brief):** `dotnet build` of `Sim.csproj` and `regress/Regress.csproj`, 0 errors
+  both. `Regress` harness `ttk`/`pd`/`aps`/`pressure`/`barrage` run before/after: pressure and barrage byte-identical;
+  ttk shows cheap units surviving longer against unchanged fire support/towers (e.g. `2 mortar carriers vs 4
+  armoured cars` 68.9s->81.9s) and the two large-tower assault lines easing (e.g. `Assault squad vs heavy turret`
+  73.8s->67.6s), matching the addendum's intent. One flagged, not-fixed result: `Army vs Earth Borer (mini boss)`
+  survival rate dropped 2/3->1/3 seeds in the ttk boss set with no boss stat touched — likely a composition-timing
+  knock-on from several army units' stat changes; left for the owner.
+- **Campaign audit (sec 38, measure only):** `campaign.json` (generated, not edited) references the changed
+  canonical ids extensively (ifv 321, attack_helicopter 137, tank_destroyer 132, light_tank 99, sam_launcher 101,
+  aa_vehicle 167, strike_drone 60, armored_car 56, flame_tank 53, mortar_carrier 75, fpv_carrier 71, wheeled_gun 42,
+  fighter_jet 43, rocket_technical 38, recon_drone 27, mine_layer 29, scout_jeep 23, ew_jammer 25, zu23_technical 13,
+  command_vehicle 19, engineer_vehicle 14, ammo_carrier 8, scout_heli 8); ids resolve against balance.json at
+  runtime so the buffs apply automatically. No campaign-only nerf applied.
+- **Open for the owner:** (1) no confident id match for "heavy/special fortress-style tower" (sec 22) —
+  `spawn_bastion` looks boss-adjacent (no fort/rebuildCp/branches fields), left untouched; (2) `supply_truck`'s
+  cp:0/captureRate:0 made its sec 12 "supply vehicle" classification a judgment call; (3) `cp_relay` left out of the
+  utility-tower bucket (pass 1 used a separate "structure HP" rule for it); (4) the Earth Borer regression above.
+- Full report: `Docs/balance/BALANCE_V3_REPORT.md` (copied to `bao_cao_combat/balance_v3_report.md`).
+
+## Balance v3 owner answers (06/10)
+
+Docs/prompts/balance_v3_answers_vi.md:
+- §22 "fortress-style tower": no entity qualifies this pass; spawn_bastion KEEP (no inference from name/model).
+- supply_truck: HP 805 -> 700 (original). It is mission-only (cp 0, MissionEvents Truck, unlocks_sheet "Nhiệm vụ (không vào bộ bài)"), no player-buyable path, so the cheap/mid rule (CP-bought roster units only) does not apply.
+- cp_relay: keeps its pass-1 rule only (one balance classification per entity); no utility-tower +15 %.
+- Earth Borer: no boss change. The 2/3 -> 1/3 survival drop with the boss unchanged most likely comes from composition (cheap units +1 CP = fewer hulls per budget) or formation/pathing bunching units into the 6 m burrow hit (350 dmg, 3 s stun, 2 s warning).
+
+## Boss missile rescan (06/10)
+
+Owner play-test report: "many boss missiles fly extremely fast, usually the direct-aimed kinds." The balance v2
+addendum pass above only swept weapon ids by prefix and only read the `projectileSpeed` data field (no Sim run);
+this brief re-audited from the runtime per the owner's rescan request. Full report:
+`Docs/balance/BOSS_MISSILE_RESCAN.md` (copied to `bao_cao_combat/boss_missile_rescan.md`).
+
+- **Root cause:** not a speed problem. 13 boss-exclusive guided missile/anti-ship/drone-swarm weapons
+  (`pt14_hp_nsm`, `pt14_co_spike`, `pt14_th_jagm`, `nyx_tomahawk`, `scylla_kh35`, `pt14_ixion_kornet`,
+  `p26_roc_direct_roc_atgm`, `p26_matriarch_direct_ma_atgm`, `p26_bastion_tiny_kornet_twin`,
+  `p26_behemoth_tiny_boss_missiles`, `p26_matriarch_ma_drones`, `locust_drones`) had `groundMinReach` effectively
+  `1` m (a no-op minimum range) in `bossWeaponOverrides` and/or baked into the weapon's own row. At 1 m and 70-80
+  m/s, flight time measures 10-30 ms in the headless Sim (`Tools/simbuild/regress`'s new `missiles-pointblank`
+  mode) -- visually hitscan, 25x past the addendum's `flightTimeAtTypicalRange < ~0.35 s` outlier line. Every
+  affected boss already has a separate gun/flak/HMG mount covering true point-blank range, so the 1 m floor was
+  redundant, not a documented "intentional hitscan" design.
+- **Fix (data-only):** raised `groundMinReach` to 30 m (70-80 m/s guided missiles) / 15 m (26-28 m/s drone
+  swarms) -- the lowest value clearing ~0.4 s of flight -- in both the `bossWeaponOverrides` row and the weapon's
+  own baked field where present. Confirmed via a direct `Catalog.FromJson` dump that every one of the 13 now
+  carries the new value, not `1`, at every boss that fires it (inheritance through `variantOf` included: Coeus/
+  Theia from Hyperion's row, Argus from the airship's, Locust from the mothership's, Bastion Mk0 from Fortress
+  Bastion's). Measured before/after at a 5/15/30 m point-blank test: 10 of 13 improved from a 10-30 ms snap to
+  either clear of the 0.35 s line (Fortress Bastion/Monster's Kornet twin, Ixion's Kornet) or 10-40x slower; 3
+  (`pt14_hp_nsm`, `p26_roc_direct_roc_atgm`, and `p26_matriarch_direct_ma_atgm` not re-exercised) still fired
+  closer than the new floor in that adversarial test despite the catalog data being provably correct -- flagged
+  as a narrower AI per-mount target-selection question for a follow-up, not re-guessed at here. Speed, damage,
+  Pen, cooldown, splash and boss armour untouched; the generic shared `atgm`/`drone_missile` (also used by player
+  IFVs/helicopters, genuinely has no minimum range) was left alone per the brief.
+- **Also fixed (code, naval):** `NavalSystem.cs` `Cruise()` (Leviathan/Typhon/Hydra/Nyx/Scylla/Kraken's `"cruise"`
+  field) used the fixed `cruise.Warn` (4-4.5 s) as the view's travel time *and* the damage delay, never reading
+  the missile's own `ProjectileSpeed` -- a direct violation of addendum sec 7 (warning and travel must be tracked
+  separately; here they were literally the same number). Now `max(cruise.Warn, distance/ProjectileSpeed)`.
+  Code-reviewed and build-verified only; the regression harness's bare map has no sea/lanes, so this path never
+  fires there (confirmed: 220 s run, zero cruise-field-sourced events).
+- **Ruled out:** `BossSystem.BigAttacks.cs` `Lead()`'s `MaxLead = 2.5 s` cap looked like a fit for
+  `doomsday_missile`/`typhon_underwater_launch` (long, reach-less "aim": "hq"/"base" strikes) but tracing the
+  call graph shows `BigShape.Missile` strikes never reach `Lead()` at all (they use `Launch()`/`_bigFlyers`
+  instead); they're governed by the already-conservative `BossSystem.MissileTopSpeed` = 24 m/s (play-test 4,
+  DECISIONS 19R), measured 19.8-21.6 m/s at runtime -- already slower than the addendum's slowest band, not the
+  "too fast" cause. A speculative fix to `Lead()` was written, proven a no-op by the harness, and reverted.
+  Every ordinary mount/secondary boss missile measured exactly at its data `ProjectileSpeed` (100+ combinations);
+  the view (`WeaponEffects.cs`/`ProjectilePool.cs`) always plays the Sim's own given duration with no early-exit.
+- **Regression:** `dotnet build Tools/simbuild/Sim.csproj` and `Tools/simbuild/regress/Regress.csproj` (new
+  project file; none existed before), 0 errors both. No Unity run; no `export.py` run.
+
+### Follow-up (06/10, same day): the muzzle-origin overshoot, general fix
+
+Owner named Hyperion specifically and asked for the per-mount path that let `pt14_hp_nsm`/`p26_roc_direct_roc_atgm`
+still fire under their corrected `groundMinReach` to be found and fixed generally. Found: `GroundMinReach` is
+enforced correctly in `CombatSystem.InReach()` (confirmed via temporary instrumentation, removed) -- the gate was
+never the problem. The actual bug is in `CombatSystem.Launch()`'s muzzle-origin calc:
+`origin = shooter.Position + Forward(mountHeading) * shooter.Radius`. For an ordinary vehicle this forward nudge
+(approximating "the gun is on the hull edge, not the dead centre") is a couple of metres, irrelevant against any
+real engagement range. For a boss whose live `Vehicle.Radius` is the data radius scaled by its own `"size"`
+(command airship: `18 x 1.7564 = 31.6152` m, confirmed exact), the nudge can be as large as, or larger than, the
+whole distance to a target that had just barely cleared the `GroundMinReach` floor measured from the hull centre
+(the gate's correct reference point) -- pushing the visual muzzle almost onto the target and collapsing
+`Distance(origin, aim)`, the number the view's travel time is built from, to near zero. The gate was sound
+throughout; only the geometry feeding the view's own distance was not.
+
+- **Fix (general, one shared function):** capped the muzzle nudge in `Launch()` to the lesser of the shooter's
+  `Radius`, a flat 3 m, and 90% of the real distance to the aim point. Three metres is enough for any shot to
+  read as leaving the hull's edge rather than its dead centre, for a vehicle of any size, and can never eat a
+  meaningful share of a shot that already cleared a 15-30 m minimum range. The cap only engages above `Radius`
+  3 m, so every ordinary (non-boss) vehicle fires exactly as before -- checked, none has a `Radius` over 3 m.
+  Not a weapon-data change; applies to every mount of every vehicle (the brief's "fix it generally" ask), though
+  in practice only boss-scale hulls are large enough to trigger it.
+- **Re-measured (`missiles-pointblank`, same 5/15/30 m setup):** `pt14_hp_nsm` 0.00-0.04 s -> **0.37 s (29.2 m)**;
+  `p26_roc_direct_roc_atgm` 0.00-0.05 s -> **0.42 s (29.3 m)**; `pt14_th_jagm` 0.21 s -> 0.42 s; `pt14_ixion_kornet`
+  0.31 s -> 0.42 s; `p26_bastion_tiny_kornet_twin` (Fortress Bastion) 0.38 s -> 0.50 s, (Monster) 0.28 s -> 0.39 s;
+  `p26_behemoth_tiny_boss_missiles` 0.37 s -> 0.47 s. All 9 weapons that fired in this test now clear the
+  addendum's 0.35 s line. The remaining 4 (`pt14_co_spike`, `nyx_tomahawk`, `scylla_kh35`,
+  `p26_matriarch_direct_ma_atgm`) never fired in this test's target geometry, before or after -- a target/arc
+  selection question independent of this bug; their data and the shared code fix are both confirmed correct.
+- **No regression:** re-ran the broader `missiles` sweep (every boss, natural AI range, 100+ combinations) --
+  byte-identical outlier set to before this fix (`p26_icarus_sec_orbital_laser` laser/beam,
+  `p26_leviathan_lev406` direct kinetic naval gun, both pre-existing and out of scope either way).
+- `dotnet build Tools/simbuild/Sim.csproj` and `Tools/simbuild/regress/Regress.csproj`: 0 errors both. No Unity
+  run; no `export.py` run. Report updated: `Docs/balance/BOSS_MISSILE_RESCAN.md` (+ `bao_cao_combat` copy).
+
 ## Map/visual/audio W1-A (lane A)
 
 Map / visual / audio master spec Parts C-P, U, V, BW, CA, CD, CI (map), CJ; branch `feature/mva-w1a` (06/10). Code:

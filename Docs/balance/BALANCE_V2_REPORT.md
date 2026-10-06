@@ -320,3 +320,15 @@ brought them in line.
   value vs 4 IFV +4% (6461 -> 6717, same cause via `air_cruise_missile`'s splash). No other matchup moved.
   `barrage` and the `aps`/AI-lead half of the harness were byte-identical before/after.
 - No Unity EditMode run was needed or used.
+
+## Owner clarifications applied (06/10, Docs/prompts/balance_v2_clarify_vi.md)
+
+| ID | Field | Old | New | Note |
+|---|---|---|---|---|
+| recoilless_106 | damage / cooldown / Pen | 314 / 9.524 / 4 | 314 / 9.524 / 4 | confirmed; "220" was stale |
+| sam_48n6 | splash | 6.0 | 6.0 | confirmed; cap wins over ×1.25 |
+| pt14_hp_nsm | splash | 5 | 8 | impact overlay and rings follow the radius (TierFx Core -1) |
+| scylla_kh35 | splash | 6 | 8 | same |
+| railgun | Pen / damage / cooldown | 5 / 510 / 7 | 5 / 510 / 7 | confirmed; reload only after an Armour 4/5 TTK regression |
+
+Boss armour unchanged.

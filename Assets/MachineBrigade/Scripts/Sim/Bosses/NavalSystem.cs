@@ -542,19 +542,27 @@ namespace MachineBrigade.Sim.Bosses
             var scatter = v.RadarOff ? 6f : 2f;
             var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
             var at = _world.ClampToMap(aim + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * scatter * (float)_world.Random.NextDouble());
-            if (cruise.Warning != null && _world.Catalog.TryGetSupport(cruise.Warning, out var warning))
-                _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, cruise.Warn));
             WeaponDef? missile = null;
-            if (cruise.Weapon != null && _world.Catalog.Weapons.TryGetValue(cruise.Weapon, out missile))
-                _world.Emit(cell >= 0 ? SimEvent.FiredFrom(v, missile, cell, origin, at, cruise.Warn, EntityId.None)
-                    : SimEvent.FiredWith(v, missile, origin, at, cruise.Warn, EntityId.None));
+            if (cruise.Weapon != null) _world.Catalog.Weapons.TryGetValue(cruise.Weapon, out missile);
+            // Boss missile rescan 06/10: this used cruise.Warn (a flat 4-4.5 s) as the missile's view travel time and the
+            // damage delay regardless of range, so the sprite crossed its real distance (up to 400 m) in that fixed time --
+            // too fast at long range (Leviathan/Typhon's base strike), too slow up close. The missile's own data speed now
+            // sets the real flight; Warn only floors it, so a close shot is never less readable than the old warned pace.
+            var flight = missile != null && missile.ProjectileSpeed > 1f
+                ? MathF.Max(cruise.Warn, Vector2.Distance(origin, at) / missile.ProjectileSpeed)
+                : cruise.Warn;
+            if (cruise.Warning != null && _world.Catalog.TryGetSupport(cruise.Warning, out var warning))
+                _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, flight));
+            if (missile != null)
+                _world.Emit(cell >= 0 ? SimEvent.FiredFrom(v, missile, cell, origin, at, flight, EntityId.None)
+                    : SimEvent.FiredWith(v, missile, origin, at, flight, EntityId.None));
             // Play-test 14 (lane L): the blast is drawn at its missile's own impact tier (a look only: the tier never changes the
             // damage); the Leviathan's Kalibr stays Ultimate, the Hydra's Club-S (a mini boss's) is drawn Large.
             // MB_FINAL F3: a ship's own cruise size (Scylla's and Nyx's Kalibr: Large) brings its missile's T look with it.
             var tier = cruise.ImpactTier ?? missile?.ImpactTier ?? ExplosionTier.Ultimate;
             var blast = ExplosionDef.TwoLayer(cruise.Damage, cruise.Radius, tier);
             if (cruise.ImpactTier != null && missile != null) blast.Round = missile.Id;
-            _world.Damage.Queue(at, blast, cruise.Warn, v.Team, v, HitKind.Strike, v.Id);
+            _world.Damage.Queue(at, blast, flight, v.Team, v, HitKind.Strike, v.Id);
         }
 
         /// <summary>

@@ -7,6 +7,26 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Balance v3 owner answers: supply_truck HP back to 700 (mission-only unit, 06/10).
+- Balance v3 cheap/mid tier (06/10, branch feature/balance-v3): cheap ground units (armored_car, scout_jeep,
+  rocket_technical, zu23_technical, recoilless_jeep) and light_tank/ifv/wheeled_gun/tank_destroyer/flame_tank/
+  fpv_carrier/aa_vehicle/sam_launcher/support vehicles/recon_drone/strike_drone/scout_heli more durable and (primary
+  weapon only) harder-hitting; large combat towers and the SAM-tower/"targeting" utility tower corrected from the
+  old +30%/+20% down to +25%/+15% HP; MG bunker's own weapon multiplier raised to +10%. Final totals vs. the
+  original pre-balance baseline, not stacked on pass 1/2. Report `Docs/balance/BALANCE_V3_REPORT.md`.
+- Boss missile rescan (06/10, branch feature/boss-missile-rescan): fixed 13 boss-exclusive guided missile/drone
+  weapons (Hyperion's NSM, Coeus's Spike, Theia's JAGM, Nyx's Tomahawk, Scylla's Kh-35, Ixion's Kornet, the
+  airship/mothership/Bastion/Behemoth/Locust ATGM and drone-swarm variants) whose `groundMinReach` was
+  effectively `1` m, letting them fire point-blank for a hitscan-looking 10-30 ms flight; raised to 30 m / 15 m.
+  Also fixed `NavalSystem.Cruise()` (Leviathan/Typhon/Hydra/Nyx/Scylla/Kraken) computing its missile's view
+  travel time from the fixed warning time instead of distance/speed. See `Docs/balance/BOSS_MISSILE_RESCAN.md`.
+- Boss missile rescan follow-up (06/10): found and fixed, generally, why Hyperion's NSM and the airship's ATGM
+  still fired under their corrected `groundMinReach`: `CombatSystem.Launch()`'s muzzle-origin forward nudge used
+  the shooter's full (possibly `"size"`-scaled) `Radius` unconditionally, which for a boss-scale hull (31.6 m for
+  the command airship) could overshoot almost onto a close target, collapsing the view's travel time to near
+  zero even though the `GroundMinReach` gate itself was correct. Capped the nudge at 3 m; every weapon re-tested
+  in the point-blank setup now clears the 0.35 s line.
+- Balance v2 clarifications: Hyperion NSM and Scylla Kh-35 splash to 8 m (owner 06/10).
 - Map/visual/audio W1-A (lane A, 06/10): GameplayTopology on the AI MASTER MapTopology (size classes Light to Boss, anchors resolved to components, tactical chokes with capacity, lanes, route audits, spawn fairness, shore fire regions, naval kinematics and turn-radius audit, breaches, positions, staging, terrain semantics, weather presentation), load gates, warning registry with reviews, map telemetry; traffic, feasibility and fire support read it (no behaviour change); Tools/maps/topogen writes Docs/maps (100 maps, all load gates pass); tests written, not run.
 - Balance v2 (06/10, branch feature/balance-v2): finished the validator v2 refactor (3 buckets, 5 reason codes; 0 HARD_FAIL
   across 360 weapons); long-SAM `sam_48n6` 140->115 m/s (splash capped 6 m); `ballistic_missile` 200->90 m/s, splash

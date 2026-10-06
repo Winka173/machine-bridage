@@ -995,7 +995,21 @@ namespace MachineBrigade.Sim.Combat
                 aim += mountState.StickDir * along + side * across;
                 if (OwnNear(shooter.Team, aim, laid.Safety)) return;
             }
-            var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;
+            // Boss missile rescan follow-up (06/10): the muzzle's forward nudge off the hull centre used to be the shooter's
+            // full Radius unconditionally. For an ordinary vehicle that is a couple of metres, lost in any real engagement
+            // range; for a boss-scale hull (Radius itself scaled by the vehicle's own "size", e.g. the airship's 18 m stated
+            // radius x 1.7564 size = 31.6 m) it can be as large as, or larger than, the whole shot's own distance to a close
+            // target that still cleared GroundMinReach from the hull centre (the gate that actually matters: InReach measures
+            // from v.Position, never the muzzle). The nudge then overshot almost onto the target, collapsing
+            // Distance(origin, aim) -- and so the view's travel time -- to near zero: a guided missile fired by a huge boss
+            // at a target well outside its minimum range still looked hitscan. A few metres is already enough for the muzzle
+            // to read as off-centre rather than at the hull's dead middle, so capping it at the lesser of the shooter's own
+            // Radius and a small flat distance (never more than a third of GroundMinReach's usual 15-30 m floor) keeps every
+            // ordinary vehicle's muzzle exactly where it was (their Radius was already well under this) while a boss's nudge
+            // can no longer eat a meaningful slice of a shot that just cleared its minimum range.
+            var toAim = aim - shooter.Position;
+            var nudge = MathF.Min(MathF.Min(shooter.Radius, 3f), toAim.Length() * 0.9f);
+            var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * nudge;
             // A direct-fire round that meets a wall on its way (the spread took it wide, or the
             // target slipped behind a building mid-salvo) bursts on the wall and damages it.
             if (!shooter.Flying && !targetFlying && !weapon.Indirect)
