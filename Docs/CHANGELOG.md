@@ -7,6 +7,12 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Balance v3 cheap/mid tier (06/10, branch feature/balance-v3): cheap ground units (armored_car, scout_jeep,
+  rocket_technical, zu23_technical, recoilless_jeep) and light_tank/ifv/wheeled_gun/tank_destroyer/flame_tank/
+  fpv_carrier/aa_vehicle/sam_launcher/support vehicles/recon_drone/strike_drone/scout_heli more durable and (primary
+  weapon only) harder-hitting; large combat towers and the SAM-tower/"targeting" utility tower corrected from the
+  old +30%/+20% down to +25%/+15% HP; MG bunker's own weapon multiplier raised to +10%. Final totals vs. the
+  original pre-balance baseline, not stacked on pass 1/2. Report `Docs/balance/BALANCE_V3_REPORT.md`.
 - Balance v2 clarifications: Hyperion NSM and Scylla Kh-35 splash to 8 m (owner 06/10).
 - Balance v2 (06/10, branch feature/balance-v2): finished the validator v2 refactor (3 buckets, 5 reason codes; 0 HARD_FAIL
   across 360 weapons); long-SAM `sam_48n6` 140->115 m/s (splash capped 6 m); `ballistic_missile` 200->90 m/s, splash

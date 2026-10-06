@@ -21436,3 +21436,76 @@ Owner final clarifications (Docs/prompts/balance_v2_clarify_vi.md) override olde
 - sam_48n6: splash 6 m final (cap wins over ×1.25), speed 115, damage/Pen KEEP (already in data).
 - pt14_hp_nsm splash 5 -> 8 m, scylla_kh35 splash 6 -> 8 m; nothing else changed. Their TierFx look keeps Core -1 (the overlay and rings follow the real radius), so the impact and the damage-radius rings grow with the splash; no separate warning def references them. Only these two, not every boss anti-ship missile.
 - railgun: Pen 5, damage and cooldown KEEP (already in data); revisit reload only if Armour 4/5 TTK regression shows overtuning.
+
+## Balance v3 cheap/mid (06/10, branch feature/balance-v3)
+
+Spec: `Docs/prompts/balance_v3_cheap_mid_vi.md` (owner addendum, LOW/MID TIER §1-39). Applied on top of pass 1 + pass
+2, final totals computed vs. the ORIGINAL baseline (`balance.json` at `2a71b0cb`, before `2625c100`), per §33 — see
+`Docs/balance/BALANCE_V3_REPORT.md` for the full ledger/audit tables.
+
+- **Cheap ground combat (sec 2):** armored_car HP 300->400, CP 3->4, `autocannon_25_car` (new, +15%: 17->19.55) so
+  `autocannon_25` (tower_ac25 inherits its damage) stays clean. scout_jeep HP 120->156, CP 2->3,
+  `mg_jeep_scout` (new, +10%: 9.5->10.45) so `mg_jeep` (river_patrol_boat/supply_truck/rocket_technical's
+  self-defense MG) stays clean. rocket_technical HP 230->310.5, CP 3->4, `technical_rockets` direct +15% (49.5->56.9,
+  weapon id unique). zu23_technical HP 210->283.5, CP 3->4, `zu23_cheap` (new, +20%: 3.5->4.2) so `zu23` (moloch boss
+  secondary) stays clean. recoilless_jeep HP 159->206.7, CP 3->4, weapon KEEP (314/9.524/Pen4 already canonical).
+- **Light tank / IFV / wheeled gun / TD (sec 3-6):** light_tank HP 460->542.8, CP 3->4, `gun_57mm_lt` (new, +10%:
+  110->121) so `gun_57mm` (daedalus boss secondary) stays clean. ifv HP 623->697.76 (+12%), CP KEEP(7); `ifv_30` got
+  its own `"damage": 23.76` (+8% vs the inherited 22) so `autocannon_30` (heavy_tank/elite_heavy_tank coax, elite_apc,
+  daedalus boss) stays clean; ATGM already Pen4/damage-KEEP. wheeled_gun HP 814->895.4 (+10%), `gun_105_wheeled`
+  direct +5% (369->387.45, id unique). tank_destroyer: HP final +10% vs original (741->815, not re-stacked on pass
+  2's existing +5%/778); `gun_105_long` direct +5% (371->389.55).
+- **Elite specialists (sec 7):** no new multiplier; confirmed elite_tank_destroyer (Pen5/371 KEEP), laser_tank
+  (damage14/Pen5 already from pass 2), railgun_truck (Pen5/510 KEEP) unchanged.
+- **Flame tank / FPV / AA vehicle / SAM launcher (sec 8-11):** flame_tank HP final +12% vs original (741->830, not
+  re-stacked on pass 1's +8%/800); `flamethrower` direct +5% (21->22.05, id unique). fpv_carrier HP 500->560 (+12%),
+  fpv_swarm KEEP. aa_vehicle HP 350->392 (+12%); `flak_35` direct +8% (26->28.08, id unique); SAM secondary KEEP.
+  sam_launcher HP 691->760.1 (+10%); buk_launcher KEEP.
+- **Support/fire-support (sec 12-13):** command_vehicle/ew_jammer/mine_layer +12% HP (748/524/580); ammo_carrier/
+  engineer_vehicle +18% HP (613.6/944, engineer's final vs original, not re-stacked on pass 1's +10%/880);
+  supply_truck +15% (805, judgment call — `cp:0`/`captureRate:0`, looks event-spawned, flagged in the report).
+  mortar_carrier (only clearly fragile cheap fire-support chassis) +12% HP (358.4); artillery/mlrs/
+  heavy_rocket_artillery/ballistic_launcher/ground_cruise_missile_vehicle left unchanged (not fragile/cheap enough,
+  no damage buff per sec 13).
+- **Drones/aircraft (sec 14-21):** recon_drone HP 382->458.4 (+20%), CP KEEP (base>5), weapon KEEP. strike_drone HP
+  400->472 (+18%), CP KEEP (base>7), `drone_missile` direct +10% (260->286, id unique; children pt14_th_jagm/
+  pt14_co_spike already override their own damage). scout_heli HP 518->611 (+18% vs original, not re-stacked on pass
+  1's +15%/596), CP 6->7; `minigun` direct to the exact +8% vs original (5.5->5.94, was 5.9/+7.3% from pass 1;
+  id unique, boss_minigun already overrides its own damage); scout_rockets already exactly +8% (32.4), left as-is.
+  attack_helicopter/attack_jet: HP and the cannon/rocket/missile weapons already at the pass-1 ~+8-10%, addendum says
+  do not double-buff — **no change** (HP 805/748 stay). fighter_jet HP reduced 690->672 (addendum's "Refined final"
+  +12% supersedes pass 1's +15%); weapons KEEP. stealth_fighter HP 690 (within the +12-15% band, no change); no
+  distinct ground-attack primary identified, not blanket-buffed. heavy_bomber/sky_gunship/twin_rotor_gunship: already
+  at the target HP (+20%/+15%/+15%) and bomb-rule multipliers from pass 1/2 — no change.
+- **Towers (sec 22-31):** pass 1's tower spec already matches this addendum's small/medium combat and AA/C-RAM/
+  utility/shield numbers 1:1 except the large-combat-tower HP, corrected from the old +30% down to +25% per sec 22:
+  heavy_turret 2800->3500 (was 3640), heavy_turret.bastion 4340->5425 (was 5642), drone_hangar 2200->2750 (was 2860);
+  weapon multipliers (+10% via outgoingDamageMult) unchanged. missile_battery (sec 27, SAM tower large) got the same
+  +30%->+25% correction: 1900->2375 (was 2470); damage KEEP. targeting_station (sec 30, "targeting" utility example)
+  corrected from pass 1's structure-HP +20% down to the utility-tower +15%: 700->805 (was 840). mg_bunker/.twin/
+  .flame (sec 23) raised from the generic small-tower +8% to the bunker-specific +10% via each branch's own
+  `outgoingDamageMult` (no secondary weapon on any of the three, so no leak): 0.6573->0.6695, 0.5439->0.554,
+  0.3508->0.3573; HP already correct (+20%, no change). rocket_turret/gun_turret/atgm_tower/one_shot_atgm_tower/
+  aa_turret/aa_gun_tower/c_ram/laser_ad_station/drone_net_tower/ew_tower/flare_tower/flare_searchlight_tower/
+  barrage_balloon/shield_tower family: already matched, confirmed, no change. sec 32 explicit-unchanged
+  (coastal_battery, bunker_shelter_tower, blast_wall, bulwark_post): confirmed zero diff.
+- **Boss armour confirmed unchanged** (programmatic diff, zero differences, same check as pass 2). No boss weapon,
+  Pen, or projectile speed touched (that rescan is a separate parallel branch per the brief).
+- **Regression (headless only, per brief):** `dotnet build` of `Sim.csproj` and `regress/Regress.csproj`, 0 errors
+  both. `Regress` harness `ttk`/`pd`/`aps`/`pressure`/`barrage` run before/after: pressure and barrage byte-identical;
+  ttk shows cheap units surviving longer against unchanged fire support/towers (e.g. `2 mortar carriers vs 4
+  armoured cars` 68.9s->81.9s) and the two large-tower assault lines easing (e.g. `Assault squad vs heavy turret`
+  73.8s->67.6s), matching the addendum's intent. One flagged, not-fixed result: `Army vs Earth Borer (mini boss)`
+  survival rate dropped 2/3->1/3 seeds in the ttk boss set with no boss stat touched — likely a composition-timing
+  knock-on from several army units' stat changes; left for the owner.
+- **Campaign audit (sec 38, measure only):** `campaign.json` (generated, not edited) references the changed
+  canonical ids extensively (ifv 321, attack_helicopter 137, tank_destroyer 132, light_tank 99, sam_launcher 101,
+  aa_vehicle 167, strike_drone 60, armored_car 56, flame_tank 53, mortar_carrier 75, fpv_carrier 71, wheeled_gun 42,
+  fighter_jet 43, rocket_technical 38, recon_drone 27, mine_layer 29, scout_jeep 23, ew_jammer 25, zu23_technical 13,
+  command_vehicle 19, engineer_vehicle 14, ammo_carrier 8, scout_heli 8); ids resolve against balance.json at
+  runtime so the buffs apply automatically. No campaign-only nerf applied.
+- **Open for the owner:** (1) no confident id match for "heavy/special fortress-style tower" (sec 22) —
+  `spawn_bastion` looks boss-adjacent (no fort/rebuildCp/branches fields), left untouched; (2) `supply_truck`'s
+  cp:0/captureRate:0 made its sec 12 "supply vehicle" classification a judgment call; (3) `cp_relay` left out of the
+  utility-tower bucket (pass 1 used a separate "structure HP" rule for it); (4) the Earth Borer regression above.
+- Full report: `Docs/balance/BALANCE_V3_REPORT.md` (copied to `bao_cao_combat/balance_v3_report.md`).
