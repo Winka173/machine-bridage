@@ -5378,6 +5378,14 @@
    "changes": [
     "FLAG battleship: triangles 21,164 -> 24,152 (+14.1%); vertices 30,217 -> 33,043 (+9.4%); fileBytes 1,149,016 -> 1,248,352 (+8.6%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "battleship"
+   ],
+   "reason": "merge of feature/barrels",
+   "changes": []
   }
  ],
  "models": {
