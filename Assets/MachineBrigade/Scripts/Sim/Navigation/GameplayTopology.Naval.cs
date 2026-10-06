@@ -284,6 +284,18 @@ namespace MachineBrigade.Sim.Navigation
                 var rmin = ship.Speed / MathF.Max(0.01f, rate);
                 var required = rmin * Tun.NavalSafety;
                 var slow = rmin * throttle;
+                var look = Bosses.NavalBossMovementController.LookAhead(ship.Speed, ship.Length);
+                // The S-curve radius over the look-ahead for the lateral offset the one-step radius implies.
+                float lookRadius(float stepRadius)
+                {
+                    if (float.IsPositiveInfinity(stepRadius)) return stepRadius;
+                    var step = SeaRouteGraph.NodeStep;
+                    // Solve (L^2 + d^2) / 4d = stepRadius for d (the smaller root), then the radius over the look-ahead.
+                    var disc = 4f * stepRadius * stepRadius - step * step;
+                    if (disc < 0f) return stepRadius;
+                    var d = 2f * stepRadius - MathF.Sqrt(disc);
+                    return SCurveRadius(MathF.Max(step, look), d);
+                }
                 NavalTurnAudit Add(string manoeuvre, string where, float available, bool mitigable, string note)
                 {
                     var a = new NavalTurnAudit
@@ -300,7 +312,13 @@ namespace MachineBrigade.Sim.Navigation
                         Pass = available >= required,
                     };
                     a.Mitigated = !a.Pass && mitigable && available >= slow;
-                    a.Note = a.Pass ? note : a.Mitigated ? $"{note}; comes about at {throttle:0.00} speed (Rmin there {slow:0.0} m)" : note;
+                    // A boss ship changes lane over its controller's look-ahead (AI MASTER spec 54), not over one node step.
+                    if (!a.Pass && manoeuvre == "lane-change" && ship.Boss && lookRadius(available) >= required)
+                    {
+                        a.Mitigated = true;
+                        note += $"; the boss controller's look-ahead ({look:0} m) spreads it (radius {lookRadius(available):0.0} m)";
+                    }
+                    a.Note = a.Pass || manoeuvre == "lane-change" ? note : a.Mitigated ? $"{note}; comes about at {throttle:0.00} speed (Rmin there {slow:0.0} m)" : note;
                     list.Add(a);
                     return a;
                 }
@@ -337,11 +355,27 @@ namespace MachineBrigade.Sim.Navigation
                         Add("turnabout", $"{lane.Id}@{(end < 0 ? "-" : "+")}{lane.Patrol:0}", available, true, "U-turn at the patrol's end");
                     }
                 }
-                // Hairpins and node spacing: a track step shorter than two required radii cannot hold a lane change.
-                foreach (var s in graph.Segments)
+                // Hairpins (spec M1): a node whose two route links turn back more than 120 degrees.
+                foreach (var n in graph.Nodes)
                 {
-                    if (s.Kind != SeaSegmentKind.Track || graph.Nodes[s.A].Kind == SeaNodeKind.Exit || graph.Nodes[s.B].Kind == SeaNodeKind.Exit) continue;
-                    if (s.Length < 2f * required) Add("spacing", graph.Nodes[s.A].Id, s.Length * 0.5f, false, "node spacing too short for a turn");
+                    if (n.Kind != SeaNodeKind.Track) continue;
+                    var links = new List<Vector2>();
+                    foreach (var s in graph.Segments)
+                    {
+                        if (s.A != n.Index && s.B != n.Index) continue;
+                        var other = graph.Nodes[s.A == n.Index ? s.B : s.A];
+                        if (other.Kind != SeaNodeKind.Holding) links.Add(other.Position);
+                    }
+                    var worst = 0f;
+                    for (var i = 0; i < links.Count; i++)
+                    for (var k = i + 1; k < links.Count; k++)
+                    {
+                        var inDir = n.Position - links[i];
+                        var outDir = links[k] - n.Position;
+                        var cos = Vector2.Dot(inDir, outDir) / MathF.Max(1e-3f, inDir.Length() * outDir.Length());
+                        worst = MathF.Max(worst, MathF.Acos(Math.Clamp(cos, -1f, 1f)) * 180f / MathF.PI);
+                    }
+                    if (worst > 120f) Add("hairpin", n.Id, 0f, true, $"links turn back {worst:0} degrees");
                 }
             }
             return list;

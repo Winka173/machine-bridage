@@ -35,7 +35,7 @@ namespace MachineBrigade.Sim.Navigation
         /// <summary>Catalog ground vehicles in the class.</summary>
         public int Members { get; }
 
-        /// <summary>The widest hull of the class (m): a route for the class must fit it.</summary>
+        /// <summary>The widest hull of the class (m; Boss: the median boss hull): a route for the class must fit it.</summary>
         public float ReferenceWidth { get; }
 
         /// <summary>The class's median hull width (m): choke capacity (spec E1).</summary>

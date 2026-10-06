@@ -1,0 +1,32 @@
+// Map spec U (lane W1-A): the human review of the map warnings. Hand-authored; Tools/maps/topogen applies it to every
+// generated warning (first matching rule by glob on "<map>:<code>:<subject>", "asymmetric" limits a rule to maps whose data
+// says the asymmetry is intended; "overrides" by exact id win). Never auto-fix a YELLOW (spec CH): review it here.
+// Statuses: OPEN, FIXED, ACCEPTED_INTENTIONAL, PLAYTEST_REQUIRED.
+{
+  "version": "v0.34.0+unreleased (MVA W1-A)",
+  "rules": [
+    { "match": "*:LOADGATE_*", "status": "OPEN", "owner": "maps", "reason": "a load gate (spec BW) fails: fix the map data or the gate" },
+    { "match": "*:SPAWN_*", "asymmetric": true, "status": "ACCEPTED_INTENTIONAL", "owner": "maps", "reason": "intended asymmetry (map data): {asymmetry}" },
+    { "match": "*:SPAWN_NO_EXIT:*", "status": "OPEN", "owner": "maps", "reason": "a spawn with no open exit on its ring" },
+    { "match": "*:SPAWN_FULL_EXIT_DIRECT_FIRE:*", "status": "OPEN", "owner": "maps", "reason": "the whole exit is under enemy direct fire from reachable ground (spec G1); needs a fix or a written acceptance" },
+    { "match": "*:SPAWN_*", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "spec G1 exit check on a symmetric map; confirm with spawnBlockEvents / chokeQueueSeconds telemetry before changing geometry" },
+    { "match": "*:AUDIT_SIGHTLINE:*", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "information threshold (sightline P95 over the 32 m tank gun) met by every file; long sightlines are allowed (spec CH): confirm with the average LOS engagement distance (spec CA)" },
+    { "match": "*:AUDIT_EXITS:*", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "fewer than 2 ring openings round a drop zone; SpawnFairnessAudit.json gives the exit LOS and widths, spawnBlockEvents telemetry decides" },
+    { "match": "*:AUDIT_*", "asymmetric": true, "status": "ACCEPTED_INTENTIONAL", "owner": "maps", "reason": "intended asymmetry (map data): {asymmetry}" },
+    { "match": "*:AUDIT_*", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "static audit flag (Tools/audit/map_audit.py); judge in play before changing the map" },
+    { "match": "*:ROUTE_SIZE:Light", "status": "OPEN", "owner": "maps", "reason": "a light hull cannot reach an objective: a connectivity fault" },
+    { "match": "*:ROUTE_SIZE:Medium", "status": "OPEN", "owner": "maps", "reason": "a medium hull cannot reach an objective: a connectivity fault" },
+    { "match": "*:ROUTE_SIZE:Heavy", "status": "OPEN", "owner": "maps", "reason": "a heavy (card) hull cannot reach an objective by its clearance" },
+    { "match": "*:ROUTE_SIZE:SuperHeavy", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "super-heavy clearance (route needs the widest non-boss hull plus side room); heavyRouteFailure telemetry shows whether the AI sends one there" },
+    { "match": "*:ROUTE_SIZE:Boss", "status": "ACCEPTED_INTENTIONAL", "owner": "maps", "reason": "boss hulls drive their scripted routes, arenas and boss corridors, not every spawn-to-objective route; information" },
+    { "match": "*:ROUTE_TURN:*", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "information: a corner tighter than the class's pivot room (a hull turns on the move); heavyRouteFailure / stuck reports decide" },
+    { "match": "*:NAVAL_TURN_MITIGATED:*", "status": "ACCEPTED_INTENTIONAL", "owner": "AI P0-C", "reason": "the boss ship controller comes about at bosses.bossBrain.turnaboutThrottle and full turn rate (AI MASTER spec 52, DECISIONS AI MASTER P0-C); the low-speed radius fits" },
+    { "match": "*:NAVAL_TURN:*", "status": "OPEN", "owner": "maps", "reason": "a boss ship's turn does not fit the route even at the turnabout throttle (spec M)" },
+    { "match": "*:NAVAL_TURN_SHIP:*", "status": "PLAYTEST_REQUIRED", "owner": "maps", "reason": "a non-boss ship's turn is tighter than Rmin x safety; the naval system slows it at bays and lane ends; navalCollisionEvents telemetry decides" },
+    { "match": "*:CHOKE_QUEUE:*", "status": "PLAYTEST_REQUIRED", "owner": "AI P1", "reason": "information: a critical choke's queue box overlaps a spawn zone, capture circle or another choke (spec E2); chokeQueueSeconds telemetry decides" },
+    { "match": "*:HULLDOWN_NONE:*", "status": "ACCEPTED_INTENTIONAL", "owner": "maps", "reason": "flat Sim ground: hull-down only behind low cover props (spec J4: never from arbitrary ridges); this map has none" },
+    { "match": "*:LANDMARKS_*", "status": "OPEN", "owner": "art", "reason": "fewer than three macro landmarks or quadrants (spec S): orientation anchors to add" },
+    { "match": "*", "status": "OPEN", "owner": "maps", "reason": "not reviewed yet" }
+  ],
+  "overrides": {}
+}

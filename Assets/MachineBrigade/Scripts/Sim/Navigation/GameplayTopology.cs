@@ -145,7 +145,9 @@ namespace MachineBrigade.Sim.Navigation
             for (var i = 0; i < 5; i++)
             {
                 var list = widths[i].Count > 0 ? widths[i] : all[i];
-                var reference = list.Count > 0 ? Max(list) : defaultWidth[i];
+                // The widest hull of a class must fit its routes; the Boss class is the boss chassis typical of it (the median:
+                // boss hulls range from 6 to 16 m, and each giant drives its own scripted route or arena).
+                var reference = list.Count == 0 ? defaultWidth[i] : i == (int)VehicleSizeClass.Boss ? Median(list) : Max(list);
                 var median = list.Count > 0 ? Median(list) : defaultWidth[i];
                 var length = lengths[i] > 0f ? lengths[i] : reference * 2.2f;
                 var speed = speeds[i].Count > 0 ? Median(speeds[i]) : 5f;
@@ -235,7 +237,8 @@ namespace MachineBrigade.Sim.Navigation
                 var domain = gate.Kind switch
                 {
                     EntryGateKind.Air => MobilityDomain.Air,
-                    EntryGateKind.Sea => MobilityDomain.Naval,
+                    // A sea gate is a landing ingress: its gameplay entry position is on the beach (ships keep their own routes).
+                    EntryGateKind.Sea => MobilityDomain.Amphibious,
                     EntryGateKind.Rail => MobilityDomain.Static,
                     _ => MobilityDomain.Ground,
                 };

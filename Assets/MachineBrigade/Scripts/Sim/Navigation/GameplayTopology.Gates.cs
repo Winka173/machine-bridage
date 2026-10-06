@@ -74,7 +74,9 @@ namespace MachineBrigade.Sim.Navigation
             {
                 if (!_world.Map.Contains(p) || !_world.Map.InsideBoundary(p)) outside.Add(id);
             }
-            foreach (var c in _chokes) Inside("choke" + c.Id, c.Centre);
+            // A choke's centre is the mean of its open cells: a curved passage by the outline may put it a cell outside.
+            foreach (var c in _chokes)
+                if (!_world.Map.InsideBoundary(c.Centre) && Map.Ground.NearestPassableCell(c.Centre, 1) < 0) outside.Add("choke" + c.Id);
             foreach (var z in _spawnZones) Inside("spawnzone" + z.Team, z.Centre);
             if (full)
             {
@@ -132,6 +134,7 @@ namespace MachineBrigade.Sim.Navigation
                         "ARTILLERY_FULL_COVER" => ("enemyArtilleryCoverageAtSpawn", F(f.EnemyArtilleryCoverageAtSpawn), "< 0.95 or an alternate exit"),
                         "EXIT_NARROWER_THAN_LARGEST" => ("narrowestExitM", F(f.NarrowestExitM), ">= " + F(Class(VehicleSizeClass.SuperHeavy).ReferenceWidth + 2f * Tun.SideClearance)),
                         "SINGLE_BLOCKER_SEALS" => ("narrowestExitM", F(f.NarrowestExitM), ">= " + F(2f * (Class(VehicleSizeClass.Heavy).ReferenceWidth + Tun.SeparationMargin)) + " or an alternate exit"),
+                        "SINGLE_EXIT" => ("narrowestExitM", F(f.NarrowestExitM), ">= " + F(3f * (Class(VehicleSizeClass.Heavy).ReferenceWidth + Tun.SeparationMargin)) + " or an alternate exit"),
                         _ => ("alternateExitCount", f.AlternateExitCount.ToString(CultureInfo.InvariantCulture), ">= 1"),
                     };
                     Add(flag == "NO_EXIT" ? WarningSeverity.Red : WarningSeverity.Yellow, "SPAWN_" + flag, f.SpawnId, metric, value, threshold);

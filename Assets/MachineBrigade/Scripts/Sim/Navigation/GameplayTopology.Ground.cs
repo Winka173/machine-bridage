@@ -631,6 +631,7 @@ namespace MachineBrigade.Sim.Navigation
             var enemyDist = enemyCell >= 0 ? Map.Ground.DistancesFrom(enemyCell) : new int[CellsN];
             if (enemyCell < 0)
                 for (var i = 0; i < enemyDist.Length; i++) enemyDist[i] = -1;
+            var ownDist = ownCell >= 0 ? Map.Ground.DistancesFrom(ownCell) : enemyDist;
             var keepOut = clearRadius * 1.5f;
 
             bool Visible(Vector2 s)
@@ -644,7 +645,8 @@ namespace MachineBrigade.Sim.Navigation
                         if (CoverAt(q)) break;
                         var c = Map.CellIndex(q);
                         if (c < 0) break;
-                        if (enemyDist[c] >= 0 && Vector2.Distance(q, own.Position) > keepOut) return true;
+                        // Ground the enemy holds at the start: it gets there before this side does (path distance), off the clear zone.
+                        if (enemyDist[c] >= 0 && (ownDist[c] < 0 || enemyDist[c] < ownDist[c]) && Vector2.Distance(q, own.Position) > keepOut) return true;
                     }
                 }
                 return false;
@@ -759,7 +761,8 @@ namespace MachineBrigade.Sim.Navigation
             var heavy = Class(VehicleSizeClass.Heavy);
             var super = Class(VehicleSizeClass.SuperHeavy);
             if (open > 0 && f.EnemyDirectLosAtExit >= Tun.FullExposureShare) f.Flags.Add("FULL_EXIT_DIRECT_FIRE");
-            if (open > 0 && open < Samples && f.AlternateExitCount == 0) f.Flags.Add("SINGLE_EXIT");
+            // One way out that is also narrow (a wide single arc by the map's corner is no choke point).
+            if (open > 0 && open < Samples && f.AlternateExitCount == 0 && f.NarrowestExitM < 3f * (heavy.ReferenceWidth + Tun.SeparationMargin)) f.Flags.Add("SINGLE_EXIT");
             if (open > 0 && f.AlternateExitCount == 0 && f.NarrowestExitM < 2f * (heavy.ReferenceWidth + Tun.SeparationMargin)) f.Flags.Add("SINGLE_BLOCKER_SEALS");
             if (open > 0 && f.NarrowestExitM < super.ReferenceWidth + 2f * Tun.SideClearance) f.Flags.Add("EXIT_NARROWER_THAN_LARGEST");
             if (open == 0) f.Flags.Add("NO_EXIT");
