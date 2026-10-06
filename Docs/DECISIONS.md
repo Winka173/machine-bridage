@@ -21562,3 +21562,38 @@ this brief re-audited from the runtime per the owner's rescan request. Full repo
   the view (`WeaponEffects.cs`/`ProjectilePool.cs`) always plays the Sim's own given duration with no early-exit.
 - **Regression:** `dotnet build Tools/simbuild/Sim.csproj` and `Tools/simbuild/regress/Regress.csproj` (new
   project file; none existed before), 0 errors both. No Unity run; no `export.py` run.
+
+### Follow-up (06/10, same day): the muzzle-origin overshoot, general fix
+
+Owner named Hyperion specifically and asked for the per-mount path that let `pt14_hp_nsm`/`p26_roc_direct_roc_atgm`
+still fire under their corrected `groundMinReach` to be found and fixed generally. Found: `GroundMinReach` is
+enforced correctly in `CombatSystem.InReach()` (confirmed via temporary instrumentation, removed) -- the gate was
+never the problem. The actual bug is in `CombatSystem.Launch()`'s muzzle-origin calc:
+`origin = shooter.Position + Forward(mountHeading) * shooter.Radius`. For an ordinary vehicle this forward nudge
+(approximating "the gun is on the hull edge, not the dead centre") is a couple of metres, irrelevant against any
+real engagement range. For a boss whose live `Vehicle.Radius` is the data radius scaled by its own `"size"`
+(command airship: `18 x 1.7564 = 31.6152` m, confirmed exact), the nudge can be as large as, or larger than, the
+whole distance to a target that had just barely cleared the `GroundMinReach` floor measured from the hull centre
+(the gate's correct reference point) -- pushing the visual muzzle almost onto the target and collapsing
+`Distance(origin, aim)`, the number the view's travel time is built from, to near zero. The gate was sound
+throughout; only the geometry feeding the view's own distance was not.
+
+- **Fix (general, one shared function):** capped the muzzle nudge in `Launch()` to the lesser of the shooter's
+  `Radius`, a flat 3 m, and 90% of the real distance to the aim point. Three metres is enough for any shot to
+  read as leaving the hull's edge rather than its dead centre, for a vehicle of any size, and can never eat a
+  meaningful share of a shot that already cleared a 15-30 m minimum range. The cap only engages above `Radius`
+  3 m, so every ordinary (non-boss) vehicle fires exactly as before -- checked, none has a `Radius` over 3 m.
+  Not a weapon-data change; applies to every mount of every vehicle (the brief's "fix it generally" ask), though
+  in practice only boss-scale hulls are large enough to trigger it.
+- **Re-measured (`missiles-pointblank`, same 5/15/30 m setup):** `pt14_hp_nsm` 0.00-0.04 s -> **0.37 s (29.2 m)**;
+  `p26_roc_direct_roc_atgm` 0.00-0.05 s -> **0.42 s (29.3 m)**; `pt14_th_jagm` 0.21 s -> 0.42 s; `pt14_ixion_kornet`
+  0.31 s -> 0.42 s; `p26_bastion_tiny_kornet_twin` (Fortress Bastion) 0.38 s -> 0.50 s, (Monster) 0.28 s -> 0.39 s;
+  `p26_behemoth_tiny_boss_missiles` 0.37 s -> 0.47 s. All 9 weapons that fired in this test now clear the
+  addendum's 0.35 s line. The remaining 4 (`pt14_co_spike`, `nyx_tomahawk`, `scylla_kh35`,
+  `p26_matriarch_direct_ma_atgm`) never fired in this test's target geometry, before or after -- a target/arc
+  selection question independent of this bug; their data and the shared code fix are both confirmed correct.
+- **No regression:** re-ran the broader `missiles` sweep (every boss, natural AI range, 100+ combinations) --
+  byte-identical outlier set to before this fix (`p26_icarus_sec_orbital_laser` laser/beam,
+  `p26_leviathan_lev406` direct kinetic naval gun, both pre-existing and out of scope either way).
+- `dotnet build Tools/simbuild/Sim.csproj` and `Tools/simbuild/regress/Regress.csproj`: 0 errors both. No Unity
+  run; no `export.py` run. Report updated: `Docs/balance/BOSS_MISSILE_RESCAN.md` (+ `bao_cao_combat` copy).

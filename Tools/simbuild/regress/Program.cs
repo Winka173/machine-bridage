@@ -581,6 +581,8 @@ static class P
                         var dist = Vector2.Distance(e.Position, e.Target);
                         if (!seen.TryGetValue(e.DefId, out var list)) seen[e.DefId] = list = new List<(float, float)>();
                         list.Add((dist, e.Value));
+                        if (Environment.GetEnvironmentVariable("MB_DEBUG") == e.DefId)
+                            Console.Error.WriteLine($"EVENT {boss} {e.DefId} t={t:0.00} mount={e.Mount} fromPart={e.FromPart} ePos={e.Position} eTarget={e.Target} dist={dist:0.00} value={e.Value:0.00} bossPos={b.Position} bossHeading={b.Heading}");
                     }
                     world.ClearEvents();
                 }
