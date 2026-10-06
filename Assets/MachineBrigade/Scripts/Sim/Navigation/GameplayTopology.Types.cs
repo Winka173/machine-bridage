@@ -595,8 +595,14 @@ namespace MachineBrigade.Sim.Navigation
         public float GateMinWidthM { get; internal set; } = float.PositiveInfinity;
         public float BridgeMinWidthM { get; internal set; } = float.PositiveInfinity;
 
-        /// <summary>Its corners all leave the class's pivot room.</summary>
+        /// <summary>Its corners all leave the class's pivot room (strict: at the corner cell a shortest path hugs; information).</summary>
         public bool TurnsFit { get; internal set; } = true;
+
+        /// <summary>Lane W2-A: the least pivot room (m) a hull finds swinging wide at the route's corners (the best clearance within its pivot radius; +inf: no corner).</summary>
+        public float SwingTurnSpaceM { get; internal set; } = float.PositiveInfinity;
+
+        /// <summary>Lane W2-A: every corner leaves the pivot room when the hull swings wide (false: ROUTE_TURN_TIGHT, a real tight corner).</summary>
+        public bool TurnsFitSwing { get; internal set; } = true;
     }
 
     /// <summary>Map spec U: a map warning's severity.</summary>

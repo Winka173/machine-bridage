@@ -577,6 +577,7 @@ namespace MachineBrigade.Sim.Navigation
             audit.LengthM = (path.Count - 1) * Map.Cell;
             var minWidth = float.PositiveInfinity;
             var growth = SimWorld.ObstacleClearance;
+            var swingCells = Math.Max(2, (int)MathF.Ceiling(info.TurnRadius / Map.Cell));
             for (var i = 0; i < path.Count; i++)
             {
                 var c = path[i];
@@ -588,7 +589,13 @@ namespace MachineBrigade.Sim.Navigation
                     var dout = Map.CellCentre(path[i + 4]) - Map.CellCentre(c);
                     var cos = Vector2.Dot(din, dout) / MathF.Max(1e-3f, din.Length() * dout.Length());
                     if (cos < MathF.Cos(50f * MathF.PI / 180f))
+                    {
                         audit.MinTurnSpaceM = MathF.Min(audit.MinTurnSpaceM, (clear - 0.5f) * Map.Cell + growth);
+                        // Lane W2-A: a hull swings wide through the corner's open ground (the best clearance within its pivot
+                        // radius of the corner cell), where a shortest path hugs the inside of the turn.
+                        var swing = WindowClearance(c, swingCells);
+                        audit.SwingTurnSpaceM = MathF.Min(audit.SwingTurnSpaceM, (swing - 0.5f) * Map.Cell + growth);
+                    }
                 }
                 var p = Map.CellCentre(c);
                 foreach (var line in _world.Map.Walls)
@@ -602,6 +609,7 @@ namespace MachineBrigade.Sim.Navigation
             }
             audit.MinClearWidthM = float.IsPositiveInfinity(minWidth) ? WidthOfClearance(info.ClearanceCells) : minWidth;
             audit.TurnsFit = audit.MinTurnSpaceM >= info.TurnRadius;
+            audit.TurnsFitSwing = audit.SwingTurnSpaceM >= info.TurnRadius;
             return audit;
         }
 
@@ -862,17 +870,21 @@ namespace MachineBrigade.Sim.Navigation
         /// <summary>Spec I's rules round a seed: open, no-parking free, off chokes, spawn zones, capture circles and no-parking lanes.</summary>
         private bool FindStaging(Vector2 seed, TopologyAnchor objective, float radius, out Vector2 centre)
         {
-            for (var ring = 0; ring <= 10; ring++)
-            {
-                var samples = ring == 0 ? 1 : 8 * ring;
-                for (var k = 0; k < samples; k++)
+            // Lane W2-A (spec I "not inside immediate direct-fire threat if avoidable"): first out of a direct line of fire from
+            // the objective (within the direct-fire reference), then anywhere the rules allow.
+            for (var pass = 0; pass < 2; pass++)
+                for (var ring = 0; ring <= 10; ring++)
                 {
-                    var p = ring == 0 ? seed : seed + SimMath.Forward(k * MathF.PI * 2f / samples) * (ring * 2f);
-                    if (!StagingOk(p, objective, radius)) continue;
-                    centre = p;
-                    return true;
+                    var samples = ring == 0 ? 1 : 8 * ring;
+                    for (var k = 0; k < samples; k++)
+                    {
+                        var p = ring == 0 ? seed : seed + SimMath.Forward(k * MathF.PI * 2f / samples) * (ring * 2f);
+                        if (!StagingOk(p, objective, radius)) continue;
+                        if (pass == 0 && Vector2.Distance(p, objective.Position) <= Tun.DirectFireRef && LineClear(p, objective.Position)) continue;
+                        centre = p;
+                        return true;
+                    }
                 }
-            }
             centre = seed;
             return false;
         }

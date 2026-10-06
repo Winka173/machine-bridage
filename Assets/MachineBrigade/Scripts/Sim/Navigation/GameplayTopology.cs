@@ -399,6 +399,10 @@ namespace MachineBrigade.Sim.Navigation
                     });
                 }
             }
+            // Lane W2-A: while the AI MASTER topology waits for its rebuild (maps: ai.topology.rebuildSeconds) after a wall fell,
+            // its chokes are the ones before the fall. One the rubble opened (rubble within its reach and its narrowest width now
+            // well over the choke's) is dropped here at once, not one topology rebuild late; a static map is never stale.
+            var stale = Tun.RemeasureStaleChokes && Map.GridVersion != grid.Version && _world.HasWalls && _world.Walls.HasRubble;
             foreach (var choke in Map.Chokes)
             {
                 var covered = false;
@@ -420,6 +424,11 @@ namespace MachineBrigade.Sim.Navigation
                     bestWidth = width;
                     across = dir;
                 }
+                if (stale && bestWidth > choke.Width + 2f * grid.CellSize + 2f && RubbleNear(choke.Centre, MathF.Max(choke.Width, 8f) * 0.5f + 6f))
+                {
+                    StaleChokesDropped++;
+                    continue;
+                }
                 var through = new Vector2(-across.Y, across.X);
                 var half = MathF.Max(choke.Width, bestWidth) * 0.5f + 3f;
                 var water = Map.IsSea(choke.Centre + across * half) || Map.IsSea(choke.Centre - across * half) ||
@@ -436,6 +445,17 @@ namespace MachineBrigade.Sim.Navigation
                 });
             }
             for (var i = 0; i < _chokes.Count; i++) _chokes[i].Id = i + 1;
+        }
+
+        /// <summary>Topology chokes left out because the rubble of a fallen wall opened them before the topology's rebuild (lane W2-A).</summary>
+        public int StaleChokesDropped { get; private set; }
+
+        /// <summary>Wall rubble within <paramref name="reach"/> m of <paramref name="p"/> (its box grown by the reach).</summary>
+        private bool RubbleNear(Vector2 p, float reach)
+        {
+            foreach (var (min, max) in _world.Walls.RubbleAreas)
+                if (p.X >= min.X - reach && p.X <= max.X + reach && p.Y >= min.Y - reach && p.Y <= max.Y + reach) return true;
+            return false;
         }
 
         private static float Ray(NavGrid grid, Vector2 from, Vector2 dir, float max)

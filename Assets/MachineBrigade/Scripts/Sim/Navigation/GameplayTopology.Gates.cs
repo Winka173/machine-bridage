@@ -83,6 +83,11 @@ namespace MachineBrigade.Sim.Navigation
                 foreach (var p in Positions) Inside(p.Id, p.Position);
                 foreach (var s in StagingAreas) Inside(s.Id, s.Centre);
                 foreach (var r in ShoreFireRegions) Inside("shore" + r.Id, r.Centre);
+                foreach (var a in ObjectiveApproaches)
+                {
+                    if (a.ArtillerySupport is { } art) Inside(a.Id + "/artillery", art.Centre);
+                    if (a.DefenderFallback is { } fb) Inside(a.Id + "/fallback", fb.Centre);
+                }
             }
             results.Add(new LoadGateResult("points-in-bounds", outside.Count == 0, string.Join(",", outside)));
 
@@ -96,6 +101,14 @@ namespace MachineBrigade.Sim.Navigation
                     if (_world.LanesNoRebuild.NoParkAt(p.Position)) onLane.Add(p.Id);
                     foreach (var l in Lanes)
                         if (l.ParkingForbidden && l.DistanceTo(p.Position) < 6f) onLane.Add(p.Id + "@" + l.Id);
+                }
+                // Lane W2-A: the approach sets' artillery-support regions keep off the transit zones too.
+                foreach (var a in ObjectiveApproaches)
+                {
+                    if (a.ArtillerySupport is not { } art) continue;
+                    if (_world.LanesNoRebuild.NoParkAt(art.Centre)) onLane.Add(a.Id + "/artillery");
+                    foreach (var l in Lanes)
+                        if (l.ParkingForbidden && l.DistanceTo(art.Centre) < 6f) onLane.Add(a.Id + "/artillery@" + l.Id);
                 }
                 results.Add(new LoadGateResult("fire-support-transit", onLane.Count == 0, string.Join(",", onLane)));
             }
@@ -145,12 +158,14 @@ namespace MachineBrigade.Sim.Navigation
                 var cls = (VehicleSizeClass)k;
                 var unreachable = new List<string>();
                 int routes = 0, tight = 0;
+                var tightSwing = new List<string>();
                 foreach (var r in RouteAudits)
                 {
                     if (r.Class != cls) continue;
                     routes++;
                     if (!r.Reachable) unreachable.Add($"{r.From}->{r.To}");
                     else if (!r.TurnsFit) tight++;
+                    if (r.Reachable && !r.TurnsFitSwing) tightSwing.Add($"{r.From}->{r.To} {F(r.SwingTurnSpaceM)} m");
                 }
                 if (unreachable.Count > 0)
                     Add(k <= (int)VehicleSizeClass.Medium ? WarningSeverity.Red : WarningSeverity.Yellow, "ROUTE_SIZE", cls.ToString(), "unreachable routes",
@@ -158,6 +173,17 @@ namespace MachineBrigade.Sim.Navigation
                 if (tight > 0)
                     Add(WarningSeverity.Info, "ROUTE_TURN", cls.ToString(), "routes with a corner tighter than the pivot room",
                         $"{tight} of {routes}", "pivot radius " + F(Class(cls).TurnRadius) + " m");
+                // Lane W2-A: a corner too tight even swinging wide (Boss: scripted routes, information like ROUTE_SIZE).
+                if (tightSwing.Count > 0)
+                    Add(cls == VehicleSizeClass.Boss ? WarningSeverity.Info : WarningSeverity.Yellow, "ROUTE_TURN_TIGHT", cls.ToString(),
+                        "routes with a corner tighter than the pivot room even swinging wide", string.Join(",", tightSwing), "pivot radius " + F(Class(cls).TurnRadius) + " m");
+            }
+
+            // Lane W2-A, spec H: a capture point a side can reach by only one distinct way in (information).
+            foreach (var a in ObjectiveApproaches)
+            {
+                if (a.Approaches.Count != 1 || AnchorOf(a.Objective) is not { Kind: AnchorKind.Objective }) continue;
+                Add(WarningSeverity.Info, "APPROACH_SINGLE", a.Id, "distinct approaches", "1", ">= 2 (primary + secondary or flank)");
             }
 
             var naval = new Dictionary<string, (WarningSeverity sev, string code, string value, string threshold)>();
