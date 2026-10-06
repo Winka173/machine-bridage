@@ -136,6 +136,7 @@ namespace MachineBrigade.Game.Audio
             _zone = AcousticZones.Of(_zones.At(Focus));
             ViewTelemetry.Zone(_zone.ReverbPreset);
             ViewTelemetry.Voices(BusyVoices);
+            TickBossStates();
             // The beds (wind, rain): the zone's ambience and the warnings' duck (spec parts AT, BE, BF).
             if (_ambientBase < 0f) _ambientBase = _ambient.volume;
             _bedGain = _zone.AmbientGain * warned;
@@ -200,6 +201,37 @@ namespace MachineBrigade.Game.Audio
                 foreach (var skill in user.Def.Skills)
                     if (skill.Id == e.DefId) return skill.Radius;
             return 15f;
+        }
+
+        /// <summary>Each boss part's damage state last heard (spec part BC: one cue on entering Critical).</summary>
+        private readonly System.Collections.Generic.Dictionary<(Sim.Core.EntityId, int), PartDamageState> _partHeard = new();
+
+        /// <summary>
+        /// MVA W2-B (spec parts BC, Y): a boss part going Critical strains with a heavy metal hit at Boss priority (P2, under
+        /// the warnings, owned by the boss's state: once a part, never a loop); its breaking is its blast (already played).
+        /// </summary>
+        private void TickBossStates()
+        {
+            if (_views == null || _lobby) return;
+            var all = _views.All;
+            for (var i = 0; i < all.Count; i++)
+            {
+                var view = all[i];
+                if (!view.Def.Boss || view.IsWreck || !view.Sim.IsAlive) continue;
+                for (var p = 0; p < view.Sim.PartCount; p++)
+                {
+                    var state = view.PartState(p);
+                    var key = (view.Id, p);
+                    _partHeard.TryGetValue(key, out var was);
+                    if (state == was) continue;
+                    _partHeard[key] = state;
+                    if (state != PartDamageState.Critical) continue;
+                    var at = view.PartWorld(p);
+                    var where = new System.Numerics.Vector2(at.x, at.z);
+                    if (_tierBanks.TryGetValue("hit_metal_heavy", out var strain)) Play(strain, where, 1f, 20f, SoundPriority.Boss, 0.8f);
+                    else Play(_banks[Sound.Impact], where, 1f, 20f, SoundPriority.Boss, 0.7f);
+                }
+            }
         }
 
         /// <summary>The large weapons' banks (spec part AV), by library name.</summary>

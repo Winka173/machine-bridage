@@ -576,9 +576,11 @@ namespace MachineBrigade.Game.Views
                 if (r == null) continue;
                 var shared = r.sharedMaterials;
                 var changed = false;
+                // MVA W2-B: a boss part's renderers wear its damage state over the hull's tint.
+                var own = _partOfRenderer.Count > 0 ? PartTint(r, tint) : tint;
                 for (var i = 0; i < shared.Length; i++)
                 {
-                    var m = _materials.Tinted(shared[i], tint);
+                    var m = _materials.Tinted(shared[i], own);
                     if (m == shared[i]) continue;
                     shared[i] = m;
                     changed = true;
