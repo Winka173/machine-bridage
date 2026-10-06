@@ -1,6 +1,6 @@
 # Machine Brigade: gói cân bằng
 
-Xuất từ commit 3817f14a (ngày 2026-10-06); so sánh `_truoc` / `_sau` với bản 5f5b3247 (5f5b3247). Gói chỉ phục vụ cân
+Xuất từ commit 9a62db3b (ngày 2026-10-06); so sánh `_truoc` / `_sau` với bản 5f5b3247 (5f5b3247). Gói chỉ phục vụ cân
 bằng: giá trị cấu hình sửa được, cột suy ra để cân bằng (DPS, máu trên CP, số phát để hạ, so với ngoài đời), tham chiếu ngoài đời
 và game. Ghi đè mỗi lần chạy; lịch sử nằm trong git.
 

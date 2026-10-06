@@ -333,3 +333,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 06/10 battleship tháp 3 nòng: "có, và xem có phương tiện tháp canh nào số nòng phải tương tứng".
 - 06/10 "tiếp tục, task đang làm thì xong pháo 3 nòng là xong, không cần kiểm tra số nòng chỗ khác, không cần build lại bản window".
 - 06/10 "làm render ảnh thẻ cho các tàu trong tab Hải quân".
+- 06/10 "chạy luôn task export".

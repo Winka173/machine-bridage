@@ -2,7 +2,7 @@
 
 Nguồn ngoài đời, cơ chế lấy ý từ game, học thuyết quân sự, bản quyền tài liệu.
 
-Gói cân bằng Machine Brigade, commit 3817f14a, ngày 2026-10-06. Số liệu đầy đủ ở 08_tham_chieu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 9a62db3b, ngày 2026-10-06. Số liệu đầy đủ ở 08_tham_chieu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Cách đọc
 
