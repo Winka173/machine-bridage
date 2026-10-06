@@ -13317,3 +13317,17 @@ ready (`Tools/export/domains/_mva_w1a.py`, read from the generated files; nothin
 
 New tunables (automatic): `maps.topology.approach*` (approach alternatives, flank offset/bearing). No combat, weather
 visibility or balance value changed.
+
+## MAP VA W2-B (lane B, 06/10, feature/mva-w2b)
+
+Không đổi giá trị cân bằng. Pack không xuất lại (lead xuất sau khi merge).
+
+| mục | nơi | thay đổi |
+|---|---|---|
+| tên nút runtime | 24 GLB boss/tàu + balance.json (47 nút phần/ụ, 2 tune.node) | `.NNN` -> thẻ ngữ nghĩa theo từng model; không còn nút `.NNN` nào |
+| gộp renderer | `Tools/assets/glb_merge_static.py`, `static_merge.json` -> 10/Model_ngan_sach | 8 model: hangar 129->30, 93->27, ixion 175->101, fpv_carrier 78->35, heavy_aa 77->47, attack_jet 40->27, cp_relay 43->17; tam giác giữ nguyên từng byte; bỏ 5 miễn trừ |
+| tín hiệu đe dọa | THREAT_CUES.md -> 07 | thêm mìn bị phát hiện, EMP; tấn công từ trên có tiếng riêng (warn_topattack) và vạch bổ nhào |
+| trạng thái phần boss | code (BossPartStates) | Lành / Hư / Nguy kịch / Bị phá, hiện trên chính model |
+| âm thanh | code (AudioDirector.Space, AcousticZones) | lớp theo khoảng cách, che khuất, vùng âm học, P0/P1 không mất |
+| tương phản màu | `Docs/mapvisaudio/CONTRAST_AUDIT.md` | danh sách xem lại (Delta E theo địa hình, mù màu) |
+| trợ năng | Cài đặt | rung 0-100 %, giảm hiệu ứng, phụ đề cảnh báo, giới hạn chớp màn hình |
