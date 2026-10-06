@@ -23,6 +23,9 @@ MODELS = "Assets/MachineBrigade/Resources/Models/"
 BASELINE = "Tools/assets/baseline.json"
 REAL = "Tools/models/reference_real.json"
 GOLD = "Tools/assets/gold_metrics.json"
+NODE_MAP = "Tools/assets/runtime_node_map.json"
+NODE_BASELINE = "Tools/assets/runtime_node_baseline.json"
+WAIVERS = "Tools/assets/budget_waivers.json"
 SPECS = "Tools/blender/specs/"
 CARDS = "Assets/MachineBrigade/Resources/UI/Cards/manifest.json"
 LICENSES = "Assets/MachineBrigade/Resources/Licenses/"
@@ -122,6 +125,21 @@ def build(ctx):
     C.records(ls, base.get("history"), BASELINE, ("history",))
     kv = book.kv_sheet("Model_kiem_chuan_chung", "Model: kiểm chuẩn (chung)", "baseline.json: số model, ngày sinh")
     book.kv_rows(kv, {k: v for k, v in base.items() if k not in ("models", "budgets", "history")}, BASELINE, (), "baseline")
+
+    # ------------------------------------------------------------------ MVA W1-B: runtime node contract and budget waivers
+    for src, name, title, desc, group in (
+            (NODE_MAP, "Model_ten_nut_on_dinh", "Model: tên nút runtime ổn định",
+             "Tools/assets/runtime_node_map.json: mỗi model đã đổi tên nút có hậu tố Blender (.001) sang tên ngữ nghĩa ổn định "
+             "(cũ -> mới, giữ thứ tự); frontier_kit áp lại sau mỗi lần xuất. Báo cáo: Docs/models/RUNTIME_NODES.md", "runtime_node_map"),
+            (NODE_BASELINE, "Model_nut_ton_dong", "Model: lỗi nút runtime đã biết",
+             "Tools/assets/runtime_node_baseline.json: lỗi cứng đã biết (model|luật|vị trí) và lý do; lỗi mới làm "
+             "runtime_node_audit.py thất bại", "runtime_node_baseline"),
+            (WAIVERS, "Model_ngan_sach_mien", "Model: miễn trừ ngân sách",
+             "Tools/assets/budget_waivers.json: miễn trừ chính thức (ai, ngày, lý do, việc tiếp) cho lỗi ngân sách cứng và "
+             "ghi chú duyệt cho mức mềm. Báo cáo: Docs/models/BUDGET_OUTLIERS.md", "budget_waivers")):
+        if src in ctx.sources:
+            kvw = book.kv_sheet(name, title, desc)
+            book.kv_rows(kvw, ctx.data(src), src, (), group)
 
     # ------------------------------------------------------------------ reference sizes (Tools/models/reference_real.json)
     if REAL in ctx.sources:

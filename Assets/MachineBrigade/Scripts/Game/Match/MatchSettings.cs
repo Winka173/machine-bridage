@@ -348,6 +348,21 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>Prompt 34 L6: the radio and spoken lines under the master volume.</summary>
         public static float DialogueVolume { get; set; } = 1f;
+
+        /// <summary>
+        /// MVA W1-B (spec part AS): the critical warnings (alarms, super weapon cues, incoming whistles) under the master
+        /// volume, a slider of their own so turning the effects or the ambience down never silences a warning.
+        /// </summary>
+        public static float WarningVolume { get; set; } = 1f;
+
+        /// <summary>
+        /// MVA W1-B (spec part AL, accessibility): fewer and softer flashes: big guns' muzzle flashes 30 % smaller and the
+        /// fires' glow without its fast flicker. Gameplay cues (warning rings, telegraphs) are unchanged.
+        /// </summary>
+        public static bool ReducedFlash { get; set; }
+
+        /// <summary>The muzzle flash size factor <see cref="ReducedFlash"/> sets.</summary>
+        public static float FlashScale => ReducedFlash ? 0.7f : 1f;
         public static GraphicsQuality Graphics { get; set; } = GraphicsQuality.Auto;
 
         /// <summary>
@@ -500,6 +515,8 @@ namespace MachineBrigade.Game.Match
                 MusicVolume = PlayerPrefs.GetFloat("mb.music", MusicVolume);
                 EffectsVolume = Mathf.Clamp01(PlayerPrefs.GetFloat("mb.effects", EffectsVolume));
                 DialogueVolume = Mathf.Clamp01(PlayerPrefs.GetFloat("mb.dialogue", DialogueVolume));
+                WarningVolume = Mathf.Clamp01(PlayerPrefs.GetFloat("mb.warningVolume", WarningVolume));
+                ReducedFlash = PlayerPrefs.GetInt("mb.reducedFlash", 0) == 1;
                 Graphics = (GraphicsQuality)Mathf.Clamp(PlayerPrefs.GetInt("mb.graphics", 0), 0, 4);
                 if (Graphics == GraphicsQuality.Custom) _custom = GraphicsOptions.Load("mb.gfx.", GraphicsOptions.For(DetectTier()));
                 // Reduced motion (older saves) became the low screen-shake setting.
@@ -558,6 +575,8 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetFloat("mb.music", MusicVolume);
                 PlayerPrefs.SetFloat("mb.effects", EffectsVolume);
                 PlayerPrefs.SetFloat("mb.dialogue", DialogueVolume);
+                PlayerPrefs.SetFloat("mb.warningVolume", WarningVolume);
+                PlayerPrefs.SetInt("mb.reducedFlash", ReducedFlash ? 1 : 0);
                 PlayerPrefs.SetInt("mb.graphics", (int)Graphics);
                 if (Graphics == GraphicsQuality.Custom) _custom?.Save("mb.gfx.");
                 PlayerPrefs.SetInt("mb.shake", ScreenShake);

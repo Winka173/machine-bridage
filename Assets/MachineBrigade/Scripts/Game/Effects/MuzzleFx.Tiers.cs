@@ -20,7 +20,7 @@ namespace MachineBrigade.Game.Effects
             if (tier <= 0) return;
             var look = TierFx.FireOf(tier);
             scale = Mathf.Max(1f, scale);
-            var flash = look.Flash * scale;
+            var flash = look.Flash * scale * MachineBrigade.Game.Match.MatchSettings.FlashScale;
             var dir = direction.sqrMagnitude > 1e-4f ? direction.normalized : Vector3.forward;
             _anchor = anchor;
             _now = now;

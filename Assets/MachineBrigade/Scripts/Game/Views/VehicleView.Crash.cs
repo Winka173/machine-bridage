@@ -1,3 +1,4 @@
+using MachineBrigade.Game.Rendering;
 using UnityEngine;
 
 namespace MachineBrigade.Game.Views
@@ -41,16 +42,11 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>
-        /// Prompt 34 L7: the model's node named <paramref name="name"/> (or a numbered copy, name.001), null when it has none:
-        /// a separable part for the wreck breakup (Part_wheel, Part_wing, Rotor, Tail_rotor ...).
+        /// Prompt 34 L7: the model's node named <paramref name="name"/> (or a copy of it: a stable Part_wheel_L, a legacy
+        /// name.001), null when it has none: a separable part for the wreck breakup (Part_wheel, Part_wing, Rotor, Tail_rotor ...).
+        /// MVA W1-B: through <see cref="RuntimeNodes.Find"/>, so the plain name wins and no Blender suffix is needed.
         /// </summary>
-        public Transform FindPart(string name)
-        {
-            if (_model?.Root == null) return null;
-            foreach (var t in _model.Root.GetComponentsInChildren<Transform>(true))
-                if (t.name == name || t.name.StartsWith(name + ".")) return t;
-            return null;
-        }
+        public Transform FindPart(string name) => _model?.Root == null ? null : RuntimeNodes.Find(_model.Root.transform, name);
 
         /// <summary>True when this wreck has a crash plan (its fall is the show path, not the free fall).</summary>
         public bool CrashPlanned => _planned;

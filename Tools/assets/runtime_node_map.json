@@ -1,0 +1,134 @@
+{
+ "about": "MVA W1-B: legacy Blender-suffixed runtime node names renamed to stable semantic names, per model (old -> new, order-preserving). Tools/assets/runtime_nodes.py; frontier_kit.export_collection re-applies it after every export, so a rebuilt model keeps its stable names.",
+ "models": {
+  "aa_turret_b": {
+   "Muzzle_missile.001": "Muzzle_missile_02",
+   "Muzzle_missile.002": "Muzzle_missile_03",
+   "Muzzle_missile.003": "Muzzle_missile_04"
+  },
+  "armored_train": {
+   "Muzzle_main.001": "Muzzle_main_fore",
+   "Muzzle_mg.001": "Muzzle_mg_02",
+   "Muzzle_mg.002": "Muzzle_mg_03",
+   "Mount_mg.001": "Mount_mg_02",
+   "Mount_mg.002": "Mount_mg_03"
+  },
+  "atgm_tower": {
+   "Muzzle_missile.001": "Muzzle_missile_L"
+  },
+  "atgm_tower_a": {
+   "Muzzle_missile.001": "Muzzle_missile_L"
+  },
+  "atgm_tower_b": {
+   "Muzzle_missile.001": "Muzzle_missile_02",
+   "Muzzle_missile.002": "Muzzle_missile_03",
+   "Muzzle_missile.003": "Muzzle_missile_04"
+  },
+  "attack_jet": {
+   "Muzzle_rocket.001": "Muzzle_rocket_L",
+   "Muzzle_missile.001": "Muzzle_missile_L"
+  },
+  "attack_jet_hd": {
+   "Muzzle_rocket.001": "Muzzle_rocket_L",
+   "Muzzle_missile.001": "Muzzle_missile_L"
+  },
+  "coeus": {
+   "Muzzle_gun.001": "Muzzle_gun_R",
+   "Mount_gun.001": "Mount_gun_R",
+   "Muzzle_rocket.001": "Muzzle_rocket_R"
+  },
+  "headquarters": {
+   "Muzzle_mg.001": "Muzzle_mg_L",
+   "Mount_mg.001": "Mount_mg_L",
+   "Muzzle_main.001": "Muzzle_main_R"
+  },
+  "heavy_bomber": {
+   "Muzzle_rocket.001": "Muzzle_rocket_L"
+  },
+  "heavy_turret_b": {
+   "Muzzle_gun.001": "Muzzle_gun_L",
+   "Mount_gun.001": "Mount_gun_L"
+  },
+  "hyperion": {
+   "Muzzle_gun.001": "Muzzle_gun_02",
+   "Muzzle_gun.002": "Muzzle_gun_03",
+   "Muzzle_gun.003": "Muzzle_gun_04",
+   "Muzzle_gun.004": "Muzzle_gun_05",
+   "Muzzle_gun.005": "Muzzle_gun_06",
+   "Mount_gun.001": "Mount_gun_02",
+   "Mount_gun.002": "Mount_gun_03",
+   "Mount_gun.003": "Mount_gun_04",
+   "Mount_gun.004": "Mount_gun_05",
+   "Mount_gun.005": "Mount_gun_06",
+   "Muzzle_rocket.001": "Muzzle_rocket_R",
+   "Muzzle_mg.001": "Muzzle_mg_R",
+   "Mount_mg.001": "Mount_mg_R"
+  },
+  "icarus_mk0": {
+   "Muzzle_gun.001": "Muzzle_gun_R",
+   "Mount_gun.001": "Mount_gun_R"
+  },
+  "manpads_tower": {
+   "Muzzle_missile.001": "Muzzle_missile_L"
+  },
+  "mg_bunker": {
+   "Muzzle_mg.001": "Muzzle_mg_02",
+   "Muzzle_mg.002": "Muzzle_mg_03",
+   "Muzzle_mg.003": "Muzzle_mg_04",
+   "Mount_mg.001": "Mount_mg_02",
+   "Mount_mg.002": "Mount_mg_03",
+   "Mount_mg.003": "Mount_mg_04"
+  },
+  "mg_bunker_a": {
+   "Muzzle_mg.001": "Muzzle_mg_02",
+   "Muzzle_mg.002": "Muzzle_mg_03",
+   "Muzzle_mg.003": "Muzzle_mg_04",
+   "Mount_mg.001": "Mount_mg_02",
+   "Mount_mg.002": "Mount_mg_03",
+   "Mount_mg.003": "Mount_mg_04"
+  },
+  "recon_drone": {
+   "Muzzle_missile.001": "Muzzle_missile_L"
+  },
+  "scout_heli": {
+   "Muzzle_gun.001": "Muzzle_gun_L",
+   "Muzzle_rocket.001": "Muzzle_rocket_L"
+  },
+  "scylla": {
+   "Muzzle_mg.001": "Muzzle_mg_02",
+   "Muzzle_mg.002": "Muzzle_mg_03",
+   "Muzzle_mg.003": "Muzzle_mg_04",
+   "Muzzle_mg.004": "Muzzle_mg_05",
+   "Mount_mg.001": "Mount_mg_02",
+   "Mount_mg.002": "Mount_mg_03",
+   "Mount_mg.003": "Mount_mg_04",
+   "Mount_mg.004": "Mount_mg_05",
+   "Muzzle_missile.001": "Muzzle_missile_R",
+   "Mount_missile.001": "Mount_missile_R"
+  },
+  "stealth_bomber": {
+   "Muzzle_rocket.001": "Muzzle_rocket_L"
+  },
+  "stealth_naval_strike": {
+   "Muzzle_rocket.001": "Muzzle_rocket_R"
+  },
+  "strike_drone": {
+   "Muzzle_missile.001": "Muzzle_missile_L",
+   "Muzzle_rocket.001": "Muzzle_rocket_L"
+  },
+  "theia": {
+   "Muzzle_mg.001": "Muzzle_mg_R",
+   "Mount_mg.001": "Mount_mg_R",
+   "Muzzle_gun.001": "Muzzle_gun_R",
+   "Mount_gun.001": "Mount_gun_R",
+   "Muzzle_rocket.001": "Muzzle_rocket_R"
+  },
+  "titan_tank": {
+   "Muzzle_missile.001": "Muzzle_missile_L"
+  },
+  "twin_rotor_gunship": {
+   "Muzzle_mg.001": "Muzzle_mg_R",
+   "Mount_mg.001": "Mount_mg_R"
+  }
+ }
+}

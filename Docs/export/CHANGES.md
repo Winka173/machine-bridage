@@ -13267,3 +13267,16 @@ Source: Docs/prompts/projectile_flight_feel_spec.md; details Docs/fixes/flight_f
 | vikhr | TACTICAL_MISSILE | 120 -> 85 | weapons[vikhr] own line | 0.115/0.229/0.458 | 0.162/0.324/0.647 |
 
 The pack (`Vu_khi_suy_ra`) gains 10 flight-feel columns (effective speed, speed at the +30 % gear cap, flight time at min / half / max range, projectileFeelClass, projectileSpeedWarning, speedInheritanceSource, salvoSpacingM). Cells needing the lead's Unity re-export: game_snapshot.json weaponFlight, vehicles[].weapons and secondRounds speed and flightTime of these ids.
+
+## MAP VA W1-B (lane B, 06/10)
+
+Không đổi giá trị cân bằng. Pack không xuất lại (lead xuất sau khi merge); bản thử ở scratch: exit 0, 0 lá chưa ánh xạ.
+
+| mục | nơi | thay đổi |
+|---|---|---|
+| tên nút runtime | 25 GLB (attack_jet, attack_jet_hd, tháp, trực thăng, boss không có dữ liệu trỏ tên .NNN) | `.NNN` -> thẻ ngữ nghĩa (`_L/_R`, `_fore/_aft`, `_02..`), giữ thứ tự; bản đồ `Tools/assets/runtime_node_map.json` -> sheet 10/Model_ten_nut_on_dinh |
+| lỗi nút đã biết | `Tools/assets/runtime_node_baseline.json` -> 10/Model_nut_ton_dong | 103 lỗi cứng đã biết (35 model giữ tên cũ vì dữ liệu trỏ tới) |
+| miễn trừ ngân sách | `Tools/assets/budget_waivers.json` -> 10/Model_ngan_sach_mien | 5 miễn trừ renderer + ghi chú attack_jet, cp_relay, armored_bulldozer |
+| âm thanh: trạng thái | 09/Am_thanh, 09/Hieu_ung_tham_chieu | thêm trang_thai_giay_phep, trang_thai_nguon, trang_thai_tham_chieu_that (giấy phép tách khỏi tham chiếu tiếng thật) |
+| âm thanh: ưu tiên | AudioPolicy (code) | lớp P0-P5; cảnh báo P0/P1 không bị cắt; thanh "Cảnh báo" riêng |
+

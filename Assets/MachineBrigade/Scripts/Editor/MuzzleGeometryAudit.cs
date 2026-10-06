@@ -322,7 +322,8 @@ namespace MachineBrigade.Editor
 
         private static bool IsSpread(Transform node) => node != null && node.GetComponent<LaunchPoint>() is { } lp && lp.Spread != UnityEngine.Vector2.zero;
 
-        private static readonly Regex GroupPattern = new(@"^(Turret|Mount_[a-z]+|Part_[a-z]+)(\.\d+)?$", RegexOptions.IgnoreCase);
+        private static readonly Regex GroupPattern = new(@"^(Turret|Mount_(?!flare_)[a-z]+" + MachineBrigade.Game.Rendering.RuntimeNodes.Tag +
+                                                         @"?|Part_[a-z]+" + MachineBrigade.Game.Rendering.RuntimeNodes.Tag + @"?)(\.\d+)?$", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// The moving group a muzzle belongs to: its nearest turret, weapon mount or boss part, else
