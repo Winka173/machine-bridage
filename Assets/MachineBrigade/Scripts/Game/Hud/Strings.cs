@@ -580,6 +580,7 @@ namespace MachineBrigade.Game.Hud
             ["unit.attack_jet"] = ("Attack jet", "Máy bay cường kích"),
             ["unit.strike_drone"] = ("Strike UAV", "UAV tấn công"),
             ["support.artillery_barrage"] = ("Barrage", "Pháo kích"),
+            ["support.scripted_barrage"] = ("Barrage", "Pháo kích"), // balance final: the scripted (event) barrage
             ["support.airstrike"] = ("Airstrike", "Không kích"),
             ["support.remote_mines"] = ("Remote mines", "Mìn rải từ xa"),
             ["support.field_tower"] = ("Field tower", "Tháp dã chiến"),

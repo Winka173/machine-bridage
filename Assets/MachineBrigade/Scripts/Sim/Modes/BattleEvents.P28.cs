@@ -17,7 +17,8 @@ namespace MachineBrigade.Sim.Modes
     /// </summary>
     public sealed partial class BattleEvents
     {
-        private const string PressureBarrage = "artillery_barrage";
+        // Balance final (spec 15): the scripted barrage (event support, the card's old values), not the Artillery Barrage card.
+        private const string PressureBarrage = "scripted_barrage";
 
         private readonly Dictionary<EntityId, float> _health = new();
         private readonly float[] _window = new float[5];

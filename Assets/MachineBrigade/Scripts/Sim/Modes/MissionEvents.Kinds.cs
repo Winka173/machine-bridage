@@ -722,7 +722,7 @@ namespace MachineBrigade.Sim.Modes
                 }
                 case MissionEventKind.Barrage:
                 {
-                    var support = e.Word("support") ?? "artillery_barrage";
+                    var support = e.Word("support") ?? "scripted_barrage"; // balance final: scripted, not the card
                     var salvos = Math.Max(1, e.Whole("salvos", 3));
                     var radius = e.Number("radius", 18f);
                     for (var k = 0; k < salvos; k++)
@@ -746,7 +746,7 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.AllyArtillery:
                 {
                     var air = e.Kind == MissionEventKind.AllyAirStrike;
-                    var id = e.Word("support") ?? (air ? "airstrike" : "artillery_barrage");
+                    var id = e.Word("support") ?? (air ? "airstrike" : "scripted_barrage"); // balance final: scripted, not the card
                     if (!world.Catalog.TryGetSupport(id, out var support)) return Outcome.Done;
                     var at = OperationMode.StrikeTarget(world, Player, support.IsLine ? support.Length * 0.5f : support.Radius) ?? s.Where;
                     s.Where = at;
@@ -1040,7 +1040,7 @@ namespace MachineBrigade.Sim.Modes
             if (plan.FireAt >= 0)
             {
                 if (world.Time < plan.FireAt) return;
-                var support = e.Word("support") ?? "artillery_barrage";
+                var support = e.Word("support") ?? "scripted_barrage"; // balance final: scripted, not the card
                 for (var k = 0; k < Math.Max(1, e.Whole("salvos", 2)); k++) _strikes.Add((world.Time + k * 1.2, support, Enemy, plan.At, plan.At + Vector2.UnitX));
                 plan.FireAt = -1;
                 plan.NextAllowed = world.Time + e.Number("cooldown", 45f);
