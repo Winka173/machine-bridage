@@ -9,6 +9,7 @@ from core.model import child_rows
 
 from . import _balance as B
 from . import _b08
+from . import _mva_w1a
 from . import _lane_c as C
 
 FILE_ID = "08_ban_do"
@@ -191,3 +192,6 @@ def build(ctx):
 
     # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)
     _b08.build(ctx, book)
+
+    # ------------------------------------------------------------------ map / visual / audio W1-A (06/10): GameplayTopology outputs
+    _mva_w1a.build(ctx, book)

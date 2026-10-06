@@ -5,6 +5,7 @@ from __future__ import annotations
 from . import _b06
 from . import _c06
 from . import _p5_ai
+from . import _mva_w1a
 from . import _balance as B
 from . import _lane_c as C
 
@@ -137,3 +138,6 @@ def build(ctx):
 
     # ------------------------------------------------------------------ AI MASTER P5 (05/10): registry, doctrines, ladders, budget, health
     _p5_ai.build(ctx, book)
+
+    # ------------------------------------------------------------------ map / visual / audio W1-A (06/10): AI consumers of GameplayTopology
+    _mva_w1a.build_ai(ctx, book)
