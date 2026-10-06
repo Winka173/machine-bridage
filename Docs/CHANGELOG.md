@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Map/visual/audio W1-A (lane A, 06/10): GameplayTopology on the AI MASTER MapTopology (size classes Light to Boss, anchors resolved to components, tactical chokes with capacity, lanes, route audits, spawn fairness, shore fire regions, naval kinematics and turn-radius audit, breaches, positions, staging, terrain semantics, weather presentation), load gates, warning registry with reviews, map telemetry; traffic, feasibility and fire support read it (no behaviour change); Tools/maps/topogen writes Docs/maps (100 maps, all load gates pass); tests written, not run.
 - Balance v2 (06/10, branch feature/balance-v2): finished the validator v2 refactor (3 buckets, 5 reason codes; 0 HARD_FAIL
   across 360 weapons); long-SAM `sam_48n6` 140->115 m/s (splash capped 6 m); `ballistic_missile` 200->90 m/s, splash
   10->14 m, +impactScale; dedicated `jassm_swarm_carrier` variant (60 m/s, splash x1.20) for the drone-mothership/swarm

@@ -21428,3 +21428,59 @@ Spec: Docs/mapvisaudio (parts W-AB, AC-AO, AP-BL, BT-BX, CE-CG). Branch feature/
   `Docs/balance/player_weapon_waitlist.md`); `flight_feel_audit.py` console run. **Not regenerated:** `Docs/export/*`
   (explicit brief rule -- the lead rebuilds the pack once at the end).
 - Full report: `Docs/balance/BALANCE_V2_REPORT.md` (copied to `bao_cao_combat/balance_v2_report.md`).
+
+## Map/visual/audio W1-A (lane A)
+
+Map / visual / audio master spec Parts C-P, U, V, BW, CA, CD, CI (map), CJ; branch `feature/mva-w1a` (06/10). Code:
+`Sim/Navigation/GameplayTopology*.cs`, `MapTelemetry.cs`, `WeatherPresentation.cs`, `SimWorld.GameplayTopology.cs`, tunables
+`maps.topology.*` / `maps.terrainSemantics.*` / `maps.weatherPresentation.*` (`SimTunables.MapTopology.cs`); exporter
+`Tools/maps/topogen`; outputs `Docs/maps/*.json` + `GAMEPLAY_TOPOLOGY.md`; review file `Docs/maps/map_warning_reviews.json`.
+
+- **One implementation.** GameplayTopology extends the AI MASTER `MapTopology` (its domain graphs, clearance, chokes) and is the
+  runtime's; `Tools/maps/topogen` (net8 console on the Sim) builds each map's world as a battle starts it (props, the map's fixed
+  defences, wall lines standing, gates open; loadout towers not placed), never steps it, and writes the Part V files. No Python
+  mirror of the geometry rules. Running topogen is a static export (no battle simulated), like the static Python audits.
+- **Size classes (D1).** Light / Medium / Heavy / SuperHeavy by hull width (`maps.topology.sizeBands` 2.9 / 3.4 / 4.5 m), Boss by
+  the boss flag. A class's route reference is its widest non-story ground hull (titan 5.3 m for SuperHeavy); Boss uses the median
+  boss hull (10.95 m: giants drive scripted routes and arenas). Clearance cells = ceil(((width + 2 x 0.5 - 2 x 1.5) / 2 + 1) / 2):
+  the nav grid already grows obstacles by 1.5 m. Classes needing one cell share the ground graph (no extra flood fill).
+- **Chokes (E).** The traffic coordinator's passage measure (doorways, then uncovered topology chokes; bridges by water) moved
+  into GameplayTopology unchanged and Traffic now reads `GameplayTopology.Chokes` (same order, ids, widths). Usable width = open
+  width + 2 x 1.5 m; side-by-side = floor(usable / (class median width + 1 m)); throughput by spec 189's rule. Types from context
+  (wall gate, wall segment = breach, rail crossing, ford = river crossing, bridge, harbour throat near the waterline or piers,
+  long doorway = street canyon, else natural gap). Queue boxes A/B checked against spawn zones, capture circles, other chokes.
+- **AI wiring without behaviour change.** Traffic passages (identical measure), feasibility's ship lane stretch
+  (`GameplayTopology.LaneStretch`, the old rule moved), fire-support parking / escape / traffic terms (`ParkingAllowed`,
+  `EscapeRoutes`, `TransitConflict`: the same lane-map and grid reads). The size-class check in feasibility is behind
+  `maps.topology.sizeClassFeasibility` (false). The gameplay topology never forces a lane-map or topology rebuild; on a static
+  map traffic's passages are identical; after a wall falls the choke geometry is measured when the lane map or topology was
+  rebuilt (the moment traffic rebuilds in practice; a second wall falling inside the same window could shift one measure).
+- **Spawn fairness (G).** "Enemy direct fire at match start" = a line of fire within `directFireRef` 60 m from ground the enemy
+  reaches first (path distance), off 1.5 x the clear zone. Flags: FULL_EXIT_DIRECT_FIRE (>= 0.9 of the exit ring), SINGLE_EXIT
+  (one opening narrower than 3 heavy lanes), SINGLE_BLOCKER_SEALS, EXIT_NARROWER_THAN_LARGEST (super-heavy + side room),
+  ARTILLERY_FULL_COVER, NO_EXIT. On the 100 files: no full-exit exposure; exit flags only on the asymmetric (siege / long) files,
+  accepted with their own `asymmetry.reason`.
+- **Naval (L-N).** Lane changes and bays are S-curves over one node step (R = (L^2 + d^2) / 4d); patrol-end turnabouts need 2R of
+  water to one side plus half the hull; hairpins = links turning back > 120 degrees. Required = Rmin x `navalSafety` 1.15. A boss
+  failure counts as mitigated when the P0-C controller covers it: coming about at `turnaboutThrottle` (bays, turnabouts) or its
+  look-ahead spreading a lane change (spec 54). Lighthousebay: hydra and nyx have 18 mitigated checks, none unmitigated; the
+  `boss-curvature` load gate passes everywhere.
+- **Positions (J) / staging (I).** Direct-fire ring in the MBT gun's band with LOS; artillery pockets 40-80 m round the spawn off
+  parking-forbidden lanes; recon on a 16 m grid in the own half. Hull-down only behind real low cover (props that block hulls but
+  not shots, >= 3 m long): the flat Sim has no ridges (54 files have none: HULLDOWN_NONE, accepted). Staging 45 m back from an
+  objective along the side's lane, off chokes, spawn zones, capture circles and no-parking lanes.
+- **Terrain (P) / weather (Q).** Movement cost and forest concealment are TerrainRules' own values; the rest is metadata;
+  direct-fire cover and hull-down potential are 0 (no combat buffs). Weather presentation arrays are presentation only (incl.
+  telegraphBoost >= 1 so warnings never fade); visibility stays campaign.json `weatherSight`.
+- **Warnings (U).** Generated warnings + the static audit's flags, statuses by `map_warning_reviews.json` rules (never auto-fix a
+  YELLOW). 100 maps, 849 warnings: OPEN 56 (all LANDMARKS_QUADRANTS: fewer than three compass quadrants with a landmark, owner
+  art), PLAYTEST_REQUIRED 645 (sightline information, exits, route-turn / choke-queue information, veyra conquest super-heavy
+  routes), ACCEPTED_INTENTIONAL 148. All load gates pass (spec BW) after two rules: sea entry gates are landing ingress
+  (amphibious), and a choke centre may sit one cell off the outline.
+- **Telemetry (CA / 64).** `world.MapTelemetry`: lane usage, choke queue seconds, spawn block events, first contact, objective
+  ETA, heavy routes the size class cannot drive, artillery anchor cells and anchors in transit zones, naval close approaches, boss
+  route replans, load-gate failures. Reads only (`maps.topology.telemetry`), 1 Hz.
+- **Not done / open:** the export pack is not rebuilt (lead rebuilds after the merge; sheets ready in `_mva_w1a.py`); EditMode
+  tests `MapTopologyW1ATests` (category MapVAW1A) written, compile-checked against stubs, not run; objective approach topology
+  (spec H) is covered by lanes and staging only; acoustic zones (BP) belong to the audio lanes; the pivot-room corner check
+  (ROUTE_TURN) is strict and information only.
