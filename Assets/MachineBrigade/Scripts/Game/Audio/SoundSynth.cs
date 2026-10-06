@@ -384,6 +384,87 @@ namespace MachineBrigade.Game.Audio
         }
 
         /// <summary>
+        /// MVA W2-B (spec parts AE, BB): the top-attack warning, unlike any other incoming cue: two short high lock tones, then
+        /// a rushing dive (a steep falling tone inside a band of air) that swells to the moment the round comes down on the
+        /// target. A direct missile keeps its motor hiss; a shell its long falling whistle.
+        /// </summary>
+        public static AudioClip TopAttackDive(int seed)
+        {
+            var rng = new Random(seed);
+            const float length = 1.0f;
+            var data = new float[(int)(Rate * length)];
+            var air = new OnePole(0.3f);
+            var rush = new OnePole(0.12f);
+            var phase = 0f;
+            for (var i = 0; i < data.Length; i++)
+            {
+                var t = i / (float)Rate;
+                var beeps = 0f;
+                for (var b = 0; b < 2; b++)
+                {
+                    var bt = t - b * 0.11f;
+                    if (bt >= 0f && bt < 0.07f) beeps += Mathf.Sin(2f * Mathf.PI * 2350f * bt) * Env(bt, 0.003f, 0.05f);
+                }
+                var k = Mathf.Clamp01((t - 0.26f) / (length - 0.26f));
+                var frequency = Mathf.Lerp(1900f, 320f, Mathf.Sqrt(k));
+                phase += 2f * Mathf.PI * frequency / Rate;
+                var noise = Noise(rng);
+                var band = air.Next(noise) - rush.Next(noise);
+                var swell = t < 0.26f ? 0f : 0.15f + 0.85f * k * k;
+                var cut = 1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.94f, 1f, t / length));
+                data[i] = (beeps * 0.6f + (Mathf.Sin(phase) * 0.45f + band * 0.9f) * swell) * cut;
+            }
+            return Finish($"topattack_{seed}", data, 0.7f);
+        }
+
+        /// <summary>
+        /// MVA W2-B (spec parts BL, BH): a hostile mine spotted: two soft sonar pings, high then lower (a find, not an alarm),
+        /// over a faint click.
+        /// </summary>
+        public static AudioClip MinePing(int seed)
+        {
+            var rng = new Random(seed);
+            const float length = 0.62f;
+            var data = new float[(int)(Rate * length)];
+            for (var i = 0; i < data.Length; i++)
+            {
+                var t = i / (float)Rate;
+                var ping = Mathf.Sin(2f * Mathf.PI * 1046f * t) * Env(t, 0.004f, 0.11f);
+                var second = t >= 0.16f ? Mathf.Sin(2f * Mathf.PI * 784f * (t - 0.16f)) * Env(t - 0.16f, 0.004f, 0.16f) : 0f;
+                var click = Noise(rng) * Env(t, 0.0005f, 0.006f) * 0.3f;
+                data[i] = ping * 0.55f + second * 0.5f + click;
+            }
+            return Finish($"mine_ping_{seed}", data, 0.6f);
+        }
+
+        /// <summary>
+        /// MVA W2-B (spec parts BL, BM energy): an EMP going off: a low pressure thump, a falling electric zap and a crackle of
+        /// arcs that sputters out.
+        /// </summary>
+        public static AudioClip EmpBurst(int seed)
+        {
+            var rng = new Random(seed);
+            const float length = 1.1f;
+            var data = new float[(int)(Rate * length)];
+            var low = new OnePole(0.05f);
+            var phase = 0f;
+            var gate = 0f;
+            for (var i = 0; i < data.Length; i++)
+            {
+                var t = i / (float)Rate;
+                var noise = Noise(rng);
+                var thump = low.Next(noise) * 2.4f * Env(t, 0.003f, 0.18f);
+                phase += 2f * Mathf.PI * Mathf.Lerp(900f, 110f, Mathf.Clamp01(t / 0.6f)) / Rate;
+                var saw = (phase / (2f * Mathf.PI)) % 1f * 2f - 1f;
+                var zap = saw * Env(t, 0.002f, 0.32f) * 0.35f;
+                if (i % 400 == 0) gate = rng.NextDouble() < 0.55 - t * 0.4 ? 1f : 0f;
+                var crackle = noise * gate * Env(t, 0.01f, 0.5f) * 0.5f;
+                data[i] = thump + zap + crackle;
+            }
+            return Finish($"emp_burst_{seed}", data, 0.8f);
+        }
+
+        /// <summary>
         /// An incoming shell's whistle: a falling tone with a breathy edge, swelling as it comes
         /// down and cut off at the moment it lands (the blast is its own sound).
         /// </summary>

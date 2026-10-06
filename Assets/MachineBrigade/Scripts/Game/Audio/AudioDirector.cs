@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MachineBrigade.Game.CameraControl;
+using MachineBrigade.Game.Effects;
 using MachineBrigade.Game.Views;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Events;
@@ -40,6 +41,9 @@ namespace MachineBrigade.Game.Audio
             MachineGun, Autocannon, Cannon, HeavyCannon, Howitzer, Rocket, Missile, Flak, Flame,
             ExplosionSmall, ExplosionMedium, ExplosionLarge, ExplosionHuge, Collapse, Debris, Impact, Jet, Whistle,
             Drone, BeamStart,
+
+            // MVA W2-B (spec parts AE, BB, BL): the top-attack dive warning, a hostile mine found, an EMP going off.
+            TopAttack, MinePing, Emp,
         }
 
         /// <summary>One category: its clips and how it is mixed.</summary>
@@ -64,6 +68,12 @@ namespace MachineBrigade.Game.Audio
             /// sound takes the quietest one only when it is twice as loud, else it is dropped (no stutter, no clicks).
             /// </summary>
             public bool NoSteal;
+
+            /// <summary>
+            /// MVA W2-B (spec part AV): a large weapon's sound, heard in layers by distance (near transient, body, far report,
+            /// environment tail: AudioDirector.Space) instead of the same clip ever quieter.
+            /// </summary>
+            public bool Layered;
 
             public float LastPlayed = -10f;
 
@@ -90,6 +100,15 @@ namespace MachineBrigade.Game.Audio
         {
             public AudioSource Source;
             public AudioLowPassFilter Filter;
+
+            /// <summary>MVA W2-B (spec parts AV, AY): the environment tail of a far report (off unless the sound wants it).</summary>
+            public AudioEchoFilter Echo;
+
+            /// <summary>MVA W2-B: where it plays (world), its low-pass before occlusion, and its occlusion gain now / wanted.</summary>
+            public Vector3 Where;
+            public float BaseCutoff = 22000f;
+            public float Occlusion = 1f, OcclusionTarget = 1f;
+            public float NextOcclusion;
             public Bank Bank;
             public float Level;
             public float Started;
@@ -221,6 +240,10 @@ namespace MachineBrigade.Game.Audio
             // ignites with a rising whine before its hum takes over.
             Add(Sound.Drone, "drone_buzz", i => SoundSynth.DroneBuzz(970 + i), 0.5f, 4, 0.12f, 2, light: true);
             Add(Sound.BeamStart, "beam_start", i => SoundSynth.BeamStart(980 + i), 0.6f, 2, 0.3f, 3);
+            // MVA W2-B: the cues W1 left as gaps (THREAT_CUES.md): top attack's own dive warning (P1), a mine found (P1), an EMP (P1).
+            Add(Sound.TopAttack, "sfx/warn_topattack", i => SoundSynth.TopAttackDive(990 + i), 0.55f, 3, 0.2f, SoundPriority.Warning);
+            Add(Sound.MinePing, "sfx/warn_mine", i => SoundSynth.MinePing(995 + i), 0.45f, 2, 0.6f, SoundPriority.Warning);
+            Add(Sound.Emp, "sfx/emp_burst", i => SoundSynth.EmpBurst(998 + i), 0.6f, 2, 0.3f, SoundPriority.Warning);
             // Points taken and lost come over the radio: a squelch and two soft notes.
             _captured = Own(SoundSynth.Radio(true));
             _lost = Own(SoundSynth.Radio(false));
@@ -228,13 +251,19 @@ namespace MachineBrigade.Game.Audio
             foreach (var (id, cue) in SuperCues) _superCues[id] = Own(SoundSynth.SuperWarning("super_" + id, cue));
             // Prompt 34 L6: the tiered banks (Resources/Audio/p34, Tools/sfx/build_sfx.py); the naval and rail ones load with their units.
             AddTierBanks();
+            // MVA W2-B (spec part AV): the large weapons are heard in distance layers.
+            MarkLayered();
 
             for (var i = 0; i < Voices; i++)
             {
                 var source = NewSource($"Voice {i}");
                 var filter = source.gameObject.AddComponent<AudioLowPassFilter>();
                 filter.cutoffFrequency = 22000f;
-                _voices[i] = new Voice { Source = source, Filter = filter };
+                // MVA W2-B: the far reports' environment tail (disabled: no cost until a layered sound turns it on).
+                var echo = source.gameObject.AddComponent<AudioEchoFilter>();
+                echo.enabled = false;
+                echo.dryMix = 1f;
+                _voices[i] = new Voice { Source = source, Filter = filter, Echo = echo };
             }
             _ambient = Loop("Wind", "wind_loop", () => SoundSynth.Wind(9));
             // Play-test 6: the wind sits under the music (0.16 before).
@@ -299,7 +328,12 @@ namespace MachineBrigade.Game.Audio
         public float AmbientLevel
         {
             get => _ambient.volume;
-            set => _ambient.volume = (_lobby ? value * LobbyAmbience : value) * Fx;
+            set
+            {
+                // MVA W2-B: the level the weather asks for; TickSpace puts the zone's ambience and the warnings' duck over it.
+                _ambientBase = (_lobby ? value * LobbyAmbience : value) * Fx;
+                _ambient.volume = _ambientBase * _bedGain;
+            }
         }
 
         /// <summary>Rain loop level (0 = dry).</summary>
@@ -307,7 +341,8 @@ namespace MachineBrigade.Game.Audio
         {
             set
             {
-                _rain.volume = value * Fx;
+                _rainBase = value * Fx;
+                _rain.volume = _rainBase * _bedGain;
                 if (value > 0f && !_rain.isPlaying) _rain.Play();
                 else if (value <= 0f && _rain.isPlaying) _rain.Stop();
             }
@@ -362,7 +397,7 @@ namespace MachineBrigade.Game.Audio
                         Incoming(e, weapon);
                         // Heavy shells on a long flight whistle down onto where they are aimed.
                         if (weapon != null && weapon.MinRange > 0f && weapon.Projectile == ProjectileKind.Shell && e.Value > WhistleLead + 0.2f)
-                            Whistle(e.Target, 0.7f, e.Value - WhistleLead, SoundLibrary.SizeOf(weapon) >= SizeClass.S406);
+                            Whistle(e.Target, 0.7f, e.Value - WhistleLead, SoundLibrary.SizeOf(weapon) >= SizeClass.S406, ThreatCues.Of(weapon));
                         break;
                     case SimEventKind.ProjectileImpact:
                         // A beam's burn is in its hum: no ping for each of its shots.
@@ -397,7 +432,7 @@ namespace MachineBrigade.Game.Audio
                         // (aircraft strikes announce themselves with their engines; smoke and repairs are quiet).
                         if (_catalog.TryGetSupport(e.DefId, out var strike) && strike.Kind is SupportKind.Barrage or SupportKind.CruiseMissile)
                         {
-                            Schedule(Sound.Whistle, e.Position, 1f, e.Value - WhistleLead);
+                            Schedule(Sound.Whistle, e.Position, 1f, e.Value - WhistleLead, (int)ThreatType.SupportStrike);
                             // A long barrage keeps coming down: a second whistle halfway through.
                             if (strike.Duration > 1.5f) Schedule(Sound.Whistle, e.Position, 0.85f, e.Value + strike.Duration * 0.5f - WhistleLead);
                         }
@@ -408,6 +443,10 @@ namespace MachineBrigade.Game.Audio
                         // MVA W1-B: on the CriticalWarnings bus (its own slider), and it ducks the lower classes for a moment.
                         if (e.DefId != null && _superCues.TryGetValue(e.DefId, out var cue)) _ui.PlayOneShot(cue, 0.36f * Warn);
                         else if (_siren != null) _ui.PlayOneShot(_siren, 0.32f * Warn);
+                        // MVA W2-B: the alarm is the super weapon's cue (caption, telemetry); its landing whistle adds none.
+                        CueFeed.Raise(ThreatType.BossSuperweapon, new Vector3(e.Position.X, 0f, e.Position.Y));
+                        ViewTelemetry.SoundRequested(0);
+                        ViewTelemetry.SoundStarted(0);
                         _warningAt = Time.unscaledTime;
                         MusicDirector.Current?.Alert();
                         Whistle(e.Position, 1f, e.Value - WhistleLead, true);
@@ -535,7 +574,7 @@ namespace MachineBrigade.Game.Audio
                 var s = _scheduled[i];
                 if (now < s.at) continue;
                 _scheduled.RemoveAt(i);
-                Play(s.bank, s.where, s.volume, 0f, s.priority);
+                Play(s.bank, s.where, s.volume, 0f, s.priority, cue: s.cue);
             }
             TickTiers(views, now);
             // Fix pass L7: the Effects compressor's gain on every effect voice; small arms come back up after a big blast.
@@ -544,11 +583,13 @@ namespace MachineBrigade.Game.Audio
             // MVA W1-B (spec parts AS, AT): a warning is not under the Effects compressor or the big-blast duck; while one
             // starts, the classes under P2 duck briefly (never another warning, never the whole mix).
             var warned = AudioPolicy.DuckGain(now - _warningAt);
+            // MVA W2-B (spec parts AX, AY, BF, BE): occlusion of the near high-value sounds, the zone's ambience, the beds' duck.
+            TickSpace(now, warned);
             foreach (var v in _voices)
             {
                 if (v.Bank == null || !v.Source.isPlaying) continue;
                 if (AudioPolicy.IsCritical(v.Priority)) v.Source.volume = v.Level;
-                else v.Source.volume = v.Level * (v.Bank.Light ? duck : 1f) * _busGain * Choked(v, now) * (v.Priority < SoundPriority.NearBlast ? warned : 1f);
+                else v.Source.volume = v.Level * (v.Bank.Light ? duck : 1f) * _busGain * Choked(v, now) * (v.Priority < SoundPriority.NearBlast ? warned : 1f) * v.Occlusion;
             }
         }
 
@@ -643,16 +684,29 @@ namespace MachineBrigade.Game.Audio
         private const float WhistleLead = 1.15f;
 
         /// <summary>Sounds due later (a whistle timed to a landing), played through the usual limits when due.</summary>
-        private readonly List<(float at, Bank bank, System.Numerics.Vector2 where, float volume, int priority)> _scheduled = new();
+        private readonly List<(float at, Bank bank, System.Numerics.Vector2 where, float volume, int priority, int cue)> _scheduled = new();
 
-        private void Schedule(Sound sound, System.Numerics.Vector2 at, float volume, float delay) =>
-            Schedule(_banks[sound], at, volume, delay, -1);
+        /// <summary>Pending sounds kept at most; MVA W2-B: a P0 / P1 cue past it takes a lesser one's place, never dropped.</summary>
+        internal const int ScheduledCap = 24;
 
-        private void Schedule(Bank bank, System.Numerics.Vector2 at, float volume, float delay, int priority)
+        private void Schedule(Sound sound, System.Numerics.Vector2 at, float volume, float delay, int cue = -1) =>
+            Schedule(_banks[sound], at, volume, delay, -1, cue);
+
+        /// <param name="cue">MVA W2-B: the ThreatType the sound warns of (-1: none): CueFeed hears it when it starts (captions).</param>
+        private void Schedule(Bank bank, System.Numerics.Vector2 at, float volume, float delay, int priority, int cue = -1)
         {
-            if (_scheduled.Count > 24) return;
+            if (_scheduled.Count > ScheduledCap)
+            {
+                // MVA W2-B (spec part BV): a full queue drops a lesser pending sound for a warning, never the warning.
+                if (!AudioPolicy.IsCritical(priority < 0 ? bank.Priority : priority)) return;
+                var lesser = -1;
+                for (var i = 0; i < _scheduled.Count && lesser < 0; i++)
+                    if (!AudioPolicy.IsCritical(_scheduled[i].priority < 0 ? _scheduled[i].bank.Priority : _scheduled[i].priority)) lesser = i;
+                if (lesser >= 0) _scheduled.RemoveAt(lesser);
+                else if (_scheduled.Count > ScheduledCap * 3) return;
+            }
             if (_ranging) volume *= RangeGain;
-            _scheduled.Add((Time.unscaledTime + Mathf.Max(0f, delay), bank, at, volume, priority));
+            _scheduled.Add((Time.unscaledTime + Mathf.Max(0f, delay), bank, at, volume, priority, cue));
         }
 
         private void Burn(System.Numerics.Vector2 at, float seconds) =>
@@ -666,7 +720,7 @@ namespace MachineBrigade.Game.Audio
         /// the speed of sound. <paramref name="priority"/> is the 7-step priority it plays at (-1: the bank's own).
         /// </summary>
         /// <param name="run">The bomb-run fix, pass 3: the stick the sound is a blast of (0: none; see AudioDirector.Sticks).</param>
-        private void Play(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority, float pitch = 1f, int run = 0)
+        private void Play(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority, float pitch = 1f, int run = 0, int cue = -1)
         {
             if (_ranging) volume *= RangeGain;
             var now = Time.unscaledTime;
@@ -675,16 +729,21 @@ namespace MachineBrigade.Game.Audio
             if (now - bank.LastPlayed < bank.Cooldown &&
                 !(AudioPolicy.IsCritical(effective) && System.Numerics.Vector2.Distance(at, bank.LastAt) > AudioPolicy.CueMergeRadius)) return;
             var distance = Vector3.Distance(new Vector3(at.X, 0f, at.Y), Focus);
+            // MVA W2-B (spec part BV): a P0 / P1 cue carries a quarter farther than the effects (it is heard at the view's edge).
+            if (AudioPolicy.IsCritical(effective)) reachBonus += Reach(reachBonus) * CriticalReach;
             if (distance >= Reach(reachBonus) * 0.98f) return;
             bank.LastPlayed = now;
             bank.LastAt = at;
             // Big blasts far off arrive a moment after the flash (capped: a few tenths at most).
             var delay = bank.Delayed ? Mathf.Min(0.3f, Mathf.Max(0f, distance - 30f) / SpeedOfSound) : 0f;
             if (delay > 0.02f) _delayed.Add((now + delay, bank, at, volume, priority, run));
-            else Start(bank, at, volume, reachBonus, priority, pitch, run);
+            else Start(bank, at, volume, reachBonus, priority, pitch, run, cue);
         }
 
-        private void Start(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority, float pitch = 1f, int run = 0)
+        /// <summary>MVA W2-B: how much farther than the effects a warning carries (a share of the reach).</summary>
+        internal const float CriticalReach = 0.25f;
+
+        private void Start(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority, float pitch = 1f, int run = 0, int cue = -1)
         {
             var now = Time.unscaledTime;
             var world = new Vector3(at.X, 0f, at.Y);
@@ -701,13 +760,25 @@ namespace MachineBrigade.Game.Audio
             var critical = AudioPolicy.IsCritical(priority);
             // MVA W1-B: a warning on the CriticalWarnings bus (its slider), an effect on the Effects one.
             var level = bank.Volume * volume * SoundLibrary.Falloff(distance, height, reach) * (offScreen ? OffScreenGain : 1f) * (critical ? Warn : Fx);
+            // MVA W2-B (spec part AV): a large weapon's far report keeps its body instead of fading like a small one.
+            if (bank.Layered && !critical) level = Mathf.Max(level, FarReportLevel(bank.Volume * volume * (offScreen ? OffScreenGain : 1f) * Fx, distance / reach));
             if (level <= 0.001f) return;
 
+            var cls = (int)AudioPolicy.ClassOf(priority);
+            ViewTelemetry.SoundRequested(cls);
             var voice = PickVoice(bank, level, priority, distance / reach);
-            if (voice == null) return;
+            if (voice == null)
+            {
+                ViewTelemetry.SoundDropped(cls);
+                return;
+            }
+            ViewTelemetry.SoundStarted(cls);
+            if (voice.Bank != null && voice.Source.isPlaying) ViewTelemetry.VoiceStolen((int)AudioPolicy.ClassOf(voice.Priority));
             voice.Distance = distance / reach;
             if (critical)
             {
+                // MVA W2-B (spec parts BH, BL): the cue's caption and telemetry, the moment its sound starts.
+                if (cue >= 0) CueFeed.Raise((ThreatType)cue, world);
                 _warningAt = now;
                 if (priority >= SoundPriority.Critical) MusicDirector.Current?.Alert();
             }
@@ -722,9 +793,9 @@ namespace MachineBrigade.Game.Audio
             voice.Source.volume = critical ? level : (bank.Light ? level * Duck(now) : level) * _busGain;
             voice.Source.panStereo = Mathf.Clamp((screen.x - 0.5f) * 1.4f, -0.9f, 0.9f);
             voice.Source.pitch = bank.Pitch * pitch * (1f + ((float)_rng.NextDouble() - 0.5f) * bank.PitchSpread);
-            // Far sounds lose their top end.
-            var far = Mathf.Pow(Mathf.Clamp01(distance / reach), 0.8f);
-            voice.Filter.cutoffFrequency = Mathf.Lerp(22000f, 2200f, far);
+            // Far sounds lose their top end; MVA W2-B: by layers for the large weapons, the zone's tail, occlusion (Space).
+            voice.Where = world;
+            Space(voice, bank, distance, reach, critical);
             voice.Source.Play();
         }
 

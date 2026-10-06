@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Events;
+using MachineBrigade.Game.Effects;
 using UnityEngine;
 using Vector2 = System.Numerics.Vector2;
 
@@ -62,7 +63,7 @@ namespace MachineBrigade.Game.Audio
             if (_stickWhistled.TryGetValue(key, out var last) && now - last < stick.Bombs * stick.Interval + 0.5f) return;
             _stickWhistled[key] = now;
             if (_stickWhistled.Count > 64) _stickWhistled.Clear();
-            Whistle(e.Target, 0.75f, e.Value - WhistleLead, weapon.Tier >= 4);
+            Whistle(e.Target, 0.75f, e.Value - WhistleLead, weapon.Tier >= 4, ThreatCues.Of(weapon));
         }
 
         /// <summary>A bomb <paramref name="gap"/> s and <paramref name="apart"/> m after the last of its weapon follows on in the same stick.</summary>

@@ -20,7 +20,10 @@ namespace MachineBrigade.Game.Effects
             if (tier <= 0) return;
             var look = TierFx.FireOf(tier);
             scale = Mathf.Max(1f, scale);
-            var flash = look.Flash * scale * MachineBrigade.Game.Match.MatchSettings.FlashScale;
+            // MVA W2-B (spec part Q1): the weather's flash visibility (night a little brighter), never above 1 with Reduced flashes.
+            var weather = MachineBrigade.Game.Rendering.Weather.FlashVisibility;
+            if (MachineBrigade.Game.Match.MatchSettings.ReducedFlash) weather = Mathf.Min(1f, weather);
+            var flash = look.Flash * scale * MachineBrigade.Game.Match.MatchSettings.FlashScale * weather;
             var dir = direction.sqrMagnitude > 1e-4f ? direction.normalized : Vector3.forward;
             _anchor = anchor;
             _now = now;

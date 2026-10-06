@@ -74,6 +74,14 @@ namespace MachineBrigade.Game.Rendering
             _progress = -1f;
         }
 
+        /// <summary>
+        /// MVA W2-B (spec part Q1): the least boost a danger telegraph gets in this weather (WeatherPresentation.TelegraphBoost,
+        /// 1 to 1.3): its colour brighter and its alpha fuller (capped at 1). Set by Rendering.Weather.
+        /// </summary>
+        public static float TelegraphBoost { get; set; } = 1f;
+
+        private static Color Boost(Color c) => new(c.r * TelegraphBoost, c.g * TelegraphBoost, c.b * TelegraphBoost, Mathf.Min(1f, c.a * TelegraphBoost));
+
         public void Set(Color color, Color accent, float progress = 0f, float pulse = 0f)
         {
             if (color == _color && accent == _accent && Mathf.Abs(progress - _progress) < 0.002f && Mathf.Abs(pulse - _pulse) < 0.01f) return;
@@ -81,6 +89,14 @@ namespace MachineBrigade.Game.Rendering
             _accent = accent;
             _progress = progress;
             _pulse = pulse;
+            // MVA W2-B (spec parts Q1, AM): a danger telegraph (warning ring, stick rectangle, strike zone) gets the weather's
+            // boost, so fog, snow or a sandstorm never fade it out; the other marks draw as given.
+            var style = Mathf.RoundToInt(_style);
+            if ((style == (int)Style.Warning || style == (int)Style.WarningRect || style == (int)Style.Strike) && TelegraphBoost > 1f)
+            {
+                color = Boost(color);
+                accent = Boost(accent);
+            }
             _block.SetColor(ColorId, color);
             _block.SetColor(AccentId, accent);
             _block.SetVector(ParamsId, new Vector4(_style, progress, pulse, _seed));

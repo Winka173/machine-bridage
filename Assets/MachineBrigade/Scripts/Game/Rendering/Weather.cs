@@ -150,6 +150,15 @@ namespace MachineBrigade.Game.Rendering
         /// <param name="clearHaze">The map's own haze on a clear day.</param>
         /// <param name="previous">The weather this one replaces: it rolls in from how that one looks now.</param>
         /// <param name="seconds">How long the roll-in takes (prompt 23 D.9: a mission event's 20-30 s; 0: <see cref="TransitionSeconds"/>).</param>
+        /// <summary>MVA W2-B: this weather's presentation metadata (Sim.Navigation.WeatherPresentation, W1-A).</summary>
+        public Sim.Navigation.WeatherPresentation Presentation { get; }
+
+        /// <summary>
+        /// MVA W2-B (spec part Q1): the muzzle flashes' size factor in this weather (night a little brighter, a sandstorm a
+        /// little more); MuzzleFx keeps Reduced flashes under 1 whatever the weather.
+        /// </summary>
+        public static float FlashVisibility { get; private set; } = 1f;
+
         public Weather(WeatherKind kind, Atmosphere atmosphere, MaterialLibrary materials, RtsCamera camera, AudioDirector audio,
             Transform parent, bool highQuality, Color clearCast, Color clearHaze, Weather previous = null, float seconds = 0f)
         {
@@ -157,6 +166,12 @@ namespace MachineBrigade.Game.Rendering
             _transition = seconds > 0f ? seconds : TransitionSeconds;
             _camera = camera;
             _audio = audio;
+            // MVA W2-B (spec part Q): the weather's presentation metadata (W1-A), view and audio only; visibility stays the
+            // campaign's weatherSight. The audio damps its tails, the warnings get the weather's telegraph boost.
+            Presentation = Sim.Navigation.WeatherPresentation.Of(kind.ToString());
+            if (_audio != null) _audio.WeatherLook = Presentation;
+            GroundMark.TelegraphBoost = Presentation.TelegraphBoost;
+            FlashVisibility = Mathf.Clamp(1f + (Presentation.MuzzleFlashVisibility - 1f) * 0.35f, 0.85f, 1.2f);
             _atmosphere = atmosphere;
             foreach (var light in Object.FindObjectsByType<Light>())
                 if (light.type == LightType.Directional) _sun = light;
@@ -385,7 +400,9 @@ namespace MachineBrigade.Game.Rendering
             // One bright flash that dies away smoothly, with a softer after-glow: no strobing flicker.
             var ft = Time.time - _flashStart;
             var flash = ft < 0f ? 0f : Mathf.Exp(-ft * 9f) + 0.35f * Mathf.Exp(-Mathf.Abs(ft - 0.22f) * 14f) * (ft < 0.6f ? 1f : 0f);
-            _sun.intensity = Current.Sun + Mathf.Clamp01(flash) * 3f;
+            // MVA W2-B (spec parts AL, Q): the flash by the weather's lightning intensity; Reduced flashes keeps a third of it.
+            var strength = Mathf.Lerp(0.6f, 1f, Mathf.Clamp01(Presentation.LightningIntensity)) * (Match.MatchSettings.ReducedFlash ? 0.33f : 1f);
+            _sun.intensity = Current.Sun + Mathf.Clamp01(flash) * 3f * strength;
         }
 
         /// <summary>The weather's particle volumes follow the view.</summary>

@@ -160,7 +160,7 @@ namespace MachineBrigade.Game.Match
             _frameRate = new FrameRateGovernor(_frameRateTarget, MatchSettings.SavingBattery ? 30 : MatchSettings.Options.FrameRate);
             ApplyDebugFlags();
             _perf = PerfProbe.Create();
-            if (_perf != null) _perf.Detail = () => _views?.LodSummary();
+            if (_perf != null) _perf.Detail = () => _views?.LodSummary() + " " + Effects.ViewTelemetry.Summary();
             if (!_debugStarted && DebugFlags.Has("-mb-play"))
             {
                 // Device testing: skip the menu once and play straight away.
@@ -403,6 +403,9 @@ namespace MachineBrigade.Game.Match
             yield return null;
             // The menu battle has no player side, so no alarms or chimes.
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
+            // MVA W2-B: the map's acoustic zones and the cover that occludes (spec parts AX, AY, BP); a fresh view telemetry.
+            _audio.SetWorld(_world);
+            Effects.ViewTelemetry.Reset();
             // The soundtrack: the menu theme, the siege track for fortress battles, else a battle track.
             var fortress = MatchSettings.Mode is GameModeKind.Siege or GameModeKind.Defend or GameModeKind.Endless;
             _music = MusicDirector.Play(_menu ? MusicDirector.Mood.Menu : fortress ? MusicDirector.Mood.Siege : MusicDirector.Mood.Battle,
