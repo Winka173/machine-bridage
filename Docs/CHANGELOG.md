@@ -7,6 +7,9 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Naval models, lane A (06/10, branch feature/naval-models-art): real models for torpedo_boat, ashm_corvette,
+  aa_corvette, ciws_escort_ship, ew_corvette, frigate, missile_frigate, aa_frigate and rocket_artillery_ship
+  (replacing the stand-ins), each with its own weapons and runtime mounts; quality gate reads stable mount tags.
 - Naval vehicle expansion, data/AI/economy lane (06/10, branch feature/naval-data): 17 new naval units
   (torpedo_boat through battleship, plus ew_corvette) added to balance.json as canonical, additive data; 10
   ship-specific weapon variants (AShM salvos locked to 80 m/s/Pen4, battleship main gun Pen5 only); AI doctrine
