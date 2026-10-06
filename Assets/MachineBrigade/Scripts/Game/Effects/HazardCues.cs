@@ -24,8 +24,9 @@ namespace MachineBrigade.Game.Effects
         internal const int Marks = 10;
         internal const float MineSeconds = 3f, EmpSeconds = 1.4f;
 
-        private static readonly Color MineEdge = new(2.2f, 1.45f, 0.25f, 0.95f), MineFill = new(1.2f, 0.75f, 0.1f, 0.22f);
-        private static readonly Color EmpEdge = new(1.1f, 1.9f, 3.2f, 1f), EmpFill = new(0.4f, 0.8f, 1.6f, 0.28f);
+        // Hue kept when HDR clips (Low has no bloom): amber and cyan stay amber and cyan on snow (Tools/vfx/contrast_audit.py).
+        private static readonly Color MineEdge = new(1.8f, 0.75f, 0.08f, 0.95f), MineFill = new(1.1f, 0.45f, 0.05f, 0.22f);
+        private static readonly Color EmpEdge = new(0.1f, 0.55f, 2.4f, 1f), EmpFill = new(0.05f, 0.35f, 1.4f, 0.28f);
 
         private sealed class Mark
         {

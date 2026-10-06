@@ -19,8 +19,9 @@ namespace MachineBrigade.Game.Effects
         private const int Marks = 12;
         internal const float DiveShare = 0.4f, MinDive = 0.9f, OpenScale = 2.6f, ClosedScale = 1.15f;
 
-        private static readonly Color Edge = new(1.35f, 0.95f, 2.1f, 0.95f);
-        private static readonly Color Fill = new(0.8f, 0.55f, 1.4f, 0.35f);
+        // MVA W2-B: a deeper violet, so the hue survives HDR clipping on snow (it read near white there: contrast_audit.py).
+        private static readonly Color Edge = new(1.25f, 0.3f, 2.2f, 0.95f);
+        private static readonly Color Fill = new(0.75f, 0.2f, 1.4f, 0.35f);
 
         private sealed class Mark
         {
@@ -47,7 +48,7 @@ namespace MachineBrigade.Game.Effects
             if (_diveMaterial == null)
             {
                 _diveMaterial = new Material(materials.StrikeWarning) { name = "Top Attack Dive" };
-                _diveMaterial.SetColor("_Color", new Color(1.5f, 0.9f, 2.6f));
+                _diveMaterial.SetColor("_Color", new Color(1.4f, 0.35f, 2.6f));
             }
             var go = new GameObject("Top Attack Dive");
             go.transform.SetParent(root, false);
