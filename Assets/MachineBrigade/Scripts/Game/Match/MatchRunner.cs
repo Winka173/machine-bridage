@@ -436,6 +436,12 @@ namespace MachineBrigade.Game.Match
             _richEffects = options.MaxEffects;
             _crates = new CrateViews(_models, worldRoot);
             _mineViews = new MineViews(_models, worldRoot, _menu ? -1 : PlayerTeam);
+            // MVA W2-B (THREAT_CUES "mine detected"): a hostile mine spotted: its trigger-radius ring and the mine ping (caption).
+            _mineViews.Found += mine =>
+            {
+                _effects?.MineFound(new Vector3(mine.Position.X, 0f, mine.Position.Y), mine.TriggerRadius);
+                _audio?.MineFound(mine.Position);
+            };
             // Quick battles sometimes turn: a storm rolls in, the fog comes down, night falls.
             if (!_menu && mission == null && kind != GameModeKind.Sandbox) _nextWeatherShift = 150 + new System.Random(seed).NextDouble() * 120;
             ApplyPost(options.Bloom, MatchSettings.Brightness);

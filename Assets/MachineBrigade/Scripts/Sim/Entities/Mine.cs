@@ -39,5 +39,8 @@ namespace MachineBrigade.Sim.Entities
         public int VisibleToMask { get; internal set; }
 
         public bool IsVisibleTo(int team) => team >= 0 && (VisibleToMask & (1 << team)) != 0;
+
+        /// <summary>MVA W2-B (view only): how close a vehicle sets it off (m): the danger shape its "mine detected" cue draws.</summary>
+        public float TriggerRadius => Def.Trigger;
     }
 }

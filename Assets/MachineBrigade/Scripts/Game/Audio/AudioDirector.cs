@@ -414,11 +414,19 @@ namespace MachineBrigade.Game.Audio
                     case SimEventKind.SkillUsed when e.Skill == SkillKind.Flares:
                         Flared(e);
                         break;
+                    case SimEventKind.SkillUsed when e.Skill == SkillKind.Emp:
+                        // MVA W2-B: the EMP's burst (a P1 warning when it reaches the player's units).
+                        EmpBurst(e.Position, SkillRadius(e), e.Team);
+                        break;
                     case SimEventKind.Explosion:
                         if (Exploded(e)) break;
                         if (TierBlast(e.Tier, e.Position)) break;
                         Play(e.Tier <= ExplosionTier.Small ? Sound.ExplosionSmall : Blast(e.Tier < ExplosionTier.Large ? ExplosionTier.Large : e.Tier),
                             e.Position, 1f);
+                        break;
+                    case SimEventKind.StrikeImpact when e.DefId != null && _catalog.TryGetSupport(e.DefId, out var pulse) && pulse.Kind == SupportKind.Emp:
+                        // MVA W2-B: an EMP support lands as an EMP, not as a blast.
+                        EmpBurst(e.Position, pulse.Radius, e.Team);
                         break;
                     case SimEventKind.StrikeImpact:
                         if (TierBlast(e.Tier < ExplosionTier.Large ? ExplosionTier.Large : e.Tier, e.Position)) break;

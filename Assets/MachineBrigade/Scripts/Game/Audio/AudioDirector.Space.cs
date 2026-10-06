@@ -162,6 +162,46 @@ namespace MachineBrigade.Game.Audio
             _occlusionCursor = (_occlusionCursor + 1) % _voices.Length;
         }
 
+        /// <summary>
+        /// MVA W2-B (THREAT_CUES "mine detected"): a hostile mine the player's side just spotted: the mine ping, a P1 cue (its
+        /// caption: [Mine detected]); a minefield found at once is one ping (the bank's cooldown at one spot).
+        /// </summary>
+        public void MineFound(System.Numerics.Vector2 at)
+        {
+            if (_lobby) return;
+            Play(_banks[Sound.MinePing], at, 1f, 20f, SoundPriority.Warning, cue: (int)ThreatType.MineDetected);
+        }
+
+        /// <summary>
+        /// MVA W2-B (THREAT_CUES "EMP"): an EMP going off at <paramref name="at"/> over <paramref name="radius"/> m: a P1
+        /// warning with its caption when an enemy's EMP reaches the player's units, else the plain burst (a near effect).
+        /// </summary>
+        private void EmpBurst(System.Numerics.Vector2 at, float radius, int team)
+        {
+            var hits = false;
+            if (_views != null && _playerTeam >= 0 && team != _playerTeam)
+            {
+                var all = _views.All;
+                for (var i = 0; i < all.Count && !hits; i++)
+                {
+                    var v = all[i];
+                    if (v.Sim.Team != _playerTeam || !v.Sim.IsAlive || v.Flying) continue;
+                    hits = System.Numerics.Vector2.Distance(v.Sim.Position, at) <= radius + v.Def.HullRadius;
+                }
+            }
+            if (hits) Play(_banks[Sound.Emp], at, 1f, 20f, SoundPriority.Warning, cue: (int)ThreatType.Emp);
+            else Play(_banks[Sound.Emp], at, 0.8f, 0f, SoundPriority.NearShot);
+        }
+
+        /// <summary>The radius of the skill a SkillUsed event is (the user's own), else 15 m.</summary>
+        private float SkillRadius(in Sim.Events.SimEvent e)
+        {
+            if (_views != null && _views.TryGet(e.Entity, out var user))
+                foreach (var skill in user.Def.Skills)
+                    if (skill.Id == e.DefId) return skill.Radius;
+            return 15f;
+        }
+
         /// <summary>The large weapons' banks (spec part AV), by library name.</summary>
         private static readonly string[] LayeredBanks =
         {
