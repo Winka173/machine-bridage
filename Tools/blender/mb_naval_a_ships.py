@@ -455,7 +455,7 @@ def frigate(a):
     hull.build(team_band=(-8.0, 10.0, .4, .34), portholes=(-15.5, -14.5, -13.5, 14.0, 15.0, 16.0))
     d = hull.dz
     N.anchor_gear(a, hull, -17.8, spread=.85)
-    N.gun_100(a, (0, -13.4, d(-13.4)), sc=1.1)
+    N.gun_100(a, (0, -12.6, d(-12.6)), sc=1.25)
     _breakwater(a, hull, -16.6, w=1.3, h=.6)
     _house(a, -10.0, 9.0, d(-10.0) - .05, 4.75, 2.75, 2.6, rake=.55, cut=.65,
            ports=(-8.0, -7.0, -1.5, -.5, 3.0, 4.0, 7.5), doors=(-5.0, 1.0, 6.0))

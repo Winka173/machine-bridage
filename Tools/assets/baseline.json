@@ -5316,6 +5316,18 @@
     "rocket_artillery_ship: new (9262 triangles)",
     "torpedo_boat: new (5914 triangles)"
    ]
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "frigate",
+    "torpedo_boat"
+   ],
+   "reason": "naval models lane A: frigate gun, torpedo tube paint",
+   "changes": [
+    "frigate: vertices 17,536 -> 17,539 (+0.0%); fileBytes 680,644 -> 680,372 (-0.0%)",
+    "torpedo_boat: bytes only"
+   ]
   }
  ],
  "models": {
@@ -28894,8 +28906,8 @@
   },
   "frigate": {
    "file": "frigate.glb",
-   "fileBytes": 680644,
-   "sha1": "c0b102e498818308",
+   "fileBytes": 680372,
+   "sha1": "bf756e2592af5106",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -28912,7 +28924,7 @@
    "materialSlots": 41,
    "materialsUsed": 15,
    "triangles": 12460,
-   "vertices": 17536,
+   "vertices": 17539,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -28945,7 +28957,7 @@
    ],
    "structureHash": "3529e7ca68d59702",
    "color0": {
-    "mean": 0.6587,
+    "mean": 0.6594,
     "min": 0.0801,
     "max": 1.0,
     "p05": 0.2193,
@@ -29029,7 +29041,7 @@
    "errors": [],
    "warnings": [
     "triangles 12,460 over the ground normal hard cap 9,700 (info: kept, owner rule)",
-    "vertices 17,536 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+    "vertices 17,539 over the ground normal hard cap 12,600 (info: kept, owner rule)"
    ],
    "units": [
     "frigate"
@@ -56509,7 +56521,7 @@
   "torpedo_boat": {
    "file": "torpedo_boat.glb",
    "fileBytes": 323312,
-   "sha1": "c782347526eec74e",
+   "sha1": "6820240d5e67c69d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",

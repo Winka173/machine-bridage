@@ -623,7 +623,7 @@ def rocket_battery(a, loc, tag='', slot='rocket', elev=.38, pod=(1.0, 4.2, .78),
 def torpedo_tubes(a, mouth_y, z, xs, deck, length=5.6, r=.33, splay=.06, body='Launch_tubes'):
     """Fixed 533 mm deck tubes, one per x in xs, mouths at mouth_y, splayed out by `splay` radians, on saddles;
     `Mount_missile` (invisible yaw pivot) between the mouths with its muzzle."""
-    tube = a.part(body, 'Armor')
+    tube = a.part(body, 'Team')
     caps = a.part('Tube_caps', 'Steel')
     sad = a.part('Tube_saddles', 'Steel')
     for x in xs:
