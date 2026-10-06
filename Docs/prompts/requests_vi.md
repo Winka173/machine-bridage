@@ -328,3 +328,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 06/10 "Final clarifications" balance v2 (recoilless 314 KEEP, sam_48n6 6 m, pt14_hp_nsm + scylla_kh35 splash 8 m, railgun Pen 5 KEEP reload) -> Docs/prompts/balance_v2_clarify_vi.md.
 - 06/10 "làm cái này xong, export window xong hãy làm tiếp cái kia, và kiểm tra tôi thấy rất nhiều tên lửa các boss tốc độ cực nhanh, thường là các loại nhắm thẳng mục tiêu, scan lại toàn bộ" + addendum LOW/MID TIER -> Docs/prompts/balance_v3_cheap_mid_vi.md.
 - 06/10 trả lời 4 câu balance v3 (spawn_bastion giữ, supply_truck hoàn tác HP, cp_relay giữ rule cũ, Earth Borer không nerf) -> Docs/prompts/balance_v3_answers_vi.md.
+- 06/10 "tiếp tục, xong nhớ xuất lại data hoàn chỉnh cho tôi trong export_current".
