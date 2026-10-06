@@ -73,7 +73,7 @@ namespace MachineBrigade.Game.Rendering
 
         public static Name Parse(string name)
         {
-            if (string.IsNullOrEmpty(name)) return default;
+            if (string.IsNullOrEmpty(name)) return new Name(Kind.None, null, Array.Empty<string>(), -1);
             if (TryParse(Muzzle, Kind.Muzzle, name, out var n) || TryParse(Mount, Kind.Mount, name, out n) || TryParse(Part, Kind.Part, name, out n))
                 return n;
             return new Name(Kind.None, null, Array.Empty<string>(), -1);
