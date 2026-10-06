@@ -319,3 +319,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 05/10 "tiếp tục, task về map và audio khoan làm đợi tôi confirm".
 - 05/10 "Dùng file đính kèm Machine_Brigade_PROJECTILE_FLIGHT_FEEL_MASTER_SPEC.md, dùng 1 agent sonnet, không chạy test phần này" -> Docs/prompts/projectile_flight_feel_spec.md (source of truth tốc độ đạn).
 - 05/10 "làm Spec bản đồ, hình ảnh, âm thanh" (xác nhận; Docs/mapvisaudio/).
+- 06/10 "tiếp tục nhưng làm cái này trước @Machine_Brigade_BALANCE_MASTER_UPDATE_FINAL.md" + implement brief -> Docs/prompts/balance_master_final_vi.md (+ _spec.md, source of truth; làm trước, sau đó tiếp MVA W1).
