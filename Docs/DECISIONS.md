@@ -21509,3 +21509,11 @@ Spec: `Docs/prompts/balance_v3_cheap_mid_vi.md` (owner addendum, LOW/MID TIER §
   cp:0/captureRate:0 made its sec 12 "supply vehicle" classification a judgment call; (3) `cp_relay` left out of the
   utility-tower bucket (pass 1 used a separate "structure HP" rule for it); (4) the Earth Borer regression above.
 - Full report: `Docs/balance/BALANCE_V3_REPORT.md` (copied to `bao_cao_combat/balance_v3_report.md`).
+
+## Balance v3 owner answers (06/10)
+
+Docs/prompts/balance_v3_answers_vi.md:
+- §22 "fortress-style tower": no entity qualifies this pass; spawn_bastion KEEP (no inference from name/model).
+- supply_truck: HP 805 -> 700 (original). It is mission-only (cp 0, MissionEvents Truck, unlocks_sheet "Nhiệm vụ (không vào bộ bài)"), no player-buyable path, so the cheap/mid rule (CP-bought roster units only) does not apply.
+- cp_relay: keeps its pass-1 rule only (one balance classification per entity); no utility-tower +15 %.
+- Earth Borer: no boss change. The 2/3 -> 1/3 survival drop with the boss unchanged most likely comes from composition (cheap units +1 CP = fewer hulls per budget) or formation/pathing bunching units into the 6 m burrow hit (350 dmg, 3 s stun, 2 s warning).
