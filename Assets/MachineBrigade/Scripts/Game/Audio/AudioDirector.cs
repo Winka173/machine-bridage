@@ -66,6 +66,14 @@ namespace MachineBrigade.Game.Audio
             public bool NoSteal;
 
             public float LastPlayed = -10f;
+
+            /// <summary>MVA W1-B: where it last played (a P0 / P1 cue elsewhere is not held back by its cooldown).</summary>
+            public System.Numerics.Vector2 LastAt;
+
+            /// <summary>MVA W1-B: an id for the voice arbiter (equal ids: one bank).</summary>
+            public readonly int Id = ++_bankIds;
+
+            private static int _bankIds;
             private int _last = -1;
 
             public AudioClip Next(System.Random rng)
@@ -85,6 +93,9 @@ namespace MachineBrigade.Game.Audio
             public Bank Bank;
             public float Level;
             public float Started;
+
+            /// <summary>MVA W1-B: its distance from the view as a share of the hearing reach when it started (the arbiter's weighting).</summary>
+            public float Distance;
 
             /// <summary>Prompt 34 L6: what this sound counts for when the voices run out (<see cref="SoundPriority"/>, 1-7).</summary>
             public int Priority;
@@ -394,8 +405,10 @@ namespace MachineBrigade.Game.Audio
                     // Prompt 18 A.3: a boss's big attack begins: the alarm (heard wherever the view is) and the whistle as it lands.
                     case SimEventKind.BigAttack when e.Mount == 0 && _playerTeam >= 0:
                         // Prompt 25 C1: a super weapon's own warning, else the siren.
-                        if (e.DefId != null && _superCues.TryGetValue(e.DefId, out var cue)) _ui.PlayOneShot(cue, 0.36f * Fx);
-                        else if (_siren != null) _ui.PlayOneShot(_siren, 0.32f * Fx);
+                        // MVA W1-B: on the CriticalWarnings bus (its own slider), and it ducks the lower classes for a moment.
+                        if (e.DefId != null && _superCues.TryGetValue(e.DefId, out var cue)) _ui.PlayOneShot(cue, 0.36f * Warn);
+                        else if (_siren != null) _ui.PlayOneShot(_siren, 0.32f * Warn);
+                        _warningAt = Time.unscaledTime;
                         MusicDirector.Current?.Alert();
                         Whistle(e.Position, 1f, e.Value - WhistleLead, true);
                         break;
@@ -404,7 +417,8 @@ namespace MachineBrigade.Game.Audio
                         var alarm = Vector3.Distance(new Vector3(e.Position.X, 0f, e.Position.Y), Focus);
                         if (alarm < 120f)
                         {
-                            _ui.PlayOneShot(_siren, (0.28f * (1f - alarm / 120f) + 0.06f) * Fx);
+                            _ui.PlayOneShot(_siren, (0.28f * (1f - alarm / 120f) + 0.06f) * Warn);
+                            _warningAt = Time.unscaledTime;
                             MusicDirector.Current?.Alert();
                         }
                         break;
@@ -527,8 +541,15 @@ namespace MachineBrigade.Game.Audio
             // Fix pass L7: the Effects compressor's gain on every effect voice; small arms come back up after a big blast.
             Compress(Time.unscaledDeltaTime);
             var duck = Duck(now);
+            // MVA W1-B (spec parts AS, AT): a warning is not under the Effects compressor or the big-blast duck; while one
+            // starts, the classes under P2 duck briefly (never another warning, never the whole mix).
+            var warned = AudioPolicy.DuckGain(now - _warningAt);
             foreach (var v in _voices)
-                if (v.Bank != null && v.Source.isPlaying) v.Source.volume = v.Level * (v.Bank.Light ? duck : 1f) * _busGain * Choked(v, now);
+            {
+                if (v.Bank == null || !v.Source.isPlaying) continue;
+                if (AudioPolicy.IsCritical(v.Priority)) v.Source.volume = v.Level;
+                else v.Source.volume = v.Level * (v.Bank.Light ? duck : 1f) * _busGain * Choked(v, now) * (v.Priority < SoundPriority.NearBlast ? warned : 1f);
+            }
         }
 
         /// <summary>Prompt 34 L9: the voices playing now, of 32 (the stress scene's count).</summary>
@@ -649,10 +670,14 @@ namespace MachineBrigade.Game.Audio
         {
             if (_ranging) volume *= RangeGain;
             var now = Time.unscaledTime;
-            if (now - bank.LastPlayed < bank.Cooldown) return;
+            var effective = priority < 0 ? bank.Priority : priority;
+            // MVA W1-B: a P0 / P1 cue is held back by its bank's cooldown only at the same spot (there it is one cue, aggregated).
+            if (now - bank.LastPlayed < bank.Cooldown &&
+                !(AudioPolicy.IsCritical(effective) && System.Numerics.Vector2.Distance(at, bank.LastAt) > AudioPolicy.CueMergeRadius)) return;
             var distance = Vector3.Distance(new Vector3(at.X, 0f, at.Y), Focus);
             if (distance >= Reach(reachBonus) * 0.98f) return;
             bank.LastPlayed = now;
+            bank.LastAt = at;
             // Big blasts far off arrive a moment after the flash (capped: a few tenths at most).
             var delay = bank.Delayed ? Mathf.Min(0.3f, Mathf.Max(0f, distance - 30f) / SpeedOfSound) : 0f;
             if (delay > 0.02f) _delayed.Add((now + delay, bank, at, volume, priority, run));
@@ -672,13 +697,21 @@ namespace MachineBrigade.Game.Audio
             var offScreen = screen.x < 0f || screen.x > 1f || screen.y < 0f || screen.y > 1f || screen.z < 0f;
             // Fix pass L7: the camera-distance falloff (ground distance and the camera's height), in place of (1 - d / reach)^2.
             var height = Mathf.Max(0f, View.transform.position.y);
-            var level = bank.Volume * volume * SoundLibrary.Falloff(distance, height, reach) * (offScreen ? OffScreenGain : 1f) * Fx;
-            if (level <= 0.001f) return;
             if (priority < 0) priority = bank.Priority;
+            var critical = AudioPolicy.IsCritical(priority);
+            // MVA W1-B: a warning on the CriticalWarnings bus (its slider), an effect on the Effects one.
+            var level = bank.Volume * volume * SoundLibrary.Falloff(distance, height, reach) * (offScreen ? OffScreenGain : 1f) * (critical ? Warn : Fx);
+            if (level <= 0.001f) return;
 
-            var voice = PickVoice(bank, level, priority);
+            var voice = PickVoice(bank, level, priority, distance / reach);
             if (voice == null) return;
-            if (priority >= SoundPriority.NearBlast) _duckUntil = now + 0.35f;
+            voice.Distance = distance / reach;
+            if (critical)
+            {
+                _warningAt = now;
+                if (priority >= SoundPriority.Critical) MusicDirector.Current?.Alert();
+            }
+            else if (priority >= SoundPriority.NearBlast) _duckUntil = now + 0.35f;
             voice.Priority = priority;
             voice.Run = run;
             voice.Choke = -1f;
@@ -686,7 +719,7 @@ namespace MachineBrigade.Game.Audio
             voice.Level = level;
             voice.Started = now;
             voice.Source.clip = bank.Next(_rng);
-            voice.Source.volume = (bank.Light ? level * Duck(now) : level) * _busGain;
+            voice.Source.volume = critical ? level : (bank.Light ? level * Duck(now) : level) * _busGain;
             voice.Source.panStereo = Mathf.Clamp((screen.x - 0.5f) * 1.4f, -0.9f, 0.9f);
             voice.Source.pitch = bank.Pitch * pitch * (1f + ((float)_rng.NextDouble() - 0.5f) * bank.PitchSpread);
             // Far sounds lose their top end.
@@ -695,42 +728,31 @@ namespace MachineBrigade.Game.Audio
             voice.Source.Play();
         }
 
+        /// <summary>When the latest P0 / P1 warning started (its brief duck of the lower classes; AudioPolicy.DuckGain).</summary>
+        private float _warningAt = -100f;
+
+        /// <summary>The voice states the arbiter reads (reused).</summary>
+        private readonly VoiceState[] _states = new VoiceState[Voices];
+
         /// <summary>
-        /// A voice for a new sound: its category's oldest once the category is at its limit, else a
-        /// free one, else the least important and quietest playing one that matters no more than
-        /// the new sound. Null drops the new sound.
+        /// A voice for a new sound (MVA W1-B: <see cref="VoiceArbiter.Pick"/>): its category's oldest once the category is at its
+        /// limit, else a free one, else the least important and quietest playing one that matters no more than the new sound
+        /// (distance-weighted); a P0 / P1 warning always gets one and is never cut while it plays. Null drops the new sound.
         /// </summary>
-        private Voice PickVoice(Bank bank, float level, int priority)
+        private Voice PickVoice(Bank bank, float level, int priority, float distance = 0f)
         {
-            Voice oldest = null, free = null, weakest = null, quietest = null;
-            var playing = 0;
-            var busy = 0;
-            foreach (var v in _voices)
+            for (var i = 0; i < _voices.Length; i++)
             {
-                if (!v.Source.isPlaying || v.Bank == null)
+                var v = _voices[i];
+                var playing = v.Source.isPlaying && v.Bank != null;
+                _states[i] = new VoiceState
                 {
-                    free ??= v;
-                    continue;
-                }
-                busy++;
-                if (v.Bank == bank)
-                {
-                    playing++;
-                    if (oldest == null || v.Started < oldest.Started) oldest = v;
-                    if (quietest == null || v.Level < quietest.Level) quietest = v;
-                }
-                if (v.Priority > priority || (v.Priority == priority && v.Level > level)) continue;
-                if (weakest == null || v.Priority < weakest.Priority || (v.Priority == weakest.Priority && v.Level < weakest.Level)) weakest = v;
+                    Playing = playing, Bank = playing ? v.Bank.Id : 0, Priority = v.Priority, Level = v.Level, Started = v.Started,
+                    Distance = v.Distance,
+                };
             }
-            if (playing >= bank.MaxVoices)
-            {
-                if (!bank.NoSteal) return oldest;
-                return quietest != null && quietest.Level * 2f < level ? quietest : null;
-            }
-            // Prompt 34 L6: about 24 effect voices at once before the least important is cut; the pool's last 8 are kept
-            // for the warnings and the T5 / boss sounds.
-            if (busy >= EffectVoices && priority < SoundPriority.Boss) return weakest;
-            return free ?? weakest;
+            var pick = VoiceArbiter.Pick(_states, bank.Id, bank.MaxVoices, bank.NoSteal, priority, level, distance);
+            return pick >= 0 ? _voices[pick] : null;
         }
 
         private void Add(Sound sound, string folder, Func<int, AudioClip> synth, float volume, int voices, float cooldown, int priority,

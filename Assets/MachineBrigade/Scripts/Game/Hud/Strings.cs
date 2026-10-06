@@ -1868,6 +1868,8 @@ namespace MachineBrigade.Game.Hud
             ["settings.music"] = ("Music", "Nhạc nền"),
             ["settings.effectsVolume"] = ("Effects", "Hiệu ứng âm thanh"),
             ["settings.dialogueVolume"] = ("Dialogue", "Thoại"),
+            ["settings.warningVolume"] = ("Warnings", "Cảnh báo"),
+            ["settings.reducedFlash"] = ("Reduced flashes", "Giảm chớp sáng"),
             ["settings.quality"] = ("Graphics", "Đồ họa"),
             ["settings.high"] = ("High", "Cao"),
             ["settings.medium"] = ("Medium", "Vừa"),

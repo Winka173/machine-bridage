@@ -478,6 +478,8 @@ namespace MachineBrigade.Game.Hud
             game.Add(OptionRow("move", "settings.shake",
                     new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Strings.Get("settings.full") },
                     () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
+            // MVA W1-B (spec part AL): fewer, softer flashes; the warnings stay as they are.
+            game.Add(ToggleRow("flame", "settings.reducedFlash", () => MatchSettings.ReducedFlash, on => MatchSettings.ReducedFlash = on));
             // Fix prompt L5: the warning rings: full, important only, off (off keeps the super weapons').
             game.Add(OptionRow("flame", "settings.warnings",
                     new[] { Strings.Get("settings.warnings.full"), Strings.Get("settings.warnings.important"), Strings.Get("settings.off") },
@@ -511,6 +513,10 @@ namespace MachineBrigade.Game.Hud
             sound.Add(Stepper("volume", Strings.Get("settings.dialogueVolume"),
                 () => MatchSettings.DialogueVolume <= 0f ? Strings.Get("settings.off") : $"{Mathf.RoundToInt(MatchSettings.DialogueVolume * 100f)}%",
                 step => MatchSettings.DialogueVolume = Mathf.Clamp01(Mathf.Round((MatchSettings.DialogueVolume + step * 0.1f) * 10f) / 10f)));
+            // MVA W1-B: the critical warnings have their own level (never under the effects' or the ambience's slider); 20 % at least.
+            sound.Add(Stepper("volume", Strings.Get("settings.warningVolume"),
+                () => $"{Mathf.RoundToInt(MatchSettings.WarningVolume * 100f)}%",
+                step => MatchSettings.WarningVolume = Mathf.Clamp(Mathf.Round((MatchSettings.WarningVolume + step * 0.1f) * 10f) / 10f, 0.2f, 1f)));
         }
 
         // ------------------------------------------------------------------ shared building blocks

@@ -65,7 +65,8 @@ namespace MachineBrigade.Game.Effects
         public static float Flicker(int seed, float time)
         {
             var phase = (seed & 1023) * 0.173f;
-            var fast = Mathf.PerlinNoise(time * 9f, phase);
+            // MVA W1-B: reduced flashes keep only the slow swell (spec part AL: no rapid flicker).
+            var fast = MatchSettings.ReducedFlash ? 0.5f : Mathf.PerlinNoise(time * 9f, phase);
             var slow = Mathf.PerlinNoise(time * 1.3f + phase, 7.1f);
             return 0.62f + 0.3f * fast + 0.18f * slow;
         }
