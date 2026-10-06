@@ -5328,6 +5328,22 @@
     "frigate: vertices 17,536 -> 17,539 (+0.0%); fileBytes 680,644 -> 680,372 (-0.0%)",
     "torpedo_boat: bytes only"
    ]
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "aa_corvette",
+    "aa_frigate",
+    "ashm_corvette",
+    "ciws_escort_ship",
+    "ew_corvette",
+    "frigate",
+    "missile_frigate",
+    "rocket_artillery_ship",
+    "torpedo_boat"
+   ],
+   "reason": "merge of feature/naval-models-art",
+   "changes": []
   }
  ],
  "models": {
