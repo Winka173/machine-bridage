@@ -21896,3 +21896,51 @@ via the locked penetration/damage-type tables), never a simulated battle. Full r
   zero-cost baseline. Known gap in the comparison script: it reads only the `"weapon"` field, so `gun_destroyer`
   (2 turrets) and `battleship` (3 turrets) show roughly half/a-third of their true multi-mount output in the
   table — noted explicitly in the report rather than silently wrong.
+
+## Naval models (lane A)
+
+06/10, branch feature/naval-models-art. Real GLBs for the nine light/medium naval-expansion hulls (contract:
+`Docs/naval/MODEL_CONTRACT.md`): torpedo_boat, ashm_corvette, aa_corvette, ciws_escort_ship, ew_corvette, frigate,
+missile_frigate, aa_frigate, rocket_artillery_ship. The 8 big ships are lane B's.
+
+- **Builders.** `Tools/blender/mb_naval_a_kit.py` (shared parametric parts: open-strip hull per material - painted
+  topsides, BootTop, HullRed antifouling, NavyDeck deck, raked stem, cut-away forefoot, planing option; deckhouse tiers
+  with window bands; masts, radars, directors, funnels; weapons with their runtime nodes) and
+  `Tools/blender/mb_naval_a_ships.py` (one builder per ship, its own layout), registered last in `build_assets.py`.
+  The build filter is a substring: `-- frigate` also builds missile_frigate and aa_frigate.
+- **References / silhouettes.** torpedo_boat Shershen/Turya FAC (two 533 mm deck tubes, M2 tub aft); ashm_corvette
+  Tarantul/Molniya with a 2 x 2 Oniks-type canister bank on the foredeck; aa_corvette Sea Sparrow-type 8-cell
+  trainable box in place of the gun, 3D radar + illuminators; ciws_escort_ship three AK-630s (aft + two bridge
+  sponsons) and a token 76 mm; ew_corvette enclosed EW mast with jammer dome + big radome tower, **no Radar pivot / no
+  dish** (owner constraint), Mistral pedestal aft; frigate AK-100 forward, two canisters angled outboard amidships,
+  SHORAD pedestal on the after house, AK-630 aft; missile_frigate Krivak-like 3 x 2 bank on the foredeck, RAM-type box,
+  AK-630, the 76 mm right aft on a tall barbette; aa_frigate twin-arm area SAM on its magazine barbette (the biggest
+  system), big air-search radar, AK-630 amidships, 76 mm aft only; rocket_artillery_ship coaster-style bridge aft, a
+  four-pod GMLRS battery amidships on a training barbette, reload pods + crane, bare M2 tub forward. No transport bays
+  or doors, no flight decks. The data's weapons drive the look (hover_ciws = AK-630, naval_100 = AK-100, sam =
+  Stinger/Mistral class, sam_long = Buk/Shtil class, mlrs_rockets = GMLRS pods).
+- **Nodes.** Stable names only: `Mount_<slot>` / `_02` / `_03` > `Muzzle_<slot>[_NN]`, the k-th data weapon of a slot
+  on the k-th mount (checked statically for all nine: every muzzle under its own mount, no `.NNN`). Fixed launchers
+  (canister banks, torpedo tubes) get an invisible yaw pivot at the mouths with the muzzle on it, so nothing visible
+  turns. Ships with one missile mount use the runtime's launcher names (`Launch_tubes`, `Launcher_covers`,
+  `Missiles`, `Rocket_pods`) so rounds leave from each tube / cell; frigate and missile_frigate (two missile mounts)
+  avoid those names (`Canister_caps`, `Sam_tubes`, `Ram_cells`) so the SAM never borrows the AShM cells. Ships with
+  `aps` carry `Aps_cluster` decoy launchers (the runtime's APS effect points, one per side) and `Mount_APS`.
+- **Readability.** Weapons may be scaled about their pivot (`_scale`, sc 1.1-1.25) and canisters / SAM boxes are light
+  (Fuel / Medical), torpedo tubes in Team paint, so the weapon reads on the dark NavyDeck at the battle camera.
+- **Data swap.** Only `"model"` and the `modelSize` **height** changed in balance.json. The contract heights
+  (3.2-6.1 m) are hull-only; the real-reference masts give height/length 0.28-0.40 (sea_corvette is 0.41). The view
+  fits the length only (ModelHeight is not read at runtime), the size gate compares proportions, so the height
+  follows the model: 5.4 / 12.5 / 12.9 / 10.4 / 12.8 / 13.9 / 13.8 / 14.4 / 10.6 m. Lengths and beams are the
+  contract's (widths within 7 %).
+- **Budgets.** 5.9k-13.7k triangles (owner's cap for this stage: 3 x the ground budget = 23.4k); renderers 29-44 (cap
+  76), moving parts 2-6. Quality gate: all nine hard ok, soft 80-95 ("Tốt").
+- **Validators.** `Tools/models/scan_prep.py` now counts stable tags (`Mount_mg_02`, `Muzzle_rocket_L`) like a legacy
+  `.NNN` (it failed every multi-mount ship, sea_cruiser included, which now passes its mounts). `quality_gate.py`
+  `systems_absent`: a ship with no point defence in its data (no interceptionMode, no CIWS weapon) is not asked for a
+  CIWS part (torpedo_boat, ew_corvette, rocket_artillery_ship: the contract's "no CIWS"). glb_check (baseline accepted
+  for the nine), runtime_node_audit (0 new hard; the new ids are not in game_snapshot.json until the next
+  ExportGameDoc, so the mount check was done by a scratch script against balance.json) and budget_audit (0 HARD) clean.
+- **Effects.** Nothing new needed: wake (WakeView), sinking/break-up (ShipSinking, the ships >= 24 m break in two),
+  wreck class and launch/impact FX all key off `Def.Naval` and the weapon data. No cards (`"card": false`), so the
+  card/scan pipeline was not run; Blender render_angles sheets checked by eye. No Unity runs, no export.py.

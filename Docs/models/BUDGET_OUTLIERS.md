@@ -9,8 +9,8 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | HARD | 0 |
 | WAIVED | 0 |
 | EXCEPTION | 0 |
-| INFO | 61 |
-| SOFT | 82 |
+| INFO | 74 |
+| SOFT | 85 |
 
 ## Spec part CG models
 
@@ -28,10 +28,15 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | vehicle_hangar_base | vertices | 18,781 | 9,800 / 12,200 | 1.54 | structure normal | INFO |
 | fortress_bastion | vertices | 80,512 | 43,000 / 54,000 | 1.49 | boss_s normal | INFO |
 | mobile_fortress | triangles | 67,060 | 36,000 / 45,000 | 1.49 | boss_s normal | INFO |
+| missile_frigate | vertices | 18,718 | 10,100 / 12,600 | 1.49 | ground normal | INFO |
 | sea_cruiser | triangles | 14,150 | 7,800 / 9,700 | 1.46 | ground normal | INFO |
+| missile_frigate | triangles | 13,728 | 7,800 / 9,700 | 1.42 | ground normal | INFO |
+| frigate | vertices | 17,536 | 10,100 / 12,600 | 1.39 | ground normal | INFO |
 | elite_heavy_tank | triangles | 13,350 | 7,800 / 9,700 | 1.38 | ground normal | INFO |
 | fortress_bastion | triangles | 60,706 | 36,000 / 45,000 | 1.35 | boss_s normal | INFO |
 | elite_heavy_tank | vertices | 16,786 | 10,100 / 12,600 | 1.33 | ground normal | INFO |
+| aa_frigate | vertices | 16,470 | 10,100 / 12,600 | 1.31 | ground normal | INFO |
+| frigate | triangles | 12,460 | 7,800 / 9,700 | 1.28 | ground normal | INFO |
 | next_gen_tank | vertices | 15,947 | 10,100 / 12,600 | 1.27 | ground normal | INFO |
 | silver_bug_wreck | triangles | 69,462 | 44,000 / 55,000 | 1.26 | boss_m normal | INFO |
 | aircraft_hangar | vertices | 15,107 | 9,800 / 12,200 | 1.24 | structure normal | INFO |
@@ -41,8 +46,10 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | silver_bug | triangles | 67,592 | 44,000 / 55,000 | 1.23 | boss_m normal | INFO |
 | elite_aa | triangles | 11,904 | 7,800 / 9,700 | 1.23 | ground normal | INFO |
 | elite_aa | vertices | 15,448 | 10,100 / 12,600 | 1.23 | ground normal | INFO |
+| aa_frigate | triangles | 11,846 | 7,800 / 9,700 | 1.22 | ground normal | INFO |
 | aa_vehicle | triangles | 11,760 | 7,800 / 9,700 | 1.21 | ground normal | INFO |
 | armored_train | vertices | 84,703 | 56,000 / 70,000 | 1.21 | boss_m normal | INFO |
+| ashm_corvette | vertices | 15,164 | 10,100 / 12,600 | 1.20 | ground normal | INFO |
 | next_gen_tank | triangles | 11,642 | 7,800 / 9,700 | 1.20 | ground normal | INFO |
 | elite_tank_destroyer | vertices | 15,019 | 10,100 / 12,600 | 1.19 | ground normal | INFO |
 | elite_apc | vertices | 14,910 | 10,100 / 12,600 | 1.18 | ground normal | INFO |
@@ -52,9 +59,12 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | thermobaric_launcher | vertices | 14,499 | 10,100 / 12,600 | 1.15 | ground normal | INFO |
 | elite_tank_destroyer | triangles | 11,140 | 7,800 / 9,700 | 1.15 | ground normal | INFO |
 | headquarters | triangles | 21,052 | 14,700 / 18,400 | 1.14 | tower normal | INFO |
+| ciws_escort_ship | vertices | 14,354 | 10,100 / 12,600 | 1.14 | ground normal | INFO |
 | tank_destroyer | vertices | 14,143 | 10,100 / 12,600 | 1.12 | ground normal | INFO |
 | headquarters | vertices | 28,108 | 20,100 / 25,100 | 1.12 | tower normal | INFO |
+| aa_corvette | vertices | 14,096 | 10,100 / 12,600 | 1.12 | ground normal | INFO |
 | leviathan | vertices | 100,605 | 72,000 / 90,000 | 1.12 | boss_l normal | INFO |
+| ashm_corvette | triangles | 10,782 | 7,800 / 9,700 | 1.11 | ground normal | INFO |
 | flame_tank | triangles | 10,726 | 7,800 / 9,700 | 1.11 | ground normal | INFO |
 | thermobaric_launcher | triangles | 10,700 | 7,800 / 9,700 | 1.10 | ground normal | INFO |
 | silver_bug | vertices | 76,991 | 56,000 / 70,000 | 1.10 | boss_m normal | INFO |
@@ -63,6 +73,7 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | landing_craft | vertices | 13,691 | 10,100 / 12,600 | 1.09 | ground normal | INFO |
 | flame_tank | vertices | 13,677 | 10,100 / 12,600 | 1.09 | ground normal | INFO |
 | kraken | triangles | 75,770 | 56,000 / 70,000 | 1.08 | boss_l normal | INFO |
+| ciws_escort_ship | triangles | 10,424 | 7,800 / 9,700 | 1.07 | ground normal | INFO |
 | siege_tank | triangles | 10,350 | 7,800 / 9,700 | 1.07 | ground normal | INFO |
 | kraken | vertices | 95,725 | 72,000 / 90,000 | 1.06 | boss_l normal | INFO |
 | bastion_mk0 | vertices | 57,354 | 43,000 / 54,000 | 1.06 | boss_s normal | INFO |
@@ -73,6 +84,7 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | elite_mbt | vertices | 13,210 | 10,100 / 12,600 | 1.05 | ground normal | INFO |
 | stealth_naval_strike | triangles | 6,704 | 5,100 / 6,400 | 1.05 | jet normal | INFO |
 | titan_tank | vertices | 13,043 | 10,100 / 12,600 | 1.04 | ground normal | INFO |
+| aa_corvette | triangles | 10,032 | 7,800 / 9,700 | 1.03 | ground normal | INFO |
 | command_hq | triangles | 8,872 | 6,900 / 8,600 | 1.03 | prop normal | INFO |
 | armored_train | triangles | 56,714 | 44,000 / 55,000 | 1.03 | boss_m normal | INFO |
 | elite_mbt | triangles | 10,002 | 7,800 / 9,700 | 1.03 | ground normal | INFO |
@@ -82,6 +94,7 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | hyperion | triangles | 71,400 | 56,000 / 70,000 | 1.02 | boss_l normal | INFO |
 | twin_tank | triangles | 9,870 | 7,800 / 9,700 | 1.02 | ground normal | INFO |
 | ifv | vertices | 12,809 | 10,100 / 12,600 | 1.02 | ground normal | INFO |
+| rocket_artillery_ship | vertices | 12,797 | 10,100 / 12,600 | 1.02 | ground normal | INFO |
 | armored_bulldozer | vertices | 12,787 | 10,100 / 12,600 | 1.01 | ground normal | INFO |
 | twin_rotor_gunship | triangles | 8,392 | 6,600 / 8,300 | 1.01 | helicopter normal | INFO |
 | mg_bunker_a | movingParts | 9 | 8 / 9 | 1.00 | tower normal | SOFT |
@@ -95,10 +108,12 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | heavy_tank | triangles | 9,296 | 7,800 / 9,700 | 0.96 | ground normal | SOFT |
 | logistics_station | renderers | 46 | 39 / 48 | 0.96 | structure normal | SOFT |
 | targeting_station | renderers | 46 | 39 / 48 | 0.96 | structure normal | SOFT |
+| rocket_artillery_ship | triangles | 9,262 | 7,800 / 9,700 | 0.95 | ground normal | SOFT |
 | armored_bulldozer | triangles | 9,246 | 7,800 / 9,700 | 0.95 | ground normal | SOFT |
 | drop_pod | triangles | 6,090 | 5,100 / 6,400 | 0.95 | jet normal | SOFT |
 | next_gen_tank | renderers | 72 | 61 / 76 | 0.95 | ground normal | SOFT |
 | heavy_tank | vertices | 11,900 | 10,100 / 12,600 | 0.94 | ground normal | SOFT |
+| ew_corvette | vertices | 11,861 | 10,100 / 12,600 | 0.94 | ground normal | SOFT |
 | shield_tower_a | renderers | 45 | 39 / 48 | 0.94 | structure normal | SOFT |
 | grad_truck | renderers | 71 | 61 / 76 | 0.93 | ground normal | SOFT |
 | silver_bug | renderers | 207 | 178 / 222 | 0.93 | boss_m normal | SOFT |
@@ -116,6 +131,7 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | heavy_aa | movingParts | 9 | 8 / 10 | 0.90 | ground normal | SOFT |
 | iron_beam | movingParts | 9 | 8 / 10 | 0.90 | ground normal | SOFT |
 | sea_corvette | vertices | 11,332 | 10,100 / 12,600 | 0.90 | ground normal | SOFT |
+| ew_corvette | triangles | 8,700 | 7,800 / 9,700 | 0.90 | ground normal | SOFT |
 | command_hq | renderers | 52 | 46 / 58 | 0.90 | prop normal | SOFT |
 | aa_vehicle | renderers | 68 | 61 / 76 | 0.89 | ground normal | SOFT |
 | elite_heavy_tank | renderers | 68 | 61 / 76 | 0.89 | ground normal | SOFT |

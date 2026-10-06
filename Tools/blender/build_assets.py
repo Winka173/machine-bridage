@@ -115,6 +115,7 @@ import mb_p35_inflatable_decoy  # noqa: E402
 import mb_p35_barrage_balloon  # noqa: E402
 import mb_p35_super_gun  # noqa: E402
 import mb_p35_ifv  # noqa: E402
+import mb_naval_a_ships  # noqa: E402
 import mb_p35_light_tank  # noqa: E402
 import mb_p35_engineer_vehicle  # noqa: E402
 import mb_p35_mortar_carrier  # noqa: E402
@@ -456,7 +457,9 @@ def all_builders():
                 **mb_pt14_r2_naval.BUILDERS,
                 # Play-test 14 wave R4 (DECISIONS "Play-test 14 wave R4 (lane models)"): hyperion redrawn as a heavy
                 # cruiser, its mini-boss variants theia and coeus with their own models (last, so they win).
-                **mb_pt14_r4_cruiser.BUILDERS}
+                **mb_pt14_r4_cruiser.BUILDERS,
+                # Naval models lane A (DECISIONS "Naval models (lane A)"): the nine light and medium naval-expansion hulls.
+                **mb_naval_a_ships.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

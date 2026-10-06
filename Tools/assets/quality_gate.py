@@ -492,6 +492,11 @@ def systems_absent(defs, own):
         out.add('smoke')
     if f(own, 'mainAim') == 'Hull':
         out.update(('turret', 'mantlet'))
+    # Naval models lane A: a ship with no point defence in its data (no interceptionMode, no CIWS weapon) has no CIWS
+    # mount to draw (torpedo_boat, ew_corvette, rocket_artillery_ship: the contract's "no CIWS").
+    weapons = [f(own, 'weapon')] + [s.get('weapon') for s in (f(own, 'secondary') or []) if isinstance(s, dict)]
+    if not f(own, 'interceptionMode') and not any('ciws' in (w or '') for w in weapons):
+        out.add('ciws')
     return out
 
 

@@ -1,7 +1,7 @@
 {
  "generated": "2026-10-06",
  "tool": "Tools/assets/glb_check.py",
- "count": 456,
+ "count": 465,
  "budgets": {
   "ground": {
    "normal": {
@@ -5290,9 +5290,330 @@
    ],
    "reason": "merge of feature/mva-w2b",
    "changes": []
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "torpedo_boat",
+    "ashm_corvette",
+    "aa_corvette",
+    "ciws_escort_ship",
+    "ew_corvette",
+    "frigate",
+    "missile_frigate",
+    "aa_frigate",
+    "rocket_artillery_ship"
+   ],
+   "reason": "naval models lane A: nine new ship GLBs",
+   "changes": [
+    "aa_corvette: new (10032 triangles)",
+    "aa_frigate: new (11846 triangles)",
+    "ashm_corvette: new (10782 triangles)",
+    "ciws_escort_ship: new (10424 triangles)",
+    "ew_corvette: new (8700 triangles)",
+    "frigate: new (12460 triangles)",
+    "missile_frigate: new (13728 triangles)",
+    "rocket_artillery_ship: new (9262 triangles)",
+    "torpedo_boat: new (5914 triangles)"
+   ]
+  },
+  {
+   "date": "2026-10-06",
+   "models": [
+    "frigate",
+    "torpedo_boat"
+   ],
+   "reason": "naval models lane A: frigate gun, torpedo tube paint",
+   "changes": [
+    "frigate: vertices 17,536 -> 17,539 (+0.0%); fileBytes 680,644 -> 680,372 (-0.0%)",
+    "torpedo_boat: bytes only"
+   ]
   }
  ],
  "models": {
+  "aa_corvette": {
+   "file": "aa_corvette.glb",
+   "fileBytes": 554048,
+   "sha1": "ef976bc9c8b76b4a",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 47,
+   "meshes": 39,
+   "materials": 14,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 39,
+   "submeshes": 39,
+   "materialSlots": 39,
+   "materialsUsed": 14,
+   "triangles": 10032,
+   "vertices": 14096,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 372,
+   "openEdges": 328,
+   "nonManifoldEdges": 2,
+   "boundsMin": [
+    -3.15,
+    -1.2,
+    -16.5346
+   ],
+   "boundsMax": [
+    3.118,
+    11.7,
+    16.5
+   ],
+   "size": [
+    33.035,
+    6.268,
+    12.9
+   ],
+   "center": [
+    -0.016,
+    5.25,
+    -0.017
+   ],
+   "structureHash": "2c40563856097844",
+   "color0": {
+    "mean": 0.6694,
+    "min": 0.0782,
+    "max": 1.0,
+    "p05": 0.2267,
+    "p95": 0.8143,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_mg",
+     "Muzzle_mg_02",
+     "Muzzle_missile"
+    ],
+    "mount": [
+     "Mount_APS",
+     "Mount_mg",
+     "Mount_mg_02",
+     "Mount_missile"
+    ],
+    "radar": [
+     "Radar"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Aps_cluster",
+    "Barrel_mg_02",
+    "Barrels_ciws",
+    "Boat_tubes",
+    "Boats",
+    "Boot_top",
+    "Bridge_glass",
+    "CIWS_body",
+    "CIWS_hatch",
+    "CIWS_ring",
+    "Crane",
+    "Deck",
+    "Deck_gear",
+    "Deck_walkways",
+    "Directors",
+    "Funnel",
+    "Hatches",
+    "Hatches.001",
+    "Hazard_marks",
+    "Hull",
+    "Hull_low",
+    "Hull_seams",
+    "Kit_cables",
+    "Launcher_covers",
+    "Life_rafts",
+    "Mast",
+    "Mg_body_02",
+    "Mg_post_02",
+    "Mount_APS",
+    "Mount_mg",
+    "Mount_mg_02",
+    "Mount_missile",
+    "Muzzle_mg",
+    "Muzzle_mg_02",
+    "Muzzle_missile",
+    "Nav_lights",
+    "Radar",
+    "Radar_array",
+    "Radar_face",
+    "Radar_pedestal",
+    "Rails",
+    "Sam_bands",
+    "Sam_base",
+    "Sam_box",
+    "Sam_stand",
+    "Sam_yoke",
+    "Superstructure"
+   ],
+   "category": "ground",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "triangles 10,032 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 14,096 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
+   "units": [
+    "aa_corvette"
+   ],
+   "movingParts": 5,
+   "budgetClass": "ground"
+  },
+  "aa_frigate": {
+   "file": "aa_frigate.glb",
+   "fileBytes": 645796,
+   "sha1": "961f3d583c8ead73",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 52,
+   "meshes": 44,
+   "materials": 16,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 44,
+   "submeshes": 44,
+   "materialSlots": 44,
+   "materialsUsed": 16,
+   "triangles": 11846,
+   "vertices": 16470,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 432,
+   "openEdges": 352,
+   "nonManifoldEdges": 2,
+   "boundsMin": [
+    -3.768,
+    -1.5,
+    -21.5347
+   ],
+   "boundsMax": [
+    4.1975,
+    12.9,
+    21.5
+   ],
+   "size": [
+    43.035,
+    7.965,
+    14.4
+   ],
+   "center": [
+    0.215,
+    5.7,
+    -0.017
+   ],
+   "structureHash": "43f502cfea85fb64",
+   "color0": {
+    "mean": 0.6726,
+    "min": 0.0802,
+    "max": 1.0,
+    "p05": 0.2267,
+    "p95": 0.8702,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_gun",
+     "Muzzle_mg",
+     "Muzzle_missile"
+    ],
+    "mount": [
+     "Mount_APS",
+     "Mount_gun",
+     "Mount_mg",
+     "Mount_missile"
+    ],
+    "radar": [
+     "Radar"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Aps_cluster",
+    "Barrels_ciws",
+    "Boat_tubes",
+    "Boats",
+    "Boot_top",
+    "Bridge_glass",
+    "CIWS_body",
+    "CIWS_hatch",
+    "CIWS_ring",
+    "Crane",
+    "Deck",
+    "Deck_gear",
+    "Deck_walkways",
+    "Directors",
+    "Funnel",
+    "Gun_barrel",
+    "Gun_brake",
+    "Gun_house",
+    "Gun_mantlet",
+    "Gun_ring",
+    "Gun_vents",
+    "Hatches",
+    "Hatches.001",
+    "Hazard_marks",
+    "Hull",
+    "Hull_low",
+    "Hull_seams",
+    "Kit_cables",
+    "Life_rafts",
+    "Mast",
+    "Missile_bands",
+    "Missile_fins",
+    "Missile_seekers",
+    "Missiles",
+    "Mount_APS",
+    "Mount_gun",
+    "Mount_mg",
+    "Mount_missile",
+    "Muzzle_gun",
+    "Muzzle_mg",
+    "Muzzle_missile",
+    "Nav_lights",
+    "Nav_lights.001",
+    "Radar",
+    "Radar_array",
+    "Radar_face",
+    "Radar_pedestal",
+    "Rails",
+    "Sam_arms",
+    "Sam_base",
+    "Sam_pillar",
+    "Superstructure"
+   ],
+   "category": "ground",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "triangles 11,846 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 16,470 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
+   "units": [
+    "aa_frigate"
+   ],
+   "movingParts": 5,
+   "budgetClass": "ground"
+  },
   "aa_gun_tower": {
    "file": "aa_gun_tower.glb",
    "fileBytes": 344140,
@@ -8931,6 +9252,135 @@
    "units": [],
    "movingParts": 0,
    "budgetClass": "prop"
+  },
+  "ashm_corvette": {
+   "file": "ashm_corvette.glb",
+   "fileBytes": 586512,
+   "sha1": "a251c870d41ff96a",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 39,
+   "meshes": 33,
+   "materials": 16,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 33,
+   "submeshes": 33,
+   "materialSlots": 33,
+   "materialsUsed": 16,
+   "triangles": 10782,
+   "vertices": 15164,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 399,
+   "openEdges": 552,
+   "nonManifoldEdges": 1,
+   "boundsMin": [
+    -3.4495,
+    -1.25,
+    -17.0346
+   ],
+   "boundsMax": [
+    3.1169,
+    11.2004,
+    17.0
+   ],
+   "size": [
+    34.035,
+    6.566,
+    12.45
+   ],
+   "center": [
+    -0.166,
+    4.975,
+    -0.017
+   ],
+   "structureHash": "ca60dd08755e1748",
+   "color0": {
+    "mean": 0.656,
+    "min": 0.0821,
+    "max": 1.0,
+    "p05": 0.2193,
+    "p95": 0.8137,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_mg",
+     "Muzzle_missile"
+    ],
+    "mount": [
+     "Mount_APS",
+     "Mount_mg",
+     "Mount_missile"
+    ],
+    "radar": [
+     "Radar"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Aps_cluster",
+    "Barrels_ciws",
+    "Boat_tubes",
+    "Boats",
+    "Boot_top",
+    "Bridge_glass",
+    "CIWS_body",
+    "CIWS_hatch",
+    "CIWS_ring",
+    "Canisters",
+    "Crane",
+    "Deck",
+    "Deck_gear",
+    "Deck_walkways",
+    "Directors",
+    "Funnel",
+    "Hatches",
+    "Hatches.001",
+    "Hazard_marks",
+    "Hull",
+    "Hull_low",
+    "Hull_seams",
+    "Kit_cables",
+    "Launcher_covers",
+    "Life_rafts",
+    "Mast",
+    "Mount_APS",
+    "Mount_mg",
+    "Mount_missile",
+    "Muzzle_mg",
+    "Muzzle_missile",
+    "Nav_lights",
+    "Nav_lights.001",
+    "Radar",
+    "Radar_array",
+    "Radar_face",
+    "Radar_pedestal",
+    "Rails",
+    "Superstructure"
+   ],
+   "category": "ground",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "triangles 10,782 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 15,164 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
+   "units": [
+    "ashm_corvette"
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "atgm_ataka": {
    "file": "atgm_ataka.glb",
@@ -14487,6 +14937,153 @@
    "units": [],
    "movingParts": 0,
    "budgetClass": "prop"
+  },
+  "ciws_escort_ship": {
+   "file": "ciws_escort_ship.glb",
+   "fileBytes": 561788,
+   "sha1": "2a04b687fe152498",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 53,
+   "meshes": 43,
+   "materials": 14,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 43,
+   "submeshes": 43,
+   "materialSlots": 43,
+   "materialsUsed": 14,
+   "triangles": 10424,
+   "vertices": 14354,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 362,
+   "openEdges": 300,
+   "nonManifoldEdges": 2,
+   "boundsMin": [
+    -2.718,
+    -1.05,
+    -13.0345
+   ],
+   "boundsMax": [
+    2.718,
+    9.3004,
+    13.0
+   ],
+   "size": [
+    26.035,
+    5.436,
+    10.35
+   ],
+   "center": [
+    0.0,
+    4.125,
+    -0.017
+   ],
+   "structureHash": "2f15c8fe39c7fad2",
+   "color0": {
+    "mean": 0.6542,
+    "min": 0.0802,
+    "max": 1.0,
+    "p05": 0.2193,
+    "p95": 0.8143,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_gun",
+     "Muzzle_mg",
+     "Muzzle_mg_02",
+     "Muzzle_mg_03"
+    ],
+    "mount": [
+     "Mount_APS",
+     "Mount_gun",
+     "Mount_mg",
+     "Mount_mg_02",
+     "Mount_mg_03"
+    ],
+    "radar": [
+     "Radar"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Aps_cluster",
+    "Barrels_ciws",
+    "Barrels_ciws_02",
+    "Barrels_ciws_03",
+    "Boat_tubes",
+    "Boats",
+    "Boot_top",
+    "Bridge_glass",
+    "CIWS_body",
+    "CIWS_body_02",
+    "CIWS_body_03",
+    "CIWS_hatch",
+    "CIWS_hatch_02",
+    "CIWS_hatch_03",
+    "CIWS_ring",
+    "CIWS_ring_02",
+    "CIWS_ring_03",
+    "Deck",
+    "Deck_gear",
+    "Deck_walkways",
+    "Directors",
+    "Funnel",
+    "Gun_barrel",
+    "Gun_brake",
+    "Gun_house",
+    "Gun_mantlet",
+    "Gun_ring",
+    "Gun_vents",
+    "Hatches",
+    "Hatches.001",
+    "Hazard_marks",
+    "Hull",
+    "Hull_low",
+    "Hull_seams",
+    "Life_rafts",
+    "Mast",
+    "Mount_APS",
+    "Mount_gun",
+    "Mount_mg",
+    "Mount_mg_02",
+    "Mount_mg_03",
+    "Muzzle_gun",
+    "Muzzle_mg",
+    "Muzzle_mg_02",
+    "Muzzle_mg_03",
+    "Nav_lights",
+    "Nav_lights.001",
+    "Radar",
+    "Radar_array",
+    "Radar_face",
+    "Radar_pedestal",
+    "Rails",
+    "Superstructure"
+   ],
+   "category": "ground",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "triangles 10,424 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 14,354 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
+   "units": [
+    "ciws_escort_ship"
+   ],
+   "movingParts": 6,
+   "budgetClass": "ground"
   },
   "cliff_a": {
    "file": "cliff_a.glb",
@@ -25237,6 +25834,129 @@
    "movingParts": 3,
    "budgetClass": "ground"
   },
+  "ew_corvette": {
+   "file": "ew_corvette.glb",
+   "fileBytes": 467744,
+   "sha1": "9db3c7e3f1bca95b",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 37,
+   "meshes": 33,
+   "materials": 15,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 33,
+   "submeshes": 33,
+   "materialSlots": 33,
+   "materialsUsed": 15,
+   "triangles": 8700,
+   "vertices": 11861,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 308,
+   "openEdges": 328,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -3.0179,
+    -1.2,
+    -16.0346
+   ],
+   "boundsMax": [
+    3.0179,
+    11.55,
+    16.0
+   ],
+   "size": [
+    32.035,
+    6.036,
+    12.75
+   ],
+   "center": [
+    0.0,
+    5.175,
+    -0.017
+   ],
+   "structureHash": "9a92711da9449e6d",
+   "color0": {
+    "mean": 0.6716,
+    "min": 0.0821,
+    "max": 1.0,
+    "p05": 0.223,
+    "p95": 0.8137,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_gun",
+     "Muzzle_missile"
+    ],
+    "mount": [
+     "Mount_gun",
+     "Mount_missile"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Boat_tubes",
+    "Boats",
+    "Boot_top",
+    "Bridge_glass",
+    "Deck",
+    "Deck_gear",
+    "Deck_walkways",
+    "Funnel",
+    "Gun_barrel",
+    "Gun_brake",
+    "Gun_house",
+    "Gun_mantlet",
+    "Gun_ring",
+    "Gun_vents",
+    "Hatches",
+    "Hatches.001",
+    "Hazard_marks",
+    "Hull",
+    "Hull_low",
+    "Hull_seams",
+    "Jammer_arrays",
+    "Jammer_dome",
+    "Life_rafts",
+    "Mast",
+    "Mount_gun",
+    "Mount_missile",
+    "Muzzle_gun",
+    "Muzzle_missile",
+    "Nav_lights",
+    "Nav_lights.001",
+    "Rails",
+    "Sam_arms",
+    "Sam_caps",
+    "Sam_head",
+    "Sam_sight",
+    "Sam_tubes",
+    "Superstructure"
+   ],
+   "category": "ground",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "triangles 8,700 over the ground normal budget 7,800",
+    "vertices 11,861 over the ground normal budget 10,100"
+   ],
+   "units": [
+    "ew_corvette"
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
+  },
   "ew_jammer": {
    "file": "ew_jammer.glb",
    "fileBytes": 413604,
@@ -28183,6 +28903,151 @@
    "units": [],
    "movingParts": 0,
    "budgetClass": null
+  },
+  "frigate": {
+   "file": "frigate.glb",
+   "fileBytes": 680372,
+   "sha1": "bf756e2592af5106",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 51,
+   "meshes": 41,
+   "materials": 15,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 41,
+   "submeshes": 41,
+   "materialSlots": 41,
+   "materialsUsed": 15,
+   "triangles": 12460,
+   "vertices": 17539,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 458,
+   "openEdges": 448,
+   "nonManifoldEdges": 2,
+   "boundsMin": [
+    -3.7178,
+    -1.5,
+    -21.0347
+   ],
+   "boundsMax": [
+    3.7178,
+    12.4,
+    21.0
+   ],
+   "size": [
+    42.035,
+    7.436,
+    13.9
+   ],
+   "center": [
+    0.0,
+    5.45,
+    -0.017
+   ],
+   "structureHash": "3529e7ca68d59702",
+   "color0": {
+    "mean": 0.6594,
+    "min": 0.0801,
+    "max": 1.0,
+    "p05": 0.2193,
+    "p95": 0.8137,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_gun",
+     "Muzzle_mg",
+     "Muzzle_missile",
+     "Muzzle_missile_02"
+    ],
+    "mount": [
+     "Mount_APS",
+     "Mount_gun",
+     "Mount_mg",
+     "Mount_missile",
+     "Mount_missile_02"
+    ],
+    "radar": [
+     "Radar"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Aps_cluster",
+    "Barrels_ciws",
+    "Boat_tubes",
+    "Boats",
+    "Boot_top",
+    "Bridge_glass",
+    "CIWS_body",
+    "CIWS_hatch",
+    "CIWS_ring",
+    "Canister_caps",
+    "Canisters",
+    "Deck",
+    "Deck_gear",
+    "Deck_walkways",
+    "Directors",
+    "Funnel",
+    "Gun_barrel",
+    "Gun_hatches",
+    "Gun_house",
+    "Gun_mantlet",
+    "Gun_ring",
+    "Hatches",
+    "Hatches.001",
+    "Hazard_marks",
+    "Hull",
+    "Hull_low",
+    "Hull_seams",
+    "Life_rafts",
+    "Mast",
+    "Mount_APS",
+    "Mount_gun",
+    "Mount_mg",
+    "Mount_missile",
+    "Mount_missile_02",
+    "Muzzle_gun",
+    "Muzzle_mg",
+    "Muzzle_missile",
+    "Muzzle_missile_02",
+    "Nav_lights",
+    "Nav_lights.001",
+    "Radar",
+    "Radar_array",
+    "Radar_face",
+    "Radar_pedestal",
+    "Rails",
+    "Sam_arms_02",
+    "Sam_caps_02",
+    "Sam_head_02",
+    "Sam_sight_02",
+    "Sam_tubes_02",
+    "Superstructure"
+   ],
+   "category": "ground",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "triangles 12,460 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 17,539 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
+   "units": [
+    "frigate"
+   ],
+   "movingParts": 6,
+   "budgetClass": "ground"
   },
   "fuel_bladder": {
    "file": "fuel_bladder.glb",
@@ -41043,6 +41908,151 @@
    "movingParts": 3,
    "budgetClass": "ground"
   },
+  "missile_frigate": {
+   "file": "missile_frigate.glb",
+   "fileBytes": 725576,
+   "sha1": "bde858516c0e471a",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 51,
+   "meshes": 41,
+   "materials": 15,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 41,
+   "submeshes": 41,
+   "materialSlots": 41,
+   "materialsUsed": 15,
+   "triangles": 13728,
+   "vertices": 18718,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 475,
+   "openEdges": 632,
+   "nonManifoldEdges": 2,
+   "boundsMin": [
+    -3.818,
+    -1.5,
+    -22.0347
+   ],
+   "boundsMax": [
+    3.818,
+    12.3,
+    22.0
+   ],
+   "size": [
+    44.035,
+    7.636,
+    13.8
+   ],
+   "center": [
+    0.0,
+    5.4,
+    -0.017
+   ],
+   "structureHash": "bc887ed9557740fd",
+   "color0": {
+    "mean": 0.6464,
+    "min": 0.0802,
+    "max": 1.0,
+    "p05": 0.2084,
+    "p95": 0.8137,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_gun",
+     "Muzzle_mg",
+     "Muzzle_missile",
+     "Muzzle_missile_02"
+    ],
+    "mount": [
+     "Mount_APS",
+     "Mount_gun",
+     "Mount_mg",
+     "Mount_missile",
+     "Mount_missile_02"
+    ],
+    "radar": [
+     "Radar"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Aps_cluster",
+    "Barrels_ciws",
+    "Boat_tubes",
+    "Boats",
+    "Boot_top",
+    "Bridge_glass",
+    "CIWS_body",
+    "CIWS_hatch",
+    "CIWS_ring",
+    "Canister_caps",
+    "Canisters",
+    "Deck",
+    "Deck_gear",
+    "Deck_walkways",
+    "Directors",
+    "Funnel",
+    "Gun_barrel",
+    "Gun_brake",
+    "Gun_house",
+    "Gun_mantlet",
+    "Gun_ring",
+    "Gun_vents",
+    "Hatches",
+    "Hatches.001",
+    "Hazard_marks",
+    "Hull",
+    "Hull_low",
+    "Hull_seams",
+    "Life_rafts",
+    "Mast",
+    "Mount_APS",
+    "Mount_gun",
+    "Mount_mg",
+    "Mount_missile",
+    "Mount_missile_02",
+    "Muzzle_gun",
+    "Muzzle_mg",
+    "Muzzle_missile",
+    "Muzzle_missile_02",
+    "Nav_lights",
+    "Nav_lights.001",
+    "Radar",
+    "Radar_array",
+    "Radar_face",
+    "Radar_pedestal",
+    "Rails",
+    "Ram_arms_02",
+    "Ram_base_02",
+    "Ram_box_02",
+    "Ram_cells_02",
+    "Superstructure"
+   ],
+   "category": "ground",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "triangles 13,728 over the ground normal hard cap 9,700 (info: kept, owner rule)",
+    "vertices 18,718 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
+   "units": [
+    "missile_frigate"
+   ],
+   "movingParts": 6,
+   "budgetClass": "ground"
+  },
   "mlrs": {
    "file": "mlrs.glb",
    "fileBytes": 427316,
@@ -46624,6 +47634,135 @@
    "movingParts": 0,
    "budgetClass": "munition"
   },
+  "rocket_artillery_ship": {
+   "file": "rocket_artillery_ship.glb",
+   "fileBytes": 503488,
+   "sha1": "cd49e137c990bbec",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 40,
+   "meshes": 35,
+   "materials": 15,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 35,
+   "submeshes": 35,
+   "materialSlots": 35,
+   "materialsUsed": 15,
+   "triangles": 9262,
+   "vertices": 12797,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 331,
+   "openEdges": 296,
+   "nonManifoldEdges": 1,
+   "boundsMin": [
+    -3.5141,
+    -1.0,
+    -19.0347
+   ],
+   "boundsMax": [
+    3.5141,
+    9.5504,
+    19.0
+   ],
+   "size": [
+    38.035,
+    7.028,
+    10.55
+   ],
+   "center": [
+    0.0,
+    4.275,
+    -0.017
+   ],
+   "structureHash": "f03ee9f2a1dca9fb",
+   "color0": {
+    "mean": 0.6612,
+    "min": 0.0782,
+    "max": 1.0,
+    "p05": 0.2048,
+    "p95": 0.8222,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_mg",
+     "Muzzle_rocket"
+    ],
+    "mount": [
+     "Mount_mg",
+     "Mount_rocket"
+    ],
+    "radar": [
+     "Radar"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Barrel_mg",
+    "Blast_plates",
+    "Boat_tubes",
+    "Boats",
+    "Boot_top",
+    "Bridge_glass",
+    "Crane",
+    "Deck",
+    "Deck_gear",
+    "Deck_walkways",
+    "Directors",
+    "Funnel",
+    "Hatches",
+    "Hatches.001",
+    "Hazard_marks",
+    "Hull",
+    "Hull_low",
+    "Hull_seams",
+    "Kit_cables",
+    "Launcher_cradle",
+    "Launcher_housing",
+    "Launcher_ring",
+    "Life_rafts",
+    "Mast",
+    "Mg_body",
+    "Mg_post",
+    "Mount_mg",
+    "Mount_rocket",
+    "Muzzle_mg",
+    "Muzzle_rocket",
+    "Nav_lights",
+    "Nav_lights.001",
+    "Pod_bands",
+    "Pod_bores",
+    "Radar",
+    "Radar_array",
+    "Radar_pedestal",
+    "Rails",
+    "Rocket_pods",
+    "Superstructure"
+   ],
+   "category": "ground",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "triangles 9,262 over the ground normal budget 7,800",
+    "vertices 12,797 over the ground normal hard cap 12,600 (info: kept, owner rule)"
+   ],
+   "units": [
+    "rocket_artillery_ship"
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
+  },
   "rocket_technical": {
    "file": "rocket_technical.glb",
    "fileBytes": 411388,
@@ -49364,13 +50503,30 @@
    "hd": false,
    "errors": [],
    "warnings": [
+    "destroyer (borrowed model): height/length 0.32 vs modelSize 0.13 (+139%)",
+    "gun_destroyer (borrowed model): height/length 0.32 vs modelSize 0.13 (+144%)",
+    "missile_destroyer (borrowed model): height/length 0.32 vs modelSize 0.13 (+145%)",
+    "aa_destroyer (borrowed model): height/length 0.32 vs modelSize 0.13 (+144%)",
+    "heavy_monitor (borrowed model): height/length 0.32 vs modelSize 0.17 (+95%)",
+    "heavy_monitor: length 64.00 m vs modelSize 46 m (fitted at runtime)",
+    "battlecruiser (borrowed model): height/length 0.32 vs modelSize 0.13 (+155%)",
+    "battleship (borrowed model): height/length 0.32 vs modelSize 0.12 (+159%)",
+    "missile_cruiser (borrowed model): height/length 0.32 vs modelSize 0.13 (+146%)",
     "triangles 14,150 over the ground normal hard cap 9,700 (info: kept, owner rule)",
     "vertices 21,844 over the ground normal hard cap 12,600 (info: kept, owner rule)",
     "renderers 63 over the ground normal budget 61",
     "movingParts 10 over the ground normal budget 8"
    ],
    "units": [
-    "sea_cruiser"
+    "sea_cruiser",
+    "destroyer",
+    "gun_destroyer",
+    "missile_destroyer",
+    "aa_destroyer",
+    "heavy_monitor",
+    "battlecruiser",
+    "battleship",
+    "missile_cruiser"
    ],
    "movingParts": 10,
    "budgetClass": "ground"
@@ -55360,6 +56516,132 @@
     "titan_tank"
    ],
    "movingParts": 5,
+   "budgetClass": "ground"
+  },
+  "torpedo_boat": {
+   "file": "torpedo_boat.glb",
+   "fileBytes": 323312,
+   "sha1": "6820240d5e67c69d",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_mesh_quantization"
+   ],
+   "nodes": 34,
+   "meshes": 29,
+   "materials": 15,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 29,
+   "submeshes": 29,
+   "materialSlots": 29,
+   "materialsUsed": 15,
+   "triangles": 5914,
+   "vertices": 7968,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 203,
+   "openEdges": 336,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -2.1465,
+    -0.62,
+    -9.2
+   ],
+   "boundsMax": [
+    2.1465,
+    4.7504,
+    9.0
+   ],
+   "size": [
+    18.2,
+    4.293,
+    5.37
+   ],
+   "center": [
+    0.0,
+    2.065,
+    -0.1
+   ],
+   "structureHash": "8d01eebb741fdbef",
+   "color0": {
+    "mean": 0.6455,
+    "min": 0.0782,
+    "max": 1.0,
+    "p05": 0.2048,
+    "p95": 0.8222,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_mg",
+     "Muzzle_missile"
+    ],
+    "mount": [
+     "Mount_mg",
+     "Mount_missile"
+    ],
+    "radar": [
+     "Radar"
+    ],
+    "loose": [
+     "Searchlight"
+    ],
+    "launch": [
+     "Launch_tubes"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Barrel_mg",
+    "Boat_tubes",
+    "Boats",
+    "Boot_top",
+    "Bridge_glass",
+    "Deck",
+    "Deck_gear",
+    "Deck_walkways",
+    "Directors",
+    "Hatches",
+    "Hatches.001",
+    "Hazard_marks",
+    "Hull",
+    "Hull_low",
+    "Hull_seams",
+    "Kit_cables",
+    "Lamps",
+    "Launch_tubes",
+    "Life_rafts",
+    "Mast",
+    "Mg_body",
+    "Mg_post",
+    "Mount_mg",
+    "Mount_missile",
+    "Muzzle_mg",
+    "Muzzle_missile",
+    "Nav_lights",
+    "Nav_lights.001",
+    "Radar",
+    "Radar_array",
+    "Radar_pedestal",
+    "Rails",
+    "Searchlight",
+    "Superstructure"
+   ],
+   "category": "ground",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [
+    "torpedo_boat"
+   ],
+   "movingParts": 4,
    "budgetClass": "ground"
   },
   "tos_rocket": {
