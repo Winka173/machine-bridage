@@ -2,7 +2,7 @@
 
 Tháp và nhánh, tường, nhà chính, mô-đun tiện ích, xây lại, AI căn cứ.
 
-Gói cân bằng Machine Brigade, commit 2189ecd8, ngày 2026-10-05. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 3e5a45e7, ngày 2026-10-06. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Căn cứ và tháp
 
@@ -190,10 +190,10 @@ Sheet 03_can_cu/Nha_chinh — Nhà chính (4 dòng, 84 cột)
 
 | id | ten_en | ten_vi | ten_ngan_vi | lop | ke_thua_tu | base_cp | mau_hp | mau_trong_tran_hp | giap_hong |
 |---|---|---|---|---|---|---|---|---|---|
-| headquarters | Headquarters | Sở chỉ huy | Sở chỉ huy | Defense |  | 0 | 9000 | 19800.0 | 4 |
-| headquarters.fortress_air | Headquarters · AA Fortress | Sở chỉ huy · Pháo đài phòng không | Pháo đài PK | Defense | headquarters | 0 | 9000 | 19800.0 | 4 |
-| headquarters.fortress_ground | Headquarters · Fortress | Sở chỉ huy · Pháo đài | SCH Pháo đài | Defense | headquarters | 0 | 9000 | 19800.0 | 4 |
-| headquarters.shield | Headquarters · Shield | Sở chỉ huy · Lá chắn | SCH Lá chắn | Defense | headquarters | 0 | 9000 | 19800.0 | 4 |
+| headquarters | Headquarters | Sở chỉ huy | Sở chỉ huy | Defense |  | 0 | 9450 | 20790.0 | 4 |
+| headquarters.fortress_air | Headquarters · AA Fortress | Sở chỉ huy · Pháo đài phòng không | Pháo đài PK | Defense | headquarters | 0 | 9450 | 20790.0 | 4 |
+| headquarters.fortress_ground | Headquarters · Fortress | Sở chỉ huy · Pháo đài | SCH Pháo đài | Defense | headquarters | 0 | 9450 | 20790.0 | 4 |
+| headquarters.shield | Headquarters · Shield | Sở chỉ huy · Lá chắn | SCH Lá chắn | Defense | headquarters | 0 | 9450 | 20790.0 | 4 |
 
 *In 10 / 84 cột; 46 cột khác: xem sheet.*
 
@@ -211,10 +211,10 @@ Sheet 03_can_cu/Mo_dun_tien_ich — Mô-đun tiện ích (4 dòng, 90 cột)
 
 | id | ten_en | ten_vi | ten_ngan_vi | base_cp | mau_hp | mau_trong_tran_hp | giap_hong | giap_noc | cong_trinh |
 |---|---|---|---|---|---|---|---|---|---|
-| airfield | Airfield | Sân bay dã chiến | Sân bay | 0 | 1600 | 3520.0 | 1 | 1 | TRUE |
-| fire_control_centre | Defence Command Centre | Trung tâm chỉ huy phòng thủ | TT phòng thủ | 0 | 1136 | 2499.2 | 1 | 1 | TRUE |
-| logistics_station | Logistics station | Trạm hậu cần | Trạm hậu cần | 0 | 1400 | 3080.0 | 1 | 1 | TRUE |
-| repair_bay | Repair bay | Xưởng sửa chữa | Xưởng sửa chữa | 0 | 1600 | 3520.0 | 2 | 2 | TRUE |
+| airfield | Airfield | Sân bay dã chiến | Sân bay | 0 | 1920 | 4224.0 | 1 | 1 | TRUE |
+| fire_control_centre | Defence Command Centre | Trung tâm chỉ huy phòng thủ | TT phòng thủ | 0 | 1420 | 3124.0 | 1 | 1 | TRUE |
+| logistics_station | Logistics station | Trạm hậu cần | Trạm hậu cần | 0 | 1680 | 3696.0 | 1 | 1 | TRUE |
+| repair_bay | Repair bay | Xưởng sửa chữa | Xưởng sửa chữa | 0 | 1920 | 4224.0 | 2 | 2 | TRUE |
 
 *In 10 / 90 cột; 47 cột khác: xem sheet.*
 
