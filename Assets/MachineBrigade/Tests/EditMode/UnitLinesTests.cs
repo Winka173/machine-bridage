@@ -48,7 +48,7 @@ namespace MachineBrigade.Tests
                                 StringAssert.IsMatch(Word(load), text, def.Id + ": its stores");
                                 StringAssert.Contains(((int)System.MathF.Round(def.RearmTime)).ToString(), text, def.Id + ": its rearm time");
                             }
-                            else if (w.Clip > 0) StringAssert.IsMatch(Word(w.Clip * w.RoundsPerPull), text, def.Id + ": its magazine");
+                            else if (w.Clip > 0) StringAssert.IsMatch(Word(w.Clip), text, def.Id + ": its magazine");
                             else if (w.Ammo > 0) StringAssert.IsMatch(Word(w.Ammo), text, def.Id + ": its shots");
                         }
                     }
@@ -87,7 +87,7 @@ namespace MachineBrigade.Tests
                 if (w.Size > 0f) set.Add((int)System.MathF.Round(w.Size));
                 foreach (Match c in Calibre.Matches(w.RealName ?? "")) set.Add(int.Parse(c.Groups[1].Value));
                 foreach (Match c in Regex.Matches(w.Id, @"\d{2,3}")) set.Add(int.Parse(c.Value));
-                foreach (var n in new[] { def.LoadOf(w), w.Clip, w.Clip * w.RoundsPerPull, w.Ammo, w.Burst, w.RoundsPerCycle, w.Ammo * w.Burst }) if (n > 0) set.Add(n);
+                foreach (var n in new[] { def.LoadOf(w), w.Clip, w.Ammo, w.Burst, w.RoundsPerCycle, w.Ammo * w.Burst }) if (n > 0) set.Add(n);
             }
             return set;
         }

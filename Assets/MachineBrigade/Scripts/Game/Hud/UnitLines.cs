@@ -140,7 +140,7 @@ namespace MachineBrigade.Game.Hud
             }
             if (w.Clip > 0)
             {
-                lines.Add(F("ul.clip", ("count", w.Clip * w.RoundsPerPull), ("seconds", N(w.ClipReload))));
+                lines.Add(F("ul.clip", ("count", w.Clip), ("seconds", N(w.ClipReload))));
                 return lines;
             }
             if (w.Ammo > 0)
@@ -219,7 +219,7 @@ namespace MachineBrigade.Game.Hud
             // After firing.
             if (def.Scoot is { } scoot) lines.Add(F("ul.after.scoot", ("count", scoot.Shots), ("minimum", N(scoot.Min)), ("maximum", N(scoot.Max))));
             if (def.Flying && def.FixedWing && !def.Kamikaze && !def.Orbit) lines.Add(Strings.Get("ul.after.pass"));
-            if (armed && w.Clip > 1 && !def.Static) lines.Add(F("ul.after.clip", w.Clip * w.RoundsPerPull));
+            if (armed && w.Clip > 1 && !def.Static) lines.Add(F("ul.after.clip", w.Clip));
             // Target priority.
             if (bomber) lines.Add(Strings.Get("ul.target.bomber"));
             else if (def.Interceptor || def.Class == UnitClass.AntiAir && w.Targets == TargetLayers.Air) lines.Add(Strings.Get("ul.target.air"));

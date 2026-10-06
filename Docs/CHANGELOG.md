@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Barrels (06/10, feature/barrels): the battleship carries three Iowa triple 406 mm turrets that fire all three barrels
+  together (3 x 200 a volley, DPS unchanged); Tools/assets/barrel_audit.py lists other data / model barrel mismatches.
 - Naval models, lane A (06/10, branch feature/naval-models-art): real models for torpedo_boat, ashm_corvette,
   aa_corvette, ciws_escort_ship, ew_corvette, frigate, missile_frigate, aa_frigate and rocket_artillery_ship
   (replacing the stand-ins), each with its own weapons and runtime mounts; quality gate reads stable mount tags.

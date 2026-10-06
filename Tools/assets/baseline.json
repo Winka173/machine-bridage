@@ -5372,15 +5372,11 @@
   {
    "date": "2026-10-06",
    "models": [
-    "battleship",
-    "battlecruiser",
-    "heavy_monitor"
+    "battleship"
    ],
-   "reason": "barrels pass 06/10: Iowa triple turrets (3 barrels, Muzzle_b1..3 per turret); heavy turret barrels rise by elev (bores at the tips)",
+   "reason": "barrels pass 06/10: Iowa triple turrets (3 barrels, Muzzle_b1..3_gun[_NN] a turret, bores at the tips)",
    "changes": [
-    "battlecruiser: bytes only",
-    "FLAG battleship: triangles 21,164 -> 24,152 (+14.1%); vertices 30,217 -> 33,043 (+9.4%); fileBytes 1,149,016 -> 1,248,352 (+8.6%); structure changed",
-    "heavy_monitor: bytes only"
+    "FLAG battleship: triangles 21,164 -> 24,152 (+14.1%); vertices 30,217 -> 33,043 (+9.4%); fileBytes 1,149,016 -> 1,248,352 (+8.6%); structure changed"
    ]
   }
  ],
@@ -12350,7 +12346,7 @@
   "battlecruiser": {
    "file": "battlecruiser.glb",
    "fileBytes": 1006828,
-   "sha1": "55b815b6ee3e9b32",
+   "sha1": "073c1514f33438b7",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",
@@ -12400,7 +12396,7 @@
    ],
    "structureHash": "95196f652169f5ac",
    "color0": {
-    "mean": 0.641,
+    "mean": 0.6402,
     "min": 0.0801,
     "max": 1.0,
     "p05": 0.2013,
@@ -33388,7 +33384,7 @@
   "heavy_monitor": {
    "file": "heavy_monitor.glb",
    "fileBytes": 613212,
-   "sha1": "f0ffdd8c235081a4",
+   "sha1": "38ca2cf0861004a5",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength",

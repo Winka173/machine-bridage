@@ -21997,3 +21997,22 @@ the data lane's brief Docs/naval/MODEL_CONTRACT.md: real GLBs for the eight big 
   baseline.json, models.json) and the new GLBs' .meta files are left for the lead's merge pass.
 - **Pictures:** Blender Workbench sheets in `Docs/models/rebuild/<id>/blender_sheet.png`; the ships have
   "card": false, so the card pipeline renders none; Unity ModelScan sheets need Unity (not run).
+
+## Barrels: battleship triple turrets + audit
+
+Owner 06/10 (Docs/prompts/requests_vi.md), branch feature/barrels; scope narrowed by the owner the same day to the battleship.
+- **Battleship** (Iowa): the three heavy turrets are triples (mb_naval_b.battleship: `barrels=3, cal=.32, width=1.12,
+  pitch=1.25, rise=True`). `heavy_turret` writes `Muzzle_b1..3_gun[_NN]` under each turret's `Muzzle_gun[_NN]` (the runtime's
+  per-barrel name, ModelLibrary.AddBarrelPoints; `_L/_C/_R` would parse as extra mounts), a centre sight hood and gun port
+  plates. `rise=True` lifts the barrels by `elev` so the bores meet the muzzle nodes (the kit's barrels dipped 2 x dz under
+  them); the monitor and battlecruiser keep `rise=False` (unchanged GLBs). 24,152 tris (2.5 x the ground cap, stage rework 3 x).
+- **Data** (`naval_406_bs`, battleship only): barrels 3, SIMULTANEOUS, damage 600 -> 200 a round, cooldown 11, roundWeight 600;
+  per volley 3 x 200 = 600 and DPS 54.55 a turret, as before; pen 5, splash 8, range kept. full_weapon_audit WAIT_NOTES
+  records its rate (TOO FAST against the real Iowa: game pace, owner's call). p34_barrels.MUZZLES lists the three turrets;
+  its muzzle check skips a GLB missing from the tree (cerberus) instead of crashing p34_validate / fix_validate.
+- **Audit**: Tools/assets/barrel_audit.py (static: balance.json + GLBs) compares every mount's data barrels with the model;
+  Docs/models/BARREL_AUDIT.md lists the 33 weapons that differ. Not fixed (owner). Notes for a later pass: most are twin /
+  quad AA and boss guns; magazine guns cannot be SIMULTANEOUS (Catalog.P34 throws) without a Sim change; fix_validate item 6
+  now runs (it crashed on cerberus before) and shows older SIMULTANEOUS models missing from MUZZLES.
+- Checks: glb_check (accepted, 0 errors), quality_gate battleship pass, runtime_node_audit 0 new hard, budget_audit 0 hard,
+  dotnet build Sim 0 errors. No tests or Unity runs.

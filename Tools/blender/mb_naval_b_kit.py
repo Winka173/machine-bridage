@@ -569,7 +569,7 @@ def gun_stealth(a, i, at, s=1.0, barrel=4.6, base=.4):
 
 
 def heavy_turret(a, i, at, s=1.0, barrels=1, barrel=10.0, cal=.42, base_h=1.0, base_r=2.6, elev=.03,
-                 rangefinder=True, house_mat='Team', width=1.0, pitch=1.25):
+                 rangefinder=True, house_mat='Team', width=1.0, pitch=1.25, rise=False):
     """A heavy turret on `Mount_gun[_NN]` (Iowa / Alaska / monitor read): the armoured barbette (static, base_h above
     the deck point `at`), the gun house with the sloped face plate, flat sides, the rear overhang and its bevels, the
     sighting hoods and roof vents, the rangefinder ears at the rear; per barrel a canvas blast bag and the long tapered
@@ -614,7 +614,10 @@ def heavy_turret(a, i, at, s=1.0, barrels=1, barrel=10.0, cal=.42, base_h=1.0, b
     xs = [0.0] if barrels == 1 else [-.95 * s, .95 * s] if barrels == 2 else [-pitch * s, 0, pitch * s]
     zb = 1.05 * s
     L = barrel * s
-    dz = math.sin(elev) * L     # barrels pass 06/10: the barrels rise by elev (they dipped before, 2 x dz under the muzzle)
+    dz = math.sin(elev) * L
+    # Barrels pass 06/10: rise=True lifts the barrels by elev so the bores meet the muzzles (without it they dip by elev,
+    # 2 x dz under the muzzle; the monitor and battlecruiser keep that until their own rework).
+    tilt = R90 - elev if rise else R90 + elev
     for bx in xs:
         if barrels == 3:
             # The gun port plate on the face, behind the bag (proud of the face by 2-6 cm: no coplanar faces).
@@ -624,11 +627,11 @@ def heavy_turret(a, i, at, s=1.0, barrels=1, barrel=10.0, cal=.42, base_h=1.0, b
                                                      bevel=.02)
         k.lathe(a.part('Blast_bags' + n, 'Canvas', m), [(cal * 1.55 * s, 0), (cal * 1.8 * s, .2 * s),
                                                        (cal * 1.65 * s, .45 * s), (cal * 1.3 * s, .6 * s)],
-                loc=(bx, f + .2 * s, zb), rot=(R90 - elev, 0, 0), seg=12)
+                loc=(bx, f + .2 * s, zb), rot=(tilt, 0, 0), seg=12)
         k.lathe(a.part('Gun_barrels' + n, 'Steel', m), [(cal * 1.25 * s, 0), (cal * 1.25 * s, L * .22),
                                                        (cal * .95 * s, L * .3), (cal * .78 * s, L * .93),
                                                        (cal * .88 * s, L * .965), (cal * .85 * s, L),
-                                                       (0, L)], loc=(bx, f + .4 * s, zb), rot=(R90 - elev, 0, 0),
+                                                       (0, L)], loc=(bx, f + .4 * s, zb), rot=(tilt, 0, 0),
                 seg=14, worn=(4,))
         a.part('Gun_muzzles' + n, 'Undercarriage', m).cyl(cal * .5 * s, .03, loc=(bx, f + .4 * s - L - .015,
                                                                                   zb + dz), rot=FWD, seg=10, bevel=0)

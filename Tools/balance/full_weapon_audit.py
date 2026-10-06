@@ -219,8 +219,7 @@ def numbers(w):
     barrels = int(w.get("barrels", 1) or 1)
     pull = barrels if sim else 1
     if clip > 0:
-        # Barrels pass (owner 06/10): a simultaneous magazine gun's clip counts volleys, every barrel a round.
-        mode, n, inner, pause, cycle = "magazine", clip * pull, cd, cr, (clip - 1) * cd + cr
+        mode, n, inner, pause, cycle = "magazine", clip, cd, cr, (clip - 1) * cd + cr
     elif burst > 1:
         mode, n, inner, pause, cycle = "salvo", burst * pull, bi, cd, cd + (burst - 1) * bi
     else:
@@ -257,8 +256,6 @@ def flags_rate(w, nb, real):
     inner = nb["inner"] * guns / max(1, nb["pull"]) if nb["inner"] and nb["n"] > guns else None
     if nb["mode"] == "magazine" or kind in ("mg", "ac", "aa"):  # a stream's barrels take turns
         inner = nb["inner"] * mount if nb["inner"] else None
-        if nb["sim"] and nb["inner"]:  # ... unless they fire together: each barrel once a volley
-            inner = nb["inner"] * max(1, mount // max(1, nb["barrels"]))
     note = f"{real['rpm']:g} rpm{' x' + str(mount) if mount > 1 else ''}"
     ratio = per / ref
     if kind == "rocket":
@@ -680,10 +677,7 @@ WAIT_NOTES = [
     ({"siege_gun_105", "siege_mortar_240", "recoilless_106", "gun_105_ags", "gun_140_twin", "gun_100_river"},
      "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error"),
     ({"naval_406_bs"},
-     "owner 06/10 (DECISIONS 'Barrels: battleship triple turrets + audit'): the Iowa triple fires 3 x 200 every 11 s, the old single round's 600 a volley"),
-    ({"p26_hydra_ty100_twin", "p26_matriarch_close_boss_flak", "p26_matriarch_tiny_mothership_cannon", "train_boss_flak_quad",
-      "twin_30_flak", "p26_leviathan_direct_lev127"},
-     "barrels pass (owner 06/10): the model shows more barrels than the line fired from; the DPS is kept, so each barrel fires its share"),
+     "owner 06/10 (DECISIONS 'Barrels: battleship triple turrets'): the Iowa triple fires 3 x 200 every 11 s, the old single round's 600 a volley"),
 ]
 
 

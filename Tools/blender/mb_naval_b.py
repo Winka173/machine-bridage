@@ -383,11 +383,11 @@ def battleship(a):
             (-11.0, 19.0), -34.0)
     S.breakwater(-31.0, h=.65)
     N.heavy_turret(a, 0, (0, -24.5, dz(-24.5)), s=1.35, barrels=3, barrel=8.5, cal=.32, base_h=.9, base_r=2.9,
-                   width=1.12, pitch=1.25)
+                   width=1.12, pitch=1.25, rise=True)
     N.heavy_turret(a, 1, (0, -15.0, dz(-15.0)), s=1.35, barrels=3, barrel=8.5, cal=.32, base_h=3.8, base_r=2.9,
-                   width=1.12, pitch=1.25)
+                   width=1.12, pitch=1.25, rise=True)
     N.heavy_turret(a, 2, (0, 25.5, dz(25.5)), s=1.35, barrels=3, barrel=8.5, cal=.32, base_h=.9, base_r=2.9,
-                   width=1.12, pitch=1.25)
+                   width=1.12, pitch=1.25, rise=True)
     sup = a.part('Superstructure', 'Team')
     sup.asset = a
     N.tier(sup, -9.4, 10.0, dz(0) - .05, 8.0, 5.6, 5.4, rf=.3, rb=.3)

@@ -103,7 +103,6 @@ namespace MachineBrigade.Sim.Content
         /// <summary>
         /// Prompt 34 L4: data "salvoMode": "SIMULTANEOUS" fires every barrel in the same tick each trigger pull (one volley; the
         /// view staggers the flashes); "RIPPLE" (the default) fires one round a pull, a salvo's rounds one after another.
-        /// Barrels pass (owner 06/10): every multi-barrel gun turret is simultaneous; a magazine gun's "clip" then counts volleys.
         /// </summary>
         public bool Simultaneous { get; internal set; }
 
