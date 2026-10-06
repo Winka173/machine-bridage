@@ -21653,3 +21653,59 @@ Map / visual / audio master spec Parts C-P, U, V, BW, CA, CD, CI (map), CJ; bran
   tests `MapTopologyW1ATests` (category MapVAW1A) written, compile-checked against stubs, not run; objective approach topology
   (spec H) is covered by lanes and staging only; acoustic zones (BP) belong to the audio lanes; the pivot-room corner check
   (ROUTE_TURN) is strict and information only.
+
+## Map/visual/audio W2 (lane A)
+
+Map / visual / audio master spec Part H (objective approaches), BT (performance test scenes), the map rows of CI/CJ, plus the
+AI topology hooks map spec O/I/P mention; branch `feature/mva-w2a` (06/10), continuing W1-A. Code:
+`Sim/Navigation/GameplayTopology.Approaches.cs`, `.Gates.cs` / `.Ground.cs` / `.Types.cs` additions, `Sim/AI/TopologyHooks.cs`,
+`Sim/Navigation/MapTelemetry.cs`, `Sim/Navigation/MapStressScenes.cs`; tunables `maps.topology.approach*` /
+`aiBreachPriority` / `aiStagingCandidate` / `aiConcealmentWeight` / `telemetryApproaches`
+(`SimTunables.MapTopologyW2A.cs`); exporter `Tools/maps/topogen` (+ `--check`); outputs `Docs/maps/ObjectiveApproaches.json`,
+`Docs/maps/MapAcceptance.json`, `Docs/maps/STRESS_SCENES.json`, `MapConnectivity.json` routes' `swingTurnSpaceM` /
+`turnsFitSwing`.
+
+- **Objective approaches (H).** Per objective x attacking side: up to `approachAlternatives` + 1 distinct terrain-weighted
+  routes from the side's rally point (a route sharing more than `approachDistinctShare` of its cells with one already found is
+  not new), a cover-weighted safest route and the heavy graph's route. Roles by measure: Shortest (length), Primary (the route
+  on the side's own tactical lane, else the shortest), Secondary (the next), Flank (>= `approachFlankOffset` of the map's short
+  side off the primary and arriving >= `approachFlankBearing` degrees round), Safest (least exposure, `approachExposurePenalty`
+  per open cell), HeavyCompatible (shortest a heavy hull clears). Plus an artillery-support region in the attacker's half and
+  the defender's fallback region behind the objective (cover, a line back, exits), both `TacticalRegion` (centre, radius, open
+  cells, scored terms) reused from the existing position/staging scoring shape. An objective no ground route reaches for a side
+  gets an empty approach set (not an error): the acceptance row only flags it when a light hull reaches it by the plain route
+  graph anyway.
+- **Swing-turn re-measure.** `ROUTE_TURN` (spec M-style pivot room) is a strict on-the-spot check; `ROUTE_TURN_TIGHT` adds the
+  same corner measured letting the hull swing wide through the turn (`SwingTurnSpaceM`), the way a moving vehicle actually
+  takes a bend. A route failing `ROUTE_TURN` can still pass `ROUTE_TURN_TIGHT`; the reverse should never happen (asserted by
+  `MapTopologyW2ATests.SwingTurnSpaceNeverExceedsTheStrictPivotCheckItRelaxes`, not run by this lane). Boss stays
+  information (scripted routes, as `ROUTE_SIZE:Boss`); other classes are Yellow, governed `PLAYTEST_REQUIRED` (telemetry:
+  `bossRouteReplanCount` / `heavyRouteFailure`) in `map_warning_reviews.json`, not auto-fixed (spec CH).
+- **AI topology hooks, off by default.** `BreachTopology.Ranking` (spec O): breachers rank a wall segment nearer when its fall
+  opens or shortens a path (`breachObjectiveBonus`, `breachSavingWeight` per metre saved, capped at 80 m) and farther under
+  defensive tower coverage (`breachTowerPenalty`); gated on `aiBreachPriority` (false: pick unchanged). `StagingTopology.For`
+  (spec I/H): offers the topology's own staging area as one more candidate to `Commander.P3`'s `StagingP3`, competing on the
+  same threat score (`aiStagingCandidate`, false: unchanged). `TerrainTopology.ConcealmentTerm` (spec P): terrain concealment as
+  a `FireSupportAnchor.Score` term, weight `aiConcealmentWeight` (0: unchanged). All three are map knowledge only (no fog
+  leak): the walls, staging geometry and terrain tags are drawn on the map already.
+- **Telemetry.** `MapTelemetry` adds average LOS engagement distance (existing P2/combat sampling) and, behind
+  `telemetryApproaches` (false: the approach sets are not built just to count), per-approach-route usage samples (a vehicle
+  within 6 m of a route's polyline). Both 1 Hz, reads only.
+- **Acceptance / stress scenes.** `Tools/maps/topogen` adds `--check` (exit 1 on any failing acceptance row, nothing written;
+  the generator otherwise always writes) and three new CI rows beyond W1-A's: **BW** (the full load gates, already measured),
+  **H** (every objective approach set with routes has Primary/Shortest/Safest; one with none is only a fault if a light hull
+  still reaches it), **I** (no staging area within 6 m of a no-parking lane). `MapStressScenes` (spec BT) lists the six scenes
+  (48v48 urban choke, 48v48 open desert, naval boss + escorts, fortress siege, weather storm, maximum wreck density) with their
+  roster, extras, weather, wreck seed and the metrics each part records (map here; render/audio/the siege scene in Unity play,
+  the final part); `FocusOf` resolves each scene's named feature (busiest critical choke, nearest sea node, biggest breach
+  saving, else the main lane's middle) on the shipped map so the final part's harness does not re-derive it. Definitions only:
+  no battle is stepped by this lane.
+- **Warnings re-governed.** New codes `ROUTE_TURN_TIGHT` and `APPROACH_SINGLE` (an objective with exactly one distinct ground
+  approach, information) added to `map_warning_reviews.json` before the catch-all rule; re-running topogen moved the
+  acceptance failure count from 74 (CI7, the two codes ungoverned) to 0 across all 100 maps (1013 warnings).
+- **Not done / open:** the export pack is not rebuilt (lead rebuilds after the merge; three new sheets ready in `_mva_w1a.py`:
+  `Ban_do_tiep_can_muc_tieu`, `Ban_do_nghiem_thu`, `Ban_do_canh_ap_luc`); EditMode tests `MapTopologyW2ATests` (category
+  MapVAW2A) written, not run (compile-checked only outside Unity, since the file needs `UnityEngine`/NUnit); the siege stress
+  scene and the render/audio metrics of all six scenes are recorded by the final part in Unity play, not this lane; the
+  conquest scenes' Sim harness (`Tests/EditMode MapVaW2AStressHarness`, category Explicit, named in `STRESS_SCENES.json`'s
+  `harness` field) is not written yet — the next part's job, reusing `MapStressScenes.All` and `FocusOf`.
