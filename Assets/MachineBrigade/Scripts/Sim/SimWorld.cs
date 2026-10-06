@@ -916,6 +916,8 @@ namespace MachineBrigade.Sim
             Strikes.Step();
             Damage.Step();
             if (Map.Neutrals.Count > 0) Neutrals.Step(dt);
+            // Map / visual / audio W1-A: the map telemetry (reads only, maps.topology.telemetry).
+            if (Content.SimTunables.Maps.Topology.Telemetry) MapTelemetry.Step(this);
             RemoveDead();
         }
 

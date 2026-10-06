@@ -1077,6 +1077,51 @@
       "parkedSpeed": { "value": 0.5, "unit": "x", "kind": "tan_suat", "linh_vuc": "08", "code": "UnitCostField.ParkedSpeed" },
       "ringReach": { "value": 2.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "UnitCostField.RingReach" },
       "refreshTicks": { "value": 10, "unit": "ticks", "kind": "thoi_gian", "linh_vuc": "08", "code": "UnitCostField.RefreshTicks" }
+    },
+    // Map / visual / audio W1-A: GameplayTopology audit references (not combat values), terrain semantics, weather presentation.
+    "topology": {
+      "sizeBands": { "value": [2.9, 3.4, 4.5], "unit": "m", "kind": "nguong", "linh_vuc": "08", "code": "GameplayTopology.ClassOf (hull width: Medium, Heavy, SuperHeavy start)" },
+      "sideClearance": { "value": 0.5, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "GameplayTopology size-class route clearance" },
+      "separationMargin": { "value": 1.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "TacticalChoke side-by-side capacity (spec E1)" },
+      "navalSafety": { "value": 1.15, "unit": "x", "kind": "nguong", "linh_vuc": "08", "code": "NavalRouteAudit curve radius >= Rmin x safety (spec M)" },
+      "navalMargin": { "value": 2.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "NavalRouteAudit water kept round a turning hull" },
+      "directFireRef": { "value": 60.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "SpawnFairness direct-fire reference (audit only)" },
+      "artilleryRef": { "value": 120.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "SpawnFairness / ArtilleryPocket artillery reference (audit only)" },
+      "artilleryMinRef": { "value": 20.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "ArtilleryPocket minimum-range reference (audit only)" },
+      "reconRef": { "value": 70.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "ReconObservation reach reference (audit only)" },
+      "towerRangeRef": { "value": 40.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "BreachInfo defensive tower coverage reference" },
+      "spawnRing": { "value": 30.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "SpawnFairness exit ring (as Tools/audit/map_audit.py)" },
+      "fullExposureShare": { "value": 0.9, "unit": "share", "kind": "nguong", "linh_vuc": "08", "code": "SpawnFairness FULL_EXIT_DIRECT_FIRE flag" },
+      "shoreBand": { "value": 24.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "ShoreFireRegion inland band" },
+      "shoreStep": { "value": 16.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "ShoreFireRegion length along the waterline" },
+      "stagingDistance": { "value": 45.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "StagingArea standoff from an objective" },
+      "stagingRadius": { "value": 12.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "StagingArea radius" },
+      "positionSpacing": { "value": 15.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "TacticalPosition least spacing" },
+      "positionsPerObjective": { "value": 4, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "08", "code": "TacticalPosition direct-fire positions per objective" },
+      "laneAlternatives": { "value": 3, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "08", "code": "TacticalLane alternatives after the main lane" },
+      "lanePenalty": { "value": 25.0, "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "TacticalLane cost added round a found lane" },
+      "sizeClassFeasibility": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "08", "code": "EngagementFeasibility size-class route check (false: P0-B as before)" },
+      "telemetry": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "08", "code": "MapTelemetry counters (spec CA / 64)" },
+      "telemetrySeconds": { "value": 1.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "08", "code": "MapTelemetry sampling period" }
+    },
+    // [traction, visualCover, artilleryExposure, mineSuitability, largeVehiclePenalty] per terrain tag (metadata, never a combat buff).
+    "terrainSemantics": {
+      "normal": { "value": [0.9, 0.0, 1.0, 0.6, 0.0], "unit": "share", "kind": "khac", "linh_vuc": "08", "code": "TerrainSemantics.Of (spec P)" },
+      "road": { "value": [1.0, 0.0, 1.0, 1.0, 0.0], "unit": "share", "kind": "khac", "linh_vuc": "08", "code": "TerrainSemantics.Of (spec P)" },
+      "rough": { "value": [0.7, 0.1, 0.9, 0.8, 0.2], "unit": "share", "kind": "khac", "linh_vuc": "08", "code": "TerrainSemantics.Of (spec P)" },
+      "forest": { "value": [0.75, 0.5, 0.8, 0.4, 0.4], "unit": "share", "kind": "khac", "linh_vuc": "08", "code": "TerrainSemantics.Of (spec P)" },
+      "shallowWater": { "value": [0.5, 0.0, 1.0, 0.0, 0.5], "unit": "share", "kind": "khac", "linh_vuc": "08", "code": "TerrainSemantics.Of (spec P)" }
+    },
+    // Presentation only (visibility stays campaign.json weatherSight): [fogDensity, ambientLight, cloudiness, rain, snow, wind, windDirectionDeg, lightning, dust, contrailVisibility, muzzleFlashVisibility, lowpassEnvironmentAmount, telegraphBoost].
+    "weatherPresentation": {
+      "clear": { "value": [0.0, 1.0, 0.1, 0.0, 0.0, 0.2, 225.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0], "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "WeatherPresentation.Of (spec Q)" },
+      "overcast": { "value": [0.05, 0.75, 0.8, 0.0, 0.0, 0.35, 225.0, 0.0, 0.0, 0.8, 1.1, 0.05, 1.0], "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "WeatherPresentation.Of (spec Q)" },
+      "rain": { "value": [0.15, 0.6, 0.9, 0.6, 0.0, 0.5, 210.0, 0.0, 0.0, 0.5, 1.15, 0.2, 1.1], "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "WeatherPresentation.Of (spec Q)" },
+      "storm": { "value": [0.25, 0.45, 1.0, 1.0, 0.0, 0.9, 200.0, 0.8, 0.0, 0.3, 1.25, 0.35, 1.2], "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "WeatherPresentation.Of (spec Q)" },
+      "snow": { "value": [0.3, 0.8, 0.9, 0.0, 0.8, 0.4, 330.0, 0.0, 0.0, 0.6, 1.1, 0.3, 1.2], "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "WeatherPresentation.Of (spec Q)" },
+      "sandstorm": { "value": [0.45, 0.6, 0.4, 0.0, 0.0, 1.0, 90.0, 0.0, 1.0, 0.2, 1.2, 0.4, 1.3], "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "WeatherPresentation.Of (spec Q)" },
+      "fog": { "value": [0.8, 0.65, 0.6, 0.0, 0.0, 0.1, 180.0, 0.0, 0.0, 0.2, 1.2, 0.45, 1.3], "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "WeatherPresentation.Of (spec Q)" },
+      "night": { "value": [0.1, 0.2, 0.3, 0.0, 0.0, 0.2, 225.0, 0.0, 0.0, 0.4, 1.6, 0.1, 1.0], "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "WeatherPresentation.Of (spec Q)" }
     }
   }
 }

@@ -13280,3 +13280,24 @@ Không đổi giá trị cân bằng. Pack không xuất lại (lead xuất sau 
 | âm thanh: trạng thái | 09/Am_thanh, 09/Hieu_ung_tham_chieu | thêm trang_thai_giay_phep, trang_thai_nguon, trang_thai_tham_chieu_that (giấy phép tách khỏi tham chiếu tiếng thật) |
 | âm thanh: ưu tiên | AudioPolicy (code) | lớp P0-P5; cảnh báo P0/P1 không bị cắt; thanh "Cảnh báo" riêng |
 
+## MAP VA W1-A (lane A, 06/10, feature/mva-w1a)
+
+Pack not rebuilt in this lane (the lead rebuilds once after the merge). New sheets ready (`Tools/export/domains/_mva_w1a.py`, read
+from the generated `Docs/maps/*.json` of `Tools/maps/topogen`):
+
+| Sheet | File | Content |
+|---|---|---|
+| Ban_do_dia_hinh_tong | 06_ban_do | per map: components, chokes, lanes, positions, staging, shore regions, load gates, warnings |
+| Ban_do_diem_nghen | 06_ban_do | tactical chokes: type, usable width, side-by-side capacity per class, throughput, two-way, queue areas |
+| Ban_do_lan_chien_thuat | 06_ban_do | tactical lanes: kind, width, directionality, class support, speed, chokes, objectives, parking forbidden |
+| Ban_do_kiem_tra_tuyen | 06_ban_do | spawn -> objective per size class: reachable, width, turn space, gate / bridge width |
+| Ban_do_cong_bang_bai_tha | 06_ban_do | spawn fairness metrics and G1 flags |
+| Ban_do_vi_tri_chien_thuat, Ban_do_khu_tap_ket | 06_ban_do | tactical positions (direct fire, artillery pocket, recon, hull-down), staging areas |
+| Ban_do_pha_tuong | 06_ban_do | wall breach metadata |
+| Ban_do_vung_ban_bo, Ban_do_tuyen_bien_dong_hoc, Ban_do_quay_tau | 06_ban_do | shore fire regions, sea route kinematics, ship turn-radius audit |
+| Ban_do_canh_bao | 06_ban_do | map warning registry (status / owner / reason / version) |
+| Ban_do_ngu_nghia_dia_hinh, Thoi_tiet_trinh_bay | 06_ban_do | terrain semantics, weather presentation (visibility stays in Thoi_tiet) |
+| AI_dia_hinh_tieu_thu | 09_ai | the AI code that reads GameplayTopology |
+
+New tunables (Hang_so_ban_do, automatic): `maps.topology.*` (audit references, flags), `maps.terrainSemantics.*`,
+`maps.weatherPresentation.*`. No combat, weather visibility or balance value changed.

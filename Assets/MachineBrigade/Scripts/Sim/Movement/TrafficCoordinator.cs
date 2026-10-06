@@ -302,8 +302,7 @@ namespace MachineBrigade.Sim.Movement
             // A rebuild keeps the reservations of passages that stay where they were (same centre within a cell).
             var old = new List<Passage>(_passages);
             _passages.Clear();
-            BuildDoorways(lanes);
-            BuildChokes(topology);
+            BuildPassages(_world.GameplayTopology);
             for (var i = 0; i < _passages.Count; i++)
             {
                 var p = _passages[i];
@@ -323,117 +322,28 @@ namespace MachineBrigade.Sim.Movement
             }
         }
 
-        /// <summary>The lane map's doorways (gates, gaps): one passage each, measured from their cells.</summary>
-        private void BuildDoorways(LaneMap lanes)
+        /// <summary>
+        /// The passages: the gameplay topology's tactical chokes (map spec E, lane W1-A), which are the lane map's doorways
+        /// (gates, gaps, narrow roads) then the map topology's ground chokes no doorway covers (bridges beside water). The
+        /// measure moved there unchanged from this class (BuildDoorways / BuildChokes), so traffic and the map layer share one.
+        /// </summary>
+        private void BuildPassages(GameplayTopology gameplay)
         {
-            var grid = _world.Grid;
-            var count = lanes.DoorwayCount;
-            if (count == 0) return;
-            var sum = new Vector2[count + 1];
-            var cells = new int[count + 1];
-            var road = new int[count + 1];
-            for (var y = 0; y < grid.Height; y++)
-            for (var x = 0; x < grid.Width; x++)
-            {
-                var f = lanes.FlagsOf(x, y);
-                if ((f & LaneFlags.Narrow) == 0) continue;
-                var c = grid.CellCenter(x, y);
-                var id = lanes.DoorwayAt(c);
-                if (id <= 0 || id > count) continue;
-                sum[id] += c;
-                cells[id]++;
-                if ((f & LaneFlags.Road) != 0) road[id]++;
-            }
-            var lo = new float[count + 1];
-            var hi = new float[count + 1];
-            var wlo = new float[count + 1];
-            var whi = new float[count + 1];
-            for (var id = 1; id <= count; id++)
-            {
-                lo[id] = wlo[id] = float.MaxValue;
-                hi[id] = whi[id] = float.MinValue;
-            }
-            for (var y = 0; y < grid.Height; y++)
-            for (var x = 0; x < grid.Width; x++)
-            {
-                if ((lanes.FlagsOf(x, y) & LaneFlags.Narrow) == 0) continue;
-                var c = grid.CellCenter(x, y);
-                var id = lanes.DoorwayAt(c);
-                if (id <= 0 || id > count || cells[id] == 0) continue;
-                var through = lanes.DoorwayThrough(id);
-                var across = new Vector2(through.Y, -through.X);
-                var d = c - sum[id] / cells[id];
-                var a = Vector2.Dot(d, through);
-                var w = Vector2.Dot(d, across);
-                lo[id] = MathF.Min(lo[id], a);
-                hi[id] = MathF.Max(hi[id], a);
-                wlo[id] = MathF.Min(wlo[id], w);
-                whi[id] = MathF.Max(whi[id], w);
-            }
-            for (var id = 1; id <= count; id++)
-            {
-                if (cells[id] == 0) continue;
-                var length = hi[id] - lo[id] + grid.CellSize;
-                var width = whi[id] - wlo[id] + grid.CellSize;
-                var kind = length > width * 3f && road[id] * 2 >= cells[id] ? PassageKind.NarrowRoad : PassageKind.Gate;
+            foreach (var c in gameplay.Chokes)
                 _passages.Add(new Passage
                 {
-                    Kind = kind,
-                    Centre = sum[id] / cells[id],
-                    Through = lanes.DoorwayThrough(id),
-                    Width = width,
-                    Length = length,
-                });
-            }
-        }
-
-        /// <summary>The map topology's ground chokes not already a doorway; one over water (or beside it) is a bridge.</summary>
-        private void BuildChokes(MapTopology topology)
-        {
-            var grid = _world.Grid;
-            foreach (var choke in topology.Chokes)
-            {
-                var covered = false;
-                foreach (var p in _passages)
-                    if (Vector2.Distance(p.Centre, choke.Centre) < p.Reach + 4f)
+                    Kind = c.Shape switch
                     {
-                        covered = true;
-                        break;
-                    }
-                if (covered) continue;
-                // The narrowest of 8 bearings across it is "across"; the way through is square to it.
-                var bestWidth = float.MaxValue;
-                var across = Vector2.UnitX;
-                for (var k = 0; k < 8; k++)
-                {
-                    var dir = SimMath.Forward(k * MathF.PI / 8f);
-                    var width = Ray(grid, choke.Centre, dir, 30f) + Ray(grid, choke.Centre, -dir, 30f);
-                    if (width >= bestWidth) continue;
-                    bestWidth = width;
-                    across = dir;
-                }
-                var through = new Vector2(-across.Y, across.X);
-                var half = MathF.Max(choke.Width, bestWidth) * 0.5f + 3f;
-                var water = topology.IsSea(choke.Centre + across * half) || topology.IsSea(choke.Centre - across * half) ||
-                            grid.TerrainAt(choke.Centre + across * half) == TerrainTag.ShallowWater ||
-                            grid.TerrainAt(choke.Centre - across * half) == TerrainTag.ShallowWater;
-                var length = MathF.Max(6f, choke.Cells * topology.Cell * topology.Cell / MathF.Max(2f, choke.Width));
-                _passages.Add(new Passage
-                {
-                    Kind = water ? PassageKind.Bridge : PassageKind.Choke,
-                    Centre = choke.Centre,
-                    Through = through,
-                    Width = MathF.Max(2f, MathF.Min(choke.Width, bestWidth)),
-                    Length = MathF.Min(length, 40f),
+                        PassageShape.NarrowRoad => PassageKind.NarrowRoad,
+                        PassageShape.Bridge => PassageKind.Bridge,
+                        PassageShape.Choke => PassageKind.Choke,
+                        _ => PassageKind.Gate,
+                    },
+                    Centre = c.Centre,
+                    Through = c.Through,
+                    Width = c.OpenWidth,
+                    Length = c.Length,
                 });
-            }
-        }
-
-        private static float Ray(NavGrid grid, Vector2 from, Vector2 dir, float max)
-        {
-            for (var d = 1f; d <= max; d += 1f)
-                if (!grid.IsWalkable(from + dir * d)) return d;
-            return max;
         }
 
         // ------------------------------------------------------------------ spec 31-32: reservations
