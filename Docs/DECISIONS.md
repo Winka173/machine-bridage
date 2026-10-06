@@ -21832,3 +21832,67 @@ Sim/Navigation or map edits (one view-only accessor on Sim/Entities/Mine.cs), no
   telemetry line, spec BT); far-report clip variants in the sound library; haptics (BI, P2 optional); biome ambience clips
   (BF, P2: zones already carry the profile ids); card / golden capture consistency (CE #13); export pack 07 / 00 / README /
   CHANGES (lead rebuild; new sources: static_merge.json, CONTRAST_AUDIT.md, ACOUSTIC zones in DECISIONS).
+
+## Naval expansion (data) (lane: data/AI/economy, branch feature/naval-data, 06/10)
+
+Source: `Docs/naval/PROMPT_owner_vi.md` (owner prompt + `Machine_Brigade_NAVAL_VEHICLE_EXPANSION_SPEC.md`,
+verbatim). Owner override this pass: **no tests, no Sim/Unity runs** ("nhớ là không test") — every comparison
+is a static Python read of `balance.json` (CP, HP/CP, primary DPS/CP, effective DPS vs Light/Medium/Heavy naval
+via the locked penetration/damage-type tables), never a simulated battle. Full report:
+`Docs/naval/NAVAL_DATA_REPORT.md` (copied to `C:\Users\Winka\OneDrive\Documents\Tank-arena\bao_cao_combat\naval_expansion_report.md`).
+
+- **17 new units**, additive next to the six existing anchors (`river_patrol_boat`, `river_gunboat`,
+  `hover_gunboat`, `missile_boat`, `sea_corvette`, `sea_cruiser`, all preserved untouched): `torpedo_boat`,
+  `ashm_corvette`, `aa_corvette`, `frigate`, `missile_frigate`, `aa_frigate`, `destroyer`, `gun_destroyer`,
+  `missile_destroyer`, `aa_destroyer`, `rocket_artillery_ship`, `heavy_monitor`, `battlecruiser`, `battleship`,
+  `missile_cruiser`, `ciws_escort_ship`, `ew_corvette`. Inserted in `balance.json` "vehicles" right after
+  `missile_boat`. All `"card": false` (the existing naval pattern; no new economy path, no campaign/mode
+  wiring this pass per the spec).
+- **ew_corvette decision**: implemented, not `BLOCKED_BY_EXISTING_RUNTIME`. `Def.Jammer`
+  (`Sim/Abilities/AbilitySystem.cs`) is a pure radius/position aura with no movement-type/class assumption, so
+  it is directly reusable on a naval hull (`"jammer": 30` on the new hull, same mechanism as `ew_jammer` /
+  `gps_jammer_vehicle`).
+- **10 new ship-specific weapons** (everything else reuses an existing weapon id unmodified: `naval_76`,
+  `naval_100`, `naval_127`, `hover_ciws`, `hmg_roof`, `sam`, `sam_long`, `sam_48n6`, `mlrs_rockets`):
+  `torpedo_naval` (new torpedo family: Pen4 ShapedCharge, 360 dmg x2 salvo, 55 m/s, range 65/min 12, splash 3,
+  cooldown 12 s — a slow guided projectile on the existing pipeline, no underwater sim); `ashm_corvette_salvo`,
+  `frigate_ashm`, `ashm_quad`, `missile_frigate_salvo`, `missile_destroyer_salvo`, `missile_cruiser_salvo` (all
+  `"inherits": "anti_ship_missile"` with `"weaponFamily": ""` — the `scylla_kh35` opt-out pattern, needed because
+  `Tools/balance/flight_feel_audit.py`'s resolve step reapplies the `nsm_oniks` family row on top of an
+  `inherits` child unless it opts out, which would otherwise silently clobber a child's own splash override back
+  to 7; all hold Pen4/80 m/s, only burst/cooldown/splash differ per ship); `naval_203_monitor` (inherits
+  `gun_203_siege`, 360 dmg/7 s/splash 5.5, heavy_monitor only); `naval_203_bc` (inherits `cruiser_203`, 420
+  dmg/7.5 s, battlecruiser's twin turret); `naval_406_bs` (inherits `cruiser_203`, barrels 1, **Pen5**, 600
+  dmg/11 s/splash 8 — battleship's 3 turret mounts share this one id; Pen5 is exclusive to this weapon, no AShM
+  touched). The three `naval_*` guns were deliberately named with that prefix (renamed from an initial
+  `battlecruiser_main`/`battleship_main`/`monitor_152_203`) so `flight_feel_audit.py`'s `feel_class()` buckets
+  them as `NAVAL_DIRECT` instead of the tank-gun-calibrated `DIRECT_FAST`, which had flagged them `YELLOW_FEEL`
+  for being "too slow" — a classification artefact, not a design issue, but a one-line fix.
+- **AI**: `aiBehaviour.units` gets 16 new id -> existing-role-id lines (`TD` for the anti-heavy/missile ships,
+  `SAM` for the three AA ships, `MBT`/`Heavy` for the generalists and capitals, `MLRS` for
+  `rocket_artillery_ship`, `Support` for `ciws_escort_ship`/`ew_corvette`) — zero new `DoctrineRole`/target-class
+  code (`Sim/AI/P2/CombatRoleDoctrine.cs` unchanged). "No full-salvo waste" rides the engine's existing
+  role-independent overkill guard (`CombatSystem.P0A.cs`/`P3.cs`), not something added this pass. "CIWS escort
+  stays near a high-value ally" reuses `"naval": { "role": "Escort", "station": N }` verbatim (the field
+  `sea_corvette`/`sea_cruiser` already carry) — all 17 new ships carry a `"naval"` object (14 `Escort`,
+  `torpedo_boat` `Raider`) purely so the existing automatic wake VFX (`Game/Views/WakeView.cs`, keyed off
+  `Def.Naval != null`) is ready once a model lane gives them a hull and a later pass wires them into a
+  mission/fleet.
+- **Validators**: `flight_feel_audit.py` HARD_FAIL 0 (both before/after); one new YELLOW_FEEL,
+  `torpedo_naval` (expected — the classifier has no torpedo feel-class, scores the spec-mandated slow 55 m/s
+  against ATGM-speed expectations). `dotnet build Tools/simbuild/Sim.csproj` 0 errors, no C# touched. CatalogCheck
+  not run (Unity Editor tool); manually confirmed no stored derived field was added. `export.py`/Unity
+  `ExportGameDoc` **not run** (no Unity session this pass, owner no-test rule) — generated docs were not
+  regenerated; left for a lane with Unity access.
+- **MODEL_CONTRACT.md**: per-ship target length/beam/height, silhouette notes and exact `Mount_<slot>` node
+  names (stable naming, `Docs/models/RUNTIME_NODES.md` convention) for the model lanes; current stand-ins are
+  `missile_boat.glb` (torpedo_boat), `sea_corvette.glb` (corvette/frigate tier + the two support ships),
+  `sea_cruiser.glb` (destroyer tier + capitals) with `modelSize` forcing the box, same trick as the existing
+  `river_patrol_boat`/`hover_gunboat` stand-ins.
+- **Static comparison vs the six anchors**: see `Docs/naval/NAVAL_DATA_REPORT.md` for the full table and
+  per-matchup reasoning. Two anchors (`river_patrol_boat` CP6, `river_gunboat` CP11) are real CP-costed units
+  with meaningful per-CP ratios; the other four (`hover_gunboat`, `missile_boat`, `sea_corvette`, `sea_cruiser`)
+  are `"cp": 0` fleet-only escorts, so their per-CP columns are marked n/a rather than computed against a false
+  zero-cost baseline. Known gap in the comparison script: it reads only the `"weapon"` field, so `gun_destroyer`
+  (2 turrets) and `battleship` (3 turrets) show roughly half/a-third of their true multi-mount output in the
+  table — noted explicitly in the report rather than silently wrong.
