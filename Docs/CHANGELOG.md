@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Balance v3 owner answers: supply_truck HP back to 700 (mission-only unit, 06/10).
 - Balance v3 cheap/mid tier (06/10, branch feature/balance-v3): cheap ground units (armored_car, scout_jeep,
   rocket_technical, zu23_technical, recoilless_jeep) and light_tank/ifv/wheeled_gun/tank_destroyer/flame_tank/
   fpv_carrier/aa_vehicle/sam_launcher/support vehicles/recon_drone/strike_drone/scout_heli more durable and (primary

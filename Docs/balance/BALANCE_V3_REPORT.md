@@ -165,3 +165,12 @@ this pass (confirmed by the original-baseline diff, listed for completeness): `g
 4. **`Army vs Earth Borer (mini boss)` survival regression** noted in §4 above — flagged, not altered.
 5. Boss missile/projectile-speed rescan requested in the same owner message is **not** part of this brief (another
    agent is doing it on a separate branch) and was not touched here.
+
+## Owner answers applied (06/10, Docs/prompts/balance_v3_answers_vi.md)
+
+| Item | Result |
+|---|---|
+| §22 fortress-style tower | no entity qualifies; spawn_bastion unchanged |
+| supply_truck | HP 805 -> 700 (original); mission-only convoy truck, not buyable |
+| cp_relay | pass-1 rule only, no extra utility +15 % |
+| Earth Borer | boss unchanged; drop attributed to composition / clustering, not boss stats |
