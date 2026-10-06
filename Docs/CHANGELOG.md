@@ -7,6 +7,13 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Naval vehicle expansion, data/AI/economy lane (06/10, branch feature/naval-data): 17 new naval units
+  (torpedo_boat through battleship, plus ew_corvette) added to balance.json as canonical, additive data; 10
+  ship-specific weapon variants (AShM salvos locked to 80 m/s/Pen4, battleship main gun Pen5 only); AI doctrine
+  via aiBehaviour.units (existing TD/MBT/Heavy/SAM/MLRS/Support roles); stand-in models on the existing naval
+  GLBs; `"card": false` like the existing naval roster. No transport/radar/sonar/carrier/revive system, no
+  duplicate gun corvette/cruiser. Static (no-sim) comparison + `Docs/naval/MODEL_CONTRACT.md` for the model
+  lanes: `Docs/naval/NAVAL_DATA_REPORT.md`.
 - Balance v3 owner answers: supply_truck HP back to 700 (mission-only unit, 06/10).
 - Balance v3 cheap/mid tier (06/10, branch feature/balance-v3): cheap ground units (armored_car, scout_jeep,
   rocket_technical, zu23_technical, recoilless_jeep) and light_tank/ifv/wheeled_gun/tank_destroyer/flame_tank/
