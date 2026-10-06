@@ -3,6 +3,14 @@
     "file": "aa_57mm_vehicle.glb",
     "triangles": 7096
   },
+  "aa_corvette": {
+    "file": "aa_corvette.glb",
+    "triangles": 10032
+  },
+  "aa_frigate": {
+    "file": "aa_frigate.glb",
+    "triangles": 11846
+  },
   "aa_gun_tower": {
     "file": "aa_gun_tower.glb",
     "triangles": 5924
@@ -134,6 +142,10 @@
   "artillery_wreck": {
     "file": "artillery_wreck.glb",
     "triangles": 2488
+  },
+  "ashm_corvette": {
+    "file": "ashm_corvette.glb",
+    "triangles": 10782
   },
   "at_gun_emplacement": {
     "file": "at_gun_emplacement.glb",
@@ -342,6 +354,10 @@
   "church": {
     "file": "church.glb",
     "triangles": 3870
+  },
+  "ciws_escort_ship": {
+    "file": "ciws_escort_ship.glb",
+    "triangles": 10424
   },
   "cliff_a": {
     "file": "cliff_a.glb",
@@ -823,6 +839,10 @@
     "file": "engineer_vehicle.glb",
     "triangles": 8144
   },
+  "ew_corvette": {
+    "file": "ew_corvette.glb",
+    "triangles": 8700
+  },
   "ew_jammer": {
     "file": "ew_jammer.glb",
     "triangles": 7472
@@ -914,6 +934,10 @@
   "fpv_drone": {
     "file": "fpv_drone.glb",
     "triangles": 1564
+  },
+  "frigate": {
+    "file": "frigate.glb",
+    "triangles": 12460
   },
   "fuel_bladder": {
     "file": "fuel_bladder.glb",
@@ -1311,6 +1335,10 @@
     "file": "missile_boat.glb",
     "triangles": 5752
   },
+  "missile_frigate": {
+    "file": "missile_frigate.glb",
+    "triangles": 13728
+  },
   "mlrs": {
     "file": "mlrs.glb",
     "triangles": 7364
@@ -1530,6 +1558,10 @@
   "rocket_107": {
     "file": "rocket_107.glb",
     "triangles": 110
+  },
+  "rocket_artillery_ship": {
+    "file": "rocket_artillery_ship.glb",
+    "triangles": 9262
   },
   "rocket_technical": {
     "file": "rocket_technical.glb",
@@ -1810,6 +1842,10 @@
   "titan_tank": {
     "file": "titan_tank.glb",
     "triangles": 10282
+  },
+  "torpedo_boat": {
+    "file": "torpedo_boat.glb",
+    "triangles": 5914
   },
   "tos_rocket": {
     "file": "tos_rocket.glb",

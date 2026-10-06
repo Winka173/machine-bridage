@@ -134,6 +134,8 @@ TRACKED = role('Tracks?|Track_links|Part_track|Sprockets?|Treads?')
 WHEELED = role('Tyres|Wheels|Part_wheel')
 ROTOR = role('Rotor')
 NO_MUZZLE = {'bomb', 'drone', 'blade'}
+# Stable semantic tags of RUNTIME_NODES.md (Mount_mg_02, Muzzle_rocket_L): counted like a legacy .NNN (naval lane A).
+TAG = r'(?-i:(?:_(?:L|R|C|fore|mid|aft|\d{2})){0,2})'
 SLOT_ALIAS = {'rocket2': 'rocket'}
 
 
@@ -301,13 +303,13 @@ def weapon_checks(defs: Defs, own, cls: str, names):
         for slot, (need, free, is_main) in per_slot.items():
             if slot in NO_MUZZLE:
                 continue
-            have = count(names, rf'^(Muzzle_{slot}(\.\d+)?$|Muzzle_b\d+_{slot}(\.\d+)?$|Launch_{slot})')
+            have = count(names, rf'^(Muzzle_{slot}{TAG}(\.\d+)?$|Muzzle_b\d+_{slot}(\.\d+)?$|Launch_{slot})')
             need_total += need
             found_total += min(have, need)
             if have < need:
                 missing.append(f'Muzzle_{slot} {have}/{need}' + (' (main)' if is_main else ''))
             if free:
-                mhave = count(names, rf'^Mount_{slot}(\.\d+)?$')
+                mhave = count(names, rf'^Mount_{slot}{TAG}(\.\d+)?$')
                 if mhave < free:
                     mounts.append(f'Mount_{slot} {mhave}/{free}')
         if main and cls not in ('jet', 'air_other') and f(own, 'turretTurnRate') and \
