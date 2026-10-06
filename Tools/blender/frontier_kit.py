@@ -721,6 +721,7 @@ def export_collection(collection, path):
         if linked:
             scene.collection.children.unlink(collection)
     _quantize(path)
+    _stable_names(path)
 
 
 def _quantize(path):
@@ -731,6 +732,20 @@ def _quantize(path):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     module.quantize_file(path)
+
+
+def _stable_names(path):
+    """MVA W1-B: a model listed in Tools/assets/runtime_node_map.json gets its stable runtime node names back after the
+    export (Muzzle_rocket.001 -> Muzzle_rocket_L), so a rebuild never brings a Blender suffix back into a gameplay lookup."""
+    import importlib.util
+    import pathlib
+    src = pathlib.Path(__file__).resolve().parents[1] / 'assets' / 'runtime_nodes.py'
+    spec = importlib.util.spec_from_file_location('runtime_nodes', src)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    done = module.apply_export_map(path)
+    if done:
+        print(f'STABLE NAMES {pathlib.Path(path).stem}: {len(done)} runtime nodes renamed')
 
 
 def lattice_slice(bm, world, step):

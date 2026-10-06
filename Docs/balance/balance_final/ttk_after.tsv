@@ -1,0 +1,64 @@
+set	matchup	ttk_s	killed	winner_side0_share	avg_end_s	hits	dealt
+ground	MBT vs Heavy (front)	70.2	3/3	1.00	70.4	435	4829
+ground	MBT vs Heavy (flank)	46.5	3/3	1.00	46.7	306	4851
+ground	Heavy vs MBT (front)	12.9	3/3	1.00	13.0	139	2433
+ground	MBT vs MBT (front)	37.3	3/3	1.00	37.4	224	2427
+ground	MBT vs MBT duel (both fire)	~33.3	1/3	0.33	30.7	185	2342
+ground	Heavy vs TD (front)	5.4	3/3	1.00	5.5	45	1719
+ground	TD vs Heavy (front)	44.9	3/3	1.00	45.1	298	4989
+ground	Heavy vs TD duel (both fire)	10.2	3/3	1.00	10.4	34	2095
+ground	TD vs Titan (front)	97.4	3/3	1.00	97.5	621	7728
+ground	TD vs Titan (flank)	54.6	3/3	1.00	54.7	342	7990
+ground	Flame Tank assault: 2 flame vs MG bunker	36.3	3/3	1.00	36.7	1537	3961
+ground	Flame Tank assault: 2 flame vs 2 IFV	12.7	3/3	1.00	13.0	703	2743
+ground	Flame Tank survives: 2 IFV vs flame tank	7.7	3/3	1.00	7.8	178	1765
+ground	Breacher vs HESCO wall	119.4	3/3	1.00	120.0	758	3457
+ground	Breacher vs T-wall	119.4	3/3	1.00	120.0	758	1296
+ground	MBT vs bulldozer (breacher survival)	39.5	3/3	1.00	39.7	245	4066
+ground	Railgun vs MBT (armour 4)	17.6	3/3	1.00	18.6	3	2536
+ground	Railgun vs Titan (armour 5)	80.6	3/3	1.00	81.6	11	7904
+air	SHORAD (aa_vehicle) vs attack helicopter	119.7	3/3	1.00	120.0	9	703
+air	SHORAD (heavy_aa) vs attack helicopter	5.5	3/3	1.00	5.8	125	1774
+air	Attack helicopter vs aa_vehicle	2.5	3/3	1.00	3.0	3	1201
+air	SAM (sam_launcher) vs attack jet	6.7	3/3	1.00	7.9	4	1975
+air	SAM (long_sam) vs attack jet	9.8	3/3	1.00	11.6	2	2460
+air	Fighter vs fighter (AAM)	8.9	3/3	1.00	9.4	9	1690
+air	Fighter vs attack helicopter (AAM)	4.8	3/3	1.00	5.3	22	1874
+air	Heavy bomber survival vs long_sam	26.2	3/3	1.00	28.0	4	4552
+air	Heavy bomber survival vs heavy_aa	14.3	3/3	1.00	14.7	196	3707
+air	Sortie: attack jet vs 3 MBT	14.3	3/3	1.00	16.0	121	7618
+air	Sortie: heavy bomber vs 4 IFV	44.5	3/3	1.00	45.4	19	6461
+air	Sortie: stealth bomber vs gun turret	2.9	3/3	1.00	4.6	4	6276
+air	Sortie: attack helicopter vs 2 MBT	22.4	3/3	1.00	23.1	70	4869
+air	Sortie: sky gunship vs 4 armoured cars	5.7	3/3	1.00	6.5	57	2733
+tower	Assault squad (2 MBT + IFV) vs guard tower (small)	9.3	3/3	1.00	9.5	155	2093
+tower	Assault squad vs gun turret (medium)	27.8	3/3	1.00	28.0	475	4950
+tower	Assault squad vs heavy turret (large)	73.8	3/3	1.00	74.0	1216	8077
+tower	Gun turret vs 2 MBT (tower damage)	56.3	3/3	1.00	56.6	15	5437
+tower	MG bunker vs 3 armoured cars (tower damage)	23.4	3/3	1.00	23.9	539	1989
+tower	Gun turret vs assault squad (both fire)	~50.5	0/3	0.00	31.4	9	3855
+tower	Bomber vs gun turret (medium)	44.9	3/3	1.00	45.8	8	5126
+tower	Bomber vs heavy turret (large)	66.4	3/3	1.00	67.3	13	8582
+tower	2 SP howitzers vs gun turret	39.0	3/3	1.00	40.1	9	5571
+tower	Thermobaric launcher vs MG bunker	24.4	3/3	1.00	26.3	18	4041
+tower	Breacher (bulldozer) vs MG bunker	25.3	3/3	1.00	25.9	176	4042
+tower	Attack jet bombs vs repair bay (utility)	12.9	3/3	1.00	14.6	101	4252
+tower	4 MBT + 2 SP howitzers vs HQ	82.9	3/3	1.00	83.5	2070	20901
+fire	2 mortar carriers vs 4 armoured cars	68.9	3/3	1.00	73.9	25	3052
+fire	AMOS (sp_mortar) vs 4 armoured cars	68.9	3/3	1.00	70.2	21	3267
+fire	Siege tank 240 mm vs 4 IFV	70.8	3/3	1.00	75.7	17	6896
+fire	2 SP howitzers vs 4 armoured cars (formation)	29.4	3/3	1.00	30.5	14	3239
+fire	2 SP howitzers vs 2 MBT	45.7	3/3	1.00	46.8	17	5109
+fire	2 MLRS vs 4 IFV	67.4	3/3	1.00	69.3	63	5714
+fire	2 MLRS vs 2 MBT	63.0	3/3	1.00	64.9	46	4980
+fire	Elite MLRS (cluster) vs 4 armoured cars	36.4	3/3	1.00	38.2	74	2812
+fire	Elite Grad (cluster) vs 4 armoured cars	45.2	3/3	1.00	47.5	106	2714
+fire	TOS vs 4 IFV (unchanged)	94.4	3/3	1.00	96.3	95	5717
+fire	Counter-battery duel: SP howitzer vs SP howitzer	~14.4	1/3	0.33	16.7	2	826
+fire	Counter-battery duel: MLRS vs SP howitzer	~13.9	1/3	0.33	79.7	4	470
+boss	Army vs Behemoth (main)	~98.1	0/3	0.00	35.0	758	11665
+boss	Army vs Mobile Fortress (main)	~105.9	0/3	0.00	28.7	615	11265
+boss	Army vs Fortress Bastion (main)	~80.3	0/3	0.00	35.7	723	10527
+boss	Army vs Behemoth Inferno (mini)	43.0	3/3	1.00	43.1	1753	22324
+boss	Army vs Behemoth Mk0 (mini)	~33.2	0/3	0.00	32.9	780	16370
+boss	Army vs Earth Borer (mini)	~127.6	2/3	0.67	130.9	1636	43005

@@ -46,7 +46,9 @@ FF_COLS = [
     ("thoi_gian_bay_tam_toi_da_s", "flightTimeMaxRangeS", "s", "thời gian bay tại tầm tối đa (tầm / tốc độ: Sim không có quỹ đạo cong, đường cong chỉ là hình ảnh)"),
     ("thoi_gian_bay_tam_toi_da_tran_s", "flightTimeMaxRangeAtGearCapS", "s", "thời gian bay tại tầm tối đa khi trang bị ở trần +30 %"),
     ("lop_cam_giac_dan", "projectileFeelClass", "", "lớp cảm giác đạn (DIRECT_FAST / TACTICAL_MISSILE / AIR_DEFENCE_MISSILE / ROCKET_ARTILLERY / MORTAR / HOWITZER / CRUISE / DRONE / BOMB + AIRCRAFT_ROCKET / NAVAL_DIRECT / ANTI_SHIP_MISSILE / BALLISTIC_MISSILE)"),
-    ("canh_bao_toc_do_dan", "projectileSpeedWarning", "", "TOO_FAST_FOR_CLASS / TOO_SLOW_FOR_CLASS / TOO_FAST_AT_GEAR_CAP / OWNER_EXCEPTION / ok (ngưỡng theo lớp; thay vai trò đọc tốc độ của NHANH_QUA / CHAM_QUA, vốn là cờ chu kỳ bắn)"),
+    ("ket_qua_kiem_dan", "validationBucket", "", "bản kiểm v2 (06/10, owner answer 3): HARD_FAIL / YELLOW_FEEL / PASS_INTENTIONAL_SHORT_RANGE / ok; thay vai trò đọc tốc độ của NHANH_QUA / CHAM_QUA, vốn là cờ chu kỳ bắn, không phải cờ tốc độ đạn"),
+    ("ly_do_kiem_dan", "reasonCode", "", "mã lý do của ket_qua_kiem_dan: CANONICAL_SHORT_RANGE / INHERITANCE_MISMATCH / TOO_FAST_FOR_CLASS / TOO_SLOW_FOR_CLASS / INTENTIONAL_BOSS_OVERRIDE / trống (ok)"),
+    ("canh_bao_toc_do_dan", "projectileSpeedWarning", "", "[CŨ, giữ để tương thích] bí danh của ket_qua_kiem_dan: HARD_FAIL / YELLOW_FEEL / PASS_INTENTIONAL_SHORT_RANGE / ok"),
     ("nguon_ke_thua_toc_do", "speedInheritanceSource", "", "tốc độ lấy từ đâu: họ vũ khí (weaponFamilies) / dòng riêng / kế thừa từ vũ khí cha"),
     ("khoang_cach_loat_m", "salvoSpacingM", "m", "khoảng cách giữa hai quả trong loạt = tốc độ x burstInterval (tên lửa / rocket nhiều quả)"),
 ]

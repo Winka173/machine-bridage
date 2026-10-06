@@ -14,6 +14,9 @@ namespace MachineBrigade.Game.Effects
     {
         private readonly EscapeWarnings _escape;
 
+        /// <summary>MVA W1-B (spec part AE): the closing dive ring of a top-attack round on the player's unit.</summary>
+        private readonly TopAttackMarks _topAttack;
+
         /// <summary>Fix prompt L5: which warning rings are drawn (<see cref="WarningGate"/>).</summary>
         private readonly WarningGate _gate = new();
 
@@ -21,7 +24,11 @@ namespace MachineBrigade.Game.Effects
         public int WarningLevel
         {
             get => _gate.Level;
-            set => _gate.Level = Mathf.Clamp(value, 0, 2);
+            set
+            {
+                _gate.Level = Mathf.Clamp(value, 0, 2);
+                _topAttack.Level = _gate.Level;
+            }
         }
 
         /// <summary>The player's side (no rings for its own rounds; its units are what a ring threatens).</summary>
@@ -53,6 +60,21 @@ namespace MachineBrigade.Game.Effects
             return round.Projectile == ProjectileKind.Shell &&
                 (round.Indirect || round.Family == "howitzer" || round.Family == "mortar");
         }
+
+        /// <summary>
+        /// MVA W1-B (spec part AE): an enemy's top-attack round (ThreatCues.Of: the weapon is marked top attack, never ordinary
+        /// direct fire) aimed at one of the player's units gets its closing dive ring.
+        /// </summary>
+        private void TopAttackMark(SimEvent e, VehicleView shooter, WeaponDef weapon, ViewRegistry views, float now)
+        {
+            var round = FiredRound(e, shooter, weapon);
+            if (round == null || ThreatCues.Of(round) != ThreatType.TopAttack || e.Jammed) return;
+            if (!views.TryGet(e.Other, out var target) || target.Sim.Team != views.PlayerTeam) return;
+            _topAttack.Add(e.Other, now, Mathf.Max(0.05f, e.Value));
+        }
+
+        /// <summary>Tests: top-attack marks live now.</summary>
+        internal int TopAttackMarksLive => _topAttack.ActiveCount;
 
         /// <summary>Tests: rings the gate shows now.</summary>
         internal int WarningsShown => _gate.ShownCount;

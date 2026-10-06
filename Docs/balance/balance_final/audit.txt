@@ -1,0 +1,67 @@
+BOSS ARMOUR: raw boss entries 33 changed []; built bosses+parts 254 changed []; runtime boss defs 33 changed []; bossParts library 19 changed []
+bossFrames/bossRanks armour-like keys unchanged: True
+KEEP titan_tank: changed fields []
+KEEP twin_tank: changed fields []
+KEEP ifv: changed fields []
+KEEP light_tank: changed fields []
+KEEP armored_car: changed fields []
+KEEP scout_jeep: changed fields []
+KEEP railgun_truck: changed fields []
+KEEP artillery: changed fields []
+KEEP mortar_carrier: changed fields []
+KEEP mlrs: changed fields []
+KEEP heavy_rocket_artillery: changed fields []
+KEEP ballistic_launcher: changed fields []
+KEEP ground_cruise_missile_vehicle: changed fields []
+KEEP thermobaric_launcher: changed fields []
+KEEP sp_mortar: changed fields []
+KEEP siege_tank: changed fields []
+KEEP spawn_bastion: changed fields []
+KEEP wall_hesco: changed fields []
+KEEP wall_t: changed fields []
+KEEP wall_gun: changed fields []
+KEEP blast_wall: changed fields []
+KEEP elite_mlrs: changed fields []
+KEEP elite_grad: changed fields []
+KEEP elite_artillery: changed fields []
+KEEP-weapon thermobaric_rockets: {}
+KEEP-weapon turret_thermobaric: {}
+KEEP-weapon rockets_300mm: {}
+KEEP-weapon grad_rockets: {}
+KEEP-weapon ballistic_missile: {}
+KEEP-weapon cruise_missile_ground: {}
+KEEP-weapon jassm: {}
+KEEP-weapon air_cruise_missile: {}
+KEEP-weapon leviathan_cruise: {}
+KEEP-weapon nyx_tomahawk: {}
+KEEP-weapon hydra_club_s: {}
+KEEP-weapon railgun: {}
+KEEP-weapon gun_140_twin: {}
+KEEP-weapon air_to_air: {'projectileSpeed': (140, 120)}
+KEEP-weapon wvr_aam: {'projectileSpeed': (115, 100)}
+KEEP-weapon r60: {'projectileSpeed': (110, 95)}
+KEEP-weapon stinger_atas: {'projectileSpeed': (105, 90)}
+KEEP-weapon patriot: {'projectileSpeed': (165, 130)}
+KEEP-weapon sam_battery: {'projectileSpeed': (165, 95)}
+KEEP-weapon gun_120mm: {}
+KEEP-weapon gun_105_apfsds: {}
+KEEP-weapon gun_105_long: {}
+KEEP-weapon howitzer_guided: {}
+KEEP-weapon howitzer_fixed_guided: {}
+KEEP-weapon casemate_155_guided: {}
+walls rule unchanged: True
+base.hqTypes.shield (dome/ward pool, recharge) unchanged: True
+base.rebuild (tower rebuild CP / cooldown) unchanged: True
+elites rules unchanged: True; toughness True; damageTable True
+bigAttacks unchanged: True; bossWeaponOverrides unchanged: True
+Pen/reload/fire-rate/ammo/range fields changed on any weapon: []
+armour/CP/rebuildCp/rearm/APS/flare/jammer/repair/rearm-aura fields changed on any vehicle: []
+gear (tunables.json) untouched by this pass: see git diff (balance.json only)
+WARN anti_ship_missile: warnSeconds 2.5 -> 2.5, speed 95 -> 80, range 140, flight at reach 1.75
+WARN kh29: warnSeconds 2.5 -> 2.5, speed 80 -> 75, range 40, flight at reach 0.533
+WARN mortar_240: warnSeconds 2.5 -> 2.7222223, speed 40 -> 40, range 85, flight at reach 2.125
+WARN p26_jotunn_jo_rockets: warnSeconds 2.5 -> 2.5, speed 80 -> 65, range 45, flight at reach 0.692
+WARN p26_jotunn_sec_jo_rockets: warnSeconds 2.5 -> 2.5, speed 80 -> 65, range 45, flight at reach 0.692
+WARN pt14_hp_nsm: warnSeconds 2.5 -> 2.5, speed 90 -> 80, range 95, flight at reach 1.188
+WARN scylla_kh35: warnSeconds 2.5 -> 2.5, speed 90 -> 80, range 110, flight at reach 1.375
+WARN siege_mortar_240: warnSeconds 2.5 -> 2.7222223, speed 40 -> 40, range 70, flight at reach 1.75

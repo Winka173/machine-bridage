@@ -319,3 +319,9 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 05/10 "tiếp tục, task về map và audio khoan làm đợi tôi confirm".
 - 05/10 "Dùng file đính kèm Machine_Brigade_PROJECTILE_FLIGHT_FEEL_MASTER_SPEC.md, dùng 1 agent sonnet, không chạy test phần này" -> Docs/prompts/projectile_flight_feel_spec.md (source of truth tốc độ đạn).
 - 05/10 "làm Spec bản đồ, hình ảnh, âm thanh" (xác nhận; Docs/mapvisaudio/).
+- 06/10 "tiếp tục nhưng làm cái này trước @Machine_Brigade_BALANCE_MASTER_UPDATE_FINAL.md" + implement brief -> Docs/prompts/balance_master_final_vi.md (+ _spec.md, source of truth; làm trước, sau đó tiếp MVA W1).
+- 06/10 "sau khi xong balance thì dừng"; "không cần xuất lại export".
+- 06/10 "chạy export ra file exe lại" (= build Windows exe -> Tank-arena/MachineBrigade_Windows); "tiếp tục tiếp task còn lại" (resume MVA W1).
+- 06/10 trả lời 4 câu hỏi balance final (airstrike, validator 3 lớp, rebuild pack cuối cùng) -> Docs/prompts/balance_final_answers_vi.md.
+- 06/10 "sửa cho tôi cái này trước, xong update bản window, dừng các task đang làm và tiếp tục lại sau khi xong" + balance v2 prompt + boss missile flight-feel addendum -> Docs/prompts/balance_v2_vi.md (source of truth; W1-A + validator dừng, làm lại sau).
+- 06/10 "tiết kiệm token dùng sonet cũng được do chỉ là data, sonnet 5.5 cũng được" (balance v2 chạy lại bằng sonnet).

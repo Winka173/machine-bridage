@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Game.Views;
 using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Movement;
 using EntityId = MachineBrigade.Sim.Core.EntityId;
 using UnityEngine;
 
@@ -61,6 +62,10 @@ namespace MachineBrigade.Game.Effects
             public float FlipStart = -1f, FlipAngle, FlipSide, FlipLift;
             public Quaternion FlipBase;
             public int Fire;
+
+            /// <summary>MVA W1-B: when the Sim lets its hulk go (view time; below 0: it never blocks), and whether it was simplified.</summary>
+            public float SolidUntil = -1f;
+            public bool Simplified;
         }
 
         private readonly List<Wreck> _wrecks = new();
@@ -121,6 +126,8 @@ namespace MachineBrigade.Game.Effects
             var life = solid ? Mathf.Max(1f, capped - SinkSeconds) : capped;
             var wreck = new Wreck
             {
+                // MVA W1-B: a hulk the Sim holds solid until its life ends (WreckField) is drawn until then, whatever trims it.
+                SolidUntil = solid && WreckField.Leaves(view.Sim) ? now + capped : -1f,
                 Id = view.Id, View = view, Class = cls, Created = now, Expires = now + life, Burn = Mathf.Min((solid ? full - SinkSeconds : full) * BurnShare, life),
                 NextPop = now + Random.Range(3f, 5f), PopsLeft = Random.Range(1, 3), WasFalling = view.Falling,
             };
@@ -164,8 +171,11 @@ namespace MachineBrigade.Game.Effects
             if (living <= _capacity) return;
             foreach (var w in _wrecks)
             {
-                if (w.SinkStart >= 0f || w.View.Def.Static) continue;
-                Sink(w, now);
+                if (w.SinkStart >= 0f || w.View.Def.Static || w.Simplified) continue;
+                // MVA W1-B (spec part AO): a hulk still solid in the Sim is never sunk early (an invisible wreck that blocks);
+                // it is simplified instead (its fire out), and sinks on the Sim's clock.
+                if (now < EarliestSink(w)) Simplify(w, now);
+                else Sink(w, now);
                 break;
             }
         }
@@ -262,6 +272,60 @@ namespace MachineBrigade.Game.Effects
             }
             position = default;
             return false;
+        }
+
+        /// <summary>MVA W1-B: the soonest a wreck may start to sink (its sink ends as the Sim lets the ground go); 0: any time.</summary>
+        private static float EarliestSink(Wreck w) => w.SolidUntil > 0f ? w.SolidUntil - SinkSeconds : 0f;
+
+        /// <summary>
+        /// MVA W1-B: a trim (the full-wreck cap, a far wreck's short life) brings a wreck's end forward, never before the Sim
+        /// releases its hulk: a solid one is simplified in the meantime (fire and cook-offs out), still drawn and still blocking.
+        /// </summary>
+        private void Shorten(Wreck w, float until, float now)
+        {
+            var earliest = EarliestSink(w);
+            if (until < earliest && !w.Simplified) Simplify(w, now);
+            w.Expires = Mathf.Min(w.Expires, Mathf.Max(until, earliest));
+        }
+
+        /// <summary>A cheaper hulk: its fire and fountain out, no more cook-offs; the mesh stays (it still blocks in the Sim).</summary>
+        private void Simplify(Wreck w, float now)
+        {
+            w.Simplified = true;
+            w.JetUntil = 0f;
+            w.PopsLeft = 0;
+            w.ChainLeft = 0;
+            _fires.Extinguish(w.Fire, now);
+        }
+
+        /// <summary>
+        /// MVA W1-B (spec part AO): the view's state of a wreck: its death show, a hulk (solid in the Sim), then rubble as it
+        /// sinks or for wrecks the Sim never holds (aircraft, defences' ruins), Removed when there is none.
+        /// </summary>
+        internal WreckState ViewState(EntityId id, float now)
+        {
+            foreach (var w in _wrecks)
+            {
+                if (w.Id != id) continue;
+                if (w.Gone || w.View.Root == null) return WreckState.Removed;
+                if (w.SinkStart >= 0f || w.SolidUntil <= 0f) return WreckState.PassableRubble;
+                return now - w.Created < WreckStates.AnimatingSeconds ? WreckState.DestroyedAnimating : WreckState.BlockingWreck;
+            }
+            return WreckState.Removed;
+        }
+
+        /// <summary>
+        /// MVA W1-B: wrecks whose view and Sim states disagree now (<see cref="WreckStates.InSync"/>): a Sim hulk with nothing
+        /// drawn, or a drawn solid hulk the Sim lets through. 0 when synchronised (the stress scene and tests read it).
+        /// </summary>
+        internal int Desyncs(WreckField field, double simNow, float now)
+        {
+            var n = 0;
+            foreach (var spot in field.List)
+                if (!spot.Naval && !WreckStates.InSync(WreckStates.Of(field, spot.Id, simNow, true), ViewState(spot.Id, now), true)) n++;
+            foreach (var w in _wrecks)
+                if (w.SolidUntil > 0f && !WreckStates.InSync(WreckStates.Of(field, w.Id, simNow, true), ViewState(w.Id, now), true)) n++;
+            return n;
         }
 
         private void Sink(Wreck w, float now)
@@ -538,11 +602,11 @@ namespace MachineBrigade.Game.Effects
                 var far = new Vector2(p.x - Focus.x, p.z - Focus.z).magnitude > WreckClasses.NearCamera;
                 if (far)
                 {
-                    w.Expires = Mathf.Min(w.Expires, w.Created + WreckClasses.SimpleLife);
+                    Shorten(w, w.Created + WreckClasses.SimpleLife, now);
                     continue;
                 }
                 // The list runs newest first from the end: those past the cap are the older ones.
-                if (++near > cap) w.Expires = Mathf.Min(w.Expires, now + 3f);
+                if (++near > cap) Shorten(w, now + 3f, now);
             }
         }
 

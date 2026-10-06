@@ -148,14 +148,10 @@ def mount_node(info, slot: str, k: int):
     slot = slot.lower()
 
     def listed(prefix):
-        out = []
-        for n in names:
-            if not n.lower().startswith(prefix):
-                continue
-            rest = n[len(prefix):]
-            if rest.lower() == slot or (rest.lower().startswith(slot + ".") and rest[len(slot) + 1:].isdigit()):
-                out.append(n)
-        return sorted(out)
+        # MVA W1-B: the runtime's canonical order (Tools/assets/runtime_nodes.py): plain, semantic tags, legacy .NNN.
+        _paths()
+        import runtime_nodes
+        return runtime_nodes.groups(names).get((prefix.rstrip("_"), slot), [])
 
     if slot in MUZZLE_SLOTS:
         lst = listed("muzzle_")

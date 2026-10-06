@@ -1,0 +1,8916 @@
+{
+ "about": "MVA W1-B aim/pivot contract (Tools/assets/runtime_node_audit.py): per unit and mount, as data and model agree today. yaw: degrees clockwise from the nose; pitch: barrelLimits (estimated).",
+ "units": {
+  "aa_gun_tower": {
+   "model": "aa_gun_tower",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "bofors_l70",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "aa_gun_vehicle": {
+   "model": "aa_gun_vehicle",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "bofors_l70",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "aa_turret": {
+   "model": "aa_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "tower_flak_30",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "sam",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "aa_turret.flak": {
+   "model": "aa_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "flak_quad",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "aa_turret.sam": {
+   "model": "aa_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "stinger_post",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "aa_vehicle": {
+   "model": "aa_vehicle",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "flak_35",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "sam",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "aircraft_hangar": {
+   "model": "aircraft_hangar",
+   "mounts": []
+  },
+  "airfield": {
+   "model": "helipad",
+   "mounts": []
+  },
+  "ammo_carrier": {
+   "model": "ammo_carrier",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "argus": {
+   "model": "command_airship",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_roc_main_roc_bombs",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "bom",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_roc_main_roc_bombs",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "bom",
+     "findings": []
+    }
+   ]
+  },
+  "armored_bulldozer": {
+   "model": "armored_bulldozer",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "blade",
+     "k": 0,
+     "weapon": "dozer_blade",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "armored_car": {
+   "model": "armored_car",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "autocannon_25",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax_long",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "armored_train": {
+   "model": "armored_train",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "train_gun",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "pt14_train_grad",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket",
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "boss_hmg",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_02",
+     "muzzleNodes": [
+      "Muzzle_mg_02"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "main",
+     "k": 1,
+     "weapon": "train_gun",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main_fore"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_03",
+     "muzzleNodes": [
+      "Muzzle_mg_03"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "artillery": {
+   "model": "artillery",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "howitzer",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "atgm_tower": {
+   "model": "atgm_tower",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "tower_kornet",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "atgm_tower.multi": {
+   "model": "atgm_tower",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "kornet_multi",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "atgm_tower.top": {
+   "model": "atgm_tower",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "kornet_top",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "attack_helicopter": {
+   "model": "attack_helicopter",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "hellfire_standoff",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "heli_gun",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "heli_rockets",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "aam",
+     "k": 0,
+     "weapon": "stinger_atas",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_aam"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "rocket2",
+     "k": 0,
+     "weapon": "apkws_rocket",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": [
+      "slot_missing"
+     ]
+    }
+   ]
+  },
+  "attack_jet": {
+   "model": "attack_jet",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "jet_cannon",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "s8_pods",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "jet_bombs",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "bom",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "missile",
+     "k": 1,
+     "weapon": "kh29",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile_L"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "aam",
+     "k": 0,
+     "weapon": "r60",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_aam",
+     "muzzleNodes": [
+      "Muzzle_aam"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "ballistic_launcher": {
+   "model": "ballistic_launcher",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "ballistic_missile",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    }
+   ]
+  },
+  "barrage_balloon": {
+   "model": "barrage_balloon",
+   "mounts": []
+  },
+  "bastion_mk0": {
+   "model": "bastion_mk0",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_bastion_sec_b240",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_bastion_direct_b100",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -125.0,
+     "yawMax": 35.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_bastion_direct_b100",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -35.0,
+     "yawMax": 125.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "behemoth": {
+   "model": "behemoth",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_behemoth_main_be152",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_behemoth_tiny_be120",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_behemoth_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_behemoth_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "p26_behemoth_tiny_boss_missiles",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "missile",
+     "k": 1,
+     "weapon": "p26_behemoth_tiny_boss_missiles",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile.001"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "missile",
+     "k": 2,
+     "weapon": "p26_behemoth_tiny_kornet_twin",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile.002"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_behemoth_direct_be120",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 8,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "p26_behemoth_direct_be120",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.002",
+     "muzzleNodes": [
+      "Muzzle_gun.002"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 9,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "p26_behemoth_sec_be_rockets",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket",
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    }
+   ]
+  },
+  "behemoth_inferno": {
+   "model": "behemoth_inferno",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "boss_flamer",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -20,
+     "pitchMax": 45,
+     "pitchClass": "phun_lua",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "boss_thermo",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket",
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "main",
+     "k": 1,
+     "weapon": "boss_flamer",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -20,
+     "pitchMax": 45,
+     "pitchClass": "phun_lua",
+     "findings": []
+    }
+   ]
+  },
+  "behemoth_mk0": {
+   "model": "behemoth",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_behemoth_main_be152",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_behemoth_direct_be120",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_behemoth_direct_be120",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "p26_behemoth_sec_be_rockets",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket",
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    }
+   ]
+  },
+  "behemoth_mk2": {
+   "model": "behemoth",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_behemoth_main_be152",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_behemoth_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_behemoth_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "behemoth_tempest": {
+   "model": "behemoth_tempest",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "boss_railgun",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "coilgun",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "coilgun",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "blast_wall": {
+   "model": "blast_wall",
+   "mounts": []
+  },
+  "bulwark_post": {
+   "model": "bulwark_post",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "bunker_hmg",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "bunker_shelter_tower": {
+   "model": "bunker_shelter_tower",
+   "mounts": []
+  },
+  "c_ram": {
+   "model": "c_ram",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "c_ram_gatling",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "c_ram.centurion": {
+   "model": "c_ram",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "c_ram_gatling",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "c_ram.dome": {
+   "model": "c_ram",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "tamir",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "coastal_battery": {
+   "model": "coastal_battery",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_155_coastal",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "coeus": {
+   "model": "coeus",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "pt14_co_203",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "pt14_co_v76",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "pt14_co_v76",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun_R",
+     "muzzleNodes": [
+      "Muzzle_gun_R"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "pt14_co_spike",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "rocket",
+     "k": 1,
+     "weapon": "pt14_co_spike",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket_R"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "command_airship": {
+   "model": "command_airship",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_roc_main_roc_bombs",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "bom",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_roc_main_roc_bombs",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "bom",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "door_l",
+     "k": 0,
+     "weapon": "p26_roc_direct_roc_atgm",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_door_l"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "door_r",
+     "k": 0,
+     "weapon": "p26_roc_direct_roc_atgm",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_door_r"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "p26_roc_close_twin_30_bmpt",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.002",
+     "muzzleNodes": [
+      "Muzzle_gun.002"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "gun",
+     "k": 3,
+     "weapon": "p26_roc_close_twin_30_bmpt",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.003",
+     "muzzleNodes": [
+      "Muzzle_gun.003"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "gun",
+     "k": 4,
+     "weapon": "p26_roc_roc105",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "gun",
+     "k": 5,
+     "weapon": "p26_roc_roc105",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "command_vehicle": {
+   "model": "command_vehicle",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "cp_relay": {
+   "model": "cp_relay",
+   "mounts": []
+  },
+  "daedalus": {
+   "model": "daedalus",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_daedalus_direct_dae_laser",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "pt14_dd_v57",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "pt14_dd_v57",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.002",
+     "muzzleNodes": [
+      "Muzzle_gun.002"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "gun",
+     "k": 3,
+     "weapon": "pt14_dd_v25",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.003",
+     "muzzleNodes": [
+      "Muzzle_gun.003"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 4,
+     "weapon": "pt14_dd_v25",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.004",
+     "muzzleNodes": [
+      "Muzzle_gun.004"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "gun",
+     "k": 5,
+     "weapon": "p26_daedalus_direct_dae_laser",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.005",
+     "muzzleNodes": [
+      "Muzzle_gun.005"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "demolition_line_vehicle": {
+   "model": "demolition_line_vehicle",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "drone_hangar": {
+   "model": "drone_hangar",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "door_l",
+     "k": 0,
+     "weapon": "fpv_hangar",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_door_l"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "drone",
+     "findings": []
+    }
+   ]
+  },
+  "drone_hangar.lancet": {
+   "model": "drone_hangar",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "door_l",
+     "k": 0,
+     "weapon": "lancet_hangar",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_door_l"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "drone",
+     "findings": []
+    }
+   ]
+  },
+  "drone_hangar.swarm": {
+   "model": "drone_hangar",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "door_l",
+     "k": 0,
+     "weapon": "fpv_hangar_swarm",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_door_l"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "drone",
+     "findings": []
+    }
+   ]
+  },
+  "drone_mothership": {
+   "model": "drone_mothership",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_matriarch_tiny_mothership_cannon",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "p26_matriarch_ma_drones",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile.001",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "drone",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_matriarch_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_matriarch_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "main",
+     "k": 1,
+     "weapon": "p26_matriarch_tiny_mothership_cannon",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_main.001",
+     "muzzleNodes": [
+      "Muzzle_main.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "missile",
+     "k": 1,
+     "weapon": "p26_matriarch_direct_ma_atgm",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile.001",
+     "muzzleNodes": [
+      "Muzzle_missile.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_matriarch_sec_autocannon_30",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_matriarch_sec_autocannon_30",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 8,
+     "slot": "missile",
+     "k": 2,
+     "weapon": "p26_matriarch_direct_ma_atgm",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile.001",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "drone_net_tower": {
+   "model": "drone_net_tower",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "net_zap",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "drop_pod": {
+   "model": "drop_pod",
+   "mounts": []
+  },
+  "earth_borer": {
+   "model": "earth_borer",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "borer_drill",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "borer_cannon",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "borer_cannon",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "elite_aa": {
+   "model": "elite_aa",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "twin_35_ahead",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "sam",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "elite_apc": {
+   "model": "elite_apc",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "autocannon_30",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "atgm",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "elite_artillery": {
+   "model": "artillery",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "howitzer",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "elite_attack_helicopter": {
+   "model": "elite_attack_helicopter",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "hellfire_volley",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "heli_gun",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "heli_rockets",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "aam",
+     "k": 0,
+     "weapon": "stinger_atas",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_aam"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "elite_attack_jet": {
+   "model": "attack_jet",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "jet_cannon",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "s8_pods",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "jet_bombs",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "bom",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "missile",
+     "k": 1,
+     "weapon": "kh29",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile_L"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "aam",
+     "k": 0,
+     "weapon": "r60",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_aam",
+     "muzzleNodes": [
+      "Muzzle_aam"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "elite_fpv_carrier": {
+   "model": "fpv_carrier",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "fpv_swarm",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "drone",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_18",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "elite_grad": {
+   "model": "grad_truck",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "grad_cluster",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "elite_heavy_tank": {
+   "model": "elite_heavy_tank",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_152_heat",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "autocannon_30",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "elite_long_sam": {
+   "model": "long_sam",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "sam_48n6",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "elite_mbt": {
+   "model": "elite_mbt",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_125_elite",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "elite_mlrs": {
+   "model": "elite_mlrs",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "mlrs_elite",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "elite_tank_destroyer": {
+   "model": "elite_tank_destroyer",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_105_apfsds",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "engineer_vehicle": {
+   "model": "engineer_vehicle",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "ew_jammer": {
+   "model": "ew_jammer",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "ew_tower": {
+   "model": "ew_tower",
+   "mounts": []
+  },
+  "ew_tower.drone": {
+   "model": "ew_tower",
+   "mounts": []
+  },
+  "ew_tower.spoof": {
+   "model": "ew_tower",
+   "mounts": []
+  },
+  "fenrir": {
+   "model": "fenrir",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "p26_jotunn_sec_jo_rockets",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket",
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "rocket",
+     "k": 1,
+     "weapon": "p26_jotunn_sec_jo_rockets",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket.001",
+     "muzzleNodes": [
+      "Muzzle_rocket.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_jotunn_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "fighter_jet": {
+   "model": "fighter_jet",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "air_to_air",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "aam",
+     "k": 0,
+     "weapon": "wvr_aam",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_aam"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "fighter_cannon",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "fire_control_centre": {
+   "model": "fire_control_centre",
+   "mounts": []
+  },
+  "flame_tank": {
+   "model": "flame_tank",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "flamethrower",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -20,
+     "pitchMax": 45,
+     "pitchClass": "phun_lua",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "flare_searchlight_tower": {
+   "model": "flare_searchlight_tower",
+   "mounts": []
+  },
+  "flare_tower": {
+   "model": "flare_tower",
+   "mounts": []
+  },
+  "fortress_bastion": {
+   "model": "fortress_bastion",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_bastion_sec_b240",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_bastion_direct_b100",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -125.0,
+     "yawMax": 35.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_bastion_direct_b100",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -35.0,
+     "yawMax": 125.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "p26_bastion_tiny_autocannon_40",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.002",
+     "muzzleNodes": [
+      "Muzzle_gun.002"
+     ],
+     "yawMin": -215.0,
+     "yawMax": -55.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 3,
+     "weapon": "p26_bastion_tiny_autocannon_40",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.003",
+     "muzzleNodes": [
+      "Muzzle_gun.003"
+     ],
+     "yawMin": 55.0,
+     "yawMax": 215.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "p26_bastion_tiny_kornet_twin",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_bastion_close_boss_hmg",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_bastion_close_boss_hmg",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 8,
+     "slot": "gun",
+     "k": 4,
+     "weapon": "p26_bastion_main_b155",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.004",
+     "muzzleNodes": [
+      "Muzzle_gun.004"
+     ],
+     "yawMin": -60.0,
+     "yawMax": 60.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 9,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "p26_bastion_tiny_zu23",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 10,
+     "slot": "mg",
+     "k": 3,
+     "weapon": "p26_bastion_tiny_zu23",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "fpv_carrier": {
+   "model": "fpv_carrier",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "fpv_swarm",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "drone",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_18",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "gps_jammer_vehicle": {
+   "model": "gps_jammer_vehicle",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "ground_cruise_missile_vehicle": {
+   "model": "ground_cruise_missile_vehicle",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "cruise_missile_ground",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "guard_tower": {
+   "model": "guard_tower",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "tower_hmg",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "guard_tower.nest": {
+   "model": "guard_tower",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "tower_ac25",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "guard_tower.watch": {
+   "model": "guard_tower",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "tower_hmg",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "gun_turret": {
+   "model": "gun_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "turret_gun_120",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "gun_turret.auto": {
+   "model": "gun_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_57_auto",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "gun_turret.long": {
+   "model": "gun_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "turret_gun_120_long",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "headquarters": {
+   "model": "headquarters",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "bastion_gun",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hq_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "hq_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_L",
+     "muzzleNodes": [
+      "Muzzle_mg_L"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "headquarters.fortress_air": {
+   "model": "headquarters",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "bastion_gun",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hq_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "hq_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_L",
+     "muzzleNodes": [
+      "Muzzle_mg_L"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "bofors_l70",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "headquarters.fortress_ground": {
+   "model": "headquarters",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "bastion_gun",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hq_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "hq_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_L",
+     "muzzleNodes": [
+      "Muzzle_mg_L"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "turret_gun_120_long",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "headquarters.shield": {
+   "model": "headquarters",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "bastion_gun",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hq_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "hq_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_L",
+     "muzzleNodes": [
+      "Muzzle_mg_L"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "heavy_aa": {
+   "model": "heavy_aa",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "twin_30_flak",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "missile_57e6",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "heavy_bomber": {
+   "model": "heavy_bomber",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "bomber_payload",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "bom",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "bomber_tail_guns",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "air_cruise_missile",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "heavy_rocket_artillery": {
+   "model": "heavy_rocket_artillery",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "rockets_300mm",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    }
+   ]
+  },
+  "heavy_tank": {
+   "model": "heavy_tank",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_152",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "autocannon_30",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "heavy_turret": {
+   "model": "heavy_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_155_twin_ap",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "heavy_turret.bastion": {
+   "model": "heavy_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_155_twin_ap",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "heavy_turret.coastal": {
+   "model": "heavy_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_155_twin_coastlr",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "hover_gunboat": {
+   "model": "hover_gunboat",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hover_ciws",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "hydra": {
+   "model": "hydra_sub",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_typhon_sec_ty57",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_typhon_sec_ty57",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": 30.0,
+     "yawMax": 330.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "p26_typhon_direct_ty100",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.002",
+     "muzzleNodes": [
+      "Muzzle_gun.002"
+     ],
+     "yawMin": -150.0,
+     "yawMax": 150.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "hyperion": {
+   "model": "hyperion",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_icarus_sec_orbital_laser",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "pt14_hp_155",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "pt14_hp_155",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun_02",
+     "muzzleNodes": [
+      "Muzzle_gun_02"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "pt14_hp_vlaser",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun_03",
+     "muzzleNodes": [
+      "Muzzle_gun_03"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 3,
+     "weapon": "pt14_hp_vlaser",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun_04",
+     "muzzleNodes": [
+      "Muzzle_gun_04"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "gun",
+     "k": 4,
+     "weapon": "pt14_hp_v127",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun_05",
+     "muzzleNodes": [
+      "Muzzle_gun_05"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "gun",
+     "k": 5,
+     "weapon": "pt14_hp_v127",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun_06",
+     "muzzleNodes": [
+      "Muzzle_gun_06"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "pt14_hp_nsm",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 8,
+     "slot": "rocket",
+     "k": 1,
+     "weapon": "pt14_hp_nsm",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket_R"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "icarus_mk0": {
+   "model": "icarus_mk0",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_icarus_sec_orbital_laser",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "pt14_mk0_v40",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "pt14_mk0_v40",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun_R",
+     "muzzleNodes": [
+      "Muzzle_gun_R"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "ifv": {
+   "model": "ifv",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "ifv_30",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "atgm",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "iron_beam": {
+   "model": "iron_beam",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "hel_beam",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "ixion": {
+   "model": "ixion",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_ixion_125",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_ixion_mg",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_ixion_mg",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "pt14_ixion_30",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "pt14_ixion_kornet",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "missile",
+     "k": 1,
+     "weapon": "pt14_ixion_kornet",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile.001",
+     "muzzleNodes": [
+      "Muzzle_missile.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "pt14_ixion_grad",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket",
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    }
+   ]
+  },
+  "kraken": {
+   "model": "kraken",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_leviathan_lev406",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_leviathan_lev406",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "p26_leviathan_lev406",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.002",
+     "muzzleNodes": [
+      "Muzzle_gun.002"
+     ],
+     "yawMin": 30.0,
+     "yawMax": 330.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "gun",
+     "k": 3,
+     "weapon": "p26_leviathan_sec_lev155",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.003",
+     "muzzleNodes": [
+      "Muzzle_gun.003"
+     ],
+     "yawMin": -135.0,
+     "yawMax": 135.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 4,
+     "weapon": "p26_leviathan_sec_lev155",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.004",
+     "muzzleNodes": [
+      "Muzzle_gun.004"
+     ],
+     "yawMin": 45.0,
+     "yawMax": 315.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_leviathan_direct_lev127",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_leviathan_direct_lev127",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.002",
+     "muzzleNodes": [
+      "Muzzle_mg.002"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 8,
+     "slot": "mg",
+     "k": 3,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.003",
+     "muzzleNodes": [
+      "Muzzle_mg.003"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 9,
+     "slot": "mg",
+     "k": 4,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.004",
+     "muzzleNodes": [
+      "Muzzle_mg.004"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 10,
+     "slot": "mg",
+     "k": 5,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.005",
+     "muzzleNodes": [
+      "Muzzle_mg.005"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 11,
+     "slot": "mg",
+     "k": 6,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.006",
+     "muzzleNodes": [
+      "Muzzle_mg.006"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 12,
+     "slot": "mg",
+     "k": 7,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.007",
+     "muzzleNodes": [
+      "Muzzle_mg.007"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 13,
+     "slot": "mg",
+     "k": 8,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.008",
+     "muzzleNodes": [
+      "Muzzle_mg.008"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 14,
+     "slot": "mg",
+     "k": 9,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.009",
+     "muzzleNodes": [
+      "Muzzle_mg.009"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 15,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "sam_post",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "landing_craft": {
+   "model": "landing_craft",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "landing_hovercraft": {
+   "model": "landing_hovercraft",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "hover_ciws",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "hover_ciws",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "ciws_aa",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "hover_rockets",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket",
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "rocket",
+     "k": 1,
+     "weapon": "hover_rockets",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket.001",
+     "muzzleNodes": [
+      "Muzzle_rocket.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    }
+   ]
+  },
+  "laser_ad_station": {
+   "model": "laser_ad_station",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "laser_50kw",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "laser_ad_station.laser": {
+   "model": "laser_ad_station",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "laser_50kw",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "laser_tank": {
+   "model": "laser_tank",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "focus_laser",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "leviathan": {
+   "model": "leviathan",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_leviathan_lev406",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_leviathan_lev406",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "p26_leviathan_lev406",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.002",
+     "muzzleNodes": [
+      "Muzzle_gun.002"
+     ],
+     "yawMin": 30.0,
+     "yawMax": 330.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "gun",
+     "k": 3,
+     "weapon": "p26_leviathan_sec_lev155",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.003",
+     "muzzleNodes": [
+      "Muzzle_gun.003"
+     ],
+     "yawMin": -135.0,
+     "yawMax": 135.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 4,
+     "weapon": "p26_leviathan_sec_lev155",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.004",
+     "muzzleNodes": [
+      "Muzzle_gun.004"
+     ],
+     "yawMin": 45.0,
+     "yawMax": 315.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_leviathan_direct_lev127",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_leviathan_direct_lev127",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.002",
+     "muzzleNodes": [
+      "Muzzle_mg.002"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 8,
+     "slot": "mg",
+     "k": 3,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.003",
+     "muzzleNodes": [
+      "Muzzle_mg.003"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 9,
+     "slot": "mg",
+     "k": 4,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.004",
+     "muzzleNodes": [
+      "Muzzle_mg.004"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 10,
+     "slot": "mg",
+     "k": 5,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.005",
+     "muzzleNodes": [
+      "Muzzle_mg.005"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 11,
+     "slot": "mg",
+     "k": 6,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.006",
+     "muzzleNodes": [
+      "Muzzle_mg.006"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 12,
+     "slot": "mg",
+     "k": 7,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.007",
+     "muzzleNodes": [
+      "Muzzle_mg.007"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 13,
+     "slot": "mg",
+     "k": 8,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.008",
+     "muzzleNodes": [
+      "Muzzle_mg.008"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 14,
+     "slot": "mg",
+     "k": 9,
+     "weapon": "aa_25_triple",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.009",
+     "muzzleNodes": [
+      "Muzzle_mg.009"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 15,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "sam_post",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "light_tank": {
+   "model": "light_tank",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_57mm",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "main",
+     "k": 1,
+     "weapon": "gun_launched_atgm",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "locust": {
+   "model": "drone_mothership",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "locust_drones",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile.001",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "drone",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_matriarch_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "logistics_station": {
+   "model": "logistics_station",
+   "mounts": []
+  },
+  "long_sam": {
+   "model": "long_sam",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "sam_48n6",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "main_battle_tank": {
+   "model": "main_battle_tank",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_120mm",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "manpads_tower": {
+   "model": "manpads_tower",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "sam",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "mara_behemoth": {
+   "model": "behemoth",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_behemoth",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "gun_120mm",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "boss_missiles",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "missile",
+     "k": 1,
+     "weapon": "boss_missiles",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile.001"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "mega_gunship": {
+   "model": "mega_gunship",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "gunship_rockets",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "boss_heli_gun",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -115.0,
+     "yawMax": 25.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "boss_heli_gun",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -25.0,
+     "yawMax": 115.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "boss_minigun",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "rocket",
+     "k": 1,
+     "weapon": "gunship_rockets",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket.001"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "boss_hmg",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "boss_hmg",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.002",
+     "muzzleNodes": [
+      "Muzzle_mg.002"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "mg_bunker": {
+   "model": "mg_bunker",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "bunker_hmg",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "bunker_pkm",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -70.0,
+     "yawMax": 10.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "bunker_pkm",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_02",
+     "muzzleNodes": [
+      "Muzzle_mg_02"
+     ],
+     "yawMin": -10.0,
+     "yawMax": 70.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "bunker_pkm",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_03",
+     "muzzleNodes": [
+      "Muzzle_mg_03"
+     ],
+     "yawMin": -130.0,
+     "yawMax": -50.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "mg",
+     "k": 3,
+     "weapon": "bunker_pkm",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_04",
+     "muzzleNodes": [
+      "Muzzle_mg_04"
+     ],
+     "yawMin": 50.0,
+     "yawMax": 130.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "mg_bunker.flame": {
+   "model": "mg_bunker",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "bunker_flame",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -20,
+     "pitchMax": 45,
+     "pitchClass": "phun_lua",
+     "findings": []
+    }
+   ]
+  },
+  "mg_bunker.twin": {
+   "model": "mg_bunker",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "bunker_hmg_twin",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "bunker_pkm",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -70.0,
+     "yawMax": 10.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "bunker_pkm",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_02",
+     "muzzleNodes": [
+      "Muzzle_mg_02"
+     ],
+     "yawMin": -10.0,
+     "yawMax": 70.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "bunker_pkm",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_03",
+     "muzzleNodes": [
+      "Muzzle_mg_03"
+     ],
+     "yawMin": -130.0,
+     "yawMax": -50.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "mg",
+     "k": 3,
+     "weapon": "bunker_pkm",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_04",
+     "muzzleNodes": [
+      "Muzzle_mg_04"
+     ],
+     "yawMin": 50.0,
+     "yawMax": 130.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "mine_layer": {
+   "model": "mine_layer",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "missile_battery": {
+   "model": "missile_battery",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "patriot",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "missile_battery.lrr": {
+   "model": "missile_battery",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "sam_battery_lrr",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "missile_battery.pac3": {
+   "model": "missile_battery",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "sam_pac3",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "missile_boat": {
+   "model": "missile_boat",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "boat_rockets",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket",
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "mlrs": {
+   "model": "mlrs",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "mlrs_rockets",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    }
+   ]
+  },
+  "mobile_fortress": {
+   "model": "mobile_fortress",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_jotunn_jo203",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "p26_jotunn_sec_jo_rockets",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket",
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "rocket",
+     "k": 1,
+     "weapon": "p26_jotunn_sec_jo_rockets",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket.001",
+     "muzzleNodes": [
+      "Muzzle_rocket.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_jotunn_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_jotunn_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "p26_jotunn_direct_jo125",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "p26_jotunn_tiny_twin_30_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_jotunn_jo203",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 8,
+     "slot": "missile",
+     "k": 1,
+     "weapon": "sam_post",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile.001",
+     "muzzleNodes": [
+      "Muzzle_missile.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "moloch": {
+   "model": "moloch",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_moloch_main_mo120",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_moloch_tiny_zu23",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_moloch_tiny_zu23",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_moloch_main_mo120",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_moloch_direct_mo120ap",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "p26_moloch_direct_mo120ap",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.002",
+     "muzzleNodes": [
+      "Muzzle_gun.002"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "p26_moloch_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "monster": {
+   "model": "monster",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_bastion_sec_b240",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_bastion_direct_b100",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -125.0,
+     "yawMax": 35.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_bastion_direct_b100",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -35.0,
+     "yawMax": 125.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "p26_bastion_tiny_autocannon_40",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.002",
+     "muzzleNodes": [
+      "Muzzle_gun.002"
+     ],
+     "yawMin": -215.0,
+     "yawMax": -55.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 3,
+     "weapon": "p26_bastion_tiny_autocannon_40",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.003",
+     "muzzleNodes": [
+      "Muzzle_gun.003"
+     ],
+     "yawMin": 55.0,
+     "yawMax": 215.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "p26_bastion_tiny_kornet_twin",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_bastion_close_boss_hmg",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_bastion_close_boss_hmg",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 8,
+     "slot": "gun",
+     "k": 4,
+     "weapon": "p26_bastion_main_b155",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.004",
+     "muzzleNodes": [
+      "Muzzle_gun.004"
+     ],
+     "yawMin": -60.0,
+     "yawMax": 60.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 9,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "p26_bastion_tiny_zu23",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 10,
+     "slot": "mg",
+     "k": 3,
+     "weapon": "p26_bastion_tiny_zu23",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "mortar_carrier": {
+   "model": "mortar_carrier",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "mortar_120",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_18",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "next_gen_tank": {
+   "model": "next_gen_tank",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_125_armata_ke",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "nuke_train": {
+   "model": "nuke_train",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_nemesis_main_ne152",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_nemesis_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_nemesis_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "p26_nemesis_sec_boss_rockets",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_rocket",
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "sam_battery",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_nemesis_direct_ne125",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "p26_nemesis_close_boss_flak",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.002",
+     "muzzleNodes": [
+      "Muzzle_mg.002"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "nyx": {
+   "model": "nyx",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "nyx_ags_155",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_leviathan_direct_lev127",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "p26_leviathan_direct_lev127",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "nyx_millennium",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.002",
+     "muzzleNodes": [
+      "Muzzle_mg.002"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "mg",
+     "k": 3,
+     "weapon": "nyx_millennium",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.003",
+     "muzzleNodes": [
+      "Muzzle_mg.003"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "nyx_tomahawk",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "one_shot_atgm_tower": {
+   "model": "one_shot_atgm_tower",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "one_shot_kornet",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "railgun_truck": {
+   "model": "railgun_truck",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "railgun",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "recoilless_gun_tower": {
+   "model": "recoilless_gun_tower",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "spg9_73mm",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "recoilless_jeep": {
+   "model": "recoilless_jeep",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "recoilless_106",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "recon_drone": {
+   "model": "recon_drone",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "recon_missile",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "repair_bay": {
+   "model": "repair_bay",
+   "mounts": []
+  },
+  "river_gunboat": {
+   "model": "river_gunboat",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_100_river",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "river_patrol_boat": {
+   "model": "river_patrol_boat",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "mg_jeep",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "agl_40",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "rocket_technical": {
+   "model": "rocket_technical",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "technical_rockets",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "mg_jeep_selfdef",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "rocket_turret": {
+   "model": "rocket_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "turret_rockets",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    }
+   ]
+  },
+  "rocket_turret.cluster": {
+   "model": "rocket_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "turret_rockets_cluster",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    }
+   ]
+  },
+  "rocket_turret.guided": {
+   "model": "rocket_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "turret_gmlrs",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    }
+   ]
+  },
+  "sam_launcher": {
+   "model": "sam_launcher",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "buk_launcher",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "scout_heli": {
+   "model": "scout_heli",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "minigun",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "scout_rockets",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": 0,
+     "pitchMax": 50,
+     "pitchClass": "be_rocket",
+     "findings": []
+    }
+   ]
+  },
+  "scout_jeep": {
+   "model": "scout_jeep",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "mg_jeep",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "scylla": {
+   "model": "scylla",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "naval_130_twin",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "p26_leviathan_direct_lev127",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "scylla_ak230",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_02",
+     "muzzleNodes": [
+      "Muzzle_mg_02"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "mg",
+     "k": 2,
+     "weapon": "scylla_ak230",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_03",
+     "muzzleNodes": [
+      "Muzzle_mg_03"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "mg",
+     "k": 3,
+     "weapon": "scylla_2m7",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_04",
+     "muzzleNodes": [
+      "Muzzle_mg_04"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "mg",
+     "k": 4,
+     "weapon": "scylla_2m7",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_05",
+     "muzzleNodes": [
+      "Muzzle_mg_05"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "scylla_kh35",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "missile",
+     "k": 1,
+     "weapon": "scylla_kh35",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_missile_R",
+     "muzzleNodes": [
+      "Muzzle_missile_R"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "sea_corvette": {
+   "model": "sea_corvette",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "naval_76",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hover_ciws",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "sea_cruiser": {
+   "model": "sea_cruiser",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "cruiser_203",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "cruiser_203",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": 30.0,
+     "yawMax": 330.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hover_ciws",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "hover_ciws",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg.001",
+     "muzzleNodes": [
+      "Muzzle_mg.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "shahed_truck": {
+   "model": "shahed_truck",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "shahed",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "drone",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "shield_carrier": {
+   "model": "shield_carrier",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "hmg_selfdef_15",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "shield_tower": {
+   "model": "shield_tower",
+   "mounts": []
+  },
+  "shield_tower.bulwark": {
+   "model": "shield_tower",
+   "mounts": []
+  },
+  "shield_tower.ward": {
+   "model": "shield_tower",
+   "mounts": []
+  },
+  "siege_tank": {
+   "model": "siege_tank",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "siege_mortar_240",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "siege_gun_105",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_21",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "silver_bug": {
+   "model": "silver_bug",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_icarus_sec_orbital_laser",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_icarus_main_ic_coil",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_icarus_main_ic_coil",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "p26_icarus_direct_ic_laser",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.002",
+     "muzzleNodes": [
+      "Muzzle_gun.002"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 3,
+     "weapon": "p26_icarus_direct_ic_laser",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.003",
+     "muzzleNodes": [
+      "Muzzle_gun.003"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "gun",
+     "k": 4,
+     "weapon": "pt14_sb_v30",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.004",
+     "muzzleNodes": [
+      "Muzzle_gun.004"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "gun",
+     "k": 5,
+     "weapon": "pt14_sb_v30",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.005",
+     "muzzleNodes": [
+      "Muzzle_gun.005"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "gun",
+     "k": 6,
+     "weapon": "pt14_sb_v105",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.006",
+     "muzzleNodes": [
+      "Muzzle_gun.006"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 8,
+     "slot": "gun",
+     "k": 7,
+     "weapon": "pt14_sb_v105",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.007",
+     "muzzleNodes": [
+      "Muzzle_gun.007"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 9,
+     "slot": "gun",
+     "k": 8,
+     "weapon": "p26_icarus_close_autocannon_40",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.008",
+     "muzzleNodes": [
+      "Muzzle_gun.008"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 10,
+     "slot": "gun",
+     "k": 9,
+     "weapon": "p26_icarus_close_autocannon_40",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.009",
+     "muzzleNodes": [
+      "Muzzle_gun.009"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "sky_gunship": {
+   "model": "sky_gunship",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gunship_105",
+     "aimMode": "FixedArc",
+     "dataAim": "Left",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -150.0,
+     "yawMax": -30.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "gunship_40mm",
+     "aimMode": "FixedArc",
+     "dataAim": "Left",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -150.0,
+     "yawMax": -30.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "gunship_25mm",
+     "aimMode": "FixedArc",
+     "dataAim": "Left",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -150.0,
+     "yawMax": -30.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "sp_mortar": {
+   "model": "sp_mortar",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "amos_120",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_18",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "spawn_bastion": {
+   "model": "heavy_turret",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "bastion_gun",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "stealth_bomber": {
+   "model": "stealth_bomber",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "stealth_payload",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "bom",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "jassm",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "stealth_fighter": {
+   "model": "stealth_fighter",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "air_to_air",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "bomb",
+     "k": 0,
+     "weapon": "guided_bomb",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "bom",
+     "findings": [
+      "slot_missing"
+     ]
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "fighter_cannon",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "stealth_naval_strike": {
+   "model": "stealth_naval_strike",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "jet_bombs",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "bom",
+     "findings": []
+    }
+   ]
+  },
+  "strike_drone": {
+   "model": "strike_drone",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "drone_missile",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "guided_bomb",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "bom",
+     "findings": []
+    }
+   ]
+  },
+  "super_gun": {
+   "model": "super_gun",
+   "mounts": []
+  },
+  "supply_truck": {
+   "model": "supply_truck",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "mg_jeep",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "swarm_carrier": {
+   "model": "swarm_carrier",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "drone",
+     "k": 0,
+     "weapon": "swarm_drones",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "drone",
+     "findings": [
+      "slot_missing"
+     ]
+    },
+    {
+     "mount": 1,
+     "slot": "drone",
+     "k": 1,
+     "weapon": "jassm",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": [
+      "slot_missing"
+     ]
+    }
+   ]
+  },
+  "tank_destroyer": {
+   "model": "tank_destroyer",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_105_long",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "targeting_station": {
+   "model": "targeting_station",
+   "mounts": []
+  },
+  "theia": {
+   "model": "theia",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "p26_icarus_sec_orbital_laser",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "p26_matriarch_ma_drones",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "drone",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "pt14_th_jagm",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "rocket",
+     "k": 1,
+     "weapon": "pt14_th_jagm",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_rocket_R"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "pt14_th_v35",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 5,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "pt14_th_v35",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun_R",
+     "muzzleNodes": [
+      "Muzzle_gun_R"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 6,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "pt14_th_pd",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 7,
+     "slot": "mg",
+     "k": 1,
+     "weapon": "pt14_th_pd",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg_R",
+     "muzzleNodes": [
+      "Muzzle_mg_R"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    }
+   ]
+  },
+  "thermobaric_launcher": {
+   "model": "thermobaric_launcher",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "rocket",
+     "k": 0,
+     "weapon": "thermobaric_rockets",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_rocket"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": 5,
+     "pitchMax": 70,
+     "pitchClass": "ban_cau",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_selfdef_18",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "titan_tank": {
+   "model": "titan_tank",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_140_twin",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "atgm",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "ten_lua",
+     "findings": []
+    }
+   ]
+  },
+  "twin_rotor_gunship": {
+   "model": "twin_rotor_gunship",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "heli_gun",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "agl_40",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "twin_tank": {
+   "model": "twin_tank",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_120_twin",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "typhon": {
+   "model": "typhon",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "missile",
+     "k": 0,
+     "weapon": "sam_post",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Mount_missile",
+     "muzzleNodes": [
+      "Muzzle_missile"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": null,
+     "pitchMax": null,
+     "pitchClass": "phong_khong",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "gun",
+     "k": 0,
+     "weapon": "p26_typhon_sec_ty57",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun",
+     "muzzleNodes": [
+      "Muzzle_gun"
+     ],
+     "yawMin": -150.0,
+     "yawMax": 150.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "gun",
+     "k": 1,
+     "weapon": "p26_typhon_sec_ty57",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.001",
+     "muzzleNodes": [
+      "Muzzle_gun.001"
+     ],
+     "yawMin": 30.0,
+     "yawMax": 330.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 3,
+     "slot": "gun",
+     "k": 2,
+     "weapon": "p26_typhon_direct_ty100",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.002",
+     "muzzleNodes": [
+      "Muzzle_gun.002"
+     ],
+     "yawMin": -150.0,
+     "yawMax": 150.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 4,
+     "slot": "gun",
+     "k": 3,
+     "weapon": "p26_typhon_sec_ty57",
+     "aimMode": "FixedArc",
+     "dataAim": "Free",
+     "pivotNode": "Mount_gun.003",
+     "muzzleNodes": [
+      "Muzzle_gun.003"
+     ],
+     "yawMin": 30.0,
+     "yawMax": 330.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "vbied": {
+   "model": "vbied",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "detonator",
+     "aimMode": "Hull",
+     "dataAim": "Hull",
+     "pivotNode": null,
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": 0.0,
+     "yawMax": 0.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  },
+  "vehicle_hangar": {
+   "model": "vehicle_hangar_base",
+   "mounts": []
+  },
+  "wall_gun": {
+   "model": "wall_gun",
+   "mounts": []
+  },
+  "wall_hesco": {
+   "model": "wall_hesco",
+   "mounts": []
+  },
+  "wall_t": {
+   "model": "wall_t",
+   "mounts": []
+  },
+  "wheeled_gun": {
+   "model": "wheeled_gun",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "gun_105_wheeled",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    },
+    {
+     "mount": 1,
+     "slot": "coax",
+     "k": 0,
+     "weapon": "mg_coax",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_coax"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    },
+    {
+     "mount": 2,
+     "slot": "mg",
+     "k": 0,
+     "weapon": "hmg_roof",
+     "aimMode": "Free",
+     "dataAim": "Free",
+     "pivotNode": "Mount_mg",
+     "muzzleNodes": [
+      "Muzzle_mg"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -15,
+     "pitchMax": 70,
+     "pitchClass": "sung_phu",
+     "findings": []
+    }
+   ]
+  },
+  "zu23_technical": {
+   "model": "zu23_technical",
+   "mounts": [
+    {
+     "mount": 0,
+     "slot": "main",
+     "k": 0,
+     "weapon": "zu23",
+     "aimMode": "Free",
+     "dataAim": "Turret",
+     "pivotNode": "Turret",
+     "muzzleNodes": [
+      "Muzzle_main"
+     ],
+     "yawMin": -180.0,
+     "yawMax": 180.0,
+     "pitchMin": -8,
+     "pitchMax": 70,
+     "pitchClass": "phao_boss",
+     "findings": []
+    }
+   ]
+  }
+ }
+}

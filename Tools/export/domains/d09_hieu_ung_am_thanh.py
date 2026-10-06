@@ -47,6 +47,11 @@ def _ogg_info(path) -> tuple[float | str, int | str, int | str]:
         return "", "", ""
 
 
+LICENSE_STATES = ("ASSET_LICENSE_OK", "ASSET_LICENSE_MISSING")
+SOURCE_STATES = ("ASSET_SOURCE_OK", "ASSET_SOURCE_MISSING")
+REALISM_STATES = ("REALISM_REFERENCE_OK", "REALISM_REFERENCE_NEEDS_SOURCE", "NOT_APPLICABLE")
+
+
 def _credits():
     """{file relative to Audio/: (length, author, source, licence)} from Audio/CREDITS.md and Music/MUSIC_CREDITS.md."""
     out = {}
@@ -82,6 +87,12 @@ def build(ctx):
                  ("tac_gia", "tác giả / nhà phát hành (CREDITS)"), ("nguon_goc", "nguồn gốc (CREDITS; sfx: tổng hợp / trộn bởi Tools/sfx/build_sfx.py)"),
                  ("giay_phep", "giấy phép (CREDITS)")):
         at.col(c, unit="s" if c.endswith("_s") else "Hz" if c.endswith("_hz") else "", meaning=m)
+    # MVA W1-B (spec part BJ): the asset's own legal / source status apart from the realism reference, so a legally sourced
+    # clip is never held back because a real-sound comparison is not cited yet.
+    for c, m, e in (("trang_thai_giay_phep", "assetLicenseStatus: giấy phép của chính tài sản", LICENSE_STATES),
+                    ("trang_thai_nguon", "assetSourceStatus: nguồn của chính tài sản", SOURCE_STATES),
+                    ("trang_thai_tham_chieu_that", "realismReferenceStatus: tham chiếu tiếng thật để so (không chặn tài sản)", REALISM_STATES)):
+        at.col(c, meaning=m, enum=list(e))
     for sid in sorted(s for s, src in ctx.sources.items() if src.kind == "audio" and s.startswith(AUDIO)):
         relp = sid[len(AUDIO):]
         parts = relp.split("/")
@@ -110,6 +121,11 @@ def build(ctx):
         elif relp.startswith("Music/"):
             r.set("nguon_goc", "nhạc gốc của dự án (Tools/music, Music/MUSIC_CREDITS.md)")
             r.set("giay_phep", "của dự án (Music/MUSIC_CREDITS.md)")
+        lic, src = r.values.get("giay_phep"), r.values.get("nguon_goc")
+        r.set("trang_thai_giay_phep", "ASSET_LICENSE_OK" if lic else "ASSET_LICENSE_MISSING")
+        r.set("trang_thai_nguon", "ASSET_SOURCE_OK" if src else "ASSET_SOURCE_MISSING")
+        # Music and UI have no real-world sound to match; combat sound has none cited in the repo yet.
+        r.set("trang_thai_tham_chieu_that", "NOT_APPLICABLE" if relp.startswith(("Music/", "ui", "UI")) else "REALISM_REFERENCE_NEEDS_SOURCE")
 
     # ------------------------------------------------------------------ Am_thanh_bank (library.json)
     bk = book.sheet("Am_thanh_bank", "Âm thanh: bank", "Tools/sfx/library.json banks: nhóm, bậc cỡ, hàng, số biến thể")

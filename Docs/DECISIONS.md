@@ -21331,3 +21331,100 @@ the worktree (owner-allowed by the MASTER spec). Result: 154/154 pass. Per failu
 - **Speeds:** spec sections 2-14 and 16 applied by family and role (108 ids; table in Docs/fixes/flight_feel_report.md and Docs/export/CHANGES.md "FLIGHT FEEL"); cruise, bombs, drones, ballistic, direct tank / APFSDS / MG kept. Seven new family ids carry the splits (jet rockets 100, howitzer fixed 65 / ext 60, coastal 70, guided +5). Earlier slow-downs (boss_rockets 65, sam_post 80, sam_battery 95, pt14_train_grad 65, sam_pac3 300 ...) superseded; PlayTest14LaneH/I tests updated.
 - **Validator:** NHANH_QUA / CHAM_QUA are fire-cycle flags and stay; added Tools/balance/flight_feel_audit.py (class bands, min / half / max flight, gear-cap flight, TOO_FAST / TOO_SLOW_FOR_CLASS) and 10 columns in Vu_khi_suy_ra. Rocket artillery at the spec's 80 m/s is under its 0.7 s band in the game's 45-55 m reach: owner decision left open.
 - **Code:** `BossSystem.MaxLead` 0.9 -> 2.5 (the cap fitted 180-300 m/s rounds; slow boss shells would fly 2.5x too fast in the view). AI lead, proximity fuze, APS and flare windows, salvo spacing read statically: all time- or metre-based, nothing else needed changing; APS, flare and homing need a Unity measurement (not run, owner rule); APS not nerfed.
+
+## Balance master final
+
+Spec Docs/prompts/balance_master_final_spec.md, brief Docs/prompts/balance_master_final_vi.md (06/10). Report: Docs/balance/BALANCE_MASTER_FINAL_REPORT.md; old -> new log Docs/balance/balance_final_changes.json (177 entries, Tools/balance/balance_final_apply.py).
+- **Speeds:** final spec 3-5 applied at the runtime source (family rows first): Hellfire / Kornet / TOW / gun-launched ATGM 70, Vikhr / Maverick / Kh-29 75, APKWS 80, anti-ship 80 (incl. pt14_hp_nsm, scylla_kh35), Stinger / Igla 90, R-60 95, AIM-9 100, SHORAD 100, Tamir 105, Pantsir 110, AMRAAM 120, Buk 120, Patriot 130, S-400 140. Boss exceptions restored: sam_post 80, sam_battery 95 (Nemesis only), boss rockets 65 (incl. pt14_ixion_grad, hover_rockets). 53 runtime speeds changed; Python resolver = headless Sim Catalog = Unity snapshot (0 differences).
+- **Isolation of shared data:** boss_mortar on its own 240 mm row (2b8_240_mm_boss, 9 m); mlrs_rockets on its own GMLRS row (m31_gmlrs_227_mm_mlrs, 4.9 m; tower branch keeps 4.5); boss_heli_gun / boss_minigun damage and howitzer_fixed_guided edge pinned so boss and guided values do not follow buffed parents.
+- **Levers:** aircraft output x1.08 on aircraft-only weapons (sky gunship via outgoingDamageMult); heavy tank, tower and Nyx / Scylla damage via outgoingDamageMult (Nyx / Scylla cruise strikes scaled separately, NavalSystem lays them); coverage = splash / cluster radius; class rules applied to elites too.
+- **Artillery Barrage:** blast 7 -> 7.7 (only lever; measured +9.9 to +13.7 %); scripted barrages moved to the new event support `scripted_barrage` (old values) in BattleEvents.P28, MissionEvents.Kinds (3 defaults), SiegeModes and the two campaign Strike events.
+- **Kept:** boss armour (0 changes, 254 built entries), Titan, walls, TOS, Nemesis / Mobile Fortress damage, AAM damage, Pen / reload / fire rate / CP / gear, repair (all % of max HP), resupply (not limiting), rebuild CP / time. Unlisted kept: coastal_battery, bunker_shelter_tower, wheeled_gun, blast_wall, bulwark_post.
+- **Validator:** flight_feel_audit.py bands = final spec 6 (new AIR_DEFENCE_SHORT); 25 flags remain, all spec speeds at short ranges (owner decision).
+- **Measurement (owner's word for this pass):** headless harness Tools/simbuild/regress (port of the EditMode benches) before / after; one Unity EditMode run (ExportGameDoc) as a cross-check. Export pack not regenerated (owner stop 06/10): Docs/export is stale for the changed ids until the next rebuild.
+
+## Map/visual/audio W1-B (lane B)
+
+Spec: Docs/mapvisaudio (parts W-AB, AC-AO, AP-BL, BT-BX, CE-CG). Branch feature/mva-w1b. No balance, no weather, no Unity runs.
+
+- **Runtime node contract (W, BX):** `Game/Rendering/RuntimeNodes.cs` + `Tools/assets/runtime_nodes.py` (twins). Indexed nodes
+  `Muzzle_<slot>` / `Mount_<slot>` / `Part_<name>` take a case-sensitive semantic tag (`L|C|R|fore|mid|aft|01-99`, up to two);
+  canonical order = plain, tags, then a legacy `.NNN` by number (exactly the old ordinal order, so un-renamed GLBs resolve as
+  before). `Mount_Flare_*` never matches a weapon mount; lower-case `_l` names (Part_aa_l, Muzzle_door_l) are not tags. The plain
+  name is kept on rename (the slot's first node; every exact lookup of it still works), extra nodes get a tag: a pair's second by
+  side / along the hull (glTF +X is the model's left: glTFast negates X), three or more `_02.._NN`, muzzles take their mount's tag.
+  ModelLibrary sorts with `RuntimeNodes.Compare`; `VehicleView.FindPart` and the editor audit use the resolver.
+- **Renamed (order-preserving, JSON chunk only):** attack_jet first (+ _hd), then every model whose data and tests name no suffixed
+  node: 25 GLBs, map in `Tools/assets/runtime_node_map.json`, re-applied by `frontier_kit.export_collection` after each export.
+  Kept legacy (35): bosses / towers whose balance.json parts / mount nodes, p34_barrels or silver_bug tests name `.NNN`; rename model
+  + data together later (`runtime_node_audit.py --rename`).
+- **Audit:** `Tools/assets/runtime_node_audit.py` hard-fails suffix lookups, duplicate / mixed ids, missing data part nodes, slots
+  with no node, a muzzle off its k-th pivot; soft: count wrap, tilted pivot, fixed-arc side, hull aim on a pivot. Ratchet baseline
+  `runtime_node_baseline.json` (103 known: 100 legacy suffix groups, 3 slot gaps rocket2 / bomb / drone); 0 new. Writes
+  `Docs/models/RUNTIME_NODES.md` and `Docs/models/aim_contract.json` (aimMode Free / Hull / FixedArc, pivot, muzzles, yaw, pitch from
+  barrelLimits, per unit and mount). Arc check confirmed the side convention (mg_bunker's side guns).
+- **Budgets (Z, AB, CG):** `Tools/assets/budget_audit.py` -> `Docs/models/BUDGET_OUTLIERS.md`: HARD (renderers / moving parts over
+  the cap; tris / verts only for units seen in numbers past 1.5x) / WAIVED / EXCEPTION / INFO (owner rule 02/10) / SOFT. Waivers in
+  `budget_waivers.json` (who, date, why, follow-up): hangars x2, ixion, fpv_carrier, heavy_aa (renderers); notes for attack_jet
+  (renderers 40, soft), cp_relay (43, soft), armored_bulldozer (12,787 verts INFO, tris soft). Renderer merges go to W3 (PLAN).
+- **Audio (AP-AT, BL, BV):** `Game/Audio/AudioPolicy.cs`: classes P0-P5 over SoundPriority (new `Critical` = 80 = P0: big whistles,
+  super cues; `Warning` = P1), per-class max instances, cooldown, distance weight, virtualisation, bus. `VoiceArbiter` (pure) keeps the
+  L7 rules for combat and adds: a playing P0 / P1 voice is never taken, a P0 / P1 sound always gets a voice (past its bank limit when
+  the bank is all active warnings). Warnings skip the compressor and big-blast duck and duck the classes under P2 briefly (attack
+  0.15, hold 0.4, release 0.8 s to 0.55; music only on P0 via Alert). Bank cooldown no longer drops a P1 cue at another spot (> 12 m).
+  CriticalWarnings bus = new Settings slider "Warnings" (20-100 %, `mb.warningVolume`); alarms moved off the effects slider. A guided /
+  top-attack missile hiss aimed at the player's unit is P1. Existing small-arms clustering stays the AR aggregation.
+- **Threat cues (AE, AF, AG, AN, BL):** `Game/Effects/ThreatCues.cs` + `Docs/mapvisaudio/THREAT_CUES.md` (lead, telegraph vs danger
+  shape, audio, cancel, impact, occlusion, low preset). Owner zoneless rule for ordinary bombs / artillery kept (whistle is the cue).
+  Top attack: `TopAttackMarks` closing violet ring on the targeted player unit over the dive, only for top-attack weapons, follows
+  the warning-rings setting, all tiers. Low preset: warnings are not tier-gated (checked); plume glow is the only Low cut. Gaps: mine
+  detected, EMP (W2).
+- **Wrecks (AO):** `Sim/Movement/WreckStates.cs` (Alive / DestroyedAnimating / BlockingWreck / PassableRubble / Removed + contract).
+  Fix: WreckManager's cap and Trim sank Sim-solid hulks early (invisible but blocking); now they are simplified (fire out) and sink on
+  the Sim's clock. `ViewState` / `Desyncs` for the stress scene and tests.
+- **Audio records (BJ):** 09/Am_thanh and Hieu_ung_tham_chieu get trang_thai_giay_phep / trang_thai_nguon / trang_thai_tham_chieu_that
+  (ASSET_LICENSE_OK, ASSET_SOURCE_OK, REALISM_REFERENCE_NEEDS_SOURCE / NOT_APPLICABLE); 10 maps the three new Tools/assets JSONs.
+  Pack not regenerated (lead rebuilds); a scratch build exited 0 with 0 unmapped.
+- **Accessibility:** screen shake already had Off / Low / Full; added "Reduced flashes" (big-gun muzzle flash 0.7x, fire glow without
+  fast flicker); gameplay cues unchanged.
+- **Tests written, not run:** `MvaW1bNodeContractTests`, `MvaW1bCriticalAudioTests` (P0 in a 32-voice storm of 500 events).
+
+## Balance v2 (06/10)
+
+- **Validator v2 finished:** the WIP commit `dfe4bb5e` (3 buckets: HARD_FAIL/YELLOW_FEEL/PASS_INTENTIONAL_SHORT_RANGE,
+  5 reason codes) was already complete but never run; compiled clean and run this pass: 0 HARD_FAIL, 6 YELLOW_FEEL,
+  25 PASS_INTENTIONAL_SHORT_RANGE, 329 ok across 360 weapons. No code changes needed.
+- **Speeds:** `sam_48n6` 140 -> 115 m/s, splash capped 7.2 -> 6.0 m (owner's "x1.25 cap 5-6 m" formula doesn't fit a
+  starting value already over the cap; capped directly instead of multiplying further over it). `ballistic_missile`
+  200 -> 90 m/s, splash 10 -> 14 m, added `impactScale: 1.3`. Damage KEEP on both.
+- **Drone mothership/swarm carrier:** created `jassm_swarm_carrier` (inherits `jassm`, speed 60, splash 14.4 = new
+  jassm splash 12 x 1.20); `swarm_carrier`'s secondary weapon and `loads` key switched to it. Generic `jassm` untouched
+  speed-wise (70 m/s cruise band).
+- **Cruise footprint (sec 5):** `jassm`/`air_cruise_missile`/`cruise_missile_ground` splash -> 12; `hydra_club_s` -> 10;
+  `nyx_tomahawk` -> 11 (its own direct VLS fire); `leviathan_cruise` -> 14 (shared by Leviathan's and Typhon's scripted
+  "cruise" bigAttack). Fixed the stale 6.5/10 m naval-boss warning markers: `NavalSystem.cs`'s `CruiseDef.Radius` is the
+  actual damage radius (confirmed by reading the C#), independent of the weapon catalog's splash field, so the five
+  `"cruise"` bigAttack blocks (leviathan/typhon/nyx/hydra/scylla) and the two `leviathan_cruise_mark`/`kalibr_cruise_mark`
+  support markers all needed their own sync. Nyx and Scylla declare no `weapon` field for this scripted attack (a code
+  comment confirms it's by design: a shared Kalibr-type bombardment independent of their actually-mounted missile) --
+  raised all three Large-tier ships (nyx/hydra/scylla) from 6.5 to 10 m together rather than inventing an unsupported
+  per-ship mapping.
+- **Pen hierarchy (sec 11-19):** `focus_laser` 4 -> 5 (+damage 12.5 -> 14); `recoilless_106` 3 -> 4 (damage KEEP at the
+  canonical 314 -- the prompt's "220 KEEP" never matched any prior-pass document checked, flagged not applied);
+  `siege_gun_105` 3 -> 2 (prompt's explicit "KEEP 2" read as the corrective target). `gun_105_apfsds`/`railgun` already
+  Pen 5 from the previous pass (verified, not reapplied); IFV `atgm` already Pen 4 (audited, no stale inheritance found).
+- **Boss missile/rocket flight-feel audit (addendum):** swept every `p26_`/`pt14_`/`nyx_`/`scylla_`/`boss_`/`train_`
+  missile/rocket weapon plus the naval `"cruise"` bigAttacks -- every one already inside its target band from the
+  previous pass; no speed changes needed. Hyperion's `pt14_hp_nsm` (80 m/s, anti-ship band) and `pt14_hp_155` (direct
+  naval gun, non-goal) explicitly reviewed. Boss anti-ship splash (`pt14_hp_nsm` 5 m, `scylla_kh35` 6 m) flagged as
+  slightly below the "~8-14 m" identity guidance but kept, per "do not automatically increase every boss missile splash."
+- **Boss armour confirmed unchanged:** programmatic diff of every vehicle's `armour` field, zero differences.
+- **Regression (headless only, per brief):** `dotnet build` of `Sim.csproj` and `regress/Regress.csproj`, 0 errors both.
+  `Regress` harness `ttk`/`pd`/`barrage`/`aps`/`pressure` modes run before/after: `long_sam` vs `attack_jet` TTC eased
+  slightly (expected from the slower SAM); `nyx` pressure +3.2% and heavy-bomber-vs-IFV sortie value +4% (both from the
+  cruise/ACM splash increases hitting more targets in AoE, expected, no damage number changed); `barrage` and the AI-lead
+  half of `aps` byte-identical. No Unity EditMode run used.
+- **Regenerated:** `Tools/balance/full_weapon_audit.py` (writes `Docs/checks/full_weapon_audit.md` and
+  `Docs/balance/player_weapon_waitlist.md`); `flight_feel_audit.py` console run. **Not regenerated:** `Docs/export/*`
+  (explicit brief rule -- the lead rebuilds the pack once at the end).
+- Full report: `Docs/balance/BALANCE_V2_REPORT.md` (copied to `bao_cao_combat/balance_v2_report.md`).

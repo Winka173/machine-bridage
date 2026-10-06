@@ -1,0 +1,40 @@
+fire	guard	tanks_hp_lost_45s	interceptions	diverted_rounds	shots_fired
+direct (ATGM, heli, FPV)	none	30034	0.0	0.0	445.0
+direct (ATGM, heli, FPV)	c_ram	12095	72.3	0.0	289.7
+direct (ATGM, heli, FPV)	c_ram.centurion	7086	83.7	0.0	303.3
+direct (ATGM, heli, FPV)	c_ram.dome	21738	16.0	0.0	349.3
+direct (ATGM, heli, FPV)	iron_beam	8031	33.3	0.0	1108.3
+direct (ATGM, heli, FPV)	aa_vehicle	25484	0.0	0.3	387.7
+direct (ATGM, heli, FPV)	laser_ad_station	17501	44.0	0.0	292.0
+lobbed (MLRS, howitzer, mortar, Shahed)	none	6565	0.0	0.0	31.0
+lobbed (MLRS, howitzer, mortar, Shahed)	c_ram	567	27.0	0.0	30.3
+lobbed (MLRS, howitzer, mortar, Shahed)	c_ram.centurion	567	27.0	0.0	30.7
+lobbed (MLRS, howitzer, mortar, Shahed)	c_ram.dome	882	12.7	0.0	30.7
+lobbed (MLRS, howitzer, mortar, Shahed)	iron_beam	499	12.3	0.0	31.0
+lobbed (MLRS, howitzer, mortar, Shahed)	aa_vehicle	6565	0.0	0.0	31.0
+lobbed (MLRS, howitzer, mortar, Shahed)	laser_ad_station	499	12.3	0.0	31.0
+missiles (TD? no: ATGM tower-free: 2 IFV + light tank + strike drone)	none	6284	0.0	0.0	31.0
+missiles (TD? no: ATGM tower-free: 2 IFV + light tank + strike drone)	c_ram	3632	9.0	0.0	31.0
+missiles (TD? no: ATGM tower-free: 2 IFV + light tank + strike drone)	c_ram.centurion	3632	9.0	0.0	31.0
+missiles (TD? no: ATGM tower-free: 2 IFV + light tank + strike drone)	c_ram.dome	6998	0.0	0.0	31.0
+missiles (TD? no: ATGM tower-free: 2 IFV + light tank + strike drone)	iron_beam	2366	11.3	0.0	131.0
+missiles (TD? no: ATGM tower-free: 2 IFV + light tank + strike drone)	aa_vehicle	7284	0.0	0.0	31.0
+missiles (TD? no: ATGM tower-free: 2 IFV + light tank + strike drone)	laser_ad_station	3061	10.7	0.0	31.0
+
+air_defence	target	damage_60s	hits	diverted	shots
+sam_launcher	attack_helicopter	15306	31.0	0.0	36.0
+sam_launcher (+enemy ew_jammer)	attack_helicopter	123	1.0	0.0	36.0
+sam_launcher	attack_jet	11685	23.7	0.0	26.0
+sam_launcher (+enemy ew_jammer)	attack_jet	8270	17.0	0.0	26.0
+long_sam	attack_jet	7935	7.0	0.0	7.0
+long_sam (+enemy ew_jammer)	attack_jet	3055	5.7	0.0	7.0
+aa_vehicle	attack_helicopter	4811	81.7	0.3	82.7
+aa_vehicle (+enemy ew_jammer)	attack_helicopter	115	2.0	0.0	173.3
+manpads_tower	attack_helicopter	2678	9.3	0.7	10.7
+manpads_tower (+enemy ew_jammer)	attack_helicopter	0	0.0	0.0	14.0
+missile_battery	heavy_bomber	11766	26.7	0.0	28.0
+missile_battery (+enemy ew_jammer)	heavy_bomber	9723	24.7	0.0	28.0
+heavy_aa	fighter_jet	12946	669.7	0.0	682.3
+heavy_aa (+enemy ew_jammer)	fighter_jet	3052	216.3	0.0	927.7
+fighter_jet	attack_helicopter	24718	458.7	0.7	459.3
+fighter_jet (+enemy ew_jammer)	attack_helicopter	14525	437.7	0.0	458.7
