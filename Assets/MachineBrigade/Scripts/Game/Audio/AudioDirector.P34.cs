@@ -523,7 +523,11 @@ namespace MachineBrigade.Game.Audio
             var now = Time.unscaledTime;
             if (now < _nextHiss) return;
             _nextHiss = now + HissGap;
-            Schedule(hiss, e.Target, 0.9f, e.Value - HissLead, SoundPriority.FarShot);
+            // MVA W1-B (spec parts BA, BL): a guided or top-attack missile aimed at one of the player's units is an incoming
+            // missile warning (P1: never cut while it plays); any other hiss stays a far shot.
+            var incoming = (weapon.Guided || weapon.TopAttack) && e.Team != _playerTeam && _playerTeam >= 0 && _views != null &&
+                           _views.TryGet(e.Other, out var aimed) && aimed.Sim.Team == _playerTeam;
+            Schedule(hiss, e.Target, 0.9f, e.Value - HissLead, incoming ? SoundPriority.Warning : SoundPriority.FarShot);
         }
 
         /// <summary>An incoming shell's whistle: the big one for a boss's attack or a 406 mm / super weapon.</summary>

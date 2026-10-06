@@ -212,8 +212,9 @@ namespace MachineBrigade.Game.Effects
             _bigZones = new BigAttackZones(materials, meshes, _root);
             // Prompt 34 L3: the T4+ rounds' escape warnings.
             _escape = new EscapeWarnings(materials, meshes, _root);
+            _topAttack = new TopAttackMarks(materials, meshes, _root);
             // Play-test 12: the rounds, streaks and warning rings on this director's own shot clock (ShotClock.cs).
-            _tracers.Clock = _projectiles.Clock = _escape.Clock = Clock;
+            _tracers.Clock = _projectiles.Clock = _escape.Clock = _topAttack.Clock = Clock;
             // Fix prompt L6: the smoke and dust a blast leaves, by its size band.
             _smoke = new ImpactSmoke(_root);
             // Fix prompt L5: one gate decides which warning rings are drawn (data warningRules).
@@ -750,7 +751,10 @@ namespace MachineBrigade.Game.Effects
                 // small or medium shell (prompt 26 B.4's 0.8 s ring on a boss's 5 m shells is gone).
                 if (shooter != null && shooter.Sim.Team != views.PlayerTeam && e.Kind == SimEventKind.WeaponFired && e.DefId != null &&
                     !stickWarned && _catalog.Weapons.TryGetValue(e.DefId, out var big) && !big.Laid)
+                {
                     EscapeRing(e, shooter, big, now);
+                    TopAttackMark(e, shooter, big, views, now);
+                }
                 // Prompt 34 L8: a preview shows every blast round of its unit landing inside its ring, at the round's real size.
                 if (PreviewRings && !stickWarned && shooter != null && e.Kind == SimEventKind.WeaponFired && shooter.Sim.Team == 0 && e.DefId != null &&
                     _catalog.Weapons.TryGetValue(e.DefId, out var shown))
@@ -812,6 +816,7 @@ namespace MachineBrigade.Game.Effects
             _strikes.Tick(now);
             _bigZones.Tick(views, now);
             _escape.Tick(now);
+            _topAttack.Tick(views, now);
             // The bomb-run fix, pass 3: the sticks' rectangles (offered to the gate before it resolves) and the bay doors.
             TickSticks(views, now);
             // Fix prompt L6: the lingering smoke columns and the craters' lives.
