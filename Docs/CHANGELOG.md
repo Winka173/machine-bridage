@@ -20,6 +20,14 @@ its commits.
   GLBs; `"card": false` like the existing naval roster. No transport/radar/sonar/carrier/revive system, no
   duplicate gun corvette/cruiser. Static (no-sim) comparison + `Docs/naval/MODEL_CONTRACT.md` for the model
   lanes: `Docs/naval/NAVAL_DATA_REPORT.md`.
+- Deck tabs (06/10, branch feature/deck-tabs): the Army deck's filter chips split from five
+  (All/Armor/Light/Artillery/Air/Support) into a complete, data-derived set — All, Tanks, Anti-tank, Light &
+  recon, Anti-air, Artillery, Air, Naval, Support & engineer — membership read from each unit's own class/flying
+  field, never a hand list; empty tabs hide; the chip row scrolls horizontally instead of wrapping. Naval is a
+  read-only codex of the fleet's 21 "card": false ships (stats, weapons, render, "AI only"), not a toggleable
+  tab: the player's Deploy command always arrives at the team's one (land) drop zone, and the sea entry points
+  `SpawnPoints.cs` builds are enemy/AI-side only, so making the ships playable needs a new player-side sea drop
+  zone and map-eligibility system, not a reuse (see DECISIONS "Deck tabs").
 - Balance v3 owner answers: supply_truck HP back to 700 (mission-only unit, 06/10).
 - Balance v3 cheap/mid tier (06/10, branch feature/balance-v3): cheap ground units (armored_car, scout_jeep,
   rocket_technical, zu23_technical, recoilless_jeep) and light_tank/ifv/wheeled_gun/tank_destroyer/flame_tank/

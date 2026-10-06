@@ -21997,3 +21997,81 @@ the data lane's brief Docs/naval/MODEL_CONTRACT.md: real GLBs for the eight big 
   baseline.json, models.json) and the new GLBs' .meta files are left for the lead's merge pass.
 - **Pictures:** Blender Workbench sheets in `Docs/models/rebuild/<id>/blender_sheet.png`; the ships have
   "card": false, so the card pipeline renders none; Unity ModelScan sheets need Unity (not run).
+
+## Deck tabs (06/10, branch feature/deck-tabs)
+
+Owner prompt (06/10, after the naval expansion): "xong thì deck phân ra thêm tab cho đầy đủ" — split the deck /
+collection into more tabs so every unit family is covered. Worked in `MachineBrigade-art`, lead `f74c975`.
+
+**Tab set.** `MenuScreen.Army.cs`'s `CardFilter` enum: All, Tank, AntiTank, LightRecon, AntiAir, Artillery, Air,
+Naval, Support (declaration order = chip order, matching the owner's example "All / Tanks / Anti-tank / Light &
+recon / Anti-air / Artillery / Air / Naval / Support & engineer"). The old five (Armor/Light/Artillery/Air/Support,
+mapped straight off the four-value `GearBranch`/equipment branch) folded TankHunter into Armor and Scout/AntiAir/
+Support(class) into Light; that is gone from the Deck filter. The Equipment tab is untouched: `GearBranch` and
+`KitOf(GearBranch)` still produce the original four-branch grouping for loadouts, a separate concept from the new
+`KitBranch` members added for the deck chips (Tank/AntiTank/LightRecon/AntiAir/Naval) — same enum, two independent
+call sites (`BranchOf(CardFilter)` for the deck, `KitOf(GearBranch)` for equipment), so neither screen's existing
+behaviour moved.
+
+**Membership is data, not a hand list** (`Matches(CardFilter, id)` in `MenuScreen.Army.cs`): a non-vehicle support
+card (`MatchSettings.AllSupports`) only ever matches Support; a vehicle's `UnitClass` (`def.Class`, itself already
+inferred per-def by `Catalog.InferClass`, not something this change touches) and `def.Flying` decide the rest —
+Tank/Heavy → Tank tab, TankHunter → Anti-tank, Light/Scout → Light & recon, AntiAir → Anti-air, Artillery →
+Artillery, `def.Flying` → Air (the same field `Catalog.BranchFor` already uses to call an aircraft Air), Support
+class → Support & engineer (joining the non-vehicle support cards there). Checked every id in
+`MatchSettings.AllVehicles`/`AllSupports` resolves to exactly one of these eight, with none landing in Boss/Defense
+(towers and bosses are not in that list; the Towers tab is unchanged). Empty tabs hide: `AnyFor(CardFilter)` checks
+whether anything matches before showing a chip (defensive; every tab is populated today).
+
+**Naval tab — codex, not cards.** Investigated whether the player's Deploy command could reuse the AI's sea entry
+points before deciding, per the brief's "without a new subsystem" test:
+- `Command.Deploy(team, vehicleId)` (`Sim/Commands/Command.cs`) carries no position; `SpawnPoints.Build`
+  (`Sim/Navigation/SpawnPoints.cs:210`) resolves the player's own arrival point once, from
+  `world.Bases.TryGetDropZone(player)` (else the rally/home) — a single land point, independent of the unit being
+  deployed. There is no per-unit or per-domain branch in that path today.
+- The sea entry points that exist (`SpawnKind.Sea`, built at `SpawnPoints.cs:178-182` from `map.Sea.Landings` and
+  at `WaterLandings` `:364-395` from water props near the map edge) are added **only** as `SpawnSide.Enemy` — they
+  feed AI reinforcement waves (boats landing troops against the player), never the player's own side. There is no
+  symmetric "player sea drop zone" concept anywhere in `SpawnPoints`.
+- Making a naval card deployable would need: a new player-side sea drop zone (today there is exactly one drop
+  zone, land, per `BaseSites`/`world.Bases`), a per-def or per-domain branch in `Command.Deploy`'s resolution, and a
+  map-eligibility check (does this map's sea connect to the player's side, not just an enemy landing beach) plus
+  the UI's disabled-with-reason state the brief asks for on land maps. That is new sim-side plumbing, not a reuse
+  of the existing AI spawn — and it is exactly the kind of change `Docs/naval/NAVAL_DATA_REPORT.md` already flagged
+  as deferred ("Campaign/mode eligibility: none wired this pass... left for a later pass", "a later pass should wire
+  1-2 of these ships into a boss fleet or a coastal mission") and that needs a simulated regression to verify, which
+  the owner's no-test rule does not allow this pass. **Decision: keep every naval ship `"card": false`**; no
+  balance/economy/unlock field touched.
+- Instead, Naval is a read-only codex tab: `BuildCollection()` special-cases `_filter == CardFilter.Naval` and
+  renders `NavalShipIds()` (every catalog vehicle with a `"naval"` block — `def.Naval != null`, the data field the
+  brief named; this reads 21 ships: the 17 new ones plus the existing `sea_corvette`, `sea_cruiser`, `missile_boat`,
+  `landing_craft` fleet anchors, all already `"card": false`) through `NavalCard(id)`, built by hand rather than
+  `VehicleCardData.From` (that factory reads `PlayerProfile.IsUnlocked`/`Rank`, which would call these ships
+  "locked" and point at a shop that never sells them). Each card shows the render, armour/weapon row and CP like
+  any card, with an "AI only" band in the existing lock-row slot (reused for its look, not its unlock meaning) and
+  opens the normal vehicle detail page on tap. `MenuScreen.Detail.cs`'s `OpenDetail`/`FillDetailDock`/`RefreshDetail`
+  gained a parallel `IsNavalOnly(id)` beside the existing `IsBoss(id)`: no Equipment tab, no level/blueprint dock
+  (same reasoning as a boss page — the ship never carries a player loadout or levels up), the prev/next arrows
+  cycle the Naval codex's own list instead of the normal (always-empty, for Naval) collection list. Names added for
+  all 17 ships (`Strings.cs` "unit.<id>"/"short.<id>", en+vi) — the data-only naval lane had not needed them since
+  no UI showed the ships yet.
+- Nothing about the 17 ships' `balance.json` entries changed (no CP/stat/weapon edit); this pass only reads
+  `def.Naval`, `def.Class`, `def.CpCost` and adds display strings.
+
+**Mobile width.** `KitChipRow` (`Kit/KitControls.cs`) gained an opt-in `scroll` parameter: `true` wraps the chip
+group in a `Kit.Scroll(Horizontal)` strip (new CSS `.fc-chip-row__chips--scroll`, nowrap) instead of the default
+wrapping row, so the Army deck's now-up-to-nine chips drag sideways on a phone width rather than spilling to a
+second line; the sort button and its divider stay outside the scroll strip, matching the existing deck-strip
+pattern (`fc-army__deck-strip`). Only the Army deck's chip row passes `scroll: true`; every other `KitChipRow`
+caller (Equipment branches, Home/Base plan chips) is unchanged.
+
+**New assets.** Five `KitBranch` members (Tank, AntiTank, LightRecon, AntiAir, Naval) each with their own colour
+token (`--fc-branch-tank` etc., `Tokens.uss`) and icon (`tank`/`destroyer`/`armoredcar`/`aa`/`anchor` — all
+pre-existing `Icons.cs` entries, no new icon drawn). No model/card-render work: the ships stayed `"card": false`,
+so the card render pipeline (`render_wave.sh`/`wave_cards.sh`) was not needed.
+
+**Not done / out of scope:** no balance value changed; no `export.py`/`ExportGameDoc` run (owner: no tests, no
+Unity run); EditMode tests not run (not written either — this is a menu-only change with no new Sim-side logic to
+test). `Tools/simbuild/Sim.csproj` is unaffected (no file under `Scripts/Sim/**` touched); C# 9 checked by reading
+(pattern `is X or Y`, switch expressions, target-typed object initializers — all already used elsewhere in this
+codebase, nothing newer).
