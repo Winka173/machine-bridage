@@ -324,3 +324,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 06/10 "chạy export ra file exe lại" (= build Windows exe -> Tank-arena/MachineBrigade_Windows); "tiếp tục tiếp task còn lại" (resume MVA W1).
 - 06/10 trả lời 4 câu hỏi balance final (airstrike, validator 3 lớp, rebuild pack cuối cùng) -> Docs/prompts/balance_final_answers_vi.md.
 - 06/10 "sửa cho tôi cái này trước, xong update bản window, dừng các task đang làm và tiếp tục lại sau khi xong" + balance v2 prompt + boss missile flight-feel addendum -> Docs/prompts/balance_v2_vi.md (source of truth; W1-A + validator dừng, làm lại sau).
+- 06/10 "tiết kiệm token dùng sonet cũng được do chỉ là data, sonnet 5.5 cũng được" (balance v2 chạy lại bằng sonnet).
