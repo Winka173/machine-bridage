@@ -175,7 +175,12 @@ namespace MachineBrigade.Game.Hud
         }
     }
 
-    /// <summary>The five vehicle branches of the brief, each with its colour token (never shown without the class icon).</summary>
+    /// <summary>
+    /// The five vehicle branches of the brief, each with its colour token (never shown without the class icon);
+    /// plus the Deck tab's own finer split (Tank/AntiTank/LightRecon/AntiAir/Naval, deck tabs 06/10): the
+    /// Equipment screen still groups by the first five (<see cref="Of"/>), the Army deck's filter chips by
+    /// <c>BranchOf(CardFilter)</c> in <c>MenuScreen.Army.cs</c>.
+    /// </summary>
     public enum KitBranch
     {
         Armor,
@@ -183,6 +188,11 @@ namespace MachineBrigade.Game.Hud
         Artillery,
         Air,
         Support,
+        Tank,
+        AntiTank,
+        LightRecon,
+        AntiAir,
+        Naval,
     }
 
     public static class KitBranches
@@ -203,10 +213,13 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The branch's line icon (filter chips): its most typical class.</summary>
         public static string Icon(KitBranch branch) => branch switch
         {
-            KitBranch.Armor => "tank",
-            KitBranch.Light => "armoredcar",
+            KitBranch.Armor or KitBranch.Tank => "tank",
+            KitBranch.Light or KitBranch.LightRecon => "armoredcar",
             KitBranch.Artillery => "artillery",
             KitBranch.Air => "helicopter",
+            KitBranch.AntiTank => "destroyer",
+            KitBranch.AntiAir => "aa",
+            KitBranch.Naval => "anchor",
             _ => "repair",
         };
 

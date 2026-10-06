@@ -36,13 +36,22 @@ namespace MachineBrigade.Game.Hud
             Outpost,
         }
 
+        /// <summary>
+        /// Deck tabs (06/10, DECISIONS "Deck tabs"): a complete, data-derived tab set. Membership comes from the
+        /// unit's own fields (<see cref="Passes"/>: <c>def.Class</c>, <c>def.Flying</c>), never a hand list, so
+        /// every card-eligible unit lands in exactly one tab. Naval is the one exception: it is a read-only codex
+        /// of the fleet's "card": false ships (<c>def.Naval != null</c>), never part of the toggleable collection.
+        /// </summary>
         private enum CardFilter
         {
             All,
-            Armor,
-            Light,
+            Tank,
+            AntiTank,
+            LightRecon,
+            AntiAir,
             Artillery,
             Air,
+            Naval,
             Support,
         }
 
@@ -98,7 +107,9 @@ namespace MachineBrigade.Game.Hud
                 chips.Add(chip);
             }
             _sortButton = new KitSortButton(SortName(_sort), PickSort);
-            deckBody.Add(new KitChipRow(chips, _sortButton));
+            // Deck tabs (06/10): up to nine chips now, so the row scrolls horizontally on a phone width instead of
+            // wrapping to a second line (the sort button and divider stay put, apart from the scroll).
+            deckBody.Add(new KitChipRow(chips, _sortButton, scroll: true));
             _collection = Kit.Box("fc-army__collection");
             deckBody.Add(_collection);
             _deckView.Add(deckBody);
@@ -171,10 +182,13 @@ namespace MachineBrigade.Game.Hud
 
         private static KitBranch BranchOf(CardFilter filter) => filter switch
         {
-            CardFilter.Armor => KitBranch.Armor,
-            CardFilter.Light => KitBranch.Light,
+            CardFilter.Tank => KitBranch.Tank,
+            CardFilter.AntiTank => KitBranch.AntiTank,
+            CardFilter.LightRecon => KitBranch.LightRecon,
+            CardFilter.AntiAir => KitBranch.AntiAir,
             CardFilter.Artillery => KitBranch.Artillery,
             CardFilter.Air => KitBranch.Air,
+            CardFilter.Naval => KitBranch.Naval,
             _ => KitBranch.Support,
         };
 
@@ -207,19 +221,72 @@ namespace MachineBrigade.Game.Hud
 
         private static bool IsSupport(string id) => MatchSettings.AllSupports.Contains(id);
 
-        private bool Passes(string id)
+        /// <summary>
+        /// Deck tabs (06/10): membership by the unit's own data, not a hand list. Tank/Heavy classes are Tanks
+        /// (MBT, heavy, superheavy); TankHunter is its own Anti-tank tab (was folded into Armour before); Light and
+        /// Scout share Light &amp; recon; AntiAir and Artillery keep their own class; <c>def.Flying</c> (already how
+        /// the branch system itself tells an aircraft apart, <see cref="Catalog.BranchFor"/>) is Air; Support class
+        /// vehicles join the non-vehicle support cards in one Support &amp; engineer tab. Naval never passes here:
+        /// its codex is built straight from the catalog in <see cref="NavalShipIds"/>, not through the collection.
+        /// </summary>
+        private bool Matches(CardFilter filter, string id)
         {
-            if (_filter == CardFilter.All) return true;
-            if (IsSupport(id)) return _filter == CardFilter.Support;
+            if (filter == CardFilter.All) return true;
+            if (filter == CardFilter.Naval) return false;
+            if (IsSupport(id)) return filter == CardFilter.Support;
             if (!_catalog.Vehicles.TryGetValue(id, out var def)) return false;
-            return _filter switch
+            return filter switch
             {
-                CardFilter.Armor => Gear.BranchOf(def) == GearBranch.Armor,
-                CardFilter.Light => Gear.BranchOf(def) == GearBranch.Light,
-                CardFilter.Artillery => Gear.BranchOf(def) == GearBranch.Artillery,
-                CardFilter.Air => Gear.BranchOf(def) == GearBranch.Air,
+                CardFilter.Tank => def.Class is UnitClass.Tank or UnitClass.Heavy,
+                CardFilter.AntiTank => def.Class == UnitClass.TankHunter,
+                CardFilter.LightRecon => def.Class is UnitClass.Light or UnitClass.Scout,
+                CardFilter.AntiAir => def.Class == UnitClass.AntiAir,
+                CardFilter.Artillery => def.Class == UnitClass.Artillery,
+                CardFilter.Air => def.Flying,
+                CardFilter.Support => def.Class == UnitClass.Support,
                 _ => false,
             };
+        }
+
+        private bool Passes(string id) => Matches(_filter, id);
+
+        /// <summary>Empty tabs hidden (06/10): whether any card-eligible unit, or the Naval codex, has something to show.</summary>
+        private bool AnyFor(CardFilter filter) => filter == CardFilter.All || (filter == CardFilter.Naval
+            ? NavalShipIds().Any()
+            : MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Any(id => Matches(filter, id)));
+
+        /// <summary>The fleet's ships (06/10): every catalog vehicle with a "naval" block, all "card": false (AI / boss-escort only).</summary>
+        private IEnumerable<string> NavalShipIds() => _catalog.Vehicles.Values.Where(v => v.Naval != null).Select(v => v.Id);
+
+        private List<string> SortedNavalShipIds() => _sort switch
+        {
+            CardSort.Name => NavalShipIds().OrderBy(Strings.Card, StringComparer.CurrentCulture).ToList(),
+            _ => NavalShipIds().OrderBy(id => _catalog.Vehicles[id].CpCost).ToList(),
+        };
+
+        /// <summary>A Naval codex card (06/10): the ship's render, stats and weapons like any card, "AI only" in the lock
+        /// band (reusing it, not the unlock pattern: these ships are never unlocked by play, only ever AI-driven), a tap
+        /// opens the same detail page as a vehicle's. Bypasses <see cref="VehicleCardData.From"/> on purpose: that
+        /// factory reads the player's unlock/rank state, which would call these "locked" and point at a shop they are
+        /// never sold in.</summary>
+        private VisualElement NavalCard(string id)
+        {
+            var def = _catalog.Vehicles[id];
+            var data = new VehicleCardData
+            {
+                Id = def.Id,
+                Name = Strings.Card(def.Id),
+                ShortName = Strings.Short(def.Id),
+                Branch = KitBranch.Naval,
+                ClassIcon = KitBranches.ClassIcon(def.Class),
+                Cp = def.CpCost,
+                Locked = true,
+                UnlockWhere = Strings.Get("army.aiOnly"),
+                Art = CardArt.For(def.Id),
+                Def = def,
+                Combat = true,
+            };
+            return new KitVehicleCard(data, () => OpenDetail(id));
         }
 
         private int CostOf(string id) =>
@@ -314,15 +381,30 @@ namespace MachineBrigade.Game.Hud
             cover.Add(roles);
             _deckOverview.Add(cover);
 
-            foreach (var (chip, filter) in _filterChips) chip.Selected = filter == _filter;
+            foreach (var (chip, filter) in _filterChips)
+            {
+                chip.Selected = filter == _filter;
+                // Empty tabs hidden (06/10): every tab is populated today, but a chip with nothing behind it (a
+                // future roster change) disappears instead of opening on an empty grid.
+                chip.style.display = AnyFor(filter) ? DisplayStyle.Flex : DisplayStyle.None;
+            }
             _sortButton.Value = SortName(_sort);
             BuildCollection();
         }
 
-        /// <summary>The collection: owned cards (sorted), then the locked ones with where they unlock.</summary>
+        /// <summary>The collection: owned cards (sorted), then the locked ones with where they unlock; Naval (06/10) is
+        /// a read-only codex of the fleet's AI-only ships instead, never mixed into the normal grid.</summary>
         private void BuildCollection()
         {
             _collection.Clear();
+            if (_filter == CardFilter.Naval)
+            {
+                _collection.Add(Kit.Body2(Strings.Get("army.navalHint")));
+                var navalGrid = Kit.Box("fc-army__grid fc-mt-2");
+                foreach (var id in SortedNavalShipIds()) navalGrid.Add(NavalCard(id));
+                _collection.Add(navalGrid);
+                return;
+            }
             var all = MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Where(Passes).ToList();
             var owned = all.Where(PlayerProfile.IsUnlocked).ToList();
             owned = _sort switch

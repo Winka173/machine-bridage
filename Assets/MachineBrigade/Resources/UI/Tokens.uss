@@ -64,6 +64,12 @@
     --fc-branch-artillery: #e0956a;
     --fc-branch-air: #bba6e6;
     --fc-branch-support: #cfc8b8;
+    /* Deck tabs (06/10): the Army deck filter's finer split, apart from the equipment branch's five above. */
+    --fc-branch-tank: #6f9bc9;
+    --fc-branch-antitank: #c2705f;
+    --fc-branch-lightrecon: #7ecb9e;
+    --fc-branch-antiair: #d1bb5a;
+    --fc-branch-naval: #3f8fae;
 
     /* ---- A. colour: rarity (legendary is redder than the accent, so it never reads as the main button) */
     --fc-rarity-common: #9aa3ab;
@@ -416,6 +422,10 @@
 /* ---- filter chips: chosen = text-colour face with dark text; the rest an outline -------------- */
 .fc-chip-row { flex-direction: row; align-items: flex-start; flex-wrap: nowrap; }
 .fc-chip-row__chips { flex-direction: row; flex-wrap: wrap; flex-grow: 1; flex-shrink: 1; align-items: center; }
+/* Deck tabs (06/10): the scrolling variant (KitChipRow's "scroll: true") never wraps; its chips run in one row the
+   strip drags sideways, mobile-width friendly for a chip set too wide for the panel. */
+.fc-chip-row__chips--scroll { flex-wrap: nowrap; flex-grow: 0; }
+.fc-chip-row__chips--scroll .unity-scroll-view__content-container { flex-direction: row; align-items: center; flex-wrap: nowrap; }
 .fc-chip-row__divider { width: var(--fc-line); height: 40px; margin: 21px var(--fc-space-3) 0 var(--fc-space-3); flex-shrink: 0; background-color: var(--fc-border-strong); }
 .fc-chip-row > .fc-sort { flex-shrink: 0; margin-right: 0; }
 .fc-chip {
@@ -451,6 +461,11 @@
 .fc-branch--artillery { background-color: var(--fc-branch-artillery); }
 .fc-branch--air { background-color: var(--fc-branch-air); }
 .fc-branch--support { background-color: var(--fc-branch-support); }
+.fc-branch--tank { background-color: var(--fc-branch-tank); }
+.fc-branch--antitank { background-color: var(--fc-branch-antitank); }
+.fc-branch--lightrecon { background-color: var(--fc-branch-lightrecon); }
+.fc-branch--antiair { background-color: var(--fc-branch-antiair); }
+.fc-branch--naval { background-color: var(--fc-branch-naval); }
 
 /* ---- dropdowns: label, current value, caret, an optional thumbnail --------------------------- */
 .fc-dropdown {
@@ -684,6 +699,11 @@
 .fc-swatch--fc-branch-artillery { background-color: var(--fc-branch-artillery); }
 .fc-swatch--fc-branch-air { background-color: var(--fc-branch-air); }
 .fc-swatch--fc-branch-support { background-color: var(--fc-branch-support); }
+.fc-swatch--fc-branch-tank { background-color: var(--fc-branch-tank); }
+.fc-swatch--fc-branch-antitank { background-color: var(--fc-branch-antitank); }
+.fc-swatch--fc-branch-lightrecon { background-color: var(--fc-branch-lightrecon); }
+.fc-swatch--fc-branch-antiair { background-color: var(--fc-branch-antiair); }
+.fc-swatch--fc-branch-naval { background-color: var(--fc-branch-naval); }
 .fc-swatch--fc-rarity-common { background-color: var(--fc-rarity-common); }
 .fc-swatch--fc-rarity-uncommon { background-color: var(--fc-rarity-uncommon); }
 .fc-swatch--fc-rarity-rare { background-color: var(--fc-rarity-rare); }

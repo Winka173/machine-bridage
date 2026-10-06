@@ -109,12 +109,27 @@ namespace MachineBrigade.Game.Hud
     /// <summary>A row of filter chips, then a divider and the sort button on its own.</summary>
     public sealed class KitChipRow : VisualElement
     {
-        public KitChipRow(IEnumerable<VisualElement> chips, KitSortButton sort = null)
+        /// <summary>
+        /// <paramref name="scroll"/> (deck tabs 06/10): a horizontal drag-scroll strip instead of a wrapping row, for
+        /// a chip set too wide for one line on a phone (the Army deck's up to nine tabs); the sort button and the
+        /// divider stay outside it, so they never scroll away. Every other caller keeps the wrapping row.
+        /// </summary>
+        public KitChipRow(IEnumerable<VisualElement> chips, KitSortButton sort = null, bool scroll = false)
         {
             AddToClassList("fc-chip-row");
-            var group = Kit.Box("fc-chip-row__chips");
+            VisualElement group;
+            if (scroll)
+            {
+                var strip = Kit.Scroll(ScrollViewMode.Horizontal, "fc-chip-row__chips fc-chip-row__chips--scroll");
+                Add(strip);
+                group = strip.contentContainer;
+            }
+            else
+            {
+                group = Kit.Box("fc-chip-row__chips");
+                Add(group);
+            }
             foreach (var chip in chips) group.Add(chip);
-            Add(group);
             if (sort == null) return;
             Add(Kit.Box("fc-chip-row__divider"));
             Add(sort);

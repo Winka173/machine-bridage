@@ -171,7 +171,11 @@ namespace MachineBrigade.Game.Hud
         private void OpenDetail(string id)
         {
             _detailId = id;
-            _detailList = IsStructure(id) ? Structures() : IsBoss(id) ? Bosses() : MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Where(Passes).ToList();
+            // Deck tabs (06/10): the Naval codex's own order (Passes() never passes a naval id, so the usual
+            // list would come back with this one ship alone; the arrows browse the fleet instead).
+            _detailList = IsStructure(id) ? Structures() : IsBoss(id) ? Bosses()
+                : _filter == CardFilter.Naval ? SortedNavalShipIds()
+                : MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Where(Passes).ToList();
             if (!_detailList.Contains(id)) _detailList.Add(id);
             Open(_detail, Strings.Get(IsStructure(id) ? "detail.structureTitle" : "detail.title"));
             ShowPreview();
@@ -179,6 +183,13 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>A boss (its detail page is a Guide page: no deck, level or blueprints).</summary>
         private bool IsBoss(string id) => id != null && _catalog.Vehicles.TryGetValue(id, out var def) && def.Boss;
+
+        /// <summary>
+        /// Deck tabs (06/10): a fleet ship (<c>def.Naval != null</c>, all "card": false). Its detail page shows
+        /// stats, weapons and the render like any card, but no level/blueprints/deck dock: it is never unlocked,
+        /// so that dock would otherwise show a disabled "Level up" captioned "Unlocks in the shop", which is wrong.
+        /// </summary>
+        private bool IsNavalOnly(string id) => id != null && _catalog.Vehicles.TryGetValue(id, out var def) && def.Naval != null;
 
         /// <summary>Prompt 20 O.3: the bosses in story order (the chapters switched on), then the rest by id: a boss page's arrows.</summary>
         private List<string> Bosses()
@@ -248,10 +259,17 @@ namespace MachineBrigade.Game.Hud
             // Every tower and module stands in the base from the start: nothing to unlock.
             var unlocked = structure || PlayerProfile.IsUnlocked(id);
             var rank = PlayerProfile.Rank(structure ? vehicle.CardId : id);
-            // A boss is no card (play-test 6, DECISIONS 21B): its page has no Equipment tab.
+            // A boss is no card (play-test 6, DECISIONS 21B): its page has no Equipment tab; neither does a fleet
+            // ship (deck tabs 06/10): it never carries the player's branch loadout into a battle.
             var bossPage = IsBoss(id);
-            _detailTabs.Tabs[(int)DetailTab.Equipment].style.display = bossPage ? DisplayStyle.None : DisplayStyle.Flex;
-            if (bossPage && _detailTab == DetailTab.Equipment) _detailTab = DetailTab.Guide;
+            var navalPage = IsNavalOnly(id);
+            var noEquipment = bossPage || navalPage;
+            _detailTabs.Tabs[(int)DetailTab.Equipment].style.display = noEquipment ? DisplayStyle.None : DisplayStyle.Flex;
+            if (_detailTab == DetailTab.Equipment)
+            {
+                if (bossPage) _detailTab = DetailTab.Guide;
+                else if (navalPage) _detailTab = DetailTab.Stats;
+            }
             // Play-test 14: the Units called tab only on a support that calls units.
             var calls = vehicle == null && _catalog.TryGetSupport(id, out var calling) && (calling.Units.Count > 0 || calling.CallMaxCp > 0f);
             _detailTabs.Tabs[(int)DetailTab.Units].style.display = calls ? DisplayStyle.Flex : DisplayStyle.None;
@@ -326,10 +344,11 @@ namespace MachineBrigade.Game.Hud
         private void FillDetailDock(string id, bool unlocked, int rank)
         {
             _detailDock.Clear();
-            // A boss is no card: nothing to level up or put in the deck.
-            if (IsBoss(id))
+            // A boss is no card: nothing to level up or put in the deck; neither is a fleet ship (deck tabs 06/10).
+            if (IsBoss(id) || IsNavalOnly(id))
             {
                 _detailDeck.Clear();
+                if (IsNavalOnly(id)) _detailDock.Add(Kit.Body2(Strings.Get("army.aiOnly")));
                 return;
             }
             var prints = Kit.Box("fc-detail__prints");
