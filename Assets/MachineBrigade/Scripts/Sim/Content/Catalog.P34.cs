@@ -50,7 +50,7 @@ namespace MachineBrigade.Sim.Content
                 "RIPPLE" => false,
                 _ => throw new FormatException($"{w.Path}.salvoMode: SIMULTANEOUS or RIPPLE, not '{mode}'."),
             };
-            if (def.Simultaneous && def.Clip > 0) throw new FormatException($"{w.Path}: a magazine (clip) cannot fire its barrels together.");
+            // Barrels pass (owner 06/10): a magazine gun may fire its barrels together; its "clip" then counts volleys.
         }
 
         /// <summary>

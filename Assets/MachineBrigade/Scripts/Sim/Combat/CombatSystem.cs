@@ -714,6 +714,10 @@ namespace MachineBrigade.Sim.Combat
             {
                 var scale = index == 0 && v.Gear != null ? _world.Gear.MachineGunRound(v) : 1f;
                 Launch(v, index, target.Position, target.Id, flying, scale, true, target);
+                // Barrels pass (owner 06/10): a magazine gun that fires its barrels together fires every barrel each volley
+                // (one trigger pull, one place in the magazine).
+                for (var b = Loaded(v, index).RoundsPerPull - 1; b > 0; b--)
+                    Launch(v, index, target.Position, target.Id, flying, scale, false, target);
                 state.ClipLeft--;
                 state.Cooldown += weapon.Cooldown * Jitter();
             }

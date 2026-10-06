@@ -95,7 +95,8 @@ namespace MachineBrigade.Sim.Content
         /// <see cref="Cooldown"/> apart at whatever the mount is laid on (it tracks its target, unlike a
         /// salvo, and stops when the target stops bearing), then <see cref="ClipReload"/> seconds to change
         /// magazines. A pause of that long tops a part-used magazine up. 0: no magazine (a single shot,
-        /// a salvo, or a machine gun's runs of fire). Only for single-round weapons (burst 1).
+        /// a salvo, or a machine gun's runs of fire). Only for single-round weapons (burst 1). Barrels pass (owner
+        /// 06/10): a gun that fires its barrels together (<see cref="WeaponDef.Simultaneous"/>) counts volleys here, one round a barrel.
         /// </summary>
         public int Clip { get; internal set; }
 
@@ -116,8 +117,8 @@ namespace MachineBrigade.Sim.Content
         private float _roundWeight;
 
         /// <summary>Rounds one trigger pull or one magazine fires off: the magazine, else the salvo.</summary>
-        // Prompt 34 L4: a simultaneous gun's volley is every barrel.
-        public int RoundsPerCycle => Clip > 0 ? Clip : Burst * RoundsPerPull;
+        // Prompt 34 L4: a simultaneous gun's volley is every barrel (barrels pass: a magazine's volleys too).
+        public int RoundsPerCycle => (Clip > 0 ? Clip : Burst) * RoundsPerPull;
 
         /// <summary>Seconds from one magazine's or salvo's first round to the next one's first round.</summary>
         public float CycleSeconds => Clip > 0 ? (Clip - 1) * Cooldown + ClipReload : Cooldown + (Burst - 1) * BurstInterval;
