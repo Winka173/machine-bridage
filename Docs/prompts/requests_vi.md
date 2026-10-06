@@ -322,3 +322,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 06/10 "tiếp tục nhưng làm cái này trước @Machine_Brigade_BALANCE_MASTER_UPDATE_FINAL.md" + implement brief -> Docs/prompts/balance_master_final_vi.md (+ _spec.md, source of truth; làm trước, sau đó tiếp MVA W1).
 - 06/10 "sau khi xong balance thì dừng"; "không cần xuất lại export".
 - 06/10 "chạy export ra file exe lại" (= build Windows exe -> Tank-arena/MachineBrigade_Windows); "tiếp tục tiếp task còn lại" (resume MVA W1).
+- 06/10 trả lời 4 câu hỏi balance final (airstrike, validator 3 lớp, rebuild pack cuối cùng) -> Docs/prompts/balance_final_answers_vi.md.
