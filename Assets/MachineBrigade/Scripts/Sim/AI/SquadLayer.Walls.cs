@@ -69,6 +69,8 @@ namespace MachineBrigade.Sim.AI
                 var dps = SquadDps(world, s, wall);
                 if (dps <= 0f) continue;
                 var cost = Way(seg.Center) + profile.WallBreachCost * (wall.Hp / dps) * speed;
+                // Map VA W2-A (spec O, maps.topology.aiBreachPriority, off by default): what the segment's fall opens.
+                if (BreachTopology.Enabled) cost += BreachTopology.Ranking(world, wall);
                 if (cost < bestCost)
                 {
                     bestCost = cost;

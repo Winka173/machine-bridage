@@ -1,11 +1,18 @@
-"""08_ban_do (pack 06_ban_do) + 06_ai (pack 09_ai), layer C, map / visual / audio W1-A (06/10): the generated GameplayTopology
-outputs of Tools/maps/topogen (Docs/maps/*.json: never hand-authored, the canonical map JSON stays the authority), read as data:
+"""08_ban_do (pack 06_ban_do) + 06_ai (pack 09_ai), layer C, map / visual / audio W1-A / W2-A (06/10): the generated
+GameplayTopology outputs of Tools/maps/topogen (Docs/maps/*.json: never hand-authored, the canonical map JSON stays the
+authority), read as data:
 
 * Ban_do_dia_hinh_tong: per map file: components, chokes, lanes, positions, staging, shore regions, load gates, warnings.
 * Ban_do_diem_nghen (spec E), Ban_do_lan_chien_thuat (F), Ban_do_kiem_tra_tuyen (D1), Ban_do_cong_bang_bai_tha (G),
   Ban_do_vi_tri_chien_thuat (J), Ban_do_khu_tap_ket (I), Ban_do_pha_tuong (O), Ban_do_vung_ban_bo (K),
   Ban_do_tuyen_bien_dong_hoc (L/N), Ban_do_quay_tau (M), Ban_do_canh_bao (U: the warning registry with status / owner / reason),
   Ban_do_ngu_nghia_dia_hinh (P), Thoi_tiet_trinh_bay (Q: presentation only; visibility stays Thoi_tiet).
+* Ban_do_tiep_can_muc_tieu (spec H, lane W2-A): objective approach routes by role (Primary/Secondary/Flank/Shortest/Safest/
+  HeavyCompatible), artillery-support and defender-fallback regions.
+* Ban_do_nghiem_thu (spec CI map rows + BW + H + I, lane W2-A): the acceptance row pass/fail/detail Tools/maps/topogen measures
+  per map, the same rows the EditMode tests (MapTopologyW1ATests / MapTopologyW2ATests) assert.
+* Ban_do_canh_ap_luc (spec BT, lane W2-A): the six map stress scene definitions and their resolved focus; render/audio metrics
+  are recorded by the final part in Unity play, not here.
 * 06_ai AI_dia_hinh_tieu_thu: which AI code reads which GameplayTopology field (P0-B feasibility, P1 traffic, P2 fire support).
 
 Read only: nothing here changes a game value. A missing output file is reported (ctx.issue) and its sheets stay empty."""
@@ -66,6 +73,9 @@ def build(ctx, book):
     naval = _load(ctx, "NavalRouteAudit.json")
     fair = _load(ctx, "SpawnFairnessAudit.json")
     reg = _load(ctx, "MapWarningRegistry.json")
+    appr = _load(ctx, "ObjectiveApproaches.json")
+    acc = _load(ctx, "MapAcceptance.json")
+    stress = _load(ctx, "STRESS_SCENES.json")
 
     # ------------------------------------------------------------------ per map summary
     warn_n = {}
@@ -194,6 +204,52 @@ def build(ctx, book):
             ("trang_thai", "status", "trạng thái", ""), ("phu_trach", "owner", "người phụ trách", ""), ("ly_do", "acceptedReason", "lý do", ""),
             ("phien_ban_xet", "lastReviewedVersion", "phiên bản xét gần nhất", ""), ("nguon_canh_bao", "source", "nguồn cảnh báo", "")],
            [(w["warningId"], w["warningId"].split(":")[0], w) for w in reg.get("warnings") or []], "MapWarningRegistry.json")
+
+    # ------------------------------------------------------------------ objective approaches (spec H), acceptance (spec CI/BW/H/I), lane W2-A
+    appr_rows = []
+    for mid in sorted((appr.get("maps") or {})):
+        for s in appr["maps"][mid].get("sets") or []:
+            for r in s.get("routes") or []:
+                d = dict(r)
+                d["objective"] = s.get("objective")
+                d["team"] = s.get("team")
+                d["setId"] = s.get("id")
+                d["artillerySupport"] = s.get("artillerySupport")
+                d["defenderFallback"] = s.get("defenderFallback")
+                appr_rows.append((f"{mid}/{s['id']}/{r['id']}", mid, d))
+    _table(book, "Ban_do_tiep_can_muc_tieu", "Bản đồ: tuyến tiếp cận mục tiêu (spec H)",
+           "Mỗi mục tiêu x đội tấn công: các tuyến tiếp cận riêng biệt với vai trò (Primary/Secondary/Flank/Shortest/Safest/HeavyCompatible), "
+           "khu phủ pháo của đội tấn công, khu rút của đội phòng thủ",
+           [("ma", "id", "id tuyến", ""), ("tap_hop", "setId", "id tập hợp tiếp cận (đội + mục tiêu)", ""), ("muc_tieu", "objective", "mục tiêu", ""),
+            ("doi", "team", "đội tấn công", ""), ("vai_tro", "roles", "vai trò tuyến", ""), ("dai_m", "lengthM", "chiều dài", "m"),
+            ("eta_s", "etaSeconds", "giây xe vừa đi hết", "s"), ("phoi_lo", "exposure", "tỷ lệ ô không có che (spec H)", "share"),
+            ("rong_min_m", "minWidthM", "bề rộng hẹp nhất", "m"), ("hang_xe", "vehicleClassSupport", "hạng xe lớn nhất đi hết tuyến", ""),
+            ("diem_nghen", "chokeIds", "điểm nghẽn trên tuyến", ""), ("lan", "laneId", "làn chiến thuật theo (trống: không)", ""),
+            ("goc_toi_do", "arrivalBearingDeg", "góc tới mục tiêu (0 = +z, theo kim đồng hồ)", "deg"),
+            ("khu_phao", "artillerySupport", "khu phủ pháo của đội tấn công (JSON)", ""), ("khu_rut", "defenderFallback", "khu rút của đội phòng thủ (JSON)", "")],
+           appr_rows, "ObjectiveApproaches.json")
+
+    acc_rows = []
+    for mid in sorted((acc.get("maps") or {})):
+        for r in acc["maps"][mid].get("rows") or []:
+            acc_rows.append((f"{mid}/{r['row']}", mid, r))
+    _table(book, "Ban_do_nghiem_thu", "Bản đồ: hàng nghiệm thu (spec CI bản đồ + BW + H + I)",
+           "Mỗi hàng nghiệm thu bản đồ: đạt hay không, chi tiết khi trượt (Tools/maps/topogen Acceptance; cùng hàng với EditMode "
+           "MapTopologyW1ATests / MapTopologyW2ATests)",
+           [("dong", "row", "tên hàng nghiệm thu", ""), ("dat", "pass", "đạt", ""), ("chi_tiet", "detail", "chi tiết khi trượt", "")],
+           acc_rows, "MapAcceptance.json")
+
+    stress_rows = [(s["id"], s["map"], s) for s in stress.get("scenes") or []]
+    _table(book, "Ban_do_canh_ap_luc", "Bản đồ: cảnh áp lực hiệu năng (spec BT)",
+           "6 cảnh lặp lại (48v48 phố hẹp, 48v48 sa mạc mở, boss biển + hộ tống, công thành, bão thời tiết, mật độ xác xe tối đa); "
+           "đo bản đồ ở đây (EditMode), đo dựng hình / âm thanh ở phần cuối (Unity play)",
+           [("ma", "id", "id cảnh", ""), ("ten", "title", "tên", ""), ("che_do", "mode", "conquest / siege", ""),
+            ("moi_ben", "perSide", "xe mỗi bên", ""), ("thoi_tiet", "weather", "thời tiết trình bày", ""),
+            ("xac_xe", "wreckSeed", "số xác xe gieo", ""), ("tieu_diem", "focus", "loại tiêu điểm yêu cầu", ""),
+            ("tieu_diem_giai", "focusResolved", "tiêu điểm đã giải trên bản đồ này", ""), ("tai_diem", "focusAt", "vị trí tiêu điểm", "m"),
+            ("khoi_dong_s", "warmupSeconds", "giây khởi động bỏ qua", "s"), ("do_s", "seconds", "giây đo", "s"), ("seed", "seed", "seed", ""),
+            ("cong_cu", "harness", "công cụ đo", "")],
+           stress_rows, "STRESS_SCENES.json")
 
     # ------------------------------------------------------------------ terrain semantics, weather presentation
     g = topo.get("global") or {}

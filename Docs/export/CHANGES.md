@@ -13301,3 +13301,19 @@ from the generated `Docs/maps/*.json` of `Tools/maps/topogen`):
 
 New tunables (Hang_so_ban_do, automatic): `maps.topology.*` (audit references, flags), `maps.terrainSemantics.*`,
 `maps.weatherPresentation.*`. No combat, weather visibility or balance value changed.
+
+## MAP VA W2-A (lane A, 06/10, feature/mva-w2a)
+
+Pack not rebuilt in this lane (the lead rebuilds once after the merge). `Tools/maps/topogen` now also writes
+`Docs/maps/ObjectiveApproaches.json` (spec H), `Docs/maps/MapAcceptance.json` (spec CI map rows + BW + H + I) and
+`Docs/maps/STRESS_SCENES.json` (spec BT); `MapConnectivity.json` routes carry `swingTurnSpaceM` / `turnsFitSwing`. New sheets
+ready (`Tools/export/domains/_mva_w1a.py`, read from the generated files; nothing hand-authored):
+
+| Sheet | File | Content |
+|---|---|---|
+| Ban_do_tiep_can_muc_tieu | 06_ban_do | objective approach routes by role (Primary/Secondary/Flank/Shortest/Safest/HeavyCompatible), artillery support, defender fallback |
+| Ban_do_nghiem_thu | 06_ban_do | map acceptance rows (CI map rows + BW + H + I): pass / fail / detail per map |
+| Ban_do_canh_ap_luc | 06_ban_do | the six spec BT stress scene definitions with their resolved map focus |
+
+New tunables (automatic): `maps.topology.approach*` (approach alternatives, flank offset/bearing). No combat, weather
+visibility or balance value changed.
