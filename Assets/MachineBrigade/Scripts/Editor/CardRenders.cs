@@ -49,6 +49,8 @@ namespace MachineBrigade.Editor
             // The modes' and bosses' fixed defences without a base slot (the super-gun, the spawn bastion, the fallback post,
             // the targeting station): their cards and detail pages had no picture.
             ("structure", d => d.Static && d.Fort == null && !d.Boss),
+            // Deck tabs (06/10): the Naval codex shows the AI-only ships with their picture.
+            ("naval", d => d.Naval != null && !d.Boss),
         };
 
         /// <summary>A model ships under Resources/Models (a tower branch's own model, TowerArt).</summary>

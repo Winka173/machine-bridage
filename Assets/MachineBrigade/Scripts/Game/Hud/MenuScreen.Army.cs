@@ -256,7 +256,7 @@ namespace MachineBrigade.Game.Hud
             : MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Any(id => Matches(filter, id)));
 
         /// <summary>The fleet's ships (06/10): every catalog vehicle with a "naval" block, all "card": false (AI / boss-escort only).</summary>
-        private IEnumerable<string> NavalShipIds() => _catalog.Vehicles.Values.Where(v => v.Naval != null).Select(v => v.Id);
+        private IEnumerable<string> NavalShipIds() => _catalog.Vehicles.Values.Where(v => v.Naval != null && !v.Boss).Select(v => v.Id);
 
         private List<string> SortedNavalShipIds() => _sort switch
         {
