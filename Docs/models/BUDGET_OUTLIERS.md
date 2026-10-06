@@ -9,7 +9,7 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | HARD | 0 |
 | WAIVED | 0 |
 | EXCEPTION | 0 |
-| INFO | 74 |
+| INFO | 90 |
 | SOFT | 85 |
 
 ## Spec part CG models
@@ -23,15 +23,29 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 
 | model | metric | value | soft / hard | x hard | class | status |
 | --- | --- | --- | --- | --- | --- | --- |
+| battleship | vertices | 33,043 | 10,100 / 12,600 | 2.62 | ground normal | INFO |
+| battleship | triangles | 24,152 | 7,800 / 9,700 | 2.49 | ground normal | INFO |
+| battlecruiser | vertices | 26,203 | 10,100 / 12,600 | 2.08 | ground normal | INFO |
+| missile_cruiser | vertices | 25,090 | 10,100 / 12,600 | 1.99 | ground normal | INFO |
+| gun_destroyer | vertices | 23,640 | 10,100 / 12,600 | 1.88 | ground normal | INFO |
+| battlecruiser | triangles | 17,586 | 7,800 / 9,700 | 1.81 | ground normal | INFO |
+| missile_destroyer | vertices | 22,783 | 10,100 / 12,600 | 1.81 | ground normal | INFO |
+| missile_cruiser | triangles | 17,462 | 7,800 / 9,700 | 1.80 | ground normal | INFO |
+| destroyer | vertices | 22,343 | 10,100 / 12,600 | 1.77 | ground normal | INFO |
 | sea_cruiser | vertices | 21,844 | 10,100 / 12,600 | 1.73 | ground normal | INFO |
+| aa_destroyer | vertices | 21,719 | 10,100 / 12,600 | 1.72 | ground normal | INFO |
+| gun_destroyer | triangles | 15,364 | 7,800 / 9,700 | 1.58 | ground normal | INFO |
+| missile_destroyer | triangles | 15,290 | 7,800 / 9,700 | 1.58 | ground normal | INFO |
 | mobile_fortress | vertices | 84,978 | 43,000 / 54,000 | 1.57 | boss_s normal | INFO |
 | vehicle_hangar_base | vertices | 18,781 | 9,800 / 12,200 | 1.54 | structure normal | INFO |
+| destroyer | triangles | 14,852 | 7,800 / 9,700 | 1.53 | ground normal | INFO |
+| aa_destroyer | triangles | 14,628 | 7,800 / 9,700 | 1.51 | ground normal | INFO |
 | fortress_bastion | vertices | 80,512 | 43,000 / 54,000 | 1.49 | boss_s normal | INFO |
 | mobile_fortress | triangles | 67,060 | 36,000 / 45,000 | 1.49 | boss_s normal | INFO |
 | missile_frigate | vertices | 18,718 | 10,100 / 12,600 | 1.49 | ground normal | INFO |
 | sea_cruiser | triangles | 14,150 | 7,800 / 9,700 | 1.46 | ground normal | INFO |
 | missile_frigate | triangles | 13,728 | 7,800 / 9,700 | 1.42 | ground normal | INFO |
-| frigate | vertices | 17,536 | 10,100 / 12,600 | 1.39 | ground normal | INFO |
+| frigate | vertices | 17,539 | 10,100 / 12,600 | 1.39 | ground normal | INFO |
 | elite_heavy_tank | triangles | 13,350 | 7,800 / 9,700 | 1.38 | ground normal | INFO |
 | fortress_bastion | triangles | 60,706 | 36,000 / 45,000 | 1.35 | boss_s normal | INFO |
 | elite_heavy_tank | vertices | 16,786 | 10,100 / 12,600 | 1.33 | ground normal | INFO |
@@ -49,6 +63,7 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | aa_frigate | triangles | 11,846 | 7,800 / 9,700 | 1.22 | ground normal | INFO |
 | aa_vehicle | triangles | 11,760 | 7,800 / 9,700 | 1.21 | ground normal | INFO |
 | armored_train | vertices | 84,703 | 56,000 / 70,000 | 1.21 | boss_m normal | INFO |
+| heavy_monitor | vertices | 15,186 | 10,100 / 12,600 | 1.21 | ground normal | INFO |
 | ashm_corvette | vertices | 15,164 | 10,100 / 12,600 | 1.20 | ground normal | INFO |
 | next_gen_tank | triangles | 11,642 | 7,800 / 9,700 | 1.20 | ground normal | INFO |
 | elite_tank_destroyer | vertices | 15,019 | 10,100 / 12,600 | 1.19 | ground normal | INFO |
@@ -69,6 +84,7 @@ Policy (spec part Z): **HARD** = over the hard cap on an enforced metric (render
 | thermobaric_launcher | triangles | 10,700 | 7,800 / 9,700 | 1.10 | ground normal | INFO |
 | silver_bug | vertices | 76,991 | 56,000 / 70,000 | 1.10 | boss_m normal | INFO |
 | mine_layer | vertices | 13,853 | 10,100 / 12,600 | 1.10 | ground normal | INFO |
+| heavy_monitor | triangles | 10,564 | 7,800 / 9,700 | 1.09 | ground normal | INFO |
 | tank_destroyer | triangles | 10,558 | 7,800 / 9,700 | 1.09 | ground normal | INFO |
 | landing_craft | vertices | 13,691 | 10,100 / 12,600 | 1.09 | ground normal | INFO |
 | flame_tank | vertices | 13,677 | 10,100 / 12,600 | 1.09 | ground normal | INFO |

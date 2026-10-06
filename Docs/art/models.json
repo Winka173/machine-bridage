@@ -239,6 +239,14 @@
     "file": "bastion_mk0.glb",
     "triangles": 39357
   },
+  "battlecruiser": {
+    "file": "battlecruiser.glb",
+    "triangles": 17586
+  },
+  "battleship": {
+    "file": "battleship.glb",
+    "triangles": 24152
+  },
   "behemoth": {
     "file": "behemoth.glb",
     "triangles": 25692
@@ -1054,6 +1062,10 @@
   "heavy_lift_helicopter": {
     "file": "heavy_lift_helicopter.glb",
     "triangles": 5388
+  },
+  "heavy_monitor": {
+    "file": "heavy_monitor.glb",
+    "triangles": 10564
   },
   "heavy_rocket": {
     "file": "heavy_rocket.glb",

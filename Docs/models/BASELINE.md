@@ -9,7 +9,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
 | boss | 29 | 1,141,989 | 39,378 | leviathan (86,412) | 3,905 | 0 | 14 |
-| ground | 83 | 789,104 | 9,507 | battleship (21,164) | 4,481 | 0 | 56 |
+| ground | 83 | 792,092 | 9,543 | battleship (24,152) | 4,481 | 0 | 56 |
 | structure | 71 | 412,111 | 5,804 | headquarters (21,052) | 3,618 | 0 | 10 |
 | prop | 115 | 258,170 | 2,244 | command_hq (8,872) | 1,568 | 0 | 3 |
 | unlisted | 34 | 108,062 | 3,178 | apc_hd (14,968) | 668 | 0 | 0 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | scenery | 96 | 40,708 | 424 | rubble_large (3,516) | 294 | 0 | 2 |
 | munition | 25 | 5,154 | 206 | bomb (404) | 175 | 0 | 0 |
 
-All files: 2,926,088 triangles, 0 with errors, 95 more with warnings only.
+All files: 2,929,076 triangles, 0 with errors, 95 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
