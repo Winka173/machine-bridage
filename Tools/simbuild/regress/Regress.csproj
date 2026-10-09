@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- Balance final (06/10): headless regression harness over the engine-free Sim. Build: dotnet build Tools/simbuild/regress -o Temp/regress; run: Temp/regress/MachineBrigade.Tests.EditMode.exe <load|dump|ttk|pd|aps|barrage|pressure> <balance.json> <tunables.json> <out> [campaign.json]. Measurements need the owner's word. -->
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyName>MachineBrigade.Tests.EditMode</AssemblyName>
+    <NoWarn>$(NoWarn);CS8632;CS0168;CS0219</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Sim.csproj" />
+  </ItemGroup>
+</Project>
