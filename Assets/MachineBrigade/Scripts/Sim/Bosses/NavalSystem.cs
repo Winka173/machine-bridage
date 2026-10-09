@@ -695,8 +695,10 @@ namespace MachineBrigade.Sim.Bosses
             var standoff = role is global::MachineBrigade.Sim.AI.DoctrineRole.TankDestroyer or global::MachineBrigade.Sim.AI.DoctrineRole.FireSupport;
             var brawl = role is global::MachineBrigade.Sim.AI.DoctrineRole.MainBattle or global::MachineBrigade.Sim.AI.DoctrineRole.Siege
                 or global::MachineBrigade.Sim.AI.DoctrineRole.LightCombat or global::MachineBrigade.Sim.AI.DoctrineRole.Generic;
-            if (!standoff && !brawl) return false;
-            var reach = w.Range * global::MachineBrigade.Sim.Content.SimTunables.Ai.NavalEngage.ContactShare;
+            // The EW corvette (a jammer, support doctrine) does not duel: it keeps jammerAvoid metres off enemy ships.
+            var evade = v.Def.Jammer > 0f && role == global::MachineBrigade.Sim.AI.DoctrineRole.Support;
+            if (!standoff && !brawl && !evade) return false;
+            var reach = evade ? Tun.JammerAvoid : w.Range * Tun.ContactShare;
             Vehicle? contact = null;
             if (_world.TryGetVehicle(v.Target, out var t) && Contact(v, t) && Vector2.Distance(t.Position, v.Position) <= reach) contact = t;
             else
@@ -722,10 +724,11 @@ namespace MachineBrigade.Sim.Bosses
             var limit = MathF.Max(lane.Patrol, lane.End - Tun.EndMargin);
             var side = MathF.Abs(du) > 0.5f ? MathF.Sign(du) : v.NavalDir;
             float want;
-            if (standoff)
+            if (standoff || evade)
             {
-                var near = w.Range * Tun.StandoffBand;
-                var far = w.Range * Tun.StandoffMax;
+                var band = v.Def.Naval?.Band;
+                var near = evade ? Tun.JammerAvoid : w.Range * (band?[0] ?? Tun.StandoffBand);
+                var far = evade ? float.PositiveInfinity : w.Range * (band?[1] ?? Tun.StandoffMax);
                 var pressed = closing > Tun.ClosingMin;
                 // Cornered at the end of its lane with the enemy inside its band: it breaks out past it (along its own lane,
                 // abeam of it) and opens the range on the other side; the break holds until it is past or clear.
@@ -740,16 +743,23 @@ namespace MachineBrigade.Sim.Bosses
                     side = -side;
                 }
                 // Inside its band, or in reach with the enemy closing: it opens the range (stern to it, firing as it goes);
-                // beyond its reach with the enemy not coming: it closes to the band's outer edge; else it holds.
+                // beyond its band with the enemy not coming: it closes to the band's middle; else it holds.
                 if (v.NavalBreak != 0) want = near;
-                else if (d < near || (pressed && d <= w.Range)) want = MathF.Max(near, d + Tun.KiteLead);
-                else if (d > far && !pressed) want = far;
-                else return true;
+                else if (d < near || (!evade && pressed && d <= w.Range)) want = MathF.Max(near, d + Tun.KiteLead);
+                else if (d > far && !pressed) want = (near + far) * 0.5f;
+                else if (band != null && !evade)
+                {
+                    // An attack craft (its own band) never sits in it: it runs on at speed along its lane, weaving in and out.
+                    u = Math.Clamp(f.X + v.NavalDir * Tun.WeaveLead, -limit, limit);
+                    if (MathF.Abs(u - f.X) < 1f) v.NavalDir = -v.NavalDir;
+                    return true;
+                }
+                else return !evade;
             }
             else
             {
                 // A gun ship closes to its band, and on into it (to brawlChase of the band) after a target that runs.
-                var far = w.Range * Tun.BrawlBand;
+                var far = w.Range * (v.Def.Naval?.Band?[1] ?? Tun.BrawlBand);
                 var chase = far * Tun.BrawlChase;
                 if (d > far || (closing < -Tun.ClosingMin && d > chase)) want = chase;
                 else return true;

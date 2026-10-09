@@ -3154,7 +3154,9 @@
       "cornerRoom": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "NavalEngage.CornerRoom (naval tune 09/10)" },
       "closingMin": { "value": 0.5, "unit": "m/s", "kind": "nguong", "linh_vuc": "06", "code": "NavalEngage.ClosingMin (naval tune 09/10)" },
       "kiteLead": { "value": 6.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "NavalEngage.KiteLead (naval tune 09/10)" },
-      "brawlChase": { "value": 0.7, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "NavalEngage.BrawlChase (naval tune 09/10)" }
+      "brawlChase": { "value": 0.7, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "NavalEngage.BrawlChase (naval tune 09/10)" },
+      "jammerAvoid": { "value": 90.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "NavalEngage.JammerAvoid (naval tune 09/10)" },
+      "weaveLead": { "value": 12.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "NavalEngage.WeaveLead (naval tune 09/10)" }
     },
     "modeDoctrine": {
       "mortarBand": { "value": [0.55, 0.75], "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "ModeDoctrine.MortarBand (AI MASTER P2)" },

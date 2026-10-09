@@ -54,6 +54,13 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public string? Patrol { get; internal set; }
 
+        /// <summary>
+        /// Naval tune 09/10 (data "band": [near, far], shares of its main weapon's reach): the ship's own fighting band on its
+        /// lane, over its doctrine's (ai.navalEngage). An attack craft's run inside the big ships' missile reach (the torpedo
+        /// boat). Null: the doctrine's.
+        /// </summary>
+        public float[]? Band { get; internal set; }
+
         public float DashW { get; internal set; } = 48f;
         public float DashEvery { get; internal set; } = 26f;
         public float DashHold { get; internal set; } = 7f;

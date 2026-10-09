@@ -50,6 +50,10 @@ namespace MachineBrigade.Sim.Content
                 public static float KiteLead = 6f;
                 /// <summary>ai.navalEngage.brawlChase (share of the band): a gun ship goes on to this inside its band after a target that runs.</summary>
                 public static float BrawlChase = 0.7f;
+                /// <summary>ai.navalEngage.jammerAvoid (m): an EW (jammer) ship with no flagship keeps this far off enemy ships (spec 7: it does not duel).</summary>
+                public static float JammerAvoid = 90f;
+                /// <summary>ai.navalEngage.weaveLead (m): an attack craft in its band steers this far on along its lane (it keeps moving).</summary>
+                public static float WeaveLead = 12f;
             }
 
             public static partial class ModeDoctrine
@@ -224,6 +228,8 @@ namespace MachineBrigade.Sim.Content
             new Entry("ai.navalEngage.closingMin", "m/s", () => Ai.NavalEngage.ClosingMin, v => Ai.NavalEngage.ClosingMin = (float)v),
             new Entry("ai.navalEngage.kiteLead", "m", () => Ai.NavalEngage.KiteLead, v => Ai.NavalEngage.KiteLead = (float)v),
             new Entry("ai.navalEngage.brawlChase", "share", () => Ai.NavalEngage.BrawlChase, v => Ai.NavalEngage.BrawlChase = (float)v),
+            new Entry("ai.navalEngage.jammerAvoid", "m", () => Ai.NavalEngage.JammerAvoid, v => Ai.NavalEngage.JammerAvoid = (float)v),
+            new Entry("ai.navalEngage.weaveLead", "m", () => Ai.NavalEngage.WeaveLead, v => Ai.NavalEngage.WeaveLead = (float)v),
             new Entry("ai.roleDoctrine.clusterRadius", "m", () => Ai.RoleDoctrine.ClusterRadius, v => Ai.RoleDoctrine.ClusterRadius = (float)v),
             Entry.FloatArray("ai.modeDoctrine.mortarBand", "share", () => Ai.ModeDoctrine.MortarBand, v => Ai.ModeDoctrine.MortarBand = v),
             Entry.FloatArray("ai.modeDoctrine.artilleryBand", "share", () => Ai.ModeDoctrine.ArtilleryBand, v => Ai.ModeDoctrine.ArtilleryBand = v),
