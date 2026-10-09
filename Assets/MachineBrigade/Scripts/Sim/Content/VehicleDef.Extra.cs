@@ -61,6 +61,21 @@ namespace MachineBrigade.Sim.Content
         public float WeaponDamage { get; internal set; } = 1f;
 
         /// <summary>
+        /// Boss design 09/10: its guns' fire rate against the rank's and the data's, from the workbook's "gunNerf.rate" (sheet 03,
+        /// the old guns' tempo; 1: unchanged). Multiplies <see cref="Entities.Vehicle.RankFire"/>.
+        /// </summary>
+        public float FireScale { get; internal set; } = 1f;
+
+        /// <summary>Boss design 09/10: the DPS budget of its new hardpoints at weapon level (sheet 03 col L; 0: it adds none).</summary>
+        public float NewGunDps { get; internal set; }
+
+        /// <summary>Boss design 09/10: the whole gun DPS of a new mini boss at weapon level (sheet 05), shared evenly by all its mounts (0: not used).</summary>
+        public float GunDpsAll { get; internal set; }
+
+        /// <summary>Boss design 09/10: the damage share of "gunNerf" (already folded into <see cref="WeaponDamage"/>); new guns are scaled against it.</summary>
+        public float GunNerfDamage { get; internal set; } = 1f;
+
+        /// <summary>
         /// Prompt 29 S03 (D2, R8): this vehicle's damage on every weapon it fires (ground and air, rank and boss multipliers
         /// on top), so a card is balanced without editing a weapon other vehicles share. Fire rate, magazine, reload and
         /// round count stay the weapon's. balance.json "outgoingDamageMult", default 1.

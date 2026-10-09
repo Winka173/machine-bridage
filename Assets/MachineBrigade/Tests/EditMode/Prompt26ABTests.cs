@@ -110,23 +110,16 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void ThePhasesRunFortyThirtyFiveTwentyFiveForAMainAndFiftyFiveFortyFiveForAMini()
+        public void EveryBossHasOnePhaseAtFiftyPercentAndNoStackedBuff()
         {
+            // Boss design 09/10 (sheet 13): the old 60 / 25 % (main) and 45 % (mini) marks and their buffs are gone.
             var catalog = C;
             foreach (var boss in catalog.Vehicles.Values.Where(v => v.Boss && v.Phases.Count > 0))
             {
-                if (boss.Rank == BossRank.Main)
-                {
-                    Assert.AreEqual(2, boss.Phases.Count, boss.Id);
-                    Assert.AreEqual(0.6f, boss.Phases[0].At, 1e-3f, boss.Id + ": phase 2 at 60 % (the first 40 %)");
-                    Assert.AreEqual(0.25f, boss.Phases[1].At, 1e-3f, boss.Id + ": phase 3 at 25 %");
-                    Assert.AreEqual(1.25f, boss.Phases[1].FireRate, 1e-3f, boss.Id + ": the last phase fires 25 % faster");
-                }
-                else
-                {
-                    Assert.AreEqual(1, boss.Phases.Count, boss.Id);
-                    Assert.AreEqual(0.45f, boss.Phases[0].At, 1e-3f, boss.Id + ": a mini's second phase at 45 %");
-                }
+                Assert.AreEqual(1, boss.Phases.Count, boss.Id);
+                Assert.AreEqual(0.5f, boss.Phases[0].At, 1e-3f, boss.Id + ": its one phase at 50 %");
+                Assert.AreEqual(1f, boss.Phases[0].Damage, 1e-3f, boss.Id + ": no damage buff");
+                Assert.AreEqual(1f, boss.Phases[0].FireRate, 1e-3f, boss.Id + ": no tempo buff");
             }
         }
 

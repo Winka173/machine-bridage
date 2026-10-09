@@ -204,12 +204,12 @@ namespace MachineBrigade.Tests
             world.Bosses.Break(ship, 0);
             world.Bosses.Break(ship, 1);
             var aa = world.SpawnVehicle("aa_vehicle", 0, new Vector2(0f, -30f), 0f);
-            var radar = ship.Def.PartIndex("radar");
+            var radar = ship.Def.PartIndex("pod_105_l");
             var partBefore = ship.PartHealth(radar);
             var bodyBefore = ship.Hp;
             var p = new Projectile(aa.Id, 0, aa.Weapon, ship.PartPosition(radar), ship.Id, 0f, true) { Origin = aa.Position, Shooter = aa, Main = true, Part = radar };
             world.Damage.ResolveImpact(p);
-            Assert.Less(ship.PartHealth(radar), partBefore, "the direct hit struck the radar");
+            Assert.Less(ship.PartHealth(radar), partBefore, "the direct hit struck the gun pod");
             Assert.AreEqual(bodyBefore, ship.Hp, 1e-2f, "its blast does not also hurt the part");
             var splashBefore = ship.PartHealth(radar);
             world.Damage.Splash(ship.PartPosition(radar), 6f, 500f, DamageType.Fragmentation, 0, default, aa.Id, true, new HitInfo(aa, 0, aa.Weapon, aa.Position, HitKind.Splash, false));
@@ -218,7 +218,7 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void BrokenBaysStopTheirDronesAndABrokenRadarSpoilsTheFlak()
+        public void BrokenBaysStopTheirDrones()
         {
             var world = Field();
             var ship = world.SpawnVehicle("command_airship", 1, Vector2.Zero, 0f);
@@ -233,9 +233,7 @@ namespace MachineBrigade.Tests
             var bays = ship.Def.Parts[left].Mounts.Concat(ship.Def.Parts[right].Mounts).ToHashSet();
             Assert.IsFalse(events.Any(e => e.Kind == SimEventKind.WeaponFired && e.Entity == ship.Id && bays.Contains(e.Mount)), "no drones from broken bays");
             Assert.IsFalse(world.Vehicles.Any(v => v.Def.Id == "strike_drone"), "and no strike drones launched");
-            world.Bosses.Break(ship, ship.Def.PartIndex("radar"));
-            Assert.AreEqual(3f, ship.MountSpread[0], 1e-3f, "the flak scatters three times as wide");
-            Assert.AreEqual(0.5f, ship.MountFail[1], 1e-3f);
+            Assert.AreEqual(-1, ship.Def.PartIndex("radar"), "no destructible radar part (boss design 09/10)");
         }
 
         [Test]

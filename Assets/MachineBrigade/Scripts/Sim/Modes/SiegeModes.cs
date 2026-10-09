@@ -1412,8 +1412,9 @@ namespace MachineBrigade.Sim.Modes
             new[] { "moloch" },
             new[] { "daedalus" },
             new[] { "typhon" },
-            new[] { "behemoth_mk2", "bastion_mk0", "fenrir", "ixion" },
-            new[] { "locust", "argus", "icarus_mk0" },
+            // Boss design 09/10 (sheet 05): the six new mini bosses join the mini kinds of their parent's element.
+            new[] { "behemoth_mk2", "bastion_mk0", "fenrir", "ixion", "jotunn_artillery", "bastion_aa" },
+            new[] { "locust", "argus", "icarus_mk0", "roc_gunship", "daedalus_assault", "icarus_interceptor", "matriarch_flak" },
             // Prompt 22 E: the two new mini bosses.
             new[] { "behemoth_mk0" },
             new[] { "scylla" },

@@ -62,7 +62,9 @@ namespace MachineBrigade.Sim.Entities
                 // the hull's heading, so it never faces forward before its first aim.
                 var mount = def.Mounts[i];
                 var rest = mount.ArcHalf > 0f ? heading + mount.ArcCentre : heading;
-                Weapons[i] = new WeaponState { Heading = rest, Ammo = load > 0 ? load : ammo > 0 ? ammo : -1, Load = load };
+                Weapons[i] = new WeaponState { Heading = rest, Ammo = load > 0 ? load : ammo > 0 ? ammo : -1, Load = load, DamageScale = mount.DamageScale };
+                // Boss design 09/10: a boss with many hardpoints opens fire out of step, each mount after its own deterministic delay.
+                if (def.Boss && Weapons.Length > 4) Weapons[i].Cooldown = i * 0.61f % 3f;
                 if (load > 0) HasStores = true;
             }
             Aps = def.Aps;
@@ -278,6 +280,9 @@ namespace MachineBrigade.Sim.Entities
         // ------------------------------------------------------------ skills and effects
         internal readonly double[] SkillReadyAt;
         internal readonly bool[] SkillUsed;
+
+        /// <summary>Boss design 09/10: its summons' first-wave delays have been laid (once, at its first skill step).</summary>
+        internal bool SkillsArmed;
         internal double ShieldUntil = double.NegativeInfinity, OverdriveUntil = double.NegativeInfinity,
             BarrageUntil = double.NegativeInfinity, FlaresUntil = double.NegativeInfinity,
             StunnedUntil = double.NegativeInfinity, HealUntil = double.NegativeInfinity;

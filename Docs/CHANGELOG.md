@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Boss design workbook (09/10, feature/boss-design-0910): sheet 10 HP, old-gun nerf + new-gun DPS budgets, Roc/Argus bomb and eight AoE nerfs, fire groups, Leviathan 22 / Kraken 13 hardpoints, capped periodic summons with breakable hangars / decks / gates, no radar parts, one 50 % phase per boss, six new minis (roc_gunship, daedalus_assault, icarus_interceptor, matriarch_flak, jotunn_artillery, bastion_aa); headless rules + smoke (regress bossrules / bosssmoke), no Unity run.
 - Naval FINAL spec (09/10, feature/naval-final): 18-ship roster reconciled to the final spec (CP 7-23, HP by anchor ratio, no
   Armour 5, one secondary capability, player AShM ladder Pen 4 / 80 m/s, light torpedo); ciws_escort_craft, naval_monitor,
   sea_cruiser.gun / .missile; naval doctrine (patrol lanes, astern escorts, salvo guard); regress `naval` suite (not run).

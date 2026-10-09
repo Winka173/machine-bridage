@@ -84,19 +84,22 @@ namespace MachineBrigade.Tests
                 ["kraken"] = "kessler", ["monster"] = "orlov", ["hyperion"] = "aurel", ["nyx"] = "kessler", ["hydra"] = "hung",
                 // Play-test 14 wave R4: Hyperion's two mini-boss variants.
                 ["theia"] = "aurel", ["coeus"] = "aurel",
+                // Boss design 09/10 (sheet 05): the six new mini bosses.
+                ["roc_gunship"] = "quaden", ["daedalus_assault"] = "aurel", ["icarus_interceptor"] = "aurel", ["matriarch_flak"] = "sen",
+                ["jotunn_artillery"] = "orlov", ["bastion_aa"] = "brandt",
             };
             var bosses = C.Vehicles.Values.Where(v => v.Boss).ToList();
             // Play-test 14 deleted ten bosses (two main: Gungnir, Kronos).
-            Assert.AreEqual(33, bosses.Count, "14 main bosses and 19 mini bosses (play-test 14 wave R4: Theia, Coeus)");
+            Assert.AreEqual(39, bosses.Count, "14 main bosses and 25 mini bosses (boss design 09/10: six new minis)");
             Assert.AreEqual(14, bosses.Count(b => b.Rank == BossRank.Main));
-            Assert.AreEqual(19, bosses.Count(b => b.Rank == BossRank.Mini));
+            Assert.AreEqual(25, bosses.Count(b => b.Rank == BossRank.Mini));
             foreach (var b in bosses)
             {
                 Assert.IsNotNull(b.Frame, b.Id + " has a body frame");
                 Assert.IsNotNull(b.RankDef, b.Id + " has its rank's rules");
                 Assert.AreEqual(general[b.Id], b.General, b.Id + "'s general (prompt 20 K)");
                 var phases = b.Tiers != null ? b.Tiers.Marks.Count : b.Phases.Count;
-                Assert.AreEqual(b.MiniBoss ? 1 : 2, phases, b.Id + ": a main boss has three phases, a mini boss two");
+                Assert.AreEqual(1, phases, b.Id + ": one phase mark at 50 % for a main and a mini boss alike (boss design 09/10)");
                 if (!b.MiniBoss) continue;
                 // Play-test 6 (DECISIONS 21G): 0.8 -> 1.2 (+50 %); the big attack 0.7 -> 0.56 of that (+20 % in all).
                 Assert.AreEqual(1.2f, b.DamageScale, 1e-4f, b.Id + ": a mini boss's weapons hit at 120 %");
@@ -238,7 +241,7 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void ArgusTightensItsSidesArtilleryUntilItsRadarBreaks()
+        public void ArgusTightensItsSidesArtilleryAsLongAsItLives()
         {
             var world = Field();
             Assert.AreEqual(1f, world.Bosses.SpotAuraFor(1), 1e-4f);
@@ -246,9 +249,9 @@ namespace MachineBrigade.Tests
             Run(world, 1f);
             Assert.AreEqual(0.5f, world.Bosses.SpotAuraFor(1), 1e-4f, "its side's artillery falls half as wide");
             Assert.AreEqual(1f, world.Bosses.SpotAuraFor(0), 1e-4f, "not the other side's");
-            world.Bosses.Break(argus, argus.Def.PartIndex("radar"));
+            Assert.AreEqual(-1, argus.Def.PartIndex("radar"), "no destructible radar part (boss design 09/10)");
             Run(world, 1f);
-            Assert.AreEqual(1f, world.Bosses.SpotAuraFor(1), 1e-4f, "its radar broken: as usual");
+            Assert.AreEqual(0.5f, world.Bosses.SpotAuraFor(1), 1e-4f, "still tight: nothing to break");
         }
 
         [Test]

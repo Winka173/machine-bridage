@@ -23,6 +23,15 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>The weapon's reach (WeaponDef.Range); a ground reach of its own (GroundRange) is scaled with it. Null: the weapon's.</summary>
         public float? MaxRange { get; internal set; }
+
+        /// <summary>Boss design 09/10 (sheet 04): this boss's damage per round of the weapon, as a multiple of the weapon's (null: its own).</summary>
+        public float? DamageMult { get; internal set; }
+
+        /// <summary>Boss design 09/10: its tempo as a multiple (0.7: it fires at 70 %, the cooldown is divided by it); null: the weapon's.</summary>
+        public float? RateMult { get; internal set; }
+
+        /// <summary>Boss design 09/10: its blast radius (core and edge) as a multiple of the weapon's; null: its own.</summary>
+        public float? RadiusMult { get; internal set; }
     }
 
     public sealed partial class WeaponDef
@@ -44,6 +53,17 @@ namespace MachineBrigade.Sim.Content
             {
                 if (MinRange > 0f) copy.MinRange = min;
                 else copy.GroundMinReach = MathF.Max(copy.GroundMinReach, min);
+            }
+            if (o.DamageMult is { } dmg) copy.Damage = Damage * dmg;
+            if (o.RateMult is { } rate)
+            {
+                copy.Cooldown = Cooldown / rate;
+                if (Clip > 0) copy.ClipReload = ClipReload / rate;
+            }
+            if (o.RadiusMult is { } rad)
+            {
+                copy.SplashRadius = SplashRadius * rad;
+                copy.SplashEdge = SplashEdge * rad;
             }
             if (copy.MinRange >= copy.Range) throw new FormatException($"{path}: minRange {copy.MinRange} must be below the reach {copy.Range}.");
             if (copy.GroundMinReach >= copy.Range) throw new FormatException($"{path}: groundMinReach {copy.GroundMinReach} must be below the reach {copy.Range}.");
@@ -78,16 +98,21 @@ namespace MachineBrigade.Sim.Content
                 {
                     var o = boss.Object(weaponId);
                     foreach (var key in o.Keys)
-                        if (key is not ("groundMinReach" or "minRange" or "maxRange"))
-                            throw new FormatException($"{o.Path}.{key}: a boss weapon override takes groundMinReach, minRange and maxRange only.");
+                        if (key is not ("groundMinReach" or "minRange" or "maxRange" or "damageMult" or "rateMult" or "radiusMult"))
+                            throw new FormatException($"{o.Path}.{key}: a boss weapon override takes groundMinReach, minRange, maxRange, damageMult, rateMult and radiusMult only.");
                     var row = new BossWeaponOverride
                     {
                         GroundMinReach = o.Has("groundMinReach") ? o.Float("groundMinReach") : null,
                         MinRange = o.Has("minRange") ? o.Float("minRange") : null,
                         MaxRange = o.Has("maxRange") ? o.Float("maxRange") : null,
+                        DamageMult = o.Has("damageMult") ? o.Float("damageMult") : null,
+                        RateMult = o.Has("rateMult") ? o.Float("rateMult") : null,
+                        RadiusMult = o.Has("radiusMult") ? o.Float("radiusMult") : null,
                     };
                     if (row.GroundMinReach < 0f || row.MinRange < 0f || row.MaxRange <= 0f)
                         throw new FormatException($"{o.Path}: groundMinReach and minRange 0 or more, maxRange above 0.");
+                    if (row.DamageMult <= 0f || row.RateMult <= 0f || row.RadiusMult <= 0f)
+                        throw new FormatException($"{o.Path}: damageMult, rateMult and radiusMult above 0.");
                     rows[weaponId] = row;
                 }
                 table._rows[bossId] = rows;
