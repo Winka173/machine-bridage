@@ -27,7 +27,7 @@ namespace MachineBrigade.Sim.AI
 
         /// <summary>1 - exp(-shots / 2), fading with <see cref="Tun.FireMissions.HalfLifeS"/> since the last shot seen.</summary>
         public float Confidence(double now) =>
-            (1f - MathF.Exp(-Shots / 2f)) * MathF.Pow(0.5f, (float)(Math.Max(0.0, now - LastAt) / MathF.Max(0.1f, Tun.FireMissions.HalfLifeS)));
+            (1f - MathF.Exp(-Shots / global::MachineBrigade.Sim.Content.SimTunables.Ai.OriginEstimate.ConfidenceShotsDivisor)) * MathF.Pow(global::MachineBrigade.Sim.Content.SimTunables.Ai.OriginEstimate.ConfidenceMaxExponent, (float)(Math.Max(0.0, now - LastAt) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.OriginEstimate.ConfidenceHalfLifeSFloor, Tun.FireMissions.HalfLifeS)));
 
         public override string ToString() => $"origin ({Centre.X:0},{Centre.Y:0}) +-{ErrorRadius:0} m, {Shots} shots";
     }
@@ -41,8 +41,8 @@ namespace MachineBrigade.Sim.AI
     /// </summary>
     public sealed class CounterBatteryTracker
     {
-        private const int MaxEstimates = 16;
-        private const int MaxImpacts = 64;
+        private static int MaxEstimates => global::MachineBrigade.Sim.Content.SimTunables.Ai.CounterBatteryTracker.MaxEstimates;
+        private static int MaxImpacts => global::MachineBrigade.Sim.Content.SimTunables.Ai.CounterBatteryTracker.MaxImpacts;
         private readonly List<OriginEstimate> _estimates = new();
         private readonly List<(Vector2 at, double time)> _impacts = new();
 
@@ -85,7 +85,7 @@ namespace MachineBrigade.Sim.AI
             {
                 var d = Vector2.Distance(e.Centre, seen);
                 // Two estimates of one battery can each be off by a single shot's error: their circles overlap (plus the merge radius).
-                if (d <= Tun.FireMissions.MergeRadius + 2f * MathF.Max(e.ErrorRadius, error) && d < bestD)
+                if (d <= Tun.FireMissions.MergeRadius + global::MachineBrigade.Sim.Content.SimTunables.Ai.CounterBatteryTracker.ObserveMaxScale * MathF.Max(e.ErrorRadius, error) && d < bestD)
                 {
                     best = e;
                     bestD = d;
@@ -127,8 +127,8 @@ namespace MachineBrigade.Sim.AI
 
         internal void Prune(double now)
         {
-            _estimates.RemoveAll(e => e.Confidence(now) < 0.05f);
-            while (_impacts.Count > 0 && now - _impacts[0].time > 60.0) _impacts.RemoveAt(0);
+            _estimates.RemoveAll(e => e.Confidence(now) < global::MachineBrigade.Sim.Content.SimTunables.Ai.CounterBatteryTracker.PruneConfidenceMax);
+            while (_impacts.Count > 0 && now - _impacts[0].time > global::MachineBrigade.Sim.Content.SimTunables.Ai.CounterBatteryTracker.PruneNowMin) _impacts.RemoveAt(0);
         }
     }
 
@@ -153,7 +153,7 @@ namespace MachineBrigade.Sim.AI
 
         internal void Prune(double now)
         {
-            if (_book.Count < 64) return;
+            if (_book.Count < global::MachineBrigade.Sim.Content.SimTunables.Ai.RouteBook.PruneCountMax) return;
             var old = new List<int>();
             foreach (var kv in _book)
                 if (kv.Value.until <= now) old.Add(kv.Key);

@@ -93,7 +93,7 @@ namespace MachineBrigade.Sim.AI
             if (!_damage.TryGetValue(target.Value, out var list)) return 0f;
             var sum = 0f;
             foreach (var r in list)
-                if (r.until > now && r.shooter / 16 != except.Value) sum += r.amount;
+                if (r.until > now && r.shooter / global::MachineBrigade.Sim.Content.SimTunables.Ai.PlannedActionBoard.PlannedDamageShooterDivisor != except.Value) sum += r.amount;
             return sum;
         }
 
@@ -178,7 +178,7 @@ namespace MachineBrigade.Sim.AI
 
         public void PlanSmoke(SmokeMission m)
         {
-            if (_smoke.Count >= 16) _smoke.RemoveAt(0);
+            if (_smoke.Count >= global::MachineBrigade.Sim.Content.SimTunables.Ai.PlannedActionBoard.PlanSmokeCountMin) _smoke.RemoveAt(0);
             _smoke.Add(m);
         }
 
@@ -216,7 +216,7 @@ namespace MachineBrigade.Sim.AI
                 if (_shooterTarget.Count > 2048) _shooterTarget.Clear();
             }
             _smoke.RemoveAll(m => m.End <= now);
-            if (_missions.Count > 64)
+            if (_missions.Count > global::MachineBrigade.Sim.Content.SimTunables.Ai.PlannedActionBoard.PruneCountMin3)
             {
                 var old = new List<int>();
                 foreach (var kv in _missions)

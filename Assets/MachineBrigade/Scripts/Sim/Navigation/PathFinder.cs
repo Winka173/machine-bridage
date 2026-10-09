@@ -41,7 +41,7 @@ namespace MachineBrigade.Sim.Navigation
         /// Smoothing may draw a straight line across cells up to this dear (or as dear as the cells
         /// the raw path itself crossed), never straight back through a parked hull.
         /// </summary>
-        public int SmoothLimit = 20;
+        public int SmoothLimit = global::MachineBrigade.Sim.Content.SimTunables.Maps.PathCosts.SmoothLimit;
 
         /// <summary>Cells the last search expanded.</summary>
         public int Expansions;
@@ -252,7 +252,7 @@ namespace MachineBrigade.Sim.Navigation
         private float MaxTerrainAlong(Vector2 a, Vector2 b)
         {
             var delta = b - a;
-            var steps = Math.Max(1, (int)MathF.Ceiling(delta.Length() / (_grid.CellSize * 0.25f)));
+            var steps = Math.Max(1, (int)MathF.Ceiling(delta.Length() / (_grid.CellSize * global::MachineBrigade.Sim.Content.SimTunables.Maps.PathFinder.MaxTerrainAlongCellSizeScale)));
             var worst = 0f;
             var last = -1;
             for (var s = 0; s <= steps; s++)
@@ -270,7 +270,7 @@ namespace MachineBrigade.Sim.Navigation
         private int MaxExtraAlong(Vector2 a, Vector2 b, PathCosts costs)
         {
             var delta = b - a;
-            var steps = Math.Max(1, (int)MathF.Ceiling(delta.Length() / (_grid.CellSize * 0.25f)));
+            var steps = Math.Max(1, (int)MathF.Ceiling(delta.Length() / (_grid.CellSize * global::MachineBrigade.Sim.Content.SimTunables.Maps.PathFinder.MaxExtraAlongCellSizeScale)));
             var worst = 0;
             var last = -1;
             for (var s = 0; s <= steps; s++)

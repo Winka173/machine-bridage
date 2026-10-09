@@ -139,6 +139,7 @@ Game/Match/WeeklyFortress.cs,22,47,100,Week,calendar arithmetic (ISO week id and
 Game/Match/WeeklyFortress.cs,33,37,100,MapId,calendar arithmetic (ISO week id and week -> map index),var index = (week / 100 * 53 + week % 100) % maps.Length;
 Game/Match/WeeklyFortress.cs,33,43,53,MapId,calendar arithmetic (ISO week id and week -> map index),var index = (week / 100 * 53 + week % 100) % maps.Length;
 Game/Match/WeeklyFortress.cs,33,55,100,MapId,calendar arithmetic (ISO week id and week -> map index),var index = (week / 100 * 53 + week % 100) % maps.Length;
+Sim/AI/BreachAccess.cs,38,37,4096,Capacity,infrastructure: a cache's capacity (memory),public const int Capacity = 4096;
 Sim/AI/BreachAccess.cs,98,143,8,FirstBlocker,infrastructure: bit operation (flags / hashing),"var key = (unit.Team, amphibious, sx / Bucket, sy / Bucket, tx / Bucket, ty / Bucket, (int)(reach / 4f), ((int)(minRange / 4f) << 8) | (int)(radius / 2f));"
 Sim/AI/BreachAccess.cs,218,44,0.5f,Mark,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"var half = new Vector2(width * 0.5f, depth * 0.5f);"
 Sim/AI/BreachAccess.cs,218,58,0.5f,Mark,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"var half = new Vector2(width * 0.5f, depth * 0.5f);"
@@ -151,8 +152,9 @@ Sim/AI/ConquestAi.cs,633,77,0.5f,TryStrike,geometry: half of a length / width / 
 Sim/AI/ConquestAi.cs,634,72,0.5f,TryStrike,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),var start = pick.IsLine ? cluster - along * (pick.Length * 0.5f) : cluster;
 Sim/AI/ConquestAi.cs,839,80,0.5f,ClearRun,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"if (OwnWithin(world, centre + direction * (strike.Length * 0.5f * s / 4f), reach)) clear = false;"
 Sim/AI/ConquestAi.cs,1119,55,1,Levels,"index: 0 / 1 / -1 (identity, start value; whitelist §3.5)",private const int Levels = ArmourLevels.Max + 1;
-Sim/AI/DecisionLog.cs,124,37,4000,Capacity,infrastructure: Log code (hash / save / parse / text / log / export),public const int Capacity = 4000;
+Sim/AI/DecisionLog.cs,124,37,4000,Capacity,infrastructure: a cache's capacity (memory),public const int Capacity = 4000;
 Sim/AI/P2/Commander.P2.cs,142,43,32,AssignP2,"infrastructure: a cache's size cap (memory), not gameplay",if (_reserveCommitted.Count > 32) _reserveCommitted.Clear();
+Sim/AI/P2/ComponentState.cs,90,35,4096,Check,infrastructure: a bookkeeping collection's size cap (memory),if (_last.Count > 4096) Prune();
 Sim/AI/P2/FireSupportAnchor.cs,130,57,0.01f,Reference,math: a zero-length guard (a vector is normalised only when it is longer than this),var forward = ctx.Forward.LengthSquared() > 0.01f ? Vector2.Normalize(ctx.Forward) : Vector2.UnitY;
 Sim/AI/P2/FireSupportAnchor.cs,199,94,0.01f,Normalize,math: a zero-length guard (a vector is normalised only when it is longer than this),"private static Vector2 Normalize(Vector2 v, Vector2 fallback) => v.LengthSquared() > 0.01f ? Vector2.Normalize(v) : fallback;"
 Sim/AI/P2/FireSupportAnchor.cs,441,43,0.01f,Slot,math: a zero-length guard (a vector is normalised only when it is longer than this),back = back.LengthSquared() > 0.01f ? -Vector2.Normalize(back) : Vector2.UnitY;
@@ -186,6 +188,7 @@ Sim/AI/P3/Coordination.cs,121,36,1024,Step,"infrastructure: a cache's size cap (
 Sim/AI/P3/CoordinationRules.cs,356,56,100f,Distance,infrastructure: percent conversion,return lo + (Math.Abs(gunId * 37) % 101) / 100f * (hi - lo);
 Sim/AI/P3/CounterBattery.cs,80,33,12,Observe,infrastructure: bit operation (flags / hashing),var radius = ((h >> 12) % 1000u) / 1000f * error;
 Sim/AI/P3/FrontlineModel.cs,239,40,0.01f,Dir,math: a zero-length guard (a vector is normalised only when it is longer than this),return d.LengthSquared() > 0.01f ? Vector2.Normalize(d) : Vector2.UnitY;
+Sim/AI/P3/PlannedActionBoard.cs,207,33,256,Prune,infrastructure: a bookkeeping collection's size cap (memory),if (_damage.Count > 256)
 Sim/AI/P3/PlannedActionBoard.cs,216,44,2048,Prune,"infrastructure: a cache's size cap (memory), not gameplay",if (_shooterTarget.Count > 2048) _shooterTarget.Clear();
 Sim/AI/P4/Air.P4.cs,350,49,0.01f,Approach,math: a zero-length guard (a vector is normalised only when it is longer than this),inbound = inbound.LengthSquared() > 0.01f ? Vector2.Normalize(inbound) : Vector2.UnitX;
 Sim/AI/P4/Air.P4.cs,425,53,0.01f,SeadP4,math: a zero-length guard (a vector is normalised only when it is longer than this),inbound = inbound.LengthSquared() > 0.01f ? Vector2.Normalize(inbound) : Vector2.UnitX;
@@ -198,6 +201,7 @@ Sim/AI/P4/Planning.cs,96,31,1e-3f,PurchaseModifier,math: a float epsilon (guards
 Sim/AI/P4/Planning.cs,188,36,128,StoreForecast,"infrastructure: a cache's size cap (memory), not gameplay",if (_forecasts.Count > 128) _forecasts.Clear();
 Sim/AI/P4/Planning.cs,277,40,256,ObserveDeath,"infrastructure: a cache's size cap (memory), not gameplay",if (_lossCells.Count > 256) _lossCells.Clear();
 Sim/AI/P4/Planning.cs,308,45,1000003L,ObserveWarnings,sentinel: a huge number meaning 'none' / 'never' (not a quantity),key = ((long)w.Source * 1000003L + (long)MathF.Round(w.Centre.X * 0.5f) * 7919L + (long)MathF.Round(w.Centre.Y * 0.5f)) * 31L + (long)Math.Round(w.Due * 10.0);
+Sim/AI/P4/Planning.cs,324,35,256,ObserveWarnings,infrastructure: a bookkeeping collection's size cap (memory),if (_warnSeen.Count > 256)
 Sim/AI/P4/Planning.cs,419,66,0.5f,Update,infrastructure: midpoint / average ((a + b) / 2),var centre = (areas[i].min + areas[i].max) * 0.5f;
 Sim/AI/P4/PlanningRules.cs,442,40,0.01f,EnvelopeGoal,math: a zero-length guard (a vector is normalised only when it is longer than this),if (away.LengthSquared() < 0.01f) away = from - e;
 Sim/AI/P4/PlanningRules.cs,443,40,0.01f,EnvelopeGoal,math: a zero-length guard (a vector is normalised only when it is longer than this),if (away.LengthSquared() < 0.01f) return goal;
@@ -224,6 +228,8 @@ Sim/AI/Squads.cs,1005,72,0.5f,Engage,infrastructure: midpoint / average ((a + b)
 Sim/AI/Squads.cs,1011,64,0.5f,Engage,infrastructure: midpoint / average ((a + b) / 2),sum += (role.EngageMin + role.EngageMax) * 0.5f;
 Sim/AI/Squads.cs,1174,40,0.01f,Direction,math: a zero-length guard (a vector is normalised only when it is longer than this),return d.LengthSquared() > 0.01f ? Vector2.Normalize(d) : Vector2.UnitY;
 Sim/AI/TacticalAi.P3.cs,55,48,0.01f,RepairTargetP3,math: a zero-length guard (a vector is normalised only when it is longer than this),"var stand = away.LengthSquared() > 0.01f ? best.Position - Vector2.Normalize(away) * MathF.Max(2f, aura.Radius * 0.5f) : best.Position;"
+Sim/AI/TacticalAi.cs,249,48,2,.ctor,math: a coin flip (Next(2)),_flankSide = new Random(seed).Next(2) == 0 ? -1f : 1f;
+Sim/AI/TargetAccessCache.cs,40,37,8192,Capacity,infrastructure: a cache's capacity (memory),public const int Capacity = 8192;
 Sim/AI/TargetAccessCache.cs,96,64,24,CanInfluence,infrastructure: bit operation (flags / hashing),"return Reachable(((long)(int)domain << 24) | (uint)component, true, domain, target, targetRadius, reach, weapon.MinRange);"
 Sim/Abilities/FieldWorksSystem.cs,52,74,1e-3f,Dark,math: a float epsilon (guards a division or a 'not zero' test),public bool Dark => _dark || _world.WeatherSight <= NightSight + 1e-3f;
 Sim/Abilities/FieldWorksSystem.cs,249,63,31,LitMask,C# pattern (is >= a and < b): needs a compile-time constant; here an index / team / stage bound,"if (team != target.Team && team is >= 0 and < 31 && Vector2.DistanceSquared(at, target.Position) <= (radius + target.Radius) * (radius + target.Radius))"
@@ -384,8 +390,12 @@ Sim/Content/FortressDef.cs,198,30,2,Points,"math: parity (even / odd: alternate 
 Sim/Content/FortressDef.cs,199,50,2,Points,"data format: x, z pairs","for (var i = 0; i < flat.Count; i += 2) list.Add(new Vector2(flat[i], flat[i + 1]));"
 Sim/Content/HandbookFacts.cs,14,42,0.8f,ReactiveCap,infrastructure: Handbook code (hash / save / parse / text / log / export),public const float ReactiveCap = 0.8f;
 Sim/Content/MapDefinition.Edges.cs,144,119,2,Parse,infrastructure: Parse code (hash / save / parse / text / log / export),"var between = c.Raw.TryGetValue(""between"", out var b) && b is List<object?> pair && pair.Count == 2 ? pair : null;"
+Sim/Content/MapDefinition.cs,138,43,0.5f,.ctor,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),Min = new Vector2(-Size * 0.5f);
+Sim/Content/MapDefinition.cs,139,42,0.5f,.ctor,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),Max = new Vector2(Size * 0.5f);
 Sim/Content/MapDefinition.cs,167,48,0.5f,Centre,infrastructure: midpoint / average ((a + b) / 2),public Vector2 Centre => (Min + Max) * 0.5f;
 Sim/Content/MapDefinition.cs,233,30,3,InsideBoundary,math: a polygon needs three points,if (poly.Count < 3) return Contains(p);
+Sim/Content/MapDefinition.cs,314,61,0.5f,IsSquare,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),private bool IsSquare => Min == new Vector2(-Size * 0.5f) && Max == new Vector2(Size * 0.5f);
+Sim/Content/MapDefinition.cs,314,96,0.5f,IsSquare,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),private bool IsSquare => Min == new Vector2(-Size * 0.5f) && Max == new Vector2(Size * 0.5f);
 Sim/Content/MapDefinition.cs,325,32,4,FromJson,data format check: the parser's expected count (a malformed file throws),"if (b.Count != 4) throw new FormatException(""map.bounds: needs min x, min z, max x, max z."");"
 Sim/Content/MapDefinition.cs,368,38,4,FromJson,data format check: the parser's expected count (a malformed file throws),"if (flat.Count < 4 || flat.Count % 2 != 0) throw new FormatException($""{r.Path}.points: needs x, z pairs."");"
 Sim/Content/MapDefinition.cs,368,56,2,FromJson,"math: parity (even / odd: alternate sides, or x, z pairs in the data)","if (flat.Count < 4 || flat.Count % 2 != 0) throw new FormatException($""{r.Path}.points: needs x, z pairs."");"
@@ -443,7 +453,7 @@ Sim/Modes/BaseSystem.cs,605,130,1e7f,Step,sentinel: a huge number meaning 'none'
 Sim/Modes/BattleEvents.cs,35,41,7919,.ctor,RNG seed salt: an arbitrary constant mixed into a seed,_random = new Random(seed * 7919 + 13);
 Sim/Modes/BattleEvents.cs,35,48,13,.ctor,RNG seed salt: an arbitrary constant mixed into a seed,_random = new Random(seed * 7919 + 13);
 Sim/Modes/BattleEvents.cs,65,73,0.5f,DropCrate,infrastructure: midpoint / average ((a + b) / 2),var middle = a != null && b != null ? (a.Value + b.Value) * 0.5f : world.Map.Centre;
-Sim/Modes/BattleEvents.cs,70,108,2,DropCrate,"math: a random draw in [-1, 1] (r x 2 - 1)","var at = (attempt < 10 ? middle : map.Centre) + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * spread,"
+Sim/Modes/BattleEvents.cs,70,192,2,DropCrate,"math: a random draw in [-1, 1] (r x 2 - 1)",var at = (attempt < global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.DropCrateAttemptMax2 ? middle : map.Centre) + new Vector2((float)(_random.
 Sim/Modes/BattleEvents.cs,71,52,2,DropCrate,"math: a random draw in [-1, 1] (r x 2 - 1)",(float)(_random.NextDouble() * 2 - 1) * map.Length * spread);
 Sim/Modes/BattleEvents.cs,165,64,0.5f,Raid,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),var start = best.Value - along * (support.Length * 0.5f);
 Sim/Modes/MissionEvents.Kinds.cs,431,88,0.5f,PrepareLine,geometry: centring k - (n - 1) / 2 of a row of n slots (math),var spot = world.ClampToMap(line + across * ((k - (towers.Count - 1) * 0.5f) * spacing));
@@ -454,14 +464,14 @@ Sim/Modes/MissionEvents.Kinds.cs,488,84,15,ActOf,index: the act number of a camp
 Sim/Modes/MissionEvents.Kinds.cs,488,90,3,ActOf,index: the act number of a campaign chapter,"public static int ActOf(int chapter) => chapter switch { 13 => 1, 14 => 2, 15 => 3, <= 0 => 1, _ => Math.Clamp((chapter - 1) / 3 + 1, 1, 4) };"
 Sim/Modes/MissionEvents.Kinds.cs,488,136,3,ActOf,index: the act number of a campaign chapter,"public static int ActOf(int chapter) => chapter switch { 13 => 1, 14 => 2, 15 => 3, <= 0 => 1, _ => Math.Clamp((chapter - 1) / 3 + 1, 1, 4) };"
 Sim/Modes/MissionEvents.Kinds.cs,488,146,4,ActOf,index: the act number of a campaign chapter,"public static int ActOf(int chapter) => chapter switch { 13 => 1, 14 => 2, 15 => 3, <= 0 => 1, _ => Math.Clamp((chapter - 1) / 3 + 1, 1, 4) };"
-Sim/Modes/MissionEvents.Kinds.cs,653,82,2,PrepareCrate,"math: a random draw in [-1, 1] (r x 2 - 1)","var at = map.Centre + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * 0.2f, (float)(_random.NextDouble() * 2 - 1) * map.Length * 0.2f);"
-Sim/Modes/MissionEvents.Kinds.cs,653,140,2,PrepareCrate,"math: a random draw in [-1, 1] (r x 2 - 1)","var at = map.Centre + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * 0.2f, (float)(_random.NextDouble() * 2 - 1) * map.Length * 0.2f);"
+Sim/Modes/MissionEvents.Kinds.cs,653,82,2,PrepareCrate,"math: a random draw in [-1, 1] (r x 2 - 1)",var at = map.Centre + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem
+Sim/Modes/MissionEvents.Kinds.cs,653,239,2,PrepareCrate,"math: a random draw in [-1, 1] (r x 2 - 1)",var at = map.Centre + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem
 Sim/Modes/MissionEvents.Kinds.cs,741,66,0.5f,Happen,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),var start = s.Where - along * (raid.Length * 0.5f);
 Sim/Modes/MissionEvents.Kinds.cs,751,106,0.5f,Happen,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"var at = OperationMode.StrikeTarget(world, Player, support.IsLine ? support.Length * 0.5f : support.Radius) ?? s.Where;"
-Sim/Modes/MissionEvents.Kinds.cs,759,85,0.5f,Happen,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"var start = support.IsLine ? at - along * (support.Length * 0.5f) : at + new Vector2((k % 2) * 6f - 3f, (k / 2) * 6f - 3f) * (k > 0 ? 1f : 0f);"
-Sim/Modes/MissionEvents.Kinds.cs,759,115,2,Happen,"math: parity (even / odd: alternate sides, or x, z pairs in the data)","var start = support.IsLine ? at - along * (support.Length * 0.5f) : at + new Vector2((k % 2) * 6f - 3f, (k / 2) * 6f - 3f) * (k > 0 ? 1f : 0f);"
-Sim/Modes/MissionEvents.Kinds.cs,873,65,2,FieldGeneral,"math: parity (even / odd: alternate sides, or x, z pairs in the data)",var spot = world.ClampToMap(at + across * ((k % 2 == 0 ? 1f : -1f) * (6f + 4f * (k / 2))) - plan.Point.Inward * 4f);
-Sim/Modes/MissionEvents.Kinds.cs,915,66,0.5f,StartConvoy,geometry: centring k - (n - 1) / 2 of a row of n slots (math),var angle = (k - (besiegers.Count - 1) * 0.5f) * 0.45f;
+Sim/Modes/MissionEvents.Kinds.cs,759,85,0.5f,Happen,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),var start = support.IsLine ? at - along * (support.Length * 0.5f) : at + new Vector2((k % 2) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEv
+Sim/Modes/MissionEvents.Kinds.cs,759,115,2,Happen,"math: parity (even / odd: alternate sides, or x, z pairs in the data)",var start = support.IsLine ? at - along * (support.Length * 0.5f) : at + new Vector2((k % 2) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEv
+Sim/Modes/MissionEvents.Kinds.cs,873,65,2,FieldGeneral,"math: parity (even / odd: alternate sides, or x, z pairs in the data)",var spot = world.ClampToMap(at + across * ((k % 2 == 0 ? 1f : -1f) * (global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.FieldGeneralKAd
+Sim/Modes/MissionEvents.Kinds.cs,915,66,0.5f,StartConvoy,geometry: centring k - (n - 1) / 2 of a row of n slots (math),var angle = (k - (besiegers.Count - 1) * 0.5f) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartConvoyKScale2;
 Sim/Modes/MissionEvents.P31.cs,227,56,0.01f,PrepareP31,math: a zero-length guard (a vector is normalised only when it is longer than this),plan.Wind = wind.LengthSquared() > 0.01f ? Vector2.Normalize(wind) : Vector2.UnitY;
 Sim/Modes/MissionEvents.P31.cs,485,36,0.5f,StepFire,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),var hx = b.Width * 0.5f;
 Sim/Modes/MissionEvents.P31.cs,486,36,0.5f,StepFire,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),var hz = b.Depth * 0.5f;
@@ -476,12 +486,12 @@ Sim/Modes/ModeSupport.cs,227,44,1e7f,TickHolder,sentinel: a huge number meaning 
 Sim/Modes/OperationMode.cs,355,102,0.5f,Strike,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"var target = e.Position ?? StrikeTarget(world, e.Team, support.IsLine ? support.Length * 0.5f : support.Radius);"
 Sim/Modes/OperationMode.cs,360,73,0.5f,Strike,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),var start = support.IsLine ? at - along * (support.Length * 0.5f) : at;
 Sim/Modes/QuickModes.cs,420,98,1e7f,Advance,sentinel: a huge number meaning 'none' / 'never' (not a quantity),"if (world.TryGetVehicle(id, out var gun) && gun.IsAlive) world.Damage.Apply(gun, 1e7f, DamageType.HighExplosive);"
-Sim/Modes/QuickModes.cs,491,37,2,Fortify,"math: parity (even / odd: alternate sides, or x, z pairs in the data)",var side = (i % 2 == 0 ? 1f : -1f) * (sector.Count > 1 ? 6f : 9f);
+Sim/Modes/QuickModes.cs,491,37,2,Fortify,"math: parity (even / odd: alternate sides, or x, z pairs in the data)",var side = (i % 2 == 0 ? 1f : -1f) * (sector.Count > 1 ? global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.FortifyCountTrue : global::MachineBrig
 Sim/Modes/SandboxMode.cs,61,30,2,SpawnBoss,index: an id / stage / phase number compared with == (not a quantity),var id = kind == 2 ? main : def.MiniVariant;
 Sim/Modes/SiegeModes.cs,539,37,3,Setup,index: a siege has stages 1-3 (the start stage is capped to the last one),"while (Stage < Math.Min(3, _rules.StartStage))"
 Sim/Modes/SiegeModes.cs,572,60,7919,Setup,RNG seed salt: an arbitrary constant mixed into a seed,_waveRandom = new Random(_rules.WaveSeed * 7919 + 17);
 Sim/Modes/SiegeModes.cs,572,67,17,Setup,RNG seed salt: an arbitrary constant mixed into a seed,_waveRandom = new Random(_rules.WaveSeed * 7919 + 17);
-Sim/Modes/SiegeModes.cs,658,68,0.5f,ClassifyWorks,infrastructure: midpoint / average ((a + b) / 2),var split = rings.Count >= 2 ? (rings[0] + rings[1]) * 0.5f : float.MaxValue;
+Sim/Modes/SiegeModes.cs,658,151,0.5f,ClassifyWorks,infrastructure: midpoint / average ((a + b) / 2),var split = rings.Count >= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ClassifyWorksCountMin ? (rings[0] + rings[1]) * 0.5f : float.MaxValue;
 Sim/Modes/SiegeModes.cs,686,44,0.5f,ClassifyWorks,infrastructure: midpoint / average ((a + b) / 2),DomeCentre = (min + max) * 0.5f;
 Sim/Modes/SiegeModes.cs,829,28,2,GateToBreak,C# pattern (is >= a and < b): needs a compile-time constant; here an index / team / stage bound,"if (Stage is < 2 or > 3 || Breached(world, Stage)) return EntityId.None;"
 Sim/Modes/SiegeModes.cs,829,35,3,GateToBreak,C# pattern (is >= a and < b): needs a compile-time constant; here an index / team / stage bound,"if (Stage is < 2 or > 3 || Breached(world, Stage)) return EntityId.None;"
@@ -489,8 +499,8 @@ Sim/Modes/SiegeModes.cs,876,74,2,Tick,index: a siege stage number,"if (Stage == 
 Sim/Modes/SiegeModes.cs,877,26,2,Tick,index: an id / stage / phase number compared with == (not a quantity),"if (Stage == 2 && Alive(world, _generators) == 0) Advance(world, 3);"
 Sim/Modes/SiegeModes.cs,877,78,3,Tick,index: a siege stage number,"if (Stage == 2 && Alive(world, _generators) == 0) Advance(world, 3);"
 Sim/Modes/SiegeModes.cs,878,26,3,Tick,index: an id / stage / phase number compared with == (not a quantity),if (Stage == 3) KeepEvents(world);
-Sim/Modes/SiegeModes.cs,885,26,3,Tick,index: an id / stage / phase number compared with == (not a quantity),"if (Stage == 3 && (_targets.Count > 0 ? Alive(world, _targets) == 0 : Progress(world) >= 0.999f))"
-Sim/Modes/SiegeModes.cs,1023,34,2,KeepEvents,index: an id / stage / phase number compared with == (not a quantity),else if (_hqPhase == 2 && health < 0.25f)
+Sim/Modes/SiegeModes.cs,885,26,3,Tick,index: an id / stage / phase number compared with == (not a quantity),"if (Stage == 3 && (_targets.Count > 0 ? Alive(world, _targets) == 0 : Progress(world) >= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.TickProg"
+Sim/Modes/SiegeModes.cs,1023,34,2,KeepEvents,index: an id / stage / phase number compared with == (not a quantity),else if (_hqPhase == 2 && health < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.KeepEventsHealthMax3)
 Sim/Modes/SiegeModes.cs,1197,45,0.01f,NextArrival,math: a zero-length guard (a vector is normalised only when it is longer than this),along = along.LengthSquared() > 0.01f ? Vector2.Normalize(along) : Vector2.UnitX;
 Sim/Modes/SiegeModes.cs,1729,152,2,Spawn,C# pattern (is >= a and < b): needs a compile-time constant; here an index / team / stage bound,"if (world.Catalog.Vehicles.TryGetValue(id, out var routed) && routed.RouteName != null && world.Map.Route(routed.RouteName) is { Count: >= 2 } line)"
 Sim/Modes/WallSystem.cs,217,44,1e7f,OnDestroyed,sentinel: a huge number meaning 'none' / 'never' (not a quantity),"_world.Damage.Apply(tower, 1e7f, DamageType.HighExplosive);"
@@ -522,6 +532,7 @@ Sim/Navigation/CoverGrid.cs,29,117,0.5f,.ctor,"not reachable from the simulation
 Sim/Navigation/CoverGrid.cs,43,52,4L,MemoryBytes,"not reachable from the simulation and part of a tool (sandbox lab, map stress scenes, topology audits, debug / memory readouts, handbook matrix, barrel spacing of the model)",public long MemoryBytes => _count.Length * 4L;
 Sim/Navigation/CoverGrid.cs,78,26,1e-3f,TryFirstHit,math: a float epsilon (guards a division or a 'not zero' test),if (length < 1e-3f) return false;
 Sim/Navigation/CoverGrid.cs,93,62,0.5f,Inside,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),MathF.Abs(p.X - prop.Position.X) <= prop.Width * 0.5f + CellSize * 0.5f &&
+Sim/Navigation/CoverGrid.cs,93,80,0.5f,Inside,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),MathF.Abs(p.X - prop.Position.X) <= prop.Width * 0.5f + CellSize * 0.5f &&
 Sim/Navigation/CoverGrid.cs,98,51,0.5f,Change,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"var hw = MathF.Max(0.1f, prop.Width * 0.5f - Inset);"
 Sim/Navigation/CoverGrid.cs,99,51,0.5f,Change,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"var hd = MathF.Max(0.1f, prop.Depth * 0.5f - Inset);"
 Sim/Navigation/EntryGate.cs,92,38,2,ParseAll,"math: parity (even / odd: alternate sides, or x, z pairs in the data)","if (flat.Count % 2 != 0) throw new FormatException($""{g.Path}.path: needs x, z pairs."");"
@@ -579,6 +590,8 @@ Sim/Navigation/MapStressScenes.cs,127,156,23,All,"not reachable from the simulat
 Sim/Navigation/MapStressScenes.cs,156,83,6f,FocusOf,"not reachable from the simulation and part of a tool (sandbox lab, map stress scenes, topology audits, debug / memory readouts, handbook matrix, barrel spacing of the model)",if (main != null && main.DistanceTo(c.Centre) > c.Reach + 6f) continue;
 Sim/Navigation/MapStressScenes.cs,183,43,0.5f,FocusOf,"not reachable from the simulation and part of a tool (sandbox lab, map stress scenes, topology audits, debug / memory readouts, handbook matrix, barrel spacing of the model)",var half = main.LengthM * 0.5f;
 Sim/Navigation/MapStressScenes.cs,191,77,2,FocusOf,"not reachable from the simulation and part of a tool (sandbox lab, map stress scenes, topology audits, debug / memory readouts, handbook matrix, barrel spacing of the model)","return (""main lane middle"", main.Points[main.Points.Count / 2]);"
+Sim/Navigation/MapTopology.cs,376,62,15,Bottleneck,geometry: n cells either side of a centre cell span 2n - 1 cells,return narrowest == int.MaxValue || narrowest >= 15 ? float.PositiveInfinity : (narrowest * 2f - 1f) * Cell;
+Sim/Navigation/MapTopology.cs,376,105,2f,Bottleneck,geometry: n cells either side of a centre cell span 2n - 1 cells,return narrowest == int.MaxValue || narrowest >= 15 ? float.PositiveInfinity : (narrowest * 2f - 1f) * Cell;
 Sim/Navigation/MapTopology.cs,476,68,0.5f,FindChokes,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"var half = Math.Max(1, (int)MathF.Ceiling(chokeWidth * 0.5f / Cell));"
 Sim/Navigation/NavGrid.cs,17,131,0.5f,.ctor,"not reachable from the simulation and part of a tool (sandbox lab, map stress scenes, topology audits, debug / memory readouts, handbook matrix, barrel spacing of the model)","public NavGrid(float worldSize, float cellSize) : this(new Vector2(-(int)MathF.Ceiling(worldSize / cellSize) * cellSize * 0.5f), worldSize, worldSize, cellSize)"
 Sim/Navigation/NavGrid.cs,40,90,4L,MemoryBytes,"not reachable from the simulation and part of a tool (sandbox lab, map stress scenes, topology audits, debug / memory readouts, handbook matrix, barrel spacing of the model)",public long MemoryBytes => (_blockers.Length + _region.Length + _queue.Length) * 4L;
@@ -586,11 +599,16 @@ Sim/Navigation/NavGrid.cs,128,44,0.5f,AddBlocker,geometry: half of a length / wi
 Sim/Navigation/NavGrid.cs,128,70,0.5f,AddBlocker,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"var half = new Vector2(width * 0.5f + clearance, depth * 0.5f + clearance);"
 Sim/Navigation/NavGrid.cs,153,44,0.5f,ChangeRect,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"var half = new Vector2(width * 0.5f, depth * 0.5f);"
 Sim/Navigation/NavGrid.cs,153,58,0.5f,ChangeRect,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"var half = new Vector2(width * 0.5f, depth * 0.5f);"
+Sim/Navigation/NavGrid.cs,293,102,1.42f,TryNearestInRegion,math: the square root of 2 (a grid diagonal),"if (found == float.MaxValue) last = Math.Min(maxRings, (int)MathF.Ceiling(ring * 1.42f));"
 Sim/Navigation/NavStates.cs,26,60,0.5f,Min,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"public Vector2 Min => Center - new Vector2(Width * 0.5f + Clearance, Depth * 0.5f + Clearance);"
 Sim/Navigation/NavStates.cs,26,86,0.5f,Min,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"public Vector2 Min => Center - new Vector2(Width * 0.5f + Clearance, Depth * 0.5f + Clearance);"
 Sim/Navigation/NavStates.cs,28,60,0.5f,Max,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"public Vector2 Max => Center + new Vector2(Width * 0.5f + Clearance, Depth * 0.5f + Clearance);"
 Sim/Navigation/NavStates.cs,28,86,0.5f,Max,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"public Vector2 Max => Center + new Vector2(Width * 0.5f + Clearance, Depth * 0.5f + Clearance);"
 Sim/Navigation/NavStates.cs,359,54,1000,Mix,infrastructure: Mix code (hash / save / parse / text / log / export),foreach (var s in _sites) mix(s.Active * 1000 + s.Pending + 1);
+Sim/Navigation/PathFinder.cs,80,33,256,.ctor,infrastructure: a collection's initial capacity (memory),_open = new MinHeap(256);
+Sim/Navigation/PathFinder.cs,291,42,2f,Heuristic,"math: the octile distance dx + dy + (diagonal - 2) min(dx, dy)","return dx + dy + (Diagonal - 2f) * Math.Min(dx, dy);"
+Sim/Navigation/PathFinder.cs,314,54,2,Push,infrastructure: array growth factor,"Array.Resize(ref _items, Count * 2);"
+Sim/Navigation/PathFinder.cs,315,59,2,Push,infrastructure: array growth factor,"Array.Resize(ref _priorities, Count * 2);"
 Sim/Navigation/RailSpline.cs,63,32,2,.ctor,data format check: the parser's expected count (a malformed file throws),"if (points.Count < 2) throw new FormatException($""rail {id}: needs two points at least."");"
 Sim/Navigation/RailSpline.cs,169,34,4,ParseAll,data format check: the parser's expected count (a malformed file throws),"if (flat.Count < 4 || flat.Count % 2 != 0) throw new FormatException($""{r.Path}.points: needs at least two x, z pairs."");"
 Sim/Navigation/RailSpline.cs,169,52,2,ParseAll,"math: parity (even / odd: alternate sides, or x, z pairs in the data)","if (flat.Count < 4 || flat.Count % 2 != 0) throw new FormatException($""{r.Path}.points: needs at least two x, z pairs."");"
@@ -602,6 +620,7 @@ Sim/Navigation/StuckWatch.cs,378,113,0.5f,BlockerAt,geometry: half of a length /
 Sim/Navigation/StuckWatch.cs,379,70,0.5f,BlockerAt,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),MathF.Abs(prop.Position.Y - p.Y) <= prop.Depth * 0.5f + reach) return prop.Def.Id;
 Sim/Navigation/TerrainTags.cs,44,31,4,ParseAll,data format check: the parser's expected count (a malformed file throws),"if (r.Count % 4 != 0) throw new FormatException($""{z.Path}.rects: needs x0, z0, x1, z1 quadruples."");"
 Sim/Navigation/TerrainTags.cs,45,51,4,ParseAll,infrastructure: Parse code (hash / save / parse / text / log / export),for (var i = 0; i < r.Count; i += 4)
+Sim/Navigation/UnitCostField.cs,56,70,2,Invalidate,sentinel arithmetic (a 'never' time),internal void Invalidate() => _refreshedAt = long.MinValue / 2;
 Sim/Navigation/WeatherPresentation.cs,31,46,12,.ctor,"not reachable from the simulation and part of a tool (sandbox lab, map stress scenes, topology audits, debug / memory readouts, handbook matrix, barrel spacing of the model)","TelegraphBoost = Math.Max(1f, At(12));"
 Sim/Sandbox/SandboxBattle.cs,311,84,100,SetAmmo,infrastructure: percent conversion,"v.Weapons[i].Ammo = (int)MathF.Round(full * Math.Clamp(percent, 0, 100) / 100f);"
 Sim/Sandbox/SandboxBattle.cs,311,91,100f,SetAmmo,infrastructure: percent conversion,"v.Weapons[i].Ammo = (int)MathF.Round(full * Math.Clamp(percent, 0, 100) / 100f);"

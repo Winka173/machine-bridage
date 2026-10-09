@@ -112,6 +112,10 @@ internal static class TableNames
         else if (field != null && field.Declaration.Variables.Count == 1 && field.Declaration.Variables[0].Initializer is { } fi2 && fi2.Value.Span.Contains(lit.Span)
                  && node.Parent is EqualsValueClauseSyntax)
             rowId = field.Declaration.Variables[0].Identifier.Text; // an instance field's own table: its name
+        else if (node.Parent is EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax local })
+            rowId = MemberOf(lit) + "_" + local.Identifier.Text; // a local table: the method and the local's name
+        else if (node.Parent is ForEachStatementSyntax fe && fe.Expression == node)
+            rowId = MemberOf(lit) + "_" + fe.Identifier.Text; // foreach (var angle in new[] { ... }): the method and the loop variable
         else rowId = "";
         parts.Reverse();
         var sb = new System.Text.StringBuilder(Ident(rowId));
@@ -126,6 +130,12 @@ internal static class TableNames
         if (char.IsDigit(name[0])) name = "n" + name;
         return name.Length > 60 ? name[..60] : name;
     }
+
+    private static string MemberOf(SyntaxNode n) => n.Ancestors().Select(a => a switch
+    {
+        MethodDeclarationSyntax m => m.Identifier.Text, LocalFunctionStatementSyntax lf => lf.Identifier.Text, PropertyDeclarationSyntax pd => pd.Identifier.Text,
+        ConstructorDeclarationSyntax => "ctor", _ => null,
+    }).FirstOrDefault(x => x != null) ?? "";
 
     /// <summary>The declared name of a tuple element ((int cp, float seconds)[] x = { (2, 25f) } -> "seconds" for index 1).</summary>
     private static string? TupleElementName(SyntaxNode tuple, int idx)

@@ -50,7 +50,7 @@ namespace MachineBrigade.Sim.Navigation
         public NavSiteDef(string id, IReadOnlyList<NavStateDef> states, string? initial = null)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentException("A nav site needs an id.");
-            if (states == null || states.Count < 2) throw new ArgumentException($"Nav site {id}: two or more states.");
+            if (states == null || states.Count < global::MachineBrigade.Sim.Content.SimTunables.Maps.NavSiteDef.CtorCountMax) throw new ArgumentException($"Nav site {id}: two or more states.");
             var names = new HashSet<string>(StringComparer.Ordinal);
             foreach (var s in states)
                 if (!names.Add(s.Name)) throw new ArgumentException($"Nav site {id}: state {s.Name} twice.");
@@ -254,7 +254,7 @@ namespace MachineBrigade.Sim.Navigation
         {
             var r = _grid.RegionOf(p);
             if (r > 0) return r;
-            return _grid.TryNearestWalkable(p, 5, out var open) ? _grid.RegionOf(open) : 0;
+            return _grid.TryNearestWalkable(p, global::MachineBrigade.Sim.Content.SimTunables.Maps.NavStates.AnchorRegionMaxRings, out var open) ? _grid.RegionOf(open) : 0;
         }
 
         /// <summary>Takes one state's ground out and another's in; <paramref name="closing"/>: through AddBlocker (routes replanned).</summary>
@@ -318,7 +318,7 @@ namespace MachineBrigade.Sim.Navigation
             {
                 var region = _grid.RegionOf(v.Position);
                 if (region != 0 && (region == main || !wasMain)) continue;
-                if (!_grid.TryNearestInRegion(v.Position, main, 24, out var open)) continue;
+                if (!_grid.TryNearestInRegion(v.Position, main, global::MachineBrigade.Sim.Content.SimTunables.Maps.NavStates.SwitchMaxRings, out var open)) continue;
                 v.Position = open;
                 v.Speed = 0f;
                 Displaced++;

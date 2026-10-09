@@ -97,7 +97,7 @@ namespace MachineBrigade.Sim.Navigation
     public sealed class StuckWatch
     {
         /// <summary>Seconds without headway before a vehicle counts as stuck.</summary>
-        public float Threshold = 8f;
+        public float Threshold = global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.Threshold;
 
         /// <summary>Moving this far from where it last got going counts as headway.</summary>
         public float Tolerance = 2.5f;
@@ -106,7 +106,7 @@ namespace MachineBrigade.Sim.Navigation
         public float GoalReach = 6f;
 
         /// <summary>It looks every this many steps (0.5 s at 20 Hz).</summary>
-        public int SampleTicks = 10;
+        public int SampleTicks = global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.SampleTicks;
 
         public readonly string Map, Mode, Config;
         public readonly int Seed;
@@ -143,7 +143,7 @@ namespace MachineBrigade.Sim.Navigation
         /// up on the vehicle's route or found none: its commander sends it again a moment later, and
         /// it still gets nowhere.
         /// </summary>
-        public float Grace = 6f;
+        public float Grace = global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.Grace;
 
         private sealed class Track
         {
@@ -254,9 +254,9 @@ namespace MachineBrigade.Sim.Navigation
             goal = v.Position;
             if (v.PathQueued) goal = v.QueuedGoal;
             else if (v.HasPath) goal = v.PathGoal;
-            else if (world.Time - v.Traffic.PathFailedAt < 1.5) goal = v.Traffic.PathFailedGoal;
+            else if (world.Time - v.Traffic.PathFailedAt < global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.WantsTimeMax) goal = v.Traffic.PathFailedGoal;
             else return false;
-            return Vector2.Distance(goal, v.Position) > MathF.Max(6f, v.Def.HullBound * 2f);
+            return Vector2.Distance(goal, v.Position) > MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.WantsHullBoundFloor, v.Def.HullBound * global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.WantsHullBoundScale);
         }
 
         // ------------------------------------------------------------------ why it is stuck
@@ -281,7 +281,7 @@ namespace MachineBrigade.Sim.Navigation
             var t = v.Traffic;
             if (!grid.IsWalkable(v.Position)) return (StuckCause.Embedded, "on " + BlockerAt(world, v.Position));
             var here = ComponentOf(world, v.Position);
-            if (world.Time - t.PathFailedAt < 2.0)
+            if (world.Time - t.PathFailedAt < global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.ClassifyTimeMax)
                 return (StuckCause.NoPath, $"goal {Fmt(t.PathFailedGoal)} in {GoalText(world, t.PathFailedGoal, here)}");
             if (!Reaches(world, goal, here)) return (StuckCause.GoalUnreachable, $"goal {Fmt(goal)} in {GoalText(world, goal, here)}");
             if (v.HasPath)
@@ -336,7 +336,7 @@ namespace MachineBrigade.Sim.Navigation
 
         /// <summary>Whether a goal can be reached from region <paramref name="from"/>: open ground of it within 16 cells, as the route search resolves it.</summary>
         private static bool Reaches(SimWorld world, Vector2 goal, int from) =>
-            from == 0 || world.Grid.TryNearestInRegion(goal, from, 16, out _);
+            from == 0 || world.Grid.TryNearestInRegion(goal, from, global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.ReachesMaxRings, out _);
 
         private static string GoalText(SimWorld world, Vector2 goal, int from)
         {
@@ -380,7 +380,7 @@ namespace MachineBrigade.Sim.Navigation
             foreach (var o in world.VehicleList)
             {
                 if (!o.IsAlive || !o.BlocksRoutes) continue;
-                var half = MathF.Max(o.Def.Length, o.Def.Width) * 0.4f + reach;
+                var half = MathF.Max(o.Def.Length, o.Def.Width) * global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.BlockerAtMaxScale + reach;
                 if (MathF.Abs(o.Position.X - p.X) <= half && MathF.Abs(o.Position.Y - p.Y) <= half) return o.Def.Id + "(defence)";
             }
             return world.Map.InsideBoundary(p) ? "?" : "outline";
@@ -389,7 +389,7 @@ namespace MachineBrigade.Sim.Navigation
         /// <summary>Whether the centre line from a to b crosses a blocked cell (no side strips: the hull's own line).</summary>
         private static bool BlockedLine(SimWorld world, Vector2 a, Vector2 b)
         {
-            var steps = Math.Max(1, (int)MathF.Ceiling(Vector2.Distance(a, b) / 0.5f));
+            var steps = Math.Max(1, (int)MathF.Ceiling(Vector2.Distance(a, b) / global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.BlockedLineDistanceDivisor));
             for (var i = 0; i <= steps; i++)
                 if (!world.Grid.IsWalkable(Vector2.Lerp(a, b, i / (float)steps))) return true;
             return false;
@@ -397,14 +397,14 @@ namespace MachineBrigade.Sim.Navigation
 
         private static string BlockerOnLine(SimWorld world, Vector2 a, Vector2 b)
         {
-            var steps = Math.Max(1, (int)MathF.Ceiling(Vector2.Distance(a, b) / 0.5f));
+            var steps = Math.Max(1, (int)MathF.Ceiling(Vector2.Distance(a, b) / global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.BlockerOnLineDistanceDivisor));
             for (var i = 0; i <= steps; i++)
             {
                 var p = Vector2.Lerp(a, b, i / (float)steps);
                 if (!world.Grid.IsWalkable(p)) return BlockerAt(world, p);
             }
             var side = b - a;
-            side = side.LengthSquared() > 1e-4f ? Vector2.Normalize(new Vector2(-side.Y, side.X)) * (world.Grid.CellSize * 0.25f) : Vector2.Zero;
+            side = side.LengthSquared() > 1e-4f ? Vector2.Normalize(new Vector2(-side.Y, side.X)) * (world.Grid.CellSize * global::MachineBrigade.Sim.Content.SimTunables.Maps.StuckWatch.BlockerOnLineCellSizeScale) : Vector2.Zero;
             for (var i = 0; i <= steps; i++)
             {
                 var p = Vector2.Lerp(a, b, i / (float)steps);

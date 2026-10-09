@@ -190,7 +190,7 @@ namespace MachineBrigade.Sim.AI
         {
             if (!_teams.TryGetValue(team, out var intel))
                 _teams[team] = intel = new TeamIntel(_world, this, team);
-            var rate = MathF.Max(0.1f, _world.Catalog.Ai.WorldRate);
+            var rate = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.WorldModel.ForWorldRateFloor, _world.Catalog.Ai.WorldRate);
             if (!intel.Ready || _world.Time - intel.UpdatedAt >= 1.0 / rate - 1e-6)
                 intel.Refresh();
             return intel;
@@ -229,7 +229,7 @@ namespace MachineBrigade.Sim.AI
             _world = world;
             _model = model;
             Team = team;
-            Cell = MathF.Max(2f, world.Catalog.Ai.WorldCell);
+            Cell = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.CtorWorldCellFloor, world.Catalog.Ai.WorldCell);
             _min = world.Map.Min;
             Columns = Math.Max(1, (int)MathF.Ceiling(world.Map.Width / Cell));
             Rows = Math.Max(1, (int)MathF.Ceiling(world.Map.Length / Cell));
@@ -307,16 +307,16 @@ namespace MachineBrigade.Sim.AI
         }
 
         public Vector2 CellCentre(int index) =>
-            _min + new Vector2((index % Columns + 0.5f) * Cell, (index / Columns + 0.5f) * Cell);
+            _min + new Vector2((index % Columns + global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.CellCentreIndexAdd) * Cell, (index / Columns + global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.CellCentreIndexAdd) * Cell);
 
         public float ThreatAt(ThreatKind kind, Vector2 p) => Threat[(int)kind][CellIndex(p)];
 
         /// <summary>A side tells "no enemy anti-air seen here" (Unknown) from "seen lately and none there" (ConfirmedAbsent).</summary>
-        public Knowledge Know(ThreatKind kind, Vector2 p, float freshSeconds = 3f)
+        public Knowledge Know(ThreatKind kind, Vector2 p, float? freshSeconds = null)
         {
             var c = CellIndex(p);
             if (Threat[(int)kind][c] > 0f) return Knowledge.Present;
-            return _world.Time - Seen[c] <= freshSeconds ? Knowledge.ConfirmedAbsent : Knowledge.Unknown;
+            return _world.Time - Seen[c] <= (freshSeconds ?? global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.KnowFreshSeconds) ? Knowledge.ConfirmedAbsent : Knowledge.Unknown;
         }
 
         /// <summary>Own and estimated enemy strength within <paramref name="radius"/> of a point (by cell centres).</summary>
@@ -349,7 +349,7 @@ namespace MachineBrigade.Sim.AI
         /// <summary>A vehicle's fighting worth: the catalog's Power (CP, elites and defences by health) times its health share.</summary>
         public static float StrengthOf(Vehicle v)
         {
-            var power = v.Def.Boss ? v.MaxHp / 150f : v.Def.Power;
+            var power = v.Def.Boss ? v.MaxHp / global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.StrengthOfMaxHpDivisor : v.Def.Power;
             return power * (v.MaxHp > 0f ? Math.Clamp(v.Hp / v.MaxHp, 0f, 1f) : 1f);
         }
 
@@ -438,7 +438,7 @@ namespace MachineBrigade.Sim.AI
                 if (c.AntiAir) Paint(ThreatKind.AntiAir, c.Position, c.Reach, s);
                 if (c.AntiTank) Paint(ThreatKind.AntiTank, c.Position, c.Reach, s);
                 if (c.Artillery) Paint(ThreatKind.Artillery, c.Position, c.Reach, s);
-                if (c.SplashRadius >= ai.Get("world.splashMin", 2f)) Paint(ThreatKind.Splash, c.Position, c.Reach, s);
+                if (c.SplashRadius >= ai.Get("world.splashMin", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.RefreshFallback2)) Paint(ThreatKind.Splash, c.Position, c.Reach, s);
             }
             EnemySplash = maxSplash;
 
@@ -494,7 +494,7 @@ namespace MachineBrigade.Sim.AI
         {
             var (x0, y0) = XY(at - new Vector2(radius));
             var (x1, y1) = XY(at + new Vector2(radius));
-            var r2 = (radius + Cell * 0.5f) * (radius + Cell * 0.5f);
+            var r2 = (radius + Cell * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.ForCellsCellScale) * (radius + Cell * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.ForCellsCellScale);
             for (var y = y0; y <= y1; y++)
             for (var x = x0; x <= x1; x++)
             {
@@ -533,7 +533,7 @@ namespace MachineBrigade.Sim.AI
             for (var i = 0; i < _blurOwn.Length; i++)
             {
                 float own = _blurOwn[i], enemy = _blurEnemy[i];
-                if (own > 0f && enemy > 0f && MathF.Abs(own - enemy) <= 0.5f * MathF.Max(own, enemy)) _contested.Add(i);
+                if (own > 0f && enemy > 0f && MathF.Abs(own - enemy) <= global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.FrontLineMaxScale * MathF.Max(own, enemy)) _contested.Add(i);
                 var sign = MathF.Sign(own - enemy);
                 if (sign <= 0 || own <= 0f) continue;
                 // A cell this side holds next to one the enemy holds.
@@ -580,9 +580,9 @@ namespace MachineBrigade.Sim.AI
                 for (var sx = -2; sx <= 2; sx++)
                 {
                     all++;
-                    if (grid.IsWalkable(centre + new Vector2(sx, sy) * (Cell * 0.2f))) open++;
+                    if (grid.IsWalkable(centre + new Vector2(sx, sy) * (Cell * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.NarrowCellsCellScale))) open++;
                 }
-                narrow[i] = open > 0 && open <= all * 0.6f;
+                narrow[i] = open > 0 && open <= all * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.NarrowCellsAllScale;
             }
             return narrow;
         }
@@ -590,7 +590,7 @@ namespace MachineBrigade.Sim.AI
         private void Cluster(double now, float decay)
         {
             _groups.Clear();
-            const float reach = 25f;
+            float reach = global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.ClusterReach;
             var used = new bool[_contacts.Count];
             for (var i = 0; i < _contacts.Count; i++)
             {
@@ -604,7 +604,7 @@ namespace MachineBrigade.Sim.AI
                     var b = _contacts[j];
                     if (used[j] || b.Displaced || b.Flying != a.Flying || Vector2.Distance(a.Position, b.Position) > reach) continue;
                     used[j] = true;
-                    var w = MathF.Max(0.01f, b.Strength);
+                    var w = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.ClusterStrengthFloor, b.Strength);
                     centre += b.Position * w;
                     velocity += b.Velocity * w;
                     weight += w;
@@ -620,7 +620,7 @@ namespace MachineBrigade.Sim.AI
         private void Detect(double now, float decay)
         {
             var ai = _world.Catalog.Ai;
-            var life = ai.Get("world.eventLife", 8f);
+            var life = ai.Get("world.eventLife", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectFallback);
             _events.RemoveAll(e => e.Expires <= now);
 
             foreach (var c in _contacts)
@@ -628,13 +628,13 @@ namespace MachineBrigade.Sim.AI
                 if (!c.InSight) continue;
                 // OPPORTUNITY: a valuable target has just come into sight.
                 if (!c.WasInSight && c.HighValue)
-                    Raise(IntelEventKind.Opportunity, $"{c.Group?.ToString() ?? c.Unit} spotted", 50f + 10f * MathF.Min(3f, c.Strength / MathF.Max(1f, EnemyTotal / MathF.Max(1, _contacts.Count))),
+                    Raise(IntelEventKind.Opportunity, $"{c.Group?.ToString() ?? c.Unit} spotted", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectMinAdd + global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectMinScale * MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectStrengthCap, c.Strength / MathF.Max(1f, EnemyTotal / MathF.Max(1, _contacts.Count))),
                         1f, now + life, c.Position, Cell, c.Id);
                 // WINDOW: enemy anti-air has moved off where it stood; a valuable enemy is reloading.
-                if (c.WasInSight && c.Group == ForceGroup.AntiAir && Vector2.Distance(c.PreviousPosition, c.Position) > Cell * 2f)
-                    Raise(IntelEventKind.Window, "enemy anti-air moved off", 60f, 1f, now + life, c.PreviousPosition, c.Reach, c.Id);
+                if (c.WasInSight && c.Group == ForceGroup.AntiAir && Vector2.Distance(c.PreviousPosition, c.Position) > Cell * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectCellScale)
+                    Raise(IntelEventKind.Window, "enemy anti-air moved off", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectPriority, 1f, now + life, c.PreviousPosition, c.Reach, c.Id);
                 if (c.Reloading && c.HighValue)
-                    Raise(IntelEventKind.Window, $"{c.Unit} reloading", 55f, 1f, now + life * 0.5f, c.Position, Cell, c.Id);
+                    Raise(IntelEventKind.Window, $"{c.Unit} reloading", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectPriority2, 1f, now + life * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectLifeScale, c.Position, Cell, c.Id);
             }
 
             // THREAT: a telegraphed blow over own vehicles; a stronger enemy group closing in; aircraft inbound.
@@ -643,20 +643,20 @@ namespace MachineBrigade.Sim.AI
                 if (w.Team == Team || w.Due < now) continue;
                 var (own, _) = StrengthAround(w.Centre, w.Radius);
                 if (own > 0f)
-                    Raise(IntelEventKind.Threat, w.Big ? "big attack incoming" : "strike incoming", w.Big ? 95f : 85f, 1f, w.Due, w.Centre, w.Radius, EntityId.None);
+                    Raise(IntelEventKind.Threat, w.Big ? "big attack incoming" : "strike incoming", w.Big ? global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectBigTrue : global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectBigFalse, 1f, w.Due, w.Centre, w.Radius, EntityId.None);
             }
             var overwhelm = ai.OverwhelmRatio;
             for (var i = 0; i < _groups.Count; i++)
             {
                 var g = _groups[i];
-                if (g.Velocity.LengthSquared() < 0.25f) continue;
+                if (g.Velocity.LengthSquared() < global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectLengthSquaredMax) continue;
                 var ahead = g.Centre + Vector2.Normalize(g.Velocity) * Cell * 3f;
                 var (own, _) = StrengthAround(ahead, Cell * 3f);
                 if (own <= 0f) continue;
                 if (g.Air)
-                    Raise(IntelEventKind.Threat, "enemy aircraft inbound", 70f, g.Confidence, now + life, ahead, Cell * 3f, EntityId.None, null, i);
+                    Raise(IntelEventKind.Threat, "enemy aircraft inbound", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectPriority3, g.Confidence, now + life, ahead, Cell * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectCellScale2, EntityId.None, null, i);
                 else if (g.Strength >= own * overwhelm)
-                    Raise(IntelEventKind.Threat, "overwhelming enemy force closing", 80f, g.Confidence, now + life, ahead, Cell * 3f, EntityId.None, null, i);
+                    Raise(IntelEventKind.Threat, "overwhelming enemy force closing", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectPriority4, g.Confidence, now + life, ahead, Cell * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectCellScale2, EntityId.None, null, i);
             }
 
             // MISMATCH: the army does not fit the enemy's.
@@ -664,13 +664,13 @@ namespace MachineBrigade.Sim.AI
             {
                 var air = (EnemyComposition[(int)ForceGroup.Helicopter] + EnemyComposition[(int)ForceGroup.Plane]) / EnemyTotal;
                 var aa = OwnComposition[(int)ForceGroup.AntiAir] / OwnTotal;
-                if (air >= ai.Get("world.airShare", 0.25f) && aa < ai.Get("world.aaShare", 0.1f))
-                    Raise(IntelEventKind.Mismatch, "no anti-air against many aircraft", 65f, AverageConfidence(now, decay), now + life * 2f,
+                if (air >= ai.Get("world.airShare", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectFallback2) && aa < ai.Get("world.aaShare", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectFallback3))
+                    Raise(IntelEventKind.Mismatch, "no anti-air against many aircraft", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectPriority5, AverageConfidence(now, decay), now + life * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectLifeScale2,
                         Vector2.Zero, 0f, EntityId.None, ForceGroup.AntiAir);
                 var armour = EnemyComposition[(int)ForceGroup.Armour] / EnemyTotal;
-                var at = (OwnComposition[(int)ForceGroup.AntiTank] + OwnComposition[(int)ForceGroup.Armour] * 0.5f) / OwnTotal;
-                if (armour >= ai.Get("world.armourShare", 0.4f) && at < ai.Get("world.atShare", 0.15f))
-                    Raise(IntelEventKind.Mismatch, "no anti-tank against many tanks", 60f, AverageConfidence(now, decay), now + life * 2f,
+                var at = (OwnComposition[(int)ForceGroup.AntiTank] + OwnComposition[(int)ForceGroup.Armour] * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectOwnCompositionScale) / OwnTotal;
+                if (armour >= ai.Get("world.armourShare", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectFallback4) && at < ai.Get("world.atShare", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectFallback5))
+                    Raise(IntelEventKind.Mismatch, "no anti-tank against many tanks", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectPriority, AverageConfidence(now, decay), now + life * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectLifeScale2,
                         Vector2.Zero, 0f, EntityId.None, ForceGroup.AntiTank);
             }
 
@@ -681,10 +681,10 @@ namespace MachineBrigade.Sim.AI
                 {
                     var p = mode.Points[i];
                     if (_world.PressureTier >= 1 && p.Owner != Team && !p.Locked)
-                        Raise(IntelEventKind.ObjectivePressure, $"point {p.Def.Name} worth more", 55f, 1f, now + life, p.Def.Position, p.Def.Radius,
+                        Raise(IntelEventKind.ObjectivePressure, $"point {p.Def.Name} worth more", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectPriority2, 1f, now + life, p.Def.Position, p.Def.Radius,
                             new EntityId(-(i + 1)));
                     if (p.Owner == Team && p.Contested)
-                        Raise(IntelEventKind.ObjectivePressure, $"losing point {p.Def.Name}", 75f, 1f, now + life, p.Def.Position, p.Def.Radius,
+                        Raise(IntelEventKind.ObjectivePressure, $"losing point {p.Def.Name}", global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamIntel.DetectPriority6, 1f, now + life, p.Def.Position, p.Def.Radius,
                             new EntityId(-(i + 1)));
                 }
             }

@@ -95,8 +95,8 @@ namespace MachineBrigade.Sim.Navigation
 
         private void Change(Prop prop, int delta)
         {
-            var hw = MathF.Max(0.1f, prop.Width * 0.5f - Inset);
-            var hd = MathF.Max(0.1f, prop.Depth * 0.5f - Inset);
+            var hw = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.CoverGrid.ChangeWidthFloor, prop.Width * 0.5f - Inset);
+            var hd = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.CoverGrid.ChangeDepthFloor, prop.Depth * 0.5f - Inset);
             var minX = (int)MathF.Floor((prop.Position.X - hw - _origin.X) / CellSize);
             var maxX = (int)MathF.Floor((prop.Position.X + hw - _origin.X) / CellSize);
             var minY = (int)MathF.Floor((prop.Position.Y - hd - _origin.Y) / CellSize);

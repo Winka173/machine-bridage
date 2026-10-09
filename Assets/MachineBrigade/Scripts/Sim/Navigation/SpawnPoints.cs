@@ -147,7 +147,7 @@ namespace MachineBrigade.Sim.Navigation
                 if (!EdgePoint(world, centre, dir, main, out var at)) continue;
                 var near = false;
                 foreach (var e in edges)
-                    if (Vector2.DistanceSquared(e, at) < 22f * 22f) near = true;
+                    if (Vector2.DistanceSquared(e, at) < global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.BuildScale * global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.BuildScale) near = true;
                 if (near) continue;
                 edges.Add(at);
                 if (Vector2.Distance(at, home) >= CampClearance) sp.Add(world, SpawnSide.Enemy, SpawnKind.Edge, at, at, centre, home);
@@ -198,14 +198,14 @@ namespace MachineBrigade.Sim.Navigation
             {
                 var bearing = sp.BearingOf(e, centre);
                 if (bearing == SpawnBearing.Rear || Vector2.Distance(e, home) < CampClearance) continue;
-                if (Snap(world, Vector2.Lerp(centre, e, 0.45f), main, out var drop) && Vector2.Distance(drop, home) >= CampClearance * 0.8f)
+                if (Snap(world, Vector2.Lerp(centre, e, global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.BuildCentreLerp), main, out var drop) && Vector2.Distance(drop, home) >= CampClearance * global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.BuildCampClearanceScale)
                     sp.Add(world, SpawnSide.Enemy, SpawnKind.Air, drop, e, centre, home);
             }
 
             // Behind the player's area, and the drop zone.
             var back = home - axis * 22f;
             var across = new Vector2(-axis.Y, axis.X);
-            foreach (var off in new[] { 0f, 20f, -20f })
+            foreach (var off in new[] { 0f, global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.BuildOff2, global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.BuildOff3 })
                 if (Snap(world, back + across * off, main, out var at)) sp.Add(world, SpawnSide.Ally, SpawnKind.Behind, at, at, centre, home);
             var dropZone = world.Bases.TryGetDropZone(player, out var dz) ? dz : world.TryGetRally(player, out var r) ? r : home;
             if (Snap(world, dropZone, main, out var dropAt)) sp.Add(world, SpawnSide.Ally, SpawnKind.Drop, dropAt, dropAt, centre, home);
@@ -218,7 +218,7 @@ namespace MachineBrigade.Sim.Navigation
             var gate = GateFor(world, side, kind, at, home);
             if (gate != null) at = gate.Position;
             foreach (var p in _all)
-                if (p.Side == side && p.Kind == kind && Vector2.DistanceSquared(p.Position, at) < 12f * 12f) return;
+                if (p.Side == side && p.Kind == kind && Vector2.DistanceSquared(p.Position, at) < global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.AddScale * global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.AddScale) return;
             var inward = centre - at;
             if (side == SpawnSide.Ally && kind is SpawnKind.Behind or SpawnKind.Drop) inward = Axis;
             inward = inward.LengthSquared() > 1f ? Vector2.Normalize(inward) : Axis;
@@ -233,9 +233,9 @@ namespace MachineBrigade.Sim.Navigation
             var across = new Vector2(-inward.Y, inward.X);
             var alternates = new List<Vector2>();
             var main = world.Grid.MainRegion;
-            foreach (var off in new[] { 22f, -22f, 40f, -40f })
-                if (Snap(world, at + across * off, main, out var alt) && Vector2.DistanceSquared(alt, at) > 100f &&
-                    (side == SpawnSide.Ally || Vector2.Distance(alt, home) >= CampClearance * 0.9f))
+            foreach (var off in new[] { global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.AddOff1, global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.AddOff2, global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.AddOff3, global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.AddOff4 })
+                if (Snap(world, at + across * off, main, out var alt) && Vector2.DistanceSquared(alt, at) > global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.AddDistanceSquaredMin &&
+                    (side == SpawnSide.Ally || Vector2.Distance(alt, home) >= CampClearance * global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.AddCampClearanceScale))
                     alternates.Add(alt);
             _all.Add(new SpawnPoint
             {
@@ -258,12 +258,12 @@ namespace MachineBrigade.Sim.Navigation
         {
             var map = world.Map;
             if (map.EntryGates.Count == 0) return null;
-            var edgeKind = kind is SpawnKind.Edge or SpawnKind.Rail || kind == SpawnKind.Behind && map.EdgeDistance(at) <= 14f;
+            var edgeKind = kind is SpawnKind.Edge or SpawnKind.Rail || kind == SpawnKind.Behind && map.EdgeDistance(at) <= global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.GateForEdgeDistanceMax;
             if (!edgeKind && kind != SpawnKind.Sea) return null;
             var gate = EntryGate.Nearest(map.EntryGates, at, GateReach, kind);
             // On the battlefield's ground (a road gate stands on its road, where nobody parks: it is driven through).
             if (gate == null || !world.Grid.IsWalkable(gate.Position) || world.Grid.RegionOf(gate.Position) != world.Grid.MainRegion) return null;
-            if (side == SpawnSide.Enemy && Vector2.Distance(gate.Position, home) < CampClearance * 0.9f) return null;
+            if (side == SpawnSide.Enemy && Vector2.Distance(gate.Position, home) < CampClearance * global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.GateForCampClearanceScale) return null;
             return gate;
         }
 
@@ -333,7 +333,7 @@ namespace MachineBrigade.Sim.Navigation
             for (; t > 30f; t -= 3f)
             {
                 var p = centre + dir * t;
-                if (map.Contains(p) && map.EdgeDistance(p) >= EdgeMargin - 0.5f && Open(world, p, main))
+                if (map.Contains(p) && map.EdgeDistance(p) >= EdgeMargin - global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.EdgePointEdgeMarginSub && Open(world, p, main))
                 {
                     at = p;
                     return true;
@@ -349,7 +349,7 @@ namespace MachineBrigade.Sim.Navigation
         /// <summary>The open ground of the battlefield nearest a spot (within about 16 m), or false.</summary>
         internal static bool Snap(SimWorld world, Vector2 p, int main, out Vector2 at)
         {
-            p = world.Map.Clamp(p, EdgeMargin * 0.5f);
+            p = world.Map.Clamp(p, EdgeMargin * global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.SnapEdgeMarginScale);
             if (Open(world, p, main))
             {
                 at = p;
@@ -366,12 +366,12 @@ namespace MachineBrigade.Sim.Navigation
             var clusters = new List<(Vector2 sum, int n)>();
             foreach (var prop in world.PropList)
             {
-                if (!prop.Def.Id.Contains("water") || world.Map.EdgeDistance(prop.Position) > 25f || Vector2.Distance(prop.Position, home) < CampClearance + 10f) continue;
+                if (!prop.Def.Id.Contains("water") || world.Map.EdgeDistance(prop.Position) > global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.WaterLandingsEdgeDistanceMin || Vector2.Distance(prop.Position, home) < CampClearance + global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.WaterLandingsCampClearanceAdd) continue;
                 var joined = false;
                 for (var i = 0; i < clusters.Count; i++)
                 {
                     var (sum, n) = clusters[i];
-                    if (Vector2.Distance(sum / n, prop.Position) > 40f) continue;
+                    if (Vector2.Distance(sum / n, prop.Position) > global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.WaterLandingsDistanceMin) continue;
                     clusters[i] = (sum + prop.Position, n + 1);
                     joined = true;
                     break;
@@ -379,7 +379,7 @@ namespace MachineBrigade.Sim.Navigation
                 if (!joined) clusters.Add((prop.Position, 1));
             }
             clusters.Sort((a, b) => b.n.CompareTo(a.n));
-            for (var i = 0; i < clusters.Count && i < 3; i++)
+            for (var i = 0; i < clusters.Count && i < global::MachineBrigade.Sim.Content.SimTunables.Maps.SpawnPoints.WaterLandingsIMax; i++)
             {
                 var water = clusters[i].sum / clusters[i].n;
                 var inland = centre - water;

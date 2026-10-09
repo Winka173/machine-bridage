@@ -231,7 +231,7 @@ internal static partial class Scan
                 named = true;
             }
             if (Syn.Pascal(baseName) == Syn.Pascal(owner)) baseName += "Value";
-            var tv = TypedValue.FromToken(l.Node.Token)!.Value;
+            var tv = TypedValue.FromToken(l.Node.Token, l.Negated)!.Value; // pass 2: signed (a negated literal is its own value)
             string key;
             for (var n = 1; ; n++)
             {

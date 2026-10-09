@@ -58,7 +58,7 @@ namespace MachineBrigade.Sim.AI
 
         private static float BlastOf(Vehicle v)
         {
-            var r = 8f;
+            var r = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.BlastOfR;
             foreach (var m in v.Def.Mounts)
                 if (m.Weapon.Projectile == ProjectileKind.Bomb) r = MathF.Max(r, m.Weapon.SplashRadius);
             return r;
@@ -106,8 +106,8 @@ namespace MachineBrigade.Sim.AI
             _strongestAa = null;
             foreach (var c in intel.Contacts)
             {
-                if (c.Flying && (c.InSight || c.Age(now) < 3f)) _airTargets.Add(c);
-                if ((c.AntiAir || c.Group == ForceGroup.AntiAir) && !c.Flying && c.Age(now) < 30f && !c.Displaced &&
+                if (c.Flying && (c.InSight || c.Age(now) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PrepareAirP4AgeMax)) _airTargets.Add(c);
+                if ((c.AntiAir || c.Group == ForceGroup.AntiAir) && !c.Flying && c.Age(now) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PrepareAirP4AgeMax2 && !c.Displaced &&
                     (_strongestAa == null || c.Strength > _strongestAa.Strength + 1e-4f)) _strongestAa = c;
             }
             _airTargets.Sort((a, b) =>
@@ -120,8 +120,8 @@ namespace MachineBrigade.Sim.AI
             void Zone(Vector2 p)
             {
                 foreach (var z in _capZones)
-                    if (Vector2.Distance(z, p) < 40f) return;
-                _capZones.Add(world.Map.Clamp(p, 10f));
+                    if (Vector2.Distance(z, p) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PrepareAirP4DistanceMax) return;
+                _capZones.Add(world.Map.Clamp(p, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PrepareAirP4Margin));
             }
             foreach (var v in world.VehicleList)
                 if (v.IsAlive && v.Team == Team && v.Def.Boss) Zone(v.Position);
@@ -192,11 +192,11 @@ namespace MachineBrigade.Sim.AI
                 if (v.Order.Kind == OrderKind.Attack && v.Order.Target == t.Id) return true;
                 var reach = v.Def.Weapon.Range;
                 var d = Vector2.Distance(v.Position, t.Position);
-                if (d > reach * 1.2f && t.Velocity.LengthSquared() > 1f)
+                if (d > reach * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.FighterP4ReachScale && t.Velocity.LengthSquared() > 1f)
                 {
                     // Predictive interception: where the aircraft will be, not where it is.
-                    var ip = world.Map.Clamp(PursuitDiscipline.Intercept(v.Position, MathF.Max(1f, v.Def.Speed), t.Position, t.Velocity, Tun.AirOps.InterceptHorizonS, t.Age(now), out _), 10f);
-                    if (v.Order.Kind != OrderKind.AttackMove || Vector2.Distance(v.Order.Point, ip) > 15f)
+                    var ip = world.Map.Clamp(PursuitDiscipline.Intercept(v.Position, MathF.Max(1f, v.Def.Speed), t.Position, t.Velocity, Tun.AirOps.InterceptHorizonS, t.Age(now), out _), global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.FighterP4Margin);
+                    if (v.Order.Kind != OrderKind.AttackMove || Vector2.Distance(v.Order.Point, ip) > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.FighterP4DistanceMin)
                     {
                         world.Submit(new Command(CommandType.AttackMove, Team, new[] { v.Id }, ip));
                         tp.Metrics.AirIntercepts++;
@@ -221,7 +221,7 @@ namespace MachineBrigade.Sim.AI
             if (AirRules.OutsideCap(zone, v.Position))
             {
                 var back = AirRules.PatrolPoint(zone, v.Id.Value, now);
-                if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, back) > 15f)
+                if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, back) > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.FighterP4DistanceMin)
                 {
                     world.Submit(new Command(CommandType.Move, Team, new[] { v.Id }, back));
                     tp.Metrics.CapReturns++;
@@ -261,7 +261,7 @@ namespace MachineBrigade.Sim.AI
             if (!DifficultyGate.Sead(Level) || !AirRules.SeadNeeded(intel.ThreatAt(ThreatKind.AntiAir, goal), strength)) return true;
             var tp = _p4!;
             if (tp.WindowNear(goal, OpportunityRoles.Air, 10f) is { Kind: OpportunityKind.AntiAirDown }) return true;
-            return tp.SeadUsed is { } su && now - su.time <= 15.0 && Vector2.Distance(su.at, goal) <= 80f;
+            return tp.SeadUsed is { } su && now - su.time <= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SeadReadyP4NowMax && Vector2.Distance(su.at, goal) <= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SeadReadyP4DistanceMax;
         }
 
         private bool BomberP4(SimWorld world, TeamIntel intel, Vehicle v)
@@ -277,8 +277,8 @@ namespace MachineBrigade.Sim.AI
             var blast = BlastOf(v);
             var strength = MathF.Max(1f, TeamIntel.StrengthOf(v));
             float Risk(Vector2 a, Vector2 b) => AirRules.LegRisk(p => intel.ThreatAt(ThreatKind.AntiAir, p), a, b, Tun.AirOps.RiskSamples) / strength;
-            var value = SeenGroundStrength(intel, goal, blast + 4f);
-            var urgent = _urgency >= Tun.Pursuit.UrgencyDrop && Intent.PrimaryObjective is { } po && Vector2.Distance(po, goal) < 40f;
+            var value = SeenGroundStrength(intel, goal, blast + global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.BomberP4BlastAdd);
+            var urgent = _urgency >= Tun.Pursuit.UrgencyDrop && Intent.PrimaryObjective is { } po && Vector2.Distance(po, goal) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.BomberP4DistanceMax;
             var waited = held && now - h.since >= Tun.AirOps.BomberWaitMaxS;
             var risk = Risk(v.Position, goal);
             var clear = !FriendsNear(world, goal, blast + Tun.AirOps.BomberBlastGap) && tp.DropClear(goal, blast, now);
@@ -292,7 +292,7 @@ namespace MachineBrigade.Sim.AI
                     P4Reasons.Unit(world, v, DecisionKind.Action, P4Reasons.BomberGo, waited ? "waited out: goes as before" : $"value {value:0.0}");
                     if (waited) _airFreeUntil[v.Id] = now + Tun.AirOps.BomberWaitMaxS;
                 }
-                tp.ReserveDrop(goal, blast, now + 6.0);
+                tp.ReserveDrop(goal, blast, now + global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.BomberP4NowAdd);
                 return false;
             }
             // A better target in reach: the most valuable seen cluster on an acceptable route with the blast clear.
@@ -301,7 +301,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var c in intel.Contacts)
             {
                 if (!c.InSight || c.Flying) continue;
-                var val = SeenGroundStrength(intel, c.Position, blast + 4f);
+                var val = SeenGroundStrength(intel, c.Position, blast + global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.BomberP4BlastAdd);
                 if (val < bestValue - 1e-4f || Risk(v.Position, c.Position) > Tun.AirOps.BomberRiskMax) continue;
                 if (FriendsNear(world, c.Position, blast + Tun.AirOps.BomberBlastGap) || !tp.DropClear(c.Position, blast, now)) continue;
                 if (!SeadReadyP4(intel, c.Position, strength, now)) continue;
@@ -315,7 +315,7 @@ namespace MachineBrigade.Sim.AI
             {
                 _bomberHold.Remove(v.Id);
                 world.Submit(new Command(CommandType.AttackMove, Team, new[] { v.Id }, b));
-                tp.ReserveDrop(b, blast, now + 6.0);
+                tp.ReserveDrop(b, blast, now + global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.BomberP4NowAdd);
                 tp.Metrics.BomberRetargets++;
                 P4Reasons.Unit(world, v, DecisionKind.Target, P4Reasons.BomberRetarget, $"value {bestValue:0.0} at ({b.X:0},{b.Y:0})");
                 return true;
@@ -328,8 +328,8 @@ namespace MachineBrigade.Sim.AI
                 P4Reasons.Unit(world, v, DecisionKind.Action, P4Reasons.BomberWait, $"{why} ({value:0.0} at ({goal.X:0},{goal.Y:0}))");
             }
             var loiter = OwnCentre(world, out _);
-            if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, loiter) > 15f)
-                world.Submit(new Command(CommandType.Move, Team, new[] { v.Id }, world.Map.Clamp(loiter, 10f)));
+            if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, loiter) > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.BomberP4DistanceMin)
+                world.Submit(new Command(CommandType.Move, Team, new[] { v.Id }, world.Map.Clamp(loiter, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.BomberP4Margin)));
             return true;
         }
 
@@ -350,11 +350,11 @@ namespace MachineBrigade.Sim.AI
             inbound = inbound.LengthSquared() > 0.01f ? Vector2.Normalize(inbound) : Vector2.UnitX;
             Vector2? pick = null;
             cost = float.MaxValue;
-            foreach (var angle in new[] { 0f, -1.05f, 1.05f, -1.75f, 1.75f })
+            foreach (var angle in new[] { 0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ApproachAngle2, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ApproachAngle3, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ApproachAngle4, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ApproachAngle5 })
             {
                 float c = MathF.Cos(angle), s = MathF.Sin(angle);
                 var dir = new Vector2(inbound.X * c - inbound.Y * s, inbound.X * s + inbound.Y * c);
-                var wp = world.Map.Clamp(goal - dir * 50f, 10f);
+                var wp = world.Map.Clamp(goal - dir * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ApproachDirScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ApproachMargin);
                 var k = Leg(v.Position, wp) + Leg(wp, goal);
                 if (k < cost - 1e-4f)
                 {
@@ -385,15 +385,15 @@ namespace MachineBrigade.Sim.AI
                 return false;
             }
             var key = (long)MathF.Floor(goal.X / 30f) * 100003L + (long)MathF.Floor(goal.Y / 30f);
-            if (!_sead.TryGetValue(key, out var st) || now - st.Made > 90.0)
+            if (!_sead.TryGetValue(key, out var st) || now - st.Made > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SeadP4NowMin)
             {
                 _sead[key] = st = new SeadState { Start = now, Made = now };
                 tp.Metrics.SeadPackages++;
-                if (_sead.Count > 32)
+                if (_sead.Count > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SeadP4CountMin)
                 {
                     var old = new List<long>();
                     foreach (var kv in _sead)
-                        if (now - kv.Value.Made > 90.0) old.Add(kv.Key);
+                        if (now - kv.Value.Made > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SeadP4NowMin) old.Add(kv.Key);
                     foreach (var k in old) _sead.Remove(k);
                 }
             }
@@ -417,16 +417,16 @@ namespace MachineBrigade.Sim.AI
             }
             Contact? aa = null;
             foreach (var c in intel.Contacts)
-                if ((c.AntiAir || c.Group == ForceGroup.AntiAir) && !c.Flying && c.Age(now) < 30f && Vector2.Distance(c.Position, goal) <= 80f &&
+                if ((c.AntiAir || c.Group == ForceGroup.AntiAir) && !c.Flying && c.Age(now) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SeadP4AgeMax && Vector2.Distance(c.Position, goal) <= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SeadP4DistanceMax &&
                     (aa == null || c.Strength > aa.Strength + 1e-4f)) aa = c;
             if (now - st.Start < Tun.AirOps.SeadHoldS)
             {
                 var inbound = goal - v.Position;
                 inbound = inbound.LengthSquared() > 0.01f ? Vector2.Normalize(inbound) : Vector2.UnitX;
                 var centre = aa?.Position ?? goal;
-                var ingress = world.Map.Clamp(centre - inbound * ((aa?.Reach ?? 40f) + Tun.AirOps.SeadStandoff), 10f);
+                var ingress = world.Map.Clamp(centre - inbound * ((aa?.Reach ?? global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SeadP4ReachDefault) + Tun.AirOps.SeadStandoff), global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SeadP4Margin);
                 if (!held) _strikeHold[v.Id] = (goal, now);
-                if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, ingress) > 15f)
+                if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, ingress) > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SeadP4DistanceMin)
                 {
                     world.Submit(new Command(CommandType.Move, Team, new[] { v.Id }, ingress));
                     P4Reasons.Unit(world, v, DecisionKind.Action, P4Reasons.SeadHold, $"SAM ({centre.X:0},{centre.Y:0}): wait for suppression");
@@ -441,7 +441,7 @@ namespace MachineBrigade.Sim.AI
                 st.Rerouted = true;
                 if (Approach(world, intel, v, goal, out var cost) is { } wp && cost / strength <= Tun.AirOps.BomberRiskMax)
                 {
-                    _approach[v.Id] = (goal, now + 25.0);
+                    _approach[v.Id] = (goal, now + global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SeadP4NowAdd);
                     world.Submit(new Command(CommandType.Move, Team, new[] { v.Id }, wp));
                     tp.Metrics.SeadReroutes++;
                     P4Reasons.Commander(world, Team, DecisionKind.Plan, P4Reasons.SeadReroute, $"via ({wp.X:0},{wp.Y:0}) risk {cost / strength:0.00}");
@@ -465,7 +465,7 @@ namespace MachineBrigade.Sim.AI
         private bool EgressP4(SimWorld world, TeamIntel intel, Vehicle v)
         {
             var now = world.Time;
-            if (now - v.LastFiredAt > 2.0 || (_egressAt.TryGetValue(v.Id, out var at) && now < at)) return false;
+            if (now - v.LastFiredAt > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EgressP4NowMin || (_egressAt.TryGetValue(v.Id, out var at) && now < at)) return false;
             var strength = MathF.Max(1f, TeamIntel.StrengthOf(v));
             if (intel.ThreatAt(ThreatKind.AntiAir, v.Position) < strength * 0.5f) return false;
             var from = _strongestAa?.Position ?? (v.Order.Kind == OrderKind.AttackMove ? v.Order.Point : v.Position + SimMath.Forward(v.Heading) * 10f);
@@ -473,11 +473,11 @@ namespace MachineBrigade.Sim.AI
             away = away.LengthSquared() > 0.01f ? Vector2.Normalize(away) : -SimMath.Forward(v.Heading);
             Vector2? pick = null;
             var best = float.MaxValue;
-            foreach (var angle in new[] { 0f, -0.87f, 0.87f, -1.75f, 1.75f })
+            foreach (var angle in new[] { 0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EgressP4Angle2, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EgressP4Angle3, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EgressP4Angle4, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EgressP4Angle5 })
             {
                 float c = MathF.Cos(angle), s = MathF.Sin(angle);
                 var dir = new Vector2(away.X * c - away.Y * s, away.X * s + away.Y * c);
-                var p = world.Map.Clamp(v.Position + dir * 70f, 10f);
+                var p = world.Map.Clamp(v.Position + dir * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EgressP4DirScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EgressP4Margin);
                 var risk = AirRules.LegRisk(q => intel.ThreatAt(ThreatKind.AntiAir, q), v.Position, p, Tun.AirOps.RiskSamples);
                 if (risk < best - 1e-4f)
                 {
@@ -486,7 +486,7 @@ namespace MachineBrigade.Sim.AI
                 }
             }
             if (pick is not { } egress) return false;
-            _egressAt[v.Id] = now + 6.0;
+            _egressAt[v.Id] = now + global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EgressP4NowAdd;
             world.Submit(new Command(CommandType.Move, Team, new[] { v.Id }, egress));
             _p4!.Metrics.Egresses++;
             if (LogDue(0x5200 + (v.Id.Value & 0xfff), 5.0)) P4Reasons.Unit(world, v, DecisionKind.Action, P4Reasons.Egress, $"risk {best:0.0}");
@@ -509,11 +509,11 @@ namespace MachineBrigade.Sim.AI
             }
             if (_approach.ContainsKey(v.Id) || v.Order.Kind != OrderKind.AttackMove) return false;
             var goal = v.Order.Point;
-            if (Vector2.Distance(v.Position, goal) < 60f || (!crosses && Level < 2)) return false;
+            if (Vector2.Distance(v.Position, goal) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.RiskRouteP4DistanceMax || (!crosses && Level < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.RiskRouteP4LevelMax)) return false;
             var direct = AirRules.LegRisk(p => intel.ThreatAt(ThreatKind.AntiAir, p), v.Position, goal, Tun.AirOps.RiskSamples);
             if (direct <= 0f) return false;
             if (Approach(world, intel, v, goal, out var cost) is not { } wp || cost >= direct * (crosses ? 1f : 0.7f)) return false;
-            _approach[v.Id] = (goal, now + 25.0);
+            _approach[v.Id] = (goal, now + global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.RiskRouteP4NowAdd);
             world.Submit(new Command(CommandType.Move, Team, new[] { v.Id }, wp));
             _p4!.Metrics.RiskReroutes++;
             P4Reasons.Unit(world, v, DecisionKind.Action, P4Reasons.RiskRoute, $"{(crosses ? "no second pass through the SAM; " : "")}risk {direct:0.0} -> {cost:0.0}");

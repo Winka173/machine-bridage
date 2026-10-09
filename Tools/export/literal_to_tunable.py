@@ -174,7 +174,7 @@ MANUAL_EXCLUDE = {
 
 
 # literals the Roslyn scan calls gameplay that are math, geometry, structure or infrastructure (each rule a reason)
-GEOMETRY_OPERAND = re.compile(r"(?i)(length|width|depth|breadth|extent|stick)(scale)?$")
+GEOMETRY_OPERAND = re.compile(r"(?i)(length|width|depth|breadth|extent|stick|size)(scale)?$")
 STRUCTURE_LINES = {
     # (file, line): reason; the table's shape, not its values
     ("Sim/Content/DamageTable.cs", 53): "structure: the splash row's step count (the row's length; changing it breaks every table)",
@@ -188,6 +188,10 @@ STRUCTURE_LINES = {
 STRUCTURE_LINES.update({
     ("Sim/Modes/MissionEvents.Kinds.cs", 488): "index: the act number of a campaign chapter",
     ("Sim/Modes/SiegeModes.cs", 539): "index: a siege has stages 1-3 (the start stage is capped to the last one)",
+})
+STRUCTURE_LINES.update({
+    ("Sim/Navigation/MapTopology.cs", 376): "geometry: n cells either side of a centre cell span 2n - 1 cells",
+    ("Sim/Navigation/PathFinder.cs", 291): "math: the octile distance dx + dy + (diagonal - 2) min(dx, dy)",
 })
 STRUCTURE_RESULTS = {
     # (file, line): the integer results of these lines are step indexes (the thresholds on them stay data)
@@ -238,6 +242,20 @@ def _math_rule(c, src_line: str):
         return "math: a polygon needs three points"
     if v == 2 and ctx == "compound_assign" and re.search(r"\+=\s*2\)", src_line) and "flat" in src_line:
         return "data format: x, z pairs"
+    if ctx.startswith("ctor_arg") and c["name_hint"].lower() in ("capacity", "initialcapacity"):
+        return "infrastructure: a collection's initial capacity (memory)"
+    if ctx == "const_field" and c["name_hint"] == "Capacity":
+        return "infrastructure: a cache's capacity (memory)"
+    if "Array.Resize" in src_line:
+        return "infrastructure: array growth factor"
+    if re.search(r"\b(long|int|float|double)\.(MinValue|MaxValue)\s*[/*]\s*" + re.escape(lit), src_line):
+        return "sentinel arithmetic (a 'never' time)"
+    if v is not None and v >= 256 and ctx == "compare" and re.search(r"\.Count\s*>\s*" + re.escape(lit), src_line):
+        return "infrastructure: a bookkeeping collection's size cap (memory)"
+    if v is not None and abs(v - 1.41421356) < 0.01:
+        return "math: the square root of 2 (a grid diagonal)"
+    if v == 2 and ctx.startswith("arg:Random.Next"):
+        return "math: a coin flip (Next(2))"
     if ctx.startswith("arg:SiegeMode.Advance"):
         return "index: a siege stage number"
     if v == 2 and ctx == "multiply" and re.search(r"NextDouble\(\)\)?\s*\*\s*2\s*-\s*1", src_line):

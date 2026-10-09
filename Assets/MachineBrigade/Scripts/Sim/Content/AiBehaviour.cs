@@ -182,7 +182,7 @@ namespace MachineBrigade.Sim.Content
         {
             var list = new List<TacticDef>();
             foreach (var t in Tactics)
-                if (t.MergedInto == null && list.Count < 2)
+                if (t.MergedInto == null && list.Count < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiBehaviour.SuitedToCountMax)
                     foreach (var c in t.Commanders)
                         if (c == commanderId)
                         {
@@ -199,7 +199,7 @@ namespace MachineBrigade.Sim.Content
         internal static AiBehaviour Parse(JsonObject o)
         {
             var b = new AiBehaviour();
-            for (var i = 0; i < b.States.Length; i++) b.States[i] = new SquadStateDef(2, 4f);
+            for (var i = 0; i < b.States.Length; i++) b.States[i] = new SquadStateDef(global::MachineBrigade.Sim.Content.SimTunables.Ai.AiBehaviour.ParsePriority, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiBehaviour.ParseCommit);
             if (o.Has("states"))
                 foreach (var kv in o.Object("states").Raw)
                     if (Enum.TryParse<SquadState>(kv.Key, true, out var s))

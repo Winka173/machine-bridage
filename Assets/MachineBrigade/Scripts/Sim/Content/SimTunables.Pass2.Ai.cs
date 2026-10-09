@@ -9,10 +9,3407 @@ namespace MachineBrigade.Sim.Content
     {
         public static partial class Ai
         {
+            public static partial class AiBehaviour
+            {
+                /// <summary>ai.aiBehaviour.suitedToCountMax (count; gioi_han_thuc_the, was Sim/Content/AiBehaviour.cs:185).</summary>
+                public static int SuitedToCountMax = 2;
+                /// <summary>ai.aiBehaviour.parsePriority (m; ban_kinh, was Sim/Content/AiBehaviour.cs:202).</summary>
+                public static int ParsePriority = 2;
+                /// <summary>ai.aiBehaviour.parseCommit (m; ban_kinh, was Sim/Content/AiBehaviour.cs:202).</summary>
+                public static float ParseCommit = 4f;
+            }
+
+            public static partial class AiCommander
+            {
+                /// <summary>ai.aiCommander.scootTimeDivisor (x; thoi_gian, was Sim/AI/Commander.Units.cs:74).</summary>
+                public static int ScootTimeDivisor = 10;
+                /// <summary>ai.aiCommander.scootDirScale (x; khac, was Sim/AI/Commander.Units.cs:78).</summary>
+                public static float ScootDirScale = 18f;
+                /// <summary>ai.aiCommander.scootMargin (x; khac, was Sim/AI/Commander.Units.cs:78).</summary>
+                public static float ScootMargin = 6f;
+                /// <summary>ai.aiCommander.scootRangeSub (m; ban_kinh, was Sim/AI/Commander.Units.cs:81).</summary>
+                public static float ScootRangeSub = 2f;
+                /// <summary>ai.aiCommander.scootMinRangeAdd (m; ban_kinh, was Sim/AI/Commander.Units.cs:81).</summary>
+                public static float ScootMinRangeAdd = 3f;
+                /// <summary>ai.aiCommander.aircraftStrengthOfScale (x; thoi_gian, was Sim/AI/Commander.Units.cs:101).</summary>
+                public static float AircraftStrengthOfScale = 2f;
+                /// <summary>ai.aiCommander.aircraftNowMin (s; thoi_gian, was Sim/AI/Commander.Units.cs:101).</summary>
+                public static double AircraftNowMin = 5.0;
+                /// <summary>ai.aiCommander.aircraftNowMin2 (s; thoi_gian, was Sim/AI/Commander.Units.cs:104).</summary>
+                public static double AircraftNowMin2 = 10.0;
+                /// <summary>ai.aiCommander.aircraftDistanceMax (m; thoi_gian, was Sim/AI/Commander.Units.cs:132).</summary>
+                public static float AircraftDistanceMax = 15f;
+                /// <summary>ai.aiCommander.aircraftDistanceMax2 (m; ban_kinh, was Sim/AI/Commander.Units.cs:141).</summary>
+                public static float AircraftDistanceMax2 = 60f;
+                /// <summary>ai.aiCommander.aircraftAngle1 (m; ban_kinh, was Sim/AI/Commander.Units.cs:148).</summary>
+                public static float AircraftAngle1 = -1.05f;
+                /// <summary>ai.aiCommander.aircraftAngle2 (m; ban_kinh, was Sim/AI/Commander.Units.cs:148).</summary>
+                public static float AircraftAngle2 = 1.05f;
+                /// <summary>ai.aiCommander.aircraftRotatedScale (x; khac, was Sim/AI/Commander.Units.cs:153).</summary>
+                public static float AircraftRotatedScale = 50f;
+                /// <summary>ai.aiCommander.aircraftMargin (x; khac, was Sim/AI/Commander.Units.cs:153).</summary>
+                public static float AircraftMargin = 10f;
+                /// <summary>ai.aiCommander.aircraftNowAdd (s; thoi_gian, was Sim/AI/Commander.Units.cs:162).</summary>
+                public static double AircraftNowAdd = 25.0;
+                /// <summary>ai.aiCommander.ctorTeamTrue (s; thoi_gian, was Sim/AI/Commander.cs:114).</summary>
+                public static float CtorTeamTrue = 0.5f;
+                /// <summary>ai.aiCommander.attackThresholdBaseAttackThresholdBase (x; khac, was Sim/AI/Commander.cs:164).</summary>
+                public static float AttackThresholdBaseAttackThresholdBase = 1.2f;
+                /// <summary>ai.aiCommander.attackThresholdBaseFallback (x; khac, was Sim/AI/Commander.cs:167).</summary>
+                public static float AttackThresholdBaseFallback = 0.9f;
+                /// <summary>ai.aiCommander.attackThresholdBaseFallback2 (x; nguong, was Sim/AI/Commander.cs:168).</summary>
+                public static float AttackThresholdBaseFallback2 = 30f;
+                /// <summary>ai.aiCommander.passFallback (s; thoi_gian, was Sim/AI/Commander.cs:271).</summary>
+                public static float PassFallback = 6f;
+                /// <summary>ai.aiCommander.planDistanceMax (m; ban_kinh, was Sim/AI/Commander.cs:297).</summary>
+                public static float PlanDistanceMax = 5f;
+                /// <summary>ai.aiCommander.planDistanceMin (m; ban_kinh, was Sim/AI/Commander.cs:300).</summary>
+                public static float PlanDistanceMin = 5f;
+                /// <summary>ai.aiCommander.planMaxScale (x; nguong, was Sim/AI/Commander.cs:315).</summary>
+                public static float PlanMaxScale = 0.05f;
+                /// <summary>ai.aiCommander.planPrepScale (x; thoi_gian, was Sim/AI/Commander.cs:320).</summary>
+                public static double PlanPrepScale = 8.0;
+                /// <summary>ai.aiCommander.planConfidenceMin (m; ban_kinh, was Sim/AI/Commander.cs:342).</summary>
+                public static float PlanConfidenceMin = 0.5f;
+                /// <summary>ai.aiCommander.planDistanceMax2 (m; ban_kinh, was Sim/AI/Commander.cs:342).</summary>
+                public static float PlanDistanceMax2 = 80f;
+                /// <summary>ai.aiCommander.planEnemyThereFloor (x; sat_thuong, was Sim/AI/Commander.cs:366).</summary>
+                public static float PlanEnemyThereFloor = 0.01f;
+                /// <summary>ai.aiCommander.switchTacticTimeMin (s; thoi_gian, was Sim/AI/Commander.cs:404).</summary>
+                public static double SwitchTacticTimeMin = 20.0;
+                /// <summary>ai.aiCommander.savingUpVehicleCountMin (count; gioi_han_thuc_the, was Sim/AI/Commander.cs:491).</summary>
+                public static int SavingUpVehicleCountMin = 4;
+                /// <summary>ai.aiCommander.updateUrgencyPriorityMin (m; ban_kinh, was Sim/AI/P2/Commander.P2.cs:50).</summary>
+                public static float UpdateUrgencyPriorityMin = 60f;
+                /// <summary>ai.aiCommander.updateUrgencyDistanceMax (m; ban_kinh, was Sim/AI/P2/Commander.P2.cs:50).</summary>
+                public static float UpdateUrgencyDistanceMax = 50f;
+                /// <summary>ai.aiCommander.updateUrgencyLostScale (x; gioi_han_thuc_the, was Sim/AI/P2/Commander.P2.cs:56).</summary>
+                public static float UpdateUrgencyLostScale = 0.5f;
+                /// <summary>ai.aiCommander.updateUrgencyPhaseMin (x; nguong, was Sim/AI/P2/Commander.P2.cs:64).</summary>
+                public static int UpdateUrgencyPhaseMin = 2;
+                /// <summary>ai.aiCommander.updateUrgencyUFloor (x; nguong, was Sim/AI/P2/Commander.P2.cs:64).</summary>
+                public static float UpdateUrgencyUFloor = 0.5f;
+                /// <summary>ai.aiCommander.pickReserveCountMax (count; gioi_han_thuc_the, was Sim/AI/P2/Commander.P2.cs:160).</summary>
+                public static int PickReserveCountMax = 2;
+                /// <summary>ai.aiCommander.reserveSpotHomeLerp (x; khac, was Sim/AI/P2/Commander.P2.cs:190).</summary>
+                public static float ReserveSpotHomeLerp = 0.35f;
+                /// <summary>ai.aiCommander.reserveSpotMargin (x; khac, was Sim/AI/P2/Commander.P2.cs:190).</summary>
+                public static float ReserveSpotMargin = 8f;
+                /// <summary>ai.aiCommander.reserveTriggerDistanceMax (m; ban_kinh, was Sim/AI/P2/Commander.P2.cs:206).</summary>
+                public static float ReserveTriggerDistanceMax = 60f;
+                /// <summary>ai.aiCommander.reserveTriggerDistanceMax2 (m; ban_kinh, was Sim/AI/P2/Commander.P2.cs:209).</summary>
+                public static float ReserveTriggerDistanceMax2 = 50f;
+                /// <summary>ai.aiCommander.reserveTriggerReachFloor (m; ban_kinh, was Sim/AI/P2/Commander.P2.cs:215).</summary>
+                public static float ReserveTriggerReachFloor = 40f;
+                /// <summary>ai.aiCommander.demandDistanceMin (m; ban_kinh, was Sim/AI/P2/Commander.P2.cs:227).</summary>
+                public static float DemandDistanceMin = 80f;
+                /// <summary>ai.aiCommander.assignmentScoreClampScale (x; ban_kinh, was Sim/AI/P2/Commander.P2.cs:252).</summary>
+                public static float AssignmentScoreClampScale = 10f;
+                /// <summary>ai.aiCommander.assignmentScoreDistanceDivisor (x; ban_kinh, was Sim/AI/P2/Commander.P2.cs:252).</summary>
+                public static float AssignmentScoreDistanceDivisor = 300f;
+                /// <summary>ai.aiCommander.counterattackP3LostFloor (count; gioi_han_thuc_the, was Sim/AI/P3/Commander.P3.cs:100).</summary>
+                public static float CounterattackP3LostFloor = 0.01f;
+                /// <summary>ai.aiCommander.defenseInDepthP3DistanceMin (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:118).</summary>
+                public static float DefenseInDepthP3DistanceMin = 10f;
+                /// <summary>ai.aiCommander.defenseInDepthP3Margin (x; khac, was Sim/AI/P3/Commander.P3.cs:124).</summary>
+                public static float DefenseInDepthP3Margin = 8f;
+                /// <summary>ai.aiCommander.defenseInDepthP3Reach (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:124).</summary>
+                public static float DefenseInDepthP3Reach = 8f;
+                /// <summary>ai.aiCommander.defenseInDepthP3OwnFloor (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:134).</summary>
+                public static float DefenseInDepthP3OwnFloor = 0.1f;
+                /// <summary>ai.aiCommander.pointOwnerRadiusAdd (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:172).</summary>
+                public static float PointOwnerRadiusAdd = 5f;
+                /// <summary>ai.aiCommander.sunkCostP3DistanceMax (m; thoi_gian, was Sim/AI/P3/Commander.P3.cs:183).</summary>
+                public static float SunkCostP3DistanceMax = 15f;
+                /// <summary>ai.aiCommander.sunkCostP3Radius (CP; thoi_gian, was Sim/AI/P3/Commander.P3.cs:186).</summary>
+                public static float SunkCostP3Radius = 40f;
+                /// <summary>ai.aiCommander.sunkCostP3DistanceMin (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:201).</summary>
+                public static float SunkCostP3DistanceMin = 15f;
+                /// <summary>ai.aiCommander.sunkCostP3DirectionScale (x; khac, was Sim/AI/P3/Commander.P3.cs:205).</summary>
+                public static float SunkCostP3DirectionScale = 20f;
+                /// <summary>ai.aiCommander.sunkCostP3Margin (CP; khac, was Sim/AI/P3/Commander.P3.cs:205).</summary>
+                public static float SunkCostP3Margin = 8f;
+                /// <summary>ai.aiCommander.economyOfForceP3DistanceMax (m; thoi_gian, was Sim/AI/P3/Commander.P3.cs:224).</summary>
+                public static float EconomyOfForceP3DistanceMax = 5f;
+                /// <summary>ai.aiCommander.economyOfForceP3NowAdd (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:257).</summary>
+                public static double EconomyOfForceP3NowAdd = 30.0;
+                /// <summary>ai.aiCommander.pressuredRadiusAdd (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:267).</summary>
+                public static float PressuredRadiusAdd = 20f;
+                /// <summary>ai.aiCommander.deadlinesP3ReachScale (x; ban_kinh, was Sim/AI/P3/Commander.P3.cs:288, Sim/AI/P3/Commander.P3.cs:302).</summary>
+                public static float DeadlinesP3ReachScale = 0.5f;
+                /// <summary>ai.aiCommander.deadlinesP3DistanceMin (m; thoi_gian, was Sim/AI/P3/Commander.P3.cs:291).</summary>
+                public static float DeadlinesP3DistanceMin = 15f;
+                /// <summary>ai.aiCommander.deadlinesP3NowMin (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:294).</summary>
+                public static double DeadlinesP3NowMin = 10.0;
+                /// <summary>ai.aiCommander.deadlinesP3DistanceMax (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:301).</summary>
+                public static float DeadlinesP3DistanceMax = 5f;
+                /// <summary>ai.aiCommander.deadlinesP3NowMin2 (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:312).</summary>
+                public static double DeadlinesP3NowMin2 = 0.99;
+                /// <summary>ai.aiCommander.deadlineOfRadiusAdd (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:333).</summary>
+                public static float DeadlineOfRadiusAdd = 5f;
+                /// <summary>ai.aiCommander.deadlineOfConfidenceMax (x; tan_suat, was Sim/AI/P3/Commander.P3.cs:346).</summary>
+                public static float DeadlineOfConfidenceMax = 0.5f;
+                /// <summary>ai.aiCommander.frontageP3CountMax (count; gioi_han_thuc_the, was Sim/AI/P3/Commander.P3.cs:362).</summary>
+                public static int FrontageP3CountMax = 2;
+                /// <summary>ai.aiCommander.frontageP3DistanceMax (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:370).</summary>
+                public static float FrontageP3DistanceMax = 80f;
+                /// <summary>ai.aiCommander.frontageP3NarrowestFloor (x; nguong, was Sim/AI/P3/Commander.P3.cs:379).</summary>
+                public static float FrontageP3NarrowestFloor = 4f;
+                /// <summary>ai.aiCommander.frontageP3NowMin (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:403).</summary>
+                public static double FrontageP3NowMin = 60.0;
+                /// <summary>ai.aiCommander.packageP3DistanceMin (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:451).</summary>
+                public static float PackageP3DistanceMin = 15f;
+                /// <summary>ai.aiCommander.packageP3DistanceMax (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:462).</summary>
+                public static float PackageP3DistanceMax = 15f;
+                /// <summary>ai.aiCommander.buildPackageDistanceMax (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:492).</summary>
+                public static float BuildPackageDistanceMax = 40f;
+                /// <summary>ai.aiCommander.buildPackageLengthMax (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:492).</summary>
+                public static float BuildPackageLengthMax = 2f;
+                /// <summary>ai.aiCommander.buildPackageCountMin (count; gioi_han_thuc_the, was Sim/AI/P3/Commander.P3.cs:500).</summary>
+                public static int BuildPackageCountMin = 2;
+                /// <summary>ai.aiCommander.buildPackageFastTrue (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:512).</summary>
+                public static float BuildPackageFastTrue = 0.5f;
+                /// <summary>ai.aiCommander.buildPackageReachScale (x; ban_kinh, was Sim/AI/P3/Commander.P3.cs:538, Sim/AI/P3/Commander.P3.cs:539).</summary>
+                public static float BuildPackageReachScale = 0.8f;
+                /// <summary>ai.aiCommander.buildPackagePrep (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:547).</summary>
+                public static float BuildPackagePrep = 0.01f;
+                /// <summary>ai.aiCommander.buildPackageRadius2 (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:554).</summary>
+                public static float BuildPackageRadius2 = 40f;
+                /// <summary>ai.aiCommander.buildPackageLeftMax (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:556).</summary>
+                public static float BuildPackageLeftMax = 60f;
+                /// <summary>ai.aiCommander.applyPackageScoutUntilAdd (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:588).</summary>
+                public static double ApplyPackageScoutUntilAdd = 1.5;
+                /// <summary>ai.aiCommander.applyPackageRadius (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:589).</summary>
+                public static float ApplyPackageRadius = 40f;
+                /// <summary>ai.aiCommander.applyPackageStandoff (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:609).</summary>
+                public static float ApplyPackageStandoff = 25f;
+                /// <summary>ai.aiCommander.sendScoutVisionRangeScale (x; ban_kinh, was Sim/AI/P3/Commander.P3.cs:660).</summary>
+                public static float SendScoutVisionRangeScale = 0.7f;
+                /// <summary>ai.aiCommander.scoutPointStandoffFloor (x; nguong, was Sim/AI/P3/Commander.P3.cs:667).</summary>
+                public static float ScoutPointStandoffFloor = 10f;
+                /// <summary>ai.aiCommander.scoutPointMargin (x; nguong, was Sim/AI/P3/Commander.P3.cs:667, Sim/AI/P3/Commander.P3.cs:668).</summary>
+                public static float ScoutPointMargin = 6f;
+                /// <summary>ai.aiCommander.scoutPointFromLerp (x; khac, was Sim/AI/P3/Commander.P3.cs:668).</summary>
+                public static float ScoutPointFromLerp = 0.6f;
+                /// <summary>ai.aiCommander.stagingP3DistanceMax (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:679).</summary>
+                public static float StagingP3DistanceMax = 80f;
+                /// <summary>ai.aiCommander.stagingP3ReachFloor (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:680).</summary>
+                public static float StagingP3ReachFloor = 40f;
+                /// <summary>ai.aiCommander.stagingP3K4 (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:685).</summary>
+                public static int StagingP3K4 = 2;
+                /// <summary>ai.aiCommander.stagingP3K5 (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:685).</summary>
+                public static int StagingP3K5 = -2;
+                /// <summary>ai.aiCommander.stagingP3Margin (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:689, Sim/AI/P3/Commander.P3.cs:707, Sim/AI/P3/Commander.P3.cs:718).</summary>
+                public static float StagingP3Margin = 8f;
+                /// <summary>ai.aiCommander.stagingP3Reach (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:689, Sim/AI/P3/Commander.P3.cs:707).</summary>
+                public static float StagingP3Reach = 10f;
+                /// <summary>ai.aiCommander.stagingP3DistanceScale (x; ban_kinh, was Sim/AI/P3/Commander.P3.cs:711).</summary>
+                public static float StagingP3DistanceScale = 0.9f;
+                /// <summary>ai.aiCommander.stagingP3FromLerp (x; khac, was Sim/AI/P3/Commander.P3.cs:718).</summary>
+                public static float StagingP3FromLerp = 0.5f;
+                /// <summary>ai.aiCommander.inChokeWidthAdd (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:724).</summary>
+                public static float InChokeWidthAdd = 4f;
+                /// <summary>ai.aiCommander.reserveReleaseP3PriorityMin (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:762).</summary>
+                public static float ReserveReleaseP3PriorityMin = 70f;
+                /// <summary>ai.aiCommander.reserveReleaseP3ConfidenceMin (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:762).</summary>
+                public static float ReserveReleaseP3ConfidenceMin = 0.5f;
+                /// <summary>ai.aiCommander.reserveReleaseP3DistanceMax (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:762).</summary>
+                public static float ReserveReleaseP3DistanceMax = 60f;
+                /// <summary>ai.aiCommander.reserveReleaseP3DistanceMax2 (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:776).</summary>
+                public static float ReserveReleaseP3DistanceMax2 = 40f;
+                /// <summary>ai.aiCommander.reserveReleaseP3DistanceMax3 (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:785).</summary>
+                public static float ReserveReleaseP3DistanceMax3 = 50f;
+                /// <summary>ai.aiCommander.reserveReleaseP3Rank (count; gioi_han_thuc_the, was Sim/AI/P3/Commander.P3.cs:787).</summary>
+                public static int ReserveReleaseP3Rank = 2;
+                /// <summary>ai.aiCommander.reserveReleaseP3Rank2 (x; khac, was Sim/AI/P3/Commander.P3.cs:793).</summary>
+                public static int ReserveReleaseP3Rank2 = 3;
+                /// <summary>ai.aiCommander.reserveReleaseP3Rank3 (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:797).</summary>
+                public static int ReserveReleaseP3Rank3 = 4;
+                /// <summary>ai.aiCommander.reserveReleaseP3DistanceMax4 (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:805).</summary>
+                public static float ReserveReleaseP3DistanceMax4 = 80f;
+                /// <summary>ai.aiCommander.reserveReleaseP3ReachFloor (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:810).</summary>
+                public static float ReserveReleaseP3ReachFloor = 40f;
+                /// <summary>ai.aiCommander.reserveReleaseP3OwnMax (count; gioi_han_thuc_the, was Sim/AI/P3/Commander.P3.cs:811).</summary>
+                public static float ReserveReleaseP3OwnMax = 0.6f;
+                /// <summary>ai.aiCommander.reserveReleaseP3Rank4 (count; gioi_han_thuc_the, was Sim/AI/P3/Commander.P3.cs:811).</summary>
+                public static int ReserveReleaseP3Rank4 = 5;
+                /// <summary>ai.aiCommander.reserveReleaseP3TimeMin (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:817).</summary>
+                public static double ReserveReleaseP3TimeMin = 10.0;
+                /// <summary>ai.aiCommander.reserveReleaseP3DistanceMin (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:826).</summary>
+                public static float ReserveReleaseP3DistanceMin = 20f;
+                /// <summary>ai.aiCommander.coverageP3DistanceDivisor (x; ban_kinh, was Sim/AI/P3/Commander.P3.cs:900).</summary>
+                public static float CoverageP3DistanceDivisor = 200f;
+                /// <summary>ai.aiCommander.coverageP3RangeFloor (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:916).</summary>
+                public static float CoverageP3RangeFloor = 10f;
+                /// <summary>ai.aiCommander.coverageP3DistanceMin (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:921).</summary>
+                public static float CoverageP3DistanceMin = 8f;
+                /// <summary>ai.aiCommander.coverageSpotRangeFloor (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:928).</summary>
+                public static float CoverageSpotRangeFloor = 10f;
+                /// <summary>ai.aiCommander.coverageSpotDistanceSquaredMax (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:941).</summary>
+                public static float CoverageSpotDistanceSquaredMax = 36f;
+                /// <summary>ai.aiCommander.coverageSpotReachScale (x; ban_kinh, was Sim/AI/P3/Commander.P3.cs:944).</summary>
+                public static float CoverageSpotReachScale = 0.5f;
+                /// <summary>ai.aiCommander.counterBatteryStrikeP3NowMax (count; thoi_gian, was Sim/AI/P3/Commander.P3.cs:978).</summary>
+                public static double CounterBatteryStrikeP3NowMax = 15.0;
+                /// <summary>ai.aiCommander.counterBatteryStrikeP3ErrorRadiusAdd (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:981).</summary>
+                public static float CounterBatteryStrikeP3ErrorRadiusAdd = 10f;
+                /// <summary>ai.aiCommander.assaultSmokeP3ExecuteAtSub (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:1022).</summary>
+                public static double AssaultSmokeP3ExecuteAtSub = 2.0;
+                /// <summary>ai.aiCommander.assaultSmokeP3ExecuteAtAdd (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:1022).</summary>
+                public static double AssaultSmokeP3ExecuteAtAdd = 6.0;
+                /// <summary>ai.aiCommander.artilleryP3ReachAdd (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:1051).</summary>
+                public static float ArtilleryP3ReachAdd = 20f;
+                /// <summary>ai.aiCommander.artilleryP3MinConfidence (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:1053).</summary>
+                public static float ArtilleryP3MinConfidence = 0.3f;
+                /// <summary>ai.aiCommander.scootP3TimeDivisor (x; thoi_gian, was Sim/AI/P3/Commander.P3.cs:1077).</summary>
+                public static int ScootP3TimeDivisor = 10;
+                /// <summary>ai.aiCommander.scootP3Margin (m; ban_kinh, was Sim/AI/P3/Commander.P3.cs:1083).</summary>
+                public static float ScootP3Margin = 6f;
+                /// <summary>ai.aiCommander.fireMissionP3NowAdd (s; thoi_gian, was Sim/AI/P3/Commander.P3.cs:1142).</summary>
+                public static double FireMissionP3NowAdd = 10.0;
+                /// <summary>ai.aiCommander.blastOfR (x; sat_thuong, was Sim/AI/P4/Air.P4.cs:61).</summary>
+                public static float BlastOfR = 8f;
+                /// <summary>ai.aiCommander.prepareAirP4AgeMax (s; thoi_gian, was Sim/AI/P4/Air.P4.cs:109).</summary>
+                public static float PrepareAirP4AgeMax = 3f;
+                /// <summary>ai.aiCommander.prepareAirP4AgeMax2 (s; thoi_gian, was Sim/AI/P4/Air.P4.cs:110).</summary>
+                public static float PrepareAirP4AgeMax2 = 30f;
+                /// <summary>ai.aiCommander.prepareAirP4DistanceMax (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:123).</summary>
+                public static float PrepareAirP4DistanceMax = 40f;
+                /// <summary>ai.aiCommander.prepareAirP4Margin (x; khac, was Sim/AI/P4/Air.P4.cs:124).</summary>
+                public static float PrepareAirP4Margin = 10f;
+                /// <summary>ai.aiCommander.fighterP4ReachScale (x; ban_kinh, was Sim/AI/P4/Air.P4.cs:195).</summary>
+                public static float FighterP4ReachScale = 1.2f;
+                /// <summary>ai.aiCommander.fighterP4Margin (s; thoi_gian, was Sim/AI/P4/Air.P4.cs:198).</summary>
+                public static float FighterP4Margin = 10f;
+                /// <summary>ai.aiCommander.fighterP4DistanceMin (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:199, Sim/AI/P4/Air.P4.cs:224).</summary>
+                public static float FighterP4DistanceMin = 15f;
+                /// <summary>ai.aiCommander.seadReadyP4NowMax (s; thoi_gian, was Sim/AI/P4/Air.P4.cs:264).</summary>
+                public static double SeadReadyP4NowMax = 15.0;
+                /// <summary>ai.aiCommander.seadReadyP4DistanceMax (m; thoi_gian, was Sim/AI/P4/Air.P4.cs:264).</summary>
+                public static float SeadReadyP4DistanceMax = 80f;
+                /// <summary>ai.aiCommander.bomberP4BlastAdd (x; sat_thuong, was Sim/AI/P4/Air.P4.cs:280, Sim/AI/P4/Air.P4.cs:304).</summary>
+                public static float BomberP4BlastAdd = 4f;
+                /// <summary>ai.aiCommander.bomberP4DistanceMax (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:281).</summary>
+                public static float BomberP4DistanceMax = 40f;
+                /// <summary>ai.aiCommander.bomberP4NowAdd (x; sat_thuong, was Sim/AI/P4/Air.P4.cs:295, Sim/AI/P4/Air.P4.cs:318).</summary>
+                public static double BomberP4NowAdd = 6.0;
+                /// <summary>ai.aiCommander.bomberP4DistanceMin (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:331).</summary>
+                public static float BomberP4DistanceMin = 15f;
+                /// <summary>ai.aiCommander.bomberP4Margin (x; khac, was Sim/AI/P4/Air.P4.cs:332).</summary>
+                public static float BomberP4Margin = 10f;
+                /// <summary>ai.aiCommander.approachAngle2 (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:353).</summary>
+                public static float ApproachAngle2 = -1.05f;
+                /// <summary>ai.aiCommander.approachAngle3 (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:353).</summary>
+                public static float ApproachAngle3 = 1.05f;
+                /// <summary>ai.aiCommander.approachAngle4 (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:353).</summary>
+                public static float ApproachAngle4 = -1.75f;
+                /// <summary>ai.aiCommander.approachAngle5 (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:353).</summary>
+                public static float ApproachAngle5 = 1.75f;
+                /// <summary>ai.aiCommander.approachDirScale (x; khac, was Sim/AI/P4/Air.P4.cs:357).</summary>
+                public static float ApproachDirScale = 50f;
+                /// <summary>ai.aiCommander.approachMargin (x; khac, was Sim/AI/P4/Air.P4.cs:357).</summary>
+                public static float ApproachMargin = 10f;
+                /// <summary>ai.aiCommander.seadP4NowMin (s; thoi_gian, was Sim/AI/P4/Air.P4.cs:388, Sim/AI/P4/Air.P4.cs:396).</summary>
+                public static double SeadP4NowMin = 90.0;
+                /// <summary>ai.aiCommander.seadP4CountMin (count; gioi_han_thuc_the, was Sim/AI/P4/Air.P4.cs:392).</summary>
+                public static int SeadP4CountMin = 32;
+                /// <summary>ai.aiCommander.seadP4AgeMax (s; thoi_gian, was Sim/AI/P4/Air.P4.cs:420).</summary>
+                public static float SeadP4AgeMax = 30f;
+                /// <summary>ai.aiCommander.seadP4DistanceMax (m; thoi_gian, was Sim/AI/P4/Air.P4.cs:420).</summary>
+                public static float SeadP4DistanceMax = 80f;
+                /// <summary>ai.aiCommander.seadP4ReachDefault (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:427).</summary>
+                public static float SeadP4ReachDefault = 40f;
+                /// <summary>ai.aiCommander.seadP4Margin (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:427).</summary>
+                public static float SeadP4Margin = 10f;
+                /// <summary>ai.aiCommander.seadP4DistanceMin (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:429).</summary>
+                public static float SeadP4DistanceMin = 15f;
+                /// <summary>ai.aiCommander.seadP4NowAdd (s; thoi_gian, was Sim/AI/P4/Air.P4.cs:444).</summary>
+                public static double SeadP4NowAdd = 25.0;
+                /// <summary>ai.aiCommander.egressP4NowMin (s; thoi_gian, was Sim/AI/P4/Air.P4.cs:468).</summary>
+                public static double EgressP4NowMin = 2.0;
+                /// <summary>ai.aiCommander.egressP4Angle2 (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:476).</summary>
+                public static float EgressP4Angle2 = -0.87f;
+                /// <summary>ai.aiCommander.egressP4Angle3 (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:476).</summary>
+                public static float EgressP4Angle3 = 0.87f;
+                /// <summary>ai.aiCommander.egressP4Angle4 (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:476).</summary>
+                public static float EgressP4Angle4 = -1.75f;
+                /// <summary>ai.aiCommander.egressP4Angle5 (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:476).</summary>
+                public static float EgressP4Angle5 = 1.75f;
+                /// <summary>ai.aiCommander.egressP4DirScale (x; khac, was Sim/AI/P4/Air.P4.cs:480).</summary>
+                public static float EgressP4DirScale = 70f;
+                /// <summary>ai.aiCommander.egressP4Margin (x; khac, was Sim/AI/P4/Air.P4.cs:480).</summary>
+                public static float EgressP4Margin = 10f;
+                /// <summary>ai.aiCommander.egressP4NowAdd (s; thoi_gian, was Sim/AI/P4/Air.P4.cs:489).</summary>
+                public static double EgressP4NowAdd = 6.0;
+                /// <summary>ai.aiCommander.riskRouteP4DistanceMax (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:512).</summary>
+                public static float RiskRouteP4DistanceMax = 60f;
+                /// <summary>ai.aiCommander.riskRouteP4LevelMax (m; ban_kinh, was Sim/AI/P4/Air.P4.cs:512).</summary>
+                public static int RiskRouteP4LevelMax = 2;
+                /// <summary>ai.aiCommander.riskRouteP4NowAdd (s; thoi_gian, was Sim/AI/P4/Air.P4.cs:516).</summary>
+                public static double RiskRouteP4NowAdd = 25.0;
+                /// <summary>ai.aiCommander.weaponDpsCycleSecondsFloor (s; sat_thuong, was Sim/AI/P4/Commander.P4.cs:97).</summary>
+                public static float WeaponDpsCycleSecondsFloor = 0.1f;
+                /// <summary>ai.aiCommander.estimateSpeedFloor (m/s; tan_suat, was Sim/AI/P4/Commander.P4.cs:134).</summary>
+                public static float EstimateSpeedFloor = 0.5f;
+                /// <summary>ai.aiCommander.estimateSplashRadiusMin (m; sat_thuong, was Sim/AI/P4/Commander.P4.cs:150).</summary>
+                public static float EstimateSplashRadiusMin = 2f;
+                /// <summary>ai.aiCommander.estimateSpeed (m/s; tan_suat, was Sim/AI/P4/Commander.P4.cs:161).</summary>
+                public static float EstimateSpeed = 8f;
+                /// <summary>ai.aiCommander.contactUnitStrengthScale (x; sat_thuong, was Sim/AI/P4/Commander.P4.cs:171).</summary>
+                public static float ContactUnitStrengthScale = 150f;
+                /// <summary>ai.aiCommander.contactUnitStrengthMin (x; sat_thuong, was Sim/AI/P4/Commander.P4.cs:171).</summary>
+                public static float ContactUnitStrengthMin = 0.05f;
+                /// <summary>ai.aiCommander.forcesForAgeMin (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:205).</summary>
+                public static float ForcesForAgeMin = 20f;
+                /// <summary>ai.aiCommander.forcesForDMax (count; gioi_han_thuc_the, was Sim/AI/P4/Commander.P4.cs:209).</summary>
+                public static float ForcesForDMax = 60f;
+                /// <summary>ai.aiCommander.forcesForDistanceMax (m; ban_kinh, was Sim/AI/P4/Commander.P4.cs:229).</summary>
+                public static float ForcesForDistanceMax = 50f;
+                /// <summary>ai.aiCommander.forcesForRadius (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:233).</summary>
+                public static float ForcesForRadius = 40f;
+                /// <summary>ai.aiCommander.forcesForUnknownShareMin (share; thoi_gian, was Sim/AI/P4/Commander.P4.cs:233).</summary>
+                public static float ForcesForUnknownShareMin = 0.5f;
+                /// <summary>ai.aiCommander.forecastKeyDistanceDivisor (x; ban_kinh, was Sim/AI/P4/Commander.P4.cs:242).</summary>
+                public static float ForecastKeyDistanceDivisor = 10f;
+                /// <summary>ai.aiCommander.forecastKeyCountScale (x; sat_thuong, was Sim/AI/P4/Commander.P4.cs:243, Sim/AI/P4/Commander.P4.cs:244).</summary>
+                public static long ForecastKeyCountScale = 131L;
+                /// <summary>ai.aiCommander.forecastKeyHpDivisor (x; sat_thuong, was Sim/AI/P4/Commander.P4.cs:243, Sim/AI/P4/Commander.P4.cs:244).</summary>
+                public static float ForecastKeyHpDivisor = 50f;
+                /// <summary>ai.aiCommander.evaluatePlansMainFalse (x; tan_suat, was Sim/AI/P4/Commander.P4.cs:294).</summary>
+                public static float EvaluatePlansMainFalse = 5f;
+                /// <summary>ai.aiCommander.evaluatePlansFromLerp (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:314).</summary>
+                public static float EvaluatePlansFromLerp = 0.5f;
+                /// <summary>ai.aiCommander.evaluatePlansLaneTrue (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:315, Sim/AI/P4/Commander.P4.cs:330).</summary>
+                public static float EvaluatePlansLaneTrue = 0.5f;
+                /// <summary>ai.aiCommander.evaluatePlansPlanGainScale (x; thoi_gian, was Sim/AI/P4/Commander.P4.cs:351).</summary>
+                public static float EvaluatePlansPlanGainScale = 0.5f;
+                /// <summary>ai.aiCommander.depsP4AgeMin (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:394).</summary>
+                public static float DepsP4AgeMin = 20f;
+                /// <summary>ai.aiCommander.depsP4DistanceMin (m; thoi_gian, was Sim/AI/P4/Commander.P4.cs:394).</summary>
+                public static float DepsP4DistanceMin = 60f;
+                /// <summary>ai.aiCommander.packagePlanP4DistanceMax (m; ban_kinh, was Sim/AI/P4/Commander.P4.cs:416, Sim/AI/P4/Commander.P4.cs:426).</summary>
+                public static float PackagePlanP4DistanceMax = 15f;
+                /// <summary>ai.aiCommander.packagePlanP4Severity (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:461).</summary>
+                public static float PackagePlanP4Severity = 0.2f;
+                /// <summary>ai.aiCommander.choosePlanP4CreatedAtScale (x; thoi_gian, was Sim/AI/P4/Commander.P4.cs:534).</summary>
+                public static double ChoosePlanP4CreatedAtScale = 10.0;
+                /// <summary>ai.aiCommander.applyPlanP4FastTrue (m; ban_kinh, was Sim/AI/P4/Commander.P4.cs:571).</summary>
+                public static float ApplyPlanP4FastTrue = 30f;
+                /// <summary>ai.aiCommander.applyPlanP4CommitSDefault (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:610).</summary>
+                public static float ApplyPlanP4CommitSDefault = 8f;
+                /// <summary>ai.aiCommander.judgePlanP4LostDivisor (x; thoi_gian, was Sim/AI/P4/Commander.P4.cs:662).</summary>
+                public static float JudgePlanP4LostDivisor = 0.6f;
+                /// <summary>ai.aiCommander.forecastCollapseP4Side (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:676).</summary>
+                public static int ForecastCollapseP4Side = 9;
+                /// <summary>ai.aiCommander.supportWantedP4NowMax (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:687).</summary>
+                public static double SupportWantedP4NowMax = 3.0;
+                /// <summary>ai.aiCommander.supportWantedP4StrikeConfidenceScale (x; thoi_gian, was Sim/AI/P4/Commander.P4.cs:689).</summary>
+                public static float SupportWantedP4StrikeConfidenceScale = 0.8f;
+                /// <summary>ai.aiCommander.supportWantedP4StrikeMaxErrorScale (x; thoi_gian, was Sim/AI/P4/Commander.P4.cs:690).</summary>
+                public static float SupportWantedP4StrikeMaxErrorScale = 1.25f;
+                /// <summary>ai.aiCommander.supportWantedP4NowMin (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:690).</summary>
+                public static double SupportWantedP4NowMin = 20.0;
+                /// <summary>ai.aiCommander.supportWantedP4DistanceMax (m; ban_kinh, was Sim/AI/P4/Commander.P4.cs:698).</summary>
+                public static float SupportWantedP4DistanceMax = 40f;
+                /// <summary>ai.aiCommander.probeP4Radius (share; thoi_gian, was Sim/AI/P4/Commander.P4.cs:751).</summary>
+                public static float ProbeP4Radius = 30f;
+                /// <summary>ai.aiCommander.probeP4StrengthFloor (share; nguong, was Sim/AI/P4/Commander.P4.cs:777).</summary>
+                public static float ProbeP4StrengthFloor = 0.1f;
+                /// <summary>ai.aiCommander.stepProbeP4DMin (share; thoi_gian, was Sim/AI/P4/Commander.P4.cs:805).</summary>
+                public static float StepProbeP4DMin = 25f;
+                /// <summary>ai.aiCommander.stepProbeP4DMax (share; gioi_han_thuc_the, was Sim/AI/P4/Commander.P4.cs:806).</summary>
+                public static float StepProbeP4DMax = 25f;
+                /// <summary>ai.aiCommander.stepProbeP4Radius (share; sat_thuong, was Sim/AI/P4/Commander.P4.cs:815).</summary>
+                public static float StepProbeP4Radius = 40f;
+                /// <summary>ai.aiCommander.stepProbeP4Confidence (share; sat_thuong, was Sim/AI/P4/Commander.P4.cs:815).</summary>
+                public static float StepProbeP4Confidence = 0.7f;
+                /// <summary>ai.aiCommander.feintP4Radius (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:870).</summary>
+                public static float FeintP4Radius = 30f;
+                /// <summary>ai.aiCommander.feintP4DistanceMin (m; ban_kinh, was Sim/AI/P4/Commander.P4.cs:874).</summary>
+                public static float FeintP4DistanceMin = 50f;
+                /// <summary>ai.aiCommander.feintP4SideScale (x; khac, was Sim/AI/P4/Commander.P4.cs:889).</summary>
+                public static float FeintP4SideScale = 50f;
+                /// <summary>ai.aiCommander.feintP4ApproachScale (x; khac, was Sim/AI/P4/Commander.P4.cs:889).</summary>
+                public static float FeintP4ApproachScale = 10f;
+                /// <summary>ai.aiCommander.feintP4Margin (x; khac, was Sim/AI/P4/Commander.P4.cs:889).</summary>
+                public static float FeintP4Margin = 8f;
+                /// <summary>ai.aiCommander.feintP4NowMin (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:892).</summary>
+                public static double FeintP4NowMin = 20.0;
+                /// <summary>ai.aiCommander.stepFeintP4NowMin (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:934).</summary>
+                public static double StepFeintP4NowMin = 5.0;
+                /// <summary>ai.aiCommander.stepFeintP4NowSub (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:941).</summary>
+                public static double StepFeintP4NowSub = 2.0;
+                /// <summary>ai.aiCommander.stepFeintP4NowMax (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:942).</summary>
+                public static double StepFeintP4NowMax = 5.0;
+                /// <summary>ai.aiCommander.stepFeintP4Radius2 (x; sat_thuong, was Sim/AI/P4/Commander.P4.cs:947).</summary>
+                public static float StepFeintP4Radius2 = 50f;
+                /// <summary>ai.aiCommander.stepFeintP4Confidence (x; sat_thuong, was Sim/AI/P4/Commander.P4.cs:947).</summary>
+                public static float StepFeintP4Confidence = 0.7f;
+                /// <summary>ai.aiCommander.stepFeintP4NowAdd (x; sat_thuong, was Sim/AI/P4/Commander.P4.cs:947).</summary>
+                public static double StepFeintP4NowAdd = 12.0;
+                /// <summary>ai.aiCommander.stepFeintP4Subject (x; sat_thuong, was Sim/AI/P4/Commander.P4.cs:947).</summary>
+                public static int StepFeintP4Subject = 3;
+                /// <summary>ai.aiCommander.adaptP4RangeScale (x; ban_kinh, was Sim/AI/P4/Commander.P4.cs:990).</summary>
+                public static float AdaptP4RangeScale = 1.1f;
+                /// <summary>ai.aiCommander.adaptP4NowMax (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:995).</summary>
+                public static double AdaptP4NowMax = 2.5;
+                /// <summary>ai.aiCommander.purchaseAdjustP4PurchaseModifierScale (x; thoi_gian, was Sim/AI/P4/Commander.P4.cs:1019).</summary>
+                public static float PurchaseAdjustP4PurchaseModifierScale = 4f;
+                /// <summary>ai.aiCommander.enoughP4AgeMax (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:1037).</summary>
+                public static float EnoughP4AgeMax = 30f;
+                /// <summary>ai.aiCommander.enoughP4Side (s; thoi_gian, was Sim/AI/P4/Commander.P4.cs:1046).</summary>
+                public static int EnoughP4Side = 7;
+                /// <summary>ai.aiCommander.holdPurchaseP4EnoughMaxHoldSAdd (count; nguong, was Sim/AI/P4/Commander.P4.cs:1065).</summary>
+                public static double HoldPurchaseP4EnoughMaxHoldSAdd = 10.0;
+            }
+
+            public static partial class AiHealthMonitor
+            {
+                /// <summary>ai.aiHealthMonitor.next (x; khac, was Sim/AI/P5/AiHealthMonitor.cs:139).</summary>
+                public static double Next = 0.5;
+                /// <summary>ai.aiHealthMonitor.stepPeriodSFloor (x; sat_thuong, was Sim/AI/P5/AiHealthMonitor.cs:164).</summary>
+                public static float StepPeriodSFloor = 0.1f;
+                /// <summary>ai.aiHealthMonitor.sampleTimeMax (s; thoi_gian, was Sim/AI/P5/AiHealthMonitor.cs:358).</summary>
+                public static double SampleTimeMax = 5.0;
+                /// <summary>ai.aiHealthMonitor.trafficJammedScale (x; gioi_han_thuc_the, was Sim/AI/P5/AiHealthMonitor.cs:416).</summary>
+                public static int TrafficJammedScale = 2;
+            }
+
+            public static partial class AiHints
+            {
+                /// <summary>ai.aiHints.nextTimeMax (s; thoi_gian, was Sim/AI/Commander.cs:620, Sim/AI/Commander.cs:629).</summary>
+                public static double NextTimeMax = 20.0;
+            }
+
+            public static partial class AiParams
+            {
+                /// <summary>ai.aiParams.worldRateFallback (x; tan_suat, was Sim/Content/AiParams.cs:70).</summary>
+                public static float WorldRateFallback = 2f;
+                /// <summary>ai.aiParams.attackThresholdFallback (x; khac, was Sim/Content/AiParams.cs:74).</summary>
+                public static float AttackThresholdFallback = 1.2f;
+                /// <summary>ai.aiParams.fallbackRatioFallback (share; khac, was Sim/Content/AiParams.cs:75).</summary>
+                public static float FallbackRatioFallback = 0.6f;
+                /// <summary>ai.aiParams.minCommitFallback (x; nguong, was Sim/Content/AiParams.cs:77).</summary>
+                public static float MinCommitFallback = 4f;
+                /// <summary>ai.aiParams.stuckTimeFallback (s; thoi_gian, was Sim/Content/AiParams.cs:79).</summary>
+                public static float StuckTimeFallback = 3f;
+                /// <summary>ai.aiParams.emergencyCooldownFallback (s; thoi_gian, was Sim/Content/AiParams.cs:80).</summary>
+                public static float EmergencyCooldownFallback = 25f;
+                /// <summary>ai.aiParams.overwhelmRatioFallback (share; khac, was Sim/Content/AiParams.cs:81).</summary>
+                public static float OverwhelmRatioFallback = 2f;
+                /// <summary>ai.aiParams.reactionDelayFallback (s; thoi_gian, was Sim/Content/AiParams.cs:85).</summary>
+                public static float ReactionDelayFallback = 0.8f;
+                /// <summary>ai.aiParams.tacticCooldownFallback (s; thoi_gian, was Sim/Content/AiParams.cs:94).</summary>
+                public static float TacticCooldownFallback = 50f;
+            }
+
+            public static partial class AiSkill
+            {
+                /// <summary>ai.aiSkill.forValue (s; thoi_gian, was Sim/AI/Commander.cs:41).</summary>
+                public static float ForValue = 0.8f;
+                /// <summary>ai.aiSkill.forMin (s; thoi_gian, was Sim/AI/Commander.cs:41).</summary>
+                public static float ForMin = 0.3f;
+                /// <summary>ai.aiSkill.forMax (s; thoi_gian, was Sim/AI/Commander.cs:41).</summary>
+                public static float ForMax = 1.5f;
+                /// <summary>ai.aiSkill.forDecayScale (x; sat_thuong, was Sim/AI/Commander.cs:45).</summary>
+                public static float ForDecayScale = 1.5f;
+                /// <summary>ai.aiSkill.forSpread (x; sat_thuong, was Sim/AI/Commander.cs:45).</summary>
+                public static float ForSpread = 0.5f;
+                /// <summary>ai.aiSkill.forFlank (x; sat_thuong, was Sim/AI/Commander.cs:45).</summary>
+                public static float ForFlank = 0.5f;
+                /// <summary>ai.aiSkill.forNormalScale (x; thoi_gian, was Sim/AI/Commander.cs:49).</summary>
+                public static float ForNormalScale = 0.6f;
+                /// <summary>ai.aiSkill.forDecayScale2 (x; thoi_gian, was Sim/AI/Commander.cs:49).</summary>
+                public static float ForDecayScale2 = 0.85f;
+                /// <summary>ai.aiSkill.forFlank2 (s; thoi_gian, was Sim/AI/Commander.cs:49, Sim/AI/Commander.cs:55).</summary>
+                public static float ForFlank2 = 1.3f;
+                /// <summary>ai.aiSkill.forFocus (s; thoi_gian, was Sim/AI/Commander.cs:49, Sim/AI/Commander.cs:55).</summary>
+                public static float ForFocus = 1.3f;
+                /// <summary>ai.aiSkill.forDecayScale3 (x; thoi_gian, was Sim/AI/Commander.cs:55).</summary>
+                public static float ForDecayScale3 = 0.6f;
+            }
+
+            public static partial class AiSpatialIndex
+            {
+                /// <summary>ai.aiSpatialIndex.ensureSpatialCellMin (x; nguong, was Sim/AI/P5/AiBudget.cs:142).</summary>
+                public static float EnsureSpatialCellMin = 4f;
+                /// <summary>ai.aiSpatialIndex.ensureSpatialCellMax (x; nguong, was Sim/AI/P5/AiBudget.cs:142).</summary>
+                public static float EnsureSpatialCellMax = 40f;
+            }
+
+            public static partial class AirRules
+            {
+                /// <summary>ai.airRules.legRiskSamplesFloor (x; nguong, was Sim/AI/P4/PlanningRules.cs:744).</summary>
+                public static int LegRiskSamplesFloor = 2;
+                /// <summary>ai.airRules.legRiskMaxScale (x; nguong, was Sim/AI/P4/PlanningRules.cs:752).</summary>
+                public static float LegRiskMaxScale = 0.5f;
+                /// <summary>ai.airRules.attackersTtkGoalFloor (x; nguong, was Sim/AI/P4/PlanningRules.cs:759).</summary>
+                public static float AttackersTtkGoalFloor = 0.5f;
+                /// <summary>ai.airRules.patrolPointCapRadiusScale (x; ban_kinh, was Sim/AI/P4/PlanningRules.cs:776).</summary>
+                public static float PatrolPointCapRadiusScale = 0.5f;
+            }
+
+            public static partial class BreachAccess
+            {
+                /// <summary>ai.breachAccess.breachCellCost (CP; ban_kinh, was Sim/AI/BreachAccess.cs:32).</summary>
+                public static int BreachCellCost = 12;
+                /// <summary>ai.breachAccess.firstBlockerMaxRings (x; sat_thuong, was Sim/AI/BreachAccess.cs:89).</summary>
+                public static int FirstBlockerMaxRings = 3;
+                /// <summary>ai.breachAccess.firstBlockerReachDivisor (x; ban_kinh, was Sim/AI/BreachAccess.cs:98).</summary>
+                public static float FirstBlockerReachDivisor = 4f;
+                /// <summary>ai.breachAccess.firstBlockerMinRangeDivisor (x; ban_kinh, was Sim/AI/BreachAccess.cs:98).</summary>
+                public static float FirstBlockerMinRangeDivisor = 4f;
+                /// <summary>ai.breachAccess.firstBlockerRadiusDivisor (x; ban_kinh, was Sim/AI/BreachAccess.cs:98).</summary>
+                public static float FirstBlockerRadiusDivisor = 2f;
+                /// <summary>ai.breachAccess.buildClearanceScale (x; ban_kinh, was Sim/AI/BreachAccess.cs:151, Sim/AI/BreachAccess.cs:165).</summary>
+                public static float BuildClearanceScale = 2f;
+            }
+
+            public static partial class BreachTopology
+            {
+                /// <summary>ai.breachTopology.rankingPathCostReductionOnDestroyCap (CP; ban_kinh, was Sim/AI/TopologyHooks.cs:30).</summary>
+                public static float RankingPathCostReductionOnDestroyCap = 80f;
+            }
+
+            public static partial class Churn
+            {
+                /// <summary>ai.churn.addNowMin (s; thoi_gian, was Sim/AI/DecisionLog.cs:203).</summary>
+                public static double AddNowMin = 60.0;
+                /// <summary>ai.churn.lastMinuteNowMin (s; thoi_gian, was Sim/AI/DecisionLog.cs:211).</summary>
+                public static double LastMinuteNowMin = 60.0;
+            }
+
+            public static partial class CombatActivityWatchdog
+            {
+                /// <summary>ai.combatActivityWatchdog.stepTickMod (s; thoi_gian, was Sim/AI/CombatActivityWatchdog.cs:185).</summary>
+                public static int StepTickMod = 200;
+                /// <summary>ai.combatActivityWatchdog.firingWindowCooldownAdd (s; thoi_gian, was Sim/AI/CombatActivityWatchdog.cs:314).</summary>
+                public static float FiringWindowCooldownAdd = 0.5f;
+                /// <summary>ai.combatActivityWatchdog.recoverAnomalyRecoveriesMin (s; thoi_gian, was Sim/AI/CombatActivityWatchdog.cs:428).</summary>
+                public static int RecoverAnomalyRecoveriesMin = 2;
+            }
+
+            public static partial class CombatForecaster
+            {
+                /// <summary>ai.combatForecaster.uptimeClosingFloor (s; thoi_gian, was Sim/AI/P4/PlanningRules.cs:110).</summary>
+                public static float UptimeClosingFloor = 0.5f;
+            }
+
+            public static partial class CombatRoleDoctrine
+            {
+                /// <summary>ai.combatRoleDoctrine.classOfFrontMin2 (x; sat_thuong, was Sim/AI/P2/CombatRoleDoctrine.cs:175).</summary>
+                public static int ClassOfFrontMin2 = 4;
+                /// <summary>ai.combatRoleDoctrine.worthRung (x; sat_thuong, was Sim/AI/P2/CombatRoleDoctrine.cs:211, Sim/AI/P2/CombatRoleDoctrine.cs:222).</summary>
+                public static int WorthRung = 2;
+                /// <summary>ai.combatRoleDoctrine.worthRungs (x; sat_thuong, was Sim/AI/P2/CombatRoleDoctrine.cs:211, Sim/AI/P2/CombatRoleDoctrine.cs:222, Sim/AI/P2/CombatRoleDoctrine.cs:259).</summary>
+                public static int WorthRungs = 6;
+                /// <summary>ai.combatRoleDoctrine.worthRung3 (x; sat_thuong, was Sim/AI/P2/CombatRoleDoctrine.cs:259, Sim/AI/P2/CombatRoleDoctrine.cs:269).</summary>
+                public static int WorthRung3 = 4;
+                /// <summary>ai.combatRoleDoctrine.worthRungs2 (x; sat_thuong, was Sim/AI/P2/CombatRoleDoctrine.cs:269, Sim/AI/P2/CombatRoleDoctrine.cs:298).</summary>
+                public static int WorthRungs2 = 5;
+                /// <summary>ai.combatRoleDoctrine.worthRungs3 (x; sat_thuong, was Sim/AI/P2/CombatRoleDoctrine.cs:285).</summary>
+                public static int WorthRungs3 = 4;
+                /// <summary>ai.combatRoleDoctrine.worthRung4 (x; sat_thuong, was Sim/AI/P2/CombatRoleDoctrine.cs:298).</summary>
+                public static int WorthRung4 = 5;
+                /// <summary>ai.combatRoleDoctrine.clusteredLimit (m; ban_kinh, was Sim/AI/P2/CombatRoleDoctrine.cs:316).</summary>
+                public static int ClusteredLimit = 2;
+                /// <summary>ai.combatRoleDoctrine.clusteredCountSameSideMin (count; ban_kinh, was Sim/AI/P2/CombatRoleDoctrine.cs:316).</summary>
+                public static int ClusteredCountSameSideMin = 2;
+            }
+
+            public static partial class ComponentState
+            {
+                /// <summary>ai.componentState.ofIMax (count; gioi_han_thuc_the, was Sim/AI/P2/ComponentState.cs:62).</summary>
+                public static int OfIMax = 31;
+            }
+
+            public static partial class ConquestAi
+            {
+                /// <summary>ai.conquestAi.newCardScoreAntiAirCap (count; tran, was Sim/AI/ConquestAi.P17.cs:22).</summary>
+                public static float NewCardScoreAntiAirCap = 3f;
+                /// <summary>ai.conquestAi.newCardScoreTotalFloor (x; nguong, was Sim/AI/ConquestAi.P17.cs:22).</summary>
+                public static float NewCardScoreTotalFloor = 8f;
+                /// <summary>ai.conquestAi.newCardScoreAntiAirScale (x; nguong, was Sim/AI/ConquestAi.P17.cs:22).</summary>
+                public static float NewCardScoreAntiAirScale = 6f;
+                /// <summary>ai.conquestAi.newCardScoreAntiAirScale2 (x; nguong, was Sim/AI/ConquestAi.P17.cs:22).</summary>
+                public static float NewCardScoreAntiAirScale2 = 0.5f;
+                /// <summary>ai.conquestAi.p25CardScoreDronesCap (count; tran, was Sim/AI/ConquestAi.P25A.cs:24).</summary>
+                public static float P25CardScoreDronesCap = 2.5f;
+                /// <summary>ai.conquestAi.p25CardScoreDronesScale (x; nguong, was Sim/AI/ConquestAi.P25A.cs:24).</summary>
+                public static float P25CardScoreDronesScale = 0.8f;
+                /// <summary>ai.conquestAi.p25CardScoreMinSub (x; nguong, was Sim/AI/ConquestAi.P25A.cs:24).</summary>
+                public static float P25CardScoreMinSub = 0.4f;
+                /// <summary>ai.conquestAi.p25CardScoreDronesFalse (x; nguong, was Sim/AI/ConquestAi.P25A.cs:24).</summary>
+                public static float P25CardScoreDronesFalse = -1.5f;
+                /// <summary>ai.conquestAi.p25CardScoreJammersCap (count; tran, was Sim/AI/ConquestAi.P25A.cs:30).</summary>
+                public static float P25CardScoreJammersCap = 2f;
+                /// <summary>ai.conquestAi.p25CardScoreTotalFloor (x; nguong, was Sim/AI/ConquestAi.P25A.cs:30, Sim/AI/ConquestAi.P25A.cs:33).</summary>
+                public static float P25CardScoreTotalFloor = 8f;
+                /// <summary>ai.conquestAi.p25CardScoreJammersScale (x; nguong, was Sim/AI/ConquestAi.P25A.cs:30).</summary>
+                public static float P25CardScoreJammersScale = 6f;
+                /// <summary>ai.conquestAi.p25CardScoreJammersAdd (x; nguong, was Sim/AI/ConquestAi.P25A.cs:30).</summary>
+                public static float P25CardScoreJammersAdd = 0.6f;
+                /// <summary>ai.conquestAi.p25CardScoreSmokeCap (count; ban_kinh, was Sim/AI/ConquestAi.P25A.cs:33).</summary>
+                public static float P25CardScoreSmokeCap = 1.6f;
+                /// <summary>ai.conquestAi.p25CardScoreSmokeScale (x; ban_kinh, was Sim/AI/ConquestAi.P25A.cs:33).</summary>
+                public static float P25CardScoreSmokeScale = 5f;
+                /// <summary>ai.conquestAi.p25CardScoreSmokeAdd (m; ban_kinh, was Sim/AI/ConquestAi.P25A.cs:33).</summary>
+                public static float P25CardScoreSmokeAdd = 0.4f;
+                /// <summary>ai.conquestAi.p25CardScoreOwnedTrue (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.P25A.cs:35).</summary>
+                public static float P25CardScoreOwnedTrue = -4f;
+                /// <summary>ai.conquestAi.p25CardScoreCountMax (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.P25A.cs:35).</summary>
+                public static int P25CardScoreCountMax = 3;
+                /// <summary>ai.conquestAi.p25CardScoreCountTrue (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.P25A.cs:35).</summary>
+                public static float P25CardScoreCountTrue = 1.2f;
+                /// <summary>ai.conquestAi.p25CardScoreCountFalse (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.P25A.cs:35).</summary>
+                public static float P25CardScoreCountFalse = -1.5f;
+                /// <summary>ai.conquestAi.deployOrDropNormalizeScale (x; ban_kinh, was Sim/AI/ConquestAi.P25A.cs:56).</summary>
+                public static float DeployOrDropNormalizeScale = 8f;
+                /// <summary>ai.conquestAi.buyThroughDirectorOwnTotalMax (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.Procurement.cs:90).</summary>
+                public static int BuyThroughDirectorOwnTotalMax = 4;
+                /// <summary>ai.conquestAi.roleOfSpeedMin (m/s; tan_suat, was Sim/AI/ConquestAi.cs:140).</summary>
+                public static float RoleOfSpeedMin = 11f;
+                /// <summary>ai.conquestAi.intervalDifficultyValue (s; thoi_gian, was Sim/AI/ConquestAi.cs:224).</summary>
+                public static float IntervalDifficultyValue = 2.2f;
+                /// <summary>ai.conquestAi.intervalDifficultyValue2 (s; thoi_gian, was Sim/AI/ConquestAi.cs:225).</summary>
+                public static float IntervalDifficultyValue2 = 0.6f;
+                /// <summary>ai.conquestAi.intervalDifficultyValue3 (s; thoi_gian, was Sim/AI/ConquestAi.cs:226).</summary>
+                public static float IntervalDifficultyValue3 = 0.45f;
+                /// <summary>ai.conquestAi.intervalDifficultyValue4 (s; thoi_gian, was Sim/AI/ConquestAi.cs:227).</summary>
+                public static float IntervalDifficultyValue4 = 1.1f;
+                /// <summary>ai.conquestAi.pickDeckSpeedMin (m/s; tan_suat, was Sim/AI/ConquestAi.cs:291).</summary>
+                public static float PickDeckSpeedMin = 11f;
+                /// <summary>ai.conquestAi.pickDeckDifficultyTrue (share; xac_suat, was Sim/AI/ConquestAi.cs:296).</summary>
+                public static float PickDeckDifficultyTrue = 0.5f;
+                /// <summary>ai.conquestAi.pickDeckDifficultyFalse (share; xac_suat, was Sim/AI/ConquestAi.cs:296).</summary>
+                public static float PickDeckDifficultyFalse = 0.4f;
+                /// <summary>ai.conquestAi.pickDeckPlayerAaScale (x; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:308).</summary>
+                public static float PickDeckPlayerAaScale = 1.5f;
+                /// <summary>ai.conquestAi.pickDeckGuardMax (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:314).</summary>
+                public static int PickDeckGuardMax = 64;
+                /// <summary>ai.conquestAi.tryRebuildArmyCpMin (CP; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:382).</summary>
+                public static int TryRebuildArmyCpMin = 12;
+                /// <summary>ai.conquestAi.cheapestCardCheapestTrue (x; nguong, was Sim/AI/ConquestAi.cs:455).</summary>
+                public static float CheapestCardCheapestTrue = 4f;
+                /// <summary>ai.conquestAi.chooseObjectiveDistanceDivisor (x; ban_kinh, was Sim/AI/ConquestAi.cs:492).</summary>
+                public static float ChooseObjectiveDistanceDivisor = 120f;
+                /// <summary>ai.conquestAi.chooseObjectiveGuardCap (count; tran, was Sim/AI/ConquestAi.cs:505).</summary>
+                public static float ChooseObjectiveGuardCap = 2f;
+                /// <summary>ai.conquestAi.chooseObjectiveOwnPowerFloor (x; nguong, was Sim/AI/ConquestAi.cs:505).</summary>
+                public static float ChooseObjectiveOwnPowerFloor = 3f;
+                /// <summary>ai.conquestAi.chooseObjectiveDifficultyTrue (x; nguong, was Sim/AI/ConquestAi.cs:505).</summary>
+                public static float ChooseObjectiveDifficultyTrue = 2f;
+                /// <summary>ai.conquestAi.chooseObjectiveDifficultyFalse (x; nguong, was Sim/AI/ConquestAi.cs:505).</summary>
+                public static float ChooseObjectiveDifficultyFalse = 1.2f;
+                /// <summary>ai.conquestAi.chooseObjectiveDistanceDivisor2 (x; ban_kinh, was Sim/AI/ConquestAi.cs:507).</summary>
+                public static float ChooseObjectiveDistanceDivisor2 = 60f;
+                /// <summary>ai.conquestAi.guardRadiusAdd (m; ban_kinh, was Sim/AI/ConquestAi.cs:520).</summary>
+                public static float GuardRadiusAdd = 18f;
+                /// <summary>ai.conquestAi.safePointDistanceMax (m; ban_kinh, was Sim/AI/ConquestAi.cs:550).</summary>
+                public static float SafePointDistanceMax = 15f;
+                /// <summary>ai.conquestAi.enemyNearRadiusAdd (m; ban_kinh, was Sim/AI/ConquestAi.cs:568).</summary>
+                public static float EnemyNearRadiusAdd = 8f;
+                /// <summary>ai.conquestAi.tryStrikeNextDoubleMax (share; xac_suat, was Sim/AI/ConquestAi.cs:577).</summary>
+                public static double TryStrikeNextDoubleMax = 0.6;
+                /// <summary>ai.conquestAi.tryStrikeNextDoubleMax2 (share; xac_suat, was Sim/AI/ConquestAi.cs:579).</summary>
+                public static double TryStrikeNextDoubleMax2 = 0.7;
+                /// <summary>ai.conquestAi.tryStrikeRadiusAdd (m; ban_kinh, was Sim/AI/ConquestAi.cs:600).</summary>
+                public static float TryStrikeRadiusAdd = 16f;
+                /// <summary>ai.conquestAi.tryStrikeRadiusAdd2 (m; ban_kinh, was Sim/AI/ConquestAi.cs:603).</summary>
+                public static float TryStrikeRadiusAdd2 = 3f;
+                /// <summary>ai.conquestAi.tryUtilityStrikeDistanceMax (m; ban_kinh, was Sim/AI/ConquestAi.cs:667).</summary>
+                public static float TryUtilityStrikeDistanceMax = 45f;
+                /// <summary>ai.conquestAi.tryUtilityStrikeScale (x; ban_kinh, was Sim/AI/ConquestAi.cs:672).</summary>
+                public static float TryUtilityStrikeScale = 5f;
+                /// <summary>ai.conquestAi.tryUtilityStrikeGapMax (m; ban_kinh, was Sim/AI/ConquestAi.cs:681).</summary>
+                public static float TryUtilityStrikeGapMax = 22f;
+                /// <summary>ai.conquestAi.tryUtilityStrikeGapCap (count; ban_kinh, was Sim/AI/ConquestAi.cs:682).</summary>
+                public static float TryUtilityStrikeGapCap = 14f;
+                /// <summary>ai.conquestAi.tryUtilityStrikeGapScale (x; ban_kinh, was Sim/AI/ConquestAi.cs:682).</summary>
+                public static float TryUtilityStrikeGapScale = 0.4f;
+                /// <summary>ai.conquestAi.tryUtilityStrikeRadiusAdd (m; ban_kinh, was Sim/AI/ConquestAi.cs:683).</summary>
+                public static float TryUtilityStrikeRadiusAdd = 3f;
+                /// <summary>ai.conquestAi.tryUtilityStrikeScale2 (x; ban_kinh, was Sim/AI/ConquestAi.cs:697).</summary>
+                public static float TryUtilityStrikeScale2 = 10f;
+                /// <summary>ai.conquestAi.baseCounterCannonMin (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:740).</summary>
+                public static int BaseCounterCannonMin = 2;
+                /// <summary>ai.conquestAi.baseCounterSpeedMin (m/s; sat_thuong, was Sim/AI/ConquestAi.cs:742).</summary>
+                public static float BaseCounterSpeedMin = 11f;
+                /// <summary>ai.conquestAi.baseCounterShareScale (x; sat_thuong, was Sim/AI/ConquestAi.cs:742, Sim/AI/ConquestAi.cs:743).</summary>
+                public static float BaseCounterShareScale = 1.6f;
+                /// <summary>ai.conquestAi.baseCounterCannonReachAdd (m; ban_kinh, was Sim/AI/ConquestAi.cs:744).</summary>
+                public static float BaseCounterCannonReachAdd = 5f;
+                /// <summary>ai.conquestAi.baseCounterShareScale2 (x; ban_kinh, was Sim/AI/ConquestAi.cs:744).</summary>
+                public static float BaseCounterShareScale2 = 1.4f;
+                /// <summary>ai.conquestAi.baseCounterMachineGunMin (count; sat_thuong, was Sim/AI/ConquestAi.cs:746).</summary>
+                public static int BaseCounterMachineGunMin = 2;
+                /// <summary>ai.conquestAi.baseCounterShareScale3 (x; sat_thuong, was Sim/AI/ConquestAi.cs:746).</summary>
+                public static float BaseCounterShareScale3 = 1.8f;
+                /// <summary>ai.conquestAi.baseCounterAntiAirMin (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:747).</summary>
+                public static int BaseCounterAntiAirMin = 2;
+                /// <summary>ai.conquestAi.baseCounterShareScale4 (x; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:749).</summary>
+                public static float BaseCounterShareScale4 = 2.2f;
+                /// <summary>ai.conquestAi.baseCounterShareScale5 (x; ban_kinh, was Sim/AI/ConquestAi.cs:750).</summary>
+                public static float BaseCounterShareScale5 = 1.2f;
+                /// <summary>ai.conquestAi.scanTargetTimeMin (s; thoi_gian, was Sim/AI/ConquestAi.cs:774).</summary>
+                public static double ScanTargetTimeMin = 2.0;
+                /// <summary>ai.conquestAi.scanTargetPositionScale (x; khac, was Sim/AI/ConquestAi.cs:776).</summary>
+                public static float ScanTargetPositionScale = 0.6f;
+                /// <summary>ai.conquestAi.scanTargetReach (m; ban_kinh, was Sim/AI/ConquestAi.cs:779).</summary>
+                public static float ScanTargetReach = 1000f;
+                /// <summary>ai.conquestAi.scanTargetDistanceMax (m; ban_kinh, was Sim/AI/ConquestAi.cs:787).</summary>
+                public static float ScanTargetDistanceMax = 25f;
+                /// <summary>ai.conquestAi.bossRadiusAdd (m; ban_kinh, was Sim/AI/ConquestAi.cs:801).</summary>
+                public static float BossRadiusAdd = 8f;
+                /// <summary>ai.conquestAi.clearRunLengthDivisor (x; ban_kinh, was Sim/AI/ConquestAi.cs:839).</summary>
+                public static float ClearRunLengthDivisor = 4f;
+                /// <summary>ai.conquestAi.tryDeployVehicleCountMin (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:850).</summary>
+                public static int TryDeployVehicleCountMin = 5;
+                /// <summary>ai.conquestAi.tryDeployOwnArtilleryScale (x; ban_kinh, was Sim/AI/ConquestAi.cs:936).</summary>
+                public static int TryDeployOwnArtilleryScale = 5;
+                /// <summary>ai.conquestAi.tryDeployOwnArtilleryTrue (m; ban_kinh, was Sim/AI/ConquestAi.cs:936).</summary>
+                public static float TryDeployOwnArtilleryTrue = 1.2f;
+                /// <summary>ai.conquestAi.tryDeployOwnArtilleryFalse (m; ban_kinh, was Sim/AI/ConquestAi.cs:936).</summary>
+                public static float TryDeployOwnArtilleryFalse = -2f;
+                /// <summary>ai.conquestAi.tryDeployCaptureRateScale (x; tan_suat, was Sim/AI/ConquestAi.cs:937).</summary>
+                public static float TryDeployCaptureRateScale = 0.35f;
+                /// <summary>ai.conquestAi.tryDeployAirScale2 (x; nguong, was Sim/AI/ConquestAi.cs:939).</summary>
+                public static float TryDeployAirScale2 = 0.7f;
+                /// <summary>ai.conquestAi.tryDeployMaxScale (x; nguong, was Sim/AI/ConquestAi.cs:939).</summary>
+                public static float TryDeployMaxScale = 1.2f;
+                /// <summary>ai.conquestAi.tryDeployCapturersMax (x; tan_suat, was Sim/AI/ConquestAi.cs:941).</summary>
+                public static int TryDeployCapturersMax = 4;
+                /// <summary>ai.conquestAi.tryDeployFlyingTrue (x; tan_suat, was Sim/AI/ConquestAi.cs:941).</summary>
+                public static float TryDeployFlyingTrue = -2.5f;
+                /// <summary>ai.conquestAi.tryDeployFlyingFalse (x; tan_suat, was Sim/AI/ConquestAi.cs:941).</summary>
+                public static float TryDeployFlyingFalse = 1.2f;
+                /// <summary>ai.conquestAi.tryDeployScore2 (x; sat_thuong, was Sim/AI/ConquestAi.cs:944).</summary>
+                public static float TryDeployScore2 = 1.6f;
+                /// <summary>ai.conquestAi.tryDeployCannonMin (m; ban_kinh, was Sim/AI/ConquestAi.cs:952).</summary>
+                public static int TryDeployCannonMin = 2;
+                /// <summary>ai.conquestAi.tryDeployCannonTrue (m; ban_kinh, was Sim/AI/ConquestAi.cs:952).</summary>
+                public static float TryDeployCannonTrue = 1.8f;
+                /// <summary>ai.conquestAi.tryDeployCannonFalse (m; ban_kinh, was Sim/AI/ConquestAi.cs:952).</summary>
+                public static float TryDeployCannonFalse = -1.5f;
+                /// <summary>ai.conquestAi.tryDeployEnemyBreachersCap (count; sat_thuong, was Sim/AI/ConquestAi.cs:954).</summary>
+                public static float TryDeployEnemyBreachersCap = 2f;
+                /// <summary>ai.conquestAi.tryDeployEnemyBreachersScale (x; sat_thuong, was Sim/AI/ConquestAi.cs:954).</summary>
+                public static float TryDeployEnemyBreachersScale = 0.7f;
+                /// <summary>ai.conquestAi.tryDeployEnemyGunsCap (count; tran, was Sim/AI/ConquestAi.cs:956).</summary>
+                public static float TryDeployEnemyGunsCap = 2.4f;
+                /// <summary>ai.conquestAi.tryDeployEnemyGunsScale (x; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:956).</summary>
+                public static float TryDeployEnemyGunsScale = 0.8f;
+                /// <summary>ai.conquestAi.tryDeployMinSub (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:956).</summary>
+                public static float TryDeployMinSub = 0.6f;
+                /// <summary>ai.conquestAi.tryDeployEnemyGunsFalse (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:956).</summary>
+                public static float TryDeployEnemyGunsFalse = -2.5f;
+                /// <summary>ai.conquestAi.tryDeployOwnResuppliedMin (s; thoi_gian, was Sim/AI/ConquestAi.cs:958).</summary>
+                public static int TryDeployOwnResuppliedMin = 3;
+                /// <summary>ai.conquestAi.tryDeployOwnResuppliedAdd (s; thoi_gian, was Sim/AI/ConquestAi.cs:958).</summary>
+                public static float TryDeployOwnResuppliedAdd = 1.6f;
+                /// <summary>ai.conquestAi.tryDeployOwnResuppliedScale (x; thoi_gian, was Sim/AI/ConquestAi.cs:958).</summary>
+                public static float TryDeployOwnResuppliedScale = 0.2f;
+                /// <summary>ai.conquestAi.tryDeployOwnResuppliedFalse (s; thoi_gian, was Sim/AI/ConquestAi.cs:958).</summary>
+                public static float TryDeployOwnResuppliedFalse = -3f;
+                /// <summary>ai.conquestAi.tryDeployMixFloor (x; nguong, was Sim/AI/ConquestAi.cs:966).</summary>
+                public static float TryDeployMixFloor = 0.5f;
+                /// <summary>ai.conquestAi.underFireTimeMax (s; thoi_gian, was Sim/AI/ConquestAi.cs:1013).</summary>
+                public static double UnderFireTimeMax = 3.0;
+                /// <summary>ai.conquestAi.strikeValueSupportFitCap (count; tran, was Sim/AI/ConquestAi.cs:1035).</summary>
+                public static float StrikeValueSupportFitCap = 0.35f;
+                /// <summary>ai.conquestAi.strikeValueSupportFitScale (x; nguong, was Sim/AI/ConquestAi.cs:1035).</summary>
+                public static float StrikeValueSupportFitScale = 2.5f;
+                /// <summary>ai.conquestAi.findDamagedGroupHpMin (x; sat_thuong, was Sim/AI/ConquestAi.cs:1078).</summary>
+                public static float FindDamagedGroupHpMin = 0.5f;
+                /// <summary>ai.conquestAi.findDamagedGroupHpMin2 (x; sat_thuong, was Sim/AI/ConquestAi.cs:1083).</summary>
+                public static float FindDamagedGroupHpMin2 = 0.6f;
+                /// <summary>ai.conquestAi.findDamagedGroupDistanceMin (m; sat_thuong, was Sim/AI/ConquestAi.cs:1084).</summary>
+                public static float FindDamagedGroupDistanceMin = 10f;
+                /// <summary>ai.conquestAi.findDamagedGroupNearMax (x; sat_thuong, was Sim/AI/ConquestAi.cs:1088).</summary>
+                public static int FindDamagedGroupNearMax = 2;
+                /// <summary>ai.conquestAi.findDamagedGroupBestMin (x; sat_thuong, was Sim/AI/ConquestAi.cs:1092).</summary>
+                public static int FindDamagedGroupBestMin = 2;
+                /// <summary>ai.conquestAi.fitEffectScale (x; nguong, was Sim/AI/ConquestAi.cs:1167).</summary>
+                public static float FitEffectScale = 0.5f;
+                /// <summary>ai.conquestAi.enemyMixCountMax (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:1177).</summary>
+                public static int EnemyMixCountMax = 6;
+                /// <summary>ai.conquestAi.enemyMixMaxScale (x; nguong, was Sim/AI/ConquestAi.cs:1181).</summary>
+                public static float EnemyMixMaxScale = 0.5f;
+                /// <summary>ai.conquestAi.enemyMixBossTrue (x; nguong, was Sim/AI/ConquestAi.cs:1200).</summary>
+                public static float EnemyMixBossTrue = 30f;
+                /// <summary>ai.conquestAi.ownAnswersSpeedMin (m/s; tan_suat, was Sim/AI/ConquestAi.cs:1225).</summary>
+                public static float OwnAnswersSpeedMin = 11f;
+                /// <summary>ai.conquestAi.counterScoreTotalFloor (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:1257, Sim/AI/ConquestAi.cs:1289).</summary>
+                public static float CounterScoreTotalFloor = 8f;
+                /// <summary>ai.conquestAi.counterScoreAnsweringScale (x; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:1258).</summary>
+                public static float CounterScoreAnsweringScale = 0.85f;
+                /// <summary>ai.conquestAi.counterScoreShortScale (x; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:1263).</summary>
+                public static float CounterScoreShortScale = 8f;
+                /// <summary>ai.conquestAi.counterScoreScore (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:1265).</summary>
+                public static float CounterScoreScore = 2f;
+                /// <summary>ai.conquestAi.counterScoreScore2 (count; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:1267).</summary>
+                public static float CounterScoreScore2 = 2.5f;
+                /// <summary>ai.conquestAi.counterScoreOwnFitScale (x; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:1275).</summary>
+                public static float CounterScoreOwnFitScale = 0.85f;
+                /// <summary>ai.conquestAi.counterScoreGroundScale (x; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:1275).</summary>
+                public static float CounterScoreGroundScale = 8f;
+                /// <summary>ai.conquestAi.counterScoreSpeedMin (m/s; tan_suat, was Sim/AI/ConquestAi.cs:1277).</summary>
+                public static float CounterScoreSpeedMin = 11f;
+                /// <summary>ai.conquestAi.counterScoreShortScale2 (x; tan_suat, was Sim/AI/ConquestAi.cs:1277).</summary>
+                public static float CounterScoreShortScale2 = 4f;
+                /// <summary>ai.conquestAi.counterScoreAntiAirScale (x; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:1278).</summary>
+                public static float CounterScoreAntiAirScale = 4f;
+                /// <summary>ai.conquestAi.counterScoreMinScale (x; gioi_han_thuc_the, was Sim/AI/ConquestAi.cs:1285, Sim/AI/ConquestAi.cs:1289).</summary>
+                public static float CounterScoreMinScale = 2.5f;
+                /// <summary>ai.conquestAi.counterScoreMinScale2 (x; sat_thuong, was Sim/AI/ConquestAi.cs:1286, Sim/AI/ConquestAi.cs:1287, Sim/AI/ConquestAi.cs:1290).</summary>
+                public static float CounterScoreMinScale2 = 2f;
+            }
+
+            public static partial class CoordinationState
+            {
+                /// <summary>ai.coordinationState.maxShells (count; nguong, was Sim/AI/P3/Coordination.cs:26).</summary>
+                public static int MaxShells = 256;
+                /// <summary>ai.coordinationState.observeMaxHpDivisor (x; nguong, was Sim/AI/P3/Coordination.cs:68).</summary>
+                public static float ObserveMaxHpDivisor = 150f;
+                /// <summary>ai.coordinationState.observePowerFloor (x; nguong, was Sim/AI/P3/Coordination.cs:68).</summary>
+                public static float ObservePowerFloor = 0.5f;
+                /// <summary>ai.coordinationState.observeValueScale (x; thoi_gian, was Sim/AI/P3/Coordination.cs:95).</summary>
+                public static int ObserveValueScale = 131;
+            }
+
+            public static partial class CounterBatteryTracker
+            {
+                /// <summary>ai.counterBatteryTracker.maxEstimates (count; nguong, was Sim/AI/P3/CounterBattery.cs:44).</summary>
+                public static int MaxEstimates = 16;
+                /// <summary>ai.counterBatteryTracker.maxImpacts (count; nguong, was Sim/AI/P3/CounterBattery.cs:45).</summary>
+                public static int MaxImpacts = 64;
+                /// <summary>ai.counterBatteryTracker.observeMaxScale (x; ban_kinh, was Sim/AI/P3/CounterBattery.cs:88).</summary>
+                public static float ObserveMaxScale = 2f;
+                /// <summary>ai.counterBatteryTracker.pruneConfidenceMax (s; thoi_gian, was Sim/AI/P3/CounterBattery.cs:130).</summary>
+                public static float PruneConfidenceMax = 0.05f;
+                /// <summary>ai.counterBatteryTracker.pruneNowMin (s; thoi_gian, was Sim/AI/P3/CounterBattery.cs:131).</summary>
+                public static double PruneNowMin = 60.0;
+            }
+
+            public static partial class CounterattackWindow
+            {
+                /// <summary>ai.counterattackWindow.opensLostFloor (x; nguong, was Sim/AI/P3/Coordination.cs:212).</summary>
+                public static float OpensLostFloor = 0.01f;
+            }
+
+            public static partial class DifficultyGate
+            {
+                /// <summary>ai.difficultyGate.sectorsAtMax (x; nguong, was Sim/AI/P4/PlanningRules.cs:729).</summary>
+                public static int SectorsAtMax = 8;
+            }
+
+            public static partial class EngagementFeasibility
+            {
+                /// <summary>ai.engagementFeasibility.evaluateSpeedFloor (m/s; tan_suat, was Sim/AI/EngagementFeasibility.cs:195).</summary>
+                public static float EvaluateSpeedFloor = 0.5f;
+                /// <summary>ai.engagementFeasibility.evaluateValueFloor (x; nguong, was Sim/AI/EngagementFeasibility.cs:222).</summary>
+                public static float EvaluateValueFloor = 0.01f;
+                /// <summary>ai.engagementFeasibility.canReachRadius (m; ban_kinh, was Sim/AI/EngagementFeasibility.cs:294).</summary>
+                public static float CanReachRadius = 2f;
+                /// <summary>ai.engagementFeasibility.travelSecondsRadius (s; thoi_gian, was Sim/AI/EngagementFeasibility.cs:298).</summary>
+                public static float TravelSecondsRadius = 2f;
+                /// <summary>ai.engagementFeasibility.travelSecondsSpeedFloor (s; thoi_gian, was Sim/AI/EngagementFeasibility.cs:301).</summary>
+                public static float TravelSecondsSpeedFloor = 0.5f;
+                /// <summary>ai.engagementFeasibility.spawnUsefulRadiusFloor (m; ban_kinh, was Sim/AI/EngagementFeasibility.cs:373).</summary>
+                public static float SpawnUsefulRadiusFloor = 2f;
+                /// <summary>ai.engagementFeasibility.stepsIntoCellScale (x; ban_kinh, was Sim/AI/EngagementFeasibility.cs:384).</summary>
+                public static float StepsIntoCellScale = 0.75f;
+                /// <summary>ai.engagementFeasibility.cacheLimit (count; khac, was Sim/AI/EngagementFeasibility.cs:442).</summary>
+                public static int CacheLimit = 20000;
+                /// <summary>ai.engagementFeasibility.clusterReach (m; ban_kinh, was Sim/AI/EngagementFeasibility.cs:450).</summary>
+                public static float ClusterReach = 16f;
+                /// <summary>ai.engagementFeasibility.observedBossTrue (x; nguong, was Sim/AI/EngagementFeasibility.cs:474).</summary>
+                public static float ObservedBossTrue = 30f;
+                /// <summary>ai.engagementFeasibility.observedClusterReachScale (x; ban_kinh, was Sim/AI/EngagementFeasibility.cs:481).</summary>
+                public static float ObservedClusterReachScale = 0.5f;
+                /// <summary>ai.engagementFeasibility.observedRadiusFloor (m; ban_kinh, was Sim/AI/EngagementFeasibility.cs:492).</summary>
+                public static float ObservedRadiusFloor = 2f;
+                /// <summary>ai.engagementFeasibility.observedValue (m; ban_kinh, was Sim/AI/EngagementFeasibility.cs:492).</summary>
+                public static float ObservedValue = 4f;
+            }
+
+            public static partial class EscapeSectors
+            {
+                /// <summary>ai.escapeSectors.assignSectorsMax (x; nguong, was Sim/AI/P4/PlanningRules.cs:538).</summary>
+                public static int AssignSectorsMax = 8;
+                /// <summary>ai.escapeSectors.assignSlotScale (x; ban_kinh, was Sim/AI/P4/PlanningRules.cs:582).</summary>
+                public static float AssignSlotScale = 4f;
+            }
+
+            public static partial class EventLevels
+            {
+                /// <summary>ai.eventLevels.fromBaseLevelMax (x; nguong, was Sim/Content/EventDefs.cs:598).</summary>
+                public static int FromBaseLevelMax = 3;
+            }
+
+            public static partial class EventRules
+            {
+                /// <summary>ai.eventRules.levelsMinDirections3 (s; thoi_gian, was Sim/Content/EventDefs.cs:421).</summary>
+                public static int LevelsMinDirections3 = 3;
+                /// <summary>ai.eventRules.levelsMaxDirections3 (count; thoi_gian, was Sim/Content/EventDefs.cs:421).</summary>
+                public static int LevelsMaxDirections3 = 4;
+                /// <summary>ai.eventRules.levelsWarning4 (s; thoi_gian, was Sim/Content/EventDefs.cs:421).</summary>
+                public static float LevelsWarning4 = 6f;
+                /// <summary>ai.eventRules.levelsAllyShare4 (share; thoi_gian, was Sim/Content/EventDefs.cs:421).</summary>
+                public static float LevelsAllyShare4 = 0.15f;
+                /// <summary>ai.eventRules.levelsWaveScale4 (x; thoi_gian, was Sim/Content/EventDefs.cs:421).</summary>
+                public static float LevelsWaveScale4 = 1.3f;
+                /// <summary>ai.eventRules.levelsEscorts4 (s; thoi_gian, was Sim/Content/EventDefs.cs:421).</summary>
+                public static int LevelsEscorts4 = 5;
+                /// <summary>ai.eventRules.levelsStep2 (s; thoi_gian, was Sim/Content/EventDefs.cs:421).</summary>
+                public static int LevelsStep2 = 3;
+                /// <summary>ai.eventRules.generalsLastChapter (x; nguong, was Sim/Content/EventDefs.cs:436).</summary>
+                public static int GeneralsLastChapter = 10;
+            }
+
+            public static partial class EventTrigger
+            {
+                /// <summary>ai.eventTrigger.parseHasTrue (s; thoi_gian, was Sim/Content/EventDefs.cs:198).</summary>
+                public static int ParseHasTrue = 99;
+            }
+
+            public static partial class FeintRules
+            {
+                /// <summary>ai.feintRules.utilityI (s; thoi_gian, was Sim/AI/P4/PlanningRules.cs:459).</summary>
+                public static int UtilityI = 2;
+                /// <summary>ai.feintRules.utilityI2 (s; thoi_gian, was Sim/AI/P4/PlanningRules.cs:459).</summary>
+                public static int UtilityI2 = 3;
+            }
+
+            public static partial class FireSupportDirector
+            {
+                /// <summary>ai.fireSupportDirector.referenceRangeScale (x; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:170).</summary>
+                public static float ReferenceRangeScale = 2f;
+                /// <summary>ai.fireSupportDirector.referenceRangeScale2 (x; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:190).</summary>
+                public static float ReferenceRangeScale2 = 1.5f;
+                /// <summary>ai.fireSupportDirector.referenceDistanceCap (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:192).</summary>
+                public static float ReferenceDistanceCap = 25f;
+                /// <summary>ai.fireSupportDirector.convoyDistanceMax (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:218).</summary>
+                public static float ConvoyDistanceMax = 12f;
+                /// <summary>ai.fireSupportDirector.triggerMinRangeAdd (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:275).</summary>
+                public static float TriggerMinRangeAdd = 2f;
+                /// <summary>ai.fireSupportDirector.triggerLengthSquaredMin (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:285).</summary>
+                public static float TriggerLengthSquaredMin = 0.5f;
+                /// <summary>ai.fireSupportDirector.triggerDotMax (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:285).</summary>
+                public static float TriggerDotMax = 0.7f;
+                /// <summary>ai.fireSupportDirector.counterBatteryHitShotsSinceMin (count; gioi_han_thuc_the, was Sim/AI/P2/FireSupportAnchor.cs:304).</summary>
+                public static int CounterBatteryHitShotsSinceMin = 3;
+                /// <summary>ai.fireSupportDirector.shotsSinceNTrue (count; gioi_han_thuc_the, was Sim/AI/P2/FireSupportAnchor.cs:313).</summary>
+                public static int ShotsSinceNTrue = 3;
+                /// <summary>ai.fireSupportDirector.setMargin (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:338, Sim/AI/P2/FireSupportAnchor.cs:348).</summary>
+                public static float SetMargin = 6f;
+                /// <summary>ai.fireSupportDirector.setDistanceMax (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:341).</summary>
+                public static float SetDistanceMax = 15f;
+                /// <summary>ai.fireSupportDirector.setScore (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:341).</summary>
+                public static float SetScore = 2f;
+                /// <summary>ai.fireSupportDirector.setBackScale (x; khac, was Sim/AI/P2/FireSupportAnchor.cs:348).</summary>
+                public static float SetBackScale = 18f;
+                /// <summary>ai.fireSupportDirector.setReach (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:348).</summary>
+                public static float SetReach = 10f;
+                /// <summary>ai.fireSupportDirector.setDistanceMax2 (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:362).</summary>
+                public static float SetDistanceMax2 = 20f;
+                /// <summary>ai.fireSupportDirector.scoreMinRangeAdd (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:406, Sim/AI/P2/FireSupportAnchor.cs:427).</summary>
+                public static float ScoreMinRangeAdd = 3f;
+                /// <summary>ai.fireSupportDirector.scoreRangeScale (x; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:407).</summary>
+                public static float ScoreRangeScale = 0.95f;
+                /// <summary>ai.fireSupportDirector.scoreRangeScale2 (x; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:407).</summary>
+                public static float ScoreRangeScale2 = 0.25f;
+                /// <summary>ai.fireSupportDirector.scoreThreatAtDivisor (x; nguong, was Sim/AI/P2/FireSupportAnchor.cs:425, Sim/AI/P2/FireSupportAnchor.cs:426).</summary>
+                public static float ScoreThreatAtDivisor = 5f;
+                /// <summary>ai.fireSupportDirector.scoreDistanceMax (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:429).</summary>
+                public static float ScoreDistanceMax = 12f;
+                /// <summary>ai.fireSupportDirector.scoreTraffic (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:430).</summary>
+                public static float ScoreTraffic = 0.5f;
+                /// <summary>ai.fireSupportDirector.scoreI5 (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:432).</summary>
+                public static int ScoreI5 = 6;
+                /// <summary>ai.fireSupportDirector.scoreI6 (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:432).</summary>
+                public static int ScoreI6 = 7;
+                /// <summary>ai.fireSupportDirector.scoreCongestionDivisor (x; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:432).</summary>
+                public static float ScoreCongestionDivisor = 3f;
+                /// <summary>ai.fireSupportDirector.scoreI7 (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:432).</summary>
+                public static int ScoreI7 = 8;
+                /// <summary>ai.fireSupportDirector.scoreI8 (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:432).</summary>
+                public static int ScoreI8 = 9;
+                /// <summary>ai.fireSupportDirector.slotMargin (m; ban_kinh, was Sim/AI/P2/FireSupportAnchor.cs:447).</summary>
+                public static float SlotMargin = 6f;
+            }
+
+            public static partial class FiringPositionScorer
+            {
+                /// <summary>ai.firingPositionScorer.scoreInReachTrue (m; thoi_gian, was Sim/AI/P2/FiringPosition.cs:57).</summary>
+                public static float ScoreInReachTrue = 0.3f;
+                /// <summary>ai.firingPositionScorer.scoreRangeScale (x; ban_kinh, was Sim/AI/P2/FiringPosition.cs:64).</summary>
+                public static float ScoreRangeScale = 4f;
+                /// <summary>ai.firingPositionScorer.scoreFriendsDivisor (x; nguong, was Sim/AI/P2/FiringPosition.cs:92).</summary>
+                public static float ScoreFriendsDivisor = 3f;
+                /// <summary>ai.firingPositionScorer.scoreCrowdDivisor (x; nguong, was Sim/AI/P2/FiringPosition.cs:93).</summary>
+                public static float ScoreCrowdDivisor = 2f;
+                /// <summary>ai.firingPositionScorer.scoreThreatAtDivisor (x; nguong, was Sim/AI/P2/FiringPosition.cs:97, Sim/AI/P2/FiringPosition.cs:98, Sim/AI/P2/FiringPosition.cs:99).</summary>
+                public static float ScoreThreatAtDivisor = 5f;
+                /// <summary>ai.firingPositionScorer.scoreI (s; thoi_gian, was Sim/AI/P2/FiringPosition.cs:101).</summary>
+                public static int ScoreI = 2;
+                /// <summary>ai.firingPositionScorer.scoreI2 (s; thoi_gian, was Sim/AI/P2/FiringPosition.cs:101).</summary>
+                public static int ScoreI2 = 3;
+                /// <summary>ai.firingPositionScorer.scoreI3 (s; thoi_gian, was Sim/AI/P2/FiringPosition.cs:101).</summary>
+                public static int ScoreI3 = 4;
+                /// <summary>ai.firingPositionScorer.scoreI4 (x; sat_thuong, was Sim/AI/P2/FiringPosition.cs:102).</summary>
+                public static int ScoreI4 = 5;
+                /// <summary>ai.firingPositionScorer.scoreI5 (x; sat_thuong, was Sim/AI/P2/FiringPosition.cs:102).</summary>
+                public static int ScoreI5 = 6;
+                /// <summary>ai.firingPositionScorer.scoreI6 (x; sat_thuong, was Sim/AI/P2/FiringPosition.cs:102).</summary>
+                public static int ScoreI6 = 7;
+                /// <summary>ai.firingPositionScorer.scoreI7 (x; sat_thuong, was Sim/AI/P2/FiringPosition.cs:102).</summary>
+                public static int ScoreI7 = 8;
+                /// <summary>ai.firingPositionScorer.scoreI8 (x; sat_thuong, was Sim/AI/P2/FiringPosition.cs:102).</summary>
+                public static int ScoreI8 = 9;
+                /// <summary>ai.firingPositionScorer.scoreI9 (x; sat_thuong, was Sim/AI/P2/FiringPosition.cs:102).</summary>
+                public static int ScoreI9 = 10;
+                /// <summary>ai.firingPositionScorer.directExposureRangeAdd (m; ban_kinh, was Sim/AI/P2/FiringPosition.cs:167).</summary>
+                public static float DirectExposureRangeAdd = 5f;
+                /// <summary>ai.firingPositionScorer.inLineLengthMax (m; ban_kinh, was Sim/AI/P2/FiringPosition.cs:180).</summary>
+                public static float InLineLengthMax = 4f;
+                /// <summary>ai.firingPositionScorer.inLineAlongMax (m; ban_kinh, was Sim/AI/P2/FiringPosition.cs:184).</summary>
+                public static float InLineAlongMax = 2f;
+                /// <summary>ai.firingPositionScorer.inLineLengthSub (m; ban_kinh, was Sim/AI/P2/FiringPosition.cs:184).</summary>
+                public static float InLineLengthSub = 2f;
+            }
+
+            public static partial class FixAndFlank
+            {
+                /// <summary>ai.fixAndFlank.viableAccessRoutesMin (x; nguong, was Sim/AI/P3/CoordinationRules.cs:178).</summary>
+                public static int ViableAccessRoutesMin = 2;
+                /// <summary>ai.fixAndFlank.viableEnemyPowerScale (x; nguong, was Sim/AI/P3/CoordinationRules.cs:178).</summary>
+                public static float ViableEnemyPowerScale = 0.8f;
+            }
+
+            public static partial class FixedDeckDef
+            {
+                /// <summary>ai.fixedDeckDef.vehicleSlots (count; gioi_han_thuc_the, was Sim/Content/FixedDeckDef.cs:61).</summary>
+                public static int VehicleSlots = 8;
+                /// <summary>ai.fixedDeckDef.supportSlots (count; gioi_han_thuc_the, was Sim/Content/FixedDeckDef.cs:62).</summary>
+                public static int SupportSlots = 2;
+                /// <summary>ai.fixedDeckDef.maxLoaned (count; nguong, was Sim/Content/FixedDeckDef.cs:65).</summary>
+                public static int MaxLoaned = 2;
+            }
+
+            public static partial class FrontlineModel
+            {
+                /// <summary>ai.frontlineModel.rebuildWidth (s; thoi_gian, was Sim/AI/P3/FrontlineModel.cs:102).</summary>
+                public static float RebuildWidth = 60f;
+                /// <summary>ai.frontlineModel.rebuildConfidence (s; thoi_gian, was Sim/AI/P3/FrontlineModel.cs:102).</summary>
+                public static float RebuildConfidence = 0.3f;
+                /// <summary>ai.frontlineModel.addSegmentCellScale (x; ban_kinh, was Sim/AI/P3/FrontlineModel.cs:111).</summary>
+                public static float AddSegmentCellScale = 3f;
+                /// <summary>ai.frontlineModel.addSegmentThreatMemoryScale (x; thoi_gian, was Sim/AI/P3/FrontlineModel.cs:125).</summary>
+                public static float AddSegmentThreatMemoryScale = 0.5f;
+                /// <summary>ai.frontlineModel.addSegmentWidthFloor (m; ban_kinh, was Sim/AI/P3/FrontlineModel.cs:143).</summary>
+                public static float AddSegmentWidthFloor = 4f;
+                /// <summary>ai.frontlineModel.addSegmentRadiusScale (x; ban_kinh, was Sim/AI/P3/FrontlineModel.cs:148).</summary>
+                public static float AddSegmentRadiusScale = 1.5f;
+                /// <summary>ai.frontlineModel.addSegmentStrengthFloor (s; thoi_gian, was Sim/AI/P3/FrontlineModel.cs:149, Sim/AI/P3/FrontlineModel.cs:150).</summary>
+                public static float AddSegmentStrengthFloor = 0.1f;
+                /// <summary>ai.frontlineModel.addSegmentWFalse (s; thoi_gian, was Sim/AI/P3/FrontlineModel.cs:152).</summary>
+                public static float AddSegmentWFalse = 0.4f;
+                /// <summary>ai.frontlineModel.addFinalDistanceMax (m; ban_kinh, was Sim/AI/P3/FrontlineModel.cs:159).</summary>
+                public static float AddFinalDistanceMax = 12f;
+                /// <summary>ai.frontlineModel.addFinalNowDivisor (x; thoi_gian, was Sim/AI/P3/FrontlineModel.cs:160).</summary>
+                public static double AddFinalNowDivisor = 10.0;
+                /// <summary>ai.frontlineModel.weakestFriendlyPressureFloor (x; nguong, was Sim/AI/P3/FrontlineModel.cs:200).</summary>
+                public static float WeakestFriendlyPressureFloor = 0.1f;
+            }
+
+            public static partial class HiddenDef
+            {
+                /// <summary>ai.hiddenDef.ctorCutMax (x; nguong, was Sim/Content/SkillDef.cs:194).</summary>
+                public static float CtorCutMax = 0.95f;
+            }
+
+            public static partial class HumanStagger
+            {
+                /// <summary>ai.humanStagger.delayLengthMax (s; thoi_gian, was Sim/AI/P4/PlanningRules.cs:716).</summary>
+                public static int DelayLengthMax = 2;
+            }
+
+            public static partial class IntentOwnership
+            {
+                /// <summary>ai.intentOwnership.pruneCountMax (count; gioi_han_thuc_the, was Sim/AI/P4/PlanningRules.cs:834).</summary>
+                public static int PruneCountMax = 32;
+            }
+
+            public static partial class ModeCombatDoctrine
+            {
+                /// <summary>ai.modeCombatDoctrine.bandLengthMin (m; ban_kinh, was Sim/AI/P2/ModeCombatDoctrine.cs:219).</summary>
+                public static int BandLengthMin = 2;
+                /// <summary>ai.modeCombatDoctrine.bandBan (m; ban_kinh, was Sim/AI/P2/ModeCombatDoctrine.cs:219).</summary>
+                public static float BandBan = 0.65f;
+                /// <summary>ai.modeCombatDoctrine.bandBan2 (m; ban_kinh, was Sim/AI/P2/ModeCombatDoctrine.cs:219).</summary>
+                public static float BandBan2 = 0.85f;
+            }
+
+            public static partial class ModeDoctrineState
+            {
+                /// <summary>ai.modeDoctrineState.reserveShareOfLengthMin (m; ban_kinh, was Sim/AI/P2/ModeCombatDoctrine.cs:538).</summary>
+                public static int ReserveShareOfLengthMin = 2;
+                /// <summary>ai.modeDoctrineState.reserveShareOfBan (share; ban_kinh, was Sim/AI/P2/ModeCombatDoctrine.cs:538).</summary>
+                public static float ReserveShareOfBan = 0.15f;
+                /// <summary>ai.modeDoctrineState.reserveShareOfBan2 (share; ban_kinh, was Sim/AI/P2/ModeCombatDoctrine.cs:538).</summary>
+                public static float ReserveShareOfBan2 = 0.25f;
+            }
+
+            public static partial class ObjectiveRules
+            {
+                /// <summary>ai.objectiveRules.recoveryCostEnemyMin (CP; nguong, was Sim/AI/P3/CoordinationRules.cs:292).</summary>
+                public static float RecoveryCostEnemyMin = 0.5f;
+                /// <summary>ai.objectiveRules.recoveryCostEnemyMax (CP; nguong, was Sim/AI/P3/CoordinationRules.cs:292).</summary>
+                public static float RecoveryCostEnemyMax = 3f;
+                /// <summary>ai.objectiveRules.depthLinesIMax (x; nguong, was Sim/AI/P3/CoordinationRules.cs:303).</summary>
+                public static float DepthLinesIMax = 0.9f;
+            }
+
+            public static partial class OriginEstimate
+            {
+                /// <summary>ai.originEstimate.confidenceShotsDivisor (x; thoi_gian, was Sim/AI/P3/CounterBattery.cs:30).</summary>
+                public static float ConfidenceShotsDivisor = 2f;
+                /// <summary>ai.originEstimate.confidenceMaxExponent (count; thoi_gian, was Sim/AI/P3/CounterBattery.cs:30).</summary>
+                public static float ConfidenceMaxExponent = 0.5f;
+                /// <summary>ai.originEstimate.confidenceHalfLifeSFloor (s; thoi_gian, was Sim/AI/P3/CounterBattery.cs:30).</summary>
+                public static float ConfidenceHalfLifeSFloor = 0.1f;
+            }
+
+            public static partial class PatternMemory
+            {
+                /// <summary>ai.patternMemory.signatureSourceScale (x; ban_kinh, was Sim/AI/P4/PlanningRules.cs:614).</summary>
+                public static int SignatureSourceScale = 131;
+                /// <summary>ai.patternMemory.signatureRadiusDivisor (x; ban_kinh, was Sim/AI/P4/PlanningRules.cs:614).</summary>
+                public static float SignatureRadiusDivisor = 4f;
+            }
+
+            public static partial class PlannedActionBoard
+            {
+                /// <summary>ai.plannedActionBoard.plannedDamageShooterDivisor (x; sat_thuong, was Sim/AI/P3/PlannedActionBoard.cs:96).</summary>
+                public static int PlannedDamageShooterDivisor = 16;
+                /// <summary>ai.plannedActionBoard.planSmokeCountMin (count; gioi_han_thuc_the, was Sim/AI/P3/PlannedActionBoard.cs:181).</summary>
+                public static int PlanSmokeCountMin = 16;
+                /// <summary>ai.plannedActionBoard.pruneCountMin3 (count; gioi_han_thuc_the, was Sim/AI/P3/PlannedActionBoard.cs:219).</summary>
+                public static int PruneCountMin3 = 64;
+            }
+
+            public static partial class ProbeRules
+            {
+                /// <summary>ai.probeRules.judgeProbeStrengthFloor (x; nguong, was Sim/AI/P4/PlanningRules.cs:429).</summary>
+                public static float JudgeProbeStrengthFloor = 0.5f;
+                /// <summary>ai.probeRules.judgeLossShareMin (share; nguong, was Sim/AI/P4/PlanningRules.cs:430).</summary>
+                public static float JudgeLossShareMin = 0.34f;
+                /// <summary>ai.probeRules.envelopeGoalReachFloor (m; ban_kinh, was Sim/AI/P4/PlanningRules.cs:439).</summary>
+                public static float EnvelopeGoalReachFloor = 5f;
+            }
+
+            public static partial class ProcurementDirector
+            {
+                /// <summary>ai.procurementDirector.observeNowCap (count; thoi_gian, was Sim/AI/ProcurementDirector.cs:142).</summary>
+                public static double ObserveNowCap = 5.0;
+                /// <summary>ai.procurementDirector.observeBossTrue (x; nguong, was Sim/AI/ProcurementDirector.cs:152).</summary>
+                public static float ObserveBossTrue = 30f;
+                /// <summary>ai.procurementDirector.observeFrontMin (x; sat_thuong, was Sim/AI/ProcurementDirector.cs:157).</summary>
+                public static int ObserveFrontMin = 4;
+                /// <summary>ai.procurementDirector.trackTimeMax (s; thoi_gian, was Sim/AI/ProcurementDirector.cs:237).</summary>
+                public static double TrackTimeMax = 2.0;
+                /// <summary>ai.procurementDirector.trackScale (x; ban_kinh, was Sim/AI/ProcurementDirector.cs:243).</summary>
+                public static float TrackScale = 1.5f;
+                /// <summary>ai.procurementDirector.desiredLengthMin (m; ban_kinh, was Sim/AI/ProcurementDirector.cs:270).</summary>
+                public static int DesiredLengthMin = 8;
+                /// <summary>ai.procurementDirector.desiredLengthMin2 (m; ban_kinh, was Sim/AI/ProcurementDirector.cs:282).</summary>
+                public static int DesiredLengthMin2 = 5;
+                /// <summary>ai.procurementDirector.scoreCombatValueScale (x; khac, was Sim/AI/ProcurementDirector.cs:380).</summary>
+                public static float ScoreCombatValueScale = 0.5f;
+                /// <summary>ai.procurementDirector.scoreLateScale (x; khac, was Sim/AI/ProcurementDirector.cs:380).</summary>
+                public static float ScoreLateScale = 0.5f;
+                /// <summary>ai.procurementDirector.scoreSaturatedTrue (x; tan_suat, was Sim/AI/ProcurementDirector.cs:383).</summary>
+                public static float ScoreSaturatedTrue = 0.1f;
+                /// <summary>ai.procurementDirector.scoreI (count; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:389).</summary>
+                public static int ScoreI = 2;
+                /// <summary>ai.procurementDirector.scoreI2 (count; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:389).</summary>
+                public static int ScoreI2 = 3;
+                /// <summary>ai.procurementDirector.scoreI3 (count; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:389, Sim/AI/ProcurementDirector.cs:399).</summary>
+                public static int ScoreI3 = 4;
+                /// <summary>ai.procurementDirector.scoreI4 (count; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:389).</summary>
+                public static int ScoreI4 = 5;
+                /// <summary>ai.procurementDirector.scoreWScale (x; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:396, Sim/AI/ProcurementDirector.cs:399).</summary>
+                public static float ScoreWScale = 100f;
+                /// <summary>ai.procurementDirector.scoreRedundancyScale (x; tan_suat, was Sim/AI/ProcurementDirector.cs:404).</summary>
+                public static float ScoreRedundancyScale = 100f;
+                /// <summary>ai.procurementDirector.roleDeficitHaveTotalFloor (x; nguong, was Sim/AI/ProcurementDirector.cs:433).</summary>
+                public static float RoleDeficitHaveTotalFloor = 8f;
+                /// <summary>ai.procurementDirector.roleDeficitI (x; sat_thuong, was Sim/AI/ProcurementDirector.cs:453).</summary>
+                public static int RoleDeficitI = 2;
+                /// <summary>ai.procurementDirector.roleDeficitMaxWeightFloor (count; nguong, was Sim/AI/ProcurementDirector.cs:466).</summary>
+                public static float RoleDeficitMaxWeightFloor = 0.25f;
+                /// <summary>ai.procurementDirector.counterNeedOwnTotalFloor (count; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:481).</summary>
+                public static float CounterNeedOwnTotalFloor = 8f;
+                /// <summary>ai.procurementDirector.counterNeedAnsweredScale (x; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:489).</summary>
+                public static float CounterNeedAnsweredScale = 0.85f;
+                /// <summary>ai.procurementDirector.counterNeedShareFloor (count; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:489).</summary>
+                public static float CounterNeedShareFloor = 0.05f;
+                /// <summary>ai.procurementDirector.survivabilityFitEmaScale (x; sat_thuong, was Sim/AI/ProcurementDirector.cs:516).</summary>
+                public static float SurvivabilityFitEmaScale = 0.4f;
+                /// <summary>ai.procurementDirector.survivabilityFitEmaScale2 (x; sat_thuong, was Sim/AI/ProcurementDirector.cs:516).</summary>
+                public static float SurvivabilityFitEmaScale2 = 0.1f;
+                /// <summary>ai.procurementDirector.synergyCountDivisor (x; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:524).</summary>
+                public static float SynergyCountDivisor = 8f;
+                /// <summary>ai.procurementDirector.tacticPreferenceFitScale (x; khac, was Sim/AI/ProcurementDirector.cs:535).</summary>
+                public static float TacticPreferenceFitScale = 2f;
+                /// <summary>ai.procurementDirector.congestionRadiusDivisor (x; ban_kinh, was Sim/AI/ProcurementDirector.cs:544).</summary>
+                public static float CongestionRadiusDivisor = 3f;
+                /// <summary>ai.procurementDirector.chokeDependencyChokeScale (x; nguong, was Sim/AI/ProcurementDirector.cs:578).</summary>
+                public static float ChokeDependencyChokeScale = 0.5f;
+                /// <summary>ai.procurementDirector.chokeDependencyChokeScale2 (x; nguong, was Sim/AI/ProcurementDirector.cs:578).</summary>
+                public static float ChokeDependencyChokeScale2 = 1.5f;
+                /// <summary>ai.procurementDirector.makePlanDifficultyValue (x; khac, was Sim/AI/ProcurementDirector.cs:598).</summary>
+                public static int MakePlanDifficultyValue = 3;
+                /// <summary>ai.procurementDirector.makePlanDifficultyValue2 (x; khac, was Sim/AI/ProcurementDirector.cs:598).</summary>
+                public static int MakePlanDifficultyValue2 = 4;
+                /// <summary>ai.procurementDirector.makePlanDifficultyValue3 (x; khac, was Sim/AI/ProcurementDirector.cs:598).</summary>
+                public static int MakePlanDifficultyValue3 = 5;
+                /// <summary>ai.procurementDirector.makePlanPassMax (count; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:606).</summary>
+                public static int MakePlanPassMax = 2;
+                /// <summary>ai.procurementDirector.makePlanCountMin (count; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:613).</summary>
+                public static int MakePlanCountMin = 2;
+                /// <summary>ai.procurementDirector.purposeEmaMin (s; thoi_gian, was Sim/AI/ProcurementDirector.cs:636).</summary>
+                public static float PurposeEmaMin = 0.3f;
+                /// <summary>ai.procurementDirector.reserveBankSub (count; gioi_han_thuc_the, was Sim/AI/ProcurementDirector.cs:692).</summary>
+                public static float ReserveBankSub = 3f;
+                /// <summary>ai.procurementDirector.rolesOfW (x; sat_thuong, was Sim/AI/ProcurementDirector.cs:732, Sim/AI/ProcurementDirector.cs:740, Sim/AI/ProcurementDirector.cs:757, Sim/AI/ProcurementDirector.cs:773).</summary>
+                public static float RolesOfW = 0.5f;
+                /// <summary>ai.procurementDirector.rolesOfVisionRangeMin (m; ban_kinh, was Sim/AI/ProcurementDirector.cs:757).</summary>
+                public static float RolesOfVisionRangeMin = 40f;
+                /// <summary>ai.procurementDirector.rolesOfMaxRangeMin (m; ban_kinh, was Sim/AI/ProcurementDirector.cs:773).</summary>
+                public static float RolesOfMaxRangeMin = 60f;
+                /// <summary>ai.procurementDirector.answersSpeedMin (m/s; ban_kinh, was Sim/AI/ProcurementDirector.cs:796).</summary>
+                public static float AnswersSpeedMin = 11f;
+            }
+
+            public static partial class PursuitDiscipline
+            {
+                /// <summary>ai.pursuitDiscipline.interceptAgeFadeSFloor (x; nguong, was Sim/AI/P3/CoordinationRules.cs:213).</summary>
+                public static float InterceptAgeFadeSFloor = 0.1f;
+                /// <summary>ai.pursuitDiscipline.interceptDotScale (x; tan_suat, was Sim/AI/P3/CoordinationRules.cs:215).</summary>
+                public static float InterceptDotScale = 2f;
+            }
+
+            public static partial class RepetitionMemory
+            {
+                /// <summary>ai.repetitionMemory.failLengthMin (m; ban_kinh, was Sim/AI/P4/PlanningRules.cs:379).</summary>
+                public static int FailLengthMin = 2;
+                /// <summary>ai.repetitionMemory.failLengthFalse (m; ban_kinh, was Sim/AI/P4/PlanningRules.cs:379).</summary>
+                public static float FailLengthFalse = 0.35f;
+                /// <summary>ai.repetitionMemory.penaltyAgeExponent (s; thoi_gian, was Sim/AI/P4/PlanningRules.cs:387).</summary>
+                public static float PenaltyAgeExponent = 0.5f;
+                /// <summary>ai.repetitionMemory.pruneCountMax (count; gioi_han_thuc_the, was Sim/AI/P4/PlanningRules.cs:392).</summary>
+                public static int PruneCountMax = 64;
+                /// <summary>ai.repetitionMemory.prunePenaltyMax (s; thoi_gian, was Sim/AI/P4/PlanningRules.cs:395).</summary>
+                public static float PrunePenaltyMax = 0.01f;
+            }
+
+            public static partial class RouteBook
+            {
+                /// <summary>ai.routeBook.pruneCountMax (count; gioi_han_thuc_the, was Sim/AI/P3/CounterBattery.cs:156).</summary>
+                public static int PruneCountMax = 64;
+            }
+
+            public static partial class ScoutPlanner
+            {
+                /// <summary>ai.scoutPlanner.waitScoutMaxWaitSCap (s; thoi_gian, was Sim/AI/P3/CoordinationRules.cs:171).</summary>
+                public static float WaitScoutMaxWaitSCap = 2f;
+            }
+
+            public static partial class ShallowPlanner
+            {
+                /// <summary>ai.shallowPlanner.scoreRepeatPenaltyMax (x; nguong, was Sim/AI/P4/PlanningRules.cs:234).</summary>
+                public static float ScoreRepeatPenaltyMax = 0.9f;
+            }
+
+            public static partial class ShootAndScoot
+            {
+                /// <summary>ai.shootAndScoot.salvosLengthFalse (m; ban_kinh, was Sim/AI/P3/CoordinationRules.cs:348).</summary>
+                public static int SalvosLengthFalse = 2;
+                /// <summary>ai.shootAndScoot.distanceLengthFalse (m; ban_kinh, was Sim/AI/P3/CoordinationRules.cs:355).</summary>
+                public static float DistanceLengthFalse = 12f;
+                /// <summary>ai.shootAndScoot.distanceGunIdScale (x; ban_kinh, was Sim/AI/P3/CoordinationRules.cs:356).</summary>
+                public static int DistanceGunIdScale = 37;
+                /// <summary>ai.shootAndScoot.distanceAbsMod (m; ban_kinh, was Sim/AI/P3/CoordinationRules.cs:356).</summary>
+                public static int DistanceAbsMod = 101;
+            }
+
+            public static partial class SimWorld
+            {
+                /// <summary>ai.simWorld.issueAlongCorridorRepathTimer (s; thoi_gian, was Sim/SimWorld.Traffic.cs:36).</summary>
+                public static float IssueAlongCorridorRepathTimer = 0.5f;
+                /// <summary>ai.simWorld.ctorCellSize (m; ban_kinh, was Sim/SimWorld.cs:51).</summary>
+                public static float CtorCellSize = 2f;
+                /// <summary>ai.simWorld.ctorCountMin (count; gioi_han_thuc_the, was Sim/SimWorld.cs:53).</summary>
+                public static int CtorCountMin = 3;
+                /// <summary>ai.simWorld.spawnVehicleMaxRings (x; khac, was Sim/SimWorld.cs:464).</summary>
+                public static int SpawnVehicleMaxRings = 8;
+                /// <summary>ai.simWorld.spawnVehicleRegionSizeScale (x; sat_thuong, was Sim/SimWorld.cs:468).</summary>
+                public static int SpawnVehicleRegionSizeScale = 8;
+                /// <summary>ai.simWorld.spawnVehicleMaxRings2 (x; sat_thuong, was Sim/SimWorld.cs:468).</summary>
+                public static int SpawnVehicleMaxRings2 = 12;
+                /// <summary>ai.simWorld.spawnVehicleTimeAdd (s; thoi_gian, was Sim/SimWorld.cs:516).</summary>
+                public static double SpawnVehicleTimeAdd = 5.0;
+                /// <summary>ai.simWorld.upgradeDamageFloor (x; sat_thuong, was Sim/SimWorld.cs:600).</summary>
+                public static float UpgradeDamageFloor = 0.05f;
+                /// <summary>ai.simWorld.upgradeRateFloor (x; tan_suat, was Sim/SimWorld.cs:601).</summary>
+                public static float UpgradeRateFloor = 0.05f;
+                /// <summary>ai.simWorld.clearSpotHullBoundAdd (m; ban_kinh, was Sim/SimWorld.cs:619, Sim/SimWorld.cs:633).</summary>
+                public static float ClearSpotHullBoundAdd = 0.5f;
+                /// <summary>ai.simWorld.footprintOpenKMax (x; sat_thuong, was Sim/SimWorld.cs:646).</summary>
+                public static int FootprintOpenKMax = 8;
+                /// <summary>ai.simWorld.footprintOpenKDivisor (x; sat_thuong, was Sim/SimWorld.cs:648).</summary>
+                public static float FootprintOpenKDivisor = 8f;
+                /// <summary>ai.simWorld.freeSpotHullBoundScale (x; ban_kinh, was Sim/SimWorld.cs:673).</summary>
+                public static float FreeSpotHullBoundScale = 0.8f;
+                /// <summary>ai.simWorld.applyStoresShareMin (share; nguong, was Sim/SimWorld.cs:833).</summary>
+                public static float ApplyStoresShareMin = 0.999f;
+                /// <summary>ai.simWorld.profiledStepNowScale (x; thoi_gian, was Sim/SimWorld.cs:941).</summary>
+                public static double ProfiledStepNowScale = 1000.0;
+                /// <summary>ai.simWorld.refillTimeAdd (s; thoi_gian, was Sim/SimWorld.cs:1016, Sim/SimWorld.cs:1021).</summary>
+                public static double RefillTimeAdd = 2.0;
+                /// <summary>ai.simWorld.refillAliveScale (x; thoi_gian, was Sim/SimWorld.cs:1021).</summary>
+                public static int RefillAliveScale = 2;
+                /// <summary>ai.simWorld.crushVegetationSpeedMax (m/s; tan_suat, was Sim/SimWorld.cs:1068).</summary>
+                public static float CrushVegetationSpeedMax = 0.5f;
+                /// <summary>ai.simWorld.crushVegetationHullRadiusAdd (m; ban_kinh, was Sim/SimWorld.cs:1078).</summary>
+                public static float CrushVegetationHullRadiusAdd = 0.3f;
+                /// <summary>ai.simWorld.crushVegetationRadiusScale (x; ban_kinh, was Sim/SimWorld.cs:1078).</summary>
+                public static float CrushVegetationRadiusScale = 0.5f;
+                /// <summary>ai.simWorld.pathToRepathTimer (s; thoi_gian, was Sim/SimWorld.cs:1116).</summary>
+                public static float PathToRepathTimer = 0.5f;
+                /// <summary>ai.simWorld.escapeRouteDistanceFloor (m; ban_kinh, was Sim/SimWorld.cs:1184).</summary>
+                public static float EscapeRouteDistanceFloor = 6f;
+                /// <summary>ai.simWorld.escapeRouteDistanceSquaredMin (m; ban_kinh, was Sim/SimWorld.cs:1194).</summary>
+                public static float EscapeRouteDistanceSquaredMin = 16f;
+                /// <summary>ai.simWorld.escapeRouteDMin (m; ban_kinh, was Sim/SimWorld.cs:1200).</summary>
+                public static float EscapeRouteDMin = 4f;
+                /// <summary>ai.simWorld.escapeRouteD (m; ban_kinh, was Sim/SimWorld.cs:1200).</summary>
+                public static float EscapeRouteD = 3f;
+                /// <summary>ai.simWorld.escapeRouteMovedScale (x; ban_kinh, was Sim/SimWorld.cs:1208).</summary>
+                public static float EscapeRouteMovedScale = 0.2f;
+                /// <summary>ai.simWorld.escapeRouteEdgeSub (m; ban_kinh, was Sim/SimWorld.cs:1208).</summary>
+                public static float EscapeRouteEdgeSub = 10f;
+                /// <summary>ai.simWorld.issueGroupMoveSpacing (m; ban_kinh, was Sim/SimWorld.cs:1240).</summary>
+                public static float IssueGroupMoveSpacing = 1.5f;
+                /// <summary>ai.simWorld.issueGroupMoveRadiusAdd (m; ban_kinh, was Sim/SimWorld.cs:1241).</summary>
+                public static float IssueGroupMoveRadiusAdd = 1.5f;
+                /// <summary>ai.simWorld.issueGroupMoveDistanceSquaredMax (m; ban_kinh, was Sim/SimWorld.cs:1250).</summary>
+                public static float IssueGroupMoveDistanceSquaredMax = 0.25f;
+                /// <summary>ai.simWorld.refreshVisibilityStatMax (s; thoi_gian, was Sim/SimWorld.cs:1352).</summary>
+                public static float RefreshVisibilityStatMax = 0.5f;
+                /// <summary>ai.simWorld.staticFootprintMaxScale (x; ban_kinh, was Sim/SimWorld.cs:1455).</summary>
+                public static float StaticFootprintMaxScale = 0.8f;
+            }
+
+            public static partial class Squad
+            {
+                /// <summary>ai.squad.p3RouteAction (count; gioi_han_thuc_the, was Sim/AI/P3/SquadLayer.P3.cs:29).</summary>
+                public static int P3RouteAction = 255;
+            }
+
+            public static partial class SquadLayer
+            {
+                /// <summary>ai.squadLayer.placementOfSpeedMin (m/s; tan_suat, was Sim/AI/P2/SquadFormation.cs:40).</summary>
+                public static float PlacementOfSpeedMin = 11f;
+                /// <summary>ai.squadLayer.requiredWidthRadius (m; ban_kinh, was Sim/AI/P2/SquadFormation.cs:90).</summary>
+                public static float RequiredWidthRadius = 1.5f;
+                /// <summary>ai.squadLayer.requiredWidthRadiusAdd (m; ban_kinh, was Sim/AI/P2/SquadFormation.cs:97).</summary>
+                public static float RequiredWidthRadiusAdd = 2f;
+                /// <summary>ai.squadLayer.requiredWidthNScale (x; ban_kinh, was Sim/AI/P2/SquadFormation.cs:98).</summary>
+                public static float RequiredWidthNScale = 0.7f;
+                /// <summary>ai.squadLayer.chokeAheadWidthAdd (m; ban_kinh, was Sim/AI/P2/SquadFormation.cs:117).</summary>
+                public static float ChokeAheadWidthAdd = 6f;
+                /// <summary>ai.squadLayer.spacingOfModeValue (m; ban_kinh, was Sim/AI/P2/SquadFormation.cs:194).</summary>
+                public static float SpacingOfModeValue = 9f;
+                /// <summary>ai.squadLayer.spacingOfModeValue2 (m; ban_kinh, was Sim/AI/P2/SquadFormation.cs:195).</summary>
+                public static float SpacingOfModeValue2 = 5f;
+                /// <summary>ai.squadLayer.spacingOfModeValue3 (m; ban_kinh, was Sim/AI/P2/SquadFormation.cs:196).</summary>
+                public static float SpacingOfModeValue3 = 6f;
+                /// <summary>ai.squadLayer.formationSlotsIScale (x; ban_kinh, was Sim/AI/P2/SquadFormation.cs:227).</summary>
+                public static float FormationSlotsIScale = 0.7f;
+                /// <summary>ai.squadLayer.formationSlotsRScale (x; ban_kinh, was Sim/AI/P2/SquadFormation.cs:232).</summary>
+                public static float FormationSlotsRScale = 0.7f;
+                /// <summary>ai.squadLayer.formationSlotsSpacingScale (x; ban_kinh, was Sim/AI/P2/SquadFormation.cs:232).</summary>
+                public static float FormationSlotsSpacingScale = 0.5f;
+                /// <summary>ai.squadLayer.formationSlotsRadius (count; ban_kinh, was Sim/AI/P2/SquadFormation.cs:237).</summary>
+                public static float FormationSlotsRadius = 1.5f;
+                /// <summary>ai.squadLayer.formationSlotsXDivisor (x; gioi_han_thuc_the, was Sim/AI/P2/SquadFormation.cs:266).</summary>
+                public static float FormationSlotsXDivisor = 120f;
+                /// <summary>ai.squadLayer.assignSlotsPassMax (count; gioi_han_thuc_the, was Sim/AI/P2/SquadFormation.cs:308).</summary>
+                public static int AssignSlotsPassMax = 2;
+                /// <summary>ai.squadLayer.slotsP2Spacing (count; ban_kinh, was Sim/AI/P2/SquadFormation.cs:353).</summary>
+                public static float SlotsP2Spacing = 2f;
+                /// <summary>ai.squadLayer.slotsP2CountMin (count; gioi_han_thuc_the, was Sim/AI/P2/SquadFormation.cs:365).</summary>
+                public static int SlotsP2CountMin = 2;
+                /// <summary>ai.squadLayer.slotsP2PacketDelayMin (s; thoi_gian, was Sim/AI/P2/SquadFormation.cs:388).</summary>
+                public static float SlotsP2PacketDelayMin = 2f;
+                /// <summary>ai.squadLayer.slotsP2PacketDelayMax (s; thoi_gian, was Sim/AI/P2/SquadFormation.cs:388).</summary>
+                public static float SlotsP2PacketDelayMax = 4f;
+                /// <summary>ai.squadLayer.slotsP2Margin (count; gioi_han_thuc_the, was Sim/AI/P2/SquadFormation.cs:397).</summary>
+                public static float SlotsP2Margin = 4f;
+                /// <summary>ai.squadLayer.slotsP2ReachFloor (m; ban_kinh, was Sim/AI/P2/SquadFormation.cs:405).</summary>
+                public static float SlotsP2ReachFloor = 20f;
+                /// <summary>ai.squadLayer.slotsP2ReachScale (x; ban_kinh, was Sim/AI/P2/SquadFormation.cs:405).</summary>
+                public static float SlotsP2ReachScale = 0.8f;
+                /// <summary>ai.squadLayer.slotsP2BeforeLerp (count; gioi_han_thuc_the, was Sim/AI/P2/SquadFormation.cs:411).</summary>
+                public static float SlotsP2BeforeLerp = 0.5f;
+                /// <summary>ai.squadLayer.enlistOneSpeedMin (m/s; tan_suat, was Sim/AI/P2/SquadManagement.cs:111).</summary>
+                public static float EnlistOneSpeedMin = 11f;
+                /// <summary>ai.squadLayer.rendezvousRendezvousBackAdd (count; gioi_han_thuc_the, was Sim/AI/P2/SquadManagement.cs:206).</summary>
+                public static float RendezvousRendezvousBackAdd = 4f;
+                /// <summary>ai.squadLayer.rendezvousRendezvousBackSub (count; gioi_han_thuc_the, was Sim/AI/P2/SquadManagement.cs:206).</summary>
+                public static float RendezvousRendezvousBackSub = 3f;
+                /// <summary>ai.squadLayer.rendezvousMargin (x; khac, was Sim/AI/P2/SquadManagement.cs:211, Sim/AI/P2/SquadManagement.cs:223).</summary>
+                public static float RendezvousMargin = 6f;
+                /// <summary>ai.squadLayer.rendezvousThreatScale (x; gioi_han_thuc_the, was Sim/AI/P2/SquadManagement.cs:216).</summary>
+                public static float RendezvousThreatScale = 2f;
+                /// <summary>ai.squadLayer.rendezvousRouteScale (x; gioi_han_thuc_the, was Sim/AI/P2/SquadManagement.cs:216).</summary>
+                public static float RendezvousRouteScale = 3f;
+                /// <summary>ai.squadLayer.rendezvousAbsScale (x; gioi_han_thuc_the, was Sim/AI/P2/SquadManagement.cs:216).</summary>
+                public static float RendezvousAbsScale = 0.05f;
+                /// <summary>ai.squadLayer.rendezvousAbsScale2 (x; gioi_han_thuc_the, was Sim/AI/P2/SquadManagement.cs:216).</summary>
+                public static float RendezvousAbsScale2 = 0.1f;
+                /// <summary>ai.squadLayer.servePendingDistanceMax (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:240).</summary>
+                public static float ServePendingDistanceMax = 6f;
+                /// <summary>ai.squadLayer.servePendingDistanceMax2 (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:240).</summary>
+                public static float ServePendingDistanceMax2 = 20f;
+                /// <summary>ai.squadLayer.servePendingDistanceMin (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:255, Sim/AI/P2/SquadManagement.cs:257).</summary>
+                public static float ServePendingDistanceMin = 30f;
+                /// <summary>ai.squadLayer.servePendingIntervalScale (x; thoi_gian, was Sim/AI/P2/SquadManagement.cs:261).</summary>
+                public static float ServePendingIntervalScale = 2f;
+                /// <summary>ai.squadLayer.servePendingIntervalAdd (s; thoi_gian, was Sim/AI/P2/SquadManagement.cs:261).</summary>
+                public static float ServePendingIntervalAdd = 0.5f;
+                /// <summary>ai.squadLayer.understrengthPowerFloor (x; nguong, was Sim/AI/P2/SquadManagement.cs:313).</summary>
+                public static float UnderstrengthPowerFloor = 0.5f;
+                /// <summary>ai.squadLayer.compatibleTasksDistanceMax (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:326).</summary>
+                public static float CompatibleTasksDistanceMax = 30f;
+                /// <summary>ai.squadLayer.splitI (count; gioi_han_thuc_the, was Sim/AI/P2/SquadManagement.cs:370).</summary>
+                public static int SplitI = 2;
+                /// <summary>ai.squadLayer.updateLifecycleTimeMax (s; thoi_gian, was Sim/AI/P2/SquadManagement.cs:400).</summary>
+                public static double UpdateLifecycleTimeMax = 3.0;
+                /// <summary>ai.squadLayer.cohesionOfBeforeSub (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:455).</summary>
+                public static float CohesionOfBeforeSub = 0.3f;
+                /// <summary>ai.squadLayer.cohesionOfDistanceMax (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:457).</summary>
+                public static float CohesionOfDistanceMax = 15f;
+                /// <summary>ai.squadLayer.cohesionOfNowMax (s; thoi_gian, was Sim/AI/P2/SquadManagement.cs:458).</summary>
+                public static double CohesionOfNowMax = 3.0;
+                /// <summary>ai.squadLayer.cohesionOfI (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:482).</summary>
+                public static int CohesionOfI = 2;
+                /// <summary>ai.squadLayer.powerOfCooldownFloor (s; sat_thuong, was Sim/AI/P2/SquadManagement.cs:506).</summary>
+                public static float PowerOfCooldownFloor = 0.2f;
+                /// <summary>ai.squadLayer.powerOfEstimateFloor (x; sat_thuong, was Sim/AI/P2/SquadManagement.cs:507).</summary>
+                public static float PowerOfEstimateFloor = 0.05f;
+                /// <summary>ai.squadLayer.powerOfHpDivisor (x; sat_thuong, was Sim/AI/P2/SquadManagement.cs:508).</summary>
+                public static float PowerOfHpDivisor = 100f;
+                /// <summary>ai.squadLayer.powerOfFrontScale (x; sat_thuong, was Sim/AI/P2/SquadManagement.cs:508).</summary>
+                public static float PowerOfFrontScale = 0.25f;
+                /// <summary>ai.squadLayer.powerOfRangeDivisor (x; ban_kinh, was Sim/AI/P2/SquadManagement.cs:511).</summary>
+                public static float PowerOfRangeDivisor = 40f;
+                /// <summary>ai.squadLayer.powerOfRangeMin (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:511).</summary>
+                public static float PowerOfRangeMin = 0.5f;
+                /// <summary>ai.squadLayer.powerOfRangeMax (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:511).</summary>
+                public static float PowerOfRangeMax = 1.5f;
+                /// <summary>ai.squadLayer.regroupPointBack2 (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:535).</summary>
+                public static float RegroupPointBack2 = 8f;
+                /// <summary>ai.squadLayer.regroupPointBack3 (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:535).</summary>
+                public static float RegroupPointBack3 = 16f;
+                /// <summary>ai.squadLayer.regroupPointLat2 (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:536).</summary>
+                public static float RegroupPointLat2 = 8f;
+                /// <summary>ai.squadLayer.regroupPointLat3 (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:536).</summary>
+                public static float RegroupPointLat3 = -8f;
+                /// <summary>ai.squadLayer.regroupPointMargin (x; khac, was Sim/AI/P2/SquadManagement.cs:538).</summary>
+                public static float RegroupPointMargin = 6f;
+                /// <summary>ai.squadLayer.regroupPointWidthAdd (m; ban_kinh, was Sim/AI/P2/SquadManagement.cs:546).</summary>
+                public static float RegroupPointWidthAdd = 4f;
+                /// <summary>ai.squadLayer.regroupPointSplashScale (x; sat_thuong, was Sim/AI/P2/SquadManagement.cs:547).</summary>
+                public static float RegroupPointSplashScale = 3f;
+                /// <summary>ai.squadLayer.regroupPointRouteScale (x; sat_thuong, was Sim/AI/P2/SquadManagement.cs:547).</summary>
+                public static float RegroupPointRouteScale = 2f;
+                /// <summary>ai.squadLayer.regroupPointChokeScale (x; sat_thuong, was Sim/AI/P2/SquadManagement.cs:547).</summary>
+                public static float RegroupPointChokeScale = 3f;
+                /// <summary>ai.squadLayer.regroupPointBackScale (x; sat_thuong, was Sim/AI/P2/SquadManagement.cs:547).</summary>
+                public static float RegroupPointBackScale = 0.05f;
+                /// <summary>ai.squadLayer.regroupPointAbsScale (x; sat_thuong, was Sim/AI/P2/SquadManagement.cs:547).</summary>
+                public static float RegroupPointAbsScale = 0.02f;
+                /// <summary>ai.squadLayer.slowestSpeedSlowTrue (m/s; tan_suat, was Sim/AI/P2/SquadManagement.cs:581).</summary>
+                public static float SlowestSpeedSlowTrue = 5f;
+                /// <summary>ai.squadLayer.confidenceOfScale (x; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:61).</summary>
+                public static float ConfidenceOfScale = 80f;
+                /// <summary>ai.squadLayer.confidenceOfHasAtFalse (x; sat_thuong, was Sim/AI/P3/SquadLayer.P3.cs:74).</summary>
+                public static float ConfidenceOfHasAtFalse = 0.8f;
+                /// <summary>ai.squadLayer.confidenceOfScale2 (x; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:82).</summary>
+                public static float ConfidenceOfScale2 = 40f;
+                /// <summary>ai.squadLayer.confidenceOfRadius (s; thoi_gian, was Sim/AI/P3/SquadLayer.P3.cs:90).</summary>
+                public static float ConfidenceOfRadius = 30f;
+                /// <summary>ai.squadLayer.adjustP3HeavyShareMin (share; nguong, was Sim/AI/P3/SquadLayer.P3.cs:107).</summary>
+                public static float AdjustP3HeavyShareMin = 0.5f;
+                /// <summary>ai.squadLayer.adjustP3CostsMin (x; nguong, was Sim/AI/P3/SquadLayer.P3.cs:129).</summary>
+                public static float AdjustP3CostsMin = 0.01f;
+                /// <summary>ai.squadLayer.adjustP3PtsScale (x; gioi_han_thuc_the, was Sim/AI/P3/SquadLayer.P3.cs:134).</summary>
+                public static float AdjustP3PtsScale = -2f;
+                /// <summary>ai.squadLayer.adjustP3Extra (count; gioi_han_thuc_the, was Sim/AI/P3/SquadLayer.P3.cs:135).</summary>
+                public static float AdjustP3Extra = 20f;
+                /// <summary>ai.squadLayer.adjustP3CautiousFloor (x; nguong, was Sim/AI/P3/SquadLayer.P3.cs:153).</summary>
+                public static float AdjustP3CautiousFloor = 0.01f;
+                /// <summary>ai.squadLayer.adjustP3ScoreMax (x; nguong, was Sim/AI/P3/SquadLayer.P3.cs:161).</summary>
+                public static float AdjustP3ScoreMax = 100f;
+                /// <summary>ai.squadLayer.congestionAlongReachAdd (m; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:199).</summary>
+                public static float CongestionAlongReachAdd = 4f;
+                /// <summary>ai.squadLayer.congestionAlongHullWidth (m; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:201).</summary>
+                public static float CongestionAlongHullWidth = 3f;
+                /// <summary>ai.squadLayer.congestionAlongLanesScale (x; nguong, was Sim/AI/P3/SquadLayer.P3.cs:201).</summary>
+                public static float CongestionAlongLanesScale = 3f;
+                /// <summary>ai.squadLayer.congestionAlongMinScale (x; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:204).</summary>
+                public static float CongestionAlongMinScale = 0.2f;
+                /// <summary>ai.squadLayer.congestionAlongDensityCap (count; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:204).</summary>
+                public static int CongestionAlongDensityCap = 3;
+                /// <summary>ai.squadLayer.congestionAlongCostCap (count; tran, was Sim/AI/P3/SquadLayer.P3.cs:205).</summary>
+                public static float CongestionAlongCostCap = 3f;
+                /// <summary>ai.squadLayer.trackRouteP3P3RouteAction (count; gioi_han_thuc_the, was Sim/AI/P3/SquadLayer.P3.cs:225).</summary>
+                public static int TrackRouteP3P3RouteAction = 255;
+                /// <summary>ai.squadLayer.trackRouteP3RoutePenaltyMin (s; thoi_gian, was Sim/AI/P3/SquadLayer.P3.cs:231).</summary>
+                public static float TrackRouteP3RoutePenaltyMin = 0.1f;
+                /// <summary>ai.squadLayer.stageP3Seconds (s; thoi_gian, was Sim/AI/P3/SquadLayer.P3.cs:281).</summary>
+                public static float StageP3Seconds = 1.5f;
+                /// <summary>ai.squadLayer.fixP3ReachFloor (m; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:296).</summary>
+                public static float FixP3ReachFloor = 10f;
+                /// <summary>ai.squadLayer.pursuitP3ReachFloor (m; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:312).</summary>
+                public static float PursuitP3ReachFloor = 10f;
+                /// <summary>ai.squadLayer.pursuitP3DistanceMax (m; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:328).</summary>
+                public static float PursuitP3DistanceMax = 30f;
+                /// <summary>ai.squadLayer.cutoffP3DistanceMax (m; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:376).</summary>
+                public static float CutoffP3DistanceMax = 25f;
+                /// <summary>ai.squadLayer.cutoffP3WidthAdd (m; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:391).</summary>
+                public static float CutoffP3WidthAdd = 10f;
+                /// <summary>ai.squadLayer.antiAirSquadNScale (x; gioi_han_thuc_the, was Sim/AI/P3/SquadLayer.P3.cs:405).</summary>
+                public static int AntiAirSquadNScale = 2;
+                /// <summary>ai.squadLayer.focusShareP3StrengthScale (x; sat_thuong, was Sim/AI/P3/SquadLayer.P3.cs:433).</summary>
+                public static float FocusShareP3StrengthScale = 0.5f;
+                /// <summary>ai.squadLayer.stanceP3HoldFireFalse (x; nguong, was Sim/AI/P3/SquadLayer.P3.cs:461).</summary>
+                public static float StanceP3HoldFireFalse = 0.6f;
+                /// <summary>ai.squadLayer.stanceP3LengthMin (m; ban_kinh, was Sim/AI/P3/SquadLayer.P3.cs:462).</summary>
+                public static int StanceP3LengthMin = 2;
+                /// <summary>ai.squadLayer.unitsP3Seconds (s; thoi_gian, was Sim/AI/P3/SquadLayer.P3.cs:508).</summary>
+                public static float UnitsP3Seconds = 1.5f;
+                /// <summary>ai.squadLayer.unitsP3CountMax (count; gioi_han_thuc_the, was Sim/AI/P3/SquadLayer.P3.cs:510).</summary>
+                public static int UnitsP3CountMax = 2;
+                /// <summary>ai.squadLayer.unitsP3SuitBMax (count; gioi_han_thuc_the, was Sim/AI/P3/SquadLayer.P3.cs:521).</summary>
+                public static float UnitsP3SuitBMax = 0.2f;
+                /// <summary>ai.squadLayer.disperseHoldP3SpreadAdd (s; thoi_gian, was Sim/AI/P3/SquadLayer.P3.cs:544).</summary>
+                public static float DisperseHoldP3SpreadAdd = 20f;
+                /// <summary>ai.squadLayer.disperseHoldP3RadiusAdd (m; thoi_gian, was Sim/AI/P3/SquadLayer.P3.cs:547).</summary>
+                public static float DisperseHoldP3RadiusAdd = 10f;
+                /// <summary>ai.squadLayer.adjustP4Salt (s; thoi_gian, was Sim/AI/P4/SquadLayer.P4.cs:47).</summary>
+                public static int AdjustP4Salt = 3;
+                /// <summary>ai.squadLayer.adjustP4Points4 (s; thoi_gian, was Sim/AI/P4/SquadLayer.P4.cs:69).</summary>
+                public static float AdjustP4Points4 = 5f;
+                /// <summary>ai.squadLayer.adjustP4ScoreMax (x; nguong, was Sim/AI/P4/SquadLayer.P4.cs:75).</summary>
+                public static float AdjustP4ScoreMax = 100f;
+                /// <summary>ai.squadLayer.envelopeP4AgeMin (s; thoi_gian, was Sim/AI/P4/SquadLayer.P4.cs:88).</summary>
+                public static float EnvelopeP4AgeMin = 20f;
+                /// <summary>ai.squadLayer.envelopeP4ReachFloor (m; ban_kinh, was Sim/AI/P4/SquadLayer.P4.cs:96).</summary>
+                public static float EnvelopeP4ReachFloor = 10f;
+                /// <summary>ai.squadLayer.escapeExitP4WarningKeyScale (x; thoi_gian, was Sim/AI/P4/SquadLayer.P4.cs:116).</summary>
+                public static int EscapeExitP4WarningKeyScale = 31;
+                /// <summary>ai.squadLayer.escapeExitP4RadiusAdd (m; ban_kinh, was Sim/AI/P4/SquadLayer.P4.cs:127, Sim/AI/P4/SquadLayer.P4.cs:141).</summary>
+                public static float EscapeExitP4RadiusAdd = 2f;
+                /// <summary>ai.squadLayer.escapeExitP4Margin (m; ban_kinh, was Sim/AI/P4/SquadLayer.P4.cs:139).</summary>
+                public static float EscapeExitP4Margin = 4f;
+                /// <summary>ai.squadLayer.escapeExitP4DistanceSquaredMin (m; ban_kinh, was Sim/AI/P4/SquadLayer.P4.cs:139).</summary>
+                public static float EscapeExitP4DistanceSquaredMin = 0.01f;
+                /// <summary>ai.squadLayer.ownerKeyTeamScale (x; gioi_han_thuc_the, was Sim/AI/SquadLayer.Traffic.cs:36).</summary>
+                public static int OwnerKeyTeamScale = 65536;
+                /// <summary>ai.squadLayer.squadRightOfWayHeavyScale (x; gioi_han_thuc_the, was Sim/AI/SquadLayer.Traffic.cs:48).</summary>
+                public static int SquadRightOfWayHeavyScale = 2;
+                /// <summary>ai.squadLayer.squadRightOfWayArtilleryScale (x; gioi_han_thuc_the, was Sim/AI/SquadLayer.Traffic.cs:51).</summary>
+                public static int SquadRightOfWayArtilleryScale = 2;
+                /// <summary>ai.squadLayer.planTrafficHullHalfScale (x; ban_kinh, was Sim/AI/SquadLayer.Traffic.cs:92).</summary>
+                public static float PlanTrafficHullHalfScale = 2f;
+                /// <summary>ai.squadLayer.planTrafficOverloadedFalse (x; khac, was Sim/AI/SquadLayer.Traffic.cs:127).</summary>
+                public static int PlanTrafficOverloadedFalse = 2;
+                /// <summary>ai.squadLayer.planTrafficLanesMax (x; nguong, was Sim/AI/SquadLayer.Traffic.cs:127).</summary>
+                public static int PlanTrafficLanesMax = 4;
+                /// <summary>ai.squadLayer.issueSlotChokeBatchGapSMin (m; ban_kinh, was Sim/AI/SquadLayer.Traffic.cs:152).</summary>
+                public static float IssueSlotChokeBatchGapSMin = 2f;
+                /// <summary>ai.squadLayer.issueSlotChokeBatchGapSMax (m; ban_kinh, was Sim/AI/SquadLayer.Traffic.cs:152).</summary>
+                public static float IssueSlotChokeBatchGapSMax = 4f;
+                /// <summary>ai.squadLayer.unsharedSlotRingMax (x; nguong, was Sim/AI/SquadLayer.Traffic.cs:177).</summary>
+                public static int UnsharedSlotRingMax = 4;
+                /// <summary>ai.squadLayer.unsharedSlotRingScale (x; nguong, was Sim/AI/SquadLayer.Traffic.cs:179).</summary>
+                public static int UnsharedSlotRingScale = 8;
+                /// <summary>ai.squadLayer.unsharedSlotRingScale2 (x; nguong, was Sim/AI/SquadLayer.Traffic.cs:183).</summary>
+                public static float UnsharedSlotRingScale2 = 2.5f;
+                /// <summary>ai.squadLayer.queueSpotMargin (x; khac, was Sim/AI/SquadLayer.Traffic.cs:205).</summary>
+                public static float QueueSpotMargin = 4f;
+                /// <summary>ai.squadLayer.trafficTickLengthAdd (ticks; thoi_gian, was Sim/AI/SquadLayer.Traffic.cs:236).</summary>
+                public static float TrafficTickLengthAdd = 6f;
+                /// <summary>ai.squadLayer.trafficTickIntervalScale (x; thoi_gian, was Sim/AI/SquadLayer.Traffic.cs:247).</summary>
+                public static float TrafficTickIntervalScale = 2f;
+                /// <summary>ai.squadLayer.trafficTickIntervalAdd (ticks; thoi_gian, was Sim/AI/SquadLayer.Traffic.cs:247).</summary>
+                public static float TrafficTickIntervalAdd = 0.5f;
+                /// <summary>ai.squadLayer.trafficTickNowMin (ticks; thoi_gian, was Sim/AI/SquadLayer.Traffic.cs:251).</summary>
+                public static double TrafficTickNowMin = 30.0;
+                /// <summary>ai.squadLayer.unitsReachScale (x; ban_kinh, was Sim/AI/SquadLayer.Units.cs:35).</summary>
+                public static float UnitsReachScale = 1.5f;
+                /// <summary>ai.squadLayer.unitsVisionRangeScale (x; ban_kinh, was Sim/AI/SquadLayer.Units.cs:43).</summary>
+                public static float UnitsVisionRangeScale = 0.75f;
+                /// <summary>ai.squadLayer.unitsDirectionScale (x; ban_kinh, was Sim/AI/SquadLayer.Units.cs:45).</summary>
+                public static float UnitsDirectionScale = 0.9f;
+                /// <summary>ai.squadLayer.unitsMargin (m; ban_kinh, was Sim/AI/SquadLayer.Units.cs:45).</summary>
+                public static float UnitsMargin = 6f;
+                /// <summary>ai.squadLayer.explainTargetMaxHpScale (x; sat_thuong, was Sim/AI/SquadLayer.Units.cs:74).</summary>
+                public static float ExplainTargetMaxHpScale = 0.3f;
+                /// <summary>ai.squadLayer.shortMoveRadiusAdd (m; ban_kinh, was Sim/AI/SquadLayer.Units.cs:99).</summary>
+                public static float ShortMoveRadiusAdd = 4f;
+                /// <summary>ai.squadLayer.shortMoveMargin (x; khac, was Sim/AI/SquadLayer.Units.cs:120).</summary>
+                public static float ShortMoveMargin = 4f;
+                /// <summary>ai.squadLayer.crowdedDistanceCap (m; ban_kinh, was Sim/AI/SquadLayer.Units.cs:131).</summary>
+                public static float CrowdedDistanceCap = 40f;
+                /// <summary>ai.squadLayer.crowdedDistanceMax (m; ban_kinh, was Sim/AI/SquadLayer.Units.cs:136).</summary>
+                public static float CrowdedDistanceMax = 12f;
+                /// <summary>ai.squadLayer.crowdedDensityMin (m; ban_kinh, was Sim/AI/SquadLayer.Units.cs:136).</summary>
+                public static int CrowdedDensityMin = 3;
+                /// <summary>ai.squadLayer.squadSpeedSlowestTrue (m/s; tan_suat, was Sim/AI/SquadLayer.Walls.cs:89).</summary>
+                public static float SquadSpeedSlowestTrue = 5f;
+                /// <summary>ai.squadLayer.explainHoldsIntervalScale (x; thoi_gian, was Sim/AI/SquadLayer.Watchdog.cs:13).</summary>
+                public static float ExplainHoldsIntervalScale = 2f;
+                /// <summary>ai.squadLayer.explainHoldsIntervalAdd (s; thoi_gian, was Sim/AI/SquadLayer.Watchdog.cs:13).</summary>
+                public static float ExplainHoldsIntervalAdd = 0.5f;
+                /// <summary>ai.squadLayer.ctorIntervalScale (x; thoi_gian, was Sim/AI/Squads.cs:163).</summary>
+                public static float CtorIntervalScale = 0.5f;
+                /// <summary>ai.squadLayer.measureCountDivisor (x; ban_kinh, was Sim/AI/Squads.cs:298).</summary>
+                public static int MeasureCountDivisor = 2;
+                /// <summary>ai.squadLayer.measureLastHpSub (x; sat_thuong, was Sim/AI/Squads.cs:300).</summary>
+                public static float MeasureLastHpSub = 0.5f;
+                /// <summary>ai.squadLayer.scoreReachFloor (m; ban_kinh, was Sim/AI/Squads.cs:374).</summary>
+                public static float ScoreReachFloor = 40f;
+                /// <summary>ai.squadLayer.scoreReachScale (x; ban_kinh, was Sim/AI/Squads.cs:374).</summary>
+                public static float ScoreReachScale = 1.2f;
+                /// <summary>ai.squadLayer.scoreEnemyGoalFloor (x; nguong, was Sim/AI/Squads.cs:379).</summary>
+                public static float ScoreEnemyGoalFloor = 0.01f;
+                /// <summary>ai.squadLayer.scoreRatioScale (x; nguong, was Sim/AI/Squads.cs:388).</summary>
+                public static float ScoreRatioScale = 25f;
+                /// <summary>ai.squadLayer.scoreRatioMin (x; nguong, was Sim/AI/Squads.cs:388).</summary>
+                public static float ScoreRatioMin = -25f;
+                /// <summary>ai.squadLayer.scoreRatioMax (x; nguong, was Sim/AI/Squads.cs:388).</summary>
+                public static float ScoreRatioMax = 25f;
+                /// <summary>ai.squadLayer.scorePoints3 (m; ban_kinh, was Sim/AI/Squads.cs:391, Sim/AI/Squads.cs:410).</summary>
+                public static float ScorePoints3 = 10f;
+                /// <summary>ai.squadLayer.scorePoints2 (count; gioi_han_thuc_the, was Sim/AI/Squads.cs:393).</summary>
+                public static float ScorePoints2 = 15f;
+                /// <summary>ai.squadLayer.scoreRouteThreatCap (count; tran, was Sim/AI/Squads.cs:397).</summary>
+                public static float ScoreRouteThreatCap = 15f;
+                /// <summary>ai.squadLayer.scoreRouteThreatScale (x; nguong, was Sim/AI/Squads.cs:397).</summary>
+                public static float ScoreRouteThreatScale = 6f;
+                /// <summary>ai.squadLayer.scoreCohesionScale (x; gioi_han_thuc_the, was Sim/AI/Squads.cs:398).</summary>
+                public static float ScoreCohesionScale = -10f;
+                /// <summary>ai.squadLayer.scorePoints7 (s; thoi_gian, was Sim/AI/Squads.cs:400).</summary>
+                public static float ScorePoints7 = -20f;
+                /// <summary>ai.squadLayer.scorePoints8 (s; thoi_gian, was Sim/AI/Squads.cs:401, Sim/AI/Squads.cs:413).</summary>
+                public static float ScorePoints8 = -15f;
+                /// <summary>ai.squadLayer.scoreBaseScore (count; gioi_han_thuc_the, was Sim/AI/Squads.cs:402).</summary>
+                public static float ScoreBaseScore = 40f;
+                /// <summary>ai.squadLayer.scoreBaseScore2 (count; gioi_han_thuc_the, was Sim/AI/Squads.cs:417, Sim/AI/Squads.cs:441, Sim/AI/Squads.cs:473).</summary>
+                public static float ScoreBaseScore2 = 30f;
+                /// <summary>ai.squadLayer.scoreCountMin (count; ban_kinh, was Sim/AI/Squads.cs:421).</summary>
+                public static int ScoreCountMin = 2;
+                /// <summary>ai.squadLayer.scoreDistanceMin (m; ban_kinh, was Sim/AI/Squads.cs:421).</summary>
+                public static float ScoreDistanceMin = 30f;
+                /// <summary>ai.squadLayer.scoreEnemyGoalScale (x; khac, was Sim/AI/Squads.cs:430).</summary>
+                public static float ScoreEnemyGoalScale = 15f;
+                /// <summary>ai.squadLayer.scoreEnemyGoalMin (x; nguong, was Sim/AI/Squads.cs:430).</summary>
+                public static float ScoreEnemyGoalMin = -10f;
+                /// <summary>ai.squadLayer.scoreEnemyGoalMax (x; nguong, was Sim/AI/Squads.cs:430).</summary>
+                public static float ScoreEnemyGoalMax = 15f;
+                /// <summary>ai.squadLayer.scoreSideEnemyCap (count; tran, was Sim/AI/Squads.cs:436).</summary>
+                public static float ScoreSideEnemyCap = 10f;
+                /// <summary>ai.squadLayer.scoreSideEnemyScale (x; nguong, was Sim/AI/Squads.cs:436).</summary>
+                public static float ScoreSideEnemyScale = 5f;
+                /// <summary>ai.squadLayer.scoreThreatCap (count; tran, was Sim/AI/Squads.cs:437).</summary>
+                public static float ScoreThreatCap = 10f;
+                /// <summary>ai.squadLayer.scoreThreatScale (x; nguong, was Sim/AI/Squads.cs:437).</summary>
+                public static float ScoreThreatScale = 4f;
+                /// <summary>ai.squadLayer.scoreReachMin (m; ban_kinh, was Sim/AI/Squads.cs:445).</summary>
+                public static float ScoreReachMin = 40f;
+                /// <summary>ai.squadLayer.scoreBaseScore3 (count; gioi_han_thuc_the, was Sim/AI/Squads.cs:451, Sim/AI/Squads.cs:492).</summary>
+                public static float ScoreBaseScore3 = 25f;
+                /// <summary>ai.squadLayer.scoreGainCap (count; tran, was Sim/AI/Squads.cs:459).</summary>
+                public static float ScoreGainCap = 25f;
+                /// <summary>ai.squadLayer.scoreBaseScore4 (count; gioi_han_thuc_the, was Sim/AI/Squads.cs:461).</summary>
+                public static float ScoreBaseScore4 = 20f;
+                /// <summary>ai.squadLayer.scoreFeFloor (x; nguong, was Sim/AI/Squads.cs:470).</summary>
+                public static float ScoreFeFloor = 0.01f;
+                /// <summary>ai.squadLayer.scoreFoScale (x; nguong, was Sim/AI/Squads.cs:470).</summary>
+                public static float ScoreFoScale = 25f;
+                /// <summary>ai.squadLayer.scoreFoMax (x; nguong, was Sim/AI/Squads.cs:470).</summary>
+                public static float ScoreFoMax = 25f;
+                /// <summary>ai.squadLayer.scoreBaseScore5 (count; gioi_han_thuc_the, was Sim/AI/Squads.cs:480).</summary>
+                public static float ScoreBaseScore5 = 35f;
+                /// <summary>ai.squadLayer.scorePoints9 (count; gioi_han_thuc_the, was Sim/AI/Squads.cs:480).</summary>
+                public static float ScorePoints9 = 25f;
+                /// <summary>ai.squadLayer.scoreTimeMax (s; thoi_gian, was Sim/AI/Squads.cs:486).</summary>
+                public static double ScoreTimeMax = 2.0;
+                /// <summary>ai.squadLayer.scoreCohesionCap (count; tran, was Sim/AI/Squads.cs:489).</summary>
+                public static float ScoreCohesionCap = 25f;
+                /// <summary>ai.squadLayer.scoreCohesionScale3 (x; nguong, was Sim/AI/Squads.cs:489).</summary>
+                public static float ScoreCohesionScale3 = 40f;
+                /// <summary>ai.squadLayer.scoreScoreMax (x; nguong, was Sim/AI/Squads.cs:507).</summary>
+                public static float ScoreScoreMax = 100f;
+                /// <summary>ai.squadLayer.urgentDistanceMin (m; ban_kinh, was Sim/AI/Squads.cs:532).</summary>
+                public static float UrgentDistanceMin = 30f;
+                /// <summary>ai.squadLayer.idleTooLongNowMax (s; thoi_gian, was Sim/AI/Squads.cs:543).</summary>
+                public static double IdleTooLongNowMax = 3.0;
+                /// <summary>ai.squadLayer.setStateReachScale (x; ban_kinh, was Sim/AI/Squads.cs:574).</summary>
+                public static float SetStateReachScale = 1.5f;
+                /// <summary>ai.squadLayer.dodgeRadiusAdd (m; ban_kinh, was Sim/AI/Squads.cs:602).</summary>
+                public static float DodgeRadiusAdd = 2f;
+                /// <summary>ai.squadLayer.dodgeRadiusAdd2 (m; ban_kinh, was Sim/AI/Squads.cs:612).</summary>
+                public static float DodgeRadiusAdd2 = 6f;
+                /// <summary>ai.squadLayer.dodgeMargin (m; ban_kinh, was Sim/AI/Squads.cs:612).</summary>
+                public static float DodgeMargin = 4f;
+                /// <summary>ai.squadLayer.dodgeDistanceMin (m; ban_kinh, was Sim/AI/Squads.cs:615).</summary>
+                public static float DodgeDistanceMin = 4f;
+                /// <summary>ai.squadLayer.dodgeCountMin (count; thoi_gian, was Sim/AI/Squads.cs:620).</summary>
+                public static int DodgeCountMin = 64;
+                /// <summary>ai.squadLayer.pruneNowMin (s; thoi_gian, was Sim/AI/Squads.cs:636).</summary>
+                public static double PruneNowMin = 30.0;
+                /// <summary>ai.squadLayer.overwhelmedReachFloor (m; ban_kinh, was Sim/AI/Squads.cs:642).</summary>
+                public static float OverwhelmedReachFloor = 40f;
+                /// <summary>ai.squadLayer.overwhelmedRadiusAdd (m; ban_kinh, was Sim/AI/Squads.cs:646).</summary>
+                public static float OverwhelmedRadiusAdd = 10f;
+                /// <summary>ai.squadLayer.executeReachScale (x; ban_kinh, was Sim/AI/Squads.cs:708).</summary>
+                public static float ExecuteReachScale = 0.8f;
+                /// <summary>ai.squadLayer.executeDistanceMin (m; ban_kinh, was Sim/AI/Squads.cs:713).</summary>
+                public static float ExecuteDistanceMin = 40f;
+                /// <summary>ai.squadLayer.executeDistanceMin2 (m; ban_kinh, was Sim/AI/Squads.cs:718).</summary>
+                public static float ExecuteDistanceMin2 = 12f;
+                /// <summary>ai.squadLayer.executeDistanceMax (m; ban_kinh, was Sim/AI/Squads.cs:741).</summary>
+                public static float ExecuteDistanceMax = 12f;
+                /// <summary>ai.squadLayer.executeMargin (x; khac, was Sim/AI/Squads.cs:791).</summary>
+                public static float ExecuteMargin = 6f;
+                /// <summary>ai.squadLayer.executeStateTrue (m; ban_kinh, was Sim/AI/Squads.cs:799).</summary>
+                public static float ExecuteStateTrue = 10f;
+                /// <summary>ai.squadLayer.executeStateFalse (m; ban_kinh, was Sim/AI/Squads.cs:799).</summary>
+                public static float ExecuteStateFalse = 6f;
+                /// <summary>ai.squadLayer.boundCountMax (count; gioi_han_thuc_the, was Sim/AI/Squads.cs:813).</summary>
+                public static int BoundCountMax = 2;
+                /// <summary>ai.squadLayer.boundNowAdd (s; thoi_gian, was Sim/AI/Squads.cs:817).</summary>
+                public static double BoundNowAdd = 6.0;
+                /// <summary>ai.squadLayer.boundReachScale (x; ban_kinh, was Sim/AI/Squads.cs:822).</summary>
+                public static float BoundReachScale = 0.8f;
+                /// <summary>ai.squadLayer.boundReachCap (m; ban_kinh, was Sim/AI/Squads.cs:822).</summary>
+                public static float BoundReachCap = 30f;
+                /// <summary>ai.squadLayer.boundMargin (x; khac, was Sim/AI/Squads.cs:823).</summary>
+                public static float BoundMargin = 6f;
+                /// <summary>ai.squadLayer.spreadDistanceBlastFloor (m; sat_thuong, was Sim/AI/Squads.cs:842).</summary>
+                public static float SpreadDistanceBlastFloor = 6f;
+                /// <summary>ai.squadLayer.spreadDistanceBlastScale (x; sat_thuong, was Sim/AI/Squads.cs:842).</summary>
+                public static float SpreadDistanceBlastScale = 2f;
+                /// <summary>ai.squadLayer.spreadDistanceDirectAtMaxSpreadFloor (m; sat_thuong, was Sim/AI/Squads.cs:845).</summary>
+                public static float SpreadDistanceDirectAtMaxSpreadFloor = 6f;
+                /// <summary>ai.squadLayer.unstickDistanceMin (m; thoi_gian, was Sim/AI/Squads.cs:869).</summary>
+                public static float UnstickDistanceMin = 6f;
+                /// <summary>ai.squadLayer.unstickDistanceMin2 (m; thoi_gian, was Sim/AI/Squads.cs:870).</summary>
+                public static float UnstickDistanceMin2 = 2f;
+                /// <summary>ai.squadLayer.unstickDistanceMin3 (m; thoi_gian, was Sim/AI/Squads.cs:874).</summary>
+                public static float UnstickDistanceMin3 = 15f;
+                /// <summary>ai.squadLayer.unstickAwayScale (x; thoi_gian, was Sim/AI/Squads.cs:886).</summary>
+                public static float UnstickAwayScale = 4f;
+                /// <summary>ai.squadLayer.unstickMargin (s; thoi_gian, was Sim/AI/Squads.cs:886, Sim/AI/Squads.cs:890, Sim/AI/Squads.cs:895).</summary>
+                public static float UnstickMargin = 4f;
+                /// <summary>ai.squadLayer.unstickValueTrue (s; thoi_gian, was Sim/AI/Squads.cs:889).</summary>
+                public static float UnstickValueTrue = 8f;
+                /// <summary>ai.squadLayer.unstickValueFalse (s; thoi_gian, was Sim/AI/Squads.cs:889).</summary>
+                public static float UnstickValueFalse = -8f;
+                /// <summary>ai.squadLayer.unstickOutScale (x; thoi_gian, was Sim/AI/Squads.cs:895).</summary>
+                public static float UnstickOutScale = 8f;
+                /// <summary>ai.squadLayer.unstickRungCap (count; thoi_gian, was Sim/AI/Squads.cs:901).</summary>
+                public static int UnstickRungCap = 3;
+                /// <summary>ai.squadLayer.unstickRungMin (s; thoi_gian, was Sim/AI/Squads.cs:910).</summary>
+                public static int UnstickRungMin = 3;
+                /// <summary>ai.squadLayer.stanceHoldFireFalse (x; nguong, was Sim/AI/Squads.cs:929).</summary>
+                public static float StanceHoldFireFalse = 0.6f;
+                /// <summary>ai.squadLayer.focusWeightMin (count; gioi_han_thuc_the, was Sim/AI/Squads.cs:958).</summary>
+                public static float FocusWeightMin = 0.01f;
+                /// <summary>ai.squadLayer.focusReachAdd (m; ban_kinh, was Sim/AI/Squads.cs:963).</summary>
+                public static float FocusReachAdd = 10f;
+                /// <summary>ai.squadLayer.focusStrengthFloor (x; sat_thuong, was Sim/AI/Squads.cs:966).</summary>
+                public static float FocusStrengthFloor = 0.5f;
+                /// <summary>ai.squadLayer.focusHpSub (x; sat_thuong, was Sim/AI/Squads.cs:966).</summary>
+                public static float FocusHpSub = 1.6f;
+                /// <summary>ai.squadLayer.focusReachFloor (m; sat_thuong, was Sim/AI/Squads.cs:970).</summary>
+                public static float FocusReachFloor = 10f;
+                /// <summary>ai.squadLayer.pointPressureRadiusAdd (m; ban_kinh, was Sim/AI/Squads.cs:1059).</summary>
+                public static float PointPressureRadiusAdd = 20f;
+                /// <summary>ai.squadLayer.flankPointDistanceCap (count; ban_kinh, was Sim/AI/Squads.cs:1083).</summary>
+                public static float FlankPointDistanceCap = 30f;
+                /// <summary>ai.squadLayer.flankPointDistanceScale (x; ban_kinh, was Sim/AI/Squads.cs:1083).</summary>
+                public static float FlankPointDistanceScale = 0.4f;
+                /// <summary>ai.squadLayer.flankPointDistanceScale2 (x; ban_kinh, was Sim/AI/Squads.cs:1083).</summary>
+                public static float FlankPointDistanceScale2 = 0.5f;
+                /// <summary>ai.squadLayer.flankPointDistanceMin (m; ban_kinh, was Sim/AI/Squads.cs:1083).</summary>
+                public static float FlankPointDistanceMin = 25f;
+                /// <summary>ai.squadLayer.flankPointDistanceMax (m; ban_kinh, was Sim/AI/Squads.cs:1083).</summary>
+                public static float FlankPointDistanceMax = 45f;
+                /// <summary>ai.squadLayer.flankPointMargin (m; ban_kinh, was Sim/AI/Squads.cs:1083).</summary>
+                public static float FlankPointMargin = 8f;
+                /// <summary>ai.squadLayer.flankPointDistanceMax2 (m; ban_kinh, was Sim/AI/Squads.cs:1085).</summary>
+                public static float FlankPointDistanceMax2 = 15f;
+                /// <summary>ai.squadLayer.flankPointMaxScale (x; nguong, was Sim/AI/Squads.cs:1086).</summary>
+                public static float FlankPointMaxScale = 1.5f;
+                /// <summary>ai.squadLayer.advancingFriendDistanceMax (m; ban_kinh, was Sim/AI/Squads.cs:1093).</summary>
+                public static float AdvancingFriendDistanceMax = 60f;
+                /// <summary>ai.squadLayer.losingFriendReachFloor (m; ban_kinh, was Sim/AI/Squads.cs:1104).</summary>
+                public static float LosingFriendReachFloor = 40f;
+                /// <summary>ai.squadLayer.losingFriendEnemyFloor (x; nguong, was Sim/AI/Squads.cs:1105).</summary>
+                public static float LosingFriendEnemyFloor = 0.01f;
+                /// <summary>ai.squadLayer.betterSpotReachFloor (m; ban_kinh, was Sim/AI/Squads.cs:1141).</summary>
+                public static float BetterSpotReachFloor = 40f;
+                /// <summary>ai.squadLayer.betterSpotDirectionScale (x; khac, was Sim/AI/Squads.cs:1145).</summary>
+                public static float BetterSpotDirectionScale = 35f;
+                /// <summary>ai.squadLayer.betterSpotMargin (x; khac, was Sim/AI/Squads.cs:1145, Sim/AI/Squads.cs:1157).</summary>
+                public static float BetterSpotMargin = 6f;
+                /// <summary>ai.squadLayer.betterSpotThreatAtScale (x; sat_thuong, was Sim/AI/Squads.cs:1150).</summary>
+                public static float BetterSpotThreatAtScale = 0.5f;
+                /// <summary>ai.squadLayer.betterSpotScale (x; khac, was Sim/AI/Squads.cs:1157).</summary>
+                public static float BetterSpotScale = 25f;
+                /// <summary>ai.squadLayer.betterSpotHereScale (x; nguong, was Sim/AI/Squads.cs:1167).</summary>
+                public static float BetterSpotHereScale = 10f;
+            }
+
+            public static partial class SupportDef
+            {
+                /// <summary>ai.supportDef.ctorRadiusCap (count; sat_thuong, was Sim/Content/SupportDef.cs:92).</summary>
+                public static float CtorRadiusCap = 6f;
+            }
+
+            public static partial class SyncPlanner
+            {
+                /// <summary>ai.syncPlanner.etaSpeedFloor (m; ban_kinh, was Sim/AI/P3/CoordinationRules.cs:100).</summary>
+                public static float EtaSpeedFloor = 0.5f;
+            }
+
+            public static partial class TacticalAi
+            {
+                /// <summary>ai.tacticalAi.claimGunP4NowAdd (s; thoi_gian, was Sim/AI/P4/Ownership.P4.cs:48).</summary>
+                public static double ClaimGunP4NowAdd = 2.0;
+                /// <summary>ai.tacticalAi.repairTargetP3MaxHpScale (x; sat_thuong, was Sim/AI/TacticalAi.P3.cs:26).</summary>
+                public static float RepairTargetP3MaxHpScale = 0.8f;
+                /// <summary>ai.tacticalAi.repairTargetP3RadiusFloor (m; ban_kinh, was Sim/AI/TacticalAi.P3.cs:55).</summary>
+                public static float RepairTargetP3RadiusFloor = 2f;
+                /// <summary>ai.tacticalAi.repairTargetP3RadiusScale (x; ban_kinh, was Sim/AI/TacticalAi.P3.cs:55).</summary>
+                public static float RepairTargetP3RadiusScale = 0.5f;
+                /// <summary>ai.tacticalAi.explainSpanDecisionIntervalScale (x; thoi_gian, was Sim/AI/TacticalAi.Watchdog.cs:19).</summary>
+                public static float ExplainSpanDecisionIntervalScale = 2f;
+                /// <summary>ai.tacticalAi.explainSpanDecisionIntervalAdd (s; thoi_gian, was Sim/AI/TacticalAi.Watchdog.cs:19).</summary>
+                public static float ExplainSpanDecisionIntervalAdd = 0.5f;
+                /// <summary>ai.tacticalAi.alliesDecisionIntervalScale (x; thoi_gian, was Sim/AI/TacticalAi.cs:238).</summary>
+                public static float AlliesDecisionIntervalScale = 0.25f;
+                /// <summary>ai.tacticalAi.ctorDecisionIntervalScale (x; thoi_gian, was Sim/AI/TacticalAi.cs:252).</summary>
+                public static float CtorDecisionIntervalScale = 0.5f;
+                /// <summary>ai.tacticalAi.tickNearestGroundMax (ticks; thoi_gian, was Sim/AI/TacticalAi.cs:293).</summary>
+                public static float TickNearestGroundMax = 45f;
+                /// <summary>ai.tacticalAi.tickHomeRadiusAdd (ticks; thoi_gian, was Sim/AI/TacticalAi.cs:301).</summary>
+                public static float TickHomeRadiusAdd = 18f;
+                /// <summary>ai.tacticalAi.tickDistanceMin (ticks; thoi_gian, was Sim/AI/TacticalAi.cs:317).</summary>
+                public static float TickDistanceMin = 20f;
+                /// <summary>ai.tacticalAi.tickForwardScale (x; thoi_gian, was Sim/AI/TacticalAi.cs:325).</summary>
+                public static float TickForwardScale = 5f;
+                /// <summary>ai.tacticalAi.judgeOddsDistanceMax (m; sat_thuong, was Sim/AI/TacticalAi.cs:357).</summary>
+                public static float JudgeOddsDistanceMax = 55f;
+                /// <summary>ai.tacticalAi.judgeOddsDistanceMax2 (m; sat_thuong, was Sim/AI/TacticalAi.cs:362).</summary>
+                public static float JudgeOddsDistanceMax2 = 60f;
+                /// <summary>ai.tacticalAi.judgeOddsAgeMin (share; xac_suat, was Sim/AI/TacticalAi.cs:371).</summary>
+                public static double JudgeOddsAgeMin = 120.0;
+                /// <summary>ai.tacticalAi.judgeOddsDistanceMax3 (m; ban_kinh, was Sim/AI/TacticalAi.cs:377).</summary>
+                public static float JudgeOddsDistanceMax3 = 70f;
+                /// <summary>ai.tacticalAi.judgeOddsAgeExponent (share; ban_kinh, was Sim/AI/TacticalAi.cs:377).</summary>
+                public static double JudgeOddsAgeExponent = 0.5;
+                /// <summary>ai.tacticalAi.judgeOddsAgeDivisor (x; ban_kinh, was Sim/AI/TacticalAi.cs:377).</summary>
+                public static double JudgeOddsAgeDivisor = 45.0;
+                /// <summary>ai.tacticalAi.judgeOddsTheirsMin (share; xac_suat, was Sim/AI/TacticalAi.cs:380).</summary>
+                public static float JudgeOddsTheirsMin = 0.5f;
+                /// <summary>ai.tacticalAi.judgeOddsTheirsMax (share; xac_suat, was Sim/AI/TacticalAi.cs:390).</summary>
+                public static float JudgeOddsTheirsMax = 0.5f;
+                /// <summary>ai.tacticalAi.judgeOddsTheirsMin2 (share; thoi_gian, was Sim/AI/TacticalAi.cs:397).</summary>
+                public static float JudgeOddsTheirsMin2 = 3f;
+                /// <summary>ai.tacticalAi.judgeOddsDistanceCap (m; ban_kinh, was Sim/AI/TacticalAi.cs:404).</summary>
+                public static float JudgeOddsDistanceCap = 30f;
+                /// <summary>ai.tacticalAi.grabCratesMargin (x; tan_suat, was Sim/AI/TacticalAi.cs:438).</summary>
+                public static float GrabCratesMargin = 2f;
+                /// <summary>ai.tacticalAi.grabCratesDistanceMax (m; ban_kinh, was Sim/AI/TacticalAi.cs:448).</summary>
+                public static float GrabCratesDistanceMax = 2.5f;
+                /// <summary>ai.tacticalAi.grabCratesDistanceMax2 (m; ban_kinh, was Sim/AI/TacticalAi.cs:449).</summary>
+                public static float GrabCratesDistanceMax2 = 2f;
+                /// <summary>ai.tacticalAi.sendToRearmSpeedScale (x; thoi_gian, was Sim/AI/TacticalAi.cs:491).</summary>
+                public static float SendToRearmSpeedScale = 0.8f;
+                /// <summary>ai.tacticalAi.sendToRearmDepotReachScale (x; thoi_gian, was Sim/AI/TacticalAi.cs:497).</summary>
+                public static float SendToRearmDepotReachScale = 1.5f;
+                /// <summary>ai.tacticalAi.sendToRearmLeftDivisor (x; thoi_gian, was Sim/AI/TacticalAi.cs:498).</summary>
+                public static float SendToRearmLeftDivisor = 3f;
+                /// <summary>ai.tacticalAi.sendToRearmDAdd (s; thoi_gian, was Sim/AI/TacticalAi.cs:498).</summary>
+                public static float SendToRearmDAdd = 2f;
+                /// <summary>ai.tacticalAi.sendToRearmRadiusScale (x; thoi_gian, was Sim/AI/TacticalAi.cs:504).</summary>
+                public static float SendToRearmRadiusScale = 0.6f;
+                /// <summary>ai.tacticalAi.sendToRearmReach (s; thoi_gian, was Sim/AI/TacticalAi.cs:505).</summary>
+                public static float SendToRearmReach = 12f;
+                /// <summary>ai.tacticalAi.sendToRearmDistanceMin (m; thoi_gian, was Sim/AI/TacticalAi.cs:506).</summary>
+                public static float SendToRearmDistanceMin = 8f;
+                /// <summary>ai.tacticalAi.sendToRearmDistanceMin2 (m; thoi_gian, was Sim/AI/TacticalAi.cs:508, Sim/AI/TacticalAi.cs:516).</summary>
+                public static float SendToRearmDistanceMin2 = 6f;
+                /// <summary>ai.tacticalAi.sendToRearmRangeAdd (m; thoi_gian, was Sim/AI/TacticalAi.cs:513).</summary>
+                public static float SendToRearmRangeAdd = 4f;
+                /// <summary>ai.tacticalAi.sendToRearmRangeAdd2 (m; thoi_gian, was Sim/AI/TacticalAi.cs:514).</summary>
+                public static float SendToRearmRangeAdd2 = 10f;
+                /// <summary>ai.tacticalAi.sendToRearmDistanceMin3 (m; thoi_gian, was Sim/AI/TacticalAi.cs:520).</summary>
+                public static float SendToRearmDistanceMin3 = 3f;
+                /// <summary>ai.tacticalAi.sendToRearmRangeAdd3 (m; thoi_gian, was Sim/AI/TacticalAi.cs:521).</summary>
+                public static float SendToRearmRangeAdd3 = 14f;
+                /// <summary>ai.tacticalAi.refitDistanceMin (m; ban_kinh, was Sim/AI/TacticalAi.cs:560).</summary>
+                public static float RefitDistanceMin = 4f;
+                /// <summary>ai.tacticalAi.rearmInLullsTimeMax (s; thoi_gian, was Sim/AI/TacticalAi.cs:572).</summary>
+                public static double RearmInLullsTimeMax = 4.0;
+                /// <summary>ai.tacticalAi.rearmInLullsVisionRangeAdd (m; thoi_gian, was Sim/AI/TacticalAi.cs:573).</summary>
+                public static float RearmInLullsVisionRangeAdd = 15f;
+                /// <summary>ai.tacticalAi.breachObstaclesAlongMax (m; ban_kinh, was Sim/AI/TacticalAi.cs:599).</summary>
+                public static float BreachObstaclesAlongMax = -4f;
+                /// <summary>ai.tacticalAi.breachObstaclesLengthMin (m; ban_kinh, was Sim/AI/TacticalAi.cs:599).</summary>
+                public static float BreachObstaclesLengthMin = 18f;
+                /// <summary>ai.tacticalAi.breachObstaclesDistanceMax (m; ban_kinh, was Sim/AI/TacticalAi.cs:607).</summary>
+                public static float BreachObstaclesDistanceMax = 25f;
+                /// <summary>ai.tacticalAi.directBreachersAlongMax (m; ban_kinh, was Sim/AI/TacticalAi.cs:643).</summary>
+                public static float DirectBreachersAlongMax = -10f;
+                /// <summary>ai.tacticalAi.directBreachersLengthScale (x; ban_kinh, was Sim/AI/TacticalAi.cs:644).</summary>
+                public static float DirectBreachersLengthScale = 1.5f;
+                /// <summary>ai.tacticalAi.directBreachersObstacleTrue (m; ban_kinh, was Sim/AI/TacticalAi.cs:644).</summary>
+                public static float DirectBreachersObstacleTrue = 25f;
+                /// <summary>ai.tacticalAi.directSupportForwardScale (x; khac, was Sim/AI/TacticalAi.cs:667).</summary>
+                public static float DirectSupportForwardScale = 9f;
+                /// <summary>ai.tacticalAi.directSupportDistanceMax (m; ban_kinh, was Sim/AI/TacticalAi.cs:677).</summary>
+                public static float DirectSupportDistanceMax = 6f;
+                /// <summary>ai.tacticalAi.directSupportDistanceMax2 (m; ban_kinh, was Sim/AI/TacticalAi.cs:678, Sim/AI/TacticalAi.cs:686).</summary>
+                public static float DirectSupportDistanceMax2 = 5f;
+                /// <summary>ai.tacticalAi.directSupportForwardScale2 (x; khac, was Sim/AI/TacticalAi.cs:685).</summary>
+                public static float DirectSupportForwardScale2 = 3f;
+                /// <summary>ai.tacticalAi.directSupportReach (m; ban_kinh, was Sim/AI/TacticalAi.cs:685).</summary>
+                public static float DirectSupportReach = 6f;
+                /// <summary>ai.tacticalAi.directSupportDistanceMax3 (m; ban_kinh, was Sim/AI/TacticalAi.cs:687, Sim/AI/TacticalAi.cs:694).</summary>
+                public static float DirectSupportDistanceMax3 = 4f;
+                /// <summary>ai.tacticalAi.directSupportDistanceMin (m; ban_kinh, was Sim/AI/TacticalAi.cs:694).</summary>
+                public static float DirectSupportDistanceMin = 6f;
+                /// <summary>ai.tacticalAi.directSupportDistanceMax4 (m; ban_kinh, was Sim/AI/TacticalAi.cs:698).</summary>
+                public static float DirectSupportDistanceMax4 = 10f;
+                /// <summary>ai.tacticalAi.directSupportDistanceMax5 (m; ban_kinh, was Sim/AI/TacticalAi.cs:699).</summary>
+                public static float DirectSupportDistanceMax5 = 8f;
+                /// <summary>ai.tacticalAi.resupplySpotForwardScale (x; khac, was Sim/AI/TacticalAi.cs:720).</summary>
+                public static float ResupplySpotForwardScale = 6f;
+                /// <summary>ai.tacticalAi.resupplySpotReach (m; ban_kinh, was Sim/AI/TacticalAi.cs:720).</summary>
+                public static float ResupplySpotReach = 8f;
+                /// <summary>ai.tacticalAi.collectFallBackDistanceMax (m; ban_kinh, was Sim/AI/TacticalAi.cs:737).</summary>
+                public static float CollectFallBackDistanceMax = 12f;
+                /// <summary>ai.tacticalAi.huntRearmingBest (s; thoi_gian, was Sim/AI/TacticalAi.cs:823).</summary>
+                public static float HuntRearmingBest = 150f;
+                /// <summary>ai.tacticalAi.huntRearmingAircraftMax (s; thoi_gian, was Sim/AI/TacticalAi.cs:836).</summary>
+                public static int HuntRearmingAircraftMax = 3;
+                /// <summary>ai.tacticalAi.huntRearmingStrikeTrue (s; thoi_gian, was Sim/AI/TacticalAi.cs:850).</summary>
+                public static float HuntRearmingStrikeTrue = 120f;
+                /// <summary>ai.tacticalAi.huntRearmingStrikeFalse (s; thoi_gian, was Sim/AI/TacticalAi.cs:850).</summary>
+                public static float HuntRearmingStrikeFalse = 20f;
+                /// <summary>ai.tacticalAi.plunderWithEffectiveMax (x; sat_thuong, was Sim/AI/TacticalAi.cs:968).</summary>
+                public static float PlunderWithEffectiveMax = 0.35f;
+                /// <summary>ai.tacticalAi.plunderWithRangeAdd (m; ban_kinh, was Sim/AI/TacticalAi.cs:969).</summary>
+                public static float PlunderWithRangeAdd = 8f;
+                /// <summary>ai.tacticalAi.plunderWithRangeAdd2 (m; ban_kinh, was Sim/AI/TacticalAi.cs:971).</summary>
+                public static float PlunderWithRangeAdd2 = 2f;
+                /// <summary>ai.tacticalAi.directGunMinRangeAdd (m; ban_kinh, was Sim/AI/TacticalAi.cs:1008, Sim/AI/TacticalAi.cs:1014).</summary>
+                public static float DirectGunMinRangeAdd = 6f;
+                /// <summary>ai.tacticalAi.directGunRangeAdd (m; ban_kinh, was Sim/AI/TacticalAi.cs:1009).</summary>
+                public static float DirectGunRangeAdd = 4f;
+                /// <summary>ai.tacticalAi.directGunMinRangeAdd2 (m; ban_kinh, was Sim/AI/TacticalAi.cs:1018).</summary>
+                public static float DirectGunMinRangeAdd2 = 14f;
+                /// <summary>ai.tacticalAi.directGunReachAdd (m; ban_kinh, was Sim/AI/TacticalAi.cs:1025).</summary>
+                public static float DirectGunReachAdd = 6f;
+                /// <summary>ai.tacticalAi.directGunReachAdd2 (m; ban_kinh, was Sim/AI/TacticalAi.cs:1025).</summary>
+                public static float DirectGunReachAdd2 = 3f;
+                /// <summary>ai.tacticalAi.directGunReachAdd3 (m; ban_kinh, was Sim/AI/TacticalAi.cs:1026).</summary>
+                public static float DirectGunReachAdd3 = 10f;
+                /// <summary>ai.tacticalAi.directGunRangeScale (x; ban_kinh, was Sim/AI/TacticalAi.cs:1054).</summary>
+                public static float DirectGunRangeScale = 0.7f;
+                /// <summary>ai.tacticalAi.directGunForwardScale (x; ban_kinh, was Sim/AI/TacticalAi.cs:1054).</summary>
+                public static float DirectGunForwardScale = 18f;
+                /// <summary>ai.tacticalAi.directGunForwardScale2 (x; ban_kinh, was Sim/AI/TacticalAi.cs:1055).</summary>
+                public static float DirectGunForwardScale2 = 10f;
+                /// <summary>ai.tacticalAi.directGunReach (m; ban_kinh, was Sim/AI/TacticalAi.cs:1060).</summary>
+                public static float DirectGunReach = 10f;
+                /// <summary>ai.tacticalAi.directGunDistanceMin (m; ban_kinh, was Sim/AI/TacticalAi.cs:1063).</summary>
+                public static float DirectGunDistanceMin = 10f;
+                /// <summary>ai.tacticalAi.standingDistanceMax (m; ban_kinh, was Sim/AI/TacticalAi.cs:1095).</summary>
+                public static float StandingDistanceMax = 3f;
+                /// <summary>ai.tacticalAi.firingSpotMinRangeAdd (m; ban_kinh, was Sim/AI/TacticalAi.cs:1119).</summary>
+                public static float FiringSpotMinRangeAdd = 2f;
+                /// <summary>ai.tacticalAi.firingSpotTargetRadiusScale (x; ban_kinh, was Sim/AI/TacticalAi.cs:1129).</summary>
+                public static float FiringSpotTargetRadiusScale = 0.5f;
+                /// <summary>ai.tacticalAi.firingSpotFractionSub (m; ban_kinh, was Sim/AI/TacticalAi.cs:1132).</summary>
+                public static float FiringSpotFractionSub = 0.95f;
+                /// <summary>ai.tacticalAi.firingSpotFractionScale (x; ban_kinh, was Sim/AI/TacticalAi.cs:1132).</summary>
+                public static float FiringSpotFractionScale = 0.5f;
+                /// <summary>ai.tacticalAi.firingSpotAbsScale (x; ban_kinh, was Sim/AI/TacticalAi.cs:1142).</summary>
+                public static float FiringSpotAbsScale = 4f;
+                /// <summary>ai.tacticalAi.shellDefencesEffectiveMax (x; sat_thuong, was Sim/AI/TacticalAi.cs:1189).</summary>
+                public static float ShellDefencesEffectiveMax = 0.2f;
+                /// <summary>ai.tacticalAi.shellStructureDefenceSearchScale (x; ban_kinh, was Sim/AI/TacticalAi.cs:1207).</summary>
+                public static float ShellStructureDefenceSearchScale = 2f;
+                /// <summary>ai.tacticalAi.shellFromSafetyRangeSub (m; ban_kinh, was Sim/AI/TacticalAi.cs:1215).</summary>
+                public static float ShellFromSafetyRangeSub = 0.5f;
+                /// <summary>ai.tacticalAi.shellFromSafetyDistanceMin (m; ban_kinh, was Sim/AI/TacticalAi.cs:1229).</summary>
+                public static float ShellFromSafetyDistanceMin = 4f;
+                /// <summary>ai.tacticalAi.directFlankersCountMax (count; gioi_han_thuc_the, was Sim/AI/TacticalAi.cs:1236).</summary>
+                public static int DirectFlankersCountMax = 2;
+                /// <summary>ai.tacticalAi.directFlankersForwardScale (x; ban_kinh, was Sim/AI/TacticalAi.cs:1242).</summary>
+                public static float DirectFlankersForwardScale = 6f;
+                /// <summary>ai.tacticalAi.directFlankersMargin (count; gioi_han_thuc_the, was Sim/AI/TacticalAi.cs:1244).</summary>
+                public static float DirectFlankersMargin = 2f;
+                /// <summary>ai.tacticalAi.directFlankersDistanceMax (m; ban_kinh, was Sim/AI/TacticalAi.cs:1254).</summary>
+                public static float DirectFlankersDistanceMax = 9f;
+                /// <summary>ai.tacticalAi.directMainBodyDistanceMax (m; ban_kinh, was Sim/AI/TacticalAi.cs:1292).</summary>
+                public static float DirectMainBodyDistanceMax = 8f;
+                /// <summary>ai.tacticalAi.directMainBodyMargin (count; gioi_han_thuc_the, was Sim/AI/TacticalAi.cs:1305, Sim/AI/TacticalAi.cs:1326).</summary>
+                public static float DirectMainBodyMargin = 2f;
+                /// <summary>ai.tacticalAi.directMainBodyCountScale (x; gioi_han_thuc_the, was Sim/AI/TacticalAi.cs:1310).</summary>
+                public static float DirectMainBodyCountScale = 0.75f;
+                /// <summary>ai.tacticalAi.directMainBodyBoundLengthScale (x; ban_kinh, was Sim/AI/TacticalAi.cs:1323).</summary>
+                public static float DirectMainBodyBoundLengthScale = 1.5f;
+                /// <summary>ai.tacticalAi.directMainBodyDistanceMax2 (m; ban_kinh, was Sim/AI/TacticalAi.cs:1334).</summary>
+                public static float DirectMainBodyDistanceMax2 = 16f;
+                /// <summary>ai.tacticalAi.directMainBodyCountScale2 (x; gioi_han_thuc_the, was Sim/AI/TacticalAi.cs:1335).</summary>
+                public static float DirectMainBodyCountScale2 = 0.8f;
+                /// <summary>ai.tacticalAi.strongEnoughDistanceMin (m; ban_kinh, was Sim/AI/TacticalAi.cs:1371).</summary>
+                public static float StrongEnoughDistanceMin = 35f;
+                /// <summary>ai.tacticalAi.strongEnoughGroundReachAdd (m; ban_kinh, was Sim/AI/TacticalAi.cs:1382).</summary>
+                public static float StrongEnoughGroundReachAdd = 8f;
+                /// <summary>ai.tacticalAi.strongEnoughDistanceMax (m; sat_thuong, was Sim/AI/TacticalAi.cs:1386).</summary>
+                public static float StrongEnoughDistanceMax = 30f;
+                /// <summary>ai.tacticalAi.strongEnoughTheirsMax (share; xac_suat, was Sim/AI/TacticalAi.cs:1387).</summary>
+                public static float StrongEnoughTheirsMax = 0.5f;
+                /// <summary>ai.tacticalAi.threatTurretTurnRateMax (m; ban_kinh, was Sim/AI/TacticalAi.cs:1405).</summary>
+                public static float ThreatTurretTurnRateMax = 60f;
+                /// <summary>ai.tacticalAi.threatFastScale (x; nguong, was Sim/AI/TacticalAi.cs:1408).</summary>
+                public static float ThreatFastScale = 0.5f;
+                /// <summary>ai.tacticalAi.frontOfCountMin (count; gioi_han_thuc_the, was Sim/AI/TacticalAi.cs:1450).</summary>
+                public static int FrontOfCountMin = 2;
+                /// <summary>ai.tacticalAi.gatherReinforcementsHomeReachScale (x; ban_kinh, was Sim/AI/TacticalAi.cs:1462).</summary>
+                public static float GatherReinforcementsHomeReachScale = 0.5f;
+                /// <summary>ai.tacticalAi.gatherReinforcementsDirectionScale (x; khac, was Sim/AI/TacticalAi.cs:1467).</summary>
+                public static float GatherReinforcementsDirectionScale = 22f;
+                /// <summary>ai.tacticalAi.gatherReinforcementsCountMax (count; gioi_han_thuc_the, was Sim/AI/TacticalAi.cs:1471).</summary>
+                public static int GatherReinforcementsCountMax = 2;
+                /// <summary>ai.tacticalAi.gatherReinforcementsDistanceMin (m; ban_kinh, was Sim/AI/TacticalAi.cs:1485).</summary>
+                public static float GatherReinforcementsDistanceMin = 12f;
+                /// <summary>ai.tacticalAi.gatherReinforcementsDistanceMax (m; ban_kinh, was Sim/AI/TacticalAi.cs:1501).</summary>
+                public static float GatherReinforcementsDistanceMax = 10f;
+                /// <summary>ai.tacticalAi.gatherReinforcementsDistanceMax2 (m; ban_kinh, was Sim/AI/TacticalAi.cs:1502).</summary>
+                public static float GatherReinforcementsDistanceMax2 = 8f;
+                /// <summary>ai.tacticalAi.pushStaleSameRendezvousScale (x; ban_kinh, was Sim/AI/TacticalAi.cs:1534).</summary>
+                public static float PushStaleSameRendezvousScale = 0.5f;
+                /// <summary>ai.tacticalAi.nearestClusterDistanceMin (m; ban_kinh, was Sim/AI/TacticalAi.cs:1585).</summary>
+                public static float NearestClusterDistanceMin = 12f;
+                /// <summary>ai.tacticalAi.tryFindClusterMinRangeAdd (m; ban_kinh, was Sim/AI/TacticalAi.cs:1602).</summary>
+                public static float TryFindClusterMinRangeAdd = 2f;
+                /// <summary>ai.tacticalAi.directionLengthMin (m; ban_kinh, was Sim/AI/TacticalAi.cs:1648).</summary>
+                public static float DirectionLengthMin = 0.01f;
+            }
+
+            public static partial class TacticalConfidence
+            {
+                /// <summary>ai.tacticalConfidence.computeD (x; khac, was Sim/AI/P3/CoordinationRules.cs:56).</summary>
+                public static float ComputeD = 0.35f;
+                /// <summary>ai.tacticalConfidence.computeD2 (x; khac, was Sim/AI/P3/CoordinationRules.cs:56).</summary>
+                public static float ComputeD2 = 0.20f;
+                /// <summary>ai.tacticalConfidence.computeI (x; khac, was Sim/AI/P3/CoordinationRules.cs:56).</summary>
+                public static int ComputeI = 2;
+                /// <summary>ai.tacticalConfidence.computeD3 (x; khac, was Sim/AI/P3/CoordinationRules.cs:56).</summary>
+                public static float ComputeD3 = 0.15f;
+                /// <summary>ai.tacticalConfidence.computeI2 (x; khac, was Sim/AI/P3/CoordinationRules.cs:56).</summary>
+                public static int ComputeI2 = 3;
+                /// <summary>ai.tacticalConfidence.computeD4 (x; khac, was Sim/AI/P3/CoordinationRules.cs:56).</summary>
+                public static float ComputeD4 = 0.10f;
+            }
+
+            public static partial class TacticalMemory
+            {
+                /// <summary>ai.tacticalMemory.maxMarks (count; nguong, was Sim/AI/P3/TacticalMemory.cs:24).</summary>
+                public static int MaxMarks = 64;
+                /// <summary>ai.tacticalMemory.decayAgeExponent (s; thoi_gian, was Sim/AI/P3/TacticalMemory.cs:51).</summary>
+                public static float DecayAgeExponent = 0.5f;
+                /// <summary>ai.tacticalMemory.decayHalfLifeFloor (s; thoi_gian, was Sim/AI/P3/TacticalMemory.cs:51).</summary>
+                public static float DecayHalfLifeFloor = 0.1f;
+                /// <summary>ai.tacticalMemory.deathDangerValueDivisor (x; thoi_gian, was Sim/AI/P3/TacticalMemory.cs:124).</summary>
+                public static float DeathDangerValueDivisor = 10f;
+                /// <summary>ai.tacticalMemory.deathDangerDistScale (x; thoi_gian, was Sim/AI/P3/TacticalMemory.cs:124).</summary>
+                public static float DeathDangerDistScale = 0.5f;
+                /// <summary>ai.tacticalMemory.deathAlongDeathRadiusFloor (m; ban_kinh, was Sim/AI/P3/TacticalMemory.cs:133).</summary>
+                public static float DeathAlongDeathRadiusFloor = 2f;
+                /// <summary>ai.tacticalMemory.deathAlongDeathRadiusScale (x; ban_kinh, was Sim/AI/P3/TacticalMemory.cs:133).</summary>
+                public static float DeathAlongDeathRadiusScale = 0.5f;
+                /// <summary>ai.tacticalMemory.unknownModifierLengthMax (m; ban_kinh, was Sim/AI/P3/TacticalMemory.cs:183).</summary>
+                public static int UnknownModifierLengthMax = 4;
+                /// <summary>ai.tacticalMemory.unknownModifierUnknownModifier (m; ban_kinh, was Sim/AI/P3/TacticalMemory.cs:183).</summary>
+                public static float UnknownModifierUnknownModifier = 0.6f;
+                /// <summary>ai.tacticalMemory.pruneRoutesCountMax (count; gioi_han_thuc_the, was Sim/AI/P3/TacticalMemory.cs:204).</summary>
+                public static int PruneRoutesCountMax = 64;
+                /// <summary>ai.tacticalMemory.pruneRoutesRoutePenaltyMax (s; thoi_gian, was Sim/AI/P3/TacticalMemory.cs:207).</summary>
+                public static float PruneRoutesRoutePenaltyMax = 0.02f;
+            }
+
+            public static partial class TargetAccessCache
+            {
+                /// <summary>ai.targetAccessCache.canInfluenceMaxRings (x; sat_thuong, was Sim/AI/TargetAccessCache.cs:101).</summary>
+                public static int CanInfluenceMaxRings = 3;
+                /// <summary>ai.targetAccessCache.reachableReachDivisor (x; ban_kinh, was Sim/AI/TargetAccessCache.cs:145).</summary>
+                public static float ReachableReachDivisor = 4f;
+                /// <summary>ai.targetAccessCache.reachableMinRangeDivisor (x; ban_kinh, was Sim/AI/TargetAccessCache.cs:145).</summary>
+                public static float ReachableMinRangeDivisor = 4f;
+                /// <summary>ai.targetAccessCache.reachableRadiusDivisor (x; ban_kinh, was Sim/AI/TargetAccessCache.cs:145).</summary>
+                public static float ReachableRadiusDivisor = 2f;
+                /// <summary>ai.targetAccessCache.sampleCellsDivisor (x; nguong, was Sim/AI/TargetAccessCache.cs:173).</summary>
+                public static int SampleCellsDivisor = 12;
+            }
+
+            public static partial class TeamIntel
+            {
+                /// <summary>ai.teamIntel.ctorWorldCellFloor (x; nguong, was Sim/AI/WorldModel.cs:232).</summary>
+                public static float CtorWorldCellFloor = 2f;
+                /// <summary>ai.teamIntel.cellCentreIndexAdd (x; khac, was Sim/AI/WorldModel.cs:310).</summary>
+                public static float CellCentreIndexAdd = 0.5f;
+                /// <summary>ai.teamIntel.knowFreshSeconds (s; thoi_gian, was Sim/AI/WorldModel.cs:315).</summary>
+                public static float KnowFreshSeconds = 3f;
+                /// <summary>ai.teamIntel.strengthOfMaxHpDivisor (x; nguong, was Sim/AI/WorldModel.cs:352).</summary>
+                public static float StrengthOfMaxHpDivisor = 150f;
+                /// <summary>ai.teamIntel.refreshFallback2 (x; sat_thuong, was Sim/AI/WorldModel.cs:441).</summary>
+                public static float RefreshFallback2 = 2f;
+                /// <summary>ai.teamIntel.forCellsCellScale (x; ban_kinh, was Sim/AI/WorldModel.cs:497).</summary>
+                public static float ForCellsCellScale = 0.5f;
+                /// <summary>ai.teamIntel.frontLineMaxScale (x; nguong, was Sim/AI/WorldModel.cs:536).</summary>
+                public static float FrontLineMaxScale = 0.5f;
+                /// <summary>ai.teamIntel.narrowCellsCellScale (x; sat_thuong, was Sim/AI/WorldModel.cs:583).</summary>
+                public static float NarrowCellsCellScale = 0.2f;
+                /// <summary>ai.teamIntel.narrowCellsAllScale (x; sat_thuong, was Sim/AI/WorldModel.cs:585).</summary>
+                public static float NarrowCellsAllScale = 0.6f;
+                /// <summary>ai.teamIntel.clusterReach (m; ban_kinh, was Sim/AI/WorldModel.cs:593).</summary>
+                public static float ClusterReach = 25f;
+                /// <summary>ai.teamIntel.clusterStrengthFloor (x; nguong, was Sim/AI/WorldModel.cs:607).</summary>
+                public static float ClusterStrengthFloor = 0.01f;
+                /// <summary>ai.teamIntel.detectFallback (s; thoi_gian, was Sim/AI/WorldModel.cs:623).</summary>
+                public static float DetectFallback = 8f;
+                /// <summary>ai.teamIntel.detectMinAdd (x; nguong, was Sim/AI/WorldModel.cs:631).</summary>
+                public static float DetectMinAdd = 50f;
+                /// <summary>ai.teamIntel.detectMinScale (x; nguong, was Sim/AI/WorldModel.cs:631).</summary>
+                public static float DetectMinScale = 10f;
+                /// <summary>ai.teamIntel.detectStrengthCap (count; tran, was Sim/AI/WorldModel.cs:631).</summary>
+                public static float DetectStrengthCap = 3f;
+                /// <summary>ai.teamIntel.detectCellScale (x; ban_kinh, was Sim/AI/WorldModel.cs:634).</summary>
+                public static float DetectCellScale = 2f;
+                /// <summary>ai.teamIntel.detectPriority (s; thoi_gian, was Sim/AI/WorldModel.cs:635, Sim/AI/WorldModel.cs:673).</summary>
+                public static float DetectPriority = 60f;
+                /// <summary>ai.teamIntel.detectPriority2 (s; thoi_gian, was Sim/AI/WorldModel.cs:637, Sim/AI/WorldModel.cs:684).</summary>
+                public static float DetectPriority2 = 55f;
+                /// <summary>ai.teamIntel.detectLifeScale (x; thoi_gian, was Sim/AI/WorldModel.cs:637).</summary>
+                public static float DetectLifeScale = 0.5f;
+                /// <summary>ai.teamIntel.detectBigTrue (m; ban_kinh, was Sim/AI/WorldModel.cs:646).</summary>
+                public static float DetectBigTrue = 95f;
+                /// <summary>ai.teamIntel.detectBigFalse (m; ban_kinh, was Sim/AI/WorldModel.cs:646).</summary>
+                public static float DetectBigFalse = 85f;
+                /// <summary>ai.teamIntel.detectLengthSquaredMax (m; ban_kinh, was Sim/AI/WorldModel.cs:652).</summary>
+                public static float DetectLengthSquaredMax = 0.25f;
+                /// <summary>ai.teamIntel.detectPriority3 (s; thoi_gian, was Sim/AI/WorldModel.cs:657).</summary>
+                public static float DetectPriority3 = 70f;
+                /// <summary>ai.teamIntel.detectCellScale2 (x; thoi_gian, was Sim/AI/WorldModel.cs:657, Sim/AI/WorldModel.cs:659).</summary>
+                public static float DetectCellScale2 = 3f;
+                /// <summary>ai.teamIntel.detectPriority4 (s; thoi_gian, was Sim/AI/WorldModel.cs:659).</summary>
+                public static float DetectPriority4 = 80f;
+                /// <summary>ai.teamIntel.detectFallback2 (x; khac, was Sim/AI/WorldModel.cs:667).</summary>
+                public static float DetectFallback2 = 0.25f;
+                /// <summary>ai.teamIntel.detectFallback3 (x; khac, was Sim/AI/WorldModel.cs:667).</summary>
+                public static float DetectFallback3 = 0.1f;
+                /// <summary>ai.teamIntel.detectPriority5 (s; thoi_gian, was Sim/AI/WorldModel.cs:668).</summary>
+                public static float DetectPriority5 = 65f;
+                /// <summary>ai.teamIntel.detectLifeScale2 (x; thoi_gian, was Sim/AI/WorldModel.cs:668, Sim/AI/WorldModel.cs:673).</summary>
+                public static float DetectLifeScale2 = 2f;
+                /// <summary>ai.teamIntel.detectOwnCompositionScale (x; sat_thuong, was Sim/AI/WorldModel.cs:671).</summary>
+                public static float DetectOwnCompositionScale = 0.5f;
+                /// <summary>ai.teamIntel.detectFallback4 (x; sat_thuong, was Sim/AI/WorldModel.cs:672).</summary>
+                public static float DetectFallback4 = 0.4f;
+                /// <summary>ai.teamIntel.detectFallback5 (x; sat_thuong, was Sim/AI/WorldModel.cs:672).</summary>
+                public static float DetectFallback5 = 0.15f;
+                /// <summary>ai.teamIntel.detectPriority6 (s; thoi_gian, was Sim/AI/WorldModel.cs:687).</summary>
+                public static float DetectPriority6 = 75f;
+            }
+
+            public static partial class TeamPlanning
+            {
+                /// <summary>ai.teamPlanning.openDistanceMax (m; sat_thuong, was Sim/AI/P4/Planning.cs:221).</summary>
+                public static float OpenDistanceMax = 20f;
+                /// <summary>ai.teamPlanning.observeDeathNowMin (s; thoi_gian, was Sim/AI/P4/Planning.cs:271).</summary>
+                public static double ObserveDeathNowMin = 20.0;
+                /// <summary>ai.teamPlanning.observeDeathMaxHpDivisor (x; nguong, was Sim/AI/P4/Planning.cs:281).</summary>
+                public static float ObserveDeathMaxHpDivisor = 150f;
+                /// <summary>ai.teamPlanning.observeDeathPowerFloor (x; nguong, was Sim/AI/P4/Planning.cs:281).</summary>
+                public static float ObserveDeathPowerFloor = 0.5f;
+                /// <summary>ai.teamPlanning.observeDeathCountMin2 (count; gioi_han_thuc_the, was Sim/AI/P4/Planning.cs:283).</summary>
+                public static int ObserveDeathCountMin2 = 128;
+                /// <summary>ai.teamPlanning.observeDeathRangeFloor (m; sat_thuong, was Sim/AI/P4/Planning.cs:287).</summary>
+                public static float ObserveDeathRangeFloor = 30f;
+                /// <summary>ai.teamPlanning.observeDeathConfidence (x; sat_thuong, was Sim/AI/P4/Planning.cs:287).</summary>
+                public static float ObserveDeathConfidence = 0.8f;
+                /// <summary>ai.teamPlanning.observePartBrokenRadiusAdd (m; sat_thuong, was Sim/AI/P4/Planning.cs:295).</summary>
+                public static float ObservePartBrokenRadiusAdd = 40f;
+                /// <summary>ai.teamPlanning.observePartBrokenConfidence (x; sat_thuong, was Sim/AI/P4/Planning.cs:295).</summary>
+                public static float ObservePartBrokenConfidence = 0.9f;
+                /// <summary>ai.teamPlanning.observeWarningsXScale (x; thoi_gian, was Sim/AI/P4/Planning.cs:308).</summary>
+                public static float ObserveWarningsXScale = 0.5f;
+                /// <summary>ai.teamPlanning.observeWarningsRoundScale (x; thoi_gian, was Sim/AI/P4/Planning.cs:308).</summary>
+                public static long ObserveWarningsRoundScale = 7919L;
+                /// <summary>ai.teamPlanning.observeWarningsYScale (x; thoi_gian, was Sim/AI/P4/Planning.cs:308).</summary>
+                public static float ObserveWarningsYScale = 0.5f;
+                /// <summary>ai.teamPlanning.observeWarningsSourceScale2 (x; thoi_gian, was Sim/AI/P4/Planning.cs:308).</summary>
+                public static long ObserveWarningsSourceScale2 = 31L;
+                /// <summary>ai.teamPlanning.observeWarningsDueScale (x; thoi_gian, was Sim/AI/P4/Planning.cs:308).</summary>
+                public static double ObserveWarningsDueScale = 10.0;
+                /// <summary>ai.teamPlanning.observeWarningsRadiusFloor (m; thoi_gian, was Sim/AI/P4/Planning.cs:314).</summary>
+                public static float ObserveWarningsRadiusFloor = 4f;
+                /// <summary>ai.teamPlanning.observeWarningsRadiusScale (x; thoi_gian, was Sim/AI/P4/Planning.cs:314).</summary>
+                public static float ObserveWarningsRadiusScale = 0.5f;
+                /// <summary>ai.teamPlanning.observeWarningsNowMin (s; thoi_gian, was Sim/AI/P4/Planning.cs:328).</summary>
+                public static double ObserveWarningsNowMin = 30.0;
+                /// <summary>ai.teamPlanning.updateCountMin (count; gioi_han_thuc_the, was Sim/AI/P4/Planning.cs:357).</summary>
+                public static int UpdateCountMin = 64;
+                /// <summary>ai.teamPlanning.updateAgeMax (s; thoi_gian, was Sim/AI/P4/Planning.cs:370).</summary>
+                public static float UpdateAgeMax = 5f;
+                /// <summary>ai.teamPlanning.updateRadius (x; sat_thuong, was Sim/AI/P4/Planning.cs:376, Sim/AI/P4/Planning.cs:421).</summary>
+                public static float UpdateRadius = 20f;
+                /// <summary>ai.teamPlanning.updateConfidence (x; sat_thuong, was Sim/AI/P4/Planning.cs:376).</summary>
+                public static float UpdateConfidence = 0.7f;
+                /// <summary>ai.teamPlanning.updateRadius2 (x; sat_thuong, was Sim/AI/P4/Planning.cs:391, Sim/AI/P4/Planning.cs:409).</summary>
+                public static float UpdateRadius2 = 50f;
+                /// <summary>ai.teamPlanning.updateDistanceMin (m; ban_kinh, was Sim/AI/P4/Planning.cs:394).</summary>
+                public static float UpdateDistanceMin = 15f;
+                /// <summary>ai.teamPlanning.updateNowSub (s; thoi_gian, was Sim/AI/P4/Planning.cs:399).</summary>
+                public static double UpdateNowSub = 2.0;
+                /// <summary>ai.teamPlanning.updateRadius3 (s; thoi_gian, was Sim/AI/P4/Planning.cs:408).</summary>
+                public static float UpdateRadius3 = 60f;
+                /// <summary>ai.teamPlanning.updatePeakScale (x; thoi_gian, was Sim/AI/P4/Planning.cs:408).</summary>
+                public static float UpdatePeakScale = 0.5f;
+                /// <summary>ai.teamPlanning.updateConfidence2 (x; sat_thuong, was Sim/AI/P4/Planning.cs:409).</summary>
+                public static float UpdateConfidence2 = 0.6f;
+                /// <summary>ai.teamPlanning.updateNowSub2 (s; thoi_gian, was Sim/AI/P4/Planning.cs:420).</summary>
+                public static double UpdateNowSub2 = 3.0;
+                /// <summary>ai.teamPlanning.updateConfidence3 (x; sat_thuong, was Sim/AI/P4/Planning.cs:421).</summary>
+                public static float UpdateConfidence3 = 0.8f;
+                /// <summary>ai.teamPlanning.updateIAdd (x; sat_thuong, was Sim/AI/P4/Planning.cs:421).</summary>
+                public static int UpdateIAdd = 100;
+                /// <summary>ai.teamPlanning.updateNowMax (s; thoi_gian, was Sim/AI/P4/Planning.cs:435).</summary>
+                public static double UpdateNowMax = 30.0;
+                /// <summary>ai.teamPlanning.updateNowMin (s; thoi_gian, was Sim/AI/P4/Planning.cs:437).</summary>
+                public static double UpdateNowMin = 60.0;
+            }
+
+            public static partial class WeakpointUtility
+            {
+                /// <summary>ai.weakpointUtility.scoreI (x; nguong, was Sim/AI/P4/PlanningRules.cs:667).</summary>
+                public static int ScoreI = 2;
+                /// <summary>ai.weakpointUtility.scoreI2 (x; sat_thuong, was Sim/AI/P4/PlanningRules.cs:668).</summary>
+                public static int ScoreI2 = 3;
+                /// <summary>ai.weakpointUtility.scoreDistanceScale (x; sat_thuong, was Sim/AI/P4/PlanningRules.cs:668).</summary>
+                public static float ScoreDistanceScale = 0.01f;
+            }
+
+            public static partial class Why
+            {
+                /// <summary>ai.why.splitCountMin (count; ban_kinh, was Sim/AI/DecisionLog.cs:87).</summary>
+                public static int SplitCountMin = 3;
+                /// <summary>ai.why.splitIndex (m; ban_kinh, was Sim/AI/DecisionLog.cs:87).</summary>
+                public static int SplitIndex = 3;
+                /// <summary>ai.why.splitCountSub (count; ban_kinh, was Sim/AI/DecisionLog.cs:87).</summary>
+                public static int SplitCountSub = 3;
+                /// <summary>ai.why.splitCountMin2 (count; ban_kinh, was Sim/AI/DecisionLog.cs:88).</summary>
+                public static int SplitCountMin2 = 2;
+                /// <summary>ai.why.splitIndex2 (m; ban_kinh, was Sim/AI/DecisionLog.cs:88).</summary>
+                public static int SplitIndex2 = 2;
+                /// <summary>ai.why.splitCountSub2 (count; ban_kinh, was Sim/AI/DecisionLog.cs:88).</summary>
+                public static int SplitCountSub2 = 2;
+            }
+
+            public static partial class WorldModel
+            {
+                /// <summary>ai.worldModel.forWorldRateFloor (x; tan_suat, was Sim/AI/WorldModel.cs:193).</summary>
+                public static float ForWorldRateFloor = 0.1f;
+            }
         }
 
         private static readonly Entry[] Pass2Ai =
         {
+            new Entry("ai.aiBehaviour.suitedToCountMax", "count", () => Ai.AiBehaviour.SuitedToCountMax, v => Ai.AiBehaviour.SuitedToCountMax = (int)System.Math.Round(v)),
+            new Entry("ai.aiBehaviour.parsePriority", "m", () => Ai.AiBehaviour.ParsePriority, v => Ai.AiBehaviour.ParsePriority = (int)System.Math.Round(v)),
+            new Entry("ai.aiBehaviour.parseCommit", "m", () => Ai.AiBehaviour.ParseCommit, v => Ai.AiBehaviour.ParseCommit = (float)v),
+            new Entry("ai.aiCommander.scootTimeDivisor", "x", () => Ai.AiCommander.ScootTimeDivisor, v => Ai.AiCommander.ScootTimeDivisor = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.scootDirScale", "x", () => Ai.AiCommander.ScootDirScale, v => Ai.AiCommander.ScootDirScale = (float)v),
+            new Entry("ai.aiCommander.scootMargin", "x", () => Ai.AiCommander.ScootMargin, v => Ai.AiCommander.ScootMargin = (float)v),
+            new Entry("ai.aiCommander.scootRangeSub", "m", () => Ai.AiCommander.ScootRangeSub, v => Ai.AiCommander.ScootRangeSub = (float)v),
+            new Entry("ai.aiCommander.scootMinRangeAdd", "m", () => Ai.AiCommander.ScootMinRangeAdd, v => Ai.AiCommander.ScootMinRangeAdd = (float)v),
+            new Entry("ai.aiCommander.aircraftStrengthOfScale", "x", () => Ai.AiCommander.AircraftStrengthOfScale, v => Ai.AiCommander.AircraftStrengthOfScale = (float)v),
+            new Entry("ai.aiCommander.aircraftNowMin", "s", () => Ai.AiCommander.AircraftNowMin, v => Ai.AiCommander.AircraftNowMin = v),
+            new Entry("ai.aiCommander.aircraftNowMin2", "s", () => Ai.AiCommander.AircraftNowMin2, v => Ai.AiCommander.AircraftNowMin2 = v),
+            new Entry("ai.aiCommander.aircraftDistanceMax", "m", () => Ai.AiCommander.AircraftDistanceMax, v => Ai.AiCommander.AircraftDistanceMax = (float)v),
+            new Entry("ai.aiCommander.aircraftDistanceMax2", "m", () => Ai.AiCommander.AircraftDistanceMax2, v => Ai.AiCommander.AircraftDistanceMax2 = (float)v),
+            new Entry("ai.aiCommander.aircraftAngle1", "m", () => Ai.AiCommander.AircraftAngle1, v => Ai.AiCommander.AircraftAngle1 = (float)v),
+            new Entry("ai.aiCommander.aircraftAngle2", "m", () => Ai.AiCommander.AircraftAngle2, v => Ai.AiCommander.AircraftAngle2 = (float)v),
+            new Entry("ai.aiCommander.aircraftRotatedScale", "x", () => Ai.AiCommander.AircraftRotatedScale, v => Ai.AiCommander.AircraftRotatedScale = (float)v),
+            new Entry("ai.aiCommander.aircraftMargin", "x", () => Ai.AiCommander.AircraftMargin, v => Ai.AiCommander.AircraftMargin = (float)v),
+            new Entry("ai.aiCommander.aircraftNowAdd", "s", () => Ai.AiCommander.AircraftNowAdd, v => Ai.AiCommander.AircraftNowAdd = v),
+            new Entry("ai.aiCommander.ctorTeamTrue", "s", () => Ai.AiCommander.CtorTeamTrue, v => Ai.AiCommander.CtorTeamTrue = (float)v),
+            new Entry("ai.aiCommander.attackThresholdBaseAttackThresholdBase", "x", () => Ai.AiCommander.AttackThresholdBaseAttackThresholdBase, v => Ai.AiCommander.AttackThresholdBaseAttackThresholdBase = (float)v),
+            new Entry("ai.aiCommander.attackThresholdBaseFallback", "x", () => Ai.AiCommander.AttackThresholdBaseFallback, v => Ai.AiCommander.AttackThresholdBaseFallback = (float)v),
+            new Entry("ai.aiCommander.attackThresholdBaseFallback2", "x", () => Ai.AiCommander.AttackThresholdBaseFallback2, v => Ai.AiCommander.AttackThresholdBaseFallback2 = (float)v),
+            new Entry("ai.aiCommander.passFallback", "s", () => Ai.AiCommander.PassFallback, v => Ai.AiCommander.PassFallback = (float)v),
+            new Entry("ai.aiCommander.planDistanceMax", "m", () => Ai.AiCommander.PlanDistanceMax, v => Ai.AiCommander.PlanDistanceMax = (float)v),
+            new Entry("ai.aiCommander.planDistanceMin", "m", () => Ai.AiCommander.PlanDistanceMin, v => Ai.AiCommander.PlanDistanceMin = (float)v),
+            new Entry("ai.aiCommander.planMaxScale", "x", () => Ai.AiCommander.PlanMaxScale, v => Ai.AiCommander.PlanMaxScale = (float)v),
+            new Entry("ai.aiCommander.planPrepScale", "x", () => Ai.AiCommander.PlanPrepScale, v => Ai.AiCommander.PlanPrepScale = v),
+            new Entry("ai.aiCommander.planConfidenceMin", "m", () => Ai.AiCommander.PlanConfidenceMin, v => Ai.AiCommander.PlanConfidenceMin = (float)v),
+            new Entry("ai.aiCommander.planDistanceMax2", "m", () => Ai.AiCommander.PlanDistanceMax2, v => Ai.AiCommander.PlanDistanceMax2 = (float)v),
+            new Entry("ai.aiCommander.planEnemyThereFloor", "x", () => Ai.AiCommander.PlanEnemyThereFloor, v => Ai.AiCommander.PlanEnemyThereFloor = (float)v),
+            new Entry("ai.aiCommander.switchTacticTimeMin", "s", () => Ai.AiCommander.SwitchTacticTimeMin, v => Ai.AiCommander.SwitchTacticTimeMin = v),
+            new Entry("ai.aiCommander.savingUpVehicleCountMin", "count", () => Ai.AiCommander.SavingUpVehicleCountMin, v => Ai.AiCommander.SavingUpVehicleCountMin = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.updateUrgencyPriorityMin", "m", () => Ai.AiCommander.UpdateUrgencyPriorityMin, v => Ai.AiCommander.UpdateUrgencyPriorityMin = (float)v),
+            new Entry("ai.aiCommander.updateUrgencyDistanceMax", "m", () => Ai.AiCommander.UpdateUrgencyDistanceMax, v => Ai.AiCommander.UpdateUrgencyDistanceMax = (float)v),
+            new Entry("ai.aiCommander.updateUrgencyLostScale", "x", () => Ai.AiCommander.UpdateUrgencyLostScale, v => Ai.AiCommander.UpdateUrgencyLostScale = (float)v),
+            new Entry("ai.aiCommander.updateUrgencyPhaseMin", "x", () => Ai.AiCommander.UpdateUrgencyPhaseMin, v => Ai.AiCommander.UpdateUrgencyPhaseMin = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.updateUrgencyUFloor", "x", () => Ai.AiCommander.UpdateUrgencyUFloor, v => Ai.AiCommander.UpdateUrgencyUFloor = (float)v),
+            new Entry("ai.aiCommander.pickReserveCountMax", "count", () => Ai.AiCommander.PickReserveCountMax, v => Ai.AiCommander.PickReserveCountMax = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.reserveSpotHomeLerp", "x", () => Ai.AiCommander.ReserveSpotHomeLerp, v => Ai.AiCommander.ReserveSpotHomeLerp = (float)v),
+            new Entry("ai.aiCommander.reserveSpotMargin", "x", () => Ai.AiCommander.ReserveSpotMargin, v => Ai.AiCommander.ReserveSpotMargin = (float)v),
+            new Entry("ai.aiCommander.reserveTriggerDistanceMax", "m", () => Ai.AiCommander.ReserveTriggerDistanceMax, v => Ai.AiCommander.ReserveTriggerDistanceMax = (float)v),
+            new Entry("ai.aiCommander.reserveTriggerDistanceMax2", "m", () => Ai.AiCommander.ReserveTriggerDistanceMax2, v => Ai.AiCommander.ReserveTriggerDistanceMax2 = (float)v),
+            new Entry("ai.aiCommander.reserveTriggerReachFloor", "m", () => Ai.AiCommander.ReserveTriggerReachFloor, v => Ai.AiCommander.ReserveTriggerReachFloor = (float)v),
+            new Entry("ai.aiCommander.demandDistanceMin", "m", () => Ai.AiCommander.DemandDistanceMin, v => Ai.AiCommander.DemandDistanceMin = (float)v),
+            new Entry("ai.aiCommander.assignmentScoreClampScale", "x", () => Ai.AiCommander.AssignmentScoreClampScale, v => Ai.AiCommander.AssignmentScoreClampScale = (float)v),
+            new Entry("ai.aiCommander.assignmentScoreDistanceDivisor", "x", () => Ai.AiCommander.AssignmentScoreDistanceDivisor, v => Ai.AiCommander.AssignmentScoreDistanceDivisor = (float)v),
+            new Entry("ai.aiCommander.counterattackP3LostFloor", "count", () => Ai.AiCommander.CounterattackP3LostFloor, v => Ai.AiCommander.CounterattackP3LostFloor = (float)v),
+            new Entry("ai.aiCommander.defenseInDepthP3DistanceMin", "m", () => Ai.AiCommander.DefenseInDepthP3DistanceMin, v => Ai.AiCommander.DefenseInDepthP3DistanceMin = (float)v),
+            new Entry("ai.aiCommander.defenseInDepthP3Margin", "x", () => Ai.AiCommander.DefenseInDepthP3Margin, v => Ai.AiCommander.DefenseInDepthP3Margin = (float)v),
+            new Entry("ai.aiCommander.defenseInDepthP3Reach", "m", () => Ai.AiCommander.DefenseInDepthP3Reach, v => Ai.AiCommander.DefenseInDepthP3Reach = (float)v),
+            new Entry("ai.aiCommander.defenseInDepthP3OwnFloor", "m", () => Ai.AiCommander.DefenseInDepthP3OwnFloor, v => Ai.AiCommander.DefenseInDepthP3OwnFloor = (float)v),
+            new Entry("ai.aiCommander.pointOwnerRadiusAdd", "m", () => Ai.AiCommander.PointOwnerRadiusAdd, v => Ai.AiCommander.PointOwnerRadiusAdd = (float)v),
+            new Entry("ai.aiCommander.sunkCostP3DistanceMax", "m", () => Ai.AiCommander.SunkCostP3DistanceMax, v => Ai.AiCommander.SunkCostP3DistanceMax = (float)v),
+            new Entry("ai.aiCommander.sunkCostP3Radius", "CP", () => Ai.AiCommander.SunkCostP3Radius, v => Ai.AiCommander.SunkCostP3Radius = (float)v),
+            new Entry("ai.aiCommander.sunkCostP3DistanceMin", "m", () => Ai.AiCommander.SunkCostP3DistanceMin, v => Ai.AiCommander.SunkCostP3DistanceMin = (float)v),
+            new Entry("ai.aiCommander.sunkCostP3DirectionScale", "x", () => Ai.AiCommander.SunkCostP3DirectionScale, v => Ai.AiCommander.SunkCostP3DirectionScale = (float)v),
+            new Entry("ai.aiCommander.sunkCostP3Margin", "CP", () => Ai.AiCommander.SunkCostP3Margin, v => Ai.AiCommander.SunkCostP3Margin = (float)v),
+            new Entry("ai.aiCommander.economyOfForceP3DistanceMax", "m", () => Ai.AiCommander.EconomyOfForceP3DistanceMax, v => Ai.AiCommander.EconomyOfForceP3DistanceMax = (float)v),
+            new Entry("ai.aiCommander.economyOfForceP3NowAdd", "s", () => Ai.AiCommander.EconomyOfForceP3NowAdd, v => Ai.AiCommander.EconomyOfForceP3NowAdd = v),
+            new Entry("ai.aiCommander.pressuredRadiusAdd", "m", () => Ai.AiCommander.PressuredRadiusAdd, v => Ai.AiCommander.PressuredRadiusAdd = (float)v),
+            new Entry("ai.aiCommander.deadlinesP3ReachScale", "x", () => Ai.AiCommander.DeadlinesP3ReachScale, v => Ai.AiCommander.DeadlinesP3ReachScale = (float)v),
+            new Entry("ai.aiCommander.deadlinesP3DistanceMin", "m", () => Ai.AiCommander.DeadlinesP3DistanceMin, v => Ai.AiCommander.DeadlinesP3DistanceMin = (float)v),
+            new Entry("ai.aiCommander.deadlinesP3NowMin", "s", () => Ai.AiCommander.DeadlinesP3NowMin, v => Ai.AiCommander.DeadlinesP3NowMin = v),
+            new Entry("ai.aiCommander.deadlinesP3DistanceMax", "m", () => Ai.AiCommander.DeadlinesP3DistanceMax, v => Ai.AiCommander.DeadlinesP3DistanceMax = (float)v),
+            new Entry("ai.aiCommander.deadlinesP3NowMin2", "s", () => Ai.AiCommander.DeadlinesP3NowMin2, v => Ai.AiCommander.DeadlinesP3NowMin2 = v),
+            new Entry("ai.aiCommander.deadlineOfRadiusAdd", "m", () => Ai.AiCommander.DeadlineOfRadiusAdd, v => Ai.AiCommander.DeadlineOfRadiusAdd = (float)v),
+            new Entry("ai.aiCommander.deadlineOfConfidenceMax", "x", () => Ai.AiCommander.DeadlineOfConfidenceMax, v => Ai.AiCommander.DeadlineOfConfidenceMax = (float)v),
+            new Entry("ai.aiCommander.frontageP3CountMax", "count", () => Ai.AiCommander.FrontageP3CountMax, v => Ai.AiCommander.FrontageP3CountMax = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.frontageP3DistanceMax", "m", () => Ai.AiCommander.FrontageP3DistanceMax, v => Ai.AiCommander.FrontageP3DistanceMax = (float)v),
+            new Entry("ai.aiCommander.frontageP3NarrowestFloor", "x", () => Ai.AiCommander.FrontageP3NarrowestFloor, v => Ai.AiCommander.FrontageP3NarrowestFloor = (float)v),
+            new Entry("ai.aiCommander.frontageP3NowMin", "s", () => Ai.AiCommander.FrontageP3NowMin, v => Ai.AiCommander.FrontageP3NowMin = v),
+            new Entry("ai.aiCommander.packageP3DistanceMin", "m", () => Ai.AiCommander.PackageP3DistanceMin, v => Ai.AiCommander.PackageP3DistanceMin = (float)v),
+            new Entry("ai.aiCommander.packageP3DistanceMax", "m", () => Ai.AiCommander.PackageP3DistanceMax, v => Ai.AiCommander.PackageP3DistanceMax = (float)v),
+            new Entry("ai.aiCommander.buildPackageDistanceMax", "m", () => Ai.AiCommander.BuildPackageDistanceMax, v => Ai.AiCommander.BuildPackageDistanceMax = (float)v),
+            new Entry("ai.aiCommander.buildPackageLengthMax", "m", () => Ai.AiCommander.BuildPackageLengthMax, v => Ai.AiCommander.BuildPackageLengthMax = (float)v),
+            new Entry("ai.aiCommander.buildPackageCountMin", "count", () => Ai.AiCommander.BuildPackageCountMin, v => Ai.AiCommander.BuildPackageCountMin = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.buildPackageFastTrue", "s", () => Ai.AiCommander.BuildPackageFastTrue, v => Ai.AiCommander.BuildPackageFastTrue = (float)v),
+            new Entry("ai.aiCommander.buildPackageReachScale", "x", () => Ai.AiCommander.BuildPackageReachScale, v => Ai.AiCommander.BuildPackageReachScale = (float)v),
+            new Entry("ai.aiCommander.buildPackagePrep", "m", () => Ai.AiCommander.BuildPackagePrep, v => Ai.AiCommander.BuildPackagePrep = (float)v),
+            new Entry("ai.aiCommander.buildPackageRadius2", "s", () => Ai.AiCommander.BuildPackageRadius2, v => Ai.AiCommander.BuildPackageRadius2 = (float)v),
+            new Entry("ai.aiCommander.buildPackageLeftMax", "s", () => Ai.AiCommander.BuildPackageLeftMax, v => Ai.AiCommander.BuildPackageLeftMax = (float)v),
+            new Entry("ai.aiCommander.applyPackageScoutUntilAdd", "s", () => Ai.AiCommander.ApplyPackageScoutUntilAdd, v => Ai.AiCommander.ApplyPackageScoutUntilAdd = v),
+            new Entry("ai.aiCommander.applyPackageRadius", "s", () => Ai.AiCommander.ApplyPackageRadius, v => Ai.AiCommander.ApplyPackageRadius = (float)v),
+            new Entry("ai.aiCommander.applyPackageStandoff", "s", () => Ai.AiCommander.ApplyPackageStandoff, v => Ai.AiCommander.ApplyPackageStandoff = (float)v),
+            new Entry("ai.aiCommander.sendScoutVisionRangeScale", "x", () => Ai.AiCommander.SendScoutVisionRangeScale, v => Ai.AiCommander.SendScoutVisionRangeScale = (float)v),
+            new Entry("ai.aiCommander.scoutPointStandoffFloor", "x", () => Ai.AiCommander.ScoutPointStandoffFloor, v => Ai.AiCommander.ScoutPointStandoffFloor = (float)v),
+            new Entry("ai.aiCommander.scoutPointMargin", "x", () => Ai.AiCommander.ScoutPointMargin, v => Ai.AiCommander.ScoutPointMargin = (float)v),
+            new Entry("ai.aiCommander.scoutPointFromLerp", "x", () => Ai.AiCommander.ScoutPointFromLerp, v => Ai.AiCommander.ScoutPointFromLerp = (float)v),
+            new Entry("ai.aiCommander.stagingP3DistanceMax", "m", () => Ai.AiCommander.StagingP3DistanceMax, v => Ai.AiCommander.StagingP3DistanceMax = (float)v),
+            new Entry("ai.aiCommander.stagingP3ReachFloor", "m", () => Ai.AiCommander.StagingP3ReachFloor, v => Ai.AiCommander.StagingP3ReachFloor = (float)v),
+            new Entry("ai.aiCommander.stagingP3K4", "m", () => Ai.AiCommander.StagingP3K4, v => Ai.AiCommander.StagingP3K4 = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.stagingP3K5", "m", () => Ai.AiCommander.StagingP3K5, v => Ai.AiCommander.StagingP3K5 = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.stagingP3Margin", "m", () => Ai.AiCommander.StagingP3Margin, v => Ai.AiCommander.StagingP3Margin = (float)v),
+            new Entry("ai.aiCommander.stagingP3Reach", "m", () => Ai.AiCommander.StagingP3Reach, v => Ai.AiCommander.StagingP3Reach = (float)v),
+            new Entry("ai.aiCommander.stagingP3DistanceScale", "x", () => Ai.AiCommander.StagingP3DistanceScale, v => Ai.AiCommander.StagingP3DistanceScale = (float)v),
+            new Entry("ai.aiCommander.stagingP3FromLerp", "x", () => Ai.AiCommander.StagingP3FromLerp, v => Ai.AiCommander.StagingP3FromLerp = (float)v),
+            new Entry("ai.aiCommander.inChokeWidthAdd", "m", () => Ai.AiCommander.InChokeWidthAdd, v => Ai.AiCommander.InChokeWidthAdd = (float)v),
+            new Entry("ai.aiCommander.reserveReleaseP3PriorityMin", "m", () => Ai.AiCommander.ReserveReleaseP3PriorityMin, v => Ai.AiCommander.ReserveReleaseP3PriorityMin = (float)v),
+            new Entry("ai.aiCommander.reserveReleaseP3ConfidenceMin", "m", () => Ai.AiCommander.ReserveReleaseP3ConfidenceMin, v => Ai.AiCommander.ReserveReleaseP3ConfidenceMin = (float)v),
+            new Entry("ai.aiCommander.reserveReleaseP3DistanceMax", "m", () => Ai.AiCommander.ReserveReleaseP3DistanceMax, v => Ai.AiCommander.ReserveReleaseP3DistanceMax = (float)v),
+            new Entry("ai.aiCommander.reserveReleaseP3DistanceMax2", "m", () => Ai.AiCommander.ReserveReleaseP3DistanceMax2, v => Ai.AiCommander.ReserveReleaseP3DistanceMax2 = (float)v),
+            new Entry("ai.aiCommander.reserveReleaseP3DistanceMax3", "m", () => Ai.AiCommander.ReserveReleaseP3DistanceMax3, v => Ai.AiCommander.ReserveReleaseP3DistanceMax3 = (float)v),
+            new Entry("ai.aiCommander.reserveReleaseP3Rank", "count", () => Ai.AiCommander.ReserveReleaseP3Rank, v => Ai.AiCommander.ReserveReleaseP3Rank = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.reserveReleaseP3Rank2", "x", () => Ai.AiCommander.ReserveReleaseP3Rank2, v => Ai.AiCommander.ReserveReleaseP3Rank2 = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.reserveReleaseP3Rank3", "m", () => Ai.AiCommander.ReserveReleaseP3Rank3, v => Ai.AiCommander.ReserveReleaseP3Rank3 = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.reserveReleaseP3DistanceMax4", "m", () => Ai.AiCommander.ReserveReleaseP3DistanceMax4, v => Ai.AiCommander.ReserveReleaseP3DistanceMax4 = (float)v),
+            new Entry("ai.aiCommander.reserveReleaseP3ReachFloor", "m", () => Ai.AiCommander.ReserveReleaseP3ReachFloor, v => Ai.AiCommander.ReserveReleaseP3ReachFloor = (float)v),
+            new Entry("ai.aiCommander.reserveReleaseP3OwnMax", "count", () => Ai.AiCommander.ReserveReleaseP3OwnMax, v => Ai.AiCommander.ReserveReleaseP3OwnMax = (float)v),
+            new Entry("ai.aiCommander.reserveReleaseP3Rank4", "count", () => Ai.AiCommander.ReserveReleaseP3Rank4, v => Ai.AiCommander.ReserveReleaseP3Rank4 = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.reserveReleaseP3TimeMin", "s", () => Ai.AiCommander.ReserveReleaseP3TimeMin, v => Ai.AiCommander.ReserveReleaseP3TimeMin = v),
+            new Entry("ai.aiCommander.reserveReleaseP3DistanceMin", "m", () => Ai.AiCommander.ReserveReleaseP3DistanceMin, v => Ai.AiCommander.ReserveReleaseP3DistanceMin = (float)v),
+            new Entry("ai.aiCommander.coverageP3DistanceDivisor", "x", () => Ai.AiCommander.CoverageP3DistanceDivisor, v => Ai.AiCommander.CoverageP3DistanceDivisor = (float)v),
+            new Entry("ai.aiCommander.coverageP3RangeFloor", "m", () => Ai.AiCommander.CoverageP3RangeFloor, v => Ai.AiCommander.CoverageP3RangeFloor = (float)v),
+            new Entry("ai.aiCommander.coverageP3DistanceMin", "m", () => Ai.AiCommander.CoverageP3DistanceMin, v => Ai.AiCommander.CoverageP3DistanceMin = (float)v),
+            new Entry("ai.aiCommander.coverageSpotRangeFloor", "m", () => Ai.AiCommander.CoverageSpotRangeFloor, v => Ai.AiCommander.CoverageSpotRangeFloor = (float)v),
+            new Entry("ai.aiCommander.coverageSpotDistanceSquaredMax", "m", () => Ai.AiCommander.CoverageSpotDistanceSquaredMax, v => Ai.AiCommander.CoverageSpotDistanceSquaredMax = (float)v),
+            new Entry("ai.aiCommander.coverageSpotReachScale", "x", () => Ai.AiCommander.CoverageSpotReachScale, v => Ai.AiCommander.CoverageSpotReachScale = (float)v),
+            new Entry("ai.aiCommander.counterBatteryStrikeP3NowMax", "count", () => Ai.AiCommander.CounterBatteryStrikeP3NowMax, v => Ai.AiCommander.CounterBatteryStrikeP3NowMax = v),
+            new Entry("ai.aiCommander.counterBatteryStrikeP3ErrorRadiusAdd", "m", () => Ai.AiCommander.CounterBatteryStrikeP3ErrorRadiusAdd, v => Ai.AiCommander.CounterBatteryStrikeP3ErrorRadiusAdd = (float)v),
+            new Entry("ai.aiCommander.assaultSmokeP3ExecuteAtSub", "s", () => Ai.AiCommander.AssaultSmokeP3ExecuteAtSub, v => Ai.AiCommander.AssaultSmokeP3ExecuteAtSub = v),
+            new Entry("ai.aiCommander.assaultSmokeP3ExecuteAtAdd", "s", () => Ai.AiCommander.AssaultSmokeP3ExecuteAtAdd, v => Ai.AiCommander.AssaultSmokeP3ExecuteAtAdd = v),
+            new Entry("ai.aiCommander.artilleryP3ReachAdd", "m", () => Ai.AiCommander.ArtilleryP3ReachAdd, v => Ai.AiCommander.ArtilleryP3ReachAdd = (float)v),
+            new Entry("ai.aiCommander.artilleryP3MinConfidence", "s", () => Ai.AiCommander.ArtilleryP3MinConfidence, v => Ai.AiCommander.ArtilleryP3MinConfidence = (float)v),
+            new Entry("ai.aiCommander.scootP3TimeDivisor", "x", () => Ai.AiCommander.ScootP3TimeDivisor, v => Ai.AiCommander.ScootP3TimeDivisor = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.scootP3Margin", "m", () => Ai.AiCommander.ScootP3Margin, v => Ai.AiCommander.ScootP3Margin = (float)v),
+            new Entry("ai.aiCommander.fireMissionP3NowAdd", "s", () => Ai.AiCommander.FireMissionP3NowAdd, v => Ai.AiCommander.FireMissionP3NowAdd = v),
+            new Entry("ai.aiCommander.blastOfR", "x", () => Ai.AiCommander.BlastOfR, v => Ai.AiCommander.BlastOfR = (float)v),
+            new Entry("ai.aiCommander.prepareAirP4AgeMax", "s", () => Ai.AiCommander.PrepareAirP4AgeMax, v => Ai.AiCommander.PrepareAirP4AgeMax = (float)v),
+            new Entry("ai.aiCommander.prepareAirP4AgeMax2", "s", () => Ai.AiCommander.PrepareAirP4AgeMax2, v => Ai.AiCommander.PrepareAirP4AgeMax2 = (float)v),
+            new Entry("ai.aiCommander.prepareAirP4DistanceMax", "m", () => Ai.AiCommander.PrepareAirP4DistanceMax, v => Ai.AiCommander.PrepareAirP4DistanceMax = (float)v),
+            new Entry("ai.aiCommander.prepareAirP4Margin", "x", () => Ai.AiCommander.PrepareAirP4Margin, v => Ai.AiCommander.PrepareAirP4Margin = (float)v),
+            new Entry("ai.aiCommander.fighterP4ReachScale", "x", () => Ai.AiCommander.FighterP4ReachScale, v => Ai.AiCommander.FighterP4ReachScale = (float)v),
+            new Entry("ai.aiCommander.fighterP4Margin", "s", () => Ai.AiCommander.FighterP4Margin, v => Ai.AiCommander.FighterP4Margin = (float)v),
+            new Entry("ai.aiCommander.fighterP4DistanceMin", "m", () => Ai.AiCommander.FighterP4DistanceMin, v => Ai.AiCommander.FighterP4DistanceMin = (float)v),
+            new Entry("ai.aiCommander.seadReadyP4NowMax", "s", () => Ai.AiCommander.SeadReadyP4NowMax, v => Ai.AiCommander.SeadReadyP4NowMax = v),
+            new Entry("ai.aiCommander.seadReadyP4DistanceMax", "m", () => Ai.AiCommander.SeadReadyP4DistanceMax, v => Ai.AiCommander.SeadReadyP4DistanceMax = (float)v),
+            new Entry("ai.aiCommander.bomberP4BlastAdd", "x", () => Ai.AiCommander.BomberP4BlastAdd, v => Ai.AiCommander.BomberP4BlastAdd = (float)v),
+            new Entry("ai.aiCommander.bomberP4DistanceMax", "m", () => Ai.AiCommander.BomberP4DistanceMax, v => Ai.AiCommander.BomberP4DistanceMax = (float)v),
+            new Entry("ai.aiCommander.bomberP4NowAdd", "x", () => Ai.AiCommander.BomberP4NowAdd, v => Ai.AiCommander.BomberP4NowAdd = v),
+            new Entry("ai.aiCommander.bomberP4DistanceMin", "m", () => Ai.AiCommander.BomberP4DistanceMin, v => Ai.AiCommander.BomberP4DistanceMin = (float)v),
+            new Entry("ai.aiCommander.bomberP4Margin", "x", () => Ai.AiCommander.BomberP4Margin, v => Ai.AiCommander.BomberP4Margin = (float)v),
+            new Entry("ai.aiCommander.approachAngle2", "m", () => Ai.AiCommander.ApproachAngle2, v => Ai.AiCommander.ApproachAngle2 = (float)v),
+            new Entry("ai.aiCommander.approachAngle3", "m", () => Ai.AiCommander.ApproachAngle3, v => Ai.AiCommander.ApproachAngle3 = (float)v),
+            new Entry("ai.aiCommander.approachAngle4", "m", () => Ai.AiCommander.ApproachAngle4, v => Ai.AiCommander.ApproachAngle4 = (float)v),
+            new Entry("ai.aiCommander.approachAngle5", "m", () => Ai.AiCommander.ApproachAngle5, v => Ai.AiCommander.ApproachAngle5 = (float)v),
+            new Entry("ai.aiCommander.approachDirScale", "x", () => Ai.AiCommander.ApproachDirScale, v => Ai.AiCommander.ApproachDirScale = (float)v),
+            new Entry("ai.aiCommander.approachMargin", "x", () => Ai.AiCommander.ApproachMargin, v => Ai.AiCommander.ApproachMargin = (float)v),
+            new Entry("ai.aiCommander.seadP4NowMin", "s", () => Ai.AiCommander.SeadP4NowMin, v => Ai.AiCommander.SeadP4NowMin = v),
+            new Entry("ai.aiCommander.seadP4CountMin", "count", () => Ai.AiCommander.SeadP4CountMin, v => Ai.AiCommander.SeadP4CountMin = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.seadP4AgeMax", "s", () => Ai.AiCommander.SeadP4AgeMax, v => Ai.AiCommander.SeadP4AgeMax = (float)v),
+            new Entry("ai.aiCommander.seadP4DistanceMax", "m", () => Ai.AiCommander.SeadP4DistanceMax, v => Ai.AiCommander.SeadP4DistanceMax = (float)v),
+            new Entry("ai.aiCommander.seadP4ReachDefault", "m", () => Ai.AiCommander.SeadP4ReachDefault, v => Ai.AiCommander.SeadP4ReachDefault = (float)v),
+            new Entry("ai.aiCommander.seadP4Margin", "m", () => Ai.AiCommander.SeadP4Margin, v => Ai.AiCommander.SeadP4Margin = (float)v),
+            new Entry("ai.aiCommander.seadP4DistanceMin", "m", () => Ai.AiCommander.SeadP4DistanceMin, v => Ai.AiCommander.SeadP4DistanceMin = (float)v),
+            new Entry("ai.aiCommander.seadP4NowAdd", "s", () => Ai.AiCommander.SeadP4NowAdd, v => Ai.AiCommander.SeadP4NowAdd = v),
+            new Entry("ai.aiCommander.egressP4NowMin", "s", () => Ai.AiCommander.EgressP4NowMin, v => Ai.AiCommander.EgressP4NowMin = v),
+            new Entry("ai.aiCommander.egressP4Angle2", "m", () => Ai.AiCommander.EgressP4Angle2, v => Ai.AiCommander.EgressP4Angle2 = (float)v),
+            new Entry("ai.aiCommander.egressP4Angle3", "m", () => Ai.AiCommander.EgressP4Angle3, v => Ai.AiCommander.EgressP4Angle3 = (float)v),
+            new Entry("ai.aiCommander.egressP4Angle4", "m", () => Ai.AiCommander.EgressP4Angle4, v => Ai.AiCommander.EgressP4Angle4 = (float)v),
+            new Entry("ai.aiCommander.egressP4Angle5", "m", () => Ai.AiCommander.EgressP4Angle5, v => Ai.AiCommander.EgressP4Angle5 = (float)v),
+            new Entry("ai.aiCommander.egressP4DirScale", "x", () => Ai.AiCommander.EgressP4DirScale, v => Ai.AiCommander.EgressP4DirScale = (float)v),
+            new Entry("ai.aiCommander.egressP4Margin", "x", () => Ai.AiCommander.EgressP4Margin, v => Ai.AiCommander.EgressP4Margin = (float)v),
+            new Entry("ai.aiCommander.egressP4NowAdd", "s", () => Ai.AiCommander.EgressP4NowAdd, v => Ai.AiCommander.EgressP4NowAdd = v),
+            new Entry("ai.aiCommander.riskRouteP4DistanceMax", "m", () => Ai.AiCommander.RiskRouteP4DistanceMax, v => Ai.AiCommander.RiskRouteP4DistanceMax = (float)v),
+            new Entry("ai.aiCommander.riskRouteP4LevelMax", "m", () => Ai.AiCommander.RiskRouteP4LevelMax, v => Ai.AiCommander.RiskRouteP4LevelMax = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.riskRouteP4NowAdd", "s", () => Ai.AiCommander.RiskRouteP4NowAdd, v => Ai.AiCommander.RiskRouteP4NowAdd = v),
+            new Entry("ai.aiCommander.weaponDpsCycleSecondsFloor", "s", () => Ai.AiCommander.WeaponDpsCycleSecondsFloor, v => Ai.AiCommander.WeaponDpsCycleSecondsFloor = (float)v),
+            new Entry("ai.aiCommander.estimateSpeedFloor", "m/s", () => Ai.AiCommander.EstimateSpeedFloor, v => Ai.AiCommander.EstimateSpeedFloor = (float)v),
+            new Entry("ai.aiCommander.estimateSplashRadiusMin", "m", () => Ai.AiCommander.EstimateSplashRadiusMin, v => Ai.AiCommander.EstimateSplashRadiusMin = (float)v),
+            new Entry("ai.aiCommander.estimateSpeed", "m/s", () => Ai.AiCommander.EstimateSpeed, v => Ai.AiCommander.EstimateSpeed = (float)v),
+            new Entry("ai.aiCommander.contactUnitStrengthScale", "x", () => Ai.AiCommander.ContactUnitStrengthScale, v => Ai.AiCommander.ContactUnitStrengthScale = (float)v),
+            new Entry("ai.aiCommander.contactUnitStrengthMin", "x", () => Ai.AiCommander.ContactUnitStrengthMin, v => Ai.AiCommander.ContactUnitStrengthMin = (float)v),
+            new Entry("ai.aiCommander.forcesForAgeMin", "s", () => Ai.AiCommander.ForcesForAgeMin, v => Ai.AiCommander.ForcesForAgeMin = (float)v),
+            new Entry("ai.aiCommander.forcesForDMax", "count", () => Ai.AiCommander.ForcesForDMax, v => Ai.AiCommander.ForcesForDMax = (float)v),
+            new Entry("ai.aiCommander.forcesForDistanceMax", "m", () => Ai.AiCommander.ForcesForDistanceMax, v => Ai.AiCommander.ForcesForDistanceMax = (float)v),
+            new Entry("ai.aiCommander.forcesForRadius", "s", () => Ai.AiCommander.ForcesForRadius, v => Ai.AiCommander.ForcesForRadius = (float)v),
+            new Entry("ai.aiCommander.forcesForUnknownShareMin", "share", () => Ai.AiCommander.ForcesForUnknownShareMin, v => Ai.AiCommander.ForcesForUnknownShareMin = (float)v),
+            new Entry("ai.aiCommander.forecastKeyDistanceDivisor", "x", () => Ai.AiCommander.ForecastKeyDistanceDivisor, v => Ai.AiCommander.ForecastKeyDistanceDivisor = (float)v),
+            new Entry("ai.aiCommander.forecastKeyCountScale", "x", () => Ai.AiCommander.ForecastKeyCountScale, v => Ai.AiCommander.ForecastKeyCountScale = (long)System.Math.Round(v)),
+            new Entry("ai.aiCommander.forecastKeyHpDivisor", "x", () => Ai.AiCommander.ForecastKeyHpDivisor, v => Ai.AiCommander.ForecastKeyHpDivisor = (float)v),
+            new Entry("ai.aiCommander.evaluatePlansMainFalse", "x", () => Ai.AiCommander.EvaluatePlansMainFalse, v => Ai.AiCommander.EvaluatePlansMainFalse = (float)v),
+            new Entry("ai.aiCommander.evaluatePlansFromLerp", "s", () => Ai.AiCommander.EvaluatePlansFromLerp, v => Ai.AiCommander.EvaluatePlansFromLerp = (float)v),
+            new Entry("ai.aiCommander.evaluatePlansLaneTrue", "s", () => Ai.AiCommander.EvaluatePlansLaneTrue, v => Ai.AiCommander.EvaluatePlansLaneTrue = (float)v),
+            new Entry("ai.aiCommander.evaluatePlansPlanGainScale", "x", () => Ai.AiCommander.EvaluatePlansPlanGainScale, v => Ai.AiCommander.EvaluatePlansPlanGainScale = (float)v),
+            new Entry("ai.aiCommander.depsP4AgeMin", "s", () => Ai.AiCommander.DepsP4AgeMin, v => Ai.AiCommander.DepsP4AgeMin = (float)v),
+            new Entry("ai.aiCommander.depsP4DistanceMin", "m", () => Ai.AiCommander.DepsP4DistanceMin, v => Ai.AiCommander.DepsP4DistanceMin = (float)v),
+            new Entry("ai.aiCommander.packagePlanP4DistanceMax", "m", () => Ai.AiCommander.PackagePlanP4DistanceMax, v => Ai.AiCommander.PackagePlanP4DistanceMax = (float)v),
+            new Entry("ai.aiCommander.packagePlanP4Severity", "s", () => Ai.AiCommander.PackagePlanP4Severity, v => Ai.AiCommander.PackagePlanP4Severity = (float)v),
+            new Entry("ai.aiCommander.choosePlanP4CreatedAtScale", "x", () => Ai.AiCommander.ChoosePlanP4CreatedAtScale, v => Ai.AiCommander.ChoosePlanP4CreatedAtScale = v),
+            new Entry("ai.aiCommander.applyPlanP4FastTrue", "m", () => Ai.AiCommander.ApplyPlanP4FastTrue, v => Ai.AiCommander.ApplyPlanP4FastTrue = (float)v),
+            new Entry("ai.aiCommander.applyPlanP4CommitSDefault", "s", () => Ai.AiCommander.ApplyPlanP4CommitSDefault, v => Ai.AiCommander.ApplyPlanP4CommitSDefault = (float)v),
+            new Entry("ai.aiCommander.judgePlanP4LostDivisor", "x", () => Ai.AiCommander.JudgePlanP4LostDivisor, v => Ai.AiCommander.JudgePlanP4LostDivisor = (float)v),
+            new Entry("ai.aiCommander.forecastCollapseP4Side", "s", () => Ai.AiCommander.ForecastCollapseP4Side, v => Ai.AiCommander.ForecastCollapseP4Side = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.supportWantedP4NowMax", "s", () => Ai.AiCommander.SupportWantedP4NowMax, v => Ai.AiCommander.SupportWantedP4NowMax = v),
+            new Entry("ai.aiCommander.supportWantedP4StrikeConfidenceScale", "x", () => Ai.AiCommander.SupportWantedP4StrikeConfidenceScale, v => Ai.AiCommander.SupportWantedP4StrikeConfidenceScale = (float)v),
+            new Entry("ai.aiCommander.supportWantedP4StrikeMaxErrorScale", "x", () => Ai.AiCommander.SupportWantedP4StrikeMaxErrorScale, v => Ai.AiCommander.SupportWantedP4StrikeMaxErrorScale = (float)v),
+            new Entry("ai.aiCommander.supportWantedP4NowMin", "s", () => Ai.AiCommander.SupportWantedP4NowMin, v => Ai.AiCommander.SupportWantedP4NowMin = v),
+            new Entry("ai.aiCommander.supportWantedP4DistanceMax", "m", () => Ai.AiCommander.SupportWantedP4DistanceMax, v => Ai.AiCommander.SupportWantedP4DistanceMax = (float)v),
+            new Entry("ai.aiCommander.probeP4Radius", "share", () => Ai.AiCommander.ProbeP4Radius, v => Ai.AiCommander.ProbeP4Radius = (float)v),
+            new Entry("ai.aiCommander.probeP4StrengthFloor", "share", () => Ai.AiCommander.ProbeP4StrengthFloor, v => Ai.AiCommander.ProbeP4StrengthFloor = (float)v),
+            new Entry("ai.aiCommander.stepProbeP4DMin", "share", () => Ai.AiCommander.StepProbeP4DMin, v => Ai.AiCommander.StepProbeP4DMin = (float)v),
+            new Entry("ai.aiCommander.stepProbeP4DMax", "share", () => Ai.AiCommander.StepProbeP4DMax, v => Ai.AiCommander.StepProbeP4DMax = (float)v),
+            new Entry("ai.aiCommander.stepProbeP4Radius", "share", () => Ai.AiCommander.StepProbeP4Radius, v => Ai.AiCommander.StepProbeP4Radius = (float)v),
+            new Entry("ai.aiCommander.stepProbeP4Confidence", "share", () => Ai.AiCommander.StepProbeP4Confidence, v => Ai.AiCommander.StepProbeP4Confidence = (float)v),
+            new Entry("ai.aiCommander.feintP4Radius", "s", () => Ai.AiCommander.FeintP4Radius, v => Ai.AiCommander.FeintP4Radius = (float)v),
+            new Entry("ai.aiCommander.feintP4DistanceMin", "m", () => Ai.AiCommander.FeintP4DistanceMin, v => Ai.AiCommander.FeintP4DistanceMin = (float)v),
+            new Entry("ai.aiCommander.feintP4SideScale", "x", () => Ai.AiCommander.FeintP4SideScale, v => Ai.AiCommander.FeintP4SideScale = (float)v),
+            new Entry("ai.aiCommander.feintP4ApproachScale", "x", () => Ai.AiCommander.FeintP4ApproachScale, v => Ai.AiCommander.FeintP4ApproachScale = (float)v),
+            new Entry("ai.aiCommander.feintP4Margin", "x", () => Ai.AiCommander.FeintP4Margin, v => Ai.AiCommander.FeintP4Margin = (float)v),
+            new Entry("ai.aiCommander.feintP4NowMin", "s", () => Ai.AiCommander.FeintP4NowMin, v => Ai.AiCommander.FeintP4NowMin = v),
+            new Entry("ai.aiCommander.stepFeintP4NowMin", "s", () => Ai.AiCommander.StepFeintP4NowMin, v => Ai.AiCommander.StepFeintP4NowMin = v),
+            new Entry("ai.aiCommander.stepFeintP4NowSub", "s", () => Ai.AiCommander.StepFeintP4NowSub, v => Ai.AiCommander.StepFeintP4NowSub = v),
+            new Entry("ai.aiCommander.stepFeintP4NowMax", "s", () => Ai.AiCommander.StepFeintP4NowMax, v => Ai.AiCommander.StepFeintP4NowMax = v),
+            new Entry("ai.aiCommander.stepFeintP4Radius2", "x", () => Ai.AiCommander.StepFeintP4Radius2, v => Ai.AiCommander.StepFeintP4Radius2 = (float)v),
+            new Entry("ai.aiCommander.stepFeintP4Confidence", "x", () => Ai.AiCommander.StepFeintP4Confidence, v => Ai.AiCommander.StepFeintP4Confidence = (float)v),
+            new Entry("ai.aiCommander.stepFeintP4NowAdd", "x", () => Ai.AiCommander.StepFeintP4NowAdd, v => Ai.AiCommander.StepFeintP4NowAdd = v),
+            new Entry("ai.aiCommander.stepFeintP4Subject", "x", () => Ai.AiCommander.StepFeintP4Subject, v => Ai.AiCommander.StepFeintP4Subject = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.adaptP4RangeScale", "x", () => Ai.AiCommander.AdaptP4RangeScale, v => Ai.AiCommander.AdaptP4RangeScale = (float)v),
+            new Entry("ai.aiCommander.adaptP4NowMax", "s", () => Ai.AiCommander.AdaptP4NowMax, v => Ai.AiCommander.AdaptP4NowMax = v),
+            new Entry("ai.aiCommander.purchaseAdjustP4PurchaseModifierScale", "x", () => Ai.AiCommander.PurchaseAdjustP4PurchaseModifierScale, v => Ai.AiCommander.PurchaseAdjustP4PurchaseModifierScale = (float)v),
+            new Entry("ai.aiCommander.enoughP4AgeMax", "s", () => Ai.AiCommander.EnoughP4AgeMax, v => Ai.AiCommander.EnoughP4AgeMax = (float)v),
+            new Entry("ai.aiCommander.enoughP4Side", "s", () => Ai.AiCommander.EnoughP4Side, v => Ai.AiCommander.EnoughP4Side = (int)System.Math.Round(v)),
+            new Entry("ai.aiCommander.holdPurchaseP4EnoughMaxHoldSAdd", "count", () => Ai.AiCommander.HoldPurchaseP4EnoughMaxHoldSAdd, v => Ai.AiCommander.HoldPurchaseP4EnoughMaxHoldSAdd = v),
+            new Entry("ai.aiHealthMonitor.next", "x", () => Ai.AiHealthMonitor.Next, v => Ai.AiHealthMonitor.Next = v),
+            new Entry("ai.aiHealthMonitor.stepPeriodSFloor", "x", () => Ai.AiHealthMonitor.StepPeriodSFloor, v => Ai.AiHealthMonitor.StepPeriodSFloor = (float)v),
+            new Entry("ai.aiHealthMonitor.sampleTimeMax", "s", () => Ai.AiHealthMonitor.SampleTimeMax, v => Ai.AiHealthMonitor.SampleTimeMax = v),
+            new Entry("ai.aiHealthMonitor.trafficJammedScale", "x", () => Ai.AiHealthMonitor.TrafficJammedScale, v => Ai.AiHealthMonitor.TrafficJammedScale = (int)System.Math.Round(v)),
+            new Entry("ai.aiHints.nextTimeMax", "s", () => Ai.AiHints.NextTimeMax, v => Ai.AiHints.NextTimeMax = v),
+            new Entry("ai.aiParams.worldRateFallback", "x", () => Ai.AiParams.WorldRateFallback, v => Ai.AiParams.WorldRateFallback = (float)v),
+            new Entry("ai.aiParams.attackThresholdFallback", "x", () => Ai.AiParams.AttackThresholdFallback, v => Ai.AiParams.AttackThresholdFallback = (float)v),
+            new Entry("ai.aiParams.fallbackRatioFallback", "share", () => Ai.AiParams.FallbackRatioFallback, v => Ai.AiParams.FallbackRatioFallback = (float)v),
+            new Entry("ai.aiParams.minCommitFallback", "x", () => Ai.AiParams.MinCommitFallback, v => Ai.AiParams.MinCommitFallback = (float)v),
+            new Entry("ai.aiParams.stuckTimeFallback", "s", () => Ai.AiParams.StuckTimeFallback, v => Ai.AiParams.StuckTimeFallback = (float)v),
+            new Entry("ai.aiParams.emergencyCooldownFallback", "s", () => Ai.AiParams.EmergencyCooldownFallback, v => Ai.AiParams.EmergencyCooldownFallback = (float)v),
+            new Entry("ai.aiParams.overwhelmRatioFallback", "share", () => Ai.AiParams.OverwhelmRatioFallback, v => Ai.AiParams.OverwhelmRatioFallback = (float)v),
+            new Entry("ai.aiParams.reactionDelayFallback", "s", () => Ai.AiParams.ReactionDelayFallback, v => Ai.AiParams.ReactionDelayFallback = (float)v),
+            new Entry("ai.aiParams.tacticCooldownFallback", "s", () => Ai.AiParams.TacticCooldownFallback, v => Ai.AiParams.TacticCooldownFallback = (float)v),
+            new Entry("ai.aiSkill.forValue", "s", () => Ai.AiSkill.ForValue, v => Ai.AiSkill.ForValue = (float)v),
+            new Entry("ai.aiSkill.forMin", "s", () => Ai.AiSkill.ForMin, v => Ai.AiSkill.ForMin = (float)v),
+            new Entry("ai.aiSkill.forMax", "s", () => Ai.AiSkill.ForMax, v => Ai.AiSkill.ForMax = (float)v),
+            new Entry("ai.aiSkill.forDecayScale", "x", () => Ai.AiSkill.ForDecayScale, v => Ai.AiSkill.ForDecayScale = (float)v),
+            new Entry("ai.aiSkill.forSpread", "x", () => Ai.AiSkill.ForSpread, v => Ai.AiSkill.ForSpread = (float)v),
+            new Entry("ai.aiSkill.forFlank", "x", () => Ai.AiSkill.ForFlank, v => Ai.AiSkill.ForFlank = (float)v),
+            new Entry("ai.aiSkill.forNormalScale", "x", () => Ai.AiSkill.ForNormalScale, v => Ai.AiSkill.ForNormalScale = (float)v),
+            new Entry("ai.aiSkill.forDecayScale2", "x", () => Ai.AiSkill.ForDecayScale2, v => Ai.AiSkill.ForDecayScale2 = (float)v),
+            new Entry("ai.aiSkill.forFlank2", "s", () => Ai.AiSkill.ForFlank2, v => Ai.AiSkill.ForFlank2 = (float)v),
+            new Entry("ai.aiSkill.forFocus", "s", () => Ai.AiSkill.ForFocus, v => Ai.AiSkill.ForFocus = (float)v),
+            new Entry("ai.aiSkill.forDecayScale3", "x", () => Ai.AiSkill.ForDecayScale3, v => Ai.AiSkill.ForDecayScale3 = (float)v),
+            new Entry("ai.aiSpatialIndex.ensureSpatialCellMin", "x", () => Ai.AiSpatialIndex.EnsureSpatialCellMin, v => Ai.AiSpatialIndex.EnsureSpatialCellMin = (float)v),
+            new Entry("ai.aiSpatialIndex.ensureSpatialCellMax", "x", () => Ai.AiSpatialIndex.EnsureSpatialCellMax, v => Ai.AiSpatialIndex.EnsureSpatialCellMax = (float)v),
+            new Entry("ai.airRules.legRiskSamplesFloor", "x", () => Ai.AirRules.LegRiskSamplesFloor, v => Ai.AirRules.LegRiskSamplesFloor = (int)System.Math.Round(v)),
+            new Entry("ai.airRules.legRiskMaxScale", "x", () => Ai.AirRules.LegRiskMaxScale, v => Ai.AirRules.LegRiskMaxScale = (float)v),
+            new Entry("ai.airRules.attackersTtkGoalFloor", "x", () => Ai.AirRules.AttackersTtkGoalFloor, v => Ai.AirRules.AttackersTtkGoalFloor = (float)v),
+            new Entry("ai.airRules.patrolPointCapRadiusScale", "x", () => Ai.AirRules.PatrolPointCapRadiusScale, v => Ai.AirRules.PatrolPointCapRadiusScale = (float)v),
+            new Entry("ai.breachAccess.breachCellCost", "CP", () => Ai.BreachAccess.BreachCellCost, v => Ai.BreachAccess.BreachCellCost = (int)System.Math.Round(v)),
+            new Entry("ai.breachAccess.firstBlockerMaxRings", "x", () => Ai.BreachAccess.FirstBlockerMaxRings, v => Ai.BreachAccess.FirstBlockerMaxRings = (int)System.Math.Round(v)),
+            new Entry("ai.breachAccess.firstBlockerReachDivisor", "x", () => Ai.BreachAccess.FirstBlockerReachDivisor, v => Ai.BreachAccess.FirstBlockerReachDivisor = (float)v),
+            new Entry("ai.breachAccess.firstBlockerMinRangeDivisor", "x", () => Ai.BreachAccess.FirstBlockerMinRangeDivisor, v => Ai.BreachAccess.FirstBlockerMinRangeDivisor = (float)v),
+            new Entry("ai.breachAccess.firstBlockerRadiusDivisor", "x", () => Ai.BreachAccess.FirstBlockerRadiusDivisor, v => Ai.BreachAccess.FirstBlockerRadiusDivisor = (float)v),
+            new Entry("ai.breachAccess.buildClearanceScale", "x", () => Ai.BreachAccess.BuildClearanceScale, v => Ai.BreachAccess.BuildClearanceScale = (float)v),
+            new Entry("ai.breachTopology.rankingPathCostReductionOnDestroyCap", "CP", () => Ai.BreachTopology.RankingPathCostReductionOnDestroyCap, v => Ai.BreachTopology.RankingPathCostReductionOnDestroyCap = (float)v),
+            new Entry("ai.churn.addNowMin", "s", () => Ai.Churn.AddNowMin, v => Ai.Churn.AddNowMin = v),
+            new Entry("ai.churn.lastMinuteNowMin", "s", () => Ai.Churn.LastMinuteNowMin, v => Ai.Churn.LastMinuteNowMin = v),
+            new Entry("ai.combatActivityWatchdog.stepTickMod", "s", () => Ai.CombatActivityWatchdog.StepTickMod, v => Ai.CombatActivityWatchdog.StepTickMod = (int)System.Math.Round(v)),
+            new Entry("ai.combatActivityWatchdog.firingWindowCooldownAdd", "s", () => Ai.CombatActivityWatchdog.FiringWindowCooldownAdd, v => Ai.CombatActivityWatchdog.FiringWindowCooldownAdd = (float)v),
+            new Entry("ai.combatActivityWatchdog.recoverAnomalyRecoveriesMin", "s", () => Ai.CombatActivityWatchdog.RecoverAnomalyRecoveriesMin, v => Ai.CombatActivityWatchdog.RecoverAnomalyRecoveriesMin = (int)System.Math.Round(v)),
+            new Entry("ai.combatForecaster.uptimeClosingFloor", "s", () => Ai.CombatForecaster.UptimeClosingFloor, v => Ai.CombatForecaster.UptimeClosingFloor = (float)v),
+            new Entry("ai.combatRoleDoctrine.classOfFrontMin2", "x", () => Ai.CombatRoleDoctrine.ClassOfFrontMin2, v => Ai.CombatRoleDoctrine.ClassOfFrontMin2 = (int)System.Math.Round(v)),
+            new Entry("ai.combatRoleDoctrine.worthRung", "x", () => Ai.CombatRoleDoctrine.WorthRung, v => Ai.CombatRoleDoctrine.WorthRung = (int)System.Math.Round(v)),
+            new Entry("ai.combatRoleDoctrine.worthRungs", "x", () => Ai.CombatRoleDoctrine.WorthRungs, v => Ai.CombatRoleDoctrine.WorthRungs = (int)System.Math.Round(v)),
+            new Entry("ai.combatRoleDoctrine.worthRung3", "x", () => Ai.CombatRoleDoctrine.WorthRung3, v => Ai.CombatRoleDoctrine.WorthRung3 = (int)System.Math.Round(v)),
+            new Entry("ai.combatRoleDoctrine.worthRungs2", "x", () => Ai.CombatRoleDoctrine.WorthRungs2, v => Ai.CombatRoleDoctrine.WorthRungs2 = (int)System.Math.Round(v)),
+            new Entry("ai.combatRoleDoctrine.worthRungs3", "x", () => Ai.CombatRoleDoctrine.WorthRungs3, v => Ai.CombatRoleDoctrine.WorthRungs3 = (int)System.Math.Round(v)),
+            new Entry("ai.combatRoleDoctrine.worthRung4", "x", () => Ai.CombatRoleDoctrine.WorthRung4, v => Ai.CombatRoleDoctrine.WorthRung4 = (int)System.Math.Round(v)),
+            new Entry("ai.combatRoleDoctrine.clusteredLimit", "m", () => Ai.CombatRoleDoctrine.ClusteredLimit, v => Ai.CombatRoleDoctrine.ClusteredLimit = (int)System.Math.Round(v)),
+            new Entry("ai.combatRoleDoctrine.clusteredCountSameSideMin", "count", () => Ai.CombatRoleDoctrine.ClusteredCountSameSideMin, v => Ai.CombatRoleDoctrine.ClusteredCountSameSideMin = (int)System.Math.Round(v)),
+            new Entry("ai.componentState.ofIMax", "count", () => Ai.ComponentState.OfIMax, v => Ai.ComponentState.OfIMax = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.newCardScoreAntiAirCap", "count", () => Ai.ConquestAi.NewCardScoreAntiAirCap, v => Ai.ConquestAi.NewCardScoreAntiAirCap = (float)v),
+            new Entry("ai.conquestAi.newCardScoreTotalFloor", "x", () => Ai.ConquestAi.NewCardScoreTotalFloor, v => Ai.ConquestAi.NewCardScoreTotalFloor = (float)v),
+            new Entry("ai.conquestAi.newCardScoreAntiAirScale", "x", () => Ai.ConquestAi.NewCardScoreAntiAirScale, v => Ai.ConquestAi.NewCardScoreAntiAirScale = (float)v),
+            new Entry("ai.conquestAi.newCardScoreAntiAirScale2", "x", () => Ai.ConquestAi.NewCardScoreAntiAirScale2, v => Ai.ConquestAi.NewCardScoreAntiAirScale2 = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreDronesCap", "count", () => Ai.ConquestAi.P25CardScoreDronesCap, v => Ai.ConquestAi.P25CardScoreDronesCap = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreDronesScale", "x", () => Ai.ConquestAi.P25CardScoreDronesScale, v => Ai.ConquestAi.P25CardScoreDronesScale = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreMinSub", "x", () => Ai.ConquestAi.P25CardScoreMinSub, v => Ai.ConquestAi.P25CardScoreMinSub = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreDronesFalse", "x", () => Ai.ConquestAi.P25CardScoreDronesFalse, v => Ai.ConquestAi.P25CardScoreDronesFalse = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreJammersCap", "count", () => Ai.ConquestAi.P25CardScoreJammersCap, v => Ai.ConquestAi.P25CardScoreJammersCap = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreTotalFloor", "x", () => Ai.ConquestAi.P25CardScoreTotalFloor, v => Ai.ConquestAi.P25CardScoreTotalFloor = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreJammersScale", "x", () => Ai.ConquestAi.P25CardScoreJammersScale, v => Ai.ConquestAi.P25CardScoreJammersScale = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreJammersAdd", "x", () => Ai.ConquestAi.P25CardScoreJammersAdd, v => Ai.ConquestAi.P25CardScoreJammersAdd = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreSmokeCap", "count", () => Ai.ConquestAi.P25CardScoreSmokeCap, v => Ai.ConquestAi.P25CardScoreSmokeCap = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreSmokeScale", "x", () => Ai.ConquestAi.P25CardScoreSmokeScale, v => Ai.ConquestAi.P25CardScoreSmokeScale = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreSmokeAdd", "m", () => Ai.ConquestAi.P25CardScoreSmokeAdd, v => Ai.ConquestAi.P25CardScoreSmokeAdd = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreOwnedTrue", "count", () => Ai.ConquestAi.P25CardScoreOwnedTrue, v => Ai.ConquestAi.P25CardScoreOwnedTrue = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreCountMax", "count", () => Ai.ConquestAi.P25CardScoreCountMax, v => Ai.ConquestAi.P25CardScoreCountMax = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.p25CardScoreCountTrue", "count", () => Ai.ConquestAi.P25CardScoreCountTrue, v => Ai.ConquestAi.P25CardScoreCountTrue = (float)v),
+            new Entry("ai.conquestAi.p25CardScoreCountFalse", "count", () => Ai.ConquestAi.P25CardScoreCountFalse, v => Ai.ConquestAi.P25CardScoreCountFalse = (float)v),
+            new Entry("ai.conquestAi.deployOrDropNormalizeScale", "x", () => Ai.ConquestAi.DeployOrDropNormalizeScale, v => Ai.ConquestAi.DeployOrDropNormalizeScale = (float)v),
+            new Entry("ai.conquestAi.buyThroughDirectorOwnTotalMax", "count", () => Ai.ConquestAi.BuyThroughDirectorOwnTotalMax, v => Ai.ConquestAi.BuyThroughDirectorOwnTotalMax = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.roleOfSpeedMin", "m/s", () => Ai.ConquestAi.RoleOfSpeedMin, v => Ai.ConquestAi.RoleOfSpeedMin = (float)v),
+            new Entry("ai.conquestAi.intervalDifficultyValue", "s", () => Ai.ConquestAi.IntervalDifficultyValue, v => Ai.ConquestAi.IntervalDifficultyValue = (float)v),
+            new Entry("ai.conquestAi.intervalDifficultyValue2", "s", () => Ai.ConquestAi.IntervalDifficultyValue2, v => Ai.ConquestAi.IntervalDifficultyValue2 = (float)v),
+            new Entry("ai.conquestAi.intervalDifficultyValue3", "s", () => Ai.ConquestAi.IntervalDifficultyValue3, v => Ai.ConquestAi.IntervalDifficultyValue3 = (float)v),
+            new Entry("ai.conquestAi.intervalDifficultyValue4", "s", () => Ai.ConquestAi.IntervalDifficultyValue4, v => Ai.ConquestAi.IntervalDifficultyValue4 = (float)v),
+            new Entry("ai.conquestAi.pickDeckSpeedMin", "m/s", () => Ai.ConquestAi.PickDeckSpeedMin, v => Ai.ConquestAi.PickDeckSpeedMin = (float)v),
+            new Entry("ai.conquestAi.pickDeckDifficultyTrue", "share", () => Ai.ConquestAi.PickDeckDifficultyTrue, v => Ai.ConquestAi.PickDeckDifficultyTrue = (float)v),
+            new Entry("ai.conquestAi.pickDeckDifficultyFalse", "share", () => Ai.ConquestAi.PickDeckDifficultyFalse, v => Ai.ConquestAi.PickDeckDifficultyFalse = (float)v),
+            new Entry("ai.conquestAi.pickDeckPlayerAaScale", "x", () => Ai.ConquestAi.PickDeckPlayerAaScale, v => Ai.ConquestAi.PickDeckPlayerAaScale = (float)v),
+            new Entry("ai.conquestAi.pickDeckGuardMax", "count", () => Ai.ConquestAi.PickDeckGuardMax, v => Ai.ConquestAi.PickDeckGuardMax = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.tryRebuildArmyCpMin", "CP", () => Ai.ConquestAi.TryRebuildArmyCpMin, v => Ai.ConquestAi.TryRebuildArmyCpMin = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.cheapestCardCheapestTrue", "x", () => Ai.ConquestAi.CheapestCardCheapestTrue, v => Ai.ConquestAi.CheapestCardCheapestTrue = (float)v),
+            new Entry("ai.conquestAi.chooseObjectiveDistanceDivisor", "x", () => Ai.ConquestAi.ChooseObjectiveDistanceDivisor, v => Ai.ConquestAi.ChooseObjectiveDistanceDivisor = (float)v),
+            new Entry("ai.conquestAi.chooseObjectiveGuardCap", "count", () => Ai.ConquestAi.ChooseObjectiveGuardCap, v => Ai.ConquestAi.ChooseObjectiveGuardCap = (float)v),
+            new Entry("ai.conquestAi.chooseObjectiveOwnPowerFloor", "x", () => Ai.ConquestAi.ChooseObjectiveOwnPowerFloor, v => Ai.ConquestAi.ChooseObjectiveOwnPowerFloor = (float)v),
+            new Entry("ai.conquestAi.chooseObjectiveDifficultyTrue", "x", () => Ai.ConquestAi.ChooseObjectiveDifficultyTrue, v => Ai.ConquestAi.ChooseObjectiveDifficultyTrue = (float)v),
+            new Entry("ai.conquestAi.chooseObjectiveDifficultyFalse", "x", () => Ai.ConquestAi.ChooseObjectiveDifficultyFalse, v => Ai.ConquestAi.ChooseObjectiveDifficultyFalse = (float)v),
+            new Entry("ai.conquestAi.chooseObjectiveDistanceDivisor2", "x", () => Ai.ConquestAi.ChooseObjectiveDistanceDivisor2, v => Ai.ConquestAi.ChooseObjectiveDistanceDivisor2 = (float)v),
+            new Entry("ai.conquestAi.guardRadiusAdd", "m", () => Ai.ConquestAi.GuardRadiusAdd, v => Ai.ConquestAi.GuardRadiusAdd = (float)v),
+            new Entry("ai.conquestAi.safePointDistanceMax", "m", () => Ai.ConquestAi.SafePointDistanceMax, v => Ai.ConquestAi.SafePointDistanceMax = (float)v),
+            new Entry("ai.conquestAi.enemyNearRadiusAdd", "m", () => Ai.ConquestAi.EnemyNearRadiusAdd, v => Ai.ConquestAi.EnemyNearRadiusAdd = (float)v),
+            new Entry("ai.conquestAi.tryStrikeNextDoubleMax", "share", () => Ai.ConquestAi.TryStrikeNextDoubleMax, v => Ai.ConquestAi.TryStrikeNextDoubleMax = v),
+            new Entry("ai.conquestAi.tryStrikeNextDoubleMax2", "share", () => Ai.ConquestAi.TryStrikeNextDoubleMax2, v => Ai.ConquestAi.TryStrikeNextDoubleMax2 = v),
+            new Entry("ai.conquestAi.tryStrikeRadiusAdd", "m", () => Ai.ConquestAi.TryStrikeRadiusAdd, v => Ai.ConquestAi.TryStrikeRadiusAdd = (float)v),
+            new Entry("ai.conquestAi.tryStrikeRadiusAdd2", "m", () => Ai.ConquestAi.TryStrikeRadiusAdd2, v => Ai.ConquestAi.TryStrikeRadiusAdd2 = (float)v),
+            new Entry("ai.conquestAi.tryUtilityStrikeDistanceMax", "m", () => Ai.ConquestAi.TryUtilityStrikeDistanceMax, v => Ai.ConquestAi.TryUtilityStrikeDistanceMax = (float)v),
+            new Entry("ai.conquestAi.tryUtilityStrikeScale", "x", () => Ai.ConquestAi.TryUtilityStrikeScale, v => Ai.ConquestAi.TryUtilityStrikeScale = (float)v),
+            new Entry("ai.conquestAi.tryUtilityStrikeGapMax", "m", () => Ai.ConquestAi.TryUtilityStrikeGapMax, v => Ai.ConquestAi.TryUtilityStrikeGapMax = (float)v),
+            new Entry("ai.conquestAi.tryUtilityStrikeGapCap", "count", () => Ai.ConquestAi.TryUtilityStrikeGapCap, v => Ai.ConquestAi.TryUtilityStrikeGapCap = (float)v),
+            new Entry("ai.conquestAi.tryUtilityStrikeGapScale", "x", () => Ai.ConquestAi.TryUtilityStrikeGapScale, v => Ai.ConquestAi.TryUtilityStrikeGapScale = (float)v),
+            new Entry("ai.conquestAi.tryUtilityStrikeRadiusAdd", "m", () => Ai.ConquestAi.TryUtilityStrikeRadiusAdd, v => Ai.ConquestAi.TryUtilityStrikeRadiusAdd = (float)v),
+            new Entry("ai.conquestAi.tryUtilityStrikeScale2", "x", () => Ai.ConquestAi.TryUtilityStrikeScale2, v => Ai.ConquestAi.TryUtilityStrikeScale2 = (float)v),
+            new Entry("ai.conquestAi.baseCounterCannonMin", "count", () => Ai.ConquestAi.BaseCounterCannonMin, v => Ai.ConquestAi.BaseCounterCannonMin = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.baseCounterSpeedMin", "m/s", () => Ai.ConquestAi.BaseCounterSpeedMin, v => Ai.ConquestAi.BaseCounterSpeedMin = (float)v),
+            new Entry("ai.conquestAi.baseCounterShareScale", "x", () => Ai.ConquestAi.BaseCounterShareScale, v => Ai.ConquestAi.BaseCounterShareScale = (float)v),
+            new Entry("ai.conquestAi.baseCounterCannonReachAdd", "m", () => Ai.ConquestAi.BaseCounterCannonReachAdd, v => Ai.ConquestAi.BaseCounterCannonReachAdd = (float)v),
+            new Entry("ai.conquestAi.baseCounterShareScale2", "x", () => Ai.ConquestAi.BaseCounterShareScale2, v => Ai.ConquestAi.BaseCounterShareScale2 = (float)v),
+            new Entry("ai.conquestAi.baseCounterMachineGunMin", "count", () => Ai.ConquestAi.BaseCounterMachineGunMin, v => Ai.ConquestAi.BaseCounterMachineGunMin = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.baseCounterShareScale3", "x", () => Ai.ConquestAi.BaseCounterShareScale3, v => Ai.ConquestAi.BaseCounterShareScale3 = (float)v),
+            new Entry("ai.conquestAi.baseCounterAntiAirMin", "count", () => Ai.ConquestAi.BaseCounterAntiAirMin, v => Ai.ConquestAi.BaseCounterAntiAirMin = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.baseCounterShareScale4", "x", () => Ai.ConquestAi.BaseCounterShareScale4, v => Ai.ConquestAi.BaseCounterShareScale4 = (float)v),
+            new Entry("ai.conquestAi.baseCounterShareScale5", "x", () => Ai.ConquestAi.BaseCounterShareScale5, v => Ai.ConquestAi.BaseCounterShareScale5 = (float)v),
+            new Entry("ai.conquestAi.scanTargetTimeMin", "s", () => Ai.ConquestAi.ScanTargetTimeMin, v => Ai.ConquestAi.ScanTargetTimeMin = v),
+            new Entry("ai.conquestAi.scanTargetPositionScale", "x", () => Ai.ConquestAi.ScanTargetPositionScale, v => Ai.ConquestAi.ScanTargetPositionScale = (float)v),
+            new Entry("ai.conquestAi.scanTargetReach", "m", () => Ai.ConquestAi.ScanTargetReach, v => Ai.ConquestAi.ScanTargetReach = (float)v),
+            new Entry("ai.conquestAi.scanTargetDistanceMax", "m", () => Ai.ConquestAi.ScanTargetDistanceMax, v => Ai.ConquestAi.ScanTargetDistanceMax = (float)v),
+            new Entry("ai.conquestAi.bossRadiusAdd", "m", () => Ai.ConquestAi.BossRadiusAdd, v => Ai.ConquestAi.BossRadiusAdd = (float)v),
+            new Entry("ai.conquestAi.clearRunLengthDivisor", "x", () => Ai.ConquestAi.ClearRunLengthDivisor, v => Ai.ConquestAi.ClearRunLengthDivisor = (float)v),
+            new Entry("ai.conquestAi.tryDeployVehicleCountMin", "count", () => Ai.ConquestAi.TryDeployVehicleCountMin, v => Ai.ConquestAi.TryDeployVehicleCountMin = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.tryDeployOwnArtilleryScale", "x", () => Ai.ConquestAi.TryDeployOwnArtilleryScale, v => Ai.ConquestAi.TryDeployOwnArtilleryScale = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.tryDeployOwnArtilleryTrue", "m", () => Ai.ConquestAi.TryDeployOwnArtilleryTrue, v => Ai.ConquestAi.TryDeployOwnArtilleryTrue = (float)v),
+            new Entry("ai.conquestAi.tryDeployOwnArtilleryFalse", "m", () => Ai.ConquestAi.TryDeployOwnArtilleryFalse, v => Ai.ConquestAi.TryDeployOwnArtilleryFalse = (float)v),
+            new Entry("ai.conquestAi.tryDeployCaptureRateScale", "x", () => Ai.ConquestAi.TryDeployCaptureRateScale, v => Ai.ConquestAi.TryDeployCaptureRateScale = (float)v),
+            new Entry("ai.conquestAi.tryDeployAirScale2", "x", () => Ai.ConquestAi.TryDeployAirScale2, v => Ai.ConquestAi.TryDeployAirScale2 = (float)v),
+            new Entry("ai.conquestAi.tryDeployMaxScale", "x", () => Ai.ConquestAi.TryDeployMaxScale, v => Ai.ConquestAi.TryDeployMaxScale = (float)v),
+            new Entry("ai.conquestAi.tryDeployCapturersMax", "x", () => Ai.ConquestAi.TryDeployCapturersMax, v => Ai.ConquestAi.TryDeployCapturersMax = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.tryDeployFlyingTrue", "x", () => Ai.ConquestAi.TryDeployFlyingTrue, v => Ai.ConquestAi.TryDeployFlyingTrue = (float)v),
+            new Entry("ai.conquestAi.tryDeployFlyingFalse", "x", () => Ai.ConquestAi.TryDeployFlyingFalse, v => Ai.ConquestAi.TryDeployFlyingFalse = (float)v),
+            new Entry("ai.conquestAi.tryDeployScore2", "x", () => Ai.ConquestAi.TryDeployScore2, v => Ai.ConquestAi.TryDeployScore2 = (float)v),
+            new Entry("ai.conquestAi.tryDeployCannonMin", "m", () => Ai.ConquestAi.TryDeployCannonMin, v => Ai.ConquestAi.TryDeployCannonMin = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.tryDeployCannonTrue", "m", () => Ai.ConquestAi.TryDeployCannonTrue, v => Ai.ConquestAi.TryDeployCannonTrue = (float)v),
+            new Entry("ai.conquestAi.tryDeployCannonFalse", "m", () => Ai.ConquestAi.TryDeployCannonFalse, v => Ai.ConquestAi.TryDeployCannonFalse = (float)v),
+            new Entry("ai.conquestAi.tryDeployEnemyBreachersCap", "count", () => Ai.ConquestAi.TryDeployEnemyBreachersCap, v => Ai.ConquestAi.TryDeployEnemyBreachersCap = (float)v),
+            new Entry("ai.conquestAi.tryDeployEnemyBreachersScale", "x", () => Ai.ConquestAi.TryDeployEnemyBreachersScale, v => Ai.ConquestAi.TryDeployEnemyBreachersScale = (float)v),
+            new Entry("ai.conquestAi.tryDeployEnemyGunsCap", "count", () => Ai.ConquestAi.TryDeployEnemyGunsCap, v => Ai.ConquestAi.TryDeployEnemyGunsCap = (float)v),
+            new Entry("ai.conquestAi.tryDeployEnemyGunsScale", "x", () => Ai.ConquestAi.TryDeployEnemyGunsScale, v => Ai.ConquestAi.TryDeployEnemyGunsScale = (float)v),
+            new Entry("ai.conquestAi.tryDeployMinSub", "count", () => Ai.ConquestAi.TryDeployMinSub, v => Ai.ConquestAi.TryDeployMinSub = (float)v),
+            new Entry("ai.conquestAi.tryDeployEnemyGunsFalse", "count", () => Ai.ConquestAi.TryDeployEnemyGunsFalse, v => Ai.ConquestAi.TryDeployEnemyGunsFalse = (float)v),
+            new Entry("ai.conquestAi.tryDeployOwnResuppliedMin", "s", () => Ai.ConquestAi.TryDeployOwnResuppliedMin, v => Ai.ConquestAi.TryDeployOwnResuppliedMin = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.tryDeployOwnResuppliedAdd", "s", () => Ai.ConquestAi.TryDeployOwnResuppliedAdd, v => Ai.ConquestAi.TryDeployOwnResuppliedAdd = (float)v),
+            new Entry("ai.conquestAi.tryDeployOwnResuppliedScale", "x", () => Ai.ConquestAi.TryDeployOwnResuppliedScale, v => Ai.ConquestAi.TryDeployOwnResuppliedScale = (float)v),
+            new Entry("ai.conquestAi.tryDeployOwnResuppliedFalse", "s", () => Ai.ConquestAi.TryDeployOwnResuppliedFalse, v => Ai.ConquestAi.TryDeployOwnResuppliedFalse = (float)v),
+            new Entry("ai.conquestAi.tryDeployMixFloor", "x", () => Ai.ConquestAi.TryDeployMixFloor, v => Ai.ConquestAi.TryDeployMixFloor = (float)v),
+            new Entry("ai.conquestAi.underFireTimeMax", "s", () => Ai.ConquestAi.UnderFireTimeMax, v => Ai.ConquestAi.UnderFireTimeMax = v),
+            new Entry("ai.conquestAi.strikeValueSupportFitCap", "count", () => Ai.ConquestAi.StrikeValueSupportFitCap, v => Ai.ConquestAi.StrikeValueSupportFitCap = (float)v),
+            new Entry("ai.conquestAi.strikeValueSupportFitScale", "x", () => Ai.ConquestAi.StrikeValueSupportFitScale, v => Ai.ConquestAi.StrikeValueSupportFitScale = (float)v),
+            new Entry("ai.conquestAi.findDamagedGroupHpMin", "x", () => Ai.ConquestAi.FindDamagedGroupHpMin, v => Ai.ConquestAi.FindDamagedGroupHpMin = (float)v),
+            new Entry("ai.conquestAi.findDamagedGroupHpMin2", "x", () => Ai.ConquestAi.FindDamagedGroupHpMin2, v => Ai.ConquestAi.FindDamagedGroupHpMin2 = (float)v),
+            new Entry("ai.conquestAi.findDamagedGroupDistanceMin", "m", () => Ai.ConquestAi.FindDamagedGroupDistanceMin, v => Ai.ConquestAi.FindDamagedGroupDistanceMin = (float)v),
+            new Entry("ai.conquestAi.findDamagedGroupNearMax", "x", () => Ai.ConquestAi.FindDamagedGroupNearMax, v => Ai.ConquestAi.FindDamagedGroupNearMax = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.findDamagedGroupBestMin", "x", () => Ai.ConquestAi.FindDamagedGroupBestMin, v => Ai.ConquestAi.FindDamagedGroupBestMin = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.fitEffectScale", "x", () => Ai.ConquestAi.FitEffectScale, v => Ai.ConquestAi.FitEffectScale = (float)v),
+            new Entry("ai.conquestAi.enemyMixCountMax", "count", () => Ai.ConquestAi.EnemyMixCountMax, v => Ai.ConquestAi.EnemyMixCountMax = (int)System.Math.Round(v)),
+            new Entry("ai.conquestAi.enemyMixMaxScale", "x", () => Ai.ConquestAi.EnemyMixMaxScale, v => Ai.ConquestAi.EnemyMixMaxScale = (float)v),
+            new Entry("ai.conquestAi.enemyMixBossTrue", "x", () => Ai.ConquestAi.EnemyMixBossTrue, v => Ai.ConquestAi.EnemyMixBossTrue = (float)v),
+            new Entry("ai.conquestAi.ownAnswersSpeedMin", "m/s", () => Ai.ConquestAi.OwnAnswersSpeedMin, v => Ai.ConquestAi.OwnAnswersSpeedMin = (float)v),
+            new Entry("ai.conquestAi.counterScoreTotalFloor", "count", () => Ai.ConquestAi.CounterScoreTotalFloor, v => Ai.ConquestAi.CounterScoreTotalFloor = (float)v),
+            new Entry("ai.conquestAi.counterScoreAnsweringScale", "x", () => Ai.ConquestAi.CounterScoreAnsweringScale, v => Ai.ConquestAi.CounterScoreAnsweringScale = (float)v),
+            new Entry("ai.conquestAi.counterScoreShortScale", "x", () => Ai.ConquestAi.CounterScoreShortScale, v => Ai.ConquestAi.CounterScoreShortScale = (float)v),
+            new Entry("ai.conquestAi.counterScoreScore", "count", () => Ai.ConquestAi.CounterScoreScore, v => Ai.ConquestAi.CounterScoreScore = (float)v),
+            new Entry("ai.conquestAi.counterScoreScore2", "count", () => Ai.ConquestAi.CounterScoreScore2, v => Ai.ConquestAi.CounterScoreScore2 = (float)v),
+            new Entry("ai.conquestAi.counterScoreOwnFitScale", "x", () => Ai.ConquestAi.CounterScoreOwnFitScale, v => Ai.ConquestAi.CounterScoreOwnFitScale = (float)v),
+            new Entry("ai.conquestAi.counterScoreGroundScale", "x", () => Ai.ConquestAi.CounterScoreGroundScale, v => Ai.ConquestAi.CounterScoreGroundScale = (float)v),
+            new Entry("ai.conquestAi.counterScoreSpeedMin", "m/s", () => Ai.ConquestAi.CounterScoreSpeedMin, v => Ai.ConquestAi.CounterScoreSpeedMin = (float)v),
+            new Entry("ai.conquestAi.counterScoreShortScale2", "x", () => Ai.ConquestAi.CounterScoreShortScale2, v => Ai.ConquestAi.CounterScoreShortScale2 = (float)v),
+            new Entry("ai.conquestAi.counterScoreAntiAirScale", "x", () => Ai.ConquestAi.CounterScoreAntiAirScale, v => Ai.ConquestAi.CounterScoreAntiAirScale = (float)v),
+            new Entry("ai.conquestAi.counterScoreMinScale", "x", () => Ai.ConquestAi.CounterScoreMinScale, v => Ai.ConquestAi.CounterScoreMinScale = (float)v),
+            new Entry("ai.conquestAi.counterScoreMinScale2", "x", () => Ai.ConquestAi.CounterScoreMinScale2, v => Ai.ConquestAi.CounterScoreMinScale2 = (float)v),
+            new Entry("ai.coordinationState.maxShells", "count", () => Ai.CoordinationState.MaxShells, v => Ai.CoordinationState.MaxShells = (int)System.Math.Round(v)),
+            new Entry("ai.coordinationState.observeMaxHpDivisor", "x", () => Ai.CoordinationState.ObserveMaxHpDivisor, v => Ai.CoordinationState.ObserveMaxHpDivisor = (float)v),
+            new Entry("ai.coordinationState.observePowerFloor", "x", () => Ai.CoordinationState.ObservePowerFloor, v => Ai.CoordinationState.ObservePowerFloor = (float)v),
+            new Entry("ai.coordinationState.observeValueScale", "x", () => Ai.CoordinationState.ObserveValueScale, v => Ai.CoordinationState.ObserveValueScale = (int)System.Math.Round(v)),
+            new Entry("ai.counterBatteryTracker.maxEstimates", "count", () => Ai.CounterBatteryTracker.MaxEstimates, v => Ai.CounterBatteryTracker.MaxEstimates = (int)System.Math.Round(v)),
+            new Entry("ai.counterBatteryTracker.maxImpacts", "count", () => Ai.CounterBatteryTracker.MaxImpacts, v => Ai.CounterBatteryTracker.MaxImpacts = (int)System.Math.Round(v)),
+            new Entry("ai.counterBatteryTracker.observeMaxScale", "x", () => Ai.CounterBatteryTracker.ObserveMaxScale, v => Ai.CounterBatteryTracker.ObserveMaxScale = (float)v),
+            new Entry("ai.counterBatteryTracker.pruneConfidenceMax", "s", () => Ai.CounterBatteryTracker.PruneConfidenceMax, v => Ai.CounterBatteryTracker.PruneConfidenceMax = (float)v),
+            new Entry("ai.counterBatteryTracker.pruneNowMin", "s", () => Ai.CounterBatteryTracker.PruneNowMin, v => Ai.CounterBatteryTracker.PruneNowMin = v),
+            new Entry("ai.counterattackWindow.opensLostFloor", "x", () => Ai.CounterattackWindow.OpensLostFloor, v => Ai.CounterattackWindow.OpensLostFloor = (float)v),
+            new Entry("ai.difficultyGate.sectorsAtMax", "x", () => Ai.DifficultyGate.SectorsAtMax, v => Ai.DifficultyGate.SectorsAtMax = (int)System.Math.Round(v)),
+            new Entry("ai.engagementFeasibility.evaluateSpeedFloor", "m/s", () => Ai.EngagementFeasibility.EvaluateSpeedFloor, v => Ai.EngagementFeasibility.EvaluateSpeedFloor = (float)v),
+            new Entry("ai.engagementFeasibility.evaluateValueFloor", "x", () => Ai.EngagementFeasibility.EvaluateValueFloor, v => Ai.EngagementFeasibility.EvaluateValueFloor = (float)v),
+            new Entry("ai.engagementFeasibility.canReachRadius", "m", () => Ai.EngagementFeasibility.CanReachRadius, v => Ai.EngagementFeasibility.CanReachRadius = (float)v),
+            new Entry("ai.engagementFeasibility.travelSecondsRadius", "s", () => Ai.EngagementFeasibility.TravelSecondsRadius, v => Ai.EngagementFeasibility.TravelSecondsRadius = (float)v),
+            new Entry("ai.engagementFeasibility.travelSecondsSpeedFloor", "s", () => Ai.EngagementFeasibility.TravelSecondsSpeedFloor, v => Ai.EngagementFeasibility.TravelSecondsSpeedFloor = (float)v),
+            new Entry("ai.engagementFeasibility.spawnUsefulRadiusFloor", "m", () => Ai.EngagementFeasibility.SpawnUsefulRadiusFloor, v => Ai.EngagementFeasibility.SpawnUsefulRadiusFloor = (float)v),
+            new Entry("ai.engagementFeasibility.stepsIntoCellScale", "x", () => Ai.EngagementFeasibility.StepsIntoCellScale, v => Ai.EngagementFeasibility.StepsIntoCellScale = (float)v),
+            new Entry("ai.engagementFeasibility.cacheLimit", "count", () => Ai.EngagementFeasibility.CacheLimit, v => Ai.EngagementFeasibility.CacheLimit = (int)System.Math.Round(v)),
+            new Entry("ai.engagementFeasibility.clusterReach", "m", () => Ai.EngagementFeasibility.ClusterReach, v => Ai.EngagementFeasibility.ClusterReach = (float)v),
+            new Entry("ai.engagementFeasibility.observedBossTrue", "x", () => Ai.EngagementFeasibility.ObservedBossTrue, v => Ai.EngagementFeasibility.ObservedBossTrue = (float)v),
+            new Entry("ai.engagementFeasibility.observedClusterReachScale", "x", () => Ai.EngagementFeasibility.ObservedClusterReachScale, v => Ai.EngagementFeasibility.ObservedClusterReachScale = (float)v),
+            new Entry("ai.engagementFeasibility.observedRadiusFloor", "m", () => Ai.EngagementFeasibility.ObservedRadiusFloor, v => Ai.EngagementFeasibility.ObservedRadiusFloor = (float)v),
+            new Entry("ai.engagementFeasibility.observedValue", "m", () => Ai.EngagementFeasibility.ObservedValue, v => Ai.EngagementFeasibility.ObservedValue = (float)v),
+            new Entry("ai.escapeSectors.assignSectorsMax", "x", () => Ai.EscapeSectors.AssignSectorsMax, v => Ai.EscapeSectors.AssignSectorsMax = (int)System.Math.Round(v)),
+            new Entry("ai.escapeSectors.assignSlotScale", "x", () => Ai.EscapeSectors.AssignSlotScale, v => Ai.EscapeSectors.AssignSlotScale = (float)v),
+            new Entry("ai.eventLevels.fromBaseLevelMax", "x", () => Ai.EventLevels.FromBaseLevelMax, v => Ai.EventLevels.FromBaseLevelMax = (int)System.Math.Round(v)),
+            new Entry("ai.eventRules.levelsMinDirections3", "s", () => Ai.EventRules.LevelsMinDirections3, v => Ai.EventRules.LevelsMinDirections3 = (int)System.Math.Round(v)),
+            new Entry("ai.eventRules.levelsMaxDirections3", "count", () => Ai.EventRules.LevelsMaxDirections3, v => Ai.EventRules.LevelsMaxDirections3 = (int)System.Math.Round(v)),
+            new Entry("ai.eventRules.levelsWarning4", "s", () => Ai.EventRules.LevelsWarning4, v => Ai.EventRules.LevelsWarning4 = (float)v),
+            new Entry("ai.eventRules.levelsAllyShare4", "share", () => Ai.EventRules.LevelsAllyShare4, v => Ai.EventRules.LevelsAllyShare4 = (float)v),
+            new Entry("ai.eventRules.levelsWaveScale4", "x", () => Ai.EventRules.LevelsWaveScale4, v => Ai.EventRules.LevelsWaveScale4 = (float)v),
+            new Entry("ai.eventRules.levelsEscorts4", "s", () => Ai.EventRules.LevelsEscorts4, v => Ai.EventRules.LevelsEscorts4 = (int)System.Math.Round(v)),
+            new Entry("ai.eventRules.levelsStep2", "s", () => Ai.EventRules.LevelsStep2, v => Ai.EventRules.LevelsStep2 = (int)System.Math.Round(v)),
+            new Entry("ai.eventRules.generalsLastChapter", "x", () => Ai.EventRules.GeneralsLastChapter, v => Ai.EventRules.GeneralsLastChapter = (int)System.Math.Round(v)),
+            new Entry("ai.eventTrigger.parseHasTrue", "s", () => Ai.EventTrigger.ParseHasTrue, v => Ai.EventTrigger.ParseHasTrue = (int)System.Math.Round(v)),
+            new Entry("ai.feintRules.utilityI", "s", () => Ai.FeintRules.UtilityI, v => Ai.FeintRules.UtilityI = (int)System.Math.Round(v)),
+            new Entry("ai.feintRules.utilityI2", "s", () => Ai.FeintRules.UtilityI2, v => Ai.FeintRules.UtilityI2 = (int)System.Math.Round(v)),
+            new Entry("ai.fireSupportDirector.referenceRangeScale", "x", () => Ai.FireSupportDirector.ReferenceRangeScale, v => Ai.FireSupportDirector.ReferenceRangeScale = (float)v),
+            new Entry("ai.fireSupportDirector.referenceRangeScale2", "x", () => Ai.FireSupportDirector.ReferenceRangeScale2, v => Ai.FireSupportDirector.ReferenceRangeScale2 = (float)v),
+            new Entry("ai.fireSupportDirector.referenceDistanceCap", "m", () => Ai.FireSupportDirector.ReferenceDistanceCap, v => Ai.FireSupportDirector.ReferenceDistanceCap = (float)v),
+            new Entry("ai.fireSupportDirector.convoyDistanceMax", "m", () => Ai.FireSupportDirector.ConvoyDistanceMax, v => Ai.FireSupportDirector.ConvoyDistanceMax = (float)v),
+            new Entry("ai.fireSupportDirector.triggerMinRangeAdd", "m", () => Ai.FireSupportDirector.TriggerMinRangeAdd, v => Ai.FireSupportDirector.TriggerMinRangeAdd = (float)v),
+            new Entry("ai.fireSupportDirector.triggerLengthSquaredMin", "m", () => Ai.FireSupportDirector.TriggerLengthSquaredMin, v => Ai.FireSupportDirector.TriggerLengthSquaredMin = (float)v),
+            new Entry("ai.fireSupportDirector.triggerDotMax", "m", () => Ai.FireSupportDirector.TriggerDotMax, v => Ai.FireSupportDirector.TriggerDotMax = (float)v),
+            new Entry("ai.fireSupportDirector.counterBatteryHitShotsSinceMin", "count", () => Ai.FireSupportDirector.CounterBatteryHitShotsSinceMin, v => Ai.FireSupportDirector.CounterBatteryHitShotsSinceMin = (int)System.Math.Round(v)),
+            new Entry("ai.fireSupportDirector.shotsSinceNTrue", "count", () => Ai.FireSupportDirector.ShotsSinceNTrue, v => Ai.FireSupportDirector.ShotsSinceNTrue = (int)System.Math.Round(v)),
+            new Entry("ai.fireSupportDirector.setMargin", "m", () => Ai.FireSupportDirector.SetMargin, v => Ai.FireSupportDirector.SetMargin = (float)v),
+            new Entry("ai.fireSupportDirector.setDistanceMax", "m", () => Ai.FireSupportDirector.SetDistanceMax, v => Ai.FireSupportDirector.SetDistanceMax = (float)v),
+            new Entry("ai.fireSupportDirector.setScore", "m", () => Ai.FireSupportDirector.SetScore, v => Ai.FireSupportDirector.SetScore = (float)v),
+            new Entry("ai.fireSupportDirector.setBackScale", "x", () => Ai.FireSupportDirector.SetBackScale, v => Ai.FireSupportDirector.SetBackScale = (float)v),
+            new Entry("ai.fireSupportDirector.setReach", "m", () => Ai.FireSupportDirector.SetReach, v => Ai.FireSupportDirector.SetReach = (float)v),
+            new Entry("ai.fireSupportDirector.setDistanceMax2", "m", () => Ai.FireSupportDirector.SetDistanceMax2, v => Ai.FireSupportDirector.SetDistanceMax2 = (float)v),
+            new Entry("ai.fireSupportDirector.scoreMinRangeAdd", "m", () => Ai.FireSupportDirector.ScoreMinRangeAdd, v => Ai.FireSupportDirector.ScoreMinRangeAdd = (float)v),
+            new Entry("ai.fireSupportDirector.scoreRangeScale", "x", () => Ai.FireSupportDirector.ScoreRangeScale, v => Ai.FireSupportDirector.ScoreRangeScale = (float)v),
+            new Entry("ai.fireSupportDirector.scoreRangeScale2", "x", () => Ai.FireSupportDirector.ScoreRangeScale2, v => Ai.FireSupportDirector.ScoreRangeScale2 = (float)v),
+            new Entry("ai.fireSupportDirector.scoreThreatAtDivisor", "x", () => Ai.FireSupportDirector.ScoreThreatAtDivisor, v => Ai.FireSupportDirector.ScoreThreatAtDivisor = (float)v),
+            new Entry("ai.fireSupportDirector.scoreDistanceMax", "m", () => Ai.FireSupportDirector.ScoreDistanceMax, v => Ai.FireSupportDirector.ScoreDistanceMax = (float)v),
+            new Entry("ai.fireSupportDirector.scoreTraffic", "m", () => Ai.FireSupportDirector.ScoreTraffic, v => Ai.FireSupportDirector.ScoreTraffic = (float)v),
+            new Entry("ai.fireSupportDirector.scoreI5", "m", () => Ai.FireSupportDirector.ScoreI5, v => Ai.FireSupportDirector.ScoreI5 = (int)System.Math.Round(v)),
+            new Entry("ai.fireSupportDirector.scoreI6", "m", () => Ai.FireSupportDirector.ScoreI6, v => Ai.FireSupportDirector.ScoreI6 = (int)System.Math.Round(v)),
+            new Entry("ai.fireSupportDirector.scoreCongestionDivisor", "x", () => Ai.FireSupportDirector.ScoreCongestionDivisor, v => Ai.FireSupportDirector.ScoreCongestionDivisor = (float)v),
+            new Entry("ai.fireSupportDirector.scoreI7", "m", () => Ai.FireSupportDirector.ScoreI7, v => Ai.FireSupportDirector.ScoreI7 = (int)System.Math.Round(v)),
+            new Entry("ai.fireSupportDirector.scoreI8", "m", () => Ai.FireSupportDirector.ScoreI8, v => Ai.FireSupportDirector.ScoreI8 = (int)System.Math.Round(v)),
+            new Entry("ai.fireSupportDirector.slotMargin", "m", () => Ai.FireSupportDirector.SlotMargin, v => Ai.FireSupportDirector.SlotMargin = (float)v),
+            new Entry("ai.firingPositionScorer.scoreInReachTrue", "m", () => Ai.FiringPositionScorer.ScoreInReachTrue, v => Ai.FiringPositionScorer.ScoreInReachTrue = (float)v),
+            new Entry("ai.firingPositionScorer.scoreRangeScale", "x", () => Ai.FiringPositionScorer.ScoreRangeScale, v => Ai.FiringPositionScorer.ScoreRangeScale = (float)v),
+            new Entry("ai.firingPositionScorer.scoreFriendsDivisor", "x", () => Ai.FiringPositionScorer.ScoreFriendsDivisor, v => Ai.FiringPositionScorer.ScoreFriendsDivisor = (float)v),
+            new Entry("ai.firingPositionScorer.scoreCrowdDivisor", "x", () => Ai.FiringPositionScorer.ScoreCrowdDivisor, v => Ai.FiringPositionScorer.ScoreCrowdDivisor = (float)v),
+            new Entry("ai.firingPositionScorer.scoreThreatAtDivisor", "x", () => Ai.FiringPositionScorer.ScoreThreatAtDivisor, v => Ai.FiringPositionScorer.ScoreThreatAtDivisor = (float)v),
+            new Entry("ai.firingPositionScorer.scoreI", "s", () => Ai.FiringPositionScorer.ScoreI, v => Ai.FiringPositionScorer.ScoreI = (int)System.Math.Round(v)),
+            new Entry("ai.firingPositionScorer.scoreI2", "s", () => Ai.FiringPositionScorer.ScoreI2, v => Ai.FiringPositionScorer.ScoreI2 = (int)System.Math.Round(v)),
+            new Entry("ai.firingPositionScorer.scoreI3", "s", () => Ai.FiringPositionScorer.ScoreI3, v => Ai.FiringPositionScorer.ScoreI3 = (int)System.Math.Round(v)),
+            new Entry("ai.firingPositionScorer.scoreI4", "x", () => Ai.FiringPositionScorer.ScoreI4, v => Ai.FiringPositionScorer.ScoreI4 = (int)System.Math.Round(v)),
+            new Entry("ai.firingPositionScorer.scoreI5", "x", () => Ai.FiringPositionScorer.ScoreI5, v => Ai.FiringPositionScorer.ScoreI5 = (int)System.Math.Round(v)),
+            new Entry("ai.firingPositionScorer.scoreI6", "x", () => Ai.FiringPositionScorer.ScoreI6, v => Ai.FiringPositionScorer.ScoreI6 = (int)System.Math.Round(v)),
+            new Entry("ai.firingPositionScorer.scoreI7", "x", () => Ai.FiringPositionScorer.ScoreI7, v => Ai.FiringPositionScorer.ScoreI7 = (int)System.Math.Round(v)),
+            new Entry("ai.firingPositionScorer.scoreI8", "x", () => Ai.FiringPositionScorer.ScoreI8, v => Ai.FiringPositionScorer.ScoreI8 = (int)System.Math.Round(v)),
+            new Entry("ai.firingPositionScorer.scoreI9", "x", () => Ai.FiringPositionScorer.ScoreI9, v => Ai.FiringPositionScorer.ScoreI9 = (int)System.Math.Round(v)),
+            new Entry("ai.firingPositionScorer.directExposureRangeAdd", "m", () => Ai.FiringPositionScorer.DirectExposureRangeAdd, v => Ai.FiringPositionScorer.DirectExposureRangeAdd = (float)v),
+            new Entry("ai.firingPositionScorer.inLineLengthMax", "m", () => Ai.FiringPositionScorer.InLineLengthMax, v => Ai.FiringPositionScorer.InLineLengthMax = (float)v),
+            new Entry("ai.firingPositionScorer.inLineAlongMax", "m", () => Ai.FiringPositionScorer.InLineAlongMax, v => Ai.FiringPositionScorer.InLineAlongMax = (float)v),
+            new Entry("ai.firingPositionScorer.inLineLengthSub", "m", () => Ai.FiringPositionScorer.InLineLengthSub, v => Ai.FiringPositionScorer.InLineLengthSub = (float)v),
+            new Entry("ai.fixAndFlank.viableAccessRoutesMin", "x", () => Ai.FixAndFlank.ViableAccessRoutesMin, v => Ai.FixAndFlank.ViableAccessRoutesMin = (int)System.Math.Round(v)),
+            new Entry("ai.fixAndFlank.viableEnemyPowerScale", "x", () => Ai.FixAndFlank.ViableEnemyPowerScale, v => Ai.FixAndFlank.ViableEnemyPowerScale = (float)v),
+            new Entry("ai.fixedDeckDef.vehicleSlots", "count", () => Ai.FixedDeckDef.VehicleSlots, v => Ai.FixedDeckDef.VehicleSlots = (int)System.Math.Round(v)),
+            new Entry("ai.fixedDeckDef.supportSlots", "count", () => Ai.FixedDeckDef.SupportSlots, v => Ai.FixedDeckDef.SupportSlots = (int)System.Math.Round(v)),
+            new Entry("ai.fixedDeckDef.maxLoaned", "count", () => Ai.FixedDeckDef.MaxLoaned, v => Ai.FixedDeckDef.MaxLoaned = (int)System.Math.Round(v)),
+            new Entry("ai.frontlineModel.rebuildWidth", "s", () => Ai.FrontlineModel.RebuildWidth, v => Ai.FrontlineModel.RebuildWidth = (float)v),
+            new Entry("ai.frontlineModel.rebuildConfidence", "s", () => Ai.FrontlineModel.RebuildConfidence, v => Ai.FrontlineModel.RebuildConfidence = (float)v),
+            new Entry("ai.frontlineModel.addSegmentCellScale", "x", () => Ai.FrontlineModel.AddSegmentCellScale, v => Ai.FrontlineModel.AddSegmentCellScale = (float)v),
+            new Entry("ai.frontlineModel.addSegmentThreatMemoryScale", "x", () => Ai.FrontlineModel.AddSegmentThreatMemoryScale, v => Ai.FrontlineModel.AddSegmentThreatMemoryScale = (float)v),
+            new Entry("ai.frontlineModel.addSegmentWidthFloor", "m", () => Ai.FrontlineModel.AddSegmentWidthFloor, v => Ai.FrontlineModel.AddSegmentWidthFloor = (float)v),
+            new Entry("ai.frontlineModel.addSegmentRadiusScale", "x", () => Ai.FrontlineModel.AddSegmentRadiusScale, v => Ai.FrontlineModel.AddSegmentRadiusScale = (float)v),
+            new Entry("ai.frontlineModel.addSegmentStrengthFloor", "s", () => Ai.FrontlineModel.AddSegmentStrengthFloor, v => Ai.FrontlineModel.AddSegmentStrengthFloor = (float)v),
+            new Entry("ai.frontlineModel.addSegmentWFalse", "s", () => Ai.FrontlineModel.AddSegmentWFalse, v => Ai.FrontlineModel.AddSegmentWFalse = (float)v),
+            new Entry("ai.frontlineModel.addFinalDistanceMax", "m", () => Ai.FrontlineModel.AddFinalDistanceMax, v => Ai.FrontlineModel.AddFinalDistanceMax = (float)v),
+            new Entry("ai.frontlineModel.addFinalNowDivisor", "x", () => Ai.FrontlineModel.AddFinalNowDivisor, v => Ai.FrontlineModel.AddFinalNowDivisor = v),
+            new Entry("ai.frontlineModel.weakestFriendlyPressureFloor", "x", () => Ai.FrontlineModel.WeakestFriendlyPressureFloor, v => Ai.FrontlineModel.WeakestFriendlyPressureFloor = (float)v),
+            new Entry("ai.hiddenDef.ctorCutMax", "x", () => Ai.HiddenDef.CtorCutMax, v => Ai.HiddenDef.CtorCutMax = (float)v),
+            new Entry("ai.humanStagger.delayLengthMax", "s", () => Ai.HumanStagger.DelayLengthMax, v => Ai.HumanStagger.DelayLengthMax = (int)System.Math.Round(v)),
+            new Entry("ai.intentOwnership.pruneCountMax", "count", () => Ai.IntentOwnership.PruneCountMax, v => Ai.IntentOwnership.PruneCountMax = (int)System.Math.Round(v)),
+            new Entry("ai.modeCombatDoctrine.bandLengthMin", "m", () => Ai.ModeCombatDoctrine.BandLengthMin, v => Ai.ModeCombatDoctrine.BandLengthMin = (int)System.Math.Round(v)),
+            new Entry("ai.modeCombatDoctrine.bandBan", "m", () => Ai.ModeCombatDoctrine.BandBan, v => Ai.ModeCombatDoctrine.BandBan = (float)v),
+            new Entry("ai.modeCombatDoctrine.bandBan2", "m", () => Ai.ModeCombatDoctrine.BandBan2, v => Ai.ModeCombatDoctrine.BandBan2 = (float)v),
+            new Entry("ai.modeDoctrineState.reserveShareOfLengthMin", "m", () => Ai.ModeDoctrineState.ReserveShareOfLengthMin, v => Ai.ModeDoctrineState.ReserveShareOfLengthMin = (int)System.Math.Round(v)),
+            new Entry("ai.modeDoctrineState.reserveShareOfBan", "share", () => Ai.ModeDoctrineState.ReserveShareOfBan, v => Ai.ModeDoctrineState.ReserveShareOfBan = (float)v),
+            new Entry("ai.modeDoctrineState.reserveShareOfBan2", "share", () => Ai.ModeDoctrineState.ReserveShareOfBan2, v => Ai.ModeDoctrineState.ReserveShareOfBan2 = (float)v),
+            new Entry("ai.objectiveRules.recoveryCostEnemyMin", "CP", () => Ai.ObjectiveRules.RecoveryCostEnemyMin, v => Ai.ObjectiveRules.RecoveryCostEnemyMin = (float)v),
+            new Entry("ai.objectiveRules.recoveryCostEnemyMax", "CP", () => Ai.ObjectiveRules.RecoveryCostEnemyMax, v => Ai.ObjectiveRules.RecoveryCostEnemyMax = (float)v),
+            new Entry("ai.objectiveRules.depthLinesIMax", "x", () => Ai.ObjectiveRules.DepthLinesIMax, v => Ai.ObjectiveRules.DepthLinesIMax = (float)v),
+            new Entry("ai.originEstimate.confidenceShotsDivisor", "x", () => Ai.OriginEstimate.ConfidenceShotsDivisor, v => Ai.OriginEstimate.ConfidenceShotsDivisor = (float)v),
+            new Entry("ai.originEstimate.confidenceMaxExponent", "count", () => Ai.OriginEstimate.ConfidenceMaxExponent, v => Ai.OriginEstimate.ConfidenceMaxExponent = (float)v),
+            new Entry("ai.originEstimate.confidenceHalfLifeSFloor", "s", () => Ai.OriginEstimate.ConfidenceHalfLifeSFloor, v => Ai.OriginEstimate.ConfidenceHalfLifeSFloor = (float)v),
+            new Entry("ai.patternMemory.signatureSourceScale", "x", () => Ai.PatternMemory.SignatureSourceScale, v => Ai.PatternMemory.SignatureSourceScale = (int)System.Math.Round(v)),
+            new Entry("ai.patternMemory.signatureRadiusDivisor", "x", () => Ai.PatternMemory.SignatureRadiusDivisor, v => Ai.PatternMemory.SignatureRadiusDivisor = (float)v),
+            new Entry("ai.plannedActionBoard.plannedDamageShooterDivisor", "x", () => Ai.PlannedActionBoard.PlannedDamageShooterDivisor, v => Ai.PlannedActionBoard.PlannedDamageShooterDivisor = (int)System.Math.Round(v)),
+            new Entry("ai.plannedActionBoard.planSmokeCountMin", "count", () => Ai.PlannedActionBoard.PlanSmokeCountMin, v => Ai.PlannedActionBoard.PlanSmokeCountMin = (int)System.Math.Round(v)),
+            new Entry("ai.plannedActionBoard.pruneCountMin3", "count", () => Ai.PlannedActionBoard.PruneCountMin3, v => Ai.PlannedActionBoard.PruneCountMin3 = (int)System.Math.Round(v)),
+            new Entry("ai.probeRules.judgeProbeStrengthFloor", "x", () => Ai.ProbeRules.JudgeProbeStrengthFloor, v => Ai.ProbeRules.JudgeProbeStrengthFloor = (float)v),
+            new Entry("ai.probeRules.judgeLossShareMin", "share", () => Ai.ProbeRules.JudgeLossShareMin, v => Ai.ProbeRules.JudgeLossShareMin = (float)v),
+            new Entry("ai.probeRules.envelopeGoalReachFloor", "m", () => Ai.ProbeRules.EnvelopeGoalReachFloor, v => Ai.ProbeRules.EnvelopeGoalReachFloor = (float)v),
+            new Entry("ai.procurementDirector.observeNowCap", "count", () => Ai.ProcurementDirector.ObserveNowCap, v => Ai.ProcurementDirector.ObserveNowCap = v),
+            new Entry("ai.procurementDirector.observeBossTrue", "x", () => Ai.ProcurementDirector.ObserveBossTrue, v => Ai.ProcurementDirector.ObserveBossTrue = (float)v),
+            new Entry("ai.procurementDirector.observeFrontMin", "x", () => Ai.ProcurementDirector.ObserveFrontMin, v => Ai.ProcurementDirector.ObserveFrontMin = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.trackTimeMax", "s", () => Ai.ProcurementDirector.TrackTimeMax, v => Ai.ProcurementDirector.TrackTimeMax = v),
+            new Entry("ai.procurementDirector.trackScale", "x", () => Ai.ProcurementDirector.TrackScale, v => Ai.ProcurementDirector.TrackScale = (float)v),
+            new Entry("ai.procurementDirector.desiredLengthMin", "m", () => Ai.ProcurementDirector.DesiredLengthMin, v => Ai.ProcurementDirector.DesiredLengthMin = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.desiredLengthMin2", "m", () => Ai.ProcurementDirector.DesiredLengthMin2, v => Ai.ProcurementDirector.DesiredLengthMin2 = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.scoreCombatValueScale", "x", () => Ai.ProcurementDirector.ScoreCombatValueScale, v => Ai.ProcurementDirector.ScoreCombatValueScale = (float)v),
+            new Entry("ai.procurementDirector.scoreLateScale", "x", () => Ai.ProcurementDirector.ScoreLateScale, v => Ai.ProcurementDirector.ScoreLateScale = (float)v),
+            new Entry("ai.procurementDirector.scoreSaturatedTrue", "x", () => Ai.ProcurementDirector.ScoreSaturatedTrue, v => Ai.ProcurementDirector.ScoreSaturatedTrue = (float)v),
+            new Entry("ai.procurementDirector.scoreI", "count", () => Ai.ProcurementDirector.ScoreI, v => Ai.ProcurementDirector.ScoreI = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.scoreI2", "count", () => Ai.ProcurementDirector.ScoreI2, v => Ai.ProcurementDirector.ScoreI2 = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.scoreI3", "count", () => Ai.ProcurementDirector.ScoreI3, v => Ai.ProcurementDirector.ScoreI3 = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.scoreI4", "count", () => Ai.ProcurementDirector.ScoreI4, v => Ai.ProcurementDirector.ScoreI4 = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.scoreWScale", "x", () => Ai.ProcurementDirector.ScoreWScale, v => Ai.ProcurementDirector.ScoreWScale = (float)v),
+            new Entry("ai.procurementDirector.scoreRedundancyScale", "x", () => Ai.ProcurementDirector.ScoreRedundancyScale, v => Ai.ProcurementDirector.ScoreRedundancyScale = (float)v),
+            new Entry("ai.procurementDirector.roleDeficitHaveTotalFloor", "x", () => Ai.ProcurementDirector.RoleDeficitHaveTotalFloor, v => Ai.ProcurementDirector.RoleDeficitHaveTotalFloor = (float)v),
+            new Entry("ai.procurementDirector.roleDeficitI", "x", () => Ai.ProcurementDirector.RoleDeficitI, v => Ai.ProcurementDirector.RoleDeficitI = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.roleDeficitMaxWeightFloor", "count", () => Ai.ProcurementDirector.RoleDeficitMaxWeightFloor, v => Ai.ProcurementDirector.RoleDeficitMaxWeightFloor = (float)v),
+            new Entry("ai.procurementDirector.counterNeedOwnTotalFloor", "count", () => Ai.ProcurementDirector.CounterNeedOwnTotalFloor, v => Ai.ProcurementDirector.CounterNeedOwnTotalFloor = (float)v),
+            new Entry("ai.procurementDirector.counterNeedAnsweredScale", "x", () => Ai.ProcurementDirector.CounterNeedAnsweredScale, v => Ai.ProcurementDirector.CounterNeedAnsweredScale = (float)v),
+            new Entry("ai.procurementDirector.counterNeedShareFloor", "count", () => Ai.ProcurementDirector.CounterNeedShareFloor, v => Ai.ProcurementDirector.CounterNeedShareFloor = (float)v),
+            new Entry("ai.procurementDirector.survivabilityFitEmaScale", "x", () => Ai.ProcurementDirector.SurvivabilityFitEmaScale, v => Ai.ProcurementDirector.SurvivabilityFitEmaScale = (float)v),
+            new Entry("ai.procurementDirector.survivabilityFitEmaScale2", "x", () => Ai.ProcurementDirector.SurvivabilityFitEmaScale2, v => Ai.ProcurementDirector.SurvivabilityFitEmaScale2 = (float)v),
+            new Entry("ai.procurementDirector.synergyCountDivisor", "x", () => Ai.ProcurementDirector.SynergyCountDivisor, v => Ai.ProcurementDirector.SynergyCountDivisor = (float)v),
+            new Entry("ai.procurementDirector.tacticPreferenceFitScale", "x", () => Ai.ProcurementDirector.TacticPreferenceFitScale, v => Ai.ProcurementDirector.TacticPreferenceFitScale = (float)v),
+            new Entry("ai.procurementDirector.congestionRadiusDivisor", "x", () => Ai.ProcurementDirector.CongestionRadiusDivisor, v => Ai.ProcurementDirector.CongestionRadiusDivisor = (float)v),
+            new Entry("ai.procurementDirector.chokeDependencyChokeScale", "x", () => Ai.ProcurementDirector.ChokeDependencyChokeScale, v => Ai.ProcurementDirector.ChokeDependencyChokeScale = (float)v),
+            new Entry("ai.procurementDirector.chokeDependencyChokeScale2", "x", () => Ai.ProcurementDirector.ChokeDependencyChokeScale2, v => Ai.ProcurementDirector.ChokeDependencyChokeScale2 = (float)v),
+            new Entry("ai.procurementDirector.makePlanDifficultyValue", "x", () => Ai.ProcurementDirector.MakePlanDifficultyValue, v => Ai.ProcurementDirector.MakePlanDifficultyValue = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.makePlanDifficultyValue2", "x", () => Ai.ProcurementDirector.MakePlanDifficultyValue2, v => Ai.ProcurementDirector.MakePlanDifficultyValue2 = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.makePlanDifficultyValue3", "x", () => Ai.ProcurementDirector.MakePlanDifficultyValue3, v => Ai.ProcurementDirector.MakePlanDifficultyValue3 = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.makePlanPassMax", "count", () => Ai.ProcurementDirector.MakePlanPassMax, v => Ai.ProcurementDirector.MakePlanPassMax = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.makePlanCountMin", "count", () => Ai.ProcurementDirector.MakePlanCountMin, v => Ai.ProcurementDirector.MakePlanCountMin = (int)System.Math.Round(v)),
+            new Entry("ai.procurementDirector.purposeEmaMin", "s", () => Ai.ProcurementDirector.PurposeEmaMin, v => Ai.ProcurementDirector.PurposeEmaMin = (float)v),
+            new Entry("ai.procurementDirector.reserveBankSub", "count", () => Ai.ProcurementDirector.ReserveBankSub, v => Ai.ProcurementDirector.ReserveBankSub = (float)v),
+            new Entry("ai.procurementDirector.rolesOfW", "x", () => Ai.ProcurementDirector.RolesOfW, v => Ai.ProcurementDirector.RolesOfW = (float)v),
+            new Entry("ai.procurementDirector.rolesOfVisionRangeMin", "m", () => Ai.ProcurementDirector.RolesOfVisionRangeMin, v => Ai.ProcurementDirector.RolesOfVisionRangeMin = (float)v),
+            new Entry("ai.procurementDirector.rolesOfMaxRangeMin", "m", () => Ai.ProcurementDirector.RolesOfMaxRangeMin, v => Ai.ProcurementDirector.RolesOfMaxRangeMin = (float)v),
+            new Entry("ai.procurementDirector.answersSpeedMin", "m/s", () => Ai.ProcurementDirector.AnswersSpeedMin, v => Ai.ProcurementDirector.AnswersSpeedMin = (float)v),
+            new Entry("ai.pursuitDiscipline.interceptAgeFadeSFloor", "x", () => Ai.PursuitDiscipline.InterceptAgeFadeSFloor, v => Ai.PursuitDiscipline.InterceptAgeFadeSFloor = (float)v),
+            new Entry("ai.pursuitDiscipline.interceptDotScale", "x", () => Ai.PursuitDiscipline.InterceptDotScale, v => Ai.PursuitDiscipline.InterceptDotScale = (float)v),
+            new Entry("ai.repetitionMemory.failLengthMin", "m", () => Ai.RepetitionMemory.FailLengthMin, v => Ai.RepetitionMemory.FailLengthMin = (int)System.Math.Round(v)),
+            new Entry("ai.repetitionMemory.failLengthFalse", "m", () => Ai.RepetitionMemory.FailLengthFalse, v => Ai.RepetitionMemory.FailLengthFalse = (float)v),
+            new Entry("ai.repetitionMemory.penaltyAgeExponent", "s", () => Ai.RepetitionMemory.PenaltyAgeExponent, v => Ai.RepetitionMemory.PenaltyAgeExponent = (float)v),
+            new Entry("ai.repetitionMemory.pruneCountMax", "count", () => Ai.RepetitionMemory.PruneCountMax, v => Ai.RepetitionMemory.PruneCountMax = (int)System.Math.Round(v)),
+            new Entry("ai.repetitionMemory.prunePenaltyMax", "s", () => Ai.RepetitionMemory.PrunePenaltyMax, v => Ai.RepetitionMemory.PrunePenaltyMax = (float)v),
+            new Entry("ai.routeBook.pruneCountMax", "count", () => Ai.RouteBook.PruneCountMax, v => Ai.RouteBook.PruneCountMax = (int)System.Math.Round(v)),
+            new Entry("ai.scoutPlanner.waitScoutMaxWaitSCap", "s", () => Ai.ScoutPlanner.WaitScoutMaxWaitSCap, v => Ai.ScoutPlanner.WaitScoutMaxWaitSCap = (float)v),
+            new Entry("ai.shallowPlanner.scoreRepeatPenaltyMax", "x", () => Ai.ShallowPlanner.ScoreRepeatPenaltyMax, v => Ai.ShallowPlanner.ScoreRepeatPenaltyMax = (float)v),
+            new Entry("ai.shootAndScoot.salvosLengthFalse", "m", () => Ai.ShootAndScoot.SalvosLengthFalse, v => Ai.ShootAndScoot.SalvosLengthFalse = (int)System.Math.Round(v)),
+            new Entry("ai.shootAndScoot.distanceLengthFalse", "m", () => Ai.ShootAndScoot.DistanceLengthFalse, v => Ai.ShootAndScoot.DistanceLengthFalse = (float)v),
+            new Entry("ai.shootAndScoot.distanceGunIdScale", "x", () => Ai.ShootAndScoot.DistanceGunIdScale, v => Ai.ShootAndScoot.DistanceGunIdScale = (int)System.Math.Round(v)),
+            new Entry("ai.shootAndScoot.distanceAbsMod", "m", () => Ai.ShootAndScoot.DistanceAbsMod, v => Ai.ShootAndScoot.DistanceAbsMod = (int)System.Math.Round(v)),
+            new Entry("ai.simWorld.issueAlongCorridorRepathTimer", "s", () => Ai.SimWorld.IssueAlongCorridorRepathTimer, v => Ai.SimWorld.IssueAlongCorridorRepathTimer = (float)v),
+            new Entry("ai.simWorld.ctorCellSize", "m", () => Ai.SimWorld.CtorCellSize, v => Ai.SimWorld.CtorCellSize = (float)v),
+            new Entry("ai.simWorld.ctorCountMin", "count", () => Ai.SimWorld.CtorCountMin, v => Ai.SimWorld.CtorCountMin = (int)System.Math.Round(v)),
+            new Entry("ai.simWorld.spawnVehicleMaxRings", "x", () => Ai.SimWorld.SpawnVehicleMaxRings, v => Ai.SimWorld.SpawnVehicleMaxRings = (int)System.Math.Round(v)),
+            new Entry("ai.simWorld.spawnVehicleRegionSizeScale", "x", () => Ai.SimWorld.SpawnVehicleRegionSizeScale, v => Ai.SimWorld.SpawnVehicleRegionSizeScale = (int)System.Math.Round(v)),
+            new Entry("ai.simWorld.spawnVehicleMaxRings2", "x", () => Ai.SimWorld.SpawnVehicleMaxRings2, v => Ai.SimWorld.SpawnVehicleMaxRings2 = (int)System.Math.Round(v)),
+            new Entry("ai.simWorld.spawnVehicleTimeAdd", "s", () => Ai.SimWorld.SpawnVehicleTimeAdd, v => Ai.SimWorld.SpawnVehicleTimeAdd = v),
+            new Entry("ai.simWorld.upgradeDamageFloor", "x", () => Ai.SimWorld.UpgradeDamageFloor, v => Ai.SimWorld.UpgradeDamageFloor = (float)v),
+            new Entry("ai.simWorld.upgradeRateFloor", "x", () => Ai.SimWorld.UpgradeRateFloor, v => Ai.SimWorld.UpgradeRateFloor = (float)v),
+            new Entry("ai.simWorld.clearSpotHullBoundAdd", "m", () => Ai.SimWorld.ClearSpotHullBoundAdd, v => Ai.SimWorld.ClearSpotHullBoundAdd = (float)v),
+            new Entry("ai.simWorld.footprintOpenKMax", "x", () => Ai.SimWorld.FootprintOpenKMax, v => Ai.SimWorld.FootprintOpenKMax = (int)System.Math.Round(v)),
+            new Entry("ai.simWorld.footprintOpenKDivisor", "x", () => Ai.SimWorld.FootprintOpenKDivisor, v => Ai.SimWorld.FootprintOpenKDivisor = (float)v),
+            new Entry("ai.simWorld.freeSpotHullBoundScale", "x", () => Ai.SimWorld.FreeSpotHullBoundScale, v => Ai.SimWorld.FreeSpotHullBoundScale = (float)v),
+            new Entry("ai.simWorld.applyStoresShareMin", "share", () => Ai.SimWorld.ApplyStoresShareMin, v => Ai.SimWorld.ApplyStoresShareMin = (float)v),
+            new Entry("ai.simWorld.profiledStepNowScale", "x", () => Ai.SimWorld.ProfiledStepNowScale, v => Ai.SimWorld.ProfiledStepNowScale = v),
+            new Entry("ai.simWorld.refillTimeAdd", "s", () => Ai.SimWorld.RefillTimeAdd, v => Ai.SimWorld.RefillTimeAdd = v),
+            new Entry("ai.simWorld.refillAliveScale", "x", () => Ai.SimWorld.RefillAliveScale, v => Ai.SimWorld.RefillAliveScale = (int)System.Math.Round(v)),
+            new Entry("ai.simWorld.crushVegetationSpeedMax", "m/s", () => Ai.SimWorld.CrushVegetationSpeedMax, v => Ai.SimWorld.CrushVegetationSpeedMax = (float)v),
+            new Entry("ai.simWorld.crushVegetationHullRadiusAdd", "m", () => Ai.SimWorld.CrushVegetationHullRadiusAdd, v => Ai.SimWorld.CrushVegetationHullRadiusAdd = (float)v),
+            new Entry("ai.simWorld.crushVegetationRadiusScale", "x", () => Ai.SimWorld.CrushVegetationRadiusScale, v => Ai.SimWorld.CrushVegetationRadiusScale = (float)v),
+            new Entry("ai.simWorld.pathToRepathTimer", "s", () => Ai.SimWorld.PathToRepathTimer, v => Ai.SimWorld.PathToRepathTimer = (float)v),
+            new Entry("ai.simWorld.escapeRouteDistanceFloor", "m", () => Ai.SimWorld.EscapeRouteDistanceFloor, v => Ai.SimWorld.EscapeRouteDistanceFloor = (float)v),
+            new Entry("ai.simWorld.escapeRouteDistanceSquaredMin", "m", () => Ai.SimWorld.EscapeRouteDistanceSquaredMin, v => Ai.SimWorld.EscapeRouteDistanceSquaredMin = (float)v),
+            new Entry("ai.simWorld.escapeRouteDMin", "m", () => Ai.SimWorld.EscapeRouteDMin, v => Ai.SimWorld.EscapeRouteDMin = (float)v),
+            new Entry("ai.simWorld.escapeRouteD", "m", () => Ai.SimWorld.EscapeRouteD, v => Ai.SimWorld.EscapeRouteD = (float)v),
+            new Entry("ai.simWorld.escapeRouteMovedScale", "x", () => Ai.SimWorld.EscapeRouteMovedScale, v => Ai.SimWorld.EscapeRouteMovedScale = (float)v),
+            new Entry("ai.simWorld.escapeRouteEdgeSub", "m", () => Ai.SimWorld.EscapeRouteEdgeSub, v => Ai.SimWorld.EscapeRouteEdgeSub = (float)v),
+            new Entry("ai.simWorld.issueGroupMoveSpacing", "m", () => Ai.SimWorld.IssueGroupMoveSpacing, v => Ai.SimWorld.IssueGroupMoveSpacing = (float)v),
+            new Entry("ai.simWorld.issueGroupMoveRadiusAdd", "m", () => Ai.SimWorld.IssueGroupMoveRadiusAdd, v => Ai.SimWorld.IssueGroupMoveRadiusAdd = (float)v),
+            new Entry("ai.simWorld.issueGroupMoveDistanceSquaredMax", "m", () => Ai.SimWorld.IssueGroupMoveDistanceSquaredMax, v => Ai.SimWorld.IssueGroupMoveDistanceSquaredMax = (float)v),
+            new Entry("ai.simWorld.refreshVisibilityStatMax", "s", () => Ai.SimWorld.RefreshVisibilityStatMax, v => Ai.SimWorld.RefreshVisibilityStatMax = (float)v),
+            new Entry("ai.simWorld.staticFootprintMaxScale", "x", () => Ai.SimWorld.StaticFootprintMaxScale, v => Ai.SimWorld.StaticFootprintMaxScale = (float)v),
+            new Entry("ai.squad.p3RouteAction", "count", () => Ai.Squad.P3RouteAction, v => Ai.Squad.P3RouteAction = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.placementOfSpeedMin", "m/s", () => Ai.SquadLayer.PlacementOfSpeedMin, v => Ai.SquadLayer.PlacementOfSpeedMin = (float)v),
+            new Entry("ai.squadLayer.requiredWidthRadius", "m", () => Ai.SquadLayer.RequiredWidthRadius, v => Ai.SquadLayer.RequiredWidthRadius = (float)v),
+            new Entry("ai.squadLayer.requiredWidthRadiusAdd", "m", () => Ai.SquadLayer.RequiredWidthRadiusAdd, v => Ai.SquadLayer.RequiredWidthRadiusAdd = (float)v),
+            new Entry("ai.squadLayer.requiredWidthNScale", "x", () => Ai.SquadLayer.RequiredWidthNScale, v => Ai.SquadLayer.RequiredWidthNScale = (float)v),
+            new Entry("ai.squadLayer.chokeAheadWidthAdd", "m", () => Ai.SquadLayer.ChokeAheadWidthAdd, v => Ai.SquadLayer.ChokeAheadWidthAdd = (float)v),
+            new Entry("ai.squadLayer.spacingOfModeValue", "m", () => Ai.SquadLayer.SpacingOfModeValue, v => Ai.SquadLayer.SpacingOfModeValue = (float)v),
+            new Entry("ai.squadLayer.spacingOfModeValue2", "m", () => Ai.SquadLayer.SpacingOfModeValue2, v => Ai.SquadLayer.SpacingOfModeValue2 = (float)v),
+            new Entry("ai.squadLayer.spacingOfModeValue3", "m", () => Ai.SquadLayer.SpacingOfModeValue3, v => Ai.SquadLayer.SpacingOfModeValue3 = (float)v),
+            new Entry("ai.squadLayer.formationSlotsIScale", "x", () => Ai.SquadLayer.FormationSlotsIScale, v => Ai.SquadLayer.FormationSlotsIScale = (float)v),
+            new Entry("ai.squadLayer.formationSlotsRScale", "x", () => Ai.SquadLayer.FormationSlotsRScale, v => Ai.SquadLayer.FormationSlotsRScale = (float)v),
+            new Entry("ai.squadLayer.formationSlotsSpacingScale", "x", () => Ai.SquadLayer.FormationSlotsSpacingScale, v => Ai.SquadLayer.FormationSlotsSpacingScale = (float)v),
+            new Entry("ai.squadLayer.formationSlotsRadius", "count", () => Ai.SquadLayer.FormationSlotsRadius, v => Ai.SquadLayer.FormationSlotsRadius = (float)v),
+            new Entry("ai.squadLayer.formationSlotsXDivisor", "x", () => Ai.SquadLayer.FormationSlotsXDivisor, v => Ai.SquadLayer.FormationSlotsXDivisor = (float)v),
+            new Entry("ai.squadLayer.assignSlotsPassMax", "count", () => Ai.SquadLayer.AssignSlotsPassMax, v => Ai.SquadLayer.AssignSlotsPassMax = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.slotsP2Spacing", "count", () => Ai.SquadLayer.SlotsP2Spacing, v => Ai.SquadLayer.SlotsP2Spacing = (float)v),
+            new Entry("ai.squadLayer.slotsP2CountMin", "count", () => Ai.SquadLayer.SlotsP2CountMin, v => Ai.SquadLayer.SlotsP2CountMin = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.slotsP2PacketDelayMin", "s", () => Ai.SquadLayer.SlotsP2PacketDelayMin, v => Ai.SquadLayer.SlotsP2PacketDelayMin = (float)v),
+            new Entry("ai.squadLayer.slotsP2PacketDelayMax", "s", () => Ai.SquadLayer.SlotsP2PacketDelayMax, v => Ai.SquadLayer.SlotsP2PacketDelayMax = (float)v),
+            new Entry("ai.squadLayer.slotsP2Margin", "count", () => Ai.SquadLayer.SlotsP2Margin, v => Ai.SquadLayer.SlotsP2Margin = (float)v),
+            new Entry("ai.squadLayer.slotsP2ReachFloor", "m", () => Ai.SquadLayer.SlotsP2ReachFloor, v => Ai.SquadLayer.SlotsP2ReachFloor = (float)v),
+            new Entry("ai.squadLayer.slotsP2ReachScale", "x", () => Ai.SquadLayer.SlotsP2ReachScale, v => Ai.SquadLayer.SlotsP2ReachScale = (float)v),
+            new Entry("ai.squadLayer.slotsP2BeforeLerp", "count", () => Ai.SquadLayer.SlotsP2BeforeLerp, v => Ai.SquadLayer.SlotsP2BeforeLerp = (float)v),
+            new Entry("ai.squadLayer.enlistOneSpeedMin", "m/s", () => Ai.SquadLayer.EnlistOneSpeedMin, v => Ai.SquadLayer.EnlistOneSpeedMin = (float)v),
+            new Entry("ai.squadLayer.rendezvousRendezvousBackAdd", "count", () => Ai.SquadLayer.RendezvousRendezvousBackAdd, v => Ai.SquadLayer.RendezvousRendezvousBackAdd = (float)v),
+            new Entry("ai.squadLayer.rendezvousRendezvousBackSub", "count", () => Ai.SquadLayer.RendezvousRendezvousBackSub, v => Ai.SquadLayer.RendezvousRendezvousBackSub = (float)v),
+            new Entry("ai.squadLayer.rendezvousMargin", "x", () => Ai.SquadLayer.RendezvousMargin, v => Ai.SquadLayer.RendezvousMargin = (float)v),
+            new Entry("ai.squadLayer.rendezvousThreatScale", "x", () => Ai.SquadLayer.RendezvousThreatScale, v => Ai.SquadLayer.RendezvousThreatScale = (float)v),
+            new Entry("ai.squadLayer.rendezvousRouteScale", "x", () => Ai.SquadLayer.RendezvousRouteScale, v => Ai.SquadLayer.RendezvousRouteScale = (float)v),
+            new Entry("ai.squadLayer.rendezvousAbsScale", "x", () => Ai.SquadLayer.RendezvousAbsScale, v => Ai.SquadLayer.RendezvousAbsScale = (float)v),
+            new Entry("ai.squadLayer.rendezvousAbsScale2", "x", () => Ai.SquadLayer.RendezvousAbsScale2, v => Ai.SquadLayer.RendezvousAbsScale2 = (float)v),
+            new Entry("ai.squadLayer.servePendingDistanceMax", "m", () => Ai.SquadLayer.ServePendingDistanceMax, v => Ai.SquadLayer.ServePendingDistanceMax = (float)v),
+            new Entry("ai.squadLayer.servePendingDistanceMax2", "m", () => Ai.SquadLayer.ServePendingDistanceMax2, v => Ai.SquadLayer.ServePendingDistanceMax2 = (float)v),
+            new Entry("ai.squadLayer.servePendingDistanceMin", "m", () => Ai.SquadLayer.ServePendingDistanceMin, v => Ai.SquadLayer.ServePendingDistanceMin = (float)v),
+            new Entry("ai.squadLayer.servePendingIntervalScale", "x", () => Ai.SquadLayer.ServePendingIntervalScale, v => Ai.SquadLayer.ServePendingIntervalScale = (float)v),
+            new Entry("ai.squadLayer.servePendingIntervalAdd", "s", () => Ai.SquadLayer.ServePendingIntervalAdd, v => Ai.SquadLayer.ServePendingIntervalAdd = (float)v),
+            new Entry("ai.squadLayer.understrengthPowerFloor", "x", () => Ai.SquadLayer.UnderstrengthPowerFloor, v => Ai.SquadLayer.UnderstrengthPowerFloor = (float)v),
+            new Entry("ai.squadLayer.compatibleTasksDistanceMax", "m", () => Ai.SquadLayer.CompatibleTasksDistanceMax, v => Ai.SquadLayer.CompatibleTasksDistanceMax = (float)v),
+            new Entry("ai.squadLayer.splitI", "count", () => Ai.SquadLayer.SplitI, v => Ai.SquadLayer.SplitI = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.updateLifecycleTimeMax", "s", () => Ai.SquadLayer.UpdateLifecycleTimeMax, v => Ai.SquadLayer.UpdateLifecycleTimeMax = v),
+            new Entry("ai.squadLayer.cohesionOfBeforeSub", "m", () => Ai.SquadLayer.CohesionOfBeforeSub, v => Ai.SquadLayer.CohesionOfBeforeSub = (float)v),
+            new Entry("ai.squadLayer.cohesionOfDistanceMax", "m", () => Ai.SquadLayer.CohesionOfDistanceMax, v => Ai.SquadLayer.CohesionOfDistanceMax = (float)v),
+            new Entry("ai.squadLayer.cohesionOfNowMax", "s", () => Ai.SquadLayer.CohesionOfNowMax, v => Ai.SquadLayer.CohesionOfNowMax = v),
+            new Entry("ai.squadLayer.cohesionOfI", "m", () => Ai.SquadLayer.CohesionOfI, v => Ai.SquadLayer.CohesionOfI = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.powerOfCooldownFloor", "s", () => Ai.SquadLayer.PowerOfCooldownFloor, v => Ai.SquadLayer.PowerOfCooldownFloor = (float)v),
+            new Entry("ai.squadLayer.powerOfEstimateFloor", "x", () => Ai.SquadLayer.PowerOfEstimateFloor, v => Ai.SquadLayer.PowerOfEstimateFloor = (float)v),
+            new Entry("ai.squadLayer.powerOfHpDivisor", "x", () => Ai.SquadLayer.PowerOfHpDivisor, v => Ai.SquadLayer.PowerOfHpDivisor = (float)v),
+            new Entry("ai.squadLayer.powerOfFrontScale", "x", () => Ai.SquadLayer.PowerOfFrontScale, v => Ai.SquadLayer.PowerOfFrontScale = (float)v),
+            new Entry("ai.squadLayer.powerOfRangeDivisor", "x", () => Ai.SquadLayer.PowerOfRangeDivisor, v => Ai.SquadLayer.PowerOfRangeDivisor = (float)v),
+            new Entry("ai.squadLayer.powerOfRangeMin", "m", () => Ai.SquadLayer.PowerOfRangeMin, v => Ai.SquadLayer.PowerOfRangeMin = (float)v),
+            new Entry("ai.squadLayer.powerOfRangeMax", "m", () => Ai.SquadLayer.PowerOfRangeMax, v => Ai.SquadLayer.PowerOfRangeMax = (float)v),
+            new Entry("ai.squadLayer.regroupPointBack2", "m", () => Ai.SquadLayer.RegroupPointBack2, v => Ai.SquadLayer.RegroupPointBack2 = (float)v),
+            new Entry("ai.squadLayer.regroupPointBack3", "m", () => Ai.SquadLayer.RegroupPointBack3, v => Ai.SquadLayer.RegroupPointBack3 = (float)v),
+            new Entry("ai.squadLayer.regroupPointLat2", "m", () => Ai.SquadLayer.RegroupPointLat2, v => Ai.SquadLayer.RegroupPointLat2 = (float)v),
+            new Entry("ai.squadLayer.regroupPointLat3", "m", () => Ai.SquadLayer.RegroupPointLat3, v => Ai.SquadLayer.RegroupPointLat3 = (float)v),
+            new Entry("ai.squadLayer.regroupPointMargin", "x", () => Ai.SquadLayer.RegroupPointMargin, v => Ai.SquadLayer.RegroupPointMargin = (float)v),
+            new Entry("ai.squadLayer.regroupPointWidthAdd", "m", () => Ai.SquadLayer.RegroupPointWidthAdd, v => Ai.SquadLayer.RegroupPointWidthAdd = (float)v),
+            new Entry("ai.squadLayer.regroupPointSplashScale", "x", () => Ai.SquadLayer.RegroupPointSplashScale, v => Ai.SquadLayer.RegroupPointSplashScale = (float)v),
+            new Entry("ai.squadLayer.regroupPointRouteScale", "x", () => Ai.SquadLayer.RegroupPointRouteScale, v => Ai.SquadLayer.RegroupPointRouteScale = (float)v),
+            new Entry("ai.squadLayer.regroupPointChokeScale", "x", () => Ai.SquadLayer.RegroupPointChokeScale, v => Ai.SquadLayer.RegroupPointChokeScale = (float)v),
+            new Entry("ai.squadLayer.regroupPointBackScale", "x", () => Ai.SquadLayer.RegroupPointBackScale, v => Ai.SquadLayer.RegroupPointBackScale = (float)v),
+            new Entry("ai.squadLayer.regroupPointAbsScale", "x", () => Ai.SquadLayer.RegroupPointAbsScale, v => Ai.SquadLayer.RegroupPointAbsScale = (float)v),
+            new Entry("ai.squadLayer.slowestSpeedSlowTrue", "m/s", () => Ai.SquadLayer.SlowestSpeedSlowTrue, v => Ai.SquadLayer.SlowestSpeedSlowTrue = (float)v),
+            new Entry("ai.squadLayer.confidenceOfScale", "x", () => Ai.SquadLayer.ConfidenceOfScale, v => Ai.SquadLayer.ConfidenceOfScale = (float)v),
+            new Entry("ai.squadLayer.confidenceOfHasAtFalse", "x", () => Ai.SquadLayer.ConfidenceOfHasAtFalse, v => Ai.SquadLayer.ConfidenceOfHasAtFalse = (float)v),
+            new Entry("ai.squadLayer.confidenceOfScale2", "x", () => Ai.SquadLayer.ConfidenceOfScale2, v => Ai.SquadLayer.ConfidenceOfScale2 = (float)v),
+            new Entry("ai.squadLayer.confidenceOfRadius", "s", () => Ai.SquadLayer.ConfidenceOfRadius, v => Ai.SquadLayer.ConfidenceOfRadius = (float)v),
+            new Entry("ai.squadLayer.adjustP3HeavyShareMin", "share", () => Ai.SquadLayer.AdjustP3HeavyShareMin, v => Ai.SquadLayer.AdjustP3HeavyShareMin = (float)v),
+            new Entry("ai.squadLayer.adjustP3CostsMin", "x", () => Ai.SquadLayer.AdjustP3CostsMin, v => Ai.SquadLayer.AdjustP3CostsMin = (float)v),
+            new Entry("ai.squadLayer.adjustP3PtsScale", "x", () => Ai.SquadLayer.AdjustP3PtsScale, v => Ai.SquadLayer.AdjustP3PtsScale = (float)v),
+            new Entry("ai.squadLayer.adjustP3Extra", "count", () => Ai.SquadLayer.AdjustP3Extra, v => Ai.SquadLayer.AdjustP3Extra = (float)v),
+            new Entry("ai.squadLayer.adjustP3CautiousFloor", "x", () => Ai.SquadLayer.AdjustP3CautiousFloor, v => Ai.SquadLayer.AdjustP3CautiousFloor = (float)v),
+            new Entry("ai.squadLayer.adjustP3ScoreMax", "x", () => Ai.SquadLayer.AdjustP3ScoreMax, v => Ai.SquadLayer.AdjustP3ScoreMax = (float)v),
+            new Entry("ai.squadLayer.congestionAlongReachAdd", "m", () => Ai.SquadLayer.CongestionAlongReachAdd, v => Ai.SquadLayer.CongestionAlongReachAdd = (float)v),
+            new Entry("ai.squadLayer.congestionAlongHullWidth", "m", () => Ai.SquadLayer.CongestionAlongHullWidth, v => Ai.SquadLayer.CongestionAlongHullWidth = (float)v),
+            new Entry("ai.squadLayer.congestionAlongLanesScale", "x", () => Ai.SquadLayer.CongestionAlongLanesScale, v => Ai.SquadLayer.CongestionAlongLanesScale = (float)v),
+            new Entry("ai.squadLayer.congestionAlongMinScale", "x", () => Ai.SquadLayer.CongestionAlongMinScale, v => Ai.SquadLayer.CongestionAlongMinScale = (float)v),
+            new Entry("ai.squadLayer.congestionAlongDensityCap", "count", () => Ai.SquadLayer.CongestionAlongDensityCap, v => Ai.SquadLayer.CongestionAlongDensityCap = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.congestionAlongCostCap", "count", () => Ai.SquadLayer.CongestionAlongCostCap, v => Ai.SquadLayer.CongestionAlongCostCap = (float)v),
+            new Entry("ai.squadLayer.trackRouteP3P3RouteAction", "count", () => Ai.SquadLayer.TrackRouteP3P3RouteAction, v => Ai.SquadLayer.TrackRouteP3P3RouteAction = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.trackRouteP3RoutePenaltyMin", "s", () => Ai.SquadLayer.TrackRouteP3RoutePenaltyMin, v => Ai.SquadLayer.TrackRouteP3RoutePenaltyMin = (float)v),
+            new Entry("ai.squadLayer.stageP3Seconds", "s", () => Ai.SquadLayer.StageP3Seconds, v => Ai.SquadLayer.StageP3Seconds = (float)v),
+            new Entry("ai.squadLayer.fixP3ReachFloor", "m", () => Ai.SquadLayer.FixP3ReachFloor, v => Ai.SquadLayer.FixP3ReachFloor = (float)v),
+            new Entry("ai.squadLayer.pursuitP3ReachFloor", "m", () => Ai.SquadLayer.PursuitP3ReachFloor, v => Ai.SquadLayer.PursuitP3ReachFloor = (float)v),
+            new Entry("ai.squadLayer.pursuitP3DistanceMax", "m", () => Ai.SquadLayer.PursuitP3DistanceMax, v => Ai.SquadLayer.PursuitP3DistanceMax = (float)v),
+            new Entry("ai.squadLayer.cutoffP3DistanceMax", "m", () => Ai.SquadLayer.CutoffP3DistanceMax, v => Ai.SquadLayer.CutoffP3DistanceMax = (float)v),
+            new Entry("ai.squadLayer.cutoffP3WidthAdd", "m", () => Ai.SquadLayer.CutoffP3WidthAdd, v => Ai.SquadLayer.CutoffP3WidthAdd = (float)v),
+            new Entry("ai.squadLayer.antiAirSquadNScale", "x", () => Ai.SquadLayer.AntiAirSquadNScale, v => Ai.SquadLayer.AntiAirSquadNScale = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.focusShareP3StrengthScale", "x", () => Ai.SquadLayer.FocusShareP3StrengthScale, v => Ai.SquadLayer.FocusShareP3StrengthScale = (float)v),
+            new Entry("ai.squadLayer.stanceP3HoldFireFalse", "x", () => Ai.SquadLayer.StanceP3HoldFireFalse, v => Ai.SquadLayer.StanceP3HoldFireFalse = (float)v),
+            new Entry("ai.squadLayer.stanceP3LengthMin", "m", () => Ai.SquadLayer.StanceP3LengthMin, v => Ai.SquadLayer.StanceP3LengthMin = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.unitsP3Seconds", "s", () => Ai.SquadLayer.UnitsP3Seconds, v => Ai.SquadLayer.UnitsP3Seconds = (float)v),
+            new Entry("ai.squadLayer.unitsP3CountMax", "count", () => Ai.SquadLayer.UnitsP3CountMax, v => Ai.SquadLayer.UnitsP3CountMax = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.unitsP3SuitBMax", "count", () => Ai.SquadLayer.UnitsP3SuitBMax, v => Ai.SquadLayer.UnitsP3SuitBMax = (float)v),
+            new Entry("ai.squadLayer.disperseHoldP3SpreadAdd", "s", () => Ai.SquadLayer.DisperseHoldP3SpreadAdd, v => Ai.SquadLayer.DisperseHoldP3SpreadAdd = (float)v),
+            new Entry("ai.squadLayer.disperseHoldP3RadiusAdd", "m", () => Ai.SquadLayer.DisperseHoldP3RadiusAdd, v => Ai.SquadLayer.DisperseHoldP3RadiusAdd = (float)v),
+            new Entry("ai.squadLayer.adjustP4Salt", "s", () => Ai.SquadLayer.AdjustP4Salt, v => Ai.SquadLayer.AdjustP4Salt = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.adjustP4Points4", "s", () => Ai.SquadLayer.AdjustP4Points4, v => Ai.SquadLayer.AdjustP4Points4 = (float)v),
+            new Entry("ai.squadLayer.adjustP4ScoreMax", "x", () => Ai.SquadLayer.AdjustP4ScoreMax, v => Ai.SquadLayer.AdjustP4ScoreMax = (float)v),
+            new Entry("ai.squadLayer.envelopeP4AgeMin", "s", () => Ai.SquadLayer.EnvelopeP4AgeMin, v => Ai.SquadLayer.EnvelopeP4AgeMin = (float)v),
+            new Entry("ai.squadLayer.envelopeP4ReachFloor", "m", () => Ai.SquadLayer.EnvelopeP4ReachFloor, v => Ai.SquadLayer.EnvelopeP4ReachFloor = (float)v),
+            new Entry("ai.squadLayer.escapeExitP4WarningKeyScale", "x", () => Ai.SquadLayer.EscapeExitP4WarningKeyScale, v => Ai.SquadLayer.EscapeExitP4WarningKeyScale = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.escapeExitP4RadiusAdd", "m", () => Ai.SquadLayer.EscapeExitP4RadiusAdd, v => Ai.SquadLayer.EscapeExitP4RadiusAdd = (float)v),
+            new Entry("ai.squadLayer.escapeExitP4Margin", "m", () => Ai.SquadLayer.EscapeExitP4Margin, v => Ai.SquadLayer.EscapeExitP4Margin = (float)v),
+            new Entry("ai.squadLayer.escapeExitP4DistanceSquaredMin", "m", () => Ai.SquadLayer.EscapeExitP4DistanceSquaredMin, v => Ai.SquadLayer.EscapeExitP4DistanceSquaredMin = (float)v),
+            new Entry("ai.squadLayer.ownerKeyTeamScale", "x", () => Ai.SquadLayer.OwnerKeyTeamScale, v => Ai.SquadLayer.OwnerKeyTeamScale = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.squadRightOfWayHeavyScale", "x", () => Ai.SquadLayer.SquadRightOfWayHeavyScale, v => Ai.SquadLayer.SquadRightOfWayHeavyScale = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.squadRightOfWayArtilleryScale", "x", () => Ai.SquadLayer.SquadRightOfWayArtilleryScale, v => Ai.SquadLayer.SquadRightOfWayArtilleryScale = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.planTrafficHullHalfScale", "x", () => Ai.SquadLayer.PlanTrafficHullHalfScale, v => Ai.SquadLayer.PlanTrafficHullHalfScale = (float)v),
+            new Entry("ai.squadLayer.planTrafficOverloadedFalse", "x", () => Ai.SquadLayer.PlanTrafficOverloadedFalse, v => Ai.SquadLayer.PlanTrafficOverloadedFalse = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.planTrafficLanesMax", "x", () => Ai.SquadLayer.PlanTrafficLanesMax, v => Ai.SquadLayer.PlanTrafficLanesMax = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.issueSlotChokeBatchGapSMin", "m", () => Ai.SquadLayer.IssueSlotChokeBatchGapSMin, v => Ai.SquadLayer.IssueSlotChokeBatchGapSMin = (float)v),
+            new Entry("ai.squadLayer.issueSlotChokeBatchGapSMax", "m", () => Ai.SquadLayer.IssueSlotChokeBatchGapSMax, v => Ai.SquadLayer.IssueSlotChokeBatchGapSMax = (float)v),
+            new Entry("ai.squadLayer.unsharedSlotRingMax", "x", () => Ai.SquadLayer.UnsharedSlotRingMax, v => Ai.SquadLayer.UnsharedSlotRingMax = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.unsharedSlotRingScale", "x", () => Ai.SquadLayer.UnsharedSlotRingScale, v => Ai.SquadLayer.UnsharedSlotRingScale = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.unsharedSlotRingScale2", "x", () => Ai.SquadLayer.UnsharedSlotRingScale2, v => Ai.SquadLayer.UnsharedSlotRingScale2 = (float)v),
+            new Entry("ai.squadLayer.queueSpotMargin", "x", () => Ai.SquadLayer.QueueSpotMargin, v => Ai.SquadLayer.QueueSpotMargin = (float)v),
+            new Entry("ai.squadLayer.trafficTickLengthAdd", "ticks", () => Ai.SquadLayer.TrafficTickLengthAdd, v => Ai.SquadLayer.TrafficTickLengthAdd = (float)v),
+            new Entry("ai.squadLayer.trafficTickIntervalScale", "x", () => Ai.SquadLayer.TrafficTickIntervalScale, v => Ai.SquadLayer.TrafficTickIntervalScale = (float)v),
+            new Entry("ai.squadLayer.trafficTickIntervalAdd", "ticks", () => Ai.SquadLayer.TrafficTickIntervalAdd, v => Ai.SquadLayer.TrafficTickIntervalAdd = (float)v),
+            new Entry("ai.squadLayer.trafficTickNowMin", "ticks", () => Ai.SquadLayer.TrafficTickNowMin, v => Ai.SquadLayer.TrafficTickNowMin = v),
+            new Entry("ai.squadLayer.unitsReachScale", "x", () => Ai.SquadLayer.UnitsReachScale, v => Ai.SquadLayer.UnitsReachScale = (float)v),
+            new Entry("ai.squadLayer.unitsVisionRangeScale", "x", () => Ai.SquadLayer.UnitsVisionRangeScale, v => Ai.SquadLayer.UnitsVisionRangeScale = (float)v),
+            new Entry("ai.squadLayer.unitsDirectionScale", "x", () => Ai.SquadLayer.UnitsDirectionScale, v => Ai.SquadLayer.UnitsDirectionScale = (float)v),
+            new Entry("ai.squadLayer.unitsMargin", "m", () => Ai.SquadLayer.UnitsMargin, v => Ai.SquadLayer.UnitsMargin = (float)v),
+            new Entry("ai.squadLayer.explainTargetMaxHpScale", "x", () => Ai.SquadLayer.ExplainTargetMaxHpScale, v => Ai.SquadLayer.ExplainTargetMaxHpScale = (float)v),
+            new Entry("ai.squadLayer.shortMoveRadiusAdd", "m", () => Ai.SquadLayer.ShortMoveRadiusAdd, v => Ai.SquadLayer.ShortMoveRadiusAdd = (float)v),
+            new Entry("ai.squadLayer.shortMoveMargin", "x", () => Ai.SquadLayer.ShortMoveMargin, v => Ai.SquadLayer.ShortMoveMargin = (float)v),
+            new Entry("ai.squadLayer.crowdedDistanceCap", "m", () => Ai.SquadLayer.CrowdedDistanceCap, v => Ai.SquadLayer.CrowdedDistanceCap = (float)v),
+            new Entry("ai.squadLayer.crowdedDistanceMax", "m", () => Ai.SquadLayer.CrowdedDistanceMax, v => Ai.SquadLayer.CrowdedDistanceMax = (float)v),
+            new Entry("ai.squadLayer.crowdedDensityMin", "m", () => Ai.SquadLayer.CrowdedDensityMin, v => Ai.SquadLayer.CrowdedDensityMin = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.squadSpeedSlowestTrue", "m/s", () => Ai.SquadLayer.SquadSpeedSlowestTrue, v => Ai.SquadLayer.SquadSpeedSlowestTrue = (float)v),
+            new Entry("ai.squadLayer.explainHoldsIntervalScale", "x", () => Ai.SquadLayer.ExplainHoldsIntervalScale, v => Ai.SquadLayer.ExplainHoldsIntervalScale = (float)v),
+            new Entry("ai.squadLayer.explainHoldsIntervalAdd", "s", () => Ai.SquadLayer.ExplainHoldsIntervalAdd, v => Ai.SquadLayer.ExplainHoldsIntervalAdd = (float)v),
+            new Entry("ai.squadLayer.ctorIntervalScale", "x", () => Ai.SquadLayer.CtorIntervalScale, v => Ai.SquadLayer.CtorIntervalScale = (float)v),
+            new Entry("ai.squadLayer.measureCountDivisor", "x", () => Ai.SquadLayer.MeasureCountDivisor, v => Ai.SquadLayer.MeasureCountDivisor = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.measureLastHpSub", "x", () => Ai.SquadLayer.MeasureLastHpSub, v => Ai.SquadLayer.MeasureLastHpSub = (float)v),
+            new Entry("ai.squadLayer.scoreReachFloor", "m", () => Ai.SquadLayer.ScoreReachFloor, v => Ai.SquadLayer.ScoreReachFloor = (float)v),
+            new Entry("ai.squadLayer.scoreReachScale", "x", () => Ai.SquadLayer.ScoreReachScale, v => Ai.SquadLayer.ScoreReachScale = (float)v),
+            new Entry("ai.squadLayer.scoreEnemyGoalFloor", "x", () => Ai.SquadLayer.ScoreEnemyGoalFloor, v => Ai.SquadLayer.ScoreEnemyGoalFloor = (float)v),
+            new Entry("ai.squadLayer.scoreRatioScale", "x", () => Ai.SquadLayer.ScoreRatioScale, v => Ai.SquadLayer.ScoreRatioScale = (float)v),
+            new Entry("ai.squadLayer.scoreRatioMin", "x", () => Ai.SquadLayer.ScoreRatioMin, v => Ai.SquadLayer.ScoreRatioMin = (float)v),
+            new Entry("ai.squadLayer.scoreRatioMax", "x", () => Ai.SquadLayer.ScoreRatioMax, v => Ai.SquadLayer.ScoreRatioMax = (float)v),
+            new Entry("ai.squadLayer.scorePoints3", "m", () => Ai.SquadLayer.ScorePoints3, v => Ai.SquadLayer.ScorePoints3 = (float)v),
+            new Entry("ai.squadLayer.scorePoints2", "count", () => Ai.SquadLayer.ScorePoints2, v => Ai.SquadLayer.ScorePoints2 = (float)v),
+            new Entry("ai.squadLayer.scoreRouteThreatCap", "count", () => Ai.SquadLayer.ScoreRouteThreatCap, v => Ai.SquadLayer.ScoreRouteThreatCap = (float)v),
+            new Entry("ai.squadLayer.scoreRouteThreatScale", "x", () => Ai.SquadLayer.ScoreRouteThreatScale, v => Ai.SquadLayer.ScoreRouteThreatScale = (float)v),
+            new Entry("ai.squadLayer.scoreCohesionScale", "x", () => Ai.SquadLayer.ScoreCohesionScale, v => Ai.SquadLayer.ScoreCohesionScale = (float)v),
+            new Entry("ai.squadLayer.scorePoints7", "s", () => Ai.SquadLayer.ScorePoints7, v => Ai.SquadLayer.ScorePoints7 = (float)v),
+            new Entry("ai.squadLayer.scorePoints8", "s", () => Ai.SquadLayer.ScorePoints8, v => Ai.SquadLayer.ScorePoints8 = (float)v),
+            new Entry("ai.squadLayer.scoreBaseScore", "count", () => Ai.SquadLayer.ScoreBaseScore, v => Ai.SquadLayer.ScoreBaseScore = (float)v),
+            new Entry("ai.squadLayer.scoreBaseScore2", "count", () => Ai.SquadLayer.ScoreBaseScore2, v => Ai.SquadLayer.ScoreBaseScore2 = (float)v),
+            new Entry("ai.squadLayer.scoreCountMin", "count", () => Ai.SquadLayer.ScoreCountMin, v => Ai.SquadLayer.ScoreCountMin = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.scoreDistanceMin", "m", () => Ai.SquadLayer.ScoreDistanceMin, v => Ai.SquadLayer.ScoreDistanceMin = (float)v),
+            new Entry("ai.squadLayer.scoreEnemyGoalScale", "x", () => Ai.SquadLayer.ScoreEnemyGoalScale, v => Ai.SquadLayer.ScoreEnemyGoalScale = (float)v),
+            new Entry("ai.squadLayer.scoreEnemyGoalMin", "x", () => Ai.SquadLayer.ScoreEnemyGoalMin, v => Ai.SquadLayer.ScoreEnemyGoalMin = (float)v),
+            new Entry("ai.squadLayer.scoreEnemyGoalMax", "x", () => Ai.SquadLayer.ScoreEnemyGoalMax, v => Ai.SquadLayer.ScoreEnemyGoalMax = (float)v),
+            new Entry("ai.squadLayer.scoreSideEnemyCap", "count", () => Ai.SquadLayer.ScoreSideEnemyCap, v => Ai.SquadLayer.ScoreSideEnemyCap = (float)v),
+            new Entry("ai.squadLayer.scoreSideEnemyScale", "x", () => Ai.SquadLayer.ScoreSideEnemyScale, v => Ai.SquadLayer.ScoreSideEnemyScale = (float)v),
+            new Entry("ai.squadLayer.scoreThreatCap", "count", () => Ai.SquadLayer.ScoreThreatCap, v => Ai.SquadLayer.ScoreThreatCap = (float)v),
+            new Entry("ai.squadLayer.scoreThreatScale", "x", () => Ai.SquadLayer.ScoreThreatScale, v => Ai.SquadLayer.ScoreThreatScale = (float)v),
+            new Entry("ai.squadLayer.scoreReachMin", "m", () => Ai.SquadLayer.ScoreReachMin, v => Ai.SquadLayer.ScoreReachMin = (float)v),
+            new Entry("ai.squadLayer.scoreBaseScore3", "count", () => Ai.SquadLayer.ScoreBaseScore3, v => Ai.SquadLayer.ScoreBaseScore3 = (float)v),
+            new Entry("ai.squadLayer.scoreGainCap", "count", () => Ai.SquadLayer.ScoreGainCap, v => Ai.SquadLayer.ScoreGainCap = (float)v),
+            new Entry("ai.squadLayer.scoreBaseScore4", "count", () => Ai.SquadLayer.ScoreBaseScore4, v => Ai.SquadLayer.ScoreBaseScore4 = (float)v),
+            new Entry("ai.squadLayer.scoreFeFloor", "x", () => Ai.SquadLayer.ScoreFeFloor, v => Ai.SquadLayer.ScoreFeFloor = (float)v),
+            new Entry("ai.squadLayer.scoreFoScale", "x", () => Ai.SquadLayer.ScoreFoScale, v => Ai.SquadLayer.ScoreFoScale = (float)v),
+            new Entry("ai.squadLayer.scoreFoMax", "x", () => Ai.SquadLayer.ScoreFoMax, v => Ai.SquadLayer.ScoreFoMax = (float)v),
+            new Entry("ai.squadLayer.scoreBaseScore5", "count", () => Ai.SquadLayer.ScoreBaseScore5, v => Ai.SquadLayer.ScoreBaseScore5 = (float)v),
+            new Entry("ai.squadLayer.scorePoints9", "count", () => Ai.SquadLayer.ScorePoints9, v => Ai.SquadLayer.ScorePoints9 = (float)v),
+            new Entry("ai.squadLayer.scoreTimeMax", "s", () => Ai.SquadLayer.ScoreTimeMax, v => Ai.SquadLayer.ScoreTimeMax = v),
+            new Entry("ai.squadLayer.scoreCohesionCap", "count", () => Ai.SquadLayer.ScoreCohesionCap, v => Ai.SquadLayer.ScoreCohesionCap = (float)v),
+            new Entry("ai.squadLayer.scoreCohesionScale3", "x", () => Ai.SquadLayer.ScoreCohesionScale3, v => Ai.SquadLayer.ScoreCohesionScale3 = (float)v),
+            new Entry("ai.squadLayer.scoreScoreMax", "x", () => Ai.SquadLayer.ScoreScoreMax, v => Ai.SquadLayer.ScoreScoreMax = (float)v),
+            new Entry("ai.squadLayer.urgentDistanceMin", "m", () => Ai.SquadLayer.UrgentDistanceMin, v => Ai.SquadLayer.UrgentDistanceMin = (float)v),
+            new Entry("ai.squadLayer.idleTooLongNowMax", "s", () => Ai.SquadLayer.IdleTooLongNowMax, v => Ai.SquadLayer.IdleTooLongNowMax = v),
+            new Entry("ai.squadLayer.setStateReachScale", "x", () => Ai.SquadLayer.SetStateReachScale, v => Ai.SquadLayer.SetStateReachScale = (float)v),
+            new Entry("ai.squadLayer.dodgeRadiusAdd", "m", () => Ai.SquadLayer.DodgeRadiusAdd, v => Ai.SquadLayer.DodgeRadiusAdd = (float)v),
+            new Entry("ai.squadLayer.dodgeRadiusAdd2", "m", () => Ai.SquadLayer.DodgeRadiusAdd2, v => Ai.SquadLayer.DodgeRadiusAdd2 = (float)v),
+            new Entry("ai.squadLayer.dodgeMargin", "m", () => Ai.SquadLayer.DodgeMargin, v => Ai.SquadLayer.DodgeMargin = (float)v),
+            new Entry("ai.squadLayer.dodgeDistanceMin", "m", () => Ai.SquadLayer.DodgeDistanceMin, v => Ai.SquadLayer.DodgeDistanceMin = (float)v),
+            new Entry("ai.squadLayer.dodgeCountMin", "count", () => Ai.SquadLayer.DodgeCountMin, v => Ai.SquadLayer.DodgeCountMin = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.pruneNowMin", "s", () => Ai.SquadLayer.PruneNowMin, v => Ai.SquadLayer.PruneNowMin = v),
+            new Entry("ai.squadLayer.overwhelmedReachFloor", "m", () => Ai.SquadLayer.OverwhelmedReachFloor, v => Ai.SquadLayer.OverwhelmedReachFloor = (float)v),
+            new Entry("ai.squadLayer.overwhelmedRadiusAdd", "m", () => Ai.SquadLayer.OverwhelmedRadiusAdd, v => Ai.SquadLayer.OverwhelmedRadiusAdd = (float)v),
+            new Entry("ai.squadLayer.executeReachScale", "x", () => Ai.SquadLayer.ExecuteReachScale, v => Ai.SquadLayer.ExecuteReachScale = (float)v),
+            new Entry("ai.squadLayer.executeDistanceMin", "m", () => Ai.SquadLayer.ExecuteDistanceMin, v => Ai.SquadLayer.ExecuteDistanceMin = (float)v),
+            new Entry("ai.squadLayer.executeDistanceMin2", "m", () => Ai.SquadLayer.ExecuteDistanceMin2, v => Ai.SquadLayer.ExecuteDistanceMin2 = (float)v),
+            new Entry("ai.squadLayer.executeDistanceMax", "m", () => Ai.SquadLayer.ExecuteDistanceMax, v => Ai.SquadLayer.ExecuteDistanceMax = (float)v),
+            new Entry("ai.squadLayer.executeMargin", "x", () => Ai.SquadLayer.ExecuteMargin, v => Ai.SquadLayer.ExecuteMargin = (float)v),
+            new Entry("ai.squadLayer.executeStateTrue", "m", () => Ai.SquadLayer.ExecuteStateTrue, v => Ai.SquadLayer.ExecuteStateTrue = (float)v),
+            new Entry("ai.squadLayer.executeStateFalse", "m", () => Ai.SquadLayer.ExecuteStateFalse, v => Ai.SquadLayer.ExecuteStateFalse = (float)v),
+            new Entry("ai.squadLayer.boundCountMax", "count", () => Ai.SquadLayer.BoundCountMax, v => Ai.SquadLayer.BoundCountMax = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.boundNowAdd", "s", () => Ai.SquadLayer.BoundNowAdd, v => Ai.SquadLayer.BoundNowAdd = v),
+            new Entry("ai.squadLayer.boundReachScale", "x", () => Ai.SquadLayer.BoundReachScale, v => Ai.SquadLayer.BoundReachScale = (float)v),
+            new Entry("ai.squadLayer.boundReachCap", "m", () => Ai.SquadLayer.BoundReachCap, v => Ai.SquadLayer.BoundReachCap = (float)v),
+            new Entry("ai.squadLayer.boundMargin", "x", () => Ai.SquadLayer.BoundMargin, v => Ai.SquadLayer.BoundMargin = (float)v),
+            new Entry("ai.squadLayer.spreadDistanceBlastFloor", "m", () => Ai.SquadLayer.SpreadDistanceBlastFloor, v => Ai.SquadLayer.SpreadDistanceBlastFloor = (float)v),
+            new Entry("ai.squadLayer.spreadDistanceBlastScale", "x", () => Ai.SquadLayer.SpreadDistanceBlastScale, v => Ai.SquadLayer.SpreadDistanceBlastScale = (float)v),
+            new Entry("ai.squadLayer.spreadDistanceDirectAtMaxSpreadFloor", "m", () => Ai.SquadLayer.SpreadDistanceDirectAtMaxSpreadFloor, v => Ai.SquadLayer.SpreadDistanceDirectAtMaxSpreadFloor = (float)v),
+            new Entry("ai.squadLayer.unstickDistanceMin", "m", () => Ai.SquadLayer.UnstickDistanceMin, v => Ai.SquadLayer.UnstickDistanceMin = (float)v),
+            new Entry("ai.squadLayer.unstickDistanceMin2", "m", () => Ai.SquadLayer.UnstickDistanceMin2, v => Ai.SquadLayer.UnstickDistanceMin2 = (float)v),
+            new Entry("ai.squadLayer.unstickDistanceMin3", "m", () => Ai.SquadLayer.UnstickDistanceMin3, v => Ai.SquadLayer.UnstickDistanceMin3 = (float)v),
+            new Entry("ai.squadLayer.unstickAwayScale", "x", () => Ai.SquadLayer.UnstickAwayScale, v => Ai.SquadLayer.UnstickAwayScale = (float)v),
+            new Entry("ai.squadLayer.unstickMargin", "s", () => Ai.SquadLayer.UnstickMargin, v => Ai.SquadLayer.UnstickMargin = (float)v),
+            new Entry("ai.squadLayer.unstickValueTrue", "s", () => Ai.SquadLayer.UnstickValueTrue, v => Ai.SquadLayer.UnstickValueTrue = (float)v),
+            new Entry("ai.squadLayer.unstickValueFalse", "s", () => Ai.SquadLayer.UnstickValueFalse, v => Ai.SquadLayer.UnstickValueFalse = (float)v),
+            new Entry("ai.squadLayer.unstickOutScale", "x", () => Ai.SquadLayer.UnstickOutScale, v => Ai.SquadLayer.UnstickOutScale = (float)v),
+            new Entry("ai.squadLayer.unstickRungCap", "count", () => Ai.SquadLayer.UnstickRungCap, v => Ai.SquadLayer.UnstickRungCap = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.unstickRungMin", "s", () => Ai.SquadLayer.UnstickRungMin, v => Ai.SquadLayer.UnstickRungMin = (int)System.Math.Round(v)),
+            new Entry("ai.squadLayer.stanceHoldFireFalse", "x", () => Ai.SquadLayer.StanceHoldFireFalse, v => Ai.SquadLayer.StanceHoldFireFalse = (float)v),
+            new Entry("ai.squadLayer.focusWeightMin", "count", () => Ai.SquadLayer.FocusWeightMin, v => Ai.SquadLayer.FocusWeightMin = (float)v),
+            new Entry("ai.squadLayer.focusReachAdd", "m", () => Ai.SquadLayer.FocusReachAdd, v => Ai.SquadLayer.FocusReachAdd = (float)v),
+            new Entry("ai.squadLayer.focusStrengthFloor", "x", () => Ai.SquadLayer.FocusStrengthFloor, v => Ai.SquadLayer.FocusStrengthFloor = (float)v),
+            new Entry("ai.squadLayer.focusHpSub", "x", () => Ai.SquadLayer.FocusHpSub, v => Ai.SquadLayer.FocusHpSub = (float)v),
+            new Entry("ai.squadLayer.focusReachFloor", "m", () => Ai.SquadLayer.FocusReachFloor, v => Ai.SquadLayer.FocusReachFloor = (float)v),
+            new Entry("ai.squadLayer.pointPressureRadiusAdd", "m", () => Ai.SquadLayer.PointPressureRadiusAdd, v => Ai.SquadLayer.PointPressureRadiusAdd = (float)v),
+            new Entry("ai.squadLayer.flankPointDistanceCap", "count", () => Ai.SquadLayer.FlankPointDistanceCap, v => Ai.SquadLayer.FlankPointDistanceCap = (float)v),
+            new Entry("ai.squadLayer.flankPointDistanceScale", "x", () => Ai.SquadLayer.FlankPointDistanceScale, v => Ai.SquadLayer.FlankPointDistanceScale = (float)v),
+            new Entry("ai.squadLayer.flankPointDistanceScale2", "x", () => Ai.SquadLayer.FlankPointDistanceScale2, v => Ai.SquadLayer.FlankPointDistanceScale2 = (float)v),
+            new Entry("ai.squadLayer.flankPointDistanceMin", "m", () => Ai.SquadLayer.FlankPointDistanceMin, v => Ai.SquadLayer.FlankPointDistanceMin = (float)v),
+            new Entry("ai.squadLayer.flankPointDistanceMax", "m", () => Ai.SquadLayer.FlankPointDistanceMax, v => Ai.SquadLayer.FlankPointDistanceMax = (float)v),
+            new Entry("ai.squadLayer.flankPointMargin", "m", () => Ai.SquadLayer.FlankPointMargin, v => Ai.SquadLayer.FlankPointMargin = (float)v),
+            new Entry("ai.squadLayer.flankPointDistanceMax2", "m", () => Ai.SquadLayer.FlankPointDistanceMax2, v => Ai.SquadLayer.FlankPointDistanceMax2 = (float)v),
+            new Entry("ai.squadLayer.flankPointMaxScale", "x", () => Ai.SquadLayer.FlankPointMaxScale, v => Ai.SquadLayer.FlankPointMaxScale = (float)v),
+            new Entry("ai.squadLayer.advancingFriendDistanceMax", "m", () => Ai.SquadLayer.AdvancingFriendDistanceMax, v => Ai.SquadLayer.AdvancingFriendDistanceMax = (float)v),
+            new Entry("ai.squadLayer.losingFriendReachFloor", "m", () => Ai.SquadLayer.LosingFriendReachFloor, v => Ai.SquadLayer.LosingFriendReachFloor = (float)v),
+            new Entry("ai.squadLayer.losingFriendEnemyFloor", "x", () => Ai.SquadLayer.LosingFriendEnemyFloor, v => Ai.SquadLayer.LosingFriendEnemyFloor = (float)v),
+            new Entry("ai.squadLayer.betterSpotReachFloor", "m", () => Ai.SquadLayer.BetterSpotReachFloor, v => Ai.SquadLayer.BetterSpotReachFloor = (float)v),
+            new Entry("ai.squadLayer.betterSpotDirectionScale", "x", () => Ai.SquadLayer.BetterSpotDirectionScale, v => Ai.SquadLayer.BetterSpotDirectionScale = (float)v),
+            new Entry("ai.squadLayer.betterSpotMargin", "x", () => Ai.SquadLayer.BetterSpotMargin, v => Ai.SquadLayer.BetterSpotMargin = (float)v),
+            new Entry("ai.squadLayer.betterSpotThreatAtScale", "x", () => Ai.SquadLayer.BetterSpotThreatAtScale, v => Ai.SquadLayer.BetterSpotThreatAtScale = (float)v),
+            new Entry("ai.squadLayer.betterSpotScale", "x", () => Ai.SquadLayer.BetterSpotScale, v => Ai.SquadLayer.BetterSpotScale = (float)v),
+            new Entry("ai.squadLayer.betterSpotHereScale", "x", () => Ai.SquadLayer.BetterSpotHereScale, v => Ai.SquadLayer.BetterSpotHereScale = (float)v),
+            new Entry("ai.supportDef.ctorRadiusCap", "count", () => Ai.SupportDef.CtorRadiusCap, v => Ai.SupportDef.CtorRadiusCap = (float)v),
+            new Entry("ai.syncPlanner.etaSpeedFloor", "m", () => Ai.SyncPlanner.EtaSpeedFloor, v => Ai.SyncPlanner.EtaSpeedFloor = (float)v),
+            new Entry("ai.tacticalAi.claimGunP4NowAdd", "s", () => Ai.TacticalAi.ClaimGunP4NowAdd, v => Ai.TacticalAi.ClaimGunP4NowAdd = v),
+            new Entry("ai.tacticalAi.repairTargetP3MaxHpScale", "x", () => Ai.TacticalAi.RepairTargetP3MaxHpScale, v => Ai.TacticalAi.RepairTargetP3MaxHpScale = (float)v),
+            new Entry("ai.tacticalAi.repairTargetP3RadiusFloor", "m", () => Ai.TacticalAi.RepairTargetP3RadiusFloor, v => Ai.TacticalAi.RepairTargetP3RadiusFloor = (float)v),
+            new Entry("ai.tacticalAi.repairTargetP3RadiusScale", "x", () => Ai.TacticalAi.RepairTargetP3RadiusScale, v => Ai.TacticalAi.RepairTargetP3RadiusScale = (float)v),
+            new Entry("ai.tacticalAi.explainSpanDecisionIntervalScale", "x", () => Ai.TacticalAi.ExplainSpanDecisionIntervalScale, v => Ai.TacticalAi.ExplainSpanDecisionIntervalScale = (float)v),
+            new Entry("ai.tacticalAi.explainSpanDecisionIntervalAdd", "s", () => Ai.TacticalAi.ExplainSpanDecisionIntervalAdd, v => Ai.TacticalAi.ExplainSpanDecisionIntervalAdd = (float)v),
+            new Entry("ai.tacticalAi.alliesDecisionIntervalScale", "x", () => Ai.TacticalAi.AlliesDecisionIntervalScale, v => Ai.TacticalAi.AlliesDecisionIntervalScale = (float)v),
+            new Entry("ai.tacticalAi.ctorDecisionIntervalScale", "x", () => Ai.TacticalAi.CtorDecisionIntervalScale, v => Ai.TacticalAi.CtorDecisionIntervalScale = (float)v),
+            new Entry("ai.tacticalAi.tickNearestGroundMax", "ticks", () => Ai.TacticalAi.TickNearestGroundMax, v => Ai.TacticalAi.TickNearestGroundMax = (float)v),
+            new Entry("ai.tacticalAi.tickHomeRadiusAdd", "ticks", () => Ai.TacticalAi.TickHomeRadiusAdd, v => Ai.TacticalAi.TickHomeRadiusAdd = (float)v),
+            new Entry("ai.tacticalAi.tickDistanceMin", "ticks", () => Ai.TacticalAi.TickDistanceMin, v => Ai.TacticalAi.TickDistanceMin = (float)v),
+            new Entry("ai.tacticalAi.tickForwardScale", "x", () => Ai.TacticalAi.TickForwardScale, v => Ai.TacticalAi.TickForwardScale = (float)v),
+            new Entry("ai.tacticalAi.judgeOddsDistanceMax", "m", () => Ai.TacticalAi.JudgeOddsDistanceMax, v => Ai.TacticalAi.JudgeOddsDistanceMax = (float)v),
+            new Entry("ai.tacticalAi.judgeOddsDistanceMax2", "m", () => Ai.TacticalAi.JudgeOddsDistanceMax2, v => Ai.TacticalAi.JudgeOddsDistanceMax2 = (float)v),
+            new Entry("ai.tacticalAi.judgeOddsAgeMin", "share", () => Ai.TacticalAi.JudgeOddsAgeMin, v => Ai.TacticalAi.JudgeOddsAgeMin = v),
+            new Entry("ai.tacticalAi.judgeOddsDistanceMax3", "m", () => Ai.TacticalAi.JudgeOddsDistanceMax3, v => Ai.TacticalAi.JudgeOddsDistanceMax3 = (float)v),
+            new Entry("ai.tacticalAi.judgeOddsAgeExponent", "share", () => Ai.TacticalAi.JudgeOddsAgeExponent, v => Ai.TacticalAi.JudgeOddsAgeExponent = v),
+            new Entry("ai.tacticalAi.judgeOddsAgeDivisor", "x", () => Ai.TacticalAi.JudgeOddsAgeDivisor, v => Ai.TacticalAi.JudgeOddsAgeDivisor = v),
+            new Entry("ai.tacticalAi.judgeOddsTheirsMin", "share", () => Ai.TacticalAi.JudgeOddsTheirsMin, v => Ai.TacticalAi.JudgeOddsTheirsMin = (float)v),
+            new Entry("ai.tacticalAi.judgeOddsTheirsMax", "share", () => Ai.TacticalAi.JudgeOddsTheirsMax, v => Ai.TacticalAi.JudgeOddsTheirsMax = (float)v),
+            new Entry("ai.tacticalAi.judgeOddsTheirsMin2", "share", () => Ai.TacticalAi.JudgeOddsTheirsMin2, v => Ai.TacticalAi.JudgeOddsTheirsMin2 = (float)v),
+            new Entry("ai.tacticalAi.judgeOddsDistanceCap", "m", () => Ai.TacticalAi.JudgeOddsDistanceCap, v => Ai.TacticalAi.JudgeOddsDistanceCap = (float)v),
+            new Entry("ai.tacticalAi.grabCratesMargin", "x", () => Ai.TacticalAi.GrabCratesMargin, v => Ai.TacticalAi.GrabCratesMargin = (float)v),
+            new Entry("ai.tacticalAi.grabCratesDistanceMax", "m", () => Ai.TacticalAi.GrabCratesDistanceMax, v => Ai.TacticalAi.GrabCratesDistanceMax = (float)v),
+            new Entry("ai.tacticalAi.grabCratesDistanceMax2", "m", () => Ai.TacticalAi.GrabCratesDistanceMax2, v => Ai.TacticalAi.GrabCratesDistanceMax2 = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmSpeedScale", "x", () => Ai.TacticalAi.SendToRearmSpeedScale, v => Ai.TacticalAi.SendToRearmSpeedScale = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmDepotReachScale", "x", () => Ai.TacticalAi.SendToRearmDepotReachScale, v => Ai.TacticalAi.SendToRearmDepotReachScale = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmLeftDivisor", "x", () => Ai.TacticalAi.SendToRearmLeftDivisor, v => Ai.TacticalAi.SendToRearmLeftDivisor = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmDAdd", "s", () => Ai.TacticalAi.SendToRearmDAdd, v => Ai.TacticalAi.SendToRearmDAdd = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmRadiusScale", "x", () => Ai.TacticalAi.SendToRearmRadiusScale, v => Ai.TacticalAi.SendToRearmRadiusScale = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmReach", "s", () => Ai.TacticalAi.SendToRearmReach, v => Ai.TacticalAi.SendToRearmReach = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmDistanceMin", "m", () => Ai.TacticalAi.SendToRearmDistanceMin, v => Ai.TacticalAi.SendToRearmDistanceMin = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmDistanceMin2", "m", () => Ai.TacticalAi.SendToRearmDistanceMin2, v => Ai.TacticalAi.SendToRearmDistanceMin2 = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmRangeAdd", "m", () => Ai.TacticalAi.SendToRearmRangeAdd, v => Ai.TacticalAi.SendToRearmRangeAdd = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmRangeAdd2", "m", () => Ai.TacticalAi.SendToRearmRangeAdd2, v => Ai.TacticalAi.SendToRearmRangeAdd2 = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmDistanceMin3", "m", () => Ai.TacticalAi.SendToRearmDistanceMin3, v => Ai.TacticalAi.SendToRearmDistanceMin3 = (float)v),
+            new Entry("ai.tacticalAi.sendToRearmRangeAdd3", "m", () => Ai.TacticalAi.SendToRearmRangeAdd3, v => Ai.TacticalAi.SendToRearmRangeAdd3 = (float)v),
+            new Entry("ai.tacticalAi.refitDistanceMin", "m", () => Ai.TacticalAi.RefitDistanceMin, v => Ai.TacticalAi.RefitDistanceMin = (float)v),
+            new Entry("ai.tacticalAi.rearmInLullsTimeMax", "s", () => Ai.TacticalAi.RearmInLullsTimeMax, v => Ai.TacticalAi.RearmInLullsTimeMax = v),
+            new Entry("ai.tacticalAi.rearmInLullsVisionRangeAdd", "m", () => Ai.TacticalAi.RearmInLullsVisionRangeAdd, v => Ai.TacticalAi.RearmInLullsVisionRangeAdd = (float)v),
+            new Entry("ai.tacticalAi.breachObstaclesAlongMax", "m", () => Ai.TacticalAi.BreachObstaclesAlongMax, v => Ai.TacticalAi.BreachObstaclesAlongMax = (float)v),
+            new Entry("ai.tacticalAi.breachObstaclesLengthMin", "m", () => Ai.TacticalAi.BreachObstaclesLengthMin, v => Ai.TacticalAi.BreachObstaclesLengthMin = (float)v),
+            new Entry("ai.tacticalAi.breachObstaclesDistanceMax", "m", () => Ai.TacticalAi.BreachObstaclesDistanceMax, v => Ai.TacticalAi.BreachObstaclesDistanceMax = (float)v),
+            new Entry("ai.tacticalAi.directBreachersAlongMax", "m", () => Ai.TacticalAi.DirectBreachersAlongMax, v => Ai.TacticalAi.DirectBreachersAlongMax = (float)v),
+            new Entry("ai.tacticalAi.directBreachersLengthScale", "x", () => Ai.TacticalAi.DirectBreachersLengthScale, v => Ai.TacticalAi.DirectBreachersLengthScale = (float)v),
+            new Entry("ai.tacticalAi.directBreachersObstacleTrue", "m", () => Ai.TacticalAi.DirectBreachersObstacleTrue, v => Ai.TacticalAi.DirectBreachersObstacleTrue = (float)v),
+            new Entry("ai.tacticalAi.directSupportForwardScale", "x", () => Ai.TacticalAi.DirectSupportForwardScale, v => Ai.TacticalAi.DirectSupportForwardScale = (float)v),
+            new Entry("ai.tacticalAi.directSupportDistanceMax", "m", () => Ai.TacticalAi.DirectSupportDistanceMax, v => Ai.TacticalAi.DirectSupportDistanceMax = (float)v),
+            new Entry("ai.tacticalAi.directSupportDistanceMax2", "m", () => Ai.TacticalAi.DirectSupportDistanceMax2, v => Ai.TacticalAi.DirectSupportDistanceMax2 = (float)v),
+            new Entry("ai.tacticalAi.directSupportForwardScale2", "x", () => Ai.TacticalAi.DirectSupportForwardScale2, v => Ai.TacticalAi.DirectSupportForwardScale2 = (float)v),
+            new Entry("ai.tacticalAi.directSupportReach", "m", () => Ai.TacticalAi.DirectSupportReach, v => Ai.TacticalAi.DirectSupportReach = (float)v),
+            new Entry("ai.tacticalAi.directSupportDistanceMax3", "m", () => Ai.TacticalAi.DirectSupportDistanceMax3, v => Ai.TacticalAi.DirectSupportDistanceMax3 = (float)v),
+            new Entry("ai.tacticalAi.directSupportDistanceMin", "m", () => Ai.TacticalAi.DirectSupportDistanceMin, v => Ai.TacticalAi.DirectSupportDistanceMin = (float)v),
+            new Entry("ai.tacticalAi.directSupportDistanceMax4", "m", () => Ai.TacticalAi.DirectSupportDistanceMax4, v => Ai.TacticalAi.DirectSupportDistanceMax4 = (float)v),
+            new Entry("ai.tacticalAi.directSupportDistanceMax5", "m", () => Ai.TacticalAi.DirectSupportDistanceMax5, v => Ai.TacticalAi.DirectSupportDistanceMax5 = (float)v),
+            new Entry("ai.tacticalAi.resupplySpotForwardScale", "x", () => Ai.TacticalAi.ResupplySpotForwardScale, v => Ai.TacticalAi.ResupplySpotForwardScale = (float)v),
+            new Entry("ai.tacticalAi.resupplySpotReach", "m", () => Ai.TacticalAi.ResupplySpotReach, v => Ai.TacticalAi.ResupplySpotReach = (float)v),
+            new Entry("ai.tacticalAi.collectFallBackDistanceMax", "m", () => Ai.TacticalAi.CollectFallBackDistanceMax, v => Ai.TacticalAi.CollectFallBackDistanceMax = (float)v),
+            new Entry("ai.tacticalAi.huntRearmingBest", "s", () => Ai.TacticalAi.HuntRearmingBest, v => Ai.TacticalAi.HuntRearmingBest = (float)v),
+            new Entry("ai.tacticalAi.huntRearmingAircraftMax", "s", () => Ai.TacticalAi.HuntRearmingAircraftMax, v => Ai.TacticalAi.HuntRearmingAircraftMax = (int)System.Math.Round(v)),
+            new Entry("ai.tacticalAi.huntRearmingStrikeTrue", "s", () => Ai.TacticalAi.HuntRearmingStrikeTrue, v => Ai.TacticalAi.HuntRearmingStrikeTrue = (float)v),
+            new Entry("ai.tacticalAi.huntRearmingStrikeFalse", "s", () => Ai.TacticalAi.HuntRearmingStrikeFalse, v => Ai.TacticalAi.HuntRearmingStrikeFalse = (float)v),
+            new Entry("ai.tacticalAi.plunderWithEffectiveMax", "x", () => Ai.TacticalAi.PlunderWithEffectiveMax, v => Ai.TacticalAi.PlunderWithEffectiveMax = (float)v),
+            new Entry("ai.tacticalAi.plunderWithRangeAdd", "m", () => Ai.TacticalAi.PlunderWithRangeAdd, v => Ai.TacticalAi.PlunderWithRangeAdd = (float)v),
+            new Entry("ai.tacticalAi.plunderWithRangeAdd2", "m", () => Ai.TacticalAi.PlunderWithRangeAdd2, v => Ai.TacticalAi.PlunderWithRangeAdd2 = (float)v),
+            new Entry("ai.tacticalAi.directGunMinRangeAdd", "m", () => Ai.TacticalAi.DirectGunMinRangeAdd, v => Ai.TacticalAi.DirectGunMinRangeAdd = (float)v),
+            new Entry("ai.tacticalAi.directGunRangeAdd", "m", () => Ai.TacticalAi.DirectGunRangeAdd, v => Ai.TacticalAi.DirectGunRangeAdd = (float)v),
+            new Entry("ai.tacticalAi.directGunMinRangeAdd2", "m", () => Ai.TacticalAi.DirectGunMinRangeAdd2, v => Ai.TacticalAi.DirectGunMinRangeAdd2 = (float)v),
+            new Entry("ai.tacticalAi.directGunReachAdd", "m", () => Ai.TacticalAi.DirectGunReachAdd, v => Ai.TacticalAi.DirectGunReachAdd = (float)v),
+            new Entry("ai.tacticalAi.directGunReachAdd2", "m", () => Ai.TacticalAi.DirectGunReachAdd2, v => Ai.TacticalAi.DirectGunReachAdd2 = (float)v),
+            new Entry("ai.tacticalAi.directGunReachAdd3", "m", () => Ai.TacticalAi.DirectGunReachAdd3, v => Ai.TacticalAi.DirectGunReachAdd3 = (float)v),
+            new Entry("ai.tacticalAi.directGunRangeScale", "x", () => Ai.TacticalAi.DirectGunRangeScale, v => Ai.TacticalAi.DirectGunRangeScale = (float)v),
+            new Entry("ai.tacticalAi.directGunForwardScale", "x", () => Ai.TacticalAi.DirectGunForwardScale, v => Ai.TacticalAi.DirectGunForwardScale = (float)v),
+            new Entry("ai.tacticalAi.directGunForwardScale2", "x", () => Ai.TacticalAi.DirectGunForwardScale2, v => Ai.TacticalAi.DirectGunForwardScale2 = (float)v),
+            new Entry("ai.tacticalAi.directGunReach", "m", () => Ai.TacticalAi.DirectGunReach, v => Ai.TacticalAi.DirectGunReach = (float)v),
+            new Entry("ai.tacticalAi.directGunDistanceMin", "m", () => Ai.TacticalAi.DirectGunDistanceMin, v => Ai.TacticalAi.DirectGunDistanceMin = (float)v),
+            new Entry("ai.tacticalAi.standingDistanceMax", "m", () => Ai.TacticalAi.StandingDistanceMax, v => Ai.TacticalAi.StandingDistanceMax = (float)v),
+            new Entry("ai.tacticalAi.firingSpotMinRangeAdd", "m", () => Ai.TacticalAi.FiringSpotMinRangeAdd, v => Ai.TacticalAi.FiringSpotMinRangeAdd = (float)v),
+            new Entry("ai.tacticalAi.firingSpotTargetRadiusScale", "x", () => Ai.TacticalAi.FiringSpotTargetRadiusScale, v => Ai.TacticalAi.FiringSpotTargetRadiusScale = (float)v),
+            new Entry("ai.tacticalAi.firingSpotFractionSub", "m", () => Ai.TacticalAi.FiringSpotFractionSub, v => Ai.TacticalAi.FiringSpotFractionSub = (float)v),
+            new Entry("ai.tacticalAi.firingSpotFractionScale", "x", () => Ai.TacticalAi.FiringSpotFractionScale, v => Ai.TacticalAi.FiringSpotFractionScale = (float)v),
+            new Entry("ai.tacticalAi.firingSpotAbsScale", "x", () => Ai.TacticalAi.FiringSpotAbsScale, v => Ai.TacticalAi.FiringSpotAbsScale = (float)v),
+            new Entry("ai.tacticalAi.shellDefencesEffectiveMax", "x", () => Ai.TacticalAi.ShellDefencesEffectiveMax, v => Ai.TacticalAi.ShellDefencesEffectiveMax = (float)v),
+            new Entry("ai.tacticalAi.shellStructureDefenceSearchScale", "x", () => Ai.TacticalAi.ShellStructureDefenceSearchScale, v => Ai.TacticalAi.ShellStructureDefenceSearchScale = (float)v),
+            new Entry("ai.tacticalAi.shellFromSafetyRangeSub", "m", () => Ai.TacticalAi.ShellFromSafetyRangeSub, v => Ai.TacticalAi.ShellFromSafetyRangeSub = (float)v),
+            new Entry("ai.tacticalAi.shellFromSafetyDistanceMin", "m", () => Ai.TacticalAi.ShellFromSafetyDistanceMin, v => Ai.TacticalAi.ShellFromSafetyDistanceMin = (float)v),
+            new Entry("ai.tacticalAi.directFlankersCountMax", "count", () => Ai.TacticalAi.DirectFlankersCountMax, v => Ai.TacticalAi.DirectFlankersCountMax = (int)System.Math.Round(v)),
+            new Entry("ai.tacticalAi.directFlankersForwardScale", "x", () => Ai.TacticalAi.DirectFlankersForwardScale, v => Ai.TacticalAi.DirectFlankersForwardScale = (float)v),
+            new Entry("ai.tacticalAi.directFlankersMargin", "count", () => Ai.TacticalAi.DirectFlankersMargin, v => Ai.TacticalAi.DirectFlankersMargin = (float)v),
+            new Entry("ai.tacticalAi.directFlankersDistanceMax", "m", () => Ai.TacticalAi.DirectFlankersDistanceMax, v => Ai.TacticalAi.DirectFlankersDistanceMax = (float)v),
+            new Entry("ai.tacticalAi.directMainBodyDistanceMax", "m", () => Ai.TacticalAi.DirectMainBodyDistanceMax, v => Ai.TacticalAi.DirectMainBodyDistanceMax = (float)v),
+            new Entry("ai.tacticalAi.directMainBodyMargin", "count", () => Ai.TacticalAi.DirectMainBodyMargin, v => Ai.TacticalAi.DirectMainBodyMargin = (float)v),
+            new Entry("ai.tacticalAi.directMainBodyCountScale", "x", () => Ai.TacticalAi.DirectMainBodyCountScale, v => Ai.TacticalAi.DirectMainBodyCountScale = (float)v),
+            new Entry("ai.tacticalAi.directMainBodyBoundLengthScale", "x", () => Ai.TacticalAi.DirectMainBodyBoundLengthScale, v => Ai.TacticalAi.DirectMainBodyBoundLengthScale = (float)v),
+            new Entry("ai.tacticalAi.directMainBodyDistanceMax2", "m", () => Ai.TacticalAi.DirectMainBodyDistanceMax2, v => Ai.TacticalAi.DirectMainBodyDistanceMax2 = (float)v),
+            new Entry("ai.tacticalAi.directMainBodyCountScale2", "x", () => Ai.TacticalAi.DirectMainBodyCountScale2, v => Ai.TacticalAi.DirectMainBodyCountScale2 = (float)v),
+            new Entry("ai.tacticalAi.strongEnoughDistanceMin", "m", () => Ai.TacticalAi.StrongEnoughDistanceMin, v => Ai.TacticalAi.StrongEnoughDistanceMin = (float)v),
+            new Entry("ai.tacticalAi.strongEnoughGroundReachAdd", "m", () => Ai.TacticalAi.StrongEnoughGroundReachAdd, v => Ai.TacticalAi.StrongEnoughGroundReachAdd = (float)v),
+            new Entry("ai.tacticalAi.strongEnoughDistanceMax", "m", () => Ai.TacticalAi.StrongEnoughDistanceMax, v => Ai.TacticalAi.StrongEnoughDistanceMax = (float)v),
+            new Entry("ai.tacticalAi.strongEnoughTheirsMax", "share", () => Ai.TacticalAi.StrongEnoughTheirsMax, v => Ai.TacticalAi.StrongEnoughTheirsMax = (float)v),
+            new Entry("ai.tacticalAi.threatTurretTurnRateMax", "m", () => Ai.TacticalAi.ThreatTurretTurnRateMax, v => Ai.TacticalAi.ThreatTurretTurnRateMax = (float)v),
+            new Entry("ai.tacticalAi.threatFastScale", "x", () => Ai.TacticalAi.ThreatFastScale, v => Ai.TacticalAi.ThreatFastScale = (float)v),
+            new Entry("ai.tacticalAi.frontOfCountMin", "count", () => Ai.TacticalAi.FrontOfCountMin, v => Ai.TacticalAi.FrontOfCountMin = (int)System.Math.Round(v)),
+            new Entry("ai.tacticalAi.gatherReinforcementsHomeReachScale", "x", () => Ai.TacticalAi.GatherReinforcementsHomeReachScale, v => Ai.TacticalAi.GatherReinforcementsHomeReachScale = (float)v),
+            new Entry("ai.tacticalAi.gatherReinforcementsDirectionScale", "x", () => Ai.TacticalAi.GatherReinforcementsDirectionScale, v => Ai.TacticalAi.GatherReinforcementsDirectionScale = (float)v),
+            new Entry("ai.tacticalAi.gatherReinforcementsCountMax", "count", () => Ai.TacticalAi.GatherReinforcementsCountMax, v => Ai.TacticalAi.GatherReinforcementsCountMax = (int)System.Math.Round(v)),
+            new Entry("ai.tacticalAi.gatherReinforcementsDistanceMin", "m", () => Ai.TacticalAi.GatherReinforcementsDistanceMin, v => Ai.TacticalAi.GatherReinforcementsDistanceMin = (float)v),
+            new Entry("ai.tacticalAi.gatherReinforcementsDistanceMax", "m", () => Ai.TacticalAi.GatherReinforcementsDistanceMax, v => Ai.TacticalAi.GatherReinforcementsDistanceMax = (float)v),
+            new Entry("ai.tacticalAi.gatherReinforcementsDistanceMax2", "m", () => Ai.TacticalAi.GatherReinforcementsDistanceMax2, v => Ai.TacticalAi.GatherReinforcementsDistanceMax2 = (float)v),
+            new Entry("ai.tacticalAi.pushStaleSameRendezvousScale", "x", () => Ai.TacticalAi.PushStaleSameRendezvousScale, v => Ai.TacticalAi.PushStaleSameRendezvousScale = (float)v),
+            new Entry("ai.tacticalAi.nearestClusterDistanceMin", "m", () => Ai.TacticalAi.NearestClusterDistanceMin, v => Ai.TacticalAi.NearestClusterDistanceMin = (float)v),
+            new Entry("ai.tacticalAi.tryFindClusterMinRangeAdd", "m", () => Ai.TacticalAi.TryFindClusterMinRangeAdd, v => Ai.TacticalAi.TryFindClusterMinRangeAdd = (float)v),
+            new Entry("ai.tacticalAi.directionLengthMin", "m", () => Ai.TacticalAi.DirectionLengthMin, v => Ai.TacticalAi.DirectionLengthMin = (float)v),
+            new Entry("ai.tacticalConfidence.computeD", "x", () => Ai.TacticalConfidence.ComputeD, v => Ai.TacticalConfidence.ComputeD = (float)v),
+            new Entry("ai.tacticalConfidence.computeD2", "x", () => Ai.TacticalConfidence.ComputeD2, v => Ai.TacticalConfidence.ComputeD2 = (float)v),
+            new Entry("ai.tacticalConfidence.computeI", "x", () => Ai.TacticalConfidence.ComputeI, v => Ai.TacticalConfidence.ComputeI = (int)System.Math.Round(v)),
+            new Entry("ai.tacticalConfidence.computeD3", "x", () => Ai.TacticalConfidence.ComputeD3, v => Ai.TacticalConfidence.ComputeD3 = (float)v),
+            new Entry("ai.tacticalConfidence.computeI2", "x", () => Ai.TacticalConfidence.ComputeI2, v => Ai.TacticalConfidence.ComputeI2 = (int)System.Math.Round(v)),
+            new Entry("ai.tacticalConfidence.computeD4", "x", () => Ai.TacticalConfidence.ComputeD4, v => Ai.TacticalConfidence.ComputeD4 = (float)v),
+            new Entry("ai.tacticalMemory.maxMarks", "count", () => Ai.TacticalMemory.MaxMarks, v => Ai.TacticalMemory.MaxMarks = (int)System.Math.Round(v)),
+            new Entry("ai.tacticalMemory.decayAgeExponent", "s", () => Ai.TacticalMemory.DecayAgeExponent, v => Ai.TacticalMemory.DecayAgeExponent = (float)v),
+            new Entry("ai.tacticalMemory.decayHalfLifeFloor", "s", () => Ai.TacticalMemory.DecayHalfLifeFloor, v => Ai.TacticalMemory.DecayHalfLifeFloor = (float)v),
+            new Entry("ai.tacticalMemory.deathDangerValueDivisor", "x", () => Ai.TacticalMemory.DeathDangerValueDivisor, v => Ai.TacticalMemory.DeathDangerValueDivisor = (float)v),
+            new Entry("ai.tacticalMemory.deathDangerDistScale", "x", () => Ai.TacticalMemory.DeathDangerDistScale, v => Ai.TacticalMemory.DeathDangerDistScale = (float)v),
+            new Entry("ai.tacticalMemory.deathAlongDeathRadiusFloor", "m", () => Ai.TacticalMemory.DeathAlongDeathRadiusFloor, v => Ai.TacticalMemory.DeathAlongDeathRadiusFloor = (float)v),
+            new Entry("ai.tacticalMemory.deathAlongDeathRadiusScale", "x", () => Ai.TacticalMemory.DeathAlongDeathRadiusScale, v => Ai.TacticalMemory.DeathAlongDeathRadiusScale = (float)v),
+            new Entry("ai.tacticalMemory.unknownModifierLengthMax", "m", () => Ai.TacticalMemory.UnknownModifierLengthMax, v => Ai.TacticalMemory.UnknownModifierLengthMax = (int)System.Math.Round(v)),
+            new Entry("ai.tacticalMemory.unknownModifierUnknownModifier", "m", () => Ai.TacticalMemory.UnknownModifierUnknownModifier, v => Ai.TacticalMemory.UnknownModifierUnknownModifier = (float)v),
+            new Entry("ai.tacticalMemory.pruneRoutesCountMax", "count", () => Ai.TacticalMemory.PruneRoutesCountMax, v => Ai.TacticalMemory.PruneRoutesCountMax = (int)System.Math.Round(v)),
+            new Entry("ai.tacticalMemory.pruneRoutesRoutePenaltyMax", "s", () => Ai.TacticalMemory.PruneRoutesRoutePenaltyMax, v => Ai.TacticalMemory.PruneRoutesRoutePenaltyMax = (float)v),
+            new Entry("ai.targetAccessCache.canInfluenceMaxRings", "x", () => Ai.TargetAccessCache.CanInfluenceMaxRings, v => Ai.TargetAccessCache.CanInfluenceMaxRings = (int)System.Math.Round(v)),
+            new Entry("ai.targetAccessCache.reachableReachDivisor", "x", () => Ai.TargetAccessCache.ReachableReachDivisor, v => Ai.TargetAccessCache.ReachableReachDivisor = (float)v),
+            new Entry("ai.targetAccessCache.reachableMinRangeDivisor", "x", () => Ai.TargetAccessCache.ReachableMinRangeDivisor, v => Ai.TargetAccessCache.ReachableMinRangeDivisor = (float)v),
+            new Entry("ai.targetAccessCache.reachableRadiusDivisor", "x", () => Ai.TargetAccessCache.ReachableRadiusDivisor, v => Ai.TargetAccessCache.ReachableRadiusDivisor = (float)v),
+            new Entry("ai.targetAccessCache.sampleCellsDivisor", "x", () => Ai.TargetAccessCache.SampleCellsDivisor, v => Ai.TargetAccessCache.SampleCellsDivisor = (int)System.Math.Round(v)),
+            new Entry("ai.teamIntel.ctorWorldCellFloor", "x", () => Ai.TeamIntel.CtorWorldCellFloor, v => Ai.TeamIntel.CtorWorldCellFloor = (float)v),
+            new Entry("ai.teamIntel.cellCentreIndexAdd", "x", () => Ai.TeamIntel.CellCentreIndexAdd, v => Ai.TeamIntel.CellCentreIndexAdd = (float)v),
+            new Entry("ai.teamIntel.knowFreshSeconds", "s", () => Ai.TeamIntel.KnowFreshSeconds, v => Ai.TeamIntel.KnowFreshSeconds = (float)v),
+            new Entry("ai.teamIntel.strengthOfMaxHpDivisor", "x", () => Ai.TeamIntel.StrengthOfMaxHpDivisor, v => Ai.TeamIntel.StrengthOfMaxHpDivisor = (float)v),
+            new Entry("ai.teamIntel.refreshFallback2", "x", () => Ai.TeamIntel.RefreshFallback2, v => Ai.TeamIntel.RefreshFallback2 = (float)v),
+            new Entry("ai.teamIntel.forCellsCellScale", "x", () => Ai.TeamIntel.ForCellsCellScale, v => Ai.TeamIntel.ForCellsCellScale = (float)v),
+            new Entry("ai.teamIntel.frontLineMaxScale", "x", () => Ai.TeamIntel.FrontLineMaxScale, v => Ai.TeamIntel.FrontLineMaxScale = (float)v),
+            new Entry("ai.teamIntel.narrowCellsCellScale", "x", () => Ai.TeamIntel.NarrowCellsCellScale, v => Ai.TeamIntel.NarrowCellsCellScale = (float)v),
+            new Entry("ai.teamIntel.narrowCellsAllScale", "x", () => Ai.TeamIntel.NarrowCellsAllScale, v => Ai.TeamIntel.NarrowCellsAllScale = (float)v),
+            new Entry("ai.teamIntel.clusterReach", "m", () => Ai.TeamIntel.ClusterReach, v => Ai.TeamIntel.ClusterReach = (float)v),
+            new Entry("ai.teamIntel.clusterStrengthFloor", "x", () => Ai.TeamIntel.ClusterStrengthFloor, v => Ai.TeamIntel.ClusterStrengthFloor = (float)v),
+            new Entry("ai.teamIntel.detectFallback", "s", () => Ai.TeamIntel.DetectFallback, v => Ai.TeamIntel.DetectFallback = (float)v),
+            new Entry("ai.teamIntel.detectMinAdd", "x", () => Ai.TeamIntel.DetectMinAdd, v => Ai.TeamIntel.DetectMinAdd = (float)v),
+            new Entry("ai.teamIntel.detectMinScale", "x", () => Ai.TeamIntel.DetectMinScale, v => Ai.TeamIntel.DetectMinScale = (float)v),
+            new Entry("ai.teamIntel.detectStrengthCap", "count", () => Ai.TeamIntel.DetectStrengthCap, v => Ai.TeamIntel.DetectStrengthCap = (float)v),
+            new Entry("ai.teamIntel.detectCellScale", "x", () => Ai.TeamIntel.DetectCellScale, v => Ai.TeamIntel.DetectCellScale = (float)v),
+            new Entry("ai.teamIntel.detectPriority", "s", () => Ai.TeamIntel.DetectPriority, v => Ai.TeamIntel.DetectPriority = (float)v),
+            new Entry("ai.teamIntel.detectPriority2", "s", () => Ai.TeamIntel.DetectPriority2, v => Ai.TeamIntel.DetectPriority2 = (float)v),
+            new Entry("ai.teamIntel.detectLifeScale", "x", () => Ai.TeamIntel.DetectLifeScale, v => Ai.TeamIntel.DetectLifeScale = (float)v),
+            new Entry("ai.teamIntel.detectBigTrue", "m", () => Ai.TeamIntel.DetectBigTrue, v => Ai.TeamIntel.DetectBigTrue = (float)v),
+            new Entry("ai.teamIntel.detectBigFalse", "m", () => Ai.TeamIntel.DetectBigFalse, v => Ai.TeamIntel.DetectBigFalse = (float)v),
+            new Entry("ai.teamIntel.detectLengthSquaredMax", "m", () => Ai.TeamIntel.DetectLengthSquaredMax, v => Ai.TeamIntel.DetectLengthSquaredMax = (float)v),
+            new Entry("ai.teamIntel.detectPriority3", "s", () => Ai.TeamIntel.DetectPriority3, v => Ai.TeamIntel.DetectPriority3 = (float)v),
+            new Entry("ai.teamIntel.detectCellScale2", "x", () => Ai.TeamIntel.DetectCellScale2, v => Ai.TeamIntel.DetectCellScale2 = (float)v),
+            new Entry("ai.teamIntel.detectPriority4", "s", () => Ai.TeamIntel.DetectPriority4, v => Ai.TeamIntel.DetectPriority4 = (float)v),
+            new Entry("ai.teamIntel.detectFallback2", "x", () => Ai.TeamIntel.DetectFallback2, v => Ai.TeamIntel.DetectFallback2 = (float)v),
+            new Entry("ai.teamIntel.detectFallback3", "x", () => Ai.TeamIntel.DetectFallback3, v => Ai.TeamIntel.DetectFallback3 = (float)v),
+            new Entry("ai.teamIntel.detectPriority5", "s", () => Ai.TeamIntel.DetectPriority5, v => Ai.TeamIntel.DetectPriority5 = (float)v),
+            new Entry("ai.teamIntel.detectLifeScale2", "x", () => Ai.TeamIntel.DetectLifeScale2, v => Ai.TeamIntel.DetectLifeScale2 = (float)v),
+            new Entry("ai.teamIntel.detectOwnCompositionScale", "x", () => Ai.TeamIntel.DetectOwnCompositionScale, v => Ai.TeamIntel.DetectOwnCompositionScale = (float)v),
+            new Entry("ai.teamIntel.detectFallback4", "x", () => Ai.TeamIntel.DetectFallback4, v => Ai.TeamIntel.DetectFallback4 = (float)v),
+            new Entry("ai.teamIntel.detectFallback5", "x", () => Ai.TeamIntel.DetectFallback5, v => Ai.TeamIntel.DetectFallback5 = (float)v),
+            new Entry("ai.teamIntel.detectPriority6", "s", () => Ai.TeamIntel.DetectPriority6, v => Ai.TeamIntel.DetectPriority6 = (float)v),
+            new Entry("ai.teamPlanning.openDistanceMax", "m", () => Ai.TeamPlanning.OpenDistanceMax, v => Ai.TeamPlanning.OpenDistanceMax = (float)v),
+            new Entry("ai.teamPlanning.observeDeathNowMin", "s", () => Ai.TeamPlanning.ObserveDeathNowMin, v => Ai.TeamPlanning.ObserveDeathNowMin = v),
+            new Entry("ai.teamPlanning.observeDeathMaxHpDivisor", "x", () => Ai.TeamPlanning.ObserveDeathMaxHpDivisor, v => Ai.TeamPlanning.ObserveDeathMaxHpDivisor = (float)v),
+            new Entry("ai.teamPlanning.observeDeathPowerFloor", "x", () => Ai.TeamPlanning.ObserveDeathPowerFloor, v => Ai.TeamPlanning.ObserveDeathPowerFloor = (float)v),
+            new Entry("ai.teamPlanning.observeDeathCountMin2", "count", () => Ai.TeamPlanning.ObserveDeathCountMin2, v => Ai.TeamPlanning.ObserveDeathCountMin2 = (int)System.Math.Round(v)),
+            new Entry("ai.teamPlanning.observeDeathRangeFloor", "m", () => Ai.TeamPlanning.ObserveDeathRangeFloor, v => Ai.TeamPlanning.ObserveDeathRangeFloor = (float)v),
+            new Entry("ai.teamPlanning.observeDeathConfidence", "x", () => Ai.TeamPlanning.ObserveDeathConfidence, v => Ai.TeamPlanning.ObserveDeathConfidence = (float)v),
+            new Entry("ai.teamPlanning.observePartBrokenRadiusAdd", "m", () => Ai.TeamPlanning.ObservePartBrokenRadiusAdd, v => Ai.TeamPlanning.ObservePartBrokenRadiusAdd = (float)v),
+            new Entry("ai.teamPlanning.observePartBrokenConfidence", "x", () => Ai.TeamPlanning.ObservePartBrokenConfidence, v => Ai.TeamPlanning.ObservePartBrokenConfidence = (float)v),
+            new Entry("ai.teamPlanning.observeWarningsXScale", "x", () => Ai.TeamPlanning.ObserveWarningsXScale, v => Ai.TeamPlanning.ObserveWarningsXScale = (float)v),
+            new Entry("ai.teamPlanning.observeWarningsRoundScale", "x", () => Ai.TeamPlanning.ObserveWarningsRoundScale, v => Ai.TeamPlanning.ObserveWarningsRoundScale = (long)System.Math.Round(v)),
+            new Entry("ai.teamPlanning.observeWarningsYScale", "x", () => Ai.TeamPlanning.ObserveWarningsYScale, v => Ai.TeamPlanning.ObserveWarningsYScale = (float)v),
+            new Entry("ai.teamPlanning.observeWarningsSourceScale2", "x", () => Ai.TeamPlanning.ObserveWarningsSourceScale2, v => Ai.TeamPlanning.ObserveWarningsSourceScale2 = (long)System.Math.Round(v)),
+            new Entry("ai.teamPlanning.observeWarningsDueScale", "x", () => Ai.TeamPlanning.ObserveWarningsDueScale, v => Ai.TeamPlanning.ObserveWarningsDueScale = v),
+            new Entry("ai.teamPlanning.observeWarningsRadiusFloor", "m", () => Ai.TeamPlanning.ObserveWarningsRadiusFloor, v => Ai.TeamPlanning.ObserveWarningsRadiusFloor = (float)v),
+            new Entry("ai.teamPlanning.observeWarningsRadiusScale", "x", () => Ai.TeamPlanning.ObserveWarningsRadiusScale, v => Ai.TeamPlanning.ObserveWarningsRadiusScale = (float)v),
+            new Entry("ai.teamPlanning.observeWarningsNowMin", "s", () => Ai.TeamPlanning.ObserveWarningsNowMin, v => Ai.TeamPlanning.ObserveWarningsNowMin = v),
+            new Entry("ai.teamPlanning.updateCountMin", "count", () => Ai.TeamPlanning.UpdateCountMin, v => Ai.TeamPlanning.UpdateCountMin = (int)System.Math.Round(v)),
+            new Entry("ai.teamPlanning.updateAgeMax", "s", () => Ai.TeamPlanning.UpdateAgeMax, v => Ai.TeamPlanning.UpdateAgeMax = (float)v),
+            new Entry("ai.teamPlanning.updateRadius", "x", () => Ai.TeamPlanning.UpdateRadius, v => Ai.TeamPlanning.UpdateRadius = (float)v),
+            new Entry("ai.teamPlanning.updateConfidence", "x", () => Ai.TeamPlanning.UpdateConfidence, v => Ai.TeamPlanning.UpdateConfidence = (float)v),
+            new Entry("ai.teamPlanning.updateRadius2", "x", () => Ai.TeamPlanning.UpdateRadius2, v => Ai.TeamPlanning.UpdateRadius2 = (float)v),
+            new Entry("ai.teamPlanning.updateDistanceMin", "m", () => Ai.TeamPlanning.UpdateDistanceMin, v => Ai.TeamPlanning.UpdateDistanceMin = (float)v),
+            new Entry("ai.teamPlanning.updateNowSub", "s", () => Ai.TeamPlanning.UpdateNowSub, v => Ai.TeamPlanning.UpdateNowSub = v),
+            new Entry("ai.teamPlanning.updateRadius3", "s", () => Ai.TeamPlanning.UpdateRadius3, v => Ai.TeamPlanning.UpdateRadius3 = (float)v),
+            new Entry("ai.teamPlanning.updatePeakScale", "x", () => Ai.TeamPlanning.UpdatePeakScale, v => Ai.TeamPlanning.UpdatePeakScale = (float)v),
+            new Entry("ai.teamPlanning.updateConfidence2", "x", () => Ai.TeamPlanning.UpdateConfidence2, v => Ai.TeamPlanning.UpdateConfidence2 = (float)v),
+            new Entry("ai.teamPlanning.updateNowSub2", "s", () => Ai.TeamPlanning.UpdateNowSub2, v => Ai.TeamPlanning.UpdateNowSub2 = v),
+            new Entry("ai.teamPlanning.updateConfidence3", "x", () => Ai.TeamPlanning.UpdateConfidence3, v => Ai.TeamPlanning.UpdateConfidence3 = (float)v),
+            new Entry("ai.teamPlanning.updateIAdd", "x", () => Ai.TeamPlanning.UpdateIAdd, v => Ai.TeamPlanning.UpdateIAdd = (int)System.Math.Round(v)),
+            new Entry("ai.teamPlanning.updateNowMax", "s", () => Ai.TeamPlanning.UpdateNowMax, v => Ai.TeamPlanning.UpdateNowMax = v),
+            new Entry("ai.teamPlanning.updateNowMin", "s", () => Ai.TeamPlanning.UpdateNowMin, v => Ai.TeamPlanning.UpdateNowMin = v),
+            new Entry("ai.weakpointUtility.scoreI", "x", () => Ai.WeakpointUtility.ScoreI, v => Ai.WeakpointUtility.ScoreI = (int)System.Math.Round(v)),
+            new Entry("ai.weakpointUtility.scoreI2", "x", () => Ai.WeakpointUtility.ScoreI2, v => Ai.WeakpointUtility.ScoreI2 = (int)System.Math.Round(v)),
+            new Entry("ai.weakpointUtility.scoreDistanceScale", "x", () => Ai.WeakpointUtility.ScoreDistanceScale, v => Ai.WeakpointUtility.ScoreDistanceScale = (float)v),
+            new Entry("ai.why.splitCountMin", "count", () => Ai.Why.SplitCountMin, v => Ai.Why.SplitCountMin = (int)System.Math.Round(v)),
+            new Entry("ai.why.splitIndex", "m", () => Ai.Why.SplitIndex, v => Ai.Why.SplitIndex = (int)System.Math.Round(v)),
+            new Entry("ai.why.splitCountSub", "count", () => Ai.Why.SplitCountSub, v => Ai.Why.SplitCountSub = (int)System.Math.Round(v)),
+            new Entry("ai.why.splitCountMin2", "count", () => Ai.Why.SplitCountMin2, v => Ai.Why.SplitCountMin2 = (int)System.Math.Round(v)),
+            new Entry("ai.why.splitIndex2", "m", () => Ai.Why.SplitIndex2, v => Ai.Why.SplitIndex2 = (int)System.Math.Round(v)),
+            new Entry("ai.why.splitCountSub2", "count", () => Ai.Why.SplitCountSub2, v => Ai.Why.SplitCountSub2 = (int)System.Math.Round(v)),
+            new Entry("ai.worldModel.forWorldRateFloor", "x", () => Ai.WorldModel.ForWorldRateFloor, v => Ai.WorldModel.ForWorldRateFloor = (float)v),
         };
     }
 }

@@ -192,7 +192,7 @@ namespace MachineBrigade.Sim.AI
         public InfluenceResult Evaluate(VehicleDef def, Vector2 deployAt, IReadOnlyList<FeasibilityTarget> targets)
         {
             var domain = MapTopology.DomainOf(def);
-            var speed = MathF.Max(0.5f, def.Speed);
+            var speed = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.EvaluateSpeedFloor, def.Speed);
             var detour = SimTunables.Ai.Feasibility.TravelDetour;
             if (targets.Count == 0)
                 return new InfluenceResult(CanDeploy(domain, deployAt), false, false, false, 0f, 0f, 0f,
@@ -219,7 +219,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var t in targets)
             {
                 var env = WeaponEnvelope.Of(def, t.Layer);
-                var value = MathF.Max(0.01f, t.Value);
+                var value = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.EvaluateValueFloor, t.Value);
                 float reach = 0f, cover = 0f;
                 // Getting there: aircraft fly anywhere; fixed defences stay; the rest by their domain's cells.
                 float steps;
@@ -291,20 +291,20 @@ namespace MachineBrigade.Sim.AI
             Map.For(domain)!.NearestPassableCell(at, SimTunables.Ai.Topology.NearestRings) >= 0;
 
         /// <summary>Whether a unit of <paramref name="def"/> standing at <paramref name="from"/> can drive (sail, fly) to within <paramref name="radius"/> of <paramref name="to"/>.</summary>
-        public bool CanReach(VehicleDef def, Vector2 from, Vector2 to, float radius = 2f) =>
-            !float.IsPositiveInfinity(TravelSeconds(def, from, to, radius));
+        public bool CanReach(VehicleDef def, Vector2 from, Vector2 to, float? radius = null) =>
+            !float.IsPositiveInfinity(TravelSeconds(def, from, to, (radius ?? global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.CanReachRadius)));
 
         /// <summary>Seconds of travel from one point to within <paramref name="radius"/> of another (+inf: cannot get there).</summary>
-        public float TravelSeconds(VehicleDef def, Vector2 from, Vector2 to, float radius = 2f)
+        public float TravelSeconds(VehicleDef def, Vector2 from, Vector2 to, float? radius = null)
         {
             var domain = MapTopology.DomainOf(def);
-            var speed = MathF.Max(0.5f, def.Speed);
+            var speed = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.TravelSecondsSpeedFloor, def.Speed);
             if (domain == MobilityDomain.Air) return Vector2.Distance(from, to) / speed;
-            if (domain == MobilityDomain.Static) return Vector2.Distance(from, to) <= radius ? 0f : float.PositiveInfinity;
+            if (domain == MobilityDomain.Static) return Vector2.Distance(from, to) <= (radius ?? global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.TravelSecondsRadius) ? 0f : float.PositiveInfinity;
             var graph = Map.For(domain)!;
             var source = graph.NearestPassableCell(from, SimTunables.Ai.Topology.NearestRings);
             if (source < 0) return float.PositiveInfinity;
-            var steps = StepsInto(graph.DistancesFrom(source), to, radius);
+            var steps = StepsInto(graph.DistancesFrom(source), to, (radius ?? global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.TravelSecondsRadius));
             return float.IsPositiveInfinity(steps) ? steps : steps * Map.Cell * SimTunables.Ai.Feasibility.TravelDetour / speed;
         }
 
@@ -370,7 +370,7 @@ namespace MachineBrigade.Sim.AI
                 return true;
             }
             var ctx = new FeasibilityContext(team, at);
-            foreach (var p in _world.Map.Points) ctx.Targets.Add(new FeasibilityTarget("point_" + p.Id, p.Position, MathF.Max(2f, p.Radius), TargetLayer.Ground, 1f, true, capture: true));
+            foreach (var p in _world.Map.Points) ctx.Targets.Add(new FeasibilityTarget("point_" + p.Id, p.Position, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.SpawnUsefulRadiusFloor, p.Radius), TargetLayer.Ground, 1f, true, capture: true));
             foreach (var start in _world.Map.Teams)
                 if (start.Team != team) ctx.Targets.Add(new FeasibilityTarget("rally_" + start.Team, start.Rally, 8f, TargetLayer.Ground, 1f, true));
             var result = Evaluate(def, ctx);
@@ -381,7 +381,7 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Steps from the source (in <paramref name="dist"/>) to the nearest reached cell within <paramref name="radius"/> of a point.</summary>
         private float StepsInto(int[] dist, Vector2 centre, float radius)
         {
-            var r = MathF.Max(radius, Map.Cell * 0.75f);
+            var r = MathF.Max(radius, Map.Cell * global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.StepsIntoCellScale);
             var (x0, y0) = Map.CellXY(centre - new Vector2(r));
             var (x1, y1) = Map.CellXY(centre + new Vector2(r));
             var best = int.MaxValue;
@@ -439,7 +439,7 @@ namespace MachineBrigade.Sim.AI
         private const int SnapCells = 4;
 
         /// <summary>Cached firing checks kept before the cache is cleared.</summary>
-        private const int CacheLimit = 20000;
+        private static int CacheLimit => global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.CacheLimit;
 
         /// <summary>
         /// The targets a side knows (fog-fair): the enemies in <paramref name="known"/> (what it has seen), a ship also by the
@@ -447,7 +447,7 @@ namespace MachineBrigade.Sim.AI
         /// base. Used by the buying AI; other layers can build their own.
         /// </summary>
         /// <summary>Enemies within this many metres of the first of a group are judged as one target.</summary>
-        public const float ClusterReach = 16f;
+        public static float ClusterReach => global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.ClusterReach;
 
         public static FeasibilityContext Observed(SimWorld world, int team, Vector2 deployAt, IReadOnlyList<Vehicle> known,
             Modes.IObjectiveMode? mode, Vector2? goal, Vector2? defendPoint)
@@ -471,14 +471,14 @@ namespace MachineBrigade.Sim.AI
                     if (used[j] || !o.IsAlive || o.Team == team || LayerOf(world, o) != layer) continue;
                     if (Vector2.DistanceSquared(o.Position, e.Position) > ClusterReach * ClusterReach) continue;
                     used[j] = true;
-                    var w = o.Def.Boss ? 30f : MathF.Max(1f, o.Def.CpCost);
+                    var w = o.Def.Boss ? global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.ObservedBossTrue : MathF.Max(1f, o.Def.CpCost);
                     value += w;
                     sum += o.Position * w;
                     members++;
                     if (o.Radius > lead.Radius) lead = o;
                 }
                 var centre = members > 1 ? sum / value : e.Position;
-                var radius = members > 1 ? lead.Radius + ClusterReach * 0.5f : e.Radius;
+                var radius = members > 1 ? lead.Radius + ClusterReach * global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.ObservedClusterReachScale : e.Radius;
                 IReadOnlyList<Vector2>? lane = null;
                 // A ship patrols: the stretch of the lane nearest where it was seen (map spec K / L, the gameplay topology's rule).
                 if (layer == TargetLayer.Naval && world.Map.Sea is { } sea) lane = GameplayTopology.LaneStretch(sea, centre, lead.Radius, samples);
@@ -489,7 +489,7 @@ namespace MachineBrigade.Sim.AI
                 {
                     // Points to take, and our own while they are contested (held ground the enemy is on).
                     if (p.Locked || (p.Owner == team && !p.Contested)) continue;
-                    ctx.Targets.Add(new FeasibilityTarget("point_" + p.Def.Id, p.Def.Position, MathF.Max(2f, p.Def.Radius), TargetLayer.Ground, 4f, true, capture: true));
+                    ctx.Targets.Add(new FeasibilityTarget("point_" + p.Def.Id, p.Def.Position, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.ObservedRadiusFloor, p.Def.Radius), TargetLayer.Ground, global::MachineBrigade.Sim.Content.SimTunables.Ai.EngagementFeasibility.ObservedValue, true, capture: true));
                 }
             if (goal is { } g)
             {

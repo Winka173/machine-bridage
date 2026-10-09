@@ -137,7 +137,7 @@ namespace MachineBrigade.Sim.AI
             def.Flying ? Role.Air
             : def.Weapon.MinRange > 0f ? Role.Artillery
             : def.Class == UnitClass.AntiAir || (CanHitAir(def) && def.Armor != ArmorClass.Heavy) ? Role.AntiAir
-            : def.Speed >= 11f ? Role.Fast
+            : def.Speed >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.RoleOfSpeedMin ? Role.Fast
             : Role.Front;
 
         private readonly float[] _have = new float[5];
@@ -221,10 +221,10 @@ namespace MachineBrigade.Sim.AI
 
         private float Interval => _difficulty switch
         {
-            AiDifficulty.Easy => 2.2f,
-            AiDifficulty.Hard => 0.6f,
-            AiDifficulty.VeryHard => 0.45f,
-            _ => 1.1f,
+            AiDifficulty.Easy => global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.IntervalDifficultyValue,
+            AiDifficulty.Hard => global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.IntervalDifficultyValue2,
+            AiDifficulty.VeryHard => global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.IntervalDifficultyValue3,
+            _ => global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.IntervalDifficultyValue4,
         };
 
         private BuyProfile Profile => BuyProfile.For(_difficulty);
@@ -288,12 +288,12 @@ namespace MachineBrigade.Sim.AI
                     "armour" => !c.Flying && KillsArmour(c) && c.Class is UnitClass.TankHunter or UnitClass.Tank,
                     "aa" => c.Class == UnitClass.AntiAir,
                     "artillery" => fights && c.Weapon.MinRange > 0f,
-                    "fast" => fights && !c.Flying && c.Speed >= 11f && c.Class != UnitClass.Support,
+                    "fast" => fights && !c.Flying && c.Speed >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.PickDeckSpeedMin && c.Class != UnitClass.Support,
                     "air" => fights && c.Flying,
                     _ => c.Class == UnitClass.Support,
                 };
                 if (!fits) return float.MinValue;
-                var score = (float)random.NextDouble() * (difficulty == AiDifficulty.Normal ? 0.5f : 0.4f);
+                var score = (float)random.NextDouble() * (difficulty == AiDifficulty.Normal ? global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.PickDeckDifficultyTrue : global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.PickDeckDifficultyFalse);
                 // Normal (the balance pass after prompt 18, D.4): the role's typical cards, not any that fits, so one
                 // seed's deck is not far stronger or weaker than the next (Deathmatch swung from 2/6 to 8/12 on the
                 // eight cards a seed happened to draw).
@@ -305,13 +305,13 @@ namespace MachineBrigade.Sim.AI
                 // Very Hard: more of what the player's deck is short of answers to.
                 if (difficulty == AiDifficulty.VeryHard && playerCount > 0f)
                 {
-                    if (c.Flying) score += 1.5f * (1f - playerAa / playerCount);
+                    if (c.Flying) score += global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.PickDeckPlayerAaScale * (1f - playerAa / playerCount);
                     if (c.Armor == ArmorClass.Heavy && !c.Flying) score += 1f * (1f - playerAt / playerCount);
                 }
                 return score;
             }
             var r = 0;
-            for (var guard = 0; deck.Count < size && guard < 64; guard++, r++)
+            for (var guard = 0; deck.Count < size && guard < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.PickDeckGuardMax; guard++, r++)
             {
                 var role = roles[r % roles.Length];
                 VehicleDef? best = null;
@@ -379,7 +379,7 @@ namespace MachineBrigade.Sim.AI
             var bases = world.Bases;
             if (bases.Of(_team) is not { } ours) return false;
             var callable = bases.Callable(_team);
-            if (callable.Count > 0 && economy.ArmyCp >= 12)
+            if (callable.Count > 0 && economy.ArmyCp >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryRebuildArmyCpMin)
             {
                 // Prompt 32 L2: the fallen tower nearest a threat first (slot order on a tie), and only with the CP for the
                 // deck's cheapest vehicle still left after paying its runtime price.
@@ -452,7 +452,7 @@ namespace MachineBrigade.Sim.AI
             var cheapest = float.MaxValue;
             foreach (var id in economy.Vehicles)
                 if (world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Card && !def.Flying && def.BaseCp > 0) cheapest = Math.Min(cheapest, def.BaseCp);
-            return cheapest == float.MaxValue ? 4f : cheapest;
+            return cheapest == float.MaxValue ? global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CheapestCardCheapestTrue : cheapest;
         }
 
         /// <summary>
@@ -489,7 +489,7 @@ namespace MachineBrigade.Sim.AI
                     var ours = point.Owner == _team;
                     score = ours ? 3f : point.Owner == -1 ? 1f : 0.5f;
                     if (point.Contested || (ours && (point.Progress * (_team == 0 ? 1f : -1f) < 0.99f || EnemyNear(world, point)))) score += 2f;
-                    if (ours) score -= Vector2.Distance(point.Def.Position, enemyCamp) / 120f;
+                    if (ours) score -= Vector2.Distance(point.Def.Position, enemyCamp) / global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ChooseObjectiveDistanceDivisor;
                 }
                 else
                 {
@@ -502,9 +502,9 @@ namespace MachineBrigade.Sim.AI
                     if (ours) score += threatened ? 2.5f : -2f;
                     // Go where they are thin: every enemy seen dug in round a point (towers and
                     // defences included) counts against it, relative to our own strength.
-                    else if (choices > 1) score -= MathF.Min(2f, Guard(point) / MathF.Max(3f, ownPower)) * (_difficulty == AiDifficulty.VeryHard ? 2f : 1.2f);
+                    else if (choices > 1) score -= MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ChooseObjectiveGuardCap, Guard(point) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ChooseObjectiveOwnPowerFloor, ownPower)) * (_difficulty == AiDifficulty.VeryHard ? global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ChooseObjectiveDifficultyTrue : global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ChooseObjectiveDifficultyFalse);
                 }
-                score -= Vector2.Distance(front, point.Def.Position) / 60f;
+                score -= Vector2.Distance(front, point.Def.Position) / global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ChooseObjectiveDistanceDivisor2;
                 if (score <= bestScore) continue;
                 best = point;
                 bestScore = score;
@@ -517,7 +517,7 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Strength of the enemies seen round a point (a guess from what is in sight).</summary>
         private float Guard(ObjectiveState point)
         {
-            var reach = point.Def.Radius + 18f;
+            var reach = point.Def.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.GuardRadiusAdd;
             var total = 0f;
             foreach (var e in _tactics.KnownEnemies)
                 if (!e.Flying && Vector2.Distance(e.Position, point.Def.Position) < reach) total += e.Def.Power * (e.Hp / e.MaxHp);
@@ -547,7 +547,7 @@ namespace MachineBrigade.Sim.AI
                 if (point.Owner != _team) continue;
                 var p = point.Def.Position;
                 var distance = Vector2.Distance(front, p);
-                if (distance < 15f || Vector2.Distance(p, home) > frontToHome) continue;
+                if (distance < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.SafePointDistanceMax || Vector2.Distance(p, home) > frontToHome) continue;
                 if (distance >= bestDistance) continue;
                 best = p;
                 bestDistance = distance;
@@ -565,7 +565,7 @@ namespace MachineBrigade.Sim.AI
 
         private bool EnemyNear(SimWorld world, ObjectiveState point)
         {
-            var reach = point.Def.Radius + 8f;
+            var reach = point.Def.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.EnemyNearRadiusAdd;
             foreach (var v in world.VehicleList)
                 if (v.IsAlive && v.Team == _enemyTeam && !v.Flying && v.IsVisibleTo(_team) &&
                     Vector2.Distance(v.Position, point.Def.Position) < reach) return true;
@@ -574,9 +574,9 @@ namespace MachineBrigade.Sim.AI
 
         private bool TryStrike(SimWorld world, TeamEconomy economy)
         {
-            if (_difficulty == AiDifficulty.Easy && _random.NextDouble() < 0.6) return false;
+            if (_difficulty == AiDifficulty.Easy && _random.NextDouble() < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryStrikeNextDoubleMax) return false;
             // Hard and Very Hard time their fire support with an attack: not while the army holds back.
-            if (_difficulty >= AiDifficulty.Hard && _tactics.HoldingBack && _random.NextDouble() < 0.7) return false;
+            if (_difficulty >= AiDifficulty.Hard && _tactics.HoldingBack && _random.NextDouble() < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryStrikeNextDoubleMax2) return false;
             var supports = Cards(world, economy.Supports, world.Catalog.Supports.Keys);
             // Repair or resupply a battered group first (prompt 25 F2 batch C: ht05 reuses the same group as Repair).
             if (FindDamagedGroup(world, out var hurt))
@@ -597,10 +597,10 @@ namespace MachineBrigade.Sim.AI
                 if (e.Def.Boss && !e.Flying)
                 {
                     cluster = e.Position;
-                    if (OwnCentroid(world, e.Position, e.Radius + 16f, out var own))
+                    if (OwnCentroid(world, e.Position, e.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryStrikeRadiusAdd, out var own))
                     {
                         var away = e.Position - own;
-                        if (away.LengthSquared() > 0.01f) cluster = e.Position + Vector2.Normalize(away) * (e.Radius + 3f);
+                        if (away.LengthSquared() > 0.01f) cluster = e.Position + Vector2.Normalize(away) * (e.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryStrikeRadiusAdd2);
                     }
                     size = ClusterSize + 2;
                     foundCluster = true;
@@ -664,12 +664,12 @@ namespace MachineBrigade.Sim.AI
                             if (p.Owner != _team) continue;
                             var threat = 0;
                             foreach (var e in _tactics.KnownEnemies)
-                                if (e.IsAlive && !e.Flying && !e.Def.Static && Vector2.Distance(e.Position, p.Def.Position) < 45f) threat++;
+                                if (e.IsAlive && !e.Flying && !e.Def.Static && Vector2.Distance(e.Position, p.Def.Position) < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryUtilityStrikeDistanceMax) threat++;
                             // Prompt 22 F.5: a tower commander (Bulwark) drops its towers at the first sign of a threat.
                             if (threat < (CommanderRules.SupportFit(economy.Commander, s) > 0f ? 1 : 2)) continue;
                             world.TryGetRally(_team, out var home);
                             var back = home - p.Def.Position;
-                            var at = world.ClampToMap(p.Def.Position + (back.LengthSquared() > 1f ? Vector2.Normalize(back) : Vector2.Zero) * 5f);
+                            var at = world.ClampToMap(p.Def.Position + (back.LengthSquared() > 1f ? Vector2.Normalize(back) : Vector2.Zero) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryUtilityStrikeScale);
                             if (world.Submit(Command.Strike(_team, id, at, at + (p.Def.Position - home))).Accepted) return true;
                         }
                         break;
@@ -678,9 +678,9 @@ namespace MachineBrigade.Sim.AI
                         if (FindCluster(world, out var group, out _) && OwnCentroid(world, group, 55f, out var line))
                         {
                             var gap = Vector2.Distance(group, line);
-                            if (gap < 22f) break;
-                            var at = group + Vector2.Normalize(line - group) * MathF.Min(14f, gap * 0.4f);
-                            if (OwnWithin(world, at, s.Radius + 3f)) break;
+                            if (gap < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryUtilityStrikeGapMax) break;
+                            var at = group + Vector2.Normalize(line - group) * MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryUtilityStrikeGapCap, gap * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryUtilityStrikeGapScale);
+                            if (OwnWithin(world, at, s.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryUtilityStrikeRadiusAdd)) break;
                             if (world.Submit(Command.Strike(_team, id, world.ClampToMap(at))).Accepted) return true;
                         }
                         break;
@@ -694,7 +694,7 @@ namespace MachineBrigade.Sim.AI
                     case SupportKind.Reinforce when FindCluster(world, out var enemyAt, out _) && OwnCentroid(world, enemyAt, 60f, out var ownAt):
                     {
                         var toward = enemyAt - ownAt;
-                        var at = ownAt + (toward.LengthSquared() > 1f ? Vector2.Normalize(toward) : Vector2.UnitX) * 10f;
+                        var at = ownAt + (toward.LengthSquared() > 1f ? Vector2.Normalize(toward) : Vector2.UnitX) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryUtilityStrikeScale2;
                         if (world.Submit(Command.Strike(_team, id, world.ClampToMap(at))).Accepted) return true;
                         break;
                     }
@@ -737,17 +737,17 @@ namespace MachineBrigade.Sim.AI
             var score = 0f;
             var drones = def.Drone;
             foreach (var m in def.Mounts) drones |= m.Weapon.Projectile == ProjectileKind.Drone;
-            if (towers.cannon >= 2)
+            if (towers.cannon >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BaseCounterCannonMin)
             {
-                if (def.Speed >= 11f && def.Armor == ArmorClass.Light) score += 1.6f * Share(towers.cannon);
-                if (drones) score += 1.6f * Share(towers.cannon);
-                if (def.Weapon.MinRange > 0f && def.Weapon.Range > cannonReach + 5f) score += 1.4f * Share(towers.cannon);
+                if (def.Speed >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BaseCounterSpeedMin && def.Armor == ArmorClass.Light) score += global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BaseCounterShareScale * Share(towers.cannon);
+                if (drones) score += global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BaseCounterShareScale * Share(towers.cannon);
+                if (def.Weapon.MinRange > 0f && def.Weapon.Range > cannonReach + global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BaseCounterCannonReachAdd) score += global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BaseCounterShareScale2 * Share(towers.cannon);
             }
-            if (towers.machineGun >= 2 && def.Armor == ArmorClass.Heavy && !def.Flying) score += 1.8f * Share(towers.machineGun);
-            if (towers.antiAir >= 2)
+            if (towers.machineGun >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BaseCounterMachineGunMin && def.Armor == ArmorClass.Heavy && !def.Flying) score += global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BaseCounterShareScale3 * Share(towers.machineGun);
+            if (towers.antiAir >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BaseCounterAntiAirMin)
             {
-                if (def.Flying) score -= 2.2f * Share(towers.antiAir);
-                if (def.Weapon.MinRange > 0f) score += 1.2f * Share(towers.antiAir);
+                if (def.Flying) score -= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BaseCounterShareScale4 * Share(towers.antiAir);
+                if (def.Weapon.MinRange > 0f) score += global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BaseCounterShareScale5 * Share(towers.antiAir);
             }
             return score;
         }
@@ -771,12 +771,12 @@ namespace MachineBrigade.Sim.AI
             at = default;
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != _team || v.Flying || world.Time - v.LastHitTime > 2.0) continue;
+                if (!v.IsAlive || v.Team != _team || v.Flying || world.Time - v.LastHitTime > global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ScanTargetTimeMin) continue;
                 if (!world.TryGetVehicle(v.LastAttacker, out var shooter) || !shooter.IsAlive || shooter.IsVisibleTo(_team)) continue;
-                at = world.ClampToMap(v.Position + (shooter.Position - v.Position) * 0.6f);
+                at = world.ClampToMap(v.Position + (shooter.Position - v.Position) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ScanTargetPositionScale);
                 return true;
             }
-            if (_mode == null || !OwnCentroid(world, world.ClampToMap(Vector2.Zero), 1000f, out var army)) return false;
+            if (_mode == null || !OwnCentroid(world, world.ClampToMap(Vector2.Zero), global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ScanTargetReach, out var army)) return false;
             foreach (var p in _mode.Points)
             {
                 if (p.Owner == _team) continue;
@@ -784,7 +784,7 @@ namespace MachineBrigade.Sim.AI
                 if (d > 45f || d < 12f) continue;
                 var seen = false;
                 foreach (var e in _tactics.KnownEnemies)
-                    if (e.IsAlive && Vector2.Distance(e.Position, p.Def.Position) < 25f) seen = true;
+                    if (e.IsAlive && Vector2.Distance(e.Position, p.Def.Position) < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ScanTargetDistanceMax) seen = true;
                 if (seen) continue;
                 at = p.Def.Position;
                 return true;
@@ -798,7 +798,7 @@ namespace MachineBrigade.Sim.AI
         private bool Boss(Vector2 at)
         {
             foreach (var e in _tactics.KnownEnemies)
-                if (e.Def.Boss && Vector2.Distance(e.Position, at) < e.Radius + 8f) return true;
+                if (e.Def.Boss && Vector2.Distance(e.Position, at) < e.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BossRadiusAdd) return true;
             return false;
         }
 
@@ -836,7 +836,7 @@ namespace MachineBrigade.Sim.AI
                 direction = SimMath.Rotate(preferred, angle);
                 var clear = true;
                 for (var s = -4; s <= 4 && clear; s++)
-                    if (OwnWithin(world, centre + direction * (strike.Length * 0.5f * s / 4f), reach)) clear = false;
+                    if (OwnWithin(world, centre + direction * (strike.Length * 0.5f * s / global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ClearRunLengthDivisor), reach)) clear = false;
                 if (clear) return true;
             }
             direction = preferred;
@@ -847,7 +847,7 @@ namespace MachineBrigade.Sim.AI
         {
             // Very Hard masses its CP for coordinated attack waves (prompt 13 I.1): with an army on the
             // field and no fight on its hands it saves up to two thirds of its bank, then buys card after card.
-            if (_difficulty == AiDifficulty.VeryHard && !_massing && economy.VehicleCount >= 5 && _tactics.KnownEnemies.Count > 0 &&
+            if (_difficulty == AiDifficulty.VeryHard && !_massing && economy.VehicleCount >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployVehicleCountMin && _tactics.KnownEnemies.Count > 0 &&
                 economy.Cp < economy.Bank * 0.66f && !UnderFire(world))
                 return;
             // Prompt 28 H.5: All-out assault saves to a threshold and buys a whole wave.
@@ -933,15 +933,15 @@ namespace MachineBrigade.Sim.AI
                     if (def.Flying) score += (ownAir * 7 < ownTotal + 2 ? 1.2f : -2f) + heavy * 0.25f - air * 0.3f;
                     // An interceptor with no enemy aircraft to hunt is dead weight (a fighter sent at a ground boss dies for nothing).
                     if (def.Flying && def.Weapon.Targets == TargetLayers.Air && air <= 0) score -= 2.5f;
-                    if (main.MinRange > 0f) score += ownArtillery * 5 < ownTotal ? 1.2f : -2f;
-                    score += def.CaptureRate * neutral * 0.35f;
+                    if (main.MinRange > 0f) score += ownArtillery * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployOwnArtilleryScale < ownTotal ? global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployOwnArtilleryTrue : global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployOwnArtilleryFalse;
+                    score += def.CaptureRate * neutral * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployCaptureRateScale;
                     // Enough anti-air for the enemy's aircraft, not a car park of it.
-                    if (def.Class == UnitClass.AntiAir) score -= MathF.Max(0f, ownAa - air * 0.7f - 1f) * 1.2f;
+                    if (def.Class == UnitClass.AntiAir) score -= MathF.Max(0f, ownAa - air * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployAirScale2 - 1f) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployMaxScale;
                     // Points are taken on the ground: keep a core of vehicles that can capture.
-                    if (neutral > 0 && capturers < 4) score += def.Flying || def.CaptureRate <= 0f ? -2.5f : 1.2f;
+                    if (neutral > 0 && capturers < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployCapturersMax) score += def.Flying || def.CaptureRate <= 0f ? global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployFlyingTrue : global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployFlyingFalse;
                     if (demolishing)
                     {
-                        if (main.DamageType == DamageType.HighExplosive) score += 1.6f;
+                        if (main.DamageType == DamageType.HighExplosive) score += global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployScore2;
                         if (def.Class == UnitClass.AntiAir) score -= 1.5f;
                     }
                     score += BaseCounter(def, towers, towerReach);
@@ -949,13 +949,13 @@ namespace MachineBrigade.Sim.AI
                     if (def.CommandAura != null) score += ownTotal >= 5 ? 1.4f : -2f;
                     // A breacher (the armoured bulldozer) pays against a base or a structure to bring down,
                     // and is dead weight in an open fight.
-                    if (def.Breacher) score += towers.cannon + towers.machineGun + towers.antiAir + enemyObstacles >= 2 || demolishing ? 1.8f : -1.5f;
+                    if (def.Breacher) score += towers.cannon + towers.machineGun + towers.antiAir + enemyObstacles >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployCannonMin || demolishing ? global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployCannonTrue : global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployCannonFalse;
                     // Enemy breachers coming for our base: tank hunters and guns that pierce heavy armour.
-                    if (enemyBreachers > 0 && KillsArmour(def) && !def.Flying) score += MathF.Min(2f, enemyBreachers * 0.7f);
+                    if (enemyBreachers > 0 && KillsArmour(def) && !def.Flying) score += MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployEnemyBreachersCap, enemyBreachers * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployEnemyBreachersScale);
                     // A counter-battery radar only where the enemy has guns to find.
-                    if (def.CounterBattery != null) score += enemyGuns > 0 ? MathF.Min(2.4f, enemyGuns * 0.8f) - 0.6f : -2.5f;
+                    if (def.CounterBattery != null) score += enemyGuns > 0 ? MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployEnemyGunsCap, enemyGuns * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployEnemyGunsScale) - global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployMinSub : global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployEnemyGunsFalse;
                     // Prompt 13 F.2: an ammunition carrier once the army has launchers and helicopters to feed (one is enough).
-                    if (def.RearmAura != null || def.AirRearm != null) score += ownResupplied >= 3 && !owned.ContainsKey(id) ? 1.6f + ownResupplied * 0.2f : -3f;
+                    if (def.RearmAura != null || def.AirRearm != null) score += ownResupplied >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployOwnResuppliedMin && !owned.ContainsKey(id) ? global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployOwnResuppliedAdd + ownResupplied * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployOwnResuppliedScale : global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployOwnResuppliedFalse;
                     score += NewCardScore(def, owned.ContainsKey(id), ownManned, ownTotal, enemy, towers, neutral);
                     // Prompt 25 F2 batch A: the new cards' reasons (drones to down, jammers and smoke to beat, nothing seen, points to drop on).
                     score += P25CardScore(def, owned.ContainsKey(id), enemy, neutral);
@@ -963,7 +963,7 @@ namespace MachineBrigade.Sim.AI
                 // The role furthest below its share of the army comes first (OpenRA's and 0 A.D.'s
                 // unit-share quotas): an army of one kind is easy to counter.
                 // Prompt 28 H.5: the layered AI buys to the tactic's force shares by CP spent instead.
-                if (Commander != null) score += Commander.BuyScore(world, economy, def) * MathF.Max(0.5f, profile.Mix);
+                if (Commander != null) score += Commander.BuyScore(world, economy, def) * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.TryDeployMixFloor, profile.Mix);
                 else if (_difficulty != AiDifficulty.Easy && armyValue > 0f)
                     score += (mix[(int)RoleOf(def)] - _have[(int)RoleOf(def)] / armyValue) * 5f * profile.Mix;
                 // A mixed army: each copy already fielded makes another less attractive.
@@ -1010,7 +1010,7 @@ namespace MachineBrigade.Sim.AI
         private bool UnderFire(SimWorld world)
         {
             foreach (var v in world.VehicleList)
-                if (v.IsAlive && v.Team == _team && world.Time - v.LastHitTime < 3.0) return true;
+                if (v.IsAlive && v.Team == _team && world.Time - v.LastHitTime < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.UnderFireTimeMax) return true;
             return false;
         }
 
@@ -1032,7 +1032,7 @@ namespace MachineBrigade.Sim.AI
 
         /// <summary>A strike's worth when choosing one: its CP, a third more for one that suits the commander's arm.</summary>
         private static float StrikeValue(SupportDef s, TeamEconomy economy) =>
-            s.CpCost * (1f + MathF.Min(0.35f, CommanderRules.SupportFit(economy.Commander, s) * 2.5f));
+            s.CpCost * (1f + MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.StrikeValueSupportFitCap, CommanderRules.SupportFit(economy.Commander, s) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.StrikeValueSupportFitScale));
 
         private static IEnumerable<string> Cards(SimWorld world, IReadOnlyList<string> deck, IEnumerable<string> all)
         {
@@ -1075,21 +1075,21 @@ namespace MachineBrigade.Sim.AI
             var best = 0;
             foreach (var v in world.Vehicles)
             {
-                if (!v.IsAlive || v.Team != _team || v.Hp / v.MaxHp > 0.5f) continue;
+                if (!v.IsAlive || v.Team != _team || v.Hp / v.MaxHp > global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.FindDamagedGroupHpMin) continue;
                 var near = 0;
                 var sum = Vector2.Zero;
                 foreach (var other in world.Vehicles)
                 {
-                    if (!other.IsAlive || other.Team != _team || other.Hp / other.MaxHp > 0.6f ||
-                        Vector2.Distance(other.Position, v.Position) > 10f) continue;
+                    if (!other.IsAlive || other.Team != _team || other.Hp / other.MaxHp > global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.FindDamagedGroupHpMin2 ||
+                        Vector2.Distance(other.Position, v.Position) > global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.FindDamagedGroupDistanceMin) continue;
                     near++;
                     sum += other.Position;
                 }
-                if (near < 2 || near <= best) continue;
+                if (near < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.FindDamagedGroupNearMax || near <= best) continue;
                 best = near;
                 centre = sum / near;
             }
-            return best >= 2;
+            return best >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.FindDamagedGroupBestMin;
         }
 
         /// <summary>The value (CP) of what the enemy fields that the AI has seen, by kind.</summary>
@@ -1164,7 +1164,7 @@ namespace MachineBrigade.Sim.AI
                     if (w.Damage <= 0f || !w.CanTarget(false)) continue;
                     var effect = table.Effective(w, Armour.StrikesTop(w) || (def.Flying && def.FixedWing) ? i % Levels : i / Levels, TargetKind.Ground,
                         def.Flying && def.FixedWing);
-                    best = MathF.Max(best, k == 0 ? effect : effect * 0.5f);
+                    best = MathF.Max(best, k == 0 ? effect : effect * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.FitEffectScale);
                 }
                 sum += value * best;
             }
@@ -1174,11 +1174,11 @@ namespace MachineBrigade.Sim.AI
         private Mix EnemyMix()
         {
             var mix = new Mix();
-            if (Profile.KnowsDeck && KnownDeck != null && _tactics.KnownEnemies.Count < 6 && _catalog != null)
+            if (Profile.KnowsDeck && KnownDeck != null && _tactics.KnownEnemies.Count < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.EnemyMixCountMax && _catalog != null)
                 foreach (var id in KnownDeck)
                 {
                     if (!_catalog.Vehicles.TryGetValue(id, out var d)) continue;
-                    var value = MathF.Max(1f, d.CpCost) * 0.5f;
+                    var value = MathF.Max(1f, d.CpCost) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.EnemyMixMaxScale;
                     if (d.Flying) mix.Air += value;
                     else if (d.Weapon.MinRange > 0f) mix.Artillery += value;
                     else if (d.Armor == ArmorClass.Heavy) mix.Heavy += value;
@@ -1197,7 +1197,7 @@ namespace MachineBrigade.Sim.AI
                     continue;
                 }
                 // A boss weighs as much as a small army of its kind.
-                var value = e.Def.Boss ? 30f : MathF.Max(1f, e.Def.CpCost);
+                var value = e.Def.Boss ? global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.EnemyMixBossTrue : MathF.Max(1f, e.Def.CpCost);
                 if (e.Flying) mix.Air += value;
                 else if (e.Def.Weapon.MinRange > 0f) mix.Artillery += value;
                 else if (e.Armor == ArmorClass.Heavy) mix.Heavy += value;
@@ -1222,7 +1222,7 @@ namespace MachineBrigade.Sim.AI
                 if (KillsArmour(v.Def)) mix.Heavy += value;
                 if (v.Def.Weapon.DamageType is DamageType.Kinetic or DamageType.Fire or DamageType.HighExplosive && v.Def.Weapon.MinRange <= 0f)
                     mix.Light += value;
-                if (v.Def.Flying || v.Def.Speed >= 11f) mix.Artillery += value;
+                if (v.Def.Flying || v.Def.Speed >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.OwnAnswersSpeedMin) mix.Artillery += value;
                 mix.Pierce += value * Fit(world.Catalog.Damage, v.Def, enemy);
                 mix.Total += value;
             }
@@ -1254,17 +1254,17 @@ namespace MachineBrigade.Sim.AI
         private static float CounterScore(DamageTable table, VehicleDef def, Mix enemy, Mix own)
         {
             if (enemy.Total <= 0f) return 0f;
-            var ours = MathF.Max(8f, own.Total);
-            float Short(float theirs, float answering) => theirs / enemy.Total - answering / ours * 0.85f;
+            var ours = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreTotalFloor, own.Total);
+            float Short(float theirs, float answering) => theirs / enemy.Total - answering / ours * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreAnsweringScale;
             var score = 0f;
             var antiAir = CanHitAir(def);
             if (antiAir)
             {
-                score += Short(enemy.Air, own.Air) * 8f;
+                score += Short(enemy.Air, own.Air) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreShortScale;
                 // The first answer to aircraft matters most.
-                if (enemy.Air > 0f && own.Air <= 0f) score += 2f;
+                if (enemy.Air > 0f && own.Air <= 0f) score += global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreScore;
                 // No aircraft over there: a dedicated anti-air vehicle is dead weight.
-                if (enemy.Air <= 0f && def.Class == UnitClass.AntiAir) score -= 2.5f;
+                if (enemy.Air <= 0f && def.Class == UnitClass.AntiAir) score -= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreScore2;
             }
             // Prompt 15 C.10: the ground enemies by the armour they show: what pierces it, against how well our army
             // already does (heavy armour wants darts and heavy missiles, light armour anything).
@@ -1272,22 +1272,22 @@ namespace MachineBrigade.Sim.AI
             {
                 var ownFit = own.Total > 0f ? own.Pierce / own.Total : 0f;
                 var fit = Fit(table, def, enemy);
-                score += enemy.Ground / enemy.Total * (fit - ownFit * 0.85f) * 8f;
+                score += enemy.Ground / enemy.Total * (fit - ownFit * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreOwnFitScale) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreGroundScale;
             }
-            if (def.Flying || def.Speed >= 11f) score += Short(enemy.Artillery, own.Artillery) * 4f;
-            if (def.Flying && !antiAir) score -= enemy.AntiAir / enemy.Total * 4f;
+            if (def.Flying || def.Speed >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreSpeedMin) score += Short(enemy.Artillery, own.Artillery) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreShortScale2;
+            if (def.Flying && !antiAir) score -= enemy.AntiAir / enemy.Total * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreAntiAirScale;
             // Their defences against what this card fires (the counter table): APS shoots down missiles, rockets
             // and drones; reactive armour and cages cut shaped charges; smoke scatters beams; jammers turn guided
             // rounds away; flares pull anti-air missiles off.
             var main = def.Weapon;
             var ground = MathF.Max(1f, enemy.Ground);
             if (main.CanTarget(false) && (main.Guided || (main.Projectile == ProjectileKind.Rocket && main.MinRange <= 0f)))
-                score -= MathF.Min(1f, enemy.Aps / ground) * 2.5f;
-            if (main.DamageType == DamageType.ShapedCharge) score -= MathF.Min(1f, enemy.Reactive / ground) * 2f;
-            if (main.DamageType == DamageType.Energy) score -= MathF.Min(1f, enemy.Smoke / enemy.Total) * 2f;
+                score -= MathF.Min(1f, enemy.Aps / ground) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreMinScale;
+            if (main.DamageType == DamageType.ShapedCharge) score -= MathF.Min(1f, enemy.Reactive / ground) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreMinScale2;
+            if (main.DamageType == DamageType.Energy) score -= MathF.Min(1f, enemy.Smoke / enemy.Total) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreMinScale2;
             // Prompt 17 C: shield domes stop everything but energy.
-            if (main.DamageType == DamageType.Energy && main.CanTarget(false)) score += MathF.Min(1f, enemy.Domes / MathF.Max(8f, enemy.Total)) * 2.5f;
-            if (main.Guided) score -= MathF.Min(1f, enemy.Jammers / enemy.Total) * 2f;
+            if (main.DamageType == DamageType.Energy && main.CanTarget(false)) score += MathF.Min(1f, enemy.Domes / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreTotalFloor, enemy.Total)) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreMinScale;
+            if (main.Guided) score -= MathF.Min(1f, enemy.Jammers / enemy.Total) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.CounterScoreMinScale2;
             if (antiAir && main.Projectile == ProjectileKind.Missile && enemy.Air > 0f) score -= enemy.AirFlares / enemy.Air * (1f - main.FlareResist);
             return score;
         }

@@ -87,7 +87,7 @@ namespace MachineBrigade.Sim.AI
             var director = Procurement;
             var def = world.Catalog.Vehicles[id];
             RankScored();
-            if (director.Reserve(world, economy, def, CounterCard(world), ownTotal < 4, UnderFire(world))) return false;
+            if (director.Reserve(world, economy, def, CounterCard(world), ownTotal < global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.BuyThroughDirectorOwnTotalMax, UnderFire(world))) return false;
             // AI MASTER P4 (P0-B 18): force enough by the forecast / CP kept for a seen boss's next phase.
             if (Commander != null && !UnderFire(world) && Commander.HoldPurchaseP4(world, economy, economy.PriceOf(id, def.CpCost), ownTotal)) return false;
             if (director.Plan == null && _difficulty != AiDifficulty.Easy && _ranked.Count >= SimTunables.Ai.Procurement.MinPlanCards &&

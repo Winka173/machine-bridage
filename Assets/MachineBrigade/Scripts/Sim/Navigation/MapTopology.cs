@@ -113,7 +113,7 @@ namespace MachineBrigade.Sim.Navigation
         private readonly List<TopologyRegion> _regions = new();
         private readonly Dictionary<int, int[]> _distances = new();
         private readonly List<int> _distanceOrder = new();
-        private const int DistanceCacheSize = 16;
+        private static int DistanceCacheSize => global::MachineBrigade.Sim.Content.SimTunables.Maps.DomainGraph.DistanceCacheSize;
 
         internal DomainGraph(MapTopology map, MobilityDomain domain, bool[] passable)
         {
@@ -452,7 +452,7 @@ namespace MachineBrigade.Sim.Navigation
             {
                 var i = queue[head++];
                 int x = i % Columns, y = i / Columns;
-                var d = (byte)Math.Min(15, Clearance[i] + 1);
+                var d = (byte)Math.Min(global::MachineBrigade.Sim.Content.SimTunables.Maps.MapTopology.MeasureClearanceClearanceCap, Clearance[i] + 1);
                 if (x + 1 < Columns) Step(i + 1);
                 if (x > 0) Step(i - 1);
                 if (y + 1 < Rows) Step(i + Columns);
@@ -528,10 +528,10 @@ namespace MachineBrigade.Sim.Navigation
         private void AddObjectives(SimWorld world)
         {
             var rings = SimTunables.Ai.Topology.NearestRings;
-            foreach (var p in world.Map.Points) Add(p.Id, p.Position, MathF.Max(2f, p.Radius));
-            foreach (var t in world.Map.Teams) Add("rally_" + t.Team, t.Rally, 6f);
+            foreach (var p in world.Map.Points) Add(p.Id, p.Position, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.MapTopology.AddObjectivesRadiusFloor, p.Radius));
+            foreach (var t in world.Map.Teams) Add("rally_" + t.Team, t.Rally, global::MachineBrigade.Sim.Content.SimTunables.Maps.MapTopology.AddObjectivesRadius);
             if (world.Map.Sea is { } sea)
-                foreach (var b in sea.Batteries) Add("battery_" + b.Id, b.At, 6f);
+                foreach (var b in sea.Batteries) Add("battery_" + b.Id, b.At, global::MachineBrigade.Sim.Content.SimTunables.Maps.MapTopology.AddObjectivesRadius);
 
             void Add(string id, Vector2 at, float radius)
             {

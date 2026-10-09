@@ -9,10 +9,800 @@ namespace MachineBrigade.Sim.Content
     {
         public static partial class Maps
         {
+            public static partial class CoverGrid
+            {
+                /// <summary>maps.coverGrid.changeWidthFloor (m; ban_kinh, was Sim/Navigation/CoverGrid.cs:98).</summary>
+                public static float ChangeWidthFloor = 0.1f;
+                /// <summary>maps.coverGrid.changeDepthFloor (x; nguong, was Sim/Navigation/CoverGrid.cs:99).</summary>
+                public static float ChangeDepthFloor = 0.1f;
+            }
+
+            public static partial class DomainGraph
+            {
+                /// <summary>maps.domainGraph.distanceCacheSize (m; ban_kinh, was Sim/Navigation/MapTopology.cs:116).</summary>
+                public static int DistanceCacheSize = 16;
+            }
+
+            public static partial class FiringLaneResolver
+            {
+                /// <summary>maps.firingLaneResolver.blockerLengthMax (m; ban_kinh, was Sim/AI/P2/FiringLane.cs:52).</summary>
+                public static float BlockerLengthMax = 4f;
+                /// <summary>maps.firingLaneResolver.blockerAlongMax (m; ban_kinh, was Sim/AI/P2/FiringLane.cs:61).</summary>
+                public static float BlockerAlongMax = 2f;
+                /// <summary>maps.firingLaneResolver.blockerLengthSub (m; ban_kinh, was Sim/AI/P2/FiringLane.cs:61).</summary>
+                public static float BlockerLengthSub = 2f;
+                /// <summary>maps.firingLaneResolver.blockerAlongMin (m; ban_kinh, was Sim/AI/P2/FiringLane.cs:61).</summary>
+                public static float BlockerAlongMin = 60f;
+                /// <summary>maps.firingLaneResolver.resolveAbsMin (m; ban_kinh, was Sim/AI/P2/FiringLane.cs:103).</summary>
+                public static float ResolveAbsMin = 0.2f;
+                /// <summary>maps.firingLaneResolver.resolveSidestepMetresScale (x; ban_kinh, was Sim/AI/P2/FiringLane.cs:123).</summary>
+                public static float ResolveSidestepMetresScale = 0.5f;
+                /// <summary>maps.firingLaneResolver.resolveTimeMin (s; thoi_gian, was Sim/AI/P2/FiringLane.cs:146).</summary>
+                public static double ResolveTimeMin = 2.0;
+                /// <summary>maps.firingLaneResolver.stepMargin (m; ban_kinh, was Sim/AI/P2/FiringLane.cs:165).</summary>
+                public static float StepMargin = 4f;
+                /// <summary>maps.firingLaneResolver.ringMargin (x; khac, was Sim/AI/P2/FiringLane.cs:178).</summary>
+                public static float RingMargin = 4f;
+                /// <summary>maps.firingLaneResolver.inLineLengthMax (m; ban_kinh, was Sim/AI/P2/FiringLane.cs:186).</summary>
+                public static float InLineLengthMax = 4f;
+                /// <summary>maps.firingLaneResolver.inLineAlongMax (m; ban_kinh, was Sim/AI/P2/FiringLane.cs:190).</summary>
+                public static float InLineAlongMax = 2f;
+                /// <summary>maps.firingLaneResolver.inLineLengthSub (m; ban_kinh, was Sim/AI/P2/FiringLane.cs:190).</summary>
+                public static float InLineLengthSub = 2f;
+            }
+
+            public static partial class Formation
+            {
+                /// <summary>maps.formation.slotsMaxRings (count; gioi_han_thuc_the, was Sim/Navigation/Formation.cs:30).</summary>
+                public static int SlotsMaxRings = 16;
+                /// <summary>maps.formation.slotsReach (count; ban_kinh, was Sim/Navigation/Formation.cs:32).</summary>
+                public static float SlotsReach = 12f;
+                /// <summary>maps.formation.slotsCountDivisor (x; gioi_han_thuc_the, was Sim/Navigation/Formation.cs:39).</summary>
+                public static float SlotsCountDivisor = 3f;
+                /// <summary>maps.formation.slotsCeilingAdd (count; gioi_han_thuc_the, was Sim/Navigation/Formation.cs:39).</summary>
+                public static int SlotsCeilingAdd = 3;
+                /// <summary>maps.formation.slotsRingsCap (count; ban_kinh, was Sim/Navigation/Formation.cs:40).</summary>
+                public static float SlotsRingsCap = 80f;
+                /// <summary>maps.formation.slotsRingsAdd (count; ban_kinh, was Sim/Navigation/Formation.cs:40).</summary>
+                public static float SlotsRingsAdd = 8f;
+                /// <summary>maps.formation.slotsRingMax (count; gioi_han_thuc_the, was Sim/Navigation/Formation.cs:44).</summary>
+                public static int SlotsRingMax = 24;
+                /// <summary>maps.formation.slotsRingScale (x; gioi_han_thuc_the, was Sim/Navigation/Formation.cs:46).</summary>
+                public static int SlotsRingScale = 6;
+                /// <summary>maps.formation.slotsRingScale2 (x; gioi_han_thuc_the, was Sim/Navigation/Formation.cs:49).</summary>
+                public static float SlotsRingScale2 = 0.5f;
+                /// <summary>maps.formation.slotsSpacingScale (x; ban_kinh, was Sim/Navigation/Formation.cs:51).</summary>
+                public static float SlotsSpacingScale = 0.8f;
+                /// <summary>maps.formation.untangleNowSub (s; thoi_gian, was Sim/Navigation/Formation.cs:139).</summary>
+                public static float UntangleNowSub = 0.5f;
+            }
+
+            public static partial class FrontMap
+            {
+                /// <summary>maps.frontMap.reach (m; ban_kinh, was Game/Match/FrontMap.cs:90).</summary>
+                public static float Reach = 0.075f;
+                /// <summary>maps.frontMap.sectorsSqrtAdd (m; ban_kinh, was Game/Match/FrontMap.cs:149).</summary>
+                public static float SectorsSqrtAdd = 0.012f;
+                /// <summary>maps.frontMap.sectorsSqrtScale (x; ban_kinh, was Game/Match/FrontMap.cs:149).</summary>
+                public static float SectorsSqrtScale = 0.015f;
+                /// <summary>maps.frontMap.gridXAdd (m; ban_kinh, was Game/Match/FrontMap.cs:179).</summary>
+                public static float GridXAdd = 0.5f;
+                /// <summary>maps.frontMap.gridYAdd (m; ban_kinh, was Game/Match/FrontMap.cs:179).</summary>
+                public static float GridYAdd = 0.5f;
+            }
+
+            public static partial class GameplayTopology
+            {
+                /// <summary>maps.gameplayTopology.makeApproachMedianSpeedFloor (m/s; tan_suat, was Sim/Navigation/GameplayTopology.Approaches.cs:283).</summary>
+                public static float MakeApproachMedianSpeedFloor = 0.5f;
+                /// <summary>maps.gameplayTopology.makeApproachIMin (count; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Approaches.cs:288).</summary>
+                public static int MakeApproachIMin = 3;
+                /// <summary>maps.gameplayTopology.makeApproachCountSub (count; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Approaches.cs:288).</summary>
+                public static int MakeApproachCountSub = 3;
+                /// <summary>maps.gameplayTopology.makeApproachStepCostFloor (CP; thoi_gian, was Sim/Navigation/GameplayTopology.Approaches.cs:298).</summary>
+                public static float MakeApproachStepCostFloor = 0.1f;
+                /// <summary>maps.gameplayTopology.makeApproachR (m; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:303).</summary>
+                public static int MakeApproachR = 2;
+                /// <summary>maps.gameplayTopology.makeApproachCountSub2 (count; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Approaches.cs:321).</summary>
+                public static int MakeApproachCountSub2 = 2;
+                /// <summary>maps.gameplayTopology.makeApproachDistanceToMax (m; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:350).</summary>
+                public static float MakeApproachDistanceToMax = 6f;
+                /// <summary>maps.gameplayTopology.makeApproachShareMax (x; nguong, was Sim/Navigation/GameplayTopology.Approaches.cs:352).</summary>
+                public static float MakeApproachShareMax = 0.6f;
+                /// <summary>maps.gameplayTopology.assignRolesCountFalse (count; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Approaches.cs:429).</summary>
+                public static int AssignRolesCountFalse = 99;
+                /// <summary>maps.gameplayTopology.artillerySupportRadiusAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:443).</summary>
+                public static float ArtillerySupportRadiusAdd = 10f;
+                /// <summary>maps.gameplayTopology.artillerySupportRadiusFloor (m; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:443).</summary>
+                public static float ArtillerySupportRadiusFloor = 30f;
+                /// <summary>maps.gameplayTopology.artillerySupportLoAdd (x; nguong, was Sim/Navigation/GameplayTopology.Approaches.cs:444).</summary>
+                public static float ArtillerySupportLoAdd = 10f;
+                /// <summary>maps.gameplayTopology.artillerySupportArtilleryRefScale (x; nguong, was Sim/Navigation/GameplayTopology.Approaches.cs:444).</summary>
+                public static float ArtillerySupportArtilleryRefScale = 0.8f;
+                /// <summary>maps.gameplayTopology.artillerySupportF2 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:445).</summary>
+                public static float ArtillerySupportF2 = 0.5f;
+                /// <summary>maps.gameplayTopology.artillerySupportDistanceToMax (m; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:454).</summary>
+                public static float ArtillerySupportDistanceToMax = 6f;
+                /// <summary>maps.gameplayTopology.artillerySupportReach (m; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:464).</summary>
+                public static float ArtillerySupportReach = 40f;
+                /// <summary>maps.gameplayTopology.artillerySupportRays (x; khac, was Sim/Navigation/GameplayTopology.Approaches.cs:464).</summary>
+                public static int ArtillerySupportRays = 16;
+                /// <summary>maps.gameplayTopology.defenderFallbackExtra1 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:485).</summary>
+                public static float DefenderFallbackExtra1 = 15f;
+                /// <summary>maps.gameplayTopology.defenderFallbackExtra2 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:485).</summary>
+                public static float DefenderFallbackExtra2 = 25f;
+                /// <summary>maps.gameplayTopology.defenderFallbackExtra3 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:485).</summary>
+                public static float DefenderFallbackExtra3 = 40f;
+                /// <summary>maps.gameplayTopology.defenderFallbackStagingRadiusScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:492).</summary>
+                public static float DefenderFallbackStagingRadiusScale = 0.5f;
+                /// <summary>maps.gameplayTopology.defenderFallbackReach (m; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:494).</summary>
+                public static float DefenderFallbackReach = 30f;
+                /// <summary>maps.gameplayTopology.defenderFallbackRays (x; khac, was Sim/Navigation/GameplayTopology.Approaches.cs:494).</summary>
+                public static int DefenderFallbackRays = 16;
+                /// <summary>maps.gameplayTopology.defenderFallbackDistanceToDivisor (x; ban_kinh, was Sim/Navigation/GameplayTopology.Approaches.cs:497).</summary>
+                public static float DefenderFallbackDistanceToDivisor = 20f;
+                /// <summary>maps.gameplayTopology.openShareT (share; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:76).</summary>
+                public static float OpenShareT = 2f;
+                /// <summary>maps.gameplayTopology.sightAreaT (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:98, Sim/Navigation/GameplayTopology.Ground.cs:99).</summary>
+                public static float SightAreaT = 2f;
+                /// <summary>maps.gameplayTopology.simplifyCountMax (count; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Ground.cs:266).</summary>
+                public static int SimplifyCountMax = 2;
+                /// <summary>maps.gameplayTopology.objectivesRadius (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:314).</summary>
+                public static float ObjectivesRadius = 6f;
+                /// <summary>maps.gameplayTopology.objectivesRadiusFloor (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:316).</summary>
+                public static float ObjectivesRadiusFloor = 2f;
+                /// <summary>maps.gameplayTopology.buildLanesCountDivisor (x; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Ground.cs:358).</summary>
+                public static int BuildLanesCountDivisor = 2;
+                /// <summary>maps.gameplayTopology.buildLanesSpanScale (x; thoi_gian, was Sim/Navigation/GameplayTopology.Ground.cs:364).</summary>
+                public static float BuildLanesSpanScale = 0.2f;
+                /// <summary>maps.gameplayTopology.buildLanesCountScale (x; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Ground.cs:398).</summary>
+                public static int BuildLanesCountScale = 7;
+                /// <summary>maps.gameplayTopology.buildLanesCountDivisor2 (x; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Ground.cs:398).</summary>
+                public static int BuildLanesCountDivisor2 = 10;
+                /// <summary>maps.gameplayTopology.buildLanesDistanceMin (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:404).</summary>
+                public static float BuildLanesDistanceMin = 20f;
+                /// <summary>maps.gameplayTopology.buildLanesCountMax (count; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Ground.cs:414).</summary>
+                public static int BuildLanesCountMax = 2;
+                /// <summary>maps.gameplayTopology.makeLaneStepCostFloor (CP; tan_suat, was Sim/Navigation/GameplayTopology.Ground.cs:486).</summary>
+                public static float MakeLaneStepCostFloor = 0.1f;
+                /// <summary>maps.gameplayTopology.makeLaneP (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:497).</summary>
+                public static float MakeLaneP = 0.1f;
+                /// <summary>maps.gameplayTopology.makeLaneObstacleClearanceScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:521).</summary>
+                public static float MakeLaneObstacleClearanceScale = 2f;
+                /// <summary>maps.gameplayTopology.makeLaneMedianSpeedFloor (m/s; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:522).</summary>
+                public static float MakeLaneMedianSpeedFloor = 0.5f;
+                /// <summary>maps.gameplayTopology.makeLaneReferenceLengthFloor (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:522).</summary>
+                public static float MakeLaneReferenceLengthFloor = 2f;
+                /// <summary>maps.gameplayTopology.makeLaneReferenceLengthAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:522).</summary>
+                public static float MakeLaneReferenceLengthAdd = 4f;
+                /// <summary>maps.gameplayTopology.makeLaneRadiusAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:527).</summary>
+                public static float MakeLaneRadiusAdd = 20f;
+                /// <summary>maps.gameplayTopology.buildStagingCountMax (count; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Ground.cs:802).</summary>
+                public static int BuildStagingCountMax = 2;
+                /// <summary>maps.gameplayTopology.buildStagingDistanceToMax (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:823).</summary>
+                public static float BuildStagingDistanceToMax = 25f;
+                /// <summary>maps.gameplayTopology.buildStagingRays (x; khac, was Sim/Navigation/GameplayTopology.Ground.cs:835).</summary>
+                public static int BuildStagingRays = 16;
+                /// <summary>maps.gameplayTopology.buildStagingOpenShareScale (x; khac, was Sim/Navigation/GameplayTopology.Ground.cs:835).</summary>
+                public static float BuildStagingOpenShareScale = 0.5f;
+                /// <summary>maps.gameplayTopology.stagingOkDistanceToMax (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:899).</summary>
+                public static float StagingOkDistanceToMax = 6f;
+                /// <summary>maps.gameplayTopology.directRangeDirectRange (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:929).</summary>
+                public static float DirectRangeDirectRange = 32f;
+                /// <summary>maps.gameplayTopology.directFirePositionsF1 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:959).</summary>
+                public static float DirectFirePositionsF1 = 0.6f;
+                /// <summary>maps.gameplayTopology.directFirePositionsF2 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:959).</summary>
+                public static float DirectFirePositionsF2 = 0.8f;
+                /// <summary>maps.gameplayTopology.directFirePositionsF3 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:959).</summary>
+                public static float DirectFirePositionsF3 = 0.95f;
+                /// <summary>maps.gameplayTopology.directFirePositionsRadiusAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:961).</summary>
+                public static float DirectFirePositionsRadiusAdd = 4f;
+                /// <summary>maps.gameplayTopology.directFirePositionsRangeScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:968).</summary>
+                public static float DirectFirePositionsRangeScale = 0.8f;
+                /// <summary>maps.gameplayTopology.directFirePositionsRangeScale2 (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:968).</summary>
+                public static float DirectFirePositionsRangeScale2 = 0.35f;
+                /// <summary>maps.gameplayTopology.directFirePositionsReach2 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:973).</summary>
+                public static float DirectFirePositionsReach2 = 40f;
+                /// <summary>maps.gameplayTopology.directFirePositionsRays (x; khac, was Sim/Navigation/GameplayTopology.Ground.cs:973).</summary>
+                public static int DirectFirePositionsRays = 16;
+                /// <summary>maps.gameplayTopology.directFirePositionsTermsScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:974).</summary>
+                public static float DirectFirePositionsTermsScale = 0.3f;
+                /// <summary>maps.gameplayTopology.directFirePositionsTermsScale2 (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:974).</summary>
+                public static float DirectFirePositionsTermsScale2 = 0.2f;
+                /// <summary>maps.gameplayTopology.directFirePositionsTermsScale3 (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:974).</summary>
+                public static float DirectFirePositionsTermsScale3 = 0.15f;
+                /// <summary>maps.gameplayTopology.directFirePositionsTermsScale4 (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:974).</summary>
+                public static float DirectFirePositionsTermsScale4 = 0.1f;
+                /// <summary>maps.gameplayTopology.artilleryPocketsD1 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:993).</summary>
+                public static float ArtilleryPocketsD1 = 40f;
+                /// <summary>maps.gameplayTopology.artilleryPocketsD2 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:993).</summary>
+                public static float ArtilleryPocketsD2 = 60f;
+                /// <summary>maps.gameplayTopology.artilleryPocketsD3 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:993).</summary>
+                public static float ArtilleryPocketsD3 = 80f;
+                /// <summary>maps.gameplayTopology.artilleryPocketsDistanceToMax (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1000).</summary>
+                public static float ArtilleryPocketsDistanceToMax = 6f;
+                /// <summary>maps.gameplayTopology.artilleryPocketsArtilleryMinRefAdd (x; nguong, was Sim/Navigation/GameplayTopology.Ground.cs:1010).</summary>
+                public static float ArtilleryPocketsArtilleryMinRefAdd = 5f;
+                /// <summary>maps.gameplayTopology.artilleryPocketsArtilleryMinRefAdd2 (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1021).</summary>
+                public static float ArtilleryPocketsArtilleryMinRefAdd2 = 10f;
+                /// <summary>maps.gameplayTopology.artilleryPocketsReach (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1022).</summary>
+                public static float ArtilleryPocketsReach = 40f;
+                /// <summary>maps.gameplayTopology.artilleryPocketsRays (x; khac, was Sim/Navigation/GameplayTopology.Ground.cs:1022).</summary>
+                public static int ArtilleryPocketsRays = 16;
+                /// <summary>maps.gameplayTopology.artilleryPocketsTermsScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1027).</summary>
+                public static float ArtilleryPocketsTermsScale = 0.25f;
+                /// <summary>maps.gameplayTopology.artilleryPocketsTermsScale2 (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1027, Sim/Navigation/GameplayTopology.Ground.cs:1028).</summary>
+                public static float ArtilleryPocketsTermsScale2 = 0.15f;
+                /// <summary>maps.gameplayTopology.artilleryPocketsTermsScale3 (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1027, Sim/Navigation/GameplayTopology.Ground.cs:1028).</summary>
+                public static float ArtilleryPocketsTermsScale3 = 0.1f;
+                /// <summary>maps.gameplayTopology.artilleryPocketsTermsScale4 (x; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Ground.cs:1028).</summary>
+                public static float ArtilleryPocketsTermsScale4 = 0.05f;
+                /// <summary>maps.gameplayTopology.reconPositionsYAdd (x; nguong, was Sim/Navigation/GameplayTopology.Ground.cs:1064).</summary>
+                public static float ReconPositionsYAdd = 8f;
+                /// <summary>maps.gameplayTopology.reconPositionsY (x; nguong, was Sim/Navigation/GameplayTopology.Ground.cs:1064).</summary>
+                public static float ReconPositionsY = 16f;
+                /// <summary>maps.gameplayTopology.reconPositionsXAdd (x; nguong, was Sim/Navigation/GameplayTopology.Ground.cs:1065).</summary>
+                public static float ReconPositionsXAdd = 8f;
+                /// <summary>maps.gameplayTopology.reconPositionsX (x; nguong, was Sim/Navigation/GameplayTopology.Ground.cs:1065).</summary>
+                public static float ReconPositionsX = 16f;
+                /// <summary>maps.gameplayTopology.reconPositionsDistanceMax (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1068).</summary>
+                public static float ReconPositionsDistanceMax = 40f;
+                /// <summary>maps.gameplayTopology.reconPositionsRays (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1081).</summary>
+                public static int ReconPositionsRays = 16;
+                /// <summary>maps.gameplayTopology.reconPositionsDiagScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1084).</summary>
+                public static float ReconPositionsDiagScale = 0.5f;
+                /// <summary>maps.gameplayTopology.lowCoverMaxMax (count; nguong, was Sim/Navigation/GameplayTopology.Ground.cs:1125).</summary>
+                public static float LowCoverMaxMax = 3f;
+                /// <summary>maps.gameplayTopology.hullDownPositionsRangeScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1157).</summary>
+                public static float HullDownPositionsRangeScale = 2f;
+                /// <summary>maps.gameplayTopology.hullDownPositionsRangeScale2 (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1164).</summary>
+                public static float HullDownPositionsRangeScale2 = 0.8f;
+                /// <summary>maps.gameplayTopology.hullDownPositionsTermsAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1166).</summary>
+                public static float HullDownPositionsTermsAdd = 0.4f;
+                /// <summary>maps.gameplayTopology.hullDownPositionsTermsScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1166).</summary>
+                public static float HullDownPositionsTermsScale = 0.3f;
+                /// <summary>maps.gameplayTopology.buildBreachesReachAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1210).</summary>
+                public static float BuildBreachesReachAdd = 10f;
+                /// <summary>maps.gameplayTopology.buildBreachesGrowthScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1217).</summary>
+                public static float BuildBreachesGrowthScale = 2f;
+                /// <summary>maps.gameplayTopology.buildBreachesBeforeScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1256).</summary>
+                public static float BuildBreachesBeforeScale = 0.75f;
+                /// <summary>maps.gameplayTopology.buildBreachesSideClearanceScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1261).</summary>
+                public static float BuildBreachesSideClearanceScale = 2f;
+                /// <summary>maps.gameplayTopology.footprintScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Ground.cs:1286, Sim/Navigation/GameplayTopology.Ground.cs:1287).</summary>
+                public static float FootprintScale = 0.5f;
+                /// <summary>maps.gameplayTopology.buildShoreCountMax (count; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.Naval.cs:89).</summary>
+                public static int BuildShoreCountMax = 2;
+                /// <summary>maps.gameplayTopology.buildShoreCorridorScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Naval.cs:113).</summary>
+                public static float BuildShoreCorridorScale = 0.5f;
+                /// <summary>maps.gameplayTopology.sCurveRadiusOffsetMax (m; ban_kinh, was Sim/Navigation/GameplayTopology.Naval.cs:179).</summary>
+                public static float SCurveRadiusOffsetMax = 0.01f;
+                /// <summary>maps.gameplayTopology.sCurveRadiusOffsetScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Naval.cs:179).</summary>
+                public static float SCurveRadiusOffsetScale = 4f;
+                /// <summary>maps.gameplayTopology.buildNavalCorridorScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Naval.cs:210, Sim/Navigation/GameplayTopology.Naval.cs:225).</summary>
+                public static float BuildNavalCorridorScale = 2f;
+                /// <summary>maps.gameplayTopology.buildNavalMaxWidthScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Naval.cs:210).</summary>
+                public static float BuildNavalMaxWidthScale = 2f;
+                /// <summary>maps.gameplayTopology.buildNavalNavalMarginScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Naval.cs:210).</summary>
+                public static float BuildNavalNavalMarginScale = 3f;
+                /// <summary>maps.gameplayTopology.buildNavalMaxDistanceToNavalLaneScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Naval.cs:254).</summary>
+                public static float BuildNavalMaxDistanceToNavalLaneScale = 0.5f;
+                /// <summary>maps.gameplayTopology.buildTurnsRateFloor (x; tan_suat, was Sim/Navigation/GameplayTopology.Naval.cs:284).</summary>
+                public static float BuildTurnsRateFloor = 0.01f;
+                /// <summary>maps.gameplayTopology.buildTurnsStepRadiusScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Naval.cs:294).</summary>
+                public static float BuildTurnsStepRadiusScale = 4f;
+                /// <summary>maps.gameplayTopology.buildTurnsRoomScale (x; nguong, was Sim/Navigation/GameplayTopology.Naval.cs:354).</summary>
+                public static float BuildTurnsRoomScale = 0.5f;
+                /// <summary>maps.gameplayTopology.clearanceForSideClearanceScale (x; sat_thuong, was Sim/Navigation/GameplayTopology.cs:110).</summary>
+                public static float ClearanceForSideClearanceScale = 2f;
+                /// <summary>maps.gameplayTopology.clearanceForObstacleClearanceScale (x; sat_thuong, was Sim/Navigation/GameplayTopology.cs:110).</summary>
+                public static float ClearanceForObstacleClearanceScale = 2f;
+                /// <summary>maps.gameplayTopology.widthOfClearanceClearanceScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.cs:116).</summary>
+                public static float WidthOfClearanceClearanceScale = 2f;
+                /// <summary>maps.gameplayTopology.widthOfClearanceObstacleClearanceScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.cs:116).</summary>
+                public static float WidthOfClearanceObstacleClearanceScale = 2f;
+                /// <summary>maps.gameplayTopology.measureClassesDefaultWidth1 (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:144).</summary>
+                public static float MeasureClassesDefaultWidth1 = 2.6f;
+                /// <summary>maps.gameplayTopology.measureClassesDefaultWidth2 (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:144).</summary>
+                public static float MeasureClassesDefaultWidth2 = 3.2f;
+                /// <summary>maps.gameplayTopology.measureClassesDefaultWidth3 (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:144).</summary>
+                public static float MeasureClassesDefaultWidth3 = 3.9f;
+                /// <summary>maps.gameplayTopology.measureClassesDefaultWidth4 (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:144).</summary>
+                public static float MeasureClassesDefaultWidth4 = 5.3f;
+                /// <summary>maps.gameplayTopology.measureClassesDefaultWidth5 (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:144).</summary>
+                public static float MeasureClassesDefaultWidth5 = 11f;
+                /// <summary>maps.gameplayTopology.measureClassesReferenceScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.cs:152).</summary>
+                public static float MeasureClassesReferenceScale = 2.2f;
+                /// <summary>maps.gameplayTopology.measureClassesCountFalse (count; tan_suat, was Sim/Navigation/GameplayTopology.cs:153).</summary>
+                public static float MeasureClassesCountFalse = 5f;
+                /// <summary>maps.gameplayTopology.resolveAnchorsRadiusFloor (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:247).</summary>
+                public static float ResolveAnchorsRadiusFloor = 2f;
+                /// <summary>maps.gameplayTopology.resolveAnchorsRadius2 (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:248, Sim/Navigation/GameplayTopology.cs:266).</summary>
+                public static float ResolveAnchorsRadius2 = 8f;
+                /// <summary>maps.gameplayTopology.resolveAnchorsCountMin (count; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.cs:262).</summary>
+                public static int ResolveAnchorsCountMin = 2;
+                /// <summary>maps.gameplayTopology.resolveAnchorsCountDivisor (x; gioi_han_thuc_the, was Sim/Navigation/GameplayTopology.cs:262).</summary>
+                public static int ResolveAnchorsCountDivisor = 2;
+                /// <summary>maps.gameplayTopology.resolveAnchorsRadius (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:262, Sim/Navigation/GameplayTopology.cs:263, Sim/Navigation/GameplayTopology.cs:269, Sim/Navigation/GameplayTopology.cs:270).</summary>
+                public static float ResolveAnchorsRadius = 6f;
+                /// <summary>maps.gameplayTopology.measurePassagesWidthScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.cs:394).</summary>
+                public static float MeasurePassagesWidthScale = 3f;
+                /// <summary>maps.gameplayTopology.measurePassagesRoadScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.cs:394).</summary>
+                public static int MeasurePassagesRoadScale = 2;
+                /// <summary>maps.gameplayTopology.measurePassagesReachAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:410).</summary>
+                public static float MeasurePassagesReachAdd = 4f;
+                /// <summary>maps.gameplayTopology.measurePassagesMax (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:422).</summary>
+                public static float MeasurePassagesMax = 30f;
+                /// <summary>maps.gameplayTopology.measurePassagesCellSizeScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.cs:427).</summary>
+                public static float MeasurePassagesCellSizeScale = 2f;
+                /// <summary>maps.gameplayTopology.measurePassagesWidthAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:427).</summary>
+                public static float MeasurePassagesWidthAdd = 2f;
+                /// <summary>maps.gameplayTopology.measurePassagesWidthFloor (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:427).</summary>
+                public static float MeasurePassagesWidthFloor = 8f;
+                /// <summary>maps.gameplayTopology.measurePassagesMaxScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.cs:427, Sim/Navigation/GameplayTopology.cs:433).</summary>
+                public static float MeasurePassagesMaxScale = 0.5f;
+                /// <summary>maps.gameplayTopology.measurePassagesMaxAdd (count; ban_kinh, was Sim/Navigation/GameplayTopology.cs:427).</summary>
+                public static float MeasurePassagesMaxAdd = 6f;
+                /// <summary>maps.gameplayTopology.measurePassagesMaxAdd2 (count; ban_kinh, was Sim/Navigation/GameplayTopology.cs:433).</summary>
+                public static float MeasurePassagesMaxAdd2 = 3f;
+                /// <summary>maps.gameplayTopology.measurePassagesCellsFloor (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:437).</summary>
+                public static float MeasurePassagesCellsFloor = 6f;
+                /// <summary>maps.gameplayTopology.measurePassagesWidthFloor2 (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:437).</summary>
+                public static float MeasurePassagesWidthFloor2 = 2f;
+                /// <summary>maps.gameplayTopology.measurePassagesMinFloor (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:443).</summary>
+                public static float MeasurePassagesMinFloor = 2f;
+                /// <summary>maps.gameplayTopology.measurePassagesLengthCap (count; ban_kinh, was Sim/Navigation/GameplayTopology.cs:444).</summary>
+                public static float MeasurePassagesLengthCap = 40f;
+                /// <summary>maps.gameplayTopology.typeChokesGrowthScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.cs:481).</summary>
+                public static float TypeChokesGrowthScale = 2f;
+                /// <summary>maps.gameplayTopology.typeChokesMedianSpeedFloor (m/s; ban_kinh, was Sim/Navigation/GameplayTopology.cs:487).</summary>
+                public static float TypeChokesMedianSpeedFloor = 0.5f;
+                /// <summary>maps.gameplayTopology.typeChokesReferenceLengthFloor (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:487).</summary>
+                public static float TypeChokesReferenceLengthFloor = 2f;
+                /// <summary>maps.gameplayTopology.typeChokesReferenceLengthAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:487).</summary>
+                public static float TypeChokesReferenceLengthAdd = 4f;
+                /// <summary>maps.gameplayTopology.typeChokesMaxMediumSideBySideMin (count; nguong, was Sim/Navigation/GameplayTopology.cs:488).</summary>
+                public static int TypeChokesMaxMediumSideBySideMin = 2;
+                /// <summary>maps.gameplayTopology.typeChokesSideClearanceScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.cs:495).</summary>
+                public static float TypeChokesSideClearanceScale = 2f;
+                /// <summary>maps.gameplayTopology.typeOfGateWidthAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:507).</summary>
+                public static float TypeOfGateWidthAdd = 4f;
+                /// <summary>maps.gameplayTopology.typeOfLengthAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:509).</summary>
+                public static float TypeOfLengthAdd = 2f;
+                /// <summary>maps.gameplayTopology.typeOfHalfAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:513).</summary>
+                public static float TypeOfHalfAdd = 4f;
+                /// <summary>maps.gameplayTopology.typeOfDistanceMax (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:521).</summary>
+                public static float TypeOfDistanceMax = 20f;
+                /// <summary>maps.gameplayTopology.typeOfOpenWidthScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.cs:523).</summary>
+                public static float TypeOfOpenWidthScale = 1.5f;
+                /// <summary>maps.gameplayTopology.queueSpacingScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.cs:532).</summary>
+                public static float QueueSpacingScale = 1.5f;
+                /// <summary>maps.gameplayTopology.queueOpenWidthAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:533).</summary>
+                public static float QueueOpenWidthAdd = 4f;
+                /// <summary>maps.gameplayTopology.laneStretchRadiusAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.cs:591).</summary>
+                public static float LaneStretchRadiusAdd = 12f;
+            }
+
+            public static partial class LaneMap
+            {
+                /// <summary>maps.laneMap.stampSegmentRouteCountMax (count; gioi_han_thuc_the, was Sim/Navigation/LaneMap.cs:257).</summary>
+                public static int StampSegmentRouteCountMax = 255;
+                /// <summary>maps.laneMap.offLaneRingScale (x; ban_kinh, was Sim/Navigation/LaneMap.cs:393).</summary>
+                public static float OffLaneRingScale = 2f;
+                /// <summary>maps.laneMap.standCostFTrue (CP; gioi_han_thuc_the, was Sim/Navigation/LaneMap.cs:414).</summary>
+                public static float StandCostFTrue = 12f;
+                /// <summary>maps.laneMap.standCostRouteCountAtScale (x; gioi_han_thuc_the, was Sim/Navigation/LaneMap.cs:414).</summary>
+                public static float StandCostRouteCountAtScale = 20f;
+            }
+
+            public static partial class MapDefinition
+            {
+                /// <summary>maps.mapDefinition.isLongWidthScale (x; ban_kinh, was Sim/Content/MapDefinition.cs:170).</summary>
+                public static float IsLongWidthScale = 1.2f;
+            }
+
+            public static partial class MapTelemetry
+            {
+                /// <summary>maps.mapTelemetry.stepTelemetrySecondsFloor (s; thoi_gian, was Sim/Navigation/MapTelemetry.cs:68, Sim/Navigation/MapTelemetry.cs:73).</summary>
+                public static float StepTelemetrySecondsFloor = 0.1f;
+                /// <summary>maps.mapTelemetry.stepDistanceToMax (m; ban_kinh, was Sim/Navigation/MapTelemetry.cs:102).</summary>
+                public static float StepDistanceToMax = 6f;
+                /// <summary>maps.mapTelemetry.stepDistanceSquaredMin (m; ban_kinh, was Sim/Navigation/MapTelemetry.cs:112, Sim/Navigation/MapTelemetry.cs:123).</summary>
+                public static float StepDistanceSquaredMin = 4f;
+                /// <summary>maps.mapTelemetry.stepRadius (m; ban_kinh, was Sim/Navigation/MapTelemetry.cs:115).</summary>
+                public static float StepRadius = 4f;
+            }
+
+            public static partial class MapTopology
+            {
+                /// <summary>maps.mapTopology.measureClearanceClearanceCap (count; tran, was Sim/Navigation/MapTopology.cs:455).</summary>
+                public static int MeasureClearanceClearanceCap = 15;
+                /// <summary>maps.mapTopology.addObjectivesRadiusFloor (m; ban_kinh, was Sim/Navigation/MapTopology.cs:531).</summary>
+                public static float AddObjectivesRadiusFloor = 2f;
+                /// <summary>maps.mapTopology.addObjectivesRadius (m; ban_kinh, was Sim/Navigation/MapTopology.cs:532, Sim/Navigation/MapTopology.cs:534).</summary>
+                public static float AddObjectivesRadius = 6f;
+            }
+
+            public static partial class NavGrid
+            {
+                /// <summary>maps.navGrid.setTerrainXSub (x; nguong, was Sim/Navigation/NavGrid.cs:72, Sim/Navigation/NavGrid.cs:74).</summary>
+                public static float SetTerrainXSub = 0.5f;
+                /// <summary>maps.navGrid.setTerrainYSub (x; nguong, was Sim/Navigation/NavGrid.cs:73, Sim/Navigation/NavGrid.cs:75).</summary>
+                public static float SetTerrainYSub = 0.5f;
+                /// <summary>maps.navGrid.addBlockerClearanceScale (x; ban_kinh, was Sim/Navigation/NavGrid.cs:126).</summary>
+                public static float AddBlockerClearanceScale = 2f;
+                /// <summary>maps.navGrid.removeBlockerClearanceScale (x; ban_kinh, was Sim/Navigation/NavGrid.cs:133).</summary>
+                public static float RemoveBlockerClearanceScale = 2f;
+                /// <summary>maps.navGrid.markClearanceScale (x; ban_kinh, was Sim/Navigation/NavGrid.cs:140).</summary>
+                public static float MarkClearanceScale = 2f;
+                /// <summary>maps.navGrid.lineOfSightCellSizeScale (x; ban_kinh, was Sim/Navigation/NavGrid.cs:367, Sim/Navigation/NavGrid.cs:368).</summary>
+                public static float LineOfSightCellSizeScale = 0.25f;
+            }
+
+            public static partial class NavSiteDef
+            {
+                /// <summary>maps.navSiteDef.ctorCountMax (count; gioi_han_thuc_the, was Sim/Navigation/NavStates.cs:53).</summary>
+                public static int CtorCountMax = 2;
+            }
+
+            public static partial class NavStates
+            {
+                /// <summary>maps.navStates.anchorRegionMaxRings (x; sat_thuong, was Sim/Navigation/NavStates.cs:257).</summary>
+                public static int AnchorRegionMaxRings = 5;
+                /// <summary>maps.navStates.switchMaxRings (x; sat_thuong, was Sim/Navigation/NavStates.cs:321).</summary>
+                public static int SwitchMaxRings = 24;
+            }
+
+            public static partial class PathCosts
+            {
+                /// <summary>maps.pathCosts.smoothLimit (count; khac, was Sim/Navigation/PathFinder.cs:44).</summary>
+                public static int SmoothLimit = 20;
+            }
+
+            public static partial class PathFinder
+            {
+                /// <summary>maps.pathFinder.maxTerrainAlongCellSizeScale (x; ban_kinh, was Sim/Navigation/PathFinder.cs:255).</summary>
+                public static float MaxTerrainAlongCellSizeScale = 0.25f;
+                /// <summary>maps.pathFinder.maxExtraAlongCellSizeScale (x; ban_kinh, was Sim/Navigation/PathFinder.cs:273).</summary>
+                public static float MaxExtraAlongCellSizeScale = 0.25f;
+            }
+
+            public static partial class SizeClassInfo
+            {
+                /// <summary>maps.sizeClassInfo.turnRadiusSqrtScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Types.cs:54).</summary>
+                public static float TurnRadiusSqrtScale = 0.5f;
+            }
+
+            public static partial class SpawnPoints
+            {
+                /// <summary>maps.spawnPoints.buildScale (x; ban_kinh, was Sim/Navigation/SpawnPoints.cs:150).</summary>
+                public static float BuildScale = 22f;
+                /// <summary>maps.spawnPoints.buildCentreLerp (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:201).</summary>
+                public static float BuildCentreLerp = 0.45f;
+                /// <summary>maps.spawnPoints.buildCampClearanceScale (x; ban_kinh, was Sim/Navigation/SpawnPoints.cs:201).</summary>
+                public static float BuildCampClearanceScale = 0.8f;
+                /// <summary>maps.spawnPoints.buildOff2 (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:208).</summary>
+                public static float BuildOff2 = 20f;
+                /// <summary>maps.spawnPoints.buildOff3 (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:208).</summary>
+                public static float BuildOff3 = -20f;
+                /// <summary>maps.spawnPoints.addScale (x; ban_kinh, was Sim/Navigation/SpawnPoints.cs:221).</summary>
+                public static float AddScale = 12f;
+                /// <summary>maps.spawnPoints.addOff1 (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:236).</summary>
+                public static float AddOff1 = 22f;
+                /// <summary>maps.spawnPoints.addOff2 (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:236).</summary>
+                public static float AddOff2 = -22f;
+                /// <summary>maps.spawnPoints.addOff3 (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:236).</summary>
+                public static float AddOff3 = 40f;
+                /// <summary>maps.spawnPoints.addOff4 (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:236).</summary>
+                public static float AddOff4 = -40f;
+                /// <summary>maps.spawnPoints.addDistanceSquaredMin (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:237).</summary>
+                public static float AddDistanceSquaredMin = 100f;
+                /// <summary>maps.spawnPoints.addCampClearanceScale (x; ban_kinh, was Sim/Navigation/SpawnPoints.cs:238).</summary>
+                public static float AddCampClearanceScale = 0.9f;
+                /// <summary>maps.spawnPoints.gateForEdgeDistanceMax (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:261).</summary>
+                public static float GateForEdgeDistanceMax = 14f;
+                /// <summary>maps.spawnPoints.gateForCampClearanceScale (x; ban_kinh, was Sim/Navigation/SpawnPoints.cs:266).</summary>
+                public static float GateForCampClearanceScale = 0.9f;
+                /// <summary>maps.spawnPoints.edgePointEdgeMarginSub (x; sat_thuong, was Sim/Navigation/SpawnPoints.cs:336).</summary>
+                public static float EdgePointEdgeMarginSub = 0.5f;
+                /// <summary>maps.spawnPoints.snapEdgeMarginScale (x; khac, was Sim/Navigation/SpawnPoints.cs:352).</summary>
+                public static float SnapEdgeMarginScale = 0.5f;
+                /// <summary>maps.spawnPoints.waterLandingsEdgeDistanceMin (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:369).</summary>
+                public static float WaterLandingsEdgeDistanceMin = 25f;
+                /// <summary>maps.spawnPoints.waterLandingsCampClearanceAdd (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:369).</summary>
+                public static float WaterLandingsCampClearanceAdd = 10f;
+                /// <summary>maps.spawnPoints.waterLandingsDistanceMin (m; ban_kinh, was Sim/Navigation/SpawnPoints.cs:374).</summary>
+                public static float WaterLandingsDistanceMin = 40f;
+                /// <summary>maps.spawnPoints.waterLandingsIMax (count; gioi_han_thuc_the, was Sim/Navigation/SpawnPoints.cs:382).</summary>
+                public static int WaterLandingsIMax = 3;
+            }
+
+            public static partial class StuckWatch
+            {
+                /// <summary>maps.stuckWatch.threshold (x; khac, was Sim/Navigation/StuckWatch.cs:100).</summary>
+                public static float Threshold = 8f;
+                /// <summary>maps.stuckWatch.sampleTicks (ticks; thoi_gian, was Sim/Navigation/StuckWatch.cs:109).</summary>
+                public static int SampleTicks = 10;
+                /// <summary>maps.stuckWatch.grace (x; khac, was Sim/Navigation/StuckWatch.cs:146).</summary>
+                public static float Grace = 6f;
+                /// <summary>maps.stuckWatch.wantsTimeMax (s; thoi_gian, was Sim/Navigation/StuckWatch.cs:257).</summary>
+                public static double WantsTimeMax = 1.5;
+                /// <summary>maps.stuckWatch.wantsHullBoundFloor (m; ban_kinh, was Sim/Navigation/StuckWatch.cs:259).</summary>
+                public static float WantsHullBoundFloor = 6f;
+                /// <summary>maps.stuckWatch.wantsHullBoundScale (x; ban_kinh, was Sim/Navigation/StuckWatch.cs:259).</summary>
+                public static float WantsHullBoundScale = 2f;
+                /// <summary>maps.stuckWatch.classifyTimeMax (s; thoi_gian, was Sim/Navigation/StuckWatch.cs:284).</summary>
+                public static double ClassifyTimeMax = 2.0;
+                /// <summary>maps.stuckWatch.reachesMaxRings (m; ban_kinh, was Sim/Navigation/StuckWatch.cs:339).</summary>
+                public static int ReachesMaxRings = 16;
+                /// <summary>maps.stuckWatch.blockerAtMaxScale (x; ban_kinh, was Sim/Navigation/StuckWatch.cs:383).</summary>
+                public static float BlockerAtMaxScale = 0.4f;
+                /// <summary>maps.stuckWatch.blockedLineDistanceDivisor (x; ban_kinh, was Sim/Navigation/StuckWatch.cs:392).</summary>
+                public static float BlockedLineDistanceDivisor = 0.5f;
+                /// <summary>maps.stuckWatch.blockerOnLineDistanceDivisor (x; ban_kinh, was Sim/Navigation/StuckWatch.cs:400).</summary>
+                public static float BlockerOnLineDistanceDivisor = 0.5f;
+                /// <summary>maps.stuckWatch.blockerOnLineCellSizeScale (x; ban_kinh, was Sim/Navigation/StuckWatch.cs:407).</summary>
+                public static float BlockerOnLineCellSizeScale = 0.25f;
+            }
+
+            public static partial class TacticalChoke
+            {
+                /// <summary>maps.tacticalChoke.reachMaxScale (x; ban_kinh, was Sim/Navigation/GameplayTopology.Types.cs:209).</summary>
+                public static float ReachMaxScale = 0.5f;
+                /// <summary>maps.tacticalChoke.reachMaxAdd (m; ban_kinh, was Sim/Navigation/GameplayTopology.Types.cs:209).</summary>
+                public static float ReachMaxAdd = 3f;
+            }
+
+            public static partial class UnitCostField
+            {
+                /// <summary>maps.unitCostField.refreshFriendParkedCostScale (x; thoi_gian, was Sim/Navigation/UnitCostField.cs:78).</summary>
+                public static int RefreshFriendParkedCostScale = 3;
+                /// <summary>maps.unitCostField.refreshRadiusAdd (m; ban_kinh, was Sim/Navigation/UnitCostField.cs:80).</summary>
+                public static float RefreshRadiusAdd = 1.5f;
+                /// <summary>maps.unitCostField.stampRadiusAdd (m; ban_kinh, was Sim/Navigation/UnitCostField.cs:94).</summary>
+                public static float StampRadiusAdd = 0.5f;
+            }
         }
 
         private static readonly Entry[] Pass2Maps =
         {
+            new Entry("maps.coverGrid.changeWidthFloor", "m", () => Maps.CoverGrid.ChangeWidthFloor, v => Maps.CoverGrid.ChangeWidthFloor = (float)v),
+            new Entry("maps.coverGrid.changeDepthFloor", "x", () => Maps.CoverGrid.ChangeDepthFloor, v => Maps.CoverGrid.ChangeDepthFloor = (float)v),
+            new Entry("maps.domainGraph.distanceCacheSize", "m", () => Maps.DomainGraph.DistanceCacheSize, v => Maps.DomainGraph.DistanceCacheSize = (int)System.Math.Round(v)),
+            new Entry("maps.firingLaneResolver.blockerLengthMax", "m", () => Maps.FiringLaneResolver.BlockerLengthMax, v => Maps.FiringLaneResolver.BlockerLengthMax = (float)v),
+            new Entry("maps.firingLaneResolver.blockerAlongMax", "m", () => Maps.FiringLaneResolver.BlockerAlongMax, v => Maps.FiringLaneResolver.BlockerAlongMax = (float)v),
+            new Entry("maps.firingLaneResolver.blockerLengthSub", "m", () => Maps.FiringLaneResolver.BlockerLengthSub, v => Maps.FiringLaneResolver.BlockerLengthSub = (float)v),
+            new Entry("maps.firingLaneResolver.blockerAlongMin", "m", () => Maps.FiringLaneResolver.BlockerAlongMin, v => Maps.FiringLaneResolver.BlockerAlongMin = (float)v),
+            new Entry("maps.firingLaneResolver.resolveAbsMin", "m", () => Maps.FiringLaneResolver.ResolveAbsMin, v => Maps.FiringLaneResolver.ResolveAbsMin = (float)v),
+            new Entry("maps.firingLaneResolver.resolveSidestepMetresScale", "x", () => Maps.FiringLaneResolver.ResolveSidestepMetresScale, v => Maps.FiringLaneResolver.ResolveSidestepMetresScale = (float)v),
+            new Entry("maps.firingLaneResolver.resolveTimeMin", "s", () => Maps.FiringLaneResolver.ResolveTimeMin, v => Maps.FiringLaneResolver.ResolveTimeMin = v),
+            new Entry("maps.firingLaneResolver.stepMargin", "m", () => Maps.FiringLaneResolver.StepMargin, v => Maps.FiringLaneResolver.StepMargin = (float)v),
+            new Entry("maps.firingLaneResolver.ringMargin", "x", () => Maps.FiringLaneResolver.RingMargin, v => Maps.FiringLaneResolver.RingMargin = (float)v),
+            new Entry("maps.firingLaneResolver.inLineLengthMax", "m", () => Maps.FiringLaneResolver.InLineLengthMax, v => Maps.FiringLaneResolver.InLineLengthMax = (float)v),
+            new Entry("maps.firingLaneResolver.inLineAlongMax", "m", () => Maps.FiringLaneResolver.InLineAlongMax, v => Maps.FiringLaneResolver.InLineAlongMax = (float)v),
+            new Entry("maps.firingLaneResolver.inLineLengthSub", "m", () => Maps.FiringLaneResolver.InLineLengthSub, v => Maps.FiringLaneResolver.InLineLengthSub = (float)v),
+            new Entry("maps.formation.slotsMaxRings", "count", () => Maps.Formation.SlotsMaxRings, v => Maps.Formation.SlotsMaxRings = (int)System.Math.Round(v)),
+            new Entry("maps.formation.slotsReach", "count", () => Maps.Formation.SlotsReach, v => Maps.Formation.SlotsReach = (float)v),
+            new Entry("maps.formation.slotsCountDivisor", "x", () => Maps.Formation.SlotsCountDivisor, v => Maps.Formation.SlotsCountDivisor = (float)v),
+            new Entry("maps.formation.slotsCeilingAdd", "count", () => Maps.Formation.SlotsCeilingAdd, v => Maps.Formation.SlotsCeilingAdd = (int)System.Math.Round(v)),
+            new Entry("maps.formation.slotsRingsCap", "count", () => Maps.Formation.SlotsRingsCap, v => Maps.Formation.SlotsRingsCap = (float)v),
+            new Entry("maps.formation.slotsRingsAdd", "count", () => Maps.Formation.SlotsRingsAdd, v => Maps.Formation.SlotsRingsAdd = (float)v),
+            new Entry("maps.formation.slotsRingMax", "count", () => Maps.Formation.SlotsRingMax, v => Maps.Formation.SlotsRingMax = (int)System.Math.Round(v)),
+            new Entry("maps.formation.slotsRingScale", "x", () => Maps.Formation.SlotsRingScale, v => Maps.Formation.SlotsRingScale = (int)System.Math.Round(v)),
+            new Entry("maps.formation.slotsRingScale2", "x", () => Maps.Formation.SlotsRingScale2, v => Maps.Formation.SlotsRingScale2 = (float)v),
+            new Entry("maps.formation.slotsSpacingScale", "x", () => Maps.Formation.SlotsSpacingScale, v => Maps.Formation.SlotsSpacingScale = (float)v),
+            new Entry("maps.formation.untangleNowSub", "s", () => Maps.Formation.UntangleNowSub, v => Maps.Formation.UntangleNowSub = (float)v),
+            new Entry("maps.frontMap.reach", "m", () => Maps.FrontMap.Reach, v => Maps.FrontMap.Reach = (float)v),
+            new Entry("maps.frontMap.sectorsSqrtAdd", "m", () => Maps.FrontMap.SectorsSqrtAdd, v => Maps.FrontMap.SectorsSqrtAdd = (float)v),
+            new Entry("maps.frontMap.sectorsSqrtScale", "x", () => Maps.FrontMap.SectorsSqrtScale, v => Maps.FrontMap.SectorsSqrtScale = (float)v),
+            new Entry("maps.frontMap.gridXAdd", "m", () => Maps.FrontMap.GridXAdd, v => Maps.FrontMap.GridXAdd = (float)v),
+            new Entry("maps.frontMap.gridYAdd", "m", () => Maps.FrontMap.GridYAdd, v => Maps.FrontMap.GridYAdd = (float)v),
+            new Entry("maps.gameplayTopology.makeApproachMedianSpeedFloor", "m/s", () => Maps.GameplayTopology.MakeApproachMedianSpeedFloor, v => Maps.GameplayTopology.MakeApproachMedianSpeedFloor = (float)v),
+            new Entry("maps.gameplayTopology.makeApproachIMin", "count", () => Maps.GameplayTopology.MakeApproachIMin, v => Maps.GameplayTopology.MakeApproachIMin = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.makeApproachCountSub", "count", () => Maps.GameplayTopology.MakeApproachCountSub, v => Maps.GameplayTopology.MakeApproachCountSub = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.makeApproachStepCostFloor", "CP", () => Maps.GameplayTopology.MakeApproachStepCostFloor, v => Maps.GameplayTopology.MakeApproachStepCostFloor = (float)v),
+            new Entry("maps.gameplayTopology.makeApproachR", "m", () => Maps.GameplayTopology.MakeApproachR, v => Maps.GameplayTopology.MakeApproachR = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.makeApproachCountSub2", "count", () => Maps.GameplayTopology.MakeApproachCountSub2, v => Maps.GameplayTopology.MakeApproachCountSub2 = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.makeApproachDistanceToMax", "m", () => Maps.GameplayTopology.MakeApproachDistanceToMax, v => Maps.GameplayTopology.MakeApproachDistanceToMax = (float)v),
+            new Entry("maps.gameplayTopology.makeApproachShareMax", "x", () => Maps.GameplayTopology.MakeApproachShareMax, v => Maps.GameplayTopology.MakeApproachShareMax = (float)v),
+            new Entry("maps.gameplayTopology.assignRolesCountFalse", "count", () => Maps.GameplayTopology.AssignRolesCountFalse, v => Maps.GameplayTopology.AssignRolesCountFalse = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.artillerySupportRadiusAdd", "m", () => Maps.GameplayTopology.ArtillerySupportRadiusAdd, v => Maps.GameplayTopology.ArtillerySupportRadiusAdd = (float)v),
+            new Entry("maps.gameplayTopology.artillerySupportRadiusFloor", "m", () => Maps.GameplayTopology.ArtillerySupportRadiusFloor, v => Maps.GameplayTopology.ArtillerySupportRadiusFloor = (float)v),
+            new Entry("maps.gameplayTopology.artillerySupportLoAdd", "x", () => Maps.GameplayTopology.ArtillerySupportLoAdd, v => Maps.GameplayTopology.ArtillerySupportLoAdd = (float)v),
+            new Entry("maps.gameplayTopology.artillerySupportArtilleryRefScale", "x", () => Maps.GameplayTopology.ArtillerySupportArtilleryRefScale, v => Maps.GameplayTopology.ArtillerySupportArtilleryRefScale = (float)v),
+            new Entry("maps.gameplayTopology.artillerySupportF2", "m", () => Maps.GameplayTopology.ArtillerySupportF2, v => Maps.GameplayTopology.ArtillerySupportF2 = (float)v),
+            new Entry("maps.gameplayTopology.artillerySupportDistanceToMax", "m", () => Maps.GameplayTopology.ArtillerySupportDistanceToMax, v => Maps.GameplayTopology.ArtillerySupportDistanceToMax = (float)v),
+            new Entry("maps.gameplayTopology.artillerySupportReach", "m", () => Maps.GameplayTopology.ArtillerySupportReach, v => Maps.GameplayTopology.ArtillerySupportReach = (float)v),
+            new Entry("maps.gameplayTopology.artillerySupportRays", "x", () => Maps.GameplayTopology.ArtillerySupportRays, v => Maps.GameplayTopology.ArtillerySupportRays = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.defenderFallbackExtra1", "m", () => Maps.GameplayTopology.DefenderFallbackExtra1, v => Maps.GameplayTopology.DefenderFallbackExtra1 = (float)v),
+            new Entry("maps.gameplayTopology.defenderFallbackExtra2", "m", () => Maps.GameplayTopology.DefenderFallbackExtra2, v => Maps.GameplayTopology.DefenderFallbackExtra2 = (float)v),
+            new Entry("maps.gameplayTopology.defenderFallbackExtra3", "m", () => Maps.GameplayTopology.DefenderFallbackExtra3, v => Maps.GameplayTopology.DefenderFallbackExtra3 = (float)v),
+            new Entry("maps.gameplayTopology.defenderFallbackStagingRadiusScale", "x", () => Maps.GameplayTopology.DefenderFallbackStagingRadiusScale, v => Maps.GameplayTopology.DefenderFallbackStagingRadiusScale = (float)v),
+            new Entry("maps.gameplayTopology.defenderFallbackReach", "m", () => Maps.GameplayTopology.DefenderFallbackReach, v => Maps.GameplayTopology.DefenderFallbackReach = (float)v),
+            new Entry("maps.gameplayTopology.defenderFallbackRays", "x", () => Maps.GameplayTopology.DefenderFallbackRays, v => Maps.GameplayTopology.DefenderFallbackRays = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.defenderFallbackDistanceToDivisor", "x", () => Maps.GameplayTopology.DefenderFallbackDistanceToDivisor, v => Maps.GameplayTopology.DefenderFallbackDistanceToDivisor = (float)v),
+            new Entry("maps.gameplayTopology.openShareT", "share", () => Maps.GameplayTopology.OpenShareT, v => Maps.GameplayTopology.OpenShareT = (float)v),
+            new Entry("maps.gameplayTopology.sightAreaT", "m", () => Maps.GameplayTopology.SightAreaT, v => Maps.GameplayTopology.SightAreaT = (float)v),
+            new Entry("maps.gameplayTopology.simplifyCountMax", "count", () => Maps.GameplayTopology.SimplifyCountMax, v => Maps.GameplayTopology.SimplifyCountMax = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.objectivesRadius", "m", () => Maps.GameplayTopology.ObjectivesRadius, v => Maps.GameplayTopology.ObjectivesRadius = (float)v),
+            new Entry("maps.gameplayTopology.objectivesRadiusFloor", "m", () => Maps.GameplayTopology.ObjectivesRadiusFloor, v => Maps.GameplayTopology.ObjectivesRadiusFloor = (float)v),
+            new Entry("maps.gameplayTopology.buildLanesCountDivisor", "x", () => Maps.GameplayTopology.BuildLanesCountDivisor, v => Maps.GameplayTopology.BuildLanesCountDivisor = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.buildLanesSpanScale", "x", () => Maps.GameplayTopology.BuildLanesSpanScale, v => Maps.GameplayTopology.BuildLanesSpanScale = (float)v),
+            new Entry("maps.gameplayTopology.buildLanesCountScale", "x", () => Maps.GameplayTopology.BuildLanesCountScale, v => Maps.GameplayTopology.BuildLanesCountScale = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.buildLanesCountDivisor2", "x", () => Maps.GameplayTopology.BuildLanesCountDivisor2, v => Maps.GameplayTopology.BuildLanesCountDivisor2 = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.buildLanesDistanceMin", "m", () => Maps.GameplayTopology.BuildLanesDistanceMin, v => Maps.GameplayTopology.BuildLanesDistanceMin = (float)v),
+            new Entry("maps.gameplayTopology.buildLanesCountMax", "count", () => Maps.GameplayTopology.BuildLanesCountMax, v => Maps.GameplayTopology.BuildLanesCountMax = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.makeLaneStepCostFloor", "CP", () => Maps.GameplayTopology.MakeLaneStepCostFloor, v => Maps.GameplayTopology.MakeLaneStepCostFloor = (float)v),
+            new Entry("maps.gameplayTopology.makeLaneP", "m", () => Maps.GameplayTopology.MakeLaneP, v => Maps.GameplayTopology.MakeLaneP = (float)v),
+            new Entry("maps.gameplayTopology.makeLaneObstacleClearanceScale", "x", () => Maps.GameplayTopology.MakeLaneObstacleClearanceScale, v => Maps.GameplayTopology.MakeLaneObstacleClearanceScale = (float)v),
+            new Entry("maps.gameplayTopology.makeLaneMedianSpeedFloor", "m/s", () => Maps.GameplayTopology.MakeLaneMedianSpeedFloor, v => Maps.GameplayTopology.MakeLaneMedianSpeedFloor = (float)v),
+            new Entry("maps.gameplayTopology.makeLaneReferenceLengthFloor", "m", () => Maps.GameplayTopology.MakeLaneReferenceLengthFloor, v => Maps.GameplayTopology.MakeLaneReferenceLengthFloor = (float)v),
+            new Entry("maps.gameplayTopology.makeLaneReferenceLengthAdd", "m", () => Maps.GameplayTopology.MakeLaneReferenceLengthAdd, v => Maps.GameplayTopology.MakeLaneReferenceLengthAdd = (float)v),
+            new Entry("maps.gameplayTopology.makeLaneRadiusAdd", "m", () => Maps.GameplayTopology.MakeLaneRadiusAdd, v => Maps.GameplayTopology.MakeLaneRadiusAdd = (float)v),
+            new Entry("maps.gameplayTopology.buildStagingCountMax", "count", () => Maps.GameplayTopology.BuildStagingCountMax, v => Maps.GameplayTopology.BuildStagingCountMax = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.buildStagingDistanceToMax", "m", () => Maps.GameplayTopology.BuildStagingDistanceToMax, v => Maps.GameplayTopology.BuildStagingDistanceToMax = (float)v),
+            new Entry("maps.gameplayTopology.buildStagingRays", "x", () => Maps.GameplayTopology.BuildStagingRays, v => Maps.GameplayTopology.BuildStagingRays = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.buildStagingOpenShareScale", "x", () => Maps.GameplayTopology.BuildStagingOpenShareScale, v => Maps.GameplayTopology.BuildStagingOpenShareScale = (float)v),
+            new Entry("maps.gameplayTopology.stagingOkDistanceToMax", "m", () => Maps.GameplayTopology.StagingOkDistanceToMax, v => Maps.GameplayTopology.StagingOkDistanceToMax = (float)v),
+            new Entry("maps.gameplayTopology.directRangeDirectRange", "m", () => Maps.GameplayTopology.DirectRangeDirectRange, v => Maps.GameplayTopology.DirectRangeDirectRange = (float)v),
+            new Entry("maps.gameplayTopology.directFirePositionsF1", "m", () => Maps.GameplayTopology.DirectFirePositionsF1, v => Maps.GameplayTopology.DirectFirePositionsF1 = (float)v),
+            new Entry("maps.gameplayTopology.directFirePositionsF2", "m", () => Maps.GameplayTopology.DirectFirePositionsF2, v => Maps.GameplayTopology.DirectFirePositionsF2 = (float)v),
+            new Entry("maps.gameplayTopology.directFirePositionsF3", "m", () => Maps.GameplayTopology.DirectFirePositionsF3, v => Maps.GameplayTopology.DirectFirePositionsF3 = (float)v),
+            new Entry("maps.gameplayTopology.directFirePositionsRadiusAdd", "m", () => Maps.GameplayTopology.DirectFirePositionsRadiusAdd, v => Maps.GameplayTopology.DirectFirePositionsRadiusAdd = (float)v),
+            new Entry("maps.gameplayTopology.directFirePositionsRangeScale", "x", () => Maps.GameplayTopology.DirectFirePositionsRangeScale, v => Maps.GameplayTopology.DirectFirePositionsRangeScale = (float)v),
+            new Entry("maps.gameplayTopology.directFirePositionsRangeScale2", "x", () => Maps.GameplayTopology.DirectFirePositionsRangeScale2, v => Maps.GameplayTopology.DirectFirePositionsRangeScale2 = (float)v),
+            new Entry("maps.gameplayTopology.directFirePositionsReach2", "m", () => Maps.GameplayTopology.DirectFirePositionsReach2, v => Maps.GameplayTopology.DirectFirePositionsReach2 = (float)v),
+            new Entry("maps.gameplayTopology.directFirePositionsRays", "x", () => Maps.GameplayTopology.DirectFirePositionsRays, v => Maps.GameplayTopology.DirectFirePositionsRays = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.directFirePositionsTermsScale", "x", () => Maps.GameplayTopology.DirectFirePositionsTermsScale, v => Maps.GameplayTopology.DirectFirePositionsTermsScale = (float)v),
+            new Entry("maps.gameplayTopology.directFirePositionsTermsScale2", "x", () => Maps.GameplayTopology.DirectFirePositionsTermsScale2, v => Maps.GameplayTopology.DirectFirePositionsTermsScale2 = (float)v),
+            new Entry("maps.gameplayTopology.directFirePositionsTermsScale3", "x", () => Maps.GameplayTopology.DirectFirePositionsTermsScale3, v => Maps.GameplayTopology.DirectFirePositionsTermsScale3 = (float)v),
+            new Entry("maps.gameplayTopology.directFirePositionsTermsScale4", "x", () => Maps.GameplayTopology.DirectFirePositionsTermsScale4, v => Maps.GameplayTopology.DirectFirePositionsTermsScale4 = (float)v),
+            new Entry("maps.gameplayTopology.artilleryPocketsD1", "m", () => Maps.GameplayTopology.ArtilleryPocketsD1, v => Maps.GameplayTopology.ArtilleryPocketsD1 = (float)v),
+            new Entry("maps.gameplayTopology.artilleryPocketsD2", "m", () => Maps.GameplayTopology.ArtilleryPocketsD2, v => Maps.GameplayTopology.ArtilleryPocketsD2 = (float)v),
+            new Entry("maps.gameplayTopology.artilleryPocketsD3", "m", () => Maps.GameplayTopology.ArtilleryPocketsD3, v => Maps.GameplayTopology.ArtilleryPocketsD3 = (float)v),
+            new Entry("maps.gameplayTopology.artilleryPocketsDistanceToMax", "m", () => Maps.GameplayTopology.ArtilleryPocketsDistanceToMax, v => Maps.GameplayTopology.ArtilleryPocketsDistanceToMax = (float)v),
+            new Entry("maps.gameplayTopology.artilleryPocketsArtilleryMinRefAdd", "x", () => Maps.GameplayTopology.ArtilleryPocketsArtilleryMinRefAdd, v => Maps.GameplayTopology.ArtilleryPocketsArtilleryMinRefAdd = (float)v),
+            new Entry("maps.gameplayTopology.artilleryPocketsArtilleryMinRefAdd2", "m", () => Maps.GameplayTopology.ArtilleryPocketsArtilleryMinRefAdd2, v => Maps.GameplayTopology.ArtilleryPocketsArtilleryMinRefAdd2 = (float)v),
+            new Entry("maps.gameplayTopology.artilleryPocketsReach", "m", () => Maps.GameplayTopology.ArtilleryPocketsReach, v => Maps.GameplayTopology.ArtilleryPocketsReach = (float)v),
+            new Entry("maps.gameplayTopology.artilleryPocketsRays", "x", () => Maps.GameplayTopology.ArtilleryPocketsRays, v => Maps.GameplayTopology.ArtilleryPocketsRays = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.artilleryPocketsTermsScale", "x", () => Maps.GameplayTopology.ArtilleryPocketsTermsScale, v => Maps.GameplayTopology.ArtilleryPocketsTermsScale = (float)v),
+            new Entry("maps.gameplayTopology.artilleryPocketsTermsScale2", "x", () => Maps.GameplayTopology.ArtilleryPocketsTermsScale2, v => Maps.GameplayTopology.ArtilleryPocketsTermsScale2 = (float)v),
+            new Entry("maps.gameplayTopology.artilleryPocketsTermsScale3", "x", () => Maps.GameplayTopology.ArtilleryPocketsTermsScale3, v => Maps.GameplayTopology.ArtilleryPocketsTermsScale3 = (float)v),
+            new Entry("maps.gameplayTopology.artilleryPocketsTermsScale4", "x", () => Maps.GameplayTopology.ArtilleryPocketsTermsScale4, v => Maps.GameplayTopology.ArtilleryPocketsTermsScale4 = (float)v),
+            new Entry("maps.gameplayTopology.reconPositionsYAdd", "x", () => Maps.GameplayTopology.ReconPositionsYAdd, v => Maps.GameplayTopology.ReconPositionsYAdd = (float)v),
+            new Entry("maps.gameplayTopology.reconPositionsY", "x", () => Maps.GameplayTopology.ReconPositionsY, v => Maps.GameplayTopology.ReconPositionsY = (float)v),
+            new Entry("maps.gameplayTopology.reconPositionsXAdd", "x", () => Maps.GameplayTopology.ReconPositionsXAdd, v => Maps.GameplayTopology.ReconPositionsXAdd = (float)v),
+            new Entry("maps.gameplayTopology.reconPositionsX", "x", () => Maps.GameplayTopology.ReconPositionsX, v => Maps.GameplayTopology.ReconPositionsX = (float)v),
+            new Entry("maps.gameplayTopology.reconPositionsDistanceMax", "m", () => Maps.GameplayTopology.ReconPositionsDistanceMax, v => Maps.GameplayTopology.ReconPositionsDistanceMax = (float)v),
+            new Entry("maps.gameplayTopology.reconPositionsRays", "m", () => Maps.GameplayTopology.ReconPositionsRays, v => Maps.GameplayTopology.ReconPositionsRays = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.reconPositionsDiagScale", "x", () => Maps.GameplayTopology.ReconPositionsDiagScale, v => Maps.GameplayTopology.ReconPositionsDiagScale = (float)v),
+            new Entry("maps.gameplayTopology.lowCoverMaxMax", "count", () => Maps.GameplayTopology.LowCoverMaxMax, v => Maps.GameplayTopology.LowCoverMaxMax = (float)v),
+            new Entry("maps.gameplayTopology.hullDownPositionsRangeScale", "x", () => Maps.GameplayTopology.HullDownPositionsRangeScale, v => Maps.GameplayTopology.HullDownPositionsRangeScale = (float)v),
+            new Entry("maps.gameplayTopology.hullDownPositionsRangeScale2", "x", () => Maps.GameplayTopology.HullDownPositionsRangeScale2, v => Maps.GameplayTopology.HullDownPositionsRangeScale2 = (float)v),
+            new Entry("maps.gameplayTopology.hullDownPositionsTermsAdd", "m", () => Maps.GameplayTopology.HullDownPositionsTermsAdd, v => Maps.GameplayTopology.HullDownPositionsTermsAdd = (float)v),
+            new Entry("maps.gameplayTopology.hullDownPositionsTermsScale", "x", () => Maps.GameplayTopology.HullDownPositionsTermsScale, v => Maps.GameplayTopology.HullDownPositionsTermsScale = (float)v),
+            new Entry("maps.gameplayTopology.buildBreachesReachAdd", "m", () => Maps.GameplayTopology.BuildBreachesReachAdd, v => Maps.GameplayTopology.BuildBreachesReachAdd = (float)v),
+            new Entry("maps.gameplayTopology.buildBreachesGrowthScale", "x", () => Maps.GameplayTopology.BuildBreachesGrowthScale, v => Maps.GameplayTopology.BuildBreachesGrowthScale = (float)v),
+            new Entry("maps.gameplayTopology.buildBreachesBeforeScale", "x", () => Maps.GameplayTopology.BuildBreachesBeforeScale, v => Maps.GameplayTopology.BuildBreachesBeforeScale = (float)v),
+            new Entry("maps.gameplayTopology.buildBreachesSideClearanceScale", "x", () => Maps.GameplayTopology.BuildBreachesSideClearanceScale, v => Maps.GameplayTopology.BuildBreachesSideClearanceScale = (float)v),
+            new Entry("maps.gameplayTopology.footprintScale", "x", () => Maps.GameplayTopology.FootprintScale, v => Maps.GameplayTopology.FootprintScale = (float)v),
+            new Entry("maps.gameplayTopology.buildShoreCountMax", "count", () => Maps.GameplayTopology.BuildShoreCountMax, v => Maps.GameplayTopology.BuildShoreCountMax = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.buildShoreCorridorScale", "x", () => Maps.GameplayTopology.BuildShoreCorridorScale, v => Maps.GameplayTopology.BuildShoreCorridorScale = (float)v),
+            new Entry("maps.gameplayTopology.sCurveRadiusOffsetMax", "m", () => Maps.GameplayTopology.SCurveRadiusOffsetMax, v => Maps.GameplayTopology.SCurveRadiusOffsetMax = (float)v),
+            new Entry("maps.gameplayTopology.sCurveRadiusOffsetScale", "x", () => Maps.GameplayTopology.SCurveRadiusOffsetScale, v => Maps.GameplayTopology.SCurveRadiusOffsetScale = (float)v),
+            new Entry("maps.gameplayTopology.buildNavalCorridorScale", "x", () => Maps.GameplayTopology.BuildNavalCorridorScale, v => Maps.GameplayTopology.BuildNavalCorridorScale = (float)v),
+            new Entry("maps.gameplayTopology.buildNavalMaxWidthScale", "x", () => Maps.GameplayTopology.BuildNavalMaxWidthScale, v => Maps.GameplayTopology.BuildNavalMaxWidthScale = (float)v),
+            new Entry("maps.gameplayTopology.buildNavalNavalMarginScale", "x", () => Maps.GameplayTopology.BuildNavalNavalMarginScale, v => Maps.GameplayTopology.BuildNavalNavalMarginScale = (float)v),
+            new Entry("maps.gameplayTopology.buildNavalMaxDistanceToNavalLaneScale", "x", () => Maps.GameplayTopology.BuildNavalMaxDistanceToNavalLaneScale, v => Maps.GameplayTopology.BuildNavalMaxDistanceToNavalLaneScale = (float)v),
+            new Entry("maps.gameplayTopology.buildTurnsRateFloor", "x", () => Maps.GameplayTopology.BuildTurnsRateFloor, v => Maps.GameplayTopology.BuildTurnsRateFloor = (float)v),
+            new Entry("maps.gameplayTopology.buildTurnsStepRadiusScale", "x", () => Maps.GameplayTopology.BuildTurnsStepRadiusScale, v => Maps.GameplayTopology.BuildTurnsStepRadiusScale = (float)v),
+            new Entry("maps.gameplayTopology.buildTurnsRoomScale", "x", () => Maps.GameplayTopology.BuildTurnsRoomScale, v => Maps.GameplayTopology.BuildTurnsRoomScale = (float)v),
+            new Entry("maps.gameplayTopology.clearanceForSideClearanceScale", "x", () => Maps.GameplayTopology.ClearanceForSideClearanceScale, v => Maps.GameplayTopology.ClearanceForSideClearanceScale = (float)v),
+            new Entry("maps.gameplayTopology.clearanceForObstacleClearanceScale", "x", () => Maps.GameplayTopology.ClearanceForObstacleClearanceScale, v => Maps.GameplayTopology.ClearanceForObstacleClearanceScale = (float)v),
+            new Entry("maps.gameplayTopology.widthOfClearanceClearanceScale", "x", () => Maps.GameplayTopology.WidthOfClearanceClearanceScale, v => Maps.GameplayTopology.WidthOfClearanceClearanceScale = (float)v),
+            new Entry("maps.gameplayTopology.widthOfClearanceObstacleClearanceScale", "x", () => Maps.GameplayTopology.WidthOfClearanceObstacleClearanceScale, v => Maps.GameplayTopology.WidthOfClearanceObstacleClearanceScale = (float)v),
+            new Entry("maps.gameplayTopology.measureClassesDefaultWidth1", "m", () => Maps.GameplayTopology.MeasureClassesDefaultWidth1, v => Maps.GameplayTopology.MeasureClassesDefaultWidth1 = (float)v),
+            new Entry("maps.gameplayTopology.measureClassesDefaultWidth2", "m", () => Maps.GameplayTopology.MeasureClassesDefaultWidth2, v => Maps.GameplayTopology.MeasureClassesDefaultWidth2 = (float)v),
+            new Entry("maps.gameplayTopology.measureClassesDefaultWidth3", "m", () => Maps.GameplayTopology.MeasureClassesDefaultWidth3, v => Maps.GameplayTopology.MeasureClassesDefaultWidth3 = (float)v),
+            new Entry("maps.gameplayTopology.measureClassesDefaultWidth4", "m", () => Maps.GameplayTopology.MeasureClassesDefaultWidth4, v => Maps.GameplayTopology.MeasureClassesDefaultWidth4 = (float)v),
+            new Entry("maps.gameplayTopology.measureClassesDefaultWidth5", "m", () => Maps.GameplayTopology.MeasureClassesDefaultWidth5, v => Maps.GameplayTopology.MeasureClassesDefaultWidth5 = (float)v),
+            new Entry("maps.gameplayTopology.measureClassesReferenceScale", "x", () => Maps.GameplayTopology.MeasureClassesReferenceScale, v => Maps.GameplayTopology.MeasureClassesReferenceScale = (float)v),
+            new Entry("maps.gameplayTopology.measureClassesCountFalse", "count", () => Maps.GameplayTopology.MeasureClassesCountFalse, v => Maps.GameplayTopology.MeasureClassesCountFalse = (float)v),
+            new Entry("maps.gameplayTopology.resolveAnchorsRadiusFloor", "m", () => Maps.GameplayTopology.ResolveAnchorsRadiusFloor, v => Maps.GameplayTopology.ResolveAnchorsRadiusFloor = (float)v),
+            new Entry("maps.gameplayTopology.resolveAnchorsRadius2", "m", () => Maps.GameplayTopology.ResolveAnchorsRadius2, v => Maps.GameplayTopology.ResolveAnchorsRadius2 = (float)v),
+            new Entry("maps.gameplayTopology.resolveAnchorsCountMin", "count", () => Maps.GameplayTopology.ResolveAnchorsCountMin, v => Maps.GameplayTopology.ResolveAnchorsCountMin = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.resolveAnchorsCountDivisor", "x", () => Maps.GameplayTopology.ResolveAnchorsCountDivisor, v => Maps.GameplayTopology.ResolveAnchorsCountDivisor = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.resolveAnchorsRadius", "m", () => Maps.GameplayTopology.ResolveAnchorsRadius, v => Maps.GameplayTopology.ResolveAnchorsRadius = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesWidthScale", "x", () => Maps.GameplayTopology.MeasurePassagesWidthScale, v => Maps.GameplayTopology.MeasurePassagesWidthScale = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesRoadScale", "x", () => Maps.GameplayTopology.MeasurePassagesRoadScale, v => Maps.GameplayTopology.MeasurePassagesRoadScale = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.measurePassagesReachAdd", "m", () => Maps.GameplayTopology.MeasurePassagesReachAdd, v => Maps.GameplayTopology.MeasurePassagesReachAdd = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesMax", "m", () => Maps.GameplayTopology.MeasurePassagesMax, v => Maps.GameplayTopology.MeasurePassagesMax = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesCellSizeScale", "x", () => Maps.GameplayTopology.MeasurePassagesCellSizeScale, v => Maps.GameplayTopology.MeasurePassagesCellSizeScale = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesWidthAdd", "m", () => Maps.GameplayTopology.MeasurePassagesWidthAdd, v => Maps.GameplayTopology.MeasurePassagesWidthAdd = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesWidthFloor", "m", () => Maps.GameplayTopology.MeasurePassagesWidthFloor, v => Maps.GameplayTopology.MeasurePassagesWidthFloor = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesMaxScale", "x", () => Maps.GameplayTopology.MeasurePassagesMaxScale, v => Maps.GameplayTopology.MeasurePassagesMaxScale = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesMaxAdd", "count", () => Maps.GameplayTopology.MeasurePassagesMaxAdd, v => Maps.GameplayTopology.MeasurePassagesMaxAdd = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesMaxAdd2", "count", () => Maps.GameplayTopology.MeasurePassagesMaxAdd2, v => Maps.GameplayTopology.MeasurePassagesMaxAdd2 = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesCellsFloor", "m", () => Maps.GameplayTopology.MeasurePassagesCellsFloor, v => Maps.GameplayTopology.MeasurePassagesCellsFloor = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesWidthFloor2", "m", () => Maps.GameplayTopology.MeasurePassagesWidthFloor2, v => Maps.GameplayTopology.MeasurePassagesWidthFloor2 = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesMinFloor", "m", () => Maps.GameplayTopology.MeasurePassagesMinFloor, v => Maps.GameplayTopology.MeasurePassagesMinFloor = (float)v),
+            new Entry("maps.gameplayTopology.measurePassagesLengthCap", "count", () => Maps.GameplayTopology.MeasurePassagesLengthCap, v => Maps.GameplayTopology.MeasurePassagesLengthCap = (float)v),
+            new Entry("maps.gameplayTopology.typeChokesGrowthScale", "x", () => Maps.GameplayTopology.TypeChokesGrowthScale, v => Maps.GameplayTopology.TypeChokesGrowthScale = (float)v),
+            new Entry("maps.gameplayTopology.typeChokesMedianSpeedFloor", "m/s", () => Maps.GameplayTopology.TypeChokesMedianSpeedFloor, v => Maps.GameplayTopology.TypeChokesMedianSpeedFloor = (float)v),
+            new Entry("maps.gameplayTopology.typeChokesReferenceLengthFloor", "m", () => Maps.GameplayTopology.TypeChokesReferenceLengthFloor, v => Maps.GameplayTopology.TypeChokesReferenceLengthFloor = (float)v),
+            new Entry("maps.gameplayTopology.typeChokesReferenceLengthAdd", "m", () => Maps.GameplayTopology.TypeChokesReferenceLengthAdd, v => Maps.GameplayTopology.TypeChokesReferenceLengthAdd = (float)v),
+            new Entry("maps.gameplayTopology.typeChokesMaxMediumSideBySideMin", "count", () => Maps.GameplayTopology.TypeChokesMaxMediumSideBySideMin, v => Maps.GameplayTopology.TypeChokesMaxMediumSideBySideMin = (int)System.Math.Round(v)),
+            new Entry("maps.gameplayTopology.typeChokesSideClearanceScale", "x", () => Maps.GameplayTopology.TypeChokesSideClearanceScale, v => Maps.GameplayTopology.TypeChokesSideClearanceScale = (float)v),
+            new Entry("maps.gameplayTopology.typeOfGateWidthAdd", "m", () => Maps.GameplayTopology.TypeOfGateWidthAdd, v => Maps.GameplayTopology.TypeOfGateWidthAdd = (float)v),
+            new Entry("maps.gameplayTopology.typeOfLengthAdd", "m", () => Maps.GameplayTopology.TypeOfLengthAdd, v => Maps.GameplayTopology.TypeOfLengthAdd = (float)v),
+            new Entry("maps.gameplayTopology.typeOfHalfAdd", "m", () => Maps.GameplayTopology.TypeOfHalfAdd, v => Maps.GameplayTopology.TypeOfHalfAdd = (float)v),
+            new Entry("maps.gameplayTopology.typeOfDistanceMax", "m", () => Maps.GameplayTopology.TypeOfDistanceMax, v => Maps.GameplayTopology.TypeOfDistanceMax = (float)v),
+            new Entry("maps.gameplayTopology.typeOfOpenWidthScale", "x", () => Maps.GameplayTopology.TypeOfOpenWidthScale, v => Maps.GameplayTopology.TypeOfOpenWidthScale = (float)v),
+            new Entry("maps.gameplayTopology.queueSpacingScale", "x", () => Maps.GameplayTopology.QueueSpacingScale, v => Maps.GameplayTopology.QueueSpacingScale = (float)v),
+            new Entry("maps.gameplayTopology.queueOpenWidthAdd", "m", () => Maps.GameplayTopology.QueueOpenWidthAdd, v => Maps.GameplayTopology.QueueOpenWidthAdd = (float)v),
+            new Entry("maps.gameplayTopology.laneStretchRadiusAdd", "m", () => Maps.GameplayTopology.LaneStretchRadiusAdd, v => Maps.GameplayTopology.LaneStretchRadiusAdd = (float)v),
+            new Entry("maps.laneMap.stampSegmentRouteCountMax", "count", () => Maps.LaneMap.StampSegmentRouteCountMax, v => Maps.LaneMap.StampSegmentRouteCountMax = (int)System.Math.Round(v)),
+            new Entry("maps.laneMap.offLaneRingScale", "x", () => Maps.LaneMap.OffLaneRingScale, v => Maps.LaneMap.OffLaneRingScale = (float)v),
+            new Entry("maps.laneMap.standCostFTrue", "CP", () => Maps.LaneMap.StandCostFTrue, v => Maps.LaneMap.StandCostFTrue = (float)v),
+            new Entry("maps.laneMap.standCostRouteCountAtScale", "x", () => Maps.LaneMap.StandCostRouteCountAtScale, v => Maps.LaneMap.StandCostRouteCountAtScale = (float)v),
+            new Entry("maps.mapDefinition.isLongWidthScale", "x", () => Maps.MapDefinition.IsLongWidthScale, v => Maps.MapDefinition.IsLongWidthScale = (float)v),
+            new Entry("maps.mapTelemetry.stepTelemetrySecondsFloor", "s", () => Maps.MapTelemetry.StepTelemetrySecondsFloor, v => Maps.MapTelemetry.StepTelemetrySecondsFloor = (float)v),
+            new Entry("maps.mapTelemetry.stepDistanceToMax", "m", () => Maps.MapTelemetry.StepDistanceToMax, v => Maps.MapTelemetry.StepDistanceToMax = (float)v),
+            new Entry("maps.mapTelemetry.stepDistanceSquaredMin", "m", () => Maps.MapTelemetry.StepDistanceSquaredMin, v => Maps.MapTelemetry.StepDistanceSquaredMin = (float)v),
+            new Entry("maps.mapTelemetry.stepRadius", "m", () => Maps.MapTelemetry.StepRadius, v => Maps.MapTelemetry.StepRadius = (float)v),
+            new Entry("maps.mapTopology.measureClearanceClearanceCap", "count", () => Maps.MapTopology.MeasureClearanceClearanceCap, v => Maps.MapTopology.MeasureClearanceClearanceCap = (int)System.Math.Round(v)),
+            new Entry("maps.mapTopology.addObjectivesRadiusFloor", "m", () => Maps.MapTopology.AddObjectivesRadiusFloor, v => Maps.MapTopology.AddObjectivesRadiusFloor = (float)v),
+            new Entry("maps.mapTopology.addObjectivesRadius", "m", () => Maps.MapTopology.AddObjectivesRadius, v => Maps.MapTopology.AddObjectivesRadius = (float)v),
+            new Entry("maps.navGrid.setTerrainXSub", "x", () => Maps.NavGrid.SetTerrainXSub, v => Maps.NavGrid.SetTerrainXSub = (float)v),
+            new Entry("maps.navGrid.setTerrainYSub", "x", () => Maps.NavGrid.SetTerrainYSub, v => Maps.NavGrid.SetTerrainYSub = (float)v),
+            new Entry("maps.navGrid.addBlockerClearanceScale", "x", () => Maps.NavGrid.AddBlockerClearanceScale, v => Maps.NavGrid.AddBlockerClearanceScale = (float)v),
+            new Entry("maps.navGrid.removeBlockerClearanceScale", "x", () => Maps.NavGrid.RemoveBlockerClearanceScale, v => Maps.NavGrid.RemoveBlockerClearanceScale = (float)v),
+            new Entry("maps.navGrid.markClearanceScale", "x", () => Maps.NavGrid.MarkClearanceScale, v => Maps.NavGrid.MarkClearanceScale = (float)v),
+            new Entry("maps.navGrid.lineOfSightCellSizeScale", "x", () => Maps.NavGrid.LineOfSightCellSizeScale, v => Maps.NavGrid.LineOfSightCellSizeScale = (float)v),
+            new Entry("maps.navSiteDef.ctorCountMax", "count", () => Maps.NavSiteDef.CtorCountMax, v => Maps.NavSiteDef.CtorCountMax = (int)System.Math.Round(v)),
+            new Entry("maps.navStates.anchorRegionMaxRings", "x", () => Maps.NavStates.AnchorRegionMaxRings, v => Maps.NavStates.AnchorRegionMaxRings = (int)System.Math.Round(v)),
+            new Entry("maps.navStates.switchMaxRings", "x", () => Maps.NavStates.SwitchMaxRings, v => Maps.NavStates.SwitchMaxRings = (int)System.Math.Round(v)),
+            new Entry("maps.pathCosts.smoothLimit", "count", () => Maps.PathCosts.SmoothLimit, v => Maps.PathCosts.SmoothLimit = (int)System.Math.Round(v)),
+            new Entry("maps.pathFinder.maxTerrainAlongCellSizeScale", "x", () => Maps.PathFinder.MaxTerrainAlongCellSizeScale, v => Maps.PathFinder.MaxTerrainAlongCellSizeScale = (float)v),
+            new Entry("maps.pathFinder.maxExtraAlongCellSizeScale", "x", () => Maps.PathFinder.MaxExtraAlongCellSizeScale, v => Maps.PathFinder.MaxExtraAlongCellSizeScale = (float)v),
+            new Entry("maps.sizeClassInfo.turnRadiusSqrtScale", "x", () => Maps.SizeClassInfo.TurnRadiusSqrtScale, v => Maps.SizeClassInfo.TurnRadiusSqrtScale = (float)v),
+            new Entry("maps.spawnPoints.buildScale", "x", () => Maps.SpawnPoints.BuildScale, v => Maps.SpawnPoints.BuildScale = (float)v),
+            new Entry("maps.spawnPoints.buildCentreLerp", "m", () => Maps.SpawnPoints.BuildCentreLerp, v => Maps.SpawnPoints.BuildCentreLerp = (float)v),
+            new Entry("maps.spawnPoints.buildCampClearanceScale", "x", () => Maps.SpawnPoints.BuildCampClearanceScale, v => Maps.SpawnPoints.BuildCampClearanceScale = (float)v),
+            new Entry("maps.spawnPoints.buildOff2", "m", () => Maps.SpawnPoints.BuildOff2, v => Maps.SpawnPoints.BuildOff2 = (float)v),
+            new Entry("maps.spawnPoints.buildOff3", "m", () => Maps.SpawnPoints.BuildOff3, v => Maps.SpawnPoints.BuildOff3 = (float)v),
+            new Entry("maps.spawnPoints.addScale", "x", () => Maps.SpawnPoints.AddScale, v => Maps.SpawnPoints.AddScale = (float)v),
+            new Entry("maps.spawnPoints.addOff1", "m", () => Maps.SpawnPoints.AddOff1, v => Maps.SpawnPoints.AddOff1 = (float)v),
+            new Entry("maps.spawnPoints.addOff2", "m", () => Maps.SpawnPoints.AddOff2, v => Maps.SpawnPoints.AddOff2 = (float)v),
+            new Entry("maps.spawnPoints.addOff3", "m", () => Maps.SpawnPoints.AddOff3, v => Maps.SpawnPoints.AddOff3 = (float)v),
+            new Entry("maps.spawnPoints.addOff4", "m", () => Maps.SpawnPoints.AddOff4, v => Maps.SpawnPoints.AddOff4 = (float)v),
+            new Entry("maps.spawnPoints.addDistanceSquaredMin", "m", () => Maps.SpawnPoints.AddDistanceSquaredMin, v => Maps.SpawnPoints.AddDistanceSquaredMin = (float)v),
+            new Entry("maps.spawnPoints.addCampClearanceScale", "x", () => Maps.SpawnPoints.AddCampClearanceScale, v => Maps.SpawnPoints.AddCampClearanceScale = (float)v),
+            new Entry("maps.spawnPoints.gateForEdgeDistanceMax", "m", () => Maps.SpawnPoints.GateForEdgeDistanceMax, v => Maps.SpawnPoints.GateForEdgeDistanceMax = (float)v),
+            new Entry("maps.spawnPoints.gateForCampClearanceScale", "x", () => Maps.SpawnPoints.GateForCampClearanceScale, v => Maps.SpawnPoints.GateForCampClearanceScale = (float)v),
+            new Entry("maps.spawnPoints.edgePointEdgeMarginSub", "x", () => Maps.SpawnPoints.EdgePointEdgeMarginSub, v => Maps.SpawnPoints.EdgePointEdgeMarginSub = (float)v),
+            new Entry("maps.spawnPoints.snapEdgeMarginScale", "x", () => Maps.SpawnPoints.SnapEdgeMarginScale, v => Maps.SpawnPoints.SnapEdgeMarginScale = (float)v),
+            new Entry("maps.spawnPoints.waterLandingsEdgeDistanceMin", "m", () => Maps.SpawnPoints.WaterLandingsEdgeDistanceMin, v => Maps.SpawnPoints.WaterLandingsEdgeDistanceMin = (float)v),
+            new Entry("maps.spawnPoints.waterLandingsCampClearanceAdd", "m", () => Maps.SpawnPoints.WaterLandingsCampClearanceAdd, v => Maps.SpawnPoints.WaterLandingsCampClearanceAdd = (float)v),
+            new Entry("maps.spawnPoints.waterLandingsDistanceMin", "m", () => Maps.SpawnPoints.WaterLandingsDistanceMin, v => Maps.SpawnPoints.WaterLandingsDistanceMin = (float)v),
+            new Entry("maps.spawnPoints.waterLandingsIMax", "count", () => Maps.SpawnPoints.WaterLandingsIMax, v => Maps.SpawnPoints.WaterLandingsIMax = (int)System.Math.Round(v)),
+            new Entry("maps.stuckWatch.threshold", "x", () => Maps.StuckWatch.Threshold, v => Maps.StuckWatch.Threshold = (float)v),
+            new Entry("maps.stuckWatch.sampleTicks", "ticks", () => Maps.StuckWatch.SampleTicks, v => Maps.StuckWatch.SampleTicks = (int)System.Math.Round(v)),
+            new Entry("maps.stuckWatch.grace", "x", () => Maps.StuckWatch.Grace, v => Maps.StuckWatch.Grace = (float)v),
+            new Entry("maps.stuckWatch.wantsTimeMax", "s", () => Maps.StuckWatch.WantsTimeMax, v => Maps.StuckWatch.WantsTimeMax = v),
+            new Entry("maps.stuckWatch.wantsHullBoundFloor", "m", () => Maps.StuckWatch.WantsHullBoundFloor, v => Maps.StuckWatch.WantsHullBoundFloor = (float)v),
+            new Entry("maps.stuckWatch.wantsHullBoundScale", "x", () => Maps.StuckWatch.WantsHullBoundScale, v => Maps.StuckWatch.WantsHullBoundScale = (float)v),
+            new Entry("maps.stuckWatch.classifyTimeMax", "s", () => Maps.StuckWatch.ClassifyTimeMax, v => Maps.StuckWatch.ClassifyTimeMax = v),
+            new Entry("maps.stuckWatch.reachesMaxRings", "m", () => Maps.StuckWatch.ReachesMaxRings, v => Maps.StuckWatch.ReachesMaxRings = (int)System.Math.Round(v)),
+            new Entry("maps.stuckWatch.blockerAtMaxScale", "x", () => Maps.StuckWatch.BlockerAtMaxScale, v => Maps.StuckWatch.BlockerAtMaxScale = (float)v),
+            new Entry("maps.stuckWatch.blockedLineDistanceDivisor", "x", () => Maps.StuckWatch.BlockedLineDistanceDivisor, v => Maps.StuckWatch.BlockedLineDistanceDivisor = (float)v),
+            new Entry("maps.stuckWatch.blockerOnLineDistanceDivisor", "x", () => Maps.StuckWatch.BlockerOnLineDistanceDivisor, v => Maps.StuckWatch.BlockerOnLineDistanceDivisor = (float)v),
+            new Entry("maps.stuckWatch.blockerOnLineCellSizeScale", "x", () => Maps.StuckWatch.BlockerOnLineCellSizeScale, v => Maps.StuckWatch.BlockerOnLineCellSizeScale = (float)v),
+            new Entry("maps.tacticalChoke.reachMaxScale", "x", () => Maps.TacticalChoke.ReachMaxScale, v => Maps.TacticalChoke.ReachMaxScale = (float)v),
+            new Entry("maps.tacticalChoke.reachMaxAdd", "m", () => Maps.TacticalChoke.ReachMaxAdd, v => Maps.TacticalChoke.ReachMaxAdd = (float)v),
+            new Entry("maps.unitCostField.refreshFriendParkedCostScale", "x", () => Maps.UnitCostField.RefreshFriendParkedCostScale, v => Maps.UnitCostField.RefreshFriendParkedCostScale = (int)System.Math.Round(v)),
+            new Entry("maps.unitCostField.refreshRadiusAdd", "m", () => Maps.UnitCostField.RefreshRadiusAdd, v => Maps.UnitCostField.RefreshRadiusAdd = (float)v),
+            new Entry("maps.unitCostField.stampRadiusAdd", "m", () => Maps.UnitCostField.StampRadiusAdd, v => Maps.UnitCostField.StampRadiusAdd = (float)v),
         };
     }
 }

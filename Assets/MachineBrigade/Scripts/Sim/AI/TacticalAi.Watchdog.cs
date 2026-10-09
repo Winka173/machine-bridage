@@ -16,7 +16,7 @@ namespace MachineBrigade.Sim.AI
         private readonly List<WatchdogRequest> _watchdog = new();
 
         /// <summary>How long a reason given at one decision lasts: past the next decision.</summary>
-        private static float ExplainSpan => DecisionInterval * 2f + 0.5f;
+        private static float ExplainSpan => DecisionInterval * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ExplainSpanDecisionIntervalScale + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ExplainSpanDecisionIntervalAdd;
 
         /// <summary>First thing of a decision: this side is the AI's; the watchdog's requests are carried out.</summary>
         private void ServeWatchdog(SimWorld world)

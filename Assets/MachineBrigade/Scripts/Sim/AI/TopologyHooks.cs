@@ -27,7 +27,7 @@ namespace MachineBrigade.Sim.AI
             if (info == null) return 0f;
             var r = 0f;
             if (info.ObjectiveAccessGained) r -= Tun.BreachObjectiveBonus;
-            r -= MathF.Min(80f, info.PathCostReductionOnDestroy) * Tun.BreachSavingWeight;
+            r -= MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.BreachTopology.RankingPathCostReductionOnDestroyCap, info.PathCostReductionOnDestroy) * Tun.BreachSavingWeight;
             r += info.DefensiveTowerCoverage * Tun.BreachTowerPenalty;
             return r;
         }

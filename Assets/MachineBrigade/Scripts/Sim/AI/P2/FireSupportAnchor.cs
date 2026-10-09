@@ -167,7 +167,7 @@ namespace MachineBrigade.Sim.AI
                 }
                 case FireSupportPolicy.SiegeLayers:
                 {
-                    var tower = NearestDefence(world, ctx.Front, range * 2f);
+                    var tower = NearestDefence(world, ctx.Front, range * global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ReferenceRangeScale);
                     if (tower == null) goto default;
                     reference = tower.Position;
                     back = Normalize(ctx.Front - reference, -forward);
@@ -187,9 +187,9 @@ namespace MachineBrigade.Sim.AI
                 }
                 default:
                     // FrontLogical: the enemy in front of the line when there is contact, else a little ahead of the front.
-                    reference = ctx.Contact && ctx.EnemyCentre is { } enemy && Vector2.Distance(enemy, ctx.Front) < range * 1.5f
+                    reference = ctx.Contact && ctx.EnemyCentre is { } enemy && Vector2.Distance(enemy, ctx.Front) < range * global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ReferenceRangeScale2
                         ? enemy
-                        : ctx.Front + forward * MathF.Min(Vector2.Distance(ctx.Front, ctx.Objective), 25f);
+                        : ctx.Front + forward * MathF.Min(Vector2.Distance(ctx.Front, ctx.Objective), global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ReferenceDistanceCap);
                     back = -forward;
                     break;
             }
@@ -215,7 +215,7 @@ namespace MachineBrigade.Sim.AI
             // The convoy's way: its vehicles' mean heading (the escort's trucks; any of the side's escorted vehicles).
             var h = Vector2.Zero;
             foreach (var v in world.VehicleList)
-                if (v.IsAlive && v.Team == _team && v.IsMoving && Vector2.Distance(v.Position, centre) < 12f) h += SimMath.Forward(v.Heading);
+                if (v.IsAlive && v.Team == _team && v.IsMoving && Vector2.Distance(v.Position, centre) < global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ConvoyDistanceMax) h += SimMath.Forward(v.Heading);
             heading = Normalize(h, heading);
             return true;
         }
@@ -272,7 +272,7 @@ namespace MachineBrigade.Sim.AI
             if (s.GridVersion != world.Grid.Version && (tr & RepositionTrigger.TerrainChange) != 0 && !world.Grid.IsWalkable(s.Point)) return "terrain";
             var dist = Vector2.Distance(s.Point, reference);
             var (bandMin, bandMax) = ModeCombatDoctrine.Band(s.Class);
-            if (dist > s.Range || dist < s.MinRange + 2f)
+            if (dist > s.Range || dist < s.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.TriggerMinRangeAdd)
                 return (tr & (RepositionTrigger.RangeBandLost | RepositionTrigger.FrontMoved | RepositionTrigger.ObjectiveUncovered)) != 0 ? "rangeBandLost" : null;
             var intel = world.Intel.Peek(_team);
             if ((tr & RepositionTrigger.CounterBattery) != 0 && intel != null && intel.ThreatAt(ThreatKind.Artillery, s.Point) > 0f && CounterBatteryHit(world, s))
@@ -282,7 +282,7 @@ namespace MachineBrigade.Sim.AI
                 dist > s.Range * (bandMax + Tun.FireSupport.BandSlack))
                 return (tr & RepositionTrigger.ObjectiveUncovered) != 0 ? "objectiveUncovered" : "frontMoved";
             if ((tr & RepositionTrigger.PocketCompromised) != 0 && intel != null && intel.ThreatAt(ThreatKind.AntiTank, s.Point) > 0f) return "pocketCompromised";
-            if ((tr & RepositionTrigger.WaveDirection) != 0 && s.Approach.LengthSquared() > 0.5f && Vector2.Dot(s.Approach, approach) < 0.7f) return "waveDirection";
+            if ((tr & RepositionTrigger.WaveDirection) != 0 && s.Approach.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.TriggerLengthSquaredMin && Vector2.Dot(s.Approach, approach) < global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.TriggerDotMax) return "waveDirection";
             if ((tr & RepositionTrigger.Rotation) != 0 && d.Rotate && now - s.Since >= Tun.ModeDoctrine.RotateSeconds) return "rotation";
             if ((tr & RepositionTrigger.Utilization) != 0 && ctx.Contact)
             {
@@ -301,7 +301,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var p in _class) hp += p.Hp;
             var hit = s.Hp >= 0f && hp < s.Hp - 1f;
             s.Hp = hp;
-            return hit || world.Doctrine.For(_team).ShootAndScoot && ShotsSince(s) >= 3;
+            return hit || world.Doctrine.For(_team).ShootAndScoot && ShotsSince(s) >= global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.CounterBatteryHitShotsSinceMin;
         }
 
         private int ShotsSince(FireSupportAnchorState s)
@@ -310,7 +310,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var p in _class)
                 if (p.LastFiredAt > s.Since) n += 1;
             // Every piece of the class fired since the anchor was set (three salvos of a battery): scoot.
-            return n >= _class.Count && _class.Count > 0 ? 3 : 0;
+            return n >= _class.Count && _class.Count > 0 ? global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ShotsSinceNTrue : 0;
         }
 
         // ------------------------------------------------------------------------------------------------ setting
@@ -335,17 +335,17 @@ namespace MachineBrigade.Sim.AI
             foreach (var f in fractions)
                 for (var k = -lateral; k <= lateral; k++)
                 {
-                    var p = world.Map.Clamp(reference + back * (s.Range * f) + side * (k * Tun.FireSupport.LateralStep), 6f);
+                    var p = world.Map.Clamp(reference + back * (s.Range * f) + side * (k * Tun.FireSupport.LateralStep), global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.SetMargin);
                     if (!Valid(world, p, ctx)) continue;
                     var score = Score(world, d, s, p, reference, approach, ctx) - MathF.Abs(f - wanted) * 2f;
-                    if (avoid is { } old && Vector2.Distance(old, p) < 15f) score -= 2f;
+                    if (avoid is { } old && Vector2.Distance(old, p) < global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.SetDistanceMax) score -= global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.SetScore;
                     candidates.Add((p, score));
                 }
             Vector2 point;
             if (candidates.Count == 0)
             {
                 // Nothing valid on the band: the old standoff (behind the front), off the lanes.
-                point = world.Lanes.OffLane(world.Map.Clamp(ctx.Front + back * 18f, 6f), 10f);
+                point = world.Lanes.OffLane(world.Map.Clamp(ctx.Front + back * global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.SetBackScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.SetMargin), global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.SetReach);
             }
             else
             {
@@ -359,7 +359,7 @@ namespace MachineBrigade.Sim.AI
                     {
                         var far = true;
                         foreach (var q in s.Pockets)
-                            if (Vector2.Distance(q, c.p) < 20f) far = false;
+                            if (Vector2.Distance(q, c.p) < global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.SetDistanceMax2) far = false;
                         if (far) s.Pockets.Add(c.p);
                         if (s.Pockets.Count >= Math.Max(1, Tun.ModeDoctrine.Pockets)) break;
                     }
@@ -403,8 +403,8 @@ namespace MachineBrigade.Sim.AI
             float Covers(Vector2 at)
             {
                 var dd = Vector2.Distance(p, at);
-                if (dd < s.MinRange + 3f) return 0f;
-                return dd <= s.Range * 0.95f ? 1f : MathF.Max(0f, 1f - (dd - s.Range * 0.95f) / MathF.Max(1f, s.Range * 0.25f));
+                if (dd < s.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreMinRangeAdd) return 0f;
+                return dd <= s.Range * global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreRangeScale ? 1f : MathF.Max(0f, 1f - (dd - s.Range * global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreRangeScale) / MathF.Max(1f, s.Range * global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreRangeScale2));
             }
             var objective = Covers(ctx.Objective);
             var enemyApproach = Covers(ctx.EnemyCentre ?? reference + approach * 20f);
@@ -422,14 +422,14 @@ namespace MachineBrigade.Sim.AI
             }
             var topology = world.GameplayTopology;
             var escape = topology.EscapeRoutes(p, 12f);
-            var cb = intel == null ? 1f : 1f - MathF.Min(1f, intel.ThreatAt(ThreatKind.Artillery, p) / 5f);
-            var threat = intel == null ? 0f : MathF.Min(1f, (intel.ThreatAt(ThreatKind.AntiTank, p) + intel.ThreatAt(ThreatKind.Splash, p)) / 5f);
-            var minRange = Vector2.Distance(p, reference) < s.MinRange + 3f ? 1f : 0f;
+            var cb = intel == null ? 1f : 1f - MathF.Min(1f, intel.ThreatAt(ThreatKind.Artillery, p) / global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreThreatAtDivisor);
+            var threat = intel == null ? 0f : MathF.Min(1f, (intel.ThreatAt(ThreatKind.AntiTank, p) + intel.ThreatAt(ThreatKind.Splash, p)) / global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreThreatAtDivisor);
+            var minRange = Vector2.Distance(p, reference) < s.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreMinRangeAdd ? 1f : 0f;
             var traffic = topology.TransitConflict(p);
-            if (world.TryGetRally(_team, out var spawn) && Vector2.Distance(spawn, p) < 12f) traffic = 1f;
-            if (hq && s.Class is FireClass.Mlrs or FireClass.LongRange) traffic += 0.5f;
+            if (world.TryGetRally(_team, out var spawn) && Vector2.Distance(spawn, p) < global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreDistanceMax) traffic = 1f;
+            if (hq && s.Class is FireClass.Mlrs or FireClass.LongRange) traffic += global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreTraffic;
             return W(0) * objective + W(1) * enemyApproach + W(2) * front + W(3) * aa + W(4) * escape / 8f + W(5) * cb
-                   - W(6) * threat - W(7) * MathF.Min(1f, congestion / 3f) - W(8) * minRange - W(9) * traffic
+                   - W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreI5) * threat - W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreI6) * MathF.Min(1f, congestion / global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreCongestionDivisor) - W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreI7) * minRange - W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.ScoreI8) * traffic
                    + TerrainTopology.ConcealmentTerm(world, p);
         }
 
@@ -444,7 +444,7 @@ namespace MachineBrigade.Sim.AI
             var row = index / 5;
             var col = index % 5;
             var lateral = ((col + 1) / 2) * (col % 2 == 0 ? 1f : -1f) * spacing;
-            var p = world.Map.Clamp(s.Point + side * lateral + back * (row * spacing), 6f);
+            var p = world.Map.Clamp(s.Point + side * lateral + back * (row * spacing), global::MachineBrigade.Sim.Content.SimTunables.Ai.FireSupportDirector.SlotMargin);
             p = world.Lanes.OffLane(p, 10f);
             return world.Grid.IsWalkable(p) ? p : s.Point;
         }

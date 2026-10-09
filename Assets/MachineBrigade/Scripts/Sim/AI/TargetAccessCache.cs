@@ -98,7 +98,7 @@ namespace MachineBrigade.Sim.AI
             }
             var region = grid.RegionOf(unit.Position);
             // A unit standing on a closed cell (pushed onto a blocker's edge) is judged from the open ground next to it.
-            if (region == 0 && grid.TryNearestWalkable(unit.Position, 3, out var open)) region = grid.RegionOf(open);
+            if (region == 0 && grid.TryNearestWalkable(unit.Position, global::MachineBrigade.Sim.Content.SimTunables.Ai.TargetAccessCache.CanInfluenceMaxRings, out var open)) region = grid.RegionOf(open);
             if (region == 0) return true;
             return Reachable(region, false, MobilityDomain.Ground, target, targetRadius, reach, weapon.MinRange);
         }
@@ -142,7 +142,7 @@ namespace MachineBrigade.Sim.AI
         {
             var grid = _world.Grid;
             var (cx, cy) = grid.CellOf(target);
-            var key = (source, resolved, cx / Bucket, cy / Bucket, (int)(reach / 4f), (int)(minRange / 4f), (int)(radius / 2f));
+            var key = (source, resolved, cx / Bucket, cy / Bucket, (int)(reach / global::MachineBrigade.Sim.Content.SimTunables.Ai.TargetAccessCache.ReachableReachDivisor), (int)(minRange / global::MachineBrigade.Sim.Content.SimTunables.Ai.TargetAccessCache.ReachableMinRangeDivisor), (int)(radius / global::MachineBrigade.Sim.Content.SimTunables.Ai.TargetAccessCache.ReachableRadiusDivisor));
             if (_cache.TryGetValue(key, out var known))
             {
                 Hits++;
@@ -170,7 +170,7 @@ namespace MachineBrigade.Sim.AI
             var cell = grid.CellSize;
             var outer = reach + radius;
             var cells = (int)MathF.Ceiling(outer / cell);
-            var coarse = Math.Max(1, cells / 12);
+            var coarse = Math.Max(1, cells / global::MachineBrigade.Sim.Content.SimTunables.Ai.TargetAccessCache.SampleCellsDivisor);
             // A coarse lattice first; only when it finds nothing, every cell (a narrow strip of shore, a lane between rocks).
             return Pass(coarse) || (coarse > 1 && Pass(1));
 

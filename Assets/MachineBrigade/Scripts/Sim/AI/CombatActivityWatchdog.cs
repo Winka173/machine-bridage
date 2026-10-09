@@ -182,7 +182,7 @@ namespace MachineBrigade.Sim.AI
                 Evaluate(v);
             }
             // Records of vehicles gone, now and then.
-            if (tick % 200 == 0)
+            if (tick % global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatActivityWatchdog.StepTickMod == 0)
             {
                 _gone.Clear();
                 foreach (var id in _records.Keys)
@@ -311,7 +311,7 @@ namespace MachineBrigade.Sim.AI
             return _world.Time - v.LastFiredAt < FiringWindow(v.Arms[main]) ? CombatIdleReason.Firing : reason;
         }
 
-        private static double FiringWindow(WeaponDef weapon) => MathF.Max(SimTunables.Ai.CombatWatchdog.FiredRecentlySeconds, weapon.Cooldown + 0.5f);
+        private static double FiringWindow(WeaponDef weapon) => MathF.Max(SimTunables.Ai.CombatWatchdog.FiredRecentlySeconds, weapon.Cooldown + global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatActivityWatchdog.FiringWindowCooldownAdd);
 
         private CombatIdleReason ClassifyMain(Vehicle v, int main, Record r, out FiringCheck check, out Vehicle? enemy)
         {
@@ -425,7 +425,7 @@ namespace MachineBrigade.Sim.AI
             r.AimAtStart = 0f;
             var aimedAt = _world.TryGetTarget(v.Target, out var t) ? t : enemy;
             // (1) validate the target, (3) clear the stale aim state, (6) the second time: leave this target for a moment.
-            _world.Combat.ResetAim(v, r.Recoveries >= 2, now + SimTunables.Ai.CombatWatchdog.SuppressSeconds);
+            _world.Combat.ResetAim(v, r.Recoveries >= global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatActivityWatchdog.RecoverAnomalyRecoveriesMin, now + SimTunables.Ai.CombatWatchdog.SuppressSeconds);
             // (2) recompute the bearing: a hull-laid weapon (or a traverse-limited turret) turns the hull to the target.
             var mount = v.Def.Mounts[main];
             if (aimedAt != null && !v.Flying && !v.Def.Static && (mount.Aim == MountAim.Hull || v.Def.TurretArc > 0f))

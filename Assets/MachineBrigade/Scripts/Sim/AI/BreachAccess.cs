@@ -29,7 +29,7 @@ namespace MachineBrigade.Sim.AI
     public sealed class BreachAccess
     {
         /// <summary>Extra cost of crossing one breakable cell (in open cells): a long way round is taken before a short breach.</summary>
-        public const int BreachCellCost = 12;
+        public static int BreachCellCost => global::MachineBrigade.Sim.Content.SimTunables.Ai.BreachAccess.BreachCellCost;
 
         /// <summary>Unit and target cells are grouped this many grid cells to a side for the cache key (2 m cells: 8 m).</summary>
         private const int Bucket = 4;
@@ -86,7 +86,7 @@ namespace MachineBrigade.Sim.AI
             var (sx, sy) = grid.CellOf(unit.Position);
             if (!grid.IsWalkable(sx, sy))
             {
-                if (!grid.TryNearestWalkable(unit.Position, 3, out var open)) return EntityId.None;
+                if (!grid.TryNearestWalkable(unit.Position, global::MachineBrigade.Sim.Content.SimTunables.Ai.BreachAccess.FirstBlockerMaxRings, out var open)) return EntityId.None;
                 (sx, sy) = grid.CellOf(open);
             }
             var amphibious = TerrainRules.Wades(unit.Def);
@@ -95,7 +95,7 @@ namespace MachineBrigade.Sim.AI
             var label = layer.Label[start];
             if (label == 0) return EntityId.None;
             var (tx, ty) = grid.CellOf(target);
-            var key = (unit.Team, amphibious, sx / Bucket, sy / Bucket, tx / Bucket, ty / Bucket, (int)(reach / 4f), ((int)(minRange / 4f) << 8) | (int)(radius / 2f));
+            var key = (unit.Team, amphibious, sx / Bucket, sy / Bucket, tx / Bucket, ty / Bucket, (int)(reach / global::MachineBrigade.Sim.Content.SimTunables.Ai.BreachAccess.FirstBlockerReachDivisor), ((int)(minRange / global::MachineBrigade.Sim.Content.SimTunables.Ai.BreachAccess.FirstBlockerMinRangeDivisor) << 8) | (int)(radius / global::MachineBrigade.Sim.Content.SimTunables.Ai.BreachAccess.FirstBlockerRadiusDivisor));
             if (_cache.TryGetValue(key, out var known)) return known;
             if (_cache.Count >= Capacity) _cache.Clear();
             var result = InBand(grid, layer, label, target, radius, reach, minRange)
@@ -148,7 +148,7 @@ namespace MachineBrigade.Sim.AI
                     foreach (var seg in line.Segments)
                     {
                         if (seg.Rubble || !_world.TryGetVehicle(seg.Entity, out var wall) || !CanBreak(wall)) continue;
-                        Mark(grid, layer, wall.Id, seg.Def.Center, seg.Def.Width + 2f * clearance, seg.Def.Depth + 2f * clearance);
+                        Mark(grid, layer, wall.Id, seg.Def.Center, seg.Def.Width + global::MachineBrigade.Sim.Content.SimTunables.Ai.BreachAccess.BuildClearanceScale * clearance, seg.Def.Depth + global::MachineBrigade.Sim.Content.SimTunables.Ai.BreachAccess.BuildClearanceScale * clearance);
                     }
                 }
             // Enemy walls, gates and obstacles standing on their ground like buildings (SimWorld.AnchorDefence).
@@ -162,7 +162,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var prop in _world.Props)
             {
                 if (!prop.IsAlive || !prop.Def.BlocksMovement || prop.Def.Indestructible || prop.Invulnerable) continue;
-                Mark(grid, layer, prop.Id, prop.Position, prop.Width + 2f * clearance, prop.Depth + 2f * clearance);
+                Mark(grid, layer, prop.Id, prop.Position, prop.Width + global::MachineBrigade.Sim.Content.SimTunables.Ai.BreachAccess.BuildClearanceScale * clearance, prop.Depth + global::MachineBrigade.Sim.Content.SimTunables.Ai.BreachAccess.BuildClearanceScale * clearance);
             }
             // Components of the breach-passable cells (four-neighbour, as the route search moves).
             var sea = amphibious ? null : SeaCells(n);

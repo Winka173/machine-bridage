@@ -86,7 +86,7 @@ namespace MachineBrigade.Sim.AI
             var slowest = float.MaxValue;
             foreach (var id in s.MemberList)
                 if (world.TryGetVehicle(id, out var v) && v.IsAlive && !v.Flying) slowest = MathF.Min(slowest, v.Def.Speed);
-            return slowest == float.MaxValue ? 5f : MathF.Max(1f, slowest);
+            return slowest == float.MaxValue ? global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SquadSpeedSlowestTrue : MathF.Max(1f, slowest);
         }
 
         /// <summary>The squad's ground members' damage a second against a wall segment (the damage table, armour, their bonuses).</summary>

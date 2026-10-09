@@ -136,7 +136,7 @@ namespace MachineBrigade.Sim.AI
         private readonly Dictionary<(int team, int squad), double> _damped = new();
         private readonly int[] _idleByReason = new int[Enum.GetValues(typeof(CombatIdleReason)).Length];
         private readonly HashSet<int> _anchorRefresh = new();
-        private double _next = 0.5;
+        private double _next = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiHealthMonitor.Next;
         private int _lastUnexplained, _lastNavalReverse, _lastLowClasses;
         private (int a, int s, int t) _lastChurn;
         private double _lastChurnAt = double.NaN;
@@ -161,7 +161,7 @@ namespace MachineBrigade.Sim.AI
         {
             var now = _world.Time;
             if (now < _next) return;
-            _next = now + Math.Max(0.1f, Tun.Health.PeriodS);
+            _next = now + Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.AiHealthMonitor.StepPeriodSFloor, Tun.Health.PeriodS);
             var start = _world.AiPerf.Begin();
             Counters.Passes++;
             ReadLaneCounters(now);
@@ -355,7 +355,7 @@ namespace MachineBrigade.Sim.AI
                 if (_world.TryGetVehicle(id, out var v) && v.LastFiredAt > sample.LastFireAt) sample.LastFireAt = v.LastFiredAt;
             var reach = s.Reach + Tun.Health.ContactMargin;
             foreach (var c in intel.Contacts)
-                if (Vector2.DistanceSquared(c.Position, s.Centre) <= reach * reach && _world.Time - c.LastSeen < 5.0)
+                if (Vector2.DistanceSquared(c.Position, s.Centre) <= reach * reach && _world.Time - c.LastSeen < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiHealthMonitor.SampleTimeMax)
                 {
                     sample.InContact = true;
                     break;
@@ -413,7 +413,7 @@ namespace MachineBrigade.Sim.AI
                     var jammed = 0;
                     foreach (var id in s.MemberList)
                         if (_world.TryGetVehicle(id, out var v) && v.Traffic.Jam.Stage >= JamStage.Yield) jammed++;
-                    if (jammed * 2 < Math.Max(1, s.MemberList.Count)) continue;
+                    if (jammed * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiHealthMonitor.TrafficJammedScale < Math.Max(1, s.MemberList.Count)) continue;
                     if (!_squads.TryGetValue((team, s.Id), out var st)) _squads[(team, s.Id)] = st = new SquadHealthState();
                     if (now - st.RecoveredAt < Tun.Health.RecoveryCooldownS) continue;
                     st.RecoveredAt = now;

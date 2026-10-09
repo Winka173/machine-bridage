@@ -48,9 +48,9 @@ namespace MachineBrigade.Sim
             Seed = seed;
             Random = new Random(seed);
             // The map's own rectangle (a long battlefield's is 300 x 480 m, prompt 17).
-            Grid = new NavGrid(map.Min, map.Width, map.Length, 2f);
+            Grid = new NavGrid(map.Min, map.Width, map.Length, global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.CtorCellSize);
             Cover = new CoverGrid(map.Min, map.Width, map.Length);
-            if (map.Boundary.Count >= 3)
+            if (map.Boundary.Count >= global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.CtorCountMin)
             {
                 // Beyond the outline is terrain: no driving there, and it stops direct fire.
                 Grid.BlockWhere(map.InsideBoundary);
@@ -461,11 +461,11 @@ namespace MachineBrigade.Sim
             var def = Catalog.Vehicle(defId);
             // A ship goes on the water where it is put (the naval system keeps it off the land).
             var afloat = def.Naval != null && Map.Sea != null;
-            var at = def.Flying || afloat ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
+            var at = def.Flying || afloat ? ClampToMap(position) : Grid.TryNearestWalkable(position, global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.SpawnVehicleMaxRings, out var walkable) ? walkable : position;
             // A landing in a pocket sealed off from the battlefield (between buildings, behind a wall
             // corner) would never get out: it comes down on the open ground nearest instead (prompt 12).
             if (!def.Flying && !def.Static && !afloat && Grid.RegionOf(at) is var region && region != Grid.MainRegion &&
-                Grid.RegionSize(region) * 8 < Grid.RegionSize(Grid.MainRegion) && Grid.TryNearestInRegion(at, Grid.MainRegion, 12, out var open))
+                Grid.RegionSize(region) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.SpawnVehicleRegionSizeScale < Grid.RegionSize(Grid.MainRegion) && Grid.TryNearestInRegion(at, Grid.MainRegion, global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.SpawnVehicleMaxRings2, out var open))
                 at = open;
             if (!def.Flying && !def.Static && !afloat) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
@@ -513,7 +513,7 @@ namespace MachineBrigade.Sim
             // from (a map's fortress as much as a mode's tower): routes go round it instead of into it.
             if (def.Static) AnchorDefence(vehicle);
             Emit(SimEvent.Spawned(vehicle));
-            if (HomeZones && !vehicle.Def.Static) vehicle.GraceUntil = Time + 5.0;
+            if (HomeZones && !vehicle.Def.Static) vehicle.GraceUntil = Time + global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.SpawnVehicleTimeAdd;
             return vehicle;
         }
 
@@ -597,8 +597,8 @@ namespace MachineBrigade.Sim
                 {
                     var damage = b.Stat(StatId.Damage);
                     var rate = b.Stat(StatId.FireRate);
-                    v.DamageBoost *= (1f + damage + Headroom(v.Def, StatId.Damage, damage, b.SpecialPower)) / MathF.Max(0.05f, 1f + damage);
-                    v.FireBoost *= (1f + rate + Headroom(v.Def, StatId.FireRate, rate, b.SpecialPower)) / MathF.Max(0.05f, 1f + rate);
+                    v.DamageBoost *= (1f + damage + Headroom(v.Def, StatId.Damage, damage, b.SpecialPower)) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.UpgradeDamageFloor, 1f + damage);
+                    v.FireBoost *= (1f + rate + Headroom(v.Def, StatId.FireRate, rate, b.SpecialPower)) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.UpgradeRateFloor, 1f + rate);
                     break;
                 }
             }
@@ -616,7 +616,7 @@ namespace MachineBrigade.Sim
         /// </summary>
         internal Vector2 ClearSpot(VehicleDef def, Vector2 at, int team)
         {
-            var reach = def.HullBound + 0.5f;
+            var reach = def.HullBound + global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.ClearSpotHullBoundAdd;
             for (var ring = 0; ring <= 8; ring++)
             {
                 var steps = ring == 0 ? 1 : ring * 8;
@@ -630,7 +630,7 @@ namespace MachineBrigade.Sim
                     foreach (var other in _vehicleList)
                     {
                         if (!other.IsAlive || other.Flying) continue;
-                        var gap = def.HullBound + other.Def.HullBound + 0.5f;
+                        var gap = def.HullBound + other.Def.HullBound + global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.ClearSpotHullBoundAdd;
                         if (Vector2.DistanceSquared(other.Position, p) < gap * gap) { clear = false; break; }
                     }
                     if (clear) return p;
@@ -643,9 +643,9 @@ namespace MachineBrigade.Sim
         private bool FootprintOpen(Vector2 p, float reach)
         {
             if (!Grid.IsWalkable(p)) return false;
-            for (var k = 0; k < 8; k++)
+            for (var k = 0; k < global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.FootprintOpenKMax; k++)
             {
-                var angle = k * SimMath.Tau / 8f;
+                var angle = k * SimMath.Tau / global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.FootprintOpenKDivisor;
                 var q = p + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach;
                 if (!Map.Contains(q) || !Grid.IsWalkable(q)) return false;
             }
@@ -670,7 +670,7 @@ namespace MachineBrigade.Sim
                     foreach (var other in _vehicleList)
                     {
                         if (!other.IsAlive || other.Flying) continue;
-                        var gap = def.HullBound * 0.8f + other.Def.HullBound * 0.8f;
+                        var gap = def.HullBound * global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.FreeSpotHullBoundScale + other.Def.HullBound * global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.FreeSpotHullBoundScale;
                         if (Vector2.DistanceSquared(other.Position, p) < gap * gap) { clear = false; break; }
                     }
                     if (clear) return p;
@@ -830,7 +830,7 @@ namespace MachineBrigade.Sim
                     var sent = 0;
                     foreach (var v in _unitBuffer)
                     {
-                        if (!v.HasStores || v.Supply != SupplyState.Fighting || v.StoresShare >= 0.999f) continue;
+                        if (!v.HasStores || v.Supply != SupplyState.Fighting || v.StoresShare >= global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.ApplyStoresShareMin) continue;
                         v.RearmRequested = true;
                         sent++;
                     }
@@ -938,7 +938,7 @@ namespace MachineBrigade.Sim
             void Lap(int i)
             {
                 var now = System.Diagnostics.Stopwatch.GetTimestamp();
-                row[i] = (now - ticks) * 1000.0 / System.Diagnostics.Stopwatch.Frequency;
+                row[i] = (now - ticks) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.ProfiledStepNowScale / System.Diagnostics.Stopwatch.Frequency;
                 ticks = now;
             }
             RefreshVisibility();
@@ -1013,12 +1013,12 @@ namespace MachineBrigade.Sim
                 v.Weapons[i].ReloadLeft = 0f;
             }
             // A fixed minefield's mines are its rounds: once half are gone the field is laid again in a moment.
-            if (v.MineLayer is { Spread: > 0f } field && v.NextMineAt > Time + 2.0)
+            if (v.MineLayer is { Spread: > 0f } field && v.NextMineAt > Time + global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.RefillTimeAdd)
             {
                 var alive = 0;
                 foreach (var m in _abilities.Mines)
                     if (m.IsAlive && m.Layer == v.Id) alive++;
-                if (alive * 2 < field.Max) v.NextMineAt = Time + 2.0;
+                if (alive * global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.RefillAliveScale < field.Max) v.NextMineAt = Time + global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.RefillTimeAdd;
             }
         }
 
@@ -1065,7 +1065,7 @@ namespace MachineBrigade.Sim
             if (_crushable.Count == 0) return;
             foreach (var v in _vehicleList)
             {
-                if (!v.IsAlive || v.Flying || v.Def.Static || v.Speed < 0.5f) continue;
+                if (!v.IsAlive || v.Flying || v.Def.Static || v.Speed < global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.CrushVegetationSpeedMax) continue;
                 var cx = (int)MathF.Floor(v.Position.X / CrushCell);
                 var cy = (int)MathF.Floor(v.Position.Y / CrushCell);
                 for (var dx = -1; dx <= 1; dx++)
@@ -1075,7 +1075,7 @@ namespace MachineBrigade.Sim
                         foreach (var prop in list)
                         {
                             if (!prop.IsAlive) continue;
-                            var reach = v.Def.HullRadius + 0.3f + prop.Radius * 0.5f;
+                            var reach = v.Def.HullRadius + global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.CrushVegetationHullRadiusAdd + prop.Radius * global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.CrushVegetationRadiusScale;
                             if (Vector2.DistanceSquared(v.Position, prop.Position) < reach * reach)
                                 Damage.Crush(prop, SimMath.Forward(v.Heading));
                         }
@@ -1113,7 +1113,7 @@ namespace MachineBrigade.Sim
         /// </summary>
         internal bool PathTo(Vehicle vehicle, Vector2 goal)
         {
-            vehicle.RepathTimer = 0.5f;
+            vehicle.RepathTimer = global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.PathToRepathTimer;
             if (vehicle.Team == 0 && PlayArea is { } area) goal = area.Clamp(goal);
             // Prompt 33 L5: nobody parks on a rail.
             if (!vehicle.Flying) goal = Rails.OffRail(vehicle, goal);
@@ -1181,7 +1181,7 @@ namespace MachineBrigade.Sim
         /// </summary>
         internal Vector2? EscapeRoute(Vehicle v, Vector2 threat, float distance)
         {
-            distance = MathF.Max(distance, 6f);
+            distance = MathF.Max(distance, global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.EscapeRouteDistanceFloor);
             var away = v.Position - threat;
             var back = away.LengthSquared() > 0.01f ? Vector2.Normalize(away) : SimMath.Forward(v.Heading + MathF.PI);
             var bearings = new List<Vector2>(EscapeBearings.Length + 1);
@@ -1191,13 +1191,13 @@ namespace MachineBrigade.Sim
                 var s = MathF.Sin(turn);
                 bearings.Add(new Vector2(back.X * c - back.Y * s, back.X * s + back.Y * c));
             }
-            if (TryGetRally(v.Team, out var home) && Vector2.DistanceSquared(home, v.Position) > 16f)
+            if (TryGetRally(v.Team, out var home) && Vector2.DistanceSquared(home, v.Position) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.EscapeRouteDistanceSquaredMin)
                 bearings.Add(Vector2.Normalize(home - v.Position));
             Vector2? best = null;
             var bestScore = 1f;
             var here = Vector2.Distance(v.Position, threat);
             foreach (var dir in bearings)
-                for (var d = distance; d >= 4f; d -= 3f)
+                for (var d = distance; d >= global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.EscapeRouteDMin; d -= global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.EscapeRouteD)
                 {
                     var p = ClampToMap(v.Position + dir * d);
                     if (!Map.Contains(p) || !Grid.IsWalkable(p)) continue;
@@ -1205,7 +1205,7 @@ namespace MachineBrigade.Sim
                     if (moved < 4f) break;
                     var edge = Map.EdgeDistance(p);
                     // (It stops where it lands: not in a gate or a gap, where it would close the way.)
-                    var score = Vector2.Distance(p, threat) - here + moved * 0.2f - MathF.Max(0f, 10f - edge) -
+                    var score = Vector2.Distance(p, threat) - here + moved * global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.EscapeRouteMovedScale - MathF.Max(0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.EscapeRouteEdgeSub - edge) -
                                 (!v.Flying && Lanes.NoParkAt(p) ? 8f : 0f);
                     if (score > bestScore)
                     {
@@ -1237,8 +1237,8 @@ namespace MachineBrigade.Sim
 
         private void IssueGroupMove(Vector2 point, OrderKind kind, bool manual = true)
         {
-            var spacing = 1.5f;
-            foreach (var v in _unitBuffer) spacing = MathF.Max(spacing, v.Radius * 2f + 1.5f);
+            var spacing = global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.IssueGroupMoveSpacing;
+            foreach (var v in _unitBuffer) spacing = MathF.Max(spacing, v.Radius * 2f + global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.IssueGroupMoveRadiusAdd);
             var ground = !_unitBuffer[0].Flying;
             var slots = Formation.Slots(point, _unitBuffer.Count, spacing, Grid, ground ? Lanes : null, ground ? GroupRegion() : 0);
             Formation.Assign(_unitBuffer, slots, point, _slotBuffer);
@@ -1247,7 +1247,7 @@ namespace MachineBrigade.Sim
                 var goal = _slotBuffer.TryGetValue(v.Id, out var slot) ? slot : point;
                 // AI MASTER P1 (spec 186): an AI order equivalent to the one the unit is already carrying out (same kind,
                 // same point, still on its way) is not issued again: no path reset, no jitter, no churn.
-                if (!manual && v.Order.Kind == kind && Vector2.DistanceSquared(v.Order.Point, goal) < 0.25f && (v.HasPath || v.PathQueued) &&
+                if (!manual && v.Order.Kind == kind && Vector2.DistanceSquared(v.Order.Point, goal) < global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.IssueGroupMoveDistanceSquaredMax && (v.HasPath || v.PathQueued) &&
                     !v.Traffic.YieldingTo.IsValid)
                 {
                     Traffic.Stats.CommandsDeduplicated++;
@@ -1349,7 +1349,7 @@ namespace MachineBrigade.Sim
                 var hidden = false;
                 if (target.Gear is { } tg)
                 {
-                    if (!target.IsMoving && Time - target.StillSince >= 1.0) sight *= 1f - Math.Clamp(tg.Stat(StatId.Camouflage), 0f, 0.5f);
+                    if (!target.IsMoving && Time - target.StillSince >= 1.0) sight *= 1f - Math.Clamp(tg.Stat(StatId.Camouflage), 0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.RefreshVisibilityStatMax);
                     hidden = tg.Hidden;
                 }
                 var naval = target.Def.Naval != null && Map.Sea != null;
@@ -1452,7 +1452,7 @@ namespace MachineBrigade.Sim
         }
 
         /// <summary>The square a fixed defence blocks, whichever way it faces.</summary>
-        internal static float StaticFootprint(VehicleDef def) => MathF.Max(def.Length, def.Width) * 0.8f;
+        internal static float StaticFootprint(VehicleDef def) => MathF.Max(def.Length, def.Width) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.StaticFootprintMaxScale;
 
         private void RemoveDead()
         {

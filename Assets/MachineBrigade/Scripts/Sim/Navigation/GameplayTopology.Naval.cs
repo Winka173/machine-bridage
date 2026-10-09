@@ -86,7 +86,7 @@ namespace MachineBrigade.Sim.Navigation
                         bestN = n;
                     }
                 var mine = cells.FindAll(c => Map.Ground.ComponentOfCell(c) == best);
-                if (mine.Count < 2) continue;
+                if (mine.Count < global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.BuildShoreCountMax) continue;
                 SeaLaneDef? nearest = null;
                 var nearestD = float.MaxValue;
                 var sum = Vector2.Zero;
@@ -110,7 +110,7 @@ namespace MachineBrigade.Sim.Navigation
                     var d = LaneDistance(sea, nearest, p);
                     min = MathF.Min(min, d);
                     max = MathF.Max(max, d);
-                    foreach (var l in sea.Lanes) useful = MathF.Max(useful, LaneDistance(sea, l, p) + corridor * 0.5f);
+                    foreach (var l in sea.Lanes) useful = MathF.Max(useful, LaneDistance(sea, l, p) + corridor * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.BuildShoreCorridorScale);
                     if (BesideCover(p)) covered++;
                     if (k % 2 != 0) continue;
                     sampled++;
@@ -176,7 +176,7 @@ namespace MachineBrigade.Sim.Navigation
 
         /// <summary>The S-curve radius (m) of a lateral move <paramref name="offset"/> over a run <paramref name="run"/>: (L^2 + d^2) / 4d.</summary>
         public static float SCurveRadius(float run, float offset) =>
-            offset < 0.01f ? float.PositiveInfinity : (run * run + offset * offset) / (4f * offset);
+            offset < global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.SCurveRadiusOffsetMax ? float.PositiveInfinity : (run * run + offset * offset) / (global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.SCurveRadiusOffsetScale * offset);
 
         private (List<NavalNodeInfo> nodes, List<NavalSegmentInfo> segments) BuildNaval()
         {
@@ -207,7 +207,7 @@ namespace MachineBrigade.Sim.Navigation
                 };
                 if (s.Kind != SeaSegmentKind.Track)
                     info.CurveRadiusM = SCurveRadius(SeaRouteGraph.NodeStep, MathF.Abs(b.Frame.Y - a.Frame.Y));
-                info.PassingAllowed = s.Kind == SeaSegmentKind.Track && !s.OneWay && graph.Corridor * 2f >= 2f * maxWidth + 3f * Tun.NavalMargin;
+                info.PassingAllowed = s.Kind == SeaSegmentKind.Track && !s.OneWay && graph.Corridor * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.BuildNavalCorridorScale >= global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.BuildNavalMaxWidthScale * maxWidth + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.BuildNavalNavalMarginScale * Tun.NavalMargin;
                 info.NoOvertake = s.OneWay || !info.PassingAllowed;
                 segments.Add(info);
             }
@@ -222,7 +222,7 @@ namespace MachineBrigade.Sim.Navigation
                     Lane = n.Lane,
                     Position = n.Position,
                     Component = Map.Naval.ComponentOfCell(Map.Naval.NearestPassableCell(n.Position, 4)),
-                    Width = graph.Corridor * 2f,
+                    Width = graph.Corridor * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.BuildNavalCorridorScale,
                 };
                 var shoreRoom = n.Frame.Y - sea.ShoreAt(n.Frame.X);
                 var seaRoom = EdgeRoom(n.Position, sea.Out);
@@ -251,7 +251,7 @@ namespace MachineBrigade.Sim.Navigation
                 foreach (var b in batteries)
                     if (Vector2.Distance(b.At, n.Position) <= Tun.ArtilleryRef) exposure++;
                 foreach (var r in ShoreFireRegions)
-                    if (Vector2.Distance(r.Centre, n.Position) - (r.MaxDistanceToNavalLane - r.MinDistanceToNavalLane) * 0.5f <= Tun.DirectFireRef) exposure++;
+                    if (Vector2.Distance(r.Centre, n.Position) - (r.MaxDistanceToNavalLane - r.MinDistanceToNavalLane) * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.BuildNavalMaxDistanceToNavalLaneScale <= Tun.DirectFireRef) exposure++;
                 info.ShoreThreatExposure = exposure;
                 nodes.Add(info);
             }
@@ -281,7 +281,7 @@ namespace MachineBrigade.Sim.Navigation
             foreach (var ship in Ships())
             {
                 var rate = ship.TurnRate;
-                var rmin = ship.Speed / MathF.Max(0.01f, rate);
+                var rmin = ship.Speed / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.BuildTurnsRateFloor, rate);
                 var required = rmin * Tun.NavalSafety;
                 var slow = rmin * throttle;
                 var look = Bosses.NavalBossMovementController.LookAhead(ship.Speed, ship.Length);
@@ -291,7 +291,7 @@ namespace MachineBrigade.Sim.Navigation
                     if (float.IsPositiveInfinity(stepRadius)) return stepRadius;
                     var step = SeaRouteGraph.NodeStep;
                     // Solve (L^2 + d^2) / 4d = stepRadius for d (the smaller root), then the radius over the look-ahead.
-                    var disc = 4f * stepRadius * stepRadius - step * step;
+                    var disc = global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.BuildTurnsStepRadiusScale * stepRadius * stepRadius - step * step;
                     if (disc < 0f) return stepRadius;
                     var d = 2f * stepRadius - MathF.Sqrt(disc);
                     return SCurveRadius(MathF.Max(step, look), d);
@@ -351,7 +351,7 @@ namespace MachineBrigade.Sim.Navigation
                         var shoreRoom = lane.W - sea.ShoreAt(end);
                         var seaRoom = EdgeRoom(p, sea.Out);
                         var room = MathF.Max(shoreRoom, seaRoom) - Tun.NavalMargin - ship.Width * 0.5f;
-                        var available = MathF.Max(0f, room * 0.5f);
+                        var available = MathF.Max(0f, room * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.BuildTurnsRoomScale);
                         Add("turnabout", $"{lane.Id}@{(end < 0 ? "-" : "+")}{lane.Patrol:0}", available, true, "U-turn at the patrol's end");
                     }
                 }

@@ -33,7 +33,7 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>The squad's key with the coordinator (its side's squads are numbered by this commander).</summary>
-        private int OwnerKey(Squad s) => _commander.Team * 65536 + s.Id;
+        private int OwnerKey(Squad s) => _commander.Team * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.OwnerKeyTeamScale + s.Id;
 
         /// <summary>Spec 32 for a squad: heavy 80, main effort 70, artillery 60, normal 50, reinforcement (joining) 40, scouts 30.</summary>
         private static int SquadRightOfWay(Squad s, List<Vehicle> members)
@@ -45,10 +45,10 @@ namespace MachineBrigade.Sim.AI
                 if (v.Def.Class == UnitClass.Heavy) heavy++;
                 if (v.Def.Class == UnitClass.Artillery || v.Def.Weapon.MinRange > 0f) artillery++;
             }
-            if (members.Count > 0 && heavy * 2 >= members.Count) return TrafficSteering.PriorityHeavy;
+            if (members.Count > 0 && heavy * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SquadRightOfWayHeavyScale >= members.Count) return TrafficSteering.PriorityHeavy;
             if (s.Task.Kind == TaskKind.Primary && s.Action is SquadAction.Attack or SquadAction.FlankLeft or SquadAction.FlankRight)
                 return TrafficSteering.PriorityMainEffort;
-            if (members.Count > 0 && artillery * 2 > members.Count) return TrafficSteering.PriorityArtilleryMove;
+            if (members.Count > 0 && artillery * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SquadRightOfWayArtilleryScale > members.Count) return TrafficSteering.PriorityArtilleryMove;
             if (s.Action == SquadAction.Join) return TrafficSteering.PriorityReinforcement;
             if (s.Fast) return TrafficSteering.PriorityScout;
             return TrafficSteering.PriorityCombat;
@@ -89,7 +89,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var v in members)
             {
                 hullWidth += v.Def.HullRadius * 2f;
-                hullLength += v.Def.HullHalf * 2f + v.Def.HullRadius * 2f;
+                hullLength += v.Def.HullHalf * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PlanTrafficHullHalfScale + v.Def.HullRadius * 2f;
                 speed = MathF.Min(speed, v.Def.Speed * v.SpeedFactor);
             }
             hullWidth /= members.Count;
@@ -124,7 +124,7 @@ namespace MachineBrigade.Sim.AI
             plan.Queued = grant == PassageGrant.Queued;
             plan.QueueBase = queueSlot;
             // Spec 86 / 188: packets of the passage's lanes (two rows of them unless it is overloaded), 1-4 hulls.
-            plan.PacketSize = Math.Clamp(lanes * (overloaded ? 1 : 2), 1, 4);
+            plan.PacketSize = Math.Clamp(lanes * (overloaded ? 1 : global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PlanTrafficOverloadedFalse), 1, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PlanTrafficLanesMax);
             var changed = s.PassageId != passage.Id || s.PassageQueued != plan.Queued;
             if (s.PassageId != passage.Id) s.PassageSince = world.Time;
             s.PassageId = passage.Id;
@@ -149,7 +149,7 @@ namespace MachineBrigade.Sim.AI
             if (now < t.FormationBreakUntil) return;
             if (plan.Passage != null)
             {
-                var gap = Math.Clamp(SimTunables.Ai.Traffic.ChokeBatchGapS, 2f, 4f);
+                var gap = Math.Clamp(SimTunables.Ai.Traffic.ChokeBatchGapS, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.IssueSlotChokeBatchGapSMin, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.IssueSlotChokeBatchGapSMax);
                 var release = plan.Queued ? double.PositiveInfinity : plan.Start + (index / Math.Max(1, plan.PacketSize)) * gap;
                 if (release > now)
                 {
@@ -174,13 +174,13 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         private static Vector2 UnsharedSlot(SimWorld world, Vehicle v, Vector2 slot)
         {
-            for (var ring = 0; ring <= 4; ring++)
+            for (var ring = 0; ring <= global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnsharedSlotRingMax; ring++)
             {
-                var steps = ring == 0 ? 1 : ring * 8;
+                var steps = ring == 0 ? 1 : ring * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnsharedSlotRingScale;
                 for (var k = 0; k < steps; k++)
                 {
                     var angle = k * MathF.PI * 2f / steps;
-                    var p = slot + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * 2.5f);
+                    var p = slot + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnsharedSlotRingScale2);
                     if (ring > 0 && (!world.Map.Contains(p) || !world.Grid.IsWalkable(p) || world.Lanes.NoParkAt(p))) continue;
                     if (!SlotTaken(world, v, p)) return p;
                 }
@@ -202,7 +202,7 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Queue position Q(slot+1) before the passage, on open ground off doorways (else the nearest parkable spot).</summary>
         private static Vector2 QueueSpot(SimWorld world, Passage passage, int dir, int slot, Vehicle v)
         {
-            var q = world.Map.Clamp(passage.QueuePoint(dir, slot), 4f);
+            var q = world.Map.Clamp(passage.QueuePoint(dir, slot), global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.QueueSpotMargin);
             if (world.Grid.IsWalkable(q) && !world.Lanes.NoParkAt(q)) return q;
             if (world.Lanes.TryParkable(q, 12f, out var spot)) return spot;
             return world.Grid.TryNearestWalkable(q, 6, out var near) ? near : v.Position;
@@ -233,7 +233,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var id in s.MemberList)
             {
                 if (!world.TryGetVehicle(id, out var v)) continue;
-                if (Vector2.Dot(v.Position - passage.Centre, through) < passage.Length * 0.5f + 6f)
+                if (Vector2.Dot(v.Position - passage.Centre, through) < passage.Length * 0.5f + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.TrafficTickLengthAdd)
                 {
                     past = false;
                     break;
@@ -244,11 +244,11 @@ namespace MachineBrigade.Sim.AI
                 ReleasePassage(world, s);
                 return;
             }
-            var span = Interval * 2f + 0.5f;
+            var span = Interval * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.TrafficTickIntervalScale + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.TrafficTickIntervalAdd;
             if (s.PassageQueued)
             {
                 foreach (var id in s.MemberList) world.CombatWatch.Explain(id, CombatIdleReason.WaitingFormation, span);
-                if (now - s.PassageSince > 30.0)
+                if (now - s.PassageSince > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.TrafficTickNowMin)
                 {
                     // Waited long enough: plain orders (the vehicles' doorway turns and jam stages carry on).
                     world.Traffic.Log(team, s.Id, $"TRAFFIC_QUEUE_TIMEOUT passage={passage.Id}");

@@ -23,7 +23,7 @@ namespace MachineBrigade.Sim.AI
             var covered = false;
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != _team || v.Flying || v.Def.Static || v == engineer || v.Hp >= v.MaxHp * 0.8f) continue;
+                if (!v.IsAlive || v.Team != _team || v.Flying || v.Def.Static || v == engineer || v.Hp >= v.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.RepairTargetP3MaxHpScale) continue;
                 var d = Vector2.Distance(v.Position, front);
                 if (d > 60f) continue;
                 var need = v.MaxHp - v.Hp;
@@ -52,7 +52,7 @@ namespace MachineBrigade.Sim.AI
             tc.Board.ReserveRepair(best.Id, engineer.Id, amount, now + Tun.Board.RepairWindowS);
             if (!had) P3Reasons.Unit(world, engineer, DecisionKind.Plan, P3Reasons.RepairReserved, $"#{best.Id.Value} need {bestDeficit:0}");
             var away = best.Position - engineer.Position;
-            var stand = away.LengthSquared() > 0.01f ? best.Position - Vector2.Normalize(away) * MathF.Max(2f, aura.Radius * 0.5f) : best.Position;
+            var stand = away.LengthSquared() > 0.01f ? best.Position - Vector2.Normalize(away) * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.RepairTargetP3RadiusFloor, aura.Radius * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.RepairTargetP3RadiusScale) : best.Position;
             return world.Grid.IsWalkable(stand) ? stand : best.Position;
         }
     }

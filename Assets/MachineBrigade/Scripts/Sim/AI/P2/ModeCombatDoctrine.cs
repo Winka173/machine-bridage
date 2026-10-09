@@ -216,7 +216,7 @@ namespace MachineBrigade.Sim.AI
                 FireClass.LongRange => Tun.ModeDoctrine.LongBand,
                 _ => Tun.ModeDoctrine.ArtilleryBand,
             };
-            return b.Length >= 2 ? (b[0], b[1]) : (0.65f, 0.85f);
+            return b.Length >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ModeCombatDoctrine.BandLengthMin ? (b[0], b[1]) : (global::MachineBrigade.Sim.Content.SimTunables.Ai.ModeCombatDoctrine.BandBan, global::MachineBrigade.Sim.Content.SimTunables.Ai.ModeCombatDoctrine.BandBan2);
         }
 
         // ------------------------------------------------------------------------------------------------ the table
@@ -535,7 +535,7 @@ namespace MachineBrigade.Sim.AI
                 var d = For(team);
                 if (!d.ReserveAllowed) return (0f, 0f);
                 var r = Tun.ModeDoctrine.ReserveShare;
-                var (min, max) = r.Length >= 2 ? (r[0], r[1]) : (0.15f, 0.25f);
+                var (min, max) = r.Length >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ModeDoctrineState.ReserveShareOfLengthMin ? (r[0], r[1]) : (global::MachineBrigade.Sim.Content.SimTunables.Ai.ModeDoctrineState.ReserveShareOfBan, global::MachineBrigade.Sim.Content.SimTunables.Ai.ModeDoctrineState.ReserveShareOfBan2);
                 if (_stage == ShowdownStage.Final) return (0f, Tun.ModeDoctrine.FinalReserveShare);
                 return (min, max);
             }

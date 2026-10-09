@@ -49,7 +49,7 @@ namespace MachineBrigade.Sim.AI
             var from = v.Position;
             var d = target - from;
             var length = d.Length();
-            if (length < 4f) return null;
+            if (length < global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.BlockerLengthMax) return null;
             var dir = d / length;
             Vehicle? best = null;
             var bestAlong = float.MaxValue;
@@ -58,7 +58,7 @@ namespace MachineBrigade.Sim.AI
                 if (f == v || !f.IsAlive || f.Team != v.Team || f.Flying || f.Def.Static) continue;
                 var rel = f.Position - from;
                 var along = Vector2.Dot(rel, dir);
-                if (along <= 2f || along >= length - 2f || along > 60f) continue;
+                if (along <= global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.BlockerAlongMax || along >= length - global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.BlockerLengthSub || along > global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.BlockerAlongMin) continue;
                 if (MathF.Abs(rel.X * dir.Y - rel.Y * dir.X) >= f.Radius + 1f) continue;
                 if (along < bestAlong)
                 {
@@ -100,7 +100,7 @@ namespace MachineBrigade.Sim.AI
             var side = new Vector2(dir.Y, -dir.X);
             // Away from the blocker's side of the line (straight on: by id parity, fixed per pair).
             var offset = Vector2.Dot(blocker.Position - v.Position, side);
-            var sign = MathF.Abs(offset) > 0.2f ? -MathF.Sign(offset) : ((v.Id.Value & 1) == 0 ? 1f : -1f);
+            var sign = MathF.Abs(offset) > global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.ResolveAbsMin ? -MathF.Sign(offset) : ((v.Id.Value & 1) == 0 ? 1f : -1f);
             while (true)
             {
                 var rung = e.Rung++;
@@ -120,7 +120,7 @@ namespace MachineBrigade.Sim.AI
                         // metres ahead covers more of the line than one step clears; a sidestep that leaves it blocked is no rung).
                         for (var k = 2; k <= 4; k++)
                         {
-                            var metres = Tun.FiringLane.SidestepMetres * k * 0.5f;
+                            var metres = Tun.FiringLane.SidestepMetres * k * global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.ResolveSidestepMetresScale;
                             if (Step(v, target, side * sign * metres, blocker, out point) || Step(v, target, -side * sign * metres, blocker, out point))
                             {
                                 P2Reasons.Unit(_world, v, DecisionKind.Action, P2Reasons.PositionLaneSidestep, $"({point.X:0},{point.Y:0})");
@@ -143,7 +143,7 @@ namespace MachineBrigade.Sim.AI
                     default:
                         // 5. Only now, and only an idle AI squad-mate, the blocker steps aside; then the ladder starts again.
                         e.Rung = 1;
-                        if (!blocker.IsMoving && _world.Time - blocker.LastFiredAt > 2.0 && !blocker.UnderPlayerControl(now) && blocker.Def.Speed > 0f &&
+                        if (!blocker.IsMoving && _world.Time - blocker.LastFiredAt > global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.ResolveTimeMin && !blocker.UnderPlayerControl(now) && blocker.Def.Speed > 0f &&
                             !(_yielding.TryGetValue(blocker.Id, out var y) && y > now))
                         {
                             var nudge = blocker.Position - side * sign * Tun.FiringLane.BlockerNudgeMetres;
@@ -162,7 +162,7 @@ namespace MachineBrigade.Sim.AI
 
         private bool Step(Vehicle v, Vector2 target, Vector2 offset, Vehicle blocker, out Vector2 point)
         {
-            point = _world.Map.Clamp(v.Position + offset, 4f);
+            point = _world.Map.Clamp(v.Position + offset, global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.StepMargin);
             return _world.Grid.IsWalkable(point) && !InLine(point, target, blocker);
         }
 
@@ -175,7 +175,7 @@ namespace MachineBrigade.Sim.AI
             var rel = v.Position - target;
             var c = MathF.Cos(angle);
             var s = MathF.Sin(angle);
-            point = _world.Map.Clamp(target + new Vector2(rel.X * c - rel.Y * s, rel.X * s + rel.Y * c), 4f);
+            point = _world.Map.Clamp(target + new Vector2(rel.X * c - rel.Y * s, rel.X * s + rel.Y * c), global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.RingMargin);
             return _world.Grid.IsWalkable(point) && !InLine(point, target, blocker);
         }
 
@@ -183,11 +183,11 @@ namespace MachineBrigade.Sim.AI
         {
             var d = target - from;
             var length = d.Length();
-            if (length < 4f) return false;
+            if (length < global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.InLineLengthMax) return false;
             var dir = d / length;
             var rel = blocker.Position - from;
             var along = Vector2.Dot(rel, dir);
-            if (along <= 2f || along >= length - 2f) return false;
+            if (along <= global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.InLineAlongMax || along >= length - global::MachineBrigade.Sim.Content.SimTunables.Maps.FiringLaneResolver.InLineLengthSub) return false;
             return MathF.Abs(rel.X * dir.Y - rel.Y * dir.X) < blocker.Radius + 1f;
         }
 

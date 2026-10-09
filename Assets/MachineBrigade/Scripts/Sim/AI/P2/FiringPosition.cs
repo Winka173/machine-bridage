@@ -54,14 +54,14 @@ namespace MachineBrigade.Sim.AI
             // Uptime: the target in reach (and in the line of fire for direct weapons).
             var d = Vector2.Distance(p, target);
             var inReach = d <= weapon.Range && d >= weapon.MinRange;
-            t.Uptime = inReach && (indirect || Clear(world, p, target)) ? 1f : inReach ? 0.3f : 0f;
+            t.Uptime = inReach && (indirect || Clear(world, p, target)) ? 1f : inReach ? global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreInReachTrue : 0f;
             // Cover: share of the known direct-fire enemies within twice our reach whose line to the spot is blocked.
             var seen = 0;
             var blocked = 0;
             foreach (var o in world.VehicleList)
             {
                 if (!o.IsAlive || o.Team == v.Team || o.Team < 0 || o.Flying || o.Def.Weapon.Damage <= 0f || o.Def.Weapon.MinRange > 0f || !o.IsVisibleTo(v.Team)) continue;
-                if (Vector2.DistanceSquared(o.Position, p) > weapon.Range * weapon.Range * 4f) continue;
+                if (Vector2.DistanceSquared(o.Position, p) > weapon.Range * weapon.Range * global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreRangeScale) continue;
                 seen++;
                 if (!Clear(world, o.Position, p)) blocked++;
                 if (seen >= 8) break;
@@ -89,17 +89,17 @@ namespace MachineBrigade.Sim.AI
                 // Standing in a friend's line of fire (Part D "FriendlyFireLaneBlocking").
                 if (!lane && world.TryGetVehicle(f.Target, out var ft) && InLine(f.Position, ft.Position, p, v.Radius + 1f)) lane = true;
             }
-            t.Support = MathF.Min(1f, friends / 3f);
-            t.Congestion = MathF.Min(1f, crowd / 2f);
+            t.Support = MathF.Min(1f, friends / global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreFriendsDivisor);
+            t.Congestion = MathF.Min(1f, crowd / global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreCrowdDivisor);
             t.LaneBlock = lane ? 1f : 0f;
             if (intel != null)
             {
-                t.Threat = MathF.Min(1f, intel.ThreatAt(ThreatKind.AntiTank, p) / 5f);
-                t.Splash = MathF.Min(1f, intel.ThreatAt(ThreatKind.Splash, p) / 5f);
-                t.CounterBattery = MathF.Min(1f, intel.ThreatAt(ThreatKind.Artillery, p) / 5f);
+                t.Threat = MathF.Min(1f, intel.ThreatAt(ThreatKind.AntiTank, p) / global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreThreatAtDivisor);
+                t.Splash = MathF.Min(1f, intel.ThreatAt(ThreatKind.Splash, p) / global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreThreatAtDivisor);
+                t.CounterBattery = MathF.Min(1f, intel.ThreatAt(ThreatKind.Artillery, p) / global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreThreatAtDivisor);
             }
-            t.Total = W(0) * t.Uptime + W(1) * fCover * t.Cover + W(2) * fHull * t.HullDown + W(3) * fObs * t.Observation + W(4) * t.Escape +
-                      W(5) * t.Support - W(6) * t.Threat - W(7) * t.Splash - W(8) * t.Congestion - W(9) * t.LaneBlock - W(10) * fCb * t.CounterBattery;
+            t.Total = W(0) * t.Uptime + W(1) * fCover * t.Cover + W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreI) * fHull * t.HullDown + W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreI2) * fObs * t.Observation + W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreI3) * t.Escape +
+                      W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreI4) * t.Support - W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreI5) * t.Threat - W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreI6) * t.Splash - W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreI7) * t.Congestion - W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreI8) * t.LaneBlock - W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.ScoreI9) * fCb * t.CounterBattery;
             return t.Total;
         }
 
@@ -164,7 +164,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var o in world.VehicleList)
             {
                 if (!o.IsAlive || o.Team == team || o.Team < 0 || o.Flying || o.Def.Weapon.Damage <= 0f || o.Def.Weapon.MinRange > 0f || !o.IsVisibleTo(team)) continue;
-                var reach = o.Def.Weapon.Range + 5f;
+                var reach = o.Def.Weapon.Range + global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.DirectExposureRangeAdd;
                 if (Vector2.DistanceSquared(o.Position, p) > reach * reach || !Clear(world, o.Position, p)) continue;
                 if (++n >= 4) break;
             }
@@ -177,11 +177,11 @@ namespace MachineBrigade.Sim.AI
         {
             var d = to - from;
             var length = d.Length();
-            if (length < 4f) return false;
+            if (length < global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.InLineLengthMax) return false;
             var dir = d / length;
             var rel = p - from;
             var along = Vector2.Dot(rel, dir);
-            if (along <= 2f || along >= length - 2f) return false;
+            if (along <= global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.InLineAlongMax || along >= length - global::MachineBrigade.Sim.Content.SimTunables.Ai.FiringPositionScorer.InLineLengthSub) return false;
             return MathF.Abs(rel.X * dir.Y - rel.Y * dir.X) < width;
         }
     }

@@ -53,7 +53,7 @@ namespace MachineBrigade.Sim.AI
         {
             var w = Tun.Confidence.Weights;
             float W(int i, float d) => i < w.Length ? w[i] : d;
-            return Math.Clamp(W(0, 0.35f) * localRatio + W(1, 0.20f) * roleCoverage + W(2, 0.15f) * support + W(3, 0.10f) * position +
+            return Math.Clamp(W(0, global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalConfidence.ComputeD) * localRatio + W(1, global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalConfidence.ComputeD2) * roleCoverage + W(global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalConfidence.ComputeI, global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalConfidence.ComputeD3) * support + W(global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalConfidence.ComputeI2, global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalConfidence.ComputeD4) * position +
                               W(4, 0.10f) * urgency + W(5, 0.10f) * intel, 0f, 1f);
         }
 
@@ -97,7 +97,7 @@ namespace MachineBrigade.Sim.AI
     public static class SyncPlanner
     {
         /// <summary>ETA over <paramref name="distance"/> at <paramref name="speed"/> with the path detour.</summary>
-        public static float Eta(float distance, float speed) => MathF.Max(0f, distance) * Tun.AttackSync.Detour / MathF.Max(0.5f, speed);
+        public static float Eta(float distance, float speed) => MathF.Max(0f, distance) * Tun.AttackSync.Detour / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SyncPlanner.EtaSpeedFloor, speed);
 
         /// <summary>Seconds from now to the package's execute time: the latest ETA, the artillery prep lead and the air cover.</summary>
         public static float ExecuteDelay(IReadOnlyList<float> groundEtas, float prepEta = 0f, float airEta = 0f)
@@ -168,14 +168,14 @@ namespace MachineBrigade.Sim.AI
             (unknownShare >= Tun.AttackSync.ScoutUnknownShare || deathDanger >= Tun.AttackSync.ScoutDeathDanger);
 
         /// <summary>The wait the main force accepts: the scout's ETA, clamped to 2 .. scoutMaxWaitS.</summary>
-        public static float Wait(float scoutEta) => Math.Clamp(scoutEta, MathF.Min(2f, Tun.AttackSync.ScoutMaxWaitS), Tun.AttackSync.ScoutMaxWaitS);
+        public static float Wait(float scoutEta) => Math.Clamp(scoutEta, MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.ScoutPlanner.WaitScoutMaxWaitSCap, Tun.AttackSync.ScoutMaxWaitS), Tun.AttackSync.ScoutMaxWaitS);
     }
 
     /// <summary>Spec 134: fix-and-flank needs a stable enemy cluster, two access routes and enough power.</summary>
     public static class FixAndFlank
     {
         public static bool Viable(bool stableCluster, int accessRoutes, float ownPower, float enemyPower, float threshold) =>
-            stableCluster && accessRoutes >= 2 && enemyPower > 0f && ownPower >= enemyPower * threshold * 0.8f;
+            stableCluster && accessRoutes >= global::MachineBrigade.Sim.Content.SimTunables.Ai.FixAndFlank.ViableAccessRoutesMin && enemyPower > 0f && ownPower >= enemyPower * threshold * global::MachineBrigade.Sim.Content.SimTunables.Ai.FixAndFlank.ViableEnemyPowerScale;
 
         /// <summary>The Fix squad's goal: never closer than its envelope share of its reach (no suicide).</summary>
         public static Vector2 FixGoal(Vector2 from, Vector2 target, Vector2 goal, float reach)
@@ -210,9 +210,9 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         public static Vector2 Intercept(Vector2 self, float speed, Vector2 target, Vector2 velocity, float horizon, float age, out float t)
         {
-            var h = horizon * Math.Clamp(1f - age / MathF.Max(0.1f, Tun.Pursuit.AgeFadeS), 0f, 1f);
+            var h = horizon * Math.Clamp(1f - age / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.PursuitDiscipline.InterceptAgeFadeSFloor, Tun.Pursuit.AgeFadeS), 0f, 1f);
             var d = target - self;
-            float a = Vector2.Dot(velocity, velocity) - speed * speed, b = 2f * Vector2.Dot(d, velocity), c = Vector2.Dot(d, d);
+            float a = Vector2.Dot(velocity, velocity) - speed * speed, b = global::MachineBrigade.Sim.Content.SimTunables.Ai.PursuitDiscipline.InterceptDotScale * Vector2.Dot(d, velocity), c = Vector2.Dot(d, d);
             t = h;
             if (MathF.Abs(a) < 1e-4f)
             {
@@ -289,7 +289,7 @@ namespace MachineBrigade.Sim.AI
 
         /// <summary>Spec 172: recovery cost from the decayed losses there and the odds now.</summary>
         public static float RecoveryCost(float lostThere, float own, float enemy) =>
-            lostThere * Math.Clamp(enemy / MathF.Max(1f, own), 0.5f, 3f);
+            lostThere * Math.Clamp(enemy / MathF.Max(1f, own), global::MachineBrigade.Sim.Content.SimTunables.Ai.ObjectiveRules.RecoveryCostEnemyMin, global::MachineBrigade.Sim.Content.SimTunables.Ai.ObjectiveRules.RecoveryCostEnemyMax);
 
         /// <summary>Spec 171: what a secondary needs: enough to delay / screen / contest, capped by the share of the army.</summary>
         public static float SecondaryNeed(float enemyThere, float total) =>
@@ -300,7 +300,7 @@ namespace MachineBrigade.Sim.AI
         {
             var n = Math.Max(1, lines);
             var result = new Vector2[n];
-            for (var i = 0; i < n; i++) result[i] = Vector2.Lerp(objective, home, Math.Clamp(i * step, 0f, 0.9f));
+            for (var i = 0; i < n; i++) result[i] = Vector2.Lerp(objective, home, Math.Clamp(i * step, 0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.ObjectiveRules.DepthLinesIMax));
             return result;
         }
     }
@@ -345,15 +345,15 @@ namespace MachineBrigade.Sim.AI
         public static int Salvos(int gunId)
         {
             var s = Tun.FireMissions.ScootSalvos;
-            int lo = s.Length > 0 ? s[0] : 2, hi = s.Length > 1 ? s[1] : lo;
+            int lo = s.Length > 0 ? s[0] : global::MachineBrigade.Sim.Content.SimTunables.Ai.ShootAndScoot.SalvosLengthFalse, hi = s.Length > 1 ? s[1] : lo;
             return lo + Math.Abs(gunId) % Math.Max(1, hi - lo + 1);
         }
 
         public static float Distance(int gunId)
         {
             var d = Tun.FireMissions.ScootDistance;
-            float lo = d.Length > 0 ? d[0] : 12f, hi = d.Length > 1 ? d[1] : lo;
-            return lo + (Math.Abs(gunId * 37) % 101) / 100f * (hi - lo);
+            float lo = d.Length > 0 ? d[0] : global::MachineBrigade.Sim.Content.SimTunables.Ai.ShootAndScoot.DistanceLengthFalse, hi = d.Length > 1 ? d[1] : lo;
+            return lo + (Math.Abs(gunId * global::MachineBrigade.Sim.Content.SimTunables.Ai.ShootAndScoot.DistanceGunIdScale) % global::MachineBrigade.Sim.Content.SimTunables.Ai.ShootAndScoot.DistanceAbsMod) / 100f * (hi - lo);
         }
 
         /// <summary>Scoot after the gun's salvo count, or at once (one salvo fired) under a counter-battery threat.</summary>

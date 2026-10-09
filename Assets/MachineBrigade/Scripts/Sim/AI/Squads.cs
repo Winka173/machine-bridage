@@ -160,7 +160,7 @@ namespace MachineBrigade.Sim.AI
         internal SquadLayer(AiCommander commander)
         {
             _commander = commander;
-            _timer = commander.Team == 1 ? Interval * 0.5f : 0f;
+            _timer = commander.Team == 1 ? Interval * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.CtorIntervalScale : 0f;
         }
 
         public IReadOnlyList<Squad> Squads => _squads;
@@ -295,9 +295,9 @@ namespace MachineBrigade.Sim.AI
             s.Spread = spread;
             s.Strength = strength;
             reaches.Sort();
-            s.Reach = reaches[reaches.Count / 2];
+            s.Reach = reaches[reaches.Count / global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.MeasureCountDivisor];
             // Taking fire since the last look (releases an ambush's held fire).
-            if (hp < s.LastHp - 0.5f) s.HoldReleased = true;
+            if (hp < s.LastHp - global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.MeasureLastHpSub) s.HoldReleased = true;
             s.LastHp = hp;
         }
 
@@ -371,12 +371,12 @@ namespace MachineBrigade.Sim.AI
             var m = tactic.Modules;
             var skill = _commander.Skill;
             var goal = s.Task.Objective ?? NearestEnemy(intel, s.Centre) ?? s.Centre;
-            var radius = MathF.Max(40f, s.Reach * 1.2f);
+            var radius = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreReachFloor, s.Reach * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreReachScale);
             var (_, enemyHere) = intel.StrengthAround(s.Centre, radius);
             var (ownGoal, enemyGoal) = intel.StrengthAround(goal, radius);
             var own = s.Strength + ownGoal * 0.5f;
             var threshold = _commander.AttackThreshold(s);
-            var ratio = own / MathF.Max(0.01f, enemyGoal);
+            var ratio = own / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreEnemyGoalFloor, enemyGoal);
             var confidence = Confidence(intel, goal, radius, world.Time);
             var transitioning = _commander.InTransition;
             var crippled = CrippledShare(world, s);
@@ -385,21 +385,21 @@ namespace MachineBrigade.Sim.AI
             if (s.Task.Objective.HasValue || NearestEnemy(intel, s.Centre).HasValue)
             {
                 var f = new List<Factor>();
-                if (enemyGoal > 0f) f.Add(new Factor("ratio", Math.Clamp((ratio / threshold - 1f) * 25f, -25f, 25f)));
+                if (enemyGoal > 0f) f.Add(new Factor("ratio", Math.Clamp((ratio / threshold - 1f) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreRatioScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreRatioMin, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreRatioMax)));
                 else f.Add(new Factor("undefended", 12f));
                 if (s.Task.Window) f.Add(new Factor("window", 15f));
-                if (HighValueNear(intel, goal, radius)) f.Add(new Factor("highValue", 10f));
+                if (HighValueNear(intel, goal, radius)) f.Add(new Factor("highValue", global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScorePoints3));
                 if (s.Task.Kind == TaskKind.Primary && !s.Task.Hold) f.Add(new Factor("primary", 8f));
-                if (m.Counterattack > 0f && enemyGoal > 0f && ratio >= m.Counterattack) f.Add(new Factor("counterattack", 15f));
+                if (m.Counterattack > 0f && enemyGoal > 0f && ratio >= m.Counterattack) f.Add(new Factor("counterattack", global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScorePoints2));
                 if (m.Hold || s.Task.Hold) f.Add(new Factor("holdTactic", -12f));
                 if (enemyGoal > 0f) f.Add(new Factor("lowConfidence", -(1f - confidence) * 15f));
                 var routeThreat = RouteThreat(intel, s.Centre, goal);
-                if (routeThreat > 0f) f.Add(new Factor("routeThreat", -MathF.Min(15f, routeThreat / MathF.Max(1f, s.Strength) * 6f)));
-                if (s.Cohesion < SimTunables.Ai.Squads.CohesionRegroup && m.Cohesion > 0f) f.Add(new Factor("notGathered", -10f * m.Cohesion));
+                if (routeThreat > 0f) f.Add(new Factor("routeThreat", -MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreRouteThreatCap, routeThreat / MathF.Max(1f, s.Strength) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreRouteThreatScale)));
+                if (s.Cohesion < SimTunables.Ai.Squads.CohesionRegroup && m.Cohesion > 0f) f.Add(new Factor("notGathered", global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreCohesionScale * m.Cohesion));
                 if (transitioning) f.Add(new Factor("transition", -30f));
-                if (_commander.WaitingForAir) f.Add(new Factor("waitAir", -20f));
-                if (_commander.WaitingForArtillery) f.Add(new Factor("artilleryPrep", -15f));
-                Add(SquadAction.Attack, 40f, f);
+                if (_commander.WaitingForAir) f.Add(new Factor("waitAir", global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScorePoints7));
+                if (_commander.WaitingForArtillery) f.Add(new Factor("artilleryPrep", global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScorePoints8));
+                Add(SquadAction.Attack, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreBaseScore, f);
             }
 
             // HOLD: a point to hold, or cover close by (a squad can always stand where it is).
@@ -407,18 +407,18 @@ namespace MachineBrigade.Sim.AI
                 var f = new List<Factor>();
                 if (s.Task.Hold || m.Hold) f.Add(new Factor("holdTask", 25f));
                 if (m.Stance == FireStance.HoldFire) f.Add(new Factor("ambush", 15f));
-                if (_commander.WaitingForAir || _commander.WaitingForArtillery || transitioning) f.Add(new Factor("waiting", 10f));
+                if (_commander.WaitingForAir || _commander.WaitingForArtillery || transitioning) f.Add(new Factor("waiting", global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScorePoints3));
                 if (PointPressure(intel, goal)) f.Add(new Factor("losingPoint", -20f));
                 if (intel.ThreatAt(ThreatKind.Splash, s.Centre) > 0f || intel.ThreatAt(ThreatKind.Artillery, s.Centre) > 0f)
-                    f.Add(new Factor("inSplash", -15f));
+                    f.Add(new Factor("inSplash", global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScorePoints8));
                 if (!s.Task.Hold && !m.Hold && s.Task.Window) f.Add(new Factor("window", -10f));
                 // Part F2: most of the squad crippled: hold / support rather than a long move (capability, not health).
                 if (crippled > 0.5f) f.Add(new Factor("crippled", SimTunables.Ai.ComponentState.HoldBonus));
-                Add(SquadAction.Hold, 30f, f);
+                Add(SquadAction.Hold, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreBaseScore2, f);
             }
 
             // FLANK_LEFT / FLANK_RIGHT: only with a route round that is open and not under too much threat (filtered first).
-            if (s.MemberList.Count >= 2 && Vector2.Distance(s.Centre, goal) > 30f)
+            if (s.MemberList.Count >= global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreCountMin && Vector2.Distance(s.Centre, goal) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreDistanceMin)
                 for (var side = -1; side <= 1; side += 2)
                 {
                     if ((side < 0 && s.BlockedLeft) || (side > 0 && s.BlockedRight)) continue;
@@ -427,28 +427,28 @@ namespace MachineBrigade.Sim.AI
                     if (!FlankRouteFits(world, s, point)) continue;
                     var f = new List<Factor>();
                     var (_, sideEnemy) = intel.StrengthAround(point, radius);
-                    if (enemyGoal > 0f) f.Add(new Factor("weakFlank", Math.Clamp((enemyGoal - sideEnemy) / enemyGoal * 15f, -10f, 15f)));
+                    if (enemyGoal > 0f) f.Add(new Factor("weakFlank", Math.Clamp((enemyGoal - sideEnemy) / enemyGoal * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreEnemyGoalScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreEnemyGoalMin, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreEnemyGoalMax)));
                     if (s.Fast) f.Add(new Factor("mobile", 12f));
                     var weight = ai.FlankWeight * m.Flank * skill.Flank;
                     if (MathF.Abs(weight - 1f) > 0.01f) f.Add(new Factor("flankTactic", (weight - 1f) * 20f));
                     if (s.Task.FlankSide == side) f.Add(new Factor("pincer", 15f));
                     f.Add(new Factor("cohesionRisk", -8f * ai.Cohesion));
-                    if (sideEnemy > 0f) f.Add(new Factor("reserveThatWay", -MathF.Min(10f, sideEnemy / MathF.Max(1f, s.Strength) * 5f)));
-                    if (threat > 0f) f.Add(new Factor("routeThreat", -MathF.Min(10f, threat / MathF.Max(1f, s.Strength) * 4f)));
+                    if (sideEnemy > 0f) f.Add(new Factor("reserveThatWay", -MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreSideEnemyCap, sideEnemy / MathF.Max(1f, s.Strength) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreSideEnemyScale)));
+                    if (threat > 0f) f.Add(new Factor("routeThreat", -MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreThreatCap, threat / MathF.Max(1f, s.Strength) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreThreatScale)));
                     if (transitioning) f.Add(new Factor("transition", -30f));
                     // Part F2: no long flank with a crippled engine in the squad.
                     if (crippled > 0f) f.Add(new Factor("crippled", -SimTunables.Ai.ComponentState.FlankPenalty));
-                    Add(side < 0 ? SquadAction.FlankLeft : SquadAction.FlankRight, 30f, f);
+                    Add(side < 0 ? SquadAction.FlankLeft : SquadAction.FlankRight, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreBaseScore2, f);
                 }
 
             // OVERWATCH: a friendly squad close by is advancing.
-            if (s.Reach >= 40f && AdvancingFriend(intel, s) is { } friend)
+            if (s.Reach >= global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreReachMin && AdvancingFriend(intel, s) is { } friend)
             {
                 var f = new List<Factor>();
                 if (intel.Know(ThreatKind.AntiTank, friend.Goal) == Knowledge.Unknown) f.Add(new Factor("unknownGround", 15f));
                 if (m.Bounding) f.Add(new Factor("bounding", 20f));
                 if (s.Task.Kind == TaskKind.Primary && s.Task.Window) f.Add(new Factor("window", -10f));
-                Add(SquadAction.Overwatch, 25f, f);
+                Add(SquadAction.Overwatch, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreBaseScore3, f);
             }
 
             // REPOSITION: a better spot within a short distance (less splash, artillery or anti-tank fire), or the line behind.
@@ -456,9 +456,9 @@ namespace MachineBrigade.Sim.AI
             {
                 var f = new List<Factor>();
                 if (fallback) f.Add(new Factor("fallbackLine", 35f));
-                if (gain > 0f) f.Add(new Factor("underFire", MathF.Min(25f, gain)));
+                if (gain > 0f) f.Add(new Factor("underFire", MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreGainCap, gain)));
                 if (s.Focus.IsValid) f.Add(new Factor("focusing", -15f));
-                Add(SquadAction.Reposition, 20f, f);
+                Add(SquadAction.Reposition, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreBaseScore4, f);
                 s.Waypoint = better;
             }
 
@@ -467,29 +467,29 @@ namespace MachineBrigade.Sim.AI
             {
                 var f = new List<Factor>();
                 var (fo, fe) = intel.StrengthAround(losing.Centre, radius);
-                f.Add(new Factor("friendLosing", Math.Clamp((1f - fo / MathF.Max(0.01f, fe)) * 25f, 0f, 25f)));
+                f.Add(new Factor("friendLosing", Math.Clamp((1f - fo / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreFeFloor, fe)) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreFoScale, 0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreFoMax)));
                 if (enemyHere <= 0f) f.Add(new Factor("free", 10f));
                 if (s.Task.Kind == TaskKind.Primary) f.Add(new Factor("leavesTask", -15f));
-                Add(SquadAction.Support, 30f, f);
+                Add(SquadAction.Support, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreBaseScore2, f);
             }
 
             // JOIN: too small, with another squad of its kind close by.
             if (s.MemberList.Count < MinSquad && JoinableSquad(world, intel, s) is { } join)
             {
                 s.JoinTarget = join.Id;
-                Add(SquadAction.Join, 35f, new List<Factor> { new("belowMinimum", 25f) });
+                Add(SquadAction.Join, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreBaseScore5, new List<Factor> { new("belowMinimum", global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScorePoints9) });
             }
 
             // REGROUP: scattered (and, once regrouping, until gathered again).
             // AI MASTER P2 spec 25: cohesion under 0.55 for over 2 s (not in an immediate survival fight), until it is back over 0.7.
             var lowCohesion = !double.IsNaN(s.LowCohesionSince) && world.Time - s.LowCohesionSince > SimTunables.Ai.Squads.CohesionSeconds &&
-                              !(s.State == SquadState.Combat && world.Time - s.UnderFireAt < 2.0);
+                              !(s.State == SquadState.Combat && world.Time - s.UnderFireAt < global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreTimeMax);
             if (lowCohesion || (s.Action == SquadAction.Regroup && s.Cohesion < SimTunables.Ai.Squads.CohesionRecover) || transitioning)
             {
-                var f = new List<Factor> { new("scattered", MathF.Min(25f, (1f - s.Cohesion) * 40f)) };
+                var f = new List<Factor> { new("scattered", MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreCohesionCap, (1f - s.Cohesion) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreCohesionScale3)) };
                 if (transitioning) f.Add(new Factor("tacticChanged", 20f));
                 if (s.Task.Window) f.Add(new Factor("window", -15f));
-                Add(SquadAction.Regroup, 25f, f);
+                Add(SquadAction.Regroup, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreBaseScore3, f);
             }
 
             // AI MASTER P3: confidence, route diversity, posture, package and dispersion factors (SquadLayer.P3).
@@ -504,7 +504,7 @@ namespace MachineBrigade.Sim.AI
             {
                 var score = baseScore;
                 foreach (var f in factors) score += f.Points;
-                _options.Add((a, Math.Clamp(score, 0f, 100f), factors));
+                _options.Add((a, Math.Clamp(score, 0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ScoreScoreMax), factors));
             }
         }
 
@@ -529,7 +529,7 @@ namespace MachineBrigade.Sim.AI
         {
             if (s.Focus.IsValid && !(world.TryGetVehicle(s.Focus, out var f) && f.IsAlive)) return true;
             if (s.Task.Objective is { } o && !float.IsNaN(s.IssuedGoal.X) && s.Action is SquadAction.Attack or SquadAction.Hold &&
-                Vector2.Distance(o, s.Goal) > 30f) return true;
+                Vector2.Distance(o, s.Goal) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UrgentDistanceMin) return true;
             return (s.Action == SquadAction.FlankLeft && s.BlockedLeft) || (s.Action == SquadAction.FlankRight && s.BlockedRight);
         }
 
@@ -540,7 +540,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var id in s.MemberList)
             {
                 if (!world.TryGetVehicle(id, out var v)) continue;
-                if (v.IsMoving || now - v.LastFiredAt < 3.0 || v.OutOfAmmo || v.DeployBusy || v.Target.IsValid) reason = true;
+                if (v.IsMoving || now - v.LastFiredAt < global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.IdleTooLongNowMax || v.OutOfAmmo || v.DeployBusy || v.Target.IsValid) reason = true;
             }
             if (reason)
             {
@@ -571,7 +571,7 @@ namespace MachineBrigade.Sim.AI
                     next = s.FlankReached || nearest <= s.Reach ? SquadState.Combat : SquadState.Flank;
                     break;
                 default:
-                    next = nearest <= s.Reach ? SquadState.Combat : nearest <= s.Reach * 1.5f ? SquadState.Approach : SquadState.Travel;
+                    next = nearest <= s.Reach ? SquadState.Combat : nearest <= s.Reach * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SetStateReachScale ? SquadState.Approach : SquadState.Travel;
                     break;
             }
             if (next == s.State) return;
@@ -599,7 +599,7 @@ namespace MachineBrigade.Sim.AI
                 if (now - seen < delay) continue;
                 foreach (var id in s.MemberList)
                 {
-                    if (!world.TryGetVehicle(id, out var v) || Vector2.Distance(v.Position, w.Centre) > w.Radius + v.Radius + 2f) continue;
+                    if (!world.TryGetVehicle(id, out var v) || Vector2.Distance(v.Position, w.Centre) > w.Radius + v.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.DodgeRadiusAdd) continue;
                     // AI MASTER P4 spec 217: each member reacts after its own deterministic stagger (the squad stays dodging meanwhile).
                     if (StaggerWaitP4(id, key, seen, now, delay))
                     {
@@ -609,15 +609,15 @@ namespace MachineBrigade.Sim.AI
                     // The shortest way out of the ring.
                     var away = v.Position - w.Centre;
                     away = away.LengthSquared() > 0.01f ? Vector2.Normalize(away) : SimMath.Forward(v.Heading + MathF.PI * 0.5f);
-                    var exit = world.Map.Clamp(w.Centre + away * (w.Radius + v.Radius + 6f), 4f);
+                    var exit = world.Map.Clamp(w.Centre + away * (w.Radius + v.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.DodgeRadiusAdd2), global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.DodgeMargin);
                     // AI MASTER P4 spec 181: the squad's escape sectors (spread over 3-5 safe sectors) instead of one radial point each.
                     if (EscapeExitP4(world, intel, s, w, key, id) is { } sector) exit = sector;
-                    if (!v.HasPath || Vector2.Distance(v.Order.Point, exit) > 4f)
+                    if (!v.HasPath || Vector2.Distance(v.Order.Point, exit) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.DodgeDistanceMin)
                         world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, exit));
                     any = true;
                 }
             }
-            if (_warningsSeen.Count > 64) Prune(now);
+            if (_warningsSeen.Count > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.DodgeCountMin) Prune(now);
             if (any && !s.Dodging)
                 world.AiLog.Add(new DecisionEntry(now, _commander.Team, AiLayer.Squad, s.Id, DecisionKind.Emergency, "dodge warning ring"));
             if (!any && s.Dodging)
@@ -633,17 +633,17 @@ namespace MachineBrigade.Sim.AI
         {
             var old = new List<(int, int)>();
             foreach (var kv in _warningsSeen)
-                if (now - kv.Value > 30.0) old.Add(kv.Key);
+                if (now - kv.Value > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PruneNowMin) old.Add(kv.Key);
             foreach (var k in old) _warningsSeen.Remove(k);
         }
 
         private static bool Overwhelmed(TeamIntel intel, Squad s, AiParams ai)
         {
-            var (own, enemy) = intel.StrengthAround(s.Centre, MathF.Max(40f, s.Reach));
+            var (own, enemy) = intel.StrengthAround(s.Centre, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.OverwhelmedReachFloor, s.Reach));
             if (enemy >= MathF.Max(own, s.Strength) * ai.OverwhelmRatio && enemy > 0f) return true;
             foreach (var e in intel.Events)
                 if (e.Kind == IntelEventKind.Threat && e.Priority >= 80f && e.Confidence >= 0.5f &&
-                    Vector2.Distance(e.Centre, s.Centre) <= e.Radius + s.Spread + 10f) return true;
+                    Vector2.Distance(e.Centre, s.Centre) <= e.Radius + s.Spread + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.OverwhelmedRadiusAdd) return true;
             return false;
         }
 
@@ -705,17 +705,17 @@ namespace MachineBrigade.Sim.AI
                         // Engagement distance (D.5): stand at the role's (or the tactic's) share of the reach.
                         var band = Engage(world, s, m);
                         var nearest = Vector2.Distance(s.Centre, enemy);
-                        if (band > 0f && (m.Standoff || m.Kite > 0f || nearest < s.Reach * band * 0.8f))
+                        if (band > 0f && (m.Standoff || m.Kite > 0f || nearest < s.Reach * band * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ExecuteReachScale))
                             goal = enemy - Direction(s.Centre, enemy) * s.Reach * band;
                         if (m.Kite > 0f && nearest < s.Reach * m.Kite) type = CommandType.Move;
                         SetKiting(world, s, type == CommandType.Move);
                     }
-                    else if (m.Cohesion > 0f && s.State == SquadState.Travel && Vector2.Distance(s.Centre, target) > 40f)
+                    else if (m.Cohesion > 0f && s.State == SquadState.Travel && Vector2.Distance(s.Centre, target) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ExecuteDistanceMin)
                     {
                         // Squad cohesion: advance in bounds so the fast wait for the slow (blitz does not wait).
                         var step = (m.Bounding ? 24f : 32f) * m.Pace;
                         // The bound already ordered stands until the squad is near it (no new route every look).
-                        goal = !float.IsNaN(s.IssuedGoal.X) && s.IssuedAction == s.Action && Vector2.Distance(s.Centre, s.IssuedGoal) > 12f
+                        goal = !float.IsNaN(s.IssuedGoal.X) && s.IssuedAction == s.Action && Vector2.Distance(s.Centre, s.IssuedGoal) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ExecuteDistanceMin2
                             ? s.IssuedGoal
                             : s.Centre + forward * step;
                         if (m.Bounding && Bound(world, s, goal, forward)) return;
@@ -738,7 +738,7 @@ namespace MachineBrigade.Sim.AI
                 case SquadAction.FlankRight:
                     if (!s.FlankReached && FlankPoint(world, intel, s, target, s.Action == SquadAction.FlankLeft ? -1 : 1, out var w, out _))
                     {
-                        if (Vector2.Distance(s.Centre, w) < 12f) s.FlankReached = true;
+                        if (Vector2.Distance(s.Centre, w) < global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ExecuteDistanceMax) s.FlankReached = true;
                         else
                         {
                             goal = w;
@@ -788,7 +788,7 @@ namespace MachineBrigade.Sim.AI
             // AI MASTER P2 Part I: a no-chase / leash doctrine keeps the squad near its anchor.
             goal = Leash(world, s, goal);
             if (s.MorphPending && world.Time >= s.MorphUntil) s.IssuedGoal = new Vector2(float.NaN, float.NaN);
-            goal = world.Map.Clamp(goal, 6f);
+            goal = world.Map.Clamp(goal, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ExecuteMargin);
             // AI MASTER P1 (spec 40): never a rally or holding point in a spawn's exit box.
             if (type == CommandType.Move) goal = world.Traffic.OutOfExit(goal, _commander.Team);
             // Release an ambush's hold the moment the squad does anything else; kiting only while it backs off.
@@ -796,7 +796,7 @@ namespace MachineBrigade.Sim.AI
             if (type != CommandType.Move || s.State != SquadState.Combat) SetKiting(world, s, false);
             // Orders only when the goal or the action changed, or a member has nothing to do (no reshuffling every look).
             var changed = s.Action != s.IssuedAction || float.IsNaN(s.IssuedGoal.X) ||
-                          Vector2.Distance(goal, s.IssuedGoal) > (s.State == SquadState.Combat ? 10f : 6f);
+                          Vector2.Distance(goal, s.IssuedGoal) > (s.State == SquadState.Combat ? global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ExecuteStateTrue : global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ExecuteStateFalse);
             s.Goal = goal;
             if (changed)
             {
@@ -810,17 +810,17 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Bounding overwatch (C.8): half the squad stands and covers while the other half moves up to its cover range.</summary>
         private bool Bound(SimWorld world, Squad s, Vector2 goal, Vector2 forward)
         {
-            if (s.MemberList.Count < 2) return false;
+            if (s.MemberList.Count < global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BoundCountMax) return false;
             var now = world.Time;
             if (now < s.BoundSwapAt) return true;
             s.BoundPhase = !s.BoundPhase;
-            s.BoundSwapAt = now + 6.0;
+            s.BoundSwapAt = now + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BoundNowAdd;
             var moving = new List<EntityId>();
             var standing = new List<EntityId>();
             for (var i = 0; i < s.MemberList.Count; i++)
                 (i % 2 == (s.BoundPhase ? 0 : 1) ? moving : standing).Add(s.MemberList[i]);
-            var cover = MathF.Min(s.Reach * 0.8f, 30f);
-            var to = world.Map.Clamp(s.Centre + forward * cover, 6f);
+            var cover = MathF.Min(s.Reach * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BoundReachScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BoundReachCap);
+            var to = world.Map.Clamp(s.Centre + forward * cover, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BoundMargin);
             world.Submit(new Command(CommandType.AttackMove, _commander.Team, moving.ToArray(), to));
             world.Submit(new Command(CommandType.Stop, _commander.Team, standing.ToArray()));
             s.IssuedGoal = goal;
@@ -839,10 +839,10 @@ namespace MachineBrigade.Sim.AI
             var intel = world.Intel.For(_commander.Team);
             var m = _commander.TacticFor(s).Modules;
             var blast = intel.EnemySplash * world.Catalog.Ai.SplashSpread * m.Spread * _commander.Skill.Spread;
-            var spacing = MathF.Max(6f, blast * 2f);
+            var spacing = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SpreadDistanceBlastFloor, blast * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SpreadDistanceBlastScale);
             // AI MASTER P2 spec 162: against direct anti-tank fire with little splash, no useless spread (cover and flank instead).
             var splashHere = intel.ThreatAt(ThreatKind.Splash, s.Centre) + intel.ThreatAt(ThreatKind.Artillery, s.Centre);
-            if (splashHere <= 0f && intel.ThreatAt(ThreatKind.AntiTank, s.Centre) > 0f) spacing = MathF.Min(spacing, MathF.Max(6f, SimTunables.Ai.Formation.DirectAtMaxSpread));
+            if (splashHere <= 0f && intel.ThreatAt(ThreatKind.AntiTank, s.Centre) > 0f) spacing = MathF.Min(spacing, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SpreadDistanceDirectAtMaxSpreadFloor, SimTunables.Ai.Formation.DirectAtMaxSpread));
             return spacing;
         }
 
@@ -866,12 +866,12 @@ namespace MachineBrigade.Sim.AI
                     s.Progress[id] = (v.Position, now, p.rung);
                     continue;
                 }
-                var moving = v.HasPath && Vector2.Distance(v.Position, v.Order.Point) > 6f;
-                if (!moving || Vector2.Distance(v.Position, p.at) > 2f)
+                var moving = v.HasPath && Vector2.Distance(v.Position, v.Order.Point) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickDistanceMin;
+                if (!moving || Vector2.Distance(v.Position, p.at) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickDistanceMin2)
                 {
                     s.Progress[id] = (v.Position, now, moving ? p.rung : 0);
                     // A member left with nothing to do while its squad still has a goal: send it again.
-                    if (!moving && v.Order.Kind == OrderKind.Idle && !v.Target.IsValid && Vector2.Distance(v.Position, goal) > 15f && now >= s.StaggerUntil &&
+                    if (!moving && v.Order.Kind == OrderKind.Idle && !v.Target.IsValid && Vector2.Distance(v.Position, goal) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickDistanceMin3 && now >= s.StaggerUntil &&
                         now >= ReleaseOf(s, id) &&
                         s.Action != SquadAction.Hold && s.Action != SquadAction.Overwatch)
                         // To its own formation slot (spec 111: the squad's goal is every idle member's, never one point for all).
@@ -883,22 +883,22 @@ namespace MachineBrigade.Sim.AI
                 switch (p.rung)
                 {
                     case 0: // back off a little and try again
-                        world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(v.Position - away * 4f, 4f))));
+                        world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(v.Position - away * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickAwayScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickMargin))));
                         break;
                     case 1: // another route: a side step towards the goal
-                        var sideStep = new Vector2(away.Y, -away.X) * ((id.Value & 1) == 0 ? 8f : -8f);
-                        world.Submit(new Command(type, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(goal + sideStep, 4f))));
+                        var sideStep = new Vector2(away.Y, -away.X) * ((id.Value & 1) == 0 ? global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickValueTrue : global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickValueFalse);
+                        world.Submit(new Command(type, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(goal + sideStep, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickMargin))));
                         break;
                     case 2: // out of the cluster
                         var out_ = v.Position - s.Centre;
                         out_ = out_.LengthSquared() > 0.01f ? Vector2.Normalize(out_) : new Vector2(away.Y, -away.X);
-                        world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(v.Position + out_ * 8f, 4f))));
+                        world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(v.Position + out_ * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickOutScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickMargin))));
                         break;
                     default:
                         blocked++;
                         break;
                 }
-                s.Progress[id] = (v.Position, now, Math.Min(3, p.rung + 1));
+                s.Progress[id] = (v.Position, now, Math.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickRungCap, p.rung + 1));
             }
             if (blocked == 0) return;
             // Still stuck: the squad re-scores with this route marked invalid.
@@ -907,7 +907,7 @@ namespace MachineBrigade.Sim.AI
             s.ActionSince = double.NegativeInfinity;
             s.IssuedGoal = new Vector2(float.NaN, float.NaN);
             foreach (var id in s.MemberList)
-                if (s.Progress.TryGetValue(id, out var p) && p.rung >= 3) s.Progress[id] = (p.at, now, 0);
+                if (s.Progress.TryGetValue(id, out var p) && p.rung >= global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnstickRungMin) s.Progress[id] = (p.at, now, 0);
             world.AiLog.Add(new DecisionEntry(now, _commander.Team, AiLayer.Squad, s.Id, DecisionKind.Action, "route blocked: re-score"));
         }
 
@@ -926,7 +926,7 @@ namespace MachineBrigade.Sim.AI
                 SetHoldFire(world, s, false);
                 return;
             }
-            var share = m.HoldFire > 0f ? m.HoldFire : world.Catalog.Ai.HoldFire > 0f ? world.Catalog.Ai.HoldFire : 0.6f;
+            var share = m.HoldFire > 0f ? m.HoldFire : world.Catalog.Ai.HoldFire > 0f ? world.Catalog.Ai.HoldFire : global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.StanceHoldFireFalse;
             if (NearestEnemyDistance(intel, s.Centre) <= s.Reach * share)
             {
                 s.HoldReleased = true;
@@ -955,19 +955,19 @@ namespace MachineBrigade.Sim.AI
             var weight = world.Catalog.Ai.FocusWeight * tactic.Modules.Focus * _commander.Skill.Focus;
             var old = s.Focus;
             s.Focus = EntityId.None;
-            if (weight > 0.01f && s.State == SquadState.Combat)
+            if (weight > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FocusWeightMin && s.State == SquadState.Combat)
             {
                 var best = 0f;
                 foreach (var c in intel.Contacts)
                 {
-                    if (!c.InSight || c.Flying || Vector2.Distance(c.Position, s.Centre) > s.Reach + 10f) continue;
+                    if (!c.InSight || c.Flying || Vector2.Distance(c.Position, s.Centre) > s.Reach + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FocusReachAdd) continue;
                     if (!world.TryGetVehicle(c.Id, out var v) || !v.IsAlive) continue;
                     // Worth over time to kill: the squad's strength against its health, its value, nearly dead first.
-                    var value = MathF.Max(0.5f, c.Strength) * (1.6f - v.Hp / MathF.Max(1f, v.MaxHp));
+                    var value = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FocusStrengthFloor, c.Strength) * (global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FocusHpSub - v.Hp / MathF.Max(1f, v.MaxHp));
                     if (c.Group is { } g)
                         foreach (var t in tactic.Modules.Targets)
                             if (t == g) value *= 2f;
-                    var score = value * s.Strength / MathF.Max(1f, v.Hp) / (1f + Vector2.Distance(c.Position, s.Centre) / MathF.Max(10f, s.Reach));
+                    var score = value * s.Strength / MathF.Max(1f, v.Hp) / (1f + Vector2.Distance(c.Position, s.Centre) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FocusReachFloor, s.Reach));
                     if (c.Id == old) score *= 1.3f; // keep the focus unless another is clearly better
                     if (score > best)
                     {
@@ -1056,7 +1056,7 @@ namespace MachineBrigade.Sim.AI
         private static bool PointPressure(TeamIntel intel, Vector2 at)
         {
             foreach (var e in intel.Events)
-                if (e.Kind == IntelEventKind.ObjectivePressure && Vector2.Distance(e.Centre, at) <= e.Radius + 20f) return true;
+                if (e.Kind == IntelEventKind.ObjectivePressure && Vector2.Distance(e.Centre, at) <= e.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PointPressureRadiusAdd) return true;
             return false;
         }
 
@@ -1080,17 +1080,17 @@ namespace MachineBrigade.Sim.AI
             var forward = Direction(s.Centre, goal);
             var lateral = new Vector2(forward.Y, -forward.X) * side;
             var distance = Vector2.Distance(s.Centre, goal);
-            point = world.Map.Clamp(goal - forward * MathF.Min(30f, distance * 0.4f) + lateral * Math.Clamp(distance * 0.5f, 25f, 45f), 8f);
+            point = world.Map.Clamp(goal - forward * MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FlankPointDistanceCap, distance * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FlankPointDistanceScale) + lateral * Math.Clamp(distance * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FlankPointDistanceScale2, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FlankPointDistanceMin, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FlankPointDistanceMax), global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FlankPointMargin);
             threat = RouteThreat(intel, s.Centre, point);
-            if (!world.Grid.IsWalkable(point) || Vector2.Distance(point, goal) < 15f) return false;
-            return threat <= MathF.Max(1f, s.Strength) * 1.5f;
+            if (!world.Grid.IsWalkable(point) || Vector2.Distance(point, goal) < global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FlankPointDistanceMax2) return false;
+            return threat <= MathF.Max(1f, s.Strength) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FlankPointMaxScale;
         }
 
         private Squad? AdvancingFriend(TeamIntel intel, Squad s)
         {
             foreach (var o in _squads)
                 if (o != s && o.MemberList.Count > 0 && (o.Action is SquadAction.Attack or SquadAction.FlankLeft or SquadAction.FlankRight) &&
-                    (o.State is SquadState.Travel or SquadState.Approach) && Vector2.Distance(o.Centre, s.Centre) <= 60f) return o;
+                    (o.State is SquadState.Travel or SquadState.Approach) && Vector2.Distance(o.Centre, s.Centre) <= global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.AdvancingFriendDistanceMax) return o;
             return null;
         }
 
@@ -1101,8 +1101,8 @@ namespace MachineBrigade.Sim.AI
             foreach (var o in _squads)
             {
                 if (o == s || o.State != SquadState.Combat || Vector2.Distance(o.Centre, s.Centre) > SupportReach) continue;
-                var (own, enemy) = intel.StrengthAround(o.Centre, MathF.Max(40f, o.Reach));
-                var ratio = own / MathF.Max(0.01f, enemy);
+                var (own, enemy) = intel.StrengthAround(o.Centre, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.LosingFriendReachFloor, o.Reach));
+                var ratio = own / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.LosingFriendEnemyFloor, enemy);
                 if (enemy > 0f && ratio < worstRatio)
                 {
                     worst = o;
@@ -1138,23 +1138,23 @@ namespace MachineBrigade.Sim.AI
             fallback = false;
             if (m.Fallback > 0f && s.Action == SquadAction.Hold)
             {
-                var (own, enemy) = intel.StrengthAround(s.Centre, MathF.Max(40f, s.Reach));
+                var (own, enemy) = intel.StrengthAround(s.Centre, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BetterSpotReachFloor, s.Reach));
                 if (enemy > 0f && own / enemy < m.Fallback && world.TryGetRally(_commander.Team, out var home))
                 {
                     // The whole squad moves to the line behind (C.9); no vehicle falls back on its own.
-                    spot = world.Map.Clamp(s.Centre + Direction(s.Centre, home) * 35f, 6f);
+                    spot = world.Map.Clamp(s.Centre + Direction(s.Centre, home) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BetterSpotDirectionScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BetterSpotMargin);
                     fallback = true;
                     return true;
                 }
             }
-            float Danger(Vector2 p) => intel.ThreatAt(ThreatKind.Splash, p) + intel.ThreatAt(ThreatKind.Artillery, p) + 0.5f * intel.ThreatAt(ThreatKind.AntiTank, p);
+            float Danger(Vector2 p) => intel.ThreatAt(ThreatKind.Splash, p) + intel.ThreatAt(ThreatKind.Artillery, p) + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BetterSpotThreatAtScale * intel.ThreatAt(ThreatKind.AntiTank, p);
             var here = Danger(s.Centre);
             if (here <= 0f) return false;
             var best = here;
             for (var k = 0; k < 8; k++)
             {
                 var angle = k * MathF.PI / 4f;
-                var p = world.Map.Clamp(s.Centre + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * 25f, 6f);
+                var p = world.Map.Clamp(s.Centre + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BetterSpotScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BetterSpotMargin);
                 if (!world.Grid.IsWalkable(p)) continue;
                 var d = Danger(p);
                 if (d < best * 0.6f)
@@ -1164,7 +1164,7 @@ namespace MachineBrigade.Sim.AI
                 }
             }
             if (best >= here) return false;
-            gain = (here - best) / MathF.Max(1f, s.Strength) * 10f;
+            gain = (here - best) / MathF.Max(1f, s.Strength) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.BetterSpotHereScale;
             return true;
         }
 

@@ -75,9 +75,9 @@ namespace MachineBrigade.Sim.Navigation
                 var w = wrecks[n];
                 if (w.Naval) continue;
                 // AI MASTER P1 (spec 39): a hulk still falling is dear, then a wall.
-                var core = world.Time - w.Since < Content.SimTunables.Ai.Navigation.WreckSettleS ? FriendParkedCost * 3 : StunnedCost;
+                var core = world.Time - w.Since < Content.SimTunables.Ai.Navigation.WreckSettleS ? FriendParkedCost * global::MachineBrigade.Sim.Content.SimTunables.Maps.UnitCostField.RefreshFriendParkedCostScale : StunnedCost;
                 // (Widened by a typical half hull: the route finder plans for a point, and a hull must not fit a gap it cannot.)
-                foreach (var layer in _cost) Stamp(layer, w.A, w.B, w.Radius + 1.5f, (byte)core);
+                foreach (var layer in _cost) Stamp(layer, w.A, w.B, w.Radius + global::MachineBrigade.Sim.Content.SimTunables.Maps.UnitCostField.RefreshRadiusAdd, (byte)core);
             }
             // AI MASTER P1 (spec 84): the traffic's dynamic costs (jams, friendly boss corridors, booked firing spots).
             world.Traffic.StampCosts(_cost, _grid);
@@ -91,7 +91,7 @@ namespace MachineBrigade.Sim.Navigation
 
         private void Stamp(byte[] layer, Vector2 a, Vector2 b, float radius, byte core)
         {
-            var inner = radius + 0.5f;
+            var inner = radius + global::MachineBrigade.Sim.Content.SimTunables.Maps.UnitCostField.StampRadiusAdd;
             var outer = inner + RingReach;
             var min = Vector2.Min(a, b) - new Vector2(outer);
             var max = Vector2.Max(a, b) + new Vector2(outer);

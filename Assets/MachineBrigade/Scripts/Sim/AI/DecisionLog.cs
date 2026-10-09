@@ -84,8 +84,8 @@ namespace MachineBrigade.Sim.AI
             // Stable sorts (by points, then key) so a replay prints the same record.
             plus.Sort((a, b) => b.Points != a.Points ? b.Points.CompareTo(a.Points) : string.CompareOrdinal(a.Key, b.Key));
             minus.Sort((a, b) => a.Points != b.Points ? a.Points.CompareTo(b.Points) : string.CompareOrdinal(a.Key, b.Key));
-            if (plus.Count > 3) plus.RemoveRange(3, plus.Count - 3);
-            if (minus.Count > 2) minus.RemoveRange(2, minus.Count - 2);
+            if (plus.Count > global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitCountMin) plus.RemoveRange(global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitIndex, plus.Count - global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitCountSub);
+            if (minus.Count > global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitCountMin2) minus.RemoveRange(global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitIndex2, minus.Count - global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitCountSub2);
             return (plus.ToArray(), minus.ToArray());
         }
     }
@@ -200,7 +200,7 @@ namespace MachineBrigade.Sim.AI
                 if (kind == DecisionKind.Action) TotalActions++;
                 else if (kind == DecisionKind.State) TotalStates++;
                 else if (kind == DecisionKind.Target) TotalTargets++;
-                while (_recent.Count > 0 && now - _recent.Peek().at > 60.0) _recent.Dequeue();
+                while (_recent.Count > 0 && now - _recent.Peek().at > global::MachineBrigade.Sim.Content.SimTunables.Ai.Churn.AddNowMin) _recent.Dequeue();
             }
 
             public (int, int, int) LastMinute(double now)
@@ -208,7 +208,7 @@ namespace MachineBrigade.Sim.AI
                 int a = 0, s = 0, t = 0;
                 foreach (var (at, kind) in _recent)
                 {
-                    if (now - at > 60.0) continue;
+                    if (now - at > global::MachineBrigade.Sim.Content.SimTunables.Ai.Churn.LastMinuteNowMin) continue;
                     if (kind == DecisionKind.Action) a++;
                     else if (kind == DecisionKind.State) s++;
                     else if (kind == DecisionKind.Target) t++;

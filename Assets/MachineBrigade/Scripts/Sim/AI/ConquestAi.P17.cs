@@ -19,7 +19,7 @@ namespace MachineBrigade.Sim.AI
             // The stealth fighter hunts air defences as well as aircraft: the enemy's anti-air makes it worth more
             // (and offsets the "no aircraft to hunt" rule for interceptors).
             if (def.Sead)
-                score += MathF.Min(3f, enemy.AntiAir / MathF.Max(8f, enemy.Total) * 6f + towers.antiAir * 0.5f);
+                score += MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.NewCardScoreAntiAirCap, enemy.AntiAir / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.NewCardScoreTotalFloor, enemy.Total) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.NewCardScoreAntiAirScale + towers.antiAir * global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.NewCardScoreAntiAirScale2);
             return score;
         }
     }

@@ -191,7 +191,7 @@ namespace MachineBrigade.Sim.Content
         public HiddenDef(float rise, float cut, float firstShot)
         {
             Rise = Guard.Positive(rise, "hidden", nameof(rise));
-            Cut = Math.Clamp(cut, 0f, 0.95f);
+            Cut = Math.Clamp(cut, 0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.HiddenDef.CtorCutMax);
             FirstShot = MathF.Max(1f, firstShot);
         }
 

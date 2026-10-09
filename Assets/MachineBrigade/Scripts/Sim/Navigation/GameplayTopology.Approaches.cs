@@ -280,12 +280,12 @@ namespace MachineBrigade.Sim.Navigation
             var time = 0f;
             var open = 0;
             var medium = Class(VehicleSizeClass.Medium);
-            var speed = MathF.Max(0.5f, medium.MedianSpeed);
+            var speed = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MakeApproachMedianSpeedFloor, medium.MedianSpeed);
             for (var i = 0; i < cells.Count; i++)
             {
                 var c = cells[i];
                 var clear = WindowClearance(c, 2);
-                if (i >= 3 && i < cells.Count - 3)
+                if (i >= global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MakeApproachIMin && i < cells.Count - global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MakeApproachCountSub)
                 {
                     minClear = Math.Min(minClear, clear);
                     minWidth = MathF.Min(minWidth, WidthOfClearance(clear));
@@ -295,12 +295,12 @@ namespace MachineBrigade.Sim.Navigation
                 {
                     var step = Vector2.Distance(Map.CellCentre(cells[i - 1]), Map.CellCentre(c));
                     length += step;
-                    time += step * MathF.Max(0.1f, grid.StepCost(c)) / speed;
+                    time += step * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MakeApproachStepCostFloor, grid.StepCost(c)) / speed;
                 }
             }
             if (minClear == int.MaxValue)
             {
-                foreach (var c in cells) minClear = Math.Min(minClear, WindowClearance(c, 2));
+                foreach (var c in cells) minClear = Math.Min(minClear, WindowClearance(c, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MakeApproachR));
                 minWidth = WidthOfClearance(minClear == int.MaxValue ? 0 : minClear);
             }
             var support = VehicleSizeClass.Light;
@@ -318,7 +318,7 @@ namespace MachineBrigade.Sim.Navigation
             var end = Map.CellCentre(cells[cells.Count - 1]);
             var back = end;
             var walked = 0f;
-            for (var i = cells.Count - 2; i >= 0; i--)
+            for (var i = cells.Count - global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MakeApproachCountSub2; i >= 0; i--)
             {
                 var p = Map.CellCentre(cells[i]);
                 walked += Vector2.Distance(p, back);
@@ -347,9 +347,9 @@ namespace MachineBrigade.Sim.Navigation
                 if (l.Kind == LaneKind.BossCorridor) continue;
                 var inside = 0;
                 foreach (var c in cells)
-                    if (l.DistanceTo(Map.CellCentre(c)) <= 6f) inside++;
+                    if (l.DistanceTo(Map.CellCentre(c)) <= global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MakeApproachDistanceToMax) inside++;
                 var share = cells.Count > 0 ? inside / (float)cells.Count : 0f;
-                if (share < 0.6f || share <= bestShare) continue;
+                if (share < global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MakeApproachShareMax || share <= bestShare) continue;
                 bestShare = share;
                 approach.LaneId = l.Id;
             }
@@ -426,7 +426,7 @@ namespace MachineBrigade.Sim.Navigation
             foreach (var a in routes) a.Roles.Sort();
             routes.Sort((x, y) =>
             {
-                var c = (x.Roles.Count > 0 ? (int)x.Roles[0] : 99).CompareTo(y.Roles.Count > 0 ? (int)y.Roles[0] : 99);
+                var c = (x.Roles.Count > 0 ? (int)x.Roles[0] : global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.AssignRolesCountFalse).CompareTo(y.Roles.Count > 0 ? (int)y.Roles[0] : global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.AssignRolesCountFalse);
                 return c != 0 ? c : string.CompareOrdinal(x.Id, y.Id);
             });
         }
@@ -440,9 +440,9 @@ namespace MachineBrigade.Sim.Navigation
             foreach (var a in set.Approaches) points.AddRange(a.Points);
             var component = Map.Ground.ComponentAt(rally.Position);
             TacticalRegion? best = null;
-            var lo = MathF.Max(radius + Tun.ArtilleryMinRef + 10f, 30f);
-            var hi = MathF.Max(lo + 10f, Tun.ArtilleryRef * 0.8f);
-            foreach (var f in new[] { 0f, 0.5f, 1f })
+            var lo = MathF.Max(radius + Tun.ArtilleryMinRef + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ArtillerySupportRadiusAdd, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ArtillerySupportRadiusFloor);
+            var hi = MathF.Max(lo + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ArtillerySupportLoAdd, Tun.ArtilleryRef * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ArtillerySupportArtilleryRefScale);
+            foreach (var f in new[] { 0f, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ArtillerySupportF2, 1f })
                 for (var k = 0; k < 16; k++)
                 {
                     var dir = SimMath.Forward(k * MathF.PI / 8f);
@@ -451,7 +451,7 @@ namespace MachineBrigade.Sim.Navigation
                     if (!PositionOk(p) || (component > 0 && Map.Ground.ComponentAt(p) != component)) continue;
                     var forbidden = false;
                     foreach (var l in Lanes)
-                        if (l.ParkingForbidden && l.DistanceTo(p) < 6f) forbidden = true;
+                        if (l.ParkingForbidden && l.DistanceTo(p) < global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ArtillerySupportDistanceToMax) forbidden = true;
                     if (forbidden) continue;
                     var inBand = 0;
                     foreach (var q in points)
@@ -461,7 +461,7 @@ namespace MachineBrigade.Sim.Navigation
                     }
                     var r = new TacticalRegion { Centre = p, Radius = Tun.StagingRadius };
                     r.Terms["approachCoverage"] = points.Count > 0 ? inBand / (float)points.Count : 0f;
-                    r.Terms["directFireProtection"] = 1f - OpenShare(p, 40f, 16);
+                    r.Terms["directFireProtection"] = 1f - OpenShare(p, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ArtillerySupportReach, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ArtillerySupportRays);
                     r.Terms["trafficConflict"] = LaneConflict(p);
                     r.Terms["exits"] = EscapeRoutes(p, 12f) / 8f;
                     r.Score = 0.45f * r.Terms["approachCoverage"] + 0.25f * r.Terms["directFireProtection"] + 0.2f * r.Terms["exits"] - 0.2f * r.Terms["trafficConflict"];
@@ -482,19 +482,19 @@ namespace MachineBrigade.Sim.Navigation
             var cell = Map.Ground.NearestPassableCell(o.Position, Math.Max(SimTunables.Ai.Topology.NearestRings, (int)MathF.Ceiling(radius / Map.Cell)));
             var component = cell >= 0 ? Map.Ground.ComponentOfCell(cell) : 0;
             TacticalRegion? best = null;
-            foreach (var extra in new[] { 15f, 25f, 40f })
+            foreach (var extra in new[] { global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.DefenderFallbackExtra1, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.DefenderFallbackExtra2, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.DefenderFallbackExtra3 })
                 for (var k = -3; k <= 3; k++)
                 {
                     var angle = k * MathF.PI / 9f;
                     var dir = new Vector2(away.X * MathF.Cos(angle) - away.Y * MathF.Sin(angle), away.X * MathF.Sin(angle) + away.Y * MathF.Cos(angle));
                     var p = o.Position + dir * (radius + extra);
                     if (!PositionOk(p) || (component > 0 && Map.Ground.ComponentAt(p) != component)) continue;
-                    if (Vector2.Distance(p, o.Position) < radius + Tun.StagingRadius * 0.5f) continue;
+                    if (Vector2.Distance(p, o.Position) < radius + Tun.StagingRadius * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.DefenderFallbackStagingRadiusScale) continue;
                     var r = new TacticalRegion { Centre = p, Radius = Tun.StagingRadius };
-                    r.Terms["cover"] = BesideCover(p) ? 1f : 1f - OpenShare(p, 30f, 16);
+                    r.Terms["cover"] = BesideCover(p) ? 1f : 1f - OpenShare(p, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.DefenderFallbackReach, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.DefenderFallbackRays);
                     r.Terms["lineBack"] = LineClear(p, o.Position) ? 1f : 0f;
                     r.Terms["exits"] = EscapeRoutes(p, 12f) / 8f;
-                    r.Terms["offApproach"] = MathF.Min(1f, primary.DistanceTo(p) / 20f);
+                    r.Terms["offApproach"] = MathF.Min(1f, primary.DistanceTo(p) / global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.DefenderFallbackDistanceToDivisor);
                     r.Score = 0.35f * r.Terms["cover"] + 0.3f * r.Terms["lineBack"] + 0.2f * r.Terms["exits"] + 0.15f * r.Terms["offApproach"] - 0.01f * Math.Abs(k);
                     if (best != null && r.Score <= best.Score) continue;
                     best = r;

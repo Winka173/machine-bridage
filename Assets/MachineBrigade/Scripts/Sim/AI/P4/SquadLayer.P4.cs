@@ -44,7 +44,7 @@ namespace MachineBrigade.Sim.AI
                     P4Reasons.Squad(world, _commander.Team, s.Id, DecisionKind.Action, P4Reasons.AdaptBait, $"({s.Centre.X:0},{s.Centre.Y:0})");
             }
             var window = tp.WindowNear(goal, OpportunityRoles.Ground | OpportunityRoles.Fast, 20f);
-            var routeCommit = CommitmentWindows.Seconds(Tun.Commitment.RouteS, s.Id, 3);
+            var routeCommit = CommitmentWindows.Seconds(Tun.Commitment.RouteS, s.Id, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.AdjustP4Salt);
             for (var i = 0; i < _options.Count; i++)
             {
                 var (action, score, factors) = _options[i];
@@ -66,13 +66,13 @@ namespace MachineBrigade.Sim.AI
                             case LaneState.Exploit: factors.Add(new Factor("laneExploit", 10f)); break;
                         }
                         // Spec 184: a squad route (flank side) is kept 4-6 s (emergencies are handled before scoring).
-                        if (s.Action == action && CommitmentWindows.Holds(s.ActionSince, now, routeCommit, false)) factors.Add(new Factor("routeCommit", 5f));
+                        if (s.Action == action && CommitmentWindows.Holds(s.ActionSince, now, routeCommit, false)) factors.Add(new Factor("routeCommit", global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.AdjustP4Points4));
                         break;
                     }
                 }
                 if (factors.Count == before) continue;
                 for (var k = before; k < factors.Count; k++) score += factors[k].Points;
-                _options[i] = (action, Math.Clamp(score, 0f, 100f), factors);
+                _options[i] = (action, Math.Clamp(score, 0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.AdjustP4ScoreMax), factors);
             }
         }
 
@@ -85,7 +85,7 @@ namespace MachineBrigade.Sim.AI
             var best = float.MaxValue;
             foreach (var c in intel.Contacts)
             {
-                if (c.Flying || c.Age(now) > 20f) continue;
+                if (c.Flying || c.Age(now) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.EnvelopeP4AgeMin) continue;
                 var d = Vector2.Distance(c.Position, goal);
                 if (d < best)
                 {
@@ -93,7 +93,7 @@ namespace MachineBrigade.Sim.AI
                     nearest = c.Position;
                 }
             }
-            var kept = ProbeRules.EnvelopeGoal(s.Centre, nearest, goal, MathF.Max(10f, s.Reach));
+            var kept = ProbeRules.EnvelopeGoal(s.Centre, nearest, goal, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.EnvelopeP4ReachFloor, s.Reach));
             return world.Grid.IsWalkable(kept) ? kept : goal;
         }
 
@@ -113,7 +113,7 @@ namespace MachineBrigade.Sim.AI
         {
             var tp = P4;
             if (tp == null) return null;
-            var plan = WarningKey(key) * 31 + s.Id;
+            var plan = WarningKey(key) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.EscapeExitP4WarningKeyScale + s.Id;
             if (!_escapePlans.TryGetValue(plan, out var exits))
             {
                 if (_escapePlans.Count > 64) _escapePlans.Clear();
@@ -124,7 +124,7 @@ namespace MachineBrigade.Sim.AI
                 var sorted = new List<EntityId>(s.MemberList);
                 sorted.Sort((a, b) => a.Value.CompareTo(b.Value));
                 foreach (var m in sorted)
-                    if (world.TryGetVehicle(m, out var v) && Vector2.Distance(v.Position, w.Centre) <= w.Radius + v.Radius + 2f)
+                    if (world.TryGetVehicle(m, out var v) && Vector2.Distance(v.Position, w.Centre) <= w.Radius + v.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.EscapeExitP4RadiusAdd)
                     {
                         ids.Add(m);
                         spots.Add(v.Position);
@@ -136,9 +136,9 @@ namespace MachineBrigade.Sim.AI
                 var now = world.Time;
                 bool Blocked(Vector2 p)
                 {
-                    if (Vector2.DistanceSquared(world.Map.Clamp(p, 4f), p) > 0.01f || !world.Grid.IsWalkable(p)) return true;
+                    if (Vector2.DistanceSquared(world.Map.Clamp(p, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.EscapeExitP4Margin), p) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.EscapeExitP4DistanceSquaredMin || !world.Grid.IsWalkable(p)) return true;
                     foreach (var o in intel.Warnings)
-                        if (o.Team != _commander.Team && o.Due >= now && (o.Centre != w.Centre || o.Radius != w.Radius) && Vector2.Distance(o.Centre, p) <= o.Radius + 2f) return true;
+                        if (o.Team != _commander.Team && o.Due >= now && (o.Centre != w.Centre || o.Radius != w.Radius) && Vector2.Distance(o.Centre, p) <= o.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.EscapeExitP4RadiusAdd) return true;
                     return false;
                 }
                 float[]? extra = null;

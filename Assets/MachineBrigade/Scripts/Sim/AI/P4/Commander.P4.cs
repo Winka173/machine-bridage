@@ -94,7 +94,7 @@ namespace MachineBrigade.Sim.AI
 
         // ------------------------------------------------------------------------------------------------ 152 forecast inputs
 
-        private static float WeaponDps(WeaponDef w) => w.Damage <= 0f ? 0f : w.Damage * Math.Max(1, w.RoundsPerCycle) / MathF.Max(0.1f, w.CycleSeconds);
+        private static float WeaponDps(WeaponDef w) => w.Damage <= 0f ? 0f : w.Damage * Math.Max(1, w.RoundsPerCycle) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.WeaponDpsCycleSecondsFloor, w.CycleSeconds);
 
         private readonly List<(VehicleDef def, float hp, float strength, bool flying)> _ownUnits = new(), _enemyUnits = new(), _reinforceUnits = new();
         private readonly float[] _levelsOwn = new float[ArmourLevels.Max + 1], _levelsEnemy = new float[ArmourLevels.Max + 1], _levelsReinforce = new float[ArmourLevels.Max + 1];
@@ -131,7 +131,7 @@ namespace MachineBrigade.Sim.AI
                 e.Strength += u.strength;
                 e.Count++;
                 if (u.flying) air += u.hp;
-                else e.Speed = MathF.Min(e.Speed, MathF.Max(0.5f, u.def.Speed));
+                else e.Speed = MathF.Min(e.Speed, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EstimateSpeedFloor, u.def.Speed));
                 var reach = 0f;
                 var mounts = u.def.Mounts;
                 var n = mounts.Count > 0 ? mounts.Count : 1;
@@ -147,7 +147,7 @@ namespace MachineBrigade.Sim.AI
                             if (targetLevels[l] > 0f) eff += targetLevels[l] * damage.Effective(w, l, TargetKind.Ground);
                         e.DpsGround += dps * eff;
                         reach = MathF.Max(reach, w.Range);
-                        if (w.SplashRadius > 2f) splash += dps * eff;
+                        if (w.SplashRadius > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EstimateSplashRadiusMin) splash += dps * eff;
                     }
                     if (w.CanTarget(true) && targetAir > 0f) e.DpsAir += dps * damage.Effective(w, 1, TargetKind.Air);
                 }
@@ -158,7 +158,7 @@ namespace MachineBrigade.Sim.AI
                 e.AirShare = air / e.Hp;
                 e.Reach = reachW / e.Hp;
             }
-            if (e.Speed == float.MaxValue) e.Speed = 8f;
+            if (e.Speed == float.MaxValue) e.Speed = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EstimateSpeed;
             e.SplashShare = e.DpsGround + e.DpsAir > 0f ? Math.Clamp(splash / (e.DpsGround + e.DpsAir), 0f, 1f) : 0f;
             return e;
         }
@@ -168,7 +168,7 @@ namespace MachineBrigade.Sim.AI
         {
             unit = default;
             if (!world.Catalog.Vehicles.TryGetValue(c.Unit, out var def)) return false;
-            var hp = def.Boss ? c.Strength * 150f : def.Power > 0f ? def.MaxHp * Math.Clamp(c.Strength / def.Power, 0.05f, 1f) : def.MaxHp;
+            var hp = def.Boss ? c.Strength * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ContactUnitStrengthScale : def.Power > 0f ? def.MaxHp * Math.Clamp(c.Strength / def.Power, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ContactUnitStrengthMin, 1f) : def.MaxHp;
             unit = (def, hp, c.Strength, c.Flying);
             return true;
         }
@@ -202,11 +202,11 @@ namespace MachineBrigade.Sim.AI
             }
             foreach (var c in intel.Contacts)
             {
-                if (c.Age(now) > 20f || c.Displaced) continue;
+                if (c.Age(now) > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ForcesForAgeMin || c.Displaced) continue;
                 var d = Vector2.Distance(c.Position, target);
                 if (d > Tun.Forecast.ReinforceRadius) continue;
                 if (!ContactUnit(world, c, out var u)) continue;
-                if (d <= 60f) _enemyUnits.Add(u);
+                if (d <= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ForcesForDMax) _enemyUnits.Add(u);
                 else _reinforceUnits.Add(u);
             }
             var ownAir = Profile(_ownUnits, _levelsOwn);
@@ -226,11 +226,11 @@ namespace MachineBrigade.Sim.AI
                         if (_levelsEnemy[l] > 0f) eff += _levelsEnemy[l] * world.Catalog.Damage.Effective(v.Def.Weapon, l, TargetKind.Ground);
                     own.SupportDps += WeaponDps(v.Def.Weapon) * eff;
                 }
-                if (v.Def.RepairAura is { } aura && members.Count > 0 && Vector2.Distance(v.Position, centre) <= 50f && own.Count > 0)
+                if (v.Def.RepairAura is { } aura && members.Count > 0 && Vector2.Distance(v.Position, centre) <= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ForcesForDistanceMax && own.Count > 0)
                     own.RepairPerS += aura.Rate * own.Hp / own.Count;
             }
             // Unknown ground round the cluster: the enemy may be more than is seen (spec 130 / 152 "local threat").
-            if (CoordinationP3 is { } tc && tc.Memory.UnknownShare(intel, target, 40f, now) >= 0.5f) enemy = enemy.Scaled(Tun.Forecast.UnknownMargin);
+            if (CoordinationP3 is { } tc && tc.Memory.UnknownShare(intel, target, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ForcesForRadius, now) >= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ForcesForUnknownShareMin) enemy = enemy.Scaled(Tun.Forecast.UnknownMargin);
         }
 
         private long ForecastKey(PlanKind kind, int side, Vector2 target, float distance, in ForceEstimate own, in ForceEstimate enemy)
@@ -239,9 +239,9 @@ namespace MachineBrigade.Sim.AI
             {
                 long h = (long)kind * 31 + side + 1;
                 h = h * 1000003L + (long)MathF.Floor(target.X / 10f) * 7919L + (long)MathF.Floor(target.Y / 10f);
-                h = h * 1000003L + (long)MathF.Floor(distance / 10f);
-                h = h * 1000003L + own.Count * 131L + (long)MathF.Round(own.Hp / 50f);
-                return h * 1000003L + enemy.Count * 131L + (long)MathF.Round(enemy.Hp / 50f);
+                h = h * 1000003L + (long)MathF.Floor(distance / global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ForecastKeyDistanceDivisor);
+                h = h * 1000003L + own.Count * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ForecastKeyCountScale + (long)MathF.Round(own.Hp / global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ForecastKeyHpDivisor);
+                return h * 1000003L + enemy.Count * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ForecastKeyCountScale + (long)MathF.Round(enemy.Hp / global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ForecastKeyHpDivisor);
             }
         }
 
@@ -291,7 +291,7 @@ namespace MachineBrigade.Sim.AI
             var deep = DifficultyGate.Depth(Level) >= 2;
             var main = squads.Find(s => s.Id == p.Main) ?? (squads.Count > 0 ? squads[0] : null);
             var from = main?.Centre ?? target;
-            var speed = main != null ? MathF.Max(1f, Squads.SlowestP3(world, main)) : 5f;
+            var speed = main != null ? MathF.Max(1f, Squads.SlowestP3(world, main)) : global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EvaluatePlansMainFalse;
             var count = ShallowPlanner.Count(Level);
             CombatForecast Run(PlanKind kind, int side, float fScale, float eUptime, float preLoss, float dist) =>
                 CachedForecast(ForecastKey(kind, side, target, dist, own, enemy), () =>
@@ -311,8 +311,8 @@ namespace MachineBrigade.Sim.AI
                         var lane = tp.Lane(TeamPlanning.LaneKey(target, 0), now);
                         var f = Run(kind, 0, 1f, 1f, 0f, distance);
                         var gain = OpportunityGain(target, ground) + (lane == LaneState.Exploit ? Tun.Opportunity.PlanGain : 0f);
-                        plans.Add(ShallowPlanner.Score(kind, f, own.Strength, enemy.Strength, 0f, _urgency, tc.Routes.Occupancy(Vector2.Lerp(from, target, 0.5f), -1, now),
-                            tc.Memory.UnknownAlong(intel, from, target, now) + (lane == LaneState.Hot ? 0.5f : 0f), gain, penalty, lane != LaneState.Blocked));
+                        plans.Add(ShallowPlanner.Score(kind, f, own.Strength, enemy.Strength, 0f, _urgency, tc.Routes.Occupancy(Vector2.Lerp(from, target, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EvaluatePlansFromLerp), -1, now),
+                            tc.Memory.UnknownAlong(intel, from, target, now) + (lane == LaneState.Hot ? global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EvaluatePlansLaneTrue : 0f), gain, penalty, lane != LaneState.Blocked));
                         break;
                     }
                     case PlanKind.Flank:
@@ -327,7 +327,7 @@ namespace MachineBrigade.Sim.AI
                                 var f = Run(kind, side, Tun.Planning.FlankDpsBonus, Tun.Planning.FlankEnemyUptime, 0f, distance + extra);
                                 var gain = OpportunityGain(fp, ground) + (lane == LaneState.Exploit ? Tun.Opportunity.PlanGain : 0f);
                                 var c = ShallowPlanner.Score(kind, f, own.Strength, enemy.Strength, extra / speed, _urgency, tc.Routes.Occupancy(fp, -1, now),
-                                    tc.Memory.UnknownAlong(intel, from, fp, now) + (lane == LaneState.Hot ? 0.5f : 0f), gain, penalty, lane != LaneState.Blocked, side);
+                                    tc.Memory.UnknownAlong(intel, from, fp, now) + (lane == LaneState.Hot ? global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EvaluatePlansLaneTrue : 0f), gain, penalty, lane != LaneState.Blocked, side);
                                 if (best == null || (c.Valid && (!best.Value.Valid || c.Utility > best.Value.Utility + 1e-4f))) best = c;
                             }
                         plans.Add(best ?? new PlanCandidate { Kind = kind, Valid = false });
@@ -348,7 +348,7 @@ namespace MachineBrigade.Sim.AI
                         var hot = tp.Lane(TeamPlanning.LaneKey(target, -1), now) == LaneState.Hot || tp.Lane(TeamPlanning.LaneKey(target, 0), now) == LaneState.Hot ||
                                   tp.Lane(TeamPlanning.LaneKey(target, 1), now) == LaneState.Hot;
                         plans.Add(ShallowPlanner.Score(kind, f, own.Strength, enemy.Strength, Tun.Planning.WaitArtilleryS, _urgency, 0f,
-                            tc.Memory.UnknownAlong(intel, from, target, now), OpportunityGain(target, ground) + (hot ? Tun.Opportunity.PlanGain * 0.5f : 0f), penalty, support > 0f));
+                            tc.Memory.UnknownAlong(intel, from, target, now), OpportunityGain(target, ground) + (hot ? Tun.Opportunity.PlanGain * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EvaluatePlansPlanGainScale : 0f), penalty, support > 0f));
                         break;
                     }
                     case PlanKind.SplitHold:
@@ -391,7 +391,7 @@ namespace MachineBrigade.Sim.AI
             var strength = 0f;
             foreach (var c in intel.Contacts)
             {
-                if (c.Age(now) > 20f || c.Flying || Vector2.Distance(c.Position, p.Target) > 60f) continue;
+                if (c.Age(now) > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.DepsP4AgeMin || c.Flying || Vector2.Distance(c.Position, p.Target) > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.DepsP4DistanceMin) continue;
                 sum += c.Position * c.Strength;
                 strength += c.Strength;
             }
@@ -413,7 +413,7 @@ namespace MachineBrigade.Sim.AI
             // A forecast hold in force (plan D): the primary squads hold until it runs out (never under an emergency objective).
             if (_planHoldUntil > now)
             {
-                if (Intent.PrimaryObjective is { } ht && Vector2.Distance(ht, _holdFor) < 15f && _urgency < Tun.Pursuit.UrgencyDrop)
+                if (Intent.PrimaryObjective is { } ht && Vector2.Distance(ht, _holdFor) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PackagePlanP4DistanceMax && _urgency < Tun.Pursuit.UrgencyDrop)
                 {
                     foreach (var s in PrimaryMembersP4()) SetTask(s, s.Task.Kind, s.Task.Objective, true, s.Task.Window, s.Task.FlankSide);
                     return;
@@ -423,7 +423,7 @@ namespace MachineBrigade.Sim.AI
             if (_planHoldUntil > double.NegativeInfinity && now >= _planHoldUntil)
             {
                 _planHoldUntil = double.NegativeInfinity;
-                if (!float.IsNaN(_packageDoneFor.X) && Vector2.Distance(_packageDoneFor, _holdFor) < 15f) _packageDoneFor = new Vector2(float.NaN, float.NaN);
+                if (!float.IsNaN(_packageDoneFor.X) && Vector2.Distance(_packageDoneFor, _holdFor) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PackagePlanP4DistanceMax) _packageDoneFor = new Vector2(float.NaN, float.NaN);
             }
             if (_plan != null && (_package == null || _package.CreatedAt != _plan.PackageCreated))
             {
@@ -458,7 +458,7 @@ namespace MachineBrigade.Sim.AI
             {
                 tp.Metrics.PackageAbortsP4++;
                 // A plan whose assumption broke because the enemy proved stronger is remembered (lightly) as a failure.
-                if (abort == P4Reasons.DepEnemyRise || abort == P4Reasons.AbortFlankBlocked) tp.Repetition.Fail(_plan.Key, 0.2f, now);
+                if (abort == P4Reasons.DepEnemyRise || abort == P4Reasons.AbortFlankBlocked) tp.Repetition.Fail(_plan.Key, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PackagePlanP4Severity, now);
                 P4Reasons.Commander(world, Team, DecisionKind.Plan, abort, $"{_plan.Kind} deps {_plan.Deps.Hash:x8} -> {deps.Hash:x8}");
                 AbortPackage(world, abort);
                 _plan = null;
@@ -531,7 +531,7 @@ namespace MachineBrigade.Sim.AI
                 FlankSide = chosen.FlankSide,
                 Deps = DepsP4(world, intel, p),
                 ChosenAt = now,
-                CommitS = CommitmentWindows.Seconds(Tun.Commitment.PackageS, p.Main, (int)(p.CreatedAt * 10.0)),
+                CommitS = CommitmentWindows.Seconds(Tun.Commitment.PackageS, p.Main, (int)(p.CreatedAt * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ChoosePlanP4CreatedAtScale)),
                 Key = RepetitionMemory.Key(chosen.Kind, p.Target),
             };
             foreach (var s in squads)
@@ -568,7 +568,7 @@ namespace MachineBrigade.Sim.AI
                     foreach (var s in squads)
                     {
                         if (s.Id == p.Main || !Squads.FlankPointP3(world, intel, s, p.Target, plan.FlankSide, out var fp)) continue;
-                        var cost = Vector2.Distance(s.Centre, fp) - (s.Fast ? 30f : 0f);
+                        var cost = Vector2.Distance(s.Centre, fp) - (s.Fast ? global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ApplyPlanP4FastTrue : 0f);
                         if (cost < bestCost)
                         {
                             bestCost = cost;
@@ -607,7 +607,7 @@ namespace MachineBrigade.Sim.AI
                     break;
                 }
                 case PlanKind.SplitHold:
-                    _planHoldUntil = now + (_plan?.CommitS ?? 8f);
+                    _planHoldUntil = now + (_plan?.CommitS ?? global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ApplyPlanP4CommitSDefault);
                     _holdFor = p.Target;
                     _p4!.Metrics.PlanHolds++;
                     AbortPackage(world, P4Reasons.PlanHold);
@@ -659,7 +659,7 @@ namespace MachineBrigade.Sim.AI
             }
             if (lost < 0.3f && enemy < rec.StartEnemy * 0.8f) return;
             tp.Adaptation.RouteResult(lane, false);
-            tp.Repetition.Fail(rec.Key, Math.Clamp(lost / 0.6f, 0f, 1f), now);
+            tp.Repetition.Fail(rec.Key, Math.Clamp(lost / global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.JudgePlanP4LostDivisor, 0f, 1f), now);
             tp.Metrics.PlanFailures++;
             P4Reasons.Commander(world, Team, DecisionKind.Plan, P4Reasons.PlanFailed, $"{rec.Kind} lost {lost:0%}, enemy {enemy:0.0} of {rec.StartEnemy:0.0}");
         }
@@ -673,7 +673,7 @@ namespace MachineBrigade.Sim.AI
             var squads = PackageSquadsP4(p);
             if (squads.Count == 0) return null;
             ForcesFor(world, intel, squads, p.Target, out var own, out var enemy, out _, out _);
-            var f = CachedForecast(ForecastKey(PlanKind.AttackNow, 9, p.Target, 0f, own, enemy), () => CombatForecaster.Forecast(own, enemy, Tun.Forecast.Seconds, 0f));
+            var f = CachedForecast(ForecastKey(PlanKind.AttackNow, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ForecastCollapseP4Side, p.Target, 0f, own, enemy), () => CombatForecaster.Forecast(own, enemy, Tun.Forecast.Seconds, 0f));
             if (f.FriendlyPowerAfter >= Tun.Planning.HoldPowerFloor || f.EnemyPowerAfter < 0.5f) return null;
             if (LogDue(0x4E2, 10.0)) P4Reasons.Commander(world, Team, DecisionKind.Plan, P4Reasons.ReserveForecast, f.ToString());
             return p.Target;
@@ -684,10 +684,10 @@ namespace MachineBrigade.Sim.AI
         {
             if (PlanningP4 is not { } tp || CoordinationP3 is not { } tc) return null;
             var now = world.Time;
-            if (_seadWanted is { } sead && now - _seadWantedAt < 3.0 && SeadMeansP4(world)) return (SupportKind.Sead, sead);
+            if (_seadWanted is { } sead && now - _seadWantedAt < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SupportWantedP4NowMax && SeadMeansP4(world)) return (SupportKind.Sead, sead);
             if (!BarrageReadyP4(world)) return null;
-            if (DifficultyGate.Adaptation(Level) && tp.Adaptation.ArtilleryCamping && tc.Battery.Best(now, Tun.FireMissions.StrikeConfidence * 0.8f) is { } e &&
-                e.ErrorRadius <= Tun.FireMissions.StrikeMaxError * 1.25f && now - e.StruckAt > 20.0)
+            if (DifficultyGate.Adaptation(Level) && tp.Adaptation.ArtilleryCamping && tc.Battery.Best(now, Tun.FireMissions.StrikeConfidence * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SupportWantedP4StrikeConfidenceScale) is { } e &&
+                e.ErrorRadius <= Tun.FireMissions.StrikeMaxError * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SupportWantedP4StrikeMaxErrorScale && now - e.StruckAt > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SupportWantedP4NowMin)
             {
                 if (LogDue(0x4E3, 10.0)) P4Reasons.Commander(world, Team, DecisionKind.Plan, P4Reasons.AdaptCounterBattery, e.ToString());
                 return (SupportKind.Barrage, e.Centre);
@@ -695,7 +695,7 @@ namespace MachineBrigade.Sim.AI
             if (_plan is { Kind: PlanKind.WaitArtillery, Executed: false } && _package is { } p && now < p.ExecuteAt && !_plan.Deps.Artillery)
             {
                 foreach (var c in world.Intel.For(Team).Contacts)
-                    if (c.InSight && !c.Flying && Vector2.Distance(c.Position, p.Target) <= 40f)
+                    if (c.InSight && !c.Flying && Vector2.Distance(c.Position, p.Target) <= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SupportWantedP4DistanceMax)
                     {
                         if (LogDue(0x4E4, 10.0)) P4Reasons.Commander(world, Team, DecisionKind.Plan, P4Reasons.SupportForecast, $"#{c.Id.Value}");
                         return (SupportKind.Barrage, c.Position);
@@ -748,7 +748,7 @@ namespace MachineBrigade.Sim.AI
                 if (side == 0) point = Vector2.Lerp(main.Centre, target, 0.6f);
                 else if (!Squads.FlankPointP3(world, intel, main, target, side, out point)) continue;
                 if (tp.Lane(TeamPlanning.LaneKey(target, side), now) != LaneState.Unknown) continue;
-                var unknown = tc.Memory.UnknownShare(intel, point, 30f, now);
+                var unknown = tc.Memory.UnknownShare(intel, point, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ProbeP4Radius, now);
                 if (unknown >= bestUnknown + 1e-4f)
                 {
                     bestUnknown = unknown;
@@ -774,7 +774,7 @@ namespace MachineBrigade.Sim.AI
                 Lane = TeamPlanning.LaneKey(target, bestSide),
                 Start = now,
                 ProgressAt = now,
-                StartStrength = MathF.Max(0.1f, probe.Strength),
+                StartStrength = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ProbeP4StrengthFloor, probe.Strength),
                 Best = Vector2.Distance(probe.Centre, bestPoint),
             };
             probe.P4Role = P4Role.Probe;
@@ -802,8 +802,8 @@ namespace MachineBrigade.Sim.AI
                     pr.Best = d;
                     pr.ProgressAt = now;
                 }
-                var blocked = now - pr.ProgressAt >= Tun.Probe.BlockedS && d > 25f && s.State != SquadState.Combat;
-                var arrived = d <= 25f || s.State == SquadState.Combat;
+                var blocked = now - pr.ProgressAt >= Tun.Probe.BlockedS && d > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.StepProbeP4DMin && s.State != SquadState.Combat;
+                var arrived = d <= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.StepProbeP4DMax || s.State == SquadState.Combat;
                 outcome = ProbeRules.Judge(TeamPlanning.SeenStrength(intel, pr.Point, 40f), intel.ThreatAt(ThreatKind.AntiTank, pr.Point), s.Strength,
                     1f - s.Strength / pr.StartStrength, blocked, arrived, now - pr.Start >= Tun.Probe.MaxSeconds);
             }
@@ -812,7 +812,7 @@ namespace MachineBrigade.Sim.AI
             {
                 case ProbeOutcome.Exploit:
                     tp.MarkLane(pr.Lane, LaneState.Exploit, now + Tun.Probe.ExploitS);
-                    tp.Open(new OpportunityWindow(OpportunityKind.ProbeExploit, pr.Point, 40f, 0.7f, now + Tun.Probe.ExploitS,
+                    tp.Open(new OpportunityWindow(OpportunityKind.ProbeExploit, pr.Point, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.StepProbeP4Radius, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.StepProbeP4Confidence, now + Tun.Probe.ExploitS,
                         OpportunityRoles.Ground | OpportunityRoles.Fast, (int)(pr.Lane & 0x3fffffff)));
                     tp.Metrics.ProbeSuccess++;
                     tp.Adaptation.RouteResult(pr.Lane, true);
@@ -867,11 +867,11 @@ namespace MachineBrigade.Sim.AI
             void Consider(Vector2 point, bool contests, bool threatens)
             {
                 if (!world.Grid.IsWalkable(point)) return;
-                var unknown = tc.Memory.UnknownShare(intel, point, 30f, now);
+                var unknown = tc.Memory.UnknownShare(intel, point, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.FeintP4Radius, now);
                 var pins = false;
                 foreach (var c in intel.Contacts)
                 {
-                    if (c.Reach <= 0f || Vector2.Distance(c.Position, point) > 50f || !world.Catalog.Vehicles.TryGetValue(c.Unit, out var def) || !def.Static) continue;
+                    if (c.Reach <= 0f || Vector2.Distance(c.Position, point) > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.FeintP4DistanceMin || !world.Catalog.Vehicles.TryGetValue(c.Unit, out var def) || !def.Static) continue;
                     var toFeint = Direction(c.Position, point);
                     var toMain = Direction(c.Position, from);
                     if (Vector2.Dot(toFeint, toMain) < 0.7f) pins = true;
@@ -886,10 +886,10 @@ namespace MachineBrigade.Sim.AI
             }
             if (Intent.SecondaryObjective is { } sec && PointOwner(world, sec) != Team) Consider(sec, true, false);
             var side = p.FlankSide != 0 ? -p.FlankSide : ((p.Main & 1) == 0 ? 1 : -1);
-            Consider(world.Map.Clamp(target + lateral * (50f * side) - approach * 10f, 8f), false, true);
+            Consider(world.Map.Clamp(target + lateral * (global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.FeintP4SideScale * side) - approach * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.FeintP4ApproachScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.FeintP4Margin), false, true);
             if (!FeintRules.Allowed(Level, fits, _urgency, bestUtility))
             {
-                if (bestUtility > 0f && now - _feintRejectLogAt > 20.0)
+                if (bestUtility > 0f && now - _feintRejectLogAt > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.FeintP4NowMin)
                 {
                     _feintRejectLogAt = now;
                     tp.Metrics.FeintRejected++;
@@ -931,20 +931,20 @@ namespace MachineBrigade.Sim.AI
             var tp = _p4!;
             var s = Squads.Find(f.Squad);
             var over = s == null || s.MemberList.Count == 0 || now - f.Start >= Tun.Feint.MaxSeconds || _urgency >= Tun.Pursuit.UrgencyDrop ||
-                       (!double.IsNaN(f.SuccessAt) && now - f.SuccessAt >= 5.0);
+                       (!double.IsNaN(f.SuccessAt) && now - f.SuccessAt >= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.StepFeintP4NowMin);
             if (!over)
             {
                 s!.P4Role = P4Role.Feint;
                 SetTask(s, TaskKind.Secondary, f.At, false, false);
                 // Only what is seen counts (no hidden reaction): the objective watched now, its defenders seen fewer, more seen at the feint.
                 var mainNow = TeamPlanning.SeenStrength(intel, f.Main, 60f);
-                var watched = intel.Seen[intel.CellIndex(f.Main)] >= now - 2.0;
-                if (now - f.Start < 5.0) f.MainBefore = MathF.Max(f.MainBefore, mainNow);
+                var watched = intel.Seen[intel.CellIndex(f.Main)] >= now - global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.StepFeintP4NowSub;
+                if (now - f.Start < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.StepFeintP4NowMax) f.MainBefore = MathF.Max(f.MainBefore, mainNow);
                 else if (double.IsNaN(f.SuccessAt) && watched && FeintRules.Succeeded(f.MainBefore, mainNow, f.FeintBefore, TeamPlanning.SeenStrength(intel, f.At, 60f)))
                 {
                     f.SuccessAt = now;
                     tp.Metrics.FeintSuccess++;
-                    tp.Open(new OpportunityWindow(OpportunityKind.FeintSuccess, f.Main, 50f, 0.7f, now + 12.0, OpportunityRoles.Ground | OpportunityRoles.Fast, 3));
+                    tp.Open(new OpportunityWindow(OpportunityKind.FeintSuccess, f.Main, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.StepFeintP4Radius2, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.StepFeintP4Confidence, now + global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.StepFeintP4NowAdd, OpportunityRoles.Ground | OpportunityRoles.Fast, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.StepFeintP4Subject));
                     P4Reasons.Commander(world, Team, DecisionKind.Plan, P4Reasons.FeintSuccess, $"seen at the objective {f.MainBefore:0.0} -> {mainNow:0.0}");
                     // The main package goes now (the window is short).
                     if (_package is { } p && now < p.ExecuteAt)
@@ -987,12 +987,12 @@ namespace MachineBrigade.Sim.AI
                     var w = v.Def.Weapon;
                     var chance = false;
                     foreach (var c in _seenNow)
-                        if (w.CanTarget(c.Flying) && Vector2.Distance(c.Position, v.Position) <= w.Range * 1.1f)
+                        if (w.CanTarget(c.Flying) && Vector2.Distance(c.Position, v.Position) <= w.Range * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AdaptP4RangeScale)
                         {
                             chance = true;
                             break;
                         }
-                    if (chance) tp.Adaptation.SampleUse(v.Def.Id, now - v.LastFiredAt <= 2.5, now);
+                    if (chance) tp.Adaptation.SampleUse(v.Def.Id, now - v.LastFiredAt <= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AdaptP4NowMax, now);
                 }
             var a = tp.Adaptation;
             if (a.AirHeavy != _adaptAir && (_adaptAir = a.AirHeavy)) P4Reasons.Commander(world, Team, DecisionKind.Plan, P4Reasons.AdaptAir, $"air {a.AirShare:0%}");
@@ -1016,7 +1016,7 @@ namespace MachineBrigade.Sim.AI
         {
             if (PlanningP4 is not { } tp || !DifficultyGate.Adaptation(Level)) return 0f;
             var a = tp.Adaptation;
-            var points = -(1f - a.PurchaseModifier(def.Id, world.Time)) * 4f;
+            var points = -(1f - a.PurchaseModifier(def.Id, world.Time)) * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PurchaseAdjustP4PurchaseModifierScale;
             if (a.AirHeavy && (def.Class == UnitClass.AntiAir || Combat.CombatSystem.IsAntiAir(def.Weapon))) points += 1.5f;
             if (a.TowerPattern && (def.Weapon.MinRange > 0f || def.Breacher)) points += 1f;
             return points;
@@ -1034,7 +1034,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var v in world.VehicleList)
                 if (v.IsAlive && v.Team == Team && !v.Def.Static && !v.Scripted) _ownUnits.Add(OwnUnit(v));
             foreach (var c in intel.Contacts)
-                if (c.Age(now) <= 30f && ContactUnit(world, c, out var u))
+                if (c.Age(now) <= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EnoughP4AgeMax && ContactUnit(world, c, out var u))
                 {
                     _enemyUnits.Add(u);
                     known++;
@@ -1043,7 +1043,7 @@ namespace MachineBrigade.Sim.AI
             var enemyAir = Profile(_enemyUnits, _levelsEnemy);
             var own = Estimate(world, _ownUnits, _levelsEnemy, enemyAir);
             var enemy = Estimate(world, _enemyUnits, _levelsOwn, ownAir).Scaled(Tun.Forecast.UnknownMargin);
-            var f = CachedForecast(ForecastKey(PlanKind.AttackNow, 7, Vector2.Zero, 0f, own, enemy), () => CombatForecaster.Forecast(own, enemy, Tun.Forecast.Seconds, 0f));
+            var f = CachedForecast(ForecastKey(PlanKind.AttackNow, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.EnoughP4Side, Vector2.Zero, 0f, own, enemy), () => CombatForecaster.Forecast(own, enemy, Tun.Forecast.Seconds, 0f));
             var enough = CombatForecaster.Enough(own.Strength, enemy.Strength, known, f);
             if (enough && !_enough) _enoughSince = now;
             if (!enough) _enoughSince = double.NaN;
@@ -1062,7 +1062,7 @@ namespace MachineBrigade.Sim.AI
             if (ownTotal < 4 || economy.Cp >= economy.Bank - 3f) return false;
             if (_enough && !double.IsNaN(_enoughSince))
             {
-                var cycle = Tun.Forecast.EnoughMaxHoldS + 10.0;
+                var cycle = Tun.Forecast.EnoughMaxHoldS + global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.HoldPurchaseP4EnoughMaxHoldSAdd;
                 if ((now - _enoughSince) % cycle < Tun.Forecast.EnoughMaxHoldS)
                 {
                     if (LogDue(0x4E0, 10.0))
