@@ -87,7 +87,7 @@ namespace MachineBrigade.Game.Match
         public const float Aspect = 16f / 7f;
 
         /// <summary>How far a mission's ground reaches from where it is fought.</summary>
-        public static float Reach => global::MachineBrigade.Sim.Content.SimTunables.Maps.FrontMap.Reach;
+        public const float Reach = 0.075f;
 
         public static bool Betrayed => PlayerProfile.Completed(BetrayalMission);
 
@@ -146,7 +146,7 @@ namespace MachineBrigade.Game.Match
                 perSite[m.Map] = k + 1;
                 // A ring round the battlefield, one piece a mission, in the order they are played there.
                 var angle = k * 2.39996f;
-                var radius = global::MachineBrigade.Sim.Content.SimTunables.Maps.FrontMap.SectorsSqrtAdd + global::MachineBrigade.Sim.Content.SimTunables.Maps.FrontMap.SectorsSqrtScale * Mathf.Sqrt(k);
+                var radius = 0.012f + 0.015f * Mathf.Sqrt(k);
                 var at = site + new Vector2(Mathf.Cos(angle) * radius / Aspect, Mathf.Sin(angle) * radius);
                 var won = PlayerProfile.Completed(m.Id);
                 var order = Order(m.Chapter);
@@ -176,7 +176,7 @@ namespace MachineBrigade.Game.Match
             for (var x = 0; x < width; x++)
                 for (var y = 0; y < height; y++)
                 {
-                    var p = new Vector2((x + global::MachineBrigade.Sim.Content.SimTunables.Maps.FrontMap.GridXAdd) / width, (y + global::MachineBrigade.Sim.Content.SimTunables.Maps.FrontMap.GridYAdd) / height);
+                    var p = new Vector2((x + 0.5f) / width, (y + 0.5f) / height);
                     if (!Land(p)) continue;
                     var best = Reach * Reach;
                     var state = FrontState.None;

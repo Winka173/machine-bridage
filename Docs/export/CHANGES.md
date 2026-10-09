@@ -13331,3 +13331,112 @@ Không đổi giá trị cân bằng. Pack không xuất lại (lead xuất sau 
 | âm thanh | code (AudioDirector.Space, AcousticZones) | lớp theo khoảng cách, che khuất, vùng âm học, P0/P1 không mất |
 | tương phản màu | `Docs/mapvisaudio/CONTRAST_AUDIT.md` | danh sách xem lại (Delta E theo địa hình, mù màu) |
 | trợ năng | Cài đặt | rung 0-100 %, giảm hiệu ứng, phụ đề cảnh báo, giới hạn chớp màn hình |
+
+## Gói 2 lượt 2 (09/10)
+
+Chủ dự án 09/10: "xuất toàn bộ các hằng số còn thiếu ra file data" = Gói cân bằng 2, lượt 2 (`Docs/prompts/export_pack2_vi.txt`
+§1, §2, §3, §6 "Lượt 2"). Nhánh `feature/pack2-pass2` (worktree MachineBrigade-bal), từ lead `b70288428`. Chỉ lý thuyết: không
+chạy Unity, không chạy test, không chạy `export.py` (lead dựng lại gói sau cùng). **Không đổi giá trị nào**: mọi số đưa ra dữ
+liệu giữ nguyên giá trị, kiểu C# và hậu tố (f / d / m), số âm giữ dấu.
+
+### Công cụ
+
+- `Tools/export/literal_to_tunable.py` (§2.1): `build` (dựng `Tools/export/mbconst`, Roslyn có sẵn trong .NET SDK), `plan`
+  (hàng `de_xuat_dua_ra_du_lieu = co` của `scan_constants.py` ghép với bản quét Roslyn: lớp, ngữ cảnh, tên khóa → danh sách
+  `Tools/export/pack2/pass2/moves_<lĩnh vực>.csv` và `excluded.csv` kèm lý do), `move --csv <danh sách>` (cột tối thiểu
+  `file,line,literal,key`; thay đúng token literal bằng `global::MachineBrigade.Sim.Content.SimTunables.<Lĩnh vực>.<Lớp>.<Tên>`,
+  sinh trường trong `Sim/Content/SimTunables.Pass2.<Lĩnh vực>.cs`, thêm khóa vào `tunables.json` với value = literal; dòng nào
+  không làm an toàn được thì từ chối, không ghi gì), `check --base <rev>` (§2.2 a–e), `status`, `drop --keys` (trả số về mã khi
+  một số hóa ra không phải lối chơi). Không dùng regex để thay số: cây cú pháp và mô hình ngữ nghĩa Roslyn.
+- Cách thay: tại chỗ (inline); `const` → thuộc tính `static T X => SimTunables...` (khi không dùng trong ngữ cảnh hằng); bảng
+  `static readonly` (danh mục trang bị, chỉ huy, hỗ trợ săn boss, `DamageTable.DefaultSplash`) thay từng phần tử tại chỗ;
+  `-x` thay cả cụm, khóa giữ giá trị âm; tham số mặc định `T x = lit` → `T? x = null` và mỗi lần đọc `(x ?? SimTunables...)`
+  (lời gọi bỏ trống đọc khóa = lit, lời gọi có đối số giữ nguyên; tên tham số giữ nên đối số có tên vẫn chạy).
+- Tên khóa: `<lĩnh vực>.<lớp chủ>.<tên>`; số trong bảng lấy mã hàng + đường dẫn (ví dụ `vehicles.gearCatalog.longBarrelTop3`,
+  `vehicles.commanders.reyesLinesDamageAircraft`, `bases.baseRules.rebuild2Cooldown`, `modes.defendSession.lineHealthEndless1`);
+  số khác lấy hàm + ngữ cảnh (so sánh, nhân, Max/Min/Clamp...). Cùng số khác nghĩa = khóa khác; một khóa chỉ một literal (c).
+- Mã AI (`Sim/AI/**`) vào lĩnh vực `ai` (trước đây tên tệp "Commander", "Conquest" kéo về phương tiện / chế độ).
+
+### Đã chuyển theo lĩnh vực (thứ tự §6)
+
+| lĩnh vực | commit | số literal | khóa mới | tệp sinh |
+|---|---|---|---|---|
+| vũ khí và đạn | b4af2897d, 48f93d40a | 308 | 266 | SimTunables.Pass2.Weapons.cs |
+| phương tiện (di chuyển, kỹ năng, tiếp tế, ray, trang bị, chỉ huy) | 0a955af55 | 1 046 | 988 | SimTunables.Pass2.Vehicles.cs |
+| boss | 4bfd52b8e | 284 | 270 | SimTunables.Pass2.Bosses.cs |
+| căn cứ, tháp, tường | 9031f0075 | 99 | 99 | SimTunables.Pass2.Bases.cs |
+| chế độ và chiến dịch | 4207c281d | 492 | 272 + 186 | SimTunables.Pass2.Modes.cs, .Campaign.cs |
+| AI, dẫn đường, bản đồ, còn lại | a75054c1b | 1 379 | 1 044 + 232 | SimTunables.Pass2.Ai.cs, .Maps.cs |
+| **tổng** | | **3 608 chỗ đọc (3 607 literal)** | **3 357** | tunables.json: 864 → 4 221 khóa |
+
+Game/Match: chỉ số ảnh hưởng mô phỏng (505 chỗ): `GearCatalog.cs` / `GearCatalog.Tower.cs` (chỉ số trang bị xe và tháp),
+`Gear.Model.cs` (tỉ lệ cấp, khoảng roll, số dòng phụ theo độ hiếm), `ModeSessions.cs` (CP, thu nhập, trần quân, thời gian, máu /
+sát thương theo tuyến của từng chế độ, điều kiện thua sinh tồn), `VehicleFit.cs`. Game đọc `SimTunables` trực tiếp (assembly Game
+tham chiếu Sim), không cần đường dữ liệu khác.
+
+### Loại, có lý do (686 literal; danh sách đủ: `Tools/export/pack2/pass2/excluded.csv`)
+
+| nhóm | số | ví dụ |
+|---|---|---|
+| hình học | 162 | nửa chiều dài / rộng (`Width * 0.5f`), căn giữa `k - (n-1)/2`, đường kính `2 * r` |
+| hạ tầng | 139 | trộn băm `Mix`, muối RNG (`seed * 7919 + 13`), trần bộ đệm (`Count > 4096 → Clear`), số canh "không bao giờ" (`1e7f`, `long.MinValue / 2`), bit đội `< 31`, sức chứa mảng, ghi nhật ký, lưu / đọc |
+| trình bày | 104 | thoại / radio (`Dialogue`, `RadioDirector`, `ReactiveRadio`), toast, rung, bản đồ mặt trận (`FrontMap`), sổ quyết định AI (3 / 2 lý do), skin |
+| toán | 102 | epsilon `1e-3f`, chặn vectơ dài 0 (`LengthSquared() > 0.01f`), smoothstep, `r - 0.5`, `2r - 1`, `√2`, khoảng cách octile, chẵn lẻ `% 2`, góc phần tư `% 90` |
+| công cụ | 71 | Sandbox lab, cảnh stress bản đồ, kiểm tra topology, số đo bộ nhớ, ma trận handbook, khoảng cách nòng của model |
+| chỉ mục | 42 | số giai đoạn / pha / chương so bằng `==`, nhãn `case`, mẫu `is >= 0 and < 8`, bậc hiếm 0–4, chỉ số bước splash |
+| định dạng dữ liệu | 29 | số phần tử mà parser đòi (`Count != 2` → lỗi tệp), cặp x, z |
+| meta | 21 | xu thưởng sau trận, nhiệm vụ ngày, số thẻ đặc tính lò rèn đưa ra |
+| cấu trúc | 15 | số cột bảng xuyên giáp / splash / xuyên quá, số cấp giáp, số ô trang bị, nhịp mô phỏng 20 tick/s |
+| tham số chết | 1 | `DamageSystem.Splash(edgeShare = 0.4f)`: không còn đọc |
+
+Theo lĩnh vực (thô theo tên tệp): vũ khí 56, phương tiện 59, boss 82, căn cứ / tháp 31, chế độ / chiến dịch 139, AI 99, còn lại
+(dẫn đường, bản đồ, thoại, Game/Match trình bày) 220. Bỏ qua (theo luật §3.1) những gì `scan_constants` đã gắn `khong` (giao
+diện, hiệu ứng, âm thanh, mặc định của lần đọc dữ liệu `.Float("k", x)`...).
+
+Đã chuyển dù là toán (giữ: giá trị y hệt, vô hại; có thể gom lại sau bằng `drop`): 26 chỗ ở các lượt đầu trước khi có luật
+tương ứng: 20 chặn vectơ dài 0 (`LengthSquared() > 0.01f`), 2 số canh (`1e6f`, số nguyên tố muối lớp ngẫu nhiên AI `1299709`),
+2 tung đồng xu `Next(2)`, 1 kiểm số phần tử, 1 `r - 0.5`. Khóa: weapons.damageSystem.tryInterceptLengthSquaredMin, weapons.damageSystem.hitVehicleDamageMax, weapons.armour.faceFromLengthSquaredMax, weapons.munitionRules.pairCountIs, weapons.strikeSystem.launchLengthSquaredMin / advanceNextDoubleSub / fireFromLengthSquaredMin, vehicles.gearSystem.movingAwayLengthSquaredMax / shootDownLengthSquaredMin / frontalLengthSquaredMax, vehicles.supplySystem.holdingPointLengthSquaredMin, vehicles.movementSystem.moverDirectionLengthSquaredMin2 / tryStandBesideLengthSquaredMax / standoffLengthSquaredMin, vehicles.simWorld.aiRandomLayerScale, bosses.bossSystem.tryBeginLengthSquaredMin / blastAtLengthSquaredMin / burnLengthSquaredMin / stepFiresLengthSquaredMin / threatDirectionLengthSquaredMin / firepowerLengthSquaredMin / behindLengthSquaredMax, bosses.bigZone.exitsLengthSquaredMin, campaign.missionEventSystem.prepareWaveMaxValue / prepareCrossingMaxValue.
+
+### Còn lại
+
+`python Tools/export/literal_to_tunable.py status`: **0** hàng `co` (vũ khí 0, phương tiện 0, boss 0, căn cứ 0, tháp 0, chế
+độ 0, AI 0). `scan_constants.py` đọc `excluded.csv` và gắn `khong` cho các hàng đã loại có lý do; dòng nào đổi sau này sẽ hiện
+`co` trở lại cho đến khi chạy `plan` lại.
+
+### Kiểm tương đương (§2.2), cả lượt `b70288428 → HEAD`
+
+`Docs/export/current/_qa/equivalence.md` (thư mục _qa không commit), `python Tools/export/literal_to_tunable.py check --base
+b70288428`: **PASS**.
+- (a) 2 026/2 026 hunk chỉ thay literal → SimTunables (3 608 chỗ: inline 3 590, const → thuộc tính 20, tham số mặc định 9);
+  cây cú pháp dựng lại (đảo các chỗ thay) trùng cây cũ.
+- (b) 4 221 khóa: mặc định trong SimTunables = value trong tunables.json = literal gốc (cùng kiểu, cùng hậu tố); 3 357 khóa mới
+  có chỗ thay làm chứng.
+- (c) 0 khóa có hai literal khác nhau.
+- (d) Roslyn biên dịch Sim + Game (DLL Unity 6): 0 lỗi, 0 cảnh báo mới; `dotnet build Tools/simbuild/Sim.csproj` 0 lỗi; thêm:
+  Sim, Game, Editor và EditMode tests biên dịch bằng dotnet với DLL Unity: 0 lỗi mới so với `b70288428`.
+- (e) 0 đổi kiểu biểu thức; 52 phép gấp hằng nay tính lúc chạy (đa số `15f * 15f`; còn lại một phép float như
+  `ThreatWeight / 0.3f`, `2f * SupportRun / SupportTravel`): cùng kết quả IEEE single trên IL2CPP / Mono x64 / ARM (không dùng
+  x87). Đối số `5` của `Status.Shred` nay đổi sang `int?` (tham số mặc định mới), cùng giá trị.
+- Bộ xuất: mọi lá của tunables.json khớp `Tools/export/core/tunables.py` (nhóm → sheet `Hang_so_*`, 5 trường), không lá nào
+  chưa ánh xạ.
+
+### Lưu ý cho chủ dự án
+
+- Bảng `static readonly` (trang bị, chỉ huy, hỗ trợ săn boss, `DefaultSplash`, `EmpBurst`, `LayRateMin`, `FreeMountTurnRate`)
+  đọc khóa một lần khi bảng được dùng lần đầu. Giá trị y như cũ; sửa các khóa này trong tunables.json có tác dụng khi
+  `GameContent.LoadCatalog` (gọi `LoadTunables`) chạy trước lần dùng đầu đó, nếu không thì sau khi khởi động lại game.
+- Tham số mặc định chuyển (mẫu `T? x = null` + `(x ?? khóa)`): `StatusSystem.Shred(maxStacks)`, `DamageTable(thermobaricStructure)`,
+  `WeaponDef(burstInterval)`, `TeamEconomy(startCp, bank)`, `WorldModel.Know(freshSeconds)`, `EngagementFeasibility` (2 × `radius`).
+- Nhiều khóa có tên máy sinh (`...Scale`, `...Floor`, `...Min2`); `code` trong tunables.json ghi tệp:dòng gốc để tra.
+
+### Test viết sẵn, chưa chạy (chủ dự án chạy khi muốn)
+
+Unity đóng; dự án = checkout có nhánh này. Lệnh (EditMode):
+1. Ghi baseline hash phát lại ở mã **trước** lượt 2 (`git checkout b70288428`): `set MB_REPLAY_RECORD=1` rồi
+   `"C:\Program Files\Unity\Hub\Editor\6000.6.3f1\Editor\Unity.exe" -batchmode -projectPath <dự án> -runTests -testPlatform
+   EditMode -testFilter MachineBrigade.Tests.ReplayHashTests -testResults replay_base.xml -logFile -` (ghi
+   `Docs/export/replay_hashes.txt`).
+2. Về đầu nhánh `feature/pack2-pass2`, bỏ `MB_REPLAY_RECORD`, chạy lại cùng lệnh: 8 trận phải trùng hash từng 400 tick
+   (`TheFixedBattlesKeepTheirFingerprints`, `TheSameBattleTwiceGivesTheSameFingerprints`).
+3. `-testFilter MachineBrigade.Tests.TunablesTests`: `TheShippedFileSetsEveryKey` (4 221 khóa, không khóa lạ),
+   `TheShippedValuesAreTheCodesDefaults`, `AValueInTheFileReachesTheCode`, `PassTwoMovesKeepTheOldLiterals`.

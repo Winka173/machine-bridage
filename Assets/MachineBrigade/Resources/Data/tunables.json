@@ -3796,14 +3796,6 @@
     "aiHints": {
       "nextTimeMax": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "Commander (pack 2 pass 2, was Sim/AI/Commander.cs:620)" }
     },
-    "why": {
-      "splitCountMin": { "value": 3, "unit": "count", "kind": "ban_kinh", "linh_vuc": "06", "code": "DecisionLog (pack 2 pass 2, was Sim/AI/DecisionLog.cs:87)" },
-      "splitIndex": { "value": 3, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "DecisionLog (pack 2 pass 2, was Sim/AI/DecisionLog.cs:87)" },
-      "splitCountSub": { "value": 3, "unit": "count", "kind": "ban_kinh", "linh_vuc": "06", "code": "DecisionLog (pack 2 pass 2, was Sim/AI/DecisionLog.cs:87)" },
-      "splitCountMin2": { "value": 2, "unit": "count", "kind": "ban_kinh", "linh_vuc": "06", "code": "DecisionLog (pack 2 pass 2, was Sim/AI/DecisionLog.cs:88)" },
-      "splitIndex2": { "value": 2, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "DecisionLog (pack 2 pass 2, was Sim/AI/DecisionLog.cs:88)" },
-      "splitCountSub2": { "value": 2, "unit": "count", "kind": "ban_kinh", "linh_vuc": "06", "code": "DecisionLog (pack 2 pass 2, was Sim/AI/DecisionLog.cs:88)" }
-    },
     "churn": {
       "addNowMin": { "value": 60.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "DecisionLog (pack 2 pass 2, was Sim/AI/DecisionLog.cs:203)" },
       "lastMinuteNowMin": { "value": 60.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "06", "code": "DecisionLog (pack 2 pass 2, was Sim/AI/DecisionLog.cs:211)" }
@@ -4587,13 +4579,6 @@
       "sandstorm": { "value": [0.45, 0.6, 0.4, 0.0, 0.0, 1.0, 90.0, 0.0, 1.0, 0.2, 1.2, 0.4, 1.3], "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "WeatherPresentation.Of (spec Q)" },
       "fog": { "value": [0.8, 0.65, 0.6, 0.0, 0.0, 0.1, 180.0, 0.0, 0.0, 0.2, 1.2, 0.45, 1.3], "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "WeatherPresentation.Of (spec Q)" },
       "night": { "value": [0.1, 0.2, 0.3, 0.0, 0.0, 0.2, 225.0, 0.0, 0.0, 0.4, 1.6, 0.1, 1.0], "unit": "x", "kind": "khac", "linh_vuc": "08", "code": "WeatherPresentation.Of (spec Q)" }
-    },
-    "frontMap": {
-      "reach": { "value": 0.075, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "FrontMap (pack 2 pass 2, was Game/Match/FrontMap.cs:90)" },
-      "sectorsSqrtAdd": { "value": 0.012, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "FrontMap (pack 2 pass 2, was Game/Match/FrontMap.cs:149)" },
-      "sectorsSqrtScale": { "value": 0.015, "unit": "x", "kind": "ban_kinh", "linh_vuc": "08", "code": "FrontMap (pack 2 pass 2, was Game/Match/FrontMap.cs:149)" },
-      "gridXAdd": { "value": 0.5, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "FrontMap (pack 2 pass 2, was Game/Match/FrontMap.cs:179)" },
-      "gridYAdd": { "value": 0.5, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "FrontMap (pack 2 pass 2, was Game/Match/FrontMap.cs:179)" }
     },
     "firingLaneResolver": {
       "blockerLengthMax": { "value": 4.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "08", "code": "FiringLane (pack 2 pass 2, was Sim/AI/P2/FiringLane.cs:52)" },

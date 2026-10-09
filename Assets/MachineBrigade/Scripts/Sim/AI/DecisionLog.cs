@@ -84,8 +84,8 @@ namespace MachineBrigade.Sim.AI
             // Stable sorts (by points, then key) so a replay prints the same record.
             plus.Sort((a, b) => b.Points != a.Points ? b.Points.CompareTo(a.Points) : string.CompareOrdinal(a.Key, b.Key));
             minus.Sort((a, b) => a.Points != b.Points ? a.Points.CompareTo(b.Points) : string.CompareOrdinal(a.Key, b.Key));
-            if (plus.Count > global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitCountMin) plus.RemoveRange(global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitIndex, plus.Count - global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitCountSub);
-            if (minus.Count > global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitCountMin2) minus.RemoveRange(global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitIndex2, minus.Count - global::MachineBrigade.Sim.Content.SimTunables.Ai.Why.SplitCountSub2);
+            if (plus.Count > 3) plus.RemoveRange(3, plus.Count - 3);
+            if (minus.Count > 2) minus.RemoveRange(2, minus.Count - 2);
             return (plus.ToArray(), minus.ToArray());
         }
     }

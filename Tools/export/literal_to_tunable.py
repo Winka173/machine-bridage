@@ -21,6 +21,8 @@ literal "-x" is replaced whole and the key holds -x), and tunables.json gets the
         of tunables.json -> Docs/export/current/_qa/equivalence.md (the _qa folder is not committed)
     python Tools/export/literal_to_tunable.py status
         scan_constants "co" rows per lane (what is left)
+    python Tools/export/literal_to_tunable.py drop --keys <k1,k2>
+        undo moves whose literal proved not to be gameplay (code back to the literal, field and key removed)
 
 No Unity, no tests, no export.py (DECISIONS "Pack 2 pass 2 (09/10)").
 """
@@ -89,6 +91,7 @@ GAME_EXCLUDE_FILES = {
     "Game/Match/MatchRunner.MissionEvents.cs": "presentation: toast seconds, arrow threshold, haptics",
     "Game/Match/MatchRunner.cs": "presentation: toast seconds and the tower art's bar count",
     "Game/Match/MatchRunner.Dialogue.cs": "presentation: how often the dialogue director re-checks for a boss (frames)",
+    "Game/Match/FrontMap.cs": "presentation: the campaign front map's drawing (sector dots, pixel centres, pick reach on screen)",
     "Game/Match/ShowdownSession.cs": "presentation (toast seconds) and the after-battle coin reward",
     "Game/Match/PlayerCommander.cs": "input geometry: half the support line's length at the tap point",
 }
@@ -192,6 +195,8 @@ STRUCTURE_LINES.update({
 STRUCTURE_LINES.update({
     ("Sim/Navigation/MapTopology.cs", 376): "geometry: n cells either side of a centre cell span 2n - 1 cells",
     ("Sim/Navigation/PathFinder.cs", 291): "math: the octile distance dx + dy + (diagonal - 2) min(dx, dy)",
+    ("Sim/AI/DecisionLog.cs", 87): "presentation: the decision log keeps the 3 strongest reasons for (text of the log)",
+    ("Sim/AI/DecisionLog.cs", 88): "presentation: the decision log keeps the 2 strongest reasons against (text of the log)",
 })
 STRUCTURE_RESULTS = {
     # (file, line): the integer results of these lines are step indexes (the thresholds on them stay data)
@@ -619,6 +624,69 @@ def check(args) -> int:
     return 0 if r.returncode == 0 and sim.returncode == 0 and not errs and not mapping and unity_new == 0 else 1
 
 
+# ------------------------------------------------------------------------------------------------ drop
+
+CHAIN = "global::MachineBrigade.Sim.Content.SimTunables."
+
+
+def drop(args) -> int:
+    """Undo moves whose literal proved not to be gameplay: each read of the key's field goes back to the literal (its
+    default, exactly as generated), the field and its Entry leave SimTunables.Pass2.<Domain>.cs, the key leaves
+    tunables.json. Only pass-2 keys (SimTunables.Pass2.*.cs). Run `check` afterwards (base = before the moves)."""
+    keys = [k.strip() for k in args.keys.split(",") if k.strip()]
+    content = ROOT / SCRIPTS / "Sim/Content"
+    fields = {}
+    for f in sorted(content.glob("SimTunables.Pass2.*.cs")):
+        text = f.read_text("utf-8")
+        for k in keys:
+            m = re.search(r"/// <summary>" + re.escape(k) + r" \([^\n]*\n\s*public static (\w+) (\w+) = ([^;]+);", text)
+            if m:
+                fields[k] = (f, m.group(3).strip())
+    missing = [k for k in keys if k not in fields]
+    if missing:
+        raise SystemExit(f"not pass-2 keys: {missing}")
+    path_of = {k: ".".join(x[:1].upper() + x[1:] for x in k.split(".")) for k in keys}
+    # 1. the code
+    changed = 0
+    for cs in sorted((ROOT / SCRIPTS).rglob("*.cs")):
+        if cs.name.startswith("SimTunables"):
+            continue
+        text = cs.read_text("utf-8-sig") if cs.read_bytes()[:3] == b"\xef\xbb\xbf" else cs.read_text("utf-8")
+        new = text
+        for k in keys:
+            new = re.sub(re.escape(CHAIN + path_of[k]) + r"(?![\w.])", fields[k][1], new)
+        if new != text:
+            bom = cs.read_bytes()[:3] == b"\xef\xbb\xbf"
+            cs.write_bytes((b"\xef\xbb\xbf" if bom else b"") + new.encode("utf-8"))
+            changed += 1
+    # 2. the generated fields
+    for k in keys:
+        f = fields[k][0]
+        text = f.read_text("utf-8")
+        text = re.sub(r"[ \t]*/// <summary>" + re.escape(k) + r" \([^\n]*\n[ \t]*public static [^\n]*\n", "", text)
+        text = re.sub(r"[ \t]*new Entry\(\"" + re.escape(k) + r"\"[^\n]*\n", "", text)
+        text = re.sub(r"\n[ \t]*public static partial class \w+\r?\n[ \t]*\{\r?\n[ \t]*\}\r?\n(\r?\n)?", "\n", text)
+        f.write_text(text, "utf-8")
+    # 3. tunables.json (one key a line; drop the line, then an owner block left empty)
+    lines = TUNABLES.read_text("utf-8").split("\n")
+    for k in keys:
+        domain, owner, name = k.split(".")
+        d = next(i for i, l in enumerate(lines) if l.startswith(f'  "{domain}": {{'))
+        o = next(i for i in range(d + 1, len(lines)) if lines[i].startswith(f'    "{owner}": {{'))
+        n = next(i for i in range(o + 1, len(lines)) if lines[i].startswith(f'      "{name}": {{'))
+        del lines[n]
+        if lines[n].startswith("    }") and not lines[n - 1].startswith("    \""):
+            lines[n - 1] = re.sub(r",(\s*)$", r"\1", lines[n - 1])  # it was the last entry
+        if lines[o + 1].startswith("    }"):  # the owner is empty now
+            closing = lines[o + 1]
+            del lines[o:o + 2]
+            if not closing.rstrip().endswith(","):
+                lines[o - 1] = re.sub(r",(\s*)$", r"\1", lines[o - 1])
+    TUNABLES.write_text("\n".join(lines), "utf-8")
+    print(f"drop: {len(keys)} key(s); {changed} C# file(s) back to the literal. Next: check --base <before the moves>")
+    return 0
+
+
 # ------------------------------------------------------------------------------------------------ status
 
 def status(_args) -> int:
@@ -649,8 +717,10 @@ def main(argv=None) -> int:
     p.add_argument("--out")
     p.add_argument("--no-unity-compile", action="store_true", help="skip the Editor / EditMode-tests compile")
     sub.add_parser("status")
+    p = sub.add_parser("drop")
+    p.add_argument("--keys", required=True, help="comma-separated pass-2 keys to put back into the code as literals")
     a = ap.parse_args(argv)
-    return {"build": build, "plan": plan, "move": move, "check": check, "status": status}[a.cmd](a)
+    return {"build": build, "plan": plan, "move": move, "check": check, "status": status, "drop": drop}[a.cmd](a)
 
 
 if __name__ == "__main__":

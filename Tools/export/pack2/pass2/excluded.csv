@@ -19,6 +19,11 @@ Game/Match/Dialogue.cs,223,68,1.75,SecondsFor,presentation: radio / dialogue pac
 Game/Match/Dialogue.cs,223,85,0.05,SecondsFor,presentation: radio / dialogue pacing on the HUD; the simulation never reads it,"public static double SecondsFor(int letters) => Math.Clamp(1.75 + letters * 0.05, MinSeconds, MaxSeconds);"
 Game/Match/Dialogue.cs,274,69,2,Tick,presentation: radio / dialogue pacing on the HUD; the simulation never reads it,Level(_queue[0].line.Priority) == 1 && level >= 2 && now - _shownAt >= MinShown);
 Game/Match/Dialogue.cs,282,30,2,Tick,presentation: radio / dialogue pacing on the HUD; the simulation never reads it,if (nextLevel >= 2 && now - _lastStart < (BossBattle ? BossGap : Gap)) return;
+Game/Match/FrontMap.cs,90,36,0.075f,Reach,"presentation: the campaign front map's drawing (sector dots, pixel centres, pick reach on screen)",public const float Reach = 0.075f;
+Game/Match/FrontMap.cs,149,30,0.012f,Sectors,"presentation: the campaign front map's drawing (sector dots, pixel centres, pick reach on screen)",var radius = 0.012f + 0.015f * Mathf.Sqrt(k);
+Game/Match/FrontMap.cs,149,39,0.015f,Sectors,"presentation: the campaign front map's drawing (sector dots, pixel centres, pick reach on screen)",var radius = 0.012f + 0.015f * Mathf.Sqrt(k);
+Game/Match/FrontMap.cs,179,46,0.5f,Grid,"presentation: the campaign front map's drawing (sector dots, pixel centres, pick reach on screen)","var p = new Vector2((x + 0.5f) / width, (y + 0.5f) / height);"
+Game/Match/FrontMap.cs,179,66,0.5f,Grid,"presentation: the campaign front map's drawing (sector dots, pixel centres, pick reach on screen)","var p = new Vector2((x + 0.5f) / width, (y + 0.5f) / height);"
 Game/Match/Gear.Fit.cs,148,46,17,Unhide,"RNG salt (stream id of RngFor), not a quantity","RollTrait(item, RngFor(item, 17), BranchMask.All);"
 Game/Match/Gear.Model.cs,23,40,6,NormalSlots,"structure: the number of equipment slots (screens, save format and arrays size by it)",public const int NormalSlots = 6;
 Game/Match/Gear.Model.cs,52,54,4,ImplicitValue,"index bound: rarity 0-4 (five rarities, the Top[] arrays' last index)","return b.Top[Mathf.Clamp(item.rarity, 0, 4)] * (b.Flat ? 1f : LevelShare(item));"
@@ -152,6 +157,12 @@ Sim/AI/ConquestAi.cs,633,77,0.5f,TryStrike,geometry: half of a length / width / 
 Sim/AI/ConquestAi.cs,634,72,0.5f,TryStrike,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),var start = pick.IsLine ? cluster - along * (pick.Length * 0.5f) : cluster;
 Sim/AI/ConquestAi.cs,839,80,0.5f,ClearRun,geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant),"if (OwnWithin(world, centre + direction * (strike.Length * 0.5f * s / global::MachineBrigade.Sim.Content.SimTunables.Ai.ConquestAi.ClearRunLengthDivisor), reach"
 Sim/AI/ConquestAi.cs,1119,55,1,Levels,"index: 0 / 1 / -1 (identity, start value; whitelist §3.5)",private const int Levels = ArmourLevels.Max + 1;
+Sim/AI/DecisionLog.cs,87,30,3,Split,presentation: the decision log keeps the 3 strongest reasons for (text of the log),"if (plus.Count > 3) plus.RemoveRange(3, plus.Count - 3);"
+Sim/AI/DecisionLog.cs,87,50,3,Split,presentation: the decision log keeps the 3 strongest reasons for (text of the log),"if (plus.Count > 3) plus.RemoveRange(3, plus.Count - 3);"
+Sim/AI/DecisionLog.cs,87,66,3,Split,presentation: the decision log keeps the 3 strongest reasons for (text of the log),"if (plus.Count > 3) plus.RemoveRange(3, plus.Count - 3);"
+Sim/AI/DecisionLog.cs,88,31,2,Split,presentation: the decision log keeps the 2 strongest reasons against (text of the log),"if (minus.Count > 2) minus.RemoveRange(2, minus.Count - 2);"
+Sim/AI/DecisionLog.cs,88,52,2,Split,presentation: the decision log keeps the 2 strongest reasons against (text of the log),"if (minus.Count > 2) minus.RemoveRange(2, minus.Count - 2);"
+Sim/AI/DecisionLog.cs,88,69,2,Split,presentation: the decision log keeps the 2 strongest reasons against (text of the log),"if (minus.Count > 2) minus.RemoveRange(2, minus.Count - 2);"
 Sim/AI/DecisionLog.cs,124,37,4000,Capacity,infrastructure: a cache's capacity (memory),public const int Capacity = 4000;
 Sim/AI/P2/Commander.P2.cs,142,43,32,AssignP2,"infrastructure: a cache's size cap (memory), not gameplay",if (_reserveCommitted.Count > 32) _reserveCommitted.Clear();
 Sim/AI/P2/ComponentState.cs,90,35,4096,Check,infrastructure: a bookkeeping collection's size cap (memory),if (_last.Count > 4096) Prune();

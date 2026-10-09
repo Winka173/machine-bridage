@@ -77,20 +77,6 @@ namespace MachineBrigade.Sim.Content
                 public static float UntangleNowSub = 0.5f;
             }
 
-            public static partial class FrontMap
-            {
-                /// <summary>maps.frontMap.reach (m; ban_kinh, was Game/Match/FrontMap.cs:90).</summary>
-                public static float Reach = 0.075f;
-                /// <summary>maps.frontMap.sectorsSqrtAdd (m; ban_kinh, was Game/Match/FrontMap.cs:149).</summary>
-                public static float SectorsSqrtAdd = 0.012f;
-                /// <summary>maps.frontMap.sectorsSqrtScale (x; ban_kinh, was Game/Match/FrontMap.cs:149).</summary>
-                public static float SectorsSqrtScale = 0.015f;
-                /// <summary>maps.frontMap.gridXAdd (m; ban_kinh, was Game/Match/FrontMap.cs:179).</summary>
-                public static float GridXAdd = 0.5f;
-                /// <summary>maps.frontMap.gridYAdd (m; ban_kinh, was Game/Match/FrontMap.cs:179).</summary>
-                public static float GridYAdd = 0.5f;
-            }
-
             public static partial class GameplayTopology
             {
                 /// <summary>maps.gameplayTopology.makeApproachMedianSpeedFloor (m/s; tan_suat, was Sim/Navigation/GameplayTopology.Approaches.cs:283).</summary>
@@ -592,11 +578,6 @@ namespace MachineBrigade.Sim.Content
             new Entry("maps.formation.slotsRingScale2", "x", () => Maps.Formation.SlotsRingScale2, v => Maps.Formation.SlotsRingScale2 = (float)v),
             new Entry("maps.formation.slotsSpacingScale", "x", () => Maps.Formation.SlotsSpacingScale, v => Maps.Formation.SlotsSpacingScale = (float)v),
             new Entry("maps.formation.untangleNowSub", "s", () => Maps.Formation.UntangleNowSub, v => Maps.Formation.UntangleNowSub = (float)v),
-            new Entry("maps.frontMap.reach", "m", () => Maps.FrontMap.Reach, v => Maps.FrontMap.Reach = (float)v),
-            new Entry("maps.frontMap.sectorsSqrtAdd", "m", () => Maps.FrontMap.SectorsSqrtAdd, v => Maps.FrontMap.SectorsSqrtAdd = (float)v),
-            new Entry("maps.frontMap.sectorsSqrtScale", "x", () => Maps.FrontMap.SectorsSqrtScale, v => Maps.FrontMap.SectorsSqrtScale = (float)v),
-            new Entry("maps.frontMap.gridXAdd", "m", () => Maps.FrontMap.GridXAdd, v => Maps.FrontMap.GridXAdd = (float)v),
-            new Entry("maps.frontMap.gridYAdd", "m", () => Maps.FrontMap.GridYAdd, v => Maps.FrontMap.GridYAdd = (float)v),
             new Entry("maps.gameplayTopology.makeApproachMedianSpeedFloor", "m/s", () => Maps.GameplayTopology.MakeApproachMedianSpeedFloor, v => Maps.GameplayTopology.MakeApproachMedianSpeedFloor = (float)v),
             new Entry("maps.gameplayTopology.makeApproachIMin", "count", () => Maps.GameplayTopology.MakeApproachIMin, v => Maps.GameplayTopology.MakeApproachIMin = (int)System.Math.Round(v)),
             new Entry("maps.gameplayTopology.makeApproachCountSub", "count", () => Maps.GameplayTopology.MakeApproachCountSub, v => Maps.GameplayTopology.MakeApproachCountSub = (int)System.Math.Round(v)),

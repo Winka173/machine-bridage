@@ -2335,22 +2335,6 @@ namespace MachineBrigade.Sim.Content
                 public static float ScoreDistanceScale = 0.01f;
             }
 
-            public static partial class Why
-            {
-                /// <summary>ai.why.splitCountMin (count; ban_kinh, was Sim/AI/DecisionLog.cs:87).</summary>
-                public static int SplitCountMin = 3;
-                /// <summary>ai.why.splitIndex (m; ban_kinh, was Sim/AI/DecisionLog.cs:87).</summary>
-                public static int SplitIndex = 3;
-                /// <summary>ai.why.splitCountSub (count; ban_kinh, was Sim/AI/DecisionLog.cs:87).</summary>
-                public static int SplitCountSub = 3;
-                /// <summary>ai.why.splitCountMin2 (count; ban_kinh, was Sim/AI/DecisionLog.cs:88).</summary>
-                public static int SplitCountMin2 = 2;
-                /// <summary>ai.why.splitIndex2 (m; ban_kinh, was Sim/AI/DecisionLog.cs:88).</summary>
-                public static int SplitIndex2 = 2;
-                /// <summary>ai.why.splitCountSub2 (count; ban_kinh, was Sim/AI/DecisionLog.cs:88).</summary>
-                public static int SplitCountSub2 = 2;
-            }
-
             public static partial class WorldModel
             {
                 /// <summary>ai.worldModel.forWorldRateFloor (x; tan_suat, was Sim/AI/WorldModel.cs:193).</summary>
@@ -3403,12 +3387,6 @@ namespace MachineBrigade.Sim.Content
             new Entry("ai.weakpointUtility.scoreI", "x", () => Ai.WeakpointUtility.ScoreI, v => Ai.WeakpointUtility.ScoreI = (int)System.Math.Round(v)),
             new Entry("ai.weakpointUtility.scoreI2", "x", () => Ai.WeakpointUtility.ScoreI2, v => Ai.WeakpointUtility.ScoreI2 = (int)System.Math.Round(v)),
             new Entry("ai.weakpointUtility.scoreDistanceScale", "x", () => Ai.WeakpointUtility.ScoreDistanceScale, v => Ai.WeakpointUtility.ScoreDistanceScale = (float)v),
-            new Entry("ai.why.splitCountMin", "count", () => Ai.Why.SplitCountMin, v => Ai.Why.SplitCountMin = (int)System.Math.Round(v)),
-            new Entry("ai.why.splitIndex", "m", () => Ai.Why.SplitIndex, v => Ai.Why.SplitIndex = (int)System.Math.Round(v)),
-            new Entry("ai.why.splitCountSub", "count", () => Ai.Why.SplitCountSub, v => Ai.Why.SplitCountSub = (int)System.Math.Round(v)),
-            new Entry("ai.why.splitCountMin2", "count", () => Ai.Why.SplitCountMin2, v => Ai.Why.SplitCountMin2 = (int)System.Math.Round(v)),
-            new Entry("ai.why.splitIndex2", "m", () => Ai.Why.SplitIndex2, v => Ai.Why.SplitIndex2 = (int)System.Math.Round(v)),
-            new Entry("ai.why.splitCountSub2", "count", () => Ai.Why.SplitCountSub2, v => Ai.Why.SplitCountSub2 = (int)System.Math.Round(v)),
             new Entry("ai.worldModel.forWorldRateFloor", "x", () => Ai.WorldModel.ForWorldRateFloor, v => Ai.WorldModel.ForWorldRateFloor = (float)v),
         };
     }
