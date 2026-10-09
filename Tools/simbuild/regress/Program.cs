@@ -38,6 +38,8 @@ static class P
             case "load": sb.AppendLine($"OK {Cat.Vehicles.Count} vehicles, {Cat.Weapons.Count} weapons, {Cat.Supports.Count} supports"); break;
             case "dump": Dump(sb); break;
             case "bossdump": BossDesign.Dump(Cat, sb); break;
+            case "bossrules": foreach (var line in MachineBrigade.Sim.Content.BossDesignRules.Check(Cat)) sb.AppendLine(line); sb.AppendLine("rules checked"); break;
+            case "bosssmoke": BossDesign.Smoke(Cat, sb); break;
             case "ttk": Ttk(sb, Environment.GetEnvironmentVariable("MB_SET") ?? "all"); break;
             case "pd": PointDefence(sb); break;
             case "barrage": Barrage(sb); break;

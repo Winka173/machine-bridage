@@ -216,8 +216,23 @@ namespace MachineBrigade.Sim.Bosses
         public bool CanPatch(Vehicle boss)
         {
             for (var i = 0; i < boss.PartBroken.Length; i++)
-                if (boss.PartBroken[i] && !boss.PartPatched[i]) return true;
+                if (boss.PartBroken[i] && !boss.PartPatched[i] && Patchable(boss, i)) return true;
             return false;
+        }
+
+        /// <summary>
+        /// Boss design 09/10 (sheet 09, "phá module: dừng sinh quân mới", sheet 14): a hangar, deck, gate, door or pod bay that has been
+        /// broken stays broken for the rest of the fight; a self-repair never mends the part that calls units.
+        /// </summary>
+        private static bool Patchable(Vehicle boss, int i)
+        {
+            var part = boss.Def.Parts[i];
+            foreach (var skill in part.Skills)
+                foreach (var s in boss.Def.Skills)
+                    if (s.Id == skill && s.Kind == SkillKind.Summon) return false;
+            foreach (var stop in part.Stops)
+                if (stop == "pods" || stop == "factory") return false;
+            return true;
         }
 
         /// <summary>
@@ -232,7 +247,7 @@ namespace MachineBrigade.Sim.Bosses
             var bestScore = -1f;
             for (var i = 0; i < boss.PartBroken.Length; i++)
             {
-                if (!boss.PartBroken[i] || boss.PartPatched[i]) continue;
+                if (!boss.PartBroken[i] || boss.PartPatched[i] || !Patchable(boss, i)) continue;
                 var part = boss.Def.Parts[i];
                 var score = 0f;
                 foreach (var m in part.Mounts) score += GroundFirepower(boss.Arms[m]);
