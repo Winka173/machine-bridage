@@ -160,94 +160,58 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: thân rất mỏng (giáp cấp 1): phòng không hạ nó nhanh.\n" +
                 "Mẹo: phá khoang drone là nó hết đòn."),
             ["guide.roc_gunship"] = (
-                "[[Mini boss]] · Roc Arsenal
-" +
-                "How it fights: A gunship cut from the Roc's hull: heavy twin guns and flak, no bombs and no drones.
-" +
-                "Strong / weak: many small guns, each its own part; break them one by one.
-" +
+                "[[Mini boss]] · Roc Arsenal\n" +
+                "How it fights: A gunship cut from the Roc's hull: heavy twin guns and flak, no bombs and no drones.\n" +
+                "Strong / weak: many small guns, each its own part; break them one by one.\n" +
                 "Tip: it has no super weapon; keep tanks spread and flank it.",
-                "[[Mini boss]] · Roc Arsenal
-" +
-                "Cách đánh: Khinh khí cầu chiến đấu cắt từ thân Roc: pháo đôi hạng nặng và cao xạ, không bom, không drone.
-" +
-                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
-" +
+                "[[Mini boss]] · Roc Arsenal\n" +
+                "Cách đánh: Khinh khí cầu chiến đấu cắt từ thân Roc: pháo đôi hạng nặng và cao xạ, không bom, không drone.\n" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.\n" +
                 "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
             ["guide.daedalus_assault"] = (
-                "[[Mini boss]] · Daedalus Assault
-" +
-                "How it fights: A light assault lander: close guns, point-defence lasers and one slow drop-pod bay.
-" +
-                "Strong / weak: many small guns, each its own part; break them one by one.
-" +
+                "[[Mini boss]] · Daedalus Assault\n" +
+                "How it fights: A light assault lander: close guns, point-defence lasers and one slow drop-pod bay.\n" +
+                "Strong / weak: many small guns, each its own part; break them one by one.\n" +
                 "Tip: it has no super weapon; keep tanks spread and flank it.",
-                "[[Mini boss]] · Daedalus Assault
-" +
-                "Cách đánh: Tàu đổ bộ xung kích nhẹ: pháo cận chiến, laser phòng thủ điểm và một khoang thả xe chậm.
-" +
-                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
-" +
+                "[[Mini boss]] · Daedalus Assault\n" +
+                "Cách đánh: Tàu đổ bộ xung kích nhẹ: pháo cận chiến, laser phòng thủ điểm và một khoang thả xe chậm.\n" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.\n" +
                 "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
             ["guide.icarus_interceptor"] = (
-                "[[Mini boss]] · Icarus Sentinel
-" +
-                "How it fights: A fast interceptor with laser towers and anti-air missile pods; it hunts aircraft first.
-" +
-                "Strong / weak: many small guns, each its own part; break them one by one.
-" +
+                "[[Mini boss]] · Icarus Sentinel\n" +
+                "How it fights: A fast interceptor with laser towers and anti-air missile pods; it hunts aircraft first.\n" +
+                "Strong / weak: many small guns, each its own part; break them one by one.\n" +
                 "Tip: it has no super weapon; keep tanks spread and flank it.",
-                "[[Mini boss]] · Icarus Sentinel
-" +
-                "Cách đánh: Phi thuyền đánh chặn nhanh: tháp laser và tên lửa phòng không, ưu tiên săn máy bay.
-" +
-                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
-" +
+                "[[Mini boss]] · Icarus Sentinel\n" +
+                "Cách đánh: Phi thuyền đánh chặn nhanh: tháp laser và tên lửa phòng không, ưu tiên săn máy bay.\n" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.\n" +
                 "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
             ["guide.matriarch_flak"] = (
-                "[[Mini boss]] · Matriarch Wasp
-" +
-                "How it fights: A drone tender armed for the air: flak guns, CIWS and a few small drones.
-" +
-                "Strong / weak: many small guns, each its own part; break them one by one.
-" +
+                "[[Mini boss]] · Matriarch Wasp\n" +
+                "How it fights: A drone tender armed for the air: flak guns, CIWS and a few small drones.\n" +
+                "Strong / weak: many small guns, each its own part; break them one by one.\n" +
                 "Tip: it has no super weapon; keep tanks spread and flank it.",
-                "[[Mini boss]] · Matriarch Wasp
-" +
-                "Cách đánh: Tàu mang drone thiên về phòng không: cao xạ, CIWS và vài drone nhỏ.
-" +
-                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
-" +
+                "[[Mini boss]] · Matriarch Wasp\n" +
+                "Cách đánh: Tàu mang drone thiên về phòng không: cao xạ, CIWS và vài drone nhỏ.\n" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.\n" +
                 "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
             ["guide.jotunn_artillery"] = (
-                "[[Mini boss]] · Jötunn Mortar
-" +
-                "How it fights: A mobile fortress turned to mortars: it lobs shells over cover; close in under its arc.
-" +
-                "Strong / weak: many small guns, each its own part; break them one by one.
-" +
+                "[[Mini boss]] · Jötunn Mortar\n" +
+                "How it fights: A mobile fortress turned to mortars: it lobs shells over cover; close in under its arc.\n" +
+                "Strong / weak: many small guns, each its own part; break them one by one.\n" +
                 "Tip: it has no super weapon; keep tanks spread and flank it.",
-                "[[Mini boss]] · Jötunn Mortar
-" +
-                "Cách đánh: Pháo đài di động chuyên cối: bắn vòng qua vật cản; áp sát để tránh cung đạn.
-" +
-                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
-" +
+                "[[Mini boss]] · Jötunn Mortar\n" +
+                "Cách đánh: Pháo đài di động chuyên cối: bắn vòng qua vật cản; áp sát để tránh cung đạn.\n" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.\n" +
                 "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
             ["guide.bastion_aa"] = (
-                "[[Mini boss]] · Bastion Flak
-" +
-                "How it fights: A fortress thick with flak and missiles: deadly to aircraft, thin against tanks.
-" +
-                "Strong / weak: many small guns, each its own part; break them one by one.
-" +
+                "[[Mini boss]] · Bastion Flak\n" +
+                "How it fights: A fortress thick with flak and missiles: deadly to aircraft, thin against tanks.\n" +
+                "Strong / weak: many small guns, each its own part; break them one by one.\n" +
                 "Tip: it has no super weapon; keep tanks spread and flank it.",
-                "[[Mini boss]] · Bastion Flak
-" +
-                "Cách đánh: Pháo đài dày cao xạ và tên lửa: chết chóc với máy bay, mỏng với xe tăng.
-" +
-                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
-" +
+                "[[Mini boss]] · Bastion Flak\n" +
+                "Cách đánh: Pháo đài dày cao xạ và tên lửa: chết chóc với máy bay, mỏng với xe tăng.\n" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.\n" +
                 "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
             ["guide.behemoth_mk2"] = (
                 "[[Mini boss]] · upgraded Behemoth · ice-coated armour\n" +
