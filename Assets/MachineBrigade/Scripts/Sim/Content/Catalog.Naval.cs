@@ -22,6 +22,7 @@ namespace MachineBrigade.Sim.Content
                     EscapeRun = n.Float("escapeRun", 150f),
                     Station = n.Float("station", 0f),
                     Patrol = n.Has("patrol") ? n.String("patrol") : null,
+                    Band = n.Has("band") && n.FloatArray("band") is { Count: 2 } band ? new[] { band[0], band[1] } : null,
                     DashW = n.Float("dashW", 48f),
                     DashEvery = n.Float("dashEvery", 26f),
                     DashHold = n.Float("dashHold", 7f),

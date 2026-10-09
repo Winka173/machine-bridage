@@ -29,6 +29,33 @@ namespace MachineBrigade.Sim.Content
                 public static float ClusterRadius = 8f;
             }
 
+            /// <summary>Naval tune 09/10: how a ship with no flagship fights on its own lane (NavalSystem.Engage, spec section 7).</summary>
+            public static partial class NavalEngage
+            {
+                /// <summary>ai.navalEngage.contactShare (share of reach): an enemy surface contact this far (x its main weapon's range) is fought.</summary>
+                public static float ContactShare = 1.3f;
+                /// <summary>ai.navalEngage.standoffBand (share of reach): a missile / torpedo / rocket ship opens the range inside this.</summary>
+                public static float StandoffBand = 0.85f;
+                /// <summary>ai.navalEngage.standoffMax (share of reach): ... and closes beyond this.</summary>
+                public static float StandoffMax = 0.95f;
+                /// <summary>ai.navalEngage.brawlBand (share of reach): a gun ship closes to this (it never opens the range).</summary>
+                public static float BrawlBand = 0.5f;
+                /// <summary>ai.navalEngage.endMargin (m): a fighting ship keeps this far inside its lane's end.</summary>
+                public static float EndMargin = 10f;
+                /// <summary>ai.navalEngage.cornerRoom (m): a standoff ship this close to that limit with the enemy inside its band breaks out past it.</summary>
+                public static float CornerRoom = 8f;
+                /// <summary>ai.navalEngage.closingMin (m/s): an enemy coming on (or running) faster than this presses (or draws) a ship.</summary>
+                public static float ClosingMin = 0.5f;
+                /// <summary>ai.navalEngage.kiteLead (m): a pressed standoff ship steers this far beyond its present distance (stern to the enemy).</summary>
+                public static float KiteLead = 6f;
+                /// <summary>ai.navalEngage.brawlChase (share of the band): a gun ship goes on to this inside its band after a target that runs.</summary>
+                public static float BrawlChase = 0.7f;
+                /// <summary>ai.navalEngage.jammerAvoid (m): an EW (jammer) ship with no flagship keeps this far off enemy ships (spec 7: it does not duel).</summary>
+                public static float JammerAvoid = 90f;
+                /// <summary>ai.navalEngage.weaveLead (m): an attack craft in its band steers this far on along its lane (it keeps moving).</summary>
+                public static float WeaveLead = 12f;
+            }
+
             public static partial class ModeDoctrine
             {
                 /// <summary>ai.modeDoctrine.mortarBand / artilleryBand / mlrsBand / longBand (share of reach): Part I1's anchor distances.</summary>
@@ -192,6 +219,17 @@ namespace MachineBrigade.Sim.Content
             new Entry("ai.roleDoctrine.heavySalvoMinWorth", "CP", () => Ai.RoleDoctrine.HeavySalvoMinWorth, v => Ai.RoleDoctrine.HeavySalvoMinWorth = (float)v),
             new Entry("ai.roleDoctrine.navalSalvoMinAlpha", "HP", () => Ai.RoleDoctrine.NavalSalvoMinAlpha, v => Ai.RoleDoctrine.NavalSalvoMinAlpha = (float)v),
             new Entry("ai.roleDoctrine.navalSalvoMinWorth", "CP", () => Ai.RoleDoctrine.NavalSalvoMinWorth, v => Ai.RoleDoctrine.NavalSalvoMinWorth = (float)v),
+            new Entry("ai.navalEngage.contactShare", "share", () => Ai.NavalEngage.ContactShare, v => Ai.NavalEngage.ContactShare = (float)v),
+            new Entry("ai.navalEngage.standoffBand", "share", () => Ai.NavalEngage.StandoffBand, v => Ai.NavalEngage.StandoffBand = (float)v),
+            new Entry("ai.navalEngage.standoffMax", "share", () => Ai.NavalEngage.StandoffMax, v => Ai.NavalEngage.StandoffMax = (float)v),
+            new Entry("ai.navalEngage.brawlBand", "share", () => Ai.NavalEngage.BrawlBand, v => Ai.NavalEngage.BrawlBand = (float)v),
+            new Entry("ai.navalEngage.endMargin", "m", () => Ai.NavalEngage.EndMargin, v => Ai.NavalEngage.EndMargin = (float)v),
+            new Entry("ai.navalEngage.cornerRoom", "m", () => Ai.NavalEngage.CornerRoom, v => Ai.NavalEngage.CornerRoom = (float)v),
+            new Entry("ai.navalEngage.closingMin", "m/s", () => Ai.NavalEngage.ClosingMin, v => Ai.NavalEngage.ClosingMin = (float)v),
+            new Entry("ai.navalEngage.kiteLead", "m", () => Ai.NavalEngage.KiteLead, v => Ai.NavalEngage.KiteLead = (float)v),
+            new Entry("ai.navalEngage.brawlChase", "share", () => Ai.NavalEngage.BrawlChase, v => Ai.NavalEngage.BrawlChase = (float)v),
+            new Entry("ai.navalEngage.jammerAvoid", "m", () => Ai.NavalEngage.JammerAvoid, v => Ai.NavalEngage.JammerAvoid = (float)v),
+            new Entry("ai.navalEngage.weaveLead", "m", () => Ai.NavalEngage.WeaveLead, v => Ai.NavalEngage.WeaveLead = (float)v),
             new Entry("ai.roleDoctrine.clusterRadius", "m", () => Ai.RoleDoctrine.ClusterRadius, v => Ai.RoleDoctrine.ClusterRadius = (float)v),
             Entry.FloatArray("ai.modeDoctrine.mortarBand", "share", () => Ai.ModeDoctrine.MortarBand, v => Ai.ModeDoctrine.MortarBand = v),
             Entry.FloatArray("ai.modeDoctrine.artilleryBand", "share", () => Ai.ModeDoctrine.ArtilleryBand, v => Ai.ModeDoctrine.ArtilleryBand = v),

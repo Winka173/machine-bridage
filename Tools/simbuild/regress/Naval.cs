@@ -56,8 +56,8 @@ static class NavalSuite
     static readonly Row[] Matrix =
     {
         // ---- duels (prompt H, spec 9): both sides on their own patrol lanes, fighting AI
-        new() { Set = "duel", Name = "hover_gunboat x2 vs torpedo_boat x2", A = N("hover_gunboat", 2), B = N("torpedo_boat", 2), Expect = "A", Note = "torpedo boat loses to the gunboat" },
-        new() { Set = "duel", Name = "river_patrol_boat x2 vs torpedo_boat x2", A = N("river_patrol_boat", 2), B = N("torpedo_boat", 2), Expect = "A" },
+        new() { Set = "duel", Name = "hover_gunboat x2 vs torpedo_boat x2", A = N("hover_gunboat", 2), B = N("torpedo_boat", 2), Expect = "A", Note = "OWNER DECISION: hover_gunboat is not a sea unit (no naval block; the sea's water blocks it, it is pushed ashore) and the torpedo boat is navalOnly" },
+        new() { Set = "duel", Name = "river_patrol_boat x2 vs torpedo_boat x2", A = N("river_patrol_boat", 2), B = N("torpedo_boat", 2), Expect = "A", Note = "OWNER DECISION: river_patrol_boat is a ground-domain river craft (no naval block), it cannot enter the sea" },
         new() { Set = "duel", Name = "sea_corvette vs ashm_corvette (close 40 m)", A = N("sea_corvette", 1), B = N("ashm_corvette", 1), Gap = 40f, Expect = "A", Note = "AShM corvette loses close" },
         new() { Set = "duel", Name = "sea_corvette vs ashm_corvette (long 130 m)", A = N("sea_corvette", 1), B = N("ashm_corvette", 1), Gap = 130f, Expect = "B", Note = "AShM corvette wins at standoff" },
         new() { Set = "duel", Name = "ashm_corvette vs sea_corvette + ciws_escort_craft", A = N("ashm_corvette", 1), B = L("sea_corvette", "ciws_escort_craft"), Gap = 120f, Expect = "B", Note = "a lone AShM corvette loses to a CIWS-protected group" },
@@ -210,6 +210,11 @@ static class NavalSuite
 
     static Catalog Cat;
 
+    static readonly bool Trace = Environment.GetEnvironmentVariable("MB_TRACE") == "1";
+
+    /// <summary>MB_ROW=text: only the matrix rows whose name contains it (diagnosis).</summary>
+    static readonly string RowFilter = Environment.GetEnvironmentVariable("MB_ROW") ?? "";
+
     // ------------------------------------------------------------------ one run
 
     sealed class RunStats
@@ -302,6 +307,7 @@ static class NavalSuite
                     {
                         if (e.Team == 0 && r.FirstShotA < 0) r.FirstShotA = world.Time;
                         if (e.Team == 1 && r.FirstShotB < 0) r.FirstShotB = world.Time;
+                        if (Trace && e.Mount == 0) Console.Error.WriteLine($"  t={world.Time:0.0} FIRE {e.Team}#{e.Entity.Value} {e.DefId}");
                         var key = (e.Team == 0 ? "A:" : "B:") + (e.DefId ?? "?");
                         r.Shots[key] = (r.Shots.TryGetValue(key, out var n) ? n : 0) + 1;
                         if (e.Mount == 0 && world.TryGetVehicle(e.Entity, out var shooter) && CombatRoleDoctrine.NavalSalvo(shooter.Def, shooter.Def.Weapon) &&
@@ -322,6 +328,14 @@ static class NavalSuite
                     }
                 }
                 world.ClearEvents();
+                // MB_TRACE=1: every unit's place, order, target and health each second (diagnosis, stderr).
+                if (Trace && world.Tick % 20 == 0)
+                    foreach (var v in mine)
+                    {
+                        if (!v.IsAlive) continue;
+                        var tgt = world.TryGetVehicle(v.Target, out var tv) ? $"{tv.Def.Id}@{Vector2.Distance(tv.Position, v.Position):0}" : "-";
+                        Console.Error.WriteLine($"  t={world.Time:0} {v.Team}:{v.Def.Id}#{v.Id.Value} p=({v.Position.X:0},{v.Position.Y:0}) v={v.Speed:0.0} hp={v.Hp:0} ord={v.Order.Kind}({v.Order.Point.X:0},{v.Order.Point.Y:0}) tgt={tgt} scr={v.Scripted} cd0={v.Weapons[0].Cooldown:0.0} ammo0={v.Weapons[0].Ammo} los={(tv != null ? world.Combat.HasLineOfFire(v, tv, v.Def.Weapon) : false)} mh={SimMath.WrapAngle((v.MountHeading(0) - v.Heading)) * 57.3f:0}");
+                    }
                 // Per-unit samples every 0.5 s: target switches, range keeping, pathing.
                 if (world.Tick % 10 != 0) continue;
                 foreach (var v in mine)
@@ -390,6 +404,7 @@ static class NavalSuite
         foreach (var row in Matrix)
         {
             if (set != "all" && row.Set != set) continue;
+            if (RowFilter != "" && !row.Name.Contains(RowFilter)) continue;
             var a = Fill(row.A, row.Budget);
             var b = Fill(row.B, row.Budget);
             var missing = a.Concat(b).Where(id => !Cat.Vehicles.ContainsKey(id)).Distinct().ToList();

@@ -10,6 +10,8 @@ using MachineBrigade.Sim.Events;
 
 namespace MachineBrigade.Sim.Bosses
 {
+    using Tun = global::MachineBrigade.Sim.Content.SimTunables.Ai.NavalEngage;
+
     /// <summary>
     /// Ships at sea (prompt 16 B, C), on a battlefield with a sea (<see cref="SeaDef"/>). Ships never touch
     /// the ground's grid: they are steered here in the coast's frame (u along the coast, w out to sea), on
@@ -665,9 +667,113 @@ namespace MachineBrigade.Sim.Bosses
         {
             var lane = sea.Lane(laneId)!;
             var f = sea.Frame(v.Position);
+            // Naval tune 09/10 (spec section 7): with a surface contact in reach it fights from its doctrine's band instead.
+            if (Engage(v, sea, lane, f, out var u))
+            {
+                v.NavalGoal = new Vector2(u, lane.W);
+                return;
+            }
             if ((f.X - v.NavalDir * lane.Patrol) * v.NavalDir > -4f) v.NavalDir = -v.NavalDir;
             v.NavalGoal = new Vector2(v.NavalDir * lane.Patrol, lane.W);
         }
+
+        /// <summary>
+        /// Naval tune 09/10 (spec section 7, DECISIONS "Naval tune (09/10)"): a ship patrolling on its own lane with an enemy surface
+        /// contact (its target, else the nearest seen ship or shore target within <c>ai.navalEngage.contactShare</c> of its main
+        /// weapon's reach) keeps its doctrine's distance along the lane: a missile, torpedo or rocket ship (tank destroyer, fire
+        /// support) opens the range inside <c>standoffBand</c> of its reach and closes beyond <c>standoffMax</c>; a gun ship (main
+        /// battle) closes to <c>brawlBand</c> and never opens it. Air-defence, support and recon ships keep their patrol, as does a
+        /// ship whose main weapon cannot fire at the surface. The way along its lane stays inside its patrol stretch, so a ship
+        /// that runs is cornered at its end. The goal <paramref name="u"/> is along the coast (the lane gives the distance out).
+        /// </summary>
+        private bool Engage(Vehicle v, SeaDef sea, SeaLaneDef lane, Vector2 f, out float u)
+        {
+            u = f.X;
+            var w = v.Def.Weapon;
+            if (w.Range <= 0f || w.Damage <= 0f || !w.CanTarget(false)) return false;
+            var role = global::MachineBrigade.Sim.AI.CombatRoleDoctrine.BaseRole(_world, v);
+            var standoff = role is global::MachineBrigade.Sim.AI.DoctrineRole.TankDestroyer or global::MachineBrigade.Sim.AI.DoctrineRole.FireSupport;
+            var brawl = role is global::MachineBrigade.Sim.AI.DoctrineRole.MainBattle or global::MachineBrigade.Sim.AI.DoctrineRole.Siege
+                or global::MachineBrigade.Sim.AI.DoctrineRole.LightCombat or global::MachineBrigade.Sim.AI.DoctrineRole.Generic;
+            // The EW corvette (a jammer, support doctrine) does not duel: it keeps jammerAvoid metres off enemy ships.
+            var evade = v.Def.Jammer > 0f && role == global::MachineBrigade.Sim.AI.DoctrineRole.Support;
+            if (!standoff && !brawl && !evade) return false;
+            var reach = evade ? Tun.JammerAvoid : w.Range * Tun.ContactShare;
+            Vehicle? contact = null;
+            if (_world.TryGetVehicle(v.Target, out var t) && Contact(v, t) && Vector2.Distance(t.Position, v.Position) <= reach) contact = t;
+            else
+            {
+                var best = reach * reach;
+                foreach (var o in _world.VehicleList)
+                {
+                    if (!Contact(v, o)) continue;
+                    var d2 = Vector2.DistanceSquared(o.Position, v.Position);
+                    if (d2 > best) continue;
+                    best = d2;
+                    contact = o;
+                }
+            }
+            if (contact == null) return false;
+            var tf = sea.Frame(contact.Position);
+            var du = f.X - tf.X;
+            var dw = lane.W - tf.Y;
+            var d = MathF.Sqrt(du * du + dw * dw);
+            // The contact's speed towards this ship (+ closing on it, - opening).
+            var toMe = v.Position - contact.Position;
+            var closing = toMe.LengthSquared() > 0.01f ? Vector2.Dot(SimMath.Forward(contact.Heading) * contact.Speed, Vector2.Normalize(toMe)) : 0f;
+            var limit = MathF.Max(lane.Patrol, lane.End - Tun.EndMargin);
+            var side = MathF.Abs(du) > 0.5f ? MathF.Sign(du) : v.NavalDir;
+            float want;
+            if (standoff || evade)
+            {
+                var band = v.Def.Naval?.Band;
+                var near = evade ? Tun.JammerAvoid : w.Range * (band?[0] ?? Tun.StandoffBand);
+                var far = evade ? float.PositiveInfinity : w.Range * (band?[1] ?? Tun.StandoffMax);
+                var pressed = closing > Tun.ClosingMin;
+                // Cornered at the end of its lane with the enemy inside its band: it breaks out past it (along its own lane,
+                // abeam of it) and opens the range on the other side; the break holds until it is past or clear.
+                if (v.NavalBreak != 0)
+                {
+                    if (MathF.Sign(du) == v.NavalBreak || d >= near) v.NavalBreak = 0;
+                    else side = v.NavalBreak;
+                }
+                else if (d < near && side * f.X > limit - Tun.CornerRoom)
+                {
+                    v.NavalBreak = -side;
+                    side = -side;
+                }
+                // Inside its band, or in reach with the enemy closing: it opens the range (stern to it, firing as it goes);
+                // beyond its band with the enemy not coming: it closes to the band's middle; else it holds.
+                if (v.NavalBreak != 0) want = near;
+                else if (d < near || (!evade && pressed && d <= w.Range)) want = MathF.Max(near, d + Tun.KiteLead);
+                else if (d > far && !pressed) want = (near + far) * 0.5f;
+                else if (band != null && !evade)
+                {
+                    // An attack craft (its own band) never sits in it: it runs on at speed along its lane, weaving in and out.
+                    u = Math.Clamp(f.X + v.NavalDir * Tun.WeaveLead, -limit, limit);
+                    if (MathF.Abs(u - f.X) < 1f) v.NavalDir = -v.NavalDir;
+                    return true;
+                }
+                else return !evade;
+            }
+            else
+            {
+                // A gun ship closes to its band, and on into it (to brawlChase of the band) after a target that runs.
+                var far = w.Range * (v.Def.Naval?.Band?[1] ?? Tun.BrawlBand);
+                var chase = far * Tun.BrawlChase;
+                if (d > far || (closing < -Tun.ClosingMin && d > chase)) want = chase;
+                else return true;
+            }
+            var along = MathF.Sqrt(MathF.Max(0f, want * want - dw * dw));
+            u = Math.Clamp(tf.X + side * along, -limit, limit);
+            if (MathF.Abs(u - f.X) > 0.5f) v.NavalDir = u > f.X ? 1 : -1;
+            return true;
+        }
+
+        /// <summary>An enemy a ship on patrol steers by: alive, on the surface (a ship, a boat, a shore target), seen, and one its main weapon may fire at.</summary>
+        private bool Contact(Vehicle v, Vehicle o) =>
+            o.IsAlive && o.Team != v.Team && o.Team >= 0 && !o.Escaped && !o.Def.Flying && (!_world.FogOfWar || o.IsVisibleTo(v.Team)) &&
+            (!v.Def.NavalOnly || o.Def.Naval != null);
 
         /// <summary>An attack boat: out on the mid lane by its flagship, then a dash to the nearest pier head, a hold there firing, and back out.</summary>
         private void Raider(Vehicle v, NavalDef naval, SeaDef sea, double now)

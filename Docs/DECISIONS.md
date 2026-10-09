@@ -22194,3 +22194,20 @@ Docs/bosses/design_0910/MAPPING.md; results: REPORT.md.
 - **Checks.** `dotnet build Tools/simbuild/Sim.csproj` and the regress harness 0 errors; harness `bossrules` (BossDesignRules, also in CatalogCheck) no breach; harness `bosssmoke`
   (39 bosses, 90-360 s each: phase once incl. a big hit, a heal and a dip, summon cap and delay, broken module stops new units) 0 failures on the final run. No Unity run; EditMode
   tests written/updated (BossDesign0910Tests, Prompt20/26AB/8Content) and NOT run.
+
+## Naval tune (09/10)
+
+Owner allowed tests for the naval work (09/10). First suite run 33 as_expected / 12 UNEXPECTED / 32 record; final run
+(`Docs/naval/final/results/naval_suite_0910_final.tsv`, 5 seeds, after merging lead/integration) 43 / 2 / 32. Details and root
+causes: `Docs/naval/final/NAVAL_FINAL_REPORT.md` "Naval tune (09/10)".
+- Ships with no flagship fight from doctrine bands on their own lane (`NavalSystem.Engage`, tunables `ai.navalEngage.*`):
+  standoff (TD / fire support) 0.85-0.95 of reach, kite when pressed, break out past the enemy when cornered; gun ships close to
+  0.5 and chase to 0.7 of that; a jammer ship keeps 90 m off; an attack craft with data `naval.band` weaves inside its band.
+  With a flagship, escorts keep their stations as before. Boss ships untouched (they have flagship / boss controllers).
+- New ships' CIWS = `naval_ciws` (air only, own air-burst round); anchors keep `hover_ciws` (spec 6: CIWS surface DPS low).
+- Player AShM variants `"minReach": 45` (existing key, no artillery semantics): AShM ships lose when a gun ship closes.
+- `naval_torpedo_light`: not interceptable, 800 x 2 / 8 s; torpedo_boat HP 545 (1.30 x missile_boat) and band [0.45, 0.7].
+- EW corvette primary `naval_57_selfdef` (light 57 mm, spec 4.5).
+- Battleship: `naval_406_bs` cooldown 18 s (spec "long reload"), APS recharge 3.0 s (not specialist tier).
+- Owner decision: hover_gunboat / river_patrol_boat cannot meet a torpedo boat at sea (not sea units; torpedo boat navalOnly);
+  rows kept UNEXPECTED. Tried and dropped: enemy ships exempt from sea-route gap rules (broke gun vs missile destroyer at range).
