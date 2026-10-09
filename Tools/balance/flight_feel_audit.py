@@ -66,6 +66,8 @@ BANDS = {
     "AIR_DEFENCE_MISSILE": (0.40, 0.80), "ROCKET_ARTILLERY": (0.70, 1.60), "MORTAR": (0.90, 2.00), "HOWITZER": (0.90, 2.00),
     "CRUISE": (1.20, None), "DRONE": None, "BOMB": None, "AIRCRAFT_ROCKET": (0.25, 0.65), "NAVAL_DIRECT": (0.60, 2.00),
     "ANTI_SHIP_MISSILE": (0.80, 1.80), "BALLISTIC_MISSILE": (0.60, None), "BEAM_OR_MELEE": None,
+    # Naval FINAL spec 09/10 (section 6): a torpedo runs slower than any AShM and its run is meant to be read (wake).
+    "TORPEDO": (0.90, 2.50),
 }
 # spec 6: a tactical / guided missile is flagged when its half-range flight is under ~0.30 s (unless exempted)
 HALF_MIN = {"TACTICAL_MISSILE": 0.30, "AIR_DEFENCE_SHORT": 0.15, "AIR_DEFENCE_MISSILE": 0.20, "ANTI_SHIP_MISSILE": 0.40}
@@ -182,6 +184,7 @@ def feel_class(i, r):
     if fam in ("cruise", "cruise_missile"): return "CRUISE"
     if fam == "ballistic": return "BALLISTIC_MISSILE"
     if fam == "aa_missile": return "AIR_DEFENCE_SHORT" if i in SHORT_AAM or r.get("inherits") in SHORT_AAM else "AIR_DEFENCE_MISSILE"
+    if fam == "torpedo": return "TORPEDO"
     if i == "anti_ship_missile" or r.get("weaponFamily") == "nsm_oniks" or "anti_ship_missile" in str(r.get("inherits", "")) or i in ("pt14_hp_nsm", "scylla_kh35"): return "ANTI_SHIP_MISSILE"
     if pj == "Missile" or fam == "atgm": return "TACTICAL_MISSILE"
     if pj == "Rocket":

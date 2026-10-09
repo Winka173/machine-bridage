@@ -1232,7 +1232,7 @@
     { "id": "anti_ship_missile_cruiser", "inherits": "anti_ship_missile", "weaponFamily": "", "real": "NSM / P-800 Oniks (eight inclined cells, sea_cruiser.missile)", "burst": 8, "burstInterval": 0.45, "cooldown": 28 },
     // The escort craft's CIWS: the hover gunboat's AK-630 on aircraft, drones and missiles only (no surface fire); the
     // missiles and rockets themselves are its "aps" block's.
-    { "id": "naval_ciws_escort", "inherits": "hover_ciws", "real": "AK-630 30 mm, escort fit (ciws_escort_craft)", "targets": "Air" },
+    { "id": "escort_ciws_ak630", "inherits": "hover_ciws", "real": "AK-630 30 mm, escort fit (ciws_escort_craft)", "targets": "Air" },
     // The gun destroyer's two Mk 45 mounts together fire 1.125 x the destroyer's one (5.143 s x 2 / 1.125).
     { "id": "naval_127_gd", "inherits": "naval_127", "real": "Mk 45 127 mm, single mounts fore and aft (gun_destroyer)", "cooldown": 9.143 },
     // The rocket ship: the MLRS family's rocket, the same rockets a second (5 / 9.944 s = 8 / 15.9 s), in a bigger, wider salvo.
@@ -2264,8 +2264,8 @@
     // Renamed from ciws_escort_ship (06/10); same model. Its CIWS shoots aircraft and drones only, its "aps" takes the
     // missiles and rockets round it (weaker than a C-RAM's 4-6 charges / 0.35-0.6 s); the 76 mm is self-defence.
     { "id": "ciws_escort_craft", "class": "Support", "card": false, "interceptionMode": "PointDefense", "armour": [1, 1, 1, 0], "hp": 580, "speed": 9.0, "turnRate": 18, "turretTurnRate": 150, "radius": 4.6,
-      "length": 26, "width": 5.4, "cp": 8, "vision": 80, "captureRate": 0, "firesWhileMoving": true, "weapon": "naval_ciws_escort", "mainSlot": "mg", "mainAim": "Free",
-      "secondary": [ { "weapon": "naval_ciws_escort", "slot": "mg", "aim": "Free" }, { "weapon": "naval_ciws_escort", "slot": "mg", "aim": "Free" }, { "weapon": "naval_76", "slot": "gun", "aim": "Free" } ],
+      "length": 26, "width": 5.4, "cp": 8, "vision": 80, "captureRate": 0, "firesWhileMoving": true, "weapon": "escort_ciws_ak630", "mainSlot": "mg", "mainAim": "Free",
+      "secondary": [ { "weapon": "escort_ciws_ak630", "slot": "mg", "aim": "Free" }, { "weapon": "escort_ciws_ak630", "slot": "mg", "aim": "Free" }, { "weapon": "naval_76", "slot": "gun", "aim": "Free" } ],
       "aps": { "radius": 36, "charges": 3, "recharge": 1.8, "rockets": true },
       "naval": { "role": "Escort", "station": -16, "patrol": "far" },
       "model": "ciws_escort_ship", "modelSize": [26, 5.4, 10.4],
