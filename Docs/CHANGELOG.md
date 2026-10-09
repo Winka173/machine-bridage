@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Naval tune (09/10): ships fight from doctrine bands without a flagship; air-only CIWS on new ships; AShM min reach 45 m; torpedo not interceptable 800 x 2 / 8 s; EW 57 mm; battleship reload 18 s. Naval suite 43 as expected / 2 owner decision.
 - Boss design workbook (09/10, feature/boss-design-0910): sheet 10 HP, old-gun nerf + new-gun DPS budgets, Roc/Argus bomb and eight AoE nerfs, fire groups, Leviathan 22 / Kraken 13 hardpoints, capped periodic summons with breakable hangars / decks / gates, no radar parts, one 50 % phase per boss, six new minis (roc_gunship, daedalus_assault, icarus_interceptor, matriarch_flak, jotunn_artillery, bastion_aa); headless rules + smoke (regress bossrules / bosssmoke), no Unity run.
 - Naval FINAL spec (09/10, feature/naval-final): 18-ship roster reconciled to the final spec (CP 7-23, HP by anchor ratio, no
   Armour 5, one secondary capability, player AShM ladder Pen 4 / 80 m/s, light torpedo); ciws_escort_craft, naval_monitor,

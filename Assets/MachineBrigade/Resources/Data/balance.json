@@ -2379,7 +2379,7 @@
     // every ship to a doctrine role; "naval" gives its stance: "patrol" the lane it holds alone (far: standoff for
     // missile / AA / escort ships; near: the gun envelope off the shore; mid: the capitals), a negative "station" keeps
     // an escort astern of its flagship (never leading). No transport / radar / sonar / revive / salvage system.
-    { "id": "torpedo_boat", "class": "TankHunter", "card": false, "navalOnly": true, "armour": 0, "hp": 546, "speed": 13, "turnRate": 50, "turretTurnRate": 130, "radius": 3.0,
+    { "id": "torpedo_boat", "class": "TankHunter", "card": false, "navalOnly": true, "armour": 0, "hp": 545, "speed": 13, "turnRate": 50, "turretTurnRate": 130, "radius": 3.0,
       "length": 18, "width": 4.2, "cp": 7, "vision": 60, "captureRate": 0, "firesWhileMoving": true, "weapon": "naval_torpedo_light", "mainSlot": "missile", "mainAim": "Free",
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "naval": { "role": "Escort", "station": 24, "patrol": "far", "band": [0.45, 0.7] },
