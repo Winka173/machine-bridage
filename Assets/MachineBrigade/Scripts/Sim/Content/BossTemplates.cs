@@ -121,14 +121,21 @@ namespace MachineBrigade.Sim.Content
                     {
                         if (!merged.ContainsKey("mounts"))
                         {
-                            var mount = new Dictionary<string, object?> { ["weapon"] = weapon };
-                            foreach (var key in new[] { "slot", "aim", "arc", "model", "group", "new" })
-                                if (merged.TryGetValue(key, out var value) && value != null) mount[key] = value;
-                            if (!mount.ContainsKey("slot")) mount["slot"] = "gun";
-                            secondary.Add(mount);
-                            merged["mounts"] = new List<object?> { (double)secondary.Count };
+                            // Boss design 09/10: "count" gives one part several identical mounts (a CIWS cluster: 2-4 barrels, one subsystem).
+                            var count = merged.TryGetValue("count", out var cv) && cv is double cd ? Math.Max(1, (int)Math.Round(cd)) : 1;
+                            var carried = new List<object?>();
+                            for (var c = 0; c < count; c++)
+                            {
+                                var mount = new Dictionary<string, object?> { ["weapon"] = weapon };
+                                foreach (var key in new[] { "slot", "aim", "arc", "model", "group", "new" })
+                                    if (merged.TryGetValue(key, out var value) && value != null) mount[key] = Clone(value);
+                                if (!mount.ContainsKey("slot")) mount["slot"] = "gun";
+                                secondary.Add(mount);
+                                carried.Add((double)secondary.Count);
+                            }
+                            merged["mounts"] = carried;
                         }
-                        foreach (var key in new[] { "weapon", "slot", "aim", "arc", "model", "group", "new" }) merged.Remove(key);
+                        foreach (var key in new[] { "weapon", "slot", "aim", "arc", "model", "group", "new", "count" }) merged.Remove(key);
                     }
                     parts[k] = merged;
                 }
@@ -292,13 +299,6 @@ namespace MachineBrigade.Sim.Content
                 var drop = Strings(dropList);
                 Strip(d, id => !drop.Contains(id));
             }
-            // Boss design 09/10: parts of its own (a gun mount, a bay, a door) on top of the ones it keeps.
-            if (rules.TryGetValue("add", out var ad) && ad is List<object?> addList)
-            {
-                if (!d.TryGetValue("parts", out var existing) || existing is not List<object?>) d["parts"] = new List<object?>();
-                foreach (var a in addList) ((List<object?>)d["parts"]!).Add(Clone(a));
-                ExpandLibraryParts(d, library, path);
-            }
             // Part by part changes (a thinner hull's parts, a hardened one).
             if (rules.TryGetValue("tune", out var t) && t is Dictionary<string, object?> tune && d.TryGetValue("parts", out var p) && p is List<object?> parts)
                 for (var i = 0; i < parts.Count; i++)
@@ -309,8 +309,26 @@ namespace MachineBrigade.Sim.Content
             foreach (var pair in own)
             {
                 if (pair.Key is "variant") continue;
+                // Boss design 09/10: a null takes the parent's key away (a carrier without the battleship's laid salvo).
+                if (pair.Value == null) { d.Remove(pair.Key); continue; }
                 if (pair.Value is Dictionary<string, object?> sub && d.TryGetValue(pair.Key, out var under) && under is Dictionary<string, object?> ud) d[pair.Key] = Merge(ud, sub);
                 else d[pair.Key] = Clone(pair.Value);
+            }
+            // Boss design 09/10: parts of its own (a gun mount, a bay, a door) on top of the ones it keeps. After its own fields (a variant
+            // that names its own "secondary" list gets these mounts after them); their places are given in the parent's frame and scaled here.
+            if (rules.TryGetValue("add", out var ad) && ad is List<object?> addList)
+            {
+                if (!d.TryGetValue("parts", out var existing) || existing is not List<object?>) d["parts"] = new List<object?>();
+                var size = Number(rules, "size", 0.7f);
+                foreach (var a in addList)
+                {
+                    var part = (Dictionary<string, object?>)Clone(a)!;
+                    if (part.TryGetValue("at", out var at) && at is List<object?> xyz) part["at"] = Scaled(xyz, size);
+                    var lib = part.TryGetValue("use", out var u) && u is string use && library.TryGetValue(use, out var lv) && lv is Dictionary<string, object?> ld ? ld : null;
+                    part["radius"] = (double)(Number(part, "radius", lib != null ? Number(lib, "radius", 2f) : 2f) * size);
+                    ((List<object?>)d["parts"]!).Add(part);
+                }
+                ExpandLibraryParts(d, library, path);
             }
             if (rules.TryGetValue("tint", out var tint) && tint != null) d["tint"] = Clone(tint);
             if (rules.TryGetValue("mark", out var mark) && mark != null) d["mark"] = mark;

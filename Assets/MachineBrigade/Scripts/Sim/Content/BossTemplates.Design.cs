@@ -59,7 +59,7 @@ namespace MachineBrigade.Sim.Content
                         if (value is not Dictionary<string, object?> set) throw new FormatException($"{path}.set: an object is expected.");
                         foreach (var kv in set)
                         {
-                            if (kv.Value == null) raw.Remove(kv.Key);
+                            if (kv.Value == null) { if (variant) raw[kv.Key] = null; else raw.Remove(kv.Key); }
                             else if (kv.Value is Dictionary<string, object?> sub && raw.TryGetValue(kv.Key, out var under) && under is Dictionary<string, object?> ud) raw[kv.Key] = Merge(ud, sub);
                             else raw[kv.Key] = Clone(kv.Value);
                         }
